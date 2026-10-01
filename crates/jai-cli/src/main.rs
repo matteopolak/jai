@@ -68,6 +68,7 @@ enum Error {
         cause: std::io::Error,
     },
     Source(String),
+    Codegen(jai_codegen::Error),
     ToolNotFound(PathBuf),
     ReferenceTool(PathBuf),
     BackendFailed,
@@ -78,6 +79,7 @@ impl fmt::Display for Error {
         match self {
             Self::Arguments(text) => f.write_str(text),
             Self::Source(text) => f.write_str(text),
+            Self::Codegen(e) => fmt::Display::fmt(e, f),
             Self::Io { path, cause } => write!(f, "{}: {cause}", path.display()),
             Self::ToolNotFound(p) => write!(f, "trusted compiler not found: {}", p.display()),
             Self::ReferenceTool(p) => {
@@ -118,7 +120,7 @@ fn run() -> Result<(), Error> {
         Options::Lex(_) => {}
         Options::Check(path) => println!("checked {}", path.display()),
         Options::EmitLlvm { output, .. } => {
-            let ir = jai_codegen::emit(&program);
+            let ir = jai_codegen::emit(&program).map_err(Error::Codegen)?;
             match output {
                 Output::Stdout => print!("{ir}"),
                 Output::File(path) => {
@@ -127,7 +129,7 @@ fn run() -> Result<(), Error> {
             }
         }
         Options::Build { output, .. } => {
-            let ir = jai_codegen::emit(&program);
+            let ir = jai_codegen::emit(&program).map_err(Error::Codegen)?;
             let tool = trusted_compiler()?;
             let mut child = Command::new(tool)
                 .args(["-x", "ir", "-", "-o"])
