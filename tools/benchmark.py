@@ -28,10 +28,13 @@ def main() -> None:
     if args.upstream: command.append('--include-ignored')
     files = sorted(list((ROOT / 'crates').rglob('*.rs')) + [ROOT / 'Cargo.toml', ROOT / 'Cargo.lock', ROOT / 'rust-toolchain.toml', ROOT / '.cargo/config.toml'])
     if args.upstream: files.append(ROOT / 'corpus/upstreams.json')
-    metadata = {'format': 1, 'timestamp': datetime.now(timezone.utc).isoformat(), 'command': command,
+    llvm_prefix = environment.get('LLVM_SYS_221_PREFIX')
+    llvm_config = str(Path(llvm_prefix) / 'bin/llvm-config') if llvm_prefix else 'llvm-config'
+    metadata = {'format': 2, 'timestamp': datetime.now(timezone.utc).isoformat(), 'command': command,
                 'platform': platform.platform(), 'architecture': platform.machine(),
                 'rustc': version('rustc', '-vV'), 'cargo': version('cargo', '-V'),
-                'allocation_instrumented': True, 'shared_host': True,
+                'allocation_instrumented': True, 'allocation_scope': 'Rust allocator only; LLVM native allocations excluded', 'shared_host': True,
+                'llvm': {'version': version(llvm_config, '--version'), 'prefix': version(llvm_config, '--prefix')},
                 'input_hashes': {str(p.relative_to(ROOT)): digest(p) for p in files}}
     for name, root in [('reference', ROOT / 'reference'), ('upstream', ROOT / 'corpus/upstream')]:
         if name == 'upstream' and not args.upstream: continue
