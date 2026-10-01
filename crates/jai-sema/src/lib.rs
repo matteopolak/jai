@@ -1,0 +1,593 @@
+//! Resolve names and construct a typed program before code generation.
+use jai_source::{Diagnostic, Span, Symbol, Symbols};
+use jai_syntax::{self as syntax, BinaryOp, ReturnType, ScalarType, UnaryOp};
+use std::collections::HashMap;
+
+macro_rules! id {
+    ($name:ident) => {
+        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        pub struct $name(usize);
+        impl $name {
+            pub fn index(self) -> usize {
+                self.0
+            }
+        }
+    };
+}
+id!(ProcedureId);
+id!(IntLocal);
+id!(BoolLocal);
+#[derive(Clone, Copy, Debug)]
+pub enum Local {
+    Int(IntLocal),
+    Bool(BoolLocal),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum EntryPoint {
+    Void(ProcedureId),
+    Int(ProcedureId),
+}
+#[derive(Debug)]
+pub struct Program {
+    procedures: Vec<Procedure>,
+    entry: EntryPoint,
+}
+impl Program {
+    pub fn procedures(&self) -> &[Procedure] {
+        &self.procedures
+    }
+    pub fn entry(&self) -> EntryPoint {
+        self.entry
+    }
+}
+#[derive(Debug)]
+pub struct Procedure {
+    pub id: ProcedureId,
+    pub parameters: Vec<Local>,
+    pub locals: Vec<Local>,
+    pub return_type: ReturnType,
+    pub body: Block,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Flow {
+    FallsThrough,
+    Returns,
+}
+#[derive(Debug)]
+pub struct Block {
+    pub statements: Vec<Statement>,
+    pub flow: Flow,
+}
+#[derive(Debug)]
+pub enum Statement {
+    StoreInt(IntLocal, IntExpr),
+    StoreBool(BoolLocal, BoolExpr),
+    ReturnVoid,
+    ReturnInt(IntExpr),
+    ReturnBool(BoolExpr),
+    DiscardInt(IntExpr),
+    DiscardBool(BoolExpr),
+    CallVoid(Call),
+    If(BoolExpr, Block, Block),
+    While(BoolExpr, Block),
+    Block(Block),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum IntOp {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Remainder,
+    BitAnd,
+    BitOr,
+    BitXor,
+    ShiftLeft,
+    ShiftRight,
+}
+#[derive(Clone, Copy, Debug)]
+pub enum Relation {
+    Equal,
+    NotEqual,
+    Less,
+    LessEqual,
+    Greater,
+    GreaterEqual,
+}
+#[derive(Clone, Copy, Debug)]
+pub enum Equality {
+    Equal,
+    NotEqual,
+}
+#[derive(Debug)]
+pub enum IntExpr {
+    Constant(i64),
+    FromBool(Box<BoolExpr>),
+    Local(IntLocal),
+    Call(Call),
+    Negate(Box<IntExpr>),
+    Complement(Box<IntExpr>),
+    Binary(IntOp, Box<IntExpr>, Box<IntExpr>),
+}
+#[derive(Debug)]
+pub enum BoolExpr {
+    Constant(bool),
+    FromInt(Box<IntExpr>),
+    Local(BoolLocal),
+    Call(Call),
+    Not(Box<BoolExpr>),
+    CompareInts(Relation, Box<IntExpr>, Box<IntExpr>),
+    CompareBools(Equality, Box<BoolExpr>, Box<BoolExpr>),
+    And(Box<BoolExpr>, Box<BoolExpr>),
+    Or(Box<BoolExpr>, Box<BoolExpr>),
+}
+#[derive(Debug)]
+pub enum ValueExpr {
+    Int(IntExpr),
+    Bool(BoolExpr),
+}
+#[derive(Debug)]
+pub struct Call {
+    pub procedure: ProcedureId,
+    pub arguments: Vec<ValueExpr>,
+}
+
+struct Signature {
+    id: ProcedureId,
+    parameters: Vec<ScalarType>,
+    result: ReturnType,
+}
+enum Expr {
+    Int(IntExpr),
+    Bool(BoolExpr),
+    Void(Call),
+}
+impl Expr {
+    fn int(self, span: Span) -> Result<IntExpr, Diagnostic> {
+        match self {
+            Self::Int(e) => Ok(e),
+            _ => Err(Diagnostic::new(span, "expected int value")),
+        }
+    }
+    fn bool(self, span: Span) -> Result<BoolExpr, Diagnostic> {
+        match self {
+            Self::Bool(e) => Ok(e),
+            _ => Err(Diagnostic::new(span, "expected bool value")),
+        }
+    }
+    fn value(self, span: Span) -> Result<ValueExpr, Diagnostic> {
+        match self {
+            Self::Int(e) => Ok(ValueExpr::Int(e)),
+            Self::Bool(e) => Ok(ValueExpr::Bool(e)),
+            Self::Void(_) => Err(Diagnostic::new(span, "void call cannot supply a value")),
+        }
+    }
+    fn condition(self, span: Span) -> Result<BoolExpr, Diagnostic> {
+        match self {
+            Self::Bool(e) => Ok(e),
+            Self::Int(e) => Ok(BoolExpr::FromInt(Box::new(e))),
+            Self::Void(_) => Err(Diagnostic::new(span, "void call cannot supply a condition")),
+        }
+    }
+}
+
+pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
+    let mut signatures = HashMap::new();
+    for (index, p) in module.procedures().iter().enumerate() {
+        let signature = Signature {
+            id: ProcedureId(index),
+            parameters: p.parameters.iter().map(|p| p.ty).collect(),
+            result: p.return_type,
+        };
+        if signatures.insert(p.name, signature).is_some() {
+            return Err(Diagnostic::new(
+                p.span,
+                format!("duplicate procedure '{}'", module.symbols().name(p.name)),
+            ));
+        }
+    }
+    let main = module
+        .symbols()
+        .find("main")
+        .and_then(|s| signatures.get(&s))
+        .ok_or_else(|| Diagnostic::new(Span::default(), "no main procedure"))?;
+    if !main.parameters.is_empty() {
+        return Err(Diagnostic::new(
+            Span::default(),
+            "main cannot take parameters in this compiler stage",
+        ));
+    }
+    let entry = match main.result {
+        ReturnType::Void => EntryPoint::Void(main.id),
+        ReturnType::Value(ScalarType::Int) => EntryPoint::Int(main.id),
+        ReturnType::Value(ScalarType::Bool) => {
+            return Err(Diagnostic::new(
+                Span::default(),
+                "main must return int or void",
+            ));
+        }
+    };
+    let mut procedures = Vec::new();
+    for (index, p) in module.procedures().iter().enumerate() {
+        let mut r = Resolver {
+            signatures: &signatures,
+            symbols: module.symbols(),
+            scopes: vec![HashMap::new()],
+            locals: Vec::new(),
+            span: p.span,
+            result: p.return_type,
+        };
+        let mut parameters = Vec::new();
+        for param in &p.parameters {
+            parameters.push(r.declare(param.name, param.ty)?);
+        }
+        let body = r.block(&p.body, false)?;
+        if p.return_type != ReturnType::Void && body.flow != Flow::Returns {
+            return Err(Diagnostic::new(
+                p.span,
+                "value-returning procedure may reach its end",
+            ));
+        }
+        procedures.push(Procedure {
+            id: ProcedureId(index),
+            parameters,
+            locals: r.locals,
+            return_type: p.return_type,
+            body,
+        });
+    }
+    Ok(Program { procedures, entry })
+}
+struct Resolver<'a> {
+    signatures: &'a HashMap<Symbol, Signature>,
+    symbols: &'a Symbols,
+    scopes: Vec<HashMap<Symbol, Local>>,
+    locals: Vec<Local>,
+    span: Span,
+    result: ReturnType,
+}
+impl Resolver<'_> {
+    fn error(&self, text: impl Into<String>) -> Diagnostic {
+        Diagnostic::new(self.span, text)
+    }
+    fn lookup(&self, name: Symbol) -> Result<Local, Diagnostic> {
+        self.scopes
+            .iter()
+            .rev()
+            .find_map(|s| s.get(&name))
+            .copied()
+            .ok_or_else(|| self.error(format!("unknown variable '{}'", self.symbols.name(name))))
+    }
+    fn declare(&mut self, name: Symbol, ty: ScalarType) -> Result<Local, Diagnostic> {
+        let scope = self.scopes.last_mut().expect("resolver always has a scope");
+        if scope.contains_key(&name) {
+            return Err(Diagnostic::new(
+                self.span,
+                format!("duplicate variable '{}'", self.symbols.name(name)),
+            ));
+        }
+        let local = match ty {
+            ScalarType::Int => Local::Int(IntLocal(self.locals.len())),
+            ScalarType::Bool => Local::Bool(BoolLocal(self.locals.len())),
+        };
+        scope.insert(name, local);
+        self.locals.push(local);
+        Ok(local)
+    }
+    fn store(&self, local: Local, value: Expr) -> Result<Statement, Diagnostic> {
+        Ok(match local {
+            Local::Int(id) => Statement::StoreInt(id, value.int(self.span)?),
+            Local::Bool(id) => Statement::StoreBool(id, value.bool(self.span)?),
+        })
+    }
+    fn block(
+        &mut self,
+        statements: &[syntax::Statement],
+        scoped: bool,
+    ) -> Result<Block, Diagnostic> {
+        if scoped {
+            self.scopes.push(HashMap::new());
+        }
+        let mut out = Vec::new();
+        let mut flow = Flow::FallsThrough;
+        for statement in statements {
+            if flow == Flow::Returns {
+                return Err(self.error("unreachable statement"));
+            }
+            let s = self.statement(statement)?;
+            flow = match &s {
+                Statement::ReturnVoid | Statement::ReturnInt(_) | Statement::ReturnBool(_) => {
+                    Flow::Returns
+                }
+                Statement::If(_, yes, no)
+                    if yes.flow == Flow::Returns && no.flow == Flow::Returns =>
+                {
+                    Flow::Returns
+                }
+                Statement::Block(b) => b.flow,
+                _ => Flow::FallsThrough,
+            };
+            out.push(s);
+        }
+        if scoped {
+            self.scopes.pop();
+        }
+        Ok(Block {
+            statements: out,
+            flow,
+        })
+    }
+    fn statement(&mut self, statement: &syntax::Statement) -> Result<Statement, Diagnostic> {
+        Ok(match statement {
+            syntax::Statement::Declare(decl) => {
+                let (name, ty, value) = match decl {
+                    syntax::Declaration::Inferred { name, initializer } => {
+                        let value = self.expr(initializer)?.value(initializer.span)?;
+                        let (ty, value) = match value {
+                            ValueExpr::Int(e) => (ScalarType::Int, Expr::Int(e)),
+                            ValueExpr::Bool(e) => (ScalarType::Bool, Expr::Bool(e)),
+                        };
+                        (*name, ty, value)
+                    }
+                    syntax::Declaration::Explicit {
+                        name,
+                        ty,
+                        initializer,
+                    } => {
+                        let value = match initializer {
+                            Some(e) => self.expr(e)?,
+                            None => match ty {
+                                ScalarType::Int => Expr::Int(IntExpr::Constant(0)),
+                                ScalarType::Bool => Expr::Bool(BoolExpr::Constant(false)),
+                            },
+                        };
+                        (*name, *ty, value)
+                    }
+                };
+                let local = self.declare(name, ty)?;
+                self.store(local, value)?
+            }
+            syntax::Statement::Assign(name, e) => {
+                let local = self.lookup(*name)?;
+                let value = self.expr(e)?;
+                self.store(local, value)?
+            }
+            syntax::Statement::Update(name, op, e) => {
+                let local = self.lookup(*name)?;
+                let lhs = match local {
+                    Local::Int(id) => Expr::Int(IntExpr::Local(id)),
+                    Local::Bool(id) => Expr::Bool(BoolExpr::Local(id)),
+                };
+                let value = self.binary(*op, lhs, self.expr(e)?, e.span)?;
+                self.store(local, value)?
+            }
+            syntax::Statement::Return(e) => match (self.result, e) {
+                (ReturnType::Void, None) => Statement::ReturnVoid,
+                (ReturnType::Value(ScalarType::Int), Some(e)) => {
+                    Statement::ReturnInt(self.expr(e)?.int(e.span)?)
+                }
+                (ReturnType::Value(ScalarType::Bool), Some(e)) => {
+                    Statement::ReturnBool(self.expr(e)?.bool(e.span)?)
+                }
+                _ => return Err(self.error("return value does not match procedure signature")),
+            },
+            syntax::Statement::Expression(e) => match self.expr(e)? {
+                Expr::Int(e) => Statement::DiscardInt(e),
+                Expr::Bool(e) => Statement::DiscardBool(e),
+                Expr::Void(c) => Statement::CallVoid(c),
+            },
+            syntax::Statement::If(cond, yes, no) => Statement::If(
+                self.expr(cond)?.condition(cond.span)?,
+                self.block(yes, true)?,
+                self.block(no, true)?,
+            ),
+            syntax::Statement::While(cond, body) => Statement::While(
+                self.expr(cond)?.condition(cond.span)?,
+                self.block(body, true)?,
+            ),
+            syntax::Statement::Block(body) => Statement::Block(self.block(body, true)?),
+        })
+    }
+    fn expr(&self, expr: &syntax::Expression) -> Result<Expr, Diagnostic> {
+        let span = expr.span;
+        Ok(match &expr.kind {
+            syntax::ExpressionKind::Integer(n) => Expr::Int(IntExpr::Constant(*n)),
+            syntax::ExpressionKind::Bool(b) => Expr::Bool(BoolExpr::Constant(*b)),
+            syntax::ExpressionKind::Name(name) => match self.lookup(*name)? {
+                Local::Int(id) => Expr::Int(IntExpr::Local(id)),
+                Local::Bool(id) => Expr::Bool(BoolExpr::Local(id)),
+            },
+            syntax::ExpressionKind::Call(name, args) => {
+                let signature = self.signatures.get(name).ok_or_else(|| {
+                    Diagnostic::new(
+                        span,
+                        format!("unknown procedure '{}'", self.symbols.name(*name)),
+                    )
+                })?;
+                if args.len() != signature.parameters.len() {
+                    return Err(Diagnostic::new(span, "wrong argument count"));
+                }
+                let arguments = args
+                    .iter()
+                    .zip(&signature.parameters)
+                    .map(|(e, ty)| {
+                        let e = self.expr(e)?;
+                        Ok(match ty {
+                            ScalarType::Int => ValueExpr::Int(e.int(span)?),
+                            ScalarType::Bool => ValueExpr::Bool(e.bool(span)?),
+                        })
+                    })
+                    .collect::<Result<_, Diagnostic>>()?;
+                let call = Call {
+                    procedure: signature.id,
+                    arguments,
+                };
+                match signature.result {
+                    ReturnType::Void => Expr::Void(call),
+                    ReturnType::Value(ScalarType::Int) => Expr::Int(IntExpr::Call(call)),
+                    ReturnType::Value(ScalarType::Bool) => Expr::Bool(BoolExpr::Call(call)),
+                }
+            }
+            syntax::ExpressionKind::Unary(op, operand) => {
+                let value = self.expr(operand)?;
+                match op {
+                    UnaryOp::Positive => Expr::Int(value.int(span)?),
+                    UnaryOp::Negate => Expr::Int(IntExpr::Negate(Box::new(value.int(span)?))),
+                    UnaryOp::Complement => {
+                        Expr::Int(IntExpr::Complement(Box::new(value.int(span)?)))
+                    }
+                    UnaryOp::LogicalNot => {
+                        Expr::Bool(BoolExpr::Not(Box::new(value.condition(span)?)))
+                    }
+                }
+            }
+            syntax::ExpressionKind::Cast(ty, operand) => {
+                let value = self.expr(operand)?;
+                match ty {
+                    ScalarType::Bool => Expr::Bool(value.condition(span)?),
+                    ScalarType::Int => match value {
+                        Expr::Int(e) => Expr::Int(e),
+                        Expr::Bool(e) => Expr::Int(IntExpr::FromBool(Box::new(e))),
+                        Expr::Void(_) => {
+                            return Err(Diagnostic::new(span, "void call cannot be cast to int"));
+                        }
+                    },
+                }
+            }
+            syntax::ExpressionKind::Binary(op, lhs, rhs) => {
+                let lhs = self.expr(lhs)?;
+                let rhs = self.expr(rhs)?;
+                self.binary(*op, lhs, rhs, span)?
+            }
+        })
+    }
+    fn binary(&self, op: BinaryOp, lhs: Expr, rhs: Expr, span: Span) -> Result<Expr, Diagnostic> {
+        Ok(match Operator::from(op) {
+            Operator::Integer(op) => Expr::Int(IntExpr::Binary(
+                op,
+                Box::new(lhs.int(span)?),
+                Box::new(rhs.int(span)?),
+            )),
+            Operator::Relation(op) => Expr::Bool(BoolExpr::CompareInts(
+                op,
+                Box::new(lhs.int(span)?),
+                Box::new(rhs.int(span)?),
+            )),
+            Operator::Equality(op) => Expr::Bool(match (lhs, rhs) {
+                (Expr::Int(l), Expr::Int(r)) => BoolExpr::CompareInts(
+                    match op {
+                        Equality::Equal => Relation::Equal,
+                        Equality::NotEqual => Relation::NotEqual,
+                    },
+                    Box::new(l),
+                    Box::new(r),
+                ),
+                (Expr::Bool(l), Expr::Bool(r)) => {
+                    BoolExpr::CompareBools(op, Box::new(l), Box::new(r))
+                }
+                _ => {
+                    return Err(Diagnostic::new(
+                        span,
+                        "equality requires two values of the same type",
+                    ));
+                }
+            }),
+            Operator::And => Expr::Bool(BoolExpr::And(
+                Box::new(lhs.condition(span)?),
+                Box::new(rhs.condition(span)?),
+            )),
+            Operator::Or => Expr::Bool(BoolExpr::Or(
+                Box::new(lhs.condition(span)?),
+                Box::new(rhs.condition(span)?),
+            )),
+        })
+    }
+}
+enum Operator {
+    Integer(IntOp),
+    Relation(Relation),
+    Equality(Equality),
+    And,
+    Or,
+}
+impl From<BinaryOp> for Operator {
+    fn from(op: BinaryOp) -> Self {
+        match op {
+            BinaryOp::LogicalAnd => Self::And,
+            BinaryOp::LogicalOr => Self::Or,
+            BinaryOp::Equal => Self::Equality(Equality::Equal),
+            BinaryOp::NotEqual => Self::Equality(Equality::NotEqual),
+            BinaryOp::Less => Self::Relation(Relation::Less),
+            BinaryOp::LessEqual => Self::Relation(Relation::LessEqual),
+            BinaryOp::Greater => Self::Relation(Relation::Greater),
+            BinaryOp::GreaterEqual => Self::Relation(Relation::GreaterEqual),
+            BinaryOp::Add => Self::Integer(IntOp::Add),
+            BinaryOp::Subtract => Self::Integer(IntOp::Subtract),
+            BinaryOp::Multiply => Self::Integer(IntOp::Multiply),
+            BinaryOp::Divide => Self::Integer(IntOp::Divide),
+            BinaryOp::Remainder => Self::Integer(IntOp::Remainder),
+            BinaryOp::BitAnd => Self::Integer(IntOp::BitAnd),
+            BinaryOp::BitOr => Self::Integer(IntOp::BitOr),
+            BinaryOp::BitXor => Self::Integer(IntOp::BitXor),
+            BinaryOp::ShiftLeft => Self::Integer(IntOp::ShiftLeft),
+            BinaryOp::ShiftRight => Self::Integer(IntOp::ShiftRight),
+        }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn check(source: &str) -> Result<Program, Diagnostic> {
+        resolve(&syntax::parse(source).unwrap())
+    }
+    #[test]
+    fn reject_unresolved_names_and_arity() {
+        for src in [
+            "main :: () { x = 1; }",
+            "main :: () { missing(); }",
+            "f :: (x:int) {} main :: () { f(); }",
+        ] {
+            assert!(check(src).is_err(), "{src}");
+        }
+    }
+    #[test]
+    fn preserve_scalar_types() {
+        for src in [
+            "main :: () { x: int = true; }",
+            "main :: () { x: bool = 1; }",
+            "main :: ()->int { return true; }",
+            "f :: (b:bool) {} main :: () { f(1); }",
+            "main :: () { x := true + false; }",
+        ] {
+            assert!(check(src).is_err(), "{src}");
+        }
+    }
+    #[test]
+    fn void_values_cannot_escape() {
+        assert!(check("f :: () {} main :: () { f(); }").is_ok());
+        assert!(check("f :: () {} main :: () { x := f(); }").is_err());
+    }
+    #[test]
+    fn return_flow_and_scope() {
+        for src in [
+            "main :: ()->int {}",
+            "main :: () { return; x := 1; }",
+            "main :: () { { x := 1; } x = 2; }",
+            "main :: () { x := 1; x := 2; }",
+        ] {
+            assert!(check(src).is_err(), "{src}");
+        }
+        assert!(check("main :: ()->int { if true return 1; else return 2; }").is_ok());
+    }
+    #[test]
+    fn entry_point_and_parameter_invariants() {
+        for src in [
+            "f :: () {}",
+            "main :: (x:int) {}",
+            "main :: ()->bool { return true; }",
+            "f :: (x:int,x:bool) {} main :: () {}",
+        ] {
+            assert!(check(src).is_err(), "{src}");
+        }
+    }
+}

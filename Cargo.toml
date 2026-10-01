@@ -1,0 +1,22 @@
+[workspace]
+resolver = "3"
+members = ["crates/jai-source", "crates/jai-lexer", "crates/jai-syntax", "crates/jai-sema", "crates/jai-codegen", "crates/jai-cli", "crates/jai-bench"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+
+[workspace.dependencies]
+jai-source = { path = "crates/jai-source" }
+jai-lexer = { path = "crates/jai-lexer" }
+jai-syntax = { path = "crates/jai-syntax" }
+jai-sema = { path = "crates/jai-sema" }
+jai-codegen = { path = "crates/jai-codegen" }
+divan = "0.1.21"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "warn"

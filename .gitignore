@@ -1,0 +1,6 @@
+/target/
+/reference/
+/artifacts/
+/corpus/upstream/
+**/__pycache__/
+*.jai-output

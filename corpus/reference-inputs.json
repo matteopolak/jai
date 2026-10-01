@@ -1,0 +1,3546 @@
+{
+  "format": 1,
+  "archive_sha256": "03288e4ceb7b3a7d91fa8fc9f8829295a2395ce8f6362176ee77a43fa3020bb9",
+  "files": [
+    {
+      "path": "bin/jai-linux",
+      "bytes": 73159640,
+      "sha256": "354d0942bfc2a8b3beaee5d9f3f2d4e65851a1ff2a705458daab7a961db69277"
+    },
+    {
+      "path": "bin/jai-macos",
+      "bytes": 132512304,
+      "sha256": "a76ba6e153838a81e3ed4edbcc4ec42ad86c333cdeaf4053fdc592ed0b61600e"
+    },
+    {
+      "path": "bin/jai.exe",
+      "bytes": 45767680,
+      "sha256": "05b5d19a5e580f96d6b1c62e7d6a50936d1edb1a43588dd1e4957132df06a214"
+    },
+    {
+      "path": "bin/lld-linux",
+      "bytes": 78567312,
+      "sha256": "4b34e06d65a36d673dfaabfc22bec1eac79daad0e0333f73d835d4cbf8189bec"
+    },
+    {
+      "path": "bin/lld-macos",
+      "bytes": 135712224,
+      "sha256": "5c0329f12268fc08ffcc31410adf8c3573d994c36089f4b190b716029e770c72"
+    },
+    {
+      "path": "bin/lld.exe",
+      "bytes": 54296064,
+      "sha256": "1ea3e626e6d5d19d427ec3a42b8202f3eafbcb19de470b0a4a9946f90ba0fc6b"
+    },
+    {
+      "path": "examples/VR/first.jai",
+      "bytes": 5087,
+      "sha256": "6fa4d51370a353ce29e47844ba8fe2bd61db81d6dd603a58846475a6aee53e83"
+    },
+    {
+      "path": "examples/VR/jai_vr.jai",
+      "bytes": 44116,
+      "sha256": "e13ced0eb72af044dddb740f15dbc7c30398927fbf759ab10b82f2f0bf876417"
+    },
+    {
+      "path": "examples/VR/modules/OpenXR/bindings.jai",
+      "bytes": 218973,
+      "sha256": "00899883815ea684b02e4fa27498a1ec0e5ce0b8f94b5680f9ca4e9d02225312"
+    },
+    {
+      "path": "examples/VR/modules/OpenXR/generate.jai",
+      "bytes": 10668,
+      "sha256": "6536ea2a0913374bc2542fcd665a552c38a6915e620a505acc03c375291582dd"
+    },
+    {
+      "path": "examples/VR/modules/OpenXR/module.jai",
+      "bytes": 309,
+      "sha256": "eea7b7428ed34b164ca42a04c9fe4acae65b51cf8cc8a9bfc2422dc694932c7c"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Memory_Allocator/bindings.jai",
+      "bytes": 73903,
+      "sha256": "73b8cca4f5cba215dd52760961a6f92aa087daff7ffc009e71a12a17c62254e6"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Memory_Allocator/generate.jai",
+      "bytes": 5417,
+      "sha256": "675d6488a7e604d9c4c1bf00860f790f4b47105cea94d6bdd2a684691cd95adf"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Memory_Allocator/module.jai",
+      "bytes": 42,
+      "sha256": "e3b3ddebd4235a3d88aa5625bae8c4a2d30aa13bfbf950569d1fe9f483d2fb8f"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Paths.jai",
+      "bytes": 1008,
+      "sha256": "69db745a0ef71d305fc4f1c820b3e4cb4a52d8ff782ffd2eb86db00d724652bd"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Render/examples/example.jai",
+      "bytes": 3020,
+      "sha256": "78083bf4ad0ce602406389a17b470c208c9f768f1960bc6c608844efe3057acc"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Render/examples/first.jai",
+      "bytes": 1441,
+      "sha256": "542345397919481e2c9a1ac515a528751b144fc4fff15e94b56acdff32fa19e3"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Render/module.jai",
+      "bytes": 61885,
+      "sha256": "d2cc046a0ada09296a6e8da2b10d10bede615b7e1897673770867b618f2ac976"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Render/shader_compilation.jai",
+      "bytes": 2264,
+      "sha256": "6aa1d3768bbf19f9c5c4d32efcfe876575fb0c6cddfdfde014f851a31823945d"
+    },
+    {
+      "path": "examples/VR/modules/Vulkan_Render/shaders/build.jai",
+      "bytes": 204,
+      "sha256": "29b534f63dfc408c372a44e122685f9e73b41b5b6e63195689b680cb8ecf46b8"
+    },
+    {
+      "path": "examples/add_build_string_into_specific_scope/My_Modules/module_a.jai",
+      "bytes": 92,
+      "sha256": "6519041afd93cbcce884bfc6107c1ce4f8532789b7f063fe7ba47233aa33122e"
+    },
+    {
+      "path": "examples/add_build_string_into_specific_scope/My_Modules/module_b.jai",
+      "bytes": 92,
+      "sha256": "34102fe504dc1d88b6c593715b96944b4cc4ff0c552db2a4042a984b3702570c"
+    },
+    {
+      "path": "examples/add_build_string_into_specific_scope/build.jai",
+      "bytes": 3533,
+      "sha256": "650ad7adcb1407b0c3739fadbc2cc24dc404922cf32bb5169a7b5ac8edbe711d"
+    },
+    {
+      "path": "examples/add_build_string_into_specific_scope/main.jai",
+      "bytes": 448,
+      "sha256": "cfa14c426db8936e06ca4f329a5f66509f6f420059e45c68064e455a8a66295d"
+    },
+    {
+      "path": "examples/add_build_string_into_specific_scope/sub_file.jai",
+      "bytes": 99,
+      "sha256": "3e9d8d30016c192adaed1de13cf56605061cfa6320bc6a5be1f95cbaac33dd49"
+    },
+    {
+      "path": "examples/beta_key_mailer/convert_to_csv.jai",
+      "bytes": 1464,
+      "sha256": "b0b6809531866ccb7c824053c7350c3f2e693bf8805c67ec03a55efee2ee6ba0"
+    },
+    {
+      "path": "examples/beta_key_mailer/email_keys.jai",
+      "bytes": 3577,
+      "sha256": "af3b2caf7b4bf8ef1c8b73fd1496c08a678384a1fe2761007d737dec3ca9920a"
+    },
+    {
+      "path": "examples/beta_key_mailer/generate_keys.jai",
+      "bytes": 1552,
+      "sha256": "03b76d7a94a64ad2097b389f11edd061cf7b7aff3a765674daf44c498ad064e8"
+    },
+    {
+      "path": "examples/code_type.jai",
+      "bytes": 2648,
+      "sha256": "ced0a065758506351c5cfb9eb030fb0954c38cfe7b98447e701ac5fc43d505c6"
+    },
+    {
+      "path": "examples/codex_view/build.jai",
+      "bytes": 168,
+      "sha256": "a3f1086962689998c25654905eb6ec9341c2eb04431c292dec92c8003800f892"
+    },
+    {
+      "path": "examples/codex_view/src/draw_live_allocations.jai",
+      "bytes": 43959,
+      "sha256": "a751a0fb6683547d4991c17c6ea6dce05685cfe63b0032dd9e6beffa9dca2540"
+    },
+    {
+      "path": "examples/codex_view/src/draw_metrics.jai",
+      "bytes": 18695,
+      "sha256": "2b382f95fadf8f720bbf5d05eed6fed93ae20aee1c4425886762ed6dc78e5bb1"
+    },
+    {
+      "path": "examples/codex_view/src/graphs.jai",
+      "bytes": 15635,
+      "sha256": "0dae939d12c4f500e15af6a472f2f2b9ebcde256a1801160da35fc30c01c80bf"
+    },
+    {
+      "path": "examples/codex_view/src/info.jai",
+      "bytes": 3897,
+      "sha256": "71575237d5119a1fd26823183048d12aab44104287e44f4b4506534ee4aa265c"
+    },
+    {
+      "path": "examples/codex_view/src/live_allocations.jai",
+      "bytes": 13323,
+      "sha256": "76ff6331c8a3da032cfab299768f3376f11b4b3ebe0a1d7e50c259bebbbbf76c"
+    },
+    {
+      "path": "examples/codex_view/src/main.jai",
+      "bytes": 10942,
+      "sha256": "691c6b85358268d345a5a4249f75b6b25782c2cd86117bcf0eeeac0fde5458ae"
+    },
+    {
+      "path": "examples/codex_view/src/recording.jai",
+      "bytes": 11918,
+      "sha256": "391efd40ff427139d77252abdea8b32a065bf2f140a0b6c9db6bd7955e470a20"
+    },
+    {
+      "path": "examples/codex_view/src/settings.jai",
+      "bytes": 1475,
+      "sha256": "6d917d77101f06bb9f7e69d71b8aa9143f0bb61a131bed2d9e184e0c09965e25"
+    },
+    {
+      "path": "examples/codex_view/src/sidebar.jai",
+      "bytes": 1458,
+      "sha256": "8d84fc70e06368979a4cf44fd9cc624499e8d0550a373365da3485481e0adbc2"
+    },
+    {
+      "path": "examples/codex_view/src/treemap.jai",
+      "bytes": 12720,
+      "sha256": "2ac38a9d5ad9d8ba50a331197d3152f21ddd932dc5c2a4c0c97e1ee46ad43245"
+    },
+    {
+      "path": "examples/d3d11_example/d3d11_example.jai",
+      "bytes": 15316,
+      "sha256": "e5aab4e6ad6ddd44f8f9778b03096709dce152617b85c4399f90a6db9b714f0d"
+    },
+    {
+      "path": "examples/dll/backchannel.jai",
+      "bytes": 92,
+      "sha256": "0bfe1080c07d1730d3c51c3538988c12c083428e64fcd1e39fc38f8b084ff8f7"
+    },
+    {
+      "path": "examples/dll/build.jai",
+      "bytes": 3022,
+      "sha256": "a607be38cbf9bf621baf44a48c9f6569f78a22b406e3056cebe50df22ce71abd"
+    },
+    {
+      "path": "examples/dll/helper.jai",
+      "bytes": 824,
+      "sha256": "009ae0e5f1766690eeb265efd48f795ba777af4370d5e5b45b191013b6e10a7d"
+    },
+    {
+      "path": "examples/dll/main.jai",
+      "bytes": 1724,
+      "sha256": "c0b77afd15b4c42befc06097153e57bfbccc60685f6faa51c7f028023d652221"
+    },
+    {
+      "path": "examples/dump_binary_file.jai",
+      "bytes": 61307,
+      "sha256": "059979a0ae6e53caf1cceae245369c94c65cfceb908721a9e9fa318c741fb087"
+    },
+    {
+      "path": "examples/find_symbol.jai",
+      "bytes": 8071,
+      "sha256": "8172724a39ae90068a92a31fa4ce1c0fb9ae18407a88b53a7ea2f3eb9862451a"
+    },
+    {
+      "path": "examples/hash_table_test.jai",
+      "bytes": 26341,
+      "sha256": "729d764566842668b988336b6f95cedf26e02ea83d5a4ffff68c129ba43a8be1"
+    },
+    {
+      "path": "examples/here_string_detector.jai",
+      "bytes": 949,
+      "sha256": "ad8d354295113654b34a14c87928077d42397dad283fe450c1f79801fd56683b"
+    },
+    {
+      "path": "examples/import_replacement/example.jai",
+      "bytes": 4891,
+      "sha256": "86529707cef86534ab1b1bc5a6fed1416c881438db650d5c844c8bb3870f5881"
+    },
+    {
+      "path": "examples/import_replacement/local_imports/BlockMe.jai",
+      "bytes": 75,
+      "sha256": "d8ddc931d7b175087b1bb6ea82d82af99ce289e08c36c687d35607ff76222353"
+    },
+    {
+      "path": "examples/import_replacement/local_imports/Dimwit.jai",
+      "bytes": 166,
+      "sha256": "dc823107ce36bead8ba508f289146bfb23edf09eaf86addd395325606c592c3d"
+    },
+    {
+      "path": "examples/import_replacement/local_imports/Flathead.jai",
+      "bytes": 427,
+      "sha256": "0bab87dc38c53220a6ca3e8b5ebef7e0cd8df4c1c79b22177eac28cc751fc364"
+    },
+    {
+      "path": "examples/import_replacement/local_imports/Frotz-6_9_105.jai",
+      "bytes": 19,
+      "sha256": "a4193bcb44f9fd7b9d5293d821fb8d8c2927b9baa1c49c832d0f3628f11cea81"
+    },
+    {
+      "path": "examples/import_replacement/local_imports/Frotz.jai",
+      "bytes": 20,
+      "sha256": "d92670376213ce89a6661921454d9565f1557b0710b26151ead5bf0f55d3ba1f"
+    },
+    {
+      "path": "examples/import_replacement/main_program.jai",
+      "bytes": 2224,
+      "sha256": "59bd2e812b7915a7b338bad1c76eeb4aa9ea584924e1e0eae3633522a1d7938b"
+    },
+    {
+      "path": "examples/import_replacement/somewhere/FunModule/module.jai",
+      "bytes": 135,
+      "sha256": "545f0dc0fdd127605f6d920319a5e9f8e33e9494a4850166cb922efb0021d010"
+    },
+    {
+      "path": "examples/import_replacement/specific_filename.jai",
+      "bytes": 255,
+      "sha256": "3e8722e95fef5063cf7b09d00adf0e5f5e7b4a5cbbdfeae19159f80148634483"
+    },
+    {
+      "path": "examples/invaders/first.jai",
+      "bytes": 4463,
+      "sha256": "850c69a4248ea583247d29f6a1d1642463523d25847beb3bbc8a8fc36e430558"
+    },
+    {
+      "path": "examples/invaders/source/entities.jai",
+      "bytes": 1035,
+      "sha256": "113616734dd152f13e7b1d4c50afa8ba0f7dd2fdb30c764432cf924007882291"
+    },
+    {
+      "path": "examples/invaders/source/invaders.jai",
+      "bytes": 31053,
+      "sha256": "34fc44f5112c80e08857374ef548002cdbab2a16096baf8f8cac402d45d46754"
+    },
+    {
+      "path": "examples/invaders/source/levels.jai",
+      "bytes": 3599,
+      "sha256": "0e964a8ab9a2f7d6067534ae7a695acabb7213b22117b233e4b6ee41e44210dd"
+    },
+    {
+      "path": "examples/invaders/source/onscreen_controls.jai",
+      "bytes": 12468,
+      "sha256": "af9d10e3874abd3c19858c885dd289f6709027cb499537d6e9a4701c1f9223ad"
+    },
+    {
+      "path": "examples/invaders/source/particles.jai",
+      "bytes": 3763,
+      "sha256": "e95c11fc94414477513ed983798fd05c1743f2778a9a4ed5d19eb21acfd2ea31"
+    },
+    {
+      "path": "examples/invaders/source/pathing.jai",
+      "bytes": 4870,
+      "sha256": "ff0c1e001522ff6fe4d70103493e1b9bcfe397469d02c9ef43e49c6fc99cc57e"
+    },
+    {
+      "path": "examples/invaders/source/simulate.jai",
+      "bytes": 10671,
+      "sha256": "c8459d95d9b9fc9ea68ac1e3a65e394127b28c51a9b48c6d072519fbae6ed32e"
+    },
+    {
+      "path": "examples/ios_library/first.jai",
+      "bytes": 2141,
+      "sha256": "2f0a1d8f7b58f64e0bb4345fea33cce07642bf70f3e5579857abb8cdc21cb7cb"
+    },
+    {
+      "path": "examples/ios_library/library.jai",
+      "bytes": 602,
+      "sha256": "14547ac1cb501e4d195676a7455f0f0ffa78fc07b91854440330695436a87486"
+    },
+    {
+      "path": "examples/module_info.jai",
+      "bytes": 43710,
+      "sha256": "f6ba62bba2c0c93c77c2bd9d1ab6242ce3fe86dbeb1d0596813e24f5cc5dd2c6"
+    },
+    {
+      "path": "examples/output_types/build.jai",
+      "bytes": 3289,
+      "sha256": "b75cdd424ccc5f13e98ecb0d989c81d9a26deaae3d72de48f9955c6ac1309ee5"
+    },
+    {
+      "path": "examples/reduce.jai",
+      "bytes": 2352,
+      "sha256": "682a28fd7b76d9300de661fdbfb434b37d68e15b4267ebdcbb8673561f6461ad"
+    },
+    {
+      "path": "examples/runtime_global_data_search.jai",
+      "bytes": 2826,
+      "sha256": "23a75c0a23e2e78d0768cfa27e25843a2a455b07a6594f4ec761e2a9086429ee"
+    },
+    {
+      "path": "examples/self_inspect.jai",
+      "bytes": 860,
+      "sha256": "32c36a5a7a3af32257d2760d8d5d08e1975691be3ddeaf081f4849d721438b2c"
+    },
+    {
+      "path": "examples/skeletal-animation/first.jai",
+      "bytes": 4180,
+      "sha256": "c8ea4c612dd2823b37671ff1ecfb4cd0948dd0c80c12b6d7df8d1f6978fc6c09"
+    },
+    {
+      "path": "examples/skeletal-animation/source/anim.jai",
+      "bytes": 13020,
+      "sha256": "0510ec642e9f7f5cce6fea0e23d6e9f06e23a3cb8c85b8a04fd235df27dadbd8"
+    },
+    {
+      "path": "examples/skeletal-animation/source/camera.jai",
+      "bytes": 3039,
+      "sha256": "82cf895210524055ba4b3722d35fd4e4572150100a6b4d235c99883ac3a5964a"
+    },
+    {
+      "path": "examples/skeletal-animation/source/main.jai",
+      "bytes": 10810,
+      "sha256": "22d1c0538d6178ad7b016c52dff23c39011a3d92225ffee70da506775e0d474c"
+    },
+    {
+      "path": "examples/skeletal-animation/source/mesh.jai",
+      "bytes": 6094,
+      "sha256": "258d0ab7b357103bddb18b03e0616be521dcd9c8edc82ad85b194c2c6971c6bb"
+    },
+    {
+      "path": "examples/skeletal-animation/source/parse_utils.jai",
+      "bytes": 4153,
+      "sha256": "bc70e5731eff876b8106f679bc180020a39ad9ec839602e459811546a8a4682c"
+    },
+    {
+      "path": "examples/skeletal-animation/source/render.jai",
+      "bytes": 12103,
+      "sha256": "b70cdb6fdbc54657da24d964732c5ea41d5a01d43967f03d588e4372bb1c7265"
+    },
+    {
+      "path": "examples/skeletal-animation/source/ui.jai",
+      "bytes": 4536,
+      "sha256": "a5411696aba6ecb975635daf00452f3965fd8da8e696863b3bf701661d87df72"
+    },
+    {
+      "path": "examples/subtitles/convert.jai",
+      "bytes": 8539,
+      "sha256": "b735bcbeda91c9be30d376ef32d3ab205cedecfa810b2cfca8e0759df6eafbd9"
+    },
+    {
+      "path": "examples/system_info/system_info.jai",
+      "bytes": 3918,
+      "sha256": "63e3f2ef5c1695249bf07d139b8cf3ee18b23a8dc7885481cbb27e39ab48c717"
+    },
+    {
+      "path": "examples/treemap/build.jai",
+      "bytes": 520,
+      "sha256": "4ca9271958475514c4cb14e77a56e2d3ebae43e8bc7f5b9eb418c480ade34caf"
+    },
+    {
+      "path": "examples/treemap/file.jai",
+      "bytes": 2212,
+      "sha256": "eaf8acce4999b3335530ae4c3f6ba7a266403ee62e5a3899b7608bc489a2f3fd"
+    },
+    {
+      "path": "examples/treemap/main.jai",
+      "bytes": 8353,
+      "sha256": "4b6c9e763913f753e36b31856e032e3dfe673ec6b65c291dfba953b1e06af996"
+    },
+    {
+      "path": "examples/wasm/first.jai",
+      "bytes": 3572,
+      "sha256": "920b1639bb50aef4bafa692e611f1b55502d575e6c9438a9be7fbe1c430ff077"
+    },
+    {
+      "path": "examples/wasm/main.jai",
+      "bytes": 1543,
+      "sha256": "93c1c7dff01a59453b8238f49cc172b9c90288f563345ff0c1aef865b8ae1824"
+    },
+    {
+      "path": "examples/wasm/modules/Walloc.jai",
+      "bytes": 2287,
+      "sha256": "a3830c81a3e9345b6245704ec2b88f71616ee2d1f6941818f83844efe271f3f1"
+    },
+    {
+      "path": "how_to/001_first.jai",
+      "bytes": 2505,
+      "sha256": "2c77c1129f83408744874320098d8d6deb3d7fe1342859ff62882927492d1ed4"
+    },
+    {
+      "path": "how_to/002_number_types.jai",
+      "bytes": 5804,
+      "sha256": "65ededc47ce7fa5f0e5432f5f8e238fece2e185d8d67f149867a6cda347320cc"
+    },
+    {
+      "path": "how_to/003_booleans.jai",
+      "bytes": 2886,
+      "sha256": "c4764e0c21f19af974db79d8d92b9da398d04967ea1e358eafb70665ebbbfbaf"
+    },
+    {
+      "path": "how_to/004_arrays.jai",
+      "bytes": 17961,
+      "sha256": "be3adc64821ceda746cfff3a4361ddef0453e487b7c502dd62d117f42ecb9167"
+    },
+    {
+      "path": "how_to/005_strings.jai",
+      "bytes": 17023,
+      "sha256": "dd7b6eada6c995b49e06eb4fe781829e6e3e72e4bb09beddea4cfcd461ed719c"
+    },
+    {
+      "path": "how_to/006_structs.jai",
+      "bytes": 19239,
+      "sha256": "6df51b62f4d509e4ddea75bb15ee24bfd7262c9fc47e5a14e0aa7ad68e8844c4"
+    },
+    {
+      "path": "how_to/007_struct_literals.jai",
+      "bytes": 10848,
+      "sha256": "c2767719dc9d530c92a359cc73cab36c3a20fa957cff1adb5cb512d6c4c5ac84"
+    },
+    {
+      "path": "how_to/008_types.jai",
+      "bytes": 11029,
+      "sha256": "730b9a8d0490607a3b1f8f3ee507fd47e191dc876b4671758a2c0c5d614157b1"
+    },
+    {
+      "path": "how_to/010_calling_procedures.jai",
+      "bytes": 18580,
+      "sha256": "db08cd80debf0739925aaa3d444bc6a3002618e62efc587962657a28fdc1f13a"
+    },
+    {
+      "path": "how_to/011_context.jai",
+      "bytes": 13349,
+      "sha256": "3dec8edba26de178e12366a90d05577de1c0b247df24f4159c969344dd20ef48"
+    },
+    {
+      "path": "how_to/012_temporary_storage.jai",
+      "bytes": 11499,
+      "sha256": "b3b699bcb829f91707789e4bc540680b929074fb250c89d5f18e3de4f5a92c98"
+    },
+    {
+      "path": "how_to/013_enums.jai",
+      "bytes": 10319,
+      "sha256": "1adba7ec0eb27748a71b58e22c8bee76a03288c0d1ac619868493df189f8d117"
+    },
+    {
+      "path": "how_to/014_enum_unary_dot.jai",
+      "bytes": 3397,
+      "sha256": "6c3f72e9a9acfce5dc393046b127d43489edfe2eb1a749133cc9a767210012f5"
+    },
+    {
+      "path": "how_to/015_array_literals.jai",
+      "bytes": 5317,
+      "sha256": "f50930a0a6a120ea4d5273b056d0b5ed7337c5c6bff14405657a4da7ce723c2a"
+    },
+    {
+      "path": "how_to/018_print_functions.jai",
+      "bytes": 25023,
+      "sha256": "c21b8b2ffc0f7cfb29605443c1082227fc7d56f16c2dc14d981194cad39132af"
+    },
+    {
+      "path": "how_to/019_looping.jai",
+      "bytes": 26778,
+      "sha256": "986d3baf75e0ff70307fda8414f60b8cd095538a07dfb2a2e3f36a90a1f717c9"
+    },
+    {
+      "path": "how_to/020_type_info.jai",
+      "bytes": 1560,
+      "sha256": "413565b5aefbcacaecd5e8318ccf5ec3d4d3bd58a3b6dcf5f8e5c726713bcac2"
+    },
+    {
+      "path": "how_to/022_if.jai",
+      "bytes": 7918,
+      "sha256": "3ca44ac6ed15937f157c765504722ec06f12ff6e9508d34879db8e119884abd0"
+    },
+    {
+      "path": "how_to/025_ifx.jai",
+      "bytes": 10223,
+      "sha256": "16361fdc62840d8e92c8f526e6cb24f2af91f1aeac728663238ba396f6aac1f9"
+    },
+    {
+      "path": "how_to/027_if_case.jai",
+      "bytes": 9544,
+      "sha256": "976e8c2214417ddf56b06ee7d0e12b00932eedcf4d23c697c44d0e88e45e014c"
+    },
+    {
+      "path": "how_to/030_any.jai",
+      "bytes": 10986,
+      "sha256": "e82060fb5a3f487c8b7c39ca1b90ac6074f5fcefac7d581d3236e41223b922af"
+    },
+    {
+      "path": "how_to/040_import_and_load/files/From_Subdirectory/another_file.jai",
+      "bytes": 91,
+      "sha256": "27ae0cab63b997392a5226c5753b98968572e0edeb3ca65f9c617065985d3e86"
+    },
+    {
+      "path": "how_to/040_import_and_load/files/From_Subdirectory/module.jai",
+      "bytes": 332,
+      "sha256": "efaaf4eb574fa2a43c2d79bff7a19349c29fde9885aa658543c5200488852beb"
+    },
+    {
+      "path": "how_to/040_import_and_load/files/specific.jai",
+      "bytes": 396,
+      "sha256": "753359c02aa0889de72b58f29c3d7925928232714c0ff7cd33c269cf0e0969f0"
+    },
+    {
+      "path": "how_to/040_import_and_load/main.jai",
+      "bytes": 3788,
+      "sha256": "b5bfd849fef8e5fcf264e34692499afe839a2017adb231963da1016228a045a9"
+    },
+    {
+      "path": "how_to/042_using.jai",
+      "bytes": 11073,
+      "sha256": "6f4d2ce71b571655a79031f488c2db307cb3ded6718b7a1acf79f139d49efb2f"
+    },
+    {
+      "path": "how_to/044_using_advanced/linked_lists.jai",
+      "bytes": 104,
+      "sha256": "844bdd79b7624b01f6c3de96deaa7e096a2a7add11a37052ad109b6ba36533c6"
+    },
+    {
+      "path": "how_to/044_using_advanced/main.jai",
+      "bytes": 21454,
+      "sha256": "da0a616f2b436f82fda285d9bcad9f9299fbb8f5e291251af8ad393a588d1dbb"
+    },
+    {
+      "path": "how_to/044_using_advanced/trees.jai",
+      "bytes": 581,
+      "sha256": "1b46d6d83277f2594babbf86dc3af804e9d6ada754580cd5b004335ca2cb63a4"
+    },
+    {
+      "path": "how_to/050_this.jai",
+      "bytes": 2908,
+      "sha256": "3fedc19c4d69d30fb7a7a19de53a0ba8c94eb9d4ff30b3560e82e085bcb8d654"
+    },
+    {
+      "path": "how_to/080_scopes.jai",
+      "bytes": 13469,
+      "sha256": "da231c2db2e53cfd13df25a2f9575f4a9c803448035b7c9ea4fbbc797dc97980"
+    },
+    {
+      "path": "how_to/085_default_types_for_literals.jai",
+      "bytes": 14250,
+      "sha256": "c825ff6da6b5454b51be80204c8dceacb27c625f004ef8d03673d5f4ce0ee297"
+    },
+    {
+      "path": "how_to/090_how_typechecking_works.jai",
+      "bytes": 24706,
+      "sha256": "c64d40de3fe0964b4b587c372023039b6c92f28047ecc7c59c3e5e7a968b7be1"
+    },
+    {
+      "path": "how_to/093_operator_overloading.jai",
+      "bytes": 16771,
+      "sha256": "575306bcddc7351c4a2bc8ac8cbcf6a466dd1ecb7daf3b20e2ea54cecad09aba"
+    },
+    {
+      "path": "how_to/094_array_operators.jai",
+      "bytes": 8208,
+      "sha256": "64dffb2d95fba56c31bdbfabdd3f9da1f8e7ed8e9c1855ef89ef3c6a9920353d"
+    },
+    {
+      "path": "how_to/095_static_if.jai",
+      "bytes": 11133,
+      "sha256": "5b0a1dbdaa4995352249e708e69ec8f4bf051b9c701befa51bf5ddede0ec2958"
+    },
+    {
+      "path": "how_to/100_polymorphic_procedures.jai",
+      "bytes": 36027,
+      "sha256": "3ce1e067d15bd6ff638cc1d41662f1f05377b2251163277768aa889d4a3b6c6e"
+    },
+    {
+      "path": "how_to/110_polymorphic_arguments.jai",
+      "bytes": 9082,
+      "sha256": "7e34ddb198937399f977ae1e0ee73b981f37a6d8d3d2d4538de1f2f8bfefc7f2"
+    },
+    {
+      "path": "how_to/115_auto_bakes.jai",
+      "bytes": 14128,
+      "sha256": "e42832b9c1e72173ad93f1044d0214f4f2d7482d956701755f0a24521f0ef3aa"
+    },
+    {
+      "path": "how_to/120_polymorphic_structs.jai",
+      "bytes": 17150,
+      "sha256": "d8478e39bc5f27b409ae224c733c835fdd624ce7527b370c2a63c2987c09bbec"
+    },
+    {
+      "path": "how_to/151_file_and_global_scopes/151_file_and_global_scopes.jai",
+      "bytes": 10081,
+      "sha256": "6a1935881a8fa6f63fda4dc1c02c9646ce1c210ecb5475cc8411fd192880316a"
+    },
+    {
+      "path": "how_to/151_file_and_global_scopes/file_alpha.jai",
+      "bytes": 1086,
+      "sha256": "0e72fcdbedd52d8369dd06bc55f1293f260106d9e09e29a98e333cd3b1ad330e"
+    },
+    {
+      "path": "how_to/151_file_and_global_scopes/file_beta.jai",
+      "bytes": 572,
+      "sha256": "f20d61f0773b01699f8d00878cd435a0a247987c31860ea3e1484d11198bdab0"
+    },
+    {
+      "path": "how_to/160_type_restrictions.jai",
+      "bytes": 15141,
+      "sha256": "ddac3b0e401ed78be508647907ff609a9a5f78ddbeee6d3ae6913b0c0bd70c4c"
+    },
+    {
+      "path": "how_to/170_modify.jai",
+      "bytes": 20176,
+      "sha256": "6f0e2708d1952a730f17b12ab64a3bf5fe4ea4eb1cb8dcc670d276e5f75f4e9d"
+    },
+    {
+      "path": "how_to/180_type_variants.jai",
+      "bytes": 5819,
+      "sha256": "b5d499cb3d579c48fbdda2c09ea6ca325b405657be607930e46e8063c66e90ff"
+    },
+    {
+      "path": "how_to/200_memory_management.jai",
+      "bytes": 51529,
+      "sha256": "47e26eeda689b7e7fd7bec8b2098db231a7ca9aca8e4e35d3e6d63d58ef8ea13"
+    },
+    {
+      "path": "how_to/225_comma_comma.jai",
+      "bytes": 4594,
+      "sha256": "40a72efaf9279423b080fd2f7eecb2b90c5e034116e5403aca827f823c086f87"
+    },
+    {
+      "path": "how_to/250_how_parameters_are_passed.jai",
+      "bytes": 12256,
+      "sha256": "a8be8a6592f4bd6cc55f3f9866579790216c34f7263c36c8d6872a27fa8f6dbb"
+    },
+    {
+      "path": "how_to/350_logging.jai",
+      "bytes": 13045,
+      "sha256": "4918ee927e07dfc4aaa60c23a2d279cf002d1b85ebcac7ac825ded05f7fe68f3"
+    },
+    {
+      "path": "how_to/380_module_parameters/first.jai",
+      "bytes": 9373,
+      "sha256": "0abfdfa29313375a51349cef3c2cd070b6795c9d4b4ab245bc7ded4b0418fc69"
+    },
+    {
+      "path": "how_to/380_module_parameters/local_modules/Rendering.jai",
+      "bytes": 2462,
+      "sha256": "0f1c9e6181e64d76a9966507ee1199e96748d043163dfd8346bb053f829de8ef"
+    },
+    {
+      "path": "how_to/400_workspaces.jai",
+      "bytes": 15271,
+      "sha256": "1b3c2ef63d05d4f434a2d3856c3988b58a5dadf4ad0179d6ad99d3e055a4013d"
+    },
+    {
+      "path": "how_to/420_command_line.jai",
+      "bytes": 2578,
+      "sha256": "00757d878dee6b8b9ee44f2fbfcc240b267fdb5bbf754f9424b0959afeb079f6"
+    },
+    {
+      "path": "how_to/450_basic_metaprogram/first.jai",
+      "bytes": 6219,
+      "sha256": "623cac3fd7c021188a29105554ea63a5f4efa923221cece082eb965164125564"
+    },
+    {
+      "path": "how_to/450_basic_metaprogram/target.jai",
+      "bytes": 300,
+      "sha256": "d0b6212865b82d664c44a515ba82678295b7635744612075a38a5b3904860d12"
+    },
+    {
+      "path": "how_to/460_code_browsing_and_generation/first.jai",
+      "bytes": 5735,
+      "sha256": "b12796929b15a279d7c1a0d3042fbee608c13aa7211a5195cf16c65735c96eed"
+    },
+    {
+      "path": "how_to/460_code_browsing_and_generation/other_entities.jai",
+      "bytes": 259,
+      "sha256": "b80ebbb351d3c9c7c41203c09aa9a4df8494a909ebe95a110fb05821409af2cf"
+    },
+    {
+      "path": "how_to/460_code_browsing_and_generation/target.jai",
+      "bytes": 1911,
+      "sha256": "309aee5966dc67d4dc1f459d514b087854480406db548d9b9c997ceeab238402"
+    },
+    {
+      "path": "how_to/470_running_hooks_in_the_target_workspace/first.jai",
+      "bytes": 6253,
+      "sha256": "8e6e6bfb330f77d9a115d3c6322b5de75234ca0c7dfaddff02037dcb608ee216"
+    },
+    {
+      "path": "how_to/470_running_hooks_in_the_target_workspace/other_entities.jai",
+      "bytes": 259,
+      "sha256": "b80ebbb351d3c9c7c41203c09aa9a4df8494a909ebe95a110fb05821409af2cf"
+    },
+    {
+      "path": "how_to/470_running_hooks_in_the_target_workspace/target.jai",
+      "bytes": 5915,
+      "sha256": "390f922090332a4da2464d38e183672dc602b6f8b04f9a7cb6b13cdedaa2dccd"
+    },
+    {
+      "path": "how_to/480_custom_checks/first.jai",
+      "bytes": 23963,
+      "sha256": "2c0f4222197a22202aaf029540ace3c29e14de1462b223dbba9b303567329f58"
+    },
+    {
+      "path": "how_to/480_custom_checks/target.jai",
+      "bytes": 3959,
+      "sha256": "6ad775c70ff8f4b83312b27a4b7a6c680f698ec4f2755a10979384f8e621315f"
+    },
+    {
+      "path": "how_to/490_browsing_by_module/first.jai",
+      "bytes": 10445,
+      "sha256": "406c47cf665dfbdf31b881d25aa7a2acb10a22def79ed9490e83b5194374c1c5"
+    },
+    {
+      "path": "how_to/490_browsing_by_module/target.jai",
+      "bytes": 1516,
+      "sha256": "add5a07807e35ab5a282a19a04cd8e9c646b8ba0d80258fc7fd61cb60974fbc7"
+    },
+    {
+      "path": "how_to/495_default_metaprogram.jai",
+      "bytes": 2849,
+      "sha256": "84a0193706bc3d3390bb45aa4b97a12514ef9bf94525ecf6754d3891b69c48bb"
+    },
+    {
+      "path": "how_to/497_caller_code.jai",
+      "bytes": 2817,
+      "sha256": "533c418ed8696d07b0b0120979210aada4219dfcfa06e284034e27c938deff8b"
+    },
+    {
+      "path": "how_to/500_use_of_compile_time_execution.jai",
+      "bytes": 5123,
+      "sha256": "3b9ebfe3860825bd4058d7f5e1ff5c089b5ca9c86f8da32710daee9f9aa6916f"
+    },
+    {
+      "path": "how_to/550_is_constant.jai",
+      "bytes": 8989,
+      "sha256": "efb2837a291bc9f101d70845b61ae137a933b6377d586e3d966e5810aa0aedd3"
+    },
+    {
+      "path": "how_to/551_things_that_are_constant.jai",
+      "bytes": 14981,
+      "sha256": "eb6803fbdd098e1660af3f64def28a9edf31531244ad91840643bd434927f7e8"
+    },
+    {
+      "path": "how_to/560_no_reset.jai",
+      "bytes": 5522,
+      "sha256": "57b76e13989df0f9cd42ec39a7116ec254d13a9f6f70e672c932f315dca5f29e"
+    },
+    {
+      "path": "how_to/600_insert.jai",
+      "bytes": 13127,
+      "sha256": "8ccc29306f2b9606b476e177ed2116b01901f78e23aaa5fe9bb5f371398c88c4"
+    },
+    {
+      "path": "how_to/630_compiler_get_nodes.jai",
+      "bytes": 5727,
+      "sha256": "5bc8ed257b720c2809f8bb05ac068e96eea1ad36ad6c19d71272d394abef22dd"
+    },
+    {
+      "path": "how_to/700_stack_trace.jai",
+      "bytes": 4492,
+      "sha256": "8da013b7a150561d88a980e4f905fbbb2dba2480301c501170e52db69ecfe86c"
+    },
+    {
+      "path": "how_to/730_for_expansions.jai",
+      "bytes": 17166,
+      "sha256": "f7388b120ea47279b26b211fbf8a20cea9fc58077525fc84f1071784a8c13d73"
+    },
+    {
+      "path": "how_to/800_allocators.jai",
+      "bytes": 12566,
+      "sha256": "d7f19491b0c142da03432a59c7fdc923cdeaebb9008aad00130a41bc58d4a5ea"
+    },
+    {
+      "path": "how_to/900_inline_assembly.jai",
+      "bytes": 25240,
+      "sha256": "573fdb594548524480af8751f9c6e0d5bb7f30cc90c98d8c529eeb33d4e12447"
+    },
+    {
+      "path": "how_to/935_type_info_reduction.jai",
+      "bytes": 7432,
+      "sha256": "fc6324261f50d4fb94ed14bc5d89356dffaa408d198b4c525cb4076ab0a131b3"
+    },
+    {
+      "path": "how_to/999_temperance.jai",
+      "bytes": 3029,
+      "sha256": "69375f5c434fc31a2ad78dbc5fbaa13b8c53c241e47ce18a13d0192b1d92aba7"
+    },
+    {
+      "path": "modules/Adpcm.jai",
+      "bytes": 6951,
+      "sha256": "c09819b3f9fa4fbda60e7b31564082ed3c7d98adfc93dfddbd69ef522935cba1"
+    },
+    {
+      "path": "modules/Android/AAudio/bindings.jai",
+      "bytes": 51381,
+      "sha256": "9350fb9f0d75d0c6d4644425a73cd7e67920a1f66e301bd02d32d26930649596"
+    },
+    {
+      "path": "modules/Android/AAudio/module.jai",
+      "bytes": 60,
+      "sha256": "c989eafbcb52edcbc6320fb4ded53a598d207a7907342ad9056f36ac91bb2e18"
+    },
+    {
+      "path": "modules/Android/EGL/bindings.jai",
+      "bytes": 10317,
+      "sha256": "2dc14a9c88ce33e3f014fb4a0ee7088475ece4d7331f6b8fce4819598299090e"
+    },
+    {
+      "path": "modules/Android/EGL/module.jai",
+      "bytes": 4788,
+      "sha256": "b2c1e9f2c713b081ec9589217e3cff40cd95c0fb164f2aa416333f4fbb3922af"
+    },
+    {
+      "path": "modules/Android/File.jai",
+      "bytes": 3445,
+      "sha256": "72220b4672b0e27f3391d290161c4cd74e03509f008d7dd03c10156b56c010a8"
+    },
+    {
+      "path": "modules/Android/GLES.jai",
+      "bytes": 150913,
+      "sha256": "075b77a1a8111f6a2e3277456423ff9da77d5b5a1663a796fc7c886543f14ddf"
+    },
+    {
+      "path": "modules/Android/Jni.jai",
+      "bytes": 31988,
+      "sha256": "cc161264065012b4af0aebcf4e3109483e6f0b644d831cf957a67f5b32e2afab"
+    },
+    {
+      "path": "modules/Android/Log/bindings.jai",
+      "bytes": 10421,
+      "sha256": "2e3d16cbaa81f14d31d95f27128289fe79b43107ef4151b0eb1e6a305cba0954"
+    },
+    {
+      "path": "modules/Android/Log/module.jai",
+      "bytes": 851,
+      "sha256": "f1fbcb9745a68b540a8081756d48ef736e51102d9f1fc7f4de33d141622a0106"
+    },
+    {
+      "path": "modules/Android/Native_App/bindings.jai",
+      "bytes": 7907,
+      "sha256": "68dc1103747a276b2a2c022f7085c33be571f86129591691389b7413d24706d3"
+    },
+    {
+      "path": "modules/Android/Native_App/module.jai",
+      "bytes": 255,
+      "sha256": "0550ecafa2f5a2bf8314841594d6e9a99ab73501435bc73467215a91eb95b6db"
+    },
+    {
+      "path": "modules/Android/bindings.jai",
+      "bytes": 58662,
+      "sha256": "c31264ecd09e3fc31d11de1aa3c59e9fc110b279597481ed2e1d2ee37656c6e9"
+    },
+    {
+      "path": "modules/Android/examples/software_render.jai",
+      "bytes": 6860,
+      "sha256": "9ef5eb7aeabccba2dc5a16a714776ff6b8cfef9ea1711acbd2548b095b136d0d"
+    },
+    {
+      "path": "modules/Android/generate.jai",
+      "bytes": 17031,
+      "sha256": "57a01e77ca7530e56d23eaecbc6dbf6ea7e3e59b086eae94e02e4b692e2ea6fe"
+    },
+    {
+      "path": "modules/Android/module.jai",
+      "bytes": 1802,
+      "sha256": "4fbc384d8dd14aa74196ccbe7f10a0b27f201ed5b48c3c5319186094d78bfc3c"
+    },
+    {
+      "path": "modules/Atomics.jai",
+      "bytes": 8444,
+      "sha256": "130640eab31754868ab3f70e2fbe99cb1883c27496cd4e1db0bd56722b721c3e"
+    },
+    {
+      "path": "modules/Autorun.jai",
+      "bytes": 2902,
+      "sha256": "19be4871b622d81492d8f9675e3d998cc8c219f47e624f9e4eb437ec5f59018b"
+    },
+    {
+      "path": "modules/Base64.jai",
+      "bytes": 8673,
+      "sha256": "31179c6398f3ece8cc876176950a560023db13abdf3d5dda28af540c7a40deea"
+    },
+    {
+      "path": "modules/Basic/Apollo_Time.jai",
+      "bytes": 40485,
+      "sha256": "b06b7f90165a893942ec5db788ff6a894ba59b8164018a8e068026a95abc40aa"
+    },
+    {
+      "path": "modules/Basic/Array.jai",
+      "bytes": 11048,
+      "sha256": "ac4321816a3740cad71337da3a1cd8ab60334d11114e5e1e811a3d156a582313"
+    },
+    {
+      "path": "modules/Basic/Int128.jai",
+      "bytes": 27267,
+      "sha256": "bd9a705240138a102f6d77ddc85d12cf386f246851f7713c296166470e6c152f"
+    },
+    {
+      "path": "modules/Basic/Memory_Debugger.jai",
+      "bytes": 51322,
+      "sha256": "2c0c8fc9b708c47559a0dca942f18592576b4a18c085886370de995c14655967"
+    },
+    {
+      "path": "modules/Basic/Print.jai",
+      "bytes": 41898,
+      "sha256": "db1175d5b98c17546ae413c9d30f75fb954d2cf92f995cc2c1bd72413951364c"
+    },
+    {
+      "path": "modules/Basic/Simple_String.jai",
+      "bytes": 7485,
+      "sha256": "0d7628bebbbb1b8d1432b0917b27db6767a4a41e6209d70f69c022ac1ba8818d"
+    },
+    {
+      "path": "modules/Basic/String_Builder.jai",
+      "bytes": 12395,
+      "sha256": "b15c6a7c52d72aab54039c42a3161e0a7331d4536d911c6bb0c1c231e706727b"
+    },
+    {
+      "path": "modules/Basic/Visualize_Memory_Debugger.jai",
+      "bytes": 11000,
+      "sha256": "8d4e589084ae09d515d74f7b5ef4b62c3b845b896534b11d6a1d6c62a4682cee"
+    },
+    {
+      "path": "modules/Basic/examples/basic.jai",
+      "bytes": 6522,
+      "sha256": "429ec32a73e023c74a66c72909efe8e24d10044abb64c73b70ea9104cee47f68"
+    },
+    {
+      "path": "modules/Basic/examples/memory_debugger.jai",
+      "bytes": 13882,
+      "sha256": "d4e677ec5c40336ae9f098812be17c42636ca36b0f4c2567d3e6be638b29cca8"
+    },
+    {
+      "path": "modules/Basic/examples/time.jai",
+      "bytes": 6743,
+      "sha256": "7e50b41e558a374aee1e9448aeb16483b5ef51fa67f26369652d3e0c375e77cb"
+    },
+    {
+      "path": "modules/Basic/float_to_string.jai",
+      "bytes": 26729,
+      "sha256": "f33a9966a6305dc58dd7e472f657f131ea2afe888791e524b2b4d936c722da85"
+    },
+    {
+      "path": "modules/Basic/linux.jai",
+      "bytes": 979,
+      "sha256": "197ece87397aea9bb1b0cea4df23f0167cfd83e88d6db1978fece5ac7ac8d5e4"
+    },
+    {
+      "path": "modules/Basic/module.jai",
+      "bytes": 29988,
+      "sha256": "a4678656b5a623a7e50ab5eb1a86671799b6e62d9dc56471164f1f52ef664405"
+    },
+    {
+      "path": "modules/Basic/osx.jai",
+      "bytes": 1657,
+      "sha256": "2b50f81cfba537c267a68ac32751ed9f39ea2aa37a5512f9fa7b9e6dba6542f1"
+    },
+    {
+      "path": "modules/Basic/posix.jai",
+      "bytes": 2065,
+      "sha256": "ae60575c8347499dfcb949524b20974f2b503e61a4c8e5bb850a08d941de85e9"
+    },
+    {
+      "path": "modules/Basic/string_to_float.jai",
+      "bytes": 39192,
+      "sha256": "f6b17e9a2a76ceb9226c804592b6da7831a7bfb777ed57321b6f696f0134d4d1"
+    },
+    {
+      "path": "modules/Basic/tests.jai",
+      "bytes": 29861,
+      "sha256": "b6c3aa7c9e8c8ca0e6934e3094ceca1ca885ab2ac55c9966cb664163684393b6"
+    },
+    {
+      "path": "modules/Basic/windows.jai",
+      "bytes": 2831,
+      "sha256": "8e742ccf0b714465bd5e0717b143b15feb727c8799a0e7f0690e6a3ddb68b70a"
+    },
+    {
+      "path": "modules/Bindings_Generator/examples/first.jai",
+      "bytes": 2620,
+      "sha256": "ab47fc859080e4489bb02787c04eaa45fb0730d38dc90944de1ccee6b8725d2b"
+    },
+    {
+      "path": "modules/Bindings_Generator/examples/linux.jai",
+      "bytes": 6007,
+      "sha256": "3285795838687443b808adcfb502d74b5d8509734c869b0279ce93dc8d87f8b8"
+    },
+    {
+      "path": "modules/Bindings_Generator/examples/macos.jai",
+      "bytes": 6007,
+      "sha256": "3285795838687443b808adcfb502d74b5d8509734c869b0279ce93dc8d87f8b8"
+    },
+    {
+      "path": "modules/Bindings_Generator/examples/main.jai",
+      "bytes": 1182,
+      "sha256": "34dcaac6330f0c115d697545ddb7874953a038f050b2ff8ba16a4b24299f9dee"
+    },
+    {
+      "path": "modules/Bindings_Generator/examples/windows.jai",
+      "bytes": 5457,
+      "sha256": "d5df42ec73b044630b003ce7431149ffe400e4bb55ab60be1049a7493eb64b16"
+    },
+    {
+      "path": "modules/Bindings_Generator/generate.jai",
+      "bytes": 52,
+      "sha256": "6d0cbec5a86564a99cf9824d15e1be4805b70a58c0cc518d6db6f3fc3e0d02e4"
+    },
+    {
+      "path": "modules/Bindings_Generator/generate_common.jai",
+      "bytes": 3620,
+      "sha256": "8737da116b4c883f165889b5708bd03a186c90027ab1a3479db4442c60ecaefa"
+    },
+    {
+      "path": "modules/Bindings_Generator/module.jai",
+      "bytes": 307816,
+      "sha256": "9b10b9fad21e3aad224615a3f61b306038489ffc23c716e64bec73c866e916b9"
+    },
+    {
+      "path": "modules/Bindings_Generator/tests/first.jai",
+      "bytes": 3159,
+      "sha256": "6417d8eb0105e7d8f9f91c719072933ebf616ba931823014155ac12c11f630d9"
+    },
+    {
+      "path": "modules/Bindings_Generator/tests/linux.jai",
+      "bytes": 37678,
+      "sha256": "62977e61cc8868dc608efec230fbf4dfb031f405a17ae01b241f53fe40e387bc"
+    },
+    {
+      "path": "modules/Bindings_Generator/tests/macos.jai",
+      "bytes": 37678,
+      "sha256": "62977e61cc8868dc608efec230fbf4dfb031f405a17ae01b241f53fe40e387bc"
+    },
+    {
+      "path": "modules/Bindings_Generator/tests/main.jai",
+      "bytes": 2249,
+      "sha256": "5fce3153329bea59fc35e7fc2c3ce14ed47cc94a49c6024981da96de736be472"
+    },
+    {
+      "path": "modules/Bindings_Generator/tests/windows.jai",
+      "bytes": 37717,
+      "sha256": "16f4c12441ac538a7b88b1003f51f294949c766cc267ae62c681527729ee5942"
+    },
+    {
+      "path": "modules/Bindings_Generator/unix.jai",
+      "bytes": 194946,
+      "sha256": "3d545123d97134eae213bb83d5bc95a080b4e2369acdc4a42525b76b45fdb6df"
+    },
+    {
+      "path": "modules/Bindings_Generator/windows.jai",
+      "bytes": 195024,
+      "sha256": "be4043f2f83cf11276c9a73bb365d22a783f09ba9b763edff85fbf7aa902473e"
+    },
+    {
+      "path": "modules/Bit_Array.jai",
+      "bytes": 5106,
+      "sha256": "8b665374f7fbb2f2cf018012746dab13c8874f24fd01a15466da5794161a8df9"
+    },
+    {
+      "path": "modules/Bit_Operations.jai",
+      "bytes": 5594,
+      "sha256": "a659475518232234d1f0753835d072c86c0e1dcb492841a9c5a33ae94cf37377"
+    },
+    {
+      "path": "modules/Bucket_Array.jai",
+      "bytes": 5717,
+      "sha256": "7d5d19377b88ca4b37d78f428cfc318c6699bb885353a84e2be3fc2c0b9dc5e4"
+    },
+    {
+      "path": "modules/BuildCpp.jai",
+      "bytes": 14054,
+      "sha256": "be76ff1c51720504a35d6de3822d94210dfd2dd1e1efbb0f98e072eef0a77212"
+    },
+    {
+      "path": "modules/Check/bindings.jai",
+      "bytes": 23362,
+      "sha256": "191096e040e05e377c7dc9048b3aa240b427908a3a3d816a04e5091ea9042702"
+    },
+    {
+      "path": "modules/Check/bindings/unix.jai",
+      "bytes": 18105,
+      "sha256": "6bc6ee1b87a120d29e1a2c71e6638fffac06a424a4b1485e40f1b77ad169851f"
+    },
+    {
+      "path": "modules/Check/bindings/windows.jai",
+      "bytes": 34416,
+      "sha256": "96ee041671e8cc8056a0a28d9fc43a1139721ddf7de4fc577c2168f1dcb56df2"
+    },
+    {
+      "path": "modules/Check/c_porting.jai",
+      "bytes": 9232,
+      "sha256": "7241ba6956075e2d379930e6405a7046b905f40685d9d5fceb449d184f4ba4a5"
+    },
+    {
+      "path": "modules/Check/examples/c_porting/first.jai",
+      "bytes": 2530,
+      "sha256": "e999786612638056ea870e389e28c8d594d2843613c7cb770b6d0509e52fd048"
+    },
+    {
+      "path": "modules/Check/examples/c_porting/ported_from_c.jai",
+      "bytes": 1297,
+      "sha256": "91afe69831a923939da959c8846715204265ec15a2ec7eec628b4f032c22030f"
+    },
+    {
+      "path": "modules/Check/module.jai",
+      "bytes": 13722,
+      "sha256": "58b795106c31d67261059ef9077c50f55fef0d2c4ad9573f98df7efb3af6adde"
+    },
+    {
+      "path": "modules/Clipboard/Clipboard.jai",
+      "bytes": 12177,
+      "sha256": "86da44568c125657d282a5475d52022d683f8021531ee0720787527527c0c2ab"
+    },
+    {
+      "path": "modules/Clipboard/examples/clipboard_test.jai",
+      "bytes": 4413,
+      "sha256": "2ae8dfb64ca183240ec74df4a357182bbc9e232795431ca17b5514550408b486"
+    },
+    {
+      "path": "modules/Clipboard/module.jai",
+      "bytes": 687,
+      "sha256": "719be8f51d45f85e8b603f1478d483cb200ed1a89069d78d0c65c72f0de61b59"
+    },
+    {
+      "path": "modules/Code_Visit/module.jai",
+      "bytes": 9253,
+      "sha256": "267f31b46227c2a1d6c24f3022c807bddabaa856bd389269694d8b70b7be2616"
+    },
+    {
+      "path": "modules/Codex/metrics.jai",
+      "bytes": 7920,
+      "sha256": "bfe3efcf85b20663df25ae6e1c051106d6a909b2b01132c90dde26275a43f962"
+    },
+    {
+      "path": "modules/Codex/module.jai",
+      "bytes": 6803,
+      "sha256": "5ccc0e3541f33a17f331160249f27a5d4e42fba3879635ccfde637b61ed8612c"
+    },
+    {
+      "path": "modules/Codex/read.jai",
+      "bytes": 3983,
+      "sha256": "6c9fa14afb0b9878eeb346d0bec8927a80fc596a7ecc8c62f7f45273eb2b3f36"
+    },
+    {
+      "path": "modules/Codex/serialize.jai",
+      "bytes": 4228,
+      "sha256": "d240184d7d233afe8a685504c85e4ab1e04f07635d9e60dd4a5e6b5b3eeb6eab"
+    },
+    {
+      "path": "modules/Codex/write.jai",
+      "bytes": 11471,
+      "sha256": "9ffdca698056e4799d59fb314b89fcd4239db61e0a5ef4024823f1b69686a169"
+    },
+    {
+      "path": "modules/Command_Line.jai",
+      "bytes": 16723,
+      "sha256": "49d9ba3eda3a3e3cfaa654cc60b5b519e9e6fa0915130cc33ecfa2436465464c"
+    },
+    {
+      "path": "modules/Compiler/Compiler.jai",
+      "bytes": 77025,
+      "sha256": "d933380ca77ddd8e1d63b4d675a46e61b4a71428fcb5e86dafb6df55bcc2e8ec"
+    },
+    {
+      "path": "modules/Compiler/examples/add_data_segment.jai",
+      "bytes": 4338,
+      "sha256": "d9750322b081f537a73c11ae16a9c6a6abb337446f617d08a7c455439c548130"
+    },
+    {
+      "path": "modules/Compiler/examples/compile_me.jai",
+      "bytes": 10715,
+      "sha256": "d0a7830d0a805a9314158de9787b9991b965ba26c36ed2b9bc640bcbb58f42c4"
+    },
+    {
+      "path": "modules/Compiler/examples/dont_compile_me.jai",
+      "bytes": 418,
+      "sha256": "72b92c40964b0c8b3e6468185589423ba5e3d74b653da71e68ebaf12fa9398a1"
+    },
+    {
+      "path": "modules/Compiler/examples/global_data/global_data.jai",
+      "bytes": 4323,
+      "sha256": "f96e9eb32c338f4cb42a605f558c905f87a2a4ccd92b99c038f69c3f1e9b5ab0"
+    },
+    {
+      "path": "modules/Compiler/module.jai",
+      "bytes": 98,
+      "sha256": "758a4ad96d93f59d752f67b1339150cfe0546ab103f3a72a24be111f8e57a3dc"
+    },
+    {
+      "path": "modules/Crc.jai",
+      "bytes": 6075,
+      "sha256": "76b584c0f3b88071ee59e5d5275cb78fd0d9cce6573fd941b8dfc096ce8fd4bb"
+    },
+    {
+      "path": "modules/Curl/examples/download.jai",
+      "bytes": 3461,
+      "sha256": "5b604dfac7b8fdbc2da7517ac59cf51b4acb1461fb8beaad85c3b295c9740b02"
+    },
+    {
+      "path": "modules/Curl/examples/easy.jai",
+      "bytes": 399,
+      "sha256": "027d52bdf82afb94fcb88c277bde65a3d384b675ed5166982445e1d03f2215ed"
+    },
+    {
+      "path": "modules/Curl/examples/error_checking.jai",
+      "bytes": 7507,
+      "sha256": "e707e1f8ba9de87364cf97d3068f03c182f28a079527839b7f7899c21b0da121"
+    },
+    {
+      "path": "modules/Curl/examples/ftp.jai",
+      "bytes": 3993,
+      "sha256": "13cd54546af1e9a3981b719e20165360e9bac525013fe7c859a6f6dd110874c5"
+    },
+    {
+      "path": "modules/Curl/examples/http_request.jai",
+      "bytes": 8553,
+      "sha256": "9d5cdac1cd6edb541eb7339b2e5b84cce4ffe86eb675219ca25ef7d9e62371e8"
+    },
+    {
+      "path": "modules/Curl/examples/http_request_simple.jai",
+      "bytes": 4512,
+      "sha256": "d31adfe9fc4404f6f5aace1a657c167db96084e0dc690342fb8ed2f32d51159e"
+    },
+    {
+      "path": "modules/Curl/examples/upload.jai",
+      "bytes": 4116,
+      "sha256": "e83f7abb7610561b256e7f29870da348cd1301e72d3efdd0386c99c795bccfab"
+    },
+    {
+      "path": "modules/Curl/generate.jai",
+      "bytes": 9646,
+      "sha256": "f16566fe592695e8ced72e547b14da04466ab12a90a52cb44245d8aa605c93a3"
+    },
+    {
+      "path": "modules/Curl/module.jai",
+      "bytes": 290,
+      "sha256": "be046c3ca4d2034e4f2c9ffa55e759b52a23e3812efa8de52d8069feb7bed8db"
+    },
+    {
+      "path": "modules/Curl/unix.jai",
+      "bytes": 76241,
+      "sha256": "bea4f25900d0f3866f575777e5264d0d362cc70327bd6a1f9e41bfc45191a1a7"
+    },
+    {
+      "path": "modules/Curl/windows.jai",
+      "bytes": 75893,
+      "sha256": "f00d934725b5343c4dc68e38786781196333f92961b492dfb1a9ee7467d7bfc1"
+    },
+    {
+      "path": "modules/Debug.jai",
+      "bytes": 47593,
+      "sha256": "04eb8b3665cd0d94dabebd68540592cf28cbc2efcc563f65ca2e2ab09d672022"
+    },
+    {
+      "path": "modules/Deep_Copy.jai",
+      "bytes": 9863,
+      "sha256": "6ea4ca5fc6dedcb65127ef1d95ab10be1a5c0743ba708c3b2b6c60d9869a8447"
+    },
+    {
+      "path": "modules/Default_Allocator/Default_Allocator_with_statistics.jai",
+      "bytes": 86207,
+      "sha256": "e96402637cc935344707ebb44c5befc0447333afddd7240a65b41ac4065daf2d"
+    },
+    {
+      "path": "modules/Default_Allocator/module.jai",
+      "bytes": 84503,
+      "sha256": "aee883fd15bce2fc980ff92d4c81e58e9efb5449930d01b029f1fd509f2fd733"
+    },
+    {
+      "path": "modules/Default_Allocator/module_with_statistics.jai",
+      "bytes": 2000,
+      "sha256": "9a78d3db6b530c3eb48c8ff4d66646edace0a59d3745cfbabfbfa378ab2434af"
+    },
+    {
+      "path": "modules/Default_Allocator/test.jai",
+      "bytes": 46787,
+      "sha256": "53d9f3e9ef22980952245b52ee0ff9407ba5ab2c2a6efb70820947040bf0b859"
+    },
+    {
+      "path": "modules/Default_Metaprogram.jai",
+      "bytes": 24200,
+      "sha256": "c72e052a75f2ea0ad7c085b14ecc6ca96726a255f437a731fd43832122b4334d"
+    },
+    {
+      "path": "modules/Example_Plugin.jai",
+      "bytes": 4580,
+      "sha256": "3c39cb740d53c65a227529e09112d8a587f7aba43d761e49344d5cdb1e87dbc1"
+    },
+    {
+      "path": "modules/File/examples/files.jai",
+      "bytes": 2538,
+      "sha256": "2789cf57156b8e187dd152b1affdecbb3afca1c6f1f1dcd00c0f37b24156d9ad"
+    },
+    {
+      "path": "modules/File/module.jai",
+      "bytes": 5876,
+      "sha256": "3a899cc899d78ba69cce277111b553c2e25a07107522179f0abbeb55e8adea21"
+    },
+    {
+      "path": "modules/File/unix.jai",
+      "bytes": 8449,
+      "sha256": "9ec53462ec77e0a86cff10b4b2454e229cfbe778b70c608d8e9d55a90d5c66eb"
+    },
+    {
+      "path": "modules/File/windows.jai",
+      "bytes": 18325,
+      "sha256": "135e7dabe638f2991ecf131d4c5242ddda1fdc7ec1e6105d2bcec15f33fc205a"
+    },
+    {
+      "path": "modules/File_Async/examples/WARNING_CREATES_LARGE_FILE.jai",
+      "bytes": 1583,
+      "sha256": "1c86d0dfb5eb27568c3241177d765664b60f66c808b3a6699e3e769e445394e8"
+    },
+    {
+      "path": "modules/File_Async/examples/count_lines_in_tree.jai",
+      "bytes": 12298,
+      "sha256": "2142a307740576573e83045136d2bfce03d85d972f281b1c56c20eda5c7656f1"
+    },
+    {
+      "path": "modules/File_Async/examples/example.jai",
+      "bytes": 1743,
+      "sha256": "a3182735cdda178885e80ede8b778bb5c0638bc22aa4eb9e1a1045fa03505cdc"
+    },
+    {
+      "path": "modules/File_Async/io_completion_ports.jai",
+      "bytes": 9441,
+      "sha256": "44e278c70e44b74155e35fdf9c415f4366aa35ee3abe95ce398681628d2493c4"
+    },
+    {
+      "path": "modules/File_Async/io_uring.jai",
+      "bytes": 29816,
+      "sha256": "953842a6bc769293b69fdded90d58704ab65a16a39cac29c97ce89250beaf9c2"
+    },
+    {
+      "path": "modules/File_Async/module.jai",
+      "bytes": 10437,
+      "sha256": "f1534be121dd06653a25b7ed56220c8e644a8a44b6affe16ee77670ade9c82da"
+    },
+    {
+      "path": "modules/File_Async/thread_pool.jai",
+      "bytes": 25145,
+      "sha256": "d1952beaeaf8633a50cbe79448d3ad6c2881cdba42d013bdc22a448fac769265"
+    },
+    {
+      "path": "modules/File_Utilities/examples/path_example.jai",
+      "bytes": 11850,
+      "sha256": "04aa46f70843e7179cf572df1197ed510385ef96037f55c74fd82a1f036b6a27"
+    },
+    {
+      "path": "modules/File_Utilities/module.jai",
+      "bytes": 3384,
+      "sha256": "7a2fbdda704498abdee545ac57e37f93be754116b16d579534590cf9d9deab5b"
+    },
+    {
+      "path": "modules/File_Utilities/os/unix.jai",
+      "bytes": 5081,
+      "sha256": "75addcebadfe12268bc592e04ea9abd7df79e69606eaea51c1645e479cfbe1a3"
+    },
+    {
+      "path": "modules/File_Utilities/os/windows.jai",
+      "bytes": 6189,
+      "sha256": "594a45ae5e0b7803c2e536c940de2b6f7a98ff720a74ae871ef7a10adc4f6e20"
+    },
+    {
+      "path": "modules/File_Utilities/path.jai",
+      "bytes": 10321,
+      "sha256": "48e7369f15cd551c8a68b719ae47858463a13c87ac8b4dbe2dfbc5d20b2d613b"
+    },
+    {
+      "path": "modules/File_Utilities/tests/tests.jai",
+      "bytes": 1937,
+      "sha256": "65d6b8ceed3ba6b700ee11c8ade8d3a0bc5c06455ef396bdbabeff0779fcb057"
+    },
+    {
+      "path": "modules/File_Watcher/examples/watch.jai",
+      "bytes": 1784,
+      "sha256": "89f2e4305cbcc4832ab061cb45273a5af7b61f63f9d4b8e48dcc80d5ab5bfac1"
+    },
+    {
+      "path": "modules/File_Watcher/module.jai",
+      "bytes": 28203,
+      "sha256": "2d66049263b074d04db80b5746854aa2f6dc189f97461826cd26744dcb0f78ac"
+    },
+    {
+      "path": "modules/Flat_Pool.jai",
+      "bytes": 10018,
+      "sha256": "69ad5a9e2abffdcb2d9a3baa8919041a4ccf56fac5db2789bc2defb8c1a88558"
+    },
+    {
+      "path": "modules/Float16.jai",
+      "bytes": 23325,
+      "sha256": "f4c8c9fe302a07f8c526f49a34ceff51ef33fa0241645d26b43970b93631bd21"
+    },
+    {
+      "path": "modules/GL/GL.jai",
+      "bytes": 34085,
+      "sha256": "682c30b825cd958ba1c6d09ba57417b196c4a79b9a196fd0d42f99e978e63b5a"
+    },
+    {
+      "path": "modules/GL/examples/gl_sdl.jai",
+      "bytes": 1773,
+      "sha256": "5e40ca561c69328bf72b3384cf40e2489159b732080d517d167bb2a3707744c4"
+    },
+    {
+      "path": "modules/GL/glad_all.jai",
+      "bytes": 696734,
+      "sha256": "dca349ef52b2fba79808c8ce51c651bf80e12ce6f65222290aedd5415d805a99"
+    },
+    {
+      "path": "modules/GL/glad_core.jai",
+      "bytes": 158368,
+      "sha256": "41b7ae9c41a2847aeabe9f23ab32cc238dfa279abdf15838e208bc8e7124a3f2"
+    },
+    {
+      "path": "modules/GL/module.jai",
+      "bytes": 17,
+      "sha256": "a0d7caf673f846c9e42a6f526f8d7f5cf634ff7ead72db31133c8b5908b0b137"
+    },
+    {
+      "path": "modules/Gamepad/Gamepad.jai",
+      "bytes": 35989,
+      "sha256": "0a1463fe92993862df936d6229aba25a9a17b900f5c68c617881758d6aee6178"
+    },
+    {
+      "path": "modules/Gamepad/IOHID.jai",
+      "bytes": 143346,
+      "sha256": "5594ff6a14a3a9ae6a242088dc77f0ff67371a1e96b1a43925e228ff3f68e027"
+    },
+    {
+      "path": "modules/Gamepad/SDL_Input_Map.jai",
+      "bytes": 178575,
+      "sha256": "df2e9da6b947377a612ca967575ae2b11a16f0f754bb031760c5a26642cf644d"
+    },
+    {
+      "path": "modules/Gamepad/Xinput.jai",
+      "bytes": 7949,
+      "sha256": "1deb4458a01da15f2ec3fcb6ad900c054a513b1292885fd05afa6d811a599c7a"
+    },
+    {
+      "path": "modules/Gamepad/evdev.jai",
+      "bytes": 9283,
+      "sha256": "ee3bd1c0ad6e26a7325dbcc89f1ca3fe18fa290b164fde91a1bfd659014fc95a"
+    },
+    {
+      "path": "modules/Gamepad/module.jai",
+      "bytes": 3111,
+      "sha256": "bf6679ff26acf72277e4e9ad84173f64611eb439c7504bae58f571221549225e"
+    },
+    {
+      "path": "modules/GetRect/examples/example.jai",
+      "bytes": 24972,
+      "sha256": "89e2db83225a955f13a75228c826e8d9514678ab34ef5dd81433c5b63a414ed1"
+    },
+    {
+      "path": "modules/GetRect/module.jai",
+      "bytes": 35025,
+      "sha256": "1eff5e7f7c36b991326f9ae22879c01c1f5ef5074a277e90435e18e4966e87bf"
+    },
+    {
+      "path": "modules/GetRect/system/active_widgets.jai",
+      "bytes": 5685,
+      "sha256": "a418e2e2e43c9b7922a8603b2a718936944125e837022a8586ec3698bcf8669f"
+    },
+    {
+      "path": "modules/GetRect/system/occlusion.jai",
+      "bytes": 2877,
+      "sha256": "fa7f95c8eb70b710714b87951339b2067cc837ba7cc9968bb07651f381982f80"
+    },
+    {
+      "path": "modules/GetRect/system/pointer_image.jai",
+      "bytes": 4688,
+      "sha256": "3dcfdb112d71c5921deab984a0a6bc4c27ae3ba9f9070e85f80350bdbdfb6886"
+    },
+    {
+      "path": "modules/GetRect/system/popups.jai",
+      "bytes": 2054,
+      "sha256": "2daf7212656379a9eb09593bae7f9033dca0ca91ae5417d1ea1e5528e8ce2090"
+    },
+    {
+      "path": "modules/GetRect/system/state.jai",
+      "bytes": 1371,
+      "sha256": "20a80b2a9a605cf03ff5789e4cf1b4441ba13fa4d72119e925795ec59fcca59c"
+    },
+    {
+      "path": "modules/GetRect/system/system.jai",
+      "bytes": 166,
+      "sha256": "70c9444eb0783076f49de99ff006e6bff692a722b1747bdc55857bfbbb67ce77"
+    },
+    {
+      "path": "modules/GetRect/system/themes.jai",
+      "bytes": 34956,
+      "sha256": "9166cdb744f9f4974ddb2e3d1cce4c49f708e9f830ea9ff4c4bae250dfc35f4b"
+    },
+    {
+      "path": "modules/GetRect/system/tooltips.jai",
+      "bytes": 451,
+      "sha256": "225eaaf9bef673bedc50ea80273390a8851eef6f7cdf44e69b8ea343126554ef"
+    },
+    {
+      "path": "modules/GetRect/widgets/button.jai",
+      "bytes": 18774,
+      "sha256": "284003b0128443cc6658d2ca846fd1311e7c9d3f2deb43d8d7b47b46c5e91859"
+    },
+    {
+      "path": "modules/GetRect/widgets/checkbox.jai",
+      "bytes": 7595,
+      "sha256": "6d5b75936a6b2bd9fde7e3436bbb197fa069b4603102faf6d4041b5d5ecaaa0b"
+    },
+    {
+      "path": "modules/GetRect/widgets/color_animation_editor.jai",
+      "bytes": 41964,
+      "sha256": "a932a174d7cdb86f66d7b14c2c9035a139a41f35305478443014c5eb6b0fa2ee"
+    },
+    {
+      "path": "modules/GetRect/widgets/color_picker.jai",
+      "bytes": 66513,
+      "sha256": "0346e69edd88f4dfb6fc1d6ca601bc9c7cadd608b2dfa98aeebb6a00891ed6a2"
+    },
+    {
+      "path": "modules/GetRect/widgets/dropdown.jai",
+      "bytes": 8866,
+      "sha256": "b71856abd40cc8a45cdf515f003a1bd12c2be16b1cfd045f33b309f759cc1df2"
+    },
+    {
+      "path": "modules/GetRect/widgets/label.jai",
+      "bytes": 3001,
+      "sha256": "20b685aa168f1279b3a98d7fb071f77ed4ebe00ff8ab832fe506637729690a8f"
+    },
+    {
+      "path": "modules/GetRect/widgets/number_input.jai",
+      "bytes": 5272,
+      "sha256": "919bde54e38da5386040836c669bc845df1a988a20e7b1da9348df5d1c5058ab"
+    },
+    {
+      "path": "modules/GetRect/widgets/scrollable_region.jai",
+      "bytes": 11879,
+      "sha256": "921f0cc060e2e1dde375ce14bbd675f6b32cebf99b3d6304cb823958add059be"
+    },
+    {
+      "path": "modules/GetRect/widgets/slidable_region.jai",
+      "bytes": 8381,
+      "sha256": "09563662f034237e7b79f3274766d8a280896a9608c8b9ffaed76938fe5e5e75"
+    },
+    {
+      "path": "modules/GetRect/widgets/slider.jai",
+      "bytes": 23315,
+      "sha256": "1322f7798c74ea8e78fe837051386acb9a4263edd269d9a574d74f8ba32f39a8"
+    },
+    {
+      "path": "modules/GetRect/widgets/subwindow.jai",
+      "bytes": 33457,
+      "sha256": "df29f5c881a07fcfb7534695da458f9b7124bced2712d2fbaa5f17b6b96b92fb"
+    },
+    {
+      "path": "modules/GetRect/widgets/text_display.jai",
+      "bytes": 12153,
+      "sha256": "5aec5557dd1ddb12adbc43d9a675d15331442f60ecbf7ee7d5eb7fc06ba831ae"
+    },
+    {
+      "path": "modules/GetRect/widgets/text_input.jai",
+      "bytes": 54873,
+      "sha256": "48693d072f33712693d06b030a687a51ac2a7235e8528394e98ba17146833e2c"
+    },
+    {
+      "path": "modules/GetRect/widgets/widgets.jai",
+      "bytes": 371,
+      "sha256": "53fc979453930bc18606bf35fd0abcc0c3c9ff9baef1c1b172b633e62d8e9d46"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/examples/example.jai",
+      "bytes": 25043,
+      "sha256": "ff298928f6af2bdf82bd706664f5fcad860d3e3fab577b567e87a9a0f9546d0e"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/module.jai",
+      "bytes": 33877,
+      "sha256": "9ba05e119ed75b78961ffb1b6a1c5edc61f796d8392d51c5bb53c39bac32bcdd"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/active_widgets.jai",
+      "bytes": 5685,
+      "sha256": "a418e2e2e43c9b7922a8603b2a718936944125e837022a8586ec3698bcf8669f"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/occlusion.jai",
+      "bytes": 2879,
+      "sha256": "8ae070185d1084e4a9fa90d957260cd8e8257765db6e254ac21a01d82bffc5ec"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/pointer_image.jai",
+      "bytes": 4688,
+      "sha256": "3dcfdb112d71c5921deab984a0a6bc4c27ae3ba9f9070e85f80350bdbdfb6886"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/popups.jai",
+      "bytes": 2054,
+      "sha256": "2daf7212656379a9eb09593bae7f9033dca0ca91ae5417d1ea1e5528e8ce2090"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/state.jai",
+      "bytes": 1371,
+      "sha256": "20a80b2a9a605cf03ff5789e4cf1b4441ba13fa4d72119e925795ec59fcca59c"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/system.jai",
+      "bytes": 166,
+      "sha256": "70c9444eb0783076f49de99ff006e6bff692a722b1747bdc55857bfbbb67ce77"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/themes.jai",
+      "bytes": 34945,
+      "sha256": "753308e7450e486a0eb7c87bd72ac48f1d134cd55cc554b6a914c0d1282843c1"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/system/tooltips.jai",
+      "bytes": 451,
+      "sha256": "225eaaf9bef673bedc50ea80273390a8851eef6f7cdf44e69b8ea343126554ef"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/button.jai",
+      "bytes": 18783,
+      "sha256": "9bbdd28c3445fdd0d12f142722acb9687ce7e577ecd6ceeb7202a11057508831"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/checkbox.jai",
+      "bytes": 7595,
+      "sha256": "6d5b75936a6b2bd9fde7e3436bbb197fa069b4603102faf6d4041b5d5ecaaa0b"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/color_animation_editor.jai",
+      "bytes": 41680,
+      "sha256": "87a7bbdb09c625e40bc00595e4fc880b93e2327d32eff07b417e26fd32fb8b8b"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/color_picker.jai",
+      "bytes": 66782,
+      "sha256": "0c952b355de2f1d6e51ea0360e55a4cd7211a3ba8bf9cbc90af00e11aa46c090"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/dropdown.jai",
+      "bytes": 9025,
+      "sha256": "58ebb2c0bf98c1f3cf1139b7ed8981307e39fc921c6876c6b29378762b362be0"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/label.jai",
+      "bytes": 3007,
+      "sha256": "1fb5437b33000cbe337eeb3a4690b9bc567fc980b4dcdee2343c4b2dd955ef5d"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/number_input.jai",
+      "bytes": 5346,
+      "sha256": "88962fd00d031a7af2b95398292b9ae659aaca6bb84ab765bac4ba18a0b63567"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/scrollable_region.jai",
+      "bytes": 11857,
+      "sha256": "a57e4fa43902ede3903d2585738e1a7bb84b25ce7237d3d8e570c302e999c06d"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/slidable_region.jai",
+      "bytes": 8360,
+      "sha256": "fee9ca409780f57596aeb0cd19c945d0b4e53831a598cd3ec4de68ffc4a30b24"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/slider.jai",
+      "bytes": 23391,
+      "sha256": "6282d056865d1643f16a860c68d8bd6b7347caa276e3f206b1701c116d55f4c8"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/subwindow.jai",
+      "bytes": 32445,
+      "sha256": "b94f8a2c6a7f817e09c3c6b483fe4ae7173032130af0ed59afe05b64733c8ab8"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "bytes": 12152,
+      "sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/text_input.jai",
+      "bytes": 55615,
+      "sha256": "951f0808ce5b1a6ce6dce5fee00d566727029576c2b72d186afc1508642b0496"
+    },
+    {
+      "path": "modules/GetRect_LeftHanded/widgets/widgets.jai",
+      "bytes": 371,
+      "sha256": "53fc979453930bc18606bf35fd0abcc0c3c9ff9baef1c1b172b633e62d8e9d46"
+    },
+    {
+      "path": "modules/Hash.jai",
+      "bytes": 5404,
+      "sha256": "60e880d01a9d27490d26022dad6768af78529a460e02839cbd0f01d98c52ff8c"
+    },
+    {
+      "path": "modules/Hash_Table.jai",
+      "bytes": 18636,
+      "sha256": "b435a22ef3456c2d64a5cadefe1e1f999f13bba994617bafcaa09a2ff3ac775e"
+    },
+    {
+      "path": "modules/Ico_File.jai",
+      "bytes": 7492,
+      "sha256": "22e5766ebb6bff23a53043b12097752c0463a2bef8f1efe1c8680162dd124e0a"
+    },
+    {
+      "path": "modules/Icon.jai",
+      "bytes": 3498,
+      "sha256": "186d610ffac3fcfb34f7551c4dc1ae49051c51396d0360c85b253443a22f5e5a"
+    },
+    {
+      "path": "modules/ImGui/examples/imgui_inspector.jai",
+      "bytes": 8871,
+      "sha256": "0f5e549a831acbfdebbdc56cb95828ca93bd0955f31c1d4474346cd91239e89c"
+    },
+    {
+      "path": "modules/ImGui/examples/imgui_sdl_gl.jai",
+      "bytes": 17646,
+      "sha256": "6ec8bbcc6f5f6a8892e3ca345996f432665f070278c83ff2e4b08907187387e4"
+    },
+    {
+      "path": "modules/ImGui/examples/imgui_test.jai",
+      "bytes": 5546,
+      "sha256": "cee41da9650d6ff5e164df833cb0199d5846a2605ec133f66e633f5ed938d3a2"
+    },
+    {
+      "path": "modules/ImGui/generate.jai",
+      "bytes": 13491,
+      "sha256": "5576311cdd37b127def87c6f78f43d1c6bb7084c139927ee64ea86dd0bffc7d3"
+    },
+    {
+      "path": "modules/ImGui/module.jai",
+      "bytes": 557,
+      "sha256": "65ce98190f0e74cc5c761ff1d0305f5ae436a941bda982f8cc8583d6e70140e9"
+    },
+    {
+      "path": "modules/ImGui/unix.jai",
+      "bytes": 231913,
+      "sha256": "1c2d10fe428ccb041536c2ea56e3a87bf24ba04bbd5ae5cdc1d7625b80960f07"
+    },
+    {
+      "path": "modules/ImGui/windows.jai",
+      "bytes": 234574,
+      "sha256": "a823eba48e49021ffd89842ee218b9eb02dd2ebd7af3d4439a46de384f392664"
+    },
+    {
+      "path": "modules/Input/android.jai",
+      "bytes": 9279,
+      "sha256": "be7be36023576e907a75600279df56c795f960171c32f295dd997983c7251455"
+    },
+    {
+      "path": "modules/Input/examples/input_test.jai",
+      "bytes": 4891,
+      "sha256": "b801f5991873e858e2aff5d64564cf39194c3e51e4f9bdf0aa0faa066072c739"
+    },
+    {
+      "path": "modules/Input/macos.jai",
+      "bytes": 31128,
+      "sha256": "ffb54ebf6f5235de45f160b12cdc7faa02a83f1fc11277ae83eb8923fabcc08c"
+    },
+    {
+      "path": "modules/Input/module.jai",
+      "bytes": 7144,
+      "sha256": "b6af105133ab8eff2569fba1f8acac8f67968f43723a68e12d6c9545e4883178"
+    },
+    {
+      "path": "modules/Input/windows.jai",
+      "bytes": 41468,
+      "sha256": "e0a5b4ca8107fc031abb0bb55313e97db8c8eb804d4f444fe73ee9bd0d866265"
+    },
+    {
+      "path": "modules/Input/x11.jai",
+      "bytes": 30224,
+      "sha256": "1851af9b207d4e5028bf61faf19b21effd0b3c704b7798ad600e6e10af81e744"
+    },
+    {
+      "path": "modules/IntroSort.jai",
+      "bytes": 3601,
+      "sha256": "ce4e7b7ea142811ad81e4a6d0b2cbf3c0a9614a8e2c45799e8dc56646b3930a1"
+    },
+    {
+      "path": "modules/Iprof/draw.jai",
+      "bytes": 20104,
+      "sha256": "d49d682db69d5b30bedf56844900d1b5bdfa28322a5aa334d0fdde296a2b654b"
+    },
+    {
+      "path": "modules/Iprof/instrument.jai",
+      "bytes": 14356,
+      "sha256": "5dd1713cee6f667cba23f7a5ce84986f242be7b29ba39bd59711cce4bb1e44be"
+    },
+    {
+      "path": "modules/Iprof/module.jai",
+      "bytes": 1000,
+      "sha256": "38f7e83553553182b2344ac19a5681b40129ce0cdddc7238cac11d94ad0a50b1"
+    },
+    {
+      "path": "modules/Iprof/options.jai",
+      "bytes": 2439,
+      "sha256": "b50ec413118b2959898c9a26d32e0c66752e9f6538a0f6b674c32a235bb659ff"
+    },
+    {
+      "path": "modules/Iprof/reports.jai",
+      "bytes": 4354,
+      "sha256": "0db7f92619fd321f51049dc73a41b105220b85042c4b43881a31841e942a07b0"
+    },
+    {
+      "path": "modules/Iprof/runtime.jai",
+      "bytes": 30636,
+      "sha256": "adce10cb3587e9e6f211e587e6cedae506bb34faad35dda04aba8daa3eb827cf"
+    },
+    {
+      "path": "modules/Jai_Lexer/examples/example.jai",
+      "bytes": 1693,
+      "sha256": "f2aaf5865d7b08445d455284dc99ecce5d52cbc14200226fe97f91653207ad66"
+    },
+    {
+      "path": "modules/Jai_Lexer/examples/lex_all_files.jai",
+      "bytes": 2094,
+      "sha256": "4381abd758d44ec18940d3b84352149d497b9cc028f591adf848c4a573682271"
+    },
+    {
+      "path": "modules/Jai_Lexer/module.jai",
+      "bytes": 67389,
+      "sha256": "b733ad0815c80580e033fa26c6783d61a26b83c9ba2af52fb9e3cf62379c91bf"
+    },
+    {
+      "path": "modules/Keymap/examples/keymap_set.jai",
+      "bytes": 8341,
+      "sha256": "382c50d17f0b919f955ceda73f87ac12446fef5bd1528be403c96fd621a0988a"
+    },
+    {
+      "path": "modules/Keymap/examples/single_keymap.jai",
+      "bytes": 9333,
+      "sha256": "282ae11ce9914a99b8a151ebb0f2a61f1de88f7d20c406ff1306257a4f64223f"
+    },
+    {
+      "path": "modules/Keymap/module.jai",
+      "bytes": 20384,
+      "sha256": "36d4e8b00bad71d431c39e9b26de6331599d275324cd4c86d765c544e1d9f441"
+    },
+    {
+      "path": "modules/Keymap/save.jai",
+      "bytes": 2701,
+      "sha256": "6a2978076472f390794b6bcc8cf537817b81db4e7684f9049c8d120cac3eeb48"
+    },
+    {
+      "path": "modules/Linux/epoll.jai",
+      "bytes": 1867,
+      "sha256": "529538a0b8cc4b3cf87cdfd769cc8496af62e763e368935da752441f8f08ce6d"
+    },
+    {
+      "path": "modules/Linux/io_uring.jai",
+      "bytes": 22795,
+      "sha256": "57b1532a58d755581a0be0f3ecd86ea5a74c96d4a93cc208cee232db95a05bef"
+    },
+    {
+      "path": "modules/Linux/module.jai",
+      "bytes": 3428,
+      "sha256": "cd27ccf2da76534a27b88d4ff74d6618baaa876c99d8eaf3fe51fe3a3ebd8ac1"
+    },
+    {
+      "path": "modules/MacOS_Bundler.jai",
+      "bytes": 5150,
+      "sha256": "88c00b897588eca140dfa2b7f15faddbacca17aa4f497846e134333a4a62c8d3"
+    },
+    {
+      "path": "modules/Machine_X64.jai",
+      "bytes": 28761,
+      "sha256": "a5c06eedfbbfa5613e3d9466181c92ce797e30b621e5556ddc668a4248efff64"
+    },
+    {
+      "path": "modules/Mail.jai",
+      "bytes": 9435,
+      "sha256": "25c348b6931fac0c06c27214435963fbc224005658481d0dbac2a7bde110b35a"
+    },
+    {
+      "path": "modules/Math/cephes.jai",
+      "bytes": 48024,
+      "sha256": "fb6389775e1993fed026aa2f128a67f20dc787dce7fb381e572754af8605cccc"
+    },
+    {
+      "path": "modules/Math/matrix.jai",
+      "bytes": 41237,
+      "sha256": "80d210fba9c19739f0d4f1b36f512a315f9f20ea83e9b835070d7004ab948a43"
+    },
+    {
+      "path": "modules/Math/module.jai",
+      "bytes": 25652,
+      "sha256": "92082d29dfde31ad440df38d247843e195b0e02e9652304e7928225f18779747"
+    },
+    {
+      "path": "modules/Math/plane.jai",
+      "bytes": 2390,
+      "sha256": "1083a603e0d554c883c45c7ff5b4b3ce54f109b817e97916a01c7778e92760a3"
+    },
+    {
+      "path": "modules/Math/print.jai",
+      "bytes": 2093,
+      "sha256": "2337c240e031bd0c9045499f6cd891497e82bd62e21fdf41a42b60acb0c51090"
+    },
+    {
+      "path": "modules/Math/tests.jai",
+      "bytes": 4824,
+      "sha256": "65f055a01e89cccc581659976c7a39ea9923689a0db874a1aa849dce52c2fb53"
+    },
+    {
+      "path": "modules/Memory/generic.jai",
+      "bytes": 6711,
+      "sha256": "6bd6e4f29ae1ae27609a72bf1a1b06d36ecdc965d34911aed9fb064b17cc421d"
+    },
+    {
+      "path": "modules/Memory/module.jai",
+      "bytes": 4011,
+      "sha256": "612995d8ea464f9e0697fcb26cba421c27d29f8e98712c670e881a4e9a8e0a83"
+    },
+    {
+      "path": "modules/Memory/supplementary/candidates.jai",
+      "bytes": 21783,
+      "sha256": "2b497c84e7cb049043e4c288199764537cda199e3efec9c39e56aca280a52bd6"
+    },
+    {
+      "path": "modules/Memory/supplementary/unwraps.jai",
+      "bytes": 12801,
+      "sha256": "ab363c88dec3a964750a64fc89ac1567ef10399196bb79dfd53c9372b8a09a19"
+    },
+    {
+      "path": "modules/Memory/tests/test.jai",
+      "bytes": 7568,
+      "sha256": "cee8bd3076ecac4c7e97024c3be1b495fd28183f581616d823dad13e18370d05"
+    },
+    {
+      "path": "modules/Memory/x64.jai",
+      "bytes": 6467,
+      "sha256": "2a8774c0e2ea328440a39f07015eb12880ac16d612786fc3098e115d9cae0f57"
+    },
+    {
+      "path": "modules/Metal/Metal.jai",
+      "bytes": 286233,
+      "sha256": "5f743de7f3612f7386eb60ba4407cf13e1c1383a8cf1b752c55d04548a83b9b7"
+    },
+    {
+      "path": "modules/Metal/examples/sdl_metal.jai",
+      "bytes": 2658,
+      "sha256": "916a629ca98c2a987f81f253d9cd8421223e91890724dbce1f2a415f729759a4"
+    },
+    {
+      "path": "modules/Metal/module.jai",
+      "bytes": 92,
+      "sha256": "7b2a5b77242b7522a86636bed40b4a68a625534791e37efbad08b2aa2c93a219"
+    },
+    {
+      "path": "modules/Metaprogram_Plugins.jai",
+      "bytes": 5021,
+      "sha256": "9445ff7eb590155916b3e16cb98a0b676d3826e805dcc0cbba70d346f7bd6ab0"
+    },
+    {
+      "path": "modules/Minimal_Metaprogram.jai",
+      "bytes": 4458,
+      "sha256": "02c18af4d3c678a74ecbf4540d5553d1892b9385bbb13eba583a200cca0b85d4"
+    },
+    {
+      "path": "modules/MojoShader/examples/mojoshader_example_test_thing.jai",
+      "bytes": 1139,
+      "sha256": "6bfae7a324641b6537329c4ffd712c80b9b8f37576e3808258956e81a83ed4a7"
+    },
+    {
+      "path": "modules/MojoShader/module.jai",
+      "bytes": 41047,
+      "sha256": "e58463af14843006d15e915326b94db5a68e20bc1e592037f0aa5d118d80253c"
+    },
+    {
+      "path": "modules/Objective_C/AppKit.jai",
+      "bytes": 55627,
+      "sha256": "aaa9c8db076625e36d2ba04384545b28e5dc080e113f5c209a742e622c4423de"
+    },
+    {
+      "path": "modules/Objective_C/CoreGraphics.jai",
+      "bytes": 3787,
+      "sha256": "0f16d6a53a2346f36319e2e6d2c08c5b9fbab4a76c9cb597547c8c32014957a6"
+    },
+    {
+      "path": "modules/Objective_C/Foundation.jai",
+      "bytes": 24056,
+      "sha256": "7f38a125e1f2c93312a56410a4dd5a198066cd67864b5cfe18751b495d7dee24"
+    },
+    {
+      "path": "modules/Objective_C/GameController.jai",
+      "bytes": 31425,
+      "sha256": "9b3c6c2a3c9b81a0c1c08cf3a3d5a11d1193f4a784eaa43f79f2042a6b27fcb7"
+    },
+    {
+      "path": "modules/Objective_C/LightweightRenderingView/build.jai",
+      "bytes": 1817,
+      "sha256": "9401a749720c2db18a64e2d20ea046083b7a4d4a0ce2b20b528a00144575cf9d"
+    },
+    {
+      "path": "modules/Objective_C/LightweightRenderingView/module.jai",
+      "bytes": 3634,
+      "sha256": "ba3159cedc857d0a4f51f04ba078cb387ca61255bdde502758adb1e27efb39a1"
+    },
+    {
+      "path": "modules/Objective_C/bindings/arm64/message.jai",
+      "bytes": 1088,
+      "sha256": "d45e47afcf7f4b473820321128a2993ebaac287b5754ac4b23f90c87b8e42548"
+    },
+    {
+      "path": "modules/Objective_C/bindings/arm64/runtime.jai",
+      "bytes": 59842,
+      "sha256": "8110384f8cf929b022b9ace79d4c792c9563c23bb300101528aba30390909cba"
+    },
+    {
+      "path": "modules/Objective_C/bindings/x64/message.jai",
+      "bytes": 3307,
+      "sha256": "ef168c6b9131bae7be7898e108c5a01aa68a572a8eb8fe15156559d18e4cefd2"
+    },
+    {
+      "path": "modules/Objective_C/bindings/x64/runtime.jai",
+      "bytes": 57504,
+      "sha256": "31f3ad3f303b38b5c7b6a2a0087e640394fa75699deaf266e52f7474d097250b"
+    },
+    {
+      "path": "modules/Objective_C/examples/cocoa.jai",
+      "bytes": 3929,
+      "sha256": "318a0a7d594828b6cfc598a048f5956dadeb3f4443de03e7c4e13dc5a2cec213"
+    },
+    {
+      "path": "modules/Objective_C/generate.jai",
+      "bytes": 7972,
+      "sha256": "3cb157a22c26c82538b83cc2402455835acdae292e596a1422ca94700f314ba5"
+    },
+    {
+      "path": "modules/Objective_C/module.jai",
+      "bytes": 26412,
+      "sha256": "1317f0cc83b8c06a54f4b58ddb612c88962b04cf66b9f5055c468326dcaa7ba1"
+    },
+    {
+      "path": "modules/Overwriting_Allocator/examples/double_free.jai",
+      "bytes": 646,
+      "sha256": "cad3d424689202fa9846caea71152054a0460986c198bb34a901add35eb8b8a1"
+    },
+    {
+      "path": "modules/Overwriting_Allocator/examples/example.jai",
+      "bytes": 989,
+      "sha256": "7404ddedb7407f80e72e3574414afb43da7824bc61bd67553b8541037906d7ff"
+    },
+    {
+      "path": "modules/Overwriting_Allocator/module.jai",
+      "bytes": 7260,
+      "sha256": "8a0c167bdec71575fd40ef508688a9b0fe92f220793f0f21c71dd6fba63620de"
+    },
+    {
+      "path": "modules/PCG.jai",
+      "bytes": 4135,
+      "sha256": "6d44719a2c70c730ed3c49ce3301f60ff914a5077e8deb742c4746eba641888b"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/base.jai",
+      "bytes": 41037,
+      "sha256": "2a4eba5f0cba515c693bd7e9d8d886fe7abd992d11cbc72d1a780446d5929c6e"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/pthread.jai",
+      "bytes": 17916,
+      "sha256": "8da2b1fdef306237d60cda59fc3fdec0a3595a506959b70f3b5225237a2cf21e"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/resource.jai",
+      "bytes": 2324,
+      "sha256": "6cb83797e2d89ece37dcd5b10113a4773207bc75b83915f27dff986373117ad6"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/stdio.jai",
+      "bytes": 21523,
+      "sha256": "d575f6f4edf4c4677364466216a788e0ccf1d3484466cdded608c3182b8262ca"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/stdlib.jai",
+      "bytes": 837,
+      "sha256": "5a194d1191a5f51189e7cb0484c8c193d7aedd70fa65eef020afb0955625db56"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/arm64/syscall.jai",
+      "bytes": 7326,
+      "sha256": "769f2bd4fa30bbb7d3effa5b660867bf71b5a2823d906f10055f0633c0cfd903"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/base.jai",
+      "bytes": 44128,
+      "sha256": "38a16ebd2253c96beb576f3063e0c88cfc16aa2f73d8cb72aca15d1ed927c6fb"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/pthread.jai",
+      "bytes": 17914,
+      "sha256": "8f328c590b34280f3c586838d29e8d5ab326fb6d421795ccbfd8f3a32665fc1c"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/resource.jai",
+      "bytes": 2322,
+      "sha256": "cd15033b60865cb58147b746b58426795b23c7fa1fbec4153d4e06326061da16"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/stdio.jai",
+      "bytes": 21445,
+      "sha256": "3d4c2f40db62257cc905b19c0d047c6a375d59b9ffdf808c418ffef739941172"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/stdlib.jai",
+      "bytes": 835,
+      "sha256": "b7b80cca985fe7144f77b40b4ac33f44986e9b402ace462298a339f74f1ab1e7"
+    },
+    {
+      "path": "modules/POSIX/bindings/android/x64/syscall.jai",
+      "bytes": 8459,
+      "sha256": "faca8d646ef1ef9d7b36b1402452921df8cfb9dbcb8f300cbac99da3f8ddf0b4"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/base.jai",
+      "bytes": 95455,
+      "sha256": "e73ed91669b6da9e7217496f8dd2f5a2ed6f1e2ce7d745d3ffc7fe38dc7dfd24"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/pthread.jai",
+      "bytes": 32674,
+      "sha256": "af4e1f60405d082fe5bacce724dc788af89c1bc8d83380eac93415ab7da5a28d"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/resource.jai",
+      "bytes": 3849,
+      "sha256": "6d0ce382db0fee438f84bca7372bcd2ca0a8fce67156ec4efb81993bb49b43ba"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/stdio.jai",
+      "bytes": 37535,
+      "sha256": "8704e36987ca666d2573e1ce3f43aee89a4dd95d1c55944609352626c053cb4b"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/stdlib.jai",
+      "bytes": 2035,
+      "sha256": "f0fee5c5722778eaa6e808b6de3152dfe0dd0194036004f387a35ec93efb629e"
+    },
+    {
+      "path": "modules/POSIX/bindings/linux/syscall.jai",
+      "bytes": 8142,
+      "sha256": "8ad4477de2f6b8694c55f8ab1a059b55eda6f2f46b1f31d948f4c8d4e4398957"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/base.jai",
+      "bytes": 62651,
+      "sha256": "45885d822283a3caae849a60ada03b8b6dc2253035c6b930b490e0caff82827c"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/pthread.jai",
+      "bytes": 14906,
+      "sha256": "ed39a7d20d94c158cb570162f5fc101e7adda673523356601fe2e1eee3516bbd"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/resource.jai",
+      "bytes": 10799,
+      "sha256": "458b83db749213de0a56b1e26658142f794024d30125add06ed823a75aed1d96"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/stdio.jai",
+      "bytes": 28266,
+      "sha256": "c51504081b6727b3521bef166b94b944c33960e859aece6e144920ed8597d258"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/stdlib.jai",
+      "bytes": 1367,
+      "sha256": "8dc7c0a120b294a800e0a850aa5bcc2989a47fff84adba4dd9084fc38607911b"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/syscall.jai",
+      "bytes": 10865,
+      "sha256": "3cc67e353cea783f74cd897c47acfc6e01fd366126b9b9a2c7cb5db6f86c65cb"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/arm64/sysctl.jai",
+      "bytes": 10157,
+      "sha256": "104d0bed1d95082e916623047f8b656b17cbf9686b52f0e3bbcf5dcc30546907"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/base.jai",
+      "bytes": 62501,
+      "sha256": "7a793851a9744d3605690f951c4c1aa183701829c21f042f882f31aec0b39885"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/pthread.jai",
+      "bytes": 14144,
+      "sha256": "9666f121bf497d856e27db48b2ee642cfd785f927433ef3f52a7dbccfad197b1"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/resource.jai",
+      "bytes": 8404,
+      "sha256": "7289465b525df01ef0c34b9b4fcb3c02586bcd47b443d3c469b579d9649f7eaa"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/stdio.jai",
+      "bytes": 28947,
+      "sha256": "c4d8920e488ad788369075739ed44b56c873ebc763f39c0fc45c0be3f51cdcc6"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/stdlib.jai",
+      "bytes": 1325,
+      "sha256": "a7f8e9d449f25d016ed9e5944120213d952d48806f36b928bfee0df29cb5b41c"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/syscall.jai",
+      "bytes": 10337,
+      "sha256": "32a60636920ccd0d1906c9a0bd96d17ae51ed6faddfbdba6dd8fc7a32e8ce089"
+    },
+    {
+      "path": "modules/POSIX/bindings/macos/x64/sysctl.jai",
+      "bytes": 10051,
+      "sha256": "7c257435edddfd33b38ba59cbffe438176198cdda34e47bc5f5c1c151281d5f0"
+    },
+    {
+      "path": "modules/POSIX/compare_bindings.jai",
+      "bytes": 7131,
+      "sha256": "216e825bca4ad9838b9a24d39780a940739aee50ca9100764bbade1a8839ceb2"
+    },
+    {
+      "path": "modules/POSIX/generate.jai",
+      "bytes": 37902,
+      "sha256": "65e14ced41da8fe51919591e178cf0fa73d7b7b91b6c8e14d333d81753375932"
+    },
+    {
+      "path": "modules/POSIX/generate_glibc_bindings.jai",
+      "bytes": 20627,
+      "sha256": "cce17a4a02bd6108f8ca9ba9d4d3e4774d6483c18e14dd6e079c22d1aca25ab9"
+    },
+    {
+      "path": "modules/POSIX/module.jai",
+      "bytes": 5813,
+      "sha256": "105cad30e2c72f90170742f714b417c1fe8d1e551ec9d907b07c4a288e67356d"
+    },
+    {
+      "path": "modules/POSIX_old/POSIX.jai",
+      "bytes": 97732,
+      "sha256": "6e64d61be5124b331bdd2ba7ad01b22f9ca3ed04add003064993668704c6aca2"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/android/arm64/base.jai",
+      "bytes": 38725,
+      "sha256": "922e03934d17edc35ac4b2c917f8986c585d5ca4db651cdb01a1d10dda211aca"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/android/arm64/pthread.jai",
+      "bytes": 16094,
+      "sha256": "7f305bbd95d7b8c99a7583d7977809e401b7dd6efa43449276439d95c6a2dc03"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/android/x64/base.jai",
+      "bytes": 38676,
+      "sha256": "93ec09b2a8f5f5ea3b8ab92d8ecf357a24680733b11799e7f97361fb9b99ef51"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/android/x64/pthread.jai",
+      "bytes": 16087,
+      "sha256": "09b23de79598195980e998ff002ea7a1ef2b19526b0411c79160027ce7b56c9b"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/linux/epoll.jai",
+      "bytes": 1867,
+      "sha256": "529538a0b8cc4b3cf87cdfd769cc8496af62e763e368935da752441f8f08ce6d"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/linux/io_uring.jai",
+      "bytes": 17032,
+      "sha256": "98d85222d2cd2402d96647b1a888b6ae6864df9de7fef33de198d0431f6fef33"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/linux/pthread.jai",
+      "bytes": 26741,
+      "sha256": "f30bc40d9d7972c5329dd02194eaaa6c201de285d9f2b0b037bfbaad8b934aea"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/linux/resource.jai",
+      "bytes": 5179,
+      "sha256": "db193a5c5042a52766fe2131f285f20a6654264370fd6f8f498c14fd90a1f517"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/macos/pthread.jai",
+      "bytes": 14086,
+      "sha256": "cda75726d77489bebd602f6dce33eda37bc2b25b7ea0bc2741c3d99ad9fda349"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/macos/resource.jai",
+      "bytes": 8548,
+      "sha256": "820b6f498ccd56160e26539ff9c5dd99697d58104835ad9548d6fe8cbb462991"
+    },
+    {
+      "path": "modules/POSIX_old/bindings/macos/sysctl.jai",
+      "bytes": 10073,
+      "sha256": "ec3d76b12ee5820c4883a0538fe730b670e2696e5d24bfe331a2f84575144dc0"
+    },
+    {
+      "path": "modules/POSIX_old/generate.jai",
+      "bytes": 11794,
+      "sha256": "e23ee7b20d06bc7c631b0a992bd1f579343336803a70c7c5755658c1cb0c923b"
+    },
+    {
+      "path": "modules/POSIX_old/generate_glibc_bindings.jai",
+      "bytes": 20627,
+      "sha256": "cce17a4a02bd6108f8ca9ba9d4d3e4774d6483c18e14dd6e079c22d1aca25ab9"
+    },
+    {
+      "path": "modules/POSIX_old/libc_bindings.jai",
+      "bytes": 13015,
+      "sha256": "78251cd8f8ba7938f1088be16cf4136d0fa360e10b366446e23f34618b5a0038"
+    },
+    {
+      "path": "modules/POSIX_old/module.jai",
+      "bytes": 1623,
+      "sha256": "8a84d1bf1dab7c3056b1bd930874b8a600e07d5787880452c8768bd0c76a9cf1"
+    },
+    {
+      "path": "modules/Performance_Report.jai",
+      "bytes": 7012,
+      "sha256": "517f31ca5affccb389a9059764e61152fee0eae5257390e29ed7725c241f8605"
+    },
+    {
+      "path": "modules/Pool.jai",
+      "bytes": 13924,
+      "sha256": "e12b62aad4d72c5d3a117880a0597881ea9eab9be84febf7a60a4a6e53024f43"
+    },
+    {
+      "path": "modules/Preload.jai",
+      "bytes": 13612,
+      "sha256": "1d00c2ecde58c5362c8e2edf978d57eb490a39076eb6ebf7d118a9811a851904"
+    },
+    {
+      "path": "modules/Print_Color.jai",
+      "bytes": 7023,
+      "sha256": "3ef5efdb84c38eb19af7097ce50c6e3e261b74d887b080ec1264de4eaba07a29"
+    },
+    {
+      "path": "modules/Print_Vars.jai",
+      "bytes": 4440,
+      "sha256": "11046e3ed6e2d0fc2d3a80aff88624fb463148b0ab35668a63120b3a98b0c3b5"
+    },
+    {
+      "path": "modules/Process/examples/run_program.jai",
+      "bytes": 1129,
+      "sha256": "fefbf9ec43a6d9af533fc99b23a344c8b7d18df62d9bd62ef630ee0be6c490e3"
+    },
+    {
+      "path": "modules/Process/examples/run_programs_in_parallel.jai",
+      "bytes": 3778,
+      "sha256": "0fc12d49f11afd8a66cb1b269bb7f559bf7efdf64fd2df4570c00ac6534f896e"
+    },
+    {
+      "path": "modules/Process/module.jai",
+      "bytes": 12531,
+      "sha256": "fd3e70f67e18e3f41dc897e7d90703edd9b6de4fb21f2d3a0e779d66871b8696"
+    },
+    {
+      "path": "modules/Process/posix.jai",
+      "bytes": 28858,
+      "sha256": "ad728a7c6817db9f4b72026dd8aa675128eba59d4dce5e9ca0a0a1192413b9b3"
+    },
+    {
+      "path": "modules/Process/windows.jai",
+      "bytes": 15390,
+      "sha256": "b0cc991e8c2971fd0e1eb4677f76684929e0192635ddfc0cc6c78b075ec36223"
+    },
+    {
+      "path": "modules/Program_Print/module.jai",
+      "bytes": 50469,
+      "sha256": "fa6b9b812dca15c840659867c03f9d9283318cdf87101996c71fa1967b6aee43"
+    },
+    {
+      "path": "modules/Project_Generator.jai",
+      "bytes": 14176,
+      "sha256": "1e91b110e7071901713cfc8d538f04145bdf3e1b08068232eda6c7c4274abf8f"
+    },
+    {
+      "path": "modules/Protocol_For_Memory_Visualization.jai",
+      "bytes": 3695,
+      "sha256": "a5ddf3a3c5e8a236d6c7f6ebecd3fe93e5e5d0e67d58868cf2481fbadf2a249c"
+    },
+    {
+      "path": "modules/RadixSort.jai",
+      "bytes": 9482,
+      "sha256": "58d6a36a697b8431daf031a1c03bdf5e79618fde3b93bc21d0510f78fe8d583a"
+    },
+    {
+      "path": "modules/Random.jai",
+      "bytes": 7044,
+      "sha256": "f759f666816c66aa1c4bdb1e9deec078dd6a48aa55bedc1ad88bf6b338219525"
+    },
+    {
+      "path": "modules/Reflection.jai",
+      "bytes": 10344,
+      "sha256": "700366aa2d91bddb7182ace3b05749d82ce4365f9648932633072b83c8169e9f"
+    },
+    {
+      "path": "modules/Relative_Pointers.jai",
+      "bytes": 4967,
+      "sha256": "ea9078293820cbd696f68953bbfca22de474317cb59cd198844c26284c35a02d"
+    },
+    {
+      "path": "modules/Remap_Context.jai",
+      "bytes": 7197,
+      "sha256": "9a4b334902b46d7eba11355ecb6468477653cb4a3362d4519bf97a7247a3d45d"
+    },
+    {
+      "path": "modules/Runtime_Support.jai",
+      "bytes": 30052,
+      "sha256": "dff8ab76882e2f05b630e919d874039b61be2b9ebf1b610c13c7998e8197a213"
+    },
+    {
+      "path": "modules/Runtime_Support_Crash_Handler.jai",
+      "bytes": 32290,
+      "sha256": "98eaa3f6d2f251c582954fafd1da51c9b3c42a7c0f90e43d874c365760996cce"
+    },
+    {
+      "path": "modules/SDL/SDL_audio.jai",
+      "bytes": 5604,
+      "sha256": "390e049c2c6da3fcd019c36f03a85483721b32d4ab5ec739178f2bec68dd749b"
+    },
+    {
+      "path": "modules/SDL/SDL_blendmode.jai",
+      "bytes": 1138,
+      "sha256": "c9ae05beedab7574d5c1dc72ac235f5db7cbd507678096b0b0af8dced8b3f02e"
+    },
+    {
+      "path": "modules/SDL/SDL_blit.jai",
+      "bytes": 633,
+      "sha256": "ef539a9f582d73e33efd09fc78c9a91eb32e17cef93442f2de9bd80c5df7b78f"
+    },
+    {
+      "path": "modules/SDL/SDL_clipboard.jai",
+      "bytes": 180,
+      "sha256": "443a1a021a17f9c6a6c6f1a83943e3b9d679b4c3e718f582719b9d19065027a5"
+    },
+    {
+      "path": "modules/SDL/SDL_event.jai",
+      "bytes": 11780,
+      "sha256": "430f80a44f70b972bba6ad20e0b9712ff9a7bc3e9b95aac4af32bf91aa5deba8"
+    },
+    {
+      "path": "modules/SDL/SDL_gamecontroller.jai",
+      "bytes": 4430,
+      "sha256": "ee4b02298aad0305bd83cdddd11902fb9e2a928f22fdca1e6671c35fbb2f4224"
+    },
+    {
+      "path": "modules/SDL/SDL_hints.jai",
+      "bytes": 6143,
+      "sha256": "929ea4938a8f97fd42dfbdc3cbe86e063a7e29468f76231bc69dec64be6142ea"
+    },
+    {
+      "path": "modules/SDL/SDL_joystick.jai",
+      "bytes": 3840,
+      "sha256": "7ed6744bbea7d7132fe4d9da1769ee36782fc25aa2493c5241446b1fa92c17c0"
+    },
+    {
+      "path": "modules/SDL/SDL_keyboard.jai",
+      "bytes": 19255,
+      "sha256": "b39f0d3e1efca05d6401339a112f0df9c7a71eae9acf7e2c432bfb4b7107c74e"
+    },
+    {
+      "path": "modules/SDL/SDL_mouse.jai",
+      "bytes": 2441,
+      "sha256": "e4f421a52e301df36efaccb9d91cb3f0446c0302fd926d1337c5530a1f20b0ea"
+    },
+    {
+      "path": "modules/SDL/SDL_pixels.jai",
+      "bytes": 570,
+      "sha256": "ef1929724b8a982c46065a52506e39f0f5f04d0c3983c99faaa459446ec14bab"
+    },
+    {
+      "path": "modules/SDL/SDL_rect.jai",
+      "bytes": 1012,
+      "sha256": "9176025e5ea042bd4755702207a515dd57094c98118c2d54b590fdc8f6a23443"
+    },
+    {
+      "path": "modules/SDL/SDL_render.jai",
+      "bytes": 6299,
+      "sha256": "f025d8113b395d52ba082517c43a06e85641b9ebd67f4e1bc55cb7bb468fa116"
+    },
+    {
+      "path": "modules/SDL/SDL_scancode.jai",
+      "bytes": 8054,
+      "sha256": "f3d8788720570b669e266a04ac7ad7b0d91700189cca8901a01a2e03fb54bee8"
+    },
+    {
+      "path": "modules/SDL/SDL_surface.jai",
+      "bytes": 1269,
+      "sha256": "c9b34f2cae8d9762661f48c48a2b1e4fd33d50e5a806d933577de571cc0aae0d"
+    },
+    {
+      "path": "modules/SDL/SDL_syswm.jai",
+      "bytes": 970,
+      "sha256": "6f86dfa5778c045376ade095b7366071f25c048ffbbc29f975864c316c040666"
+    },
+    {
+      "path": "modules/SDL/SDL_timer.jai",
+      "bytes": 205,
+      "sha256": "c1286a66b8c62a40936312ce9138d80f4c98407072b7ae77ff4afb5cc51055ef"
+    },
+    {
+      "path": "modules/SDL/SDL_version.jai",
+      "bytes": 599,
+      "sha256": "e79b25d95b32bdb56b3b6c85fabad3794773caf2b0b7a0aae25ab57ed0399d11"
+    },
+    {
+      "path": "modules/SDL/SDL_video.jai",
+      "bytes": 10371,
+      "sha256": "c1920355e4bc0321a7c129eb56e40d007841774ea5a0804d7502e117d3ad8723"
+    },
+    {
+      "path": "modules/SDL/examples/sdl_test.jai",
+      "bytes": 1016,
+      "sha256": "a2181a54e1b016d4809115c83293090f330b0a1087ed9512a12e93a31b0fdba6"
+    },
+    {
+      "path": "modules/SDL/generate.jai",
+      "bytes": 7133,
+      "sha256": "1d68b967734cfbe0fbe3e565db19f12e8e425cd86fb39eac51d16d64f093a7ef"
+    },
+    {
+      "path": "modules/SDL/module.jai",
+      "bytes": 2199,
+      "sha256": "c14e0afbf4f1bc22db29437792799193a4ba1b0c8cdcbde22aa2b6ef8286374e"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/examples/common.jai",
+      "bytes": 377,
+      "sha256": "458052d6fb8340dcf0b6c83b021100e63e8c223c547b4118b41b43301114fc9c"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/examples/read.jai",
+      "bytes": 2889,
+      "sha256": "9649bcdadbeebac7e190102cc2dcded0cf3357ff30e9dddeff428da40fff9336"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/examples/write.jai",
+      "bytes": 2462,
+      "sha256": "bc03529dbee1da5bccaa8f7732298d260797dccf5b858b268efd089464f4ad84"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/module.jai",
+      "bytes": 14227,
+      "sha256": "b9df5f774326b0b45b2220085e4de8e6b92b3df7c1207a71a972833f2acc495f"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/posix.jai",
+      "bytes": 7232,
+      "sha256": "91aeb83e961c8260a0a27286b8bd1e7dbb5b96c1bea8f515437bd492db17d40b"
+    },
+    {
+      "path": "modules/Shared_Memory_Channel/windows.jai",
+      "bytes": 5316,
+      "sha256": "505e70039ba24ecff2b817b06b800048e07a9ed474d53c759bebcc905d6ce08b"
+    },
+    {
+      "path": "modules/Simp/backend/gl.jai",
+      "bytes": 31026,
+      "sha256": "b6222b4b58cd04535fb7f6ed0b82b73c303746abbd789288b4951aa09db5ffdf"
+    },
+    {
+      "path": "modules/Simp/backend/gl_screenshot.jai",
+      "bytes": 14872,
+      "sha256": "0b7f3604346fccde1051731a8e02374ed0a43b68109002ad028751c0d7e50cef"
+    },
+    {
+      "path": "modules/Simp/bitmap.jai",
+      "bytes": 8137,
+      "sha256": "1b35822f6934ff91fea344449d7417cbbadc10f79e6cc124f6f4575e538d7c38"
+    },
+    {
+      "path": "modules/Simp/examples/example.jai",
+      "bytes": 7632,
+      "sha256": "a1f5e91fb6c490e394c34cf7c467a7b1f43a6962caedf3a6bc6a11131170340c"
+    },
+    {
+      "path": "modules/Simp/examples/multiple_windows.jai",
+      "bytes": 6642,
+      "sha256": "e147333493027de92ec388d5dd2d5f43720693d50ff59880afa8cfc26691406b"
+    },
+    {
+      "path": "modules/Simp/examples/render_to_texture.jai",
+      "bytes": 6490,
+      "sha256": "39930804942c5ebdc036ebed2b11b75eb15a8c819e0d577e525b77791a727898"
+    },
+    {
+      "path": "modules/Simp/font.jai",
+      "bytes": 42416,
+      "sha256": "bbfaf860f5eb7fc6e6c3fdaa608d588523de8779c7c37c553baf383828e975c6"
+    },
+    {
+      "path": "modules/Simp/immediate.jai",
+      "bytes": 15720,
+      "sha256": "643ade7cc7f7dc1cb3193ab8c48baf5a999100b472e51bbb447c88b5ed87909f"
+    },
+    {
+      "path": "modules/Simp/module.jai",
+      "bytes": 9726,
+      "sha256": "8164e52d70176149df57c99ee6ba847f1ebeb5e14ff96804ce35092497414334"
+    },
+    {
+      "path": "modules/Simp/shader.jai",
+      "bytes": 1374,
+      "sha256": "d2937b12c661006980dcc685f2ef3d233d1e24ce132b166b4a63bf2049400310"
+    },
+    {
+      "path": "modules/Simp/texture.jai",
+      "bytes": 2916,
+      "sha256": "ae6ce1f5df2c4a1c897ee1f89ecf943de07bb3fcae8f65bd920e5b656de20da8"
+    },
+    {
+      "path": "modules/Simp/texture_format.jai",
+      "bytes": 3643,
+      "sha256": "924457bcb2c4f4aff2bb4f6ea82e51cca306eaae74aecaebb9093f747f76a244"
+    },
+    {
+      "path": "modules/Simple_Package/examples/example.jai",
+      "bytes": 1695,
+      "sha256": "e1f0680fe3581d687a0bc89af23fdd104e2c1cea19d6edb36a0e6dfca223d340"
+    },
+    {
+      "path": "modules/Simple_Package/module.jai",
+      "bytes": 14501,
+      "sha256": "f01f945915fb426b0046487d03e1fa869e225416334eb3e89da32e24c62ab192"
+    },
+    {
+      "path": "modules/Sloppy_Math.jai",
+      "bytes": 1946,
+      "sha256": "5a0f460f18d728e71a12fed1a785e82ebc855a427f23578e7b71c3cb57a9d48d"
+    },
+    {
+      "path": "modules/Soa.jai",
+      "bytes": 4208,
+      "sha256": "45a02bdccc0e8172bcb0e97336a1c12894d4979f9e42ab83b6d59e034bdd78c3"
+    },
+    {
+      "path": "modules/Socket/generate.jai",
+      "bytes": 15262,
+      "sha256": "38ae0c92b17b0580f6e2e2470422b478f880a1f9f0bf3aa4b98963050b47bf7c"
+    },
+    {
+      "path": "modules/Socket/generated_android.jai",
+      "bytes": 29973,
+      "sha256": "a87ab95535e2f3d5c54c2625499f44723a0b7801a366e5c24b9970610b7e5b73"
+    },
+    {
+      "path": "modules/Socket/generated_linux.jai",
+      "bytes": 61760,
+      "sha256": "19eca6150473e34b4c20caee080259cb5c4b7b590bd95c37e96125ff38bf9199"
+    },
+    {
+      "path": "modules/Socket/generated_macos.jai",
+      "bytes": 52986,
+      "sha256": "8f9a5c2af0096fd92bb9a6c61e468b0ff5ac85dee855292500c38fa548862ac2"
+    },
+    {
+      "path": "modules/Socket/generated_windows.jai",
+      "bytes": 63202,
+      "sha256": "6a748a6e8ba4ad054c731adb6c1989fc2c92304f2aaa1bbdf6adf4a33bf9341e"
+    },
+    {
+      "path": "modules/Socket/module.jai",
+      "bytes": 20439,
+      "sha256": "b04da51999287ae3460a223bc4e365843375267b4a7911ee6b4aa8cd317b40ab"
+    },
+    {
+      "path": "modules/Sort.jai",
+      "bytes": 3121,
+      "sha256": "5214bb9dcb992d3f6e2abdd7b23e33aaf85a7060ca3072dd08af5d80a6855686"
+    },
+    {
+      "path": "modules/Sound_Player/async.jai",
+      "bytes": 23748,
+      "sha256": "e05c4dbaf590d4b2c05ed29ec92711331a2de133d0d2f92cc4795bfff04695f3"
+    },
+    {
+      "path": "modules/Sound_Player/cached_decoder.jai",
+      "bytes": 16945,
+      "sha256": "59d24cdb6afaea4fe324d5f91630c83e691d7d168f1c9a5113b354fc7a1773f0"
+    },
+    {
+      "path": "modules/Sound_Player/examples/audio.jai",
+      "bytes": 1647,
+      "sha256": "814ac5aca8d52904d546d9cd28d96bcb11ccc00e425b9d752b927ef520edf883"
+    },
+    {
+      "path": "modules/Sound_Player/examples/audio_without_window.jai",
+      "bytes": 1855,
+      "sha256": "365e2e0d1a8d5567b421efc5aa6b3fb36144a578ecd87ca58347fc7a1516f1b4"
+    },
+    {
+      "path": "modules/Sound_Player/load.jai",
+      "bytes": 3108,
+      "sha256": "e9f9a1024e9a6474e94d1172d66d838dad5e64a15d5bf479cb0a927b9386f885"
+    },
+    {
+      "path": "modules/Sound_Player/module.jai",
+      "bytes": 58986,
+      "sha256": "4a9ee1cced5aaba9fa8997d2eb3f226b596b04f6e6e6f3443b4a51fe91ff7a5a"
+    },
+    {
+      "path": "modules/Sound_Player/os/aaudio.jai",
+      "bytes": 22364,
+      "sha256": "2625ffb9432743855cde697c01a361553e77f45f350378f03c86e78ffc993d78"
+    },
+    {
+      "path": "modules/Sound_Player/os/alsa.jai",
+      "bytes": 22197,
+      "sha256": "e0bde99cf89c4f46a6d082b576608261edda85b887ab94be710101d01e92d39b"
+    },
+    {
+      "path": "modules/Sound_Player/os/core_audio.jai",
+      "bytes": 34045,
+      "sha256": "741cf911ec39d0d3a14a98c8cc04f027e23f2fab85da00d03b94209c2331f306"
+    },
+    {
+      "path": "modules/Sound_Player/os/win32.jai",
+      "bytes": 20961,
+      "sha256": "3ff023a78f3401f513519fd68c35d32004eee8140f6aa4d87a2c0f54a6870f31"
+    },
+    {
+      "path": "modules/Srgb.jai",
+      "bytes": 2367,
+      "sha256": "2858e31626cc7235672da208cae91914022504752f085482f34b26e95c5f5f7a"
+    },
+    {
+      "path": "modules/String/module.jai",
+      "bytes": 55566,
+      "sha256": "a92c522eadb2c92cf1f7bb13b3fc6d8d106b0bbb8c1434cccab5d694fb47d702"
+    },
+    {
+      "path": "modules/System.jai",
+      "bytes": 19625,
+      "sha256": "241019f1e143e92f24c94c76353dc70cc553f39d1b67a7ee710b1dfaca1940c8"
+    },
+    {
+      "path": "modules/Tagged_Union.jai",
+      "bytes": 4510,
+      "sha256": "f22c26da5b266a617a5074009bf78b38ef9dd1a046f35af9be45bb0ef70ffc78"
+    },
+    {
+      "path": "modules/Text_File_Handler/examples/example.jai",
+      "bytes": 10953,
+      "sha256": "67c5cb6d3e14c77890b58c76a8988b3c5461c2e82b1aec97bab79d1f57d9396c"
+    },
+    {
+      "path": "modules/Text_File_Handler/module.jai",
+      "bytes": 11124,
+      "sha256": "d17b27870c1b1979538b8c6202e3021332fdd7a6a281b050d952b068aed8eeea"
+    },
+    {
+      "path": "modules/Thekla_Atlas/generate.jai",
+      "bytes": 10793,
+      "sha256": "4ffa10c918d967a6276312819c24aaa8ce955cf52ae172d35488a56ba8cd3d0a"
+    },
+    {
+      "path": "modules/Thekla_Atlas/module.jai",
+      "bytes": 140,
+      "sha256": "72a87d471c0b38c28dc6b1c9f5bb9c84b54a08a342bd7f2c371c0524d7d1781f"
+    },
+    {
+      "path": "modules/Thekla_Atlas/unix.jai",
+      "bytes": 16698,
+      "sha256": "ba4001dde63ec8e61703c69775e381b247cdf3ff35361d9a85da2d75fc386ec3"
+    },
+    {
+      "path": "modules/Thekla_Atlas/windows.jai",
+      "bytes": 16604,
+      "sha256": "2458d5e395b02730791932ec9ede5a65a6064f3e2afe0ba597939ce622259d3d"
+    },
+    {
+      "path": "modules/Thekla_Baker/generate.jai",
+      "bytes": 10169,
+      "sha256": "ed405d07ee5b1cded170faaa9876caa27357642cfa4197f85d61c2fca154d196"
+    },
+    {
+      "path": "modules/Thekla_Baker/module.jai",
+      "bytes": 205,
+      "sha256": "2f2e5042f2dc549cb8758d69d23e80e3dba31f3d11e44bb7e795b793c8e987fa"
+    },
+    {
+      "path": "modules/Thekla_Baker/unix.jai",
+      "bytes": 7891,
+      "sha256": "533c9bb167168de705162774f950591f556d7a59a4d41340de9a3d4446cd71ea"
+    },
+    {
+      "path": "modules/Thekla_Baker/windows.jai",
+      "bytes": 7778,
+      "sha256": "0389f39d541a7410cc69050f5ccee1a23c1436f8627a8dde2fced447a55e2058"
+    },
+    {
+      "path": "modules/Thread/examples/mutex_order.jai",
+      "bytes": 5739,
+      "sha256": "48e8dcfe80f45b71eddbcf6bae06d8c16cd652e262934a993e6b26598dc64d69"
+    },
+    {
+      "path": "modules/Thread/examples/thread_group.jai",
+      "bytes": 7769,
+      "sha256": "879e787fc8edd32e901861067ccdcc7f1d91b21c03273ba2abaf2d52504414b7"
+    },
+    {
+      "path": "modules/Thread/module.jai",
+      "bytes": 2720,
+      "sha256": "377d0418b8b57ad098173620851ad8b08cc65a4ecf0b6415fe52a673206d034d"
+    },
+    {
+      "path": "modules/Thread/primitives.jai",
+      "bytes": 25119,
+      "sha256": "7acaa8ac6ac124507b148561c5b4dfccb291c761d4a8134902e9e99af2b3396b"
+    },
+    {
+      "path": "modules/Thread/thread_group.jai",
+      "bytes": 23798,
+      "sha256": "f64b563ad1d6623d830555a482e44b7118a598c1b962637f5dfaa936d97f9efa"
+    },
+    {
+      "path": "modules/Toolchains/Android/android_studio.jai",
+      "bytes": 14598,
+      "sha256": "b0c357a736b270c21ac69f5c6b2c8422ad1fbf68d80d34dfca73a4ed27736dcb"
+    },
+    {
+      "path": "modules/Toolchains/Android/module.jai",
+      "bytes": 793,
+      "sha256": "54e73f6d9dbce8a862b9c723c736982ad9567eaaa1b858eedb3e0f90d2c7cec9"
+    },
+    {
+      "path": "modules/Toolchains/Android/ndk.jai",
+      "bytes": 7685,
+      "sha256": "1e2dfe2152c99a324c0376b35ebcdd166b1699e8e648de32e360a983b9b5952b"
+    },
+    {
+      "path": "modules/Toolchains/Android/plugin.jai",
+      "bytes": 4353,
+      "sha256": "e6719b44220cbeff0bf00002f7d2fded38e412458279728f7b9508feed1d4d47"
+    },
+    {
+      "path": "modules/Toolchains/macOS.jai",
+      "bytes": 1997,
+      "sha256": "9b6dd9201b72cf063db94d1021917b2473ca9b2314f93363d2a0a0196d1047e3"
+    },
+    {
+      "path": "modules/Treemap.jai",
+      "bytes": 15221,
+      "sha256": "5d23327a730b4e530a11a4fcdd53de9c47c1fe918fb908cc76a4f2c5dec94562"
+    },
+    {
+      "path": "modules/Unicode.jai",
+      "bytes": 6496,
+      "sha256": "47db196146d3a2b32df0748a6f022cf049035f48f9d9f404427e4f5273728b14"
+    },
+    {
+      "path": "modules/Unmapping_Allocator/examples/read_past_end.jai",
+      "bytes": 945,
+      "sha256": "6baf4545bcfbb8c3e75edd705f40bd3dd78ca20b99ed3e8da12e009b33d4ff22"
+    },
+    {
+      "path": "modules/Unmapping_Allocator/examples/simple.jai",
+      "bytes": 1140,
+      "sha256": "d60a4e22f063cf61d92a237d6aa666dac672f8f2bab5281f645ea0bd985eb6dd"
+    },
+    {
+      "path": "modules/Unmapping_Allocator/examples/with_pool.jai",
+      "bytes": 1446,
+      "sha256": "e4bfd85b806a48b4d2d2546b05c050961b63d5958754316e6d560908deafeee1"
+    },
+    {
+      "path": "modules/Unmapping_Allocator/module.jai",
+      "bytes": 10798,
+      "sha256": "687a1b2b64bececd025cc4bb8b993be6a478a6ca243ee523c4c45a5182a2e0f1"
+    },
+    {
+      "path": "modules/Vulkan/examples/example.jai",
+      "bytes": 19619,
+      "sha256": "fc40b3294de1f06670a0dbe84121b46b6ce09d373108751d5505239fb11542d4"
+    },
+    {
+      "path": "modules/Vulkan/generate.jai",
+      "bytes": 11295,
+      "sha256": "eac310e180724789de34ae7154976a7214a380980a0cd3a6009dabd9eff2c0e3"
+    },
+    {
+      "path": "modules/Vulkan/generated_linux.jai",
+      "bytes": 477408,
+      "sha256": "fd8f434f12330fd18e2dc243bd799c5dc02a1fca4220b1a697a5005b60a578bb"
+    },
+    {
+      "path": "modules/Vulkan/generated_windows.jai",
+      "bytes": 474381,
+      "sha256": "9a8e24d80930819732cfb977d770a0ba887499f40fe64b5620745d861bf7b33b"
+    },
+    {
+      "path": "modules/Vulkan/module.jai",
+      "bytes": 2802,
+      "sha256": "924995b783e9d016a7e6eb5803d508637d0cb7ddd2017b5f58bea1cca4501fc6"
+    },
+    {
+      "path": "modules/Vulkan/windows_extras.jai",
+      "bytes": 6169,
+      "sha256": "222f86411528392feb79dc52843573385486f821224162d77e89f5cf71e126d2"
+    },
+    {
+      "path": "modules/Wav_File.jai",
+      "bytes": 6328,
+      "sha256": "d3099893bb730ef759bb2cafd9f3629aba646ebefd64882abcf89b58247fd911"
+    },
+    {
+      "path": "modules/Window_Creation/android.jai",
+      "bytes": 3460,
+      "sha256": "3b175098031b204d8efa01d7212ba9786a3fd9cb56f5987aa83ec53fab6b4470"
+    },
+    {
+      "path": "modules/Window_Creation/examples/window_creation.jai",
+      "bytes": 620,
+      "sha256": "48b958ef3a1ed2a330dc4bc596299d9d0ef67893b18b1d90cb76fae8e75a2db8"
+    },
+    {
+      "path": "modules/Window_Creation/linux.jai",
+      "bytes": 8393,
+      "sha256": "5937e57164058064c2817f328bb79ba25c528655b240464f456484807a8844ef"
+    },
+    {
+      "path": "modules/Window_Creation/module.jai",
+      "bytes": 786,
+      "sha256": "2527118d7eaa61785a38d7fcc2d0f433516903af7c5721c4865ac48bb5bf9695"
+    },
+    {
+      "path": "modules/Window_Creation/osx.jai",
+      "bytes": 9060,
+      "sha256": "2b161ffd565fc36a2d99c94dd2da2b3c557f25c2f011b4dbb2f26ed6fdb49f25"
+    },
+    {
+      "path": "modules/Window_Creation/windows.jai",
+      "bytes": 9381,
+      "sha256": "64d99b24ad93e832bf188a8e7096086a4f17c597d4869419edcc07600d05bd06"
+    },
+    {
+      "path": "modules/Window_Type.jai",
+      "bytes": 1159,
+      "sha256": "02e4e39fde22c6550a2907423b83acb0778b3f633d0088c6ba84c5aac3bd7b50"
+    },
+    {
+      "path": "modules/Windows.jai",
+      "bytes": 152589,
+      "sha256": "03d5f21ce4fe225f5e5400018188ad7ef1d3ef777787fdfd1cf425b0784183ec"
+    },
+    {
+      "path": "modules/Windows_Registry.jai",
+      "bytes": 3121,
+      "sha256": "590b7de0041654fa1cb5f786785f8fd6416def609dac9c528f9446ea07c481cb"
+    },
+    {
+      "path": "modules/Windows_Resources.jai",
+      "bytes": 25072,
+      "sha256": "b123267ef13d8b3ecc8c08fa85a737627efd3babda426ab67cc31978b524917a"
+    },
+    {
+      "path": "modules/Windows_Utf8.jai",
+      "bytes": 4005,
+      "sha256": "c5f7ab51e8631e7bd43110d46e8f69759a2b2c907836719447bf0f51e9a279a5"
+    },
+    {
+      "path": "modules/X11/module.jai",
+      "bytes": 117716,
+      "sha256": "d5d0eebb734b70dc8e3dbbbbd0badd5b4e9da7d8b5e1e8c4a181d822c773362c"
+    },
+    {
+      "path": "modules/X11/sofd/module.jai",
+      "bytes": 1082,
+      "sha256": "dee1bfaf4256560b3f5bfa9c2284e78111cf5a7a0657f8fab4864962fc333ee9"
+    },
+    {
+      "path": "modules/Zip_File_Directory.jai",
+      "bytes": 6630,
+      "sha256": "76be38df1bf50397f1d9fd296a38df2bbc6b448f97e068135365c11ee0d16d36"
+    },
+    {
+      "path": "modules/d3d11/d3d11_bindings.jai",
+      "bytes": 308677,
+      "sha256": "a7bd646d83af5476aedb0cb344478823109737a6605438bbbd5d14c23dd05a71"
+    },
+    {
+      "path": "modules/d3d11/d3d11_debug_bindings.jai",
+      "bytes": 328374,
+      "sha256": "d01017ae1e329efb489978da184bb835cf078d47b81fe06d0b52795dc85b1ad2"
+    },
+    {
+      "path": "modules/d3d11/generate.jai",
+      "bytes": 5169,
+      "sha256": "e235ee04160e25d53e8a19e04c30ff81f2e6281f806aec50575c14e3fcacd54d"
+    },
+    {
+      "path": "modules/d3d11/module.jai",
+      "bytes": 284,
+      "sha256": "124d9a2950ec38e8b1defd02770e8e48d2e98181da3475c831b363fd3cb49c65"
+    },
+    {
+      "path": "modules/d3d12/d3d12_bindings.jai",
+      "bytes": 341825,
+      "sha256": "5beea49f16880dc4bc2d2d8e96f2ac0ae5190d2ebdca8a1e3b5cc65ec97a7b24"
+    },
+    {
+      "path": "modules/d3d12/d3d12_debug_bindings.jai",
+      "bytes": 252788,
+      "sha256": "633754cd73385885392897a61e0c7970735c4f482d118a681f2847badbb7c5e0"
+    },
+    {
+      "path": "modules/d3d12/examples/example.jai",
+      "bytes": 32295,
+      "sha256": "2224c0565f6546d50f57a03e7ca78faef83f827024cc1d82da6feaf361df0451"
+    },
+    {
+      "path": "modules/d3d12/generate.jai",
+      "bytes": 5249,
+      "sha256": "42b0961d8793850108d6f092fd2546f0685352861c69c889b7ecb16ba139ea9c"
+    },
+    {
+      "path": "modules/d3d12/module.jai",
+      "bytes": 3727,
+      "sha256": "c992140abbd364064a75b3266ed46f5386a5baadf27b6089d837129c1474dcfd"
+    },
+    {
+      "path": "modules/d3d_compiler/d3dcompiler_bindings.jai",
+      "bytes": 20629,
+      "sha256": "a3228326aab21d4ba3d7c55724e17c93e3f551a786691121c4ee8470105ababe"
+    },
+    {
+      "path": "modules/d3d_compiler/generate.jai",
+      "bytes": 4095,
+      "sha256": "da4646a521987a1c7b560fa026b84303bcda5a34b5e1e5545c70c8213dbf83c8"
+    },
+    {
+      "path": "modules/d3d_compiler/module.jai",
+      "bytes": 2781,
+      "sha256": "367db3e21a9ea20da3fe828675f706a64c63a43dd3c868407eb131d9f29f73d1"
+    },
+    {
+      "path": "modules/debug_info/codeview/codeview.jai",
+      "bytes": 89019,
+      "sha256": "a8bba3e2dd95ca4927418cf7641a2b10c303f16ff7ba7763773d99fcc27a41c9"
+    },
+    {
+      "path": "modules/debug_info/codeview/codeview_enums.jai",
+      "bytes": 30666,
+      "sha256": "ddf36c46f6037997b0789729211292bf0263f3b6af652e96f1588386757a362f"
+    },
+    {
+      "path": "modules/debug_info/dwarf/dwarf.jai",
+      "bytes": 43422,
+      "sha256": "ed075c77ac80689ba0d223dcd42390fc08d8666a5832aa097a697c07f1e7db26"
+    },
+    {
+      "path": "modules/debug_info/dwarf/dwarf_enums.jai",
+      "bytes": 17559,
+      "sha256": "4c7498f8979f5d711233c8866f55c0a6fad693269b4d6fda5290b23a25fcf7b7"
+    },
+    {
+      "path": "modules/debug_info/dwarf/line_program.jai",
+      "bytes": 14651,
+      "sha256": "cdc07a2464e99a02f695ac156d3bc838cf8e6bb26c400f8aa821dec6f723bbaf"
+    },
+    {
+      "path": "modules/debug_info/module.jai",
+      "bytes": 919,
+      "sha256": "9d63c0e20a540e6db70eedf2a2216d7e3410df788fefcf3a863f588a97508114"
+    },
+    {
+      "path": "modules/debug_info/pdb/free_page_map.jai",
+      "bytes": 2801,
+      "sha256": "7daacf4493afb093061627b85135a6ef38ac167a6ec44d2fd46d851b7a7fbdb7"
+    },
+    {
+      "path": "modules/debug_info/pdb/int_set.jai",
+      "bytes": 395,
+      "sha256": "af0162005a47a5a3f541e078ee79a26e19c66392a9477d9d6c75b34e5ed05c3a"
+    },
+    {
+      "path": "modules/debug_info/pdb/msf.jai",
+      "bytes": 21137,
+      "sha256": "3ceca863231c966af10bb09239747a382472f086f2f8e3dd833e384c0266fe7c"
+    },
+    {
+      "path": "modules/debug_info/pdb/pdb.jai",
+      "bytes": 8515,
+      "sha256": "08a92e3cf376bed97dd3431a0e9d5c2d2e95592d2579740a5e366040f337739c"
+    },
+    {
+      "path": "modules/debug_info/pdb/tpi.jai",
+      "bytes": 2425,
+      "sha256": "ae9c3d639a8b6ee87482ecafae3af4e9e987526318b7136b72c97bb23e28a4ff"
+    },
+    {
+      "path": "modules/dxc_compiler/dxc_compiler_bindings.jai",
+      "bytes": 62741,
+      "sha256": "bc49f04c746f870123b04b2ee9d0cb22454e5e7ad3c07fc3138c58e7afe56dff"
+    },
+    {
+      "path": "modules/dxc_compiler/generate.jai",
+      "bytes": 1398,
+      "sha256": "5e701ee004f2a91404b0fea5fc34adea75fb0946fdae2d7465f74f81ea89dcfa"
+    },
+    {
+      "path": "modules/dxc_compiler/module.jai",
+      "bytes": 7088,
+      "sha256": "1c73b17ac283558dddc26ea3dd7450e25d1022e48915c6e0f5f8e2e05ff753f6"
+    },
+    {
+      "path": "modules/dxgi/dxgi_bindings.jai",
+      "bytes": 100160,
+      "sha256": "ac941d4740edadb4626c67374ae32f6943b4adf0fdfe2f99f8d03c5d43d4aa2e"
+    },
+    {
+      "path": "modules/dxgi/generate.jai",
+      "bytes": 4627,
+      "sha256": "2aa3aa8973b9498f979b6539865f7689590f45ae0686ed32f67c5d166ee08651"
+    },
+    {
+      "path": "modules/dxgi/module.jai",
+      "bytes": 2285,
+      "sha256": "92e6b1e9f3bdafd5ff096d3f03d4ab28ebd1b31e8112535e84131341c7104517"
+    },
+    {
+      "path": "modules/executable_formats/apple_universal.jai",
+      "bytes": 7772,
+      "sha256": "62538e2409d284c03ffa2f2d33b2ca58c7e8d57b3b7ebc432573748ba0fdc603"
+    },
+    {
+      "path": "modules/executable_formats/ar.jai",
+      "bytes": 13285,
+      "sha256": "7ffdc2dd81b7188dd34b17f2b790ef022b120f95ed29f9c691170fced826a1be"
+    },
+    {
+      "path": "modules/executable_formats/bindings/macho.jai",
+      "bytes": 72407,
+      "sha256": "22d7851c3de254d919e9fc42928022823f656d6c5360e65c4e23ec2a6a181e00"
+    },
+    {
+      "path": "modules/executable_formats/coff.jai",
+      "bytes": 44517,
+      "sha256": "6c2cc14e84217e9071a97f43a77d9ab104fc48e9237a369e0af065016aefc238"
+    },
+    {
+      "path": "modules/executable_formats/elf.jai",
+      "bytes": 22166,
+      "sha256": "c74676d5b704059f7fca79cee0e948b4f78b8eebd7ff317364486a450407da89"
+    },
+    {
+      "path": "modules/executable_formats/generate_macho.jai",
+      "bytes": 4241,
+      "sha256": "bd34e5fd5efe1a85bdbe1dd0f3d1c23007c05c5bffd1677c93d7c2d34e1f3c46"
+    },
+    {
+      "path": "modules/executable_formats/macho.jai",
+      "bytes": 15887,
+      "sha256": "35c1beef5cbbdc829afa6414418d5bc455194d8327c114f0bb9adafaebd03365"
+    },
+    {
+      "path": "modules/executable_formats/module.jai",
+      "bytes": 826,
+      "sha256": "5ca9d64536e01a86dc2c79e67b3f5278cd92df3dd45a207777e4dbebb44197f9"
+    },
+    {
+      "path": "modules/executable_formats/pe.jai",
+      "bytes": 2685,
+      "sha256": "77c6427b0b1e6cb56ed4ca136b087ec0f8be335e95929419ef1e206a5a5d0ff4"
+    },
+    {
+      "path": "modules/executable_formats/tbd/lexer.jai",
+      "bytes": 26780,
+      "sha256": "3730c03677dc1aaa0d129b545b14e62a561584eb8a73b0578fede4798c7e974c"
+    },
+    {
+      "path": "modules/executable_formats/tbd/tbd.jai",
+      "bytes": 19992,
+      "sha256": "3be06153122202a043b792a0b35a5a4143490531762b891cde90f42e2887dcdd"
+    },
+    {
+      "path": "modules/freetype-2.12.1/generate.jai",
+      "bytes": 10750,
+      "sha256": "c81f5cf5c2c8b9360968b82173619d8e7c9deeca8ee92dd3ecc54cffc66de534"
+    },
+    {
+      "path": "modules/freetype-2.12.1/module.jai",
+      "bytes": 17365,
+      "sha256": "ebb7de93fe175894fe4aeb5fe78b811bbef7fb4ea2d54c3bcb5eef86d6d6a05f"
+    },
+    {
+      "path": "modules/freetype-2.12.1/unix.jai",
+      "bytes": 258488,
+      "sha256": "fc311bb7d43ff409de0c8999a6aa4d31e4299f63d4c003fede3478af57ec0c62"
+    },
+    {
+      "path": "modules/freetype-2.12.1/windows.jai",
+      "bytes": 258159,
+      "sha256": "e911fcf24234b323bdeea494147d15c01019d03b83531c3f41199ee2c13f72a1"
+    },
+    {
+      "path": "modules/freetype255/module.jai",
+      "bytes": 8224,
+      "sha256": "ecb504e44a03e17cda8028e4495512343d8eddfaa52000e5c346d03cb391934f"
+    },
+    {
+      "path": "modules/generate_c_header.jai",
+      "bytes": 15695,
+      "sha256": "cd57231b2887464d1c392421540a2d4b164ce28727f23be2acfbf680eb9c52db"
+    },
+    {
+      "path": "modules/linux_build.jai",
+      "bytes": 5970,
+      "sha256": "3f46a67d9e66f3dcfedf5002faa3c565d595b95d31cdd3068f4e6ae089a9b54b"
+    },
+    {
+      "path": "modules/lz4/bindings.jai",
+      "bytes": 33517,
+      "sha256": "bfaed6591c8df7bfe3c4f1077e26d740eb7977aca045a1aea95b34b60d1d3e31"
+    },
+    {
+      "path": "modules/lz4/generate.jai",
+      "bytes": 8749,
+      "sha256": "1af56f1e780a287a0de823770d4c0927a71dd6f5befa808b4e3021c558e8fbda"
+    },
+    {
+      "path": "modules/lz4/module.jai",
+      "bytes": 43,
+      "sha256": "d8e95f22e32d7b3ef58068a925ce6e91bae27702859b941601d27bb534d1440b"
+    },
+    {
+      "path": "modules/macos/bindings/core_foundation.jai",
+      "bytes": 161443,
+      "sha256": "c6aea67c7112e0a9bd558b22281651b0fc9e09bcdd624f0f8f6e67fce9711f22"
+    },
+    {
+      "path": "modules/macos/bindings/kernel.jai",
+      "bytes": 425,
+      "sha256": "4f5c6add465a5c7e83ef15639f87a80f9a93540addf0218f00ccebfeb1f25af0"
+    },
+    {
+      "path": "modules/macos/bindings/mach.jai",
+      "bytes": 97376,
+      "sha256": "84c26ae2ad378bde6d0ebf12b6c339e0302504bda11ccf536a982c08151021c2"
+    },
+    {
+      "path": "modules/macos/generate_corefoundation.jai",
+      "bytes": 6701,
+      "sha256": "4219aedb49479a1972f2a2d3dffeead4b61df6d8d3faa7bb90b6168588abbea7"
+    },
+    {
+      "path": "modules/macos/generate_kernel.jai",
+      "bytes": 4041,
+      "sha256": "b2823f181bc7c1458fe9e02bdb8c7092bad224883982149b219bb233d3aed2cd"
+    },
+    {
+      "path": "modules/macos/generate_mach.jai",
+      "bytes": 5305,
+      "sha256": "ad22119d3881dcc2d582c1fb9b8f8d811b3676825d1938049b514191d7d350df"
+    },
+    {
+      "path": "modules/macos/kevent.jai",
+      "bytes": 7845,
+      "sha256": "805835b26b2500308c1a5ad04989f49072fe866d84c05b7fb1d480d6121a98ba"
+    },
+    {
+      "path": "modules/macos/module.jai",
+      "bytes": 4137,
+      "sha256": "db5180166d110eb06a48ecd2f16de8dcdd4156a6072a240d65e81155f7cb6312"
+    },
+    {
+      "path": "modules/macos/tests.jai",
+      "bytes": 463,
+      "sha256": "54bb1b41effda27f2a992e8a9615ce94faec1b8475cf4315a4e96c7fe917c0d7"
+    },
+    {
+      "path": "modules/md5.jai",
+      "bytes": 4315,
+      "sha256": "4dfb5faf319ddf173f6793037952d14664f6946b8510d4c11ce2aec81ec3af01"
+    },
+    {
+      "path": "modules/meow_hash/module.jai",
+      "bytes": 16038,
+      "sha256": "e1f9647efb46db59b6807f75c6949ee872e98887e65190fe28545186bff82823"
+    },
+    {
+      "path": "modules/meow_hash/test.jai",
+      "bytes": 2151,
+      "sha256": "654941fbfd5c87307e60dfcd28fde58604b1ad3aa67340308e78481306967d2d"
+    },
+    {
+      "path": "modules/meshoptimizer/build.jai",
+      "bytes": 852,
+      "sha256": "17885840d5e0df749046eb109fd6eaabd3f3ecf1926af4be1fd3b82682ed56f4"
+    },
+    {
+      "path": "modules/meshoptimizer/meshoptimizer.jai",
+      "bytes": 19933,
+      "sha256": "1e72235eb592f955667a896d54620d1d13a73bfef5dd30228d09a9339de30eae"
+    },
+    {
+      "path": "modules/meshoptimizer/module.jai",
+      "bytes": 26,
+      "sha256": "ad26b36777db42aba7775d811589018f6791803bcf396df47bfb99d839637c33"
+    },
+    {
+      "path": "modules/nvidia_aftermath/generate.jai",
+      "bytes": 1564,
+      "sha256": "78728b8543c702f789a6f4e838067b35c0ee2ea60cc4611c2b258a30bc69d84b"
+    },
+    {
+      "path": "modules/nvidia_aftermath/module.jai",
+      "bytes": 78,
+      "sha256": "a1d86baf86622498c8851939fd384d562468f5a65895208ca77b0d3ea41f3ab5"
+    },
+    {
+      "path": "modules/nvidia_aftermath/nvidia_aftermath_bindings.jai",
+      "bytes": 115226,
+      "sha256": "0792385473d2ab42fe3fdaf0f9d09763003fd354b09e55efe787c671f0c638ce"
+    },
+    {
+      "path": "modules/nvtt/generate.jai",
+      "bytes": 85,
+      "sha256": "fac64374cec4bae3b10d2d426171b9cc9800ddc0f3d278b04e994d3f0d46f6d8"
+    },
+    {
+      "path": "modules/nvtt/generate_common.jai",
+      "bytes": 2893,
+      "sha256": "e87825d7577f308cdec7195c888e752ef36a6e9ec110fa2b3223c2a6be38ffb7"
+    },
+    {
+      "path": "modules/nvtt/linux.jai",
+      "bytes": 46520,
+      "sha256": "3d89497042141b16bc6b687386917b81c6fb4b2740ac4da538d826d19c602714"
+    },
+    {
+      "path": "modules/nvtt/macos.jai",
+      "bytes": 45059,
+      "sha256": "5d95a207ad35587451bb3e4d20a7ee9bd28f3645a66984984bfbb836effcde84"
+    },
+    {
+      "path": "modules/nvtt/module.jai",
+      "bytes": 396,
+      "sha256": "0c1deae6d30ccc8adbe8662231463def313f88ecdb17ecea0a201b005f5eb0cd"
+    },
+    {
+      "path": "modules/nvtt/windows.jai",
+      "bytes": 43763,
+      "sha256": "7ade2afd23b95cd4bf913452c7d297940e6e43e5286f8908c9d6bffadac1d7fa"
+    },
+    {
+      "path": "modules/pl_mpeg/audio.jai",
+      "bytes": 29906,
+      "sha256": "af6d436c03263b6c333c078a0e94565ad401d1efa733375e77d063aab708ac0d"
+    },
+    {
+      "path": "modules/pl_mpeg/buffer.jai",
+      "bytes": 10071,
+      "sha256": "b4561e1afa864d5c1dbf44eacd362f9fe748f556bf41000fc9eaca4e75bd3134"
+    },
+    {
+      "path": "modules/pl_mpeg/demux.jai",
+      "bytes": 13274,
+      "sha256": "49d1600b30f48d058fcbd3c0052d06209b26ce7e48a2b0abdb217fcbcf83ae25"
+    },
+    {
+      "path": "modules/pl_mpeg/examples/dump_frames.jai",
+      "bytes": 1521,
+      "sha256": "38216ab4ab3e55bc57d7b2934b84e85429c621efca92df0a02d50e1d74cb7a49"
+    },
+    {
+      "path": "modules/pl_mpeg/module.jai",
+      "bytes": 40885,
+      "sha256": "2c48034e2d6cbed7e84ac8378e670f3380b4a06bd00d42b6e9bbd766c2a7aa0f"
+    },
+    {
+      "path": "modules/pl_mpeg/video.jai",
+      "bytes": 48526,
+      "sha256": "2ca98b3dd406a6d7a60e46cbe0807cf2034be1d9d4367d9f297d3ed2d0b95b45"
+    },
+    {
+      "path": "modules/rpmalloc/module.jai",
+      "bytes": 6048,
+      "sha256": "72e59639ea3fdd150e3e59a269e00d8b09852c9ce669df359b589a7461165560"
+    },
+    {
+      "path": "modules/rpmalloc/rpmalloc.jai",
+      "bytes": 142990,
+      "sha256": "d37d61ad5501c03bd18a4f6f432c0ac4a41b5e88ba19b1685960fb9e94d87f96"
+    },
+    {
+      "path": "modules/rpmalloc/rpmalloc.raw.jai",
+      "bytes": 171663,
+      "sha256": "f2fbcbd0c31ec45afde4781af3aa504f17e08a7be74ce291dd00c0ec4a4bd221"
+    },
+    {
+      "path": "modules/rpmalloc/test/coverage.jai",
+      "bytes": 1872,
+      "sha256": "603626a5fd883dc51d57c8c576401ffabe94e8dcc62bfa52c6ab75b7d706d87e"
+    },
+    {
+      "path": "modules/rpmalloc/test/jai-rpmalloc-test.jai",
+      "bytes": 49236,
+      "sha256": "841e73b2a9f7af7f9840c8b9e2ce8a4c94e0b9217af87910f6445541a1fc004c"
+    },
+    {
+      "path": "modules/rpmalloc/test/simple_test.jai",
+      "bytes": 1420,
+      "sha256": "f0e2365d30ae057aeeafb4ff915952bd980e1bcaf02f4161854933f884062c28"
+    },
+    {
+      "path": "modules/stb_image/bindings.jai",
+      "bytes": 7122,
+      "sha256": "ce97d44311b763f5651b9727e1925aaf3b28813874a3bb1485c7dee2405ffb58"
+    },
+    {
+      "path": "modules/stb_image/generate.jai",
+      "bytes": 5589,
+      "sha256": "01c746a6a97a8efd14b684a94d3276c7fd0f191f50f8b7c8a0a7479dd8431b8b"
+    },
+    {
+      "path": "modules/stb_image/module.jai",
+      "bytes": 223,
+      "sha256": "984832caa9f3bfff901cb792a4e6984350012590a271570d935d05f4114f1ded"
+    },
+    {
+      "path": "modules/stb_image_resize/bindings.jai",
+      "bytes": 8438,
+      "sha256": "26d8e8c46bfb55556828d801ac6d422b2e1a631d1707e696f3d21a8d33399e26"
+    },
+    {
+      "path": "modules/stb_image_resize/generate.jai",
+      "bytes": 6341,
+      "sha256": "163f8e387ea0e67f1e36b03c149f6ee1ef8a6fcb88810e33088db6ea4f91cdb0"
+    },
+    {
+      "path": "modules/stb_image_resize/module.jai",
+      "bytes": 25,
+      "sha256": "e192967d9a8866d9234054e3bcbb925c29786a1839f1edc76a1dbe9e39b93465"
+    },
+    {
+      "path": "modules/stb_image_write/bindings.jai",
+      "bytes": 2379,
+      "sha256": "3e50637254af6c1aecbcaecac912e998659b9c45ff141ae59338d60dd16f7338"
+    },
+    {
+      "path": "modules/stb_image_write/generate.jai",
+      "bytes": 5545,
+      "sha256": "019d15ff6be4b30e5ba37d4b576950f6a88445000e14ed43f85de7dbaa98efd0"
+    },
+    {
+      "path": "modules/stb_image_write/module.jai",
+      "bytes": 25,
+      "sha256": "e192967d9a8866d9234054e3bcbb925c29786a1839f1edc76a1dbe9e39b93465"
+    },
+    {
+      "path": "modules/stb_vorbis/bindings.jai",
+      "bytes": 20490,
+      "sha256": "1563ed3b6f974e4566efa5317053be2730eb259e3634ef6448c0e2576a8f37a2"
+    },
+    {
+      "path": "modules/stb_vorbis/generate.jai",
+      "bytes": 6306,
+      "sha256": "91c481cb860a58d61ded8e945ae9303ce21207c877315337b59b1c5d6a131aca"
+    },
+    {
+      "path": "modules/stb_vorbis/module.jai",
+      "bytes": 220,
+      "sha256": "ab70feb7f7f4143ead1c4715012cbf777e81b6628c7788afef8a8abe41629cb2"
+    },
+    {
+      "path": "modules/telemetry3/module.jai",
+      "bytes": 50,
+      "sha256": "c3b1213e218c70088f12c95f293fab8578e407d9a3a76fa7f4dbf45439f8ca7d"
+    },
+    {
+      "path": "modules/telemetry3/telemetry.jai",
+      "bytes": 28326,
+      "sha256": "53fe44ba02d6cc03702d580960056784428a6b108df2946585e49f4658175c88"
+    },
+    {
+      "path": "modules/xxHash/module.jai",
+      "bytes": 12952,
+      "sha256": "191c2f9a52213636c35928f2a0201ed49eb658df6752ff6c64bf9c729063d84f"
+    },
+    {
+      "path": "modules/xxHash/test/bench.jai",
+      "bytes": 3309,
+      "sha256": "865ba923d5716a51f5b7f096b4a6558bbd0391fe079bfc67275f26cfdbcf8d3d"
+    }
+  ]
+}
