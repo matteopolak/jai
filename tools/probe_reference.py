@@ -51,6 +51,7 @@ def main():
 (allow sysctl-read)
 (allow mach-lookup)
 (allow file-read*
+    (literal "/")
     (literal {json.dumps(str(binary))})
     (subpath "/System") (subpath "/usr/lib") (subpath "/Library/Apple")
     (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random")
