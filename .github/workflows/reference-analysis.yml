@@ -5,8 +5,8 @@ permissions:
   contents: read
 jobs:
   inspect:
-    runs-on: macos-14
-    timeout-minutes: 45
+    runs-on: macos-15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -14,31 +14,25 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.14'
-      - name: Download data from the unpublished input release
+      - name: Download the authorized reference data asset
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p artifacts/runner
-          gh release download audit-inputs-2026-10-01 --repo "$GITHUB_REPOSITORY" --pattern reference-inputs.tar.gz --dir artifacts/runner
-      - name: Verify hashes and extract read-only input data
-        run: python3 tools/runner_inputs.py extract
-      - name: Install trusted disassembly tools
+          mkdir -p reference/bin
+          gh release download reference-0.2.009 --repo "$GITHUB_REPOSITORY" --pattern jai-macos --dir reference/bin
+          chmod 400 reference/bin/jai-macos
+      - name: Verify supplied binary identity
         run: |
-          brew install llvm
-          echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
-      - name: Inspect every compiler and linker executable section
+          echo 'a76ba6e153838a81e3ed4edbcc4ec42ad86c333cdeaf4053fdc592ed0b61600e  reference/bin/jai-macos' | shasum -a 256 -c -
+      - name: Install trusted LLVM disassembly tools
         run: |
-          python3 tools/audit_reference.py
+          brew install llvm@22
+          echo "$(brew --prefix llvm@22)/bin" >> "$GITHUB_PATH"
+      - name: Read every executable section without executing supplied code
+        run: |
+          python3 tools/audit_reference.py --binary bin/jai-macos
           python3 tools/analyze_macos_calls.py
-      - name: Install pinned Rust tooling
-        run: rustup toolchain install nightly-2026-08-29 --profile minimal
-      - name: Check dependency ages before compilation
-        run: python3 tools/check_dependency_age.py
-      - name: Run compiler tests against the supplied source corpus
-        run: cargo test --workspace --locked
-      - name: Benchmark smoke checks
-        run: cargo bench -p jai-bench --bench compiler --locked -- --test
-      - name: Retain inspection reports (never original executable bytes)
+      - name: Retain inspection reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

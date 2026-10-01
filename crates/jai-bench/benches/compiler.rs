@@ -39,13 +39,23 @@ fn resolve(bencher: Bencher, procedures: usize) {
         .bench_local(|| jai_sema::resolve(divan::black_box(&module)).unwrap());
 }
 #[divan::bench(args = [4, 64, 1024])]
+fn lower_llvm(bencher: Bencher, procedures: usize) {
+    let source = generated(procedures);
+    let module = jai_syntax::parse(&source).unwrap();
+    let program = jai_sema::resolve(&module).unwrap();
+    let context = jai_codegen::Context::create();
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| jai_codegen::lower(&context, divan::black_box(&program)).unwrap());
+}
+#[divan::bench(args = [4, 64, 1024])]
 fn emit_llvm(bencher: Bencher, procedures: usize) {
     let source = generated(procedures);
     let module = jai_syntax::parse(&source).unwrap();
     let program = jai_sema::resolve(&module).unwrap();
     bencher
         .counter(BytesCount::new(source.len()))
-        .bench_local(|| jai_codegen::emit(divan::black_box(&program)));
+        .bench_local(|| jai_codegen::emit(divan::black_box(&program)).unwrap());
 }
 #[divan::bench(args = [4, 64, 1024])]
 fn pipeline(bencher: Bencher, procedures: usize) {
@@ -55,7 +65,7 @@ fn pipeline(bencher: Bencher, procedures: usize) {
         .bench_local(|| {
             let module = jai_syntax::parse(divan::black_box(&source)).unwrap();
             let program = jai_sema::resolve(&module).unwrap();
-            jai_codegen::emit(&program)
+            jai_codegen::emit(&program).unwrap()
         });
 }
 fn corpus(path: &Path, out: &mut Vec<String>) {

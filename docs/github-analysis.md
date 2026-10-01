@@ -1,29 +1,29 @@
-# GitHub checks and static analysis
+# GitHub compiler checks and reference inspection
 
 ## What it is
 
-The public `matteopolak/jai` repository hosts the independent Rust rewrite and automated checks. A separate manually dispatched workflow inspects supplied reference bytes on a fresh GitHub-hosted ARM64 macOS runner without executing them.
+The public `matteopolak/jai` repository hosts the independent Rust rewrite and compiler checks. A manually dispatched workflow statically inspects the supplied macOS compiler in a fresh native ARM64 hosted VM.
 
 ## How it works
 
-Ordinary pushes and pull requests run dependency-age enforcement, formatting, lint, Rust/native fixture tests, Python policy tests and benchmark smoke checks. The public checkout excludes `reference/`; two distribution-dependent tests and the reference benchmark are explicitly filtered in this workflow. Those checks run in the separate reference workflow. Native tests execute only fixtures compiled by our Rust compiler using independently installed Clang.
+Pushes and pull requests run dependency-age enforcement, Rustfmt, Clippy, Rust/native fixture tests, Python policy tests and benchmark smoke checks. Public Git history excludes `reference/`; two distribution-dependent tests and the reference benchmark are explicitly filtered. Local checks with the reference run them without filters. Native tests execute only fixtures compiled by our Rust compiler through trusted Clang.
 
-`tools/runner_inputs.py pack` packages the 702 `.jai` sources and six compiler/linker binaries as inert data. `corpus/reference-inputs.json` records each path, length and SHA-256, plus the archive SHA-256. The archive is an asset on an **unpublished draft release**, `audit-inputs-2026-10-01`, rather than public Git history or a published release. Draft releases require repository write access for ordinary users; the workflow uses its repository-scoped token only in the download step. Do not publish the input draft or put its bytes into public Git history automatically.
+The user initially declined reference transfer, then explicitly authorized the Jai binary as a release asset for CI. Only `reference/bin/jai-macos` is uploaded to release `reference-0.2.009`; the six-binary/source archive was never uploaded. This public asset is a supplied input fixture, not a release of our Rust compiler. The reference source distribution remains local. No supplied binary enters Git history.
 
-The dispatched `static reference analysis` workflow downloads that archive, verifies hashes, rejects unexpected members, links, duplicate names and traversal paths, and extracts files with mode `0400`. Independently installed LLVM tools read headers, symbols and every executable section. The workflow then tests our compiler against the reference text and uploads inspection reports for 14 days. It never invokes a supplied compiler, linker, installer, object or library. Static analysis cannot resolve every runtime call or establish harmlessness.
+The inspection workflow downloads that asset using its repository token only in the download step, removes executable permissions, verifies SHA-256, and uses independently installed LLVM to read headers, symbols and executable sections. It retains disassembly/capability reports for 14 days. This static workflow never invokes the supplied executable or loads its libraries.
 
-The hosted runner is a fresh VM with ARM64 hardware for `macos-14`. It has networking and GitHub's workflow infrastructure; this workflow does not claim an air-gapped execution environment. Any proposed original-binary execution still requires the user's approval after the concrete findings, and a separate reviewed isolation configuration.
+`macos-15` is a fresh ARM64 GitHub-hosted VM. Networking and workflow infrastructure remain present; this is not air-gapped isolation. The standard public runner is free under [GitHub's runner specification](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Static inspection cannot prove harmlessness. Original-binary execution must be a separate reviewed step under the user's execution authorization.
 
 ## How to change it
 
-Change `.github/workflows/ci.yml` for public compiler checks and `.github/workflows/reference-analysis.yml` for static inspection. Pin Actions to reviewed immutable commits. Keep `persist-credentials: false`, repository permissions at `contents: read`, and input analysis out of `pull_request_target` and self-hosted runners. Repackage inputs and update the manifest together when the distribution changes. Do not add original execution to a static inspection step.
+Change `.github/workflows/ci.yml` for compiler checks and `reference-analysis.yml` for static inspection. Pin Actions to reviewed commits, retain `persist-credentials: false` and `contents: read`, and keep reference work out of `pull_request_target` and self-hosted runners. Update the release asset, SHA-256 and documentation together when changing the reference.
 
-Dispatch with `gh workflow run reference-analysis.yml --repo matteopolak/jai`. Inspect the actual run with `gh run view --repo matteopolak/jai RUN_ID`; a checked-in workflow is not evidence that it passed.
+Dispatch with `gh workflow run reference-analysis.yml --repo matteopolak/jai`. Inspect real runs with `gh run view --repo matteopolak/jai RUN_ID`; checked-in workflows do not establish that checks passed.
 
 ## Configuration
 
-Both workflows use the pinned Rust nightly in `rust-toolchain.toml`. The public job has a 30-minute limit; static inspection has a 45-minute limit. The draft release tag and asset name are currently fixed in the inspection workflow. No personal token, project secret or host credential is provisioned to the input analysis steps.
+Compiler CI uses the pinned Rust nightly, Python 3.14 and independently installed LLVM 22. Both jobs have 30-minute limits. The inspection release tag and expected digest are fixed in its workflow. No project secrets or personal tokens are provisioned to inspected code.
 
 ## Dependencies
 
-GitHub Actions standard hosted runners, the official checkout/Python/artifact Actions, Python 3.14, Rustup, independently installed Clang and Homebrew LLVM. See [GitHub's hosted-runner specification](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) and [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
+GitHub standard hosted runners, official checkout/Python/artifact Actions, Python, Rustup, Homebrew LLVM and Clang. See [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).

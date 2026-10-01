@@ -16,7 +16,7 @@ After the tables exist, `python3 tools/analyze_macos_calls.py` resolves ARM64 Ma
 
 Extend format/architecture decoding and import resolution with fixtures. Trace startup paths and calls to process execution, filesystem mutation, native loading, networking and environment access before recommending VM execution. Imports alone do not establish whether a path is reachable or malicious. A report with unresolved indirect calls cannot claim that all possible calls have been cleared.
 
-The same static workflow can run on a disposable GitHub-hosted ARM64 macOS runner. See [GitHub checks and static analysis](github-analysis.md) for input transfer, credential limits and dispatch commands.
+The user later authorized the supplied macOS compiler as a release asset for CI. The [GitHub inspection workflow](github-analysis.md) verifies its digest and repeats static analysis on a fresh ARM64 hosted VM; the source distribution remains local.
 
 ## Configuration
 

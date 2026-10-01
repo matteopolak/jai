@@ -10,7 +10,7 @@ The lexer assigns `Keyword`, `Directive` and `Punct` tags at the text boundary. 
 
 `jai-sema` resolves symbols into private procedure/local IDs, checks scopes, calls, arguments, returns and reachable control flow, and constructs separate `IntExpr` and `BoolExpr` trees. Integer truthiness becomes an explicit `BoolExpr::FromInt`; integer casts of Booleans become `IntExpr::FromBool`. Compound updates are typed before storing back to a local. `Program` has private fields and exposes immutable accessors, so consumers cannot replace checked procedures or fabricate an entry point.
 
-The LLVM renderer accepts only `Program`. Integer/Boolean operands and labels have distinct types, and its API has no semantic-error result. LLVM instruction strings appear only when rendering text. The CLI parses raw arguments into command variants before reading or writing files.
+The LLVM backend accepts only `Program` and constructs instructions through Inkwell. Private integer/Boolean value and storage wrappers preserve scalar distinctions, while LLVM function and block handles identify control flow. Construction and verification errors are structured backend failures; source semantic errors are rejected earlier. LLVM serializes output only after module verification. The CLI parses raw arguments into command variants before reading or writing files.
 
 ## How to change it
 

@@ -5,6 +5,7 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+inkwell.workspace = true
 jai-sema.workspace = true
 jai-syntax.workspace = true
 

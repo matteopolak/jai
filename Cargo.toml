@@ -14,6 +14,7 @@ jai-syntax = { path = "crates/jai-syntax" }
 jai-sema = { path = "crates/jai-sema" }
 jai-codegen = { path = "crates/jai-codegen" }
 divan = "0.1.21"
+inkwell = { version = "0.10.0", default-features = false, features = ["llvm22-1-prefer-dynamic"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

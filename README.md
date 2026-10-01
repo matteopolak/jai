@@ -1,20 +1,96 @@
-# Jai in Rust
+# Jai, in Rust
 
-An independent compiler rewrite targeting Jai programs and libraries, prioritizing recent upstream sources over the older local beta 0.2.009 distribution. **The rewrite is in its initial stage; complete standard-library and reference/upstream project builds have not passed yet.**
+[![Compiler checks](https://github.com/matteopolak/jai/actions/workflows/ci.yml/badge.svg)](https://github.com/matteopolak/jai/actions/workflows/ci.yml)
 
-The Rust workspace currently includes source diagnostics and symbol IDs, typed lexical/syntax tags, semantic resolution into typed IR, an LLVM backend, a CLI and allocation-aware benchmarks. See [developer documentation](docs/README.md) for current coverage, acceptance criteria, dependency policy and binary execution restrictions.
+An independent Jai compiler written in Rust. The goal is to compile existing Jai programs and libraries, with a clean implementation that is easy to test, understand, and improve.
 
-The supplied distribution stays outside public Git history. A public checkout can run compiler checks with `cargo test --workspace --locked -- --skip lex_entire_reference_without_executing_it --skip supplied_executable_is_rejected_before_backend_execution` and benchmark smoke checks with `--test --skip reference_lex`. The separately dispatched [static inspection workflow](docs/github-analysis.md) runs the distribution-dependent checks with hashed data inputs.
+**Early development:** small programs compile and run today. The standard library and larger Jai projects still need substantial language support before they can build.
 
-```sh
-# Python 3.11+ is required for repository tools.
-python3 tools/check_dependency_age.py
-cargo test --workspace --locked
-python3 -m unittest discover -s tools -p 'test_*.py'
-cargo run -p jai-cli -- lex reference/how_to/001_first.jai
-cargo bench -p jai-bench --bench compiler --locked -- --test
+```jai
+sum_to :: (n: int) -> int {
+    total := 0;
+    while n > 0 {
+        total += n;
+        n -= 1;
+    }
+    return total;
+}
+
+main :: () -> int {
+    return sum_to(9); // Exit status: 45
+}
 ```
 
-Fetch the pinned recent source corpus with `python3 tools/fetch_upstreams.py`, verify it with `python3 tools/verify_upstreams.py`, then run `cargo test -p jai-lexer --test upstream --locked -- --ignored`. Save performance/allocation measurements with `python3 tools/benchmark.py --upstream`.
+## What works today
 
-Use `jai-rs build file.jai output` for the implemented signed-integer/Boolean subset. This requires independently installed LLVM/Clang. Never point `JAI_RS_CLANG` at a supplied executable. The reference compiler and bundled native libraries remain unexecuted pending inspection and explicit approval.
+| Area | Status |
+| --- | --- |
+| Integers and Booleans | Supported in the current subset |
+| Procedures, arguments, return values, recursion | Supported |
+| Local variables, nested scopes, scalar casts | Supported |
+| Arithmetic, comparisons, compound assignment | Supported |
+| `if`, `while`, short-circuit `&&` and `||` | Supported |
+| Native compilation | Small programs tested on ARM64 macOS |
+| Strings, arrays, pointers, structs, enums | Not implemented in compilation yet |
+| Imports, modules, generics, overloads | Not implemented yet |
+| Compile-time execution and compiler APIs | Not implemented yet |
+| Full standard library and reference examples | Not compiling yet |
+| Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |
+| Linux, Windows, mobile, WebAssembly | Planned; runtime compatibility unverified |
+
+The lexer currently accepts **702 local reference files** and **1,440 files from seven recent upstream projects**. These checks test reading and tokenizing source, not successful compilation. [Compatibility coverage](docs/reference-compatibility.md) explains the remaining work.
+
+## Try it
+
+You need [Rustup](https://rustup.rs/), Python 3.11 or newer, and an independently installed LLVM 22 with Clang. Rustup uses this repository's pinned toolchain automatically.
+
+On macOS, install LLVM with Homebrew and set `LLVM_SYS_221_PREFIX` to its installation directory. See the [LLVM setup guide](docs/llvm-backend.md) for exact commands and troubleshooting.
+
+```sh
+git clone https://github.com/matteopolak/jai.git
+cd jai
+
+# Check dependency release dates before building.
+python3 tools/check_dependency_age.py
+cargo build -p jai-cli --locked
+```
+
+The example above is included as `examples/sum.jai`:
+
+```sh
+cargo run -p jai-cli -- check examples/sum.jai
+cargo run -p jai-cli -- build examples/sum.jai sum
+./sum
+echo $? # 45
+```
+
+You can also inspect a source file with `lex`, or save its LLVM output with `emit-llvm`:
+
+```sh
+cargo run -p jai-cli -- emit-llvm examples/sum.jai sum.ll
+```
+
+## Compatibility and performance
+
+The local Jai distribution helps establish language behavior. Newer, maintained Jai projects guide compatibility when they differ from that older reference. The [upstream corpus](docs/upstream-corpus.md) records the projects and exact revisions used.
+
+Tests cover rejected programs and the behavior of newly compiled programs. Benchmarks measure compiler time and Rust allocations so performance work can be based on measurements. Unsupported features produce errors instead of counting as successful builds.
+
+The supplied source distribution stays outside this repository. An authorized reference compiler asset is used for isolated static inspection in CI; it has not been executed. [Binary inspection](docs/binary-inspection.md) documents the findings and limits of static analysis.
+
+## Working on the compiler
+
+For a public checkout:
+
+```sh
+cargo test --workspace --locked -- \
+  --skip lex_entire_reference_without_executing_it \
+  --skip supplied_executable_is_rejected_before_backend_execution
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo bench -p jai-bench --bench compiler --locked -- --test --skip reference_lex
+```
+
+The two skipped tests require the separately supplied reference files. Local reference checks run them without those filters.
+
+Start with the [developer guide](docs/README.md) for architecture, language coverage, benchmarks, and dependency policy. Rustfmt keeps code formatting consistent, and Cargo enforces a minimum dependency release age of 14 days.

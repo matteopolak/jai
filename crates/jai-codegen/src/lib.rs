@@ -1,58 +1,142 @@
-//! LLVM rendering consumes a resolved, immutable typed program.
-use jai_sema::{
-    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntOp, Local, Program, Relation,
-    Statement, ValueExpr,
+//! Construct and verify LLVM modules from immutable checked programs.
+pub use inkwell::context::Context;
+use inkwell::{
+    IntPredicate,
+    basic_block::BasicBlock,
+    builder::{Builder, BuilderError},
+    module::Module,
+    support::LLVMString,
+    types::{BasicMetadataTypeEnum, IntType},
+    values::{
+        BasicMetadataValueEnum, BasicValueEnum, CallSiteValue, FunctionValue, IntValue,
+        PointerValue,
+    },
 };
-use std::fmt::{self, Write};
+use jai_sema::{
+    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local, Program,
+    Relation, Statement, ValueExpr,
+};
+use jai_syntax::{ReturnType, ScalarType};
+use std::fmt;
 
-#[derive(Clone, Copy)]
-struct IntRegister(usize);
-#[derive(Clone, Copy)]
-struct BoolRegister(usize);
-#[derive(Clone, Copy)]
-enum IntOperand {
-    Constant(i64),
-    Register(IntRegister),
+#[derive(Debug)]
+pub enum Error {
+    Build(BuilderError),
+    Verification(LLVMString),
+    Invariant,
 }
-#[derive(Clone, Copy)]
-enum BoolOperand {
-    Constant(bool),
-    Register(BoolRegister),
+impl From<BuilderError> for Error {
+    fn from(e: BuilderError) -> Self {
+        Self::Build(e)
+    }
 }
-#[derive(Clone, Copy)]
-enum Label {
-    Entry,
-    Block(usize),
-}
-impl fmt::Display for IntOperand {
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Constant(n) => write!(f, "{n}"),
-            Self::Register(IntRegister(n)) => write!(f, "%v{n}"),
+            Self::Build(e) => write!(f, "LLVM instruction construction failed: {e}"),
+            Self::Verification(e) => write!(f, "LLVM module verification failed: {e}"),
+            Self::Invariant => f.write_str("internal LLVM lowering invariant failed"),
         }
     }
 }
-impl fmt::Display for BoolOperand {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Constant(n) => write!(f, "{}", u8::from(*n)),
-            Self::Register(BoolRegister(n)) => write!(f, "%v{n}"),
+impl std::error::Error for Error {}
+/// LLVM performs instruction construction and text serialization.
+pub fn emit(program: &Program) -> Result<String, Error> {
+    let context = Context::create();
+    Ok(lower(&context, program)?.print_to_string().to_string())
+}
+/// Build a verified module without serialization. The context owns its lifetime.
+pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'ctx>, Error> {
+    let module = context.create_module("jai");
+    let word = context.i64_type();
+    let bit = context.bool_type();
+    // Declare signatures before bodies to support forward and recursive calls.
+    let functions: Vec<_> = program
+        .procedures()
+        .iter()
+        .map(|p| {
+            let parameters: Vec<BasicMetadataTypeEnum<'ctx>> = p
+                .parameters
+                .iter()
+                .map(|local| match local {
+                    Local::Int(_) => word.into(),
+                    Local::Bool(_) => bit.into(),
+                })
+                .collect();
+            let signature = match p.return_type {
+                ReturnType::Void => context.void_type().fn_type(&parameters, false),
+                ReturnType::Value(ScalarType::Int) => word.fn_type(&parameters, false),
+                ReturnType::Value(ScalarType::Bool) => bit.fn_type(&parameters, false),
+            };
+            module.add_function(&format!("jai.p{}", p.id.index()), signature, None)
+        })
+        .collect();
+    for p in program.procedures() {
+        let function = functions[p.id.index()];
+        let builder = context.create_builder();
+        builder.position_at_end(context.append_basic_block(function, "entry"));
+        let mut slots = Vec::with_capacity(p.locals.len());
+        for local in &p.locals {
+            slots.push(match local {
+                Local::Int(_) => Slot::Int(IntSlot(builder.build_alloca(word, "local")?)),
+                Local::Bool(_) => Slot::Bool(BoolSlot(builder.build_alloca(bit, "local")?)),
+            });
+        }
+        for (parameter, local) in function.get_param_iter().zip(&p.parameters) {
+            let pointer = match slots[local_index(*local)] {
+                Slot::Int(slot) => slot.0,
+                Slot::Bool(slot) => slot.0,
+            };
+            builder.build_store(pointer, parameter)?;
+        }
+        let mut g = Generator {
+            context,
+            builder,
+            function,
+            functions: &functions,
+            slots,
+            word,
+            bit,
+        };
+        g.block(&p.body)?;
+        if p.body.flow == Flow::FallsThrough {
+            g.builder.build_return(None)?;
         }
     }
-}
-impl fmt::Display for Label {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Entry => f.write_str("entry"),
-            Self::Block(n) => write!(f, "bb{n}"),
+    let main = module.add_function("main", context.i32_type().fn_type(&[], false), None);
+    let builder = context.create_builder();
+    builder.position_at_end(context.append_basic_block(main, "entry"));
+    let status = match program.entry() {
+        EntryPoint::Void(id) => {
+            builder.build_call(functions[id.index()], &[], "")?;
+            context.i32_type().const_zero()
         }
-    }
+        EntryPoint::Int(id) => {
+            let call = builder.build_call(functions[id.index()], &[], "result")?;
+            builder.build_int_truncate(call_int(call)?, context.i32_type(), "status")?
+        }
+    };
+    builder.build_return(Some(&status))?;
+    module.verify().map_err(Error::Verification)?;
+    Ok(module)
 }
-fn local_type(local: Local) -> &'static str {
-    match local {
-        Local::Int(_) => "i64",
-        Local::Bool(_) => "i1",
-    }
+// LLVM uses IntValue for both i64 and i1; keep language widths distinct.
+#[derive(Clone, Copy)]
+struct Word<'ctx>(IntValue<'ctx>);
+#[derive(Clone, Copy)]
+struct Bit<'ctx>(IntValue<'ctx>);
+#[derive(Clone, Copy)]
+struct IntSlot<'ctx>(PointerValue<'ctx>);
+#[derive(Clone, Copy)]
+struct BoolSlot<'ctx>(PointerValue<'ctx>);
+#[derive(Clone, Copy)]
+enum Slot<'ctx> {
+    Int(IntSlot<'ctx>),
+    Bool(BoolSlot<'ctx>),
+}
+enum Logical {
+    And,
+    Or,
 }
 fn local_index(local: Local) -> usize {
     match local {
@@ -60,310 +144,243 @@ fn local_index(local: Local) -> usize {
         Local::Bool(id) => id.index(),
     }
 }
-fn return_type(ty: jai_syntax::ReturnType) -> &'static str {
-    match ty {
-        jai_syntax::ReturnType::Void => "void",
-        jai_syntax::ReturnType::Value(jai_syntax::ScalarType::Int) => "i64",
-        jai_syntax::ReturnType::Value(jai_syntax::ScalarType::Bool) => "i1",
+fn int_value(value: BasicValueEnum<'_>) -> Result<IntValue<'_>, Error> {
+    match value {
+        BasicValueEnum::IntValue(value) => Ok(value),
+        _ => Err(Error::Invariant),
     }
 }
-/// Semantic errors are ruled out by `jai_sema::resolve` before this boundary.
-pub fn emit(program: &Program) -> String {
-    let mut b = Builder {
-        text: String::from("; Generated by the Rust Jai compiler.\n"),
-        next_register: 0,
-        next_block: 0,
-        current: Label::Entry,
-    };
-    for p in program.procedures() {
-        write!(
-            b.text,
-            "define {} @jai.p{}(",
-            return_type(p.return_type),
-            p.id.index()
-        )
-        .unwrap();
-        for (i, local) in p.parameters.iter().enumerate() {
-            if i != 0 {
-                b.text.push_str(", ");
-            }
-            write!(b.text, "{} %arg{i}", local_type(*local)).unwrap();
-        }
-        b.text.push_str(") {\nentry:\n");
-        b.current = Label::Entry;
-        for local in &p.locals {
-            b.line(format_args!(
-                "%local{} = alloca {}",
-                local_index(*local),
-                local_type(*local)
-            ));
-        }
-        for (i, local) in p.parameters.iter().enumerate() {
-            b.line(format_args!(
-                "store {} %arg{i}, ptr %local{}",
-                local_type(*local),
-                local_index(*local)
-            ));
-        }
-        b.block(&p.body);
-        if p.body.flow == Flow::FallsThrough {
-            b.line(format_args!("ret void"));
-        }
-        b.text.push_str("}\n\n");
-    }
-    b.text.push_str("define i32 @main() {\nentry:\n");
-    match program.entry() {
-        EntryPoint::Void(id) => {
-            b.line(format_args!("call void @jai.p{}()", id.index()));
-            b.line(format_args!("ret i32 0"));
-        }
-        EntryPoint::Int(id) => {
-            b.line(format_args!("%result = call i64 @jai.p{}()", id.index()));
-            b.line(format_args!("%status = trunc i64 %result to i32"));
-            b.line(format_args!("ret i32 %status"));
-        }
-    }
-    b.text.push_str("}\n");
-    b.text
+fn call_int(call: CallSiteValue<'_>) -> Result<IntValue<'_>, Error> {
+    int_value(call.try_as_basic_value().basic().ok_or(Error::Invariant)?)
 }
-struct Builder {
-    text: String,
-    next_register: usize,
-    next_block: usize,
-    current: Label,
+struct Generator<'ctx, 'functions> {
+    context: &'ctx Context,
+    builder: Builder<'ctx>,
+    function: FunctionValue<'ctx>,
+    functions: &'functions [FunctionValue<'ctx>],
+    slots: Vec<Slot<'ctx>>,
+    word: IntType<'ctx>,
+    bit: IntType<'ctx>,
 }
-impl Builder {
-    fn line(&mut self, args: fmt::Arguments<'_>) {
-        writeln!(self.text, "  {args}").unwrap();
+impl<'ctx> Generator<'ctx, '_> {
+    fn label(&self, name: &str) -> BasicBlock<'ctx> {
+        self.context.append_basic_block(self.function, name)
     }
-    fn int_result(&mut self, args: fmt::Arguments<'_>) -> IntOperand {
-        let n = self.next_register;
-        self.next_register += 1;
-        self.line(format_args!("%v{n} = {args}"));
-        IntOperand::Register(IntRegister(n))
+    fn int_slot(&self, id: IntLocal) -> Result<IntSlot<'ctx>, Error> {
+        match self.slots.get(id.index()) {
+            Some(Slot::Int(slot)) => Ok(*slot),
+            _ => Err(Error::Invariant),
+        }
     }
-    fn bool_result(&mut self, args: fmt::Arguments<'_>) -> BoolOperand {
-        let n = self.next_register;
-        self.next_register += 1;
-        self.line(format_args!("%v{n} = {args}"));
-        BoolOperand::Register(BoolRegister(n))
+    fn bool_slot(&self, id: jai_sema::BoolLocal) -> Result<BoolSlot<'ctx>, Error> {
+        match self.slots.get(id.index()) {
+            Some(Slot::Bool(slot)) => Ok(*slot),
+            _ => Err(Error::Invariant),
+        }
     }
-    fn label(&mut self) -> Label {
-        let n = self.next_block;
-        self.next_block += 1;
-        Label::Block(n)
-    }
-    fn begin(&mut self, label: Label) {
-        writeln!(self.text, "{label}:").unwrap();
-        self.current = label;
-    }
-    fn jump(&mut self, label: Label) {
-        self.line(format_args!("br label %{label}"));
-    }
-    fn block(&mut self, block: &Block) {
-        for s in &block.statements {
-            match s {
+    fn block(&mut self, block: &Block) -> Result<(), Error> {
+        for statement in &block.statements {
+            match statement {
                 Statement::StoreInt(id, e) => {
-                    let v = self.int(e);
-                    self.line(format_args!("store i64 {v}, ptr %local{}", id.index()));
+                    let v = self.int(e)?;
+                    self.builder.build_store(self.int_slot(*id)?.0, v.0)?;
                 }
                 Statement::StoreBool(id, e) => {
-                    let v = self.boolean(e);
-                    self.line(format_args!("store i1 {v}, ptr %local{}", id.index()));
+                    let v = self.boolean(e)?;
+                    self.builder.build_store(self.bool_slot(*id)?.0, v.0)?;
                 }
-                Statement::ReturnVoid => self.line(format_args!("ret void")),
+                Statement::ReturnVoid => {
+                    self.builder.build_return(None)?;
+                }
                 Statement::ReturnInt(e) => {
-                    let v = self.int(e);
-                    self.line(format_args!("ret i64 {v}"));
+                    let v = self.int(e)?;
+                    self.builder.build_return(Some(&v.0))?;
                 }
                 Statement::ReturnBool(e) => {
-                    let v = self.boolean(e);
-                    self.line(format_args!("ret i1 {v}"));
+                    let v = self.boolean(e)?;
+                    self.builder.build_return(Some(&v.0))?;
                 }
                 Statement::DiscardInt(e) => {
-                    self.int(e);
+                    self.int(e)?;
                 }
                 Statement::DiscardBool(e) => {
-                    self.boolean(e);
+                    self.boolean(e)?;
                 }
-                Statement::CallVoid(c) => {
-                    let args = self.arguments(c);
-                    self.line(format_args!(
-                        "call void @jai.p{}({args})",
-                        c.procedure.index()
-                    ));
+                Statement::CallVoid(call) => {
+                    self.call(call)?;
                 }
-                Statement::Block(b) => self.block(b),
-                Statement::If(c, yes, no) => {
-                    let c = self.boolean(c);
-                    let y = self.label();
-                    let n = self.label();
-                    let end = self.label();
-                    self.line(format_args!("br i1 {c}, label %{y}, label %{n}"));
-                    self.begin(y);
-                    self.block(yes);
-                    if yes.flow == Flow::FallsThrough {
-                        self.jump(end);
+                Statement::Block(block) => self.block(block)?,
+                Statement::If(condition, yes, no) => {
+                    let c = self.boolean(condition)?;
+                    let y = self.label("if.yes");
+                    let n = self.label("if.no");
+                    // Both returning arms need no join block.
+                    let join = (yes.flow == Flow::FallsThrough || no.flow == Flow::FallsThrough)
+                        .then(|| self.label("if.end"));
+                    self.builder.build_conditional_branch(c.0, y, n)?;
+                    for (label, block) in [(y, yes), (n, no)] {
+                        self.builder.position_at_end(label);
+                        self.block(block)?;
+                        if block.flow == Flow::FallsThrough {
+                            self.builder
+                                .build_unconditional_branch(join.ok_or(Error::Invariant)?)?;
+                        }
                     }
-                    self.begin(n);
-                    self.block(no);
-                    if no.flow == Flow::FallsThrough {
-                        self.jump(end);
-                    }
-                    if yes.flow == Flow::FallsThrough || no.flow == Flow::FallsThrough {
-                        self.begin(end);
+                    if let Some(join) = join {
+                        self.builder.position_at_end(join);
                     }
                 }
-                Statement::While(c, body) => {
-                    let test = self.label();
-                    let inside = self.label();
-                    let end = self.label();
-                    self.jump(test);
-                    self.begin(test);
-                    let c = self.boolean(c);
-                    self.line(format_args!("br i1 {c}, label %{inside}, label %{end}"));
-                    self.begin(inside);
-                    self.block(body);
+                Statement::While(condition, body) => {
+                    let test = self.label("while.test");
+                    let inside = self.label("while.body");
+                    let end = self.label("while.end");
+                    self.builder.build_unconditional_branch(test)?;
+                    self.builder.position_at_end(test);
+                    let c = self.boolean(condition)?;
+                    self.builder.build_conditional_branch(c.0, inside, end)?;
+                    self.builder.position_at_end(inside);
+                    self.block(body)?;
                     if body.flow == Flow::FallsThrough {
-                        self.jump(test);
+                        self.builder.build_unconditional_branch(test)?;
                     }
-                    self.begin(end);
+                    self.builder.position_at_end(end);
                 }
             }
         }
+        Ok(())
     }
-    fn arguments(&mut self, call: &Call) -> String {
-        let mut args = String::new();
-        for (i, e) in call.arguments.iter().enumerate() {
-            if i != 0 {
-                args.push_str(", ");
-            }
-            match e {
-                ValueExpr::Int(e) => {
-                    let v = self.int(e);
-                    write!(args, "i64 {v}").unwrap();
-                }
-                ValueExpr::Bool(e) => {
-                    let v = self.boolean(e);
-                    write!(args, "i1 {v}").unwrap();
-                }
-            }
+    fn call(&mut self, call: &Call) -> Result<CallSiteValue<'ctx>, Error> {
+        let mut args: Vec<BasicMetadataValueEnum<'ctx>> = Vec::with_capacity(call.arguments.len());
+        for argument in &call.arguments {
+            args.push(match argument {
+                ValueExpr::Int(e) => self.int(e)?.0.into(),
+                ValueExpr::Bool(e) => self.boolean(e)?.0.into(),
+            });
         }
-        args
+        let f = self.functions[call.procedure.index()];
+        let name = if f.get_type().get_return_type().is_some() {
+            "call"
+        } else {
+            ""
+        };
+        Ok(self.builder.build_call(f, &args, name)?)
     }
-    fn int(&mut self, e: &IntExpr) -> IntOperand {
-        match e {
-            IntExpr::Constant(n) => IntOperand::Constant(*n),
+    fn int(&mut self, e: &IntExpr) -> Result<Word<'ctx>, Error> {
+        Ok(Word(match e {
+            IntExpr::Constant(n) => self.word.const_int(*n as u64, true),
             IntExpr::FromBool(e) => {
-                let v = self.boolean(e);
-                self.int_result(format_args!("zext i1 {v} to i64"))
+                let v = self.boolean(e)?;
+                self.builder
+                    .build_int_z_extend(v.0, self.word, "cast.int")?
             }
-            IntExpr::Local(id) => {
-                self.int_result(format_args!("load i64, ptr %local{}", id.index()))
-            }
-            IntExpr::Call(c) => {
-                let args = self.arguments(c);
-                self.int_result(format_args!(
-                    "call i64 @jai.p{}({args})",
-                    c.procedure.index()
-                ))
-            }
+            IntExpr::Local(id) => int_value(self.builder.build_load(
+                self.word,
+                self.int_slot(*id)?.0,
+                "load.int",
+            )?)?,
+            IntExpr::Call(call) => call_int(self.call(call)?)?,
             IntExpr::Negate(e) => {
-                let v = self.int(e);
-                self.int_result(format_args!("sub i64 0, {v}"))
+                let v = self.int(e)?;
+                self.builder.build_int_neg(v.0, "negate")?
             }
             IntExpr::Complement(e) => {
-                let v = self.int(e);
-                self.int_result(format_args!("xor i64 {v}, -1"))
+                let v = self.int(e)?;
+                self.builder.build_not(v.0, "complement")?
             }
             IntExpr::Binary(op, lhs, rhs) => {
-                let lhs = self.int(lhs);
-                let rhs = self.int(rhs);
-                let op = match op {
-                    IntOp::Add => "add",
-                    IntOp::Subtract => "sub",
-                    IntOp::Multiply => "mul",
-                    IntOp::Divide => "sdiv",
-                    IntOp::Remainder => "srem",
-                    IntOp::BitAnd => "and",
-                    IntOp::BitOr => "or",
-                    IntOp::BitXor => "xor",
-                    IntOp::ShiftLeft => "shl",
-                    IntOp::ShiftRight => "ashr",
-                };
-                self.int_result(format_args!("{op} i64 {lhs}, {rhs}"))
+                let lhs = self.int(lhs)?.0;
+                let rhs = self.int(rhs)?.0;
+                match op {
+                    IntOp::Add => self.builder.build_int_add(lhs, rhs, "add")?,
+                    IntOp::Subtract => self.builder.build_int_sub(lhs, rhs, "subtract")?,
+                    IntOp::Multiply => self.builder.build_int_mul(lhs, rhs, "multiply")?,
+                    IntOp::Divide => self.builder.build_int_signed_div(lhs, rhs, "divide")?,
+                    IntOp::Remainder => self.builder.build_int_signed_rem(lhs, rhs, "remainder")?,
+                    IntOp::BitAnd => self.builder.build_and(lhs, rhs, "and")?,
+                    IntOp::BitOr => self.builder.build_or(lhs, rhs, "or")?,
+                    IntOp::BitXor => self.builder.build_xor(lhs, rhs, "xor")?,
+                    IntOp::ShiftLeft => self.builder.build_left_shift(lhs, rhs, "shift.left")?,
+                    IntOp::ShiftRight => {
+                        self.builder
+                            .build_right_shift(lhs, rhs, true, "shift.right")?
+                    }
+                }
             }
-        }
+        }))
     }
-    fn boolean(&mut self, e: &BoolExpr) -> BoolOperand {
-        match e {
-            BoolExpr::Constant(b) => BoolOperand::Constant(*b),
+    fn boolean(&mut self, e: &BoolExpr) -> Result<Bit<'ctx>, Error> {
+        Ok(Bit(match e {
+            BoolExpr::Constant(b) => self.bit.const_int(u64::from(*b), false),
             BoolExpr::FromInt(e) => {
-                let v = self.int(e);
-                self.bool_result(format_args!("icmp ne i64 {v}, 0"))
+                let v = self.int(e)?;
+                self.builder.build_int_compare(
+                    IntPredicate::NE,
+                    v.0,
+                    self.word.const_zero(),
+                    "truthiness",
+                )?
             }
-            BoolExpr::Local(id) => {
-                self.bool_result(format_args!("load i1, ptr %local{}", id.index()))
-            }
-            BoolExpr::Call(c) => {
-                let args = self.arguments(c);
-                self.bool_result(format_args!(
-                    "call i1 @jai.p{}({args})",
-                    c.procedure.index()
-                ))
-            }
+            BoolExpr::Local(id) => int_value(self.builder.build_load(
+                self.bit,
+                self.bool_slot(*id)?.0,
+                "load.bool",
+            )?)?,
+            BoolExpr::Call(call) => call_int(self.call(call)?)?,
             BoolExpr::Not(e) => {
-                let v = self.boolean(e);
-                self.bool_result(format_args!("xor i1 {v}, 1"))
+                let v = self.boolean(e)?;
+                self.builder.build_not(v.0, "not")?
             }
             BoolExpr::CompareInts(op, lhs, rhs) => {
-                let lhs = self.int(lhs);
-                let rhs = self.int(rhs);
-                let op = match op {
-                    Relation::Equal => "eq",
-                    Relation::NotEqual => "ne",
-                    Relation::Less => "slt",
-                    Relation::LessEqual => "sle",
-                    Relation::Greater => "sgt",
-                    Relation::GreaterEqual => "sge",
+                let lhs = self.int(lhs)?.0;
+                let rhs = self.int(rhs)?.0;
+                let pred = match op {
+                    Relation::Equal => IntPredicate::EQ,
+                    Relation::NotEqual => IntPredicate::NE,
+                    Relation::Less => IntPredicate::SLT,
+                    Relation::LessEqual => IntPredicate::SLE,
+                    Relation::Greater => IntPredicate::SGT,
+                    Relation::GreaterEqual => IntPredicate::SGE,
                 };
-                self.bool_result(format_args!("icmp {op} i64 {lhs}, {rhs}"))
+                self.builder
+                    .build_int_compare(pred, lhs, rhs, "compare.int")?
             }
             BoolExpr::CompareBools(op, lhs, rhs) => {
-                let lhs = self.boolean(lhs);
-                let rhs = self.boolean(rhs);
-                let op = match op {
-                    Equality::Equal => "eq",
-                    Equality::NotEqual => "ne",
+                let lhs = self.boolean(lhs)?.0;
+                let rhs = self.boolean(rhs)?.0;
+                let pred = match op {
+                    Equality::Equal => IntPredicate::EQ,
+                    Equality::NotEqual => IntPredicate::NE,
                 };
-                self.bool_result(format_args!("icmp {op} i1 {lhs}, {rhs}"))
+                self.builder
+                    .build_int_compare(pred, lhs, rhs, "compare.bool")?
             }
-            BoolExpr::And(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::And),
-            BoolExpr::Or(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::Or),
-        }
+            BoolExpr::And(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::And)?.0,
+            BoolExpr::Or(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::Or)?.0,
+        }))
     }
-    fn short_circuit(&mut self, lhs: &BoolExpr, rhs: &BoolExpr, op: Logical) -> BoolOperand {
-        let lhs = self.boolean(lhs);
-        let left_block = self.current;
-        let right_block = self.label();
-        let join = self.label();
+    fn short_circuit(
+        &mut self,
+        lhs: &BoolExpr,
+        rhs: &BoolExpr,
+        op: Logical,
+    ) -> Result<Bit<'ctx>, Error> {
+        let lhs = self.boolean(lhs)?;
+        let left_end = self.builder.get_insert_block().ok_or(Error::Invariant)?;
+        let right = self.label("logical.rhs");
+        let join = self.label("logical.end");
         let (yes, no, bypass) = match op {
-            Logical::And => (right_block, join, false),
-            Logical::Or => (join, right_block, true),
+            Logical::And => (right, join, false),
+            Logical::Or => (join, right, true),
         };
-        self.line(format_args!("br i1 {lhs}, label %{yes}, label %{no}"));
-        self.begin(right_block);
-        let rhs = self.boolean(rhs);
-        let right_end = self.current;
-        self.jump(join);
-        self.begin(join);
-        self.bool_result(format_args!(
-            "phi i1 [ {}, %{left_block} ], [ {rhs}, %{right_end} ]",
-            u8::from(bypass)
-        ))
+        self.builder.build_conditional_branch(lhs.0, yes, no)?;
+        self.builder.position_at_end(right);
+        let rhs = self.boolean(rhs)?;
+        let right_end = self.builder.get_insert_block().ok_or(Error::Invariant)?;
+        self.builder.build_unconditional_branch(join)?;
+        self.builder.position_at_end(join);
+        let phi = self.builder.build_phi(self.bit, "logical.value")?;
+        let bypass = self.bit.const_int(u64::from(bypass), false);
+        phi.add_incoming(&[(&bypass, left_end), (&rhs.0, right_end)]);
+        Ok(Bit(int_value(phi.as_basic_value())?))
     }
-}
-enum Logical {
-    And,
-    Or,
 }

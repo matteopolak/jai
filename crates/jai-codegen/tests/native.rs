@@ -17,7 +17,7 @@ impl Drop for Scratch {
 fn execute(source: &str) -> i32 {
     let module = jai_syntax::parse(source).unwrap();
     let program = jai_sema::resolve(&module).unwrap();
-    let ir = jai_codegen::emit(&program);
+    let ir = jai_codegen::emit(&program).unwrap();
     let path = std::env::temp_dir().join(format!(
         "jai-rust-test-{}-{}-{}",
         std::process::id(),
