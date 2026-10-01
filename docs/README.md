@@ -10,5 +10,6 @@
 - [Recent upstream source corpus](upstream-corpus.md)
 - [GitHub checks and inspection](github-analysis.md)
 - [LLVM backend and setup](llvm-backend.md)
+- [Bounded reference probes](reference-probes.md)
 
 The reference is an input corpus, not executable tooling. Do not execute or load its compiler, linkers, installers, native libraries, or native objects without the user's explicit approval after an inspection report.
