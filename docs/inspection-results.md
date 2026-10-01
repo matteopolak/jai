@@ -21,7 +21,7 @@ These uses are consistent with compiler infrastructure as an inference from symb
 
 ## How to change it
 
-Repeat the hash and static workflow when input bytes or inspection tools change. Preserve unresolved-call counts and report uncertainty explicitly. Extend actual target resolution instead of labeling an import table a complete call graph. Bounded version/help experiments are recorded separately in [reference probes](reference-probes.md).
+Repeat the hash and static workflow when input bytes or inspection tools change. Preserve unresolved-call counts and report uncertainty explicitly. Extend actual target resolution instead of labeling an import table a complete call graph. Bounded version/help experiments are recorded separately in [reference probes](reference-probes.md). The corrected hosted probe starts the compiler, but both commands stop on the missing `Preload.jai` bootstrap; a successful startup is not a successful help/version result.
 
 ## Configuration
 
