@@ -3,6 +3,7 @@
 - [Compiler architecture and current support](compiler-architecture.md)
 - [Reference compatibility and acceptance](reference-compatibility.md)
 - [Static binary inspection](binary-inspection.md)
+- [Recorded reference inspection results](inspection-results.md)
 - [Native VM isolation](vm-isolation.md)
 - [Dependencies and build policy](dependency-policy.md)
 - [Typed compiler boundaries](type-safety.md)

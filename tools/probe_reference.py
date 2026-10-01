@@ -58,9 +58,23 @@ def main():
 (allow file-write* (subpath {json.dumps(str(scratch))}))
 '''
         (output / 'sandbox.sb').write_text(profile)
+        control_profile = profile.replace(json.dumps(str(binary)), '"/usr/bin/printf"')
+        with tempfile.TemporaryFile(dir=scratch) as control_output:
+            control = subprocess.run(['/usr/bin/sandbox-exec', '-p', control_profile,
+                                      '/usr/bin/printf', 'sandbox-control-ok'], cwd=scratch,
+                env={'PATH': '/usr/bin:/bin', 'HOME': str(scratch), 'TMPDIR': str(scratch)},
+                stdin=subprocess.DEVNULL, stdout=control_output, stderr=control_output,
+                timeout=15, preexec_fn=limits)
+            control_output.seek(0)
+            report['trusted_control'] = {'returncode': control.returncode,
+                                       'output': control_output.read(1024).decode('utf-8', errors='replace')}
+        if control.returncode != 0 or report['trusted_control']['output'] != 'sandbox-control-ok':
+            report['executed_reference_code'] = False
+            (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+            raise SystemExit('Sandbox control failed; reference execution refused')
         binary.chmod(0o500)
         for flag in ('-version', '-help'):
-            with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
+            with tempfile.TemporaryFile(dir=scratch) as stdout, tempfile.TemporaryFile(dir=scratch) as stderr:
                 process = subprocess.Popen(['/usr/bin/sandbox-exec', '-p', profile, str(binary), flag],
                     cwd=scratch, env={'PATH': '/usr/bin:/bin', 'HOME': str(scratch), 'TMPDIR': str(scratch)},
                     stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
