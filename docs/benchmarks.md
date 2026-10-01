@@ -26,6 +26,8 @@ The initial 50-sample shared-host run recorded a 5.07 ms median source-to-IR pip
 
 A later run after scalar-cast/compound-update work recorded 11.88 ms for the same generated workload, with identical allocation counts. Its lexical medians rose to 305.9 ms and 440.9 ms while other builds/tests shared the host. This demonstrates why these timings cannot establish a regression or improvement without controlled measurement. `artifacts/benchmarks/20261001T222905.259878Z/` also includes a compiler-source archive and corpus fingerprints. Both recorded runs used the earlier handwritten text backend. The LLVM API replacement changes the workload and memory accounting, so those runs are historical baselines rather than performance comparisons for the current backend. These are instrumented baselines, not optimized results or Jai compiler parity.
 
+A 25-sample LLVM API baseline at `artifacts/benchmarks/20261001T231909.958818Z/` records LLVM 22.1.1 and explicit Rust-only allocation scope. For 1,024 procedures, medians were 5.62 ms for module construction/verification, 17.27 ms including serialization, and 22.69 ms for the complete pipeline. The pipeline recorded 58,419 Rust allocation operations plus 1,065 grows and 4.35 MB peak live Rust allocations; native LLVM heap use is excluded. The shared host was active, so these remain descriptive baselines without a performance gate.
+
 ## Dependencies
 
 Divan 0.1.21, selected with the native 14-day Cargo policy and verified with all 33 locked external packages before compilation. Compiler crates remain independent of Divan. See [dependency policy](dependency-policy.md).
