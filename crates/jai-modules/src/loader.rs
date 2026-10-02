@@ -1,3 +1,4 @@
+mod bootstrap_imports;
 mod callable_aliases;
 mod collisions;
 mod declaration_insertions;
@@ -801,6 +802,9 @@ impl<'a> Builder<'a> {
         file: FileInstanceId,
         import: &ImportDeclaration,
     ) -> Result<ModuleId, GraphError> {
+        if let Some(module) = self.shared_prelude_import(import)? {
+            return Ok(module);
+        }
         let path = self.import_path(file, import)?;
         if self
             .modules

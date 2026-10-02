@@ -5,6 +5,13 @@ use jai_syntax::NamePath;
 use std::path::Path;
 
 fn graph(files: &[(&str, &str)]) -> ModuleGraph {
+    selected_graph(files, PreludeSource::Search).unwrap()
+}
+
+fn selected_graph(
+    files: &[(&str, &str)],
+    prelude: PreludeSource,
+) -> Result<ModuleGraph, GraphError> {
     let mut provider = SourceOverlay::new();
     for (path, source) in files {
         provider
@@ -16,11 +23,10 @@ fn graph(files: &[(&str, &str)]) -> ModuleGraph {
         GraphOptions {
             import_dirs: vec!["/jai-prelude/modules".into()],
         },
-        PreludeSource::Search,
+        prelude,
         &provider,
         None,
     )
-    .unwrap()
 }
 
 fn lookup(
@@ -195,4 +201,137 @@ fn checking_preload_itself_reserves_its_source_once() {
     assert_eq!(graph.modules().len(), 1);
     assert_eq!(graph.sources().records().len(), 1);
     assert_eq!(graph.declarations().len(), 1);
+}
+
+#[test]
+fn explicit_bootstrap_selection_owns_named_preload_imports() {
+    let graph = selected_graph(
+        &[
+            (
+                "/jai-prelude/main.jai",
+                "P :: #import \"Preload\"; A :: #import \"A\"; main :: () {}",
+            ),
+            (
+                "/jai-prelude/bootstrap.jai",
+                "Shared :: struct { value: int; }",
+            ),
+            (
+                "/jai-prelude/modules/Preload.jai",
+                "this source must not be parsed",
+            ),
+            (
+                "/jai-prelude/modules/A.jai",
+                "P :: #import \"Preload\"; item: P.Shared;",
+            ),
+        ],
+        PreludeSource::File("/jai-prelude/bootstrap.jai".into()),
+    )
+    .unwrap();
+    let root = graph.module(graph.root()).unwrap().entry();
+    assert_eq!(
+        lookup(&graph, root, &["P"]),
+        Ok(Binding::Module(graph.prelude().unwrap()))
+    );
+    assert_eq!(
+        lookup(&graph, root, &["Shared"]),
+        lookup(&graph, root, &["P", "Shared"])
+    );
+    let Binding::Module(imported) = lookup(&graph, root, &["A"]).unwrap() else {
+        panic!("module expected");
+    };
+    assert_eq!(
+        lookup(&graph, graph.module(imported).unwrap().entry(), &["P"]),
+        Ok(Binding::Module(graph.prelude().unwrap()))
+    );
+    assert_eq!(graph.modules().len(), 3);
+    assert_eq!(graph.sources().records().len(), 3);
+}
+
+#[test]
+fn empty_named_import_arguments_reuse_the_shared_prelude() {
+    let graph = graph(&[
+        (
+            "/jai-prelude/main.jai",
+            "P :: #import \"Preload\"(); Q :: #import \"Preload\"()(); main :: () {}",
+        ),
+        (
+            "/jai-prelude/modules/Preload.jai",
+            "Shared :: struct { value: int; }",
+        ),
+    ]);
+    let root = graph.module(graph.root()).unwrap().entry();
+    assert_eq!(lookup(&graph, root, &["P"]), lookup(&graph, root, &["Q"]));
+    assert_eq!(graph.modules().len(), 2);
+    assert_eq!(graph.declarations().len(), 2);
+}
+
+#[test]
+fn nonempty_named_import_arguments_cannot_create_another_prelude() {
+    for arguments in ["(value=1)", "()(value=1)"] {
+        let source = format!("P :: #import \"Preload\"{arguments}; main :: () {{}}");
+        let error = selected_graph(
+            &[
+                ("/jai-prelude/main.jai", &source),
+                ("/jai-prelude/modules/Preload.jai", "Shared :: struct {};"),
+            ],
+            PreludeSource::Search,
+        )
+        .unwrap_err();
+        let GraphError::Located {
+            diagnostic,
+            rendered,
+        } = error
+        else {
+            panic!("located import diagnostic expected");
+        };
+        assert!(rendered.contains("main.jai:1:"));
+        assert!(diagnostic.message.contains("cannot be specialized"));
+    }
+}
+
+#[test]
+fn disabled_bootstrap_keeps_named_preload_an_ordinary_import() {
+    let graph = selected_graph(
+        &[
+            (
+                "/jai-prelude/main.jai",
+                "P :: #import \"Preload\"; main :: () {}",
+            ),
+            ("/jai-prelude/modules/Preload.jai", "Shared :: struct {};"),
+        ],
+        PreludeSource::Disabled,
+    )
+    .unwrap();
+    assert_eq!(graph.prelude(), None);
+    let root = graph.module(graph.root()).unwrap().entry();
+    assert!(lookup(&graph, root, &["P", "Shared"]).is_ok());
+    assert!(matches!(
+        lookup(&graph, root, &["Shared"]),
+        Err(LookupError::UnknownName(_))
+    ));
+}
+
+#[test]
+fn explicit_file_imports_keep_their_actual_source_identity() {
+    let graph = selected_graph(
+        &[
+            (
+                "/jai-prelude/main.jai",
+                "P :: #import \"Preload\"; Q :: #import,file \"other.jai\"; main :: () {}",
+            ),
+            ("/jai-prelude/bootstrap.jai", "Shared :: struct {};"),
+            ("/jai-prelude/other.jai", "Shared :: struct {};"),
+        ],
+        PreludeSource::File("/jai-prelude/bootstrap.jai".into()),
+    )
+    .unwrap();
+    let root = graph.module(graph.root()).unwrap().entry();
+    assert_eq!(
+        lookup(&graph, root, &["P", "Shared"]),
+        lookup(&graph, root, &["Shared"])
+    );
+    assert_ne!(
+        lookup(&graph, root, &["P", "Shared"]),
+        lookup(&graph, root, &["Q", "Shared"])
+    );
 }
