@@ -6,7 +6,7 @@ An independent Rust implementation targeting Jai source compatibility. Recent up
 
 ## How it works
 
-`jai-source` owns byte spans, diagnostics and interned symbol IDs. `jai-lexer` assigns typed token tags, including nested comments and opaque here-strings. Its decoder tolerates legacy non-UTF8 bytes inside comments while preserving byte offsets, and rejects them in code or strings. `jai-syntax` parses signed integer/Boolean procedures, local variables, expressions, conditionals, loops and returns. `jai-sema` resolves names and produces an immutable typed program. `jai-codegen` constructs and verifies an LLVM module through Inkwell, then uses LLVM to serialize it. `jai-cli` drives lexical inspection, semantic checking and native builds; `jai-bench` measures compiler stages.
+`jai-source` owns byte spans, diagnostics and interned symbol IDs. `jai-lexer` assigns typed token tags, including nested comments and opaque here-strings. Its decoder tolerates legacy non-UTF8 bytes inside comments while preserving byte offsets, and rejects them in code or strings. `jai-syntax` parses signed integer/Boolean procedures, local variables, expressions, conditionals, loops and returns. `jai-eval` binds and evaluates pure scalar constants with shared domain operators. `jai-sema` resolves constant dependencies and global storage, then resolves names and produces an immutable typed program. `jai-codegen` constructs and verifies an LLVM module through Inkwell, then uses LLVM to serialize it. `jai-cli` drives lexical inspection, semantic checking and native builds; `jai-bench` measures compiler stages.
 
 Boolean parameters/returns use Boolean LLVM values, void procedures emit void calls/returns, and nested `&&`/`||` expressions short-circuit through branches and phi nodes. Integer truthiness and explicit scalar casts are represented in checked IR. Compound assignment preserves scalar types and logical updates short-circuit. Native behavior tests execute only newly generated fixtures with a five-second timeout. See [type safety](type-safety.md) for stage invariants.
 
@@ -26,4 +26,4 @@ The signed-integer backend is provisional. Division and shifts currently follow 
 
 ## Dependencies
 
-The frontend and semantic crates use internal crates and Rust's standard library. The backend uses Inkwell and llvm-sys with independently installed LLVM 22. The separate benchmark crate uses Divan. Native builds additionally require trusted Clang and the host SDK/linker. See [LLVM setup](llvm-backend.md). No supplied binary is part of the compiler implementation.
+The frontend, constant-evaluation and semantic crates use internal crates and Rust's standard library. The backend uses Inkwell and llvm-sys with independently installed LLVM 22. The separate benchmark crate uses Divan. Native builds additionally require trusted Clang and the host SDK/linker. See [LLVM setup](llvm-backend.md). No supplied binary is part of the compiler implementation.

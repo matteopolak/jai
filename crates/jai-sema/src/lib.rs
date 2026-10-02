@@ -1,6 +1,10 @@
 //! Resolve names and construct a typed program before code generation.
 mod cleanup;
+mod declarations;
 mod loops;
+use jai_eval::Value as ConstantValue;
+use jai_eval::operators::Operator;
+pub use jai_eval::operators::{Equality, IntOp, Relation};
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
 use jai_syntax::{self as syntax, BinaryOp, ReturnType, ScalarType, UnaryOp};
 use std::collections::HashMap;
@@ -21,10 +25,45 @@ id!(IntLocal);
 id!(BoolLocal);
 id!(LoopId);
 id!(CleanupId);
+id!(IntGlobal);
+id!(BoolGlobal);
 #[derive(Clone, Copy, Debug)]
 pub enum Local {
     Int(IntLocal),
     Bool(BoolLocal),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum IntPlace {
+    Local(IntLocal),
+    Global(IntGlobal),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum BoolPlace {
+    Local(BoolLocal),
+    Global(BoolGlobal),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum Storage {
+    Int(IntPlace),
+    Bool(BoolPlace),
+}
+impl From<Local> for Storage {
+    fn from(local: Local) -> Self {
+        match local {
+            Local::Int(id) => Self::Int(IntPlace::Local(id)),
+            Local::Bool(id) => Self::Bool(BoolPlace::Local(id)),
+        }
+    }
+}
+#[derive(Clone, Copy, Debug)]
+enum Binding {
+    Storage(Storage),
+    Constant(ConstantValue),
+}
+#[derive(Clone, Copy, Debug)]
+pub enum Global {
+    Int { id: IntGlobal, initializer: i64 },
+    Bool { id: BoolGlobal, initializer: bool },
 }
 #[derive(Clone, Copy, Debug)]
 pub enum EntryPoint {
@@ -35,10 +74,14 @@ pub enum EntryPoint {
 pub struct Program {
     procedures: Vec<Procedure>,
     entry: EntryPoint,
+    globals: Vec<Global>,
 }
 impl Program {
     pub fn procedures(&self) -> &[Procedure] {
         &self.procedures
+    }
+    pub fn globals(&self) -> &[Global] {
+        &self.globals
     }
     pub fn entry(&self) -> EntryPoint {
         self.entry
@@ -65,8 +108,8 @@ pub struct Block {
 }
 #[derive(Debug)]
 pub enum Statement {
-    StoreInt(IntLocal, IntExpr),
-    StoreBool(BoolLocal, BoolExpr),
+    StoreInt(IntPlace, IntExpr),
+    StoreBool(BoolPlace, BoolExpr),
     Exit(Exit),
     Cleanup(CleanupId),
     DiscardInt(IntExpr),
@@ -109,38 +152,11 @@ pub struct RangeLoop {
     pub direction: syntax::Direction,
     pub body: Block,
 }
-#[derive(Clone, Copy, Debug)]
-pub enum IntOp {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Remainder,
-    BitAnd,
-    BitOr,
-    BitXor,
-    ShiftLeft,
-    ShiftRight,
-}
-#[derive(Clone, Copy, Debug)]
-pub enum Relation {
-    Equal,
-    NotEqual,
-    Less,
-    LessEqual,
-    Greater,
-    GreaterEqual,
-}
-#[derive(Clone, Copy, Debug)]
-pub enum Equality {
-    Equal,
-    NotEqual,
-}
 #[derive(Debug)]
 pub enum IntExpr {
     Constant(i64),
     FromBool(Box<BoolExpr>),
-    Local(IntLocal),
+    Load(IntPlace),
     Call(Call),
     Negate(Box<IntExpr>),
     Complement(Box<IntExpr>),
@@ -150,7 +166,7 @@ pub enum IntExpr {
 pub enum BoolExpr {
     Constant(bool),
     FromInt(Box<IntExpr>),
-    Local(BoolLocal),
+    Load(BoolPlace),
     Call(Call),
     Not(Box<BoolExpr>),
     CompareInts(Relation, Box<IntExpr>, Box<IntExpr>),
@@ -209,6 +225,8 @@ impl Expr {
 }
 
 pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
+    declarations::check_top_level_names(module)?;
+    let (globals, global_bindings) = declarations::resolve_globals(module)?;
     let mut signatures = HashMap::new();
     for (index, p) in module.procedures().iter().enumerate() {
         let signature = Signature {
@@ -249,6 +267,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
         let mut r = Resolver {
             signatures: &signatures,
             symbols: module.symbols(),
+            globals: &global_bindings,
             scopes: vec![HashMap::new()],
             locals: Vec::new(),
             span: p.span,
@@ -279,7 +298,11 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             body,
         });
     }
-    Ok(Program { procedures, entry })
+    Ok(Program {
+        procedures,
+        entry,
+        globals,
+    })
 }
 struct LoopBinding {
     id: LoopId,
@@ -293,7 +316,8 @@ struct CleanupContext {
 struct Resolver<'a> {
     signatures: &'a HashMap<Symbol, Signature>,
     symbols: &'a Symbols,
-    scopes: Vec<HashMap<Symbol, Local>>,
+    scopes: Vec<HashMap<Symbol, Binding>>,
+    globals: &'a HashMap<Symbol, Binding>,
     locals: Vec<Local>,
     span: Span,
     result: ReturnType,
@@ -307,23 +331,34 @@ impl Resolver<'_> {
     fn error(&self, text: impl Into<String>) -> Diagnostic {
         Diagnostic::new(self.span, text)
     }
-    fn lookup(&self, name: Symbol) -> Result<Local, Diagnostic> {
+    fn lookup_optional(&self, name: Symbol) -> Option<Binding> {
         self.scopes
             .iter()
             .rev()
             .find_map(|s| s.get(&name))
+            .or_else(|| self.globals.get(&name))
             .copied()
+    }
+    fn lookup(&self, name: Symbol) -> Result<Binding, Diagnostic> {
+        self.lookup_optional(name)
             .ok_or_else(|| self.error(format!("unknown variable '{}'", self.symbols.name(name))))
     }
-    fn bind(&mut self, name: Symbol, local: Local) -> Result<(), Diagnostic> {
+    fn storage(&self, name: Symbol) -> Result<Storage, Diagnostic> {
+        match self.lookup(name)? {
+            Binding::Storage(storage) => Ok(storage),
+            Binding::Constant(_) => Err(self.error("cannot assign to a constant")),
+        }
+    }
+    fn bind_name(&mut self, name: Symbol, binding: Binding) -> Result<(), Diagnostic> {
         let scope = self.scopes.last_mut().expect("resolver always has a scope");
         if scope.contains_key(&name) {
-            return Err(Diagnostic::new(
-                self.span,
-                format!("duplicate variable '{}'", self.symbols.name(name)),
-            ));
+            return Err(self.error(format!("duplicate variable '{}'", self.symbols.name(name))));
         }
-        scope.insert(name, local);
+        scope.insert(name, binding);
+        Ok(())
+    }
+    fn bind(&mut self, name: Symbol, local: Local) -> Result<(), Diagnostic> {
+        self.bind_name(name, Binding::Storage(Storage::from(local)))?;
         self.locals.push(local);
         Ok(())
     }
@@ -343,10 +378,10 @@ impl Resolver<'_> {
             ScalarType::Bool => self.declare_bool(name).map(Local::Bool),
         }
     }
-    fn store(&self, local: Local, value: Expr) -> Result<Statement, Diagnostic> {
+    fn store(&self, local: Storage, value: Expr) -> Result<Statement, Diagnostic> {
         Ok(match local {
-            Local::Int(id) => Statement::StoreInt(id, value.int(self.span)?),
-            Local::Bool(id) => Statement::StoreBool(id, value.bool(self.span)?),
+            Storage::Int(id) => Statement::StoreInt(id, value.int(self.span)?),
+            Storage::Bool(id) => Statement::StoreBool(id, value.bool(self.span)?),
         })
     }
     fn block(
@@ -357,10 +392,14 @@ impl Resolver<'_> {
         if scoped {
             self.scopes.push(HashMap::new());
         }
+        self.bind_block_constants(statements)?;
         self.deferred_scopes.push(Vec::new());
         let mut out = Vec::new();
         let mut flow = Flow::FallsThrough;
         for statement in statements {
+            if matches!(statement, syntax::Statement::Constant(_)) {
+                continue;
+            }
             if flow == Flow::Terminates {
                 return Err(self.error("unreachable statement"));
             }
@@ -424,24 +463,26 @@ impl Resolver<'_> {
                     }
                 };
                 let local = self.declare(name, ty)?;
-                self.store(local, value)?
+                self.store(Storage::from(local), value)?
             }
             syntax::Statement::Assign(name, e) => {
-                let local = self.lookup(*name)?;
+                let local = self.storage(*name)?;
                 let value = self.expr(e)?;
                 self.store(local, value)?
             }
             syntax::Statement::Update(name, op, e) => {
-                let local = self.lookup(*name)?;
+                let local = self.storage(*name)?;
                 let lhs = match local {
-                    Local::Int(id) => Expr::Int(IntExpr::Local(id)),
-                    Local::Bool(id) => Expr::Bool(BoolExpr::Local(id)),
+                    Storage::Int(id) => Expr::Int(IntExpr::Load(id)),
+                    Storage::Bool(id) => Expr::Bool(BoolExpr::Load(id)),
                 };
                 let value = self.binary(*op, lhs, self.expr(e)?, e.span)?;
                 self.store(local, value)?
             }
             syntax::Statement::Return(e) => self.resolve_return(e.as_ref())?,
-            syntax::Statement::Defer(_) => unreachable!("defer is handled by block resolution"),
+            syntax::Statement::Defer(_) | syntax::Statement::Constant(_) => {
+                unreachable!("declarations are handled by block resolution")
+            }
             syntax::Statement::Expression(e) => match self.expr(e)? {
                 Expr::Int(e) => Statement::DiscardInt(e),
                 Expr::Bool(e) => Statement::DiscardBool(e),
@@ -466,10 +507,15 @@ impl Resolver<'_> {
             syntax::ExpressionKind::Integer(n) => Expr::Int(IntExpr::Constant(*n)),
             syntax::ExpressionKind::Bool(b) => Expr::Bool(BoolExpr::Constant(*b)),
             syntax::ExpressionKind::Name(name) => match self.lookup(*name)? {
-                Local::Int(id) => Expr::Int(IntExpr::Local(id)),
-                Local::Bool(id) => Expr::Bool(BoolExpr::Local(id)),
+                Binding::Storage(Storage::Int(id)) => Expr::Int(IntExpr::Load(id)),
+                Binding::Storage(Storage::Bool(id)) => Expr::Bool(BoolExpr::Load(id)),
+                Binding::Constant(ConstantValue::Int(n)) => Expr::Int(IntExpr::Constant(n)),
+                Binding::Constant(ConstantValue::Bool(b)) => Expr::Bool(BoolExpr::Constant(b)),
             },
             syntax::ExpressionKind::Call(name, args) => {
+                if self.lookup_optional(*name).is_some() {
+                    return Err(Diagnostic::new(span, "scalar value is not a procedure"));
+                }
                 let signature = self.signatures.get(name).ok_or_else(|| {
                     Diagnostic::new(
                         span,
@@ -575,37 +621,6 @@ impl Resolver<'_> {
         })
     }
 }
-enum Operator {
-    Integer(IntOp),
-    Relation(Relation),
-    Equality(Equality),
-    And,
-    Or,
-}
-impl From<BinaryOp> for Operator {
-    fn from(op: BinaryOp) -> Self {
-        match op {
-            BinaryOp::LogicalAnd => Self::And,
-            BinaryOp::LogicalOr => Self::Or,
-            BinaryOp::Equal => Self::Equality(Equality::Equal),
-            BinaryOp::NotEqual => Self::Equality(Equality::NotEqual),
-            BinaryOp::Less => Self::Relation(Relation::Less),
-            BinaryOp::LessEqual => Self::Relation(Relation::LessEqual),
-            BinaryOp::Greater => Self::Relation(Relation::Greater),
-            BinaryOp::GreaterEqual => Self::Relation(Relation::GreaterEqual),
-            BinaryOp::Add => Self::Integer(IntOp::Add),
-            BinaryOp::Subtract => Self::Integer(IntOp::Subtract),
-            BinaryOp::Multiply => Self::Integer(IntOp::Multiply),
-            BinaryOp::Divide => Self::Integer(IntOp::Divide),
-            BinaryOp::Remainder => Self::Integer(IntOp::Remainder),
-            BinaryOp::BitAnd => Self::Integer(IntOp::BitAnd),
-            BinaryOp::BitOr => Self::Integer(IntOp::BitOr),
-            BinaryOp::BitXor => Self::Integer(IntOp::BitXor),
-            BinaryOp::ShiftLeft => Self::Integer(IntOp::ShiftLeft),
-            BinaryOp::ShiftRight => Self::Integer(IntOp::ShiftRight),
-        }
-    }
-}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -692,6 +707,47 @@ mod tests {
             assert!(check(source).is_err(), "{source}");
         }
         assert!(check("main :: () { defer { for i: 1..3 { if i == 2 break i; } } }").is_ok());
+    }
+    #[test]
+    fn constants_are_immutable_and_dependencies_must_be_acyclic() {
+        for source in [
+            "A :: B; B :: A; main :: () {}",
+            "A :: A; main :: () {}",
+            "A :: 1; main :: () { A = 2; }",
+            "main :: () { A :: 1; A += 2; }",
+            "main :: (x:int) { A :: x; }",
+            "main :: () { x := 1; { A :: x; } }",
+            "A :: missing; main :: () {}",
+            "A :: 1 / 0; main :: () {}",
+            "A : bool : 1; main :: () {}",
+            "A :: 1; A := 2; main :: () {}",
+            "main :: () { A :: 1; A :: 2; }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+    }
+    #[test]
+    fn global_initializers_and_scalar_calls_are_checked() {
+        for source in [
+            "x : bool = 1; main :: () {}",
+            "x : int = true; main :: () {}",
+            "x := y; y := 3; main :: () {}",
+            "f :: ()->int { return 1; } x := f(); main :: () {}",
+            "main :: () {} main := 0;",
+            "f :: () {} main :: () { f := 2; f(); }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+    }
+    #[test]
+    fn deep_constant_dependency_chains_use_a_worklist() {
+        use std::fmt::Write;
+        let mut source = String::new();
+        for n in 0..20_000 {
+            writeln!(source, "C{n} :: C{} + 1;", n + 1).unwrap();
+        }
+        source.push_str("C20000 :: 0; main :: ()->int { return C0; }");
+        assert!(check(&source).is_ok());
     }
     #[test]
     fn entry_point_and_parameter_invariants() {

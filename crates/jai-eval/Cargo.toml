@@ -1,11 +1,10 @@
 [package]
-name = "jai-sema"
+name = "jai-eval"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-jai-eval.workspace = true
 jai-source.workspace = true
 jai-syntax.workspace = true
 

@@ -16,6 +16,8 @@ Nested integer ranges have separate `range_lower_llvm` and `range_pipeline` case
 
 Deferred nested loops have `cleanup_lower_llvm` and `cleanup_pipeline` cases at the same sizes. They include cleanup on named outer exits and track both IR resolution allocations and LLVM construction costs. Original workloads stay unchanged for comparison.
 
+Constant dependency workloads have `constants_resolve` and `constants_pipeline` cases at 4, 64 and 1,024 declarations. They exercise forward dependency worklists, literal evaluation and initialized global storage without changing the earlier generated procedure workload.
+
 ## How to change it
 
 Add a representative, correct workload to `crates/jai-bench/benches/compiler.rs` and a behavior test for the feature it exercises. Avoid timing filesystem reads, source generation, fixture preparation or failed compilations inside a successful-stage benchmark. Keep rejection-path measurements separately named.
