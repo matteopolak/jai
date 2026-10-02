@@ -160,6 +160,36 @@ fn constants_pipeline(bencher: Bencher, count: usize) {
             jai_codegen::emit(&program).unwrap()
         });
 }
+fn conditional_source(procedures: usize) -> String {
+    use std::fmt::Write;
+    let mut source = String::new();
+    for n in 0..procedures {
+        writeln!(source, "f{n} :: (n:int, enabled:bool)->int {{ active := ifx n > 0 then enabled && n < 100 else false; return ifx active then (ifx n < 5 n + 1 else n * 2) else 0; }}").unwrap();
+    }
+    source.push_str("main :: ()->int { return f0(9, true); }");
+    source
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn conditional_lower_llvm(bencher: Bencher, procedures: usize) {
+    let source = conditional_source(procedures);
+    let module = jai_syntax::parse(&source).unwrap();
+    let program = jai_sema::resolve(&module).unwrap();
+    let context = jai_codegen::Context::create();
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| jai_codegen::lower(&context, divan::black_box(&program)).unwrap());
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn conditional_pipeline(bencher: Bencher, procedures: usize) {
+    let source = conditional_source(procedures);
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| {
+            let module = jai_syntax::parse(divan::black_box(&source)).unwrap();
+            let program = jai_sema::resolve(&module).unwrap();
+            jai_codegen::emit(&program).unwrap()
+        });
+}
 fn corpus(path: &Path, out: &mut Vec<String>) {
     if !path.exists() {
         return;

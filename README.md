@@ -31,6 +31,7 @@ main :: () -> int {
 | Scalar constants and global variables | Supported with constant global initializers |
 | Arithmetic, comparisons, compound assignment | Supported |
 | `if`, `while`, short-circuit `&&` and `\|\|` | Supported |
+| `ifx` conditional values | Scalar expression arms supported |
 | Integer range loops, reverse iteration, named `break`/`continue` | Supported |
 | `defer` on scope exits and returns | Supported for the scalar subset |
 | Native compilation | Small programs tested on ARM64 macOS |

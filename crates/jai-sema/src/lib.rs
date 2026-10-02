@@ -161,6 +161,7 @@ pub enum IntExpr {
     Negate(Box<IntExpr>),
     Complement(Box<IntExpr>),
     Binary(IntOp, Box<IntExpr>, Box<IntExpr>),
+    Conditional(Box<Conditional<IntExpr>>),
 }
 #[derive(Debug)]
 pub enum BoolExpr {
@@ -173,6 +174,13 @@ pub enum BoolExpr {
     CompareBools(Equality, Box<BoolExpr>, Box<BoolExpr>),
     And(Box<BoolExpr>, Box<BoolExpr>),
     Or(Box<BoolExpr>, Box<BoolExpr>),
+    Conditional(Box<Conditional<BoolExpr>>),
+}
+#[derive(Debug)]
+pub struct Conditional<T> {
+    pub condition: BoolExpr,
+    pub then_value: T,
+    pub else_value: T,
 }
 #[derive(Debug)]
 pub enum ValueExpr {
@@ -546,6 +554,41 @@ impl Resolver<'_> {
                     ReturnType::Value(ScalarType::Bool) => Expr::Bool(BoolExpr::Call(call)),
                 }
             }
+            syntax::ExpressionKind::Conditional(e) => {
+                let condition = self.expr(&e.condition)?.condition(e.condition.span)?;
+                let then_value = self.expr(&e.then_value)?;
+                let else_value = e.else_value.as_ref().map(|e| self.expr(e)).transpose()?;
+                match then_value {
+                    Expr::Int(then_value) => {
+                        let else_value = match else_value {
+                            Some(e) => e.int(span)?,
+                            None => IntExpr::Constant(0),
+                        };
+                        Expr::Int(IntExpr::Conditional(Box::new(Conditional {
+                            condition,
+                            then_value,
+                            else_value,
+                        })))
+                    }
+                    Expr::Bool(then_value) => {
+                        let else_value = match else_value {
+                            Some(e) => e.bool(span)?,
+                            None => BoolExpr::Constant(false),
+                        };
+                        Expr::Bool(BoolExpr::Conditional(Box::new(Conditional {
+                            condition,
+                            then_value,
+                            else_value,
+                        })))
+                    }
+                    Expr::Void(_) => {
+                        return Err(Diagnostic::new(
+                            span,
+                            "void call cannot supply an ifx result",
+                        ));
+                    }
+                }
+            }
             syntax::ExpressionKind::Unary(op, operand) => {
                 let value = self.expr(operand)?;
                 match op {
@@ -626,6 +669,24 @@ mod tests {
     use super::*;
     fn check(source: &str) -> Result<Program, Diagnostic> {
         resolve(&syntax::parse(source).unwrap())
+    }
+    #[test]
+    fn conditional_results_require_matching_non_void_types() {
+        for source in [
+            "main :: ()->int { return ifx true then 1 else false; }",
+            "main :: ()->bool { return ifx false then false else 1; }",
+            "f :: () {} main :: ()->int { return ifx true then f() else 1; }",
+            "f :: () {} main :: ()->int { return ifx false then 1 else f(); }",
+            "f :: () {} main :: ()->int { return ifx f() then 1 else 2; }",
+            "main :: ()->int { return ifx true then 1 else missing; }",
+            "N :: ifx true then 1 else M; M :: N; main :: ()->int { return N; }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+        assert!(
+            check("N :: ifx true then M else 1 / 0; M :: 42; main :: ()->int { return N; }")
+                .is_ok()
+        );
     }
     #[test]
     fn reject_unresolved_names_and_arity() {

@@ -2,6 +2,7 @@
 
 - [Completion and acceptance plan](completion-plan.md)
 - [Constants and global storage](constants-and-globals.md)
+- [Conditional expressions](conditional-expressions.md)
 - [Compiler architecture and current support](compiler-architecture.md)
 - [Reference compatibility and acceptance](reference-compatibility.md)
 - [Static binary inspection](binary-inspection.md)
