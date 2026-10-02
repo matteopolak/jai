@@ -28,6 +28,7 @@ main :: () -> int {
 | Integers and Booleans | Supported in the current subset |
 | Procedures, arguments, return values, recursion | Supported |
 | Local variables, nested scopes, scalar casts | Supported |
+| Scalar constants and global variables | Supported with constant global initializers |
 | Arithmetic, comparisons, compound assignment | Supported |
 | `if`, `while`, short-circuit `&&` and `\|\|` | Supported |
 | Integer range loops, reverse iteration, named `break`/`continue` | Supported |

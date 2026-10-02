@@ -128,6 +128,38 @@ fn cleanup_pipeline(bencher: Bencher, procedures: usize) {
             jai_codegen::emit(&program).unwrap()
         });
 }
+fn constants_source(count: usize) -> String {
+    use std::fmt::Write;
+    let mut source = String::new();
+    for n in 0..count {
+        writeln!(source, "C{n} :: C{} + 1;", n + 1).unwrap();
+    }
+    writeln!(
+        source,
+        "C{count} :: 0; global := C0; main :: ()->int {{ global += 1; return global; }}"
+    )
+    .unwrap();
+    source
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn constants_resolve(bencher: Bencher, count: usize) {
+    let source = constants_source(count);
+    let module = jai_syntax::parse(&source).unwrap();
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| jai_sema::resolve(divan::black_box(&module)).unwrap());
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn constants_pipeline(bencher: Bencher, count: usize) {
+    let source = constants_source(count);
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| {
+            let module = jai_syntax::parse(divan::black_box(&source)).unwrap();
+            let program = jai_sema::resolve(&module).unwrap();
+            jai_codegen::emit(&program).unwrap()
+        });
+}
 fn corpus(path: &Path, out: &mut Vec<String>) {
     if !path.exists() {
         return;

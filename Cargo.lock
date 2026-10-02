@@ -166,6 +166,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "jai-eval"
+version = "0.1.0"
+dependencies = [
+ "jai-source",
+ "jai-syntax",
+]
+
+[[package]]
 name = "jai-lexer"
 version = "0.1.0"
 dependencies = [
@@ -176,6 +184,7 @@ dependencies = [
 name = "jai-sema"
 version = "0.1.0"
 dependencies = [
+ "jai-eval",
  "jai-source",
  "jai-syntax",
 ]

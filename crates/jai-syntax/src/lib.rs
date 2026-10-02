@@ -86,10 +86,18 @@ impl BinaryOp {
 pub struct Module {
     procedures: Vec<Procedure>,
     symbols: Symbols,
+    constants: Vec<ConstantDeclaration>,
+    globals: Vec<GlobalDeclaration>,
 }
 impl Module {
     pub fn procedures(&self) -> &[Procedure] {
         &self.procedures
+    }
+    pub fn constants(&self) -> &[ConstantDeclaration] {
+        &self.constants
+    }
+    pub fn globals(&self) -> &[GlobalDeclaration] {
+        &self.globals
     }
     pub fn symbols(&self) -> &Symbols {
         &self.symbols
@@ -109,6 +117,18 @@ pub struct Procedure {
     pub return_type: ReturnType,
 }
 #[derive(Clone, Debug)]
+pub struct GlobalDeclaration {
+    pub declaration: Declaration,
+    pub span: Span,
+}
+#[derive(Clone, Debug)]
+pub struct ConstantDeclaration {
+    pub name: Symbol,
+    pub ty: Option<ScalarType>,
+    pub initializer: Expression,
+    pub span: Span,
+}
+#[derive(Clone, Debug)]
 pub enum Declaration {
     Inferred {
         name: Symbol,
@@ -119,6 +139,13 @@ pub enum Declaration {
         ty: ScalarType,
         initializer: Option<Expression>,
     },
+}
+impl Declaration {
+    pub fn name(&self) -> Symbol {
+        match self {
+            Self::Inferred { name, .. } | Self::Explicit { name, .. } => *name,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Direction {
@@ -154,6 +181,7 @@ pub struct RangeLoop {
 #[derive(Clone, Debug)]
 pub enum Statement {
     Declare(Declaration),
+    Constant(ConstantDeclaration),
     Assign(Symbol, Expression),
     Update(Symbol, BinaryOp, Expression),
     Return(Option<Expression>),
@@ -193,11 +221,27 @@ pub fn parse(source: &str) -> Result<Module, Diagnostic> {
         symbols: Symbols::default(),
     };
     let mut procedures = Vec::new();
+    let mut constants = Vec::new();
+    let mut globals = Vec::new();
     while parser.token().kind != Kind::Eof {
-        procedures.push(parser.procedure()?);
+        if parser.starts_procedure() {
+            procedures.push(parser.procedure()?);
+        } else {
+            let span = parser.token().span;
+            let name = parser.name()?;
+            match parser.data_declaration(name, span)? {
+                Statement::Declare(declaration) => {
+                    globals.push(GlobalDeclaration { declaration, span })
+                }
+                Statement::Constant(declaration) => constants.push(declaration),
+                _ => unreachable!("data declaration always produces a declaration"),
+            }
+        }
     }
     Ok(Module {
         procedures,
+        constants,
+        globals,
         symbols: parser.symbols,
     })
 }
@@ -267,6 +311,79 @@ impl Parser<'_> {
         }
         self.at += 1;
         Ok(ty)
+    }
+    fn starts_procedure(&self) -> bool {
+        if self.token().kind != Kind::Ident
+            || self
+                .tokens
+                .get(self.at + 1)
+                .is_none_or(|t| t.kind != Kind::Punctuation(Punct::Constant))
+            || self
+                .tokens
+                .get(self.at + 2)
+                .is_none_or(|t| t.kind != Kind::Punctuation(Punct::OpenParen))
+        {
+            return false;
+        }
+        let mut depth = 0;
+        for (offset, token) in self.tokens[self.at + 2..].iter().enumerate() {
+            match token.kind {
+                Kind::Punctuation(Punct::OpenParen) => depth += 1,
+                Kind::Punctuation(Punct::CloseParen) => {
+                    depth -= 1;
+                    if depth == 0 {
+                        return self.tokens.get(self.at + offset + 3).is_some_and(|next| {
+                            matches!(
+                                next.kind,
+                                Kind::Punctuation(Punct::OpenBrace | Punct::Arrow)
+                            )
+                        });
+                    }
+                }
+                Kind::Eof => return false,
+                _ => {}
+            }
+        }
+        false
+    }
+    fn data_declaration(&mut self, name: Symbol, span: Span) -> Result<Statement, Diagnostic> {
+        let statement = if self.take(Punct::Constant) {
+            Statement::Constant(ConstantDeclaration {
+                name,
+                span,
+                ty: None,
+                initializer: self.expression(0)?,
+            })
+        } else if self.take(Punct::Infer) {
+            Statement::Declare(Declaration::Inferred {
+                name,
+                initializer: self.expression(0)?,
+            })
+        } else {
+            self.need(Punct::Colon)?;
+            let ty = self.scalar_type()?;
+            if self.take(Punct::Colon) {
+                Statement::Constant(ConstantDeclaration {
+                    name,
+                    span,
+                    ty: Some(ty),
+                    initializer: self.expression(0)?,
+                })
+            } else {
+                let initializer = if self.take(Punct::Assign) {
+                    Some(self.expression(0)?)
+                } else {
+                    None
+                };
+                Statement::Declare(Declaration::Explicit {
+                    name,
+                    ty,
+                    initializer,
+                })
+            }
+        };
+        self.need(Punct::Semicolon)?;
+        Ok(statement)
     }
     fn procedure(&mut self) -> Result<Procedure, Diagnostic> {
         let span = self.token().span;
@@ -408,8 +525,9 @@ impl Parser<'_> {
         }
         if self.token().kind == Kind::Ident
             && matches!(self.tokens[self.at + 1].kind, Kind::Punctuation(p)
-                if matches!(p, Punct::Infer | Punct::Colon | Punct::Assign) || BinaryOp::compound(p).is_some())
+                if matches!(p, Punct::Infer | Punct::Colon | Punct::Constant | Punct::Assign) || BinaryOp::compound(p).is_some())
         {
+            let span = self.token().span;
             let name = self.name()?;
             if let Kind::Punctuation(p) = self.token().kind
                 && let Some(op) = BinaryOp::compound(p)
@@ -424,27 +542,7 @@ impl Parser<'_> {
                 self.need(Punct::Semicolon)?;
                 return Ok(Statement::Assign(name, v));
             }
-            let declaration = if self.take(Punct::Infer) {
-                Declaration::Inferred {
-                    name,
-                    initializer: self.expression(0)?,
-                }
-            } else {
-                self.need(Punct::Colon)?;
-                let ty = self.scalar_type()?;
-                let initializer = if self.take(Punct::Assign) {
-                    Some(self.expression(0)?)
-                } else {
-                    None
-                };
-                Declaration::Explicit {
-                    name,
-                    ty,
-                    initializer,
-                }
-            };
-            self.need(Punct::Semicolon)?;
-            return Ok(Statement::Declare(declaration));
+            return self.data_declaration(name, span);
         }
         let expr = self.expression(0)?;
         self.need(Punct::Semicolon)?;
@@ -610,6 +708,18 @@ mod tests {
         ] {
             assert!(parse(invalid).is_err(), "{invalid}");
         }
+    }
+    #[test]
+    fn distinguish_parenthesized_constants_from_procedures() {
+        let module = parse("N :: (1 + 2) * 14; flag : bool : true; count : int; main :: ()->int { LOCAL :: 2; return N; }").unwrap();
+        assert_eq!(module.constants().len(), 2);
+        assert_eq!(module.globals().len(), 1);
+        assert_eq!(module.procedures().len(), 1);
+        assert!(matches!(
+            module.procedures()[0].body[0],
+            Statement::Constant(_)
+        ));
+        assert!(parse("N :: (1 + 2; main :: () {}").is_err());
     }
     #[test]
     fn reserved_words_are_not_names() {

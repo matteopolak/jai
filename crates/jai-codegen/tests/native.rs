@@ -339,3 +339,62 @@ fn cleanup_can_use_its_own_loops_and_short_circuiting() {
         42
     );
 }
+
+#[test]
+fn constants_resolve_forward_dependencies_and_local_scopes() {
+    assert_eq!(
+        execute("ANSWER :: LIMIT * 6; LIMIT :: 7; main :: ()->int { return ANSWER; }"),
+        42
+    );
+    assert_eq!(
+        execute(
+            "N :: 7; main :: ()->int { result := 0; { N :: M + 1; M :: 5; result = N; } return result + N; }"
+        ),
+        13
+    );
+    assert_eq!(execute("main :: ()->int { return N; N : int : 42; }"), 42);
+}
+
+#[test]
+fn mutable_globals_are_shared_by_procedures_and_recursion() {
+    assert_eq!(
+        execute(
+            "count : int; increment :: ()->int { count += 1; return count; } main :: ()->int { increment(); increment(); return count + 40; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "count := 0; visit :: (n:int) { count += 1; if n > 0 visit(n-1); } main :: ()->int { visit(4); return count; }"
+        ),
+        5
+    );
+}
+
+#[test]
+fn boolean_globals_and_constant_initializers_preserve_types() {
+    assert_eq!(
+        execute(
+            "LIMIT :: 7; count := LIMIT * 6; enabled : bool; turn_on :: () { enabled = true; } main :: ()->int { turn_on(); if enabled return count; else return 1; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn local_shadowing_preserves_global_storage_and_deferred_capture() {
+    assert_eq!(
+        execute(
+            "count := 3; main :: ()->int { { count := 9; count += 1; } { defer count += 4; count := 100; count += 1; } return count; }"
+        ),
+        7
+    );
+}
+
+#[test]
+fn constant_short_circuiting_does_not_execute_invalid_arithmetic() {
+    assert_eq!(
+        execute("PASS :: true || (1 / 0); main :: ()->int { if PASS return 42; else return 1; }"),
+        42
+    );
+}

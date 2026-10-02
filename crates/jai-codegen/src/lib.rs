@@ -16,7 +16,7 @@ use jai_sema::{
     Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local,
     LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
-use jai_sema::{CleanupId, Exit, Transfer};
+use jai_sema::{BoolPlace, CleanupId, Exit, Global, IntPlace, Transfer};
 use jai_syntax::{Direction, ReturnType, ScalarType};
 use std::fmt;
 
@@ -51,6 +51,23 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
     let module = context.create_module("jai");
     let word = context.i64_type();
     let bit = context.bool_type();
+    let globals: Vec<_> = program
+        .globals()
+        .iter()
+        .enumerate()
+        .map(|(index, global)| match global {
+            Global::Int { initializer, .. } => {
+                let value = module.add_global(word, None, &format!("jai.g{index}"));
+                value.set_initializer(&word.const_int(*initializer as u64, true));
+                Slot::Int(IntSlot(value.as_pointer_value()))
+            }
+            Global::Bool { initializer, .. } => {
+                let value = module.add_global(bit, None, &format!("jai.g{index}"));
+                value.set_initializer(&bit.const_int(u64::from(*initializer), false));
+                Slot::Bool(BoolSlot(value.as_pointer_value()))
+            }
+        })
+        .collect();
     // Declare signatures before bodies to support forward and recursive calls.
     let functions: Vec<_> = program
         .procedures()
@@ -96,6 +113,7 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
             function,
             functions: &functions,
             slots,
+            globals: &globals,
             word,
             bit,
             loops: Vec::new(),
@@ -178,19 +196,34 @@ struct Generator<'ctx, 'functions> {
     bit: IntType<'ctx>,
     loops: Vec<LoopBlocks<'ctx>>,
     cleanups: &'functions [Block],
+    globals: &'functions [Slot<'ctx>],
 }
 impl<'ctx> Generator<'ctx, '_> {
     fn label(&self, name: &str) -> BasicBlock<'ctx> {
         self.context.append_basic_block(self.function, name)
     }
     fn int_slot(&self, id: IntLocal) -> Result<IntSlot<'ctx>, Error> {
-        match self.slots.get(id.index()) {
+        self.int_place(IntPlace::Local(id))
+    }
+    fn int_place(&self, place: IntPlace) -> Result<IntSlot<'ctx>, Error> {
+        let slot = match place {
+            IntPlace::Local(id) => self.slots.get(id.index()),
+            IntPlace::Global(id) => self.globals.get(id.index()),
+        };
+        match slot {
             Some(Slot::Int(slot)) => Ok(*slot),
             _ => Err(Error::Invariant),
         }
     }
     fn bool_slot(&self, id: jai_sema::BoolLocal) -> Result<BoolSlot<'ctx>, Error> {
-        match self.slots.get(id.index()) {
+        self.bool_place(BoolPlace::Local(id))
+    }
+    fn bool_place(&self, place: BoolPlace) -> Result<BoolSlot<'ctx>, Error> {
+        let slot = match place {
+            BoolPlace::Local(id) => self.slots.get(id.index()),
+            BoolPlace::Global(id) => self.globals.get(id.index()),
+        };
+        match slot {
             Some(Slot::Bool(slot)) => Ok(*slot),
             _ => Err(Error::Invariant),
         }
@@ -200,11 +233,11 @@ impl<'ctx> Generator<'ctx, '_> {
             match statement {
                 Statement::StoreInt(id, e) => {
                     let v = self.int(e)?;
-                    self.builder.build_store(self.int_slot(*id)?.0, v.0)?;
+                    self.builder.build_store(self.int_place(*id)?.0, v.0)?;
                 }
                 Statement::StoreBool(id, e) => {
                     let v = self.boolean(e)?;
-                    self.builder.build_store(self.bool_slot(*id)?.0, v.0)?;
+                    self.builder.build_store(self.bool_place(*id)?.0, v.0)?;
                 }
                 Statement::Exit(exit) => self.exit(exit)?,
                 Statement::Cleanup(id) => self.cleanup(*id)?,
@@ -403,9 +436,9 @@ impl<'ctx> Generator<'ctx, '_> {
                 self.builder
                     .build_int_z_extend(v.0, self.word, "cast.int")?
             }
-            IntExpr::Local(id) => int_value(self.builder.build_load(
+            IntExpr::Load(id) => int_value(self.builder.build_load(
                 self.word,
-                self.int_slot(*id)?.0,
+                self.int_place(*id)?.0,
                 "load.int",
             )?)?,
             IntExpr::Call(call) => call_int(self.call(call)?)?,
@@ -450,9 +483,9 @@ impl<'ctx> Generator<'ctx, '_> {
                     "truthiness",
                 )?
             }
-            BoolExpr::Local(id) => int_value(self.builder.build_load(
+            BoolExpr::Load(id) => int_value(self.builder.build_load(
                 self.bit,
-                self.bool_slot(*id)?.0,
+                self.bool_place(*id)?.0,
                 "load.bool",
             )?)?,
             BoolExpr::Call(call) => call_int(self.call(call)?)?,
