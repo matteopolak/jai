@@ -8,7 +8,7 @@ The original macOS ARM64 and Linux x86-64 hosts passed the [integer/call/module-
 
 ## How it works
 
-Each runner enforces the existing 14-day locked Rust dependency age policy before compiling, then runs formatting, lint, Rust/native execution tests, Python policy tests and benchmark smoke checks. Before building, `tools/check_ci_sources.py` inspects literal Rust `include_str!`/`include_bytes!` inputs against the public Git inventory. It rejects private reference/corpus files, missing inputs, and paths escaping the checkout; the approved vendored Preload is the only vendor exception. This is a literal-include audit rather than a complete Rust parser; clean-checkout compilation remains the definitive check. Optional private corpus tests use runtime reads and explicitly skip absent source inputs.
+Each runner enforces the existing 14-day locked Rust dependency age policy before compiling, then runs formatting, lint, Rust/native execution tests, Python policy tests and benchmark smoke checks. Before building, `tools/check_ci_sources.py` inspects literal Rust `include_str!`/`include_bytes!` inputs against the public Git inventory. It rejects private reference/corpus files, every vendor input, missing inputs, and paths escaping the checkout. The [compiler prelude](compiler-prelude.md) is repository-authored source and needs no exception. This is a literal-include audit rather than a complete Rust parser; clean-checkout compilation remains the definitive check. Optional private corpus tests use runtime reads and explicitly skip absent source inputs.
 
 Native fixtures use this compiler's generated LLVM IR and independently installed Clang. The runner disables core dumps for deliberately trapping fixtures with `ulimit -c 0`.
 

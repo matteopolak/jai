@@ -37,7 +37,7 @@ Target values `OS`, `BUILD_OS`, `CPU`, and `BUILD_CPU` use the explicitly select
 
 Extend `jai-syntax/src/statement_conditionals.rs` for syntax and `jai-sema/src/compile_time_conditionals.rs` for selection or permitted constant operations. Keep purity traversal exhaustive when adding expression IR variants. Register declarations before binding guards, preserve original source spans, and never pre-bind an inactive branch. `local_declarations.rs` separates declaration registration from eager resolution for this purpose; other callers retain the combined wrapper.
 
-`modules/target_values.rs` supplies source target values; enum constant classification routes expressions referencing them through typed constant evaluation. Keep source enum identity separate from numeric tag spelling. The semantic tests exercise Windows, Linux, and macOS selection with the complete permitted vendored Preload; native tests execute only independent source and newly emitted host objects.
+`modules/target_values.rs` supplies source target values; enum constant classification routes expressions referencing them through typed constant evaluation. Keep source enum identity separate from numeric tag spelling. The semantic tests exercise Windows, Linux, and macOS selection with the complete authored compiler prelude; native tests execute only independent source and newly emitted host objects.
 
 ## Configuration
 

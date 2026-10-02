@@ -21,7 +21,7 @@ cargo run -p jai-modules --example bootstrap-check --locked -- \
 
 This uses `ModuleGraph::load_with_bootstrap_options` and its normal filesystem provider. It requires real Preload and Runtime_Support sources, selects dependencies through ordinary compile-time graph evaluation, and reports module/source/declaration counts with a `source graph only` label. A graph check can expose a missing dependency or unsupported source construct while the semantic compiler is being extended; it does not run procedures or validate procedure bodies.
 
-The complete permitted vendored `Preload.jai` passes syntax, module graph and semantic library integration tests. The semantic fixture checks that same unchanged source with an explicitly selected target, canonical source reflection schemas and typed compiler/intrinsic bindings. A successful parser or module graph probe by itself is not evidence of semantic checking, runtime execution or full standard-library compatibility. Full Runtime_Support and native execution remain separate gates.
+The complete [authored compiler prelude](compiler-prelude.md) has syntax, module graph and semantic library integration tests. The semantic fixture checks the same composed source with an explicitly selected target, canonical source reflection schemas and typed compiler/intrinsic bindings. A separate physical-entry graph checks its actual source fragments. A successful parser or module graph probe by itself is not evidence of semantic checking, runtime execution or full standard-library compatibility. Full Runtime_Support and native execution remain separate gates.
 
 ## How to change it
 

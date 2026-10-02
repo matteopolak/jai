@@ -40,4 +40,4 @@ Callers select a validated `LayoutPolicy` explicitly; there are no environment v
 
 ## Dependencies
 
-The layout engine uses `jai-types`' frozen registry, integer/float domains, and the Rust standard library. Descriptor rules come from `reference/how_to/004_arrays.jai`, `reference/how_to/005_strings.jai`, and the already vendored `vendor/jai-0.2.009/modules/Preload.jai`. No supplied native compiler or library is executed, and there are no new external dependencies.
+The layout engine uses `jai-types`' frozen registry, integer/float domains, and the Rust standard library. Descriptor rules come from the statically inspected `reference/how_to/004_arrays.jai`, `reference/how_to/005_strings.jai`, and the public contracts now defined in the [authored compiler prelude](compiler-prelude.md). No supplied native compiler or library is executed, and there are no new external dependencies.

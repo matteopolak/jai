@@ -16,6 +16,10 @@ The implementation deliberately keeps source-defined nominal types instead of re
 
 The former vendor bootstrap is no longer a build dependency. The historical hosted developer-help probe is retired because its workflow staged that original file. [Reference probe history](reference-probes.md) retains the observed result and its original input hashes without claiming that the authored prelude reproduces it.
 
+Before vendor removal, a frozen Rust CLI (`b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13`) checked 669 genuine pinned original-library, example/tutorial, and OpenJai sources twice, selecting original Preload and this physical prelude entry. Both runs produced 51 successful checks and 618 source rejections, with no changed status or first diagnostic. Original libraries contributed 11 successful checks, original examples/tutorials nine, and OpenJai 31. Those failures remain unresolved; this comparison establishes the measured bootstrap compatibility, not complete library or project acceptance. Local source-free receipts are `artifacts/prelude-rewrite/source-comparison.json` and `bootstrap-proof.json`.
+
+An independently authored program separately passed a compile-time VM assertion and generated native execution using the physical entry. It exercised memory intrinsics, a canonical `u64` reflection descriptor, and the runtime workspace-query fallback. The test used only this Rust compiler, installed native tools, and newly generated objects; no original native compiler, object, library or project script was executed or linked. Runtime_Support remained disabled.
+
 ## How to change it
 
 Change the relevant protocol file and update both the `Preload.jai` load list and the composition in `compiler_prelude.rs` when adding a fragment. Keep fragments declarative: imports, native libraries, `#run`, allocation and side effects do not belong in this bootstrap interface. New intrinsic behavior belongs in the Rust source binder, typed IR/VM operation, and native backend.
