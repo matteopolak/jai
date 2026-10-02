@@ -12,6 +12,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = 'a76ba6e153838a81e3ed4edbcc4ec42ad86c333cdeaf4053fdc592ed0b61600e'
+EXPECTED_PRELOAD = '1d00c2ecde58c5362c8e2edf978d57eb490a39076eb6ebf7d118a9811a851904'
 
 
 def hosted_native(environment, system, machine):
@@ -35,12 +36,17 @@ def main():
         actual = hashlib.file_digest(stream, 'sha256').hexdigest()
     if actual != EXPECTED:
         raise SystemExit('Reference execution refused: binary identity mismatch')
+    preload = (ROOT / 'reference/modules/Preload.jai').resolve(strict=True)
+    with preload.open('rb') as stream:
+        preload_hash = hashlib.file_digest(stream, 'sha256').hexdigest()
+    if preload_hash != EXPECTED_PRELOAD:
+        raise SystemExit('Reference execution refused: bootstrap identity mismatch')
     output = ROOT / 'artifacts/probe'
     output.mkdir(parents=True, exist_ok=True)
-    report = {'binary_sha256': actual, 'platform': platform.platform(),
+    report = {'binary_sha256': actual, 'preload_sha256': preload_hash, 'platform': platform.platform(),
               'architecture': platform.machine(), 'executed_reference_code': True,
               'limits': {'wall_seconds': 15, 'cpu_seconds': 10, 'output_bytes_per_stream': 2 * 1024 * 1024},
-              'scope': 'version/help only; no supplied source, libraries or generated programs are run',
+              'scope': 'version/help only; the inspected Preload bootstrap may be parsed; no supplied libraries or generated programs are run',
               'assessment': 'observational evidence only; not certified harmless', 'probes': []}
     with tempfile.TemporaryDirectory(prefix='jai-probe-') as temp:
         scratch = Path(temp).resolve()
@@ -53,6 +59,7 @@ def main():
 (allow file-read*
     (literal "/")
     (literal {json.dumps(str(binary))})
+    (literal {json.dumps(str(preload))})
     (subpath "/System") (subpath "/usr/lib") (subpath "/Library/Apple")
     (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random")
     (subpath {json.dumps(str(scratch))}))
