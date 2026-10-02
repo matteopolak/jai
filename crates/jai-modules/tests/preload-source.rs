@@ -139,3 +139,62 @@ fn physical_prelude_fragments_share_one_module_and_match_composed_exports() {
     assert_eq!(physical.sources().records().len(), 9);
     assert_eq!(composed.sources().records().len(), 2);
 }
+
+#[test]
+fn physical_bootstrap_and_library_preload_import_have_identical_declarations() {
+    let repository = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let entry = repository
+        .join(jai_modules::COMPILER_PRELUDE_ENTRY)
+        .canonicalize()
+        .unwrap();
+    let library = repository.join("stdlib").canonicalize().unwrap();
+    let mut provider = SourceOverlay::new();
+    let main = Path::new("/jai-physical-preload/main.jai");
+    provider
+        .insert(main, b"P :: #import \"Preload\"; main :: () {}".to_vec())
+        .unwrap();
+    let graph = ModuleGraph::load_with_bootstrap(
+        main,
+        GraphOptions {
+            import_dirs: vec![library],
+        },
+        PreludeSource::File(entry),
+        &provider,
+        None,
+    )
+    .unwrap();
+    let root = graph.module(graph.root()).unwrap().entry();
+    let lookup = |names: &[&str]| {
+        graph
+            .lookup(
+                root,
+                &NamePath {
+                    root: graph.symbols().find(names[0]).unwrap(),
+                    members: names[1..]
+                        .iter()
+                        .map(|name| graph.symbols().find(name).unwrap())
+                        .collect(),
+                },
+            )
+            .unwrap()
+    };
+    assert_eq!(lookup(&["P"]), Binding::Module(graph.prelude().unwrap()));
+    for name in [
+        "Type_Info",
+        "Type_Info_Struct",
+        "Allocator",
+        "Operating_System_Tag",
+    ] {
+        assert_eq!(lookup(&[name]), lookup(&["P", name]));
+        assert_eq!(
+            graph
+                .declarations()
+                .iter()
+                .filter(|declaration| graph.symbols().name(declaration.name()) == name)
+                .count(),
+            1
+        );
+    }
+    assert_eq!(graph.modules().len(), 2);
+    assert_eq!(graph.sources().records().len(), 9);
+}
