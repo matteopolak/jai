@@ -1,0 +1,1147 @@
+{
+  "format": 1,
+  "rows": [
+    {
+      "path": "stdlib/ImGui/unix.jai",
+      "authored": [
+        {
+          "name": "BeginChild",
+          "signature": "( str_id : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } , border := false , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginChild",
+          "signature": "( id : ID , size : ImVec2 = ImVec2 .{ 0 , 0 } , border := false , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowPos",
+          "signature": "( pos : ImVec2 , cond : Cond = . None , pivot : ImVec2 = ImVec2 .{ 0 , 0 } )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowSize",
+          "signature": "( size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowSizeConstraints",
+          "signature": "( size_min : ImVec2 , size_max : ImVec2 , custom_callback : SizeCallback = null , custom_callback_data : * void = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowContentSize",
+          "signature": "( size : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowScroll",
+          "signature": "( scroll : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowPos",
+          "signature": "( pos : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowSize",
+          "signature": "( size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowPos",
+          "signature": "( name : * u8 , pos : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowSize",
+          "signature": "( name : * u8 , size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushStyleColor",
+          "signature": "( idx : Col , col : ImVec4 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushStyleVar",
+          "signature": "( idx : StyleVar , val : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "GetColorU32",
+          "signature": "( col : ImVec4 ) -> ImU32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Dummy",
+          "signature": "( size : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetCursorPos",
+          "signature": "( local_pos : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetCursorScreenPos",
+          "signature": "( pos : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushID",
+          "signature": "( str_id : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "GetID",
+          "signature": "( str_id : string ) -> ID",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextUnformatted",
+          "signature": "( text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Text",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextColored",
+          "signature": "( col : ImVec4 , fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextDisabled",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextWrapped",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "LabelText",
+          "signature": "( label : * u8 , fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BulletText",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Button",
+          "signature": "( label : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InvisibleButton",
+          "signature": "( str_id : * u8 , size : ImVec2 , flags : ButtonFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ProgressBar",
+          "signature": "( fraction : float , size_arg : ImVec2 = ImVec2 .{ - FLOAT32_MIN , 0 } , overlay : * u8 = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Image",
+          "signature": "( user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } , border_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ImageButton",
+          "signature": "( str_id : * u8 , user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , bg_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderFloat",
+          "signature": "( label : * u8 , size : ImVec2 , v : * float , v_min : float , v_max : float , format : * u8 = \"%.3f\" , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderInt",
+          "signature": "( label : * u8 , size : ImVec2 , v : * s32 , v_min : s32 , v_max : s32 , format : * u8 = \"%d\" , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderScalar",
+          "signature": "( label : * u8 , size : ImVec2 , data_type : DataType , p_data : * void , p_min : * void , p_max : * void , format : * u8 = null , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InputTextMultiline",
+          "signature": "( label : * u8 , buf : * u8 , buf_size : u64 , size : ImVec2 = ImVec2 .{ 0 , 0 } , flags : InputTextFlags = . None , callback : InputTextCallback = null , user_data : * void = null ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ColorButton",
+          "signature": "( desc_id : * u8 , col : ImVec4 , flags : ColorEditFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNode",
+          "signature": "( str_id : * u8 , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNode",
+          "signature": "( ptr_id : * void , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNodeEx",
+          "signature": "( str_id : * u8 , flags : TreeNodeFlags , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNodeEx",
+          "signature": "( ptr_id : * void , flags : TreeNodeFlags , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Selectable",
+          "signature": "( label : * u8 , selected := false , flags : SelectableFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Selectable",
+          "signature": "( label : * u8 , p_selected : * bool , flags : SelectableFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginListBox",
+          "signature": "( label : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetTooltip",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginTable",
+          "signature": "( str_id : * u8 , column : s32 , flags : TableFlags = . None , outer_size : ImVec2 = ImVec2 .{ 0.0 , 0.0 } , inner_width : float = 0.0 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "LogText",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushClipRect",
+          "signature": "( clip_rect_min : ImVec2 , clip_rect_max : ImVec2 , intersect_with_current_clip_rect : bool )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsRectVisible",
+          "signature": "( size : ImVec2 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsRectVisible",
+          "signature": "( rect_min : ImVec2 , rect_max : ImVec2 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginChildFrame",
+          "signature": "( id : ID , size : ImVec2 , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcTextSize",
+          "signature": "( text : string , hide_text_after_double_hash := false , wrap_width : float = - 1.0 ) -> ImVec2",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ColorConvertFloat4ToU32",
+          "signature": "( in : ImVec4 ) -> ImU32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsMouseHoveringRect",
+          "signature": "( r_min : ImVec2 , r_max : ImVec2 , clip := true ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ImageButton",
+          "signature": "( user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , frame_padding : s32 = - 1 , bg_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InsertChars",
+          "signature": "( this : * InputTextCallbackData , pos : s32 , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PassFilter",
+          "signature": "( this : * TextFilter , text : string ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushClipRect",
+          "signature": "( this : * ImDrawList , clip_rect_min : ImVec2 , clip_rect_max : ImVec2 , intersect_with_current_clip_rect := false )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddLine",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRect",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col : ImU32 , rounding : float = 0.0 , flags : ImDrawFlags = . None , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRectFilled",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col : ImU32 , rounding : float = 0.0 , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRectFilledMultiColor",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col_upr_left : ImU32 , col_upr_right : ImU32 , col_bot_right : ImU32 , col_bot_left : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddQuad",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddQuadFilled",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddTriangle",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddTriangleFilled",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCircle",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 = 0 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCircleFilled",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddNgon",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddNgonFilled",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImDrawList , pos : ImVec2 , col : ImU32 , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImDrawList , font : * ImFont , font_size : float , pos : ImVec2 , col : ImU32 , text : string , wrap_width : float = 0.0 , cpu_fine_clip_rect : * ImVec4 = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddBezierCubic",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 , thickness : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddBezierQuadratic",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 , thickness : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImage",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p_min : ImVec2 , p_max : ImVec2 , uv_min : ImVec2 = ImVec2 .{ 0 , 0 } , uv_max : ImVec2 = ImVec2 .{ 1 , 1 } , col : ImU32 = 4294967295 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImageQuad",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , uv1 : ImVec2 = ImVec2 .{ 0 , 0 } , uv2 : ImVec2 = ImVec2 .{ 1 , 0 } , uv3 : ImVec2 = ImVec2 .{ 1 , 1 } , uv4 : ImVec2 = ImVec2 .{ 0 , 1 } , col : ImU32 = 4294967295 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImageRounded",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p_min : ImVec2 , p_max : ImVec2 , uv_min : ImVec2 , uv_max : ImVec2 , col : ImU32 , rounding : float , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathArcTo",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min : float , a_max : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathArcToFast",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min_of_12 : s32 , a_max_of_12 : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathBezierCubicCurveTo",
+          "signature": "( this : * ImDrawList , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathBezierQuadraticCurveTo",
+          "signature": "( this : * ImDrawList , p2 : ImVec2 , p3 : ImVec2 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathRect",
+          "signature": "( this : * ImDrawList , rect_min : ImVec2 , rect_max : ImVec2 , rounding : float = 0.0 , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimRect",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimRectUV",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , uv_a : ImVec2 , uv_b : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimQuadUV",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , c : ImVec2 , d : ImVec2 , uv_a : ImVec2 , uv_b : ImVec2 , uv_c : ImVec2 , uv_d : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_PathArcToFastEx",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min_sample : s32 , a_max_sample : s32 , a_step : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_PathArcToN",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min : float , a_max : float , num_segments : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ScaleClipRects",
+          "signature": "( this : * ImDrawData , fb_scale : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImFontGlyphRangesBuilder , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCustomRectFontGlyph",
+          "signature": "( this : * ImFontAtlas , font : * ImFont , id : ImWchar , width : s32 , height : s32 , advance_x : float , offset : ImVec2 = ImVec2 .{ 0 , 0 } ) -> s32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcTextSizeA",
+          "signature": "( this : * ImFont , size : float , max_width : float , wrap_width : float , text : string , remaining : * * u8 = null ) -> ImVec2",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcWordWrapPositionA",
+          "signature": "( this : * ImFont , scale : float , text : string , wrap_width : float ) -> * u8",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "RenderChar",
+          "signature": "( this : * ImFont , draw_list : * ImDrawList , size : float , pos : ImVec2 , col : ImU32 , c : ImWchar )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "RenderText",
+          "signature": "( this : * ImFont , draw_list : * ImDrawList , size : float , pos : ImVec2 , col : ImU32 , clip_rect : ImVec4 , text : string , wrap_width : float = 0.0 , cpu_fine_clip := false )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_imgui_text_begin",
+          "signature": "( text : string ) -> * u8",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        }
+      ],
+      "count": 94,
+      "new_this_pass": 0
+    },
+    {
+      "path": "stdlib/ImGui/windows.jai",
+      "authored": [
+        {
+          "name": "BeginChild",
+          "signature": "( str_id : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } , border := false , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginChild",
+          "signature": "( id : ID , size : ImVec2 = ImVec2 .{ 0 , 0 } , border := false , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowPos",
+          "signature": "( pos : ImVec2 , cond : Cond = . None , pivot : ImVec2 = ImVec2 .{ 0 , 0 } )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowSize",
+          "signature": "( size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowSizeConstraints",
+          "signature": "( size_min : ImVec2 , size_max : ImVec2 , custom_callback : SizeCallback = null , custom_callback_data : * void = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowContentSize",
+          "signature": "( size : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetNextWindowScroll",
+          "signature": "( scroll : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowPos",
+          "signature": "( pos : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowSize",
+          "signature": "( size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowPos",
+          "signature": "( name : * u8 , pos : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetWindowSize",
+          "signature": "( name : * u8 , size : ImVec2 , cond : Cond = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushStyleColor",
+          "signature": "( idx : Col , col : ImVec4 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushStyleVar",
+          "signature": "( idx : StyleVar , val : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "GetColorU32",
+          "signature": "( col : ImVec4 ) -> ImU32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Dummy",
+          "signature": "( size : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetCursorPos",
+          "signature": "( local_pos : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetCursorScreenPos",
+          "signature": "( pos : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushID",
+          "signature": "( str_id : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "GetID",
+          "signature": "( str_id : string ) -> ID",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextUnformatted",
+          "signature": "( text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Text",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextColored",
+          "signature": "( col : ImVec4 , fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextDisabled",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TextWrapped",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "LabelText",
+          "signature": "( label : * u8 , fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BulletText",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Button",
+          "signature": "( label : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InvisibleButton",
+          "signature": "( str_id : * u8 , size : ImVec2 , flags : ButtonFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ProgressBar",
+          "signature": "( fraction : float , size_arg : ImVec2 = ImVec2 .{ - FLOAT32_MIN , 0 } , overlay : * u8 = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Image",
+          "signature": "( user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } , border_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ImageButton",
+          "signature": "( str_id : * u8 , user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , bg_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderFloat",
+          "signature": "( label : * u8 , size : ImVec2 , v : * float , v_min : float , v_max : float , format : * u8 = \"%.3f\" , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderInt",
+          "signature": "( label : * u8 , size : ImVec2 , v : * s32 , v_min : s32 , v_max : s32 , format : * u8 = \"%d\" , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "VSliderScalar",
+          "signature": "( label : * u8 , size : ImVec2 , data_type : DataType , p_data : * void , p_min : * void , p_max : * void , format : * u8 = null , flags : SliderFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InputTextMultiline",
+          "signature": "( label : * u8 , buf : * u8 , buf_size : u64 , size : ImVec2 = ImVec2 .{ 0 , 0 } , flags : InputTextFlags = . None , callback : InputTextCallback = null , user_data : * void = null ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ColorButton",
+          "signature": "( desc_id : * u8 , col : ImVec4 , flags : ColorEditFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNode",
+          "signature": "( str_id : * u8 , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNode",
+          "signature": "( ptr_id : * void , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNodeEx",
+          "signature": "( str_id : * u8 , flags : TreeNodeFlags , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "TreeNodeEx",
+          "signature": "( ptr_id : * void , flags : TreeNodeFlags , fmt : string , __args : .. Any ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Selectable",
+          "signature": "( label : * u8 , selected := false , flags : SelectableFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "Selectable",
+          "signature": "( label : * u8 , p_selected : * bool , flags : SelectableFlags = . None , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginListBox",
+          "signature": "( label : * u8 , size : ImVec2 = ImVec2 .{ 0 , 0 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "SetTooltip",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginTable",
+          "signature": "( str_id : * u8 , column : s32 , flags : TableFlags = . None , outer_size : ImVec2 = ImVec2 .{ 0.0 , 0.0 } , inner_width : float = 0.0 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "LogText",
+          "signature": "( fmt : string , __args : .. Any )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushClipRect",
+          "signature": "( clip_rect_min : ImVec2 , clip_rect_max : ImVec2 , intersect_with_current_clip_rect : bool )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsRectVisible",
+          "signature": "( size : ImVec2 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsRectVisible",
+          "signature": "( rect_min : ImVec2 , rect_max : ImVec2 ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "BeginChildFrame",
+          "signature": "( id : ID , size : ImVec2 , flags : WindowFlags = . None ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcTextSize",
+          "signature": "( text : string , hide_text_after_double_hash := false , wrap_width : float = - 1.0 ) -> ImVec2",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ColorConvertFloat4ToU32",
+          "signature": "( in : ImVec4 ) -> ImU32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "IsMouseHoveringRect",
+          "signature": "( r_min : ImVec2 , r_max : ImVec2 , clip := true ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ImageButton",
+          "signature": "( user_texture_id : ImTextureID , size : ImVec2 , uv0 : ImVec2 = ImVec2 .{ 0 , 0 } , uv1 : ImVec2 = ImVec2 .{ 1 , 1 } , frame_padding : s32 = - 1 , bg_col : ImVec4 = ImVec4 .{ 0 , 0 , 0 , 0 } , tint_col : ImVec4 = ImVec4 .{ 1 , 1 , 1 , 1 } ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "InsertChars",
+          "signature": "( this : * InputTextCallbackData , pos : s32 , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PassFilter",
+          "signature": "( this : * TextFilter , text : string ) -> bool",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PushClipRect",
+          "signature": "( this : * ImDrawList , clip_rect_min : ImVec2 , clip_rect_max : ImVec2 , intersect_with_current_clip_rect := false )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddLine",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRect",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col : ImU32 , rounding : float = 0.0 , flags : ImDrawFlags = . None , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRectFilled",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col : ImU32 , rounding : float = 0.0 , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddRectFilledMultiColor",
+          "signature": "( this : * ImDrawList , p_min : ImVec2 , p_max : ImVec2 , col_upr_left : ImU32 , col_upr_right : ImU32 , col_bot_right : ImU32 , col_bot_left : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddQuad",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddQuadFilled",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddTriangle",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddTriangleFilled",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCircle",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 = 0 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCircleFilled",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddNgon",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 , thickness : float = 1.0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddNgonFilled",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , col : ImU32 , num_segments : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImDrawList , pos : ImVec2 , col : ImU32 , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImDrawList , font : * ImFont , font_size : float , pos : ImVec2 , col : ImU32 , text : string , wrap_width : float = 0.0 , cpu_fine_clip_rect : * ImVec4 = null )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddBezierCubic",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , col : ImU32 , thickness : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddBezierQuadratic",
+          "signature": "( this : * ImDrawList , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , col : ImU32 , thickness : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImage",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p_min : ImVec2 , p_max : ImVec2 , uv_min : ImVec2 = ImVec2 .{ 0 , 0 } , uv_max : ImVec2 = ImVec2 .{ 1 , 1 } , col : ImU32 = 4294967295 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImageQuad",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p1 : ImVec2 , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , uv1 : ImVec2 = ImVec2 .{ 0 , 0 } , uv2 : ImVec2 = ImVec2 .{ 1 , 0 } , uv3 : ImVec2 = ImVec2 .{ 1 , 1 } , uv4 : ImVec2 = ImVec2 .{ 0 , 1 } , col : ImU32 = 4294967295 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddImageRounded",
+          "signature": "( this : * ImDrawList , user_texture_id : ImTextureID , p_min : ImVec2 , p_max : ImVec2 , uv_min : ImVec2 , uv_max : ImVec2 , col : ImU32 , rounding : float , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathArcTo",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min : float , a_max : float , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathArcToFast",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min_of_12 : s32 , a_max_of_12 : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathBezierCubicCurveTo",
+          "signature": "( this : * ImDrawList , p2 : ImVec2 , p3 : ImVec2 , p4 : ImVec2 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathBezierQuadraticCurveTo",
+          "signature": "( this : * ImDrawList , p2 : ImVec2 , p3 : ImVec2 , num_segments : s32 = 0 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PathRect",
+          "signature": "( this : * ImDrawList , rect_min : ImVec2 , rect_max : ImVec2 , rounding : float = 0.0 , flags : ImDrawFlags = . None )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimRect",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimRectUV",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , uv_a : ImVec2 , uv_b : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "PrimQuadUV",
+          "signature": "( this : * ImDrawList , a : ImVec2 , b : ImVec2 , c : ImVec2 , d : ImVec2 , uv_a : ImVec2 , uv_b : ImVec2 , uv_c : ImVec2 , uv_d : ImVec2 , col : ImU32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_PathArcToFastEx",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min_sample : s32 , a_max_sample : s32 , a_step : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_PathArcToN",
+          "signature": "( this : * ImDrawList , center : ImVec2 , radius : float , a_min : float , a_max : float , num_segments : s32 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "ScaleClipRects",
+          "signature": "( this : * ImDrawData , fb_scale : ImVec2 )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddText",
+          "signature": "( this : * ImFontGlyphRangesBuilder , text : string )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "AddCustomRectFontGlyph",
+          "signature": "( this : * ImFontAtlas , font : * ImFont , id : ImWchar , width : s32 , height : s32 , advance_x : float , offset : ImVec2 = ImVec2 .{ 0 , 0 } ) -> s32",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcTextSizeA",
+          "signature": "( this : * ImFont , size : float , max_width : float , wrap_width : float , text : string , remaining : * * u8 = null ) -> ImVec2",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "CalcWordWrapPositionA",
+          "signature": "( this : * ImFont , scale : float , text : string , wrap_width : float ) -> * u8",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "RenderChar",
+          "signature": "( this : * ImFont , draw_list : * ImDrawList , size : float , pos : ImVec2 , col : ImU32 , c : ImWchar )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "RenderText",
+          "signature": "( this : * ImFont , draw_list : * ImDrawList , size : float , pos : ImVec2 , col : ImU32 , clip_rect : ImVec4 , text : string , wrap_width : float = 0.0 , cpu_fine_clip := false )",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        },
+        {
+          "name": "_imgui_text_begin",
+          "signature": "( text : string ) -> * u8",
+          "kind": "independently-authored-native-overload-forwarding",
+          "native_runtime_verified": false
+        }
+      ],
+      "count": 94,
+      "new_this_pass": 0
+    }
+  ]
+}

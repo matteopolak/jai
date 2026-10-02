@@ -1,0 +1,1530 @@
+{
+  "schema_version": 1,
+  "area": "basic-collections",
+  "status": "independent_source_partial_compatibility_runtime_unverified",
+  "source_authority": "Pinned maintained OpenJai contracts take precedence. Historical incompatible layouts/results are explicit compatibility helpers or recorded gaps.",
+  "forbidden_native_or_reference_execution": false,
+  "implemented_sources": [
+    "stdlib/Basic/module.jai",
+    "stdlib/Basic/Array.jai",
+    "stdlib/Bit_Array.jai",
+    "stdlib/Hash_Table.jai",
+    "stdlib/Sort.jai",
+    "stdlib/IntroSort.jai",
+    "stdlib/RadixSort.jai",
+    "stdlib/Basic/protocol.jai"
+  ],
+  "files": [
+    {
+      "path": "stdlib/Basic/Array.jai",
+      "sha256": "83613337b203e41d5193b92ec6f8adc686b97bd927884ab409002749f18438b3",
+      "authored_declarations": [
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 2,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 7,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 12,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "array_view",
+          "kind": "constant",
+          "line": 16,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/Bit_Array.jai",
+      "sha256": "7122dcd5ba4c91d0dd4657d1fd7053bdd89034efc6f35f436da92e0f1f17a069",
+      "authored_declarations": [
+        {
+          "name": "Bit_Array",
+          "kind": "record",
+          "line": 3,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            "words",
+            "count"
+          ]
+        },
+        {
+          "name": "init_bit_array",
+          "kind": "procedure",
+          "line": 7,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "bit_index_in_range",
+          "kind": "procedure",
+          "line": 14,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_bit",
+          "kind": "procedure",
+          "line": 15,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "set_bit",
+          "kind": "procedure",
+          "line": 20,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "clear_bit",
+          "kind": "procedure",
+          "line": 24,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "toggle_bit",
+          "kind": "procedure",
+          "line": 28,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "set_bit_to",
+          "kind": "procedure",
+          "line": 32,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "deinit",
+          "kind": "procedure",
+          "line": 35,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "make_bit_array",
+          "kind": "procedure",
+          "line": 39,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "operator[]",
+          "kind": "procedure",
+          "line": 44,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "operator[]=",
+          "kind": "procedure",
+          "line": 48,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "clear_all_bits",
+          "kind": "procedure",
+          "line": 49,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "set_all_bits",
+          "kind": "procedure",
+          "line": 50,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "toggle_all_bits",
+          "kind": "procedure",
+          "line": 54,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "for_expansion",
+          "kind": "procedure",
+          "line": 58,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "for_expansion",
+          "kind": "procedure",
+          "line": 70,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "only_set",
+          "kind": "procedure",
+          "line": 73,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "only_unset",
+          "kind": "procedure",
+          "line": 76,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "set_bits",
+          "kind": "procedure",
+          "line": 79,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/Hash_Table.jai",
+      "sha256": "05d5f80b1141461d4ad8df5e423aaa81253158bd9438c31216b07d9dff577766",
+      "authored_declarations": [
+        {
+          "name": "Table",
+          "kind": "record",
+          "line": 2,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            "keys",
+            "values",
+            "count"
+          ]
+        },
+        {
+          "name": "init",
+          "kind": "procedure",
+          "line": 7,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "deinit",
+          "kind": "procedure",
+          "line": 11,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_add",
+          "kind": "procedure",
+          "line": 15,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_set",
+          "kind": "procedure",
+          "line": 20,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_find",
+          "kind": "procedure",
+          "line": 21,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_find_pointer",
+          "kind": "procedure",
+          "line": 27,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_contains",
+          "kind": "procedure",
+          "line": 32,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_remove",
+          "kind": "procedure",
+          "line": 33,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "resize",
+          "kind": "procedure",
+          "line": 42,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_reset",
+          "kind": "procedure",
+          "line": 45,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_ensure_space",
+          "kind": "procedure",
+          "line": 48,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_add_duplicate",
+          "kind": "procedure",
+          "line": 53,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "table_find_multiple",
+          "kind": "procedure",
+          "line": 54,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "find_or_add",
+          "kind": "procedure",
+          "line": 59,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "for_expansion",
+          "kind": "procedure",
+          "line": 65,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "NEVER_OCCUPIED_HASH",
+          "kind": "constant",
+          "line": 77,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "REMOVED_HASH",
+          "kind": "constant",
+          "line": 78,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "FIRST_VALID_HASH",
+          "kind": "constant",
+          "line": 79,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "expand",
+          "kind": "procedure",
+          "line": 80,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "next_power_of_two",
+          "kind": "procedure",
+          "line": 83,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/Sort.jai",
+      "sha256": "11ab3a58e97b47761cd02137be0f53ff840457c5fca7f92d5e9b4e718cf5a534",
+      "authored_declarations": [
+        {
+          "name": "compare_floats",
+          "kind": "procedure",
+          "line": 3,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "compare_strings",
+          "kind": "procedure",
+          "line": 4,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "bubble_sort",
+          "kind": "procedure",
+          "line": 14,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "quick_sort",
+          "kind": "procedure",
+          "line": 27,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "quick_sort",
+          "kind": "procedure",
+          "line": 50,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/IntroSort.jai",
+      "sha256": "8d3c2da46c71b8dc689f47a2995cd1cde731d5e63699c11b3c47dde281ec3769",
+      "authored_declarations": [
+        {
+          "name": "Basic",
+          "kind": "constant",
+          "line": 2,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "intro_sort",
+          "kind": "procedure",
+          "line": 3,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "insertion_sort",
+          "kind": "procedure",
+          "line": 6,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "intro_sort",
+          "kind": "procedure",
+          "line": 7,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "insertion_sort",
+          "kind": "procedure",
+          "line": 10,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/RadixSort.jai",
+      "sha256": "60b290618308c8e10ecc319562c7e7beb129d5f9f9c06f3356660557863480f5",
+      "authored_declarations": [
+        {
+          "name": "MAX_RADIX_COUNT",
+          "kind": "constant",
+          "line": 3,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "RadixSort",
+          "kind": "record",
+          "line": 4,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            "ranks",
+            "count"
+          ]
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 8,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "rank",
+          "kind": "procedure",
+          "line": 9,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "free_resources",
+          "kind": "procedure",
+          "line": 10,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "reset",
+          "kind": "procedure",
+          "line": 14,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "resize",
+          "kind": "procedure",
+          "line": 15,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "operator[]",
+          "kind": "procedure",
+          "line": 20,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 21,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 22,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 23,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 24,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 25,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "reorder",
+          "kind": "procedure",
+          "line": 26,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/Basic/protocol.jai",
+      "sha256": "2b2ebff038d8652d1b8d6dd19a61ff7de27b54a5f74463268afd7f6f060f8511",
+      "authored_declarations": [
+        {
+          "name": "Allocator_Mode",
+          "kind": "constant",
+          "line": 7,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Allocator_Caps",
+          "kind": "constant",
+          "line": 8,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Allocator_Proc",
+          "kind": "constant",
+          "line": 9,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Allocator",
+          "kind": "constant",
+          "line": 10,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Temporary_Storage",
+          "kind": "constant",
+          "line": 11,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Tag",
+          "kind": "constant",
+          "line": 12,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info",
+          "kind": "constant",
+          "line": 13,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Integer",
+          "kind": "constant",
+          "line": 14,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Float",
+          "kind": "constant",
+          "line": 15,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_String",
+          "kind": "constant",
+          "line": 16,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Pointer",
+          "kind": "constant",
+          "line": 17,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Array",
+          "kind": "constant",
+          "line": 18,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Procedure",
+          "kind": "constant",
+          "line": 19,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Enum",
+          "kind": "constant",
+          "line": 20,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Variant",
+          "kind": "constant",
+          "line": 21,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Variant_Flags",
+          "kind": "constant",
+          "line": 22,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Struct_Member",
+          "kind": "constant",
+          "line": 23,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Type_Info_Struct",
+          "kind": "constant",
+          "line": 24,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Struct_Status_Flags",
+          "kind": "constant",
+          "line": 25,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Struct_Nontextual_Flags",
+          "kind": "constant",
+          "line": 26,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Struct_Textual_Flags",
+          "kind": "constant",
+          "line": 27,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Enum_Status_Flags",
+          "kind": "constant",
+          "line": 28,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Enum_Type_Flags",
+          "kind": "constant",
+          "line": 29,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Any_Struct",
+          "kind": "constant",
+          "line": 30,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Any",
+          "kind": "constant",
+          "line": 31,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Source_Code_Location",
+          "kind": "constant",
+          "line": 32,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Source_Code_Range",
+          "kind": "constant",
+          "line": 33,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Log_Level",
+          "kind": "constant",
+          "line": 34,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Log_Flags",
+          "kind": "constant",
+          "line": 35,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Log_Section",
+          "kind": "constant",
+          "line": 36,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Log_Info",
+          "kind": "constant",
+          "line": 37,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Logger",
+          "kind": "constant",
+          "line": 38,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Stack_Trace_Procedure_Info",
+          "kind": "constant",
+          "line": 39,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Stack_Trace_Node",
+          "kind": "constant",
+          "line": 40,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Procedure_With_Data",
+          "kind": "constant",
+          "line": 41,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Newstring",
+          "kind": "constant",
+          "line": 42,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Array_View_64",
+          "kind": "constant",
+          "line": 43,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Resizable_Array",
+          "kind": "constant",
+          "line": 44,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Name_Mapper",
+          "kind": "constant",
+          "line": 45,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "For_Flags",
+          "kind": "constant",
+          "line": 46,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    },
+    {
+      "path": "stdlib/Basic/module.jai",
+      "sha256": "639535ed1a4370cccad6e590d7c18747702703ae802c2e93017dc75e6efcdd62",
+      "authored_declarations": [
+        {
+          "name": "SET_STORAGE_MARK_STAMP",
+          "kind": "constant",
+          "line": 23,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "RESET_STORAGE_STAMP",
+          "kind": "constant",
+          "line": 24,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "FREE_PAGE_STAMP",
+          "kind": "constant",
+          "line": 25,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "write_string",
+          "kind": "constant",
+          "line": 26,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "write_strings",
+          "kind": "constant",
+          "line": 27,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "debug_break",
+          "kind": "constant",
+          "line": 28,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "this_allocation_is_not_a_leak",
+          "kind": "procedure",
+          "line": 30,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "this_allocation_leaks_todo",
+          "kind": "procedure",
+          "line": 31,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "this_allocation_does_not_propagate_leak_ownership",
+          "kind": "procedure",
+          "line": 32,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "memory_visualizer_per_frame_update",
+          "kind": "procedure",
+          "line": 33,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "assert_helper",
+          "kind": "procedure",
+          "line": 35,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "assert",
+          "kind": "procedure",
+          "line": 43,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_command_line_arguments",
+          "kind": "procedure",
+          "line": 50,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 59,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 60,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 61,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 62,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Min",
+          "kind": "constant",
+          "line": 63,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Max",
+          "kind": "constant",
+          "line": 64,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "clamp",
+          "kind": "procedure",
+          "line": 65,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "Swap",
+          "kind": "procedure",
+          "line": 66,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 67,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 68,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "IsScalar",
+          "kind": "procedure",
+          "line": 69,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_field_with_offset",
+          "kind": "procedure",
+          "line": 73,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_field",
+          "kind": "procedure",
+          "line": 77,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_names",
+          "kind": "procedure",
+          "line": 81,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_values_as_s64",
+          "kind": "procedure",
+          "line": 82,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_values_as_enum",
+          "kind": "procedure",
+          "line": 83,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_range_given_info",
+          "kind": "procedure",
+          "line": 89,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_range",
+          "kind": "procedure",
+          "line": 95,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "enum_highest_value",
+          "kind": "procedure",
+          "line": 96,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "remember_allocators",
+          "kind": "procedure",
+          "line": 97,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "resizable",
+          "kind": "procedure",
+          "line": 100,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "is_integer_type",
+          "kind": "procedure",
+          "line": 106,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_integer_range",
+          "kind": "procedure",
+          "line": 112,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "clamp_to_another_integer_type",
+          "kind": "procedure",
+          "line": 121,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 134,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 135,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "print_stack_trace",
+          "kind": "procedure",
+          "line": 148,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "get_stack_trace_string",
+          "kind": "procedure",
+          "line": 155,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        },
+        {
+          "name": "log_stack_trace",
+          "kind": "procedure",
+          "line": 164,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": []
+        }
+      ],
+      "syntax": "passed_frozen_source_parser"
+    }
+  ],
+  "maintained_contract_inputs": [
+    {
+      "module": "Basic",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/Basic/module.jai",
+      "sha256": "1bc0d9de180d074cd3dcf042f5c6bd7e2863ae49cbefa2d0618b7b000a3f29ff",
+      "public_declaration_names": [
+        "Apollo_Time",
+        "Allocator_Mode",
+        "Allocator_Proc",
+        "Allocator",
+        "Temporary_Storage",
+        "Format_Int",
+        "Format_Float",
+        "Format_Struct",
+        "Print_Style",
+        "Context",
+        "Type_Info_Tag",
+        "Type_Info",
+        "Type_Info_Struct_Member",
+        "Type_Info_Struct",
+        "Type_Info_Integer",
+        "Type_Info_Pointer",
+        "Type_Info_Procedure",
+        "Any",
+        "temp",
+        "context",
+        "print",
+        "log",
+        "assert",
+        "exit",
+        "swap",
+        "memcpy",
+        "memset",
+        "alloc",
+        "free",
+        "NewArray",
+        "NewArray",
+        "push_allocator",
+        "reset_temporary_storage",
+        "auto_release_temp",
+        "talloc_string",
+        "alloc_string",
+        "make_leak_report",
+        "log_leak_report",
+        "get_capabilities",
+        "formatInt",
+        "formatFloat",
+        "formatStruct",
+        "current_time_consensus",
+        "current_time_monotonic",
+        "to_calendar",
+        "calendar_to_string",
+        "get_time",
+        "seconds_since_init",
+        "sleep_milliseconds",
+        "to_float64_seconds",
+        "get_field",
+        "type_to_string",
+        "enum_range",
+        "enum_values_as_enum",
+        "enum_values_as_s64",
+        "enum_names",
+        "array_add",
+        "array_add",
+        "array_free",
+        "array_reset",
+        "array_reserve",
+        "array_insert_at",
+        "array_ordered_remove_by_index",
+        "array_unordered_remove_by_index",
+        "array_find",
+        "array_copy",
+        "peek",
+        "pop",
+        "get_command_line_arguments",
+        "advance",
+        "log_error"
+      ]
+    },
+    {
+      "module": "Bit_Array",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/Bit_Array/module.jai",
+      "sha256": "ccb555a137ba31a16d3eceb8e5f4c77ed5a55b619b8cfa4449295e604aa510e8",
+      "public_declaration_names": [
+        "Bit_Array",
+        "init_bit_array",
+        "set_bit",
+        "clear_bit",
+        "toggle_bit",
+        "set_bit_to",
+        "get_bit",
+        "deinit",
+        "bit_index_in_range"
+      ]
+    },
+    {
+      "module": "Hash_Table",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/Hash_Table/module.jai",
+      "sha256": "4f3da0915f8b3501717e7ed74f186901f38713f145cc31d0bd55b3e7d335ef1c",
+      "public_declaration_names": [
+        "Table",
+        "init",
+        "deinit",
+        "table_add",
+        "table_set",
+        "table_find",
+        "table_find_pointer",
+        "table_contains",
+        "table_remove"
+      ]
+    },
+    {
+      "module": "Sort",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/Sort/module.jai",
+      "sha256": "88bfb45c6a3836af8dbd599a4393519a1ca83202bdb1438b8004634d9cd774e5",
+      "public_declaration_names": [
+        "compare_floats",
+        "compare_strings",
+        "quick_sort",
+        "_quick_sort_impl",
+        "bubble_sort"
+      ]
+    },
+    {
+      "module": "IntroSort",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/IntroSort/module.jai",
+      "sha256": "019df7c98266e047804d9d48aae55a00fb80ddfd12bbdf391356a4fa4c7c8296",
+      "public_declaration_names": [
+        "intro_sort"
+      ]
+    },
+    {
+      "module": "RadixSort",
+      "source": "corpus/upstream/withlang-dev--open-jai/modules/RadixSort/module.jai",
+      "sha256": "fc84a7c4c55d03f3cc5cdacdd6149c05f91e8584a6f4ebb6607603e5e0a0e399",
+      "public_declaration_names": [
+        "MAX_RADIX_COUNT",
+        "RadixSort",
+        "sort",
+        "rank",
+        "free_resources"
+      ]
+    }
+  ],
+  "supported_source_behaviors": [
+    "Resizable arrays: captured allocator, allocate-copy-free growth, initialized append, ordered/unordered removal, copy/view/resize, reset/pop.",
+    "Bit arrays: maintained words/count field shape, logical-bound checks, trailing-word masking, source iteration macros.",
+    "Tables: exact maintained keys/values/count stored fields and two type parameters, authored reverse vector lookup and synchronized row mutation, add/set replacement, find/remove/reset, pointer-returning find, source iterator, explicit duplicate helper.",
+    "Sort: maintained comparator entry points with stable merge and heap algorithms, historical selector overload.",
+    "RadixSort: maintained fixed ranks/count and capacity constant, stable rank merge, u64/float additional overloads, reorder helper.",
+    "Basic: assertion failure dispatch, enumeration/range reflection, allocator capture traversal, integer clamping, stack trace packing/formatting.",
+    "Basic qualified protocol aliases use genuine selected Preload declarations; no copied records or fabricated nominal IDs. Basic.Any names builtin any; Temporary_Storage aliases Runtime_Support source."
+  ],
+  "incomplete_or_different_contracts": [
+    {
+      "api": "Basic.MEMORY_DEBUGGER=true",
+      "status": "explicitly_rejected",
+      "reason": "Full allocation/leak tracking and visualization integration is not authored; false-policy leak hints are intentionally guarded no-op macros."
+    },
+    {
+      "api": "Basic qualified protocol schema compatibility",
+      "status": "actual_selected_source_aliases_authored_schema_differences_explicit",
+      "reason": "Allocator/Type_Info descriptors alias canonical selected Preload declarations, Any names builtin any, Temporary_Storage aliases genuine Runtime_Support. Maintained FREE_ALL is absent (selected value 3 is STARTUP), reflection tag ordinals/layouts differ, Struct_Member type/flags and Struct members view differ, Pointer.pointer_to differs from points_to, Procedure flags and Runtime temporary storage fields differ. Qualified Context remains absent pending verified synthesized identity."
+    },
+    {
+      "api": "Basic.get_field historical two-result signature",
+      "status": "different_default",
+      "reason": "Maintained get_field returns a pointer; get_field_with_offset provides the historical offset tuple."
+    },
+    {
+      "api": "Basic.array_find resizable-array historical tuple result",
+      "status": "different_default",
+      "reason": "Maintained resizable-array overload returns bool; historical view overload and private index helper return tuple."
+    },
+    {
+      "api": "Hash_Table legacy entries layout/tombstone counters",
+      "status": "legacy_layout_absent",
+      "reason": "Maintained packed keys/values/count are canonical; default storage has no extra fields and no tombstones."
+    },
+    {
+      "api": "Hash_Table.table_add historical duplicate+pointer convention",
+      "status": "different_default",
+      "reason": "Maintained add/set replace values and return void. Explicit table_add_duplicate returns an inserted pointer."
+    },
+    {
+      "api": "Hash_Table.Walk_Table caller capture",
+      "status": "absent_legacy_macro",
+      "reason": "Caller-capture macro depends on the incompatible historical entries/hash layout and is not exported by default."
+    },
+    {
+      "api": "Hash_Table generic LOAD_FACTOR_PERCENT/REFILL_REMOVED/COUNT_COLLISIONS",
+      "status": "absent_legacy_configuration",
+      "reason": "Default follows maintained two type parameters and no module parameters; historical custom hash/equality, load-factor, tombstone, collision configurations require a separate legacy implementation."
+    },
+    {
+      "api": "Sort.quick_sort historical two-argument comparator slice result",
+      "status": "different_default",
+      "reason": "Maintained comparator entry point returns void; historical key-selector overload returns the view."
+    },
+    {
+      "api": "RadixSort historical dynamic ranks/ranks2/allocator layout",
+      "status": "legacy_layout_absent",
+      "reason": "Default preserves maintained fixed 65536 ranks+count; resizable rank metadata is incompatible."
+    },
+    {
+      "api": "Bit_Array historical slots/allocator record fields",
+      "status": "legacy_layout_absent",
+      "reason": "Default stores exactly maintained words/count fields; historical signed slots and separate allocator are incompatible."
+    },
+    {
+      "api": "all authored source behaviors",
+      "status": "runtime_unverified",
+      "reason": "No semantic, native, or VM execution proof claimed; only independently built frozen source parser ran."
+    }
+  ],
+  "validation": {
+    "compiler_snapshot": "b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13",
+    "parse": "all_eight_owned_sources_and_both_authored_smokes_passed",
+    "source_check": {
+      "status": "blocked_at_dependency",
+      "diagnostic": "stdlib/Basic/String_Builder.jai:2:38: this constant expression requires typed compile-time evaluation",
+      "environment": {
+        "JAI_RS_MODULE_PATH": "/Users/matthew/projects/jai/stdlib",
+        "JAI_RS_PRELOAD": "/Users/matthew/projects/jai/prelude/Preload.jai",
+        "JAI_RS_RUNTIME_SUPPORT": "off"
+      }
+    },
+    "behavior_smoke": "tests/stdlib/basic-collections.jai",
+    "runtime": "not_verified",
+    "protocol_alias_body": "tests/stdlib/basic-protocol-aliases.jai; syntax passed; root new-CLI semantic/body run pending"
+  },
+  "related_reports": [
+    "stdlib/.coverage/basic-utilities.json",
+    "stdlib/.coverage/storage-layout.json"
+  ],
+  "documentation": "docs/stdlib/basic-collections.md",
+  "protocol_alias_identity_evidence": "Parent integration established canonical named Preload source identity with sixteen main gates; current frozen b1 CLI predates that fix, so this report claims syntax only for newly authored Basic aliases."
+}

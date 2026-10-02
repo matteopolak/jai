@@ -1,5 +1,8 @@
 # Developer documentation
 
+- [Independent standard library](stdlib/architecture.md)
+- [Standard-library API coverage](stdlib/api-coverage.md)
+
 - [Deferred context pushes](deferred-context.md)
 
 - [Runtime parameter defaults](runtime-parameter-defaults.md)
@@ -252,3 +255,19 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Scalar domain inference](scalar-domain-inference.md)
 - [Float and SIMD source validation](float-simd-source-validation.md)
 - [Constant slices](constant-slices.md)
+
+- [Basic and collection modules](stdlib/basic-collections.md)
+- [Binary formats and hashing](stdlib/binary-formats.md)
+- [Codec and native bindings](stdlib/codec-native-bindings.md)
+- [Command-line arguments](stdlib/command-line.md)
+- [Metaprogram tooling](stdlib/metaprogram-tooling.md)
+- [Window and audio bindings](stdlib/window-audio-bindings.md)
+- [Allocation, memory, and hashing](stdlib/allocation-memory.md)
+- [Math and numeric modules](stdlib/math-numeric.md)
+- [Platform SDK bindings](stdlib/platform-sdk-bindings.md)
+- [Strings, Unicode, and text files](stdlib/strings-serialization.md)
+- [UI widgets, drawing, fonts, and textures](stdlib/ui-drawing.md)
+- [Compiler and reflection support](stdlib/compiler-reflection.md)
+- [Files, processes, and OS services](stdlib/os-file-process.md)
+- [Threads, sockets, and input](stdlib/thread-socket.md)
+- [Native platform and graphics bindings](stdlib/native-platform-bindings.md)

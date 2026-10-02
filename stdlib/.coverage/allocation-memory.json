@@ -1,0 +1,500 @@
+{
+  "schema_version": 1,
+  "owner": "allocation-memory",
+  "authorship": "independently authored Jai bodies; supplied source used only for API/semantic contract inspection",
+  "compiler": {
+    "path": "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs",
+    "sha256": "b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13"
+  },
+  "compatibility_inputs": [
+    "reference/modules",
+    "corpus/upstream/withlang-dev--open-jai/modules"
+  ],
+  "runtime_coverage_complete": false,
+  "native_executables_run": false,
+  "reference_executable_or_native_artifacts_run": false,
+  "source_evidence": [
+    {
+      "path": "stdlib/Basic/allocation.jai",
+      "sha256": "6fd11dc0644425bcf7065f8aaea49c03359c5b5521166d76bc9bb5a64be3ae3e",
+      "parse": {
+        "exit_code": 0,
+        "output": "37 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "2106 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Default_Allocator/module.jai",
+      "sha256": "e6059de728d7ddaa44683740117a63db6814c4fc14d345b9c0715645684752a3",
+      "parse": {
+        "exit_code": 0,
+        "output": "23 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "1021 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Overwriting_Allocator/module.jai",
+      "sha256": "c7959653e4215244998707ed796e1bc664d02b89c987e3599d7d77d51489acac",
+      "parse": {
+        "exit_code": 0,
+        "output": "10 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "625 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Unmapping_Allocator/module.jai",
+      "sha256": "1f6373d9c478963e0819065bf744f8365fe7f1286e20aa27e89ba1b4c3a4d30b",
+      "parse": {
+        "exit_code": 0,
+        "output": "17 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "833 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Memory/module.jai",
+      "sha256": "391b5b8150603dda26bb98c6d33ec0fc5b7327c4c6bc6cf553df8c13cf39587b",
+      "parse": {
+        "exit_code": 0,
+        "output": "3 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "195 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Bit_Operations.jai",
+      "sha256": "1ca4d1c7ec9bf8c083cd1b1202b55ecadd59b37489f13603a76227725889983d",
+      "parse": {
+        "exit_code": 0,
+        "output": "8 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "476 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Hash.jai",
+      "sha256": "c39c199821dbdff9e9e3dff2efe2dcfe4f466a1726d2a41a9d820bb77a4a939d",
+      "parse": {
+        "exit_code": 0,
+        "output": "13 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "541 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Crc.jai",
+      "sha256": "18dc5d49f20eb0a8f27114be439494ce5d9e344fe0647e20561cbef18158299f",
+      "parse": {
+        "exit_code": 0,
+        "output": "5 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "112 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Crc/module.jai",
+      "sha256": "01c3349ce6500df294c8f880355057669047f5649a1f07b976000af1edf1b7ef",
+      "parse": {
+        "exit_code": 0,
+        "output": "1 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "3 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/xxHash/module.jai",
+      "sha256": "2e21b8c9c474d729874e1439e9f28f667bb753fc1382f51b0340a9ffa59d7d39",
+      "parse": {
+        "exit_code": 0,
+        "output": "33 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "1483 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Deep_Copy.jai",
+      "sha256": "55b7d3c61378233bfbe7fdd2a331d15a496b7f316f5768af25dd774a46c7e25f",
+      "parse": {
+        "exit_code": 0,
+        "output": "11 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "991 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Remap_Context.jai",
+      "sha256": "4c93e448e506f70956a4c20ec8022de131df6620c13557fb774dfcb1da9b37a5",
+      "parse": {
+        "exit_code": 1,
+        "output": "stdlib/Remap_Context.jai:5:18: error: expected expression; this syntax is not implemented yet"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "305 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "tests/stdlib/allocation-memory.jai",
+      "sha256": "0983670d9eb09000d682f670874e0ad940380a2d3244e6537e38809b283c2f27",
+      "parse": {
+        "exit_code": 0,
+        "output": "11 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "491 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "tests/stdlib/bit-operations.jai",
+      "sha256": "585344aab067b01257c38396b5656a417ae499fa4e2c31fb5b35f52e120adc2c",
+      "parse": {
+        "exit_code": 0,
+        "output": "2 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "125 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "tests/stdlib/default-allocator.jai",
+      "sha256": "f520ca28cea7a351a3518a90721bc00fcee5a7f9cec1a275593fed455db2c32f",
+      "parse": {
+        "exit_code": 0,
+        "output": "4 items (syntax stage only)"
+      },
+      "lex": {
+        "exit_code": 0,
+        "output": "278 tokens (lexical stage only)"
+      }
+    }
+  ],
+  "behavior_evidence": [
+    {
+      "path": "tests/stdlib/allocation-memory.jai",
+      "exit_code": 0,
+      "output": "checked tests/stdlib/allocation-memory.jai",
+      "executed_assert_run": true
+    },
+    {
+      "path": "tests/stdlib/bit-operations.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/tests/stdlib/bit-operations.jai:5:16: error: #expand procedure calls currently require statement position; value results need expansion result binding",
+      "executed_assert_run": false
+    },
+    {
+      "path": "tests/stdlib/default-allocator.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/tests/stdlib/default-allocator.jai:24:9: error: foreign procedure 33 cannot execute in the compile-time VM",
+      "executed_assert_run": false
+    }
+  ],
+  "contract_conflicts": [
+    "crc64 defaults to maintained CRC-64/ECMA-182; older CRC-64/WE preserved as crc64_we",
+    "maintained NewArray default returns a single view; older tuple requires explicit baked initialized argument",
+    "maintained get_capabilities returns bool,string; flag-returning legacy behavior in get_capabilities_info",
+    "maintained XXH states omit older reserved fields; updates use input_ptr:*u8"
+  ],
+  "modules": [
+    {
+      "module": "Basic allocation",
+      "paths": [
+        "stdlib/Basic/allocation.jai"
+      ],
+      "apis": [
+        "alloc",
+        "free(*void)",
+        "free(string)",
+        "realloc",
+        "create_heap",
+        "destroy_heap",
+        "get_capabilities",
+        "get_capabilities_info",
+        "alloc_string",
+        "talloc_string",
+        "push_allocator(Allocator)",
+        "push_allocator(Allocator_Proc,*void)",
+        "Initialize",
+        "New",
+        "NewArray(count,Type,allocator,alignment)",
+        "NewArray(Type,count,allocator,alignment)",
+        "NewArray(count,Type,initialized,alignment,allocator)",
+        "align_forward",
+        "talloc",
+        "temporary_alloc",
+        "temp",
+        "__temporary_allocator",
+        "temporary_allocator",
+        "Temporary_Storage_State",
+        "temporary_allocator_proc",
+        "get_temporary_storage_mark",
+        "set_temporary_storage_mark",
+        "reset_temporary_storage",
+        "auto_release_temp",
+        "init_temporary_storage",
+        "deinit_temporary_storage"
+      ],
+      "implementation": "authored",
+      "behavior": "pending source runtime/allocator receipt integration",
+      "gaps": [
+        "single-result NewArray positive custom alignment is explicitly unsupported",
+        "memory debugger is separately gated by Basic",
+        "allocation overflow/exhaustion cleanup needs execution acceptance"
+      ]
+    },
+    {
+      "module": "Default_Allocator",
+      "paths": [
+        "stdlib/Default_Allocator/module.jai"
+      ],
+      "apis": [
+        "allocator",
+        "allocator_default_heap",
+        "allocator_proc",
+        "initialize_if_needed",
+        "finalize",
+        "unsafe_reset",
+        "c_malloc",
+        "c_realloc",
+        "c_free"
+      ],
+      "implementation": "authored genuine C heap plus Jai ownership ledger and CAS lock",
+      "behavior": "pending trusted VM heap foreign-call receipt; native unverified",
+      "gaps": [
+        "ownership query accepts exact pointers rather than arbitrary interior addresses",
+        "requires allocation/projection/atomic backend acceptance"
+      ]
+    },
+    {
+      "module": "Overwriting_Allocator",
+      "paths": [
+        "stdlib/Overwriting_Allocator/module.jai"
+      ],
+      "apis": [
+        "Overwriting_Allocator",
+        "get_overwriting_allocator",
+        "deinit_overwriting_allocator",
+        "deinit",
+        "overwriting_allocator_proc"
+      ],
+      "implementation": "authored",
+      "behavior": "unverified",
+      "gaps": [
+        "depends on Thread native Mutex; VM synchronization adapters unavailable",
+        "separate heaps and ownership query explicitly unsupported"
+      ]
+    },
+    {
+      "module": "Unmapping_Allocator",
+      "paths": [
+        "stdlib/Unmapping_Allocator/module.jai"
+      ],
+      "apis": [
+        "Unmapping_Allocator",
+        "get_unmapping_allocator",
+        "deinit_unmapping_allocator",
+        "deinit",
+        "unmapping_allocator_proc"
+      ],
+      "implementation": "authored real POSIX mmap/mprotect quarantine",
+      "behavior": "unverified native; unavailable in VM",
+      "gaps": [
+        "Windows and other target mappings unsupported",
+        "no trusted VM page-permission adapter",
+        "reservations intentionally survive deinitialization",
+        "separate heaps and ownership query explicitly unsupported"
+      ]
+    },
+    {
+      "module": "Memory",
+      "paths": [
+        "stdlib/Memory/module.jai"
+      ],
+      "apis": [
+        "copy"
+      ],
+      "implementation": "authored",
+      "behavior": "VM overlap byte fixtures passed",
+      "gaps": [
+        "with_candidates and with_unwraps explicitly rejected",
+        "overlap involving virtual pointer/procedure relocations unverified",
+        "equality scan costs linear work before copy"
+      ]
+    },
+    {
+      "module": "Bit_Operations",
+      "paths": [
+        "stdlib/Bit_Operations.jai"
+      ],
+      "apis": [
+        "byte_swap",
+        "byte_swap_in_place",
+        "bit_scan_forward",
+        "bit_scan_reverse",
+        "popcount",
+        "bits_equal(*void,*void,s64)",
+        "bits_equal(*T,*T)",
+        "first_different_byte"
+      ],
+      "implementation": "authored portable scalar bodies",
+      "behavior": "pending expansion-result binding in frozen compiler",
+      "gaps": [
+        "no SIMD/assembly acceleration",
+        "deprecated annotation messages differ from supplied source"
+      ]
+    },
+    {
+      "module": "Hash",
+      "paths": [
+        "stdlib/Hash.jai"
+      ],
+      "apis": [
+        "sdbm_hash",
+        "sdbm_float_hash",
+        "djb2_hash",
+        "FNV_64_PRIME",
+        "FNV_64_OFFSET_BIAS",
+        "fnv1a_hash(u64)",
+        "fnv1a_hash(*void,int)",
+        "knuth_hash",
+        "get_hash(scalar)",
+        "get_hash(string)",
+        "get_hash(array)"
+      ],
+      "implementation": "authored",
+      "behavior": "VM DJB2 and FNV-1a abc vectors, unsigned scalar hash, and seed-only pointer hash passed",
+      "gaps": [
+        "pointer get_hash deliberately returns the seed to preserve equality without address-byte exposure",
+        "float/enum/bool/variant/array generic domains not executed"
+      ]
+    },
+    {
+      "module": "Crc",
+      "paths": [
+        "stdlib/Crc.jai",
+        "stdlib/Crc/module.jai"
+      ],
+      "apis": [
+        "CRC64_ECMA_POLY",
+        "crc64",
+        "crc64_we"
+      ],
+      "implementation": "authored bitwise polynomial recurrence",
+      "behavior": "VM empty/123456789 ECMA and WE vectors passed",
+      "gaps": []
+    },
+    {
+      "module": "xxHash",
+      "paths": [
+        "stdlib/xxHash/module.jai"
+      ],
+      "apis": [
+        "XXH_versionNumber",
+        "XXH_VERSION_MAJOR",
+        "XXH_VERSION_MINOR",
+        "XXH_VERSION_RELEASE",
+        "XXH_VERSION_NUMBER",
+        "XXH_PRIME32_1..5",
+        "XXH_PRIME64_1..5",
+        "XXH32_state_t",
+        "XXH64_state_t",
+        "xxh32_rotl",
+        "xxh64_rotl",
+        "xxh32_round",
+        "xxh64_round",
+        "xxh64_mergeRound",
+        "read_u32_le",
+        "read_u64_le",
+        "XXH32_reset",
+        "XXH32_update",
+        "XXH32_digest",
+        "XXH64_reset",
+        "XXH64_update",
+        "XXH64_digest",
+        "native_XXH32",
+        "native_XXH64",
+        "memcpy_bytes"
+      ],
+      "implementation": "authored scalar byte streaming",
+      "behavior": "VM known empty vectors and split/multi-block equality passed",
+      "gaps": [
+        "long-input known external vectors not yet tested",
+        "byte-at-a-time streaming favors clarity over throughput"
+      ]
+    },
+    {
+      "module": "Deep_Copy",
+      "paths": [
+        "stdlib/Deep_Copy.jai"
+      ],
+      "apis": [
+        "Deep_Copy_Config",
+        "Pointer_Map",
+        "Deep_Copy",
+        "helper_count",
+        "time_total"
+      ],
+      "implementation": "authored reflection walker with exact-pointer alias map",
+      "behavior": "unverified",
+      "gaps": [
+        "time_total elapsed-time instrumentation missing",
+        "Any/procedure/void/interior-pointer graphs not deep copied",
+        "allocation failure has no rollback",
+        "NoDeepCopy/graph-cycle/array cases require source execution tests"
+      ]
+    },
+    {
+      "module": "Remap_Context",
+      "paths": [
+        "stdlib/Remap_Context.jai"
+      ],
+      "apis": [
+        "Remap_Context",
+        "remap_context()",
+        "remap_context(*void,*Type_Info_Struct)"
+      ],
+      "implementation": "authored name/size field remapping",
+      "behavior": "unverified; frozen parser predates push_context,defer_pop syntax",
+      "gaps": [
+        "detailed per-field VERBOSE diagnostics missing",
+        "source context macro/remapped foreign schema acceptance pending"
+      ]
+    },
+    {
+      "module": "meow_hash",
+      "paths": [],
+      "apis": [],
+      "implementation": "missing",
+      "behavior": "unsupported",
+      "gaps": [
+        "AES/SIMD register and streaming contracts have no independent implementation; no substitute or stub module counted"
+      ]
+    }
+  ]
+}

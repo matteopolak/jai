@@ -1,0 +1,193 @@
+{
+  "format": 1,
+  "owner": "basic-utilities",
+  "identity": "Independent Jai implementations derived from public declarations/layouts. An initial overly broad declaration search incidentally displayed some reference local declarations; they were not reused. No reference implementation bodies copied.",
+  "primary_contract": "Maintained OpenJai public Basic declarations in corpus/upstream/withlang-dev--open-jai/modules/Basic/module.jai; legacy APIs additive where compatible.",
+  "contract_inputs": {
+    "openjai_sha256": "1bc0d9de180d074cd3dcf042f5c6bd7e2863ae49cbefa2d0618b7b000a3f29ff",
+    "legacy_paths": [
+      "reference/modules/Basic/Simple_String.jai",
+      "reference/modules/Basic/Int128.jai",
+      "reference/modules/Basic/Apollo_Time.jai",
+      "reference/modules/Basic/Print.jai"
+    ]
+  },
+  "files": {
+    "Basic/Simple_String.jai": {
+      "state": "authored-source-parser-pass",
+      "apis": [
+        "to_string",
+        "to_upper",
+        "to_lower",
+        "is_alpha",
+        "is_digit",
+        "is_alnum",
+        "is_space",
+        "is_print",
+        "advance",
+        "eat_spaces",
+        "to_c_string",
+        "temp_c_string",
+        "copy_string",
+        "copy_temporary_string",
+        "to_integer",
+        "string_to_int",
+        "string_to_float",
+        "string_to_float64",
+        "string_to_float_type_T"
+      ],
+      "limits": [
+        "Classification is ASCII; is_alnum includes underscore.",
+        "Integer parser supports base 2 through 36 and integer widths up to 64 bits; overflow fails without consuming input.",
+        "Float parser recognizes decimal fractions and decimal exponents, not hexadecimal/locale/NaN/Inf forms; correctly rounded conversion not established.",
+        "Pointer advance uses newer value/count parameter names with a compatible count=1 convenience default; original amount= named argument is not retained.",
+        "Float aliases are callable wrappers because frozen parser rejects #bake_constants."
+      ]
+    },
+    "Basic/Int128.jai": {
+      "state": "authored-source-parser-pass",
+      "apis": [
+        "S128",
+        "U128",
+        "U128_ERROR",
+        "S128_ERROR",
+        "to_s128",
+        "to_u128",
+        "multiply_64bits_with_overflow",
+        "logical_shift_right",
+        "signed_divide_with_remainder",
+        "unsigned_divide_with_remainder",
+        "operator ==",
+        "operator !",
+        "operator +",
+        "operator -",
+        "operator <<",
+        "operator >>",
+        "operator *",
+        "operator /",
+        "operator <",
+        "operator <=",
+        "operator >",
+        "operator >="
+      ],
+      "limits": [
+        "Primitive conversions are intended for integers up to 64 bits; float conversions are not supported.",
+        "Arithmetic wraps modulo 2^128. Division reports zero divisor and signed minimum/-1 overflow. Shifts at least 128 saturate to zero or signed fill.",
+        "Portable shift-add multiplication and restoring division replace CPU assembly; no performance equivalence established."
+      ]
+    },
+    "Basic/Apollo_Time.jai": {
+      "state": "authored-source-parser-pass",
+      "apis": [
+        "Apollo_Time",
+        "APOLLO_TIME_INVALID",
+        "FEMTOSECONDS",
+        "APOLLO_TIME_FOR_JAN_1_1970",
+        "Time_Zone",
+        "Calendar_Time",
+        "seconds_to_apollo",
+        "milliseconds_to_apollo",
+        "microseconds_to_apollo",
+        "nanoseconds_to_apollo",
+        "ConvertToApollo",
+        "ConvertFromApollo",
+        "to_seconds",
+        "to_milliseconds",
+        "to_microseconds",
+        "to_nanoseconds",
+        "compare_apollo_times",
+        "to_float64_seconds",
+        "to_float64_seconds_checked",
+        "to_apollo",
+        "calendar_to_string(Calendar_Time)",
+        "calendar_to_iso_string",
+        "arithmetic/comparison operators"
+      ],
+      "limits": [
+        "Apollo_Time uses newer independent struct low:u64/high:s64 rather than legacy isa S128; explicit operators preserve common arithmetic.",
+        "Primary to_float64_seconds returns one float64; the legacy checked tuple is exposed as to_float64_seconds_checked. Invalid primary conversion yields zero.",
+        "Calendar is undeclared in maintained OpenJai source; to_calendar and calendar_to_string(Calendar) are unavailable. Calendar_Time is an explicitly legacy layout.",
+        "Integer rounding is nearest with halves away from zero. Exact upstream rounding/format rendering parity is not established.",
+        "Calendar_Time rendering is YYYY-MM-DD HH:MM:SS.mmm or ISO with UTC Z; LOCAL has no inferred offset.",
+        "OS clock acquisition, timespec conversion, timezone conversion, and calendar validation are external responsibilities.",
+        "Float time conversions have float64 precision and are not exact femtosecond round trips."
+      ]
+    },
+    "Basic/Print.jai": {
+      "state": "authored-source-parser-pass-partial-formatting",
+      "apis": [
+        "Format_Int",
+        "Format_Float",
+        "Format_Struct",
+        "Print_Style",
+        "formatInt(s64)->string",
+        "formatFloat(float64)->string",
+        "formatStruct(Any)->string",
+        "Formatter",
+        "FormatInt",
+        "FormatFloat",
+        "FormatStruct",
+        "FormatArray",
+        "print",
+        "print_to_builder",
+        "print_item_to_builder",
+        "print_sequence_to_builder",
+        "print_u64_base_n",
+        "print_integer",
+        "print_float",
+        "print_type_to_builder",
+        "append_struct_info",
+        "print_array",
+        "sprint",
+        "tprint",
+        "print_character",
+        "print_bytes",
+        "type_to_string(Type)",
+        "type_to_string(*Type_Info)",
+        "log",
+        "log_error",
+        "log_warning",
+        "get_s64_from_void_pointer",
+        "get_u64_from_void_pointer",
+        "my_is_digit",
+        "parse_number",
+        "isFormatter"
+      ],
+      "limits": [
+        "Newer format factories return temporary strings; legacy factories returning formatting records are incompatible and not exported. Legacy records remain usable as literals.",
+        "Print_Style retains maintained three-pointer layout; legacy by-value defaults, array formatting default, custom struct callback, indentation state, and log_runtime_errors are not retained.",
+        "Adds only print_style to compiler-managed context rather than duplicating newer divergent Context/Type_Info schemas.",
+        "Formatting supports lone %, zero-based %N, and %% escapes. Exact undocumented upstream selector semantics are unverified.",
+        "Integer bases are 2 through 36 and digit grouping is at most 65535.",
+        "Float formatting supports up to 18 trailing digits; large decimal magnitudes use scientific notation. SHORTEST is compact approximation, not a proven shortest-round-trip algorithm.",
+        "Float width means left space padding to minimum total bytes; exact legacy width semantics unverified.",
+        "Records skip constants/imports and cap recursion at 16; unions fail explicitly because active-member metadata is absent. Named enum values work; flag decomposition and complete procedure type rendering are absent.",
+        "Strings are quoted/escaped inside arrays and records. Pointer values are displayed without dereference.",
+        "Original buffer_to_string_without_copy(value builder) and append_indentation(context legacy depth) unavailable; no unsafe stack view or fabricated indentation state.",
+        "print/log counts represent submitted bytes because Runtime_Support.write_string returns void; OS write failure counts cannot be reported by this API.",
+        "Formatting errors append explicit markers and return false/-1 where the public result supports status; sprint/tprint retain rendered diagnostics."
+      ]
+    }
+  },
+  "dependencies": [
+    "Compiler-owned prelude reflection/memory intrinsics/context",
+    "Basic allocation wrappers and temporary allocator",
+    "Basic String_Builder",
+    "Runtime_Support write_string and context logger"
+  ],
+  "verification": {
+    "kind": "syntax-only",
+    "command": "target/debug/examples/source-check stdlib/Basic/<file>.jai",
+    "tool_sha256": "84ead95ddd5eec75b1330662e52671de6aa99c585b9e655b98a5981760eedeb6",
+    "top_level_items": {
+      "Simple_String.jai": 20,
+      "Int128.jai": 40,
+      "Apollo_Time.jai": 29,
+      "Print.jai": 47
+    },
+    "semantic_checked": false,
+    "runtime_checked": false,
+    "reference_native_code_executed": false,
+    "cargo_build_performed": false
+  }
+}

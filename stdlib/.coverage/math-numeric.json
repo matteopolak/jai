@@ -1,0 +1,889 @@
+{
+  "area": "math-numeric",
+  "authorship": "Independent Jai implementations; maintained OpenJai public APIs and supplied declaration/state-transition contracts and numerical constants used as specifications. No original implementation blocks imported and no original/native artifacts executed.",
+  "contract_sources": [
+    "corpus/upstream/withlang-dev--open-jai/modules/Math/module.jai",
+    "corpus/upstream/withlang-dev--open-jai/modules/GetRect/module.jai",
+    "reference/modules/Math",
+    "reference/modules/Float16.jai",
+    "reference/modules/Sloppy_Math.jai",
+    "reference/modules/Srgb.jai",
+    "reference/modules/Random.jai",
+    "reference/modules/PCG.jai",
+    "reference/modules/Machine_X64.jai",
+    "reference/modules/GetRect_LeftHanded"
+  ],
+  "maintained_contract_policy": {
+    "Math": "Maintained default: full literal PI/TAU, zero default Quaternion.w, plain float32 coordinates, coordinate constructors, maintained named parameters; import-free helpers. Authored older overlays/printers isolated under legacy/Math.",
+    "GetRect": "Four separate Rect float64 fields; maintained UI contract and behavior receipt owned by ui-drawing.",
+    "GetRect_LeftHanded": "No maintained counterpart found; historical float32 coordinate convention."
+  },
+  "modules": {
+    "Math": {
+      "status": "authored-bodies; full-root checked; representative behavior verified",
+      "implemented": [
+        "scalar IEEE classification/rounding/exp/log/pow/trig",
+        "vectors and component/scalar operators",
+        "quaternion rotation/interpolation",
+        "matrix construction/multiplication/projection/inversion/decomposition",
+        "planes",
+        "own min/max/clamp helpers"
+      ],
+      "behavior_evidence": [
+        "scalar-tests.jai: IEEE edge cases, ordinary finite identities, exhaustive binary16 patterns",
+        "vector-matrix-tests.jai: plain layouts, min/max/clamp, vectors, normalization, quaternion rotation/interpolation, Matrix4 transform/inverse/singular handling"
+      ],
+      "limitations": [
+        "Transcendental approximations have no certified ULP or correct-rounding guarantee; very large angle reduction loses accuracy.",
+        "Historical generic/interface helper instantiations are not all behavior-verified.",
+        "Historical Cephes coefficient/helper exports are absent from the maintained default.",
+        "No claim of complete public API parity from the representative behavior tests."
+      ]
+    },
+    "legacy/Math": {
+      "status": "authored historical compatibility bodies; parser blocked; behavior unverified",
+      "implemented": [
+        "older overlapping vector/matrix/plane views",
+        "older PI/TAU precision and Quaternion.w default",
+        "known-type Basic printer integration",
+        "additional historical generic/interface bodies"
+      ],
+      "blocked_by": [
+        "vectors.jai #place parser rejection"
+      ],
+      "limitations": [
+        "Historical compatibility is partial, not an exact fully verified replacement.",
+        "Arbitrary user-defined matrix structs are not dynamically recognized by the printer.",
+        "Additional Basic/type-array/generic checks may fail after the first parser blocker."
+      ]
+    },
+    "Float16": {
+      "status": "authored-bodies; full-root checked; scalar and aggregate behavior verified",
+      "implemented": [
+        "binary16 round-to-nearest ties-even conversion",
+        "NaN/Inf/signed-zero/subnormal handling",
+        "vector/matrix wrappers",
+        "real union overlapping named Matrix3_Float16 fields and floats array"
+      ],
+      "behavior_evidence": "All 65536 half patterns execute authored scalar conversions; finite/infinite exact roundtrip and NaN classification. Aggregate tests verify vector roundtrip, matrix storage size/views and matrix roundtrip."
+    },
+    "Sloppy_Math": {
+      "status": "authored-bodies; full-root checked; representative behavior verified",
+      "behavior_evidence": "Unsigned/signed min/max type limits and epsilon closeness compile-time assertions passed."
+    },
+    "Srgb": {
+      "status": "authored-bodies; full-root checked; scalar transfer behavior verified",
+      "behavior_note": "Fast variants use the full transfer formula; pow2/sqrt variants expose approximate curves. Vector wrappers authored but no exhaustive vector behavior claim.",
+      "behavior_evidence": "Black/white/threshold/half-channel goldens and eight channel inverse pairs execute authored transfer bodies."
+    },
+    "Random": {
+      "status": "explicit-state bodies behavior verified; full-root context initializer blocked",
+      "implemented": [
+        "documented 128-bit multiplicative transition via base-65536 multiplication",
+        "low/high explicit state and scalar/aggregate seed procedures",
+        "closed/open float32/float64 intervals",
+        "context convenience wrappers"
+      ],
+      "blocked_by": [
+        "Random.jai:14:30 aggregate constant evaluation is not implemented for exact #add_context initializer"
+      ],
+      "behavior_evidence": "Explicit-state sequence vectors, replay and closed/open interval assertions passed; full context convenience forms are not claimed as executed."
+    },
+    "PCG": {
+      "status": "authored-bodies; full-root checked; raw/public representative behavior verified",
+      "implemented": [
+        "XSH-RR transition",
+        "unbiased rejection sampling",
+        "explicit and module-global state forms",
+        "closed/open float intervals and ranges"
+      ],
+      "behavior_evidence": "Raw XSH-RR vectors, positive bounds 1/10/17, replay, intervals and module-global seeding/replay passed.",
+      "precondition": "Bound must be positive. Zero bound executes existing Jai int3 debug trap; that failure path was not natively executed."
+    },
+    "Machine_X64": {
+      "status": "metadata/feature helpers checked and behavior verified; hardware public APIs absent",
+      "feature_leaf_count": 11,
+      "feature_flag_count": 200,
+      "implemented": [
+        "vendor/feature enum contracts",
+        "packed leaf test/set/clear",
+        "machine-option feature layout/access"
+      ],
+      "not_implemented": [
+        "get_cpu_info",
+        "prefetch",
+        "rdtsc",
+        "rdtscp",
+        "rdseed",
+        "rdrand",
+        "mfence",
+        "lfence",
+        "sfence",
+        "pause"
+      ],
+      "pending_owner": "/root/scalar_domains staged genuine checked x64 primitives; independently authored wrappers prepared separately and withheld from stdlib until actual catalog activation.",
+      "behavior_evidence": "Packed SSE2/AVX2/RDSEED leaf changes execute authored helpers. No CPU hardware instruction or native program was executed in this numeric source lane."
+    },
+    "GetRect": {
+      "status": "geometry authored and syntax parsed; full module/dependent behavior blocked",
+      "geometry_implemented": [
+        "four separate float64 fields",
+        "slicing/expansion/shrink/intersection/bounds/half-open containment/quad",
+        "color transforms",
+        "hash keys",
+        "move_toward"
+      ],
+      "ui_owner": "/root/stdlib_rewrite/ui_drawing",
+      "blocked_by": [
+        "GL/glad_core.jai:1593:25 expected '{', found '#type_info_procedures_are_void_pointers'"
+      ],
+      "behavior_evidence": "Geometry assertion file parsed but its dependent #run assertions did not execute."
+    },
+    "GetRect_LeftHanded": {
+      "status": "geometry authored and syntax parsed; full module/dependent behavior blocked",
+      "geometry_implemented": [
+        "float32 historical layout",
+        "downward y slicing",
+        "rectangle/color utilities"
+      ],
+      "ui_owner": "/root/stdlib_rewrite/ui_drawing",
+      "blocked_by": [
+        "GL/glad_core.jai:1593:25 expected '{', found '#type_info_procedures_are_void_pointers'"
+      ],
+      "behavior_evidence": "Geometry assertion file parsed but its dependent #run assertions did not execute."
+    }
+  },
+  "evidence": {
+    "frozen_cli": "target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs",
+    "binary_sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d",
+    "build_inputs_verified": false,
+    "runtime_support": "off",
+    "module_path": "stdlib",
+    "preload": "prelude/Preload.jai",
+    "sources_unchanged_during_verification": true,
+    "check_results": [
+      {
+        "source": "stdlib/Math/module.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Math/module.jai"
+      },
+      {
+        "source": "stdlib/Float16.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Float16.jai"
+      },
+      {
+        "source": "stdlib/Sloppy_Math.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Sloppy_Math.jai"
+      },
+      {
+        "source": "stdlib/Srgb.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Srgb.jai"
+      },
+      {
+        "source": "stdlib/Random.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Random.jai:14:30: error: aggregate constant evaluation is not implemented"
+      },
+      {
+        "source": "stdlib/PCG.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/PCG.jai"
+      },
+      {
+        "source": "stdlib/Machine_X64.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Machine_X64.jai"
+      },
+      {
+        "source": "stdlib/GetRect/module.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+      },
+      {
+        "source": "stdlib/GetRect_LeftHanded/module.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+      },
+      {
+        "source": "stdlib/legacy/Math/module.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/legacy/Math/vectors.jai:4:5: error: expected identifier"
+      },
+      {
+        "source": "stdlib/Float16/tests/aggregate-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Float16/tests/aggregate-tests.jai"
+      },
+      {
+        "source": "stdlib/GetRect/tests/geometry-tests.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+      },
+      {
+        "source": "stdlib/GetRect_LeftHanded/tests/geometry-tests.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+      },
+      {
+        "source": "stdlib/Machine_X64/tests/feature-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Machine_X64/tests/feature-tests.jai"
+      },
+      {
+        "source": "stdlib/Math/tests/scalar-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Math/tests/scalar-tests.jai"
+      },
+      {
+        "source": "stdlib/Math/tests/vector-matrix-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Math/tests/vector-matrix-tests.jai"
+      },
+      {
+        "source": "stdlib/PCG/tests/bounded-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/PCG/tests/bounded-tests.jai"
+      },
+      {
+        "source": "stdlib/Random/tests/sequence-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Random/tests/sequence-tests.jai"
+      },
+      {
+        "source": "stdlib/Sloppy_Math/tests/limits-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Sloppy_Math/tests/limits-tests.jai"
+      },
+      {
+        "source": "stdlib/Srgb/tests/transfer-tests.jai",
+        "command": "check-library",
+        "exit_code": 0,
+        "output": "checked library stdlib/Srgb/tests/transfer-tests.jai"
+      }
+    ],
+    "source_hashes_before": {
+      "stdlib/Float16.jai": "55c53cf4a47556aaf75b271a58c44b8d5dacfa7b5dc995b70df3a9f84e995ca9",
+      "stdlib/Float16/conversion.jai": "0dba6b7d613b39fe653e4b257cb6d375116ec192319c00a66e4d00561173bb3d",
+      "stdlib/Float16/tests/aggregate-tests.jai": "3c14ecaf496b74c634fc1fc7ca4fafecdf90767cd450ca1c8ec6bd3334f0582d",
+      "stdlib/GetRect/module.jai": "3a178cfce155a25d83de0558952b3642d50d7ce01ef2a51defc775f5aac760f8",
+      "stdlib/GetRect/tests/geometry-tests.jai": "b20ec1692eb35fd848da936b3dab87f566253988ea8a5dfe38e1bb6bd4471041",
+      "stdlib/GetRect_LeftHanded/module.jai": "c3b5b9489d126741d14e098b12b2d064e2ec3f6362bd8acf43e1144191417b49",
+      "stdlib/GetRect_LeftHanded/tests/geometry-tests.jai": "4e4951c309c49e8233588a70c13895f0baadb1e0fef37029fab725692aa778c4",
+      "stdlib/Machine_X64.jai": "648433c2cbdb7a91261bb0d7659771b73f8ed9fcc591a223ac20421c46b742c2",
+      "stdlib/Machine_X64/tests/feature-tests.jai": "8209fe48e55bcf63d8961d1deacdba9aac4bf6de522f9b3cd1992066d1ad6ed5",
+      "stdlib/Math/constants.jai": "31137622b517effbe11ffc370bf7fea9391f2cee34f804645493154946b50d69",
+      "stdlib/Math/matrix.jai": "d5699c3abee4677afe8bb4a333e86b89dcc121341d7b6f65e14c61df44abf8cc",
+      "stdlib/Math/module.jai": "35cef88babe36944b30222a1d25fe11d22901ce9a7a17b5709a6b34e3fb56db0",
+      "stdlib/Math/plane.jai": "86ff54c1aa22f3019a0688dbf479c0c760cfdd5e70d8df315d06a5e183aabda6",
+      "stdlib/Math/scalar.jai": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "stdlib/Math/tests/scalar-tests.jai": "7f4e54e4214083a0eda7c9fd55bef470e11d005e7199f172e2d5d4bae591cd62",
+      "stdlib/Math/tests/vector-matrix-tests.jai": "323c23af0583581686d18eb4a4e2f9e3201c66b87bb628e2bf3de26ed8cdfa6a",
+      "stdlib/Math/vectors.jai": "3a8e66dcced70453669b74705cd038716dd388ede29d3ef51b1715f925a535ba",
+      "stdlib/PCG.jai": "90c3cea6810cc855e4c79651ac0618753c3228ce58df299a68d30e5675480cfe",
+      "stdlib/PCG/tests/bounded-tests.jai": "3193567285839f227dd62bf96ded15ca02a7f39270a2e17bae110d94530f9e13",
+      "stdlib/PCG/transition.jai": "c02c0b33eedbfc76d8141ef94aa0bde5e1dd16d436b0de3d338b50fa7daf7f11",
+      "stdlib/Random.jai": "67c7fbd835dbb13016032a194f09b252bf38f9b2623d032ee26b029e9d71731f",
+      "stdlib/Random/generator.jai": "c2e6e9448a37d6bcaed446d2bb4fcd65c19a06af1da946924327bfcd160c505e",
+      "stdlib/Random/tests/sequence-tests.jai": "273683d586d0f0981a5aea92f2aa16335a7b2462a1c99b401182044a1ebf94eb",
+      "stdlib/Sloppy_Math.jai": "9d887762fcafacebd31a03ce0fa6b74c8c62d37329c5492a715f28c0d470eecf",
+      "stdlib/Sloppy_Math/tests/limits-tests.jai": "69167a2aeec01d21b729b7ed4715981f8117230b4bcb50d83463085c3b6f454d",
+      "stdlib/Srgb.jai": "19fd570f54b15cd74c048b5e7f15c5ff2c4f8728db2b7a366faf72cffabae2a3",
+      "stdlib/Srgb/tests/transfer-tests.jai": "a2f340a635e8db0488f06866e7e576bd83ea077a0da07d08b317ff928c51ed7e",
+      "stdlib/Srgb/transfer.jai": "fe5eeaa128acd3a157a41c4ce4bac23d8beb92d9ce0f0e6d9754fa34cee44992",
+      "stdlib/legacy/Math/constants.jai": "f273ba62c24810bb1671bfc9d626b22097788f462cdd4a9a799c3d1f612341ab",
+      "stdlib/legacy/Math/matrix.jai": "b778974e425a4af8f82e48a80f0bbdcc6f1ccc855fcfc8bcb4543bc7c48e2871",
+      "stdlib/legacy/Math/module.jai": "eedaf7a0162e30b90d49796a702497ee610cd695a1e951c36e27b3e403ba8efb",
+      "stdlib/legacy/Math/plane.jai": "2e166b1ca03a989e1f8161049c3b01740441ee7dbaa9a527c8a82cb231308c35",
+      "stdlib/legacy/Math/print.jai": "a8d961828b788d461c33c048ac6a95be3787bdbb32e9b7c305ecaf08e67b034a",
+      "stdlib/legacy/Math/scalar.jai": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "stdlib/legacy/Math/vectors.jai": "3a584fa72edc55ac90314409b450b3cc6623729e8a7de52577877abf0d9bcbcf"
+    },
+    "source_hashes_after": {
+      "stdlib/Float16.jai": "55c53cf4a47556aaf75b271a58c44b8d5dacfa7b5dc995b70df3a9f84e995ca9",
+      "stdlib/Float16/conversion.jai": "0dba6b7d613b39fe653e4b257cb6d375116ec192319c00a66e4d00561173bb3d",
+      "stdlib/Float16/tests/aggregate-tests.jai": "3c14ecaf496b74c634fc1fc7ca4fafecdf90767cd450ca1c8ec6bd3334f0582d",
+      "stdlib/GetRect/module.jai": "3a178cfce155a25d83de0558952b3642d50d7ce01ef2a51defc775f5aac760f8",
+      "stdlib/GetRect/tests/geometry-tests.jai": "b20ec1692eb35fd848da936b3dab87f566253988ea8a5dfe38e1bb6bd4471041",
+      "stdlib/GetRect_LeftHanded/module.jai": "c3b5b9489d126741d14e098b12b2d064e2ec3f6362bd8acf43e1144191417b49",
+      "stdlib/GetRect_LeftHanded/tests/geometry-tests.jai": "4e4951c309c49e8233588a70c13895f0baadb1e0fef37029fab725692aa778c4",
+      "stdlib/Machine_X64.jai": "648433c2cbdb7a91261bb0d7659771b73f8ed9fcc591a223ac20421c46b742c2",
+      "stdlib/Machine_X64/tests/feature-tests.jai": "8209fe48e55bcf63d8961d1deacdba9aac4bf6de522f9b3cd1992066d1ad6ed5",
+      "stdlib/Math/constants.jai": "31137622b517effbe11ffc370bf7fea9391f2cee34f804645493154946b50d69",
+      "stdlib/Math/matrix.jai": "d5699c3abee4677afe8bb4a333e86b89dcc121341d7b6f65e14c61df44abf8cc",
+      "stdlib/Math/module.jai": "35cef88babe36944b30222a1d25fe11d22901ce9a7a17b5709a6b34e3fb56db0",
+      "stdlib/Math/plane.jai": "86ff54c1aa22f3019a0688dbf479c0c760cfdd5e70d8df315d06a5e183aabda6",
+      "stdlib/Math/scalar.jai": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "stdlib/Math/tests/scalar-tests.jai": "7f4e54e4214083a0eda7c9fd55bef470e11d005e7199f172e2d5d4bae591cd62",
+      "stdlib/Math/tests/vector-matrix-tests.jai": "323c23af0583581686d18eb4a4e2f9e3201c66b87bb628e2bf3de26ed8cdfa6a",
+      "stdlib/Math/vectors.jai": "3a8e66dcced70453669b74705cd038716dd388ede29d3ef51b1715f925a535ba",
+      "stdlib/PCG.jai": "90c3cea6810cc855e4c79651ac0618753c3228ce58df299a68d30e5675480cfe",
+      "stdlib/PCG/tests/bounded-tests.jai": "3193567285839f227dd62bf96ded15ca02a7f39270a2e17bae110d94530f9e13",
+      "stdlib/PCG/transition.jai": "c02c0b33eedbfc76d8141ef94aa0bde5e1dd16d436b0de3d338b50fa7daf7f11",
+      "stdlib/Random.jai": "67c7fbd835dbb13016032a194f09b252bf38f9b2623d032ee26b029e9d71731f",
+      "stdlib/Random/generator.jai": "c2e6e9448a37d6bcaed446d2bb4fcd65c19a06af1da946924327bfcd160c505e",
+      "stdlib/Random/tests/sequence-tests.jai": "273683d586d0f0981a5aea92f2aa16335a7b2462a1c99b401182044a1ebf94eb",
+      "stdlib/Sloppy_Math.jai": "9d887762fcafacebd31a03ce0fa6b74c8c62d37329c5492a715f28c0d470eecf",
+      "stdlib/Sloppy_Math/tests/limits-tests.jai": "69167a2aeec01d21b729b7ed4715981f8117230b4bcb50d83463085c3b6f454d",
+      "stdlib/Srgb.jai": "19fd570f54b15cd74c048b5e7f15c5ff2c4f8728db2b7a366faf72cffabae2a3",
+      "stdlib/Srgb/tests/transfer-tests.jai": "a2f340a635e8db0488f06866e7e576bd83ea077a0da07d08b317ff928c51ed7e",
+      "stdlib/Srgb/transfer.jai": "fe5eeaa128acd3a157a41c4ce4bac23d8beb92d9ce0f0e6d9754fa34cee44992",
+      "stdlib/legacy/Math/constants.jai": "f273ba62c24810bb1671bfc9d626b22097788f462cdd4a9a799c3d1f612341ab",
+      "stdlib/legacy/Math/matrix.jai": "b778974e425a4af8f82e48a80f0bbdcc6f1ccc855fcfc8bcb4543bc7c48e2871",
+      "stdlib/legacy/Math/module.jai": "eedaf7a0162e30b90d49796a702497ee610cd695a1e951c36e27b3e403ba8efb",
+      "stdlib/legacy/Math/plane.jai": "2e166b1ca03a989e1f8161049c3b01740441ee7dbaa9a527c8a82cb231308c35",
+      "stdlib/legacy/Math/print.jai": "a8d961828b788d461c33c048ac6a95be3787bdbb32e9b7c305ecaf08e67b034a",
+      "stdlib/legacy/Math/scalar.jai": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "stdlib/legacy/Math/vectors.jai": "3a584fa72edc55ac90314409b450b3cc6623729e8a7de52577877abf0d9bcbcf"
+    },
+    "negative_control": "changing expected sqrt(4) from 2 to 3 produced compile-time assertion failure",
+    "summary": {
+      "authored_source_count": 35,
+      "syntax_parse_passed": 32,
+      "full_root_checks_passed": 6,
+      "full_root_checks_blocked": 4,
+      "compile_time_test_files_passed": 8,
+      "compile_time_geometry_test_files_dependency_blocked": 2
+    },
+    "not_claimed": [
+      "Verified build inputs for the frozen CLI",
+      "full historical/default API parity",
+      "all generic/interface helper instantiations",
+      "renderer/widget runtime acceptance in this numeric lane",
+      "certified transcendental ULP bounds",
+      "Random default context forms executed",
+      "Machine_X64 hardware API implementation or execution"
+    ]
+  },
+  "sources": [
+    {
+      "source": "stdlib/Float16.jai",
+      "sha256": "55c53cf4a47556aaf75b271a58c44b8d5dacfa7b5dc995b70df3a9f84e995ca9",
+      "parse": {
+        "exit_code": 0,
+        "message": "8 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Float16/conversion.jai",
+      "sha256": "0dba6b7d613b39fe653e4b257cb6d375116ec192319c00a66e4d00561173bb3d",
+      "parse": {
+        "exit_code": 0,
+        "message": "5 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Float16/tests/aggregate-tests.jai",
+      "sha256": "3c14ecaf496b74c634fc1fc7ca4fafecdf90767cd450ca1c8ec6bd3334f0582d",
+      "parse": {
+        "exit_code": 0,
+        "message": "4 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/GetRect/module.jai",
+      "sha256": "3a178cfce155a25d83de0558952b3642d50d7ce01ef2a51defc775f5aac760f8",
+      "parse": {
+        "exit_code": 0,
+        "message": "36 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/GetRect/tests/geometry-tests.jai",
+      "sha256": "b20ec1692eb35fd848da936b3dab87f566253988ea8a5dfe38e1bb6bd4471041",
+      "parse": {
+        "exit_code": 0,
+        "message": "3 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/GetRect_LeftHanded/module.jai",
+      "sha256": "c3b5b9489d126741d14e098b12b2d064e2ec3f6362bd8acf43e1144191417b49",
+      "parse": {
+        "exit_code": 0,
+        "message": "36 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/GetRect_LeftHanded/tests/geometry-tests.jai",
+      "sha256": "4e4951c309c49e8233588a70c13895f0baadb1e0fef37029fab725692aa778c4",
+      "parse": {
+        "exit_code": 0,
+        "message": "3 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Machine_X64.jai",
+      "sha256": "648433c2cbdb7a91261bb0d7659771b73f8ed9fcc591a223ac20421c46b742c2",
+      "parse": {
+        "exit_code": 0,
+        "message": "11 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Machine_X64/tests/feature-tests.jai",
+      "sha256": "8209fe48e55bcf63d8961d1deacdba9aac4bf6de522f9b3cd1992066d1ad6ed5",
+      "parse": {
+        "exit_code": 0,
+        "message": "3 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/constants.jai",
+      "sha256": "31137622b517effbe11ffc370bf7fea9391f2cee34f804645493154946b50d69",
+      "parse": {
+        "exit_code": 0,
+        "message": "27 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/matrix.jai",
+      "sha256": "d5699c3abee4677afe8bb4a333e86b89dcc121341d7b6f65e14c61df44abf8cc",
+      "parse": {
+        "exit_code": 0,
+        "message": "105 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/module.jai",
+      "sha256": "35cef88babe36944b30222a1d25fe11d22901ce9a7a17b5709a6b34e3fb56db0",
+      "parse": {
+        "exit_code": 0,
+        "message": "21 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/plane.jai",
+      "sha256": "86ff54c1aa22f3019a0688dbf479c0c760cfdd5e70d8df315d06a5e183aabda6",
+      "parse": {
+        "exit_code": 0,
+        "message": "11 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/scalar.jai",
+      "sha256": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "parse": {
+        "exit_code": 0,
+        "message": "53 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/tests/scalar-tests.jai",
+      "sha256": "7f4e54e4214083a0eda7c9fd55bef470e11d005e7199f172e2d5d4bae591cd62",
+      "parse": {
+        "exit_code": 0,
+        "message": "73 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/tests/vector-matrix-tests.jai",
+      "sha256": "323c23af0583581686d18eb4a4e2f9e3201c66b87bb628e2bf3de26ed8cdfa6a",
+      "parse": {
+        "exit_code": 0,
+        "message": "7 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Math/vectors.jai",
+      "sha256": "3a8e66dcced70453669b74705cd038716dd388ede29d3ef51b1715f925a535ba",
+      "parse": {
+        "exit_code": 0,
+        "message": "122 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/PCG.jai",
+      "sha256": "90c3cea6810cc855e4c79651ac0618753c3228ce58df299a68d30e5675480cfe",
+      "parse": {
+        "exit_code": 0,
+        "message": "16 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/PCG/tests/bounded-tests.jai",
+      "sha256": "3193567285839f227dd62bf96ded15ca02a7f39270a2e17bae110d94530f9e13",
+      "parse": {
+        "exit_code": 0,
+        "message": "3 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/PCG/transition.jai",
+      "sha256": "c02c0b33eedbfc76d8141ef94aa0bde5e1dd16d436b0de3d338b50fa7daf7f11",
+      "parse": {
+        "exit_code": 0,
+        "message": "1 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Random.jai",
+      "sha256": "67c7fbd835dbb13016032a194f09b252bf38f9b2623d032ee26b029e9d71731f",
+      "parse": {
+        "exit_code": 0,
+        "message": "13 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Random/generator.jai",
+      "sha256": "c2e6e9448a37d6bcaed446d2bb4fcd65c19a06af1da946924327bfcd160c505e",
+      "parse": {
+        "exit_code": 0,
+        "message": "9 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Random/tests/sequence-tests.jai",
+      "sha256": "273683d586d0f0981a5aea92f2aa16335a7b2462a1c99b401182044a1ebf94eb",
+      "parse": {
+        "exit_code": 0,
+        "message": "6 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Sloppy_Math.jai",
+      "sha256": "9d887762fcafacebd31a03ce0fa6b74c8c62d37329c5492a715f28c0d470eecf",
+      "parse": {
+        "exit_code": 0,
+        "message": "8 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Sloppy_Math/tests/limits-tests.jai",
+      "sha256": "69167a2aeec01d21b729b7ed4715981f8117230b4bcb50d83463085c3b6f454d",
+      "parse": {
+        "exit_code": 0,
+        "message": "3 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Srgb.jai",
+      "sha256": "19fd570f54b15cd74c048b5e7f15c5ff2c4f8728db2b7a366faf72cffabae2a3",
+      "parse": {
+        "exit_code": 0,
+        "message": "14 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Srgb/tests/transfer-tests.jai",
+      "sha256": "a2f340a635e8db0488f06866e7e576bd83ea077a0da07d08b317ff928c51ed7e",
+      "parse": {
+        "exit_code": 0,
+        "message": "5 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/Srgb/transfer.jai",
+      "sha256": "fe5eeaa128acd3a157a41c4ce4bac23d8beb92d9ce0f0e6d9754fa34cee44992",
+      "parse": {
+        "exit_code": 0,
+        "message": "4 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/constants.jai",
+      "sha256": "f273ba62c24810bb1671bfc9d626b22097788f462cdd4a9a799c3d1f612341ab",
+      "parse": {
+        "exit_code": 0,
+        "message": "27 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/matrix.jai",
+      "sha256": "b778974e425a4af8f82e48a80f0bbdcc6f1ccc855fcfc8bcb4543bc7c48e2871",
+      "parse": {
+        "exit_code": 1,
+        "message": "stdlib/legacy/Math/matrix.jai:5:5: error: expected identifier"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/module.jai",
+      "sha256": "eedaf7a0162e30b90d49796a702497ee610cd695a1e951c36e27b3e403ba8efb",
+      "parse": {
+        "exit_code": 0,
+        "message": "24 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/plane.jai",
+      "sha256": "2e166b1ca03a989e1f8161049c3b01740441ee7dbaa9a527c8a82cb231308c35",
+      "parse": {
+        "exit_code": 1,
+        "message": "stdlib/legacy/Math/plane.jai:3:5: error: expected identifier"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/print.jai",
+      "sha256": "a8d961828b788d461c33c048ac6a95be3787bdbb32e9b7c305ecaf08e67b034a",
+      "parse": {
+        "exit_code": 0,
+        "message": "4 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/scalar.jai",
+      "sha256": "9e064d7df15571fb29653b18bd955d04dcdacf6acbf1fa90a936f9f56589521b",
+      "parse": {
+        "exit_code": 0,
+        "message": "53 items (syntax stage only)"
+      }
+    },
+    {
+      "source": "stdlib/legacy/Math/vectors.jai",
+      "sha256": "3a584fa72edc55ac90314409b450b3cc6623729e8a7de52577877abf0d9bcbcf",
+      "parse": {
+        "exit_code": 1,
+        "message": "stdlib/legacy/Math/vectors.jai:4:5: error: expected identifier"
+      }
+    }
+  ],
+  "previous_evidence": [
+    {
+      "evidence": {
+        "frozen_cli": "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs",
+        "runtime_support": "off",
+        "module_path": "stdlib",
+        "preload": "prelude/Preload.jai",
+        "passed_compile_time_assertions": [
+          "Math/tests/scalar-tests.jai scalar IEEE edge cases and ordinary-value identities; 64 chunks covering every half bit pattern",
+          "Random/tests/sequence-tests.jai documented multiplier vectors, replay, intervals, PCG XSH-RR vectors",
+          "Machine_X64/tests/feature-tests.jai packed leaf changes",
+          "Srgb/tests/transfer-tests.jai transfer thresholds, black/white/0.5 channels, and inverse pairs"
+        ],
+        "negative_control": "changing expected sqrt(4) from 2 to 3 produced compile-time assertion failure",
+        "not_claimed": [
+          "full Math root checked-library pass",
+          "renderer/widget runtime acceptance",
+          "certified transcendental ULP bounds",
+          "Machine_X64 hardware instruction execution"
+        ]
+      },
+      "sources": [
+        {
+          "source": "stdlib/Math/module.jai",
+          "sha256": "eedaf7a0162e30b90d49796a702497ee610cd695a1e951c36e27b3e403ba8efb",
+          "parse": {
+            "exit_code": 0,
+            "message": "24 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Math/constants.jai",
+          "sha256": "31137622b517effbe11ffc370bf7fea9391f2cee34f804645493154946b50d69",
+          "parse": {
+            "exit_code": 0,
+            "message": "27 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Math/scalar.jai",
+          "sha256": "73702b6f2de01bc4b6bf920dc300c46aa41f73d21f8ac1372c01923b11679648",
+          "parse": {
+            "exit_code": 0,
+            "message": "53 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Math/vectors.jai",
+          "sha256": "35a0d37a33976000fb39393e59a6f8ac6a9d3092226251bb518072bfff555297",
+          "parse": {
+            "exit_code": 1,
+            "message": "stdlib/Math/vectors.jai:4:5: error: expected identifier"
+          }
+        },
+        {
+          "source": "stdlib/Math/matrix.jai",
+          "sha256": "b778974e425a4af8f82e48a80f0bbdcc6f1ccc855fcfc8bcb4543bc7c48e2871",
+          "parse": {
+            "exit_code": 1,
+            "message": "stdlib/Math/matrix.jai:5:5: error: expected identifier"
+          }
+        },
+        {
+          "source": "stdlib/Math/plane.jai",
+          "sha256": "2e166b1ca03a989e1f8161049c3b01740441ee7dbaa9a527c8a82cb231308c35",
+          "parse": {
+            "exit_code": 1,
+            "message": "stdlib/Math/plane.jai:3:5: error: expected identifier"
+          }
+        },
+        {
+          "source": "stdlib/Math/print.jai",
+          "sha256": "a8d961828b788d461c33c048ac6a95be3787bdbb32e9b7c305ecaf08e67b034a",
+          "parse": {
+            "exit_code": 0,
+            "message": "4 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Math/tests/scalar-tests.jai",
+          "sha256": "7f4e54e4214083a0eda7c9fd55bef470e11d005e7199f172e2d5d4bae591cd62",
+          "parse": {
+            "exit_code": 0,
+            "message": "73 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Float16.jai",
+          "sha256": "5582735b221e0a3edab3407d98a722d5662a9df1a93d0106b91c4b7b00a9f993",
+          "parse": {
+            "exit_code": 1,
+            "message": "stdlib/Float16.jai:8:5: error: expected identifier"
+          }
+        },
+        {
+          "source": "stdlib/Float16/conversion.jai",
+          "sha256": "0dba6b7d613b39fe653e4b257cb6d375116ec192319c00a66e4d00561173bb3d",
+          "parse": {
+            "exit_code": 0,
+            "message": "5 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Sloppy_Math.jai",
+          "sha256": "9d887762fcafacebd31a03ce0fa6b74c8c62d37329c5492a715f28c0d470eecf",
+          "parse": {
+            "exit_code": 0,
+            "message": "8 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Srgb.jai",
+          "sha256": "e66b58018aa8ec4bb4be4adcc49d98fccb9fb9a2c2acf9a0112a03ddb825b820",
+          "parse": {
+            "exit_code": 0,
+            "message": "14 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Random.jai",
+          "sha256": "67c7fbd835dbb13016032a194f09b252bf38f9b2623d032ee26b029e9d71731f",
+          "parse": {
+            "exit_code": 0,
+            "message": "13 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Random/generator.jai",
+          "sha256": "c2e6e9448a37d6bcaed446d2bb4fcd65c19a06af1da946924327bfcd160c505e",
+          "parse": {
+            "exit_code": 0,
+            "message": "9 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Random/tests/sequence-tests.jai",
+          "sha256": "273683d586d0f0981a5aea92f2aa16335a7b2462a1c99b401182044a1ebf94eb",
+          "parse": {
+            "exit_code": 0,
+            "message": "6 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/PCG.jai",
+          "sha256": "17fc9687d56f582d0ae77136ad9507b8f8d37304feb6fd3b7aaac873eabb9b1c",
+          "parse": {
+            "exit_code": 0,
+            "message": "17 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/PCG/transition.jai",
+          "sha256": "c02c0b33eedbfc76d8141ef94aa0bde5e1dd16d436b0de3d338b50fa7daf7f11",
+          "parse": {
+            "exit_code": 0,
+            "message": "1 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Machine_X64.jai",
+          "sha256": "648433c2cbdb7a91261bb0d7659771b73f8ed9fcc591a223ac20421c46b742c2",
+          "parse": {
+            "exit_code": 0,
+            "message": "11 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Machine_X64/tests/feature-tests.jai",
+          "sha256": "8209fe48e55bcf63d8961d1deacdba9aac4bf6de522f9b3cd1992066d1ad6ed5",
+          "parse": {
+            "exit_code": 0,
+            "message": "3 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/GetRect/module.jai",
+          "sha256": "f7cd610b49d6a001bed27dcaa95706e52c3c01bd872da08357640957ea37314a",
+          "parse": {
+            "exit_code": 0,
+            "message": "36 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/GetRect/tests/geometry-tests.jai",
+          "sha256": "b20ec1692eb35fd848da936b3dab87f566253988ea8a5dfe38e1bb6bd4471041",
+          "parse": {
+            "exit_code": 0,
+            "message": "3 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/GetRect_LeftHanded/module.jai",
+          "sha256": "c3b5b9489d126741d14e098b12b2d064e2ec3f6362bd8acf43e1144191417b49",
+          "parse": {
+            "exit_code": 0,
+            "message": "36 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/GetRect_LeftHanded/tests/geometry-tests.jai",
+          "sha256": "4e4951c309c49e8233588a70c13895f0baadb1e0fef37029fab725692aa778c4",
+          "parse": {
+            "exit_code": 0,
+            "message": "3 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Srgb/transfer.jai",
+          "sha256": "fe5eeaa128acd3a157a41c4ce4bac23d8beb92d9ce0f0e6d9754fa34cee44992",
+          "parse": {
+            "exit_code": 0,
+            "message": "4 items (syntax stage only)"
+          }
+        },
+        {
+          "source": "stdlib/Srgb/tests/transfer-tests.jai",
+          "sha256": "a2f340a635e8db0488f06866e7e576bd83ea077a0da07d08b317ff928c51ed7e",
+          "parse": {
+            "exit_code": 0,
+            "message": "5 items (syntax stage only)"
+          }
+        }
+      ],
+      "note": "Historical immutable CLI receipt; these source hashes predate the modern/legacy split and later edits. Prior blockers are not current statuses."
+    }
+  ],
+  "source_edits_quiescent": true,
+  "documentation": "docs/stdlib/math-numeric.md"
+}

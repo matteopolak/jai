@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "module": "Command_Line",
+  "implementation": "independently-authored-jai",
+  "public_contract_source": "reference/modules/Command_Line.jai",
+  "newer_public_contract": "No Command_Line module is present in the pinned withlang-dev/open-jai module tree.",
+  "sources": ["stdlib/Command_Line.jai"],
+  "public_apis": ["Is_Set", "Argument_Flags", "Default_Argument_Flags", "parse_arguments", "show_help"],
+  "additive_apis": ["parse_arguments_from"],
+  "implemented_behaviors": [
+    "generated bool marker fields excluding constant/imported members",
+    "default retention and explicit-default markers",
+    "bool/string/integer/float/ordinary-enum/fixed-array option values",
+    "integer range checks and complete numeric token validation",
+    "positional arguments and double-dash terminator",
+    "single/double dash policy and help triggers",
+    "duplicate and unknown option errors",
+    "sorted/aligned help descriptions from reflected notes",
+    "owned string/positional copies and argv cleanup"
+  ],
+  "unsupported_behaviors": [
+    "enum_flags values",
+    "pointer or struct option values",
+    "view and resizable array option values",
+    "option aliases, bundled short options, and name=value shorthand"
+  ],
+  "validation": {
+    "syntax": {
+      "status": "passed",
+      "tool": "target/debug/examples/source-check",
+      "files": ["stdlib/Command_Line.jai", "stdlib/tests/command-line.jai"]
+    },
+    "semantic": {
+      "status": "blocked",
+      "compiler": "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs",
+      "profile": "authored Preload, authored stdlib, explicit Runtime Support with entry/initialization/backtrace=false",
+      "diagnostic": "stdlib/Basic/String_Builder.jai:2:38: this constant expression requires typed compile-time evaluation"
+    },
+    "runtime": {
+      "status": "not-run",
+      "fixture": "stdlib/tests/command-line.jai",
+      "reason": "The dependency graph has not completed semantic admission; no behavioral assertions are claimed as executed."
+    },
+    "help_description_notes": {
+      "status": "unverified",
+      "reason": "The existing parser rejects supplied @quoted-string note syntax; the authored fixture omits that spelling."
+    }
+  },
+  "third_party_scope": {
+    "jaison": "Unchanged corpus compatibility target; no replacement source is authored."
+  }
+}

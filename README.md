@@ -38,7 +38,8 @@ main :: () -> int {
 | Foreign calls and native builds | LLVM library backend; host ABI tests and selected system-library calls |
 | Debugging | Line tables, locals, records and recursive pointers tested |
 | Compiler bootstrap | Independently authored source prelude type-checks; runtime integration in progress |
-| Full standard library and reference examples | Not compiling yet |
+| Independent standard library | Authored modules included; full compilation and behavior testing pending |
+| Reference examples | Source checks in progress; complete coverage pending |
 | Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |
 | Windows, mobile, WebAssembly | C ABI and object tests; runtime compatibility unverified |
 
@@ -61,6 +62,8 @@ main :: () -> int {
 ```
 
 This example is included as [compile-time-record.jai](examples/compile-time-record.jai).
+
+An independently authored standard library is included in [`stdlib/`](stdlib/). Its [coverage report](docs/stdlib/api-coverage.md) records implemented APIs, source checks, and the remaining work.
 
 ## Try it
 

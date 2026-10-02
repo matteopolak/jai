@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "group": "storage-layout",
+  "implementation_origin": "independently authored Jai procedures; supplied sources inspected for public contracts only",
+  "contract_priority": "maintained OpenJai modules first; incompatible older layouts use legacy module names",
+  "behavior_status": "source implementations present; syntax checked; semantic and runtime behavior unverified",
+  "modules": [
+    {
+      "name": "Bucket_Array",
+      "path": "stdlib/Bucket_Array.jai",
+      "contract_source": "corpus/upstream/withlang-dev--open-jai/modules/Bucket_Array/module.jai",
+      "implemented_apis": [
+        "Bucket_Array",
+        "Bucket_Locator",
+        "bucket_array_add",
+        "bucket_array_find",
+        "bucket_array_remove",
+        "bucket_array_reset"
+      ],
+      "additional_apis": [
+        "bucket_array_free",
+        "operator *[]",
+        "for_expansion"
+      ],
+      "implemented_behaviors": [
+        "single-index locators",
+        "parallel item and occupancy arrays",
+        "lowest vacant position reuse",
+        "accurate bucket vacancy metadata",
+        "reset retaining capacity",
+        "default value for absent locators"
+      ],
+      "compatibility_gaps": [
+        "Returned pointers may move when items grows, as implied by maintained resizable-array storage.",
+        "Old two-part locator and stable-address bucket layout require legacy/Bucket_Array."
+      ]
+    },
+    {
+      "name": "Pool",
+      "path": "stdlib/Pool.jai",
+      "contract_source": "corpus/upstream/withlang-dev--open-jai/modules/Pool/module.jai",
+      "implemented_apis": [
+        "Pool",
+        "set_allocators",
+        "get",
+        "reset",
+        "release",
+        "pool_allocator_proc"
+      ],
+      "implemented_behaviors": [
+        "maintained memblock_size, bytes_left, current_block, and integer current_pos fields",
+        "reusable heap block chain",
+        "8-byte allocation alignment",
+        "lazy initialization",
+        "whole-pool reset and release",
+        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+      ],
+      "compatibility_gaps": [
+        "pool_allocator_proc is a callable procedure rather than the maintained source's integer intrinsic marker.",
+        "Source management fields blocks, active, and block_allocator are appended; exact binary layout is different.",
+        "Thread and independent heap allocator modes reject explicitly.",
+        "Old configurable pool layout requires legacy/Pool."
+      ]
+    },
+    {
+      "name": "Flat_Pool",
+      "path": "stdlib/Flat_Pool.jai",
+      "contract_source": "corpus/upstream/withlang-dev--open-jai/modules/Flat_Pool/module.jai",
+      "implemented_apis": [
+        "Flat_Pool",
+        "get",
+        "reset",
+        "fini",
+        "flat_pool_allocator_proc"
+      ],
+      "additional_apis": [
+        "init"
+      ],
+      "implemented_behaviors": [
+        "maintained integer position and capacity fields",
+        "alignment default 8",
+        "single contiguous heap reservation",
+        "lazy initialization",
+        "reset stamping",
+        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+      ],
+      "compatibility_gaps": [
+        "flat_pool_allocator_proc is a callable procedure rather than the maintained source's integer intrinsic marker.",
+        "A source backing_allocator field is appended; exact binary layout is different.",
+        "Reservation is eager heap memory, not native virtual-page reservation or incremental commitment.",
+        "Thread and independent heap allocator modes reject explicitly.",
+        "Old pointer-position layout and module parameters require legacy/Flat_Pool."
+      ]
+    },
+    {
+      "name": "legacy/Bucket_Array",
+      "path": "stdlib/legacy/Bucket_Array.jai",
+      "contract_source": "reference/modules/Bucket_Array.jai",
+      "implemented_apis": [
+        "Bucket_Array",
+        "Bucket",
+        "Bucket_Locator",
+        "bucket_array_reset",
+        "bucket_array_add",
+        "bucket_array_find",
+        "bucket_array_remove",
+        "find_and_occupy_empty_slot",
+        "operator *[]",
+        "for_expansion"
+      ],
+      "implemented_behaviors": [
+        "stable bucket allocations",
+        "two-part locators",
+        "occupied-slot reuse",
+        "dense forward or reverse iterator indices",
+        "optional pointer iteration",
+        "default initialization on slot acquisition",
+        "reset releases all backing storage"
+      ],
+      "compatibility_gaps": [
+        "Locators have no generation counter; removal followed by reuse intentionally reuses the location."
+      ]
+    },
+    {
+      "name": "legacy/Pool",
+      "path": "stdlib/legacy/Pool.jai",
+      "contract_source": "reference/modules/Pool.jai",
+      "implemented_apis": [
+        "Pool",
+        "POOL_BUCKET_SIZE_DEFAULT",
+        "POOL_OVERSIZED_SIZE_DEFAULT",
+        "STAMP",
+        "HEADER_SIZE",
+        "set_allocators",
+        "get",
+        "reset",
+        "release",
+        "pool_allocator_proc",
+        "calculate_used_memory",
+        "CAPS_VERSION_STRING"
+      ],
+      "implemented_behaviors": [
+        "legacy public fields and defaults",
+        "configurable power-of-two alignment",
+        "retained unused blocks",
+        "oversized allocation list",
+        "reset stamping and optional block freeing",
+        "oversized allocation logging hooks",
+        "consumed in-band byte and oversized-object counts",
+        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+      ],
+      "compatibility_gaps": [
+        "USE_UNMAPPING_ALLOCATOR=true rejects at compile time; no native unmapping dependency is supplied.",
+        "Private Memblock metadata and HEADER_SIZE differ from the supplied implementation.",
+        "Thread and independent heap allocator modes reject explicitly."
+      ]
+    },
+    {
+      "name": "legacy/Flat_Pool",
+      "path": "stdlib/legacy/Flat_Pool.jai",
+      "contract_source": "reference/modules/Flat_Pool.jai",
+      "implemented_apis": [
+        "Flat_Pool",
+        "init",
+        "get",
+        "reset",
+        "fini",
+        "flat_pool_allocator_proc",
+        "CAPS_VERSION_STRING"
+      ],
+      "implemented_behaviors": [
+        "legacy pointer-position fields",
+        "legacy module defaults",
+        "single contiguous heap reservation",
+        "alignment",
+        "reset stamping",
+        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+      ],
+      "compatibility_gaps": [
+        "Reservation is eager heap memory; first_uncommitted_page equals address_limit because the complete reservation is backed immediately.",
+        "A source backing_allocator field is appended; exact binary layout is different.",
+        "Thread and independent heap allocator modes reject explicitly."
+      ]
+    },
+    {
+      "name": "Treemap",
+      "path": "stdlib/Treemap.jai",
+      "contract_source": "reference/modules/Treemap.jai",
+      "implemented_apis": [
+        "Border_Direction",
+        "Display_Node",
+        "Treemap_Display",
+        "Treemap_Node",
+        "Treemap",
+        "Border_Proc",
+        "add_node",
+        "recompute_if_dirty",
+        "init_treemap_display",
+        "size_children",
+        "flush_nodes",
+        "get_index"
+      ],
+      "implemented_behaviors": [
+        "stable hierarchy nodes using legacy/Bucket_Array",
+        "recursive parent weight aggregation",
+        "stable descending child weight sorting",
+        "independently authored squarified rows",
+        "intrusive border callbacks",
+        "zero-weight and zero-size rectangles",
+        "dirty revision tracking across multiple displays"
+      ],
+      "compatibility_gaps": [
+        "Source revision fields are appended to Treemap and Treemap_Display; exact binary layouts differ.",
+        "Raw bucket removal and cyclic hierarchy mutation are unsupported; there is no public tree deletion API.",
+        "Geometry has not been checked against legacy outputs or a rendered treemap."
+      ]
+    },
+    {
+      "name": "Soa",
+      "path": "stdlib/Soa.jai",
+      "contract_source": "reference/modules/Soa.jai",
+      "status": "partial-source-implementation",
+      "implemented_apis": [
+        "Soa",
+        "operator []",
+        "operator []=",
+        "for_expansion"
+      ],
+      "implemented_behaviors": [
+        "fixed packed member columns",
+        "default row initialization before first assignment",
+        "indexed reconstruction and assignment",
+        "overlapping member aliases skipped",
+        "forward and reverse value iteration",
+        "mutable temporary pointer iteration with writeback"
+      ],
+      "compatibility_gaps": [
+        "Generated named member arrays such as soa.x are not implemented.",
+        "Physical storage uses byte columns plus a written bitmap and does not match the supplied generated record layout.",
+        "Union records reject explicitly."
+      ]
+    },
+    {
+      "name": "Relative_Pointers",
+      "path": "stdlib/Relative_Pointers.jai",
+      "contract_source": "reference/modules/Relative_Pointers.jai",
+      "implemented_apis": [
+        "Relative_Pointer",
+        "Relative_String",
+        "decode",
+        "encode",
+        "decode_relative_pointer",
+        "decode_relative_pointer_static",
+        "write_relative_pointer"
+      ],
+      "implemented_behaviors": [
+        "signed 1, 2, 4, or 8 byte displacements",
+        "sign-bit XOR null encoding",
+        "self pointers",
+        "explicit-base decoding and writing",
+        "range rejection for reserved or unrepresentable displacements",
+        "relative string views"
+      ],
+      "compatibility_gaps": []
+    }
+  ],
+  "validation": {
+    "syntax": {
+      "status": "passed",
+      "compiler": "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs",
+      "command": "jai-rs parse FILE",
+      "files_passed": 9,
+      "compiler_sha256": "b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13"
+    },
+    "semantic": {
+      "status": "not-run",
+      "reason": "delegated scope authorizes source-only parser checks"
+    },
+    "runtime": {
+      "status": "not-run",
+      "reason": "delegated scope authorizes source-only parser checks"
+    },
+    "native": {
+      "status": "not-run",
+      "reason": "no supplied original binary or native artifact executed"
+    }
+  },
+  "authored_source_sha256": {
+    "stdlib/Bucket_Array.jai": "832e00af6ae1ed1bca2b980b6c9c806db14dce7b28085db1b605800ec2e92f87",
+    "stdlib/Pool.jai": "5d9c8b0339f3a73c3dbe8981df0272a664ff18550d444ee3c023d223f0b51a10",
+    "stdlib/Flat_Pool.jai": "4493ec85040a34ccdab2cdbbb7a0ba53bff72a27a3feeca9b6ebeab0be09b8b4",
+    "stdlib/legacy/Bucket_Array.jai": "9c400aa1d78c801c4728c9b9781fb969aa7e80243b662837aca9989c2112200e",
+    "stdlib/legacy/Pool.jai": "8a986ef97a1994a9f5a3a11b78be33aeac50caf03e098da8c70799a9e9619596",
+    "stdlib/legacy/Flat_Pool.jai": "12700f1cd3a3448f4217ed749f48572f1869ed1bb39f2f5a0556ce3cf9e7175d",
+    "stdlib/Treemap.jai": "642b46355d67f6e9686d4094c85fbd7efb79f32c968c3091a0d1c3c262353fec",
+    "stdlib/Soa.jai": "8997c59b6ffb92ed34dc09a25cf5b859f50a929c9b85ddcaa57aee4c3c8ff491",
+    "stdlib/Relative_Pointers.jai": "af7883ede7edfeaae148cf22fdc9e45e9810e1bfbc9ec4ac948f57c00e164f05"
+  }
+}
