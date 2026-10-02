@@ -702,6 +702,9 @@ impl TypeRegistry {
             .copied()
             .unwrap_or_default())
     }
+    pub(crate) fn reserve_record_reflection_policy_capacity(&mut self, additional: usize) {
+        self.record_reflection.reserve(additional);
+    }
     pub(crate) fn set_record_reflection_policy(
         &mut self,
         record: TypeId,

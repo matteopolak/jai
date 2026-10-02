@@ -38,6 +38,35 @@ impl RecordReflectionCommit {
     }
 }
 
+pub struct PreparedRecordReflectionTransaction<'a> {
+    types: &'a mut TypeRegistry,
+    changes: Box<[RecordReflectionChange]>,
+}
+
+impl fmt::Debug for PreparedRecordReflectionTransaction<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PreparedRecordReflectionTransaction")
+            .field("changes", &self.changes)
+            .finish_non_exhaustive()
+    }
+}
+
+impl PreparedRecordReflectionTransaction<'_> {
+    pub fn changes(&self) -> &[RecordReflectionChange] {
+        &self.changes
+    }
+
+    pub fn apply(self) -> RecordReflectionCommit {
+        for change in &self.changes {
+            self.types
+                .set_record_reflection_policy(change.record, change.after);
+        }
+        RecordReflectionCommit {
+            changes: self.changes,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum RecordReflectionTransactionError {
     Type(TypeError),
@@ -137,6 +166,13 @@ impl RecordReflectionTransaction {
         self,
         types: &mut TypeRegistry,
     ) -> Result<RecordReflectionCommit, RecordReflectionTransactionError> {
+        Ok(self.prepare(types)?.apply())
+    }
+
+    pub fn prepare(
+        self,
+        types: &mut TypeRegistry,
+    ) -> Result<PreparedRecordReflectionTransaction<'_>, RecordReflectionTransactionError> {
         self.validate(types)?;
         if self.changes.iter().any(|change| {
             change
@@ -145,10 +181,9 @@ impl RecordReflectionTransaction {
         }) {
             types.pointer(types.void())?;
         }
-        for change in &self.changes {
-            types.set_record_reflection_policy(change.record, change.after);
-        }
-        Ok(RecordReflectionCommit {
+        types.reserve_record_reflection_policy_capacity(self.changes.len());
+        Ok(PreparedRecordReflectionTransaction {
+            types,
             changes: self.changes.into_boxed_slice(),
         })
     }
@@ -175,6 +210,66 @@ mod tests {
 
     fn flags(flag: RecordReflectionFlag) -> RecordReflectionPolicy {
         RecordReflectionPolicy::from_flags([flag])
+    }
+
+    #[test]
+    fn prepared_updates_apply_without_a_second_validation_or_allocation_phase() {
+        let mut types = TypeRegistry::new();
+        let first = types.reserve_record(RecordKind::Struct);
+        let second = types.reserve_record(RecordKind::Union);
+        let hidden = flags(RecordReflectionFlag::NoTypeInfo);
+        let pointers = flags(RecordReflectionFlag::ProceduresAreVoidPointers);
+        let mut transaction = RecordReflectionTransaction::default();
+        transaction.stage(&types, first, hidden).unwrap();
+        transaction.stage(&types, second, pointers).unwrap();
+        let prepared = transaction.prepare(&mut types).unwrap();
+        assert_eq!(prepared.changes().len(), 2);
+        let receipt: RecordReflectionCommit = prepared.apply();
+        assert_eq!(receipt.changes()[0].record(), first);
+        assert_eq!(receipt.changes()[1].record(), second);
+        assert_eq!(types.record_reflection_policy(first).unwrap(), hidden);
+        assert_eq!(types.record_reflection_policy(second).unwrap(), pointers);
+        assert!(types.lookup(&TypeKind::Pointer(types.void())).is_some());
+    }
+
+    #[test]
+    fn cancelling_prepared_updates_keeps_policies_and_source_schema_unchanged() {
+        let mut types = TypeRegistry::new();
+        let record = types.reserve_record(RecordKind::Struct);
+        let flags = flags(RecordReflectionFlag::ProceduresAreVoidPointers);
+        let mut transaction = RecordReflectionTransaction::default();
+        transaction.stage(&types, record, flags).unwrap();
+        let prepared = transaction.prepare(&mut types).unwrap();
+        assert_eq!(prepared.changes()[0].after(), flags);
+        drop(prepared);
+        assert_eq!(
+            types.record_reflection_policy(record).unwrap(),
+            RecordReflectionPolicy::default()
+        );
+        assert!(types.runtime_type_header().is_none());
+    }
+
+    #[test]
+    fn stale_preparation_rejects_every_policy_before_auxiliary_interning() {
+        let mut types = TypeRegistry::new();
+        let first = types.reserve_record(RecordKind::Struct);
+        let second = types.reserve_record(RecordKind::Union);
+        let pointers = flags(RecordReflectionFlag::ProceduresAreVoidPointers);
+        let mut transaction = RecordReflectionTransaction::default();
+        transaction.stage(&types, first, pointers).unwrap();
+        transaction.stage(&types, second, pointers).unwrap();
+        types
+            .add_record_reflection_flags(second, flags(RecordReflectionFlag::NoSizeComplaint))
+            .unwrap();
+        assert!(matches!(
+            transaction.prepare(&mut types),
+            Err(RecordReflectionTransactionError::Stale { record, .. }) if record == second
+        ));
+        assert_eq!(
+            types.record_reflection_policy(first).unwrap(),
+            RecordReflectionPolicy::default()
+        );
+        assert!(types.lookup(&TypeKind::Pointer(types.void())).is_none());
     }
 
     #[test]

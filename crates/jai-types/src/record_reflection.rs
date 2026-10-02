@@ -4,8 +4,8 @@ use std::fmt;
 
 mod transactions;
 pub use transactions::{
-    RecordReflectionChange, RecordReflectionCommit, RecordReflectionTransaction,
-    RecordReflectionTransactionError,
+    PreparedRecordReflectionTransaction, RecordReflectionChange, RecordReflectionCommit,
+    RecordReflectionTransaction, RecordReflectionTransactionError,
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
