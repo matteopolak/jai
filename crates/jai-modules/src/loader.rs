@@ -3,6 +3,7 @@ mod callable_aliases;
 mod collisions;
 mod declaration_insertions;
 mod session;
+mod suspended_imports;
 use super::*;
 use crate::params::{Argument, ModuleKey};
 use jai_source::Identities;
@@ -789,18 +790,25 @@ impl<'a> Builder<'a> {
         file: FileInstanceId,
         import: &ImportDeclaration,
     ) -> Result<(), GraphError> {
-        let module = self.import_module(file, import)?;
-        self.graph.imports.push(ImportEdge {
+        let module = self.import_module_with_scope(
             file,
-            module,
-            location: import.location,
-        });
-        self.bind_import(file, import, module)
+            import,
+            suspended_imports::ImportBindingScope::File,
+        )?;
+        self.publish_import(file, import, module)
     }
     pub(super) fn import_module(
         &mut self,
         file: FileInstanceId,
         import: &ImportDeclaration,
+    ) -> Result<ModuleId, GraphError> {
+        self.import_module_with_scope(file, import, suspended_imports::ImportBindingScope::Lexical)
+    }
+    fn import_module_with_scope(
+        &mut self,
+        file: FileInstanceId,
+        import: &ImportDeclaration,
+        scope: suspended_imports::ImportBindingScope,
     ) -> Result<ModuleId, GraphError> {
         if let Some(module) = self.shared_prelude_import(import)? {
             return Ok(module);
@@ -861,9 +869,6 @@ impl<'a> Builder<'a> {
             if self.active_modules.contains(&module) {
                 return Err(self.cycle(DependencyKind::Import, path, Some(import.location)));
             }
-            if !self.completed_modules.contains(&module) {
-                self.expand_module(module, &path)?;
-            }
             module
         } else {
             if self
@@ -885,9 +890,11 @@ impl<'a> Builder<'a> {
             self.graph.source_requests.insert(module, key.clone());
             self.modules.insert(key, module);
             self.requests.insert(module, (arguments, program));
-            self.expand_module(module, &path)?;
             module
         };
+        if !self.completed_modules.contains(&module) {
+            self.expand_import_module(file, import, module, &path, scope)?;
+        }
         self.pending_imports.remove(&path);
         Ok(module)
     }
