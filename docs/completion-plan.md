@@ -17,7 +17,7 @@ Track supported source semantics and actual builds separately. The current bulk 
 | Compilation units | Scoped imports, source overlays, scalar/enum parameters, builtin/source-nominal type parameters and bound interfaces have graph/source/VM fixtures; target facts and transactional workspace scheduler tested | Native parameter acceptance, advanced generic/inherited/modified interfaces, actual CLI scheduled artifacts and advanced scope forms |
 | Compile-time engine | Checked VM with context, memory, transactions and replay; source `#run`, reflection and code insertion tested | Complete expansion/modification, compiler API schema and early generated declarations |
 | Native backend | LLVM object/optimization pipeline, system libraries, context, runtime memory/CAS intrinsics and static relocations tested | Complete ABI/targets, richer debug information and all source integration |
-| Runtime/library | Exact unchanged vendored Preload passes semantic checking and a generated native rebuild fixture; its type prefix adopts source identities | Compile actual runtime and every library module through appropriate entrypoints |
+| Runtime/library | Authored compiler prelude has complete schema, intrinsic and generated-source replay tests; genuine-source paired checks preserve the baseline's outcomes | Compile actual runtime and every library module through appropriate entrypoints |
 | Corpus | Recorded integrated CLI snapshot: 1,759/2,142 parse passes, 100 support-file check passes and one intended rejection with actual Preload and Runtime Support disabled; all lex passes; 36 positive native feature contracts and 10 intended rejections pass on a separate earlier feature checkpoint | Remaining syntax, application-root checks, actual project builds and runtime behavior |
 | Targets | Published scalar checks on ARM64 macOS and x86_64 Linux; additional host native fixtures | Hosted verification of the bulk implementation; Windows/mobile/wasm and platform dependencies |
 
@@ -37,7 +37,7 @@ Update the coverage table and corresponding subsystem docs as behavior becomes i
 
 ## Configuration
 
-Pinned source corpus revisions, platform SDKs, module/build parameters, Cargo's dependency-age policy and native tool paths affect acceptance. Original binary execution remains confined to inspected, authorized hosted experiments; original source upload authorization currently covers the single vendored Preload input.
+Pinned source corpus revisions, platform SDKs, module/build parameters, Cargo's dependency-age policy and native tool paths affect acceptance. The former hosted developer-help probe and vendor input are retired. Original native binaries/libraries remain static inputs on the development host, and other original source uploads are not authorized. Public bootstrap tests use the independently authored compiler prelude.
 
 ## Dependencies
 
