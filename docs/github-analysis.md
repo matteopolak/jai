@@ -12,7 +12,7 @@ The user initially declined reference transfer, then explicitly authorized the J
 
 The inspection workflow downloads that asset using its repository token only in the download step, removes executable permissions, verifies SHA-256, and uses independently installed LLVM to read headers, symbols and executable sections. It retains disassembly/capability reports for 14 days. This static workflow never invokes the supplied executable or loads its libraries.
 
-`macos-15` is a fresh ARM64 GitHub-hosted VM. Networking and workflow infrastructure remain present; this is not air-gapped isolation. The standard public runner is free under [GitHub's runner specification](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Static inspection cannot prove harmlessness. The user also authorized original execution in CI. The separate [bounded probe workflow](reference-probes.md) limits that experiment to sandboxed version/help after hosted static inspection.
+`macos-15` is a fresh ARM64 GitHub-hosted VM. Networking and workflow infrastructure remain present; this is not air-gapped isolation. The standard public runner is free under [GitHub's runner specification](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Static inspection cannot prove harmlessness. The user also authorized original execution in CI. The separate [bounded probe workflow](reference-probes.md) limits that experiment to sandboxed developer help after hosted static inspection.
 
 ## How to change it
 

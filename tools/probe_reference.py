@@ -46,7 +46,7 @@ def main():
     report = {'binary_sha256': actual, 'preload_sha256': preload_hash, 'platform': platform.platform(),
               'architecture': platform.machine(), 'executed_reference_code': True,
               'limits': {'wall_seconds': 15, 'cpu_seconds': 10, 'output_bytes_per_stream': 2 * 1024 * 1024},
-              'scope': 'version/help only; the inspected Preload bootstrap may be parsed; no supplied libraries or generated programs are run',
+              'scope': 'developer help only; the inspected Preload bootstrap may be parsed; no supplied libraries or generated programs are run',
               'assessment': 'observational evidence only; not certified harmless', 'probes': []}
     with tempfile.TemporaryDirectory(prefix='jai-probe-') as temp:
         scratch = Path(temp).resolve()
@@ -81,9 +81,9 @@ def main():
             (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
             raise SystemExit('Sandbox control failed; reference execution refused')
         binary.chmod(0o500)
-        for flag in ('-version', '-help'):
+        for arguments in (('--', 'help'),):
             with tempfile.TemporaryFile(dir=scratch) as stdout, tempfile.TemporaryFile(dir=scratch) as stderr:
-                process = subprocess.Popen(['/usr/bin/sandbox-exec', '-p', profile, str(binary), flag],
+                process = subprocess.Popen(['/usr/bin/sandbox-exec', '-p', profile, str(binary), *arguments],
                     cwd=scratch, env={'PATH': '/usr/bin:/bin', 'HOME': str(scratch), 'TMPDIR': str(scratch)},
                     stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
                     start_new_session=True, preexec_fn=limits)
@@ -95,12 +95,12 @@ def main():
                     os.killpg(process.pid, signal.SIGKILL)
                     process.wait()
                 stdout.seek(0); stderr.seek(0)
-                result = {'flag': flag, 'returncode': process.returncode, 'timed_out': timed_out,
+                result = {'arguments': list(arguments), 'returncode': process.returncode, 'timed_out': timed_out,
                           'stdout': stdout.read(2 * 1024 * 1024).decode('utf-8', errors='replace'),
                           'stderr': stderr.read(2 * 1024 * 1024).decode('utf-8', errors='replace')}
                 report['probes'].append(result)
                 (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
-                print(f'{flag}: exit={process.returncode}, timed_out={timed_out}')
+                print(f'{" ".join(arguments)}: exit={process.returncode}, timed_out={timed_out}')
         report['scratch_files'] = sorted(str(p.relative_to(scratch)) for p in scratch.rglob('*') if p.is_file())
         (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     if any(p['timed_out'] or p['returncode'] != 0 for p in report['probes']):

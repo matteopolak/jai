@@ -2,7 +2,7 @@
 
 ## What it is
 
-A separately dispatched, narrow execution experiment for the original compiler after static inspection and the user's authorization to run it in GitHub CI. It runs only version/help on a disposable native ARM64 macOS runner; original reference code is never executed on the development machine.
+A separately dispatched, narrow execution experiment for the original compiler after static inspection and the user's authorization to run it in GitHub CI. It now runs only the statically identified developer-help command (`-- help`) on a disposable native ARM64 macOS runner; original reference code is never executed on the development machine.
 
 ## How it works
 
@@ -22,7 +22,7 @@ The initial run [36940827475](https://github.com/matteopolak/jai/actions/runs/36
 
 A separate trusted local `cat` control confirmed that the root-directory read rule still denies contents of an inert file outside the allowed scratch directory while permitting the file inside it. A separately compiled, independently written socket control connected to an inert localhost listener without the sandbox, then failed with `EPERM` under the same policy. This checks direct socket denial; it does not establish that every Mach service is unable to proxy network activity. These local controls used installed Apple commands and our own inert test program; no provided compiler or library ran locally.
 
-The inspected bootstrap is `modules/Preload.jai`, 13,612 bytes, SHA-256 `1d00c2ecde58c5362c8e2edf978d57eb490a39076eb6ebf7d118a9811a851904`. It contains type declarations/compiler intrinsics, no imports, loads or `#run` directives. The user subsequently authorized uploading this file into a vendor folder. It is preserved byte for byte at `vendor/jai-0.2.009/modules/Preload.jai`, with origin and hash in `vendor/README.md`. The workflow stages it at the original compiler's expected `reference/modules/Preload.jai` path, and the helper allows read access to that exact file only. Other reference source remains local. A new hosted retry is pending; staging an input does not establish probe success.
+The inspected bootstrap is `modules/Preload.jai`, 13,612 bytes, SHA-256 `1d00c2ecde58c5362c8e2edf978d57eb490a39076eb6ebf7d118a9811a851904`. It contains type declarations/compiler intrinsics, no imports, loads or `#run` directives. The user subsequently authorized uploading this file into a vendor folder. It is preserved byte for byte at `vendor/jai-0.2.009/modules/Preload.jai`, with origin and hash in `vendor/README.md`. The workflow stages it at the original compiler's expected `reference/modules/Preload.jai` path, and the helper allows read access to that exact file only. Other reference source remains local. The initial vendored retry [36947152030](https://github.com/matteopolak/jai/actions/runs/36947152030) verified both hashes and passed the trusted control. Both provisional flags still exited 1, now requesting the implicit `Runtime_Support` module. Static strings identify `-- help` as the actual developer-help command; the next probe uses only that command. There is no verified standalone version flag. No additional reference source has been uploaded.
 
 ## Configuration
 

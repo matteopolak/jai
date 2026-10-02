@@ -39,7 +39,7 @@ jobs:
           mkdir -p reference/modules
           cp vendor/jai-0.2.009/modules/Preload.jai reference/modules/Preload.jai
           chmod 400 reference/modules/Preload.jai
-      - name: Native version/help probes with network denied
+      - name: Native developer-help probe with network denied
         run: python3 tools/probe_reference.py
       - name: Retain probe evidence
         if: always()
