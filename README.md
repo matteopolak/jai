@@ -30,6 +30,7 @@ main :: () -> int {
 | Local variables, nested scopes, scalar casts | Supported |
 | Arithmetic, comparisons, compound assignment | Supported |
 | `if`, `while`, short-circuit `&&` and `\|\|` | Supported |
+| Integer range loops, reverse iteration, named `break`/`continue` | Supported |
 | Native compilation | Small programs tested on ARM64 macOS |
 | Strings, arrays, pointers, structs, enums | Not implemented in compilation yet |
 | Imports, modules, generics, overloads | Not implemented yet |

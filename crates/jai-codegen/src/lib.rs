@@ -13,10 +13,10 @@ use inkwell::{
     },
 };
 use jai_sema::{
-    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local, Program,
-    Relation, Statement, ValueExpr,
+    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local,
+    LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
-use jai_syntax::{ReturnType, ScalarType};
+use jai_syntax::{Direction, ReturnType, ScalarType};
 use std::fmt;
 
 #[derive(Debug)]
@@ -97,6 +97,7 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
             slots,
             word,
             bit,
+            loops: Vec::new(),
         };
         g.block(&p.body)?;
         if p.body.flow == Flow::FallsThrough {
@@ -119,6 +120,12 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
     builder.build_return(Some(&status))?;
     module.verify().map_err(Error::Verification)?;
     Ok(module)
+}
+#[derive(Clone, Copy)]
+struct LoopBlocks<'ctx> {
+    id: LoopId,
+    next: BasicBlock<'ctx>,
+    end: BasicBlock<'ctx>,
 }
 // LLVM uses IntValue for both i64 and i1; keep language widths distinct.
 #[derive(Clone, Copy)]
@@ -161,6 +168,7 @@ struct Generator<'ctx, 'functions> {
     slots: Vec<Slot<'ctx>>,
     word: IntType<'ctx>,
     bit: IntType<'ctx>,
+    loops: Vec<LoopBlocks<'ctx>>,
 }
 impl<'ctx> Generator<'ctx, '_> {
     fn label(&self, name: &str) -> BasicBlock<'ctx> {
@@ -214,7 +222,7 @@ impl<'ctx> Generator<'ctx, '_> {
                     let c = self.boolean(condition)?;
                     let y = self.label("if.yes");
                     let n = self.label("if.no");
-                    // Both returning arms need no join block.
+                    // Both terminating arms need no join block.
                     let join = (yes.flow == Flow::FallsThrough || no.flow == Flow::FallsThrough)
                         .then(|| self.label("if.end"));
                     self.builder.build_conditional_branch(c.0, y, n)?;
@@ -230,16 +238,41 @@ impl<'ctx> Generator<'ctx, '_> {
                         self.builder.position_at_end(join);
                     }
                 }
-                Statement::While(condition, body) => {
+                Statement::Break(id) | Statement::Continue(id) => {
+                    let target = self
+                        .loops
+                        .iter()
+                        .rev()
+                        .find(|l| l.id == *id)
+                        .ok_or(Error::Invariant)?;
+                    let destination = match statement {
+                        Statement::Break(_) => target.end,
+                        Statement::Continue(_) => target.next,
+                        _ => return Err(Error::Invariant),
+                    };
+                    self.builder.build_unconditional_branch(destination)?;
+                }
+                Statement::Range(range) => self.range(range)?,
+                Statement::While {
+                    id,
+                    condition,
+                    body,
+                } => {
                     let test = self.label("while.test");
                     let inside = self.label("while.body");
                     let end = self.label("while.end");
                     self.builder.build_unconditional_branch(test)?;
                     self.builder.position_at_end(test);
-                    let c = self.boolean(condition)?;
+                    let c = self.loop_condition(condition)?;
                     self.builder.build_conditional_branch(c.0, inside, end)?;
                     self.builder.position_at_end(inside);
+                    self.loops.push(LoopBlocks {
+                        id: *id,
+                        next: test,
+                        end,
+                    });
                     self.block(body)?;
+                    self.loops.pop();
                     if body.flow == Flow::FallsThrough {
                         self.builder.build_unconditional_branch(test)?;
                     }
@@ -247,6 +280,74 @@ impl<'ctx> Generator<'ctx, '_> {
                 }
             }
         }
+        Ok(())
+    }
+    fn loop_condition(&mut self, condition: &LoopCondition) -> Result<Bit<'ctx>, Error> {
+        match condition {
+            LoopCondition::Value(e) => self.boolean(e),
+            LoopCondition::BoundInt(id, e) => {
+                let value = self.int(e)?;
+                self.builder.build_store(self.int_slot(*id)?.0, value.0)?;
+                Ok(Bit(self.builder.build_int_compare(
+                    IntPredicate::NE,
+                    value.0,
+                    self.word.const_zero(),
+                    "while.truth",
+                )?))
+            }
+            LoopCondition::BoundBool(id, e) => {
+                let value = self.boolean(e)?;
+                self.builder.build_store(self.bool_slot(*id)?.0, value.0)?;
+                Ok(value)
+            }
+        }
+    }
+    fn range(&mut self, range: &RangeLoop) -> Result<(), Error> {
+        let start = self.int(&range.start)?.0;
+        let end = self.int(&range.end)?.0;
+        let slot = self.int_slot(range.iterator)?.0;
+        let (first, last, done_predicate) = match range.direction {
+            Direction::Forward => (start, end, IntPredicate::SGE),
+            Direction::Reverse => (end, start, IntPredicate::SLE),
+        };
+        let inside = self.label("range.body");
+        let step = self.label("range.step");
+        let advance = self.label("range.advance");
+        let after = self.label("range.end");
+        self.builder.build_store(slot, first)?;
+        let nonempty =
+            self.builder
+                .build_int_compare(IntPredicate::SLE, start, end, "range.nonempty")?;
+        self.builder
+            .build_conditional_branch(nonempty, inside, after)?;
+        self.builder.position_at_end(inside);
+        self.loops.push(LoopBlocks {
+            id: range.id,
+            next: step,
+            end: after,
+        });
+        self.block(&range.body)?;
+        self.loops.pop();
+        if range.body.flow == Flow::FallsThrough {
+            self.builder.build_unconditional_branch(step)?;
+        }
+        self.builder.position_at_end(step);
+        let current = int_value(self.builder.build_load(self.word, slot, "range.current")?)?;
+        // Test before advancing: inclusive MAX/MIN endpoints cannot wrap the iterator.
+        let done = self
+            .builder
+            .build_int_compare(done_predicate, current, last, "range.done")?;
+        self.builder
+            .build_conditional_branch(done, after, advance)?;
+        self.builder.position_at_end(advance);
+        let one = self.word.const_int(1, false);
+        let next = match range.direction {
+            Direction::Forward => self.builder.build_int_add(current, one, "range.next")?,
+            Direction::Reverse => self.builder.build_int_sub(current, one, "range.next")?,
+        };
+        self.builder.build_store(slot, next)?;
+        self.builder.build_unconditional_branch(inside)?;
+        self.builder.position_at_end(after);
         Ok(())
     }
     fn call(&mut self, call: &Call) -> Result<CallSiteValue<'ctx>, Error> {

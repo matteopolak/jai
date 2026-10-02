@@ -158,3 +158,91 @@ fn boolean_compound_assignments_short_circuit() {
 fn hexadecimal_subtraction_without_whitespace() {
     assert_eq!(execute("main :: ()->int { return 0xFE-212; }"), 42);
 }
+
+#[test]
+fn inclusive_ranges_and_iterator_shadowing() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { total := 0; it := 7; for 1..3 { total += it; for 10..11 total += it; } return total + it; }"
+        ),
+        76
+    );
+}
+
+#[test]
+fn reverse_ranges_and_empty_ranges() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for < i: 1..3 n = n * 10 + i; for 5..4 n = 0; for < 5..4 n = 0; return n - 279; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn range_endpoints_are_snapshots_before_iterator_binding() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { it := 2; limit := 4; n := 0; for it..limit { limit = 0; n += it; } return n + it; }"
+        ),
+        11
+    );
+}
+
+#[test]
+fn range_continue_runs_step_and_named_jump_selects_outer_loop() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for outer: 1..5 { if outer == 2 continue; for inner: 1..4 { if inner == 2 continue outer; n += outer; } } return n; }"
+        ),
+        13
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for outer: 1..5 { for inner: 1..4 { if outer == 3 && inner == 2 break outer; n += 1; } } return n; }"
+        ),
+        9
+    );
+}
+
+#[test]
+fn while_jumps_and_named_condition_values() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; while true { n += 1; if n < 4 continue; else break; } return n; }"
+        ),
+        4
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 4; total := 0; while value := n { n -= 1; if value == 2 continue value; total += value; } return total; }"
+        ),
+        8
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; while outer := n < 10 { n += 1; while true { if n == 4 break outer; else continue outer; } } return n; }"
+        ),
+        4
+    );
+}
+
+#[test]
+fn mixed_returns_and_loop_exits_have_no_spurious_join() {
+    assert_eq!(
+        execute(
+            "f :: (b:bool)->int { while true { if b return 17; else break; } return 29; } main :: ()->int { return f(false) + f(true); }"
+        ),
+        46
+    );
+}
+
+#[test]
+fn inclusive_ranges_stop_at_integer_boundaries_without_wrapping() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; max := 9223372036854775807; min := -9223372036854775807 - 1; for max-1..max n += 1; for < min..min+1 n += 1; for max..max n += 1; for < min..min n += 1; return n; }"
+        ),
+        6
+    );
+}

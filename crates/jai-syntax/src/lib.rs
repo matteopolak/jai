@@ -120,6 +120,37 @@ pub enum Declaration {
         initializer: Option<Expression>,
     },
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Direction {
+    Forward,
+    Reverse,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum JumpKind {
+    Break,
+    Continue,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LoopTarget {
+    Innermost,
+    Named(Symbol),
+}
+#[derive(Clone, Debug)]
+pub enum WhileCondition {
+    Expression(Expression),
+    Binding {
+        name: Symbol,
+        initializer: Expression,
+    },
+}
+#[derive(Clone, Debug)]
+pub struct RangeLoop {
+    pub iterator: Symbol,
+    pub start: Expression,
+    pub end: Expression,
+    pub direction: Direction,
+    pub body: Vec<Statement>,
+}
 #[derive(Clone, Debug)]
 pub enum Statement {
     Declare(Declaration),
@@ -128,7 +159,13 @@ pub enum Statement {
     Return(Option<Expression>),
     Expression(Expression),
     If(Expression, Vec<Statement>, Vec<Statement>),
-    While(Expression, Vec<Statement>),
+    While(WhileCondition, Vec<Statement>),
+    Range(RangeLoop),
+    Jump {
+        kind: JumpKind,
+        target: LoopTarget,
+        span: Span,
+    },
     Block(Vec<Statement>),
 }
 #[derive(Clone, Debug)]
@@ -282,6 +319,13 @@ impl Parser<'_> {
             Ok(vec![self.statement()?])
         }
     }
+    fn named_prefix(&self, punctuation: Punct) -> bool {
+        self.token().kind == Kind::Ident
+            && self
+                .tokens
+                .get(self.at + 1)
+                .is_some_and(|t| t.kind == Kind::Punctuation(punctuation))
+    }
     fn statement(&mut self) -> Result<Statement, Diagnostic> {
         if self.is(Punct::OpenBrace) {
             return Ok(Statement::Block(self.block()?));
@@ -306,8 +350,57 @@ impl Parser<'_> {
             return Ok(Statement::If(cond, yes, no));
         }
         if self.keyword(Keyword::While) {
-            let cond = self.expression(0)?;
-            return Ok(Statement::While(cond, self.body()?));
+            let condition = if self.named_prefix(Punct::Infer) {
+                let name = self.name()?;
+                self.need(Punct::Infer)?;
+                WhileCondition::Binding {
+                    name,
+                    initializer: self.expression(0)?,
+                }
+            } else {
+                WhileCondition::Expression(self.expression(0)?)
+            };
+            return Ok(Statement::While(condition, self.body()?));
+        }
+        if self.keyword(Keyword::For) {
+            let direction = if self.take(Punct::Less) {
+                Direction::Reverse
+            } else {
+                Direction::Forward
+            };
+            let iterator = if self.named_prefix(Punct::Colon) {
+                let name = self.name()?;
+                self.need(Punct::Colon)?;
+                name
+            } else {
+                self.symbols.intern("it")
+            };
+            let start = self.expression(0)?;
+            self.need(Punct::Range)?;
+            let end = self.expression(0)?;
+            return Ok(Statement::Range(RangeLoop {
+                iterator,
+                start,
+                end,
+                direction,
+                body: self.body()?,
+            }));
+        }
+        let jump = match self.token().kind {
+            Kind::Keyword(Keyword::Break) => Some(JumpKind::Break),
+            Kind::Keyword(Keyword::Continue) => Some(JumpKind::Continue),
+            _ => None,
+        };
+        if let Some(kind) = jump {
+            let span = self.token().span;
+            self.at += 1;
+            let target = if self.token().kind == Kind::Ident {
+                LoopTarget::Named(self.name()?)
+            } else {
+                LoopTarget::Innermost
+            };
+            self.need(Punct::Semicolon)?;
+            return Ok(Statement::Jump { kind, target, span });
         }
         if self.token().kind == Kind::Ident
             && matches!(self.tokens[self.at + 1].kind, Kind::Punctuation(p)
@@ -488,6 +581,31 @@ mod tests {
     #[test]
     fn missing_delimiter() {
         assert!(parse("main :: () { return 1;").is_err());
+    }
+    #[test]
+    fn loop_syntax_has_domain_tags() {
+        let module =
+            parse("main :: () { for < i: 1..4 { continue i; } while value := true break value; }")
+                .unwrap();
+        let Statement::Range(range) = &module.procedures[0].body[0] else {
+            panic!("expected range")
+        };
+        assert_eq!(range.direction, Direction::Reverse);
+        assert!(
+            matches!(&range.body[0], Statement::Jump { kind: JumpKind::Continue, target: LoopTarget::Named(name), .. } if *name == range.iterator)
+        );
+        assert!(matches!(
+            &module.procedures[0].body[1],
+            Statement::While(WhileCondition::Binding { .. }, _)
+        ));
+        for invalid in [
+            "main :: () { for 1.. {} }",
+            "main :: () { for 1 {} }",
+            "main :: () { break 1; }",
+            "main :: () { for #v2 < 1..3 {} }",
+        ] {
+            assert!(parse(invalid).is_err(), "{invalid}");
+        }
     }
     #[test]
     fn reserved_words_are_not_names() {

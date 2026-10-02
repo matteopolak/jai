@@ -1,4 +1,5 @@
 //! Resolve names and construct a typed program before code generation.
+mod loops;
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
 use jai_syntax::{self as syntax, BinaryOp, ReturnType, ScalarType, UnaryOp};
 use std::collections::HashMap;
@@ -17,6 +18,7 @@ macro_rules! id {
 id!(ProcedureId);
 id!(IntLocal);
 id!(BoolLocal);
+id!(LoopId);
 #[derive(Clone, Copy, Debug)]
 pub enum Local {
     Int(IntLocal),
@@ -51,7 +53,7 @@ pub struct Procedure {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Flow {
     FallsThrough,
-    Returns,
+    Terminates,
 }
 #[derive(Debug)]
 pub struct Block {
@@ -69,8 +71,30 @@ pub enum Statement {
     DiscardBool(BoolExpr),
     CallVoid(Call),
     If(BoolExpr, Block, Block),
-    While(BoolExpr, Block),
+    While {
+        id: LoopId,
+        condition: LoopCondition,
+        body: Block,
+    },
+    Range(RangeLoop),
+    Break(LoopId),
+    Continue(LoopId),
     Block(Block),
+}
+#[derive(Debug)]
+pub enum LoopCondition {
+    Value(BoolExpr),
+    BoundInt(IntLocal, IntExpr),
+    BoundBool(BoolLocal, BoolExpr),
+}
+#[derive(Debug)]
+pub struct RangeLoop {
+    pub id: LoopId,
+    pub iterator: IntLocal,
+    pub start: IntExpr,
+    pub end: IntExpr,
+    pub direction: syntax::Direction,
+    pub body: Block,
 }
 #[derive(Clone, Copy, Debug)]
 pub enum IntOp {
@@ -216,13 +240,15 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             locals: Vec::new(),
             span: p.span,
             result: p.return_type,
+            loops: Vec::new(),
+            next_loop: 0,
         };
         let mut parameters = Vec::new();
         for param in &p.parameters {
             parameters.push(r.declare(param.name, param.ty)?);
         }
         let body = r.block(&p.body, false)?;
-        if p.return_type != ReturnType::Void && body.flow != Flow::Returns {
+        if p.return_type != ReturnType::Void && body.flow != Flow::Terminates {
             return Err(Diagnostic::new(
                 p.span,
                 "value-returning procedure may reach its end",
@@ -238,6 +264,10 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
     }
     Ok(Program { procedures, entry })
 }
+struct LoopBinding {
+    id: LoopId,
+    name: Option<Symbol>,
+}
 struct Resolver<'a> {
     signatures: &'a HashMap<Symbol, Signature>,
     symbols: &'a Symbols,
@@ -245,6 +275,8 @@ struct Resolver<'a> {
     locals: Vec<Local>,
     span: Span,
     result: ReturnType,
+    loops: Vec<LoopBinding>,
+    next_loop: usize,
 }
 impl Resolver<'_> {
     fn error(&self, text: impl Into<String>) -> Diagnostic {
@@ -258,7 +290,7 @@ impl Resolver<'_> {
             .copied()
             .ok_or_else(|| self.error(format!("unknown variable '{}'", self.symbols.name(name))))
     }
-    fn declare(&mut self, name: Symbol, ty: ScalarType) -> Result<Local, Diagnostic> {
+    fn bind(&mut self, name: Symbol, local: Local) -> Result<(), Diagnostic> {
         let scope = self.scopes.last_mut().expect("resolver always has a scope");
         if scope.contains_key(&name) {
             return Err(Diagnostic::new(
@@ -266,13 +298,25 @@ impl Resolver<'_> {
                 format!("duplicate variable '{}'", self.symbols.name(name)),
             ));
         }
-        let local = match ty {
-            ScalarType::Int => Local::Int(IntLocal(self.locals.len())),
-            ScalarType::Bool => Local::Bool(BoolLocal(self.locals.len())),
-        };
         scope.insert(name, local);
         self.locals.push(local);
-        Ok(local)
+        Ok(())
+    }
+    fn declare_int(&mut self, name: Symbol) -> Result<IntLocal, Diagnostic> {
+        let id = IntLocal(self.locals.len());
+        self.bind(name, Local::Int(id))?;
+        Ok(id)
+    }
+    fn declare_bool(&mut self, name: Symbol) -> Result<BoolLocal, Diagnostic> {
+        let id = BoolLocal(self.locals.len());
+        self.bind(name, Local::Bool(id))?;
+        Ok(id)
+    }
+    fn declare(&mut self, name: Symbol, ty: ScalarType) -> Result<Local, Diagnostic> {
+        match ty {
+            ScalarType::Int => self.declare_int(name).map(Local::Int),
+            ScalarType::Bool => self.declare_bool(name).map(Local::Bool),
+        }
     }
     fn store(&self, local: Local, value: Expr) -> Result<Statement, Diagnostic> {
         Ok(match local {
@@ -291,18 +335,20 @@ impl Resolver<'_> {
         let mut out = Vec::new();
         let mut flow = Flow::FallsThrough;
         for statement in statements {
-            if flow == Flow::Returns {
+            if flow == Flow::Terminates {
                 return Err(self.error("unreachable statement"));
             }
             let s = self.statement(statement)?;
             flow = match &s {
-                Statement::ReturnVoid | Statement::ReturnInt(_) | Statement::ReturnBool(_) => {
-                    Flow::Returns
-                }
+                Statement::ReturnVoid
+                | Statement::ReturnInt(_)
+                | Statement::ReturnBool(_)
+                | Statement::Break(_)
+                | Statement::Continue(_) => Flow::Terminates,
                 Statement::If(_, yes, no)
-                    if yes.flow == Flow::Returns && no.flow == Flow::Returns =>
+                    if yes.flow == Flow::Terminates && no.flow == Flow::Terminates =>
                 {
-                    Flow::Returns
+                    Flow::Terminates
                 }
                 Statement::Block(b) => b.flow,
                 _ => Flow::FallsThrough,
@@ -381,10 +427,11 @@ impl Resolver<'_> {
                 self.block(yes, true)?,
                 self.block(no, true)?,
             ),
-            syntax::Statement::While(cond, body) => Statement::While(
-                self.expr(cond)?.condition(cond.span)?,
-                self.block(body, true)?,
-            ),
+            syntax::Statement::While(condition, body) => self.resolve_while(condition, body)?,
+            syntax::Statement::Range(range) => self.resolve_range(range)?,
+            syntax::Statement::Jump { kind, target, span } => {
+                self.resolve_jump(*kind, *target, *span)?
+            }
             syntax::Statement::Block(body) => Statement::Block(self.block(body, true)?),
         })
     }
@@ -578,6 +625,34 @@ mod tests {
             assert!(check(src).is_err(), "{src}");
         }
         assert!(check("main :: ()->int { if true return 1; else return 2; }").is_ok());
+    }
+    #[test]
+    fn jumps_require_active_loop_targets_and_reachable_code() {
+        for source in [
+            "main :: () { break; }",
+            "main :: () { continue; }",
+            "main :: () { x := 1; while true { break x; } }",
+            "main :: () { for i: 1..3 {} break i; }",
+            "main :: () { while true { break; x := 1; } }",
+            "main :: () { while true { if true continue; else break; x := 1; } }",
+            "main :: ()->int { while true { break; } }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+    }
+    #[test]
+    fn iterator_and_while_bindings_are_scoped_and_typed() {
+        for source in [
+            "main :: () { for true..4 {} }",
+            "main :: () { for 1..false {} }",
+            "main :: () { for i: 1..3 {} i = 4; }",
+            "main :: () { while value := true {} value = false; }",
+            "main :: () { while value := true { value = 1; } }",
+            "f :: () {} main :: () { while value := f() {} }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+        assert!(check("main :: () { for i: 1..3 { for i: 1..3 break i; continue i; } }").is_ok());
     }
     #[test]
     fn entry_point_and_parameter_invariants() {
