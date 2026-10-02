@@ -167,6 +167,7 @@ pub enum Statement {
         span: Span,
     },
     Block(Vec<Statement>),
+    Defer(Vec<Statement>),
 }
 #[derive(Clone, Debug)]
 pub struct Expression {
@@ -329,6 +330,9 @@ impl Parser<'_> {
     fn statement(&mut self) -> Result<Statement, Diagnostic> {
         if self.is(Punct::OpenBrace) {
             return Ok(Statement::Block(self.block()?));
+        }
+        if self.keyword(Keyword::Defer) {
+            return Ok(Statement::Defer(self.body()?));
         }
         if self.keyword(Keyword::Return) {
             let expr = if self.is(Punct::Semicolon) {

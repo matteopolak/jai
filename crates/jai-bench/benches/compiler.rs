@@ -98,6 +98,36 @@ fn range_pipeline(bencher: Bencher, procedures: usize) {
             jai_codegen::emit(&program).unwrap()
         });
 }
+fn cleanup_source(procedures: usize) -> String {
+    let mut source = String::new();
+    for n in 0..procedures {
+        use std::fmt::Write;
+        writeln!(source, "f{n} :: (n:int)->int {{ sum := 0; for outer: 1..n {{ defer sum += 1; for < inner: 1..4 {{ defer sum += 2; if inner == 2 continue outer; sum += inner; if sum > 100 break outer; }} }} return sum; }}").unwrap();
+    }
+    source.push_str("main :: ()->int { return f0(9); }");
+    source
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn cleanup_lower_llvm(bencher: Bencher, procedures: usize) {
+    let source = cleanup_source(procedures);
+    let module = jai_syntax::parse(&source).unwrap();
+    let program = jai_sema::resolve(&module).unwrap();
+    let context = jai_codegen::Context::create();
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| jai_codegen::lower(&context, divan::black_box(&program)).unwrap());
+}
+#[divan::bench(args = [4, 64, 1024])]
+fn cleanup_pipeline(bencher: Bencher, procedures: usize) {
+    let source = cleanup_source(procedures);
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| {
+            let module = jai_syntax::parse(divan::black_box(&source)).unwrap();
+            let program = jai_sema::resolve(&module).unwrap();
+            jai_codegen::emit(&program).unwrap()
+        });
+}
 fn corpus(path: &Path, out: &mut Vec<String>) {
     if !path.exists() {
         return;

@@ -1,11 +1,18 @@
 //! Resolve lexical loop names once, before LLVM block construction.
-use super::*;
+use super::{
+    Diagnostic, Exit, HashMap, LoopBinding, LoopCondition, LoopId, RangeLoop, Resolver, Span,
+    Statement, Symbol, Transfer, ValueExpr, syntax,
+};
 
 impl Resolver<'_> {
     fn enter_loop(&mut self, name: Option<Symbol>) -> LoopId {
         let id = LoopId(self.next_loop);
         self.next_loop += 1;
-        self.loops.push(LoopBinding { id, name });
+        self.loops.push(LoopBinding {
+            id,
+            name,
+            cleanup_depth: self.deferred_scopes.len(),
+        });
         id
     }
     pub(super) fn resolve_while(
@@ -65,18 +72,33 @@ impl Resolver<'_> {
         target: syntax::LoopTarget,
         span: Span,
     ) -> Result<Statement, Diagnostic> {
-        let active = match target {
-            syntax::LoopTarget::Innermost => self.loops.last(),
-            syntax::LoopTarget::Named(name) => {
-                self.loops.iter().rev().find(|l| l.name == Some(name))
-            }
+        let (index, active) = match target {
+            syntax::LoopTarget::Innermost => self.loops.last().map(|l| (self.loops.len() - 1, l)),
+            syntax::LoopTarget::Named(name) => self
+                .loops
+                .iter()
+                .enumerate()
+                .rev()
+                .find(|(_, l)| l.name == Some(name)),
         }
         .ok_or_else(|| {
             Diagnostic::new(span, "break/continue must target an active enclosing loop")
         })?;
-        Ok(match kind {
-            syntax::JumpKind::Break => Statement::Break(active.id),
-            syntax::JumpKind::Continue => Statement::Continue(active.id),
-        })
+        if self
+            .cleanup_context
+            .is_some_and(|context| index < context.loop_depth)
+        {
+            return Err(Diagnostic::new(
+                span,
+                "a deferred body cannot exit an enclosing loop",
+            ));
+        }
+        Ok(Statement::Exit(Exit {
+            cleanups: self.pending_cleanups(active.cleanup_depth),
+            transfer: match kind {
+                syntax::JumpKind::Break => Transfer::Break(active.id),
+                syntax::JumpKind::Continue => Transfer::Continue(active.id),
+            },
+        }))
     }
 }

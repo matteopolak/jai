@@ -246,3 +246,96 @@ fn inclusive_ranges_stop_at_integer_boundaries_without_wrapping() {
         6
     );
 }
+
+#[test]
+fn deferred_cleanup_is_lifo_and_reads_values_on_exit() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; x := 1; { defer n = n * 10 + x; defer n = n * 10 + 2; x = 3; } return n; }"
+        ),
+        23
+    );
+}
+
+#[test]
+fn deferred_cleanup_runs_on_while_break_and_continue() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; while true { defer n += 1; if n < 3 continue; break; } return n; }"
+        ),
+        4
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; while true { if n == 3 break; defer n += 1; continue; } return n; }"
+        ),
+        3
+    );
+}
+
+#[test]
+fn outer_loop_exits_unwind_only_the_crossed_scopes() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; { defer n += 100; for outer: 1..3 { defer n += 10; for inner: 1..3 { defer n += 1; if inner == 2 continue outer; } } } return n; }"
+        ),
+        136
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for outer: 1..3 { defer n += 10; for inner: 1..3 { defer n += 1; break outer; } } return n; }"
+        ),
+        11
+    );
+}
+
+#[test]
+fn return_values_are_captured_before_deferred_mutation() {
+    assert_eq!(
+        execute(
+            "f :: ()->int { n := 7; defer n = 99; { defer n = 88; return n; } } main :: ()->int { return f(); }"
+        ),
+        7
+    );
+    assert_eq!(
+        execute(
+            "f :: ()->bool { b := true; defer b = false; return b; } main :: ()->int { return cast(int) f(); }"
+        ),
+        1
+    );
+    assert_eq!(execute("main :: () { x := 0; defer x += 1; return; }"), 0);
+}
+
+#[test]
+fn conditional_defer_activation_and_nested_cleanup() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; if false { defer n = 99; } { defer { defer n = n * 10 + 1; n = 2; } } return n; }"
+        ),
+        21
+    );
+}
+
+#[test]
+fn deferred_names_capture_their_original_binding() {
+    assert_eq!(
+        execute("main :: ()->int { n := 0; x := 3; { defer n = x; x := 8; x += 1; } return n; }"),
+        3
+    );
+}
+
+#[test]
+fn cleanup_can_use_its_own_loops_and_short_circuiting() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; { defer { for i: 1..4 { if i == 2 continue i; n += i; } } } return n; }"
+        ),
+        8
+    );
+    assert_eq!(
+        execute(
+            "forever :: ()->bool { while true {} return true; } main :: ()->int { b := false; { defer b ||= (false && forever()) || true; } return cast(int) b * 42; }"
+        ),
+        42
+    );
+}

@@ -14,6 +14,8 @@ Divan's allocation profiler wraps the system allocator only in the benchmark exe
 
 Nested integer ranges have separate `range_lower_llvm` and `range_pipeline` cases at 4, 64 and 1,024 procedures. They exercise reverse traversal, named outer continue/break and verified LLVM construction without changing the original baseline workload. They benchmark compilation, not generated program runtime.
 
+Deferred nested loops have `cleanup_lower_llvm` and `cleanup_pipeline` cases at the same sizes. They include cleanup on named outer exits and track both IR resolution allocations and LLVM construction costs. Original workloads stay unchanged for comparison.
+
 ## How to change it
 
 Add a representative, correct workload to `crates/jai-bench/benches/compiler.rs` and a behavior test for the feature it exercises. Avoid timing filesystem reads, source generation, fixture preparation or failed compilations inside a successful-stage benchmark. Keep rejection-path measurements separately named.
@@ -33,4 +35,3 @@ A 25-sample LLVM API baseline at `artifacts/benchmarks/20261001T231909.958818Z/`
 ## Dependencies
 
 Divan 0.1.21, selected with the native 14-day Cargo policy and verified with all 33 locked external packages before compilation. Compiler crates remain independent of Divan. See [dependency policy](dependency-policy.md).
-

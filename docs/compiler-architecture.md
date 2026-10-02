@@ -12,7 +12,7 @@ Boolean parameters/returns use Boolean LLVM values, void procedures emit void ca
 
 The current native pipeline rejects imports, structs, metaprogramming and other unimplemented syntax. Lexing a reference file does not imply it parses, typechecks, links or runs. No builtin shortcut replaces `Basic` or makes an unimplemented reference program count as successful.
 
-Integer range loops and named loop exits use resolved `LoopId` values and LLVM block handles. See [loop control](loop-control.md) for endpoint, scope and exit behavior.
+Integer range loops and named loop exits use resolved `LoopId` values and LLVM block handles. Deferred cleanup uses typed cleanup IDs attached to each exit, with return values captured before cleanup. See [deferred cleanup](deferred-cleanup.md). See [loop control](loop-control.md) for endpoint, scope and exit behavior.
 
 ## How to change it
 
