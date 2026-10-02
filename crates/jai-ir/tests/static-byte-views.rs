@@ -233,3 +233,22 @@ fn byte_ranges_cannot_exceed_target_addresses_or_the_signed_descriptor_count() {
         )))
     ));
 }
+
+#[test]
+fn byte_view_errors_keep_typed_target_context_without_large_error_results() {
+    assert!(std::mem::size_of::<StaticByteViewError>() <= 128);
+    assert!(std::mem::size_of::<StaticDataError>() <= 128);
+    let types = TypeRegistry::new();
+    let word = types.scalar(ScalarType::Int(IntegerType::U32));
+    let mut builder = StaticDataBuilder::new();
+    let object = builder.reserve(word, &types).unwrap();
+    let view = builder
+        .byte_view(object, LayoutPolicy::lp64(), 0, 4, &types)
+        .unwrap();
+    let Err(StaticByteViewError::Target { expected, actual }) = view.validate_target(policy32())
+    else {
+        panic!("target mismatch retains its typed context")
+    };
+    assert_eq!(*expected, LayoutPolicy::lp64());
+    assert_eq!(*actual, policy32());
+}

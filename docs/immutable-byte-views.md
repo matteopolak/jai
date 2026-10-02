@@ -4,7 +4,7 @@
 
 An immutable byte view exposes the storage of one real typed static object as `[]u8`. Reflection uses this for `Type_Info_Struct.constant_storage`: namespace constants occupy target-aligned typed cells, and each member identifies its cell's byte offset.
 
-The public receipt, VM pointer-region consumer, and native constant projection are implemented. Focused tests cover selected layouts, real relocation cells, and attempts to escape a narrow view; Reflection source acceptance is tracked separately.
+The public receipt, VM pointer-region consumer, and native constant projection are implemented. The two focused VM tests pass for bounds, readonly storage, casts, integer receipts, and copied pointer relocations. The two native fixtures pass for observable Type identity, callable recovery, host execution at O0/O2, and 32/64-bit VM execution and native emission. Reflection source acceptance is tracked separately.
 
 ## How it works
 
@@ -17,6 +17,8 @@ A smaller view must retain a non-widening region through casts, integer receipts
 ## How to change it
 
 The proof lives beside `jai-ir` static storage, with its constructor restricted to the builder. Extend address validation, the native static projection emitter, and the VM static projection consumer together. Keep exact object identity, type-arena ownership, target policy, and checked range proofs. Do not accept a pointer plus an unrelated `TypeId`, or move IR `ProcedureId` into `jai-types`.
+
+Keep error contexts typed and compact. Target mismatch errors box the expected and actual `LayoutPolicy` only on the error path, so nesting them in `StaticDataError` does not enlarge every successful `Result`. The regression checks both enum sizes and the exact retained policies; strict IR Clippy passes without a large-error lint exception.
 
 Tests cover typed heterogeneous backing, real data relocations, Type descriptor identity, callable recovery, 32/64-bit target layouts, and native O0/O2 execution. Bounds, foreign/stale objects, read-only writes, target mismatch, and attempted region widening are separate negative gates. Passing these consumer tests does not establish unchanged Reflection-module source acceptance.
 
