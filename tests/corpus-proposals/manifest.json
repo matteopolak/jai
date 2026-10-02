@@ -1,0 +1,259 @@
+{
+  "format": 1,
+  "provenance": "Independently authored small source contracts; no original source excerpts.",
+  "review": "Bounded pure generated program proposals; no foreign libraries, SDKs, file/network effects or upstream scripts. Native review/promotion and actual stages remain required.",
+  "cases": [
+    {
+      "id": "short-lambda-value",
+      "source": "short-lambda-value.jai",
+      "sha256": "13bbcae245749704d00ccd5bf1410262834df6e378d92f91881efba28f3bf9f0",
+      "owners": [
+        "short_lambdas_xhigh"
+      ],
+      "contract": "Direct inferred short-lambda alias call, without runtime closure capture",
+      "related_requirement_group": null,
+      "kind": "program",
+      "runtime": {
+        "exit_code": 22,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:src/build_system.jai",
+          "sha256": "5933b3afe52bdeb2cfd56b1fc824d1da91964ff5ec4ae398bcd3a1497b422a87",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 488,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        },
+        {
+          "source": "focus-editor/focus:src/draw.jai",
+          "sha256": "f0033973db9c4955103a48a799bb678f2fb73e09bebbd97284ac2de9b7ce057d",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 1303,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "lexical-using-place",
+      "source": "lexical-using-place.jai",
+      "sha256": "f08fd8280d0a03258b0c771ea750bec5dd67969957b99cebf0936039293da611",
+      "owners": [
+        "scope_semantics_high"
+      ],
+      "contract": "Lexical promotion retains mutable record field storage",
+      "related_requirement_group": "reflection-and-type-metadata",
+      "kind": "program",
+      "runtime": {
+        "exit_code": 22,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:modules/File_Async/io_uring.jai",
+          "sha256": "288ace74f2a84333065a4982045ec55dc6e81812a5b68898e85db9c1972be1e0",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 131,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        },
+        {
+          "source": "focus-editor/focus:modules/Input/macos.jai",
+          "sha256": "93a9cb944f435bdd458e9f811da497544069c4706b29b51c74255d967e8a7482",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 129,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "void-pointer-distance",
+      "source": "void-pointer-distance.jai",
+      "sha256": "a8cd58b5215198df09f7587915260da7d62549b779244709d5a477ea5154a216",
+      "owners": [
+        "pointers_high"
+      ],
+      "contract": "Void pointer offsets and subtraction use byte distance",
+      "related_requirement_group": "void-and-typed-pointer-arithmetic",
+      "kind": "program",
+      "runtime": {
+        "exit_code": 3,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:modules/Simp/bitmap.jai",
+          "sha256": "219a7dfbcb8a81c8e8e51f8c213fee672994c68db0b84377c3a19e494df31536",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 185,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "string-content-equality",
+      "source": "string-content-equality.jai",
+      "sha256": "23f1b3eebd75e307e466a94d26e09d7bc72a72c8c406aef0a68e1721029d3cf1",
+      "owners": [
+        "float_pipeline_high"
+      ],
+      "contract": "Embedded NUL strings compare content and count",
+      "related_requirement_group": "dynamic-memory-and-descriptor-lifetimes",
+      "kind": "program",
+      "runtime": {
+        "exit_code": 22,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:first.jai",
+          "sha256": "e1d2c3e97ae016a2c5c77261f90402035002933d78d733f523947db8bd8820d2",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 4,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        },
+        {
+          "source": "focus-editor/focus:modules/Clipboard/Clipboard.jai",
+          "sha256": "2fc5651cd5f894f3ffb5a17151a7ec845ee82474f04dc8897fd4324cb9d51aba",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 8,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "ifx-implicit-value",
+      "source": "ifx-implicit-value.jai",
+      "sha256": "ac85fa67494d5d9301da0758b4a5249c4815ecfa206cc71f69d56c0e214af3cc",
+      "owners": [
+        "frontend_types_high",
+        "parent"
+      ],
+      "contract": "Implicit true arm returns the condition value",
+      "related_requirement_group": null,
+      "kind": "program",
+      "runtime": {
+        "exit_code": 22,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:first.jai",
+          "sha256": "e1d2c3e97ae016a2c5c77261f90402035002933d78d733f523947db8bd8820d2",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 116,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        },
+        {
+          "source": "focus-editor/focus:modules/File_Async/io_completion_ports.jai",
+          "sha256": "ee1c49acb058f3a1bb46d51ec1542f670c798f88f25706c7a0dfe9a60e76076a",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 41,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "runtime-record-metadata",
+      "source": "runtime-record-metadata.jai",
+      "sha256": "292f141d67f4ca663cb13e5e16668cf3a0fd494cb17166878c58414309c27645",
+      "owners": [
+        "reflection_metaprogram_max",
+        "type_core_review"
+      ],
+      "contract": "Runtime record member names and canonical byte offsets",
+      "related_requirement_group": "reflection-and-type-metadata",
+      "kind": "program",
+      "runtime": {
+        "exit_code": 42,
+        "stdout": "",
+        "stderr": ""
+      },
+      "dependencies": [],
+      "status": "proposed; not in active feature matrix; compiler stages and native behavior unverified",
+      "source_evidence": [
+        {
+          "source": "focus-editor/focus:modules/Linux_Display/GL.jai",
+          "sha256": "1dd437aab608ab74dc57fb5beb0fc480afe3a69224c25c48f5df2f6d27e7df06",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 12,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        },
+        {
+          "source": "focus-editor/focus:modules/Linux_Display/X11.jai",
+          "sha256": "0eaa726d1fa35c222f63821ffdc38436fef001d733509f88332240bb75128529",
+          "revision": "c6b3ead7d4174527d0138e8a31f7c3c5663badec",
+          "line": 1508,
+          "scope": "Static related source requirement; not equivalence or successful compiler acceptance."
+        }
+      ]
+    },
+    {
+      "id": "structural-interface-fields",
+      "source": "structural-interface-fields.jai",
+      "sha256": "38c7c9bf6c073d4920d1971a7ac1db35fec259ec1a000297dd2ae68b3a1a1fb4",
+      "owners": [
+        "polymorphism_max",
+        "frontend_types_high"
+      ],
+      "contract": "Structural interface requires exact visible member names/types while retaining inferred actual T.",
+      "related_requirement_group": "polymorphic-and-baked-procedures",
+      "kind": "program",
+      "dependencies": [],
+      "status": "proposed; not in active46; Restricted source AST and precise semantic diagnostic pending owner convergence",
+      "source_evidence": [
+        {
+          "source": "Ivo-Balbaert/The_Way_to_Jai:examples/23/23.6_interface.jai",
+          "sha256": "e9daf3c29e101d8fa015e4a3b04fe0caed0e58e8513fd4460d16cd5ccbb37787",
+          "revision": "19cb4b7acb0de2798c769f9ad73313a4d15f4056",
+          "line": 18,
+          "scope": "Pinned structural interface restriction syntax; independently authored fixture body."
+        }
+      ],
+      "runtime": {
+        "exit_code": 22,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "structural-interface-missing-field",
+      "source": "structural-interface-missing-field.jai",
+      "sha256": "0ad4c20689b29ebac4eec5b7093b03d84f55b5c442f0f2f7b0fc5082df687687",
+      "owners": [
+        "polymorphism_max",
+        "frontend_types_high"
+      ],
+      "contract": "Structural interface requires exact visible member names/types while retaining inferred actual T.",
+      "related_requirement_group": "polymorphic-and-baked-procedures",
+      "kind": "negative",
+      "dependencies": [],
+      "status": "proposed; not in active46; Restricted source AST and precise semantic diagnostic pending owner convergence",
+      "source_evidence": [
+        {
+          "source": "Ivo-Balbaert/The_Way_to_Jai:examples/23/23.6_interface.jai",
+          "sha256": "e9daf3c29e101d8fa015e4a3b04fe0caed0e58e8513fd4460d16cd5ccbb37787",
+          "revision": "19cb4b7acb0de2798c769f9ad73313a4d15f4056",
+          "line": 18,
+          "scope": "Pinned structural interface restriction syntax; independently authored fixture body."
+        }
+      ],
+      "required_rejection_stage": "check",
+      "diagnostic_contract": "Must identify unsatisfied structural interface with missing required value member; exact matcher text pending owner. A parser/unsupported diagnostic never satisfies this negative."
+    }
+  ]
+}

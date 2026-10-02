@@ -29,6 +29,8 @@ main :: () -> int {
 
 Change `CaseStatement` and `Parser::case_statement` in `jai-syntax` for grammar changes, `jai-sema/src/cases.rs` for label/type/completeness rules, and `jai-codegen/src/cases.rs` for dispatch. Preserve exactly-once subject evaluation and full arm scopes when optimizing comparisons into a switch. Extend completeness only after the relevant finite type domains exist. Keep expression cases separate from statement cases because expressions require result typing and value joins.
 
+The source-order compatibility update is staged separately and has not yet changed the public case schema or parser restrictions. Its private `jai-types/src/case_order.rs` helper distinguishes labelled dispatch priority from physical body order: a default slot counts preceding normal arms, and checked `CaseTarget` successors include the default body wherever it appears. Authentic source places defaults first and explicitly falls through from defaults. Publish the ordinal and fallthrough metadata together with semantic validation, ordinary/resumable VM routing, native branches and flow analysis; removing a parser restriction alone would route middle-default fallthrough incorrectly.
+
 ## Configuration
 
 There are no environment variables or flags specific to cases. Native tests use the normal LLVM setup documented in [LLVM backend](llvm-backend.md).
