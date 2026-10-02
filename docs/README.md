@@ -55,6 +55,7 @@
 - [Module parameters and target selection](module-parameters.md)
 - [Semantic module parameter discovery](module-parameter-discovery.md)
 - [Module source origins for effect replay](module-source-origins.md)
+- [Suspended module imports](suspended-module-imports.md)
 - [Aggregate type syntax](aggregate-types.md)
 - [Closed SIMD assembly syntax](simd-source-syntax.md)
 - [SIMD virtual execution](simd-vm.md)
