@@ -16,6 +16,7 @@ use jai_sema::{
     Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local,
     LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
+use jai_sema::{CleanupId, Exit, Transfer};
 use jai_syntax::{Direction, ReturnType, ScalarType};
 use std::fmt;
 
@@ -98,6 +99,7 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
             word,
             bit,
             loops: Vec::new(),
+            cleanups: &p.cleanups,
         };
         g.block(&p.body)?;
         if p.body.flow == Flow::FallsThrough {
@@ -141,6 +143,12 @@ enum Slot<'ctx> {
     Int(IntSlot<'ctx>),
     Bool(BoolSlot<'ctx>),
 }
+enum Destination<'ctx> {
+    ReturnVoid,
+    ReturnInt(Word<'ctx>),
+    ReturnBool(Bit<'ctx>),
+    Branch(BasicBlock<'ctx>),
+}
 enum Logical {
     And,
     Or,
@@ -169,6 +177,7 @@ struct Generator<'ctx, 'functions> {
     word: IntType<'ctx>,
     bit: IntType<'ctx>,
     loops: Vec<LoopBlocks<'ctx>>,
+    cleanups: &'functions [Block],
 }
 impl<'ctx> Generator<'ctx, '_> {
     fn label(&self, name: &str) -> BasicBlock<'ctx> {
@@ -197,17 +206,8 @@ impl<'ctx> Generator<'ctx, '_> {
                     let v = self.boolean(e)?;
                     self.builder.build_store(self.bool_slot(*id)?.0, v.0)?;
                 }
-                Statement::ReturnVoid => {
-                    self.builder.build_return(None)?;
-                }
-                Statement::ReturnInt(e) => {
-                    let v = self.int(e)?;
-                    self.builder.build_return(Some(&v.0))?;
-                }
-                Statement::ReturnBool(e) => {
-                    let v = self.boolean(e)?;
-                    self.builder.build_return(Some(&v.0))?;
-                }
+                Statement::Exit(exit) => self.exit(exit)?,
+                Statement::Cleanup(id) => self.cleanup(*id)?,
                 Statement::DiscardInt(e) => {
                     self.int(e)?;
                 }
@@ -238,20 +238,6 @@ impl<'ctx> Generator<'ctx, '_> {
                         self.builder.position_at_end(join);
                     }
                 }
-                Statement::Break(id) | Statement::Continue(id) => {
-                    let target = self
-                        .loops
-                        .iter()
-                        .rev()
-                        .find(|l| l.id == *id)
-                        .ok_or(Error::Invariant)?;
-                    let destination = match statement {
-                        Statement::Break(_) => target.end,
-                        Statement::Continue(_) => target.next,
-                        _ => return Err(Error::Invariant),
-                    };
-                    self.builder.build_unconditional_branch(destination)?;
-                }
                 Statement::Range(range) => self.range(range)?,
                 Statement::While {
                     id,
@@ -278,6 +264,49 @@ impl<'ctx> Generator<'ctx, '_> {
                     }
                     self.builder.position_at_end(end);
                 }
+            }
+        }
+        Ok(())
+    }
+    fn cleanup(&mut self, id: CleanupId) -> Result<(), Error> {
+        let block = self.cleanups.get(id.index()).ok_or(Error::Invariant)?;
+        self.block(block)
+    }
+    fn exit(&mut self, exit: &Exit) -> Result<(), Error> {
+        // Snapshot the return value before cleanup can mutate its source locals.
+        let destination = match &exit.transfer {
+            Transfer::ReturnVoid => Destination::ReturnVoid,
+            Transfer::ReturnInt(e) => Destination::ReturnInt(self.int(e)?),
+            Transfer::ReturnBool(e) => Destination::ReturnBool(self.boolean(e)?),
+            Transfer::Break(id) | Transfer::Continue(id) => {
+                let target = self
+                    .loops
+                    .iter()
+                    .rev()
+                    .find(|l| l.id == *id)
+                    .ok_or(Error::Invariant)?;
+                Destination::Branch(match exit.transfer {
+                    Transfer::Break(_) => target.end,
+                    Transfer::Continue(_) => target.next,
+                    _ => return Err(Error::Invariant),
+                })
+            }
+        };
+        for id in &exit.cleanups {
+            self.cleanup(*id)?;
+        }
+        match destination {
+            Destination::ReturnVoid => {
+                self.builder.build_return(None)?;
+            }
+            Destination::ReturnInt(value) => {
+                self.builder.build_return(Some(&value.0))?;
+            }
+            Destination::ReturnBool(value) => {
+                self.builder.build_return(Some(&value.0))?;
+            }
+            Destination::Branch(block) => {
+                self.builder.build_unconditional_branch(block)?;
             }
         }
         Ok(())

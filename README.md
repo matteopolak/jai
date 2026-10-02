@@ -31,6 +31,7 @@ main :: () -> int {
 | Arithmetic, comparisons, compound assignment | Supported |
 | `if`, `while`, short-circuit `&&` and `\|\|` | Supported |
 | Integer range loops, reverse iteration, named `break`/`continue` | Supported |
+| `defer` on scope exits and returns | Supported for the scalar subset |
 | Native compilation | Small programs tested on ARM64 macOS |
 | Strings, arrays, pointers, structs, enums | Not implemented in compilation yet |
 | Imports, modules, generics, overloads | Not implemented yet |

@@ -1,4 +1,5 @@
 //! Resolve names and construct a typed program before code generation.
+mod cleanup;
 mod loops;
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
 use jai_syntax::{self as syntax, BinaryOp, ReturnType, ScalarType, UnaryOp};
@@ -19,6 +20,7 @@ id!(ProcedureId);
 id!(IntLocal);
 id!(BoolLocal);
 id!(LoopId);
+id!(CleanupId);
 #[derive(Clone, Copy, Debug)]
 pub enum Local {
     Int(IntLocal),
@@ -49,6 +51,7 @@ pub struct Procedure {
     pub locals: Vec<Local>,
     pub return_type: ReturnType,
     pub body: Block,
+    pub cleanups: Vec<Block>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Flow {
@@ -64,9 +67,8 @@ pub struct Block {
 pub enum Statement {
     StoreInt(IntLocal, IntExpr),
     StoreBool(BoolLocal, BoolExpr),
-    ReturnVoid,
-    ReturnInt(IntExpr),
-    ReturnBool(BoolExpr),
+    Exit(Exit),
+    Cleanup(CleanupId),
     DiscardInt(IntExpr),
     DiscardBool(BoolExpr),
     CallVoid(Call),
@@ -77,9 +79,20 @@ pub enum Statement {
         body: Block,
     },
     Range(RangeLoop),
+    Block(Block),
+}
+#[derive(Debug)]
+pub struct Exit {
+    pub cleanups: Vec<CleanupId>,
+    pub transfer: Transfer,
+}
+#[derive(Debug)]
+pub enum Transfer {
+    ReturnVoid,
+    ReturnInt(IntExpr),
+    ReturnBool(BoolExpr),
     Break(LoopId),
     Continue(LoopId),
-    Block(Block),
 }
 #[derive(Debug)]
 pub enum LoopCondition {
@@ -242,6 +255,9 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             result: p.return_type,
             loops: Vec::new(),
             next_loop: 0,
+            cleanups: Vec::new(),
+            deferred_scopes: Vec::new(),
+            cleanup_context: None,
         };
         let mut parameters = Vec::new();
         for param in &p.parameters {
@@ -258,6 +274,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             id: ProcedureId(index),
             parameters,
             locals: r.locals,
+            cleanups: r.cleanups,
             return_type: p.return_type,
             body,
         });
@@ -267,6 +284,11 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
 struct LoopBinding {
     id: LoopId,
     name: Option<Symbol>,
+    cleanup_depth: usize,
+}
+#[derive(Clone, Copy)]
+struct CleanupContext {
+    loop_depth: usize,
 }
 struct Resolver<'a> {
     signatures: &'a HashMap<Symbol, Signature>,
@@ -277,6 +299,9 @@ struct Resolver<'a> {
     result: ReturnType,
     loops: Vec<LoopBinding>,
     next_loop: usize,
+    cleanups: Vec<Block>,
+    deferred_scopes: Vec<Vec<CleanupId>>,
+    cleanup_context: Option<CleanupContext>,
 }
 impl Resolver<'_> {
     fn error(&self, text: impl Into<String>) -> Diagnostic {
@@ -332,19 +357,20 @@ impl Resolver<'_> {
         if scoped {
             self.scopes.push(HashMap::new());
         }
+        self.deferred_scopes.push(Vec::new());
         let mut out = Vec::new();
         let mut flow = Flow::FallsThrough;
         for statement in statements {
             if flow == Flow::Terminates {
                 return Err(self.error("unreachable statement"));
             }
+            if let syntax::Statement::Defer(body) = statement {
+                self.register_defer(body)?;
+                continue;
+            }
             let s = self.statement(statement)?;
             flow = match &s {
-                Statement::ReturnVoid
-                | Statement::ReturnInt(_)
-                | Statement::ReturnBool(_)
-                | Statement::Break(_)
-                | Statement::Continue(_) => Flow::Terminates,
+                Statement::Exit(_) => Flow::Terminates,
                 Statement::If(_, yes, no)
                     if yes.flow == Flow::Terminates && no.flow == Flow::Terminates =>
                 {
@@ -354,6 +380,13 @@ impl Resolver<'_> {
                 _ => Flow::FallsThrough,
             };
             out.push(s);
+        }
+        let pending = self
+            .deferred_scopes
+            .pop()
+            .expect("each block has a cleanup scope");
+        if flow == Flow::FallsThrough {
+            out.extend(pending.into_iter().rev().map(Statement::Cleanup));
         }
         if scoped {
             self.scopes.pop();
@@ -407,16 +440,8 @@ impl Resolver<'_> {
                 let value = self.binary(*op, lhs, self.expr(e)?, e.span)?;
                 self.store(local, value)?
             }
-            syntax::Statement::Return(e) => match (self.result, e) {
-                (ReturnType::Void, None) => Statement::ReturnVoid,
-                (ReturnType::Value(ScalarType::Int), Some(e)) => {
-                    Statement::ReturnInt(self.expr(e)?.int(e.span)?)
-                }
-                (ReturnType::Value(ScalarType::Bool), Some(e)) => {
-                    Statement::ReturnBool(self.expr(e)?.bool(e.span)?)
-                }
-                _ => return Err(self.error("return value does not match procedure signature")),
-            },
+            syntax::Statement::Return(e) => self.resolve_return(e.as_ref())?,
+            syntax::Statement::Defer(_) => unreachable!("defer is handled by block resolution"),
             syntax::Statement::Expression(e) => match self.expr(e)? {
                 Expr::Int(e) => Statement::DiscardInt(e),
                 Expr::Bool(e) => Statement::DiscardBool(e),
@@ -653,6 +678,20 @@ mod tests {
             assert!(check(source).is_err(), "{source}");
         }
         assert!(check("main :: () { for i: 1..3 { for i: 1..3 break i; continue i; } }").is_ok());
+    }
+    #[test]
+    fn cleanup_cannot_escape_to_its_enclosing_procedure_or_loop() {
+        for source in [
+            "main :: () { defer return; }",
+            "main :: () { for i: 1..3 { defer break i; } }",
+            "main :: () { while true { defer continue; } }",
+            "main :: () { defer x = 1; x := 0; }",
+            "main :: () { defer { x := 1; } x = 2; }",
+            "main :: () { return; defer {} }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+        assert!(check("main :: () { defer { for i: 1..3 { if i == 2 break i; } } }").is_ok());
     }
     #[test]
     fn entry_point_and_parameter_invariants() {

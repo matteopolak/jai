@@ -6,7 +6,7 @@
 
 ## How it works
 
-`lower(&Context, &Program)` declares all procedure signatures first, then lowers checked bodies into LLVM basic blocks and values. Forward and recursive calls target existing function handles. Local storage is allocated once in entry blocks. Branches implement conditionals, loops and short-circuit expressions. Phi nodes use the actual end blocks of nested expressions. Fully returning conditionals do not create unused unterminated joins.
+`lower(&Context, &Program)` declares all procedure signatures first, then lowers checked bodies into LLVM basic blocks and values. Forward and recursive calls target existing function handles. Local storage is allocated once in entry blocks. Branches implement conditionals, loops and short-circuit expressions. Phi nodes use the actual end blocks of nested expressions. Fully terminating conditionals do not create unused unterminated joins. Typed exit records emit scope cleanup before branching or returning, after saving any scalar return value.
 
 Private integer/Boolean value and storage wrappers preserve language widths because LLVM uses one Rust value type for both. Enums select operations and comparison predicates. Strings name modules, functions and instructions for diagnostics; they do not select types or encode LLVM syntax.
 

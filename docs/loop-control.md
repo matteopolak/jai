@@ -31,7 +31,7 @@ Recent [Focus loop usage](https://github.com/focus-editor/focus/blob/c6b3ead7d41
 
 Update syntax tags, semantic loop bindings and LLVM loop blocks together. Preserve early diagnostics for invalid targets, escaped bindings, non-integer range endpoints and unreachable statements. Native tests cover actual generated execution, including nested outer jumps, reverse/empty ranges, bound snapshots and MAX/MIN endpoints. Benchmarks separately exercise nested range resolution and LLVM construction.
 
-Array iteration, pointer iterators, index bindings, custom `for_expansion`, `remove`, deferred cleanup and complete target-dependent integer typing are not implemented. Adding deferred cleanup will require processing each exit's crossed scopes before branching; do not treat every terminator as a procedure return.
+Loop exits process [deferred cleanup](deferred-cleanup.md) for exactly the scopes they cross. Array iteration, pointer iterators, index bindings, custom `for_expansion`, `remove` and complete target-dependent integer typing are not implemented. Do not treat every terminator as a procedure return.
 
 ## Configuration
 
