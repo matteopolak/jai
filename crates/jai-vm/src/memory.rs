@@ -14,6 +14,7 @@ mod metadata_tests;
 pub(crate) mod pools;
 mod runtime_intrinsics;
 mod runtime_types;
+#[cfg(test)]
 mod sequence_allocators;
 mod sequence_buffers;
 mod simd;
