@@ -7,6 +7,101 @@ static ALLOC: divan::AllocProfiler = divan::AllocProfiler::system();
 fn main() {
     divan::main();
 }
+
+fn structural_types(registry: &mut jai_types::TypeRegistry, count: usize) -> jai_types::TypeId {
+    let mut ty = registry.scalar(jai_types::ScalarType::Int(jai_types::IntegerType::U64));
+    for n in 0..count {
+        let pointer = registry.pointer(ty).unwrap();
+        let array = registry.fixed_array(pointer, n as u64 + 1).unwrap();
+        let slice = registry.slice(array).unwrap();
+        ty = registry.dynamic_array(slice).unwrap();
+    }
+    ty
+}
+
+#[divan::bench(args = [4, 64, 1024])]
+fn type_intern_create(bencher: Bencher, count: usize) {
+    let mut check = jai_types::TypeRegistry::new();
+    let root = structural_types(&mut check, count);
+    assert_eq!(root, structural_types(&mut check, count));
+    assert_eq!(check.freeze().unwrap().iter().count(), 14 + 4 * count);
+    bencher.bench_local(|| {
+        let mut registry = jai_types::TypeRegistry::new();
+        divan::black_box(structural_types(&mut registry, count));
+        registry
+    });
+}
+
+#[divan::bench(args = [4, 64, 1024])]
+fn type_intern_reuse(bencher: Bencher, count: usize) {
+    let mut registry = jai_types::TypeRegistry::new();
+    let root = structural_types(&mut registry, count);
+    assert_eq!(root, structural_types(&mut registry, count));
+    bencher.bench_local(|| structural_types(&mut registry, divan::black_box(count)));
+}
+
+fn nominal_graph(count: usize) -> (jai_types::TypeRegistry, jai_types::TypeId) {
+    use jai_types::{IntegerType, RecordKind, ScalarType, TypeRegistry};
+    let mut registry = TypeRegistry::new();
+    let mut root = registry.scalar(ScalarType::Int(IntegerType::U64));
+    for _ in 0..count {
+        let record = registry.reserve_record(RecordKind::Struct);
+        let pointer = registry.pointer(record).unwrap();
+        let slice = registry.slice(record).unwrap();
+        let dynamic = registry.dynamic_array(record).unwrap();
+        registry
+            .define_record(record, [root, pointer, slice, dynamic])
+            .unwrap();
+        root = record;
+    }
+    (registry, root)
+}
+
+fn checked_nominal_graph(count: usize) -> (jai_types::Types, jai_types::TypeId) {
+    let (registry, root) = nominal_graph(count);
+    let types = registry.freeze().unwrap();
+    assert_eq!(types.iter().count(), 14 + 4 * count);
+    let mut engine = jai_types::LayoutEngine::new(&types, jai_types::LayoutPolicy::lp64());
+    let layout = engine.layout(root).unwrap();
+    assert_eq!(layout.size, 8 + 64 * count as u64);
+    assert_eq!(layout.alignment, 8);
+    assert_eq!(
+        layout.field_offsets.as_ref(),
+        &[
+            0,
+            8 + 64 * (count as u64 - 1),
+            16 + 64 * (count as u64 - 1),
+            32 + 64 * (count as u64 - 1)
+        ]
+    );
+    (types, root)
+}
+
+#[divan::bench(args = [4, 64, 1024])]
+fn nominal_graph_build_freeze(bencher: Bencher, count: usize) {
+    checked_nominal_graph(count);
+    bencher.bench_local(|| nominal_graph(divan::black_box(count)).0.freeze().unwrap());
+}
+
+#[divan::bench(args = [4, 64, 1024])]
+fn type_layout_cold(bencher: Bencher, count: usize) {
+    let (types, root) = checked_nominal_graph(count);
+    bencher.bench_local(|| {
+        let mut engine = jai_types::LayoutEngine::new(&types, jai_types::LayoutPolicy::lp64());
+        divan::black_box(engine.layout(root).unwrap());
+        engine
+    });
+}
+
+#[divan::bench(args = [4, 64, 1024])]
+fn type_layout_cached(bencher: Bencher, count: usize) {
+    let (types, root) = checked_nominal_graph(count);
+    let mut engine = jai_types::LayoutEngine::new(&types, jai_types::LayoutPolicy::lp64());
+    engine.layout(root).unwrap();
+    bencher.bench_local(|| {
+        divan::black_box(engine.layout(divan::black_box(root)).unwrap());
+    });
+}
 fn generated(procedures: usize) -> String {
     let mut source = String::new();
     for n in 0..procedures {

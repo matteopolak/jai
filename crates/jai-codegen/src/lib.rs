@@ -1,5 +1,6 @@
 //! Construct and verify LLVM modules from immutable checked programs.
 mod cases;
+pub mod types;
 pub use inkwell::context::Context;
 use inkwell::{
     IntPredicate,
@@ -8,7 +9,7 @@ use inkwell::{
     intrinsics::Intrinsic,
     module::Module,
     support::LLVMString,
-    types::{BasicMetadataTypeEnum, IntType},
+    types::IntType,
     values::{
         BasicMetadataValueEnum, BasicValueEnum, CallSiteValue, FunctionValue, IntValue,
         PointerValue,
@@ -16,17 +17,28 @@ use inkwell::{
 };
 use jai_sema::{
     Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntExprKind, IntLocal, IntOp,
-    Local, LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
+    LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
-use jai_sema::{BoolPlace, CleanupId, Conditional, Exit, Global, IntPlace, Transfer};
-use jai_syntax::{CastMode, Direction, IntegerType, ReturnType, ScalarType};
+use jai_sema::{
+    BoolPlace, CleanupId, Conditional, Exit, GlobalInitializer, IntPlace, Place, PlaceKind,
+    Transfer,
+};
+use jai_syntax::{CastMode, Direction, IntegerType};
+use jai_types::{TypeId, TypeKind, Types};
 use std::fmt;
+use types::integer_type;
 
 #[derive(Debug)]
 pub enum Error {
     Build(BuilderError),
+    Type(types::Error),
     Verification(LLVMString),
     Invariant,
+}
+impl From<types::Error> for Error {
+    fn from(error: types::Error) -> Self {
+        Self::Type(error)
+    }
 }
 impl From<BuilderError> for Error {
     fn from(e: BuilderError) -> Self {
@@ -36,6 +48,7 @@ impl From<BuilderError> for Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::Type(e) => write!(f, "LLVM type lowering failed: {e}"),
             Self::Build(e) => write!(f, "LLVM instruction construction failed: {e}"),
             Self::Verification(e) => write!(f, "LLVM module verification failed: {e}"),
             Self::Invariant => f.write_str("internal LLVM lowering invariant failed"),
@@ -53,47 +66,37 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
     let module = context.create_module("jai");
 
     let bit = context.bool_type();
+    let types = program.types();
+    let mut lowerer = types::TypeLowerer::new(context, types);
     let globals: Vec<_> = program
         .globals()
         .iter()
-        .enumerate()
-        .map(|(index, global)| match global {
-            Global::Int { initializer, .. } => {
-                let ty = integer_type(context, initializer.ty());
-                let value = module.add_global(ty, None, &format!("jai.g{index}"));
-                value.set_initializer(&ty.const_int(initializer.bits(), false));
-                Slot::Int(IntSlot(value.as_pointer_value()))
-            }
-            Global::Bool { initializer, .. } => {
-                let value = module.add_global(bit, None, &format!("jai.g{index}"));
-                value.set_initializer(&bit.const_int(u64::from(*initializer), false));
-                Slot::Bool(BoolSlot(value.as_pointer_value()))
-            }
+        .map(|global| {
+            let ty = scalar_type(&mut lowerer, global.ty())?;
+            let value = module.add_global(ty, None, &format!("jai.g{}", global.id().index()));
+            let initializer = match global.initializer() {
+                GlobalInitializer::Int(n) => ty.const_int(n.bits(), false),
+                GlobalInitializer::Bool(b) => ty.const_int(u64::from(b), false),
+            };
+            value.set_initializer(&initializer);
+            Ok(Slot {
+                pointer: value.as_pointer_value(),
+                ty: global.ty(),
+            })
         })
-        .collect();
-    // Declare signatures before bodies to support forward and recursive calls.
+        .collect::<Result<_, Error>>()?;
     let functions: Vec<_> = program
         .procedures()
         .iter()
-        .map(|p| {
-            let parameters: Vec<BasicMetadataTypeEnum<'ctx>> = p
-                .parameters
-                .iter()
-                .map(|local| match local {
-                    Local::Int(id) => integer_type(context, id.ty()).into(),
-                    Local::Bool(_) => bit.into(),
-                })
-                .collect();
-            let signature = match p.return_type {
-                ReturnType::Void => context.void_type().fn_type(&parameters, false),
-                ReturnType::Value(ScalarType::Int(ty)) => {
-                    integer_type(context, ty).fn_type(&parameters, false)
-                }
-                ReturnType::Value(ScalarType::Bool) => bit.fn_type(&parameters, false),
-            };
-            module.add_function(&format!("jai.p{}", p.id.index()), signature, None)
+        .map(|procedure| {
+            let function_type = lowerer.function(procedure.signature)?;
+            Ok(module.add_function(
+                &format!("jai.p{}", procedure.id.index()),
+                function_type,
+                None,
+            ))
         })
-        .collect();
+        .collect::<Result<_, Error>>()?;
     let trap = Intrinsic::find("llvm.trap")
         .ok_or(Error::Invariant)?
         .get_declaration(&module, &[])
@@ -104,22 +107,19 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
         builder.position_at_end(context.append_basic_block(function, "entry"));
         let mut slots = Vec::with_capacity(p.locals.len());
         for local in &p.locals {
-            slots.push(match local {
-                Local::Int(id) => Slot::Int(IntSlot(
-                    builder.build_alloca(integer_type(context, id.ty()), "local")?,
-                )),
-                Local::Bool(_) => Slot::Bool(BoolSlot(builder.build_alloca(bit, "local")?)),
+            let ty = scalar_type(&mut lowerer, local.ty())?;
+            slots.push(Slot {
+                pointer: builder.build_alloca(ty, "local")?,
+                ty: local.ty(),
             });
         }
         for (parameter, local) in function.get_param_iter().zip(&p.parameters) {
-            let pointer = match slots[local_index(*local)] {
-                Slot::Int(slot) => slot.0,
-                Slot::Bool(slot) => slot.0,
-            };
-            builder.build_store(pointer, parameter)?;
+            builder.build_store(slots[local.id().index()].pointer, parameter)?;
         }
         let mut g = Generator {
             context,
+            types,
+            procedure: p.id,
             builder,
             function,
             functions: &functions,
@@ -168,9 +168,9 @@ struct IntSlot<'ctx>(PointerValue<'ctx>);
 #[derive(Clone, Copy)]
 struct BoolSlot<'ctx>(PointerValue<'ctx>);
 #[derive(Clone, Copy)]
-enum Slot<'ctx> {
-    Int(IntSlot<'ctx>),
-    Bool(BoolSlot<'ctx>),
+struct Slot<'ctx> {
+    pointer: PointerValue<'ctx>,
+    ty: TypeId,
 }
 enum Destination<'ctx> {
     ReturnVoid,
@@ -181,14 +181,6 @@ enum Destination<'ctx> {
 enum Logical {
     And,
     Or,
-}
-fn integer_type(context: &Context, ty: IntegerType) -> IntType<'_> {
-    match ty {
-        IntegerType::S8 | IntegerType::U8 => context.i8_type(),
-        IntegerType::S16 | IntegerType::U16 => context.i16_type(),
-        IntegerType::S32 | IntegerType::U32 => context.i32_type(),
-        IntegerType::S64 | IntegerType::U64 => context.i64_type(),
-    }
 }
 fn predicate(op: Relation, ty: IntegerType) -> IntPredicate {
     match (op, ty.signed()) {
@@ -204,10 +196,13 @@ fn predicate(op: Relation, ty: IntegerType) -> IntPredicate {
         (Relation::GreaterEqual, false) => IntPredicate::UGE,
     }
 }
-fn local_index(local: Local) -> usize {
-    match local {
-        Local::Int(id) => id.index(),
-        Local::Bool(id) => id.index(),
+fn scalar_type<'ctx>(
+    lowerer: &mut types::TypeLowerer<'ctx, '_>,
+    ty: TypeId,
+) -> Result<IntType<'ctx>, Error> {
+    match lowerer.basic(ty)? {
+        inkwell::types::BasicTypeEnum::IntType(ty) => Ok(ty),
+        _ => Err(Error::Invariant),
     }
 }
 fn int_value(value: BasicValueEnum<'_>) -> Result<IntValue<'_>, Error> {
@@ -221,6 +216,8 @@ fn call_int(call: CallSiteValue<'_>) -> Result<IntValue<'_>, Error> {
 }
 struct Generator<'ctx, 'functions> {
     context: &'ctx Context,
+    types: &'functions Types,
+    procedure: jai_sema::ProcedureId,
     builder: Builder<'ctx>,
     function: FunctionValue<'ctx>,
     functions: &'functions [FunctionValue<'ctx>],
@@ -235,29 +232,35 @@ impl<'ctx> Generator<'ctx, '_> {
     fn label(&self, name: &str) -> BasicBlock<'ctx> {
         self.context.append_basic_block(self.function, name)
     }
+    fn slot(&self, place: Place) -> Result<Slot<'ctx>, Error> {
+        let slots = match place.kind() {
+            PlaceKind::Local(id) if id.procedure() == self.procedure => self.slots.get(id.index()),
+            PlaceKind::Local(_) => return Err(Error::Invariant),
+            PlaceKind::Global(id) => self.globals.get(id.index()),
+        };
+        let slot = slots.copied().ok_or(Error::Invariant)?;
+        if slot.ty != place.ty() {
+            return Err(Error::Invariant);
+        }
+        Ok(slot)
+    }
     fn int_slot(&self, id: IntLocal) -> Result<IntSlot<'ctx>, Error> {
-        self.int_place(IntPlace::Local(id))
+        self.int_place(id.place())
     }
     fn int_place(&self, place: IntPlace) -> Result<IntSlot<'ctx>, Error> {
-        let slot = match place {
-            IntPlace::Local(id) => self.slots.get(id.index()),
-            IntPlace::Global(id) => self.globals.get(id.index()),
-        };
-        match slot {
-            Some(Slot::Int(slot)) => Ok(*slot),
+        let slot = self.slot(place.place())?;
+        match self.types.kind(slot.ty).map_err(|_| Error::Invariant)? {
+            TypeKind::Integer(ty) if *ty == place.ty() => Ok(IntSlot(slot.pointer)),
             _ => Err(Error::Invariant),
         }
     }
     fn bool_slot(&self, id: jai_sema::BoolLocal) -> Result<BoolSlot<'ctx>, Error> {
-        self.bool_place(BoolPlace::Local(id))
+        self.bool_place(id.place())
     }
     fn bool_place(&self, place: BoolPlace) -> Result<BoolSlot<'ctx>, Error> {
-        let slot = match place {
-            BoolPlace::Local(id) => self.slots.get(id.index()),
-            BoolPlace::Global(id) => self.globals.get(id.index()),
-        };
-        match slot {
-            Some(Slot::Bool(slot)) => Ok(*slot),
+        let slot = self.slot(place.place())?;
+        match self.types.kind(slot.ty).map_err(|_| Error::Invariant)? {
+            TypeKind::Bool => Ok(BoolSlot(slot.pointer)),
             _ => Err(Error::Invariant),
         }
     }

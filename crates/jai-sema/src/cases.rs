@@ -1,19 +1,5 @@
 //! Checked case dispatch: one hidden subject slot and independent arm scopes.
 use super::*;
-#[derive(Debug)]
-pub struct Cases {
-    pub subject: Box<Statement>,
-    pub arms: Vec<CaseArm>,
-    pub default: Option<Block>,
-    pub flow: Flow,
-    pub exhaustive: bool,
-}
-#[derive(Debug)]
-pub struct CaseArm {
-    pub condition: BoolExpr,
-    pub body: Block,
-    pub through: bool,
-}
 impl Resolver<'_> {
     pub(super) fn resolve_cases(
         &mut self,
@@ -22,23 +8,24 @@ impl Resolver<'_> {
         let span = case.value.span;
         let (subject, place) = match self.expr(&case.value)? {
             Expr::Bool(value) => {
-                let id = BoolLocal(self.locals.len());
-                self.locals.push(Local::Bool(id));
+                let id = self
+                    .allocate(ScalarType::Bool)
+                    .boolean(self.types)
+                    .expect("boolean subject");
                 (
-                    Statement::StoreBool(BoolPlace::Local(id), value),
-                    Storage::Bool(BoolPlace::Local(id)),
+                    Statement::StoreBool(id.place(), value),
+                    Storage::Bool(id.place()),
                 )
             }
             value => {
                 let value = value.int(span)?;
-                let id = IntLocal {
-                    index: self.locals.len(),
-                    ty: value.ty(),
-                };
-                self.locals.push(Local::Int(id));
+                let id = self
+                    .allocate(ScalarType::Int(value.ty()))
+                    .integer(self.types)
+                    .expect("integer subject");
                 (
-                    Statement::StoreInt(IntPlace::Local(id), value),
-                    Storage::Int(IntPlace::Local(id)),
+                    Statement::StoreInt(id.place(), value),
+                    Storage::Int(id.place()),
                 )
             }
         };

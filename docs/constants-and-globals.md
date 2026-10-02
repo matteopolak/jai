@@ -27,13 +27,13 @@ A dependency worklist resolves constants before runtime statements, supports for
 
 `jai-eval` binds the complete constant expression into separate integer and Boolean nodes before evaluating it. Even a short-circuited operand must have valid names and operand types. Evaluation short-circuits execution, so `true || (1 / 0)` is valid, while evaluating `1 / 0` is a diagnostic. Fixed-width integer arithmetic wraps to its declared width; untyped literal arithmetic retains checked intermediates until a type constraint materializes it. Division overflow and shift counts outside the selected width are rejected during constant execution. See [integer types](integer-types.md) for coercion, casts and current numeric limits.
 
-Global initializers may reference constants, but mutable storage and procedure calls cannot yet supply compile-time values. Resolution creates distinct integer/Boolean global IDs. Checked place enums distinguish global storage from procedure-local storage. LLVM emits initialized global values and direct typed loads/stores; constants become literal values and cannot be assigned or updated.
+Global initializers may reference constants, but mutable storage and procedure calls cannot yet supply compile-time values. Resolution creates common global IDs and registry-typed places with checked integer/Boolean views. Checked place enums distinguish global storage from procedure-local storage. LLVM emits initialized global values and direct typed loads/stores; constants become literal values and cannot be assigned or updated.
 
 ## How to change it
 
 Extend `jai-syntax` declaration/expression variants, the shared domain operators in `jai-eval`, semantic declaration resolution and LLVM places together. Preserve lexical shadowing, cycle detection, whole-expression binding and immutable constants. The constant dependency test uses 20,000 forward references without recursive dependency resolution. Native tests cover actual shared storage and mutation, rather than emitted-text patterns.
 
-The evaluation crate currently handles scalar expressions only. Procedure execution, composite values, type-valued constants, `#run`, host interactions and compiler workspaces require a larger compile-time engine; do not replace them with successful no-ops. Module/file namespaces and linkage are future work.
+The evaluation crate currently handles scalar expressions only. Procedure execution, composite values, type-valued constants, `#run`, host interactions and compiler workspaces require a larger compile-time engine; do not replace them with successful no-ops. The graph adapter resolves module/file names and qualified constant dependencies by declaration identity; see [scoped semantics](scoped-semantics.md).
 
 ## Configuration
 

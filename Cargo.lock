@@ -143,6 +143,7 @@ dependencies = [
  "jai-sema",
  "jai-source",
  "jai-syntax",
+ "jai-types",
 ]
 
 [[package]]
@@ -164,6 +165,7 @@ dependencies = [
  "inkwell",
  "jai-sema",
  "jai-syntax",
+ "jai-types",
 ]
 
 [[package]]
@@ -171,6 +173,7 @@ name = "jai-driver"
 version = "0.1.0"
 dependencies = [
  "jai-lexer",
+ "jai-modules",
  "jai-sema",
  "jai-source",
  "jai-syntax",
@@ -193,12 +196,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "jai-modules"
+version = "0.1.0"
+dependencies = [
+ "jai-lexer",
+ "jai-source",
+ "jai-syntax",
+]
+
+[[package]]
 name = "jai-sema"
 version = "0.1.0"
 dependencies = [
  "jai-eval",
+ "jai-modules",
  "jai-source",
  "jai-syntax",
+ "jai-types",
 ]
 
 [[package]]

@@ -1,7 +1,11 @@
 //! Parsing converts raw tokens into domain operators, names and signatures.
+mod modules;
 mod numeric_literals;
+mod types;
 use jai_lexer::{Directive, Keyword, Kind, Punct, Token, lex};
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
+pub use modules::*;
+pub use types::*;
 
 pub use jai_types::{CastMode, IntegerType, ReturnType, ScalarType};
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -144,11 +148,18 @@ pub enum Declaration {
         ty: ScalarType,
         initializer: Option<Expression>,
     },
+    UnresolvedExplicit {
+        name: Symbol,
+        ty: TypeSyntax,
+        initializer: Option<Expression>,
+    },
 }
 impl Declaration {
     pub fn name(&self) -> Symbol {
         match self {
-            Self::Inferred { name, .. } | Self::Explicit { name, .. } => *name,
+            Self::Inferred { name, .. }
+            | Self::Explicit { name, .. }
+            | Self::UnresolvedExplicit { name, .. } => *name,
         }
     }
 }
@@ -226,7 +237,14 @@ pub enum ExpressionKind {
     Integer(i128),
     Bool(bool),
     Name(Symbol),
+    QualifiedName(NamePath),
     Call(Symbol, Vec<CallArgument>),
+    QualifiedCall(NamePath, Vec<CallArgument>),
+    StructLiteral(StructLiteral),
+    Member {
+        base: Box<Expression>,
+        member: Symbol,
+    },
     Unary(UnaryOp, Box<Expression>),
     Cast(CastMode, ScalarType, Box<Expression>),
     Binary(BinaryOp, Box<Expression>, Box<Expression>),
@@ -245,6 +263,7 @@ pub fn parse(source: &str) -> Result<Module, Diagnostic> {
         tokens: lex(source)?,
         at: 0,
         symbols: Symbols::default(),
+        allow_qualified: false,
     };
     let mut procedures = Vec::new();
     let mut constants = Vec::new();
@@ -276,6 +295,7 @@ struct Parser<'a> {
     tokens: Vec<Token>,
     at: usize,
     symbols: Symbols,
+    allow_qualified: bool,
 }
 impl Parser<'_> {
     fn token(&self) -> Token {
@@ -327,16 +347,8 @@ impl Parser<'_> {
         Ok(symbol)
     }
     fn scalar_type(&mut self) -> Result<ScalarType, Diagnostic> {
-        let ty = match self.text() {
-            "int" | "s64" => ScalarType::Int(IntegerType::S64),
-            "s8" => ScalarType::Int(IntegerType::S8),
-            "s16" => ScalarType::Int(IntegerType::S16),
-            "s32" => ScalarType::Int(IntegerType::S32),
-            "u8" => ScalarType::Int(IntegerType::U8),
-            "u16" => ScalarType::Int(IntegerType::U16),
-            "u32" => ScalarType::Int(IntegerType::U32),
-            "u64" => ScalarType::Int(IntegerType::U64),
-            "bool" => ScalarType::Bool,
+        let ty = match BuiltinType::from_spelling(self.text()) {
+            Some(BuiltinType::Scalar(ty)) => ty,
             _ => return Err(self.error("expected a supported scalar type")),
         };
         if self.token().kind != Kind::Ident {
@@ -394,8 +406,15 @@ impl Parser<'_> {
             })
         } else {
             self.need(Punct::Colon)?;
-            let ty = self.scalar_type()?;
+            let ty = if self.allow_qualified {
+                self.type_syntax()?
+            } else {
+                TypeSyntax::Builtin(BuiltinType::Scalar(self.scalar_type()?))
+            };
             if self.take(Punct::Colon) {
+                let Some(ty) = ty.as_scalar() else {
+                    return Err(self.error("non-scalar constant annotations are not implemented"));
+                };
                 Statement::Constant(ConstantDeclaration {
                     name,
                     span,
@@ -408,10 +427,18 @@ impl Parser<'_> {
                 } else {
                     None
                 };
-                Statement::Declare(Declaration::Explicit {
-                    name,
-                    ty,
-                    initializer,
+                Statement::Declare(if let Some(ty) = ty.as_scalar() {
+                    Declaration::Explicit {
+                        name,
+                        ty,
+                        initializer,
+                    }
+                } else {
+                    Declaration::UnresolvedExplicit {
+                        name,
+                        ty,
+                        initializer,
+                    }
                 })
             }
         };
@@ -683,6 +710,11 @@ impl Parser<'_> {
             let e = self.expression(0)?;
             self.need(Punct::CloseParen)?;
             e
+        } else if self.is(Punct::StructLiteral) {
+            if !self.allow_qualified {
+                return Err(self.error("struct literals require aggregate type resolution"));
+            }
+            self.struct_literal(None, span.start)?
         } else if self.keyword(Keyword::Ifx) {
             let condition = Box::new(self.expression(0)?);
             if self.is(Punct::OpenBrace) {
@@ -759,9 +791,58 @@ impl Parser<'_> {
             return Err(self.error("expected expression; this syntax is not implemented yet"));
         };
         loop {
+            if self.is(Punct::StructLiteral) && minimum <= 23 {
+                if !self.allow_qualified {
+                    return Err(self.error("struct literals require aggregate type resolution"));
+                }
+                let ty = match lhs.kind {
+                    ExpressionKind::Name(root) => NamePath {
+                        root,
+                        members: Vec::new(),
+                    },
+                    ExpressionKind::QualifiedName(path) => path,
+                    _ => return Err(self.error("struct literal type must be a named type")),
+                };
+                lhs = self.struct_literal(Some(ty), lhs.span.start)?;
+                continue;
+            }
+            if self.is(Punct::Dot) && minimum <= 23 {
+                if !self.allow_qualified {
+                    return Err(
+                        self.error("qualified module references require module scope resolution")
+                    );
+                }
+                self.at += 1;
+                let member = self.name()?;
+                let start = lhs.span.start;
+                let kind = match lhs.kind {
+                    ExpressionKind::Name(root) => ExpressionKind::QualifiedName(NamePath {
+                        root,
+                        members: vec![member],
+                    }),
+                    ExpressionKind::QualifiedName(mut path) => {
+                        path.members.push(member);
+                        ExpressionKind::QualifiedName(path)
+                    }
+                    _ => ExpressionKind::Member {
+                        base: Box::new(lhs),
+                        member,
+                    },
+                };
+                lhs = Expression {
+                    span: Span::new(start, self.tokens[self.at - 1].span.end),
+                    kind,
+                };
+                continue;
+            }
             if self.is(Punct::OpenParen) && minimum <= 23 {
-                let ExpressionKind::Name(name) = lhs.kind else {
-                    return Err(self.error("indirect procedure calls are not implemented"));
+                let callee = match lhs.kind {
+                    ExpressionKind::Name(name) => NamePath {
+                        root: name,
+                        members: vec![],
+                    },
+                    ExpressionKind::QualifiedName(path) => path,
+                    _ => return Err(self.error("indirect procedure calls are not implemented")),
                 };
                 self.at += 1;
                 let mut args = Vec::new();
@@ -786,7 +867,11 @@ impl Parser<'_> {
                 }
                 lhs = Expression {
                     span: Span::new(lhs.span.start, self.tokens[self.at - 1].span.end),
-                    kind: ExpressionKind::Call(name, args),
+                    kind: if callee.members.is_empty() {
+                        ExpressionKind::Call(callee.root, args)
+                    } else {
+                        ExpressionKind::QualifiedCall(callee, args)
+                    },
                 };
                 continue;
             }

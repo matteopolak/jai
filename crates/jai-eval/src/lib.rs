@@ -1,7 +1,7 @@
 //! Pure constant evaluation with typed nodes and no host effects.
 pub mod operators;
 use jai_source::{Diagnostic, Span, Symbol};
-use jai_syntax::{Expression, ExpressionKind, UnaryOp};
+use jai_syntax::{Expression, ExpressionKind, NamePath, UnaryOp};
 pub use jai_types::{CastMode, Integer, IntegerType, ScalarType};
 use operators::{Equality, IntOp, Operator, Relation};
 
@@ -54,6 +54,21 @@ impl Value {
 pub fn evaluate(
     expression: &Expression,
     mut lookup: impl FnMut(Symbol, Span) -> Result<Value, Diagnostic>,
+) -> Result<Value, Diagnostic> {
+    evaluate_paths(expression, |path, span| {
+        if !path.members.is_empty() {
+            return Err(Diagnostic::new(
+                span,
+                "qualified constant requires a module scope",
+            ));
+        }
+        lookup(path.root, span)
+    })
+}
+/// Resolve complete namespace paths without combining spelling and declaration identity.
+pub fn evaluate_paths(
+    expression: &Expression,
+    mut lookup: impl FnMut(&NamePath, Span) -> Result<Value, Diagnostic>,
 ) -> Result<Value, Diagnostic> {
     match bind(expression, &mut lookup)? {
         Expr::Number(e) => e.evaluate(),
@@ -290,14 +305,27 @@ fn number_pair(
 }
 fn bind(
     expression: &Expression,
-    lookup: &mut impl FnMut(Symbol, Span) -> Result<Value, Diagnostic>,
+    lookup: &mut impl FnMut(&NamePath, Span) -> Result<Value, Diagnostic>,
 ) -> Result<Expr, Diagnostic> {
     let span = expression.span;
     Ok(match &expression.kind {
         ExpressionKind::Integer(n) => literal(Value::Literal(*n)),
         ExpressionKind::Bool(b) => literal(Value::Bool(*b)),
-        ExpressionKind::Name(name) => literal(lookup(*name, span)?),
-        ExpressionKind::Call(_, _) => {
+        ExpressionKind::Name(name) => literal(lookup(
+            &NamePath {
+                root: *name,
+                members: Vec::new(),
+            },
+            span,
+        )?),
+        ExpressionKind::QualifiedName(path) => literal(lookup(path, span)?),
+        ExpressionKind::StructLiteral(_) | ExpressionKind::Member { .. } => {
+            return Err(Diagnostic::new(
+                span,
+                "aggregate constant evaluation is not implemented",
+            ));
+        }
+        ExpressionKind::Call(_, _) | ExpressionKind::QualifiedCall(_, _) => {
             return Err(Diagnostic::new(
                 span,
                 "procedure calls in constant expressions are not implemented yet",
@@ -536,5 +564,42 @@ mod tests {
         ] {
             assert!(run(source).is_err(), "{source}");
         }
+    }
+}
+
+#[cfg(test)]
+mod path_tests {
+    use super::*;
+    use jai_source::{SourceMap, Symbols};
+    use jai_syntax::{FileDeclarationKind, FileItem};
+    #[test]
+    fn qualified_names_are_bound_even_when_execution_skips_the_branch() {
+        let mut sources = SourceMap::default();
+        let source = sources.insert(
+            "fixture.jai".into(),
+            "VALUE :: true || Math.missing;".into(),
+        );
+        let mut symbols = Symbols::default();
+        let file = jai_syntax::parse_file(sources.get(source).unwrap(), &mut symbols).unwrap();
+        let FileItem::Declaration(declaration) = &file.items()[0] else {
+            panic!()
+        };
+        let FileDeclarationKind::Constant(constant) = &declaration.kind else {
+            panic!()
+        };
+        let mut seen = Vec::new();
+        let result = evaluate_paths(&constant.initializer, |path, span| {
+            seen.push((path.clone(), span));
+            Err(Diagnostic::new(span, "unknown module member"))
+        });
+        assert!(result.is_err());
+        assert_eq!(seen[0].0.root, symbols.find("Math").unwrap());
+        assert_eq!(seen[0].0.members, vec![symbols.find("missing").unwrap()]);
+        assert!(
+            evaluate(&constant.initializer, |_, _| panic!(
+                "qualified lookup cannot be truncated"
+            ))
+            .is_err()
+        );
     }
 }

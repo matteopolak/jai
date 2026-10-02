@@ -1,63 +1,16 @@
-//! Filesystem compilation units with source-preserving diagnostic mapping.
-use jai_lexer::{Directive, Kind, Punct};
-use jai_source::{Diagnostic, Span};
+//! Coordinate independently scoped sources and checked compilation programs.
+pub use jai_modules as modules;
+use jai_modules::{DependencyKind, GraphError, GraphOptions, ModuleGraph};
+use jai_source::{Diagnostic, LocatedDiagnostic};
+pub use jai_source::{ModuleId, SourceId, SourceRecord as Source, UnitId};
 use std::{
-    collections::HashSet,
-    fmt, fs,
+    fmt,
     path::{Path, PathBuf},
 };
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct SourceId(usize);
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct UnitId(usize);
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct ModuleId(usize);
-#[derive(Debug)]
-pub struct Source {
-    id: SourceId,
-    path: PathBuf,
-    text: String,
-}
-#[derive(Debug)]
-struct Mapping {
-    source: SourceId,
-    generated: Span,
-    original: usize,
-}
 #[derive(Debug)]
 pub struct CompilationUnit {
-    id: UnitId,
-    module: ModuleId,
-    sources: Vec<Source>,
-    text: String,
-    mappings: Vec<Mapping>,
-}
-impl SourceId {
-    pub fn index(self) -> usize {
-        self.0
-    }
-}
-impl UnitId {
-    pub fn index(self) -> usize {
-        self.0
-    }
-}
-impl ModuleId {
-    pub fn index(self) -> usize {
-        self.0
-    }
-}
-impl Source {
-    pub fn id(&self) -> SourceId {
-        self.id
-    }
-    pub fn path(&self) -> &Path {
-        &self.path
-    }
-    pub fn text(&self) -> &str {
-        &self.text
-    }
+    graph: ModuleGraph,
 }
 #[derive(Debug)]
 pub enum Error {
@@ -75,10 +28,10 @@ pub enum Error {
         diagnostic: Diagnostic,
         rendered: String,
     },
-    Diagnostic(Diagnostic),
     LoadCycle {
         path: PathBuf,
     },
+    Graph(GraphError),
 }
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -86,8 +39,8 @@ impl fmt::Display for Error {
             Self::Io { path, cause } => write!(f, "{}: {cause}", path.display()),
             Self::Decode { path, diagnostic } => write!(f, "{}: {diagnostic}", path.display()),
             Self::Located { rendered, .. } => f.write_str(rendered),
-            Self::Diagnostic(d) => fmt::Display::fmt(d, f),
             Self::LoadCycle { path } => write!(f, "{}: cyclic #load", path.display()),
+            Self::Graph(error) => fmt::Display::fmt(error, f),
         }
     }
 }
@@ -95,161 +48,73 @@ impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::Io { cause, .. } => Some(cause),
-            Self::Decode { diagnostic, .. }
-            | Self::Located { diagnostic, .. }
-            | Self::Diagnostic(diagnostic) => Some(diagnostic),
+            Self::Decode { diagnostic, .. } | Self::Located { diagnostic, .. } => Some(diagnostic),
+            Self::Graph(error) => Some(error),
             Self::LoadCycle { .. } => None,
         }
     }
 }
+impl From<GraphError> for Error {
+    fn from(error: GraphError) -> Self {
+        match error {
+            GraphError::Io { path, cause } => Self::Io { path, cause },
+            GraphError::Decode { path, diagnostic } => Self::Decode { path, diagnostic },
+            GraphError::Cycle {
+                kind: DependencyKind::Load,
+                path,
+                ..
+            } => Self::LoadCycle { path },
+            other => Self::Graph(other),
+        }
+    }
+}
 impl CompilationUnit {
+    pub fn load(path: &Path) -> Result<Self, Error> {
+        Self::load_with_options(path, GraphOptions::default())
+    }
+    pub fn load_with_options(path: &Path, options: GraphOptions) -> Result<Self, Error> {
+        Ok(Self {
+            graph: ModuleGraph::load(path, options)?,
+        })
+    }
     pub fn id(&self) -> UnitId {
-        self.id
+        self.graph.unit()
     }
     pub fn module(&self) -> ModuleId {
-        self.module
+        self.graph.root()
     }
     pub fn sources(&self) -> &[Source] {
-        &self.sources
+        self.graph.sources().records()
     }
-    fn located(&self, source: SourceId, diagnostic: Diagnostic) -> Error {
-        let file = &self.sources[source.0];
-        let rendered = diagnostic.render(&file.path.to_string_lossy(), &file.text);
-        Error::Located {
-            source,
-            path: file.path.clone(),
-            diagnostic,
-            rendered,
-        }
-    }
-
-    pub fn load(path: &Path) -> Result<Self, Error> {
-        let mut unit = Self {
-            id: UnitId(0),
-            module: ModuleId(0),
-            sources: vec![],
-            text: String::new(),
-            mappings: vec![],
-        };
-        unit.visit(path, &mut HashSet::new(), &mut HashSet::new())?;
-        Ok(unit)
-    }
-    pub fn parse(&self) -> Result<jai_syntax::Module, Error> {
-        jai_syntax::parse(&self.text).map_err(|d| self.diagnostic(d))
+    pub fn graph(&self) -> &ModuleGraph {
+        &self.graph
     }
     pub fn resolve(&self) -> Result<jai_sema::Program, Error> {
-        jai_sema::resolve(&self.parse()?).map_err(|d| self.diagnostic(d))
+        jai_sema::resolve_graph(&self.graph).map_err(|error| self.located(error))
     }
-    fn diagnostic(&self, mut d: Diagnostic) -> Error {
-        if let Some(m) = self
-            .mappings
-            .iter()
-            .find(|m| m.generated.start <= d.span.start && d.span.start < m.generated.end)
-        {
-            let s = &self.sources[m.source.0];
-            let start = m.original + d.span.start - m.generated.start;
-            d.span = Span::new(start, start + d.span.end.saturating_sub(d.span.start));
-            self.located(s.id, d)
-        } else {
-            Error::Diagnostic(d)
-        }
+    pub fn resolve_library(&self) -> Result<jai_sema::Library, Error> {
+        jai_sema::resolve_library(&self.graph).map_err(|error| self.located(error))
     }
-    fn append(&mut self, id: SourceId, start: usize, end: usize) {
-        let generated = Span::new(self.text.len(), self.text.len() + end - start);
-        self.text.push_str(&self.sources[id.0].text[start..end]);
-        self.mappings.push(Mapping {
-            source: id,
-            generated,
-            original: start,
-        });
-    }
-    fn visit(
-        &mut self,
-        path: &Path,
-        active: &mut HashSet<PathBuf>,
-        seen: &mut HashSet<PathBuf>,
-    ) -> Result<(), Error> {
-        let path = path.canonicalize().map_err(|cause| Error::Io {
-            path: path.to_owned(),
-            cause,
-        })?;
-        if active.contains(&path) {
-            return Err(Error::LoadCycle { path });
+    fn located(&self, error: LocatedDiagnostic) -> Error {
+        let record = self
+            .graph
+            .sources()
+            .get(error.location.source)
+            .expect("semantic diagnostics retain graph source identities");
+        let rendered = error.render(self.graph.sources());
+        Error::Located {
+            source: error.location.source,
+            path: record.path().to_owned(),
+            diagnostic: Diagnostic::new(error.location.span, error.message),
+            rendered,
         }
-        if !seen.insert(path.clone()) {
-            return Ok(());
-        }
-        active.insert(path.clone());
-        let bytes = fs::read(&path).map_err(|cause| Error::Io {
-            path: path.clone(),
-            cause,
-        })?;
-        let text = jai_lexer::decode_source(&bytes)
-            .map_err(|diagnostic| Error::Decode {
-                path: path.clone(),
-                diagnostic,
-            })?
-            .into_owned();
-        let id = SourceId(self.sources.len());
-        self.sources.push(Source {
-            id,
-            path: path.clone(),
-            text,
-        });
-        let tokens = jai_lexer::lex(&self.sources[id.0].text).map_err(|d| self.located(id, d))?;
-        let mut depth = 0usize;
-        let mut cursor = 0;
-        let mut i = 0;
-        while i < tokens.len() {
-            let t = tokens[i];
-            match t.kind {
-                Kind::Punctuation(Punct::OpenBrace) => depth += 1,
-                Kind::Punctuation(Punct::CloseBrace) => depth = depth.saturating_sub(1),
-                Kind::Directive(Directive::Import) => {
-                    return Err(self.located(
-                        id,
-                        Diagnostic::new(t.span, "#import module scopes are not implemented"),
-                    ));
-                }
-                Kind::Directive(Directive::Load) => {
-                    let fail = |message| self.located(id, Diagnostic::new(t.span, message));
-                    if depth != 0 {
-                        return Err(fail("#load is supported only at top level"));
-                    }
-                    let Some(value) = tokens.get(i + 1).filter(|v| v.kind == Kind::String) else {
-                        return Err(fail("#load requires a literal file path"));
-                    };
-                    let raw = value.span.text(&self.sources[id.0].text);
-                    let name = raw[1..raw.len() - 1].to_owned();
-                    if name.contains('\\') || name.is_empty() {
-                        return Err(fail("#load paths must be nonempty unescaped strings"));
-                    }
-                    if tokens
-                        .get(i + 2)
-                        .is_none_or(|v| v.kind != Kind::Punctuation(Punct::Semicolon))
-                    {
-                        return Err(fail("expected ';' after #load"));
-                    }
-                    self.append(id, cursor, t.span.start);
-                    self.text.push('\n');
-                    self.visit(&path.parent().unwrap().join(name), active, seen)?;
-                    self.text.push('\n');
-                    cursor = tokens[i + 2].span.end;
-                    i += 2;
-                }
-                _ => {}
-            }
-            i += 1;
-        }
-        self.append(id, cursor, self.sources[id.0].text.len());
-        active.remove(&path);
-        Ok(())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
     use std::sync::atomic::{AtomicUsize, Ordering};
     static NEXT: AtomicUsize = AtomicUsize::new(0);
     struct Fixture(PathBuf);
