@@ -10,6 +10,7 @@
 - [Compiler time and allocation benchmarks](benchmarks.md)
 - [Recent upstream source corpus](upstream-corpus.md)
 - [GitHub checks and inspection](github-analysis.md)
+- [Range loops and named loop control](loop-control.md)
 - [LLVM backend and setup](llvm-backend.md)
 - [Bounded reference probes](reference-probes.md)
 
