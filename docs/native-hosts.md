@@ -4,6 +4,8 @@
 
 Compiler CI targets macOS ARM64 (`macos-15`) and Linux x86_64 (`ubuntu-24.04`). Only completed hosted runs establish support. Windows, mobile and WebAssembly execution remain unverified.
 
+Both hosts passed the [integer/call/module-loading checkpoint](https://github.com/matteopolak/jai/actions/runs/36953861195). This proves the tested scalar native subset, rather than standard-library or full-project compatibility.
+
 ## How it works
 
 Each runner enforces the existing 14-day locked Rust dependency age policy before compiling, then runs formatting, lint, Rust/native execution tests, Python policy tests and benchmark smoke checks. Native fixtures use this compiler's generated LLVM IR and independently installed Clang. The runner disables core dumps for deliberately trapping fixtures with `ulimit -c 0`.

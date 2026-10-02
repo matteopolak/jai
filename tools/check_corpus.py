@@ -115,7 +115,7 @@ def validate_cases(manifest: dict) -> dict[str, dict]:
         if case.get('id') in cases or not isinstance(case.get('id'), str):
             raise ValueError('duplicate or invalid acceptance case id')
         for stage, expected in case.get('negative', {}).items():
-            if stage not in {'lex', 'check', 'codegen', 'build'} or not isinstance(expected, str) or not expected.strip():
+            if stage not in {'lex', 'parse', 'check', 'codegen', 'build'} or not isinstance(expected, str) or not expected.strip():
                 raise ValueError('negative requires a nonempty stage diagnostic')
         if case['kind'] == 'negative' and not case.get('negative'):
             raise ValueError('negative case requires expected diagnostic')
@@ -137,8 +137,10 @@ def classify(returncode: int, diagnostic: str, expected: str | None) -> Status:
 
 
 def execute(compiler: Path, source: Source, stage: Stage, timeout: float,
-            output: Path, expected: str | None = None) -> Evidence:
-    action = {Stage.LEX: 'lex', Stage.CHECK: 'check', Stage.CODEGEN: 'emit-llvm', Stage.BUILD: 'build'}[stage]
+            output: Path, expected: str | None = None, *, library: bool = False) -> Evidence:
+    action = {Stage.LEX: 'lex', Stage.PARSE: 'parse', Stage.CHECK: 'check', Stage.CODEGEN: 'emit-llvm', Stage.BUILD: 'build'}[stage]
+    if stage == Stage.CHECK and library:
+        action = 'check-library'
     command = [str(compiler), action, str(source.path)]
     if stage in (Stage.CODEGEN, Stage.BUILD):
         command.append(str(output))
@@ -169,16 +171,16 @@ def evaluate(source: Source, case: dict, compiler: Path, through: Stage, timeout
     if source.sha256 != source.expected_sha256:
         stages['check'] = Evidence(Status.BLOCKED, 'source missing or fingerprint differs from pinned manifest')
         return result
-    stages['parse'] = Evidence(Status.NOT_RUN, 'CLI has no independent parse command; check success implies parsing but is not separate evidence')
     stages['run'] = Evidence(Status.BLOCKED, 'runtime requires separate isolated execution and behavior assertions')
-    for stage in (Stage.LEX, Stage.CHECK, Stage.CODEGEN, Stage.BUILD):
+    for stage in (Stage.LEX, Stage.PARSE, Stage.CHECK, Stage.CODEGEN, Stage.BUILD):
         if list(Stage).index(stage) > list(Stage).index(through):
             break
         if stage == Stage.BUILD and not case.get('host_build_reviewed', False):
             stages['build'] = Evidence(Status.BLOCKED, 'host build not reviewed: SDK, foreign libraries, metaprogram and target requirements')
             break
         expected = case.get('negative', {}).get(stage.value)
-        evidence = execute(compiler, source, stage, timeout, output, expected)
+        evidence = execute(compiler, source, stage, timeout, output, expected,
+                           library=case.get('kind') == 'module')
         stages[stage.value] = evidence
         if evidence.status != Status.PASSED:
             break
@@ -203,7 +205,7 @@ def main() -> int:
     parser.add_argument('--compiler', type=Path, default=ROOT / 'target/debug/jai-rs')
     parser.add_argument('--manifest', type=Path, default=ROOT / 'corpus/acceptance.json')
     parser.add_argument('--report', type=Path, default=ROOT / 'artifacts/corpus-acceptance.json')
-    parser.add_argument('--through', type=Stage, choices=[Stage.LEX, Stage.CHECK, Stage.CODEGEN, Stage.BUILD], default=Stage.CHECK)
+    parser.add_argument('--through', type=Stage, choices=[Stage.LEX, Stage.PARSE, Stage.CHECK, Stage.CODEGEN, Stage.BUILD], default=Stage.CHECK)
     parser.add_argument('--all', action='store_true', help='attempt every inventoried source, including support files; not project build coverage')
     parser.add_argument('--select', action='append', default=[], help='exact source id; may repeat')
     parser.add_argument('--timeout', type=float, default=10)
@@ -250,7 +252,7 @@ def main() -> int:
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps(payload, indent=2) + '\n')
     print(json.dumps({'inventory': len(sources), 'selected': len(selected), 'totals': payload['totals'], 'report': str(report)}))
-    return int(any(e.status in (Status.FAILED, Status.UNEXPECTED_ACCEPTANCE, Status.BLOCKED) for r in results for name, e in r.stages.items() if name not in ('run', 'parse')))
+    return int(any(e.status in (Status.FAILED, Status.UNEXPECTED_ACCEPTANCE, Status.BLOCKED) for r in results for name, e in r.stages.items() if name != 'run'))
 
 if __name__ == '__main__':
     raise SystemExit(main())

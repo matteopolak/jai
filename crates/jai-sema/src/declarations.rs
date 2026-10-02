@@ -1,9 +1,6 @@
 //! Resolve declarative constants before runtime statements and allocate globals.
-use super::{
-    Binding, BoolGlobal, ConstantValue, Diagnostic, Global, HashMap, IntGlobal, Resolver, Span,
-    Storage, Symbol, syntax,
-};
-use super::{BoolPlace, IntPlace};
+use super::{Binding, ConstantValue, Diagnostic, Global, HashMap, Resolver, Span, Symbol, syntax};
+use super::{GlobalInitializer, TypeRegistry};
 
 #[derive(Clone, Copy)]
 enum State {
@@ -18,11 +15,13 @@ struct Constants<'a> {
     declarations: HashMap<Symbol, &'a syntax::ConstantDeclaration>,
     states: HashMap<Symbol, State>,
     outer: &'a HashMap<Symbol, Binding>,
+    graph_scope: Option<super::modules::FileScope<'a>>,
 }
 impl<'a> Constants<'a> {
     fn new(
         declarations: &[&'a syntax::ConstantDeclaration],
         outer: &'a HashMap<Symbol, Binding>,
+        graph_scope: Option<super::modules::FileScope<'a>>,
     ) -> Result<Self, Diagnostic> {
         let mut names = HashMap::new();
         for declaration in declarations {
@@ -37,6 +36,7 @@ impl<'a> Constants<'a> {
             declarations: names,
             states: HashMap::new(),
             outer,
+            graph_scope,
         })
     }
     fn ready_value(&self, name: Symbol, span: Span) -> Result<ConstantValue, Diagnostic> {
@@ -49,8 +49,41 @@ impl<'a> Constants<'a> {
                     span,
                     "mutable storage cannot supply a compile-time constant",
                 )),
-                None => Err(Diagnostic::new(span, "unknown constant")),
+                None => match self.graph_scope {
+                    Some(scope) => match scope.value(
+                        &syntax::NamePath {
+                            root: name,
+                            members: Vec::new(),
+                        },
+                        span,
+                    )? {
+                        Binding::Constant(value) => Ok(value),
+                        Binding::Storage(_) => Err(Diagnostic::new(
+                            span,
+                            "mutable storage cannot supply a compile-time constant",
+                        )),
+                    },
+                    None => Err(Diagnostic::new(span, "unknown constant")),
+                },
             },
+        }
+    }
+    fn ready_path(&self, path: &syntax::NamePath, span: Span) -> Result<ConstantValue, Diagnostic> {
+        if path.members.is_empty() {
+            return self.ready_value(path.root, span);
+        }
+        if self.declarations.contains_key(&path.root) || self.outer.contains_key(&path.root) {
+            return Err(Diagnostic::new(span, "scalar value is not a namespace"));
+        }
+        let scope = self
+            .graph_scope
+            .ok_or_else(|| Diagnostic::new(span, "qualified constant requires a module scope"))?;
+        match scope.value(path, span)? {
+            Binding::Constant(value) => Ok(value),
+            Binding::Storage(_) => Err(Diagnostic::new(
+                span,
+                "mutable storage cannot supply a compile-time constant",
+            )),
         }
     }
     fn value(&mut self, name: Symbol, span: Span) -> Result<ConstantValue, Diagnostic> {
@@ -93,7 +126,11 @@ impl<'a> Constants<'a> {
                             }
                             syntax::ExpressionKind::Integer(_)
                             | syntax::ExpressionKind::Bool(_)
+                            | syntax::ExpressionKind::QualifiedName(_)
+                            | syntax::ExpressionKind::QualifiedCall(_, _)
                             | syntax::ExpressionKind::Call(_, _) => {}
+                            syntax::ExpressionKind::StructLiteral(_)
+                            | syntax::ExpressionKind::Member { .. } => {}
                         }
                     }
                     work.extend(
@@ -104,9 +141,10 @@ impl<'a> Constants<'a> {
                     );
                 }
                 Work::Finish(declaration) => {
-                    let mut value = jai_eval::evaluate(&declaration.initializer, |name, span| {
-                        self.ready_value(name, span)
-                    })?;
+                    let mut value =
+                        jai_eval::evaluate_paths(&declaration.initializer, |path, span| {
+                            self.ready_path(path, span)
+                        })?;
                     if let Some(ty) = declaration.ty {
                         value = value.coerce(ty, declaration.span)?;
                     }
@@ -145,10 +183,11 @@ pub(super) fn check_top_level_names(module: &syntax::Module) -> Result<(), Diagn
 }
 pub(super) fn resolve_globals(
     module: &syntax::Module,
+    types: &TypeRegistry,
 ) -> Result<(Vec<Global>, HashMap<Symbol, Binding>), Diagnostic> {
     let declarations: Vec<_> = module.constants().iter().collect();
     let empty = HashMap::new();
-    let mut constants = Constants::new(&declarations, &empty)?;
+    let mut constants = Constants::new(&declarations, &empty, None)?;
     let mut bindings = HashMap::new();
     for declaration in &declarations {
         let value = constants.value(declaration.name, declaration.span)?;
@@ -173,24 +212,22 @@ pub(super) fn resolve_globals(
                 let value = value.coerce(*ty, global.span)?;
                 (*name, value)
             }
+            syntax::Declaration::UnresolvedExplicit { .. } => {
+                return Err(Diagnostic::new(
+                    global.span,
+                    "global aggregate types are not implemented",
+                ));
+            }
         };
         let value = value.coerce(value.ty(), global.span)?;
-        let storage = match value {
-            ConstantValue::Int(initializer) => {
-                let id = IntGlobal {
-                    index: globals.len(),
-                    ty: initializer.ty(),
-                };
-                globals.push(Global::Int { id, initializer });
-                Storage::Int(IntPlace::Global(id))
-            }
-            ConstantValue::Literal(_) => unreachable!("globals are materialized before allocation"),
-            ConstantValue::Bool(initializer) => {
-                let id = BoolGlobal(globals.len());
-                globals.push(Global::Bool { id, initializer });
-                Storage::Bool(BoolPlace::Global(id))
-            }
+        let initializer = match value {
+            ConstantValue::Int(n) => GlobalInitializer::Int(n),
+            ConstantValue::Bool(b) => GlobalInitializer::Bool(b),
+            ConstantValue::Literal(_) => unreachable!("global value is coerced before allocation"),
         };
+        let global = Global::new(globals.len(), initializer, types);
+        let storage = global.storage();
+        globals.push(global);
         bindings.insert(name, Binding::Storage(storage));
     }
     Ok((globals, bindings))
@@ -214,7 +251,7 @@ impl Resolver<'_> {
         for scope in &self.scopes {
             visible.extend(scope.iter().map(|(name, value)| (*name, *value)));
         }
-        let mut constants = Constants::new(&declarations, &visible)?;
+        let mut constants = Constants::new(&declarations, &visible, self.graph_scope)?;
         for declaration in declarations {
             let value = constants.value(declaration.name, declaration.span)?;
             self.bind_name(declaration.name, Binding::Constant(value))?;

@@ -75,6 +75,7 @@
     "through": {
       "enum": [
         "lex",
+        "parse",
         "check",
         "codegen",
         "build"

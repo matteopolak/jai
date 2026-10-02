@@ -24,6 +24,8 @@ Mixed-width workloads have `integer_lower_llvm` and `integer_pipeline` cases at 
 
 ## How to change it
 
+Shared type cases use 4, 64 and 1,024 graph levels. `type_intern_create` includes registry initialization and new pointer/array/slice/dynamic-array interning; `type_intern_reuse` repeats those lookups in a prepared registry. `nominal_graph_build_freeze` includes nominal reservation, recursive pointer/descriptor definitions, and freeze's value-cycle validation. `type_layout_cold` computes explicit LP64 layouts for nested records in a fresh engine; `type_layout_cached` queries a prewarmed root. Fixture construction and freeze happen outside layout timing. Preflight assertions check canonical IDs, graph cardinality, root size/alignment and field offsets before measurements. These measure shared type infrastructure, not source syntax support or a verified target ABI.
+
 Add a representative, correct workload to `crates/jai-bench/benches/compiler.rs` and a behavior test for the feature it exercises. Avoid timing filesystem reads, source generation, fixture preparation or failed compilations inside a successful-stage benchmark. Keep rejection-path measurements separately named.
 
 Run `cargo bench -p jai-bench --bench compiler --locked -- --test` for smoke checks. After fetching upstream sources, run with `--test --ignored` for the optional upstream benchmark. CI performs smoke checks, without timing gates on a shared runner.

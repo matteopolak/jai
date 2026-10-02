@@ -1,8 +1,13 @@
 //! Byte-based source locations shared by the compiler stages.
+mod locations;
+pub use locations::{
+    DeclarationId, Identities, LocatedDiagnostic, ModuleId, ScopeId, SourceId, SourceMap,
+    SourceRecord, SourceSpan, UnitId,
+};
 use std::collections::HashMap;
 use std::fmt;
 
-/// A source name's identity, scoped to the module's symbol table.
+/// An interned spelling; declaration identity is represented separately.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct Symbol(usize);
 

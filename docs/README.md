@@ -2,6 +2,10 @@
 
 - [Completion and acceptance plan](completion-plan.md)
 - [Integer types and conversions](integer-types.md)
+- [Shared type registry](type-registry.md)
+- [Target type layouts](type-layout.md)
+- [File and module scope foundation](module-scopes.md)
+- [Aggregate type syntax](aggregate-types.md)
 - [Procedure calls](procedure-calls.md)
 - [Compilation units](compilation-units.md)
 - [Constants and global storage](constants-and-globals.md)
@@ -21,7 +25,10 @@
 - [Range loops and named loop control](loop-control.md)
 - [Deferred cleanup](deferred-cleanup.md)
 - [LLVM backend and setup](llvm-backend.md)
+- [LLVM type lowering](llvm-types.md)
+- [Scoped semantic resolution](scoped-semantics.md)
 - [Native host checks and LLVM setup](native-hosts.md)
 - [Bounded reference probes](reference-probes.md)
 
 The reference is an input corpus, not executable tooling. Do not execute or load its compiler, linkers, installers, native libraries, or native objects without the user's explicit approval after an inspection report.
+- [Semantic IR](semantic-ir.md): frozen type ownership and shared checked storage/place representation.

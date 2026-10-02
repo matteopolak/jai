@@ -5,6 +5,26 @@ pub(super) fn parameters(
     procedure: &syntax::Procedure,
     globals: &HashMap<Symbol, Binding>,
 ) -> Result<Vec<ParameterSignature>, Diagnostic> {
+    parameters_paths(procedure, |path, span| {
+        if !path.members.is_empty() {
+            return Err(Diagnostic::new(
+                span,
+                "qualified default requires a module scope",
+            ));
+        }
+        match globals.get(&path.root) {
+            Some(Binding::Constant(value)) => Ok(*value),
+            _ => Err(Diagnostic::new(
+                span,
+                "parameter default requires a compile-time constant",
+            )),
+        }
+    })
+}
+pub(super) fn parameters_paths(
+    procedure: &syntax::Procedure,
+    mut lookup: impl FnMut(&syntax::NamePath, Span) -> Result<ConstantValue, Diagnostic>,
+) -> Result<Vec<ParameterSignature>, Diagnostic> {
     let mut names = std::collections::HashSet::new();
     procedure
         .parameters
@@ -16,14 +36,7 @@ pub(super) fn parameters(
             let (ty, default) = match &parameter.binding {
                 syntax::ParameterBinding::Required(ty) => (*ty, None),
                 syntax::ParameterBinding::Defaulted { ty, expression } => {
-                    let value =
-                        jai_eval::evaluate(expression, |name, span| match globals.get(&name) {
-                            Some(Binding::Constant(value)) => Ok(*value),
-                            _ => Err(Diagnostic::new(
-                                span,
-                                "parameter default requires a compile-time constant",
-                            )),
-                        })?;
+                    let value = jai_eval::evaluate_paths(expression, &mut lookup)?;
                     let ty = ty.unwrap_or_else(|| value.ty());
                     (ty, Some(value.coerce(ty, expression.span)?))
                 }
@@ -44,15 +57,55 @@ impl Resolver<'_> {
         args: &[syntax::CallArgument],
         span: Span,
     ) -> Result<Expr, Diagnostic> {
-        if self.lookup_optional(name).is_some() {
-            return Err(Diagnostic::new(span, "scalar value is not a procedure"));
-        }
-        let signature = self.signatures.get(&name).ok_or_else(|| {
-            Diagnostic::new(
+        self.resolve_call_path(
+            &syntax::NamePath {
+                root: name,
+                members: Vec::new(),
+            },
+            args,
+            span,
+        )
+    }
+    pub(super) fn resolve_call_path(
+        &self,
+        path: &syntax::NamePath,
+        args: &[syntax::CallArgument],
+        span: Span,
+    ) -> Result<Expr, Diagnostic> {
+        if self
+            .scopes
+            .iter()
+            .rev()
+            .any(|scope| scope.contains_key(&path.root))
+        {
+            return Err(Diagnostic::new(
                 span,
-                format!("unknown procedure '{}'", self.symbols.name(name)),
-            )
-        })?;
+                if path.members.is_empty() {
+                    "scalar value is not a procedure"
+                } else {
+                    "scalar value is not a namespace"
+                },
+            ));
+        }
+        let signature = if let Some(scope) = self.graph_scope {
+            scope.signature(path, span)?
+        } else {
+            if !path.members.is_empty() {
+                return Err(Diagnostic::new(
+                    span,
+                    "qualified call requires a module scope",
+                ));
+            }
+            if self.globals.contains_key(&path.root) {
+                return Err(Diagnostic::new(span, "scalar value is not a procedure"));
+            }
+            self.signatures.get(&path.root).ok_or_else(|| {
+                Diagnostic::new(
+                    span,
+                    format!("unknown procedure '{}'", self.symbols.name(path.root)),
+                )
+            })?
+        };
         let mut bound = vec![false; signature.parameters.len()];
         let mut arguments = Vec::with_capacity(bound.len());
         let mut positional = 0;

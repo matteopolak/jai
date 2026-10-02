@@ -2,9 +2,9 @@
 mod calls;
 mod cases;
 mod cleanup;
-pub use cases::{CaseArm, Cases};
 mod declarations;
 mod loops;
+mod modules;
 use jai_eval::operators::Operator;
 pub use jai_eval::operators::{Equality, IntOp, Relation};
 use jai_eval::{Integer as IntegerValue, Value as ConstantValue};
@@ -12,257 +12,25 @@ use jai_source::{Diagnostic, Span, Symbol, Symbols};
 use jai_syntax::{
     self as syntax, BinaryOp, CastMode, IntegerType, ReturnType, ScalarType, UnaryOp,
 };
+pub use modules::{Library, resolve_graph, resolve_library};
 use std::collections::HashMap;
 
-macro_rules! id {
-    ($name:ident) => {
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-        pub struct $name(usize);
-        impl $name {
-            pub fn index(self) -> usize {
-                self.0
-            }
-        }
-    };
-}
-id!(ProcedureId);
-id!(ParameterId);
+mod ir;
+pub use ir::*;
+use jai_types::{CallingConvention, ContextMode, ProcedureType, TypeId, TypeRegistry};
 
-id!(BoolLocal);
-id!(LoopId);
-id!(CleanupId);
-
-id!(BoolGlobal);
-macro_rules! integer_id {
-    ($name:ident) => {
-        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-        pub struct $name {
-            index: usize,
-            ty: IntegerType,
-        }
-        impl $name {
-            pub fn index(self) -> usize {
-                self.index
-            }
-            pub fn ty(self) -> IntegerType {
-                self.ty
-            }
-        }
-    };
-}
-integer_id!(IntLocal);
-integer_id!(IntGlobal);
-#[derive(Clone, Copy, Debug)]
-pub enum Local {
-    Int(IntLocal),
-    Bool(BoolLocal),
-}
-#[derive(Clone, Copy, Debug)]
-pub enum IntPlace {
-    Local(IntLocal),
-    Global(IntGlobal),
-}
-impl IntPlace {
-    pub fn ty(self) -> IntegerType {
-        match self {
-            Self::Local(id) => id.ty(),
-            Self::Global(id) => id.ty(),
-        }
-    }
-}
-#[derive(Clone, Copy, Debug)]
-pub enum BoolPlace {
-    Local(BoolLocal),
-    Global(BoolGlobal),
-}
-#[derive(Clone, Copy, Debug)]
-pub enum Storage {
-    Int(IntPlace),
-    Bool(BoolPlace),
-}
-impl From<Local> for Storage {
-    fn from(local: Local) -> Self {
-        match local {
-            Local::Int(id) => Self::Int(IntPlace::Local(id)),
-            Local::Bool(id) => Self::Bool(BoolPlace::Local(id)),
-        }
-    }
-}
 #[derive(Clone, Copy, Debug)]
 enum Binding {
     Storage(Storage),
     Constant(ConstantValue),
 }
-#[derive(Clone, Copy, Debug)]
-pub enum Global {
-    Int {
-        id: IntGlobal,
-        initializer: IntegerValue,
-    },
-    Bool {
-        id: BoolGlobal,
-        initializer: bool,
-    },
-}
-#[derive(Clone, Copy, Debug)]
-pub enum EntryPoint {
-    Void(ProcedureId),
-    Int(ProcedureId),
-}
-#[derive(Debug)]
-pub struct Program {
-    procedures: Vec<Procedure>,
-    entry: EntryPoint,
-    globals: Vec<Global>,
-}
-impl Program {
-    pub fn procedures(&self) -> &[Procedure] {
-        &self.procedures
-    }
-    pub fn globals(&self) -> &[Global] {
-        &self.globals
-    }
-    pub fn entry(&self) -> EntryPoint {
-        self.entry
-    }
-}
-#[derive(Debug)]
-pub struct Procedure {
-    pub id: ProcedureId,
-    pub parameters: Vec<Local>,
-    pub locals: Vec<Local>,
-    pub return_type: ReturnType,
-    pub body: Block,
-    pub cleanups: Vec<Block>,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Flow {
-    FallsThrough,
-    Terminates,
-}
-#[derive(Debug)]
-pub struct Block {
-    pub statements: Vec<Statement>,
-    pub flow: Flow,
-}
-#[derive(Debug)]
-pub enum Statement {
-    StoreInt(IntPlace, IntExpr),
-    StoreBool(BoolPlace, BoolExpr),
-    Exit(Exit),
-    Cleanup(CleanupId),
-    DiscardInt(IntExpr),
-    DiscardBool(BoolExpr),
-    CallVoid(Call),
-    If(BoolExpr, Block, Block),
-    Cases(cases::Cases),
-    While {
-        id: LoopId,
-        condition: LoopCondition,
-        body: Block,
-    },
-    Range(RangeLoop),
-    Block(Block),
-}
-#[derive(Debug)]
-pub struct Exit {
-    pub cleanups: Vec<CleanupId>,
-    pub transfer: Transfer,
-}
-#[derive(Debug)]
-pub enum Transfer {
-    ReturnVoid,
-    ReturnInt(IntExpr),
-    ReturnBool(BoolExpr),
-    Break(LoopId),
-    Continue(LoopId),
-}
-#[derive(Debug)]
-pub enum LoopCondition {
-    Value(BoolExpr),
-    BoundInt(IntLocal, IntExpr),
-    BoundBool(BoolLocal, BoolExpr),
-}
-#[derive(Debug)]
-pub struct RangeLoop {
-    pub id: LoopId,
-    pub iterator: IntLocal,
-    pub start: IntExpr,
-    pub end: IntExpr,
-    pub direction: syntax::Direction,
-    pub body: Block,
-}
-#[derive(Debug)]
-pub struct IntExpr {
-    ty: IntegerType,
-    kind: IntExprKind,
-}
-impl IntExpr {
-    fn new(ty: IntegerType, kind: IntExprKind) -> Self {
-        Self { ty, kind }
-    }
-    pub fn ty(&self) -> IntegerType {
-        self.ty
-    }
-    pub fn kind(&self) -> &IntExprKind {
-        &self.kind
-    }
-    fn constant(n: IntegerValue) -> Self {
-        Self::new(n.ty(), IntExprKind::Constant(n))
-    }
-    fn load(place: IntPlace) -> Self {
-        Self::new(place.ty(), IntExprKind::Load(place))
-    }
-}
-#[derive(Debug)]
-pub enum IntExprKind {
-    Constant(IntegerValue),
-    InvalidCheckedCast,
-    FromBool(Box<BoolExpr>),
-    Cast(CastMode, Box<IntExpr>),
-    Load(IntPlace),
-    Call(Call),
-    Negate(Box<IntExpr>),
-    Complement(Box<IntExpr>),
-    Binary(IntOp, Box<IntExpr>, Box<IntExpr>),
-    Conditional(Box<Conditional<IntExpr>>),
-}
-#[derive(Debug)]
-pub enum BoolExpr {
-    Constant(bool),
-    FromInt(Box<IntExpr>),
-    Load(BoolPlace),
-    Call(Call),
-    Not(Box<BoolExpr>),
-    CompareInts(Relation, Box<IntExpr>, Box<IntExpr>),
-    CompareBools(Equality, Box<BoolExpr>, Box<BoolExpr>),
-    And(Box<BoolExpr>, Box<BoolExpr>),
-    Or(Box<BoolExpr>, Box<BoolExpr>),
-    Conditional(Box<Conditional<BoolExpr>>),
-}
-#[derive(Debug)]
-pub struct Conditional<T> {
-    pub condition: BoolExpr,
-    pub then_value: T,
-    pub else_value: T,
-}
-#[derive(Debug)]
-pub enum ValueExpr {
-    Int(IntExpr),
-    Bool(BoolExpr),
-}
-#[derive(Debug)]
-pub struct Call {
-    pub procedure: ProcedureId,
-    pub arguments: Vec<(ParameterId, ValueExpr)>,
-}
-
 struct ParameterSignature {
     name: Symbol,
     ty: ScalarType,
     default: Option<ConstantValue>,
 }
 struct Signature {
+    ty: TypeId,
     id: ProcedureId,
     parameters: Vec<ParameterSignature>,
     result: ReturnType,
@@ -382,12 +150,27 @@ impl Expr {
 
 pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
     declarations::check_top_level_names(module)?;
-    let (globals, global_bindings) = declarations::resolve_globals(module)?;
+    let mut types = TypeRegistry::new();
+    let (globals, global_bindings) = declarations::resolve_globals(module, &types)?;
     let mut signatures = HashMap::new();
     for (index, p) in module.procedures().iter().enumerate() {
+        let parameters = calls::parameters(p, &global_bindings)?;
+        let results = match p.return_type {
+            ReturnType::Void => vec![],
+            ReturnType::Value(ty) => vec![types.scalar(ty)],
+        };
+        let ty = types
+            .procedure(ProcedureType {
+                parameters: parameters.iter().map(|p| types.scalar(p.ty)).collect(),
+                results: results.into_boxed_slice(),
+                convention: CallingConvention::Jai,
+                context: ContextMode::None,
+            })
+            .map_err(|error| Diagnostic::new(p.span, error.to_string()))?;
         let signature = Signature {
+            ty,
             id: ProcedureId(index),
-            parameters: calls::parameters(p, &global_bindings)?,
+            parameters,
             result: p.return_type,
         };
         if signatures.insert(p.name, signature).is_some() {
@@ -421,6 +204,9 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
     let mut procedures = Vec::new();
     for (index, p) in module.procedures().iter().enumerate() {
         let mut r = Resolver {
+            graph_scope: None,
+            procedure: ProcedureId(index),
+            types: &types,
             signatures: &signatures,
             symbols: module.symbols(),
             globals: &global_bindings,
@@ -450,7 +236,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             parameters,
             locals: r.locals,
             cleanups: r.cleanups,
-            return_type: p.return_type,
+            signature: signatures[&p.name].ty,
             body,
         });
     }
@@ -458,6 +244,9 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
         procedures,
         entry,
         globals,
+        types: types
+            .freeze()
+            .map_err(|error| Diagnostic::new(Span::default(), error.to_string()))?,
     })
 }
 struct LoopBinding {
@@ -470,6 +259,9 @@ struct CleanupContext {
     loop_depth: usize,
 }
 struct Resolver<'a> {
+    graph_scope: Option<modules::FileScope<'a>>,
+    procedure: ProcedureId,
+    types: &'a TypeRegistry,
     signatures: &'a HashMap<Symbol, Signature>,
     symbols: &'a Symbols,
     scopes: Vec<HashMap<Symbol, Binding>>,
@@ -487,17 +279,43 @@ impl Resolver<'_> {
     fn error(&self, text: impl Into<String>) -> Diagnostic {
         Diagnostic::new(self.span, text)
     }
-    fn lookup_optional(&self, name: Symbol) -> Option<Binding> {
-        self.scopes
+    fn lookup(&self, name: Symbol) -> Result<Binding, Diagnostic> {
+        self.lookup_path(
+            &syntax::NamePath {
+                root: name,
+                members: Vec::new(),
+            },
+            self.span,
+        )
+    }
+    fn lookup_path(&self, path: &syntax::NamePath, span: Span) -> Result<Binding, Diagnostic> {
+        if let Some(value) = self
+            .scopes
             .iter()
             .rev()
-            .find_map(|s| s.get(&name))
-            .or_else(|| self.globals.get(&name))
+            .find_map(|scope| scope.get(&path.root))
             .copied()
-    }
-    fn lookup(&self, name: Symbol) -> Result<Binding, Diagnostic> {
-        self.lookup_optional(name)
-            .ok_or_else(|| self.error(format!("unknown variable '{}'", self.symbols.name(name))))
+        {
+            if path.members.is_empty() {
+                return Ok(value);
+            }
+            return Err(Diagnostic::new(span, "scalar value is not a namespace"));
+        }
+        if let Some(scope) = self.graph_scope {
+            return scope.value(path, span);
+        }
+        if !path.members.is_empty() {
+            return Err(Diagnostic::new(
+                span,
+                "qualified name requires a module scope",
+            ));
+        }
+        self.globals.get(&path.root).copied().ok_or_else(|| {
+            Diagnostic::new(
+                span,
+                format!("unknown variable '{}'", self.symbols.name(path.root)),
+            )
+        })
     }
     fn storage(&self, name: Symbol) -> Result<Storage, Diagnostic> {
         match self.lookup(name)? {
@@ -514,28 +332,27 @@ impl Resolver<'_> {
         Ok(())
     }
     fn bind(&mut self, name: Symbol, local: Local) -> Result<(), Diagnostic> {
-        self.bind_name(name, Binding::Storage(Storage::from(local)))?;
+        self.bind_name(name, Binding::Storage(Storage::local(local, self.types)))?;
         self.locals.push(local);
         Ok(())
     }
+    fn allocate(&mut self, ty: ScalarType) -> Local {
+        let local = Local::new(self.procedure, self.locals.len(), ty, self.types);
+        self.locals.push(local);
+        local
+    }
     fn declare_int(&mut self, name: Symbol, ty: IntegerType) -> Result<IntLocal, Diagnostic> {
-        let id = IntLocal {
-            index: self.locals.len(),
-            ty,
-        };
-        self.bind(name, Local::Int(id))?;
-        Ok(id)
+        let local = self.declare(name, ScalarType::Int(ty))?;
+        Ok(local.integer(self.types).expect("integer declaration"))
     }
     fn declare_bool(&mut self, name: Symbol) -> Result<BoolLocal, Diagnostic> {
-        let id = BoolLocal(self.locals.len());
-        self.bind(name, Local::Bool(id))?;
-        Ok(id)
+        let local = self.declare(name, ScalarType::Bool)?;
+        Ok(local.boolean(self.types).expect("boolean declaration"))
     }
     fn declare(&mut self, name: Symbol, ty: ScalarType) -> Result<Local, Diagnostic> {
-        match ty {
-            ScalarType::Int(ty) => self.declare_int(name, ty).map(Local::Int),
-            ScalarType::Bool => self.declare_bool(name).map(Local::Bool),
-        }
+        let local = Local::new(self.procedure, self.locals.len(), ty, self.types);
+        self.bind(name, local)?;
+        Ok(local)
     }
     fn store(&self, local: Storage, value: Expr) -> Result<Statement, Diagnostic> {
         Ok(match local {
@@ -599,6 +416,9 @@ impl Resolver<'_> {
         Ok(match statement {
             syntax::Statement::Declare(decl) => {
                 let (name, ty, value) = match decl {
+                    syntax::Declaration::UnresolvedExplicit { .. } => {
+                        return Err(self.error("local aggregate types are not implemented"));
+                    }
                     syntax::Declaration::Inferred { name, initializer } => {
                         let value = self.expr(initializer)?.value(initializer.span)?;
                         let (ty, value) = match value {
@@ -625,7 +445,7 @@ impl Resolver<'_> {
                     }
                 };
                 let local = self.declare(name, ty)?;
-                self.store(Storage::from(local), value)?
+                self.store(Storage::local(local, self.types), value)?
             }
             syntax::Statement::Assign(name, e) => {
                 let local = self.storage(*name)?;
@@ -673,12 +493,32 @@ impl Resolver<'_> {
         Ok(match &expr.kind {
             syntax::ExpressionKind::Integer(n) => Expr::Literal(*n),
             syntax::ExpressionKind::Bool(b) => Expr::Bool(BoolExpr::Constant(*b)),
-            syntax::ExpressionKind::Name(name) => match self.lookup(*name)? {
+            syntax::ExpressionKind::Name(name) => match self.lookup_path(
+                &syntax::NamePath {
+                    root: *name,
+                    members: Vec::new(),
+                },
+                span,
+            )? {
                 Binding::Storage(Storage::Int(id)) => Expr::Int(IntExpr::load(id)),
                 Binding::Storage(Storage::Bool(id)) => Expr::Bool(BoolExpr::Load(id)),
                 Binding::Constant(value) => Self::constant(value),
             },
             syntax::ExpressionKind::Call(name, args) => self.resolve_call(*name, args, span)?,
+            syntax::ExpressionKind::QualifiedName(path) => match self.lookup_path(path, span)? {
+                Binding::Storage(Storage::Int(id)) => Expr::Int(IntExpr::load(id)),
+                Binding::Storage(Storage::Bool(id)) => Expr::Bool(BoolExpr::Load(id)),
+                Binding::Constant(value) => Self::constant(value),
+            },
+            syntax::ExpressionKind::QualifiedCall(path, args) => {
+                self.resolve_call_path(path, args, span)?
+            }
+            syntax::ExpressionKind::StructLiteral(_) | syntax::ExpressionKind::Member { .. } => {
+                return Err(Diagnostic::new(
+                    span,
+                    "aggregate expression lowering is not implemented",
+                ));
+            }
             syntax::ExpressionKind::Conditional(e) => {
                 let condition = self.expr(&e.condition)?.condition(e.condition.span)?;
                 let yes = self.expr(&e.then_value)?;

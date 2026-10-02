@@ -5,6 +5,8 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+jai-modules.workspace = true
+jai-types.workspace = true
 jai-eval.workspace = true
 jai-source.workspace = true
 jai-syntax.workspace = true

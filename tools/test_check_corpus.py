@@ -29,13 +29,33 @@ class AcceptanceTests(unittest.TestCase):
     def test_no_lexical_pass_becomes_compilation_and_failure_stops_pipeline(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)
-            with patch('check_corpus.execute', side_effect=[Evidence(Status.PASSED), Evidence(Status.FAILED)]) as run:
+            with patch('check_corpus.execute', side_effect=[Evidence(Status.PASSED), Evidence(Status.PASSED), Evidence(Status.FAILED)]) as run:
                 result = evaluate(self.source(root), {}, root/'jai-rs', Stage.BUILD, 1, root/'output')
-            self.assertEqual(run.call_count, 2)
+            self.assertEqual(run.call_count, 3)
             self.assertEqual(result.stages['lex'].status, Status.PASSED)
-            for stage in ['parse', 'codegen', 'build']:
+            self.assertEqual(result.stages['parse'].status, Status.PASSED)
+            for stage in ['codegen', 'build']:
                 self.assertEqual(result.stages[stage].status, Status.NOT_RUN)
             self.assertEqual(totals([result])['check'], {'failed': 1})
+
+    def test_parse_stage_is_measured_and_failure_stops_check(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch('check_corpus.execute', side_effect=[Evidence(Status.PASSED), Evidence(Status.FAILED)]) as run:
+                result = evaluate(self.source(root), {}, root/'jai-rs', Stage.CHECK, 1, root/'out')
+            self.assertEqual([c.args[2] for c in run.call_args_list], [Stage.LEX, Stage.PARSE])
+            self.assertEqual(result.stages['parse'].status, Status.FAILED)
+            self.assertEqual(result.stages['check'].status, Status.NOT_RUN)
+
+    def test_parse_only_selection_and_negative_expectation(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            case = {'kind':'negative', 'negative':{'parse':'expected identifier'}}
+            with patch('check_corpus.execute', side_effect=[Evidence(Status.PASSED), Evidence(Status.EXPECTED_REJECTION)]) as run:
+                result = evaluate(self.source(root), case, root/'jai-rs', Stage.PARSE, 1, root/'out')
+            self.assertEqual(run.call_args.args[-1], 'expected identifier')
+            self.assertEqual(result.stages['parse'].status, Status.EXPECTED_REJECTION)
+            self.assertEqual(result.stages['check'].status, Status.NOT_RUN)
 
     def test_source_drift_blocks_every_execution(self):
         with TemporaryDirectory() as directory:
@@ -50,10 +70,20 @@ class AcceptanceTests(unittest.TestCase):
             root = Path(directory)
             with patch('check_corpus.execute', return_value=Evidence(Status.PASSED)) as run:
                 result = evaluate(self.source(root), {'kind':'module'}, root/'jai-rs', Stage.BUILD, 1, root/'out')
-            self.assertEqual(run.call_count, 3)
+            self.assertEqual(run.call_count, 4)
             self.assertEqual(result.stages['check'].status, Status.PASSED)
             self.assertEqual(result.stages['build'].status, Status.BLOCKED)
             self.assertEqual(result.stages['run'].status, Status.BLOCKED)
+
+    def test_module_check_uses_library_policy_and_program_keeps_entry_policy(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch('check_corpus.subprocess.run', return_value=subprocess.CompletedProcess([], 0, b'', b'')) as run:
+                module = execute(root/'jai-rs', self.source(root), Stage.CHECK, 1, root/'out', library=True)
+                self.assertEqual(module.status, Status.PASSED)
+                self.assertEqual(run.call_args.args[0][1], 'check-library')
+                execute(root/'jai-rs', self.source(root), Stage.CHECK, 1, root/'out')
+                self.assertEqual(run.call_args.args[0][1], 'check')
 
     def test_absent_output_timeout_and_signal_are_not_passes(self):
         with TemporaryDirectory() as directory:

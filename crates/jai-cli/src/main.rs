@@ -13,14 +13,16 @@ enum Output {
 }
 enum Options {
     Lex(PathBuf),
+    Parse(PathBuf),
     Check(PathBuf),
+    CheckLibrary(PathBuf),
     EmitLlvm { source: PathBuf, output: Output },
     Build { source: PathBuf, output: PathBuf },
 }
 impl Options {
     fn parse(mut args: impl Iterator<Item = OsString>) -> Result<Self, Error> {
         let action = args.next().ok_or(Error::Arguments(
-            "usage: jai-rs <lex|check|emit-llvm|build> <file.jai> [output]",
+            "usage: jai-rs <lex|parse|check|check-library|emit-llvm|build> <file.jai> [output]",
         ))?;
         let source = PathBuf::from(args.next().ok_or(Error::Arguments("missing source file"))?);
         let output = args.next().map(PathBuf::from);
@@ -29,7 +31,9 @@ impl Options {
         }
         match action.to_str() {
             Some("lex") if output.is_none() => Ok(Self::Lex(source)),
+            Some("parse") if output.is_none() => Ok(Self::Parse(source)),
             Some("check") if output.is_none() => Ok(Self::Check(source)),
+            Some("check-library") if output.is_none() => Ok(Self::CheckLibrary(source)),
             Some("emit-llvm") => Ok(Self::EmitLlvm {
                 source,
                 output: output.map_or(Output::Stdout, Output::File),
@@ -45,17 +49,17 @@ impl Options {
                 });
                 Ok(Self::Build { source, output })
             }
-            Some("lex" | "check") => Err(Error::Arguments(
+            Some("lex" | "parse" | "check" | "check-library") => Err(Error::Arguments(
                 "this command does not take an output path",
             )),
             _ => Err(Error::Arguments(
-                "unknown command; expected lex, check, emit-llvm or build",
+                "unknown command; expected lex, parse, check, check-library, emit-llvm or build",
             )),
         }
     }
     fn source(&self) -> &Path {
         match self {
-            Self::Lex(p) | Self::Check(p) => p,
+            Self::Lex(p) | Self::Parse(p) | Self::Check(p) | Self::CheckLibrary(p) => p,
             Self::EmitLlvm { source, .. } | Self::Build { source, .. } => source,
         }
     }
@@ -114,10 +118,33 @@ fn run() -> Result<(), Error> {
         println!("{} tokens (lexical stage only)", tokens.len() - 1);
         return Ok(());
     }
-    let unit = jai_driver::CompilationUnit::load(path).map_err(|e| Error::Source(e.to_string()))?;
+    if let Options::Parse(_) = options {
+        let mut sources = jai_source::SourceMap::default();
+        let id = sources.insert(path.to_owned(), source.into_owned());
+        let mut symbols = jai_source::Symbols::default();
+        let parsed =
+            jai_syntax::parse_file(sources.get(id).expect("inserted source"), &mut symbols)
+                .map_err(|diagnostic| Error::Source(diagnostic.render(&sources)))?;
+        println!("{} items (syntax stage only)", parsed.items().len());
+        return Ok(());
+    }
+    let graph_options = env::var_os("JAI_RS_MODULE_PATH").map_or_else(
+        jai_driver::modules::GraphOptions::default,
+        |paths| jai_driver::modules::GraphOptions {
+            import_dirs: env::split_paths(&paths).collect(),
+        },
+    );
+    let unit = jai_driver::CompilationUnit::load_with_options(path, graph_options)
+        .map_err(|e| Error::Source(e.to_string()))?;
+    if let Options::CheckLibrary(_) = options {
+        unit.resolve_library()
+            .map_err(|e| Error::Source(e.to_string()))?;
+        println!("checked library {}", path.display());
+        return Ok(());
+    }
     let program = unit.resolve().map_err(|e| Error::Source(e.to_string()))?;
     match options {
-        Options::Lex(_) => {}
+        Options::Lex(_) | Options::Parse(_) | Options::CheckLibrary(_) => {}
         Options::Check(path) => println!("checked {}", path.display()),
         Options::EmitLlvm { output, .. } => {
             let ir = jai_codegen::emit(&program).map_err(Error::Codegen)?;
@@ -194,6 +221,8 @@ mod tests {
         for args in [
             &["other", "x"][..],
             &["check", "x", "y"],
+            &["check-library", "x", "y"],
+            &["parse", "x", "y"],
             &["lex", "x", "y"],
             &["build"],
             &["build", "x", "y", "z"],

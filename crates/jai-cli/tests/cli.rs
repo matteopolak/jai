@@ -42,7 +42,7 @@ fn check_performs_semantic_resolution() {
     let source = dir.source("main :: () { unknown(); }");
     let result = cli().arg("check").arg(source).output().unwrap();
     assert!(!result.status.success());
-    assert!(String::from_utf8_lossy(&result.stderr).contains("unknown procedure"));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("unknown name 'unknown'"));
 }
 #[test]
 fn failed_semantics_preserves_existing_output() {

@@ -35,14 +35,15 @@ main :: () -> int {
 | Scalar case statements, `#through`, Boolean `#complete` | Supported |
 | Integer range loops, reverse iteration, named `break`/`continue` | Supported |
 | `defer` on scope exits and returns | Supported for the scalar subset |
-| Native compilation | Small programs tested on ARM64 macOS |
+| Native compilation | Small programs tested on ARM64 macOS and x86_64 Linux |
 | Strings, arrays, pointers, structs, enums | Not implemented in compilation yet |
 | Recursive top-level literal `#load` | Driver resolves relative paths, deduplicates files, rejects cycles, and maps diagnostics |
-| Imports, module isolation, generics, overloads | Not implemented yet |
+| Imports and module/file visibility | Unparameterized modules supported |
+| Generics, overloads, parameterized modules | Not implemented yet |
 | Compile-time execution and compiler APIs | Not implemented yet |
 | Full standard library and reference examples | Not compiling yet |
 | Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |
-| Linux, Windows, mobile, WebAssembly | Planned; runtime compatibility unverified |
+| Windows, mobile, WebAssembly | Planned; runtime compatibility unverified |
 
 The lexer currently accepts **702 local reference files** and **1,440 files from seven recent upstream projects**. These checks test reading and tokenizing source, not successful compilation. [Compatibility coverage](docs/reference-compatibility.md) explains the remaining work.
 
@@ -70,7 +71,7 @@ cargo run -p jai-cli -- build examples/sum.jai sum
 echo $? # 45
 ```
 
-You can also inspect a source file with `lex`, or save its LLVM output with `emit-llvm`:
+You can inspect tokens with `lex`, check one file's syntax with `parse`, or save its LLVM output with `emit-llvm`:
 
 ```sh
 cargo run -p jai-cli -- emit-llvm examples/sum.jai sum.ll

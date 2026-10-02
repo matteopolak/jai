@@ -1,5 +1,10 @@
-//! Scalar types and range-checked integer values shared by compiler phases.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+//! Type identities and checked values shared by compiler phases.
+mod registry;
+pub use registry::*;
+mod layout;
+pub use layout::*;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum IntegerType {
     S8,
     S16,
@@ -45,7 +50,7 @@ impl IntegerType {
         }
     }
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum ScalarType {
     Int(IntegerType),
     Bool,

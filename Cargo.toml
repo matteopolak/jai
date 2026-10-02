@@ -1,6 +1,18 @@
 [workspace]
 resolver = "3"
-members = ["crates/jai-driver", "crates/jai-source", "crates/jai-types", "crates/jai-lexer", "crates/jai-syntax", "crates/jai-sema", "crates/jai-eval", "crates/jai-codegen", "crates/jai-cli", "crates/jai-bench"]
+members = [
+    "crates/jai-source",
+    "crates/jai-types",
+    "crates/jai-lexer",
+    "crates/jai-syntax",
+    "crates/jai-modules",
+    "crates/jai-eval",
+    "crates/jai-sema",
+    "crates/jai-codegen",
+    "crates/jai-driver",
+    "crates/jai-cli",
+    "crates/jai-bench",
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -8,6 +20,7 @@ edition = "2024"
 rust-version = "1.95"
 
 [workspace.dependencies]
+jai-modules = { path = "crates/jai-modules" }
 jai-driver = { path = "crates/jai-driver" }
 jai-source = { path = "crates/jai-source" }
 jai-types = { path = "crates/jai-types" }
