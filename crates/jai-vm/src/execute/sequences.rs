@@ -504,6 +504,7 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     }
 
     /// Consume the actual typed payload, preserving its complete stored image.
+    #[cfg(test)]
     pub(super) fn sequence_allocator(&mut self, value: Value) -> Result<Value> {
         let schema = crate::value::allocator_schema(self.provider.types())?.ok_or(
             Error::InvalidIr("dynamic array allocator role is unavailable"),
@@ -527,6 +528,7 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
         Ok(*allocator)
     }
 
+    #[cfg(test)]
     pub(super) fn adopt_sequence_allocator(&self, value: Value) -> Result<Box<Value>> {
         let schema = crate::value::allocator_schema(self.provider.types())?.ok_or(
             Error::InvalidIr("dynamic array allocator role is unavailable"),
@@ -540,6 +542,7 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     }
 
     /// A field address does not read unrelated, possibly unwritten descriptor slots.
+    #[cfg(test)]
     pub(super) fn load_sequence_allocator(&mut self, storage: &Pointer) -> Result<Value> {
         let schema = crate::value::allocator_schema(self.provider.types())?.ok_or(
             Error::InvalidIr("dynamic array allocator role is unavailable"),

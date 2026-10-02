@@ -285,6 +285,7 @@ impl BranchSnapshot {
     }
     /// `other_retained` includes both machine footprints, queued branches and
     /// the one shared rollback/effect/source metadata owner. IPC is counted here once.
+    #[cfg(test)]
     pub(super) fn fork_from_live<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
         vm: &mut Vm<'_, P, E>,
         other_retained: usize,

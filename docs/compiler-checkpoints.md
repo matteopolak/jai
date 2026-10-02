@@ -20,6 +20,10 @@ The separate pushed checkpoints `77acb21` and `d13019d` remove the vendored boot
 
 Public CI for `d13019d` stopped at oversized typed error contexts in IR Clippy. Checkpoint `47dc066` boxes only the mismatch policies, with ten focused IR tests and strict IR Clippy passing locally. Checkpoint `0104568` binds named Preload imports to the selected bootstrap and adds the authored library facade; all 16 module/bootstrap gates pass, including qualified declaration identity through the real physical prelude. Hosted verification of these fixes is separate from their local gates.
 
+Public CI for `17812fc` then stopped at three groups of unused VM test helpers. The helpers now compile only under `cfg(test)`; production retains its allocator implementation and precharged fork path. The current live VM suite passes 558 tests, and strict workspace Clippy passes the VM before reaching pending semantic producers. These are local integration results, not a claim that the public checkout's full matrix passes.
+
+Checkpoint `72a9354` retains actual import bindings when a provider suspends discovery. Five new module regressions and the existing import-order regression pass. Namespace and anonymous type-alias execution tests remain separate semantic integration gates.
+
 ## How to change it
 
 Coordinate shared interface changes with the integration owner. Split later checkpoints by coherent feature batches and include the tests and documentation needed to understand each change. Push normally to the configured repository; avoid force pushes or resetting another owner's work.
