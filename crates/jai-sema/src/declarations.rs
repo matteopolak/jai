@@ -84,6 +84,13 @@ impl<'a> Constants<'a> {
                                 expressions.push(rhs);
                                 expressions.push(lhs);
                             }
+                            syntax::ExpressionKind::Conditional(e) => {
+                                if let Some(otherwise) = &e.else_value {
+                                    expressions.push(otherwise);
+                                }
+                                expressions.push(&e.then_value);
+                                expressions.push(&e.condition);
+                            }
                             syntax::ExpressionKind::Integer(_)
                             | syntax::ExpressionKind::Bool(_)
                             | syntax::ExpressionKind::Call(_, _) => {}

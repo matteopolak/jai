@@ -10,7 +10,7 @@ Track supported source semantics and actual builds separately. The current front
 
 | Component | Current coverage | Remaining acceptance |
 | --- | --- | --- |
-| Values and expressions | `s64`, Boolean expressions, casts, constants | Numeric widths, floating point, strings, composite values, all operators |
+| Values and expressions | `s64`, Boolean expressions, casts, constants, scalar `ifx` | Numeric widths, floating point, strings, composite values, block/implicit `ifx`, all operators |
 | Declarations and calls | Scalar procedures, globals, local scopes | Defaults, named/multiple results, overloads, procedure values, nested declarations |
 | Control flow | Conditions, scalar ranges, named exits, deferred cleanup | Cases, array/custom iteration, removal, remaining modifiers |
 | Types | Scalar typed IR | Records, enums, unions, arrays, pointers, layouts, recursive types, reflection |

@@ -398,3 +398,65 @@ fn constant_short_circuiting_does_not_execute_invalid_arithmetic() {
         42
     );
 }
+
+#[test]
+fn conditional_values_support_recursion_and_optional_then() {
+    assert_eq!(
+        execute(
+            "factorial :: (n:int)->int { return ifx n <= 1 then 1 else n * factorial(n-1); } main :: ()->int { return factorial(5); }"
+        ),
+        120
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { units := 0; sequence_length := 4; units += ifx sequence_length == 4 2 else 1; return units; }"
+        ),
+        2
+    );
+}
+
+#[test]
+fn conditional_branches_execute_only_the_selected_side() {
+    assert_eq!(
+        execute(
+            "count := 0; condition :: ()->bool { count += 1; return true; } selected :: ()->int { count += 10; return 31; } skipped :: ()->int { count += 100; return 99; } main :: ()->int { value := ifx condition() then selected() else skipped(); return value + count; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "count := 0; selected :: ()->int { count += 1; return 41; } skipped :: ()->int { count += 100; return 99; } main :: ()->int { value := ifx false then skipped() else selected(); return value + count; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn conditional_defaults_and_truthiness_preserve_result_types() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { a := ifx 0 then 99; b := ifx -1 42; flag := ifx 0 then true; return a + b + cast(int) flag; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "VALUE :: ifx true then NEXT else 1 / 0; NEXT :: 42; main :: ()->int { return VALUE; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn nested_conditional_and_logical_results_have_valid_phi_predecessors() {
+    assert_eq!(
+        execute(
+            "forever :: ()->bool { while true {} return true; } main :: ()->int { flag := ifx true || forever() then (ifx false then forever() else true) else forever(); result := ifx flag then (ifx false then 99 else 42) else 0; return result; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute("main :: ()->int { return ifx false then 1 else ifx true then 42 else 2; }"),
+        42
+    );
+}

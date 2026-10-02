@@ -211,6 +211,13 @@ pub enum ExpressionKind {
     Unary(UnaryOp, Box<Expression>),
     Cast(ScalarType, Box<Expression>),
     Binary(BinaryOp, Box<Expression>, Box<Expression>),
+    Conditional(ConditionalExpression),
+}
+#[derive(Clone, Debug)]
+pub struct ConditionalExpression {
+    pub condition: Box<Expression>,
+    pub then_value: Box<Expression>,
+    pub else_value: Option<Box<Expression>>,
 }
 
 pub fn parse(source: &str) -> Result<Module, Diagnostic> {
@@ -562,6 +569,27 @@ impl Parser<'_> {
             let e = self.expression(0)?;
             self.need(Punct::CloseParen)?;
             e
+        } else if self.keyword(Keyword::Ifx) {
+            let condition = Box::new(self.expression(0)?);
+            self.keyword(Keyword::Then);
+            if self.token().kind == Kind::Keyword(Keyword::Else) {
+                return Err(self.error("implicit then values in ifx are not implemented yet"));
+            }
+            let then_value = Box::new(self.expression(0)?);
+            let else_value = if self.keyword(Keyword::Else) {
+                Some(Box::new(self.expression(0)?))
+            } else {
+                None
+            };
+            let end = else_value.as_ref().unwrap_or(&then_value).span.end;
+            Expression {
+                span: Span::new(span.start, end),
+                kind: ExpressionKind::Conditional(ConditionalExpression {
+                    condition,
+                    then_value,
+                    else_value,
+                }),
+            }
         } else if self.keyword(Keyword::Cast) {
             self.need(Punct::OpenParen)?;
             let ty = self.scalar_type()?;
@@ -724,5 +752,35 @@ mod tests {
     #[test]
     fn reserved_words_are_not_names() {
         assert!(parse("if :: () {}").is_err());
+    }
+    #[test]
+    fn conditional_expressions_bind_else_to_the_nearest_ifx() {
+        let module =
+            parse("main :: ()->int { return ifx true then ifx false 1 else 2 else 3; }").unwrap();
+        let Statement::Return(Some(e)) = &module.procedures()[0].body[0] else {
+            panic!()
+        };
+        let ExpressionKind::Conditional(outer) = &e.kind else {
+            panic!()
+        };
+        assert!(matches!(
+            outer.else_value.as_ref().unwrap().kind,
+            ExpressionKind::Integer(3)
+        ));
+        let ExpressionKind::Conditional(inner) = &outer.then_value.kind else {
+            panic!()
+        };
+        assert!(matches!(
+            inner.else_value.as_ref().unwrap().kind,
+            ExpressionKind::Integer(2)
+        ));
+        assert!(parse("main :: ()->int { return ifx true then 1; }").is_ok());
+        for source in [
+            "main :: ()->int { return ifx true then else 1; }",
+            "main :: ()->int { return ifx true else 1; }",
+            "main :: ()->int { return ifx true then 1 else; }",
+        ] {
+            assert!(parse(source).is_err(), "{source}");
+        }
     }
 }

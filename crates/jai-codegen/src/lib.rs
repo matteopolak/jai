@@ -16,7 +16,7 @@ use jai_sema::{
     Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local,
     LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
-use jai_sema::{BoolPlace, CleanupId, Exit, Global, IntPlace, Transfer};
+use jai_sema::{BoolPlace, CleanupId, Conditional, Exit, Global, IntPlace, Transfer};
 use jai_syntax::{Direction, ReturnType, ScalarType};
 use std::fmt;
 
@@ -442,6 +442,12 @@ impl<'ctx> Generator<'ctx, '_> {
                 "load.int",
             )?)?,
             IntExpr::Call(call) => call_int(self.call(call)?)?,
+            IntExpr::Conditional(e) => {
+                let [(yes, yes_end), (no, no_end)] = self.conditional_values(e, Self::int)?;
+                let phi = self.builder.build_phi(self.word, "ifx.int")?;
+                phi.add_incoming(&[(&yes.0, yes_end), (&no.0, no_end)]);
+                int_value(phi.as_basic_value())?
+            }
             IntExpr::Negate(e) => {
                 let v = self.int(e)?;
                 self.builder.build_int_neg(v.0, "negate")?
@@ -489,6 +495,12 @@ impl<'ctx> Generator<'ctx, '_> {
                 "load.bool",
             )?)?,
             BoolExpr::Call(call) => call_int(self.call(call)?)?,
+            BoolExpr::Conditional(e) => {
+                let [(yes, yes_end), (no, no_end)] = self.conditional_values(e, Self::boolean)?;
+                let phi = self.builder.build_phi(self.bit, "ifx.bool")?;
+                phi.add_incoming(&[(&yes.0, yes_end), (&no.0, no_end)]);
+                int_value(phi.as_basic_value())?
+            }
             BoolExpr::Not(e) => {
                 let v = self.boolean(e)?;
                 self.builder.build_not(v.0, "not")?
@@ -520,6 +532,28 @@ impl<'ctx> Generator<'ctx, '_> {
             BoolExpr::And(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::And)?.0,
             BoolExpr::Or(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::Or)?.0,
         }))
+    }
+    fn conditional_values<T, V>(
+        &mut self,
+        expression: &Conditional<T>,
+        emit: fn(&mut Self, &T) -> Result<V, Error>,
+    ) -> Result<[(V, BasicBlock<'ctx>); 2], Error> {
+        let condition = self.boolean(&expression.condition)?;
+        let yes = self.label("ifx.then");
+        let no = self.label("ifx.else");
+        let join = self.label("ifx.end");
+        self.builder
+            .build_conditional_branch(condition.0, yes, no)?;
+        self.builder.position_at_end(yes);
+        let then_value = emit(self, &expression.then_value)?;
+        let then_end = self.builder.get_insert_block().ok_or(Error::Invariant)?;
+        self.builder.build_unconditional_branch(join)?;
+        self.builder.position_at_end(no);
+        let else_value = emit(self, &expression.else_value)?;
+        let else_end = self.builder.get_insert_block().ok_or(Error::Invariant)?;
+        self.builder.build_unconditional_branch(join)?;
+        self.builder.position_at_end(join);
+        Ok([(then_value, then_end), (else_value, else_end)])
     }
     fn short_circuit(
         &mut self,

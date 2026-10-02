@@ -57,6 +57,7 @@ enum IntExpr {
     Negate(Box<IntExpr>),
     Complement(Box<IntExpr>),
     Binary(IntOp, Box<IntExpr>, Box<IntExpr>, Span),
+    Conditional(Box<Conditional<IntExpr>>),
 }
 enum BoolExpr {
     Constant(bool),
@@ -66,6 +67,12 @@ enum BoolExpr {
     CompareBools(Equality, Box<BoolExpr>, Box<BoolExpr>),
     And(Box<BoolExpr>, Box<BoolExpr>),
     Or(Box<BoolExpr>, Box<BoolExpr>),
+    Conditional(Box<Conditional<BoolExpr>>),
+}
+struct Conditional<T> {
+    condition: BoolExpr,
+    then_value: T,
+    else_value: T,
 }
 fn literal(value: Value) -> Expr {
     match value {
@@ -87,6 +94,48 @@ fn bind(
                 span,
                 "procedure calls in constant expressions are not implemented yet",
             ));
+        }
+        ExpressionKind::Conditional(e) => {
+            let condition = bind(&e.condition, lookup)?.condition();
+            let then_value = bind(&e.then_value, lookup)?;
+            let else_value = e.else_value.as_ref().map(|e| bind(e, lookup)).transpose()?;
+            match (then_value, else_value) {
+                (Expr::Int(then_value), else_value) => {
+                    // The false arm is default-initialized to the result type when omitted.
+                    let else_value = match else_value {
+                        Some(Expr::Int(e)) => e,
+                        None => IntExpr::Constant(0),
+                        _ => {
+                            return Err(Diagnostic::new(
+                                span,
+                                "ifx branches require matching scalar types",
+                            ));
+                        }
+                    };
+                    Expr::Int(IntExpr::Conditional(Box::new(Conditional {
+                        condition,
+                        then_value,
+                        else_value,
+                    })))
+                }
+                (Expr::Bool(then_value), else_value) => {
+                    let else_value = match else_value {
+                        Some(Expr::Bool(e)) => e,
+                        None => BoolExpr::Constant(false),
+                        _ => {
+                            return Err(Diagnostic::new(
+                                span,
+                                "ifx branches require matching scalar types",
+                            ));
+                        }
+                    };
+                    Expr::Bool(BoolExpr::Conditional(Box::new(Conditional {
+                        condition,
+                        then_value,
+                        else_value,
+                    })))
+                }
+            }
         }
         ExpressionKind::Cast(ty, operand) => {
             let value = bind(operand, lookup)?;
@@ -160,6 +209,13 @@ impl IntExpr {
             Self::FromBool(e) => i64::from(e.evaluate()?),
             Self::Negate(e) => e.evaluate()?.wrapping_neg(),
             Self::Complement(e) => !e.evaluate()?,
+            Self::Conditional(e) => {
+                if e.condition.evaluate()? {
+                    e.then_value.evaluate()?
+                } else {
+                    e.else_value.evaluate()?
+                }
+            }
             Self::Binary(op, lhs, rhs, span) => {
                 let lhs = lhs.evaluate()?;
                 let rhs = rhs.evaluate()?;
@@ -209,6 +265,13 @@ impl BoolExpr {
             Self::Not(e) => !e.evaluate()?,
             Self::And(lhs, rhs) => lhs.evaluate()? && rhs.evaluate()?,
             Self::Or(lhs, rhs) => lhs.evaluate()? || rhs.evaluate()?,
+            Self::Conditional(e) => {
+                if e.condition.evaluate()? {
+                    e.then_value.evaluate()?
+                } else {
+                    e.else_value.evaluate()?
+                }
+            }
             Self::CompareInts(op, lhs, rhs) => {
                 let lhs = lhs.evaluate()?;
                 let rhs = rhs.evaluate()?;
@@ -300,6 +363,29 @@ mod tests {
             "false < true",
         ] {
             assert!(run(expression).is_err(), "{expression}");
+        }
+    }
+    #[test]
+    fn conditional_constants_bind_both_arms_and_execute_only_one() {
+        for (source, expected) in [
+            ("ifx true then 42 else 1 / 0", Value::Int(42)),
+            ("ifx false 1 / 0 else 42", Value::Int(42)),
+            ("ifx 0 then 42", Value::Int(0)),
+            ("ifx true then true else false", Value::Bool(true)),
+            ("ifx false then true", Value::Bool(false)),
+            (
+                "ifx true then ifx false then 1 else 42 else 0",
+                Value::Int(42),
+            ),
+        ] {
+            assert_eq!(run(source).unwrap(), expected, "{source}");
+        }
+        for source in [
+            "ifx true then 42 else missing",
+            "ifx false then true else 42",
+            "ifx true then 42 else f()",
+        ] {
+            assert!(run(source).is_err(), "{source}");
         }
     }
 }
