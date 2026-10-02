@@ -1,5 +1,8 @@
 # Developer documentation
 
+- [Independent standard library](specs/stdlib/README.md)
+- [Standard-library API coverage](specs/stdlib/README.md)
+
 - [Deferred context pushes](deferred-context.md)
 
 - [Runtime parameter defaults](runtime-parameter-defaults.md)
@@ -251,6 +254,22 @@ Public source corpora are input data.
 - [Scalar domain inference](scalar-domain-inference.md)
 - [Float and SIMD source validation](float-simd-source-validation.md)
 - [Constant slices](constant-slices.md)
+
+- [Basic and collection modules](specs/stdlib/README.md)
+- [Binary formats and hashing](specs/stdlib/README.md)
+- [Codec and native bindings](specs/stdlib/README.md)
+- [Command-line arguments](specs/stdlib/README.md)
+- [Metaprogram tooling](specs/stdlib/README.md)
+- [Window and audio bindings](specs/stdlib/README.md)
+- [Allocation, memory, and hashing](specs/stdlib/README.md)
+- [Math and numeric modules](specs/stdlib/README.md)
+- [Platform SDK bindings](specs/stdlib/README.md)
+- [Strings, Unicode, and text files](specs/stdlib/README.md)
+- [UI widgets, drawing, fonts, and textures](specs/stdlib/README.md)
+- [Compiler and reflection support](specs/stdlib/README.md)
+- [Files, processes, and OS services](specs/stdlib/README.md)
+- [Threads, sockets, and input](specs/stdlib/README.md)
+- [Native platform and graphics bindings](specs/stdlib/README.md)
 
 ## Language and library specifications
 
