@@ -31,8 +31,8 @@ pub enum StaticByteViewError {
         size: u64,
     },
     Target {
-        expected: LayoutPolicy,
-        actual: LayoutPolicy,
+        expected: Box<LayoutPolicy>,
+        actual: Box<LayoutPolicy>,
     },
 }
 impl From<LayoutError> for StaticByteViewError {
@@ -109,8 +109,8 @@ impl StaticByteView {
     pub fn validate_target(&self, actual: LayoutPolicy) -> Result<(), StaticByteViewError> {
         if self.policy != actual {
             return Err(StaticByteViewError::Target {
-                expected: self.policy,
-                actual,
+                expected: Box::new(self.policy),
+                actual: Box::new(actual),
             });
         }
         Ok(())
