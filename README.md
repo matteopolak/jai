@@ -78,7 +78,7 @@ The local Jai distribution helps establish language behavior. Newer, maintained 
 
 Tests cover rejected programs and the behavior of newly compiled programs. Benchmarks measure compiler time and Rust allocations so performance work can be based on measurements. Unsupported features produce errors instead of counting as successful builds.
 
-The supplied source distribution stays outside this repository apart from one explicitly authorized, inspected bootstrap in `vendor/` for isolated reference probes. An authorized reference compiler asset is used for isolated static inspection and bounded version/help experiments in CI. [Binary inspection](docs/binary-inspection.md) documents the findings and limits of static analysis.
+The supplied source distribution stays outside this repository apart from one explicitly authorized, inspected bootstrap in `vendor/` for isolated reference probes. An authorized reference compiler asset is used for isolated static inspection and bounded developer-help experiments in CI. [Binary inspection](docs/binary-inspection.md) documents the findings and limits of static analysis.
 
 ## Working on the compiler
 

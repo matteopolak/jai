@@ -13,12 +13,19 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = 'a76ba6e153838a81e3ed4edbcc4ec42ad86c333cdeaf4053fdc592ed0b61600e'
 EXPECTED_PRELOAD = '1d00c2ecde58c5362c8e2edf978d57eb490a39076eb6ebf7d118a9811a851904'
+HELP_OUTPUT = 'Developer options: import_dir name, meta metaprogram_name, no_jobs, randomize, seed some_number, extra, chaos.\n'
 
 
 def hosted_native(environment, system, machine):
     return (environment.get('GITHUB_ACTIONS') == 'true'
             and environment.get('RUNNER_ENVIRONMENT') == 'github-hosted'
             and system == 'Darwin' and machine == 'arm64')
+
+
+def developer_help_succeeded(returncode, stdout, stderr, timed_out):
+    # This exact inspected compiler prints developer help, then exits 1.
+    return (returncode == 1 and stdout == HELP_OUTPUT and stderr == ''
+            and not timed_out)
 
 
 def limits():
@@ -98,12 +105,15 @@ def main():
                 result = {'arguments': list(arguments), 'returncode': process.returncode, 'timed_out': timed_out,
                           'stdout': stdout.read(2 * 1024 * 1024).decode('utf-8', errors='replace'),
                           'stderr': stderr.read(2 * 1024 * 1024).decode('utf-8', errors='replace')}
+                result['expected_returncode'] = 1
+                result['satisfied_expectation'] = developer_help_succeeded(
+                    result['returncode'], result['stdout'], result['stderr'], result['timed_out'])
                 report['probes'].append(result)
                 (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
                 print(f'{" ".join(arguments)}: exit={process.returncode}, timed_out={timed_out}')
         report['scratch_files'] = sorted(str(p.relative_to(scratch)) for p in scratch.rglob('*') if p.is_file())
         (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
-    if any(p['timed_out'] or p['returncode'] != 0 for p in report['probes']):
+    if any(not p['satisfied_expectation'] for p in report['probes']):
         raise SystemExit('Reference probe did not pass; inspect retained evidence')
 
 
