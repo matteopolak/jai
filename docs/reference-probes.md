@@ -1,4 +1,6 @@
-# Bounded reference probes
+# Bounded reference probe history
+
+The hosted developer-help workflow is retired following removal of the vendored bootstrap dependency. This page records historical observations with the original compiler and original inspected Preload; it does not establish a result for the independently authored [compiler prelude](compiler-prelude.md). The former workflow is absent from the current checkout, and no replacement reference execution is enabled.
 
 ## What it is
 
@@ -16,7 +18,7 @@ The child receives a minimal environment without GitHub tokens, a disposable hom
 
 ## How to change it
 
-Change `tools/probe_reference.py` and `.github/workflows/reference-probe.yml` together. Keep command scope and binary/bootstrap digests explicit, and retain separate static and execution workflows. Additional source compilation, native library loading and compile-time execution require inspected inputs and a reviewed experiment. Do not convert hosted runner checks into a host-execution bypass.
+`tools/probe_reference.py` remains a historical guarded helper; its exact original binary/bootstrap identities and hosted-runner checks are retained. The retired `.github/workflows/reference-probe.yml` staged the former vendor file. Any future experiment needs a newly reviewed workflow and input policy; changing a bootstrap digest does not turn the old observation into evidence for different source. Do not convert hosted runner checks into a host-execution bypass.
 
 The initial run [36940827475](https://github.com/matteopolak/jai/actions/runs/36940827475) aborted both probes with signal 6 and no output. Its harness mistakenly captured output outside the writable scratch directory; fixing that path does not relax the sandbox. The corrected run [36941278406](https://github.com/matteopolak/jai/actions/runs/36941278406) also aborted a trusted system control and refused reference execution, showing that the failure was not specific to Jai. Local controls using only Apple's `printf` then isolated a missing read rule for the root directory itself. Adding `(literal "/")` permits that directory only, without granting descendant-file contents. The control succeeded with this narrow rule; the hosted retry established that the original compiler starts. [Run 36941991158](https://github.com/matteopolak/jai/actions/runs/36941991158) passed the trusted control, then both Jai flags exited 1 because `reference/modules/Preload.jai` was absent. The compiler created only `.build/.added_strings_w1.jai` in the scratch directory. The missing bootstrap is an input limitation, not evidence of malicious behavior or a successful version/help result.
 
@@ -26,7 +28,7 @@ The inspected bootstrap is `modules/Preload.jai`, 13,612 bytes, SHA-256 `1d00c2e
 
 ## Configuration
 
-Dispatch `gh workflow run reference-probe.yml --repo matteopolak/jai -f audit_run=36939979892`. The job has a five-minute limit, and evidence is retained for fourteen days. The release tag and compiler/bootstrap hashes are fixed to the inspected 0.2.009 distribution. `.gitattributes` disables line-ending normalization for the vendored bootstrap so hosted bytes match the inspected file.
+There is no current dispatch command for this retired workflow. The historical job had a five-minute limit and retained evidence for fourteen days. Its release tag and compiler/bootstrap hashes were fixed to the inspected 0.2.009 distribution, with line-ending normalization disabled for the vendor file. The authored prelude has separate source and generated-program tests and is not substituted into this historical reference probe.
 
 ## Dependencies
 

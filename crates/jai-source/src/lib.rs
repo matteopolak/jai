@@ -1,11 +1,16 @@
 //! Byte-based source locations shared by the compiler stages.
 mod locations;
+mod warnings;
 pub use locations::{
     DeclarationId, Identities, LocatedDiagnostic, ModuleId, ScopeId, SourceId, SourceMap,
     SourceRecord, SourceSpan, UnitId,
 };
 use std::collections::HashMap;
 use std::fmt;
+pub use warnings::{
+    MAX_SOURCE_WARNINGS, SourceWarning, SourceWarningKind, WarningLocation, WarningLocationError,
+    WarningNote,
+};
 
 /// An interned spelling; declaration identity is represented separately.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -28,6 +33,9 @@ impl Symbols {
     }
     pub fn find(&self, name: &str) -> Option<Symbol> {
         self.by_name.get(name).copied()
+    }
+    pub fn get(&self, symbol: Symbol) -> Option<&str> {
+        self.names.get(symbol.0).map(String::as_str)
     }
     pub fn name(&self, symbol: Symbol) -> &str {
         &self.names[symbol.0]
@@ -53,6 +61,8 @@ impl Span {
 pub struct Diagnostic {
     pub span: Span,
     pub message: String,
+    /// An explicit source origin survives changes to lexical lookup context.
+    pub source: Option<SourceId>,
 }
 
 impl Diagnostic {
@@ -60,7 +70,20 @@ impl Diagnostic {
         Self {
             span,
             message: message.into(),
+            source: None,
         }
+    }
+    pub fn at_source(location: SourceSpan, message: impl Into<String>) -> Self {
+        Self {
+            span: location.span,
+            message: message.into(),
+            source: Some(location.source),
+        }
+    }
+    /// Add an origin only when the diagnostic has not already retained one.
+    pub fn with_fallback_source(mut self, source: SourceId) -> Self {
+        self.source.get_or_insert(source);
+        self
     }
     pub fn render(&self, path: &str, source: &str) -> String {
         let at = self.span.start.min(source.len());

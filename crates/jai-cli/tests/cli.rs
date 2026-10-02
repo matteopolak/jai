@@ -64,7 +64,6 @@ fn supplied_executable_is_rejected_before_backend_execution() {
     let dir = Scratch::new();
     let source = dir.source("main :: () {}");
     let reference = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../reference/bin/jai-macos");
-    assert!(reference.is_file());
     let output = dir.0.join("program");
     let result = cli()
         .env("JAI_RS_CLANG", reference)

@@ -10,7 +10,9 @@ Track lexical, parsing, typechecking, code generation, linking and runtime resul
 
 The required target families are macOS, Linux, Windows, iOS, Android and the supplied **wasm64** example. Validate target-specific branches on the proper target; an x86 assembly example is not expected to become ARM assembly automatically.
 
-Current coverage is limited to the compiler stage documented in [architecture](compiler-architecture.md). There are no verified successful standard-library builds or reference example builds yet. The full-corpus lexical test is strictly a lexer test.
+Coverage is tracked by stage in [architecture](compiler-architecture.md). The immutable `a19b4808` checkpoint lexes all 2,142 corpus files, parses 1,700, and checks 97 support files plus one intended rejection with the supplied Preload and Runtime Support disabled. None of the selected complete projects builds yet. Reviewed original programs have separate generated native evidence, including the book's inlining example; these do not establish full reference-example or standard-library acceptance.
+
+The same checkpoint checks 253 library/example entrypoints and fixtures under two bootstrap profiles. With Preload alone, 199 parse and 42 check (36 library/example entrypoints and six fixtures). Enabling Runtime Support yields no successful checks. All recorded failures are source diagnostics rather than compiler panics. Local evidence is in `artifacts/corpus-a19b4808-bootstrap.json`, `artifacts/corpus-a19b4808-project-roots.json`, and `artifacts/standard-library-a19b4808.json`; their compiler SHA is `a19b48087e7a534920264dd670fc4bcb9e535831c574c4ae1f7d0871df592b6f`.
 
 ## How to change it
 

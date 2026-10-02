@@ -8,6 +8,8 @@
 
 Resolution registers each deferred body when its declaration is reached in source order. The body resolves names immediately into local/procedure IDs, but expressions execute when cleanup runs. Later changes to those locals are visible; later shadowing does not change which binding is captured.
 
+Local declaration discovery also reserves future runtime names for static capture checks. Cleanup temporarily removes only inherited runtime names without an activated binding while resolving its body, then restores them even when resolution fails. Existing locals, hoisted source declarations, and scope identities remain available. This prevents a later `x := ...` from blocking the outer `x` used by an earlier defer.
+
 ```jai
 main :: () -> int {
     n := 0;
@@ -30,7 +32,7 @@ The typed program stores each deferred body once. LLVM emits its instructions at
 
 `jai-syntax` parses the statement. `jai-sema/src/cleanup.rs` registers bodies and constructs return exits; `loops.rs` constructs loop exits. `jai-codegen` snapshots return values, emits the listed cleanup bodies and then performs the transfer. Preserve lexical activation, captured binding IDs, LIFO ordering and the distinction between returning from a procedure and leaving a loop.
 
-Native tests exercise actual cleanup effects on fallthrough, break/continue, outer exits, nested defers and returned scalar values. Rejection tests cover unsupported cleanup escapes, references to undeclared names and unreachable declarations. Composite return values, exceptions and ownership/destructor semantics remain unimplemented and must receive equivalent exit handling when added.
+Native tests exercise actual cleanup effects on fallthrough, break/continue, outer exits, nested defers, shadowing, and returned values. Checked-IR aggregate fixtures verify that returned snapshots precede deferred mutation. Rejection tests cover unsupported cleanup escapes, references to undeclared names and unreachable declarations. Future exception or destructor behavior needs equivalent exit handling.
 
 ## Configuration
 
