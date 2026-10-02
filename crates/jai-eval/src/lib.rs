@@ -1,69 +1,206 @@
-//! Pure scalar constant evaluation with typed nodes and no host effects.
+//! Pure constant evaluation with typed nodes and no host effects.
 pub mod operators;
 use jai_source::{Diagnostic, Span, Symbol};
-use jai_syntax::{Expression, ExpressionKind, ScalarType, UnaryOp};
+use jai_syntax::{Expression, ExpressionKind, UnaryOp};
+pub use jai_types::{CastMode, Integer, IntegerType, ScalarType};
 use operators::{Equality, IntOp, Operator, Relation};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Value {
-    Int(i64),
+    Literal(i128),
+    Int(Integer),
     Bool(bool),
 }
 impl Value {
     pub fn ty(self) -> ScalarType {
         match self {
-            Self::Int(_) => ScalarType::Int,
+            Self::Literal(_) => ScalarType::Int(IntegerType::S64),
+            Self::Int(n) => ScalarType::Int(n.ty()),
             Self::Bool(_) => ScalarType::Bool,
         }
     }
     pub fn zero(ty: ScalarType) -> Self {
         match ty {
-            ScalarType::Int => Self::Int(0),
+            ScalarType::Int(ty) => Self::Int(Integer::wrapping(ty, 0)),
             ScalarType::Bool => Self::Bool(false),
         }
     }
+    pub fn coerce(self, ty: ScalarType, span: Span) -> Result<Self, Diagnostic> {
+        match (self, ty) {
+            (Self::Bool(b), ScalarType::Bool) => Ok(Self::Bool(b)),
+            (Self::Literal(n), ScalarType::Int(ty)) => {
+                Integer::checked(ty, n).map(Self::Int).ok_or_else(|| {
+                    Diagnostic::new(span, "integer constant is out of range for its target type")
+                })
+            }
+            (Self::Int(n), ScalarType::Int(ty)) if ty.contains(n.ty()) => {
+                Ok(Self::Int(Integer::wrapping(ty, n.value())))
+            }
+            _ => Err(Diagnostic::new(
+                span,
+                "implicit conversion does not preserve the source type's entire range",
+            )),
+        }
+    }
+    fn number(self, span: Span) -> Result<i128, Diagnostic> {
+        match self {
+            Self::Literal(n) => Ok(n),
+            Self::Int(n) => Ok(n.value()),
+            _ => Err(Diagnostic::new(span, "expected integer constant")),
+        }
+    }
 }
-/// Bind the complete expression before execution, including skipped operands.
+/// Bind all operands, including unselected branches, before executing any arithmetic.
 pub fn evaluate(
     expression: &Expression,
     mut lookup: impl FnMut(Symbol, Span) -> Result<Value, Diagnostic>,
 ) -> Result<Value, Diagnostic> {
     match bind(expression, &mut lookup)? {
-        Expr::Int(e) => e.evaluate().map(Value::Int),
+        Expr::Number(e) => e.evaluate(),
         Expr::Bool(e) => e.evaluate().map(Value::Bool),
     }
 }
+/// Fold untyped literal operands without materializing them as s64 storage.
+pub fn binary_literals(
+    op: jai_syntax::BinaryOp,
+    a: i128,
+    b: i128,
+    span: Span,
+) -> Result<Value, Diagnostic> {
+    Ok(match Operator::from(op) {
+        Operator::Integer(op) => Value::Literal(arithmetic(NumberType::Literal, op, a, b, span)?),
+        Operator::Relation(op) => Value::Bool(compare(op, a, b)),
+        Operator::Equality(op) => Value::Bool(match op {
+            Equality::Equal => a == b,
+            Equality::NotEqual => a != b,
+        }),
+        Operator::And => Value::Bool(a != 0 && b != 0),
+        Operator::Or => Value::Bool(a != 0 || b != 0),
+    })
+}
+fn compare(op: Relation, a: i128, b: i128) -> bool {
+    match op {
+        Relation::Equal => a == b,
+        Relation::NotEqual => a != b,
+        Relation::Less => a < b,
+        Relation::LessEqual => a <= b,
+        Relation::Greater => a > b,
+        Relation::GreaterEqual => a >= b,
+    }
+}
+fn arithmetic(ty: NumberType, op: IntOp, a: i128, b: i128, span: Span) -> Result<i128, Diagnostic> {
+    let invalid = || {
+        Diagnostic::new(
+            span,
+            "invalid constant arithmetic: zero divisor, overflow or shift count",
+        )
+    };
+    Ok(match op {
+        IntOp::Add => match ty {
+            NumberType::Literal => a.checked_add(b).ok_or_else(invalid)?,
+            NumberType::Typed(_) => a.wrapping_add(b),
+        },
+        IntOp::Subtract => match ty {
+            NumberType::Literal => a.checked_sub(b).ok_or_else(invalid)?,
+            NumberType::Typed(_) => a.wrapping_sub(b),
+        },
+        IntOp::Multiply => match ty {
+            NumberType::Literal => a.checked_mul(b).ok_or_else(invalid)?,
+            NumberType::Typed(_) => a.wrapping_mul(b),
+        },
+        IntOp::BitAnd => a & b,
+        IntOp::BitOr => a | b,
+        IntOp::BitXor => a ^ b,
+        IntOp::Divide | IntOp::Remainder => {
+            if matches!(ty,NumberType::Typed(ty) if ty.signed() && a==ty.min() && b== -1) {
+                return Err(invalid());
+            }
+            if op == IntOp::Divide {
+                a.checked_div(b)
+            } else {
+                a.checked_rem(b)
+            }
+            .ok_or_else(invalid)?
+        }
+        IntOp::ShiftLeft | IntOp::ShiftRight => {
+            let width = match ty {
+                NumberType::Literal => 64,
+                NumberType::Typed(ty) => ty.bits(),
+            };
+            let count = u32::try_from(b)
+                .ok()
+                .filter(|n| *n < width)
+                .ok_or_else(invalid)?;
+            if op == IntOp::ShiftLeft {
+                match ty {
+                    NumberType::Literal => a.checked_mul(1i128 << count).ok_or_else(invalid)?,
+                    NumberType::Typed(_) => a.wrapping_shl(count),
+                }
+            } else {
+                a >> count
+            }
+        }
+    })
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum NumberType {
+    Literal,
+    Typed(IntegerType),
+}
+impl NumberType {
+    fn finish(self, value: i128) -> Value {
+        match self {
+            Self::Literal => Value::Literal(value),
+            Self::Typed(ty) => Value::Int(Integer::wrapping(ty, value)),
+        }
+    }
+    fn common(self, other: Self, span: Span) -> Result<Self, Diagnostic> {
+        match (self, other) {
+            (Self::Literal, t) | (t, Self::Literal) => Ok(t),
+            (Self::Typed(a), Self::Typed(b)) => a
+                .common(b)
+                .map(Self::Typed)
+                .ok_or_else(|| Diagnostic::new(span, "integer operands have incompatible ranges")),
+        }
+    }
+}
 enum Expr {
-    Int(IntExpr),
+    Number(NumberExpr),
     Bool(BoolExpr),
 }
 impl Expr {
-    fn int(self, span: Span) -> Result<IntExpr, Diagnostic> {
+    fn number(self, span: Span) -> Result<NumberExpr, Diagnostic> {
         match self {
-            Self::Int(e) => Ok(e),
-            _ => Err(Diagnostic::new(span, "expected int constant")),
+            Self::Number(e) => Ok(e),
+            _ => Err(Diagnostic::new(span, "expected integer constant")),
         }
     }
     fn condition(self) -> BoolExpr {
         match self {
             Self::Bool(e) => e,
-            Self::Int(e) => BoolExpr::FromInt(Box::new(e)),
+            Self::Number(e) => BoolExpr::FromNumber(Box::new(e)),
         }
     }
 }
-enum IntExpr {
-    Constant(i64),
+struct NumberExpr {
+    ty: NumberType,
+    kind: NumberKind,
+}
+enum NumberKind {
+    Literal(i128),
+    Typed(Integer),
     FromBool(Box<BoolExpr>),
-    Negate(Box<IntExpr>),
-    Complement(Box<IntExpr>),
-    Binary(IntOp, Box<IntExpr>, Box<IntExpr>, Span),
-    Conditional(Box<Conditional<IntExpr>>),
+    Cast(CastMode, Box<NumberExpr>, Span),
+    Negate(Box<NumberExpr>, Span),
+    Complement(Box<NumberExpr>),
+    Binary(IntOp, Box<NumberExpr>, Box<NumberExpr>, Span),
+    Conditional(Box<Conditional<NumberExpr>>),
 }
 enum BoolExpr {
     Constant(bool),
-    FromInt(Box<IntExpr>),
+    FromNumber(Box<NumberExpr>),
     Not(Box<BoolExpr>),
-    CompareInts(Relation, Box<IntExpr>, Box<IntExpr>),
+    CompareNumbers(Relation, Box<NumberExpr>, Box<NumberExpr>),
     CompareBools(Equality, Box<BoolExpr>, Box<BoolExpr>),
     And(Box<BoolExpr>, Box<BoolExpr>),
     Or(Box<BoolExpr>, Box<BoolExpr>),
@@ -76,9 +213,80 @@ struct Conditional<T> {
 }
 fn literal(value: Value) -> Expr {
     match value {
-        Value::Int(n) => Expr::Int(IntExpr::Constant(n)),
+        Value::Literal(n) => Expr::Number(NumberExpr {
+            ty: NumberType::Literal,
+            kind: NumberKind::Literal(n),
+        }),
+        Value::Int(n) => Expr::Number(NumberExpr {
+            ty: NumberType::Typed(n.ty()),
+            kind: NumberKind::Typed(n),
+        }),
         Value::Bool(b) => Expr::Bool(BoolExpr::Constant(b)),
     }
+}
+impl NumberExpr {
+    fn convert(self, ty: NumberType, span: Span) -> Self {
+        if self.ty == ty {
+            return self;
+        }
+        // Common-type selection has already proved range preservation for typed operands.
+        Self {
+            ty,
+            kind: NumberKind::Cast(CastMode::Checked, Box::new(self), span),
+        }
+    }
+    fn evaluate(&self) -> Result<Value, Diagnostic> {
+        let value = match &self.kind {
+            NumberKind::Literal(n) => *n,
+            NumberKind::Typed(n) => n.value(),
+            NumberKind::FromBool(e) => i128::from(e.evaluate()?),
+            NumberKind::Cast(mode, e, span) => {
+                let n = e.evaluate()?.number(*span)?;
+                if let NumberType::Typed(ty) = self.ty {
+                    return match mode {
+                        CastMode::Unchecked => Ok(Value::Int(Integer::wrapping(ty, n))),
+                        CastMode::Checked => {
+                            Integer::checked(ty, n).map(Value::Int).ok_or_else(|| {
+                                Diagnostic::new(*span, "checked integer cast is out of range")
+                            })
+                        }
+                    };
+                }
+                n
+            }
+            NumberKind::Negate(e, span) => {
+                e.evaluate()?.number(*span)?.checked_neg().ok_or_else(|| {
+                    Diagnostic::new(*span, "integer constant exceeds evaluator range")
+                })?
+            }
+            NumberKind::Complement(e) => !e.evaluate()?.number(Span::default())?,
+            NumberKind::Conditional(e) => {
+                return if e.condition.evaluate()? {
+                    e.then_value.evaluate()
+                } else {
+                    e.else_value.evaluate()
+                };
+            }
+            NumberKind::Binary(op, lhs, rhs, span) => arithmetic(
+                self.ty,
+                *op,
+                lhs.evaluate()?.number(*span)?,
+                rhs.evaluate()?.number(*span)?,
+                *span,
+            )?,
+        };
+        Ok(self.ty.finish(value))
+    }
+}
+fn number_pair(
+    lhs: Expr,
+    rhs: Expr,
+    span: Span,
+) -> Result<(NumberType, NumberExpr, NumberExpr), Diagnostic> {
+    let lhs = lhs.number(span)?;
+    let rhs = rhs.number(span)?;
+    let ty = lhs.ty.common(rhs.ty, span)?;
+    Ok((ty, lhs.convert(ty, span), rhs.convert(ty, span)))
 }
 fn bind(
     expression: &Expression,
@@ -86,7 +294,7 @@ fn bind(
 ) -> Result<Expr, Diagnostic> {
     let span = expression.span;
     Ok(match &expression.kind {
-        ExpressionKind::Integer(n) => literal(Value::Int(*n)),
+        ExpressionKind::Integer(n) => literal(Value::Literal(*n)),
         ExpressionKind::Bool(b) => literal(Value::Bool(*b)),
         ExpressionKind::Name(name) => literal(lookup(*name, span)?),
         ExpressionKind::Call(_, _) => {
@@ -95,101 +303,105 @@ fn bind(
                 "procedure calls in constant expressions are not implemented yet",
             ));
         }
+        ExpressionKind::Cast(mode, ty, e) => {
+            let value = bind(e, lookup)?;
+            match ty {
+                ScalarType::Bool => Expr::Bool(value.condition()),
+                ScalarType::Int(ty) => Expr::Number(NumberExpr {
+                    ty: NumberType::Typed(*ty),
+                    kind: match value {
+                        Expr::Number(e) => NumberKind::Cast(*mode, Box::new(e), span),
+                        Expr::Bool(e) => NumberKind::FromBool(Box::new(e)),
+                    },
+                }),
+            }
+        }
+        ExpressionKind::Unary(op, e) => {
+            let value = bind(e, lookup)?;
+            match op {
+                UnaryOp::LogicalNot => Expr::Bool(BoolExpr::Not(Box::new(value.condition()))),
+                _ => {
+                    let e = value.number(span)?;
+                    let ty = e.ty;
+                    Expr::Number(NumberExpr {
+                        ty,
+                        kind: match op {
+                            UnaryOp::Positive => return Ok(Expr::Number(e)),
+                            UnaryOp::Negate => NumberKind::Negate(Box::new(e), span),
+                            UnaryOp::Complement => NumberKind::Complement(Box::new(e)),
+                            _ => unreachable!(),
+                        },
+                    })
+                }
+            }
+        }
         ExpressionKind::Conditional(e) => {
             let condition = bind(&e.condition, lookup)?.condition();
             let then_value = bind(&e.then_value, lookup)?;
             let else_value = e.else_value.as_ref().map(|e| bind(e, lookup)).transpose()?;
-            match (then_value, else_value) {
-                (Expr::Int(then_value), else_value) => {
-                    // The false arm is default-initialized to the result type when omitted.
-                    let else_value = match else_value {
-                        Some(Expr::Int(e)) => e,
-                        None => IntExpr::Constant(0),
-                        _ => {
-                            return Err(Diagnostic::new(
-                                span,
-                                "ifx branches require matching scalar types",
-                            ));
-                        }
-                    };
-                    Expr::Int(IntExpr::Conditional(Box::new(Conditional {
-                        condition,
-                        then_value,
-                        else_value,
-                    })))
+            match then_value {
+                Expr::Number(yes) => {
+                    let no = else_value.unwrap_or_else(|| literal(yes.ty.finish(0)));
+                    let (ty, yes, no) = number_pair(Expr::Number(yes), no, span)?;
+                    Expr::Number(NumberExpr {
+                        ty,
+                        kind: NumberKind::Conditional(Box::new(Conditional {
+                            condition,
+                            then_value: yes,
+                            else_value: no,
+                        })),
+                    })
                 }
-                (Expr::Bool(then_value), else_value) => {
-                    let else_value = match else_value {
-                        Some(Expr::Bool(e)) => e,
+                Expr::Bool(yes) => {
+                    let no = match else_value {
                         None => BoolExpr::Constant(false),
+                        Some(Expr::Bool(e)) => e,
                         _ => {
                             return Err(Diagnostic::new(
                                 span,
-                                "ifx branches require matching scalar types",
+                                "ifx branches require compatible types",
                             ));
                         }
                     };
                     Expr::Bool(BoolExpr::Conditional(Box::new(Conditional {
                         condition,
-                        then_value,
-                        else_value,
+                        then_value: yes,
+                        else_value: no,
                     })))
                 }
-            }
-        }
-        ExpressionKind::Cast(ty, operand) => {
-            let value = bind(operand, lookup)?;
-            match ty {
-                ScalarType::Bool => Expr::Bool(value.condition()),
-                ScalarType::Int => Expr::Int(match value {
-                    Expr::Int(e) => e,
-                    Expr::Bool(e) => IntExpr::FromBool(Box::new(e)),
-                }),
-            }
-        }
-        ExpressionKind::Unary(op, operand) => {
-            let value = bind(operand, lookup)?;
-            match op {
-                UnaryOp::Positive => Expr::Int(value.int(span)?),
-                UnaryOp::Negate => Expr::Int(IntExpr::Negate(Box::new(value.int(span)?))),
-                UnaryOp::Complement => Expr::Int(IntExpr::Complement(Box::new(value.int(span)?))),
-                UnaryOp::LogicalNot => Expr::Bool(BoolExpr::Not(Box::new(value.condition()))),
             }
         }
         ExpressionKind::Binary(op, lhs, rhs) => {
             let lhs = bind(lhs, lookup)?;
             let rhs = bind(rhs, lookup)?;
             match Operator::from(*op) {
-                Operator::Integer(op) => Expr::Int(IntExpr::Binary(
-                    op,
-                    Box::new(lhs.int(span)?),
-                    Box::new(rhs.int(span)?),
-                    span,
-                )),
-                Operator::Relation(op) => Expr::Bool(BoolExpr::CompareInts(
-                    op,
-                    Box::new(lhs.int(span)?),
-                    Box::new(rhs.int(span)?),
-                )),
-                Operator::Equality(op) => Expr::Bool(match (lhs, rhs) {
-                    (Expr::Int(lhs), Expr::Int(rhs)) => BoolExpr::CompareInts(
-                        match op {
-                            Equality::Equal => Relation::Equal,
-                            Equality::NotEqual => Relation::NotEqual,
-                        },
-                        Box::new(lhs),
-                        Box::new(rhs),
-                    ),
+                Operator::Integer(op) => {
+                    let (ty, lhs, rhs) = number_pair(lhs, rhs, span)?;
+                    Expr::Number(NumberExpr {
+                        ty,
+                        kind: NumberKind::Binary(op, Box::new(lhs), Box::new(rhs), span),
+                    })
+                }
+                Operator::Relation(op) => {
+                    let (_, lhs, rhs) = number_pair(lhs, rhs, span)?;
+                    Expr::Bool(BoolExpr::CompareNumbers(op, Box::new(lhs), Box::new(rhs)))
+                }
+                Operator::Equality(op) => match (lhs, rhs) {
                     (Expr::Bool(lhs), Expr::Bool(rhs)) => {
-                        BoolExpr::CompareBools(op, Box::new(lhs), Box::new(rhs))
+                        Expr::Bool(BoolExpr::CompareBools(op, Box::new(lhs), Box::new(rhs)))
                     }
-                    _ => {
-                        return Err(Diagnostic::new(
-                            span,
-                            "constant equality requires matching scalar types",
-                        ));
+                    (lhs, rhs) => {
+                        let (_, lhs, rhs) = number_pair(lhs, rhs, span)?;
+                        Expr::Bool(BoolExpr::CompareNumbers(
+                            match op {
+                                Equality::Equal => Relation::Equal,
+                                Equality::NotEqual => Relation::NotEqual,
+                            },
+                            Box::new(lhs),
+                            Box::new(rhs),
+                        ))
                     }
-                }),
+                },
                 Operator::And => Expr::Bool(BoolExpr::And(
                     Box::new(lhs.condition()),
                     Box::new(rhs.condition()),
@@ -202,69 +414,14 @@ fn bind(
         }
     })
 }
-impl IntExpr {
-    fn evaluate(&self) -> Result<i64, Diagnostic> {
-        Ok(match self {
-            Self::Constant(n) => *n,
-            Self::FromBool(e) => i64::from(e.evaluate()?),
-            Self::Negate(e) => e.evaluate()?.wrapping_neg(),
-            Self::Complement(e) => !e.evaluate()?,
-            Self::Conditional(e) => {
-                if e.condition.evaluate()? {
-                    e.then_value.evaluate()?
-                } else {
-                    e.else_value.evaluate()?
-                }
-            }
-            Self::Binary(op, lhs, rhs, span) => {
-                let lhs = lhs.evaluate()?;
-                let rhs = rhs.evaluate()?;
-                match op {
-                    IntOp::Add => lhs.wrapping_add(rhs),
-                    IntOp::Subtract => lhs.wrapping_sub(rhs),
-                    IntOp::Multiply => lhs.wrapping_mul(rhs),
-                    IntOp::BitAnd => lhs & rhs,
-                    IntOp::BitOr => lhs | rhs,
-                    IntOp::BitXor => lhs ^ rhs,
-                    IntOp::Divide => lhs.checked_div(rhs).ok_or_else(|| {
-                        Diagnostic::new(
-                            *span,
-                            "invalid constant division: zero divisor or signed overflow",
-                        )
-                    })?,
-                    IntOp::Remainder => lhs.checked_rem(rhs).ok_or_else(|| {
-                        Diagnostic::new(
-                            *span,
-                            "invalid constant remainder: zero divisor or signed overflow",
-                        )
-                    })?,
-                    IntOp::ShiftLeft | IntOp::ShiftRight => {
-                        let count =
-                            u32::try_from(rhs).ok().filter(|n| *n < 64).ok_or_else(|| {
-                                Diagnostic::new(
-                                    *span,
-                                    "constant shift count must be between 0 and 63",
-                                )
-                            })?;
-                        match op {
-                            IntOp::ShiftLeft => lhs.wrapping_shl(count),
-                            IntOp::ShiftRight => lhs >> count,
-                            _ => unreachable!(),
-                        }
-                    }
-                }
-            }
-        })
-    }
-}
 impl BoolExpr {
     fn evaluate(&self) -> Result<bool, Diagnostic> {
         Ok(match self {
             Self::Constant(b) => *b,
-            Self::FromInt(e) => e.evaluate()? != 0,
+            Self::FromNumber(e) => e.evaluate()?.number(Span::default())? != 0,
             Self::Not(e) => !e.evaluate()?,
-            Self::And(lhs, rhs) => lhs.evaluate()? && rhs.evaluate()?,
-            Self::Or(lhs, rhs) => lhs.evaluate()? || rhs.evaluate()?,
+            Self::And(a, b) => a.evaluate()? && b.evaluate()?,
+            Self::Or(a, b) => a.evaluate()? || b.evaluate()?,
             Self::Conditional(e) => {
                 if e.condition.evaluate()? {
                     e.then_value.evaluate()?
@@ -272,24 +429,17 @@ impl BoolExpr {
                     e.else_value.evaluate()?
                 }
             }
-            Self::CompareInts(op, lhs, rhs) => {
-                let lhs = lhs.evaluate()?;
-                let rhs = rhs.evaluate()?;
+            Self::CompareNumbers(op, a, b) => compare(
+                *op,
+                a.evaluate()?.number(Span::default())?,
+                b.evaluate()?.number(Span::default())?,
+            ),
+            Self::CompareBools(op, a, b) => {
+                let a = a.evaluate()?;
+                let b = b.evaluate()?;
                 match op {
-                    Relation::Equal => lhs == rhs,
-                    Relation::NotEqual => lhs != rhs,
-                    Relation::Less => lhs < rhs,
-                    Relation::LessEqual => lhs <= rhs,
-                    Relation::Greater => lhs > rhs,
-                    Relation::GreaterEqual => lhs >= rhs,
-                }
-            }
-            Self::CompareBools(op, lhs, rhs) => {
-                let lhs = lhs.evaluate()?;
-                let rhs = rhs.evaluate()?;
-                match op {
-                    Equality::Equal => lhs == rhs,
-                    Equality::NotEqual => lhs != rhs,
+                    Equality::Equal => a == b,
+                    Equality::NotEqual => a != b,
                 }
             }
         })
@@ -315,12 +465,11 @@ mod tests {
             ("-8 >> 2", -2),
             ("~0", -1),
             ("+42", 42),
-            ("cast(int) cast(bool) -3", 1),
-            ("9223372036854775807 + 1", i64::MIN),
+            ("-9223372036854775808", i128::from(i64::MIN)),
         ] {
             assert_eq!(
                 run(expression).unwrap(),
-                Value::Int(expected),
+                Value::Literal(expected),
                 "{expression}"
             );
         }
@@ -357,7 +506,7 @@ mod tests {
             "1 % 0",
             "1 << -1",
             "1 >> 64",
-            "(-9223372036854775807 - 1) / -1",
+            "cast(int) -9223372036854775808 / cast(int) -1",
             "true + false",
             "1 == true",
             "false < true",
@@ -368,14 +517,14 @@ mod tests {
     #[test]
     fn conditional_constants_bind_both_arms_and_execute_only_one() {
         for (source, expected) in [
-            ("ifx true then 42 else 1 / 0", Value::Int(42)),
-            ("ifx false 1 / 0 else 42", Value::Int(42)),
-            ("ifx 0 then 42", Value::Int(0)),
+            ("ifx true then 42 else 1 / 0", Value::Literal(42)),
+            ("ifx false 1 / 0 else 42", Value::Literal(42)),
+            ("ifx 0 then 42", Value::Literal(0)),
             ("ifx true then true else false", Value::Bool(true)),
             ("ifx false then true", Value::Bool(false)),
             (
                 "ifx true then ifx false then 1 else 42 else 0",
-                Value::Int(42),
+                Value::Literal(42),
             ),
         ] {
             assert_eq!(run(source).unwrap(), expected, "{source}");

@@ -20,6 +20,8 @@ Constant dependency workloads have `constants_resolve` and `constants_pipeline` 
 
 Conditional expression workloads have `conditional_lower_llvm` and `conditional_pipeline` cases at 4, 64 and 1,024 procedures. They combine integer and Boolean `ifx` results with nested conditionals and short-circuit control flow, including PHI verification.
 
+Mixed-width workloads have `integer_lower_llvm` and `integer_pipeline` cases at the same sizes. They exercise `u64` arithmetic, checked and intentional narrowing, signed extension, scalar defaults, named argument reordering, and exhaustive Boolean cases. These are separate fixtures; the original comparison workloads remain unchanged.
+
 ## How to change it
 
 Add a representative, correct workload to `crates/jai-bench/benches/compiler.rs` and a behavior test for the feature it exercises. Avoid timing filesystem reads, source generation, fixture preparation or failed compilations inside a successful-stage benchmark. Keep rejection-path measurements separately named.

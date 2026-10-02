@@ -1,9 +1,11 @@
 //! Construct and verify LLVM modules from immutable checked programs.
+mod cases;
 pub use inkwell::context::Context;
 use inkwell::{
     IntPredicate,
     basic_block::BasicBlock,
     builder::{Builder, BuilderError},
+    intrinsics::Intrinsic,
     module::Module,
     support::LLVMString,
     types::{BasicMetadataTypeEnum, IntType},
@@ -13,11 +15,11 @@ use inkwell::{
     },
 };
 use jai_sema::{
-    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntLocal, IntOp, Local,
-    LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
+    Block, BoolExpr, Call, EntryPoint, Equality, Flow, IntExpr, IntExprKind, IntLocal, IntOp,
+    Local, LoopCondition, LoopId, Program, RangeLoop, Relation, Statement, ValueExpr,
 };
 use jai_sema::{BoolPlace, CleanupId, Conditional, Exit, Global, IntPlace, Transfer};
-use jai_syntax::{Direction, ReturnType, ScalarType};
+use jai_syntax::{CastMode, Direction, IntegerType, ReturnType, ScalarType};
 use std::fmt;
 
 #[derive(Debug)]
@@ -49,7 +51,7 @@ pub fn emit(program: &Program) -> Result<String, Error> {
 /// Build a verified module without serialization. The context owns its lifetime.
 pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'ctx>, Error> {
     let module = context.create_module("jai");
-    let word = context.i64_type();
+
     let bit = context.bool_type();
     let globals: Vec<_> = program
         .globals()
@@ -57,8 +59,9 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
         .enumerate()
         .map(|(index, global)| match global {
             Global::Int { initializer, .. } => {
-                let value = module.add_global(word, None, &format!("jai.g{index}"));
-                value.set_initializer(&word.const_int(*initializer as u64, true));
+                let ty = integer_type(context, initializer.ty());
+                let value = module.add_global(ty, None, &format!("jai.g{index}"));
+                value.set_initializer(&ty.const_int(initializer.bits(), false));
                 Slot::Int(IntSlot(value.as_pointer_value()))
             }
             Global::Bool { initializer, .. } => {
@@ -77,18 +80,24 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
                 .parameters
                 .iter()
                 .map(|local| match local {
-                    Local::Int(_) => word.into(),
+                    Local::Int(id) => integer_type(context, id.ty()).into(),
                     Local::Bool(_) => bit.into(),
                 })
                 .collect();
             let signature = match p.return_type {
                 ReturnType::Void => context.void_type().fn_type(&parameters, false),
-                ReturnType::Value(ScalarType::Int) => word.fn_type(&parameters, false),
+                ReturnType::Value(ScalarType::Int(ty)) => {
+                    integer_type(context, ty).fn_type(&parameters, false)
+                }
                 ReturnType::Value(ScalarType::Bool) => bit.fn_type(&parameters, false),
             };
             module.add_function(&format!("jai.p{}", p.id.index()), signature, None)
         })
         .collect();
+    let trap = Intrinsic::find("llvm.trap")
+        .ok_or(Error::Invariant)?
+        .get_declaration(&module, &[])
+        .ok_or(Error::Invariant)?;
     for p in program.procedures() {
         let function = functions[p.id.index()];
         let builder = context.create_builder();
@@ -96,7 +105,9 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
         let mut slots = Vec::with_capacity(p.locals.len());
         for local in &p.locals {
             slots.push(match local {
-                Local::Int(_) => Slot::Int(IntSlot(builder.build_alloca(word, "local")?)),
+                Local::Int(id) => Slot::Int(IntSlot(
+                    builder.build_alloca(integer_type(context, id.ty()), "local")?,
+                )),
                 Local::Bool(_) => Slot::Bool(BoolSlot(builder.build_alloca(bit, "local")?)),
             });
         }
@@ -114,7 +125,7 @@ pub fn lower<'ctx>(context: &'ctx Context, program: &Program) -> Result<Module<'
             functions: &functions,
             slots,
             globals: &globals,
-            word,
+            trap,
             bit,
             loops: Vec::new(),
             cleanups: &p.cleanups,
@@ -147,9 +158,9 @@ struct LoopBlocks<'ctx> {
     next: BasicBlock<'ctx>,
     end: BasicBlock<'ctx>,
 }
-// LLVM uses IntValue for both i64 and i1; keep language widths distinct.
+// LLVM uses IntValue for integers and Booleans; keep their language categories distinct.
 #[derive(Clone, Copy)]
-struct Word<'ctx>(IntValue<'ctx>);
+struct Number<'ctx>(IntValue<'ctx>);
 #[derive(Clone, Copy)]
 struct Bit<'ctx>(IntValue<'ctx>);
 #[derive(Clone, Copy)]
@@ -163,13 +174,35 @@ enum Slot<'ctx> {
 }
 enum Destination<'ctx> {
     ReturnVoid,
-    ReturnInt(Word<'ctx>),
+    ReturnInt(Number<'ctx>),
     ReturnBool(Bit<'ctx>),
     Branch(BasicBlock<'ctx>),
 }
 enum Logical {
     And,
     Or,
+}
+fn integer_type(context: &Context, ty: IntegerType) -> IntType<'_> {
+    match ty {
+        IntegerType::S8 | IntegerType::U8 => context.i8_type(),
+        IntegerType::S16 | IntegerType::U16 => context.i16_type(),
+        IntegerType::S32 | IntegerType::U32 => context.i32_type(),
+        IntegerType::S64 | IntegerType::U64 => context.i64_type(),
+    }
+}
+fn predicate(op: Relation, ty: IntegerType) -> IntPredicate {
+    match (op, ty.signed()) {
+        (Relation::Equal, _) => IntPredicate::EQ,
+        (Relation::NotEqual, _) => IntPredicate::NE,
+        (Relation::Less, true) => IntPredicate::SLT,
+        (Relation::Less, false) => IntPredicate::ULT,
+        (Relation::LessEqual, true) => IntPredicate::SLE,
+        (Relation::LessEqual, false) => IntPredicate::ULE,
+        (Relation::Greater, true) => IntPredicate::SGT,
+        (Relation::Greater, false) => IntPredicate::UGT,
+        (Relation::GreaterEqual, true) => IntPredicate::SGE,
+        (Relation::GreaterEqual, false) => IntPredicate::UGE,
+    }
 }
 fn local_index(local: Local) -> usize {
     match local {
@@ -192,7 +225,7 @@ struct Generator<'ctx, 'functions> {
     function: FunctionValue<'ctx>,
     functions: &'functions [FunctionValue<'ctx>],
     slots: Vec<Slot<'ctx>>,
-    word: IntType<'ctx>,
+    trap: FunctionValue<'ctx>,
     bit: IntType<'ctx>,
     loops: Vec<LoopBlocks<'ctx>>,
     cleanups: &'functions [Block],
@@ -250,6 +283,7 @@ impl<'ctx> Generator<'ctx, '_> {
                 Statement::CallVoid(call) => {
                     self.call(call)?;
                 }
+                Statement::Cases(case) => self.cases(case)?,
                 Statement::Block(block) => self.block(block)?,
                 Statement::If(condition, yes, no) => {
                     let c = self.boolean(condition)?;
@@ -353,7 +387,7 @@ impl<'ctx> Generator<'ctx, '_> {
                 Ok(Bit(self.builder.build_int_compare(
                     IntPredicate::NE,
                     value.0,
-                    self.word.const_zero(),
+                    value.0.get_type().const_zero(),
                     "while.truth",
                 )?))
             }
@@ -369,17 +403,24 @@ impl<'ctx> Generator<'ctx, '_> {
         let end = self.int(&range.end)?.0;
         let slot = self.int_slot(range.iterator)?.0;
         let (first, last, done_predicate) = match range.direction {
-            Direction::Forward => (start, end, IntPredicate::SGE),
-            Direction::Reverse => (end, start, IntPredicate::SLE),
+            Direction::Forward => (
+                start,
+                end,
+                predicate(Relation::GreaterEqual, range.start.ty()),
+            ),
+            Direction::Reverse => (end, start, predicate(Relation::LessEqual, range.start.ty())),
         };
         let inside = self.label("range.body");
         let step = self.label("range.step");
         let advance = self.label("range.advance");
         let after = self.label("range.end");
         self.builder.build_store(slot, first)?;
-        let nonempty =
-            self.builder
-                .build_int_compare(IntPredicate::SLE, start, end, "range.nonempty")?;
+        let nonempty = self.builder.build_int_compare(
+            predicate(Relation::LessEqual, range.start.ty()),
+            start,
+            end,
+            "range.nonempty",
+        )?;
         self.builder
             .build_conditional_branch(nonempty, inside, after)?;
         self.builder.position_at_end(inside);
@@ -394,7 +435,11 @@ impl<'ctx> Generator<'ctx, '_> {
             self.builder.build_unconditional_branch(step)?;
         }
         self.builder.position_at_end(step);
-        let current = int_value(self.builder.build_load(self.word, slot, "range.current")?)?;
+        let current = int_value(self.builder.build_load(
+            integer_type(self.context, range.iterator.ty()),
+            slot,
+            "range.current",
+        )?)?;
         // Test before advancing: inclusive MAX/MIN endpoints cannot wrap the iterator.
         let done = self
             .builder
@@ -402,7 +447,7 @@ impl<'ctx> Generator<'ctx, '_> {
         self.builder
             .build_conditional_branch(done, after, advance)?;
         self.builder.position_at_end(advance);
-        let one = self.word.const_int(1, false);
+        let one = current.get_type().const_int(1, false);
         let next = match range.direction {
             Direction::Forward => self.builder.build_int_add(current, one, "range.next")?,
             Direction::Reverse => self.builder.build_int_sub(current, one, "range.next")?,
@@ -414,12 +459,19 @@ impl<'ctx> Generator<'ctx, '_> {
     }
     fn call(&mut self, call: &Call) -> Result<CallSiteValue<'ctx>, Error> {
         let mut args: Vec<BasicMetadataValueEnum<'ctx>> = Vec::with_capacity(call.arguments.len());
-        for argument in &call.arguments {
-            args.push(match argument {
-                ValueExpr::Int(e) => self.int(e)?.0.into(),
-                ValueExpr::Bool(e) => self.boolean(e)?.0.into(),
-            });
+        let mut evaluated: Vec<(jai_sema::ParameterId, BasicMetadataValueEnum<'ctx>)> =
+            Vec::with_capacity(call.arguments.len());
+        for (parameter, argument) in &call.arguments {
+            evaluated.push((
+                *parameter,
+                match argument {
+                    ValueExpr::Int(e) => self.int(e)?.0.into(),
+                    ValueExpr::Bool(e) => self.boolean(e)?.0.into(),
+                },
+            ));
         }
+        evaluated.sort_by_key(|(parameter, _)| parameter.index());
+        args.extend(evaluated.into_iter().map(|(_, value)| value));
         let f = self.functions[call.procedure.index()];
         let name = if f.get_type().get_return_type().is_some() {
             "call"
@@ -428,50 +480,68 @@ impl<'ctx> Generator<'ctx, '_> {
         };
         Ok(self.builder.build_call(f, &args, name)?)
     }
-    fn int(&mut self, e: &IntExpr) -> Result<Word<'ctx>, Error> {
-        Ok(Word(match e {
-            IntExpr::Constant(n) => self.word.const_int(*n as u64, true),
-            IntExpr::FromBool(e) => {
-                let v = self.boolean(e)?;
-                self.builder
-                    .build_int_z_extend(v.0, self.word, "cast.int")?
+    fn int(&mut self, e: &IntExpr) -> Result<Number<'ctx>, Error> {
+        let ty = integer_type(self.context, e.ty());
+        Ok(Number(match e.kind() {
+            IntExprKind::Constant(n) => ty.const_int(n.bits(), false),
+            IntExprKind::InvalidCheckedCast => {
+                self.check_cast(Bit(self.bit.const_zero()))?;
+                ty.const_zero()
             }
-            IntExpr::Load(id) => int_value(self.builder.build_load(
-                self.word,
+            IntExprKind::FromBool(e) => {
+                let v = self.boolean(e)?;
+                self.builder.build_int_z_extend(v.0, ty, "cast.int")?
+            }
+            IntExprKind::Load(id) => int_value(self.builder.build_load(
+                ty,
                 self.int_place(*id)?.0,
                 "load.int",
             )?)?,
-            IntExpr::Call(call) => call_int(self.call(call)?)?,
-            IntExpr::Conditional(e) => {
+            IntExprKind::Call(call) => call_int(self.call(call)?)?,
+            IntExprKind::Cast(mode, source) => self.integer_cast(source, e.ty(), *mode)?.0,
+            IntExprKind::Conditional(e) => {
                 let [(yes, yes_end), (no, no_end)] = self.conditional_values(e, Self::int)?;
-                let phi = self.builder.build_phi(self.word, "ifx.int")?;
+                let phi = self.builder.build_phi(ty, "ifx.int")?;
                 phi.add_incoming(&[(&yes.0, yes_end), (&no.0, no_end)]);
                 int_value(phi.as_basic_value())?
             }
-            IntExpr::Negate(e) => {
+            IntExprKind::Negate(e) => {
                 let v = self.int(e)?;
                 self.builder.build_int_neg(v.0, "negate")?
             }
-            IntExpr::Complement(e) => {
+            IntExprKind::Complement(e) => {
                 let v = self.int(e)?;
                 self.builder.build_not(v.0, "complement")?
             }
-            IntExpr::Binary(op, lhs, rhs) => {
+            IntExprKind::Binary(op, lhs, rhs) => {
+                let signed = lhs.ty().signed();
                 let lhs = self.int(lhs)?.0;
                 let rhs = self.int(rhs)?.0;
                 match op {
                     IntOp::Add => self.builder.build_int_add(lhs, rhs, "add")?,
                     IntOp::Subtract => self.builder.build_int_sub(lhs, rhs, "subtract")?,
                     IntOp::Multiply => self.builder.build_int_mul(lhs, rhs, "multiply")?,
-                    IntOp::Divide => self.builder.build_int_signed_div(lhs, rhs, "divide")?,
-                    IntOp::Remainder => self.builder.build_int_signed_rem(lhs, rhs, "remainder")?,
+                    IntOp::Divide => {
+                        if signed {
+                            self.builder.build_int_signed_div(lhs, rhs, "divide")?
+                        } else {
+                            self.builder.build_int_unsigned_div(lhs, rhs, "divide")?
+                        }
+                    }
+                    IntOp::Remainder => {
+                        if signed {
+                            self.builder.build_int_signed_rem(lhs, rhs, "remainder")?
+                        } else {
+                            self.builder.build_int_unsigned_rem(lhs, rhs, "remainder")?
+                        }
+                    }
                     IntOp::BitAnd => self.builder.build_and(lhs, rhs, "and")?,
                     IntOp::BitOr => self.builder.build_or(lhs, rhs, "or")?,
                     IntOp::BitXor => self.builder.build_xor(lhs, rhs, "xor")?,
                     IntOp::ShiftLeft => self.builder.build_left_shift(lhs, rhs, "shift.left")?,
                     IntOp::ShiftRight => {
                         self.builder
-                            .build_right_shift(lhs, rhs, true, "shift.right")?
+                            .build_right_shift(lhs, rhs, signed, "shift.right")?
                     }
                 }
             }
@@ -485,7 +555,7 @@ impl<'ctx> Generator<'ctx, '_> {
                 self.builder.build_int_compare(
                     IntPredicate::NE,
                     v.0,
-                    self.word.const_zero(),
+                    v.0.get_type().const_zero(),
                     "truthiness",
                 )?
             }
@@ -506,16 +576,9 @@ impl<'ctx> Generator<'ctx, '_> {
                 self.builder.build_not(v.0, "not")?
             }
             BoolExpr::CompareInts(op, lhs, rhs) => {
+                let pred = predicate(*op, lhs.ty());
                 let lhs = self.int(lhs)?.0;
                 let rhs = self.int(rhs)?.0;
-                let pred = match op {
-                    Relation::Equal => IntPredicate::EQ,
-                    Relation::NotEqual => IntPredicate::NE,
-                    Relation::Less => IntPredicate::SLT,
-                    Relation::LessEqual => IntPredicate::SLE,
-                    Relation::Greater => IntPredicate::SGT,
-                    Relation::GreaterEqual => IntPredicate::SGE,
-                };
                 self.builder
                     .build_int_compare(pred, lhs, rhs, "compare.int")?
             }
@@ -532,6 +595,60 @@ impl<'ctx> Generator<'ctx, '_> {
             BoolExpr::And(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::And)?.0,
             BoolExpr::Or(lhs, rhs) => self.short_circuit(lhs, rhs, Logical::Or)?.0,
         }))
+    }
+    fn integer_cast(
+        &mut self,
+        source: &IntExpr,
+        target: IntegerType,
+        mode: CastMode,
+    ) -> Result<Number<'ctx>, Error> {
+        let value = self.int(source)?.0;
+        let from = source.ty();
+        if mode == CastMode::Checked && !target.contains(from) {
+            let mut valid = self.bit.const_int(1, false);
+            if from.min() < target.min() {
+                let minimum = value.get_type().const_int(target.min() as u64, false);
+                let lower = self.builder.build_int_compare(
+                    predicate(Relation::GreaterEqual, from),
+                    value,
+                    minimum,
+                    "cast.lower",
+                )?;
+                valid = self.builder.build_and(valid, lower, "cast.valid")?;
+            }
+            if from.max() > target.max() {
+                let maximum = value.get_type().const_int(target.max() as u64, false);
+                let upper = self.builder.build_int_compare(
+                    predicate(Relation::LessEqual, from),
+                    value,
+                    maximum,
+                    "cast.upper",
+                )?;
+                valid = self.builder.build_and(valid, upper, "cast.valid")?;
+            }
+            self.check_cast(Bit(valid))?;
+        }
+        let ty = integer_type(self.context, target);
+        Ok(Number(if from.bits() == target.bits() {
+            value
+        } else if from.bits() > target.bits() {
+            self.builder.build_int_truncate(value, ty, "cast.narrow")?
+        } else if from.signed() {
+            self.builder.build_int_s_extend(value, ty, "cast.signed")?
+        } else {
+            self.builder
+                .build_int_z_extend(value, ty, "cast.unsigned")?
+        }))
+    }
+    fn check_cast(&mut self, valid: Bit<'ctx>) -> Result<(), Error> {
+        let pass = self.label("cast.pass");
+        let fail = self.label("cast.fail");
+        self.builder.build_conditional_branch(valid.0, pass, fail)?;
+        self.builder.position_at_end(fail);
+        self.builder.build_call(self.trap, &[], "")?;
+        self.builder.build_unreachable()?;
+        self.builder.position_at_end(pass);
+        Ok(())
     }
     fn conditional_values<T, V>(
         &mut self,

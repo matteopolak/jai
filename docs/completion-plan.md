@@ -10,11 +10,11 @@ Track supported source semantics and actual builds separately. The current front
 
 | Component | Current coverage | Remaining acceptance |
 | --- | --- | --- |
-| Values and expressions | `s64`, Boolean expressions, casts, constants, scalar `ifx` | Numeric widths, floating point, strings, composite values, block/implicit `ifx`, all operators |
-| Declarations and calls | Scalar procedures, globals, local scopes | Defaults, named/multiple results, overloads, procedure values, nested declarations |
-| Control flow | Conditions, scalar ranges, named exits, deferred cleanup | Cases, array/custom iteration, removal, remaining modifiers |
+| Values and expressions | All integer widths, Boolean expressions, casts, constants, scalar `ifx` | Floating point, strings, composite values, block/implicit `ifx`, remaining operators |
+| Declarations and calls | Scalar procedures, globals, local scopes, constant defaults, named arguments | Runtime defaults, multiple/named results, overloads, procedure values, nested declarations |
+| Control flow | Conditions, scalar ranges, named exits, deferred cleanup, scalar cases/through | Expression/aggregate cases, array/custom iteration, removal, remaining modifiers |
 | Types | Scalar typed IR | Records, enums, unions, arrays, pointers, layouts, recursive types, reflection |
-| Compilation units | One parsed source | Loads, modules, scopes, parameters, dependency-driven lookup and diagnostics |
+| Compilation units | Recursive `#load` with mapped diagnostics | Imports, modules, scopes, parameters, AST-level source IDs |
 | Polymorphism | Not implemented | Generic procedures/types, restrictions, specialization, operators and auto-baking |
 | Compile-time engine | Pure scalar constants | Procedure VM, `#run`, insertion, code values, hooks, workspaces and Compiler API |
 | Native backend | Verified LLVM scalar modules and trusted Clang | Complete ABI, object emission, targets, linking, debug info and optimization |

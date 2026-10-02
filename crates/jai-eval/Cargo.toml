@@ -6,6 +6,7 @@ rust-version.workspace = true
 
 [dependencies]
 jai-source.workspace = true
+jai-types.workspace = true
 jai-syntax.workspace = true
 
 [lints]

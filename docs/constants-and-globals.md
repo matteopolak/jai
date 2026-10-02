@@ -25,7 +25,7 @@ The parser distinguishes procedure definitions from parenthesized constant expre
 
 A dependency worklist resolves constants before runtime statements, supports forward references, caches completed values and diagnoses cycles. Both file and block constants resolve within their lexical scopes. Block constants may appear after a return because they introduce no runtime statement. Names in a deferred body still capture their resolved binding IDs.
 
-`jai-eval` binds the complete constant expression into separate integer and Boolean nodes before evaluating it. Even a short-circuited operand must have valid names and operand types. Evaluation short-circuits execution, so `true || (1 / 0)` is valid, while evaluating `1 / 0` is a diagnostic. The current `s64` arithmetic wraps for addition, subtraction, multiplication and negation, matching the implemented LLVM integer operations. Division overflow and shift counts outside 0–63 are rejected during constant execution; full Jai numeric compatibility remains unverified.
+`jai-eval` binds the complete constant expression into separate integer and Boolean nodes before evaluating it. Even a short-circuited operand must have valid names and operand types. Evaluation short-circuits execution, so `true || (1 / 0)` is valid, while evaluating `1 / 0` is a diagnostic. Fixed-width integer arithmetic wraps to its declared width; untyped literal arithmetic retains checked intermediates until a type constraint materializes it. Division overflow and shift counts outside the selected width are rejected during constant execution. See [integer types](integer-types.md) for coercion, casts and current numeric limits.
 
 Global initializers may reference constants, but mutable storage and procedure calls cannot yet supply compile-time values. Resolution creates distinct integer/Boolean global IDs. Checked place enums distinguish global storage from procedure-local storage. LLVM emits initialized global values and direct typed loads/stores; constants become literal values and cannot be assigned or updated.
 
@@ -37,8 +37,8 @@ The evaluation crate currently handles scalar expressions only. Procedure execut
 
 ## Configuration
 
-No new flags or external packages. The existing `check`, `emit-llvm` and `build` commands accept these declarations. `int`/`s64` and `bool` are the implemented value types. Global procedure-call initializers remain explicit errors.
+No new flags or external packages. The existing `check`, `emit-llvm` and `build` commands accept these declarations. All eight integer widths and `bool` are implemented value types. Global procedure-call initializers remain explicit errors.
 
 ## Dependencies
 
-New internal `jai-eval` crate, `jai-syntax`, `jai-source`, `jai-sema` and `jai-codegen`. `jai-eval` has no LLVM, filesystem, process or networking dependencies. Runtime lowering and constant evaluation share integer/comparison operator enums. Existing Inkwell/LLVM and Divan dependencies are unchanged.
+Internal `jai-types` and `jai-eval` crates, `jai-syntax`, `jai-source`, `jai-sema` and `jai-codegen`. `jai-eval` has no LLVM, filesystem, process or networking dependencies. Runtime lowering and constant evaluation share integer/comparison operator enums. Existing Inkwell/LLVM and Divan dependencies are unchanged.

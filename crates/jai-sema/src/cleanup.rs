@@ -36,8 +36,8 @@ impl Resolver<'_> {
         }
         let transfer = match (self.result, expression) {
             (ReturnType::Void, None) => Transfer::ReturnVoid,
-            (ReturnType::Value(ScalarType::Int), Some(e)) => {
-                Transfer::ReturnInt(self.expr(e)?.int(e.span)?)
+            (ReturnType::Value(ScalarType::Int(ty)), Some(e)) => {
+                Transfer::ReturnInt(self.expr(e)?.int_as(ty, e.span)?)
             }
             (ReturnType::Value(ScalarType::Bool), Some(e)) => {
                 Transfer::ReturnBool(self.expr(e)?.bool(e.span)?)

@@ -28,7 +28,9 @@ impl Resolver<'_> {
             syntax::WhileCondition::Binding { name, initializer } => {
                 let value = self.expr(initializer)?.value(initializer.span)?;
                 let condition = match value {
-                    ValueExpr::Int(e) => LoopCondition::BoundInt(self.declare_int(*name)?, e),
+                    ValueExpr::Int(e) => {
+                        LoopCondition::BoundInt(self.declare_int(*name, e.ty())?, e)
+                    }
                     ValueExpr::Bool(e) => LoopCondition::BoundBool(self.declare_bool(*name)?, e),
                 };
                 (condition, Some(*name))
@@ -49,10 +51,13 @@ impl Resolver<'_> {
         range: &syntax::RangeLoop,
     ) -> Result<Statement, Diagnostic> {
         // Resolve endpoints before introducing the iterator; outer names stay visible.
-        let start = self.expr(&range.start)?.int(range.start.span)?;
-        let end = self.expr(&range.end)?.int(range.end.span)?;
+        let (start, end) = Self::integer_pair(
+            self.expr(&range.start)?,
+            self.expr(&range.end)?,
+            range.start.span,
+        )?;
         self.scopes.push(HashMap::new());
-        let iterator = self.declare_int(range.iterator)?;
+        let iterator = self.declare_int(range.iterator, start.ty())?;
         let id = self.enter_loop(Some(range.iterator));
         let body = self.block(&range.body, true)?;
         self.loops.pop();

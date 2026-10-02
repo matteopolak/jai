@@ -150,6 +150,7 @@ name = "jai-cli"
 version = "0.1.0"
 dependencies = [
  "jai-codegen",
+ "jai-driver",
  "jai-lexer",
  "jai-sema",
  "jai-source",
@@ -166,11 +167,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "jai-driver"
+version = "0.1.0"
+dependencies = [
+ "jai-lexer",
+ "jai-sema",
+ "jai-source",
+ "jai-syntax",
+]
+
+[[package]]
 name = "jai-eval"
 version = "0.1.0"
 dependencies = [
  "jai-source",
  "jai-syntax",
+ "jai-types",
 ]
 
 [[package]]
@@ -199,7 +211,12 @@ version = "0.1.0"
 dependencies = [
  "jai-lexer",
  "jai-source",
+ "jai-types",
 ]
+
+[[package]]
+name = "jai-types"
+version = "0.1.0"
 
 [[package]]
 name = "lazy_static"

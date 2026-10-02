@@ -16,7 +16,7 @@ main :: () -> int {
 
 ## How it works
 
-The parser records the condition, true expression and optional false expression. Resolution converts the condition to a Boolean using scalar truthiness and constructs either an integer conditional or a Boolean conditional. Both arms must supply the same non-void type, even when a constant condition would skip one arm. An omitted false arm becomes `0` or `false` according to the result type.
+The parser records the condition, true expression and optional false expression. Resolution converts the condition to a Boolean using scalar truthiness and constructs either an integer conditional or a Boolean conditional. Both arms must supply compatible non-void types with range-preserving integer coercions, even when a constant condition would skip one arm. An omitted false arm becomes `0` or `false` according to the result type.
 
 The pure constant evaluator binds both arms before executing only the selected one. Constant dependencies from all arms participate in name resolution and cycle detection. LLVM lowering evaluates the condition once, emits separate branch blocks and joins their values with a correctly typed PHI. Nested conditional and short-circuit expressions contribute their actual final blocks to the PHI.
 
@@ -30,7 +30,7 @@ Add rejection tests for incompatible or void arms and behavior tests for side ef
 
 ## Configuration
 
-There are no feature flags. The current result types are the compiler's `int`/`s64` and `bool` subset. `then` may be omitted when the two expressions parse unambiguously; parentheses can separate nested values. An `else` belongs to the nearest unmatched `ifx`.
+There are no feature flags. The current result types are the compiler's eight integer widths and `bool` subset. `then` may be omitted when the two expressions parse unambiguously; parentheses can separate nested values. An `else` belongs to the nearest unmatched `ifx`.
 
 ## Dependencies
 

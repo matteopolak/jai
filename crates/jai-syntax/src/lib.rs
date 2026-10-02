@@ -1,17 +1,9 @@
 //! Parsing converts raw tokens into domain operators, names and signatures.
-use jai_lexer::{Keyword, Kind, Punct, Token, lex};
+mod numeric_literals;
+use jai_lexer::{Directive, Keyword, Kind, Punct, Token, lex};
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ScalarType {
-    Int,
-    Bool,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ReturnType {
-    Void,
-    Value(ScalarType),
-}
+pub use jai_types::{CastMode, IntegerType, ReturnType, ScalarType};
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum UnaryOp {
     Positive,
@@ -106,7 +98,20 @@ impl Module {
 #[derive(Clone, Debug)]
 pub struct Parameter {
     pub name: Symbol,
-    pub ty: ScalarType,
+    pub binding: ParameterBinding,
+}
+#[derive(Clone, Debug)]
+pub enum ParameterBinding {
+    Required(ScalarType),
+    Defaulted {
+        ty: Option<ScalarType>,
+        expression: Expression,
+    },
+}
+#[derive(Clone, Debug)]
+pub struct CallArgument {
+    pub name: Option<Symbol>,
+    pub value: Expression,
 }
 #[derive(Clone, Debug)]
 pub struct Procedure {
@@ -178,6 +183,19 @@ pub struct RangeLoop {
     pub direction: Direction,
     pub body: Vec<Statement>,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CaseOperator {
+    Equal,
+    NotEqual,
+}
+#[derive(Clone, Debug)]
+pub struct CaseStatement {
+    pub value: Expression,
+    pub operator: CaseOperator,
+    pub arms: Vec<(Expression, Vec<Statement>, bool)>,
+    pub complete: bool,
+    pub default: Option<Vec<Statement>>,
+}
 #[derive(Clone, Debug)]
 pub enum Statement {
     Declare(Declaration),
@@ -187,6 +205,7 @@ pub enum Statement {
     Return(Option<Expression>),
     Expression(Expression),
     If(Expression, Vec<Statement>, Vec<Statement>),
+    Cases(CaseStatement),
     While(WhileCondition, Vec<Statement>),
     Range(RangeLoop),
     Jump {
@@ -204,12 +223,12 @@ pub struct Expression {
 }
 #[derive(Clone, Debug)]
 pub enum ExpressionKind {
-    Integer(i64),
+    Integer(i128),
     Bool(bool),
     Name(Symbol),
-    Call(Symbol, Vec<Expression>),
+    Call(Symbol, Vec<CallArgument>),
     Unary(UnaryOp, Box<Expression>),
-    Cast(ScalarType, Box<Expression>),
+    Cast(CastMode, ScalarType, Box<Expression>),
     Binary(BinaryOp, Box<Expression>, Box<Expression>),
     Conditional(ConditionalExpression),
 }
@@ -309,9 +328,16 @@ impl Parser<'_> {
     }
     fn scalar_type(&mut self) -> Result<ScalarType, Diagnostic> {
         let ty = match self.text() {
-            "int" | "s64" => ScalarType::Int,
+            "int" | "s64" => ScalarType::Int(IntegerType::S64),
+            "s8" => ScalarType::Int(IntegerType::S8),
+            "s16" => ScalarType::Int(IntegerType::S16),
+            "s32" => ScalarType::Int(IntegerType::S32),
+            "u8" => ScalarType::Int(IntegerType::U8),
+            "u16" => ScalarType::Int(IntegerType::U16),
+            "u32" => ScalarType::Int(IntegerType::U32),
+            "u64" => ScalarType::Int(IntegerType::U64),
             "bool" => ScalarType::Bool,
-            _ => return Err(self.error("this compiler stage supports int/s64/bool only")),
+            _ => return Err(self.error("expected a supported scalar type")),
         };
         if self.token().kind != Kind::Ident {
             return Err(self.error("expected type"));
@@ -401,11 +427,24 @@ impl Parser<'_> {
         if !self.take(Punct::CloseParen) {
             loop {
                 let name = self.name()?;
-                self.need(Punct::Colon)?;
-                parameters.push(Parameter {
-                    name,
-                    ty: self.scalar_type()?,
-                });
+                let binding = if self.take(Punct::Infer) {
+                    ParameterBinding::Defaulted {
+                        ty: None,
+                        expression: self.expression(0)?,
+                    }
+                } else {
+                    self.need(Punct::Colon)?;
+                    let ty = self.scalar_type()?;
+                    if self.take(Punct::Assign) {
+                        ParameterBinding::Defaulted {
+                            ty: Some(ty),
+                            expression: self.expression(0)?,
+                        }
+                    } else {
+                        ParameterBinding::Required(ty)
+                    }
+                };
+                parameters.push(Parameter { name, binding });
                 if self.take(Punct::CloseParen) {
                     break;
                 }
@@ -468,7 +507,24 @@ impl Parser<'_> {
             return Ok(Statement::Return(expr));
         }
         if self.keyword(Keyword::If) {
+            let complete = self.token().kind == Kind::Directive(Directive::Complete);
+            if complete {
+                self.at += 1;
+            }
             let cond = self.expression(0)?;
+            if self.is(Punct::OpenBrace) {
+                let operator = match self.tokens[self.at - 1].kind {
+                    Kind::Punctuation(Punct::Equal) => Some(CaseOperator::Equal),
+                    Kind::Punctuation(Punct::NotEqual) => Some(CaseOperator::NotEqual),
+                    _ => None,
+                };
+                if let Some(operator) = operator {
+                    return self.case_statement(cond, operator, complete);
+                }
+            }
+            if complete {
+                return Err(self.error("#complete requires if-case"));
+            }
             let yes = self.body()?;
             let no = if self.keyword(Keyword::Else) {
                 self.body()?
@@ -555,6 +611,64 @@ impl Parser<'_> {
         self.need(Punct::Semicolon)?;
         Ok(Statement::Expression(expr))
     }
+    fn case_statement(
+        &mut self,
+        value: Expression,
+        operator: CaseOperator,
+        complete: bool,
+    ) -> Result<Statement, Diagnostic> {
+        self.need(Punct::OpenBrace)?;
+        let mut arms = Vec::new();
+        let mut default = None;
+        while !self.take(Punct::CloseBrace) {
+            if !self.keyword(Keyword::Case) {
+                return Err(self.error("expected case label"));
+            }
+            if default.is_some() {
+                return Err(self.error("default case must be last"));
+            }
+            let label = if self.is(Punct::Semicolon) {
+                None
+            } else {
+                Some(self.expression(0)?)
+            };
+            self.need(Punct::Semicolon)?;
+            let mut body = Vec::new();
+            let mut through = false;
+            while !self.is(Punct::CloseBrace) && self.token().kind != Kind::Keyword(Keyword::Case) {
+                if self.token().kind == Kind::Eof {
+                    return Err(self.error("unterminated case block"));
+                }
+                if self.token().kind == Kind::Directive(Directive::Through) {
+                    self.at += 1;
+                    self.need(Punct::Semicolon)?;
+                    through = true;
+                    if !self.is(Punct::CloseBrace)
+                        && self.token().kind != Kind::Keyword(Keyword::Case)
+                    {
+                        return Err(self.error("#through must be the last case statement"));
+                    }
+                    break;
+                }
+                body.push(self.statement()?);
+            }
+            if let Some(label) = label {
+                arms.push((label, body, through));
+            } else {
+                if through {
+                    return Err(self.error("default case cannot #through"));
+                }
+                default = Some(body);
+            }
+        }
+        Ok(Statement::Cases(CaseStatement {
+            value,
+            operator,
+            arms,
+            default,
+            complete,
+        }))
+    }
     fn expression(&mut self, minimum: u8) -> Result<Expression, Diagnostic> {
         let token = self.token();
         let span = token.span;
@@ -571,6 +685,9 @@ impl Parser<'_> {
             e
         } else if self.keyword(Keyword::Ifx) {
             let condition = Box::new(self.expression(0)?);
+            if self.is(Punct::OpenBrace) {
+                return Err(self.error("ifx case expressions are not implemented"));
+            }
             self.keyword(Keyword::Then);
             if self.token().kind == Kind::Keyword(Keyword::Else) {
                 return Err(self.error("implicit then values in ifx are not implemented yet"));
@@ -591,13 +708,22 @@ impl Parser<'_> {
                 }),
             }
         } else if self.keyword(Keyword::Cast) {
+            let mode = if self.take(Punct::Comma) {
+                if self.token().kind != Kind::Ident || self.text() != "no_check" {
+                    return Err(self.error("expected no_check cast modifier"));
+                }
+                self.at += 1;
+                CastMode::Unchecked
+            } else {
+                CastMode::Checked
+            };
             self.need(Punct::OpenParen)?;
             let ty = self.scalar_type()?;
             self.need(Punct::CloseParen)?;
             let value = self.expression(21)?;
             Expression {
                 span: Span::new(span.start, value.span.end),
-                kind: ExpressionKind::Cast(ty, Box::new(value)),
+                kind: ExpressionKind::Cast(mode, ty, Box::new(value)),
             }
         } else if let Some(op) = unary {
             self.at += 1;
@@ -607,19 +733,12 @@ impl Parser<'_> {
                 kind: ExpressionKind::Unary(op, Box::new(rhs)),
             }
         } else if token.kind == Kind::Number {
-            let text = self.text().replace('_', "");
+            let value = numeric_literals::integer(self.text())
+                .map_err(|error| Diagnostic::new(span, error.to_string()))?;
             self.at += 1;
-            let value = if let Some(n) = text.strip_prefix("0x") {
-                i64::from_str_radix(n, 16)
-            } else if let Some(n) = text.strip_prefix("0b") {
-                i64::from_str_radix(n, 2)
-            } else {
-                text.parse()
-            }
-            .map_err(|_| Diagnostic::new(span, "expected an integer fitting s64"))?;
             Expression {
                 span,
-                kind: ExpressionKind::Integer(value),
+                kind: ExpressionKind::Integer(i128::from(value)),
             }
         } else if self.keyword(Keyword::True) {
             Expression {
@@ -648,7 +767,17 @@ impl Parser<'_> {
                 let mut args = Vec::new();
                 if !self.take(Punct::CloseParen) {
                     loop {
-                        args.push(self.expression(0)?);
+                        let name = if self.named_prefix(Punct::Assign) {
+                            let name = self.name()?;
+                            self.need(Punct::Assign)?;
+                            Some(name)
+                        } else {
+                            None
+                        };
+                        args.push(CallArgument {
+                            name,
+                            value: self.expression(0)?,
+                        });
                         if self.take(Punct::CloseParen) {
                             break;
                         }
@@ -671,6 +800,9 @@ impl Parser<'_> {
                 break;
             }
             self.at += 1;
+            if self.is(Punct::OpenBrace) && matches!(op, BinaryOp::Equal | BinaryOp::NotEqual) {
+                break;
+            }
             let rhs = self.expression(precedence + 1)?;
             lhs = Expression {
                 span: Span::new(lhs.span.start, rhs.span.end),
@@ -781,6 +913,24 @@ mod tests {
             "main :: ()->int { return ifx true then 1 else; }",
         ] {
             assert!(parse(source).is_err(), "{source}");
+        }
+    }
+}
+
+#[cfg(test)]
+mod case_parser_tests {
+    #[test]
+    fn rejects_invalid_case_structure_and_expression_cases() {
+        for source in [
+            "main :: () { if 1 == { case; case 1; } }",
+            "main :: () { if 1 == { case 1; #through; n := 1; case; } }",
+            "main :: () { if 1 == { case; #through; } }",
+            "main :: () { if 1 == { n := 1; } }",
+            "main :: () { if 1 == { case 1;",
+            "main :: () { if #complete true { } }",
+            "main :: ()->int { return ifx 1 == { case 1; 2; case; 3; }; }",
+        ] {
+            assert!(super::parse(source).is_err(), "{source}");
         }
     }
 }
