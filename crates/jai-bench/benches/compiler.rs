@@ -190,6 +190,36 @@ fn conditional_pipeline(bencher: Bencher, procedures: usize) {
             jai_codegen::emit(&program).unwrap()
         });
 }
+fn integer_source(procedures: usize) -> String {
+    use std::fmt::Write;
+    let mut source = String::new();
+    for n in 0..procedures {
+        writeln!(source,"f{n} :: (value:u64, enabled:bool=true)->int {{ small:=cast(u8)(value%200); if #complete enabled == {{ case true; return ifx small>100 then cast(int)small else cast(int)small+1; case false; return cast(int)cast,no_check(s8)small; }} }}").unwrap();
+    }
+    source.push_str("main :: ()->int { return f0(enabled=false,value=42); }");
+    source
+}
+#[divan::bench(args=[4,64,1024])]
+fn integer_lower_llvm(bencher: Bencher, procedures: usize) {
+    let source = integer_source(procedures);
+    let module = jai_syntax::parse(&source).unwrap();
+    let program = jai_sema::resolve(&module).unwrap();
+    let context = jai_codegen::Context::create();
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| jai_codegen::lower(&context, divan::black_box(&program)).unwrap());
+}
+#[divan::bench(args=[4,64,1024])]
+fn integer_pipeline(bencher: Bencher, procedures: usize) {
+    let source = integer_source(procedures);
+    bencher
+        .counter(BytesCount::new(source.len()))
+        .bench_local(|| {
+            let module = jai_syntax::parse(divan::black_box(&source)).unwrap();
+            let program = jai_sema::resolve(&module).unwrap();
+            jai_codegen::emit(&program).unwrap()
+        });
+}
 fn corpus(path: &Path, out: &mut Vec<String>) {
     if !path.exists() {
         return;

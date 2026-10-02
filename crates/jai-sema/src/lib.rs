@@ -1,12 +1,17 @@
 //! Resolve names and construct a typed program before code generation.
+mod calls;
+mod cases;
 mod cleanup;
+pub use cases::{CaseArm, Cases};
 mod declarations;
 mod loops;
-use jai_eval::Value as ConstantValue;
 use jai_eval::operators::Operator;
 pub use jai_eval::operators::{Equality, IntOp, Relation};
+use jai_eval::{Integer as IntegerValue, Value as ConstantValue};
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
-use jai_syntax::{self as syntax, BinaryOp, ReturnType, ScalarType, UnaryOp};
+use jai_syntax::{
+    self as syntax, BinaryOp, CastMode, IntegerType, ReturnType, ScalarType, UnaryOp,
+};
 use std::collections::HashMap;
 
 macro_rules! id {
@@ -21,12 +26,32 @@ macro_rules! id {
     };
 }
 id!(ProcedureId);
-id!(IntLocal);
+id!(ParameterId);
+
 id!(BoolLocal);
 id!(LoopId);
 id!(CleanupId);
-id!(IntGlobal);
+
 id!(BoolGlobal);
+macro_rules! integer_id {
+    ($name:ident) => {
+        #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+        pub struct $name {
+            index: usize,
+            ty: IntegerType,
+        }
+        impl $name {
+            pub fn index(self) -> usize {
+                self.index
+            }
+            pub fn ty(self) -> IntegerType {
+                self.ty
+            }
+        }
+    };
+}
+integer_id!(IntLocal);
+integer_id!(IntGlobal);
 #[derive(Clone, Copy, Debug)]
 pub enum Local {
     Int(IntLocal),
@@ -36,6 +61,14 @@ pub enum Local {
 pub enum IntPlace {
     Local(IntLocal),
     Global(IntGlobal),
+}
+impl IntPlace {
+    pub fn ty(self) -> IntegerType {
+        match self {
+            Self::Local(id) => id.ty(),
+            Self::Global(id) => id.ty(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug)]
 pub enum BoolPlace {
@@ -62,8 +95,14 @@ enum Binding {
 }
 #[derive(Clone, Copy, Debug)]
 pub enum Global {
-    Int { id: IntGlobal, initializer: i64 },
-    Bool { id: BoolGlobal, initializer: bool },
+    Int {
+        id: IntGlobal,
+        initializer: IntegerValue,
+    },
+    Bool {
+        id: BoolGlobal,
+        initializer: bool,
+    },
 }
 #[derive(Clone, Copy, Debug)]
 pub enum EntryPoint {
@@ -116,6 +155,7 @@ pub enum Statement {
     DiscardBool(BoolExpr),
     CallVoid(Call),
     If(BoolExpr, Block, Block),
+    Cases(cases::Cases),
     While {
         id: LoopId,
         condition: LoopCondition,
@@ -153,9 +193,33 @@ pub struct RangeLoop {
     pub body: Block,
 }
 #[derive(Debug)]
-pub enum IntExpr {
-    Constant(i64),
+pub struct IntExpr {
+    ty: IntegerType,
+    kind: IntExprKind,
+}
+impl IntExpr {
+    fn new(ty: IntegerType, kind: IntExprKind) -> Self {
+        Self { ty, kind }
+    }
+    pub fn ty(&self) -> IntegerType {
+        self.ty
+    }
+    pub fn kind(&self) -> &IntExprKind {
+        &self.kind
+    }
+    fn constant(n: IntegerValue) -> Self {
+        Self::new(n.ty(), IntExprKind::Constant(n))
+    }
+    fn load(place: IntPlace) -> Self {
+        Self::new(place.ty(), IntExprKind::Load(place))
+    }
+}
+#[derive(Debug)]
+pub enum IntExprKind {
+    Constant(IntegerValue),
+    InvalidCheckedCast,
     FromBool(Box<BoolExpr>),
+    Cast(CastMode, Box<IntExpr>),
     Load(IntPlace),
     Call(Call),
     Negate(Box<IntExpr>),
@@ -190,15 +254,22 @@ pub enum ValueExpr {
 #[derive(Debug)]
 pub struct Call {
     pub procedure: ProcedureId,
-    pub arguments: Vec<ValueExpr>,
+    pub arguments: Vec<(ParameterId, ValueExpr)>,
 }
 
+struct ParameterSignature {
+    name: Symbol,
+    ty: ScalarType,
+    default: Option<ConstantValue>,
+}
 struct Signature {
     id: ProcedureId,
-    parameters: Vec<ScalarType>,
+    parameters: Vec<ParameterSignature>,
     result: ReturnType,
 }
 enum Expr {
+    Literal(i128),
+    WeakConditional(Box<Conditional<Expr>>),
     Int(IntExpr),
     Bool(BoolExpr),
     Void(Call),
@@ -207,7 +278,35 @@ impl Expr {
     fn int(self, span: Span) -> Result<IntExpr, Diagnostic> {
         match self {
             Self::Int(e) => Ok(e),
+            Self::Literal(n) => Self::Literal(n).int_as(IntegerType::S64, span),
+            Self::WeakConditional(e) => Self::WeakConditional(e).int_as(IntegerType::S64, span),
             _ => Err(Diagnostic::new(span, "expected int value")),
+        }
+    }
+    fn int_as(self, ty: IntegerType, span: Span) -> Result<IntExpr, Diagnostic> {
+        match self {
+            Self::WeakConditional(e) => Ok(IntExpr::new(
+                ty,
+                IntExprKind::Conditional(Box::new(Conditional {
+                    condition: e.condition,
+                    then_value: e.then_value.int_as(ty, span)?,
+                    else_value: e.else_value.int_as(ty, span)?,
+                })),
+            )),
+            Self::Literal(n) => IntegerValue::checked(ty, n)
+                .map(IntExpr::constant)
+                .ok_or_else(|| {
+                    Diagnostic::new(span, "integer constant is out of range for its target type")
+                }),
+            Self::Int(e) if e.ty() == ty => Ok(e),
+            Self::Int(e) if ty.contains(e.ty()) => Ok(IntExpr::new(
+                ty,
+                IntExprKind::Cast(CastMode::Unchecked, Box::new(e)),
+            )),
+            _ => Err(Diagnostic::new(
+                span,
+                "implicit integer conversion does not preserve the source type's entire range",
+            )),
         }
     }
     fn bool(self, span: Span) -> Result<BoolExpr, Diagnostic> {
@@ -219,6 +318,8 @@ impl Expr {
     fn value(self, span: Span) -> Result<ValueExpr, Diagnostic> {
         match self {
             Self::Int(e) => Ok(ValueExpr::Int(e)),
+            Self::Literal(n) => Self::Literal(n).int(span).map(ValueExpr::Int),
+            Self::WeakConditional(e) => Self::WeakConditional(e).int(span).map(ValueExpr::Int),
             Self::Bool(e) => Ok(ValueExpr::Bool(e)),
             Self::Void(_) => Err(Diagnostic::new(span, "void call cannot supply a value")),
         }
@@ -227,7 +328,54 @@ impl Expr {
         match self {
             Self::Bool(e) => Ok(e),
             Self::Int(e) => Ok(BoolExpr::FromInt(Box::new(e))),
+            Self::Literal(n) => Ok(BoolExpr::Constant(n != 0)),
+            Self::WeakConditional(e) => Ok(BoolExpr::Conditional(Box::new(Conditional {
+                condition: e.condition,
+                then_value: e.then_value.condition(span)?,
+                else_value: e.else_value.condition(span)?,
+            }))),
             Self::Void(_) => Err(Diagnostic::new(span, "void call cannot supply a condition")),
+        }
+    }
+    fn weak_integer(&self) -> bool {
+        matches!(self, Self::Literal(_) | Self::WeakConditional(_))
+    }
+    fn cast_integer(
+        self,
+        ty: IntegerType,
+        mode: CastMode,
+        span: Span,
+    ) -> Result<IntExpr, Diagnostic> {
+        Ok(match self {
+            Self::Literal(n) => match mode {
+                CastMode::Unchecked => IntExpr::constant(IntegerValue::wrapping(ty, n)),
+                CastMode::Checked => IntegerValue::checked(ty, n)
+                    .map(IntExpr::constant)
+                    .unwrap_or_else(|| IntExpr::new(ty, IntExprKind::InvalidCheckedCast)),
+            },
+            Self::WeakConditional(e) => IntExpr::new(
+                ty,
+                IntExprKind::Conditional(Box::new(Conditional {
+                    condition: e.condition,
+                    then_value: e.then_value.cast_integer(ty, mode, span)?,
+                    else_value: e.else_value.cast_integer(ty, mode, span)?,
+                })),
+            ),
+            Self::Int(e) => IntExpr::new(ty, IntExprKind::Cast(mode, Box::new(e))),
+            Self::Bool(e) => IntExpr::new(ty, IntExprKind::FromBool(Box::new(e))),
+            Self::Void(_) => {
+                return Err(Diagnostic::new(
+                    span,
+                    "void call cannot be cast to an integer",
+                ));
+            }
+        })
+    }
+    fn integer_type(&self, span: Span) -> Result<Option<IntegerType>, Diagnostic> {
+        match self {
+            Self::Int(e) => Ok(Some(e.ty())),
+            Self::Literal(_) | Self::WeakConditional(_) => Ok(None),
+            _ => Err(Diagnostic::new(span, "expected integer operands")),
         }
     }
 }
@@ -239,7 +387,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
     for (index, p) in module.procedures().iter().enumerate() {
         let signature = Signature {
             id: ProcedureId(index),
-            parameters: p.parameters.iter().map(|p| p.ty).collect(),
+            parameters: calls::parameters(p, &global_bindings)?,
             result: p.return_type,
         };
         if signatures.insert(p.name, signature).is_some() {
@@ -262,8 +410,8 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
     }
     let entry = match main.result {
         ReturnType::Void => EntryPoint::Void(main.id),
-        ReturnType::Value(ScalarType::Int) => EntryPoint::Int(main.id),
-        ReturnType::Value(ScalarType::Bool) => {
+        ReturnType::Value(ScalarType::Int(IntegerType::S64)) => EntryPoint::Int(main.id),
+        ReturnType::Value(_) => {
             return Err(Diagnostic::new(
                 Span::default(),
                 "main must return int or void",
@@ -287,7 +435,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
             cleanup_context: None,
         };
         let mut parameters = Vec::new();
-        for param in &p.parameters {
+        for param in &signatures[&p.name].parameters {
             parameters.push(r.declare(param.name, param.ty)?);
         }
         let body = r.block(&p.body, false)?;
@@ -370,8 +518,11 @@ impl Resolver<'_> {
         self.locals.push(local);
         Ok(())
     }
-    fn declare_int(&mut self, name: Symbol) -> Result<IntLocal, Diagnostic> {
-        let id = IntLocal(self.locals.len());
+    fn declare_int(&mut self, name: Symbol, ty: IntegerType) -> Result<IntLocal, Diagnostic> {
+        let id = IntLocal {
+            index: self.locals.len(),
+            ty,
+        };
         self.bind(name, Local::Int(id))?;
         Ok(id)
     }
@@ -382,13 +533,13 @@ impl Resolver<'_> {
     }
     fn declare(&mut self, name: Symbol, ty: ScalarType) -> Result<Local, Diagnostic> {
         match ty {
-            ScalarType::Int => self.declare_int(name).map(Local::Int),
+            ScalarType::Int(ty) => self.declare_int(name, ty).map(Local::Int),
             ScalarType::Bool => self.declare_bool(name).map(Local::Bool),
         }
     }
     fn store(&self, local: Storage, value: Expr) -> Result<Statement, Diagnostic> {
         Ok(match local {
-            Storage::Int(id) => Statement::StoreInt(id, value.int(self.span)?),
+            Storage::Int(id) => Statement::StoreInt(id, value.int_as(id.ty(), self.span)?),
             Storage::Bool(id) => Statement::StoreBool(id, value.bool(self.span)?),
         })
     }
@@ -423,6 +574,7 @@ impl Resolver<'_> {
                 {
                     Flow::Terminates
                 }
+                Statement::Cases(c) => c.flow,
                 Statement::Block(b) => b.flow,
                 _ => Flow::FallsThrough,
             };
@@ -450,7 +602,7 @@ impl Resolver<'_> {
                     syntax::Declaration::Inferred { name, initializer } => {
                         let value = self.expr(initializer)?.value(initializer.span)?;
                         let (ty, value) = match value {
-                            ValueExpr::Int(e) => (ScalarType::Int, Expr::Int(e)),
+                            ValueExpr::Int(e) => (ScalarType::Int(e.ty()), Expr::Int(e)),
                             ValueExpr::Bool(e) => (ScalarType::Bool, Expr::Bool(e)),
                         };
                         (*name, ty, value)
@@ -463,7 +615,9 @@ impl Resolver<'_> {
                         let value = match initializer {
                             Some(e) => self.expr(e)?,
                             None => match ty {
-                                ScalarType::Int => Expr::Int(IntExpr::Constant(0)),
+                                ScalarType::Int(ty) => {
+                                    Expr::Int(IntExpr::constant(IntegerValue::wrapping(*ty, 0)))
+                                }
                                 ScalarType::Bool => Expr::Bool(BoolExpr::Constant(false)),
                             },
                         };
@@ -481,7 +635,7 @@ impl Resolver<'_> {
             syntax::Statement::Update(name, op, e) => {
                 let local = self.storage(*name)?;
                 let lhs = match local {
-                    Storage::Int(id) => Expr::Int(IntExpr::Load(id)),
+                    Storage::Int(id) => Expr::Int(IntExpr::load(id)),
                     Storage::Bool(id) => Expr::Bool(BoolExpr::Load(id)),
                 };
                 let value = self.binary(*op, lhs, self.expr(e)?, e.span)?;
@@ -492,6 +646,10 @@ impl Resolver<'_> {
                 unreachable!("declarations are handled by block resolution")
             }
             syntax::Statement::Expression(e) => match self.expr(e)? {
+                Expr::Literal(n) => Statement::DiscardInt(Expr::Literal(n).int(e.span)?),
+                Expr::WeakConditional(value) => {
+                    Statement::DiscardInt(Expr::WeakConditional(value).int(e.span)?)
+                }
                 Expr::Int(e) => Statement::DiscardInt(e),
                 Expr::Bool(e) => Statement::DiscardBool(e),
                 Expr::Void(c) => Statement::CallVoid(c),
@@ -501,6 +659,7 @@ impl Resolver<'_> {
                 self.block(yes, true)?,
                 self.block(no, true)?,
             ),
+            syntax::Statement::Cases(c) => self.resolve_cases(c)?,
             syntax::Statement::While(condition, body) => self.resolve_while(condition, body)?,
             syntax::Statement::Range(range) => self.resolve_range(range)?,
             syntax::Statement::Jump { kind, target, span } => {
@@ -512,158 +671,156 @@ impl Resolver<'_> {
     fn expr(&self, expr: &syntax::Expression) -> Result<Expr, Diagnostic> {
         let span = expr.span;
         Ok(match &expr.kind {
-            syntax::ExpressionKind::Integer(n) => Expr::Int(IntExpr::Constant(*n)),
+            syntax::ExpressionKind::Integer(n) => Expr::Literal(*n),
             syntax::ExpressionKind::Bool(b) => Expr::Bool(BoolExpr::Constant(*b)),
             syntax::ExpressionKind::Name(name) => match self.lookup(*name)? {
-                Binding::Storage(Storage::Int(id)) => Expr::Int(IntExpr::Load(id)),
+                Binding::Storage(Storage::Int(id)) => Expr::Int(IntExpr::load(id)),
                 Binding::Storage(Storage::Bool(id)) => Expr::Bool(BoolExpr::Load(id)),
-                Binding::Constant(ConstantValue::Int(n)) => Expr::Int(IntExpr::Constant(n)),
-                Binding::Constant(ConstantValue::Bool(b)) => Expr::Bool(BoolExpr::Constant(b)),
+                Binding::Constant(value) => Self::constant(value),
             },
-            syntax::ExpressionKind::Call(name, args) => {
-                if self.lookup_optional(*name).is_some() {
-                    return Err(Diagnostic::new(span, "scalar value is not a procedure"));
-                }
-                let signature = self.signatures.get(name).ok_or_else(|| {
-                    Diagnostic::new(
-                        span,
-                        format!("unknown procedure '{}'", self.symbols.name(*name)),
-                    )
-                })?;
-                if args.len() != signature.parameters.len() {
-                    return Err(Diagnostic::new(span, "wrong argument count"));
-                }
-                let arguments = args
-                    .iter()
-                    .zip(&signature.parameters)
-                    .map(|(e, ty)| {
-                        let e = self.expr(e)?;
-                        Ok(match ty {
-                            ScalarType::Int => ValueExpr::Int(e.int(span)?),
-                            ScalarType::Bool => ValueExpr::Bool(e.bool(span)?),
-                        })
-                    })
-                    .collect::<Result<_, Diagnostic>>()?;
-                let call = Call {
-                    procedure: signature.id,
-                    arguments,
-                };
-                match signature.result {
-                    ReturnType::Void => Expr::Void(call),
-                    ReturnType::Value(ScalarType::Int) => Expr::Int(IntExpr::Call(call)),
-                    ReturnType::Value(ScalarType::Bool) => Expr::Bool(BoolExpr::Call(call)),
-                }
-            }
+            syntax::ExpressionKind::Call(name, args) => self.resolve_call(*name, args, span)?,
             syntax::ExpressionKind::Conditional(e) => {
                 let condition = self.expr(&e.condition)?.condition(e.condition.span)?;
-                let then_value = self.expr(&e.then_value)?;
-                let else_value = e.else_value.as_ref().map(|e| self.expr(e)).transpose()?;
-                match then_value {
-                    Expr::Int(then_value) => {
-                        let else_value = match else_value {
-                            Some(e) => e.int(span)?,
-                            None => IntExpr::Constant(0),
-                        };
-                        Expr::Int(IntExpr::Conditional(Box::new(Conditional {
-                            condition,
-                            then_value,
-                            else_value,
-                        })))
-                    }
-                    Expr::Bool(then_value) => {
-                        let else_value = match else_value {
+                let yes = self.expr(&e.then_value)?;
+                let no = e.else_value.as_ref().map(|e| self.expr(e)).transpose()?;
+                match yes {
+                    Expr::Bool(yes) => Expr::Bool(BoolExpr::Conditional(Box::new(Conditional {
+                        condition,
+                        then_value: yes,
+                        else_value: match no {
                             Some(e) => e.bool(span)?,
                             None => BoolExpr::Constant(false),
-                        };
-                        Expr::Bool(BoolExpr::Conditional(Box::new(Conditional {
-                            condition,
-                            then_value,
-                            else_value,
-                        })))
-                    }
+                        },
+                    }))),
                     Expr::Void(_) => {
                         return Err(Diagnostic::new(
                             span,
                             "void call cannot supply an ifx result",
                         ));
                     }
+                    yes => {
+                        let no = no.unwrap_or(Expr::Literal(0));
+                        if yes.weak_integer() && no.weak_integer() {
+                            return Ok(Expr::WeakConditional(Box::new(Conditional {
+                                condition,
+                                then_value: yes,
+                                else_value: no,
+                            })));
+                        }
+                        let (yes, no) = Self::integer_pair(yes, no, span)?;
+                        Expr::Int(IntExpr::new(
+                            yes.ty(),
+                            IntExprKind::Conditional(Box::new(Conditional {
+                                condition,
+                                then_value: yes,
+                                else_value: no,
+                            })),
+                        ))
+                    }
                 }
             }
-            syntax::ExpressionKind::Unary(op, operand) => {
-                let value = self.expr(operand)?;
-                match op {
-                    UnaryOp::Positive => Expr::Int(value.int(span)?),
-                    UnaryOp::Negate => Expr::Int(IntExpr::Negate(Box::new(value.int(span)?))),
-                    UnaryOp::Complement => {
-                        Expr::Int(IntExpr::Complement(Box::new(value.int(span)?)))
+            syntax::ExpressionKind::Unary(op, e) => {
+                let value = self.expr(e)?;
+                match (op, value) {
+                    (UnaryOp::LogicalNot, e) => {
+                        Expr::Bool(BoolExpr::Not(Box::new(e.condition(span)?)))
                     }
-                    UnaryOp::LogicalNot => {
-                        Expr::Bool(BoolExpr::Not(Box::new(value.condition(span)?)))
+                    (UnaryOp::Positive, Expr::Literal(n)) => Expr::Literal(n),
+                    (UnaryOp::Positive, e) => Expr::Int(e.int(span)?),
+                    (UnaryOp::Negate, Expr::Literal(n)) => Expr::Literal(
+                        n.checked_neg()
+                            .ok_or_else(|| Diagnostic::new(span, "integer literal overflow"))?,
+                    ),
+                    (UnaryOp::Complement, Expr::Literal(n)) => Expr::Literal(!n),
+                    (op, e) => {
+                        let e = e.int(span)?;
+                        let ty = e.ty();
+                        Expr::Int(IntExpr::new(
+                            ty,
+                            match op {
+                                UnaryOp::Negate => IntExprKind::Negate(Box::new(e)),
+                                UnaryOp::Complement => IntExprKind::Complement(Box::new(e)),
+                                _ => unreachable!(),
+                            },
+                        ))
                     }
                 }
             }
-            syntax::ExpressionKind::Cast(ty, operand) => {
-                let value = self.expr(operand)?;
+            syntax::ExpressionKind::Cast(mode, ty, e) => {
+                let value = self.expr(e)?;
                 match ty {
                     ScalarType::Bool => Expr::Bool(value.condition(span)?),
-                    ScalarType::Int => match value {
-                        Expr::Int(e) => Expr::Int(e),
-                        Expr::Bool(e) => Expr::Int(IntExpr::FromBool(Box::new(e))),
-                        Expr::Void(_) => {
-                            return Err(Diagnostic::new(span, "void call cannot be cast to int"));
-                        }
-                    },
+                    ScalarType::Int(ty) => Expr::Int(value.cast_integer(*ty, *mode, span)?),
                 }
             }
-            syntax::ExpressionKind::Binary(op, lhs, rhs) => {
-                let lhs = self.expr(lhs)?;
-                let rhs = self.expr(rhs)?;
-                self.binary(*op, lhs, rhs, span)?
+            syntax::ExpressionKind::Binary(op, a, b) => {
+                self.binary(*op, self.expr(a)?, self.expr(b)?, span)?
             }
         })
     }
-    fn binary(&self, op: BinaryOp, lhs: Expr, rhs: Expr, span: Span) -> Result<Expr, Diagnostic> {
+    fn constant(value: ConstantValue) -> Expr {
+        match value {
+            ConstantValue::Literal(n) => Expr::Literal(n),
+            ConstantValue::Int(n) => Expr::Int(IntExpr::constant(n)),
+            ConstantValue::Bool(b) => Expr::Bool(BoolExpr::Constant(b)),
+        }
+    }
+    fn integer_pair(a: Expr, b: Expr, span: Span) -> Result<(IntExpr, IntExpr), Diagnostic> {
+        let ty = match (a.integer_type(span)?, b.integer_type(span)?) {
+            (None, None) => IntegerType::S64,
+            (Some(ty), None) | (None, Some(ty)) => ty,
+            (Some(a), Some(b)) => a.common(b).ok_or_else(|| {
+                Diagnostic::new(span, "integer operands have incompatible ranges")
+            })?,
+        };
+        Ok((a.int_as(ty, span)?, b.int_as(ty, span)?))
+    }
+    fn binary(&self, op: BinaryOp, a: Expr, b: Expr, span: Span) -> Result<Expr, Diagnostic> {
+        if let (Expr::Literal(a), Expr::Literal(b)) = (&a, &b)
+            && let Ok(value) = jai_eval::binary_literals(op, *a, *b, span)
+        {
+            return Ok(Self::constant(value));
+        }
         Ok(match Operator::from(op) {
-            Operator::Integer(op) => Expr::Int(IntExpr::Binary(
-                op,
-                Box::new(lhs.int(span)?),
-                Box::new(rhs.int(span)?),
-            )),
-            Operator::Relation(op) => Expr::Bool(BoolExpr::CompareInts(
-                op,
-                Box::new(lhs.int(span)?),
-                Box::new(rhs.int(span)?),
-            )),
-            Operator::Equality(op) => Expr::Bool(match (lhs, rhs) {
-                (Expr::Int(l), Expr::Int(r)) => BoolExpr::CompareInts(
-                    match op {
-                        Equality::Equal => Relation::Equal,
-                        Equality::NotEqual => Relation::NotEqual,
-                    },
-                    Box::new(l),
-                    Box::new(r),
-                ),
-                (Expr::Bool(l), Expr::Bool(r)) => {
-                    BoolExpr::CompareBools(op, Box::new(l), Box::new(r))
+            Operator::Integer(op) => {
+                let (a, b) = Self::integer_pair(a, b, span)?;
+                Expr::Int(IntExpr::new(
+                    a.ty(),
+                    IntExprKind::Binary(op, Box::new(a), Box::new(b)),
+                ))
+            }
+            Operator::Relation(op) => {
+                let (a, b) = Self::integer_pair(a, b, span)?;
+                Expr::Bool(BoolExpr::CompareInts(op, Box::new(a), Box::new(b)))
+            }
+            Operator::Equality(op) => match (a, b) {
+                (Expr::Bool(a), Expr::Bool(b)) => {
+                    Expr::Bool(BoolExpr::CompareBools(op, Box::new(a), Box::new(b)))
                 }
-                _ => {
-                    return Err(Diagnostic::new(
-                        span,
-                        "equality requires two values of the same type",
-                    ));
+                (a, b) => {
+                    let (a, b) = Self::integer_pair(a, b, span)?;
+                    Expr::Bool(BoolExpr::CompareInts(
+                        match op {
+                            Equality::Equal => Relation::Equal,
+                            Equality::NotEqual => Relation::NotEqual,
+                        },
+                        Box::new(a),
+                        Box::new(b),
+                    ))
                 }
-            }),
+            },
             Operator::And => Expr::Bool(BoolExpr::And(
-                Box::new(lhs.condition(span)?),
-                Box::new(rhs.condition(span)?),
+                Box::new(a.condition(span)?),
+                Box::new(b.condition(span)?),
             )),
             Operator::Or => Expr::Bool(BoolExpr::Or(
-                Box::new(lhs.condition(span)?),
-                Box::new(rhs.condition(span)?),
+                Box::new(a.condition(span)?),
+                Box::new(b.condition(span)?),
             )),
         })
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -687,6 +844,27 @@ mod tests {
             check("N :: ifx true then M else 1 / 0; M :: 42; main :: ()->int { return N; }")
                 .is_ok()
         );
+    }
+    #[test]
+    fn integer_conversions_reject_range_loss_and_oversized_literals() {
+        for source in [
+            "main :: () { n:u8 = 256; }",
+            "main :: () { n:s8 = 128; }",
+            "main :: () { n:u64 = -1; }",
+            "main :: () { n := 18446744073709551615; }",
+            "main :: () { a:u16=42; b:u8=a; }",
+            "main :: () { a:s8=42; b:u64=a; }",
+            "main :: () { a:u64=42; b:s64=a; }",
+            "main :: () { a:s8=1; b:u8=1; c:=a+b; }",
+            "f :: (n:u8) {} main :: () { f(256); }",
+            "f :: ()->u8 { n:u16=1; return n; } main :: () {}",
+            "N : u8 : 256; main :: () {}",
+            "n:u8 = 256; main :: () {}",
+            "main :: () { n := +true; }",
+        ] {
+            assert!(check(source).is_err(), "{source}");
+        }
+        assert!(check("N :: 255; main :: () { n:u8=N; large:u64=18446744073709551615; }").is_ok());
     }
     #[test]
     fn reject_unresolved_names_and_arity() {

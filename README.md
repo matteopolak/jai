@@ -25,18 +25,20 @@ main :: () -> int {
 
 | Area | Status |
 | --- | --- |
-| Integers and Booleans | Supported in the current subset |
-| Procedures, arguments, return values, recursion | Supported |
+| Signed/unsigned integers and Booleans | All eight integer widths supported |
+| Procedures, arguments, return values, recursion | Supported; scalar constant defaults and named arguments |
 | Local variables, nested scopes, scalar casts | Supported |
 | Scalar constants and global variables | Supported with constant global initializers |
 | Arithmetic, comparisons, compound assignment | Supported |
 | `if`, `while`, short-circuit `&&` and `\|\|` | Supported |
 | `ifx` conditional values | Scalar expression arms supported |
+| Scalar case statements, `#through`, Boolean `#complete` | Supported |
 | Integer range loops, reverse iteration, named `break`/`continue` | Supported |
 | `defer` on scope exits and returns | Supported for the scalar subset |
 | Native compilation | Small programs tested on ARM64 macOS |
 | Strings, arrays, pointers, structs, enums | Not implemented in compilation yet |
-| Imports, modules, generics, overloads | Not implemented yet |
+| Recursive top-level literal `#load` | Driver resolves relative paths, deduplicates files, rejects cycles, and maps diagnostics |
+| Imports, module isolation, generics, overloads | Not implemented yet |
 | Compile-time execution and compiler APIs | Not implemented yet |
 | Full standard library and reference examples | Not compiling yet |
 | Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |

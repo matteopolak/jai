@@ -3,7 +3,7 @@ use std::{
     fs,
     io::Write,
     path::PathBuf,
-    process::{Command, Stdio},
+    process::{Command, ExitStatus, Stdio},
     sync::atomic::{AtomicU64, Ordering},
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
@@ -15,6 +15,11 @@ impl Drop for Scratch {
     }
 }
 fn execute(source: &str) -> i32 {
+    execute_status(source)
+        .code()
+        .expect("test program terminated by a signal")
+}
+fn execute_status(source: &str) -> ExitStatus {
     let module = jai_syntax::parse(source).unwrap();
     let program = jai_sema::resolve(&module).unwrap();
     let ir = jai_codegen::emit(&program).unwrap();
@@ -53,7 +58,7 @@ fn execute(source: &str) -> i32 {
     let deadline = Instant::now() + Duration::from_secs(5);
     loop {
         if let Some(status) = process.try_wait().unwrap() {
-            return status.code().expect("test program terminated by a signal");
+            return status;
         }
         if Instant::now() >= deadline {
             process.kill().unwrap();
@@ -458,5 +463,325 @@ fn nested_conditional_and_logical_results_have_valid_phi_predecessors() {
     assert_eq!(
         execute("main :: ()->int { return ifx false then 1 else ifx true then 42 else 2; }"),
         42
+    );
+}
+
+#[test]
+fn integer_widths_flow_through_storage_arguments_and_results() {
+    for ty in ["s8", "s16", "s32", "s64", "u8", "u16", "u32", "u64"] {
+        let source = format!(
+            "global : {ty} = 19; double :: (x:{ty})->{ty} {{ return x * 2; }} main :: ()->int {{ local : {ty} = 2; global += local; return double(global); }}"
+        );
+        if ty == "u64" {
+            // u64 cannot implicitly become int: an explicit checked cast is required.
+            assert_eq!(
+                execute(
+                    &source.replace("return double(global)", "return cast(int) double(global)")
+                ),
+                42
+            );
+        } else {
+            assert_eq!(execute(&source), 42);
+        }
+    }
+}
+
+#[test]
+fn integer_widening_sign_and_unsigned_arithmetic_are_preserved() {
+    assert_eq!(
+        execute("main :: ()->int { a:u8 = 200; b:s32 = -10; c:=a+b; return c; }"),
+        190
+    );
+    assert_eq!(
+        execute("main :: ()->int { small:s8 = -42; big:s64 = small; return -big; }"),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n:u64 = 18446744073709551615; q:=n/2; r:=n%2; if q==9223372036854775807 && r==1 && n>9223372036854775807 return 42; else return 1; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { unsigned:u8 = 128; signed:s8 = -128; return cast(s16)(unsigned>>2) - (signed>>2); }"
+        ),
+        64
+    );
+}
+
+#[test]
+fn fixed_width_arithmetic_and_constant_evaluation_wrap_identically() {
+    assert_eq!(
+        execute(
+            "C :: cast(u8) 255 + 1; main :: ()->int { n:u8 = 255; n+=1; if C==n return 42; else return 1; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "C :: cast(u64) 18446744073709551615 * cast(u64) 18446744073709551615; main :: ()->int { n:u64 = 18446744073709551615; n*=n; if C==n && n==1 return 42; else return 1; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute("main :: ()->int { n:s8 = 127; n+=1; if n == -128 return 42; else return 1; }"),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n:s64 = -9223372036854775808; if n<0 return 42; else return 1; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn checked_casts_and_intentional_truncation_have_distinct_behavior() {
+    assert_eq!(
+        execute("main :: ()->int { return ifx true then 42 else cast(u8) 256; }"),
+        42
+    );
+    assert_eq!(
+        execute("main :: ()->int { if true || cast(u8) 256 return 42; else return 1; }"),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { wide:u16 = 298; narrowed:=cast,no_check(u8) wide; return narrowed; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { signed:s8 = -1; unsigned:=cast,no_check(u8) signed; if unsigned==255 return 42; else return 1; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute("main :: ()->int { wide:u64 = 42; return cast(s8) wide; }"),
+        42
+    );
+    assert_eq!(
+        execute("main :: ()->int { wide:u16 = 256; return ifx true then 42 else cast(u8) wide; }"),
+        42
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn checked_integer_casts_trap_when_the_value_is_out_of_range() {
+    use std::os::unix::process::ExitStatusExt;
+    for source in [
+        "main :: ()->int { return cast(u8) 256; }",
+        "main :: ()->int { wide:u16=256; return cast(u8) wide; }",
+        "main :: ()->int { n:s8 = -1; return cast(int) cast(u64) n; }",
+        "main :: ()->int { n:u64 = 18446744073709551615; return cast(int) n; }",
+        "main :: ()->int { n:u8 = 128; return cast(s8) n; }",
+    ] {
+        let status = execute_status(source);
+        assert!(!status.success(), "{source}");
+        assert!(
+            status.signal().is_some(),
+            "expected LLVM trap, got {status}: {source}"
+        );
+    }
+}
+
+#[test]
+fn typed_ranges_and_conditional_values_keep_integer_widths() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { count:=0; for i: cast(u8)254..cast(u8)255 { count+=1; } for < j: cast(s8)-128..cast(s8)-126 { count+=1; } return count; }"
+        ),
+        5
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { a:u8=42; b:u16=99; result:=ifx true then a else b; return result; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { a:u64=42; result:=ifx true then a else 0; return cast(int) result; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn conditional_integer_literals_take_their_required_storage_type() {
+    assert_eq!(
+        execute(
+            "pick :: (flag:bool)->u8 { return ifx flag then 255 else 0; } main :: ()->int { small:u8 = ifx false then 99 else 42; return small + cast(int) pick(false); }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { large:u64 = ifx false then 18446744073709551615 else 42; return cast(int) large; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { value:=cast,no_check(u8) (ifx true then 298 else 256); return value; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn named_arguments_keep_source_evaluation_order() {
+    assert_eq!(
+        execute(
+            "counter: int; next :: () -> int { counter += 1; return counter; } pair :: (a: int, b: int) -> int { return a * 10 + b; } main :: () -> int { return pair(b = next(), a = next()); }"
+        ),
+        21
+    );
+}
+#[test]
+fn parameter_defaults_and_named_required_suffix() {
+    assert_eq!(
+        execute(
+            "DEFAULT :: 3; combine :: (a: u8 = DEFAULT, b := 4, c: int, flag := true) -> int { if flag return cast(int) a + b + c; return 0; } main :: () -> int { return combine(c = 5); }"
+        ),
+        12
+    );
+}
+#[test]
+fn defaults_and_arguments_validate_even_unused_procedures() {
+    for source in [
+        "f :: (a: u8 = 256) {} main :: () {}",
+        "f :: (a: int, a: int) {} main :: () {}",
+        "f :: (a: int) {} main :: () { f(a = 1, a = 2); }",
+        "f :: (a: int) {} main :: () { f(1, a = 2); }",
+        "f :: (a: int) {} main :: () { f(z = 1); }",
+        "f :: (a: int) {} main :: () { f(); }",
+        "f :: (a: int) {} main :: () { f(a = 1, 2); }",
+        "f :: (a: u8) {} main :: () { f(a = 256); }",
+        "f :: (a: bool) {} main :: () { f(a = 1); }",
+        "v: int; f :: (a: int = v) {} main :: () {}",
+    ] {
+        let module = jai_syntax::parse(source).unwrap();
+        assert!(jai_sema::resolve(&module).is_err(), "accepted {source}");
+    }
+}
+
+#[test]
+fn defaults_accept_positional_prefix_and_named_overrides() {
+    assert_eq!(
+        execute(
+            "choose :: (a := 1, b: u8 = 2, c := 3) -> int { return a * 100 + cast(int) b * 10 + c; } main :: () -> int { if choose() != 123 return 1; if choose(2) != 223 return 2; if choose(1, c = 4) != 124 return 3; if choose(c = 5, b = 3, a = 2) != 235 return 4; return 42; }"
+        ),
+        42
+    );
+}
+
+#[test]
+fn cases_evaluate_subject_once_and_keep_arm_scopes() {
+    assert_eq!(
+        execute(
+            "n := 0; subject :: ()->int { n += 1; return 2; } main :: ()->int { result := 0; if subject() == { case 1; x := 7; result = x; case 2; x := 20; result = x; case; result = 99; } return result + n; }"
+        ),
+        21
+    );
+}
+#[test]
+fn cases_through_runs_cleanup_before_next_arm() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; if 1 == { case 1; defer n += 3; n += 2; #through; case 9; n *= 4; case; n = 99; } return n; }"
+        ),
+        20
+    );
+}
+#[test]
+fn cases_preserve_loop_transfers_and_returns() {
+    assert_eq!(
+        execute(
+            "pick :: (n:int)->int { if n == { case 2; return 42; case; return 9; } } main :: ()->int { n := 0; sum := 0; while n < 5 { n += 1; if n == { case 1; continue; case 3; break; case; sum += pick(n); } } return sum; }"
+        ),
+        42
+    );
+}
+#[test]
+fn bool_complete_cases_and_first_matching_not_equal() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; if #complete true == { case true; n = 10; case false; n = 20; } if 2 != { case 1; n += 3; case 2; n += 99; case; n += 100; } return n; }"
+        ),
+        13
+    );
+}
+#[test]
+fn cases_named_transfers_run_deferred_cleanup() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for outer: 1..3 { defer n += 10; for inner: 1..3 { defer n += 1; if inner == { case 2; continue outer; case; n += 2; } } } return n; }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; for outer: 1..3 { defer n += 10; for inner: 1..3 { defer n += 1; if inner == { case 2; break outer; case; n += 2; } } } return n; }"
+        ),
+        14
+    );
+}
+#[test]
+fn cases_narrow_unsigned_labels_and_no_match() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { x:u8 = 255; n := 0; if x == { case 1; n = 100; } if x == { case 255; n += 7; case; n += 100; } return n; }"
+        ),
+        7
+    );
+}
+
+#[test]
+fn complete_bool_cases_terminate_without_default() {
+    assert_eq!(
+        execute(
+            "pick :: (b:bool)->int { if #complete b == { case true; return 31; case false; return 42; } } main :: ()->int { return pick(false); }"
+        ),
+        42
+    );
+    assert_eq!(
+        execute(
+            "pick :: (b:bool)->int { if #complete b == { case true; #through; case false; return 27; } } main :: ()->int { return pick(true); }"
+        ),
+        27
+    );
+    assert_eq!(
+        execute(
+            "pick :: (b:bool)->bool { if #complete b == { case true; return ifx b then false else true; case false; return ifx b then true else false; } } main :: ()->int { if pick(true) return 99; return 17; }"
+        ),
+        17
+    );
+}
+#[test]
+fn empty_case_lists_and_default_only_cases_preserve_subject_effects() {
+    assert_eq!(
+        execute(
+            "n := 0; subject :: ()->int { n += 1; return 1; } main :: ()->int { if subject() == { } if subject() == { case; n += 5; } if subject() == { case 1; case; n += 100; } return n; }"
+        ),
+        8
+    );
+    assert_eq!(
+        execute(
+            "pick :: ()->int { if 1 == { case; return 23; } } main :: ()->int { return pick(); }"
+        ),
+        23
+    );
+}
+#[test]
+fn complete_bool_cases_with_falling_arms_keep_a_join() {
+    assert_eq!(
+        execute(
+            "main :: ()->int { n := 0; if #complete false == { case true; n = ifx true then 19 else 99; case false; n = ifx false then 99 else 37; } return n; }"
+        ),
+        37
     );
 }

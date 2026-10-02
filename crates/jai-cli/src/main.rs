@@ -114,8 +114,8 @@ fn run() -> Result<(), Error> {
         println!("{} tokens (lexical stage only)", tokens.len() - 1);
         return Ok(());
     }
-    let module = jai_syntax::parse(&source).map_err(&render)?;
-    let program = jai_sema::resolve(&module).map_err(render)?;
+    let unit = jai_driver::CompilationUnit::load(path).map_err(|e| Error::Source(e.to_string()))?;
+    let program = unit.resolve().map_err(|e| Error::Source(e.to_string()))?;
     match options {
         Options::Lex(_) => {}
         Options::Check(path) => println!("checked {}", path.display()),

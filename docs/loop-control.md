@@ -21,7 +21,7 @@ main :: () -> int {
 }
 ```
 
-Range endpoints evaluate once, from left to right, before introducing the iterator. Both endpoints are inclusive; a descending numeric range is empty even with `<`. Reversal changes traversal order, so `for < 1..3` visits 3, 2, 1. The unnamed iterator is `it`; nested iterators shadow outer variables only within their loop. Iterator values are mutable. The latch tests the endpoint before adding or subtracting one, preventing a final inclusive iteration at `s64` MAX/MIN from wrapping.
+Range endpoints evaluate once, from left to right, before introducing the iterator. Both endpoints are inclusive; a descending numeric range is empty even with `<`. Reversal changes traversal order, so `for < 1..3` visits 3, 2, 1. The unnamed iterator is `it`; nested iterators shadow outer variables only within their loop. Iterator values are mutable. The latch tests the endpoint before adding or subtracting one, preventing a final inclusive iteration at any implemented integer width's MAX/MIN from wrapping.
 
 A range `continue` reaches the increment/decrement latch; a `while` continue reevaluates its condition. A named condition's value is assigned on every test, retains its scalar type, and is visible only inside that loop. Named outer exits can bypass inner loops. Blocks distinguish fallthrough from termination, allowing mixed return/break/continue branches without an invalid LLVM join.
 
@@ -35,7 +35,7 @@ Loop exits process [deferred cleanup](deferred-cleanup.md) for exactly the scope
 
 ## Configuration
 
-No new flags or dependencies. `int`/`s64` are the implemented range element types. Return-flow checking is conservative: a loop does not prove that a value-returning procedure always returns, even if its bounds appear nonempty.
+No new flags or dependencies. All eight integer widths are implemented range element types; endpoint coercion must preserve the typed operand ranges. Return-flow checking is conservative: a loop does not prove that a value-returning procedure always returns, even if its bounds appear nonempty.
 
 ## Dependencies
 

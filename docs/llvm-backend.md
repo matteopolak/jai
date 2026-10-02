@@ -30,7 +30,7 @@ python3 tools/check_dependency_age.py
 cargo build -p jai-cli --locked
 ```
 
-For another LLVM 22 installation, set `LLVM_SYS_221_PREFIX` to its root containing `bin/llvm-config` and `lib/`. The development machine currently uses `/opt/homebrew/opt/llvm` (22.1.1). CI uses Homebrew's versioned formula on `macos-15`. Missing/incompatible LLVM fails at build time. Dynamic linking requires its library at runtime. Keep tool/library paths outside `reference/`.
+For another LLVM 22 installation, set `LLVM_SYS_221_PREFIX` to its root containing `bin/llvm-config` and `lib/`. The development machine currently uses `/opt/homebrew/opt/llvm` (22.1.1). CI requests macOS ARM64 and Linux x86_64 checks with the [native host setup](native-hosts.md). Missing/incompatible LLVM fails at build time. Dynamic linking requires its library at runtime. Keep tool/library paths outside `reference/`.
 
 ## Dependencies
 

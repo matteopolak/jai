@@ -79,7 +79,7 @@ impl<'a> Constants<'a> {
                                 dependencies.push((*name, expression.span))
                             }
                             syntax::ExpressionKind::Unary(_, e)
-                            | syntax::ExpressionKind::Cast(_, e) => expressions.push(e),
+                            | syntax::ExpressionKind::Cast(_, _, e) => expressions.push(e),
                             syntax::ExpressionKind::Binary(_, lhs, rhs) => {
                                 expressions.push(rhs);
                                 expressions.push(lhs);
@@ -104,14 +104,11 @@ impl<'a> Constants<'a> {
                     );
                 }
                 Work::Finish(declaration) => {
-                    let value = jai_eval::evaluate(&declaration.initializer, |name, span| {
+                    let mut value = jai_eval::evaluate(&declaration.initializer, |name, span| {
                         self.ready_value(name, span)
                     })?;
-                    if declaration.ty.is_some_and(|ty| ty != value.ty()) {
-                        return Err(Diagnostic::new(
-                            declaration.span,
-                            "constant initializer does not match its declared type",
-                        ));
+                    if let Some(ty) = declaration.ty {
+                        value = value.coerce(ty, declaration.span)?;
                     }
                     self.states.insert(declaration.name, State::Ready(value));
                 }
@@ -173,21 +170,21 @@ pub(super) fn resolve_globals(
                     Some(e) => jai_eval::evaluate(e, |name, span| constants.value(name, span))?,
                     None => ConstantValue::zero(*ty),
                 };
-                if value.ty() != *ty {
-                    return Err(Diagnostic::new(
-                        global.span,
-                        "global initializer does not match its declared type",
-                    ));
-                }
+                let value = value.coerce(*ty, global.span)?;
                 (*name, value)
             }
         };
+        let value = value.coerce(value.ty(), global.span)?;
         let storage = match value {
             ConstantValue::Int(initializer) => {
-                let id = IntGlobal(globals.len());
+                let id = IntGlobal {
+                    index: globals.len(),
+                    ty: initializer.ty(),
+                };
                 globals.push(Global::Int { id, initializer });
                 Storage::Int(IntPlace::Global(id))
             }
+            ConstantValue::Literal(_) => unreachable!("globals are materialized before allocation"),
             ConstantValue::Bool(initializer) => {
                 let id = BoolGlobal(globals.len());
                 globals.push(Global::Bool { id, initializer });
