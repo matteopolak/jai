@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Browser source workspace](browser-workspace.md)
+
 - [Code formatting](code-formatting.md)
 
 - [Independent standard library](stdlib/architecture.md)
