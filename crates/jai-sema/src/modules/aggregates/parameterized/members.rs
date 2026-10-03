@@ -25,7 +25,8 @@ where
                 M::DefaultOverride {
                     ..
                 }
-                | M::AnonymousRecord(_) => continue,
+                | M::AnonymousRecord(_)
+                | M::Placement(_) => continue,
                 M::Field(field) => (field.name, field.span),
                 M::Constant(value) => (value.name, value.span),
                 M::TypeAlias(value) => (value.name, value.span),

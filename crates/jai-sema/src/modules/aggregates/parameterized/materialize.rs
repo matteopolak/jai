@@ -410,7 +410,13 @@ where
                 )
             })?;
             self.types
-                .define_record_with_layout(ty, fields, layout)
+                .define_record_with_placements(
+                    ty,
+                    fields,
+                    layout,
+                    crate::record_placements::source_placement_ordinals(record.members)
+                        .map_err(|error| failure(self.graph, file, error))?,
+                )
                 .map_err(|e| {
                     failure(
                         self.graph,

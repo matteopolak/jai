@@ -1,6 +1,8 @@
 //! Procedure addresses and indirect calls use the same canonical signature as declarations.
 use super::*;
 mod arguments;
+pub(crate) mod baked_arguments;
+mod baked_preview;
 mod bind_arguments;
 pub(crate) mod bindings;
 mod context_calls;

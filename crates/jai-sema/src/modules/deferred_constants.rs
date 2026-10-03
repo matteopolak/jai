@@ -11,6 +11,7 @@ pub(super) fn classify(graph: &ModuleGraph) -> HashSet<DeclarationId> {
                 syntax::ExpressionKind::CompileTime(_)
                     | syntax::ExpressionKind::Code(_)
                     | syntax::ExpressionKind::AnonymousProcedure(_)
+                    | syntax::ExpressionKind::BakeArguments(_)
             )
         },
         false,
@@ -165,6 +166,10 @@ pub(super) fn visit(
             } => work.push(call),
             E::Call(_, arguments) | E::QualifiedCall(_, arguments) => {
                 work.extend(arguments.iter().map(|argument| &argument.value))
+            }
+            E::BakeArguments(value) => {
+                work.push(&value.callee);
+                work.extend(value.arguments.iter().map(|argument| &argument.value));
             }
             E::IndirectCall {
                 callee,

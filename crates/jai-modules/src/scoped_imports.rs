@@ -1251,7 +1251,8 @@ fn retain_record_bindings(scope: &mut LocalScope, members: &[RecordMember]) {
                     StatementKind::Enum(value.clone()),
                 ))
             }
-            RecordMember::Insert(_)
+            RecordMember::Placement(_)
+            | RecordMember::Insert(_)
             | RecordMember::DefaultOverride {
                 ..
             }

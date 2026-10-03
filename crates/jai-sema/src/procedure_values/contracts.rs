@@ -3,6 +3,9 @@ use super::bindings::{CallbackArgumentPolicy, CallbackSignature};
 use super::*;
 mod anonymous_headers;
 mod baked_bindings;
+mod baked_partial;
+pub(crate) mod baked_partial_constants;
+mod baked_partial_producers;
 mod bound_result_use;
 mod compiler_slots;
 mod expression_bindings;
@@ -485,12 +488,39 @@ impl Resolver<'_> {
                     } else {
                         signature.parameters.to_vec()
                     };
+                let defaults = if signature_source
+                    .parameters
+                    .iter()
+                    .any(|parameter| parameter.default.is_some())
+                {
+                    let origin = source.callback.as_ref().expect("callback producer origin");
+                    let proof = origin
+                        .proof
+                        .clone()
+                        .or_else(|| self.original_annotation_proof(origin))
+                        .ok_or_else(|| {
+                            Diagnostic::new(
+                                span,
+                                "callback defaults are pending their original checked annotation",
+                            )
+                        })?;
+                    if proof.ty() != ty || proof.parameters() != source_parameters.as_slice() {
+                        return Err(Diagnostic::new(
+                            span,
+                            "callback default proof has a different canonical signature",
+                        ));
+                    }
+                    proof.defaults().to_vec()
+                } else {
+                    Vec::new()
+                };
                 ContractKind::Callable {
                     metadata: CallbackSignature::annotation(
                         ty,
                         signature_source,
                         self.types,
                         &source_parameters,
+                        &defaults,
                     ),
                     results,
                     source: None,
@@ -648,12 +678,18 @@ impl Resolver<'_> {
                     root: *name,
                     members: vec![],
                 };
+                if let Some(contract) = self.checked_baked_constant_binding_contract(&path, span)? {
+                    return Ok(contract);
+                }
                 if let Some(contract) = self.checked_baked_callback_binding_contract(&path, span)? {
                     return Ok(Some(contract));
                 }
                 self.callback_value_contract(value, span)
             }
             syntax::ExpressionKind::QualifiedName(path) => {
+                if let Some(contract) = self.checked_baked_constant_binding_contract(path, span)? {
+                    return Ok(contract);
+                }
                 if let Some(contract) = self.checked_baked_callback_binding_contract(path, span)? {
                     return Ok(Some(contract));
                 }
@@ -681,6 +717,31 @@ impl Resolver<'_> {
             }
             syntax::ExpressionKind::Call(_, arguments)
             | syntax::ExpressionKind::QualifiedCall(_, arguments) => {
+                if let ValueExpr::IndirectCall {
+                    callee, ..
+                } = value
+                {
+                    let callee_source = syntax::Expression {
+                        kind: match &source.kind {
+                            syntax::ExpressionKind::Call(name, _) => {
+                                syntax::ExpressionKind::Name(*name)
+                            }
+                            syntax::ExpressionKind::QualifiedCall(path, _) => {
+                                syntax::ExpressionKind::QualifiedName(path.clone())
+                            }
+                            _ => unreachable!(),
+                        },
+                        span: source.span,
+                    };
+                    return Ok(self
+                        .callback_expression_contract_inner(
+                            &callee_source,
+                            callee,
+                            span,
+                            depth + 1,
+                        )?
+                        .and_then(|contract| contract.result(0)));
+                }
                 if let ValueExpr::Call {
                     call, ..
                 } = value

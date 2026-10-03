@@ -6,6 +6,9 @@
 - [Build storage](build-storage.md)
 
 - [Browser source workspace](browser-workspace.md)
+- [Shared native and WebAssembly language server](language-server.md)
+- [Browser compiler releases](browser-compiler-releases.md)
+- [Browser editor](browser-editor.md)
 - [Scripting runtime](scripting-runtime.md)
 
 - [Code formatting](code-formatting.md)
@@ -23,6 +26,7 @@
 - [Reviewed SDK source ABI witnesses](native-sdk-proofs.md)
 
 - [Completion and acceptance plan](completion-plan.md)
+- [Compiler stage strategy](compiler-stage-strategy.md)
 - [Parallel implementation and acceptance](parallel-workstreams.md)
 - [Independent frozen component checks](parallel-component-checks.md)
 - [Callable aliases in overload groups](callable-overload-aliases.md)
@@ -207,6 +211,7 @@ Public source corpora are input data.
 - [Native custom record regression tests](native-custom-records.md)
 - [Thread placement acceptance](thread-placement-acceptance.md)
 - [Record placement syntax](record-placement-syntax.md)
+- [Ordered record source metadata](ordered-record-source-metadata.md)
 - [Custom record C ABI verification](native-custom-record-abi.md)
 
 - [Native source debug information](native-debug-information.md)
@@ -316,16 +321,28 @@ Public source corpora are input data.
 - [Native library source bindings](native-library-source-bindings.md)
 - [Typed heap constructor receipts](typed-heap-constructor-receipts.md)
 
+- [Baked argument syntax](baked-argument-syntax.md)
+
+- [Platform source and host services](platform-services.md)
+- [Selected standard-library protocol profiles](specs/stdlib/README.md)
+- [Retained global initializer jobs](global-initializer-jobs.md)
+- [Frontend header grammar](frontend-header-grammar.md)
+- [Remaining frontend grammar](frontend-grammar-frontiers.md)
+- [Baked procedure arguments (staged)](baked-procedure-arguments.md)
+- [Canonical Type equality](canonical-type-equality.md) — nominal equality across immutable descriptor revisions and physical pointer casts.
+- [Opaque numeric pointer values](opaque-numeric-pointers.md)
+- [Initial type readiness](initial-type-readiness.md)
+- [Retained source-run prefix](source-run-prefix.md)
+- [Reflection publication](reflection-publication.md) — owned VM detachment and prepared source policy guards.
+- [Static catalog ownership](static-catalog-ownership.md) — complete immutable allocation footprints and cumulative retained-root admission.
+- [Constant capture admission](constant-capture-admission.md) — complete retained-root quotas and cumulative fuel for selected compiler constants.
+- [Source expression parsing](source-expression-parsing.md)
+
 - [Source syntax retention](source-syntax-retention.md)
-
 - [Scalar source retention](scalar-source-retention.md)
-
 - [Graph source retention](graph-source-retention.md)
-
 - [Metered source environments](metered-source-environments.md)
-
 - [Source reflection factory](reflection-source-factory.md)
-- [Compiler stage strategy](compiler-stage-strategy.md)
 
 ## Language and library specifications
 

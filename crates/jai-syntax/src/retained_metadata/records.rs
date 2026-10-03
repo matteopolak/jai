@@ -157,7 +157,9 @@ impl<A> Visitor<'_, A> {
             this.node(depth)?;
             match attribute {
                 RecordAttribute::Alignment(value) => this.expression(value, depth + 1),
-                RecordAttribute::NoPadding | RecordAttribute::TypeInfoNone => Ok(()),
+                RecordAttribute::NoPadding
+                | RecordAttribute::TypeInfoNone
+                | RecordAttribute::Reflection(_) => Ok(()),
             }
         })?;
         self.sequence(notes, depth, Self::note)?;
@@ -252,6 +254,9 @@ impl<A> Visitor<'_, A> {
             this.node(depth)?;
             match attribute {
                 FieldAttribute::Alignment(value) => this.expression(value, depth + 1),
+                FieldAttribute::Placement(FieldPlacementSyntax::Overlay {
+                    target, ..
+                }) => this.place(target, depth + 1),
             }
         })?;
         self.sequence(&source.notes, depth, Self::note)
@@ -263,6 +268,7 @@ impl<A> Visitor<'_, A> {
     {
         self.node(depth)?;
         match source {
+            RecordMember::Placement(source) => self.place(&source.target, depth + 1),
             RecordMember::AnonymousRecord(record) => {
                 self.boxed(record.as_ref(), depth, Self::inline_record)
             }

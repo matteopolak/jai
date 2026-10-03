@@ -362,6 +362,7 @@ impl Resolver<'_> {
             })?;
             return Ok(value.clone());
         }
+        crate::record_placements::require_record_construction_recipe(self.types, ty, span)?;
         if active.len() >= crate::constant_limits::MAX_CONSTANT_DEPTH {
             return Err(Diagnostic::new(
                 span,

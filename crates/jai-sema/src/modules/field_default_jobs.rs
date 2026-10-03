@@ -605,7 +605,7 @@ fn needs_provider(
         use syntax::ExpressionKind as E;
         if matches!(
             expression.kind,
-            E::CompileTime(_) | E::ShortLambda(_) | E::AnonymousProcedure(_)
+            E::CompileTime(_) | E::ShortLambda(_) | E::AnonymousProcedure(_) | E::BakeArguments(_)
         ) {
             needs = true;
         }
@@ -632,6 +632,7 @@ pub(crate) fn contains_typed_leaf(expression: &syntax::Expression) -> bool {
             syntax::ExpressionKind::CompileTime(_)
                 | syntax::ExpressionKind::ShortLambda(_)
                 | syntax::ExpressionKind::AnonymousProcedure(_)
+                | syntax::ExpressionKind::BakeArguments(_)
         );
     });
     found

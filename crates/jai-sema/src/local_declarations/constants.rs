@@ -113,6 +113,19 @@ impl Resolver<'_> {
         &mut self,
         constant: &syntax::ConstantDeclaration,
     ) -> Result<Binding, Diagnostic> {
+        if self.bind_baked_source_constant(constant)?.is_some() {
+            return self
+                .scopes
+                .last()
+                .and_then(|scope| scope.get(&constant.name))
+                .cloned()
+                .ok_or_else(|| {
+                    Diagnostic::new(
+                        constant.span,
+                        "partial constant did not publish its actual declaration",
+                    )
+                });
+        }
         if let Some(annotation) = &constant.ty {
             let ty = self.lexical_annotation(annotation, constant.span)?;
             if ty == self.types.code_type() {

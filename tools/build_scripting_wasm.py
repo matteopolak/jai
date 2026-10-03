@@ -52,8 +52,20 @@ def main():
         if compiled.read(8) != b"\x00asm\x01\x00\x00\x00":
             raise SystemExit("compiler output is not a WebAssembly module")
     output.mkdir(parents=True, exist_ok=True)
-    for source in (root / "web/scripting-runtime").iterdir():
-        shutil.copy2(source, output / source.name)
+    browser = root / "web/scripting-runtime"
+    for source in sorted(browser.rglob("*")):
+        relative = source.relative_to(browser)
+        if any(part in {"node_modules", ".git", "target"} for part in relative.parts):
+            continue
+        if source.is_symlink():
+            raise ValueError("browser assets cannot be symlinks")
+        if source.is_dir():
+            continue
+        if not source.is_file():
+            raise ValueError("browser assets must be regular files")
+        destination = output / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
     staged = output / "jai_wasm.wasm"
     shutil.copy2(wasm, staged)
     expected = hashlib.sha256(wasm.read_bytes()).hexdigest()

@@ -598,6 +598,7 @@ impl<'a> FileScope<'a> {
         active: &mut std::collections::HashSet<TypeId>,
         remaining: &mut usize,
     ) -> Result<jai_ir::ConstantValue, Diagnostic> {
+        crate::record_placements::require_record_construction_recipe(types, ty, span)?;
         if active.len() >= crate::constant_limits::MAX_CONSTANT_DEPTH {
             return Err(Diagnostic::new(
                 span,
@@ -1127,7 +1128,7 @@ impl<'a> FileScope<'a> {
         )
         .map_err(|error| Diagnostic::new(span, format!("invalid callback type pattern: {error:?}")))
     }
-    fn materialize_generic_record(
+    pub(super) fn materialize_generic_record(
         &self,
         declaration: DeclarationId,
         substitution: crate::polymorphism::Substitution,

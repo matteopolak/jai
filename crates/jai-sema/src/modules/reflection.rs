@@ -303,7 +303,8 @@ impl FileScope<'_> {
                             | match attribute {
                                 syntax::RecordAttribute::NoPadding => 4,
                                 syntax::RecordAttribute::TypeInfoNone => 8,
-                                syntax::RecordAttribute::Alignment(_) => 0,
+                                syntax::RecordAttribute::Alignment(_)
+                                | syntax::RecordAttribute::Reflection(_) => 0,
                             }
                     },
                 );
@@ -311,10 +312,12 @@ impl FileScope<'_> {
                     ty,
                     ReflectedRecordMetadata {
                         notes: reflected_notes(&syntax.notes, source),
-                        unsupported_members: syntax
-                            .members
-                            .iter()
-                            .any(|member| !matches!(member, syntax::RecordMember::Field(_))),
+                        unsupported_members: syntax.members.iter().any(|member| {
+                            !matches!(
+                                member,
+                                syntax::RecordMember::Field(_) | syntax::RecordMember::Placement(_)
+                            )
+                        }),
                         textual_flags,
                         status_flags: 0,
                         nontextual_flags: if syntax.kind == jai_types::RecordKind::Union {

@@ -2,7 +2,7 @@
 
 ## What it is
 
-The isolated `record_placement.rs` parser preserves a `#place` field anchor and its original source span. It is test-only while checked overlay layout and default initialization consumers are being integrated; a parsed anchor does not establish an effective offset.
+The production record parser preserves ordered `#place` members and distinct `#overlay` field attributes with original source spans. [Ordered record source metadata](ordered-record-source-metadata.md) describes checked layout publication and the remaining construction and overlay policy boundaries.
 
 ## How it works
 
@@ -12,13 +12,13 @@ The syntax preserves qualified and indexed targets without proving that they nam
 
 The book's `13.1_unions.jai` rewinds to an earlier scalar or `void` field. The supplied Thread module rewinds to `info` before a padding array initialized with `---`. These examples establish anchor syntax, but they do not justify treating uninitialized padding as a zero write over the existing information field. See [Thread placement acceptance](thread-placement-acceptance.md) for the separate VM/native layout fixtures.
 
-A second test-only helper preserves the newer field prefix `#overlay(anchor) alias:Type;` as `FieldPlacementSyntax::Overlay { target, span }`. Its parentheses belong to the overlay span, and line breaks do not join the directive to a fabricated field name. `#as` and `using` qualifiers may surround the overlay and retain their separate meanings. This prefix is distinct from record-body `#place`; the supplied aliases do not establish how an overlay changes the cursor for a later ordinary field.
+The field prefix parser preserves the newer field prefix `#overlay(anchor) alias:Type;` as `FieldPlacementSyntax::Overlay { target, span }`. Its parentheses belong to the overlay span, and line breaks do not join the directive to a fabricated field name. `#as` and `using` qualifiers may surround the overlay and retain their separate meanings. This prefix is distinct from record-body `#place`; the supplied aliases do not establish how an overlay changes the cursor for a later ordinary field.
 
 ## How to change it
 
 Update `crates/jai-syntax/src/record_placement.rs` and its boundary tests when extending the anchor grammar. Activate the record-member variant and dispatch only with exhaustive selected-member consumers, canonical field identity binding, layout extent handling, and initialization-write policy. Preserve source ordering and original anchor spans through generic specialization and inactive branch selection.
 
-The field prefix helper is `field_placement.rs`. Its production lexer/field metadata hook remains held until overlay cursor semantics and the matching semantic consumers are ready. Do not implement it by substituting a record-body `Place` member.
+The field prefix parser is `field_placement.rs`. Its typed AST is accepted independently of the checked overlay cursor policy. Semantic binding reports the explicit unsupported boundary; do not substitute a record-body placement node.
 
 Run the focused tests with `RUSTC_WRAPPER= CARGO_TARGET_DIR=target cargo test -p jai-syntax --lib --locked --offline -j1 record_placement::tests`.
 

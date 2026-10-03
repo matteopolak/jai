@@ -91,7 +91,8 @@ pub(super) fn record_body_metadata(
                     | match attribute {
                         syntax::RecordAttribute::NoPadding => 4,
                         syntax::RecordAttribute::TypeInfoNone => 8,
-                        syntax::RecordAttribute::Alignment(_) => 0,
+                        syntax::RecordAttribute::Alignment(_)
+                        | syntax::RecordAttribute::Reflection(_) => 0,
                     }
             },
         ),
@@ -105,6 +106,7 @@ pub(super) fn record_body_metadata(
             !matches!(
                 member,
                 syntax::RecordMember::Field(_)
+                    | syntax::RecordMember::Placement(_)
                     | syntax::RecordMember::AnonymousRecord(_)
                     | syntax::RecordMember::DefaultOverride { .. }
             )

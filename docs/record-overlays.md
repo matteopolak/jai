@@ -2,7 +2,7 @@
 
 ## What it is
 
-Newer Jai sources use `#overlay(anchor) name: Type` to declare an explicitly anchored storage alias. Preparation for this form is separate from the older [`#place` cursor directive](record-placement-layout.md); the production parser and semantic producer are not activated yet.
+Newer Jai sources use `#overlay(anchor) name: Type` to declare an explicitly anchored storage alias. Preparation for this form is separate from the older [`#place` cursor directive](record-placement-layout.md); the production parser retains a distinct typed field attribute, while semantic binding requires the separately established overlay cursor policy. See [ordered record source metadata](ordered-record-source-metadata.md).
 
 ## How it works
 

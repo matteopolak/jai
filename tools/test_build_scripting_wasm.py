@@ -18,6 +18,10 @@ class ScriptingWasmBuildTests(unittest.TestCase):
             compiled.parent.mkdir(parents=True); compiled.write_bytes(b'\x00asm\x01\x00\x00\x00')
             browser = root / 'web/scripting-runtime'; browser.mkdir(parents=True)
             (browser / 'engine.mjs').write_text('// authored inert staging fixture\n')
+            (browser / 'licenses').mkdir()
+            (browser / 'licenses/editor.txt').write_text('own editor license fixture\n')
+            (browser / 'node_modules').mkdir()
+            (browser / 'node_modules/unused.mjs').write_text('excluded dependency source\n')
             prefix = ['/own/rustup', 'run', 'nightly-2026-08-29', 'cargo']
             with patch.object(wasm, 'ROOT', root), patch.dict(os.environ, {}, clear=True), \
                  patch.object(wasm, 'pinned_cargo_command', return_value=prefix), \
@@ -39,6 +43,8 @@ class ScriptingWasmBuildTests(unittest.TestCase):
             self.assertEqual(receipt['wasm_build_path'], str(compiled))
             self.assertEqual(receipt['wasm_sha256'], hashlib.sha256(compiled.read_bytes()).hexdigest())
             self.assertFalse((root / 'target').exists())
+            self.assertEqual((output / 'licenses/editor.txt').read_text(), 'own editor license fixture\n')
+            self.assertFalse((output / 'node_modules').exists())
 
     def test_separate_build_volume_floor_refuses_build(self):
         with tempfile.TemporaryDirectory() as temporary:

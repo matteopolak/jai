@@ -508,6 +508,11 @@ impl Resolver<'_> {
                     _ => unreachable!("source directive branch"),
                 }
             }
+            E::BakeArguments(source) => {
+                let header =
+                    self.preview_baked_procedure(&source.callee, &source.arguments, span)?;
+                ArgumentInfo::typed(header.ty)
+            }
             E::AnonymousProcedure(source) => {
                 let header = self.preview_anonymous_procedure_argument(source)?;
                 ArgumentInfo::typed(header.ty)
@@ -1540,6 +1545,18 @@ impl Resolver<'_> {
                 .ok_or_else(|| {
                     Diagnostic::new(span, "baked callback has no checked source contract")
                 })?;
+            return self.preview_callback_call_results(&signature, contract.callback(), args, span);
+        }
+        if let Some(Some(contract)) = self.checked_baked_constant_binding_contract(path, span)?
+            && contract.callback().is_some()
+        {
+            let info = self.describe_path(path, span)?;
+            let ty = self.argument_type(&info, span)?;
+            let signature = self
+                .types
+                .procedure_definition(ty)
+                .map_err(|error| Diagnostic::new(span, error.to_string()))?
+                .clone();
             return self.preview_callback_call_results(&signature, contract.callback(), args, span);
         }
         if matches!(

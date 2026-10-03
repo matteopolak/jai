@@ -271,7 +271,7 @@ impl Resolver<'_> {
             results,
         })
     }
-    fn preview_source_parameter_default(
+    pub(crate) fn preview_source_parameter_default(
         &mut self,
         expression: &syntax::Expression,
         ty: TypeId,

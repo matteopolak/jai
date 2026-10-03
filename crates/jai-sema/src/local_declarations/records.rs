@@ -16,9 +16,10 @@ impl Resolver<'_> {
         &mut self,
         source: RecordSource<'_>,
         fields: &[FieldSource],
+        members: &[syntax::RecordMember],
         has_namespace_members: bool,
     ) -> Result<TypeId, Diagnostic> {
-        let ty = self.define_local_record_shape(source, fields, has_namespace_members)?;
+        let ty = self.define_local_record_shape(source, fields, members, has_namespace_members)?;
         self.finish_local_record_defaults(ty)?;
         Ok(ty)
     }
@@ -27,6 +28,7 @@ impl Resolver<'_> {
         &mut self,
         source: RecordSource<'_>,
         fields: &[FieldSource],
+        members: &[syntax::RecordMember],
         has_namespace_members: bool,
     ) -> Result<TypeId, Diagnostic> {
         let RecordSource {
@@ -76,7 +78,8 @@ impl Resolver<'_> {
                         layout.minimum_alignment = Some(self.local_alignment(expression)?);
                     }
                     syntax::RecordAttribute::NoPadding => layout.packed = true,
-                    syntax::RecordAttribute::TypeInfoNone => {}
+                    syntax::RecordAttribute::TypeInfoNone
+                    | syntax::RecordAttribute::Reflection(_) => {}
                 }
             }
             let mut alignments = Vec::new();
@@ -87,6 +90,7 @@ impl Resolver<'_> {
                         syntax::FieldAttribute::Alignment(expression) => {
                             alignment = Some(self.local_alignment(expression)?)
                         }
+                        syntax::FieldAttribute::Placement(_) => {}
                     }
                 }
                 alignments.push(alignment);
@@ -95,7 +99,12 @@ impl Resolver<'_> {
                 layout.field_alignments = alignments.into_boxed_slice();
             }
             self.types
-                .define_record_with_layout(ty, field_types, layout)
+                .define_record_with_placements(
+                    ty,
+                    field_types,
+                    layout,
+                    crate::record_placements::source_placement_ordinals(members)?,
+                )
                 .map_err(|error| Diagnostic::new(span, error.to_string()))?;
         }
         crate::reflection::apply_source_record_attributes(self.types, ty, attributes)
@@ -157,7 +166,8 @@ impl Resolver<'_> {
                     | match attribute {
                         syntax::RecordAttribute::NoPadding => 4,
                         syntax::RecordAttribute::TypeInfoNone => 8,
-                        syntax::RecordAttribute::Alignment(_) => 0,
+                        syntax::RecordAttribute::Alignment(_)
+                        | syntax::RecordAttribute::Reflection(_) => 0,
                     }
             },
         );

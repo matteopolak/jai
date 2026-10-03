@@ -133,3 +133,36 @@ fn runtime_refuses_compile_time_only_direct_and_indirect_calls() {
         ));
     }
 }
+
+#[test]
+fn virtual_bundle_names_keep_one_closed_posix_identity() {
+    let mut bundle = SourceBundle::default();
+    let path = bundle
+        .insert(
+            "sub/../main.jai",
+            b"main :: () -> int { return 42; }".to_vec(),
+        )
+        .unwrap();
+    assert_eq!(path, Path::new("/jai-script/main.jai"));
+    assert_eq!(bundle.entry_path("./main.jai").unwrap(), path);
+    assert_eq!(bundle.entry_path(&path).unwrap(), path);
+    for name in [
+        "/jai-script/extra.jai",
+        "../escape.jai",
+        "C:/extra.jai",
+        "a\\b.jai",
+        "a\0b.jai",
+    ] {
+        assert!(bundle.insert(name, vec![]).is_err(), "{name:?}");
+    }
+    assert!(
+        bundle
+            .read(Path::new("/jai-script/../elsewhere/main.jai"))
+            .is_err()
+    );
+    assert!(
+        bundle
+            .read(Path::new("/jai-script-other/main.jai"))
+            .is_err()
+    );
+}

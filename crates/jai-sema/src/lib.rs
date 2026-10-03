@@ -43,7 +43,6 @@ mod pointers;
 mod procedure_notes;
 mod procedure_values;
 mod record_default_overrides;
-#[cfg(test)]
 mod record_placements;
 mod reflection;
 mod restriction_facts;
@@ -1319,6 +1318,9 @@ impl Resolver<'_> {
     fn expr(&mut self, expr: &syntax::Expression) -> Result<Expr, Diagnostic> {
         let span = expr.span;
         Ok(match &expr.kind {
+            syntax::ExpressionKind::BakeArguments(source) => {
+                self.baked_procedure_value(&source.callee, &source.arguments, span)?
+            }
             syntax::ExpressionKind::AnonymousProcedure(source) => {
                 self.anonymous_procedure_value(source, span, None)?
             }

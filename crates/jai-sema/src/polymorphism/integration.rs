@@ -13,10 +13,12 @@ use jai_types::{
     CallingConvention, ContextMode, ProcedureType, TypeId, TypeRegistry, TypeView, Variadic,
 };
 use std::collections::{HashMap, HashSet};
+mod baked_preview;
 mod callable_policies;
 mod callbacks;
 mod modifier_jobs;
 mod modifiers;
+pub(crate) mod selected_constants;
 pub(crate) use modifier_jobs::ModifierReadiness;
 pub(crate) use modifier_jobs::{ModifierSource, build_modifier_source, procedure_modifier_source};
 pub(crate) use modifiers::ModifierExecution;
@@ -178,6 +180,9 @@ impl GenericContext {
     }
     pub(crate) fn callback_body_failure(&self, id: ProcedureId) -> Option<&Diagnostic> {
         self.work.callback_body_failure(id)
+    }
+    pub(crate) fn callback_body_revision(&self, procedure: ProcedureId) -> Option<usize> {
+        self.work.callback_body_revision(procedure)
     }
     pub(crate) fn callback_readiness_revision(&self) -> usize {
         self.work.callback_readiness_revision()

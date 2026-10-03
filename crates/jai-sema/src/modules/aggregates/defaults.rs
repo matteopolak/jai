@@ -561,6 +561,8 @@ impl<'a, 'b> Defaults<'a, 'b> {
         span: Span,
         anonymous_member: bool,
     ) -> Result<TypedConstant, LocatedDiagnostic> {
+        crate::record_placements::require_record_construction_recipe(self.types, ty, span)
+            .map_err(|error| located(self.graph, file, error))?;
         let kind = match self
             .types
             .kind(ty)
@@ -1257,6 +1259,12 @@ impl<'a, 'b> Defaults<'a, 'b> {
             _ => {}
         }
         if let ExpressionKind::PositionalStructLiteral(literal) = &expression.kind {
+            crate::record_placements::require_record_construction_recipe(
+                self.types,
+                ty,
+                expression.span,
+            )
+            .map_err(|error| located(self.graph, file, error))?;
             let actual = match &literal.ty {
                 None => ty,
                 Some(path) => self.literal_type(file, path, expression.span)?,
@@ -1310,6 +1318,12 @@ impl<'a, 'b> Defaults<'a, 'b> {
             });
         }
         if let ExpressionKind::StructLiteral(literal) = &expression.kind {
+            crate::record_placements::require_record_construction_recipe(
+                self.types,
+                ty,
+                expression.span,
+            )
+            .map_err(|error| located(self.graph, file, error))?;
             let actual = match &literal.ty {
                 None => ty,
                 Some(path) => self.literal_type(file, path, expression.span)?,

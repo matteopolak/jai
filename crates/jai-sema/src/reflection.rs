@@ -32,6 +32,11 @@ pub(crate) struct MetaContext {
     pub(crate) compiler_source_signatures:
         HashMap<ProcedureId, modules::compiler_intrinsics::SourceCompilerSignature>,
     pub(crate) callbacks: crate::procedure_values::bindings::CallbackRegistry,
+    pub(crate) baked_wrappers: crate::procedure_values::baked_arguments::BakedWrappers,
+    pub(crate) baked_constant_contracts:
+        crate::procedure_values::contracts::baked_partial_constants::BakedConstantContracts,
+    pub(crate) selected_constants:
+        crate::polymorphism::integration::selected_constants::SelectedConstants,
     pub(crate) record_specializations: modules::aggregates::parameterized::RecordSpecializations,
     pub(crate) field_default_jobs: modules::field_default_jobs::FieldDefaultJobs,
     pub(crate) local_declarations: crate::local_declarations::LocalDeclarationRegistry,
@@ -80,7 +85,8 @@ pub(crate) fn is_semantic_constant(expression: &syntax::Expression) -> bool {
     let mut expressions = vec![expression];
     while let Some(expression) = expressions.pop() {
         match &expression.kind {
-            syntax::ExpressionKind::Type(_)
+            syntax::ExpressionKind::BakeArguments(_)
+            | syntax::ExpressionKind::Type(_)
             | syntax::ExpressionKind::TypeQuery {
                 ..
             }
@@ -122,6 +128,9 @@ impl Resolver<'_> {
         &mut self,
         constant: &syntax::ConstantDeclaration,
     ) -> Result<(), Diagnostic> {
+        if self.bind_baked_source_constant(constant)?.is_some() {
+            return Ok(());
+        }
         if let Some(annotation) = &constant.ty {
             let ty = self.lexical_annotation(annotation, constant.span)?;
             if ty == self.types.code_type() {

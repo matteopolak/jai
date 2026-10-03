@@ -3,17 +3,19 @@ use super::*;
 
 impl Resolver<'_> {
     pub(crate) fn baked_callback_call_source(
-        &self,
+        &mut self,
         path: &syntax::NamePath,
         span: Span,
     ) -> Result<Option<syntax::Expression>, Diagnostic> {
-        if self.baked_callable_type(path).is_none() {
+        if !self.call_is_indirect(path, span) {
             return Ok(None);
         }
-        self.checked_baked_callback_binding_contract(path, span)?
-            .ok_or_else(|| {
-                Diagnostic::new(span, "baked callback has no checked source contract")
-            })?;
+        if self.baked_callable_type(path).is_some() {
+            self.checked_baked_callback_binding_contract(path, span)?
+                .ok_or_else(|| {
+                    Diagnostic::new(span, "baked callback has no checked source contract")
+                })?;
+        }
         Ok(Some(syntax::Expression {
             kind: if path.members.is_empty() {
                 syntax::ExpressionKind::Name(path.root)
