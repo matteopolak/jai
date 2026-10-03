@@ -25,7 +25,10 @@ fn source(
     let mut suffix = Vec::new();
     let mut path = loop {
         match &current.kind {
-            syntax::ExpressionKind::Member { base, member } => {
+            syntax::ExpressionKind::Member {
+                base,
+                member,
+            } => {
                 if suffix.len() >= MAX_PATH {
                     return Err(located(
                         graph,
@@ -129,6 +132,21 @@ fn source(
     Ok(None)
 }
 
+/// A typed header prerequisite, recognized in the default's defining file.
+/// Source bindings named `context` remain ordinary global storage reads.
+pub(super) fn needs_context_schema(
+    graph: &ModuleGraph,
+    file: FileInstanceId,
+    expression: &syntax::Expression,
+    declarations: &ScopedDeclarations<'_>,
+) -> Result<bool, LocatedDiagnostic> {
+    if declarations.context.is_some() {
+        return Ok(false);
+    }
+    Ok(source(graph, file, expression)?
+        .is_some_and(|read| matches!(read.root, SourceRoot::Context)))
+}
+
 #[allow(clippy::too_many_arguments)]
 pub(super) fn infer(
     graph: &ModuleGraph,
@@ -201,12 +219,20 @@ pub(super) fn prepare(
             let declaration = graph.declaration(id).expect("checked global source");
             let annotation = match &declaration.syntax().kind {
                 FileDeclarationKind::Global(global) => match &global.declaration {
-                    syntax::Declaration::Explicit { ty, .. } => Some(syntax::TypeSyntax::Builtin(
-                        syntax::BuiltinType::Scalar(*ty),
-                    )),
-                    syntax::Declaration::UnresolvedExplicit { ty, .. }
-                    | syntax::Declaration::External { ty, .. } => Some(ty.clone()),
-                    syntax::Declaration::Inferred { .. } => None,
+                    syntax::Declaration::Explicit {
+                        ty, ..
+                    } => Some(syntax::TypeSyntax::Builtin(syntax::BuiltinType::Scalar(
+                        *ty,
+                    ))),
+                    syntax::Declaration::UnresolvedExplicit {
+                        ty, ..
+                    }
+                    | syntax::Declaration::External {
+                        ty, ..
+                    } => Some(ty.clone()),
+                    syntax::Declaration::Inferred {
+                        ..
+                    } => None,
                 },
                 _ => unreachable!("source classifier checks global ownership"),
             };

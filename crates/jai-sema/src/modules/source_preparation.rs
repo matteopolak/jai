@@ -99,6 +99,7 @@ pub(super) struct PendingAliases<'graph> {
     sources: Vec<DeclarationId>,
     next: usize,
     pending: Option<SourcePreparationPending>,
+    context_headers: HashMap<DeclarationId, procedure_headers::ContextHeaderPrerequisite>,
 }
 
 impl<'graph> PendingAliases<'graph> {
@@ -120,6 +121,7 @@ impl<'graph> PendingAliases<'graph> {
             sources,
             next: 0,
             pending: None,
+            context_headers: HashMap::new(),
         }
     }
 
@@ -151,7 +153,9 @@ impl<'graph> PendingAliases<'graph> {
                     self.next += 1;
                 }
                 Some(TypePreparation::Pending(mut cause)) => {
-                    if let PendingType::Constant { declaration, .. } = cause
+                    if let PendingType::Constant {
+                        declaration, ..
+                    } = cause
                         && let Some(annotation_wait) = self.prepare_constant_annotation(
                             declaration,
                             declarations,
@@ -181,8 +185,12 @@ impl<'graph> PendingAliases<'graph> {
                 continue;
             };
             let annotation = match &global.declaration {
-                syntax::Declaration::UnresolvedExplicit { ty, .. }
-                | syntax::Declaration::External { ty, .. } => ty,
+                syntax::Declaration::UnresolvedExplicit {
+                    ty, ..
+                }
+                | syntax::Declaration::External {
+                    ty, ..
+                } => ty,
                 _ => continue,
             };
             match aggregates::parameterized::prepare_type_paired(
@@ -336,13 +344,15 @@ impl<'graph> PendingAliases<'graph> {
                 .iter()
                 .filter_map(|parameter| match &parameter.binding {
                     syntax::ParameterBinding::RequiredType(ty)
-                    | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => {
-                        Some((ty, parameter.span))
-                    }
+                    | syntax::ParameterBinding::DefaultedType {
+                        ty: Some(ty), ..
+                    } => Some((ty, parameter.span)),
                     _ => None,
                 })
                 .chain(results.iter().filter_map(|result| match &result.binding {
-                    syntax::ResultBinding::Typed { ty, .. } => Some((ty, result.span)),
+                    syntax::ResultBinding::Typed {
+                        ty, ..
+                    } => Some((ty, result.span)),
                     _ => None,
                 }));
             for (annotation, span) in annotations {
@@ -363,14 +373,21 @@ impl<'graph> PendingAliases<'graph> {
                 }
             }
             if ready {
-                procedure_headers::register_selected(
+                match procedure_headers::register_selected(
                     self.graph,
                     source,
                     types,
                     declarations,
                     &mut self.constants,
                     meta,
-                )?;
+                )? {
+                    procedure_headers::HeaderPreparation::Ready => {
+                        self.context_headers.remove(&source.id());
+                    }
+                    procedure_headers::HeaderPreparation::Pending(request) => {
+                        self.context_headers.insert(source.id(), request);
+                    }
+                }
             }
         }
         Ok(pending)
@@ -417,9 +434,17 @@ impl<'graph> PendingAliases<'graph> {
 
     /// Finishing an incomplete cursor returns its original retained state.
     /// The controller must not discard unfinished requests or their evaluator.
-    pub(super) fn into_constants(self) -> Result<Constants<'graph>, Self> {
+    pub(super) fn into_constants(
+        self,
+    ) -> Result<
+        (
+            Constants<'graph>,
+            Vec<procedure_headers::ContextHeaderPrerequisite>,
+        ),
+        Self,
+    > {
         if self.next == self.sources.len() {
-            Ok(self.constants)
+            Ok((self.constants, self.context_headers.into_values().collect()))
         } else {
             Err(self)
         }
