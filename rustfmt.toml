@@ -3,7 +3,6 @@ style_edition = "2024"
 max_width = 100
 newline_style = "Unix"
 
-blank_lines_lower_bound = 1
 blank_lines_upper_bound = 2
 empty_item_single_line = false
 struct_lit_single_line = false

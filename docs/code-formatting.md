@@ -18,7 +18,7 @@ Run rustfmt separately on Rust files outside the workspace, such as the standalo
 
 ## Configuration
 
-`rust-toolchain.toml` pins the formatter. The shared configuration sets a 100-column width, Unix line endings, at least one blank line between items, and expanded compact blocks. Its item-spacing options require nightly rustfmt.
+`rust-toolchain.toml` pins the formatter. The shared configuration sets a 100-column width, Unix line endings, preserved blank-line groups, and expanded compact blocks. Its item-spacing options require nightly rustfmt.
 
 ## Dependencies
 
