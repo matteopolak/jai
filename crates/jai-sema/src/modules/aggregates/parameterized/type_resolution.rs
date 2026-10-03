@@ -13,7 +13,11 @@ where
     ) -> TypeResult<TypeId> {
         use syntax::{BuiltinType as B, TypeSyntax as T};
         let result = match syntax {
-            T::Restricted { variable, span, .. } => {
+            T::Restricted {
+                variable,
+                span,
+                ..
+            } => {
                 return self.resolve(file, &T::Variable(*variable), substitution, *span);
             }
             T::This => {
@@ -160,16 +164,17 @@ where
                             root: path.root,
                             members: path.members[..count].to_vec(),
                         };
-                        let root = if count == 0 {
+                        let bound = if count == 0 {
                             substitution.and_then(|s| s.ty(path.root))
                         } else {
                             None
-                        }
-                        .or_else(|| {
-                            declaration_id(self.graph, file, &prefix, span)
-                                .ok()
-                                .and_then(|id| self.nominals.declarations.get(&id).copied())
-                        });
+                        };
+                        let root = match bound {
+                            Some(ty) => Some(ty),
+                            None => {
+                                self.source_namespace_root(file, &prefix, substitution, span)?
+                            }
+                        };
                         if let Some(mut ty) = root {
                             let mut found = true;
                             for member in &path.members[count..] {
@@ -265,7 +270,10 @@ where
                 let inner = self.resolve(file, inner, substitution, span)?;
                 self.types.dynamic_array(inner)
             }
-            T::FixedArray { count, element } => {
+            T::FixedArray {
+                count,
+                element,
+            } => {
                 let element = self.resolve(file, element, substitution, span)?;
                 let value = self.scalar(file, count, substitution)?;
                 let count_value = match value {
@@ -293,7 +301,9 @@ where
             }
             T::InlineRecord(record) => return self.inline_record(file, record, substitution),
             T::InlineEnum(enumeration) => return self.inline_enum(file, enumeration, substitution),
-            T::Variant { .. } => {
+            T::Variant {
+                ..
+            } => {
                 return self
                     .nominals
                     .resolve_type(self.graph, file, syntax, self.types, span, self.evaluate)

@@ -294,3 +294,4 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Historical right-handed GetRect](stdlib/getrect-legacy-right-handed.md) — versioned geometry and focused source overlay.
 - [Historical right-handed UI](stdlib/getrect-legacy-right-handed-ui.md) — retained widgets, upward-positive layout, and cached resource reads.
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
+- [Nested source namespaces](nested-source-namespaces.md) — canonical nested type reservations through original early source aliases.
