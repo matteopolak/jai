@@ -20,6 +20,7 @@ mod namespace;
 pub(crate) use namespace::ReadyInstanceRecordMember;
 mod pending_types;
 pub(crate) use pending_types::PendingType;
+mod namespace_roots;
 mod preparation;
 mod type_queries;
 mod type_resolution;

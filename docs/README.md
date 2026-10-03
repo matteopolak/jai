@@ -293,6 +293,7 @@ Public source corpora are input data.
 - [Historical right-handed GetRect](specs/stdlib/README.md) — versioned geometry and focused source overlay.
 - [Historical right-handed UI](specs/stdlib/README.md) — retained widgets, upward-positive layout, and cached resource reads.
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
+- [Nested source namespaces](nested-source-namespaces.md) — canonical nested type reservations through original early source aliases.
 
 ## Language and library specifications
 
