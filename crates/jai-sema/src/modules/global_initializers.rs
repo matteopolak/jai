@@ -39,7 +39,11 @@ impl<'graph> Jobs<'graph> {
             let file = source.file();
             let index = pending.len();
             let (expected, expression, external) = match &global.declaration {
-                syntax::Declaration::External { ty, binding, .. } => {
+                syntax::Declaration::External {
+                    ty,
+                    binding,
+                    ..
+                } => {
                     let expected = declarations.nominals.resolve_type_with_specializations(
                         graph,
                         aggregates::parameterized::TypeRequest::new(file, ty, global.span),
@@ -51,7 +55,9 @@ impl<'graph> Jobs<'graph> {
                         external_data::declaration(graph, source, binding, expected, index, types)?;
                     (expected, None, Some(external))
                 }
-                syntax::Declaration::Inferred { initializer, .. } => {
+                syntax::Declaration::Inferred {
+                    initializer, ..
+                } => {
                     let expected = if enum_constants::is_pure_scalar(initializer)
                         && enum_constants::uses_enum(declarations, file, initializer)
                     {
@@ -89,10 +95,14 @@ impl<'graph> Jobs<'graph> {
                     (expected, Some(initializer), None)
                 }
                 syntax::Declaration::Explicit {
-                    ty, initializer, ..
+                    ty,
+                    initializer,
+                    ..
                 } => (types.scalar(*ty), initializer.as_ref(), None),
                 syntax::Declaration::UnresolvedExplicit {
-                    ty, initializer, ..
+                    ty,
+                    initializer,
+                    ..
                 } => {
                     let expected = declarations.nominals.resolve_type_with_specializations(
                         graph,

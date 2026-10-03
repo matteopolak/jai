@@ -305,3 +305,13 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Nested source namespaces](nested-source-namespaces.md) — canonical nested type reservations through original early source aliases.
 
 - [Return type parameters](return-type-parameters.md)
+
+- [Source allocation origins](source-allocation-origins.md)
+- [Retained source identity](retained-source-identity.md)
+- [Static catalog ownership](static-catalog-ownership.md)
+- [Retained source providers](retained-source-providers.md)
+- [C++ record return ABI](cpp-return-abi.md) — typed foreign return policy and paired native result carriers.
+- [Microsoft C++ result classification](cpp-return-classification.md)
+- [Platform and native host boundary](platform-native-host-boundary.md)
+- [Native library source bindings](native-library-source-bindings.md)
+- [Typed heap constructor receipts](typed-heap-constructor-receipts.md)

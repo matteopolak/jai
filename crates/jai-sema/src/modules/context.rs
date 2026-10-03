@@ -59,7 +59,10 @@ pub(super) fn build(
                         )?,
                         Some(initializer),
                     ),
-                    syntax::FieldBinding::Explicit { ty, initializer } => (
+                    syntax::FieldBinding::Explicit {
+                        ty,
+                        initializer,
+                    } => (
                         declarations.nominals.resolve_type(
                             graph,
                             file,
@@ -222,23 +225,29 @@ fn source_field(
     span: Span,
 ) -> Result<syntax::FieldDeclaration, Diagnostic> {
     let binding = match declaration {
-        syntax::Declaration::External { .. } => {
+        syntax::Declaration::External {
+            ..
+        } => {
             return Err(Diagnostic::new(
                 span,
                 "external data cannot supply an owned context field",
             ));
         }
-        syntax::Declaration::Inferred { initializer, .. } => {
-            syntax::FieldBinding::Inferred(initializer.clone())
-        }
+        syntax::Declaration::Inferred {
+            initializer, ..
+        } => syntax::FieldBinding::Inferred(initializer.clone()),
         syntax::Declaration::Explicit {
-            ty, initializer, ..
+            ty,
+            initializer,
+            ..
         } => syntax::FieldBinding::Explicit {
             ty: syntax::TypeSyntax::Builtin(syntax::BuiltinType::Scalar(*ty)),
             initializer: initializer.clone(),
         },
         syntax::Declaration::UnresolvedExplicit {
-            ty, initializer, ..
+            ty,
+            initializer,
+            ..
         } => syntax::FieldBinding::Explicit {
             ty: ty.clone(),
             initializer: initializer.clone(),

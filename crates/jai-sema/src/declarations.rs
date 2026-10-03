@@ -49,7 +49,12 @@ impl<'a> Constants<'a> {
                     span,
                     "nominal enum block constant requires typed constant binding",
                 )),
-                Some(Binding::Storage(_) | Binding::CompilerInput { .. }) => Err(Diagnostic::new(
+                Some(
+                    Binding::Storage(_)
+                    | Binding::CompilerInput {
+                        ..
+                    },
+                ) => Err(Diagnostic::new(
                     span,
                     "mutable storage cannot supply a compile-time constant",
                 )),
@@ -58,7 +63,9 @@ impl<'a> Constants<'a> {
                 }
                 Some(Binding::Namespace(_) | Binding::Imported(_))
                 | Some(Binding::Library(_) | Binding::Macro(_))
-                | Some(Binding::Procedure { .. })
+                | Some(Binding::Procedure {
+                    ..
+                })
                 | Some(Binding::Type(_))
                 | Some(Binding::LambdaPreview(_))
                 | Some(Binding::TypedConstant(_) | Binding::Code(_)) => Err(Diagnostic::new(
@@ -81,17 +88,20 @@ impl<'a> Constants<'a> {
                             span,
                             "nominal enum block constant requires typed constant binding",
                         )),
-                        Binding::Storage(_) | Binding::CompilerInput { .. } => {
-                            Err(Diagnostic::new(
-                                span,
-                                "mutable storage cannot supply a compile-time constant",
-                            ))
-                        }
+                        Binding::Storage(_)
+                        | Binding::CompilerInput {
+                            ..
+                        } => Err(Diagnostic::new(
+                            span,
+                            "mutable storage cannot supply a compile-time constant",
+                        )),
                         Binding::Namespace(_)
                         | Binding::Imported(_)
                         | Binding::Library(_)
                         | Binding::Macro(_)
-                        | Binding::Procedure { .. }
+                        | Binding::Procedure {
+                            ..
+                        }
                         | Binding::Type(_)
                         | Binding::LambdaPreview(_)
                         | Binding::TypedConstant(_)
@@ -128,7 +138,10 @@ impl<'a> Constants<'a> {
                 span,
                 "nominal enum block constant requires typed constant binding",
             )),
-            Binding::Storage(_) | Binding::CompilerInput { .. } => Err(Diagnostic::new(
+            Binding::Storage(_)
+            | Binding::CompilerInput {
+                ..
+            } => Err(Diagnostic::new(
                 span,
                 "mutable storage cannot supply a compile-time constant",
             )),
@@ -136,7 +149,9 @@ impl<'a> Constants<'a> {
             | Binding::Imported(_)
             | Binding::Library(_)
             | Binding::Macro(_)
-            | Binding::Procedure { .. }
+            | Binding::Procedure {
+                ..
+            }
             | Binding::Type(_)
             | Binding::LambdaPreview(_)
             | Binding::TypedConstant(_)
@@ -190,7 +205,9 @@ impl<'a> Constants<'a> {
                             | syntax::ExpressionKind::QualifiedCall(_, _)
                             | syntax::ExpressionKind::Call(_, _) => {}
                             syntax::ExpressionKind::StructLiteral(_)
-                            | syntax::ExpressionKind::Member { .. } => {}
+                            | syntax::ExpressionKind::Member {
+                                ..
+                            } => {}
                             _ => {}
                         }
                     }
@@ -276,7 +293,9 @@ pub(super) fn resolve_globals(
         }
         let (name, value) = match &global.declaration {
             syntax::Declaration::Inferred {
-                name, initializer, ..
+                name,
+                initializer,
+                ..
             } => (
                 *name,
                 jai_eval::evaluate(initializer, |name, span| constants.value(name, span))?,
@@ -294,13 +313,17 @@ pub(super) fn resolve_globals(
                 let value = value.coerce(*ty, global.span)?;
                 (*name, value)
             }
-            syntax::Declaration::External { .. } => {
+            syntax::Declaration::External {
+                ..
+            } => {
                 return Err(Diagnostic::new(
                     global.span,
                     "external data requires source graph resolution",
                 ));
             }
-            syntax::Declaration::UnresolvedExplicit { .. } => {
+            syntax::Declaration::UnresolvedExplicit {
+                ..
+            } => {
                 return Err(Diagnostic::new(
                     global.span,
                     "global aggregate types are not implemented",

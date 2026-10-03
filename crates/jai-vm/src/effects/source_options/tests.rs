@@ -3,7 +3,8 @@ use jai_types::{Integer, RecordKind, TypeRegistry};
 #[derive(Default)]
 struct Effects(Vec<CompilerRequest>);
 impl CompilerEffects for Effects {
-    fn begin(&mut self) {}
+    fn begin(&mut self) {
+    }
     fn request(&mut self, request: CompilerRequest) -> EffectOutcome {
         self.0.push(request);
         EffectOutcome::Ready(CompilerResponse::Unit)
@@ -137,7 +138,8 @@ fn settings_snapshot_returns_the_declared_nominal_record_and_enum_values() {
         requests: Vec<CompilerRequest>,
     }
     impl CompilerEffects for SnapshotEffects {
-        fn begin(&mut self) {}
+        fn begin(&mut self) {
+        }
         fn request(&mut self, request: CompilerRequest) -> EffectOutcome {
             self.requests.push(request);
             EffectOutcome::Ready(CompilerResponse::BuildOptions(self.snapshot.clone()))
@@ -311,7 +313,8 @@ fn three_level_projection_preserves_output_and_runtime_policy() {
     );
     struct PolicySnapshot;
     impl CompilerEffects for PolicySnapshot {
-        fn begin(&mut self) {}
+        fn begin(&mut self) {
+        }
         fn request(&mut self, request: CompilerRequest) -> EffectOutcome {
             assert_eq!(
                 request,

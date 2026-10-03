@@ -37,7 +37,10 @@ pub(super) fn parameters_paths(
             }
             let (ty, default) = match &parameter.binding {
                 syntax::ParameterBinding::Required(ty) => (*ty, None),
-                syntax::ParameterBinding::Defaulted { ty, expression } => {
+                syntax::ParameterBinding::Defaulted {
+                    ty,
+                    expression,
+                } => {
                     let value = jai_eval::evaluate_paths(expression, &mut lookup)?;
                     let ty = match ty {
                         Some(ty) => *ty,

@@ -135,6 +135,7 @@ mod tests {
             .procedure(jai_types::ProcedureType {
                 parameters: Box::new([]),
                 results: Box::new([]),
+                return_abi: jai_types::ForeignReturnAbi::Natural,
                 convention: CallingConvention::Jai,
                 context: ContextMode::None,
                 variadic: jai_types::Variadic::None,

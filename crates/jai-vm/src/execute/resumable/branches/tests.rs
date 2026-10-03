@@ -24,6 +24,7 @@ fn procedure(types: &mut TypeRegistry) -> Arc<Procedure> {
         .procedure(ProcedureType {
             parameters: [].into(),
             results: [].into(),
+            return_abi: jai_types::ForeignReturnAbi::Natural,
             convention: CallingConvention::Jai,
             context: ContextMode::None,
             variadic: Variadic::None,

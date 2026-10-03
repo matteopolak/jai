@@ -38,6 +38,8 @@ mod external_data;
 pub(crate) mod field_default_jobs;
 mod file_abi_bindings;
 pub(crate) mod foreign_libraries;
+mod native_library_binding;
+pub use native_library_binding::NativeSourceLibraryBinding;
 mod global_initializers;
 mod polymorphic_defaults;
 mod polymorphic_headers;

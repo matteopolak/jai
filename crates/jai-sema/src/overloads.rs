@@ -44,6 +44,7 @@ pub struct ProcedurePattern {
     pub parameters: Vec<TypePattern>,
     pub results: Vec<TypePattern>,
     pub convention: jai_types::CallingConvention,
+    pub return_abi: jai_types::ForeignReturnAbi,
     pub context: jai_types::ContextMode,
     pub variadic: CandidateVariadic,
 }

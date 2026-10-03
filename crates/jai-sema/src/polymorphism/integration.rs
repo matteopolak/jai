@@ -26,6 +26,7 @@ pub(crate) struct TemplateDefinition {
     pub file: FileInstanceId,
     pub span: Span,
     pub convention: CallingConvention,
+    pub return_abi: jai_types::ForeignReturnAbi,
     pub context: ContextMode,
 }
 
@@ -218,10 +219,14 @@ impl GenericContext {
     pub(crate) fn calling_mode(
         &self,
         declaration: DeclarationId,
-    ) -> Option<(CallingConvention, ContextMode)> {
-        self.templates
-            .get(&declaration)
-            .map(|definition| (definition.convention, definition.context))
+    ) -> Option<(CallingConvention, jai_types::ForeignReturnAbi, ContextMode)> {
+        self.templates.get(&declaration).map(|definition| {
+            (
+                definition.convention,
+                definition.return_abi,
+                definition.context,
+            )
+        })
     }
     pub(crate) fn has_pending_bodies(&self) -> bool {
         self.work
@@ -410,6 +415,7 @@ impl GenericContext {
                         .map(|parameter| parameter.ty)
                         .collect(),
                     results: results.iter().map(|result| result.ty).collect(),
+                    return_abi: definition.return_abi,
                     convention: definition.convention,
                     context: definition.context,
                     variadic: match definition.template.candidate.variadic {
@@ -662,6 +668,7 @@ mod tests {
             template,
             file,
             span: Span::default(),
+            return_abi: jai_types::ForeignReturnAbi::Natural,
             convention: CallingConvention::Jai,
             context: ContextMode::None,
         });

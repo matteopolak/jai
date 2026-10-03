@@ -16,7 +16,11 @@ impl Builder<'_> {
         scope: ImportBindingScope,
     ) -> Result<(), GraphError> {
         match self.expand_module(module, path) {
-            Err(error @ GraphError::Pending { .. }) => {
+            Err(
+                error @ GraphError::Pending {
+                    ..
+                },
+            ) => {
                 if matches!(scope, ImportBindingScope::File) {
                     self.publish_import(file, import, module)?;
                 }

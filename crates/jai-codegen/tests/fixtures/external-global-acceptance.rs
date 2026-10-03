@@ -102,7 +102,14 @@ impl Fixture {
                     }
                 })
                 .collect();
-            assert_eq!(external.len(), if provided { 2 } else { 1 });
+            assert_eq!(
+                external.len(),
+                if provided {
+                    2
+                } else {
+                    1
+                }
+            );
             for (global, data) in &external {
                 assert!(matches!(data.id(), ExternalDataId::File(_)));
                 let record = graph.sources().get(data.location().source).unwrap();
@@ -116,7 +123,10 @@ impl Fixture {
                     ExternalDataSource::Program => assert!(!library),
                     ExternalDataSource::Library(binding) => {
                         assert!(library);
-                        let ForeignLibraryKind::Local { path } = &binding.kind else {
+                        let ForeignLibraryKind::Local {
+                            path,
+                        } = &binding.kind
+                        else {
                             panic!("authored local archive became a different provider kind");
                         };
                         assert_eq!(

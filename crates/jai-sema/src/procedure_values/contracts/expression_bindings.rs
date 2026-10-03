@@ -88,7 +88,9 @@ impl Resolver<'_> {
                     **inner = value;
                 }
             }
-            ContractKind::Callable { .. } => {}
+            ContractKind::Callable {
+                ..
+            } => {}
         }
         // Callable leaves retain the destination's checked source policy.
         Ok(Some(declared))

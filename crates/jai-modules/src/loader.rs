@@ -181,7 +181,17 @@ impl<'a> Builder<'a> {
                 diagnostic,
             })?
             .into_owned();
-        let id = self.graph.sources.insert(path.to_owned(), text);
+        let snapshot = self
+            .provider
+            .retain_decoded_text(path, &text)
+            .map_err(|cause| GraphError::Io {
+                path: path.to_owned(),
+                cause,
+            })?;
+        let id = self
+            .graph
+            .sources
+            .insert_snapshot(path.to_owned(), snapshot);
         let file =
             jai_syntax::parse_file(self.graph.sources.get(id).unwrap(), &mut self.graph.symbols)
                 .map_err(|diagnostic| {
@@ -220,7 +230,11 @@ impl<'a> Builder<'a> {
                 let before = (self.initialized_files.len(), self.graph.parameters.len());
                 match self.initialize_file(file) {
                     Ok(()) => {}
-                    Err(error @ GraphError::Pending { .. }) => {
+                    Err(
+                        error @ GraphError::Pending {
+                            ..
+                        },
+                    ) => {
                         initialization_pending.get_or_insert(error);
                     }
                     Err(error) => return Err(error),
@@ -247,7 +261,11 @@ impl<'a> Builder<'a> {
                             }
                         }
                     }
-                    Err(error @ GraphError::Pending { .. }) => {
+                    Err(
+                        error @ GraphError::Pending {
+                            ..
+                        },
+                    ) => {
                         first_pending.get_or_insert(error);
                         deferred.push((file, path, item));
                     }
@@ -318,7 +336,10 @@ impl<'a> Builder<'a> {
         self.file_origins.insert(id, origin);
         self.active_files.remove(&key);
         match self.initialize_file(id) {
-            Ok(()) | Err(GraphError::Pending { .. }) => Ok(id),
+            Ok(())
+            | Err(GraphError::Pending {
+                ..
+            }) => Ok(id),
             Err(error) => Err(error),
         }
     }
@@ -517,7 +538,10 @@ impl<'a> Builder<'a> {
                         UsingDeclarationSource::File(Box::new(declaration.clone())),
                     )?;
                 }
-                FileItem::CompileTimeCases { cases, location } => {
+                FileItem::CompileTimeCases {
+                    cases,
+                    location,
+                } => {
                     let choice = match self.selected_case(file, cases.span) {
                         Some(choice) => choice,
                         None => match self.constant_case(file, &cases.header()) {
@@ -531,7 +555,14 @@ impl<'a> Builder<'a> {
                                 );
                                 choice
                             }
-                            Err(GraphError::Pending { .. } | GraphError::Unsupported { .. }) => {
+                            Err(
+                                GraphError::Pending {
+                                    ..
+                                }
+                                | GraphError::Unsupported {
+                                    ..
+                                },
+                            ) => {
                                 return Err(self.defer_case(
                                     file,
                                     &cases.header(),
@@ -561,46 +592,56 @@ impl<'a> Builder<'a> {
                     else_items,
                     location: _,
                 } => {
-                    let decision = if let Some(selected) =
-                        self.selected_condition(file, condition.span)
-                    {
-                        selected
-                    } else {
-                        let value = match self.constant_expression(file, condition, &mut Vec::new())
-                        {
-                            Ok(value) => value,
-                            Err(GraphError::Pending { .. } | GraphError::Unsupported { .. }) => {
-                                return Err(self.defer_condition(
-                                    file,
-                                    condition,
-                                    DiscoveryConditionContext::File,
-                                ));
+                    let decision =
+                        if let Some(selected) = self.selected_condition(file, condition.span) {
+                            selected
+                        } else {
+                            let value =
+                                match self.constant_expression(file, condition, &mut Vec::new()) {
+                                    Ok(value) => value,
+                                    Err(
+                                        GraphError::Pending {
+                                            ..
+                                        }
+                                        | GraphError::Unsupported {
+                                            ..
+                                        },
+                                    ) => {
+                                        return Err(self.defer_condition(
+                                            file,
+                                            condition,
+                                            DiscoveryConditionContext::File,
+                                        ));
+                                    }
+                                    Err(error) => return Err(error),
+                                };
+                            match value {
+                                jai_eval::Value::Bool(v) => v,
+                                jai_eval::Value::Literal(v) => v != 0,
+                                jai_eval::Value::Int(v) => v.value() != 0,
+                                jai_eval::Value::Float(v) => v.to_f64() != 0.0,
+                                jai_eval::Value::WeakFloat(v) => {
+                                    v.round(v.default_type(), condition.span)
+                                        .map_err(|d| {
+                                            self.located(
+                                                SourceSpan {
+                                                    source: self.graph.files[file.index()].source,
+                                                    span: d.span,
+                                                },
+                                                d.message,
+                                            )
+                                        })?
+                                        .to_f64()
+                                        != 0.0
+                                }
                             }
-                            Err(error) => return Err(error),
                         };
-                        match value {
-                            jai_eval::Value::Bool(v) => v,
-                            jai_eval::Value::Literal(v) => v != 0,
-                            jai_eval::Value::Int(v) => v.value() != 0,
-                            jai_eval::Value::Float(v) => v.to_f64() != 0.0,
-                            jai_eval::Value::WeakFloat(v) => {
-                                v.round(v.default_type(), condition.span)
-                                    .map_err(|d| {
-                                        self.located(
-                                            SourceSpan {
-                                                source: self.graph.files[file.index()].source,
-                                                span: d.span,
-                                            },
-                                            d.message,
-                                        )
-                                    })?
-                                    .to_f64()
-                                    != 0.0
-                            }
-                        }
-                    };
                     self.record_selection(file, condition.span, decision);
-                    let selected = if decision { then_items } else { else_items };
+                    let selected = if decision {
+                        then_items
+                    } else {
+                        else_items
+                    };
                     self.register_declarations(file, selected)?;
                     let module = self.graph.files[file.0].module;
                     self.pending.entry(module).or_default().extend(
@@ -640,7 +681,12 @@ impl<'a> Builder<'a> {
                     syntax: syntax.clone(),
                 }),
                 FileItem::Declaration(declaration) => self.scoped_declaration(file, declaration)?,
-                FileItem::Assert { .. } | FileItem::Scope { .. } => {}
+                FileItem::Assert {
+                    ..
+                }
+                | FileItem::Scope {
+                    ..
+                } => {}
             }
         }
         Ok(())

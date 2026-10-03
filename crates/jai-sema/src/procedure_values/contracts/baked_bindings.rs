@@ -99,9 +99,15 @@ impl Resolver<'_> {
         };
         let annotation = match &source.binding {
             syntax::ParameterBinding::RequiredType(ty)
-            | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => Some(ty),
-            syntax::ParameterBinding::DefaultedType { ty: None, .. }
-            | syntax::ParameterBinding::Defaulted { ty: None, .. } => None,
+            | syntax::ParameterBinding::DefaultedType {
+                ty: Some(ty), ..
+            } => Some(ty),
+            syntax::ParameterBinding::DefaultedType {
+                ty: None, ..
+            }
+            | syntax::ParameterBinding::Defaulted {
+                ty: None, ..
+            } => None,
             _ => return Ok(true),
         };
         let Some(annotation) = annotation else {
@@ -180,9 +186,15 @@ impl Resolver<'_> {
         };
         let annotation = match &source.binding {
             syntax::ParameterBinding::RequiredType(ty)
-            | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => ty,
-            syntax::ParameterBinding::DefaultedType { ty: None, .. }
-            | syntax::ParameterBinding::Defaulted { ty: None, .. } => {
+            | syntax::ParameterBinding::DefaultedType {
+                ty: Some(ty), ..
+            } => ty,
+            syntax::ParameterBinding::DefaultedType {
+                ty: None, ..
+            }
+            | syntax::ParameterBinding::Defaulted {
+                ty: None, ..
+            } => {
                 if !self.callback_contract_type(value.ty, 0) {
                     return Ok(false);
                 }

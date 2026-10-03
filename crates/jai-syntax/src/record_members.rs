@@ -163,7 +163,10 @@ impl Parser<'_> {
             } else {
                 None
             };
-            FieldBinding::Explicit { ty, initializer }
+            FieldBinding::Explicit {
+                ty,
+                initializer,
+            }
         };
         if matches!(
             &binding,

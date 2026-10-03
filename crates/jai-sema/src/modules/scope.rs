@@ -639,7 +639,10 @@ impl<'a> FileScope<'a> {
                     remaining,
                 )?))
             }
-            TypeKind::FixedArray { element, count } => {
+            TypeKind::FixedArray {
+                element,
+                count,
+            } => {
                 let count = usize::try_from(*count).map_err(|_| {
                     Diagnostic::new(span, "array default count exceeds host addressable limits")
                 })?;
@@ -730,7 +733,10 @@ impl<'a> FileScope<'a> {
             }
         };
         active.remove(&ty);
-        Ok(jai_ir::ConstantValue { ty, kind })
+        Ok(jai_ir::ConstantValue {
+            ty,
+            kind,
+        })
     }
     pub(crate) fn parameter_string(&self, path: &NamePath) -> Option<(Vec<u8>, Vec<Symbol>)> {
         for count in (0..=path.members.len()).rev() {
@@ -804,11 +810,17 @@ impl<'a> FileScope<'a> {
                 BakedValue::Value(jai_ir::ConstantValue {
                     ty,
                     kind: jai_ir::ConstantKind::Enum(value),
-                }) => Ok(Binding::Enum(aggregates::EnumConstant { ty, value })),
+                }) => Ok(Binding::Enum(aggregates::EnumConstant {
+                    ty,
+                    value,
+                })),
                 BakedValue::Value(jai_ir::ConstantValue {
                     ty,
                     kind: jai_ir::ConstantKind::Procedure(procedure),
-                }) => Ok(Binding::Procedure { procedure, ty }),
+                }) => Ok(Binding::Procedure {
+                    procedure,
+                    ty,
+                }),
                 BakedValue::Float(value)
                 | BakedValue::Value(jai_ir::ConstantValue {
                     kind: jai_ir::ConstantKind::Float(value),
@@ -820,8 +832,12 @@ impl<'a> FileScope<'a> {
                 )),
             };
         }
-        if let Ok(binding @ (GraphBinding::SourceMember { .. } | GraphBinding::StorageMember(_))) =
-            self.declarations.graph.lookup(self.file, path)
+        if let Ok(
+            binding @ (GraphBinding::SourceMember {
+                ..
+            }
+            | GraphBinding::StorageMember(_)),
+        ) = self.declarations.graph.lookup(self.file, path)
         {
             return self.imported_value(binding, span);
         }
@@ -1017,7 +1033,11 @@ impl<'a> FileScope<'a> {
     pub(crate) fn generic_calling_mode(
         &self,
         id: DeclarationId,
-    ) -> Option<(jai_types::CallingConvention, jai_types::ContextMode)> {
+    ) -> Option<(
+        jai_types::CallingConvention,
+        jai_types::ForeignReturnAbi,
+        jai_types::ContextMode,
+    )> {
         self.declarations.generics.borrow().calling_mode(id)
     }
     pub(crate) fn expanded_formal_pattern(
@@ -1045,7 +1065,10 @@ impl<'a> FileScope<'a> {
             &self.declarations.nominals,
             records,
             &mut |file, expression| {
-                let definition = FileScope { file, ..scope };
+                let definition = FileScope {
+                    file,
+                    ..scope
+                };
                 jai_eval::evaluate_paths(expression, |path, span| {
                     match definition.value(path, span)? {
                         Binding::Constant(value) => Ok(value),
@@ -1215,7 +1238,9 @@ fn declaration_lookup(
             span,
             "binding does not denote a single declaration",
         )),
-        Ok(GraphBinding::SourceMember { .. }) => Err(Diagnostic::new(
+        Ok(GraphBinding::SourceMember {
+            ..
+        }) => Err(Diagnostic::new(
             span,
             "source member does not denote a standalone declaration",
         )),
@@ -1236,10 +1261,14 @@ fn declaration_lookup(
                 LookupError::NotNamespace(name) => {
                     format!("'{}' is not a namespace", graph.symbols().name(name))
                 }
-                LookupError::UnknownMember { name, .. } => {
+                LookupError::UnknownMember {
+                    name, ..
+                } => {
                     format!("unknown module member '{}'", graph.symbols().name(name))
                 }
-                LookupError::PrivateMember { name, .. } => {
+                LookupError::PrivateMember {
+                    name, ..
+                } => {
                     format!("module member '{}' is private", graph.symbols().name(name))
                 }
                 LookupError::UnfilledPlaceholder(_) => {

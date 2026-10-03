@@ -78,7 +78,10 @@ impl Parser<'_> {
                     } else {
                         NoteValue::Expression(self.expression(0)?)
                     };
-                    arguments.push(NoteArgument { name: None, value });
+                    arguments.push(NoteArgument {
+                        name: None,
+                        value,
+                    });
                     if self.take(Punct::CloseParen) {
                         break;
                     }

@@ -18,7 +18,11 @@ impl Resolver<'_> {
     ) -> Result<Vec<Place>, Diagnostic> {
         let mut values = Vec::new();
         for expression in source {
-            if let syntax::ExpressionKind::CallHint { hint, call } = &expression.kind {
+            if let syntax::ExpressionKind::CallHint {
+                hint,
+                call,
+            } = &expression.kind
+            {
                 self.capture_hinted_call(
                     *hint,
                     call,
@@ -61,7 +65,10 @@ impl Resolver<'_> {
                     destinations.push(Some(local.place()));
                     values.push(local.place());
                 }
-                statements.push(Statement::CallResults { call, destinations });
+                statements.push(Statement::CallResults {
+                    call,
+                    destinations,
+                });
                 continue;
             }
             let direct = match &expression.kind {
@@ -104,7 +111,10 @@ impl Resolver<'_> {
                         destinations.push(Some(local.place()));
                         values.push(local.place());
                     }
-                    statements.push(Statement::CallResults { call, destinations });
+                    statements.push(Statement::CallResults {
+                        call,
+                        destinations,
+                    });
                     continue;
                 } else {
                     let source = self.baked_callback_call_source(&path, expression.span)?;
@@ -123,7 +133,11 @@ impl Resolver<'_> {
                     continue;
                 }
             }
-            if let syntax::ExpressionKind::IndirectCall { callee, args } = &expression.kind {
+            if let syntax::ExpressionKind::IndirectCall {
+                callee,
+                args,
+            } = &expression.kind
+            {
                 let target = self.expr(callee)?;
                 self.capture_indirect_results(
                     IndirectResultCall {
@@ -278,7 +292,10 @@ impl Resolver<'_> {
             let address = self.allocate_typed(pointer)?;
             statements.push(Statement::Store(
                 address.place(),
-                ValueExpr::AddressOf { place, ty: pointer },
+                ValueExpr::AddressOf {
+                    place,
+                    ty: pointer,
+                },
             ));
             let place = self
                 .places
@@ -304,7 +321,9 @@ impl Resolver<'_> {
             return Err(self.error("assignment result count does not match target count"));
         }
         for (index, place) in places.into_iter().enumerate() {
-            let Some(place) = place else { continue };
+            let Some(place) = place else {
+                continue;
+            };
             let value = self.typed_value(
                 ValueExpr::Load(values[index]),
                 values[index].ty(),

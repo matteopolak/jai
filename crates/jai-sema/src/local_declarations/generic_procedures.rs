@@ -426,6 +426,7 @@ impl Resolver<'_> {
                     .map(|parameter| parameter.ty)
                     .collect(),
                 results: results.iter().map(|result| result.ty).collect(),
+                return_abi: source.return_abi,
                 convention: source.convention,
                 context: source.context,
                 variadic: jai_types::Variadic::None,

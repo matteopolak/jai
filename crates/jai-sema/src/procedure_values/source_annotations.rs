@@ -94,12 +94,16 @@ impl CheckedSourceProcedureType {
                         fixed_parameters: parameters.len(),
                     }
                 } else {
-                    crate::overloads::CandidateVariadic::Jai { parameter }
+                    crate::overloads::CandidateVariadic::Jai {
+                        parameter,
+                    }
                 }
             });
         let variadic = match source_variadic {
             crate::overloads::CandidateVariadic::None => jai_types::Variadic::None,
-            crate::overloads::CandidateVariadic::C { .. } => {
+            crate::overloads::CandidateVariadic::C {
+                ..
+            } => {
                 if source.parameters.last().is_some_and(|parameter| {
                     parameter.evaluation == syntax::ParameterEvaluation::Evaluate
                 }) {
@@ -110,7 +114,9 @@ impl CheckedSourceProcedureType {
                     jai_types::Variadic::None
                 }
             }
-            crate::overloads::CandidateVariadic::Jai { parameter } => {
+            crate::overloads::CandidateVariadic::Jai {
+                parameter,
+            } => {
                 let element = match types.kind(parameters[parameter]) {
                     Ok(jai_types::TypeKind::Slice(element)) => *element,
                     _ => {
@@ -139,6 +145,7 @@ impl CheckedSourceProcedureType {
         if evaluated.as_slice() != runtime.parameters.as_ref()
             || variadic != runtime.variadic
             || source.convention != runtime.convention
+            || source.return_abi != runtime.return_abi
             || source.context != runtime.context
         {
             return Err(Diagnostic::new(

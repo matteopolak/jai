@@ -98,7 +98,9 @@ impl Resolver<'_> {
                 S::Declare(declaration) => {
                     let (name, ty) = match declaration {
                         syntax::Declaration::Inferred {
-                            name, initializer, ..
+                            name,
+                            initializer,
+                            ..
                         } => {
                             self.validate_discarded_expression(initializer)?;
                             let info = self.describe_argument(initializer)?;
@@ -128,7 +130,11 @@ impl Resolver<'_> {
                             }
                             (*name, ty)
                         }
-                        syntax::Declaration::External { name, ty, .. } => {
+                        syntax::Declaration::External {
+                            name,
+                            ty,
+                            ..
+                        } => {
                             if self.symbols.name(*name) == "_" {
                                 return Err(Diagnostic::new(
                                     span,
@@ -219,7 +225,10 @@ impl Resolver<'_> {
                     self.scopes.pop();
                     returns |= yes? && no?;
                 }
-                S::Block(body) | S::CheckScope { body, .. } => {
+                S::Block(body)
+                | S::CheckScope {
+                    body, ..
+                } => {
                     self.scopes.push(HashMap::new());
                     let checked = self.check_discarded_statements(body, result, depth + 1);
                     self.scopes.pop();

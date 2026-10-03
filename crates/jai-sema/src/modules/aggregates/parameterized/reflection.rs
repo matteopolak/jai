@@ -81,7 +81,11 @@ pub(super) fn record_body_metadata(
     ReflectedRecordMetadata {
         notes: notes(record.notes, source),
         textual_flags: record.attributes.iter().fold(
-            if union { 2 } else { 0 },
+            if union {
+                2
+            } else {
+                0
+            },
             |flags, attribute| {
                 flags
                     | match attribute {
@@ -92,7 +96,11 @@ pub(super) fn record_body_metadata(
             },
         ),
         status_flags: 0,
-        nontextual_flags: if union { 64 } else { 0 },
+        nontextual_flags: if union {
+            64
+        } else {
+            0
+        },
         unsupported_members: record.members.iter().any(|member| {
             !matches!(
                 member,

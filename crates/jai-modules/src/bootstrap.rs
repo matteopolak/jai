@@ -63,14 +63,18 @@ pub enum PreludeError {
 impl fmt::Display for PreludeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Missing { roots } => {
+            Self::Missing {
+                roots,
+            } => {
                 f.write_str("Preload source not found in configured module roots")?;
                 for root in roots {
                     write!(f, " {}", root.display())?;
                 }
                 Ok(())
             }
-            Self::MissingRuntimeSupport { roots } => {
+            Self::MissingRuntimeSupport {
+                roots,
+            } => {
                 f.write_str("Runtime_Support source not found in configured module roots")?;
                 for root in roots {
                     write!(f, " {}", root.display())?;
@@ -78,16 +82,25 @@ impl fmt::Display for PreludeError {
                 Ok(())
             }
             Self::InvalidConfiguration(message) => f.write_str(message),
-            Self::Io { path, cause } => write!(f, "{}: {cause}", path.display()),
+            Self::Io {
+                path,
+                cause,
+            } => write!(f, "{}: {cause}", path.display()),
         }
     }
 }
 impl std::error::Error for PreludeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
-            Self::Io { cause, .. } => Some(cause),
-            Self::Missing { .. }
-            | Self::MissingRuntimeSupport { .. }
+            Self::Io {
+                cause, ..
+            } => Some(cause),
+            Self::Missing {
+                ..
+            }
+            | Self::MissingRuntimeSupport {
+                ..
+            }
             | Self::InvalidConfiguration(_) => None,
         }
     }

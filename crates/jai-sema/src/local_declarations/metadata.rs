@@ -414,7 +414,10 @@ impl Resolver<'_> {
                     self.lexical_default_inner(base, span, active, remaining, false)?,
                 ))
             }
-            TypeKind::FixedArray { element, count } => {
+            TypeKind::FixedArray {
+                element,
+                count,
+            } => {
                 if *count == 0 {
                     ConstantKind::Zero
                 } else {
@@ -543,7 +546,10 @@ impl Resolver<'_> {
             }
         };
         active.remove(&ty);
-        Ok(jai_ir::ConstantValue { ty, kind })
+        Ok(jai_ir::ConstantValue {
+            ty,
+            kind,
+        })
     }
 
     fn require_local_record_initializer(&self, ty: TypeId, span: Span) -> Result<(), Diagnostic> {
@@ -621,6 +627,9 @@ impl Resolver<'_> {
             .get(&path.members[0])
             .copied()
             .ok_or_else(|| Diagnostic::new(span, "unknown enum member"))?;
-        Ok(Some(modules::aggregates::EnumConstant { ty, value }))
+        Ok(Some(modules::aggregates::EnumConstant {
+            ty,
+            value,
+        }))
     }
 }

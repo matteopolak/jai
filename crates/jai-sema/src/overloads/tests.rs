@@ -560,6 +560,7 @@ fn callback_patterns_infer_results_and_keep_abi_context_and_parameter_types_exac
     let signature = ProcedureType {
         parameters: vec![u8, u8].into_boxed_slice(),
         results: vec![u16].into_boxed_slice(),
+        return_abi: jai_types::ForeignReturnAbi::Natural,
         convention: CallingConvention::Jai,
         context: ContextMode::Implicit,
         variadic: Variadic::None,
@@ -572,6 +573,7 @@ fn callback_patterns_infer_results_and_keep_abi_context_and_parameter_types_exac
             TypePattern::Procedure(Box::new(ProcedurePattern {
                 parameters: vec![TypePattern::Variable(t), TypePattern::Variable(t)],
                 results: vec![TypePattern::Infer(r)],
+                return_abi: signature.return_abi,
                 convention: signature.convention,
                 context: signature.context,
                 variadic: CandidateVariadic::None,
@@ -595,6 +597,7 @@ fn callback_patterns_infer_results_and_keep_abi_context_and_parameter_types_exac
             ..signature.clone()
         },
         ProcedureType {
+            return_abi: jai_types::ForeignReturnAbi::Natural,
             convention: CallingConvention::C,
             context: ContextMode::None,
             ..signature.clone()
@@ -628,6 +631,7 @@ fn contextual_callback_inference_requires_known_parameters_and_a_unique_result()
     let pattern = TypePattern::Procedure(Box::new(ProcedurePattern {
         parameters: vec![TypePattern::Variable(t)],
         results: vec![TypePattern::Infer(r)],
+        return_abi: jai_types::ForeignReturnAbi::Natural,
         convention: CallingConvention::Jai,
         context: ContextMode::Implicit,
         variadic: CandidateVariadic::None,
@@ -639,6 +643,7 @@ fn contextual_callback_inference_requires_known_parameters_and_a_unique_result()
     let descriptor = ProcedureType {
         parameters: vec![u8].into_boxed_slice(),
         results: vec![u16].into_boxed_slice(),
+        return_abi: jai_types::ForeignReturnAbi::Natural,
         convention: CallingConvention::Jai,
         context: ContextMode::Implicit,
         variadic: Variadic::None,

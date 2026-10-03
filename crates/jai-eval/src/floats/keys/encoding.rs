@@ -15,7 +15,8 @@ impl std::fmt::Display for WeakFloatEncodingError {
         })
     }
 }
-impl std::error::Error for WeakFloatEncodingError {}
+impl std::error::Error for WeakFloatEncodingError {
+}
 
 struct Output {
     bytes: Vec<u8>,

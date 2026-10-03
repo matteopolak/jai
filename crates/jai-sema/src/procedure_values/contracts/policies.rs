@@ -83,7 +83,8 @@ impl PartialEq for RuntimeReadPolicy {
             && self.0.ty() == other.0.ty()
     }
 }
-impl Eq for RuntimeReadPolicy {}
+impl Eq for RuntimeReadPolicy {
+}
 impl Hash for RuntimeReadPolicy {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.0.root().hash(state);
@@ -129,9 +130,9 @@ impl Resolver<'_> {
                 let metadata = self.preview_short_lambda_signature(lambda, expected, span)?;
                 Some(Self::preview_lambda_contract(metadata))
             }
-            syntax::ExpressionKind::TypeCast { ty, .. } => {
-                self.annotation_value_contract(expected, ty, span)?
-            }
+            syntax::ExpressionKind::TypeCast {
+                ty, ..
+            } => self.annotation_value_contract(expected, ty, span)?,
             syntax::ExpressionKind::Name(name) => {
                 let path = syntax::NamePath {
                     root: *name,
@@ -183,7 +184,9 @@ impl Resolver<'_> {
         }
         if let (
             Ok(
-                jai_types::TypeKind::FixedArray { element, .. }
+                jai_types::TypeKind::FixedArray {
+                    element, ..
+                }
                 | jai_types::TypeKind::Slice(element)
                 | jai_types::TypeKind::DynamicArray(element),
             ),
@@ -287,13 +290,15 @@ impl Resolver<'_> {
             syntax::ExpressionKind::QualifiedName(path) => {
                 self.preview_binding_contract(path, source.span)?
             }
-            syntax::ExpressionKind::CallHint { call, .. } => {
-                self.preview_source_contract(call, depth + 1)?
-            }
-            syntax::ExpressionKind::InferredCast { value, .. } => {
-                self.preview_source_contract(value, depth + 1)?
-            }
-            syntax::ExpressionKind::TypeCast { ty, .. } => {
+            syntax::ExpressionKind::CallHint {
+                call, ..
+            } => self.preview_source_contract(call, depth + 1)?,
+            syntax::ExpressionKind::InferredCast {
+                value, ..
+            } => self.preview_source_contract(value, depth + 1)?,
+            syntax::ExpressionKind::TypeCast {
+                ty, ..
+            } => {
                 let retained = self.retained_callback_syntax(ty, source.span)?;
                 let checked = retained
                     .callback
@@ -311,18 +316,20 @@ impl Resolver<'_> {
                     None => None,
                 }
             }
-            syntax::ExpressionKind::Member { .. } => self
+            syntax::ExpressionKind::Member {
+                ..
+            } => self
                 .preview_receiver_contract(source, depth + 1)?
                 .and_then(|(_, contract)| contract),
-            syntax::ExpressionKind::Index { base, .. } => {
-                match self.preview_source_contract(base, depth + 1)? {
-                    Some(ValueContract {
-                        kind: ContractKind::Sequence(element),
-                        ..
-                    }) => Some(*element),
-                    _ => None,
-                }
-            }
+            syntax::ExpressionKind::Index {
+                base, ..
+            } => match self.preview_source_contract(base, depth + 1)? {
+                Some(ValueContract {
+                    kind: ContractKind::Sequence(element),
+                    ..
+                }) => Some(*element),
+                _ => None,
+            },
             syntax::ExpressionKind::Dereference(base) => {
                 match self.preview_source_contract(base, depth + 1)? {
                     Some(ValueContract {
@@ -342,8 +349,12 @@ impl Resolver<'_> {
             syntax::ExpressionKind::QualifiedCall(path, _) => {
                 self.preview_named_call_contract(path, source.span)?
             }
-            syntax::ExpressionKind::IndirectCall { callee, .. }
-            | syntax::ExpressionKind::ContextCall { callee, .. } => self
+            syntax::ExpressionKind::IndirectCall {
+                callee, ..
+            }
+            | syntax::ExpressionKind::ContextCall {
+                callee, ..
+            } => self
                 .preview_source_contract(callee, depth + 1)?
                 .and_then(|contract| contract.result(0)),
             syntax::ExpressionKind::Conditional(branches) => match (
@@ -412,9 +423,9 @@ impl Resolver<'_> {
         };
         match binding {
             Binding::Storage(storage) => self.callback_place_contract(storage.place(), span, 0),
-            Binding::Procedure { procedure, .. } => {
-                self.preview_procedure_contract(procedure, span)
-            }
+            Binding::Procedure {
+                procedure, ..
+            } => self.preview_procedure_contract(procedure, span),
             Binding::TypedConstant(id) => {
                 let value = self.meta.constant(id).cloned().ok_or_else(|| {
                     Diagnostic::new(span, "callback constant identity is unavailable")
@@ -469,7 +480,10 @@ impl Resolver<'_> {
                     return Ok(Some(receiver));
                 }
             }
-            syntax::ExpressionKind::Member { base, member } => {
+            syntax::ExpressionKind::Member {
+                base,
+                member,
+            } => {
                 return self
                     .preview_receiver_contract(base, depth + 1)?
                     .map(|receiver| {
@@ -488,11 +502,15 @@ impl Resolver<'_> {
                     },
                 ));
             }
-            syntax::ExpressionKind::Index { base, .. } => {
+            syntax::ExpressionKind::Index {
+                base, ..
+            } => {
                 return Ok(self.preview_receiver_contract(base, depth + 1)?.and_then(
                     |(ty, contract)| {
                         let element = match self.types.kind(ty).ok()? {
-                            jai_types::TypeKind::FixedArray { element, .. }
+                            jai_types::TypeKind::FixedArray {
+                                element, ..
+                            }
                             | jai_types::TypeKind::Slice(element)
                             | jai_types::TypeKind::DynamicArray(element) => *element,
                             _ => return None,
@@ -544,9 +562,9 @@ impl Resolver<'_> {
                 let info = self.describe_binding(binding.clone(), span)?;
                 let ty = self.argument_type(&info, span)?;
                 let contract = match binding {
-                    Binding::Procedure { procedure, .. } => {
-                        self.preview_procedure_contract(procedure, span)?
-                    }
+                    Binding::Procedure {
+                        procedure, ..
+                    } => self.preview_procedure_contract(procedure, span)?,
                     Binding::Storage(storage) => {
                         self.callback_place_contract(storage.place(), span, depth + 1)?
                     }
@@ -651,7 +669,9 @@ impl Resolver<'_> {
         }
         let policy = match &contract.kind {
             ContractKind::Callable {
-                metadata, results, ..
+                metadata,
+                results,
+                ..
             } => {
                 let parameters = metadata
                     .parameters
@@ -671,12 +691,12 @@ impl Resolver<'_> {
                     .collect();
                 let variadic = match metadata.source_variadic {
                     crate::overloads::CandidateVariadic::None => VariadicPolicy::None,
-                    crate::overloads::CandidateVariadic::Jai { parameter } => {
-                        VariadicPolicy::Jai(parameter)
-                    }
-                    crate::overloads::CandidateVariadic::C { fixed_parameters } => {
-                        VariadicPolicy::C(fixed_parameters)
-                    }
+                    crate::overloads::CandidateVariadic::Jai {
+                        parameter,
+                    } => VariadicPolicy::Jai(parameter),
+                    crate::overloads::CandidateVariadic::C {
+                        fixed_parameters,
+                    } => VariadicPolicy::C(fixed_parameters),
                 };
                 let results = metadata
                     .results
@@ -750,7 +770,10 @@ impl Resolver<'_> {
                         })
                         .collect::<Result<Vec<_>, Diagnostic>>()?;
                     active.remove(&identity);
-                    ValuePolicy::Record { bindings, fields }
+                    ValuePolicy::Record {
+                        bindings,
+                        fields,
+                    }
                 }
             }
         };
@@ -779,12 +802,17 @@ mod tests {
         let policy = |index, span| {
             RuntimeReadPolicy(
                 RuntimeDefaultRead::checked(
-                    DefaultReadRoot::Context { ty: record },
+                    DefaultReadRoot::Context {
+                        ty: record,
+                    },
                     vec![DefaultReadStep::Field(
                         types.field(record, index).unwrap().id,
                     )],
                     integer,
-                    SourceSpan { source, span },
+                    SourceSpan {
+                        source,
+                        span,
+                    },
                     &types,
                 )
                 .unwrap(),
@@ -818,7 +846,9 @@ fn default_policy(default: &ParameterDefault, ty: TypeId) -> DefaultPolicy {
             DefaultPolicy::RuntimeRead(RuntimeReadPolicy(read.clone()))
         }
         ParameterDefault::CallerLocation => DefaultPolicy::CallerLocation(ty),
-        ParameterDefault::CodeNull { ty } => DefaultPolicy::CodeNull(*ty),
+        ParameterDefault::CodeNull {
+            ty,
+        } => DefaultPolicy::CodeNull(*ty),
         ParameterDefault::Discarded => DefaultPolicy::Discarded,
     }
 }

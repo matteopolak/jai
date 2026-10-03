@@ -79,7 +79,11 @@ where
             match self.records.modifiers.prepare(intent, location) {
                 modifier_intents::RecordModifierReadiness::Pending(id) => {
                     return Err(TypeFailure::Pending(
-                        PendingRecordModifier { id, location }.into(),
+                        PendingRecordModifier {
+                            id,
+                            location,
+                        }
+                        .into(),
                     ));
                 }
                 modifier_intents::RecordModifierReadiness::Failed(error) => {
@@ -184,7 +188,9 @@ where
         for parameter in &record.parameters {
             let expected = self.parameter_type(file, parameter, &substitution)?;
             let default_expression = match &parameter.binding {
-                syntax::RecordParameterBinding::Typed { default, .. } => default.as_ref(),
+                syntax::RecordParameterBinding::Typed {
+                    default, ..
+                } => default.as_ref(),
                 syntax::RecordParameterBinding::InferredDefault(expression) => Some(expression),
             };
             let default = default_expression
@@ -376,9 +382,9 @@ where
                 }
                 let field_ty = self.in_record_annotation(ty, |resolver| match field {
                     FieldSourceRef::Named(field) => match &field.binding {
-                        syntax::FieldBinding::Explicit { ty, .. } => {
-                            resolver.resolve(file, ty, Some(&substitution), field.span)
-                        }
+                        syntax::FieldBinding::Explicit {
+                            ty, ..
+                        } => resolver.resolve(file, ty, Some(&substitution), field.span),
                         syntax::FieldBinding::Inferred(expression) => {
                             resolver.inferred_default_type(file, expression, &substitution)
                         }
