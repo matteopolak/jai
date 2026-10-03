@@ -7,6 +7,7 @@ use jai_vm::{
     CompilerReturnSiteId, CompilerRuntimeInput, CompilerRuntimeLeaf, CompilerSlotId,
 };
 use std::sync::Arc;
+use std::{cell::RefCell, rc::Rc};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct CompilerCodeOccurrence(usize);
@@ -62,8 +63,12 @@ pub(crate) struct CompilerCodeRegistry {
     templates: HashMap<DeclarationId, CompilerCodeTemplate>,
     anonymous:
         HashMap<(FileInstanceId, jai_source::SourceId, usize, usize), CompilerCodeOccurrence>,
+    source_retention: Rc<RefCell<crate::metaprogram::CompilerQuoteBudget>>,
 }
 impl CompilerCodeRegistry {
+    pub(crate) fn source_retention(&self) -> Rc<RefCell<crate::metaprogram::CompilerQuoteBudget>> {
+        self.source_retention.clone()
+    }
     pub(crate) fn template(&self, id: DeclarationId) -> Option<&CompilerCodeTemplate> {
         self.templates.get(&id)
     }
@@ -126,9 +131,16 @@ impl CompilerCodeSourcePlan {
         if !self.plan.owns_site(site) {
             return None;
         }
-        self.quotations
-            .get(site.index())
-            .filter(|quote| quote.site() == site && quote.plan() == self.plan.id())
+        self.quotations.get(site.index()).filter(|quote| {
+            let source = quote.source();
+            let defining = self.key.location();
+            quote.site() == site
+                && quote.plan() == self.plan.id()
+                && source.file == self.key.file()
+                && source.location.source == defining.source
+                && source.location.span.start >= defining.span.start
+                && source.location.span.end <= defining.span.end
+        })
     }
 }
 
@@ -145,7 +157,7 @@ struct Binder {
     scopes: Vec<HashMap<Symbol, (CompilerSlotId, TypeId)>>,
     nodes: usize,
     key: CompilerCodeSourceKey,
-    quote_budget: crate::metaprogram::CompilerQuoteBudget,
+    quote_budget: Rc<RefCell<crate::metaprogram::CompilerQuoteBudget>>,
 }
 
 impl Resolver<'_> {
@@ -175,7 +187,7 @@ impl Resolver<'_> {
             scopes: vec![],
             nodes: 0,
             key,
-            quote_budget: Default::default(),
+            quote_budget: self.meta.compiler_code.source_retention(),
         };
         let root = self.compiler_code_block(&mut binder, body, span, 0)?;
         let plan = binder
@@ -186,15 +198,18 @@ impl Resolver<'_> {
             .quotations
             .into_iter()
             .map(|quote| {
-                crate::metaprogram::CompilerQuoteTemplate::checked(
+                crate::metaprogram::CompilerQuoteTemplate::checked_in_session(
                     &plan,
                     quote.site,
                     &quote.body,
                     quote.source,
                     quote.frames,
+                    binder.quote_budget.clone(),
                 )
             })
             .collect::<Result<Vec<_>, _>>()?;
+        self.local_scopes
+            .admit_compiler_clone(&mut binder.quote_budget.borrow_mut(), span)?;
         Ok(CompilerCodeSourcePlan {
             key,
             plan,
@@ -317,22 +332,28 @@ impl Resolver<'_> {
     ) -> Result<CompilerRuntimeLeaf, Diagnostic> {
         let (inputs, bindings) = self.compiler_code_inputs(binder, source)?;
         self.scopes.push(bindings);
-        let leaf = (|| Ok(match self.discard_call_results(source)? {
-            Some(Statement::CallVoid(call) | Statement::CallResults { call, .. }) => {
-                CompilerRuntimeLeaf::call(call)
-            }
-            Some(_) => {
-                return Err(Diagnostic::new(
-                    source.span,
-                    "compiler Code effect requires a checked direct native call or expression",
-                ));
-            }
-            None => {
-                let expression = self.expr(source)?;
-                let ty = self.expression_type(&expression, source.span)?;
-                CompilerRuntimeLeaf::expression(self.coerce_value(expression, ty, source.span)?)
-            }
-        }))();
+        let leaf = (|| {
+            Ok(match self.discard_call_results(source)? {
+                Some(Statement::CallVoid(call) | Statement::CallResults { call, .. }) => {
+                    CompilerRuntimeLeaf::call(call)
+                }
+                Some(_) => {
+                    return Err(Diagnostic::new(
+                        source.span,
+                        "compiler Code effect requires a checked direct native call or expression",
+                    ));
+                }
+                None => {
+                    let expression = self.expr(source)?;
+                    let ty = self.expression_type(&expression, source.span)?;
+                    CompilerRuntimeLeaf::expression(self.coerce_value(
+                        expression,
+                        ty,
+                        source.span,
+                    )?)
+                }
+            })
+        })();
         self.scopes.pop();
         let leaf = leaf?;
         Ok(leaf.with_inputs(inputs))
@@ -472,7 +493,7 @@ impl Resolver<'_> {
                         "compiler Code return requires a retained quotation in this implementation",
                     ));
                 };
-                binder.quote_budget.admit(body, source.span)?;
+                binder.quote_budget.borrow_mut().admit(body, source.span)?;
                 let mut locals = HashMap::new();
                 for scope in &binder.scopes {
                     for (&name, &(slot, ty)) in scope {
@@ -537,6 +558,14 @@ impl Resolver<'_> {
                     frame.push((name, binding));
                 }
                 frame.sort_by_key(|(name, _)| self.symbols.name(*name));
+                binder.quote_budget.borrow_mut().retain_metadata(
+                    frame
+                        .len()
+                        .saturating_mul(16)
+                        .saturating_add(self.debug.caller_origins().len()),
+                    0,
+                    source.span,
+                )?;
                 binder.quotations.push(CompilerCodeQuotation {
                     site,
                     body: body.clone(),

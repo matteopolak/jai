@@ -24,7 +24,17 @@ pub(crate) use lexical_keys::RunLexicalKey;
 pub(crate) use run_facts::{RunBindingFact, RunCaptureFacts, RunLexicalFacts, RunMacroFact};
 mod loop_replacements;
 pub(crate) use local_macros::{ExpandedTarget, LocalMacroId, MacroId};
+mod compiler_quote_budget;
+mod compiler_quote_capture;
+mod compiler_quote_finish;
+mod compiler_quotes;
 mod declaration_capture;
+pub(crate) use compiler_quote_budget::CompilerQuoteBudget;
+pub(crate) use compiler_quote_capture::PublishedCompilerQuote;
+pub(crate) use compiler_quote_finish::CompilerQuoteFinishError;
+pub(crate) use compiler_quotes::{
+    CompilerQuoteBinding, CompilerQuoteSource, CompilerQuoteTemplate,
+};
 mod declaration_members;
 mod discarded;
 pub(crate) mod record_members;

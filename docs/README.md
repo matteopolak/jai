@@ -136,7 +136,7 @@
 - [Compiler effects and workspaces](compiler-effects.md)
 - [Compile-time host file and process effects](compile-time-host-io.md)
 - [Virtual stdio state](virtual-stdio.md)
-- [Virtual C allocator storage](virtual-heap.md)
+- [Virtual C allocator storage and source receipts](virtual-heap.md)
 - [Pool allocation intrinsics](pool-intrinsics.md)
 - [Virtual POSIX process execution protocol](virtual-process-protocol.md)
 - [Process ABI binding proofs](process-abi-bindings.md)
@@ -271,3 +271,13 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Files, processes, and OS services](stdlib/os-file-process.md)
 - [Threads, sockets, and input](stdlib/thread-socket.md)
 - [Native platform and graphics bindings](stdlib/native-platform-bindings.md)
+
+- [Global initializer jobs](global-initializer-jobs.md)
+
+- [Insertion admission](insertion-admission.md)
+
+- [Source run prefix](source-run-prefix.md)
+
+- [VM snapshot budgets](vm-snapshot-budgets.md)
+
+- [Constant capture admission](constant-capture-admission.md)

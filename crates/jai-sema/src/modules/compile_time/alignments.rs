@@ -41,8 +41,10 @@ pub(super) fn bind(
             &child,
             places,
         );
-        let dependencies = child.pending.into_inner();
-        let constants = child.pending_constants.into_inner();
+        let dependencies = child.pending.borrow().clone();
+        let constants = child.pending_constants.borrow().clone();
+        let fields = child.pending_field_defaults.borrow().clone();
+        context.merge_pending_from(&child);
         match result {
             Ok(alignment) => {
                 let published = alignment.map_or(Ok(()), |alignment| {
@@ -66,11 +68,13 @@ pub(super) fn bind(
                 }
             }
             Err(error) => {
-                if !dependencies.is_empty() || !constants.is_empty() {
+                if !dependencies.is_empty() || !constants.is_empty() || !fields.is_empty() {
                     progress.stalled = Some((
                         job.file,
                         job.annotation_span(),
-                        format!("storage alignment {dependencies:?}; constants {constants:?}"),
+                        format!(
+                            "storage alignment {dependencies:?}; constants {constants:?}; fields {fields:?}"
+                        ),
                     ));
                 } else {
                     progress

@@ -25,6 +25,9 @@ impl Machine {
     pub(in crate::execute::resumable) fn snapshot_cells(
         &self,
     ) -> std::result::Result<usize, Error> {
+        if self.source_retired {
+            return Ok(0);
+        }
         let mut cells = self
             .accounted_cells()
             .checked_mul(3)
@@ -43,11 +46,6 @@ impl Machine {
             cells = cells
                 .checked_add(values.capacity())
                 .ok_or(Error::Limit(LimitKind::ValueCells))?;
-            for value in values {
-                cells = cells
-                    .checked_add(value.cells(usize::MAX)?)
-                    .ok_or(Error::Limit(LimitKind::ValueCells))?;
-            }
         }
         Ok(cells)
     }

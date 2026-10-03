@@ -55,6 +55,22 @@ fn lexical_enum_using_resolves_actual_nominal_members() {
 }
 
 #[test]
+fn imported_using_enum_keeps_namespace_type_aliases_available_during_preparation() {
+    execute(
+        "Lib::#import,file \"library.jai\"; Level::Lib.Width; main::()->int{value:Level=42;return cast(int)value;}",
+        "Width::u64; using Flags::enum_flags Width{FIRST::1;}",
+    );
+}
+
+#[test]
+fn imported_using_enum_keeps_anonymous_type_aliases_available_during_preparation() {
+    execute(
+        "#import,file \"library.jai\"; Level::Width; main::()->int{value:Level=42;return cast(int)value;}",
+        "Width::u64; using Flags::enum_flags Width{FIRST::1;}",
+    );
+}
+
+#[test]
 fn computed_namespace_filters_and_map_publish_real_declarations() {
     execute(
         "Lib::#import,file \"library.jai\"; names::()->[]string{return .[\"value\"]; } using,only(names()) Lib; main::()->int{return value;}",

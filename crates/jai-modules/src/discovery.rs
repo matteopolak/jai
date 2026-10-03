@@ -88,6 +88,7 @@ impl std::error::Error for ConditionSelectionError {}
 /// work while the semantic phase resolves compile-time source conditions.
 pub struct GraphDiscovery<'a> {
     pub(super) builder: Builder<'a>,
+    pub(super) insertion_revision: u64,
     failed: Option<String>,
 }
 impl fmt::Debug for GraphDiscovery<'_> {
@@ -132,6 +133,7 @@ impl<'a> GraphDiscovery<'a> {
         builder.initialize(path, bootstrap)?;
         Ok(Self {
             builder,
+            insertion_revision: 0,
             failed: None,
         })
     }
@@ -141,6 +143,13 @@ impl<'a> GraphDiscovery<'a> {
     }
     pub(super) fn has_failed(&self) -> bool {
         self.failed.is_some()
+    }
+    /// Every mutable discovery entry point must retire proofs of its old frontier.
+    pub(super) fn invalidate_insertion_admissions(&mut self) {
+        self.insertion_revision = self
+            .insertion_revision
+            .checked_add(1)
+            .expect("insertion admission revision space exhausted");
     }
     pub fn conditions(&self) -> &[DeferredCondition] {
         &self.builder.conditions
@@ -159,6 +168,7 @@ impl<'a> GraphDiscovery<'a> {
         id: ConditionRequestId,
         selected: bool,
     ) -> Result<(), ConditionSelectionError> {
+        self.invalidate_insertion_admissions();
         let condition = self
             .builder
             .conditions
@@ -187,6 +197,7 @@ impl<'a> GraphDiscovery<'a> {
                 rendered: rendered.clone(),
             });
         }
+        self.invalidate_insertion_admissions();
         match self.builder.advance() {
             Ok(status) => Ok(status),
             Err(error) => {

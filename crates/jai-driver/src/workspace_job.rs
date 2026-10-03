@@ -18,9 +18,18 @@ pub struct WorkspaceJobResult {
     pub replay: EffectReplayCache,
 }
 
+/// Completed source-prefix journals for a genuine input/configuration rebuild.
+pub struct WorkspaceSourceRebuild {
+    pub unit: Arc<CompilationUnit>,
+    pub compiler: CompilerSession,
+    pub replay: EffectReplayCache,
+}
+
 pub enum WorkspaceJobProgress {
+    SourceRebuild(Box<WorkspaceSourceRebuild>),
     Complete(Box<WorkspaceJobResult>),
     Pending(LibraryPending),
+    SourceWait(LibraryPending),
     Failed(Error),
 }
 
@@ -33,9 +42,24 @@ struct JobState {
     journal: Option<Journal>,
     pending: Option<LibraryPending>,
     cancellation_error: Option<jai_vm::Error>,
+    child_canceller: Option<crate::workspace_scheduler::ChildJobCanceller>,
 }
 
-type JobFuture = Pin<Box<dyn Future<Output = Result<Box<jai_sema::Library>, LocatedDiagnostic>>>>;
+enum WorkspaceJobFailure {
+    Hard(LocatedDiagnostic),
+    Source(LibraryPending),
+}
+impl From<LocatedDiagnostic> for WorkspaceJobFailure {
+    fn from(error: LocatedDiagnostic) -> Self {
+        Self::Hard(error)
+    }
+}
+enum WorkspaceJobOutcome {
+    Library(Box<jai_sema::Library>),
+    SourceRebuild,
+}
+type JobFuture = Pin<Box<dyn Future<Output = Result<WorkspaceJobOutcome, WorkspaceJobFailure>>>>;
+mod source_prefix;
 
 /// Owns a source snapshot, private journals, and a compiler-pinned preparation.
 /// Dropping a pending job synchronously cancels its exact VM continuation.
@@ -52,11 +76,34 @@ impl PreparedWorkspaceJob {
         compiler: CompilerSession,
         replay: EffectReplayCache,
     ) -> Self {
+        let baseline = source_prefix::source_configuration(&compiler);
+        Self::with_configuration(unit, options, compiler, replay, baseline)
+    }
+
+    pub(crate) fn with_source_baseline(
+        unit: CompilationUnit,
+        options: ResolveOptions,
+        compiler: CompilerSession,
+        replay: EffectReplayCache,
+        baseline: &CompilerSession,
+    ) -> Self {
+        let baseline = source_prefix::source_configuration(baseline);
+        Self::with_configuration(unit, options, compiler, replay, baseline)
+    }
+
+    fn with_configuration(
+        unit: CompilationUnit,
+        options: ResolveOptions,
+        compiler: CompilerSession,
+        replay: EffectReplayCache,
+        baseline: source_prefix::SourceConfiguration,
+    ) -> Self {
         let unit = Arc::new(unit);
         let state = Rc::new(RefCell::new(JobState {
             journal: Some(Journal { compiler, replay }),
             pending: None,
             cancellation_error: None,
+            child_canceller: None,
         }));
         let future_unit = Arc::clone(&unit);
         let future_state = Rc::clone(&state);
@@ -64,10 +111,13 @@ impl PreparedWorkspaceJob {
             // Rust's pinned future retains these locals and their borrows across
             // await. The controller never constructs a self-referential struct.
             let mut session = PreparedLibrarySession::new(future_unit.graph(), &options)?;
-            let guard = CancellationGuard {
+            let mut guard = CancellationGuard {
                 session: &mut session,
                 state: future_state,
             };
+            if source_prefix::drive(&mut guard, &baseline).await? {
+                return Ok(WorkspaceJobOutcome::SourceRebuild);
+            }
             poll_fn(|_| {
                 let mut state = guard.state.borrow_mut();
                 let progress = {
@@ -82,11 +132,24 @@ impl PreparedWorkspaceJob {
                 match progress {
                     LibraryReadiness::Complete(library) => {
                         state.pending = None;
-                        Poll::Ready(Ok(library))
+                        Poll::Ready(Ok(WorkspaceJobOutcome::Library(library)))
                     }
                     LibraryReadiness::Failed(error) => {
                         state.pending = None;
-                        Poll::Ready(Err(error))
+                        Poll::Ready(Err(WorkspaceJobFailure::Hard(error)))
+                    }
+                    LibraryReadiness::Pending(pending)
+                        if crate::discovery_worklists::source_only_wait(&pending) =>
+                    {
+                        // This immutable graph has no remaining structural
+                        // producer. Completed source runs retain their journals
+                        // so new committed inputs can start the next graph round.
+                        state.pending = None;
+                        Poll::Ready(Err(WorkspaceJobFailure::Source(pending)))
+                    }
+                    LibraryReadiness::Pending(pending) if pending.dependencies.is_empty() => {
+                        state.pending = None;
+                        Poll::Ready(Err(WorkspaceJobFailure::Hard(pending.diagnostic)))
                     }
                     LibraryReadiness::Pending(pending) => {
                         state.pending = Some(pending);
@@ -109,11 +172,25 @@ impl PreparedWorkspaceJob {
 
     /// Polls the same pinned source job. Readiness is serviced by its controller.
     pub fn poll(&mut self) -> Result<WorkspaceJobProgress, jai_vm::Error> {
+        let parked = self.suspended_job_ids();
         let future = self.future.as_mut().ok_or_else(|| {
             jai_vm::Error::EffectRejected("workspace job has already terminated".into())
         })?;
         let waker = Waker::from(Arc::new(JobWake));
         let result = future.as_mut().poll(&mut Context::from_waker(&waker));
+        let retained = self.suspended_job_ids();
+        let retired = parked
+            .into_iter()
+            .filter(|id| !retained.contains(id))
+            .collect();
+        if let Err(error) = self.cancel_child_ids(retired) {
+            self.future = None;
+            self.state
+                .borrow_mut()
+                .cancellation_error
+                .get_or_insert(error.clone());
+            return Err(error);
+        }
         match result {
             Poll::Pending => Ok(WorkspaceJobProgress::Pending(
                 self.state
@@ -131,7 +208,18 @@ impl PreparedWorkspaceJob {
                     return Err(error);
                 }
                 Ok(match result {
-                    Ok(library) => {
+                    Ok(WorkspaceJobOutcome::SourceRebuild) => {
+                        let Journal { compiler, replay } = state
+                            .journal
+                            .take()
+                            .expect("completed source prefix retains its private journals");
+                        WorkspaceJobProgress::SourceRebuild(Box::new(WorkspaceSourceRebuild {
+                            unit: Arc::clone(&self.unit),
+                            compiler,
+                            replay,
+                        }))
+                    }
+                    Ok(WorkspaceJobOutcome::Library(library)) => {
                         let Journal { compiler, replay } = state
                             .journal
                             .take()
@@ -143,18 +231,53 @@ impl PreparedWorkspaceJob {
                             replay,
                         }))
                     }
-                    Err(error) => WorkspaceJobProgress::Failed(self.unit.located(error)),
+                    Err(WorkspaceJobFailure::Source(pending)) => {
+                        WorkspaceJobProgress::SourceWait(pending)
+                    }
+                    Err(WorkspaceJobFailure::Hard(error)) => {
+                        state.journal = None;
+                        WorkspaceJobProgress::Failed(self.unit.located(error))
+                    }
                 })
             }
         }
     }
 
+    fn cancel_child_ids(&self, ids: Vec<crate::CompilerJobId>) -> Result<(), jai_vm::Error> {
+        let canceller = self.state.borrow().child_canceller.clone();
+        canceller.map_or(Ok(()), |cancel| cancel(ids))
+    }
+
+    fn cancel_children(&self) -> Result<(), jai_vm::Error> {
+        self.cancel_child_ids(self.suspended_job_ids())
+    }
+
     pub fn cancel(&mut self) -> Result<(), jai_vm::Error> {
+        let child_error = self.cancel_children().err();
         self.future = None;
         let mut state = self.state.borrow_mut();
         state.pending = None;
         state.journal = None;
-        state.cancellation_error.take().map_or(Ok(()), Err)
+        state
+            .cancellation_error
+            .take()
+            .or(child_error)
+            .map_or(Ok(()), Err)
+    }
+
+    pub(crate) fn suspended_job_ids(&self) -> Vec<crate::CompilerJobId> {
+        self.state
+            .borrow()
+            .journal
+            .as_ref()
+            .map(|journal| {
+                journal
+                    .replay
+                    .suspended_origins()
+                    .filter_map(|origin| journal.replay.suspended_job(origin))
+                    .collect()
+            })
+            .unwrap_or_default()
     }
 
     pub fn suspended_origins(&self) -> Vec<jai_vm::SourceOrigin> {
@@ -171,6 +294,7 @@ impl PreparedWorkspaceJob {
         &mut self,
         scheduler: &mut crate::WorkspaceScheduler,
     ) -> Result<bool, crate::SchedulerError> {
+        self.state.borrow_mut().child_canceller = Some(scheduler.child_canceller());
         let mut progress = false;
         for origin in self.suspended_origins() {
             progress |= self.with_journals(|compiler, replay| {
@@ -207,6 +331,12 @@ impl PreparedWorkspaceJob {
 
 impl Drop for PreparedWorkspaceJob {
     fn drop(&mut self) {
+        if let Err(error) = self.cancel_children() {
+            self.state
+                .borrow_mut()
+                .cancellation_error
+                .get_or_insert(error);
+        }
         self.future = None;
     }
 }
@@ -224,7 +354,7 @@ impl Drop for CancellationGuard<'_, '_> {
                 .session
                 .cancel(&mut ReplayEffects::new(compiler, replay))
         {
-            state.cancellation_error = Some(error);
+            state.cancellation_error.get_or_insert(error);
         }
     }
 }

@@ -41,7 +41,7 @@ impl PackState {
 
     /// Cached retained image bytes, metadata, and snapshot headers for task admission.
     pub(super) fn cells(&self) -> usize {
-        self.cells
+        self.cells.saturating_add(self.snapshots.capacity())
     }
 
     /// Capture only a computed operand. No source expression is retained or rerun.

@@ -1,8 +1,6 @@
 //! Resume the retained source graph with genuine typed compiler decisions.
 use crate::{CompilationUnit, CompilerSession, EffectReplayCache, Error, ReplayEffects};
-use jai_modules::{
-    BootstrapOptions, DiscoveryStatus, GraphDiscovery, GraphOptions, ModuleGraph, SourceProvider,
-};
+use jai_modules::{BootstrapOptions, GraphDiscovery, GraphOptions, ModuleGraph, SourceProvider};
 use jai_source::LocatedDiagnostic;
 use jai_types::BuildTarget;
 use jai_vm::{Limits, WorkspaceId};
@@ -48,15 +46,17 @@ impl CompilationUnit {
         policy: DiscoveryEffectPolicy,
     ) -> Result<jai_sema::Program, Error> {
         let options = self.resolve_options(layout, session);
+        let workspace = session.root();
         let program = match policy {
             DiscoveryEffectPolicy::Disabled => {
                 jai_sema::resolve_graph_with_options(&self.graph, &options, &mut jai_vm::NoEffects)
             }
-            DiscoveryEffectPolicy::CompilerSession => jai_sema::resolve_graph_with_options(
-                &self.graph,
-                &options,
-                &mut ReplayEffects::new(session, replay),
-            ),
+            DiscoveryEffectPolicy::CompilerSession => {
+                return private_session(session, replay, workspace, |effects| {
+                    jai_sema::resolve_graph_with_options(&self.graph, &options, effects)
+                        .map_err(|diagnostic| self.located(diagnostic))
+                });
+            }
         }
         .map_err(|diagnostic| self.located(diagnostic))?;
         if let Some(error) = session.error() {
@@ -73,17 +73,19 @@ impl CompilationUnit {
         policy: DiscoveryEffectPolicy,
     ) -> Result<jai_sema::Library, Error> {
         let options = self.resolve_options(layout, session);
+        let workspace = session.root();
         let library = match policy {
             DiscoveryEffectPolicy::Disabled => jai_sema::resolve_library_with_options(
                 &self.graph,
                 &options,
                 &mut jai_vm::NoEffects,
             ),
-            DiscoveryEffectPolicy::CompilerSession => jai_sema::resolve_library_with_options(
-                &self.graph,
-                &options,
-                &mut ReplayEffects::new(session, replay),
-            ),
+            DiscoveryEffectPolicy::CompilerSession => {
+                return private_session(session, replay, workspace, |effects| {
+                    jai_sema::resolve_library_with_options(&self.graph, &options, effects)
+                        .map_err(|diagnostic| self.located(diagnostic))
+                });
+            }
         }
         .map_err(|diagnostic| self.located(diagnostic))?;
         if let Some(error) = session.error() {
@@ -100,16 +102,65 @@ pub fn discover_graph_with_session(
     session: &mut CompilerSession,
     replay: &mut EffectReplayCache,
 ) -> Result<ModuleGraph, Error> {
+    let workspace = options.workspace;
     match options.effect_policy {
         DiscoveryEffectPolicy::Disabled => {
             discover_graph_with_effects(path, options, provider, &mut jai_vm::NoEffects)
         }
-        DiscoveryEffectPolicy::CompilerSession => discover_graph_with_effects(
-            path,
-            options,
-            provider,
-            &mut ReplayEffects::new(session, replay),
-        ),
+        DiscoveryEffectPolicy::CompilerSession => {
+            private_session(session, replay, workspace, |effects| {
+                discover_graph_with_effects(path, options, provider, effects)
+            })
+        }
+    }
+}
+
+/// Publish only a completed source operation's private compiler journal.
+fn private_session<T>(
+    session: &mut CompilerSession,
+    replay: &mut EffectReplayCache,
+    workspace: WorkspaceId,
+    operation: impl FnOnce(&mut dyn jai_vm::CompilerEffects) -> Result<T, Error>,
+) -> Result<T, Error> {
+    require_idle(session)?;
+    let mut compiler = session.clone();
+    let mut traces = replay.fork_committed();
+    let value = operation(&mut ReplayEffects::new(&mut compiler, &mut traces))
+        .map_err(|error| record_failure(session, workspace, error))?;
+    if let Some(error) = compiler.error() {
+        return Err(record_failure(
+            session,
+            workspace,
+            Error::CompilerReport(error.clone()),
+        ));
+    }
+    *session = compiler;
+    *replay = traces;
+    Ok(value)
+}
+
+pub(crate) fn require_idle(session: &CompilerSession) -> Result<(), Error> {
+    session.require_source_idle().map_err(|error| {
+        Error::CompilerReport(crate::CompilerMessage {
+            level: jai_vm::MessageLevel::Error,
+            text: error.to_string(),
+            location: None,
+        })
+    })
+}
+
+pub(crate) fn record_failure(
+    session: &mut CompilerSession,
+    workspace: WorkspaceId,
+    error: Error,
+) -> Error {
+    match session.record_source_failure(workspace, &error) {
+        Ok(()) => error,
+        Err(cause) => Error::CompilerReport(crate::CompilerMessage {
+            level: jai_vm::MessageLevel::Error,
+            text: format!("{error}; could not publish the workspace failure: {cause}"),
+            location: None,
+        }),
     }
 }
 
@@ -121,201 +172,145 @@ pub(crate) fn discover_graph_with_effects(
     provider: &dyn SourceProvider,
     effects: &mut dyn jai_vm::CompilerEffects,
 ) -> Result<ModuleGraph, Error> {
+    use crate::discovery_worklists::{
+        DiscoveryWorklists, SourceDiscoveryPending, SourceDiscoveryRequest, publish,
+        source_only_wait,
+    };
     let mut discovery = GraphDiscovery::with_bootstrap(
         path,
         options.graph.clone(),
-        options.bootstrap,
+        options.bootstrap.clone(),
         provider,
         Some(options.target.clone()),
     )?;
     loop {
         let status = discovery.advance()?;
-        let using = discovery.pending_using_requests();
-        if status.is_complete() && !discovery.has_dependency_templates() && using.is_empty() {
+        let mut worklists = DiscoveryWorklists::new(&discovery, status);
+        if worklists.status.is_complete()
+            && worklists.queries.is_empty()
+            && worklists.parameters.is_empty()
+        {
             return Ok(discovery
                 .into_graph()
                 .ok()
                 .expect("complete discovery retains its graph"));
         }
-        let requests: Vec<_> = discovery.pending_conditions().cloned().collect();
-        let parameters = discovery.pending_parameter_requests();
-        let cases: Vec<_> = discovery.pending_cases().cloned().collect();
-        if requests.is_empty()
-            && cases.is_empty()
-            && parameters.is_empty()
-            && using.is_empty()
-            && !status.is_complete()
-            && !discovery.has_dependency_templates()
-        {
-            let DiscoveryStatus::Awaiting { dependencies, .. } = status else {
-                unreachable!()
+        if !worklists.parameters.is_empty() {
+            let resolve = jai_sema::ResolveOptions {
+                file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
+                    discovery.graph(),
+                    &options.graph.import_dirs,
+                    options.target.clone(),
+                ),
+                target: Some(options.target.clone()),
+                compile_time_limits: options.limits,
+                compiler: Some(jai_sema::CompilerBindingContext::from_graph(
+                    discovery.graph(),
+                    &options.graph.import_dirs,
+                    options.workspace,
+                )),
+                ..Default::default()
             };
-            let dependency = dependencies
-                .into_iter()
-                .next()
-                .expect("awaiting discovery retains a dependency");
-            return Err(located(discovery.graph(), dependency.diagnostic));
-        }
-        let resolve = jai_sema::ResolveOptions {
-            target: Some(options.target.clone()),
-            compile_time_limits: options.limits,
-            compiler: Some(jai_sema::CompilerBindingContext::from_graph(
+            match jai_sema::resolve_discovery_parameters(
                 discovery.graph(),
-                &options.graph.import_dirs,
-                options.workspace,
-            )),
-            ..Default::default()
-        };
-        let mut parameter_failure = None;
-        if !parameters.is_empty() {
-            let outcome = jai_sema::resolve_discovery_parameters(
-                discovery.graph(),
-                &parameters,
+                &worklists.parameters,
                 &resolve,
                 effects,
-            );
-            match outcome {
-                Ok(outcome) if !outcome.decisions.is_empty() => {
+            ) {
+                Ok(outcome) => {
+                    let progressed = !outcome.decisions.is_empty();
                     for (request, response) in outcome.decisions {
                         discovery
                             .resolve_parameter(request, response)
                             .expect("typed parameter responses retain source request identity");
                     }
-                    continue;
-                }
-                Ok(outcome) => {
-                    parameter_failure = outcome
-                        .pending
-                        .into_iter()
-                        .next()
-                        .map(|pending| pending.diagnostic)
-                }
-                Err(diagnostic) => parameter_failure = Some(diagnostic),
-            }
-        }
-        let mut using_failure = None;
-        if !using.is_empty() {
-            let outcome =
-                jai_sema::resolve_discovery_using(discovery.graph(), &using, &resolve, effects);
-            match outcome {
-                Ok(outcome) => {
-                    let mut progressed = false;
-                    for key in outcome.specializations {
-                        progressed |= discovery.discover_specialization(key)?;
-                    }
-                    for (request, decision) in outcome.decisions {
-                        discovery.resolve_using(request, decision)?;
-                        progressed = true;
-                    }
                     if progressed {
                         continue;
                     }
-                    using_failure = outcome
-                        .pending
-                        .into_iter()
-                        .next()
-                        .map(|pending| pending.diagnostic);
+                    if let Some(pending) = outcome.pending.into_iter().next() {
+                        worklists.deferred(SourceDiscoveryPending {
+                            request: SourceDiscoveryRequest::Parameter(pending.request),
+                            diagnostic: pending.diagnostic,
+                        });
+                    }
                 }
-                Err(diagnostic) => using_failure = Some(diagnostic),
+                Err(diagnostic) => worklists.failure(diagnostic),
             }
         }
-        let mut case_failure = None;
-        if !cases.is_empty() {
-            let result =
-                jai_sema::resolve_discovery_cases(discovery.graph(), &cases, &resolve, effects);
-            match result {
-                Ok(outcome) => {
-                    let mut progressed = false;
-                    for key in outcome.specializations {
-                        progressed |= discovery.discover_specialization(key)?;
+        let mut advanced = false;
+        for kind in worklists.queries.clone() {
+            let mut query =
+                match crate::PreparedGraphDiscoverySession::new(&discovery, &options, kind) {
+                    Ok(query) => query,
+                    Err(diagnostic)
+                        if matches!(
+                            kind,
+                            crate::DiscoveryQuery::Conditions | crate::DiscoveryQuery::Insertions,
+                        ) =>
+                    {
+                        return Err(located(discovery.graph(), diagnostic));
                     }
-                    for (request, choice) in outcome.decisions {
-                        discovery
-                            .select_case(request, choice)
-                            .expect("typed case choices retain original source request identity");
-                        progressed = true;
-                    }
-                    if progressed {
+                    Err(diagnostic) => {
+                        worklists.failure(diagnostic);
                         continue;
                     }
-                    case_failure = outcome
-                        .pending
-                        .into_iter()
-                        .next()
-                        .map(|pending| pending.diagnostic);
+                };
+            let readiness = query.drive(effects);
+            let cancellation = query.cancel(effects);
+            drop(query);
+            if let Err(error) = cancellation {
+                return Err(located(
+                    discovery.graph(),
+                    LocatedDiagnostic {
+                        location: crate::discovery_worklists::root_location(discovery.graph()),
+                        message: format!("source query cancellation failed: {error}"),
+                    },
+                ));
+            }
+            match readiness {
+                jai_sema::DiscoveryReadiness::Complete(outcome) => {
+                    let published =
+                        publish(&mut discovery, outcome).map_err(|failure| failure.error)?;
+                    advanced = published.progressed;
+                    if let Some(pending) = published.pending {
+                        worklists.deferred(pending);
+                    }
                 }
-                Err(diagnostic) => case_failure = Some(diagnostic),
+                jai_sema::DiscoveryReadiness::Pending(pending) if source_only_wait(&pending) => {
+                    worklists.source_wait(kind, pending);
+                }
+                jai_sema::DiscoveryReadiness::Pending(pending) => {
+                    // The synchronous entry point cannot retain a live external
+                    // checkpoint. Its original diagnostic remains authoritative.
+                    return Err(located(discovery.graph(), pending.diagnostic));
+                }
+                jai_sema::DiscoveryReadiness::Failed(diagnostic)
+                    if matches!(
+                        kind,
+                        crate::DiscoveryQuery::Conditions | crate::DiscoveryQuery::Insertions
+                    ) =>
+                {
+                    return Err(located(discovery.graph(), diagnostic));
+                }
+                jai_sema::DiscoveryReadiness::Failed(diagnostic) => worklists.failure(diagnostic),
+            }
+            if advanced {
+                break;
             }
         }
-        if requests.is_empty() && !discovery.has_dependency_templates() {
-            let diagnostic = case_failure
-                .or(using_failure)
-                .or(parameter_failure)
-                .unwrap_or_else(|| LocatedDiagnostic {
-                    location: cases
-                        .first()
-                        .map(|case| case.location)
-                        .or_else(|| using.first().map(|request| request.location))
-                        .unwrap_or_else(|| parameters[0].location),
-                    message: "source discovery request has no ready semantic response".into(),
-                });
-            return Err(located(discovery.graph(), diagnostic));
-        }
-        let outcome = {
-            let result = jai_sema::resolve_discovery_conditions(
-                discovery.graph(),
-                &requests,
-                &resolve,
-                effects,
-            );
-            result.map_err(|diagnostic| located(discovery.graph(), diagnostic))?
-        };
-        let mut progressed = false;
-        for key in outcome.specializations {
-            progressed |= discovery.discover_specialization(key)?;
-        }
-        for (request, selected) in outcome.decisions {
-            discovery
-                .select_condition(request, selected)
-                .expect("typed decisions retain discovery request identity");
-            progressed = true;
-        }
-        if progressed {
+        if advanced {
             continue;
         }
-        if status.is_complete()
-            && parameter_failure.is_none()
-            && using_failure.is_none()
-            && case_failure.is_none()
-        {
+        if worklists.is_complete() {
             return Ok(discovery
                 .into_graph()
                 .ok()
-                .expect("complete specialization discovery retains its graph"));
+                .expect("complete discovery retains its graph"));
         }
-        let diagnostic = outcome
-            .pending
-            .into_iter()
-            .next()
-            .map(|pending| pending.diagnostic)
-            .or(case_failure)
-            .or(using_failure)
-            .or(parameter_failure)
-            .or_else(|| match status {
-                DiscoveryStatus::Awaiting { dependencies, .. } => dependencies
-                    .into_iter()
-                    .next()
-                    .map(|dependency| dependency.diagnostic),
-                DiscoveryStatus::Complete => None,
-            })
-            .unwrap_or_else(|| LocatedDiagnostic {
-                location: requests
-                    .first()
-                    .map(|request| request.location)
-                    .unwrap_or_else(|| discovery.graph().dependency_templates()[0].location()),
-                message: "source specialization has no ready semantic dependency".into(),
-            });
-        return Err(located(discovery.graph(), diagnostic));
+        return match worklists.stalled(discovery.graph()) {
+            Ok(pending) => Err(located(discovery.graph(), pending.diagnostic)),
+            Err(diagnostic) => Err(located(discovery.graph(), diagnostic)),
+        };
     }
 }
 

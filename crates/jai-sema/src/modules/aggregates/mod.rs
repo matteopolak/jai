@@ -529,6 +529,9 @@ impl Resolver<'_> {
             self.check_local_storage_capture(storage, span)?;
         }
         match binding {
+            Binding::CompilerInput { binding, ty } => {
+                self.typed_value(ValueExpr::Bound { binding, ty }, ty, span)
+            }
             Binding::Discarded(_) => {
                 Err(Diagnostic::new(span, "#discard parameter cannot be read"))
             }

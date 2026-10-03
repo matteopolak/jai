@@ -1,5 +1,6 @@
 //! A staged boundary for native compiler slots without source-contract transport.
 use super::*;
+use jai_types::TypeView;
 
 impl Resolver<'_> {
     pub(crate) fn compiler_slot_contains_callback(

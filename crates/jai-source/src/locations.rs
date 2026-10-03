@@ -90,7 +90,7 @@ impl std::fmt::Display for LocatedDiagnostic {
     }
 }
 impl std::error::Error for LocatedDiagnostic {}
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct SourceRecord {
     id: SourceId,
     path: PathBuf,
@@ -111,7 +111,7 @@ impl SourceRecord {
         Arc::clone(&self.text)
     }
 }
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SourceMap {
     records: Vec<SourceRecord>,
 }

@@ -1,4 +1,5 @@
 //! Replay committed source transactions without repeating compiler mutations.
+mod completed_forks;
 use crate::{
     CompilerJobId, CompilerSession, CompilerTransactionError, SuspendedCompilerTransaction,
 };

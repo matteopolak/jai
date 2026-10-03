@@ -4,13 +4,46 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     /// Copy virtual string views into owned bytes for compiler effects and publication.
     /// Pointer, array and slice identities otherwise remain unchanged.
     pub fn materialize_value(&self, value: &Value) -> std::result::Result<Value, Error> {
-        let mut budget = MaterializationBudget::new(self.limits);
+        let mut budget = MaterializationBudget::new(
+            self.limits,
+            &self.publication_work,
+            self.statistics.steps,
+            self.limits.fuel,
+        );
         self.materialize_inner(value, 0, &mut budget)
     }
 
     /// Materialize effect arguments under one output and traversal budget.
     pub fn materialize_values(&self, values: &[Value]) -> std::result::Result<Vec<Value>, Error> {
-        let mut budget = MaterializationBudget::new(self.limits);
+        let mut budget = MaterializationBudget::new(
+            self.limits,
+            &self.publication_work,
+            self.statistics.steps,
+            self.limits.fuel,
+        );
+        budget.reserve(values.len())?;
+        values
+            .iter()
+            .map(|value| self.materialize_inner(value, 0, &mut budget))
+            .collect()
+    }
+
+    /// Materialize selected facts under one narrowed output and cumulative work budget.
+    pub fn materialize_borrowed_values(
+        &self,
+        values: &[&Value],
+        mut limits: Limits,
+    ) -> std::result::Result<Vec<Value>, Error> {
+        limits.value_cells = limits.value_cells.min(self.limits.value_cells);
+        limits.fuel = limits.fuel.min(self.publication_remaining_fuel());
+        limits.evaluation_depth = limits.evaluation_depth.min(self.limits.evaluation_depth);
+        let mut budget = MaterializationBudget::new(
+            limits,
+            &self.publication_work,
+            self.statistics.steps,
+            self.limits.fuel,
+        );
+        budget.reserve(values.len())?;
         values
             .iter()
             .map(|value| self.materialize_inner(value, 0, &mut budget))
@@ -21,9 +54,9 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
         &self,
         value: &Value,
         depth: usize,
-        budget: &mut MaterializationBudget,
+        budget: &mut MaterializationBudget<'_>,
     ) -> std::result::Result<Value, Error> {
-        if depth > self.limits.evaluation_depth.min(256) {
+        if depth > budget.depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
         budget.reserve(1)?;
@@ -152,15 +185,32 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     }
 }
 
-struct MaterializationBudget {
+struct MaterializationBudget<'a> {
+    publication_work: &'a std::cell::Cell<u64>,
+    initial_steps: u64,
+    configured_fuel: u64,
+    depth: usize,
     cells: usize,
     work: u64,
 }
-impl MaterializationBudget {
-    fn new(limits: Limits) -> Self {
+impl<'a> MaterializationBudget<'a> {
+    fn new(
+        limits: Limits,
+        publication_work: &'a std::cell::Cell<u64>,
+        initial_steps: u64,
+        configured_fuel: u64,
+    ) -> Self {
         Self {
+            publication_work,
+            initial_steps,
+            configured_fuel,
+            depth: limits.evaluation_depth,
             cells: limits.value_cells,
-            work: limits.fuel,
+            work: limits.fuel.min(
+                configured_fuel
+                    .saturating_sub(initial_steps)
+                    .saturating_sub(publication_work.get()),
+            ),
         }
     }
     fn reserve(&mut self, cells: usize) -> std::result::Result<(), Error> {
@@ -171,10 +221,23 @@ impl MaterializationBudget {
         self.charge_work(cells)
     }
     fn charge_work(&mut self, cells: usize) -> std::result::Result<(), Error> {
-        self.work = self
+        let charge = u64::try_from(cells).map_err(|_| Error::Limit(LimitKind::Fuel))?;
+        let remaining = self
             .work
-            .checked_sub(u64::try_from(cells).map_err(|_| Error::Limit(LimitKind::Fuel))?)
+            .checked_sub(charge)
             .ok_or(Error::Limit(LimitKind::Fuel))?;
+        let pending = self
+            .publication_work
+            .get()
+            .checked_add(charge)
+            .filter(|pending| {
+                self.initial_steps
+                    .checked_add(*pending)
+                    .is_some_and(|total| total <= self.configured_fuel)
+            })
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        self.work = remaining;
+        self.publication_work.set(pending);
         Ok(())
     }
 }

@@ -3,8 +3,8 @@ mod declaration_insertions;
 mod deferred_cases;
 pub use declaration_insertions::{
     DeclarationInsertionCode, DeclarationInsertionPublication, DeclarationInsertionRequest,
-    InsertionPublicationError, InsertionRequestId, InsertionResponseError, InsertionTransaction,
-    SourceCaptureValue,
+    InsertionAdmission, InsertionPublicationError, InsertionRequestId, InsertionResponseError,
+    InsertionTransaction, SourceCaptureValue,
 };
 mod discovery;
 pub use deferred_cases::{CaseRequestId, CaseSelectionError, DeferredCase, SourceCaseSelection};
@@ -104,18 +104,18 @@ impl SourceConditionSelection {
         self.specialization.as_ref()
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct FileRun {
     pub file: FileInstanceId,
     pub syntax: jai_syntax::RunDirective,
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct FileInsertion {
     pub file: FileInstanceId,
     pub directive: jai_syntax::InsertDirective,
     pub location: SourceSpan,
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ContextField {
     file: FileInstanceId,
     syntax: jai_syntax::ContextFieldDeclaration,
@@ -140,7 +140,7 @@ impl OverloadSetId {
     }
 }
 /// Immutable declaration membership; exported and private sets stay independent.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct OverloadSet {
     id: OverloadSetId,
     declarations: Box<[DeclarationId]>,
@@ -166,7 +166,7 @@ pub enum Binding {
         member: Symbol,
     },
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Declaration {
     id: DeclarationId,
     file: FileInstanceId,
@@ -200,7 +200,7 @@ impl Declaration {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct FileInstance {
     id: FileInstanceId,
     module: ModuleId,
@@ -233,7 +233,7 @@ impl FileInstance {
         &self.syntax
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ModuleInstance {
     id: ModuleId,
     scope: ScopeId,
@@ -416,7 +416,7 @@ pub enum LookupError {
     PrivateMember { module: ModuleId, name: Symbol },
     UnfilledPlaceholder(PlaceholderId),
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ModuleGraph {
     unit: UnitId,
     target: Option<jai_types::BuildTarget>,

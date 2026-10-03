@@ -30,6 +30,7 @@ pub(crate) fn formal_pattern(
         variables: &variables,
         substitution: request.substitution,
         bare_templates: true,
+        owner_span: request.span,
     };
     let mut resolver = TypeResolver {
         graph,
@@ -62,11 +63,13 @@ struct PatternScope<'a> {
     variables: &'a HashSet<jai_source::Symbol>,
     substitution: Option<&'a Substitution>,
     bare_templates: bool,
+    owner_span: Span,
 }
 
 struct HeaderSyntax<'a> {
     parameters: &'a [syntax::Parameter],
     results: &'a [syntax::ProcedureResult],
+    span: Span,
 }
 
 pub(crate) fn procedure_patterns(
@@ -87,6 +90,7 @@ pub(crate) fn procedure_patterns(
         HeaderSyntax {
             parameters: &procedure.parameters,
             results: &procedure.results,
+            span: procedure.span,
         },
         types,
         nominals,
@@ -154,6 +158,7 @@ pub(crate) fn procedure_application_patterns(
         variables: &variables,
         substitution: None,
         bare_templates: false,
+        owner_span: procedure.span,
     };
     let mut patterns = HashMap::new();
     for annotation in annotations {
@@ -181,6 +186,7 @@ pub(crate) fn prototype_patterns(
         HeaderSyntax {
             parameters: &prototype.parameters,
             results: &prototype.results,
+            span: prototype.span,
         },
         types,
         nominals,
@@ -203,6 +209,7 @@ fn header_patterns(
     let HeaderSyntax {
         parameters,
         results,
+        span,
     } = header;
     let mut variables = HashSet::new();
     let annotations = parameters
@@ -244,6 +251,7 @@ fn header_patterns(
         variables: &variables,
         substitution: None,
         bare_templates: false,
+        owner_span: span,
     };
     for (ty, span) in annotations {
         resolver
@@ -740,7 +748,7 @@ where
                     self.graph,
                     caller_file,
                     Diagnostic::new(
-                        application.span,
+                        pattern_scope.owner_span,
                         "an inferred modified-record pattern requires a checked default recipe",
                     ),
                 ));

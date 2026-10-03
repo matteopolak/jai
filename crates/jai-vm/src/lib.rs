@@ -107,6 +107,7 @@ pub enum Error {
     UnsupportedType(TypeId),
     UnsupportedPointerOperation(&'static str),
     UnsupportedForeignProcedure(ProcedureId),
+    CompileTimeOnlyProcedure(ProcedureId),
     UnsupportedExternalGlobal(jai_ir::GlobalId),
     EffectRejected(String),
     CompilerReported(String),
@@ -182,6 +183,11 @@ impl fmt::Display for Error {
                 "foreign procedure {} cannot execute in the compile-time VM",
                 id.index()
             ),
+            Self::CompileTimeOnlyProcedure(id) => write!(
+                f,
+                "procedure {} is compile-time only and cannot execute as a script",
+                id.index()
+            ),
             Self::UnsupportedExternalGlobal(id) => write!(
                 f,
                 "external global {} has no checked compile-time data provider",
@@ -244,3 +250,10 @@ mod constants_shape_tests;
 
 #[cfg(test)]
 mod provider_signature_tests;
+
+pub mod compiler_code_plan;
+pub use compiler_code_plan::{
+    CompilerCodePlan, CompilerCodePlanBuilder, CompilerCodePlanId, CompilerCodePlanLimits,
+    CompilerControl, CompilerControlId, CompilerReturnSiteId, CompilerRuntimeInput,
+    CompilerRuntimeLeaf, CompilerRuntimeLeafKind, CompilerSlotId, CompilerSlotSchema,
+};

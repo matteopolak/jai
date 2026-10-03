@@ -2,6 +2,7 @@
 use super::super::*;
 mod module_parameters;
 pub(crate) use module_parameters::ModuleTypeRequest;
+mod alias_preparation;
 mod type_queries;
 use jai_types::{FieldId, Integer, RecordKind, TypeKind};
 use std::collections::HashSet;
@@ -279,6 +280,7 @@ impl<'a> Nominals<'a> {
             evaluate,
         )
     }
+    #[cfg(test)]
     pub(crate) fn define_aliases_with_specializations(
         &mut self,
         graph: &ModuleGraph,

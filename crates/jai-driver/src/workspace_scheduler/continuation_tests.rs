@@ -1,6 +1,9 @@
 use super::*;
+use crate::ReplayEffects;
 use jai_types::{Architecture, ByteOrder, LayoutPolicy, OperatingSystem, ScalarLayout};
-use jai_vm::{CompilerRequest, CompilerResponse, EffectKey, EffectOutcome, InterceptFlags};
+use jai_vm::{
+    CompilerEffects, CompilerRequest, CompilerResponse, EffectKey, EffectOutcome, InterceptFlags,
+};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 struct Fixture(PathBuf);
@@ -96,6 +99,7 @@ fn root_scheduler_retains_a_real_pending_source_job_across_drives_and_cancels_it
         .build
         .as_ref()
         .unwrap()
+        .state
         .active
         .as_ref()
         .unwrap()
@@ -112,6 +116,7 @@ fn root_scheduler_retains_a_real_pending_source_job_across_drives_and_cancels_it
             .build
             .as_ref()
             .unwrap()
+            .state
             .active
             .as_ref()
             .unwrap()
@@ -407,21 +412,47 @@ fn a_checked_library_never_fabricates_successful_native_completion() {
 }
 
 #[test]
-fn an_empty_child_is_waiting_and_real_source_failure_rolls_back_the_parent() {
+fn an_empty_child_waits_and_actual_failed_child_emits_failure_before_parent_rollback() {
     for source in ["", "child :: () -> int { return missing; }"] {
         let fixture = Fixture::new();
         let mut scheduler = fixture.scheduler();
         let mut session = CompilerSession::new();
-        let (origin, child, _) = park_child(&mut scheduler, &mut session, source);
+        let (origin, child, key) = park_child(&mut scheduler, &mut session, source);
         let outcome = scheduler.service_suspended(&mut session, &origin);
         if source.is_empty() {
             assert!(!outcome.unwrap());
         } else {
-            assert!(outcome.unwrap_err().to_string().contains("missing"));
+            assert!(outcome.unwrap());
+            let preview = scheduler
+                .replay
+                .preview_suspended(&origin, &session)
+                .unwrap();
+            assert_eq!(
+                preview.workspace(child).unwrap().status(),
+                jai_vm::WorkspaceStatus::Failed
+            );
+            assert!(preview.error().unwrap().text.contains("missing"));
         }
         {
             let mut effects = ReplayEffects::new(&mut session, &mut scheduler.replay);
             effects.set_source_origin(origin);
+            if !source.is_empty() {
+                effects.resume().unwrap();
+                assert_eq!(
+                    effects.poll_request(&CompilerRequest::WaitForMessage, key),
+                    EffectOutcome::Ready(CompilerResponse::Message(CompilerEvent::Phase {
+                        workspace: child,
+                        phase: CompilerPhase::SourceParsed,
+                    }))
+                );
+                assert_eq!(
+                    ready(effects.request(CompilerRequest::WaitForMessage)),
+                    CompilerResponse::Message(CompilerEvent::Complete {
+                        workspace: child,
+                        error: jai_vm::CompilerCompletion::CompilationFailed,
+                    })
+                );
+            }
             effects.finish(false).unwrap();
         }
         assert!(session.workspace(child).is_none());

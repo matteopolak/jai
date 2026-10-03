@@ -490,3 +490,145 @@ fn complete_carrier_whole_copies_retain_actual_initialized_padding() {
     assert_eq!(snapshot.image().bytes(), bytes);
     assert_eq!(read(&snapshot, &p.types, 1), 42);
 }
+
+#[test]
+fn scalar_overlap_precharges_cloned_existing_pointer_provenance() {
+    let mut p = provider();
+    let byte = p.types.scalar(ScalarType::Int(IntegerType::U8));
+    let address = p.types.pointer(byte).unwrap();
+    let prefix = p.types.fixed_array(byte, 3).unwrap();
+    let owner = p.types.reserve_record(RecordKind::Struct);
+    p.types
+        .define_record_with_placements(
+            owner,
+            [address, prefix, byte],
+            RecordLayout::default(),
+            [None, Some(0), None],
+        )
+        .unwrap();
+    let mut nested = byte;
+    let mut containers = vec![];
+    for _ in 0..32 {
+        let record = p.types.reserve_record(RecordKind::Struct);
+        p.types.define_record(record, [nested]).unwrap();
+        containers.push(record);
+        nested = record;
+    }
+    let pointer_field = p.types.field(owner, 0).unwrap().id;
+    let byte_field = p.types.field(owner, 2).unwrap().id;
+    let paths = [&[pointer_field][..], &[byte_field][..]];
+    let mut vm = Vm::new(&p, crate::NoEffects, Limits::default()).unwrap();
+    vm.prepare_layout(nested).unwrap();
+    let mut pointer = vm.memory.allocate(&p.types, nested, None).unwrap();
+    for _ in containers.iter().rev() {
+        pointer = vm.memory.field(&p.types, &pointer, 0).unwrap();
+    }
+    vm.prepare_ordered_record(owner, paths).unwrap();
+    assert_eq!(
+        vm.memory
+            .prepared_layout(&p.types, owner)
+            .unwrap()
+            .field_offsets
+            .as_ref(),
+        [0, 0, 3]
+    );
+    let mut state = vm
+        .start_ordered_record(owner, OrderedRecordBacking::Uninitialized, paths, 0)
+        .unwrap();
+    vm.write_ordered_record(&mut state, 0, &Value::Pointer(pointer), 0)
+        .unwrap();
+    let old_metadata = state.image.metadata_cells();
+    assert!(old_metadata > 32);
+    let old_image = state.image.clone();
+    let rhs = Value::Int(Integer::wrapping(IntegerType::U8, 7));
+    // The old formula admits the scalar RHS and two-byte patch, but omits
+    // cloning an existing projected Pointer when the address span splits.
+    vm.limits.value_cells =
+        state.cells(4096).unwrap() + vm.memory.value_cells() + rhs.cells(4096).unwrap() * 3 + 2;
+    assert!(matches!(
+        vm.write_ordered_record(&mut state, 1, &rhs, 0),
+        Err(Halt::Failed(Error::Limit(LimitKind::ValueCells)))
+    ));
+    assert_eq!(state.image, old_image);
+}
+
+#[test]
+fn partial_pointer_overwrite_keeps_actual_owning_memory_bytes() {
+    let mut p = provider();
+    let byte = p.types.scalar(ScalarType::Int(IntegerType::U8));
+    let pointer_ty = p.types.pointer(byte).unwrap();
+    let prefix = p.types.fixed_array(byte, 3).unwrap();
+    let owner = p.types.reserve_record(RecordKind::Struct);
+    p.types
+        .define_record_with_placements(
+            owner,
+            [pointer_ty, prefix, byte],
+            RecordLayout::default(),
+            [None, Some(0), None],
+        )
+        .unwrap();
+    let pointer_field = p.types.field(owner, 0).unwrap().id;
+    let byte_field = p.types.field(owner, 2).unwrap().id;
+    let paths = [&[pointer_field][..], &[byte_field][..]];
+    let mut vm = Vm::new(&p, crate::NoEffects, Limits::default()).unwrap();
+    let target = vm.memory.allocate(&p.types, byte, None).unwrap();
+    let oracle = vm.memory.allocate(&p.types, owner, None).unwrap();
+    let oracle_pointer = vm.memory.field(&p.types, &oracle, 0).unwrap();
+    let oracle_byte = vm.memory.field(&p.types, &oracle, 2).unwrap();
+    let pointer_value = Value::Pointer(target);
+    let byte_value = Value::Int(Integer::wrapping(IntegerType::U8, 7));
+    vm.memory
+        .store(&p.types, &oracle_pointer, pointer_value.clone())
+        .unwrap();
+    vm.memory
+        .store(&p.types, &oracle_byte, byte_value.clone())
+        .unwrap();
+    let Value::StoredAggregate(expected) = vm.memory.load(&p.types, &oracle).unwrap() else {
+        panic!("expected actual oracle storage")
+    };
+    vm.prepare_ordered_record(owner, paths).unwrap();
+    let mut state = vm
+        .start_ordered_record(owner, OrderedRecordBacking::Uninitialized, paths, 0)
+        .unwrap();
+    vm.write_ordered_record(&mut state, 0, &pointer_value, 0)
+        .unwrap();
+    vm.write_ordered_record(&mut state, 1, &byte_value, 0)
+        .unwrap();
+    let Value::StoredAggregate(actual) = vm.finish_ordered_record(state, 0).unwrap() else {
+        panic!("expected physical recipe storage")
+    };
+    assert_eq!(actual.image().bytes(), expected.image().bytes());
+    assert_eq!(actual.image(), expected.image());
+    assert_eq!(
+        actual
+            .field(&p.types, 2, 4096)
+            .unwrap()
+            .integer()
+            .unwrap()
+            .value(),
+        7
+    );
+    assert!(actual.field(&p.types, 0, 4096).is_err());
+}
+#[test]
+fn foreign_memory_pointer_patch_fails_before_completed_image_mutation() {
+    let mut p = provider();
+    let word = p.types.scalar(ScalarType::Int(IntegerType::S64));
+    let pointer_ty = p.types.pointer(word).unwrap();
+    let owner = p.types.reserve_record(RecordKind::Struct);
+    p.types.define_record(owner, [pointer_ty]).unwrap();
+    let field = p.types.field(owner, 0).unwrap().id;
+    let mut vm = Vm::new(&p, crate::NoEffects, Limits::default()).unwrap();
+    let mut foreign = Memory::new(Limits::default());
+    let pointer = foreign.allocate(&p.types, word, None).unwrap();
+    vm.prepare_ordered_record(owner, [&[field][..]]).unwrap();
+    let mut state = vm
+        .start_ordered_record(owner, OrderedRecordBacking::Zeroed, [&[field][..]], 0)
+        .unwrap();
+    let old_image = state.image.clone();
+    assert!(matches!(
+        vm.write_ordered_record(&mut state, 0, &Value::Pointer(pointer), 0),
+        Err(Halt::Failed(Error::ForeignPointer))
+    ));
+    assert_eq!(state.image, old_image);
+}

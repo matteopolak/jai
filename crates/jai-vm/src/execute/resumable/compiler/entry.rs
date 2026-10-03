@@ -13,6 +13,11 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         if self.continuation.is_some() {
             return self.progress_failed(Error::InvalidIr("a continuation is already active"));
         }
+        if !self.execution_phase().is_compile_time() {
+            return self.progress_failed(Error::InvalidIr(
+                "compiler Code plans require compile-time execution",
+            ));
+        }
         let empty = Places::default();
         let controller = source
             .verify(
@@ -69,6 +74,11 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 }
                 Ok(value)
             });
+        if let Err(halt) = self.flush_publication_work() {
+            let error = publication_admission_error(halt);
+            self.fail_resumable(error.clone().into());
+            return Err(error);
+        }
         let value = match validation {
             Ok(value) => value,
             Err(Error::Type(TypeError::Incomplete(ty))) => {

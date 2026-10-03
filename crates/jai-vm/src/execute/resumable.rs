@@ -2,6 +2,8 @@
 mod apply;
 mod branches;
 mod checkpoint;
+mod compiler;
+pub use compiler::{CompilerCodeSelection, CompilerFrameId};
 #[cfg(test)]
 mod control_tests;
 mod machine;
@@ -62,12 +64,43 @@ enum Phase {
     AwaitingPublication,
 }
 pub(super) struct Session {
-    machine: machine::Machine,
+    root: SessionRoot,
     process_scheduler: process_scheduler::ProcessScheduler,
     checkpoint: Checkpoint,
+    compiler_reserved_cells: usize,
     phase: Phase,
     origin: Option<crate::SourceOrigin>,
     signatures: HashMap<ProcedureId, TypeId>,
+}
+enum SessionRoot {
+    Native(machine::Machine),
+    Compiler(Box<compiler::CompilerController>),
+}
+impl SessionRoot {
+    fn retain_metadata(&mut self, cells: usize, limit: usize) -> std::result::Result<(), Error> {
+        match self {
+            Self::Native(machine) => machine.retain_metadata(cells, limit),
+            Self::Compiler(controller) => controller.retain_metadata(cells, limit),
+        }
+    }
+    fn retained_cells(&self) -> std::result::Result<usize, Error> {
+        match self {
+            Self::Native(machine) => Ok(machine.retained_cells()),
+            Self::Compiler(controller) => controller.retained_cells(),
+        }
+    }
+    fn values(&self) -> Option<&[Value]> {
+        match self {
+            Self::Native(machine) => machine.values(),
+            Self::Compiler(_) => None,
+        }
+    }
+    fn take_values(&mut self) -> Option<Vec<Value>> {
+        match self {
+            Self::Native(machine) => machine.take_values(),
+            Self::Compiler(_) => None,
+        }
+    }
 }
 struct Checkpoint {
     memory: crate::memory::MemorySnapshot,
@@ -110,7 +143,10 @@ pub struct ContinuationState {
 impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     /// The pinned origin remains available during validated result publication.
     pub fn publication_source_origin(&self) -> Option<&crate::SourceOrigin> {
-        self.continuation.as_ref()?.origin.as_ref()
+        self.continuation
+            .as_ref()
+            .and_then(|session| session.origin.as_ref())
+            .or(self.publication_origin.as_ref())
     }
     pub fn start_resumable_expression(&mut self, expression: &ValueExpr) -> ResumableExecution {
         self.start_resumable_expression_with_origin(None, expression, None)
@@ -261,7 +297,14 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     }
     fn begin_resumable(
         &mut self,
-        mut machine: machine::Machine,
+        machine: machine::Machine,
+        origin: Option<crate::SourceOrigin>,
+    ) -> ResumableExecution {
+        self.begin_resumable_root(SessionRoot::Native(machine), origin)
+    }
+    fn begin_resumable_root(
+        &mut self,
+        mut root: SessionRoot,
         origin: Option<crate::SourceOrigin>,
     ) -> ResumableExecution {
         self.statistics = Statistics::default();
@@ -275,16 +318,14 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         self.root_sequence_temp_bytes = 0;
         let origin_cells = origin.as_ref().map_or(0, source_origin_cells);
         let signatures_work = self.provider.signatures().capacity();
-        let metadata = signatures_work
-            .saturating_mul(2)
-            .saturating_add(origin_cells);
+        let metadata = signatures_work.saturating_mul(2);
         if metadata > self.limits.value_cells {
             return self.progress_failed(Error::Limit(LimitKind::ValueCells));
         }
         if let Err(halt) = self.charge_work(signatures_work.saturating_add(origin_cells)) {
             return self.fail_resumable(halt);
         }
-        if let Err(error) = machine.retain_metadata(
+        if let Err(error) = root.retain_metadata(
             metadata,
             self.limits
                 .value_cells
@@ -292,10 +333,22 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         ) {
             return self.progress_failed(error);
         }
-        let admission = match checkpoint::prepare(self, machine.retained_cells()) {
-            Ok(admission) => admission,
-            Err(halt) => return self.fail_resumable(halt),
+        let root_cells = match root.retained_cells() {
+            Ok(cells) => cells,
+            Err(error) => return self.progress_failed(error),
         };
+        // Move the pinned origin while the checkpoint gate measures common owners.
+        let previous_origin = self.publication_origin.take();
+        self.publication_origin = origin;
+        let admission = match checkpoint::prepare(self, root_cells) {
+            Ok(admission) => admission,
+            Err(halt) => {
+                self.publication_origin = previous_origin;
+                return self.fail_resumable(halt);
+            }
+        };
+        let origin = self.publication_origin.take();
+        self.publication_origin = previous_origin;
         let signatures = self.provider.signatures().clone();
         let checkpoint = Checkpoint {
             memory: self.memory.snapshot(),
@@ -314,12 +367,13 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         }
         self.effects.begin();
         self.continuation = Some(Session {
-            machine,
+            root,
             process_scheduler: process_scheduler::ProcessScheduler::new(
                 admission.cells,
                 admission.resident_ancillary_cells,
             ),
             checkpoint,
+            compiler_reserved_cells: admission.cells,
             phase: Phase::Running,
             origin,
             signatures,
@@ -355,8 +409,33 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     }
     fn drive_resumable(&mut self) -> ResumableExecution {
         let mut session = self.continuation.take().expect("active continuation");
-        let result = session.process_scheduler.drive(self, &mut session.machine);
+        let previous_origin = self.publication_origin.take();
+        self.publication_origin = session.origin.take();
+        let previous_retention = (
+            self.transaction_retained_cells,
+            self.transaction_ancillary_cells,
+            self.transaction_value_cell_limit,
+        );
+        let result = match &mut session.root {
+            SessionRoot::Native(machine) => session.process_scheduler.drive(self, machine),
+            SessionRoot::Compiler(controller) => controller
+                .drive_with_checkpoint(self, session.compiler_reserved_cells)
+                .map(|()| machine::DriveStatus::Complete),
+        };
+        session
+            .process_scheduler
+            .refresh_publication_ancillary(self.transaction_ancillary_cells);
+        session.origin = self.publication_origin.take();
+        self.publication_origin = previous_origin;
+        (
+            self.transaction_retained_cells,
+            self.transaction_ancillary_cells,
+            self.transaction_value_cell_limit,
+        ) = previous_retention;
         self.continuation = Some(session);
+        if let Err(halt) = self.flush_publication_work() {
+            return self.fail_resumable(halt);
+        }
         match result {
             Ok(machine::DriveStatus::Complete) => {
                 self.continuation.as_mut().unwrap().phase = Phase::AwaitingPublication;
@@ -382,7 +461,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     pub fn resumable_values(&self) -> Option<&[Value]> {
         let session = self.continuation.as_ref()?;
         matches!(session.phase, Phase::AwaitingPublication)
-            .then(|| session.machine.values())
+            .then(|| session.root.values())
             .flatten()
     }
     pub fn resumable_dependency(&self) -> Option<&Dependency> {
@@ -400,7 +479,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 outcome: Outcome::Failed(Error::InvalidIr(
                     "continuation has no publishable result",
                 )),
-                statistics: self.statistics,
+                statistics: self.publication_statistics(),
             };
         };
         let validation = validator(self, values)
@@ -425,11 +504,21 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 statistics: progress.statistics,
             };
         }
+        if let Err(halt) = self.flush_publication_work() {
+            let failure = self.fail_resumable(halt);
+            return Execution {
+                outcome: Outcome::Failed(match failure.outcome {
+                    ResumableOutcome::Failed(error) => error,
+                    _ => unreachable!(),
+                }),
+                statistics: failure.statistics,
+            };
+        }
         let mut session = self.continuation.take().unwrap();
         if let Some(origin) = &session.origin {
             self.effects.set_source_origin(origin.clone());
         }
-        let values = session.machine.take_values().unwrap();
+        let values = session.root.take_values().unwrap();
         let mut result = Ok(());
         for pointer in self.root_temporaries.drain(..) {
             if let Err(error) = self.memory.release(&pointer) {
@@ -449,18 +538,20 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         match result {
             Ok(()) => Execution {
                 outcome: Outcome::Complete(values),
-                statistics: self.statistics,
+                statistics: self.publication_statistics(),
             },
             Err(error) => {
                 self.restore_checkpoint(session.checkpoint);
                 Execution {
                     outcome: Outcome::Failed(error),
-                    statistics: self.statistics,
+                    statistics: self.publication_statistics(),
                 }
             }
         }
     }
     pub fn cancel_resumable(&mut self) -> std::result::Result<(), Error> {
+        self.flush_publication_work()
+            .map_err(publication_admission_error)?;
         let Some(session) = self.continuation.take() else {
             return Err(Error::InvalidIr("no continuation is active"));
         };
@@ -472,6 +563,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         result
     }
     fn fail_resumable(&mut self, halt: Halt) -> ResumableExecution {
+        let _ = self.flush_publication_work();
         let error = match halt {
             Halt::Failed(error) => error,
             Halt::Pending(_) => Error::InvalidIr("continuation initialization is pending"),
@@ -507,13 +599,15 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     fn progress(&self, outcome: ResumableOutcome) -> ResumableExecution {
         ResumableExecution {
             outcome,
-            statistics: self.statistics,
+            statistics: self.publication_statistics(),
         }
     }
     fn progress_failed(&self, error: Error) -> ResumableExecution {
         self.progress(ResumableOutcome::Failed(error))
     }
     pub fn into_continuation(mut self) -> std::result::Result<ContinuationState, Error> {
+        self.flush_publication_work()
+            .map_err(publication_admission_error)?;
         let session = self
             .continuation
             .take()
@@ -524,6 +618,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 "only a suspended continuation can be transferred",
             ));
         }
+        let statistics = self.publication_statistics();
         let mut frames = Vec::with_capacity(self.frames.len());
         for frame in self.frames {
             let FrameCode::Owned(procedure) = frame.procedure else {
@@ -544,6 +639,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         }
         let state = VmState {
             memory: self.memory,
+            execution_phase: self.execution_phase,
             host_files: self.host_files,
             host_heap: self.host_heap,
             processes: self.processes,
@@ -565,7 +661,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             current_context: self.current_context,
             root_temporaries: self.root_temporaries,
             root_sequence_temp_bytes: self.root_sequence_temp_bytes,
-            statistics: self.statistics,
+            statistics,
             journal: self.effects.take_journal(),
             expression_bindings: self.expression_bindings,
         })
@@ -646,4 +742,95 @@ fn source_origin_cells(origin: &crate::SourceOrigin) -> usize {
         .saturating_add(origin.body.capacity())
         .saturating_add(origin.specialization.capacity())
         .saturating_add(8)
+}
+
+// Paired hooks in execute/resumable.rs; fields and ordinary transaction hooks
+// are supplied by constant_slices. SessionRoot conversion is supplied by compiler.
+pub(super) fn publication_transaction_admission<
+    P: ProcedureProvider + ?Sized,
+    E: CompilerEffects,
+>(
+    vm: &mut Vm<'_, P, E>,
+) -> std::result::Result<(usize, usize), Error> {
+    checkpoint::prepare(vm, 0)
+        .map(|admission| (admission.cells, admission.resident_ancillary_cells))
+        .map_err(publication_admission_error)
+}
+pub(super) fn publication_transaction_residual<
+    P: ProcedureProvider + ?Sized,
+    E: CompilerEffects,
+>(
+    vm: &mut Vm<'_, P, E>,
+) -> std::result::Result<usize, Error> {
+    let storage = branches::measured(vm, false).map_err(publication_admission_error)?;
+    checkpoint::residual(vm, storage.cells).map_err(publication_admission_error)
+}
+fn publication_admission_error(halt: Halt) -> Error {
+    match halt {
+        Halt::Failed(error) => error,
+        Halt::Pending(_) => Error::InvalidIr("publication snapshot admission is pending"),
+    }
+}
+pub(super) fn publication_origin_cells<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
+    vm: &Vm<'_, P, E>,
+) -> usize {
+    vm.publication_origin_cells()
+}
+pub(super) fn cache_drive_publication_retention<
+    P: ProcedureProvider + ?Sized,
+    E: CompilerEffects,
+>(
+    vm: &mut Vm<'_, P, E>,
+    original_limit: usize,
+    retained_roots: usize,
+    ancillary_without_pool: usize,
+) -> Result<()> {
+    vm.transaction_retained_cells = retained_roots;
+    vm.transaction_ancillary_cells = ancillary_without_pool;
+    vm.transaction_value_cell_limit = Some(original_limit);
+    Ok(())
+}
+impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
+    pub fn publication_value_cell_limit(&self) -> usize {
+        self.transaction_value_cell_limit
+            .unwrap_or(self.limits.value_cells)
+    }
+    pub fn publication_retained_cells(&self) -> std::result::Result<usize, Error> {
+        let (reserved, root) = if let Some(session) = &self.continuation {
+            (
+                session.process_scheduler.publication_cells()?,
+                session.root.retained_cells()?,
+            )
+        } else if self.transaction_value_cell_limit.is_some() {
+            (
+                self.transaction_retained_cells
+                    .checked_add(self.transaction_ancillary_cells)
+                    .ok_or(Error::Limit(LimitKind::ValueCells))?,
+                0,
+            )
+        } else {
+            return Err(Error::InvalidIr(
+                "publication requires an admitted transaction",
+            ));
+        };
+        self.memory
+            .value_cells()
+            .checked_add(self.expression_bindings.cells())
+            .and_then(|cells| {
+                cells.checked_add(
+                    self.processes
+                        .as_ref()
+                        .map_or(0, process::ProcessState::cells),
+                )
+            })
+            .and_then(|cells| cells.checked_add(reserved))
+            .and_then(|cells| cells.checked_add(root))
+            .and_then(|cells| cells.checked_add(publication_origin_cells(self)))
+            .ok_or(Error::Limit(LimitKind::ValueCells))
+    }
+    pub fn publication_remaining_value_cells(&self) -> std::result::Result<usize, Error> {
+        self.publication_value_cell_limit()
+            .checked_sub(self.publication_retained_cells()?)
+            .ok_or(Error::Limit(LimitKind::ValueCells))
+    }
 }

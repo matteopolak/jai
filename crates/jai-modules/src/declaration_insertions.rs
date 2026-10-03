@@ -26,11 +26,26 @@ impl InsertionRequestId {
 pub struct InsertionTransaction {
     request: InsertionRequestId,
     generation: u64,
+    admitted_revision: Option<u64>,
 }
 impl InsertionTransaction {
     pub fn request(self) -> InsertionRequestId {
         self.request
     }
+    pub(super) fn admitted_revision(self) -> Option<u64> {
+        self.admitted_revision
+    }
+}
+
+/// Sealed admission of the exact source payload on one immutable discovery
+/// frontier. Clones retain the same request generation and cannot be replayed
+/// after staging, cancellation, publication, or a discovery mutation.
+#[derive(Clone, Debug)]
+pub struct InsertionAdmission {
+    pub(super) request: InsertionRequestId,
+    pub(super) generation: u64,
+    pub(super) revision: u64,
+    pub(super) code: Arc<DeclarationInsertionCode>,
 }
 
 /// Registry-independent captured source. All declaration syntax remains in its
@@ -123,6 +138,7 @@ pub enum InsertionResponseError {
     AlreadyStaged,
     AlreadyPublished,
     StaleTransaction,
+    StaleAdmission,
     InvalidSource,
     InvalidBinding,
     DuplicateCapture,
@@ -138,6 +154,9 @@ impl fmt::Display for InsertionResponseError {
             Self::AlreadyStaged => "insertion request already has a staged response",
             Self::AlreadyPublished => "insertion request has already published declarations",
             Self::StaleTransaction => "insertion transaction was consumed or cancelled",
+            Self::StaleAdmission => {
+                "insertion admission no longer matches the source request or discovery frontier"
+            }
             Self::InvalidSource => "insertion response has invalid original source provenance",
             Self::InvalidBinding => "insertion capture references an unavailable source binding",
             Self::DuplicateCapture => "insertion capture repeats a bound source name",
@@ -150,6 +169,7 @@ impl fmt::Display for InsertionResponseError {
 }
 impl std::error::Error for InsertionResponseError {}
 
+#[derive(Clone)]
 pub(super) struct InsertionRequestStore {
     session: u64,
     pub(super) requests: Vec<DeclarationInsertionRequest>,
@@ -216,6 +236,37 @@ impl InsertionRequestStore {
         id: InsertionRequestId,
         code: Arc<DeclarationInsertionCode>,
     ) -> Result<InsertionTransaction, InsertionResponseError> {
+        self.stage_with_revision(id, code, None)
+    }
+    pub(super) fn admission_generation(
+        &self,
+        id: InsertionRequestId,
+    ) -> Result<u64, InsertionResponseError> {
+        let request = self.request(id)?;
+        if request.publication.is_some() {
+            return Err(InsertionResponseError::AlreadyPublished);
+        }
+        if request.staged.is_some() {
+            return Err(InsertionResponseError::AlreadyStaged);
+        }
+        Ok(request.generation)
+    }
+    pub(super) fn stage_admitted(
+        &mut self,
+        id: InsertionRequestId,
+        admission: InsertionAdmission,
+    ) -> Result<InsertionTransaction, InsertionResponseError> {
+        if admission.request != id || self.admission_generation(id)? != admission.generation {
+            return Err(InsertionResponseError::StaleAdmission);
+        }
+        self.stage_with_revision(id, admission.code, Some(admission.revision))
+    }
+    fn stage_with_revision(
+        &mut self,
+        id: InsertionRequestId,
+        code: Arc<DeclarationInsertionCode>,
+        admitted_revision: Option<u64>,
+    ) -> Result<InsertionTransaction, InsertionResponseError> {
         let request = self.request_mut(id)?;
         if request.publication.is_some() {
             return Err(InsertionResponseError::AlreadyPublished);
@@ -223,11 +274,15 @@ impl InsertionRequestStore {
         if request.staged.is_some() {
             return Err(InsertionResponseError::AlreadyStaged);
         }
-        request.generation += 1;
+        request.generation = request
+            .generation
+            .checked_add(1)
+            .expect("insertion transaction generation space exhausted");
         request.staged = Some(code);
         Ok(InsertionTransaction {
             request: id,
             generation: request.generation,
+            admitted_revision,
         })
     }
     pub(super) fn staged(
@@ -416,7 +471,9 @@ fn declaration_name(declaration: &FileDeclaration) -> Symbol {
 }
 
 impl ModuleGraph {
-    /// Check owned source transport before a source execution commits effects.
+    /// Validate source transport and ancestry only. Source execution must use
+    /// `GraphDiscovery::admit_insertion` before committing compiler effects,
+    /// because declaration registration can also reject namespace collisions.
     pub fn validate_insertion_code(
         &self,
         mut destination: FileInstanceId,

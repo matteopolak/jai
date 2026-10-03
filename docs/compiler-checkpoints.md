@@ -24,6 +24,16 @@ Public CI for `17812fc` then stopped at three groups of unused VM test helpers. 
 
 Checkpoint `72a9354` retains actual import bindings when a provider suspends discovery. Five new module regressions and the existing import-order regression pass. Namespace and anonymous type-alias execution tests remain separate semantic integration gates.
 
+The subsequent live source-controller batch passes 29 tests for retained `Code`, global initializers, header and initial-type prerequisites, source insertion and per-run prefix checkpoints. All nine `using` source tests pass, including namespace and anonymous aliases imported from a suspended provider. Five driver tests cover repeated source rebuilds, pending continuation cancellation, late failure rollback and handled child failures. These results belong to the live batch and do not update the older frozen CLI corpus counts.
+
+Dependent baked values are now rechecked after a modifier changes their formal type. The original seven record-modifier tests and a narrowing rejection pass. Two additional distinct-type witnesses remain pending because canonical typed-constant preparation fails before the modifier runs. Allocator source tests pass six of seven; the independently authored default allocator's numeric pointer ownership sentinel requires an opaque VM pointer representation without allocation authority. Keep unresolved behavior explicit until its actual source gate passes.
+
+An additional prefix regression now passes with the original omitted `bool` argument in both `#run read()` and an ordinary runtime call. The source stage waits for the real declared default before producing its checkpoint, and the VM returns 42. All five prefix tests pass; earlier lifecycle fixtures with explicit arguments remain separate coverage.
+
+Public CI for `e072f77` stops at semantic Clippy diagnostics. The cleanup replaces singleton cloned slices, removes an unnecessary reference conversion and orders an existing trait implementation before its test module. Genuine production producers must be registered or removed according to their actual consumers; lint allowances do not establish feature readiness. Strict hosted verification remains separate from the passing source tests.
+
+A fresh owned CLI snapshot, `017353c4`, retains 919 authored source inputs and verifies 10,438 captured inputs before and after its successful build. Its immutable executable and receipt live under `artifacts/integration-checkpoints/source-verified-20261002/`. The full source sweep parses 1,784 of 2,142 files and checks 101 support files with reference Preload enabled and Runtime Support disabled. Its authored-library sweep parses 370 of 390 files and checks 27 of 128 module entrypoints. All source and family-report hashes remain unchanged during that library sweep; these results establish source checks, not native library or project acceptance.
+
 ## How to change it
 
 Coordinate shared interface changes with the integration owner. Split later checkpoints by coherent feature batches and include the tests and documentation needed to understand each change. Push normally to the configured repository; avoid force pushes or resetting another owner's work.

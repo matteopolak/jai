@@ -1,0 +1,53 @@
+{
+  "status": "pending-opaque-numeric-pointer-semantics",
+  "test": "authored_standard_allocator_runs_its_real_heap_ledger_without_stdio",
+  "original_driver_test_source": "crates/jai-driver/tests/heap_abi.rs",
+  "original_driver_test_sha256": "a6b61fbb44df1025e2b714ef2a2d184c4b244910addca52b4496771a3a967669",
+  "pending_witness_sha256": "93eabd328b642356aa370261334c81014fc550c1a72e4bb22e32b755ba5456a3",
+  "original_source_inputs": {
+    "tests/stdlib/default-allocator.jai": "f520ca28cea7a351a3518a90721bc00fcee5a7f9cec1a275593fed455db2c32f",
+    "stdlib/Default_Allocator/module.jai": "e6059de728d7ddaa44683740117a63db6814c4fc14d345b9c0715645684752a3"
+  },
+  "bootstrap_inputs": {
+    "stdlib/Preload.jai": "d9cad1f7167bfefa7949dab57aa1aace4f57414f72682e6854e0aa7e0b235b96",
+    "stdlib/Runtime_Support.jai": "35616e67867ced7251c3432c9b37a67529bfbbbe817b7ab2a3043c85c327a870"
+  },
+  "target": {
+    "operating_system": "MacOS",
+    "architecture": "Arm64",
+    "layout": "lp64",
+    "byte_order": "Little"
+  },
+  "runtime_support_parameters": {
+    "define_system_entry_point": false,
+    "define_initialization": false,
+    "enable_backtrace_on_crash": false
+  },
+  "cli_environment": {
+    "JAI_RS_MODULE_PATH": "unset",
+    "JAI_RS_STDLIB": "/Users/matthew/projects/jai/stdlib",
+    "JAI_RS_PRELOAD": "/Users/matthew/projects/jai/stdlib/Preload.jai",
+    "JAI_RS_RUNTIME_SUPPORT": "/Users/matthew/projects/jai/stdlib/Runtime_Support.jai",
+    "JAI_RS_RUNTIME_ENTRY": "false",
+    "JAI_RS_RUNTIME_INITIALIZATION": "false",
+    "JAI_RS_RUNTIME_BACKTRACE": "false"
+  },
+  "prior_source_gate": {
+    "passed": 6,
+    "failed": 1,
+    "log": "source-seven.log",
+    "log_sha256": "b331971047d1e812870af7038f4766fbb0eca0753ca999a19a12af8ec5c5e9bd",
+    "original_log": "/private/tmp/jai-integration-allocator-source-final-tests.log"
+  },
+  "split_tests": {
+    "active": 6,
+    "pending": 1,
+    "rerun": false
+  },
+  "production_changed": false,
+  "active_driver_test_sha256": "f72b25600465e68b2265a2a94172a28f81a78a460108070f7ae3be1c8a7a2d5d",
+  "doc_sha256": "05735c8150cf004f77e27f15d58646dbdef30e052bf5f84ddcb587dad4eead4b",
+  "preserved_six_test_bodies_exact": true,
+  "pending_witness_original_extraction_sha256": "7a083cfe95ac51ad19a7e517ffea53e39e81e04b6f46f0f84c8e93215e96fd67",
+  "pending_witness_formatting": "Removed one extra terminal blank line from the extracted function; complete original harness is unchanged."
+}

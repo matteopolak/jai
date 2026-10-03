@@ -15,21 +15,25 @@ impl SourceProcedures {
     }
 }
 
+pub(in crate::modules) fn is_concrete(declaration: &jai_modules::Declaration) -> bool {
+    match &declaration.syntax().kind {
+        FileDeclarationKind::Procedure(procedure) => {
+            !procedure.expands && !crate::polymorphism::is_polymorphic(procedure)
+        }
+        FileDeclarationKind::ProcedurePrototype(prototype) => {
+            !crate::polymorphism::is_polymorphic_prototype(prototype)
+        }
+        _ => false,
+    }
+}
+
 pub(in crate::modules) fn reserve(
     graph: &ModuleGraph,
     callable_aliases: &HashMap<DeclarationId, Vec<DeclarationId>>,
 ) -> Result<SourceProcedures, LocatedDiagnostic> {
     let mut declarations = HashMap::new();
     for declaration in super::dependencies::ordered(graph, callable_aliases)? {
-        let concrete = match &declaration.syntax().kind {
-            FileDeclarationKind::Procedure(procedure) => {
-                !procedure.expands && !crate::polymorphism::is_polymorphic(procedure)
-            }
-            FileDeclarationKind::ProcedurePrototype(prototype) => {
-                !crate::polymorphism::is_polymorphic_prototype(prototype)
-            }
-            _ => false,
-        };
+        let concrete = is_concrete(declaration);
         if concrete {
             let id = ProcedureId::new(declarations.len());
             declarations.insert(declaration.id(), id);

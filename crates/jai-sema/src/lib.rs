@@ -23,6 +23,7 @@ pub use resolve_options::ResolveOptions;
 mod c_string_literals;
 mod compile_time_cases;
 mod compile_time_conditionals;
+mod compiler_code;
 mod constant_limits;
 mod constant_queries;
 mod enum_operators;
@@ -73,6 +74,10 @@ pub use modules::{
     DiscoveryConditionPending, resolve_discovery_cases, resolve_discovery_conditions,
 };
 pub use modules::{
+    DiscoveryInsertionDecision, DiscoveryInsertionOutcome, DiscoveryInsertionPending,
+    InsertionAdmissionCallback,
+};
+pub use modules::{
     DiscoveryParameterOutcome, DiscoveryParameterPending, resolve_discovery_parameters,
 };
 pub use modules::{
@@ -80,7 +85,10 @@ pub use modules::{
     PreparedDiscoverySession,
 };
 pub use modules::{DiscoveryUsingOutcome, DiscoveryUsingPending, resolve_discovery_using};
-pub use modules::{LibraryPending, LibraryReadiness, PreparedLibrarySession};
+pub use modules::{
+    LibraryPending, LibraryReadiness, PreparedLibrarySession, SourcePrefixReadiness,
+    SourcePreparationPending,
+};
 pub use modules::{resolve_graph, resolve_library, select_entry};
 pub use modules::{resolve_graph_with_options, resolve_library_with_options};
 pub mod compile_time;
@@ -95,13 +103,20 @@ use jai_types::{CallingConvention, ContextMode, ProcedureType, TypeId, TypeRegis
 
 #[derive(Clone, Debug)]
 enum Binding {
+    CompilerInput {
+        binding: jai_ir::ExpressionBindingId,
+        ty: TypeId,
+    },
     Discarded(TypeId),
     LambdaPreview(short_lambdas::PreviewBinding),
     Macro(metaprogram::LocalMacroId),
     Namespace(jai_source::ModuleId),
     Imported(jai_modules::Binding),
     Library(ForeignLibraryId),
-    Procedure { procedure: ProcedureId, ty: TypeId },
+    Procedure {
+        procedure: ProcedureId,
+        ty: TypeId,
+    },
     Code(jai_types::CodeValueId),
     TypedConstant(typed_constants::ConstantId),
     Type(TypeId),
@@ -679,6 +694,9 @@ impl Resolver<'_> {
             }
         };
         match binding {
+            Binding::CompilerInput { .. } => {
+                Err(self.error("compiler input is read-only and has no native place"))
+            }
             Binding::Discarded(_) => Err(self.error("#discard parameter cannot be assigned")),
             Binding::Storage(storage) => Ok(storage),
             Binding::Constant(_)

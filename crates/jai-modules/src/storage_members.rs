@@ -15,7 +15,7 @@ impl SourceStorageMemberId {
         self.index
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct SourceStorageMember {
     owner: DeclarationId,
     path: Box<[Symbol]>,
@@ -32,7 +32,7 @@ impl SourceStorageMember {
         self.location
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub(super) struct StorageMembers {
     session: u64,
     records: Vec<SourceStorageMember>,

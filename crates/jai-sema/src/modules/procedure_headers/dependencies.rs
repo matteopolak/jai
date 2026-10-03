@@ -2,7 +2,7 @@
 use super::*;
 use std::collections::HashSet;
 
-pub(super) fn ordered<'a>(
+pub(in crate::modules) fn ordered<'a>(
     graph: &'a ModuleGraph,
     callable_aliases: &HashMap<DeclarationId, Vec<DeclarationId>>,
 ) -> Result<Vec<&'a jai_modules::Declaration>, LocatedDiagnostic> {
@@ -18,7 +18,18 @@ pub(super) fn ordered<'a>(
         .map(|declaration| {
             (
                 declaration,
-                dependencies(graph, callable_aliases, declaration),
+                if super::identities::is_concrete(declaration) {
+                    dependencies(graph, callable_aliases, declaration)
+                        .into_iter()
+                        .filter(|id| {
+                            graph
+                                .declaration(*id)
+                                .is_some_and(super::identities::is_concrete)
+                        })
+                        .collect()
+                } else {
+                    HashSet::new()
+                },
             )
         })
         .collect::<Vec<_>>();
@@ -46,7 +57,7 @@ pub(super) fn ordered<'a>(
     Ok(ordered)
 }
 
-fn dependencies(
+pub(in crate::modules) fn dependencies(
     graph: &ModuleGraph,
     callable_aliases: &HashMap<DeclarationId, Vec<DeclarationId>>,
     declaration: &jai_modules::Declaration,

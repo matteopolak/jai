@@ -22,13 +22,21 @@ impl<'a> FileScope<'a> {
         }
     }
 
-    pub(crate) fn validate_compiler_insertion(
+    pub(crate) fn has_compiler_quote_source(
         &self,
-        file: FileInstanceId,
-        code: &jai_modules::DeclarationInsertionCode,
+        source_file: FileInstanceId,
         location: jai_source::SourceSpan,
-    ) -> Result<(), Diagnostic> {
-        self.declarations.graph.validate_insertion_code(file, code)
-            .map_err(|error| Diagnostic::at_source(location, error.to_string()))
+    ) -> bool {
+        let graph = self.declarations.graph;
+        graph
+            .file(source_file)
+            .is_some_and(|file| file.source() == location.source)
+            && graph.sources().get(location.source).is_some_and(|record| {
+                let text = record.text();
+                location.span.start <= location.span.end
+                    && location.span.end <= text.len()
+                    && text.is_char_boundary(location.span.start)
+                    && text.is_char_boundary(location.span.end)
+            })
     }
 }

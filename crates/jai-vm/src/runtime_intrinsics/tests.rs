@@ -307,6 +307,7 @@ fn vm_dispatch_charges_all_byte_work_before_write_and_keeps_successful_results()
                 jai_types::CastMode::Unchecked,
             )
             .unwrap();
+        vm.test_budget_source_work(fuel, false, 0);
         let result = vm.execute(
             jai_ir::ProcedureId::new(0),
             vec![

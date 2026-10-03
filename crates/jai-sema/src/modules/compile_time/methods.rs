@@ -22,6 +22,56 @@ pub(super) fn sweep_headers(
     sweep_with_demand(context, declarations, types, places, meta, Some(required))
 }
 
+pub(super) fn sweep_types(
+    context: &Context<'_>,
+    declarations: &ScopedDeclarations<'_>,
+    types: &mut TypeRegistry,
+    places: &mut PlaceRegistry,
+    meta: &mut crate::reflection::MetaContext,
+) -> Result<(), LocatedDiagnostic> {
+    let signatures = HashMap::new();
+    let globals = HashMap::new();
+    let mut resolver = Resolver {
+        expression_owner: Some(context.owner),
+        debug: crate::debug_capture::Capture::default(),
+        checks: crate::safety_checks::ActiveChecks::default(),
+        local_scopes: crate::local_declarations::LocalScopes::default(),
+        context: declarations.context.as_ref(),
+        context_available: false,
+        meta,
+        procedure: context.owner,
+        types,
+        target_layout: context.target.map(|target| target.policy),
+        places,
+        signatures: &signatures,
+        globals: &globals,
+        graph_scope: Some(FileScope {
+            declarations,
+            file: context.file,
+            substitution: None,
+        }),
+        compile_time: Some(context),
+        symbols: declarations.graph.symbols(),
+        scopes: vec![HashMap::new()],
+        locals: vec![],
+        span: Span::default(),
+        results: &[],
+        loops: vec![],
+        next_loop: 0,
+        active_push: None,
+        next_push: 0,
+        cleanups: vec![],
+        deferred_scopes: vec![],
+        cleanup_context: None,
+    };
+    resolver
+        .service_record_modifiers(aggregates::parameterized::RecordModifierPolicy {
+            context: jai_types::ContextMode::None,
+            checks: syntax::SafetyChecks::default(),
+        })
+        .map(|_| ())
+}
+
 fn sweep_with_demand(
     context: &Context<'_>,
     declarations: &ScopedDeclarations<'_>,
@@ -74,6 +124,13 @@ fn sweep_with_demand(
             bodies.and(fields)
         });
     }
+    // Body annotations can queue an actual recipe after the initial type cursor.
+    // Service that same retained intent before retrying its source body; count
+    // modifiers keep their genuine no-context execution policy here as well.
+    resolver.service_record_modifiers(aggregates::parameterized::RecordModifierPolicy {
+        context: jai_types::ContextMode::None,
+        checks: syntax::SafetyChecks::default(),
+    })?;
     // Complete defaults through this worklist's genuine provider. A pending
     // default must still allow default-free sibling bodies to become ready.
     let fields = super::super::field_default_jobs::sweep(&mut resolver);

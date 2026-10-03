@@ -3,7 +3,7 @@ use super::*;
 use jai_modules::{DeclarationInsertionCode, SourceCaptureValue};
 use jai_types::TypeId;
 
-enum SourceBinding {
+pub(super) enum SourceBinding {
     Graph(jai_modules::Binding),
     Value(SourceCaptureValue),
 }
@@ -84,7 +84,7 @@ impl Resolver<'_> {
         })
     }
 
-    fn source_insertion_binding(
+    pub(super) fn source_insertion_binding(
         &self,
         binding: Binding,
         location: SourceSpan,
@@ -97,7 +97,24 @@ impl Resolver<'_> {
                 "declaration capture requires its original source graph",
             )
         })?;
+        self.source_insertion_binding_in_scope(binding, location, nodes, bytes, scope)
+    }
+
+    pub(super) fn source_insertion_binding_in_scope(
+        &self,
+        binding: Binding,
+        location: SourceSpan,
+        nodes: &mut usize,
+        bytes: &mut usize,
+        scope: crate::modules::FileScope<'_>,
+    ) -> Result<SourceBinding, Diagnostic> {
         let value = match binding {
+            Binding::CompilerInput { .. } => {
+                return Err(Diagnostic::at_source(
+                    location,
+                    "compiler input cannot enter declaration insertion capture",
+                ));
+            }
             Binding::Namespace(module) => {
                 return Ok(SourceBinding::Graph(jai_modules::Binding::Module(module)));
             }
@@ -109,7 +126,7 @@ impl Resolver<'_> {
                 location,
             )?),
             Binding::Enum(value) => {
-                return self.source_insertion_enum(value.ty, value.value, location);
+                return self.source_insertion_enum_in_scope(value.ty, value.value, location, scope);
             }
             Binding::Procedure { procedure, ty } => {
                 return scope
@@ -156,7 +173,7 @@ impl Resolver<'_> {
                     )
                 })?;
                 lexical_keys::charge_constant(value, nodes, bytes, location.span)?;
-                return self.source_insertion_constant(value, location);
+                return self.source_insertion_constant_in_scope(value, location, scope);
             }
             Binding::Storage(_) => {
                 return Err(Diagnostic::at_source(
@@ -197,15 +214,13 @@ impl Resolver<'_> {
         Ok(SourceBinding::Value(value))
     }
 
-    fn source_insertion_enum(
+    fn source_insertion_enum_in_scope(
         &self,
         ty: TypeId,
         value: jai_types::Integer,
         location: SourceSpan,
+        scope: crate::modules::FileScope<'_>,
     ) -> Result<SourceBinding, Diagnostic> {
-        let scope = self.graph_scope.ok_or_else(|| {
-            Diagnostic::at_source(location, "enum capture requires a source graph")
-        })?;
         let jai_modules::ModuleType::Declaration(declaration) = scope.insertion_capture_type(
             self.types,
             &self.meta.record_specializations,
@@ -223,21 +238,21 @@ impl Resolver<'_> {
         )))
     }
 
-    fn source_insertion_constant(
+    pub(super) fn source_insertion_constant_in_scope(
         &self,
         value: &jai_ir::ConstantValue,
         location: SourceSpan,
+        scope: crate::modules::FileScope<'_>,
     ) -> Result<SourceBinding, Diagnostic> {
         use jai_ir::ConstantKind as C;
-        let scope = self.graph_scope.ok_or_else(|| {
-            Diagnostic::at_source(location, "constant capture requires a source graph")
-        })?;
         let value = match &value.kind {
             C::Int(value) => SourceCaptureValue::Scalar(jai_eval::Value::Int(*value)),
             C::Bool(value) => SourceCaptureValue::Scalar(jai_eval::Value::Bool(*value)),
             C::Float(value) => SourceCaptureValue::Scalar(jai_eval::Value::Float(*value)),
             C::StringBytes(bytes) => SourceCaptureValue::String(bytes.clone().into_boxed_slice()),
-            C::Enum(integer) => return self.source_insertion_enum(value.ty, *integer, location),
+            C::Enum(integer) => {
+                return self.source_insertion_enum_in_scope(value.ty, *integer, location, scope);
+            }
             C::RuntimeType(value) => SourceCaptureValue::Type(scope.insertion_capture_type(
                 self.types,
                 &self.meta.record_specializations,

@@ -6,7 +6,7 @@ pub mod operators;
 #[cfg(test)]
 mod safety_checks_tests;
 pub use bound_values::binary_values;
-pub use domains::{DomainInference, ScalarDomain};
+pub use domains::{DomainInference, ScalarDomain, ScalarInferenceError};
 pub use floats::evaluate_float_paths;
 use jai_source::{Diagnostic, Span, Symbol};
 use jai_syntax::{Expression, ExpressionKind, NamePath, UnaryOp};

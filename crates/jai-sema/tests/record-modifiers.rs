@@ -12,8 +12,12 @@ fn graph(source: &str) -> ModuleGraph {
 }
 
 fn run(source: &str) -> i128 {
+    run_with_options(source, &ResolveOptions::default())
+}
+
+fn run_with_options(source: &str, options: &ResolveOptions) -> i128 {
     let graph = graph(source);
-    let mut session = PreparedLibrarySession::new(&graph, &ResolveOptions::default()).unwrap();
+    let mut session = PreparedLibrarySession::new(&graph, options).unwrap();
     let library = match session.drive(&mut jai_vm::NoEffects) {
         LibraryReadiness::Complete(library) => *library,
         LibraryReadiness::Pending(pending) => panic!("{pending:?}"),
@@ -107,13 +111,19 @@ fn modifier_waits_for_the_original_checked_helper_body() {
 #[test]
 fn accepted_type_slot_rechecks_its_dependent_baked_value() {
     assert_eq!(
-        run(r#"
+        run_with_options(
+            r#"
             Box::struct(T:Type,Fill:T) #modify {T=s64;return true;} {value:T=Fill;}
             First::#type Box(u8,21);
             Second::#type Box(u16,21);
             saved:First;
             main::()->int {other:Second=saved;return saved.value+other.value;}
-        "#,),
+        "#,
+            &ResolveOptions {
+                layout: Some(jai_types::LayoutPolicy::lp64()),
+                ..ResolveOptions::default()
+            },
+        ),
         42,
     );
 }
@@ -163,4 +173,52 @@ fn inferred_modified_default_pattern_requires_its_own_checked_recipe() {
     );
     assert!(error.location.span.start >= read.span.start);
     assert!(error.location.span.end <= read.span.end);
+}
+
+fn rejected_type_modifier(source: &str) -> jai_source::LocatedDiagnostic {
+    let graph = graph(source);
+    let options = ResolveOptions {
+        layout: Some(jai_types::LayoutPolicy::lp64()),
+        ..ResolveOptions::default()
+    };
+    let error = match PreparedLibrarySession::new(&graph, &options) {
+        Err(error) => error,
+        Ok(mut session) => match session.drive(&mut jai_vm::NoEffects) {
+            LibraryReadiness::Failed(error) => error,
+            LibraryReadiness::Complete(_) => panic!("an incompatible accepted binding must fail"),
+            LibraryReadiness::Pending(pending) => panic!("{pending:?}"),
+        },
+    };
+    let rejected = graph
+        .declarations()
+        .iter()
+        .find(|source| graph.symbols().name(source.name()) == "Rejected")
+        .unwrap();
+    let syntax::FileDeclarationKind::TypeAlias(alias) = &rejected.syntax().kind else {
+        panic!("the original application owns this rejection")
+    };
+    let syntax::TypeSyntax::Application(application) = &alias.ty else {
+        panic!("the original application owns this rejection")
+    };
+    assert!(
+        error
+            .message
+            .contains("baked record argument differs from its formal parameter type"),
+        "{error:?}"
+    );
+    assert_eq!(
+        error.location.source,
+        rejected.location().source,
+        "{error:?}"
+    );
+    assert_eq!(error.location.span, application.span, "{error:?}");
+    error
+}
+
+#[test]
+fn accepted_type_slot_rejects_narrowing_the_dependent_typed_value() {
+    rejected_type_modifier(
+        "Box::struct(T:Type,Fill:T) #modify {T=u8;return true;} {value:T=Fill;} \
+         Rejected::#type Box(u16,21); main::()->int{return 0;}",
+    );
 }

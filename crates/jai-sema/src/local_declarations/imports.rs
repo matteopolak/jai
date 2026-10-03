@@ -44,6 +44,15 @@ pub(super) struct UsingPrefixEnvironment {
 }
 
 impl UsingPrefixEnvironment {
+    pub(super) fn compiler_retention_entries(&self) -> usize {
+        self.bindings
+            .capacity()
+            .saturating_add(self.pending.capacity())
+            .saturating_add(self.placeholders.capacity())
+            .saturating_add(self.origins.capacity())
+            .saturating_add(self.operator_declarations.len())
+    }
+
     pub(super) fn from_frame(frame: &ScopeFrame) -> Self {
         Self {
             bindings: frame.using_bindings.clone(),

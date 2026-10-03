@@ -269,7 +269,7 @@ mod tests {
                 .declarations()
                 .iter()
                 .filter_map(|declaration| declaration.syntax().program_export.as_ref())
-                .last()
+                .next_back()
                 .unwrap();
             assert_eq!(error.location.span, expected_annotation.span);
         }

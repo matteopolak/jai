@@ -28,6 +28,7 @@ impl crate::Resolver<'_> {
         span: Span,
         used: &[bool],
     ) -> Result<Vec<ConstantValue>, Diagnostic> {
+        self.check_source_execution(span)?;
         let context = self.compile_time.ok_or_else(|| {
             Diagnostic::new(span, "#run requires a checked procedure readiness context")
         })?;

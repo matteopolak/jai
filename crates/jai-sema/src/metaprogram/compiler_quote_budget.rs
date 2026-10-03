@@ -796,7 +796,8 @@ impl<'a> Budget<'a> {
     }
 }
 
-/// One source plan charges every quotation clone against the same retained budget.
+/// One semantic session charges every compiler-source retention against the
+/// same cumulative allocation allowance, including temporary overlapping copies.
 #[derive(Default)]
 pub(crate) struct CompilerQuoteBudget {
     nodes: usize,
@@ -805,6 +806,134 @@ pub(crate) struct CompilerQuoteBudget {
 impl CompilerQuoteBudget {
     pub(crate) fn admit(&mut self, body: &syntax::CodeBody, span: Span) -> Result<(), Diagnostic> {
         self.admit_node(Node::Code(body), span)
+    }
+    pub(crate) fn admit_procedure(
+        &mut self,
+        value: &syntax::Procedure,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Procedure(value), span)
+    }
+    pub(crate) fn admit_record(
+        &mut self,
+        value: &syntax::RecordDeclaration,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Record(value), span)
+    }
+    pub(crate) fn admit_enum(
+        &mut self,
+        value: &syntax::EnumDeclaration,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(
+            Node::Enum(value.representation.as_ref(), &value.members),
+            span,
+        )
+    }
+    pub(crate) fn admit_type(
+        &mut self,
+        value: &syntax::TypeSyntax,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Type(value), span)
+    }
+    pub(crate) fn admit_constant(
+        &mut self,
+        value: &syntax::ConstantDeclaration,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Constant(value), span)
+    }
+    pub(crate) fn admit_prototype(
+        &mut self,
+        value: &syntax::ProcedurePrototype,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Prototype(value), span)
+    }
+    pub(crate) fn admit_declaration(
+        &mut self,
+        value: &syntax::Declaration,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        self.admit_node(Node::Declaration(value), span)
+    }
+    pub(crate) fn retain_metadata(
+        &mut self,
+        count: usize,
+        bytes: usize,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        let mut budget = Budget {
+            pending: Vec::new(),
+            nodes: self.nodes,
+            bytes: self.bytes,
+            span,
+        };
+        budget.charge(count)?;
+        budget.bytes(bytes)?;
+        self.nodes = budget.nodes;
+        self.bytes = budget.bytes;
+        Ok(())
+    }
+    pub(crate) fn admit_substitution(
+        &mut self,
+        value: &crate::polymorphism::Substitution,
+        span: Span,
+    ) -> Result<(), Diagnostic> {
+        if !value.callables.is_empty() {
+            return Err(Diagnostic::new(
+                span,
+                "compiler Code capture requires a checked retained size receipt for callable substitutions",
+            ));
+        }
+        self.retain_metadata(
+            value.types.len().saturating_add(value.constants.len()),
+            0,
+            span,
+        )?;
+        for binding in &value.constants {
+            match &binding.value {
+                crate::polymorphism::BakedValue::String(value) => {
+                    self.retain_metadata(1, value.len(), span)?
+                }
+                crate::polymorphism::BakedValue::Value(value) => {
+                    self.admit_value(value, span, 0)?
+                }
+                _ => self.retain_metadata(1, 0, span)?,
+            }
+        }
+        Ok(())
+    }
+    fn admit_value(
+        &mut self,
+        value: &jai_ir::ConstantValue,
+        span: Span,
+        depth: usize,
+    ) -> Result<(), Diagnostic> {
+        if depth >= MAX_DEPTH {
+            return Err(Diagnostic::new(
+                span,
+                "compiler source constant exceeds its retention depth limit",
+            ));
+        }
+        self.retain_metadata(1, 0, span)?;
+        match &value.kind {
+            jai_ir::ConstantKind::Array(values) | jai_ir::ConstantKind::Record(values) => {
+                for value in values {
+                    self.admit_value(value, span, depth + 1)?;
+                }
+            }
+            jai_ir::ConstantKind::Distinct(value) | jai_ir::ConstantKind::Union { value, .. } => {
+                self.admit_value(value, span, depth + 1)?
+            }
+            jai_ir::ConstantKind::StringBytes(value) => {
+                self.retain_metadata(0, value.len(), span)?
+            }
+            _ => {}
+        }
+        Ok(())
     }
     fn admit_node(&mut self, node: Node<'_>, span: Span) -> Result<(), Diagnostic> {
         let mut budget = Budget {
@@ -822,10 +951,12 @@ impl CompilerQuoteBudget {
         Ok(())
     }
 }
-pub(crate) fn admit_compiler_quote(body: &syntax::CodeBody, span: Span) -> Result<(), Diagnostic> {
+#[cfg(test)]
+fn admit_compiler_quote(body: &syntax::CodeBody, span: Span) -> Result<(), Diagnostic> {
     CompilerQuoteBudget::default().admit(body, span)
 }
-pub(crate) fn admit_compiler_code_procedure(
+#[cfg(test)]
+fn admit_compiler_code_procedure(
     procedure: &syntax::Procedure,
     span: Span,
 ) -> Result<(), Diagnostic> {

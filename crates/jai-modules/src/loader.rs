@@ -2,6 +2,7 @@ mod bootstrap_imports;
 mod callable_aliases;
 mod collisions;
 mod declaration_insertions;
+mod insertion_admission;
 mod session;
 mod suspended_imports;
 use super::*;
@@ -10,6 +11,7 @@ use jai_source::Identities;
 use jai_syntax::{FileItem, ImportDeclaration, ImportMode};
 use std::collections::HashSet;
 type ParameterRequests = (Option<Vec<Argument>>, Option<Vec<Argument>>);
+#[derive(Clone)]
 pub(super) struct Builder<'a> {
     provider: &'a dyn SourceProvider,
     pub(super) graph: ModuleGraph,

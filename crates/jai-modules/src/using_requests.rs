@@ -105,6 +105,7 @@ impl fmt::Display for UsingResponseError {
 }
 impl std::error::Error for UsingResponseError {}
 
+#[derive(Clone)]
 pub(super) struct UsingRequestStore {
     session: u64,
     requests: Vec<FileUsingRequest>,
@@ -134,6 +135,7 @@ impl GraphDiscovery<'_> {
         visibility: Visibility,
         context: DiscoveryConditionContext,
     ) -> Result<UsingRequestId, GraphError> {
+        self.invalidate_insertion_admissions();
         let source = self
             .builder
             .graph
@@ -195,6 +197,7 @@ impl GraphDiscovery<'_> {
         id: UsingRequestId,
         decision: FileUsingDecision,
     ) -> Result<(), GraphError> {
+        self.invalidate_insertion_admissions();
         let request = self
             .builder
             .using_requests

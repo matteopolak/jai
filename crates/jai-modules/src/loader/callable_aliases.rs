@@ -15,6 +15,7 @@ impl Destination {
         }
     }
 }
+#[derive(Clone)]
 pub(super) struct DeferredAlias {
     destination: Destination,
     name: Symbol,

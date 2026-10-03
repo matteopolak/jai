@@ -1,4 +1,5 @@
 //! Atomic compiler-input changes requested by compile-time execution.
+mod driver_failures;
 use jai_types::{BacktraceOnCrash, BuildOutputKind, RuntimeSupportMode};
 use jai_vm::{
     BitcodeOptimization, BuildOption, BuildOptionsSnapshot, CompilerEffects, CompilerOutputStream,

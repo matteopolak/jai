@@ -337,9 +337,9 @@ impl Machine {
         }
         // Storage disposal is not source unwind. The parent separately drops private frames/Memory.
         vm.charge_work(self.fork_work_cost()?)?;
-        self.tasks.clear();
-        self.operands.clear();
-        self.plans.clear();
+        self.tasks = Vec::new();
+        self.operands = Vec::new();
+        self.plans = HashMap::new();
         self.initial_plan = None;
         self.retained = 0;
         self.plan_cells = 0;

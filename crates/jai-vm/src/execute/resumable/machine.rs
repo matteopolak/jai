@@ -183,6 +183,44 @@ enum Action {
     },
     Complete,
 }
+impl Action {
+    // Cache concrete backing headers when an action enters the stack. Payload
+    // caches account nested values; these capacities include empty spare slots.
+    fn backing_cells(&self) -> std::result::Result<usize, Error> {
+        let (first, second, goal) = match self {
+            Self::Collect {
+                nodes,
+                values,
+                goal,
+                ..
+            } => {
+                let goal = match goal {
+                    Goal::Exit { cleanups, .. } => cleanups.capacity(),
+                    Goal::BindResults { destinations, .. } => destinations.capacity(),
+                    _ => 0,
+                };
+                (nodes.capacity(), values.capacity(), goal)
+            }
+            Self::Apply { values, .. } => (values.capacity(), 0, 0),
+            Self::Invoke { arguments, .. } => (arguments.capacity(), 0, 0),
+            Self::BindResults { destinations, .. } | Self::StoreResults(destinations) => {
+                (destinations.capacity(), 0, 0)
+            }
+            Self::ExitChain {
+                cleanups, values, ..
+            } => (cleanups.capacity(), values.capacity(), 0),
+            Self::Transfer { values, .. } => (values.capacity(), 0, 0),
+            Self::Simd { registers, .. } | Self::SimdAddress { registers, .. } => {
+                (registers.capacity(), 0, 0)
+            }
+            _ => (0, 0, 0),
+        };
+        first
+            .checked_add(second)
+            .and_then(|cells| cells.checked_add(goal))
+            .ok_or(Error::Limit(LimitKind::ValueCells))
+    }
+}
 #[derive(Clone)]
 enum Goal {
     Apply {
@@ -287,7 +325,7 @@ impl Machine {
         }
     }
     pub(super) fn procedure(id: ProcedureId, arguments: Vec<Value>) -> Self {
-        let cells = arguments.iter().fold(0usize, |cells, value| {
+        let cells = arguments.iter().fold(arguments.capacity(), |cells, value| {
             cells.saturating_add(value.cells(usize::MAX).unwrap_or(usize::MAX))
         });
         Self {
@@ -332,7 +370,11 @@ impl Machine {
         Ok(())
     }
     pub(super) fn take_values(&mut self) -> Option<Vec<Value>> {
-        self.result.take()
+        let values = self.result.take();
+        if values.is_some() {
+            self.retained = 0;
+        }
+        values
     }
     fn push<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
         &mut self,
@@ -350,7 +392,8 @@ impl Machine {
             _ => 0,
         };
         let cells = payload
-            .checked_add(range_cells)
+            .checked_add(action.backing_cells()?)
+            .and_then(|cells| cells.checked_add(range_cells))
             .ok_or(Error::Limit(LimitKind::ValueCells))?
             .checked_add(1)
             .ok_or(Error::Limit(LimitKind::ValueCells))?;
@@ -566,7 +609,12 @@ impl Machine {
                 other => other?,
             },
             Action::Complete => {
-                let operand = self.pop(vm)?;
+                // Move the already-admitted operand into the publication owner.
+                // Its cached payload remains retained; no unmetered value walk.
+                let operand = self
+                    .operands
+                    .pop()
+                    .ok_or(Error::InvalidIr("missing continuation result operand"))?;
                 self.result = Some(operand.into_results()?);
             }
             Action::Eval(node) => {
@@ -2106,6 +2154,7 @@ impl Machine {
             charged,
             retry_leaf,
         } = invocation;
+        vm.require_procedure_phase(id)?;
         if !charged {
             vm.step(depth)?;
             vm.statistics.calls = vm
@@ -2521,12 +2570,15 @@ fn operand_cells(value: &Operand, limit: usize) -> std::result::Result<usize, Er
     match value {
         Operand::Value(value) => value.cells(limit),
         Operand::Place(pointer) => Ok(pointer.metadata_cells().saturating_add(1)),
-        Operand::Results(values) => values.iter().try_fold(1usize, |cells, value| {
-            cells
-                .checked_add(value.cells(limit)?)
-                .filter(|cells| *cells <= limit)
-                .ok_or(Error::Limit(LimitKind::ValueCells))
-        }),
+        Operand::Results(values) => values.iter().try_fold(
+            1usize.saturating_add(values.capacity() - values.len()),
+            |cells, value| {
+                cells
+                    .checked_add(value.cells(limit)?)
+                    .filter(|cells| *cells <= limit)
+                    .ok_or(Error::Limit(LimitKind::ValueCells))
+            },
+        ),
     }
 }
 fn clone_operands<P: ProcedureProvider + ?Sized, E: CompilerEffects>(

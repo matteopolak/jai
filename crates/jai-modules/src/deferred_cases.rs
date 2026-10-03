@@ -68,6 +68,7 @@ impl GraphDiscovery<'_> {
         id: CaseRequestId,
         choice: CompileTimeCaseChoice,
     ) -> Result<(), CaseSelectionError> {
+        self.invalidate_insertion_admissions();
         if id.unit != self.builder.graph.unit {
             return Err(CaseSelectionError::UnknownRequest);
         }

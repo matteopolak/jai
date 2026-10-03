@@ -1,6 +1,7 @@
 //! Adapt graph lookup into semantic declaration metadata.
 use super::*;
 use jai_modules::{Binding as GraphBinding, LookupError};
+mod compiler_code;
 mod imports;
 mod operators;
 mod storage_members;

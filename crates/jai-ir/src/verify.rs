@@ -663,3 +663,5 @@ impl<'a> Context<'a> {
         same_type(expected, results[0])
     }
 }
+
+pub(crate) mod compiler_bindings;

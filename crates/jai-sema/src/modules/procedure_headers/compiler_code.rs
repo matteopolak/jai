@@ -1,4 +1,4 @@
-//! Private staging: identify a closed compiler-only result before native
+//! Identify a closed compiler-only result before native
 //! parameter defaults or procedure ABI construction can execute.
 use super::*;
 
@@ -49,7 +49,23 @@ pub(super) fn template<'a>(
             ),
         ));
     }
-    crate::metaprogram::admit_compiler_code_procedure(procedure, procedure.span)
+    if procedure.convention != CallingConvention::Jai
+        || procedure.compiler.is_some()
+        || procedure.modify.is_some()
+    {
+        return Err(located(
+            graph,
+            declaration.file(),
+            Diagnostic::new(
+                procedure.span,
+                "compiler Code requires a checked compiler source header without native ABI or modifier execution",
+            ),
+        ));
+    }
+    meta.compiler_code
+        .source_retention()
+        .borrow_mut()
+        .admit_procedure(procedure, procedure.span)
         .map_err(|error| located(graph, declaration.file(), error))?;
     Ok(Some(crate::compiler_code::CompilerCodeTemplate {
         declaration: declaration.id(),

@@ -22,7 +22,7 @@ impl SourcePreparationPending {
     pub fn placeholder(self) -> Option<jai_modules::PlaceholderId> {
         match self.cause {
             PendingType::Placeholder(demand) => Some(demand.placeholder),
-            PendingType::RecordModifier(_) => None,
+            PendingType::RecordModifier(_) | PendingType::Constant { .. } => None,
         }
     }
 
@@ -37,12 +37,6 @@ impl SourcePreparationPending {
 
 pub(super) enum AliasProgress {
     Complete,
-    Pending(SourcePreparationPending),
-}
-
-pub(super) enum SelectedAliasProgress {
-    Ready,
-    NotAlias,
     Pending(SourcePreparationPending),
 }
 
@@ -116,7 +110,9 @@ impl<'graph> PendingAliases<'graph> {
         meta: &mut crate::reflection::MetaContext,
     ) -> Result<AliasProgress, LocatedDiagnostic> {
         for source in self.graph.declarations() {
-            let FileDeclarationKind::Global(global) = &source.syntax().kind else { continue };
+            let FileDeclarationKind::Global(global) = &source.syntax().kind else {
+                continue;
+            };
             let annotation = match &global.declaration {
                 syntax::Declaration::UnresolvedExplicit { ty, .. }
                 | syntax::Declaration::External { ty, .. } => ty,
@@ -125,10 +121,14 @@ impl<'graph> PendingAliases<'graph> {
             match aggregates::parameterized::prepare_type_paired(
                 self.graph,
                 aggregates::parameterized::TypeRequest::new(source.file(), annotation, global.span),
-                types, &declarations.nominals, &mut meta.record_specializations,
+                types,
+                &declarations.nominals,
+                &mut meta.record_specializations,
                 &mut |file, expression| self.constants.prepare_evaluate_lazy(file, expression),
             )? {
-                TypePreparation::Ready(ty) => { declarations.nominals.value_types.insert(source.id(), ty); }
+                TypePreparation::Ready(ty) => {
+                    declarations.nominals.value_types.insert(source.id(), ty);
+                }
                 TypePreparation::Pending(cause) => {
                     let pending = SourcePreparationPending::new(cause);
                     self.pending = Some(pending);
@@ -137,34 +137,6 @@ impl<'graph> PendingAliases<'graph> {
             }
         }
         Ok(AliasProgress::Complete)
-    }
-
-    /// A checked prerequisite may request a later original alias without
-    /// advancing the blocked prefix or replacing its retained wait cause.
-    pub(super) fn drive_selected(
-        &mut self,
-        source: DeclarationId,
-        declarations: &mut ScopedDeclarations<'graph>,
-        types: &mut TypeRegistry,
-        meta: &mut crate::reflection::MetaContext,
-    ) -> Result<SelectedAliasProgress, LocatedDiagnostic> {
-        self.check_graph(declarations)?;
-        if !self.sources.contains(&source) {
-            return Err(self.lifecycle_error("selected alias is not an original alias candidate"));
-        }
-        match declarations.nominals.prepare_alias(
-            self.graph,
-            source,
-            types,
-            &mut meta.record_specializations,
-            &mut |file, expression| self.constants.prepare_evaluate_lazy(file, expression),
-        )? {
-            None => Ok(SelectedAliasProgress::NotAlias),
-            Some(TypePreparation::Ready(_)) => Ok(SelectedAliasProgress::Ready),
-            Some(TypePreparation::Pending(cause)) => Ok(SelectedAliasProgress::Pending(
-                SourcePreparationPending::new(cause),
-            )),
-        }
     }
 
     fn check_graph(
@@ -204,10 +176,6 @@ impl<'graph> PendingAliases<'graph> {
 
     pub(super) fn constants_mut(&mut self) -> &mut Constants<'graph> {
         &mut self.constants
-    }
-
-    pub(super) fn pending(&self) -> Option<SourcePreparationPending> {
-        self.pending
     }
 
     /// Annotation requests retain their defining declaration; no representation
@@ -269,29 +237,47 @@ impl<'graph> PendingAliases<'graph> {
         meta: &mut crate::reflection::MetaContext,
     ) -> Result<Option<SourcePreparationPending>, LocatedDiagnostic> {
         let mut pending = None;
-        for source in procedure_headers::ordered_sources(self.graph, &declarations.callable_aliases)? {
+        for source in
+            procedure_headers::ordered_sources(self.graph, &declarations.callable_aliases)?
+        {
             if declarations.source_procedures.get(source.id()).is_none()
                 || declarations.signatures.contains_key(&source.id())
-            { continue; }
-            if procedure_headers::source_dependencies(self.graph, &declarations.callable_aliases, source)
-                .iter().any(|dependency| !declarations.signatures.contains_key(dependency))
-            { continue; }
+            {
+                continue;
+            }
+            if procedure_headers::source_dependencies(
+                self.graph,
+                &declarations.callable_aliases,
+                source,
+            )
+            .iter()
+            .any(|dependency| !declarations.signatures.contains_key(dependency))
+            {
+                continue;
+            }
             let (parameters, results) = match &source.syntax().kind {
-                FileDeclarationKind::Procedure(procedure) => (&procedure.parameters, &procedure.results),
-                FileDeclarationKind::ProcedurePrototype(prototype) => (&prototype.parameters, &prototype.results),
+                FileDeclarationKind::Procedure(procedure) => {
+                    (&procedure.parameters, &procedure.results)
+                }
+                FileDeclarationKind::ProcedurePrototype(prototype) => {
+                    (&prototype.parameters, &prototype.results)
+                }
                 _ => continue,
             };
             let mut ready = true;
-            let annotations = parameters.iter().filter_map(|parameter| {
-                match &parameter.binding {
+            let annotations = parameters
+                .iter()
+                .filter_map(|parameter| match &parameter.binding {
                     syntax::ParameterBinding::RequiredType(ty)
-                    | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => Some((ty, parameter.span)),
+                    | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => {
+                        Some((ty, parameter.span))
+                    }
                     _ => None,
-                }
-            }).chain(results.iter().filter_map(|result| match &result.binding {
-                syntax::ResultBinding::Typed { ty, .. } => Some((ty, result.span)),
-                _ => None,
-            }));
+                })
+                .chain(results.iter().filter_map(|result| match &result.binding {
+                    syntax::ResultBinding::Typed { ty, .. } => Some((ty, result.span)),
+                    _ => None,
+                }));
             for (annotation, span) in annotations {
                 match aggregates::parameterized::prepare_type_paired(
                     self.graph,
@@ -311,7 +297,12 @@ impl<'graph> PendingAliases<'graph> {
             }
             if ready {
                 procedure_headers::register_selected(
-                    self.graph, source, types, declarations, &mut self.constants, meta,
+                    self.graph,
+                    source,
+                    types,
+                    declarations,
+                    &mut self.constants,
+                    meta,
                 )?;
             }
         }

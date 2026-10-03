@@ -132,12 +132,21 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
         for argument in arguments {
             self.admit_value(&mut argument_cells, argument)?;
         }
-        self.validate_values(arguments, &signature.parameters)?;
         let operation = procedure.operation();
-        if matches!(
-            operation,
-            ProcessAbiOperation::Fcntl | ProcessAbiOperation::ExecVp
-        ) {
+        if operation == ProcessAbiOperation::Fcntl {
+            let fixed = arguments
+                .get(..signature.parameters.len())
+                .ok_or(Error::InvalidIr("process ABI argument count"))?;
+            self.validate_values(fixed, &signature.parameters)?;
+            procedure.validate_process_arguments(
+                arguments,
+                self.provider.types(),
+                procedure.target(),
+            )?;
+        } else {
+            self.validate_values(arguments, &signature.parameters)?;
+        }
+        if operation == ProcessAbiOperation::ExecVp {
             return Err(Error::UnsupportedForeignProcedure(requested_id).into());
         }
         for (index, argument) in arguments.iter().enumerate() {
@@ -257,5 +266,7 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     }
 }
 
+#[cfg(test)]
+mod fcntl_tests;
 #[cfg(test)]
 mod tests;

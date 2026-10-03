@@ -641,6 +641,7 @@ fn small_spread_precharges_cold_backing_but_keeps_warm_snapshots_cheap() {
                 .unwrap();
         }
         let cells = vm.memory().value_cells();
+        vm.test_budget_source_work(1_000, false, 0);
         let result = vm.execute(
             ProcedureId::new(0),
             vec![Value::Slice {
@@ -662,7 +663,7 @@ fn small_spread_precharges_cold_backing_but_keeps_warm_snapshots_cheap() {
 #[test]
 fn pack_snapshots_and_final_assembly_charge_address_origin_metadata() {
     const ORIGINS: usize = 128;
-    fn run(spread: bool, addressed: bool, pending: bool, fuel: u64) -> Execution {
+    fn run(spread: bool, addressed: bool, pending: bool, fuel: u64) -> (Execution, u64) {
         let mut f = fixture();
         let integer_type = f.types.scalar(ScalarType::Int(IntegerType::S64));
         let unsigned = f.types.scalar(ScalarType::Int(IntegerType::U64));
@@ -749,43 +750,45 @@ fn pack_snapshots_and_final_assembly_charge_address_origin_metadata() {
             source
         };
         let allocations = vm.memory().allocation_count();
+        let checkpoint_work = vm.test_budget_source_work(fuel, false, 0);
         let result = vm.execute(ProcedureId::new(0), vec![argument]);
         assert_eq!(vm.memory().allocation_count(), allocations);
-        result
+        (result, checkpoint_work)
     }
     for spread in [false, true] {
-        let plain = run(spread, false, false, 10_000);
-        let addressed = run(spread, true, false, 10_000);
+        let (plain, plain_checkpoint) = run(spread, false, false, 10_000);
+        let (addressed, addressed_checkpoint) = run(spread, true, false, 10_000);
         assert_eq!(plain.outcome, Outcome::Complete(vec![value(1)]));
         assert_eq!(addressed.outcome, plain.outcome);
         assert_eq!(
-            addressed.statistics.steps - plain.statistics.steps,
+            (addressed.statistics.steps - addressed_checkpoint)
+                - (plain.statistics.steps - plain_checkpoint),
             // Both paths charge origins while constructing the cold source
             // image, snapshotting it, and assembling the final pack. A scalar
             // additionally clones its selected value before the raw snapshot.
             if spread { 3 } else { 4 } * ORIGINS as u64,
         );
-        let final_copy = run(
+        let (final_copy, _) = run(
             spread,
             true,
             false,
-            addressed.statistics.steps - ORIGINS as u64 / 2,
+            addressed.statistics.steps - addressed_checkpoint - ORIGINS as u64 / 2,
         );
         assert_eq!(
             final_copy.outcome,
             Outcome::Failed(Error::Limit(LimitKind::Fuel))
         );
         assert_eq!(final_copy.statistics.calls, 1);
-        let pending = run(spread, false, true, 10_000);
+        let (pending, pending_checkpoint) = run(spread, false, true, 10_000);
         assert_eq!(
             pending.outcome,
             Outcome::Pending(vec![Dependency::Procedure(ProcedureId::new(2))])
         );
-        let first_copy = run(
+        let (first_copy, _) = run(
             spread,
             true,
             true,
-            pending.statistics.steps + ORIGINS as u64 / 2,
+            pending.statistics.steps - pending_checkpoint + ORIGINS as u64 / 2,
         );
         assert_eq!(
             first_copy.outcome,

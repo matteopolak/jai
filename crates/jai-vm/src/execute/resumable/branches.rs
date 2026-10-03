@@ -216,7 +216,7 @@ pub(super) fn measured<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
     vm: &mut Vm<'_, P, E>,
     fork: bool,
 ) -> Result<Bounds> {
-    let available = vm.limits.fuel.saturating_sub(vm.statistics.steps);
+    let available = vm.publication_remaining_fuel();
     let mut spent = 0_u64;
     let result = bounds(vm, fork, &mut |work| {
         spent = spent
@@ -251,7 +251,7 @@ fn admit<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
             add(add(live, parked)?, other_retained)?,
             shared_world_cells(vm)?,
         )?,
-        scratch,
+        add(scratch, publication_origin_cells(vm))?,
     )?;
     if total > vm.limits.value_cells {
         Err(Error::Limit(LimitKind::ValueCells).into())
@@ -291,6 +291,7 @@ impl BranchSnapshot {
         other_retained: usize,
     ) -> Result<Self> {
         let bounds = Self::admit_fork(vm, other_retained)?;
+        vm.charge_work(bounds.work)?;
         Self::clone_admitted(vm, bounds)
     }
 
@@ -298,7 +299,6 @@ impl BranchSnapshot {
         vm: &mut Vm<'_, P, E>,
         bounds: Bounds,
     ) -> Result<Self> {
-        vm.charge_work(bounds.work)?;
         let frames = vm
             .frames
             .iter()

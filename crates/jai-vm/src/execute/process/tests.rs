@@ -261,11 +261,14 @@ fn scalar_calls_transfer_the_same_process_identity_with_vm_state() {
 #[test]
 fn unused_process_capabilities_do_not_require_process_metadata_capacity() {
     let fixture = Fixture::new();
+    let mut probe = Vm::new(&fixture, NoEffects, Limits::default()).unwrap();
+    let (empty_owner, _, _) = probe.test_snapshot_costs();
     let mut vm = Vm::new(
         &fixture,
         NoEffects,
         Limits {
-            value_cells: 1,
+            // Actual empty live/rollback owners plus one source scalar.
+            value_cells: 2 * empty_owner + 1,
             ..Limits::default()
         },
     )

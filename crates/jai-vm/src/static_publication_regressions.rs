@@ -164,9 +164,11 @@ fn repeated_static_reads_in_a_body_do_not_rescan_cached_graph_objects() {
         complete_pointer(publication);
         assert_eq!(vm.memory().allocation_count(), objects);
         provider.types.queries.set(0);
+        let (_, checkpoint_work, _) = vm.test_snapshot_costs();
         let result = vm.execute(ProcedureId::new(0), vec![]);
         assert_eq!(result.outcome, Outcome::Complete(vec![value(42)]));
-        work.push(result.statistics.steps);
+        assert!(result.statistics.steps >= checkpoint_work);
+        work.push(result.statistics.steps - checkpoint_work);
         type_queries.push(provider.types.queries.get());
         assert_eq!(vm.memory().allocation_count(), objects);
     }
@@ -246,11 +248,9 @@ fn fuel_exhaustion_initializing_a_suffix_restores_the_prior_publication() {
             .unwrap(),
     );
     let original_expression = address(original, first, pointer);
-    let limits = Limits {
-        // First publication also admits and charges its demanded target layout.
-        fuel: 32,
-        ..Limits::default()
-    };
+    // Establish the prior publication; the bounded attempts below retain the
+    // original 32 source-work credit plus their measured rollback/inspection.
+    let limits = Limits::default();
     let mut vm = Vm::new(&f, NoEffects, limits).unwrap();
     let first_pointer = complete_pointer(vm.evaluate(&original_expression));
     for number in 0..9 {
@@ -263,11 +263,13 @@ fn fuel_exhaustion_initializing_a_suffix_restores_the_prior_publication() {
     );
     let extended_expression = address(extended, first, pointer);
     for _ in 0..2 {
+        vm.test_budget_source_work(32, true, 0);
         assert_eq!(
             vm.evaluate(&extended_expression).outcome,
             Outcome::Failed(Error::Limit(LimitKind::Fuel))
         );
         assert_eq!(vm.memory().allocation_count(), 1);
+        vm.test_budget_source_work(32, true, 0);
         assert_eq!(
             vm.evaluate(&original_expression).outcome,
             Outcome::Complete(vec![Value::Pointer(first_pointer.clone())])
