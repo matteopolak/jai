@@ -11,7 +11,7 @@ impl Memory {
         view.validate_target(self.target.policy)
             .map_err(|error| Error::IrValidation(error.to_string()))?;
         let allocation = self.allocation(pointer)?;
-        if !pointer.path.is_empty() || allocation.ty != view.backing_type() {
+        if !pointer.data()?.path.is_empty() || allocation.ty != view.backing_type() {
             return Err(Error::InvalidIr(
                 "static byte view requires its exact typed root",
             ));
@@ -28,13 +28,13 @@ impl Memory {
         }
         let byte = types.scalar(ScalarType::Int(IntegerType::U8));
         let mut result = pointer.clone();
-        result.path = vec![Projection::Bytes {
+        result.data_mut()?.path = vec![Projection::Bytes {
             offset: view.offset(),
             ty: byte,
         }];
         result.pointee = byte;
-        result.region = Some((view.offset(), end));
-        result.restricted_region = true;
+        result.data_mut()?.region = Some((view.offset(), end));
+        result.data_mut()?.restricted_region = true;
         Ok(result)
     }
 }

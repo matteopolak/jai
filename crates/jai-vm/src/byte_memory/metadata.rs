@@ -142,7 +142,7 @@ pub(super) fn encoded_metadata_cells(value: &Value, limit: usize) -> Result<usiz
             | Value::StringView { pointer, .. }
             | Value::Type {
                 descriptor: Some(pointer),
-            } if !pointer.is_null() => 1usize
+            } if !pointer.is_null() && !pointer.is_opaque() => 1usize
                 .saturating_add(pointer.metadata_cells())
                 .saturating_mul(2),
             Value::Procedure {

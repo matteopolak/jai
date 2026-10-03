@@ -1,4 +1,4 @@
-//! An invocation exports checked bindings to inserted caller code, with explicit name remapping.
+//! Invocation exports retain real caller bindings, cleanup lifetime and return ownership.
 use super::*;
 
 /// A live caller block and its context, captured before entering the definition.
@@ -8,6 +8,13 @@ pub(super) struct CallerCleanupTarget {
     scope: usize,
     active_push: Option<jai_ir::PushContextId>,
     context_available: bool,
+}
+
+/// An expanded return targets the actual procedure and its checked source results.
+/// Result names, defaults and usage belong to this signature, independently of ABI.
+pub(super) struct CallerReturnTarget {
+    procedure: jai_ir::ProcedureId,
+    results: Vec<crate::ResultSignature>,
 }
 
 impl CodeRegistry {
@@ -80,11 +87,16 @@ impl Resolver<'_> {
             active_push: self.active_push,
             context_available: self.context_available,
         });
+        let return_target = CallerReturnTarget {
+            procedure: self.procedure,
+            results: self.results.to_vec(),
+        };
         let body_scope = self.deferred_scopes.len();
         let frame = self.meta.codes.exports.last_mut().ok_or_else(|| {
             Diagnostic::new(span, "macro expansion requires an active export frame")
         })?;
         frame.cleanup_target = Some(target);
+        frame.return_target = Some(return_target);
         frame.body_scope = Some(body_scope);
         frame.caller_scope = Some(caller_capture);
         frame.caller_key = Some(caller_key);
@@ -184,6 +196,53 @@ impl Resolver<'_> {
         }))
     }
 
+    fn caller_export_return(
+        &mut self,
+        statement: &syntax::Statement,
+    ) -> Result<Statement, Diagnostic> {
+        let target = self
+            .meta
+            .codes
+            .exports
+            .last()
+            .and_then(|frame| frame.return_target.as_ref())
+            .ok_or_else(|| {
+                Diagnostic::new(
+                    statement.span,
+                    "caller return target is unavailable during expansion",
+                )
+            })?;
+        if target.procedure != self.procedure
+            || target.results.len() != self.results.len()
+            || !target
+                .results
+                .iter()
+                .zip(self.results)
+                .all(|(caller, active)| {
+                    caller.ty == active.ty
+                        && caller.name == active.name
+                        && caller.usage == active.usage
+                        && caller.default == active.default
+                })
+        {
+            return Err(Diagnostic::new(
+                statement.span,
+                "caller return no longer targets its actual procedure and source result signature",
+            ));
+        }
+        // Only the explicit caller return bypasses the macro-body return region.
+        // Keep the macro's lexical scopes for operands and the real procedure's
+        // callback/source-policy maps and cleanup stack for the checked transfer.
+        let previous = std::mem::replace(&mut self.span, statement.span);
+        let result = match &statement.kind {
+            syntax::StatementKind::Return(expression) => self.resolve_return(expression.as_ref()),
+            syntax::StatementKind::ReturnValues(values) => self.resolve_return_values(values),
+            _ => unreachable!("caller return requires retained return syntax"),
+        };
+        self.span = previous;
+        result
+    }
+
     pub(crate) fn export_bound_name(&mut self, name: Symbol, span: Span) -> Result<(), Diagnostic> {
         let binding = self.resolve_local_name(name, span)?.ok_or_else(|| {
             Diagnostic::new(span, "caller export declaration did not bind a value")
@@ -202,6 +261,9 @@ impl Resolver<'_> {
             ));
         }
         let (name, result) = match &statement.kind {
+            syntax::StatementKind::Return(_) | syntax::StatementKind::ReturnValues(_) => {
+                return self.caller_export_return(statement);
+            }
             syntax::StatementKind::Defer(body) => {
                 return self.caller_export_defer(body, statement.span);
             }
@@ -224,7 +286,7 @@ impl Resolver<'_> {
             _ => {
                 return Err(Diagnostic::new(
                     statement.span,
-                    "caller export requires a declaration or defer",
+                    "caller export requires a declaration, defer, or return",
                 ));
             }
         };

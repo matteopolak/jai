@@ -13,7 +13,7 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
         Ok(())
     }
     pub(super) fn pointer_truth(&mut self, pointer: &Pointer) -> Result<bool> {
-        if pointer.code_pointer().is_some() {
+        if pointer.code_pointer().is_some() || pointer.is_opaque() {
             self.prepare_pointer_layouts(pointer, false)?;
         }
         Ok(!pointer.is_null())

@@ -72,36 +72,17 @@ pub(crate) fn infer_target(
                 "#caller_location requires a visible source Source_Code_Location type",
             )
         })?;
-    let binding = graph
-        .lookup(
-            file,
-            &syntax::NamePath {
-                root: name,
-                members: Vec::new(),
-            },
-        )
-        .map_err(|_| {
-            Diagnostic::new(
-                span,
-                "#caller_location requires a visible source Source_Code_Location type",
-            )
-        })?;
-    let jai_modules::Binding::Declaration(declaration) = binding else {
-        return Err(Diagnostic::new(
-            span,
-            "#caller_location requires a source type declaration",
-        ));
-    };
-    let ty = nominals
-        .declarations
-        .get(&declaration)
-        .copied()
-        .ok_or_else(|| {
-            Diagnostic::new(
-                span,
-                "#caller_location requires a visible source Source_Code_Location type",
-            )
-        })?;
+    let ty = selected_source_target(
+        graph,
+        file,
+        &syntax::NamePath {
+            root: name,
+            members: vec![],
+        },
+        nominals,
+        span,
+        &mut std::collections::HashSet::new(),
+    )?;
     // Callable type reservation runs before record fields are defined. Prove
     // the real nominal identity now; complete headers and calls check fields.
     if nominals.records.contains_key(&ty) {
@@ -119,6 +100,83 @@ pub(crate) fn infer_target(
         ));
     }
     Ok(ty)
+}
+
+/// Follow only the selected source aliases in their defining files. Reservation
+/// owns each nominal ID; this lookup neither creates a type nor evaluates a value.
+fn selected_source_target(
+    graph: &ModuleGraph,
+    file: FileInstanceId,
+    path: &syntax::NamePath,
+    nominals: &modules::aggregates::Nominals<'_>,
+    span: Span,
+    visiting: &mut std::collections::HashSet<jai_source::DeclarationId>,
+) -> Result<TypeId, Diagnostic> {
+    let binding = graph.lookup(file, path).map_err(|_| {
+        Diagnostic::new(
+            span,
+            "#caller_location requires a visible source Source_Code_Location type",
+        )
+    })?;
+    let id = match binding {
+        jai_modules::Binding::Declaration(id) => id,
+        jai_modules::Binding::Parameter(id) => return nominals
+            .module_parameter_types
+            .get(&id)
+            .copied()
+            .ok_or_else(|| {
+                Diagnostic::new(
+                    span,
+                    "#caller_location source type parameter is pending canonical materialization",
+                )
+            }),
+        _ => {
+            return Err(Diagnostic::new(
+                span,
+                "#caller_location requires a source type declaration",
+            ));
+        }
+    };
+    if let Some(&ty) = nominals.declarations.get(&id) {
+        return Ok(ty);
+    }
+    let declaration = graph.declaration(id).expect("selected source declaration");
+    if visiting.len() >= 256 || !visiting.insert(id) {
+        return Err(Diagnostic::at_source(
+            declaration.location(),
+            "#caller_location has cyclic or excessively deep source type aliases",
+        ));
+    }
+    let alias = match &declaration.syntax().kind {
+        syntax::FileDeclarationKind::TypeAlias(alias) => match &alias.ty {
+            syntax::TypeSyntax::Named(path) => Some(path.clone()),
+            _ => None,
+        },
+        syntax::FileDeclarationKind::Constant(constant) if constant.ty.is_none() => match &constant
+            .initializer
+            .kind
+        {
+            syntax::ExpressionKind::Name(root) => Some(syntax::NamePath {
+                root: *root,
+                members: vec![],
+            }),
+            syntax::ExpressionKind::QualifiedName(path)
+            | syntax::ExpressionKind::Type(syntax::TypeSyntax::Named(path)) => Some(path.clone()),
+            _ => None,
+        },
+        _ => None,
+    };
+    let result = match alias {
+        Some(path) => {
+            selected_source_target(graph, declaration.file(), &path, nominals, span, visiting)
+        }
+        None => Err(Diagnostic::at_source(
+            declaration.location(),
+            "#caller_location requires a selected source nominal or transparent source type alias",
+        )),
+    };
+    visiting.remove(&id);
+    result
 }
 
 impl Resolver<'_> {

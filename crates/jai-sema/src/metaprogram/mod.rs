@@ -146,6 +146,7 @@ struct ExportFrame {
     names: HashSet<Symbol>,
     bindings: HashMap<Symbol, Binding>,
     cleanup_target: Option<exports::CallerCleanupTarget>,
+    return_target: Option<exports::CallerReturnTarget>,
     body_scope: Option<usize>,
     caller_scope: Option<Arc<CapturedScope>>,
     caller_key: Option<Arc<CaptureKey>>,

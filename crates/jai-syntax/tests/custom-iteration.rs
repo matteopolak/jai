@@ -44,7 +44,7 @@ fn exports_reject_non_declaration_statements_at_their_source_range() {
         jai_syntax::parse_file(sources.get(id).unwrap(), &mut Symbols::default()).unwrap_err();
     assert_eq!(
         error.message,
-        "a caller export requires a declaration or defer"
+        "a caller export requires a declaration, defer, or return"
     );
     assert_eq!(error.location.span.text(text), "consume();");
 }

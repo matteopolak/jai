@@ -507,6 +507,20 @@ impl super::Memory {
                     Ok(())
                 };
             }
+            if pointer.is_opaque() {
+                if available_work == 0 {
+                    return Err(Error::Limit(LimitKind::Fuel));
+                }
+                work = 1;
+                self.validate_opaque_address(types, pointer)?;
+                return if include_pointee {
+                    Err(Error::UnsupportedPointerOperation(
+                        "numeric address has no allocation provenance",
+                    ))
+                } else {
+                    Ok(())
+                };
+            }
             if pointer.is_null() {
                 return if include_pointee {
                     Err(Error::NullPointer)
@@ -520,7 +534,7 @@ impl super::Memory {
                 work += cost;
                 result
             };
-            for projection in &pointer.path {
+            for projection in &pointer.data()?.path {
                 match projection {
                     super::Projection::Bytes { ty: view, .. } => ty = *view,
                     super::Projection::Field(index) => {

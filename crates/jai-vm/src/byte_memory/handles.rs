@@ -162,6 +162,18 @@ impl ByteImage {
                 "virtual handle storage width is unsupported",
             ));
         }
+        if let Value::Pointer(pointer) = value
+            && let Some((bits, width)) = pointer.opaque_address_bits()
+        {
+            if u64::from(width) != self.target.policy.pointer().size * 8
+                || length as u64 != self.target.policy.pointer().size
+            {
+                return Err(Error::UnsupportedPointerOperation(
+                    "numeric pointer belongs to another target width",
+                ));
+            }
+            return self.put_bits(offset, length, bits);
+        }
         match value {
             Value::Pointer(pointer) if pointer.is_null() => return Ok(()),
             Value::Procedure {
@@ -225,20 +237,18 @@ impl ByteImage {
                 .checked_sub(pointer.metadata_cells())
                 .ok_or(Error::Limit(LimitKind::ValueCells))?;
             Ok(pointer.retype(pointee))
-        } else if {
+        } else {
             self.reject_address_view(
                 offset,
                 length,
                 "tagged integer bytes require an explicit integer-to-pointer cast",
             )?;
-            self.bits(offset, length)?
-        } == 0
-        {
-            Ok(Pointer::null(pointee))
-        } else {
-            Err(Error::InvalidIr(
-                "byte storage cannot forge pointer provenance",
-            ))
+            Pointer::opaque(
+                self.bits(offset, length)?,
+                u32::try_from(self.target.policy.pointer().size * 8)
+                    .map_err(|_| Error::CheckedCast)?,
+                pointee,
+            )
         }
     }
     pub(super) fn decode_procedure(

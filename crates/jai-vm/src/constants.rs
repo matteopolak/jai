@@ -321,15 +321,14 @@ pub(crate) fn native_pointer(
             "native pointer constant width is unsupported",
         ))?;
     let address = constant.address(bits).map_err(error)?;
-    if address.bits() != 0 {
-        return Err(Error::UnsupportedPointerOperation(
-            "native pointer constant has no virtual allocation or code provenance",
-        ));
-    }
     let TypeKind::Pointer(pointee) = types.kind(constant.type_id())? else {
         return Err(Error::TypeMismatch {
             expected: constant.type_id(),
         });
     };
-    Ok(Value::Pointer(Pointer::null(*pointee)))
+    Ok(Value::Pointer(Pointer::opaque(
+        address.bits(),
+        bits,
+        *pointee,
+    )?))
 }

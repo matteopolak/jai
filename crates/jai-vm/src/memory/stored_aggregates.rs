@@ -106,7 +106,7 @@ impl Memory {
         self.retokenize_image(types, &mut image)?;
         self.install_intrinsic_image(pointer, image)?;
         self.allocations
-            .get_mut(&pointer.allocation)
+            .get_mut(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?
             .has_stored_aggregate = true;
         Ok(())

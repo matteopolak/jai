@@ -22,8 +22,8 @@ impl Memory {
         root: &Pointer,
     ) -> Result<(), Error> {
         let allocation = self.allocation(root)?;
-        if !root.path.is_empty()
-            || root.region.is_some()
+        if !root.data()?.path.is_empty()
+            || root.data()?.region.is_some()
             || allocation.readonly
             || root.pointee != allocation.ty
             || !matches!(types.kind(allocation.ty)?, TypeKind::String)

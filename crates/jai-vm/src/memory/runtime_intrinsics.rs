@@ -69,7 +69,7 @@ impl Memory {
         let (cells, total) = self.image_cell_charge(allocation, &image)?;
         let allocation = self
             .allocations
-            .get_mut(&pointer.allocation)
+            .get_mut(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?;
         *allocation.image.borrow_mut() = Some(image);
         allocation.cells.set(cells);
@@ -91,7 +91,7 @@ impl Memory {
         }
         let destination_range = self.intrinsic_range(types, destination, count, true)?;
         let source_range = self.intrinsic_range(types, source, count, false)?;
-        if destination.allocation == source.allocation
+        if destination.allocation_id() == source.allocation_id()
             && destination_range.start < source_range.end
             && source_range.start < destination_range.end
         {

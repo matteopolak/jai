@@ -27,8 +27,8 @@ impl Memory {
     ) -> Result<(), Error> {
         let (pointer, _) = proof.into_parts();
         let allocation = self.allocation(&pointer)?;
-        if !pointer.path.is_empty()
-            || pointer.region.is_some()
+        if !pointer.data()?.path.is_empty()
+            || pointer.data()?.region.is_some()
             || pointer.pointee != allocation.ty
             || !allocation.readonly
             || allocation.value.is_some()
@@ -40,12 +40,12 @@ impl Memory {
         }
         let allocation = self
             .allocations
-            .remove(&pointer.allocation)
+            .remove(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?;
         self.cells.set(self.cells.get() - allocation.cells.get());
         self.virtual_regions.remove(&allocation.virtual_base);
         self.runtime_types
-            .retain(|(id, _), _| *id != pointer.allocation);
+            .retain(|(id, _), _| *id != pointer.allocation_id());
         Ok(())
     }
 }

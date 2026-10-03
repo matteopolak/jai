@@ -33,6 +33,7 @@
 - [Discarded parameters](discarded-parameters.md)
 - [Callback source policies](callback-source-policies.md)
 - [Caller defer exports](caller-defer-exports.md)
+- [Caller returns](caller-returns.md)
 - [Compile-time run flags](run-flags.md)
 - [Deprecated procedures](deprecated-procedures.md)
 - [Padded identifiers](padded-identifiers.md)
@@ -278,6 +279,7 @@ Public source corpora are input data.
 - [Source run prefix](source-run-prefix.md)
 
 - [VM snapshot budgets](vm-snapshot-budgets.md)
+- [Opaque numeric pointers](opaque-numeric-pointers.md)
 
 - [Constant capture admission](constant-capture-admission.md)
 

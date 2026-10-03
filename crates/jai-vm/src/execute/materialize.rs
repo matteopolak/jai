@@ -60,6 +60,25 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
         budget.reserve(1)?;
+        let pointer = match value {
+            Value::Pointer(pointer)
+            | Value::Slice { pointer, .. }
+            | Value::StringView { pointer, .. }
+            | Value::DynamicArray { pointer, .. } => Some(pointer),
+            _ => None,
+        };
+        if let Some(pointer) = pointer
+            && pointer.is_opaque()
+        {
+            let (work, result) = self.memory.prepare_pointer_layouts(
+                self.provider.types(),
+                pointer,
+                false,
+                usize::try_from(budget.work).unwrap_or(usize::MAX),
+            );
+            budget.charge_work(work)?;
+            result?;
+        }
         Ok(match value {
             Value::StoredAggregate(snapshot) => {
                 budget.reserve(snapshot.storage_cells())?;
