@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Bounded compiler and interpreter fuzzing](fuzz-targets.md)
+
 - [Persistent source checkpoints](source-checkpoints.md)
 - [Build storage](build-storage.md)
 

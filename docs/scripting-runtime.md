@@ -58,7 +58,7 @@ The pointer-free ABI lives in `jai-wasm/src/exports.rs`; its state and budgets l
 
 The CLI accepts `--fuel <steps>` before `--`; everything following `--` is an exact UTF-8 argument. The browser API accepts an unsigned 32-bit fuel count. `SourceBundle` defaults to a 4 MiB aggregate source limit. The wasm bridge limits argument text to 1 MiB, argument count to 16,384, and source names to 4,096 bytes. Browser fuel defaults to 1,000,000 steps.
 
-`build_scripting_wasm.py --release` selects optimized Rust output; `--output <directory>` selects the staged runner directory. Builds remain offline, locked, single-job and non-incremental, and refuse to start below 2 GiB of free disk. The pinned wasm Rust target must already be installed.
+`build_scripting_wasm.py --release` selects optimized Rust output; `--output <directory>` selects the staged runner directory and preserves relative output paths against the current working directory. `--target-dir` overrides a nonempty `CARGO_TARGET_DIR`, then pinned Cargo's configured target directory. Build commands and wasm artifact lookup use that same absolute path. On this host use `--target-dir /Volumes/CodexBuilds/targets/jai`; [build storage](build-storage.md) describes the verified APFS setup. The staged `build-metadata.json` records target selection, query/build commands, compiled/staged paths and the module hash. Builds remain offline, locked, single-job and non-incremental, and refuse to start below 2 GiB free on source, build or staging storage. The pinned wasm Rust target must already be installed.
 
 ## Dependencies
 
