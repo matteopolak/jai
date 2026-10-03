@@ -3,6 +3,7 @@ mod source_procedures;
 pub use source_procedures::*;
 mod anonymous_procedures;
 mod anonymous_records;
+mod array_literal_targets;
 mod builtin_type_tags;
 mod call_arguments;
 mod caller_exports;

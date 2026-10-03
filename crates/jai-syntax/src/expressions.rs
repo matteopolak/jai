@@ -486,27 +486,9 @@ impl Parser<'_> {
                 if !self.allow_qualified {
                     return Err(self.error("array literals require type resolution"));
                 }
-                let path = match lhs.kind {
-                    ExpressionKind::Name(root) => NamePath {
-                        root,
-                        members: Vec::new(),
-                    },
-                    ExpressionKind::QualifiedName(path) => path,
-                    ExpressionKind::Type(ty) => {
-                        lhs = self.array_literal(Some(ty), lhs.span.start)?;
-                        continue;
-                    }
-                    _ => return Err(self.error("array literal element type must be a named type")),
-                };
-                let element_type = if path.members.is_empty() {
-                    match BuiltinType::from_spelling(self.symbols.name(path.root)) {
-                        Some(builtin) => TypeSyntax::Builtin(builtin),
-                        None => TypeSyntax::Named(path),
-                    }
-                } else {
-                    TypeSyntax::Named(path)
-                };
-                lhs = self.array_literal(Some(element_type), lhs.span.start)?;
+                let start = lhs.span.start;
+                let element_type = self.array_literal_type_target(lhs)?;
+                lhs = self.array_literal(Some(element_type), start)?;
                 continue;
             }
             if self.is(Punct::StructLiteral) && minimum <= 23 {
