@@ -24,9 +24,15 @@ An unannotated module short lambda, and a chain of pure constant aliases to it, 
 
 A retained no-progress failure includes its actual binding phase and typed source demand, selected constant and field readiness, queued record modifiers, selected layout and isolated VM wait status. When the partial type phase has no escaping VM/body error, the failure keeps the original demand's `SourceSpan` instead of using an unrelated retained procedure as its location. This diagnostic does not publish any missing fact or reinterpret a hard error as pending.
 
+An actual selected constant prerequisite enters the retained checked worklist even when its original expression has no explicit `#run`. The worklist reserves one real shared owner and keeps the same cache while its required bodies become ready. A reached `size_of` can complete an independently declared nested record through its original reserved parent/member path, source scope and conditional selection. It does not require the outer field layout first. For example, `N :: 4096 - size_of(Builder.Buffer)` can size an independent `Buffer` before defining the outer `bytes: [N]u8` field. If the nested record instead reads `N` in its own array count, or contains its unfinished outer record by value, that genuine cycle still fails.
+
+The nested-layout change passed the registered workspace build and 23 source regressions: four nested-layout cases, one dependency cycle, and eighteen existing type, prefix, default and namespace cases. The same frozen authored Basic inputs advance past the previous dependency stall but still fail imported nested namespace lookup in `String_Builder`; this is not yet a complete Basic compatibility result.
+
 ## How to change it
 
 Keep header registration in `modules/procedure_headers.rs` and phase ordering in `modules/prepared_session.rs`. Extend `procedure_signatures.rs` for default type inference and aggregate `Defaults` for actual value construction. Reuse existing procedure IDs when completing headers; allocating new IDs would invalidate callback constants and compiler metadata.
+
+Extend selected constant admission in `modules/compile_time/worklist.rs` and source layout completion in `modules/aggregates/parameterized/source_layouts.rs`. Reuse the existing nested materializer and canonical reservations; do not derive a layout from a printed namespace or complete an unrelated outer record to satisfy a child query. `size_of` still requires the selected target/layout in `ResolveOptions`.
 
 Extend `procedure_headers/dependencies.rs` when adding an inferred expression form. Record dependencies through syntax and canonical graph bindings; do not retry registration by matching diagnostic text. Only expressions needed to infer a type belong in this ordering. A declared literal or cast type already provides a type, so procedure values within it wait until default materialization.
 

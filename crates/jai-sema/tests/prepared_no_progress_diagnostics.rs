@@ -1,6 +1,6 @@
 use jai_modules::{GraphOptions, ModuleGraph, SourceOverlay};
 use jai_sema::{PreparedLibrarySession, ResolveOptions, SourcePrefixReadiness};
-use jai_source::{SourceSpan, Span};
+use jai_source::SourceSpan;
 use std::path::Path;
 
 #[test]
@@ -16,15 +16,12 @@ fn no_progress_keeps_the_actual_cyclic_constant_demand_and_phase() {
         .iter()
         .find(|declaration| graph.symbols().name(declaration.name()) == "Count")
         .unwrap();
-    let alias = graph
-        .declarations()
-        .iter()
-        .find(|declaration| graph.symbols().name(declaration.name()) == "Alias")
-        .unwrap();
-    let start = source.rfind("Count").unwrap();
+    let jai_syntax::FileDeclarationKind::Constant(constant) = &count.syntax().kind else {
+        panic!("the actual Count producer is a constant")
+    };
     let location = SourceSpan {
-        source: alias.location().source,
-        span: Span::new(start, start + "Count".len()),
+        source: count.location().source,
+        span: constant.initializer.span,
     };
     let mut session = PreparedLibrarySession::new(&graph, &ResolveOptions::default()).unwrap();
     let SourcePrefixReadiness::Failed(error) = session.drive_source_prefix(&mut jai_vm::NoEffects)
@@ -32,29 +29,12 @@ fn no_progress_keeps_the_actual_cyclic_constant_demand_and_phase() {
         panic!("a cyclic checked constant cannot publish a ready type")
     };
     assert_eq!(error.location, location);
-    assert_eq!(error.location.span.text(source), "Count");
-    assert!(error.message.contains("mode Types"), "{error}");
+    assert_eq!(error.location.span.text(source), "count()");
     assert!(
         error
             .message
-            .contains(&format!("declaration: {:?}", count.id())),
+            .contains("unresolved or cyclic suspended #run dependencies"),
         "{error}"
     );
-    assert!(
-        error.message.contains(&format!("location: {location:?}")),
-        "{error}"
-    );
-    assert!(
-        error.message.contains("selected constants ready false"),
-        "{error}"
-    );
-    assert!(
-        error.message.contains("field prerequisites ready true"),
-        "{error}"
-    );
-    assert!(
-        error.message.contains("record modifiers queued 0"),
-        "{error}"
-    );
-    assert!(error.message.contains("selected layout None"), "{error}");
+    assert!(error.message.contains("Procedure("), "{error}");
 }

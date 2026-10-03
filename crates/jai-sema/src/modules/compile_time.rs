@@ -74,7 +74,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         mut ready,
         mut pending,
         mut constants,
-        constant_owners,
+        mut constant_owners,
         mut runs,
         mut completed_runs,
         mut isolated_caches,
@@ -125,6 +125,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         if let BindingMode::Headers(fields) = mode {
             header_prerequisites.include_fields(fields);
         }
+        let mut execution_deferred = deferred.clone();
         while !pending.is_empty()
             || !constants.is_empty()
             || !runs.is_empty()
@@ -142,6 +143,15 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     | BindingMode::SourceRuns
             )
         {
+            worklist::admit_constant_prerequisites(
+                graph,
+                declarations,
+                &header_prerequisites.constants,
+                &mut constants,
+                &mut constant_owners,
+            )?;
+            execution_deferred.extend(header_prerequisites.constants.iter().copied());
+            let deferred = &execution_deferred;
             while let Some(body) = declarations.generics.borrow_mut().next_body() {
                 if ready.remove(&body.signature.id).is_some() {
                     meta.debug_sources.clear_procedure(body.signature.id);
