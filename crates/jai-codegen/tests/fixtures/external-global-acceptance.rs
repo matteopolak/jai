@@ -160,6 +160,25 @@ impl Fixture {
             }
             let mut vm =
                 jai_vm::Vm::new(&program, jai_vm::NoEffects, jai_vm::Limits::default()).unwrap();
+            assert_eq!(
+                vm.memory().allocation_count(),
+                0,
+                "a fresh VM eagerly allocated external storage"
+            );
+            if !provided {
+                // Implicit entry calls lazily allocate their genuine context.
+                // Establish that separate storage before measuring externs.
+                let context = program.library().context().unwrap();
+                let initialized = vm.evaluate(&jai_ir::ValueExpr::Context {
+                    ty: context.record_type,
+                });
+                assert!(
+                    matches!(initialized.outcome, jai_vm::Outcome::Complete(ref values)
+                    if values.len() == 1),
+                    "{initialized:?}"
+                );
+                assert!(vm.memory().allocation_count() > 0);
+            }
             let before = vm.memory().allocation_count();
             let entry = match program.entry() {
                 jai_ir::EntryPoint::Int(id) | jai_ir::EntryPoint::Void(id) => id,
