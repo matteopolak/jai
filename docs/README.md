@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Persistent source checkpoints](source-checkpoints.md)
+
 - [Browser source workspace](browser-workspace.md)
 
 - [Code formatting](code-formatting.md)
