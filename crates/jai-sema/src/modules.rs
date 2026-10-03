@@ -174,6 +174,12 @@ fn infer_name_constant(
     {
         return Ok(ty);
     }
+    if let Some(ty) = nominals
+        .source_enum_member_type(graph, file, path, expression.span)
+        .map_err(|error| located(graph, file, error))?
+    {
+        return Ok(ty);
+    }
     if let Some(member) = nominals
         .enum_member(graph, file, path, expression.span)
         .map_err(|error| located(graph, file, error))?
