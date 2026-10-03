@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Code formatting](code-formatting.md)
+
 - [Independent standard library](stdlib/architecture.md)
 - [Standard-library API coverage](stdlib/api-coverage.md)
 
