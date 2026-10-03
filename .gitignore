@@ -4,5 +4,9 @@
 **/__pycache__/
 *.jai-output
 /rustc-ice-*.txt
+/fuzz/target/
+/fuzz/corpus/
+/fuzz/artifacts/
+/fuzz/coverage/
 /TODO.md
 /HANDOFF.md
