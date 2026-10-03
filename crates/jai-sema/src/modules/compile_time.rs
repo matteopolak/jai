@@ -20,7 +20,7 @@ pub(super) enum BindingProgress {
     Pending(super::LibraryPending),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub(super) enum BindingMode<'a> {
     Headers(&'a std::collections::HashSet<jai_types::FieldId>),
     Initializers,
@@ -1575,6 +1575,15 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 {
                     break;
                 }
+                // A partial type phase retains the actual source demand even
+                // when no VM dependency or body attempt has escaped this pass.
+                let demanded_location = if stalled.is_none()
+                    && let BindingMode::Types(pending) = mode
+                {
+                    Some(pending.location())
+                } else {
+                    None
+                };
                 let (file, span, dependencies) = match stalled {
                     Some(wait) => wait,
                     None => {
@@ -1620,7 +1629,17 @@ pub(super) fn bind_procedures_resumable<'graph>(
                             file,
                             span,
                             format!(
-                                "retained source work made no progress; bodies {bodies:?}, constants {values:?}, original runs {}, alignment jobs {}, file guards {}, selected defaults {}, generic bodies {}, modifier bodies {}",
+                                "retained source work made no progress; mode {mode:?}; selected constants ready {}, field prerequisites ready {}, record modifiers queued {}, selected layout {:?}, isolated VM waits {}; bodies {bodies:?}, constants {values:?}, original runs {}, alignment jobs {}, file guards {}, selected defaults {}, generic bodies {}, modifier bodies {}",
+                                header_prerequisites
+                                    .constants
+                                    .iter()
+                                    .all(|id| declarations.values.contains_key(id)),
+                                header_prerequisites.ready(&meta.field_default_jobs),
+                                meta.record_specializations.queued_modifier_count(),
+                                options.effective_layout(),
+                                isolated_caches
+                                    .values()
+                                    .any(|cache| cache.pending_execution().is_some()),
                                 runs.len(),
                                 alignment_jobs.len(),
                                 file_guards.len(),
@@ -1631,14 +1650,18 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         )
                     }
                 };
-                return Err(located(
+                let mut failure = located(
                     graph,
                     file,
                     Diagnostic::new(
                         span,
                         format!("unresolved or cyclic #run dependencies: {dependencies:?}"),
                     ),
-                ));
+                );
+                if let Some(location) = demanded_location {
+                    failure.location = location;
+                }
+                return Err(failure);
             }
             pending = retry;
             constants = retry_constants;
