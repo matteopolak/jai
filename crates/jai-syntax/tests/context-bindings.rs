@@ -34,6 +34,7 @@ fn unrelated_reserved_keywords_do_not_become_declaration_names() {
 }
 
 #[test]
+#[ignore = "requires the separately supplied reference and pinned upstream source corpus"]
 fn unchanged_open_jai_basic_parses_its_context_global() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../corpus/upstream/withlang-dev--open-jai/modules/Basic/module.jai");

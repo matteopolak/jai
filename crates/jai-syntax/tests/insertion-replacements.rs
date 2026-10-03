@@ -84,6 +84,7 @@ fn parenthesized_code_values_still_parse_without_replacement_modifiers() {
 }
 
 #[test]
+#[ignore = "requires the separately supplied reference and pinned upstream source corpus"]
 fn unchanged_upstream_collection_files_parse_with_real_replacement_forms() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut failures = Vec::new();
