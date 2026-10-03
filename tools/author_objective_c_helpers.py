@@ -30,7 +30,11 @@ for member: record.members {
     'objc_finalize_class': 'if my_class != null objc_registerClassPair(my_class);',
     'has_isa_member': '''if ty == null return false;
 for member: ty.members {
-    if (cast(u32) member.flags & 3) == 0 && member.name == "isa" && member.offset_in_bytes == 0 return true;
+    if (cast(u32) member.flags & 3) != 0 || member.offset_in_bytes != 0 continue;
+    if member.name == "isa" && member.type == type_info(Class) return true;
+    if (cast(u32) member.flags & 16) != 0 && member.type.type == .STRUCT {
+        if has_isa_member(cast(*Type_Info_Struct) member.type) return true;
+    }
 }
 return false;''',
     'objc_msgSend_typed': '''invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *void #c_call;
@@ -65,7 +69,7 @@ name := (cast(*Type_Info_Struct) info).name;
 // Compatibility views use SDK classes rather than a shipped custom binary.
 if name == "LightweightOpenGLView" return objc_getClass(cast(*u8) "NSOpenGLView\\0");
 if name == "LightweightRenderingView" return objc_getClass(cast(*u8) "NSView\\0");
-if name == "LightweightMetalView" return null;
+if name == "LightweightMetalView" return objc_getClass(cast(*u8) "NSView\\0");
 buffer: [1024] u8;
 length: s64 = 0;
 while length < name.count && name[length] != #char "(" {
