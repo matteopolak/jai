@@ -41,7 +41,7 @@ fn comma_pointer_operands_preserve_source_order_and_aliases() {
         "main::()->int { pointer:=cast(*int,0,trunc); if pointer==null return 42; return 0; }",
         42,
     );
-    check_vm_unsupported(
+    check(
         "main::()->int { sentinel:=cast,trunc(*void)-1; if sentinel != null return 42; return 0; }",
         42,
     );
