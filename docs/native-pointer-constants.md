@@ -35,9 +35,16 @@ normalization and reject unsupported widths.
 
 Native constant emission must normalize using actual LLVM TargetData and then
 construct a constant integer-to-pointer conversion. The VM must use its explicit
-target layout: zero can become a canonical null pointer, while an unknown nonzero
-native address must report an unsupported capability. Numeric bits alone cannot
-grant allocation bounds, a callable receipt, or a host pointer.
+target layout: zero becomes a canonical null pointer, while a nonzero numeric
+address remains opaque. Sentinel comparisons and numeric round trips operate on
+those bits; they do not grant allocation bounds, a callable receipt, or host
+memory access. Dereference and heap operations still require actual provenance.
+
+The native `cast_dialects` integration suite compares the nonzero `-1` sentinel
+with null in both the VM and a newly generated executable. Its separate
+provenance-bearing data-pointer-to-narrow-integer case still requires the VM's
+explicit unsupported-operation result, because virtual addresses cannot predict
+a native allocation's low bits.
 
 ## How to change it
 
