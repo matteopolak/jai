@@ -99,7 +99,7 @@ cargo run -p jai-cli -- emit-llvm examples/sum.jai sum.ll
 
 The local Jai distribution helps establish language behavior. Newer, maintained Jai projects guide compatibility when they differ from that older reference. The [upstream corpus](docs/upstream-corpus.md) records the projects and exact revisions used.
 
-Tests cover rejected programs and the behavior of newly compiled programs. Benchmarks measure compiler time and Rust allocations so performance work can be based on measurements. Unsupported features produce errors instead of counting as successful builds.
+Tests cover rejected programs and the behavior of newly compiled programs. Benchmarks cover compiler stages, module discovery, interpreter execution, and memory use; broader native workloads are being verified. Unsupported features produce errors instead of counting as successful builds.
 
 The compiler uses an independently authored [source prelude](docs/compiler-prelude.md) split into protocol components under `prelude/`. Supplied source distributions remain external compatibility inputs. The retired reference probe used an authorized compiler asset for isolated static inspection and bounded developer-help experiments; [binary inspection](docs/binary-inspection.md) preserves those findings and their limits.
 
