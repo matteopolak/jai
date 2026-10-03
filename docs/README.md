@@ -345,3 +345,5 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Graph source retention](graph-source-retention.md)
 - [Metered source environments](metered-source-environments.md)
 - [Source reflection factory](reflection-source-factory.md)
+
+- [Latest corpus frontier](corpus-breadth-frontier.md) — matched source cohorts, stage results, and remaining language coverage.

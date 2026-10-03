@@ -44,7 +44,7 @@ main :: () -> int {
 | Browser editor | Real Wasm runs, file tree, source editor and shared source LSP tested; host services and full standard library pending |
 | Windows and mobile | C ABI and object tests; runtime compatibility unverified |
 
-The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded snapshot tokenizes all **2,603 files**, including our library and prelude, and parses **2,235** completely. It checks **101 pinned support files** with the included Preload. Full standard-library and upstream project builds remain pending. See the [measured coverage baseline](docs/corpus-breadth-baseline.md) for the separate stage results.
+The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded snapshot tokenizes all **2,603 files**, including our library and prelude, and parses **2,310** completely. It checks **103 pinned support files** with the included Preload. Full standard-library and upstream project builds remain pending. See the [latest measured frontier](docs/corpus-breadth-frontier.md) and [earlier baseline](docs/corpus-breadth-baseline.md) for the separate stage results.
 
 For example, record specialization and compile-time execution can work together:
 
@@ -126,5 +126,7 @@ cargo bench -p jai-bench --bench vm --locked -- --test
 ```
 
 The skipped lexer test requires the separately supplied reference files. Native-path rejection tests run in public checkouts too. Local reference checks run without the lexer filter.
+
+The standalone [fuzz targets](docs/fuzz-targets.md) exercise lexer/parser source, closed virtual module loading, constants and the checked IR interpreter with authored seeds, bounded resources and AddressSanitizer. Their mutable corpora and crash inputs are retained separately from benchmarks; completed campaigns and deterministic replay provide different evidence from build or target registration.
 
 Start with the [developer guide](docs/README.md) for architecture, language coverage, benchmarks, and dependency policy. Rustfmt keeps code formatting consistent, and Cargo enforces a minimum dependency release age of 14 days.
