@@ -625,6 +625,25 @@ fn describe(
                         .unwrap_or_default(),
                 });
             }
+            let mut record_metadata = metadata.records.get(&ty).cloned().unwrap_or_default();
+            let reductions = if policy.contains(RecordReflectionFlag::NoTypeInfo) {
+                8
+            } else {
+                0
+            } | if policy.contains(RecordReflectionFlag::ProceduresAreVoidPointers)
+            {
+                16
+            } else {
+                0
+            } | if policy.contains(RecordReflectionFlag::NoSizeComplaint) {
+                32
+            } else {
+                0
+            };
+            // These source bits describe the policy observed by this immutable
+            // graph. Preserve every other genuine source metadata flag.
+            record_metadata.textual_flags =
+                (record_metadata.textual_flags & !(8 | 16 | 32)) | reductions;
             DescriptorKind::Record {
                 kind: record.kind,
                 fields: fields.into(),
@@ -637,7 +656,7 @@ fn describe(
                         .cloned()
                         .unwrap_or_default()
                 },
-                metadata: metadata.records.get(&ty).cloned().unwrap_or_default(),
+                metadata: record_metadata,
             }
         }
         TypeKind::Enum(id) => {

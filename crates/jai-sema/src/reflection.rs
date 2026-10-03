@@ -1,8 +1,15 @@
 //! Bind type-valued queries without evaluating runtime expressions.
 use super::*;
 use jai_types::{ReflectionReadiness, TypeKind, reflected_size};
+mod catalog;
+mod policy_revision;
+mod record_attributes;
+mod runtime_info;
 pub(crate) mod schema;
+pub(crate) use record_attributes::apply_source_record_attributes;
+mod source_facts;
 mod storage;
+pub(crate) use runtime_info::RuntimeInfoCheckpoint;
 
 #[derive(Default)]
 pub(crate) struct MetaContext {
@@ -34,6 +41,10 @@ pub(crate) struct MetaContext {
     storage: HashMap<TypeId, (TypeId, std::sync::Arc<StaticData>, StaticAddress)>,
     storage_policies: HashMap<TypeId, jai_types::RecordReflectionPolicy>,
     storage_builder: StaticDataBuilder,
+    reflection_catalog: catalog::SourceTypeCatalog,
+    runtime_info_snapshots:
+        HashMap<runtime_info::RuntimeInfoKey, std::sync::Arc<jai_ir::RuntimeInfoSnapshot>>,
+    descriptor_policy_epoch: u64,
 }
 
 impl MetaContext {

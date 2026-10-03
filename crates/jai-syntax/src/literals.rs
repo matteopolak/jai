@@ -30,6 +30,10 @@ impl std::fmt::Display for FloatRangeError {
 impl std::error::Error for FloatRangeError {
 }
 impl DecimalLiteral {
+    pub fn retained_spelling_capacity(&self) -> usize {
+        self.0.capacity()
+    }
+
     pub fn spelling(&self) -> &str {
         &self.0
     }

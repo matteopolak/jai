@@ -938,6 +938,10 @@ impl<'a> Nominals<'a> {
                 .map_err(|error| {
                     located(graph, file, Diagnostic::new(record.span, error.to_string()))
                 })?;
+            crate::reflection::apply_source_record_attributes(types, ty, &record.attributes)
+                .map_err(|error| {
+                    located(graph, file, Diagnostic::new(record.span, error.to_string()))
+                })?;
             let mut fields = Vec::new();
             for (index, field) in record.fields().enumerate() {
                 let descriptor = types.field(ty, index).map_err(|error| {

@@ -23,7 +23,6 @@
 - [Reviewed SDK source ABI witnesses](native-sdk-proofs.md)
 
 - [Completion and acceptance plan](completion-plan.md)
-- [Compiler stage strategy](compiler-stage-strategy.md)
 - [Parallel implementation and acceptance](parallel-workstreams.md)
 - [Independent frozen component checks](parallel-component-checks.md)
 - [Callable aliases in overload groups](callable-overload-aliases.md)
@@ -316,3 +315,14 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Platform and native host boundary](platform-native-host-boundary.md)
 - [Native library source bindings](native-library-source-bindings.md)
 - [Typed heap constructor receipts](typed-heap-constructor-receipts.md)
+
+- [Source syntax retention](source-syntax-retention.md)
+
+- [Scalar source retention](scalar-source-retention.md)
+
+- [Graph source retention](graph-source-retention.md)
+
+- [Metered source environments](metered-source-environments.md)
+
+- [Source reflection factory](reflection-source-factory.md)
+- [Compiler stage strategy](compiler-stage-strategy.md)

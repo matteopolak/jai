@@ -367,7 +367,7 @@ impl Resolver<'_> {
     }
 }
 
-fn materialize(
+pub(super) fn materialize(
     types: &mut TypeRegistry,
     graph: &ReflectionGraph,
     schema: &schema::TypeInfoSchema,
@@ -836,7 +836,7 @@ fn reference(
         kind: StaticValueKind::Address(address),
     })
 }
-fn view(
+pub(super) fn view(
     types: &mut TypeRegistry,
     builder: &mut StaticDataBuilder,
     view: TypeId,
@@ -866,7 +866,7 @@ fn view(
         },
     })
 }
-fn record(ty: TypeId, fields: Vec<StaticValue>) -> StaticValue {
+pub(super) fn record(ty: TypeId, fields: Vec<StaticValue>) -> StaticValue {
     StaticValue {
         ty,
         kind: StaticValueKind::Record(fields),
@@ -881,7 +881,7 @@ fn empty_view(ty: TypeId) -> StaticValue {
         },
     }
 }
-fn zero(ty: TypeId) -> StaticValue {
+pub(super) fn zero(ty: TypeId) -> StaticValue {
     StaticValue::constant(jai_ir::ConstantValue {
         ty,
         kind: ConstantKind::Zero,

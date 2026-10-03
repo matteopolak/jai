@@ -191,6 +191,37 @@ pub struct SourceRecord {
     kind: SourceRecordKind,
 }
 impl SourceRecord {
+    /// Borrow every genuine retained prefix text; no Arc clone or equal-text substitution.
+    /// Text control/payload storage belongs to the text callback's actual-owner census.
+    pub fn visit_retained_metadata<E>(
+        &self,
+        admit: &mut impl FnMut(usize, usize) -> Result<(), E>,
+        text: &mut impl FnMut(SourceAllocationId, &Arc<str>) -> Result<(), E>,
+    ) -> Result<(), E> {
+        admit(1, self.path.capacity())?;
+        if let SourceRecordKind::Embedded {
+            resolution_path, ..
+        } = &self.kind
+        {
+            admit(1, resolution_path.capacity())?;
+        }
+        let mut owner = &self.snapshot;
+        loop {
+            admit(1, 0)?;
+            text(owner.allocation, &owner.text)?;
+            admit(1, 0)?;
+            let Some((prefix, _)) = &owner.prefix else {
+                break;
+            };
+            admit(
+                1,
+                std::mem::size_of::<SourceTextSnapshot>() + 3 * std::mem::size_of::<usize>(),
+            )?;
+            owner = prefix;
+        }
+        Ok(())
+    }
+
     pub fn span_owner(&self, span: Span) -> Option<(SourceAllocationId, Arc<str>)> {
         self.snapshot.owner_at(span)
     }
@@ -254,6 +285,25 @@ pub struct SourceMap {
     records: Vec<SourceRecord>,
 }
 impl SourceMap {
+    /// Visit actual record capacity before lending records to a source-owner scanner.
+    pub fn visit_retained_record_storage<E>(
+        &self,
+        admit: &mut impl FnMut(usize, usize) -> Result<(), E>,
+        source: &mut impl FnMut(&SourceRecord) -> Result<(), E>,
+    ) -> Result<(), E> {
+        admit(
+            self.records.capacity().saturating_add(1),
+            self.records
+                .capacity()
+                .saturating_mul(std::mem::size_of::<SourceRecord>()),
+        )?;
+        for record in &self.records {
+            admit(1, 0)?;
+            source(record)?;
+        }
+        Ok(())
+    }
+
     pub fn insert(&mut self, path: PathBuf, text: String) -> SourceId {
         self.insert_snapshot(path, SourceTextSnapshot::new(text))
     }

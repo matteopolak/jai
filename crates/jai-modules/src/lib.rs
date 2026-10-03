@@ -29,7 +29,9 @@ mod operator_scopes;
 mod scoped_imports;
 mod source_arguments;
 mod source_origins;
-pub use source_origins::SourceOriginError;
+mod source_storage;
+pub use source_origins::{SourceOriginAdmissionError, SourceOriginError};
+pub use source_storage::GraphSyntaxStorage;
 mod source_specializations;
 mod storage_members;
 pub use storage_members::{
@@ -808,3 +810,5 @@ impl ModuleGraph {
 }
 #[cfg(test)]
 mod tests;
+
+pub use jai_syntax::SourceMetadataError;

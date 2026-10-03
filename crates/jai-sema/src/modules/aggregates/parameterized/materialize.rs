@@ -419,6 +419,14 @@ where
                     )
                 })?;
         }
+        crate::reflection::apply_source_record_attributes(self.types, ty, record.attributes)
+            .map_err(|error| {
+                failure(
+                    self.graph,
+                    file,
+                    Diagnostic::new(record.span, error.to_string()),
+                )
+            })?;
         let mut fields = Vec::new();
         for (index, field) in record.physical_fields().enumerate() {
             let descriptor = self.types.field(ty, index).map_err(|e| {

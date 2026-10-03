@@ -523,7 +523,7 @@ fn ordinary_storage_cannot_gain_descriptor_identity_and_failed_bindings_are_retr
 }
 
 #[test]
-fn duplicate_or_foreign_descriptor_bindings_cannot_be_published() {
+fn immutable_descriptor_objects_share_nominal_identity_but_foreign_bindings_fail() {
     let catalog = Catalog::new();
     let foreign = Catalog::new();
     let mut builder = StaticDataBuilder::new();
@@ -562,18 +562,28 @@ fn duplicate_or_foreign_descriptor_bindings_cannot_be_published() {
             &catalog.types,
         )
         .unwrap();
-    assert!(matches!(
-        builder.publish(&catalog.types, StaticDataLimits::default()),
-        Err(StaticDataError::InvalidValue(_))
-    ));
-    builder.discard_unpublished();
-    assert_eq!(
+    let extended = Arc::new(
         builder
             .publish(&catalog.types, StaticDataLimits::default())
-            .unwrap()
-            .objects()
-            .len(),
-        1
+            .unwrap(),
     );
-    RuntimeTypeConstant::new(published, first, &catalog.types).unwrap();
+    let old = RuntimeTypeConstant::new(Arc::clone(&published), first, &catalog.types).unwrap();
+    let new = RuntimeTypeConstant::new(Arc::clone(&extended), duplicate, &catalog.types).unwrap();
+    assert_eq!(old.identity().ty(), new.identity().ty());
+    assert_ne!(old.identity().object(), new.identity().object());
+    assert!(Arc::ptr_eq(&published.objects()[0], &extended.objects()[0]));
+    assert_eq!(published.objects().len(), 1);
+    assert_eq!(extended.objects().len(), 2);
+    assert!(matches!(
+        builder.define_type_descriptor(
+            first,
+            catalog.value(0, 4, true),
+            &catalog.graph,
+            catalog.graph.root(),
+            &catalog.types,
+        ),
+        Err(StaticDataError::AlreadyDefined(id)) if id == first
+    ));
+    old.validate(&catalog.types).unwrap();
+    new.validate(&catalog.types).unwrap();
 }

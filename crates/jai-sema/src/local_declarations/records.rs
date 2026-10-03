@@ -76,12 +76,7 @@ impl Resolver<'_> {
                         layout.minimum_alignment = Some(self.local_alignment(expression)?);
                     }
                     syntax::RecordAttribute::NoPadding => layout.packed = true,
-                    syntax::RecordAttribute::TypeInfoNone => {
-                        return Err(Diagnostic::new(
-                            span,
-                            "#type_info_none requires reflection metadata suppression, which is not implemented",
-                        ));
-                    }
+                    syntax::RecordAttribute::TypeInfoNone => {}
                 }
             }
             let mut alignments = Vec::new();
@@ -103,6 +98,8 @@ impl Resolver<'_> {
                 .define_record_with_layout(ty, field_types, layout)
                 .map_err(|error| Diagnostic::new(span, error.to_string()))?;
         }
+        crate::reflection::apply_source_record_attributes(self.types, ty, attributes)
+            .map_err(|error| Diagnostic::new(span, error.to_string()))?;
         let mut metadata = Vec::new();
         for (index, field) in fields.iter().enumerate() {
             let descriptor = self
