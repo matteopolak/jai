@@ -23,6 +23,7 @@
 - [Reviewed SDK source ABI witnesses](native-sdk-proofs.md)
 
 - [Completion and acceptance plan](completion-plan.md)
+- [Compiler stage strategy](compiler-stage-strategy.md)
 - [Parallel implementation and acceptance](parallel-workstreams.md)
 - [Independent frozen component checks](parallel-component-checks.md)
 - [Callable aliases in overload groups](callable-overload-aliases.md)
