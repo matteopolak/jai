@@ -26,7 +26,9 @@ impl Builder<'_> {
         self.initialize(path, bootstrap)?;
         match self.advance()? {
             DiscoveryStatus::Complete => Ok(self.graph),
-            DiscoveryStatus::Awaiting { .. } => {
+            DiscoveryStatus::Awaiting {
+                ..
+            } => {
                 let diagnostic = self
                     .pending_diagnostics
                     .first()
@@ -177,9 +179,12 @@ impl Builder<'_> {
             }
             match self.expand_module(module, &path) {
                 Ok(()) => {}
-                Err(GraphError::Pending { diagnostic, .. }) => self
-                    .pending_diagnostics
-                    .push(DeferredDependency { module, diagnostic }),
+                Err(GraphError::Pending {
+                    diagnostic, ..
+                }) => self.pending_diagnostics.push(DeferredDependency {
+                    module,
+                    diagnostic,
+                }),
                 Err(error) => return Err(error),
             }
         }
@@ -200,9 +205,13 @@ impl Builder<'_> {
                 .to_owned();
             match self.expand_module(module, &path) {
                 Ok(()) => {}
-                Err(GraphError::Pending { diagnostic, .. }) => {
-                    self.pending_diagnostics
-                        .push(DeferredDependency { module, diagnostic });
+                Err(GraphError::Pending {
+                    diagnostic, ..
+                }) => {
+                    self.pending_diagnostics.push(DeferredDependency {
+                        module,
+                        diagnostic,
+                    });
                     self.pending_inserted_modules.push(module);
                 }
                 Err(error) => return Err(error),
@@ -211,7 +220,9 @@ impl Builder<'_> {
         for key in std::mem::take(&mut self.pending_specializations) {
             match self.expand_specialization(&key) {
                 Ok(()) => self.graph.source_specializations.push(key),
-                Err(GraphError::Pending { diagnostic, .. }) => {
+                Err(GraphError::Pending {
+                    diagnostic, ..
+                }) => {
                     let module = self.graph.files[self
                         .graph
                         .declaration(key.declaration())
@@ -219,8 +230,10 @@ impl Builder<'_> {
                         .file()
                         .index()]
                     .module;
-                    self.pending_diagnostics
-                        .push(DeferredDependency { module, diagnostic });
+                    self.pending_diagnostics.push(DeferredDependency {
+                        module,
+                        diagnostic,
+                    });
                     self.pending_specializations.push(key);
                 }
                 Err(error) => return Err(error),

@@ -27,7 +27,8 @@ impl std::fmt::Display for FloatRangeError {
     }
 }
 
-impl std::error::Error for FloatRangeError {}
+impl std::error::Error for FloatRangeError {
+}
 impl DecimalLiteral {
     pub fn spelling(&self) -> &str {
         &self.0
@@ -135,7 +136,15 @@ pub(super) fn string(raw: &str, span: Span) -> Result<Vec<u8>, Diagnostic> {
                 continue;
             }
             'u' | 'U' => {
-                let value = hex_digits(&mut chars, if escape == 'u' { 4 } else { 8 }, span)?;
+                let value = hex_digits(
+                    &mut chars,
+                    if escape == 'u' {
+                        4
+                    } else {
+                        8
+                    },
+                    span,
+                )?;
                 let character = char::from_u32(value)
                     .ok_or_else(|| Diagnostic::new(span, "invalid Unicode string escape"))?;
                 let mut buffer = [0; 4];
@@ -253,7 +262,10 @@ pub(super) fn here_string(raw: &str, span: Span) -> Result<HereStringLiteral, Di
             bytes.push(byte);
         }
     }
-    Ok(HereStringLiteral { bytes, modifiers })
+    Ok(HereStringLiteral {
+        bytes,
+        modifiers,
+    })
 }
 fn hex_digits(
     chars: &mut impl Iterator<Item = char>,

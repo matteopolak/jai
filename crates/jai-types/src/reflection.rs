@@ -164,6 +164,7 @@ pub enum DescriptorKind {
         parameters: Box<[DescriptorId]>,
         results: Box<[DescriptorId]>,
         convention: CallingConvention,
+        return_abi: crate::ForeignReturnAbi,
         context: ContextMode,
         variadic: Variadic,
     },
@@ -222,17 +223,37 @@ impl TypeDescriptor {
             DescriptorKind::Code => TypeInfoTag::Code,
             DescriptorKind::Any => TypeInfoTag::Any,
             DescriptorKind::Bool => TypeInfoTag::Bool,
-            DescriptorKind::Integer { .. } => TypeInfoTag::Integer,
-            DescriptorKind::Float { .. } => TypeInfoTag::Float,
+            DescriptorKind::Integer {
+                ..
+            } => TypeInfoTag::Integer,
+            DescriptorKind::Float {
+                ..
+            } => TypeInfoTag::Float,
             DescriptorKind::String => TypeInfoTag::String,
-            DescriptorKind::Pointer { .. } => TypeInfoTag::Pointer,
-            DescriptorKind::FixedArray { .. }
-            | DescriptorKind::Slice { .. }
-            | DescriptorKind::DynamicArray { .. } => TypeInfoTag::Array,
-            DescriptorKind::Procedure { .. } => TypeInfoTag::Procedure,
-            DescriptorKind::Record { .. } => TypeInfoTag::Struct,
-            DescriptorKind::Enum { .. } => TypeInfoTag::Enum,
-            DescriptorKind::Distinct { .. } => TypeInfoTag::Variant,
+            DescriptorKind::Pointer {
+                ..
+            } => TypeInfoTag::Pointer,
+            DescriptorKind::FixedArray {
+                ..
+            }
+            | DescriptorKind::Slice {
+                ..
+            }
+            | DescriptorKind::DynamicArray {
+                ..
+            } => TypeInfoTag::Array,
+            DescriptorKind::Procedure {
+                ..
+            } => TypeInfoTag::Procedure,
+            DescriptorKind::Record {
+                ..
+            } => TypeInfoTag::Struct,
+            DescriptorKind::Enum {
+                ..
+            } => TypeInfoTag::Enum,
+            DescriptorKind::Distinct {
+                ..
+            } => TypeInfoTag::Variant,
         }
     }
     pub fn runtime_size(&self) -> Option<u64> {
@@ -277,7 +298,8 @@ impl fmt::Display for ReflectionError {
         }
     }
 }
-impl std::error::Error for ReflectionError {}
+impl std::error::Error for ReflectionError {
+}
 
 /// A closed, immutable descriptor graph. Cycles are represented by descriptor
 /// IDs; recursively linked records do not recursively allocate descriptions.
@@ -461,7 +483,9 @@ fn dependencies(
         TypeKind::Pointer(element)
         | TypeKind::Slice(element)
         | TypeKind::DynamicArray(element)
-        | TypeKind::FixedArray { element, .. } => vec![*element],
+        | TypeKind::FixedArray {
+            element, ..
+        } => vec![*element],
         TypeKind::Record(id) => {
             let record = types.record(*id)?;
             let mut fields = Vec::with_capacity(record.fields.len());
@@ -525,7 +549,10 @@ fn describe(
         TypeKind::Pointer(pointee) => DescriptorKind::Pointer {
             pointee: DescriptorId(*pointee),
         },
-        TypeKind::FixedArray { element, count } => DescriptorKind::FixedArray {
+        TypeKind::FixedArray {
+            element,
+            count,
+        } => DescriptorKind::FixedArray {
             element: DescriptorId(*element),
             count: *count,
             stride: layout
@@ -552,6 +579,7 @@ fn describe(
                     .map(|&ty| DescriptorId(ty))
                     .collect(),
                 convention: procedure.convention,
+                return_abi: procedure.return_abi,
                 context: procedure.context,
                 variadic: procedure.variadic,
             }
@@ -631,7 +659,10 @@ fn describe(
                     enumeration
                         .values
                         .iter()
-                        .map(|&value| ReflectedEnumMember { name: None, value })
+                        .map(|&value| ReflectedEnumMember {
+                            name: None,
+                            value,
+                        })
                         .collect(),
                     false,
                 ),

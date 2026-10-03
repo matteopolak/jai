@@ -332,7 +332,9 @@ fn bind_source_signature(
                 return Err("requires (version_info_return: *Version_Info) -> string".into());
             };
             schema::validate_version(*record, graph, declarations, types, context)?;
-            return Ok(CompilerIntrinsic::SourceVersionInfo { record: *record });
+            return Ok(CompilerIntrinsic::SourceVersionInfo {
+                record: *record,
+            });
         }
         (SourceIntrinsic::RuntimeInfo, [id], [result]) if workspace(*id) => {
             return Ok(CompilerIntrinsic::SourceRuntimeInfo {
@@ -433,7 +435,9 @@ fn bind_signature(
         SourceIntrinsic::EndIntercept
             if matches!(parameters, [id] if is_workspace(*id)) && results.is_empty() =>
         {
-            Ok(CompilerIntrinsic::SourceEndIntercept { current_workspace })
+            Ok(CompilerIntrinsic::SourceEndIntercept {
+                current_workspace,
+            })
         }
         SourceIntrinsic::BeginIntercept => Err(
             "requires (w: s64, flags: Intercept_Flags) -> void with the exact source u32 flags enum",
@@ -446,13 +450,17 @@ fn bind_signature(
             if matches!(parameters, [workspace] if is_workspace(*workspace))
                 && matches!(results, [name] if is_string(*name)) =>
         {
-            Ok(CompilerIntrinsic::SourceGetWorkspaceName { current_workspace })
+            Ok(CompilerIntrinsic::SourceGetWorkspaceName {
+                current_workspace,
+            })
         }
         SourceIntrinsic::DestroyWorkspace
             if matches!(parameters, [workspace] if is_workspace(*workspace))
                 && results.is_empty() =>
         {
-            Ok(CompilerIntrinsic::SourceDestroyWorkspace { current_workspace })
+            Ok(CompilerIntrinsic::SourceDestroyWorkspace {
+                current_workspace,
+            })
         }
         SourceIntrinsic::WriteString
             if matches!(parameters, [text, error] if is_string(*text) && matches!(types.kind(*error), Ok(TypeKind::Bool)))
@@ -490,16 +498,22 @@ fn bind_signature(
             if parameters.is_empty()
                 && matches!(results, [workspace] if is_workspace(*workspace)) =>
         {
-            Ok(CompilerIntrinsic::SourceCurrentWorkspace { current_workspace })
+            Ok(CompilerIntrinsic::SourceCurrentWorkspace {
+                current_workspace,
+            })
         }
         SourceIntrinsic::AddString | SourceIntrinsic::AddFile
             if matches!(parameters, [text, workspace] if is_string(*text) && is_workspace(*workspace))
                 && results.is_empty() =>
         {
             Ok(if source == SourceIntrinsic::AddString {
-                CompilerIntrinsic::SourceAddString { current_workspace }
+                CompilerIntrinsic::SourceAddString {
+                    current_workspace,
+                }
             } else {
-                CompilerIntrinsic::SourceAddFile { current_workspace }
+                CompilerIntrinsic::SourceAddFile {
+                    current_workspace,
+                }
             })
         }
         SourceIntrinsic::AddString => Err(

@@ -366,6 +366,7 @@ where
             .procedure(ProcedureType {
                 parameters: parameters.into_boxed_slice(),
                 results: results.into_boxed_slice(),
+                return_abi: procedure.return_abi,
                 convention: procedure.convention,
                 context: procedure.context,
                 variadic,

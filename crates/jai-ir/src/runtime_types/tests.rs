@@ -52,7 +52,12 @@ impl Catalog {
         }
     }
     fn value(&self, tag: i128, size: i128, signed: bool) -> StaticValue {
-        let scalar = |ty, kind| StaticValue::constant(ConstantValue { ty, kind });
+        let scalar = |ty, kind| {
+            StaticValue::constant(ConstantValue {
+                ty,
+                kind,
+            })
+        };
         StaticValue {
             ty: self.integer,
             kind: StaticValueKind::Record(vec![
@@ -402,6 +407,7 @@ fn aliased_descriptor_views_share_storage_but_consume_bounded_validation_work() 
             .procedure(ProcedureType {
                 parameters: vec![boolean; 100].into(),
                 results: Box::new([]),
+                return_abi: jai_types::ForeignReturnAbi::Natural,
                 convention,
                 context: ContextMode::None,
                 variadic: Variadic::None,

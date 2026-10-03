@@ -600,17 +600,28 @@ impl CompilerEffects for CompilerSession {
             );
         }
         match request {
-            CompilerRequest::BeginIntercept { workspace, flags } => {
-                self.begin_intercept(workspace, flags)
-            }
-            CompilerRequest::EndIntercept { workspace } => self.end_intercept(workspace),
+            CompilerRequest::BeginIntercept {
+                workspace,
+                flags,
+            } => self.begin_intercept(workspace, flags),
+            CompilerRequest::EndIntercept {
+                workspace,
+            } => self.end_intercept(workspace),
             CompilerRequest::WaitForMessage => self.wait_for_message(),
-            CompilerRequest::GetWorkspaceName { workspace } => self.get_name(workspace),
-            CompilerRequest::DestroyWorkspace { workspace } => self.destroy(workspace),
-            CompilerRequest::SetWorkspaceStatus { workspace, status } => {
-                self.stage(workspace, Change::Status(workspace, status))
-            }
-            CompilerRequest::WriteOutput { stream, bytes } => {
+            CompilerRequest::GetWorkspaceName {
+                workspace,
+            } => self.get_name(workspace),
+            CompilerRequest::DestroyWorkspace {
+                workspace,
+            } => self.destroy(workspace),
+            CompilerRequest::SetWorkspaceStatus {
+                workspace,
+                status,
+            } => self.stage(workspace, Change::Status(workspace, status)),
+            CompilerRequest::WriteOutput {
+                stream,
+                bytes,
+            } => {
                 let TransactionState::Active(transaction) = &mut self.transaction else {
                     unreachable!()
                 };
@@ -628,19 +639,28 @@ impl CompilerEffects for CompilerSession {
                     return self.reject("pending compiler output exceeds the session byte limit");
                 }
                 transaction.output_bytes = staged_bytes;
-                transaction
-                    .changes
-                    .push(Change::Output(CompilerOutput { stream, bytes }));
+                transaction.changes.push(Change::Output(CompilerOutput {
+                    stream,
+                    bytes,
+                }));
                 EffectOutcome::Ready(CompilerResponse::Unit)
             }
-            CompilerRequest::GetBuildOptions { workspace } => self.get_options(workspace),
+            CompilerRequest::GetBuildOptions {
+                workspace,
+            } => self.get_options(workspace),
             CompilerRequest::AddSourceAt {
                 workspace,
                 source,
                 location,
             } => self.stage(
                 workspace,
-                Change::Input(workspace, BuildInput::SourceAt { source, location }),
+                Change::Input(
+                    workspace,
+                    BuildInput::SourceAt {
+                        source,
+                        location,
+                    },
+                ),
             ),
             CompilerRequest::AddSourceFileAt {
                 workspace,
@@ -652,7 +672,13 @@ impl CompilerEffects for CompilerSession {
                 }
                 self.stage(
                     workspace,
-                    Change::Input(workspace, BuildInput::FileAt { path, location }),
+                    Change::Input(
+                        workspace,
+                        BuildInput::FileAt {
+                            path,
+                            location,
+                        },
+                    ),
                 )
             }
             CompilerRequest::Report {
@@ -683,7 +709,9 @@ impl CompilerEffects for CompilerSession {
                     .push(Change::Message(transaction.source_workspace, message));
                 EffectOutcome::Ready(CompilerResponse::Unit)
             }
-            CompilerRequest::CreateWorkspace { name } => {
+            CompilerRequest::CreateWorkspace {
+                name,
+            } => {
                 let Some(id) = allocate_workspace() else {
                     return self.reject("workspace identities exhausted");
                 };
@@ -704,11 +732,17 @@ impl CompilerEffects for CompilerSession {
                 );
                 EffectOutcome::Ready(CompilerResponse::Workspace(id))
             }
-            CompilerRequest::AddSource { workspace, source } => self.stage(
+            CompilerRequest::AddSource {
+                workspace,
+                source,
+            } => self.stage(
                 workspace,
                 Change::Input(workspace, BuildInput::Source(source)),
             ),
-            CompilerRequest::AddSourceFile { workspace, path } => {
+            CompilerRequest::AddSourceFile {
+                workspace,
+                path,
+            } => {
                 if path.as_os_str().is_empty() {
                     return self.reject("compiler source path must not be empty");
                 }
@@ -730,13 +764,19 @@ impl CompilerEffects for CompilerSession {
                 }
                 self.stage(workspace, Change::Option(workspace, option, Some(location)))
             }
-            CompilerRequest::SetBuildOption { workspace, option } => {
+            CompilerRequest::SetBuildOption {
+                workspace,
+                option,
+            } => {
                 if matches!(&option, BuildOption::OutputPath(path) if path.as_os_str().is_empty()) {
                     return self.reject("compiler output path must not be empty");
                 }
                 self.stage(workspace, Change::Option(workspace, option, None))
             }
-            CompilerRequest::Message { level, text } => {
+            CompilerRequest::Message {
+                level,
+                text,
+            } => {
                 let TransactionState::Active(transaction) = &mut self.transaction else {
                     unreachable!()
                 };
@@ -1086,7 +1126,9 @@ mod tests {
             option: BuildOption::BitcodeOptimization(BitcodeOptimization::Os),
         });
         let EffectOutcome::Ready(CompilerResponse::BuildOptions(snapshot)) =
-            session.request(CompilerRequest::GetBuildOptions { workspace: root })
+            session.request(CompilerRequest::GetBuildOptions {
+                workspace: root,
+            })
         else {
             panic!("expected build options");
         };
@@ -1098,7 +1140,9 @@ mod tests {
         session.finish(false).unwrap();
         session.begin();
         let EffectOutcome::Ready(CompilerResponse::BuildOptions(snapshot)) =
-            session.request(CompilerRequest::GetBuildOptions { workspace: root })
+            session.request(CompilerRequest::GetBuildOptions {
+                workspace: root,
+            })
         else {
             panic!("expected build options");
         };
@@ -1127,7 +1171,9 @@ mod tests {
         }
         let snapshot = |session: &mut CompilerSession, workspace| {
             let EffectOutcome::Ready(CompilerResponse::BuildOptions(snapshot)) =
-                session.request(CompilerRequest::GetBuildOptions { workspace })
+                session.request(CompilerRequest::GetBuildOptions {
+                    workspace,
+                })
             else {
                 panic!("expected build options");
             };

@@ -1,11 +1,13 @@
 //! Byte-based source locations shared by the compiler stages.
 mod diagnostic_markers;
 mod locations;
+mod provider;
 pub use diagnostic_markers::DiagnosticMarker;
+pub use provider::{SourceProvider, normalize_virtual_path};
 mod warnings;
 pub use locations::{
-    DeclarationId, Identities, LocatedDiagnostic, ModuleId, ScopeId, SourceId, SourceMap,
-    SourceRecord, SourceSpan, UnitId,
+    DeclarationId, Identities, LocatedDiagnostic, ModuleId, ScopeId, SourceAllocationId, SourceId,
+    SourceMap, SourceRecord, SourceRecordKind, SourceSpan, SourceTextSnapshot, UnitId,
 };
 use std::collections::HashMap;
 use std::fmt;
@@ -52,7 +54,10 @@ pub struct Span {
 
 impl Span {
     pub fn new(start: usize, end: usize) -> Self {
-        Self { start, end }
+        Self {
+            start,
+            end,
+        }
     }
     pub fn text(self, source: &str) -> &str {
         &source[self.start..self.end]
@@ -113,7 +118,8 @@ impl fmt::Display for Diagnostic {
         f.write_str(&self.message)
     }
 }
-impl std::error::Error for Diagnostic {}
+impl std::error::Error for Diagnostic {
+}
 
 #[cfg(test)]
 mod tests {

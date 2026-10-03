@@ -165,6 +165,7 @@ pub(crate) fn checked_wrapper(
                 .map(|parameter| parameter.ty)
                 .collect(),
             results: descriptor.results,
+            return_abi: descriptor.return_abi,
             convention: descriptor.convention,
             context: descriptor.context,
             variadic: jai_types::Variadic::None,
@@ -203,7 +204,10 @@ pub(crate) fn checked_wrapper(
         (Statement::CallVoid(call), Transfer::ReturnVoid)
     } else {
         (
-            Statement::CallResults { call, destinations },
+            Statement::CallResults {
+                call,
+                destinations,
+            },
             Transfer::ReturnValues(returns),
         )
     };
@@ -524,7 +528,10 @@ impl Resolver<'_> {
         let owner = self.reserve_generated_procedure(span)?;
         let (signature, procedure) = checked_wrapper(self.types, owner, target, bound)?;
         let original_arguments = match &procedure.body.statements[0] {
-            Statement::CallResults { call, .. } | Statement::CallVoid(call) => &call.arguments,
+            Statement::CallResults {
+                call, ..
+            }
+            | Statement::CallVoid(call) => &call.arguments,
             _ => unreachable!("checked wrapper contains its original direct call"),
         };
         let returned = self.call_result_contracts_for_source(
@@ -609,7 +616,10 @@ impl Resolver<'_> {
                 origin: target.origin,
                 formal,
                 value,
-                source: SourceSpan { source, span },
+                source: SourceSpan {
+                    source,
+                    span,
+                },
             });
         }
         Ok(bound)
@@ -645,6 +655,7 @@ mod tests {
             .procedure(ProcedureType {
                 parameters: vec![int, int, int].into(),
                 results: vec![int].into(),
+                return_abi: jai_types::ForeignReturnAbi::Natural,
                 convention: CallingConvention::Jai,
                 context: ContextMode::None,
                 variadic: jai_types::Variadic::None,
@@ -700,7 +711,10 @@ mod tests {
             syntax::ParameterEvaluation::Discard
         );
         assert_eq!(wrapper.parameters.len(), 2);
-        let Statement::CallResults { call, .. } = &wrapper.body.statements[0] else {
+        let Statement::CallResults {
+            call, ..
+        } = &wrapper.body.statements[0]
+        else {
             panic!("the wrapper must contain a real direct call")
         };
         assert_eq!(call.procedure, target_id);

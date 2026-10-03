@@ -232,6 +232,7 @@ version = "0.1.0"
 dependencies = [
  "jai-lexer",
  "jai-modules",
+ "jai-platform",
  "jai-sema",
  "jai-source",
  "jai-syntax",
@@ -277,9 +278,27 @@ version = "0.1.0"
 dependencies = [
  "jai-eval",
  "jai-lexer",
+ "jai-native-source",
  "jai-source",
  "jai-syntax",
  "jai-types",
+]
+
+[[package]]
+name = "jai-native-source"
+version = "0.1.0"
+dependencies = [
+ "jai-lexer",
+ "jai-source",
+]
+
+[[package]]
+name = "jai-platform"
+version = "0.1.0"
+dependencies = [
+ "jai-native-source",
+ "jai-source",
+ "jai-vm",
 ]
 
 [[package]]

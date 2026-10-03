@@ -207,7 +207,9 @@ fn nested_file_conditions_publish_selected_declarations_once() {
     assert_eq!(discovery.graph().declaration(id).unwrap().name(), selected);
     assert!(matches!(
         discovery.select_condition(inner, true),
-        Err(ConditionSelectionError::AlreadySelected { previous: false })
+        Err(ConditionSelectionError::AlreadySelected {
+            previous: false
+        })
     ));
     discovery.select_condition(inner, false).unwrap();
     assert_eq!(inputs.reads("/discovery/main.jai"), 1);
@@ -353,7 +355,10 @@ fn actual_specializations_keep_conditional_import_decisions_independent() {
     for (key, selected) in [(&no, false), (&yes, true)] {
         assert!(discovery.discover_specialization(key.clone()).unwrap());
         assert!(!discovery.specialization_discovered(key));
-        let DiscoveryStatus::Awaiting { conditions, .. } = discovery.advance().unwrap() else {
+        let DiscoveryStatus::Awaiting {
+            conditions, ..
+        } = discovery.advance().unwrap()
+        else {
             panic!("expected specialization condition")
         };
         let request = discovery.condition(conditions[0]).unwrap();

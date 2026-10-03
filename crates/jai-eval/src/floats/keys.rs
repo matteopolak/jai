@@ -100,7 +100,8 @@ mod tests {
         assert_ne!(left, right);
     }
 }
-impl Eq for WeakFloatKey {}
+impl Eq for WeakFloatKey {
+}
 impl std::hash::Hash for WeakFloatKey {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         // Equal semantic trees have equal cached hashes, regardless of sharing.

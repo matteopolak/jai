@@ -68,6 +68,7 @@ use jai_eval::{Integer as IntegerValue, Value as ScalarConstant};
 use jai_source::{Diagnostic, Span, Symbol, Symbols};
 use jai_syntax::{self as syntax, BinaryOp, IntegerType, ReturnType, ScalarType, UnaryOp};
 pub use modules::FileAbiBindingContext;
+pub use modules::NativeSourceLibraryBinding;
 pub use modules::ProcessAbiBindingContext;
 pub use modules::compiler_intrinsics::{
     CompilerBindingContext, CompilerModuleOrigin, CompilerModuleOrigins,
@@ -472,6 +473,7 @@ pub fn resolve(module: &syntax::Module) -> Result<Program, Diagnostic> {
                     .map(|parameter| parameter.ty)
                     .collect(),
                 results: results.iter().map(|result| result.ty).collect(),
+                return_abi: jai_types::ForeignReturnAbi::Natural,
                 convention: CallingConvention::Jai,
                 context: ContextMode::None,
                 variadic: jai_types::Variadic::None,

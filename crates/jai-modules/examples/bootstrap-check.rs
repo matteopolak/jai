@@ -43,7 +43,9 @@ fn run() -> Result<(), String> {
     }
     let graph = ModuleGraph::load_with_bootstrap_options(
         &entry,
-        GraphOptions { import_dirs },
+        GraphOptions {
+            import_dirs,
+        },
         BootstrapOptions {
             prelude: PreludeSource::Search,
             runtime_support: Some(RuntimeSupportOptions {

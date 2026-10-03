@@ -71,7 +71,8 @@ impl PartialEq for WeakFloatValue {
         self.key == other.key
     }
 }
-impl Eq for WeakFloatValue {}
+impl Eq for WeakFloatValue {
+}
 impl std::hash::Hash for WeakFloatValue {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.key.hash(state);

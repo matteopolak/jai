@@ -183,7 +183,9 @@ impl FileScope<'_> {
                 .to_vec(),
             GraphBinding::Module(_)
             | GraphBinding::Parameter(_)
-            | GraphBinding::SourceMember { .. }
+            | GraphBinding::SourceMember {
+                ..
+            }
             | GraphBinding::StorageMember(_) => return Ok(Vec::new()),
         };
         let mut expanded = Vec::new();
@@ -225,7 +227,9 @@ impl FileScope<'_> {
                 .to_vec(),
             GraphBinding::Module(_)
             | GraphBinding::Parameter(_)
-            | GraphBinding::SourceMember { .. }
+            | GraphBinding::SourceMember {
+                ..
+            }
             | GraphBinding::StorageMember(_) => return Ok(None),
         };
         let mut expanded = Vec::new();

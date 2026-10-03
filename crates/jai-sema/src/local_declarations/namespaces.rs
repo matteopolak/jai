@@ -27,7 +27,9 @@ impl Resolver<'_> {
         source: RecordSource<'_>,
         members: &[syntax::RecordMember],
     ) -> Result<TypeId, Diagnostic> {
-        let RecordSource { id, .. } = source;
+        let RecordSource {
+            id, ..
+        } = source;
         if members.len() > 65_536 {
             return Err(Diagnostic::new(
                 source.span,
@@ -131,10 +133,18 @@ impl Resolver<'_> {
                         fields.push(FieldSource::AnonymousRecord(record.as_ref().clone()));
                         continue;
                     }
-                    syntax::RecordMember::Assert { .. }
-                    | syntax::RecordMember::DefaultOverride { .. } => continue,
-                    syntax::RecordMember::Conditional { span, .. }
-                    | syntax::RecordMember::CompileTimeCases { span, .. } => {
+                    syntax::RecordMember::Assert {
+                        ..
+                    }
+                    | syntax::RecordMember::DefaultOverride {
+                        ..
+                    } => continue,
+                    syntax::RecordMember::Conditional {
+                        span, ..
+                    }
+                    | syntax::RecordMember::CompileTimeCases {
+                        span, ..
+                    } => {
                         return Err(Diagnostic::new(
                             *span,
                             "record conditional was not selected before shape binding",

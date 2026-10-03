@@ -20,7 +20,9 @@ pub(super) fn invoke_get_options(
         return Err(fail("get_build_options requires a source s64 workspace"));
     };
     let workspace = super::source::workspace_argument(workspace, current_workspace)?;
-    let snapshot = match effects.request(CompilerRequest::GetBuildOptions { workspace }) {
+    let snapshot = match effects.request(CompilerRequest::GetBuildOptions {
+        workspace,
+    }) {
         EffectOutcome::Ready(CompilerResponse::BuildOptions(snapshot)) => snapshot,
         EffectOutcome::Ready(_) => {
             return Err(EffectError::Failed(Error::EffectResponse(
@@ -154,7 +156,10 @@ fn empty_options(ty: TypeId, types: &dyn TypeView, depth: usize) -> Result<Value
                 .iter()
                 .map(|&field| empty_options(field, types, depth + 1))
                 .collect::<Result<_, _>>()?;
-            Ok(Value::Record { ty, fields })
+            Ok(Value::Record {
+                ty,
+                fields,
+            })
         }
         _ => Err(fail("get_build_options has an unsupported schema field")),
     }
@@ -166,7 +171,10 @@ fn assign_enum(
     level: i128,
     types: &dyn TypeView,
 ) -> Result<(), EffectError> {
-    let Value::Enum { ty, .. } = field(record, path, types)? else {
+    let Value::Enum {
+        ty, ..
+    } = field(record, path, types)?
+    else {
         return Err(EffectError::Failed(Error::InvalidIr(
             "get_build_options optimization projection requires an enum",
         )));
@@ -190,7 +198,11 @@ fn assign(
         field: jai_types::FieldId,
         types: &dyn TypeView,
     ) -> Result<(&'a mut Value, TypeId), EffectError> {
-        let Value::Record { ty, fields } = record else {
+        let Value::Record {
+            ty,
+            fields,
+        } = record
+        else {
             return Err(EffectError::Failed(Error::InvalidIr(
                 "get_build_options projection requires a struct record",
             )));
@@ -377,7 +389,10 @@ fn invoke_options_with_location(
                 location: location.clone(),
             }
         } else {
-            CompilerRequest::SetBuildOption { workspace, option }
+            CompilerRequest::SetBuildOption {
+                workspace,
+                option,
+            }
         };
         match effects.request(request) {
             EffectOutcome::Ready(CompilerResponse::Unit) => {}
@@ -407,7 +422,11 @@ fn field<'a>(
         field: jai_types::FieldId,
         types: &dyn TypeView,
     ) -> Result<&'a Value, EffectError> {
-        let Value::Record { ty, fields } = record else {
+        let Value::Record {
+            ty,
+            fields,
+        } = record
+        else {
             return Err(EffectError::Failed(Error::InvalidIr(
                 "build option projection requires a struct record",
             )));
@@ -450,7 +469,10 @@ fn string(value: &Value) -> Result<String, EffectError> {
     })
 }
 fn enumeration(value: &Value) -> Result<u64, EffectError> {
-    let Value::Enum { value, .. } = value else {
+    let Value::Enum {
+        value, ..
+    } = value
+    else {
         return Err(EffectError::Failed(Error::InvalidIr(
             "optimization field requires its checked enum",
         )));

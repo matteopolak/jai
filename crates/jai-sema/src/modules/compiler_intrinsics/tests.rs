@@ -7,6 +7,7 @@ fn signature(parameters: &[TypeId], results: &[TypeId]) -> ProcedureType {
     ProcedureType {
         parameters: parameters.into(),
         results: results.into(),
+        return_abi: jai_types::ForeignReturnAbi::Natural,
         convention: CallingConvention::Jai,
         context: ContextMode::Implicit,
         variadic: jai_types::Variadic::None,

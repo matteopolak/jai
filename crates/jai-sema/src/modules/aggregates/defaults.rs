@@ -583,7 +583,10 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     .representation;
                 ConstantKind::Distinct(Box::new(self.default_value(file, representation, span)?))
             }
-            TypeKind::FixedArray { element, count } => {
+            TypeKind::FixedArray {
+                element,
+                count,
+            } => {
                 let element = *element;
                 let count = usize::try_from(*count).map_err(|_| {
                     located(
@@ -721,7 +724,10 @@ impl<'a, 'b> Defaults<'a, 'b> {
                 ));
             }
         };
-        Ok(TypedConstant { ty, kind })
+        Ok(TypedConstant {
+            ty,
+            kind,
+        })
     }
     fn annotation_matches(
         &mut self,
@@ -779,7 +785,10 @@ impl<'a, 'b> Defaults<'a, 'b> {
                 }
                 _ => false,
             },
-            syntax::TypeSyntax::FixedArray { count, element } => match actual {
+            syntax::TypeSyntax::FixedArray {
+                count,
+                element,
+            } => match actual {
                 TypeKind::FixedArray {
                     element: expected_element,
                     count: expected_count,
@@ -799,6 +808,7 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     return Ok(false);
                 };
                 if source.convention != signature.convention
+                    || source.return_abi != signature.return_abi
                     || source.context != signature.context
                     || source.results.len() != signature.results.len()
                 {
@@ -821,13 +831,23 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     (None, jai_types::Variadic::None) => {
                         source.parameters.len() == signature.parameters.len()
                     }
-                    (Some(index), jai_types::Variadic::C { fixed_parameters }) => {
+                    (
+                        Some(index),
+                        jai_types::Variadic::C {
+                            fixed_parameters,
+                        },
+                    ) => {
                         source.convention == CallingConvention::C
                             && index == fixed_parameters
                             && source.parameters.len() == fixed_parameters + 1
                             && signature.parameters.len() == fixed_parameters
                     }
-                    (Some(index), jai_types::Variadic::Jai { parameter, .. }) => {
+                    (
+                        Some(index),
+                        jai_types::Variadic::Jai {
+                            parameter, ..
+                        },
+                    ) => {
                         index == parameter && source.parameters.len() == signature.parameters.len()
                     }
                     _ => false,
@@ -842,9 +862,10 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     .enumerate()
                 {
                     let expected = match signature.variadic {
-                        jai_types::Variadic::Jai { parameter, element } if parameter == index => {
-                            element
-                        }
+                        jai_types::Variadic::Jai {
+                            parameter,
+                            element,
+                        } if parameter == index => element,
                         _ => ty,
                     };
                     if !self.annotation_matches(file, &parameter.ty, expected, span)? {
@@ -897,7 +918,11 @@ impl<'a, 'b> Defaults<'a, 'b> {
                 ),
             ));
         }
-        if let ExpressionKind::InferredCast { mode, value } = &expression.kind {
+        if let ExpressionKind::InferredCast {
+            mode,
+            value,
+        } = &expression.kind
+        {
             return self.inferred_cast_constant(file, value, ty, *mode, expression.span);
         }
         let kind = self
@@ -994,7 +1019,10 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     ));
                 }
             };
-            return Ok(TypedConstant { ty, kind: constant });
+            return Ok(TypedConstant {
+                ty,
+                kind: constant,
+            });
         }
         if let ExpressionKind::TypeCast {
             ty: annotation,
@@ -1166,7 +1194,13 @@ impl<'a, 'b> Defaults<'a, 'b> {
                     kind: ConstantKind::StringBytes(literal.bytes.clone()),
                 });
             }
-            (ExpressionKind::ArrayLiteral(literal), TypeKind::FixedArray { element, count }) => {
+            (
+                ExpressionKind::ArrayLiteral(literal),
+                TypeKind::FixedArray {
+                    element,
+                    count,
+                },
+            ) => {
                 if let Some(annotation) = &literal.element_type
                     && !self.annotation_matches(file, annotation, *element, expression.span)?
                 {
@@ -1449,6 +1483,9 @@ impl<'a, 'b> Defaults<'a, 'b> {
                 ));
             }
         };
-        Ok(TypedConstant { ty, kind })
+        Ok(TypedConstant {
+            ty,
+            kind,
+        })
     }
 }

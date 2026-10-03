@@ -414,7 +414,10 @@ impl FieldDefaultJobs {
                 } else {
                     JobState::Dormant
                 };
-                entry.insert(Entry { job, state });
+                entry.insert(Entry {
+                    job,
+                    state,
+                });
             }
         }
         Ok(())
@@ -658,7 +661,10 @@ fn dependent_fields(
             TypeKind::Record(_) | TypeKind::Any(_) => {
                 fields.extend(owners.get(&ty).into_iter().flatten().copied())
             }
-            TypeKind::FixedArray { element, count } if *count > 0 => pending.push(*element),
+            TypeKind::FixedArray {
+                element,
+                count,
+            } if *count > 0 => pending.push(*element),
             _ => {}
         }
     }

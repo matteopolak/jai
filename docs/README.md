@@ -305,6 +305,16 @@ Public source corpora are input data.
 
 - [Return type parameters](return-type-parameters.md)
 
+- [Source allocation origins](source-allocation-origins.md)
+- [Retained source identity](retained-source-identity.md)
+- [Static catalog ownership](static-catalog-ownership.md)
+- [Retained source providers](retained-source-providers.md)
+- [C++ record return ABI](cpp-return-abi.md) — typed foreign return policy and paired native result carriers.
+- [Microsoft C++ result classification](cpp-return-classification.md)
+- [Platform and native host boundary](platform-native-host-boundary.md)
+- [Native library source bindings](native-library-source-bindings.md)
+- [Typed heap constructor receipts](typed-heap-constructor-receipts.md)
+
 ## Language and library specifications
 
 - [Jai language guide](specs/jai/README.md)

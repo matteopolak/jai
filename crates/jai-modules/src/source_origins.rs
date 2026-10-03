@@ -25,7 +25,8 @@ impl fmt::Display for SourceOriginError {
         })
     }
 }
-impl std::error::Error for SourceOriginError {}
+impl std::error::Error for SourceOriginError {
+}
 
 impl ModuleGraph {
     /// Stable source bytes, without arena IDs, for the defining module's
@@ -545,7 +546,10 @@ impl Encoder<'_> {
                 self.tag(5);
                 self.ty(inner, depth + 1)?;
             }
-            ModuleType::FixedArray { element, count } => {
+            ModuleType::FixedArray {
+                element,
+                count,
+            } => {
                 self.tag(6);
                 self.number(*count);
                 self.ty(element, depth + 1)?;
@@ -558,17 +562,25 @@ impl Encoder<'_> {
                     CallingConvention::Stdcall => 2,
                     CallingConvention::CppMethod => 3,
                 });
+                self.tag(match procedure.return_abi {
+                    jai_types::ForeignReturnAbi::Natural => 0,
+                    jai_types::ForeignReturnAbi::CppNonPod => 1,
+                });
                 self.tag(match procedure.context {
                     ContextMode::Implicit => 0,
                     ContextMode::None => 1,
                 });
                 match procedure.variadic {
                     ModuleVariadic::None => self.tag(0),
-                    ModuleVariadic::C { fixed_parameters } => {
+                    ModuleVariadic::C {
+                        fixed_parameters,
+                    } => {
                         self.tag(1);
                         self.number(fixed_parameters as u64);
                     }
-                    ModuleVariadic::Jai { parameter } => {
+                    ModuleVariadic::Jai {
+                        parameter,
+                    } => {
                         self.tag(2);
                         self.number(parameter as u64);
                     }

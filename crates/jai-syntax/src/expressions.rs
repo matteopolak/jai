@@ -366,7 +366,10 @@ impl Parser<'_> {
             self.need(Punct::CloseParen)?;
             Expression {
                 span: Span::new(span.start, self.tokens[self.at - 1].span.end),
-                kind: ExpressionKind::TypeQuery { query, value },
+                kind: ExpressionKind::TypeQuery {
+                    query,
+                    value,
+                },
             }
         } else if token.kind == Kind::Directive(Directive::Run) {
             self.compile_time()?
@@ -429,7 +432,10 @@ impl Parser<'_> {
                 ))
             };
             self.at += 1;
-            Expression { span, kind }
+            Expression {
+                span,
+                kind,
+            }
         } else if self.keyword(Keyword::True) {
             Expression {
                 span,
@@ -713,7 +719,11 @@ mod tests {
                 "answer(22)",
             ),
         ] {
-            let ExpressionKind::CallHint { hint: actual, call } = &expression.kind else {
+            let ExpressionKind::CallHint {
+                hint: actual,
+                call,
+            } = &expression.kind
+            else {
                 panic!()
             };
             assert_eq!(*actual, hint);
@@ -743,10 +753,16 @@ mod tests {
         let StatementKind::Return(Some(expression)) = &procedure.body[0].kind else {
             panic!()
         };
-        let ExpressionKind::Member { base, .. } = &expression.kind else {
+        let ExpressionKind::Member {
+            base, ..
+        } = &expression.kind
+        else {
             panic!()
         };
-        let ExpressionKind::CallHint { call, .. } = &base.kind else {
+        let ExpressionKind::CallHint {
+            call, ..
+        } = &base.kind
+        else {
             panic!()
         };
         assert_eq!(base.span.text(text), "inline make()");
@@ -765,7 +781,9 @@ mod tests {
         else {
             panic!("expected procedure")
         };
-        let ParameterBinding::DefaultedType { expression, .. } = &procedure.parameters[0].binding
+        let ParameterBinding::DefaultedType {
+            expression, ..
+        } = &procedure.parameters[0].binding
         else {
             panic!("expected typed default")
         };
@@ -905,38 +923,43 @@ mod tests {
         else {
             panic!()
         };
-        let StatementKind::Declare(Declaration::Inferred { initializer, .. }) =
-            &procedure.body[0].kind
+        let StatementKind::Declare(Declaration::Inferred {
+            initializer, ..
+        }) = &procedure.body[0].kind
         else {
             panic!()
         };
         assert!(
             matches!(&initializer.kind, ExpressionKind::AddressOf(value) if matches!(value.kind,ExpressionKind::Member {..}))
         );
-        let StatementKind::Declare(Declaration::Inferred { initializer, .. }) =
-            &procedure.body[1].kind
+        let StatementKind::Declare(Declaration::Inferred {
+            initializer, ..
+        }) = &procedure.body[1].kind
         else {
             panic!()
         };
         assert!(
             matches!(&initializer.kind,ExpressionKind::Binary(BinaryOp::Add,left,_) if matches!(left.kind,ExpressionKind::Dereference(_)))
         );
-        let StatementKind::Declare(Declaration::Inferred { initializer, .. }) =
-            &procedure.body[2].kind
+        let StatementKind::Declare(Declaration::Inferred {
+            initializer, ..
+        }) = &procedure.body[2].kind
         else {
             panic!()
         };
         assert!(
             matches!(&initializer.kind,ExpressionKind::TypeQuery {query:TypeQueryKind::SizeOf,value} if matches!(value.kind,ExpressionKind::Type(TypeSyntax::FixedArray{..})))
         );
-        let StatementKind::Declare(Declaration::Inferred { initializer, .. }) =
-            &procedure.body[3].kind
+        let StatementKind::Declare(Declaration::Inferred {
+            initializer, ..
+        }) = &procedure.body[3].kind
         else {
             panic!()
         };
         assert!(matches!(initializer.kind, ExpressionKind::TypeCast { .. }));
-        let StatementKind::Declare(Declaration::Inferred { initializer, .. }) =
-            &procedure.body[4].kind
+        let StatementKind::Declare(Declaration::Inferred {
+            initializer, ..
+        }) = &procedure.body[4].kind
         else {
             panic!()
         };

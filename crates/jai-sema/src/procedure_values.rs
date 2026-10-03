@@ -65,7 +65,10 @@ impl Resolver<'_> {
         self.warn_deprecated_procedure(id, span)?;
         Ok(Expr::Typed {
             ty,
-            value: ValueExpr::ProcedureValue { procedure: id, ty },
+            value: ValueExpr::ProcedureValue {
+                procedure: id,
+                ty,
+            },
         })
     }
 
