@@ -22,6 +22,8 @@ These facts establish signature identity, not body readiness. Checked IR publica
 
 An unannotated module short lambda, and a chain of pure constant aliases to it, retain their defining source declaration until a caller provides parameter types or an expected callback signature. The scalar constant pass defers these declarations; the readiness evaluator excludes only these contextual sources from eager evaluation. Calls, typed casts, aggregate initializers, and `#run` recipes that depend on them remain readiness jobs and materialize through the checked lambda producer in the original file scope.
 
+A retained no-progress failure includes its actual binding phase and typed source demand, selected constant and field readiness, queued record modifiers, selected layout and isolated VM wait status. When the partial type phase has no escaping VM/body error, the failure keeps the original demand's `SourceSpan` instead of using an unrelated retained procedure as its location. This diagnostic does not publish any missing fact or reinterpret a hard error as pending.
+
 ## How to change it
 
 Keep header registration in `modules/procedure_headers.rs` and phase ordering in `modules/prepared_session.rs`. Extend `procedure_signatures.rs` for default type inference and aggregate `Defaults` for actual value construction. Reuse existing procedure IDs when completing headers; allocating new IDs would invalidate callback constants and compiler metadata.
