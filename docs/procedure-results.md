@@ -18,6 +18,8 @@ The per-result colon form declares only marked slots: `success:, plugins_to_crea
 
 Lexical constant result groups retain one initializer and an ordered list of names: `IS_INTEGER, SIGNED, BITS :: #run is_integer_type(T);`. Each name owns a lexical declaration identity and projects an output from one shared compile-time call transaction. Result count, discard obligations and every output type are checked before commit; binding retries reuse the cached result vector. Current groups require a direct or qualified `#run` call initializer.
 
+After the first named projection executes, the resolver materializes and publishes every named sibling into its registered declaration entry together. Otherwise each newly bound projection changes the lexical cache key and can execute the initializer again. Siblings are selected by their shared registered declaration object in the defining frame; separate shadowed groups keep independent executions. Discard-only groups still execute through the checked result provider.
+
 ## How to change it
 
 The shared call argument binder lives in `crates/jai-sema/src/procedure_values/bind_arguments.rs`; `results.rs` consumes its checked call and signature. Keep one call execution separate from the individual result destinations. Extend indirect multiple-result calls through the same checked signature contract rather than constructing one call expression per result.
@@ -29,6 +31,8 @@ Mixed binding lives in `results/mixed.rs`; preserve the callback contract metada
 An existing callback binding keeps its established source annotation, including optional result use, when receiving a callback with a different source contract. Copy that contract to the captured destination address as well; use the incoming callback contract only when the existing binding has no established contract.
 
 Constant group projections live in `local_declarations/constant_results.rs`. Keep one lexical identity per name and one common compile-time transaction per initializer; validate every output before publishing any binding. Use the shared source execution provider and effect cache so binding retries cannot repeat effects.
+
+Keep sibling publication atomic: construct all named bindings before updating declaration entries, and preserve each entry's scope watermark. Do not remove lexical capture facts from the general run cache to make projection keys match. `jai-codegen/tests/constant_results.rs` checks execution counts, forward references and shadowed groups through the actual generated native program and interpreter.
 
 ## Configuration
 
