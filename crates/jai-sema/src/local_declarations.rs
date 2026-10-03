@@ -1357,6 +1357,14 @@ impl Resolver<'_> {
                 .cloned()
             {
                 return match declaration {
+                    syntax::Declaration::GroupMember {
+                        ..
+                    } => {
+                        return Err(Diagnostic::new(
+                            span,
+                            "file declaration group requires its source publication owner",
+                        ));
+                    }
                     syntax::Declaration::Explicit {
                         ty, ..
                     } => Ok(Some(self.types.scalar(ty))),

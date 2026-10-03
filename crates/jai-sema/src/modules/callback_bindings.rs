@@ -128,7 +128,7 @@ impl FileScope<'_> {
         };
         let syntax::Declaration::Inferred {
             initializer, ..
-        } = &global.declaration
+        } = global.declaration.source()
         else {
             return Ok(None);
         };
@@ -254,7 +254,7 @@ impl FileScope<'_> {
         let FileDeclarationKind::Global(global) = &declaration.syntax().kind else {
             return Ok(None);
         };
-        let ty = match &global.declaration {
+        let ty = match global.declaration.source() {
             syntax::Declaration::UnresolvedExplicit {
                 ty, ..
             }

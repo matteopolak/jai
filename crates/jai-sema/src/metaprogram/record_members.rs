@@ -248,6 +248,14 @@ pub(crate) fn literal_record_members(
             }
             syntax::StatementKind::Declare(declaration) => {
                 let binding = match declaration {
+                    syntax::Declaration::GroupMember {
+                        ..
+                    } => {
+                        return Err(Diagnostic::new(
+                            statement.span,
+                            "file declaration group requires its source publication owner",
+                        ));
+                    }
                     syntax::Declaration::External {
                         ..
                     } => {

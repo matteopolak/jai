@@ -329,11 +329,6 @@ pub(super) fn number(text: &str, span: Span) -> Result<ExpressionKind, Diagnosti
 impl Parser<'_> {
     pub(super) fn initializer(&mut self) -> Result<Expression, Diagnostic> {
         if self.is(Punct::Uninitialized) {
-            if !self.allow_qualified {
-                return Err(
-                    self.error("uninitialized storage requires type and storage resolution")
-                );
-            }
             let span = self.token().span;
             self.at += 1;
             return Ok(Expression {

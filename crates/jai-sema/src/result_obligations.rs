@@ -40,6 +40,14 @@ impl Resolver<'_> {
         declaration: &syntax::Declaration,
     ) -> Result<Option<Statement>, Diagnostic> {
         let (name, annotation, initializer) = match declaration {
+            syntax::Declaration::GroupMember {
+                ..
+            } => {
+                return Err(Diagnostic::new(
+                    self.span,
+                    "file declaration group requires its source publication owner",
+                ));
+            }
             // External storage has no initializer result to consume or discard.
             syntax::Declaration::External {
                 ..

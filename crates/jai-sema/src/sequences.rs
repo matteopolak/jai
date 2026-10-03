@@ -448,6 +448,22 @@ impl Resolver<'_> {
         value: ValueExpr,
         span: Span,
     ) -> Result<jai_ir::ConstantValue, Diagnostic> {
+        fn scalar_kind(
+            value: &ValueExpr,
+            expected: TypeId,
+            types: &TypeRegistry,
+            span: Span,
+            depth: usize,
+        ) -> Result<jai_ir::ConstantKind, Diagnostic> {
+            let constant = convert(value.clone(), types, span, depth + 1)?;
+            if constant.ty != expected {
+                return Err(Diagnostic::new(
+                    span,
+                    "closed scalar constant has a different canonical type",
+                ));
+            }
+            Ok(constant.kind)
+        }
         fn convert(
             value: ValueExpr,
             types: &TypeRegistry,
@@ -466,6 +482,7 @@ impl Resolver<'_> {
                 ValueExpr::RuntimeType(value) => jai_ir::ConstantKind::RuntimeType(value),
                 ValueExpr::Int(value) => match value.kind() {
                     IntExprKind::Constant(value) => jai_ir::ConstantKind::Int(*value),
+                    IntExprKind::Value(value) => scalar_kind(value, ty, types, span, depth)?,
                     _ => {
                         return Err(Diagnostic::new(
                             span,
@@ -474,8 +491,12 @@ impl Resolver<'_> {
                     }
                 },
                 ValueExpr::Bool(BoolExpr::Constant(value)) => jai_ir::ConstantKind::Bool(value),
+                ValueExpr::Bool(BoolExpr::Value(value)) => {
+                    scalar_kind(&value, ty, types, span, depth)?
+                }
                 ValueExpr::Float(value) => match value.kind() {
                     FloatExprKind::Constant(value) => jai_ir::ConstantKind::Float(*value),
+                    FloatExprKind::Value(value) => scalar_kind(value, ty, types, span, depth)?,
                     _ => {
                         return Err(Diagnostic::new(
                             span,
@@ -498,6 +519,22 @@ impl Resolver<'_> {
                         .map(|value| convert(value, types, span, depth + 1))
                         .collect::<Result<Vec<_>, _>>()?,
                 ),
+                ValueExpr::Field {
+                    base,
+                    field,
+                    ..
+                } => {
+                    let record = convert(*base, types, span, depth + 1)?;
+                    let projected =
+                        crate::field_conversions::project_constant(record, &[field], types, span)?;
+                    if projected.ty != ty {
+                        return Err(Diagnostic::new(
+                            span,
+                            "constant field projection has a different canonical type",
+                        ));
+                    }
+                    projected.kind
+                }
                 ValueExpr::Record {
                     fields, ..
                 } => jai_ir::ConstantKind::Record(

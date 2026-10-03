@@ -101,6 +101,11 @@ impl Builder<'_> {
                 .source
                 .resolve(&self.options.import_dirs, self.provider)
                 .map_err(GraphError::Prelude)?;
+            if runtime.parameters.temporary_storage_size < 0 {
+                return Err(GraphError::Prelude(PreludeError::InvalidConfiguration(
+                    "Runtime_Support temporary storage size must be nonnegative",
+                )));
+            }
             let arguments = [
                 (
                     "DEFINE_SYSTEM_ENTRY_POINT",
@@ -121,6 +126,17 @@ impl Builder<'_> {
                 value: ParameterValue::Scalar(jai_eval::Value::Bool(value)),
             })
             .collect::<Vec<_>>();
+            let mut arguments = arguments;
+            arguments.push(Argument {
+                name: Some(self.graph.symbols.intern("TEMPORARY_STORAGE_SIZE")),
+                value: ParameterValue::Scalar(jai_eval::Value::Int(
+                    jai_types::Integer::checked(
+                        jai_types::IntegerType::S32,
+                        runtime.parameters.temporary_storage_size as i128,
+                    )
+                    .expect("validated Runtime_Support temporary storage size"),
+                )),
+            });
             if runtime_path == path {
                 self.graph.runtime_support = Some(root);
                 self.requests.insert(root, (Some(arguments), None));
@@ -260,6 +276,7 @@ impl Builder<'_> {
                 ),
             });
         }
+        self.refresh_import_exports()?;
         if self.discovery_complete() {
             self.graph
                 .validate_operator_aliases()

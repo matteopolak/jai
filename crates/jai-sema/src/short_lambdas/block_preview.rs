@@ -400,6 +400,14 @@ impl Resolver<'_> {
         span: Span,
     ) -> Result<(Symbol, TypeId), Diagnostic> {
         let (name, annotation, initializer) = match declaration {
+            syntax::Declaration::GroupMember {
+                ..
+            } => {
+                return Err(Diagnostic::new(
+                    self.span,
+                    "file declaration group requires its source publication owner",
+                ));
+            }
             syntax::Declaration::Inferred {
                 name,
                 initializer,

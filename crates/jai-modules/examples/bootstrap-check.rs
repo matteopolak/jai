@@ -36,6 +36,7 @@ fn run() -> Result<(), String> {
         define_system_entry_point: boolean()?,
         define_initialization: boolean()?,
         enable_backtrace_on_crash: boolean()?,
+        temporary_storage_size: 32768,
     };
     let import_dirs = arguments.map(PathBuf::from).collect::<Vec<_>>();
     if import_dirs.is_empty() {

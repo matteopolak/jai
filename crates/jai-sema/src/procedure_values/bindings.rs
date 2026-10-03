@@ -220,6 +220,14 @@ impl Resolver<'_> {
         ) = value
         {
             let initializer = match declaration {
+                syntax::Declaration::GroupMember {
+                    ..
+                } => {
+                    return Err(Diagnostic::new(
+                        self.span,
+                        "file declaration group requires its source publication owner",
+                    ));
+                }
                 syntax::Declaration::External {
                     ..
                 } => None,

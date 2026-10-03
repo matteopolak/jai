@@ -164,7 +164,10 @@ fn settings_snapshot_returns_the_declared_nominal_record_and_enum_values() {
         .define_record(llvm, vec![enumeration, string])
         .unwrap();
     let options = types.reserve_record(RecordKind::Struct);
-    types.define_record(options, vec![string, llvm]).unwrap();
+    let temporary_storage_size = types.scalar(jai_types::ScalarType::Int(IntegerType::S32));
+    types
+        .define_record(options, vec![string, llvm, temporary_storage_size])
+        .unwrap();
     let outer = types.field(options, 1).unwrap().id;
     let projection = BuildOptionsProjection {
         output_path: Some(RecordFieldPath {
@@ -182,6 +185,11 @@ fn settings_snapshot_returns_the_declared_nominal_record_and_enum_values() {
             outer,
             inner: Some(types.field(llvm, 1).unwrap().id),
         }),
+        temporary_storage_size: Some(RecordFieldPath {
+            leaf: None,
+            outer: types.field(options, 2).unwrap().id,
+            inner: None,
+        }),
         machine: None,
         ..Default::default()
     };
@@ -194,6 +202,7 @@ fn settings_snapshot_returns_the_declared_nominal_record_and_enum_values() {
             target: Some(TargetTriple::parse("aarch64-apple-darwin").unwrap()),
             bitcode: BitcodeOptimization::Oz,
             machine: MachineOptimization::Unset,
+            temporary_storage_size: 4096,
         },
         requests: vec![],
     };
@@ -227,7 +236,8 @@ fn settings_snapshot_returns_the_declared_nominal_record_and_enum_values() {
                         },
                         Value::String(b"aarch64-apple-darwin".to_vec())
                     ]
-                }
+                },
+                Value::Int(Integer::checked(IntegerType::S32, 4096).unwrap())
             ]
         }]
     );
@@ -327,6 +337,7 @@ fn three_level_projection_preserves_output_and_runtime_policy() {
                 target: None,
                 bitcode: BitcodeOptimization::Unset,
                 machine: MachineOptimization::Unset,
+                temporary_storage_size: 32768,
                 output_kind: BuildOutputKind::Object,
                 runtime_support: RuntimeSupportMode::InitializationOnly,
                 backtrace_on_crash: BacktraceOnCrash::Off,

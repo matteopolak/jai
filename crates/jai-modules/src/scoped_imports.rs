@@ -1672,21 +1672,21 @@ mod tests {
     }
 
     #[test]
-    fn cycles_and_missing_selected_imports_keep_import_location() {
+    fn same_instance_cycles_and_missing_selected_imports_keep_import_location() {
         let source = "main :: () { M :: #import,file \"dependency.jai\"; }";
-        let error = graph(
+        let cycle_graph = graph(
             source,
             Some("loop :: () { Root :: #import,file \"main.jai\"; }"),
         )
-        .unwrap_err();
-        assert!(matches!(
-            error,
-            GraphError::Cycle {
-                kind: DependencyKind::Import,
-                location: Some(_),
-                ..
-            }
-        ));
+        .unwrap();
+        assert_eq!(cycle_graph.modules().len(), 2);
+        assert_eq!(cycle_graph.scoped_imports().len(), 2);
+        assert!(
+            cycle_graph
+                .scoped_imports()
+                .iter()
+                .any(|edge| edge.module() == cycle_graph.root())
+        );
         let error =
             graph("main :: () { #if true { M :: #import \"Absent\"; } }", None).unwrap_err();
         let GraphError::Located {

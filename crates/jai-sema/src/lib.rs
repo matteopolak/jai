@@ -978,6 +978,10 @@ impl Resolver<'_> {
     }
     fn statement_kind(&mut self, statement: &syntax::Statement) -> Result<Statement, Diagnostic> {
         Ok(match &statement.kind {
+            syntax::StatementKind::Empty => Statement::Block(Block {
+                statements: Vec::new(),
+                flow: Flow::FallsThrough,
+            }),
             syntax::StatementKind::Simd(block) => Statement::Simd(self.simd_block(block)?),
             syntax::StatementKind::InstructionBytes(instruction) => {
                 Statement::Simd(self.machine_bytes(instruction)?)
@@ -1034,6 +1038,14 @@ impl Resolver<'_> {
                     return Ok(statement);
                 }
                 let (name, ty, expression) = match declaration {
+                    syntax::Declaration::GroupMember {
+                        ..
+                    } => {
+                        return Err(Diagnostic::new(
+                            self.span,
+                            "file declaration group requires its source publication owner",
+                        ));
+                    }
                     syntax::Declaration::External {
                         ..
                     } => {

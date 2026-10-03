@@ -21,6 +21,7 @@ mod source_procedure_headers;
 pub use compile_time_cases::*;
 mod context_fields;
 mod declaration_attributes;
+mod declaration_lists;
 mod deferred_context;
 mod deprecation;
 mod file_conditional_bodies;
@@ -68,6 +69,7 @@ pub use run_flags::RunFlags;
 mod short_lambdas;
 mod simd;
 mod statement_conditionals;
+mod statement_termination;
 mod statements;
 mod type_annotations;
 mod type_restrictions;
@@ -214,6 +216,12 @@ pub struct ConstantResultsDeclaration {
 }
 #[derive(Clone, Debug)]
 pub enum Declaration {
+    /// Each published name retains one common initializer syntax owner.
+    GroupMember {
+        name: Symbol,
+        ordinal: usize,
+        group: std::sync::Arc<DeclarationGroup>,
+    },
     External {
         name: Symbol,
         ty: TypeSyntax,
@@ -238,9 +246,70 @@ pub enum Declaration {
         attributes: Vec<DeclarationAttribute>,
     },
 }
+#[derive(Clone, Debug)]
+pub struct DeclarationGroup {
+    names: Vec<(Symbol, Span)>,
+    source: Declaration,
+    extra_initializers: Vec<Expression>,
+}
+impl DeclarationGroup {
+    pub fn names(&self) -> &[(Symbol, Span)] {
+        &self.names
+    }
+    pub fn name_capacity(&self) -> usize {
+        self.names.capacity()
+    }
+    /// Include the shared owner and Arc counters before borrowing its payload.
+    pub fn retained_owner_byte_bound(&self) -> usize {
+        std::mem::size_of::<Self>()
+            .saturating_add(std::mem::size_of::<[usize; 2]>())
+            .saturating_add(std::mem::align_of::<Self>().saturating_sub(1))
+    }
+    pub fn source(&self) -> &Declaration {
+        &self.source
+    }
+    pub fn extra_initializers(&self) -> &Vec<Expression> {
+        &self.extra_initializers
+    }
+    pub fn initializer_for(&self, ordinal: usize) -> Option<&Expression> {
+        if ordinal != 0 && !self.extra_initializers.is_empty() {
+            return self.extra_initializers.get(ordinal - 1);
+        }
+        match &self.source {
+            Declaration::Inferred {
+                initializer, ..
+            } => Some(initializer),
+            Declaration::Explicit {
+                initializer, ..
+            }
+            | Declaration::UnresolvedExplicit {
+                initializer, ..
+            } => initializer.as_ref(),
+            Declaration::External {
+                ..
+            }
+            | Declaration::GroupMember {
+                ..
+            } => None,
+        }
+    }
+}
 impl Declaration {
+    /// View the actual common written type/initializer without changing the
+    /// individual name of a published group member.
+    pub fn source(&self) -> &Self {
+        match self {
+            Self::GroupMember {
+                group, ..
+            } => group.source(),
+            _ => self,
+        }
+    }
     pub fn attributes(&self) -> &[DeclarationAttribute] {
         match self {
+            Self::GroupMember {
+                group, ..
+            } => group.source().attributes(),
             Self::Inferred {
                 attributes, ..
             }
@@ -257,6 +326,9 @@ impl Declaration {
     }
     pub fn name(&self) -> Symbol {
         match self {
+            Self::GroupMember {
+                name, ..
+            } => *name,
             Self::Inferred {
                 name, ..
             }
@@ -351,6 +423,8 @@ impl Statement {
 
 #[derive(Clone, Debug)]
 pub enum StatementKind {
+    /// An explicit empty statement retains its genuine semicolon range.
+    Empty,
     InstructionBytes(InstructionBytes),
     Simd(SimdBlock),
     Import(ScopedImportDeclaration),
@@ -459,15 +533,13 @@ pub fn parse(source: &str) -> Result<Module, Diagnostic> {
         if parser.starts_procedure() {
             procedures.push(parser.procedure()?);
         } else {
-            let span = parser.token().span;
-            let name = parser.name()?;
-            match parser.data_declaration(name, span)?.kind {
-                StatementKind::Declare(declaration) => globals.push(GlobalDeclaration {
-                    declaration,
-                    span,
-                }),
-                StatementKind::Constant(declaration) => constants.push(declaration),
-                _ => unreachable!("data declaration always produces a declaration"),
+            for declaration in parser.file_data_declarations()? {
+                match declaration {
+                    declaration_lists::GlobalOrConstant::Global(global) => globals.push(global),
+                    declaration_lists::GlobalOrConstant::Constant(constant) => {
+                        constants.push(constant)
+                    }
+                }
             }
         }
     }

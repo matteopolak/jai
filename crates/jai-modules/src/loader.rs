@@ -2,6 +2,7 @@ mod bootstrap_imports;
 mod callable_aliases;
 mod collisions;
 mod declaration_insertions;
+mod import_cycles;
 mod insertion_admission;
 mod session;
 mod suspended_imports;
@@ -44,6 +45,8 @@ pub(super) struct Builder<'a> {
     active_modules: HashSet<ModuleId>,
     active_files: HashSet<(ModuleId, PathBuf)>,
     callable_aliases: Vec<callable_aliases::DeferredAlias>,
+    published_imports: Vec<import_cycles::PublishedImport>,
+    has_import_backedges: bool,
 }
 impl<'a> Builder<'a> {
     pub(super) fn new(options: GraphOptions, provider: &'a dyn SourceProvider) -> Self {
@@ -124,6 +127,8 @@ impl<'a> Builder<'a> {
             active_modules: HashSet::new(),
             active_files: HashSet::new(),
             callable_aliases: Vec::new(),
+            published_imports: vec![],
+            has_import_backedges: false,
         }
     }
     fn canonical(&self, path: &Path) -> Result<PathBuf, GraphError> {
@@ -215,6 +220,7 @@ impl<'a> Builder<'a> {
         self.active_specialization = specialization;
         if result.is_ok() {
             self.completed_modules.insert(module);
+            self.refresh_import_exports()?;
         }
         result
     }
@@ -225,6 +231,7 @@ impl<'a> Builder<'a> {
         loop {
             let mut progressed = false;
             let mut initialization_pending = None;
+            self.refresh_import_exports()?;
             self.prepare_callable_aliases(module)?;
             for file in self.graph.modules[module.index()].files.clone() {
                 let before = (self.initialized_files.len(), self.graph.parameters.len());
@@ -277,6 +284,7 @@ impl<'a> Builder<'a> {
                 return Err(first_pending.expect("no progress requires a pending dependency"));
             }
         }
+        self.refresh_import_exports()?;
         self.finish_callable_aliases(module)
     }
     fn file(
@@ -862,13 +870,10 @@ impl<'a> Builder<'a> {
             return Ok(module);
         }
         let path = self.import_path(file, import)?;
-        if self
+        let active_path = self
             .modules
             .iter()
-            .any(|(key, module)| key.path == path && self.active_modules.contains(module))
-        {
-            return Err(self.cycle(DependencyKind::Import, path, Some(import.location)));
-        }
+            .any(|(key, module)| key.path == path && self.active_modules.contains(module));
         self.first_import
             .entry(path.clone())
             .or_insert(import.location);
@@ -876,6 +881,7 @@ impl<'a> Builder<'a> {
             .pending_imports
             .get(&path)
             .is_some_and(|location| *location != import.location)
+            && !active_path
         {
             let diagnostic = self.graph.diagnostic(
                 import.location,
@@ -887,11 +893,16 @@ impl<'a> Builder<'a> {
                 rendered,
             });
         }
-        self.pending_imports.insert(path.clone(), import.location);
+        if !active_path {
+            self.pending_imports.insert(path.clone(), import.location);
+        }
         let arguments =
             self.evaluate_arguments(file, &import.arguments.instance, import.location)?;
         let supplied_program =
             self.evaluate_arguments(file, &import.arguments.program, import.location)?;
+        if supplied_program.is_some() && active_path {
+            return Err(self.located(import.location, "program module parameters must be supplied before the module begins dependency expansion"));
+        }
         if supplied_program.is_some()
             && self.program.contains_key(&path)
             && self.first_import.get(&path) != Some(&import.location)
@@ -915,7 +926,10 @@ impl<'a> Builder<'a> {
         };
         let module = if let Some(&module) = self.modules.get(&key) {
             if self.active_modules.contains(&module) {
-                return Err(self.cycle(DependencyKind::Import, path, Some(import.location)));
+                // The entry's declarations are already reserved. A backedge
+                // retains this exact instance rather than recursively expanding it.
+                self.has_import_backedges = true;
+                return Ok(module);
             }
             module
         } else {
@@ -943,7 +957,9 @@ impl<'a> Builder<'a> {
         if !self.completed_modules.contains(&module) {
             self.expand_import_module(file, import, module, &path, scope)?;
         }
-        self.pending_imports.remove(&path);
+        if !active_path {
+            self.pending_imports.remove(&path);
+        }
         Ok(module)
     }
     fn bind_import(
@@ -952,17 +968,35 @@ impl<'a> Builder<'a> {
         import: &ImportDeclaration,
         module: ModuleId,
     ) -> Result<(), GraphError> {
-        if let Some(name) = import.namespace {
+        self.bind_import_names(
+            file,
+            import.namespace,
+            import.using,
+            import.visibility,
+            module,
+            import.location,
+        )
+    }
+    pub(super) fn bind_import_names(
+        &mut self,
+        file: FileInstanceId,
+        namespace: Option<Symbol>,
+        using: bool,
+        visibility: Visibility,
+        module: ModuleId,
+        location: SourceSpan,
+    ) -> Result<(), GraphError> {
+        if let Some(name) = namespace {
             self.bind(
                 file,
-                import.visibility,
+                visibility,
                 name,
                 Binding::Module(module),
-                import.location,
+                location,
                 true,
             )?;
         }
-        if import.namespace.is_none() || import.using {
+        if namespace.is_none() || using {
             let mut exports: Vec<_> = self.graph.modules[module.index()]
                 .exports
                 .iter()
@@ -975,23 +1009,10 @@ impl<'a> Builder<'a> {
                     .cmp(self.graph.symbols.name(*right))
             });
             for (name, binding) in exports {
-                self.bind(
-                    file,
-                    import.visibility,
-                    name,
-                    binding,
-                    import.location,
-                    true,
-                )?;
+                self.bind(file, visibility, name, binding, location, true)?;
             }
             for (name, placeholder) in self.graph.module_placeholder_exports(module) {
-                self.link_placeholder_import(
-                    file,
-                    import.visibility,
-                    name,
-                    placeholder,
-                    import.location,
-                )?;
+                self.link_placeholder_import(file, visibility, name, placeholder, location)?;
             }
         }
         Ok(())

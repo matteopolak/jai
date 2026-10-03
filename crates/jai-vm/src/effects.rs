@@ -82,6 +82,7 @@ pub enum BuildOption {
     Optimize(bool),
     OutputPath(PathBuf),
     Target(TargetTriple),
+    TemporaryStorageSize(i32),
 }
 pub use jai_types::{BacktraceOnCrash, BuildOutputKind, RuntimeSupportMode};
 pub use jai_types::{BitcodeOptimization, MachineOptimization};
@@ -106,6 +107,7 @@ pub struct BuildOptionsProjection {
     pub target: Option<RecordFieldPath>,
     pub bitcode: Option<RecordFieldPath>,
     pub machine: Option<RecordFieldPath>,
+    pub temporary_storage_size: Option<RecordFieldPath>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MessageLevel {
@@ -207,6 +209,7 @@ pub struct BuildOptionsSnapshot {
     pub target: Option<TargetTriple>,
     pub bitcode: BitcodeOptimization,
     pub machine: MachineOptimization,
+    pub temporary_storage_size: i32,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CompilerResponse {

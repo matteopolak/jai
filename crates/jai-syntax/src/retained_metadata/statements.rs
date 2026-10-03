@@ -57,6 +57,14 @@ impl<A> Visitor<'_, A> {
     {
         self.node(depth)?;
         let attributes = match source {
+            Declaration::GroupMember {
+                group, ..
+            } => {
+                self.admit(1, group.retained_owner_byte_bound())?;
+                self.allocation::<(Symbol, Span), E>(group.name_capacity())?;
+                self.declaration(group.source(), depth + 1)?;
+                return self.sequence(group.extra_initializers(), depth + 1, Self::expression);
+            }
             Declaration::External {
                 ty,
                 binding,
@@ -198,6 +206,7 @@ impl<A> Visitor<'_, A> {
     {
         self.node(depth)?;
         match &source.kind {
+            StatementKind::Empty => Ok(()),
             StatementKind::Jump {
                 ..
             } => Ok(()),

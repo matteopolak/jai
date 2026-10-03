@@ -97,6 +97,14 @@ impl Resolver<'_> {
                 }
                 S::Declare(declaration) => {
                     let (name, ty) = match declaration {
+                        syntax::Declaration::GroupMember {
+                            ..
+                        } => {
+                            return Err(Diagnostic::new(
+                                self.span,
+                                "file declaration group requires its source publication owner",
+                            ));
+                        }
                         syntax::Declaration::Inferred {
                             name,
                             initializer,

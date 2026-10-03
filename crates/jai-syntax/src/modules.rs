@@ -417,6 +417,40 @@ impl Parser<'_> {
                 None
             };
             let declaration_start = self.token().span.start;
+            if self.token().kind == Kind::Ident
+                && self
+                    .tokens
+                    .get(self.at + 1)
+                    .is_some_and(|token| token.kind == Kind::Punctuation(Punct::Comma))
+            {
+                if using_declaration.is_some() || program_export.is_some() {
+                    return Err(
+                        self.error("using and #program_export require an individual declaration")
+                    );
+                }
+                for member in self.file_data_declarations()? {
+                    let (kind, span) = match member {
+                        declaration_lists::GlobalOrConstant::Global(global) => {
+                            let span = global.span;
+                            (FileDeclarationKind::Global(global), span)
+                        }
+                        declaration_lists::GlobalOrConstant::Constant(constant) => {
+                            let span = constant.span;
+                            (FileDeclarationKind::Constant(constant), span)
+                        }
+                    };
+                    items.push(FileItem::Declaration(FileDeclaration {
+                        program_export: None,
+                        visibility,
+                        kind,
+                        location: SourceSpan {
+                            source,
+                            span,
+                        },
+                    }));
+                }
+                continue;
+            }
             let kind = if self.starts_library() {
                 FileDeclarationKind::Library(self.library_declaration()?)
             } else if matches!(

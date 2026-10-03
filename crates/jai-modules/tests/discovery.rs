@@ -1,7 +1,7 @@
 use jai_modules::{
-    Binding, ConditionSelectionError, DependencyKind, DiscoveryConditionContext, DiscoveryStatus,
-    GraphDiscovery, GraphError, GraphOptions, LookupError, ModuleBoundArgument, ParameterValue,
-    SourceOverlay, SourceProvider, SourceSpecializationKey,
+    Binding, ConditionSelectionError, DiscoveryConditionContext, DiscoveryStatus, GraphDiscovery,
+    GraphError, GraphOptions, LookupError, ModuleBoundArgument, ParameterValue, SourceOverlay,
+    SourceProvider, SourceSpecializationKey,
 };
 use jai_syntax::{ExpressionKind, FileDeclarationKind, NamePath, StatementKind};
 use std::{
@@ -280,7 +280,7 @@ fn parameter_initialization_resumes_without_republishing_completed_values() {
 }
 
 #[test]
-fn resumed_import_cycles_keep_selected_source_provenance() {
+fn resumed_same_instance_import_cycles_keep_selected_source_provenance() {
     let inputs = Inputs::new(&[
         (
             "/discovery/main.jai",
@@ -300,23 +300,22 @@ fn resumed_import_cycles_keep_selected_source_provenance() {
     discovery.advance().unwrap();
     let id = discovery.pending_conditions().next().unwrap().id;
     discovery.select_condition(id, true).unwrap();
-    let error = discovery.advance().unwrap_err();
-    let GraphError::Cycle {
-        kind: DependencyKind::Import,
-        location: Some(location),
-        ..
-    } = error
-    else {
-        panic!("expected source import cycle")
-    };
+    assert!(discovery.advance().unwrap().is_complete());
+    assert_eq!(discovery.graph().modules().len(), 2);
+    let backedge = discovery
+        .graph()
+        .scoped_imports()
+        .iter()
+        .find(|edge| edge.module() == discovery.graph().root())
+        .unwrap();
+    let location = backedge.location();
     let source = discovery.graph().sources().get(location.source).unwrap();
     assert_eq!(source.path(), Path::new("/discovery/dependency.jai"));
     assert!(location.span.text(source.text()).contains("#import"));
-    assert!(matches!(
-        discovery.advance(),
-        Err(GraphError::FailedDiscovery { .. })
-    ));
-    assert!(discovery.into_graph().is_err());
+    assert_eq!(inputs.reads("/discovery/main.jai"), 1);
+    assert_eq!(inputs.reads("/discovery/dependency.jai"), 1);
+    assert!(discovery.advance().unwrap().is_complete());
+    assert!(discovery.into_graph().is_ok());
 }
 
 #[test]

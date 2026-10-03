@@ -468,6 +468,10 @@ impl Parser<'_> {
         self.need(Punct::OpenBrace)?;
         let mut members = Vec::new();
         while !self.take(Punct::CloseBrace) {
+            // Extra separators do not declare members or advance enum values.
+            if self.take(Punct::Semicolon) {
+                continue;
+            }
             if self.token().kind == Kind::Eof {
                 return Err(self.error("unterminated enum declaration"));
             }
