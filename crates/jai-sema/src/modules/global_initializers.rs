@@ -243,11 +243,21 @@ fn requires_worklist(
 ) -> bool {
     let deferred = deferred_constants::classify(graph);
     let mut required = false;
+    let scope = FileScope {
+        declarations,
+        file,
+        substitution: None,
+    };
     deferred_constants::visit(expression, |expression| {
         use syntax::ExpressionKind as E;
         if matches!(
             expression.kind,
-            E::CompileTime(_) | E::AnonymousProcedure(_) | E::ShortLambda(_)
+            E::CompileTime(_)
+                | E::AnonymousProcedure(_)
+                | E::ShortLambda(_)
+                | E::Call(..)
+                | E::QualifiedCall(..)
+                | E::IndirectCall { .. }
         ) {
             required = true;
         }
@@ -256,12 +266,21 @@ fn requires_worklist(
             E::QualifiedName(name) => Some(name.clone()),
             _ => None,
         };
-        if let Some(name) = name
-            && let Ok(jai_modules::Binding::Declaration(id)) = graph.lookup(file, &name)
-            && deferred.contains(&id)
-            && !declarations.values.contains_key(&id)
-        {
-            required = true;
+        if let Some(name) = name {
+            // A genuine builtin type value needs canonical expression binding,
+            // even when its destination later rejects the meta Type. Scalar
+            // preparation cannot decide that binding alternative.
+            if scope.type_value_name_absent(&name)
+                && syntax::BuiltinType::from_spelling(graph.symbols().name(name.root)).is_some()
+            {
+                required = true;
+            }
+            if let Ok(jai_modules::Binding::Declaration(id)) = graph.lookup(file, &name)
+                && deferred.contains(&id)
+                && !declarations.values.contains_key(&id)
+            {
+                required = true;
+            }
         }
     });
     required

@@ -202,7 +202,7 @@ fn register_sources<'a>(
         let file = declaration.file();
         let mut parameters = Vec::new();
         let mut names = std::collections::HashSet::new();
-        for parameter in source_parameters {
+        for (parameter_index, parameter) in source_parameters.iter().enumerate() {
             if parameter.variadic && convention == CallingConvention::C {
                 continue;
             }
@@ -314,7 +314,40 @@ fn register_sources<'a>(
                     (ty, Some(expression))
                 }
             };
+            let retained_default = declarations
+                .signatures
+                .get(&declaration.id())
+                .and_then(|signature| {
+                    signature
+                        .parameters
+                        .iter()
+                        .find(|checked| checked.name == parameter.name)
+                })
+                .and_then(|checked| match &checked.default {
+                    Some(ParameterDefault::Source(source)) => Some(std::rc::Rc::clone(source)),
+                    _ => None,
+                });
+            if retained_default
+                .as_ref()
+                .is_some_and(|source| source.key.expected != ty)
+            {
+                return Err(located(
+                    graph,
+                    file,
+                    Diagnostic::new(
+                        parameter.span,
+                        "source default changed its checked formal type",
+                    ),
+                ));
+            }
             let default = match default {
+                Some(_)
+                    if retained_default
+                        .as_ref()
+                        .is_some_and(|source| source.ready().is_some()) =>
+                {
+                    Some(ParameterDefault::Source(retained_default.unwrap()))
+                }
                 Some(expression)
                     if parameter.evaluation == syntax::ParameterEvaluation::Discard =>
                 {
@@ -381,9 +414,43 @@ fn register_sources<'a>(
                     }
                     Some(ParameterDefault::CallerLocation)
                 }
-                Some(_) if phase == HeaderPhase::TypesOnly => None,
+                Some(expression) if phase == HeaderPhase::TypesOnly => {
+                    let procedure = declarations
+                        .source_procedures
+                        .get(declaration.id())
+                        .ok_or_else(|| {
+                            located(
+                                graph,
+                                file,
+                                Diagnostic::new(
+                                    parameter.span,
+                                    "source default requires its reserved concrete procedure",
+                                ),
+                            )
+                        })?;
+                    let source = crate::source_parameter_defaults::SourceParameterDefault::new(
+                        crate::source_parameter_defaults::SourceParameterDefaultKey {
+                            declaration: declaration.id(),
+                            file,
+                            parameter: parameter_index,
+                            expected: ty,
+                            procedure,
+                            location: SourceSpan {
+                                source: declaration.location().source,
+                                span: expression.span,
+                            },
+                        },
+                        expression.clone(),
+                        graph
+                            .sources()
+                            .get(declaration.location().source)
+                            .expect("original source default")
+                            .shared_text(),
+                    );
+                    Some(ParameterDefault::Source(source))
+                }
                 Some(expression) => {
-                    if let Some(read) = runtime_defaults::prepare(
+                    let value = if let Some(read) = runtime_defaults::prepare(
                         graph,
                         file,
                         expression,
@@ -393,7 +460,7 @@ fn register_sources<'a>(
                         constants,
                         meta,
                     )? {
-                        Some(ParameterDefault::RuntimeRead(read))
+                        ParameterDefault::RuntimeRead(read)
                     } else {
                         let mut evaluator = aggregates::Defaults::new(
                             graph,
@@ -405,9 +472,15 @@ fn register_sources<'a>(
                         .with_context(declarations.context.as_ref());
                         evaluator.fields = declarations.defaults.clone();
                         hydrate_constants(&mut evaluator, declarations, meta);
-                        Some(ParameterDefault::Constant(
-                            evaluator.expression(file, expression, ty)?,
-                        ))
+                        ParameterDefault::Constant(evaluator.expression(file, expression, ty)?)
+                    };
+                    if let Some(source) = retained_default {
+                        source
+                            .publish(value)
+                            .map_err(|error| located(graph, file, error))?;
+                        Some(ParameterDefault::Source(source))
+                    } else {
+                        Some(value)
                     }
                 }
                 None => None,

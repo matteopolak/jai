@@ -56,6 +56,19 @@ impl Constants<'_> {
                 }
                 _ => None,
             });
+        if target.is_none() && constant.ty.is_some() {
+            if self.checked_typed_values.contains_key(&id) {
+                return Err(LocatedDiagnostic {
+                    location: site,
+                    message: "a checked nominal or aggregate constant cannot supply a scalar value"
+                        .into(),
+                });
+            }
+            return Ok(ScalarPreparation::Pending(PendingType::Constant {
+                declaration: id,
+                location: site,
+            }));
+        }
         self.states.insert(id, ConstantState::Visiting);
         let result = self.prepare_expression(file, &constant.initializer, target, Some((id, site))).and_then(|result| {
             match result {
@@ -82,6 +95,26 @@ impl Constants<'_> {
             }
         }
         result
+    }
+
+    pub(in crate::modules) fn register_checked_typed_value(
+        &mut self,
+        id: DeclarationId,
+        ty: TypeId,
+    ) -> Result<(), LocatedDiagnostic> {
+        let source = self
+            .graph
+            .declaration(id)
+            .expect("actual typed constant producer");
+        if self.annotations.get(&id).copied() != Some(ty) {
+            return Err(LocatedDiagnostic {
+                location: source.location(),
+                message: "checked typed constant differs from its canonical source annotation"
+                    .into(),
+            });
+        }
+        self.checked_typed_values.insert(id, ty);
+        Ok(())
     }
 
     pub(in crate::modules) fn register_ready_value(
@@ -356,14 +389,18 @@ impl Constants<'_> {
             }));
         }
         if constant.ty.is_some() {
-            return Err(located(
-                self.graph,
-                declaration.file(),
-                Diagnostic::new(
-                    constant.span,
-                    "typed constant annotation requires canonical semantic resolution",
-                ),
-            ));
+            if self.checked_typed_values.contains_key(&id) {
+                return Err(LocatedDiagnostic {
+                    location: site,
+                    message:
+                        "a checked nominal or aggregate constant cannot supply a scalar domain"
+                            .into(),
+                });
+            }
+            return Ok(DomainPreparation::Pending(PendingType::Constant {
+                declaration: id,
+                location: site,
+            }));
         }
         if visiting.len() >= 256 || !visiting.insert(id) {
             return Err(LocatedDiagnostic {

@@ -1,4 +1,5 @@
 mod backend;
+mod compile_time_limits;
 mod foreign_libraries;
 mod native_dependencies;
 mod native_paths;
@@ -118,6 +119,7 @@ impl Options {
 #[derive(Debug)]
 enum Error {
     Arguments(&'static str),
+    CompileTimeLimit(compile_time_limits::ParseError),
     Io {
         path: PathBuf,
         cause: std::io::Error,
@@ -134,6 +136,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Arguments(text) => f.write_str(text),
+            Self::CompileTimeLimit(error) => fmt::Display::fmt(error, f),
             Self::Source(text) => f.write_str(text),
             Self::Codegen(e) => fmt::Display::fmt(e, f),
             Self::Io { path, cause } => write!(f, "{}: {cause}", path.display()),
@@ -194,6 +197,7 @@ fn run() -> Result<(), Error> {
                 &path,
                 sources.graph,
                 sources.bootstrap,
+                sources.compile_time_limits,
                 &native_options,
                 &target,
                 workspace_build::ArtifactCommand::Llvm(output),
@@ -204,6 +208,7 @@ fn run() -> Result<(), Error> {
                 &path,
                 sources.graph,
                 sources.bootstrap,
+                sources.compile_time_limits,
                 &native_options,
                 &target,
                 workspace_build::ArtifactCommand::Object(output),
@@ -214,6 +219,7 @@ fn run() -> Result<(), Error> {
                 &path,
                 sources.graph,
                 sources.bootstrap,
+                sources.compile_time_limits,
                 &native_options,
                 &target,
                 workspace_build::ArtifactCommand::Executable(output),

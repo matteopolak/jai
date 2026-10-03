@@ -63,6 +63,10 @@ enum VariadicPolicy {
 }
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 enum DefaultPolicy {
+    PendingSource {
+        key: crate::source_parameter_defaults::SourceParameterDefaultKey,
+        bytes: std::sync::Arc<str>,
+    },
     Constant(jai_ir::ConstantValue),
     RuntimeRead(RuntimeReadPolicy),
     CallerLocation(TypeId),
@@ -659,19 +663,10 @@ impl Resolver<'_> {
                             syntax::ParameterEvaluation::Evaluate => EvaluationPolicy::Evaluate,
                             syntax::ParameterEvaluation::Discard => EvaluationPolicy::Discard,
                         },
-                        default: parameter.default.as_ref().map(|default| match default {
-                            ParameterDefault::Constant(value) => {
-                                DefaultPolicy::Constant(value.clone())
-                            }
-                            ParameterDefault::RuntimeRead(read) => {
-                                DefaultPolicy::RuntimeRead(RuntimeReadPolicy(read.clone()))
-                            }
-                            ParameterDefault::CallerLocation => {
-                                DefaultPolicy::CallerLocation(parameter.ty)
-                            }
-                            ParameterDefault::CodeNull { ty } => DefaultPolicy::CodeNull(*ty),
-                            ParameterDefault::Discarded => DefaultPolicy::Discarded,
-                        }),
+                        default: parameter
+                            .default
+                            .as_ref()
+                            .map(|default| default_policy(default, parameter.ty)),
                     })
                     .collect();
                 let variadic = match metadata.source_variadic {
@@ -806,5 +801,24 @@ mod tests {
             hasher.finish()
         };
         assert_eq!(hash(&first), hash(&same));
+    }
+}
+
+fn default_policy(default: &ParameterDefault, ty: TypeId) -> DefaultPolicy {
+    match default {
+        ParameterDefault::Source(source) => match source.ready() {
+            Some(value) => default_policy(value, ty),
+            None => DefaultPolicy::PendingSource {
+                key: source.key,
+                bytes: source.source_bytes.clone(),
+            },
+        },
+        ParameterDefault::Constant(value) => DefaultPolicy::Constant(value.clone()),
+        ParameterDefault::RuntimeRead(read) => {
+            DefaultPolicy::RuntimeRead(RuntimeReadPolicy(read.clone()))
+        }
+        ParameterDefault::CallerLocation => DefaultPolicy::CallerLocation(ty),
+        ParameterDefault::CodeNull { ty } => DefaultPolicy::CodeNull(*ty),
+        ParameterDefault::Discarded => DefaultPolicy::Discarded,
     }
 }

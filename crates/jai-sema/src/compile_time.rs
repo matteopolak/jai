@@ -511,14 +511,17 @@ impl crate::Resolver<'_> {
                 proof,
             );
         }
-        let origin = if run.flags.stallable {
-            if self.graph_scope.is_none() {
-                return Err(jai_source::Diagnostic::at_source(
-                    location,
-                    "stallable #run requires a retained source graph",
-                ));
-            }
+        // A graph-owned run retains reached source prerequisites even without
+        // the stallable flag. Restarting after a late procedure/type read would
+        // reissue effects which precede that read. External waits still require
+        // the original stallable policy at the suspension boundary.
+        let origin = if self.graph_scope.is_some() {
             Some(self.source_run_origin(context.workspace, self.procedure, source_id, span)?)
+        } else if run.flags.stallable {
+            return Err(jai_source::Diagnostic::at_source(
+                location,
+                "stallable #run requires a retained source graph",
+            ));
         } else {
             None
         };
@@ -536,6 +539,16 @@ impl crate::Resolver<'_> {
                 None => self.expr(source),
             }
             .map_err(|error| error.with_fallback_source(source_id))?;
+            if let Some(scope) = self.graph_scope
+                && let Some(procedure) =
+                    scope.initializer_call_dependency(&expression, context, self.meta)
+            {
+                context.record_pending(vec![Dependency::Procedure(procedure)]);
+                return Err(jai_source::Diagnostic::at_source(
+                    location,
+                    "initializer call is waiting for its checked source body",
+                ));
+            }
             // Deferred constants may wrap the same source directive while binding it.
             if let Some(completed) =
                 context

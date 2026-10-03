@@ -147,7 +147,7 @@ impl Resolver<'_> {
                 self.validate_compiler_root_code(code, span)?;
             } else {
                 let runtime = index - usize::from(index > metadata.code_slot);
-                if let ParameterDefault::RuntimeRead(read) = default {
+                if let Some(ParameterDefault::RuntimeRead(read)) = default.prepared() {
                     omitted_reads.insert(jai_ir::ParameterId::new(runtime), read.clone());
                 }
                 bound.push((
@@ -199,6 +199,7 @@ pub(crate) fn source_candidate<Origin>(
                 evaluation: parameter.evaluation,
                 ty: TypePattern::Concrete(parameter.ty),
                 default: parameter.default.as_ref().map(|default| match default {
+                    ParameterDefault::Source(_) => ArgumentInfo::typed(parameter.ty),
                     ParameterDefault::Discarded => ArgumentInfo::typed(parameter.ty),
                     ParameterDefault::RuntimeRead(_) => ArgumentInfo::typed(parameter.ty),
                     ParameterDefault::Constant(value) => ArgumentInfo::constant(

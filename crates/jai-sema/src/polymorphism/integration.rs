@@ -479,6 +479,7 @@ pub(crate) fn concrete_candidate<Origin>(
                     _ => parameter.ty,
                 }),
                 default: parameter.default.as_ref().map(|value| match value {
+                    ParameterDefault::Source(_) => ArgumentInfo::typed(parameter.ty),
                     ParameterDefault::RuntimeRead(read) => ArgumentInfo::runtime_read(read.clone()),
                     ParameterDefault::Discarded => ArgumentInfo::typed(parameter.ty),
                     ParameterDefault::Constant(value) => {

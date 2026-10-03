@@ -52,6 +52,7 @@ pub fn run(
     source: &Path,
     graph_options: jai_driver::modules::GraphOptions,
     bootstrap: jai_driver::modules::BootstrapOptions,
+    compile_time_limits: Limits,
     options: &TargetOptions,
     selected: &NativeTarget,
     command: ArtifactCommand,
@@ -67,7 +68,7 @@ pub fn run(
             .map_err(|error| Error::Source(error.to_string()))?,
         target_triple: TargetTriple::parse(&triple)
             .map_err(|error| Error::Source(error.to_string()))?,
-        compile_time_limits: Limits::default(),
+        compile_time_limits,
         limits: SchedulerLimits::default(),
         replay_limits: jai_driver::ReplayLimits::default(),
     };

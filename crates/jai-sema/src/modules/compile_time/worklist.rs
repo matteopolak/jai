@@ -35,6 +35,7 @@ pub(in crate::modules) struct Worklist<'graph> {
     pub(super) method_file: FileInstanceId,
     pub(super) method_owner: ProcedureId,
     pub(super) methods_pending: bool,
+    pub(super) procedure_defaults: super::super::procedure_default_jobs::Jobs,
     pub(super) header_prerequisites: header_prerequisites::HeaderPrerequisites,
 }
 
@@ -103,7 +104,8 @@ impl<'graph> Worklist<'graph> {
             ));
         let contextual = super::super::deferred_constants::contextual_lambdas(session.graph);
         for source in session.graph.declarations() {
-            if !session.deferred.contains(&source.id())
+            if !(session.deferred.contains(&source.id())
+                || canonical_constant(source, session.declarations, session.types))
                 || contextual.contains(&source.id())
                 || session.declarations.values.contains_key(&source.id())
                 || self.constant_owners.contains_key(&source.id())
@@ -268,7 +270,8 @@ impl<'graph> Worklist<'graph> {
             .declarations()
             .iter()
             .filter(|declaration| {
-                deferred.contains(&declaration.id())
+                (deferred.contains(&declaration.id())
+                    || canonical_constant(declaration, declarations, types))
                     && !contextual_lambdas.contains(&declaration.id())
             })
             .collect();
@@ -355,7 +358,29 @@ impl<'graph> Worklist<'graph> {
             method_file,
             method_owner,
             methods_pending,
+            procedure_defaults: Default::default(),
             header_prerequisites: Default::default(),
         })
     }
+}
+
+pub(super) fn canonical_constant(
+    source: &jai_modules::Declaration,
+    declarations: &ScopedDeclarations<'_>,
+    types: &TypeRegistry,
+) -> bool {
+    matches!(&source.syntax().kind, FileDeclarationKind::Constant(constant) if constant.ty.is_some())
+        && !declarations
+            .nominals
+            .is_type_alias(declarations.graph, source.id())
+        && declarations
+            .nominals
+            .value_types
+            .get(&source.id())
+            .is_some_and(|&ty| {
+                matches!(
+                    types.kind(ty),
+                    Ok(TypeKind::Distinct(_) | TypeKind::Enum(_))
+                )
+            })
 }

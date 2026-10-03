@@ -85,6 +85,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         method_file,
         method_owner,
         mut methods_pending,
+        mut procedure_defaults,
         mut header_prerequisites,
         insertion_owners,
     } = match retained.take() {
@@ -114,7 +115,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
             admission,
         } = session;
         if let BindingMode::Types(pending) = mode {
-            if let aggregates::parameterized::PendingType::Constant { declaration, .. } =
+            if let Some(aggregates::parameterized::PendingType::Constant { declaration, .. }) =
                 pending.cause()
             {
                 header_prerequisites.constants.insert(declaration);
@@ -129,6 +130,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
             || declarations.generics.borrow().has_pending_bodies()
             || declarations.generics.borrow().has_pending_modifier_bodies()
             || methods_pending
+            || !procedure_defaults.is_empty()
             || !alignment_jobs.is_empty()
             || !file_guards.is_empty()
             || matches!(
@@ -194,7 +196,8 @@ pub(super) fn bind_procedures_resumable<'graph>(
             let before = before
                 + header_prerequisites.len()
                 + meta.record_specializations.completed_modifier_count()
-                + initializers.as_ref().map_or(0, |jobs| jobs.completed());
+                + initializers.as_ref().map_or(0, |jobs| jobs.completed())
+                + procedure_defaults.progress_count();
             let before_revision = (
                 declarations.generics.borrow().callback_readiness_revision(),
                 meta.local_declarations.callback_readiness_revision(),
@@ -246,6 +249,26 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 process_abi: &process_abi,
                 deferred,
             };
+            let default_checkpoint = procedure_defaults.bind(
+                &method_context,
+                declarations,
+                types,
+                places,
+                meta,
+                super::procedure_default_jobs::BindOptions {
+                    resolve: options,
+                    prefix: source_prefix
+                        && matches!(mode, BindingMode::Types(_) | BindingMode::SourceRuns),
+                },
+            )?;
+            if default_checkpoint {
+                return Ok(BindingProgress::SourceRunReady);
+            }
+            let mut source_wait = procedure_defaults.source_wait();
+            let mut initializer_lookup_wait = None;
+            let initializer_lookup_allowed =
+                source_prefix && matches!(mode, BindingMode::Initializers) && !runs.is_empty();
+            let method_requests = super::procedure_default_jobs::request_snapshot(declarations);
             let method_result = match mode {
                 BindingMode::Types(_) => {
                     methods::sweep_types(&method_context, declarations, types, places, meta)
@@ -296,6 +319,11 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 meta,
                 &record_callable_aliases,
             )?;
+            if let Some(wait) =
+                super::procedure_default_jobs::requested_since(declarations, &method_requests)
+            {
+                source_wait = Some(wait);
+            }
             methods_pending = method_result.is_err();
             let method_error = method_result.err();
             if !method_dependencies.is_empty()
@@ -377,6 +405,20 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     process_abi: &process_abi,
                     deferred,
                 };
+                let default_requests =
+                    super::procedure_default_jobs::request_snapshot(declarations);
+                let lookup_attempt = if initializer_lookup_allowed {
+                    Some(declarations.source_lookup.begin(
+                        graph,
+                        declaration.id(),
+                        file,
+                        declaration.location(),
+                    )?)
+                } else {
+                    None
+                };
+                let canonical_initializer =
+                    worklist::canonical_constant(declaration, declarations, types);
                 let result = {
                     let mut resolver = Resolver {
                         expression_owner: Some(context.owner),
@@ -414,7 +456,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     // Bind quotations in the existing compile-only CodeRegistry,
                     // preserving their defining scope without resolving the body.
                     // Runtime materialization is not a representation for Code.
-                    if code_constants.contains(&declaration.id()) {
+                    if code_constants.contains(&declaration.id()) || canonical_initializer {
                         resolver.bind_semantic_constant(constant).and_then(|()| {
                             resolver
                                 .scopes
@@ -465,6 +507,12 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         })
                     }
                 };
+                let lookup_wait = lookup_attempt.and_then(|attempt| attempt.finish(graph, &result));
+                if let Some(demand) = lookup_wait {
+                    let wait = SourcePreparationPending::lookup(demand);
+                    initializer_lookup_wait = Some(wait);
+                    source_wait = Some(wait);
+                }
                 let dependencies = context.pending.into_inner();
                 let constants_pending = context.pending_constants.into_inner();
                 let field_defaults_pending = context.pending_field_defaults.into_inner();
@@ -484,6 +532,11 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 for &field in &field_defaults_pending {
                     meta.field_default_jobs.request(field);
                 }
+                let default_wait =
+                    super::procedure_default_jobs::requested_since(declarations, &default_requests);
+                if let Some(wait) = default_wait {
+                    source_wait = Some(wait);
+                }
                 match result {
                     Ok(binding) => {
                         declarations.values.insert(declaration.id(), binding);
@@ -491,7 +544,9 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     Err(error)
                         if !dependencies.is_empty()
                             || !constants_pending.is_empty()
-                            || !field_defaults_pending.is_empty() =>
+                            || !field_defaults_pending.is_empty()
+                            || default_wait.is_some()
+                            || lookup_wait.is_some() =>
                     {
                         stalled = Some((
                             file,
@@ -553,7 +608,26 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         process_abi: &process_abi,
                         deferred,
                     };
+                    let default_requests =
+                        super::procedure_default_jobs::request_snapshot(declarations);
+                    let lookup_attempt = if initializer_lookup_allowed {
+                        Some(declarations.source_lookup.begin(
+                            graph,
+                            job.declaration,
+                            job.file,
+                            job.location,
+                        )?)
+                    } else {
+                        None
+                    };
                     let result = job.evaluate(&context, declarations, types, places, meta, options);
+                    let lookup_wait =
+                        lookup_attempt.and_then(|attempt| attempt.finish(graph, &result));
+                    if let Some(demand) = lookup_wait {
+                        let wait = SourcePreparationPending::lookup(demand);
+                        initializer_lookup_wait = Some(wait);
+                        source_wait = Some(wait);
+                    }
                     let dependencies = context.pending.into_inner();
                     let constants_pending = context.pending_constants.into_inner();
                     let fields_pending = context.pending_field_defaults.into_inner();
@@ -565,6 +639,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     for &field in &fields_pending {
                         meta.field_default_jobs.request(field);
                     }
+                    let default_wait = super::procedure_default_jobs::requested_since(
+                        declarations,
+                        &default_requests,
+                    );
+                    if let Some(wait) = default_wait {
+                        source_wait = Some(wait);
+                    }
                     match result {
                         Ok(global) => {
                             jobs.publish(global, declarations, globals, alignment_jobs)?
@@ -572,7 +653,9 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         Err(error)
                             if !dependencies.is_empty()
                                 || !constants_pending.is_empty()
-                                || !fields_pending.is_empty() =>
+                                || !fields_pending.is_empty()
+                                || default_wait.is_some()
+                                || lookup_wait.is_some() =>
                         {
                             stalled = Some((
                                 job.file,
@@ -811,6 +894,18 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     pending_constants: RefCell::new(vec![]),
                     pending_field_defaults: RefCell::new(vec![]),
                 };
+                let default_requests =
+                    super::procedure_default_jobs::request_snapshot(declarations);
+                let lookup_attempt = if initializer_lookup_allowed {
+                    Some(declarations.source_lookup.begin(
+                        graph,
+                        job.declaration,
+                        file,
+                        declaration.location(),
+                    )?)
+                } else {
+                    None
+                };
                 let result = {
                     if job.modifier.is_none() {
                         meta.remember_inline_hint(signature.id, procedure.inline_hint);
@@ -941,6 +1036,12 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         })
                     })()
                 };
+                let lookup_wait = lookup_attempt.and_then(|attempt| attempt.finish(graph, &result));
+                if let Some(demand) = lookup_wait {
+                    let wait = SourcePreparationPending::lookup(demand);
+                    initializer_lookup_wait = Some(wait);
+                    source_wait = Some(wait);
+                }
                 let dependencies = context.pending.into_inner();
                 let constants_pending = context.pending_constants.into_inner();
                 let field_defaults_pending = context.pending_field_defaults.into_inner();
@@ -959,6 +1060,11 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 }
                 for &field in &field_defaults_pending {
                     meta.field_default_jobs.request(field);
+                }
+                let default_wait =
+                    super::procedure_default_jobs::requested_since(declarations, &default_requests);
+                if let Some(wait) = default_wait {
+                    source_wait = Some(wait);
                 }
                 match result {
                     Ok(procedure) => {
@@ -981,7 +1087,9 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     Err(error)
                         if !dependencies.is_empty()
                             || !constants_pending.is_empty()
-                            || !field_defaults_pending.is_empty() =>
+                            || !field_defaults_pending.is_empty()
+                            || default_wait.is_some()
+                            || lookup_wait.is_some() =>
                     {
                         stalled = Some((
                             file,
@@ -1142,11 +1250,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     }
                 }
             }
-            // Header defaults and actual storage complete before ordinary root
-            // runs. Only a genuine initial type wait can use the earlier prefix.
+            // An actual initializer lookup demand may select an independent
+            // original producer. Its completed input journal is inspected before
+            // the blocked job can bind against a newly published graph.
             let prefix_runs = source_prefix
                 && declarations.context.is_some()
-                && matches!(mode, BindingMode::Types(_) | BindingMode::SourceRuns);
+                && (matches!(mode, BindingMode::Types(_) | BindingMode::SourceRuns)
+                    || initializer_lookup_wait.is_some());
             let mut source_run_checkpoint = false;
             if (matches!(mode, BindingMode::Full | BindingMode::SourceRuns) || prefix_runs)
                 && (prefix_runs || retry_constants.is_empty())
@@ -1238,6 +1348,8 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         deferred_scopes: vec![],
                         cleanup_context: None,
                     };
+                    let default_requests =
+                        super::procedure_default_jobs::request_snapshot(declarations);
                     let result = resolver.resolve_compile_time_statement(
                         &syntax::CompileTimeRun {
                             flags: request.syntax.flags,
@@ -1258,6 +1370,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     for &field in &field_defaults_pending {
                         meta.field_default_jobs.request(field);
                     }
+                    let default_wait = super::procedure_default_jobs::requested_since(
+                        declarations,
+                        &default_requests,
+                    );
+                    if let Some(wait) = default_wait {
+                        source_wait = Some(wait);
+                    }
                     match result {
                         Ok(_) => {
                             completed_runs += 1;
@@ -1266,7 +1385,8 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         Err(error)
                             if !dependencies.is_empty()
                                 || !constants_pending.is_empty()
-                                || !field_defaults_pending.is_empty() =>
+                                || !field_defaults_pending.is_empty()
+                                || default_wait.is_some() =>
                         {
                             stalled = Some((
                                 request.file,
@@ -1282,6 +1402,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 }
                 runs = retry_runs;
             }
+            procedure_defaults.admit_requested(declarations)?;
             if let Some(error) = cache.take_callback_failure() {
                 return Err(LocatedDiagnostic::new(root_source, error));
             }
@@ -1291,7 +1412,10 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 return Ok(BindingProgress::SourceRunReady);
             }
             if prefix_runs
+                && (!matches!(mode, BindingMode::Initializers)
+                    || initializers.as_ref().is_some_and(|jobs| jobs.is_complete()))
                 && runs.is_empty()
+                && procedure_defaults.is_empty()
                 && alignment_jobs.is_empty()
                 && header_prerequisites.ready(&meta.field_default_jobs)
                 && header_prerequisites
@@ -1310,6 +1434,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 return Ok(BindingProgress::SourceRunsReady);
             }
             if matches!(mode, BindingMode::Headers(_))
+                && procedure_defaults.is_empty()
                 && header_prerequisites.ready(&meta.field_default_jobs)
                 && cache.pending_execution().is_none()
                 && isolated_caches
@@ -1321,6 +1446,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 return Ok(BindingProgress::HeadersReady);
             }
             if matches!(mode, BindingMode::Types(_))
+                && procedure_defaults.is_empty()
                 && !prefix_runs
                 && meta.record_specializations.queued_modifier_count() == 0
                 && header_prerequisites
@@ -1335,6 +1461,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 return Ok(BindingProgress::TypesReady);
             }
             if matches!(mode, BindingMode::Initializers)
+                && procedure_defaults.is_empty()
                 && initializers.as_ref().is_some_and(|jobs| jobs.is_complete())
                 && cache.pending_execution().is_none()
             {
@@ -1355,6 +1482,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 + header_prerequisites.len()
                 + meta.record_specializations.completed_modifier_count()
                 + initializers.as_ref().map_or(0, |jobs| jobs.completed())
+                + procedure_defaults.progress_count()
                 == before
                 && (
                     declarations.generics.borrow().callback_readiness_revision(),
@@ -1363,7 +1491,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 && record_count == meta.record_specializations.records().count()
                 && before_modifier_queue == meta.record_specializations.queued_modifier_count()
             {
-                if let Some(suspension) = cache.pending_execution() {
+                if let Some(mut suspension) = cache.pending_execution() {
                     if !suspension.dependencies.iter().any(|dependency| {
                         matches!(
                             dependency,
@@ -1380,7 +1508,17 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     }
                     pending = retry;
                     constants = retry_constants;
+                    suspension.source = source_wait;
                     return Ok(BindingProgress::Pending(suspension));
+                }
+                if let Some(wait) = source_wait {
+                    pending = retry;
+                    constants = retry_constants;
+                    return Ok(BindingProgress::Pending(LibraryPending {
+                        dependencies: vec![],
+                        diagnostic: wait.diagnostic(graph),
+                        source: Some(wait),
+                    }));
                 }
                 if matches!(mode, BindingMode::Full) && discovery.is_some() {
                     return Ok(BindingProgress::Complete(completed_procedures(
@@ -1426,8 +1564,62 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 {
                     break;
                 }
-                let (file, span, dependencies) =
-                    stalled.expect("unresolved bodies retain their readiness dependencies");
+                let (file, span, dependencies) = match stalled {
+                    Some(wait) => wait,
+                    None => {
+                        // Retained source work can be blocked before a VM read.
+                        // Diagnose its actual source front, never fabricate a VM dependency.
+                        let (file, span) = if let Some(job) = retry.first() {
+                            let source = graph
+                                .declaration(job.declaration)
+                                .expect("retained body source");
+                            (
+                                job.file,
+                                job.syntax
+                                    .as_ref()
+                                    .map_or(source.location().span, |source| source.span),
+                            )
+                        } else if let Some(source) = retry_constants.first() {
+                            (source.file(), source.location().span)
+                        } else if let Some((source, _)) = runs.first() {
+                            (source.file, source.syntax.location.span)
+                        } else if let Some(source) = alignment_jobs.first() {
+                            (
+                                source.file,
+                                graph
+                                    .declaration(source.declaration)
+                                    .expect("alignment source")
+                                    .location()
+                                    .span,
+                            )
+                        } else {
+                            // This is the real aggregate method sweep's defining file.
+                            // No concrete source front remains to attribute more narrowly.
+                            (method_file, Span::default())
+                        };
+                        let bodies = retry
+                            .iter()
+                            .map(|job| (job.declaration, job.signature.id))
+                            .collect::<Vec<_>>();
+                        let values = retry_constants
+                            .iter()
+                            .map(|source| source.id())
+                            .collect::<Vec<_>>();
+                        (
+                            file,
+                            span,
+                            format!(
+                                "retained source work made no progress; bodies {bodies:?}, constants {values:?}, original runs {}, alignment jobs {}, file guards {}, selected defaults {}, generic bodies {}, modifier bodies {}",
+                                runs.len(),
+                                alignment_jobs.len(),
+                                file_guards.len(),
+                                !procedure_defaults.is_empty(),
+                                declarations.generics.borrow().has_pending_bodies(),
+                                declarations.generics.borrow().has_pending_modifier_bodies()
+                            ),
+                        )
+                    }
+                };
                 return Err(located(
                     graph,
                     file,
@@ -1471,6 +1663,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         method_file,
         method_owner,
         methods_pending,
+        procedure_defaults,
         header_prerequisites,
         insertion_owners,
     };

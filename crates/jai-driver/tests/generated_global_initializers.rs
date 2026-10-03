@@ -1,4 +1,4 @@
-//! Generated declaration fulfillment uses the real workspace source scheduler.
+//! Generated initializer fulfillment uses the real workspace source scheduler.
 use jai_driver::{
     CompilerSession, ReplayLimits, ScheduledBuild, SchedulerLimits, SchedulerOptions,
     WorkspaceOutput, WorkspaceScheduler,
@@ -19,7 +19,7 @@ struct Fixture(PathBuf);
 impl Fixture {
     fn new(source: &str) -> Self {
         let directory = std::env::temp_dir().join(format!(
-            "jai-source-placeholders-{}-{}",
+            "jai-generated-global-initializers-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
@@ -71,7 +71,7 @@ fn execute_main(build: &ScheduledBuild, session: &CompilerSession) -> i128 {
     let mut vm = jai_vm::Vm::new(library.as_ref(), jai_vm::NoEffects, Limits::default()).unwrap();
     let execution = vm.execute(main, vec![]);
     let Outcome::Complete(values) = execution.outcome else {
-        panic!("generated placeholder fixture did not complete");
+        panic!("generated initializer fixture did not complete");
     };
     let [Value::Int(value)] = values.as_slice() else {
         panic!("expected one integer result: {values:?}");
@@ -80,9 +80,9 @@ fn execute_main(build: &ScheduledBuild, session: &CompilerSession) -> i128 {
 }
 
 #[test]
-fn file_run_fills_a_constant_once_and_rebuild_preserves_the_real_binding() {
+fn original_run_supplies_the_called_global_initializer_source_once() {
     let fixture = Fixture::new(
-        "#placeholder ANSWER;add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"ANSWER::42;\",-1);main::()->int{return ANSWER;}",
+        "value:int=#run generated();add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"generated::()->int{return 42;}\",-1);main::()->int{return value;}",
     );
     let mut scheduler = fixture.scheduler();
     let mut session = CompilerSession::new();
@@ -97,9 +97,9 @@ fn file_run_fills_a_constant_once_and_rebuild_preserves_the_real_binding() {
 }
 
 #[test]
-fn unavailable_global_type_waits_for_its_real_generated_record_definition() {
+fn ordinary_global_call_keeps_the_original_initializer_job() {
     let fixture = Fixture::new(
-        "#placeholder Generated;value:Generated;add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"Generated::struct{answer:int=42;}\",-1);main::()->int{return value.answer;}",
+        "value:int=generated();add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"generated::()->int{return 42;}\",-1);main::()->int{return value;}",
     );
     let mut session = CompilerSession::new();
     let build = fixture.scheduler().resolve(&mut session).unwrap();
@@ -108,9 +108,9 @@ fn unavailable_global_type_waits_for_its_real_generated_record_definition() {
 }
 
 #[test]
-fn unavailable_procedure_header_waits_without_inventing_parameter_types() {
+fn selected_initializer_body_waits_without_starting_a_blocking_vm_journal() {
     let fixture = Fixture::new(
-        "#placeholder Generated;answer::(value:Generated=.{})->int{return value.answer;}add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"Generated::struct{answer:int=42;}\",-1);main::()->int{return answer();}",
+        "read::()->int{return generated();}value:int=#run read();add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"generated::()->int{return 42;}\",-1);main::()->int{return value;}",
     );
     let mut session = CompilerSession::new();
     let build = fixture.scheduler().resolve(&mut session).unwrap();
@@ -119,28 +119,43 @@ fn unavailable_procedure_header_waits_without_inventing_parameter_types() {
 }
 
 #[test]
-fn a_pointer_alias_preserves_the_unavailable_nominal_until_real_fulfillment() {
+fn separate_initializers_keep_source_order_across_two_actual_publications() {
     let fixture = Fixture::new(
-        "#placeholder Generated;Alias::#type *Generated;add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"Generated::struct{answer:int=42;}\",-1);main::()->int{value:Generated;pointer:Alias=*value;return pointer.answer;}",
+        "first:int=#run generated_first();second:int=#run generated_second();add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"generated_first::()->int{return 40;}\",-1);#run add_build_string(\"generated_second::()->int{return 2;}\",-1);main::()->int{return first+second;}",
+    );
+    let mut scheduler = fixture.scheduler();
+    let mut session = CompilerSession::new();
+    let build = scheduler.resolve(&mut session).unwrap();
+    assert_eq!(execute_main(&build, &session), 42);
+    assert_eq!(build.passes, 3);
+    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 2);
+    assert_eq!(scheduler.replay_cache().len(), 2);
+}
+
+#[test]
+fn a_source_producer_may_read_an_earlier_genuinely_published_global() {
+    let fixture = Fixture::new(
+        "ready:int=40;value:int=#run generated();add_build_string::(data:string,w:s64)#compiler;#run {if ready!=40 {zero:int=0;bad:=1/zero;}add_build_string(\"generated::()->int{return 42;}\",-1);}main::()->int{return value;}",
     );
     let mut session = CompilerSession::new();
     let build = fixture.scheduler().resolve(&mut session).unwrap();
     assert_eq!(execute_main(&build, &session), 42);
-    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 1);
 }
 
 #[test]
-fn missing_fulfillment_returns_a_demand_error_at_a_stable_source_fixed_point() {
-    let fixture = Fixture::new("#placeholder MISSING;main::()->int{return MISSING;}");
+fn an_exhausted_source_prefix_reports_the_actual_lookup_and_drops_private_inputs() {
+    let fixture = Fixture::new(
+        "value:int=#run missing();add_build_string::(data:string,w:s64)#compiler;#run add_build_string(\"unrelated::()->int{return 42;}\",-1);main::()->int{return value;}",
+    );
+    let mut scheduler = fixture.scheduler();
     let mut session = CompilerSession::new();
-    let error = match fixture.scheduler().resolve(&mut session) {
-        Ok(_) => panic!("unfilled reservation cannot provide a runtime result"),
+    let error = match scheduler.resolve(&mut session) {
         Err(error) => error,
+        Ok(_) => panic!("an unrelated generated declaration cannot satisfy the actual lookup"),
     };
-    let message = error.to_string();
     assert!(
-        message.contains("#placeholder") && message.contains("unfilled"),
-        "{message}"
+        error.to_string().contains("unknown name 'missing'"),
+        "{error}"
     );
     assert!(
         session
@@ -149,43 +164,20 @@ fn missing_fulfillment_returns_a_demand_error_at_a_stable_source_fixed_point() {
             .inputs()
             .is_empty()
     );
+    assert!(scheduler.replay_cache().is_empty());
 }
 
 #[test]
-fn selected_ordinary_default_precedes_a_real_generated_record_round() {
+fn a_failing_selected_source_producer_cannot_publish_its_initializer_or_effects() {
     let fixture = Fixture::new(
-        "#placeholder Generated; Alias::#type *Generated; \
-         add_build_string::(data:string,w:s64)#compiler; \
-         produce::(to_standard_error:=false) {if to_standard_error return;add_build_string(\"Generated::struct{answer:int=42;}\",-1);} \
-         #run produce(); main::()->int{value:Generated;pointer:Alias=*value;return pointer.answer;}",
+        "value:int=#run generated();add_build_string::(data:string,w:s64)#compiler;write_string::(data:string,to_standard_error:bool)#no_context #compiler;make_zero::()->int #no_context{return 0;}#run {write_string(\"private\",false);add_build_string(\"generated::()->int{return 42;}\",-1);zero:=make_zero();bad:=1/zero;}main::()->int{return value;}",
     );
     let mut scheduler = fixture.scheduler();
     let mut session = CompilerSession::new();
-    let build = scheduler.resolve(&mut session).unwrap();
-    assert_eq!(execute_main(&build, &session), 42);
-    assert_eq!(build.passes, 2);
-    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 1);
-    assert_eq!(scheduler.replay_cache().len(), 1);
-    let again = scheduler.resolve(&mut session).unwrap();
-    assert_eq!(execute_main(&again, &session), 42);
-    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 1);
-}
-
-#[test]
-fn failed_early_default_cannot_publish_its_generated_source_or_replay_receipt() {
-    let fixture = Fixture::new(
-        "#placeholder Generated; Alias::#type *Generated; \
-         add_build_string::(data:string,w:s64)#compiler; \
-         make_zero::()->int #no_context{return 0;} \
-         choose::()->bool {add_build_string(\"Generated::struct{answer:int=42;}\",-1);zero:=make_zero();return 1/zero==0;} \
-         produce::(flag:bool=#run choose()) {} #run produce(); main::()->int{return 42;}",
-    );
-    let mut scheduler = fixture.scheduler();
-    let mut session = CompilerSession::new();
-    let error = scheduler
-        .resolve(&mut session)
-        .err()
-        .expect("the genuine selected default must fail");
+    let error = match scheduler.resolve(&mut session) {
+        Err(error) => error,
+        Ok(_) => panic!("the original source producer must fail"),
+    };
     let jai_driver::SchedulerError::Driver(jai_driver::Error::Located {
         source,
         path,
@@ -193,7 +185,7 @@ fn failed_early_default_cannot_publish_its_generated_source_or_replay_receipt() 
         ..
     }) = &error
     else {
-        panic!("the original selected default arithmetic failure must remain located: {error:?}")
+        panic!("the actual source VM arithmetic failure must remain located: {error:?}")
     };
     assert_eq!(
         diagnostic.message,
@@ -202,22 +194,7 @@ fn failed_early_default_cannot_publish_its_generated_source_or_replay_receipt() 
     assert_eq!(diagnostic.source, Some(*source));
     assert_eq!(path, &fs::canonicalize(fixture.0.join("main.jai")).unwrap());
     let unit = jai_driver::CompilationUnit::load(&fixture.0.join("main.jai")).unwrap();
-    let original = unit
-        .graph()
-        .declarations()
-        .iter()
-        .find(|source| unit.graph().symbols().name(source.name()) == "produce")
-        .unwrap();
-    let jai_syntax::FileDeclarationKind::Procedure(procedure) = &original.syntax().kind else {
-        panic!("the default retains its original source procedure")
-    };
-    let default = match &procedure.parameters[0].binding {
-        jai_syntax::ParameterBinding::Defaulted { expression, .. }
-        | jai_syntax::ParameterBinding::DefaultedType { expression, .. } => expression,
-        jai_syntax::ParameterBinding::Required(_)
-        | jai_syntax::ParameterBinding::RequiredType(_) => panic!("original source default"),
-    };
-    assert_eq!(diagnostic.span, default.span);
+    assert_eq!(diagnostic.span, unit.graph().runs()[0].syntax.location.span);
     assert!(
         session
             .workspace(session.root())

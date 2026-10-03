@@ -303,6 +303,10 @@ impl Resolver<'_> {
         span: Span,
     ) -> Result<ValueExpr, Diagnostic> {
         match default {
+            ParameterDefault::Source(source) => {
+                let checked = source.require()?;
+                self.materialize_parameter_default(checked, ty, span)
+            }
             ParameterDefault::RuntimeRead(read) => self.materialize_runtime_default(read, ty, span),
             ParameterDefault::Discarded => Err(Diagnostic::new(
                 span,
@@ -338,6 +342,9 @@ impl Resolver<'_> {
         span: Span,
     ) -> Result<Expr, Diagnostic> {
         match default {
+            ParameterDefault::Source(source) => {
+                self.materialize_code_default(source.require()?, span)
+            }
             ParameterDefault::CodeNull { ty } if *ty == self.types.code_type() => {
                 Ok(Expr::Code(self.meta.codes.null()))
             }

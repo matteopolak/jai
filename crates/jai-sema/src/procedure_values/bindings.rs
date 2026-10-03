@@ -169,7 +169,9 @@ impl Resolver<'_> {
             {
                 self.bind_value_contract(place, Some(contract), parameter.span)?;
             }
-        } else if let Some(ParameterDefault::Constant(value)) = default {
+        } else if let Some(ParameterDefault::Constant(value)) =
+            default.and_then(ParameterDefault::prepared)
+        {
             let contract =
                 self.callback_value_contract(&value.clone().into_expression(), parameter.span)?;
             if let Some(metadata) = contract

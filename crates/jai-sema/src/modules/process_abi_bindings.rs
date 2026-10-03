@@ -439,6 +439,7 @@ mod tests {
             signatures: HashMap::new(),
             callable_aliases,
             source_procedures,
+            source_lookup: Default::default(),
             generics: std::cell::RefCell::new(
                 crate::polymorphism::integration::GenericContext::new(count),
             ),
