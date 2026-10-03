@@ -50,6 +50,7 @@ fn hiding_record_members_preserves_layout_and_source_record_metadata() {
         panic!()
     };
     assert!(fields.is_empty());
+    assert_eq!(metadata.textual_flags, 8);
     assert_eq!(metadata.notes[0].as_ref(), b"@KeepRecord");
     assert_eq!(types.field(record, 1).unwrap().ty, wide);
 }
@@ -71,7 +72,14 @@ fn reducing_procedure_members_changes_only_the_immutable_reflection_edge() {
     let record = types.reserve_record(RecordKind::Struct);
     types.define_record(record, vec![procedure]).unwrap();
     let field = types.field(record, 0).unwrap();
-    let metadata = ReflectionMetadata::default();
+    let mut metadata = ReflectionMetadata::default();
+    metadata.record(
+        record,
+        ReflectedRecordMetadata {
+            textual_flags: 2 | 4 | 128,
+            ..ReflectedRecordMetadata::default()
+        },
+    );
     let original = ready(ReflectionGraph::build(
         &types,
         record,
@@ -95,11 +103,14 @@ fn reducing_procedure_members_changes_only_the_immutable_reflection_edge() {
         &metadata,
     ));
     let DescriptorKind::Record {
-        fields, ..
+        fields,
+        metadata,
+        ..
     } = &reduced.descriptor(record).unwrap().kind
     else {
         panic!()
     };
+    assert_eq!(metadata.textual_flags, 2 | 4 | 16 | 32 | 128);
     assert_eq!(fields[0].id, field.id);
     assert_eq!(fields[0].offset_in_bytes, 0);
     assert!(
@@ -123,11 +134,14 @@ fn reducing_procedure_members_changes_only_the_immutable_reflection_edge() {
         reduced.descriptor(record).unwrap().layout
     );
     let DescriptorKind::Record {
-        fields, ..
+        fields,
+        metadata,
+        ..
     } = &original.descriptor(record).unwrap().kind
     else {
         panic!()
     };
+    assert_eq!(metadata.textual_flags, 2 | 4 | 128);
     assert_eq!(fields[0].ty.represented_type(), procedure);
     assert!(
         !fields[0]

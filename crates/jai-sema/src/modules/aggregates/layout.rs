@@ -23,7 +23,7 @@ pub(super) fn record_layout(
 pub(super) fn record_body_layout(
     graph: &ModuleGraph,
     file: FileInstanceId,
-    span: Span,
+    _span: Span,
     attributes: &[syntax::RecordAttribute],
     members: &[syntax::RecordMember],
     evaluate: &mut impl FnMut(
@@ -38,16 +38,7 @@ pub(super) fn record_body_layout(
                 layout.minimum_alignment = Some(alignment(graph, file, expression, evaluate)?);
             }
             syntax::RecordAttribute::NoPadding => layout.packed = true,
-            syntax::RecordAttribute::TypeInfoNone => {
-                return Err(located(
-                    graph,
-                    file,
-                    Diagnostic::new(
-                        span,
-                        "#type_info_none requires reflection metadata suppression, which is not implemented",
-                    ),
-                ));
-            }
+            syntax::RecordAttribute::TypeInfoNone => {}
         }
     }
     let mut fields = Vec::new();

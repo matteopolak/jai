@@ -712,8 +712,8 @@ impl StaticData {
                     .ok_or(StaticDataError::Limit("validation work"))?,
             )?;
         }
-        // Multiple catalog objects require independent validation.
-        let mut represented = std::collections::HashSet::new();
+        // Each immutable descriptor object has its own binding. Historical
+        // revisions may represent one canonical type; validate every object.
         let mut descriptor_work = self.limits.value_nodes;
         for object in &self.objects {
             if let Some(binding) = object.descriptor_binding() {
@@ -726,9 +726,6 @@ impl StaticData {
                     )?;
                 }
                 binding.validate(self, types, &mut descriptor_work)?;
-                if !represented.insert(binding.identity().ty()) {
-                    return Err(StaticDataError::InvalidValue(object.ty()));
-                }
             }
         }
         let mut pending: Vec<_> = self

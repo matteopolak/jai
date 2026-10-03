@@ -49,6 +49,7 @@ mod procedure_signatures;
 mod process_abi_bindings;
 mod record_method_headers;
 mod reflection;
+mod reflection_catalog;
 mod run_origin;
 pub(crate) mod runtime_defaults;
 mod short_lambdas;

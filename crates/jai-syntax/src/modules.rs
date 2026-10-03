@@ -179,6 +179,10 @@ pub struct ParsedFile {
     items: Vec<FileItem>,
 }
 impl ParsedFile {
+    pub(super) fn retained_items(&self) -> &Vec<FileItem> {
+        &self.items
+    }
+
     /// Wrap original typed source items in a new expansion instance without
     /// reparsing text or changing their source coordinates.
     pub fn from_items(source: SourceId, items: Vec<FileItem>) -> Self {

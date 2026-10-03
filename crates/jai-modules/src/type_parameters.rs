@@ -1,5 +1,6 @@
 //! Source-bound type identities are materialized by the existing semantic registry.
 use super::*;
+mod retained_metadata;
 use jai_syntax::{BuiltinType, Expression, ExpressionKind, TypeSyntax};
 use jai_types::{CallingConvention, ContextMode, FloatType, ScalarType};
 

@@ -1,6 +1,8 @@
 //! Pure constant evaluation with typed nodes and no host effects.
 mod bound_values;
 mod domains;
+mod retained_metadata;
+pub use retained_metadata::EvalRetainedMetadataError;
 pub mod floats;
 pub mod operators;
 #[cfg(test)]
