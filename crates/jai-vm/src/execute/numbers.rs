@@ -3,6 +3,7 @@ use super::*;
 mod tests;
 impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
     pub(super) fn charge_work(&mut self, work: usize) -> Result<()> {
+        self.flush_publication_work()?;
         self.statistics.steps = self
             .statistics
             .steps
@@ -184,5 +185,48 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
             return Ok(number);
         }
         Ok(result)
+    }
+}
+
+impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
+    /// Immutable publication callbacks debit the same job fuel as VM actions.
+    /// The pending debit is common execution state and is never snapshotted.
+    pub fn charge_publication_work(&self, work: usize) -> std::result::Result<(), Error> {
+        let work = u64::try_from(work).map_err(|_| Error::Limit(LimitKind::Fuel))?;
+        let pending = self
+            .publication_work
+            .get()
+            .checked_add(work)
+            .filter(|pending| {
+                self.statistics
+                    .steps
+                    .checked_add(*pending)
+                    .is_some_and(|total| total <= self.limits.fuel)
+            })
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        self.publication_work.set(pending);
+        Ok(())
+    }
+    pub fn publication_remaining_fuel(&self) -> u64 {
+        self.limits
+            .fuel
+            .saturating_sub(self.statistics.steps)
+            .saturating_sub(self.publication_work.get())
+    }
+    pub(super) fn flush_publication_work(&mut self) -> Result<()> {
+        let total = self
+            .statistics
+            .steps
+            .checked_add(self.publication_work.get())
+            .filter(|total| *total <= self.limits.fuel)
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        self.statistics.steps = total;
+        self.publication_work.set(0);
+        Ok(())
+    }
+    pub(super) fn publication_statistics(&self) -> Statistics {
+        let mut statistics = self.statistics;
+        statistics.steps = statistics.steps.saturating_add(self.publication_work.get());
+        statistics
     }
 }

@@ -142,6 +142,27 @@ pub(super) fn bind(
     context: Option<&CompilerBindingContext>,
     meta: &crate::reflection::MetaContext,
 ) -> Result<HashMap<ProcedureId, CompilerProcedure>, LocatedDiagnostic> {
+    bind_available(graph, types, declarations, context, meta, false)
+}
+
+pub(super) fn bind_ready(
+    graph: &ModuleGraph,
+    types: &TypeRegistry,
+    declarations: &ScopedDeclarations<'_>,
+    context: Option<&CompilerBindingContext>,
+    meta: &crate::reflection::MetaContext,
+) -> Result<HashMap<ProcedureId, CompilerProcedure>, LocatedDiagnostic> {
+    bind_available(graph, types, declarations, context, meta, true)
+}
+
+fn bind_available(
+    graph: &ModuleGraph,
+    types: &TypeRegistry,
+    declarations: &ScopedDeclarations<'_>,
+    context: Option<&CompilerBindingContext>,
+    meta: &crate::reflection::MetaContext,
+    partial: bool,
+) -> Result<HashMap<ProcedureId, CompilerProcedure>, LocatedDiagnostic> {
     let mut bindings = HashMap::new();
     for declaration in graph.declarations() {
         let (declared_name, parameters, mark) = match &declaration.syntax().kind {
@@ -159,6 +180,9 @@ pub(super) fn bind(
             }
             _ => continue,
         };
+        if partial && !declarations.signatures.contains_key(&declaration.id()) {
+            continue;
+        }
         let name = mark
             .tag
             .as_deref()

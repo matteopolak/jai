@@ -59,6 +59,13 @@ impl Fixture {
     }
 
     fn job(&self, compiler: CompilerSession) -> PreparedWorkspaceJob {
+        self.job_with_replay(compiler, EffectReplayCache::default())
+    }
+    fn job_with_replay(
+        &self,
+        compiler: CompilerSession,
+        replay: EffectReplayCache,
+    ) -> PreparedWorkspaceJob {
         let target = Self::target();
         let unit =
             CompilationUnit::load_with_target(&self.0, Default::default(), target.clone()).unwrap();
@@ -71,7 +78,7 @@ impl Fixture {
             )),
             ..Default::default()
         };
-        PreparedWorkspaceJob::new(unit, options, compiler, EffectReplayCache::default())
+        PreparedWorkspaceJob::new(unit, options, compiler, replay)
     }
 }
 impl Drop for Fixture {
@@ -178,8 +185,18 @@ fn actual_stallable_source_resumes_the_owned_job_after_real_child_readiness() {
     assert!(original.take_outputs().is_empty());
     let mut scheduler = fixture.scheduler();
     assert!(job.service_pending(&mut scheduler).unwrap());
-    let WorkspaceJobProgress::Complete(mut result) = job.poll().unwrap() else {
-        panic!("the same source job must resume after actual child readiness")
+    let WorkspaceJobProgress::SourceRebuild(rebuild) = job.poll().unwrap() else {
+        panic!("completed real prefix exposes its actual child source configuration")
+    };
+    let WorkspaceSourceRebuild {
+        unit: _,
+        compiler,
+        replay,
+    } = *rebuild;
+    drop(job);
+    let mut rebound = fixture.job_with_replay(compiler, replay);
+    let WorkspaceJobProgress::Complete(mut result) = rebound.poll().unwrap() else {
+        panic!("source-owned replay reaches Full without repeating the prior prefix")
     };
     assert_eq!(result.compiler.workspaces().count(), 2);
     let output: Vec<_> = result

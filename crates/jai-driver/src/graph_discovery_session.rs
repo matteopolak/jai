@@ -5,6 +5,7 @@ use jai_sema::{DiscoveryReadiness, PreparedDiscoveryRequests, PreparedDiscoveryS
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DiscoveryQuery {
+    Insertions,
     Conditions,
     Cases,
     Using,
@@ -25,6 +26,9 @@ impl<'graph> PreparedGraphDiscoverySession<'graph> {
     ) -> Result<Self, jai_source::LocatedDiagnostic> {
         let graph = discovery.graph();
         let requests = match query {
+            DiscoveryQuery::Insertions => PreparedDiscoveryRequests::Insertions(
+                discovery.pending_insertion_requests().cloned().collect(),
+            ),
             DiscoveryQuery::Conditions => PreparedDiscoveryRequests::Conditions(
                 discovery.pending_conditions().cloned().collect(),
             ),
@@ -43,7 +47,7 @@ impl<'graph> PreparedGraphDiscoverySession<'graph> {
                 &options.graph.import_dirs,
                 options.workspace,
             )),
-            file_abi: jai_sema::FileAbiBindingContext::from_graph(
+            file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
                 graph,
                 &options.graph.import_dirs,
                 options.target.clone(),
@@ -51,7 +55,12 @@ impl<'graph> PreparedGraphDiscoverySession<'graph> {
             ..Default::default()
         };
         Ok(Self {
-            semantic: PreparedDiscoverySession::new(graph, &resolve, requests)?,
+            semantic: PreparedDiscoverySession::with_insertion_admission(
+                graph,
+                &resolve,
+                requests,
+                Box::new(move |request, code| discovery.admit_insertion(request, code)),
+            )?,
             policy: options.effect_policy,
         })
     }

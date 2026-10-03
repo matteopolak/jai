@@ -4,6 +4,7 @@ use super::*;
 mod anonymous_headers;
 mod baked_bindings;
 mod bound_result_use;
+mod compiler_slots;
 mod expression_bindings;
 mod generic_bindings;
 mod generics;

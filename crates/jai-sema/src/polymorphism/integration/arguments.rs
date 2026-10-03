@@ -1125,6 +1125,7 @@ impl Resolver<'_> {
         span: Span,
     ) -> Result<ArgumentInfo, Diagnostic> {
         Ok(match binding {
+            Binding::CompilerInput { ty, .. } => ArgumentInfo::typed(ty),
             Binding::Discarded(_) => {
                 return Err(Diagnostic::new(span, "a #discard parameter cannot be read"));
             }

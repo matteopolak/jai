@@ -11,6 +11,9 @@ use worklist::BodyJob;
 pub(super) use worklist::Worklist;
 
 pub(super) enum BindingProgress {
+    SourceRunReady,
+    SourceRunsReady,
+    TypesReady,
     HeadersReady,
     InitializersReady,
     Complete(Vec<Procedure>),
@@ -21,11 +24,14 @@ pub(super) enum BindingProgress {
 pub(super) enum BindingMode<'a> {
     Headers(&'a std::collections::HashSet<jai_types::FieldId>),
     Initializers,
+    SourceRuns,
+    Types(super::SourcePreparationPending),
     Full,
 }
 
 pub(super) struct BindSession<'a, 'graph, 'requests> {
     pub mode: BindingMode<'a>,
+    pub source_prefix: bool,
     pub graph: &'graph ModuleGraph,
     pub types: &'a mut TypeRegistry,
     pub declarations: &'a mut ScopedDeclarations<'graph>,
@@ -40,6 +46,7 @@ pub(super) struct BindSession<'a, 'graph, 'requests> {
     pub meta: &'a mut crate::reflection::MetaContext,
     pub alignment_jobs: &'a mut Vec<super::storage_alignment::Job>,
     pub discovery: Option<&'a mut super::discovery_conditions::Jobs<'requests>>,
+    pub admission: Option<&'a InsertionAdmissionCallback<'graph>>,
 }
 
 pub(super) fn bind_procedures_resumable<'graph>(
@@ -79,6 +86,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         method_owner,
         mut methods_pending,
         mut header_prerequisites,
+        insertion_owners,
     } = match retained.take() {
         Some(worklist) => worklist,
         None => Worklist::new(&mut session)?,
@@ -88,6 +96,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
         let empty_values = HashMap::new();
         let BindSession {
             mode,
+            source_prefix,
             graph,
             types,
             declarations,
@@ -102,7 +111,15 @@ pub(super) fn bind_procedures_resumable<'graph>(
             meta,
             alignment_jobs,
             mut discovery,
+            admission,
         } = session;
+        if let BindingMode::Types(pending) = mode {
+            if let aggregates::parameterized::PendingType::Constant { declaration, .. } =
+                pending.cause()
+            {
+                header_prerequisites.constants.insert(declaration);
+            }
+        }
         if let BindingMode::Headers(fields) = mode {
             header_prerequisites.include_fields(fields);
         }
@@ -114,7 +131,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
             || methods_pending
             || !alignment_jobs.is_empty()
             || !file_guards.is_empty()
-            || matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers)
+            || matches!(
+                mode,
+                BindingMode::Types(_)
+                    | BindingMode::Headers(_)
+                    | BindingMode::Initializers
+                    | BindingMode::SourceRuns
+            )
         {
             while let Some(body) = declarations.generics.borrow_mut().next_body() {
                 if ready.remove(&body.signature.id).is_some() {
@@ -157,6 +180,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
             let mut file_guard_error = None;
             let pending_global_alignments: std::collections::HashSet<_> =
                 alignment_jobs.iter().map(|job| job.global).collect();
+            let before_modifier_queue = meta.record_specializations.queued_modifier_count();
             let before = ready.len()
                 + meta.local_declarations.semantic_ready_count()
                 + declarations.values.len()
@@ -169,6 +193,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 + meta.field_default_jobs.requested_count();
             let before = before
                 + header_prerequisites.len()
+                + meta.record_specializations.completed_modifier_count()
                 + initializers.as_ref().map_or(0, |jobs| jobs.completed());
             let before_revision = (
                 declarations.generics.borrow().callback_readiness_revision(),
@@ -222,10 +247,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 deferred,
             };
             let method_result = match mode {
+                BindingMode::Types(_) => {
+                    methods::sweep_types(&method_context, declarations, types, places, meta)
+                }
                 BindingMode::Full => {
                     methods::sweep(&method_context, declarations, types, places, meta)
                 }
-                BindingMode::Headers(_) | BindingMode::Initializers => {
+                BindingMode::Headers(_) | BindingMode::Initializers | BindingMode::SourceRuns => {
                     header_prerequisites.observe_fields(&meta.field_default_jobs);
                     methods::sweep_headers(
                         &method_context,
@@ -240,7 +268,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
             let method_dependencies = method_context.pending.into_inner();
             let method_constants = method_context.pending_constants.into_inner();
             let method_fields = method_context.pending_field_defaults.into_inner();
-            if matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers) {
+            if matches!(
+                mode,
+                BindingMode::Types(_)
+                    | BindingMode::Headers(_)
+                    | BindingMode::Initializers
+                    | BindingMode::SourceRuns
+            ) {
                 header_prerequisites.observe(
                     &method_dependencies,
                     &method_constants,
@@ -282,8 +316,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 if declarations.values.contains_key(&declaration.id()) {
                     continue;
                 }
-                if matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers)
-                    && !header_prerequisites.constants.contains(&declaration.id())
+                if matches!(
+                    mode,
+                    BindingMode::Types(_)
+                        | BindingMode::Headers(_)
+                        | BindingMode::Initializers
+                        | BindingMode::SourceRuns
+                ) && !header_prerequisites.constants.contains(&declaration.id())
                 {
                     retry_constants.push(declaration);
                     continue;
@@ -429,7 +468,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 let dependencies = context.pending.into_inner();
                 let constants_pending = context.pending_constants.into_inner();
                 let field_defaults_pending = context.pending_field_defaults.into_inner();
-                if matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers) {
+                if matches!(
+                    mode,
+                    BindingMode::Types(_)
+                        | BindingMode::Headers(_)
+                        | BindingMode::Initializers
+                        | BindingMode::SourceRuns
+                ) {
                     header_prerequisites.observe(
                         &dependencies,
                         &constants_pending,
@@ -542,9 +587,108 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     }
                 }
             }
+            if matches!(mode, BindingMode::Types(_) | BindingMode::Full) {
+                if let Some(jobs) = discovery.as_deref_mut() {
+                    if let Some(insertions) = &mut jobs.insertions {
+                        let snapshot = places.snapshot();
+                        let context = Context {
+                            workspace: options
+                                .compiler
+                                .as_ref()
+                                .map_or(jai_vm::WorkspaceId::from_raw(1).unwrap(), |context| {
+                                    context.current_workspace
+                                }),
+                            foreign: &foreign,
+                            owner: method_owner,
+                            generics: &declarations.generics,
+                            context: declarations
+                                .context
+                                .as_ref()
+                                .map(|schema| &schema.definition),
+                            procedures: &ready,
+                            signatures: &signatures,
+                            globals,
+                            pending_global_alignments: &pending_global_alignments,
+                            places: &snapshot,
+                            source: graph.file(method_file).unwrap().source(),
+                            file: method_file,
+                            target: options
+                                .target
+                                .as_ref()
+                                .map(jai_vm::ByteTarget::from)
+                                .or_else(|| {
+                                    options.effective_layout().map(|policy| jai_vm::ByteTarget {
+                                        policy,
+                                        endian: jai_vm::Endian::Little,
+                                    })
+                                }),
+                            limits: options.compile_time_limits,
+                            pending: RefCell::new(vec![]),
+                            pending_constants: RefCell::new(vec![]),
+                            pending_field_defaults: RefCell::new(vec![]),
+                            cache: &cache,
+                            effects,
+                            effect_mode: crate::compile_time::EffectsMode::Compiler,
+                            compiler,
+                            runtime,
+                            file_abi: &file_abi,
+                            heap_abi: &heap_abi,
+                            process_abi: &process_abi,
+                            deferred,
+                        };
+                        insertions.evaluate(
+                            admission,
+                            &context,
+                            &insertion_owners,
+                            declarations,
+                            types,
+                            places,
+                            meta,
+                        )?;
+                        let dependencies = context.pending.into_inner();
+                        let constants_pending = context.pending_constants.into_inner();
+                        let fields_pending = context.pending_field_defaults.into_inner();
+                        header_prerequisites.observe(
+                            &dependencies,
+                            &constants_pending,
+                            &fields_pending,
+                        );
+                        for field in fields_pending {
+                            meta.field_default_jobs.request(field);
+                        }
+                        if !insertions.decisions.is_empty() {
+                            return Ok(BindingProgress::Complete(completed_procedures(
+                                std::mem::take(&mut ready),
+                                meta,
+                                &declarations.generics,
+                            )));
+                        }
+                        if !dependencies.is_empty() || !constants_pending.is_empty() {
+                            stalled = Some((
+                                method_file,
+                                Span::default(),
+                                format!("{dependencies:?}; constants {constants_pending:?}"),
+                            ));
+                        } else if matches!(mode, BindingMode::Types(_))
+                            && !insertions.pending.is_empty()
+                        {
+                            return Ok(BindingProgress::Complete(completed_procedures(
+                                std::mem::take(&mut ready),
+                                meta,
+                                &declarations.generics,
+                            )));
+                        }
+                    }
+                }
+            }
             for mut job in std::mem::take(&mut pending) {
-                if matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers)
-                    && !header_prerequisites.procedures.contains(&job.signature.id)
+                if matches!(
+                    mode,
+                    BindingMode::Types(_)
+                        | BindingMode::Headers(_)
+                        | BindingMode::Initializers
+                        | BindingMode::SourceRuns
+                ) && !header_prerequisites.procedures.contains(&job.signature.id)
                 {
                     retry.push(job);
                     continue;
@@ -800,7 +944,13 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 let dependencies = context.pending.into_inner();
                 let constants_pending = context.pending_constants.into_inner();
                 let field_defaults_pending = context.pending_field_defaults.into_inner();
-                if matches!(mode, BindingMode::Headers(_) | BindingMode::Initializers) {
+                if matches!(
+                    mode,
+                    BindingMode::Types(_)
+                        | BindingMode::Headers(_)
+                        | BindingMode::Initializers
+                        | BindingMode::SourceRuns
+                ) {
                     header_prerequisites.observe(
                         &dependencies,
                         &constants_pending,
@@ -881,8 +1031,9 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     }
                 }
             }
-            if matches!(mode, BindingMode::Full)
-                && (!alignment_jobs.is_empty() || !file_guards.is_empty() || discovery.is_some())
+            if (matches!(mode, BindingMode::Full)
+                && (!alignment_jobs.is_empty() || !file_guards.is_empty() || discovery.is_some()))
+                || (matches!(mode, BindingMode::SourceRuns) && !alignment_jobs.is_empty())
             {
                 let snapshot = places.snapshot();
                 let context = Context {
@@ -947,43 +1098,63 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 if progress.stalled.is_some() {
                     stalled = progress.stalled;
                 }
-                let progress = file_conditions::bind(
-                    &context,
-                    &mut file_guards,
-                    declarations,
-                    types,
-                    places,
-                    meta,
-                );
-                completed_file_guards += progress.completed;
-                file_guard_error = progress.error;
-                if let Some(jobs) = discovery.as_deref_mut() {
-                    super::discovery_conditions::evaluate(
+                if matches!(mode, BindingMode::SourceRuns) {
+                    header_prerequisites.observe(
+                        &context.pending.borrow(),
+                        &context.pending_constants.borrow(),
+                        &context.pending_field_defaults.borrow(),
+                    );
+                    for &field in context.pending_field_defaults.borrow().iter() {
+                        meta.field_default_jobs.request(field);
+                    }
+                }
+                if matches!(mode, BindingMode::Full) {
+                    let progress = file_conditions::bind(
                         &context,
+                        &mut file_guards,
                         declarations,
                         types,
                         places,
                         meta,
-                        jobs,
-                    )?;
-                    if !jobs.decisions.is_empty()
-                        || !jobs.case_decisions.is_empty()
-                        || !jobs.using_decisions.is_empty()
-                        || !meta.pending_source_specializations.is_empty()
-                    {
-                        return Ok(BindingProgress::Complete(completed_procedures(
-                            std::mem::take(&mut ready),
+                    );
+                    completed_file_guards += progress.completed;
+                    file_guard_error = progress.error;
+                    if let Some(jobs) = discovery.as_deref_mut() {
+                        super::discovery_conditions::evaluate(
+                            &context,
+                            declarations,
+                            types,
+                            places,
                             meta,
-                            &declarations.generics,
-                        )));
+                            jobs,
+                        )?;
+                        if !jobs.decisions.is_empty()
+                            || !jobs.case_decisions.is_empty()
+                            || !jobs.using_decisions.is_empty()
+                            || !meta.pending_source_specializations.is_empty()
+                        {
+                            return Ok(BindingProgress::Complete(completed_procedures(
+                                std::mem::take(&mut ready),
+                                meta,
+                                &declarations.generics,
+                            )));
+                        }
                     }
                 }
             }
-            if matches!(mode, BindingMode::Full) && retry_constants.is_empty() {
+            // Header defaults and actual storage complete before ordinary root
+            // runs. Only a genuine initial type wait can use the earlier prefix.
+            let prefix_runs = source_prefix
+                && declarations.context.is_some()
+                && matches!(mode, BindingMode::Types(_) | BindingMode::SourceRuns);
+            let mut source_run_checkpoint = false;
+            if (matches!(mode, BindingMode::Full | BindingMode::SourceRuns) || prefix_runs)
+                && (prefix_runs || retry_constants.is_empty())
+            {
                 signatures.extend(declarations.generics.borrow().signature_snapshot());
                 let mut retry_runs = vec![];
                 for (request, owner_ref) in runs.drain(..) {
-                    if !retry_runs.is_empty() {
+                    if source_run_checkpoint || !retry_runs.is_empty() {
                         retry_runs.push((request, owner_ref));
                         continue;
                     }
@@ -1077,11 +1248,21 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     let dependencies = context.pending.into_inner();
                     let constants_pending = context.pending_constants.into_inner();
                     let field_defaults_pending = context.pending_field_defaults.into_inner();
+                    if prefix_runs {
+                        header_prerequisites.observe(
+                            &dependencies,
+                            &constants_pending,
+                            &field_defaults_pending,
+                        );
+                    }
                     for &field in &field_defaults_pending {
                         meta.field_default_jobs.request(field);
                     }
                     match result {
-                        Ok(_) => completed_runs += 1,
+                        Ok(_) => {
+                            completed_runs += 1;
+                            source_run_checkpoint = prefix_runs;
+                        }
                         Err(error)
                             if !dependencies.is_empty()
                                 || !constants_pending.is_empty()
@@ -1104,6 +1285,30 @@ pub(super) fn bind_procedures_resumable<'graph>(
             if let Some(error) = cache.take_callback_failure() {
                 return Err(LocatedDiagnostic::new(root_source, error));
             }
+            if source_run_checkpoint {
+                pending = retry;
+                constants = retry_constants;
+                return Ok(BindingProgress::SourceRunReady);
+            }
+            if prefix_runs
+                && runs.is_empty()
+                && alignment_jobs.is_empty()
+                && header_prerequisites.ready(&meta.field_default_jobs)
+                && header_prerequisites
+                    .constants
+                    .iter()
+                    .all(|id| declarations.values.contains_key(id))
+                && meta.record_specializations.queued_modifier_count() == 0
+                && !declarations.generics.borrow().has_pending_modifier_bodies()
+                && cache.pending_execution().is_none()
+                && isolated_caches
+                    .values()
+                    .all(|cache| cache.pending_execution().is_none())
+            {
+                pending = retry;
+                constants = retry_constants;
+                return Ok(BindingProgress::SourceRunsReady);
+            }
             if matches!(mode, BindingMode::Headers(_))
                 && header_prerequisites.ready(&meta.field_default_jobs)
                 && cache.pending_execution().is_none()
@@ -1114,6 +1319,20 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 pending = retry;
                 constants = retry_constants;
                 return Ok(BindingProgress::HeadersReady);
+            }
+            if matches!(mode, BindingMode::Types(_))
+                && !prefix_runs
+                && meta.record_specializations.queued_modifier_count() == 0
+                && header_prerequisites
+                    .constants
+                    .iter()
+                    .all(|id| declarations.values.contains_key(id))
+                && !declarations.generics.borrow().has_pending_modifier_bodies()
+                && cache.pending_execution().is_none()
+            {
+                pending = retry;
+                constants = retry_constants;
+                return Ok(BindingProgress::TypesReady);
             }
             if matches!(mode, BindingMode::Initializers)
                 && initializers.as_ref().is_some_and(|jobs| jobs.is_complete())
@@ -1134,6 +1353,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                 + meta.field_default_jobs.ready().count()
                 + meta.field_default_jobs.requested_count()
                 + header_prerequisites.len()
+                + meta.record_specializations.completed_modifier_count()
                 + initializers.as_ref().map_or(0, |jobs| jobs.completed())
                 == before
                 && (
@@ -1141,6 +1361,7 @@ pub(super) fn bind_procedures_resumable<'graph>(
                     meta.local_declarations.callback_readiness_revision(),
                 ) == before_revision
                 && record_count == meta.record_specializations.records().count()
+                && before_modifier_queue == meta.record_specializations.queued_modifier_count()
             {
                 if let Some(suspension) = cache.pending_execution() {
                     if !suspension.dependencies.iter().any(|dependency| {
@@ -1251,10 +1472,14 @@ pub(super) fn bind_procedures_resumable<'graph>(
         method_owner,
         methods_pending,
         header_prerequisites,
+        insertion_owners,
     };
     match &outcome {
         Ok(
             BindingProgress::Pending(_)
+            | BindingProgress::SourceRunReady
+            | BindingProgress::SourceRunsReady
+            | BindingProgress::TypesReady
             | BindingProgress::HeadersReady
             | BindingProgress::InitializersReady,
         ) => *retained = Some(worklist),

@@ -23,6 +23,7 @@ impl CompilerFrameId {
 /// Only a reached Return control can create this read-only publication view.
 pub struct CompilerCodeSelection<'a> {
     site: CompilerReturnSiteId,
+    publication_occurrence: u64,
     frame: &'a CompilerFrame,
     captures: &'a [CompilerSlotId],
     capture_flags: &'a [bool],
@@ -30,6 +31,12 @@ pub struct CompilerCodeSelection<'a> {
 impl CompilerCodeSelection<'_> {
     pub fn site(&self) -> CompilerReturnSiteId {
         self.site
+    }
+    /// One logical selected-capture event within the canonical source origin.
+    /// Resume and publication retry retain this event; arena/frame serials do
+    /// not participate in replay or native constant identity.
+    pub fn publication_occurrence(&self) -> u64 {
+        self.publication_occurrence
     }
     pub fn frame(&self) -> CompilerFrameId {
         self.frame.id
@@ -106,6 +113,11 @@ struct Leaf {
     code: Arc<plan::Plan>,
     inputs: Box<[CompilerRuntimeInput]>,
 }
+#[derive(Clone, Copy)]
+struct SelectedReturn {
+    site: CompilerReturnSiteId,
+    publication_occurrence: u64,
+}
 enum Work {
     Enter(CompilerControlId),
     BlockNext {
@@ -153,7 +165,7 @@ pub(super) struct CompilerController {
     frame: CompilerFrame,
     work: Vec<Work>,
     active: Option<ActiveLeaf>,
-    selected: Option<CompilerReturnSiteId>,
+    selected: Option<SelectedReturn>,
     fixed_cells: usize,
     planning_work: usize,
     initialized: bool,
@@ -319,9 +331,15 @@ impl CompilerController {
         })
     }
     pub(super) fn retained_cells(&self) -> std::result::Result<usize, Error> {
-        let mut cells = sum(sum(self.fixed_cells, self.frame.cells)?, self.work.capacity())?;
+        let mut cells = sum(
+            sum(self.fixed_cells, self.frame.cells)?,
+            self.work.capacity(),
+        )?;
         if let Some(active) = &self.active {
-            cells = sum(cells, active.retained_cells(self.leaves[active.leaf].code.metadata_cells)?)?;
+            cells = sum(
+                cells,
+                active.retained_cells(self.leaves[active.leaf].code.metadata_cells)?,
+            )?;
         }
         Ok(cells)
     }
@@ -336,11 +354,12 @@ impl CompilerController {
         Ok(())
     }
     pub(super) fn selection(&self) -> Option<CompilerCodeSelection<'_>> {
-        let site = self.selected?;
+        let selected = self.selected?;
         Some(CompilerCodeSelection {
-            site,
+            site: selected.site,
+            publication_occurrence: selected.publication_occurrence,
             frame: &self.frame,
-            captures: self.sites[site.index()]
+            captures: self.sites[selected.site.index()]
                 .as_deref()
                 .expect("selected compiler site"),
             capture_flags: &self.capture_flags,
@@ -381,7 +400,9 @@ impl CompilerController {
         work: Work,
     ) -> Result<()> {
         if self.work.len() == self.work.capacity() {
-            return Err(Error::InvalidIr("compiler control exceeds its checked stack bound").into());
+            return Err(
+                Error::InvalidIr("compiler control exceeds its checked stack bound").into(),
+            );
         }
         self.admit(vm, 0)?;
         vm.charge_work(1)?;
@@ -491,6 +512,12 @@ impl CompilerController {
                     }
                     Control::Return(site) => {
                         let site = *site;
+                        let publication_occurrence = u64::try_from(site.index())
+                            .ok()
+                            .and_then(|index| index.checked_add(1))
+                            .ok_or(Error::InvalidIr(
+                                "compiler publication occurrences exhausted",
+                            ))?;
                         let captures = self.sites[site.index()]
                             .as_deref()
                             .expect("verified compiler site");
@@ -505,7 +532,10 @@ impl CompilerController {
                         for slot in captures {
                             self.capture_flags[slot.index()] = true;
                         }
-                        self.selected = Some(site);
+                        self.selected = Some(SelectedReturn {
+                            site,
+                            publication_occurrence,
+                        });
                     }
                 },
                 Work::BlockNext { block, index } => {
@@ -589,9 +619,13 @@ impl CompilerController {
                 .checked_sub(self.leaves[active.leaf].code.metadata_cells)
                 .ok_or(Error::InvalidIr("compiler code accounting underflow"))?;
             let memory_limit = vm.memory.replace_value_cell_limit(original)?;
-            let progress = active.machine.as_mut().unwrap().drive_budgeted(vm, |vm, machine| {
-                admit_live(vm, external, Some(machine), original, rollback_cells)
-            });
+            let progress = active
+                .machine
+                .as_mut()
+                .unwrap()
+                .drive_budgeted(vm, |vm, machine| {
+                    admit_live(vm, external, Some(machine), original, rollback_cells)
+                });
             vm.limits.value_cells = original;
             vm.memory.replace_value_cell_limit(memory_limit)?;
             match progress? {
@@ -624,7 +658,13 @@ impl CompilerController {
             active.value_cells = Some(cells);
         }
         let active_cells = active.retained_cells(self.leaves[active.leaf].code.metadata_cells)?;
-        admit_live(vm, sum(self.retained_cells()?, active_cells)?, None, original, rollback_cells)?;
+        admit_live(
+            vm,
+            sum(self.retained_cells()?, active_cells)?,
+            None,
+            original,
+            rollback_cells,
+        )?;
         self.admit(vm, active_cells)?;
         match active.goal {
             Goal::Discard => {
@@ -689,11 +729,16 @@ fn admit_live<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
     vm.limits.value_cells = original;
     let storage = branches::measured(vm, false)?;
     let residual = checkpoint::residual(vm, storage.cells)?;
+    let origin_cells = publication_origin_cells(vm);
     let machine_cells = machine.map_or(0, machine::Machine::retained_cells);
     let machine_extra = match machine {
-        Some(machine) => machine_cells
-            .checked_sub(machine.accounted_cells())
-            .ok_or(Error::InvalidIr("compiler leaf residual accounting underflow"))?,
+        Some(machine) => {
+            machine_cells
+                .checked_sub(machine.accounted_cells())
+                .ok_or(Error::InvalidIr(
+                    "compiler leaf residual accounting underflow",
+                ))?
+        }
         None => 0,
     };
     let occupied = sum(
@@ -701,10 +746,16 @@ fn admit_live<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
             sum(storage.cells, branches::shared_world_cells(vm)?)?,
             compiler_cells,
         )?,
-        sum(machine_cells, rollback_cells)?,
+        sum(sum(machine_cells, rollback_cells)?, origin_cells)?,
     )?;
     bound(occupied, original)?;
-    let mut reserved = sum(rollback_cells, residual)?;
+    cache_drive_publication_retention(
+        vm,
+        original,
+        sum(sum(rollback_cells, compiler_cells)?, machine_cells)?,
+        residual,
+    )?;
+    let mut reserved = sum(sum(rollback_cells, residual)?, origin_cells)?;
     if machine.is_some() {
         reserved = sum(reserved, sum(compiler_cells, machine_extra)?)?;
     }

@@ -12,11 +12,15 @@ After inference succeeds, `evaluate_paths` or `evaluate_float_paths` requests va
 
 Weak decimal expressions preserve direct contextual rounding. An inactive arm may determine the weak expression's default width; the selected exact expression retains that width in its immutable request identity. The canonical weak-float key encoding adds tag 28 for a default-width override while preserving existing encoding tags and existing simple-decimal bytes. A selected named value whose domain disagrees with its bound fact is rejected instead of silently changing the arithmetic type.
 
+`infer_for_preparation` returns structured `ScalarInferenceError::RequiresTypedExecution` for a source form that needs checked typed execution, such as a call, `#run`, or storage cast. Genuine scalar binding errors remain `ScalarInferenceError::Diagnostic`. `infer` retains its diagnostic-only API. Preparation must wait on the actual referenced producer when typed execution is required; a transitive dependency classification must never force an inactive producer value. For example, `M :: ifx true then 42 else N; N : int : #run count();` obtains `N`'s domain from its annotation and computes `M` without executing `N`. Selecting `N` still waits for its genuine value.
+
 Inference does not make unknown bindings valid. An unavailable domain still reports its normal source dependency, and incompatible inactive domains still fail. Domain availability and value readiness are distinct; a caller must obtain domains from genuine annotations, typed binding facts, or recursively inferred source declarations without running initializer arithmetic.
 
 ## How to change it
 
 Extend `crates/jai-eval/src/domains.rs` when adding a new scalar syntax form. Keep domain checks consistent with `bind` and `bound_values::bind_binary`; value construction must continue to use the existing checked arithmetic and float implementations. Never manufacture zero-valued constants to stand in for unresolved binding facts.
+
+Unsupported integer storage casts and `cast,trunc(bool)` reject before consulting operand bindings, matching the original scalar error order. Add readiness classification at the syntax branch that discovers it; never classify rendered diagnostic messages.
 
 The focused regressions in `crates/jai-eval/tests/domain_inference.rs` cover inactive bindings, common-width joins, child overflow policy, short circuiting, invalid domains, selected fact/value mismatches, and exact weak-float identity. Any new bound float-key tag also needs a stable distinct canonical encoding in `floats/keys/encoding.rs`.
 

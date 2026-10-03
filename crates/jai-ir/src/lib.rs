@@ -501,3 +501,9 @@ impl fmt::Display for IrError {
     }
 }
 impl std::error::Error for IrError {}
+
+pub use disposal::compiler_roots::{discard_call, discard_value_expression};
+pub use verify::compiler_bindings::{
+    verify_compiler_bound_call_with_context, verify_compiler_bound_expression_with_context,
+    verify_compiler_slot_type,
+};

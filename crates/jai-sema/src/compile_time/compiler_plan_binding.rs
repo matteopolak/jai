@@ -1,4 +1,4 @@
-//! Private staging: compiler-only plan binding may type native leaves, but may
+//! Compiler-only plan binding may type native leaves, but may
 //! not execute source directives while constructing the retained plan.
 use super::{Cache, Context, EffectService, EffectsMode, ProcedureId};
 use jai_modules::FileInstanceId;

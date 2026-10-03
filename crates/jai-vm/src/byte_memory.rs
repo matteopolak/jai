@@ -345,8 +345,22 @@ impl ByteImage {
         ty: TypeId,
         value: &Value,
     ) -> Result<(), Error> {
+        self.write_normalized(types, target, offset, ty, value, |_| Ok(()))
+    }
+    /// Normalize a typed patch before committing it, so later partial writes
+    /// retain canonical address bits even when its complete relocation vanishes.
+    pub(crate) fn write_normalized(
+        &mut self,
+        types: &dyn TypeView,
+        target: ByteTarget,
+        offset: usize,
+        ty: TypeId,
+        value: &Value,
+        normalize: impl FnOnce(&mut ByteImage) -> Result<(), Error>,
+    ) -> Result<(), Error> {
         self.check_target(target)?;
-        let patch = Self::encode(types, target, ty, value, self.limit)?;
+        let mut patch = Self::encode(types, target, ty, value, self.limit)?;
+        normalize(&mut patch)?;
         let end = self.range(offset, patch.len())?.end;
         let retained_handles = self
             .relocations

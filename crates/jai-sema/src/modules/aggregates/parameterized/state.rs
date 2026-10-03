@@ -122,6 +122,9 @@ impl RecordSpecializations {
     pub(crate) fn completed_modifier_count(&self) -> usize {
         self.modifiers.completed_count()
     }
+    pub(crate) fn queued_modifier_count(&self) -> usize {
+        self.modifiers.queued_count()
+    }
     pub(crate) fn remember_source(&mut self, ty: TypeId, location: jai_source::SourceSpan) {
         self.source_locations.entry(ty).or_insert(location);
     }
@@ -488,6 +491,19 @@ impl RecordSpecializations {
     }
 }
 
+impl crate::overloads::NominalView for RecordSpecializations {
+    fn specialization(&self, ty: TypeId) -> Option<(DeclarationId, &Substitution)> {
+        let record = self.record(ty)?;
+        if record.nested {
+            return None;
+        }
+        Some((record.origin?.0, &record.substitution))
+    }
+    fn default_argument(&self, ty: TypeId, parameter: Symbol) -> Option<&BakedValue> {
+        self.record(ty)?.defaults.get(&parameter)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -524,18 +540,5 @@ mod tests {
         let first = RecordTemplateId(ids.declaration());
         let second = RecordTemplateId(ids.declaration());
         assert_ne!(first, second);
-    }
-}
-
-impl crate::overloads::NominalView for RecordSpecializations {
-    fn specialization(&self, ty: TypeId) -> Option<(DeclarationId, &Substitution)> {
-        let record = self.record(ty)?;
-        if record.nested {
-            return None;
-        }
-        Some((record.origin?.0, &record.substitution))
-    }
-    fn default_argument(&self, ty: TypeId, parameter: Symbol) -> Option<&BakedValue> {
-        self.record(ty)?.defaults.get(&parameter)
     }
 }

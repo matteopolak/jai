@@ -746,7 +746,12 @@ fn low_combined_cells_and_fuel_reject_private_fork_then_restore_the_source_check
             LimitKind::ValueCells => {
                 let occupied = vm.memory.value_cells()
                     + vm.expression_bindings.cells()
-                    + vm.continuation.as_ref().unwrap().machine.retained_cells()
+                    + vm.continuation
+                        .as_ref()
+                        .unwrap()
+                        .root
+                        .retained_cells()
+                        .unwrap()
                     + vm.processes.as_ref().unwrap().cells();
                 let scheduler = &vm.continuation.as_ref().unwrap().process_scheduler;
                 let reserved = scheduler.rollback_cells + scheduler.resident_ancillary_cells;
@@ -980,6 +985,28 @@ fn preclone_combined_quota_denial_preserves_real_controls_frames_and_existing_qu
             assert_eq!(global(&vm, 0), 1);
         }
     }
+}
+
+#[test]
+fn full_clone_fuel_is_rejected_before_candidate_world_or_private_owner_changes() {
+    let fixture = Fixture::new();
+    let (mut vm, mut machine) = stopped_main(&fixture);
+    let mut scheduler = ProcessScheduler::new(0, 0);
+    let before = ResidentBefore::capture(&scheduler, &vm, &machine);
+    let statistics = vm.statistics;
+    // Calibrate only the admitted borrowed inspection. Leave enough fuel to
+    // inspect the genuine world and branch, but no clone/injection budget.
+    branches::measured(&mut vm, true).unwrap();
+    let inspection_work = vm.statistics.steps - statistics.steps;
+    vm.statistics = statistics;
+    vm.limits.fuel =
+        statistics.steps + vm.processes.as_ref().unwrap().work_cost() + inspection_work + 1;
+    assert!(matches!(
+        scheduler.fork(&mut vm, &mut machine, before.current),
+        Err(Halt::Failed(Error::Limit(LimitKind::Fuel)))
+    ));
+    assert_eq!(vm.statistics.calls, statistics.calls);
+    before.assert_preserved(&scheduler, &vm, &machine);
 }
 
 #[test]

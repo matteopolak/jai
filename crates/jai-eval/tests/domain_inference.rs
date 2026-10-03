@@ -163,3 +163,84 @@ fn inactive_weak_decimal_defaults_remain_part_of_exact_identity() {
         FloatValue::from_f32(1.0)
     );
 }
+
+#[test]
+fn inferred_domains_preserve_existing_scalar_results_and_error_policy() {
+    for text in [
+        "ifx true then 256 else cast(u8) 1",
+        "ifx false then cast(u8) 256 else cast(u16) 7",
+        "ifx true then true else false",
+        "ifx false then cast(s32) -3",
+        "ifx true then cast(float32) 1.0 else cast(float64) 2.0",
+        "(ifx true then 1.0000000596046448 else 1e39) == 1.0000000596046448",
+        "(ifx true then 1.0 else 1e39) + 0.0",
+        "false && cast(u8) 250 + 6 == 0",
+        "true || (1 / 0 == 0)",
+        "cast(u8) -1",
+        "cast,trunc(u8) 257",
+        "cast,no_check(s8) 127 + 1",
+        "cast,no_check(s32) 1.0",
+        "1.0 & 2",
+        "cast(float32) true",
+        "cast(float32) cast(s32) 3",
+    ] {
+        let input = expression(text);
+        let eager = jai_eval::evaluate_paths(&input, |_, _| panic!());
+        let lazy = DomainInference::infer(&input, unknown)
+            .and_then(|inferred| inferred.evaluate_paths(CheckMode::Enabled, |_, _| panic!()));
+        match (eager, lazy) {
+            (Ok(Value::WeakFloat(a)), Ok(Value::WeakFloat(b))) => {
+                for width in [FloatType::F32, FloatType::F64] {
+                    assert_eq!(
+                        a.round(width, Span::default()),
+                        b.round(width, Span::default()),
+                        "{text} {width:?}"
+                    );
+                }
+                assert_eq!(a.default_type(), b.default_type(), "{text}");
+            }
+            (a, b) => assert_eq!(a, b, "{text}"),
+        }
+    }
+}
+
+#[test]
+fn unsupported_integer_cast_policy_precedes_binding_its_operand() {
+    for text in [
+        "cast,force(u32) missing",
+        "cast,FORCE(u32) missing",
+        "cast,trunc(bool) missing",
+    ] {
+        let input = expression(text);
+        let eager =
+            jai_eval::evaluate_paths(&input, |_, _| panic!("unsupported cast looked up a value"));
+        let inferred =
+            DomainInference::infer(&input, |_, _| panic!("unsupported cast looked up a domain"));
+        assert_eq!(inferred.unwrap_err(), eager.unwrap_err(), "{text}");
+    }
+}
+
+#[test]
+fn typed_source_readiness_is_structured_and_scalar_errors_remain_errors() {
+    use jai_eval::ScalarInferenceError;
+    for text in ["#run work()", "work()", "cast,force(u32) 1.0"] {
+        let input = expression(text);
+        assert!(
+            matches!(
+                DomainInference::infer_for_preparation(&input, unknown),
+                Err(ScalarInferenceError::RequiresTypedExecution(_))
+            ),
+            "{text}"
+        );
+    }
+    for text in ["true + 1", "missing", "cast,trunc(bool) true"] {
+        let input = expression(text);
+        assert!(
+            matches!(
+                DomainInference::infer_for_preparation(&input, unknown),
+                Err(ScalarInferenceError::Diagnostic(_))
+            ),
+            "{text}"
+        );
+    }
+}

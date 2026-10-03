@@ -208,11 +208,14 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
             self.limits.evaluation_depth.min(128),
         )?;
         let value_cells = value.cells(self.limits.value_cells)?;
-        // The existing image, value, encoded patch and metadata coexist. Three
-        // value copies bound both relocation and origin metadata in the codec.
+        // Splitting existing address provenance temporarily retains the old
+        // receipt and its fragments, including projected-pointer paths. Three
+        // backing copies bound those clones as well as the old metadata vectors;
+        // incoming value receipts and the encoded patch are admitted separately.
         let transient = state
             .cells(self.limits.value_cells)?
-            .checked_add(value_cells.saturating_mul(3))
+            .checked_mul(3)
+            .and_then(|n| n.checked_add(value_cells.saturating_mul(3)))
             .and_then(|n| n.checked_add(write.extent.saturating_mul(2)))
             .ok_or(Error::Limit(LimitKind::ValueCells))?;
         self.admit_ordered_cells(transient, retained)?;
@@ -220,9 +223,9 @@ impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
             .memory
             .prepared_codec_layout_work(self.provider.types(), write.ty)?;
         self.charge_work(transient.saturating_add(codec))?;
-        state.image.write(
+        self.memory.write_ordered_record_patch(
             self.provider.types(),
-            self.memory.target(),
+            &mut state.image,
             write.offset,
             write.ty,
             value,

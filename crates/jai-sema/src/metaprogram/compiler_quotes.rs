@@ -2,6 +2,7 @@
 use super::*;
 use jai_types::TypeId;
 use jai_vm::{CompilerCodePlan, CompilerCodePlanId, CompilerReturnSiteId, CompilerSlotId};
+use std::{cell::RefCell, rc::Rc};
 
 #[derive(Clone)]
 pub(crate) struct CompilerQuoteSource {
@@ -19,7 +20,10 @@ pub(crate) enum CompilerQuoteBinding {
     /// An actual enclosing source place. Compiler execution never reads it;
     /// procedural quotation insertion rebinds the original source capture.
     Lexical(crate::Storage),
-    Native { slot: CompilerSlotId, ty: TypeId },
+    Native {
+        slot: CompilerSlotId,
+        ty: TypeId,
+    },
 }
 
 pub(crate) struct CompilerQuoteTemplate {
@@ -29,15 +33,28 @@ pub(crate) struct CompilerQuoteTemplate {
     source: CompilerQuoteSource,
     frames: Box<[Box<[(Symbol, CompilerQuoteBinding)]>]>,
     captures: Box<[CompilerSlotId]>,
+    source_retention: Rc<RefCell<super::CompilerQuoteBudget>>,
 }
 
 impl CompilerQuoteTemplate {
+    #[cfg(test)]
     pub(crate) fn checked(
         plan: &CompilerCodePlan,
         site: CompilerReturnSiteId,
         body: &syntax::CodeBody,
         source: CompilerQuoteSource,
         frames: Vec<Vec<(Symbol, CompilerQuoteBinding)>>,
+    ) -> Result<Self, Diagnostic> {
+        Self::checked_in_session(plan, site, body, source, frames, Default::default())
+    }
+
+    pub(crate) fn checked_in_session(
+        plan: &CompilerCodePlan,
+        site: CompilerReturnSiteId,
+        body: &syntax::CodeBody,
+        source: CompilerQuoteSource,
+        frames: Vec<Vec<(Symbol, CompilerQuoteBinding)>>,
+        source_retention: Rc<RefCell<super::CompilerQuoteBudget>>,
     ) -> Result<Self, Diagnostic> {
         let fail = |message| Diagnostic::at_source(source.location, message);
         let captures = plan
@@ -99,7 +116,9 @@ impl CompilerQuoteTemplate {
                 "compiler quotation does not retain the selected return site's exact native captures",
             ));
         }
-        super::admit_compiler_quote(body, source.location.span)?;
+        source_retention
+            .borrow_mut()
+            .admit(body, source.location.span)?;
         Ok(Self {
             plan: plan.id(),
             site,
@@ -107,6 +126,7 @@ impl CompilerQuoteTemplate {
             source,
             frames: frames.into_iter().map(Vec::into_boxed_slice).collect(),
             captures: captures.into(),
+            source_retention,
         })
     }
 
@@ -127,6 +147,29 @@ impl CompilerQuoteTemplate {
     }
     pub(crate) fn captures(&self) -> &[CompilerSlotId] {
         &self.captures
+    }
+
+    pub(crate) fn admit_publication_body(&self) -> Result<(), Diagnostic> {
+        self.source_retention
+            .borrow_mut()
+            .admit(&self.body, self.source.location.span)
+    }
+
+    pub(crate) fn admit_publication_scope(
+        &self,
+        lexical: &crate::local_declarations::LocalScopes,
+        substitution: Option<&crate::polymorphism::Substitution>,
+    ) -> Result<(), Diagnostic> {
+        let mut budget = self.source_retention.borrow_mut();
+        let span = self.source.location.span;
+        lexical.admit_compiler_clone(&mut budget, span)?;
+        budget.retain_metadata(self.source.origins.len().saturating_mul(2), 0, span)?;
+        if let Some(substitution) = substitution {
+            // Scope and canonical capture key each own their substitution.
+            budget.admit_substitution(substitution, span)?;
+            budget.admit_substitution(substitution, span)?;
+        }
+        Ok(())
     }
 }
 

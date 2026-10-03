@@ -106,7 +106,44 @@ impl<'graph> Jobs<'graph> {
             };
             let recipe = match (external, expression) {
                 (Some(external), _) => Recipe::Ready(external),
-                (_, Some(expression)) => Recipe::Expression(expression),
+                (_, Some(expression))
+                    if requires_worklist(graph, file, expression, declarations) =>
+                {
+                    Recipe::Expression(expression)
+                }
+                (_, Some(expression)) => {
+                    let value = if enum_constants::is_pure_scalar(expression)
+                        && (expected == types.meta_type()
+                            || matches!(types.kind(expected), Ok(TypeKind::Enum(_)))
+                            || enum_constants::uses_enum(declarations, file, expression))
+                    {
+                        enum_constants::evaluate_expression(
+                            declarations,
+                            types,
+                            meta,
+                            file,
+                            expression,
+                            Some(expected),
+                            options,
+                        )
+                        .map_err(|error| located(graph, file, error))?
+                    } else {
+                        let mut evaluator = aggregates::Defaults::new(
+                            graph,
+                            types,
+                            &declarations.nominals,
+                            constants,
+                        )
+                        .with_specializations(&meta.record_specializations)
+                        .with_context(declarations.context.as_ref());
+                        evaluator.fields = declarations.defaults.clone();
+                        hydrate_constants(&mut evaluator, declarations, meta);
+                        evaluator.expression(file, expression, expected)?
+                    };
+                    Recipe::Ready(Global::new_typed(index, value, types).map_err(|error| {
+                        located(graph, file, Diagnostic::new(global.span, error.to_string()))
+                    })?)
+                }
                 (_, None) => {
                     let mut evaluator =
                         aggregates::Defaults::new(graph, types, &declarations.nominals, constants)
@@ -196,6 +233,38 @@ impl<'graph> Jobs<'graph> {
         self.completed += 1;
         Ok(())
     }
+}
+
+fn requires_worklist(
+    graph: &ModuleGraph,
+    file: FileInstanceId,
+    expression: &syntax::Expression,
+    declarations: &ScopedDeclarations<'_>,
+) -> bool {
+    let deferred = deferred_constants::classify(graph);
+    let mut required = false;
+    deferred_constants::visit(expression, |expression| {
+        use syntax::ExpressionKind as E;
+        if matches!(
+            expression.kind,
+            E::CompileTime(_) | E::AnonymousProcedure(_) | E::ShortLambda(_)
+        ) {
+            required = true;
+        }
+        let name = match &expression.kind {
+            E::Name(name) => Some(path(*name)),
+            E::QualifiedName(name) => Some(name.clone()),
+            _ => None,
+        };
+        if let Some(name) = name
+            && let Ok(jai_modules::Binding::Declaration(id)) = graph.lookup(file, &name)
+            && deferred.contains(&id)
+            && !declarations.values.contains_key(&id)
+        {
+            required = true;
+        }
+    });
+    required
 }
 
 impl Job<'_> {

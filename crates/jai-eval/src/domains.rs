@@ -13,6 +13,19 @@ pub enum ScalarDomain {
     /// Exact decimal expressions retain their default width until contextual use.
     WeakFloat(FloatType),
 }
+/// Preparation distinguishes an actual typed source producer from a scalar error.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ScalarInferenceError {
+    Diagnostic(Diagnostic),
+    RequiresTypedExecution(Diagnostic),
+}
+impl ScalarInferenceError {
+    pub fn into_diagnostic(self) -> Diagnostic {
+        match self {
+            Self::Diagnostic(error) | Self::RequiresTypedExecution(error) => error,
+        }
+    }
+}
 impl Value {
     pub fn domain(&self) -> ScalarDomain {
         match self {
@@ -37,7 +50,10 @@ impl ScalarDomain {
             Self::IntegerLiteral => Ok((None, FloatType::F32)),
             Self::Float(ty) => Ok((Some(ty), ty)),
             Self::WeakFloat(ty) => Ok((None, ty)),
-            _ => Err(Diagnostic::new(span, "expected floating-point constant")),
+            _ => Err(Diagnostic::new(
+                span,
+                "expected numeric floating-point constant",
+            )),
         }
     }
     fn is_float(self) -> bool {
@@ -81,7 +97,22 @@ impl<'a> DomainInference<'a> {
         expression: &'a Expression,
         mut lookup: impl FnMut(&NamePath, Span) -> Result<ScalarDomain, Diagnostic>,
     ) -> Result<Self, Diagnostic> {
-        Self::infer_inner(expression, &mut lookup)
+        Self::infer_for_preparation(expression, &mut lookup)
+            .map_err(ScalarInferenceError::into_diagnostic)
+    }
+    /// Bind readiness structurally; callers never classify rendered error messages.
+    pub fn infer_for_preparation(
+        expression: &'a Expression,
+        mut lookup: impl FnMut(&NamePath, Span) -> Result<ScalarDomain, Diagnostic>,
+    ) -> Result<Self, ScalarInferenceError> {
+        let typed = std::cell::Cell::new(false);
+        Self::infer_inner(expression, &mut lookup, &typed).map_err(|error| {
+            if typed.get() {
+                ScalarInferenceError::RequiresTypedExecution(error)
+            } else {
+                ScalarInferenceError::Diagnostic(error)
+            }
+        })
     }
     pub fn domain(&self) -> ScalarDomain {
         self.domain
@@ -89,12 +120,13 @@ impl<'a> DomainInference<'a> {
     fn infer_inner(
         expression: &'a Expression,
         lookup: &mut impl FnMut(&NamePath, Span) -> Result<ScalarDomain, Diagnostic>,
+        typed: &std::cell::Cell<bool>,
     ) -> Result<Self, Diagnostic> {
         use ScalarDomain as D;
         let span = expression.span;
         let mut children = Vec::new();
         let mut child = |e: &'a Expression| -> Result<D, Diagnostic> {
-            let inferred = Self::infer_inner(e, lookup)?;
+            let inferred = Self::infer_inner(e, lookup, typed)?;
             let domain = inferred.domain;
             children.push(inferred);
             Ok(domain)
@@ -134,21 +166,24 @@ impl<'a> DomainInference<'a> {
                 }
             }
             ExpressionKind::Cast(mode, ty, value) => {
-                let value = child(value)?;
                 if matches!(mode, CastMode::Force(_)) {
+                    typed.set(true);
                     return Err(Diagnostic::new(
                         span,
                         "storage casts require target-layout VM evaluation",
                     ));
                 }
-                if *mode == CastMode::Truncate && (*ty == ScalarType::Bool || value == D::Bool) {
+                if *mode == CastMode::Truncate && *ty == ScalarType::Bool {
                     return Err(Diagnostic::new(
                         span,
-                        if *ty == ScalarType::Bool {
-                            "trunc cast to bool has no established source policy"
-                        } else {
-                            "trunc cast from bool has no established source policy"
-                        },
+                        "trunc cast to bool has no established source policy",
+                    ));
+                }
+                let value = child(value)?;
+                if *mode == CastMode::Truncate && value == D::Bool {
+                    return Err(Diagnostic::new(
+                        span,
+                        "trunc cast from bool has no established source policy",
                     ));
                 }
                 match ty {
@@ -159,6 +194,7 @@ impl<'a> DomainInference<'a> {
             ExpressionKind::TypeCast { mode, ty, value } => {
                 let value = child(value)?;
                 let TypeSyntax::Builtin(BuiltinType::Float(ty)) = ty else {
+                    typed.set(true);
                     return Err(Diagnostic::new(
                         span,
                         "constant cast requires a builtin numeric type",
@@ -171,6 +207,7 @@ impl<'a> DomainInference<'a> {
                     ));
                 }
                 if matches!(mode, CastMode::Force(_)) {
+                    typed.set(true);
                     return Err(Diagnostic::new(
                         span,
                         "force storage casts require target-bound typed constant evaluation",
@@ -231,6 +268,7 @@ impl<'a> DomainInference<'a> {
                 }
             }
             _ => {
+                typed.set(true);
                 // Unsupported forms share the existing binder's precise diagnostic.
                 bind(expression, CheckMode::Enabled, &mut |_, span| {
                     Err(Diagnostic::new(span, "unreachable unsupported binding"))

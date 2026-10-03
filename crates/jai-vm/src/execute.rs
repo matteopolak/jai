@@ -7,14 +7,21 @@ mod compiler_runtime_info;
 mod compiler_version;
 mod constant_values;
 mod context;
+mod execution_phase;
 mod floating;
+pub use execution_phase::ExecutionPhase;
+mod host_arguments;
 mod host_files;
 mod host_heap;
 mod numbers;
 mod ordered_records;
 mod process;
+#[cfg(test)]
+mod publication_transactions_tests;
 mod resumable;
-pub use resumable::{ContinuationState, ResumableExecution, ResumableOutcome};
+pub use resumable::{
+    CompilerCodeSelection, CompilerFrameId, ContinuationState, ResumableExecution, ResumableOutcome,
+};
 mod runtime_types;
 mod sequence_concat;
 mod sequences;
@@ -56,6 +63,9 @@ pub enum RuntimeInfoAvailability<'a> {
 }
 pub trait ProcedureProvider {
     fn types(&self) -> &dyn TypeView;
+    fn procedure_execution(&self, _id: ProcedureId) -> jai_types::ProcedureExecution {
+        jai_types::ProcedureExecution::RuntimeAndCompileTime
+    }
     fn global_alignment_pending(&self, _id: GlobalId) -> bool {
         false
     }
@@ -84,6 +94,9 @@ pub trait ProcedureProvider {
 impl ProcedureProvider for Program {
     fn types(&self) -> &dyn TypeView {
         self.types()
+    }
+    fn procedure_execution(&self, id: ProcedureId) -> jai_types::ProcedureExecution {
+        self.library().procedure_phase(id)
     }
     fn signatures(&self) -> &std::collections::HashMap<ProcedureId, TypeId> {
         self.signatures()
@@ -118,6 +131,9 @@ impl ProcedureProvider for Program {
 impl ProcedureProvider for Library {
     fn types(&self) -> &dyn TypeView {
         self.types()
+    }
+    fn procedure_execution(&self, id: ProcedureId) -> jai_types::ProcedureExecution {
+        self.procedure_phase(id)
     }
     fn signatures(&self) -> &std::collections::HashMap<ProcedureId, TypeId> {
         self.signatures()
@@ -241,6 +257,7 @@ pub struct VmState {
     literal_backing: std::collections::HashMap<(TypeId, Value), Pointer>,
     registry: TypeId,
     limits: Limits,
+    execution_phase: ExecutionPhase,
     default_context: Option<Pointer>,
     context_definition: Option<ContextDefinition>,
 }
@@ -254,6 +271,7 @@ pub struct Vm<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> {
     globals: Vec<Option<Pointer>>,
     frames: Vec<Frame<'a>>,
     limits: Limits,
+    execution_phase: ExecutionPhase,
     statistics: Statistics,
     static_objects: std::collections::HashMap<StaticObjectId, Pointer>,
     static_publications: std::collections::HashMap<u64, usize>,
@@ -266,6 +284,11 @@ pub struct Vm<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> {
     continuation: Option<resumable::Session>,
     expression_bindings: bindings::BindingEnvironment,
     process_branch_execution: bool,
+    transaction_retained_cells: usize,
+    transaction_ancillary_cells: usize,
+    transaction_value_cell_limit: Option<usize>,
+    publication_origin: Option<crate::SourceOrigin>,
+    publication_work: std::cell::Cell<u64>,
 }
 impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     pub fn new(provider: &'a P, effects: E, limits: Limits) -> std::result::Result<Self, Error> {
@@ -276,6 +299,21 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         effects: E,
         limits: Limits,
         target: crate::ByteTarget,
+    ) -> std::result::Result<Self, Error> {
+        Self::new_with_execution_phase(
+            provider,
+            effects,
+            limits,
+            target,
+            ExecutionPhase::CompileTime,
+        )
+    }
+    pub fn new_with_execution_phase(
+        provider: &'a P,
+        effects: E,
+        limits: Limits,
+        target: crate::ByteTarget,
+        execution_phase: ExecutionPhase,
     ) -> std::result::Result<Self, Error> {
         preflight_provider(provider, limits)?;
         let memory = Memory::with_target(limits, target);
@@ -296,6 +334,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             globals,
             frames: vec![],
             limits,
+            execution_phase,
             statistics: Statistics::default(),
             static_objects: std::collections::HashMap::new(),
             static_publications: std::collections::HashMap::new(),
@@ -308,6 +347,11 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             continuation: None,
             expression_bindings: bindings::BindingEnvironment::default(),
             process_branch_execution: false,
+            transaction_retained_cells: 0,
+            transaction_ancillary_cells: 0,
+            transaction_value_cell_limit: None,
+            publication_origin: None,
+            publication_work: std::cell::Cell::new(0),
         })
     }
     /// Cancels an active continuation before transferring persistent state.
@@ -337,6 +381,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             definitions: self.provider.globals().to_vec(),
             registry: self.provider.types().scalar(jai_types::ScalarType::Bool),
             limits: self.limits,
+            execution_phase: self.execution_phase,
             default_context: self.default_context,
             context_definition: self.provider.context().cloned(),
         }
@@ -428,6 +473,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             globals: state.globals,
             frames: vec![],
             limits,
+            execution_phase: state.execution_phase,
             statistics: Statistics::default(),
             current_context: None,
             default_context: state.default_context,
@@ -436,6 +482,11 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             continuation: None,
             expression_bindings: bindings::BindingEnvironment::default(),
             process_branch_execution: false,
+            transaction_retained_cells: 0,
+            transaction_ancillary_cells: 0,
+            transaction_value_cell_limit: None,
+            publication_origin: None,
+            publication_work: std::cell::Cell::new(0),
         }
     }
     pub fn memory(&self) -> &Memory {
@@ -512,6 +563,57 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     pub fn effects_mut(&mut self) -> &mut E {
         self.effects.inner_mut()
     }
+    /// Pin the scheduler's genuine directive facts before ordinary validation.
+    pub fn pin_publication_source_origin(
+        &mut self,
+        origin: crate::SourceOrigin,
+    ) -> std::result::Result<(), Error> {
+        if self.continuation.is_some()
+            || !self.frames.is_empty()
+            || self.transaction_value_cell_limit.is_some()
+        {
+            return Err(Error::InvalidIr(
+                "source publication origin changed during execution",
+            ));
+        }
+        if self.publication_origin.is_none() {
+            self.flush_publication_work().map_err(|halt| match halt {
+                Halt::Failed(error) => error,
+                Halt::Pending(_) => Error::InvalidIr("source preparation unexpectedly suspended"),
+            })?;
+            self.statistics = Statistics::default();
+        }
+        let cells = origin
+            .path
+            .capacity()
+            .checked_add(origin.body.capacity())
+            .and_then(|n| n.checked_add(origin.specialization.capacity()))
+            .and_then(|n| n.checked_add(8))
+            .ok_or(Error::Limit(LimitKind::ValueCells))?;
+        let (retained, _) = resumable::publication_transaction_admission(self)?;
+        retained
+            .checked_mul(2)
+            .and_then(|n| n.checked_add(self.publication_origin_cells()))
+            .and_then(|n| n.checked_add(cells))
+            .filter(|n| *n <= self.limits.value_cells)
+            .ok_or(Error::Limit(LimitKind::ValueCells))?;
+        self.charge_work(cells).map_err(|halt| match halt {
+            Halt::Failed(error) => error,
+            Halt::Pending(_) => Error::InvalidIr("source origin work unexpectedly suspended"),
+        })?;
+        self.publication_origin = Some(origin);
+        Ok(())
+    }
+    pub(super) fn publication_origin_cells(&self) -> usize {
+        self.publication_source_origin().map_or(0, |origin| {
+            origin
+                .path
+                .capacity()
+                .saturating_add(origin.body.capacity())
+                .saturating_add(origin.specialization.capacity())
+                .saturating_add(8)
+        })
+    }
     /// Successful runs retain globals. Pending/failed runs roll back memory and effects.
     pub fn execute(&mut self, procedure: ProcedureId, arguments: Vec<Value>) -> Execution {
         self.transaction(|vm| vm.invoke(procedure, arguments, 0))
@@ -571,6 +673,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         }
         self.transaction(|vm| {
             let values = vec![vm.value(expression, 0)?];
+            vm.refresh_publication_transaction()?;
             validator(vm, &values)?;
             Ok(values)
         })
@@ -628,9 +731,61 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         }
         self.transaction(|vm| {
             let values = vm.call(call, 0)?;
+            vm.refresh_publication_transaction()?;
             validator(vm, &values)?;
             Ok(values)
         })
+    }
+    fn begin_publication_transaction(&mut self) -> Result<()> {
+        let original = self.limits.value_cells;
+        let (retained, ancillary) = resumable::publication_transaction_admission(self)?;
+        self.charge_work(self.publication_origin_cells())?;
+        let available = original
+            .checked_sub(retained)
+            .and_then(|n| n.checked_sub(ancillary))
+            .and_then(|n| n.checked_sub(self.publication_origin_cells()))
+            .ok_or(Error::Limit(LimitKind::ValueCells))?;
+        self.memory.replace_value_cell_limit(available)?;
+        self.limits.value_cells = available;
+        self.transaction_retained_cells = retained;
+        self.transaction_ancillary_cells = ancillary;
+        self.transaction_value_cell_limit = Some(original);
+        Ok(())
+    }
+    fn refresh_publication_transaction(&mut self) -> Result<()> {
+        let original = self.transaction_value_cell_limit.ok_or(Error::InvalidIr(
+            "publication validation is outside an admitted transaction",
+        ))?;
+        let saved = self.limits.value_cells;
+        self.limits.value_cells = original;
+        let residual = resumable::publication_transaction_residual(self);
+        self.limits.value_cells = saved;
+        let ancillary = residual?;
+        let available = original
+            .checked_sub(self.transaction_retained_cells)
+            .and_then(|n| n.checked_sub(ancillary))
+            .and_then(|n| n.checked_sub(self.publication_origin_cells()))
+            .ok_or(Error::Limit(LimitKind::ValueCells))?;
+        self.memory.replace_value_cell_limit(available)?;
+        self.limits.value_cells = available;
+        self.transaction_ancillary_cells = ancillary;
+        Ok(())
+    }
+    fn finish_publication_transaction(&mut self) -> Result<()> {
+        let flush = self.flush_publication_work();
+        let restore = if let Some(original) = self.transaction_value_cell_limit.take() {
+            self.limits.value_cells = original;
+            self.memory
+                .replace_value_cell_limit(original)
+                .map(|_| ())
+                .map_err(Halt::from)
+        } else {
+            Ok(())
+        };
+        self.transaction_retained_cells = 0;
+        self.transaction_ancillary_cells = 0;
+        self.publication_origin = None;
+        flush.and(restore)
     }
     fn transaction(&mut self, action: impl FnOnce(&mut Self) -> Result<Vec<Value>>) -> Execution {
         if self.continuation.is_some() {
@@ -639,11 +794,26 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 statistics: self.statistics,
             };
         }
-        self.statistics = Statistics::default();
+        if self.publication_origin.is_none() {
+            self.statistics = Statistics::default();
+        }
+        if let Err(halt) = self.begin_publication_transaction() {
+            let _ = self.finish_publication_transaction();
+            return Execution {
+                outcome: Outcome::Failed(match halt {
+                    Halt::Failed(error) => error,
+                    Halt::Pending(_) => {
+                        Error::InvalidIr("transaction admission unexpectedly suspended")
+                    }
+                }),
+                statistics: self.statistics,
+            };
+        }
         debug_assert_eq!(self.expression_bindings.depth(), 0);
         if let Some(processes) = &self.processes {
             let work = usize::try_from(processes.work_cost()).unwrap_or(usize::MAX);
             if let Err(halt) = self.charge_work(work) {
+                let _ = self.finish_publication_transaction();
                 return Execution {
                     outcome: Outcome::Failed(match halt {
                         Halt::Failed(error) => error,
@@ -713,6 +883,14 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
             self.literal_backing = literal_snapshot;
             self.default_context = context_snapshot;
         }
+        if let Err(halt) = self.finish_publication_transaction() {
+            outcome = Outcome::Failed(match halt {
+                Halt::Failed(error) => error,
+                Halt::Pending(_) => {
+                    Error::InvalidIr("publication accounting unexpectedly suspended")
+                }
+            });
+        }
         debug_assert!(self.frames.is_empty());
         Execution {
             outcome,
@@ -720,6 +898,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         }
     }
     fn step(&mut self, depth: usize) -> Result<()> {
+        self.flush_publication_work()?;
         // Conservative hard ceilings also protect the interpreter's Rust call stack.
         if depth > self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth).into());
@@ -793,6 +972,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         depth: usize,
         availability: ProcedureAvailability<'a>,
     ) -> Result<Vec<Value>> {
+        self.require_procedure_phase(id)?;
         match availability {
             ProcedureAvailability::ProcessAbi(procedure) => {
                 match self.invoke_process_available(id, &procedure, &arguments)? {
@@ -834,12 +1014,9 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                         )
                         .ok_or(Error::Limit(LimitKind::Fuel))?;
                 }
-                self.statistics.steps = self
-                    .statistics
-                    .steps
-                    .checked_add(work)
-                    .filter(|steps| *steps <= self.limits.fuel)
-                    .ok_or(Error::Limit(LimitKind::Fuel))?;
+                self.charge_work(
+                    usize::try_from(work).map_err(|_| Error::Limit(LimitKind::Fuel))?,
+                )?;
                 let previous_context = self.enter_call_context(signature.context)?;
                 let into_effect_error = |halt| match halt {
                     Halt::Pending(dependency) => EffectError::Pending(dependency),
@@ -889,12 +1066,9 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                     self.provider.types(),
                     &self.memory,
                 )?;
-                self.statistics.steps = self
-                    .statistics
-                    .steps
-                    .checked_add(work)
-                    .filter(|steps| *steps <= self.limits.fuel)
-                    .ok_or(Error::Limit(LimitKind::Fuel))?;
+                self.charge_work(
+                    usize::try_from(work).map_err(|_| Error::Limit(LimitKind::Fuel))?,
+                )?;
                 let previous_context = self.enter_call_context(signature.context)?;
                 let result = procedure.invoke(&arguments, &mut self.memory, self.provider.types());
                 self.restore_call_context(previous_context);
@@ -1419,7 +1593,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
     fn boolean(&mut self, expression: &BoolExpr, depth: usize) -> Result<bool> {
         self.step(depth)?;
         Ok(match expression {
-            BoolExpr::CompileTime => true,
+            BoolExpr::CompileTime => self.execution_phase.is_compile_time(),
             BoolExpr::Value(value) => self.value(value, depth + 1)?.boolean()?,
             BoolExpr::Constant(value) => *value,
             BoolExpr::FromInt(expression) => {

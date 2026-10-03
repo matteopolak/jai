@@ -125,15 +125,18 @@ fn scalar_stores_charge_warm_aggregate_root_copies_and_rollback_partial_writes()
             },
         )
         .unwrap();
+        vm.test_budget_source_work(2_000, false, 0);
         assert_eq!(
             vm.execute(ProcedureId::new(0), vec![]).outcome,
             Outcome::Complete(vec![value(0)])
         );
         assert_eq!(vm.memory().allocation_count(), 1);
+        vm.test_budget_source_work(2_000, false, 0);
         assert_eq!(
             vm.execute(ProcedureId::new(1), vec![]).outcome,
             Outcome::Failed(Error::Limit(LimitKind::Fuel))
         );
+        vm.test_budget_source_work(2_000, false, 0);
         assert_eq!(
             vm.execute(ProcedureId::new(0), vec![]).outcome,
             Outcome::Complete(vec![value(0)])

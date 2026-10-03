@@ -2,11 +2,13 @@
 mod compiler_effects;
 pub mod host_io;
 
+mod discovery_worklists;
 mod effect_replay;
 mod graph_discovery_session;
 mod graph_job;
 mod runtime_support;
 mod source_discovery;
+pub use discovery_worklists::{SourceDiscoveryPending, SourceDiscoveryRequest};
 pub use graph_discovery_session::{DiscoveryQuery, PreparedGraphDiscoverySession};
 pub use graph_job::{GraphJobProgress, GraphJobResult, PreparedGraphJob};
 pub use source_discovery::{
@@ -24,7 +26,9 @@ use std::{
     fmt,
     path::{Path, PathBuf},
 };
-pub use workspace_job::{PreparedWorkspaceJob, WorkspaceJobProgress, WorkspaceJobResult};
+pub use workspace_job::{
+    PreparedWorkspaceJob, WorkspaceJobProgress, WorkspaceJobResult, WorkspaceSourceRebuild,
+};
 pub use workspace_scheduler::*;
 
 #[derive(Debug)]
@@ -164,11 +168,21 @@ impl CompilationUnit {
         session: &mut CompilerSession,
     ) -> Result<jai_sema::Program, Error> {
         let options = self.resolve_options(layout, session);
-        let program = jai_sema::resolve_graph_with_options(&self.graph, &options, session)
-            .map_err(|error| self.located(error))?;
-        if let Some(error) = session.error() {
-            return Err(Error::CompilerReport(error.clone()));
+        let workspace = session.root();
+        source_discovery::require_idle(session)?;
+        let mut compiler = session.clone();
+        let program = jai_sema::resolve_graph_with_options(&self.graph, &options, &mut compiler)
+            .map_err(|error| {
+                source_discovery::record_failure(session, workspace, self.located(error))
+            })?;
+        if let Some(error) = compiler.error() {
+            return Err(source_discovery::record_failure(
+                session,
+                workspace,
+                Error::CompilerReport(error.clone()),
+            ));
         }
+        *session = compiler;
         Ok(program)
     }
     pub fn resolve_library_with_session(
@@ -177,11 +191,21 @@ impl CompilationUnit {
         session: &mut CompilerSession,
     ) -> Result<jai_sema::Library, Error> {
         let options = self.resolve_options(layout, session);
-        let library = jai_sema::resolve_library_with_options(&self.graph, &options, session)
-            .map_err(|error| self.located(error))?;
-        if let Some(error) = session.error() {
-            return Err(Error::CompilerReport(error.clone()));
+        let workspace = session.root();
+        source_discovery::require_idle(session)?;
+        let mut compiler = session.clone();
+        let library = jai_sema::resolve_library_with_options(&self.graph, &options, &mut compiler)
+            .map_err(|error| {
+                source_discovery::record_failure(session, workspace, self.located(error))
+            })?;
+        if let Some(error) = compiler.error() {
+            return Err(source_discovery::record_failure(
+                session,
+                workspace,
+                Error::CompilerReport(error.clone()),
+            ));
         }
+        *session = compiler;
         Ok(library)
     }
     fn resolve_options(
@@ -190,6 +214,13 @@ impl CompilationUnit {
         session: &CompilerSession,
     ) -> jai_sema::ResolveOptions {
         jai_sema::ResolveOptions {
+            file_abi: self.graph.target().and_then(|target| {
+                jai_sema::FileAbiBindingContext::allocator_from_graph(
+                    &self.graph,
+                    &self.options.import_dirs,
+                    target.clone(),
+                )
+            }),
             target: self.graph.target().cloned(),
             layout: Some(layout),
             compiler: Some(jai_sema::CompilerBindingContext::from_graph(
@@ -206,6 +237,11 @@ impl CompilationUnit {
     ) -> Result<jai_sema::Program, Error> {
         let session = CompilerSession::new();
         let options = jai_sema::ResolveOptions {
+            file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
+                &self.graph,
+                &self.options.import_dirs,
+                target.clone(),
+            ),
             target: Some(target),
             compiler: Some(jai_sema::CompilerBindingContext::from_graph(
                 &self.graph,
@@ -223,6 +259,11 @@ impl CompilationUnit {
     ) -> Result<jai_sema::Library, Error> {
         let session = CompilerSession::new();
         let options = jai_sema::ResolveOptions {
+            file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
+                &self.graph,
+                &self.options.import_dirs,
+                target.clone(),
+            ),
             target: Some(target),
             compiler: Some(jai_sema::CompilerBindingContext::from_graph(
                 &self.graph,

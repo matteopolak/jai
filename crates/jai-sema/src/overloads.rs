@@ -5,6 +5,8 @@ use jai_types::{
     CastMode, FloatType, FloatValue, Integer, IntegerType, ScalarType, TypeId, TypeKind, TypeView,
 };
 use std::collections::HashSet;
+mod baked_rechecking;
+pub(crate) use baked_rechecking::recheck_baked_value;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TypePattern {

@@ -49,6 +49,10 @@ Use `crate::value::allocator_schema` to revalidate the registry's sealed role
 before constructing or projecting allocator state. `default_sequence_allocator`
 uses the same charged zero constructor as record defaults; adopting a payload
 validates the exact nominal allocator type and preserves its original carrier.
+The standalone allocator extraction and adoption wrappers currently serve the
+checked-IR regression tests; production descriptor access uses ordinary typed
+record fields. Keep these helpers test-only until a production consumer needs
+their certified subobject projection.
 Do not replace the allocator with an invented pair of opaque pointers. Its
 subtree must remain part of value-cell, zero-shape, decode-work, and lifetime
 accounting even when the array's count is zero.

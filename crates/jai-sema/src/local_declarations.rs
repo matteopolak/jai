@@ -10,6 +10,7 @@ use std::sync::Arc;
 mod applications;
 mod callback_body_checks;
 mod capture_exports;
+mod compiler_retention;
 mod constant_results;
 mod constants;
 mod default_overrides;

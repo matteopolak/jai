@@ -12,7 +12,7 @@ mod modifier_execution;
 mod modifier_intents;
 pub(crate) use modifier_intents::{RecordModifierId, RecordModifierReadiness};
 mod modifier_source;
-pub(crate) use modifier_execution::{RecordModifierPolicy, RecordModifierProgress};
+pub(crate) use modifier_execution::RecordModifierPolicy;
 mod record_body;
 use record_body::RecordBody;
 mod member_values;

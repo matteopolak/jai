@@ -315,7 +315,7 @@ mod tests {
         let field = &records.record(left).unwrap().shape.fields[1];
         assert_eq!(types.field_type(field.id).unwrap(), field.ty);
         assert_eq!(
-            records.reflected_field_notes(field.id).unwrap().as_ref(),
+            records.reflected_field_notes(field.id).unwrap(),
             &[Box::<[u8]>::from(&b"Range(7)"[..])]
         );
         let syntax::FieldBinding::Explicit { ty: annotation, .. } = source_record.shape.fields[0]

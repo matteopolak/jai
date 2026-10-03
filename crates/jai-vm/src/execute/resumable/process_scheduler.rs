@@ -36,6 +36,15 @@ impl ProcessScheduler {
             ..Self::default()
         }
     }
+    pub(super) fn publication_cells(&self) -> std::result::Result<usize, Error> {
+        self.rollback_cells
+            .checked_add(self.parked_cells)
+            .and_then(|cells| cells.checked_add(self.resident_ancillary_cells))
+            .ok_or(Error::Limit(LimitKind::ValueCells))
+    }
+    pub(super) fn refresh_publication_ancillary(&mut self, cells: usize) {
+        self.resident_ancillary_cells = cells;
+    }
     fn current<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
         vm: &Vm<'_, P, E>,
     ) -> Result<ProcessId> {
@@ -151,6 +160,7 @@ impl ProcessScheduler {
             .checked_add(self.rollback_cells)
             .and_then(|cells| cells.checked_add(residual))
             .and_then(|cells| cells.checked_add(machine_extra))
+            .and_then(|cells| cells.checked_add(publication_origin_cells(vm)))
             .ok_or(Error::Limit(LimitKind::ValueCells))?;
         let occupied = storage
             .cells
@@ -158,6 +168,7 @@ impl ProcessScheduler {
             .and_then(|cells| cells.checked_add(machine.retained_cells()))
             .and_then(|cells| cells.checked_add(self.parked_cells))
             .and_then(|cells| cells.checked_add(self.rollback_cells))
+            .and_then(|cells| cells.checked_add(publication_origin_cells(vm)))
             .filter(|cells| *cells <= original)
             .ok_or(Error::Limit(LimitKind::ValueCells))?;
         let _ = occupied;
@@ -167,6 +178,15 @@ impl ProcessScheduler {
         vm.memory.replace_value_cell_limit(available)?;
         vm.limits.value_cells = available;
         self.resident_ancillary_cells = residual;
+        cache_drive_publication_retention(
+            vm,
+            original,
+            self.rollback_cells
+                .checked_add(self.parked_cells)
+                .and_then(|cells| cells.checked_add(machine.retained_cells()))
+                .ok_or(Error::Limit(LimitKind::ValueCells))?,
+            residual,
+        )?;
         Ok(())
     }
 
@@ -216,11 +236,21 @@ impl ProcessScheduler {
             .checked_mul(3)
             .and_then(|work| work.checked_add(descriptors))
             .ok_or(Error::Limit(LimitKind::Fuel))?;
-        vm.charge_work(
-            world_work
-                .checked_add(machine_work)
-                .ok_or(Error::Limit(LimitKind::Fuel))?,
-        )?;
+        let clone_work = world_work
+            .checked_add(machine_work)
+            .and_then(|work| work.checked_add(admitted.work))
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        // Result preparation has a bounded stop/operand reservation cost. Check
+        // every remaining fuel charge before the candidate can mint a child PID.
+        let remaining_work = clone_work
+            .checked_add(injection)
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        vm.statistics
+            .steps
+            .checked_add(u64::try_from(remaining_work).map_err(|_| Error::Limit(LimitKind::Fuel))?)
+            .filter(|steps| *steps <= vm.limits.fuel)
+            .ok_or(Error::Limit(LimitKind::Fuel))?;
+        vm.charge_work(clone_work)?;
         // Every deep owner and the mutator's temporary slot copy were admitted.
         let mut world = vm.processes.as_ref().unwrap().world.clone();
         let pair = world.fork(parent).map_err(process_error)?;

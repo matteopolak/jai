@@ -51,6 +51,12 @@ impl Resolver<'_> {
             let mut values = Vec::with_capacity(frame.len());
             for (&name, binding) in frame {
                 let binding = match binding.clone() {
+                    Binding::CompilerInput { .. } => {
+                        return Err(Diagnostic::new(
+                            span,
+                            "compiler input cannot enter a retained source capture",
+                        ));
+                    }
                     Binding::Discarded(ty) => CaptureBinding::Discarded(ty),
                     Binding::LambdaPreview(_) => {
                         return Err(Diagnostic::new(

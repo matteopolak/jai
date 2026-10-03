@@ -306,7 +306,10 @@ fn start_waiting(vm: &mut Vm<'_, Provider, &mut Effects>, p: &FixturePlan) {
     let limit = vm.limits.value_cells;
     assert_eq!(vm.memory.replace_value_cell_limit(limit).unwrap(), limit);
 }
-fn finish_capture(vm: &mut Vm<'_, Provider, &mut Effects>, p: &FixturePlan) -> CompilerFrameId {
+fn finish_capture(
+    vm: &mut Vm<'_, Provider, &mut Effects>,
+    p: &FixturePlan,
+) -> (CompilerFrameId, u64) {
     assert!(vm.resumable_values().is_none());
     let rejected =
         vm.finish_resumable_validated(|_, _| panic!("Code must not enter native publication"));
@@ -323,6 +326,7 @@ fn finish_capture(vm: &mut Vm<'_, Provider, &mut Effects>, p: &FixturePlan) -> C
     );
     vm.finish_resumable_compiler_code(|_, selection| {
         assert_eq!(selection.site(), p.yes);
+        assert_eq!(selection.publication_occurrence(), p.yes.index() as u64 + 1);
         assert_ne!(selection.site(), p.no);
         assert_eq!(selection.frame().plan(), p.plan.id());
         assert_eq!(
@@ -333,7 +337,7 @@ fn finish_capture(vm: &mut Vm<'_, Provider, &mut Effects>, p: &FixturePlan) -> C
             selection.native_value(p.workspace)?.1,
             &Value::Int(Integer::wrapping(IntegerType::U64, 7))
         );
-        Ok(selection.frame())
+        Ok((selection.frame(), selection.publication_occurrence()))
     })
     .unwrap()
 }
@@ -421,7 +425,7 @@ fn source_validation_wait_retains_the_same_reached_frame() {
     let ty = provider.types().scalar(ScalarType::Int(IntegerType::S64));
     let result: std::result::Result<(), Error> =
         vm.finish_resumable_compiler_code(|_, selection| {
-            frame = Some(selection.frame());
+            frame = Some((selection.frame(), selection.publication_occurrence()));
             Err(Error::Type(TypeError::Incomplete(ty)))
         });
     assert_eq!(result, Err(Error::Type(TypeError::Incomplete(ty))));
@@ -435,6 +439,74 @@ fn source_validation_wait_retains_the_same_reached_frame() {
     assert_eq!(vm.effects().polls, 1);
     assert_eq!(vm.effects().finishes, vec![true]);
 }
+
+#[test]
+fn logical_publication_occurrence_survives_equivalent_plan_reconstruction() {
+    let provider = fixture();
+    let first = plan(&provider);
+    let second = plan(&provider);
+    assert_ne!(first.plan.id(), second.plan.id());
+    let mut events = Vec::new();
+    for source in [&first, &second] {
+        provider.wait.set(true);
+        let mut effects = Effects::default();
+        let mut vm = Vm::new(&provider, &mut effects, Limits::default()).unwrap();
+        start_waiting(&mut vm, source);
+        provider.wait.set(false);
+        assert_eq!(
+            vm.resume_resumable().outcome,
+            ResumableOutcome::AwaitingPublication
+        );
+        events.push(finish_capture(&mut vm, source));
+        assert_eq!(vm.effects().begins, 1);
+        assert_eq!(vm.effects().finishes, vec![true]);
+    }
+    assert_ne!(events[0].0, events[1].0);
+    assert_eq!(events[0].1, events[1].1);
+}
+#[test]
+fn compiler_publication_counts_frame_rollback_and_flushes_validation_work() {
+    let provider = fixture();
+    let p = plan(&provider);
+    let mut effects = Effects::default();
+    let mut vm = Vm::new(&provider, &mut effects, Limits::default()).unwrap();
+    start_waiting(&mut vm, &p);
+    provider.wait.set(false);
+    assert_eq!(
+        vm.resume_resumable().outcome,
+        ResumableOutcome::AwaitingPublication
+    );
+    let before = vm.statistics.steps;
+    let remaining = vm
+        .finish_resumable_compiler_code(|vm, selection| {
+            assert_eq!(selection.publication_occurrence(), p.yes.index() as u64 + 1);
+            assert_eq!(vm.publication_source_origin(), Some(&origin()));
+            assert_eq!(
+                vm.publication_value_cell_limit(),
+                Limits::default().value_cells
+            );
+            let session = vm.continuation.as_ref().unwrap();
+            let root_and_rollback = session
+                .root
+                .retained_cells()?
+                .checked_add(session.compiler_reserved_cells)
+                .ok_or(Error::Limit(LimitKind::ValueCells))?;
+            let retained = vm.publication_retained_cells()?;
+            assert!(retained >= root_and_rollback + vm.memory.value_cells());
+            let remaining = vm.publication_remaining_value_cells()?;
+            assert_eq!(remaining + retained, vm.publication_value_cell_limit());
+            vm.charge_publication_work(11)?;
+            Ok(remaining)
+        })
+        .unwrap();
+    assert!(remaining < Limits::default().value_cells);
+    assert!(vm.statistics.steps >= before + 11);
+    assert_eq!(vm.publication_work.get(), 0);
+    assert!(vm.transaction_value_cell_limit.is_none());
+    assert!(vm.publication_origin.is_none());
+    assert_eq!(vm.effects().finishes, vec![true]);
+}
+
 #[test]
 fn compile_admission_fails_before_any_effect_transaction() {
     let provider = fixture();
@@ -577,4 +649,30 @@ fn unloaded_global_checkpoint_owners_are_admitted_before_journal_begin() {
     assert!(vm.continuation.is_none());
     assert_eq!(vm.memory.allocation_count(), 0);
     assert!(vm.globals.iter().all(Option::is_none));
+}
+
+#[test]
+fn runtime_phase_rejects_compiler_control_before_any_effect_transaction() {
+    let provider = fixture();
+    let p = plan(&provider);
+    let mut effects = Effects::default();
+    let mut vm = Vm::new_with_execution_phase(
+        &provider,
+        &mut effects,
+        Limits::default(),
+        crate::ByteTarget::default(),
+        crate::ExecutionPhase::Runtime,
+    )
+    .unwrap();
+    assert_eq!(
+        vm.start_resumable_compiler_code(&p.plan, owner(), origin())
+            .outcome,
+        ResumableOutcome::Failed(Error::InvalidIr(
+            "compiler Code plans require compile-time execution"
+        ))
+    );
+    assert_eq!(vm.effects().begins, 0);
+    assert_eq!(vm.effects().requests, 0);
+    assert!(vm.effects().finishes.is_empty());
+    assert!(vm.continuation.is_none());
 }

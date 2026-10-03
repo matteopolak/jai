@@ -43,7 +43,7 @@ main :: () -> int {
 | Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |
 | Windows, mobile, WebAssembly | C ABI and object tests; runtime compatibility unverified |
 
-The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded compiler parses **1,759 files** and checks **100 support files** with the included Preload. A separate feature snapshot passes all **36 positive contracts** through native execution, with **10 expected rejections** also passing. Full library and project builds remain pending. The table describes tested features in the working tree; [compatibility coverage](docs/reference-compatibility.md) explains the remaining work.
+The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded compiler parses **1,784 files** and checks **101 support files** with the included Preload. A separate feature snapshot passes all **36 positive contracts** through native execution, with **10 expected rejections** also passing. Full library and project builds remain pending. The table describes tested features in the working tree; [compatibility coverage](docs/reference-compatibility.md) explains the remaining work.
 
 For example, record specialization and compile-time execution can work together:
 

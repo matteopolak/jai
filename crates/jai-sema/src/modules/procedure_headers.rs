@@ -1,6 +1,8 @@
 //! Separate callable type reservation from source default materialization.
 use super::*;
 mod dependencies;
+pub(super) use dependencies::{dependencies as source_dependencies, ordered as ordered_sources};
+mod compiler_code;
 mod discarded;
 pub(super) mod identities;
 
@@ -18,7 +20,56 @@ pub(super) fn register<'a>(
     meta: &mut crate::reflection::MetaContext,
     phase: HeaderPhase,
 ) -> Result<(), LocatedDiagnostic> {
-    for declaration in dependencies::ordered(graph, &declarations.callable_aliases)? {
+    let sources = dependencies::ordered(graph, &declarations.callable_aliases)?;
+    register_sources(graph, sources, types, declarations, constants, meta, phase)
+}
+
+pub(super) fn register_selected<'a>(
+    graph: &'a ModuleGraph,
+    source: &'a jai_modules::Declaration,
+    types: &mut TypeRegistry,
+    declarations: &mut ScopedDeclarations<'a>,
+    constants: &mut Constants<'a>,
+    meta: &mut crate::reflection::MetaContext,
+) -> Result<(), LocatedDiagnostic> {
+    register_sources(
+        graph,
+        [source],
+        types,
+        declarations,
+        constants,
+        meta,
+        HeaderPhase::TypesOnly,
+    )
+}
+
+fn register_sources<'a>(
+    graph: &'a ModuleGraph,
+    sources: impl IntoIterator<Item = &'a jai_modules::Declaration>,
+    types: &mut TypeRegistry,
+    declarations: &mut ScopedDeclarations<'a>,
+    constants: &mut Constants<'a>,
+    meta: &mut crate::reflection::MetaContext,
+    phase: HeaderPhase,
+) -> Result<(), LocatedDiagnostic> {
+    for declaration in sources {
+        if meta.compiler_code.template(declaration.id()).is_some() {
+            continue;
+        }
+        if let Some(template) =
+            compiler_code::template(graph, declaration, declarations, types, constants, meta)?
+        {
+            meta.compiler_code
+                .register(template)
+                .map_err(|error| located(graph, declaration.file(), error))?;
+            continue;
+        }
+        if phase == HeaderPhase::TypesOnly
+            && declarations.signatures.contains_key(&declaration.id())
+        {
+            continue;
+        }
+
         if matches!(&declaration.syntax().kind, FileDeclarationKind::Procedure(procedure) if procedure.expands)
         {
             continue;

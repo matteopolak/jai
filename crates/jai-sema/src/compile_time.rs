@@ -13,6 +13,11 @@ use jai_vm::{
 use std::cell::RefCell;
 use std::collections::HashMap;
 mod anonymous;
+mod compiler_plan_binding;
+mod compiler_values;
+pub(crate) use compiler_values::materialize_compiler_captures;
+mod compiler_code;
+pub(crate) use compiler_code::{CompilerDestination, CompilerRunResult};
 mod callback_readiness;
 use callback_readiness::{CallbackCheck, CallbackProof};
 use std::rc::Rc;
@@ -43,6 +48,7 @@ pub enum RunOutcome {
 pub(crate) enum EffectsMode {
     Compiler,
     Isolated,
+    CompilerPlanBinding,
 }
 pub(crate) struct Context<'a> {
     pub foreign: &'a std::collections::HashSet<ProcedureId>,
@@ -74,6 +80,8 @@ pub(crate) struct Context<'a> {
 }
 #[derive(Default)]
 pub(crate) struct Cache {
+    compiler_values: RefCell<HashMap<RunCacheKey, compiler_code::CompletedCompilerRun>>,
+    compiler_continuations: RefCell<HashMap<RunCacheKey, compiler_code::SuspendedCompilerRun>>,
     values: RefCell<HashMap<RunCacheKey, CompletedRun>>,
     results: RefCell<HashMap<RunCacheKey, CompletedResults>>,
     continuations: RefCell<HashMap<RunCacheKey, suspension::SuspendedRun>>,
@@ -364,6 +372,12 @@ impl crate::Resolver<'_> {
             .as_ref()
             .map(|annotation| self.lexical_annotation(annotation, constant.span))
             .transpose()?;
+        if let Some(CompilerRunResult::Code(id)) = self.execute_compiler_code_initializer(
+            &constant.initializer,
+            CompilerDestination::Code(expected),
+        )? {
+            return self.bind_name(constant.name, crate::Binding::Code(id));
+        }
         let run = match &constant.initializer.kind {
             jai_syntax::ExpressionKind::CompileTime(run) => run.clone(),
             _ => CompileTimeRun {
@@ -384,6 +398,11 @@ impl crate::Resolver<'_> {
         run: &CompileTimeRun,
         span: jai_source::Span,
     ) -> Result<crate::Expr, jai_source::Diagnostic> {
+        if let Some(CompilerRunResult::Code(id)) =
+            self.execute_compiler_code_run(run, span, CompilerDestination::Code(None))?
+        {
+            return Ok(crate::Expr::Code(id));
+        }
         let value = self
             .execute_compile_time(run, span, None)?
             .ok_or_else(|| jai_source::Diagnostic::new(span, "void #run cannot supply a value"))?;
@@ -396,6 +415,11 @@ impl crate::Resolver<'_> {
         span: jai_source::Span,
         expected: TypeId,
     ) -> Result<crate::Expr, jai_source::Diagnostic> {
+        if let Some(CompilerRunResult::Code(id)) =
+            self.execute_compiler_code_run(run, span, CompilerDestination::Code(Some(expected)))?
+        {
+            return Ok(crate::Expr::Code(id));
+        }
         let value = self
             .execute_compile_time(run, span, Some(expected))?
             .ok_or_else(|| jai_source::Diagnostic::new(span, "void #run cannot supply a value"))?;
@@ -439,6 +463,7 @@ impl crate::Resolver<'_> {
         destination: Option<TypeId>,
         cast: Option<jai_types::CastMode>,
     ) -> Result<Option<ConstantValue>, jai_source::Diagnostic> {
+        self.check_source_execution(span)?;
         let context = self.compile_time.ok_or_else(|| {
             jai_source::Diagnostic::new(span, "#run requires a checked procedure readiness context")
         })?;

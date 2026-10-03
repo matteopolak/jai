@@ -117,6 +117,22 @@ impl Memory {
 mod tests;
 
 impl Memory {
+    /// Complete typed handles acquire this domain's bits before another write
+    /// can split their provenance or remove their complete relocation.
+    pub(crate) fn write_ordered_record_patch(
+        &self,
+        types: &dyn TypeView,
+        image: &mut ByteImage,
+        offset: usize,
+        ty: TypeId,
+        value: &Value,
+    ) -> Result<(), Error> {
+        image.write_normalized(types, self.target, offset, ty, value, |patch| {
+            patch.validate_memory_provenance(self.identity)?;
+            self.retokenize_image(types, patch)
+        })
+    }
+
     /// Normalize handles in the actual owning domain before publishing the rvalue.
     pub(crate) fn finish_ordered_record(
         &self,

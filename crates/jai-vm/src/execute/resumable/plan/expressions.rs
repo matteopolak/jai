@@ -104,6 +104,7 @@ pub(in crate::execute::resumable) enum IntApply {
 }
 #[derive(Clone, Copy, Debug)]
 pub(in crate::execute::resumable) enum BoolApply {
+    CompileTime,
     FromValue,
     FromInt,
     FromPointer,
@@ -578,9 +579,7 @@ impl Builder<'_> {
         self.reserve(0, depth)?;
         let ty = expression.type_id(self.types);
         let (op, operands) = match expression {
-            BoolExpr::CompileTime => {
-                return self.apply(ty, ApplyOp::Literal(Value::Bool(true)), vec![], depth);
-            }
+            BoolExpr::CompileTime => (BoolApply::CompileTime, vec![]),
             BoolExpr::Constant(value) => {
                 return self.apply(ty, ApplyOp::Literal(Value::Bool(*value)), vec![], depth);
             }

@@ -299,25 +299,35 @@ impl crate::Resolver<'_> {
 impl Cache {
     pub(crate) fn pending_execution(&self) -> Option<crate::LibraryPending> {
         let continuations = self.continuations.borrow();
-        let first = continuations.values().min_by_key(|run| {
-            (
-                run.location.source.index(),
-                run.location.span.start,
-                run.location.span.end,
-            )
-        })?;
+        let compiler = self.compiler_continuations.borrow();
+        let first = continuations
+            .values()
+            .map(|run| run.location)
+            .chain(compiler.values().map(|run| run.location))
+            .min_by_key(|location| {
+                (
+                    location.source.index(),
+                    location.span.start,
+                    location.span.end,
+                )
+            })?;
         let mut dependencies = vec![];
-        for run in continuations.values() {
-            for dependency in &run.dependencies {
+        for run_dependencies in continuations
+            .values()
+            .map(|run| &run.dependencies)
+            .chain(compiler.values().map(|run| &run.dependencies))
+        {
+            for dependency in run_dependencies {
                 if !dependencies.contains(dependency) {
                     dependencies.push(dependency.clone());
                 }
             }
         }
         Some(crate::LibraryPending {
+            source: None,
             dependencies,
             diagnostic: LocatedDiagnostic {
-                location: first.location,
+                location: first,
                 message: "#run is suspended with its original VM execution and effect transaction"
                     .into(),
             },
@@ -327,6 +337,11 @@ impl Cache {
     pub(crate) fn cancel(&self, effects: &dyn EffectService) -> Result<(), jai_vm::Error> {
         let mut first_error = None;
         for (_, run) in self.continuations.borrow_mut().drain() {
+            if let Err(error) = run.state.cancel(&mut BorrowedEffects(effects)) {
+                first_error.get_or_insert(error);
+            }
+        }
+        for (_, run) in self.compiler_continuations.borrow_mut().drain() {
             if let Err(error) = run.state.cancel(&mut BorrowedEffects(effects)) {
                 first_error.get_or_insert(error);
             }

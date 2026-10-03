@@ -12,6 +12,9 @@ impl GraphDiscovery<'_> {
             .iter()
             .filter(|request| request.publication.is_none())
     }
+    /// Stage source transport without proving declaration registration.
+    /// Effectful Code producers must use `admit_insertion` before committing
+    /// effects and stage its sealed payload through `prepare_insertion_admitted`.
     pub fn prepare_insertion(
         &mut self,
         request: InsertionRequestId,
@@ -48,12 +51,25 @@ impl GraphDiscovery<'_> {
             .insertion_requests
             .staged(transaction)
             .map_err(InsertionPublicationError::Response)?;
+        if transaction
+            .admitted_revision()
+            .is_some_and(|revision| revision != self.insertion_revision)
+        {
+            self.builder
+                .insertion_requests
+                .cancel(transaction)
+                .expect("stale frontier retains its live transaction");
+            return Err(InsertionPublicationError::Response(
+                InsertionResponseError::StaleAdmission,
+            ));
+        }
         let request = self
             .builder
             .insertion_requests
             .request(transaction.request())
             .map_err(InsertionPublicationError::Response)?
             .clone();
+        self.invalidate_insertion_admissions();
         match self.builder.append_insertion(&request, code) {
             Ok(publication) => {
                 self.builder
@@ -107,7 +123,7 @@ impl Builder<'_> {
             });
         }
     }
-    fn append_insertion(
+    pub(super) fn append_insertion(
         &mut self,
         request: &DeclarationInsertionRequest,
         code: Arc<DeclarationInsertionCode>,

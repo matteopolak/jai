@@ -199,40 +199,6 @@ impl Nominals<'_> {
         };
         result.map_err(|error| failure(&error.to_string()))
     }
-    pub(crate) fn materialize_insertion_capture_types(
-        &mut self,
-        graph: &ModuleGraph,
-        types: &mut TypeRegistry,
-        records: &mut super::super::parameterized::RecordSpecializations,
-        evaluate: &mut impl FnMut(
-            FileInstanceId,
-            &syntax::Expression,
-        ) -> Result<ConstantValue, LocatedDiagnostic>,
-    ) -> Result<(), LocatedDiagnostic> {
-        for publication in graph.insertion_publications() {
-            for (name, _) in &publication.code.values {
-                let Some(jai_modules::SourceCaptureValue::Type(value)) =
-                    graph.insertion_capture_value(publication.file, *name)
-                else {
-                    continue;
-                };
-                let ty = self.resolve_module_type_with_specializations(
-                    graph,
-                    ModuleTypeRequest {
-                        file: publication.file,
-                        value,
-                        span: publication.code.location.span,
-                    },
-                    types,
-                    records,
-                    evaluate,
-                )?;
-                self.inserted_capture_types
-                    .insert((publication.file, *name), ty);
-            }
-        }
-        Ok(())
-    }
     pub(crate) fn materialize_module_parameters(
         &mut self,
         graph: &ModuleGraph,

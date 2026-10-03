@@ -562,6 +562,7 @@ pub(super) fn apply<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
             result.into_value()
         }
         ApplyOp::Bool(op) => Value::Bool(match op {
+            BoolApply::CompileTime => vm.execution_phase.is_compile_time(),
             BoolApply::FromValue => value_operand(&mut operands)?.boolean()?,
             BoolApply::FromInt => {
                 let value = number(vm, value_operand(&mut operands)?)?;

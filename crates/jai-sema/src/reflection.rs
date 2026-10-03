@@ -6,6 +6,7 @@ mod storage;
 
 #[derive(Default)]
 pub(crate) struct MetaContext {
+    pub(crate) compiler_code: crate::compiler_code::CompilerCodeRegistry,
     pub(crate) short_lambda_preview: Option<crate::short_lambdas::PreviewIdentity>,
     pub(crate) external_globals: crate::local_declarations::ExternalGlobals,
     pub(crate) source_procedure_owners: jai_ir::SourceProcedureOwners,

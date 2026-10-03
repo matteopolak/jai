@@ -270,6 +270,12 @@ impl<'a> FactsBuilder<'a, '_> {
             let mut facts = Vec::new();
             for (&name, binding) in frame {
                 let fact = match binding {
+                    Binding::CompilerInput { .. } => {
+                        return Err(Diagnostic::new(
+                            self.span,
+                            "compiler input cannot enter a native #run recipe",
+                        ));
+                    }
                     Binding::Storage(_) => continue,
                     Binding::LambdaPreview(_) => {
                         return Err(Diagnostic::new(

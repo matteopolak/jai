@@ -5,6 +5,7 @@ use jai_modules::{DeferredCondition, DiscoveryConditionContext};
 
 pub(super) struct Jobs<'a> {
     requests: &'a [DeferredCondition],
+    pub(super) insertions: Option<insertion_jobs::Jobs<'a>>,
     cases: &'a [jai_modules::DeferredCase],
     using: &'a [jai_modules::FileUsingRequest],
     pub(super) using_decisions: Vec<(jai_modules::UsingRequestId, jai_modules::FileUsingDecision)>,
@@ -19,6 +20,7 @@ impl<'a> Jobs<'a> {
     pub(super) fn new(requests: &'a [DeferredCondition]) -> Self {
         Self {
             requests,
+            insertions: None,
             cases: &[],
             using: &[],
             using_decisions: vec![],
@@ -29,6 +31,15 @@ impl<'a> Jobs<'a> {
             pending: Vec::new(),
         }
     }
+    pub(super) fn new_insertions(requests: &'a [jai_modules::DeclarationInsertionRequest]) -> Self {
+        let mut jobs = Self::new(&[]);
+        jobs.insertions = Some(insertion_jobs::Jobs::new(requests));
+        jobs
+    }
+    pub(super) fn has_insertions(&self) -> bool {
+        self.insertions.is_some()
+    }
+
     pub(super) fn new_using(requests: &'a [jai_modules::FileUsingRequest]) -> Self {
         let mut jobs = Self::new(&[]);
         jobs.using = requests;

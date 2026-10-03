@@ -4,12 +4,16 @@
 use super::PendingRecordModifier;
 use crate::modules::placeholder_demands::PlaceholderDemand;
 use jai_modules::{LookupError, ModuleGraph};
-use jai_source::{LocatedDiagnostic, SourceSpan};
+use jai_source::{DeclarationId, LocatedDiagnostic, SourceSpan};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum PendingType {
     RecordModifier(PendingRecordModifier),
     Placeholder(PlaceholderDemand),
+    Constant {
+        declaration: DeclarationId,
+        location: SourceSpan,
+    },
 }
 
 impl From<PendingRecordModifier> for PendingType {
@@ -30,6 +34,7 @@ impl PendingType {
         match self {
             Self::RecordModifier(pending) => pending.location,
             Self::Placeholder(demand) => demand.location,
+            Self::Constant { location, .. } => location,
         }
     }
 
@@ -38,6 +43,10 @@ impl PendingType {
     pub(crate) fn diagnostic(self, graph: &ModuleGraph) -> LocatedDiagnostic {
         match self {
             Self::RecordModifier(pending) => pending.diagnostic(),
+            Self::Constant { location, .. } => LocatedDiagnostic {
+                location,
+                message: "constant requires checked compile-time execution".into(),
+            },
             Self::Placeholder(demand) => {
                 LocatedDiagnostic::new(demand.location.source, demand.diagnostic(graph))
             }

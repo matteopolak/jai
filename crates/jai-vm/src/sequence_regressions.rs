@@ -852,6 +852,8 @@ fn literal_pool_growth_precharges_existing_large_keys_and_rolls_back() {
         .into_iter()
         .chain((4..8).map(|byte| vec![byte; 4096]))
     {
+        let next_inspection = vm.test_literal_insert_inspection_work(bytes.len());
+        vm.test_budget_source_work(17_000, true, next_inspection);
         assert!(matches!(
             vm.evaluate(&data(&bytes)).outcome,
             Outcome::Complete(_)
@@ -860,6 +862,8 @@ fn literal_pool_growth_precharges_existing_large_keys_and_rolls_back() {
     let mut exhausted = false;
     for number in 0u64..128 {
         let allocations = vm.memory().allocation_count();
+        let next_inspection = vm.test_literal_insert_inspection_work(8);
+        vm.test_budget_source_work(17_000, true, next_inspection);
         match vm.evaluate(&data(&number.to_le_bytes())).outcome {
             Outcome::Complete(_) => assert_eq!(vm.memory().allocation_count(), allocations + 1),
             Outcome::Failed(Error::Limit(LimitKind::Fuel)) => {

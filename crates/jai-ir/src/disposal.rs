@@ -191,3 +191,5 @@ fn run(mut pending: Vec<Work>) {
         }
     }
 }
+
+pub(crate) mod compiler_roots;

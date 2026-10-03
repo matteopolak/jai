@@ -52,7 +52,13 @@ where
                 Diagnostic::new(span, "specialization origin is not a record template"),
             ));
         };
-        let normalized = self.normalize_bindings(declaration.file(), record, substitution, span)?;
+        let normalized = self.normalize_bindings(
+            declaration.file(),
+            record,
+            substitution,
+            span,
+            BindingPolicy::Initial,
+        )?;
         let normalized = if record.modify.is_some() {
             let initial_key = RecordSpecializationKey {
                 template: RecordTemplateId(id),
@@ -83,8 +89,13 @@ where
                     // A modifier can change a preceding type slot. Re-resolve
                     // every dependent formal and normalize the accepted values
                     // before computing the immutable specialization key.
-                    let mut normalized =
-                        self.normalize_bindings(declaration.file(), record, accepted, span)?;
+                    let mut normalized = self.normalize_bindings(
+                        declaration.file(),
+                        record,
+                        accepted,
+                        span,
+                        BindingPolicy::Accepted,
+                    )?;
                     // A declaration default is an input to its own modifier
                     // recipe. It cannot become a per-TypeId proof merely by
                     // evaluating it beside whichever accepted instance won
@@ -165,6 +176,7 @@ where
         record: &syntax::RecordDeclaration,
         supplied: Substitution,
         span: Span,
+        policy: BindingPolicy,
     ) -> TypeResult<NormalizedRecord> {
         let mut substitution = Substitution::default();
         let mut defaults = HashMap::new();
@@ -196,6 +208,29 @@ where
             let value = match value {
                 BakedValue::Type(ty) if expected == self.types.meta_type() => BakedValue::Type(ty),
                 BakedValue::Code(id) if expected == self.types.code_type() => BakedValue::Code(id),
+                value if matches!(policy, BindingPolicy::Accepted) => {
+                    crate::overloads::recheck_baked_value(
+                        self.types,
+                        self.records,
+                        value,
+                        expected,
+                        &substitution,
+                        span,
+                    )
+                    .map_err(|error| {
+                        failure(
+                            self.graph,
+                            file,
+                            Diagnostic::new(
+                                span,
+                                format!(
+                                    "baked record argument differs from its formal parameter type: {}",
+                                    error.message,
+                                ),
+                            ),
+                        )
+                    })?
+                }
                 value => {
                     let value = value.into_runtime(expected, self.types).map_err(|error| failure(self.graph,
                         file, Diagnostic::new(span, format!("baked record argument differs from its formal parameter type: {error}"))))?;
@@ -433,6 +468,11 @@ where
         self.records.define_default_overrides(ty, overrides);
         Ok((shape, substitution))
     }
+}
+
+enum BindingPolicy {
+    Initial,
+    Accepted,
 }
 
 struct NormalizedRecord {

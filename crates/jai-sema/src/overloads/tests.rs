@@ -4,6 +4,7 @@ use jai_ir::{ConstantKind, ConstantValue};
 use jai_source::{Identities, Symbols};
 use jai_types::{RecordKind, TypeRegistry};
 use std::collections::HashMap;
+use std::slice::from_ref;
 
 struct Names {
     symbols: Symbols,
@@ -67,7 +68,7 @@ fn native_addresses_are_ordinary_pointer_arguments_without_baked_vm_provenance()
         pointer,
     ));
     let matched =
-        match_candidate(&types, &candidate, &[argument.clone()], Span::default()).unwrap();
+        match_candidate(&types, &candidate, from_ref(&argument), Span::default()).unwrap();
     assert!(matched.substitution.constants.is_empty());
     assert_eq!(matched.bindings[0].runtime_parameter, Some(0));
     for policy in [
@@ -76,7 +77,7 @@ fn native_addresses_are_ordinary_pointer_arguments_without_baked_vm_provenance()
     ] {
         candidate.parameters[0].baking = policy;
         let error =
-            match_candidate(&types, &candidate, &[argument.clone()], Span::default()).unwrap_err();
+            match_candidate(&types, &candidate, from_ref(&argument), Span::default()).unwrap_err();
         assert!(
             error.message.contains("baked VM pointer provenance"),
             "{error:?}"
@@ -249,8 +250,8 @@ fn only_quoted_string_literals_match_a_nul_terminated_byte_pointer() {
     ));
     let matched = select(
         &types,
-        &[pointer_candidate.clone()],
-        &[literal.clone()],
+        from_ref(&pointer_candidate),
+        from_ref(&literal),
         Span::default(),
     )
     .unwrap();
@@ -258,7 +259,7 @@ fn only_quoted_string_literals_match_a_nul_terminated_byte_pointer() {
     assert!(
         select(
             &types,
-            &[pointer_candidate.clone()],
+            from_ref(&pointer_candidate),
             &[argument(ArgumentInfo::typed(string))],
             Span::default(),
         )
@@ -287,7 +288,7 @@ fn quoted_byte_backing_matches_structural_generic_pointer_parameters() {
     )]);
     let matched = select(
         &types,
-        &[candidate.clone()],
+        from_ref(&candidate),
         &[argument(ArgumentInfo::string_literal(
             Box::from(&b"A\0B"[..]),
             types.string(),
@@ -342,13 +343,13 @@ fn force_cast_matching_requires_the_actual_layout_and_never_bakes_numeric_wrappi
     let selected = select_with_nominals(
         &types,
         &TargetLayout,
-        &[f64.clone()],
+        from_ref(&f64),
         &args,
         Span::default(),
     )
     .unwrap();
     assert_eq!(selected.conversions, vec![ConversionRank::Literal]);
-    let missing_layout = select(&types, &[f64.clone()], &args, Span::default()).unwrap_err();
+    let missing_layout = select(&types, from_ref(&f64), &args, Span::default()).unwrap_err();
     assert!(
         missing_layout
             .diagnostic(Span::default())
@@ -359,7 +360,7 @@ fn force_cast_matching_requires_the_actual_layout_and_never_bakes_numeric_wrappi
         select_with_nominals(
             &types,
             &TargetLayout,
-            &[f32.clone()],
+            from_ref(&f32),
             &args,
             Span::default()
         )
@@ -452,15 +453,15 @@ fn contextual_cast_targets_are_candidate_supplied_and_baked_casts_are_normalized
         select(
             &types,
             &[narrow.clone(), broad],
-            &[cast.clone()],
+            from_ref(&cast),
             Span::default()
         ),
         Err(SelectionError::Ambiguous(_))
     ));
-    assert!(select(&types, &[narrow.clone()], &[cast.clone()], Span::default()).is_ok());
+    assert!(select(&types, from_ref(&narrow), from_ref(&cast), Span::default()).is_ok());
     let mut baked = narrow;
     baked.parameters[0].baking = jai_syntax::ParameterBaking::Required;
-    assert!(select(&types, &[baked.clone()], &[cast], Span::default()).is_err());
+    assert!(select(&types, from_ref(&baked), &[cast], Span::default()).is_err());
     let wrapping = argument(ArgumentInfo::contextual_cast(
         CastMode::Unchecked,
         ArgumentInfo::integer_literal(300),
@@ -519,7 +520,7 @@ fn truncate_casts_keep_integer_bits_and_reject_float_and_boolean_domains() {
         CastMode::Truncate,
         ArgumentInfo::integer_literal(300),
     ));
-    let matched = select(&types, &[narrow], &[value.clone()], Span::default()).unwrap();
+    let matched = select(&types, &[narrow], from_ref(&value), Span::default()).unwrap();
     assert_eq!(
         matched
             .substitution
@@ -577,7 +578,7 @@ fn callback_patterns_infer_results_and_keep_abi_context_and_parameter_types_exac
         argument(ArgumentInfo::typed(u8)),
         argument(ArgumentInfo::typed(procedure)),
     ];
-    let matched = select(&types, &[candidate.clone()], &arguments, Span::default()).unwrap();
+    let matched = select(&types, from_ref(&candidate), &arguments, Span::default()).unwrap();
     assert_eq!(matched.substitution.ty(r), Some(u16));
     let pattern = &candidate.parameters[1].ty;
     assert_eq!(
@@ -605,7 +606,7 @@ fn callback_patterns_infer_results_and_keep_abi_context_and_parameter_types_exac
             argument(ArgumentInfo::typed(u8)),
             argument(ArgumentInfo::typed(procedure)),
         ];
-        assert!(select(&types, &[candidate.clone()], &arguments, Span::default()).is_err());
+        assert!(select(&types, from_ref(&candidate), &arguments, Span::default()).is_err());
     }
 }
 
@@ -1021,7 +1022,7 @@ fn nominal_patterns_infer_typed_arguments_and_preserve_the_origin() {
     let matched = select_with_nominals(
         &types,
         &instances,
-        &[candidate.clone()],
+        from_ref(&candidate),
         &[argument(ArgumentInfo::typed(record))],
         Span::default(),
     )
@@ -1087,7 +1088,7 @@ fn forwarded_generic_pack_infers_its_element_and_binds_trailing_arguments() {
         forwarded.clone(),
         argument(ArgumentInfo::typed(types.scalar(ScalarType::Bool))),
     ];
-    let matched = select(&types, &[candidate.clone()], &args, Span::default()).unwrap();
+    let matched = select(&types, from_ref(&candidate), &args, Span::default()).unwrap();
     assert_eq!(
         matched.substitution.ty(t),
         Some(integer(&types, IntegerType::U16))

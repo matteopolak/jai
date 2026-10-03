@@ -165,6 +165,27 @@ pub(super) fn bind(
     context: Option<&ProcessAbiBindingContext>,
     target: Option<&BuildTarget>,
 ) -> Result<HashMap<ProcedureId, ProcessAbiProcedure>, LocatedDiagnostic> {
+    bind_available(graph, types, declarations, context, target, false)
+}
+
+pub(super) fn bind_ready(
+    graph: &ModuleGraph,
+    types: &TypeRegistry,
+    declarations: &ScopedDeclarations<'_>,
+    context: Option<&ProcessAbiBindingContext>,
+    target: Option<&BuildTarget>,
+) -> Result<HashMap<ProcedureId, ProcessAbiProcedure>, LocatedDiagnostic> {
+    bind_available(graph, types, declarations, context, target, true)
+}
+
+fn bind_available(
+    graph: &ModuleGraph,
+    types: &TypeRegistry,
+    declarations: &ScopedDeclarations<'_>,
+    context: Option<&ProcessAbiBindingContext>,
+    target: Option<&BuildTarget>,
+    partial: bool,
+) -> Result<HashMap<ProcedureId, ProcessAbiProcedure>, LocatedDiagnostic> {
     let Some(context) = context else {
         return Ok(HashMap::new());
     };
@@ -184,6 +205,30 @@ pub(super) fn bind(
         return Err(error(
             "process source receipt differs from this graph or selected target".into(),
         ));
+    }
+    if partial {
+        // A source reservation is not yet a checked nominal. Preserve the
+        // original receipt and withhold capability until that fact publishes.
+        let pending = |source: &SourceReceipt, name: &str| {
+            graph.declarations().iter().any(|declaration| {
+                declaration.file() == source.file
+                    && graph.symbols().name(declaration.name()) == name
+                    && !declarations
+                        .nominals
+                        .declarations
+                        .contains_key(&declaration.id())
+            })
+        };
+        if pending(&context.entry, "OS_Error_Code")
+            || context.socket.as_ref().is_some_and(|socket| {
+                ["SOCK", "IPPROTO", "MSG", "SHUT", "msghdr", "cmsghdr"]
+                    .into_iter()
+                    .any(|name| pending(&socket.generated, name))
+                    || pending(&context.base, "iovec")
+            })
+        {
+            return Ok(HashMap::new());
+        }
     }
     let error_code = nominal(graph, declarations, &context.entry, "OS_Error_Code")
         .ok_or_else(|| error("selected POSIX entry has no checked nominal OS_Error_Code".into()))?;
@@ -231,6 +276,9 @@ pub(super) fn bind(
             let Some(operation) = operation(graph.symbols().name(prototype.name)) else {
                 continue;
             };
+            if partial && !declarations.signatures.contains_key(&declaration.id()) {
+                continue;
+            }
             let signature = declarations
                 .signatures
                 .get(&declaration.id())
@@ -260,14 +308,19 @@ pub(super) fn bind(
                     "process library lies outside its selected source receipt".into(),
                 ));
             }
-            let authority = ProcessAuthority::from_verified_source(
+            let authority = match ProcessAuthority::from_verified_source(
                 context.target.clone(),
                 library.clone(),
                 nominals,
                 [(signature.id, operation, signature.ty)],
                 types,
-            )
-            .map_err(|failure| error(failure.to_string()))?;
+            ) {
+                Ok(authority) => authority,
+                Err(jai_vm::process_abi::ProcessAbiError::Type(
+                    jai_types::TypeError::Incomplete(_),
+                )) if partial => continue,
+                Err(failure) => return Err(error(failure.to_string())),
+            };
             let prototype = ProcedurePrototype {
                 id: signature.id,
                 signature: signature.ty,
@@ -370,5 +423,104 @@ mod tests {
             ProcessAbiBindingContext::from_graph(&graph, &[fixture.0.join("modules")], unsupported)
                 .is_none()
         );
+    }
+    fn declarations<'graph>(
+        graph: &'graph ModuleGraph,
+        types: &mut TypeRegistry,
+    ) -> ScopedDeclarations<'graph> {
+        let callable_aliases = crate::polymorphism::integration::callable_aliases(graph);
+        let source_procedures =
+            procedure_headers::identities::reserve(graph, &callable_aliases).unwrap();
+        let count = source_procedures.len();
+        ScopedDeclarations {
+            graph,
+            context: None,
+            values: HashMap::new(),
+            signatures: HashMap::new(),
+            callable_aliases,
+            source_procedures,
+            generics: std::cell::RefCell::new(
+                crate::polymorphism::integration::GenericContext::new(count),
+            ),
+            nominals: Nominals::reserve(graph, types).unwrap(),
+            defaults: HashMap::new(),
+        }
+    }
+
+    #[test]
+    fn ready_binding_withholds_capability_until_actual_source_header_finishes() {
+        let fixture = Fixture::new();
+        let graph = fixture.graph();
+        let target = target();
+        let context = ProcessAbiBindingContext::from_graph(
+            &graph,
+            &[fixture.0.join("modules")],
+            target.clone(),
+        )
+        .unwrap();
+        let mut types = TypeRegistry::new();
+        let mut declarations = declarations(&graph, &mut types);
+        assert!(
+            bind_ready(&graph, &types, &declarations, Some(&context), Some(&target))
+                .unwrap()
+                .is_empty()
+        );
+        assert!(bind(&graph, &types, &declarations, Some(&context), Some(&target)).is_err());
+        let mut constants = Constants::new(&graph);
+        let mut meta = crate::reflection::MetaContext::default();
+        declarations
+            .nominals
+            .define_aliases_with_specializations(
+                &graph,
+                &mut types,
+                &mut meta.record_specializations,
+                &mut |file, expression| constants.evaluate_lazy(file, expression),
+            )
+            .unwrap();
+        procedure_headers::register(
+            &graph,
+            &mut types,
+            &mut declarations,
+            &mut constants,
+            &mut meta,
+            procedure_headers::HeaderPhase::TypesOnly,
+        )
+        .unwrap();
+        let ready =
+            bind_ready(&graph, &types, &declarations, Some(&context), Some(&target)).unwrap();
+        let strict = bind(&graph, &types, &declarations, Some(&context), Some(&target)).unwrap();
+        assert_eq!(ready.len(), 1);
+        assert_eq!(strict.len(), 1);
+        let source = graph
+            .declarations()
+            .iter()
+            .find(|source| graph.symbols().name(source.name()) == "fork")
+            .unwrap();
+        let id = declarations.signatures[&source.id()].id;
+        assert_eq!(ready[&id].procedure(), id);
+        assert_eq!(
+            ready[&id].signature(),
+            declarations.signatures[&source.id()].ty
+        );
+        assert_eq!(ready[&id].operation(), ProcessAbiOperation::Fork);
+    }
+
+    #[test]
+    fn ready_binding_validates_original_graph_receipt_before_skipping_absent_headers() {
+        let fixture = Fixture::new();
+        let graph = fixture.graph();
+        let target = target();
+        let context = ProcessAbiBindingContext::from_graph(
+            &graph,
+            &[fixture.0.join("modules")],
+            target.clone(),
+        )
+        .unwrap();
+        let other = fixture.graph();
+        let mut types = TypeRegistry::new();
+        let declarations = declarations(&other, &mut types);
+        let error =
+            bind_ready(&other, &types, &declarations, Some(&context), Some(&target)).unwrap_err();
+        assert!(error.message.contains("source receipt differs"));
     }
 }

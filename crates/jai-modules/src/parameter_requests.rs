@@ -141,6 +141,7 @@ impl fmt::Display for ParameterResponseError {
 }
 impl std::error::Error for ParameterResponseError {}
 
+#[derive(Clone)]
 pub(super) struct ParameterRequestStore {
     session: u64,
     requests: Vec<DeferredParameter>,
@@ -288,6 +289,7 @@ impl GraphDiscovery<'_> {
         id: ParameterRequestId,
         response: ParameterResponse,
     ) -> Result<(), ParameterResponseError> {
+        self.invalidate_insertion_admissions();
         let mut store = self.builder.semantic_parameters.borrow_mut();
         if id.session != store.session {
             return Err(ParameterResponseError::UnknownRequest);

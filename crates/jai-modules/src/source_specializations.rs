@@ -69,6 +69,7 @@ impl GraphDiscovery<'_> {
         &mut self,
         key: SourceSpecializationKey,
     ) -> Result<bool, GraphError> {
+        self.invalidate_insertion_admissions();
         let graph = &self.builder.graph;
         let declaration = graph.declaration(key.declaration).ok_or_else(|| {
             self.builder.located(

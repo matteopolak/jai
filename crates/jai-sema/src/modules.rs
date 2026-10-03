@@ -52,13 +52,19 @@ mod short_lambdas;
 pub use file_abi_bindings::FileAbiBindingContext;
 pub use process_abi_bindings::ProcessAbiBindingContext;
 mod discovery_session;
+mod source_preparation;
+pub use source_preparation::SourcePreparationPending;
+mod insertion_jobs;
+mod insertion_queries;
 mod prepared_session;
 pub use discovery_session::{
     DiscoveryReadiness, PreparedDiscoveryOutcome, PreparedDiscoveryRequests,
     PreparedDiscoverySession,
 };
 mod program_exports;
-pub use prepared_session::{LibraryPending, LibraryReadiness, PreparedLibrarySession};
+pub use prepared_session::{
+    LibraryPending, LibraryReadiness, PreparedLibrarySession, SourcePrefixReadiness,
+};
 mod scope;
 mod sequence_constants;
 mod target_values;
@@ -242,6 +248,30 @@ pub fn resolve_discovery_cases(
         _ => unreachable!("case resolution returns canonical case choices"),
     }
 }
+pub type InsertionAdmissionCallback<'a> = dyn Fn(
+        jai_modules::InsertionRequestId,
+        &jai_modules::DeclarationInsertionCode,
+    ) -> Result<jai_modules::InsertionAdmission, jai_modules::InsertionPublicationError>
+    + 'a;
+
+#[derive(Debug)]
+pub struct DiscoveryInsertionOutcome {
+    pub specializations: Vec<jai_modules::SourceSpecializationKey>,
+    pub decisions: Vec<DiscoveryInsertionDecision>,
+    pub pending: Vec<DiscoveryInsertionPending>,
+}
+#[derive(Clone, Debug)]
+pub struct DiscoveryInsertionDecision {
+    pub request: jai_modules::InsertionRequestId,
+    pub code: jai_modules::DeclarationInsertionCode,
+    pub admission: jai_modules::InsertionAdmission,
+}
+#[derive(Clone, Debug)]
+pub struct DiscoveryInsertionPending {
+    pub request: jai_modules::InsertionRequestId,
+    pub diagnostic: LocatedDiagnostic,
+}
+
 #[derive(Debug)]
 pub struct DiscoveryCaseOutcome {
     pub decisions: Vec<(jai_modules::CaseRequestId, syntax::CompileTimeCaseChoice)>,
@@ -327,6 +357,7 @@ enum PreparedResolution {
 
 #[derive(Clone, Copy)]
 enum PreparedDiscovery<'a> {
+    Insertions(&'a [jai_modules::DeclarationInsertionRequest]),
     Using(&'a [jai_modules::FileUsingRequest]),
     Conditions(&'a [jai_modules::DeferredCondition]),
     Cases(&'a [jai_modules::DeferredCase]),
@@ -347,6 +378,9 @@ fn resolve_prepared(
     };
     let effects = crate::compile_time::SharedEffects::new(effects);
     let mut discovery_jobs = match discovery {
+        Some(PreparedDiscovery::Insertions(requests)) => {
+            Some(discovery_conditions::Jobs::new_insertions(requests))
+        }
         Some(PreparedDiscovery::Using(requests)) => {
             Some(discovery_conditions::Jobs::new_using(requests))
         }
@@ -359,7 +393,21 @@ fn resolve_prepared(
         _ => None,
     };
     let mut worklist = None;
-    let procedures = match phase.drive_bindings(&effects, discovery_jobs.as_mut(), &mut worklist)? {
+    let progress = phase.drive_bindings(&effects, discovery_jobs.as_mut(), None, &mut worklist);
+    let progress = match progress {
+        Ok(progress) => progress,
+        Err(mut diagnostic) => {
+            if let Some(worklist) = worklist.take()
+                && let Err(cause) = worklist.cancel(&effects)
+            {
+                diagnostic
+                    .message
+                    .push_str(&format!("; cancellation failed: {cause}"));
+            }
+            return Err(diagnostic);
+        }
+    };
+    let procedures = match progress {
         compile_time::BindingProgress::Complete(procedures) => procedures,
         compile_time::BindingProgress::Pending(pending) => {
             if let Some(worklist) = worklist {
@@ -372,7 +420,10 @@ fn resolve_prepared(
             }
             return Err(pending.diagnostic);
         }
-        compile_time::BindingProgress::HeadersReady
+        compile_time::BindingProgress::SourceRunReady
+        | compile_time::BindingProgress::SourceRunsReady
+        | compile_time::BindingProgress::TypesReady
+        | compile_time::BindingProgress::HeadersReady
         | compile_time::BindingProgress::InitializersReady => {
             unreachable!("phase drives header readiness internally")
         }

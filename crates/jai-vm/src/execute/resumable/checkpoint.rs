@@ -21,6 +21,7 @@ pub(super) fn prepare<P: ProcedureProvider + ?Sized, E: CompilerEffects>(
     cells
         .checked_mul(2)
         .and_then(|cells| cells.checked_add(root_cells))
+        .and_then(|cells| cells.checked_add(publication_origin_cells(vm)))
         .filter(|cells| *cells <= vm.limits.value_cells)
         .ok_or(Error::Limit(LimitKind::ValueCells))?;
     let resident_ancillary_cells = residual(vm, storage.cells)?;

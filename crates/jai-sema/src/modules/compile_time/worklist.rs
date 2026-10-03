@@ -12,6 +12,7 @@ pub(super) struct BodyJob {
 }
 
 pub(in crate::modules) struct Worklist<'graph> {
+    pub(super) insertion_owners: HashMap<jai_modules::InsertionRequestId, ProcedureId>,
     pub(super) file_abi: HashMap<ProcedureId, jai_vm::file_abi::FileAbiProcedure>,
     pub(super) process_abi: HashMap<ProcedureId, jai_vm::process_abi::ProcessAbiProcedure>,
     pub(super) heap_abi: HashMap<ProcedureId, jai_vm::heap_abi::HeapAbiProcedure>,
@@ -45,6 +46,22 @@ impl<'graph> Worklist<'graph> {
         &mut self,
         session: &mut BindSession<'_, 'graph, '_>,
     ) -> Result<(), LocatedDiagnostic> {
+        let partial = matches!(session.mode, BindingMode::Types(_));
+        let bind_file = if partial {
+            super::super::file_abi_bindings::bind_ready
+        } else {
+            super::super::file_abi_bindings::bind
+        };
+        let bind_heap = if partial {
+            super::super::file_abi_bindings::bind_heap_ready
+        } else {
+            super::super::file_abi_bindings::bind_heap
+        };
+        let bind_process = if partial {
+            super::super::process_abi_bindings::bind_ready
+        } else {
+            super::super::process_abi_bindings::bind
+        };
         for (&declaration, signature) in &session.declarations.signatures {
             self.signatures.insert(signature.id, signature.ty);
             if !matches!(
@@ -73,6 +90,56 @@ impl<'graph> Worklist<'graph> {
                 modifier: None,
             });
         }
+        self.foreign.extend(session.declarations.signatures.iter().filter_map(|(id, signature)| {
+            matches!(&session.graph.declaration(*id)?.syntax().kind,
+                FileDeclarationKind::ProcedurePrototype(prototype) if matches!(prototype.binding, syntax::PrototypeBinding::Foreign(_)))
+                .then_some(signature.id)
+        }));
+        self.record_callable_aliases
+            .extend(super::super::record_method_headers::aliases(
+                session.graph,
+                &session.declarations.nominals,
+                session.types,
+            ));
+        let contextual = super::super::deferred_constants::contextual_lambdas(session.graph);
+        for source in session.graph.declarations() {
+            if !session.deferred.contains(&source.id())
+                || contextual.contains(&source.id())
+                || session.declarations.values.contains_key(&source.id())
+                || self.constant_owners.contains_key(&source.id())
+            {
+                continue;
+            }
+            let owner = session
+                .declarations
+                .generics
+                .borrow_mut()
+                .reserve_local_procedure()
+                .map_err(|error| located(session.graph, source.file(), error))?;
+            self.constant_owners.insert(source.id(), owner);
+            self.constants.push(source);
+        }
+        self.file_abi = bind_file(
+            session.graph,
+            session.types,
+            session.declarations,
+            session.options.file_abi.as_ref(),
+            session.options.target.as_ref(),
+        )?;
+        self.heap_abi = bind_heap(
+            session.graph,
+            session.types,
+            session.declarations,
+            session.options.file_abi.as_ref(),
+            session.options.target.as_ref(),
+        )?;
+        self.process_abi = bind_process(
+            session.graph,
+            session.types,
+            session.declarations,
+            session.options.process_abi.as_ref(),
+            session.options.target.as_ref(),
+        )?;
         self.pending.sort_by_key(|job| job.signature.id.index());
         for job in session.alignment_jobs.iter() {
             if self.alignment_owners.contains_key(&job.declaration) {
@@ -108,6 +175,22 @@ impl<'graph> Worklist<'graph> {
     pub(super) fn new(
         session: &mut BindSession<'_, 'graph, '_>,
     ) -> Result<Self, LocatedDiagnostic> {
+        let partial = matches!(session.mode, BindingMode::Types(_));
+        let bind_file = if partial {
+            super::super::file_abi_bindings::bind_ready
+        } else {
+            super::super::file_abi_bindings::bind
+        };
+        let bind_heap = if partial {
+            super::super::file_abi_bindings::bind_heap_ready
+        } else {
+            super::super::file_abi_bindings::bind_heap
+        };
+        let bind_process = if partial {
+            super::super::process_abi_bindings::bind_ready
+        } else {
+            super::super::process_abi_bindings::bind
+        };
         let graph = session.graph;
         let types = &mut *session.types;
         let declarations = &mut *session.declarations;
@@ -115,21 +198,21 @@ impl<'graph> Worklist<'graph> {
         let deferred = session.deferred;
         let alignment_jobs = &mut *session.alignment_jobs;
         let discovery = session.discovery.as_ref();
-        let file_abi = super::super::file_abi_bindings::bind(
+        let file_abi = bind_file(
             graph,
             types,
             declarations,
             options.file_abi.as_ref(),
             options.target.as_ref(),
         )?;
-        let heap_abi = super::super::file_abi_bindings::bind_heap(
+        let heap_abi = bind_heap(
             graph,
             types,
             declarations,
             options.file_abi.as_ref(),
             options.target.as_ref(),
         )?;
-        let process_abi = super::super::process_abi_bindings::bind(
+        let process_abi = bind_process(
             graph,
             types,
             declarations,
@@ -234,7 +317,22 @@ impl<'graph> Worklist<'graph> {
             .reserve_local_procedure()
             .map_err(|error| located(graph, method_file, error))?;
         let methods_pending = true;
+        let mut insertion_owners = HashMap::new();
+        if let Some(jobs) = discovery.and_then(|jobs| jobs.insertions.as_ref()) {
+            for request in jobs.requests() {
+                if request.publication.is_some() {
+                    continue;
+                }
+                let owner = declarations
+                    .generics
+                    .borrow_mut()
+                    .reserve_local_procedure()
+                    .map_err(|error| located(graph, request.file, error))?;
+                insertion_owners.insert(request.id, owner);
+            }
+        }
         Ok(Self {
+            insertion_owners,
             file_abi,
             heap_abi,
             process_abi,

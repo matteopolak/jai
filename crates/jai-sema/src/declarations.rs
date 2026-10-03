@@ -49,7 +49,7 @@ impl<'a> Constants<'a> {
                     span,
                     "nominal enum block constant requires typed constant binding",
                 )),
-                Some(Binding::Storage(_)) => Err(Diagnostic::new(
+                Some(Binding::Storage(_) | Binding::CompilerInput { .. }) => Err(Diagnostic::new(
                     span,
                     "mutable storage cannot supply a compile-time constant",
                 )),
@@ -81,10 +81,12 @@ impl<'a> Constants<'a> {
                             span,
                             "nominal enum block constant requires typed constant binding",
                         )),
-                        Binding::Storage(_) => Err(Diagnostic::new(
-                            span,
-                            "mutable storage cannot supply a compile-time constant",
-                        )),
+                        Binding::Storage(_) | Binding::CompilerInput { .. } => {
+                            Err(Diagnostic::new(
+                                span,
+                                "mutable storage cannot supply a compile-time constant",
+                            ))
+                        }
                         Binding::Namespace(_)
                         | Binding::Imported(_)
                         | Binding::Library(_)
@@ -126,7 +128,7 @@ impl<'a> Constants<'a> {
                 span,
                 "nominal enum block constant requires typed constant binding",
             )),
-            Binding::Storage(_) => Err(Diagnostic::new(
+            Binding::Storage(_) | Binding::CompilerInput { .. } => Err(Diagnostic::new(
                 span,
                 "mutable storage cannot supply a compile-time constant",
             )),

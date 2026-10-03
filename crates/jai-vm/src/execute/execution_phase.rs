@@ -8,13 +8,22 @@ pub enum ExecutionPhase {
     Runtime,
 }
 impl ExecutionPhase {
-    pub fn is_compile_time(self) -> bool { self == Self::CompileTime }
+    pub fn is_compile_time(self) -> bool {
+        self == Self::CompileTime
+    }
 }
 impl<P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'_, P, E> {
-    pub fn execution_phase(&self) -> ExecutionPhase { self.execution_phase }
-    pub(super) fn require_procedure_phase(&self, id: ProcedureId) -> std::result::Result<(), Error> {
+    pub fn execution_phase(&self) -> ExecutionPhase {
+        self.execution_phase
+    }
+    pub(super) fn require_procedure_phase(
+        &self,
+        id: ProcedureId,
+    ) -> std::result::Result<(), Error> {
         if self.execution_phase == ExecutionPhase::Runtime
-            && self.provider.procedure_execution(id) == jai_types::ProcedureExecution::CompileTimeOnly {
+            && self.provider.procedure_execution(id)
+                == jai_types::ProcedureExecution::CompileTimeOnly
+        {
             return Err(Error::CompileTimeOnlyProcedure(id));
         }
         Ok(())

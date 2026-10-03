@@ -227,6 +227,21 @@ impl<'a> Constants<'a> {
         path: &NamePath,
         span: Span,
     ) -> Result<Option<ConstantValue>, LocatedDiagnostic> {
+        if path.members.is_empty()
+            && let Some(value) = self.graph.insertion_capture_value(file, path.root)
+        {
+            return match value {
+                jai_modules::SourceCaptureValue::Scalar(value) => Ok(Some(value.clone())),
+                _ => Err(located(
+                    self.graph,
+                    file,
+                    Diagnostic::new(
+                        span,
+                        "non-scalar source capture requires typed constant resolution",
+                    ),
+                )),
+            };
+        }
         if let Ok(jai_modules::Binding::Parameter(id)) = self.graph.lookup(file, path) {
             return match &self.graph.parameter(id).unwrap().value {
                 jai_modules::ParameterValue::Scalar(value) => Ok(Some(value.clone())),

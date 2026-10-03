@@ -550,6 +550,7 @@ impl Memory {
         if result.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
+        result.path.reserve_exact(1);
         result.path.push(Projection::Sequence(field));
         result.pointee = ty;
         let start = self.byte_offset(types, &result)?;
@@ -607,6 +608,7 @@ impl Memory {
         if result.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
+        result.path.reserve_exact(1);
         result.path.push(Projection::Field(field));
         result.pointee = ty;
         let start = self.byte_offset(types, &result)?;
@@ -655,6 +657,7 @@ impl Memory {
         if result.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
+        result.path.reserve_exact(1);
         result.path.push(Projection::Index(index));
         result.pointee = element;
         let start = self.byte_offset(types, &pointer)?;
