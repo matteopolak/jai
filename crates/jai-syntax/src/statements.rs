@@ -78,10 +78,12 @@ impl Parser<'_> {
                 initializer: None,
                 ..
             }) => true,
-            StatementKind::Declare(Declaration::Inferred { initializer, .. })
-            | StatementKind::Constant(ConstantDeclaration { initializer, .. }) => {
-                initializer_terminates_declaration(initializer)
-            }
+            StatementKind::Declare(Declaration::Inferred {
+                initializer, ..
+            })
+            | StatementKind::Constant(ConstantDeclaration {
+                initializer, ..
+            }) => initializer_terminates_declaration(initializer),
             StatementKind::Declare(
                 Declaration::Explicit {
                     initializer: Some(initializer),
@@ -154,7 +156,10 @@ impl Parser<'_> {
         }
         if self.token().kind == Kind::Directive(Directive::Assert) {
             let (condition, message) = self.assertion_arguments()?;
-            return Ok(StatementKind::CompileTimeAssert { condition, message });
+            return Ok(StatementKind::CompileTimeAssert {
+                condition,
+                message,
+            });
         }
         if self.token().kind == Kind::Directive(Directive::If) {
             return self.statement_conditional();
@@ -221,6 +226,9 @@ impl Parser<'_> {
         if self.keyword(Keyword::PushContext) {
             if !self.allow_qualified {
                 return Err(self.error("push_context requires context resolution"));
+            }
+            if self.is(Punct::Comma) {
+                return self.deferred_context();
             }
             let value = if self.is(Punct::OpenBrace) {
                 None
@@ -439,7 +447,11 @@ impl Parser<'_> {
                 LoopTarget::Innermost
             };
             self.need(Punct::Semicolon)?;
-            return Ok(StatementKind::Jump { kind, target, span });
+            return Ok(StatementKind::Jump {
+                kind,
+                target,
+                span,
+            });
         }
         if (self.token().kind == Kind::Ident
             || (self.token().kind == Kind::Keyword(Keyword::Context)
@@ -502,7 +514,11 @@ impl Parser<'_> {
     fn iteration_flag_expression(&mut self) -> Result<Expression, Diagnostic> {
         // A parenthesized modifier ends before a following <= modifier, as used
         // by current source containers. Its interior still parses normally.
-        let minimum = if self.is(Punct::OpenParen) { 14 } else { 0 };
+        let minimum = if self.is(Punct::OpenParen) {
+            14
+        } else {
+            0
+        };
         self.expression(minimum)
     }
     fn expression_values(&mut self) -> Result<Vec<Expression>, Diagnostic> {
@@ -646,7 +662,11 @@ impl Parser<'_> {
                     values,
                 });
             }
-            return Ok(StatementKind::DeclareResults { names, ty, values });
+            return Ok(StatementKind::DeclareResults {
+                names,
+                ty,
+                values,
+            });
         }
         if targets.iter().any(|(_, existing)| *existing) {
             return Err(self.error("existing-result markers require a declaration"));
@@ -672,7 +692,10 @@ impl Parser<'_> {
             let target = targets.remove(0);
             let value = values.remove(0);
             return Ok(match operation {
-                None => StatementKind::AssignPlace { target, value },
+                None => StatementKind::AssignPlace {
+                    target,
+                    value,
+                },
                 Some(operation) => StatementKind::UpdatePlace {
                     target,
                     operation,
@@ -812,11 +835,17 @@ mod tests {
         assert!(matches!(main.body[3].kind, StatementKind::Range(_)));
         assert!(matches!(
             main.body[4].kind,
-            StatementKind::PushContext { value: None, .. }
+            StatementKind::PushContext {
+                value: None,
+                ..
+            }
         ));
         assert!(matches!(
             main.body[5].kind,
-            StatementKind::PushContext { value: Some(_), .. }
+            StatementKind::PushContext {
+                value: Some(_),
+                ..
+            }
         ));
     }
 

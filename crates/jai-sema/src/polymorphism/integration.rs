@@ -136,6 +136,23 @@ impl GenericContext {
             .find(|entry| entry.procedure == id)
             .map(|entry| (entry.key.declaration, entry.defining_file))
     }
+    pub(crate) fn callback_result_type_parameters(
+        &self,
+        id: ProcedureId,
+    ) -> Vec<jai_source::Symbol> {
+        self.callback_source_origin(id)
+            .and_then(|(declaration, _)| self.templates.get(&declaration))
+            .map(|definition| {
+                definition
+                    .template
+                    .candidate
+                    .result_type_parameters
+                    .iter()
+                    .map(|parameter| parameter.name)
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
     pub(crate) fn callback_signature(&self, id: ProcedureId) -> Option<Signature> {
         self.signatures.get(&id).cloned()
     }
@@ -396,7 +413,9 @@ impl GenericContext {
                     convention: definition.convention,
                     context: definition.context,
                     variadic: match definition.template.candidate.variadic {
-                        CandidateVariadic::C { .. } => Variadic::C {
+                        CandidateVariadic::C {
+                            ..
+                        } => Variadic::C {
                             fixed_parameters: runtime_count,
                         },
                         _ => variadic,
@@ -460,6 +479,7 @@ pub(crate) fn concrete_candidate<Origin>(
     let variadic = signature.source_variadic;
     Candidate {
         declaration,
+        result_type_parameters: Vec::new(),
         variadic,
         parameters: signature
             .parameters
@@ -469,7 +489,9 @@ pub(crate) fn concrete_candidate<Origin>(
                 evaluation: parameter.evaluation,
                 name: parameter.name,
                 ty: TypePattern::Concrete(match variadic {
-                    CandidateVariadic::Jai { parameter: pack } if pack == index => {
+                    CandidateVariadic::Jai {
+                        parameter: pack,
+                    } if pack == index => {
                         let Ok(jai_types::TypeKind::Slice(element)) = types.kind(parameter.ty)
                         else {
                             unreachable!("source Jai pack parameter is a checked slice");
@@ -486,7 +508,9 @@ pub(crate) fn concrete_candidate<Origin>(
                         ArgumentInfo::constant(BakedValue::Value(value.clone()), value.ty)
                     }
                     ParameterDefault::CallerLocation => ArgumentInfo::caller_location(parameter.ty),
-                    ParameterDefault::CodeNull { ty } => ArgumentInfo::code_null(*ty),
+                    ParameterDefault::CodeNull {
+                        ty,
+                    } => ArgumentInfo::code_null(*ty),
                 }),
                 baking: jai_syntax::ParameterBaking::None,
             })

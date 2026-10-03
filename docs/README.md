@@ -3,6 +3,7 @@
 - [Persistent source checkpoints](source-checkpoints.md)
 
 - [Browser source workspace](browser-workspace.md)
+- [Scripting runtime](scripting-runtime.md)
 
 - [Code formatting](code-formatting.md)
 
@@ -299,3 +300,5 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Historical right-handed UI](stdlib/getrect-legacy-right-handed-ui.md) — retained widgets, upward-positive layout, and cached resource reads.
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
 - [Nested source namespaces](nested-source-namespaces.md) — canonical nested type reservations through original early source aliases.
+
+- [Return type parameters](return-type-parameters.md)

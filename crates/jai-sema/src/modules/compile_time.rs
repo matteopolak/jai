@@ -115,8 +115,9 @@ pub(super) fn bind_procedures_resumable<'graph>(
             admission,
         } = session;
         if let BindingMode::Types(pending) = mode {
-            if let Some(aggregates::parameterized::PendingType::Constant { declaration, .. }) =
-                pending.cause()
+            if let Some(aggregates::parameterized::PendingType::Constant {
+                declaration, ..
+            }) = pending.cause()
             {
                 header_prerequisites.constants.insert(declaration);
             }
@@ -837,8 +838,11 @@ pub(super) fn bind_procedures_resumable<'graph>(
                         .generics
                         .borrow()
                         .is_isolated_procedure(signature.id);
-                let body_effects: &dyn EffectService =
-                    if isolated { &isolated_effects } else { effects };
+                let body_effects: &dyn EffectService = if isolated {
+                    &isolated_effects
+                } else {
+                    effects
+                };
                 let body_cache = if isolated {
                     isolated_caches.entry(signature.id).or_default()
                 } else {
@@ -1015,7 +1019,14 @@ pub(super) fn bind_procedures_resumable<'graph>(
                                 resolver.using_record(storage)?;
                             }
                         }
-                        let body = resolver.block(&procedure.body, false)?;
+                        let body = if job.modifier.is_some() {
+                            // Auxiliary modifier source returns acceptance, explanation,
+                            // and binding slots through its checked plan/signature. Its
+                            // source header intentionally has no ordinary result rows.
+                            resolver.block(&procedure.body, false)?
+                        } else {
+                            resolver.named_result_body(&procedure.results, &procedure.body)?
+                        };
                         if !signature.results.is_empty() && body.flow != Flow::Terminates {
                             return Err(Diagnostic::new(
                                 procedure.span,

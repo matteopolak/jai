@@ -204,6 +204,7 @@ pub(crate) struct LocalScopes {
     body_owner: Option<ProcedureId>,
     annotation_owner: NominalAnnotationContext,
     active: HashSet<LocalDeclarationId>,
+    named_results: Option<(ProcedureId, Vec<Option<Local>>)>,
 }
 
 pub(crate) struct CleanupRuntimeShadows {
@@ -267,7 +268,23 @@ impl LocalScopes {
         let mut scopes = self.clone();
         scopes.body_owner = Some(procedure);
         scopes.annotation_owner = NominalAnnotationContext::None;
+        scopes.named_results = None;
         scopes
+    }
+
+    pub(crate) fn set_named_results(&mut self, owner: ProcedureId, locals: Vec<Option<Local>>) {
+        self.named_results = Some((owner, locals));
+    }
+
+    pub(crate) fn named_result(&self, owner: ProcedureId, ordinal: usize) -> Option<Local> {
+        let (actual_owner, locals) = self.named_results.as_ref()?;
+        (*actual_owner == owner)
+            .then(|| locals.get(ordinal).copied().flatten())
+            .flatten()
+    }
+
+    pub(crate) fn retain_caller_results(&mut self, caller: &Self) {
+        self.named_results.clone_from(&caller.named_results);
     }
 
     pub(crate) fn body_owner(&self) -> Option<ProcedureId> {
@@ -281,6 +298,7 @@ impl LocalScopes {
             next_scope: self.next_scope,
             body_owner: self.body_owner,
             active: HashSet::new(),
+            named_results: self.named_results.clone(),
         }
     }
 

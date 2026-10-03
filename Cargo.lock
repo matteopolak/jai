@@ -283,6 +283,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "jai-runtime"
+version = "0.1.0"
+dependencies = [
+ "jai-modules",
+ "jai-sema",
+ "jai-source",
+ "jai-syntax",
+ "jai-types",
+ "jai-vm",
+]
+
+[[package]]
 name = "jai-sema"
 version = "0.1.0"
 dependencies = [
@@ -319,6 +331,13 @@ dependencies = [
  "jai-ir",
  "jai-source",
  "jai-types",
+]
+
+[[package]]
+name = "jai-wasm"
+version = "0.1.0"
+dependencies = [
+ "jai-runtime",
 ]
 
 [[package]]
