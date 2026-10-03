@@ -83,27 +83,44 @@ pub(super) fn plan(
             jai_types::BuildOutputKind::Executable => {
                 let entry = jai_sema::select_entry(unit.graph(), &library)
                     .map_err(|error| Error::Source(error.render(unit.graph().sources())))?;
-                let Some(entry) = entry else {
-                    if workspace.id == scheduled.root {
-                        continue;
+                match entry {
+                    Some(entry) => {
+                        let program = (*library)
+                            .into_program(entry)
+                            .map_err(|error| Error::Source(error.to_string()))?;
+                        (
+                            backend::NativeUnit::Application(program),
+                            match command {
+                                ArtifactCommand::Llvm(_) => ArtifactFormat::Llvm,
+                                ArtifactCommand::Object(_) => ArtifactFormat::Object,
+                                ArtifactCommand::Executable(_) => ArtifactFormat::Executable,
+                            },
+                        )
                     }
-                    return Err(Error::Source(format!(
-                        "workspace {} ('{}') has no application main procedure; no artifact was emitted",
-                        workspace.id.get(),
-                        workspace.name
-                    )));
-                };
-                let program = (*library)
-                    .into_program(entry)
-                    .map_err(|error| Error::Source(error.to_string()))?;
-                (
-                    backend::NativeUnit::Application(program),
-                    match command {
-                        ArtifactCommand::Llvm(_) => ArtifactFormat::Llvm,
-                        ArtifactCommand::Object(_) => ArtifactFormat::Object,
-                        ArtifactCommand::Executable(_) => ArtifactFormat::Executable,
-                    },
-                )
+                    None if !library.program_exports().is_empty()
+                        && !matches!(command, ArtifactCommand::Executable(_)) =>
+                    {
+                        backend::validate_exports(&library).map_err(|error| {
+                            setting_error(session, workspace.id, BuildSetting::OutputKind, error)
+                        })?;
+                        (
+                            backend::NativeUnit::Library(*library),
+                            if matches!(command, ArtifactCommand::Llvm(_)) {
+                                ArtifactFormat::Llvm
+                            } else {
+                                ArtifactFormat::Object
+                            },
+                        )
+                    }
+                    None if workspace.id == scheduled.root => continue,
+                    None => {
+                        return Err(Error::Source(format!(
+                            "workspace {} ('{}') has no application main procedure; no artifact was emitted",
+                            workspace.id.get(),
+                            workspace.name
+                        )));
+                    }
+                }
             }
         };
         let mut workspace_options = options.clone();
