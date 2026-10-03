@@ -1,6 +1,7 @@
 # Developer documentation
 
 - [Persistent source checkpoints](source-checkpoints.md)
+- [Build storage](build-storage.md)
 
 - [Browser source workspace](browser-workspace.md)
 - [Scripting runtime](scripting-runtime.md)

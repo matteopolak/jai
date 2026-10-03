@@ -4,7 +4,7 @@
 
 `push_context,defer_pop;` establishes a context for the remainder of its enclosing lexical block. An explicit value may precede the semicolon; the old context resumes when that block exits, after cleanups registered under the pushed context.
 
-The parser dispatches the comma modifier into its checked helper, and semantic block lowering activates the prepared lexical suffix. CI on `a4232c6` failed all five native witnesses during source parsing because these helpers were not registered; it never reached the VM or LLVM. The recovery preserves those witnesses unchanged. Post-repair VM/native acceptance remains pending the integration gate.
+The parser dispatches the comma modifier into its checked helper, and semantic block lowering activates the prepared lexical suffix. The registered implementation passed five VM/native witnesses at O0/O2, three parser regressions, two source-context regressions, and the quote-retention budget regression. The workspace also passed its all-targets compilation gate. Whole-project Vk-Engine acceptance remains pending.
 
 ## How it works
 
