@@ -44,7 +44,7 @@ main :: () -> int {
 | Browser editor | Real Wasm runs, file tree, source editor and shared source LSP tested; host services and full standard library pending |
 | Windows and mobile | C ABI and object tests; runtime compatibility unverified |
 
-The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded snapshot tokenizes all **2,603 files**, including our library and prelude, and parses **2,310** completely. It checks **103 pinned support files** with the included Preload. Full standard-library and upstream project builds remain pending. See the [latest measured frontier](docs/corpus-breadth-frontier.md) and [earlier baseline](docs/corpus-breadth-baseline.md) for the separate stage results.
+The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded snapshot tokenizes all **2,603 files**, including our library and prelude, and parses **2,349** completely, with 39 more accepted files and no regressions in the same cohort. The earlier body sweep checked **103 pinned support files** with the included Preload; that stage has not been rerun for this snapshot. Full standard-library and upstream project builds remain pending. See the [latest measured frontier](docs/corpus-breadth-frontier.md) and [earlier baseline](docs/corpus-breadth-baseline.md) for the separate stage results.
 
 For example, record specialization and compile-time execution can work together:
 

@@ -6,21 +6,21 @@ This records the next complete source sweep after the [earlier baseline](corpus-
 
 ## How it works
 
-The frozen cohort contains 702 supplied reference files, 1,440 files from seven pinned upstream projects, and 461 independently authored library/prelude inputs. All 2,603 input identities and bytes match the earlier cohort. Parser010 uses the real compiler executable with SHA256 `fb3f1df155920006414fd6894d8af5c6b5fdfb546c86fa4a0e92a563a6292aca` and compiler-source manifest `3ef446d7ad056b01d9a2025d422ef5188c1c35e3257b065f7dbfeb19f133723c`. The parser implementation is included in compiler commit `2fd03f13084cefec0af811455d968ecd54a86547`; that commit also integrates browser, ABI and fuzz work, so its binary is not asserted identical to the earlier sweep executable.
+The frozen cohort contains 702 supplied reference files, 1,440 files from seven pinned upstream projects, and 461 independently authored library/prelude inputs. All 2,603 input identities and bytes match the earlier cohort. The latest sweep uses compiler commit `210b1c53b8aee9b266b6c21a7ab1053dfa5c770d` and its immutable executable with SHA256 `fb4c0f70df0e0d481a5a788809a12ab4d09099a9683836c50b7c6dfb62fb28f2`. The exact committed tree also passed workspace/all-targets, formatting and 82 focused tests.
 
-| Stage and cohort | Earlier baseline | Parser010 |
-| --- | ---: | ---: |
-| Full tokenization, all inputs | 2,603 / 2,603 | 2,603 / 2,603 |
-| Complete AST, reference and upstream inputs | 1,799 / 2,142 | 1,862 / 2,142 |
-| Complete AST, authored library/prelude inputs | 436 / 461 | 448 / 461 |
-| Complete AST, combined | 2,235 / 2,603 | 2,310 / 2,603 |
-| Body checks, reference and upstream inputs | 101 / 2,142 | 103 / 2,142 |
-| Pinned library roots accepted | 43 / 253 | 44 / 253 |
-| Authored library roots accepted | 19 / 128 | 19 / 128 |
+| Stage and cohort | Earlier baseline | Parser010 | Latest checkpoint |
+| --- | ---: | ---: | ---: |
+| Full tokenization, all inputs | 2,603 / 2,603 | 2,603 / 2,603 | 2,603 / 2,603 |
+| Complete AST, reference and upstream inputs | 1,799 / 2,142 | 1,862 / 2,142 | 1,901 / 2,142 |
+| Complete AST, authored library/prelude inputs | 436 / 461 | 448 / 461 | 448 / 461 |
+| Complete AST, combined | 2,235 / 2,603 | 2,310 / 2,603 | 2,349 / 2,603 |
+| Body checks, reference and upstream inputs | 101 / 2,142 | 103 / 2,142 | Not rerun |
+| Pinned library roots accepted | 43 / 253 | 44 / 253 | Not rerun |
+| Authored library roots accepted | 19 / 128 | 19 / 128 | Not rerun |
 
-The AST improvement is 75 files with no regressions against the intervening Parser005 sweep. The 293 raw AST rejections include two explicit negative witnesses; they are retained as failures at their observed stage. Parser success alone does not establish correct rejection at a later stage, platform support, or executable behavior.
+The latest AST sweep gains 39 files against Parser010 with no regressions, an improvement of 114 files against the original baseline. Its 254 raw AST rejections still include the two explicit negative witnesses. Counts use actual stage exit codes, without shrinking the cohort or relabeling failures as acceptance. Parser success does not establish correct rejection at a later stage, platform support or executable behavior.
 
-The reference/upstream body sweep has 103 passes, 1,758 failures, one expected negative, and 280 files blocked by parsing. These are separate single-file graph checks with NoEffects and the supplied Preload. They are not the independently authored bootstrap profile and do not count successful project builds. The authored 128-root check remains at 19 passes. Full authored-library execution and all seven upstream application builds remain incomplete.
+The earlier reference/upstream body sweep recorded 103 passes, 1,758 failures, one expected negative and 280 parse-blocked files. These were separate single-file graph checks with NoEffects and the supplied Preload. Those results describe the earlier compiler, not a new semantic sweep of this checkpoint or the independently authored bootstrap profile. Full authored-library execution and all seven upstream application builds remain incomplete.
 
 The 461 authored inputs are the frozen compatibility snapshot, which includes work held for integration. They are not a claim that every file in that private snapshot is present in the public compiler checkout. Source snapshots and supplied input bytes remain local.
 
@@ -28,7 +28,7 @@ The 461 authored inputs are the frozen compatibility snapshot, which includes wo
 
 Implement a coherent grammar or semantic feature, build a real immutable compiler snapshot, then rerun `tools/check_corpus.py` against the same frozen inputs. Compare source hashes and compiler build receipts before comparing counts. Add a new cohort explicitly when source inputs change; never silently shrink the denominator or reinterpret an unsupported result as acceptance.
 
-The local evidence is `artifacts/agent-packets/driver-parser-bake-20261003/corpus-010/complete-cohort-proof.json` (SHA256 `930aacd694741600abed06a986f8de646bd1797ef0c3a802cbbd260f5e0b4e6c`). Its adjacent reports retain actual per-file commands and diagnostics. The independent grammar census groups the 293 rejections into 58 feature families for implementation; that classification adds no successful compilation claims.
+The latest local evidence is `artifacts/integration-recovery/corpus-210b1c5-20261003/proof.json` (SHA256 `938f78a11c3e1a9546680d2151080af84c64467399b1d9c829215279e33b2d4c`). Adjacent `results.json` and `inputs-before.json` retain actual per-file commands, diagnostics and unchanged source identities. The earlier Parser010 evidence remains at `artifacts/agent-packets/driver-parser-bake-20261003/corpus-010/complete-cohort-proof.json`. Its grammar census grouped 293 rejections into 58 feature families; that classification adds no successful compilation claims and is not a fresh census of the remaining 254.
 
 ## Configuration
 
