@@ -90,19 +90,19 @@ stbi_zlib_decode_noheader_buffer :: (obuffer: *u8, olen: s32, ibuffer: *u8, ilen
 #scope_file
 
 #if OS == .WINDOWS {
-    stb_image :: #system_library "jai_stb_image_adapter";
+    stb_image :: #system_library "stb_image";
 } else #if OS == .LINUX {
-    stb_image :: #system_library "jai_stb_image_adapter";
+    stb_image :: #system_library "stb_image";
 } else #if OS == .MACOS {
-    stb_image :: #system_library "jai_stb_image_adapter";
+    stb_image :: #system_library "stb_image";
 } else #if OS == .ANDROID {
     #if CPU == .X64 {
-        stb_image :: #system_library "jai_stb_image_adapter";
+        stb_image :: #system_library "stb_image";
     } else #if CPU == .ARM64 {
-        stb_image :: #system_library "jai_stb_image_adapter";
+        stb_image :: #system_library "stb_image";
     }
 } else #if OS == .PS5 {
-    stb_image :: #system_library "jai_stb_image_adapter";
+    stb_image :: #system_library "stb_image";
 } else {
     #assert false;
 }

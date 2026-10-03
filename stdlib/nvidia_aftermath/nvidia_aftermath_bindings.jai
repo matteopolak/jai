@@ -819,4 +819,4 @@ GPFN_GFSDK_Aftermath_GetShaderDebugName :: #type (apiVersion: GFSDK_Aftermath_Ve
 
 #import "Basic";
 
-gfsdk_aftermath_lib_x64 :: #system_library "jai_aftermath_535_adapter";
+gfsdk_aftermath_lib_x64 :: #system_library "GFSDK_Aftermath_Lib.x64";

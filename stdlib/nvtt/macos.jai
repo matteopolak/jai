@@ -206,16 +206,28 @@ OutputHandler_VTable :: struct #type_info_none {
     endImage: (this: *OutputHandler) -> void #cpp_method;
 }
 
-OutputHandler_Destructor :: (this: *OutputHandler) #foreign codec_adapter "jai_stdlib_nvtt_macos_OutputHandler_Destructor_1";
-OutputHandler_Destructor_Deleting :: (this: *OutputHandler) #foreign codec_adapter "jai_stdlib_nvtt_macos_OutputHandler_Destructor_Deleting_1";
+OutputHandler_Destructor :: (this: *OutputHandler) {
+    this.vtable.Destructor(this);
+}
+OutputHandler_Destructor_Deleting :: (this: *OutputHandler) {
+    this.vtable.Destructor_Deleting(this);
+}
 
-OutputHandler_beginImage :: (this: *OutputHandler, size: s32, width: s32, height: s32, depth: s32, face: s32, miplevel: s32) #foreign codec_adapter "jai_stdlib_nvtt_macos_OutputHandler_beginImage_1";
+OutputHandler_beginImage :: (this: *OutputHandler, size: s32, width: s32, height: s32, depth: s32, face: s32, miplevel: s32) {
+    this.vtable.beginImage(this, size, width, height, depth, face, miplevel);
+}
 
-OutputHandler_writeData :: (this: *OutputHandler, data: *void, size: s32) -> bool #foreign codec_adapter "jai_stdlib_nvtt_macos_OutputHandler_writeData_1";
+OutputHandler_writeData :: (this: *OutputHandler, data: *void, size: s32) -> bool {
+    return this.vtable.writeData(this, data, size);
+}
 
-OutputHandler_endImage :: (this: *OutputHandler) #foreign codec_adapter "jai_stdlib_nvtt_macos_OutputHandler_endImage_1";
+OutputHandler_endImage :: (this: *OutputHandler) {
+    this.vtable.endImage(this);
+}
 
-vtable :: (obj: *OutputHandler) -> *OutputHandler_VTable #foreign codec_adapter "jai_stdlib_nvtt_macos_vtable_1";
+vtable :: (obj: *OutputHandler) -> *OutputHandler_VTable {
+    return obj.vtable;
+}
 
 Error :: enum u32 {
     Unknown                 :: 0;
@@ -239,12 +251,20 @@ ErrorHandler_VTable :: struct #type_info_none {
     error: (this: *ErrorHandler, e: Error) -> void #cpp_method;
 }
 
-ErrorHandler_Destructor :: (this: *ErrorHandler) #foreign codec_adapter "jai_stdlib_nvtt_macos_ErrorHandler_Destructor_1";
-ErrorHandler_Destructor_Deleting :: (this: *ErrorHandler) #foreign codec_adapter "jai_stdlib_nvtt_macos_ErrorHandler_Destructor_Deleting_1";
+ErrorHandler_Destructor :: (this: *ErrorHandler) {
+    this.vtable.Destructor(this);
+}
+ErrorHandler_Destructor_Deleting :: (this: *ErrorHandler) {
+    this.vtable.Destructor_Deleting(this);
+}
 
-ErrorHandler_error :: (this: *ErrorHandler, e: Error) #foreign codec_adapter "jai_stdlib_nvtt_macos_ErrorHandler_error_1";
+ErrorHandler_error :: (this: *ErrorHandler, e: Error) {
+    this.vtable.error(this, e);
+}
 
-vtable :: (obj: *ErrorHandler) -> *ErrorHandler_VTable #foreign codec_adapter "jai_stdlib_nvtt_macos_vtable_2";
+vtable :: (obj: *ErrorHandler) -> *ErrorHandler_VTable {
+    return obj.vtable;
+}
 
 Container :: enum u32 {
     DDS   :: 0;
@@ -287,12 +307,20 @@ TaskDispatcher_VTable :: struct #type_info_none {
     dispatch: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) -> void #cpp_method;
 }
 
-TaskDispatcher_Destructor :: (this: *TaskDispatcher) #foreign codec_adapter "jai_stdlib_nvtt_macos_TaskDispatcher_Destructor_1";
-TaskDispatcher_Destructor_Deleting :: (this: *TaskDispatcher) #foreign codec_adapter "jai_stdlib_nvtt_macos_TaskDispatcher_Destructor_Deleting_1";
+TaskDispatcher_Destructor :: (this: *TaskDispatcher) {
+    this.vtable.Destructor(this);
+}
+TaskDispatcher_Destructor_Deleting :: (this: *TaskDispatcher) {
+    this.vtable.Destructor_Deleting(this);
+}
 
-TaskDispatcher_dispatch :: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) #foreign codec_adapter "jai_stdlib_nvtt_macos_TaskDispatcher_dispatch_1";
+TaskDispatcher_dispatch :: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) {
+    this.vtable.dispatch(this, task, _context, count);
+}
 
-vtable :: (obj: *TaskDispatcher) -> *TaskDispatcher_VTable #foreign codec_adapter "jai_stdlib_nvtt_macos_vtable_3";
+vtable :: (obj: *TaskDispatcher) -> *TaskDispatcher_VTable {
+    return obj.vtable;
+}
 
 Compressor :: struct  {
     Private :: struct {}
@@ -471,16 +499,36 @@ Surface :: struct #type_info_none {
     toCleanNormalMap :: (this: *Surface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface16toCleanNormalMapEv";
     packNormals :: (this: *Surface, scale: float = 0.5, bias: float = 0.5) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface11packNormalsEff";
     expandNormals :: (this: *Surface, scale: float = 2.0, bias: float = -1.0) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface13expandNormalsEff";
-    createToksvigMap :: (this: *Surface, power: float) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt7Surface16createToksvigMapEf";
-    createCleanMap :: (this: *Surface) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt7Surface14createCleanMapEv";
+    createToksvigMap :: (this: *Surface, power: float) -> Surface {
+        result: Surface;
+        native_object_return_1(*result, this, power);
+        return result;
+    }
+    createCleanMap :: (this: *Surface) -> Surface {
+        result: Surface;
+        native_object_return_2(*result, this);
+        return result;
+    }
 
     flipX :: (this: *Surface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface5flipXEv";
     flipY :: (this: *Surface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface5flipYEv";
     flipZ :: (this: *Surface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7Surface5flipZEv";
-    createSubImage :: (this: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt7Surface14createSubImageEiiiiii";
+    createSubImage :: (this: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) -> Surface {
+        result: Surface;
+        native_object_return_3(*result, this, x0, x1, y0, y1, z0, z1);
+        return result;
+    }
 
-    warp :: (this: *Surface, w: s32, h: s32, f: WarpFunction) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt7Surface4warpEiiPFvRfS1_S1_E";
-    warp :: (this: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt7Surface4warpEiiiPFvRfS1_S1_E";
+    warp :: (this: *Surface, w: s32, h: s32, f: WarpFunction) -> Surface {
+        result: Surface;
+        native_object_return_4(*result, this, w, h, f);
+        return result;
+    }
+    warp :: (this: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) -> Surface {
+        result: Surface;
+        native_object_return_5(*result, this, w, h, d, f);
+        return result;
+    }
 
     copyChannel :: (this: *Surface, srcImage: *Surface, srcChannel: s32) -> bool #cpp_method #foreign libnvtt "_ZN4nvtt7Surface11copyChannelERKS0_i";
     copyChannel :: (this: *Surface, srcImage: Surface, srcChannel: s32) -> bool #no_context {
@@ -550,16 +598,32 @@ CubeSurface :: struct  {
     fold :: (this: *CubeSurface, img: Surface, layout: CubeLayout) #no_context {
     fold(this, *img, layout);
 }
-    unfold :: (this: *CubeSurface, layout: CubeLayout) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt11CubeSurface6unfoldENS_10CubeLayoutE";
+    unfold :: (this: *CubeSurface, layout: CubeLayout) -> Surface {
+        result: Surface;
+        native_object_return_6(*result, this, layout);
+        return result;
+    }
 
     average :: (this: *CubeSurface, channel: s32) -> float #cpp_method #foreign libnvtt "_ZNK4nvtt11CubeSurface7averageEi";
     range :: (this: *CubeSurface, channel: s32, minimum_ptr: *float, maximum_ptr: *float) -> void #cpp_method #foreign libnvtt "_ZNK4nvtt11CubeSurface5rangeEiPfS1_";
     clamp :: (this: *CubeSurface, channel: s32, low: float = 0.0, high: float = 1.0) -> void #cpp_method #foreign libnvtt "_ZN4nvtt11CubeSurface5clampEiff";
 
-    irradianceFilter :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt11CubeSurface16irradianceFilterEiNS_9EdgeFixupE";
-    cosinePowerFilter :: (this: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt11CubeSurface17cosinePowerFilterEifNS_9EdgeFixupE";
+    irradianceFilter :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_7(*result, this, size, fixupMethod);
+        return result;
+    }
+    cosinePowerFilter :: (this: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_8(*result, this, size, cosinePower, fixupMethod);
+        return result;
+    }
 
-    fastResample :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZNK4nvtt11CubeSurface12fastResampleEiNS_9EdgeFixupE";
+    fastResample :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_9(*result, this, size, fixupMethod);
+        return result;
+    }
 
     toLinear :: (this: *CubeSurface, gamma: float) -> void #cpp_method #foreign libnvtt "_ZN4nvtt11CubeSurface8toLinearEf";
     toGamma :: (this: *CubeSurface, gamma: float) -> void #cpp_method #foreign libnvtt "_ZN4nvtt11CubeSurface7toGammaEf";
@@ -595,7 +659,11 @@ angularError :: (reference: *Surface, img: *Surface) -> float #foreign libnvtt "
 angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
-diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZN4nvtt4diffERKNS_7SurfaceES2_f";
+diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface {
+        result: Surface;
+        native_object_return_10(*result, reference, img, scale);
+        return result;
+    }
 diff :: (reference: Surface, img: Surface, scale: float) -> Surface #no_context {
     return diff(*reference, *img, scale);
 }
@@ -605,18 +673,39 @@ rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> flo
     return rmsToneMappedError(*reference, *img, exposure);
 }
 
-histogram :: (img: *Surface, width: s32, height: s32) -> Surface /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZN4nvtt9histogramERKNS_7SurfaceEii";
+histogram :: (img: *Surface, width: s32, height: s32) -> Surface {
+        result: Surface;
+        native_object_return_11(*result, img, width, height);
+        return result;
+    }
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
-histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface /* unsupported non-POD C++ return metadata */ #foreign libnvtt "_ZN4nvtt9histogramERKNS_7SurfaceEffii";
+histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface {
+        result: Surface;
+        native_object_return_12(*result, img, minRange, maxRange, width, height);
+        return result;
+    }
 histogram :: (img: Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, minRange, maxRange, width, height);
 }
 
 #scope_file
 
-libnvtt :: #system_library "jai_nvtt_legacy_adapter";
+libnvtt :: #system_library "nvtt";
+
 
 #scope_file
-codec_adapter :: #system_library "jai_nvtt_legacy_adapter";
+// Reviewed legacy C++ ABI: explicit return storage precedes this on Itanium; follows this on MSVC.
+native_object_return_1 :: (result: *Surface, this: *Surface, power: float) #foreign libnvtt "_ZNK4nvtt7Surface16createToksvigMapEf";
+native_object_return_2 :: (result: *Surface, this: *Surface) #foreign libnvtt "_ZNK4nvtt7Surface14createCleanMapEv";
+native_object_return_3 :: (result: *Surface, this: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) #foreign libnvtt "_ZNK4nvtt7Surface14createSubImageEiiiiii";
+native_object_return_4 :: (result: *Surface, this: *Surface, w: s32, h: s32, f: WarpFunction) #foreign libnvtt "_ZNK4nvtt7Surface4warpEiiPFvRfS1_S1_E";
+native_object_return_5 :: (result: *Surface, this: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) #foreign libnvtt "_ZNK4nvtt7Surface4warpEiiiPFvRfS1_S1_E";
+native_object_return_6 :: (result: *Surface, this: *CubeSurface, layout: CubeLayout) #foreign libnvtt "_ZNK4nvtt11CubeSurface6unfoldENS_10CubeLayoutE";
+native_object_return_7 :: (result: *CubeSurface, this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) #foreign libnvtt "_ZNK4nvtt11CubeSurface16irradianceFilterEiNS_9EdgeFixupE";
+native_object_return_8 :: (result: *CubeSurface, this: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) #foreign libnvtt "_ZNK4nvtt11CubeSurface17cosinePowerFilterEifNS_9EdgeFixupE";
+native_object_return_9 :: (result: *CubeSurface, this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) #foreign libnvtt "_ZNK4nvtt11CubeSurface12fastResampleEiNS_9EdgeFixupE";
+native_object_return_10 :: (result: *Surface, reference: *Surface, img: *Surface, scale: float) #foreign libnvtt "_ZN4nvtt4diffERKNS_7SurfaceES2_f";
+native_object_return_11 :: (result: *Surface, img: *Surface, width: s32, height: s32) #foreign libnvtt "_ZN4nvtt9histogramERKNS_7SurfaceEii";
+native_object_return_12 :: (result: *Surface, img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) #foreign libnvtt "_ZN4nvtt9histogramERKNS_7SurfaceEffii";

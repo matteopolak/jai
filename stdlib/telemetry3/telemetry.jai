@@ -70,30 +70,120 @@
     TM_API_BUILD_NUMBER      :: 51766;
     TM_API_VERSION           :: "2022.05.23.51766";
 
-    telemetry_enabled :: () -> bool #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_enabled_2";
+    telemetry_enabled :: () -> bool {
+        return g_tm_api0 != null;
+    }
 
     tm_program_name := "";
     tm_build_info := "";
 
-    telemetry_init :: (program_name: string, build_info: string, output_file := "") -> int #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_init_2";
+    telemetry_init :: (program_name: string, build_info: string, output_file := "") -> int {
+        if g_tm_api0 return cast(int) tm_error.TMERR_ALREADY_INITIALIZED;
+        api := native_get_api(null);
+        if !api return cast(int) tm_error.TMERR_NULL_API;
+        result := api.tmCheckVersion(TM_API_MAJOR_VERSION, TM_API_MINOR_VERSION,
+                                     TM_API_REVISION_NUMBER, TM_API_BUILD_NUMBER);
+        if result != .TM_OK return cast(int) result;
+        tm_arena_allocation = cast(*u8) alloc(TM_ARENA_BYTES + 4095);
+        if !tm_arena_allocation return cast(int) tm_error.TMERR_OUT_OF_RESOURCES;
+        aligned := cast(*u8) ((cast(u64) tm_arena_allocation + 4095) & ~cast(u64)4095);
+        result = api.tmInitialize(TM_ARENA_BYTES, aligned);
+        if result != .TM_OK {
+            free(tm_arena_allocation);
+            tm_arena_allocation = null;
+            return cast(int) result;
+        }
+        tm_program_name = copy_string(program_name);
+        tm_build_info = copy_string(build_info);
+        g_tm_api0 = api;
+        g_tm_api = api;
+        return telemetry_start(0, output_file);
+    }
 
-    telemetry_start :: (frames := 0, output_file:= "") -> int #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_start_2";
+    telemetry_start :: (frames := 0, output_file:= "") -> int {
+        if !g_tm_api0 return cast(int) tm_error.TMERR_UNINITIALIZED;
+        assert(frames >= 0);
+        destination := output_file;
+        connection: tm_connection_type = .TMCT_FILE;
+        if destination.count == 0 {
+            destination = "localhost";
+            connection = .TMCT_TCP;
+        }
+        result := g_tm_api0.tmOpen(0, temp_c_string(tm_program_name), temp_c_string(tm_build_info),
+                                   temp_c_string(destination), connection, 4719,
+                                   .TMOF_INIT_NETWORKING, 1000);
+        if result == .TM_OK {
+            g_tm_api = g_tm_api0;
+            g_run_frames = frames;
+            g_tm_api.tmSetCaptureMask(U64_MAX);
+        }
+        return cast(int) result;
+    }
 
-    telemetry_stop :: () #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_stop_2";
+    telemetry_stop :: () {
+        assert(g_tm_api0);
+        g_tm_api0.tmFlush();
+        g_tm_api0.tmSetCaptureMask(0);
+        g_tm_api0.tmClose(0);
+        g_run_frames = 0;
+    }
 
-    telemetry_shutdown :: () #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_shutdown_2";
+    telemetry_shutdown :: () {
+        assert(g_tm_api0);
+        g_tm_api0.tmFlush();
+        g_tm_api0.tmClose(0);
+        g_tm_api0.tmShutdown();
+        g_tm_api = null;
+        g_tm_api0 = null;
+        free(tm_program_name.data);
+        free(tm_build_info.data);
+        tm_program_name = "";
+        tm_build_info = "";
+        free(tm_arena_allocation);
+        tm_arena_allocation = null;
+        g_run_frames = 0;
+    }
 
-    telemetry_tick :: () #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_tick_2";
+    telemetry_tick :: () {
+        assert(g_tm_api);
+        g_tm_api.tmTick(U64_MAX);
+        if g_run_frames > 0 {
+            g_run_frames -= 1;
+            if g_run_frames == 0 telemetry_stop();
+        }
+    }
 
-    telemetry_enterzone :: (name: string, loc := #caller_location, is_dynamic := false) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_enterzone_2";
+    telemetry_enterzone :: (name: string, loc := #caller_location, is_dynamic := false) {
+        assert(g_tm_api);
+        zone_id := string_to_tm_id("%", name);
+        file_id := string_to_tm_id("%", loc.fully_pathed_filename);
+        g_tm_api.tmEnterZoneFast_Core(U64_MAX, 0, file_id, cast(u32) loc.line_number, zone_id);
+    }
 
-    telemetry_leavezone :: () #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_leavezone_2";
+    telemetry_leavezone :: () {
+        assert(g_tm_api);
+        g_tm_api.tmLeaveZone(U64_MAX);
+    }
 
-    telemetry_plot :: (plot_name: string, plot_value: float64) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_plot_2";
+    telemetry_plot :: (plot_name: string, plot_value: float64) {
+        assert(g_tm_api);
+        plot_id := string_to_tm_id("%", plot_name);
+        g_tm_api.tmPlot_Core(U64_MAX, .TM_PLOT_UNITS_REAL, .TM_PLOT_DRAW_LINE,
+                             plot_value, temp_c_string(plot_name), *plot_id);
+    }
 
-    telemetry_message :: (message: string) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_message_2";
+    telemetry_message :: (message: string) {
+        assert(g_tm_api);
+        file_id: u64;
+        message_id := string_to_tm_id("%", message);
+        g_tm_api.tmMessage_Core(U64_MAX, 0, temp_c_string(""), *file_id, 0,
+                                temp_c_string(message), *message_id);
+    }
 
-    telemetry_setthreadname :: (name: string) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_setthreadname_2";
+    telemetry_setthreadname :: (name: string) {
+        assert(g_tm_api);
+        g_tm_api.tmThreadName(U64_MAX, W.GetCurrentThreadId(), temp_c_string("%s"), temp_c_string(name));
+    }
 
     #scope_file
 
@@ -119,15 +209,42 @@
         start_times  : [3] gpu_start_times;
     };
 
-    string_to_tm_id :: (format_string: string, args: .. Any) -> u64 #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_string_to_tm_id_1";
+    string_to_tm_id :: (format_string: string, args: .. Any) -> u64 {
+        assert(g_tm_api);
+        text := tprint(format_string, ..args);
+        return g_tm_api.tmPrintf(temp_c_string("%s"), temp_c_string(text));
+    }
 
     #scope_export
 
-    telemetry_start_gpuzone :: (frame_number: u32, gpu_freq: u64, cpu_freq: u64, gpu_begin: u64, cpu_begin: u64, fast_begin: u64) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_start_gpuzone_2";
+    telemetry_start_gpuzone :: (frame_number: u32, gpu_freq: u64, cpu_freq: u64, gpu_begin: u64, cpu_begin: u64, fast_begin: u64) {
+        assert(g_tm_api);
+        assert(gpu_freq > 0 && cpu_freq > 0);
+        if g_gpuinfo.gpu_track_id == U32_MAX {
+            g_gpuinfo.gpu_track_id = g_tm_api.tmNewTrackID();
+            g_tm_api.tmTrackName(U64_MAX, g_gpuinfo.gpu_track_id, temp_c_string("GPU"));
+        }
+        g_gpuinfo.gpu_freq = gpu_freq;
+        g_gpuinfo.cpu_freq = cpu_freq;
+        g_gpuinfo.start_times[frame_number % 3] = .{gpu_begin, cpu_begin, fast_begin};
+    }
 
-    telemetry_end_gpuzone :: () #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_end_gpuzone_2";
+    telemetry_end_gpuzone :: () {
+        assert(g_tm_api);
+        g_tm_api.tmFlush();
+    }
 
-    telemetry_add_gpuzone :: (name: string, frame_number: u32, level: u32, gpu_enter: u64, gpu_leave: u64) #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_telemetry_add_gpuzone_2";
+    telemetry_add_gpuzone :: (name: string, frame_number: u32, level: u32, gpu_enter: u64, gpu_leave: u64) {
+        assert(g_tm_api && g_gpuinfo.gpu_freq > 0 && g_gpuinfo.cpu_freq > 0);
+        assert(gpu_leave >= gpu_enter);
+        reference := g_gpuinfo.start_times[frame_number % 3];
+        zone: tm_gpu_zone;
+        zone.name_id = string_to_tm_id("%", name);
+        zone.depth = level;
+        g_tm_api.tmGpuZone(*zone, g_gpuinfo.gpu_track_id, gpu_enter, gpu_leave,
+                           reference.cpu, reference.fast, reference.gpu, reference.cpu, reference.fast,
+                           g_gpuinfo.gpu_freq, g_gpuinfo.cpu_freq);
+    }
 
     g_tm_api : *tm_api = null;
     g_tm_api0 : *tm_api = null;
@@ -145,7 +262,9 @@
     telemetry_zones : [] TelemetryZone;
     telemetry_zone_count: s32;
 
-    get_telemetry_zone_index :: () -> s32 #foreign codec_adapter "jai_stdlib_telemetry3_telemetry_get_telemetry_zone_index_1";
+    get_telemetry_zone_index :: () -> s32 {
+        return atomic_add(*telemetry_zone_count, 1);
+    }
 
     tm_module: W.HMODULE = null;
 
@@ -414,7 +533,11 @@
         error                         : tm_error;
     }
 
-}
 
-#scope_file
-codec_adapter :: #system_library "jai_telemetry3_adapter";
+    #scope_file
+    TM_ARENA_BYTES :: 64 * 1024 * 1024;
+    tm_arena_allocation: *u8;
+    // Genuine SDK entry point; the returned 2022.05.23.51766 API table is version checked.
+    native_get_api :: (api: *tm_api) -> *tm_api #foreign tm_sdk "tmGetApi";
+    tm_sdk :: #system_library "rad_tm_win64";
+}

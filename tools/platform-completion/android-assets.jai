@@ -1,4 +1,3 @@
-// Normalized API contracts; reference procedure bodies were discarded.
 visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool, user_data: $T, proc: (info: *File_Visit_Info, user_data: T), visit_files := true, visit_directories := false, visit_symlinks := false, follow_directory_symlinks := false) -> bool {
     if asset_manager == null || proc == null || !_sdk_asset_path(dir_name) return false;
     if !visit_files && !visit_directories return true;
@@ -51,17 +50,7 @@ visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool
     if _sdk_asset_jni_failed(env) || list == null return false;
     return _sdk_asset_walk(asset_manager, env, java_assets, list, dir_name, recursive, user_data, proc, visit_files, visit_directories, 0);
 }
-#import "Android";
-#import "Basic";
-#import "File_Utilities";
-#import "POSIX";
-#import "String";
-
-#scope_export
-#load "asset-read.jai";
-
-
-#scope_file
+// PRIVATE HELPERS
 #import "Android/Jni";
 #import "File";
 Asset_Unicode :: #import "Unicode";

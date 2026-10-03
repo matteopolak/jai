@@ -1,14 +1,14 @@
 // Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
 #if OS == .MACOS {
-    libmojoshader :: #system_library "jai_mojoshader_legacy_adapter";
+    libmojoshader :: #system_library "mojoshader";
 }
 
 #if OS == .LINUX {
-    libmojoshader :: #system_library "jai_mojoshader_legacy_adapter";
+    libmojoshader :: #system_library "mojoshader";
 }
 
 #if OS == .WINDOWS {
-    libmojoshader :: #system_library "jai_mojoshader_legacy_adapter";
+    libmojoshader :: #system_library "mojoshader";
 }
 
 MOJOSHADER_version :: () -> s32 #foreign libmojoshader;

@@ -16,3 +16,5 @@
 }
 
 #assert size_of(*void) == 8 "This pinned native ABI contract supports 64-bit targets only.";
+
+#assert CPU == .X64 "The legacy NVTT C++ return bridge requires the reviewed x86-64 calling convention.";

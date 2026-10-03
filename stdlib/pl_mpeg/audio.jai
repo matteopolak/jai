@@ -110,33 +110,108 @@ Audio :: struct {
 	U: [32]      float;
 }
 
-audio_create_with_buffer :: (buffer: *Buffer, destroy_when_done: bool) -> *Audio #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_create_with_buffer_1";
+audio_create_with_buffer :: (buffer: *Buffer, destroy_when_done: bool) -> *Audio {
+    result := wrap_audio(raw_plm_audio_create_with_buffer(native_buffer(buffer), 0));
+    if result {
+        entry := audio_state(result);
+        entry.own_native = true;
+        result.destroy_buffer_when_done = destroy_when_done;
+    }
+    return result;
+}
 
-audio_destroy :: (audio: *Audio) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_destroy_1";
+audio_destroy :: (audio: *Audio) {
+    entry := audio_state(audio);
+    assert(entry.own_native, "A borrowed decoder is owned by its parent");
+    raw_plm_audio_destroy(entry.native);
+    if audio.destroy_buffer_when_done buffer_destroy(audio.buffer);
+    forget_audio(audio);
+}
 
-audio_has_header :: (audio: *Audio) -> bool #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_has_header_1";
+audio_has_header :: (audio: *Audio) -> bool {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_has_header(entry.native);
+    pull_audio(entry);
+    return result != 0;
+}
 
-audio_get_samplerate :: (audio: *Audio) -> u16 #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_get_samplerate_1";
+audio_get_samplerate :: (audio: *Audio) -> u16 {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_get_samplerate(entry.native);
+    pull_audio(entry);
+    return cast(u16) result;
+}
 
-audio_set_time :: (audio: *Audio, time: float64) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_set_time_1";
+audio_set_time :: (audio: *Audio, time: float64) {
+    entry := audio_state(audio);
+    push_audio(entry);
+    raw_plm_audio_set_time(entry.native, time);
+    pull_audio(entry);
+}
 
-audio_rewind :: (audio: *Audio) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_rewind_1";
+audio_rewind :: (audio: *Audio) {
+    entry := audio_state(audio);
+    push_audio(entry);
+    raw_plm_audio_rewind(entry.native);
+    pull_audio(entry);
+}
 
-audio_has_ended :: (audio: *Audio) -> bool #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_has_ended_1";
+audio_has_ended :: (audio: *Audio) -> bool {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_has_ended(entry.native);
+    pull_audio(entry);
+    return result != 0;
+}
 
-audio_decode :: (audio: *Audio) -> *Samples #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_decode_1";
+audio_decode :: (audio: *Audio) -> *Samples {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_decode(entry.native);
+    pull_audio(entry);
+    return result;
+}
 
-audio_find_frame_sync :: (audio: *Audio) -> bool #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_find_frame_sync_1";
+audio_find_frame_sync :: (audio: *Audio) -> bool {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_find_frame_sync(entry.native);
+    pull_audio(entry);
+    return result != 0;
+}
 
-audio_decode_header :: (audio: *Audio) -> s32 #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_decode_header_1";
+audio_decode_header :: (audio: *Audio) -> s32 {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_decode_header(entry.native);
+    pull_audio(entry);
+    return result;
+}
 
-audio_decode_frame :: (audio: *Audio) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_decode_frame_1";
+audio_decode_frame :: (audio: *Audio) {
+    entry := audio_state(audio);
+    push_audio(entry);
+    raw_plm_audio_decode_frame(entry.native);
+    pull_audio(entry);
+}
 
-audio_read_allocation :: (audio: *Audio, sb: s32, tab3: u8) -> *Quantizer_Spec #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_read_allocation_1";
+audio_read_allocation :: (audio: *Audio, sb: s32, tab3: u8) -> *Quantizer_Spec {
+    entry := audio_state(audio);
+    push_audio(entry);
+    result := raw_plm_audio_read_allocation(entry.native, sb, tab3);
+    pull_audio(entry);
+    return result;
+}
 
-audio_read_samples :: (audio: *Audio, ch: s32, sb: s32, part: s32) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_read_samples_1";
+audio_read_samples :: (audio: *Audio, ch: s32, sb: s32, part: s32) {
+    entry := audio_state(audio);
+    push_audio(entry);
+    raw_plm_audio_read_samples(entry.native, ch, sb, part);
+    pull_audio(entry);
+}
 
-audio_matrix_transform :: (s: [32][3] s32, ss: s32, d: *float, dp: s32) #foreign codec_adapter "jai_stdlib_pl_mpeg_audio_audio_matrix_transform_1";
-
-#scope_file
-codec_adapter :: #system_library "jai_pl_mpeg_adapter";
+audio_matrix_transform :: (s: [32][3] s32, ss: s32, d: *float, dp: s32) {
+    raw_plm_audio_idct36(*s[0], ss, d, dp);
+}

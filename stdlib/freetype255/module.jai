@@ -279,13 +279,13 @@ FT_Face :: *FT_FaceRec;
 #scope_file
 
 #if OS == .WINDOWS {
-    ft :: #system_library "jai_freetype255_legacy_adapter";
+    ft :: #system_library "freetype";
 } else #if OS == .LINUX || OS == .ANDROID {
-    ft :: #system_library "jai_freetype255_legacy_adapter";
+    ft :: #system_library "freetype";
 } else #if OS == .MACOS {
-    ft :: #system_library "jai_freetype255_legacy_adapter";
+    ft :: #system_library "freetype";
 } else #if OS == .PS5 {
-    ft :: #system_library "jai_freetype255_legacy_adapter";
+    ft :: #system_library "freetype";
 }
 
 #assert size_of(*void) == 8 "This pinned native ABI contract supports 64-bit targets only.";

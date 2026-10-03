@@ -1,12 +1,3 @@
-// Normalized API contracts; reference procedure bodies were discarded.
-EGL_DONT_CARE :: -1;
-EGL_UNKNOWN :: -1;
-EGL_NO_CONTEXT: EGLContext : null;
-EGL_NO_DISPLAY: EGLDisplay : null;
-EGL_NO_SURFACE: EGLSurface : null;
-EGL_DEFAULT_DISPLAY: EGLNativeDisplayType : null;
-EGL_NO_SYNC: EGLSync : null;
-EGL_NO_IMAGE: EGLImage : null;
 egl_create_context :: (window: *ANativeWindow, wanted_msaa: s32 = 0) -> EGLContext, EGLDisplay, EGLSurface, chosen_msaa: s32 {
     if window == null || wanted_msaa < 0 return null, null, null, 0;
     display := eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -56,10 +47,5 @@ egl_create_context :: (window: *ANativeWindow, wanted_msaa: s32 = 0) -> EGLConte
     success = true;
     return native_context, display, surface, samples;
 }
-#load "bindings.jai";
-#import "Android";
-#import "Basic";
-
-
-#scope_file
+// PRIVATE HELPERS
 // All names above are genuine SDK declarations already in EGL/bindings.jai.

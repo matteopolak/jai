@@ -22,19 +22,19 @@ stbi_flip_vertically_on_write :: (flip_boolean: s32) -> void #foreign stb_image_
 #scope_file
 
 #if OS == .WINDOWS {
-    stb_image_write :: #system_library "jai_stb_image_write_adapter";
+    stb_image_write :: #system_library "stb_image_write";
 } else #if OS == .LINUX {
-    stb_image_write :: #system_library "jai_stb_image_write_adapter";
+    stb_image_write :: #system_library "stb_image_write";
 } else #if OS == .MACOS {
-    stb_image_write :: #system_library "jai_stb_image_write_adapter";
+    stb_image_write :: #system_library "stb_image_write";
 } else #if OS == .ANDROID {
     #if CPU == .X64 {
-        stb_image_write :: #system_library "jai_stb_image_write_adapter";
+        stb_image_write :: #system_library "stb_image_write";
     } else #if CPU == .ARM64 {
-        stb_image_write :: #system_library "jai_stb_image_write_adapter";
+        stb_image_write :: #system_library "stb_image_write";
     }
 } else #if OS == .PS5 {
-    stb_image_write :: #system_library "jai_stb_image_write_adapter";
+    stb_image_write :: #system_library "stb_image_write";
 } else {
     #assert false;
 }

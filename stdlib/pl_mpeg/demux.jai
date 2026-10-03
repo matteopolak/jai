@@ -25,37 +25,124 @@ Demux :: struct {
 	next_packet:    Packet;
 }
 
-demux_create :: (buffer: *Buffer, destroy_when_done: bool) -> *Demux #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_create_1";
+demux_create :: (buffer: *Buffer, destroy_when_done: bool) -> *Demux {
+    result := wrap_demux(raw_plm_demux_create(native_buffer(buffer), 0));
+    if result {
+        entry := demux_state(result);
+        entry.own_native = true;
+        result.destroy_buffer_when_done = destroy_when_done;
+    }
+    return result;
+}
 
-demux_destroy :: (demux: *Demux) #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_destroy_1";
+demux_destroy :: (demux: *Demux) {
+    entry := demux_state(demux);
+    assert(entry.own_native, "A borrowed decoder is owned by its parent");
+    raw_plm_demux_destroy(entry.native);
+    if demux.destroy_buffer_when_done buffer_destroy(demux.buffer);
+    forget_demux(demux);
+}
 
-demux_has_headers :: (demux: *Demux) -> bool #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_has_headers_1";
+demux_has_headers :: (demux: *Demux) -> bool {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_has_headers(entry.native);
+    pull_demux(entry);
+    return result != 0;
+}
 
-demux_get_num_video_streams :: (demux: *Demux) -> s32 #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_get_num_video_streams_1";
+demux_get_num_video_streams :: (demux: *Demux) -> s32 {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_get_num_video_streams(entry.native);
+    pull_demux(entry);
+    return result;
+}
 
-demux_get_num_audio_streams :: (demux: *Demux) -> s32 #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_get_num_audio_streams_1";
+demux_get_num_audio_streams :: (demux: *Demux) -> s32 {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_get_num_audio_streams(entry.native);
+    pull_demux(entry);
+    return result;
+}
 
-demux_rewind :: (demux: *Demux) #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_rewind_1";
+demux_rewind :: (demux: *Demux) {
+    entry := demux_state(demux);
+    push_demux(entry);
+    raw_plm_demux_rewind(entry.native);
+    pull_demux(entry);
+}
 
-demux_has_ended :: (demux: *Demux) -> bool #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_has_ended_1";
+demux_has_ended :: (demux: *Demux) -> bool {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_has_ended(entry.native);
+    pull_demux(entry);
+    return result != 0;
+}
 
-demux_buffer_seek :: (demux: *Demux, pos: s64) #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_buffer_seek_1";
+demux_buffer_seek :: (demux: *Demux, pos: s64) {
+    entry := demux_state(demux);
+    push_demux(entry);
+    raw_plm_demux_buffer_seek(entry.native, cast(u64) pos);
+    pull_demux(entry);
+}
 
-demux_get_start_time :: (demux: *Demux, type: Start_Code) -> float64 #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_get_start_time_1";
+demux_get_start_time :: (demux: *Demux, type: Start_Code) -> float64 {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_get_start_time(entry.native, cast(s32) type);
+    pull_demux(entry);
+    return result;
+}
 
-demux_get_duration :: (demux: *Demux, type: Start_Code) -> float64 #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_get_duration_1";
+demux_get_duration :: (demux: *Demux, type: Start_Code) -> float64 {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_get_duration(entry.native, cast(s32) type);
+    pull_demux(entry);
+    return result;
+}
 
-demux_seek :: (demux: *Demux, seek_time: float64, type: Start_Code, force_intra: bool) -> *Packet #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_seek_1";
+demux_seek :: (demux: *Demux, seek_time: float64, type: Start_Code, force_intra: bool) -> *Packet {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_seek(entry.native, seek_time, cast(s32) type, cast(s32) force_intra);
+    pull_demux(entry);
+    return packet_result(demux, result);
+}
 
-demux_decode :: (demux: *Demux) -> *Packet #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_decode_1";
+demux_decode :: (demux: *Demux) -> *Packet {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_decode(entry.native);
+    pull_demux(entry);
+    return packet_result(demux, result);
+}
 
-demux_decode_time :: (demux: *Demux) -> float64 #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_decode_time_1";
+demux_decode_time :: (demux: *Demux) -> float64 {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_decode_time(entry.native);
+    pull_demux(entry);
+    return result;
+}
 
-demux_decode_packet :: (demux: *Demux, type: Start_Code) -> *Packet #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_demux_decode_packet_1";
+demux_decode_packet :: (demux: *Demux, type: Start_Code) -> *Packet {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_decode_packet(entry.native, cast(s32) type);
+    pull_demux(entry);
+    return packet_result(demux, result);
+}
 
 #scope_file
 
-get_packet :: (using demux: *Demux) -> *Packet #foreign codec_adapter "jai_stdlib_pl_mpeg_demux_get_packet_1";
-
-#scope_file
-codec_adapter :: #system_library "jai_pl_mpeg_adapter";
+get_packet :: (using demux: *Demux) -> *Packet {
+    entry := demux_state(demux);
+    push_demux(entry);
+    result := raw_plm_demux_get_packet(entry.native);
+    pull_demux(entry);
+    return packet_result(demux, result);
+}

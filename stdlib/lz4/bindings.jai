@@ -210,6 +210,6 @@ LZ4_resetStreamHC :: (streamHCPtr: *LZ4_streamHC_t, compressionLevel: s32) -> vo
 
 #scope_file
 
-#if OS == .WINDOWS  liblz4 :: #system_library "jai_lz4_1_9_4_adapter";
-#if OS == .MACOS    liblz4 :: #system_library "jai_lz4_1_9_4_adapter";
-#if OS == .LINUX    liblz4 :: #system_library "jai_lz4_1_9_4_adapter";
+#if OS == .WINDOWS  liblz4 :: #system_library "lz4";
+#if OS == .MACOS    liblz4 :: #system_library "lz4";
+#if OS == .LINUX    liblz4 :: #system_library "lz4";

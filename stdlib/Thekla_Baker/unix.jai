@@ -126,9 +126,9 @@ baker_get_current_mesh_sample_count :: () -> s32 #foreign thekla_baker "_ZN6Thek
 #scope_file
 
 #if OS == .LINUX {
-    thekla_baker :: #system_library "jai_thekla_baker_adapter";
+    thekla_baker :: #system_library "thekla_baker";
 } else #if OS == .MACOS {
-    thekla_baker :: #system_library "jai_thekla_baker_adapter";
+    thekla_baker :: #system_library "thekla_baker";
 } else {
     #assert false;
 }

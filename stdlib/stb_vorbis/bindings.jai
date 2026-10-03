@@ -409,19 +409,19 @@ stb_vorbis_float_size_test :: [1] u8;
 #scope_file
 
 #if OS == .WINDOWS {
-    lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+    lib_stb_vorbis :: #system_library "stb_vorbis";
 } else #if OS == .LINUX {
-    lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+    lib_stb_vorbis :: #system_library "stb_vorbis";
 } else #if OS == .MACOS {
-    lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+    lib_stb_vorbis :: #system_library "stb_vorbis";
 } else #if OS == .ANDROID {
     #if CPU == .X64 {
-        lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+        lib_stb_vorbis :: #system_library "stb_vorbis";
     } else #if CPU == .ARM64 {
-        lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+        lib_stb_vorbis :: #system_library "stb_vorbis";
     }
 } else #if OS == .PS5 {
-    lib_stb_vorbis :: #system_library "jai_stb_vorbis_adapter";
+    lib_stb_vorbis :: #system_library "stb_vorbis";
 } else {
     #assert false;
 }

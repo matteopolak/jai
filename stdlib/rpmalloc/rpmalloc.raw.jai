@@ -1,3 +1,5 @@
+size_t :: u64;
+FIRST_CLASS_HEAPS :: true;
 _int :: s32;
 char :: u8;
 ptrdiff_t :: s64;
@@ -10,7 +12,7 @@ atomic32_t :: s32;
 atomic64_t :: s64;
 atomicptr_t :: *void;
 #if OS == .WINDOWS { PLATFORM_WINDOWS :: true; } else { PLATFORM_WINDOWS :: false; }
-#if ENABLE_STATISTICS {
+#if ENABLE_ADAPTIVE_THREAD_CACHE || ENABLE_STATISTICS {
 span_use_t :: struct    {
 
         current : atomic32_t;
@@ -35,6 +37,8 @@ span_use_t :: struct    {
             spans_map_calls : atomic32_t;
         }
     }
+}
+#if ENABLE_STATISTICS {
 size_class_use_t :: struct {
 
         alloc_current : atomic32_t;
@@ -251,79 +255,149 @@ global_cache_t :: struct {
     overflow : *span_t;
 }
 
-rpmalloc_initialize :: () -> _int #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_initialize_1";
+rpmalloc_initialize :: () -> _int {
+    return rp_initialize_default();
+}
 
-rpmalloc_is_initialized :: () -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_is_initialized_1";
+rpmalloc_is_initialized :: () -> bool {
+    return rp_initialized;
+}
 
-rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> _int #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_initialize_config_1";
+rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> _int {
+    return rp_initialize_config(config);
+}
 
-rpmalloc_finalize :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_finalize_1";
+rpmalloc_finalize :: () {
+    rp_finalize();
+}
 
-rpmalloc_thread_initialize :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_thread_initialize_1";
+rpmalloc_thread_initialize :: () {
+    native_thread_initialize();
+}
 
-rpmalloc_thread_finalize :: (release_caches: _int) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_thread_finalize_1";
+rpmalloc_thread_finalize :: (release_caches: _int) {
+    native_thread_finalize(cast(s32) release_caches);
+}
 
-rpmalloc_is_thread_initialized :: () -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_is_thread_initialized_1";
+rpmalloc_is_thread_initialized :: () -> bool {
+    return native_thread_is_initialized() != 0;
+}
 
-rpmalloc_config :: () -> *rpmalloc_config_t #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_config_1";
+rpmalloc_config :: () -> *rpmalloc_config_t {
+    return rp_get_config();
+}
 
-rpmalloc :: (size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_1";
+rpmalloc :: (size: size_t) -> *void {
+    return rp_allocate(null, cast(s64) size, 0);
+}
 
-rpfree :: (ptr: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpfree_1";
+rpfree :: (ptr: *void) {
+    rp_free(null, ptr);
+}
 
-rpcalloc :: (num: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpcalloc_1";
+rpcalloc :: (num: size_t, size: size_t) -> *void {
+    return rp_callocate(null, num, size, 0);
+}
 
-rprealloc :: (ptr: *void, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rprealloc_1";
+rprealloc :: (ptr: *void, size: size_t) -> *void {
+    return rp_reallocate(null, ptr, cast(s64) size, 0, 0, .{});
+}
 
-rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpaligned_realloc_1";
+rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(null, ptr, cast(s64) size, cast(s64) alignment, cast(s64) oldsize, flags);
+}
 
-rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpaligned_alloc_1";
+rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void {
+    return rp_allocate(null, cast(s64) size, cast(s64) alignment);
+}
 
-rpaligned_calloc :: (alignment: size_t, num: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpaligned_calloc_1";
+rpaligned_calloc :: (alignment: size_t, num: size_t, size: size_t) -> *void {
+    return rp_callocate(null, num, size, alignment);
+}
 
-rpmemalign :: (alignment: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmemalign_1";
+rpmemalign :: (alignment: size_t, size: size_t) -> *void {
+    return rp_allocate(null, cast(s64) size, cast(s64) alignment);
+}
 
-rpposix_memalign :: (memptr: **void, alignment: size_t, size: size_t) -> _int #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpposix_memalign_1";
+rpposix_memalign :: (memptr: **void, alignment: size_t, size: size_t) -> _int {
+    result := native_posix_memalign(memptr, alignment, size);
+    if result == 0 rp_record(memptr.*, null);
+    return result;
+}
 
-rpmalloc_usable_size :: (ptr: *void) -> size_t #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_usable_size_1";
+rpmalloc_usable_size :: (ptr: *void) -> size_t {
+    return native_usable_size(ptr);
+}
 
-rpmalloc_thread_collect :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_thread_collect_1";
+rpmalloc_thread_collect :: () {
+    native_thread_collect();
+}
 
-rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_thread_statistics_1";
+rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t) {
+    native_thread_statistics(stats);
+}
 
-rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_global_statistics_1";
+rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t) {
+    native_global_statistics(stats);
+}
 
-rpmalloc_dump_statistics :: (file: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_dump_statistics_1";
+rpmalloc_dump_statistics :: (file: *void) {
+    native_dump_statistics(file);
+}
 
 #if RPMALLOC_FIRST_CLASS_HEAPS {
 
-    rpmalloc_heap_acquire :: () -> *rpmalloc_heap_t #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_acquire_1";
+    rpmalloc_heap_acquire :: () -> *rpmalloc_heap_t {
+    return cast(*rpmalloc_heap_t) native_heap_acquire();
+}
 
-    rpmalloc_heap_release :: (heap: *rpmalloc_heap_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_release_1";
+    rpmalloc_heap_release :: (heap: *rpmalloc_heap_t) {
+    native_heap_release(heap);
+}
 
-    rpmalloc_heap_alloc :: (heap: *rpmalloc_heap_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_alloc_1";
+    rpmalloc_heap_alloc :: (heap: *rpmalloc_heap_t, size: size_t) -> *void {
+    return rp_allocate(heap, cast(s64) size, 0);
+}
 
-    rpmalloc_heap_aligned_alloc :: (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_aligned_alloc_1";
+    rpmalloc_heap_aligned_alloc :: (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void {
+    return rp_allocate(heap, cast(s64) size, cast(s64) alignment);
+}
 
-    rpmalloc_heap_calloc :: (heap: *rpmalloc_heap_t, num: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_calloc_1";
+    rpmalloc_heap_calloc :: (heap: *rpmalloc_heap_t, num: size_t, size: size_t) -> *void {
+    return rp_callocate(heap, num, size, 0);
+}
 
-    rpmalloc_heap_aligned_calloc :: (heap: *rpmalloc_heap_t, alignment: size_t, num: size_t, size: size_t) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_aligned_calloc_1";
+    rpmalloc_heap_aligned_calloc :: (heap: *rpmalloc_heap_t, alignment: size_t, num: size_t, size: size_t) -> *void {
+    return rp_callocate(heap, num, size, alignment);
+}
 
-    rpmalloc_heap_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_realloc_1";
+    rpmalloc_heap_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(heap, ptr, cast(s64) size, 0, 0, flags);
+}
 
-    rpmalloc_heap_aligned_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_aligned_realloc_1";
+    rpmalloc_heap_aligned_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(heap, ptr, cast(s64) size, cast(s64) alignment, 0, flags);
+}
 
-    rpmalloc_heap_free :: (heap: *rpmalloc_heap_t, ptr: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_free_1";
+    rpmalloc_heap_free :: (heap: *rpmalloc_heap_t, ptr: *void) {
+    rp_free(heap, ptr);
+}
 
-    rpmalloc_heap_free_all :: (heap: *rpmalloc_heap_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_free_all_1";
+    rpmalloc_heap_free_all :: (heap: *rpmalloc_heap_t) {
+    rp_free_all(heap);
+}
 
-    rpmalloc_heap_thread_set_current :: (heap: *rpmalloc_heap_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_heap_thread_set_current_1";
+    rpmalloc_heap_thread_set_current :: (heap: *rpmalloc_heap_t) {
+    native_heap_thread_set_current(heap);
+}
 
 }
 
 ENABLE_OVERRIDE :: false;
 
-rpmalloc_linker_reference :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_linker_reference_1";
+rpmalloc_linker_reference :: () {
+    native_config();
+}
 
 RPMALLOC_CONFIGURABLE :: CONFIGURABLE;
 
@@ -426,7 +500,9 @@ rpmalloc_config_t :: struct {
     rpmalloc_heap_t :: heap_t;
 }
 
-rpmalloc_thread_finalize :: (release_caches: bool) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_raw_rpmalloc_thread_finalize_2";
+rpmalloc_thread_finalize :: (release_caches: bool) {
+    native_thread_finalize(cast(s32) release_caches);
+}
 
 Heap :: heap_t;
 
@@ -455,5 +531,6 @@ dump_statistics :: rpmalloc_dump_statistics;
     heap_thread_set_current :: rpmalloc_heap_thread_set_current;
 }
 
-#scope_file
-codec_adapter :: #system_library "jai_rpmalloc_adapter";
+
+// Main-thread designation uses the genuine first-class heap API.
+rpmalloc_set_main_thread :: () { rp_set_main_thread(); }

@@ -146,6 +146,38 @@ Global_Cache :: struct {
     overflow : *Span;
 }
 
+#if ENABLE_ADAPTIVE_THREAD_CACHE || ENABLE_STATISTICS {
+    Span_Use :: struct {
+        current: s32;
+        high: s32;
+        #if ENABLE_STATISTICS {
+            spans_deferred: s32;
+            spans_to_global: s32;
+            spans_from_global: s32;
+            spans_to_cache: s32;
+            spans_from_cache: s32;
+            spans_to_reserved: s32;
+            spans_from_reserved: s32;
+            spans_map_calls: s32;
+        }
+    }
+}
+#if ENABLE_STATISTICS {
+    Size_Class_Use :: struct {
+        alloc_current: s32;
+        alloc_peak: s32;
+        alloc_total: s32;
+        free_total: s32;
+        spans_current: s32;
+        spans_peak: s32;
+        spans_to_cache: s32;
+        spans_from_cache: s32;
+        spans_from_reserved: s32;
+        spans_map_calls: s32;
+        unused: s32;
+    }
+}
+
 Realloc_Flags :: enum_flags u32 {
 
     NO_PRESERVE :: 1;
@@ -153,67 +185,151 @@ Realloc_Flags :: enum_flags u32 {
     GROW_OR_FAIL :: 2;
 }
 
-initialize :: () -> s32 #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_initialize_1";
-
-finalize :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_finalize_1";
-
-initialize_config :: (config: *rpmalloc_config_t) -> s32 #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_initialize_config_1";
-
-is_initialized :: () -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_is_initialized_1";
-
-thread_initialize :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_thread_initialize_1";
-
-thread_finalize :: (release_caches: bool) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_thread_finalize_1";
-
-is_thread_initialized :: () -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_is_thread_initialized_1";
-
-set_main_thread :: () #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_set_main_thread_1";
-
-config :: () -> *rpmalloc_config_t #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_config_1";
-
-rpmalloc :: (size: s64) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_rpmalloc_1";
-
-rpfree :: (ptr: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_rpfree_1";
-
-rprealloc :: (ptr: *void, size: s64) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_rprealloc_1";
-
-rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_rpaligned_realloc_1";
-
-rpaligned_alloc :: (alignment: s64, size: s64) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_rpaligned_alloc_1";
-
-usable_size :: (ptr: *void) -> s64 #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_usable_size_1";
-
-thread_statistics :: (stats: *rpmalloc_thread_statistics_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_thread_statistics_1";
-
-global_statistics :: (stats: *rpmalloc_global_statistics_t) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_global_statistics_1";
-
-#if ENABLE_STATISTICS {
-    dump_statistics :: (builder: *$T ) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_dump_statistics_1";
-} else {
-    dump_statistics :: (builder: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_dump_statistics_2";
+initialize :: () -> s32 {
+    return rp_initialize_default();
 }
 
-heap_acquire :: () -> *Heap #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_acquire_1";
+finalize :: () {
+    rp_finalize();
+}
 
-heap_release :: (heap: *Heap) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_release_1";
+initialize_config :: (config: *rpmalloc_config_t) -> s32 {
+    return rp_initialize_config(config);
+}
 
-heap_is_this_yours :: (heap: *Heap, memory: *void) -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_is_this_yours_1";
+is_initialized :: () -> bool {
+    return rp_initialized;
+}
 
-is_in_span :: (memory: *void, span: *Span) -> bool #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_is_in_span_1";
+thread_initialize :: () {
+    native_thread_initialize();
+}
 
-heap_alloc :: (heap: *Heap, size: s64) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_alloc_1";
+thread_finalize :: (release_caches: bool) {
+    native_thread_finalize(cast(s32) release_caches);
+}
 
-heap_aligned_alloc :: (heap: *Heap, alignment: s64, size: s64) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_aligned_alloc_1";
+is_thread_initialized :: () -> bool {
+    return native_thread_is_initialized() != 0;
+}
 
-heap_realloc :: (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_realloc_1";
+set_main_thread :: () {
+    rp_set_main_thread();
+}
 
-heap_aligned_realloc :: (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_aligned_realloc_1";
+config :: () -> *rpmalloc_config_t {
+    return rp_get_config();
+}
 
-heap_free :: (heap: *Heap, ptr: *void) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_free_1";
+rpmalloc :: (size: s64) -> *void {
+    return rp_allocate(null, size, 0);
+}
 
-heap_free_all :: (heap: *Heap) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_free_all_1";
+rpfree :: (ptr: *void) {
+    rp_free(null, ptr);
+}
 
-heap_thread_set_current :: (heap: *Heap) #foreign codec_adapter "jai_stdlib_rpmalloc_rpmalloc_heap_thread_set_current_1";
+rprealloc :: (ptr: *void, size: s64) -> *void {
+    return rp_reallocate(null, ptr, size, 0, 0, .{});
+}
+
+rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(null, ptr, size, alignment, oldsize, flags);
+}
+
+rpaligned_alloc :: (alignment: s64, size: s64) -> *void {
+    return rp_allocate(null, size, alignment);
+}
+
+usable_size :: (ptr: *void) -> s64 {
+    return cast(s64) native_usable_size(ptr);
+}
+
+thread_statistics :: (stats: *rpmalloc_thread_statistics_t) {
+    native_thread_statistics(stats);
+}
+
+global_statistics :: (stats: *rpmalloc_global_statistics_t) {
+    native_global_statistics(stats);
+}
+
+#if ENABLE_STATISTICS {
+    dump_statistics :: (builder: *$T ) {
+    stats: rpmalloc_global_statistics_t;
+    per_thread: rpmalloc_thread_statistics_t;
+    native_global_statistics(*stats);
+    native_thread_statistics(*per_thread);
+    Basic.print_to_builder(builder, "rpmalloc: mapped=% peak=% cached=% huge=% huge_peak=% mapped_total=% unmapped_total=%\n",
+                            stats.mapped, stats.mapped_peak, stats.cached, stats.huge_alloc,
+                            stats.huge_alloc_peak, stats.mapped_total, stats.unmapped_total);
+    Basic.print_to_builder(builder, "thread: sizecache=% spancache=% to_global=% from_global=%\n",
+                            per_thread.sizecache, per_thread.spancache,
+                            per_thread.thread_to_global, per_thread.global_to_thread);
+    for span_index: 0..63 {
+        entry := per_thread.span_use[span_index];
+        if entry.current != 0 || entry.peak != 0
+            Basic.print_to_builder(builder, "span %: current=% peak=% mapped=%\n", span_index, entry.current, entry.peak, entry.map_calls);
+    }
+    for size_index: 0..127 {
+        entry := per_thread.size_use[size_index];
+        if entry.alloc_total != 0
+            Basic.print_to_builder(builder, "size class %: current=% peak=% allocs=% frees=%\n",
+                                    size_index, entry.alloc_current, entry.alloc_peak, entry.alloc_total, entry.free_total);
+    }
+}
+} else {
+    dump_statistics :: (builder: *void) {
+    #assert !ENABLE_STATISTICS "Statistics output is intentionally disabled in this build profile.";
+}
+}
+
+heap_acquire :: () -> *Heap {
+    return cast(*Heap) native_heap_acquire();
+}
+
+heap_release :: (heap: *Heap) {
+    native_heap_release(heap);
+}
+
+heap_is_this_yours :: (heap: *Heap, memory: *void) -> bool {
+    return rp_owns(heap, memory);
+}
+
+is_in_span :: (memory: *void, span: *Span) -> bool {
+    if !span || !memory return false;
+    first := cast(u64) span;
+    address := cast(u64) memory;
+    span_bytes := cast(u64) span.span_count * native_config().span_size;
+    return address >= first && address - first < span_bytes;
+}
+
+heap_alloc :: (heap: *Heap, size: s64) -> *void {
+    return rp_allocate(heap, size, 0);
+}
+
+heap_aligned_alloc :: (heap: *Heap, alignment: s64, size: s64) -> *void {
+    return rp_allocate(heap, size, alignment);
+}
+
+heap_realloc :: (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(heap, ptr, size, 0, 0, flags);
+}
+
+heap_aligned_realloc :: (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void {
+    return rp_reallocate(heap, ptr, size, alignment, 0, flags);
+}
+
+heap_free :: (heap: *Heap, ptr: *void) {
+    rp_free(heap, ptr);
+}
+
+heap_free_all :: (heap: *Heap) {
+    rp_free_all(heap);
+}
+
+heap_thread_set_current :: (heap: *Heap) {
+    native_heap_thread_set_current(heap);
+}
 
 errno : enum s32 {
     SUCCESS ::  0;
@@ -282,6 +398,3 @@ rpmalloc_config_t :: struct {
 	page_name: string;
 	huge_page_name: string;
 }
-
-#scope_file
-codec_adapter :: #system_library "jai_rpmalloc_adapter";

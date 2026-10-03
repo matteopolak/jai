@@ -202,15 +202,25 @@ OutputHandler_VTable :: struct #type_info_none {
     endImage: (this: *OutputHandler) -> void #cpp_method;
 }
 
-OutputHandler_Destructor :: (this: *OutputHandler, flags: Msvc_Destructor_Flags) #foreign codec_adapter "jai_stdlib_nvtt_windows_OutputHandler_Destructor_1";
+OutputHandler_Destructor :: (this: *OutputHandler, flags: Msvc_Destructor_Flags) {
+    this.vtable.Destructor(this, flags);
+}
 
-OutputHandler_beginImage :: (this: *OutputHandler, size: s32, width: s32, height: s32, depth: s32, face: s32, miplevel: s32) #foreign codec_adapter "jai_stdlib_nvtt_windows_OutputHandler_beginImage_1";
+OutputHandler_beginImage :: (this: *OutputHandler, size: s32, width: s32, height: s32, depth: s32, face: s32, miplevel: s32) {
+    this.vtable.beginImage(this, size, width, height, depth, face, miplevel);
+}
 
-OutputHandler_writeData :: (this: *OutputHandler, data: *void, size: s32) -> bool #foreign codec_adapter "jai_stdlib_nvtt_windows_OutputHandler_writeData_1";
+OutputHandler_writeData :: (this: *OutputHandler, data: *void, size: s32) -> bool {
+    return this.vtable.writeData(this, data, size);
+}
 
-OutputHandler_endImage :: (this: *OutputHandler) #foreign codec_adapter "jai_stdlib_nvtt_windows_OutputHandler_endImage_1";
+OutputHandler_endImage :: (this: *OutputHandler) {
+    this.vtable.endImage(this);
+}
 
-vtable :: (obj: *OutputHandler) -> *OutputHandler_VTable #foreign codec_adapter "jai_stdlib_nvtt_windows_vtable_1";
+vtable :: (obj: *OutputHandler) -> *OutputHandler_VTable {
+    return obj.vtable;
+}
 
 Error :: enum s32 {
     Unknown                 :: 0;
@@ -232,11 +242,17 @@ ErrorHandler_VTable :: struct #type_info_none {
     error: (this: *ErrorHandler, e: Error) -> void #cpp_method;
 }
 
-ErrorHandler_Destructor :: (this: *ErrorHandler, flags: Msvc_Destructor_Flags) #foreign codec_adapter "jai_stdlib_nvtt_windows_ErrorHandler_Destructor_1";
+ErrorHandler_Destructor :: (this: *ErrorHandler, flags: Msvc_Destructor_Flags) {
+    this.vtable.Destructor(this, flags);
+}
 
-ErrorHandler_error :: (this: *ErrorHandler, e: Error) #foreign codec_adapter "jai_stdlib_nvtt_windows_ErrorHandler_error_1";
+ErrorHandler_error :: (this: *ErrorHandler, e: Error) {
+    this.vtable.error(this, e);
+}
 
-vtable :: (obj: *ErrorHandler) -> *ErrorHandler_VTable #foreign codec_adapter "jai_stdlib_nvtt_windows_vtable_2";
+vtable :: (obj: *ErrorHandler) -> *ErrorHandler_VTable {
+    return obj.vtable;
+}
 
 Container :: enum s32 {
     DDS   :: 0;
@@ -276,11 +292,17 @@ TaskDispatcher_VTable :: struct #type_info_none {
     dispatch: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) -> void #cpp_method;
 }
 
-TaskDispatcher_Destructor :: (this: *TaskDispatcher, flags: Msvc_Destructor_Flags) #foreign codec_adapter "jai_stdlib_nvtt_windows_TaskDispatcher_Destructor_1";
+TaskDispatcher_Destructor :: (this: *TaskDispatcher, flags: Msvc_Destructor_Flags) {
+    this.vtable.Destructor(this, flags);
+}
 
-TaskDispatcher_dispatch :: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) #foreign codec_adapter "jai_stdlib_nvtt_windows_TaskDispatcher_dispatch_1";
+TaskDispatcher_dispatch :: (this: *TaskDispatcher, task: Task, _context: *void, count: s32) {
+    this.vtable.dispatch(this, task, _context, count);
+}
 
-vtable :: (obj: *TaskDispatcher) -> *TaskDispatcher_VTable #foreign codec_adapter "jai_stdlib_nvtt_windows_vtable_3";
+vtable :: (obj: *TaskDispatcher) -> *TaskDispatcher_VTable {
+    return obj.vtable;
+}
 
 Compressor :: struct  {
     Private :: struct {}
@@ -457,16 +479,36 @@ Surface :: struct #type_info_none {
     toCleanNormalMap :: (this: *Surface) -> void #cpp_method #foreign nvtt "?toCleanNormalMap@Surface@nvtt@@QEAAXXZ";
     packNormals :: (this: *Surface, scale: float = 0.5, bias: float = 0.5) -> void #cpp_method #foreign nvtt "?packNormals@Surface@nvtt@@QEAAXMM@Z";
     expandNormals :: (this: *Surface, scale: float = 2.0, bias: float = -1.0) -> void #cpp_method #foreign nvtt "?expandNormals@Surface@nvtt@@QEAAXMM@Z";
-    createToksvigMap :: (this: *Surface, power: float) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?createToksvigMap@Surface@nvtt@@QEBA?AU12@M@Z";
-    createCleanMap :: (this: *Surface) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?createCleanMap@Surface@nvtt@@QEBA?AU12@XZ";
+    createToksvigMap :: (this: *Surface, power: float) -> Surface {
+        result: Surface;
+        native_object_return_1(this, *result, power);
+        return result;
+    }
+    createCleanMap :: (this: *Surface) -> Surface {
+        result: Surface;
+        native_object_return_2(this, *result);
+        return result;
+    }
 
     flipX :: (this: *Surface) -> void #cpp_method #foreign nvtt "?flipX@Surface@nvtt@@QEAAXXZ";
     flipY :: (this: *Surface) -> void #cpp_method #foreign nvtt "?flipY@Surface@nvtt@@QEAAXXZ";
     flipZ :: (this: *Surface) -> void #cpp_method #foreign nvtt "?flipZ@Surface@nvtt@@QEAAXXZ";
-    createSubImage :: (this: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?createSubImage@Surface@nvtt@@QEBA?AU12@HHHHHH@Z";
+    createSubImage :: (this: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) -> Surface {
+        result: Surface;
+        native_object_return_3(this, *result, x0, x1, y0, y1, z0, z1);
+        return result;
+    }
 
-    warp :: (this: *Surface, w: s32, h: s32, f: WarpFunction) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?warp@Surface@nvtt@@QEBA?AU12@HHP6AXAEAM00@Z@Z";
-    warp :: (this: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?warp@Surface@nvtt@@QEBA?AU12@HHHP6AXAEAM00@Z@Z";
+    warp :: (this: *Surface, w: s32, h: s32, f: WarpFunction) -> Surface {
+        result: Surface;
+        native_object_return_4(this, *result, w, h, f);
+        return result;
+    }
+    warp :: (this: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) -> Surface {
+        result: Surface;
+        native_object_return_5(this, *result, w, h, d, f);
+        return result;
+    }
 
     copyChannel :: (this: *Surface, srcImage: *Surface, srcChannel: s32) -> bool #cpp_method #foreign nvtt "?copyChannel@Surface@nvtt@@QEAA_NAEBU12@H@Z";
     copyChannel :: (this: *Surface, srcImage: Surface, srcChannel: s32) -> bool #no_context {
@@ -533,16 +575,32 @@ CubeSurface :: struct  {
     fold :: (this: *CubeSurface, img: Surface, layout: CubeLayout) #no_context {
     fold(this, *img, layout);
 }
-    unfold :: (this: *CubeSurface, layout: CubeLayout) -> Surface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?unfold@CubeSurface@nvtt@@QEBA?AUSurface@2@W4CubeLayout@2@@Z";
+    unfold :: (this: *CubeSurface, layout: CubeLayout) -> Surface {
+        result: Surface;
+        native_object_return_6(this, *result, layout);
+        return result;
+    }
 
     average :: (this: *CubeSurface, channel: s32) -> float #cpp_method #foreign nvtt "?average@CubeSurface@nvtt@@QEBAMH@Z";
     range :: (this: *CubeSurface, channel: s32, minimum_ptr: *float, maximum_ptr: *float) -> void #cpp_method #foreign nvtt "?range@CubeSurface@nvtt@@QEBAXHPEAM0@Z";
     clamp :: (this: *CubeSurface, channel: s32, low: float = 0.0, high: float = 1.0) -> void #cpp_method #foreign nvtt "?clamp@CubeSurface@nvtt@@QEAAXHMM@Z";
 
-    irradianceFilter :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?irradianceFilter@CubeSurface@nvtt@@QEBA?AU12@HW4EdgeFixup@2@@Z";
-    cosinePowerFilter :: (this: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?cosinePowerFilter@CubeSurface@nvtt@@QEBA?AU12@HMW4EdgeFixup@2@@Z";
+    irradianceFilter :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_7(this, *result, size, fixupMethod);
+        return result;
+    }
+    cosinePowerFilter :: (this: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_8(this, *result, size, cosinePower, fixupMethod);
+        return result;
+    }
 
-    fastResample :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface #cpp_method /* unsupported non-POD C++ return metadata */ #foreign nvtt "?fastResample@CubeSurface@nvtt@@QEBA?AU12@HW4EdgeFixup@2@@Z";
+    fastResample :: (this: *CubeSurface, size: s32, fixupMethod: EdgeFixup) -> CubeSurface {
+        result: CubeSurface;
+        native_object_return_9(this, *result, size, fixupMethod);
+        return result;
+    }
 
     toLinear :: (this: *CubeSurface, gamma: float) -> void #cpp_method #foreign nvtt "?toLinear@CubeSurface@nvtt@@QEAAXM@Z";
     toGamma :: (this: *CubeSurface, gamma: float) -> void #cpp_method #foreign nvtt "?toGamma@CubeSurface@nvtt@@QEAAXM@Z";
@@ -576,7 +634,11 @@ angularError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?an
 angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
-diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface /* unsupported non-POD C++ return metadata */ #foreign nvtt "?diff@nvtt@@YA?AUSurface@1@AEBU21@0M@Z";
+diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface {
+        result: Surface;
+        native_object_return_10(*result, reference, img, scale);
+        return result;
+    }
 diff :: (reference: Surface, img: Surface, scale: float) -> Surface #no_context {
     return diff(*reference, *img, scale);
 }
@@ -586,18 +648,39 @@ rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> flo
     return rmsToneMappedError(*reference, *img, exposure);
 }
 
-histogram :: (img: *Surface, width: s32, height: s32) -> Surface /* unsupported non-POD C++ return metadata */ #foreign nvtt "?histogram@nvtt@@YA?AUSurface@1@AEBU21@HH@Z";
+histogram :: (img: *Surface, width: s32, height: s32) -> Surface {
+        result: Surface;
+        native_object_return_11(*result, img, width, height);
+        return result;
+    }
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
-histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface /* unsupported non-POD C++ return metadata */ #foreign nvtt "?histogram@nvtt@@YA?AUSurface@1@AEBU21@MMHH@Z";
+histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface {
+        result: Surface;
+        native_object_return_12(*result, img, minRange, maxRange, width, height);
+        return result;
+    }
 histogram :: (img: Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, minRange, maxRange, width, height);
 }
 
 #scope_file
 
-nvtt :: #system_library "jai_nvtt_legacy_adapter";
+nvtt :: #system_library "nvtt";
+
 
 #scope_file
-codec_adapter :: #system_library "jai_nvtt_legacy_adapter";
+// Reviewed legacy C++ ABI: explicit return storage precedes this on Itanium; follows this on MSVC.
+native_object_return_1 :: (this: *Surface, result: *Surface, power: float) #foreign nvtt "?createToksvigMap@Surface@nvtt@@QEBA?AU12@M@Z";
+native_object_return_2 :: (this: *Surface, result: *Surface) #foreign nvtt "?createCleanMap@Surface@nvtt@@QEBA?AU12@XZ";
+native_object_return_3 :: (this: *Surface, result: *Surface, x0: s32, x1: s32, y0: s32, y1: s32, z0: s32, z1: s32) #foreign nvtt "?createSubImage@Surface@nvtt@@QEBA?AU12@HHHHHH@Z";
+native_object_return_4 :: (this: *Surface, result: *Surface, w: s32, h: s32, f: WarpFunction) #foreign nvtt "?warp@Surface@nvtt@@QEBA?AU12@HHP6AXAEAM00@Z@Z";
+native_object_return_5 :: (this: *Surface, result: *Surface, w: s32, h: s32, d: s32, f: WarpFunction) #foreign nvtt "?warp@Surface@nvtt@@QEBA?AU12@HHHP6AXAEAM00@Z@Z";
+native_object_return_6 :: (this: *CubeSurface, result: *Surface, layout: CubeLayout) #foreign nvtt "?unfold@CubeSurface@nvtt@@QEBA?AUSurface@2@W4CubeLayout@2@@Z";
+native_object_return_7 :: (this: *CubeSurface, result: *CubeSurface, size: s32, fixupMethod: EdgeFixup) #foreign nvtt "?irradianceFilter@CubeSurface@nvtt@@QEBA?AU12@HW4EdgeFixup@2@@Z";
+native_object_return_8 :: (this: *CubeSurface, result: *CubeSurface, size: s32, cosinePower: float, fixupMethod: EdgeFixup) #foreign nvtt "?cosinePowerFilter@CubeSurface@nvtt@@QEBA?AU12@HMW4EdgeFixup@2@@Z";
+native_object_return_9 :: (this: *CubeSurface, result: *CubeSurface, size: s32, fixupMethod: EdgeFixup) #foreign nvtt "?fastResample@CubeSurface@nvtt@@QEBA?AU12@HW4EdgeFixup@2@@Z";
+native_object_return_10 :: (result: *Surface, reference: *Surface, img: *Surface, scale: float) #foreign nvtt "?diff@nvtt@@YA?AUSurface@1@AEBU21@0M@Z";
+native_object_return_11 :: (result: *Surface, img: *Surface, width: s32, height: s32) #foreign nvtt "?histogram@nvtt@@YA?AUSurface@1@AEBU21@HH@Z";
+native_object_return_12 :: (result: *Surface, img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) #foreign nvtt "?histogram@nvtt@@YA?AUSurface@1@AEBU21@MMHH@Z";

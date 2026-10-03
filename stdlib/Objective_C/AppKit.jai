@@ -832,8 +832,8 @@ NSModalResponseAbort :NSModalResponse: -1001;
 NSModalResponseContinue :NSModalResponse: -1002;
 NSModalResponseOK :NSModalResponse: 1;
 NSModalResponseCancel :NSModalResponse: 0;
-NSModalResponse :: NSInteger;
-NSWindowLevel :: NSInteger;
+NSModalResponse :: s64;
+NSWindowLevel :: s64;
 NSMenu :: struct {
     using #as super: NSObject;
     addItem :: (self: *NSMenu, item: *NSMenuItem) {

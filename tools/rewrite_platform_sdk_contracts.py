@@ -16,12 +16,13 @@ import shutil
 import subprocess
 from pathlib import Path
 from author_objective_c_dispatch import SDK as MACOS_SDK, author as author_objective_c
+from author_platform_completion import author as author_platform_completion
 
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "reference/modules"
 OUTPUT = ROOT / "stdlib"
 REPORT = OUTPUT / ".coverage/platform-sdk-bindings.json"
-SNAPSHOT = ROOT / "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs"
+SNAPSHOT = ROOT / "target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs"
 GROUPS = ("POSIX", "POSIX_old", "Linux", "macos", "Android", "Objective_C")
 FILES = ("Windows.jai", "Windows_Utf8.jai", "Windows_Registry.jai", "Windows_Resources.jai")
 SYSTEM_LIBRARIES = {
@@ -304,22 +305,31 @@ def normalize(source: str, relative: Path) -> tuple[str, dict]:
         out = re.sub(r'(\benum(?:_flags)?\s+)NSInteger\b', r'\1s64', out)
         adaptations.append("Expanded reviewed LP64 NSUInteger/NSInteger enum backing aliases to equivalent u64/s64 representation because frozen early enum discovery cannot resolve imported backing aliases; alias declarations and nominal enums retained")
     if str(relative) == "Objective_C/AppKit.jai":
+        out = out.replace("NSModalResponse :: NSInteger;", "NSModalResponse :: s64;").replace("NSWindowLevel :: NSInteger;", "NSWindowLevel :: s64;")
+        adaptations.append("Expanded NSModalResponse and NSWindowLevel LP64 aliases to SDK-equivalent s64 for frozen imported-alias discovery")
         events = dict(re.findall(r'\b(NSEventType\w+)\s*::\s*(\d+)\s*;', out))
         out = re.sub(r'1\s*<<\s*(NSEventType\w+)\b', lambda m: '1 << ' + events[m[1]], out)
         out = re.sub(r'\bNSUIntegerMax\b', '0xFFFFFFFFFFFFFFFF', out)
         adaptations.append("Expanded NSEventMask shift operands and NSUIntegerMax enum operands to their configured SDK-verified integer values; frozen enum discovery cannot yet resolve sibling enum members or imported constants")
+    if str(relative) == "Objective_C/GameController.jai":
+        out = out.replace("GCControllerPlayerIndexUnset :: 0xFFFFFFFFFFFFFFFF;", "GCControllerPlayerIndexUnset :: -1;")
+        adaptations.append("Corrected GCControllerPlayerIndexUnset to configured SDK signed NSInteger -1")
     if str(relative) == "Windows.jai":
         out = re.sub(r"Internal\s*:\s*u64\s*;\s*#place Internal\s*;\s*Status\s*:\s*u64\s*;", "union { Internal: u64; Status: u64; }", out)
         out = re.sub(r"InternalHigh\s*:\s*u64\s*;\s*#place InternalHigh\s*;\s*NumberOfBytesTransferred\s*:\s*u64\s*;", "union { InternalHigh: u64; NumberOfBytesTransferred: u64; }", out)
         out = re.sub(r"dwLowDateTime\s*:\s*u32\s*;\s*dwHighDateTime\s*:\s*u32\s*;\s*#place dwLowDateTime\s*;\s*QuadPart\s*:\s*u64\s*=\s*---\s*#align 4\s*;", "union { struct { dwLowDateTime: u32; dwHighDateTime: u32; } QuadPart: u64 #align 4 = ---; }", out)
         out = out.replace("dwFlags: s32, lpWideCharStr", "dwFlags: u32, lpWideCharStr").replace("dwFlags: s32, lpMultiByteStr", "dwFlags: u32, lpMultiByteStr")
+        out = out.replace('SetCursor :: (cursor: HCURSOR) #foreign user32;', 'SetCursor :: (cursor: HCURSOR) -> HCURSOR #foreign user32;')
+        adaptations.append("Corrected SetCursor native return to SDK HCURSOR; the return is the previous cursor handle")
         adaptations.append("Expressed OVERLAPPED and FILETIME placement aliases as anonymous unions; corrected encoding dwFlags to SDK DWORD")
     if str(relative) == "Windows_Registry.jai":
         out = re.sub(r"cast\(HKEY\)\s*(0x800000[0-9a-fA-F]{2})", r"cast(HKEY) (cast(s64) (cast,trunc(s32) \1))", out)
         adaptations.append("Sign-extended predefined registry handle constants through SDK LONG to pointer width")
     if str(relative) == "Windows_Resources.jai":
         out = out.replace('lpType: *u8, lpName: *u16', 'lpType: *u16, lpName: *u16')
-        adaptations.append("Corrected UpdateResourceW resource type parameter to SDK LPCWSTR")
+        for name, value in {"COINIT_APARTMENTTHREADED": 2, "COINIT_MULTITHREADED": 0, "COINIT_DISABLE_OLE1DDE": 4, "COINIT_SPEED_OVER_MEMORY": 8}.items():
+            out = re.sub(r"\b" + name + r"\s*::\s*\d+\s*;", name + " :: " + str(value) + ";", out)
+        adaptations.append("Corrected UpdateResourceW resource type parameter to SDK LPCWSTR and COINIT values to current objbase.h contract")
     if str(relative) == "macos/module.jai":
         out = re.sub(r"FSEventStreamContext\s*::\s*struct\s*\{[^{}]*\}", "FSEventStreamContext :: struct { version: CFIndex; info: *void; retain: CFAllocatorRetainCallBack; release: CFAllocatorReleaseCallBack; copyDescription: CFAllocatorCopyDescriptionCallBack; }", out)
         adaptations.append("Corrected FSEventStreamContext field order to configured macOS 27.0 SDK header")
@@ -398,6 +408,17 @@ def main():
                     adapter.pop("adapter_symbol", None)
         if dispatch_gaps:
             record["objective_c_dispatch_gaps"] = dispatch_gaps
+        out, completion = author_platform_completion(str(relative), out)
+        if completion:
+            record["independent_platform_completion"] = completion
+            by_symbol = {item["adapter_symbol"]: item for item in completion}
+            for adapter in record["unimplemented_adapters"]:
+                if adapter.get("adapter_symbol") in by_symbol:
+                    implementation = by_symbol[adapter["adapter_symbol"]]
+                    adapter["status"] = "independent-jai-implementation"
+                    adapter["implementation"] = implementation["implementation"]
+                    adapter.pop("adapter_symbol", None)
+            record["system_foreign_declarations"] = len(re.findall(r"#foreign\s+(?!Native_Adapters\b)", mask_non_code(out)[0]))
         override = OVERRIDES / relative
         if override.exists():
             out = override.read_text()
@@ -409,6 +430,7 @@ def main():
         dest = OUTPUT / relative
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(out)
+        record["output_sha256"] = hashlib.sha256(out.encode()).hexdigest()
         if args.parse:
             result = subprocess.run([str(SNAPSHOT), "parse", str(dest)], capture_output=True, text=True, timeout=30)
             record["parse"] = {"success": result.returncode == 0, "exit_code": result.returncode, "diagnostic": (result.stdout + result.stderr)[-2500:] if result.returncode else ""}
@@ -420,16 +442,16 @@ def main():
         dest = OUTPUT / relative
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(path.read_text())
-        record = {"source": str(path.relative_to(ROOT)), "output": "stdlib/" + str(relative), "source_lines": 0, "source_api_declaration_occurrences": 0, "source_procedure_bodies_discarded": 0, "system_foreign_declarations": len(re.findall(r"#foreign\s+(?!Native_Adapters\b)", mask_non_code(path.read_text())[0])), "unimplemented_adapters": [], "status": "independent-jai-implementation", "behavior_verified": False}
+        record = {"source": str(path.relative_to(ROOT)), "output": "stdlib/" + str(relative), "source_lines": 0, "source_api_declaration_occurrences": 0, "source_procedure_bodies_discarded": 0, "system_foreign_declarations": len(re.findall(r"#foreign\s+(?!Native_Adapters\b)", mask_non_code(path.read_text())[0])), "unimplemented_adapters": [], "status": "independent-jai-implementation", "behavior_verified": False, "output_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         if args.parse:
             result = subprocess.run([str(SNAPSHOT), "parse", str(dest)], capture_output=True, text=True, timeout=30)
             record["parse"] = {"success": result.returncode == 0, "exit_code": result.returncode, "diagnostic": (result.stdout + result.stderr)[-2500:] if result.returncode else ""}
         records.append(record)
     report = {
-        "schema_version": 1, "status": "declarative-sdk-contracts-with-explicit-wrapper-gaps",
+        "schema_version": 1, "status": "declarative-sdk-contracts-with-independent-wrappers-native-unverified",
         "reference_access": "Read-only source API contracts; no source procedures or shipped native files were executed, loaded, linked, or copied",
         "extractor": "tools/rewrite_platform_sdk_contracts.py",
-        "frozen_parser": str(SNAPSHOT.relative_to(ROOT)), "native_behavior_verified": False,
+        "frozen_parser": str(SNAPSHOT.relative_to(ROOT)), "frozen_parser_sha256": hashlib.sha256(SNAPSHOT.read_bytes()).hexdigest(), "native_behavior_verified": False, "build_inputs_verified": False,
         "source_check_evidence": "stdlib/.coverage/platform-sdk-source-checks.json",
         "authoritative_sources": [
             {"scope": "Configured macOS SDK contract spot-check", "source": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk", "sdk_version": "27.0", "verified": ["errno TLS entry", "LP64 pthread mutex/condition opaque sizes", "stat64 field order", "timespec/timeval scalar widths", "wait-status macro semantics", "FSEventStreamContext field order", "VM_MAKE_TAG shift"], "not_verified": "No complete header-to-binding ABI comparison or native linkage test"},
@@ -445,13 +467,21 @@ def main():
             {"scope": "Linux io_uring invocation", "source": "https://man7.org/linux/man-pages/man2/io_uring_enter.2.html", "verified": ["extended-argument flag and size"]},
             {"scope": "Objective-C messaging", "source": str(MACOS_SDK / "usr/include/objc/message.h"), "sdk_version": "27.0", "verified": ["fixed correctly typed function pointer dispatch", "objc_msgSend_stret unavailable on arm64", "reviewed plain aggregate x64 structure-return selection"], "not_verified": "No complete per-method SDK signature comparison, compiler native ABI check, or runtime execution"},
             {"scope": "X64 reviewed plain aggregate ABI", "source": "https://raw.githubusercontent.com/llvm/llvm-project/main/clang/lib/CodeGen/Targets/X86.cpp", "verified": ["Clang record classifier sends reviewed aligned non-vector multi-field records larger than 128 bits to Memory"], "not_verified": "Jai C-call ABI lowering and original/native wrapper execution have not been validated"},
-            {"scope": "Objective-C SDK method corrections", "source": str(MACOS_SDK / "System/Library/Frameworks"), "sdk_version": "27.0", "verified": ["NSView addSubview selector spelling", "four GameController snapshot instancetype pointer returns", "NSApplication/NSWindow/NSOpenGLContext void methods retain compatible Jai null result", "NSOpenGLView openGLContext property and NSOpenGLContext flushBuffer"], "not_verified": "LightweightMetalView and original custom view subclass behavior remain unavailable"},
+            {"scope": "Objective-C SDK method corrections", "source": str(MACOS_SDK / "System/Library/Frameworks"), "sdk_version": "27.0", "verified": ["NSView addSubview selector spelling", "four GameController snapshot instancetype pointer returns", "NSApplication/NSWindow/NSOpenGLContext void methods retain compatible Jai null result", "NSOpenGLView openGLContext property and NSOpenGLContext flushBuffer"], "not_verified": "Original custom view subclass callbacks and Metal-layer behavior are not recreated"},
             {"scope": "Windows resource update transaction", "source": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-updateresourcew", "verified": ["LPCWSTR resource type and name", "resource type identifiers", "SDK transaction accumulates before commit"]},
             {"scope": "Windows resource commit and rollback", "source": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-endupdateresourcew", "verified": ["fDiscard TRUE rolls back", "fDiscard FALSE commits", "native result checked"]},
             {"scope": "Windows ICO resource encoding", "source": "https://devblogs.microsoft.com/oldnewthing/20120720-00/?p=7083", "verified": ["group icon image offset replaced by WORD resource identifier", "separate RT_ICON images"]},
             {"scope": "Windows application manifests", "source": "https://learn.microsoft.com/en-us/windows/win32/sbscs/application-manifests", "verified": ["assembly identity fields", "UAC execution level", "DPI and SegmentHeap namespaces"], "not_verified": "Generated manifest and executable resource edits were not exercised on Windows"},
             {"scope": "Windows runtime console", "source": "https://learn.microsoft.com/windows/console/freeconsole", "verified": ["SDK FreeConsole detaches current process"]},
             {"scope": "Android NDK asset reading", "source": "https://developer.android.com/ndk/reference/group/asset", "verified": ["asset close ownership", "64-bit length query", "partial-read and error result"], "not_verified": "No Android NDK linker, ABI comparison, device, or runtime test"},
+            {"scope": "Objective-C runtime reflection and encoding", "source": "https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html", "verified": ["native scalar, pointer, object, class, selector, fixed-array and record encoding forms", "runtime class/method/ivar APIs reviewed in configured SDK objc/runtime.h"], "not_verified": "Native class registration, Jai reflection constant storage and generated method stubs have not been executed"},
+            {"scope": "Android Java asset traversal", "source": "https://developer.android.com/reference/android/content/res/AssetManager", "verified": ["list(String) supplies child assets", "NDK iterator supplies file entries only", "AAssetManager_fromJava validates JNI asset manager identity"], "not_verified": "Recursive traversal requires active NativeActivity context matching the supplied asset manager; no Android execution"},
+            {"scope": "Android lifecycle polling", "source": "https://developer.android.com/ndk/reference/group/looper", "verified": ["ALooper_pollOnce timeout, callback, wake and error handling", "only glue MAIN/INPUT data cast to Android_Poll_Source"], "external_prerequisite": "Application must independently build trusted NDK native_app_glue and supply Android packaging/runtime initialization; shipped reference glue is excluded"},
+            {"scope": "Android hardware key text", "source": "https://developer.android.com/reference/android/view/KeyEvent", "verified": ["full KeyEvent constructor timing, device and meta-state fields", "getUnicodeChar(int) hardware key-map translation"], "not_verified": "Application InputConnection/IME composition is not provided by the native event wrapper"},
+            {"scope": "EGL context creation", "source": "https://registry.khronos.org/EGL/specs/eglspec.1.5.pdf", "verified": ["ES 2 window configuration and context attributes", "chosen sample-count query", "failed context/surface/display cleanup"], "not_verified": "No Android EGL driver was run"},
+            {"scope": "Visual Studio Setup Configuration", "source": "https://raw.githubusercontent.com/Kitware/CMake/master/Utilities/cmvssetup/Setup.Configuration.h", "authority": "Microsoft-authored Setup Configuration SDK header distributed by maintained CMake", "verified": ["COM class UUID and configuration/instance/enumerator vtable contracts"], "not_verified": "Visual Studio discovery was not executed on Windows"},
+            {"scope": "Visual Studio MSVC path discovery", "source": "https://learn.microsoft.com/en-us/cpp/overview/acquire-msvc?view=msvc-170", "verified": ["VC/Auxiliary/Build/Microsoft.VCToolsVersion.default.txt", "VC/Tools/MSVC versioned tools directory"], "not_verified": "Only modern versioned MSVC layouts are supported; VS 2015 and older layouts require a separate implementation"},
+            {"scope": "Windows COM initialization", "source": "https://learn.microsoft.com/en-us/windows/win32/api/objbase/ne-objbase-coinit", "verified": ["COINIT SDK constant values", "balanced successful CoInitializeEx", "existing apartment retained on RPC_E_CHANGED_MODE"]},
             {"scope": "Android NDK logging", "source": "https://developer.android.com/ndk/reference/group/logging", "verified": ["terminated text/tag and log priorities", "nonvariadic __android_log_write"]},
         ],
         "abi_verification_boundary": "Source API compatibility retained for the supplied target branches. Configured macOS SDK and selected maintained online declarations were spot-checked; remaining Linux, Android, Windows, Objective-C and macOS layouts have no blanket current-ABI verification.",

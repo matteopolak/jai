@@ -659,7 +659,7 @@ ClipCursor :: (lpRect: *RECT) -> s32 #foreign user32;
 GetCursorPos :: (p: *POINT) -> s32 #foreign user32;
 LoadCursorA :: (hInstance: HINSTANCE, lpCursorName: *u8) -> HCURSOR #foreign user32;
 LoadCursorW :: (hInstance: HINSTANCE, lpCursorName: *s16) -> HCURSOR #foreign user32;
-SetCursor :: (cursor: HCURSOR) #foreign user32;
+SetCursor :: (cursor: HCURSOR) -> HCURSOR #foreign user32;
 ShowCursor :: (bShow: s32) -> s32 #foreign user32;
 MSG :: struct {
     hwnd: HWND;

@@ -125,4 +125,4 @@ baker_get_current_mesh_sample_count :: () -> s32 #foreign thekla_baker "?baker_g
 
 #scope_file
 
-thekla_baker :: #system_library "jai_thekla_baker_adapter";
+thekla_baker :: #system_library "thekla_baker";

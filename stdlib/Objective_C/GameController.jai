@@ -602,7 +602,7 @@ GCEventViewController :: struct {
     }
 }
 using GCControllerPlayerIndex :: enum s64 {
-    GCControllerPlayerIndexUnset :: 0xFFFFFFFFFFFFFFFF;
+    GCControllerPlayerIndexUnset :: -1;
     GCControllerPlayerIndex1 :: 0;
     GCControllerPlayerIndex2 :: 1;
     GCControllerPlayerIndex3 :: 2;

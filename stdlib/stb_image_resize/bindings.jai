@@ -90,19 +90,19 @@ stbir_resize_region :: (input_pixels: *void, input_w: s32, input_h: s32, input_s
 #scope_file
 
 #if OS == .WINDOWS {
-    stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+    stb_image_resize :: #system_library "stb_image_resize";
 } else #if OS == .LINUX {
-    stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+    stb_image_resize :: #system_library "stb_image_resize";
 } else #if OS == .MACOS {
-    stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+    stb_image_resize :: #system_library "stb_image_resize";
 } else #if OS == .ANDROID {
     #if CPU == .X64 {
-        stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+        stb_image_resize :: #system_library "stb_image_resize";
     } else #if CPU == .ARM64 {
-        stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+        stb_image_resize :: #system_library "stb_image_resize";
     }
 } else #if OS == .PS5 {
-    stb_image_resize :: #system_library "jai_stb_image_resize_adapter";
+    stb_image_resize :: #system_library "stb_image_resize";
 } else {
     #assert false;
 }

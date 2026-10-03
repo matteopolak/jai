@@ -110,20 +110,53 @@ Atlas_Error_Data :: struct {
 }
 
 Atlas_Message_Callback :: #type (msg: *u8, _context: *void) -> void #c_call;
-atlas_set_message_callback :: (callback: Atlas_Message_Callback, _context: *void) -> void #foreign thekla_atlas "?atlas_set_message_callback@Thekla@@YAXP6AXPEBDPEAX@Z1@Z";
+atlas_set_message_callback :: (callback: Atlas_Message_Callback, _context: *void) -> void {
+    atlas_message_callback = callback;
+    atlas_message_context = _context;
+    native_atlas_set_debug_output(atlas_debug_output);
+}
 
 Atlas_Assert_Callback :: #type (exp: *u8, file: *u8, line: s32, func: *u8, msg: *u8, _context: *void) -> void #c_call;
-atlas_set_assert_callback :: (callback: Atlas_Assert_Callback, _context: *void) -> void #foreign thekla_atlas "?atlas_set_assert_callback@Thekla@@YAXP6AXPEBD0H00PEAX@Z1@Z";
+atlas_set_assert_callback :: (callback: Atlas_Assert_Callback, _context: *void) -> void {
+    atlas_assert_callback = callback;
+    atlas_assert_context = _context;
+}
 
-atlas_set_default_options :: (options: *Atlas_Options) -> void #foreign thekla_atlas "?atlas_set_default_options@Thekla@@YAXPEAUAtlas_Options@1@@Z";
+atlas_set_default_options :: (options: *Atlas_Options) -> void {
+    native: Native_Atlas_Options;
+    native_atlas_default_options(*native);
+    options.* = .{};
+    options.charter = native.charter;
+    options.charter_options.witness.proxy_fit_metric_weight = native.charter_options.witness.proxy_fit_metric_weight;
+    options.charter_options.witness.roundness_metric_weight = native.charter_options.witness.roundness_metric_weight;
+    options.charter_options.witness.straightness_metric_weight = native.charter_options.witness.straightness_metric_weight;
+    options.charter_options.witness.normal_seam_metric_weight = native.charter_options.witness.normal_seam_metric_weight;
+    options.charter_options.witness.texture_seam_metric_weight = native.charter_options.witness.texture_seam_metric_weight;
+    options.charter_options.witness.max_chart_area = native.charter_options.witness.max_chart_area;
+    options.charter_options.witness.max_boundary_length = native.charter_options.witness.max_boundary_length;
+    options.mapper = native.mapper;
+    options.mapper_options.preserve_uvs = native.mapper_options.preserve_uvs;
+    options.mapper_options.preserve_boundary = native.mapper_options.preserve_boundary;
+    options.packer = native.packer;
+    options.packer_options.witness.packing_quality = native.packer_options.witness.packing_quality;
+    options.packer_options.witness.texels_per_unit = native.packer_options.witness.texels_per_unit;
+    options.packer_options.witness.block_align = native.packer_options.witness.block_align;
+    options.packer_options.witness.conservative = native.packer_options.witness.conservative;
+}
 
-atlas_generate :: (input: *Atlas_Input_Mesh, options: *Atlas_Options, error: *Atlas_Error, error_data: **Atlas_Error_Data) -> *Atlas_Output_Mesh #foreign thekla_atlas "?atlas_generate@Thekla@@YAPEAUAtlas_Output_Mesh@1@PEBUAtlas_Input_Mesh@1@PEBUAtlas_Options@1@PEAW4Atlas_Error@1@PEAPEAUAtlas_Error_Data@1@@Z";
+atlas_generate :: (input: *Atlas_Input_Mesh, options: *Atlas_Options, error: *Atlas_Error, error_data: **Atlas_Error_Data) -> *Atlas_Output_Mesh {
+    return generate_with_current_atlas(input, options, error, error_data);
+}
 
-atlas_free :: (output: *Atlas_Output_Mesh) -> void #foreign thekla_atlas "?atlas_free@Thekla@@YAXPEAUAtlas_Output_Mesh@1@@Z";
-atlas_free :: (output: *Atlas_Error_Data) -> void #foreign thekla_atlas "?atlas_free@Thekla@@YAXPEAUAtlas_Error_Data@1@@Z";
+atlas_free :: (output: *Atlas_Output_Mesh) -> void {
+    native_atlas_free(output);
+}
+atlas_free :: (output: *Atlas_Error_Data) -> void {
+    if !output return;
+    Basic.free(output.index_array);
+    Basic.free(output);
+}
 
 #scope_file
 
 #import "Basic";
-
-thekla_atlas :: #system_library "jai_thekla_atlas_adapter";
