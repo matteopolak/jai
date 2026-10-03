@@ -3,6 +3,7 @@ use super::super::*;
 mod module_parameters;
 pub(crate) use module_parameters::ModuleTypeRequest;
 mod alias_preparation;
+mod enum_namespace;
 mod type_queries;
 use jai_types::{FieldId, Integer, RecordKind, TypeKind};
 use std::collections::HashSet;
