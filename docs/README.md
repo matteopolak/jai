@@ -286,3 +286,4 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Source parameter defaults](source-parameter-defaults.md) — selected original ordinary defaults retained through early type preparation and source-prefix publication.
 - [Initializer source lookup](initializer-source-lookup.md) — original initializer and selected body lookup demands before genuine source-run publication.
 - [Compile-time resource limits](compile-time-resource-limits.md)
+- [Continuous integration](continuous-integration.md) — hosted correctness checks and strict lint enforcement.

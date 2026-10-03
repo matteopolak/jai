@@ -55,6 +55,8 @@ jobs:
       - name: Format check
         run: cargo fmt --all -- --check
       - name: Lint
+        id: lint
+        continue-on-error: true
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: Rust and native execution tests
         # The full reference lexer requires the separately supplied sources.
@@ -66,3 +68,8 @@ jobs:
         run: python3 -m unittest discover -s tools -p 'test_*.py'
       - name: Benchmark smoke checks (no timing gate on shared runners)
         run: cargo bench -p jai-bench --bench compiler --bench vm --bench discovery --locked -- --test --skip reference_lex
+      - name: Enforce lint result
+        if: ${{ always() && !cancelled() && steps.lint.outcome == 'failure' }}
+        run: |
+          echo "Clippy failed; see the Lint step diagnostics."
+          exit 1
