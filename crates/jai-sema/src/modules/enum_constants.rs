@@ -85,6 +85,7 @@ pub(super) fn bind(
         .copied()
         .filter(|id| {
             !deferred.contains(id)
+                && !declarations.values.contains_key(id)
                 && !declarations.nominals.is_type_alias(graph, *id)
                 && !declarations.callable_aliases.contains_key(id)
                 && !sequence_constants::is_sequence_constant(graph, graph.declaration(*id).unwrap())

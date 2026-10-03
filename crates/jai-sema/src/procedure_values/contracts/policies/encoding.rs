@@ -46,6 +46,12 @@ impl CallablePolicyKey {
                     });
                     match &parameter.default {
                         None => encoder.token(b"required"),
+                        Some(DefaultPolicy::PendingSource { key, bytes }) => {
+                            encoder.token(b"pending-original-source-default");
+                            encoder.token(bytes.as_bytes());
+                            count(encoder, key.parameter);
+                            encoder.ty(key.expected)?;
+                        }
                         Some(DefaultPolicy::Constant(value)) => {
                             encoder.token(b"constant-default");
                             encoder.constant(value)?;

@@ -30,11 +30,13 @@ impl CompilationUnit {
         replay: &mut EffectReplayCache,
     ) -> Result<Self, Error> {
         let graph_options = options.graph.clone();
+        let compile_time_limits = options.limits;
         let graph =
             discover_graph_with_session(path, options, &jai_modules::Filesystem, session, replay)?;
         Ok(Self {
             graph,
             options: graph_options,
+            compile_time_limits,
         })
     }
 

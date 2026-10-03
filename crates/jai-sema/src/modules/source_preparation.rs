@@ -2,36 +2,86 @@
 //! The cursor owns original declaration IDs and the evaluator for one graph.
 use super::*;
 use aggregates::parameterized::{PendingType, TypePreparation};
+mod constant_annotations;
 
 /// Only the preparation controller can create this source dependency.
 /// VM dependencies remain separate in LibraryPending.dependencies.
 #[derive(Clone, Copy, Debug)]
 pub struct SourcePreparationPending {
-    cause: PendingType,
+    cause: Cause,
+}
+
+#[derive(Clone, Copy, Debug)]
+enum Cause {
+    Type(PendingType),
+    Lookup(super::source_lookup_demands::Demand),
 }
 
 impl SourcePreparationPending {
     pub(crate) fn new(cause: PendingType) -> Self {
-        Self { cause }
+        Self {
+            cause: Cause::Type(cause),
+        }
     }
 
     pub fn location(self) -> SourceSpan {
-        self.cause.location()
+        match self.cause {
+            Cause::Type(cause) => cause.location(),
+            Cause::Lookup(demand) => demand.location,
+        }
     }
 
     pub fn placeholder(self) -> Option<jai_modules::PlaceholderId> {
         match self.cause {
-            PendingType::Placeholder(demand) => Some(demand.placeholder),
-            PendingType::RecordModifier(_) | PendingType::Constant { .. } => None,
+            Cause::Type(PendingType::Placeholder(demand)) => Some(demand.placeholder),
+            _ => None,
+        }
+    }
+
+    pub fn procedure_default(self) -> Option<(DeclarationId, usize)> {
+        match self.cause {
+            Cause::Type(PendingType::ProcedureDefault {
+                declaration,
+                parameter,
+                ..
+            }) => Some((declaration, parameter)),
+            _ => None,
         }
     }
 
     pub fn diagnostic(self, graph: &ModuleGraph) -> LocatedDiagnostic {
-        self.cause.diagnostic(graph)
+        match self.cause {
+            Cause::Type(cause) => cause.diagnostic(graph),
+            Cause::Lookup(demand) => demand.diagnostic(graph),
+        }
     }
 
-    pub(crate) fn cause(self) -> PendingType {
-        self.cause
+    /// A lookup wait owns an existing consumer; it claims no future declaration.
+    pub fn lookup_consumer(self) -> Option<DeclarationId> {
+        match self.cause {
+            Cause::Lookup(demand) => Some(demand.consumer),
+            _ => None,
+        }
+    }
+
+    pub fn lookup_root(self) -> Option<Symbol> {
+        match self.cause {
+            Cause::Lookup(demand) => Some(demand.root),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn lookup(demand: super::source_lookup_demands::Demand) -> Self {
+        Self {
+            cause: Cause::Lookup(demand),
+        }
+    }
+
+    pub(crate) fn cause(self) -> Option<PendingType> {
+        match self.cause {
+            Cause::Type(cause) => Some(cause),
+            Cause::Lookup(_) => None,
+        }
     }
 }
 
@@ -81,6 +131,13 @@ impl<'graph> PendingAliases<'graph> {
     ) -> Result<AliasProgress, LocatedDiagnostic> {
         self.check_graph(declarations)?;
         while let Some(&source) = self.sources.get(self.next) {
+            if let Some(cause) =
+                self.prepare_constant_annotation(source, declarations, types, meta)?
+            {
+                let pending = SourcePreparationPending::new(cause);
+                self.pending = Some(pending);
+                return Ok(AliasProgress::Pending(pending));
+            }
             let outcome = declarations.nominals.prepare_alias(
                 self.graph,
                 source,
@@ -93,7 +150,17 @@ impl<'graph> PendingAliases<'graph> {
                     self.pending = None;
                     self.next += 1;
                 }
-                Some(TypePreparation::Pending(cause)) => {
+                Some(TypePreparation::Pending(mut cause)) => {
+                    if let PendingType::Constant { declaration, .. } = cause
+                        && let Some(annotation_wait) = self.prepare_constant_annotation(
+                            declaration,
+                            declarations,
+                            types,
+                            meta,
+                        )?
+                    {
+                        cause = annotation_wait;
+                    }
                     let pending = SourcePreparationPending::new(cause);
                     self.pending = Some(pending);
                     return Ok(AliasProgress::Pending(pending));

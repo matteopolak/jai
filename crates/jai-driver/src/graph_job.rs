@@ -85,10 +85,12 @@ impl PreparedGraphJob {
         let future_state = Rc::clone(&state);
         let future = Box::pin(async move {
             let graph_options = options.graph.clone();
+            let compile_time_limits = options.limits;
             let graph = discovery::discover(&path, &options, &provider, future_state).await?;
             Ok(CompilationUnit {
                 graph,
                 options: graph_options,
+                compile_time_limits,
             })
         });
         Self {

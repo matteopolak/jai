@@ -282,6 +282,9 @@ Public source corpora are input data.
 - [Opaque numeric pointers](opaque-numeric-pointers.md)
 
 - [Constant capture admission](constant-capture-admission.md)
+- [Source parameter defaults](source-parameter-defaults.md) — selected original ordinary defaults retained through early type preparation and source-prefix publication.
+- [Initializer source lookup](initializer-source-lookup.md) — original initializer and selected body lookup demands before genuine source-run publication.
+- [Compile-time resource limits](compile-time-resource-limits.md)
 
 ## Language and library specifications
 

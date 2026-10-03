@@ -31,7 +31,7 @@ pub fn run(
             .build_target()
             .map_err(|error| Error::Source(error.to_string()))?,
         workspace: session.root(),
-        limits: jai_vm::Limits::default(),
+        limits: sources.compile_time_limits,
         effect_policy: policy,
     };
     let unit =

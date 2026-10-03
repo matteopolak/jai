@@ -35,6 +35,7 @@ pub use workspace_scheduler::*;
 pub struct CompilationUnit {
     graph: ModuleGraph,
     options: GraphOptions,
+    compile_time_limits: jai_vm::Limits,
 }
 #[derive(Debug)]
 pub enum Error {
@@ -124,6 +125,7 @@ impl CompilationUnit {
                 target,
             )?,
             options,
+            compile_time_limits: jai_vm::Limits::default(),
         })
     }
     pub fn load(path: &Path) -> Result<Self, Error> {
@@ -133,6 +135,7 @@ impl CompilationUnit {
         Ok(Self {
             graph: ModuleGraph::load(path, options.clone())?,
             options,
+            compile_time_limits: jai_vm::Limits::default(),
         })
     }
     pub fn load_with_target(
@@ -148,6 +151,7 @@ impl CompilationUnit {
                 target,
             )?,
             options,
+            compile_time_limits: jai_vm::Limits::default(),
         })
     }
     pub fn id(&self) -> UnitId {
@@ -214,6 +218,7 @@ impl CompilationUnit {
         session: &CompilerSession,
     ) -> jai_sema::ResolveOptions {
         jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
             file_abi: self.graph.target().and_then(|target| {
                 jai_sema::FileAbiBindingContext::allocator_from_graph(
                     &self.graph,
@@ -237,6 +242,7 @@ impl CompilationUnit {
     ) -> Result<jai_sema::Program, Error> {
         let session = CompilerSession::new();
         let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
             file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
                 &self.graph,
                 &self.options.import_dirs,
@@ -259,6 +265,7 @@ impl CompilationUnit {
     ) -> Result<jai_sema::Library, Error> {
         let session = CompilerSession::new();
         let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
             file_abi: jai_sema::FileAbiBindingContext::allocator_from_graph(
                 &self.graph,
                 &self.options.import_dirs,
@@ -280,6 +287,7 @@ impl CompilationUnit {
         layout: jai_types::LayoutPolicy,
     ) -> Result<jai_sema::Program, Error> {
         let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
             layout: Some(layout),
             ..Default::default()
         };
@@ -291,6 +299,7 @@ impl CompilationUnit {
         layout: jai_types::LayoutPolicy,
     ) -> Result<jai_sema::Library, Error> {
         let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
             layout: Some(layout),
             ..Default::default()
         };
@@ -298,10 +307,20 @@ impl CompilationUnit {
             .map_err(|error| self.located(error))
     }
     pub fn resolve(&self) -> Result<jai_sema::Program, Error> {
-        jai_sema::resolve_graph(&self.graph).map_err(|error| self.located(error))
+        let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
+            ..Default::default()
+        };
+        jai_sema::resolve_graph_with_options(&self.graph, &options, &mut jai_vm::NoEffects)
+            .map_err(|error| self.located(error))
     }
     pub fn resolve_library(&self) -> Result<jai_sema::Library, Error> {
-        jai_sema::resolve_library(&self.graph).map_err(|error| self.located(error))
+        let options = jai_sema::ResolveOptions {
+            compile_time_limits: self.compile_time_limits,
+            ..Default::default()
+        };
+        jai_sema::resolve_library_with_options(&self.graph, &options, &mut jai_vm::NoEffects)
+            .map_err(|error| self.located(error))
     }
     fn located(&self, error: LocatedDiagnostic) -> Error {
         let record = self
@@ -348,6 +367,31 @@ mod tests {
             let _ = fs::remove_dir_all(&self.0);
         }
     }
+    #[test]
+    fn configured_compile_time_fuel_reaches_final_resolution() {
+        let fixture = Fixture::new(&[(
+            "main.jai",
+            "measure::()->int{sum:=0;for 0..100 {sum+=it;}return sum;} measured::#run measure();main::()->int{return measured;}",
+        )]);
+        let mut unit = fixture.load().unwrap();
+        unit.compile_time_limits.fuel = 1;
+        let error = unit.resolve().unwrap_err();
+        assert!(error.to_string().contains("Fuel"), "{error}");
+        unit.compile_time_limits.fuel = 20_000_000;
+        let program = unit.resolve().unwrap();
+        let jai_sema::EntryPoint::Int(entry) = program.entry() else {
+            panic!("integer entry");
+        };
+        let mut vm =
+            jai_vm::Vm::new(&program, jai_vm::NoEffects, jai_vm::Limits::default()).unwrap();
+        assert_eq!(
+            vm.execute(entry, vec![]).outcome,
+            jai_vm::Outcome::Complete(vec![jai_vm::Value::Int(
+                jai_types::Integer::checked(jai_types::IntegerType::S64, 5_050).unwrap()
+            )])
+        );
+    }
+
     #[test]
     fn recursive_load_resolves_symbols_and_deduplicates() {
         let f = Fixture::new(&[

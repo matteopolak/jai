@@ -24,6 +24,7 @@ pub(super) struct Constants<'a> {
     nominal_types: HashMap<DeclarationId, TypeId>,
     annotations: HashMap<DeclarationId, TypeId>,
     primitive_annotations: HashMap<DeclarationId, PrimitiveAnnotation>,
+    checked_typed_values: HashMap<DeclarationId, TypeId>,
 }
 impl<'a> Constants<'a> {
     pub(super) fn new(graph: &'a ModuleGraph) -> Self {
@@ -34,6 +35,7 @@ impl<'a> Constants<'a> {
             nominal_types: HashMap::new(),
             annotations: HashMap::new(),
             primitive_annotations: HashMap::new(),
+            checked_typed_values: HashMap::new(),
         }
     }
     pub(super) fn register_nominal_type(&mut self, declaration: DeclarationId, ty: TypeId) {

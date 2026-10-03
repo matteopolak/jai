@@ -1,5 +1,7 @@
 //! Byte-based source locations shared by the compiler stages.
+mod diagnostic_markers;
 mod locations;
+pub use diagnostic_markers::DiagnosticMarker;
 mod warnings;
 pub use locations::{
     DeclarationId, Identities, LocatedDiagnostic, ModuleId, ScopeId, SourceId, SourceMap,
@@ -63,6 +65,8 @@ pub struct Diagnostic {
     pub message: String,
     /// An explicit source origin survives changes to lexical lookup context.
     pub source: Option<SourceId>,
+    /// Semantic controllers may retain an exact escaping diagnostic occurrence.
+    marker: Option<DiagnosticMarker>,
 }
 
 impl Diagnostic {
@@ -71,6 +75,7 @@ impl Diagnostic {
             span,
             message: message.into(),
             source: None,
+            marker: None,
         }
     }
     pub fn at_source(location: SourceSpan, message: impl Into<String>) -> Self {
@@ -78,12 +83,21 @@ impl Diagnostic {
             span: location.span,
             message: message.into(),
             source: Some(location.source),
+            marker: None,
         }
     }
     /// Add an origin only when the diagnostic has not already retained one.
     pub fn with_fallback_source(mut self, source: SourceId) -> Self {
         self.source.get_or_insert(source);
         self
+    }
+    /// Attach a receipt belonging to the operation that produced this error.
+    pub fn with_marker(mut self, marker: DiagnosticMarker) -> Self {
+        self.marker = Some(marker);
+        self
+    }
+    pub fn marker(&self) -> Option<&DiagnosticMarker> {
+        self.marker.as_ref()
     }
     pub fn render(&self, path: &str, source: &str) -> String {
         let at = self.span.start.min(source.len());

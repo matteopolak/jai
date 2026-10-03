@@ -770,7 +770,20 @@ impl<'a> FileScope<'a> {
     }
 
     fn declaration(&self, path: &NamePath, span: Span) -> Result<DeclarationId, Diagnostic> {
-        declaration_id(self.declarations.graph, self.file, path, span)
+        let lookup = self.declarations.graph.lookup(self.file, path);
+        let marker = lookup.as_ref().err().and_then(|error| {
+            self.declarations.source_lookup.record(
+                self.declarations.graph,
+                self.file,
+                path,
+                span,
+                *error,
+            )
+        });
+        declaration_lookup(self.declarations.graph, span, lookup).map_err(|error| match marker {
+            Some(marker) => error.with_marker(marker),
+            None => error,
+        })
     }
     pub(crate) fn value(&self, path: &NamePath, span: Span) -> Result<Binding, Diagnostic> {
         if let Some(value) = self.target_value(path, span)? {
@@ -1182,7 +1195,14 @@ pub(super) fn declaration_id(
     path: &NamePath,
     span: Span,
 ) -> Result<DeclarationId, Diagnostic> {
-    match graph.lookup(file, path) {
+    declaration_lookup(graph, span, graph.lookup(file, path))
+}
+fn declaration_lookup(
+    graph: &ModuleGraph,
+    span: Span,
+    lookup: Result<GraphBinding, LookupError>,
+) -> Result<DeclarationId, Diagnostic> {
+    match lookup {
         Ok(GraphBinding::Declaration(id)) => Ok(id),
         Ok(GraphBinding::Parameter(_)) => Err(Diagnostic::new(
             span,

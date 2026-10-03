@@ -100,6 +100,7 @@ fn readiness_publishes_only_original_headers_after_they_are_checked() {
             source_procedures.len(),
         )),
         source_procedures,
+        source_lookup: Default::default(),
         nominals,
         defaults: HashMap::new(),
     };
@@ -202,6 +203,7 @@ fn stdio_readiness_waits_for_its_actual_reserved_file_definition() {
             source_procedures.len(),
         )),
         source_procedures,
+        source_lookup: Default::default(),
         nominals,
         defaults: HashMap::new(),
     };

@@ -241,11 +241,24 @@ impl ValueContract {
     }
 }
 
-fn same_parameter_default(
+pub(crate) fn same_parameter_default(
     left: Option<&ParameterDefault>,
     right: Option<&ParameterDefault>,
 ) -> bool {
+    if let Some(ParameterDefault::Source(source)) = left {
+        if let Some(ready) = source.ready() {
+            return same_parameter_default(Some(ready), right);
+        }
+    }
+    if let Some(ParameterDefault::Source(source)) = right {
+        if let Some(ready) = source.ready() {
+            return same_parameter_default(left, Some(ready));
+        }
+    }
     match (left, right) {
+        (Some(ParameterDefault::Source(left)), Some(ParameterDefault::Source(right))) => {
+            left.key == right.key
+        }
         (None, None)
         | (Some(ParameterDefault::CallerLocation), Some(ParameterDefault::CallerLocation))
         | (Some(ParameterDefault::Discarded), Some(ParameterDefault::Discarded)) => true,

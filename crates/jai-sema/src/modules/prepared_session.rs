@@ -308,6 +308,7 @@ pub(super) fn prepare<'graph>(
             source_procedures.len(),
         )),
         source_procedures,
+        source_lookup: Default::default(),
         nominals,
         defaults: HashMap::new(),
     };
@@ -356,6 +357,37 @@ impl<'graph> PreparedPhase<'graph> {
             return Ok(None);
         };
         for (&id, binding) in &self.declarations.values {
+            if let Binding::TypedConstant(constant) = binding
+                && let Some(value) = self.meta.constant(*constant)
+            {
+                if initial.aliases.constants_mut().annotation(id).is_some() {
+                    initial
+                        .aliases
+                        .constants_mut()
+                        .register_checked_typed_value(id, value.ty)?;
+                }
+                self.declarations.nominals.value_types.insert(id, value.ty);
+                self.declarations
+                    .nominals
+                    .value_constants
+                    .insert(id, value.clone());
+            }
+            if let Binding::Enum(value) = binding {
+                if initial.aliases.constants_mut().annotation(id).is_some() {
+                    initial
+                        .aliases
+                        .constants_mut()
+                        .register_checked_typed_value(id, value.ty)?;
+                }
+                self.declarations.nominals.value_types.insert(id, value.ty);
+                self.declarations.nominals.value_constants.insert(
+                    id,
+                    jai_ir::ConstantValue {
+                        ty: value.ty,
+                        kind: jai_ir::ConstantKind::Enum(value.value),
+                    },
+                );
+            }
             let value = match binding {
                 Binding::Constant(value) => Some(value.clone()),
                 Binding::TypedConstant(constant) => {
@@ -887,7 +919,7 @@ impl<'graph> PreparedPhase<'graph> {
                             self.source_prefix_requested && self.prepare_source_prefix_context()?;
                         if matches!(
                             pending.cause(),
-                            aggregates::parameterized::PendingType::Placeholder(_)
+                            Some(aggregates::parameterized::PendingType::Placeholder(_))
                         ) && !prefix_ready
                             && discovery.as_ref().is_none_or(|jobs| !jobs.has_insertions())
                         {
@@ -905,7 +937,7 @@ impl<'graph> PreparedPhase<'graph> {
                         match progress {
                             compile_time::BindingProgress::TypesReady => continue,
                             compile_time::BindingProgress::Pending(mut wait) => {
-                                wait.source = Some(pending);
+                                wait.source.get_or_insert(pending);
                                 return Ok(compile_time::BindingProgress::Pending(wait));
                             }
                             progress => return Ok(progress),

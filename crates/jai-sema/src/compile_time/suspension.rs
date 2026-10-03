@@ -96,6 +96,18 @@ pub(super) fn evaluate(
     loop {
         match progress.outcome {
             jai_vm::ResumableOutcome::Suspended(dependencies) => {
+                if !request.key.flags.stallable
+                    && dependencies.iter().any(|dependency| {
+                        matches!(dependency, Dependency::Effect(_) | Dependency::Host(_))
+                    })
+                {
+                    let canceled = vm.cancel_resumable();
+                    context.cache.state.replace(Some(vm.into_state()));
+                    return match canceled {
+                        Ok(()) => Publication::Pending(dependencies),
+                        Err(error) => Publication::Failed(error),
+                    };
+                }
                 match context.effects.service_pending(&dependencies) {
                     Ok(true) => progress = vm.resume_resumable(),
                     Ok(false) => {

@@ -276,7 +276,7 @@ impl Resolver<'_> {
                     Diagnostic::new(span, format!("missing required argument{name}"))
                 })?;
             if let Some(id) = runtime_ids[index] {
-                if let ParameterDefault::RuntimeRead(read) = default {
+                if let Some(ParameterDefault::RuntimeRead(read)) = default.prepared() {
                     omitted_reads.insert(id, read.clone());
                 }
                 arguments.push((

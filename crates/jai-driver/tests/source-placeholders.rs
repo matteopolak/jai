@@ -150,3 +150,81 @@ fn missing_fulfillment_returns_a_demand_error_at_a_stable_source_fixed_point() {
             .is_empty()
     );
 }
+
+#[test]
+fn selected_ordinary_default_precedes_a_real_generated_record_round() {
+    let fixture = Fixture::new(
+        "#placeholder Generated; Alias::#type *Generated; \
+         add_build_string::(data:string,w:s64)#compiler; \
+         produce::(to_standard_error:=false) {if to_standard_error return;add_build_string(\"Generated::struct{answer:int=42;}\",-1);} \
+         #run produce(); main::()->int{value:Generated;pointer:Alias=*value;return pointer.answer;}",
+    );
+    let mut scheduler = fixture.scheduler();
+    let mut session = CompilerSession::new();
+    let build = scheduler.resolve(&mut session).unwrap();
+    assert_eq!(execute_main(&build, &session), 42);
+    assert_eq!(build.passes, 2);
+    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 1);
+    assert_eq!(scheduler.replay_cache().len(), 1);
+    let again = scheduler.resolve(&mut session).unwrap();
+    assert_eq!(execute_main(&again, &session), 42);
+    assert_eq!(session.workspace(session.root()).unwrap().inputs().len(), 1);
+}
+
+#[test]
+fn failed_early_default_cannot_publish_its_generated_source_or_replay_receipt() {
+    let fixture = Fixture::new(
+        "#placeholder Generated; Alias::#type *Generated; \
+         add_build_string::(data:string,w:s64)#compiler; \
+         make_zero::()->int #no_context{return 0;} \
+         choose::()->bool {add_build_string(\"Generated::struct{answer:int=42;}\",-1);zero:=make_zero();return 1/zero==0;} \
+         produce::(flag:bool=#run choose()) {} #run produce(); main::()->int{return 42;}",
+    );
+    let mut scheduler = fixture.scheduler();
+    let mut session = CompilerSession::new();
+    let error = scheduler
+        .resolve(&mut session)
+        .err()
+        .expect("the genuine selected default must fail");
+    let jai_driver::SchedulerError::Driver(jai_driver::Error::Located {
+        source,
+        path,
+        diagnostic,
+        ..
+    }) = &error
+    else {
+        panic!("the original selected default arithmetic failure must remain located: {error:?}")
+    };
+    assert_eq!(
+        diagnostic.message,
+        jai_vm::Error::Arithmetic(jai_vm::ArithmeticError::ZeroDivisor).to_string(),
+    );
+    assert_eq!(diagnostic.source, Some(*source));
+    assert_eq!(path, &fs::canonicalize(fixture.0.join("main.jai")).unwrap());
+    let unit = jai_driver::CompilationUnit::load(&fixture.0.join("main.jai")).unwrap();
+    let original = unit
+        .graph()
+        .declarations()
+        .iter()
+        .find(|source| unit.graph().symbols().name(source.name()) == "produce")
+        .unwrap();
+    let jai_syntax::FileDeclarationKind::Procedure(procedure) = &original.syntax().kind else {
+        panic!("the default retains its original source procedure")
+    };
+    let default = match &procedure.parameters[0].binding {
+        jai_syntax::ParameterBinding::Defaulted { expression, .. }
+        | jai_syntax::ParameterBinding::DefaultedType { expression, .. } => expression,
+        jai_syntax::ParameterBinding::Required(_)
+        | jai_syntax::ParameterBinding::RequiredType(_) => panic!("original source default"),
+    };
+    assert_eq!(diagnostic.span, default.span);
+    assert!(
+        session
+            .workspace(session.root())
+            .unwrap()
+            .inputs()
+            .is_empty()
+    );
+    assert!(session.take_outputs().is_empty());
+    assert!(scheduler.replay_cache().is_empty());
+}

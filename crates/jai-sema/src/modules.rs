@@ -41,6 +41,7 @@ pub(crate) mod foreign_libraries;
 mod global_initializers;
 mod polymorphic_defaults;
 mod polymorphic_headers;
+mod procedure_default_jobs;
 mod procedure_headers;
 mod procedure_signatures;
 mod process_abi_bindings;
@@ -52,6 +53,7 @@ mod short_lambdas;
 pub use file_abi_bindings::FileAbiBindingContext;
 pub use process_abi_bindings::ProcessAbiBindingContext;
 mod discovery_session;
+mod source_lookup_demands;
 mod source_preparation;
 pub use source_preparation::SourcePreparationPending;
 mod insertion_jobs;
@@ -81,6 +83,7 @@ struct ScopedDeclarations<'a> {
     values: HashMap<DeclarationId, Binding>,
     signatures: HashMap<DeclarationId, Signature>,
     source_procedures: procedure_headers::identities::SourceProcedures,
+    source_lookup: source_lookup_demands::Requests,
     callable_aliases: HashMap<DeclarationId, Vec<DeclarationId>>,
     generics: std::cell::RefCell<crate::polymorphism::integration::GenericContext>,
     nominals: Nominals<'a>,

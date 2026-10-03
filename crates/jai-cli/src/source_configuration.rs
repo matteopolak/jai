@@ -13,6 +13,7 @@ use std::{
 pub struct SourceConfiguration {
     pub graph: GraphOptions,
     pub bootstrap: BootstrapOptions,
+    pub compile_time_limits: jai_vm::Limits,
 }
 enum SourceSelection {
     Disabled,
@@ -127,6 +128,7 @@ impl SourceConfiguration {
             }
         }
         Ok(Self {
+            compile_time_limits: crate::compile_time_limits::parse(&environment)?,
             graph,
             bootstrap: BootstrapOptions {
                 prelude,

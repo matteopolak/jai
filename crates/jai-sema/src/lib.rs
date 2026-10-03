@@ -17,6 +17,7 @@ mod modules;
 mod resolve_options;
 mod runtime_defaults;
 mod source_locations;
+mod source_parameter_defaults;
 mod storage_alignment;
 mod string_comparison;
 pub use resolve_options::ResolveOptions;
@@ -134,6 +135,7 @@ struct ParameterSignature {
 /// Source-owned defaults that are evaluated when an argument is omitted.
 #[derive(Clone)]
 enum ParameterDefault {
+    Source(std::rc::Rc<source_parameter_defaults::SourceParameterDefault>),
     Discarded,
     Constant(jai_ir::ConstantValue),
     RuntimeRead(runtime_defaults::RuntimeDefaultRead),
