@@ -116,6 +116,7 @@
 - [Reference compatibility and acceptance](specs/jai/README.md)
 - [Staged corpus acceptance harness](specs/jai/README.md)
 - [Source-free corpus stage reports](corpus-stage-reports.md)
+- [Complete corpus breadth baseline](corpus-breadth-baseline.md)
 - [CLI source and artifact boundaries](cli-source-boundaries.md)
 - [Reviewed native corpus examples](native-corpus-examples.md)
 - [Focus and Jaison acceptance](focus-and-jaison-acceptance.md)
