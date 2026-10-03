@@ -47,3 +47,27 @@ fn context_record_default_cycles_remain_source_errors() {
         "{error}"
     );
 }
+
+#[test]
+fn inferred_runtime_context_default_uses_the_completed_original_field() {
+    let program = resolve("#add_context value:int=40; read::(value:=context.value)->int{return value;} main::()->int{different:=context;different.value=42;answer:=0;push_context different{answer=read();}if read()!=40 return 1;return answer;}").unwrap();
+    assert!(
+        matches!(jai_vm::execute(&program, jai_vm::Limits::default()).outcome,
+        jai_vm::Outcome::Complete(values) if matches!(values.as_slice(), [jai_vm::Value::Int(value)] if value.value()==42))
+    );
+}
+
+#[test]
+fn missing_context_default_member_is_rejected_at_its_original_occurrence() {
+    let source = "#add_context value:int=40; read::(value:=context.missing)->int{return value;} main::()->int{return read();}";
+    let error = resolve(source).unwrap_err();
+    assert_eq!(error.location.span.text(source), "context.missing");
+    assert!(
+        !error.message.contains("requires a ready Context schema"),
+        "{error}"
+    );
+    assert!(
+        error.message.contains("field") || error.message.contains("member"),
+        "{error}"
+    );
+}

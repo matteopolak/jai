@@ -129,3 +129,26 @@ fn inactive_bootstrap_branches_do_not_register_context_fields() {
         Outcome::Complete(values) if matches!(values.as_slice(), [Value::Int(value)] if value.value()==7))
     );
 }
+
+#[test]
+fn inferred_default_waits_for_the_selected_bootstrap_context() {
+    let graph = graph(
+        "FIRST_ADD_CONTEXT::#code #add_context #as using base:Context_Base;",
+        "read::(value:=context.value)->int{return value;} main::()->int{context.value=42;return read();}",
+    );
+    let program = resolve_graph(&graph).unwrap();
+    let read = graph
+        .declarations()
+        .iter()
+        .find(|declaration| graph.symbols().name(declaration.name()) == "read")
+        .unwrap();
+    let signature = program.library().procedure(read.id()).unwrap();
+    let context_type = program.context().unwrap().record_type;
+    let base = program.library().types().field(context_type, 0).unwrap().ty;
+    let field = program.library().types().field(base, 0).unwrap().ty;
+    assert_eq!(signature.parameters[0].ty(), field);
+    assert!(
+        matches!(jai_vm::execute(&program, Limits::default()).outcome,
+        Outcome::Complete(values) if matches!(values.as_slice(), [Value::Int(value)] if value.value()==42))
+    );
+}

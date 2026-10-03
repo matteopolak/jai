@@ -3,6 +3,8 @@ use super::*;
 mod dependencies;
 pub(super) use dependencies::{dependencies as source_dependencies, ordered as ordered_sources};
 mod compiler_code;
+mod context_readiness;
+pub(super) use context_readiness::{ContextHeaderPrerequisite, HeaderPreparation};
 mod discarded;
 pub(super) mod identities;
 
@@ -31,7 +33,10 @@ pub(super) fn register_selected<'a>(
     declarations: &mut ScopedDeclarations<'a>,
     constants: &mut Constants<'a>,
     meta: &mut crate::reflection::MetaContext,
-) -> Result<(), LocatedDiagnostic> {
+) -> Result<HeaderPreparation, LocatedDiagnostic> {
+    if let Some(request) = context_readiness::prerequisite(graph, source, declarations)? {
+        return Ok(HeaderPreparation::Pending(request));
+    }
     register_sources(
         graph,
         [source],
@@ -40,8 +45,45 @@ pub(super) fn register_selected<'a>(
         constants,
         meta,
         HeaderPhase::TypesOnly,
-    )
+    )?;
+    Ok(HeaderPreparation::Ready)
 }
+
+/// Retain only genuine Context prerequisites while other source headers advance.
+pub(super) fn register_before_context<'graph>(
+    graph: &'graph ModuleGraph,
+    types: &mut TypeRegistry,
+    declarations: &mut ScopedDeclarations<'graph>,
+    constants: &mut Constants<'graph>,
+    meta: &mut crate::reflection::MetaContext,
+) -> Result<Vec<ContextHeaderPrerequisite>, LocatedDiagnostic> {
+    let mut pending = Vec::new();
+    for source in dependencies::ordered(graph, &declarations.callable_aliases)? {
+        if let Some(request) = context_readiness::prerequisite(graph, source, declarations)? {
+            pending.push(request);
+            continue;
+        }
+        if identities::is_concrete(source)
+            && source_dependencies(graph, &declarations.callable_aliases, source)
+                .iter()
+                .any(|dependency| !declarations.signatures.contains_key(dependency))
+        {
+            continue;
+        }
+        register_sources(
+            graph,
+            [source],
+            types,
+            declarations,
+            constants,
+            meta,
+            HeaderPhase::TypesOnly,
+        )?;
+    }
+    Ok(pending)
+}
+
+pub(super) use context_readiness::complete as complete_context_headers;
 
 fn register_sources<'a>(
     graph: &'a ModuleGraph,
@@ -235,7 +277,10 @@ fn register_sources<'a>(
                     )?,
                     None,
                 ),
-                syntax::ParameterBinding::Defaulted { ty, expression } => (
+                syntax::ParameterBinding::Defaulted {
+                    ty,
+                    expression,
+                } => (
                     match ty {
                         Some(ty) => types.scalar(*ty),
                         None if parameter.evaluation == syntax::ParameterEvaluation::Discard => {
@@ -271,7 +316,10 @@ fn register_sources<'a>(
                     },
                     Some(expression),
                 ),
-                syntax::ParameterBinding::DefaultedType { ty, expression } => {
+                syntax::ParameterBinding::DefaultedType {
+                    ty,
+                    expression,
+                } => {
                     let ty = match ty {
                         Some(ty) => declarations.nominals.resolve_type_with_specializations(
                             graph,
@@ -397,7 +445,9 @@ fn register_sources<'a>(
                             ),
                         ));
                     }
-                    Some(ParameterDefault::CodeNull { ty })
+                    Some(ParameterDefault::CodeNull {
+                        ty,
+                    })
                 }
                 Some(expression)
                     if matches!(expression.kind, syntax::ExpressionKind::CallerLocation) =>
@@ -503,7 +553,10 @@ fn register_sources<'a>(
                 ));
             }
             let (ty, default) = match &result.binding {
-                syntax::ResultBinding::Typed { ty, default } => (
+                syntax::ResultBinding::Typed {
+                    ty,
+                    default,
+                } => (
                     declarations.nominals.resolve_type_with_specializations(
                         graph,
                         aggregates::parameterized::TypeRequest::new(file, ty, result.span),

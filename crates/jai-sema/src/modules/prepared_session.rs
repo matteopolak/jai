@@ -530,8 +530,8 @@ impl<'graph> PreparedPhase<'graph> {
             .initial_types
             .take()
             .expect("completed type prefix retains original constants");
-        let mut constants = match initial.aliases.into_constants() {
-            Ok(constants) => constants,
+        let (mut constants, mut context_headers) = match initial.aliases.into_constants() {
+            Ok(prepared) => prepared,
             Err(_) => unreachable!("finish only after original aliases complete"),
         };
         let graph = self.graph;
@@ -671,14 +671,13 @@ impl<'graph> PreparedPhase<'graph> {
         // Pending module headers have not published their type variables yet.
         // Resolve their retained requests before requiring procedure annotations.
         if !matches!(discovery, Some(PreparedDiscovery::Parameters(_))) {
-            procedure_headers::register(
+            context_headers.extend(procedure_headers::register_before_context(
                 graph,
-                &mut types,
-                &mut declarations,
+                types,
+                declarations,
                 &mut constants,
-                &mut meta,
-                procedure_headers::HeaderPhase::TypesOnly,
-            )?;
+                meta,
+            )?);
             record_method_headers::bind(
                 &declarations,
                 &mut types,
@@ -731,6 +730,16 @@ impl<'graph> PreparedPhase<'graph> {
             // schema. Keep its canonical TypeId and checked definition intact.
             debug_assert!(context_registration.fields.is_empty());
             debug_assert!(graph.context_fields().is_empty());
+        }
+        if !matches!(discovery, Some(PreparedDiscovery::Parameters(_))) {
+            procedure_headers::complete_context_headers(
+                graph,
+                &context_headers,
+                types,
+                declarations,
+                &mut constants,
+                meta,
+            )?;
         }
         // Header prerequisites use the same checked constant worklist as full
         // binding. Keep unresolved typed values available to its dependency graph.
