@@ -112,6 +112,11 @@ impl Resolver<'_> {
         span: Span,
     ) -> Result<Option<ValueContract>, Diagnostic> {
         let contract = match &source.kind {
+            syntax::ExpressionKind::BakeArguments(source) => {
+                let metadata =
+                    self.preview_baked_procedure(&source.callee, &source.arguments, span)?;
+                Some(Self::preview_lambda_contract(metadata))
+            }
             syntax::ExpressionKind::AnonymousProcedure(procedure) => {
                 let header = self.preview_anonymous_procedure_argument(procedure)?;
                 if header.ty != expected {
@@ -272,6 +277,11 @@ impl Resolver<'_> {
             ));
         }
         let contract = match &source.kind {
+            syntax::ExpressionKind::BakeArguments(value) => {
+                let metadata =
+                    self.preview_baked_procedure(&value.callee, &value.arguments, source.span)?;
+                Some(Self::preview_lambda_contract(metadata))
+            }
             syntax::ExpressionKind::AnonymousProcedure(procedure) => {
                 let header = self.preview_anonymous_procedure_argument(procedure)?;
                 Some(self.preview_source_header_contract(
@@ -378,6 +388,9 @@ impl Resolver<'_> {
         path: &syntax::NamePath,
         span: Span,
     ) -> Result<Option<ValueContract>, Diagnostic> {
+        if let Some(contract) = self.checked_baked_constant_binding_contract(path, span)? {
+            return Ok(contract);
+        }
         if let Some(contract) = self.checked_baked_callback_binding_contract(path, span)? {
             return Ok(Some(contract));
         }

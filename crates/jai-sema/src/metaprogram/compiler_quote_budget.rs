@@ -314,6 +314,10 @@ impl<'a> Budget<'a> {
                     }
                 }
                 E::AnonymousProcedure(source) => self.push(Node::SourceProcedure(source), d)?,
+                E::BakeArguments(value) => {
+                    self.push(Node::Expression(&value.callee), d)?;
+                    self.arguments(&value.arguments, d)?;
+                }
                 E::Code(body) => self.push(Node::Code(body), d)?,
                 E::Insert(insert) => self.push(Node::Insert(insert), d)?,
                 E::QualifiedName(path) => self.path(path)?,
@@ -428,6 +432,9 @@ impl<'a> Budget<'a> {
                     self.charge(value.results.len())?;
                     for parameter in value.parameters.iter().chain(&value.results) {
                         self.push(Node::Type(&parameter.ty), d)?;
+                        if let Some(default) = &parameter.default {
+                            self.push(Node::Expression(default), d)?;
+                        }
                     }
                 }
                 T::Application(value) => {
@@ -569,8 +576,17 @@ impl<'a> Budget<'a> {
             }
             Node::Field(value) => {
                 self.charge(value.attributes.len())?;
-                for syntax::FieldAttribute::Alignment(expr) in &value.attributes {
-                    self.push(Node::Expression(expr), d)?;
+                for attribute in &value.attributes {
+                    match attribute {
+                        syntax::FieldAttribute::Alignment(expr) => {
+                            self.push(Node::Expression(expr), d)?
+                        }
+                        syntax::FieldAttribute::Placement(
+                            syntax::FieldPlacementSyntax::Overlay {
+                                target, ..
+                            },
+                        ) => self.push(Node::Place(target), d)?,
+                    }
                 }
                 self.notes(&value.notes, d)?;
                 match &value.binding {
@@ -594,6 +610,9 @@ impl<'a> Budget<'a> {
                 }
             }
             Node::Member(value) => match value {
+                syntax::RecordMember::Placement(placement) => {
+                    self.push(Node::Place(&placement.target), d)?
+                }
                 syntax::RecordMember::AnonymousRecord(value) => {
                     self.push(Node::RecordType(value), d)?
                 }
@@ -1217,5 +1236,44 @@ mod tests {
         }));
         let diagnostic = admit_compiler_quote(&quote, Span::new(4, 8)).unwrap_err();
         assert!(diagnostic.message.contains("payload byte"));
+    }
+}
+
+#[cfg(test)]
+mod baked_arguments_budget_tests {
+    use super::*;
+
+    #[test]
+    fn baked_callee_and_bound_arguments_are_charged_before_quotation_retention() {
+        let text = "PARTIAL::#bake_arguments worker(value=40);";
+        let mut sources = jai_source::SourceMap::default();
+        let id = sources.insert("baked-budget.jai".into(), text.into());
+        let parsed = syntax::parse_file(
+            sources.get(id).unwrap(),
+            &mut jai_source::Symbols::default(),
+        )
+        .unwrap();
+        let syntax::FileItem::Declaration(declaration) = &parsed.items()[0] else {
+            panic!()
+        };
+        let syntax::FileDeclarationKind::Constant(constant) = &declaration.kind else {
+            panic!()
+        };
+        for callee in [false, true] {
+            let mut initializer = constant.initializer.clone();
+            let syntax::ExpressionKind::BakeArguments(value) = &mut initializer.kind else {
+                panic!()
+            };
+            let target = if callee {
+                value.callee.as_mut()
+            } else {
+                &mut value.arguments[0].value
+            };
+            target.kind = syntax::ExpressionKind::String(vec![0; MAX_BYTES + 1]);
+            let quote = syntax::CodeBody::Expression(Box::new(initializer));
+            let error =
+                admit_compiler_quote(&quote, jai_source::Span::new(0, text.len())).unwrap_err();
+            assert!(error.message.contains("payload byte"));
+        }
     }
 }

@@ -67,3 +67,42 @@ fn source_metadata_nesting_has_a_typed_boundary() {
         Err(SourceMetadataError::ExcessiveNesting)
     );
 }
+
+#[test]
+fn baked_source_census_includes_callee_and_spare_argument_capacity() {
+    let mut sources = jai_source::SourceMap::default();
+    let id = sources.insert(
+        "baked-metadata.jai".into(),
+        "value :: #bake_arguments target(data = \"retained\");".into(),
+    );
+    let file = parse_file(sources.get(id).unwrap(), &mut Symbols::default()).unwrap();
+    let mut item = file.items()[0].clone();
+    let measure = |item: &FileItem| {
+        let mut bytes = 0;
+        item.visit_retained_metadata(&mut |_, amount| {
+            bytes += amount;
+            Ok::<_, ()>(())
+        })
+        .unwrap();
+        bytes
+    };
+    let before = measure(&item);
+    let FileItem::Declaration(declaration) = &mut item else {
+        panic!("actual constant declaration")
+    };
+    let FileDeclarationKind::Constant(constant) = &mut declaration.kind else {
+        panic!("actual source constant")
+    };
+    let ExpressionKind::BakeArguments(baked) = &mut constant.initializer.kind else {
+        panic!("actual bake expression")
+    };
+    baked.arguments.reserve(80);
+    assert!(
+        measure(&item) > before,
+        "borrowed bake census must retain spare argument backing"
+    );
+    assert!(matches!(
+        item.visit_retained_metadata(&mut |_, _| Err::<(), _>("denied")),
+        Err(SourceMetadataError::Admission("denied"))
+    ));
+}

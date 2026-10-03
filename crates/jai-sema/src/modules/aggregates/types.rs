@@ -73,20 +73,21 @@ impl<'a> Nominals<'a> {
             source,
             substitution,
             parameters,
+            defaults,
             ty,
             span,
         } = publication;
-        if !source
-            .parameters
-            .iter()
-            .any(|parameter| parameter.evaluation == syntax::ParameterEvaluation::Discard)
-        {
+        if !source.parameters.iter().any(|parameter| {
+            parameter.evaluation == syntax::ParameterEvaluation::Discard
+                || parameter.default.is_some()
+        }) {
             return Ok(());
         }
         use crate::procedure_values::source_annotations::{
             CheckedSourceProcedureType, ProcedureAnnotationKey, ProcedureAnnotationOrigin,
         };
-        let proof = CheckedSourceProcedureType::checked(ty, source, parameters, types, span)?;
+        let proof =
+            CheckedSourceProcedureType::checked(ty, source, parameters, defaults, types, span)?;
         let key = ProcedureAnnotationKey::new(
             ProcedureAnnotationOrigin::Graph(file),
             source,
@@ -688,12 +689,37 @@ impl<'a> Nominals<'a> {
                     .map_err(|error| {
                         located(graph, file, Diagnostic::new(span, error.to_string()))
                     })?;
+                let defaults = procedure
+                    .parameters
+                    .iter()
+                    .filter(|parameter| {
+                        !(parameter.variadic && procedure.convention == CallingConvention::C)
+                    })
+                    .zip(&source_parameters)
+                    .map(|(parameter, expected)| {
+                        parameter
+                            .default
+                            .as_ref()
+                            .map(|expression| {
+                                if parameter.evaluation == syntax::ParameterEvaluation::Discard {
+                                    return Ok(crate::ParameterDefault::Discarded);
+                                }
+                                super::defaults::Defaults::with_evaluator(
+                                    graph, types, self, evaluate,
+                                )
+                                .expression(file, expression, *expected)
+                                .map(crate::ParameterDefault::Constant)
+                            })
+                            .transpose()
+                    })
+                    .collect::<Result<Vec<_>, LocatedDiagnostic>>()?;
                 self.remember_procedure_annotation(
                     crate::procedure_values::source_annotations::AnnotationPublication {
                         file,
                         source: procedure,
                         substitution: None,
                         parameters: source_parameters,
+                        defaults,
                         ty,
                         span,
                     },
@@ -934,7 +960,21 @@ impl<'a> Nominals<'a> {
             }
             let layout = super::layout::record_layout(graph, file, record, evaluate)?;
             types
-                .define_record_with_layout(ty, field_types, layout)
+                .define_record_with_placements(
+                    ty,
+                    field_types,
+                    layout,
+                    crate::record_placements::source_placement_ordinals(&record.members)
+                        .map_err(|error| located(graph, file, error))?,
+                )
+                .map_err(|error| {
+                    located(graph, file, Diagnostic::new(record.span, error.to_string()))
+                })?;
+            types
+                .add_record_reflection_flags(
+                    ty,
+                    crate::record_placements::source_reflection_policy(&record.attributes),
+                )
                 .map_err(|error| {
                     located(graph, file, Diagnostic::new(record.span, error.to_string()))
                 })?;

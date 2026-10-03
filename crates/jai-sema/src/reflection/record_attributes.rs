@@ -8,14 +8,14 @@ pub(crate) fn apply_source_record_attributes(
     record: TypeId,
     attributes: &[jai_syntax::RecordAttribute],
 ) -> Result<(), TypeError> {
-    if attributes
-        .iter()
-        .any(|attribute| matches!(attribute, jai_syntax::RecordAttribute::TypeInfoNone))
-    {
-        types.add_record_reflection_flags(
-            record,
-            RecordReflectionPolicy::from_flags([RecordReflectionFlag::NoTypeInfo]),
-        )?;
-    }
+    let policy =
+        RecordReflectionPolicy::from_flags(attributes.iter().filter_map(
+            |attribute| match attribute {
+                jai_syntax::RecordAttribute::TypeInfoNone => Some(RecordReflectionFlag::NoTypeInfo),
+                jai_syntax::RecordAttribute::Reflection(setting) => Some(setting.flag),
+                _ => None,
+            },
+        ));
+    types.add_record_reflection_flags(record, policy)?;
     Ok(())
 }

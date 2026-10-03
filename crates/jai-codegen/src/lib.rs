@@ -1110,14 +1110,28 @@ impl<'ctx> Generator<'ctx, '_, '_> {
             inline_hints::validate(self.library, *procedure, hint)?;
         }
         let definition = self.types.procedure_definition(signature)?;
-        crate::cpp_methods::validate_triple(
-            self.types,
-            definition,
-            self.target.c_platform()?,
-            &self.target.triple.as_str().to_string_lossy(),
-        )?;
-        let convention = definition.convention;
-        let variadic = matches!(definition.variadic, jai_types::Variadic::C { .. });
+        // The checked source convention chooses the ABI. A target with no
+        // foreign classifier can still lower its internal Jai callbacks.
+        let foreign_signature = if definition.convention.uses_c_abi() {
+            let platform = self.target.c_platform()?;
+            crate::cpp_methods::validate_triple(
+                self.types,
+                definition,
+                platform,
+                &self.target.triple.as_str().to_string_lossy(),
+            )?;
+            Some(abi::Signature::classify(
+                self.context,
+                self.types,
+                self.lowerer,
+                platform,
+                &self.target.data,
+                signature,
+                matches!(definition.variadic, jai_types::Variadic::C { .. }),
+            )?)
+        } else {
+            None
+        };
         let target = if let ValueExpr::ProcedureValue {
             procedure, ..
         } = callee
@@ -1127,16 +1141,7 @@ impl<'ctx> Generator<'ctx, '_, '_> {
             foreign::Callee::Indirect(self.value(callee)?.into_pointer_value())
         };
         let arguments = self.arguments(arguments)?;
-        let result = if convention.uses_c_abi() {
-            let signature = abi::Signature::classify(
-                self.context,
-                self.types,
-                self.lowerer,
-                self.target.c_platform()?,
-                &self.target.data,
-                signature,
-                variadic,
-            )?;
+        let result = if let Some(signature) = foreign_signature {
             foreign::call(
                 &self.builder,
                 self.types,

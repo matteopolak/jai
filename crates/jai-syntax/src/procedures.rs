@@ -160,6 +160,7 @@ pub struct ProcedureTypeParameter {
     pub variadic: bool,
     pub name: Option<Symbol>,
     pub ty: TypeSyntax,
+    pub default: Option<Expression>,
     pub using: bool,
     pub span: Span,
 }
@@ -804,6 +805,14 @@ impl Parser<'_> {
         }
         let variadic = self.take(Punct::Range);
         let ty = self.parameter_type_syntax()?;
+        let default = if !result && self.take(Punct::Assign) {
+            if variadic {
+                return Err(self.error("variadic callback parameters cannot have defaults"));
+            }
+            Some(self.expression(0)?)
+        } else {
+            None
+        };
         let usage = if self.token().kind == Kind::Directive(Directive::Must) {
             if !result {
                 return Err(self.error("#must applies only to procedure results"));
@@ -822,6 +831,7 @@ impl Parser<'_> {
             variadic,
             name,
             ty,
+            default,
             using,
             span: Span::new(start, self.tokens[self.at - 1].span.end),
         })

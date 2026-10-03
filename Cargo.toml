@@ -20,6 +20,7 @@ members = [
     "crates/jai-bench",
     "crates/jai-runtime",
     "crates/jai-wasm",
+    "crates/jai-language-server",
 ]
 
 [workspace.package]
@@ -28,6 +29,7 @@ edition = "2024"
 rust-version = "1.95"
 
 [workspace.dependencies]
+jai-language-server = { path = "crates/jai-language-server" }
 jai-modules = { path = "crates/jai-modules" }
 jai-driver = { path = "crates/jai-driver" }
 jai-source = { path = "crates/jai-source" }

@@ -3,7 +3,7 @@ use jai_modules::SourceProvider;
 use std::{
     collections::HashMap,
     io,
-    path::{Component, Path, PathBuf},
+    path::{Path, PathBuf},
 };
 
 const ROOT: &str = "/jai-script";
@@ -31,7 +31,11 @@ impl SourceBundle {
 
     /// Relative names identify explicitly supplied source files, including imports.
     pub fn insert(&mut self, name: impl AsRef<Path>, bytes: Vec<u8>) -> io::Result<PathBuf> {
-        if name.as_ref().is_absolute() {
+        if name
+            .as_ref()
+            .to_str()
+            .is_some_and(|name| name.starts_with('/'))
+        {
             return Err(invalid("source bundle names must be relative"));
         }
         let path = canonical(name.as_ref())?;
@@ -57,28 +61,8 @@ fn invalid(message: &'static str) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidInput, message)
 }
 fn canonical(path: &Path) -> io::Result<PathBuf> {
-    let root = Path::new(ROOT);
-    let path = if path.is_absolute() {
-        path.strip_prefix(root)
-            .map_err(|_| invalid("source path is outside the bundle"))?
-    } else {
-        path
-    };
-    let mut relative = PathBuf::new();
-    for component in path.components() {
-        match component {
-            Component::Normal(value) if !value.as_encoded_bytes().contains(&0) => {
-                relative.push(value)
-            }
-            Component::CurDir => {}
-            Component::ParentDir if relative.pop() => {}
-            _ => return Err(invalid("source path escapes the bundle")),
-        }
-    }
-    if relative.as_os_str().is_empty() {
-        return Err(invalid("source path is empty"));
-    }
-    Ok(root.join(relative))
+    // Bundle identities are virtual POSIX names even on wasm's unknown OS.
+    jai_source::normalize_virtual_path(ROOT, path)
 }
 impl SourceProvider for SourceBundle {
     fn canonicalize(&self, path: &Path) -> io::Result<PathBuf> {

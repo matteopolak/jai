@@ -2,7 +2,7 @@
 
 ## What it is
 
-`jai-codegen` declares checked foreign procedure prototypes and lowers C definitions, direct calls, and indirect calls using explicit Apple ARM64, Linux/Android ARM64 AAPCS64, macOS/Linux x86-64 System V, Windows x64/ARM64 and wasm32/wasm64 canonical C ABI classifiers. The internal Jai aggregate calling convention remains a separate path.
+`jai-codegen` declares checked foreign procedure prototypes and lowers C definitions, direct calls, and indirect calls using explicit Apple ARM64, Linux/Android ARM64 AAPCS64, macOS/Linux x86-64 System V, Windows x64/ARM64 and wasm32/wasm64 canonical C ABI classifiers. The internal Jai aggregate calling convention remains a separate path. A supported LLVM target can emit internal Jai calls even when that target has no supported foreign C classifier.
 
 ## How it works
 
@@ -15,6 +15,8 @@ Windows x64 directly coerces 1/2/4/8-byte aggregate storage to integers and pass
 C definitions reconstruct incoming parameters into ordinary source locals and marshal captured returns after deferred cleanup. Self-written C fixtures call generated aggregate callbacks, proving the adapters in both directions. The universal `Any` descriptor uses the shared checked record-storage accessor and two actual pointer fields. A self-written C fixture receives it by value, checks its descriptor pointer, mutates its pointed-to integer, and returns the descriptor through the classified result ABI.
 
 C variadic calls promote `f32` to `f64` and narrow integer/Boolean arguments to `s32`. Variadic aggregate arguments currently produce an explicit unsupported diagnostic. Unknown targets, context-bearing C procedures, and multiple foreign language results also fail explicitly. Custom records use their checked field offsets and alignment: System V sends aggregates containing unaligned fields through memory, while Apple classifies homogeneous float aggregates before integer or indirect carriers. System V `byval` argument storage has at least eight-byte alignment; hidden result storage retains the record alignment.
+
+Direct and indirect call lowering select their path from the checked `CallingConvention`. An indirect C call first prepares a typed `abi::Signature`, including its target and C++ result-policy validation; an indirect Jai call uses `TypeLowerer::function` and `internal_call` without requesting a foreign platform. LLVM's [calling-convention rules](https://llvm.org/docs/LangRef.html#calling-conventions) still require the lowered caller and callee to agree. A target triple supplies layout and machine lowering; it does not change a checked Jai procedure into a C procedure.
 
 LLVM declarations include exact foreign symbols. Resolved typed library declaration metadata remains attached to prototypes and the checked library dependency table for the linker driver; LLVM lowering does not search for or load libraries. See [foreign library declarations](foreign-libraries.md). Runtime reachability omits compiler-only prototypes and helpers used solely during `#run`; runtime references to compiler requests fail with a typed call chain. See [native reachability](native-reachability.md).
 
@@ -36,7 +38,7 @@ LLVM 22.1 must be installed. On the development host:
 LLVM_SYS_221_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= CARGO_TARGET_DIR=target cargo test -p jai-codegen --test foreign_abi --locked -j1
 ```
 
-The native target triple chooses the classifier. No fallback applies to an unsupported C target ABI. Native fixtures validate Clang 22 from `JAI_RS_CLANG`, `LLVM_SYS_221_PREFIX/bin/clang`, or `PATH`.
+The native target triple chooses the classifier. No fallback applies to an unsupported C target ABI. For example, i686 Linux has LLVM target/layout support for internal Jai callbacks but retains an explicit unsupported C ABI diagnostic. `tests/internal_call_targets.rs` checks scalar, aggregate and multiple-result callback object emission plus genuine foreign-classifier and Microsoft-environment rejection; the cross-target CLI debug fixture keeps its original assertions. Native fixtures validate Clang 22 from `JAI_RS_CLANG`, `LLVM_SYS_221_PREFIX/bin/clang`, or `PATH`.
 
 ## Dependencies
 

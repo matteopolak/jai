@@ -25,6 +25,7 @@ pub(crate) struct AnnotationPublication<'a> {
     pub(crate) source: &'a syntax::ProcedureTypeSyntax,
     pub(crate) substitution: Option<&'a Substitution>,
     pub(crate) parameters: Vec<TypeId>,
+    pub(crate) defaults: Vec<Option<ParameterDefault>>,
     pub(crate) ty: TypeId,
     pub(crate) span: Span,
 }
@@ -54,6 +55,7 @@ impl ProcedureAnnotationKey {
 pub(crate) struct CheckedSourceProcedureType {
     ty: TypeId,
     parameters: Box<[TypeId]>,
+    defaults: Box<[Option<ParameterDefault>]>,
     source_variadic: crate::overloads::CandidateVariadic,
 }
 impl CheckedSourceProcedureType {
@@ -61,6 +63,7 @@ impl CheckedSourceProcedureType {
         ty: TypeId,
         source: &syntax::ProcedureTypeSyntax,
         parameters: Vec<TypeId>,
+        defaults: Vec<Option<ParameterDefault>>,
         types: &TypeRegistry,
         span: Span,
     ) -> Result<Self, Diagnostic> {
@@ -72,7 +75,7 @@ impl CheckedSourceProcedureType {
             .iter()
             .filter(|parameter| !(parameter.variadic && source.convention == CallingConvention::C))
             .collect::<Vec<_>>();
-        if source_parameters.len() != parameters.len() {
+        if source_parameters.len() != parameters.len() || defaults.len() != parameters.len() {
             return Err(Diagnostic::new(
                 span,
                 "checked callback source formal type count is inconsistent",
@@ -156,6 +159,7 @@ impl CheckedSourceProcedureType {
         Ok(Self {
             ty,
             parameters: parameters.into_boxed_slice(),
+            defaults: defaults.into_boxed_slice(),
             source_variadic,
         })
     }
@@ -164,6 +168,9 @@ impl CheckedSourceProcedureType {
     }
     pub(crate) fn parameters(&self) -> &[TypeId] {
         &self.parameters
+    }
+    pub(crate) fn defaults(&self) -> &[Option<ParameterDefault>] {
+        &self.defaults
     }
 }
 
@@ -209,14 +216,35 @@ impl Resolver<'_> {
         ty: TypeId,
         span: Span,
     ) -> Result<(), Diagnostic> {
-        if !source
-            .parameters
-            .iter()
-            .any(|parameter| parameter.evaluation == syntax::ParameterEvaluation::Discard)
-        {
+        if !source.parameters.iter().any(|parameter| {
+            parameter.evaluation == syntax::ParameterEvaluation::Discard
+                || parameter.default.is_some()
+        }) {
             return Ok(());
         }
-        let proof = CheckedSourceProcedureType::checked(ty, source, parameters, self.types, span)?;
+        let defaults = source
+            .parameters
+            .iter()
+            .filter(|parameter| !(parameter.variadic && source.convention == CallingConvention::C))
+            .zip(&parameters)
+            .map(|(parameter, ty)| {
+                parameter
+                    .default
+                    .as_ref()
+                    .map(|expression| {
+                        if parameter.evaluation == syntax::ParameterEvaluation::Discard {
+                            self.validate_discarded_expression(expression)?;
+                            Ok(ParameterDefault::Discarded)
+                        } else {
+                            self.preview_source_parameter_default(expression, *ty)
+                        }
+                    })
+                    .transpose()
+            })
+            .collect::<Result<Vec<_>, Diagnostic>>()?;
+        let proof = CheckedSourceProcedureType::checked(
+            ty, source, parameters, defaults, self.types, span,
+        )?;
         let key = ProcedureAnnotationKey::new(
             ProcedureAnnotationOrigin::Local {
                 source: self

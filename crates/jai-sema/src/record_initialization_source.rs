@@ -125,7 +125,8 @@ pub(crate) fn selected_journal(
                 ));
             }
             // These namespace declarations/assertions do not create physical writes.
-            RecordMember::Assert {
+            RecordMember::Placement(_)
+            | RecordMember::Assert {
                 ..
             }
             | RecordMember::Constant(_)

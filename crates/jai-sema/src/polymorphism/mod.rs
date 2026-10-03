@@ -84,7 +84,7 @@ impl BakedValue {
     }
 }
 
-fn normalize_constant(
+pub(crate) fn normalize_constant(
     value: ConstantValue,
     types: &dyn TypeView,
 ) -> Result<ConstantValue, TypeError> {

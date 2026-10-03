@@ -41,7 +41,8 @@ main :: () -> int {
 | Independent standard library | Authored modules included; full compilation and behavior testing pending |
 | Reference examples | Source checks in progress; complete coverage pending |
 | Focus, Jails, jaison, and other recent projects | Source checks only; full builds pending |
-| Windows, mobile, WebAssembly | C ABI and object tests; runtime compatibility unverified |
+| Browser editor | Real Wasm runs, file tree, source editor and shared source LSP tested; host services and full standard library pending |
+| Windows and mobile | C ABI and object tests; runtime compatibility unverified |
 
 The compatibility corpus contains **702 local reference files** and **1,440 files from seven recent upstream projects**. The latest recorded snapshot tokenizes all **2,603 files**, including our library and prelude, and parses **2,235** completely. It checks **101 pinned support files** with the included Preload. Full standard-library and upstream project builds remain pending. See the [measured coverage baseline](docs/corpus-breadth-baseline.md) for the separate stage results.
 
@@ -88,6 +89,14 @@ cargo run -p jai-cli -- build examples/sum.jai sum
 ./sum
 echo $? # 45
 ```
+
+The source interpreter can run the same authored example without the native backend:
+
+```sh
+cargo run -p jai-runtime --bin jai-script -- run examples/sum.jai --fuel 1000000
+```
+
+To build and serve the standalone browser playground, follow the [browser editor setup](docs/browser-editor.md). Its compiler and language service run locally in WebAssembly; no deployed demo is claimed.
 
 You can inspect tokens with `lex`, check one file's syntax with `parse`, or save its LLVM output with `emit-llvm`:
 

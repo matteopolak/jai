@@ -98,7 +98,7 @@ impl Resolver<'_> {
                 "constant query exceeds source depth",
             ));
         }
-        if matches!(source.kind, E::CompileTime(_)) {
+        if matches!(source.kind, E::CompileTime(_) | E::BakeArguments(_)) {
             return Ok(Constantness::Deferred);
         }
         if let E::Cast(jai_types::CastMode::Force(_), _, value)

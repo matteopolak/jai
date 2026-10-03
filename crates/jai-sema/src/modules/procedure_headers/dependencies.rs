@@ -123,6 +123,11 @@ pub(in crate::modules) fn dependencies(
                 pending.push(value);
                 None
             }
+            E::BakeArguments(value) => {
+                pending.push(&value.callee);
+                pending.extend(value.arguments.iter().map(|argument| &argument.value));
+                None
+            }
             E::IndirectCall {
                 callee,
                 args,

@@ -264,6 +264,7 @@ fn requires_worklist(
             expression.kind,
             E::CompileTime(_)
                 | E::AnonymousProcedure(_)
+                | E::BakeArguments(_)
                 | E::ShortLambda(_)
                 | E::Call(..)
                 | E::QualifiedCall(..)

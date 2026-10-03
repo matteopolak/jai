@@ -83,7 +83,23 @@ pub(super) fn build(
                 }
                 let mut alignment = None;
                 for attribute in &syntax.attributes {
-                    let syntax::FieldAttribute::Alignment(expression) = attribute;
+                    let expression = match attribute {
+                        syntax::FieldAttribute::Alignment(expression) => expression,
+                        syntax::FieldAttribute::Placement(
+                            syntax::FieldPlacementSyntax::Overlay {
+                                span, ..
+                            },
+                        ) => {
+                            return Err(located(
+                                graph,
+                                file,
+                                Diagnostic::new(
+                                    *span,
+                                    "context extensions do not support record field placement",
+                                ),
+                            ));
+                        }
+                    };
                     let value = constants.evaluate_lazy(file, expression)?;
                     let value = match value {
                         ConstantValue::Int(value) => u32::try_from(value.value()).ok(),

@@ -558,7 +558,10 @@ impl Resolver<'_> {
                 kind,
             })
         }
-        let constant = convert(value, self.types, span, 0)?;
+        let constant = match self.closed_baked_constant(&value, span)? {
+            Some(constant) => constant,
+            None => convert(value, self.types, span, 0)?,
+        };
         crate::constant_limits::cells(&constant).ok_or_else(|| {
             Diagnostic::new(span, "constant exceeds compiler constant cell budget")
         })?;

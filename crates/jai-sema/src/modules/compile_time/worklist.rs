@@ -408,6 +408,14 @@ pub(super) fn canonical_constant(
     declarations: &ScopedDeclarations<'_>,
     types: &TypeRegistry,
 ) -> bool {
+    // The ordinary partial producer already validates constant arguments and
+    // emits a real checked wrapper. Bind it in its original declaration scope
+    // so materialization cannot erase the declaration's callback contract.
+    if matches!(&source.syntax().kind, FileDeclarationKind::Constant(constant)
+        if matches!(constant.initializer.kind, syntax::ExpressionKind::BakeArguments(_)))
+    {
+        return true;
+    }
     matches!(&source.syntax().kind, FileDeclarationKind::Constant(constant) if constant.ty.is_some())
         && !declarations
             .nominals

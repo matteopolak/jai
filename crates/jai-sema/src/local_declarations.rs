@@ -8,6 +8,8 @@ use std::collections::HashSet;
 use std::sync::Arc;
 
 mod applications;
+mod baked_constants;
+mod baked_sources;
 mod callback_body_checks;
 mod capture_exports;
 mod compiler_retention;

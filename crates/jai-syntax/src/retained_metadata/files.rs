@@ -11,10 +11,10 @@ impl<A> Visitor<'_, A> {
         A: FnMut(usize, usize) -> std::result::Result<(), E>,
     {
         self.node(depth)?;
-        if let Some(export) = &source.program_export {
-            if let Some(symbol) = &export.symbol {
-                self.text(symbol)?;
-            }
+        if let Some(export) = &source.program_export
+            && let Some(symbol) = &export.symbol
+        {
+            self.text(symbol)?;
         }
         match &source.kind {
             FileDeclarationKind::Placeholder(_) => Ok(()),

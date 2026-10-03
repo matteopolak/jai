@@ -6,6 +6,8 @@ use jai_source::{DeclarationId, LocatedDiagnostic, SourceSpan};
 use jai_types::{FieldId, TypeKind};
 use syntax::{FileDeclarationKind, NamePath};
 pub(crate) mod aggregates;
+mod baked_constants;
+mod baked_sources;
 mod compile_time;
 pub(crate) mod compiler_intrinsics;
 mod constants;

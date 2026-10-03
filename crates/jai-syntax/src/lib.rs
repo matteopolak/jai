@@ -4,7 +4,9 @@ pub use source_procedures::*;
 mod anonymous_procedures;
 mod anonymous_records;
 mod array_literal_targets;
+mod baked_arguments;
 mod builtin_type_tags;
+pub use baked_arguments::BakedArgumentsSyntax;
 mod call_arguments;
 mod caller_exports;
 #[cfg(test)]
@@ -26,8 +28,8 @@ pub use deprecation::Deprecation;
 mod expressions;
 mod external_data;
 pub use external_data::{ExternalDataBinding, ExternalDataSource};
-#[cfg(test)]
 mod field_placement;
+pub use field_placement::FieldPlacementSyntax;
 mod field_prefix;
 mod instruction_bytes;
 mod libraries;
@@ -54,10 +56,10 @@ mod record_conditionals;
 mod record_defaults;
 mod record_members;
 mod record_parameters;
-#[cfg(test)]
 mod record_placement;
-#[cfg(test)]
+pub use record_placement::RecordPlacementSyntax;
 mod record_reflection_syntax;
+pub use record_reflection_syntax::RecordReflectionSettingSyntax;
 mod run_flag_parser;
 mod run_flags;
 mod safety_checks;

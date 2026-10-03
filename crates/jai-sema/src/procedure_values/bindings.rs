@@ -66,6 +66,7 @@ impl CallbackSignature {
         syntax: &syntax::ProcedureTypeSyntax,
         types: &TypeRegistry,
         source_parameters: &[TypeId],
+        defaults: &[Option<ParameterDefault>],
     ) -> Self {
         Self {
             argument_policy: CallbackArgumentPolicy::Established,
@@ -105,9 +106,10 @@ impl CallbackSignature {
                     !(parameter.variadic && syntax.convention == CallingConvention::C)
                 })
                 .zip(source_parameters)
-                .map(|(parameter, ty)| CallbackParameter {
+                .enumerate()
+                .map(|(index, (parameter, ty))| CallbackParameter {
                     name: parameter.name,
-                    default: None,
+                    default: defaults.get(index).cloned().flatten(),
                     ty: *ty,
                     evaluation: parameter.evaluation,
                 })

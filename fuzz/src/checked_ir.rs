@@ -35,6 +35,7 @@ pub fn checked_ir_vm(data: &[u8]) {
             convention: CallingConvention::Jai,
             context: ContextMode::None,
             variadic: Variadic::None,
+            return_abi: jai_types::ForeignReturnAbi::Natural,
         })
         .unwrap();
     let mut expression = IntExpr::load(IntPlace::try_from_place(copy_field, &types).unwrap());

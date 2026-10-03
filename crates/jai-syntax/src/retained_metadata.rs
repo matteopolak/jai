@@ -109,7 +109,11 @@ impl<A> Visitor<'_, A> {
         A: FnMut(usize, usize) -> std::result::Result<(), E>,
     {
         self.node(depth)?;
-        self.ty(&parameter.ty, depth + 1)
+        self.ty(&parameter.ty, depth + 1)?;
+        if let Some(default) = &parameter.default {
+            self.expression(default, depth + 1)?;
+        }
+        Ok(())
     }
 
     fn ty<E>(&mut self, ty: &TypeSyntax, depth: usize) -> Result<E>

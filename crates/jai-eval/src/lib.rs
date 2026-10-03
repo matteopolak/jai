@@ -479,6 +479,12 @@ fn bind(
             ty,
             value,
         } => floats::cast(ty, bind(value, overflow_check, lookup)?, *mode, span)?,
+        ExpressionKind::BakeArguments(_) => {
+            return Err(Diagnostic::new(
+                span,
+                "#bake_arguments requires checked callable source preparation",
+            ));
+        }
         ExpressionKind::Code(_)
         | ExpressionKind::ShortLambda(_)
         | ExpressionKind::AnonymousProcedure(_)

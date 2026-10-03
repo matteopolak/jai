@@ -41,6 +41,12 @@ impl<A> Visitor<'_, A> {
                 self.allocation::<u8, E>(value.bytes.capacity())?;
                 self.allocation::<HereStringModifier, E>(value.modifiers.capacity())
             }
+            ExpressionKind::BakeArguments(source) => {
+                self.boxed(source.as_ref(), depth, |this, source, depth| {
+                    this.boxed(source.callee.as_ref(), depth, Self::expression)?;
+                    this.sequence(&source.arguments, depth, Self::argument)
+                })
+            }
             ExpressionKind::Type(ty) => self.ty(ty, depth + 1),
             ExpressionKind::CompileTime(run) => self.run_body(&run.body, depth + 1),
             ExpressionKind::ShortLambda(source) => {

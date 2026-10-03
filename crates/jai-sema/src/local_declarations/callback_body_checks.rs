@@ -16,6 +16,10 @@ pub(crate) struct LocalBodyCheck {
 }
 
 impl LocalDeclarationRegistry {
+    pub(crate) fn callback_body_revision(&self, procedure: ProcedureId) -> Option<usize> {
+        self.callback_checks.body_revisions.get(&procedure).copied()
+    }
+
     pub(crate) fn callback_readiness_revision(&self) -> usize {
         self.callback_checks.revision
     }

@@ -25,6 +25,7 @@ pub enum ExpressionKind {
     SourceLine,
     ShortLambda(Box<ShortLambda>),
     AnonymousProcedure(Box<SourceProcedureSyntax>),
+    BakeArguments(Box<BakedArgumentsSyntax>),
     Code(CodeBody),
     Insert(Box<InsertDirective>),
     Uninitialized,
@@ -237,6 +238,12 @@ impl Parser<'_> {
             Expression {
                 span,
                 kind: ExpressionKind::Null,
+            }
+        } else if token.kind == Kind::Directive(Directive::BakeArguments) {
+            let value = self.baked_arguments()?;
+            Expression {
+                span: value.span,
+                kind: ExpressionKind::BakeArguments(Box::new(value)),
             }
         } else if token.kind == Kind::Directive(Directive::CompileTime) {
             if !self.allow_qualified {

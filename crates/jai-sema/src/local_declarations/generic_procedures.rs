@@ -4,6 +4,7 @@ use crate::modules::aggregates::parameterized::LexicalTypeArguments;
 use crate::overloads::{Argument, ArgumentInfo, Candidate, Match};
 use crate::polymorphism::{CallablePolicyBinding, ProcedureTemplate, Substitution};
 use std::cell::RefCell;
+mod baked_sources;
 mod contracts;
 mod materialization;
 mod modifiers;
