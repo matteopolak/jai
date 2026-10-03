@@ -373,18 +373,6 @@
       }
     },
     {
-      "path": "stdlib/Input/module.jai",
-      "sha256": "d8ebcda38a6b38b540c1f357b43f29c0bba78dc62e042740bd20a9d2d1435376",
-      "lex": {
-        "exit_code": 0,
-        "output": "1956 tokens (lexical stage only)"
-      },
-      "parse": {
-        "exit_code": 0,
-        "output": "61 items (syntax stage only)"
-      }
-    },
-    {
       "path": "stdlib/Input/windows.jai",
       "sha256": "e2993baf113033f84bfe8d3f6e00b04f4dfd31bdf77477e6ad44f786563374a3",
       "lex": {
@@ -406,6 +394,18 @@
       "parse": {
         "exit_code": 0,
         "output": "13 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Input/module.jai",
+      "sha256": "2e7888e088e450cd3e7b1abd6ad0750cfc77697d0ec0d76ba6047e86238e04b9",
+      "lex": {
+        "exit_code": 0,
+        "output": "2717 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "74 items (syntax stage only)"
       }
     }
   ],
@@ -5311,153 +5311,6 @@
       "status": "authored-body-unverified"
     },
     {
-      "name": "queue_input_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 70,
-      "signature": "queue_input_event :: (event: Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_input_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 73,
-      "signature": "queue_input_event :: (window: Window_Type, event: Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "publish_input_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 77,
-      "signature": "publish_input_event :: (event: Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "publish_input_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 78,
-      "signature": "publish_input_event :: (window: Window_Type, event: Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_mouse_delta",
-      "path": "stdlib/Input/module.jai",
-      "line": 81,
-      "signature": "queue_mouse_delta :: (x: int, y: int, z: int = 0)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_window_resize",
-      "path": "stdlib/Input/module.jai",
-      "line": 84,
-      "signature": "queue_window_resize :: (window: Window_Type, width: s32, height: s32)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_window_move",
-      "path": "stdlib/Input/module.jai",
-      "line": 90,
-      "signature": "queue_window_move :: (window: Window_Type, x: s32, y: s32)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "set_input_focus",
-      "path": "stdlib/Input/module.jai",
-      "line": 96,
-      "signature": "set_input_focus :: (focused: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "set_input_focus",
-      "path": "stdlib/Input/module.jai",
-      "line": 100,
-      "signature": "set_input_focus :: (window: Window_Type, focused: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_window_resizes",
-      "path": "stdlib/Input/module.jai",
-      "line": 105,
-      "signature": "get_window_resizes :: () -> [..] Window_Resize",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_window_moves",
-      "path": "stdlib/Input/module.jai",
-      "line": 108,
-      "signature": "get_window_moves :: () -> [] Window_Move_Record",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "input_per_frame_event_and_flag_update",
-      "path": "stdlib/Input/module.jai",
-      "line": 113,
-      "signature": "input_per_frame_event_and_flag_update :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "update_window_events",
-      "path": "stdlib/Input/module.jai",
-      "line": 125,
-      "signature": "update_window_events :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "set_custom_cursor_handling",
-      "path": "stdlib/Input/module.jai",
-      "line": 135,
-      "signature": "set_custom_cursor_handling :: (is_custom: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "init_input_system",
-      "path": "stdlib/Input/module.jai",
-      "line": 138,
-      "signature": "init_input_system :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_mouse_pointer_position",
-      "path": "stdlib/Input/module.jai",
-      "line": 150,
-      "signature": "get_mouse_pointer_position :: () -> float, float, bool",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_mouse_pointer_position",
-      "path": "stdlib/Input/module.jai",
-      "line": 156,
-      "signature": "get_mouse_pointer_position :: (window: Window_Type, client_area := false) -> float, float",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "publish_pending_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 171,
-      "signature": "publish_pending_event :: (pending: Pending_Input_Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "release_focus_buttons",
-      "path": "stdlib/Input/module.jai",
-      "line": 190,
-      "signature": "release_focus_buttons :: (window: Window_Type, scoped: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_utf8_text",
-      "path": "stdlib/Input/module.jai",
-      "line": 209,
-      "signature": "queue_utf8_text :: (window: Window_Type, bytes: []u8, repeat := false)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "install_native_input_adapter",
-      "path": "stdlib/Input/module.jai",
-      "line": 236,
-      "signature": "install_native_input_adapter :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
       "name": "windows_key_code",
       "path": "stdlib/Input/windows.jai",
       "line": 9,
@@ -5540,6 +5393,223 @@
       "line": 138,
       "signature": "x11_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool",
       "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 71,
+      "signature": "queue_input_event :: (event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 74,
+      "signature": "queue_input_event :: (window: Window_Type, event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 78,
+      "signature": "publish_input_event :: (event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 79,
+      "signature": "publish_input_event :: (window: Window_Type, event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_mouse_delta",
+      "path": "stdlib/Input/module.jai",
+      "line": 82,
+      "signature": "queue_mouse_delta :: (x: int, y: int, z: int = 0)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_window_resize",
+      "path": "stdlib/Input/module.jai",
+      "line": 85,
+      "signature": "queue_window_resize :: (window: Window_Type, width: s32, height: s32)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_window_move",
+      "path": "stdlib/Input/module.jai",
+      "line": 91,
+      "signature": "queue_window_move :: (window: Window_Type, x: s32, y: s32)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_input_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 97,
+      "signature": "set_input_focus :: (focused: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_input_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 105,
+      "signature": "set_input_focus :: (window: Window_Type, focused: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "window_has_input_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 112,
+      "signature": "window_has_input_focus :: (window: Window_Type) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_window_key_state",
+      "path": "stdlib/Input/module.jai",
+      "line": 117,
+      "signature": "get_window_key_state :: (window: Window_Type, key: Key_Code) -> Key_Current_State",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "window_key_is_down",
+      "path": "stdlib/Input/module.jai",
+      "line": 123,
+      "signature": "window_key_is_down :: (window: Window_Type, key: Key_Code) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_window_resizes",
+      "path": "stdlib/Input/module.jai",
+      "line": 127,
+      "signature": "get_window_resizes :: () -> [..] Window_Resize",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_window_moves",
+      "path": "stdlib/Input/module.jai",
+      "line": 130,
+      "signature": "get_window_moves :: () -> [] Window_Move_Record",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "input_per_frame_event_and_flag_update",
+      "path": "stdlib/Input/module.jai",
+      "line": 135,
+      "signature": "input_per_frame_event_and_flag_update :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "update_window_events",
+      "path": "stdlib/Input/module.jai",
+      "line": 149,
+      "signature": "update_window_events :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_custom_cursor_handling",
+      "path": "stdlib/Input/module.jai",
+      "line": 159,
+      "signature": "set_custom_cursor_handling :: (is_custom: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "init_input_system",
+      "path": "stdlib/Input/module.jai",
+      "line": 162,
+      "signature": "init_input_system :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_mouse_pointer_position",
+      "path": "stdlib/Input/module.jai",
+      "line": 178,
+      "signature": "get_mouse_pointer_position :: () -> float, float, bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_mouse_pointer_position",
+      "path": "stdlib/Input/module.jai",
+      "line": 184,
+      "signature": "get_mouse_pointer_position :: (window: Window_Type, client_area := false) -> float, float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "find_input_window",
+      "path": "stdlib/Input/module.jai",
+      "line": 205,
+      "signature": "find_input_window :: (window: Window_Type) -> s64",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "ensure_input_window",
+      "path": "stdlib/Input/module.jai",
+      "line": 209,
+      "signature": "ensure_input_window :: (window: Window_Type) -> s64",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "refresh_application_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 216,
+      "signature": "refresh_application_focus :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "key_has_any_owner_down",
+      "path": "stdlib/Input/module.jai",
+      "line": 220,
+      "signature": "key_has_any_owner_down :: (key: u32) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "update_owner_key_state",
+      "path": "stdlib/Input/module.jai",
+      "line": 225,
+      "signature": "update_owner_key_state :: (state: *Key_Current_State, pressed: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_pending_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 231,
+      "signature": "publish_pending_event :: (pending: Pending_Input_Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queued_window_key_down",
+      "path": "stdlib/Input/module.jai",
+      "line": 252,
+      "signature": "queued_window_key_down :: (window: Window_Type, key: u32) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "key_has_scoped_source",
+      "path": "stdlib/Input/module.jai",
+      "line": 262,
+      "signature": "key_has_scoped_source :: (key: u32) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "release_focus_buttons",
+      "path": "stdlib/Input/module.jai",
+      "line": 267,
+      "signature": "release_focus_buttons :: (window: Window_Type, scoped: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_utf8_text",
+      "path": "stdlib/Input/module.jai",
+      "line": 292,
+      "signature": "queue_utf8_text :: (window: Window_Type, bytes: []u8, repeat := false)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "install_native_input_adapter",
+      "path": "stdlib/Input/module.jai",
+      "line": 319,
+      "signature": "install_native_input_adapter :: ()",
+      "status": "authored-body-unverified"
     }
   ],
   "behavior_implemented_but_not_verified": {
@@ -5581,7 +5651,12 @@
       "coalesced resize/move queues",
       "configurable native event/pointer adapter boundaries",
       "Native Win32/X11/AppKit physical-key/text/pointer pumps and actual-handle routing",
-      "Borrowed scoped/unscoped frame views and actual-origin focus release"
+      "Borrowed scoped/unscoped frame views and actual-origin focus release",
+      "Independent per-window focus and published held-key state",
+      "Aggregate first-press/last-release global flags",
+      "Scoped queued/published releases preserving each origin",
+      "Legacy focus loss releases all scoped/unscoped owners",
+      "Optional default-true native-provider module configuration for pure queue witnesses"
     ],
     "Keymap": [
       "stable section allocation",
@@ -5614,7 +5689,9 @@
     "trusted socket loopback transfer and all selected SDK layout/linkage",
     "Input focus/frame lifetime and adapter pumping",
     "Keymap invalid-load rollback and save/reload",
-    "real Windows XInput hardware sample"
+    "real Windows XInput hardware sample",
+    "tests/stdlib/input-multi-window-focus.jai abstract queue/focus state assertions",
+    "Real native FocusIn/Out interleaving and two-window keyboard behavior"
   ],
   "known_api_or_behavior_gaps": [
     "Current maintained Thread opaque aliases and return shapes supersede conflicting older signatures; older Mutex desired_name/desired_order named arguments and exact legacy return types are not fully preserved.",
@@ -5624,7 +5701,6 @@
     "Deprecated compare_and_swap2 only has a Linux x64 system libatomic boundary; other targets explicitly assert, ABI/behavior unverified.",
     "Keymap text has no escaping for literal comment characters, section brackets or whitespace key tokens.",
     "Normalized Socket bindings are a declaration inventory and not complete current header ABI/symbol verification.",
-    "Public Input key state remains global: independently held same key in several windows is not represented.",
     "AppKit NSTextInputClient marked-text composition and candidate lifecycle pending.",
     "Win32 sent notifications require helper integration; native queue alone does not observe sent WM_SIZE/WM_MOVE.",
     "Native drag/drop, non-Android touch, custom cursor installation and X11 extension events pending.",
@@ -5959,6 +6035,80 @@
       "IOHID module supplies HID/CoreFoundation query APIs used by the provider; older broad IOKit display-driver/callback inventory remains incomplete.",
       "macOS GameController selects first extended profile; public Gamepad still single-controller.",
       "Android pump belongs to separate platform SDK packet and is not included or validated in this packet."
+    ]
+  },
+  "focus_followup": {
+    "status": "independently-authored-per-window-focus-and-held-state-with-source-only-witnesses",
+    "base_packet": "input-gamepad-adapters-stage/packet.json",
+    "compiler": "/Users/matthew/projects/jai/target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs",
+    "compiler_sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d",
+    "source_evidence": [
+      {
+        "path": "stdlib/Input/module.jai",
+        "sha256": "2e7888e088e450cd3e7b1abd6ad0750cfc77697d0ec0d76ba6047e86238e04b9",
+        "lex": {
+          "exit_code": 0,
+          "output": "2717 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "74 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "tests/stdlib/input-multi-window-focus.jai",
+        "sha256": "020cf08179e7bda729963c0e18b5c6048d9d40a45b645e8646269ddb3941a10f",
+        "lex": {
+          "exit_code": 0,
+          "output": "1316 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "6 items (syntax stage only)"
+        }
+      }
+    ],
+    "semantic_checks": [
+      {
+        "path": "stdlib/Input/module.jai",
+        "command": "check-library",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Objective_C/AppKit.jai:835:1: error: unknown name 'NSInteger'"
+      },
+      {
+        "path": "tests/stdlib/input-multi-window-focus.jai",
+        "command": "check",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Basic/String_Builder.jai:2:38: error: this constant expression requires typed compile-time evaluation"
+      }
+    ],
+    "native_execution_performed": false,
+    "witness_execution_performed": false,
+    "immutable_input14_verified": true,
+    "behavior_implemented_but_unverified": [
+      "Application focus is the union of observed focused windows plus explicit legacy unscoped focus.",
+      "Window key states are independent; global DOWN/START/END represents aggregate first press and last release.",
+      "Scoped focus loss derives that origin from published and queued state, preserving other origins holds.",
+      "Legacy global focus loss releases every scoped and unscoped held origin once.",
+      "Borrowed routed/unrouted payload ownership and Event ABI are unchanged."
+    ],
+    "queries": [
+      "window_has_input_focus(window)",
+      "get_window_key_state(window,key)",
+      "window_key_is_down(window,key)"
+    ],
+    "configuration": {
+      "ENABLE_NATIVE_INPUT_ADAPTERS": {
+        "default": true,
+        "source_witness": false
+      }
+    },
+    "regression_witness": "tests/stdlib/input-multi-window-focus.jai",
+    "witness_scope": "Authored abstract queue-origin inputs only; no fake native handle/device claim. Assertions cover both cross-window focus orders, same-key ownership, focus loss before publication, scoped/unscoped mix, global release and legacy direct-state compatibility.",
+    "remaining_limits": [
+      "Source assertions have not executed; full typed validation remains blocked in shared SDK/Basic dependencies.",
+      "Window key queries describe published frame state; focus releases become held-key changes at frame publication.",
+      "Window-state records remain private for module lifetime; destroyed windows must report scoped focus loss through the real adapter."
     ]
   }
 }

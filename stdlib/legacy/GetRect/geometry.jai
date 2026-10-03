@@ -1,10 +1,5 @@
-// Downward positive vertical axis.
-#module_parameters ()(Type_Indicator: Type = void);
-Math :: #import "Math";
-using Math;
-Basic :: #import "Basic";
-#load "ui.jai";
-Rect :: struct { x,y:float; w,h:float; }
+// Historical right-handed geometry, independently authored.
+Rect :: struct { x, y: float; w, h: float; }
 get_rect :: (x: float, y: float, w: float, h: float) -> Rect { return .{x,y,w,h}; }
 expand :: (rect: Rect, amount: float) -> Rect { return .{rect.x-amount,rect.y-amount,rect.w+2*amount,rect.h+2*amount}; }
 expand_x :: (rect: Rect, amount: float) -> Rect { return .{rect.x-amount,rect.y,rect.w+2*amount,rect.h}; }
@@ -18,21 +13,21 @@ cut_left :: (rect: Rect, amount: float, margin := 0.0) -> (left: Rect, remainder
 cut_right :: (rect: Rect, amount: float, margin := 0.0) -> (right: Rect, remainder: Rect) {
     return .{rect.x+rect.w-amount,rect.y,amount,rect.h}, .{rect.x,rect.y,rect.w-amount-margin,rect.h};
 }
-cut_bottom :: (rect: Rect, amount: float, margin := 0.0) -> (bottom: Rect, remainder: Rect) {
+cut_top :: (rect: Rect, amount: float, margin := 0.0) -> (top: Rect, remainder: Rect) {
     return .{rect.x,rect.y+rect.h-amount,rect.w,amount}, .{rect.x,rect.y,rect.w,rect.h-amount-margin};
 }
-cut_top :: (rect: Rect, amount: float, margin := 0.0) -> (top: Rect, remainder: Rect) {
+cut_bottom :: (rect: Rect, amount: float, margin := 0.0) -> (bottom: Rect, remainder: Rect) {
     return .{rect.x,rect.y,rect.w,amount}, .{rect.x,rect.y+amount+margin,rect.w,rect.h-amount-margin};
 }
 is_inside :: (x: float, y: float, r: Rect) -> bool { return x>=r.x && y>=r.y && x<r.x+r.w && y<r.y+r.h; }
 intersect :: (a: Rect, b: Rect) -> Rect {
-    x:=Basic.max(a.x,b.x); y:=Basic.max(a.y,b.y);
-    right:=Basic.min(a.x+a.w,b.x+b.w); far:=Basic.min(a.y+a.h,b.y+b.h);
-    return .{x,y,Basic.max(0.0,right-x),Basic.max(0.0,far-y)};
+    x:=Math.max(a.x,b.x); y:=Math.max(a.y,b.y);
+    right:=Math.min(a.x+a.w,b.x+b.w); far:=Math.min(a.y+a.h,b.y+b.h);
+    return .{x,y,Math.max(0.0,right-x),Math.max(0.0,far-y)};
 }
 bound :: (a: Rect, b: Rect) -> Rect {
-    x:=Basic.min(a.x,b.x); y:=Basic.min(a.y,b.y);
-    right:=Basic.max(a.x+a.w,b.x+b.w); far:=Basic.max(a.y+a.h,b.y+b.h);
+    x:=Math.min(a.x,b.x); y:=Math.min(a.y,b.y);
+    right:=Math.max(a.x+a.w,b.x+b.w); far:=Math.max(a.y+a.h,b.y+b.h);
     return .{x,y,right-x,far-y};
 }
 get_quad :: (using r: Rect, snap_coordinates := false) -> (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) {
@@ -42,12 +37,16 @@ get_quad :: (using r: Rect, snap_coordinates := false) -> (p0: Vector2, p1: Vect
 }
 KNUTH_GOLDEN_RATIO_64 :: 11400714819323198485;
 combine_hashes :: (a: u64, b: u64) -> u64 #no_aoc { return (a ^ b) * KNUTH_GOLDEN_RATIO_64; }
-get_hash :: (loc: Source_Code_Location, identifier: s64) -> u64 {
+get_hash :: (loc: Source_Code_Location, identifier: s64) -> u64 { return rh_location_hash(loc,identifier); }
+#scope_module
+rh_location_hash :: (loc: Source_Code_Location, identifier: s64) -> u64 #no_aoc {
     hash: u64=14695981039346656037;
     for byte: loc.fully_pathed_filename hash=(hash ^ byte)*1099511628211;
     hash=combine_hashes(hash,cast(u64) loc.line_number);
     return combine_hashes(hash,cast,no_check(u64) identifier);
 }
+
+#scope_export
 VBase3 :: struct { x, y, z: float; }
 darken :: (color: $T/interface VBase3, t: float) -> T {
     result:=color; result.x*=1-t; result.y*=1-t; result.z*=1-t;
@@ -59,7 +58,8 @@ whiten :: (color: $T/interface VBase3, t: float) -> T {
 }
 brighten :: (color: $T/interface VBase3, value: float) -> T {
     result:=color;
-    current:=Basic.max(color.x,Basic.max(color.y,color.z));
+    current:float=Math.max(color.x,color.y);
+    current=Math.max(current,color.z);
     if current==0 { result.x=value; result.y=value; result.z=value; return result; }
     multiplier:=value/current;
     result.x*=multiplier; result.y*=multiplier; result.z*=multiplier;
@@ -78,7 +78,8 @@ hsv_to_rgb :: (cx: float, cy: float, cz: float) -> (r: float, g: float, b: float
     return cz,low,falling;
 }
 rgb_to_hsv :: (r: float, g: float, b: float) -> (h: float, s: float, v: float) {
-    maximum:=Basic.max(r,Basic.max(g,b)); minimum:=Basic.min(r,Basic.min(g,b));
+    maximum:float=Math.max(r,g); maximum=Math.max(maximum,b);
+    minimum:float=Math.min(r,g); minimum=Math.min(minimum,b);
     delta:=maximum-minimum;
     if delta==0 || maximum==0 return 0,0,maximum;
     hue:=0.0;
@@ -87,11 +88,12 @@ rgb_to_hsv :: (r: float, g: float, b: float) -> (h: float, s: float, v: float) {
     else hue=4+(r-g)/delta;
     return Math.frac(hue/6),delta/maximum,maximum;
 }
+#scope_module
 move_toward :: (a: float, b: float, amount_increasing: float, amount_decreasing := -1.0) -> float {
     falling:=amount_decreasing;
     if falling<0 falling=amount_increasing;
-    if b>a return Basic.min(b,a+amount_increasing);
-    return Basic.max(b,a-falling);
+    if b>a return Math.min(b,a+amount_increasing);
+    return Math.max(b,a-falling);
 }
 move_toward :: (a_pointer: *float, target: float, dt: float, rate_up: float, rate_down: float = -1.0) {
     falling:=rate_down; if falling<0 falling=rate_up;
@@ -100,4 +102,4 @@ move_toward :: (a_pointer: *float, target: float, dt: float, rate_up: float, rat
 v2 :: xy;
 v3 :: xyz;
 v4 :: xyzw;
-fract :: (x: float) -> float { return Math.frac(x); }
+fract :: inline (x: float) -> float { return Math.frac(x); }

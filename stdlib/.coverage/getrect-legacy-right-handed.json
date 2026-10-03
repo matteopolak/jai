@@ -1,0 +1,531 @@
+{
+  "area": "historical-right-handed-getrect",
+  "status": "private authored source, lexical contracts complete, isolated geometry/production-layout behavior verified; full module and callers blocked",
+  "module": "legacy/GetRect",
+  "canonical_default_changed": false,
+  "authors": [
+    "/root/stdlib_rewrite/math_numeric",
+    "/root/stdlib_rewrite/ui_drawing"
+  ],
+  "original_implementation_copied": false,
+  "original_compiler_or_native_outputs_executed": false,
+  "source_originals_checked_read_only": true,
+  "contract_source_hashes": [
+    {
+      "path": "reference/modules/GetRect/module.jai",
+      "sha256": "1eff5e7f7c36b991326f9ae22879c01c1f5ef5074a277e90435e18e4966e87bf"
+    },
+    {
+      "path": "reference/modules/GetRect/system/system.jai",
+      "sha256": "70c9444eb0783076f49de99ff006e6bff692a722b1747bdc55857bfbbb67ce77"
+    },
+    {
+      "path": "reference/modules/GetRect/system/tooltips.jai",
+      "sha256": "225eaaf9bef673bedc50ea80273390a8851eef6f7cdf44e69b8ea343126554ef"
+    },
+    {
+      "path": "reference/modules/GetRect/system/pointer_image.jai",
+      "sha256": "3dcfdb112d71c5921deab984a0a6bc4c27ae3ba9f9070e85f80350bdbdfb6886"
+    },
+    {
+      "path": "reference/modules/GetRect/system/themes.jai",
+      "sha256": "9166cdb744f9f4974ddb2e3d1cce4c49f708e9f830ea9ff4c4bae250dfc35f4b"
+    },
+    {
+      "path": "reference/modules/GetRect/system/state.jai",
+      "sha256": "20a80b2a9a605cf03ff5789e4cf1b4441ba13fa4d72119e925795ec59fcca59c"
+    },
+    {
+      "path": "reference/modules/GetRect/system/popups.jai",
+      "sha256": "2daf7212656379a9eb09593bae7f9033dca0ca91ae5417d1ea1e5528e8ce2090"
+    },
+    {
+      "path": "reference/modules/GetRect/system/occlusion.jai",
+      "sha256": "fa7f95c8eb70b710714b87951339b2067cc837ba7cc9968bb07651f381982f80"
+    },
+    {
+      "path": "reference/modules/GetRect/system/active_widgets.jai",
+      "sha256": "a418e2e2e43c9b7922a8603b2a718936944125e837022a8586ec3698bcf8669f"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/widgets.jai",
+      "sha256": "53fc979453930bc18606bf35fd0abcc0c3c9ff9baef1c1b172b633e62d8e9d46"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/text_display.jai",
+      "sha256": "5aec5557dd1ddb12adbc43d9a675d15331442f60ecbf7ee7d5eb7fc06ba831ae"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/text_input.jai",
+      "sha256": "48693d072f33712693d06b030a687a51ac2a7235e8528394e98ba17146833e2c"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/subwindow.jai",
+      "sha256": "df29f5c881a07fcfb7534695da458f9b7124bced2712d2fbaa5f17b6b96b92fb"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/slider.jai",
+      "sha256": "1322f7798c74ea8e78fe837051386acb9a4263edd269d9a574d74f8ba32f39a8"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/slidable_region.jai",
+      "sha256": "09563662f034237e7b79f3274766d8a280896a9608c8b9ffaed76938fe5e5e75"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/scrollable_region.jai",
+      "sha256": "921f0cc060e2e1dde375ce14bbd675f6b32cebf99b3d6304cb823958add059be"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/number_input.jai",
+      "sha256": "919bde54e38da5386040836c669bc845df1a988a20e7b1da9348df5d1c5058ab"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/label.jai",
+      "sha256": "20b685aa168f1279b3a98d7fb071f77ed4ebe00ff8ab832fe506637729690a8f"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/dropdown.jai",
+      "sha256": "b71856abd40cc8a45cdf515f003a1bd12c2be16b1cfd045f33b309f759cc1df2"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/color_animation_editor.jai",
+      "sha256": "a932a174d7cdb86f66d7b14c2c9035a139a41f35305478443014c5eb6b0fa2ee"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/color_picker.jai",
+      "sha256": "0346e69edd88f4dfb6fc1d6ca601bc9c7cadd608b2dfa98aeebb6a00891ed6a2"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/checkbox.jai",
+      "sha256": "6d5b75936a6b2bd9fde7e3436bbb197fa069b4603102faf6d4041b5d5ecaaa0b"
+    },
+    {
+      "path": "reference/modules/GetRect/widgets/button.jai",
+      "sha256": "284003b0128443cc6658d2ca846fd1311e7c9d3f2deb43d8d7b47b46c5e91859"
+    }
+  ],
+  "contracts": {
+    "expected": 268,
+    "matched": 268,
+    "missing_or_different": [],
+    "semantic_equivalence": "not-established"
+  },
+  "source_body_presence": {
+    "nonempty_exported_procedures": 251,
+    "empty_exported_procedures": [],
+    "meaning": "Static bodies only; no blanket implementation/behavior acceptance inferred."
+  },
+  "layout": "Rect x,y:float; w,h:float, 16 bytes, upward-positive geometry",
+  "selection": "source/overlays/getrect-right-handed contains only GetRect symlink to versioned module, followed by default stdlib; unchanged imports",
+  "scope": {
+    "geometry": "25 exact exported contracts; core assertions passed",
+    "production_layout": "Actual production orientation helpers: dividers, scrolling, titles, resizing, lower-content fitting, descending rows and HSV mapping; assertions passed",
+    "widgets": "Independently authored RHS source flows; complete semantic/interaction/rendering acceptance pending",
+    "assets": "Real cached File reads with captured allocator ownership and explicit resource configuration; reads/decoding/release unexecuted"
+  },
+  "frozen_cli": "/Users/matthew/projects/jai/target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs",
+  "binary_sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d",
+  "build_inputs_verified": false,
+  "summary": {
+    "authored_jai_sources": 22,
+    "lex_passed": 22,
+    "parse_passed": 20,
+    "positive_compiletime_fixture_passes": 2,
+    "negative_control_failed_as_expected": true,
+    "full_module_and_surface": "GL directive parser frontier",
+    "retained_caller_gates": "Original caller grammar frontiers before semantic admission; codex_view selects LH, not RH"
+  },
+  "source_hashes_before": {
+    "source/stdlib/legacy/GetRect/advanced-layouts.jai": "2e8d16f8876033723c872affe4b2137fc1b48b6095a82bd43af16c06756f6a80",
+    "source/stdlib/legacy/GetRect/assets.jai": "d71395c4104c9aff144d398a437ea9d7228a6357b46064f970596d008e18de28",
+    "source/stdlib/legacy/GetRect/color-compatibility.jai": "e9824301d00f19f9898c9881409ae40c4c07f33607a1d827617ea6f3f31b6ace",
+    "source/stdlib/legacy/GetRect/color-math.jai": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+    "source/stdlib/legacy/GetRect/color-surfaces.jai": "dc28360655d8190306b559b032285b37ba1e50a932461c1a2102740cd65758e8",
+    "source/stdlib/legacy/GetRect/colors.jai": "95868f6d23d6ca2035a2d38e472d8b92ec72e94cd755dbd9a7d17e18b5b740be",
+    "source/stdlib/legacy/GetRect/compatibility.jai": "b5a276f58557c80650103eb08360cc51895c770cb2937a6df03906ed6ea0031c",
+    "source/stdlib/legacy/GetRect/cursors.jai": "9020f9e5340e31379b06617ddd812ffdbffcbf1b2e1eb50a5c94ea09abfb85d0",
+    "source/stdlib/legacy/GetRect/geometry.jai": "72cc045e4244cae3266a5134a2cf2d6938f286039e776086007a7b6780b25a44",
+    "source/stdlib/legacy/GetRect/legacy-layouts.jai": "1fbcd580713f0b33fa4ba6cf108d00db6a84b1b8279e0e740ec39aea9c0cd834",
+    "source/stdlib/legacy/GetRect/module.jai": "6cdccd2e3cb6e620a0fec20037b7e6b532ea19294f1e4c407c954dd8a290b86b",
+    "source/stdlib/legacy/GetRect/occlusion.jai": "e25d61012c56ba55cd40a9a264a0477cad79e51ebafac29835439d3ea3bc2be9",
+    "source/stdlib/legacy/GetRect/orientation.jai": "d47fd35dc5ee1d775d8a2c9d00c617ad012b8a91f975e06a1a731564aef8a1f6",
+    "source/stdlib/legacy/GetRect/regions.jai": "c7825a1e49cd8697b250cff01318c6c7565eb1a083beb919af46da0c7d31cfc5",
+    "source/stdlib/legacy/GetRect/tests/orientation-tests.jai": "3b7daa73d8dff97ce92675e9f75434ed289e00fd8f123c0940bf289d3722ef59",
+    "source/stdlib/legacy/GetRect/text-flow.jai": "71e757a1fc86681bde76660481c97396ef99273c97da6fe24dc761867c58d36a",
+    "source/stdlib/legacy/GetRect/text-interaction.jai": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+    "source/stdlib/legacy/GetRect/theme-presets.jai": "268085d4cde3d00fea8d98808c3febb820b51eede34d35e3e22d34a10e8a6ec2",
+    "source/stdlib/legacy/GetRect/ui.jai": "efaec821217f6d5864c8f3bb5efb5cfd9b7ebd8e71a9d6f873ca562825688d75",
+    "source/tests/stdlib/getrect-legacy-right-handed-geometry.jai": "3e67d323e19484bb436ddfa142601ed74e7b8fc17524fc9a521ffa6ff873a457",
+    "source/tests/stdlib/getrect-legacy-right-handed-surface.jai": "894bb826fa41a309c4ab0ea8d5b31aba991c4891034cc07f72859802e8479475",
+    "source/tests/stdlib/getrect-rh-negative-control.jai": "96c353699a17bd0fb6463d61dfd308402ad9c79e86d0b16df23c47418a55a56b"
+  },
+  "source_hashes_after": {
+    "source/stdlib/legacy/GetRect/advanced-layouts.jai": "2e8d16f8876033723c872affe4b2137fc1b48b6095a82bd43af16c06756f6a80",
+    "source/stdlib/legacy/GetRect/assets.jai": "d71395c4104c9aff144d398a437ea9d7228a6357b46064f970596d008e18de28",
+    "source/stdlib/legacy/GetRect/color-compatibility.jai": "e9824301d00f19f9898c9881409ae40c4c07f33607a1d827617ea6f3f31b6ace",
+    "source/stdlib/legacy/GetRect/color-math.jai": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+    "source/stdlib/legacy/GetRect/color-surfaces.jai": "dc28360655d8190306b559b032285b37ba1e50a932461c1a2102740cd65758e8",
+    "source/stdlib/legacy/GetRect/colors.jai": "95868f6d23d6ca2035a2d38e472d8b92ec72e94cd755dbd9a7d17e18b5b740be",
+    "source/stdlib/legacy/GetRect/compatibility.jai": "b5a276f58557c80650103eb08360cc51895c770cb2937a6df03906ed6ea0031c",
+    "source/stdlib/legacy/GetRect/cursors.jai": "9020f9e5340e31379b06617ddd812ffdbffcbf1b2e1eb50a5c94ea09abfb85d0",
+    "source/stdlib/legacy/GetRect/geometry.jai": "72cc045e4244cae3266a5134a2cf2d6938f286039e776086007a7b6780b25a44",
+    "source/stdlib/legacy/GetRect/legacy-layouts.jai": "1fbcd580713f0b33fa4ba6cf108d00db6a84b1b8279e0e740ec39aea9c0cd834",
+    "source/stdlib/legacy/GetRect/module.jai": "6cdccd2e3cb6e620a0fec20037b7e6b532ea19294f1e4c407c954dd8a290b86b",
+    "source/stdlib/legacy/GetRect/occlusion.jai": "e25d61012c56ba55cd40a9a264a0477cad79e51ebafac29835439d3ea3bc2be9",
+    "source/stdlib/legacy/GetRect/orientation.jai": "d47fd35dc5ee1d775d8a2c9d00c617ad012b8a91f975e06a1a731564aef8a1f6",
+    "source/stdlib/legacy/GetRect/regions.jai": "c7825a1e49cd8697b250cff01318c6c7565eb1a083beb919af46da0c7d31cfc5",
+    "source/stdlib/legacy/GetRect/tests/orientation-tests.jai": "3b7daa73d8dff97ce92675e9f75434ed289e00fd8f123c0940bf289d3722ef59",
+    "source/stdlib/legacy/GetRect/text-flow.jai": "71e757a1fc86681bde76660481c97396ef99273c97da6fe24dc761867c58d36a",
+    "source/stdlib/legacy/GetRect/text-interaction.jai": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+    "source/stdlib/legacy/GetRect/theme-presets.jai": "268085d4cde3d00fea8d98808c3febb820b51eede34d35e3e22d34a10e8a6ec2",
+    "source/stdlib/legacy/GetRect/ui.jai": "efaec821217f6d5864c8f3bb5efb5cfd9b7ebd8e71a9d6f873ca562825688d75",
+    "source/tests/stdlib/getrect-legacy-right-handed-geometry.jai": "3e67d323e19484bb436ddfa142601ed74e7b8fc17524fc9a521ffa6ff873a457",
+    "source/tests/stdlib/getrect-legacy-right-handed-surface.jai": "894bb826fa41a309c4ab0ea8d5b31aba991c4891034cc07f72859802e8479475",
+    "source/tests/stdlib/getrect-rh-negative-control.jai": "96c353699a17bd0fb6463d61dfd308402ad9c79e86d0b16df23c47418a55a56b"
+  },
+  "source_hashes_unchanged": true,
+  "maintained_defaults_unchanged": true,
+  "retained_callers_unchanged": true,
+  "amended_ui_sources": [
+    {
+      "source": "stdlib/legacy/GetRect/assets.jai",
+      "upstream_sha256": "afc9564104e35331b1a372f5e3b9ae7a038932fe410bf1e669015190fb6bdfd6",
+      "paired_sha256": "d71395c4104c9aff144d398a437ea9d7228a6357b46064f970596d008e18de28"
+    },
+    {
+      "source": "stdlib/legacy/GetRect/orientation.jai",
+      "upstream_sha256": "a68f7e3c482ff1ac9fafb5074e0f756ae947c301fb01295edfda005eeda9e256",
+      "paired_sha256": "d47fd35dc5ee1d775d8a2c9d00c617ad012b8a91f975e06a1a731564aef8a1f6"
+    },
+    {
+      "source": "stdlib/legacy/GetRect/ui.jai",
+      "upstream_sha256": "32b728b8264edd9e9b7d17672ba146ed830f1d5ddf51585b5bbce038be76781b",
+      "paired_sha256": "efaec821217f6d5864c8f3bb5efb5cfd9b7ebd8e71a9d6f873ca562825688d75"
+    }
+  ],
+  "not_claimed": [
+    "Complete semantic API admission",
+    "Full retained-caller checking or program execution",
+    "Rendered widget interaction",
+    "Native pointer/cursor/font/graphics execution",
+    "Exact historical visual or hash-output parity",
+    "Real asset availability and native decoding",
+    "Current Rust build input provenance"
+  ],
+  "results": [
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/advanced-layouts.jai",
+      "exit_code": 0,
+      "output": "763 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/assets.jai",
+      "exit_code": 0,
+      "output": "675 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-compatibility.jai",
+      "exit_code": 0,
+      "output": "1586 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-math.jai",
+      "exit_code": 0,
+      "output": "419 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-surfaces.jai",
+      "exit_code": 0,
+      "output": "924 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/colors.jai",
+      "exit_code": 0,
+      "output": "5382 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/compatibility.jai",
+      "exit_code": 0,
+      "output": "1752 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/cursors.jai",
+      "exit_code": 0,
+      "output": "542 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/geometry.jai",
+      "exit_code": 0,
+      "output": "1809 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/legacy-layouts.jai",
+      "exit_code": 0,
+      "output": "4824 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/module.jai",
+      "exit_code": 0,
+      "output": "30 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/occlusion.jai",
+      "exit_code": 0,
+      "output": "487 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/orientation.jai",
+      "exit_code": 0,
+      "output": "1340 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/regions.jai",
+      "exit_code": 0,
+      "output": "4337 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/tests/orientation-tests.jai",
+      "exit_code": 0,
+      "output": "834 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/text-flow.jai",
+      "exit_code": 0,
+      "output": "2026 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/text-interaction.jai",
+      "exit_code": 0,
+      "output": "2309 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/theme-presets.jai",
+      "exit_code": 0,
+      "output": "882 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/ui.jai",
+      "exit_code": 0,
+      "output": "11750 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-geometry.jai",
+      "exit_code": 0,
+      "output": "983 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-surface.jai",
+      "exit_code": 0,
+      "output": "464 tokens (lexical stage only)"
+    },
+    {
+      "command": "lex",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-rh-negative-control.jai",
+      "exit_code": 0,
+      "output": "983 tokens (lexical stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/advanced-layouts.jai",
+      "exit_code": 1,
+      "output": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/advanced-layouts.jai:16:26: error: expected expression; this syntax is not implemented yet"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/assets.jai",
+      "exit_code": 0,
+      "output": "19 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-compatibility.jai",
+      "exit_code": 0,
+      "output": "17 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-math.jai",
+      "exit_code": 0,
+      "output": "11 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/color-surfaces.jai",
+      "exit_code": 0,
+      "output": "4 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/colors.jai",
+      "exit_code": 0,
+      "output": "38 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/compatibility.jai",
+      "exit_code": 0,
+      "output": "31 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/cursors.jai",
+      "exit_code": 0,
+      "output": "8 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/geometry.jai",
+      "exit_code": 0,
+      "output": "35 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/legacy-layouts.jai",
+      "exit_code": 1,
+      "output": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/legacy-layouts.jai:11:42: error: expected ',', found ':='"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/module.jai",
+      "exit_code": 0,
+      "output": "6 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/occlusion.jai",
+      "exit_code": 0,
+      "output": "13 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/orientation.jai",
+      "exit_code": 0,
+      "output": "15 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/regions.jai",
+      "exit_code": 0,
+      "output": "34 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/tests/orientation-tests.jai",
+      "exit_code": 0,
+      "output": "6 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/text-flow.jai",
+      "exit_code": 0,
+      "output": "16 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/text-interaction.jai",
+      "exit_code": 0,
+      "output": "24 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/theme-presets.jai",
+      "exit_code": 0,
+      "output": "13 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/ui.jai",
+      "exit_code": 0,
+      "output": "192 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-geometry.jai",
+      "exit_code": 0,
+      "output": "9 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-surface.jai",
+      "exit_code": 0,
+      "output": "3 items (syntax stage only)"
+    },
+    {
+      "command": "parse",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-rh-negative-control.jai",
+      "exit_code": 0,
+      "output": "9 items (syntax stage only)"
+    },
+    {
+      "command": "check-library",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-geometry.jai",
+      "exit_code": 0,
+      "output": "checked library /private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-geometry.jai"
+    },
+    {
+      "command": "check-library",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-rh-negative-control.jai",
+      "exit_code": 1,
+      "output": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-rh-negative-control.jai:58:1: error: compile-time assertion failed"
+    },
+    {
+      "command": "check-library",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/tests/orientation-tests.jai",
+      "exit_code": 0,
+      "output": "checked library /private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/tests/orientation-tests.jai"
+    },
+    {
+      "command": "check-library",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/stdlib/legacy/GetRect/module.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+    },
+    {
+      "command": "check-library",
+      "source": "/private/tmp/jai-legacy-getrect-rh-20261002/source/tests/stdlib/getrect-legacy-right-handed-surface.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'"
+    },
+    {
+      "command": "check-library",
+      "source": "/Users/matthew/projects/jai/reference/modules/GetRect/examples/example.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/reference/modules/GetRect/examples/example.jai:662:54: error: expected expression; this syntax is not implemented yet"
+    },
+    {
+      "command": "check-library",
+      "source": "/Users/matthew/projects/jai/reference/examples/skeletal-animation/source/main.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/reference/examples/skeletal-animation/source/main.jai:38:23: error: expected ':', found ','"
+    },
+    {
+      "command": "check-library",
+      "source": "/Users/matthew/projects/jai/reference/examples/codex_view/src/main.jai",
+      "exit_code": 1,
+      "output": "/Users/matthew/projects/jai/reference/examples/codex_view/src/main.jai:355:6: error: expected ':', found ','"
+    }
+  ],
+  "upstream_failure_receipt_preserved": "upstream-ui-source-checks.json",
+  "related_UI_coverage": "stdlib/.coverage/getrect-legacy-right-handed-ui.json"
+}

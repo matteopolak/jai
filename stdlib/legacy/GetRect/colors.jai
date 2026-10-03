@@ -34,8 +34,8 @@ color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_
     rounded_rectangle(r,theme.background.shape,theme.background.color,theme.background.frame_color);
     pad_x:=r.w*theme.horizontal_padding; pad_y:=r.h*theme.vertical_padding;
     content:=shrink_xy(r,pad_x,pad_y); controls_height:=max(content.h*0.12,18.0);
-    color_area:=content; color_area.h=max(content.h-controls_height*2,0.0); color_area.w*=1-theme.stashed_color_width-theme.margin_between_color_input_and_stashed_colors;
-    mode_row:=Rect.{content.x,color_area.y+color_area.h,color_area.w,controls_height};
+    color_area:=content; color_area.y+=controls_height*2; color_area.h=max(content.h-controls_height*2,0.0); color_area.w*=1-theme.stashed_color_width-theme.margin_between_color_input_and_stashed_colors;
+    mode_row:=Rect.{content.x,color_area.y-controls_height,color_area.w,controls_height};
     modes:=string.["Circle","HSV","RGB","Numbers"];
     for name,index:modes {
         cell:=mode_row; cell.w/=4; cell.x+=cell.w*index;
@@ -46,14 +46,14 @@ color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_
     else if state.color_pick_mode==.HSV_SLIDERS draw_hsv_sliders(color_area,theme,state);
     else if state.color_pick_mode==.RGB_SLIDERS draw_rgb_sliders(color_area,theme,state);
     else draw_type_ins(color_area,theme,state);
-    stash_area:=content; stash_area.x=color_area.x+color_area.w+content.w*theme.margin_between_color_input_and_stashed_colors; stash_area.w=max(content.x+content.w-stash_area.x,0.0); stash_area.h=color_area.h;
+    stash_area:=content; stash_area.x=color_area.x+color_area.w+content.w*theme.margin_between_color_input_and_stashed_colors; stash_area.w=max(content.x+content.w-stash_area.x,0.0); stash_area.h=color_area.h; stash_area.y=color_area.y;
     count:=max(state.stashed_colors.count,1); height:=stash_area.h/count;
     for color,index:state.stashed_colors {
-        cell:=Rect.{stash_area.x,stash_area.y+index*height,stash_area.w,height};
+        cell:=Rect.{stash_area.x,stash_area.y+stash_area.h-(index+1)*height,stash_area.w,height};
         rounded_rectangle(cell,theme.stashed_colors_shape,.{color.x,color.y,color.z,1},.{});
         if get_status_flags(cell,state)&.PRESSED set_current_color_rgb(state,theme,color);
     }
-    actions:=Rect.{content.x,mode_row.y+mode_row.h,content.w/3,controls_height}; applied:=false;
+    actions:=Rect.{content.x,mode_row.y-controls_height,content.w/3,controls_height}; applied:=false;
     pressed,button_state,released:=button(actions,theme.apply_string,*theme.apply_and_revert_button_theme,identifier*37+201,loc);
     if pressed { input_and_output_color_rgb.*=state.current_rgb_color; state.original_rgb_color=state.current_rgb_color; applied=true; }
     actions.x+=actions.w;
@@ -66,38 +66,38 @@ color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_
     return applied,dragging,state;
 }
 draw_hsv_sliders :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=4; hsv:=state.current_hsv_color;
+    row:=area; row.h/=4; row.y=area.y+area.h-row.h; hsv:=state.current_hsv_color;
     changed:=slider(row,*hsv.x,theme.slider_hue_min,theme.slider_hue_max,1.0,*default_overall_theme.slider_theme,"H ","",1);
     if changed set_current_color_hsv(state,hsv);
-    row.y+=row.h; zoom:=state.current_hsv_color.x; half:=max(theme.hue_range_in_zoomed_slider/2,EPSILON);
+    row.y-=row.h; zoom:=state.current_hsv_color.x; half:=max(theme.hue_range_in_zoomed_slider/2,EPSILON);
     zoom_changed:=slider(row,*zoom,state.zoom_hue_center-half,state.zoom_hue_center+half,0.1,*default_overall_theme.slider_theme,"H zoom ","",4);
     if zoom_changed { hsv=state.current_hsv_color; hsv.x=zoom; set_current_color_hsv(state,hsv,false); }
-    row.y+=row.h;
+    row.y-=row.h;
     if state.hsv_picker_in_rectangle_mode {
-        plane:=row; plane.h*=2; status:=get_status_flags(plane,state);
+        plane:=row; plane.y=area.y; plane.h*=2; status:=get_status_flags(plane,state);
         if status&.PRESSED { state.dragging_in_hsv_rectangle=true; active_widget_add(state,true); }
         if state.dragging_in_hsv_rectangle left_sv_drag(plane,state,false);
         if mouse_button_left_state&.END { state.dragging_in_hsv_rectangle=false; active_widget_remove(state); }
         left_sv_surface(plane,state,false);
     } else {
         hsv=state.current_hsv_color; changed=slider(row,*hsv.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"S ","",2);
-        row.y+=row.h; changed=slider(row,*hsv.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"V ","",3)||changed;
+        row.y-=row.h; changed=slider(row,*hsv.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"V ","",3)||changed;
         if changed set_current_color_hsv(state,hsv,false);
     }
     if mouse_button_right_state&.START&&has_focus(area) toggle_rectangle_picker_mode(state);
 }
 draw_rgb_sliders :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=3; rgb:=state.current_rgb_color;
+    row:=area; row.h/=3; row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
     changed:=slider(row,*rgb.x,0.0,1.0,0.01,*default_overall_theme.slider_theme,"R ","",1);
-    row.y+=row.h; changed=slider(row,*rgb.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"G ","",2)||changed;
-    row.y+=row.h; changed=slider(row,*rgb.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"B ","",3)||changed;
+    row.y-=row.h; changed=slider(row,*rgb.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"G ","",2)||changed;
+    row.y-=row.h; changed=slider(row,*rgb.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"B ","",3)||changed;
     if changed set_current_color_rgb(state,theme,rgb);
 }
 draw_type_ins :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=3; rgb:=state.current_rgb_color;
+    row:=area; row.h/=3; row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
     changed:=number_input(row,tprint("%",rgb.x),*rgb.x,0.0,1.0,*theme.type_ins_input_theme,1);
-    row.y+=row.h; changed=number_input(row,tprint("%",rgb.y),*rgb.y,0.0,1.0,*theme.type_ins_input_theme,2)||changed;
-    row.y+=row.h; changed=number_input(row,tprint("%",rgb.z),*rgb.z,0.0,1.0,*theme.type_ins_input_theme,3)||changed;
+    row.y-=row.h; changed=number_input(row,tprint("%",rgb.y),*rgb.y,0.0,1.0,*theme.type_ins_input_theme,2)||changed;
+    row.y-=row.h; changed=number_input(row,tprint("%",rgb.z),*rgb.z,0.0,1.0,*theme.type_ins_input_theme,3)||changed;
     if changed set_current_color_rgb(state,theme,rgb);
 }
 set_keyframes :: (state:*Color_Animation_Editor_State,frames:[]Color_Keyframe) {
@@ -158,16 +158,16 @@ color_animation_editor :: (r:Rect,theme:*Color_Animation_Editor_Theme=null,ident
     state,created:=find_or_create_state(Color_Animation_Editor_State,get_hash(loc,identifier)); defer stop_using_state(state); state.theme=theme;
     if created { set_keyframes(state,theme.default_keyframes); set_interpolation(state,theme.default_interpolation); state.num_clipboard_samples=theme.default_num_clipboard_samples; state.time_view_period=theme.default_time_view_period; }
     rounded_rectangle(r,theme.background.shape,theme.background.color,theme.background.frame_color);
-    bar:=shrink_xy(r,r.w*theme.horizontal_padding,r.h*theme.vertical_padding); bar.h*=0.50;
+    bar:=shrink_xy(r,r.w*theme.horizontal_padding,r.h*theme.vertical_padding); bar.y+=bar.h*0.50; bar.h*=0.50;
     my_color_slider(bar,1.0,theme,state);
-    row:=r; row.y=bar.y+bar.h; row.h=(r.y+r.h-row.y)/2; row.w=r.w/3;
+    row:=r; row.h=max((bar.y-r.y)/2,0.0); row.y=bar.y-row.h; row.w=r.w/3;
     if theme.draw_subwidgets_flags&.INTERPOLATION_CONTROLS {
         spaces:=string.["RGB","HSV","Oklab"]; geometries:=string.["Linear","Quadric","Hermite"];
         dropdown(row,spaces,*state.interpolation_color_space_s32,*theme.dropdown_theme,identifier*41+1,100,loc); row.x+=row.w;
         dropdown(row,geometries,*state.interpolation_geometry_s32,*theme.dropdown_theme,identifier*41+2,100,loc); row.x+=row.w;
         checkbox(row,"Wrap",*state.interpolation_wrapping,*theme.checkbox_theme,identifier*41+3,loc);
     }
-    row.x=r.x; row.y+=row.h;
+    row.x=r.x; row.y-=row.h;
     if theme.draw_subwidgets_flags&.SAMPLING_CONTROLS number_input(row,tprint("%",state.num_clipboard_samples),*state.num_clipboard_samples,1,4096,*theme.number_input_theme,identifier*41+4,loc);
     row.x+=row.w;
     if theme.draw_subwidgets_flags&.TIME_VIEW {
@@ -184,27 +184,27 @@ open_color_picker :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation
     state.color_picker_keyframe_index=keyframe_index;
     color:=state.color_keyframes[keyframe_index].color_rgb; state.color_picker_editing_color_applied=.{color.x,color.y,color.z};
     info:=*state.color_picker_subwindow_info;
-    if !state.color_picker_subwindow_rect_initialized { info.rect=.{bar_rect.x,bar_rect.y+bar_rect.h,bar_rect.w,max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0)}; state.color_picker_subwindow_rect_initialized=true; }
+    if !state.color_picker_subwindow_rect_initialized { info.rect=.{bar_rect.x,bar_rect.y-max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0),bar_rect.w,max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0)}; state.color_picker_subwindow_rect_initialized=true; }
     info.open=true; info.title_text="Keyframe color"; info.draw=draw_callback_color_picker; info.user_data=state;
 }
 draw_color_picker :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State) { if state.color_picker_subwindow_info.open add_subwindow(*state.color_picker_subwindow_info,*theme.color_picker_subwindow_theme,cast(s64)state); }
-draw_callback_color_picker :: (r:Rect,data:*void) {
-    state:=cast(*Color_Animation_Editor_State)data;
-    applied,dragging,picker:=color_picker(r,*state.color_picker_editing_color_applied,*state.theme.color_picker_theme,712);
-    state.last_color_picker_state=picker;
-    if applied&&state.color_picker_keyframe_index>=0&&state.color_picker_keyframe_index<state.color_keyframes.count {
-        color:=state.color_picker_editing_color_applied; state.color_keyframes[state.color_picker_keyframe_index].color_rgb=.{color.x,color.y,color.z,1};
+draw_callback_color_picker :: (state:*Subwindow_State,r:Rect,data:*void) {
+    editor:=cast(*Color_Animation_Editor_State)data;
+    applied,dragging,picker:=color_picker(r,*editor.color_picker_editing_color_applied,*editor.theme.color_picker_theme,712);
+    editor.last_color_picker_state=picker;
+    if applied&&editor.color_picker_keyframe_index>=0&&editor.color_picker_keyframe_index<editor.color_keyframes.count {
+        color:=editor.color_picker_editing_color_applied; editor.color_keyframes[editor.color_picker_keyframe_index].color_rgb=.{color.x,color.y,color.z,1};
     }
 }
 open_time_view :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State,bar_rect:Rect) {
     info:=*state.time_view_subwindow_info; info.open=true; info.title_text="Color over time"; info.draw=draw_callback_time_view; info.user_data=state;
-    if info.rect.w<=0 info.rect=.{bar_rect.x,bar_rect.y+bar_rect.h,bar_rect.w,max(bar_rect.h,64.0)};
+    if info.rect.w<=0 info.rect=.{bar_rect.x,bar_rect.y-max(bar_rect.h,64.0),bar_rect.w,max(bar_rect.h,64.0)};
 }
 draw_time_view :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State) { if state.time_view_subwindow_info.open add_subwindow(*state.time_view_subwindow_info,*theme.time_view_subwindow_theme,cast(s64)state+713); }
-draw_callback_time_view :: (r:Rect,data:*void) {
-    state:=cast(*Color_Animation_Editor_State)data; if state.time_view_playing state.time_view_current_time+=current_dt;
-    samples:[1]Vector4; frame:=Color_Keyframe.{t=cast(float)frac(state.time_view_current_time/max(state.time_view_period,0.001))};
-    sorted:=get_sorted_keyframes(state); interp:=get_interpolation(state);
+draw_callback_time_view :: (state:*Subwindow_State,r:Rect,data:*void) {
+    editor:=cast(*Color_Animation_Editor_State)data; if editor.time_view_playing editor.time_view_current_time+=current_dt;
+    samples:[1]Vector4; frame:=Color_Keyframe.{t=cast(float)frac(editor.time_view_current_time/max(editor.time_view_period,0.001))};
+    sorted:=get_sorted_keyframes(editor); interp:=get_interpolation(editor);
     // Sampling a shifted cyclic pair uses the same interpolation implementation.
     shifted:=NewArray(sorted.count,*Color_Keyframe,allocator=Basic.temp);
     storage:=NewArray(sorted.count,Color_Keyframe,allocator=Basic.temp);
