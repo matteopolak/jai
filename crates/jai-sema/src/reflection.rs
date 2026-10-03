@@ -70,7 +70,9 @@ pub(crate) fn is_semantic_constant(expression: &syntax::Expression) -> bool {
     while let Some(expression) = expressions.pop() {
         match &expression.kind {
             syntax::ExpressionKind::Type(_)
-            | syntax::ExpressionKind::TypeQuery { .. }
+            | syntax::ExpressionKind::TypeQuery {
+                ..
+            }
             | syntax::ExpressionKind::Code(_)
             | syntax::ExpressionKind::CompileTime(_)
             | syntax::ExpressionKind::SourceLocation
@@ -91,7 +93,10 @@ pub(crate) fn is_semantic_constant(expression: &syntax::Expression) -> bool {
                 expressions.push(left);
                 expressions.push(right);
             }
-            syntax::ExpressionKind::Index { base, index } => {
+            syntax::ExpressionKind::Index {
+                base,
+                index,
+            } => {
                 expressions.push(base);
                 expressions.push(index);
             }
@@ -130,7 +135,9 @@ impl Resolver<'_> {
             Expr::Code(id) if constant.ty.is_none() => {
                 self.bind_name(constant.name, Binding::Code(id))
             }
-            Expr::Typed { value, .. } => {
+            Expr::Typed {
+                value, ..
+            } => {
                 let value = self.literal_constant(value, constant.span)?;
                 let id = self.meta.intern_constant(value);
                 self.bind_name(constant.name, Binding::TypedConstant(id))
@@ -217,6 +224,7 @@ impl Resolver<'_> {
         };
         match query {
             syntax::TypeQueryKind::SizeOf => {
+                self.prepare_queried_source_layout(ty, span)?;
                 match reflected_size(self.types, ty, self.target_layout)
                     .map_err(|error| Diagnostic::new(span, error.to_string()))?
                 {
