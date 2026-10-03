@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Code formatting](code-formatting.md)
+
 - [Independent standard library](specs/stdlib/README.md)
 - [Standard-library API coverage](specs/stdlib/README.md)
 
