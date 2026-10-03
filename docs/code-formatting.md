@@ -57,7 +57,7 @@ For temporary copied files outside the repository, run the pinned formatter with
 
 `rust-toolchain.toml` pins the nightly formatter. `rustfmt.toml` selects edition/style edition 2024, a 100-column width and Unix line endings. `blank_lines_upper_bound = 2` preserves existing groups within that ceiling; there is no `blank_lines_lower_bound` override. Compact empty items, struct literals and functions are expanded, and the single-line `if/else` and `let/else` width allowances are zero. Some options require nightly rustfmt.
 
-The scope guard uses root `Cargo.toml` workspace members/exclusions, package manifests below `crates/`, and the explicit `fuzz/Cargo.toml` standalone inventory entry when that file exists. CI's existing Format check delegates to the same script. The fuzz workflow may retain its own direct standalone formatting check as well.
+The scope guard uses root `Cargo.toml` workspace members/exclusions, package manifests below `crates/`, and the explicit `fuzz/Cargo.toml` standalone inventory entry when that file exists. CI's existing Format check delegates to the same script. CI records the original formatting outcome and continues to compiler tests; its final style enforcement fails if formatting or Clippy failed. This collects later evidence without making a failed formatting scope optional. The fuzz workflow may retain its own direct standalone formatting check as well.
 
 ## Dependencies
 

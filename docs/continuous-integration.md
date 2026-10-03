@@ -6,7 +6,7 @@ The public compiler workflow checks the repository on native macOS and Linux run
 
 ## How it works
 
-Each job verifies public source inputs and dependency ages, installs the pinned Rust toolchain and LLVM 22, and checks its actual host architecture. Clippy records its outcome while subsequent test steps run. The final enforcement step fails the job when Clippy failed, even if the correctness tests pass. This keeps strict lint as a required gate while collecting runtime evidence from the same checkout.
+Each job verifies public source inputs and dependency ages, installs the pinned Rust toolchain and LLVM 22, and checks its actual host architecture. Formatting and Clippy record their original outcomes while subsequent test steps run. The final enforcement step fails the job if either failed, even when correctness tests pass. This keeps both style gates required while collecting compiler and runtime evidence from the same checkout. A formatting-scope error is also retained as a failure; the workflow does not bypass the scope guard.
 
 A correctness-test failure still fails the job and prevents subsequent ordinary steps. Cancellation does not start additional enforcement work. Original reference lexer inputs are absent from public checkouts, so that one source-dependent test is explicitly skipped; protected-tool rejection tests remain active. These jobs execute the repository's compiler and generated test code, never the supplied reference binaries.
 

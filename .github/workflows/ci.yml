@@ -53,6 +53,8 @@ jobs:
           llvm-config --version
           clang --version
       - name: Format check
+        id: format
+        continue-on-error: true
         run: python3 tools/check_rust_format.py
       - name: Lint
         id: lint
@@ -68,8 +70,8 @@ jobs:
         run: python3 -m unittest discover -s tools -p 'test_*.py'
       - name: Benchmark smoke checks (no timing gate on shared runners)
         run: cargo bench -p jai-bench --bench compiler --bench vm --bench discovery --locked -- --test --skip reference_lex
-      - name: Enforce lint result
-        if: ${{ always() && !cancelled() && steps.lint.outcome == 'failure' }}
+      - name: Enforce formatting and lint results
+        if: ${{ always() && !cancelled() && (steps.format.outcome == 'failure' || steps.lint.outcome == 'failure') }}
         run: |
-          echo "Clippy failed; see the Lint step diagnostics."
+          echo "Formatting or Clippy failed; see the corresponding step diagnostics."
           exit 1
