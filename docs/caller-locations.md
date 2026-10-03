@@ -1,5 +1,7 @@
 # Source and caller locations
 
+## What it is
+
 `#caller_location` is a deferred procedure parameter default. Omitting the argument produces a value of the source-declared `Source_Code_Location` type at that call's source span.
 
 `#location()` produces that nominal record at the directive's own source position. `#file` produces the exact retained UTF-8 filename, `#filepath` produces its containing directory, and `#line` produces the one-based source line as `s64`. These source expressions are also immutable declaration-site constants; a `#location()` parameter default keeps its definition's coordinates when called later.
@@ -10,7 +12,7 @@ The syntax tree retains a `CallerLocation` expression marker. Semantic signature
 
 The same carrier represents `#code,null` as a typed `CodeNull` default. Checked compiler source adapters consume its semantic Code identity before publishing a runtime call. The ordinary runtime argument binder rejects that default; Code has no runtime constant or storage representation.
 
-The shared callable argument binder materializes omitted defaults after binding supplied arguments. It validates the actual source nominal's field order and types: `fully_pathed_filename: string`, `line_number: s64`, and `character_number: s64`. Inferred defaults resolve the visible `Source_Code_Location` declaration through the defining file's module scope, including the adopted Preload declaration when bootstrap is enabled.
+The shared callable argument binder materializes omitted defaults after binding supplied arguments. It validates the actual source nominal's field order and types: `fully_pathed_filename: string`, `line_number: s64`, and `character_number: s64`. Inferred defaults resolve the visible `Source_Code_Location` declaration through the defining file's module scope, including the adopted Preload declaration when bootstrap is enabled. Transparent source aliases follow the selected declaration in its own defining file, including private provider imports behind an exported facade. The target remains the reserved original nominal identity; this traversal does not evaluate a value or construct a replacement record. Alias cycles and excessive depth produce source diagnostics.
 
 Expanding procedures validate caller-location formals in their defining scope for both supplied and omitted arguments. Their omitted caller defaults use the same typed carrier and materializer, after supplied arguments have been bound. Other evaluated omitted macro defaults retain the existing unsupported diagnostic.
 
@@ -48,3 +50,5 @@ Runtime location expressions and deferred caller materialization require an expl
 This feature relies on the syntax marker, the module graph's nominal declarations, `jai-source` immutable records, `jai-types` layout validation, semantic callback metadata, and the VM/native record and string value paths.
 
 The independently authored `jai-sema` caller-location tests exercise source semantics, VM execution, quoted source, compile-time calls, and rejection boundaries. `jai-codegen/tests/caller_locations.rs` checks exact filenames and Unicode columns in VM execution and freshly emitted native objects. No supplied native toolchain is executed by these fixtures.
+
+The 2026-10-02 integration gate passed all 27 `jai-sema --test caller-locations` tests and the workspace all-targets compile. The alias regressions cover a private provider's defining scope, the selected physical Preload nominal, malformed or unrelated nominal targets, cycles, and literal locations. Complete Basic roots still await checks with the rebuilt CLI; their historical `017353c4` baseline fails at `Basic/module.jai:35:55` during inferred caller-location default typing. The focused gate does not establish whole Basic acceptance.

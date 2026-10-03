@@ -2,6 +2,7 @@ use crate::{ByteImage, ByteTarget, Endian, Error, LimitKind, Limits, Value};
 mod addresses;
 mod code_images;
 mod code_pointers;
+mod opaque_addresses;
 pub(crate) use code_pointers::CodePointer;
 mod branch_quota;
 mod copy_work;
@@ -41,60 +42,100 @@ enum Projection {
 /// Allocation identity, type and projection path are never raw host addresses.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Pointer {
+    origin: PointerOrigin,
+    pointee: TypeId,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+enum PointerOrigin {
+    Null,
+    Data(DataPointer),
+    Code(CodePointer),
+    Opaque(opaque_addresses::OpaqueAddress),
+}
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct DataPointer {
     memory: u64,
     allocation: u64,
-    pointee: TypeId,
     path: Vec<Projection>,
     region: Option<(u64, u64)>,
-    // Sealed views never regain their full owner extent through a cast.
     restricted_region: bool,
-    code: Option<CodePointer>,
 }
 impl Pointer {
     pub fn null(pointee: TypeId) -> Self {
         Self {
-            memory: 0,
-            allocation: 0,
+            origin: PointerOrigin::Null,
             pointee,
-            path: vec![],
-            region: None,
-            restricted_region: false,
-            code: None,
         }
     }
     pub fn is_null(&self) -> bool {
-        self.allocation == 0 && self.code.is_none()
+        matches!(self.origin, PointerOrigin::Null)
     }
     pub(crate) fn memory_identity(&self) -> u64 {
-        self.memory
+        match &self.origin {
+            PointerOrigin::Data(data) => data.memory,
+            PointerOrigin::Code(code) => code.memory_identity(),
+            _ => 0,
+        }
+    }
+    fn allocation_id(&self) -> u64 {
+        match &self.origin {
+            PointerOrigin::Data(data) => data.allocation,
+            _ => 0,
+        }
     }
     #[cfg(test)]
     pub(crate) fn allocation_key(&self) -> (u64, u64) {
         self.data_allocation_key()
-            .expect("code pointer has no data allocation")
+            .expect("pointer has no data allocation")
     }
     pub(crate) fn data_allocation_key(&self) -> Option<(u64, u64)> {
-        self.code
-            .is_none()
-            .then_some((self.memory, self.allocation))
+        match &self.origin {
+            PointerOrigin::Data(data) => Some((data.memory, data.allocation)),
+            _ => None,
+        }
     }
     pub(crate) fn code_pointer(&self) -> Option<CodePointer> {
-        self.code
+        match self.origin {
+            PointerOrigin::Code(code) => Some(code),
+            _ => None,
+        }
     }
     pub(crate) fn from_code(code: CodePointer, pointee: TypeId) -> Self {
         Self {
-            memory: code.memory_identity(),
-            allocation: 0,
+            origin: PointerOrigin::Code(code),
             pointee,
-            path: vec![],
-            region: None,
-            restricted_region: false,
-            code: Some(code),
         }
     }
-    /// Dynamic projection entries copied when this handle is cloned.
+    fn data(&self) -> Result<&DataPointer, Error> {
+        match &self.origin {
+            PointerOrigin::Data(data) => Ok(data),
+            PointerOrigin::Null => Err(Error::NullPointer),
+            PointerOrigin::Code(_) => Err(Error::UnsupportedPointerOperation(
+                "code address has no data storage",
+            )),
+            PointerOrigin::Opaque(_) => Err(Error::UnsupportedPointerOperation(
+                "numeric address has no allocation provenance",
+            )),
+        }
+    }
+    fn data_mut(&mut self) -> Result<&mut DataPointer, Error> {
+        match &mut self.origin {
+            PointerOrigin::Data(data) => Ok(data),
+            PointerOrigin::Null => Err(Error::NullPointer),
+            PointerOrigin::Code(_) => Err(Error::UnsupportedPointerOperation(
+                "code address has no data storage",
+            )),
+            PointerOrigin::Opaque(_) => Err(Error::UnsupportedPointerOperation(
+                "numeric address has no allocation provenance",
+            )),
+        }
+    }
+    /// Only actual data pointers retain dynamic projections.
     pub(crate) fn metadata_cells(&self) -> usize {
-        self.path.capacity()
+        match &self.origin {
+            PointerOrigin::Data(data) => data.path.capacity(),
+            _ => 0,
+        }
     }
     pub fn pointee(&self) -> TypeId {
         self.pointee
@@ -302,13 +343,14 @@ impl Memory {
         self.virtual_regions
             .insert(virtual_base, (allocation, extent));
         Ok(Pointer {
-            memory: self.identity,
-            allocation,
+            origin: PointerOrigin::Data(DataPointer {
+                memory: self.identity,
+                allocation,
+                path: vec![],
+                region: None,
+                restricted_region: false,
+            }),
             pointee: ty,
-            path: vec![],
-            region: None,
-            restricted_region: false,
-            code: None,
         })
     }
     /// Mutable, aligned caller-owned byte storage for runtime-sized sequence packs.
@@ -338,7 +380,12 @@ impl Memory {
         )
     }
     fn allocation(&self, pointer: &Pointer) -> Result<&Allocation, Error> {
-        if pointer.code.is_some() {
+        if pointer.is_opaque() {
+            return Err(Error::UnsupportedPointerOperation(
+                "numeric address has no allocation provenance",
+            ));
+        }
+        if pointer.code_pointer().is_some() {
             return Err(Error::UnsupportedPointerOperation(
                 "code address has no data storage",
             ));
@@ -346,11 +393,11 @@ impl Memory {
         if pointer.is_null() {
             return Err(Error::NullPointer);
         }
-        if pointer.memory != self.identity {
+        if pointer.memory_identity() != self.identity {
             return Err(Error::ForeignPointer);
         }
         self.allocations
-            .get(&pointer.allocation)
+            .get(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)
     }
     pub fn cast_pointer(
@@ -364,7 +411,11 @@ impl Memory {
             return Err(Error::InvalidIr("force requires a checked storage bitcast"));
         }
         types.kind(pointee)?;
-        if let Some(code) = pointer.code {
+        if pointer.is_opaque() {
+            self.validate_opaque_address(types, pointer)?;
+            return Ok(pointer.retype(pointee));
+        }
+        if let Some(code) = pointer.code_pointer() {
             self.validate_code_pointer(types, code)?;
             return Ok(pointer.retype(pointee));
         }
@@ -373,19 +424,19 @@ impl Memory {
         }
         let mut result = pointer.clone();
         if !pointer.is_null()
-            && !pointer.restricted_region
+            && !pointer.data()?.restricted_region
             && self.allocation(pointer)?.ty == pointee
             && self.byte_offset(types, pointer)? == 0
-            && (pointer.region.is_none()
-                || pointer.region == Some((0, self.allocation(pointer)?.virtual_extent))
+            && (pointer.data()?.region.is_none()
+                || pointer.data()?.region == Some((0, self.allocation(pointer)?.virtual_extent))
                 || types.kind(pointee)?.record_storage_id().is_some())
         {
             // A leading base/header field may be downcast to its proven owner.
             // The allocation identity and exact nominal type establish this span.
-            result.region = None;
+            result.data_mut()?.region = None;
         }
         if !pointer.is_null() && self.path_type(types, pointer)? != pointee {
-            result.path = vec![Projection::Bytes {
+            result.data_mut()?.path = vec![Projection::Bytes {
                 offset: self.byte_offset(types, pointer)?,
                 ty: pointee,
             }];
@@ -399,32 +450,36 @@ impl Memory {
         left: &Pointer,
         right: &Pointer,
     ) -> Result<bool, Error> {
-        if left.code.is_some() || right.code.is_some() {
-            if let Some(code) = left.code {
+        if left.is_opaque() || right.is_opaque() {
+            return Ok(self.comparable_pointer_bits(types, left)?
+                == self.comparable_pointer_bits(types, right)?);
+        }
+        if left.code_pointer().is_some() || right.code_pointer().is_some() {
+            if let Some(code) = left.code_pointer() {
                 self.validate_code_pointer(types, code)?;
             } else if !left.is_null() {
                 self.allocation(left)?;
             }
-            if let Some(code) = right.code {
+            if let Some(code) = right.code_pointer() {
                 self.validate_code_pointer(types, code)?;
             } else if !right.is_null() {
                 self.allocation(right)?;
             }
-            return Ok(left.code.is_some() && left.code == right.code);
+            return Ok(left.code_pointer().is_some() && left.code_pointer() == right.code_pointer());
         }
         if left.is_null() || right.is_null() {
             return Ok(left.is_null() && right.is_null());
         }
         self.allocation(left)?;
         self.allocation(right)?;
-        Ok(left.memory == right.memory
-            && left.allocation == right.allocation
+        Ok(left.memory_identity() == right.memory_identity()
+            && left.allocation_id() == right.allocation_id()
             && self.byte_offset(types, left)? == self.byte_offset(types, right)?)
     }
     fn byte_offset(&self, types: &dyn TypeView, pointer: &Pointer) -> Result<u64, Error> {
         let mut ty = self.allocation(pointer)?.ty;
         let mut offset = 0u64;
-        for projection in &pointer.path {
+        for projection in &pointer.data()?.path {
             let relative = match (projection, types.kind(ty)?) {
                 (
                     Projection::Bytes {
@@ -504,7 +559,9 @@ impl Memory {
     ) -> Result<i64, Error> {
         self.validate_pointer(types, left)?;
         self.validate_pointer(types, right)?;
-        if left.memory != right.memory || left.allocation != right.allocation {
+        if left.memory_identity() != right.memory_identity()
+            || left.allocation_id() != right.allocation_id()
+        {
             return Err(Error::InvalidIr(
                 "pointer difference requires one allocation",
             ));
@@ -532,7 +589,7 @@ impl Memory {
     pub fn freeze(&mut self, pointer: &Pointer) -> Result<(), Error> {
         self.allocation(pointer)?;
         self.allocations
-            .get_mut(&pointer.allocation)
+            .get_mut(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?
             .readonly = true;
         Ok(())
@@ -547,11 +604,11 @@ impl Memory {
         self.validate_pointer(types, &pointer)?;
         let ty = sequence_field_type(types, pointer.pointee, field)?;
         let mut result = pointer.clone();
-        if result.path.len() >= self.limits.evaluation_depth.min(256) {
+        if result.data()?.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
-        result.path.reserve_exact(1);
-        result.path.push(Projection::Sequence(field));
+        result.data_mut()?.path.reserve_exact(1);
+        result.data_mut()?.path.push(Projection::Sequence(field));
         result.pointee = ty;
         let start = self.byte_offset(types, &result)?;
         let size = self.layout(types, ty)?.size;
@@ -563,29 +620,29 @@ impl Memory {
                 length: usize::try_from(parent.1 - parent.0).unwrap_or(usize::MAX),
             });
         }
-        result.region = Some((start, end));
+        result.data_mut()?.region = Some((start, end));
         Ok(result)
     }
     pub fn release(&mut self, pointer: &Pointer) -> Result<(), Error> {
         if self.allocation(pointer)?.readonly {
             return Err(Error::ReadOnlyStorage);
         }
-        if !pointer.path.is_empty() {
+        if !pointer.data()?.path.is_empty() {
             return Err(Error::InvalidIr("only an allocation root can be released"));
         }
-        if self.pool_ledger.owns_descriptor(pointer.allocation) {
+        if self.pool_ledger.owns_descriptor(pointer.allocation_id()) {
             return Err(Error::InvalidIr(
                 "finish live pools before releasing their descriptor allocation",
             ));
         }
         let allocation = self
             .allocations
-            .remove(&pointer.allocation)
+            .remove(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?;
         self.cells.set(self.cells.get() - allocation.cells.get());
         self.virtual_regions.remove(&allocation.virtual_base);
         self.runtime_types
-            .retain(|(id, _), _| *id != pointer.allocation);
+            .retain(|(id, _), _| *id != pointer.allocation_id());
         Ok(())
     }
     pub fn field(
@@ -605,11 +662,11 @@ impl Memory {
             length: record.fields.len(),
         })?;
         let mut result = pointer.clone();
-        if result.path.len() >= self.limits.evaluation_depth.min(256) {
+        if result.data()?.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
-        result.path.reserve_exact(1);
-        result.path.push(Projection::Field(field));
+        result.data_mut()?.path.reserve_exact(1);
+        result.data_mut()?.path.push(Projection::Field(field));
         result.pointee = ty;
         let start = self.byte_offset(types, &result)?;
         let size = self.layout(types, ty)?.size;
@@ -621,7 +678,7 @@ impl Memory {
                 length: usize::try_from(parent_region.1 - parent_region.0).unwrap_or(usize::MAX),
             });
         }
-        result.region = Some(if record.kind == jai_types::RecordKind::Union {
+        result.data_mut()?.region = Some(if record.kind == jai_types::RecordKind::Union {
             parent_region
         } else {
             (start, end)
@@ -654,11 +711,11 @@ impl Memory {
             return Err(Error::OutOfBounds { index, length });
         }
         let mut result = pointer.clone();
-        if result.path.len() >= self.limits.evaluation_depth.min(256) {
+        if result.data()?.path.len() >= self.limits.evaluation_depth.min(256) {
             return Err(Error::Limit(LimitKind::EvaluationDepth));
         }
-        result.path.reserve_exact(1);
-        result.path.push(Projection::Index(index));
+        result.data_mut()?.path.reserve_exact(1);
+        result.data_mut()?.path.push(Projection::Index(index));
         result.pointee = element;
         let start = self.byte_offset(types, &pointer)?;
         let size = match types.kind(pointer.pointee)? {
@@ -673,7 +730,7 @@ impl Memory {
                 length: usize::try_from(parent_region.1 - parent_region.0).unwrap_or(usize::MAX),
             });
         }
-        result.region = Some((start, end));
+        result.data_mut()?.region = Some((start, end));
         Ok(result)
     }
     /// Offset within the same array only; one-past pointers cannot be dereferenced.
@@ -683,7 +740,7 @@ impl Memory {
         pointer: &Pointer,
         offset: isize,
     ) -> Result<Pointer, Error> {
-        if let Some(code) = pointer.code {
+        if let Some(code) = pointer.code_pointer() {
             self.validate_code_pointer(types, code)?;
             return if offset == 0 {
                 Ok(pointer.clone())
@@ -714,7 +771,7 @@ impl Memory {
                 length: usize::try_from(length - start).unwrap_or(usize::MAX),
             })?;
         let mut result = pointer.clone();
-        result.path = vec![Projection::Bytes {
+        result.data_mut()?.path = vec![Projection::Bytes {
             offset: next,
             ty: pointer.pointee,
         }];
@@ -729,7 +786,7 @@ impl Memory {
         }
     }
     fn region(&self, types: &dyn TypeView, pointer: &Pointer) -> Result<(u64, u64), Error> {
-        pointer.region.map_or_else(
+        pointer.data()?.region.map_or_else(
             || self.storage_length(types, pointer).map(|end| (0, end)),
             Ok,
         )
@@ -737,7 +794,7 @@ impl Memory {
     fn validate_access(&self, types: &dyn TypeView, pointer: &Pointer) -> Result<(), Error> {
         let offset = self.byte_offset(types, pointer)?;
         let (start, length) = self.region(types, pointer)?;
-        let size = if pointer.path.is_empty()
+        let size = if pointer.data()?.path.is_empty()
             && matches!(self.allocation(pointer)?.value, Some(Value::String(_)))
         {
             length
@@ -815,7 +872,7 @@ impl Memory {
     }
     fn path_type(&self, types: &dyn TypeView, pointer: &Pointer) -> Result<TypeId, Error> {
         let mut ty = self.allocation(pointer)?.ty;
-        for projection in &pointer.path {
+        for projection in &pointer.data()?.path {
             ty = match (projection, types.kind(ty)?) {
                 (Projection::Bytes { ty, .. }, _) => *ty,
                 (Projection::Sequence(field), _) => sequence_field_type(types, ty, *field)?,
@@ -840,7 +897,7 @@ impl Memory {
         Ok(ty)
     }
     fn validate_pointer(&self, types: &dyn TypeView, pointer: &Pointer) -> Result<(), Error> {
-        if let Some(code) = pointer.code {
+        if let Some(code) = pointer.code_pointer() {
             types.kind(pointer.pointee)?;
             return self.validate_code_pointer(types, code);
         }
@@ -903,9 +960,9 @@ impl Memory {
     fn retokenize_image(&self, types: &dyn TypeView, image: &mut ByteImage) -> Result<(), Error> {
         image.retokenize_handles(|value| {
             let key = match value {
-                Value::Pointer(pointer) if pointer.code.is_some() => {
+                Value::Pointer(pointer) if pointer.code_pointer().is_some() => {
                     let code = pointer
-                        .code
+                        .code_pointer()
                         .ok_or(Error::InvalidIr("missing code address receipt"))?;
                     self.validate_code_pointer(types, code)?;
                     return Ok(code.token());
@@ -980,9 +1037,9 @@ impl Memory {
     ) -> Result<Vec<(usize, TypeId, usize)>, Error> {
         let mut ty = self.allocation(pointer)?.ty;
         let mut prefix = pointer.clone();
-        prefix.path.clear();
+        prefix.data_mut()?.path.clear();
         let mut unions = vec![];
-        for projection in &pointer.path {
+        for projection in &pointer.data()?.path {
             if let (Projection::Field(field), TypeKind::Record(id)) = (projection, types.kind(ty)?)
                 && types.record(*id)?.kind == jai_types::RecordKind::Union
             {
@@ -993,7 +1050,7 @@ impl Memory {
                     *field,
                 ));
             }
-            prefix.path.push(projection.clone());
+            prefix.data_mut()?.path.push(projection.clone());
             ty = self.path_type(types, &prefix)?;
         }
         Ok(unions)
@@ -1007,7 +1064,7 @@ impl Memory {
         self.validate_pointer(types, pointer)?;
         self.validate_access(types, pointer)?;
         let allocation = self.allocation(pointer)?;
-        if pointer.path.is_empty()
+        if pointer.data()?.path.is_empty()
             && let Some(Value::String(bytes)) = &allocation.value
         {
             let image = allocation.image.borrow();
@@ -1019,6 +1076,7 @@ impl Memory {
         if allocation.image.borrow().is_some()
             || allocation.has_stored_aggregate
             || pointer
+                .data()?
                 .path
                 .iter()
                 .any(|p| matches!(p, Projection::Bytes { .. }))
@@ -1032,9 +1090,9 @@ impl Memory {
             .value
             .as_ref()
             .ok_or(Error::Uninitialized)?;
-        for (ordinal, projection) in pointer.path.iter().enumerate() {
+        for (ordinal, projection) in pointer.data()?.path.iter().enumerate() {
             if let Projection::Sequence(field) = projection {
-                if ordinal + 1 != pointer.path.len() {
+                if ordinal + 1 != pointer.data()?.path.len() {
                     return Err(Error::InvalidIr(
                         "cannot project sequence descriptor scalar further",
                     ));
@@ -1042,7 +1100,7 @@ impl Memory {
                 return sequence_field_value(value, *field);
             }
             if let (Projection::Index(index), Value::String(bytes)) = (projection, value) {
-                if ordinal + 1 != pointer.path.len() {
+                if ordinal + 1 != pointer.data()?.path.len() {
                     return Err(Error::InvalidIr("cannot project a string byte further"));
                 }
                 let byte = *bytes.get(*index).ok_or(Error::OutOfBounds {
@@ -1099,12 +1157,13 @@ impl Memory {
         }
         let allocation = self.allocation(pointer)?;
         let unions = self.union_projections(types, pointer)?;
-        if !pointer.path.is_empty()
+        if !pointer.data()?.path.is_empty()
             && (matches!(value, Value::AddressInteger(_))
                 || allocation.value.is_none()
                 || allocation.image.borrow().is_some()
                 || allocation.has_stored_aggregate
                 || pointer
+                    .data()?
                     .path
                     .iter()
                     .any(|p| matches!(p, Projection::Bytes { .. }))
@@ -1136,15 +1195,15 @@ impl Memory {
         // Change a temporary root first so bounds/type/limit errors do not partially mutate memory.
         let allocation = self.allocation(pointer)?;
         let mut root = allocation.value.clone();
-        if pointer.path.is_empty() {
+        if pointer.data()?.path.is_empty() {
             root = Some(value);
         } else {
             let mut destination = root.as_mut().ok_or(Error::Uninitialized)?;
             let mut incoming = Some(value);
             let mut wrote_byte = false;
-            for (ordinal, projection) in pointer.path.iter().enumerate() {
+            for (ordinal, projection) in pointer.data()?.path.iter().enumerate() {
                 if let Projection::Sequence(field) = projection {
-                    if ordinal + 1 != pointer.path.len() {
+                    if ordinal + 1 != pointer.data()?.path.len() {
                         return Err(Error::InvalidIr(
                             "cannot project sequence descriptor scalar further",
                         ));
@@ -1162,7 +1221,7 @@ impl Memory {
                 if let (Projection::Index(index), Value::String(bytes)) =
                     (projection, &mut *destination)
                 {
-                    if ordinal + 1 != pointer.path.len() {
+                    if ordinal + 1 != pointer.data()?.path.len() {
                         return Err(Error::InvalidIr("cannot project a string byte further"));
                     }
                     let byte = incoming
@@ -1221,7 +1280,7 @@ impl Memory {
             .ok_or(Error::Limit(LimitKind::ValueCells))?;
         let allocation = self
             .allocations
-            .get_mut(&pointer.allocation)
+            .get_mut(&pointer.allocation_id())
             .ok_or(Error::DanglingPointer)?;
         allocation.value = root;
         allocation.has_stored_aggregate = has_stored_aggregate;

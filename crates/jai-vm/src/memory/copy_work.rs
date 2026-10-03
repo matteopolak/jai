@@ -24,14 +24,14 @@ impl Memory {
         self.validate_access(types, pointer)?;
         let allocation = self.allocation(pointer)?;
         let path = pointer.metadata_cells();
-        if pointer.path.is_empty()
+        if pointer.data()?.path.is_empty()
             && let Some(Value::String(bytes)) = &allocation.value
         {
             return add_work(path, 1usize.saturating_add(bytes.len()));
         }
         let mut ty = allocation.ty;
         let mut union = false;
-        for projection in &pointer.path {
+        for projection in &pointer.data()?.path {
             if let (Projection::Field(_), kind) = (projection, types.kind(ty)?)
                 && kind.record_storage_id().is_some()
                 && types.record_storage_definition(ty)?.kind == jai_types::RecordKind::Union
@@ -59,6 +59,7 @@ impl Memory {
             || union
             || ty != pointer.pointee
             || pointer
+                .data()?
                 .path
                 .iter()
                 .any(|p| matches!(p, Projection::Bytes { .. }));
@@ -80,9 +81,9 @@ impl Memory {
             return Ok(work);
         }
         let mut value = allocation.value.as_ref().ok_or(Error::Uninitialized)?;
-        for (ordinal, projection) in pointer.path.iter().enumerate() {
+        for (ordinal, projection) in pointer.data()?.path.iter().enumerate() {
             match (projection, value) {
-                (Projection::Sequence(field), _) if ordinal + 1 == pointer.path.len() => {
+                (Projection::Sequence(field), _) if ordinal + 1 == pointer.data()?.path.len() => {
                     let metadata = match (field, value) {
                         (jai_ir::SequenceField::Data, Value::Slice { pointer, .. })
                         | (jai_ir::SequenceField::Data, Value::DynamicArray { pointer, .. })
@@ -93,7 +94,9 @@ impl Memory {
                     };
                     return add_work(path, add_work(1, metadata)?);
                 }
-                (Projection::Index(_), Value::String(_)) if ordinal + 1 == pointer.path.len() => {
+                (Projection::Index(_), Value::String(_))
+                    if ordinal + 1 == pointer.data()?.path.len() =>
+                {
                     return add_work(path, 1);
                 }
                 (Projection::Field(index), Value::Record { fields, .. }) => {
@@ -155,7 +158,7 @@ impl Memory {
             return Err(Error::ReadOnlyStorage);
         }
         let mut work = add_work(pointer.metadata_cells(), allocation.cells.get())?;
-        if !pointer.path.is_empty() {
+        if !pointer.data()?.path.is_empty() {
             work = add_work(
                 work,
                 usize::try_from(allocation.virtual_extent)

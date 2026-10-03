@@ -130,6 +130,7 @@ impl Value {
                         descriptor: Some(pointer),
                     },
                 ) if !pointer.is_null()
+                    && !pointer.is_opaque()
                     && types.runtime_type_header() == Some(pointer.pointee()) => {}
                 (TypeKind::Procedure(_), Self::Procedure { signature, .. }) if *signature == ty => {
                 }

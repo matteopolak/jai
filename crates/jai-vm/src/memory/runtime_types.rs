@@ -21,7 +21,10 @@ impl Memory {
                 "runtime Type binding has the wrong header type",
             ));
         }
-        let key = (descriptor.allocation, self.byte_offset(types, descriptor)?);
+        let key = (
+            descriptor.allocation_id(),
+            self.byte_offset(types, descriptor)?,
+        );
         if let Some(old) = self.runtime_types.get(&key) {
             return if *old == identity {
                 Ok(())
@@ -52,7 +55,10 @@ impl Memory {
         }
         self.validate_pointer(types, descriptor)?;
         self.validate_access(types, descriptor)?;
-        let key = (descriptor.allocation, self.byte_offset(types, descriptor)?);
+        let key = (
+            descriptor.allocation_id(),
+            self.byte_offset(types, descriptor)?,
+        );
         let identity = self
             .runtime_types
             .get(&key)
@@ -80,6 +86,21 @@ impl Memory {
             remaining = remaining
                 .checked_sub(1)
                 .ok_or(Error::Limit(LimitKind::ValueCells))?;
+            // Descriptor data fields are numeric pointer values too. Check their
+            // target domain before retaining any owner, while still traversing
+            // a DynamicArray allocator's independent typed payload below.
+            let pointer = match value {
+                Value::Pointer(pointer)
+                | Value::Slice { pointer, .. }
+                | Value::StringView { pointer, .. }
+                | Value::DynamicArray { pointer, .. } => Some(pointer),
+                _ => None,
+            };
+            if let Some(pointer) = pointer
+                && pointer.is_opaque()
+            {
+                self.validate_opaque_address(types, pointer)?;
+            }
             match value {
                 Value::Pointer(pointer) if pointer.code_pointer().is_some() => {
                     self.validate_pointer(types, pointer)?;

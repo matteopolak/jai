@@ -477,3 +477,138 @@ fn inferred_location_adopts_the_complete_compiler_prelude_nominal() {
         "{result:?}"
     );
 }
+
+#[test]
+fn inferred_location_follows_the_selected_alias_defining_file() {
+    for alias in [
+        "Source_Code_Location :: Provider.Source_Code_Location;",
+        "Source_Code_Location :: #type Provider.Source_Code_Location;",
+    ] {
+        let source = "#load \"facade.jai\";\nmain::()->s64 { return probe(); }";
+        let fixture = Fixture::new(source);
+        let provider = format!(
+            "{LOCATION}take::(value:Source_Code_Location)->s64{{return value.line_number*1000+value.character_number;}}"
+        );
+        let facade = format!(
+            "#scope_file Provider::#import,file \"provider.jai\";#scope_export {alias}probe::(loc:=#caller_location)->s64{{return Provider.take(loc);}}"
+        );
+        fs::write(fixture.0.join("provider.jai"), provider).unwrap();
+        fs::write(fixture.0.join("facade.jai"), facade).unwrap();
+        assert_eq!(
+            fixture.run(true).unwrap(),
+            encoded_position(source, "probe()")
+        );
+    }
+}
+
+#[test]
+fn literal_location_follows_the_selected_source_alias() {
+    let facade = "#scope_file Provider::#import,file \"provider.jai\";#scope_export Source_Code_Location::Provider.Source_Code_Location;probe::()->s64{location:=#location();return Provider.take(location);}";
+    let fixture = Fixture::new("#load \"facade.jai\";main::()->s64{return probe();}");
+    let provider = format!(
+        "{LOCATION}take::(value:Source_Code_Location)->s64{{return value.line_number*1000+value.character_number;}}"
+    );
+    fs::write(fixture.0.join("provider.jai"), provider).unwrap();
+    fs::write(fixture.0.join("facade.jai"), facade).unwrap();
+    assert_eq!(
+        fixture.run(true).unwrap(),
+        encoded_position(facade, "#location()")
+    );
+}
+
+#[test]
+fn caller_location_aliases_preserve_nominal_validation_and_cycle_rejection() {
+    for (target, provider) in [
+        (
+            "Other_Location",
+            "Other_Location::struct{fully_pathed_filename:string;line_number:s64;character_number:s64;}",
+        ),
+        (
+            "Source_Code_Location",
+            "Source_Code_Location::struct{fully_pathed_filename:string;line_number:u64;character_number:s64;}",
+        ),
+    ] {
+        let source = format!(
+            "Provider::#import,file \"provider.jai\";Source_Code_Location::Provider.{target};probe::(loc:=#caller_location)->s64{{return 42;}}main::()->s64{{return probe();}}"
+        );
+        let fixture = Fixture::new(&source);
+        fs::write(fixture.0.join("provider.jai"), provider).unwrap();
+        assert!(
+            fixture
+                .run(true)
+                .unwrap_err()
+                .contains("Source_Code_Location")
+        );
+    }
+    let fixture = Fixture::new(
+        "Source_Code_Location::Cycle;Cycle::Source_Code_Location;probe::(loc:=#caller_location)->s64{return 42;}main::()->s64{return probe();}",
+    );
+    // Source discovery may reject a cycle before semantic inference reaches it.
+    if let Ok(graph) = ModuleGraph::load(&fixture.0.join("main.jai"), GraphOptions::default()) {
+        assert!(
+            resolve_graph_with_options(
+                &graph,
+                &ResolveOptions {
+                    layout: Some(LayoutPolicy::lp64()),
+                    ..Default::default()
+                },
+                &mut NoEffects,
+            )
+            .is_err()
+        );
+    }
+}
+
+#[test]
+fn exported_facade_adopts_the_selected_physical_preload_location() {
+    use jai_modules::{PreludeSource, SourceOverlay};
+    use jai_types::{Architecture, BuildTarget, ByteOrder, OperatingSystem};
+    let repository = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .to_path_buf();
+    let source = "#load \"facade.jai\";\nmain::()->s64 { return probe(); }";
+    let fixture = Fixture::new(source);
+    let facade = "#scope_file Protocol::#import \"Preload\";#scope_export Source_Code_Location::Protocol.Source_Code_Location;accept::(location:Protocol.Source_Code_Location)->s64{return location.line_number*1000+location.character_number;}probe::(loc:=#caller_location)->s64{return accept(loc);}";
+    fs::write(fixture.0.join("facade.jai"), facade).unwrap();
+    let target = BuildTarget {
+        operating_system: OperatingSystem::Linux,
+        architecture: Architecture::X86_64,
+        layout: LayoutPolicy::lp64(),
+        byte_order: ByteOrder::Little,
+    };
+    let roots = vec![repository.join("stdlib")];
+    let provider = SourceOverlay::new();
+    let graph = ModuleGraph::load_with_bootstrap(
+        &fixture.0.join("main.jai"),
+        GraphOptions {
+            import_dirs: roots.clone(),
+        },
+        PreludeSource::File(repository.join("prelude/Preload.jai")),
+        &provider,
+        Some(target.clone()),
+    )
+    .unwrap();
+    let compiler = jai_sema::CompilerBindingContext::from_graph(
+        &graph,
+        &roots,
+        jai_vm::WorkspaceId::from_raw(1).unwrap(),
+    );
+    let program = resolve_graph_with_options(
+        &graph,
+        &ResolveOptions {
+            target: Some(target),
+            compiler: Some(compiler),
+            ..Default::default()
+        },
+        &mut NoEffects,
+    )
+    .unwrap_or_else(|e| panic!("{}", e.render(graph.sources())));
+    let outcome = jai_vm::execute(&program, Limits::default()).outcome;
+    assert!(
+        matches!(outcome,Outcome::Complete(ref values) if matches!(values.as_slice(),[Value::Int(value)] if value.value()==encoded_position(source,"probe()"))),
+        "{outcome:?}"
+    );
+}

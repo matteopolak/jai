@@ -1,8 +1,14 @@
 //! Allocator-only source receipts authorize virtual storage without host I/O.
 use jai_driver::CompilationUnit;
-use jai_modules::{BootstrapOptions, GraphOptions};
+use jai_modules::{
+    BootstrapOptions, GraphOptions, PreludeSource, RuntimeSupportOptions, RuntimeSupportParameters,
+    RuntimeSupportSource,
+};
 use jai_types::{Architecture, BuildTarget, ByteOrder, LayoutPolicy, OperatingSystem};
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 struct Fixture(PathBuf);
 impl Fixture {
@@ -170,6 +176,39 @@ main::()->s64 #no_context {return measured;}
     assert!(error.to_string().contains("foreign procedure"), "{error}");
 }
 #[test]
+fn authored_standard_allocator_runs_its_real_heap_ledger_without_stdio() {
+    let workspace = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let roots = vec![workspace.join("stdlib")];
+    let unit = CompilationUnit::load_with_bootstrap(
+        &workspace.join("tests/stdlib/default-allocator.jai"),
+        GraphOptions {
+            import_dirs: roots.clone(),
+        },
+        BootstrapOptions {
+            prelude: PreludeSource::File(workspace.join("stdlib/Preload.jai")),
+            runtime_support: Some(RuntimeSupportOptions {
+                source: RuntimeSupportSource::File(workspace.join("stdlib/Runtime_Support.jai")),
+                parameters: RuntimeSupportParameters {
+                    define_system_entry_point: false,
+                    define_initialization: false,
+                    enable_backtrace_on_crash: false,
+                },
+            }),
+        },
+        Some(target()),
+    )
+    .unwrap();
+    let context =
+        jai_sema::FileAbiBindingContext::allocator_from_graph(unit.graph(), &roots, target())
+            .unwrap();
+    assert!(context.includes_default_allocator());
+    let program = unit.resolve_with_target(target()).unwrap();
+    assert_eq!(answer(&program), 0);
+}
+#[test]
 fn independently_selected_allocator_instances_keep_their_own_foreign_identities() {
     let allocator = format!("#module_parameters(Instance:s64=1);{}", ALLOCATOR);
     let main = r#"
@@ -199,4 +238,102 @@ main::()->s64 #no_context {return measured;}
         .collect::<std::collections::HashSet<_>>();
     assert_eq!(identities.len(), 6);
     assert_eq!(answer(&program), 42);
+}
+
+fn authored_stdlib_unit(source: &Path) -> CompilationUnit {
+    let workspace = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    CompilationUnit::load_with_bootstrap(
+        source,
+        GraphOptions {
+            import_dirs: vec![workspace.join("stdlib")],
+        },
+        BootstrapOptions {
+            prelude: PreludeSource::File(workspace.join("stdlib/Preload.jai")),
+            runtime_support: Some(RuntimeSupportOptions {
+                source: RuntimeSupportSource::File(workspace.join("stdlib/Runtime_Support.jai")),
+                parameters: RuntimeSupportParameters {
+                    define_system_entry_point: false,
+                    define_initialization: false,
+                    enable_backtrace_on_crash: false,
+                },
+            }),
+        },
+        Some(target()),
+    )
+    .unwrap()
+}
+
+#[test]
+fn authored_allocator_caps_and_ownership_results_keep_exact_numeric_bits_in_storage() {
+    let main = r#"
+Default::#import "Default_Allocator";
+Snapshot::struct {caps:*void; owned:*void;}
+check_numeric_protocol::()->bool {
+    allocator:=Default.allocator;
+    caps:=allocator.proc(.CAPS,0,0,null,allocator.data);
+    expected:=cast(u64)(Allocator_Caps.MULTIPLE_THREADS | .CREATE_HEAP | .FREE | .ACTUALLY_RESIZE | .IS_THIS_YOURS | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR);
+    if !caps || caps==null return false;
+    if cast(u64)caps!=expected return false;
+    if caps!=cast(*void)expected return false;
+    memory:=allocator.proc(.ALLOCATE,4,0,null,allocator.data);
+    if !memory return false;
+    owned:=allocator.proc(.IS_THIS_YOURS,0,0,memory,allocator.data);
+    if !owned || owned==null return false;
+    if cast(u64)owned!=1 return false;
+    stored:Snapshot;
+    stored.caps=caps;
+    stored.owned=owned;
+    if cast(u64)stored.caps!=expected return false;
+    if stored.owned!=cast(*void)1 return false;
+    roundtrip:=cast(*void)(cast(u64)stored.owned);
+    if !roundtrip || roundtrip==null || cast(u64)roundtrip!=1 return false;
+    allocator.proc(.FREE,0,0,memory,allocator.data);
+    return true;
+}
+#assert #run check_numeric_protocol();
+main::()->s64 {return 42;}
+"#;
+    let fixture = Fixture::new(ALLOCATOR, main);
+    let unit = authored_stdlib_unit(&fixture.0.join("main.jai"));
+    let program = unit.resolve_with_target(target()).unwrap();
+    assert_eq!(answer(&program), 42);
+}
+
+#[test]
+fn opaque_numeric_pointers_grant_no_virtual_heap_or_memory_authority() {
+    for (operation, expected) in [
+        (
+            "c_free(cast(*void)1); return 42;",
+            "pointer is not owned by the virtual heap",
+        ),
+        (
+            "memory:=c_realloc(cast(*void)1,4); return 42;",
+            "pointer is not owned by the virtual heap",
+        ),
+        (
+            "memory:=cast(*u8)1; return cast(s64)memory[0];",
+            "numeric address has no allocation provenance",
+        ),
+        (
+            "memory:=cast(*u8)1; memory[0]=42; return 42;",
+            "numeric address has no allocation provenance",
+        ),
+    ] {
+        let main = format!(
+            "#import \"Default_Allocator\"; measure::()->s64 #no_context {{{operation}}} measured::#run measure(); main::()->s64 #no_context {{return measured;}}"
+        );
+        let fixture = Fixture::new(ALLOCATOR, &main);
+        let unit = fixture.unit();
+        let error = resolve(&unit, &options(&unit, &[fixture.modules()])).unwrap_err();
+        let message = error.to_string();
+        assert!(message.contains(expected), "{operation}: {error}");
+        assert!(
+            !message
+                .contains("native pointer constant has no virtual allocation or code provenance"),
+            "opaque value must reach the forbidden operation, rather than fail to materialize: {operation}: {error}"
+        );
+    }
 }

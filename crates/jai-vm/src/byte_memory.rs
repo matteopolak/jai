@@ -495,7 +495,7 @@ impl ByteImage {
                     let header = types.runtime_type_header().ok_or(Error::InvalidIr(
                         "nonnull runtime Type requires a bound descriptor header",
                     ))?;
-                    if pointer.pointee() != header || pointer.is_null() {
+                    if pointer.pointee() != header || pointer.is_null() || pointer.is_opaque() {
                         return Err(Error::TypeMismatch { expected: ty });
                     }
                     self.encode_handle(offset, length, &Value::Pointer(pointer.clone()))?;
@@ -690,6 +690,10 @@ impl ByteImage {
                     let pointer = self.decode_pointer(offset, length, header, remaining)?;
                     if pointer.is_null() {
                         None
+                    } else if pointer.is_opaque() {
+                        return Err(Error::InvalidIr(
+                            "byte storage cannot forge a runtime Type descriptor",
+                        ));
                     } else {
                         Some(pointer)
                     }

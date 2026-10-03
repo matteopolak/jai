@@ -195,15 +195,21 @@ fn target_width_casts_keep_bit_patterns_and_reject_unknown_addresses() {
             .bits(),
         0
     );
-    assert!(matches!(
-        memory.integer_to_pointer(
+    let numeric = memory
+        .integer_to_pointer(
             &types,
             Number::plain(Integer::wrapping(IntegerType::U32, 0xffff)),
             byte,
-            CastMode::Checked
-        ),
-        Err(Error::UnsupportedPointerOperation(_))
-    ));
+            CastMode::Checked,
+        )
+        .unwrap();
+    assert_eq!(numeric.opaque_address_bits(), Some((0xffff, 32)));
+    assert_eq!(
+        memory.load(&types, &numeric),
+        Err(Error::UnsupportedPointerOperation(
+            "numeric address has no allocation provenance"
+        ))
+    );
     assert!(
         memory
             .integer_to_pointer(

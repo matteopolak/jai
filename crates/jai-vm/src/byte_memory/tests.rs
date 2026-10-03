@@ -53,10 +53,12 @@ fn native_pointer_capsules_normalize_before_byte_encoding_without_authority() {
             &types,
         )
         .unwrap();
-        assert!(matches!(
-            crate::constants::native_pointer(&types, &unknown, target),
-            Err(Error::UnsupportedPointerOperation(_))
-        ));
+        let numeric = crate::constants::native_pointer(&types, &unknown, target).unwrap();
+        assert_eq!(
+            numeric.pointer().unwrap().opaque_address_bits(),
+            Some((1, width as u32 * 8))
+        );
+        assert_eq!(numeric.pointer().unwrap().data_allocation_key(), None);
     }
 }
 
@@ -80,10 +82,14 @@ fn native_pointer_truncation_can_be_null_only_on_selected_narrow_target() {
         assert!(null.pointer().unwrap().is_null());
         let image = ByteImage::encode(&types, narrow, pointer_ty, &null, 128).unwrap();
         assert_eq!(image.bytes(), &[0; 4]);
-        assert!(matches!(
-            crate::constants::native_pointer(&types, &capsule, ByteTarget::default()),
-            Err(Error::UnsupportedPointerOperation(_))
-        ));
+        assert_eq!(
+            crate::constants::native_pointer(&types, &capsule, ByteTarget::default())
+                .unwrap()
+                .pointer()
+                .unwrap()
+                .opaque_address_bits(),
+            Some((1u64 << 32, 64))
+        );
     }
 }
 
@@ -493,10 +499,12 @@ fn raw_backing_bytes_allow_scalar_views_without_inventing_pointer_provenance() {
         image.read(&types, target, 0, word).unwrap(),
         int(IntegerType::U32, 0x04030201)
     );
-    assert!(matches!(
-        image.read(&types, target, 0, pointer_ty),
-        Err(Error::InvalidIr(_))
-    ));
+    let numeric = image.read(&types, target, 0, pointer_ty).unwrap();
+    assert_eq!(
+        numeric.pointer().unwrap().opaque_address_bits(),
+        Some((0x0807060504030201, 64))
+    );
+    assert_eq!(numeric.pointer().unwrap().data_allocation_key(), None);
     assert!(matches!(
         ByteImage::from_bytes(target, vec![0; 9], 8),
         Err(Error::Limit(LimitKind::ValueCells))

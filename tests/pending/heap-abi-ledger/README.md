@@ -1,8 +1,8 @@
-# Pending authored allocator heap ledger
+# Restored authored allocator heap ledger
 
 ## What it is
 
-This packet retains the known failing `authored_standard_allocator_runs_its_real_heap_ledger_without_stdio` source witness. Six passing allocator source gates remain active in `crates/jai-driver/tests/heap_abi.rs`.
+This packet retains historical evidence for `authored_standard_allocator_runs_its_real_heap_ledger_without_stdio`. The exact witness is restored in `crates/jai-driver/tests/heap_abi.rs`; a fresh main run passed all nine allocator source tests, including the ledger, numeric CAPS/ownership storage and raw-pointer authority denials.
 
 ## How it works
 
@@ -12,12 +12,12 @@ The allocator returns that numeric ownership sentinel deliberately, and CAPS ret
 
 ## How to change it
 
-Restore the exact test function and required imports to the active driver harness after the paired VM schema and real source behavior pass. The staged nine-test companion at `/private/tmp/jai-allocator-only/heap_abi_opaque_tests.rs` includes this witness and two protocol/denial tests; it is not current passing acceptance. No test was rerun for this text-only split.
+Keep the original function, source snapshots and seven-test log unchanged. The paired VM change restored the exact witness and added two protocol/denial tests. The fresh main evidence is `/private/tmp/jai-integration-language-bulk-20261002/allocator-source9.log` (SHA-256 `1ac93f37378e7cdc42bb49b5c3e30244460b9a90ceee0fd7d4031cc46aecc1f4`): nine passed, zero failed. The historical six-pass/one-failure run remains in `source-seven.log`; it is not the current acceptance result.
 
 ## Configuration
 
-`manifest.json` retains original source hashes, the selected little-endian macOS Arm64 LP64 target, bootstrap paths, and all three disabled runtime-support parameters. The Rust test loads the actual repository stdlib via explicit roots, independently of ambient CLI environment. The corresponding CLI check uses the retained environment and the freshly built rewritten `jai-rs`, with `JAI_RS_MODULE_PATH` unset.
+`manifest.json` retains the original pre-restoration source hashes, the selected little-endian macOS Arm64 LP64 target, bootstrap paths, and all three disabled runtime-support parameters. The Rust test loads the actual repository stdlib via explicit roots, independently of ambient CLI environment. The corresponding CLI check must use the retained environment and a freshly built rewritten `jai-rs`, with `JAI_RS_MODULE_PATH` unset. That environment-specific CLI gate is still pending; the nine driver passes do not establish it.
 
 ## Dependencies
 
-The witness depends on the authored `Default_Allocator`, selected source heap receipts, compile-time VM memory, and future opaque numeric pointer value support. It does not authorize running, loading or linking an original supplied native binary or library.
+The witness depends on the authored `Default_Allocator`, selected source heap receipts, compile-time VM memory, and opaque numeric pointer value support. It does not authorize running, loading or linking an original supplied native binary or library.

@@ -25,7 +25,7 @@ impl Memory {
         mut image: ByteImage,
     ) -> Result<(), Error> {
         let allocation = self.allocation(root)?;
-        if !root.path.is_empty() || allocation.readonly || image.target() != self.target {
+        if !root.data()?.path.is_empty() || allocation.readonly || image.target() != self.target {
             return Err(Error::InvalidIr(
                 "sequence buffer installation requires mutable target storage",
             ));

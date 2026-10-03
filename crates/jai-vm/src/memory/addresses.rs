@@ -45,6 +45,17 @@ impl Memory {
             types.kind(pointer.pointee)?;
             return Ok(Number::plain(Integer::wrapping(target, 0)));
         }
+        if let Some((address, width)) = pointer.opaque_address_bits() {
+            self.validate_opaque_address(types, pointer)?;
+            let result = Integer::wrapping(target, i128::from(address));
+            if mode == CastMode::Checked
+                && target.bits() < width
+                && (result.bits() != address || (target.signed() && result.value() < 0))
+            {
+                return Err(Error::CheckedCast);
+            }
+            return Ok(Number::plain(result));
+        }
         if let Some(code) = pointer.code_pointer() {
             return Ok(Number::address(
                 self.code_pointer_integer(types, code, target)?,
@@ -109,11 +120,7 @@ impl Memory {
                     "transformed address integer has no proven affine pointer identity",
                 ));
             }
-            None => {
-                return Err(Error::UnsupportedPointerOperation(
-                    "plain integer cannot identify a virtual allocation",
-                ));
-            }
+            None => return Pointer::opaque(address, bits, pointee),
         };
         if let Some(code) = origin.code_pointer() {
             let code = self.code_pointer_from_integer(types, code, integer.integer(), mode)?;
@@ -171,7 +178,7 @@ impl Memory {
             return Ok(None);
         }
         let mut pointer = origin.clone();
-        pointer.path = vec![Projection::Bytes {
+        pointer.data_mut()?.path = vec![Projection::Bytes {
             offset,
             ty: pointer.pointee,
         }];
@@ -199,7 +206,9 @@ impl Memory {
         }
         self.allocation(left)?;
         self.allocation(right)?;
-        if left.memory != right.memory || left.allocation != right.allocation {
+        if left.memory_identity() != right.memory_identity()
+            || left.allocation_id() != right.allocation_id()
+        {
             return Ok(None);
         }
         Ok(Some(

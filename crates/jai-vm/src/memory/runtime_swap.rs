@@ -68,7 +68,7 @@ impl Memory {
         let right_range = self.intrinsic_range(types, right, size, true)?;
         let same_address = self.same_address(types, left, right)?;
         if !same_address
-            && left.allocation == right.allocation
+            && left.allocation_id() == right.allocation_id()
             && left_range.start < right_range.end
             && right_range.start < left_range.end
         {

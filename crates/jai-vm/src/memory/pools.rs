@@ -167,7 +167,7 @@ impl Memory {
                 state
                     .blocks
                     .iter()
-                    .any(|block| self.pool_ledger.owns_descriptor(block.root.allocation))
+                    .any(|block| self.pool_ledger.owns_descriptor(block.root.allocation_id()))
             })
         {
             return Err(Error::InvalidIr(
@@ -303,11 +303,11 @@ impl Memory {
                     .lookup(&TypeKind::Void)
                     .ok_or(Error::InvalidIr("void type missing"))?;
                 let mut result = self.cast_pointer(types, &block.root, void, CastMode::Checked)?;
-                result.path = vec![Projection::Bytes {
+                result.data_mut()?.path = vec![Projection::Bytes {
                     offset: u64::try_from(start).map_err(|_| Error::CheckedCast)?,
                     ty: void,
                 }];
-                result.region = Some((
+                result.data_mut()?.region = Some((
                     u64::try_from(start).map_err(|_| Error::CheckedCast)?,
                     u64::try_from(end).map_err(|_| Error::CheckedCast)?,
                 ));
@@ -351,7 +351,7 @@ impl Memory {
         )?;
         let key = PoolKey {
             memory: self.identity,
-            allocation: pointer.allocation,
+            allocation: pointer.allocation_id(),
             offset: self.byte_offset(types, pointer)?,
             ty: pointer.pointee,
         };
@@ -589,7 +589,7 @@ impl Memory {
             return decode_s64(bytes, self.target.endian);
         }
         let mut prefix_offset = 0usize;
-        for projection in &scalar.path {
+        for projection in &scalar.data()?.path {
             if let Value::StoredAggregate(snapshot) = value {
                 return peek_image_integer(
                     snapshot.image(),

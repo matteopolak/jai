@@ -120,10 +120,13 @@ fn exact_ledger_membership_rejects_other_frames_tokens_and_shifted_pointers() {
         .pointer_to_integer(&types, &root, IntegerType::U64, CastMode::Checked)
         .unwrap();
     let guessed = crate::Number::plain(address.integer());
-    assert!(
-        memory
-            .integer_to_pointer(&types, guessed, types.void(), CastMode::Unchecked)
-            .is_err()
+    let guessed = memory
+        .integer_to_pointer(&types, guessed, types.void(), CastMode::Unchecked)
+        .unwrap();
+    assert!(guessed.is_opaque());
+    assert_eq!(
+        heap.free(&mut memory, &types, &guessed),
+        Err(Error::InvalidIr("pointer is not owned by the virtual heap"))
     );
     let shifted = memory
         .offset(&types, &bytes(&memory, &types, &root), 1)

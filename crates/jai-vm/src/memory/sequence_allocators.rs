@@ -46,12 +46,12 @@ impl Memory {
             });
         }
         let mut result = pointer;
-        result.path = vec![Projection::Bytes {
+        result.data_mut()?.path = vec![Projection::Bytes {
             offset: start,
             ty: schema.ty(),
         }];
         result.pointee = schema.ty();
-        result.region = Some((start, end));
+        result.data_mut()?.region = Some((start, end));
         Ok(result)
     }
 }

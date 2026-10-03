@@ -194,9 +194,10 @@ fn virtual_and_native_addresses_honor_explicit_record_alignment() {
 }
 
 #[test]
-fn native_integer_pointer_sentinels_have_an_explicit_vm_boundary() {
-    // These generated programs compare sentinel pointers without accessing them.
-    check_vm_unsupported(
+fn numeric_pointer_sentinels_and_real_address_narrowing_obey_their_origins() {
+    // Numeric values are observable; genuine data-address narrowing retains its
+    // existing native-range boundary rather than losing allocation provenance.
+    check(
         "main :: ()->int { pointer := cast(*void) 1; if pointer != null return 42; return 0; }",
         42,
     );
@@ -230,6 +231,18 @@ fn void_pointer_arithmetic_uses_byte_offsets_and_preserves_its_type() {
     );
     check(
         "main :: ()->int { bytes:[4]u8 = .[5,6,7,8]; pointer:*void = *bytes[0]; pointer += 3; pointer -= 1; next := 1+pointer; view:*u8 = xx next; view.* = 41; return cast(int)bytes[3] + (next-pointer); }",
+        42,
+    );
+}
+
+#[test]
+fn opaque_numeric_pointer_storage_and_run_constants_agree_with_native() {
+    check(
+        "Box :: struct { p:*void; } main :: ()->int { x:Box; x.p = cast(*void) 1; bits:u64 = 1; q := cast(*void) bits; if !x.p || x.p != q || x.p == null return 0; if cast(u64) x.p != 1 return 0; return 42; }",
+        42,
+    );
+    check(
+        "make :: ()->*void { return cast(*void) 1; } address :: #run make(); verify :: ()->bool { return address != null && cast(u64) address == 1; } #assert #run verify(); main :: ()->int { if cast(u64) address == 1 return 42; return 0; }",
         42,
     );
 }

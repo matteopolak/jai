@@ -1134,6 +1134,11 @@ fn materializable_type(
             TypeKind::Procedure(_) => {
                 types.procedure_definition(ty)?;
             }
+            // Pointer publication is value-dependent: only null/numeric leaves
+            // pass conversion; no pointee owner is traversed or manufactured.
+            TypeKind::Pointer(pointee) => {
+                types.kind(*pointee)?;
+            }
             TypeKind::Enum(id) => {
                 types.enumeration(*id)?;
             }
@@ -1189,6 +1194,45 @@ fn materialize_with_runtime_types(
                 return Err(jai_vm::Error::UnsupportedPointerOperation(
                     "address-derived integer cannot be published as a native constant",
                 ));
+            }
+            Value::Pointer(pointer) if pointer.is_null() => ConstantKind::Zero,
+            Value::Pointer(pointer) if pointer.is_opaque() => {
+                let (bits, width) = pointer
+                    .opaque_address_bits()
+                    .expect("closed numeric pointer origin");
+                let integer_type = match width {
+                    32 => jai_types::IntegerType::U32,
+                    64 => jai_types::IntegerType::U64,
+                    _ => {
+                        return Err(jai_vm::Error::InvalidIr(
+                            "numeric pointer has unsupported target width",
+                        ));
+                    }
+                };
+                let recipe = jai_ir::NativePointerConstant::new(
+                    ty,
+                    jai_types::Integer::wrapping(integer_type, i128::from(bits)),
+                    jai_types::CastMode::Unchecked,
+                    types,
+                )
+                .map_err(|error| match error {
+                    jai_ir::NativePointerConstantError::Type(error) => jai_vm::Error::Type(error),
+                    jai_ir::NativePointerConstantError::InvalidType(expected) => {
+                        jai_vm::Error::TypeMismatch { expected }
+                    }
+                    jai_ir::NativePointerConstantError::CheckedCast => jai_vm::Error::CheckedCast,
+                    jai_ir::NativePointerConstantError::UnsupportedWidth(_) => {
+                        jai_vm::Error::InvalidIr(
+                            "numeric pointer publication has unsupported width",
+                        )
+                    }
+                    jai_ir::NativePointerConstantError::UnsupportedMode(_) => {
+                        jai_vm::Error::InvalidIr(
+                            "numeric pointer publication has unsupported cast mode",
+                        )
+                    }
+                })?;
+                ConstantKind::NativePointer(recipe)
             }
             Value::Int(value) => ConstantKind::Int(value),
             Value::Float(value) => ConstantKind::Float(value),
@@ -1278,9 +1322,15 @@ pub fn scalar_type(types: &dyn TypeView, value: &Value) -> Option<TypeId> {
         | Value::Union { ty, .. }
         | Value::Array { ty, .. } => Some(*ty),
         Value::Procedure { signature, .. } => Some(*signature),
+        Value::Pointer(pointer) if pointer.is_null() || pointer.is_opaque() => {
+            types.lookup(&TypeKind::Pointer(pointer.pointee()))
+        }
         _ => None,
     }
 }
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod opaque_numeric_pointer_publication;

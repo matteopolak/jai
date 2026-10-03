@@ -553,7 +553,7 @@ fn failure_after_block_allocation_restores_storage_and_never_reuses_its_identity
     let retired = memory.next_allocation;
     memory.limits.value_cells = 1024;
     let live = get(&mut memory, &types, &pool, true, 8);
-    assert!(live.allocation >= retired);
+    assert!(live.allocation_key().1 >= retired);
     memory
         .pool_operation(&types, &pool, true, PoolOperation::Release)
         .unwrap();
