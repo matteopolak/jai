@@ -123,7 +123,9 @@ impl Resolver<'_> {
         for parameter in &source.parameters {
             let ty = match &parameter.binding {
                 syntax::ParameterBinding::RequiredType(ty)
-                | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => Some(ty),
+                | syntax::ParameterBinding::DefaultedType {
+                    ty: Some(ty), ..
+                } => Some(ty),
                 _ => None,
             };
             if let Some(ty) = ty {
@@ -131,7 +133,10 @@ impl Resolver<'_> {
             }
         }
         for result in &source.results {
-            if let syntax::ResultBinding::Typed { ty, .. } = &result.binding {
+            if let syntax::ResultBinding::Typed {
+                ty, ..
+            } = &result.binding
+            {
                 self.local_operator_application_origins(ty, &mut lexical)?;
             }
         }
@@ -197,18 +202,22 @@ impl Resolver<'_> {
             T::Pointer(inner)
             | T::Slice(inner)
             | T::DynamicArray(inner)
-            | T::Variant { base: inner, .. } => {
+            | T::Variant {
+                base: inner, ..
+            } => {
                 self.local_operator_application_origins(inner, lexical)?;
             }
-            T::FixedArray { element, .. } => {
-                self.local_operator_application_origins(element, lexical)?
-            }
+            T::FixedArray {
+                element, ..
+            } => self.local_operator_application_origins(element, lexical)?,
             T::Procedure(procedure) => {
                 for parameter in procedure.parameters.iter().chain(&procedure.results) {
                     self.local_operator_application_origins(&parameter.ty, lexical)?;
                 }
             }
-            T::Restricted { restriction, .. } => match restriction {
+            T::Restricted {
+                restriction, ..
+            } => match restriction {
                 syntax::TypeRestrictionSyntax::Nominal(ty)
                 | syntax::TypeRestrictionSyntax::Interface(ty) => {
                     self.local_operator_application_origins(ty, lexical)?;
@@ -275,6 +284,7 @@ impl Resolver<'_> {
                 }
             }
         }
+        policies.extend(self.result_type_callable_policies(candidate, source, matched, span)?);
         matched.substitution.callables = policies;
         Ok(())
     }
@@ -361,8 +371,12 @@ impl Resolver<'_> {
             let ty =
                 self.local_operator_pattern(&parameter.ty, substitution, source_parameter.span)?;
             let expression = match &source_parameter.binding {
-                syntax::ParameterBinding::Defaulted { expression, .. }
-                | syntax::ParameterBinding::DefaultedType { expression, .. } => Some(expression),
+                syntax::ParameterBinding::Defaulted {
+                    expression, ..
+                }
+                | syntax::ParameterBinding::DefaultedType {
+                    expression, ..
+                } => Some(expression),
                 _ => None,
             };
             let default = expression
@@ -380,7 +394,9 @@ impl Resolver<'_> {
         for (result, source_result) in definition.template.results.iter().zip(&source.results) {
             let ty = self.local_operator_pattern(&result.ty, substitution, source_result.span)?;
             let expression = match &source_result.binding {
-                syntax::ResultBinding::Typed { default, .. } => default.as_ref(),
+                syntax::ResultBinding::Typed {
+                    default, ..
+                } => default.as_ref(),
                 syntax::ResultBinding::InferredDefault(expression) => Some(expression),
             };
             let default = expression

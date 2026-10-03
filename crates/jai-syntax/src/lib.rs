@@ -19,6 +19,7 @@ mod source_procedure_headers;
 pub use compile_time_cases::*;
 mod context_fields;
 mod declaration_attributes;
+mod deferred_context;
 mod deprecation;
 mod file_conditional_bodies;
 pub use deprecation::Deprecation;
@@ -236,18 +237,34 @@ pub enum Declaration {
 impl Declaration {
     pub fn attributes(&self) -> &[DeclarationAttribute] {
         match self {
-            Self::Inferred { attributes, .. }
-            | Self::Explicit { attributes, .. }
-            | Self::UnresolvedExplicit { attributes, .. }
-            | Self::External { attributes, .. } => attributes,
+            Self::Inferred {
+                attributes, ..
+            }
+            | Self::Explicit {
+                attributes, ..
+            }
+            | Self::UnresolvedExplicit {
+                attributes, ..
+            }
+            | Self::External {
+                attributes, ..
+            } => attributes,
         }
     }
     pub fn name(&self) -> Symbol {
         match self {
-            Self::Inferred { name, .. }
-            | Self::Explicit { name, .. }
-            | Self::UnresolvedExplicit { name, .. }
-            | Self::External { name, .. } => *name,
+            Self::Inferred {
+                name, ..
+            }
+            | Self::Explicit {
+                name, ..
+            }
+            | Self::UnresolvedExplicit {
+                name, ..
+            }
+            | Self::External {
+                name, ..
+            } => *name,
         }
     }
 }
@@ -321,7 +338,10 @@ pub struct Statement {
 impl Statement {
     /// Wrap retained syntax with its genuine source range; no location is inferred.
     pub fn new(span: Span, kind: StatementKind) -> Self {
-        Self { span, kind }
+        Self {
+            span,
+            kind,
+        }
     }
 }
 
@@ -400,6 +420,9 @@ pub enum StatementKind {
         value: Option<Expression>,
         body: Vec<Statement>,
     },
+    PushContextDeferred {
+        value: Option<Expression>,
+    },
     Jump {
         kind: JumpKind,
         target: LoopTarget,
@@ -435,9 +458,10 @@ pub fn parse(source: &str) -> Result<Module, Diagnostic> {
             let span = parser.token().span;
             let name = parser.name()?;
             match parser.data_declaration(name, span)?.kind {
-                StatementKind::Declare(declaration) => {
-                    globals.push(GlobalDeclaration { declaration, span })
-                }
+                StatementKind::Declare(declaration) => globals.push(GlobalDeclaration {
+                    declaration,
+                    span,
+                }),
                 StatementKind::Constant(declaration) => constants.push(declaration),
                 _ => unreachable!("data declaration always produces a declaration"),
             }
@@ -517,7 +541,10 @@ impl Parser<'_> {
         while self.take(Punct::Dot) {
             members.push(self.name()?);
         }
-        Ok(NamePath { root, members })
+        Ok(NamePath {
+            root,
+            members,
+        })
     }
     fn scalar_type(&mut self) -> Result<ScalarType, Diagnostic> {
         let ty = match BuiltinType::from_spelling(&self.token().spelling(self.source)) {

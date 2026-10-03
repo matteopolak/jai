@@ -6,7 +6,9 @@ use jai_types::{
 };
 use std::collections::HashSet;
 mod baked_rechecking;
+mod result_types;
 pub(crate) use baked_rechecking::recheck_baked_value;
+pub(crate) use result_types::collect as collect_result_type_parameters;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TypePattern {
@@ -144,7 +146,21 @@ impl Parameter {
 pub struct Candidate<Origin = DeclarationId> {
     pub declaration: Origin,
     pub parameters: Vec<Parameter>,
+    /// Source result introductions never occupy runtime formal positions.
+    pub result_type_parameters: Vec<ResultTypeParameter>,
     pub variadic: CandidateVariadic,
+}
+#[derive(Clone, Debug)]
+pub struct ResultTypeParameter {
+    pub name: Symbol,
+    pub result: usize,
+    pub span: Span,
+    pub pattern: TypePattern,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ResultTypeArgument {
+    pub parameter: usize,
+    pub argument: usize,
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum CandidateVariadic {
@@ -246,13 +262,17 @@ impl ArgumentInfo {
             ) => false,
             Some(_) => true,
             None => match &self.ty {
-                ArgumentType::ContextualCast { value, .. } => value.is_compile_time_constant(),
-                ArgumentType::RecordLiteral { fields, .. } => fields
+                ArgumentType::ContextualCast {
+                    value, ..
+                } => value.is_compile_time_constant(),
+                ArgumentType::RecordLiteral {
+                    fields, ..
+                } => fields
                     .iter()
                     .all(|field| field.value.is_compile_time_constant()),
-                ArgumentType::ArrayLiteral { elements, .. } => {
-                    elements.iter().all(ArgumentInfo::is_compile_time_constant)
-                }
+                ArgumentType::ArrayLiteral {
+                    elements, ..
+                } => elements.iter().all(ArgumentInfo::is_compile_time_constant),
                 _ => false,
             },
         }
@@ -318,7 +338,10 @@ impl ArgumentInfo {
                 negative,
                 default,
             },
-            constant: Some(ConstantArgument::FloatLiteral { spelling, negative }),
+            constant: Some(ConstantArgument::FloatLiteral {
+                spelling,
+                negative,
+            }),
         }
     }
     pub fn constant(value: BakedValue, ty: TypeId) -> Self {
@@ -362,7 +385,10 @@ impl ArgumentInfo {
                         permits_f32: f32.is_some(),
                         permits_f64: f64.is_some(),
                     },
-                    constant: Some(ConstantArgument::FloatExpression { f32, f64 }),
+                    constant: Some(ConstantArgument::FloatExpression {
+                        f32,
+                        f64,
+                    }),
                 }
             }
         }
@@ -415,6 +441,7 @@ pub struct Match<Origin = DeclarationId> {
     pub substitution: Substitution,
     pub bindings: Vec<ArgumentBinding>,
     pub defaults: Vec<usize>,
+    pub result_type_arguments: Vec<ResultTypeArgument>,
     /// One rank per explicitly supplied argument, in source order.
     pub conversions: Vec<ConversionRank>,
     pub variadic: bool,
@@ -546,6 +573,7 @@ pub fn match_candidate_with_nominals<Origin: Copy>(
         bindings,
         defaults,
         substitution,
+        result_type_arguments,
     } = prepare_candidate_arguments(types, nominals, candidate, arguments, span)?;
     let conversions = check_arguments(
         types,
@@ -561,6 +589,7 @@ pub fn match_candidate_with_nominals<Origin: Copy>(
         substitution,
         bindings,
         defaults,
+        result_type_arguments,
         conversions,
         variadic: candidate.variadic != CandidateVariadic::None,
     })
@@ -571,6 +600,7 @@ pub(crate) struct PreparedArguments {
     pub bindings: Vec<ArgumentBinding>,
     pub defaults: Vec<usize>,
     pub substitution: Substitution,
+    pub result_type_arguments: Vec<ResultTypeArgument>,
 }
 pub(crate) fn prepare_candidate_arguments<Origin>(
     types: &dyn TypeView,
@@ -580,8 +610,17 @@ pub(crate) fn prepare_candidate_arguments<Origin>(
     span: Span,
 ) -> Result<PreparedArguments, Diagnostic> {
     validate_candidate(candidate, span)?;
-    let (mut bindings, defaults) = bind_arguments(candidate, arguments, span)?;
+    let (mut bindings, defaults, result_type_arguments) =
+        bind_arguments(candidate, arguments, span)?;
     let mut substitution = Substitution::default();
+    result_types::bind(
+        types,
+        nominals,
+        candidate,
+        arguments,
+        &result_type_arguments,
+        &mut substitution,
+    )?;
     // Visit parameters in declaration order. Only introducing occurrences bind.
     // This pass is separate from compatibility so `T` may precede `$T`.
     for (parameter_index, parameter) in candidate.parameters.iter().enumerate() {
@@ -668,11 +707,20 @@ pub(crate) fn prepare_candidate_arguments<Origin>(
             )?;
         }
     }
+    result_types::check(
+        types,
+        nominals,
+        candidate,
+        arguments,
+        &result_type_arguments,
+        &substitution,
+    )?;
     assign_runtime_parameters(candidate, &substitution, &mut bindings);
     Ok(PreparedArguments {
         substitution,
         bindings,
         defaults,
+        result_type_arguments,
     })
 }
 /// Validate final bindings without inferring again or rebaking original input values.
@@ -684,9 +732,21 @@ pub fn recheck_match_with_nominals<Origin: Copy>(
     mut matched: Match<Origin>,
     span: Span,
 ) -> Result<Match<Origin>, Diagnostic> {
-    let (mut bindings, defaults) = bind_arguments(candidate, arguments, span)?;
+    let (mut bindings, defaults, result_type_arguments) =
+        bind_arguments(candidate, arguments, span)?;
+    result_types::check(
+        types,
+        nominals,
+        candidate,
+        arguments,
+        &result_type_arguments,
+        &matched.substitution,
+    )?;
     assign_runtime_parameters(candidate, &matched.substitution, &mut bindings);
-    if bindings != matched.bindings || defaults != matched.defaults {
+    if bindings != matched.bindings
+        || defaults != matched.defaults
+        || result_type_arguments != matched.result_type_arguments
+    {
         return Err(Diagnostic::new(
             span,
             "refined candidate has inconsistent argument bindings",
@@ -806,7 +866,10 @@ fn check_arguments<Origin>(
             }
         }
     }
-    if let CandidateVariadic::C { fixed_parameters } = candidate.variadic {
+    if let CandidateVariadic::C {
+        fixed_parameters,
+    } = candidate.variadic
+    {
         for argument in bindings
             .iter()
             .filter(|binding| binding.parameter >= fixed_parameters)
@@ -814,14 +877,18 @@ fn check_arguments<Origin>(
             let info = &arguments[argument.argument].info;
             let ty = match &info.ty {
                 ArgumentType::Known(ty) => Some(*ty),
-                ArgumentType::WeakInteger { minimum, maximum }
-                    if fits(IntegerType::S64, *minimum, *maximum) =>
-                {
+                ArgumentType::WeakInteger {
+                    minimum,
+                    maximum,
+                } if fits(IntegerType::S64, *minimum, *maximum) => {
                     Some(types.scalar(ScalarType::Int(IntegerType::S64)))
                 }
-                ArgumentType::WeakFloat { .. } | ArgumentType::WeakFloatExpression { .. } => {
-                    Some(types.float(FloatType::F64))
+                ArgumentType::WeakFloat {
+                    ..
                 }
+                | ArgumentType::WeakFloatExpression {
+                    ..
+                } => Some(types.float(FloatType::F64)),
                 _ => None,
             }
             .ok_or_else(|| {
@@ -870,19 +937,20 @@ pub fn validate_candidate<Origin>(
     span: Span,
 ) -> Result<(), Diagnostic> {
     match candidate.variadic {
-        CandidateVariadic::Jai { parameter }
-            if candidate.parameters.get(parameter).is_none_or(|parameter| {
-                parameter.baking != jai_syntax::ParameterBaking::None || parameter.default.is_some()
-            }) =>
+        CandidateVariadic::Jai {
+            parameter,
+        } if candidate.parameters.get(parameter).is_none_or(|parameter| {
+            parameter.baking != jai_syntax::ParameterBaking::None || parameter.default.is_some()
+        }) =>
         {
             return Err(Diagnostic::new(
                 span,
                 "variadic parameter must be a runtime pack without a default",
             ));
         }
-        CandidateVariadic::C { fixed_parameters }
-            if fixed_parameters != candidate.parameters.len() =>
-        {
+        CandidateVariadic::C {
+            fixed_parameters,
+        } if fixed_parameters != candidate.parameters.len() => {
             return Err(Diagnostic::new(
                 span,
                 "invalid fixed C variadic parameter count",
@@ -907,7 +975,9 @@ pub fn validate_candidate<Origin>(
         let mut pending = vec![&parameter.ty];
         while let Some(pattern) = pending.pop() {
             match pattern {
-                TypePattern::Restricted { ty, .. } => pending.push(ty),
+                TypePattern::Restricted {
+                    ty, ..
+                } => pending.push(ty),
                 TypePattern::Infer(name) if !introductions.insert(*name) => {
                     return Err(Diagnostic::new(
                         span,
@@ -921,7 +991,10 @@ pub fn validate_candidate<Origin>(
                     pending.extend(procedure.results.iter().rev());
                     pending.extend(procedure.parameters.iter().rev());
                 }
-                TypePattern::FixedArray { element, count } => {
+                TypePattern::FixedArray {
+                    element,
+                    count,
+                } => {
                     pending.push(element);
                     if let CountPattern::Infer(name) = count
                         && !introductions.insert(*name)
@@ -932,7 +1005,9 @@ pub fn validate_candidate<Origin>(
                         ));
                     }
                 }
-                TypePattern::NominalApplication { arguments, .. } => {
+                TypePattern::NominalApplication {
+                    arguments, ..
+                } => {
                     for argument in arguments.iter().rev() {
                         match &argument.kind {
                             NominalArgumentKind::Type(pattern) => pending.push(pattern),
@@ -950,6 +1025,28 @@ pub fn validate_candidate<Origin>(
                 }
                 _ => {}
             }
+        }
+    }
+    for result in &candidate.result_type_parameters {
+        if parameters.contains(&result.name) {
+            return Err(Diagnostic::new(
+                result.span,
+                "result Type input conflicts with a source parameter",
+            ));
+        }
+        if !introductions.insert(result.name) {
+            return Err(Diagnostic::new(
+                result.span,
+                "type variable is introduced more than once",
+            ));
+        }
+        if !matches!(&result.pattern, TypePattern::Infer(name) if *name == result.name)
+            && !matches!(&result.pattern, TypePattern::Restricted { ty, .. } if matches!(ty.as_ref(),TypePattern::Infer(name) if *name == result.name))
+        {
+            return Err(Diagnostic::new(
+                result.span,
+                "result Type input has no original introducing pattern",
+            ));
         }
     }
     Ok(())
@@ -986,8 +1083,10 @@ fn bind_arguments<Origin>(
     candidate: &Candidate<Origin>,
     arguments: &[Argument],
     span: Span,
-) -> Result<(Vec<ArgumentBinding>, Vec<usize>), Diagnostic> {
+) -> Result<(Vec<ArgumentBinding>, Vec<usize>, Vec<ResultTypeArgument>), Diagnostic> {
     let mut supplied = vec![false; candidate.parameters.len()];
+    let mut supplied_results = vec![false; candidate.result_type_parameters.len()];
+    let mut result_type_arguments = Vec::new();
     let mut bindings = Vec::with_capacity(arguments.len());
     let mut runtime_parameters = Vec::with_capacity(candidate.parameters.len());
     let mut runtime_count = 0;
@@ -1003,6 +1102,31 @@ fn bind_arguments<Origin>(
     let mut named = false;
     let mut forwarded_pack = false;
     for (argument_index, argument) in arguments.iter().enumerate() {
+        if let Some(name) = argument.name
+            && let Some(parameter) = candidate
+                .result_type_parameters
+                .iter()
+                .position(|parameter| parameter.name == name)
+        {
+            named = true;
+            if argument.spread {
+                return Err(Diagnostic::new(
+                    argument.span,
+                    "result Type input cannot be spread",
+                ));
+            }
+            if std::mem::replace(&mut supplied_results[parameter], true) {
+                return Err(Diagnostic::new(
+                    argument.span,
+                    "duplicate result Type argument",
+                ));
+            }
+            result_type_arguments.push(ResultTypeArgument {
+                parameter,
+                argument: argument_index,
+            });
+            continue;
+        }
         let parameter = match argument.name {
             Some(name) => {
                 named = true;
@@ -1020,11 +1144,9 @@ fn bind_arguments<Origin>(
                     ));
                 }
                 match candidate.variadic {
-                    CandidateVariadic::Jai { parameter }
-                        if positional >= parameter && !forwarded_pack =>
-                    {
-                        parameter
-                    }
+                    CandidateVariadic::Jai {
+                        parameter,
+                    } if positional >= parameter && !forwarded_pack => parameter,
                     _ => {
                         let index = positional;
                         positional += 1;
@@ -1061,7 +1183,9 @@ fn bind_arguments<Origin>(
             positional = parameter + 1;
         }
         if parameter >= supplied.len() {
-            if let CandidateVariadic::C { fixed_parameters } = candidate.variadic
+            if let CandidateVariadic::C {
+                fixed_parameters,
+            } = candidate.variadic
                 && parameter >= fixed_parameters
                 && argument.name.is_none()
             {
@@ -1104,7 +1228,13 @@ fn bind_arguments<Origin>(
             defaults.push(index);
         }
     }
-    Ok((bindings, defaults))
+    if supplied_results.iter().any(|supplied| !supplied) {
+        return Err(Diagnostic::new(
+            span,
+            "missing required named result Type argument",
+        ));
+    }
+    Ok((bindings, defaults, result_type_arguments))
 }
 fn info_for<'a>(
     index: usize,
@@ -1130,7 +1260,10 @@ fn infer(
     allow_conversion: bool,
     span: Span,
 ) -> Result<(), Diagnostic> {
-    if let TypePattern::Restricted { ty, .. } = pattern {
+    if let TypePattern::Restricted {
+        ty, ..
+    } = pattern
+    {
         return infer(
             types,
             nominals,
@@ -1162,7 +1295,12 @@ fn infer(
     }
     if let TypePattern::Infer(name) = pattern {
         let ty = match source {
-            ArgumentType::ContextualCast { .. } | ArgumentType::ContextualProcedure { .. } => {
+            ArgumentType::ContextualCast {
+                ..
+            }
+            | ArgumentType::ContextualProcedure {
+                ..
+            } => {
                 unreachable!("contextual arguments do not infer")
             }
             ArgumentType::Null => {
@@ -1177,12 +1315,18 @@ fn infer(
                     "leading-dot member cannot infer a polymorphic enum type",
                 ));
             }
-            ArgumentType::RecordLiteral { ty: Some(ty), .. }
+            ArgumentType::RecordLiteral {
+                ty: Some(ty), ..
+            }
             | ArgumentType::ArrayLiteral {
                 default: Some(ty), ..
             } => *ty,
-            ArgumentType::RecordLiteral { ty: None, .. }
-            | ArgumentType::ArrayLiteral { default: None, .. } => {
+            ArgumentType::RecordLiteral {
+                ty: None, ..
+            }
+            | ArgumentType::ArrayLiteral {
+                default: None, ..
+            } => {
                 return Err(Diagnostic::new(
                     span,
                     "aggregate literal needs a concrete type before polymorphic inference",
@@ -1194,19 +1338,24 @@ fn infer(
                     .map_err(|error| Diagnostic::new(span, error.to_string()))?;
                 *ty
             }
-            ArgumentType::WeakInteger { minimum, maximum }
-                if fits(IntegerType::S64, *minimum, *maximum) =>
-            {
+            ArgumentType::WeakInteger {
+                minimum,
+                maximum,
+            } if fits(IntegerType::S64, *minimum, *maximum) => {
                 types.scalar(ScalarType::Int(IntegerType::S64))
             }
-            ArgumentType::WeakInteger { .. } => {
+            ArgumentType::WeakInteger {
+                ..
+            } => {
                 return Err(Diagnostic::new(
                     span,
                     "integer literal cannot determine its default s64 type",
                 ));
             }
             ArgumentType::WeakFloat {
-                spelling, default, ..
+                spelling,
+                default,
+                ..
             } => {
                 FloatValue::parse_decimal(*default, spelling)
                     .map_err(|error| Diagnostic::new(span, error.to_string()))?;
@@ -1249,11 +1398,16 @@ fn infer(
         );
     }
     if let ArgumentType::ArrayLiteral {
-        explicit, elements, ..
+        explicit,
+        elements,
+        ..
     } = source
     {
         let element = match pattern {
-            TypePattern::FixedArray { element, count } => {
+            TypePattern::FixedArray {
+                element,
+                count,
+            } => {
                 if let CountPattern::Infer(name) = count {
                     let count = i128::try_from(elements.len())
                         .ok()
@@ -1341,7 +1495,10 @@ fn infer(
             span,
         ),
         (
-            TypePattern::FixedArray { element, count },
+            TypePattern::FixedArray {
+                element,
+                count,
+            },
             TypeKind::FixedArray {
                 element: source,
                 count: actual,
@@ -1426,7 +1583,10 @@ fn compatible(
     span: Span,
 ) -> Result<ConversionRank, Diagnostic> {
     match pattern {
-        TypePattern::Restricted { ty, restriction } => {
+        TypePattern::Restricted {
+            ty,
+            restriction,
+        } => {
             let target = match ty.as_ref() {
                 TypePattern::Concrete(ty) => *ty,
                 TypePattern::Infer(name) | TypePattern::Variable(name) => {
@@ -1466,7 +1626,11 @@ fn compatible(
         }
         _ => {}
     }
-    if let ArgumentType::ContextualCast { mode, value } = source {
+    if let ArgumentType::ContextualCast {
+        mode,
+        value,
+    } = source
+    {
         return casts::structural(types, nominals, pattern, value, substitution, *mode, span);
     }
     if let TypePattern::Procedure(pattern) = pattern {
@@ -1487,7 +1651,10 @@ fn compatible(
         )?;
         return Ok(ConversionRank::Literal);
     }
-    if let ArgumentType::ArrayLiteral { .. } = source {
+    if let ArgumentType::ArrayLiteral {
+        ..
+    } = source
+    {
         return literals::array_pattern(
             types,
             nominals,
@@ -1596,7 +1763,10 @@ fn compatible(
             | TypeKind::DynamicArray(source),
         ) if allow_conversion => (pattern.as_ref(), *source, ConversionRank::ArrayView),
         (
-            TypePattern::FixedArray { element, count },
+            TypePattern::FixedArray {
+                element,
+                count,
+            },
             TypeKind::FixedArray {
                 element: source,
                 count: actual,
@@ -1661,13 +1831,23 @@ pub(crate) fn concrete(
             ))
         };
     }
-    if let ArgumentType::ContextualCast { mode, value } = source {
+    if let ArgumentType::ContextualCast {
+        mode,
+        value,
+    } = source
+    {
         return casts::concrete(types, nominals, target, value, *mode, span);
     }
     let target_kind = types
         .kind(target)
         .map_err(|error| Diagnostic::new(span, error.to_string()))?;
-    if let ArgumentType::RecordLiteral { .. } | ArgumentType::ArrayLiteral { .. } = source {
+    if let ArgumentType::RecordLiteral {
+        ..
+    }
+    | ArgumentType::ArrayLiteral {
+        ..
+    } = source
+    {
         if allow_conversion && matches!(target_kind, TypeKind::Any(_)) {
             if matches!(source, ArgumentType::RecordLiteral { ty, .. } if ty.is_none_or(|ty| ty == target))
             {
@@ -1692,7 +1872,12 @@ pub(crate) fn concrete(
             return Ok(ConversionRank::Exact);
         }
         let represented = match source {
-            ArgumentType::ContextualCast { .. } | ArgumentType::ContextualProcedure { .. } => {
+            ArgumentType::ContextualCast {
+                ..
+            }
+            | ArgumentType::ContextualProcedure {
+                ..
+            } => {
                 unreachable!("contextual arguments checked first")
             }
             ArgumentType::Null => {
@@ -1707,23 +1892,33 @@ pub(crate) fn concrete(
                     "leading-dot member needs a concrete enum type before boxing into Any",
                 ));
             }
-            ArgumentType::RecordLiteral { .. } | ArgumentType::ArrayLiteral { .. } => {
+            ArgumentType::RecordLiteral {
+                ..
+            }
+            | ArgumentType::ArrayLiteral {
+                ..
+            } => {
                 unreachable!("aggregate boxing checked before scalar dispatch")
             }
             ArgumentType::Known(source) | ArgumentType::StringLiteral(source) => *source,
-            ArgumentType::WeakInteger { minimum, maximum }
-                if fits(IntegerType::S64, *minimum, *maximum) =>
-            {
+            ArgumentType::WeakInteger {
+                minimum,
+                maximum,
+            } if fits(IntegerType::S64, *minimum, *maximum) => {
                 types.scalar(ScalarType::Int(IntegerType::S64))
             }
-            ArgumentType::WeakInteger { .. } => {
+            ArgumentType::WeakInteger {
+                ..
+            } => {
                 return Err(Diagnostic::new(
                     span,
                     "integer literal has no default s64 type for Any boxing",
                 ));
             }
             ArgumentType::WeakFloat {
-                spelling, default, ..
+                spelling,
+                default,
+                ..
             } => {
                 FloatValue::parse_decimal(*default, spelling)
                     .map_err(|error| Diagnostic::new(span, error.to_string()))?;
@@ -1750,10 +1945,20 @@ pub(crate) fn concrete(
         return Ok(ConversionRank::Boxing);
     }
     match source {
-        ArgumentType::ContextualCast { .. } | ArgumentType::ContextualProcedure { .. } => {
+        ArgumentType::ContextualCast {
+            ..
+        }
+        | ArgumentType::ContextualProcedure {
+            ..
+        } => {
             unreachable!("contextual arguments checked first")
         }
-        ArgumentType::RecordLiteral { .. } | ArgumentType::ArrayLiteral { .. } => {
+        ArgumentType::RecordLiteral {
+            ..
+        }
+        | ArgumentType::ArrayLiteral {
+            ..
+        } => {
             unreachable!("aggregate literals checked before scalar dispatch")
         }
         ArgumentType::EnumMember(name)
@@ -1831,7 +2036,10 @@ pub(crate) fn concrete(
                 "argument type cannot be implicitly converted to the parameter type",
             ))
         }
-        ArgumentType::WeakInteger { minimum, maximum } => {
+        ArgumentType::WeakInteger {
+            minimum,
+            maximum,
+        } => {
             if let TypeKind::Float(ty) = *target_kind {
                 integer_float(*minimum, ty, span)?;
                 integer_float(*maximum, ty, span)?;
@@ -1856,7 +2064,9 @@ pub(crate) fn concrete(
             })
         }
         ArgumentType::WeakFloat {
-            spelling, default, ..
+            spelling,
+            default,
+            ..
         } => {
             let TypeKind::Float(target) = *target_kind else {
                 return Err(Diagnostic::new(
@@ -1953,7 +2163,10 @@ fn bake_with_nominals(
     substitution: &Substitution,
     span: Span,
 ) -> Result<BakedValue, Diagnostic> {
-    if let TypePattern::Restricted { ty, .. } = pattern {
+    if let TypePattern::Restricted {
+        ty, ..
+    } = pattern
+    {
         compatible(types, nominals, pattern, &info.ty, substitution, true, span)?;
         return bake_with_nominals(types, nominals, ty, info, substitution, span);
     }
@@ -1963,11 +2176,21 @@ fn bake_with_nominals(
             "source lambda cannot be baked without a stable checked procedure identity",
         ));
     }
-    if let ArgumentType::ContextualCast { mode, value } = &info.ty {
+    if let ArgumentType::ContextualCast {
+        mode,
+        value,
+    } = &info.ty
+    {
         let target = casts::target_type(types, pattern, substitution, span)?;
         return casts::bake(types, nominals, target, value, *mode, span);
     }
-    if let ArgumentType::RecordLiteral { .. } | ArgumentType::ArrayLiteral { .. } = &info.ty {
+    if let ArgumentType::RecordLiteral {
+        ..
+    }
+    | ArgumentType::ArrayLiteral {
+        ..
+    } = &info.ty
+    {
         let target = match pattern {
             TypePattern::Concrete(ty) => Some(*ty),
             TypePattern::Infer(name) | TypePattern::Variable(name) => substitution.ty(*name),
@@ -2001,8 +2224,12 @@ fn bake_with_nominals(
     let integer = match value {
         ConstantArgument::IntegerLiteral(value) => Some(*value),
         ConstantArgument::Value(value) => value.as_integer().map(Integer::value),
-        ConstantArgument::FloatLiteral { .. }
-        | ConstantArgument::FloatExpression { .. }
+        ConstantArgument::FloatLiteral {
+            ..
+        }
+        | ConstantArgument::FloatExpression {
+            ..
+        }
         | ConstantArgument::Null
         | ConstantArgument::EnumMember(_)
         | ConstantArgument::CallerLocation
@@ -2095,7 +2322,10 @@ fn bake_with_nominals(
             }
         }
         ConstantArgument::Value(value) => Ok(value.clone()),
-        ConstantArgument::FloatLiteral { spelling, negative } => {
+        ConstantArgument::FloatLiteral {
+            spelling,
+            negative,
+        } => {
             let target = target.ok_or_else(|| {
                 Diagnostic::new(span, "baked floating-point type could not be resolved")
             })?;
@@ -2116,7 +2346,10 @@ fn bake_with_nominals(
                 value
             }))
         }
-        ConstantArgument::FloatExpression { f32, f64 } => {
+        ConstantArgument::FloatExpression {
+            f32,
+            f64,
+        } => {
             let value = match target.and_then(|target| types.kind(target).ok()) {
                 Some(TypeKind::Float(FloatType::F32)) => f32,
                 Some(TypeKind::Float(FloatType::F64)) => f64,
@@ -2155,7 +2388,9 @@ fn ensure_bound(
     span: Span,
 ) -> Result<(), Diagnostic> {
     match pattern {
-        TypePattern::Restricted { ty, .. } => ensure_bound(ty, substitution, span),
+        TypePattern::Restricted {
+            ty, ..
+        } => ensure_bound(ty, substitution, span),
         TypePattern::Infer(name) | TypePattern::Variable(name)
             if substitution.ty(*name).is_none() =>
         {
@@ -2173,7 +2408,10 @@ fn ensure_bound(
             }
             Ok(())
         }
-        TypePattern::FixedArray { element, count } => {
+        TypePattern::FixedArray {
+            element,
+            count,
+        } => {
             if let CountPattern::Infer(name) | CountPattern::Variable(name) = count
                 && substitution.constant(*name).is_none()
             {
@@ -2184,7 +2422,9 @@ fn ensure_bound(
             }
             ensure_bound(element, substitution, span)
         }
-        TypePattern::NominalApplication { arguments, .. } => {
+        TypePattern::NominalApplication {
+            arguments, ..
+        } => {
             for argument in arguments {
                 match &argument.kind {
                     NominalArgumentKind::Type(pattern) => {

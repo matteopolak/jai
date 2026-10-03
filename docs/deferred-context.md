@@ -4,7 +4,7 @@
 
 `push_context,defer_pop;` establishes a context for the remainder of its enclosing lexical block. An explicit value may precede the semicolon; the old context resumes when that block exits, after cleanups registered under the pushed context.
 
-The parser and semantic helpers are staged pending the next compiler integration window. Acceptance is unverified until their registration and VM/native source tests complete.
+The parser dispatches the comma modifier into its checked helper, and semantic block lowering activates the prepared lexical suffix. CI on `a4232c6` failed all five native witnesses during source parsing because these helpers were not registered; it never reached the VM or LLVM. The recovery preserves those witnesses unchanged. Post-repair VM/native acceptance remains pending the integration gate.
 
 ## How it works
 
@@ -14,7 +14,7 @@ Existing context IR captures the value before changing the active context and ke
 
 ## How to change it
 
-Change `jai-syntax::deferred_context` for the source modifier, and `jai-sema::deferred_context` plus the block suffix lowering for its lifetime. Do not rewrite this form as assignments to individual context fields or rediscover the suffix in a new lexical declaration scope; either changes aliasing or forward declaration behavior.
+Change `jai-syntax::deferred_context` and the statement parser dispatch for the source modifier, and `jai-sema::deferred_context` plus `Resolver::block_with_preparation` for its lifetime. Keep the compiler quotation budget visitor charging the optional source value; following statements remain in the enclosing source list. A deferred push outside an enclosing statement sequence is rejected explicitly. Do not rewrite this form as assignments to individual context fields or rediscover the suffix in a new lexical declaration scope; either changes aliasing or forward declaration behavior.
 
 `crates/jai-codegen/tests/deferred_context.rs` checks authored sources through the VM and freshly generated native executables at O0/O2. It covers cleanup ordering, same-block forward aliases, captured outer pointers, loop transfers and nested record copies. Complete Vk-Engine source checking remains a separate gate. Pointer-valued context inputs and caller-exported deferred pushes require their own checked contracts.
 

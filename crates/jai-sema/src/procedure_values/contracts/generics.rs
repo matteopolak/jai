@@ -85,6 +85,25 @@ impl Resolver<'_> {
         let mut bindings = HashMap::new();
         let mut inferred_baked = HashMap::new();
         let mut has_baked_values = false;
+        // Result-introduced Types have no runtime formal; retain their actual
+        // named source annotations for this invocation's callback obligations.
+        for name in scope.callback_result_type_parameters(procedure) {
+            let argument = source_arguments.and_then(|arguments| {
+                arguments
+                    .iter()
+                    .find(|argument| argument.name == Some(name))
+            });
+            let contract = match (
+                scope.callback_specialized_type(procedure, name),
+                argument.and_then(|argument| source_type(&argument.value)),
+            ) {
+                (Some(ty), Some(annotation)) => {
+                    self.annotation_value_contract(ty, &annotation, span)?
+                }
+                _ => None,
+            };
+            bindings.insert(name, contract);
+        }
         for (ordinal, source) in parameters.iter().enumerate() {
             let source_argument = source_arguments
                 .and_then(|arguments| source_argument(arguments, source.name, ordinal));
@@ -121,7 +140,9 @@ impl Resolver<'_> {
             }
             let syntax = match &source.binding {
                 syntax::ParameterBinding::RequiredType(ty)
-                | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => ty,
+                | syntax::ParameterBinding::DefaultedType {
+                    ty: Some(ty), ..
+                } => ty,
                 _ => continue,
             };
             let Some(index) = signature
@@ -162,14 +183,18 @@ impl Resolver<'_> {
                         }
                         None => {
                             let default = match &source.binding {
-                                syntax::ParameterBinding::Defaulted { expression, .. }
-                                | syntax::ParameterBinding::DefaultedType { expression, .. } => {
-                                    Some(expression)
+                                syntax::ParameterBinding::Defaulted {
+                                    expression, ..
                                 }
+                                | syntax::ParameterBinding::DefaultedType {
+                                    expression, ..
+                                } => Some(expression),
                                 _ => None,
                             };
                             match default.map(|expression| &expression.kind) {
-                                Some(syntax::ExpressionKind::TypeCast { ty, .. }) => {
+                                Some(syntax::ExpressionKind::TypeCast {
+                                    ty, ..
+                                }) => {
                                     // The runtime default has erased its cast. Its
                                     // source annotation belongs to the defining
                                     // specialization, never the caller's aliases.
@@ -216,7 +241,9 @@ impl Resolver<'_> {
             }
             let ty = match &source.binding {
                 syntax::ParameterBinding::RequiredType(ty)
-                | syntax::ParameterBinding::DefaultedType { ty: Some(ty), .. } => ty,
+                | syntax::ParameterBinding::DefaultedType {
+                    ty: Some(ty), ..
+                } => ty,
                 _ => continue,
             };
             let Some(parameter) = signature
@@ -247,7 +274,10 @@ impl Resolver<'_> {
         for ((source, result), contract) in
             results.iter().zip(&signature.results).zip(&mut contracts)
         {
-            if let syntax::ResultBinding::Typed { ty, .. } = &source.binding {
+            if let syntax::ResultBinding::Typed {
+                ty, ..
+            } = &source.binding
+            {
                 let substitution = scope.callback_contract_substitution(procedure);
                 let source = scope.callback_contract_syntax_in_specialization(
                     file,
@@ -276,7 +306,9 @@ pub(super) fn capture_variables(
     }
     match source {
         syntax::TypeSyntax::Variable(name)
-        | syntax::TypeSyntax::Restricted { variable: name, .. } => {
+        | syntax::TypeSyntax::Restricted {
+            variable: name, ..
+        } => {
             let entry = bindings.entry(*name).or_insert(None);
             if let Some(contract) = contract {
                 *entry = Some(match entry.take() {
@@ -288,7 +320,9 @@ pub(super) fn capture_variables(
         syntax::TypeSyntax::Pointer(inner)
         | syntax::TypeSyntax::Slice(inner)
         | syntax::TypeSyntax::DynamicArray(inner)
-        | syntax::TypeSyntax::FixedArray { element: inner, .. } => {
+        | syntax::TypeSyntax::FixedArray {
+            element: inner, ..
+        } => {
             let inner_contract = contract.and_then(ValueContract::element);
             capture_variables(inner, inner_contract.as_ref(), bindings, span, depth + 1)?;
         }

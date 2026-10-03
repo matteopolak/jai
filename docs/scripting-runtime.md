@@ -62,6 +62,8 @@ The CLI accepts `--fuel <steps>` before `--`; everything following `--` is an ex
 
 ## Dependencies
 
+Both packages are explicit members of the root Cargo workspace. The authored-package scope guard in `tools/check_rust_format.py` requires this registration, so workspace formatting, Clippy and test commands include their committed sources and tests. Keep the two local package records in `Cargo.lock` aligned with their manifests; this registration adds no registry dependency. It retains the existing one-shot `Script::prepare` API. Retained compiler controllers, platform host bindings and reflection receipt carriers require their own producer and consumer changes. A formatting check does not establish native, WebAssembly or browser execution acceptance.
+
 `jai-runtime` uses only internal frontend/type/IR/interpreter crates. `jai-wasm` depends only on `jai-runtime`. These dependency paths contain no `jai-codegen`, `jai-llvm`, `inkwell`, `llvm-sys`, browser package manager or third-party wasm binding dependency.
 
 The native CLI uses Rust's filesystem source provider. The browser runner uses standard WebAssembly, workers and text encoding APIs. Python stages the runner and Node verifies the generated module. Rust's `wasm32-unknown-unknown` target provides no native filesystem/process services; host functions must be supplied explicitly when a future capability requires them. See the [official Rust target documentation](https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-unknown.html).
