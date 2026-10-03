@@ -344,6 +344,8 @@ Public source corpora are input data.
 - [Metered source environments](metered-source-environments.md)
 - [Source reflection factory](reflection-source-factory.md)
 
+- [Latest corpus frontier](corpus-breadth-frontier.md) — matched source cohorts, stage results, and remaining language coverage.
+
 ## Language and library specifications
 
 - [Jai language guide](specs/jai/README.md)
