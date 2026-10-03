@@ -241,6 +241,14 @@ fn source_field(
     span: Span,
 ) -> Result<syntax::FieldDeclaration, Diagnostic> {
     let binding = match declaration {
+        syntax::Declaration::GroupMember {
+            ..
+        } => {
+            return Err(Diagnostic::new(
+                span,
+                "file declaration group requires its source publication owner",
+            ));
+        }
         syntax::Declaration::External {
             ..
         } => {

@@ -50,6 +50,7 @@ pub struct BuildSettings {
     pub output_kind: BuildOutputKind,
     pub runtime_support: RuntimeSupportMode,
     pub backtrace_on_crash: BacktraceOnCrash,
+    pub temporary_storage_size: i32,
 }
 impl Default for BuildSettings {
     fn default() -> Self {
@@ -61,6 +62,7 @@ impl Default for BuildSettings {
             output_kind: BuildOutputKind::default(),
             runtime_support: RuntimeSupportMode::default(),
             backtrace_on_crash: BacktraceOnCrash::default(),
+            temporary_storage_size: 32768,
         }
     }
 }
@@ -86,6 +88,7 @@ impl BuildSettings {
             BuildOption::OutputKind(value) => self.output_kind = value,
             BuildOption::RuntimeSupport(value) => self.runtime_support = value,
             BuildOption::BacktraceOnCrash(value) => self.backtrace_on_crash = value,
+            BuildOption::TemporaryStorageSize(value) => self.temporary_storage_size = value,
         }
     }
 }
@@ -100,6 +103,7 @@ pub enum BuildSetting {
     OutputKind,
     RuntimeSupport,
     BacktraceOnCrash,
+    TemporaryStorageSize,
 }
 fn setting_keys(option: &BuildOption) -> &'static [BuildSetting] {
     use BuildSetting::*;
@@ -112,6 +116,7 @@ fn setting_keys(option: &BuildOption) -> &'static [BuildSetting] {
         BuildOption::OutputKind(_) => &[OutputKind],
         BuildOption::RuntimeSupport(_) => &[RuntimeSupport],
         BuildOption::BacktraceOnCrash(_) => &[BacktraceOnCrash],
+        BuildOption::TemporaryStorageSize(_) => &[TemporaryStorageSize],
     }
 }
 
@@ -553,6 +558,7 @@ impl CompilerSession {
             output_kind: settings.output_kind,
             runtime_support: settings.runtime_support,
             backtrace_on_crash: settings.backtrace_on_crash,
+            temporary_storage_size: settings.temporary_storage_size,
         }))
     }
     fn get_name(&mut self, id: WorkspaceId) -> EffectOutcome {
@@ -753,6 +759,9 @@ impl CompilerEffects for CompilerSession {
                 option,
                 location,
             } => {
+                if matches!(&option, BuildOption::TemporaryStorageSize(size) if *size < 0) {
+                    return self.reject("temporary storage size must be nonnegative");
+                }
                 if matches!(&option, BuildOption::OutputPath(path) if path.as_os_str().is_empty()) {
                     let reason = format!(
                         "{}:{}:{}: compiler output path must not be empty",
@@ -768,6 +777,9 @@ impl CompilerEffects for CompilerSession {
                 workspace,
                 option,
             } => {
+                if matches!(&option, BuildOption::TemporaryStorageSize(size) if *size < 0) {
+                    return self.reject("temporary storage size must be nonnegative");
+                }
                 if matches!(&option, BuildOption::OutputPath(path) if path.as_os_str().is_empty()) {
                     return self.reject("compiler output path must not be empty");
                 }

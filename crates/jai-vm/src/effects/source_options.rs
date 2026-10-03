@@ -1,6 +1,6 @@
 //! Apply only fields projected from a checked source Build_Options schema.
 use super::*;
-use jai_types::TypeView;
+use jai_types::{Integer, IntegerType, TypeView};
 
 pub(super) fn invoke_get_options(
     projection: BuildOptionsProjection,
@@ -59,6 +59,17 @@ pub(super) fn invoke_get_options(
                 RuntimeSupportMode::InitializationOnly => 2,
                 RuntimeSupportMode::Omit => 3,
             },
+            types,
+        )?;
+    }
+    if let Some(path) = projection.temporary_storage_size {
+        assign(
+            &mut record,
+            path,
+            Value::Int(
+                Integer::checked(IntegerType::S32, snapshot.temporary_storage_size as i128)
+                    .expect("retained temporary-storage setting fits source s32"),
+            ),
             types,
         )?;
     }
@@ -130,6 +141,10 @@ fn empty_options(ty: TypeId, types: &dyn TypeView, depth: usize) -> Result<Value
         .map_err(|error| EffectError::Failed(Error::Type(error)))?
     {
         jai_types::TypeKind::String => Ok(Value::String(vec![])),
+        jai_types::TypeKind::Integer(integer) => Ok(Value::Int(
+            Integer::checked(*integer, 0).expect("zero fits every source integer type"),
+        )),
+        jai_types::TypeKind::Bool => Ok(Value::Bool(false)),
         jai_types::TypeKind::Enum(id) => {
             let definition = types
                 .enumeration(*id)
@@ -334,6 +349,19 @@ fn invoke_options_with_location(
             }
         };
         options.push(BuildOption::RuntimeSupport(mode));
+    }
+    if let Some(path) = projection.temporary_storage_size {
+        let Value::Int(value) = field(record, path, types)? else {
+            return Err(fail(
+                "Build_Options temporary_storage_size requires an s32 integer",
+            ));
+        };
+        if value.ty() != IntegerType::S32 || value.value() < 0 {
+            return Err(fail(
+                "Build_Options temporary_storage_size must be a nonnegative source s32",
+            ));
+        }
+        options.push(BuildOption::TemporaryStorageSize(value.value() as i32));
     }
     if let Some(path) = projection.backtrace_on_crash {
         let mode = match enumeration(field(record, path, types)?)? {

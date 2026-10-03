@@ -464,6 +464,16 @@ impl<'a> Budget<'a> {
                     self.push(Node::Expression(expr), d)?;
                 }
                 match value {
+                    syntax::Declaration::GroupMember {
+                        group, ..
+                    } => {
+                        self.charge(group.names().len())?;
+                        self.push(Node::Declaration(group.source()), d)?;
+                        self.charge(group.extra_initializers().len())?;
+                        for initializer in group.extra_initializers() {
+                            self.push(Node::Expression(initializer), d)?;
+                        }
+                    }
                     syntax::Declaration::External {
                         ty,
                         binding,
@@ -703,6 +713,8 @@ impl<'a> Budget<'a> {
                 }
             },
             Node::Statement(statement) => match &statement.kind {
+                // The statement node was admitted when enqueued; Empty owns no children.
+                S::Empty => {}
                 S::InstructionBytes(value) => self.bytes(value.bytes.len())?,
                 S::Simd(value) => {
                     self.charge(value.features.len())?;

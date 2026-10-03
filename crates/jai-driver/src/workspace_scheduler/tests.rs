@@ -332,7 +332,8 @@ fn source_output_and_runtime_policy_commit_and_drive_bootstrap_parameters() {
         jai_modules::RuntimeSupportParameters {
             define_system_entry_point: false,
             define_initialization: true,
-            enable_backtrace_on_crash: false
+            enable_backtrace_on_crash: false,
+            temporary_storage_size: 32768,
         }
     );
 }

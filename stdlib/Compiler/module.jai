@@ -29,6 +29,7 @@ Build_Options :: struct {
     import_path: [..] string;
     compile_time_command_line: [..] string;
     stack_trace: bool;
+    temporary_storage_size: s32 = 32768;
     backtrace_on_crash: string;
     array_bounds_check: string;
     cast_bounds_check: string;

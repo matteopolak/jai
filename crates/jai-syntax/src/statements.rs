@@ -7,6 +7,15 @@ impl Parser<'_> {
         name: Symbol,
         span: Span,
     ) -> Result<Statement, Diagnostic> {
+        let statement = self.data_declaration_kind(name, span)?;
+        self.finish_statement(self.declaration_terminator(&statement))?;
+        Ok(Statement::new(self.consumed_span(span.start), statement))
+    }
+    pub(super) fn data_declaration_kind(
+        &mut self,
+        name: Symbol,
+        span: Span,
+    ) -> Result<StatementKind, Diagnostic> {
         let statement = if self.take(Punct::Constant) {
             StatementKind::Constant(ConstantDeclaration {
                 name,
@@ -72,34 +81,7 @@ impl Parser<'_> {
                 }
             }
         };
-        let self_terminated = match &statement {
-            StatementKind::Declare(Declaration::UnresolvedExplicit {
-                ty: TypeSyntax::InlineRecord(_),
-                initializer: None,
-                ..
-            }) => true,
-            StatementKind::Declare(Declaration::Inferred {
-                initializer, ..
-            })
-            | StatementKind::Constant(ConstantDeclaration {
-                initializer, ..
-            }) => initializer_terminates_declaration(initializer),
-            StatementKind::Declare(
-                Declaration::Explicit {
-                    initializer: Some(initializer),
-                    ..
-                }
-                | Declaration::UnresolvedExplicit {
-                    initializer: Some(initializer),
-                    ..
-                },
-            ) => initializer_terminates_declaration(initializer),
-            _ => false,
-        };
-        if !self.take(Punct::Semicolon) && !self_terminated {
-            return Err(self.error("expected ';' after declaration"));
-        }
-        Ok(Statement::new(self.consumed_span(span.start), statement))
+        Ok(statement)
     }
     pub(super) fn block(&mut self) -> Result<Vec<Statement>, Diagnostic> {
         self.need(Punct::OpenBrace)?;
@@ -136,6 +118,9 @@ impl Parser<'_> {
         Span::new(start, self.tokens[self.at - 1].span.end)
     }
     fn statement_kind(&mut self) -> Result<StatementKind, Diagnostic> {
+        if self.take(Punct::Semicolon) {
+            return Ok(StatementKind::Empty);
+        }
         if self.token().kind == Kind::Directive(Directive::Bytes) {
             return Ok(StatementKind::InstructionBytes(self.instruction_bytes()?));
         }
@@ -481,7 +466,7 @@ impl Parser<'_> {
             }
             if self.take(Punct::Assign) {
                 let v = self.expression(0)?;
-                self.need(Punct::Semicolon)?;
+                self.finish_expression_statement(&v)?;
                 return Ok(StatementKind::Assign(name, v));
             }
             return self
@@ -489,7 +474,7 @@ impl Parser<'_> {
                 .map(|statement| statement.kind);
         }
         let expr = self.expression(0)?;
-        if self.allow_qualified
+        if (self.allow_qualified || self.is(Punct::Comma))
             && (self.is(Punct::Assign)
                 || self.is(Punct::Comma)
                 || self.is(Punct::Colon)
@@ -497,17 +482,7 @@ impl Parser<'_> {
         {
             return self.place_statement(expr);
         }
-        if matches!(
-            &expr.kind,
-            ExpressionKind::CompileTime(CompileTimeRun {
-                body: CompileTimeBody::Block(_) | CompileTimeBody::Procedure { .. },
-                ..
-            })
-        ) {
-            self.take(Punct::Semicolon);
-        } else {
-            self.need(Punct::Semicolon)?;
-        }
+        self.finish_expression_statement(&expr)?;
         Ok(StatementKind::Expression(expr))
     }
 
@@ -643,12 +618,12 @@ impl Parser<'_> {
                 });
             }
             let (ty, values) = if self.take(Punct::Infer) {
-                (None, self.expression_values()?)
+                (None, self.declaration_initializers()?)
             } else {
                 self.need(Punct::Colon)?;
                 let ty = self.type_syntax()?;
                 let values = if self.take(Punct::Assign) {
-                    self.expression_values()?
+                    self.declaration_initializers()?
                 } else {
                     Vec::new()
                 };
@@ -687,7 +662,7 @@ impl Parser<'_> {
             .map(|(target, _)| PlaceSyntax::try_from(target))
             .collect::<Result<_, _>>()?;
         let mut values = self.expression_values()?;
-        self.need(Punct::Semicolon)?;
+        self.finish_value_statement(&values)?;
         if targets.len() == 1 && values.len() == 1 {
             let target = targets.remove(0);
             let value = values.remove(0);
@@ -767,18 +742,6 @@ impl Parser<'_> {
             complete,
         }))
     }
-}
-
-fn initializer_terminates_declaration(initializer: &Expression) -> bool {
-    matches!(
-        initializer.kind,
-        ExpressionKind::HereString(_)
-            | ExpressionKind::Type(TypeSyntax::InlineRecord(_) | TypeSyntax::InlineEnum(_))
-            | ExpressionKind::CompileTime(CompileTimeRun {
-                body: CompileTimeBody::Block(_) | CompileTimeBody::Procedure { .. },
-                ..
-            })
-    )
 }
 
 #[cfg(test)]

@@ -324,17 +324,11 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 
 - [Baked argument syntax](baked-argument-syntax.md)
 
-- [Platform source and host services](platform-services.md)
-- [Selected standard-library protocol profiles](stdlib/protocol-profiles.md)
 - [Retained global initializer jobs](global-initializer-jobs.md)
-- [Frontend header grammar](frontend-header-grammar.md)
-- [Remaining frontend grammar](frontend-grammar-frontiers.md)
 - [Baked procedure arguments (staged)](baked-procedure-arguments.md)
-- [Canonical Type equality](canonical-type-equality.md) — nominal equality across immutable descriptor revisions and physical pointer casts.
 - [Opaque numeric pointer values](opaque-numeric-pointers.md)
 - [Initial type readiness](initial-type-readiness.md)
 - [Retained source-run prefix](source-run-prefix.md)
-- [Reflection publication](reflection-publication.md) — owned VM detachment and prepared source policy guards.
 - [Static catalog ownership](static-catalog-ownership.md) — complete immutable allocation footprints and cumulative retained-root admission.
 - [Bounded reference probe history](reference-probes.md)
 - [Constant capture admission](constant-capture-admission.md) — complete retained-root quotas and cumulative fuel for selected compiler constants.
@@ -347,3 +341,6 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Source reflection factory](reflection-source-factory.md)
 
 - [Latest corpus frontier](corpus-breadth-frontier.md) — matched source cohorts, stage results, and remaining language coverage.
+- [Declaration lists](declaration-lists.md)
+- [Statement termination](statement-termination.md)
+- [Runtime support bootstrap](runtime-support-bootstrap.md)

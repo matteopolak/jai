@@ -17,13 +17,14 @@ pub enum PreludeSource {
     File(PathBuf),
 }
 
-/// Explicit compiler policy for the three required Runtime_Support parameters.
-/// There is deliberately no default: callers derive these from build settings.
+/// Explicit Runtime_Support policy derived from workspace build settings.
+/// The source module also retains its 32768-byte fallback for direct imports.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct RuntimeSupportParameters {
     pub define_system_entry_point: bool,
     pub define_initialization: bool,
     pub enable_backtrace_on_crash: bool,
+    pub temporary_storage_size: i32,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]

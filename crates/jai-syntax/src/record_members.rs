@@ -145,9 +145,11 @@ impl Parser<'_> {
         let field_start = self.token().span.start;
         let prefix = self.placed_field_prefix()?;
         let using = prefix.qualifiers.using;
-        let mut names = vec![self.name()?];
+        let first_span = self.token().span;
+        let mut names = vec![(self.name()?, first_span)];
         while self.take(Punct::Comma) {
-            names.push(self.name()?);
+            let span = self.token().span;
+            names.push((self.name()?, span));
         }
         if using && names.len() != 1 {
             return Err(self.error("grouped using record fields are not implemented"));
@@ -190,12 +192,12 @@ impl Parser<'_> {
         let span = Span::new(field_start, self.tokens[self.at - 1].span.end);
         Ok(names
             .into_iter()
-            .map(|name| FieldDeclaration {
+            .map(|(name, name_span)| FieldDeclaration {
                 name,
                 binding: binding.clone(),
                 using,
                 conversion: prefix.qualifiers.conversion,
-                span,
+                span: Span::new(name_span.start, span.end),
                 attributes: attributes.clone(),
                 notes: notes.clone(),
             })

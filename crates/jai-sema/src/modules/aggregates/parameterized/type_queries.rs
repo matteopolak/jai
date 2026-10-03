@@ -148,7 +148,10 @@ where
                 Some(annotation) => annotation.clone(),
                 None => return Ok(None),
             },
-            syntax::FileDeclarationKind::Global(global) => match &global.declaration {
+            syntax::FileDeclarationKind::Global(global) => match global.declaration.source() {
+                syntax::Declaration::GroupMember {
+                    ..
+                } => unreachable!("source() returns the original non-group declaration"),
                 syntax::Declaration::Explicit {
                     ty, ..
                 } => syntax::TypeSyntax::Builtin(syntax::BuiltinType::Scalar(*ty)),

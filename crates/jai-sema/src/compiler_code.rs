@@ -423,6 +423,14 @@ impl Resolver<'_> {
                     ));
                 }
                 let (name, initializer, explicit) = match source {
+                    syntax::Declaration::GroupMember {
+                        ..
+                    } => {
+                        return Err(Diagnostic::new(
+                            span,
+                            "file declaration group requires its source publication owner",
+                        ));
+                    }
                     syntax::Declaration::Inferred {
                         name,
                         initializer,

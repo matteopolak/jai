@@ -170,6 +170,13 @@ impl Resolver<'_> {
             statements.push(Statement::Store(local.place(), value));
             values.push(local.place());
         }
+        if source.len() == 1
+            && values.len() == 1
+            && expected.len() > 1
+            && !is_result_call(&source[0])
+        {
+            values.resize(expected.len(), values[0]);
+        }
         Ok(values)
     }
 
@@ -229,6 +236,30 @@ impl Resolver<'_> {
             None => None,
         };
         let mut statements = Vec::new();
+        if source.len() == 1 && matches!(source[0].kind, syntax::ExpressionKind::Uninitialized) {
+            let ty = ty.ok_or_else(|| {
+                Diagnostic::new(
+                    source[0].span,
+                    "--- declaration lists require an explicit type",
+                )
+            })?;
+            for &name in names {
+                if self.symbols.name(name) == "_" {
+                    continue;
+                }
+                let local = self.declare_typed(name, ty)?;
+                let contract = self.annotation_value_contract(
+                    ty,
+                    annotation.expect("uninitialized declaration checked its annotation"),
+                    self.span,
+                )?;
+                self.bind_value_contract(local.place(), contract, self.span)?;
+            }
+            return Ok(Statement::Block(Block {
+                statements,
+                flow: Flow::FallsThrough,
+            }));
+        }
         let used = names
             .iter()
             .map(|name| self.symbols.name(*name) != "_")
@@ -351,4 +382,15 @@ impl Resolver<'_> {
             flow: Flow::FallsThrough,
         }))
     }
+}
+
+fn is_result_call(expression: &syntax::Expression) -> bool {
+    matches!(
+        expression.kind,
+        syntax::ExpressionKind::Call(..)
+            | syntax::ExpressionKind::QualifiedCall(..)
+            | syntax::ExpressionKind::IndirectCall { .. }
+            | syntax::ExpressionKind::ContextCall { .. }
+            | syntax::ExpressionKind::CallHint { .. }
+    )
 }
