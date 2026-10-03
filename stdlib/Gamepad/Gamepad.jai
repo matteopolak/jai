@@ -53,6 +53,10 @@ init_gamepad :: () {
     for *button: gamepad.buttons button.* = .NONE;
     #if OS == .WINDOWS {
         if gamepad_sample_source == null gamepad_sample_source = sample_xinput;
+    } else #if OS == .LINUX {
+        if gamepad_sample_source == null gamepad_sample_source = sample_evdev;
+    } else #if OS == .MACOS {
+        if gamepad_sample_source == null gamepad_sample_source = sample_gamecontroller;
     }
 }
 
@@ -111,12 +115,13 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
     event.type = .KEYBOARD;
     event.key_pressed = pressed;
     event.key_code = cast(Input.Key_Code) (cast(s64) Input.Key_Code.GAMEPAD_0_BEGIN + index);
-    array_add(*Input.events_this_frame, event);
+    Input.publish_input_event(event);
 }
 
 #if OS == .WINDOWS {
     #load "Xinput.jai";
     sample_xinput :: (sample: *Gamepad_Sample) -> bool {
+        sample.* = .{};
         state: XINPUT_STATE;
         if XInputGetState(0, *state) != 0 return false;
         sample.left_stick = .{cast(float) state.Gamepad.sThumbLX / 32768, cast(float) state.Gamepad.sThumbLY / 32768};
@@ -131,3 +136,8 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
         return true;
     }
 }
+
+#if OS == .LINUX { #load "linux.jai"; }
+else #if OS == .MACOS { #load "macos.jai"; #load "iohid-provider.jai"; }
+
+#load "sdl.jai";

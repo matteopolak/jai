@@ -14,6 +14,7 @@ GLint :: s32;
 #load "texture_format.jai";
 #load "bitmap.jai";
 #load "texture.jai";
+#load "readback.jai";
 #load "shader.jai";
 #load "immediate.jai";
 #load "font.jai";

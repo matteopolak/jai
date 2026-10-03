@@ -366,7 +366,13 @@ InputTextCallback :: #type ( data : * InputTextCallbackData ) -> s32 #c_call ;
 SizeCallback :: #type ( data : * SizeCallbackData ) -> void #c_call ;
 MemAllocFunc :: #type ( sz : u64 , user_data : * void ) -> * void #c_call ;
 MemFreeFunc :: #type ( ptr : * void , user_data : * void ) -> void #c_call ;
-CreateContext :: ( shared_font_atlas : * ImFontAtlas = null ) -> * ImGuiContext #foreign imgui "?CreateContext@ImGui@@YAPEAUImGuiContext@@PEAUImFontAtlas@@@Z" ;
+CreateContext :: ( shared_font_atlas : * ImFontAtlas = null ) -> * ImGuiContext #c_call {
+    assert(DebugCheckVersionAndDataLayout(ImGui_String_Memory.temp_c_string(IMGUI_VERSION),
+        cast(u64) size_of(IO), cast(u64) size_of(Style), cast(u64) size_of(ImVec2),
+        cast(u64) size_of(ImVec4), cast(u64) size_of(ImDrawVert), cast(u64) size_of(ImDrawIdx)),
+        "Dear ImGui native version/layout does not match the retained 1.89.6 API");
+    return _imgui_create_context(shared_font_atlas);
+}
 DestroyContext :: ( ctx : * ImGuiContext = null ) -> void #foreign imgui "?DestroyContext@ImGui@@YAXPEAUImGuiContext@@@Z" ;
 GetCurrentContext :: ( ) -> * ImGuiContext #foreign imgui "?GetCurrentContext@ImGui@@YAPEAUImGuiContext@@XZ" ;
 SetCurrentContext :: ( ctx : * ImGuiContext ) -> void #foreign imgui "?SetCurrentContext@ImGui@@YAXPEAUImGuiContext@@@Z" ;
@@ -2598,7 +2604,7 @@ ModFlags :: enum_flags s32 {
 }
 #scope_file
 #import "Basic" ;
-imgui :: #system_library "jai-independent-imgui-compat" ;
+imgui :: #system_library "imgui" ;
 
 
 #scope_file
@@ -2615,3 +2621,6 @@ _imgui_text_begin :: (text: string) -> *u8 {
     if text.data != null return text.data;
     return cast(*u8) "\0";
 }
+
+#scope_file
+_imgui_create_context :: ( shared_font_atlas : * ImFontAtlas = null ) -> * ImGuiContext #foreign imgui "?CreateContext@ImGui@@YAPEAUImGuiContext@@PEAUImFontAtlas@@@Z";

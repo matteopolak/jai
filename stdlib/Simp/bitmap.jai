@@ -13,7 +13,8 @@ bitmap_alloc :: (using bitmap: *Bitmap, w: s32, h: s32, _format: Texture_Format)
     assert(bytes >= 0 && stride <= 0x7fff_ffff && (bytes>0 || w==0 || h==0), "Unsupported or overflowing bitmap dimensions");
     if bytes==0 && w>0 && h>0 return;
     deinit(bitmap);
-    data, base := NewArray(bytes, u8);
+    data, base := NewArray(bytes, u8, true);
+    if bytes>0&&!data.data { bitmap.*=.{}; assert(false,"Could not allocate bitmap storage"); return; }
     bitmap.* = .{width = w, height = h, data = data, stride = cast(s32)stride, format = _format};
     bitmap.flags = .FREE_DATA_ON_DEINIT;
 }
@@ -55,7 +56,7 @@ bitmap_build_mipmaps :: (bitmap: *Bitmap) {
     assert(bitmap.format == .R8 || bitmap.format == .RG8 || bitmap.format == .RGB8 || bitmap.format == .RGBA8 || bitmap.format == .BGRA8, "Mipmaps require an 8-bit component format");
     w := bitmap.width; h := bitmap.height; levels: s32 = 1; bytes: int = cast(int)w * h * channels;
     while w > 1 || h > 1 { w = max(w / 2, 1); h = max(h / 2, 1); bytes += cast(int)w * h * channels; levels += 1; }
-    output, base := NewArray(bytes, u8);
+    output, base := NewArray(bytes, u8, true);
     for y: 0..bitmap.height-1 memcpy(output.data + y * bitmap.width * channels, bitmap.data.data + y * bitmap.stride, bitmap.width * channels);
     source := output.data; source_w := bitmap.width; source_h := bitmap.height;
     dest := source + source_w * source_h * channels;

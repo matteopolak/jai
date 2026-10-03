@@ -22,6 +22,11 @@ using Input;
     Texture :: Type_Indicator.Texture;
 }
 #load "legacy-layouts.jai";
+#load "regions.jai";
+#load "colors.jai";
+#load "text-interaction.jai";
+#load "text-flow.jai";
+#load "theme-presets.jai";
 #add_context getrect_current_window: Window_Type = cast(Window_Type)0;
 default_overall_theme: Overall_Theme;
 draw_procs: Draw_Procs;
@@ -92,6 +97,7 @@ ui_per_frame_update :: (window:Window_Type,_render_target_width:s32,_render_targ
     current_dt=cast(float)max(current_time-last_current_time,0.0);
     if current_getrect_frame==0 current_dt=0;
     current_getrect_frame+=1; active_tooltip=.{}; current_tooltip=.{}; some_widget_received_left_mouse_button=false;
+    context.getrect_current_window=window;
     windows_per_frame_update(); popups_per_frame_update(); events_per_frame_update();
     mouse_button_left_state=ui_get_button_state(.MOUSE_BUTTON_LEFT);
     mouse_button_right_state=ui_get_button_state(.MOUSE_BUTTON_RIGHT);
@@ -115,19 +121,40 @@ switch_window :: (window:Window_Type,_render_target_width:s32,_render_target_hei
             array_add(*this_frame_per_window_states,.{window,mouse_x_float,mouse_y_float});
         }
     }
+    if left_scoped_input {
+        buttons:=left_buttons(window); mouse_button_left_state=buttons.left; mouse_button_right_state=buttons.right; shift_key_state=buttons.shift;
+    }
     events_per_window_update(window);
     return active_widget_is_grabbing,active_widget!=null;
 }
-getrect_handle_event :: (event:Event) { array_add(*events_to_handle_this_frame,event); }
-events_per_frame_update :: () { events_to_handle_this_frame.count=0; for event:events_this_frame array_add(*events_to_handle_this_frame,event); }
+getrect_handle_event :: (event:Event) { getrect_handle_event(event,context.getrect_current_window); }
+getrect_handle_event :: (event:Event,window:Window_Type) {
+    array_add(*events_to_handle_this_frame,event); array_add(*left_event_windows,window);
+    if left_scoped_input&&event.type==.KEYBOARD {
+        buttons:=left_buttons(window);
+        if event.key_code==.MOUSE_BUTTON_LEFT left_update_key(*buttons.left,event);
+        if event.key_code==.MOUSE_BUTTON_RIGHT left_update_key(*buttons.right,event);
+        if event.key_code==.SHIFT left_update_key(*buttons.shift,event);
+    }
+}
+events_per_frame_update :: () {
+    events_to_handle_this_frame.count=0; left_event_windows.count=0;
+    for *buttons:left_window_buttons { buttons.left&=.DOWN; buttons.right&=.DOWN; buttons.shift&=.DOWN; }
+    if Input.routed_events_this_frame.count>0 left_scoped_input=true;
+    if left_scoped_input {
+        for routed:Input.routed_events_this_frame getrect_handle_event(routed.event,cast(Window_Type)routed.window);
+        for event:Input.unrouted_events_this_frame getrect_handle_event(event);
+    } else for event:events_this_frame getrect_handle_event(event);
+}
 events_per_window_update :: (window:Window_Type) {
     if !active_widget||active_widget.window!=window||!active_widget.serial_events_proc return;
     filtered:[..]Event;
-    for event:events_to_handle_this_frame if event.window==window array_add(*filtered,event);
-    active_widget.serial_events_proc(active_widget,filtered);
-    array_reset(*filtered);
+    for event,index:events_to_handle_this_frame if left_event_window(index)==window array_add(*filtered,event);
+    active_widget.serial_events_proc(active_widget,filtered); array_reset(*filtered);
 }
+
 find_or_create_state :: ($T:Type,hash:u64,start_using:=true)->*T,created:bool {
+    if state_stack.count>0 hash=combine_hashes(hash,cast,no_check(u64)state_stack[state_stack.count-1]);
     for index:0..state_table.count-1 {
         widget:=state_table.values[index];
         if state_table.keys[index]==hash&&widget.widget_type==T {
@@ -142,6 +169,8 @@ find_or_create_state :: ($T:Type,hash:u64,start_using:=true)->*T,created:bool {
 start_using_state :: (widget:*Active_Widget) {
     assert(!widget.is_on_state_stack,"A widget state is already on the draw stack");
     widget.window=context.getrect_current_window;
+    widget.exists_on_occluder=null;
+    if state_stack.count>0 { parent:=state_stack[state_stack.count-1]; widget.exists_on_occluder=ifx parent.widget_type==Subwindow_State then parent else parent.exists_on_occluder; }
     widget.cosmetic_dt=cast(float)max(current_time-widget.last_update_time,0.0);
     if widget.last_getrect_frame==0 widget.cosmetic_dt=0;
     widget.last_update_time=current_time; widget.last_getrect_frame=current_getrect_frame;
@@ -168,6 +197,9 @@ active_widgets_per_frame_update :: () {
 }
 get_status_flags :: (r:Rect,widget_if_querying_outside_of_render_time:*Active_Widget=null,ignore:=Status_Flags_Ignore.NOTHING)->Status_Flags {
     status:Status_Flags;
+    occluder:=left_subwindow_hit(context.getrect_current_window,mouse_x_float,mouse_y_float);
+    query:=widget_if_querying_outside_of_render_time; if !query&&state_stack.count>0 query=state_stack[state_stack.count-1];
+    if occluder&&query!=occluder&&(!query||query.exists_on_occluder!=occluder) return status;
     if !(ignore&.SCISSOR)&&!is_visible_in_scissor(mouse_x_float,mouse_y_float) return status;
     if active_widget_is_grabbing&&active_widget!=widget_if_querying_outside_of_render_time {
         own:=false; for widget:state_stack if widget==active_widget own=true;
@@ -330,7 +362,7 @@ dropdown :: (r:Rect,choices:[]string,current_value_pointer:*s32,theme:*Dropdown_
     if state.open add_popup(draw_dropdown_popup,state,z);
     before:=current_value_pointer.*;
     if active_widget==cast(*Active_Widget)state {
-        for event:events_to_handle_this_frame if event.type==.KEYBOARD&&event.key_pressed&&event.window==state.window {
+        for event,event_index:events_to_handle_this_frame if event.type==.KEYBOARD&&event.key_pressed&&left_event_window(event_index)==state.window {
             if event.key_code==.ESCAPE state.open=false;
             if choices.count>0&&event.key_code==.ARROW_DOWN current_value_pointer.*=cast(s32)min(current_value_pointer.*+1,choices.count-1);
             if choices.count>0&&event.key_code==.ARROW_UP current_value_pointer.*=max(current_value_pointer.*-1,0);
@@ -345,7 +377,7 @@ draw_popups :: () {
     // Stable insertion ordering handles equal-z popups without dependence on a sort library.
     for i:1..popups.count-1 {
         value:=popups[i]; j:=i;
-        while j>0&&popups[j-1].z>value.z { popups[j]=popups[j-1]; j-=1; }
+        while j>0&&(popups[j-1].z>value.z||(popups[j-1].z==value.z&&popups[j-1].serial>value.serial)) { popups[j]=popups[j-1]; j-=1; }
         popups[j]=value;
     }
     drawing_popups=true;
@@ -433,16 +465,16 @@ move_cursor_left :: (state:*Text_Input_State,want_selection:=false) { move_curso
 move_cursor_right :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,seek_right_one_utf8_character(state.text,state.insert_point),want_selection); }
 move_cursor_to_beginning :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,0,want_selection); }
 move_cursor_to_end :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,state.text.count,want_selection); }
-backspace_from_cursor :: (state:*Text_Input_State) {
+backspace_from_cursor :: (using state:*Text_Input_State,by_word:=false) {
     if nonempty(state.selection) { replace_selection(state,""); return; }
     if state.insert_point==0 return;
-    state.selection=.{start_character=seek_left_one_utf8_character(state.text,state.insert_point),end_character=state.insert_point,active=true};
+    state.selection=.{start_character=ifx by_word then seek_left_one_word(state.text,state.insert_point) else seek_left_one_utf8_character(state.text,state.insert_point),end_character=state.insert_point,active=true};
     replace_selection(state,"");
 }
-delete_from_cursor :: (state:*Text_Input_State) {
+delete_from_cursor :: (using state:*Text_Input_State,by_word:=false) {
     if nonempty(state.selection) { replace_selection(state,""); return; }
     if state.insert_point>=state.text.count return;
-    state.selection=.{start_character=state.insert_point,end_character=seek_right_one_utf8_character(state.text,state.insert_point),active=true};
+    state.selection=.{start_character=state.insert_point,end_character=ifx by_word then seek_right_one_word(state.text,state.insert_point) else seek_right_one_utf8_character(state.text,state.insert_point),active=true};
     replace_selection(state,"");
 }
 activate :: (state:*Text_Input_State) {
@@ -477,24 +509,39 @@ handle_event :: (state:*Text_Input_State,event:Event) {
         if size>0 insert_text(state,string.{size,*bytes[0]});
     }
     if event.type!=.KEYBOARD||!event.key_pressed return;
-    if event.key_code==.ARROW_LEFT move_cursor_left(state,event.shift_pressed);
-    if event.key_code==.ARROW_RIGHT move_cursor_right(state,event.shift_pressed);
+    if event.key_code==.ARROW_LEFT { if event.ctrl_pressed||event.cmd_meta_pressed move_cursor_left_by_word(state,event.shift_pressed); else move_cursor_left(state,event.shift_pressed); }
+    if event.key_code==.ARROW_RIGHT { if event.ctrl_pressed||event.cmd_meta_pressed move_cursor_right_by_word(state,event.shift_pressed); else move_cursor_right(state,event.shift_pressed); }
     if event.key_code==.HOME move_cursor_to_beginning(state,event.shift_pressed);
     if event.key_code==.END move_cursor_to_end(state,event.shift_pressed);
-    if event.key_code==.BACKSPACE backspace_from_cursor(state);
-    if event.key_code==.DELETE delete_from_cursor(state);
+    if event.key_code==.BACKSPACE backspace_from_cursor(state,event.ctrl_pressed||event.cmd_meta_pressed);
+    if event.key_code==.DELETE delete_from_cursor(state,event.ctrl_pressed||event.cmd_meta_pressed);
     if cast(s32)event.key_code==65&&(event.ctrl_pressed||event.cmd_meta_pressed) select_all(state);
-    if event.key_code==.ENTER state.pending_result_actions|=.ENTERED;
+    if event.key_code==.TAB { advance_auto_complete(state,event.shift_pressed); return; }
+    if event.key_code==.ARROW_UP navigate_history_backward(state);
+    if event.key_code==.ARROW_DOWN navigate_history_forward(state);
+    if (event.ctrl_pressed||event.cmd_meta_pressed)&&cast(s32)event.key_code==67 copy_selection_to_clipboard(state);
+    if (event.ctrl_pressed||event.cmd_meta_pressed)&&cast(s32)event.key_code==88 copy_selection_to_clipboard(state,true);
+    if (event.ctrl_pressed||event.cmd_meta_pressed)&&cast(s32)event.key_code==86 left_paste_clipboard(state);
+    if event.key_code==.ENTER {
+        if state.tab_pressed&&accept_auto_complete(state) return;
+        state.pending_result_actions|=.ENTERED;
+        if state.text.count>0&&(state.command_history.count==0||state.command_history[state.command_history.count-1]!=state.text) array_add(*state.command_history,copy_string(state.text));
+        state.command_history_index=state.command_history.count;
+    }
     if event.key_code==.ESCAPE state.pending_result_actions|=.ESCAPED;
 }
 draw_text_input_background :: (r:Rect,theme:*Text_Input_Theme,state:*Text_Input_State,active:=false,changed:=false) {
-    status:=get_status_flags(r,state.widget,ignore=.LEFT_CLICK|.TOOLTIP);
+    status:=get_status_flags(r,*state.widget,ignore=.LEFT_CLICK|.TOOLTIP);
     if active status|=.DOWN; if changed status|=.PRESSED;
     core_draw_button(r,"",*state.base,status,*theme.button_theme,null);
 }
 text_input :: (_r:Rect,inert_text:string,theme:*Text_Input_Theme,identifier:s64=0,loc:=#caller_location,input_action:Text_Input_Action=0,auto_complete:Auto_Complete=.{})->result_action:Text_Result_Action,new_string:string,state:*Text_Input_State {
+    state,created:=find_or_create_state(Text_Input_State,get_hash(loc,identifier)); defer stop_using_state(state);
+    return left_text_input_body(_r,inert_text,theme,state,created,input_action,auto_complete);
+}
+#scope_module
+left_text_input_body :: (_r:Rect,inert_text:string,theme:*Text_Input_Theme,state:*Text_Input_State,created:bool,input_action:Text_Input_Action,auto_complete:Auto_Complete)->Text_Result_Action,string,*Text_Input_State {
     if !theme theme=*default_overall_theme.text_input_theme;
-    state,created=find_or_create_state(Text_Input_State,get_hash(loc,identifier)); defer stop_using_state(state);
     state.rect=_r; state.auto_complete=auto_complete;
     if created { set_text(state,inert_text); set_last_inert_text(state,inert_text); }
     if !state.active&&state.last_inert_text!=inert_text { set_text(state,inert_text); set_last_inert_text(state,inert_text); }
@@ -502,7 +549,7 @@ text_input :: (_r:Rect,inert_text:string,theme:*Text_Input_Theme,identifier:s64=
     if status&.PRESSED&&!state.disabled activate(state);
     if input_action&.ACTIVATE activate(state);
     if input_action&.DEACTIVATE { state.active=false; active_widget_remove(state); }
-    result_action=state.pending_result_actions; state.pending_result_actions=0;
+    result_action:=state.pending_result_actions; state.pending_result_actions=0;
     if result_action&.ESCAPED {
         if !theme.maintain_text_after_escape set_input(state,state.pre_modification_text);
         state.active=false; active_widget_remove(state);
@@ -510,71 +557,98 @@ text_input :: (_r:Rect,inert_text:string,theme:*Text_Input_Theme,identifier:s64=
     if result_action&.ENTERED&&theme.deactivate_on_enter { state.active=false; active_widget_remove(state); }
     draw_text_input_background(_r,theme,state,state.active,(result_action&.TEXT_MODIFIED)!=0);
     label_theme:=theme.label_theme; if !label_theme.font label_theme.font=get_default_font_at_size(_r.h*0.65);
-    label(_r,state.text,*label_theme);
-    if state.active&&label_theme.font&&draw_procs.prepare_text {
-        font:=label_theme.font; whole:=cast(float)draw_procs.prepare_text(font,state.text,label_theme.effects);
-        origin_x,origin_y:=text_origin(*label_theme,font,_r,whole);
-        prefix_width:=cast(float)draw_procs.prepare_text(font,string.{state.insert_point,state.text.data},label_theme.effects);
-        cursor:=Rect.{origin_x+prefix_width,_r.y+_r.h*0.15,max(em(theme.cursor_width_inside_text,font),1.0),_r.h*0.70};
-        if frac(cast(float)(current_time-state.last_keypress_time))<0.5 {
-            push_scissor(_r); draw_procs.set_shader_for_color(true); p0,p1,p2,p3:=get_quad(cursor); draw_procs.immediate_quad(p0,p1,p2,p3,theme.cursor_color); pop_scissor();
-        }
-    }
-    new_string=state.text;
+    left_text_pointer(state,theme,label_theme.font,status);
+    left_draw_input_contents(_r,theme,state);
+    new_string:=state.text;
+    return result_action,new_string,state;
 }
+#scope_export
+
 draw :: (state:*Text_Input_State,r:Rect,theme:*Text_Input_Theme=null,identifier:s64=0,loc:=#caller_location) {
     if !theme theme=*default_overall_theme.text_input_theme;
-    state.rect=r; draw_text_input_background(r,theme,state,state.active); label(r,state.text,*theme.label_theme);
+    state.rect=r; draw_text_input_background(r,theme,state,state.active); left_draw_input_contents(r,theme,state);
 }
 slider :: (_r:Rect,value:*$T,min_value:T,max_value:T,spinbox_step:T,theme:*Slider_Theme,prefix:="",suffix:="",identifier:s64=0,loc:=#caller_location)->bool {
     if !theme theme=*default_overall_theme.slider_theme;
     if max_value<min_value||!value return false;
     state:=find_or_create_state(Slider_State,get_hash(loc,identifier)); defer stop_using_state(state);
-    state.value_type=type_info(T); state.background.rect=_r;
-    status:=get_status_flags(_r,state);
-    if status&.PRESSED {
-        state.sliding=true; state.sliding_is_relative=theme.sliding_is_relative; active_widget_add(state,true);
+    runtime:=left_slider_runtime(state); state.value_type=type_info(T);
+    before:=value.*; candidate:=cast(float64)before; r:=_r;
+    if theme.use_spinboxes {
+        width:=min(_r.h*theme.spinbox_button_width,_r.w/3); minus:=Rect.{_r.x,_r.y,width,_r.h}; plus:=Rect.{_r.x+_r.w-width,_r.y,width,_r.h};
+        pressed,button_state,released:=button(minus,"-",*theme.spinbox_theme,identifier+301,loc); if pressed candidate-=cast(float64)spinbox_step;
+        pressed,button_state,released=button(plus,"+",*theme.spinbox_theme,identifier+302,loc); if pressed candidate+=cast(float64)spinbox_step;
+        r.x+=width; r.w=max(r.w-2*width,0.0);
     }
-    before:=value.*; candidate:=cast(float64)before;
+    state.background.rect=r; status:=get_status_flags(r,state);
+    if status&.PRESSED&&!state.inputting_text {
+        twice:=current_time-runtime.last_click<=theme.text_input_theme.multiclick_delay_max&&length(xy(mouse_x_float,mouse_y_float)-runtime.last_position)<max(r.h/4,1.0);
+        runtime.last_click=current_time; runtime.last_position=.{mouse_x_float,mouse_y_float};
+        if theme.text_editable&&twice {
+            initial:string; info:=type_info(T);
+            if info.type==.FLOAT initial=theme.format_text_float("","",cast(float64)value.*,theme,state,.EDITING);
+            else initial=theme.format_text_int("","",cast(s64)value.*,theme,state,.EDITING);
+            set_text(*runtime.editor,initial); set_last_inert_text(*runtime.editor,initial); state.inputting_text=true; runtime.editor.active=true; active_widget_add(*runtime.editor);
+        } else { state.sliding=true; state.sliding_is_relative=theme.sliding_is_relative; active_widget_add(state,true); }
+    }
     if state.sliding {
         if state.sliding_is_relative||(theme.sliding_becomes_relative_by_pressing_shift&&(shift_key_state&.DOWN)!=0) {
             factor:=theme.relative_slide_factor; if shift_key_state&.DOWN factor=theme.relative_slide_factor_modified;
             candidate+=mouse_delta_x_float*factor;
-        } else if _r.w>0 candidate=cast(float64)min_value+(cast(float64)max_value-min_value)*clamp((mouse_x_float-_r.x)/_r.w,0.0,1.0);
+        } else if r.w>0 candidate=cast(float64)min_value+(cast(float64)max_value-min_value)*clamp((mouse_x_float-r.x)/r.w,0.0,1.0);
         if mouse_button_left_state&.END { state.sliding=false; active_widget_remove(state); }
     }
-    if status&.OVER for event:events_to_handle_this_frame if event.window==state.window&&event.type==.KEYBOARD&&event.key_pressed {
+    if status&.OVER&&!state.inputting_text for event,event_index:events_to_handle_this_frame if left_event_window(event_index)==state.window&&event.type==.KEYBOARD&&event.key_pressed {
         if event.key_code==.ARROW_LEFT candidate-=cast(float64)spinbox_step;
         if event.key_code==.ARROW_RIGHT candidate+=cast(float64)spinbox_step;
     }
-    info:=type_info(T);
-    if info.type==.INTEGER candidate=floor(candidate+0.5);
-    candidate=clamp(candidate,cast(float64)min_value,cast(float64)max_value); value.*=cast(T)candidate;
+    info:=type_info(T); entered:=false;
+    if state.inputting_text {
+        start_using_state(*runtime.editor); defer stop_using_state(*runtime.editor);
+        actions,text,editor:=left_text_input_body(r,runtime.editor.last_inert_text,*theme.text_input_theme,*runtime.editor,false,0,.{});
+        if actions&.ENTERED {
+            success:bool;
+            if info.type==.FLOAT { parsed,valid:=theme.parse_text_float(text,theme,state); success=parsed; candidate=valid; }
+            else { parsed,valid:=theme.parse_text_int(text,theme,state); success=parsed; candidate=cast(float64)valid; }
+            entered=success;
+            if !success candidate=cast(float64)before;
+            state.inputting_text=false;
+        }
+        if actions&.ESCAPED||!runtime.editor.active state.inputting_text=false;
+    }
+    if info.type==.INTEGER candidate=round(candidate);
+    if !entered||theme.clamp_text_input_low candidate=max(candidate,cast(float64)min_value);
+    if !entered||theme.clamp_text_input_high candidate=min(candidate,cast(float64)max_value);
+    value.*=cast(T)candidate;
     fraction:=0.0; if max_value>min_value fraction=cast(float)((candidate-min_value)/(cast(float64)max_value-min_value));
-    state.current_slide_setting=fraction; state.changed_this_frame=value.*!=before;
+    state.current_slide_setting=clamp(fraction,0.0,1.0); state.changed_this_frame=value.*!=before;
     if state.sliding status|=.DOWN;
     state.background.status=status; state.foreground.status=status;
-    foreground:=shrink(_r,_r.h*theme.surface_margin); state.surface_margin_this_frame_in_pixels=_r.h*theme.surface_margin;
-    if theme.surface_style==.EXTEND_FROM_LEFT foreground.w*=fraction;
-    else { width:=get_float_parameter(_r,theme.nub_thickness_type,theme.nub_thickness,global_slider_nub_thickness_in_pixels); foreground.x+=fraction*max(foreground.w-width,0.0); foreground.w=min(width,foreground.w); }
-    if theme.draw_background theme.draw_background(_r,theme,state);
-    if theme.draw_foreground theme.draw_foreground(_r,foreground,theme,state);
-    text:string;
-    if info.type==.FLOAT { if theme.format_text_float text=theme.format_text_float(prefix,suffix,cast(float64)value.*,theme,state,.DISPLAY); }
-    else { if theme.format_text_int text=theme.format_text_int(prefix,suffix,cast(s64)value.*,theme,state,.DISPLAY); }
-    label(_r,text,*theme.foreground.label_theme);
+    foreground:=shrink(r,r.h*theme.surface_margin); state.surface_margin_this_frame_in_pixels=r.h*theme.surface_margin;
+    if theme.surface_style==.EXTEND_FROM_LEFT foreground.w*=state.current_slide_setting;
+    else { width:=get_float_parameter(r,theme.nub_thickness_type,theme.nub_thickness,global_slider_nub_thickness_in_pixels); foreground.x+=state.current_slide_setting*max(foreground.w-width,0.0); foreground.w=min(width,foreground.w); }
+    if !state.inputting_text {
+        if theme.draw_background theme.draw_background(r,theme,state);
+        if theme.draw_foreground theme.draw_foreground(r,foreground,theme,state);
+        text:string;
+        if info.type==.FLOAT { if theme.format_text_float text=theme.format_text_float(prefix,suffix,cast(float64)value.*,theme,state,.DISPLAY); }
+        else { if theme.format_text_int text=theme.format_text_int(prefix,suffix,cast(s64)value.*,theme,state,.DISPLAY); }
+        label(r,text,*theme.foreground.label_theme);
+    }
     return state.changed_this_frame;
 }
+
 slider_draw_background_default :: (r:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r,"",*state.background,state.background.status,*theme.background,null); }
 slider_draw_foreground_default :: (r_background:Rect,r_foreground:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r_foreground,"",*state.foreground,state.foreground.status,*theme.foreground,null); }
 slider_format_text_float_default :: (prefix:string,suffix:string,value:float64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
-    return tprint("%%%",prefix,value,suffix);
+    formatted:=Basic.formatFloat(value,trailing_width=clamp(theme.decimals,0,18),zero_removal=false);
+    if mode==.EDITING return formatted; return tprint("%%%",prefix,formatted,suffix);
 }
 slider_format_text_int_default :: (prefix:string,suffix:string,value:s64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
-    return tprint("%%%",prefix,value,suffix);
+    if mode==.EDITING return tprint("%",value); return tprint("%%%",prefix,value,suffix);
 }
-slider_parse_text_float_default :: (text:string,theme:*Slider_Theme,state:*Slider_State)->success:bool,value:float64 { value,success=String.string_to_float(text); }
-slider_parse_text_int_default :: (text:string,theme:*Slider_Theme,state:*Slider_State)->success:bool,value:s64 { value,success=String.string_to_int(text); }
+slider_parse_text_float_default :: (text:string,theme:*Slider_Theme,state:*Slider_State)->success:bool,value:float64 { parsed,valid:=String.string_to_float(text); return valid,parsed; }
+slider_parse_text_int_default :: (text:string,theme:*Slider_Theme,state:*Slider_State)->success:bool,value:s64 { parsed,valid:=String.string_to_int(text); return valid,parsed; }
 
 #scope_module
 initialized:bool; drawing_popups:bool;
@@ -610,6 +684,7 @@ left_round_fill :: (r:Rect,shape:Rectangle_Shape,radius:float,color:Vector4) {
 draw_dropdown_popup :: (data:*void) {
     state:=cast(*Dropdown_State)data;
     if !state.open return;
+    start_using_state(state); defer stop_using_state(state);
     for choice,index:state.choices {
         r:=state.base_rect; r.y+=r.h*(index+1);
         theme:=*state.theme.theme_for_each_choice; if index==state.current_value_pointer.* theme=*state.theme.theme_for_current_choice;
@@ -637,4 +712,41 @@ left_quad :: (p0:Vector2,p1:Vector2,p2:Vector2,p3:Vector2,color:=Vector4.{1,1,1,
     a:=p0;b:=p1;c:=p2;d:=p3; a.y=render_target_height-a.y;b.y=render_target_height-b.y;c.y=render_target_height-c.y;d.y=render_target_height-d.y;
     Simp.immediate_quad(a,b,c,d,color,uv0,uv1,uv2,uv3);
 }
+}
+
+#scope_module
+left_event_windows:[..]Window_Type; left_scoped_input:bool;
+Left_Window_Buttons :: struct { window:Window_Type; left:Key_Current_State; right:Key_Current_State; shift:Key_Current_State; }
+left_window_buttons:[..]Left_Window_Buttons;
+left_buttons :: (window:Window_Type)->*Left_Window_Buttons { for *buttons:left_window_buttons if buttons.window==window return buttons; return array_add(*left_window_buttons,.{window=window}); }
+left_event_window :: (index:int)->Window_Type { if index<left_event_windows.count return left_event_windows[index]; return context.getrect_current_window; }
+left_update_key :: (state:*Key_Current_State,event:Event) { if event.key_pressed { state.*|=.DOWN; if !event.repeat state.*|=.START; } else { state.*&=~Key_Current_State.DOWN; state.*|=.END; } }
+
+Left_Slider_Runtime :: struct { state:*Slider_State; editor:Text_Input_State; last_click:float64=-1; last_position:Vector2; }
+left_slider_runtimes:[..]*Left_Slider_Runtime;
+left_slider_runtime :: (state:*Slider_State)->*Left_Slider_Runtime { for runtime:left_slider_runtimes if runtime.state==state return runtime; runtime:=New(Left_Slider_Runtime); runtime.state=state; runtime.editor.widget_type=Text_Input_State; array_add(*left_slider_runtimes,runtime); return runtime; }
+
+#scope_export
+ui_deinit :: () {
+    assert(state_stack.count==0&&scissor_stack.count==0,"Finish drawing before UI teardown");
+    active_widget_deactivate_all();
+    for runtime:left_slider_runtimes { left_release_text_state(*runtime.editor); free(runtime); }
+    array_reset(*left_slider_runtimes); array_reset(*left_text_views);
+    for order:left_subwindow_orders free(order); array_reset(*left_subwindow_orders); left_raise_serial=0;
+    for widget:state_table.values {
+        if widget.widget_type==Text_Input_State left_release_text_state(cast(*Text_Input_State)widget);
+        if widget.widget_type==Number_Input_State left_release_text_state(*(cast(*Number_Input_State)widget).text_input_state);
+        if widget.widget_type==Color_Picker_State array_reset(*(cast(*Color_Picker_State)widget).stashed_colors);
+        if widget.widget_type==Color_Animation_Editor_State { state:=cast(*Color_Animation_Editor_State)widget; array_reset(*state.color_keyframes); array_reset(*state.color_samples); }
+        free(widget);
+    }
+    Tables.deinit(*state_table); array_reset(*state_stack); array_reset(*scissor_stack); array_reset(*popups);
+    array_reset(*events_to_handle_this_frame); array_reset(*left_event_windows); array_reset(*left_window_buttons);
+    array_reset(*this_frame_per_window_states); array_reset(*last_frame_per_window_states);
+    active_widget=null; active_widget_is_grabbing=false; initialized=false; left_scoped_input=false;
+}
+#scope_module
+left_release_text_state :: (state:*Text_Input_State) {
+    reset_auto_complete(state); free(state.last_inert_text.data); free(state.pre_modification_text.data); free(state.last_saved_input.data);
+    for command:state.command_history free(command.data); array_reset(*state.command_history); array_reset(*state.buffered_events);
 }

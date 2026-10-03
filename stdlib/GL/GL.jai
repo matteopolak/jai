@@ -16,14 +16,20 @@ using gl ;
 #scope_export
 GetProcAddressFunction :: #type ( proc : * u8 ) -> * void #c_call ;
 
-_glGetActiveAttrib :: ( program : GLuint , index : GLuint , bufSize : GLsizei , length : * GLsizei , size : * GLint , type : * GLenum , $$ name : string ) #foreign Native_Adapters ;
-_glGetActiveUniform :: ( program : GLuint , index : GLuint , bufSize : GLsizei , length : * GLsizei , size : * GLint , type : * GLenum , $$ name : string ) #foreign Native_Adapters ;
+_glGetActiveAttrib :: ( program : GLuint , index : GLuint , bufSize : GLsizei , length : * GLsizei , size : * GLint , type : * GLenum , $$ name : string ) {
+    assert(bufSize >= 0 && cast(s64) bufSize <= name.count, "GL name buffer is smaller than bufSize");
+    assert(bufSize == 0 || name.data != null, "GL name buffer is null");
+    gl.glGetActiveAttrib(program, index, bufSize, length, size, type, cast(*GLchar) name.data);
+}
+_glGetActiveUniform :: ( program : GLuint , index : GLuint , bufSize : GLsizei , length : * GLsizei , size : * GLint , type : * GLenum , $$ name : string ) {
+    assert(bufSize >= 0 && cast(s64) bufSize <= name.count, "GL name buffer is smaller than bufSize");
+    assert(bufSize == 0 || name.data != null, "GL name buffer is null");
+    gl.glGetActiveUniform(program, index, bufSize, length, size, type, cast(*GLchar) name.data);
+}
 
 #if OS == . WINDOWS {
-    wgl_create_context :: ( hwnd : HWND , share : HGLRC = null , major_version : s32 = 0 , minor_version : s32 = 0 , compatibility := false , debug := false , wanted_msaa : s32 = DEFAULT_MSAA ) -> HGLRC , HDC , chosen_msaa : s32 #foreign Native_Adapters ;
 }
 #if OS == . LINUX {
-    glx_create_context :: ( window : Window_Type , major_version : s32 = 0 , minor_version : s32 = 0 , compatibility := false , debug := false ) -> GLXContext , GLXFBConfig , chosen_msaa : s32 #foreign Native_Adapters ;
 }
 #if OS == . MACOS {
     #import "Objective_C" ;
@@ -37,7 +43,6 @@ _glGetActiveUniform :: ( program : GLuint , index : GLuint , bufSize : GLsizei ,
         return _gl_symbol(cast(*void) -2, temp_c_string(name));
     }
 }
-gl_create_context :: ( win : $ Window , major_version : s32 = 0 , minor_version : s32 = 0 , compatibility := false , debug := false , wanted_msaa : s32 = DEFAULT_MSAA ) #foreign Native_Adapters ;
 #scope_file
 
 
@@ -45,4 +50,3 @@ gl_create_context :: ( win : $ Window , major_version : s32 = 0 , minor_version 
 
 
 #scope_file
-Native_Adapters :: #system_library "jai-stdlib-native-adapters";

@@ -217,18 +217,6 @@
       }
     },
     {
-      "path": "stdlib/Input/module.jai",
-      "sha256": "b3c883ca89c2d0333fdc256fbf5d28a3c98219b19cec6833e05f19bfcfeef46d",
-      "parse": {
-        "exit_code": 0,
-        "output": "45 items (syntax stage only)"
-      },
-      "lex": {
-        "exit_code": 0,
-        "output": "1160 tokens (lexical stage only)"
-      }
-    },
-    {
       "path": "stdlib/Keymap/module.jai",
       "sha256": "996dac2f597a269057e48893ce7135ad01f73adb5a25b3c5bc84e5ae1e6d3cc0",
       "parse": {
@@ -253,18 +241,6 @@
       }
     },
     {
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "sha256": "04dd1845a8e99fe4b83049dae476e42dcb98b61d9641b3c179c3dcb2c6dedd78",
-      "parse": {
-        "exit_code": 0,
-        "output": "19 items (syntax stage only)"
-      },
-      "lex": {
-        "exit_code": 0,
-        "output": "1251 tokens (lexical stage only)"
-      }
-    },
-    {
       "path": "stdlib/Gamepad/Xinput.jai",
       "sha256": "765914842ef06bdef518b9e21c8bc527bd7b091e144f4202efe8b954bd9fdbd6",
       "parse": {
@@ -286,6 +262,150 @@
       "lex": {
         "exit_code": 0,
         "output": "3 tokens (lexical stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "sha256": "c812ed8dbc805abdd3094f9738c64f729d75d347945d315b346c681c489bc1ce",
+      "lex": {
+        "exit_code": 0,
+        "output": "1313 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "21 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "sha256": "2726df6d84b1a8873cb042ee14f00386642a86bce6ebde6d853ca50fcab5acd7",
+      "lex": {
+        "exit_code": 0,
+        "output": "447 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "46 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "sha256": "829208ff095b86967bdba870e9349a6d42aa532a91d1b10586d11b3c5d09efa0",
+      "lex": {
+        "exit_code": 0,
+        "output": "1143 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "16 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/evdev.jai",
+      "sha256": "097e523b08e809edcb9ac7d12db7d9986f338f57e654059cbbc4d59055f7a864",
+      "lex": {
+        "exit_code": 0,
+        "output": "1585 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "96 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/iohid-provider.jai",
+      "sha256": "da6031f95fef9c4bf855d66378d4ebe9debd5f269a8d99360f03594f406cfa48",
+      "lex": {
+        "exit_code": 0,
+        "output": "977 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "12 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/linux.jai",
+      "sha256": "74491a21ca978a50347953f4d8102863d3f6d3946385869373c43ffb4b57f985",
+      "lex": {
+        "exit_code": 0,
+        "output": "828 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "13 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/macos.jai",
+      "sha256": "e7a7ed92c6d39b06eed4d2a86197c50e379a82fcfe1da8cc0a295e22969ef9d3",
+      "lex": {
+        "exit_code": 0,
+        "output": "739 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "9 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Gamepad/sdl.jai",
+      "sha256": "e5219a40225a51642fca14ff85d0f54cb2554aa07820c5e680e38a1568e2485d",
+      "lex": {
+        "exit_code": 0,
+        "output": "477 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "10 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Input/macos.jai",
+      "sha256": "c6d42be66eea388e5499d82d45e15d8c406b8826745abb3961d95ef5050df80a",
+      "lex": {
+        "exit_code": 0,
+        "output": "2028 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "17 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Input/module.jai",
+      "sha256": "d8ebcda38a6b38b540c1f357b43f29c0bba78dc62e042740bd20a9d2d1435376",
+      "lex": {
+        "exit_code": 0,
+        "output": "1956 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "61 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Input/windows.jai",
+      "sha256": "e2993baf113033f84bfe8d3f6e00b04f4dfd31bdf77477e6ad44f786563374a3",
+      "lex": {
+        "exit_code": 0,
+        "output": "1720 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "17 items (syntax stage only)"
+      }
+    },
+    {
+      "path": "stdlib/Input/x11.jai",
+      "sha256": "59a8c0f8ecfd9cf4cf4bc0233f3677a4da2e297e920e7f545735f11d60250eb9",
+      "lex": {
+        "exit_code": 0,
+        "output": "1778 tokens (lexical stage only)"
+      },
+      "parse": {
+        "exit_code": 0,
+        "output": "13 items (syntax stage only)"
       }
     }
   ],
@@ -3945,97 +4065,6 @@
       "status": "authored-body-unverified"
     },
     {
-      "name": "queue_input_event",
-      "path": "stdlib/Input/module.jai",
-      "line": 66,
-      "signature": "queue_input_event :: (event: Event)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_mouse_delta",
-      "path": "stdlib/Input/module.jai",
-      "line": 69,
-      "signature": "queue_mouse_delta :: (x: int, y: int, z: int = 0)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_window_resize",
-      "path": "stdlib/Input/module.jai",
-      "line": 72,
-      "signature": "queue_window_resize :: (window: Window_Type, width: s32, height: s32)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "queue_window_move",
-      "path": "stdlib/Input/module.jai",
-      "line": 78,
-      "signature": "queue_window_move :: (window: Window_Type, x: s32, y: s32)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "set_input_focus",
-      "path": "stdlib/Input/module.jai",
-      "line": 84,
-      "signature": "set_input_focus :: (focused: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_window_resizes",
-      "path": "stdlib/Input/module.jai",
-      "line": 97,
-      "signature": "get_window_resizes :: () -> [..] Window_Resize",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_window_moves",
-      "path": "stdlib/Input/module.jai",
-      "line": 101,
-      "signature": "get_window_moves :: () -> [] Window_Move_Record",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "input_per_frame_event_and_flag_update",
-      "path": "stdlib/Input/module.jai",
-      "line": 106,
-      "signature": "input_per_frame_event_and_flag_update :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "update_window_events",
-      "path": "stdlib/Input/module.jai",
-      "line": 115,
-      "signature": "update_window_events :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "set_custom_cursor_handling",
-      "path": "stdlib/Input/module.jai",
-      "line": 139,
-      "signature": "set_custom_cursor_handling :: (is_custom: bool)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "init_input_system",
-      "path": "stdlib/Input/module.jai",
-      "line": 142,
-      "signature": "init_input_system :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_mouse_pointer_position",
-      "path": "stdlib/Input/module.jai",
-      "line": 152,
-      "signature": "get_mouse_pointer_position :: () -> float, float, bool",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "get_mouse_pointer_position",
-      "path": "stdlib/Input/module.jai",
-      "line": 157,
-      "signature": "get_mouse_pointer_position :: (window: Window_Type, client_area := false) -> float, float",
-      "status": "authored-body-unverified"
-    },
-    {
       "name": "add_keymap",
       "path": "stdlib/Keymap/module.jai",
       "line": 41,
@@ -4267,48 +4296,6 @@
       "status": "authored-body-unverified"
     },
     {
-      "name": "init_gamepad",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 46,
-      "signature": "init_gamepad :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "update_gamepad",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 58,
-      "signature": "update_gamepad :: ()",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "filter_stick",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 89,
-      "signature": "filter_stick :: (stick: Vector2, deadzone: float, angle: float) -> Vector2",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "filter_trigger",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 97,
-      "signature": "filter_trigger :: (value: float, deadzone: float) -> float",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "update_button_state",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 101,
-      "signature": "update_button_state :: (pressed: bool, code: Gamepad_Code)",
-      "status": "authored-body-unverified"
-    },
-    {
-      "name": "sample_xinput",
-      "path": "stdlib/Gamepad/Gamepad.jai",
-      "line": 119,
-      "signature": "sample_xinput :: (sample: *Gamepad_Sample) -> bool",
-      "status": "authored-body-unverified"
-    },
-    {
       "name": "XInputGetState",
       "path": "stdlib/Gamepad/Xinput.jai",
       "line": 8,
@@ -4321,6 +4308,1238 @@
       "line": 9,
       "signature": "XInputSetState :: (dwUserIndex: u32, pVibration: *XINPUT_VIBRATION) -> u32 #foreign xinput",
       "status": "system-sdk-declaration-unverified"
+    },
+    {
+      "name": "init_gamepad",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 47,
+      "signature": "init_gamepad :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "update_gamepad",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 63,
+      "signature": "update_gamepad :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "filter_stick",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 93,
+      "signature": "filter_stick :: (stick: Vector2, deadzone: float, angle: float) -> Vector2",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "filter_trigger",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 101,
+      "signature": "filter_trigger :: (value: float, deadzone: float) -> float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "update_button_state",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 105,
+      "signature": "update_button_state :: (pressed: bool, code: Gamepad_Code)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sample_xinput",
+      "path": "stdlib/Gamepad/Gamepad.jai",
+      "line": 123,
+      "signature": "sample_xinput :: (sample: *Gamepad_Sample) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "IOHIDManagerCreate",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 21,
+      "signature": "IOHIDManagerCreate :: (allocator:CFAllocatorRef,options:IOOptionBits)->IOHIDManagerRef #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerOpen",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 22,
+      "signature": "IOHIDManagerOpen :: (manager:IOHIDManagerRef,options:IOOptionBits)->IOReturn #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerClose",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 23,
+      "signature": "IOHIDManagerClose :: (manager:IOHIDManagerRef,options:IOOptionBits)->IOReturn #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerSetDeviceMatching",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 24,
+      "signature": "IOHIDManagerSetDeviceMatching :: (manager:IOHIDManagerRef,matching:CFDictionaryRef) #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerCopyDevices",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 25,
+      "signature": "IOHIDManagerCopyDevices :: (manager:IOHIDManagerRef)->CFSetRef #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerScheduleWithRunLoop",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 26,
+      "signature": "IOHIDManagerScheduleWithRunLoop :: (manager:IOHIDManagerRef,runLoop:CFRunLoopRef,runLoopMode:CFStringRef) #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDManagerUnscheduleFromRunLoop",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 27,
+      "signature": "IOHIDManagerUnscheduleFromRunLoop :: (manager:IOHIDManagerRef,runLoop:CFRunLoopRef,runLoopMode:CFStringRef) #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDDeviceConformsTo",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 28,
+      "signature": "IOHIDDeviceConformsTo :: (device:IOHIDDeviceRef,usagePage:u32,usage:u32)->Boolean #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDDeviceCopyMatchingElements",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 29,
+      "signature": "IOHIDDeviceCopyMatchingElements :: (device:IOHIDDeviceRef,matching:CFDictionaryRef,options:IOOptionBits)->CFArrayRef #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDDeviceGetValue",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 30,
+      "signature": "IOHIDDeviceGetValue :: (device:IOHIDDeviceRef,element:IOHIDElementRef,pValue:*IOHIDValueRef)->IOReturn #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDElementGetType",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 31,
+      "signature": "IOHIDElementGetType :: (element:IOHIDElementRef)->u32 #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDElementGetUsagePage",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 32,
+      "signature": "IOHIDElementGetUsagePage :: (element:IOHIDElementRef)->u32 #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDElementGetUsage",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 33,
+      "signature": "IOHIDElementGetUsage :: (element:IOHIDElementRef)->u32 #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDElementGetLogicalMin",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 34,
+      "signature": "IOHIDElementGetLogicalMin :: (element:IOHIDElementRef)->CFIndex #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDElementGetLogicalMax",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 35,
+      "signature": "IOHIDElementGetLogicalMax :: (element:IOHIDElementRef)->CFIndex #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "IOHIDValueGetIntegerValue",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 36,
+      "signature": "IOHIDValueGetIntegerValue :: (value:IOHIDValueRef)->CFIndex #foreign IOKit;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFRelease",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 37,
+      "signature": "CFRelease :: (value:CFTypeRef) #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFArrayGetCount",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 38,
+      "signature": "CFArrayGetCount :: (array:CFArrayRef)->CFIndex #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFArrayGetValueAtIndex",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 39,
+      "signature": "CFArrayGetValueAtIndex :: (array:CFArrayRef,index:CFIndex)->*void #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFSetGetCount",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 40,
+      "signature": "CFSetGetCount :: (set:CFSetRef)->CFIndex #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFSetGetValues",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 41,
+      "signature": "CFSetGetValues :: (set:CFSetRef,values:**void) #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFRunLoopGetCurrent",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 42,
+      "signature": "CFRunLoopGetCurrent :: ()->CFRunLoopRef #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "CFRunLoopRunInMode",
+      "path": "stdlib/Gamepad/IOHID.jai",
+      "line": 43,
+      "signature": "CFRunLoopRunInMode :: (mode:CFStringRef,seconds:float64,returnAfterSourceHandled:Boolean)->s32 #foreign CoreFoundation;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "input_name_to_input_target",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 12,
+      "signature": "input_name_to_input_target :: (name:string) -> SDL_Input_Target",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "parse_gamepad_mapping_string",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 17,
+      "signature": "parse_gamepad_mapping_string :: (input:string) -> map:SDL_Gamepad_Mapping, success:bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "deinit",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 57,
+      "signature": "deinit :: (map:SDL_Gamepad_Mapping)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_guid_string",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 60,
+      "signature": "get_guid_string :: (bustype:s16,vendor:s16,product:s16,version:s16) -> temp_string:string",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mapping_token",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 71,
+      "signature": "mapping_token :: (input:string,cursor:*s64,separator:u8) -> string",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mapping_integer",
+      "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+      "line": 78,
+      "signature": "mapping_integer :: (input:string,cursor:*s64) -> s32,bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "libevdev_new",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 12,
+      "signature": "libevdev_new :: () -> *libevdev #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_new_from_fd",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 13,
+      "signature": "libevdev_new_from_fd :: (fd: s32, dev: **libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_free",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 14,
+      "signature": "libevdev_free :: (dev: *libevdev) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_log_priority",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 15,
+      "signature": "libevdev_set_log_priority :: (priority: libevdev_log_priority) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_log_priority",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 16,
+      "signature": "libevdev_get_log_priority :: () -> libevdev_log_priority #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_grab",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 17,
+      "signature": "libevdev_grab :: (dev: *libevdev, grab: libevdev_grab_mode) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_fd",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 18,
+      "signature": "libevdev_set_fd :: (dev: *libevdev, fd: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_change_fd",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 19,
+      "signature": "libevdev_change_fd :: (dev: *libevdev, fd: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_fd",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 20,
+      "signature": "libevdev_get_fd :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_next_event",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 21,
+      "signature": "libevdev_next_event :: (dev: *libevdev, flags: libevdev_read_flag, ev: *input_event) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_has_event_pending",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 22,
+      "signature": "libevdev_has_event_pending :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 23,
+      "signature": "libevdev_get_name :: (dev: *libevdev) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 24,
+      "signature": "libevdev_set_name :: (dev: *libevdev, name: *u8) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_phys",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 25,
+      "signature": "libevdev_get_phys :: (dev: *libevdev) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_phys",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 26,
+      "signature": "libevdev_set_phys :: (dev: *libevdev, phys: *u8) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_uniq",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 27,
+      "signature": "libevdev_get_uniq :: (dev: *libevdev) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_uniq",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 28,
+      "signature": "libevdev_set_uniq :: (dev: *libevdev, uniq: *u8) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_id_product",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 29,
+      "signature": "libevdev_get_id_product :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_id_product",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 30,
+      "signature": "libevdev_set_id_product :: (dev: *libevdev, product_id: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_id_vendor",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 31,
+      "signature": "libevdev_get_id_vendor :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_id_vendor",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 32,
+      "signature": "libevdev_set_id_vendor :: (dev: *libevdev, vendor_id: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_id_bustype",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 33,
+      "signature": "libevdev_get_id_bustype :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_id_bustype",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 34,
+      "signature": "libevdev_set_id_bustype :: (dev: *libevdev, bustype: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_id_version",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 35,
+      "signature": "libevdev_get_id_version :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_id_version",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 36,
+      "signature": "libevdev_set_id_version :: (dev: *libevdev, version: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_driver_version",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 37,
+      "signature": "libevdev_get_driver_version :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_has_property",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 38,
+      "signature": "libevdev_has_property :: (dev: *libevdev, prop: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_enable_property",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 39,
+      "signature": "libevdev_enable_property :: (dev: *libevdev, prop: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_has_event_type",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 40,
+      "signature": "libevdev_has_event_type :: (dev: *libevdev, type: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_has_event_code",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 41,
+      "signature": "libevdev_has_event_code :: (dev: *libevdev, type: u32, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_minimum",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 42,
+      "signature": "libevdev_get_abs_minimum :: (dev: *libevdev, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_maximum",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 43,
+      "signature": "libevdev_get_abs_maximum :: (dev: *libevdev, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_fuzz",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 44,
+      "signature": "libevdev_get_abs_fuzz :: (dev: *libevdev, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_flat",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 45,
+      "signature": "libevdev_get_abs_flat :: (dev: *libevdev, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_resolution",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 46,
+      "signature": "libevdev_get_abs_resolution :: (dev: *libevdev, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_abs_info",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 47,
+      "signature": "libevdev_get_abs_info :: (dev: *libevdev, code: u32) -> *input_absinfo #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_event_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 48,
+      "signature": "libevdev_get_event_value :: (dev: *libevdev, type: u32, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_event_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 49,
+      "signature": "libevdev_set_event_value :: (dev: *libevdev, type: u32, code: u32, value: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_fetch_event_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 50,
+      "signature": "libevdev_fetch_event_value :: (dev: *libevdev, type: u32, code: u32, value: *s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_slot_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 51,
+      "signature": "libevdev_get_slot_value :: (dev: *libevdev, slot: u32, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_slot_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 52,
+      "signature": "libevdev_set_slot_value :: (dev: *libevdev, slot: u32, code: u32, value: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_fetch_slot_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 53,
+      "signature": "libevdev_fetch_slot_value :: (dev: *libevdev, slot: u32, code: u32, value: *s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_num_slots",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 54,
+      "signature": "libevdev_get_num_slots :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_current_slot",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 55,
+      "signature": "libevdev_get_current_slot :: (dev: *libevdev) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_minimum",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 56,
+      "signature": "libevdev_set_abs_minimum :: (dev: *libevdev, code: u32, min: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_maximum",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 57,
+      "signature": "libevdev_set_abs_maximum :: (dev: *libevdev, code: u32, max: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_fuzz",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 58,
+      "signature": "libevdev_set_abs_fuzz :: (dev: *libevdev, code: u32, fuzz: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_flat",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 59,
+      "signature": "libevdev_set_abs_flat :: (dev: *libevdev, code: u32, flat: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_resolution",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 60,
+      "signature": "libevdev_set_abs_resolution :: (dev: *libevdev, code: u32, resolution: s32) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_abs_info",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 61,
+      "signature": "libevdev_set_abs_info :: (dev: *libevdev, code: u32, abs: *input_absinfo) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_enable_event_type",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 62,
+      "signature": "libevdev_enable_event_type :: (dev: *libevdev, type: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_disable_event_type",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 63,
+      "signature": "libevdev_disable_event_type :: (dev: *libevdev, type: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_enable_event_code",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 64,
+      "signature": "libevdev_enable_event_code :: (dev: *libevdev, type: u32, code: u32, data: *void) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_disable_event_code",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 65,
+      "signature": "libevdev_disable_event_code :: (dev: *libevdev, type: u32, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_kernel_set_abs_info",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 66,
+      "signature": "libevdev_kernel_set_abs_info :: (dev: *libevdev, code: u32, abs: *input_absinfo) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_kernel_set_led_value",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 67,
+      "signature": "libevdev_kernel_set_led_value :: (dev: *libevdev, code: u32, value: libevdev_led_value) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_kernel_set_led_values",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 68,
+      "signature": "libevdev_kernel_set_led_values :: (dev: *libevdev, __args: ..Any) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_set_clock_id",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 69,
+      "signature": "libevdev_set_clock_id :: (dev: *libevdev, clockid: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_is_type",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 70,
+      "signature": "libevdev_event_is_type :: (ev: *input_event, type: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_is_code",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 71,
+      "signature": "libevdev_event_is_code :: (ev: *input_event, type: u32, code: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_get_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 72,
+      "signature": "libevdev_event_type_get_name :: (type: u32) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_code_get_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 73,
+      "signature": "libevdev_event_code_get_name :: (type: u32, code: u32) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_value_get_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 74,
+      "signature": "libevdev_event_value_get_name :: (type: u32, code: u32, value: s32) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_property_get_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 75,
+      "signature": "libevdev_property_get_name :: (prop: u32) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_get_max",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 76,
+      "signature": "libevdev_event_type_get_max :: (type: u32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_from_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 77,
+      "signature": "libevdev_event_type_from_name :: (name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_from_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 78,
+      "signature": "libevdev_event_type_from_name_n :: (name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_code_from_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 79,
+      "signature": "libevdev_event_code_from_name :: (type: u32, name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_code_from_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 80,
+      "signature": "libevdev_event_code_from_name_n :: (type: u32, name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_value_from_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 81,
+      "signature": "libevdev_event_value_from_name :: (type: u32, code: u32, name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_from_code_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 82,
+      "signature": "libevdev_event_type_from_code_name :: (name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_type_from_code_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 83,
+      "signature": "libevdev_event_type_from_code_name_n :: (name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_code_from_code_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 84,
+      "signature": "libevdev_event_code_from_code_name :: (name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_code_from_code_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 85,
+      "signature": "libevdev_event_code_from_code_name_n :: (name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_event_value_from_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 86,
+      "signature": "libevdev_event_value_from_name_n :: (type: u32, code: u32, name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_property_from_name",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 87,
+      "signature": "libevdev_property_from_name :: (name: *u8) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_property_from_name_n",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 88,
+      "signature": "libevdev_property_from_name_n :: (name: *u8, len: u64) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_get_repeat",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 89,
+      "signature": "libevdev_get_repeat :: (dev: *libevdev, delay: *s32, period: *s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_create_from_device",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 90,
+      "signature": "libevdev_uinput_create_from_device :: (dev: *libevdev, uinput_fd: s32, uinput_dev: **libevdev_uinput) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_destroy",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 91,
+      "signature": "libevdev_uinput_destroy :: (uinput_dev: *libevdev_uinput) -> void #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_get_fd",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 92,
+      "signature": "libevdev_uinput_get_fd :: (uinput_dev: *libevdev_uinput) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_get_syspath",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 93,
+      "signature": "libevdev_uinput_get_syspath :: (uinput_dev: *libevdev_uinput) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_get_devnode",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 94,
+      "signature": "libevdev_uinput_get_devnode :: (uinput_dev: *libevdev_uinput) -> *u8 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "libevdev_uinput_write_event",
+      "path": "stdlib/Gamepad/evdev.jai",
+      "line": 95,
+      "signature": "libevdev_uinput_write_event :: (uinput_dev: *libevdev_uinput, type: u32, code: u32, value: s32) -> s32 #foreign evdev_library;",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "use_iohid_gamepad",
+      "path": "stdlib/Gamepad/iohid-provider.jai",
+      "line": 15,
+      "signature": "use_iohid_gamepad :: (layout:IOHID_Gamepad_Layout) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "close_iohid_gamepad",
+      "path": "stdlib/Gamepad/iohid-provider.jai",
+      "line": 26,
+      "signature": "close_iohid_gamepad :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sample_iohid_gamepad",
+      "path": "stdlib/Gamepad/iohid-provider.jai",
+      "line": 32,
+      "signature": "sample_iohid_gamepad :: (sample:*Gamepad_Sample) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "iohid_axis",
+      "path": "stdlib/Gamepad/iohid-provider.jai",
+      "line": 94,
+      "signature": "iohid_axis :: (element:HID.IOHIDElementRef,raw:s64) -> float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "open_evdev_gamepad",
+      "path": "stdlib/Gamepad/linux.jai",
+      "line": 10,
+      "signature": "open_evdev_gamepad :: (path:string) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "close_evdev_gamepad",
+      "path": "stdlib/Gamepad/linux.jai",
+      "line": 25,
+      "signature": "close_evdev_gamepad :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sample_evdev",
+      "path": "stdlib/Gamepad/linux.jai",
+      "line": 29,
+      "signature": "sample_evdev :: (sample:*Gamepad_Sample) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "evdev_axis",
+      "path": "stdlib/Gamepad/linux.jai",
+      "line": 69,
+      "signature": "evdev_axis :: (code:u32, trigger:bool) -> float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sample_gamecontroller",
+      "path": "stdlib/Gamepad/macos.jai",
+      "line": 6,
+      "signature": "sample_gamecontroller :: (sample:*Gamepad_Sample) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "gc_button",
+      "path": "stdlib/Gamepad/macos.jai",
+      "line": 47,
+      "signature": "gc_button :: (sample:*Gamepad_Sample, button:*GC.GCControllerButtonInput, code:Gamepad_Code)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "gc_optional_button",
+      "path": "stdlib/Gamepad/macos.jai",
+      "line": 50,
+      "signature": "gc_optional_button :: (profile:*GC.GCExtendedGamepad, name:*u8) -> *GC.GCControllerButtonInput",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "use_sdl_gamepad",
+      "path": "stdlib/Gamepad/sdl.jai",
+      "line": 7,
+      "signature": "use_sdl_gamepad :: () -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "close_sdl_gamepad",
+      "path": "stdlib/Gamepad/sdl.jai",
+      "line": 15,
+      "signature": "close_sdl_gamepad :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sample_sdl_gamepad",
+      "path": "stdlib/Gamepad/sdl.jai",
+      "line": 19,
+      "signature": "sample_sdl_gamepad :: (sample:*Gamepad_Sample) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "sdl_axis",
+      "path": "stdlib/Gamepad/sdl.jai",
+      "line": 46,
+      "signature": "sdl_axis :: (axis:SDL_Gamepad.SDL_GameControllerAxis) -> float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_event_window",
+      "path": "stdlib/Input/macos.jai",
+      "line": 9,
+      "signature": "mac_event_window :: (event: *Mac.NSEvent) -> *Mac.NSWindow",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_application_windows",
+      "path": "stdlib/Input/macos.jai",
+      "line": 14,
+      "signature": "mac_application_windows :: (application: *Mac.NSApplication) -> *Foundation.NSArray(*Mac.NSWindow)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_key_code",
+      "path": "stdlib/Input/macos.jai",
+      "line": 19,
+      "signature": "mac_key_code :: (event: *Mac.NSEvent) -> Key_Code",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_modifiers",
+      "path": "stdlib/Input/macos.jai",
+      "line": 45,
+      "signature": "mac_modifiers :: (event: *Event, mask: u64)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_poll_geometry",
+      "path": "stdlib/Input/macos.jai",
+      "line": 51,
+      "signature": "mac_poll_geometry :: (application: *Mac.NSApplication)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "macos_poll_input",
+      "path": "stdlib/Input/macos.jai",
+      "line": 86,
+      "signature": "macos_poll_input :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "macos_pointer_query",
+      "path": "stdlib/Input/macos.jai",
+      "line": 152,
+      "signature": "macos_pointer_query :: (window: Window_Type, client_area: bool) -> float,float,bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_point_to_screen",
+      "path": "stdlib/Input/macos.jai",
+      "line": 171,
+      "signature": "mac_point_to_screen :: (window:*Mac.NSWindow, point:Mac.NSPoint) -> Mac.NSPoint",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "mac_application_active",
+      "path": "stdlib/Input/macos.jai",
+      "line": 177,
+      "signature": "mac_application_active :: (application:*Mac.NSApplication) -> bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 70,
+      "signature": "queue_input_event :: (event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 73,
+      "signature": "queue_input_event :: (window: Window_Type, event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 77,
+      "signature": "publish_input_event :: (event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_input_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 78,
+      "signature": "publish_input_event :: (window: Window_Type, event: Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_mouse_delta",
+      "path": "stdlib/Input/module.jai",
+      "line": 81,
+      "signature": "queue_mouse_delta :: (x: int, y: int, z: int = 0)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_window_resize",
+      "path": "stdlib/Input/module.jai",
+      "line": 84,
+      "signature": "queue_window_resize :: (window: Window_Type, width: s32, height: s32)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_window_move",
+      "path": "stdlib/Input/module.jai",
+      "line": 90,
+      "signature": "queue_window_move :: (window: Window_Type, x: s32, y: s32)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_input_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 96,
+      "signature": "set_input_focus :: (focused: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_input_focus",
+      "path": "stdlib/Input/module.jai",
+      "line": 100,
+      "signature": "set_input_focus :: (window: Window_Type, focused: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_window_resizes",
+      "path": "stdlib/Input/module.jai",
+      "line": 105,
+      "signature": "get_window_resizes :: () -> [..] Window_Resize",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_window_moves",
+      "path": "stdlib/Input/module.jai",
+      "line": 108,
+      "signature": "get_window_moves :: () -> [] Window_Move_Record",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "input_per_frame_event_and_flag_update",
+      "path": "stdlib/Input/module.jai",
+      "line": 113,
+      "signature": "input_per_frame_event_and_flag_update :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "update_window_events",
+      "path": "stdlib/Input/module.jai",
+      "line": 125,
+      "signature": "update_window_events :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "set_custom_cursor_handling",
+      "path": "stdlib/Input/module.jai",
+      "line": 135,
+      "signature": "set_custom_cursor_handling :: (is_custom: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "init_input_system",
+      "path": "stdlib/Input/module.jai",
+      "line": 138,
+      "signature": "init_input_system :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_mouse_pointer_position",
+      "path": "stdlib/Input/module.jai",
+      "line": 150,
+      "signature": "get_mouse_pointer_position :: () -> float, float, bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "get_mouse_pointer_position",
+      "path": "stdlib/Input/module.jai",
+      "line": 156,
+      "signature": "get_mouse_pointer_position :: (window: Window_Type, client_area := false) -> float, float",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "publish_pending_event",
+      "path": "stdlib/Input/module.jai",
+      "line": 171,
+      "signature": "publish_pending_event :: (pending: Pending_Input_Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "release_focus_buttons",
+      "path": "stdlib/Input/module.jai",
+      "line": 190,
+      "signature": "release_focus_buttons :: (window: Window_Type, scoped: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "queue_utf8_text",
+      "path": "stdlib/Input/module.jai",
+      "line": 209,
+      "signature": "queue_utf8_text :: (window: Window_Type, bytes: []u8, repeat := false)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "install_native_input_adapter",
+      "path": "stdlib/Input/module.jai",
+      "line": 236,
+      "signature": "install_native_input_adapter :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "windows_key_code",
+      "path": "stdlib/Input/windows.jai",
+      "line": 9,
+      "signature": "windows_key_code :: (virtual_key: u32) -> Key_Code",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "windows_modifiers",
+      "path": "stdlib/Input/windows.jai",
+      "line": 35,
+      "signature": "windows_modifiers :: (event: *Event)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "windows_emit_utf16",
+      "path": "stdlib/Input/windows.jai",
+      "line": 41,
+      "signature": "windows_emit_utf16 :: (window: Window_Type, unit: u16, repeated: bool)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "windows_poll_input",
+      "path": "stdlib/Input/windows.jai",
+      "line": 55,
+      "signature": "windows_poll_input :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "windows_pointer_query",
+      "path": "stdlib/Input/windows.jai",
+      "line": 71,
+      "signature": "windows_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "Input_MapVirtualKeyW",
+      "path": "stdlib/Input/windows.jai",
+      "line": 83,
+      "signature": "Input_MapVirtualKeyW :: (code:u32, map_type:u32) -> u32 #foreign input_user32 \"MapVirtualKeyW\";",
+      "status": "normalized-sdk-declaration-unverified"
+    },
+    {
+      "name": "windows_process_input_message",
+      "path": "stdlib/Input/windows.jai",
+      "line": 88,
+      "signature": "windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lparam:Win.LPARAM)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "x11_key_code",
+      "path": "stdlib/Input/x11.jai",
+      "line": 10,
+      "signature": "x11_key_code :: (symbol: X.KeySym) -> Key_Code",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "x11_modifiers",
+      "path": "stdlib/Input/x11.jai",
+      "line": 37,
+      "signature": "x11_modifiers :: (event: *Event, mask: u32)",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "x11_register_window",
+      "path": "stdlib/Input/x11.jai",
+      "line": 43,
+      "signature": "x11_register_window :: (window: X.Window) -> *X11_Input_Window",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "x11_poll_input",
+      "path": "stdlib/Input/x11.jai",
+      "line": 52,
+      "signature": "x11_poll_input :: ()",
+      "status": "authored-body-unverified"
+    },
+    {
+      "name": "x11_pointer_query",
+      "path": "stdlib/Input/x11.jai",
+      "line": 138,
+      "signature": "x11_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool",
+      "status": "authored-body-unverified"
     }
   ],
   "behavior_implemented_but_not_verified": {
@@ -4360,7 +5579,9 @@
       "focus-release state",
       "drag-and-drop lifetime",
       "coalesced resize/move queues",
-      "configurable native event/pointer adapter boundaries"
+      "configurable native event/pointer adapter boundaries",
+      "Native Win32/X11/AppKit physical-key/text/pointer pumps and actual-handle routing",
+      "Borrowed scoped/unscoped frame views and actual-origin focus release"
     ],
     "Keymap": [
       "stable section allocation",
@@ -4379,7 +5600,10 @@
       "trigger filtering",
       "digital threshold transitions",
       "event generation",
-      "Windows controller-zero XInput sampler"
+      "Windows controller-zero XInput sampler",
+      "Linux system libevdev discovery/sync/disconnect",
+      "macOS current GameController enumeration and explicit IOHID usage sampler",
+      "Optional system SDL2 sampler and independent classic SDL mapping parser"
     ]
   },
   "pending_runtime_tests": [
@@ -4398,10 +5622,17 @@
     "Worker_Info retains old named fields but separate padding does not preserve original #place offsets; old worker_info.thread is a snapshot of maintained threads, not an alias.",
     "DO_RACE_DETECTOR=true rejects; thread log output is not implemented.",
     "Deprecated compare_and_swap2 only has a Linux x64 system libatomic boundary; other targets explicitly assert, ABI/behavior unverified.",
-    "No automatic native Input event pumps/delegates for macOS, X11, Windows or Android.",
-    "No automatic macOS/Linux gamepad devices, multi-controller enumeration, or old Gamepad/IOHID, evdev and SDL_Input_Map modules.",
     "Keymap text has no escaping for literal comment characters, section brackets or whitespace key tokens.",
-    "Normalized Socket bindings are a declaration inventory and not complete current header ABI/symbol verification."
+    "Normalized Socket bindings are a declaration inventory and not complete current header ABI/symbol verification.",
+    "Public Input key state remains global: independently held same key in several windows is not represented.",
+    "AppKit NSTextInputClient marked-text composition and candidate lifecycle pending.",
+    "Win32 sent notifications require helper integration; native queue alone does not observe sent WM_SIZE/WM_MOVE.",
+    "Native drag/drop, non-Android touch, custom cursor installation and X11 extension events pending.",
+    "Direct Linux evdev profile only covers generic kernel gamepad usages. Device-specific profiles use custom sampler or SDL2.",
+    "Classic SDL_Input_Map rejects signed/inverted axis forms, lacks copied embedded controller database, and restores only declared parser/record API.",
+    "IOHID module supplies HID/CoreFoundation query APIs used by the provider; older broad IOKit display-driver/callback inventory remains incomplete.",
+    "macOS GameController selects first extended profile; public Gamepad still single-controller.",
+    "Android pump belongs to separate platform SDK packet and is not included or validated in this packet."
   ],
   "dependencies": [
     "prelude checked CAS/memory operations",
@@ -4524,6 +5755,210 @@
           "output": "724 items (syntax stage only)"
         }
       }
+    ]
+  },
+  "adapter_completion_packet": {
+    "status": "independently-authored-source-providers-with-dependency-blocked-typing-and-no-native-execution",
+    "compiler": {
+      "path": "target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs",
+      "sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d"
+    },
+    "source_evidence": [
+      {
+        "path": "stdlib/Gamepad/Gamepad.jai",
+        "sha256": "c812ed8dbc805abdd3094f9738c64f729d75d347945d315b346c681c489bc1ce",
+        "lex": {
+          "exit_code": 0,
+          "output": "1313 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "21 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/IOHID.jai",
+        "sha256": "2726df6d84b1a8873cb042ee14f00386642a86bce6ebde6d853ca50fcab5acd7",
+        "lex": {
+          "exit_code": 0,
+          "output": "447 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "46 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+        "sha256": "829208ff095b86967bdba870e9349a6d42aa532a91d1b10586d11b3c5d09efa0",
+        "lex": {
+          "exit_code": 0,
+          "output": "1143 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "16 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/evdev.jai",
+        "sha256": "097e523b08e809edcb9ac7d12db7d9986f338f57e654059cbbc4d59055f7a864",
+        "lex": {
+          "exit_code": 0,
+          "output": "1585 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "96 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/iohid-provider.jai",
+        "sha256": "da6031f95fef9c4bf855d66378d4ebe9debd5f269a8d99360f03594f406cfa48",
+        "lex": {
+          "exit_code": 0,
+          "output": "977 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "12 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/linux.jai",
+        "sha256": "74491a21ca978a50347953f4d8102863d3f6d3946385869373c43ffb4b57f985",
+        "lex": {
+          "exit_code": 0,
+          "output": "828 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "13 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/macos.jai",
+        "sha256": "e7a7ed92c6d39b06eed4d2a86197c50e379a82fcfe1da8cc0a295e22969ef9d3",
+        "lex": {
+          "exit_code": 0,
+          "output": "739 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "9 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Gamepad/sdl.jai",
+        "sha256": "e5219a40225a51642fca14ff85d0f54cb2554aa07820c5e680e38a1568e2485d",
+        "lex": {
+          "exit_code": 0,
+          "output": "477 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "10 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Input/macos.jai",
+        "sha256": "c6d42be66eea388e5499d82d45e15d8c406b8826745abb3961d95ef5050df80a",
+        "lex": {
+          "exit_code": 0,
+          "output": "2028 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "17 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Input/module.jai",
+        "sha256": "d8ebcda38a6b38b540c1f357b43f29c0bba78dc62e042740bd20a9d2d1435376",
+        "lex": {
+          "exit_code": 0,
+          "output": "1956 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "61 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Input/windows.jai",
+        "sha256": "e2993baf113033f84bfe8d3f6e00b04f4dfd31bdf77477e6ad44f786563374a3",
+        "lex": {
+          "exit_code": 0,
+          "output": "1720 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "17 items (syntax stage only)"
+        }
+      },
+      {
+        "path": "stdlib/Input/x11.jai",
+        "sha256": "59a8c0f8ecfd9cf4cf4bc0233f3677a4da2e297e920e7f545735f11d60250eb9",
+        "lex": {
+          "exit_code": 0,
+          "output": "1778 tokens (lexical stage only)"
+        },
+        "parse": {
+          "exit_code": 0,
+          "output": "13 items (syntax stage only)"
+        }
+      }
+    ],
+    "semantic_checks": [
+      {
+        "path": "stdlib/Input/module.jai",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Objective_C/AppKit.jai:835:1: error: unknown name 'NSInteger'"
+      },
+      {
+        "path": "stdlib/Gamepad/module.jai",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Objective_C/GameController.jai:605:5: error: integer constant is out of range for its target type"
+      },
+      {
+        "path": "stdlib/Gamepad/SDL_Input_Map.jai",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Basic/String_Builder.jai:2:38: error: this constant expression requires typed compile-time evaluation"
+      },
+      {
+        "path": "stdlib/Gamepad/IOHID.jai",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Runtime_Support.jai:215:43: error: unknown name 'TEMPORARY_STORAGE_SIZE'"
+      },
+      {
+        "path": "stdlib/Gamepad/evdev.jai",
+        "exit_code": 1,
+        "output": "/Users/matthew/projects/jai/stdlib/Linux/io_uring.jai:246:30: error: unknown name 'IOSQE_FIXED_FILE_BIT'"
+      }
+    ],
+    "native_execution_performed": false,
+    "reference_executable_or_native_artifacts_run": false,
+    "source_sdk_authority": "Existing normalized authored Windows/X11/AppKit/GameController/SDL/Linux/POSIX declarations; original libevdev public declaration signatures only; installed macOS IOKit HID/CoreFoundation headers. No original SDK procedure bodies, bundled libraries or device mapping database copied.",
+    "portable_queue_lifetime": "Event files own once in compatibility union. Scoped and unscoped frame views are borrowed and clear before union payload frees. No Event.window field added.",
+    "pending_native_acceptance": [
+      "Win32 queued input, sent-window-procedure integration and UTF16 surrogate pairs",
+      "X11 XIM text, autorepeat suppression, focus and real XID routing",
+      "AppKit native NSEvent dispatch, active-window focus, resize/move and backing coordinate queries",
+      "Linux current-device discovery, initial-held state, libevdev SYN_DROPPED sync and hotplug",
+      "macOS actual GameController/IOHID enumeration and physical sampling",
+      "SDL2 installed mapping database and actual controller sampling",
+      "Scoped/unscoped UI delivery with drag-and-drop payload lifetime"
+    ],
+    "remaining_adapter_gaps": [
+      "Public Input key state remains global: independently held same key in several windows is not represented.",
+      "AppKit NSTextInputClient marked-text composition and candidate lifecycle pending.",
+      "Win32 sent notifications require helper integration; native queue alone does not observe sent WM_SIZE/WM_MOVE.",
+      "Native drag/drop, non-Android touch, custom cursor installation and X11 extension events pending.",
+      "Direct Linux evdev profile only covers generic kernel gamepad usages. Device-specific profiles use custom sampler or SDL2.",
+      "Classic SDL_Input_Map rejects signed/inverted axis forms, lacks copied embedded controller database, and restores only declared parser/record API.",
+      "IOHID module supplies HID/CoreFoundation query APIs used by the provider; older broad IOKit display-driver/callback inventory remains incomplete.",
+      "macOS GameController selects first extended profile; public Gamepad still single-controller.",
+      "Android pump belongs to separate platform SDK packet and is not included or validated in this packet."
     ]
   }
 }

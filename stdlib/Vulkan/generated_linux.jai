@@ -4399,9 +4399,6 @@ PFN_vkCmdBeginRenderPass :: #type ( commandBuffer : VkCommandBuffer , pRenderPas
 PFN_vkCmdNextSubpass :: #type ( commandBuffer : VkCommandBuffer , contents : VkSubpassContents ) -> void #c_call ;
 PFN_vkCmdEndRenderPass :: #type ( commandBuffer : VkCommandBuffer ) -> void #c_call ;
 PFN_vkCmdExecuteCommands :: #type ( commandBuffer : VkCommandBuffer , commandBufferCount : u32 , pCommandBuffers : * VkCommandBuffer ) -> void #c_call ;
-vkCreateInstance :: ( pCreateInfo : * VkInstanceCreateInfo , pAllocator : * VkAllocationCallbacks , pInstance : * VkInstance ) -> VkResult #foreign libvulkan ;
-vkDestroyInstance :: ( instance : VkInstance , pAllocator : * VkAllocationCallbacks ) -> void #foreign libvulkan ;
-vkEnumeratePhysicalDevices :: ( instance : VkInstance , pPhysicalDeviceCount : * u32 , pPhysicalDevices : * VkPhysicalDevice ) -> VkResult #foreign libvulkan ;
 vkGetPhysicalDeviceFeatures :: ( physicalDevice : VkPhysicalDevice , pFeatures : * VkPhysicalDeviceFeatures ) -> void #foreign libvulkan ;
 vkGetPhysicalDeviceFormatProperties :: ( physicalDevice : VkPhysicalDevice , format : VkFormat , pFormatProperties : * VkFormatProperties ) -> void #foreign libvulkan ;
 vkGetPhysicalDeviceImageFormatProperties :: ( physicalDevice : VkPhysicalDevice , format : VkFormat , type : VkImageType , tiling : VkImageTiling , usage : VkImageUsageFlags , flags : VkImageCreateFlags , pImageFormatProperties : * VkImageFormatProperties ) -> VkResult #foreign libvulkan ;
@@ -4410,13 +4407,10 @@ vkGetPhysicalDeviceQueueFamilyProperties :: ( physicalDevice : VkPhysicalDevice 
 vkGetPhysicalDeviceMemoryProperties :: ( physicalDevice : VkPhysicalDevice , pMemoryProperties : * VkPhysicalDeviceMemoryProperties ) -> void #foreign libvulkan ;
 vkGetInstanceProcAddr :: ( instance : VkInstance , pName : * u8 ) -> PFN_vkVoidFunction #foreign libvulkan ;
 vkGetDeviceProcAddr :: ( device : VkDevice , pName : * u8 ) -> PFN_vkVoidFunction #foreign libvulkan ;
-vkCreateDevice :: ( physicalDevice : VkPhysicalDevice , pCreateInfo : * VkDeviceCreateInfo , pAllocator : * VkAllocationCallbacks , pDevice : * VkDevice ) -> VkResult #foreign libvulkan ;
-vkDestroyDevice :: ( device : VkDevice , pAllocator : * VkAllocationCallbacks ) -> void #foreign libvulkan ;
 vkEnumerateInstanceExtensionProperties :: ( pLayerName : * u8 , pPropertyCount : * u32 , pProperties : * VkExtensionProperties ) -> VkResult #foreign libvulkan ;
 vkEnumerateDeviceExtensionProperties :: ( physicalDevice : VkPhysicalDevice , pLayerName : * u8 , pPropertyCount : * u32 , pProperties : * VkExtensionProperties ) -> VkResult #foreign libvulkan ;
 vkEnumerateInstanceLayerProperties :: ( pPropertyCount : * u32 , pProperties : * VkLayerProperties ) -> VkResult #foreign libvulkan ;
 vkEnumerateDeviceLayerProperties :: ( physicalDevice : VkPhysicalDevice , pPropertyCount : * u32 , pProperties : * VkLayerProperties ) -> VkResult #foreign libvulkan ;
-vkGetDeviceQueue :: ( device : VkDevice , queueFamilyIndex : u32 , queueIndex : u32 , pQueue : * VkQueue ) -> void #foreign libvulkan ;
 vkQueueSubmit :: ( queue : VkQueue , submitCount : u32 , pSubmits : * VkSubmitInfo , fence : VkFence ) -> VkResult #foreign libvulkan ;
 vkQueueWaitIdle :: ( queue : VkQueue ) -> VkResult #foreign libvulkan ;
 vkDeviceWaitIdle :: ( device : VkDevice ) -> VkResult #foreign libvulkan ;
@@ -5314,7 +5308,6 @@ vkBindImageMemory2 :: ( device : VkDevice , bindInfoCount : u32 , pBindInfos : *
 vkGetDeviceGroupPeerMemoryFeatures :: ( device : VkDevice , heapIndex : u32 , localDeviceIndex : u32 , remoteDeviceIndex : u32 , pPeerMemoryFeatures : * VkPeerMemoryFeatureFlags ) -> void #foreign libvulkan ;
 vkCmdSetDeviceMask :: ( commandBuffer : VkCommandBuffer , deviceMask : u32 ) -> void #foreign libvulkan ;
 vkCmdDispatchBase :: ( commandBuffer : VkCommandBuffer , baseGroupX : u32 , baseGroupY : u32 , baseGroupZ : u32 , groupCountX : u32 , groupCountY : u32 , groupCountZ : u32 ) -> void #foreign libvulkan ;
-vkEnumeratePhysicalDeviceGroups :: ( instance : VkInstance , pPhysicalDeviceGroupCount : * u32 , pPhysicalDeviceGroupProperties : * VkPhysicalDeviceGroupProperties ) -> VkResult #foreign libvulkan ;
 vkGetImageMemoryRequirements2 :: ( device : VkDevice , pInfo : * VkImageMemoryRequirementsInfo2 , pMemoryRequirements : * VkMemoryRequirements2 ) -> void #foreign libvulkan ;
 vkGetBufferMemoryRequirements2 :: ( device : VkDevice , pInfo : * VkBufferMemoryRequirementsInfo2 , pMemoryRequirements : * VkMemoryRequirements2 ) -> void #foreign libvulkan ;
 vkGetImageSparseMemoryRequirements2 :: ( device : VkDevice , pInfo : * VkImageSparseMemoryRequirementsInfo2 , pSparseMemoryRequirementCount : * u32 , pSparseMemoryRequirements : * VkSparseImageMemoryRequirements2 ) -> void #foreign libvulkan ;
@@ -5326,7 +5319,6 @@ vkGetPhysicalDeviceQueueFamilyProperties2 :: ( physicalDevice : VkPhysicalDevice
 vkGetPhysicalDeviceMemoryProperties2 :: ( physicalDevice : VkPhysicalDevice , pMemoryProperties : * VkPhysicalDeviceMemoryProperties2 ) -> void #foreign libvulkan ;
 vkGetPhysicalDeviceSparseImageFormatProperties2 :: ( physicalDevice : VkPhysicalDevice , pFormatInfo : * VkPhysicalDeviceSparseImageFormatInfo2 , pPropertyCount : * u32 , pProperties : * VkSparseImageFormatProperties2 ) -> void #foreign libvulkan ;
 vkTrimCommandPool :: ( device : VkDevice , commandPool : VkCommandPool , flags : VkCommandPoolTrimFlags ) -> void #foreign libvulkan ;
-vkGetDeviceQueue2 :: ( device : VkDevice , pQueueInfo : * VkDeviceQueueInfo2 , pQueue : * VkQueue ) -> void #foreign libvulkan ;
 vkCreateSamplerYcbcrConversion :: ( device : VkDevice , pCreateInfo : * VkSamplerYcbcrConversionCreateInfo , pAllocator : * VkAllocationCallbacks , pYcbcrConversion : * VkSamplerYcbcrConversion ) -> VkResult #foreign libvulkan ;
 vkDestroySamplerYcbcrConversion :: ( device : VkDevice , ycbcrConversion : VkSamplerYcbcrConversion , pAllocator : * VkAllocationCallbacks ) -> void #foreign libvulkan ;
 vkCreateDescriptorUpdateTemplate :: ( device : VkDevice , pCreateInfo : * VkDescriptorUpdateTemplateCreateInfo , pAllocator : * VkAllocationCallbacks , pDescriptorUpdateTemplate : * VkDescriptorUpdateTemplate ) -> VkResult #foreign libvulkan ;
@@ -7917,9 +7909,6 @@ vkGetDisplayModePropertiesKHR :: ( physicalDevice : VkPhysicalDevice , display :
     data.count = cast(s64) count;
     return data, status;
 }
-vkGetPhysicalDeviceQueueFamilyProperties2KHR :: ( physicalDevice : VkPhysicalDevice ) -> [ ] VkQueueFamilyProperties2 #foreign Native_Adapters ;
-vkGetPhysicalDeviceSparseImageFormatProperties2KHR :: ( physicalDevice : VkPhysicalDevice , pFormatInfo : * VkPhysicalDeviceSparseImageFormatInfo2 ) -> [ ] VkSparseImageFormatProperties2 #foreign Native_Adapters ;
-vkEnumeratePhysicalDeviceGroupsKHR :: ( instance : VkInstance ) -> [ ] VkPhysicalDeviceGroupProperties , VkResult #foreign Native_Adapters ;
 vkGetPhysicalDeviceDisplayProperties2KHR :: ( physicalDevice : VkPhysicalDevice ) -> [ ] VkDisplayProperties2KHR , VkResult {
     data: [] VkDisplayProperties2KHR;
     count: u32 = 0;
@@ -7980,12 +7969,8 @@ vkGetDisplayModeProperties2KHR :: ( physicalDevice : VkPhysicalDevice , display 
     data.count = cast(s64) count;
     return data, status;
 }
-vkGetImageSparseMemoryRequirements2KHR :: ( device : VkDevice , pInfo : * VkImageSparseMemoryRequirementsInfo2 ) -> [ ] VkSparseImageMemoryRequirements2 #foreign Native_Adapters ;
-vkGetPastPresentationTimingGOOGLE :: ( device : VkDevice , swapchain : VkSwapchainKHR ) -> [ ] VkPastPresentationTimingGOOGLE , VkResult #foreign Native_Adapters ;
-vkGetQueueCheckpointDataNV :: ( queue : VkQueue ) -> [ ] VkCheckpointDataNV #foreign Native_Adapters ;
 
 #scope_file
-Native_Adapters :: #system_library "jai-stdlib-native-adapters";
 
 #scope_file
 Vulkan_Enumeration_Memory :: #import "Basic";

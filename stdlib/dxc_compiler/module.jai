@@ -23,9 +23,7 @@ Dxc_Shader_Compiler_Args :: struct {
     compile_as_spirv : bool ;
     use_spirv_1_4 : bool ;
 }
-DXC_Compile :: ( args : Dxc_Shader_Compiler_Args ) -> [ .. ] u8 #foreign Native_Adapters ;
-DXC_Reflect :: ( dxil : [ ] u8 ) -> * ID3D12ShaderReflection , bool #foreign Native_Adapters ;
-#scope_file
+#scope_module
 CLSID_DxcUtils :: #run uid ( "6245D6AF-66E0-48FD-80B4-4D271796748C" ) ;
 CLSID_DxcCompiler :: #run uid ( "73E22D93-E6CE-47F3-B5BF-F0664F39C1B0" ) ;
 IDxcUtils_UID :: #run uid ( "4605C4CB-2019-492A-ADA4-65F20BB7D67F" ) ;
@@ -47,5 +45,5 @@ BSTR :: struct {
 #import "Windows" ;
 #import "d3d12" ;
 
-#scope_file
-Native_Adapters :: #system_library "jai-stdlib-native-adapters";
+
+#load "compile-helpers.jai";

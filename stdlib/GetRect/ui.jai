@@ -53,9 +53,14 @@ ui_per_frame_update :: (window:s64,width:int,height:int,current_time:float64) {
     assert(ui_id_stack.count==0,"Finish GetRect ID scopes before beginning a frame");
     ui_window=window; ui_width=max(width,0); ui_height=max(height,0);
     ui_time=current_time; ui_ordinal=0; ui_popups.count=0; ui_consumed_click=false;
-    ui_left_down=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.DOWN)!=0;
-    ui_left_start=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.START)!=0;
-    ui_left_end=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.END)!=0;
+    if UI_Input.routed_events_this_frame.count>0 ui_scoped_input=true;
+    buttons:=ui_window_buttons(window);
+    if ui_scoped_input { ui_left_down=buttons.down; ui_left_start=false; ui_left_end=false; }
+    else {
+        ui_left_down=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.DOWN)!=0;
+        ui_left_start=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.START)!=0;
+        ui_left_end=(UI_Input.input_button_states[UI_Input.Key_Code.MOUSE_BUTTON_LEFT]&.END)!=0;
+    }
     ui_pending_key=.UNKNOWN;
     if ui_pointer_query {
         x,y,success:=ui_pointer_query(window); if success ui_set_pointer(x,y);
@@ -63,22 +68,29 @@ ui_per_frame_update :: (window:s64,width:int,height:int,current_time:float64) {
         x,y:=UI_Input.get_mouse_pointer_position(cast(UI_Windows.Window_Type)window,true);
         ui_set_pointer(x,cast(float64)height-y);
     }
-    for event:UI_Input.events_this_frame getrect_handle_event(event);
+    if ui_scoped_input {
+        for routed:UI_Input.routed_events_this_frame getrect_handle_event(routed.event,cast(s64)routed.window);
+        for event:UI_Input.unrouted_events_this_frame getrect_handle_event(event,ui_window);
+    } else for event:UI_Input.events_this_frame getrect_handle_event(event,ui_window);
+    buttons.down=ui_left_down;
     if ui_capture && ui_capture.last_frame+1<ui_frame ui_capture=null;
     if ui_focus && ui_focus.last_frame+1<ui_frame ui_focus=null;
     ui_frame+=1;
 }
 getrect_handle_event :: (event:$T) {
-    #if T==UI_Input.Event {
-        if event.window!=cast(UI_Windows.Window_Type)ui_window return;
-        if event.type==.KEYBOARD && event.key_code==.MOUSE_BUTTON_LEFT {
-            ui_left_down=event.key_pressed;
-            if event.key_pressed && !event.repeat ui_left_start=true;
-            if !event.key_pressed ui_left_end=true;
-        }
-        if event.type==.KEYBOARD && event.key_pressed ui_pending_key=event.key_code;
-    } else { assert(false,"GetRect accepts the authored Input.Event record; adapt other records explicitly"); }
+    #if T==UI_Input.Event { getrect_handle_event(event,ui_window); }
+    else { assert(false,"Adapt other event records to Input.Event explicitly"); }
 }
+getrect_handle_event :: (event:UI_Input.Event,window:s64) {
+    if window!=ui_window return;
+    if event.type==.KEYBOARD&&event.key_code==.MOUSE_BUTTON_LEFT {
+        ui_left_down=event.key_pressed;
+        if event.key_pressed&&!event.repeat ui_left_start=true;
+        if !event.key_pressed ui_left_end=true;
+    }
+    if event.type==.KEYBOARD&&event.key_pressed ui_pending_key=event.key_code;
+}
+
 button :: (r:Rect,label:string)->bool {
     state:=ui_state(.BUTTON); state.rect=r;
     over:=ui_hit(r)&&(!ui_capture||ui_capture==state)&&!ui_popup_occludes(r);
@@ -150,6 +162,7 @@ ui_deinit :: () {
     for state:ui_states free(state);
     for *popup:ui_popups array_reset(*popup.choices);
     array_reset(*ui_states); array_reset(*ui_popups); array_reset(*ui_id_stack);
+    array_reset(*ui_window_button_states); ui_scoped_input=false;
     ui_capture=null; ui_focus=null; ui_initialized=false;
 }
 #scope_module
@@ -189,3 +202,7 @@ ui_simp_text :: (r:Rect,text:string,alignment:Alignment,color:UI_Math.Vector4) {
     UI_Draw.clear_scissor();
 }
 ui_simp_flush :: () { UI_Draw.immediate_flush(); }
+
+UI_Window_Buttons :: struct { window:s64; down:bool; }
+ui_window_button_states:[..]UI_Window_Buttons; ui_scoped_input:bool;
+ui_window_buttons :: (window:s64)->*UI_Window_Buttons { for *value:ui_window_button_states if value.window==window return value; return array_add(*ui_window_button_states,.{window=window}); }

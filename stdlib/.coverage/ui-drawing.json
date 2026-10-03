@@ -1,6 +1,6 @@
 {
   "family": "ui-drawing",
-  "status": "authored-implementation-with-explicit-coverage-and-validation-gaps",
+  "status": "independently-authored-source; private-bulk-packet; behavior-partial; native-unverified",
   "source_implementation_reuse": false,
   "native_assets_copied": false,
   "unknown_intrinsics_introduced": false,
@@ -11,45 +11,6 @@
     "sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d",
     "build_inputs_verified": false,
     "native_link_or_original_execution": false
-  },
-  "source_check_receipt": {
-    "before_source_hashes": {
-      "stdlib/Simp/backend/gl.jai": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
-      "stdlib/Simp/bitmap.jai": "eb64138783f54d88ce9629af666421cedf96158a714218f90f6dff9541d64e1e",
-      "stdlib/Simp/font.jai": "4bb32b5b74e51e19fb97254efccd3e1d31fce716aa66f7cb085ac019448be361",
-      "stdlib/Simp/immediate.jai": "01987d1c1c872e75374cc354053bfcc3c5cc5fa868cdbf76bccb756bfb5617ed",
-      "stdlib/Simp/module.jai": "ff8b8f7dddb4709e2549f91411d07c861ce98ed54a2e24bcbc9b2b840fc38faf",
-      "stdlib/Simp/shader.jai": "f9ae14aa55616b414596cc8fcb3e3d2f17438f6c359f3db424a9ea8a37d3cc6f",
-      "stdlib/Simp/tests/software-render-tests.jai": "c64fabe58060c6d1e052d1df4a3f5f9adec8146918f8968c4433b16cc740a63f",
-      "stdlib/Simp/tests/texture-format-tests.jai": "afaf03d0ffd92ed613ec74f6e948638f7858302b00fb8b264a37e7bae8995147",
-      "stdlib/Simp/texture.jai": "c8ea6196036f96c3985e5af4cdad3da89de73a7fb3be7c0cd4002e5e388449a5",
-      "stdlib/Simp/texture_format.jai": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
-      "stdlib/GetRect/interaction.jai": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
-      "stdlib/GetRect/tests/pointer-transition-tests.jai": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
-      "stdlib/GetRect/tests/ui-interaction-tests.jai": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
-      "stdlib/GetRect/ui.jai": "710dc5160704a0a837021de81e3329531d3800ed926546ae370f4112c2142e86",
-      "stdlib/GetRect_LeftHanded/legacy-layouts.jai": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
-      "stdlib/GetRect_LeftHanded/ui.jai": "8c0b75f8f36edc7d8fec382d55131de3ae5ba7caf0c6a0965a4f31130bc47935"
-    },
-    "after_source_hashes": {
-      "stdlib/Simp/backend/gl.jai": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
-      "stdlib/Simp/bitmap.jai": "eb64138783f54d88ce9629af666421cedf96158a714218f90f6dff9541d64e1e",
-      "stdlib/Simp/font.jai": "4bb32b5b74e51e19fb97254efccd3e1d31fce716aa66f7cb085ac019448be361",
-      "stdlib/Simp/immediate.jai": "01987d1c1c872e75374cc354053bfcc3c5cc5fa868cdbf76bccb756bfb5617ed",
-      "stdlib/Simp/module.jai": "ff8b8f7dddb4709e2549f91411d07c861ce98ed54a2e24bcbc9b2b840fc38faf",
-      "stdlib/Simp/shader.jai": "f9ae14aa55616b414596cc8fcb3e3d2f17438f6c359f3db424a9ea8a37d3cc6f",
-      "stdlib/Simp/tests/software-render-tests.jai": "c64fabe58060c6d1e052d1df4a3f5f9adec8146918f8968c4433b16cc740a63f",
-      "stdlib/Simp/tests/texture-format-tests.jai": "afaf03d0ffd92ed613ec74f6e948638f7858302b00fb8b264a37e7bae8995147",
-      "stdlib/Simp/texture.jai": "c8ea6196036f96c3985e5af4cdad3da89de73a7fb3be7c0cd4002e5e388449a5",
-      "stdlib/Simp/texture_format.jai": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
-      "stdlib/GetRect/interaction.jai": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
-      "stdlib/GetRect/tests/pointer-transition-tests.jai": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
-      "stdlib/GetRect/tests/ui-interaction-tests.jai": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
-      "stdlib/GetRect/ui.jai": "710dc5160704a0a837021de81e3329531d3800ed926546ae370f4112c2142e86",
-      "stdlib/GetRect_LeftHanded/legacy-layouts.jai": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
-      "stdlib/GetRect_LeftHanded/ui.jai": "8c0b75f8f36edc7d8fec382d55131de3ae5ba7caf0c6a0965a4f31130bc47935"
-    },
-    "owned_sources_unchanged_during_checks": true
   },
   "verified_procedure_cases": [
     {
@@ -65,7 +26,10 @@
         "disabled press does not capture",
         "same-frame press and release clicks without retained capture"
       ],
-      "check_passed": true
+      "check_passed": true,
+      "production_sha256": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
+      "production_hash_matches_passing_receipt": true,
+      "check_receipt": "baseline-source-check"
     },
     {
       "procedures": [
@@ -82,7 +46,10 @@
         "negative dimensions",
         "integer overflow"
       ],
-      "check_passed": true
+      "check_passed": true,
+      "production_sha256": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
+      "production_hash_matches_passing_receipt": true,
+      "check_receipt": "baseline-source-check"
     }
   ],
   "api_inputs": [
@@ -255,7 +222,7 @@
   "modern_getrect_contract_comparison": {
     "module": "GetRect",
     "reference_origin": "maintained-openjai",
-    "authored_origin": "authored-default",
+    "authored_origin": "authored-private-packet",
     "expected_lexical_contracts": 22,
     "identical_lexical_contracts": 22,
     "missing_or_different_contracts": [],
@@ -265,47 +232,10 @@
   "maintained_simp_contract_comparison": {
     "module": "Simp",
     "reference_origin": "maintained-focus",
-    "authored_origin": "authored-default",
+    "authored_origin": "authored-private-packet",
     "expected_lexical_contracts": 85,
-    "identical_lexical_contracts": 79,
-    "missing_or_different_contracts": [
-      {
-        "name": "Pixel_Read",
-        "contract_sha256": "8b19102345b490db9e00d926c40ecc05d8d3fe9cd3eff55e270424ad77120311",
-        "count": 1,
-        "name_present_with_different_contract": false
-      },
-      {
-        "name": "Pixel_Read_Platform",
-        "contract_sha256": "550953ee231b61317daf9ad7662ee664becf2c66159499677e711bdb80c43ea7",
-        "count": 1,
-        "name_present_with_different_contract": false
-      },
-      {
-        "name": "pixel_read_begin",
-        "contract_sha256": "2d992d10c05d015925f1d2e0b2283adced51e3cd26120c5ef3e326146493232d",
-        "count": 1,
-        "name_present_with_different_contract": false
-      },
-      {
-        "name": "pixel_read_end",
-        "contract_sha256": "3abbba62c5848a836e6375eda73851100368d6dc146a591ef1366ebbe3db329c",
-        "count": 1,
-        "name_present_with_different_contract": false
-      },
-      {
-        "name": "pixel_read_end",
-        "contract_sha256": "82d7b88315b9240b86e4a70f8a2325bfe8681434cc997b65f8fac493c0555178",
-        "count": 1,
-        "name_present_with_different_contract": false
-      },
-      {
-        "name": "pixel_read_is_done",
-        "contract_sha256": "0226740ce8754a25a4d1a58e7a8fa36011c6cf727cb11f515c032d6ec00ee7e0",
-        "count": 1,
-        "name_present_with_different_contract": false
-      }
-    ],
+    "identical_lexical_contracts": 85,
+    "missing_or_different_contracts": [],
     "semantic_api_equivalence": "not-established",
     "behavior_acceptance": "not-established"
   },
@@ -624,9 +554,531 @@
       "line": 1524,
       "kind": "public-layout-contract",
       "source_sha256": "951f0808ce5b1a6ce6dce5fee00d566727029576c2b72d186afc1508642b0496"
+    },
+    {
+      "name": "Scrollable_Region_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/scrollable_region.jai",
+      "line": 236,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "a57e4fa43902ede3903d2585738e1a7bb84b25ce7237d3d8e570c302e999c06d",
+      "declaration_contract_sha256": "91a84a35b694120053ade4f8788f240f960a0650d5d42538139a5941648c9cbc",
+      "authored_contract_sha256": "91a84a35b694120053ade4f8788f240f960a0650d5d42538139a5941648c9cbc",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Number_Input_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/number_input.jai",
+      "line": 109,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "88962fd00d031a7af2b95398292b9ae659aaca6bb84ab765bac4ba18a0b63567",
+      "declaration_contract_sha256": "813e37615272d4c52e1ad3a0d34b0ef52637ca8d38b5edcc5fac188283a55f9a",
+      "authored_contract_sha256": "813e37615272d4c52e1ad3a0d34b0ef52637ca8d38b5edcc5fac188283a55f9a",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Subwindow_Info",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/subwindow.jai",
+      "line": 766,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "b94f8a2c6a7f817e09c3c6b483fe4ae7173032130af0ed59afe05b64733c8ab8",
+      "declaration_contract_sha256": "e5a2eef4ff68cc2d5f8534878472e1257c8eb27c9f478de98f09ba76620421b9",
+      "authored_contract_sha256": "e5a2eef4ff68cc2d5f8534878472e1257c8eb27c9f478de98f09ba76620421b9",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Subwindow_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/subwindow.jai",
+      "line": 785,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "b94f8a2c6a7f817e09c3c6b483fe4ae7173032130af0ed59afe05b64733c8ab8",
+      "declaration_contract_sha256": "ffd981e874c44a718367d555d647970b328c6370019137dfbcd3de6e12247d7c",
+      "authored_contract_sha256": "ffd981e874c44a718367d555d647970b328c6370019137dfbcd3de6e12247d7c",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Slidable_Region_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/slidable_region.jai",
+      "line": 211,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "fee9ca409780f57596aeb0cd19c945d0b4e53831a598cd3ec4de68ffc4a30b24",
+      "declaration_contract_sha256": "9bd0cc7d5908bad985055f57a61872420461fbc9e8adf5a2c98cb94e4b0bac4d",
+      "authored_contract_sha256": "9bd0cc7d5908bad985055f57a61872420461fbc9e8adf5a2c98cb94e4b0bac4d",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Flowable_Text",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 1,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "c2896f2d898c58c15663436444f199cfbbab676333b7ba1451c6dc11dfad32a6",
+      "authored_contract_sha256": "c2896f2d898c58c15663436444f199cfbbab676333b7ba1451c6dc11dfad32a6",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Text_Display_Theme",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 352,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "3548905ef0cd938e52ef65b42492a2a4941e2d77f08168271d5400674c493b46",
+      "authored_contract_sha256": "3548905ef0cd938e52ef65b42492a2a4941e2d77f08168271d5400674c493b46",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Text_Display_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 370,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "40e2041f3b666a452ead01f08d62e53615359bbad29402645a7a3f55aeb7f597",
+      "authored_contract_sha256": "40e2041f3b666a452ead01f08d62e53615359bbad29402645a7a3f55aeb7f597",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Color_Picker_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/color_picker.jai",
+      "line": 1894,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "0c952b355de2f1d6e51ea0360e55a4cd7211a3ba8bf9cbc90af00e11aa46c090",
+      "declaration_contract_sha256": "1de7bc7663351807588e8151b2ebfc2b9b2fb2fc9bcd98994e312b29f7ed843d",
+      "authored_contract_sha256": "1de7bc7663351807588e8151b2ebfc2b9b2fb2fc9bcd98994e312b29f7ed843d",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Color_Animation_Editor_State",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/color_animation_editor.jai",
+      "line": 1088,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "87a7bbdb09c625e40bc00595e4fc880b93e2327d32eff07b417e26fd32fb8b8b",
+      "declaration_contract_sha256": "17d5afde42474101a8dbf7aad8bf13f7b464986a2dd4f190054175888d6c5812",
+      "authored_contract_sha256": "17d5afde42474101a8dbf7aad8bf13f7b464986a2dd4f190054175888d6c5812",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Augmented_Keyframe",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/color_animation_editor.jai",
+      "line": 1157,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "87a7bbdb09c625e40bc00595e4fc880b93e2327d32eff07b417e26fd32fb8b8b",
+      "declaration_contract_sha256": "6e3ef820eaa917b9a6d4428822dd69f8284e0f537c9d5f28cbfb13c696b0ae78",
+      "authored_contract_sha256": "6e3ef820eaa917b9a6d4428822dd69f8284e0f537c9d5f28cbfb13c696b0ae78",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Output_Type",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/color_animation_editor.jai",
+      "line": 1173,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "87a7bbdb09c625e40bc00595e4fc880b93e2327d32eff07b417e26fd32fb8b8b",
+      "declaration_contract_sha256": "5341f344464ebf2b991bc92939abb82e060027a1129d59123b70106ef46ba846",
+      "authored_contract_sha256": "5341f344464ebf2b991bc92939abb82e060027a1129d59123b70106ef46ba846",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Unflowed_Line",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 9,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "9b654f0c791c804c717aa3fe39300d851349b5b8cf34ba83d1d6bd49accc879c",
+      "authored_contract_sha256": "9b654f0c791c804c717aa3fe39300d851349b5b8cf34ba83d1d6bd49accc879c",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Unflowed_Line_Piece",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 13,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "1df01dc7e38d93601033e104ae660e062caef9cc82e629bbba7d112000888446",
+      "authored_contract_sha256": "1df01dc7e38d93601033e104ae660e062caef9cc82e629bbba7d112000888446",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Flowed_Line",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 20,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "7873dc311bcc8dcf9ae3fc8a6eccb4ad37c2588cdecb06fce92d99a6673e3902",
+      "authored_contract_sha256": "7873dc311bcc8dcf9ae3fc8a6eccb4ad37c2588cdecb06fce92d99a6673e3902",
+      "exact_lexical_layout_contract": true
+    },
+    {
+      "name": "Flowed_Line_Piece",
+      "source": "reference/modules/GetRect_LeftHanded/widgets/text_display.jai",
+      "line": 24,
+      "kind": "public-or-returned-layout-contract",
+      "source_sha256": "e9e88d25d0f131f3b61725a43cd0bca901ebc07748dd89fc6236a94c28195fcb",
+      "declaration_contract_sha256": "1c7b4269d0475a4b22ab837b6fbee227ae27a0246b363d7e3fef77c66d1ea685",
+      "authored_contract_sha256": "1c7b4269d0475a4b22ab837b6fbee227ae27a0246b363d7e3fef77c66d1ea685",
+      "exact_lexical_layout_contract": true
     }
   ],
   "files": [
+    {
+      "path": "stdlib/GetRect/interaction.jai",
+      "sha256": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
+      "lines": 9,
+      "role": "independently-authored-implementation",
+      "public_procedure_declarations": 0,
+      "public_nonempty_source_bodies": 0,
+      "behavior_verified": false,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "current_sha256": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
+    },
+    {
+      "path": "stdlib/GetRect/tests/pointer-transition-tests.jai",
+      "sha256": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
+      "lines": 21,
+      "role": "behavior-fixture",
+      "public_procedure_declarations": 2,
+      "public_nonempty_source_bodies": 2,
+      "behavior_verified": false,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "current_sha256": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
+    },
+    {
+      "path": "stdlib/GetRect/tests/ui-interaction-tests.jai",
+      "sha256": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
+      "lines": 35,
+      "role": "behavior-fixture",
+      "public_procedure_declarations": 6,
+      "public_nonempty_source_bodies": 6,
+      "behavior_verified": false,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "current_sha256": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
+    },
+    {
+      "path": "stdlib/GetRect/ui.jai",
+      "sha256": "cb0bd9fc8fd0ced0a61e54e0f140e1d923cf9e38e874b4baacd53efd35e0bd8f",
+      "lines": 208,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 15,
+      "public_nonempty_source_bodies": 14,
+      "current_sha256": "cb0bd9fc8fd0ced0a61e54e0f140e1d923cf9e38e874b4baacd53efd35e0bd8f",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/advanced-layouts.jai",
+      "sha256": "0bb48c01037138e10f38540d8a713b40000151191bc495fae8934358cf925938",
+      "lines": 189,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": false,
+          "exit_code": 1,
+          "diagnostic": "/tmp/jai-ui-bulk-packet/stdlib/GetRect_LeftHanded/advanced-layouts.jai:16:26: error: expected expression; this syntax is not implemented yet"
+        }
+      },
+      "role": "public-layout-contracts",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 0,
+      "public_nonempty_source_bodies": 0,
+      "current_sha256": "243393aabcdf3910877a63a086726268adff65e56b77f93bcc1913ae7ae3f8be",
+      "source_hash_matches_recorded_check": false,
+      "checked_source_sha256": "243393aabcdf3910877a63a086726268adff65e56b77f93bcc1913ae7ae3f8be",
+      "trivia_equivalent_to_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/color-math.jai",
+      "sha256": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+      "lines": 19,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 2,
+      "public_nonempty_source_bodies": 2,
+      "current_sha256": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/colors.jai",
+      "sha256": "bdd16b0bf58ec8126045ba2ade13ea30c8fb83b3aa91d6767f77de86d9f170d4",
+      "lines": 264,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 27,
+      "public_nonempty_source_bodies": 27,
+      "current_sha256": "bdd16b0bf58ec8126045ba2ade13ea30c8fb83b3aa91d6767f77de86d9f170d4",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/legacy-layouts.jai",
+      "sha256": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
+      "lines": 739,
+      "role": "public-layout-contract",
+      "public_procedure_declarations": 0,
+      "public_nonempty_source_bodies": 0,
+      "behavior_verified": false,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": false,
+          "exit_code": 1,
+          "diagnostic": "stdlib/GetRect_LeftHanded/legacy-layouts.jai:11:42: error: expected ',', found ':='"
+        }
+      },
+      "current_sha256": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/regions.jai",
+      "sha256": "84e59297cad7d9d9a477799e5da13caa707b029d0c9160d3033c3b2b8d67f1b0",
+      "lines": 227,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 19,
+      "public_nonempty_source_bodies": 19,
+      "current_sha256": "84e59297cad7d9d9a477799e5da13caa707b029d0c9160d3033c3b2b8d67f1b0",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/tests/color-math-tests.jai",
+      "sha256": "adeeeb7cb3ca9c141a9d034cf1e19de5a957b6349e514e11ad819941ecc4ba2f",
+      "lines": 13,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "behavior-fixture",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 2,
+      "public_nonempty_source_bodies": 2,
+      "current_sha256": "adeeeb7cb3ca9c141a9d034cf1e19de5a957b6349e514e11ad819941ecc4ba2f",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/tests/text-interaction-tests.jai",
+      "sha256": "334c5987f24a43e2344d6c34c4055fd1fd9097be9aa573cc2215c51350285f7b",
+      "lines": 11,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "behavior-fixture",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 2,
+      "public_nonempty_source_bodies": 2,
+      "current_sha256": "334c5987f24a43e2344d6c34c4055fd1fd9097be9aa573cc2215c51350285f7b",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/text-flow.jai",
+      "sha256": "c68afcab95b4f8407babb4ec7b7f94abce560e5388922765761d0a9cd3c7138f",
+      "lines": 132,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 8,
+      "public_nonempty_source_bodies": 8,
+      "current_sha256": "c68afcab95b4f8407babb4ec7b7f94abce560e5388922765761d0a9cd3c7138f",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/text-interaction.jai",
+      "sha256": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+      "lines": 139,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 15,
+      "public_nonempty_source_bodies": 15,
+      "current_sha256": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/theme-presets.jai",
+      "sha256": "2e9459c3f3d3432f28f368d033d04e087893882e49fa52c736daff6e6cf7f289",
+      "lines": 34,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 8,
+      "public_nonempty_source_bodies": 8,
+      "current_sha256": "2e9459c3f3d3432f28f368d033d04e087893882e49fa52c736daff6e6cf7f289",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/GetRect_LeftHanded/ui.jai",
+      "sha256": "d31e8cd5e487d0b8c2d51ff63b742419ebc03f73fa391b26bae3fc5d41d04ab1",
+      "lines": 752,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 102,
+      "public_nonempty_source_bodies": 101,
+      "current_sha256": "d31e8cd5e487d0b8c2d51ff63b742419ebc03f73fa391b26bae3fc5d41d04ab1",
+      "source_hash_matches_recorded_check": true
+    },
     {
       "path": "stdlib/Simp/backend/gl.jai",
       "sha256": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
@@ -646,16 +1098,15 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/bitmap.jai",
-      "sha256": "eb64138783f54d88ce9629af666421cedf96158a714218f90f6dff9541d64e1e",
-      "lines": 91,
-      "role": "independently-authored-implementation",
-      "public_procedure_declarations": 6,
-      "public_nonempty_source_bodies": 6,
-      "behavior_verified": false,
+      "sha256": "3fb0eaa0552db3d63063c322b9436c2f16a06dcbfba335a430540d2e5684aaf2",
+      "lines": 92,
       "checks": {
         "lex": {
           "passed": true,
@@ -667,7 +1118,14 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 6,
+      "public_nonempty_source_bodies": 6,
+      "current_sha256": "3fb0eaa0552db3d63063c322b9436c2f16a06dcbfba335a430540d2e5684aaf2",
+      "source_hash_matches_recorded_check": true
     },
     {
       "path": "stdlib/Simp/font.jai",
@@ -688,7 +1146,10 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "4bb32b5b74e51e19fb97254efccd3e1d31fce716aa66f7cb085ac019448be361",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/immediate.jai",
@@ -709,16 +1170,15 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "01987d1c1c872e75374cc354053bfcc3c5cc5fa868cdbf76bccb756bfb5617ed",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/module.jai",
-      "sha256": "ff8b8f7dddb4709e2549f91411d07c861ce98ed54a2e24bcbc9b2b840fc38faf",
-      "lines": 162,
-      "role": "independently-authored-implementation",
-      "public_procedure_declarations": 20,
-      "public_nonempty_source_bodies": 17,
-      "behavior_verified": false,
+      "sha256": "53c82b0efa2b398232c652f6dc7035fb2ae1e5386bb1f9097fdb621fe5e76249",
+      "lines": 163,
       "checks": {
         "lex": {
           "passed": true,
@@ -730,7 +1190,38 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 20,
+      "public_nonempty_source_bodies": 17,
+      "current_sha256": "53c82b0efa2b398232c652f6dc7035fb2ae1e5386bb1f9097fdb621fe5e76249",
+      "source_hash_matches_recorded_check": true
+    },
+    {
+      "path": "stdlib/Simp/readback.jai",
+      "sha256": "54deab18e3862bccb8ff13e84e506b842dfa92b48e27e6a877f3601db566e201",
+      "lines": 167,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "independently-authored-implementation",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 5,
+      "public_nonempty_source_bodies": 5,
+      "current_sha256": "54deab18e3862bccb8ff13e84e506b842dfa92b48e27e6a877f3601db566e201",
+      "source_hash_matches_recorded_check": true
     },
     {
       "path": "stdlib/Simp/shader.jai",
@@ -751,7 +1242,34 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "f9ae14aa55616b414596cc8fcb3e3d2f17438f6c359f3db424a9ea8a37d3cc6f",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
+    },
+    {
+      "path": "stdlib/Simp/tests/readback-tests.jai",
+      "sha256": "aeb236572f30f8d96dcbdc85e4459810d638481f2356a43a700629824b3ed0f8",
+      "lines": 23,
+      "checks": {
+        "lex": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        },
+        "parse": {
+          "passed": true,
+          "exit_code": 0,
+          "diagnostic": ""
+        }
+      },
+      "role": "behavior-fixture",
+      "behavior_verified": false,
+      "source_check_receipt": "private-bulk-source-check",
+      "public_procedure_declarations": 2,
+      "public_nonempty_source_bodies": 2,
+      "current_sha256": "aeb236572f30f8d96dcbdc85e4459810d638481f2356a43a700629824b3ed0f8",
+      "source_hash_matches_recorded_check": true
     },
     {
       "path": "stdlib/Simp/tests/software-render-tests.jai",
@@ -772,7 +1290,10 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "c64fabe58060c6d1e052d1df4a3f5f9adec8146918f8968c4433b16cc740a63f",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/tests/texture-format-tests.jai",
@@ -793,7 +1314,10 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "afaf03d0ffd92ed613ec74f6e948638f7858302b00fb8b264a37e7bae8995147",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/texture.jai",
@@ -814,7 +1338,10 @@
           "exit_code": 0,
           "diagnostic": ""
         }
-      }
+      },
+      "current_sha256": "c8ea6196036f96c3985e5af4cdad3da89de73a7fb3be7c0cd4002e5e388449a5",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     },
     {
       "path": "stdlib/Simp/texture_format.jai",
@@ -841,133 +1368,10 @@
           "diagnostic": "",
           "stdout": "checked library stdlib/Simp/texture_format.jai"
         }
-      }
-    },
-    {
-      "path": "stdlib/GetRect/interaction.jai",
-      "sha256": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
-      "lines": 9,
-      "role": "independently-authored-implementation",
-      "public_procedure_declarations": 0,
-      "public_nonempty_source_bodies": 0,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        }
-      }
-    },
-    {
-      "path": "stdlib/GetRect/tests/pointer-transition-tests.jai",
-      "sha256": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
-      "lines": 21,
-      "role": "behavior-fixture",
-      "public_procedure_declarations": 2,
-      "public_nonempty_source_bodies": 2,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        }
-      }
-    },
-    {
-      "path": "stdlib/GetRect/tests/ui-interaction-tests.jai",
-      "sha256": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
-      "lines": 35,
-      "role": "behavior-fixture",
-      "public_procedure_declarations": 6,
-      "public_nonempty_source_bodies": 6,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        }
-      }
-    },
-    {
-      "path": "stdlib/GetRect/ui.jai",
-      "sha256": "710dc5160704a0a837021de81e3329531d3800ed926546ae370f4112c2142e86",
-      "lines": 191,
-      "role": "independently-authored-implementation",
-      "public_procedure_declarations": 14,
-      "public_nonempty_source_bodies": 13,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        }
-      }
-    },
-    {
-      "path": "stdlib/GetRect_LeftHanded/legacy-layouts.jai",
-      "sha256": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
-      "lines": 739,
-      "role": "public-layout-contract",
-      "public_procedure_declarations": 0,
-      "public_nonempty_source_bodies": 0,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": false,
-          "exit_code": 1,
-          "diagnostic": "stdlib/GetRect_LeftHanded/legacy-layouts.jai:11:42: error: expected ',', found ':='"
-        }
-      }
-    },
-    {
-      "path": "stdlib/GetRect_LeftHanded/ui.jai",
-      "sha256": "8c0b75f8f36edc7d8fec382d55131de3ae5ba7caf0c6a0965a4f31130bc47935",
-      "lines": 640,
-      "role": "independently-authored-implementation",
-      "public_procedure_declarations": 100,
-      "public_nonempty_source_bodies": 99,
-      "behavior_verified": false,
-      "checks": {
-        "lex": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        },
-        "parse": {
-          "passed": true,
-          "exit_code": 0,
-          "diagnostic": ""
-        }
-      }
+      },
+      "current_sha256": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
+      "source_hash_matches_recorded_check": true,
+      "source_check_receipt": "baseline-source-check"
     }
   ],
   "behavior_checks": [
@@ -1006,6 +1410,54 @@
       "diagnostic": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'",
       "stdout": "",
       "behavior_verified": false
+    },
+    {
+      "action": "check",
+      "path": "stdlib/GetRect_LeftHanded/tests/color-math-tests.jai",
+      "passed": false,
+      "exit_code": 1,
+      "diagnostic": "/private/tmp/jai-ui-bulk-packet/stdlib/GetRect_LeftHanded/tests/color-math-tests.jai:12:9: error: #run is waiting for checked procedure or type dependencies",
+      "stdout": "",
+      "check_receipt": "private-bulk-source-check",
+      "scope": "actual-production-fixture",
+      "behavior_verified": false,
+      "stopped_before_fixture_assertions": true
+    },
+    {
+      "action": "check",
+      "path": "stdlib/Simp/tests/readback-tests.jai",
+      "passed": false,
+      "exit_code": 1,
+      "diagnostic": "/private/tmp/jai-ui-bulk-packet/stdlib/Simp/readback.jai:87:9: error: non-scalar module parameter requires typed constant resolution",
+      "stdout": "",
+      "check_receipt": "private-bulk-source-check",
+      "scope": "actual-production-fixture",
+      "behavior_verified": false,
+      "stopped_before_fixture_assertions": true
+    },
+    {
+      "action": "check",
+      "path": "stdlib/GetRect_LeftHanded/tests/text-interaction-tests.jai",
+      "passed": false,
+      "exit_code": 1,
+      "diagnostic": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'",
+      "stdout": "",
+      "check_receipt": "private-bulk-source-check",
+      "scope": "actual-production-fixture",
+      "behavior_verified": false,
+      "stopped_before_fixture_assertions": true
+    },
+    {
+      "action": "check-library",
+      "path": "stdlib/GetRect/module.jai",
+      "passed": false,
+      "exit_code": 1,
+      "diagnostic": "/Users/matthew/projects/jai/stdlib/GL/glad_core.jai:1593:25: error: expected '{', found '#type_info_procedures_are_void_pointers'",
+      "stdout": "",
+      "check_receipt": "private-bulk-source-check",
+      "scope": "complete-module-source-graph",
+      "behavior_verified": false,
+      "stopped_before_fixture_assertions": true
     }
   ],
   "native_behavior_verified": false,
@@ -1015,54 +1467,736 @@
     "legacy typed state lookup and stacks, labels/shapes/buttons/checkboxes/radio/sliders/dropdowns/popups/tooltips, text insertion/selection/byte navigation",
     "Simp triangle batching and CPU rasterizer; independently authored OpenGL shader compilation, submission, texture upload, framebuffer checks",
     "bitmap format arithmetic/allocation/native-codec load and save/mipmap helper flow",
-    "FreeType memory faces, UTF-8/kerning, stable glyph atlas pointers, prepared quads and cursor width helpers"
+    "FreeType memory faces, UTF-8/kerning, stable glyph atlas pointers, prepared quads and cursor width helpers",
+    "Simp CPU snapshot and native GL PBO/fence polling/wait/map/readback; nearest resize, format packing, piecewise sRGB, explicit reader end/cancel",
+    "genuine Input routed-event adapter and separate scoped buttons; unassociated single-window compatibility; Event ABI unchanged",
+    "legacy selection/pointer/word editing, clipboard/history/completion copies, embedded numeric state and slider editor/spinboxes",
+    "legacy paired scrollable/slidable clips, subwindow queue/move/raise/close/resize/snap and private topmost hit rejection",
+    "legacy styled hard-wrap text/display/selection, borrowed-input/owned-output lifetimes",
+    "legacy hue ring/SV plane/HSV-RGB controls/stashes/apply-revert, editable animation keyframes and RGB-HSV-Oklab interpolation, time/color subwindows, clipboard and authored presets"
   ],
   "gaps": [
     {
       "kind": "parser",
-      "feature": "legacy callback procedure type defaults",
-      "detail": "Defaulted Draw_Procs fields retain public contracts; pinned parser rejects := or = inside a record procedure field parameter."
+      "feature": "retained record/default syntax",
+      "detail": "Baseline procedural field argument defaults stop legacy-layouts parsing; bulk Number_Input_State widget.widget_type = #this stops advanced-layouts parsing. Public default contracts were retained."
     },
     {
       "kind": "semantic-and-vm",
-      "feature": "full UI and CPU fixtures",
-      "detail": "Full graph checks stop in native binding dependencies before assertions. See the exact diagnostics in behavior_checks. The isolated actual production pointer-transition and texture-format fixtures pass independently."
+      "feature": "new production fixtures and full UI roots",
+      "detail": "New color conversion fixture waits for checked procedure/type dependencies; screenshot stops at non-scalar module-parameter typed resolution; text/UI stops at GL modifier syntax. No new assertions finished. Exact diagnostics/hashes are preserved."
     },
     {
       "kind": "native",
-      "feature": "GPU/window/font/codec behavior",
-      "detail": "Actual adapters, contexts, libraries, hardware, ABI layouts and native symbols are not acceptance-tested. Host-owned context/procedure integration is required; original implicit native initialization is not implemented."
+      "feature": "GPU/window/font/codec/clipboard behavior",
+      "detail": "Actual native APIs, libraries, contexts, hardware, ABI layouts and symbols are not acceptance-tested. Screenshot begin/end/cancel require the same current context; finish readers before shutdown. No original native executable, library or asset was copied or executed."
     },
     {
       "kind": "api-and-body",
-      "feature": "advanced legacy widgets",
-      "detail": "Number input, scrollable/slidable regions, subwindows, color/animation editors, text display/flow, theme preset bodies, history/autocomplete/clipboard/word navigation/selection rendering, slider text entry/spinboxes remain incomplete. Preserved theme layouts do not count as widget bodies."
+      "feature": "historical helper exports and contracts",
+      "detail": "Historical LH lexical closure matches 179/265; exact missing/helper/signature/default/spelling entries are enumerated, including geometry-lane contracts, old occlusion APIs, alternate warped-disc backsolvers and minor drawing helpers. Topic/console integration is absent. Core flows do not establish missing public contracts."
+    },
+    {
+      "kind": "incomplete-body",
+      "feature": "legacy optional modes and parity",
+      "detail": "Warped circle/alternate rectangle modes, hue zoom and cosmetic timing fields are not fully applied. Slider relative initial-outside-range clamp flag is unimplemented; float64 arithmetic loses very large integer precision. Full old occlusion and first-registration/cross-frame ordering parity are incomplete. Preset appearance, interpolation boundaries and rendered behavior are unverified."
     },
     {
       "kind": "api-and-body",
-      "feature": "remaining maintained Simp helpers",
-      "detail": "Pixel_Read/Pixel_Read_Platform and pixel_read_begin/end/is_done are omitted; their missing bodies and layouts are recorded by the maintained Simp comparison. Original backend platform type names unresolved by maintained input have independently defined state. Complete thread safety and registry/per-thread teardown are unfinished."
+      "feature": "resource shutdown and thread safety",
+      "detail": "Screenshot has explicit end/cancel lifetime, no implicit context-shutdown registry cleanup or cross-thread support. Texture registries and per-thread immediate state lack complete application teardown."
     },
     {
       "kind": "behavior-compatibility",
-      "feature": "draw/font parity",
-      "detail": "LCD coverage is averaged into ordinary alpha; no dual-source subpixel blending, shaping, dithering or legacy glyph substitutions. Exact invisible-glyph highlight and selected-tab marker behavior unfinished. CPU nearest sampling differs from GL linear sampling."
+      "feature": "draw/font/text parity",
+      "detail": "LCD coverage is averaged into ordinary alpha; no dual-source blending, shaping, grapheme navigation, dithering or legacy glyph substitutions. Invisible-glyph highlight and selected-tab markers are unfinished. CPU nearest sampling differs from GL linear sampling."
     },
     {
       "kind": "configuration",
       "feature": "unsupported render APIs/formats",
-      "detail": "NONE and METAL fail explicitly when used for rendering. Format sizes do not imply upload support. No font/image assets are bundled."
+      "detail": "NONE and METAL fail explicitly for rendering. Screenshot supports eight-bit component destinations and ordinary 2D sources; unsupported requests fail begin. Format sizing does not imply upload support. No assets bundled."
+    },
+    {
+      "kind": "integration",
+      "feature": "Input routing packet dependency",
+      "detail": "Bulk UI consumes Routed_Input_Event, routed_events_this_frame and unrouted_events_this_frame from the separate authored Input packet. Merge both together. Unassociated events cannot establish native multiwindow origin."
     }
   ],
   "totals": {
-    "owned_source_files": 16,
-    "source_lines": 2837,
-    "lex_passed": 16,
-    "parse_passed": 15,
-    "public_nonempty_source_bodies": 182,
-    "legacy_layout_contracts": 45,
+    "owned_source_files": 27,
+    "source_lines": 4186,
+    "lex_passed_across_hash_matched_receipts": 27,
+    "parse_passed_across_hash_matched_receipts": 25,
+    "private_bulk_lex_passed": 15,
+    "private_bulk_parse_passed": 14,
+    "public_nonempty_source_bodies": 287,
+    "legacy_layout_contracts": 61,
     "behavior_checks_passed": 2,
+    "new_bulk_behavior_checks_passed": 0,
     "whole_file_behavior_verified": 0,
     "native_behavior_passed": 0
+  },
+  "baseline_source_check_receipt": {
+    "before_source_hashes": {
+      "stdlib/Simp/backend/gl.jai": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
+      "stdlib/Simp/bitmap.jai": "eb64138783f54d88ce9629af666421cedf96158a714218f90f6dff9541d64e1e",
+      "stdlib/Simp/font.jai": "4bb32b5b74e51e19fb97254efccd3e1d31fce716aa66f7cb085ac019448be361",
+      "stdlib/Simp/immediate.jai": "01987d1c1c872e75374cc354053bfcc3c5cc5fa868cdbf76bccb756bfb5617ed",
+      "stdlib/Simp/module.jai": "ff8b8f7dddb4709e2549f91411d07c861ce98ed54a2e24bcbc9b2b840fc38faf",
+      "stdlib/Simp/shader.jai": "f9ae14aa55616b414596cc8fcb3e3d2f17438f6c359f3db424a9ea8a37d3cc6f",
+      "stdlib/Simp/tests/software-render-tests.jai": "c64fabe58060c6d1e052d1df4a3f5f9adec8146918f8968c4433b16cc740a63f",
+      "stdlib/Simp/tests/texture-format-tests.jai": "afaf03d0ffd92ed613ec74f6e948638f7858302b00fb8b264a37e7bae8995147",
+      "stdlib/Simp/texture.jai": "c8ea6196036f96c3985e5af4cdad3da89de73a7fb3be7c0cd4002e5e388449a5",
+      "stdlib/Simp/texture_format.jai": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
+      "stdlib/GetRect/interaction.jai": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
+      "stdlib/GetRect/tests/pointer-transition-tests.jai": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
+      "stdlib/GetRect/tests/ui-interaction-tests.jai": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
+      "stdlib/GetRect/ui.jai": "710dc5160704a0a837021de81e3329531d3800ed926546ae370f4112c2142e86",
+      "stdlib/GetRect_LeftHanded/legacy-layouts.jai": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
+      "stdlib/GetRect_LeftHanded/ui.jai": "8c0b75f8f36edc7d8fec382d55131de3ae5ba7caf0c6a0965a4f31130bc47935"
+    },
+    "after_source_hashes": {
+      "stdlib/Simp/backend/gl.jai": "83a42eac48a0e1d33435d2351381659a148843ab113b01c62c4388839877351f",
+      "stdlib/Simp/bitmap.jai": "eb64138783f54d88ce9629af666421cedf96158a714218f90f6dff9541d64e1e",
+      "stdlib/Simp/font.jai": "4bb32b5b74e51e19fb97254efccd3e1d31fce716aa66f7cb085ac019448be361",
+      "stdlib/Simp/immediate.jai": "01987d1c1c872e75374cc354053bfcc3c5cc5fa868cdbf76bccb756bfb5617ed",
+      "stdlib/Simp/module.jai": "ff8b8f7dddb4709e2549f91411d07c861ce98ed54a2e24bcbc9b2b840fc38faf",
+      "stdlib/Simp/shader.jai": "f9ae14aa55616b414596cc8fcb3e3d2f17438f6c359f3db424a9ea8a37d3cc6f",
+      "stdlib/Simp/tests/software-render-tests.jai": "c64fabe58060c6d1e052d1df4a3f5f9adec8146918f8968c4433b16cc740a63f",
+      "stdlib/Simp/tests/texture-format-tests.jai": "afaf03d0ffd92ed613ec74f6e948638f7858302b00fb8b264a37e7bae8995147",
+      "stdlib/Simp/texture.jai": "c8ea6196036f96c3985e5af4cdad3da89de73a7fb3be7c0cd4002e5e388449a5",
+      "stdlib/Simp/texture_format.jai": "eab1012eecfc25c58580bbb02325c44d0af3fe4f139829bf10333480655be3a2",
+      "stdlib/GetRect/interaction.jai": "4aac319b8f1147d040545b1df8702a73e4e010597e4657e41cc1f554de77fbca",
+      "stdlib/GetRect/tests/pointer-transition-tests.jai": "ddc4f7bd485ec7cfe18b8b3f92a24664597ec066a5d628d6f3184386393a1bd5",
+      "stdlib/GetRect/tests/ui-interaction-tests.jai": "901daaf00aacbf09b01027e295d77eb67ac6d647cc90a9c4c2ec7e890d59e904",
+      "stdlib/GetRect/ui.jai": "710dc5160704a0a837021de81e3329531d3800ed926546ae370f4112c2142e86",
+      "stdlib/GetRect_LeftHanded/legacy-layouts.jai": "39bbf217c727026595fa2c7bab775cc387a9211b339fb5691f038ec121bd0b37",
+      "stdlib/GetRect_LeftHanded/ui.jai": "8c0b75f8f36edc7d8fec382d55131de3ae5ba7caf0c6a0965a4f31130bc47935"
+    },
+    "owned_sources_unchanged_during_checks": true
+  },
+  "source_check_receipt": {
+    "compiler": {
+      "path": "/Users/matthew/projects/jai/target/standard-library-snapshots/9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d/jai-rs",
+      "sha256": "9508def6f527169083405db10c93d9d377289fecdca749a546eb849ca39d501d",
+      "build_inputs_verified": false
+    },
+    "source_only": true,
+    "native_runtime_executed": false,
+    "source_implementation_reuse": false,
+    "before_source_hashes": {
+      "stdlib/Simp/readback.jai": "54deab18e3862bccb8ff13e84e506b842dfa92b48e27e6a877f3601db566e201",
+      "stdlib/Simp/module.jai": "53c82b0efa2b398232c652f6dc7035fb2ae1e5386bb1f9097fdb621fe5e76249",
+      "stdlib/Simp/bitmap.jai": "3fb0eaa0552db3d63063c322b9436c2f16a06dcbfba335a430540d2e5684aaf2",
+      "stdlib/Simp/tests/readback-tests.jai": "aeb236572f30f8d96dcbdc85e4459810d638481f2356a43a700629824b3ed0f8",
+      "stdlib/GetRect/ui.jai": "cb0bd9fc8fd0ced0a61e54e0f140e1d923cf9e38e874b4baacd53efd35e0bd8f",
+      "stdlib/GetRect_LeftHanded/theme-presets.jai": "2e9459c3f3d3432f28f368d033d04e087893882e49fa52c736daff6e6cf7f289",
+      "stdlib/GetRect_LeftHanded/advanced-layouts.jai": "243393aabcdf3910877a63a086726268adff65e56b77f93bcc1913ae7ae3f8be",
+      "stdlib/GetRect_LeftHanded/colors.jai": "bdd16b0bf58ec8126045ba2ade13ea30c8fb83b3aa91d6767f77de86d9f170d4",
+      "stdlib/GetRect_LeftHanded/color-math.jai": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+      "stdlib/GetRect_LeftHanded/regions.jai": "84e59297cad7d9d9a477799e5da13caa707b029d0c9160d3033c3b2b8d67f1b0",
+      "stdlib/GetRect_LeftHanded/text-flow.jai": "c68afcab95b4f8407babb4ec7b7f94abce560e5388922765761d0a9cd3c7138f",
+      "stdlib/GetRect_LeftHanded/text-interaction.jai": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+      "stdlib/GetRect_LeftHanded/ui.jai": "d31e8cd5e487d0b8c2d51ff63b742419ebc03f73fa391b26bae3fc5d41d04ab1",
+      "stdlib/GetRect_LeftHanded/tests/color-math-tests.jai": "adeeeb7cb3ca9c141a9d034cf1e19de5a957b6349e514e11ad819941ecc4ba2f",
+      "stdlib/GetRect_LeftHanded/tests/text-interaction-tests.jai": "334c5987f24a43e2344d6c34c4055fd1fd9097be9aa573cc2215c51350285f7b"
+    },
+    "after_source_hashes": {
+      "stdlib/Simp/readback.jai": "54deab18e3862bccb8ff13e84e506b842dfa92b48e27e6a877f3601db566e201",
+      "stdlib/Simp/module.jai": "53c82b0efa2b398232c652f6dc7035fb2ae1e5386bb1f9097fdb621fe5e76249",
+      "stdlib/Simp/bitmap.jai": "3fb0eaa0552db3d63063c322b9436c2f16a06dcbfba335a430540d2e5684aaf2",
+      "stdlib/Simp/tests/readback-tests.jai": "aeb236572f30f8d96dcbdc85e4459810d638481f2356a43a700629824b3ed0f8",
+      "stdlib/GetRect/ui.jai": "cb0bd9fc8fd0ced0a61e54e0f140e1d923cf9e38e874b4baacd53efd35e0bd8f",
+      "stdlib/GetRect_LeftHanded/theme-presets.jai": "2e9459c3f3d3432f28f368d033d04e087893882e49fa52c736daff6e6cf7f289",
+      "stdlib/GetRect_LeftHanded/advanced-layouts.jai": "243393aabcdf3910877a63a086726268adff65e56b77f93bcc1913ae7ae3f8be",
+      "stdlib/GetRect_LeftHanded/colors.jai": "bdd16b0bf58ec8126045ba2ade13ea30c8fb83b3aa91d6767f77de86d9f170d4",
+      "stdlib/GetRect_LeftHanded/color-math.jai": "334342c3d48e76eede2ac9c603f87d63afb0525a272e2d82e66622ee1e5f80ad",
+      "stdlib/GetRect_LeftHanded/regions.jai": "84e59297cad7d9d9a477799e5da13caa707b029d0c9160d3033c3b2b8d67f1b0",
+      "stdlib/GetRect_LeftHanded/text-flow.jai": "c68afcab95b4f8407babb4ec7b7f94abce560e5388922765761d0a9cd3c7138f",
+      "stdlib/GetRect_LeftHanded/text-interaction.jai": "f0c63607921dee1156b8359e97aaf6daa01bc931c715151909026c335386c0fc",
+      "stdlib/GetRect_LeftHanded/ui.jai": "d31e8cd5e487d0b8c2d51ff63b742419ebc03f73fa391b26bae3fc5d41d04ab1",
+      "stdlib/GetRect_LeftHanded/tests/color-math-tests.jai": "adeeeb7cb3ca9c141a9d034cf1e19de5a957b6349e514e11ad819941ecc4ba2f",
+      "stdlib/GetRect_LeftHanded/tests/text-interaction-tests.jai": "334c5987f24a43e2344d6c34c4055fd1fd9097be9aa573cc2215c51350285f7b"
+    },
+    "sources_unchanged": true,
+    "role": "private-bulk-source-check",
+    "checked_source_files": 15,
+    "lex_passed": 15,
+    "parse_passed": 14
+  },
+  "historical_left_handed_contract_comparison": {
+    "module": "GetRect_LeftHanded",
+    "reference_origin": "legacy-supplied",
+    "authored_origin": "authored-private-packet",
+    "expected_lexical_contracts": 265,
+    "identical_lexical_contracts": 179,
+    "missing_or_different_contracts": [
+      {
+        "name": "EPSILON",
+        "contract_sha256": "cf9409f11aa86adb93201afa3872f3288c3aaa0294d09346e4b388eebe610c19",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "MAX_STASHED_COLORS",
+        "contract_sha256": "899fc387016bdb8082b609184117605650069881ecfd114349898cd0f3b6f552",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "Rect",
+        "contract_sha256": "337783a8acffd4143f78bbee43e4ae91502b11d77964884e629cafba3d46c433",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "THEME_COUNT",
+        "contract_sha256": "9e06506dc9d4d7788bbd10cedec28584dca29f9861891a4e7afcb6e911b80c6f",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "Windows",
+        "contract_sha256": "74866d747cd926f0c6e298315bc87553b80f22ad78bd5e0d70ceca84ea5c99b2",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "activate",
+        "contract_sha256": "81d68e6171c026a18b644466efddc3a58b17b48622892aea23a8a556b53ddb02",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "adjust_resize_control",
+        "contract_sha256": "3abc96ed4eb28eff55154ae51f6693b3265ca500e9d9cf175c5e820210c6f869",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "append_text",
+        "contract_sha256": "232799647e27bb077377817d6e40917bb74abb5b3b86195630b0c3dd1d608b35",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "backsolve_disc_point_from_hsv",
+        "contract_sha256": "fcb641c2f730f7264bbfe030c7178caa316f94d9046df8930427d2a64623af96",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "backsolve_disc_point_from_hsv_warp",
+        "contract_sha256": "372925ac4cf3d0e824dffd6d0ccb7a9e415b002d90b8a6570e31cf368499161c",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "backsolve_disc_point_from_rgb",
+        "contract_sha256": "6cf93c058186285936f72819691d07fa700340d5272e6e7127d43f7f13903575",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "base_checkbox",
+        "contract_sha256": "f7a0465919a39c7f448fcd2618fd662369fd73c674533531b438cda529d07832",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "break_into_lines",
+        "contract_sha256": "408964dc9a324169d3172103690c4a18c35b5a8df56610917252e94d31b02f46",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "button",
+        "contract_sha256": "3be0f96db3542d1262948808594589ef9580aebb17b7ceaa9a61a2c2cef0ddb8",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "clear_text",
+        "contract_sha256": "a21409118dec058ffc4945841d92dfd60a30a046d9a8726b3bf53a974222baee",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "core_draw_button_label",
+        "contract_sha256": "3f072e43c20dd687130494977191394db5e02759aad3c7d5b06e4b980af305bc",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "default_theme_procs",
+        "contract_sha256": "48f59f0f1ecf167720e62fb84c7ed22a280ebea7dede74f434bc0fc8d1e3cb14",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "deselect",
+        "contract_sha256": "49456d313bb7176d6f901487b44d68c0e089b791246413fa3fcfa3884ec430a0",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "draw",
+        "contract_sha256": "1588771bc7a3839722a7c0b274a24e0ab5c95b2c5bd7a83fde3a5511d99fe91e",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "draw_arrow",
+        "contract_sha256": "99fdac2d744de643cdf3c8901ce5514302b78a529119d5210ab51ed039326cad",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "draw_color_gradient_bar",
+        "contract_sha256": "d934181d57c25d4f45aad5c2fee0977be3378aea4aa354807de3cdc68372e5eb",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "draw_color_keyframe",
+        "contract_sha256": "8c82c30decd58b0c1159216b382252c6b33f2ca7a9a0a00aee0126154cb59986",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "draw_dropdown_popup",
+        "contract_sha256": "a1c47554e64bc975ee4ca8e467abee197fb738c5f4fdbca9ee5bdd3f4d0b6273",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "em",
+        "contract_sha256": "62ecab28fcff28b62c7b3d993a34b01cb9987c477fab5221fa6b467fb2155447",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "events_occluded",
+        "contract_sha256": "a862191022d5bd10fe1b8deefbad93ab2533bc9fea05be2a6f582d08a9406dbf",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "find_index_of_t",
+        "contract_sha256": "783fe90153f40daa736cf1435c8f218257cf448aa1e2c5457e7e2f092696c5d9",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "find_or_create_state",
+        "contract_sha256": "825c5528622e9deb9c14893b80baf9874f4b93ec3fbb92271babbe2b545d973b",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "get_aspect",
+        "contract_sha256": "a38741321e36045020bed2430bcc2a6903c0798135654cb95888c6c29103c54d",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "get_colors_and_thickness_for_button",
+        "contract_sha256": "441feb82f1862c83ba13bba8c4a1479f5eb007986106f05bb5821b492a425deb",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "get_hash",
+        "contract_sha256": "b2e7175f244c2b2064d63b852a79381c6784c1e3ac7b655d6d4c79d2515959b9",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "get_initial_value",
+        "contract_sha256": "44f0743ac696f0ba6b7c25b0ef20bc8888899afcf20e5dc9b00a9b103940c28f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "get_insert_point_for_cursor",
+        "contract_sha256": "f9250da89c6aab1275c2ff5ae79dd2d700c9bb72bb87925b9b8d6124fe1dd09f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "get_result",
+        "contract_sha256": "7615fa4a613a38baea32ac909ea904ef533d919a96bc8bd7b8b83da580d46c0a",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "get_roundedness_for_rect",
+        "contract_sha256": "d86f5a9f7a71160dba1a2d113b3ccec058064eeac97a3da6a077fd938b5588cb",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "get_y_range",
+        "contract_sha256": "90e7a9280d4148704024b807307d1b95c0f82c5c5f49260bb8a5eee4ba8cbe01",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "getrect_set_pointer_image",
+        "contract_sha256": "d4516dfe5a855ce766e72890d3bf355a4733c6e1131be71cd3cbce24dd01cdcf",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "has_focus",
+        "contract_sha256": "3fc4f8dd3b28026f829178016d3124144910b7306bc29174577e65dcc5a4a96d",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "init_pointers",
+        "contract_sha256": "72daf53154f432779269e3ff34dcd1fdfdbb8fae21264919f1947813df8541fc",
+        "count": 2,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "insert_clipboard_at_cursor",
+        "contract_sha256": "5b45467471322dbdcc31716caf8d54720b1a89e61e3b29abbaf7bd67e7f36598",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "insert_text",
+        "contract_sha256": "a4b2491e4cde00d07a228060a4c464aa3e42d9d3472b93dbdf71a4dee1a45844",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "invert_button_theme",
+        "contract_sha256": "2c78a9c6f2fd89253e6dd1de0edd0e3cb09ec42733030002ccae459c14c3d46f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "invert_scrollbar",
+        "contract_sha256": "fe45b08673b10a583fac9f90e9aed3decd514257e4aed963fae6aa211648f12f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "is_grabbing",
+        "contract_sha256": "0d0d9630098710a60f30063840f302ca64afbd9707fb1fdb560473a5d488678e",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "is_visible_in_scissor",
+        "contract_sha256": "f82935ebb8439dae811d368ca89e7ee4be92d13807f6d691c116758975af33d8",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "maybe_diagonalize",
+        "contract_sha256": "b99c97607fe8b59832b52c92f813e087484c119ea8a7e1b3bf919eb078c1f39c",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "move_cursor_left",
+        "contract_sha256": "bfe8a13028160dd8f6c47860f25303d8e9f5ec9ca2f246d583d071375a2387ec",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "my_color_slider",
+        "contract_sha256": "7244443bcd664e684b11c4889fe1a2d17d757903c260354051e11f6abcc3399b",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "my_draw_text",
+        "contract_sha256": "25c34fcb64606c74367d5969d5b49027b86ce0a569ca67bc6ce89fdefbb3a39a",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occluder_being_drawn",
+        "contract_sha256": "e8a86d38808f36cdf50300387897ef1f16a371a597740be4533b1c625c14b34f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occluder_finish",
+        "contract_sha256": "5cc226b834d2731f6b367fbc3b63ec0c4b57a6692a70fdba655cd8764da806c4",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occluder_start",
+        "contract_sha256": "4dbc1da34805a03fcfeafead7ffe742df83424d47a9fc44645d571be30ef3c5f",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occlusion_per_frame_update",
+        "contract_sha256": "959246c118680009760763525503b36b710f349727c2eaa6ad4c1a08f5ffa1de",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occlusion_per_window_update",
+        "contract_sha256": "33bea91717cf0b84f4e109cbff05db295a8b66bcb83f73bf25e04512fef50cc6",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occlusions_current_frame",
+        "contract_sha256": "33ad394dbc4f98b41aa94bd167b4b1052c4d2701015197be50a34cf481ad4695",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "occlusions_next_frame",
+        "contract_sha256": "4d7bdf9adb0b35f69721de50d32285ec01f83303b9cbd6a3946c9129eb9769ac",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "pointers",
+        "contract_sha256": "75f643b3558c0c57974ea7a111d40850e71ec51dc95b66230a2021cdde91f80d",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "pointers",
+        "contract_sha256": "e3cd6272bf5ba55528e8c8807555e3bc77c6a6bf6e31292f410d1aab7a31b318",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "press_enter",
+        "contract_sha256": "3a2e10c9e91f16a971558ab4e33db254d65ef2047ad97d404946671847dc4f5a",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "press_escape",
+        "contract_sha256": "8b7a22122f6b6671b998d31226054754d4b8ba40e051d1e44fde6e3a41ef9378",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "press_tab",
+        "contract_sha256": "c0bcb25e77dcaab6c2ba3788e813aee987b788004675717f15664cf1ec49c3a1",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "push_scissor",
+        "contract_sha256": "d849fdef7cd18d73293725e003c3201c0a07558d1a87a1e67da144fa866a3d1d",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "reset",
+        "contract_sha256": "1f2150f7ae0cabb78597340eb181a9f0a80720818b4d7dfea1241b1f4fdbd74d",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "rounded_rectangle",
+        "contract_sha256": "dbc4476869209d2bd96cf982e7e63eed72e40727c7c35aeef56c73f5a8e28cd3",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "sanitize",
+        "contract_sha256": "fa773649955c216df80e1beeb8eb78793f22a4e422be053b3711738985e5aa05",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "select_all",
+        "contract_sha256": "87cd0eb7fe134b5bf09ba9ea56eaa5666e32d0aa9590f3188f84a299ec812017",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "selection_was_modified",
+        "contract_sha256": "469e431b9c9f92c9654215730e756127e92938a41401a4898ef86b5392243042",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "set_and_maybe_clamp",
+        "contract_sha256": "5c5819e738161fcb38a0f43b16c10a056c0aec872141459024acae57ab8ce9dc",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "set_initial_value",
+        "contract_sha256": "2358f894ecdf6b8535a6578fa96fca2c013921078a4901464384f509d126e7f4",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "set_input",
+        "contract_sha256": "ec225596c082f61be2ea98497d7c8b46ea5005b05fbcdb8db099e906e20cda6e",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "set_scissor",
+        "contract_sha256": "20f07effa02e9ffb93bc1c2a7a974938d6cd762cd42abc351ab9d18f2a9d4dd7",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "slider_parse_text_float_default",
+        "contract_sha256": "400c5e3c9d3c8dae5c51788e1c2abf17b7303601c1cc0b192f5a3568d60f602a",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "slider_parse_text_int_default",
+        "contract_sha256": "f9b406244e34d3869f685e62fe6491a01acac94c5de74065ca3da887df131e8b",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "start_selecting",
+        "contract_sha256": "76a9035415d2e73e7e9cc2cefcd553c2a34ba4894cd9d26814b6841c60a093e4",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "state_table",
+        "contract_sha256": "58980d66975d6df2d5c10a929a4391299413aadb7ccabc0c54b88851df0404f8",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "switch_to_bottom_rect",
+        "contract_sha256": "429a081a305a382599395a98710c5ee4a2504e50577443843b7b2a3781a9a531",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "switch_to_left_rect",
+        "contract_sha256": "71dc0db0c2f84738ac01069ba92532b52022836ededbdf90cf351d2d5e388b54",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "switch_to_right_rect",
+        "contract_sha256": "3b19e7076cbd66bccec6036d1e9d69b5c3f9743795c48852d23f87cccd1c8136",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "switch_to_top_rect",
+        "contract_sha256": "f1a612ec0d53d6a5d4e64eb9404a16811a2ae0fb2ed65a9f248d8f832fcd549d",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "text_input",
+        "contract_sha256": "aae3c40efdaef4b7fb53b4bfb9702a5c28a5ba798fb98ece2154f8e2fad8f98f",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "text_origin",
+        "contract_sha256": "a2a500fc4958f80d8b23be0009930e6e22d475b61f5e6af5b200b8314d0fb048",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "text_size",
+        "contract_sha256": "91c5a0a0970b803cc8f98c7544b82286b3fa0132ee604e1a9ac3ee37ef27fa98",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "to_vec3",
+        "contract_sha256": "759dd7d680c2828b6f84994e317abdfb4d5c9cd0fe5349b67fe0fef6d297bfcf",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "update_action_durations",
+        "contract_sha256": "83e3c86edaed3e7ef73519f1d60df2553728d4e1e49d86d491b806b1aee6a654",
+        "count": 1,
+        "name_present_with_different_contract": true
+      },
+      {
+        "name": "update_keyframe_color_due_to_open_color_picker",
+        "contract_sha256": "ca343cd91fb177c5f7a5d3943b7ea375c7c5e94510a6eeff320b569da8328dad",
+        "count": 1,
+        "name_present_with_different_contract": false
+      },
+      {
+        "name": "update_keyframes",
+        "contract_sha256": "87a71ab05d35378e2217b7deffda6dd191e278db972fe87577f2264ef1f3e65e",
+        "count": 1,
+        "name_present_with_different_contract": false
+      }
+    ],
+    "semantic_api_equivalence": "not-established",
+    "behavior_acceptance": "not-established"
+  },
+  "contract_comparison_method": "readonly lexical #load closure; public declaration/default/signature tokens; procedure bodies excluded; not semantic export/API equivalence",
+  "mathematical_data_inputs": [
+    {
+      "url": "https://bottosson.github.io/posts/oklab/",
+      "use": "published Oklab coefficient data; independently authored generic matrix application and inverse flow",
+      "implementation_source_reused": false
+    }
+  ],
+  "private_packet": {
+    "path": "/private/tmp/jai-ui-bulk-packet",
+    "shared_source_written": false,
+    "requires_coordinated_Input_merge": true,
+    "frozen_check_not_current_build": true
+  },
+  "root_trivia_normalization": {
+    "path": "stdlib/GetRect_LeftHanded/advanced-layouts.jai",
+    "before_sha256": "243393aabcdf3910877a63a086726268adff65e56b77f93bcc1913ae7ae3f8be",
+    "after_sha256": "0bb48c01037138e10f38540d8a713b40000151191bc495fae8934358cf925938",
+    "changed_lines": [
+      11,
+      17,
+      24,
+      25,
+      26,
+      27,
+      29,
+      41,
+      46,
+      47,
+      49,
+      59,
+      60,
+      61,
+      120,
+      122,
+      123,
+      124,
+      138,
+      141,
+      142,
+      144,
+      145,
+      146,
+      147,
+      148,
+      157,
+      158,
+      159,
+      160,
+      161
+    ],
+    "change": "Trailing spaces outside quoted text removed; original parser/lexer receipt hashes preserved",
+    "checks_rerun": false
   }
 }

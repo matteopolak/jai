@@ -34,3 +34,7 @@ else #if OS == . LINUX || OS == . ANDROID {
 else {
     #assert false "Unsupported OS" ;
 }
+
+#load "dispatch-native.jai";
+#load "dispatch-registry.jai";
+#if OS == .LINUX || OS == .ANDROID { #load "extension-enumeration.jai"; }
