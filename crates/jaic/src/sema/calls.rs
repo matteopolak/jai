@@ -707,11 +707,27 @@ impl Compiler {
                         // in a scope holding them.
                         let mut scope = def_scope;
                         if !bindings.is_empty() {
-                            let module = self.scope(def_scope).module;
-                            scope = self.new_scope(ScopeKind::Block, Some(def_scope), module, None);
-                            for (n, v, t) in &bindings {
-                                self.add_const(scope, *n, span, v.clone(), *t);
-                            }
+                            // One scope per set of bindings, so a lambda default
+                            // (`$compare := (a, b) => a == b`) is the same procedure on every
+                            // call and the instance is found again.
+                            let key = (def_scope, bindings.iter().map(|b| b.1.clone()).collect());
+                            scope = match self.default_scopes.get(&key) {
+                                Some(&s) => s,
+                                None => {
+                                    let module = self.scope(def_scope).module;
+                                    let s = self.new_scope(
+                                        ScopeKind::Block,
+                                        Some(def_scope),
+                                        module,
+                                        None,
+                                    );
+                                    for (n, v, t) in &bindings {
+                                        self.add_const(s, *n, span, v.clone(), *t);
+                                    }
+                                    self.default_scopes.insert(key, s);
+                                    s
+                                }
+                            };
                         }
                         let declared = match &param.ty {
                             Some(t) if !procs::has_poly(t) => Some(self.eval_type(scope, t)?),
