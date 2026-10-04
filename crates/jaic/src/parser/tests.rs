@@ -93,7 +93,7 @@ fn header_with_body_is_a_procedure() {
     assert!(h.params[2].baked);
     assert!(h.params[3].using);
     assert!(h.params[4].variadic);
-    assert!(h.params[5].baked);
+    assert!(!h.params[5].baked); // `$$k` is passed at runtime.
     assert_eq!(h.returns.len(), 2);
     assert!(h.returns[1].must);
     assert!(lit.body.is_some());
