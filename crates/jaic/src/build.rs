@@ -624,7 +624,7 @@ fn output_path(settings: &BuildSettings, compiler: &Compiler) -> PathBuf {
 /// Compile every workspace created but never driven by a message loop
 /// (Jai compiles them after the metaprogram's `#run` returns).
 pub fn finish_all(shared: &SharedWorkspaces) -> Result<(), String> {
-    let mut id = 2;
+    let mut id = TOP_LEVEL_WORKSPACE + 1;
     while id < shared.borrow().list.len() as i64 {
         while shared.borrow().list[id as usize].stage != Stage::Done {
             step(shared, id)?;

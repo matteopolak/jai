@@ -257,6 +257,7 @@ pub struct Interp {
     #[cfg(not(target_arch = "wasm32"))]
     sched: Option<Box<threads::Sched>>,
     /// More than one thread exists: `run` offers the baton to the others now and then.
+    #[cfg(not(target_arch = "wasm32"))]
     multi: bool,
 }
 
@@ -288,6 +289,7 @@ impl Interp {
             trace_infos: HashMap::new(),
             #[cfg(not(target_arch = "wasm32"))]
             sched: None,
+            #[cfg(not(target_arch = "wasm32"))]
             multi: false,
         }
     }
