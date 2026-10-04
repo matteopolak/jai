@@ -754,6 +754,11 @@ impl Compiler {
             });
             return Ok(());
         }
+        if p < 0x10000 || p.wrapping_neg() < 0x10000 {
+            // Integers cast to pointers (handle-like constants such as `cast(*void) 32512`) have no memory to freeze.
+            agg.bytes[offset as usize..offset as usize + 8].copy_from_slice(&p.to_le_bytes());
+            return Ok(());
+        }
         if bytes == 0 && count > 0 {
             return err(
                 span,
