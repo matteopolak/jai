@@ -195,7 +195,7 @@ block_data :: (block: *Memblock) -> *u8 {
     return cast(*u8)block + HEADER_SIZE;
 }
 
-alignment_padding :: (address: *u8, alignment: s64) -> s64 {
+alignment_padding :: (address: *u8, alignment: s64) -> s64 #no_aoc {
     mask := cast(u64)(alignment - 1);
     return cast(s64)((cast(u64)0 - cast(u64)address) & mask);
 }

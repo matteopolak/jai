@@ -25,6 +25,8 @@ Expected result of `corpus stdlib modules upstream`: everything passes except `g
 - New negative program (must be rejected): drop it in `tests/corpus/negative/`, add a `kind: negative` entry with `sha256` and a `negative.check` string that appears in the diagnostic to `tests/corpus/manifest.json`.
 - New regression program: drop a self-checking `tests/stdlib/<name>.jai` (return non-zero / `assert` on failure).
 - An upstream entry point started working: add it to `tools/upstream-cases.json` so it stays working.
+- `build` cases (`focus-native-build`, `jails-native-build`, `jaison-native-build`) produce native executables and
+  need LLVM plus the third-party libraries from `python3 tools/build_native_libs.py` (see [native libs](native-libs.md)).
 
 ## Configuration
 

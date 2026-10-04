@@ -341,5 +341,8 @@
   {"id": "ttwj-exercises-26-struct-work", "path": "Ivo-Balbaert--The_Way_to_Jai/exercises/26/struct_work.jai", "mode": "run"},
   {"id": "ttwj-exercises-28-asm1", "path": "Ivo-Balbaert--The_Way_to_Jai/exercises/28/asm1.jai", "mode": "run"},
   {"id": "ttwj-33-33.1-glfw-window", "path": "Ivo-Balbaert--The_Way_to_Jai/examples/33/33.1_glfw_window.jai", "mode": "check", "args": ["-I", "../../my_modules"]},
-  {"id": "ttwj-exercises-08-doubly-linked-list", "path": "Ivo-Balbaert--The_Way_to_Jai/exercises/08/doubly_linked_list.jai", "mode": "check", "args": ["-I", "../../my_modules"]}
+  {"id": "ttwj-exercises-08-doubly-linked-list", "path": "Ivo-Balbaert--The_Way_to_Jai/exercises/08/doubly_linked_list.jai", "mode": "check", "args": ["-I", "../../my_modules"]},
+  {"id": "focus-native-build", "path": "focus-editor--focus/first.jai", "mode": "build"},
+  {"id": "jails-native-build", "path": "SogoCZE--Jails/build.jai", "mode": "build"},
+  {"id": "jaison-native-build", "path": "rluba--jaison/tests.jai", "mode": "build"}
 ]
