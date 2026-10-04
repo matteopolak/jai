@@ -164,6 +164,8 @@ fn convert(
                     .transpose()?;
                 FileItem::CompileTimeCases {
                     cases: syntax::CompileTimeCases {
+                        default_position: cases.default_position,
+                        default_through: cases.default_through,
                         value: cases.value.clone(),
                         operator: cases.operator,
                         arms,

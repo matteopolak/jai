@@ -8,6 +8,8 @@ The pinned Jaison source supplies the motivating forms: `.{type=.NUMBER, number=
 
 ## How it works
 
+Record namespace promotions and physical field qualifiers have distinct parser owners. A `using #as info:Type_Info;` declaration retains both promotion and conversion on the real field. Selected promotions may precede `#as`, and overlays remain physical placement attributes. The namespace promotion parser yields back before these qualifiers so source-bootstrap descriptor fields keep their original owner and span.
+
 Resolve all literal names to canonical `FieldId` paths before lowering initializer expressions. Validate each parent and leaf type, duplicate or ancestor paths, and competing union alternatives. Union selection is keyed by the entire physical prefix: two fields containing the same union type may choose different alternatives.
 
 Evaluate explicit initializer expressions once in their written order. Immutable expression bindings then let construction group leaves into the existing checked `RecordBuild` and `Union` expressions. Capture omission is safe only for already evaluated typed constants; a general static arithmetic expression can still trap and must keep its evaluation position. For example, `.{x=tick(1), middle=tick(2), y=tick(3)}` must call `tick` in the order `1,2,3`, even when `x` and `y` occupy the same anonymous child. A capture stays inside its source conditional arm, preserving lazy evaluation.

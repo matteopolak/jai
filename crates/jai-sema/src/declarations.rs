@@ -196,7 +196,9 @@ impl<'a> Constants<'a> {
                                 if let Some(otherwise) = &e.else_value {
                                     expressions.push(otherwise);
                                 }
-                                expressions.push(&e.then_value);
+                                if let Some(value) = e.explicit_then() {
+                                    expressions.push(value);
+                                }
                                 expressions.push(&e.condition);
                             }
                             syntax::ExpressionKind::Integer(_)

@@ -16,6 +16,8 @@ Target conditionals use the caller's explicit `BuildTarget` and the source-owned
 
 Change `Runtime_Support.jai` for runtime behavior and keep its compiler declarations matched to the source intrinsic signature checks. Extend `BuildSettings`, `BuildOption`, the `Build_Options` projection, compiler snapshots, and runtime bootstrap arguments together when adding another build-controlled runtime parameter. Preserve the public fields already declared in `stdlib/Compiler/module.jai`; keep newly supported fields optional so existing source callers remain valid.
 
+Custom and test runtime sources must declare the complete bootstrap parameter list in the same order: `DEFINE_SYSTEM_ENTRY_POINT: bool`, `DEFINE_INITIALIZATION: bool`, `ENABLE_BACKTRACE_ON_CRASH: bool`, and `TEMPORARY_STORAGE_SIZE: s32 = 32768`. A fixture that intentionally omits `Context_Base` still needs that valid module header so the failure reaches the actual required context diagnostic.
+
 When changing target condition behavior, update the source enums in `prelude/platform.jai` and the `OperatingSystem::source_tag` mapping together. Conditions must use a caller-supplied target and source-defined enum values.
 
 ## Configuration

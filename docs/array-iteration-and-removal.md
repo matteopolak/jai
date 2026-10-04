@@ -2,7 +2,7 @@
 
 ## What it is
 
-Array loops traverse strings, fixed arrays, slices, and dynamic arrays with optional index bindings, reverse order, and pointer bindings. `remove value;` filters a mutable slice or dynamic array with an unordered removal.
+Array loops traverse strings, fixed arrays, slices, and dynamic arrays with optional index bindings, reverse order, and pointer bindings. `remove;` or `remove value;` filters a mutable slice or dynamic array with an unordered removal.
 
 ## How it works
 
@@ -22,6 +22,8 @@ main :: () -> int {
     return values.count; // 2; backing starts with 7, 5
 }
 ```
+
+An unnamed `remove;` targets the actual innermost lexical loop. It does not skip a nested range or while loop to find an outer array; those targets reject. Named removal retains its existing explicit iterator lookup. `for #v2` selects the same captured descriptor, direction, and cleanup-latch behavior as current array iteration.
 
 Removal copies the last remaining element into the current slot and decreases both the captured descriptor count and the source descriptor count. Its statement falls through. The forward loop latch reuses the slot after removal; reverse traversal decrements the index because the moved tail was already visited. The same forward/reverse distinction appears in the pinned Focus custom `Array` expansion at `corpus/upstream/focus-editor--focus/src/utils/array.jai`; builtin original-compiler parity has not been checked by execution.
 
