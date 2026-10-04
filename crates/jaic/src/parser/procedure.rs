@@ -1,7 +1,10 @@
 //! Procedure headers, parameters, return lists, flags and lambdas.
 use super::expr::mk;
 use super::{PResult, Parser};
-use crate::ast::{AstId, CallHintFlag, Expr, ExprKind, Foreign, Param, ProcFlags, ProcHeader, ProcLit, Return};
+use crate::ast::{
+    AstId, CallHintFlag, Expr, ExprKind, Foreign, Param, ProcFlags, ProcHeader, ProcLit, Return,
+    UsingFilter,
+};
 use crate::lexer::{P, Tok};
 use std::rc::Rc;
 
@@ -35,7 +38,10 @@ fn new_header(start: crate::source::Span, inline: CallHintFlag) -> ProcHeader {
         id: AstId::fresh(),
         params: Vec::new(),
         returns: Vec::new(),
-        flags: ProcFlags { inline, ..ProcFlags::default() },
+        flags: ProcFlags {
+            inline,
+            ..ProcFlags::default()
+        },
         foreign: None,
         modify: None,
         notes: Vec::new(),
@@ -49,7 +55,9 @@ impl Parser<'_> {
 
     /// At `(` (offset `n`): does it start a procedure header rather than a parenthesized expression?
     pub(super) fn paren_starts_header(&self, n: usize) -> bool {
-        let Some(close) = self.matching_paren(n) else { return false };
+        let Some(close) = self.matching_paren(n) else {
+            return false;
+        };
         let after = &self.toks[(close + 1).min(self.toks.len() - 1)].tok;
         match after {
             Tok::Punct(P::Arrow | P::FatArrow) => return true,
@@ -61,12 +69,13 @@ impl Parser<'_> {
 
     /// Index of the `)` matching the `(` at offset `n`.
     pub(super) fn matching_paren(&self, n: usize) -> Option<usize> {
+        let start = self.pos + n;
         let mut depth = 0usize;
-        for i in self.pos + n..self.toks.len() {
-            match &self.toks[i].tok {
+        for (i, token) in self.toks.iter().enumerate().skip(start) {
+            match &token.tok {
                 Tok::Punct(P::LParen) => depth += 1,
                 Tok::Punct(P::RParen) => {
-                    depth -= 1;
+                    depth = depth.saturating_sub(1);
                     if depth == 0 {
                         return Some(i);
                     }
@@ -86,17 +95,31 @@ impl Parser<'_> {
         match tok(from) {
             Tok::Punct(P::Dollar | P::DollarDollar | P::DotDot) => true,
             Tok::Directive(d) if d.as_str() == "discard" => true,
-            Tok::Ident(name) if name.as_str() == "using" && matches!(tok(from + 1), Tok::Ident(_)) => true,
-            Tok::Ident(_) if matches!(tok(from + 1), Tok::Punct(P::Colon | P::ColonEq | P::ColonColon | P::Comma)) => true,
+            Tok::Ident(name)
+                if name.as_str() == "using" && matches!(tok(from + 1), Tok::Ident(_)) =>
+            {
+                true
+            }
+            Tok::Ident(_)
+                if matches!(
+                    tok(from + 1),
+                    Tok::Punct(P::Colon | P::ColonEq | P::ColonColon | P::Comma)
+                ) =>
+            {
+                true
+            }
+            Tok::Directive(_) => false,
             _ => self.has_top_level_comma(from, close),
         }
     }
 
     fn has_top_level_comma(&self, from: usize, close: usize) -> bool {
         let mut depth = 0usize;
-        for i in from..close {
-            match &self.toks[i].tok {
-                Tok::Punct(P::LParen | P::LBracket | P::LBrace | P::DotBrace | P::DotBracket) => depth += 1,
+        for token in &self.toks[from..close] {
+            match &token.tok {
+                Tok::Punct(P::LParen | P::LBracket | P::LBrace | P::DotBrace | P::DotBracket) => {
+                    depth += 1
+                }
                 Tok::Punct(P::RParen | P::RBracket | P::RBrace) => depth = depth.saturating_sub(1),
                 Tok::Punct(P::Comma) if depth == 0 => return true,
                 _ => {}
@@ -131,11 +154,23 @@ impl Parser<'_> {
         if self.at(P::LBrace) {
             let body = self.parse_block()?;
             let span = start.to(body.span);
-            return Ok(mk(ExprKind::Proc(Rc::new(ProcLit { header, body: Some(body) })), span));
+            return Ok(mk(
+                ExprKind::Proc(Rc::new(ProcLit {
+                    header,
+                    body: Some(body),
+                })),
+                span,
+            ));
         }
         let span = header.span;
         if has_external_body {
-            return Ok(mk(ExprKind::Proc(Rc::new(ProcLit { header, body: None })), span));
+            return Ok(mk(
+                ExprKind::Proc(Rc::new(ProcLit {
+                    header,
+                    body: None,
+                })),
+                span,
+            ));
         }
         Ok(mk(ExprKind::ProcType(header), span))
     }
@@ -149,6 +184,7 @@ impl Parser<'_> {
             name: Some(name),
             baked: false,
             using: false,
+            using_filter: None,
             discard: false,
             variadic: false,
             ty: None,
@@ -160,7 +196,11 @@ impl Parser<'_> {
     }
 
     /// At `=>` after the parameters of a lambda.
-    fn finish_lambda(&mut self, mut header: ProcHeader, start: crate::source::Span) -> PResult<Expr> {
+    fn finish_lambda(
+        &mut self,
+        mut header: ProcHeader,
+        start: crate::source::Span,
+    ) -> PResult<Expr> {
         self.expect(P::FatArrow, "in lambda")?;
         let body = if self.at(P::LBrace) {
             let block = self.parse_block()?;
@@ -171,7 +211,13 @@ impl Parser<'_> {
         };
         let span = start.to(body.span);
         header.span = span;
-        Ok(mk(ExprKind::Lambda { header: Rc::new(header), body: Box::new(body) }, span))
+        Ok(mk(
+            ExprKind::Lambda {
+                header: Rc::new(header),
+                body: Box::new(body),
+            },
+            span,
+        ))
     }
 
     // -- parameters ---------------------------------------------------------
@@ -194,22 +240,36 @@ impl Parser<'_> {
     /// `a, b: T = v`, `$T: Type`, `using x: *X`, `args: ..Any` or a bare type (procedure types).
     fn parse_param_group(&mut self, out: &mut Vec<Param>) -> PResult<()> {
         let start = self.span();
-        let (mut using, mut discard) = (false, false);
+        let (mut using, mut discard, mut using_filter) = (false, false, None);
         loop {
-            if self.at_kw("using") && !matches!(self.tok_at(1), Tok::Punct(P::Colon | P::ColonEq | P::Comma)) {
+            if self.at_kw("using") && self.using_modifier_follows() {
+                self.bump();
                 using = true;
+                using_filter = Some(self.parse_using_filter()?)
+                    .filter(|filter| !matches!(filter, UsingFilter::None));
             } else if self.at_directive("discard") {
+                self.bump();
                 discard = true;
             } else {
                 break;
             }
-            self.bump();
         }
         if !self.named_param_ahead() {
             let variadic = self.eat(P::DotDot);
             let ty = self.parse_expr()?;
             let span = start.to(ty.span);
-            out.push(Param { name: None, baked: false, using, discard, variadic, ty: Some(ty), default: None, notes: Vec::new(), span });
+            out.push(Param {
+                name: None,
+                baked: false,
+                using,
+                using_filter,
+                discard,
+                variadic,
+                ty: Some(ty),
+                default: None,
+                notes: Vec::new(),
+                span,
+            });
             return Ok(());
         }
         let mut names = Vec::new();
@@ -229,7 +289,10 @@ impl Parser<'_> {
         } else {
             self.expect(P::Colon, "after the parameter name")?;
             variadic = self.eat(P::DotDot);
-            if !matches!(self.tok(), Tok::Punct(P::Eq | P::Comma | P::Semi | P::RParen)) {
+            if !matches!(
+                self.tok(),
+                Tok::Punct(P::Eq | P::Comma | P::Semi | P::RParen)
+            ) {
                 ty = Some(self.parse_expr()?);
             }
             if self.eat(P::Eq) {
@@ -240,9 +303,29 @@ impl Parser<'_> {
         let end = self.prev_span();
         for (name, baked) in names {
             let (ty, default, notes) = (ty.clone(), default.clone(), notes.clone());
-            out.push(Param { name: Some(name), baked, using, discard, variadic, ty, default, notes, span: start.to(end) });
+            out.push(Param {
+                name: Some(name),
+                baked,
+                using,
+                using_filter: using_filter.clone(),
+                discard,
+                variadic,
+                ty,
+                default,
+                notes,
+                span: start.to(end),
+            });
         }
         Ok(())
+    }
+
+    /// At `using` that modifies a parameter, as opposed to a parameter named `using`.
+    fn using_modifier_follows(&self) -> bool {
+        match self.tok_at(1) {
+            Tok::Punct(P::Colon | P::ColonEq) => false,
+            Tok::Punct(P::Comma) => matches!(self.kw_at(2), Some("only" | "except" | "map")),
+            _ => true,
+        }
     }
 
     /// At `[$]name {, [$]name} :` or `:=`.
@@ -290,13 +373,20 @@ impl Parser<'_> {
 
     /// A parenthesized return list, unless the parentheses are a procedure type's parameters.
     fn return_list_in_parens(&self) -> bool {
-        let Some(close) = self.matching_paren(0) else { return false };
-        !matches!(self.toks[(close + 1).min(self.toks.len() - 1)].tok, Tok::Punct(P::Arrow))
+        let Some(close) = self.matching_paren(0) else {
+            return false;
+        };
+        !matches!(
+            self.toks[(close + 1).min(self.toks.len() - 1)].tok,
+            Tok::Punct(P::Arrow)
+        )
     }
 
     fn parse_return_value(&mut self) -> PResult<Return> {
         let start = self.span();
-        let name = if matches!(self.tok(), Tok::Ident(_)) && matches!(self.tok_at(1), Tok::Punct(P::Colon | P::ColonEq)) {
+        let name = if matches!(self.tok(), Tok::Ident(_))
+            && matches!(self.tok_at(1), Tok::Punct(P::Colon | P::ColonEq))
+        {
             Some(self.ident("as return name")?)
         } else {
             None
@@ -308,13 +398,26 @@ impl Parser<'_> {
                 self.bump();
             }
             let ty = self.parse_expr()?;
-            (Some(ty), if self.eat(P::Eq) { Some(self.parse_expr()?) } else { None })
+            (
+                Some(ty),
+                if self.eat(P::Eq) {
+                    Some(self.parse_expr()?)
+                } else {
+                    None
+                },
+            )
         };
         let must = self.at_directive("must");
         if must {
             self.bump();
         }
-        Ok(Return { name, ty, default, must, span: start.to(self.prev_span()) })
+        Ok(Return {
+            name,
+            ty,
+            default,
+            must,
+            span: start.to(self.prev_span()),
+        })
     }
 
     /// `#modify { ... }` or the expression form `#modify check(T)`.
@@ -325,7 +428,10 @@ impl Parser<'_> {
         let expr = self.parse_expr()?;
         let span = expr.span;
         let statement = super::stmt::stmt(crate::ast::StmtKind::Expr(expr), span);
-        Ok(crate::ast::Block { stmts: vec![statement], span })
+        Ok(crate::ast::Block {
+            stmts: vec![statement],
+            span,
+        })
     }
 
     // -- flags --------------------------------------------------------------
@@ -359,8 +465,20 @@ impl Parser<'_> {
             "c_call" => flags.c_call = true,
             "no_context" => flags.no_context = true,
             "expand" => flags.expand = true,
-            "compiler" => flags.compiler = true,
-            "intrinsic" => flags.intrinsic = true,
+            "intrinsic" | "compiler" => {
+                self.bump();
+                if name == "intrinsic" {
+                    header.flags.intrinsic = true;
+                } else {
+                    header.flags.compiler = true;
+                }
+                if let Tok::Str(s) = self.tok() {
+                    header.flags.builtin_name =
+                        Some(String::from_utf8_lossy(s).into_owned().into());
+                    self.bump();
+                }
+                return Ok(true);
+            }
             "symmetric" => flags.symmetric = true,
             "cpp_method" => flags.cpp_method = true,
             "cpp_return_type_is_non_pod" => flags.cpp_return_type_is_non_pod = true,
@@ -396,9 +514,16 @@ impl Parser<'_> {
             }
             "foreign" => {
                 self.bump();
-                let library = if matches!(self.tok(), Tok::Ident(_)) { Some(self.ident("after '#foreign'")?) } else { None };
+                let library = if matches!(self.tok(), Tok::Ident(_)) {
+                    Some(self.ident("after '#foreign'")?)
+                } else {
+                    None
+                };
                 let name = self.parse_foreign_symbol();
-                header.foreign = Some(Foreign { library, name });
+                header.foreign = Some(Foreign {
+                    library,
+                    name,
+                });
                 return Ok(true);
             }
             "modify" => {
@@ -407,7 +532,10 @@ impl Parser<'_> {
                 return Ok(true);
             }
             other if OTHER_FLAGS.contains(&other) => {
-                let ident = crate::ast::Ident { name: crate::intern::Sym::intern(other), span };
+                let ident = crate::ast::Ident {
+                    name: crate::intern::Sym::intern(other),
+                    span,
+                };
                 header.flags.other.push(ident);
                 self.bump();
                 // `#dump` is followed by the body; nothing to consume here.

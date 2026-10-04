@@ -11,10 +11,12 @@
 //! - `procedure` procedure headers, parameters, return lists, lambdas
 //! - `aggregate` struct/union/enum literals
 //! - `stmt`      statements and control flow
-//! - `decl`      declarations and declaration-like directives (`#import`, ...)
+//! - `decl`      declarations (names, types, values, `using` / `#as` modifiers, flags)
+//! - `directive_stmt` statement-level directives (`#import`, `#load`, `#if`, `#run`, ...)
 mod aggregate;
 mod decl;
 mod directive;
+mod directive_stmt;
 mod expr;
 mod procedure;
 mod stmt;
@@ -32,7 +34,10 @@ pub fn parse_file(file: FileId, text: &str) -> Result<File, Diagnostic> {
     let tokens = lex(file, text)?;
     let mut parser = Parser::new(text, tokens);
     let stmts = parser.parse_file_stmts()?;
-    Ok(File { file, stmts })
+    Ok(File {
+        file,
+        stmts,
+    })
 }
 
 pub(crate) struct Parser<'a> {
@@ -54,7 +59,15 @@ pub(crate) struct Parser<'a> {
 impl<'a> Parser<'a> {
     pub(crate) fn new(src: &'a str, toks: Vec<Token>) -> Self {
         debug_assert!(matches!(toks.last().map(|t| &t.tok), Some(Tok::Eof)));
-        Self { src, toks, pos: 0, in_list: false, pending_operator: None, block_end: usize::MAX, pending_notes: Vec::new() }
+        Self {
+            src,
+            toks,
+            pos: 0,
+            in_list: false,
+            pending_operator: None,
+            block_end: usize::MAX,
+            pending_notes: Vec::new(),
+        }
     }
 
     fn parse_file_stmts(&mut self) -> PResult<Vec<Stmt>> {
@@ -87,8 +100,11 @@ impl<'a> Parser<'a> {
     }
     /// True if the previous token is a `#string` here-string, which ends a statement by itself.
     fn prev_is_here_string(&self) -> bool {
-        let Some(prev) = self.pos.checked_sub(1).map(|i| &self.toks[i]) else { return false };
-        matches!(prev.tok, Tok::Str(_)) && self.src.as_bytes().get(prev.span.start as usize) == Some(&b'#')
+        let Some(prev) = self.pos.checked_sub(1).map(|i| &self.toks[i]) else {
+            return false;
+        };
+        matches!(prev.tok, Tok::Str(_))
+            && self.src.as_bytes().get(prev.span.start as usize) == Some(&b'#')
     }
     fn at_eof(&self) -> bool {
         matches!(self.tok(), Tok::Eof)
@@ -162,7 +178,10 @@ impl<'a> Parser<'a> {
             Tok::Ident(name) => {
                 let name = *name;
                 let span = self.bump();
-                Ok(Ident { name, span })
+                Ok(Ident {
+                    name,
+                    span,
+                })
             }
             _ => Err(self.expected("identifier", context)),
         }
@@ -186,7 +205,10 @@ impl<'a> Parser<'a> {
         while let Tok::Note(text) = self.tok() {
             let text = text.clone();
             let span = self.bump();
-            notes.push(Note { text, span });
+            notes.push(Note {
+                text,
+                span,
+            });
         }
         // `} @Note` still ends the statement with its block.
         if after_block && !notes.is_empty() {
@@ -202,8 +224,15 @@ impl<'a> Parser<'a> {
     }
     /// "expected X <context>, found Y" at the current token.
     fn expected(&self, what: &str, context: &str) -> Diagnostic {
-        let context = if context.is_empty() { String::new() } else { format!(" {context}") };
-        self.error(format!("expected {what}{context}, found {}", describe(self.tok())))
+        let context = if context.is_empty() {
+            String::new()
+        } else {
+            format!(" {context}")
+        };
+        self.error(format!(
+            "expected {what}{context}, found {}",
+            describe(self.tok())
+        ))
     }
 }
 

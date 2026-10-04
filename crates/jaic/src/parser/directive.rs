@@ -52,28 +52,81 @@ impl Parser<'_> {
     /// Flags written directly after a directive, with no space before the comma.
     pub(super) fn parse_directive_flags(&mut self) -> PResult<Vec<DirectiveFlag>> {
         let mut flags = Vec::new();
-        while self.at(P::Comma) && self.span().start == self.prev_span().end && matches!(self.tok_at(1), Tok::Ident(_)) {
+        // `#run,stallable`: no space on either side of the comma (`#code,null, loc := ...` has an argument).
+        while self.at(P::Comma)
+            && self.span().start == self.prev_span().end
+            && matches!(self.tok_at(1), Tok::Ident(_))
+            && (self.token_at(1).span.start == self.span().end || self.at_known_flag())
+        {
             self.bump();
             let name = self.ident("as a directive flag")?;
             let arg = if self.at(P::LParen) && self.span().start == self.prev_span().end {
                 self.bump();
-                let arg = if self.at(P::RParen) { None } else { Some(self.parse_expr()?) };
+                let arg = if self.at(P::RParen) {
+                    None
+                } else {
+                    Some(self.parse_expr()?)
+                };
                 self.expect(P::RParen, "after the directive flag argument")?;
                 arg
             } else {
                 None
             };
-            flags.push(DirectiveFlag { name, arg });
+            flags.push(DirectiveFlag {
+                name,
+                arg,
+            });
         }
         Ok(flags)
     }
 
+    /// The identifier after the comma is a flag name that may be spaced out (`#type, distinct u64`).
+    fn at_known_flag(&self) -> bool {
+        matches!(
+            self.kw_at(1),
+            Some("distinct" | "isa" | "file" | "dir" | "string" | "stallable" | "scope")
+        )
+    }
+
     fn parse_run(&mut self) -> PResult<Expr> {
+        self.parse_run_with(false)
+    }
+
+    /// `#run`; at statement level (`allow_stmt`) the operand may also be an assignment or declaration.
+    pub(super) fn parse_run_with(&mut self, allow_stmt: bool) -> PResult<Expr> {
         let start = self.bump();
-        let flags = self.parse_directive_flags()?.into_iter().map(|f| f.name).collect();
-        let body = if self.at(P::LBrace) { RunBody::Block(self.parse_block()?) } else { RunBody::Expr(self.parse_expr()?) };
+        let flags = self
+            .parse_directive_flags()?
+            .into_iter()
+            .map(|f| f.name)
+            .collect();
+        let body = if self.at(P::LBrace) {
+            RunBody::Block(self.parse_block()?)
+        } else if allow_stmt {
+            match self.parse_simple_stmt()? {
+                crate::ast::Stmt {
+                    kind: StmtKind::Expr(expr),
+                    ..
+                } => RunBody::Expr(expr),
+                other => {
+                    let span = other.span;
+                    RunBody::Block(Block {
+                        stmts: vec![other],
+                        span,
+                    })
+                }
+            }
+        } else {
+            RunBody::Expr(self.parse_expr()?)
+        };
         let end = self.prev_span();
-        Ok(mk(ExprKind::Run { body: Rc::new(body), flags }, start.to(end)))
+        Ok(mk(
+            ExprKind::Run {
+                body: Rc::new(body),
+                flags,
+            },
+            start.to(end),
+        ))
     }
 
     fn parse_code(&mut self) -> PResult<Expr> {
@@ -87,7 +140,10 @@ impl Parser<'_> {
         } else if self.at_directive("add_context") {
             let statement = self.parse_add_context_core()?;
             let span = statement.span;
-            CodeBody::Block(Block { stmts: vec![statement], span })
+            CodeBody::Block(Block {
+                stmts: vec![statement],
+                span,
+            })
         } else {
             // `#code a := 1` and `#code x = x + 1` are statements without a terminator.
             let stmt = self.parse_simple_stmt()?;
@@ -95,7 +151,10 @@ impl Parser<'_> {
                 StmtKind::Expr(expr) => CodeBody::Expr(expr),
                 _ => {
                     let span = stmt.span;
-                    CodeBody::Block(Block { stmts: vec![stmt], span })
+                    CodeBody::Block(Block {
+                        stmts: vec![stmt],
+                        span,
+                    })
                 }
             }
         };
@@ -109,7 +168,12 @@ impl Parser<'_> {
         let replacements = self.parse_insert_replacements()?;
         let value = self.parse_expr()?;
         let span = start.to(value.span);
-        let kind = ExprKind::Insert { value: Box::new(value), flags, scope: scope.map(Box::new), replacements };
+        let kind = ExprKind::Insert {
+            value: Box::new(value),
+            flags,
+            scope: scope.map(Box::new),
+            replacements,
+        };
         Ok(mk(kind, span))
     }
 
@@ -124,7 +188,13 @@ impl Parser<'_> {
             let name = self.ident("as replacement name")?;
             self.expect(P::Eq, "after the replacement name")?;
             let value = self.parse_replacement_value()?;
-            replacements.push(crate::ast::Arg { name: Some(name), target: None, context: false, spread: false, value });
+            replacements.push(crate::ast::Arg {
+                name: Some(name),
+                target: None,
+                context: false,
+                spread: false,
+                value,
+            });
             if !self.eat(P::Comma) {
                 break;
             }
@@ -140,18 +210,36 @@ impl Parser<'_> {
             Some("continue") => Some(StmtKind::Continue as fn(Option<Ident>) -> StmtKind),
             _ => None,
         };
-        let Some(make) = jump else { return self.parse_expr() };
+        let Some(make) = jump else {
+            return self.parse_expr();
+        };
         let start = self.bump();
-        let label = if matches!(self.tok(), Tok::Ident(_)) { Some(self.ident("as label")?) } else { None };
+        let label = if matches!(self.tok(), Tok::Ident(_)) {
+            Some(self.ident("as label")?)
+        } else {
+            None
+        };
         let span = start.to(self.prev_span());
-        Ok(mk(ExprKind::Block(Block { stmts: vec![super::stmt::stmt(make(label), span)], span }), span))
+        Ok(mk(
+            ExprKind::Block(Block {
+                stmts: vec![super::stmt::stmt(make(label), span)],
+                span,
+            }),
+            span,
+        ))
     }
 
     /// `#assert cond "message"` in expression position becomes a block holding the assert statement.
     fn parse_assert_expr(&mut self) -> PResult<Expr> {
         let assert = self.parse_assert_core()?;
         let span = assert.span;
-        Ok(mk(ExprKind::Block(Block { stmts: vec![assert], span }), span))
+        Ok(mk(
+            ExprKind::Block(Block {
+                stmts: vec![assert],
+                span,
+            }),
+            span,
+        ))
     }
 
     /// Separates plain flags from the `scope(expr)` argument.
@@ -179,7 +267,13 @@ impl Parser<'_> {
         }
         let ty = self.parse_unary()?;
         let span = start.to(ty.span);
-        Ok(mk(ExprKind::TypeDirective { modifier, ty: Box::new(ty) }, span))
+        Ok(mk(
+            ExprKind::TypeDirective {
+                modifier,
+                ty: Box::new(ty),
+            },
+            span,
+        ))
     }
 
     fn parse_char(&mut self) -> PResult<Expr> {
@@ -193,7 +287,11 @@ impl Parser<'_> {
     }
 
     /// `#directive` or `#directive(expr)`.
-    fn parse_optional_operand(&mut self, start: crate::source::Span, ctor: fn(Option<Box<Expr>>) -> ExprKind) -> PResult<Expr> {
+    fn parse_optional_operand(
+        &mut self,
+        start: crate::source::Span,
+        ctor: fn(Option<Box<Expr>>) -> ExprKind,
+    ) -> PResult<Expr> {
         self.bump();
         let mut end = start;
         let mut operand = None;
@@ -208,7 +306,11 @@ impl Parser<'_> {
     }
 
     /// `#directive operand` where the operand is a unary expression.
-    fn parse_operand(&mut self, start: crate::source::Span, ctor: fn(Box<Expr>) -> ExprKind) -> PResult<Expr> {
+    fn parse_operand(
+        &mut self,
+        start: crate::source::Span,
+        ctor: fn(Box<Expr>) -> ExprKind,
+    ) -> PResult<Expr> {
         self.bump();
         let operand = self.parse_unary()?;
         let span = start.to(operand.span);
@@ -229,8 +331,22 @@ impl Parser<'_> {
         let operand = self.parse_unary()?;
         let span = start.to(operand.span);
         match operand.kind {
-            ExprKind::Call { callee, args, .. } => Ok(mk(ExprKind::Bake { callee, args, constants }, span)),
-            _ => Err(crate::source::Diagnostic::error(operand.span, "expected a call after the bake directive")),
+            ExprKind::Call {
+                callee,
+                args,
+                ..
+            } => Ok(mk(
+                ExprKind::Bake {
+                    callee,
+                    args,
+                    constants,
+                },
+                span,
+            )),
+            _ => Err(crate::source::Diagnostic::error(
+                operand.span,
+                "expected a call after the bake directive",
+            )),
         }
     }
 
@@ -271,14 +387,29 @@ impl Parser<'_> {
     /// (`#library "x"`, `#system_library "x"`, `#foreign_library "x"`).
     fn parse_unknown_directive(&mut self) -> PResult<Expr> {
         let start = self.span();
-        let Tok::Directive(sym) = self.tok().clone() else { return Err(self.expected("directive", "")) };
+        let Tok::Directive(sym) = self.tok().clone() else {
+            return Err(self.expected("directive", ""));
+        };
         self.bump();
-        let name = Ident { name: sym, span: start };
+        let name = Ident {
+            name: sym,
+            span: start,
+        };
         if self.flags_before_string_ahead() {
             self.parse_directive_flags()?;
         }
-        let operand = if matches!(self.tok(), Tok::Str(_)) { Some(Box::new(self.parse_primary()?)) } else { None };
+        let operand = if matches!(self.tok(), Tok::Str(_)) {
+            Some(Box::new(self.parse_primary()?))
+        } else {
+            None
+        };
         let end = self.prev_span();
-        Ok(mk(ExprKind::UnknownDirective { name, operand }, start.to(end)))
+        Ok(mk(
+            ExprKind::UnknownDirective {
+                name,
+                operand,
+            },
+            start.to(end),
+        ))
     }
 }

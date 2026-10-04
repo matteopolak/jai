@@ -3,7 +3,9 @@
 use std::path::{Path, PathBuf};
 
 fn collect(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(entries) = std::fs::read_dir(dir) else { return };
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {
@@ -18,8 +20,10 @@ fn collect(dir: &Path, out: &mut Vec<PathBuf>) {
 #[ignore]
 fn corpus_sweep() {
     // `JAIC_CORPUS_ROOT` points the sweep at another checkout (the corpora are gitignored).
-    let root = std::env::var_os("JAIC_CORPUS_ROOT")
-        .map_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."), PathBuf::from);
+    let root = std::env::var_os("JAIC_CORPUS_ROOT").map_or_else(
+        || Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."),
+        PathBuf::from,
+    );
     let mut files = Vec::new();
     for dir in ["reference", "corpus/upstream", "stdlib", "prelude"] {
         collect(&root.join(dir), &mut files);
@@ -44,5 +48,9 @@ fn corpus_sweep() {
     for failure in &failures {
         eprint!("{failure}");
     }
-    eprintln!("{stage}: {} / {} files ok", files.len() - failures.len(), files.len());
+    eprintln!(
+        "{stage}: {} / {} files ok",
+        files.len() - failures.len(),
+        files.len()
+    );
 }

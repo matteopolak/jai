@@ -6,7 +6,10 @@ use crate::lexer::{P, Tok};
 use crate::source::Span;
 
 pub(super) fn mk(kind: ExprKind, span: Span) -> Expr {
-    Expr { kind, span }
+    Expr {
+        kind,
+        span,
+    }
 }
 
 /// Binary operator precedence, lowest first. Left associative.
@@ -56,12 +59,15 @@ impl Parser<'_> {
     }
 
     fn peek_binary_op(&self) -> Option<(u8, BinOp)> {
-        let Tok::Punct(p) = self.tok() else { return None };
+        let Tok::Punct(p) = self.tok() else {
+            return None;
+        };
         // `if x == {` opens a switch rather than continuing the expression.
         if *p == P::EqEq && self.switch_body_follows(1) {
             return None;
         }
-        if self.continues_after_block() {
+        // After `}` on the previous line, `*p = 1;` and `-x;` start new statements.
+        if self.continues_after_block() && matches!(p, P::Star | P::Minus | P::Plus | P::Shl) {
             return None;
         }
         binary_op(*p)
@@ -69,7 +75,8 @@ impl Parser<'_> {
 
     /// True at `{` or `#complete {` starting at offset `n`.
     pub(super) fn switch_body_follows(&self, n: usize) -> bool {
-        self.at_n(n, P::LBrace) || (self.directive_at(n) == Some("complete") && self.at_n(n + 1, P::LBrace))
+        self.at_n(n, P::LBrace)
+            || (self.directive_at(n) == Some("complete") && self.at_n(n + 1, P::LBrace))
     }
 
     /// A line starting right after a `}` begins a new statement, not an operator continuation.
@@ -94,7 +101,6 @@ impl Parser<'_> {
             Tok::Punct(P::Backtick) => return self.parse_backtick(),
             Tok::Punct(P::LParen) if self.at_n(1, P::DotStar) && self.at_n(2, P::RParen) => {
                 // `(.*) value` is a prefix dereference.
-                self.bump();
                 self.bump();
                 self.bump();
                 UnOp::Deref
@@ -131,19 +137,40 @@ impl Parser<'_> {
             let value = self.parse_expr()?;
             let end = self.expect(P::RParen, "after the value in 'cast'")?;
             let span = start.to(end);
-            let cast = mk(ExprKind::Cast { ty: Some(Box::new(ty)), value: Box::new(value), flags }, span);
+            let cast = mk(
+                ExprKind::Cast {
+                    ty: Some(Box::new(ty)),
+                    value: Box::new(value),
+                    flags,
+                },
+                span,
+            );
             return self.postfix_loop(cast, true);
         }
         self.expect(P::RParen, "after the type in 'cast'")?;
         let value = self.parse_unary()?;
         let span = start.to(value.span);
-        Ok(mk(ExprKind::Cast { ty: Some(Box::new(ty)), value: Box::new(value), flags }, span))
+        Ok(mk(
+            ExprKind::Cast {
+                ty: Some(Box::new(ty)),
+                value: Box::new(value),
+                flags,
+            },
+            span,
+        ))
     }
 
     /// `xx` is the auto-cast operator unless it is used as a plain name (`xx, y`).
     fn xx_is_cast(&self) -> bool {
-        !matches!(self.tok_at(1), Tok::Punct(P::Comma | P::Semi | P::RParen | P::Eq | P::Colon | P::ColonEq | P::ColonColon))
-            || matches!(self.kw_at(2), Some("no_check" | "trunc" | "truncate" | "force"))
+        !matches!(
+            self.tok_at(1),
+            Tok::Punct(
+                P::Comma | P::Semi | P::RParen | P::Eq | P::Colon | P::ColonEq | P::ColonColon
+            )
+        ) || matches!(
+            self.kw_at(2),
+            Some("no_check" | "trunc" | "truncate" | "force")
+        )
     }
 
     fn parse_xx(&mut self) -> PResult<Expr> {
@@ -151,12 +178,24 @@ impl Parser<'_> {
         let flags = self.parse_cast_flags();
         let value = self.parse_unary()?;
         let span = start.to(value.span);
-        Ok(mk(ExprKind::Cast { ty: None, value: Box::new(value), flags }, span))
+        Ok(mk(
+            ExprKind::Cast {
+                ty: None,
+                value: Box::new(value),
+                flags,
+            },
+            span,
+        ))
     }
 
     fn parse_cast_flags(&mut self) -> CastFlags {
         let mut flags = CastFlags::default();
-        while self.at(P::Comma) && matches!(self.kw_at(1), Some("no_check" | "trunc" | "truncate" | "force")) {
+        while self.at(P::Comma)
+            && matches!(
+                self.kw_at(1),
+                Some("no_check" | "trunc" | "truncate" | "force")
+            )
+        {
             self.bump();
             match self.kw() {
                 Some("no_check") => flags.no_check = true,
@@ -170,16 +209,27 @@ impl Parser<'_> {
 
     /// `inline f(x)` / `no_inline f(x)` call hints, and `inline (a: int) {..}` procedure flags.
     fn parse_inline(&mut self) -> PResult<Expr> {
-        let hint = if self.at_kw("inline") { CallHint::Inline } else { CallHint::NoInline };
+        let hint = if self.at_kw("inline") {
+            CallHint::Inline
+        } else {
+            CallHint::NoInline
+        };
         if self.at_n(1, P::LParen) && self.paren_starts_header(1) || self.at_n(1, P::Arrow) {
             self.bump();
-            let flag = if hint == CallHint::Inline { CallHintFlag::Inline } else { CallHintFlag::NoInline };
+            let flag = if hint == CallHint::Inline {
+                CallHintFlag::Inline
+            } else {
+                CallHintFlag::NoInline
+            };
             let proc = self.parse_proc_expr(flag)?;
             return self.postfix_loop(proc, true);
         }
         let start = self.bump();
         let mut operand = self.parse_unary()?;
-        if let ExprKind::Call { hint: slot, .. } = &mut operand.kind {
+        if let ExprKind::Call {
+            hint: slot, ..
+        } = &mut operand.kind
+        {
             *slot = hint;
         }
         operand.span = start.to(operand.span);
@@ -206,13 +256,24 @@ impl Parser<'_> {
                     self.bump();
                     let ty = self.parse_expr()?;
                     let end = self.expect(P::RParen, "after the type in '.(T)'")?;
-                    let kind = ExprKind::Cast { ty: Some(Box::new(ty)), value: Box::new(expr), flags: CastFlags::default() };
+                    let kind = ExprKind::Cast {
+                        ty: Some(Box::new(ty)),
+                        value: Box::new(expr),
+                        flags: CastFlags::default(),
+                    };
                     expr = mk(kind, start.to(end));
                 }
                 Tok::Punct(P::Dot) => {
                     self.bump();
-                    let member = if self.operator_name_follows() { self.parse_operator_name()? } else { self.ident("after '.'")? };
-                    expr = mk(ExprKind::Member(Box::new(expr), member), start.to(member.span));
+                    let member = if self.operator_name_follows() {
+                        self.parse_operator_name()?
+                    } else {
+                        self.ident("after '.'")?
+                    };
+                    expr = mk(
+                        ExprKind::Member(Box::new(expr), member),
+                        start.to(member.span),
+                    );
                 }
                 Tok::Punct(P::DotStar) => {
                     let end = self.bump();
@@ -222,25 +283,47 @@ impl Parser<'_> {
                     self.bump();
                     let fields = self.parse_args(P::RBrace, "in struct literal")?;
                     let end = self.prev_span();
-                    expr = mk(ExprKind::StructLit { ty: Some(Box::new(expr)), fields }, start.to(end));
+                    expr = mk(
+                        ExprKind::StructLit {
+                            ty: Some(Box::new(expr)),
+                            fields,
+                        },
+                        start.to(end),
+                    );
                 }
                 Tok::Punct(P::DotBracket) if literals => {
                     self.bump();
                     let elems = self.parse_elements(P::RBracket, "in array literal")?;
                     let end = self.prev_span();
-                    expr = mk(ExprKind::ArrayLit { ty: Some(Box::new(expr)), elems }, start.to(end));
+                    expr = mk(
+                        ExprKind::ArrayLit {
+                            ty: Some(Box::new(expr)),
+                            elems,
+                        },
+                        start.to(end),
+                    );
                 }
                 Tok::Punct(P::LBracket) if !self.continues_after_block() => {
                     self.bump();
                     let index = self.parse_expr()?;
                     let end = self.expect(P::RBracket, "after index expression")?;
-                    expr = mk(ExprKind::Index(Box::new(expr), Box::new(index)), start.to(end));
+                    expr = mk(
+                        ExprKind::Index(Box::new(expr), Box::new(index)),
+                        start.to(end),
+                    );
                 }
                 Tok::Punct(P::LParen) if !self.continues_after_block() => {
                     self.bump();
                     let args = self.parse_args(P::RParen, "in argument list")?;
                     let end = self.prev_span();
-                    expr = mk(ExprKind::Call { callee: Box::new(expr), args, hint: CallHint::None }, start.to(end));
+                    expr = mk(
+                        ExprKind::Call {
+                            callee: Box::new(expr),
+                            args,
+                            hint: CallHint::None,
+                        },
+                        start.to(end),
+                    );
                 }
                 _ => return Ok(expr),
             }
@@ -285,7 +368,13 @@ impl Parser<'_> {
             spread = self.eat(P::DotDot);
         }
         let value = self.parse_expr()?;
-        Ok(Arg { name, target, context: false, spread, value })
+        Ok(Arg {
+            name,
+            target,
+            context: false,
+            spread,
+            value,
+        })
     }
 
     /// At `name =` (`Some(true)`) or `a.b[i] =` (`Some(false)`).
@@ -305,7 +394,7 @@ impl Parser<'_> {
     }
 
     /// Offset just past the `]` matching the `[` at offset `n`.
-    fn bracket_end(&self, n: usize) -> Option<usize> {
+    pub(super) fn bracket_end(&self, n: usize) -> Option<usize> {
         let mut depth = 0usize;
         for i in n.. {
             match self.tok_at(i) {
@@ -407,12 +496,24 @@ impl Parser<'_> {
             P::DotBrace => {
                 self.bump();
                 let fields = self.parse_args(P::RBrace, "in struct literal")?;
-                Ok(mk(ExprKind::StructLit { ty: None, fields }, span.to(self.prev_span())))
+                Ok(mk(
+                    ExprKind::StructLit {
+                        ty: None,
+                        fields,
+                    },
+                    span.to(self.prev_span()),
+                ))
             }
             P::DotBracket => {
                 self.bump();
                 let elems = self.parse_elements(P::RBracket, "in array literal")?;
-                Ok(mk(ExprKind::ArrayLit { ty: None, elems }, span.to(self.prev_span())))
+                Ok(mk(
+                    ExprKind::ArrayLit {
+                        ty: None,
+                        elems,
+                    },
+                    span.to(self.prev_span()),
+                ))
             }
             P::Dot => {
                 self.bump();
@@ -422,7 +523,13 @@ impl Parser<'_> {
             P::LBrace if self.brace_is_struct_literal() => {
                 self.bump();
                 let fields = self.parse_args(P::RBrace, "in struct literal")?;
-                Ok(mk(ExprKind::StructLit { ty: None, fields }, span.to(self.prev_span())))
+                Ok(mk(
+                    ExprKind::StructLit {
+                        ty: None,
+                        fields,
+                    },
+                    span.to(self.prev_span()),
+                ))
             }
             P::LBrace => {
                 let block = self.parse_block()?;
@@ -449,7 +556,9 @@ impl Parser<'_> {
         let mut depth = 0usize;
         for i in 0.. {
             match self.tok_at(i) {
-                Tok::Punct(P::LBrace | P::DotBrace | P::LParen | P::LBracket | P::DotBracket) => depth += 1,
+                Tok::Punct(P::LBrace | P::DotBrace | P::LParen | P::LBracket | P::DotBracket) => {
+                    depth += 1
+                }
                 Tok::Punct(P::RBrace | P::RParen | P::RBracket) => {
                     depth -= 1;
                     if depth == 0 {
@@ -470,8 +579,23 @@ impl Parser<'_> {
             && matches!(
                 self.tok_at(1),
                 Tok::Punct(
-                    P::Plus | P::Minus | P::Star | P::Slash | P::Percent | P::EqEq | P::Ne | P::Lt | P::Le | P::Gt | P::Ge
-                        | P::Amp | P::Pipe | P::Caret | P::Shl | P::Shr | P::LBracket
+                    P::Plus
+                        | P::Minus
+                        | P::Star
+                        | P::Slash
+                        | P::Percent
+                        | P::EqEq
+                        | P::Ne
+                        | P::Lt
+                        | P::Le
+                        | P::Gt
+                        | P::Ge
+                        | P::Amp
+                        | P::Pipe
+                        | P::Caret
+                        | P::Shl
+                        | P::Shr
+                        | P::LBracket
                 )
             )
     }
@@ -480,21 +604,21 @@ impl Parser<'_> {
     pub(super) fn parse_operator_name(&mut self) -> PResult<Ident> {
         let start = self.bump();
         let mut text = String::from("operator");
-        loop {
-            let Tok::Punct(p) = self.tok() else { break };
-            text.push_str(p.text());
-            let was_bracket = *p == P::LBracket;
+        if let Tok::Punct(symbol) = *self.tok() {
+            text.push_str(symbol.text());
             self.bump();
-            if was_bracket {
+            if symbol == P::LBracket {
                 self.expect(P::RBracket, "in operator name")?;
                 text.push(']');
                 if self.eat(P::Eq) {
                     text.push('=');
                 }
             }
-            break;
         }
-        Ok(Ident { name: Sym::intern(&text), span: start.to(self.prev_span()) })
+        Ok(Ident {
+            name: Sym::intern(&text),
+            span: start.to(self.prev_span()),
+        })
     }
 
     /// `[N] T`, `[] T`, `[..] T`. The element type does not take `.{`/`.[` literals,
@@ -515,7 +639,13 @@ impl Parser<'_> {
         };
         let elem = self.parse_element_type()?;
         let span = start.to(elem.span);
-        Ok(mk(ExprKind::ArrayType { size, elem: Box::new(elem) }, span))
+        Ok(mk(
+            ExprKind::ArrayType {
+                size,
+                elem: Box::new(elem),
+            },
+            span,
+        ))
     }
 
     fn parse_element_type(&mut self) -> PResult<Expr> {
@@ -543,25 +673,50 @@ impl Parser<'_> {
             }
             let restriction = self.parse_postfix(true)?;
             end = restriction.span;
-            let kind = ExprKind::PolyRestricted { name: name.name, restriction: Box::new(restriction), interface };
+            let kind = ExprKind::PolyRestricted {
+                name: name.name,
+                restriction: Box::new(restriction),
+                interface,
+            };
             return Ok(mk(kind, start.to(end)));
         }
-        Ok(mk(ExprKind::PolyVar { name: name.name, baked }, start.to(end)))
+        Ok(mk(
+            ExprKind::PolyVar {
+                name: name.name,
+                baked,
+            },
+            start.to(end),
+        ))
     }
 
     pub(super) fn parse_ifx(&mut self, is_static: bool) -> PResult<Expr> {
         let start = self.bump();
         let cond = self.parse_expr()?;
-        let ends_here = matches!(self.tok(), Tok::Punct(P::Semi | P::Comma | P::RParen | P::RBracket | P::RBrace) | Tok::Eof);
+        let ends_here = matches!(
+            self.tok(),
+            Tok::Punct(P::Semi | P::Comma | P::RParen | P::RBracket | P::RBrace) | Tok::Eof
+        );
         let then_value = if self.at_kw("else") || ends_here {
             None
         } else {
             self.eat_kw("then");
             Some(Box::new(self.parse_branch_value()?))
         };
-        let else_value = if self.eat_kw("else") { Some(Box::new(self.parse_branch_value()?)) } else { None };
+        let else_value = if self.eat_kw("else") {
+            Some(Box::new(self.parse_branch_value()?))
+        } else {
+            None
+        };
         let span = start.to(self.prev_span());
-        Ok(mk(ExprKind::Ifx { cond: Box::new(cond), then_value, else_value, is_static }, span))
+        Ok(mk(
+            ExprKind::Ifx {
+                cond: Box::new(cond),
+                then_value,
+                else_value,
+                is_static,
+            },
+            span,
+        ))
     }
 
     fn parse_branch_value(&mut self) -> PResult<Expr> {

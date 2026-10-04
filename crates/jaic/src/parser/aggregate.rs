@@ -1,7 +1,9 @@
 //! `struct`, `union` and `enum` literals.
 use super::expr::mk;
 use super::{PResult, Parser};
-use crate::ast::{AstId, EnumItem, EnumLit, EnumMember, Expr, ExprKind, StructFlags, StructKind, StructLit};
+use crate::ast::{
+    AstId, EnumItem, EnumLit, EnumMember, Expr, ExprKind, StructFlags, StructKind, StructLit,
+};
 use crate::lexer::{P, Tok};
 use std::rc::Rc;
 
@@ -9,9 +11,17 @@ impl Parser<'_> {
     /// `struct (T: Type) #flags { ... }` / `union { ... }`.
     pub(super) fn parse_struct_expr(&mut self) -> PResult<Expr> {
         let start = self.span();
-        let kind = if self.at_kw("union") { StructKind::Union } else { StructKind::Struct };
+        let kind = if self.at_kw("union") {
+            StructKind::Union
+        } else {
+            StructKind::Struct
+        };
         self.bump();
-        let params = if self.eat(P::LParen) { self.parse_params(P::RParen)? } else { Vec::new() };
+        let params = if self.eat(P::LParen) {
+            self.parse_params(P::RParen)?
+        } else {
+            Vec::new()
+        };
         let mut notes = self.parse_notes();
         let tag = self.parse_union_tag()?;
         notes.append(&mut self.pending_notes);
@@ -22,7 +32,17 @@ impl Parser<'_> {
         let end = self.expect(P::RBrace, "to end the body")?;
         modify = self.parse_struct_flags(&mut flags)?.or(modify);
         self.block_end = self.pos;
-        let lit = StructLit { id: AstId::fresh(), kind, tag, params, body, flags, modify, notes, span: start.to(end) };
+        let lit = StructLit {
+            id: AstId::fresh(),
+            kind,
+            tag,
+            params,
+            body,
+            flags,
+            modify,
+            notes,
+            span: start.to(end),
+        };
         Ok(mk(ExprKind::Struct(Rc::new(lit)), start.to(end)))
     }
 
@@ -42,12 +62,17 @@ impl Parser<'_> {
 
     /// Struct directives, accepted before the body and after its closing brace.
     /// Returns the `#modify` block if there is one.
-    fn parse_struct_flags(&mut self, flags: &mut StructFlags) -> PResult<Option<crate::ast::Block>> {
+    fn parse_struct_flags(
+        &mut self,
+        flags: &mut StructFlags,
+    ) -> PResult<Option<crate::ast::Block>> {
         let mut modify = None;
         while let Some(name) = self.directive() {
             match name {
                 "type_info_none" => flags.type_info_none = true,
-                "type_info_procedures_are_void_pointers" => flags.type_info_procedures_are_void_pointers = true,
+                "type_info_procedures_are_void_pointers" => {
+                    flags.type_info_procedures_are_void_pointers = true
+                }
                 "type_info_no_size_complaint" => flags.type_info_no_size_complaint = true,
                 "no_padding" => flags.no_padding = true,
                 "align" => {
@@ -72,7 +97,11 @@ impl Parser<'_> {
         let start = self.span();
         let flags_enum = self.at_kw("enum_flags");
         self.bump();
-        let base = if matches!(self.tok(), Tok::Punct(P::LBrace) | Tok::Directive(_)) { None } else { Some(self.parse_expr()?) };
+        let base = if matches!(self.tok(), Tok::Punct(P::LBrace) | Tok::Directive(_)) {
+            None
+        } else {
+            Some(self.parse_expr()?)
+        };
         let (mut specified, mut complete) = (false, false);
         while let Some(name) = self.directive() {
             match name {
@@ -85,7 +114,16 @@ impl Parser<'_> {
         self.expect(P::LBrace, "to start the enum body")?;
         let items = self.parse_enum_items()?;
         let end = self.expect(P::RBrace, "to end the enum body")?;
-        let lit = EnumLit { id: AstId::fresh(), flags_enum, base, items, specified, complete, notes: Vec::new(), span: start.to(end) };
+        let lit = EnumLit {
+            id: AstId::fresh(),
+            flags_enum,
+            base,
+            items,
+            specified,
+            complete,
+            notes: Vec::new(),
+            span: start.to(end),
+        };
         Ok(mk(ExprKind::Enum(Rc::new(lit)), start.to(end)))
     }
 
@@ -111,13 +149,21 @@ impl Parser<'_> {
 
     fn parse_enum_member(&mut self) -> PResult<EnumMember> {
         let name = self.ident("as enum member name")?;
-        let value = if self.eat(P::ColonColon) || self.eat(P::Eq) { Some(self.parse_expr()?) } else { None };
+        let value = if self.eat(P::ColonColon) || self.eat(P::Eq) {
+            Some(self.parse_expr()?)
+        } else {
+            None
+        };
         let mut notes = self.parse_notes();
         if !(self.eat(P::Semi) || self.eat(P::Comma) || self.at(P::RBrace)) {
             return Err(self.expected("';'", "after the enum member"));
         }
         notes.extend(self.parse_notes());
-        Ok(EnumMember { name, value, notes })
+        Ok(EnumMember {
+            name,
+            value,
+            notes,
+        })
     }
 
     fn parse_enum_if(&mut self) -> PResult<EnumItem> {
@@ -127,9 +173,17 @@ impl Parser<'_> {
         let then_items = self.parse_enum_branch()?;
         let mut else_items = Vec::new();
         if self.eat_kw("else") {
-            else_items = if self.at_directive("if") { vec![self.parse_enum_if()?] } else { self.parse_enum_branch()? };
+            else_items = if self.at_directive("if") {
+                vec![self.parse_enum_if()?]
+            } else {
+                self.parse_enum_branch()?
+            };
         }
-        Ok(EnumItem::If { cond, then_items, else_items })
+        Ok(EnumItem::If {
+            cond,
+            then_items,
+            else_items,
+        })
     }
 
     fn parse_enum_branch(&mut self) -> PResult<Vec<EnumItem>> {
