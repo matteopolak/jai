@@ -15,4 +15,5 @@ pub mod parser;
 pub mod records;
 pub mod sema;
 pub mod source;
+pub mod stack_trace;
 pub mod types;

@@ -259,6 +259,15 @@ impl Compiler {
         self.program.stack_trace_offset = Some(offset);
     }
 
+    /// Before a backend writes the program: compiled code keeps `context.stack_trace` itself
+    /// (`stack_trace::instrument`; the interpreter does it at run time). Idempotent.
+    pub fn prepare_compiled_output(&mut self) {
+        self.enable_stack_traces(Span::default());
+        if let Some(offset) = self.program.stack_trace_offset {
+            crate::stack_trace::instrument(&mut self.program, offset);
+        }
+    }
+
     /// Run the compiled program in the interpreter; returns its exit code.
     pub fn run_program(&mut self) -> Result<i32> {
         let Some(main) = self.exported_func("main") else {

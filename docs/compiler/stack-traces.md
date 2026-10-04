@@ -2,7 +2,7 @@
 
 ## What it is
 
-While a program runs under `jaic run`, `context.stack_trace` points at a linked list of
+While a program runs (under `jaic run` or as a `jaic build` executable), `context.stack_trace` points at a linked list of
 `Stack_Trace_Node`s, innermost procedure first, as in `jai`. `print_stack_trace`, assertion
 failures and the memory debugger's leak reports read it.
 
@@ -26,6 +26,15 @@ failures and the memory debugger's leak reports read it.
   `Program.file_paths` are filled by `Compiler::enable_stack_traces`, called from `run_program` and
   from `call_thunk` (so `#run` code also gets traces; the thunk itself has no node, so the first
   node's `next` is null). Nothing is pushed when the offset is `None`.
+- **Compiled output**: `Compiler::prepare_compiled_output` (called by both `jaic build` and the
+  metaprogram's output path before the backend writes) runs `stack_trace::instrument`
+  (`crates/jaic/src/stack_trace.rs`), an IR pass. Each traced function gets a 32-byte node slot; a new
+  entry block links it (depth and hash from the previous top, or 1 and a seed for the first node) and
+  makes it the top; every `Ret` restores the previous top; after each `Loc` whose statement makes a
+  call, the line is stored into the node, so callees see their call line. A
+  `Stack_Trace_Procedure_Info` global per function holds name, declaration site and address. The pass
+  clears `Func.trace`, so the interpreter does not push a second node. Test: `stack_traces` in
+  `crates/jaic-cli/tests/native.rs`.
 - `runtime_support_assertion_failed` (`stdlib/Runtime_Support.jai`) prints
   `path:line,col: Assertion failed: message` then `Stack trace:` and one `path:line: name` per
   node, in the format of `jai`.

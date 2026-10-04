@@ -217,7 +217,7 @@ fn run(mut cli: Cli) -> ExitCode {
         Command::Build if !settings.do_output || settings.output_type == OutputType::NoOutput => {
             ExitCode::SUCCESS
         }
-        Command::Build => match build(&compiler, &cli, &path, settings) {
+        Command::Build => match build(&mut compiler, &cli, &path, settings) {
             Ok(()) => ExitCode::SUCCESS,
             Err(message) => {
                 eprintln!("error: {message}");
@@ -229,7 +229,7 @@ fn run(mut cli: Cli) -> ExitCode {
 
 /// Write the top-level program. `-o`/`-O` override what the metaprogram set.
 fn build(
-    compiler: &Compiler,
+    compiler: &mut Compiler,
     cli: &Cli,
     source: &Path,
     mut settings: BuildSettings,
@@ -252,6 +252,7 @@ fn build(
     if let Some(level) = cli.opt_level {
         settings.optimization = level.into();
     }
+    compiler.prepare_compiled_output();
     native_backend(cli).write_output(&compiler.program, &settings, &output)
 }
 
