@@ -26,6 +26,9 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   mutable `Type` variable (globals read back afterwards). Unbound variables start as `void`; `return false`
   rejects the call (`return false, "why";` adds the message to the error; it is stored in the `modify.message`
   global). Result bindings replace the inferred ones.
+- **Struct `#modify`** (`run_struct_modify`, called from `instantiate_struct`): every struct parameter, type or
+  value, is an assignable variable (`if N < 8 N = 8;`); the final values are the instance key, so `Holder(3, T)`
+  and `Holder(8, T)` can be the same type. Test: `tests/stdlib/struct-modify.jai`.
 - **Operators**: `a op= b` calls `operator op=` for struct-like targets (`try_operator_assign`); `*x[i]` calls
   `operator *[]`.
 - **Aliases**: `name :: overloaded;` resolves to `Resolved::ProcSet`. `#poke_name Module name;` copies the
@@ -124,8 +127,8 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 
 ## How to change it
 
-New operator forms belong next to `try_operator_assign`. New `#modify` features (messages, value variables) go
-in `run_modify`; it builds one IR function per call, so keep per-call cost in mind.
+New operator forms belong next to `try_operator_assign`. New `#modify` features go in `run_modify_block`
+(shared by procedures and structs); it builds one IR function per call, so keep per-call cost in mind.
 
 ## Configuration
 
