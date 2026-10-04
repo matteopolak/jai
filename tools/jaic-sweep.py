@@ -3,7 +3,8 @@
 
 Usage: tools/jaic-sweep.py [--jaic PATH] [--filter TEXT] [--verbose] SET...
 Sets: corpus (tests/corpus/positive with expected runtime), stdlib (tests/stdlib,
-run must succeed), howto (reference how_to programs, check only), upstream
+run must succeed), modules (the stdlib's own tests: stdlib/tests and stdlib/<Module>/tests,
+run must succeed; a test directory's `modules/` folder holds its mock modules), howto (reference how_to programs, check only), upstream
 (tools/upstream-cases.json: upstream project entry points that must pass), or file paths.
 """
 import argparse, json, os, subprocess, sys
@@ -20,6 +21,11 @@ def cases(name):
     elif name == "stdlib":
         for p in sorted((ROOT / "tests/stdlib").glob("*.jai")):
             yield p.stem, p, "run", None, []
+    elif name == "modules":
+        found = list((ROOT / "stdlib").glob("*/tests/*.jai")) + list((ROOT / "stdlib/tests").glob("**/*.jai"))
+        for p in sorted(set(found)):
+            if "modules" not in p.relative_to(ROOT / "stdlib").parts:
+                yield str(p.relative_to(ROOT / "stdlib").with_suffix("")), p, "run", None, []
     elif name == "upstream":
         for c in json.loads((ROOT / "tools/upstream-cases.json").read_text()):
             yield c["id"], ROOT / "corpus/upstream" / c["path"], c["mode"], None, c.get("args", [])

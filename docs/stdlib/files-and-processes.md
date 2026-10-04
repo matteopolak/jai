@@ -28,7 +28,7 @@ main :: () {
 
 - Platform splits: `File/{unix,windows}.jai`, `File_Utilities/os/{unix,windows}.jai`, `Process/{posix,windows}.jai`, `Shared_Memory_Channel/{posix,windows}.jai`. Keep portable logic in each `module.jai`.
 - `Basic` holds `get_working_directory`/`set_working_directory`; do not redefine them in `File` or `System`.
-- The manual roundtrip check `stdlib/tests/os-file-process/file-roundtrip.jai` expects one disposable, nonexistent path argument and deletes the file afterwards.
+- `stdlib/tests/os-file-process/file-roundtrip.jai` writes, reads and deletes `file-roundtrip.tmp` next to itself (sweep set `modules`).
 - `Process` captures output through pipes; the Windows variant uses SDK processes and a job object. A new capture feature needs both.
 
 ## Configuration

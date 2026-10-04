@@ -1,15 +1,10 @@
-// Run only with a disposable, absent path provided as the sole argument.
-// The witness exercises the maintained integer File handle through real APIs.
+// Writes, reads and deletes a scratch file next to this program through the File module.
 Basic :: #import "Basic";
 Files :: #import "File";
 
 main :: () {
-    arguments := Basic.get_command_line_arguments();
-    Basic.assert(arguments.count == 2, "expected a disposable file path");
-    if arguments.count != 2 return;
-    path := arguments[1];
-    Basic.assert(!Files.file_exists(path), "witness refuses to replace an existing file");
-    if Files.file_exists(path) return;
+    path := "file-roundtrip.tmp";
+    Files.file_delete(path);
     payload := "A\0B\r\n";
     Basic.assert(Files.write_entire_file(path, payload));
     defer Files.file_delete(path);

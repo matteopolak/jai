@@ -15,11 +15,7 @@ Readers and writers for a few small file formats: RIFF/WAVE (`Wav_File`), IMA/DV
 ## How to change it
 
 - Keep the little-endian helpers (`wav_u16`, `zip_u32`, ...) next to their module; each format has its own.
-- Tests are in `stdlib/tests/`: `binary-wav.jai`, `binary-adpcm.jai`, `binary-md5.jai` run as is. `binary-zip.jai` and `binary-ico.jai` replace `File` with a mock from `stdlib/tests/binary-format-fixtures`, so they need the include path:
-
-```sh
-jaic run stdlib/tests/binary-zip.jai -I stdlib/tests/binary-format-fixtures
-```
+- Tests are in `stdlib/tests/`: `binary-wav.jai`, `binary-adpcm.jai`, `binary-md5.jai` run as is. `stdlib/tests/binary-mock-file/binary-zip.jai` and `binary-ico.jai` replace `File` (and `Basic`) with mocks from that directory's `modules/` folder, which `jaic` searches before the stdlib. The sweep's `modules` set runs them all.
 
 - Without `-I` those two fail with "module 'File' has no exported member 'archive'", which is expected.
 
