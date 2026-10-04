@@ -35,7 +35,6 @@ compare :: (a: string, b: string) -> int {
     if a.count > b.count return 1;
     return 0;
 }
-compare_strings :: compare;
 compare_nocase :: (a: string, b: string) -> int {
     n := min(a.count, b.count);
     for i: 0..n-1 {

@@ -20,9 +20,6 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
         }
         return "";
     }
-    get_number_of_processors :: () -> s64 {
-        return system_processor_count(.ALL_LOGICAL);
-    }
     get_username :: () -> string, success: bool {
         buffer: [257] u16;
         length: u32 = xx buffer.count;
@@ -71,11 +68,6 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
             }
             return "";
         }
-    }
-    get_number_of_processors :: () -> s64 {
-        result := P.sysconf(._SC_NPROCESSORS_ONLN);
-        if result <= 0 return 0;
-        return result;
     }
     #if OS == .LINUX || OS == .ANDROID || OS == .MACOS {
         // Results live in temporary storage. An empty username means the current user.
@@ -135,7 +127,7 @@ get_error_value_and_string :: () -> (error_code: OS_Error_Code, description: str
     return code, get_error_string(code);
 }
 
-get_number_of_processors :: ($type: Processor_Query_Type) -> count: s32 {
+get_number_of_processors :: ($type: Processor_Query_Type = .PERFORMANCE_LOGICAL) -> count: s32 {
     return cast(s32) get_number_of_processors_for_type(type);
 }
 get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_LOGICAL) -> s64 {
@@ -199,7 +191,7 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
     }
 } else {
     system_processor_count :: (query: Processor_Query_Type) -> s64 {
-        if query == .ALL_LOGICAL || query == .PERFORMANCE_LOGICAL return get_number_of_processors();
+        if query == .ALL_LOGICAL || query == .PERFORMANCE_LOGICAL return max(P.sysconf(._SC_NPROCESSORS_ONLN), 0);
         directory := P.opendir(temp_c_string("/sys/devices/system/cpu"));
         if !directory return 0;
         defer P.closedir(directory);

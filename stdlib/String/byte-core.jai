@@ -341,7 +341,6 @@ string_to_float :: (value: string) -> float64, bool {
 }
 
 
-compare_strings :: compare;
 
 starts_with :: begins_with;
 

@@ -37,6 +37,17 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   their scope (`expand_pending`). An item that fails while some procedure body is mid-lowering (its
   compile-time code may need that body) is put back to waiting and recorded in `Compiler::deferred_pending`;
   `expand_all` retries it once nothing is lowering, and only then is a failure final.
+- **Indexing**: `x[i]` calls a matching `operator []`, else `operator *[]` and dereferences the result
+  (an assignable place); a pointer with no fitting operator indexes memory (`try_pointer_index_operator`).
+- **Polymorphic struct parameters**: a bare `Base` / `*Base` parameter accepts a struct whose `#as` member is
+  an instance of `Base` (`instance_or_as_base`); the call converts through the `#as` offset.
+- **Baked parameter defaults**: `$mode: Mode = .fast` and `$info := Info.{}` give the default (and `.X` /
+  `.{...}` arguments) the declared or default type.
+- **Conversions**: `*[..] T` → `*[] T`; a one-character string constant → `u8`; an `ifx` argument fits an
+  overload only if both branches do.
+- **Tagged unions** (`union kind: Kind { .A ,, a: X; }`): laid out as a struct holding the tag field, then an
+  anonymous union of the members (`layout_struct_inner`). Tags on members are parsed but not enforced.
+- **`#poke_name Module name`** adds the importer's entity itself to the module scope, so both see one type.
 - **Struct field types in constants**: while a struct is laid out, earlier field types are recorded in
   `Compiler::field_types`, so `type_of(field)` works in a struct constant (`FnCtx::type_only`).
 - **Thunks and queued bodies**: `drain_bodies_lenient` lowers what it can before a thunk runs; bodies that fail

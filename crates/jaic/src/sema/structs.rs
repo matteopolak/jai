@@ -72,7 +72,8 @@ impl Compiler {
         let ty = self.types.new_struct(StructInfo {
             name,
             ast: Some(lit.id),
-            is_union: lit.kind == ast::StructKind::Union,
+            // A tagged union is a struct: the tag, then the members' union.
+            is_union: lit.kind == ast::StructKind::Union && lit.tag.is_none(),
             fields: Vec::new(),
             size: 0,
             align: 1,
@@ -425,11 +426,41 @@ impl Compiler {
             .expect("struct without source");
         let mut items = Vec::new();
         self.field_types.remove(&src.scope);
-        self.collect_fields(src.scope, &src.lit.body, &mut items)?;
+        if let Some((tag, tag_ty)) = &src.lit.tag {
+            // `union tag: T { ... }`: the tag field, then an anonymous union of the members.
+            let tag_ty = self.eval_type(src.scope, tag_ty)?;
+            let mut members = (*src.lit).clone();
+            members.id = ast::AstId::fresh();
+            members.tag = None;
+            members.params = Vec::new();
+            members.notes = Vec::new();
+            let members = self.new_struct_type(
+                Sym::intern("anonymous"),
+                Rc::new(members),
+                src.scope,
+                Vec::new(),
+                None,
+            );
+            for (name, ty, using) in [(Some(tag.name), tag_ty, false), (None, members, true)] {
+                items.push(FieldItem::Field(FieldDecl {
+                    name,
+                    ty,
+                    using,
+                    as_: false,
+                    notes: Vec::new(),
+                    span: tag.span,
+                    init: None,
+                    scope: src.scope,
+                    align: None,
+                }));
+            }
+        } else {
+            self.collect_fields(src.scope, &src.lit.body, &mut items)?;
+        }
         for (decl, scope) in &src.extra {
             self.collect_decl_fields(*scope, decl, &mut items)?;
         }
-        let is_union = src.lit.kind == ast::StructKind::Union;
+        let is_union = src.lit.kind == ast::StructKind::Union && src.lit.tag.is_none();
         let no_padding = src.lit.flags.no_padding;
         let mut fields = Vec::new();
         let mut inits = Vec::new();

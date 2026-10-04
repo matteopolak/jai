@@ -1315,6 +1315,48 @@ impl Compiler {
     }
 
     /// The common type of a binary operation.
+    /// `x[i]` through `operator *[]`: the returned pointer is the element's place.
+    fn try_pointer_index_operator(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        base: &Operand,
+        index: &Operand,
+        span: Span,
+    ) -> Result<Option<Operand>> {
+        let base = match base {
+            Operand::Place {
+                ty,
+                addr,
+            } => Operand::Value {
+                ty: self.types.pointer(*ty),
+                val: *addr,
+            },
+            Operand::Value {
+                ty, ..
+            } if self.types.pointee(*ty).is_some() => base.clone(),
+            _ => return Ok(None),
+        };
+        let target = self.types.pointee(base.ty()).unwrap();
+        if self
+            .operator_candidates(scope, "*[]", &[target])?
+            .is_empty()
+        {
+            return Ok(None);
+        }
+        let Some(Operand::Value {
+            ty,
+            val,
+        }) = self.try_index_operator_overload(f, scope, "*[]", &base, index, span)?
+        else {
+            return Ok(None);
+        };
+        Ok(self.types.pointee(ty).map(|elem| Operand::Place {
+            ty: elem,
+            addr: val,
+        }))
+    }
+
     fn binary_operand_type(
         &mut self,
         lhs: &Operand,
@@ -1847,10 +1889,21 @@ impl Compiler {
             return Ok(Operand::int(s[*i as usize] as i128, TypeId::U8));
         }
         let bty = base_op.ty();
-        if let Some(result) =
-            self.try_index_operator_overload(f, scope, "[]", &base_op, &index_op, span)?
-        {
-            return Ok(result);
+        // `operator []` when one matches, else `operator *[]` dereferenced.
+        let getter = self.try_index_operator_overload(f, scope, "[]", &base_op, &index_op, span);
+        match getter {
+            Ok(Some(result)) => return Ok(result),
+            Ok(None) | Err(_) => {
+                if let Some(result) =
+                    self.try_pointer_index_operator(f, scope, &base_op, &index_op, span)?
+                {
+                    return Ok(result);
+                }
+                // A pointer indexes its memory when no operator for the pointee fits.
+                if self.types.pointee(bty).is_none() {
+                    getter?;
+                }
+            }
         }
         let index_op = self.settle_untyped(index_op, Some(TypeId::S64));
         let ity = index_op.ty();

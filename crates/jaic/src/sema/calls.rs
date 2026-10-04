@@ -390,6 +390,35 @@ impl Compiler {
             if param == TypeId::CODE && macro_call {
                 return Ok(convert::LITERAL);
             }
+            // `ifx c then a else b`: each branch must fit (`"-->"` does not fit a `u8`).
+            if let Some(ast::Expr {
+                kind:
+                    E::Ifx {
+                        then_value,
+                        else_value,
+                        ..
+                    },
+                ..
+            }) = &arg.expr
+            {
+                let mut cost = convert::LITERAL;
+                for branch in [then_value, else_value].into_iter().flatten() {
+                    if is_deferred(branch) {
+                        continue;
+                    }
+                    let Ok(op) = self.check_expr_no_emit(arg.scope, branch) else {
+                        continue;
+                    };
+                    let probe = CallArg {
+                        op: Some(op),
+                        expr: Some((**branch).clone()),
+                        span: branch.span,
+                        ..arg.clone()
+                    };
+                    cost = cost.max(self.arg_cost(&probe, param, macro_call)?);
+                }
+                return Ok(cost);
+            }
             // Deferred arguments fit any plausible target; prefer exact-looking ones.
             let scalar = matches!(
                 self.types.kind(self.types.repr_struct(param)),
@@ -575,8 +604,18 @@ impl Compiler {
                 let name = param.name.map(|n| n.name).unwrap();
                 let Some(arg) = arg_ops.first() else {
                     if let Some(d) = &param.default {
-                        let v = self.eval_const_value(def_scope, d)?;
-                        let ty = self.type_of_value(&v);
+                        // `$type: Query = .X`: the default takes the declared type.
+                        let declared = match &param.ty {
+                            Some(t) if !procs::has_poly(t) => Some(self.eval_type(def_scope, t)?),
+                            _ => None,
+                        };
+                        let (v, ty) = match declared {
+                            Some(t) => (self.const_value_of_type(def_scope, d, t)?, t),
+                            None => {
+                                let ty = self.eval_const(def_scope, d, None)?.ty();
+                                (self.const_value_of_type(def_scope, d, ty)?, ty)
+                            }
+                        };
                         bindings.push((name, v, ty));
                         continue;
                     }
@@ -605,9 +644,13 @@ impl Compiler {
                 let op = match arg.op.clone() {
                     Some(op) => op,
                     None => {
-                        // `.{...}` / `.X` for a baked parameter: check against its declared type.
-                        let declared = match &param.ty {
-                            Some(t) if !procs::has_poly(t) => Some(self.eval_type(def_scope, t)?),
+                        // `.{...}` / `.X` for a baked parameter: check against its declared
+                        // type, or the type of its default (`$info := Info.{}`).
+                        let declared = match (&param.ty, &param.default) {
+                            (Some(t), _) if !procs::has_poly(t) => {
+                                Some(self.eval_type(def_scope, t)?)
+                            }
+                            (None, Some(d)) => Some(self.eval_const(def_scope, d, None)?.ty()),
                             _ => None,
                         };
                         let expr = arg.expr.clone().unwrap();
@@ -625,6 +668,7 @@ impl Compiler {
                         }
                     }
                 };
+                let op_ty = op.ty();
                 let value = match op {
                     Operand::Type(t) => Value::Type(t),
                     Operand::Const {
@@ -645,7 +689,11 @@ impl Compiler {
                         Ok(ty) => ty,
                         Err(_) => self.type_of_value(&value),
                     },
-                    _ => self.type_of_value(&value),
+                    // Aggregate constants carry no type of their own.
+                    _ => match self.type_of_value(&value) {
+                        TypeId::VOID => op_ty,
+                        t => t,
+                    },
                 };
                 if let Some(t) = &param.ty
                     && procs::has_poly(t)
@@ -817,6 +865,25 @@ impl Compiler {
     }
 
     /// Match a polymorphic type pattern against a concrete type, adding bindings.
+    /// `ty` if it is an instance of `ps`, else the first `#as` member (searched
+    /// depth-first) that is one.
+    fn instance_or_as_base(&mut self, ps: value::PolyStructId, ty: TypeId) -> Option<TypeId> {
+        if self.poly_structs[ps.0 as usize]
+            .instances
+            .values()
+            .any(|&t| t == ty)
+        {
+            return Some(ty);
+        }
+        let s = self.types.as_struct(ty)?;
+        self.layout_struct(s, Span::default()).ok()?;
+        let fields = self.types.struct_info(s).fields.clone();
+        fields
+            .iter()
+            .filter(|f| f.as_)
+            .find_map(|f| self.instance_or_as_base(ps, f.ty))
+    }
+
     pub fn match_pattern(
         &mut self,
         pattern: &ast::Expr,
@@ -854,28 +921,21 @@ impl Compiler {
             // A bare polymorphic struct matches any of its instances; binding its
             // name makes the instance signature name the instance.
             E::Ident(name) => match self.ident_poly_struct(scope, *name)? {
-                Some(ps)
-                    if self.poly_structs[ps.0 as usize]
-                        .instances
-                        .values()
-                        .any(|&t| t == ty) =>
-                {
-                    bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
+                Some(ps) => {
+                    // A `*Instance` argument is dereferenced for a by-value parameter;
+                    // a struct with an `#as` instance member matches as that instance.
+                    let instance = self.instance_or_as_base(ps, ty).or_else(|| {
+                        let p = self.types.pointee(ty)?;
+                        self.instance_or_as_base(ps, p)
+                    });
+                    match instance {
+                        Some(t) => bind(self, bindings, *name, Value::Type(t), TypeId::TYPE),
+                        None => err(
+                            span,
+                            format!("{} is not an instance of '{name}'", self.types.name(ty)),
+                        ),
+                    }
                 }
-                // A `*Instance` argument is dereferenced for a by-value parameter.
-                Some(ps)
-                    if let Some(p) = self.types.pointee(ty)
-                        && self.poly_structs[ps.0 as usize]
-                            .instances
-                            .values()
-                            .any(|&t| t == p) =>
-                {
-                    bind(self, bindings, *name, Value::Type(p), TypeId::TYPE)
-                }
-                Some(_) => err(
-                    span,
-                    format!("{} is not an instance of '{name}'", self.types.name(ty)),
-                ),
                 None => Ok(()),
             },
             E::PolyRestricted {
