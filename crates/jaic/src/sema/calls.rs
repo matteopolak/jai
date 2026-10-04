@@ -600,9 +600,13 @@ impl Compiler {
                         );
                     }
                 };
-                // The declared type may itself be polymorphic (`$T: Type`).
+                // The declared type may itself be polymorphic (`$T: Type`), or mention
+                // another parameter's binding (`$compare: (T, T) -> bool`).
                 let ty = match &param.ty {
-                    Some(t) if !procs::has_poly(t) => self.eval_type(def_scope, t)?,
+                    Some(t) if !procs::has_poly(t) => match self.eval_type(def_scope, t) {
+                        Ok(ty) => ty,
+                        Err(_) => self.type_of_value(&value),
+                    },
                     _ => self.type_of_value(&value),
                 };
                 if let Some(t) = &param.ty
@@ -819,6 +823,16 @@ impl Compiler {
                         .any(|&t| t == ty) =>
                 {
                     bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
+                }
+                // A `*Instance` argument is dereferenced for a by-value parameter.
+                Some(ps)
+                    if let Some(p) = self.types.pointee(ty)
+                        && self.poly_structs[ps.0 as usize]
+                            .instances
+                            .values()
+                            .any(|&t| t == p) =>
+                {
+                    bind(self, bindings, *name, Value::Type(p), TypeId::TYPE)
                 }
                 Some(_) => err(
                     span,
@@ -1395,6 +1409,14 @@ impl Compiler {
             BuiltinProc::InitializerOf => {
                 let ty = self.eval_type_in(f, scope, &arg.value)?;
                 let proc = self.initializer_proc(ty, span)?;
+                // A type that is all zeroes by default has no initializer (`#if initializer_of(T)`).
+                if matches!(self.default_initializer(ty, span), Ok(None)) {
+                    return Ok(Operand::Const {
+                        ty: proc.1,
+                        value: Value::Null,
+                        untyped: false,
+                    });
+                }
                 Ok(Operand::Value {
                     ty: proc.1,
                     val: f.b.func_addr(proc.0),

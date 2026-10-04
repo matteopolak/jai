@@ -578,6 +578,14 @@ impl Compiler {
             }
             | Operand::Type(_)
             | Operand::Procs(_) => Ok(true),
+            // A pointer-sized constant computed at compile time (e.g. a procedure address).
+            Operand::Const {
+                value: Value::Bytes(agg),
+                ty,
+                ..
+            } if self.types.is_pointer(ty) || matches!(self.types.kind(ty), TypeKind::Proc(_)) => {
+                Ok(!agg.relocs.is_empty() || agg.bytes.iter().any(|&b| b != 0))
+            }
             other => err(
                 expr.span,
                 format!(

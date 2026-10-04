@@ -70,6 +70,9 @@ pub fn normalize(path: &Path) -> PathBuf {
     out
 }
 
+/// Marks an import argument `.Member` whose type comes from the module parameter.
+const INFERRED_PARAM: &str = "\0inferred.";
+
 impl Compiler {
     fn read_source(&mut self, path: &Path, span: Span) -> Result<FileId> {
         let Some(bytes) = self.fs.read(path) else {
@@ -268,6 +271,49 @@ impl Compiler {
                 if decl.using
                     && decl.kind == ast::DeclKind::Const
                     && let [name] = decl.names.as_slice()
+                    && let Some(ast::Expr {
+                        kind: ast::ExprKind::Enum(lit),
+                        ..
+                    }) = &decl.value
+                    && lit.items.iter().all(|i| matches!(i, ast::EnumItem::Member(_)))
+                {
+                    // `using E :: enum { A; B; }`: the member names are known now, so declare
+                    // `A :: E.A;` aliases at once; other declarations (even other enums'
+                    // values) may refer to them before the enum itself is checked.
+                    for item in &lit.items {
+                        let ast::EnumItem::Member(member) = item else {
+                            continue;
+                        };
+                        let span = member.name.span;
+                        let alias = const_alias(
+                            member.name,
+                            ast::Expr {
+                                kind: ast::ExprKind::Member(
+                                    Box::new(ast::Expr {
+                                        kind: ast::ExprKind::Ident(name.name),
+                                        span,
+                                    }),
+                                    member.name,
+                                ),
+                                span,
+                            },
+                        );
+                        let id = self.add_entity(
+                            target,
+                            member.name.name,
+                            span,
+                            EntityKind::Decl {
+                                decl: alias,
+                                index: 0,
+                            },
+                            exported,
+                        );
+                        self.entity_mut(id).file_private = vis == ast::ScopeKind::File;
+                        self.entity_mut(id).home = file_scope;
+                    }
+                } else if decl.using
+                    && decl.kind == ast::DeclKind::Const
+                    && let [name] = decl.names.as_slice()
                 {
                     // `using E :: enum {...}`: also bring the type's members into scope.
                     self.scope_mut(target).pending.push(Pending {
@@ -316,6 +362,9 @@ impl Compiler {
                 self.load_file(&full, module, *span)?;
             }
             ast::StmtKind::StaticIf {
+                ..
+            }
+            | ast::StmtKind::StaticSwitch {
                 ..
             }
             | ast::StmtKind::Insert {
@@ -470,6 +519,51 @@ impl Compiler {
             false,
         );
         self.modules[module.0 as usize].param_entities.push(id);
+        if let Some(Value::String(text)) = &provided
+            && let Some(member) = std::str::from_utf8(text)
+                .ok()
+                .and_then(|t| t.strip_prefix(INFERRED_PARAM))
+        {
+            // Typecheck `.Member` against the parameter's declared type.
+            let EntityKind::Decl {
+                decl, ..
+            } = &mut self.entity_mut(id).kind
+            else {
+                unreachable!()
+            };
+            let decl = Rc::make_mut(decl);
+            // `P := Kind.A` has no written type: use the default's (`type_of(Kind.A)`).
+            if decl.ty.is_none()
+                && let Some(default) = decl.value.take()
+            {
+                let span = default.span;
+                decl.ty = Some(ast::Expr {
+                    kind: ast::ExprKind::Call {
+                        callee: Box::new(ast::Expr {
+                            kind: ast::ExprKind::Ident(Sym::intern("type_of")),
+                            span,
+                        }),
+                        args: vec![ast::Arg {
+                            name: None,
+                            target: None,
+                            context: false,
+                            spread: false,
+                            value: default,
+                        }],
+                        hint: ast::CallHint::None,
+                    },
+                    span,
+                });
+            }
+            decl.value = Some(ast::Expr {
+                kind: ast::ExprKind::InferredMember(ast::Ident {
+                    name: Sym::intern(member),
+                    span: param.span,
+                }),
+                span: param.span,
+            });
+            return Ok(());
+        }
         if let Some(value) = provided {
             self.entity_mut(id).kind = EntityKind::Const {
                 value,
@@ -512,6 +606,15 @@ impl Compiler {
                     else_branch
                 };
                 self.declare_stmts(scope, file_scope, branch, vis)?;
+            }
+            ast::StmtKind::StaticSwitch {
+                value,
+                cases,
+            } => {
+                let eval_scope = file_scope_for_eval(self, scope, file_scope);
+                if let Some(case) = self.static_switch_case(eval_scope, value, cases)? {
+                    self.declare_stmts(scope, file_scope, &case.body, vis)?;
+                }
             }
             ast::StmtKind::Insert {
                 value, ..
@@ -575,7 +678,13 @@ impl Compiler {
         let dir = self.file_dir(file);
         let mut params = Vec::new();
         for (position, arg) in import.params.iter().enumerate() {
-            let value = self.eval_const_value(from_scope, &arg.value)?;
+            // `.Member` needs the parameter's type, known only once the module is read.
+            let value = match &arg.value.kind {
+                ast::ExprKind::InferredMember(member) => {
+                    Value::String(format!("{INFERRED_PARAM}{}", member.name).as_bytes().into())
+                }
+                _ => self.eval_const_value(from_scope, &arg.value)?,
+            };
             let name = arg
                 .name
                 .map_or_else(|| Sym::intern(&format!("${position}")), |n| n.name);
@@ -702,4 +811,27 @@ fn file_scope_for_eval(c: &Compiler, scope: ScopeId, file_scope: ScopeId) -> Sco
     } else {
         scope
     }
+}
+
+/// `name :: value;`, a synthesized constant declaration.
+fn const_alias(name: ast::Ident, value: ast::Expr) -> Rc<ast::Decl> {
+    Rc::new(ast::Decl {
+        id: ast::AstId::fresh(),
+        names: vec![name],
+        kind: ast::DeclKind::Const,
+        ty: None,
+        span: value.span,
+        value: Some(value),
+        extra_values: Vec::new(),
+        existing: Vec::new(),
+        using_filter: None,
+        foreign: None,
+        union_tag: None,
+        using: false,
+        as_: false,
+        backtick: false,
+        align: None,
+        flags: Vec::new(),
+        notes: Vec::new(),
+    })
 }

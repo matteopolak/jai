@@ -427,7 +427,10 @@ impl Compiler {
                 value: Value::String(s),
                 ..
             } => {
-                let text = format!("__jaic_insert :: ({});", String::from_utf8_lossy(&s));
+                // A trailing `;` (`#insert "x.y;"` as an expression) ends the statement only.
+                let source = String::from_utf8_lossy(&s);
+                let source = source.trim_end().trim_end_matches(';');
+                let text = format!("__jaic_insert :: ({source});");
                 let file = self.sources.add(
                     format!("<#insert at {}>", self.sources.get(value.span.file).path),
                     text.clone().into(),

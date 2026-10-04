@@ -579,8 +579,15 @@ pub fn call(
                     ws.name
                 )));
             }
+            let fs = reg.env.fs.clone();
+            // Resolved now: the metaprogram may change directory before it compiles.
+            let path = fs.canonical(&PathBuf::from(&value));
+            if op == MetaOp::AddFile && !fs.is_file(&path) {
+                return Err(trap(format!("add_build_file: could not read file '{value}'")));
+            }
+            let ws = reg.ws(id).map_err(trap)?;
             ws.pending.push(if op == MetaOp::AddFile {
-                ProgramSource::File(PathBuf::from(value))
+                ProgramSource::File(path)
             } else {
                 ProgramSource::String(value)
             });

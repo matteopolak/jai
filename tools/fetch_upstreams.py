@@ -19,12 +19,19 @@ REPOSITORIES = (
 )
 # Libraries the projects above import from git submodules: pinned like the
 # projects but exempt from the recency cutoff.
-DEPENDENCIES = ('SogoCZE/jai_parser',)
+DEPENDENCIES = ('SogoCZE/jai_parser', 'ostef/Linalg', 'ostef/Jolt-Jai')
+# Dependencies pinned to the consumer's submodule commit (else the newest commit).
+SUBMODULE_REVISIONS = {
+    'ostef/Linalg': '5f60c11f057787a804ce9582c5daeccc0e8de89a',
+    'ostef/Jolt-Jai': '56d1cd47b92d6c08ecdab5b9057addce35dab41a',
+}
 # Submodule mount points: (consumer directory link, target relative to corpus/upstream).
 MODULE_LINKS = (
     ('SogoCZE--Jails/modules/jaison', 'rluba--jaison'),
     ('SogoCZE--Jails/modules/unicode_utils', 'rluba--jaison/unicode_utils'),
     ('SogoCZE--Jails/modules/jai_parser', 'SogoCZE--jai_parser'),
+    ('ostef--Vk-Engine/Modules/Linalg', 'ostef--Linalg'),
+    ('ostef--Vk-Engine/Modules/JoltPhysics', 'ostef--Jolt-Jai'),
 )
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -54,7 +61,7 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     if not cache.exists():
         subprocess.run(['git', 'clone', '--bare', '--filter=blob:none', '--depth=128', f'https://github.com/{repo}.git', str(cache)], check=True)
     # Existing manifest pins win even on a machine with no cache.
-    revision = pinned['revision'] if pinned else git(cache, 'rev-parse', 'HEAD')
+    revision = pinned['revision'] if pinned else SUBMODULE_REVISIONS.get(repo) or git(cache, 'rev-parse', 'HEAD')
     if not re.fullmatch(r'[0-9a-f]{40}', revision):
         raise ValueError(f'invalid revision: {revision}')
     if subprocess.run(['git', '--git-dir', str(cache), 'cat-file', '-e', revision + '^{commit}'], capture_output=True).returncode:
