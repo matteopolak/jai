@@ -156,7 +156,7 @@ pub fn link(
     // Each library's argument group is added once (`-framework X` is two arguments).
     let mut seen: Vec<Vec<String>> = Vec::new();
     for lib in libraries {
-        let args = library_args(lib);
+        let args = library_args(lib)?;
         if !args.is_empty() && !seen.contains(&args) {
             seen.push(args);
         }
@@ -177,11 +177,11 @@ pub fn link(
 }
 
 /// Linker arguments for one Jai library reference.
-fn library_args(lib: &Library) -> Vec<String> {
+fn library_args(lib: &Library) -> Result<Vec<String>, String> {
     let name = lib.name.as_str();
     // libc and friends are always linked implicitly.
     if matches!(name, "c" | "libc") {
-        return Vec::new();
+        return Ok(Vec::new());
     }
     if !lib.system {
         // A library shipped next to the source: link it by path when found.
@@ -196,12 +196,34 @@ fn library_args(lib: &Library) -> Vec<String> {
         } else {
             "so"
         };
-        for candidate in [format!("{file}.{ext}"), format!("lib{file}.{ext}")] {
+        // Like `jai`, a static archive wins over a shared library.
+        let candidates = [
+            format!("{file}.a"),
+            format!("lib{file}.a"),
+            format!("{file}.{ext}"),
+            format!("lib{file}.{ext}"),
+        ];
+        for candidate in &candidates {
             let full = dir.join(candidate);
-            if full.exists() {
-                let parent = full.parent().unwrap_or(Path::new(".")).display();
-                return vec![full.display().to_string(), format!("-Wl,-rpath,{parent}")];
+            if !full.exists() {
+                continue;
             }
+            if candidate.ends_with(".a") {
+                return Ok(vec![full.display().to_string()]);
+            }
+            let parent = full.parent().unwrap_or(Path::new(".")).display();
+            return Ok(vec![
+                full.display().to_string(),
+                format!("-Wl,-rpath,{parent}"),
+            ]);
+        }
+        // A path is never a system library name: report it instead of a confusing `-l`.
+        if name.contains('/') {
+            return Err(format!(
+                "library '{name}' not found: looked for {} in {}",
+                candidates.join(", "),
+                dir.display()
+            ));
         }
     }
     // Apple frameworks (`AppKit`, `Metal`...) link with `-framework`; their directories exist on
@@ -209,7 +231,7 @@ fn library_args(lib: &Library) -> Vec<String> {
     if cfg!(target_os = "macos")
         && Path::new(&format!("/System/Library/Frameworks/{name}.framework")).exists()
     {
-        return vec!["-framework".to_string(), name.to_string()];
+        return Ok(vec!["-framework".to_string(), name.to_string()]);
     }
     // Jai names libraries either way (`"libobjc"` / `"objc"`); `-l` wants the bare name.
     let name = name.strip_prefix("lib").unwrap_or(name);
@@ -217,7 +239,7 @@ fn library_args(lib: &Library) -> Vec<String> {
     for dir in jaic::interp::library_dirs() {
         let archive = dir.join(format!("lib{name}.a"));
         if archive.exists() {
-            return vec![archive.display().to_string()];
+            return Ok(vec![archive.display().to_string()]);
         }
     }
     let mut args = Vec::new();
@@ -225,5 +247,5 @@ fn library_args(lib: &Library) -> Vec<String> {
         args.push("-L/opt/homebrew/lib".to_string());
     }
     args.push(format!("-l{name}"));
-    args
+    Ok(args)
 }
