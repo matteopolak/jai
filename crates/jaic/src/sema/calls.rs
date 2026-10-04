@@ -235,12 +235,7 @@ impl Compiler {
     }
 
     /// Check whether `proc` accepts `args`, instantiating polymorphic procedures.
-    fn match_candidate(
-        &mut self,
-        proc: ProcId,
-        args: &[CallArg],
-        span: Span,
-    ) -> Result<Candidate> {
+    fn match_candidate(&mut self, proc: ProcId, args: &[CallArg], span: Span) -> Result<Candidate> {
         let header = self.proc(proc).lit.header.clone();
         self.refresh_implicit_poly(proc)?;
         let poly_vars = if self.proc(proc).is_poly {
@@ -556,7 +551,10 @@ impl Compiler {
                 if let Some(t) = &param.ty {
                     for name in poly_names(t) {
                         if !bindings.iter().any(|(n, _, _)| *n == name) {
-                            return err(span, format!("could not infer polymorphic type '${name}'"));
+                            return err(
+                                span,
+                                format!("could not infer polymorphic type '${name}'"),
+                            );
                         }
                     }
                 }
@@ -1206,6 +1204,7 @@ impl Compiler {
             file,
         );
         scratch.context = Some(scratch.b.param(0));
+        scratch.type_only = true;
         scratch
     }
 

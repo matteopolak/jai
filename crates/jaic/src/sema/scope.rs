@@ -129,11 +129,17 @@ pub enum EntityKind {
 
 #[derive(Clone, Debug)]
 pub enum Resolved {
-    Const { value: Value, ty: TypeId },
+    Const {
+        value: Value,
+        ty: TypeId,
+    },
     Proc(ProcId),
     /// An alias of an overload set (`dot :: dot_product;`).
     ProcSet(Vec<ProcId>),
-    Global { global: ir::GlobalId, ty: TypeId },
+    Global {
+        global: ir::GlobalId,
+        ty: TypeId,
+    },
     Module(ModuleId),
     Library(value::LibraryId),
     PolyStruct(value::PolyStructId),

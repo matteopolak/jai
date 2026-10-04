@@ -370,6 +370,7 @@ impl Compiler {
             .cloned()
             .expect("struct without source");
         let mut items = Vec::new();
+        self.field_types.remove(&src.scope);
         self.collect_fields(src.scope, &src.lit.body, &mut items)?;
         for (decl, scope) in &src.extra {
             self.collect_decl_fields(*scope, decl, &mut items)?;
@@ -553,6 +554,10 @@ impl Compiler {
         };
         let notes: Vec<Rc<str>> = decl.notes.iter().map(|n| n.text.clone()).collect();
         for name in &decl.names {
+            self.field_types
+                .entry(scope)
+                .or_default()
+                .push((name.name, ty));
             out.push(FieldItem::Field(FieldDecl {
                 name: Some(name.name),
                 ty,

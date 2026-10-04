@@ -333,10 +333,13 @@ impl Compiler {
                 args,
                 ..
             } if name.name.as_str() == "poke_name" => {
-                let [module, ast::Expr {
-                    kind: ast::ExprKind::Ident(poked),
-                    ..
-                }] = &args[..]
+                let [
+                    module,
+                    ast::Expr {
+                        kind: ast::ExprKind::Ident(poked),
+                        ..
+                    },
+                ] = &args[..]
                 else {
                     return err(stmt.span, "#poke_name takes a module and a name");
                 };
@@ -373,7 +376,8 @@ impl Compiler {
     /// also become declarations of `Module`, joining its overload set.
     pub fn apply_pokes(&mut self) -> Result<()> {
         while let Some((module_expr, name, file_scope)) = self.pokes.pop() {
-            let lower::Operand::Module(module) = self.eval_const(file_scope, &module_expr, None)? else {
+            let lower::Operand::Module(module) = self.eval_const(file_scope, &module_expr, None)?
+            else {
                 return err(module_expr.span, "#poke_name needs a module");
             };
             let module_scope = self.modules[module.0 as usize].scope;

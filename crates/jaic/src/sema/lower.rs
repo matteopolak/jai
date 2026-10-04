@@ -128,6 +128,11 @@ pub struct FnCtx {
     pub macros: Vec<MacroFrame>,
     /// Loop body handed to the next `for_expansion` macro expansion.
     pub pending_for_body: Option<ForBody>,
+    /// Checking only for the type of an expression (`type_of`, `size_of`): no code is kept, so
+    /// names that only exist as types, such as the fields of a struct being laid out, resolve.
+    pub type_only: bool,
+    /// Constants declared ahead of their statement (see `check_block_stmts`).
+    pub hoisted_consts: std::collections::HashSet<ast::AstId>,
 }
 
 #[derive(Clone)]
@@ -169,6 +174,8 @@ impl FnCtx {
             compile_time: false,
             macros: Vec::new(),
             pending_for_body: None,
+            type_only: false,
+            hoisted_consts: Default::default(),
         }
     }
 }
