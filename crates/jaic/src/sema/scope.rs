@@ -131,6 +131,8 @@ pub enum EntityKind {
 pub enum Resolved {
     Const { value: Value, ty: TypeId },
     Proc(ProcId),
+    /// An alias of an overload set (`dot :: dot_product;`).
+    ProcSet(Vec<ProcId>),
     Global { global: ir::GlobalId, ty: TypeId },
     Module(ModuleId),
     Library(value::LibraryId),

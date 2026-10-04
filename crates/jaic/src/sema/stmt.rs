@@ -577,6 +577,59 @@ impl Compiler {
         Ok(true)
     }
 
+    /// `a op= b` through a user-defined `operator op=` (called with `*a`, or `a` by value).
+    fn try_operator_assign(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        bin: ast::BinOp,
+        target: &ast::Expr,
+        rhs: &ast::Expr,
+        span: Span,
+    ) -> Result<bool> {
+        let Ok(probe) = self.check_expr_no_emit(scope, target) else {
+            return Ok(false);
+        };
+        if !self.overloadable(probe.ty()) {
+            return Ok(false);
+        }
+        let text = format!("{}=", calls::binop_text(bin));
+        let candidates = self.operator_candidates(scope, &text, &[probe.ty()])?;
+        if candidates.is_empty() {
+            return Ok(false);
+        }
+        let Operand::Place {
+            ty,
+            addr,
+        } = self.check_expr(f, scope, target, None)?
+        else {
+            return err(target.span, "cannot assign to this expression");
+        };
+        let value = self.check_expr(f, scope, rhs, None)?;
+        let arg = |op: Operand| CallArg {
+            name: None,
+            spread: false,
+            expr: None,
+            op: Some(op),
+            span,
+            scope,
+        };
+        let ptr = Operand::Value {
+            ty: self.types.pointer(ty),
+            val: addr,
+        };
+        let by_ptr = vec![arg(ptr), arg(value.clone())];
+        if self.try_call(f, scope, &candidates, by_ptr, span).is_err() {
+            let place = Operand::Place {
+                ty,
+                addr,
+            };
+            let by_value = vec![arg(place), arg(value)];
+            self.call_procs(f, scope, &candidates, by_value, None, span)?;
+        }
+        Ok(true)
+    }
+
     fn check_assign(
         &mut self,
         f: &mut FnCtx,
@@ -595,6 +648,9 @@ impl Compiler {
         if let ast::AssignOp::Op(bin) = op {
             if lhs.len() != 1 || rhs.len() != 1 {
                 return err(span, "compound assignment takes one target and one value");
+            }
+            if self.try_operator_assign(f, scope, bin, &lhs[0], &rhs[0], span)? {
+                return Ok(());
             }
             // Evaluate the target once, then `*tmp = *tmp op rhs`.
             let place = self.check_expr(f, scope, &lhs[0], None)?;

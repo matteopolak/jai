@@ -59,6 +59,7 @@ impl Compiler {
             }
         }
         self.expand_all()?;
+        self.apply_pokes()?;
         self.run_top_level()?;
         // A program made only of `#run`/`#assert` directives has nothing to lower.
         let scope = self.modules[m.0 as usize].scope;

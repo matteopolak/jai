@@ -314,10 +314,7 @@ impl Compiler {
                 })
             }
             Operand::Procs(procs) if procs.len() == 1 => Ok(Resolved::Proc(procs[0])),
-            Operand::Procs(_) => err(
-                value.span,
-                "cannot alias an overload set with more than one procedure",
-            ),
+            Operand::Procs(procs) => Ok(Resolved::ProcSet(procs)),
             Operand::Module(m) => Ok(Resolved::Module(m)),
             Operand::PolyStruct(p) => Ok(Resolved::PolyStruct(p)),
             Operand::Library(l) => Ok(Resolved::Library(l)),

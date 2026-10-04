@@ -329,6 +329,20 @@ impl Compiler {
                 }
             }
             ast::StmtKind::Directive {
+                name,
+                args,
+                ..
+            } if name.name.as_str() == "poke_name" => {
+                let [module, ast::Expr {
+                    kind: ast::ExprKind::Ident(poked),
+                    ..
+                }] = &args[..]
+                else {
+                    return err(stmt.span, "#poke_name takes a module and a name");
+                };
+                self.pokes.push((module.clone(), *poked, file_scope));
+            }
+            ast::StmtKind::Directive {
                 ..
             }
             | ast::StmtKind::Empty => {}
@@ -353,6 +367,24 @@ impl Compiler {
             _ => return err(stmt.span, "this statement is not allowed at file scope"),
         }
         Ok(vis)
+    }
+
+    /// Apply `#poke_name Module name;`: the declarations called `name` visible at the directive
+    /// also become declarations of `Module`, joining its overload set.
+    pub fn apply_pokes(&mut self) -> Result<()> {
+        while let Some((module_expr, name, file_scope)) = self.pokes.pop() {
+            let lower::Operand::Module(module) = self.eval_const(file_scope, &module_expr, None)? else {
+                return err(module_expr.span, "#poke_name needs a module");
+            };
+            let module_scope = self.modules[module.0 as usize].scope;
+            for id in self.lookup(file_scope, name)? {
+                let poked = self.entity(id);
+                let (span, kind, home) = (poked.span, poked.kind.clone(), poked.home);
+                let copy = self.add_entity(module_scope, name, span, kind, true);
+                self.entity_mut(copy).home = home;
+            }
+        }
+        Ok(())
     }
 
     fn declare_module_parameter(
