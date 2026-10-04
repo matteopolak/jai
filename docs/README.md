@@ -7,6 +7,7 @@
 - [Shared native and WebAssembly language server](language-server.md)
 - [Browser compiler releases](browser-compiler-releases.md)
 - [Browser editor](browser-editor.md)
+- [Browser playground (jaic backend)](browser-playground.md)
 
 - [Code formatting](code-formatting.md)
 
