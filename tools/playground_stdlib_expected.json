@@ -9,6 +9,7 @@
   "as-poly-instance-args.jai",
   "asm-evex-decorations.jai",
   "asm-vector-instructions.jai",
+  "auto-bake-params.jai",
   "autocast-arithmetic-argument.jai",
   "autorun-plugin.jai",
   "backtick-defer-names.jai",
