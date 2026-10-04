@@ -77,6 +77,8 @@ pub struct Scope {
     pub usings: Vec<UsingEntry>,
     /// Procedure whose body this scope belongs to (locals are only visible inside it).
     pub proc_depth: u32,
+    /// The procedure whose parameters and body a `Proc` scope holds (for `#this`).
+    pub proc: Option<ProcId>,
 }
 
 #[derive(Clone, Debug)]
@@ -187,6 +189,7 @@ impl Compiler {
             pending: Vec::new(),
             usings: Vec::new(),
             proc_depth,
+            proc: None,
         });
         ScopeId(self.scopes.len() as u32 - 1)
     }

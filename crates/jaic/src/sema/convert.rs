@@ -144,6 +144,9 @@ impl Compiler {
                 if let TypeKind::Proc(_) = self.types.kind(to) {
                     for &p in procs {
                         if self.proc(p).is_poly {
+                            if let Some(inst) = self.instantiate_for_proc_type(p, to, span) {
+                                return Ok(Operand::Procs(vec![inst]));
+                            }
                             continue;
                         }
                         let pt = self.proc_type(p, span)?;
@@ -199,7 +202,7 @@ impl Compiler {
     }
 
     /// Structurally identical procedure types (ignoring parameter names).
-    fn proc_types_compatible(&self, a: TypeId, b: TypeId) -> bool {
+    pub(super) fn proc_types_compatible(&self, a: TypeId, b: TypeId) -> bool {
         match (self.types.kind(a), self.types.kind(b)) {
             (TypeKind::Proc(x), TypeKind::Proc(y)) => {
                 x.params == y.params && x.returns == y.returns && x.c_call == y.c_call

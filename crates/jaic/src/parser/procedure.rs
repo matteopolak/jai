@@ -239,6 +239,23 @@ impl Parser<'_> {
         Ok(params)
     }
 
+    /// A parameter's type. A bare parenthesized list, as in `f: (*Vector3)`, is a procedure type
+    /// returning nothing; parentheses around a type mean nothing here.
+    fn parse_param_type(&mut self) -> PResult<Expr> {
+        if self.at(P::LParen) && !self.paren_starts_header(0) {
+            let closes_type = self.matching_paren(0).is_some_and(|close| {
+                matches!(
+                    self.toks[close + 1].tok,
+                    Tok::Punct(P::Comma | P::Semi | P::RParen | P::Eq)
+                )
+            });
+            if closes_type {
+                return self.parse_proc_expr(Default::default());
+            }
+        }
+        self.parse_expr()
+    }
+
     /// `a, b: T = v`, `$T: Type`, `using x: *X`, `args: ..Any` or a bare type (procedure types).
     fn parse_param_group(&mut self, out: &mut Vec<Param>) -> PResult<()> {
         let start = self.span();
@@ -258,7 +275,7 @@ impl Parser<'_> {
         }
         if !self.named_param_ahead() {
             let variadic = self.eat(P::DotDot);
-            let ty = self.parse_expr()?;
+            let ty = self.parse_param_type()?;
             let span = start.to(ty.span);
             out.push(Param {
                 name: None,
@@ -295,7 +312,7 @@ impl Parser<'_> {
                 self.tok(),
                 Tok::Punct(P::Eq | P::Comma | P::Semi | P::RParen)
             ) {
-                ty = Some(self.parse_expr()?);
+                ty = Some(self.parse_param_type()?);
             }
             if self.eat(P::Eq) {
                 default = Some(self.parse_expr()?);

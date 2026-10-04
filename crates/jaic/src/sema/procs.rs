@@ -656,6 +656,7 @@ impl Compiler {
         f.b.func.source_file = file.0;
         let module = self.scope(sig.scope).module;
         let scope = self.new_scope(ScopeKind::Proc, Some(sig.scope), module, None);
+        self.scope_mut(scope).proc = Some(id);
         let Some(body) = &lit.body else {
             // Intrinsic or #compiler without a body: synthesize a forwarding body.
             return self.lower_intrinsic_wrapper(id, func_id, f, &sig, &header);

@@ -326,6 +326,13 @@ impl Compiler {
                             return Ok(convert::EXACT);
                         }
                     }
+                    for &p in procs.clone().iter() {
+                        if self.proc(p).is_poly
+                            && self.instantiate_for_proc_type(p, param, arg.span).is_some()
+                        {
+                            return Ok(convert::WIDEN);
+                        }
+                    }
                     if procs.len() == 1 && !self.proc(procs[0]).is_poly {
                         let pt = self.proc_type(procs[0], arg.span)?;
                         if let (TypeKind::Proc(a), TypeKind::Proc(b)) =
@@ -1182,10 +1189,11 @@ impl Compiler {
         Ok(None)
     }
 
-    pub fn check_expr_no_emit(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Operand> {
+    /// A throwaway function context for checking code whose output is discarded.
+    fn scratch_ctx(&self, scope: ScopeId) -> FnCtx {
         let file = self.scope_file(scope);
         let mut scratch = FnCtx::new(
-            "typeof".into(),
+            "scratch".into(),
             ir::Sig {
                 params: vec![Ty::Ptr],
                 returns: vec![],
@@ -1196,7 +1204,47 @@ impl Compiler {
             file,
         );
         scratch.context = Some(scratch.b.param(0));
+        scratch
+    }
+
+    pub fn check_expr_no_emit(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Operand> {
+        let mut scratch = self.scratch_ctx(scope);
         self.check_expr(&mut scratch, scope, expr, None)
+    }
+
+    /// Instantiate polymorphic `proc` so that it has procedure type `target`, as when a
+    /// polymorphic procedure is passed to a parameter of procedure type: the target's
+    /// parameter types play the role of call arguments.
+    pub fn instantiate_for_proc_type(
+        &mut self,
+        proc: ProcId,
+        target: TypeId,
+        span: Span,
+    ) -> Option<ProcId> {
+        let TypeKind::Proc(info) = self.types.kind(target).clone() else {
+            return None;
+        };
+        let scope = self.proc(proc).scope;
+        let mut scratch = self.scratch_ctx(scope);
+        let placeholder = scratch.b.param(0);
+        let args: Vec<CallArg> = info
+            .params
+            .iter()
+            .map(|&ty| CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(Operand::Value {
+                    ty,
+                    val: placeholder,
+                }),
+                span,
+                scope,
+            })
+            .collect();
+        let candidate = self.match_candidate(&mut scratch, proc, &args, span).ok()?;
+        let ty = self.proc_type(candidate.proc, span).ok()?;
+        (ty == target || self.proc_types_compatible(ty, target)).then_some(candidate.proc)
     }
 
     pub fn check_procedure_of_call(
@@ -1745,6 +1793,9 @@ fn assign_slots(
             }
             slots[p] = Some(if arg.spread {
                 Slot::Spread(i)
+            } else if Some(p) == variadic_index {
+                // `v = a, b, c`: later positional arguments extend the list.
+                Slot::Variadic(vec![i])
             } else {
                 Slot::Arg(i)
             });
