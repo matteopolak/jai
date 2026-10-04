@@ -1455,12 +1455,14 @@ impl Compiler {
                     );
                 }
                 agg.bytes[o..o + 8].copy_from_slice(&(s.len() as u64).to_le_bytes());
-                let g = self.string_global(s);
-                agg.relocs.push(ir::Reloc {
-                    offset: offset + 8,
-                    target: ir::RelocTarget::Global(g),
-                    addend: 0,
-                });
+                if !s.is_empty() {
+                    let g = self.string_global(s);
+                    agg.relocs.push(ir::Reloc {
+                        offset: offset + 8,
+                        target: ir::RelocTarget::Global(g),
+                        addend: 0,
+                    });
+                }
             }
             Value::Type(t) => {
                 let g = self.type_info_global(*t, span)?;
