@@ -204,6 +204,21 @@ impl Parser<'_> {
         start: crate::source::Span,
     ) -> PResult<Expr> {
         self.expect(P::FatArrow, "in lambda")?;
+        // `(a, b) =>` parses like the unnamed parameter types of a procedure type;
+        // a bare identifier there is the parameter's name.
+        for p in &mut header.params {
+            if p.name.is_none()
+                && let Some(Expr {
+                    kind: ExprKind::Ident(name),
+                    span,
+                }) = p.ty.take_if(|t| matches!(t.kind, ExprKind::Ident(_)))
+            {
+                p.name = Some(crate::ast::Ident {
+                    name,
+                    span,
+                });
+            }
+        }
         let body = if self.at(P::LBrace) {
             let block = self.parse_block()?;
             let span = block.span;
@@ -237,6 +252,28 @@ impl Parser<'_> {
         self.in_list = saved;
         self.expect(close, "to end the parameter list")?;
         Ok(params)
+    }
+
+    /// A declared parameter type. `f: (T)` is a procedure type taking one `T`
+    /// (and no results), not a parenthesized type.
+    fn parse_param_type(&mut self) -> PResult<Expr> {
+        let single_ident_parens = self.at(P::LParen)
+            && matches!(self.tok_at(1), Tok::Ident(_))
+            && self.at_n(2, P::RParen)
+            && matches!(
+                self.tok_at(3),
+                Tok::Punct(P::Comma | P::RParen | P::Semi | P::Eq)
+            );
+        if !single_ident_parens {
+            return self.parse_expr();
+        }
+        let start = self.span();
+        self.bump();
+        let mut header = new_header(start, CallHintFlag::None);
+        header.params = self.parse_params(P::RParen)?;
+        header.span = start.to(self.prev_span());
+        let span = header.span;
+        Ok(mk(ExprKind::ProcType(Rc::new(header)), span))
     }
 
     /// `a, b: T = v`, `$T: Type`, `using x: *X`, `args: ..Any` or a bare type (procedure types).
@@ -297,7 +334,7 @@ impl Parser<'_> {
                 self.tok(),
                 Tok::Punct(P::Eq | P::Comma | P::Semi | P::RParen)
             ) {
-                ty = Some(self.parse_expr()?);
+                ty = Some(self.parse_param_type()?);
             }
             if self.eat(P::Eq) {
                 default = Some(self.parse_expr()?);

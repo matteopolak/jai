@@ -733,7 +733,7 @@ isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
 }
 
 // A lone '%' (or '%0') consumes the next argument; '%N' selects argument N
-// (one-based); '%00' prints nothing. '%%' is two consecutive arguments
+// (one-based) and a following lone '%' continues after it; '%00' prints nothing. '%%' is two consecutive arguments
 // (newer Jai). A literal percent is written '\%' in source, which the lexer
 // turns into byte 31. Out-of-range selectors fail explicitly.
 __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) -> bool {
@@ -756,6 +756,7 @@ __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) 
                 index = index*10 + digit; position += 1;
             }
             index -= 1;
+            implicit = index + 1;  // A following lone '%' continues after N.
         } else {
             if position < format.count && format[position] == #char "0" position += 1;
             implicit += 1;
@@ -764,6 +765,7 @@ __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) 
             append(builder, "<missing format argument>"); builder.failed = true; return false;
         }
         __append_item(builder, args[index], false, false, 0);
+        implicit = index + 1;
         if builder.failed return false;
     }
     return !builder.failed;

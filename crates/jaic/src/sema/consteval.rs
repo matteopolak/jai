@@ -328,6 +328,26 @@ impl Compiler {
     // #insert
     // -----------------------------------------------------------------------
 
+    /// Evaluate the operand of `#insert`. `#insert -> string { ... }` (or `-> Code`) is a
+    /// procedure without parameters that runs at compile time; its result is inserted.
+    pub fn eval_insert_operand(&mut self, scope: ScopeId, value: &ast::Expr) -> Result<Operand> {
+        if let ast::ExprKind::Proc(lit) = &value.kind
+            && lit.header.params.is_empty()
+            && !lit.header.returns.is_empty()
+        {
+            let call = ast::Expr {
+                kind: ast::ExprKind::Call {
+                    callee: Box::new(value.clone()),
+                    args: Vec::new(),
+                    hint: ast::CallHint::None,
+                },
+                span: value.span,
+            };
+            return self.check_run(scope, &ast::RunBody::Expr(call), None, value.span);
+        }
+        self.eval_const(scope, value, None)
+    }
+
     pub fn insert_stmts_from(&mut self, op: Operand, span: Span) -> Result<Vec<ast::Stmt>> {
         match op {
             Operand::Const {
@@ -369,12 +389,12 @@ impl Compiler {
         scope: ScopeId,
         value: &ast::Expr,
     ) -> Result<Vec<ast::Stmt>> {
-        let op = self.eval_const(scope, value, None)?;
+        let op = self.eval_insert_operand(scope, value)?;
         self.insert_stmts_from(op, value.span)
     }
 
     pub fn eval_insert_expr(&mut self, scope: ScopeId, value: &ast::Expr) -> Result<ast::Expr> {
-        match self.eval_const(scope, value, None)? {
+        match self.eval_insert_operand(scope, value)? {
             Operand::Const {
                 value: Value::Code(code),
                 ..
@@ -501,6 +521,9 @@ impl Compiler {
                 let p = self.interp.read_u64(addr);
                 self.type_at(p, span).map(Value::Type)
             }
+            TypeKind::Code => Ok(Value::Code(
+                value::CodeId(self.interp.read_u64(addr) as u32),
+            )),
             TypeKind::String => {
                 let count = self.interp.read_u64(addr) as usize;
                 let data = self.interp.read_u64(addr + 8);

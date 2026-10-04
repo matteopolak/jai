@@ -142,7 +142,7 @@ impl Compiler {
         Ok((kept, consts))
     }
 
-    fn const_scope(
+    pub(super) fn const_scope(
         &mut self,
         parent: ScopeId,
         consts: Vec<(Sym, Value, TypeId)>,
