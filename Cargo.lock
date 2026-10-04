@@ -269,9 +269,7 @@ dependencies = [
 name = "jai-language-server"
 version = "0.1.0"
 dependencies = [
- "jai-lexer",
- "jai-source",
- "jai-syntax",
+ "jaic",
  "serde",
  "serde_json",
 ]
@@ -375,7 +373,6 @@ name = "jai-wasm"
 version = "0.1.0"
 dependencies = [
  "jai-language-server",
- "jai-runtime",
  "jaic",
 ]
 
