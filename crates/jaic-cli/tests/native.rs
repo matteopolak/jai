@@ -403,5 +403,23 @@ END
                 "{name}: unexpected report {err:?}"
             );
         }
+
+/// Window programs using Simp's automatic GL context creation type-check for every desktop
+/// OS (the GLX/WGL paths cannot run here, but they must keep compiling).
+#[test]
+fn simp_window_program_checks_on_desktop_oses() {
+    let source = repo_root().join("tests/stdlib/simp-window-program.jai");
+    for os in ["linux", "windows", "macos"] {
+        let output = Command::new(JAIC)
+            .arg("check")
+            .arg(&source)
+            .args(["-os", os])
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{os}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
     }
 }
