@@ -1,5 +1,5 @@
 // libc calls back into #c_call procedures: under the interpreter they are reached through
-// native thunks (see docs/jaic-interpreter.md).
+// native thunks (see docs/compiler/interpreter.md).
 #import "Basic";
 
 libc :: #system_library "libc";
