@@ -58,6 +58,7 @@ pub struct BuildSettings {
     pub optimization: String,
     pub additional_linker_arguments: Vec<String>,
     pub temporary_storage_size: Option<i64>,
+    pub array_bounds_check: Option<bool>,
 }
 
 impl Default for BuildSettings {
@@ -73,6 +74,7 @@ impl Default for BuildSettings {
             optimization: String::new(),
             additional_linker_arguments: Vec::new(),
             temporary_storage_size: None,
+            array_bounds_check: None,
         }
     }
 }
@@ -331,6 +333,7 @@ impl Workspaces {
             "additional_linker_arguments_clear" => s.additional_linker_arguments.clear(),
             "additional_linker_argument" => s.additional_linker_arguments.push(value.into()),
             "temporary_storage_size" => s.temporary_storage_size = value.parse().ok(),
+            "array_bounds_check" => s.array_bounds_check = Some(value != "OFF"),
             // Accepted and ignored: checks, stack traces, added-string dumps...
             _ => {}
         }
@@ -381,6 +384,9 @@ fn new_compiler(shared: &SharedWorkspaces, id: i64) -> Result<Box<Compiler>, Str
     }
     if let Some(size) = settings.temporary_storage_size {
         options.temporary_storage_size = size;
+    }
+    if let Some(check) = settings.array_bounds_check {
+        options.array_bounds_check = check;
     }
     let mut compiler = Box::new(Compiler::new(options, fs));
     compiler.interp.host = host;

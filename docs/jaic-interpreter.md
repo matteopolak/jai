@@ -12,6 +12,11 @@ playground. Memory is real host memory; foreign procedures are called natively (
   as in Jai. Runtime Support's `debug_break` is `#asm { int3; }` on x64 and `#bytes` `brk #0` on arm64; sema
   turns both (and only those `#bytes` encodings) into the `DebugBreak` intrinsic, since raw machine code
   cannot run in the interpreter.
+- **Array bounds checks**: indexing a fixed array, view, dynamic array or string emits the `BoundsCheck`
+  intrinsic (index, count), which traps with the index and count (`jaic-llvm` branches to `llvm.trap`).
+  Sema skips it inside `#no_abc` procedures and `for ... #no_abc` loops (`FnCtx::no_abc`), and everywhere when
+  a workspace sets `array_bounds_check = .OFF` (`Options::array_bounds_check`). `#no_abc { }` blocks and
+  `while`/`if` flags are parsed but still checked. Pointer indexing is never checked.
 - `Interp::call` is the entry from the compiler; `exec` / `run` / `step` interpret functions. Procedure
   values are tagged addresses (`FUNC_TAG`); foreign procedures without a native address are tagged
   `FOREIGN_TAG` and trap with "foreign procedure '...' is not available here" when called.

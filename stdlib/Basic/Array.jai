@@ -82,10 +82,10 @@ array_add_if_unique :: (array: *[..] $T, item: T) -> bool, s64 {
 array_insert_at :: (array: *[..] $T, value: T, index: s64) {
     assert(index >= 0 && index <= array.count);
     array_reserve(array, array.count+1);
-    i := array.count;
+    array.count += 1;
+    i := array.count - 1;
     while i > index { array.*[i] = array.*[i-1]; i -= 1; }
     array.*[index] = value;
-    array.count += 1;
 }
 array_unordered_remove_by_value :: (array: *[] $T, item: T, $stop_after_first := false) -> s64 {
     removed: s64;
@@ -101,13 +101,15 @@ array_unordered_remove_by_value :: (array: *[] $T, item: T, $stop_after_first :=
 }
 array_unordered_remove_by_index :: (array_pointer: *[] $T, index: s64) {
     assert(index >= 0 && index < array_pointer.count);
-    array_pointer.count -= 1;
-    if index < array_pointer.count array_pointer.*[index] = array_pointer.*[array_pointer.count];
+    last := array_pointer.count - 1;
+    if index < last array_pointer.*[index] = array_pointer.*[last];
+    array_pointer.count = last;
 }
 array_unordered_remove_by_index :: (array_pointer: *[..] $T, index: s64) {
     assert(index >= 0 && index < array_pointer.count);
-    array_pointer.count -= 1;
-    if index < array_pointer.count array_pointer.*[index] = array_pointer.*[array_pointer.count];
+    last := array_pointer.count - 1;
+    if index < last array_pointer.*[index] = array_pointer.*[last];
+    array_pointer.count = last;
 }
 array_ordered_remove_by_value :: (array_pointer: *[] $T, item: T) -> bool {
     found, index := array_find(array_pointer.*, item);
@@ -142,7 +144,7 @@ pop :: (array: *[] $T) -> T {
 pop :: (array: *[..] $T) -> T {
     assert(array.count > 0);
     array.count -= 1;
-    return array.*[array.count];
+    return array.data[array.count];
 }
 array_resize :: (array: *[] $T, new_count: s64, $initialize := true) {
     assert(new_count >= 0);

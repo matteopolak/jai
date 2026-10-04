@@ -50,7 +50,8 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 ## Open work
 
-- `Bindings_Generator` (libclang-based; libclang may be installed with Homebrew `llvm`).
+- `Bindings_Generator`: C and minimal C++ work (see `docs/stdlib/bindings-generator.md`); C++ methods,
+  templates and inheritance, and Objective-C are missing. Untested on the real Vulkan/ImGui headers (absent here).
 - GetRect / GetRect_LeftHanded share most code; deduplicate.
 - Retire the old `crates/jai-*` crates once nothing depends on them; clean up `.claude/worktrees`.
 - Float printing details (TTWJ 5.2 / 6.5) are unverified.

@@ -139,6 +139,8 @@ pub enum Intrinsic {
     DebugBreak,
     /// Abort with a runtime error (bounds check, unreachable case...).
     Trap,
+    /// (index: s64, count: s64): trap unless `0 <= index < count`.
+    BoundsCheck,
     /// (ptr: *u8, count: s64, to_stderr: bool): compile-time `write_string`.
     CompilerWrite,
     Sqrt,

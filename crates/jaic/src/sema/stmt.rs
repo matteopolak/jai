@@ -1455,6 +1455,12 @@ impl Compiler {
             }
             return self.check_for(f, scope, &resolved, span);
         }
+        if !f.no_abc && for_.flags.iter().any(|fl| fl.name.as_str() == "no_abc") {
+            f.no_abc = true;
+            let result = self.check_for(f, scope, for_, span);
+            f.no_abc = false;
+            return result;
+        }
         let it_name = for_.it.map_or_else(|| Sym::intern("it"), |i| i.name);
         let index_name = for_
             .index

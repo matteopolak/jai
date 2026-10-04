@@ -1193,7 +1193,6 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
         args: &[BasicValueEnum<'ctx>],
         want: &[Ty],
     ) -> R<Vec<BasicValueEnum<'ctx>>> {
-        let _ = st;
         let b = &self.builder;
         let i64t = self.ctx.i64_type();
         let ptr_arg = |i: usize| {
@@ -1268,6 +1267,14 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             }
             Intrinsic::Trap => {
                 self.call_intrinsic("llvm.trap", &[], &[])?;
+                Ok(vec![])
+            }
+            Intrinsic::BoundsCheck => {
+                // Unsigned compare: a negative index is out of range too.
+                let index = self.i64_of(self.as_int(args[0])?)?;
+                let count = self.i64_of(self.as_int(args[1])?)?;
+                let out = b.build_int_compare(IntPredicate::UGE, index, count, "")?;
+                self.trap_if(st, out)?;
                 Ok(vec![])
             }
             Intrinsic::CompilerWrite => {
