@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from fetch_upstreams import REPOSITORIES, safe_path
+from fetch_upstreams import DEPENDENCIES, REPOSITORIES, safe_path
 from verify_upstreams import verify
 
 class CorpusTests(unittest.TestCase):
@@ -15,7 +15,7 @@ class CorpusTests(unittest.TestCase):
     def fixture(self, root):
         data = b'main :: () {}'
         projects = []
-        for repo in REPOSITORIES:
+        for repo in REPOSITORIES + DEPENDENCIES:
             destination = root / 'corpus/upstream' / repo.replace('/', '--')
             destination.mkdir(parents=True)
             (destination / 'main.jai').write_bytes(data)
@@ -27,7 +27,7 @@ class CorpusTests(unittest.TestCase):
     def test_changed_and_unlisted_inputs_are_rejected(self):
         with TemporaryDirectory() as directory:
             root = Path(directory); project = self.fixture(root)
-            self.assertEqual(verify(root), (7, 7))
+            self.assertEqual(verify(root), (len(REPOSITORIES + DEPENDENCIES),) * 2)
             (project / 'main.jai').write_bytes(b'modified')
             with self.assertRaises(ValueError): verify(root)
         with TemporaryDirectory() as directory:

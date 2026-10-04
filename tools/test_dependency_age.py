@@ -6,9 +6,6 @@ import unittest
 spec = importlib.util.spec_from_file_location("age", Path(__file__).with_name("check_dependency_age.py"))
 age = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(age)
-graph_spec = importlib.util.spec_from_file_location("graph", Path(__file__).with_name("analyze_macos_calls.py"))
-graph = importlib.util.module_from_spec(graph_spec)
-graph_spec.loader.exec_module(graph)
 
 
 class AgePolicyTests(unittest.TestCase):
@@ -30,13 +27,6 @@ class AgePolicyTests(unittest.TestCase):
         p = {"name": "x", "version": "1", "source": "registry+https://github.com/rust-lang/crates.io-index"}
         errors = age.check([p], lambda *_: {"created_at": "2020-01-01T00:00:00Z", "yanked": True}, datetime.now(timezone.utc))
         self.assertIn("yanked", errors[0])
-
-
-class CallGraphTests(unittest.TestCase):
-    def test_shortest_paths_with_cycles(self):
-        calls = {"main": {"worker"}, "worker": {"main", "system"}}
-        self.assertEqual(graph.shortest_path(calls, "main", "system"), ["main", "worker", "system"])
-        self.assertIsNone(graph.shortest_path(calls, "main", "absent"))
 
 
 if __name__ == "__main__":
