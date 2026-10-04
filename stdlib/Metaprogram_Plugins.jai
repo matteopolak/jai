@@ -1,53 +1,60 @@
-// The supplied plugin ABI is explicitly scoped to the original compiler protocol.
-init_plugins :: (names: [] string, results: *[..] *Metaprogram_Plugin, w: Workspace) {
-    if already_initted_plugins {
-        Compiler.compiler_report("Plugin initialization was requested more than once.");
-        return;
-    }
-    already_initted_plugins = true;
-    builder: String_Builder;
-    append(*builder, "PLUGIN_INIT_STRING :: #string AUTHORED_PLUGIN_LOAD\n");
-    for name, index: names {
-        module_name, parameters := my_split_from_left(name, #char "(");
-        if module_name.count == 0 { Compiler.compiler_report("An empty plugin module name is invalid."); return; }
-        print_to_builder(*builder, "Module_% :: #import ", index);
-        append_source_quote(*builder, module_name);
-        append(*builder, parameters);
-        append(*builder, ";\n");
-        print_to_builder(*builder, "plugin_%: *Metaprogram_Plugin = Module_%.get_plugin();\n", index, index);
-        print_to_builder(*builder, "assert(plugin_%);\nplugin_%.workspace = w;\narray_add(results, plugin_%);\n", index, index, index);
-    }
-    append(*builder, "AUTHORED_PLUGIN_LOAD\n");
-    generated := builder_to_string(*builder);
-    Compiler.add_build_string(generated, cast(Workspace) -1, code=MY_MODULE_SCOPE);
-    init_plugins_part_2(results, w);
+// Metaprogram plugins (`jai first.jai -plug Name`), newer-Jai API shape.
+//
+// jaic parses plugin arguments, but cannot instantiate plugins yet: the
+// reference implementation splices `#import "Name"` into this module while a
+// metaprogram's `#run` is executing, which needs suspendable typechecking.
+// Metaprograms that ask for no plugins (the common case) work unchanged.
+
+Plugin_To_Create :: struct {
+    name: string;
+    options: [..] string;  // Arguments given to the plugin, e.g. `-plug Check -- -no_unused`.
 }
+
+// Split `-plug Name` arguments (and their trailing options) from the rest.
+parse_plugin_arguments :: (args: [] string) -> (success: bool, plugins_to_create: [..] Plugin_To_Create, remaining_args: [..] string) {
+    plugins: [..] Plugin_To_Create;
+    remaining: [..] string;
+    i := 0;
+    while i < args.count {
+        arg := args[i];
+        i += 1;
+        if arg != "-plug" && arg != "+plug" {
+            array_add(*remaining, arg);
+            continue;
+        }
+        if i >= args.count {
+            Compiler.compiler_report("-plug needs a plugin name.\n", mode = .ERROR_CONTINUABLE);
+            return false, plugins, remaining;
+        }
+        plugin: Plugin_To_Create;
+        plugin.name = args[i];
+        i += 1;
+        array_add(*plugins, plugin);
+    }
+    return true, plugins, remaining;
+}
+
+init_plugins :: (plugins: [] Plugin_To_Create, results: *[..] *Metaprogram_Plugin, w: Workspace) -> bool {
+    if !plugins.count  return true;
+    for plugins {
+        Compiler.compiler_report(tprint("Metaprogram plugin '%' cannot be loaded: jaic does not support metaprogram plugins yet.\n", it.name), mode = .ERROR_CONTINUABLE);
+    }
+    return false;
+}
+
+init_plugins :: (names: [] string, results: *[..] *Metaprogram_Plugin, w: Workspace) -> bool {
+    plugins: [..] Plugin_To_Create;
+    defer array_free(plugins);
+    for names {
+        plugin: Plugin_To_Create;
+        plugin.name = it;
+        array_add(*plugins, plugin);
+    }
+    return init_plugins(plugins, results, w);
+}
+
 #scope_module
-Compiler :: #import,file "legacy/Compiler/module.jai";
+Compiler :: #import "Compiler";
 Metaprogram_Plugin :: Compiler.Metaprogram_Plugin;
+Workspace :: Compiler.Workspace;
 #import "Basic";
-#placeholder PLUGIN_INIT_STRING;
-MY_MODULE_SCOPE :: #code {};
-already_initted_plugins := false;
-init_plugins_part_2 :: (results: *[..] *Metaprogram_Plugin, w: Workspace) {
-    #insert PLUGIN_INIT_STRING;
-}
-slice :: inline (s: string, index: s64, count: s64) -> string {
-    if index < 0 index = 0;
-    if index > s.count index = s.count;
-    if count < 0 count = 0;
-    if count > s.count - index count = s.count - index;
-    return .{count, s.data + index};
-}
-my_split_from_left :: (s: string, byte: u8) -> (left: string, right: string) {
-    for current, index: s if current == byte return slice(s, 0, index), slice(s, index, s.count - index);
-    return s, "";
-}
-append_source_quote :: (builder: *String_Builder, text: string) {
-    append(builder, "\"");
-    for byte: text {
-        if byte == #char "\"" || byte == #char "\\" append(builder, "\\");
-        append(builder, string.{1, *byte});
-    }
-    append(builder, "\"");
-}
