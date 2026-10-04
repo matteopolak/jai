@@ -677,16 +677,26 @@ impl Compiler {
                 let name = param.name.map(|n| n.name).unwrap();
                 let Some(arg) = arg_ops.first() else {
                     if let Some(d) = &param.default {
-                        // `$type: Query = .X`: the default takes the declared type.
+                        // `$type: Query = .X`: the default takes the declared type. A type
+                        // naming earlier bindings (`$compare: (T, T) -> bool = ...`) is read
+                        // in a scope holding them.
+                        let mut scope = def_scope;
+                        if !bindings.is_empty() {
+                            let module = self.scope(def_scope).module;
+                            scope = self.new_scope(ScopeKind::Block, Some(def_scope), module, None);
+                            for (n, v, t) in &bindings {
+                                self.add_const(scope, *n, span, v.clone(), *t);
+                            }
+                        }
                         let declared = match &param.ty {
-                            Some(t) if !procs::has_poly(t) => Some(self.eval_type(def_scope, t)?),
+                            Some(t) if !procs::has_poly(t) => Some(self.eval_type(scope, t)?),
                             _ => None,
                         };
                         let (v, ty) = match declared {
-                            Some(t) => (self.const_value_of_type(def_scope, d, t)?, t),
+                            Some(t) => (self.const_value_of_type(scope, d, t)?, t),
                             None => {
-                                let ty = self.eval_const(def_scope, d, None)?.ty();
-                                (self.const_value_of_type(def_scope, d, ty)?, ty)
+                                let ty = self.eval_const(scope, d, None)?.ty();
+                                (self.const_value_of_type(scope, d, ty)?, ty)
                             }
                         };
                         bindings.push((name, v, ty));
@@ -1902,7 +1912,9 @@ impl Compiler {
                         let Some(expr) = args[*a].expr.clone() else {
                             return err(args[*a].span, "Code parameter needs a code argument");
                         };
-                        // A name of a `#code` constant passes that code.
+                        // A name of a `#code` constant passes that code; a name of a
+                        // `Code` variable passes its value.
+                        let mut runtime_code = false;
                         let named = match &expr.kind {
                             E::Ident(_) | E::Member(..) => {
                                 match self.check_expr_no_emit(args[*a].scope, &expr) {
@@ -1910,6 +1922,10 @@ impl Compiler {
                                         value: Value::Code(code),
                                         ..
                                     }) => Some(code),
+                                    Ok(op) if op.ty() == TypeId::CODE => {
+                                        runtime_code = true;
+                                        None
+                                    }
                                     _ => None,
                                 }
                             }
@@ -1917,6 +1933,23 @@ impl Compiler {
                         };
                         match named {
                             Some(code) => code,
+                            None if runtime_code => {
+                                let v = self.param_value(f, &sig, &param, slot, &args, span)?;
+                                let addr = self.spill(f, param.ty, v, span)?;
+                                let depth = self.scope(mscope).proc_depth;
+                                self.add_entity(
+                                    mscope,
+                                    name,
+                                    param.span,
+                                    EntityKind::Local {
+                                        ty: param.ty,
+                                        addr,
+                                        depth,
+                                    },
+                                    false,
+                                );
+                                continue;
+                            }
                             None => {
                                 let body = match &expr.kind {
                                     E::Code(c) => c.clone(),

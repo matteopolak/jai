@@ -220,6 +220,9 @@ pub struct Interp {
     pub workspaces: Option<crate::build::SharedWorkspaces>,
     /// Bodies and source text of the compiler's `Code` values, by `CodeId`.
     pub codes: Vec<(std::rc::Rc<crate::ast::CodeBody>, std::rc::Rc<str>)>,
+    /// Codes made by compile-time code (`compiler_get_code`): their index and the
+    /// index of the code whose scope they take. The compiler adopts them lazily.
+    pub made_codes: Vec<(usize, usize)>,
 }
 
 impl Default for Interp {
@@ -245,6 +248,7 @@ impl Interp {
             compile_time: true,
             workspaces: None,
             codes: Vec::new(),
+            made_codes: Vec::new(),
         }
     }
 

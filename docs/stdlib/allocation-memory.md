@@ -48,3 +48,23 @@ Temporary poisoning follows Basic's `TEMP_ALLOCATOR_POISON_FREED_MEMORY`. `NewAr
 ## Dependencies
 
 The modules depend on the independent prelude for allocator, reflection, and memory/atomic intrinsic contracts. Allocation wrappers depend on `Runtime_Support` context and temporary storage; debug allocators and deep copying additionally depend on authored Basic, Hash_Table, and Thread. Default allocation binds system `libc` or Windows `msvcrt` declarations, while guard pages currently require macOS, Linux, or Android POSIX APIs. No bundled native library, reference executable, vendored allocator source, or Meow hash implementation is included.
+
+## Pool (`stdlib/Pool.jai`)
+
+### What it is
+A bump allocator matching the standard `Pool` module: same public fields, defaults and procedures (`set_allocators`, `get`, `reset`, `release`, `pool_allocator_proc`, `calculate_used_memory`). `stdlib/legacy/Pool.jai` is a separate, older implementation of the same layout used by the memory debugger.
+
+### How it works
+- Blocks of `memblock_size` (65536) bytes come straight from `block_allocator`; the first 8 bytes (`HEADER_SIZE`) hold the list link, so a fresh block has `memblock_size - 8` bytes left.
+- The block allocator is chosen lazily on first `get` (or explicitly via `set_allocators`) and defaults to `context.allocator`. If that is the pool itself, it logs an error, asserts, and falls back to `context.default_allocator`.
+- `get` pads `current_pos` to `alignment`, bumps it, and decreases `bytes_left`. A request of `oversized_size` (6554) bytes or more is allocated separately, pushed on `out_of_band_allocations`, and does not change the current block.
+- `reset` moves used blocks onto the unused list (or frees them with `free_memblocks_on_reset`) and frees oversized allocations. `release` is `reset` plus freeing the unused blocks. Frees through `pool_allocator_proc` are ignored.
+
+### How to change it
+Keep `Pool`'s field order and defaults identical to the standard module; programs print `bytes_left` and `memblock_size` directly. Behavior is covered by `tests/stdlib/pool-standard-behavior.jai`.
+
+### Configuration
+Module parameter `USE_UNMAPPING_ALLOCATOR` must stay `false` (unsupported). Per-pool: `memblock_size`, `oversized_size`, `alignment`, `overwrite_memory`, `free_memblocks_on_reset`, `logging_options`.
+
+### Dependencies
+`Basic` (`alloc`, `free`, `log`, `memcpy`, `memset`).

@@ -325,6 +325,7 @@ impl Compiler {
     /// A new `Code` value. The interpreter keeps the body and its text too
     /// (`compiler_get_nodes` exports it from compile-time code).
     pub fn add_code(&mut self, body: Rc<ast::CodeBody>, scope: ScopeId) -> value::CodeId {
+        self.adopt_made_codes();
         let id = value::CodeId(self.codes.len() as u32);
         let span = match &*body {
             ast::CodeBody::Expr(e) => e.span,
@@ -339,6 +340,33 @@ impl Compiler {
         self.codes.push(body);
         self.code_scopes.push(scope);
         id
+    }
+
+    /// Take over the codes compile-time code made (`compiler_get_code`), parsing their
+    /// text again as a registered source so diagnostics can point into it.
+    pub fn adopt_made_codes(&mut self) {
+        while self.codes.len() < self.interp.codes.len() {
+            let id = self.codes.len();
+            let text = self.interp.codes[id].1.clone();
+            let from = self
+                .interp
+                .made_codes
+                .iter()
+                .find(|(made, _)| *made == id)
+                .map(|&(_, from)| from);
+            let scope = from
+                .and_then(|f| self.code_scopes.get(f).copied())
+                .unwrap_or(self.root_scope);
+            let file = self.sources.add(
+                format!("<compiler_get_code {id}>"),
+                format!("__jaic_code :: #code {text};\n").into(),
+            );
+            let body = crate::build::parse_code_text(file, &text)
+                .unwrap_or_else(|_| self.interp.codes[id].0.clone());
+            self.interp.codes[id].0 = body.clone();
+            self.codes.push(body);
+            self.code_scopes.push(scope);
+        }
     }
 
     pub fn render(&self, d: &Diagnostic) -> String {

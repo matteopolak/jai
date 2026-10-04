@@ -181,5 +181,6 @@ __jaic_rec_item_int    :: (record: s64, name: string, index: s64) -> s64 #compil
 __jaic_rec_item_string :: (record: s64, name: string, index: s64) -> string #compiler;
 __jaic_rec_item_ref    :: (record: s64, name: string, index: s64) -> s64 #compiler;
 __jaic_code_nodes      :: (code: Code) -> s64 #compiler;
+__jaic_parse_code      :: (text: string, scope_from: Code) -> Code #compiler;
 __jaic_modify_procedure :: (ws: s64, body: s64, statements: *s64, count: s64) #compiler;
 __jaic_workspace_add_string_to_module :: (ws: s64, source: string, message: s64) #compiler;

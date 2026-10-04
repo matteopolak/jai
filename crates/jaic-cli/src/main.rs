@@ -1,7 +1,7 @@
 //! `jaic` command line: `jaic <run|check|build> <file.jai> [-I dir]... [-o out]`.
 use jaic::build::{BuildEnv, BuildSettings, OutputBackend, OutputType, Workspaces};
 use jaic::interp::NativeHost;
-use jaic::sema::{Compiler, FileSystem, NativeFs, Options};
+use jaic::sema::{Compiler, FileSystem, NativeFs, Options, TargetOs};
 use jaic_llvm::OptLevel;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -15,7 +15,9 @@ fn stdlib_dir() -> PathBuf {
 }
 
 fn usage() -> ExitCode {
-    eprintln!("usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [- metaprogram args...]");
+    eprintln!(
+        "usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [-os linux|windows|macos] [- metaprogram args...]"
+    );
     eprintln!(
         "       jaic build <file.jai> [-I dir]... [-o output] [-O0|-O1|-O2|-O3] [--emit-ir file.ll]"
     );
@@ -40,6 +42,8 @@ struct Cli {
     emit_ir: Option<PathBuf>,
     /// Arguments after `-`, for the metaprogram (`compiler_get_command_line`).
     command_line: Vec<String>,
+    /// `-os`: the target `OS` when it is not the host (checking code for another platform).
+    os: Option<TargetOs>,
 }
 
 fn parse(args: &[String]) -> Option<Cli> {
@@ -57,6 +61,7 @@ fn parse(args: &[String]) -> Option<Cli> {
         opt_level: None,
         emit_ir: None,
         command_line: Vec::new(),
+        os: None,
     };
     let mut rest = args[2..].iter();
     while let Some(a) = rest.next() {
@@ -65,6 +70,14 @@ fn parse(args: &[String]) -> Option<Cli> {
                 cli.command_line.extend(rest.by_ref().cloned());
             }
             "-I" | "-import_dir" => cli.imports.extend(rest.next().map(PathBuf::from)),
+            "-os" if command == Command::Check => {
+                cli.os = Some(match rest.next()?.as_str() {
+                    "linux" => TargetOs::Linux,
+                    "windows" => TargetOs::Windows,
+                    "macos" => TargetOs::MacOS,
+                    _ => return None,
+                })
+            }
             "-o" if command == Command::Build => cli.output = Some(PathBuf::from(rest.next()?)),
             "--emit-ir" if command == Command::Build => {
                 cli.emit_ir = Some(PathBuf::from(rest.next()?))
@@ -110,6 +123,9 @@ fn run(mut cli: Cli) -> ExitCode {
         return ExitCode::from(1);
     }
     let mut options = Options::host();
+    if let Some(os) = cli.os {
+        options.os = os;
+    }
     // The local `modules` folder is searched first, then `-import_dir`s, then the stdlib.
     options.import_paths = vec![main_dir.join("modules")];
     options.import_paths.extend(cli.imports.iter().cloned());

@@ -38,7 +38,15 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
   anonymous unions are filled from the same record. `record_of(pointer)` maps back.
 - **compiler_get_nodes**: `Compiler::add_code` mirrors every `Code` value (AST + source snippet) into
   `Interp::codes`; `__jaic_code_nodes` exports it without a compiler (no types or locations) and stores the
-  snippet as `__source` on the root.
+  snippet as `__source` on the root. The Jai side remembers each (root, code) pair it hands out
+  (`__code_roots` in `workspace.jai`).
+- **compiler_get_code**: prints the node tree with `Program_Print` and passes the text to `__jaic_parse_code`,
+  which parses it (`build::parse_code_text`) into a new entry of `Interp::codes` and records in
+  `Interp::made_codes` which code's scope it takes (the code the root came from, else
+  `code_to_copy_scope_from`). The compiler adopts such codes when it reads a `Code` value back from compile-time
+  code or adds a code of its own (`Compiler::adopt_made_codes`), re-parsing the text as a registered source so
+  diagnostics can point into it. Node edits the printer cannot express (see
+  [program-print](stdlib/program-print.md)) are lost.
 - **compiler_modify_procedure**: Jai sends the record ids of `body.block.statements`; they are queued on the
   workspace and applied at its next step (`Compiler::modify_procedure`): statements exported from that body map
   back to their AST, `#code` roots are re-parsed from `__source` inside a dummy procedure. The procedure's

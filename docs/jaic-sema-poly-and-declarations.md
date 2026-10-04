@@ -43,7 +43,8 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **Polymorphic struct parameters**: a bare `Base` / `*Base` parameter (and `$T/Base`) accepts a struct whose `#as` member is
   an instance of `Base` (`instance_or_as_base`); the call converts through the `#as` offset.
 - **Baked parameter defaults**: `$mode: Mode = .fast` and `$info := Info.{}` give the default (and `.X` /
-  `.{...}` arguments) the declared or default type.
+  `.{...}` arguments) the declared or default type. A declared type naming earlier type variables
+  (`$compare: (T, T) -> bool = (a, b) => a == b`) is read in a scratch scope holding the bindings so far.
 - **Conversions**: `*[..] T` → `*[] T`; a one-character string constant → `u8`; an `ifx` argument fits an
   overload only if both branches do.
 - **Tagged unions** (`union kind: Kind { .A ,, a: X; }`): laid out as a struct holding the tag field, then an
@@ -55,7 +56,8 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   A constant argument (string, integer, bool, float) the macro never writes stays a typed constant inside the
   body (`const_macro_params`, checked textually by `text_may_write`; any `#asm` in the body counts as a write), so
   `#if n <= 1` and a constant string's `.count` work in recursive macros. A Code argument naming a `#code`
-  constant passes that code. An expression `#insert code` checks the code in the scope it was written in;
+  constant passes that code; one naming a `Code` variable passes its value (a runtime `Code` local in the
+  macro). An expression `#insert code` checks the code in the scope it was written in;
   `#insert,scope()` uses the insertion scope.
 - **Backtick in defers**: a macro's deferred statement keeps the scope of the caller it was written for
   (`DeferEntry::caller_scope`), so `` `name `` inside it resolves where the defer runs (`FnCtx::backtick_scope`).

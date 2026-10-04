@@ -198,6 +198,7 @@ pub enum MetaOp {
     CustomLinkComplete,
     AddStringToModule,
     CodeNodes,
+    ParseCode,
     ModifyProcedure,
     RecTag,
     RecField,
@@ -229,6 +230,7 @@ impl MetaOp {
             "__jaic_custom_link_complete" => Self::CustomLinkComplete,
             "__jaic_workspace_add_string_to_module" => Self::AddStringToModule,
             "__jaic_code_nodes" => Self::CodeNodes,
+            "__jaic_parse_code" => Self::ParseCode,
             "__jaic_modify_procedure" => Self::ModifyProcedure,
             "__jaic_rec_tag" => Self::RecTag,
             "__jaic_rec_field" => Self::RecField,
@@ -784,6 +786,20 @@ pub fn call(
             result.ptr("root", root).refs("expressions", nodes);
             Ok(vec![reg.records.add(result) as u64])
         }
+        MetaOp::ParseCode => {
+            let (source, scope_from) = (text(interp, 0), arg(1) as usize);
+            if scope_from >= interp.codes.len() {
+                return Err(trap(
+                    "compiler_get_code: no code to take the scope from".into(),
+                ));
+            }
+            let body = parse_code_text(crate::source::FileId(u32::MAX), &source)
+                .map_err(|e| trap(format!("compiler_get_code: {e}")))?;
+            let id = interp.codes.len();
+            interp.codes.push((body, source.into()));
+            interp.made_codes.push((id, scope_from));
+            Ok(vec![id as u64])
+        }
         MetaOp::ModifyProcedure => {
             let (id, body, data, count) = (arg(0) as i64, arg(1) as i64, arg(2), arg(3));
             let stmts = (0..count)
@@ -841,4 +857,24 @@ pub fn call(
             Ok(Vec::new())
         }
     }
+}
+
+/// Parse the source text of a `Code` value (an expression, statement or block).
+pub fn parse_code_text(
+    file: crate::source::FileId,
+    text: &str,
+) -> Result<Rc<crate::ast::CodeBody>, String> {
+    let source = format!("__jaic_code :: #code {text};\n");
+    let parsed = crate::parser::parse_file(file, &source).map_err(|d| d.message.clone())?;
+    parsed
+        .stmts
+        .into_iter()
+        .find_map(|s| match s.kind {
+            crate::ast::StmtKind::Decl(d) => match d.value.as_ref().map(|v| &v.kind) {
+                Some(crate::ast::ExprKind::Code(body)) => Some(body.clone()),
+                _ => None,
+            },
+            _ => None,
+        })
+        .ok_or_else(|| "could not parse the printed code".to_string())
 }

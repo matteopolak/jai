@@ -378,12 +378,23 @@ compiler_get_nodes :: (code: Code) -> (root: *Code_Node, expressions: [] *Code_N
         expressions: [] *Code_Node;
     }
     nodes := cast(*Code_Nodes) record_struct(__jaic_code_nodes(code), type_info(Code_Nodes));
+    array_add(*__code_roots, .{nodes.root, code});
     return nodes.root, nodes.expressions;
 }
 
+// Roots handed out by compiler_get_nodes, so compiler_get_code finds the scope of their code.
+__Code_Root :: struct { root: *Code_Node; code: Code; }
+__code_roots: [..] __Code_Root;
+
+// The tree under `node` as a new Code value: printed with Program_Print and parsed again.
+// Names resolve in the scope of the code `node` came from (or `code_to_copy_scope_from`).
 compiler_get_code :: (node: *Code_Node, code_to_copy_scope_from: Code = #code,null) -> Code {
-    unsupported("compiler_get_code");
-    return #code,null;
+    PP :: #import "Program_Print";
+    builder: String_Builder;
+    PP.print_expression(*builder, node);
+    scope := code_to_copy_scope_from;
+    for __code_roots if it.root == node { scope = it.code; break; }
+    return __jaic_parse_code(builder_to_string(*builder), scope);
 }
 
 code_to_string :: (code: Code) -> string {
