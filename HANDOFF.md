@@ -14,8 +14,8 @@
 - `crates/jaic`: the compiler — `parser/`, `sema/` (checking and lowering to IR), `interp/` (IR interpreter,
   used for `#run`, metaprograms and `jaic run`), `build.rs` (workspaces and compiler messages for
   metaprograms). `crates/jaic-cli`: the `jaic` binary. `crates/jai-wasm` + `web/scripting-runtime`: the
-  browser playground. The other `crates/jai-*` are an older architecture kept for reference; new work goes
-  into `jaic`.
+  browser playground. `crates/jai-language-server`: the LSP, built on the `jaic` lexer and parser. The older
+  `jai-*` architecture has been removed; many pages in `docs/` still describe it (see `docs/README.md`).
 - `stdlib/`: our independently written standard library; `prelude/`: runtime type definitions.
 - `tests/stdlib/*.jai`: regression programs, each must exit 0 (except `getrect-rh-negative-control.jai`,
   a negative control that must fail).
@@ -26,7 +26,7 @@
 ```sh
 env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo build -q -p jaic-cli
 /Volumes/CodexBuilds/targets/jai-dev/debug/jaic run|check|build file.jai [-I dir] [-os linux|windows|macos] [- metaprogram args]
-env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo test -q -p jaic -p jai-wasm
+env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo test -q --workspace
 python3 tools/jaic-sweep.py corpus stdlib upstream --timeout 900   # expect only the negative control to fail
 env RUSTC_WRAPPER= /opt/homebrew/bin/python3.14 tools/build_scripting_wasm.py --release   # needs python >= 3.11
 node tools/check_playground_worker.mjs; node tools/check_browser_release.mjs
@@ -53,5 +53,5 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 - `Bindings_Generator`: C and minimal C++ work (see `docs/stdlib/bindings-generator.md`); C++ methods,
   templates and inheritance, and Objective-C are missing. Untested on the real Vulkan/ImGui headers (absent here).
 - GetRect / GetRect_LeftHanded share most code; deduplicate.
-- Retire the old `crates/jai-*` crates once nothing depends on them; clean up `.claude/worktrees`.
+- Clean up `.claude/worktrees`. `tools/check_corpus.py` and its inventory helpers are legacy (they drove the removed `jai-rs` binary).
 - Float printing details (TTWJ 5.2 / 6.5) are unverified.
