@@ -21,7 +21,7 @@ impl Compiler {
         Ok(())
     }
 
-    fn new_block_scope(&mut self, parent: ScopeId) -> ScopeId {
+    pub(super) fn new_block_scope(&mut self, parent: ScopeId) -> ScopeId {
         let module = self.scope(parent).module;
         self.new_scope(ScopeKind::Block, Some(parent), module, None)
     }
@@ -131,8 +131,20 @@ impl Compiler {
                 context,
                 body,
             } => {
-                let op = self.check_expr(f, scope, context, None)?;
                 let ctx_ty = self.context_type(span)?;
+                let op = if matches!(context.kind, E::Context) && f.context.is_none() {
+                    // `push_context { }` in #c_call code: a fresh default context.
+                    let size = self.size_of(ctx_ty, span)?;
+                    let align = self.align_of(ctx_ty, span)?;
+                    let addr = f.b.alloca(size, align);
+                    self.init_default(f, ctx_ty, addr, span)?;
+                    Operand::Place {
+                        ty: ctx_ty,
+                        addr,
+                    }
+                } else {
+                    self.check_expr(f, scope, context, None)?
+                };
                 let op = match op.ty() {
                     t if t == ctx_ty => op,
                     t if self.types.pointee(t) == Some(ctx_ty) => {
@@ -1423,6 +1435,51 @@ impl Compiler {
         result
     }
 
+    /// `return second = 2, first = 1;`: values are evaluated in source order
+    /// and stored into their named results.
+    fn check_named_return(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        values: &[ast::Arg],
+        span: Span,
+    ) -> Result<()> {
+        let Some(proc) = f.proc else {
+            return err(span, "named return values need a procedure");
+        };
+        let names = self.signature(proc, span)?.return_names.clone();
+        let types = f.return_types.clone();
+        let mut positional = 0;
+        for v in values {
+            let index = match v.name {
+                Some(n) => names
+                    .iter()
+                    .position(|r| *r == Some(n.name))
+                    .ok_or_else(|| {
+                        Box::new(Diagnostic::error(
+                            n.span,
+                            format!("no return value named '{}'", n.name),
+                        ))
+                    })?,
+                None => {
+                    positional += 1;
+                    positional - 1
+                }
+            };
+            let Some(&ty) = types.get(index) else {
+                return err(v.value.span, "too many return values");
+            };
+            let Some(addr) = f.named_results[index] else {
+                return err(v.value.span, "return value has no name to assign");
+            };
+            let op = self.check_expr(f, scope, &v.value, Some(ty))?;
+            let op = self.convert(f, op, ty, v.value.span)?;
+            let (_, val) = self.rvalue(f, op, v.value.span)?;
+            self.store_value(f, ty, addr, val, v.value.span)?;
+        }
+        self.emit_fallthrough_return(f, span)
+    }
+
     fn check_proc_return(
         &mut self,
         f: &mut FnCtx,
@@ -1431,6 +1488,9 @@ impl Compiler {
         span: Span,
     ) -> Result<()> {
         let types = f.return_types.clone();
+        if values.iter().any(|v| v.name.is_some()) {
+            return self.check_named_return(f, scope, values, span);
+        }
         let mut ops: Vec<Operand> = Vec::new();
         for (i, v) in values.iter().enumerate() {
             let op = self.check_expr(f, scope, &v.value, types.get(i).copied())?;

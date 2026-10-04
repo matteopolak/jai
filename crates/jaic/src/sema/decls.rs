@@ -57,7 +57,10 @@ impl Compiler {
             }
             EntityKind::Local {
                 ..
-            } => unreachable!("locals are not resolved"),
+            } => err(
+                span,
+                format!("internal: local '{name}' resolved as a declaration"),
+            ),
             EntityKind::Placeholder => err(
                 span,
                 format!("'{name}' is a #placeholder that was never defined"),
@@ -77,7 +80,7 @@ impl Compiler {
                 decl,
                 index,
             } => match decl.kind {
-                ast::DeclKind::Const => self.resolve_const_decl(scope, name, &decl, index),
+                ast::DeclKind::Const => self.resolve_const_decl(id, scope, name, &decl, index),
                 ast::DeclKind::Var => self.resolve_global_var(scope, name, &decl),
             },
         }
@@ -167,6 +170,7 @@ impl Compiler {
 
     fn resolve_const_decl(
         &mut self,
+        id: EntityId,
         scope: ScopeId,
         name: Sym,
         decl: &Rc<ast::Decl>,
@@ -289,6 +293,7 @@ impl Compiler {
                 untyped,
             } => {
                 let ty = if untyped && expected.is_none() {
+                    self.entity_mut(id).untyped_const = true;
                     self.default_untyped(ty, &value)
                 } else {
                     ty

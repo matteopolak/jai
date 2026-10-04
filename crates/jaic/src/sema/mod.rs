@@ -125,7 +125,7 @@ pub struct Compiler {
     pub types: Types,
     pub program: ir::Program,
     pub files: Vec<FileInfo>,
-    file_by_path: HashMap<PathBuf, usize>,
+    file_by_path: HashMap<(PathBuf, ModuleId), usize>,
     pub modules: Vec<Module>,
     module_cache: HashMap<(PathBuf, Vec<(Sym, Value)>), ModuleId>,
     pub scopes: Vec<scope::Scope>,

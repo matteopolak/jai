@@ -180,6 +180,10 @@ impl Compiler {
         let scope = p.bindings.unwrap_or(p.scope);
         let mut params = Vec::new();
         for param in &header.params {
+            // Baked (`$x`) parameters are constants of the instance, not runtime parameters.
+            if param.baked {
+                continue;
+            }
             let ty = match (&param.ty, &param.default) {
                 (Some(t), _) => self.eval_type(scope, t)?,
                 (None, Some(d)) => {
@@ -673,7 +677,13 @@ impl Compiler {
                 f.named_results.push(None);
             }
         }
-        self.check_block_stmts(&mut f, scope, &body.stmts)?;
+        // Named results live in the parameter scope; the body may shadow them.
+        let body_scope = if f.named_results.iter().any(Option::is_some) {
+            self.new_block_scope(scope)
+        } else {
+            scope
+        };
+        self.check_block_stmts(&mut f, body_scope, &body.stmts)?;
         if !f.b.is_terminated() {
             self.emit_fallthrough_return(&mut f, body.span)?;
         }

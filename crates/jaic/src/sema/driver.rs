@@ -39,6 +39,11 @@ impl Compiler {
         self.main_module = Some(m);
         self.expand_all()?;
         self.run_top_level()?;
+        // A program made only of `#run`/`#assert` directives has nothing to lower.
+        let scope = self.modules[m.0 as usize].scope;
+        if self.lookup(scope, Sym::intern("main"))?.is_empty() {
+            return Ok(());
+        }
         let mut i = 0;
         while i < self.export_entities.len() {
             let e = self.export_entities[i];
@@ -88,6 +93,10 @@ impl Compiler {
     /// Run the compiled program in the interpreter; returns its exit code.
     pub fn run_program(&mut self) -> Result<i32> {
         let Some(main) = self.exported_func("main") else {
+            if self.exports.is_empty() {
+                // Compile-time-only program: everything already ran.
+                return Ok(0);
+            }
             return err(
                 Span::default(),
                 "no exported 'main' (is Runtime_Support loaded?)",

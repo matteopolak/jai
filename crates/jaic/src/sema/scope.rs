@@ -153,6 +153,9 @@ pub struct Entity {
     pub state: EntityState,
     /// Declared after `#scope_file` in a module file.
     pub file_private: bool,
+    /// A constant declared without a type whose value is an untyped literal (`X :: 5`):
+    /// uses of it convert like the literal would.
+    pub untyped_const: bool,
 }
 
 /// A procedure-valued declaration can join an overload set.
@@ -218,6 +221,7 @@ impl Compiler {
             kind,
             state: EntityState::Unresolved,
             file_private: false,
+            untyped_const: false,
         });
         self.scope_mut(scope)
             .names
