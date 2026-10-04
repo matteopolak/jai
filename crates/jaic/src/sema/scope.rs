@@ -278,6 +278,8 @@ impl Compiler {
             ("Type", TypeId::TYPE),
             ("Any", TypeId::ANY),
             ("Code", TypeId::CODE),
+            // `#asm` register parameters of macros bind to the caller's operand expression.
+            ("__reg", TypeId::CODE),
         ];
         for &(name, ty) in types {
             self.add_const(

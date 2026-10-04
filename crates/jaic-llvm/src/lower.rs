@@ -1332,6 +1332,32 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                 self.inline_asm(asm, "", None)?;
                 Ok(vec![])
             }
+            Intrinsic::Popcount | Intrinsic::Bswap => {
+                let name = if op == Intrinsic::Popcount {
+                    "llvm.ctpop"
+                } else {
+                    "llvm.bswap"
+                };
+                let ty = args[0].get_type();
+                let v = self
+                    .call_intrinsic(name, &[ty], &[args[0].into()])?
+                    .ok_or("bit intrinsic produced no value")?;
+                Ok(vec![v])
+            }
+            Intrinsic::Ctlz | Intrinsic::Cttz => {
+                // The second IR argument is the width; LLVM's is_zero_poison flag stays false.
+                let name = if op == Intrinsic::Ctlz {
+                    "llvm.ctlz"
+                } else {
+                    "llvm.cttz"
+                };
+                let ty = args[0].get_type();
+                let no_poison = self.ctx.bool_type().const_zero();
+                let v = self
+                    .call_intrinsic(name, &[ty], &[args[0].into(), no_poison.into()])?
+                    .ok_or("bit intrinsic produced no value")?;
+                Ok(vec![v])
+            }
             Intrinsic::IsCompileTime => {
                 let ty = want.first().copied().unwrap_or(Ty::I8);
                 Ok(vec![self.ll(ty).into_int_type().const_zero().into()])

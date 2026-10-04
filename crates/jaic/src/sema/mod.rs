@@ -12,6 +12,7 @@
 //! global initializers) lowers a thunk procedure and runs it in `interp`.
 pub mod value;
 
+mod asm;
 mod bake;
 mod calls;
 mod consteval;
@@ -173,6 +174,8 @@ pub struct Compiler {
     pub ct_context: Option<u64>,
     /// Declarations of `#program_export` procedures (resolved by the driver).
     pub export_entities: Vec<EntityId>,
+    /// Locals declared by `#asm` register declarations (`x: gpr`).
+    pub asm_regs: HashMap<EntityId, asm::AsmReg>,
 }
 
 impl Compiler {
@@ -225,6 +228,7 @@ impl Compiler {
             thunk_scopes: HashMap::new(),
             ct_context: None,
             export_entities: Vec::new(),
+            asm_regs: HashMap::new(),
         };
         c.root_scope = c.new_scope(scope::ScopeKind::Root, None, ModuleId(u32::MAX), None);
         c.declare_builtins();

@@ -154,6 +154,13 @@ pub enum Intrinsic {
     /// Read the cycle counter (`rdtsc`).
     CycleCounter,
     Pause,
+    /// Bit counting used by `#asm` lowering: (x, bits) -> count, same width as `x`.
+    /// `Ctlz`/`Cttz` return `bits` for a zero input.
+    Popcount,
+    Ctlz,
+    Cttz,
+    /// (x, bits) -> x with its bytes reversed.
+    Bswap,
     /// 1 when executing at compile time (`#compile_time`).
     IsCompileTime,
 }

@@ -260,8 +260,86 @@ pub enum ExprKind {
     },
     /// `` `x ``: refer to the macro caller's scope.
     Backtick(Box<Expr>),
-    /// `#asm { ... }`: kept as raw tokens' source span; unsupported semantically.
-    Asm,
+    /// `#asm { ... }`: x64 instructions over Jai variables (lowered by `sema::asm`).
+    Asm(Rc<AsmBlock>),
+}
+
+// ---------------------------------------------------------------------------
+// Inline assembly
+// ---------------------------------------------------------------------------
+
+/// `#asm FEATURE, FEATURE { item; item; ... }`
+#[derive(Clone, Debug)]
+pub struct AsmBlock {
+    /// Feature-set modifiers written between `#asm` and `{` (`AVX, AVX2`).
+    pub features: Vec<Ident>,
+    pub items: Vec<AsmItem>,
+}
+
+#[derive(Clone, Debug)]
+pub enum AsmItem {
+    Inst(AsmInst),
+    /// `x: gpr;`, `t: gpr === a;` or `x === a;`
+    Decl(AsmDecl),
+}
+
+#[derive(Clone, Debug)]
+pub struct AsmInst {
+    /// Mnemonic as written, including a `lock_` / `rep_` prefix.
+    pub mnemonic: Ident,
+    /// `.q`, `.64` or `?T` operand size.
+    pub size: Option<AsmSize>,
+    pub operands: Vec<AsmOperand>,
+    pub span: Span,
+}
+
+#[derive(Clone, Debug)]
+pub enum AsmSize {
+    /// `.b` `.w` `.d` `.q` `.8` `.16` `.32` `.64` `.x` `.y` `.z`
+    Suffix(Ident),
+    /// `?T` or `?BITS`: a type, or a constant number of bits.
+    Dynamic(Box<Expr>),
+}
+
+#[derive(Clone, Debug)]
+pub enum AsmOperand {
+    /// A variable or constant expression (`count`, `17`, `-127`, `*x`).
+    Value(Expr),
+    /// `[base + index*scale + disp]`
+    Mem(AsmMem),
+    /// `name:` / `name: gpr` / `name: gpr === a` declared at its first use.
+    Decl(AsmDecl),
+}
+
+#[derive(Clone, Debug)]
+pub struct AsmDecl {
+    pub name: Ident,
+    /// False for a pin of an existing variable (`x === a`).
+    pub colon: bool,
+    /// Register class (`gpr`, `vec`, ...); `gpr` when omitted.
+    pub class: Option<Ident>,
+    /// `=== a` / `=== 15`: register pinning (ignored: registers are not modeled).
+    pub pin: Option<AsmPin>,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum AsmPin {
+    Name(Ident),
+    Index(u128),
+}
+
+#[derive(Clone, Debug)]
+pub struct AsmMem {
+    pub terms: Vec<AsmMemTerm>,
+    pub span: Span,
+}
+
+/// One `+ value` / `- value` / `+ value*scale` term of a memory operand.
+#[derive(Clone, Debug)]
+pub struct AsmMemTerm {
+    pub negate: bool,
+    pub value: Expr,
+    pub scale: Option<Expr>,
 }
 
 #[derive(Clone, Debug)]
