@@ -210,6 +210,25 @@ impl Parser<'_> {
     /// `#assert cond ["message"]` without the terminator.
     pub(super) fn parse_assert_core(&mut self) -> PResult<Stmt> {
         let start = self.bump();
+        // `#assert(cond, "message")`: the call-like form.
+        if self.at(P::LParen) {
+            let saved = self.pos;
+            self.bump();
+            if let Ok(cond) = self.parse_expr()
+                && self.eat(P::Comma)
+            {
+                let message = self.parse_expr()?;
+                self.expect(P::RParen, "after '#assert' message")?;
+                return Ok(stmt(
+                    StmtKind::Assert {
+                        cond,
+                        message: Some(message),
+                    },
+                    start.to(self.prev_span()),
+                ));
+            }
+            self.pos = saved;
+        }
         let cond = self.parse_expr()?;
         if self.at(P::Comma) && matches!(self.tok_at(1), Tok::Str(_)) {
             self.bump();

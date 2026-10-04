@@ -287,16 +287,21 @@ impl Compiler {
         };
         if decl.kind == ast::DeclKind::Const {
             for (index, name) in decl.names.iter().enumerate() {
-                self.add_entity(
-                    target,
-                    name.name,
-                    name.span,
-                    EntityKind::Decl {
-                        decl: decl.clone(),
-                        index,
-                    },
-                    false,
-                );
+                for s in [target, scope] {
+                    self.add_entity(
+                        s,
+                        name.name,
+                        name.span,
+                        EntityKind::Decl {
+                            decl: decl.clone(),
+                            index,
+                        },
+                        false,
+                    );
+                    if target == scope {
+                        break;
+                    }
+                }
             }
             return Ok(());
         }
@@ -370,17 +375,16 @@ impl Compiler {
                 None => {}
             }
             let depth = self.scope(target).proc_depth;
-            let e = self.add_entity(
-                target,
-                name.name,
-                name.span,
-                EntityKind::Local {
-                    ty,
-                    addr,
-                    depth,
-                },
-                false,
-            );
+            let kind = EntityKind::Local {
+                ty,
+                addr,
+                depth,
+            };
+            let e = self.add_entity(target, name.name, name.span, kind.clone(), false);
+            if target != scope {
+                // A backtick name is visible to the rest of the macro body too.
+                self.add_entity(scope, name.name, name.span, kind, false);
+            }
             if decl.using {
                 self.scope_mut(target).usings.push(UsingEntry::Place {
                     ty,
@@ -389,6 +393,114 @@ impl Compiler {
             }
         }
         Ok(())
+    }
+
+    /// `x[i] = v` / `x[i] op= v` through `operator []=` (and `operator []` to
+    /// read the old value). Evaluation order: base, index, (get), value, set.
+    fn try_index_assign(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        op: ast::AssignOp,
+        target: &ast::Expr,
+        rhs: &ast::Expr,
+        span: Span,
+    ) -> Result<bool> {
+        let E::Index(base, index) = &target.kind else {
+            return Ok(false);
+        };
+        let Ok(probe) = self.check_expr_no_emit(scope, base) else {
+            return Ok(false);
+        };
+        let bt = probe.ty();
+        let st = self.types.pointee(bt).unwrap_or(bt);
+        if self.types.as_struct(self.types.repr_struct(st)).is_none() {
+            return Ok(false);
+        }
+        let setters = self.operator_candidates(scope, "[]=", &[bt])?;
+        if setters.is_empty() {
+            return Ok(false);
+        }
+        let base_op = self.check_expr(f, scope, base, None)?;
+        let ptr_ty = self.types.pointer(st);
+        let ptr = if self.types.is_pointer(bt) {
+            let (_, v) = self.rvalue(f, base_op, base.span)?;
+            v
+        } else {
+            let (_, addr) = self.address_of(f, base_op, base.span)?;
+            addr
+        };
+        let ptr_op = Operand::Value {
+            ty: ptr_ty,
+            val: ptr,
+        };
+        let index_op = self.check_expr(f, scope, index, None)?;
+        let index_op = if index_op.is_const() {
+            index_op
+        } else {
+            let (ty, val) = self.rvalue(f, index_op, index.span)?;
+            Operand::Value {
+                ty,
+                val,
+            }
+        };
+        let arg = |op: Operand| CallArg {
+            name: None,
+            spread: false,
+            expr: None,
+            op: Some(op),
+            span,
+            scope,
+        };
+        let value = match op {
+            ast::AssignOp::Assign => self.check_expr(f, scope, rhs, None)?,
+            ast::AssignOp::Op(bin) => {
+                let getters = self.operator_candidates(scope, "[]", &[bt])?;
+                let by_ptr = vec![arg(ptr_op.clone()), arg(index_op.clone())];
+                let old = match self.try_call(f, scope, &getters, by_ptr, span) {
+                    Ok(v) => v,
+                    Err(_) => {
+                        let place = Operand::Place {
+                            ty: st,
+                            addr: ptr,
+                        };
+                        let by_value = vec![arg(place), arg(index_op.clone())];
+                        self.call_procs(f, scope, &getters, by_value, None, span)?
+                    }
+                };
+                let (old_ty, old_val) = self.rvalue(f, old, span)?;
+                let inner = self.new_block_scope(scope);
+                let slot = self.spill(f, old_ty, old_val, span)?;
+                let tmp = Sym::intern("\u{0}old");
+                let depth = self.scope(inner).proc_depth;
+                self.add_entity(
+                    inner,
+                    tmp,
+                    span,
+                    EntityKind::Local {
+                        ty: old_ty,
+                        addr: slot,
+                        depth,
+                    },
+                    false,
+                );
+                let expr = ast::Expr {
+                    kind: E::Binary(
+                        bin,
+                        Box::new(ast::Expr {
+                            kind: E::Ident(tmp),
+                            span: target.span,
+                        }),
+                        Box::new(rhs.clone()),
+                    ),
+                    span,
+                };
+                self.check_expr(f, inner, &expr, Some(old_ty))?
+            }
+        };
+        let args = vec![arg(ptr_op), arg(index_op), arg(value)];
+        self.call_procs(f, scope, &setters, args, None, span)?;
+        Ok(true)
     }
 
     fn check_assign(
@@ -400,6 +512,12 @@ impl Compiler {
         rhs: &[ast::Expr],
         span: Span,
     ) -> Result<()> {
+        if lhs.len() == 1
+            && rhs.len() == 1
+            && self.try_index_assign(f, scope, op, &lhs[0], &rhs[0], span)?
+        {
+            return Ok(());
+        }
         if let ast::AssignOp::Op(bin) = op {
             if lhs.len() != 1 || rhs.len() != 1 {
                 return err(span, "compound assignment takes one target and one value");

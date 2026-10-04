@@ -1025,7 +1025,10 @@ impl Compiler {
         };
         match b {
             BuiltinProc::SizeOf | BuiltinProc::AlignOf => {
-                let op = self.check_expr_no_emit(scope, &arg.value)?;
+                let op = match self.type_field_type(scope, &arg.value)? {
+                    Some(t) => Operand::Type(t),
+                    None => self.check_expr_no_emit(scope, &arg.value)?,
+                };
                 let ty = match op {
                     Operand::Type(t) => t,
                     other => other.ty(),
@@ -1042,6 +1045,9 @@ impl Compiler {
                 })
             }
             BuiltinProc::TypeOf => {
+                if let Some(t) = self.type_field_type(scope, &arg.value)? {
+                    return Ok(Operand::Type(t));
+                }
                 let op = self.check_expr_no_emit(scope, &arg.value)?;
                 let ty = match op {
                     Operand::Type(_) => TypeId::TYPE,
@@ -1105,6 +1111,20 @@ impl Compiler {
     }
 
     /// Check an expression only for its type; any IR it emits is discarded.
+    /// Argument of `type_of`/`size_of`: `Struct.field` names the field's type
+    /// there, without a value.
+    fn type_field_type(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Option<TypeId>> {
+        if let E::Member(base, field) = &expr.kind
+            && let Ok(Operand::Type(t)) = self.check_expr_no_emit(scope, base)
+            && self.types.as_struct(self.types.repr_struct(t)).is_some()
+            && self.struct_constant(t, field.name)?.is_none()
+            && let Some((_, fty)) = self.find_member(t, field.name, expr.span)?
+        {
+            return Ok(Some(fty));
+        }
+        Ok(None)
+    }
+
     pub fn check_expr_no_emit(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Operand> {
         let file = self.scope_file(scope);
         let mut scratch = FnCtx::new(
@@ -1307,7 +1327,7 @@ impl Compiler {
 
     /// Operator overloads visible from the use site, plus those visible where
     /// the operand struct types were declared (`Bit_Array` brings its `operator []`).
-    fn operator_candidates(
+    pub(super) fn operator_candidates(
         &mut self,
         scope: ScopeId,
         text: &str,
@@ -1420,7 +1440,7 @@ impl Compiler {
         }
     }
 
-    fn try_call(
+    pub(super) fn try_call(
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,

@@ -693,7 +693,7 @@ impl Compiler {
     }
 
     /// Constant members of a struct type (declared in its body), including through `using`.
-    fn struct_constant(&mut self, ty: TypeId, name: Sym) -> Result<Option<Vec<EntityId>>> {
+    pub fn struct_constant(&mut self, ty: TypeId, name: Sym) -> Result<Option<Vec<EntityId>>> {
         let ty = self.types.repr_struct(ty);
         let Some(s) = self.types.as_struct(ty) else {
             return Ok(None);
