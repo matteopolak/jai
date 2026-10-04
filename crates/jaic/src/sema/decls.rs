@@ -17,6 +17,7 @@ impl Compiler {
         match &self.entity(id).state {
             EntityState::Done(r) => return Ok(r.clone()),
             EntityState::Resolving => {
+                self.in_progress_misses += 1;
                 let e = self.entity(id);
                 return err(
                     e.span,
