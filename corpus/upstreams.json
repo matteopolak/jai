@@ -7679,6 +7679,61 @@
           "sha256": "c70758835280fd09696e7f6d78c846af6913ad3c9dd45dfad2b911442c166c55"
         },
         {
+          "path": "examples/sample.png",
+          "bytes": 59277,
+          "sha256": "5dc155999348fd0bdf8add6ffee11feb853dd2fcf556a97804a38301bd0bdb13"
+        },
+        {
+          "path": "examples/shaders/bindless.slang",
+          "bytes": 2511,
+          "sha256": "ef71b5a1f2bc96d5a62f21fcc06b4ec21343b54d139b113bd3c6a4a224d74a08"
+        },
+        {
+          "path": "examples/shaders/common.slang",
+          "bytes": 411,
+          "sha256": "ac5cb3be22d9e6583e0e079e3f3f064eed5e3b09cb52517f8fe03bb12e1a89ec"
+        },
+        {
+          "path": "examples/shaders/compute.slang",
+          "bytes": 273,
+          "sha256": "52a487fc473fb1a4281f846bee29faab179d698f6f8feb337733ba16e9bd0e09"
+        },
+        {
+          "path": "examples/shaders/hello_square_ps.slang",
+          "bytes": 332,
+          "sha256": "6cab2f767e82aeae39c60c76e6e1dd72cd6c50062c57f01f5fc8fccabebfa430"
+        },
+        {
+          "path": "examples/shaders/hello_square_vs.slang",
+          "bytes": 458,
+          "sha256": "31d0b67f3682868b42a5eeee98cbc33a4e518cd6e56509f807b8492a140a3645"
+        },
+        {
+          "path": "examples/shaders/indirect_verify.slang",
+          "bytes": 208,
+          "sha256": "dbae80a9a9e0cd5e7fff08dba2a4c1da50cb13f923357f441f4a72d65c20dcb6"
+        },
+        {
+          "path": "examples/shaders/meshlets_ms.slang",
+          "bytes": 1018,
+          "sha256": "062b721cac91bfeda05003e44a2c0e89c2f53083e35ee3a3b5dc0d3b8b0e27f4"
+        },
+        {
+          "path": "examples/shaders/meshlets_ps.slang",
+          "bytes": 250,
+          "sha256": "2bbbaf1065530749ec78299b3bb8bf3afd921e39be91debce363399b8d7cc36c"
+        },
+        {
+          "path": "examples/shaders/textured_ps.slang",
+          "bytes": 364,
+          "sha256": "66237fba3cf181a7c4717e00a324a4a40b5e0114beef6916322c21a306930005"
+        },
+        {
+          "path": "examples/shaders/textured_vs.slang",
+          "bytes": 441,
+          "sha256": "5878b845fa6a82b2bce9381b7a561e2244f2eb9940cd9e2cbd981a48618c6d30"
+        },
+        {
           "path": "examples/textures.jai",
           "bytes": 5870,
           "sha256": "82b1739b47a2b8f14b1fd944018a1f8a304960d0820c9e9a68b27377a0cb13a6"
@@ -8314,6 +8369,135 @@
           "path": "module.jai",
           "bytes": 2929,
           "sha256": "b49def9d0e30e9329081b3b623a0eec91f60b62c7d6d111e02d1e69910381430"
+        }
+      ]
+    },
+    {
+      "repository": "ostef/JoltC",
+      "revision": "d395f4138e1d29dfd46884f6ba00ff865248af08",
+      "latest_jai_change": "2026-09-08T12:40:39+02:00",
+      "source_of_truth": "https://github.com/ostef/JoltC/tree/d395f4138e1d29dfd46884f6ba00ff865248af08",
+      "selection": "recent-source",
+      "files": [
+        {
+          "path": "CMakeLists.txt",
+          "bytes": 7536,
+          "sha256": "c73615d115c7233906fdd1ddde2296d50d870a1ce37c51c8b710954fe6b97176"
+        },
+        {
+          "path": "Examples/HelloWorld.c",
+          "bytes": 7052,
+          "sha256": "af50c8994f6cd5f03ad71e417405c72e2c8d0ad864f7356e8f789cbf9a247777"
+        },
+        {
+          "path": "Examples/HelloWorld.cmake",
+          "bytes": 295,
+          "sha256": "532ae7975e1eb93cc5247b6836f33b47cf48fd74742c15253a5775f76d88929b"
+        },
+        {
+          "path": "JoltC.h",
+          "bytes": 372,
+          "sha256": "a0a21a683f895d9586d8627abab87d6f39ddc975ae59b875d444ff7e95c41274"
+        },
+        {
+          "path": "JoltC.hpp",
+          "bytes": 17156,
+          "sha256": "4c856ee88637ab049abcc878a74762169a1bbf8a7a0ea86218e4fd099a7552af"
+        },
+        {
+          "path": "JoltC_ABITests.cpp",
+          "bytes": 11862,
+          "sha256": "1fbbfee0c60dcb83479dcf6940ed65386053e261eacf3c999b510c0dad50f791"
+        },
+        {
+          "path": "JoltC_Body.cpp",
+          "bytes": 38223,
+          "sha256": "bc7fd7c0203c68706fadd2a15aacc0b75ee20cacee3f08f09cf334d8617c3d63"
+        },
+        {
+          "path": "JoltC_Body.h",
+          "bytes": 26800,
+          "sha256": "92b1691bd4d46f676ba1d38a7764a85f1b5a08652be73af24c66b248ca04c41a"
+        },
+        {
+          "path": "JoltC_Character.cpp",
+          "bytes": 29849,
+          "sha256": "b38e0f928fa78aaadc9febc31d029ed94240426ccc66ed5fa11e3b4fec1f5d04"
+        },
+        {
+          "path": "JoltC_Character.h",
+          "bytes": 18058,
+          "sha256": "5abc0e5db92beb69c909f99426884b1835552e10d4befaac8d3c06197af5f5ab"
+        },
+        {
+          "path": "JoltC_Collision.cpp",
+          "bytes": 31745,
+          "sha256": "6ba1c3556e3929aa81a25d86232c7f8d1f2748352c1cedf7e273a6f9c9ae4ad8"
+        },
+        {
+          "path": "JoltC_Collision.h",
+          "bytes": 23052,
+          "sha256": "21de7f03dafd806630eb59d6067265d3846a149e6ee67346d1530dc3bc4dd76a"
+        },
+        {
+          "path": "JoltC_Constraints.cpp",
+          "bytes": 46317,
+          "sha256": "2d662252532238c2a0274288c1edafa2b4103c3908ff4df2c86d71ffe0a46873"
+        },
+        {
+          "path": "JoltC_Constraints.h",
+          "bytes": 30571,
+          "sha256": "2ba4a6245ece2dd386dbb7718133ceeb4c38642b8b55523fdb7a6c5ba271d2e7"
+        },
+        {
+          "path": "JoltC_Core.cpp",
+          "bytes": 7237,
+          "sha256": "ac4d44a4a7931646cf54efffb0052add88d0a107410c2155b1abb6c140209811"
+        },
+        {
+          "path": "JoltC_Core.h",
+          "bytes": 13778,
+          "sha256": "8503094a14fbfb1f43bab2aaf2488bc9ae0b2965b5c26fbc3728c77c5bd4c52e"
+        },
+        {
+          "path": "JoltC_DebugRenderer.cpp",
+          "bytes": 2177,
+          "sha256": "f07bdf5c59139b9fcfb907b58447cc42fca63710acede377cb0b898bccf2407a"
+        },
+        {
+          "path": "JoltC_DebugRenderer.h",
+          "bytes": 3673,
+          "sha256": "713cbccd4983bbfb30ecec7d1da06d7f06269420536619494385636208db35ab"
+        },
+        {
+          "path": "JoltC_Shapes.cpp",
+          "bytes": 39675,
+          "sha256": "89f65524f9485ff45cc96e9354f814959a2a56dc0ea74ffa82aa9a3adfa18e2e"
+        },
+        {
+          "path": "JoltC_Shapes.h",
+          "bytes": 26419,
+          "sha256": "e0445d1c7e7afbecc35afb207de6c7172ad04eb225344b21f25a782d0a6c1f01"
+        },
+        {
+          "path": "JoltC_System.cpp",
+          "bytes": 9635,
+          "sha256": "f0fd02df07a0fe9b0580979d581002b425ba8ad5e9947c73896ba64e692d05e5"
+        },
+        {
+          "path": "JoltC_System.h",
+          "bytes": 7528,
+          "sha256": "6dc669a9214708d5c05920a99e06149f9d0cb397d8cd9a65d90037e0176de79b"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 1074,
+          "sha256": "299d655e83913c5f8fd1a20d8bf1285041211501d147db3bfb707079aa23eae9"
+        },
+        {
+          "path": "README.md",
+          "bytes": 1078,
+          "sha256": "d789f21ebc222241c8afd6a5278b9a6df51b59af5e30335f49e3a239dd6f5330"
         }
       ]
     }

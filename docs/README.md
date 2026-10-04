@@ -68,6 +68,7 @@ The LLVM backend, C ABI and linking.
 - [C ABI, callbacks and C++ methods](native/c-abi.md)
 - [jaic LLVM backend](native/llvm-backend.md)
 - [Native build and linking](native/native-linking.md)
+- [Vk-Engine corpus project](native/vk-engine.md)
 
 ## Standard library
 
