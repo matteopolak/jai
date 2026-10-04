@@ -126,14 +126,14 @@ add_change :: (using watcher: *File_Watcher, full_path: string, events: File_Cha
     for *change: changes {
         if change.full_path == full_path {
             change.events |= selected;
-            change.time_of_last_change = now;
+            change.time_of_last_change = xx now;
             return;
         }
     }
     change: File_Change;
     change.full_path = owned_path(full_path, allocator);
     change.events = selected;
-    change.time_of_last_change = now;
+    change.time_of_last_change = xx now;
     array_add(*changes, change);
 }
 
