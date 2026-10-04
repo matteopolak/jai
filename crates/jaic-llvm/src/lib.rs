@@ -125,8 +125,17 @@ pub fn used_libraries(program: &Program) -> Vec<Library> {
 }
 
 /// Link object files into an executable with the system `cc`.
-pub fn link(objects: &[PathBuf], libraries: &[Library], output: &Path) -> Result<(), String> {
+pub fn link(
+    objects: &[PathBuf],
+    libraries: &[Library],
+    output: &Path,
+    dynamic_library: bool,
+    extra_args: &[String],
+) -> Result<(), String> {
     let mut cmd = Command::new("cc");
+    if dynamic_library {
+        cmd.arg("-shared");
+    }
     cmd.args(objects).arg("-o").arg(output);
     let mut seen = Vec::new();
     for lib in libraries {
@@ -136,7 +145,7 @@ pub fn link(objects: &[PathBuf], libraries: &[Library], output: &Path) -> Result
             }
         }
     }
-    cmd.args(&seen);
+    cmd.args(&seen).args(extra_args);
     let out = cmd
         .output()
         .map_err(|e| format!("could not run the system linker 'cc': {e}"))?;

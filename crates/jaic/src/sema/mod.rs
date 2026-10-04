@@ -32,6 +32,7 @@ use crate::intern::Sym;
 use crate::ir;
 use crate::source::{Diagnostic, FileId, SourceMap, Span};
 use crate::types::{TypeId, Types};
+pub use driver::ProgramSource;
 pub use modules::{FileSystem, NativeFs, VirtualFs};
 pub use scope::{EntityId, ScopeId};
 use std::collections::HashMap;
@@ -121,7 +122,7 @@ pub struct Module {
 
 pub struct Compiler {
     pub options: Options,
-    pub fs: Box<dyn FileSystem>,
+    pub fs: Rc<dyn FileSystem>,
     pub sources: SourceMap,
     pub types: Types,
     pub program: ir::Program,
@@ -175,7 +176,12 @@ pub struct Compiler {
 }
 
 impl Compiler {
-    pub fn new(options: Options, fs: Box<dyn FileSystem>) -> Self {
+    /// Give compile-time code access to the `Compiler` module's workspaces.
+    pub fn attach_workspaces(&mut self, workspaces: crate::build::SharedWorkspaces) {
+        self.interp.workspaces = Some(workspaces);
+    }
+
+    pub fn new(options: Options, fs: Rc<dyn FileSystem>) -> Self {
         let mut c = Compiler {
             options,
             fs,

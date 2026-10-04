@@ -520,29 +520,50 @@ impl Compiler {
                 self.load_module(path, &entry, params, import.span)
             }
             ast::ImportSource::String(source) => {
-                let path = PathBuf::from(format!("<import string {}>", self.sources.len()));
-                let id = ModuleId(self.modules.len() as u32);
-                let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
-                self.modules.push(Module {
-                    name: "string".into(),
-                    path: None,
-                    scope,
-                    params,
-                    files: Vec::new(),
-                });
-                let file = self.sources.add(path.display().to_string(), source.clone());
-                let ast = crate::parser::parse_file(file, source).map_err(Box::new)?;
-                let file_scope = self.new_scope(ScopeKind::File, Some(scope), id, Some(file));
-                self.files.push(FileInfo {
-                    id: file,
-                    path,
-                    module: id,
-                    scope: file_scope,
-                });
-                self.declare_stmts(scope, file_scope, &ast.stmts, ast::ScopeKind::Export)?;
+                let id = self.new_module("string", None, params);
+                let label = format!("<import string {}>", self.sources.len());
+                self.load_string(&label, source, id)?;
                 Ok(id)
             }
         }
+    }
+
+    /// A fresh module with no files yet.
+    pub fn new_module(
+        &mut self,
+        name: &str,
+        path: Option<PathBuf>,
+        params: Vec<(Sym, Value)>,
+    ) -> ModuleId {
+        let id = ModuleId(self.modules.len() as u32);
+        let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
+        self.modules.push(Module {
+            name: name.into(),
+            path,
+            scope,
+            params,
+            files: Vec::new(),
+        });
+        id
+    }
+
+    /// Add source text (an `#import,string` or a workspace build string) as a
+    /// file of `module`. `label` names it in diagnostics.
+    pub fn load_string(&mut self, label: &str, source: &str, module: ModuleId) -> Result<()> {
+        let path = PathBuf::from(label);
+        let file = self.sources.add(label.to_string(), source.into());
+        let ast = crate::parser::parse_file(file, source).map_err(Box::new)?;
+        let module_scope = self.modules[module.0 as usize].scope;
+        let file_scope = self.new_scope(ScopeKind::File, Some(module_scope), module, Some(file));
+        self.files.push(FileInfo {
+            id: file,
+            path,
+            module,
+            scope: file_scope,
+        });
+        self.modules[module.0 as usize].files.push(file);
+        self.declare_stmts(module_scope, file_scope, &ast.stmts, ast::ScopeKind::Export)?;
+        Ok(())
     }
 
     /// Load every module reachable through imports and expand all pending

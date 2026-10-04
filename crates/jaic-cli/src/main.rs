@@ -1,8 +1,11 @@
 //! `jaic` command line: `jaic <run|check|build> <file.jai> [-I dir]... [-o out]`.
-use jaic::sema::{Compiler, NativeFs, Options};
+use jaic::build::{BuildEnv, BuildSettings, OutputBackend, OutputType, Workspaces};
+use jaic::interp::NativeHost;
+use jaic::sema::{Compiler, FileSystem, NativeFs, Options};
 use jaic_llvm::OptLevel;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
+use std::rc::Rc;
 
 fn stdlib_dir() -> PathBuf {
     if let Some(dir) = std::env::var_os("JAIC_STDLIB") {
@@ -12,7 +15,7 @@ fn stdlib_dir() -> PathBuf {
 }
 
 fn usage() -> ExitCode {
-    eprintln!("usage: jaic <run|check> <file.jai> [-I dir]...");
+    eprintln!("usage: jaic <run|check> <file.jai> [-I dir]... [- metaprogram args...]");
     eprintln!(
         "       jaic build <file.jai> [-I dir]... [-o output] [-O0|-O1|-O2|-O3] [--emit-ir file.ll]"
     );
@@ -32,8 +35,11 @@ struct Cli {
     file: String,
     imports: Vec<PathBuf>,
     output: Option<PathBuf>,
-    opt_level: OptLevel,
+    /// `None`: what the metaprogram chose (default: unoptimized).
+    opt_level: Option<OptLevel>,
     emit_ir: Option<PathBuf>,
+    /// Arguments after `-`, for the metaprogram (`compiler_get_command_line`).
+    command_line: Vec<String>,
 }
 
 fn parse(args: &[String]) -> Option<Cli> {
@@ -48,21 +54,25 @@ fn parse(args: &[String]) -> Option<Cli> {
         file: args.get(1)?.clone(),
         imports: Vec::new(),
         output: None,
-        opt_level: OptLevel::O0,
+        opt_level: None,
         emit_ir: None,
+        command_line: Vec::new(),
     };
     let mut rest = args[2..].iter();
     while let Some(a) = rest.next() {
         match a.as_str() {
+            "-" => {
+                cli.command_line.extend(rest.by_ref().cloned());
+            }
             "-I" => cli.imports.extend(rest.next().map(PathBuf::from)),
             "-o" if command == Command::Build => cli.output = Some(PathBuf::from(rest.next()?)),
             "--emit-ir" if command == Command::Build => {
                 cli.emit_ir = Some(PathBuf::from(rest.next()?))
             }
-            "-O0" if command == Command::Build => cli.opt_level = OptLevel::O0,
-            "-O1" if command == Command::Build => cli.opt_level = OptLevel::O1,
-            "-O2" if command == Command::Build => cli.opt_level = OptLevel::O2,
-            "-O3" if command == Command::Build => cli.opt_level = OptLevel::O3,
+            "-O0" if command == Command::Build => cli.opt_level = Some(OptLevel::O0),
+            "-O1" if command == Command::Build => cli.opt_level = Some(OptLevel::O1),
+            "-O2" if command == Command::Build => cli.opt_level = Some(OptLevel::O2),
+            "-O3" if command == Command::Build => cli.opt_level = Some(OptLevel::O3),
             _ => return None,
         }
     }
@@ -90,12 +100,36 @@ fn run(cli: Cli) -> ExitCode {
     options.import_paths = cli.imports.clone();
     options.import_paths.push(stdlib.clone());
     options.preload = Some(stdlib.join("Preload.jai"));
-    let mut compiler = Compiler::new(options, Box::new(NativeFs));
+    let fs: Rc<dyn FileSystem> = Rc::new(NativeFs);
+    // Workspaces created by metaprograms are written only by `build`.
+    let backend: Option<Box<dyn OutputBackend>> = (cli.command == Command::Build).then(|| {
+        Box::new(LlvmBackend {
+            emit_ir: cli.emit_ir.clone(),
+        }) as Box<dyn OutputBackend>
+    });
+    let workspaces = Workspaces::new(BuildEnv {
+        fs: fs.clone(),
+        options: options.clone(),
+        backend,
+        command_line: cli.command_line.clone(),
+        make_host: Box::new(|| Box::new(NativeHost)),
+        report: Box::new(|text| eprintln!("{text}")),
+    });
+    let mut compiler = Compiler::new(options, fs);
+    compiler.attach_workspaces(workspaces.clone());
     let path = std::fs::canonicalize(&cli.file).unwrap_or_else(|_| PathBuf::from(&cli.file));
     if let Err(d) = compiler.compile_program(&path) {
         eprintln!("{}", compiler.render(&d));
         return ExitCode::from(1);
     }
+    if let Err(message) = jaic::build::finish_all(&workspaces) {
+        eprintln!("error: {message}");
+        return ExitCode::from(1);
+    }
+    if workspaces.borrow().any_failed() {
+        return ExitCode::from(1);
+    }
+    let settings = workspaces.borrow().top_level_settings();
     match cli.command {
         Command::Check => ExitCode::SUCCESS,
         Command::Run => match compiler.run_program() {
@@ -105,7 +139,11 @@ fn run(cli: Cli) -> ExitCode {
                 ExitCode::from(1)
             }
         },
-        Command::Build => match build(&compiler, &cli, &path) {
+        // A metaprogram that turned its own output off has nothing to write.
+        Command::Build if !settings.do_output || settings.output_type == OutputType::NoOutput => {
+            ExitCode::SUCCESS
+        }
+        Command::Build => match build(&compiler, &cli, &path, settings) {
             Ok(()) => ExitCode::SUCCESS,
             Err(message) => {
                 eprintln!("error: {message}");
@@ -115,28 +153,99 @@ fn run(cli: Cli) -> ExitCode {
     }
 }
 
-/// Emit an object file for the compiled program and link it.
-fn build(compiler: &Compiler, cli: &Cli, source: &Path) -> Result<(), String> {
-    if compiler.exported_func("main").is_none() {
+/// Write the top-level program. `-o`/`-O` override what the metaprogram set.
+fn build(
+    compiler: &Compiler,
+    cli: &Cli,
+    source: &Path,
+    mut settings: BuildSettings,
+) -> Result<(), String> {
+    if settings.output_type == OutputType::Executable && compiler.exported_func("main").is_none() {
         return Err("no exported 'main' (is Runtime_Support loaded?)".into());
     }
-    let output = cli
-        .output
-        .clone()
-        .unwrap_or_else(|| PathBuf::from(source.file_stem().unwrap_or_default()));
-    let object = {
-        let mut name = output.clone().into_os_string();
-        name.push(".o");
-        PathBuf::from(name)
-    };
-    let options = jaic_llvm::Options {
-        opt_level: cli.opt_level,
-        target: None,
+    let output = cli.output.clone().unwrap_or_else(|| {
+        let name = if settings.output_executable_name.is_empty() {
+            source
+                .file_stem()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .into_owned()
+        } else {
+            settings.output_executable_name.clone()
+        };
+        PathBuf::from(&settings.output_path).join(name)
+    });
+    if let Some(level) = cli.opt_level {
+        settings.optimization = match level {
+            OptLevel::O0 => "DEBUG",
+            OptLevel::O1 | OptLevel::O2 => "OPTIMIZED",
+            OptLevel::O3 => "VERY_OPTIMIZED",
+        }
+        .into();
+    }
+    LlvmBackend {
         emit_ir: cli.emit_ir.clone(),
-    };
-    jaic_llvm::emit_object(&compiler.program, &options, &object)?;
-    let libraries = jaic_llvm::used_libraries(&compiler.program);
-    let linked = jaic_llvm::link(std::slice::from_ref(&object), &libraries, &output);
-    let _ = std::fs::remove_file(&object);
-    linked
+    }
+    .write_output(&compiler.program, &settings, &output)
+}
+
+/// Native output through `jaic-llvm` and the system linker.
+struct LlvmBackend {
+    emit_ir: Option<PathBuf>,
+}
+
+impl OutputBackend for LlvmBackend {
+    fn write_output(
+        &mut self,
+        program: &jaic::ir::Program,
+        settings: &BuildSettings,
+        output: &Path,
+    ) -> Result<(), String> {
+        if let Some(dir) = output.parent().filter(|d| !d.as_os_str().is_empty()) {
+            std::fs::create_dir_all(dir)
+                .map_err(|e| format!("could not create {}: {e}", dir.display()))?;
+        }
+        let with_ext = |ext: &str| {
+            let mut name = output.to_path_buf().into_os_string();
+            name.push(ext);
+            PathBuf::from(name)
+        };
+        let object = if settings.output_type == OutputType::ObjectFile {
+            output.to_path_buf()
+        } else {
+            with_ext(".o")
+        };
+        let opt_level = match settings.optimization.as_str() {
+            "OPTIMIZED" | "OPTIMIZED_SMALL" => OptLevel::O2,
+            "VERY_OPTIMIZED" | "OPTIMIZED_VERY_SMALL" => OptLevel::O3,
+            _ => OptLevel::O0,
+        };
+        let options = jaic_llvm::Options {
+            opt_level,
+            target: None,
+            emit_ir: self.emit_ir.clone(),
+        };
+        jaic_llvm::emit_object(program, &options, &object)?;
+        let libraries = jaic_llvm::used_libraries(program);
+        let objects = std::slice::from_ref(&object);
+        let linked = match settings.output_type {
+            OutputType::ObjectFile | OutputType::NoOutput => return Ok(()),
+            OutputType::Executable | OutputType::DynamicLibrary => jaic_llvm::link(
+                objects,
+                &libraries,
+                output,
+                settings.output_type == OutputType::DynamicLibrary,
+                &settings.additional_linker_arguments,
+            ),
+            OutputType::StaticLibrary => std::process::Command::new("ar")
+                .arg("rcs")
+                .arg(output)
+                .arg(&object)
+                .status()
+                .map_err(|e| format!("could not run 'ar': {e}"))
+                .and_then(|s| s.success().then_some(()).ok_or(format!("ar failed ({s})"))),
+        };
+        let _ = std::fs::remove_file(&object);
+        linked
+    }
 }

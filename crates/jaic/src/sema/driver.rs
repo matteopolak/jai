@@ -5,6 +5,13 @@ use super::scope::Resolved;
 use super::*;
 use std::path::Path;
 
+/// One input of a program: a file on the import file system or source text.
+#[derive(Clone, Debug)]
+pub enum ProgramSource {
+    File(std::path::PathBuf),
+    String(String),
+}
+
 impl Compiler {
     /// Load the bootstrap modules (Preload, Runtime_Support).
     pub fn load_bootstrap(&mut self) -> Result<()> {
@@ -34,9 +41,23 @@ impl Compiler {
 
     /// Compile a program whose main file is `path`.
     pub fn compile_program(&mut self, path: &Path) -> Result<()> {
+        self.compile_sources(&[ProgramSource::File(path.to_path_buf())])
+    }
+
+    /// Compile a program made of several files and source strings, all loaded
+    /// into the main module (a workspace's `add_build_file`/`add_build_string`).
+    pub fn compile_sources(&mut self, sources: &[ProgramSource]) -> Result<()> {
         self.load_bootstrap()?;
-        let m = self.load_module("main", path, Vec::new(), Span::default())?;
+        let m = self.new_module("main", None, Vec::new());
         self.main_module = Some(m);
+        for (i, source) in sources.iter().enumerate() {
+            match source {
+                ProgramSource::File(path) => self.load_file(path, m, Span::default())?,
+                ProgramSource::String(text) => {
+                    self.load_string(&format!("<added string {}>", i + 1), text, m)?
+                }
+            }
+        }
         self.expand_all()?;
         self.run_top_level()?;
         // A program made only of `#run`/`#assert` directives has nothing to lower.
