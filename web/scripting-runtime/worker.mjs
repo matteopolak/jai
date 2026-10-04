@@ -19,13 +19,8 @@ self.onmessage = ({ data }) => {
         self.postMessage({ type: "lsp", id: data.id, messages: runtime.lsp(data.message) }); return;
       }
       self.postMessage({ type: "run-started", id: data.id });
-      if (typeof runtime.play === "function") {
-        const files = { ...(data.options?.files ?? {}), "main.jai": data.source };
-        self.postMessage({ type: "run", id: data.id, play: runtime.play(files, "main.jai") });
-        return;
-      }
-      const result = runtime.run(data.source, data.options);
-      self.postMessage({ type: "run", id: data.id, result: { exitCode: result.exitCode.toString(), steps: result.steps.toString() } });
+      const files = { ...(data.options?.files ?? {}), "main.jai": data.source };
+      self.postMessage({ type: "run", id: data.id, play: runtime.play(files, "main.jai") });
     } catch (error) {
       if (error?.compilerCrashed) enginePromise = undefined; // the Wasm instance trapped; start fresh on the next request
       self.postMessage({ type: data.type ?? "run", id: data.id, error: error instanceof Error ? error.message : String(error) }); }

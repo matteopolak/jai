@@ -12,9 +12,9 @@ export async function checkWorkers(directory) {
     return { worker, send: value => worker.postMessage(value), wait(type, id) { return new Promise((resolve, reject) => { const item = { type, id, resolve, reject, timer: setTimeout(() => { pending.delete(item); reject(new Error(`Real worker timed out: ${type}`)); }, 20000) }; pending.add(item); }); } };
   }
   async function initialize(client) { const ready = client.wait("init"); client.send({ type: "init" }); const response = await ready; assert.equal(response.error, undefined); assert.equal(response.capabilities.languageServer, true); }
-  // Workers answer with the jaic playground result (`play`) when the Wasm exports it, else the legacy runtime result.
-  function exitCodeOf(message) { return String(message.play ? message.play.exitCode : message.result.exitCode); }
-  async function run(client, id, source, options) { const finished = client.wait("run", id); client.send({ type: "run", id, source, options }); const result = await finished; assert.equal(result.error, undefined); return result.play ?? result.result; }
+  // Workers answer with the jaic playground result (`play`).
+  function exitCodeOf(message) { return String(message.play.exitCode); }
+  async function run(client, id, source, options) { const finished = client.wait("run", id); client.send({ type: "run", id, source, options }); const result = await finished; assert.equal(result.error, undefined); return result.play; }
   try {
     const execution = start(), language = start(); await Promise.all([initialize(execution), initialize(language)]);
     const snapshot = { type: "run", id: 1, source: '#load "lib/helper.jai"; main :: () -> int { return answer(); }', options: { files: { "lib/helper.jai": "answer :: () -> int { return 42; }" }, fuel: 1000000 } };
@@ -32,7 +32,7 @@ export async function checkWorkers(directory) {
     const hover = await request("textDocument/hover", { textDocument: { uri }, position: { line: 1, character: "main :: () -> int { return answer(); }".indexOf("answer") + 1 } }); assert.match(hover.contents.value, /answer/);
     const restarted = start(); await initialize(restarted); assert.equal(String((await run(restarted, 3, "main :: () -> int { return 42; }", { fuel: 1000000 })).exitCode), "42");
     // Recent-feature smoke tests: stdlib containers, compile-time metaprograms, empty views, the virtual clock,
-    // and clean failure of native-only features. Skipped for legacy runtime bundles without the jaic playground.
+    // and clean failure of native-only features.
     const features = [
       ['#import "Basic"; #import "Hash_Table"; main :: () { t: Table(int, string); table_set(*t, 1, "one"); ok, v := table_find(*t, 1); print("% %\\n", v, ok); }', "one true\n"],
       ['#import "Basic"; #import "Compiler"; #run { w := compiler_create_workspace("w"); opts := get_build_options(w); opts.output_type = .NO_OUTPUT; set_build_options(opts, w); compiler_begin_intercept(w); add_build_string("main :: () {}", w); while true { m := compiler_wait_for_message(); if m.kind == .COMPLETE break; } compiler_end_intercept(w); print("meta ok\\n"); } main :: () {}', "meta ok\n"],
@@ -42,12 +42,11 @@ export async function checkWorkers(directory) {
     let featureId = 10;
     for (const [source, stdout] of features) {
       const result = await run(restarted, ++featureId, source, { fuel: 1000000 });
-      if (result.stdout === undefined) continue;
       assert.deepEqual(result.diagnostics, [], source);
       assert.equal(result.stdout, stdout, source);
     }
     const foreign = await run(restarted, 20, 'puts :: (s: *u8) -> s32 #foreign libc; libc :: #library "libc"; main :: () { puts("x"); }', { fuel: 1000000 });
-    if (foreign.stdout !== undefined) { assert.equal(foreign.exitCode, null); assert(foreign.diagnostics.length > 0, "Native-only #foreign must fail with a diagnostic, not a crash"); }
+    assert.equal(foreign.exitCode, null); assert(foreign.diagnostics.length > 0, "Native-only #foreign must fail with a diagnostic, not a crash");
     return { actualWorker: true, immutableVfsSnapshot: true, actualLanguageWorker: true, executionCancellation: true, freshWorkerRestart: true };
   } finally { await Promise.all([...workers].map(worker => worker.terminate())); }
 }
