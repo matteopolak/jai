@@ -10,6 +10,7 @@ Backend_Platform_Specific :: struct {
 }
 Immediate_State :: struct {
     current_window_info: Window_Info;
+    coordinate_system := Simp_Coordinate_System.RIGHT_HANDED;
     current_shader: *Shader;
     texture_render_target: *Texture;
     num_vertices: s32;
@@ -29,6 +30,13 @@ Immediate_Vertex :: struct {
 #add_context simp: *Immediate_State;
 CheckInit :: () #expand { if !context.simp per_thread_init(); }
 per_thread_init :: () { context.simp = New(Immediate_State); }
+// Start of an immediate-mode batch; vertices are triangles, three at a time.
+immediate_begin :: () { CheckInit(); }
+// One triangle corner. This 2D renderer uses position.x/.y and the uv; the normal is accepted and ignored.
+immediate_vertex :: (position: Vector3, color_scale: Vector4, uv: Vector2 = .{}, normal: Vector3 = .{}) {
+    vertex := reserve_vertices(1);
+    put_vertex(vertex, .{position.x, position.y}, color_scale, uv.x, uv.y);
+}
 immediate_reset :: () {
     CheckInit(); immediate_flush(); context.simp.current_shader = null;
 }

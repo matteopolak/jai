@@ -1,4 +1,5 @@
 #scope_module
+File :: #import "File";
 FT :: #import "freetype-2.12.1";
 #scope_export
 FT_Face :: FT.FT_Face;
@@ -29,9 +30,43 @@ Dynamic_Font :: struct {
     y_offset_for_centering: int;
     glyph_conversion_failed: bool;
     glyph_index_for_unknown_character: u32;
+    utf32_for_unknown_character := 0xfffd;
+    // Fields of the original layout. This implementation has no OpenType feature substitution, so they stay empty.
+    latin_font: *Dynamic_Font;
+    character_range_low, character_range_high: int;
+    y_offset_for_my_latin_characters: float;
+    use_other_font_for_latin_always: bool;
+    reversed: bool;
+    features: [..] Font_Feature;
+    feature_smallcaps, feature_ligatures, feature_lining_numbers: *Font_Feature;
+    temporary_glyphs_byte_offsets: [..] int;
+    temporary_glyphs_width_in_pixels: s64;
     temporary_glyphs: [..] *Glyph_Data;
     temporary_glyphs.allocator = temp;
     current_quads: [..] Font_Quad;
+}
+Loaded_Font :: struct { name: string; face: FT_Face; data: [] u8; }
+Font_Range_Record :: struct { start, end: s32; start_coverage_index: s32; }
+Font_Coverage_Table :: struct {
+    format: s64;
+    glyphs: [] u16;                        // format 1
+    range_records: [] Font_Range_Record;   // format 2
+}
+Font_Sequence_Table_Entry :: struct { glyphs: [] u16; }
+Font_Lookup_Subtable :: struct {
+    format: s64;
+    coverage_table: *Font_Coverage_Table;
+    delta_glyph_id: s64;
+    glyphs: [] u16;
+    sequence_table: [] Font_Sequence_Table_Entry;
+}
+Font_Lookup_Table :: struct { lookup_type: s32; lookup_flags: u32; subtables: [] Font_Lookup_Subtable; }
+Font_Feature :: struct {
+    feature_tag: u32;
+    feature_tables_pointer: *u8;
+    expanded: bool;
+    lookup_lists: [] u16;
+    lookup_tables: [] Font_Lookup_Table;
 }
 Font_Page :: struct { texture: Texture; bitmap_data: *Bitmap; line_cursor_y: s16; lines: [..] *Font_Line; dirty := false; }
 Font_Line :: struct { page: *Font_Page; bitmap_cursor_x: s16; bitmap_cursor_y: s16; height: int; }
@@ -223,6 +258,101 @@ deinit_fonts :: () {
     if ft_library FT.FT_Done_FreeType(ft_library);
     ft_library=null; fonts_initted=false;
 }
+
+glyph_id_to_hash_key :: (x: u32) -> int { return -cast(int) x; }
+isdigit :: (utf32: u32) -> bool { return utf32 >= #char "0" && utf32 <= #char "9"; }
+
+// True if the `length` bytes at `source` form one well-formed UTF-8 sequence.
+isLegalUTF8 :: (source: *u8, length: s64) -> bool {
+    if length < 1 || length > 4 return false;
+    first := source[0];
+    expected: s64;
+    if first < 0x80 expected = 1;
+    else if first >= 0xc2 && first <= 0xdf expected = 2;
+    else if first >= 0xe0 && first <= 0xef expected = 3;
+    else if first >= 0xf0 && first <= 0xf4 expected = 4;
+    else return false;
+    if expected != length return false;
+    for 1..length-1 if (source[it] & 0xc0) != 0x80 return false;
+    if first == 0xe0 && source[1] < 0xa0 return false;   // overlong
+    if first == 0xed && source[1] > 0x9f return false;   // surrogates
+    if first == 0xf0 && source[1] < 0x90 return false;   // overlong
+    if first == 0xf4 && source[1] > 0x8f return false;   // above U+10FFFF
+    return true;
+}
+
+loaded_file_fonts: [..] *Loaded_Font;
+
+find_loaded_font :: (filename: string) -> *Loaded_Font {
+    for loaded_file_fonts if it.name == filename return it;
+    return null;
+}
+
+make_loaded_font :: (name: string, data: [] u8) -> *Loaded_Font {
+    ensure_fonts_are_initted();
+    face: FT_Face;
+    error := FT.FT_New_Memory_Face(ft_library, data.data, cast(s32) data.count, 0, *face);
+    assert(error == 0, "FreeType could not open the font '%' (error %)", name, error);
+    if error return null;
+
+    loaded := New(Loaded_Font);
+    loaded.name = copy_string(name);
+    loaded.face = face;
+    loaded.data = data;
+    return loaded;
+}
+
+// Reads the file and remembers it, so find_loaded_font(filename) finds it afterwards.
+make_loaded_font :: (filename: string) -> (font: *Loaded_Font) {
+    contents, success := File.read_entire_file(filename);
+    if !success return null;
+
+    loaded := make_loaded_font(filename, cast([] u8) contents);
+    if loaded array_add(*loaded_file_fonts, loaded);
+    return loaded;
+}
+
+destroy :: (font: *Loaded_Font) { free(font.name.data); }
+
+get_glyph_width_in_pixels :: (glyph: *Glyph_Data) -> s64 {
+    if !glyph return 0;
+    return glyph.advance;
+}
+
+// `utf8` points at the first byte of one character.
+get_character_width_in_pixels :: (font: *Dynamic_Font, utf8: *u8, effect_flags: Font_Effects) -> u32 {
+    lead := utf8[0];
+    length := 1;
+    if lead >= 0xf0 length = 4; else if lead >= 0xe0 length = 3; else if lead >= 0xc0 length = 2;
+    pos: int;
+    glyph := find_or_create_glyph(font, decode_utf8(string.{length, utf8}, *pos));
+    if !glyph return 0;
+    return cast(u32) glyph.advance;
+}
+
+accumulate_glyphs_from_font :: (source: *Dynamic_Font, dest: *Dynamic_Font) {
+    for source.temporary_glyphs {
+        array_add(*dest.temporary_glyphs, it);
+        array_add(*dest.temporary_glyphs_byte_offsets, -1);
+    }
+}
+
+// Loads `<path>/<basename>` at the given pixel height.
+load_font :: (path: string, basename: string, pixel_height: int) -> font: *Dynamic_Font {
+    ensure_fonts_are_initted();
+    font_name := tprint("%/%", path, basename);
+
+    loaded := find_loaded_font(font_name);
+    if !loaded loaded = make_loaded_font(font_name);
+    if !loaded return null;
+
+    return get_font_at_size(basename, cast(string) loaded.data, pixel_height);
+}
+
+release_font :: (font: *Dynamic_Font) {}  // Fonts are cached for the program's lifetime; see deinit_fonts().
+
+get_baseline_height :: (font: *Dynamic_Font) -> s64 { return font.character_height / 4; }
+
 #scope_module
 Font_Record :: struct { font:*Dynamic_Font; bytes:string; starts:[..]s64; byte_offsets:[..]s32; lcd_keys:[..]bool; width:s64; text_bytes:s32; }
 font_records:[..]*Font_Record;
