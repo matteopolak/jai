@@ -20,14 +20,224 @@
           "sha256": "9de2ff5452b28ee180d93af0c4653e6658d79c91a0460fd6d8259dd053e5fcbc"
         },
         {
+          "path": "config/default.focus-config",
+          "bytes": 22402,
+          "sha256": "692ad2502488573160acfedf7c7642200b1dc21fa4e355948553bd046ba62440"
+        },
+        {
+          "path": "config/default_macos.focus-config",
+          "bytes": 22513,
+          "sha256": "c189468ae8a1d82ab955a635f766ef5090372a9c07ff26bd822c5713329d8feb"
+        },
+        {
+          "path": "config/example-project.focus-config",
+          "bytes": 2940,
+          "sha256": "13971ad4b121b9f586c7d074d6982171c0d1af01d83fbf9c096fafecd48ff34c"
+        },
+        {
+          "path": "config/themes/basic-light.focus-theme",
+          "bytes": 4964,
+          "sha256": "861cd4fed1a6cd30df9e46656548c77cb1e4cf8a50716b1c9cbd1d51be205279"
+        },
+        {
+          "path": "config/themes/catppuccin-frappe.focus-theme",
+          "bytes": 5013,
+          "sha256": "a3eef307a748e4fee08499343f9164e652c6fdd0eb4970e4d1583f0c7d46b1f0"
+        },
+        {
+          "path": "config/themes/catppuccin-latte.focus-theme",
+          "bytes": 5013,
+          "sha256": "3a74b886a6a0c3f329c530a5caae89104a09c6a9584f5474f3c499e5a201b7c1"
+        },
+        {
+          "path": "config/themes/catppuccin-macchiato.focus-theme",
+          "bytes": 5013,
+          "sha256": "b432ff96a713dfedc4ba081514945ba5dc80067e4542dffd542469ecf7cf7566"
+        },
+        {
+          "path": "config/themes/catppuccin-mocha.focus-theme",
+          "bytes": 5014,
+          "sha256": "eaed6b32ae69f604178aa0df985a16ea7603956f54474a92a75a1660f40ddd6d"
+        },
+        {
+          "path": "config/themes/everforest-hard.focus-theme",
+          "bytes": 5042,
+          "sha256": "aff800a7a4f17a9dd4edfd2bd400cb13f2ae1009747af4524042cf690c30475c"
+        },
+        {
+          "path": "config/themes/gruber-darker.focus-theme",
+          "bytes": 5052,
+          "sha256": "175d0dac45b655ab1a553bd9665b715495a9852e8ec6df7420777c71741c1223"
+        },
+        {
+          "path": "config/themes/gruvbox-flat.focus-theme",
+          "bytes": 4954,
+          "sha256": "9fb351425d35e4bfe5b2a781941c1bc251882327ec651c6beb2c3629f9c574ec"
+        },
+        {
+          "path": "config/themes/halogen.focus-theme",
+          "bytes": 4954,
+          "sha256": "d533dbb60838c4737e8d88084e724fbcc98efcdd894b634d69d12ebb1cb4c3dd"
+        },
+        {
+          "path": "config/themes/handmade-hero.focus-theme",
+          "bytes": 5168,
+          "sha256": "9fcb63a6137c82fc2d7de0c598d00bbb668c253660c82debdb6538af43513d92"
+        },
+        {
+          "path": "config/themes/jblow-nostalgia.focus-theme",
+          "bytes": 4954,
+          "sha256": "6617d2958d509919cc7bd941b34dc00be458251c362337a96cd947f8ee0776a6"
+        },
+        {
+          "path": "config/themes/jblowtorch.focus-theme",
+          "bytes": 4953,
+          "sha256": "3d15e1054b278915e5b9dfd6fe67701a6eac191883a405b7d6b0b83644a1beaa"
+        },
+        {
+          "path": "config/themes/jellybeans.focus-theme",
+          "bytes": 5015,
+          "sha256": "3f7c3bf8c8c72f5c1c3909f4677f6b4e282b2f84882ea14f2e5ca4e77da381a6"
+        },
+        {
+          "path": "config/themes/kanagawa.focus-theme",
+          "bytes": 5013,
+          "sha256": "c7346df06b8a6da89e2bafb63e1d06e2c1a7b80bfa3c9def6de10ad2f6d653c3"
+        },
+        {
+          "path": "config/themes/kujukuju.focus-theme",
+          "bytes": 5032,
+          "sha256": "2047edef921cc96f20c57da30ad9ee040e8bc64d50805163151ab4dc127a432d"
+        },
+        {
+          "path": "config/themes/nord-midnight.focus-theme",
+          "bytes": 4953,
+          "sha256": "93606bf7c38343bcfe28c34f4dbd4e3c56c3980e7166ddbfb4ec2a6220534a65"
+        },
+        {
+          "path": "config/themes/nord.focus-theme",
+          "bytes": 4953,
+          "sha256": "246e684c3471a68d5052ffda73ff47c88740c809df1ac34312b203708bf84911"
+        },
+        {
+          "path": "config/themes/redshift.focus-theme",
+          "bytes": 4954,
+          "sha256": "a1b4449fbac00796570abd9e8193b522c6ceb629490b529dd3e11b6175edfa46"
+        },
+        {
+          "path": "config/themes/rose-pine-dawn.focus-theme",
+          "bytes": 4971,
+          "sha256": "361ce88d167eeb7b360305dc8ccd30d2ee26d709e750673b409b3df72fb1e8a7"
+        },
+        {
+          "path": "config/themes/rose-pine-moon.focus-theme",
+          "bytes": 4999,
+          "sha256": "e28a66db626fafefa03111c698a1d74b49bddd7f27beffa65d92a14684d0bfe1"
+        },
+        {
+          "path": "config/themes/rose-pine.focus-theme",
+          "bytes": 4999,
+          "sha256": "8babde94e73b236d9de19d0343fb4446e80145fd60f5bb8d662a7b8a22497eee"
+        },
+        {
+          "path": "config/themes/solarized-dark.focus-theme",
+          "bytes": 4953,
+          "sha256": "e029bd92a6a5bf8210c3f8252a9418cf68f63831742e286c3f45bc4565e71b80"
+        },
+        {
+          "path": "config/themes/spacemacs-light.focus-theme",
+          "bytes": 5085,
+          "sha256": "1df6b96bc8ef69a59bf843b608e914e27d4e6f262c9ad23c81644d8b7a2f3833"
+        },
+        {
+          "path": "config/themes/steel-breeze.focus-theme",
+          "bytes": 5824,
+          "sha256": "6820193c637c194b1ff237376943b66beba46f72d23d469599a418dff5b2d4fe"
+        },
+        {
+          "path": "config/themes/tokyo-night-light.focus-theme",
+          "bytes": 5002,
+          "sha256": "c173e1e5c2242c56d17ea93a44f3fefc069078b7bcf719487b4e416dae8acb26"
+        },
+        {
+          "path": "config/themes/tokyo-night.focus-theme",
+          "bytes": 5002,
+          "sha256": "a350ee936994a6b114539dda558396ddb36982bab3012f14337b45de8d10ea25"
+        },
+        {
+          "path": "config/themes/vscode-dark.focus-theme",
+          "bytes": 4997,
+          "sha256": "ed5120ce237356daaa44c7613ae8b4f15d7d171878132dbe01a4d5feb64b2b26"
+        },
+        {
+          "path": "config/themes/zenburn.focus-theme",
+          "bytes": 5065,
+          "sha256": "4ddeb58f03ef3f4fafc75ec9602362e937fdb594b95d23b7b2b50f36b35c2166"
+        },
+        {
           "path": "first.jai",
           "bytes": 19271,
           "sha256": "e1d2c3e97ae016a2c5c77261f90402035002933d78d733f523947db8bd8820d2"
         },
         {
+          "path": "fonts/FiraCode-LICENSE.txt",
+          "bytes": 4389,
+          "sha256": "1d41e10031ab125302780a05ec4c91d218e47db0c7e37cf315cce5e608cdc25c"
+        },
+        {
+          "path": "fonts/FiraCode-Retina.ttf",
+          "bytes": 295252,
+          "sha256": "e8aad8140dd254b73bac71205ec4e0cc3f1c3914aa73f514e2cc4b3cf937d35d"
+        },
+        {
+          "path": "fonts/OFL.txt",
+          "bytes": 4390,
+          "sha256": "c4be6ba9d030c3339a91881884f90b82f80b0671a20c248ed6ce694fd3937f22"
+        },
+        {
+          "path": "fonts/OpenSans-Regular.ttf",
+          "bytes": 122120,
+          "sha256": "325f509becc84d3f07bcc20775bee09691bdb24c236381f1508f3fb7cce00496"
+        },
+        {
+          "path": "fonts/OpenSans-SemiBold.ttf",
+          "bytes": 122064,
+          "sha256": "0ea1ffaea1f2177f2e66c3aae6e2120f2ca427237d796bfd052b5e507b7bc11b"
+        },
+        {
+          "path": "fonts/OpenSans-SemiBoldItalic.ttf",
+          "bytes": 127600,
+          "sha256": "9554199e6f0a110b8a28bf6db1770024c7b8451fc2df40dc83a352e8ad414e3c"
+        },
+        {
+          "path": "fonts/font-awesome/Font Awesome 6 Brands-Regular-400.otf",
+          "bytes": 515644,
+          "sha256": "f9cacc94082dd4efe4c89ad1cf4c803fac22b4a35367d83b783385be3bc2675c"
+        },
+        {
+          "path": "fonts/font-awesome/Font Awesome 6 Free-Regular-400.otf",
+          "bytes": 173956,
+          "sha256": "ee80f7707493e0fcb38f86bebc067ff569bfa57099a87b35526c83d6cd288b4f"
+        },
+        {
+          "path": "fonts/font-awesome/Font Awesome 6 Free-Solid-900.otf",
+          "bytes": 999396,
+          "sha256": "ca3ad79717f000ebba39f9206a7feeb1e1a5124831d2bd32da2b6ab60383edd0"
+        },
+        {
           "path": "fonts/font-awesome/LICENSE.txt",
           "bytes": 7427,
           "sha256": "de784a808496d49f5f80dd9d1d6e9a51cff712cfbc339e7c25155631ae3cdb5d"
+        },
+        {
+          "path": "images/focus.png",
+          "bytes": 72333,
+          "sha256": "3f9a1ae0ff10cedaa5542e91ebff162ad4a859b3cac495edb576a883ab7f3f49"
+        },
+        {
+          "path": "images/mac.png",
+          "bytes": 1862365,
+          "sha256": "10052bad8b43718e663f8b6d285b9dd5b1ece99fa79b3d6782c95ee3022b35f5"
         },
         {
           "path": "modules/Clipboard/Clipboard.jai",

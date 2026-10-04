@@ -25,6 +25,11 @@ SUBMODULE_REVISIONS = {
     'ostef/Linalg': '5f60c11f057787a804ce9582c5daeccc0e8de89a',
     'ostef/Jolt-Jai': '56d1cd47b92d6c08ecdab5b9057addce35dab41a',
 }
+# Data files a project reads at compile time (`#run read_entire_file`, fonts...),
+# by path prefix.
+RESOURCE_PREFIXES = {
+    'focus-editor/focus': ('config/', 'fonts/', 'images/', 'themes/'),
+}
 # Submodule mount points: (consumer directory link, target relative to corpus/upstream).
 MODULE_LINKS = (
     ('SogoCZE--Jails/modules/jaison', 'rluba--jaison'),
@@ -75,7 +80,8 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     if source_date < since and repo not in DEPENDENCIES:
         return record | {'selection': 'stale-excluded', 'files': []}
     paths = git(cache, 'ls-tree', '-r', '--name-only', revision).splitlines()
-    selected = [p for p in paths if p.endswith('.jai') or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')]
+    selected = [p for p in paths if p.endswith('.jai') or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')
+                or (p.startswith(RESOURCE_PREFIXES.get(repo, ())) and not p.endswith('.psd'))]
     destination = ROOT / 'corpus/upstream' / key
     def one(path: str) -> dict:
         expected = next((f for f in pinned['files'] if f['path'] == path), None) if pinned else None

@@ -825,6 +825,21 @@ impl Compiler {
                     self.resolve_entity(id)?;
                 }
             }
+            // Deferred items wait until no body is mid-lowering (an outer `expand_all`).
+            let lowering = self
+                .procs
+                .iter()
+                .any(|p| p.body_state == super::procs::BodyState::Lowering);
+            if !self.deferred_pending.is_empty() && !lowering {
+                let deferred = std::mem::take(&mut self.deferred_pending);
+                let retrying = std::mem::replace(&mut self.retrying_pending, true);
+                let result = deferred
+                    .into_iter()
+                    .try_for_each(|sid| self.expand_pending(sid));
+                self.retrying_pending = retrying;
+                result?;
+                continue;
+            }
             if scope_index == self.scopes.len() {
                 return Ok(());
             }

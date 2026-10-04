@@ -354,6 +354,36 @@ impl Compiler {
         }
     }
 
+    /// Like `entity_is_overloadable`, but `name :: other_proc;` aliases count too
+    /// (resolved on demand; an alias that cannot be resolved yet shadows).
+    fn overloadable_or_alias(&mut self, id: EntityId) -> bool {
+        if self.entity_is_overloadable(id) {
+            return true;
+        }
+        let EntityKind::Decl {
+            decl, ..
+        } = &self.entity(id).kind
+        else {
+            return false;
+        };
+        let alias = decl.kind == ast::DeclKind::Const
+            && decl.ty.is_none()
+            && matches!(
+                decl.value.as_ref().map(|v| &v.kind),
+                Some(ast::ExprKind::Ident(_) | ast::ExprKind::Member(..))
+            );
+        alias
+            && matches!(
+                self.resolve_entity(id),
+                Ok(Resolved::Proc(_)
+                    | Resolved::ProcSet(_)
+                    | Resolved::Const {
+                        value: Value::Proc(_),
+                        ..
+                    })
+            )
+    }
+
     /// Expand pending conditional items of a scope (each at most once).
     pub fn expand_pending(&mut self, scope: ScopeId) -> Result<()> {
         let mut i = 0;
@@ -368,7 +398,20 @@ impl Compiler {
                 let stmt = self.scope(scope).pending[i].stmt.clone();
                 let exported = self.scope(scope).pending[i].exported;
                 let file_scope = self.scope(scope).pending[i].file_scope;
+                // Compile-time code run from inside a body that is being lowered
+                // (a lookup reached this scope) cannot call procedures that are
+                // themselves mid-lowering. Put the item back and retry it later.
+                let reentrant = !self.retrying_pending
+                    && self
+                        .procs
+                        .iter()
+                        .any(|p| p.body_state == super::procs::BodyState::Lowering);
                 let result = self.expand_pending_item(scope, file_scope, &stmt, exported);
+                if result.is_err() && reentrant {
+                    self.scope_mut(scope).pending[i].state = PendingState::Waiting;
+                    self.deferred_pending.push(scope);
+                    return Ok(());
+                }
                 self.scope_mut(scope).pending[i].state = PendingState::Done;
                 result?;
             }
@@ -461,8 +504,8 @@ impl Compiler {
 
     /// Merge `ids` into `found`; returns true when the lookup must stop
     /// (a non-procedure binding shadows everything outside it).
-    fn collect(&self, found: &mut Vec<EntityId>, ids: &[EntityId]) -> bool {
-        let overloadable = ids.iter().all(|&e| self.entity_is_overloadable(e));
+    fn collect(&mut self, found: &mut Vec<EntityId>, ids: &[EntityId]) -> bool {
+        let overloadable = ids.iter().all(|&e| self.overloadable_or_alias(e));
         if found.is_empty() {
             found.extend_from_slice(ids);
             return !overloadable;

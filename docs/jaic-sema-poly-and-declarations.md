@@ -28,7 +28,15 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **Operators**: `a op= b` calls `operator op=` for struct-like targets (`try_operator_assign`); `*x[i]` calls
   `operator *[]`.
 - **Aliases**: `name :: overloaded;` resolves to `Resolved::ProcSet`. `#poke_name Module name;` copies the
-  visible declarations into the module's scope (`apply_pokes`, run after `expand_all`).
+  visible declarations into the module's scope (`apply_pokes`, run after `expand_all`). An alias whose value is
+  a name (`starts_with :: begins_with;`) joins an overload set from another scope like a procedure does: the
+  lookup resolves it on demand (`overloadable_or_alias` in `scope.rs`).
+- **Mixed arithmetic**: an integer value meeting a float in a binary operator converts to that float
+  (`binary_operand_type` picks the float type; `binary` casts the integer side).
+- **Pending top-level items** (`#if`, `#insert`, `#run`-driven declarations) expand lazily when a lookup reaches
+  their scope (`expand_pending`). An item that fails while some procedure body is mid-lowering (its
+  compile-time code may need that body) is put back to waiting and recorded in `Compiler::deferred_pending`;
+  `expand_all` retries it once nothing is lowering, and only then is a failure final.
 - **Struct field types in constants**: while a struct is laid out, earlier field types are recorded in
   `Compiler::field_types`, so `type_of(field)` works in a struct constant (`FnCtx::type_only`).
 - **Thunks and queued bodies**: `drain_bodies_lenient` lowers what it can before a thunk runs; bodies that fail

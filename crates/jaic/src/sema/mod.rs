@@ -205,6 +205,11 @@ pub struct Compiler {
     pub asm_regs: HashMap<EntityId, asm::AsmReg>,
     /// Syntax trees and types already handed to metaprograms as records.
     pub export: code_export::ExportState,
+    /// Scopes with top-level items put back to waiting because they failed while
+    /// procedure bodies were mid-lowering (retried by `expand_all`).
+    pub deferred_pending: Vec<ScopeId>,
+    /// Set while `expand_all` retries deferred items: failures are then final.
+    pub retrying_pending: bool,
 }
 
 impl Compiler {
@@ -269,6 +274,8 @@ impl Compiler {
             export_entities: Vec::new(),
             asm_regs: HashMap::new(),
             export: code_export::ExportState::default(),
+            deferred_pending: Vec::new(),
+            retrying_pending: false,
         };
         c.root_scope = c.new_scope(scope::ScopeKind::Root, None, ModuleId(u32::MAX), None);
         c.declare_builtins();
