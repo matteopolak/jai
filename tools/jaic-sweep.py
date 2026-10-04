@@ -3,7 +3,8 @@
 
 Usage: tools/jaic-sweep.py [--jaic PATH] [--filter TEXT] [--verbose] SET...
 Sets: corpus (tests/corpus/positive with expected runtime), stdlib (tests/stdlib,
-run must succeed), howto (reference how_to programs, check only), or file paths.
+run must succeed), howto (reference how_to programs, check only), upstream
+(tools/upstream-cases.json: upstream project entry points that must pass), or file paths.
 """
 import argparse, json, os, subprocess, sys
 from pathlib import Path
@@ -15,16 +16,19 @@ def cases(name):
         m = json.loads((ROOT / "tests/corpus/manifest.json").read_text())
         for c in m["cases"]:
             if "runtime" in c:
-                yield c["id"], ROOT / "tests/corpus" / c["source"], "run", c["runtime"]
+                yield c["id"], ROOT / "tests/corpus" / c["source"], "run", c["runtime"], []
     elif name == "stdlib":
         for p in sorted((ROOT / "tests/stdlib").glob("*.jai")):
-            yield p.stem, p, "run", None
+            yield p.stem, p, "run", None, []
+    elif name == "upstream":
+        for c in json.loads((ROOT / "tools/upstream-cases.json").read_text()):
+            yield c["id"], ROOT / "corpus/upstream" / c["path"], c["mode"], None, c.get("args", [])
     elif name == "howto":
         for p in sorted((ROOT / "reference/how_to").glob("*.jai")):
-            yield p.stem, p, "check", None
+            yield p.stem, p, "check", None, []
     else:
         p = Path(name)
-        yield p.stem, p, "run", None
+        yield p.stem, p, "run", None, []
 
 def main():
     ap = argparse.ArgumentParser()
@@ -36,16 +40,16 @@ def main():
     a = ap.parse_args()
     passed, failed = 0, []
     for s in a.sets:
-        for cid, path, mode, expect in cases(s):
+        for cid, path, mode, expect, extra in cases(s):
             if a.filter not in cid:
                 continue
             try:
-                r = subprocess.run([a.jaic, mode, str(path)], capture_output=True, timeout=a.timeout, cwd=path.parent)
+                r = subprocess.run([a.jaic, mode, str(path), *extra], capture_output=True, timeout=a.timeout, cwd=path.parent)
                 out, err, code = r.stdout.decode(errors="replace"), r.stderr.decode(errors="replace"), r.returncode
             except subprocess.TimeoutExpired:
                 out, err, code = "", "timeout", -1
             ok = code == (expect or {}).get("exit_code", 0) and (expect is None or out == expect.get("stdout", ""))
-            if expect is None and mode == "run":
+            if expect is None:
                 ok = code == 0
             if ok:
                 passed += 1
