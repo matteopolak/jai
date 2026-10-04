@@ -121,6 +121,8 @@ pub struct Module {
     /// Names visible module-wide (`#scope_export` and `#scope_module`).
     pub scope: ScopeId,
     pub params: Vec<(Sym, Value)>,
+    /// Entities of `#module_parameters` (readable as `Module.NAME`).
+    pub param_entities: Vec<scope::EntityId>,
     pub files: Vec<FileId>,
 }
 
