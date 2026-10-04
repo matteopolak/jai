@@ -17,7 +17,7 @@ visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool
             name := _sdk_asset_c_string(native_name);
             full := _sdk_asset_join(dir_name, name);
             defer free(full);
-            info := File_Visit_Info.{name, full, false};
+            info := File_Visit_Info.{short_name = name, full_name = full};
             proc(*info, user_data);
         }
         return true;
@@ -175,11 +175,11 @@ _sdk_asset_walk :: (manager: *AAssetManager, env: *JNIEnv, assets: jobject, list
         if asset != null {
             AAsset_close(asset);
             if files {
-                info := File_Visit_Info.{name, full, false};
+                info := File_Visit_Info.{short_name = name, full_name = full};
                 proc(*info, user_data);
             }
         } else {
-            info := File_Visit_Info.{name, full, recursive};
+            info := File_Visit_Info.{short_name = name, full_name = full, is_directory = true, descend_into_directory = recursive};
             if directories proc(*info, user_data);
             if recursive && info.descend_into_directory && !_sdk_asset_walk(manager, env, assets, list, full, true, user_data, proc, files, directories, depth + 1) return false;
         }

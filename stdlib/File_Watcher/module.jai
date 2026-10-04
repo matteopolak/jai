@@ -177,13 +177,13 @@ release_snapshot :: (entries: *[..] Snapshot_Entry, allocator: Allocator) {
 }
 scan_directory :: (path: string, recursive: bool, entries: *[..] Snapshot_Entry) -> bool {
     state: Scan_State = .{entries, entries.allocator, false};
-    visitor :: (info: *Files.File_Visit_Details, state: *Scan_State) {
+    visitor :: (info: *Files.File_Visit_Info, state: *Scan_State) {
         modtime, size, ok := Files.file_modtime_and_size(info.full_name);
         if !ok { state.failed = true; return; }
         entry: Snapshot_Entry = .{owned_path(info.full_name, state.allocator), modtime, size};
         array_add(state.entries, entry);
     }
-    ok := Files.visit_files_detailed(path, recursive, *state, visitor, true, true, true, false);
+    ok := Files.visit_files(path, recursive, *state, visitor, true, true, true, false);
     return ok && !state.failed;
 }
 Scan_State :: struct { entries: *[..] Snapshot_Entry; allocator: Allocator; failed: bool; }

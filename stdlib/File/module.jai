@@ -132,12 +132,6 @@ get_absolute_path :: inline (relative_path: string) -> string, success: bool {
     else { return get_absolute_path_unix(relative_path); }
 }
 
-File_Visit_Info :: struct {
-    short_name: string;
-    full_name: string;
-    descend_into_directory: bool;
-}
-
 file_length :: (file: File) -> s64 {
     length, success := file_length_checked(file);
     if !success return -1;

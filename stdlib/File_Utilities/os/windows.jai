@@ -15,6 +15,12 @@ atomic_file_replace_or_just_rename_if_destination_file_does_not_exist :: (old_fi
     return Windows.MoveFileExW(os_utf8_to_wide(old_filename), os_utf8_to_wide(new_filename), 1 | 8) != 0;
 }
 
+is_directory :: (path: string) -> bool, success: bool {
+    attrib := Windows.GetFileAttributesW(os_utf8_to_wide(path));
+    if attrib == 0xffff_ffff return false, false;
+    return (attrib & Windows.FILE_ATTRIBUTE_DIRECTORY) != 0, true;
+}
+
 #scope_module
 same_file :: (source: string, destination: string) -> bool {
     a := Windows.CreateFileW(os_utf8_to_wide(source), 0, 7, null, 3, 0x02000000, null);
@@ -39,8 +45,8 @@ File_Attribute_Data :: struct {
 }
 utility_kernel :: #system_library "kernel32";
 native_file_attributes :: (name: *u16, level: s32, attributes: *File_Attribute_Data) -> s32 #foreign utility_kernel "GetFileAttributesExW";
-directory_entries :: (path: string) -> [] File_Visit_Details, bool {
-    result: [..] File_Visit_Details;
+directory_entries :: (path: string) -> [] File_Visit_Info, bool {
+    result: [..] File_Visit_Info;
     result.allocator = temp;
     native: Windows.WIN32_FIND_DATAW;
     pattern := Strings.join(path, "/*");
@@ -50,7 +56,7 @@ directory_entries :: (path: string) -> [] File_Visit_Details, bool {
     while true {
         name := os_wide_to_utf8(native.cFileName.data);
         if name != "." && name != ".." {
-            info: File_Visit_Details;
+            info: File_Visit_Info;
             info.short_name = name;
             info.full_name = Strings.join(path, "/", name);
             info.is_directory = (native.dwFileAttributes & 0x10) != 0;

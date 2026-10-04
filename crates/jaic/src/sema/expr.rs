@@ -268,15 +268,12 @@ impl Compiler {
                 self.location_operand(f, loc_span)
             }
             E::CallerLocation => self.location_operand(f, span),
+            // `#file` is the full path of the file, as loaded.
             E::File => {
                 let path = self.sources.get(span.file).path.clone();
-                let name = std::path::Path::new(&path)
-                    .file_name()
-                    .map(|n| n.to_string_lossy().into_owned())
-                    .unwrap_or(path);
                 Ok(Operand::Const {
                     ty: TypeId::STRING,
-                    value: Value::String(name.as_bytes().into()),
+                    value: Value::String(path.as_bytes().into()),
                     untyped: false,
                 })
             }
@@ -376,7 +373,11 @@ impl Compiler {
     }
 
     /// The type of `expr` if it names a runtime local of an enclosing procedure.
-    fn outer_local_type(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Option<TypeId>> {
+    pub(super) fn outer_local_type(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<Option<TypeId>> {
         let E::Ident(name) = &expr.kind else {
             return Ok(None);
         };
@@ -1112,7 +1113,12 @@ impl Compiler {
                     val: f.b.bin(ir::BinOp::SDiv, Ty::I64, diff, s),
                 });
             }
-            let rhs = self.convert(f, rhs, TypeId::S64, span)?;
+            // Any runtime integer offsets a pointer (`data + total_read` with a u64).
+            let rhs = if self.types.is_integer(rty) && !matches!(rhs, Operand::Const { .. }) {
+                self.explicit_cast(f, rhs, TypeId::S64, ast::CastFlags::default(), span)?
+            } else {
+                self.convert(f, rhs, TypeId::S64, span)?
+            };
             let (_, idx) = self.rvalue(f, rhs, span)?;
             let pointee = self.types.pointee(lty).unwrap();
             let size = if pointee == TypeId::VOID {

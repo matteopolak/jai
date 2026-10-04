@@ -1906,12 +1906,15 @@ impl Compiler {
         for (i, v) in values.iter().enumerate() {
             let op = self.check_expr(f, scope, &v.value, types.get(i).copied())?;
             match op {
-                Operand::Multi(vals) if values.len() == 1 => {
-                    ops.extend(vals.into_iter().map(|(ty, val)| Operand::Value {
-                        ty,
-                        val,
-                    }))
-                }
+                // Extra results of a returned call are dropped, like in a declaration.
+                Operand::Multi(vals) if values.len() == 1 => ops.extend(
+                    vals.into_iter()
+                        .take(types.len())
+                        .map(|(ty, val)| Operand::Value {
+                            ty,
+                            val,
+                        }),
+                ),
                 // `return f();` of a procedure without results.
                 Operand::Void if values.len() == 1 => {}
                 other => ops.push(other),

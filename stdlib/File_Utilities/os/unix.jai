@@ -10,6 +10,12 @@ atomic_file_replace_or_just_rename_if_destination_file_does_not_exist :: (old_fi
     return file_move(old_filename, new_filename);
 }
 
+is_directory :: (path: string) -> bool, success: bool {
+    stats: stat_t;
+    if stat(temp_c_string(path), *stats) != 0 return false, false;
+    return S_ISDIR(stats.st_mode), true;
+}
+
 #scope_module
 same_file :: (source: string, destination: string) -> bool {
     a: stat_t;
@@ -17,8 +23,8 @@ same_file :: (source: string, destination: string) -> bool {
     if stat(temp_c_string(source), *a) != 0 || stat(temp_c_string(destination), *b) != 0 return false;
     return a.st_dev == b.st_dev && a.st_ino == b.st_ino;
 }
-directory_entries :: (path: string) -> [] File_Visit_Details, bool {
-    result: [..] File_Visit_Details;
+directory_entries :: (path: string) -> [] File_Visit_Info, bool {
+    result: [..] File_Visit_Info;
     result.allocator = temp;
     stream := opendir(temp_c_string(path));
     if !stream return result, false;
@@ -29,7 +35,7 @@ directory_entries :: (path: string) -> [] File_Visit_Details, bool {
         if !native_entry { if errno() != 0 return result, false; break; }
         short_name := to_string(native_entry.d_name.data);
         if short_name == "." || short_name == ".." continue;
-        info: File_Visit_Details;
+        info: File_Visit_Info;
         info.short_name = copy_temporary_string(short_name);
         info.full_name = Strings.join(path, "/", short_name);
         value: stat_t;

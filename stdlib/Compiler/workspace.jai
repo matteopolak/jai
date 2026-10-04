@@ -392,10 +392,9 @@ get_root_type :: (code: Code) -> (status: Get_Root_Type_Status, type: Type) {
     return .CORRUPTED, result;
 }
 
+// A `Type` is represented by its `*Type_Info`.
 get_type :: (ti: *Type_Info) -> Type {
-    unsupported("get_type");
-    result: Type;
-    return result;
+    return (cast(*Type) *ti).*;
 }
 
 compiler_set_type_info_flags :: (type: Type, flags: Type_Info_Flags) {
