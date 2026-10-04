@@ -122,7 +122,9 @@ impl Compiler {
             self.proc_func(p, self.proc(p).span)?;
             i += 1;
         }
-        self.drain_bodies()
+        self.drain_bodies()?;
+        self.fill_runtime_info();
+        Ok(())
     }
 
     /// The `main` procedure of the main module.

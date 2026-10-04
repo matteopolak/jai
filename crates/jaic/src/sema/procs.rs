@@ -601,7 +601,11 @@ impl Compiler {
         }
     }
 
-    fn resolve_library(&mut self, scope: ScopeId, ident: &ast::Ident) -> Result<Option<usize>> {
+    pub(super) fn resolve_library(
+        &mut self,
+        scope: ScopeId,
+        ident: &ast::Ident,
+    ) -> Result<Option<usize>> {
         let ids = self.lookup(scope, ident.name)?;
         let Some(&e) = ids.first() else {
             return err(ident.span, format!("unknown library '{}'", ident.name));

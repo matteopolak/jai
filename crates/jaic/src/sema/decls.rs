@@ -375,6 +375,9 @@ impl Compiler {
             }
             (None, None) => return err(span, "global needs a type or initializer"),
         };
+        if let Some(foreign) = &decl.foreign {
+            return self.foreign_global(scope, name, foreign, ty, span);
+        }
         let size = self.size_of(ty, span)?;
         let align = self.align_of(ty, span)?;
         let mut align = align;
@@ -405,7 +408,51 @@ impl Compiler {
             g.relocs = agg.relocs.clone();
         }
         Ok(Resolved::Global {
-            global,
+            storage: ir::Storage::Data(global),
+            ty,
+        })
+    }
+
+    /// `x: T #elsewhere lib ["symbol"];`: a variable defined by a foreign
+    /// library (or the process). `__runtime_info` without a library is the
+    /// compiler's own runtime information.
+    fn foreign_global(
+        &mut self,
+        scope: ScopeId,
+        name: Sym,
+        foreign: &ast::Foreign,
+        ty: TypeId,
+        span: Span,
+    ) -> Result<Resolved> {
+        if foreign.library.is_none() && name.as_str() == "__runtime_info" {
+            let global = self.runtime_info_global(span)?;
+            return Ok(Resolved::Global {
+                storage: ir::Storage::Data(global),
+                ty,
+            });
+        }
+        let library = match &foreign.library {
+            Some(lib) => self.resolve_library(scope, lib)?,
+            None => None,
+        };
+        let symbol = match &foreign.name {
+            ast::ForeignName::Named(s) => s.to_string(),
+            ast::ForeignName::Default => name.to_string(),
+        };
+        let foreign = self.program.add_foreign(ir::Foreign {
+            symbol,
+            library,
+            sig: ir::Sig {
+                params: Vec::new(),
+                returns: Vec::new(),
+                conv: ir::Conv::C,
+                c_varargs: false,
+                c_abi: None,
+            },
+            is_data: true,
+        });
+        Ok(Resolved::Global {
+            storage: ir::Storage::Foreign(foreign),
             ty,
         })
     }

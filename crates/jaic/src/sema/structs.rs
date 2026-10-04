@@ -979,11 +979,11 @@ impl Compiler {
                     },
                     _ => match self.resolve_entity(entity)? {
                         Resolved::Global {
-                            global,
+                            storage,
                             ty,
                         } => Operand::Place {
                             ty,
-                            addr: f.b.global_addr(global),
+                            addr: f.b.storage_addr(storage),
                         },
                         _ => return err(span, "invalid using target"),
                     },
