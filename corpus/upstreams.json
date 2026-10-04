@@ -7404,6 +7404,220 @@
           "sha256": "b34de08d7a2d5f92e320eace4cd3e26a409cc27c09a9bfa4c288aa0f13504e7d"
         }
       ]
+    },
+    {
+      "repository": "SogoCZE/jai_parser",
+      "revision": "a06033e0f2a2e8f26c9129a58a7d67cbf28ff98a",
+      "latest_jai_change": "2026-10-04T04:16:49+02:00",
+      "source_of_truth": "https://github.com/SogoCZE/jai_parser/tree/a06033e0f2a2e8f26c9129a58a7d67cbf28ff98a",
+      "selection": "recent-source",
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 1070,
+          "sha256": "8888194504ea1fa66803505375f27e0f3912ba989b8282a1ba8b8f4e6e1101dc"
+        },
+        {
+          "path": "ast_print.jai",
+          "bytes": 12075,
+          "sha256": "ad239fd732d0d9f001b9cda0d77d3464b61ca8e082dd65ea9dad440af966bbbb"
+        },
+        {
+          "path": "cmd/build.jai",
+          "bytes": 2171,
+          "sha256": "8eda76707d8e549c3c3c2be86cc1b960f24b5231c2f6897202af4675e15f8a40"
+        },
+        {
+          "path": "cmd/src/json_export.jai",
+          "bytes": 8021,
+          "sha256": "95aad720a3c83842368e6cf6a642156e940b34b047f12b75a2f154c9f627ecb8"
+        },
+        {
+          "path": "cmd/src/main.jai",
+          "bytes": 4378,
+          "sha256": "360303ef9d5e86f5571c29d845bccbcdb50890302be4c69f19cc1bdc1638a200"
+        },
+        {
+          "path": "lexer.jai",
+          "bytes": 35594,
+          "sha256": "70d9acebcf9a2fc54169c22d50a9f555cc7e23fac9bab9092d12ae57c3e7195e"
+        },
+        {
+          "path": "module.jai",
+          "bytes": 161,
+          "sha256": "d06c3f30152d9ebcfe43e9cb1a425b6f7553eaa673c98e8cb0f3be7d2aded146"
+        },
+        {
+          "path": "parser.jai",
+          "bytes": 121870,
+          "sha256": "bf53a6cbefaf50aa26081f5c15735aa470bbcb937bdca14fbc08edf8c4c33e49"
+        },
+        {
+          "path": "readme.md",
+          "bytes": 12663,
+          "sha256": "0ebefc4e524b9e56aa3d99422456506da14b0b93803d694edeadb47b49baf0a9"
+        },
+        {
+          "path": "tests/basic.jai",
+          "bytes": 289,
+          "sha256": "79cfe3cdda7e4e5e69054e4fde42c155207159b6c21d2e51975dc80183366f1a"
+        },
+        {
+          "path": "tests/comma_seperated.jai",
+          "bytes": 115,
+          "sha256": "e4976043f17107f24ee6003a74a55713f034a39f56ec5620e4af77f70e3791fd"
+        },
+        {
+          "path": "tests/directive_context.jai",
+          "bytes": 52,
+          "sha256": "5c3299b6bae49ee99a683b3f28db19634a7f6b838b48afbf9b10dd292376f1b7"
+        },
+        {
+          "path": "tests/discard.jai",
+          "bytes": 109,
+          "sha256": "301620c47c08d7cdc6c2f767b96882d291c95c486a41c993a992aeef12756539"
+        },
+        {
+          "path": "tests/dot.jai",
+          "bytes": 347,
+          "sha256": "a0c2687704d1348f5ff140f4f527efa449638ceb2fe3e62297459584007cff5a"
+        },
+        {
+          "path": "tests/dotless_struct_literal.jai",
+          "bytes": 542,
+          "sha256": "f4a7e97cd494b17a16b311cf06000d1a30017976f32b3900f3e7c8509cf2d98d"
+        },
+        {
+          "path": "tests/example.jai",
+          "bytes": 370,
+          "sha256": "db34be60804b7f888997e4917cb88ec732a1702360c8320332c5c13874f434c4"
+        },
+        {
+          "path": "tests/exists_directive.jai",
+          "bytes": 89,
+          "sha256": "5a5f10573575ba21b59726e5410bb424007e809c77bab1a0b3b7b7b0cb1b1982"
+        },
+        {
+          "path": "tests/hang.jai",
+          "bytes": 503,
+          "sha256": "580322b7b4500ce5cd1c5f3514335bae6c9c8342538baa15c9177e666eff2332"
+        },
+        {
+          "path": "tests/here_string.jai",
+          "bytes": 1663,
+          "sha256": "18d2914f5248064c91c495cb081829308fc8bcbaf452ea15415015a1ef6d9e5e"
+        },
+        {
+          "path": "tests/ifx.jai",
+          "bytes": 89,
+          "sha256": "9017ca448fbe467e7928d0dba7d8faad15a118049e8b383da2d65b3a2e5ed1b8"
+        },
+        {
+          "path": "tests/import_with_arguments.jai",
+          "bytes": 78,
+          "sha256": "240ef36ed5dbac4728fa16f2eeec0e038b20bea0fa8b17ffb1dea78d12742705"
+        },
+        {
+          "path": "tests/inline_asm.jai",
+          "bytes": 546,
+          "sha256": "9f0fa1ebd5203d12c3332c2e519b0aecc9dff1c864c9bb09aadd1d89827ad1bd"
+        },
+        {
+          "path": "tests/issue_10.jai",
+          "bytes": 10,
+          "sha256": "2c7f141613a1c9d5688bff52f15b505f75328d53b9102ff7449511f9ec1a8df5"
+        },
+        {
+          "path": "tests/issue_7.jai",
+          "bytes": 133,
+          "sha256": "fcbb862313e696551f9e5a0e7cba78481ca629b5a3c06a1b79fca34123d2ceb5"
+        },
+        {
+          "path": "tests/issue_8.jai",
+          "bytes": 48,
+          "sha256": "d04d9c39e4816786ad0afa5c1c2c28501c332bc872c626fdd274188b681ca938"
+        },
+        {
+          "path": "tests/issue_9.jai",
+          "bytes": 58,
+          "sha256": "98d0085ec49d92c24793517fe3d53d74cc642bd43d9a3221f99011bd8fcb0ed5"
+        },
+        {
+          "path": "tests/issue_jails_24.jai",
+          "bytes": 40,
+          "sha256": "43e4ff4c4317796a6270230336b565a42d469b41274e782d05c02057dafe89a0"
+        },
+        {
+          "path": "tests/issue_jails_25.jai",
+          "bytes": 207,
+          "sha256": "b969b1aed158e63dcc7f35e2cc8b14a1f90255660f39d355e4927ba3426c9d41"
+        },
+        {
+          "path": "tests/library_directive.jai",
+          "bytes": 69,
+          "sha256": "120ac703fb9c123f760f2cb7396d28b5dce3c5e6a130a496f06e6a342632ae03"
+        },
+        {
+          "path": "tests/multiple_array_subscript.jai",
+          "bytes": 30,
+          "sha256": "2d23942f5f418b60c58cfdc62d38a28c805797488d263dd2b7713fc5223ac72a"
+        },
+        {
+          "path": "tests/named_returns.jai",
+          "bytes": 77,
+          "sha256": "421f8ecafe8d78383773bb9095aa3799651ee6677c1420bdf025c56888205830"
+        },
+        {
+          "path": "tests/named_returns_two.jai",
+          "bytes": 133,
+          "sha256": "e5d49008b15755b9534af0c6d3354f35d0336ecf57ec1cf75f357ee4921487f6"
+        },
+        {
+          "path": "tests/new_cast.jai",
+          "bytes": 46,
+          "sha256": "596d7a5b6f1ac563e6c2a99c7336706e16cc3fad20b46f138b1580bafaa422ac"
+        },
+        {
+          "path": "tests/performance_test.jai",
+          "bytes": 1960,
+          "sha256": "2c4bc7fdf8e977e6bdc6c477d91ab2ea76f7aad3fd9f898b03519514402cbfed"
+        },
+        {
+          "path": "tests/playground.jai",
+          "bytes": 107,
+          "sha256": "5c63d821d76b46071cf2dbb66ce3e964c0a091f24a7f9d21fe133675d8775b28"
+        },
+        {
+          "path": "tests/prefix_deref.jai",
+          "bytes": 308,
+          "sha256": "3ffaa32ec008737dc9d5f244e7fc4196dd6b37ff91d4f2a7bda12f3e19e6c5a0"
+        },
+        {
+          "path": "tests/push_context_on_procedure_call.jai",
+          "bytes": 83,
+          "sha256": "45e7f9660f3d958824e0fa4e4a23c7affbaebf133cd82871cb957d261b3f7351"
+        },
+        {
+          "path": "tests/tagged_union.jai",
+          "bytes": 288,
+          "sha256": "556ffad35997f207344fe15bc618f5b2bec68c3a4ee7ac307d95ae6f0af3a42c"
+        },
+        {
+          "path": "tests/test.jai",
+          "bytes": 565,
+          "sha256": "9f607c23e0ad2f7c682e655d66d197f6eee71cc4372280edc71b967be499cd16"
+        },
+        {
+          "path": "tests/type_inst.jai",
+          "bytes": 476,
+          "sha256": "4c046c35437ec47c8a7ce024ee70bba3aeddec3a84d533038f5e0aa3b75647f3"
+        },
+        {
+          "path": "tests/v2_for.jai",
+          "bytes": 21,
+          "sha256": "73839f7975a97a804c4c6515d6df92a014142c7d771ec9da48abe599a2a05c13"
+        }
+      ]
     }
   ]
 }

@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 import re
 from pathlib import Path, PurePosixPath
 import subprocess
@@ -15,6 +16,15 @@ import urllib.request
 REPOSITORIES = (
     'focus-editor/focus', 'Ivo-Balbaert/The_Way_to_Jai', 'SogoCZE/Jails',
     'rluba/jaison', 'withlang-dev/open-jai', 'ostef/Vk-Engine', 'roeyb1/sgpu',
+)
+# Libraries the projects above import from git submodules: pinned like the
+# projects but exempt from the recency cutoff.
+DEPENDENCIES = ('SogoCZE/jai_parser',)
+# Submodule mount points: (consumer directory link, target relative to corpus/upstream).
+MODULE_LINKS = (
+    ('SogoCZE--Jails/modules/jaison', 'rluba--jaison'),
+    ('SogoCZE--Jails/modules/unicode_utils', 'rluba--jaison/unicode_utils'),
+    ('SogoCZE--Jails/modules/jai_parser', 'SogoCZE--jai_parser'),
 )
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -55,7 +65,7 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     source_date = datetime.fromisoformat(stamp)
     record = {'repository': repo, 'revision': revision, 'latest_jai_change': stamp,
               'source_of_truth': f'https://github.com/{repo}/tree/{revision}'}
-    if source_date < since:
+    if source_date < since and repo not in DEPENDENCIES:
         return record | {'selection': 'stale-excluded', 'files': []}
     paths = git(cache, 'ls-tree', '-r', '--name-only', revision).splitlines()
     selected = [p for p in paths if p.endswith('.jai') or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')]
@@ -84,9 +94,16 @@ def main() -> None:
     old = json.loads(manifest.read_text()) if manifest.exists() else {'projects': []}
     pins = {p['repository']: p for p in old['projects']}
     projects = []
-    for repo in REPOSITORIES:
+    for repo in REPOSITORIES + DEPENDENCIES:
         record = fetch(repo, since, pins.get(repo)); projects.append(record)
         print(f"{repo}: {record['selection']}, {len(record['files'])} text files at {record['revision']}", flush=True)
+    upstream = ROOT / 'corpus/upstream'
+    for link, target in MODULE_LINKS:
+        path = upstream / link
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.is_symlink() or path.exists():
+            path.unlink()
+        path.symlink_to(os.path.relpath(upstream / target, path.parent))
     temporary = manifest.with_suffix('.json.tmp')
     temporary.write_text(json.dumps({'format': 1, 'minimum_source_date': since.isoformat(), 'projects': projects}, indent=2) + '\n')
     temporary.replace(manifest)
