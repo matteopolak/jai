@@ -226,6 +226,7 @@ impl Compiler {
             );
         }
         if self.proc(id).sig_resolving {
+            self.in_progress_misses += 1;
             return err(
                 self.proc(id).span,
                 format!("signature of '{}' depends on itself", self.proc(id).name),
@@ -754,14 +755,15 @@ impl Compiler {
                 retry.push(id);
                 continue;
             }
-            let misses = self.placeholder_misses;
+            let misses = (self.placeholder_misses, self.in_progress_misses);
             match self.lower_body(id) {
                 Ok(()) => {
                     self.lenient_failures.remove(&id);
                 }
                 Err(e) => {
-                    // Waiting for a `#placeholder` is settled by the metaprogram, at any time.
-                    if self.placeholder_misses == misses {
+                    // Waiting for a `#placeholder` is settled by the metaprogram, at any time;
+                    // something in progress (a signature, a layout) by the caller finishing.
+                    if (self.placeholder_misses, self.in_progress_misses) == misses {
                         let epoch = self.lower_epoch();
                         self.lenient_failures.insert(id, (epoch, e.clone()));
                     }
