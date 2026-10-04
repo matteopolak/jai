@@ -116,3 +116,4 @@ in `run_modify`; it builds one IR function per call, so keep per-call cost in mi
 ## Dependencies
 
 `interp` (compile-time execution), `parser/decl.rs` (mixed declaration lists), `calls.rs` (candidate matching).
+- Compile-time pointer constants that are plain integers (handle-like values such as `cast(*void) 32512` or `cast(HANDLE) -1`) are frozen as raw values by `freeze_pointer` in `sema/consteval.rs` instead of erroring with "unknown size".

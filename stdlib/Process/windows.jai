@@ -43,7 +43,7 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
         process.job_handle = Windows.CreateJobObjectA(null, null);
         limits: Windows.JOBOBJECT_EXTENDED_LIMIT_INFORMATION;
         limits.BasicLimitInformation.LimitFlags = cast(Windows.Job_Object_Limit) 0x2000;
-        if !process.job_handle || !Windows.SetInformationJobObject(process.job_handle, .JobObjectExtendedLimitInformation, *limits, size_of(type_of(limits))) || !Windows.AssignProcessToJobObject(process.job_handle, process.info.hProcess) {
+        if !process.job_handle || !Windows.SetInformationJobObject(process.job_handle, .ExtendedLimitInformation, *limits, size_of(type_of(limits))) || !Windows.AssignProcessToJobObject(process.job_handle, process.info.hProcess) {
             Windows.TerminateProcess(process.info.hProcess, 127);
             Windows.CloseHandle(process.info.hThread);
             Windows.CloseHandle(process.info.hProcess);
