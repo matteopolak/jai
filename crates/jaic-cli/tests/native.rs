@@ -151,27 +151,29 @@ fn c_structs_by_value() {
         "{}",
         String::from_utf8_lossy(&cc.stderr)
     );
-    let calls = "{11, 22} {2, 4, 6} {5, 6, 7, 8} 10 {-7, 9} {99, 2.5} {11, 22, 33}\n";
-    let interp = Command::new(JAIC)
-        .args(["run", "foreign_calls.jai"])
-        .current_dir(&dir)
-        .output()
-        .unwrap();
-    assert_eq!(
-        String::from_utf8_lossy(&interp.stdout),
-        calls,
-        "{}",
-        String::from_utf8_lossy(&interp.stderr)
-    );
+    let calls = "{11, 22} {2, 4, 6} {5, 6, 7, 8} 10 {-7, 9} {99, 2.5} {11, 22, 33}\n832\n";
+    let callbacks = "{111, 47} {10, 20, 30, 40} {8, 4}\n832\n";
+    let run_interp = |name: &str| {
+        let output = Command::new(JAIC)
+            .args(["run", &format!("{name}.jai")])
+            .current_dir(&dir)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        String::from_utf8_lossy(&output.stdout).into_owned()
+    };
+    assert_eq!(run_interp("foreign_calls"), calls);
+    assert_eq!(run_interp("callbacks"), callbacks);
     let run_native = |name: &str| {
         let output = build_and_run(&dir.join(format!("{name}.jai")), &dir, name).unwrap();
         String::from_utf8_lossy(&output.stdout).into_owned()
     };
     assert_eq!(run_native("foreign_calls"), calls);
-    assert_eq!(
-        run_native("callbacks"),
-        "{111, 47} {10, 20, 30, 40} {8, 4}\n"
-    );
+    assert_eq!(run_native("callbacks"), callbacks);
 }
 
 /// C variadic foreign calls in a native build (Apple arm64 passes variadic arguments on the stack).
