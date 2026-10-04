@@ -312,7 +312,10 @@ impl Parser<'_> {
                         span: self.span(),
                     });
                     self.bump();
-                    decl.foreign = self.parse_elsewhere_library()?;
+                    decl.foreign = Some(self.parse_elsewhere_library()?.unwrap_or(Foreign {
+                        library: None,
+                        name: ForeignName::Default,
+                    }));
                 }
                 Tok::Directive(name) if DECL_FLAGS.contains(&name.as_str()) => {
                     decl.flags.push(Ident {

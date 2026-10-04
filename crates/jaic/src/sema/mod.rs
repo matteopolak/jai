@@ -22,6 +22,7 @@ mod expr;
 mod lower;
 mod modules;
 mod procs;
+mod runtime_info;
 mod scope;
 mod stmt;
 mod structs;
@@ -148,6 +149,8 @@ pub struct Compiler {
     /// How many of `top_level_runs`/`asserts` already executed.
     runs_done: usize,
     asserts_done: usize,
+    /// `__runtime_info`, when the program references it.
+    runtime_info: Option<ir::GlobalId>,
     /// Id of the workspace this compiler builds (1: the top-level program).
     pub workspace: i64,
     /// Sources added so far (labels of added strings).
@@ -216,6 +219,7 @@ impl Compiler {
             runs_done: 0,
             asserts_done: 0,
             workspace: 1,
+            runtime_info: None,
             added_sources: 0,
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),

@@ -439,10 +439,10 @@ impl Compiler {
             },
             Resolved::Proc(p) => Operand::Procs(vec![p]),
             Resolved::Global {
-                global,
+                storage,
                 ty,
             } => {
-                let addr = f.b.global_addr(global);
+                let addr = f.b.storage_addr(storage);
                 Operand::Place {
                     ty,
                     addr,

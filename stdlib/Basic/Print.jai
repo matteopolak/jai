@@ -704,26 +704,34 @@ isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
     return null;
 }
 
-// A lone '%' consumes the next argument; '%N' selects a zero-based index;
-// '%%' emits one literal percent. Out-of-range selectors fail explicitly.
+// A lone '%' (or '%0') consumes the next argument; '%N' selects argument N
+// (one-based); '%00' prints nothing. '%%' is two consecutive arguments
+// (newer Jai). A literal percent is written '\%' in source, which the lexer
+// turns into byte 31. Out-of-range selectors fail explicitly.
 __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) -> bool {
     position: s64 = 0;
     implicit: s64 = 0;
     while position < format.count {
         byte := format[position]; position += 1;
+        if byte == 31 { append(builder, cast(u8) #char "%"); continue; }
         if byte != #char "%" { append(builder, byte); continue; }
-        if position < format.count && format[position] == #char "%" {
-            append(builder, cast(u8) #char "%"); position += 1; continue;
-        }
         index := implicit;
-        if position < format.count && is_digit(format[position]) {
+        if position + 1 < format.count && format[position] == #char "0" && format[position+1] == #char "0" {
+            position += 2;
+            continue;
+        }
+        if position < format.count && is_digit(format[position]) && format[position] != #char "0" {
             index = 0;
             while position < format.count && is_digit(format[position]) {
                 digit := format[position] - #char "0";
                 if index > (0x7fff_ffff_ffff_ffff - digit) / 10 { builder.failed = true; return false; }
                 index = index*10 + digit; position += 1;
             }
-        } else implicit += 1;
+            index -= 1;
+        } else {
+            if position < format.count && format[position] == #char "0" position += 1;
+            implicit += 1;
+        }
         if index < 0 || index >= args.count {
             append(builder, "<missing format argument>"); builder.failed = true; return false;
         }

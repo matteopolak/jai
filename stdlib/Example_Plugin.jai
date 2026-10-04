@@ -1,6 +1,6 @@
 // Independently authored example of the canonical metaprogram callback protocol.
 #import "Basic";
-#import,file "legacy/Compiler/module.jai";
+#import "Compiler";
 
 get_plugin :: () -> *Metaprogram_Plugin {
     plugin := New(Metaprogram_Plugin);

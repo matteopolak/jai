@@ -2,7 +2,7 @@
 #scope_file
 MD_Tables :: #import "legacy/Hash_Table";
 MD_Pool :: #import "legacy/Pool";
-MD_Compiler :: #import "legacy/Compiler";
+MD_Compiler :: #import "Compiler";
 #scope_export
 #add_context inside_memory_debugger := false;
 #add_context __basic_memory_debugger_lock_owned := false;

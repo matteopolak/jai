@@ -351,9 +351,11 @@ make_string_literal :: (s: string) -> *Code_Literal {
 // ---------------------------------------------------------------------------
 
 get_runtime_info :: (w: Workspace = -1) -> Runtime_Info {
-    __runtime_info: Runtime_Info #elsewhere;
     return __runtime_info;
 }
+
+// Provided by the compiler (filled once the program is fully compiled).
+__runtime_info: Runtime_Info #elsewhere;
 
 get_type_table :: (w: Workspace = -1) -> [] *Type_Info {
     return get_runtime_info(w).type_table;

@@ -129,7 +129,7 @@ pub enum EntityKind {
 pub enum Resolved {
     Const { value: Value, ty: TypeId },
     Proc(ProcId),
-    Global { global: ir::GlobalId, ty: TypeId },
+    Global { storage: ir::Storage, ty: TypeId },
     Module(ModuleId),
     Library(value::LibraryId),
     PolyStruct(value::PolyStructId),

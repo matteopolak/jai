@@ -354,6 +354,15 @@ impl Func {
     }
 }
 
+/// Where a global variable lives.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Storage {
+    /// Program data (`x: T;`).
+    Data(GlobalId),
+    /// A symbol of a foreign library (`x: T #elsewhere lib;`).
+    Foreign(ForeignId),
+}
+
 /// A relocation inside a global's initial bytes: an 8-byte pointer slot at
 /// `offset` that must hold the address of `target` plus `addend`.
 #[derive(Clone, Debug, PartialEq)]
@@ -586,6 +595,13 @@ impl Builder {
     pub fn alloca(&mut self, size: u64, align: u64) -> Val {
         let slot = self.slot(size, align);
         self.slot_addr(slot)
+    }
+    /// Address of a variable's storage: program data or a foreign symbol.
+    pub fn storage_addr(&mut self, storage: Storage) -> Val {
+        match storage {
+            Storage::Data(global) => self.global_addr(global),
+            Storage::Foreign(foreign) => self.foreign_addr(foreign),
+        }
     }
     pub fn global_addr(&mut self, global: GlobalId) -> Val {
         let dst = self.new_val(Ty::Ptr);

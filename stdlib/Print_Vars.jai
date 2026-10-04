@@ -60,7 +60,7 @@ print_vars_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config,
             Basic.print_to_builder(*generated, "names[%] = #run get_code_name(args[%]);\n", index, index);
             Basic.print_to_builder(*generated, "__printed_value% := #insert args[%];\n", index, index);
             Basic.print_to_builder(*generated, "types[%] = type_of(__printed_value%);\n", index, index);
-            Basic.print_to_builder(*generated, "values[%] = Basic.sprint(\"%%\", __printed_value%);\n", index, index);
+            Basic.print_to_builder(*generated, "values[%] = Basic.sprint(\"\%\", __printed_value%);\n", index, index);
         }
         return Basic.builder_to_string(*generated);
     };
