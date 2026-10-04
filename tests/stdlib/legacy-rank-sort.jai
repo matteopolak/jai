@@ -16,6 +16,8 @@ main :: () -> s64 {
     Ranks.sort(*sorter, integers);
     if sorter[0] != 1 || sorter[1] != 2 || sorter[2] != 3 return 5;
     decimals := float.[3.25, -2, 0, -0.0, 3.25];
+    // Valid ranks seed the stable merge; start the float case from identity.
+    Ranks.reset(*sorter);
     Ranks.sort(*sorter, decimals);
     if sorter[0] != 1 || sorter[1] != 2 || sorter[2] != 3 || sorter[4] != 4 return 6;
     data: [..]float;
