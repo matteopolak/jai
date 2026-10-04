@@ -593,7 +593,7 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
     return fill_complete(id, 0);
 }
 
-// "beta 0.2.025, jaic" -> 0, 2, 25: the first digit run, split on dots.
+// "beta 0.2.029, jaic" -> 0, 2, 29: the first digit run, split on dots.
 parse_version_numbers :: (text: string, info: *Version_Info) {
     i := 0;
     while i < text.count && !is_digit_char(text[i])  i += 1;

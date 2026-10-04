@@ -340,7 +340,6 @@ string_to_float :: (value: string) -> float64, bool {
     return result, true;
 }
 
-c_style_strlen :: (value: *u8) -> int { if !value return 0; n := 0; while value[n] != 0 n += 1; return n; }
 
 compare_strings :: compare;
 

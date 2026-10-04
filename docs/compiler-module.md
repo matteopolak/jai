@@ -70,7 +70,7 @@ Messages live in module-level records (one per kind), so a message and the strin
 
 ### Version
 
-`compiler_get_version_info(*info)` returns `__jaic_compiler_version()` unchanged and parses the first digit run split on dots (`"beta 0.2.025, jaic"` gives 0, 2, 25).
+`compiler_get_version_info(*info)` returns `__jaic_compiler_version()` unchanged and parses the first digit run split on dots (`"beta 0.2.029, jaic"` gives 0, 2, 29).
 
 ### Syntax trees and unsupported APIs
 

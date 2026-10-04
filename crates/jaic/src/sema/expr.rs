@@ -1186,6 +1186,15 @@ impl Compiler {
         } else {
             ty
         };
+        // An integer value meeting a float converts like `cast(float) x`.
+        let int_to_float =
+            |s: &Self, o: &Operand| !is_shift && s.types.is_float(ty) && s.types.is_integer(o.ty());
+        if int_to_float(self, &lhs) {
+            lhs = self.explicit_cast(f, lhs, ty, ast::CastFlags::default(), span)?;
+        }
+        if int_to_float(self, &rhs) {
+            rhs = self.explicit_cast(f, rhs, ty, ast::CastFlags::default(), span)?;
+        }
         let lhs = self.convert(f, lhs, ty, span)?;
         let rhs = self.convert(f, rhs, rhs_ty, span)?;
         let (_, x) = self.rvalue(f, lhs, span)?;
@@ -1377,6 +1386,13 @@ impl Compiler {
                     return Ok(lt);
                 }
                 if self.implicit_cost(lt, false, rt).is_some() {
+                    return Ok(rt);
+                }
+                // An integer meeting a float in arithmetic becomes that float.
+                if self.types.is_float(lt) && self.types.is_integer(rt) {
+                    return Ok(lt);
+                }
+                if self.types.is_integer(lt) && self.types.is_float(rt) {
                     return Ok(rt);
                 }
                 let (li, ri) = (self.types.int_info(lt), self.types.int_info(rt));

@@ -244,7 +244,7 @@ impl MetaOp {
     }
 }
 
-pub const COMPILER_VERSION: &str = "beta 0.2.025, jaic";
+pub const COMPILER_VERSION: &str = "beta 0.2.029, jaic";
 
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.

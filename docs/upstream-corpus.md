@@ -20,7 +20,7 @@ Pinned source snapshots from seven recently maintained Jai projects expand compa
 
 Submodule dependencies (`DEPENDENCIES` in `tools/fetch_upstreams.py`, currently [jai_parser](https://github.com/SogoCZE/jai_parser) for Jails) are pinned the same way but exempt from the recency cutoff. `MODULE_LINKS` symlinks them (and jaison/unicode_utils) into the consumer's `modules/` directory, where its submodules would live.
 
-The fetcher downloads `.jai` files, README files and license notices only, into gitignored `corpus/upstream/`. Git's bare metadata cache lives under ignored artifacts; no repository checkout, upstream compiler, native object, installer or build script executes. Existing manifest revisions remain pinned even if the remote default branch advances.
+The fetcher downloads `.jai` files, README files, license notices and the data files a project reads at compile time (`RESOURCE_PREFIXES`: focus's `config/`, `fonts/`, `images/`, `themes/`), into gitignored `corpus/upstream/`. Git's bare metadata cache lives under ignored artifacts; no repository checkout, upstream compiler, native object, installer or build script executes. Existing manifest revisions remain pinned even if the remote default branch advances.
 
 The corpus is acceptance input. Preserve source and license notices; do not copy another compiler's implementation into this rewrite. OpenJai describes a Jai-style language and incomplete alternate compiler, so use its programs to reveal requirements while resolving contradictory language claims against recent real Jai consumers and supplied language documentation. Its README's compile-through claims are not verification of this compiler.
 

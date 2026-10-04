@@ -91,7 +91,8 @@ impl Compiler {
                 Ok(Operand::Type(self.instantiate_struct(ps, values, span)?))
             }
             Operand::Procs(procs) => {
-                let call_args = self.precheck_args(f, scope, args)?;
+                let as_code = self.macro_code_args(&procs, args);
+                let call_args = self.precheck_args_deferring(f, scope, args, &as_code)?;
                 let wants_code = procs.iter().any(|&p| {
                     let header = &self.proc(p).lit.header;
                     header.params.iter().any(|p| {
@@ -165,9 +166,42 @@ impl Compiler {
         scope: ScopeId,
         args: &[ast::Arg],
     ) -> Result<Vec<CallArg>> {
+        self.precheck_args_deferring(f, scope, args, &[])
+    }
+
+    /// Arguments that a macro among `procs` takes as a `Code` parameter: they are
+    /// code, not values, so they are not checked before the call is resolved.
+    fn macro_code_args(&self, procs: &[ProcId], args: &[ast::Arg]) -> Vec<bool> {
+        let is_code = |p: &ast::Param| matches!(&p.ty, Some(ast::Expr { kind: E::Ident(n), .. }) if n.as_str() == "Code");
+        args.iter()
+            .enumerate()
+            .map(|(i, arg)| {
+                procs.iter().any(|&p| {
+                    let info = self.proc(p);
+                    let params = &info.lit.header.params;
+                    let param = match arg.name {
+                        Some(n) => params
+                            .iter()
+                            .find(|p| p.name.map(|pn| pn.name) == Some(n.name)),
+                        None => params.get(i),
+                    };
+                    info.is_macro && param.is_some_and(is_code)
+                })
+            })
+            .collect()
+    }
+
+    /// `precheck_args`, leaving the arguments marked in `defer` unchecked.
+    fn precheck_args_deferring(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        args: &[ast::Arg],
+        defer: &[bool],
+    ) -> Result<Vec<CallArg>> {
         let mut out = Vec::new();
-        for a in args {
-            let op = if is_deferred(&a.value) {
+        for (i, a) in args.iter().enumerate() {
+            let op = if is_deferred(&a.value) || defer.get(i).copied().unwrap_or(false) {
                 None
             } else {
                 Some(self.check_expr(f, scope, &a.value, None)?)
@@ -352,6 +386,9 @@ impl Compiler {
                         );
                     }
                 }
+            }
+            if param == TypeId::CODE && macro_call {
+                return Ok(convert::LITERAL);
             }
             // Deferred arguments fit any plausible target; prefer exact-looking ones.
             let scalar = matches!(

@@ -375,4 +375,3 @@ parse_float :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAU
     n, valid := string_to_float(token); if !valid return 0, false;
     line.* = cursor; return cast(float) n, true;
 }
-c_style_strlen :: (value: *u8) -> int { if !value return 0; n := 0; while value[n] != 0 n += 1; return n; }

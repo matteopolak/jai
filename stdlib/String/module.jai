@@ -83,19 +83,20 @@ to_lower_copy :: (value: string) -> string { r := copy_string(value); to_lower_i
 to_upper_copy :: (value: string) -> string { r := copy_string(value); to_upper_in_place(r); return r; }
 to_lower_copy_new :: to_lower_copy;
 to_upper_copy_new :: to_upper_copy;
-replace :: (value: string, old: string, new: string) -> string {
-    if old.count == 0 return copy_string(value);
-    builder: String_Builder; start := 0;
+replace :: (value: string, old: string, new: string) -> result: string, occurrences: int {
+    if old.count == 0 return copy_string(value), 0;
+    builder: String_Builder; start := 0; occurrences := 0;
     while true {
         i := find_index_from_left(value, old, start);
         if i < 0 {
-            if !append(*builder, slice(value, start, value.count-start)) { free_buffers(*builder); return ""; }
+            if !append(*builder, slice(value, start, value.count-start)) { free_buffers(*builder); return "", 0; }
             break;
         }
-        if !append(*builder, slice(value, start, i-start)) || !append(*builder, new) { free_buffers(*builder); return ""; }
+        if !append(*builder, slice(value, start, i-start)) || !append(*builder, new) { free_buffers(*builder); return "", 0; }
         start = i + old.count;
+        occurrences += 1;
     }
-    result := builder_to_string(*builder); free_buffers(*builder); return result;
+    result := builder_to_string(*builder); free_buffers(*builder); return result, occurrences;
 }
 join :: (values: .. string, separator := "", before_first := false, after_last := false) -> string {
     builder: String_Builder;
