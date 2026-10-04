@@ -131,6 +131,10 @@ pub struct Interp {
     pub host: Box<dyn Host>,
     depth: usize,
     loc: Option<(u32, u32, u32)>,
+    /// Inside procedures without a stack trace node (`Some`): the location of the call that
+    /// entered them from a traced procedure. A traced call made there reports that line for
+    /// the caller's node, not a line of the untraced callee's source.
+    trace_loc: Option<Option<(u32, u32, u32)>>,
     /// True while evaluating compile-time code (`#compile_time`).
     pub compile_time: bool,
     /// `compiler_set_type_info_flags` calls (type descriptor global, flags) not applied yet.
@@ -175,6 +179,7 @@ impl Interp {
             host,
             depth: 0,
             loc: None,
+            trace_loc: None,
             compile_time: true,
             pending_type_flags: Vec::new(),
             workspaces: None,
@@ -557,16 +562,23 @@ impl Interp {
         self.depth += 1;
         let stack_base = self.stack.as_mut_ptr() as u64 + base;
         let saved_loc = self.loc;
+        let saved_trace_loc = self.trace_loc;
         let pushed = if traced {
             self.trace_enter(program, id, func, args, stack_base + frame.size)
         } else {
             None
         };
+        if traced {
+            self.trace_loc = None;
+        } else if self.trace_loc.is_none() {
+            self.trace_loc = Some(self.loc);
+        }
         let result = self.run(program, func, &frame, stack_base, args);
         if let Some((slot, previous)) = pushed {
             unsafe { std::ptr::write_unaligned(slot as *mut u64, previous) };
         }
         self.loc = saved_loc;
+        self.trace_loc = saved_trace_loc;
         self.depth -= 1;
         self.sp = base;
         result
@@ -590,7 +602,10 @@ impl Interp {
             return None;
         }
         let slot = context + offset;
-        let line = self.loc.map_or(0, |(_, line, _)| line);
+        let line = self
+            .trace_loc
+            .unwrap_or(self.loc)
+            .map_or(0, |(_, line, _)| line);
         unsafe {
             let previous = std::ptr::read_unaligned(slot as *const u64);
             let (mut depth, mut hash) = (1u32, 0xcbf2_9ce4_8422_2325u64);

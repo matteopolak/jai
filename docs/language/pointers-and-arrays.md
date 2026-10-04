@@ -31,6 +31,10 @@ error: runtime error: array bounds check failed: index 7 is outside an array of 
 
 (the text comes from `crates/jaic/src/interp/mod.rs`). `#no_abc` turns the check off for a procedure, a block, or a `for`/`while`/`if`, so a view may read past its count. `tests/stdlib/array-bounds-check-opt-out.jai` demonstrates each placement. The same check is off globally when a metaprogram sets `Build_Options.array_bounds_check = .OFF` (`crates/jaic/src/build.rs`).
 
+- **Constant array literals as views**: `.["a", "b"]` viewed as `[] T` points at its own writable global
+  (`convert.rs`, fixed → view), so a procedure may return it and callers may write through it. A literal with
+  runtime elements is still a stack temporary. An empty array's `.data` is `null`.
+
 ## How to change it
 
 Index lowering is in `crates/jaic/src/sema/expr.rs` around the `BoundsCheck` intrinsic; the `#no_abc` state is carried as `FnCtx::no_abc` (`sema/lower.rs`) and set in `procs.rs` and `stmt.rs`. A new construct that indexes memory must consult `f.no_abc` or it will ignore the opt-out. Loop and `remove` handling is in `stmt.rs` (`check_remove` and the `for` lowering).
