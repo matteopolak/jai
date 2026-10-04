@@ -90,6 +90,10 @@ pub enum UnOp {
 pub struct Arg {
     /// `name = value` named argument / struct literal field.
     pub name: Option<Ident>,
+    /// Non-identifier field target in a literal: `.{values[1] = 7, base.init = f}` (then `name` is `None`).
+    pub target: Option<Expr>,
+    /// Written after `,,` in a call: temporary context change (`f(x,, allocator = temp)`).
+    pub context: bool,
     /// `..value` spreads an array into variadic arguments.
     pub spread: bool,
     pub value: Expr,
@@ -160,7 +164,9 @@ pub enum ExprKind {
     /// `cast(T) x`, `cast,no_check(T) x`. `ty == None` is `xx x`.
     Cast { ty: Option<Box<Expr>>, value: Box<Expr>, flags: CastFlags },
     /// `ifx c then a else b`; `then_value == None` means the condition value is reused.
-    Ifx { cond: Box<Expr>, then_value: Option<Box<Expr>>, else_value: Box<Expr> },
+    /// `#ifx` sets `is_static` (the condition is a compile-time constant).
+    /// `else_value == None` is `ifx c then a` (the type's zero value when false).
+    Ifx { cond: Box<Expr>, then_value: Option<Box<Expr>>, else_value: Option<Box<Expr>>, is_static: bool },
     /// `T.{...}` / `.{...}`
     StructLit { ty: Option<Box<Expr>>, fields: Vec<Arg> },
     /// `T.[...]` / `.[...]`
@@ -170,6 +176,10 @@ pub enum ExprKind {
     ProcType(Rc<ProcHeader>),
     /// A procedure literal (header + body, or a foreign/compiler declaration).
     Proc(Rc<ProcLit>),
+    /// Short lambda: `x => x + 1`, `(a, b) => { ... }`. Parameter types are usually absent.
+    Lambda { header: Rc<ProcHeader>, body: Box<Expr> },
+    /// A block in value position: `#ifx c { ...; value } else { ... }`, lambda bodies.
+    Block(Block),
     Struct(Rc<StructLit>),
     Enum(Rc<EnumLit>),
     TypeDirective { modifier: TypeModifier, ty: Box<Expr> },
@@ -177,8 +187,9 @@ pub enum ExprKind {
     Run { body: Rc<RunBody>, flags: Vec<Ident> },
     /// `#code expr`, `#code { ... }`.
     Code(Rc<CodeBody>),
-    /// `#insert expr` in expression position.
-    Insert { value: Box<Expr>, flags: Vec<Ident> },
+    /// `#insert expr` in expression position. `scope` is the `,scope(x)` operand;
+    /// `replacements` are the `(remove = ..., break = ...)` arguments before the code.
+    Insert { value: Box<Expr>, flags: Vec<Ident>, scope: Option<Box<Expr>>, replacements: Vec<Arg> },
     /// `#char "x"`
     Char(u32),
     /// `#location(expr)` (`None` = location of the directive itself).
@@ -229,6 +240,8 @@ pub struct Param {
     /// `$name: T` (the parameter's value must be a compile-time constant).
     pub baked: bool,
     pub using: bool,
+    /// `#discard` parameter flag (the argument is not evaluated when unused).
+    pub discard: bool,
     /// `..` variadic: `args: ..Any` (or `..$T`).
     pub variadic: bool,
     pub ty: Option<Expr>,
@@ -240,7 +253,8 @@ pub struct Param {
 #[derive(Clone, Debug)]
 pub struct Return {
     pub name: Option<Ident>,
-    pub ty: Expr,
+    /// `None` for `-> x := 5` (the type comes from the default value).
+    pub ty: Option<Expr>,
     pub default: Option<Expr>,
     /// `#must`
     pub must: bool,
@@ -252,6 +266,13 @@ pub enum ForeignName {
     /// `#foreign lib` — symbol is the declaration's name.
     Default,
     Named(Rc<str>),
+}
+
+/// `#foreign lib "symbol"` / `#elsewhere lib "symbol"`; `library == None` for a bare `#foreign;`.
+#[derive(Clone, Debug)]
+pub struct Foreign {
+    pub library: Option<Ident>,
+    pub name: ForeignName,
 }
 
 #[derive(Clone, Debug, Default)]
@@ -273,6 +294,8 @@ pub struct ProcFlags {
     pub deprecated: Option<Option<Rc<[u8]>>>,
     pub program_export: Option<Option<Rc<[u8]>>>,
     pub no_call: bool,
+    /// Any other `#directive` flag (`#dump`, `#entry_point`, `#no_alias`, ...), kept by name.
+    pub other: Vec<Ident>,
     pub type_info_none: bool,
     pub library_proc: bool,
 }
@@ -292,7 +315,7 @@ pub struct ProcHeader {
     pub returns: Vec<Return>,
     pub flags: ProcFlags,
     /// `#foreign library_name ["symbol"]`
-    pub foreign: Option<(Ident, ForeignName)>,
+    pub foreign: Option<Foreign>,
     /// `#modify { ... }` block that may rewrite polymorphic bindings.
     pub modify: Option<Block>,
     pub notes: Vec<Note>,
@@ -331,6 +354,8 @@ pub struct StructFlags {
 pub struct StructLit {
     pub id: AstId,
     pub kind: StructKind,
+    /// Tagged union: `union tag : TagType { .A ,, a: int; }`.
+    pub tag: Option<(Ident, Box<Expr>)>,
     /// `struct (T: Type, N := 4)`
     pub params: Vec<Param>,
     /// Body statements: declarations, `using`, `#if`, `#place`, `#as`, nested anonymous struct/union.
@@ -352,6 +377,8 @@ pub struct EnumMember {
 #[derive(Clone, Debug)]
 pub enum EnumItem {
     Member(EnumMember),
+    /// `#insert` inside an enum body generating members.
+    Insert(Expr),
     /// `#if` inside an enum body.
     If { cond: Expr, then_items: Vec<EnumItem>, else_items: Vec<EnumItem> },
 }
@@ -394,7 +421,14 @@ pub struct Decl {
     pub ty: Option<Expr>,
     /// `None` = default-initialize. `Some(Uninit)` = `---`.
     pub value: Option<Expr>,
+    /// Further values of `a, b := 1, 2;` (the first is in `value`).
+    pub extra_values: Vec<Expr>,
+    /// Mixed declare/assign lists, parallel to `names` (empty otherwise): `true` assigns to an
+    /// existing variable, as in `a=, b := f();` or `a:, b = f();`.
+    pub existing: Vec<bool>,
     pub using: bool,
+    /// `using,except(x) name: T;`
+    pub using_filter: Option<UsingFilter>,
     /// `#as using` / `#as x: T` in struct bodies.
     pub as_: bool,
     /// `` `x := ... `` declares into the macro caller's scope.
@@ -403,6 +437,10 @@ pub struct Decl {
     pub align: Option<Expr>,
     /// `#elsewhere` / `#no_reset` / other trailing flags, kept by name.
     pub flags: Vec<Ident>,
+    /// `x: T #elsewhere lib ["symbol"]`: the library (and symbol) providing the variable.
+    pub foreign: Option<Foreign>,
+    /// `.TAG ,, member: T;` in a tagged union body: the tag value selecting this member.
+    pub union_tag: Option<Ident>,
     pub notes: Vec<Note>,
     pub span: Span,
 }
@@ -432,8 +470,14 @@ pub struct For {
     pub by_pointer: bool,
     /// `for < ...` iterates in reverse.
     pub reverse: bool,
+    /// ``for *=cond ...``: iterate by pointer when `cond` holds.
+    pub pointer_if: Option<Expr>,
+    /// ``for <=cond ...``: iterate in reverse when `cond` holds.
+    pub reverse_if: Option<Expr>,
     /// `for:name ...` custom iterator modifier.
     pub iterator: Option<Ident>,
+    /// ``for `it, `it_index: ...``: the names are declared in the macro caller's scope.
+    pub backtick_names: bool,
     /// `for a..b` (range) or `for collection`.
     pub over: ForOver,
     pub body: Box<Stmt>,
@@ -472,8 +516,10 @@ pub struct Import {
     pub params: Vec<Arg>,
     /// `Name :: #import "X"` binds a namespace instead of importing names.
     pub name: Option<Ident>,
-    /// `using,only(...)` / `#import,except` style filters, kept raw.
+    /// `using,only(...)` / `#import,except` style flags, kept raw.
     pub flags: Vec<Ident>,
+    /// `using,except(x) Name :: #import "X";`
+    pub using: Option<UsingFilter>,
     pub span: Span,
 }
 
@@ -483,6 +529,8 @@ pub enum UsingFilter {
     Only(Vec<Ident>),
     Except(Vec<Ident>),
     Map(Vec<(Ident, Ident)>),
+    /// `using,only(.["+", "-"]) Basic;` operator list.
+    Operators(Expr),
 }
 
 #[derive(Clone, Debug)]
@@ -494,6 +542,8 @@ pub enum StmtKind {
     If { cond: Expr, then_branch: Box<Stmt>, else_branch: Option<Box<Stmt>> },
     /// `if x == { case ...; }`
     Switch { value: Expr, cases: Vec<Case>, complete: bool },
+    /// `#if x == { case ...; }`: only the matching case's statements are compiled.
+    StaticSwitch { value: Expr, cases: Vec<Case> },
     While { label: Option<Ident>, cond: Expr, body: Box<Stmt> },
     For(Box<For>),
     Break(Option<Ident>),
@@ -508,7 +558,7 @@ pub enum StmtKind {
     /// `#if cond { } else { }`, also at file and struct scope.
     StaticIf { cond: Expr, then_branch: Vec<Stmt>, else_branch: Vec<Stmt> },
     /// `#insert expr;` (flags e.g. `,scope(x)`).
-    Insert { value: Expr, flags: Vec<Ident> },
+    Insert { value: Expr, flags: Vec<Ident>, scope: Option<Expr>, replacements: Vec<Arg> },
     /// `#assert cond "message";`
     Assert { cond: Expr, message: Option<Expr> },
     /// Top-level `#run expr;`
@@ -525,10 +575,14 @@ pub enum StmtKind {
     Placeholder(Vec<Ident>),
     /// `#place field;` inside struct bodies.
     Place(Expr),
+    /// `#overlay(field)` prefix on the following struct member declaration.
+    Overlay(Expr),
     /// `#through;` (normally folded into `Case::through`).
     Through,
     /// `#program_export`-style top-level directives we keep for completeness.
-    Directive { name: Ident, args: Vec<Expr> },
+    Directive { name: Ident, flags: Vec<Ident>, args: Vec<Expr> },
+    /// `push_context,defer_pop ctx;`: push now, pop at the end of the scope (`None`: restore the saved context).
+    PushContextDefer { context: Option<Expr> },
     /// Empty statement (`;`).
     Empty,
 }
