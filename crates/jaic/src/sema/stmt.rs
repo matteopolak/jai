@@ -154,6 +154,11 @@ impl Compiler {
                 let entry = DeferEntry {
                     stmt: (**body).clone(),
                     scope,
+                    caller_scope: f
+                        .macros
+                        .last()
+                        .filter(|_| *backtick)
+                        .map(|m| m.caller_scope),
                 };
                 if *backtick && let Some(frame) = f.macros.last_mut() {
                     // Runs when the macro caller's block exits.
@@ -449,6 +454,8 @@ impl Compiler {
                 }
                 (None, None) => return err(span, "declaration needs a type or a value"),
             };
+            // Metaprograms read local declaration types from the exported syntax tree.
+            self.local_decl_types.entry(decl.id).or_insert(ty);
             let size = self.size_of(ty, span)?;
             let mut align = self.align_of(ty, span)?;
             if let Some(a) = &decl.align {
@@ -2202,7 +2209,10 @@ impl Compiler {
             f.defers.truncate(i);
             let entry = saved[i].clone();
             let inner = self.new_block_scope(entry.scope);
-            self.check_stmt(f, inner, &entry.stmt)?;
+            let saved_backtick = std::mem::replace(&mut f.backtick_scope, entry.caller_scope);
+            let result = self.check_stmt(f, inner, &entry.stmt);
+            f.backtick_scope = saved_backtick;
+            result?;
         }
         f.defers = saved;
         Ok(())

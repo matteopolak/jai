@@ -14,7 +14,7 @@ Small build-and-debug modules that metaprograms and programs import: `Debug` (ba
 ## How to change it
 
 - Add a Debug platform: extend the `#if OS == ...` branches in `backtrace` / `is_debugger_present` / `enable_signal_handler`.
-- `Performance_Report` prints polymorph arguments with a local `print_simple_expression` because `Program_Print` has no `print_expression` yet; replace it when that exists.
+- `Performance_Report` prints polymorph arguments with a local `print_simple_expression` because `Program_Print.print_expression` did not exist then; it can now be replaced with that.
 - Gotchas found while writing these: `return ifx cond then "s";` without `else` does not typecheck in `jaic` (use an explicit `if`); `Basic.getenv` takes a C string (`temp_c_string`); a literal array module argument such as `Autorun(LAUNCHER_COMMAND=.["x"])` arrives as `void`.
 
 ## Configuration

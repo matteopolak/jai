@@ -679,21 +679,44 @@ impl Compiler {
         result
     }
 
+    /// Typecheck a body that is not lowered yet without keeping its code, so syntax-tree
+    /// messages can report local declaration types (`local_decl_types`) before a
+    /// metaprogram gets the chance to modify the body. Errors surface on the real lowering.
+    pub fn typecheck_body_dry(&mut self, id: ProcId) {
+        let p = self.proc(id);
+        if matches!(p.body_state, BodyState::Lowering | BodyState::Done)
+            || p.is_poly
+            || p.is_macro
+            || p.lit.body.is_none()
+        {
+            return;
+        }
+        let state = p.body_state;
+        self.procs[id.0 as usize].body_state = BodyState::Lowering;
+        let _ = self.lower_body_code(id, None);
+        self.procs[id.0 as usize].body_state = state;
+    }
+
     fn lower_body_inner(&mut self, id: ProcId) -> Result<()> {
-        let span = self.proc(id).span;
-        let sig = self.signature(id, span)?;
         let Some(ProcTarget::Func(func_id)) = self.proc(id).target else {
             return Ok(());
         };
+        self.lower_body_code(id, Some(func_id))
+    }
+
+    /// Lower a body into `func_id`, or only typecheck it (`None`: the code is dropped).
+    fn lower_body_code(&mut self, id: ProcId, func_id: Option<ir::FuncId>) -> Result<()> {
+        let span = self.proc(id).span;
+        let sig = self.signature(id, span)?;
         let lit = self.proc(id).lit.clone();
         let header = lit.header.clone();
         let ir_sig = self.ir_sig(sig.ty, span)?;
         let file = self.scope_file(sig.scope);
-        let mut f = FnCtx::new(
-            self.program.func_names[func_id.0 as usize].clone(),
-            ir_sig,
-            file,
-        );
+        let name = match func_id {
+            Some(func_id) => self.program.func_names[func_id.0 as usize].clone(),
+            None => "typecheck".into(),
+        };
+        let mut f = FnCtx::new(name, ir_sig, file);
         f.proc = Some(id);
         if let Some(name) = &self.proc(id).export {
             f.b.func.linkage = ir::Linkage::Export(name.clone());
@@ -704,6 +727,9 @@ impl Compiler {
         self.scope_mut(scope).proc = Some(id);
         let Some(body) = &lit.body else {
             // Intrinsic or #compiler without a body: synthesize a forwarding body.
+            let Some(func_id) = func_id else {
+                return Ok(());
+            };
             return self.lower_intrinsic_wrapper(id, func_id, f, &sig, &header);
         };
         let mut next = 0usize;
@@ -799,7 +825,9 @@ impl Compiler {
             self.emit_fallthrough_return(&mut f, body.span)?;
         }
         let func = f.b.finish();
-        self.program.funcs[func_id.0 as usize] = Some(func);
+        if let Some(func_id) = func_id {
+            self.program.funcs[func_id.0 as usize] = Some(func);
+        }
         Ok(())
     }
 

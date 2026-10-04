@@ -302,6 +302,7 @@ Public source corpora are input data.
 - [Command-line arguments](specs/stdlib/README.md)
 
 - [Metaprogram tooling](specs/stdlib/README.md)
+- [Program_Print source printer](specs/stdlib/README.md)
 
 - [Window and audio bindings](specs/stdlib/README.md)
 
@@ -386,6 +387,7 @@ Public source corpora are input data.
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
 - [Compiler records](compiler-records.md) — Messages, Code_* syntax trees and target Type_Info exported as records; compiler_get_nodes and compiler_modify_procedure.
 - [jaic regression sweep](jaic-sweep.md) — `tools/jaic-sweep.py` sets (corpus, stdlib, upstream) and how to extend them.
+- [open-jai expectation harness](openjai-expectations.md) — runs open-jai test-suite `expect_*` output checks against jaic.
 - [Basic calendar time and platform exports](stdlib-basic-time-and-platform.md) — to_calendar/calendar_to_apollo, working directory in Basic, Machine_X64 hooks, String scan, Bucket_Array shape.
 - [Iprof profiler](iprof.md) — Instrumenting frame-based profiler: runtime, drawing callbacks, metaprogram plugin, import-mode gotchas.
 - [Tooling modules](stdlib-tooling-modules.md) — Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report, plus small Simp/Input/Socket/File compatibility additions.

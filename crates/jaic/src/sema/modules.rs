@@ -152,6 +152,7 @@ impl Compiler {
             param_entities: Vec::new(),
             program_params: Vec::new(),
             exported_usings: Vec::new(),
+            exported_using_imports: Vec::new(),
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
@@ -487,7 +488,15 @@ impl Compiler {
                     );
                     self.entity_mut(id).home = file_scope;
                     if let Some(filter) = &import.using {
-                        // `using Name :: #import "M"` also brings the module's names into scope.
+                        // `using Name :: #import "M"` also brings the module's names into scope;
+                        // at module level (exported) they become the module's members too.
+                        if exported && self.scope(target).kind == ScopeKind::Module {
+                            let index = self.scope(target).imports.len();
+                            let module = self.scope(target).module;
+                            self.modules[module.0 as usize]
+                                .exported_using_imports
+                                .push(index);
+                        }
                         self.scope_mut(target).imports.push(ImportEntry {
                             import: import.clone(),
                             module: None,
@@ -964,6 +973,7 @@ impl Compiler {
             param_entities: Vec::new(),
             program_params: Vec::new(),
             exported_usings: Vec::new(),
+            exported_using_imports: Vec::new(),
             files: Vec::new(),
         });
         id

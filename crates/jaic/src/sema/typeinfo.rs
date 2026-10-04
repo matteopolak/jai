@@ -1,6 +1,7 @@
 //! Runtime type information: one read-only `Type_Info_*` descriptor global
 //! per type, laid out with Preload's reflection structs. A `Type` value at
 //! runtime is the address of its descriptor.
+use super::scope::EntityKind;
 use super::value::Aggregate;
 use super::*;
 use crate::types::{ArrayKind, TypeKind};
@@ -378,11 +379,17 @@ impl Compiler {
             TypeKind::Struct(s) => {
                 self.layout_struct(s, span)?;
                 let info = self.types.struct_info(s).clone();
+                // Anonymous structs are named after the keyword internally; at runtime
+                // they have no name.
+                let name = match info.name.as_str() {
+                    "struct" | "union" => "",
+                    name => name,
+                };
                 self.set_field(
                     &mut agg,
                     desc,
                     "name",
-                    Value::String(info.name.as_str().as_bytes().into()),
+                    Value::String(name.as_bytes().into()),
                     span,
                 )?;
                 let member_ty = self.preload_type("Type_Info_Struct_Member", span)?;
@@ -445,6 +452,9 @@ impl Compiler {
                 if info.is_union {
                     self.set_field(&mut agg, desc, "textual_flags", Value::Int(0x2), span)?;
                 }
+                if !info.poly_args.is_empty() {
+                    self.poly_struct_info(&mut agg, desc, s, span)?;
+                }
                 let (func, _) = self.initializer_proc(ty, span)?;
                 let Some((path, _)) = self.find_member(desc, Sym::intern("initializer"), span)?
                 else {
@@ -469,6 +479,168 @@ impl Compiler {
             _ => {}
         }
         Ok(agg)
+    }
+
+    /// The parameter bindings of a polymorphic struct instance, in declaration
+    /// order (baked ones from `#bake_arguments` first).
+    pub(super) fn poly_struct_bindings(
+        &self,
+        s: crate::types::StructId,
+    ) -> Vec<(Sym, Value, TypeId)> {
+        let Some(scope) = self.struct_asts.get(&s).map(|src| src.scope) else {
+            return Vec::new();
+        };
+        let mut bindings: Vec<(EntityId, Sym, Value, TypeId)> = self
+            .scope(scope)
+            .names
+            .iter()
+            .flat_map(|(&name, ids)| ids.iter().map(move |&e| (name, e)))
+            .filter_map(|(name, e)| match &self.entity(e).kind {
+                EntityKind::Const {
+                    value,
+                    ty,
+                } => Some((e, name, value.clone(), *ty)),
+                _ => None,
+            })
+            .collect();
+        bindings.sort_by_key(|b| b.0);
+        bindings.into_iter().map(|(_, n, v, t)| (n, v, t)).collect()
+    }
+
+    /// `specified_parameters`, `constant_storage` and `polymorph_source_struct`
+    /// of a polymorphic struct instance's runtime descriptor.
+    fn poly_struct_info(
+        &mut self,
+        agg: &mut Aggregate,
+        desc: TypeId,
+        s: crate::types::StructId,
+        span: Span,
+    ) -> Result<()> {
+        let member_ty = self.preload_type("Type_Info_Struct_Member", span)?;
+        let msize = self.size_of(member_ty, span)?;
+        let malign = self.align_of(member_ty, span)?;
+        let mut storage = Aggregate {
+            bytes: Vec::new(),
+            relocs: Vec::new(),
+        };
+        let mut members = Aggregate {
+            bytes: Vec::new(),
+            relocs: Vec::new(),
+        };
+        let mut count = 0;
+        for (name, value, mut ty) in self.poly_struct_bindings(s) {
+            if self.size_of(ty, span).is_err() {
+                ty = self.type_of_value(&value); // Untyped literal arguments.
+            }
+            let (Ok(size), Ok(align)) = (self.size_of(ty, span), self.align_of(ty, span)) else {
+                continue;
+            };
+            let offset = storage.bytes.len().next_multiple_of(align.max(1) as usize);
+            storage.bytes.resize(offset + size as usize, 0);
+            if let Value::Type(t) = value {
+                let g = self.type_info_global(t, span)?;
+                storage.relocs.push(ir::Reloc {
+                    offset: offset as u64,
+                    target: ir::RelocTarget::Global(g),
+                    addend: 0,
+                });
+            } else if self
+                .write_value(&mut storage, offset as u64, &value, ty, span)
+                .is_err()
+            {
+                storage.bytes.truncate(offset);
+                continue;
+            }
+            let mut m = Aggregate {
+                bytes: vec![0; msize as usize],
+                relocs: Vec::new(),
+            };
+            self.set_field(
+                &mut m,
+                member_ty,
+                "name",
+                Value::String(name.as_str().as_bytes().into()),
+                span,
+            )?;
+            self.set_info_ptr(&mut m, member_ty, "type", ty, span)?;
+            self.set_field(&mut m, member_ty, "flags", Value::Int(0x1), span)?;
+            self.set_field(
+                &mut m,
+                member_ty,
+                "offset_into_constant_storage",
+                Value::Int(offset as i128),
+                span,
+            )?;
+            let at = members.bytes.len() as u64;
+            members.bytes.resize(at as usize + msize as usize, 0);
+            structs::write_agg(&mut members, at, &m);
+            count += 1;
+        }
+        self.set_view(
+            agg,
+            desc,
+            "specified_parameters",
+            count,
+            members,
+            malign,
+            span,
+        )?;
+        let storage_len = storage.bytes.len();
+        self.set_view(agg, desc, "constant_storage", storage_len, storage, 8, span)?;
+
+        // A stand-in descriptor for the generic struct, carrying its name.
+        let size = self.size_of(desc, span)?;
+        let mut generic = Aggregate {
+            bytes: vec![0; size as usize],
+            relocs: Vec::new(),
+        };
+        let name = self.types.struct_info(s).name;
+        self.set_field(&mut generic, desc, "type", Value::Int(tag::STRUCT), span)?;
+        self.set_field(
+            &mut generic,
+            desc,
+            "name",
+            Value::String(name.as_str().as_bytes().into()),
+            span,
+        )?;
+        self.set_field(
+            &mut generic,
+            desc,
+            "nontextual_flags",
+            Value::Int(0x100),
+            span,
+        )?;
+        let align = self.align_of(desc, span)?;
+        let g = self.program.add_global(ir::Global {
+            name: format!("type_info.generic.{}", name.as_str()),
+            size,
+            align,
+            init: generic.bytes,
+            relocs: generic.relocs,
+            read_only: true,
+            export: None,
+        });
+        let Some((path, _)) =
+            self.find_member(desc, Sym::intern("polymorph_source_struct"), span)?
+        else {
+            return Ok(());
+        };
+        let offset = path
+            .iter()
+            .map(|s| {
+                if let structs::PathStep::Offset(o) = s {
+                    *o
+                } else {
+                    0
+                }
+            })
+            .sum();
+        agg.relocs.push(ir::Reloc {
+            offset,
+            target: ir::RelocTarget::Global(g),
+            addend: 0,
+        });
+        Ok(())
     }
 
     /// Map a type-info descriptor address back to its type (compile-time reads).

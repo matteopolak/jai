@@ -20,7 +20,8 @@ impl Compiler {
         if from == to {
             return Some(EXACT);
         }
-        if to == TypeId::ANY && from != TypeId::VOID && from != TypeId::COMPILE_TIME {
+        // A `void` variable boxes too; a call without a value is rejected by the caller.
+        if to == TypeId::ANY && from != TypeId::COMPILE_TIME {
             return Some(TO_ANY);
         }
         let fk = self.types.kind(from).clone();

@@ -24,7 +24,8 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   into a polymorphic struct are stored in `PolyStruct::baked` and become members of every instance.
 - **`#modify`** (`modify.rs`): after inference, the block runs in the interpreter with each type variable as a
   mutable `Type` variable (globals read back afterwards). Unbound variables start as `void`; `return false`
-  rejects the call. Result bindings replace the inferred ones.
+  rejects the call (`return false, "why";` adds the message to the error; it is stored in the `modify.message`
+  global). Result bindings replace the inferred ones.
 - **Operators**: `a op= b` calls `operator op=` for struct-like targets (`try_operator_assign`); `*x[i]` calls
   `operator *[]`.
 - **Aliases**: `name :: overloaded;` resolves to `Resolved::ProcSet`. `#poke_name Module name;` copies the
@@ -39,7 +40,7 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   `expand_all` retries it once nothing is lowering, and only then is a failure final.
 - **Indexing**: `x[i]` calls a matching `operator []`, else `operator *[]` and dereferences the result
   (an assignable place); a pointer with no fitting operator indexes memory (`try_pointer_index_operator`).
-- **Polymorphic struct parameters**: a bare `Base` / `*Base` parameter accepts a struct whose `#as` member is
+- **Polymorphic struct parameters**: a bare `Base` / `*Base` parameter (and `$T/Base`) accepts a struct whose `#as` member is
   an instance of `Base` (`instance_or_as_base`); the call converts through the `#as` offset.
 - **Baked parameter defaults**: `$mode: Mode = .fast` and `$info := Info.{}` give the default (and `.X` /
   `.{...}` arguments) the declared or default type.
@@ -51,8 +52,15 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **Struct field types in constants**: while a struct is laid out, earlier field types are recorded in
   `Compiler::field_types`, so `type_of(field)` works in a struct constant (`FnCtx::type_only`).
 - **Macros**: constants declared in a macro body exist once per expansion (`hoisted_consts` is keyed by scope).
-  A constant string argument the macro never writes keeps a constant `.count` (`const_string_params`, checked
-  textually by `text_may_write`). An expression `#insert code` checks the code in the scope it was written in.
+  A constant argument (string, integer, bool, float) the macro never writes stays a typed constant inside the
+  body (`const_macro_params`, checked textually by `text_may_write`; any `#asm` in the body counts as a write), so
+  `#if n <= 1` and a constant string's `.count` work in recursive macros. A Code argument naming a `#code`
+  constant passes that code. An expression `#insert code` checks the code in the scope it was written in;
+  `#insert,scope()` uses the insertion scope.
+- **Backtick in defers**: a macro's deferred statement keeps the scope of the caller it was written for
+  (`DeferEntry::caller_scope`), so `` `name `` inside it resolves where the defer runs (`FnCtx::backtick_scope`).
+- **Overload ties**: candidates with equal conversion cost prefer non-polymorphic procedures, then the
+  polymorphic header whose parameter types pin down more structure (`pattern_specificity`: `*$T` beats `$T`).
 - **`#insert (break=..., continue=..., remove=...) body`**: inside the inserted for-loop body, `break` /
   `continue` / `remove` aimed at that loop run the replacement at the insertion site (`InsertReplacements`,
   `try_insert_replacement`).

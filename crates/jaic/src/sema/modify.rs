@@ -30,9 +30,20 @@ impl Compiler {
         let mut f = FnCtx::new("modify".into(), sig, self.scope_file(def_scope));
         f.compile_time = true;
         f.context = Some(f.b.param(0));
-        f.return_types = vec![TypeId::BOOL];
-        f.return_outs = vec![None];
-        f.named_results = vec![None];
+        // `return false, "message"`: the optional message goes to a global (empty by default).
+        let message = self.program.add_global(ir::Global {
+            name: "modify.message".into(),
+            size: 16,
+            align: 8,
+            init: Vec::new(),
+            relocs: Vec::new(),
+            read_only: false,
+            export: None,
+        });
+        let message_addr = f.b.global_addr(message);
+        f.return_types = vec![TypeId::BOOL, TypeId::STRING];
+        f.return_outs = vec![None, Some(message_addr)];
+        f.named_results = vec![None, Some(message_addr)];
         let scope = self.new_scope(ScopeKind::Proc, Some(def_scope), module, None);
         let depth = self.scope(scope).proc_depth;
 
@@ -88,10 +99,18 @@ impl Compiler {
         }
         let results = self.call_thunk(f, span)?;
         if results.first().copied().unwrap_or(0) & 0xff == 0 {
+            let addr = self
+                .interp
+                .global_addr(&self.program, message)
+                .map_err(|t| Box::new(Diagnostic::error(span, t.message)))?;
+            let text = match self.read_value(addr, TypeId::STRING, span)? {
+                Value::String(s) if !s.is_empty() => format!(": {}", String::from_utf8_lossy(&s)),
+                _ => String::new(),
+            };
             return err(
                 span,
                 format!(
-                    "#modify rejected the arguments to '{}'",
+                    "#modify rejected the arguments to '{}'{text}",
                     self.proc(proc).name
                 ),
             );

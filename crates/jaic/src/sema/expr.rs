@@ -97,12 +97,13 @@ impl Compiler {
                 if let Some(op) = self.enclosing_local_constant(f, scope, base, member)? {
                     return Ok(op);
                 }
-                if !self.const_string_params.is_empty()
+                if !self.const_macro_params.is_empty()
                     && member.name.as_str() == "count"
                     && let E::Ident(name) = &base.kind
                     && let Some(&id) = self.lookup(scope, *name)?.first()
-                    && let Some(&count) = self.const_string_params.get(&id)
+                    && let Some((Value::String(s), _)) = self.const_macro_params.get(&id)
                 {
+                    let count = s.len();
                     return Ok(Operand::Const {
                         ty: TypeId::S64,
                         value: Value::Int(count as i128),
@@ -267,9 +268,18 @@ impl Compiler {
                 })
             }
             E::Insert {
-                value, ..
+                value,
+                flags,
+                scope: target,
+                ..
             } => {
                 let (inserted, at) = self.eval_insert_expr(scope, value)?;
+                // `#insert,scope() code` resolves names at the insertion site.
+                let at = if target.is_none() && flags.iter().any(|fl| fl.name.as_str() == "scope") {
+                    scope
+                } else {
+                    at
+                };
                 self.check_expr(f, at, &inserted, expected)
             }
             E::Location(target) => {
@@ -337,10 +347,13 @@ impl Compiler {
             }
             E::Bytes(e) => self.check_expr(f, scope, e, expected),
             E::Backtick(inner) => {
-                let Some(frame) = f.macros.last() else {
-                    return err(span, "backtick names are only valid inside macros");
+                let caller = match (f.macros.last(), f.backtick_scope) {
+                    (_, Some(s)) => s,
+                    (Some(frame), None) => frame.caller_scope,
+                    (None, None) => {
+                        return err(span, "backtick names are only valid inside macros");
+                    }
                 };
-                let caller = frame.caller_scope;
                 self.check_expr(f, caller, inner, expected)
             }
             E::Bake {
@@ -549,6 +562,13 @@ impl Compiler {
                 addr,
                 depth,
             } => {
+                if let Some((value, ty)) = self.const_macro_params.get(&id).cloned() {
+                    return Ok(Operand::Const {
+                        ty,
+                        value,
+                        untyped: false,
+                    });
+                }
                 if depth != self.scope(scope).proc_depth {
                     if let Some((value, ty)) = self.local_consts.get(&id).cloned() {
                         return Ok(Operand::Const {
@@ -853,9 +873,7 @@ impl Compiler {
                         format!("cannot dereference a value of type {}", self.types.name(ty)),
                     );
                 };
-                if pointee == TypeId::VOID {
-                    return err(span, "cannot dereference *void");
-                }
+                // `<< ptr` on a `*void` is a `void` place (it prints as `void`).
                 Ok(Operand::Place {
                     ty: pointee,
                     addr: v,

@@ -129,6 +129,9 @@ pub struct Module {
     pub program_params: Vec<Sym>,
     /// Exported top-level `using global;`: the global's members are visible to importers.
     pub exported_usings: Vec<scope::UsingEntry>,
+    /// Import entries (indexes into the module scope's `imports`) of exported
+    /// `using Name :: #import "M";` declarations: M's names are members of this module too.
+    pub exported_using_imports: Vec<usize>,
     pub files: Vec<FileId>,
 }
 
@@ -193,9 +196,14 @@ pub struct Compiler {
     /// innermost one. Only calls to procedures that use `#caller_code` are recorded.
     pub calls_in_flight: Vec<(Rc<ast::Expr>, ScopeId)>,
     pub local_consts: HashMap<EntityId, (Value, TypeId)>,
-    /// Macro parameters bound to a constant string the macro never writes: `name.count`
-    /// is a constant (`write(fd, message.data, message.count)` into a `u64`).
-    pub const_string_params: HashMap<EntityId, i64>,
+    /// Macro parameters bound to a constant argument the macro never writes: reading them
+    /// gives the constant (`#if n <= 1` in a recursive macro; `message.count` of a constant
+    /// string fits a `u64` parameter).
+    pub const_macro_params: HashMap<EntityId, (Value, TypeId)>,
+    /// Modules whose re-exports a `module_exports` call is searching.
+    pub reexport_visiting: Vec<ModuleId>,
+    /// Types of local variable declarations, by declaration (first name), once lowered.
+    pub local_decl_types: HashMap<ast::AstId, TypeId>,
     pub anonymous_types: HashMap<(ast::AstId, ScopeId), TypeId>,
     /// Scope each `Code` value was written in (parallel to `codes`).
     pub code_scopes: Vec<ScopeId>,
@@ -289,7 +297,9 @@ impl Compiler {
             anonymous_procs: HashMap::new(),
             calls_in_flight: Vec::new(),
             local_consts: HashMap::new(),
-            const_string_params: HashMap::new(),
+            const_macro_params: HashMap::new(),
+            reexport_visiting: Vec::new(),
+            local_decl_types: HashMap::new(),
             anonymous_types: HashMap::new(),
             code_scopes: Vec::new(),
             default_images: HashMap::new(),
