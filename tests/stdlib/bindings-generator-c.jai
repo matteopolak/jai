@@ -51,7 +51,8 @@ main :: () {
     assert(has(text, "COLOR_GREEN :: GREEN;"));
     assert(has(text, "Flags :: u32;"));
     assert(has(text, "Number :: union {"));
-    assert(has(text, "__bitfield: [1] u8;"));
+    assert(has(text, "__bitfield: u8;"));
+    assert(has(text, "Packed_get_a :: (s: *Packed) -> u32 {"));
     assert(has(text, "Opaque_T :: struct {"));
     assert(has(text, "Opaque :: *Opaque_T;"));
     assert(has(text, "add :: (a: s32, b: s32) -> s32 #foreign lib;"));

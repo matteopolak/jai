@@ -951,8 +951,14 @@ impl Compiler {
             "debug_break" | "compile_time_debug_break" => ir::Intrinsic::DebugBreak,
             _ => ir::Intrinsic::Trap,
         };
-        let results = f.b.intrinsic(op, args, &returns);
-        f.b.ret(results);
+        if op == ir::Intrinsic::Trap {
+            // Compile-time-only primitives (`#compiler` hooks) have no runtime body.
+            f.b.intrinsic(op, Vec::new(), &[]);
+            f.b.terminate(ir::Term::Unreachable);
+        } else {
+            let results = f.b.intrinsic(op, args, &returns);
+            f.b.ret(results);
+        }
         self.program.funcs[func_id.0 as usize] = Some(f.b.finish());
         Ok(())
     }

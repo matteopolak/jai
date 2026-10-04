@@ -322,7 +322,8 @@ get_name_alignment :: (declarations: [] *Declaration) -> int {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         is_field, is_anon := is_struct_field(it);
         if !is_field || is_anon continue;
-        if it.output_name.count > longest longest = it.output_name.count;
+        name := unwrap_single_bitfield(it).output_name;
+        if name.count > longest longest = name.count;
     }
     return longest;
 }
@@ -339,7 +340,19 @@ print_comment_prefix :: (builder: *String_Builder, comment: Comment, no_indent: 
     }
 }
 
-print_declaration_to_builder :: (builder: *String_Builder, decl: *Declaration, current_scope: *Declaration, flags: Print_Decl_Flags = 0, align_declarations := 0) {
+// A bit field holding one member prints as that member, typed as the storage.
+unwrap_single_bitfield :: (decl: *Declaration) -> *Declaration {
+    if decl.kind != .BITFIELD return decl;
+    bf := cast(*Bitfield) decl;
+    if bf.members.count != 1 return decl;
+    member := New(Declaration);
+    <<member = <<bf.members[0];
+    member.type = bf.type;
+    return member;
+}
+
+print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, current_scope: *Declaration, flags: Print_Decl_Flags = 0, align_declarations := 0) {
+    decl := unwrap_single_bitfield(_decl);
     if !(flags & .NO_INDENT) append_indentation(builder);
 
     comment := decl.comment;
@@ -403,7 +416,14 @@ print_declaration_to_builder :: (builder: *String_Builder, decl: *Declaration, c
                 append(builder, name);
                 append(builder, ": ");
                 for name.count..align_declarations-1  append(builder, #char " ");
-                print_type_to_builder(builder, type_to_print, current_scope, flags);
+                if decl.decl_flags & .PRINT_AS_RAW {
+                    raw_struct := strip_type(type_to_print, typedefs = true).type_of_struct;
+                    append(builder, parent_path(raw_struct));
+                    append(builder, raw_struct.output_name);
+                    append(builder, "__RAW");
+                } else {
+                    print_type_to_builder(builder, type_to_print, current_scope, flags);
+                }
 
                 if !(flags & .NO_ARGUMENT_DEFAULTS) && decl.expression && can_print_expression(decl.expression) && !((decl.decl_flags & .POINTER_TO_VALUE) && (flags & .KEEP_POINTER_TO_VALUE)) {
                     append(builder, " = ");
@@ -445,7 +465,88 @@ append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name:
     }
 }
 
+// An Objective-C method is a message send through `objc_msgSend`, cast to the method's
+// signature. Selectors are registered once in `__selectors` (see print_objc_selector_table).
+// Methods returning `instancetype` are polymorphic in the receiver's class.
+print_objc_method :: (builder: *String_Builder, func: *Function, current_scope: *Declaration) {
+    type := func.type.type_of_function;
+    is_class_method := (type.flags & .OBJC_CLASS_METHOD) != 0;
+    returns_instancetype := (type.flags & .RETURNS_INSTANCETYPE) != 0;
+    owner := cast(*Struct) func.parent;
+    owner_name := join(parent_path(owner), owner.output_name);
+
+    print_to_builder(builder, "% :: inline (", func.output_name);
+    for type.arguments {
+        if it_index > 0 append(builder, ", ");
+        if it_index == 0 && !is_class_method && returns_instancetype {
+            print_to_builder(builder, "self: *$instancetype/%", owner_name);
+        } else {
+            print_declaration_to_builder(builder, it, current_scope, Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS);
+        }
+    }
+    return_text: string;
+    if returns_instancetype {
+        return_text = ifx is_class_method then join("*", owner_name) else "*instancetype";
+    } else {
+        return_text = type_to_string(type.return_type, current_scope, .IN_FUNCTION_RETURN);
+    }
+    returns_value := return_text != "void";
+    append(builder, ")");
+    if returns_value print_to_builder(builder, " -> %", return_text);
+    append(builder, " {\n");
+
+    context.generator.tab_depth += 1;
+    append_indentation(builder);
+    append(builder, "__selectors_init();\n");
+    append_indentation(builder);
+    append(builder, "_func: (obj: *void, selector: Selector");
+    for type.arguments {
+        if it_index == 0 continue;
+        print_to_builder(builder, ", %: %", it.output_name, type_to_string(it.type, current_scope, .IN_FUNCTION_ARGS));
+    }
+    print_to_builder(builder, ") -> % #c_call;\n", return_text);
+    append_indentation(builder);
+    append(builder, "_func = xx objc_msgSend;\n");
+    append_indentation(builder);
+    if returns_value append(builder, "return ");
+    print_to_builder(builder, "_func(%, __selectors.%", type.arguments[0].output_name, objc_selector_field(func.foreign_name));
+    for type.arguments {
+        if it_index == 0 continue;
+        print_to_builder(builder, ", %", it.output_name);
+    }
+    append(builder, ");\n");
+    context.generator.tab_depth -= 1;
+    append_indentation(builder);
+    append(builder, "}");
+}
+
+// `setX:y:` -> `setX_y_`
+objc_selector_field :: (selector: string) -> string {
+    builder: String_Builder;
+    for 0..selector.count-1 {
+        c := selector[it];
+        append(*builder, ifx c == #char ":" then cast(u8) #char "_" else c);
+    }
+    return avoid_reserved_names(builder_to_string(*builder));
+}
+
+// The selectors of all message sends, registered with the runtime on first use.
+print_objc_selector_table :: (builder: *String_Builder, g: *Generator_State) {
+    if !g.objc_selectors.count return;
+    append(builder, "\n\n#scope_file\n\n#import \"Objective_C\"; // For objc_msgSend and sel_registerName\n\n");
+    append(builder, "_Generated_Selectors :: struct {\n    initialized: bool;\n");
+    for g.objc_selectors  print_to_builder(builder, "    %: Selector;\n", objc_selector_field(it));
+    append(builder, "}\n__selectors: _Generated_Selectors;\n\n");
+    append(builder, "__selectors_init :: () {\n    if __selectors.initialized return;\n    __selectors.initialized = true;\n");
+    for g.objc_selectors  print_to_builder(builder, "    __selectors.% = sel_registerName(\"%\");\n", objc_selector_field(it), it);
+    append(builder, "}\n");
+}
+
 print_function :: (builder: *String_Builder, func: *Function, current_scope: *Declaration, in_vtable := false) {
+    if func.type.type_of_function.flags & .OBJC_METHOD {
+        print_objc_method(builder, func, current_scope);
+        return;
+    }
     options := *context.generator_options;
     name := func.output_name;
     needs_printf_wrapper := (func.decl_flags & .NEEDS_PRINTF_WRAPPER) != 0;
@@ -658,7 +759,21 @@ print_struct :: (builder: *String_Builder, s: *Struct) {
     if s.name && !(s.flags & .IS_ANON) {
         print_to_builder(builder, "% :: ", s.output_name);
     }
-    print_struct_body(builder, s, false);
+    if s.flags & .NEEDS_RAW {
+        // A derived class puts its fields into the tail padding of this one (Itanium C++ ABI).
+        // Jai structs are padded to their alignment, so the data lives in `X__RAW`, printed
+        // without trailing padding, and `X` wraps it.
+        print_struct_body(builder, s, false, .WRAPPER);
+        append(builder, "\n");
+        append_indentation(builder);
+        print_to_builder(builder, "// % without padding. Needed to generate a C++-equivalent struct layout when \"inheriting\" from %\n", s.output_name, s.output_name);
+        append_indentation(builder);
+        print_to_builder(builder, "%__RAW :: ", s.output_name);
+        print_struct_body(builder, s, false, .RAW_DATA);
+        append(builder, " #no_padding");
+    } else {
+        print_struct_body(builder, s, false);
+    }
 
     // The vtable of a C++ class follows the class.
     if s.name && !(s.flags & .IS_ANON) && s.type {
@@ -669,6 +784,8 @@ print_struct :: (builder: *String_Builder, s: *Struct) {
             print_struct_vtable(builder, s, info);
         }
     }
+
+    if context.generator_options.generate_bitfield_accessors print_bitfield_accessors(builder, s);
 
     // Operators are overloads at the scope of the struct, not members.
     last_location: Location;
@@ -685,8 +802,14 @@ is_operator :: (decl: *Declaration) -> bool {
     return decl.kind == .FUNCTION && (cast(*Function) decl).is_operator;
 }
 
+Struct_Part :: enum {
+    FULL;
+    WRAPPER;    // `X :: struct { using x__raw: X__RAW; <everything but the data> }`
+    RAW_DATA;   // The data members only.
+}
+
 // `union { ... }` / `struct { ... }` with the members, shared by named and inline structs.
-print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
+print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part := Struct_Part.FULL) {
     if s.flags & .IS_UNION  append(builder, "union");
     else append(builder, "struct");
 
@@ -726,8 +849,17 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
 
     // Base classes: `#as using base: Base;`. Only one base with a vtable can be
     // `using`-ed (their vtable members would clash), and none that would shadow members.
+    if part == .WRAPPER {
+        append(builder, "\n");
+        append_indentation(builder);
+        print_to_builder(builder, "using %__raw: %__RAW;", to_lower_copy(s.output_name), s.output_name);
+        printed = true;
+        has_fields = true;
+    }
+
     found_parent_with_vtable := false;
     for parent: s.parents {
+        if part == .WRAPPER continue;
         parent_info, parent_struct := find_or_create_extra_info(parent.type, s);
         disable_using := false;
         if parent_info && (parent_info.vtable.count > 0 || parent_info.vtable_parent) {
@@ -752,6 +884,11 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
         }
         append(builder, "\n");
         maybe_add_spacing(builder, *last_location, parent.location, parent.decl_flags, mimic);
+        if (s.flags & (Struct.Flags.OBJC_INTERFACE | .OBJC_PROTOCOL)) && it_index > 0 {
+            // Every superclass and protocol of an Objective_C object is the object itself.
+            append_indentation(builder);
+            print_to_builder(builder, "#place %;\n", s.parents[0].output_name);
+        }
         print_declaration_to_builder(builder, parent, s, 0);
         printed = true;
         if parent.type.size > 0 has_fields = true;
@@ -759,7 +896,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
 
     // Itanium lets a derived class's fields reuse the tail padding of a non-POD base,
     // which a Jai struct member cannot express.
-    if s.parents.count > 0 && !(s.flags & .IS_UNION) {
+    if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && !(s.parents[s.parents.count - 1].decl_flags & .PRINT_AS_RAW) {
         first_own := -1;
         for s.declarations {
             if is_struct_field(it) && it.bit_offset_in_parent >= 0 { first_own = it.bit_offset_in_parent / 8; break; }
@@ -775,7 +912,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
     }
 
     // libclang does not report the vtable pointer as a field.
-    if has_vtable && !info.vtable_parent {
+    if has_vtable && !info.vtable_parent && part != .WRAPPER {
         append(builder, "\n");
         append_indentation(builder);
         print_to_builder(builder, "%: *%_VTable;", info.vtable_name, s.output_name);
@@ -783,9 +920,31 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
         has_fields = true;
     }
 
+    // In the RAW variant a struct has no implicit padding: spell out the gaps clang laid out.
+    raw_next := 0;
+    raw_padding_count := 0;
+    if part == .RAW_DATA {
+        for s.parents  raw_next += get_base_data_size(it);
+        if has_vtable && !info.vtable_parent raw_next += context.generator.pointer_size;
+    }
+
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         if is_operator(it) continue;
+        is_data, unused := is_struct_field(it);
+        if part == .WRAPPER && is_data continue;
+        if part == .RAW_DATA && !is_data continue;
+        if part == .RAW_DATA && !(s.flags & .IS_UNION) {
+            offset, size, alignment := get_field_layout(it);
+            if offset < 0 && alignment > 0 offset = (raw_next + alignment - 1) / alignment * alignment;
+            if offset > raw_next {
+                append(builder, "\n");
+                append_indentation(builder);
+                print_to_builder(builder, "__padding%: [%] u8;", raw_padding_count, offset - raw_next);
+                raw_padding_count += 1;
+            }
+            if offset >= 0 && size >= 0  raw_next = offset + size;
+        }
         append(builder, "\n");
         maybe_add_spacing(builder, *last_location, it.location, it.decl_flags, mimic);
         flags: Print_Decl_Flags;
@@ -794,8 +953,10 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
         if is_struct_field(it) has_fields = true;
     }
 
+    if part != .WRAPPER print_bitfield_alignment_helper(builder, s);
+
     // A derived class's own vtable pointer overlays the one of its first base.
-    if has_vtable && info.vtable_parent {
+    if has_vtable && info.vtable_parent && part != .WRAPPER {
         append(builder, "\n");
         append_indentation(builder);
         print_to_builder(builder, "#place %; %: *%_VTable;", info.vtable_parent_declaration.output_name, info.vtable_name, s.output_name);
@@ -803,7 +964,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
         has_fields = true;
     }
 
-    if !as_type && !has_fields && s.type && s.type.size == 1 {
+    if !as_type && part != .WRAPPER && !has_fields && s.type && s.type.size == 1 {
         append(builder, "\n");
         append_indentation(builder);
         append(builder, "__empty_struct_padding: u8; // C++ makes empty structs have length 1");
@@ -814,6 +975,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
     // specific implementation (e.g. a base class's from an override).
     first_virtual := true;
     for s.virtual_functions {
+        if part == .RAW_DATA break;
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         if !it.library && (context.generator_options.strip_flags & .SYMBOLS_WITH_UNKNOWN_FOREIGN_LIBS) continue;
         if first_virtual {
@@ -838,6 +1000,225 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool) {
     context.generator.tab_depth -= 1;
     append_indentation(builder);
     append(builder, "}");
+}
+
+// ----------------------------------------------------------------------------
+// Bit fields.
+
+// Alignment in bytes of a type as C lays it out; 0 when it cannot be told (templates).
+get_type_alignment :: (type: *CType) -> s64 {
+    if !type return 0;
+    if type.template_instantiation_params.count > 0 return 0;
+    if type.pointer_to || type.type_of_function return context.generator.pointer_size;
+    if type.type_of_typedef return get_type_alignment(type.type_of_typedef.type);
+    if type.array_element_type return get_type_alignment(type.array_element_type);
+    if type.type_of_struct {
+        s := type.type_of_struct;
+        if s.decl_flags & .TEMPLATE return 0;
+        return get_struct_alignment(s, true);
+    }
+    if type.type_of_enum && type.type_of_enum.type return type.type_of_enum.type.size;
+    return max(type.size, 1);
+}
+
+// With `include_bitfield_alignment` false the widest declared type of the bit fields does not count.
+get_struct_alignment :: (s: *Struct, include_bitfield_alignment: bool) -> s64 {
+    best := 1;
+    for s.parents {
+        a := get_type_alignment(it.type);
+        if a == 0 return 0;
+        if a > best best = a;
+    }
+    for s.declarations {
+        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        a := 1;
+        if it.kind == .BITFIELD {
+            bf := cast(*Bitfield) it;
+            if !bf.type.array_element_type a = bf.type.size;
+            if include_bitfield_alignment && bf.alignment_type a = max(a, bf.alignment_type.size);
+        } else {
+            is_field, is_anon := is_struct_field(it);
+            if !is_field continue;
+            if it.kind == .STRUCT {
+                a = get_struct_alignment(cast(*Struct) it, include_bitfield_alignment);
+            } else {
+                a = get_type_alignment(it.type);
+            }
+            if a == 0 return 0;
+        }
+        if a > best best = a;
+    }
+    return best;
+}
+
+// C aligns a struct for the widest declared type of its bit fields even when the storage
+// member is narrower. A `#place` member of that type recreates the alignment.
+print_bitfield_alignment_helper :: (builder: *String_Builder, s: *Struct) {
+    if s.decl_flags & .TEMPLATE return;
+    needed: *Bitfield;
+    for s.declarations {
+        if it.kind != .BITFIELD || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
+        bf := cast(*Bitfield) it;
+        if bf.alignment_type && (!needed || needed.alignment_type.size < bf.alignment_type.size) needed = bf;
+    }
+    if !needed return;
+    natural := get_struct_alignment(s, false);
+    if natural == 0 || natural >= needed.alignment_type.size return;
+
+    anchor: *Declaration;
+    for s.declarations {
+        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        is_field, is_anon := is_struct_field(it);
+        if is_field && !is_anon { anchor = unwrap_single_bitfield(it); break; }
+    }
+    if !anchor return;
+
+    aligned_name := unwrap_single_bitfield(needed).output_name;
+    append(builder, "\n");
+    append_indentation(builder);
+    print_to_builder(builder, "#place %; %_alignment: ", anchor.output_name, aligned_name);
+    print_type_to_builder(builder, needed.alignment_type, null);
+    append(builder, ";");
+}
+
+// Offset (bytes, -1 if unknown), size and alignment (0 if unknown) of a data member as clang laid it out.
+get_field_layout :: (decl: *Declaration) -> offset: s64, size: s64, alignment: s64 {
+    if decl.kind == .BITFIELD {
+        bf := cast(*Bitfield) decl;
+        return bf.start_byte, bf.byte_count, ifx bf.type.array_element_type then 1 else bf.type.size;
+    }
+    if decl.kind == .STRUCT {
+        st := cast(*Struct) decl;
+        return -1, ifx st.type then st.type.size else -1, get_struct_alignment(st, true);
+    }
+    offset := -1;
+    if decl.bit_offset_in_parent >= 0 offset = decl.bit_offset_in_parent / 8;
+    if !decl.type return offset, -1, 0;
+    return offset, decl.type.size, get_type_alignment(decl.type);
+}
+
+// The bytes of a base class that fields of the derived class may not reuse.
+get_base_data_size :: (parent: *Declaration) -> s64 {
+    if parent.decl_flags & .PRINT_AS_RAW {
+        return get_data_size(strip_type(parent.type, typedefs = true).type_of_struct);
+    }
+    return max(parent.type.size, 0);
+}
+
+// Size of the data of a class without its tail padding (what a derived class starts after).
+get_data_size :: (s: *Struct) -> s64 {
+    end := 0;
+    for s.parents  end += get_base_data_size(it);
+    info := find_or_create_extra_info(s.type, s);
+    if info && info.vtable.count > 0 && !info.vtable_parent  end = max(end, context.generator.pointer_size);
+    for s.declarations {
+        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        is_data, unused := is_struct_field(it);
+        if !is_data continue;
+        offset, size, alignment := get_field_layout(it);
+        if offset < 0 {
+            offset = ifx alignment > 0 then (end + alignment - 1) / alignment * alignment else end;
+        }
+        if size >= 0 end = max(end, offset + size);
+    }
+    return end;
+}
+
+// Classes whose fields live in the tail padding of their (single) base class: the base
+// is printed with a padding-free `__RAW` variant for the derived class to embed.
+mark_tail_padding_bases :: (g: *Generator_State) {
+    for s: g.structs_to_check {
+        if (s.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (s.flags & .IS_UNION) continue;
+        if s.parents.count != 1 continue;
+        parent := s.parents[0];
+        base_type := strip_type(parent.type, typedefs = true);
+        if !base_type || !base_type.type_of_struct || base_type.template_instantiation_params.count > 0 continue;
+        base := base_type.type_of_struct;
+        if (base.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (base.flags & (Struct.Flags.IS_UNION | .IS_INCOMPLETE)) || !base.name continue;
+
+        first_own := -1;
+        for s.declarations {
+            if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+            is_data, unused := is_struct_field(it);
+            if !is_data continue;
+            offset, size, alignment := get_field_layout(it);
+            if offset >= 0 && (first_own < 0 || offset < first_own) first_own = offset;
+        }
+        if first_own < 0 || first_own >= parent.type.size continue;
+
+        base.flags |= .NEEDS_RAW;
+        if !(parent.decl_flags & .PRINT_AS_RAW) {
+            parent.decl_flags |= .PRINT_AS_RAW;
+            parent.output_name = sprint("%__raw", parent.output_name);
+        }
+    }
+}
+
+hex :: (value: u64) -> string {
+    return tprint("0x%", formatInt(value, base = 16));
+}
+
+// Extension (the reference generator leaves accessors as a @ToDo): `S_get_x` / `S_set_x`
+// procedures that read and write a bit field member by its bit offset.
+print_bitfield_accessors :: (builder: *String_Builder, s: *Struct) {
+    if s.decl_flags & .TEMPLATE return;
+    if !s.name || (s.flags & .IS_ANON) || !s.output_name return;
+    if s.parent && s.parent.kind == .STRUCT return;
+    printed := false;
+    for s.declarations {
+        if it.kind != .BITFIELD || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
+        bf := cast(*Bitfield) it;
+        for m: bf.members {
+            if m.decl_flags & .OMIT_FROM_OUTPUT continue;
+            if begins_with(m.name, "_anon") || !m.type continue;
+            width := m.bitfield_width;
+            offset := m.bit_offset_in_parent;
+            if width <= 0 || width > 64 || offset < 0 continue;
+            first_byte := offset / 8;
+            shift := offset % 8;
+            nbytes := (shift + width + 7) / 8;
+            if nbytes > 8 continue;
+            real := m.type;
+            while real.type_of_typedef real = real.type_of_typedef.type;
+            is_bool := real.hardcoded_jai_string == "bool";
+            is_signed := (real.number_flags & .SIGNED) != 0;
+            if real.type_of_enum && real.type_of_enum.type is_signed = (real.type_of_enum.type.number_flags & .SIGNED) != 0;
+            mask: u64 = 0xffff_ffff_ffff_ffff;
+            if width < 64 mask = ((cast(u64) 1) << width) - 1;
+
+            append(builder, "\n\n");
+            print_to_builder(builder, "%_get_% :: (s: *%) -> ", s.output_name, m.output_name, s.output_name);
+            print_type_to_builder(builder, m.type, null);
+            append(builder, " {\n    bits: u64;\n    base := cast(*u8) s;\n");
+            print_to_builder(builder, "    for 0..% bits |= (cast(u64) base[%+it]) << (cast(u64) (8 * it));\n", nbytes - 1, first_byte);
+            print_to_builder(builder, "    bits = (bits >> %) & %;\n", shift, hex(mask));
+            if is_signed && width < 64 {
+                print_to_builder(builder, "    if bits & % bits |= %;\n", hex((cast(u64) 1) << (width - 1)), hex(~mask));
+            }
+            if is_bool {
+                append(builder, "    return bits != 0;\n}");
+            } else {
+                append(builder, "    return cast,trunc(");
+                print_type_to_builder(builder, m.type, null);
+                append(builder, ") bits;\n}");
+            }
+
+            append(builder, "\n\n");
+            print_to_builder(builder, "%_set_% :: (s: *%, value: ", s.output_name, m.output_name, s.output_name);
+            print_type_to_builder(builder, m.type, null);
+            append(builder, ") {\n    base := cast(*u8) s;\n    bits: u64;\n");
+            print_to_builder(builder, "    for 0..% bits |= (cast(u64) base[%+it]) << (cast(u64) (8 * it));\n", nbytes - 1, first_byte);
+            if is_bool {
+                append(builder, "    new_value: u64 = ifx value then 1 else 0;\n");
+            } else {
+                append(builder, "    new_value := cast,trunc(u64) value;\n");
+            }
+            print_to_builder(builder, "    bits = (bits & ~(% << %)) | ((new_value & %) << %);\n", hex(mask), shift, hex(mask), shift);
+            print_to_builder(builder, "    for 0..% base[%+it] = cast(u8) ((bits >> (cast(u64) (8 * it))) & 0xff);\n}", nbytes - 1, first_byte);
+            printed = true;
+        }
+    }
+    if printed append(builder, "\n");
 }
 
 // ----------------------------------------------------------------------------

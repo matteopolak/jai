@@ -62,6 +62,7 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 ## Open work
 
-- `Bindings_Generator`: C and C++ (methods, ctors/dtors, vtables, inheritance, templates, operators) work and
-  were run on the real Vulkan and ImGui headers (`docs/stdlib/bindings-generator.md`). Missing: bitfield accessors,
-  tail-padding `__RAW` structs, Objective-C.
+- `Bindings_Generator`: C, C++ (methods, ctors/dtors, vtables, inheritance, templates, operators, bit fields with
+  accessors, tail-padding `__RAW` structs) and Objective-C (classes, protocols, categories, message-send wrappers)
+  work; C/C++ were run on the real Vulkan and ImGui headers (`docs/stdlib/bindings-generator.md`). Left: Objective-C
+  generics/ivars/blocks, x86-64 `objc_msgSend_stret`, `__RAW` with several bases, MSVC bit field layout.

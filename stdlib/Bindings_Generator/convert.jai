@@ -202,6 +202,23 @@ init_generator :: (g: *Generator_State) {
     g.type_def_type = New(CType);
     g.type_def_type.hardcoded_jai_string = "Type";
     g.type_def_type.size = 8;
+
+    g.type_def_objc_class = create_empty_struct_type("Class");
+    g.type_def_objc_selector = create_empty_struct_type("Selector");
+    g.type_def_objc_block_pointer = create_empty_struct_type("Block");
+    g.type_def_objc_id = create_empty_struct_type("id");
+}
+
+// A named type the Objective_C module defines (`id`, `Class`...); only its name is printed.
+create_empty_struct_type :: (name: string) -> *CType {
+    s := New(Struct);
+    s.kind = .STRUCT;
+    s.name = name;
+    s.output_name = name;
+    s.type = New(CType);
+    s.type.type_of_struct = s;
+    s.type.size = 8;
+    return s.type;
 }
 
 get_int_type :: (size: s64, signed: bool) -> *CType {
@@ -352,6 +369,30 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
 
         case T_BLOCKPOINTER;
             return g.type_def_ptr_void;
+
+        case T_ATTRIBUTED;
+            return create_type(clang("t_modified", ty), ctx);
+
+        case T_OBJCID;     return g.type_def_objc_id;
+        case T_OBJCCLASS;  return g.type_def_objc_class;
+        case T_OBJCSEL;    return g.type_def_objc_selector;
+
+        case T_OBJCINTERFACE;
+            result = New(CType);
+            result.type_of_struct = create_objc_interface(clang("t_decl", ty), true);
+            result.size = 0;
+            return result;
+
+        case T_OBJCOBJECT;
+            return create_objc_object_type(ty);
+
+        case T_OBJCOBJECTPOINTER;
+            pointee := clang("t_pointee", ty);
+            inner := create_type(pointee, ctx);
+            // `id` and `Class` are pointers already.
+            if inner == g.type_def_objc_id || inner == g.type_def_objc_class return inner;
+            result = create_pointer_to(inner);
+            return result;
 
         case T_LVALUEREF; #through;
         case T_RVALUEREF;
@@ -1201,6 +1242,10 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
     g := context.generator;
     children := get_children(key);
     bitfield: *Bitfield;
+    // Byte where the previous member ended (-1: unknown), to detect padding before a bit field run.
+    prev_end := ifx s.parents.count > 0 then -1 else 0;
+    run_prev_end := 0;
+    is_union := (s.flags & .IS_UNION) != 0;
     for children {
         kind := cursor_kind(it);
         if kind == {
@@ -1262,7 +1307,12 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                 if offset >= 0 field.bit_offset_in_parent = offset;
                 if clang("is_bitfield", it) {
                     field.bitfield_width = clang("bit_width", it);
+                    // `int : 0;` only moves the next bit field to a new storage unit;
+                    // the run's storage covers the gap.
+                    if field.bitfield_width == 0 continue;
+                    if is_union  bitfield = null;
                     if !bitfield {
+                        run_prev_end = prev_end;
                         bitfield = New(Bitfield);
                         bitfield.kind = .BITFIELD;
                         bitfield.parent = s;
@@ -1273,16 +1323,23 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                         array_add(*s.declarations, bitfield);
                     }
                     array_add(*bitfield.members, field);
-                    finish_bitfield(bitfield);
+                    finish_bitfield(bitfield, run_prev_end);
+                    prev_end = ifx is_union then -1 else bitfield.start_byte + bitfield.byte_count;
                 } else {
                     bitfield = null;
                     array_add(*s.declarations, field);
+                    if is_union || offset < 0 || !field.type || field.type.size < 0 {
+                        prev_end = -1;
+                    } else {
+                        prev_end = offset / 8 + field.type.size;
+                    }
                 }
 
             case .STRUCT_DECL; #through;
             case .UNION_DECL;
                 if clang("is_anonymous_record", it) {
                     bitfield = null;
+                    prev_end = -1;
                     nested := create_struct(it);
                     nested.parent = s;
                     nested.flags |= .IS_ANON;
@@ -1303,23 +1360,232 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
     }
 }
 
-// Size the storage of a run of bit fields.
-finish_bitfield :: (bitfield: *Bitfield) {
+// Size the storage of a run of bit fields (adjacent bit fields share one `__bitfield` member).
+// The storage covers exactly the bytes clang laid the run out in; it is an integer when the
+// run starts at a multiple of its size (so Jai places it where C does), a byte array otherwise.
+// `alignment_type` remembers the widest declared type: C aligns the struct for it even when
+// the storage is narrower, which print_struct_body restores with a `#place` member.
+finish_bitfield :: (bitfield: *Bitfield, prev_end: s64) {
     first := bitfield.members[0];
     last := bitfield.members[bitfield.members.count - 1];
-    start := first.bit_offset_in_parent;
-    end := last.bit_offset_in_parent + last.bitfield_width;
-    bytes := (end - start + 7) / 8;
-    t := New(CType);
-    base_size := ifx first.type then first.type.size else 0;
-    if bytes == base_size && (bytes == 1 || bytes == 2 || bytes == 4 || bytes == 8) {
-        t = get_int_type(bytes, false);
+    start_byte := first.bit_offset_in_parent / 8;
+    end_byte := (last.bit_offset_in_parent + last.bitfield_width + 7) / 8;
+    bytes := end_byte - start_byte;
+
+    widest: *CType;
+    for bitfield.members {
+        if it.type && (!widest || widest.size < it.type.size) widest = it.type;
+    }
+    bitfield.alignment_type = null;
+    bitfield.type = null;
+
+    // Integer storage must land where Jai's natural alignment puts it.
+    is_int_size := bytes == 1 || bytes == 2 || bytes == 4 || bytes == 8;
+    if is_int_size && start_byte % bytes == 0 && (prev_end < 0 || (prev_end + bytes - 1) / bytes * bytes == start_byte) {
+        if widest && widest.size == bytes {
+            bitfield.type = widest;
+        } else {
+            bitfield.type = get_int_type(bytes, false);
+            if widest && widest.size > bytes bitfield.alignment_type = widest;
+        }
     } else {
+        // A byte array is aligned to 1: start it where the previous member ended.
+        if prev_end >= 0 && prev_end < start_byte {
+            start_byte = prev_end;
+            bytes = end_byte - start_byte;
+        }
+        t := New(CType);
         t.array_element_type = context.generator.type_def_u8;
         t.array_element_count = bytes;
         t.size = bytes;
+        bitfield.type = t;
+        if widest && widest.size > 1 bitfield.alignment_type = widest;
     }
-    bitfield.type = t;
+    bitfield.start_byte = start_byte;
+    bitfield.byte_count = bytes;
+}
+
+
+// ----------------------------------------------------------------------------
+// Objective-C.
+
+// `id<P>`, `Class<P>` and `Base<Arg>`: protocols and generic arguments are dropped except a
+// single protocol on `id`, which names the type.
+create_objc_object_type :: (ty: Clang_Type) -> *CType {
+    g := context.generator;
+    base := clang("t_objc_base", ty);
+    base_kind := type_kind(base);
+    protocols := clang("t_objc_num_protocols", ty);
+    decl: Cursor;
+    if base_kind == T_OBJCID {
+        if protocols != 1 return g.type_def_objc_id;
+        decl = clang("t_objc_protocol", ty, 0);
+    } else if base_kind == T_OBJCCLASS {
+        return g.type_def_objc_class;
+    } else {
+        decl = clang("t_decl", base);
+    }
+    if !decl return g.type_def_objc_id;
+    result := New(CType);
+    result.type_of_struct = create_objc_interface(decl, true);
+    result.size = 0;
+    return result;
+}
+
+// An `@interface` or `@protocol`. With `resolving_type_only` only the (empty) struct that names
+// the type is created; the members are converted when the declaration itself is visited.
+create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
+    g := context.generator;
+    kind := cursor_kind(c);
+    key := clang("canonical", c);
+    found, existing := table_find(*g.declarations_by_cursor, key);
+    s: *Struct;
+    if found {
+        s = cast(*Struct) existing;
+    } else {
+        s = New(Struct);
+        s.kind = .STRUCT;
+        s.name = cursor_name(c);
+        s.output_name = avoid_reserved_names(stripped_name(s.name), true);
+        s.location = cursor_location(c);
+        fill_comment(*s.comment, c, s.location);
+        s.flags |= ifx kind == .OBJC_PROTOCOL_DECL then Struct.Flags.OBJC_PROTOCOL else .OBJC_INTERFACE;
+        s.type = New(CType);
+        s.type.type_of_struct = s;
+        s.type.size = 0;
+        table_add(*g.declarations_by_cursor, key, s);
+    }
+    if resolving_type_only || s.objc_filled return s;
+
+    // libclang does not treat an `@interface` as a definition (that is its `@implementation`);
+    // only a declaration whose definition was seen elsewhere is skipped.
+    definition := clang("definition", c);
+    if !clang("is_definition", c) && definition  return s;
+    s.objc_filled = true;
+    s.flags &= ~Struct.Flags.IS_INCOMPLETE;
+    s.location = cursor_location(c);
+    fill_comment(*s.comment, c, s.location);
+
+    children := get_children(c);
+    for children {
+        child_kind := cursor_kind(it);
+        if child_kind == {
+            case .OBJC_ROOT_CLASS;
+                // A root class is usable wherever an `id` is.
+                add_objc_parent(s, "ID", g.type_def_objc_id, it);
+
+            case .OBJC_SUPER_CLASS_REF; #through;
+            case .OBJC_PROTOCOL_REF;
+                ref := clang("referenced", it);
+                if !ref continue;
+                parent := create_objc_interface(ref, true);
+                add_objc_parent(s, to_lower_copy(parent.name), parent.type, it);
+
+            case .OBJC_INSTANCE_METHOD_DECL; #through;
+            case .OBJC_CLASS_METHOD_DECL;
+                add_objc_method(s, it);
+        }
+    }
+    return s;
+}
+
+add_objc_parent :: (s: *Struct, name: string, type: *CType, c: Cursor) {
+    decl := New(Declaration);
+    decl.kind = .DECLARATION;
+    decl.name = name;
+    decl.output_name = avoid_reserved_names(name);
+    decl.type = type;
+    decl.parent = s;
+    decl.location = cursor_location(c);
+    decl.decl_flags |= .QUALIFIER_USING | .QUALIFIER_AS;
+    array_add(*s.parents, decl);
+}
+
+// Categories add their methods to the class they extend.
+create_objc_category :: (c: Cursor) {
+    children := get_children(c);
+    target: *Struct;
+    for children {
+        if cursor_kind(it) != .OBJC_CLASS_REF continue;
+        ref := clang("referenced", it);
+        if ref target = create_objc_interface(ref, true);
+        break;
+    }
+    if !target return;
+    for children {
+        child_kind := cursor_kind(it);
+        if child_kind == .OBJC_INSTANCE_METHOD_DECL || child_kind == .OBJC_CLASS_METHOD_DECL  add_objc_method(target, it);
+    }
+}
+
+add_objc_method :: (s: *Struct, c: Cursor) {
+    g := context.generator;
+    is_class_method := cursor_kind(c) == .OBJC_CLASS_METHOD_DECL;
+    selector := cursor_name(c);
+    for s.declarations {
+        if it.kind != .FUNCTION || it.foreign_name != selector continue;
+        existing_is_class := ((cast(*Function) it).type.type_of_function.flags & Function_Type.Flags.OBJC_CLASS_METHOD) != 0;
+        if existing_is_class == is_class_method return;
+    }
+
+    func := New(Function);
+    func.kind = .FUNCTION;
+    func.name = selector;
+    func.foreign_name = selector;
+    func.parent = s;
+    func.location = cursor_location(c);
+    fill_comment(*func.comment, c, func.location);
+    colon := find_index_from_left(selector, #char ":");
+    func.output_name = avoid_reserved_names(stripped_name(ifx colon >= 0 then slice(selector, 0, colon) else selector));
+
+    ft := New(Function_Type);
+    ft.flags |= .OBJC_METHOD;
+    if is_class_method ft.flags |= .OBJC_CLASS_METHOD;
+    if clang("is_variadic", c) {
+        log_stripped(selector, "is a variadic Objective-C method");
+        return;
+    }
+
+    // The receiver comes first: `self` for instance methods, the `Class` for class methods.
+    receiver := New(Declaration);
+    receiver.kind = .DECLARATION;
+    if is_class_method {
+        receiver.name = "class";
+        receiver.output_name = "class";
+        receiver.type = g.type_def_objc_class;
+    } else {
+        receiver.name = "self";
+        receiver.output_name = "self";
+        receiver.type = create_pointer_to(s.type);
+    }
+    array_add(*ft.arguments, receiver);
+
+    result := clang("cursor_result_type", c);
+    ft.return_type = create_type(result, c);
+    if type_name_of(result) == "instancetype" ft.flags |= .RETURNS_INSTANCETYPE;
+
+    count := clang("num_args", c);
+    for 0..count-1 {
+        arg_cursor := clang("arg", c, it);
+        arg := New(Declaration);
+        arg.kind = .DECLARATION;
+        arg.name = cursor_name(arg_cursor);
+        if !arg.name arg.name = tprint("arg%", it);
+        arg.output_name = avoid_reserved_names(arg.name);
+        arg.location = cursor_location(arg_cursor);
+        arg.type = create_type(clang("type", arg_cursor), arg_cursor);
+        array_add(*ft.arguments, arg);
+    }
+
+    func.type = New(CType);
+    func.type.type_of_function = ft;
+    func.type.size = 8;
+
+    if !table_contains(*g.objc_selector_set, selector) {
+        table_add(*g.objc_selector_set, selector, true);
+        array_add(*g.objc_selectors, selector);
+    }
+    avoid_name_clash(*s.declarations, func);   // Adds it.
 }
 
 // ----------------------------------------------------------------------------
@@ -1845,6 +2111,17 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
                 s.parent = parent;
                 add_to_scope(scope, s);
             }
+
+        case .OBJC_INTERFACE_DECL; #through;
+        case .OBJC_PROTOCOL_DECL;
+            s := create_objc_interface(c);
+            if !(s.flags & .IS_INCOMPLETE) && !table_contains(*g.added_to_scope, s) {
+                s.parent = parent;
+                add_to_scope(scope, s);
+            }
+
+        case .OBJC_CATEGORY_DECL;
+            create_objc_category(c);
 
         case .ENUM_DECL;
             e := create_enum(c);

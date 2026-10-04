@@ -71,6 +71,9 @@ Generate_Bindings_Options :: struct #type_info_none {
 
     log_unsupported                 := false;
 
+    // Extension: print `S_get_x` / `S_set_x` procedures for C bit fields.
+    generate_bitfield_accessors     := true;
+
     // Extension: path of the libclang shared library (otherwise the
     // JAI_LIBCLANG environment variable and the usual install locations).
     libclang_path: string;
@@ -179,6 +182,7 @@ Function_Type :: struct {
         COPY_CONSTRUCTOR;
         MOVE_CONSTRUCTOR;
         DESTRUCTOR;
+        RETURNS_INSTANCETYPE;
     }
 }
 
@@ -341,6 +345,7 @@ Declaration_Flags :: enum_flags {
     TYPE_INFO_PROCEDURES_ARE_VOID_POINTERS;
     NO_SPACING;
     TEMPLATE;
+    PRINT_AS_RAW;   // A base class member that is the `__RAW` variant of its type.
 }
 
 Function :: struct {
@@ -395,6 +400,8 @@ Bitfield :: struct {
     kind = .BITFIELD;
     members: [..] *Declaration;
     alignment_type: *CType;
+    start_byte: s64;
+    byte_count: s64;
 }
 
 Struct :: struct {
@@ -408,6 +415,7 @@ Struct :: struct {
     template_type_params: [..] *Declaration;
 
     flags:                Flags;
+    objc_filled:          bool;   // The members of an Objective-C interface or protocol were converted.
 
     Flags :: enum_flags {
         NONE;
@@ -423,6 +431,7 @@ Struct :: struct {
         OBJC_INTERFACE;
         OBJC_CATEGORY;
         IS_INCOMPLETE;
+        NEEDS_RAW;      // A derived class reuses its tail padding: print the `__RAW` variant too.
     }
 }
 
@@ -480,6 +489,13 @@ Generator_State :: struct #type_info_none {
 
     type_def_jai_string: *CType;
     type_def_type: *CType;
+
+    type_def_objc_class: *CType;
+    type_def_objc_selector: *CType;
+    type_def_objc_block_pointer: *CType;
+    type_def_objc_id: *CType;
+    objc_selectors: [..] string;   // Unique selectors of the generated message sends.
+    objc_selector_set: Table(string, bool);
 
     declarations_by_cursor: Table(Cursor, *Declaration);
     enum_macros: [..] *Enum;

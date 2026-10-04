@@ -136,6 +136,8 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
 
     for g.global_scope.members  visit_declarations(omit_unnecessary_typedefs_and_macros, it);
 
+    mark_tail_padding_bases(g);
+
     if options.will_print_bindings  options.will_print_bindings();
 
     // Print ---------------------------------------------------------------
@@ -161,6 +163,8 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         print_declaration_to_builder(*builder, it, null, .IS_GLOBAL);
         append(*builder, "\n");
     }
+
+    print_objc_selector_table(*builder, g);
 
     if options.generate_compile_time_struct_checks  print_struct_checks(*builder, g);
 
@@ -283,6 +287,11 @@ assign_libraries :: (g: *Generator_State, scope: *[..] *Declaration, options: *G
                 if lib it.library = lib;
             }
         }
+        if decl.kind == .FUNCTION && (cast(*Function) decl).type.type_of_function.flags & .OBJC_METHOD {
+            // Messages are sent through the runtime; there is no symbol to bind.
+            array_add(*result, decl);
+            continue;
+        }
         if decl.kind == .FUNCTION || (decl.kind == .DECLARATION && decl.storage_class == .Extern) {
             symbol := decl.foreign_name;
             if !symbol symbol = decl.name;
@@ -361,14 +370,8 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
 
 // Symbol names come from `nm`; this keeps the module free of object-file parsers.
 read_symbols :: (lib: *Library_Info, path: string, strip_underscore: bool) {
-    // The listing goes through a file, not a captured pipe: on macOS the interpreter
-    // cannot yet set FD_CLOEXEC (variadic `fcntl`), and a pipe-captured child that
-    // writes more than the 64 KB pipe buffer deadlocks against the launch handshake.
-    listing := tprint("%.symbols.tmp", path);
-    result := run_command("sh", "-c", tprint("nm -g \"%\" > \"%\" 2>/dev/null", path, listing));
-    output, read_ok := read_entire_file(listing, false);
-    run_command("rm", "-f", listing);
-    if result.exit_code != 0 || !read_ok {
+    result, output := run_command("nm", "-g", path, capture_and_return_output = true);
+    if result.exit_code != 0 {
         lib.symbols_known = false;
         return;
     }
