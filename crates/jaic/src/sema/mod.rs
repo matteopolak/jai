@@ -182,6 +182,10 @@ pub struct Compiler {
     pub workspace: i64,
     /// Sources added so far (labels of added strings).
     added_sources: usize,
+    /// Bodies the lenient drain failed to lower, with the `lower_epoch` of the failure.
+    lenient_failures: HashMap<ProcId, (u64, Box<Diagnostic>)>,
+    /// Scopes holding the bindings that a polymorphic parameter's default is evaluated in.
+    default_scopes: HashMap<(ScopeId, Vec<Value>), ScopeId>,
     /// Body `#import`s already added to their file scope (by statement span).
     hoisted_imports: HashSet<Span>,
     /// Procedures that need their bodies lowered.
@@ -308,6 +312,8 @@ impl Compiler {
             workspace: crate::build::TOP_LEVEL_WORKSPACE,
             runtime_info: None,
             added_sources: 0,
+            lenient_failures: HashMap::new(),
+            default_scopes: HashMap::new(),
             hoisted_imports: HashSet::new(),
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),

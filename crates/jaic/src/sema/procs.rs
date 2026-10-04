@@ -739,15 +739,44 @@ impl Compiler {
         let mut first = None;
         let mut retry = Vec::new();
         while let Some(id) = self.body_queue.pop() {
-            if self.proc(id).body_state == BodyState::Queued
-                && let Err(e) = self.lower_body(id)
+            if self.proc(id).body_state != BodyState::Queued {
+                continue;
+            }
+            // A body that failed is only worth another attempt once something it could be
+            // waiting for happened (code added, a compile-time run finished). Otherwise every
+            // compile-time call redoes the failing work, which compounds when that work itself
+            // runs compile-time code (a body using a module that did not load).
+            let epoch = self.lower_epoch();
+            if let Some((at, err)) = self.lenient_failures.get(&id)
+                && *at == epoch
             {
-                first.get_or_insert(e);
+                first.get_or_insert_with(|| err.clone());
                 retry.push(id);
+                continue;
+            }
+            let misses = self.placeholder_misses;
+            match self.lower_body(id) {
+                Ok(()) => {
+                    self.lenient_failures.remove(&id);
+                }
+                Err(e) => {
+                    // Waiting for a `#placeholder` is settled by the metaprogram, at any time.
+                    if self.placeholder_misses == misses {
+                        let epoch = self.lower_epoch();
+                        self.lenient_failures.insert(id, (epoch, e.clone()));
+                    }
+                    first.get_or_insert(e);
+                    retry.push(id);
+                }
             }
         }
         self.body_queue.extend(retry);
         first
+    }
+
+    /// Counts the events after which a body that failed to lower may succeed.
+    fn lower_epoch(&self) -> u64 {
+        (self.added_sources + self.files.len() + self.modules.len() + self.runs_done) as u64
     }
 
     /// Lower one procedure body to IR.
