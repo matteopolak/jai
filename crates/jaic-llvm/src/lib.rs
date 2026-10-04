@@ -106,9 +106,10 @@ pub fn emit_object(program: &Program, options: &Options, path: &Path) -> Result<
         .map_err(|e| e.to_string())
 }
 
-/// The libraries from `program.libraries` that some foreign symbol uses.
+/// The libraries from `program.libraries` that some foreign symbol uses, or that are
+/// `link_always`.
 pub fn used_libraries(program: &Program) -> Vec<Library> {
-    let mut used = vec![false; program.libraries.len()];
+    let mut used: Vec<bool> = program.libraries.iter().map(|l| l.link_always).collect();
     for foreign in &program.foreigns {
         if let Some(i) = foreign.library.filter(|&i| i < used.len()) {
             used[i] = true;
@@ -194,12 +195,19 @@ fn library_args(lib: &Library) -> Vec<String> {
     {
         return vec!["-framework".to_string(), name.to_string()];
     }
+    // Jai names libraries either way (`"libobjc"` / `"objc"`); `-l` wants the bare name.
+    let name = name.strip_prefix("lib").unwrap_or(name);
+    // Built third-party libraries link statically, so the executable is self-contained.
+    for dir in jaic::interp::library_dirs() {
+        let archive = dir.join(format!("lib{name}.a"));
+        if archive.exists() {
+            return vec![archive.display().to_string()];
+        }
+    }
     let mut args = Vec::new();
     if cfg!(target_os = "macos") && Path::new("/opt/homebrew/lib").exists() {
         args.push("-L/opt/homebrew/lib".to_string());
     }
-    // Jai names libraries either way (`"libobjc"` / `"objc"`); `-l` wants the bare name.
-    let name = name.strip_prefix("lib").unwrap_or(name);
     args.push(format!("-l{name}"));
     args
 }

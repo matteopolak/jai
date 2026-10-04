@@ -21,6 +21,10 @@ let file = jaic::parser::parse_file(file_id, text)?; // Result<ast::File, Diagno
   (`decl.rs`) are recognised by lookahead: `name {, name} :`, `::` or `:=`.
 - Terminators: a statement needs `;` unless the previous token closed a brace body, a `#string`
   here-string, or `{} #flags` (`Parser::ends_block`). `@notes` after a statement attach to it.
+- Here-strings (`lexer.rs` `here_string`) keep every line ending of the body, including the one before
+  the terminator line (`#string END\nabc\nEND` is `"abc\n"`, per how_to 005; Simp concatenates shader
+  prefixes relying on it). Line endings normalize to `\n`, or `\r\n` with `#string,cr`; `#string,\%`
+  turns `\%` into byte `0x1f`. The terminator may be indented.
 
 ### Lookahead decisions worth knowing
 

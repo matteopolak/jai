@@ -559,7 +559,7 @@ fn here_string_argument_in_call() {
     else {
         panic!()
     };
-    assert!(matches!(&args[0].value.kind, ExprKind::Str(s) if &**s == b"hello"));
+    assert!(matches!(&args[0].value.kind, ExprKind::Str(s) if &**s == b"hello\n"));
     // A here-string ends its statement without a semicolon.
     assert!(matches!(
         decl(&stmts[1]).value.as_ref().unwrap().kind,

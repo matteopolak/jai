@@ -220,7 +220,8 @@ pub struct Compiler {
     pub thunk_scopes: HashMap<ScopeId, ScopeId>,
     /// Interpreter address of the compile-time `#Context`.
     pub ct_context: Option<u64>,
-    /// Declarations of `#program_export` procedures (resolved by the driver).
+    /// Declarations the driver resolves even when unreferenced: `#program_export`
+    /// procedures and `link_always` libraries.
     pub export_entities: Vec<EntityId>,
     /// Locals declared by `#asm` register declarations (`x: gpr`).
     pub asm_regs: HashMap<EntityId, asm::AsmReg>,

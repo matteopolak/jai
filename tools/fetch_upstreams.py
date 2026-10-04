@@ -59,6 +59,9 @@ def download(repo: str, revision: str, path: str) -> bytes:
         raise ValueError(f'oversize source: {repo}/{path}')
     return data
 
+# C-family sources a project builds its own helper libraries from (never prebuilt binaries).
+NATIVE_SOURCE_SUFFIXES = ('.c', '.h', '.m', '.mm', '.cpp', '.cc', '.hpp', '.inl')
+
 def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     key = repo.replace('/', '--')
     cache = ROOT / 'artifacts/upstream-cache' / f'{key}.git'
@@ -80,7 +83,7 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     if source_date < since and repo not in DEPENDENCIES:
         return record | {'selection': 'stale-excluded', 'files': []}
     paths = git(cache, 'ls-tree', '-r', '--name-only', revision).splitlines()
-    selected = [p for p in paths if p.endswith('.jai') or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')
+    selected = [p for p in paths if p.endswith('.jai') or p.endswith(NATIVE_SOURCE_SUFFIXES) or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')
                 or (p.startswith(RESOURCE_PREFIXES.get(repo, ())) and not p.endswith('.psd'))]
     destination = ROOT / 'corpus/upstream' / key
     def one(path: str) -> dict:

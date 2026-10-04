@@ -9,6 +9,7 @@
 #![allow(unsafe_code)]
 
 mod native;
+pub use native::{library_dirs, set_library_dirs};
 
 use crate::ir::{
     self, BinOp, Callee, CmpOp, ConvOp, ForeignId, FuncId, GlobalId, Inst, Program, Term, Ty, UnOp,
