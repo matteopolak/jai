@@ -378,3 +378,4 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 
 - [jaic parser](jaic-parser.md) — Recursive-descent parser of the new compiler core: lookahead rules, terminators, and how to extend it.
 - [jaic LLVM backend](jaic-llvm-backend.md) — Native backend of the new compiler core: IR to LLVM lowering, C ABI for by-value aggregates, linking, and the `jaic build` command.
+- [jaic compiler workspaces](jaic-workspaces.md) — Workspace registry, `__jaic_*` Compiler-module primitives, events and output backends.
