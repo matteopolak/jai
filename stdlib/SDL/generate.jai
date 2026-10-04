@@ -49,7 +49,7 @@ build_sdl_variant :: (args: [] string, suffix: string, extra_config_args: [] str
     return SDL_Build_Run(command);
 }
 run_or_exit :: (command: .. string, working_directory := "") -> string {
-    status, output, error, timed_out := Process_SDL_Build.run_command(command,
+    status, output, error, timed_out := Process_SDL_Build.run_command(..command,
         working_directory = working_directory, capture_and_return_output = true);
     if timed_out || status.type != .EXITED || status.exit_code != 0 {
         print("SDL SDK build command failed: %\n%\n", command, error);
@@ -71,7 +71,7 @@ main :: () {
 Process_SDL_Build :: #import "Process";
 #scope_file
 SDL_Build_Run :: (command: []string) -> bool {
-    status, output, error, timed_out := Process_SDL_Build.run_command(command,
+    status, output, error, timed_out := Process_SDL_Build.run_command(..command,
         capture_and_return_output = true, print_captured_output = true);
     defer free(output);
     defer free(error);

@@ -68,16 +68,17 @@ break_command_into_strings :: (input: string) -> [..] string {
     return result;
 }
 
-run_command :: (command: string, capture_and_return_output := false) -> (exit_code: s64, standard_output: string, standard_error: string, timed_out: bool) {
+// jaic extension: split a command line into arguments and run it.
+run_command_line :: (command: string, capture_and_return_output := false) -> (exit_code: s64, standard_output: string, standard_error: string, timed_out: bool) {
     arguments := break_command_into_strings(command);
-    status, output, error, timeout := run_command(arguments, capture_and_return_output = capture_and_return_output);
+    status, output, error, timeout := run_command(..arguments, capture_and_return_output = capture_and_return_output);
     code: s64 = -1;
     if status.type == .EXITED code = status.exit_code;
     else if status.type == .SIGNALED code = 128 + status.signal;
     return code, output, error, timeout;
 }
 
-run_command :: (args: [] string, working_directory := "", capture_and_return_output := false, print_captured_output := false, timeout_ms := -1, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED) -> (process_result: Process_Result, output_string := "", error_string := "", timeout_reached := false) {
+run_command :: (args: .. string, working_directory := "", capture_and_return_output := false, print_captured_output := false, timeout_ms := -1, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED) -> (process_result: Process_Result, output_string := "", error_string := "", timeout_reached := false) {
     process: Process;
     if !create_process(*process, ..args, working_directory, capture_and_return_output, arg_quoting) return .{type = .FAILED_TO_LAUNCH};
     defer deinit(*process);
@@ -121,7 +122,7 @@ run_command :: (args: [] string, working_directory := "", capture_and_return_out
 }
 
 run_command_arguments :: (args: .. string, working_directory := "", capture_and_return_output := false, print_captured_output := false, timeout_ms := -1, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED) -> (process_result: Process_Result, output_string := "", error_string := "", timeout_reached := false) {
-    return run_command(args, working_directory, capture_and_return_output, print_captured_output, timeout_ms, arg_quoting);
+    return run_command(..args, working_directory, capture_and_return_output, print_captured_output, timeout_ms, arg_quoting);
 }
 
 get_quoted_command_string :: (args: [] string) -> string {

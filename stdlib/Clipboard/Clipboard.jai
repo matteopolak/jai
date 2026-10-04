@@ -126,10 +126,10 @@
     Processes :: #import "Process";
     os_clipboard_get_text :: () -> string {
         arguments: [3] string = .{"wl-paste", "--no-newline", ""};
-        status, out, err, timeout := Processes.run_command(slice_array(arguments, 0, 2), capture_and_return_output = true);
+        status, out, err, timeout := Processes.run_command(..slice_array(arguments, 0, 2), capture_and_return_output = true);
         if status.type == .EXITED && status.exit_code == 0 return copy_string(out);
         x_arguments: [4] string = .{"xclip", "-selection", "clipboard", "-o"};
-        status, out, err, timeout = Processes.run_command(x_arguments, capture_and_return_output = true);
+        status, out, err, timeout = Processes.run_command(..x_arguments, capture_and_return_output = true);
         if status.type == .EXITED && status.exit_code == 0 return copy_string(out);
         return "";
     }
@@ -141,7 +141,7 @@
     }
     os_clipboard_empty :: () {
         arguments: [2] string = .{"wl-copy", "--clear"};
-        status, out, err, timeout := Processes.run_command(arguments);
+        status, out, err, timeout := Processes.run_command(..arguments);
         if status.type != .EXITED || status.exit_code != 0 os_clipboard_set_text("");
     }
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
