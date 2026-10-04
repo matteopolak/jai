@@ -59,30 +59,34 @@ impl Compiler {
                 ]))
             }
             Operand::PolyStruct(ps) => {
-                let (name, lit, def_scope) = {
+                let (name, lit) = {
                     let p = &self.poly_structs[ps.0 as usize];
-                    (p.name, p.lit.clone(), p.scope)
+                    (p.name, p.lit.clone())
                 };
+                let def_scope = self.poly_structs[ps.0 as usize].scope;
                 let args: Vec<&ast::Arg> = args.iter().collect();
                 let (kept, consts) =
                     self.bake_params(scope, def_scope, &lit.params, &args, span)?;
-                // Constants baked earlier stay members of every instance.
+                // Constants baked earlier stay; instances are the origin's instances.
+                let origin = self.poly_structs[ps.0 as usize].origin.unwrap_or(ps);
                 let consts: Vec<_> = self.poly_structs[ps.0 as usize]
                     .baked
                     .iter()
                     .cloned()
                     .chain(consts)
                     .collect();
-                let baked_scope = self.const_scope(def_scope, consts.clone(), span);
                 let mut lit = (*lit).clone();
                 lit.params = kept;
-                if lit.params.is_empty() {
-                    let lit = Rc::new(lit);
-                    let ty = self.new_struct_type(name, lit, baked_scope, consts, None);
-                    return Ok(Operand::Type(ty));
-                }
-                let baked = self.new_poly_struct(name, Rc::new(lit), baked_scope);
+                let baked = self.new_poly_struct(name, Rc::new(lit), def_scope);
                 self.poly_structs[baked.0 as usize].baked = consts;
+                self.poly_structs[baked.0 as usize].origin = Some(origin);
+                if self.poly_structs[baked.0 as usize].lit.params.is_empty() {
+                    return Ok(Operand::Type(self.instantiate_struct(
+                        baked,
+                        Vec::new(),
+                        span,
+                    )?));
+                }
                 Ok(Operand::PolyStruct(baked))
             }
             _ => err(

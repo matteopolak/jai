@@ -245,9 +245,7 @@ impl Compiler {
                 body, ..
             } => self.check_run(scope, body, expected, span),
             E::Code(body) => {
-                let id = value::CodeId(self.codes.len() as u32);
-                self.codes.push(body.clone());
-                self.code_scopes.push(scope);
+                let id = self.add_code(body.clone(), scope);
                 Ok(Operand::Const {
                     ty: TypeId::CODE,
                     value: Value::Code(id),
@@ -341,10 +339,7 @@ impl Compiler {
                 let Some((call, caller_scope)) = self.calls_in_flight.last().cloned() else {
                     return err(span, "#caller_code is only valid as a parameter default");
                 };
-                let id = value::CodeId(self.codes.len() as u32);
-                self.codes
-                    .push(Rc::new(ast::CodeBody::Expr((*call).clone())));
-                self.code_scopes.push(caller_scope);
+                let id = self.add_code(Rc::new(ast::CodeBody::Expr((*call).clone())), caller_scope);
                 Ok(Operand::Const {
                     ty: TypeId::CODE,
                     value: Value::Code(id),

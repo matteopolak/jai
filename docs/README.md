@@ -385,6 +385,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [jaic `#asm` blocks](jaic-asm.md) — x64 inline assembly lowered to IR on Jai variables: syntax, instruction table, flags, atomics, and how to add instructions.
 - [jaic compiler workspaces](jaic-workspaces.md) — Workspace registry, `__jaic_*` Compiler-module primitives, events and output backends.
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
+- [Compiler records](compiler-records.md) — Messages, Code_* syntax trees and target Type_Info exported as records; compiler_get_nodes and compiler_modify_procedure.
 - [jaic regression sweep](jaic-sweep.md) — `tools/jaic-sweep.py` sets (corpus, stdlib, upstream) and how to extend them.
 - [Basic calendar time and platform exports](stdlib-basic-time-and-platform.md) — to_calendar/calendar_to_apollo, working directory in Basic, Machine_X64 hooks, String scan, Bucket_Array shape.
 - [Iprof profiler](iprof.md) — Instrumenting frame-based profiler: runtime, drawing callbacks, metaprogram plugin, import-mode gotchas.

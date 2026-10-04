@@ -218,6 +218,8 @@ pub struct Interp {
     pub compile_time: bool,
     /// Workspace registry for the `Compiler` module, when the embedder has one.
     pub workspaces: Option<crate::build::SharedWorkspaces>,
+    /// Bodies and source text of the compiler's `Code` values, by `CodeId`.
+    pub codes: Vec<(std::rc::Rc<crate::ast::CodeBody>, std::rc::Rc<str>)>,
 }
 
 impl Default for Interp {
@@ -242,6 +244,7 @@ impl Interp {
             loc: None,
             compile_time: true,
             workspaces: None,
+            codes: Vec::new(),
         }
     }
 

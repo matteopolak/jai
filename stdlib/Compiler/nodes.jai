@@ -2,8 +2,8 @@
 //
 // Everything here is plain data. The layout and member order follow the public
 // Compiler API so that metaprograms which cast a *Message to a Message_* record,
-// or walk Code_Node subclasses, compile unchanged. Messages are produced by
-// workspace.jai; syntax nodes are not produced by jaic yet (see docs/compiler-module.md).
+// or walk Code_Node subclasses, compile unchanged. Messages and syntax nodes are
+// built from records exported by jaic (records.jai, docs/compiler-records.md).
 
 #scope_export
 
@@ -275,7 +275,7 @@ Code_Node :: struct {
     Location :: struct {
         enclosing_load: *Message_File;
 
-        // Zero-based line index and byte column of the first and one-past-last character.
+        // Line and column (1-based) of the first and one-past-last character.
         l0, c0, l1, c1: s32;
     }
 

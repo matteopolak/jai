@@ -27,6 +27,9 @@ pub struct PolyStruct {
     pub instances: HashMap<Vec<Value>, TypeId>,
     /// Parameters fixed by `#bake_arguments`: constants of every instance.
     pub baked: Vec<(Sym, Value, TypeId)>,
+    /// For `#bake_arguments S(...)`: the struct baked from. Instances are
+    /// instances of the origin (`Mat4(f32)` is `Matrix(f32, 4, 4)`).
+    pub origin: Option<PolyStructId>,
 }
 
 /// One step of a member path through `using` fields.
@@ -138,6 +141,7 @@ impl Compiler {
             scope,
             instances: HashMap::new(),
             baked: Vec::new(),
+            origin: None,
         });
         PolyStructId(self.poly_structs.len() as u32 - 1)
     }
@@ -187,6 +191,18 @@ impl Compiler {
             let p = &self.poly_structs[ps.0 as usize];
             (p.name, p.lit.clone(), p.scope)
         };
+        if let Some(origin) = self.poly_structs[ps.0 as usize].origin {
+            // Name the arguments for the origin and add the baked ones.
+            let mut named = Vec::new();
+            for (i, (n, v)) in args.into_iter().enumerate() {
+                let n = n.or_else(|| lit.params.get(i).and_then(|p| p.name).map(|p| p.name));
+                named.push((n, v));
+            }
+            for (n, value, ty) in self.poly_structs[ps.0 as usize].baked.clone() {
+                named.push((Some(n), const_operand(value, ty)));
+            }
+            return self.instantiate_struct(origin, named, span);
+        }
         let module = self.scope(def_scope).module;
         let param_scope = self.new_scope(ScopeKind::StructParams, Some(def_scope), module, None);
         let mut values: Vec<Option<Operand>> = vec![None; lit.params.len()];
@@ -1635,5 +1651,16 @@ pub fn write_agg(agg: &mut Aggregate, offset: u64, inner: &Aggregate) {
             target: r.target,
             addend: r.addend,
         });
+    }
+}
+
+fn const_operand(value: Value, ty: TypeId) -> Operand {
+    match value {
+        Value::Type(t) => Operand::Type(t),
+        value => Operand::Const {
+            ty,
+            value,
+            untyped: false,
+        },
     }
 }

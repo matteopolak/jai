@@ -1728,13 +1728,14 @@ impl Compiler {
     ) -> Result<()> {
         // The body becomes a Code value; names declared with backticks land in the loop scope.
         let loop_scope = self.new_block_scope(scope);
-        let code = value::CodeId(self.codes.len() as u32);
         let body_stmt = Rc::new((*for_.body).clone());
-        self.codes.push(Rc::new(ast::CodeBody::Block(ast::Block {
-            stmts: vec![(*for_.body).clone()],
-            span: for_.body.span,
-        })));
-        self.code_scopes.push(loop_scope);
+        let code = self.add_code(
+            Rc::new(ast::CodeBody::Block(ast::Block {
+                stmts: vec![(*for_.body).clone()],
+                span: for_.body.span,
+            })),
+            loop_scope,
+        );
         let flags_value = (for_.by_pointer as i128) | ((for_.reverse as i128) << 1);
         let flags_ty = self.preload_type("For_Flags", span).unwrap_or(TypeId::U8);
         let mut args = leading;

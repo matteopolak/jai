@@ -275,7 +275,10 @@ impl Compiler {
                         kind: ast::ExprKind::Enum(lit),
                         ..
                     }) = &decl.value
-                    && lit.items.iter().all(|i| matches!(i, ast::EnumItem::Member(_)))
+                    && lit
+                        .items
+                        .iter()
+                        .all(|i| matches!(i, ast::EnumItem::Member(_)))
                 {
                     // `using E :: enum { A; B; }`: the member names are known now, so declare
                     // `A :: E.A;` aliases at once; other declarations (even other enums'

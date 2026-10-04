@@ -4,4 +4,5 @@
 
 #load "nodes.jai";
 #load "options.jai";
+#load "records.jai";
 #load "workspace.jai";

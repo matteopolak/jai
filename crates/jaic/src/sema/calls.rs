@@ -282,6 +282,7 @@ impl Compiler {
             return err(span, "internal: signature/parameter mismatch");
         }
         let mut cost = extra;
+        let is_macro = self.proc(proc).is_macro;
         for (k, &i) in runtime_params.iter().enumerate() {
             let param = &sig.params[k];
             match &slots[i] {
@@ -291,8 +292,8 @@ impl Compiler {
                         return err(span, format!("missing argument for parameter '{name}'"));
                     }
                 }
-                Slot::Arg(a) => cost += self.arg_cost(&args[*a], param.ty)?,
-                Slot::Spread(a) => cost += self.arg_cost(&args[*a], param.ty)?,
+                Slot::Arg(a) => cost += self.arg_cost(&args[*a], param.ty, is_macro)?,
+                Slot::Spread(a) => cost += self.arg_cost(&args[*a], param.ty, is_macro)?,
                 Slot::Variadic(list) => {
                     let elem = match self.types.kind(param.ty) {
                         TypeKind::Array {
@@ -304,7 +305,7 @@ impl Compiler {
                         if sig.c_varargs {
                             continue;
                         }
-                        cost += self.arg_cost(&args[a], elem)?;
+                        cost += self.arg_cost(&args[a], elem, is_macro)?;
                     }
                 }
             }
@@ -321,7 +322,8 @@ impl Compiler {
         self.types.pointee(from) == Some(param) && self.types.as_struct(param).is_some()
     }
 
-    fn arg_cost(&mut self, arg: &CallArg, param: TypeId) -> Result<u32> {
+    /// `macro_call`: a Code parameter of a macro also binds a variable by name.
+    fn arg_cost(&mut self, arg: &CallArg, param: TypeId, macro_call: bool) -> Result<u32> {
         let Some(op) = &arg.op else {
             if let Some(ast::Expr {
                 kind: E::Lambda {
@@ -474,6 +476,7 @@ impl Compiler {
         }
         // `__reg` (Code) macro parameters bind to the caller's variable by name.
         if param == TypeId::CODE
+            && macro_call
             && matches!(op, Operand::Place { .. })
             && matches!(arg.expr.as_ref().map(|e| &e.kind), Some(E::Ident(_)))
             && self.implicit_cost(from, untyped, param).is_none()
@@ -558,9 +561,7 @@ impl Compiler {
                     )
                     && let Some(expr) = &arg.expr
                 {
-                    let id = value::CodeId(self.codes.len() as u32);
-                    self.codes.push(Rc::new(ast::CodeBody::Expr(expr.clone())));
-                    self.code_scopes.push(arg.scope);
+                    let id = self.add_code(Rc::new(ast::CodeBody::Expr(expr.clone())), arg.scope);
                     bindings.push((name, Value::Code(id), TypeId::CODE));
                     continue;
                 }
@@ -1578,13 +1579,11 @@ impl Compiler {
                         let Some(expr) = args[*a].expr.clone() else {
                             return err(args[*a].span, "Code parameter needs a code argument");
                         };
-                        let id = value::CodeId(self.codes.len() as u32);
-                        match &expr.kind {
-                            E::Code(c) => self.codes.push(c.clone()),
-                            _ => self.codes.push(Rc::new(ast::CodeBody::Expr(expr))),
-                        }
-                        self.code_scopes.push(caller);
-                        id
+                        let body = match &expr.kind {
+                            E::Code(c) => c.clone(),
+                            _ => Rc::new(ast::CodeBody::Expr(expr)),
+                        };
+                        self.add_code(body, caller)
                     }
                     Slot::Default
                         if param

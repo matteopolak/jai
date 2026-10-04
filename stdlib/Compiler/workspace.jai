@@ -144,10 +144,15 @@ add_build_string :: (data: string, w: Workspace, code := #code,null, loc := #cal
     __jaic_workspace_add_string(resolve_workspace(w), data);
 }
 
-// The scoped-by-message form: jaic cannot target a particular file or module scope
-// yet, so the text lands in the workspace's top level.
+// The text is added to the module of `message` (a FILE or IMPORT message); other
+// messages add it to the workspace's top level.
 add_build_string :: (data: string, w: Workspace, message: *Message, loc := #caller_location) {
-    __jaic_workspace_add_string(resolve_workspace(w), data);
+    record := record_of(message);
+    if record && message && (message.kind == .FILE || message.kind == .IMPORT) {
+        __jaic_workspace_add_string_to_module(resolve_workspace(w), data, record);
+    } else {
+        __jaic_workspace_add_string(resolve_workspace(w), data);
+    }
 }
 
 compiler_get_version_info :: (version_info_return: *Version_Info) -> string {
@@ -366,10 +371,14 @@ get_type_table :: (w: Workspace = -1) -> [] *Type_Info {
 // everywhere and report an error only when actually called.
 // ---------------------------------------------------------------------------
 
+// The nodes of `code`, untyped and without source locations.
 compiler_get_nodes :: (code: Code) -> (root: *Code_Node, expressions: [] *Code_Node) {
-    unsupported("compiler_get_nodes");
-    nodes: [] *Code_Node;
-    return null, nodes;
+    Code_Nodes :: struct {
+        root:        *Code_Node;
+        expressions: [] *Code_Node;
+    }
+    nodes := cast(*Code_Nodes) record_struct(__jaic_code_nodes(code), type_info(Code_Nodes));
+    return nodes.root, nodes.expressions;
 }
 
 compiler_get_code :: (node: *Code_Node, code_to_copy_scope_from: Code = #code,null) -> Code {
@@ -401,8 +410,22 @@ compiler_set_type_info_flags :: (type: Type, flags: Type_Info_Flags) {
     unsupported("compiler_set_type_info_flags");
 }
 
+// Replaces the procedure's statements with `body.block.statements`, which may mix the
+// body's own statements with nodes from compiler_get_nodes. Only the top-level
+// statement list is read; procedures already compiled (used by #run) keep their code.
 compiler_modify_procedure :: (w: Workspace, body: *Code_Procedure_Body) {
-    unsupported("compiler_modify_procedure");
+    statements: [..] s64;
+    defer array_free(statements);
+    for body.block.statements {
+        record := record_of(it);
+        if !record {
+            compiler_report("compiler_modify_procedure: a statement was not made by the compiler (build new nodes with compiler_get_nodes).", make_location(body));
+            return;
+        }
+        array_add(*statements, record);
+    }
+    __jaic_modify_procedure(resolve_workspace(w), record_of(body), statements.data, statements.count);
+    body.body_flags |= .ALREADY_MODIFIED;
 }
 
 compiler_make_procedure_live :: (w: Workspace, header: *Code_Procedure_Header) {
@@ -486,6 +509,7 @@ EVENT_FILE     :: 1;
 EVENT_PHASE    :: 2;
 EVENT_COMPLETE :: 3;
 EVENT_IMPORT   :: 4;
+EVENT_TYPECHECKED :: 5;
 
 PHASE_PRE_WRITE_EXECUTABLE         :: 3;
 PHASE_POST_WRITE_EXECUTABLE        :: 4;
@@ -502,8 +526,6 @@ last_complete_error:     s64;
 
 // Message storage. One record per kind is reused; callers may only rely on a message
 // until the next compiler_wait_for_message().
-message_file:     Message_File;
-message_import:   Message_Import;
 message_phase:    Message_Phase;
 message_complete: Message_Complete;
 phase_object_files: [..] string;
@@ -533,20 +555,13 @@ fill_complete :: (id: Workspace, error_code: s64) -> *Message {
 build_message :: (id: Workspace, event_kind: s64) -> *Message {
     if event_kind == {
         case EVENT_FILE;
-            message_file.kind  = .FILE;
-            message_file.workspace = id;
-            message_file.fully_pathed_filename = __jaic_event_string(0);
-            message_file.enclosing_import = null;
-            message_file.from_a_string = false;
-            return *message_file;
+            return record_struct(__jaic_event_int(0), type_info(Message_File));
 
         case EVENT_IMPORT;
-            message_import.kind = .IMPORT;
-            message_import.workspace = id;
-            message_import.module_name = __jaic_event_string(0);
-            message_import.fully_pathed_filename = __jaic_event_string(1);
-            message_import.module_type = ifx message_import.fully_pathed_filename.count > 0 then .FILE else .UNINITIALIZED;
-            return *message_import;
+            return record_struct(__jaic_event_int(0), type_info(Message_Import));
+
+        case EVENT_TYPECHECKED;
+            return record_struct(__jaic_event_int(0), type_info(Message_Typechecked));
 
         case EVENT_PHASE;
             phase := __jaic_event_int(0);
