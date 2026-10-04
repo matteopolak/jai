@@ -249,6 +249,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Any values at the standard output boundary](stdio-any.md)
 
 - [Embedded field conversions](field-conversions.md)
+- [Fixed array to pointer decay](array-to-pointer-decay.md) — `[N] T` converts to `*T`, ranked below views and above `Any`.
 
 - [Parameterized records](parameterized-records.md)
 - [Record instance namespaces](record-instance-namespaces.md)
@@ -390,7 +391,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 
 - [jaic parser](jaic-parser.md) — Recursive-descent parser of the new compiler core: lookahead rules, terminators, and how to extend it.
 - [jaic LLVM backend](jaic-llvm-backend.md) — Native backend of the new compiler core: IR to LLVM lowering, C ABI for by-value aggregates, linking, and the `jaic build` command.
-- [Third-party native libraries](native-libs.md) — `tools/build_native_libs.py` builds the stb libraries the stdlib binds from pinned sources; where `jaic` looks for them.
+- [Third-party native libraries](native-libs.md) — `tools/build_native_libs.py` builds the stb libraries the stdlib binds from pinned sources; where `jaic` looks for them. Also `tools/build_slang.py` (Slang, Vulkan loader and VMA for the sgpu examples).
 - [jaic `#asm` blocks](jaic-asm.md) — x64 inline assembly lowered to IR on Jai variables: syntax, instruction table, flags, atomics, and how to add instructions.
 - [jaic compiler workspaces](jaic-workspaces.md) — Workspace registry, `__jaic_*` Compiler-module primitives, events and output backends.
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.

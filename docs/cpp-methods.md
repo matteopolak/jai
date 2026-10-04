@@ -16,6 +16,8 @@ The native implementation supports scalar, enum, pointer and procedure-pointer p
 
 The native oracle and aggregate rejection test pass on the current Apple ARM64 host. Registry invariants, source callback incompatibility, VM foreign-call rejection, and procedure suffix parsing also pass their targeted tests. Strict `jai-types` and `jai-codegen` library Clippy passed at that checkpoint. Cross-target fixtures in `cpp_target_abi.rs` prove typed ABI shape; other targets still require an executed oracle to establish runtime behavior.
 
+`jaic` treats a `#cpp_method` procedure type exactly like `#c_call` when it builds the type and call signature (`proc_type_from_header` in `sema/expr.rs`, `procs.rs`): no context pointer is passed, so the callee's first argument is the receiver. Before this, an indirect call through a vtable member such as Slang's `IGlobalSession.createSession` passed the Jai context in the receiver slot and crashed inside the library. Regression: `tests/stdlib/cpp-method-and-array-decay.jai`.
+
 ## How to change it
 
 Keep signature invariants in `jai-types` and target carrier restrictions in `jai-codegen::cpp_methods`. Extend aggregate or variadic handling only with independent C++ ABI fixtures for each supported platform. Preserve the convention in procedure equality, overload matching and reflection; avoid inferring methods from names or pointer layouts. The VM must not execute native methods without an approved foreign-effects adapter.
