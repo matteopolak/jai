@@ -139,14 +139,15 @@
  ],
  "excluded": {
   "bindings-generator-c.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
-  "bindings-generator-cpp.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
   "bindings-generator-cpp-classes.jai": "starts a C++ compiler process at compile time (Process: pipe, fork, exec); the browser has no processes",
+  "bindings-generator-cpp.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
   "buildcpp-api.jai": "starts a C compiler process (Process: pipe, fork, exec); the browser has no processes",
+  "c-callbacks-interpreted.jai": "native library: C qsort/bsearch calling back into interpreted procedures needs the native libc and callback thunks",
   "c-variadic-foreign-calls.jai": "tests the native C variadic call ABI against the real libc (snprintf, pipe, fcntl); not meaningful without a native libc",
-  "simp-compat-api.jai": "native libraries: Simp needs FreeType and stb_image (C code), and a window and GPU backend",
-  "getrect-right-handed-api.jai": "native libraries: Simp (via GetRect) needs FreeType and stb_image (C code)",
   "getrect-legacy-right-handed-surface.jai": "native libraries: Simp (via GetRect) needs FreeType and stb_image (C code)",
+  "getrect-rh-negative-control.jai": "negative control: fails on every platform by design (a deliberate #assert)",
+  "getrect-right-handed-api.jai": "native libraries: Simp (via GetRect) needs FreeType and stb_image (C code)",
   "getrect-text-display-compiles.jai": "native windows: imports Window_Creation, which has no browser backend",
-  "getrect-rh-negative-control.jai": "negative control: fails on every platform by design (a deliberate #assert)"
+  "simp-compat-api.jai": "native libraries: Simp needs FreeType and stb_image (C code), and a window and GPU backend"
  }
 }
