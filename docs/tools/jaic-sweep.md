@@ -26,7 +26,7 @@ Expected result of `corpus stdlib modules upstream`: everything passes except `g
 
 ## Configuration
 
-`--jaic PATH` (default `/Volumes/CodexBuilds/targets/jai-dev/debug/jaic`), `--filter TEXT`, `--verbose`, `--timeout SECONDS` (default 60; HANDOFF uses 900).
+`--jaic PATH` (default `/Volumes/CodexBuilds/targets/jai-dev/debug/jaic`), `--filter TEXT`, `--verbose`, `--timeout SECONDS` (default 60; HANDOFF uses 900), `--jobs N` (cases run at once, default the CPU count; cases run with stdin closed).
 
 ```sh
 python3 tools/jaic-sweep.py --jaic /path/to/target/debug/jaic corpus stdlib --timeout 900
