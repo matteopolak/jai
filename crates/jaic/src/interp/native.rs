@@ -20,6 +20,18 @@ pub struct Library {
     handle: usize,
 }
 
+/// Directories searched for libraries by name before the system's, set once by the driver
+/// (the third-party libraries `tools/build_native_libs.py` builds; see docs/native-libs.md).
+static LIBRARY_DIRS: std::sync::OnceLock<Vec<std::path::PathBuf>> = std::sync::OnceLock::new();
+
+pub fn set_library_dirs(dirs: Vec<std::path::PathBuf>) {
+    let _ = LIBRARY_DIRS.set(dirs);
+}
+
+pub fn library_dirs() -> &'static [std::path::PathBuf] {
+    LIBRARY_DIRS.get().map_or(&[], Vec::as_slice)
+}
+
 #[cfg(unix)]
 mod sys {
     use std::ffi::{c_char, c_int, c_void};
@@ -69,6 +81,10 @@ impl Library {
             let base = joined(base_dir, &dir);
             candidates.push(joined(&base, &format!("{file}.{ext}")));
             candidates.push(joined(&base, &format!("lib{file}.{ext}")));
+        }
+        let bare = name.strip_prefix("lib").unwrap_or(name);
+        for d in library_dirs() {
+            candidates.push(d.join(format!("lib{bare}.{ext}")).display().to_string());
         }
         candidates.push(format!("lib{name}.{ext}"));
         candidates.push(format!("{name}.{ext}"));

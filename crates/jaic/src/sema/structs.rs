@@ -1300,6 +1300,59 @@ impl Compiler {
         Ok(None)
     }
 
+    /// Offset and type of the member a struct-body override assigns: `name` (a member of a
+    /// `using` field) or a path into a field (`base.callback`).
+    fn override_target(
+        &mut self,
+        s: StructId,
+        lhs: &ast::Expr,
+        span: Span,
+    ) -> Result<Option<(u64, TypeId)>> {
+        match &lhs.kind {
+            E::Ident(name) => self.find_used_member(s, *name, span),
+            E::Member(base, name) => {
+                let Some((offset, ty)) = self.override_path(s, base, span)? else {
+                    return Ok(None);
+                };
+                let Some(inner) = self.types.as_struct(ty) else {
+                    return Ok(None);
+                };
+                Ok(self
+                    .struct_member(inner, name.name, span)?
+                    .map(|(o, t)| (offset + o, t)))
+            }
+            _ => Ok(None),
+        }
+    }
+
+    /// `override_target` for an intermediate path segment, which may also be a direct field.
+    fn override_path(
+        &mut self,
+        s: StructId,
+        expr: &ast::Expr,
+        span: Span,
+    ) -> Result<Option<(u64, TypeId)>> {
+        if let E::Ident(name) = &expr.kind {
+            return self.struct_member(s, *name, span);
+        }
+        self.override_target(s, expr, span)
+    }
+
+    /// A field of `s` by name, directly or through `using` fields.
+    fn struct_member(
+        &mut self,
+        s: StructId,
+        name: Sym,
+        span: Span,
+    ) -> Result<Option<(u64, TypeId)>> {
+        self.layout_struct(s, span)?;
+        let fields = self.types.struct_info(s).fields.clone();
+        if let Some(f) = fields.iter().find(|f| f.name == Some(name)) {
+            return Ok(Some((f.offset, f.ty)));
+        }
+        self.find_used_member(s, name, span)
+    }
+
     /// Constant image of a default-initialized value (`None` = all zero).
     pub fn default_initializer(&mut self, ty: TypeId, span: Span) -> Result<Option<Rc<Aggregate>>> {
         if let Some(img) = self.default_images.get(&ty) {
@@ -1350,10 +1403,7 @@ impl Compiler {
                     let ([l], [r]) = (lhs.as_slice(), rhs.as_slice()) else {
                         continue;
                     };
-                    let E::Ident(name) = &l.kind else {
-                        continue;
-                    };
-                    if let Some((offset, fty)) = self.find_used_member(s, *name, span)? {
+                    if let Some((offset, fty)) = self.override_target(s, l, span)? {
                         let value = self.const_value_of_type(scope, r, fty)?;
                         self.write_value(&mut agg, offset, &value, fty, r.span)?;
                         nonzero = true;

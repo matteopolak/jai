@@ -256,6 +256,8 @@ pub enum ExprKind {
     /// `#placeholder`-style or unrecognized directive with an optional operand.
     UnknownDirective {
         name: Ident,
+        /// `#library,system,link_always "x"`: the comma flags.
+        flags: Vec<Ident>,
         operand: Option<Box<Expr>>,
     },
     /// `` `x ``: refer to the macro caller's scope.

@@ -38,10 +38,13 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 ## Status 2026-10-04
 
-- **focus-editor**: `first.jai` checks.
+- **focus-editor**: `jaic build first.jai` produces a working native editor on macOS (renders, takes input).
+  Needs `python3 tools/build_native_libs.py` (stb libraries) and its own
+  `modules/Objective_C/LightweightRenderingView/build.jai` run once (`jaic build build.jai` there). Debug builds
+  need `~/Library/Application Support/dev.focus-editor` to exist (upstream creates `.../debug` non-recursively).
 - **Vk-Engine** (+ Linalg, Jolt-Jai): Core, Renderer, Game and Editor compile and their build metaprograms
-  complete. The ImGui / Vulkan binding generators now run and stop only on their C headers, which the
-  corpus does not fetch (it pins `.jai` files only); the native `libImGui.so` / `libJoltC.so` are C++ builds.
+  complete. The ImGui / Vulkan binding generators now run and stop only on their C/C++ headers (the corpus now
+  fetches C-family sources, but not those submodules); the native `libImGui.so` / `libJoltC.so` are C++ builds.
 - **jaison**: tests and example run. **sgpu**: all examples check (host, linux, windows).
   **Jails**: server and build check; `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
 - **The_Way_to_Jai**: 21 of 313 examples fail `check`, none a compiler bug: Windows-only APIs (19.8, 33.2C, 33.6,

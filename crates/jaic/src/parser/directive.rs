@@ -393,9 +393,14 @@ impl Parser<'_> {
             name: sym,
             span: start,
         };
-        if self.flags_before_string_ahead() {
-            self.parse_directive_flags()?;
-        }
+        let flags = if self.flags_before_string_ahead() {
+            self.parse_directive_flags()?
+                .into_iter()
+                .map(|f| f.name)
+                .collect()
+        } else {
+            Vec::new()
+        };
         let operand = if matches!(self.tok(), Tok::Str(_)) {
             Some(Box::new(self.parse_primary()?))
         } else {
@@ -405,6 +410,7 @@ impl Parser<'_> {
         Ok(mk(
             ExprKind::UnknownDirective {
                 name,
+                flags,
                 operand,
             },
             start.to(end),

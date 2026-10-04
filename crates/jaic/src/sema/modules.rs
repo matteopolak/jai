@@ -404,6 +404,18 @@ impl Compiler {
                     {
                         self.export_entities.push(id);
                     }
+                    // `L :: #library,link_always "x"` is linked even if nothing names it.
+                    if let Some(ast::Expr {
+                        kind:
+                            ast::ExprKind::UnknownDirective {
+                                flags, ..
+                            },
+                        ..
+                    }) = &decl.value
+                        && flags.iter().any(|f| f.name.as_str() == "link_always")
+                    {
+                        self.export_entities.push(id);
+                    }
                     if !decl.notes.is_empty() || decl.kind == ast::DeclKind::Const {
                         self.note_declaration(id, decl);
                     }

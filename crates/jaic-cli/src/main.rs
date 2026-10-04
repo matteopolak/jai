@@ -14,6 +14,26 @@ fn stdlib_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib")
 }
 
+/// Where `tools/build_native_libs.py` puts third-party libraries for this host, or the
+/// `JAIC_NATIVE_LIBS` path list.
+fn native_lib_dirs(stdlib: &Path) -> Vec<PathBuf> {
+    if let Some(dirs) = std::env::var_os("JAIC_NATIVE_LIBS") {
+        return std::env::split_paths(&dirs).collect();
+    }
+    let os = match std::env::consts::OS {
+        "macos" => "macos",
+        "linux" => "linux",
+        _ => return Vec::new(),
+    };
+    let arch = match std::env::consts::ARCH {
+        "aarch64" => "arm64",
+        "x86_64" => "x64",
+        _ => return Vec::new(),
+    };
+    let dir = stdlib.join(format!("../artifacts/native-libs/{os}-{arch}"));
+    dir.canonicalize().map(|d| vec![d]).unwrap_or_default()
+}
+
 fn usage() -> ExitCode {
     eprintln!(
         "usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [-os linux|windows|macos] [- metaprogram args...]"
@@ -109,6 +129,7 @@ fn main() -> ExitCode {
 
 fn run(mut cli: Cli) -> ExitCode {
     let stdlib = stdlib_dir();
+    jaic::interp::set_library_dirs(native_lib_dirs(&stdlib));
     let path = std::fs::canonicalize(&cli.file).unwrap_or_else(|_| PathBuf::from(&cli.file));
     // Like `jai`, run from the main file's directory (so the program's meaning does not
     // depend on where the compiler was started); paths given on the command line stay

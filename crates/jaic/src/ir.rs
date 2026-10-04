@@ -417,6 +417,8 @@ pub struct Library {
     /// Name as written (`"libc"`, `"SDL2"`, path...).
     pub name: String,
     pub system: bool,
+    /// Linked even when no foreign procedure names it (`#library,link_always`).
+    pub link_always: bool,
     /// Directory of the declaring source file (for relative library paths).
     pub base_dir: String,
 }

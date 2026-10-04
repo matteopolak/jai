@@ -254,6 +254,7 @@ impl Compiler {
             }
             ast::ExprKind::UnknownDirective {
                 name: directive,
+                flags,
                 operand,
             } => {
                 let d = directive.name.as_str();
@@ -268,12 +269,15 @@ impl Compiler {
                         ast::ExprKind::Str(s) => String::from_utf8_lossy(s).into_owned(),
                         _ => return err(operand.span, "library name must be a string literal"),
                     };
-                    let system = d.contains("system");
+                    let flag = |f: &str| flags.iter().any(|x| x.name.as_str() == f);
+                    let system = d.contains("system") || flag("system");
+                    let link_always = flag("link_always");
                     let base_dir = self.file_dir(self.scope_file(scope)).display().to_string();
                     let ir = self.program.libraries.len();
                     self.program.libraries.push(ir::Library {
                         name: lib_name.clone(),
                         system,
+                        link_always,
                         base_dir,
                     });
                     self.libraries.push(LibraryInfo {
