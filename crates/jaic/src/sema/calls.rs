@@ -202,10 +202,15 @@ impl Compiler {
         span: Span,
     ) -> Result<Candidate> {
         let header = self.proc(proc).lit.header.clone();
-        let slots = assign_slots(&header.params, args, span)?;
+        self.refresh_implicit_poly(proc)?;
+        let poly_vars = if self.proc(proc).is_poly {
+            header_poly_names(&header)
+        } else {
+            Vec::new()
+        };
+        let slots = assign_slots(&header.params, args, &poly_vars, span)?;
         let mut proc_id = proc;
         let mut extra = 0;
-        self.refresh_implicit_poly(proc)?;
         if self.proc(proc).is_poly {
             let bindings = self.infer_bindings(f, proc, &header, &slots, args, span)?;
             proc_id = self.instantiate(proc, bindings, span)?;
@@ -351,6 +356,22 @@ impl Compiler {
     ) -> Result<Vec<(Sym, Value, TypeId)>> {
         let mut bindings: Vec<(Sym, Value, TypeId)> = Vec::new();
         let def_scope = self.proc(proc).scope;
+        let poly_vars = header_poly_names(header);
+        for arg in args {
+            if !is_poly_var_arg(&header.params, arg, &poly_vars) {
+                continue;
+            }
+            let name = arg.name.unwrap();
+            let op = match (&arg.op, &arg.expr) {
+                (Some(op), _) => op.clone(),
+                (None, Some(e)) => self.eval_const(arg.scope, e, None)?,
+                (None, None) => return err(arg.span, "missing value"),
+            };
+            let Operand::Type(t) = op else {
+                return err(arg.span, format!("'${name}' must be given a type"));
+            };
+            bindings.push((name, Value::Type(t), TypeId::TYPE));
+        }
         for (i, param) in header.params.iter().enumerate() {
             let arg_ops: Vec<&CallArg> = match &slots[i] {
                 Slot::Arg(a) | Slot::Spread(a) => vec![&args[*a]],
@@ -1599,12 +1620,41 @@ fn poly_names(expr: &ast::Expr) -> Vec<Sym> {
 }
 
 /// Map call arguments onto declared parameters.
-fn assign_slots(params: &[ast::Param], args: &[CallArg], span: Span) -> Result<Vec<Slot>> {
+/// Every `$T` binder in a header's parameter and result types.
+fn header_poly_names(header: &ast::ProcHeader) -> Vec<Sym> {
+    let mut names = Vec::new();
+    for t in header
+        .params
+        .iter()
+        .filter_map(|p| p.ty.as_ref())
+        .chain(header.returns.iter().filter_map(|r| r.ty.as_ref()))
+    {
+        names.extend(poly_names(t));
+    }
+    names
+}
+
+/// A named argument binding a polymorphic variable (`f(x, T = float64)`).
+fn is_poly_var_arg(params: &[ast::Param], arg: &CallArg, poly_vars: &[Sym]) -> bool {
+    arg.name.is_some_and(|name| {
+        poly_vars.contains(&name) && !params.iter().any(|p| p.name.map(|n| n.name) == Some(name))
+    })
+}
+
+fn assign_slots(
+    params: &[ast::Param],
+    args: &[CallArg],
+    poly_vars: &[Sym],
+    span: Span,
+) -> Result<Vec<Slot>> {
     let mut slots: Vec<Option<Slot>> = vec![None; params.len()];
     let variadic_index = params.iter().position(|p| p.variadic);
     let mut positional = 0usize;
     let mut seen_named = false;
     for (i, arg) in args.iter().enumerate() {
+        if is_poly_var_arg(params, arg, poly_vars) {
+            continue;
+        }
         if let Some(name) = arg.name {
             seen_named = true;
             let Some(p) = params
