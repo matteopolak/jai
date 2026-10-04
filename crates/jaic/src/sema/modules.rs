@@ -123,6 +123,13 @@ impl Compiler {
         if let Some(&id) = self.module_cache.get(&key) {
             return Ok(id);
         }
+        // Program parameters (`#import "Basic"()(MEMORY_DEBUGGER=true)`) configure the
+        // one instance every importer shares.
+        if !params.is_empty()
+            && let Some(id) = self.program_instance(&key.0, &params, span)?
+        {
+            return Ok(id);
+        }
         // A plain `#import "M"` joins an instance already configured elsewhere
         // (`#import "Basic"()(MEMORY_DEBUGGER=true)` in the program applies to all).
         if params.is_empty()
@@ -143,11 +150,142 @@ impl Compiler {
             scope,
             params,
             param_entities: Vec::new(),
+            program_params: Vec::new(),
+            exported_usings: Vec::new(),
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
         self.load_file(entry, id, span)?;
+        self.apply_program_params(id);
         Ok(id)
+    }
+
+    /// Record the named parameters of an import so a program parameter among them reaches
+    /// the module's shared instance before the import itself is resolved.
+    fn note_program_params(&mut self, file_scope: ScopeId, import: &ast::Import) {
+        let ast::ImportSource::Module(name) = &import.source else {
+            return;
+        };
+        if import.params.iter().all(|a| a.name.is_none()) {
+            return;
+        }
+        let file = self.scope(file_scope).file.unwrap_or_default();
+        let Some(entry) = self.find_module(name, &self.file_dir(file)) else {
+            return;
+        };
+        let path = self.fs.canonical(&entry);
+        for arg in &import.params {
+            if let Some(n) = arg.name {
+                self.program_param_settings.push((
+                    path.clone(),
+                    n.name,
+                    arg.value.clone(),
+                    file_scope,
+                ));
+            }
+        }
+        let loaded: Vec<ModuleId> = self
+            .module_cache
+            .iter()
+            .filter(|((p, _), _)| *p == path)
+            .map(|(_, &id)| id)
+            .collect();
+        for id in loaded {
+            self.apply_program_params(id);
+        }
+    }
+
+    /// Give a module instance's not-yet-used program parameters the values imports set.
+    fn apply_program_params(&mut self, module: ModuleId) {
+        let Some(path) = self.modules[module.0 as usize].path.clone() else {
+            return;
+        };
+        let path = self.fs.canonical(&path);
+        for (p, name, value, scope) in self.program_param_settings.clone() {
+            if p != path
+                || !self.modules[module.0 as usize]
+                    .program_params
+                    .contains(&name)
+            {
+                continue;
+            }
+            let entity = self.modules[module.0 as usize]
+                .param_entities
+                .iter()
+                .copied()
+                .find(|&e| self.entity(e).name == name);
+            let Some(entity) = entity else {
+                continue;
+            };
+            if !matches!(self.entity(entity).state, scope::EntityState::Unresolved) {
+                continue;
+            }
+            // The value is evaluated where the import wrote it; a written parameter type
+            // would not resolve there, so typed parameters wait for the import itself.
+            if let EntityKind::Decl {
+                decl, ..
+            } = &mut self.entity_mut(entity).kind
+                && decl.ty.is_none()
+            {
+                Rc::make_mut(decl).value = Some(value);
+                self.entity_mut(entity).home = scope;
+            }
+        }
+    }
+
+    /// The loaded instance of the module at `path` when `params` only set its program
+    /// parameters; their values are applied to it. A parameter the module already used
+    /// with a different value is an error.
+    fn program_instance(
+        &mut self,
+        path: &Path,
+        params: &[(Sym, Value, TypeId)],
+        span: Span,
+    ) -> Result<Option<ModuleId>> {
+        let Some(id) = self
+            .module_cache
+            .iter()
+            .filter(|((p, _), _)| p == path)
+            .map(|(_, &id)| id)
+            .min_by_key(|id| id.0)
+        else {
+            return Ok(None);
+        };
+        let module = &self.modules[id.0 as usize];
+        if !params
+            .iter()
+            .all(|(n, ..)| module.program_params.contains(n))
+        {
+            return Ok(None);
+        }
+        for (name, value, ty) in params {
+            let entity = self.modules[id.0 as usize]
+                .param_entities
+                .iter()
+                .copied()
+                .find(|&e| self.entity(e).name == *name);
+            let Some(entity) = entity else {
+                continue;
+            };
+            if let scope::EntityState::Done(resolved) = &self.entity(entity).state {
+                let same =
+                    matches!(resolved, scope::Resolved::Const { value: v, .. } if v == value);
+                if !same {
+                    return err(
+                        span,
+                        format!(
+                            "module parameter '{name}' is set here after the module already used another value"
+                        ),
+                    );
+                }
+                continue;
+            }
+            self.entity_mut(entity).kind = EntityKind::Const {
+                value: value.clone(),
+                ty: *ty,
+            };
+        }
+        Ok(Some(id))
     }
 
     /// Find `Name.jai` or `Name/module.jai` on the import path (and next to `from_dir`).
@@ -338,6 +476,7 @@ impl Compiler {
                 }
             }
             ast::StmtKind::Import(import) => {
+                self.note_program_params(file_scope, import);
                 if let Some(name) = import.name {
                     let id = self.add_entity(
                         target,
@@ -398,7 +537,23 @@ impl Compiler {
             } => self
                 .asserts
                 .push((cond.clone(), message.clone(), file_scope)),
-            ast::StmtKind::AddContext(decl) => self.add_contexts.push((decl.clone(), file_scope)),
+            ast::StmtKind::AddContext(decl) => {
+                self.add_contexts.push((decl.clone(), file_scope));
+                // Context already made (a `#run` needed it): extend it while its layout
+                // is still open.
+                if let Some(ty) = self.context_type {
+                    let s = self.types.as_struct(ty).unwrap();
+                    if self.types.struct_info(s).layout != crate::types::LayoutState::Pending {
+                        return err(
+                            stmt.span,
+                            "#add_context after the Context type was laid out (by compile-time code that ran earlier)",
+                        );
+                    }
+                    if let Some(src) = self.struct_asts.get_mut(&s) {
+                        src.extra.push((decl.clone(), file_scope));
+                    }
+                }
+            }
             ast::StmtKind::ModuleParameters {
                 params,
                 runtime_params,
@@ -408,6 +563,10 @@ impl Compiler {
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
                     self.declare_module_parameter(scope, module, position, param)?;
                 }
+                let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
+                self.modules[module.0 as usize]
+                    .program_params
+                    .extend(program);
                 // The trailing block declares names the parameter defaults may use.
                 if let Some(body) = body {
                     self.declare_stmts(scope, file_scope, &body.stmts, vis)?;
@@ -581,6 +740,28 @@ impl Compiler {
             return Ok(());
         }
         if let Some((value, ty)) = provided {
+            // A scalar for a parameter with a written type (`DEFAULT_MSAA: s32 = 4`) takes
+            // that type: it becomes the declaration's value instead of an untyped constant.
+            let literal = match &value {
+                Value::Int(i) if *i >= 0 => Some(ast::ExprKind::Int(*i as u128)),
+                Value::Bool(b) => Some(ast::ExprKind::Bool(*b)),
+                Value::Float(x) => Some(ast::ExprKind::Float(*x)),
+                Value::String(s) => Some(ast::ExprKind::Str(s.clone())),
+                _ => None,
+            };
+            if ty == TypeId::VOID
+                && let Some(kind) = literal
+                && let EntityKind::Decl {
+                    decl, ..
+                } = &mut self.entity_mut(id).kind
+                && decl.ty.is_some()
+            {
+                Rc::make_mut(decl).value = Some(ast::Expr {
+                    kind,
+                    span: param.span,
+                });
+                return Ok(());
+            }
             self.entity_mut(id).kind = EntityKind::Const {
                 value,
                 ty,
@@ -662,6 +843,15 @@ impl Compiler {
                             true,
                         );
                     }
+                }
+                if exported
+                    && matches!(entry, super::scope::UsingEntry::Place { .. })
+                    && self.scope(scope).kind == ScopeKind::Module
+                {
+                    let module = self.scope(scope).module;
+                    self.modules[module.0 as usize]
+                        .exported_usings
+                        .push(entry.clone());
                 }
                 self.scope_mut(scope).usings.push(entry);
             }
@@ -772,6 +962,8 @@ impl Compiler {
             scope,
             params,
             param_entities: Vec::new(),
+            program_params: Vec::new(),
+            exported_usings: Vec::new(),
             files: Vec::new(),
         });
         id
@@ -799,6 +991,19 @@ impl Compiler {
     /// Load every module reachable through imports and expand all pending
     /// top-level items, until nothing changes.
     pub fn expand_all(&mut self) -> Result<()> {
+        // First the plain `#if`s and imports everywhere (they decide which files and
+        // `#add_context`s exist), then everything else.
+        let mut plain_index = 0;
+        while plain_index < self.scopes.len() {
+            let sid = ScopeId(plain_index as u32);
+            if matches!(self.scope(sid).kind, ScopeKind::Module | ScopeKind::File) {
+                self.expand_plain_ifs(sid)?;
+                for i in 0..self.scope(sid).imports.len() {
+                    self.import_module(sid, i)?;
+                }
+            }
+            plain_index += 1;
+        }
         let mut scope_index = 0;
         let mut entity_index = 0;
         loop {
@@ -834,6 +1039,7 @@ impl Compiler {
                 .any(|p| p.body_state == super::procs::BodyState::Lowering);
             if !self.deferred_pending.is_empty() && !lowering {
                 let deferred = std::mem::take(&mut self.deferred_pending);
+                self.deferred_errors.clear();
                 let retrying = std::mem::replace(&mut self.retrying_pending, true);
                 let result = deferred
                     .into_iter()

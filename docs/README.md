@@ -18,6 +18,7 @@
 - [Selected standard-library protocol profiles](specs/stdlib/README.md)
 
 - [Declarations, polymorphism and #modify in sema](jaic-sema-poly-and-declarations.md)
+- [Modules, imports and top-level expansion in sema](jaic-sema-modules.md)
 
 - [Deferred context pushes](deferred-context.md)
 

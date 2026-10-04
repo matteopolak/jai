@@ -179,6 +179,18 @@ fn decl_is_proc(decl: &ast::Decl) -> bool {
         )
 }
 
+/// A condition made of names, literals and operators only.
+fn plain_condition(expr: &ast::Expr) -> bool {
+    use ast::ExprKind as E;
+    match &expr.kind {
+        E::Ident(_) | E::Int(_) | E::Bool(_) | E::Str(_) | E::InferredMember(_) | E::Null => true,
+        E::Member(base, _) => plain_condition(base),
+        E::Unary(_, a) => plain_condition(a),
+        E::Binary(_, a, b) => plain_condition(a) && plain_condition(b),
+        _ => false,
+    }
+}
+
 impl Compiler {
     pub fn new_scope(
         &mut self,
@@ -407,15 +419,45 @@ impl Compiler {
                         .iter()
                         .any(|p| p.body_state == super::procs::BodyState::Lowering);
                 let result = self.expand_pending_item(scope, file_scope, &stmt, exported);
-                if result.is_err() && reentrant {
+                if reentrant && let Err(e) = result {
                     self.scope_mut(scope).pending[i].state = PendingState::Waiting;
                     self.deferred_pending.push(scope);
+                    self.deferred_errors.push(e);
                     return Ok(());
                 }
                 self.scope_mut(scope).pending[i].state = PendingState::Done;
                 result?;
             }
             i += 1;
+        }
+        Ok(())
+    }
+
+    /// Expand a scope's `#if` items whose conditions are plain constant expressions (no
+    /// calls, no `#run`), ahead of items that run compile-time code. `expand_all` does
+    /// this for every scope first, so a module's `#if FLAG #load "x.jai"` (and the
+    /// `#add_context` in it) is in before any `#run` lays out the Context.
+    pub fn expand_plain_ifs(&mut self, scope: ScopeId) -> Result<()> {
+        for i in 0..self.scope(scope).pending.len() {
+            let item = &self.scope(scope).pending[i];
+            if item.state != PendingState::Waiting {
+                continue;
+            }
+            let ast::StmtKind::StaticIf {
+                cond, ..
+            } = &item.stmt.kind
+            else {
+                continue;
+            };
+            if !plain_condition(cond) {
+                continue;
+            }
+            self.scope_mut(scope).pending[i].state = PendingState::Expanding;
+            let item = &self.scope(scope).pending[i];
+            let (stmt, exported, file_scope) = (item.stmt.clone(), item.exported, item.file_scope);
+            let result = self.expand_pending_item(scope, file_scope, &stmt, exported);
+            self.scope_mut(scope).pending[i].state = PendingState::Done;
+            result?;
         }
         Ok(())
     }
@@ -435,7 +477,17 @@ impl Compiler {
         let mut found: Vec<EntityId> = Vec::new();
         let mut current = Some(scope);
         while let Some(sid) = current {
-            self.expand_pending(sid)?;
+            // A name this scope already binds to a non-procedure is final (another
+            // declaration would be a redefinition): pending items need not run first.
+            let settled = self.scope(sid).names.get(&name).is_some_and(|ids| {
+                ids.iter().any(|&e| {
+                    !matches!(self.entity(e).kind, EntityKind::Placeholder)
+                        && !self.entity_is_overloadable(e)
+                })
+            });
+            if !settled {
+                self.expand_pending(sid)?;
+            }
             if let Some(ids) = self.scope(sid).names.get(&name).cloned() {
                 // A `#placeholder` gives way to the real declaration (possibly
                 // added later by a metaprogram).
@@ -483,6 +535,18 @@ impl Compiler {
                     if !ids.is_empty() && self.collect(&mut found, &ids) {
                         return Ok(Found::Entities(found));
                     }
+                    // Members of a global the module exports with `using` (GL's `using gl;`).
+                    if found.is_empty() {
+                        for entry in self.modules[module.0 as usize].exported_usings.clone() {
+                            if let UsingEntry::Place {
+                                ty, ..
+                            } = &entry
+                                && self.type_has_member(*ty, name)?
+                            {
+                                return Ok(Found::Using(entry, name));
+                            }
+                        }
+                    }
                 }
             }
             // Preload and Runtime_Support are implicitly visible to every module.
@@ -498,6 +562,38 @@ impl Compiler {
                 }
             }
             current = self.scope(sid).parent;
+        }
+        if found.is_empty() {
+            return self.lookup_sibling_file_imports(scope, name);
+        }
+        Ok(Found::Entities(found))
+    }
+
+    /// Last resort for an unknown name: modules imported under `#scope_file` by the other
+    /// files of the same module (code such as focus relies on these being visible
+    /// module-wide). Only reached when nothing else binds the name.
+    fn lookup_sibling_file_imports(&mut self, scope: ScopeId, name: Sym) -> Result<Found> {
+        let module = self.scope(scope).module;
+        let file_scopes: Vec<ScopeId> = self
+            .files
+            .iter()
+            .filter(|f| f.module == module)
+            .map(|f| f.scope)
+            .collect();
+        let mut found = Vec::new();
+        for fs in file_scopes {
+            for i in 0..self.scope(fs).imports.len() {
+                if !matches!(self.scope(fs).imports[i].filter, ast::UsingFilter::None) {
+                    continue;
+                }
+                if let Some(m) = self.import_module(fs, i)? {
+                    for id in self.module_exports(m, name)? {
+                        if !found.contains(&id) {
+                            found.push(id);
+                        }
+                    }
+                }
+            }
         }
         Ok(Found::Entities(found))
     }

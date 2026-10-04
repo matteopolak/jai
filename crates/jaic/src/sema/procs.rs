@@ -335,7 +335,22 @@ impl Compiler {
     }
 
     pub fn proc_type(&mut self, id: ProcId, span: Span) -> Result<TypeId> {
-        Ok(self.signature(id, span)?.ty)
+        let ty = self.signature(id, span)?.ty;
+        // A procedure used as a value lends its parameter names and defaults to calls
+        // through its type (unless a procedure type header already did).
+        if !self.proc_type_params.contains_key(&ty) {
+            let proc = self.proc(id);
+            let params = &proc.lit.header.params;
+            if !proc.is_poly && params.iter().any(|p| p.default.is_some()) {
+                let info = super::ProcTypeParams {
+                    names: params.iter().map(|p| p.name.map(|n| n.name)).collect(),
+                    defaults: params.iter().map(|p| p.default.clone()).collect(),
+                    scope: proc.scope,
+                };
+                self.proc_type_params.insert(ty, Rc::new(info));
+            }
+        }
+        Ok(ty)
     }
 
     /// Lowered IR signature for a procedure type.

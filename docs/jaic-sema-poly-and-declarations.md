@@ -50,6 +50,25 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **`#poke_name Module name`** adds the importer's entity itself to the module scope, so both see one type.
 - **Struct field types in constants**: while a struct is laid out, earlier field types are recorded in
   `Compiler::field_types`, so `type_of(field)` works in a struct constant (`FnCtx::type_only`).
+- **Macros**: constants declared in a macro body exist once per expansion (`hoisted_consts` is keyed by scope).
+  A constant string argument the macro never writes keeps a constant `.count` (`const_string_params`, checked
+  textually by `text_may_write`). An expression `#insert code` checks the code in the scope it was written in.
+- **`#insert (break=..., continue=..., remove=...) body`**: inside the inserted for-loop body, `break` /
+  `continue` / `remove` aimed at that loop run the replacement at the insertion site (`InsertReplacements`,
+  `try_insert_replacement`).
+- **For loops**: `for *=cond` / `for <=cond` take compile-time flags; `remove it` works in reverse loops too.
+  A struct iterated through `for_expansion` is passed by address unless an overload takes that very type by value.
+- **Arguments**: a multi-value call passed as one argument gives its first value (spreading is the fallback);
+  `null` binds a type variable only when no other argument does (`*void`); `#char` binds `u8`; `.A | .B` and
+  `xx a + 1` are deferred like `.A` and `xx a`.
+- **Procedure values**: a procedure type may take a parameter's type from its default
+  (`(s: string, start := 0) -> s64`). Calls through a procedure value use the names and defaults recorded for its
+  type (`Compiler::proc_type_params`, from a procedure-type header or a procedure used as a value).
+- **`ifx`**: a numeric then-value widens to an expected numeric type; an overload set takes the expected or
+  else-value's procedure type; a branch may be a block whose last expression is the value.
+- **`using`** on an expression whose value is a pointer (`using editors.active_pane;`) binds the pointer itself.
+- **Compile-time constants** (`eval_const`) run with the compile-time Context, so `#assert` can call procedures
+  that take one. `type_of(local.*)` in compile-time code only needs the local's type.
 - **Thunks and queued bodies**: `drain_bodies_lenient` lowers what it can before a thunk runs; bodies that fail
   (they need a layout still in progress) stay queued and are reported by the final `drain_bodies`.
 

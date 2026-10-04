@@ -97,6 +97,18 @@ impl Compiler {
                 if let Some(op) = self.enclosing_local_constant(f, scope, base, member)? {
                     return Ok(op);
                 }
+                if !self.const_string_params.is_empty()
+                    && member.name.as_str() == "count"
+                    && let E::Ident(name) = &base.kind
+                    && let Some(&id) = self.lookup(scope, *name)?.first()
+                    && let Some(&count) = self.const_string_params.get(&id)
+                {
+                    return Ok(Operand::Const {
+                        ty: TypeId::S64,
+                        value: Value::Int(count as i128),
+                        untyped: true,
+                    });
+                }
                 // Compile-time code may read type-level constants through a runtime local
                 // (`#if table.FLAG`): only the local's type is needed.
                 if f.compile_time
@@ -257,8 +269,8 @@ impl Compiler {
             E::Insert {
                 value, ..
             } => {
-                let inserted = self.eval_insert_expr(scope, value)?;
-                self.check_expr(f, scope, &inserted, expected)
+                let (inserted, at) = self.eval_insert_expr(scope, value)?;
+                self.check_expr(f, at, &inserted, expected)
             }
             E::Location(target) => {
                 let loc_span = match target {
@@ -365,8 +377,46 @@ impl Compiler {
                 header,
                 body,
             } => self.check_lambda(scope, header, body, expected, span),
-            E::Block(_) => err(span, "block expressions are only valid as macro arguments"),
+            E::Block(block) => self.check_block_value(f, scope, block, expected, span),
         }
+    }
+
+    /// `ifx c then a else { stmts; value }`: a block's value is its last expression.
+    fn check_block_value(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        block: &ast::Block,
+        expected: Option<TypeId>,
+        span: Span,
+    ) -> Result<Operand> {
+        let Some((
+            ast::Stmt {
+                kind: ast::StmtKind::Expr(last),
+                ..
+            },
+            rest,
+        )) = block.stmts.split_last()
+        else {
+            return err(span, "a block used as a value must end in an expression");
+        };
+        let inner = self.new_block_scope(scope);
+        let depth = f.defers.len();
+        self.check_block_stmts(f, inner, rest)?;
+        let mut op = self.check_expr(f, inner, last, expected)?;
+        if f.defers.len() > depth {
+            // Deferred code runs after the value is computed.
+            let op_settled = self.settle_untyped(op, expected);
+            let ty = op_settled.ty();
+            let (_, v) = self.rvalue(f, op_settled, span)?;
+            op = Operand::Value {
+                ty,
+                val: v,
+            };
+            self.emit_defers(f, depth, span)?;
+        }
+        f.defers.truncate(depth);
+        Ok(op)
     }
 
     /// The type of `expr` if it names a runtime local of an enclosing procedure.
@@ -505,6 +555,14 @@ impl Compiler {
                             ty,
                             value,
                             untyped: false,
+                        });
+                    }
+                    if f.type_only {
+                        // `type_of(local.*)` at compile time: the address is never used.
+                        let addr = f.b.iconst(Ty::Ptr, 0);
+                        return Ok(Operand::Place {
+                            ty,
+                            addr,
                         });
                     }
                     let name = self.entity(id).name;
@@ -665,10 +723,15 @@ impl Compiler {
         let mut variadic = false;
         let mut c_varargs = false;
         for p in &header.params {
-            let Some(t) = &p.ty else {
-                return err(p.span, "procedure type parameter needs a type");
+            // `(s: string, start := 0) -> s64`: a parameter may take its default's type.
+            let ty = match (&p.ty, &p.default) {
+                (Some(t), _) => self.eval_type_in(f, scope, t)?,
+                (None, Some(d)) => {
+                    let op = self.check_expr_no_emit(scope, d)?;
+                    self.settle_untyped(op, None).ty()
+                }
+                (None, None) => return err(p.span, "procedure type parameter needs a type"),
             };
-            let ty = self.eval_type_in(f, scope, t)?;
             if p.variadic {
                 if c_call {
                     c_varargs = true;
@@ -690,14 +753,27 @@ impl Compiler {
                 returns.push(t);
             }
         }
-        Ok(self.types.intern(TypeKind::Proc(Rc::new(ProcType {
+        let ty = self.types.intern(TypeKind::Proc(Rc::new(ProcType {
             params,
             returns,
             variadic,
             c_varargs,
             c_call,
             no_context: c_call || header.flags.no_context,
-        }))))
+        })));
+        if header.params.iter().any(|p| p.default.is_some()) {
+            let info = ProcTypeParams {
+                names: header
+                    .params
+                    .iter()
+                    .map(|p| p.name.map(|n| n.name))
+                    .collect(),
+                defaults: header.params.iter().map(|p| p.default.clone()).collect(),
+                scope,
+            };
+            self.proc_type_params.insert(ty, Rc::new(info));
+        }
+        Ok(ty)
     }
 
     // -----------------------------------------------------------------------
@@ -997,13 +1073,21 @@ impl Compiler {
         let is_shift = matches!(op, BinOp::Shl | BinOp::Shr | BinOp::Rotl | BinOp::Rotr);
         let lhs_expected = if is_cmp {
             None
+        } else if is_shift {
+            // `cast(float) (1 << n)` shifts an integer.
+            expected.filter(|&t| self.types.is_integer(self.types.repr(t)))
         } else {
             expected
         };
         let mut lhs = self.check_expr(f, scope, a, lhs_expected)?;
         // Inferred enum members on the right take the left operand's type.
+        let pointer_offset = matches!(op, BinOp::Add | BinOp::Sub)
+            && self.types.is_pointer(self.types.repr(lhs.ty()));
         let rhs_expected = if is_shift {
             None
+        } else if pointer_offset {
+            // `p += ifx c then 3 else 1`: the offset is an integer.
+            Some(TypeId::S64)
         } else {
             Some(lhs.ty()).filter(|_| {
                 !matches!(
@@ -1019,7 +1103,7 @@ impl Compiler {
             f,
             scope,
             b,
-            rhs_expected.or(if is_cmp {
+            rhs_expected.or(if is_cmp || is_shift {
                 None
             } else {
                 expected
@@ -1796,9 +1880,25 @@ impl Compiler {
             Operand::Const {
                 untyped: true, ..
             } => None,
+            // An overload set takes the expected procedure type (picked by `convert`), or the
+            // else-value's.
+            Operand::Procs(p) if p.len() > 1 || expected.is_some() => None,
+            Operand::Procs(p) => Some(self.proc_type(p[0], span)?),
             other => Some(other.ty()),
         };
-        let result_ty = then_ty.or(expected);
+        // A numeric then-value widens to an expected numeric type, so the else-value may be
+        // wider (`ifx c then small_u8 else big_s32` into an `s32`).
+        let numeric = |c: &Compiler, t: TypeId| {
+            let r = c.types.repr(t);
+            c.types.is_integer(r) || c.types.is_float(r)
+        };
+        let widen = match (then_ty, expected) {
+            (Some(t), Some(e)) if t != e && numeric(self, t) && numeric(self, e) => {
+                self.implicit_cost(t, false, e).map(|_| e)
+            }
+            _ => None,
+        };
+        let result_ty = widen.or(then_ty).or(expected);
         let then_end = f.b.current;
         // Check else first to learn its type when then is untyped.
         f.b.switch_to(else_block);
@@ -1808,6 +1908,7 @@ impl Compiler {
         };
         let ty = match (result_ty, &else_op) {
             (Some(t), _) => t,
+            (None, Some(Operand::Procs(p))) if p.len() == 1 => self.proc_type(p[0], span)?,
             (None, Some(op)) => self.settle_untyped(op.clone(), None).ty(),
             // `ifx c then 5`: an untyped then-value takes its default type.
             (None, None) => self.settle_untyped(then_op.clone(), None).ty(),
