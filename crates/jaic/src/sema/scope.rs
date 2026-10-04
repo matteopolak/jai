@@ -379,11 +379,14 @@ impl Compiler {
         while let Some(sid) = current {
             self.expand_pending(sid)?;
             if let Some(ids) = self.scope(sid).names.get(&name).cloned() {
+                // A `#placeholder` gives way to the real declaration (possibly
+                // added later by a metaprogram).
+                let is_placeholder =
+                    |e: &EntityId| matches!(self.entity(*e).kind, EntityKind::Placeholder);
+                let defined = ids.iter().any(|e| !is_placeholder(e));
                 let ids: Vec<EntityId> = ids
                     .into_iter()
-                    .filter(|&e| {
-                        !matches!(self.entity(e).kind, EntityKind::Placeholder) || found.is_empty()
-                    })
+                    .filter(|e| !is_placeholder(e) || (!defined && found.is_empty()))
                     .collect();
                 if !ids.is_empty() && self.collect(&mut found, &ids) {
                     return Ok(Found::Entities(found));

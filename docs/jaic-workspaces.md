@@ -29,12 +29,20 @@ strings, set build options, and read compiler messages. Implemented in `crates/j
   | `__jaic_report(msg, file, line, col, is_error)` | error traps the compile; warnings go to `report` |
   | `__jaic_compiler_version()`, `__jaic_custom_link_complete(ws, code)` | |
 
-- A workspace is compiled by a fresh `Compiler` (`compile_sources`) the first time its events are read, or by
-  `build::finish_all` after the top-level compile for workspaces nobody intercepted. The registry borrow is released
-  during the nested compile, so nested metaprograms work.
+- Each workspace is a small state machine (`build::step`), advanced whenever its events are read (or by
+  `build::finish_all` after the top-level compile, for workspaces nobody intercepted). Its `Compiler` lives in the
+  registry between steps:
+  - **Open → Checked**: `Compiler::begin_sources` loads bootstrap + queued sources and runs their `#run`s;
+    events FILE…, PHASE parsed, PHASE TYPECHECKED_ALL_WE_CAN.
+  - **Checked + new sources** (a metaprogram called `add_build_string` after seeing TYPECHECKED_ALL_WE_CAN):
+    `add_source` + `settle`, new FILE events, PHASE TYPECHECKED_ALL_WE_CAN again.
+  - **Checked → Done**: `finish_program` (lowering), output, COMPLETE.
+  The registry borrow is released while a compiler runs, so nested metaprograms work.
+- Sources a `#run` adds to *its own* workspace (`add_build_string(s, -1)`, e.g. to define a `#placeholder`) are
+  pulled by `Compiler::pull_workspace_sources` right after that `#run` (`run_top_level` is incremental).
 - Events, in order: `FILE(1)` per loaded file; `PHASE(2)` with ints `[phase, 0]`: 0 ALL_SOURCE_CODE_PARSED,
-  1 TYPECHECKED_ALL_WE_CAN, 2 ALL_TARGET_CODE_BUILT, 3 PRE_WRITE_EXECUTABLE, 4 POST_WRITE_EXECUTABLE (strings[0] =
-  output path); `COMPLETE(3)` with ints `[error_code]` (0 none, 1 failed). Typechecked declarations/Code nodes are not
+  1 TYPECHECKED_ALL_WE_CAN, 2 ALL_TARGET_CODE_BUILT, 3 PRE_WRITE_EXECUTABLE (ints[1] = object count n, strings[0..n]
+  objects then output path), 4 POST_WRITE_EXECUTABLE (strings[0] = output path); `COMPLETE(3)` with ints `[error_code]` (0 none, 1 failed). Typechecked declarations/Code nodes are not
   delivered yet.
 - Output: when `do_output` and `output_type != NO_OUTPUT`, the embedder's `OutputBackend::write_output` is called
   with the IR program and `BuildSettings` (path = `output_path/output_executable_name`). `jaic build` passes an LLVM
