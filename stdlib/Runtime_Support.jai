@@ -257,6 +257,7 @@ __instrumentation_second :: () {
     #program_export "main"
     __system_entry_point :: (argc: s32, argv: **u8) -> s32 #c_call {
         runtime_context := __jai_runtime_init(argc, argv);
+        exit_code: s32;
         push_context runtime_context.* {
             #if ENABLE_BACKTRACE_ON_CRASH {
                 Handler :: #import "Runtime_Support_Crash_Handler";
@@ -264,11 +265,13 @@ __instrumentation_second :: () {
             }
             __instrumentation_first();
             __instrumentation_second();
-            __program_main :: () #entry_point;
-            __program_main();
+            // The compiler binds this to the program's `main`; a `main` returning
+            // an integer provides the process exit code.
+            __program_main :: () -> s32 #entry_point;
+            exit_code = __program_main();
         }
         __jai_runtime_fini(runtime_context);
-        return 0;
+        return exit_code;
     }
 }
 
