@@ -1391,6 +1391,12 @@ impl Compiler {
         if int_to_float(self, &rhs) {
             rhs = self.explicit_cast(f, rhs, ty, ast::CastFlags::default(), span)?;
         }
+        if ty == TypeId::VOID_PTR && matches!(self.types.kind(lhs.ty()), TypeKind::Proc(_)) {
+            lhs = self.explicit_cast(f, lhs, ty, ast::CastFlags::default(), span)?;
+        }
+        if ty == TypeId::VOID_PTR && matches!(self.types.kind(rhs.ty()), TypeKind::Proc(_)) {
+            rhs = self.explicit_cast(f, rhs, ty, ast::CastFlags::default(), span)?;
+        }
         let lhs = self.convert(f, lhs, ty, span)?;
         let rhs = self.convert(f, rhs, rhs_ty, span)?;
         let (_, x) = self.rvalue(f, lhs, span)?;
@@ -1731,6 +1737,13 @@ impl Compiler {
                     } else {
                         rt
                     });
+                }
+                // A procedure value meets a `*void` as an address (`proc == get_caller_address()`).
+                let is_proc = |c: &Self, t| matches!(c.types.kind(t), TypeKind::Proc(_));
+                if (is_proc(self, lt) && rt == TypeId::VOID_PTR)
+                    || (is_proc(self, rt) && lt == TypeId::VOID_PTR)
+                {
+                    return Ok(TypeId::VOID_PTR);
                 }
                 err(
                     span,
