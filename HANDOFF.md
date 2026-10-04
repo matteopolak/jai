@@ -53,7 +53,6 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 - `Bindings_Generator`: C and minimal C++ work (see `docs/stdlib/bindings-generator.md`); C++ methods,
   templates and inheritance, and Objective-C are missing. Untested on the real Vulkan/ImGui headers (absent here).
-- GetRect: `stdlib/api-coverage.json` and `stdlib/.coverage/*.json`
-  still name pre-`GetRect_Common` paths.
-- `tools/check_corpus.py` and its inventory helpers are legacy (they drove the removed `jai-rs` binary).
+- `stdlib/api-coverage.json` and `stdlib/.coverage/` are historical records from the old architecture (not
+  checked by anything). `tools/check_corpus.py` and its inventory helpers are legacy (they drove the removed `jai-rs` binary).
 - Float printing details (TTWJ 5.2 / 6.5) are unverified.
