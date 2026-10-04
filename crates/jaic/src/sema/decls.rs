@@ -427,6 +427,16 @@ impl Compiler {
                 // A procedure name used as a type means its procedure type (e.g. `#type my_proc`).
                 self.proc_type(p[0], span)
             }
+            // A polymorphic struct whose parameters all have defaults is a type already.
+            Operand::PolyStruct(ps)
+                if self.poly_structs[ps.0 as usize]
+                    .lit
+                    .params
+                    .iter()
+                    .all(|p| p.default.is_some()) =>
+            {
+                self.instantiate_struct(ps, Vec::new(), span)
+            }
             other => err(
                 span,
                 format!("expected a type, found {}", self.describe(&other)),
