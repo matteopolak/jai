@@ -14,8 +14,7 @@
 - `crates/jaic`: the compiler — `parser/`, `sema/` (checking and lowering to IR), `interp/` (IR interpreter,
   used for `#run`, metaprograms and `jaic run`), `build.rs` (workspaces and compiler messages for
   metaprograms). `crates/jaic-cli`: the `jaic` binary. `crates/jai-wasm` + `web/scripting-runtime`: the
-  browser playground. `crates/jai-language-server`: the LSP, built on the `jaic` lexer and parser. The older
-  `jai-*` architecture has been removed; many pages in `docs/` still describe it (see `docs/README.md`).
+  browser playground. `crates/jai-language-server`: the LSP, built on the `jaic` lexer and parser.
 - `stdlib/`: our independently written standard library; `prelude/`: runtime type definitions.
 - `tests/stdlib/*.jai`: regression programs, each must exit 0 (except `getrect-rh-negative-control.jai`,
   a negative control that must fail).
@@ -47,7 +46,7 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   fetches C-family sources, but not those submodules); the native `libImGui.so` / `libJoltC.so` are C++ builds.
 - **jaison**: tests and example run, also natively (`jaic build tests.jai`). **sgpu**: all examples check (host, linux, windows) and build natively on macOS
   after `python3 tools/build_slang.py` (Slang 2025.24.2, VMA and the Vulkan loader built from source); with MoltenVK
-  all run except 04_mesh_shaders (MoltenVK has no `VK_EXT_mesh_shader`). Run commands: `docs/native-libs.md`.
+  all run except 04_mesh_shaders (MoltenVK has no `VK_EXT_mesh_shader`). Run commands: `docs/tools/native-libs.md`.
 - **Jails**: `jaic build build.jai` produces a native `bin/jails` that answers LSP requests.
   Jails `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
 - **The_Way_to_Jai**: 21 of 313 examples fail `check`, none a compiler bug: Windows-only APIs (19.8, 33.2C, 33.6,
@@ -63,5 +62,3 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 - `Bindings_Generator`: C and C++ (methods, ctors/dtors, vtables, inheritance, templates, operators) work and
   were run on the real Vulkan and ImGui headers (`docs/stdlib/bindings-generator.md`). Missing: bitfield accessors,
   tail-padding `__RAW` structs, Objective-C.
-- `stdlib/api-coverage.json` and `stdlib/.coverage/` are historical records from the old architecture (not
-  checked by anything). `tools/check_corpus.py` and its inventory helpers are legacy (they drove the removed `jai-rs` binary).

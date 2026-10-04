@@ -6,6 +6,30 @@
 
 ## How it works
 
+Running it: write a small program (usually the project's `generate.jai`) that fills in the options and calls `generate_bindings`, then run it with `jaic run`. It needs libclang on the machine (see Configuration).
+
+```jai
+#import "Basic";
+#import "Bindings_Generator";
+
+main :: () {
+    opts: Generate_Bindings_Options;
+    array_add(*opts.source_files, "mylib.h");
+    array_add(*opts.include_paths, ".");
+    array_add(*opts.libnames, "mylib");
+    assert(generate_bindings(opts, "mylib.jai"));
+}
+```
+
+```sh
+jaic run generate.jai            # writes mylib.jai
+jaic check generate.jai -os linux   # generators for another OS's headers
+```
+
+A complete worked example, including `visitor` use and output assertions, is `tests/stdlib/bindings-generator-c.jai` (`jaic run tests/stdlib/bindings-generator-c.jai`; it writes into `/tmp`).
+
+The pipeline:
+
 1. `generate_bindings` (`generate.jai`) builds a `Generator_State` (stored in `context.generator`, options in `context.generator_options`), resolves the requested libraries, and asks libclang to parse a synthetic `generate_temp.h` that `#include`s each entry of `source_files`.
 2. `convert.jai` walks the translation unit and builds the declaration model of `types.jai` (`Declaration`, `Function`, `Struct`, `Enum`, `Typedef`, `Namespace`, `Bitfield`, `CType`, `Literal`...). Declarations from system headers are skipped unless `path_fragments_to_treat_as_non_system_paths` or `system_types_to_include` whitelist them; system typedefs (`uint32_t`, `size_t`...) are unwrapped to primitives. Macros are kept only when their body is a constant expression over literals and already-known constants.
 3. `post_process` converts macros to enums (`generate_enums_from_macros_with_prefixes`), assigns functions to libraries, then the user `visitor` runs over every declaration (it may set `decl_flags`, rename `output_name`, swap types, add default values), followed by `omit_unnecessary_typedefs_and_macros`.
@@ -17,15 +41,7 @@ Library assignment: each `libraries` / `libnames` entry is located (search paths
 
 The interpreter's `#foreign` calls pass scalars only. libclang passes and returns `CXCursor`/`CXType` structs by value and drives traversal with a native callback (`clang_visitChildren`). So `crates/jaic/src/clang.rs` loads libclang itself and exposes it as the `__jaic_clang(op, a, b, text)` / `__jaic_clang_text()` primitives. Cursors and types are stored in arenas and handed to Jai as integer handles; equal cursors get equal handles (usable as hash keys). `stdlib/Bindings_Generator/clang.jai` wraps this (`clang("kind", cursor)`...). All AST logic is Jai; Rust only forwards calls and collects children.
 
-## How to change it
-
-- New libclang query: add a function pointer to `Api` and a match arm in `clang::call` (`crates/jaic/src/clang.rs`), then call `clang("op", ...)` from Jai.
-- New C construct: handle its cursor kind in `handle_toplevel_cursor` / `fill_struct_members` / `create_type` (`convert.jai`) and print it in `print.jai`.
-- Output format lives entirely in `print.jai`; `maybe_add_spacing` reproduces the blank lines of the source.
-- Gotchas: every `create_type` call returns a fresh `CType` (visitors mutate them) except the primitive singletons (`type_def_*`); a struct is registered in `declarations_by_cursor` before its members are converted so recursive types terminate; the `#add_context` fields mean generator code must run inside `generate_bindings`.
-- Limitations: no Objective-C; bit fields are opaque storage (`__bitfield` plus a comment, no accessors); extern variables are printed `#elsewhere <lib>`; `long double` and 128-bit integers are approximated; C++ gaps are listed under "C++ support".
-
-## C++ support
+### C++ support
 
 Everything below is learned from the behaviour of the reference generator, not copied from it.
 
@@ -45,6 +61,14 @@ Compiler support the generated code relies on:
 - libclang bridge ops added for this: `is_virtual`, `is_pure_virtual`, `is_const_method`, `is_copy_ctor`, `is_move_ctor`, `is_inlined`, `access`, `manglings`, `specialized_template`, `t_template_arg`.
 
 Verification against real headers (scratch copies of the Vk-Engine generators run with `jaic check generate.jai -os linux`): Vulkan-Headers 1.3.250 + VMA produced 651 functions / 902 structs / 250 enums; Dear ImGui 1.90.4-docking produced 1143 functions / 121 structs / 78 enums, and the output type-checks and drives a real frame (`CreateContext`, `Style.Constructor`, `NewFrame`, `Begin`, `Render`) against a dylib built from the same sources.
+
+## How to change it
+
+- New libclang query: add a function pointer to `Api` and a match arm in `clang::call` (`crates/jaic/src/clang.rs`), then call `clang("op", ...)` from Jai.
+- New C construct: handle its cursor kind in `handle_toplevel_cursor` / `fill_struct_members` / `create_type` (`convert.jai`) and print it in `print.jai`.
+- Output format lives entirely in `print.jai`; `maybe_add_spacing` reproduces the blank lines of the source.
+- Gotchas: every `create_type` call returns a fresh `CType` (visitors mutate them) except the primitive singletons (`type_def_*`); a struct is registered in `declarations_by_cursor` before its members are converted so recursive types terminate; the `#add_context` fields mean generator code must run inside `generate_bindings`.
+- Limitations: no Objective-C; bit fields are opaque storage (`__bitfield` plus a comment, no accessors); extern variables are printed `#elsewhere <lib>`; `long double` and 128-bit integers are approximated; C++ gaps are listed under "C++ support".
 
 ## Configuration
 

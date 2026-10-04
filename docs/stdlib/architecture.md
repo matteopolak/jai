@@ -1,46 +1,46 @@
-# Independent standard library
+# Standard library layout
 
 ## What it is
 
-`stdlib/` contains independently authored Jai library modules with the existing public module names and source contracts. Maintained newer library sources determine the default API when they differ from the supplied historical distribution. The compiler bootstrap lives in `prelude/`; `stdlib/Preload.jai` loads that bootstrap through the ordinary source graph.
+`stdlib/` is the Jai standard library written for this compiler, and `prelude/` holds the runtime type definitions it builds on. Both are ordinary Jai source that `jaic` compiles like user code; the only special case is the default module search root.
 
 ## How it works
 
-Library algorithms execute as Jai procedures through the compiler's existing typed IR, virtual machine, and native backend. Host operations use authored foreign declarations and reviewed system SDK bindings. The Rust compiler owns intrinsic validation, allocation, runtime reflection, context activation, and host capability checks. A Jai declaration receives those operations only when the actual source binder recognizes its contract; declaring an unfamiliar intrinsic does not implement it.
+`jaic` resolves `#import "Name"` against `stdlib/` (a directory `Name/module.jai` or a file `Name.jai`) plus any `-I dir` given on the command line. `stdlib/Preload.jai` is a one-line `#load` of `prelude/Preload.jai`, which loads `prelude/{intrinsics,platform,context,reflection,diagnostics,runtime-storage}.jai`. Those files declare the types the compiler itself knows (`Allocator`, `Type_Info`, `Source_Code_Location`, `Temporary_Storage`, the context). `stdlib/Runtime_Support.jai` supplies the entry point and output hooks.
 
-Module files remain ordinary source inputs. `#load` joins authored fragments into one module, while `#import` preserves the graph's independent module identities, namespace privacy, parameters, and source origins. Public record fields, parameter defaults, enum values, operator declarations, and result shapes are compatibility contracts. Internal helpers and algorithms can change independently of those contracts.
+Modules fall into families, each with a page here:
 
-The supplied files under `reference/` and pinned upstream files under `corpus/` are read-only API and source compatibility evidence. They are not imported implementation dependencies of `stdlib/`, compile-time includes in its Rust implementation, or native objects eligible for linking. Inventory tools store contract identities and hashes; they do not execute those source trees.
+| Family | Modules | Page |
+| --- | --- | --- |
+| Basic, containers, time | `Basic`, `Hash_Table`, `Bit_Array`, `Bucket_Array`, `Sort`, `IntroSort`, `RadixSort`, `Soa`, `Tagged_Union`, `Treemap`, `Relative_Pointers`, `Machine_X64` | [basic-and-collections](basic-and-collections.md), [basic-time-and-platform](basic-time-and-platform.md) |
+| Strings and text | `String`, `Unicode`, `Base64`, `Text_File_Handler`, `Print_Color`, `Print_Vars`, `Command_Line` | [strings-and-text](strings-and-text.md), [command-line](command-line.md) |
+| Math | `Math`, `Random`, `PCG`, `Sloppy_Math`, `Srgb`, `Float16` | [math-and-random](math-and-random.md) |
+| Memory | `Memory`, `Pool`, `Flat_Pool`, `Default_Allocator`, `Overwriting_Allocator`, `Unmapping_Allocator`, `Deep_Copy`, `Remap_Context`, `Hash`, `Crc`, `xxHash` | [memory-and-allocators](memory-and-allocators.md) |
+| Binary formats | `Adpcm`, `Wav_File`, `Ico_File`, `Zip_File_Directory`, `md5` | [binary-formats](binary-formats.md) |
+| OS | `File`, `File_Utilities`, `File_Async`, `File_Watcher`, `Process`, `System`, `Clipboard`, `Mail`, `Shared_Memory_Channel` | [files-and-processes](files-and-processes.md) |
+| Concurrency and input | `Thread`, `Atomics`, `Socket`, `Input`, `Keymap`, `Gamepad` | [threads-sockets-input](threads-sockets-input.md) |
+| Compiler API | `Compiler`, `Reflection`, `Code_Visit`, `Check`, `Jai_Lexer`, `Program_Print`, metaprogram plugins | [compiler-and-metaprogramming](compiler-and-metaprogramming.md), [program-print](program-print.md) |
+| Build tooling | `Debug`, `MacOS_Bundler`, `BuildCpp`, `Autorun`, `Performance_Report`, `Iprof` | [tooling-modules](tooling-modules.md), [iprof](iprof.md) |
+| UI | `Simp`, `Window_Creation`, `GetRect`, `GetRect_LeftHanded` | [ui-and-drawing](ui-and-drawing.md), [getrect](getrect.md) |
+| Native bindings | `POSIX`, `macos`, `Windows`, `Linux`, `Android`, `Objective_C`, `SDL`, `GL`, `Vulkan`, `ImGui`, `stb_*`, `freetype`, ... | [native-bindings](native-bindings.md), [bindings-generator](bindings-generator.md) |
 
-Some pinned OpenJai modules have compatibility implementations and schemas that differ from the supplied library. Maintained API evidence takes priority; historical signatures remain additive where compatible or require an explicit legacy version when field layout, result shape, or algorithm semantics differ. The inventory compares those surfaces separately. An undeclared name in an alternate compiler's library, such as `Calendar`, still requires a verified declaration or language contract before nominal type identity can be implemented.
+`stdlib/legacy/` holds older variants of a few modules (`Base64`, `Bit_Array`, `Bucket_Array`, `Flat_Pool`, `Hash_Table`, `Pool`, `RadixSort`, `Unicode`, `Wav_File`, `Math`, `String`, `GetRect`, `Compiler`, `Check`, `Code_Visit`, `Debug`), imported as `#import "legacy/Name"`. Some modules use them internally: `Keymap` and `Treemap` import `legacy/Bucket_Array` because its sections keep stable addresses.
 
-Third-party Jai libraries and applications remain unchanged acceptance inputs. Jaison, Focus, Jails, Vk, and sgpu are not rewritten as standard-library modules. Native bindings retain the existing Jai public contract; SDL2, Vulkan, FreeType, codecs, and other native runtimes remain external dependencies. A newer SDK can verify a required ABI, but unused speculative namespaces stay outside the public library until an unchanged pinned consumer requires them.
-
-Coverage is deliberately split into four questions: whether a public contract is inventoried, whether an authored declaration is present, whether its source parses/checks, and whether behavior passed a real test. A foreign prototype establishes an interface; an empty or fixed-answer body establishes neither implementation nor behavior. Family reports in `stdlib/.coverage/` retain unfinished work rather than hiding it behind successful parsing.
-
-`stdlib/api-coverage.json` records the compact module inventory and failed source stages. The full local contract report is compressed under `artifacts/stdlib-rewrite/`. Those receipts do not make this unfinished tree the CLI's default library: source admission, primitive binding, semantic API verification, and relevant VM/native behavior checks must be integrated separately.
+Module parameters (`#module_parameters`) select behavior at import time, for example `#import "Basic"(MEMORY_DEBUGGER=true)`. Each page lists the parameters that matter.
 
 ## How to change it
 
-Change the owning module and its family documentation when adding or altering functionality. Preserve public signatures, stored-field layout, enum representations, defaults, and source-backed reflection identities. Keep internal helper names private. Add a meaningful authored program that exercises the changed behavior and report source-only checks separately from VM and native execution.
-
-When adding a host operation, first extend the actual compiler source adapter, capability policy, typed operation, VM implementation, and native lowering as required. Bind the authored Jai signature to that real implementation. Do not invent an intrinsic name, return a success sentinel, or cast a source type to an unrelated runtime registry identity to make a module appear supported.
-
-Run `python3 tools/stdlib_api_inventory.py` after changing the module tree. Its lexical contract report is useful for spotting missing names and signature changes; it does not prove semantic export equivalence or implementation completeness. Use the frozen compiler checks and family behavior cases for those separate questions.
+- Edit the module under `stdlib/` and add or extend a regression program in `tests/stdlib/*.jai`. Each must exit 0 under `jaic run`; assertions are runtime `assert`s or compile-time `#assert #run`. The one intentional failure is `getrect-rh-negative-control.jai`.
+- Some modules carry tests next to the source (`stdlib/Math/tests`, `Random/tests`, `PCG/tests`, `Float16/tests`, `Srgb/tests`, `Sloppy_Math/tests`, `GetRect/tests`) and `stdlib/tests/` holds string, UTF-8, command-line and binary-format programs.
+- Run the whole set with `python3 tools/jaic-sweep.py stdlib` (documented in `../tools/jaic-sweep.md`).
+- A declaration only gets compiler support if `jaic` recognizes it. New intrinsics need a Rust side in `crates/jaic` (see [compiler architecture](../compiler/architecture.md)); declaring an unknown intrinsic in Jai implements nothing.
+- Public record fields, parameter defaults and enum values are API: programs print and index them directly. Keep them stable when rewriting internals.
+- `reference/` is the reference distribution, for reading semantics only. Never run its binaries and never copy its text into `stdlib/`.
 
 ## Configuration
 
-The current explicit selection from the repository root is:
-
-```sh
-JAI_RS_STDLIB="$PWD/stdlib" \
-JAI_RS_PRELOAD="$PWD/stdlib/Preload.jai" \
-JAI_RS_RUNTIME_SUPPORT=off \
-target/debug/jai-rs check-library stdlib/Hash.jai
-```
-
-`JAI_RS_MODULE_PATH` supplies ordered application module roots. `JAI_RS_STDLIB` appends the authored library root; explicit `JAI_RS_PRELOAD` chooses its bootstrap. Runtime support must be selected explicitly with its existing entry-point, initialization, and backtrace policy flags. Source compatibility diagnostics for original libraries use the explicit `reference/modules` root and are reported independently of checks against the authored library.
+None at the library level. Compiler flags that affect module lookup: `-I dir` adds a search root, and `-os linux|windows|macos` selects the `#if OS == ...` branches, so `jaic check file.jai -os linux` type-checks another OS's bindings from a Mac.
 
 ## Dependencies
 
-The library depends on its authored modules and `prelude/`. Compiler support comes from `jai-source`, `jai-modules`, `jai-syntax`, `jai-sema`, `jai-ir`, `jai-vm`, `jai-runtime`, and the LLVM backend. Native bindings depend only on declared, reviewed system SDKs or independently built dependencies with retained provenance. The API inventory uses Python's standard library and existing source-only corpus metadata utilities; it adds no package dependency.
+The `jaic` compiler and interpreter (`crates/jaic`), the `prelude/` types, and system libraries for the native-binding modules (libc, libm, and optionally libcurl, SDL2, libclang; see [native-bindings](native-bindings.md)).

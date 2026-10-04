@@ -1,0 +1,42 @@
+# Basic and collection modules
+
+## What it is
+
+`Basic` is the module almost every program imports: allocation helpers, resizable arrays, printing, string builders, 128-bit integers, Apollo time and a memory debugger. The collection modules next to it (`Hash_Table`, `Bit_Array`, `Bucket_Array`, `Sort`, `IntroSort`, `RadixSort`, `Soa`, `Tagged_Union`, `Treemap`, `Relative_Pointers`) are plain Jai containers and algorithms. Calendar time and working-directory helpers are in [basic-time-and-platform](basic-time-and-platform.md).
+
+## How it works
+
+`stdlib/Basic/module.jai` loads its parts: `allocation.jai` (`alloc`, `free`, temporary storage), `Array.jai` (`array_add`, `array_copy`, removal, `array_find`), `Simple_String.jai`, `String_Builder.jai`, `Print.jai` (`print`, `tprint`, formatters), `Int128.jai` (`S128`/`U128`, wrapping arithmetic), `Apollo_Time.jai`, `platform-time.jai`, and `Memory_Debugger*.jai` (loaded only when `MEMORY_DEBUGGER` is set). `protocol.jai` re-exports the prelude types (`Allocator`, `Any`, `Temporary_Storage`, reflection descriptors) under the `Basic.` namespace.
+
+Resizable arrays capture the allocator in their descriptor and grow by allocating a new block, copying and releasing the old one. Ordered removal shifts elements; unordered removal moves the last element into the hole.
+
+`Hash_Table.Table(Key, Value)` is an open-addressing table. The key API is `table_set`, `table_add`, `table_find` (returns `value, found`), `table_find_pointer`, `table_contains`, `table_remove`, `table_reset`. Its parameters (`given_hash_function`, `given_compare_function`, `LOAD_FACTOR_PERCENT`, `REFILL_REMOVED`) are struct parameters, and `COUNT_COLLISIONS` is a module parameter.
+
+```jai
+#import "Basic";
+#import "Hash_Table";
+
+main :: () {
+    t: Table(string, int);
+    table_set(*t, "a", 1);
+    v, found := table_find(*t, "a");
+    print("% %\n", v, found);   // 1 true
+}
+```
+
+`Sort` provides `bubble_sort` and `quick_sort` (in place, not stable; by comparator or by key) with `compare_floats`/`compare_strings`. `IntroSort` and `RadixSort` follow the same shapes: the radix sorter keeps a `ranks` buffer and sorts `u32`, `u64` and `float` inputs. `Bit_Array` stores bits in 64-bit slots. `Bucket_Array` has stable-address storage with a two-part locator and `bucket_array_add`. `Soa(T, N)` generates one column per member with an `#insert`. `Tagged_Union(types)` stores a value plus a `Type` tag. `Relative_Pointer(Storage, T)` stores a signed offset where the sign bit reserves zero for null.
+
+## How to change it
+
+- Add Basic functionality to the matching part file, not `module.jai`.
+- When two `Basic`-level builders exist (`Basic.String_Builder` and the newer one in `String`), qualify the type if both modules are imported.
+- Container changes need a matching case in `tests/stdlib/` (`basic-collections.jai`, `bit-array-standard.jai`, `bucket-array-*.jai`, `legacy-hash-table.jai`, `intro-sort-api.jai`, `legacy-rank-sort.jai`, `sort-entry-points.jai`, `soa-generated-*.jai`, `tagged-union-layout.jai`, `storage-treemap-contract.jai`).
+- `stdlib/legacy/` holds older `Hash_Table`, `Bit_Array`, `Bucket_Array` and `RadixSort`; keep them in sync only where another module still imports them (the memory debugger uses `legacy/Hash_Table`).
+
+## Configuration
+
+`Basic` module parameters: `MEMORY_DEBUGGER` (false), `ENABLE_ASSERT` (true), `REPLACEMENT_INTERFACE`, `VISUALIZE_MEMORY_DEBUGGER` (true), `TEMP_ALLOCATOR_POISON_FREED_MEMORY` (false). `Hash_Table`: `COUNT_COLLISIONS` (false). `Tagged_Union`: `DEBUG`.
+
+## Dependencies
+
+The `prelude/` types, `Runtime_Support` for context and temporary storage, `Math` (Treemap), and libc for the system allocator (see [memory-and-allocators](memory-and-allocators.md)).
