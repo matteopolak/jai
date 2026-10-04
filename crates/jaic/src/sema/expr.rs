@@ -406,6 +406,7 @@ impl Compiler {
                         value: Value::Proc(p),
                         ..
                     } => procs.push(p),
+                    Resolved::ProcSet(set) => procs.extend(set),
                     _ => {
                         if ids.len() == 1 {
                             return self.entity_operand(f, scope, id, span);
@@ -474,6 +475,7 @@ impl Compiler {
                 untyped: self.entity(id).untyped_const,
             },
             Resolved::Proc(p) => Operand::Procs(vec![p]),
+            Resolved::ProcSet(set) => Operand::Procs(set),
             Resolved::Global {
                 global,
                 ty,
@@ -598,6 +600,29 @@ impl Compiler {
     ) -> Result<Operand> {
         match op {
             UnOp::Star => {
+                // `*x[i]` calls `operator *[]` when the base type has one.
+                if let E::Index(base, index) = &a.kind
+                    && let Ok(probe) = self.check_expr_no_emit(scope, base)
+                    && !self.operator_candidates(scope, "*[]", &[probe.ty()])?.is_empty()
+                {
+                    let mut base_op = self.check_expr(f, scope, base, None)?;
+                    if let Operand::Place {
+                        ty,
+                        addr,
+                    } = base_op
+                    {
+                        base_op = Operand::Value {
+                            ty: self.types.pointer(ty),
+                            val: addr,
+                        };
+                    }
+                    let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
+                    if let Some(result) = self.try_index_operator_overload(
+                        f, scope, "*[]", &base_op, &index_op, span,
+                    )? {
+                        return Ok(result);
+                    }
+                }
                 let inner = self.check_expr(f, scope, a, None)?;
                 match inner {
                     Operand::Type(t) => Ok(Operand::Type(self.types.pointer(t))),
@@ -1598,7 +1623,7 @@ impl Compiler {
         }
         let bty = base_op.ty();
         if let Some(result) =
-            self.try_index_operator_overload(f, scope, &base_op, &index_op, span)?
+            self.try_index_operator_overload(f, scope, "[]", &base_op, &index_op, span)?
         {
             return Ok(result);
         }

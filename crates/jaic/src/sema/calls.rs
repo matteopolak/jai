@@ -1451,23 +1451,26 @@ impl Compiler {
         for sc in scopes {
             let r = self.lookup(sc, name);
             for id in r.unwrap_or_default() {
-                let p = match self.resolve_entity(id)? {
+                let found = match self.resolve_entity(id)? {
                     scope::Resolved::Proc(p)
                     | scope::Resolved::Const {
                         value: Value::Proc(p),
                         ..
-                    } => p,
+                    } => vec![p],
+                    scope::Resolved::ProcSet(set) => set,
                     _ => continue,
                 };
-                if !procs.contains(&p) {
-                    procs.push(p);
+                for p in found {
+                    if !procs.contains(&p) {
+                        procs.push(p);
+                    }
                 }
             }
         }
         Ok(procs)
     }
 
-    fn overloadable(&self, ty: TypeId) -> bool {
+    pub(super) fn overloadable(&self, ty: TypeId) -> bool {
         matches!(
             self.types.kind(ty),
             TypeKind::Struct(_)
@@ -1604,6 +1607,7 @@ impl Compiler {
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,
+        text: &str,
         base: &Operand,
         index: &Operand,
         span: Span,
@@ -1613,7 +1617,7 @@ impl Compiler {
         if !matches!(self.types.kind(target), TypeKind::Struct(_)) {
             return Ok(None);
         }
-        let procs = self.operator_candidates(scope, "[]", &[bt])?;
+        let procs = self.operator_candidates(scope, text, &[bt])?;
         if procs.is_empty() {
             return Ok(None);
         }

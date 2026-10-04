@@ -142,6 +142,8 @@ pub struct Compiler {
     pub main_module: Option<ModuleId>,
     /// `#add_context` declarations with their declaring scope, in load order.
     pub add_contexts: Vec<(Rc<ast::Decl>, ScopeId)>,
+    /// `#poke_name Module name;` directives: (module expression, name, declaring file scope).
+    pub pokes: Vec<(ast::Expr, Sym, ScopeId)>,
     pub context_type: Option<TypeId>,
     pub top_level_runs: Vec<(ast::Expr, ScopeId)>,
     pub asserts: Vec<(ast::Expr, Option<ast::Expr>, ScopeId)>,
@@ -203,6 +205,7 @@ impl Compiler {
             runtime_support: None,
             main_module: None,
             add_contexts: Vec::new(),
+            pokes: Vec::new(),
             context_type: None,
             top_level_runs: Vec::new(),
             asserts: Vec::new(),
