@@ -16,7 +16,7 @@ vector_cases :: () -> bool {
 }
 quaternion_cases :: () -> bool {
     q: Quaternion;
-    if q.w!=0 return false;
+    if q.w!=1 return false;
     set_from_axis_and_angle(*q,axis=make_vector3(0,0,1),angle=cast(float) (PI64*0.5));
     rotated:=rotate(make_vector3(1,0,0),q);
     if abs(rotated.x)>0.00001 || abs(rotated.y-1)>0.00001 || abs(rotated.z)>0.00001 return false;
