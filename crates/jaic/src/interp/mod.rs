@@ -33,6 +33,9 @@ pub enum Hook {
     /// `write_strings(strings: ..string, to_standard_error: bool)`
     WriteStrings,
     DebugBreak,
+    /// A `Compiler` module primitive (`__jaic_*`); the flag says whether the
+    /// procedure takes a context pointer.
+    Meta(crate::build::MetaOp, bool),
 }
 
 /// Where program output and platform services go.
@@ -213,6 +216,8 @@ pub struct Interp {
     loc: Option<(u32, u32, u32)>,
     /// True while evaluating compile-time code (`#compile_time`).
     pub compile_time: bool,
+    /// Workspace registry for the `Compiler` module, when the embedder has one.
+    pub workspaces: Option<crate::build::SharedWorkspaces>,
 }
 
 impl Default for Interp {
@@ -236,6 +241,7 @@ impl Interp {
             depth: 0,
             loc: None,
             compile_time: true,
+            workspaces: None,
         }
     }
 
@@ -518,6 +524,18 @@ impl Interp {
                 }
             }
             Hook::DebugBreak => return self.trap("debug_break() was called"),
+            Hook::Meta(op, has_context) => {
+                let Some(workspaces) = self.workspaces.clone() else {
+                    return self.trap("this build has no compiler workspaces (Compiler module)");
+                };
+                let loc = self.loc;
+                return crate::build::call(&workspaces, op, has_context, args, self).map_err(
+                    |mut t| {
+                        t.loc = t.loc.or(loc);
+                        t
+                    },
+                );
+            }
         }
         Ok(Vec::new())
     }

@@ -4,6 +4,7 @@
 //! the checked tree) → `ir` (lowered procedures) → `interp` (compile-time
 //! execution, scripting, browser) or the LLVM backend in `jaic-llvm`.
 pub mod ast;
+pub mod build;
 pub mod intern;
 pub mod interp;
 pub mod ir;

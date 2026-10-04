@@ -1,7 +1,8 @@
 //! Playground entry point: compile and run a set of files with the `jaic` core.
+use jaic::build::{BuildEnv, Workspaces};
 use jaic::interp::{Host, SandboxHost};
 use jaic::ir;
-use jaic::sema::{Compiler, Options, TargetCpu, TargetOs, VirtualFs};
+use jaic::sema::{Compiler, FileSystem, Options, TargetCpu, TargetOs, VirtualFs};
 use jaic::source::{Diagnostic, Severity};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -196,11 +197,34 @@ pub fn run(files: &BTreeMap<String, Vec<u8>>, main: &str) -> PlayResult {
         return result;
     }
     let host = Rc::new(RefCell::new(SandboxHost::default()));
-    let mut compiler = Compiler::new(options(), Box::new(virtual_fs(files)));
+    let fs: Rc<dyn FileSystem> = Rc::new(virtual_fs(files));
+    // Metaprogram workspaces are checked (no output backend in the browser).
+    let workspace_host = host.clone();
+    let reports = host.clone();
+    let workspaces = Workspaces::new(BuildEnv {
+        fs: fs.clone(),
+        options: options(),
+        backend: None,
+        command_line: Vec::new(),
+        make_host: Box::new(move || Box::new(SharedHost(workspace_host.clone()))),
+        report: Box::new(move |text| {
+            reports
+                .borrow_mut()
+                .write(format!("{text}\n").as_bytes(), true)
+        }),
+    });
+    let mut compiler = Compiler::new(options(), fs);
     compiler.interp.host = Box::new(SharedHost(host.clone()));
+    compiler.attach_workspaces(workspaces.clone());
     let entry = PathBuf::from(format!("{WORKSPACE_ROOT}/{}", main.trim_start_matches('/')));
     let outcome = match compiler.compile_program(&entry) {
-        Ok(()) => compiler.run_program().map(Some),
+        Ok(()) => {
+            if let Err(message) = jaic::build::finish_all(&workspaces) {
+                let text = format!("error: {message}\n");
+                host.borrow_mut().write(text.as_bytes(), true);
+            }
+            compiler.run_program().map(Some)
+        }
         Err(d) => Err(d),
     };
     match outcome {
