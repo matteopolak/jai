@@ -1,131 +1,137 @@
-// OpenJai public shape: locators name reusable positions in parallel arrays.
-#scope_export;
+// Explicit legacy namespace: stable-address storage with two-part locators.
+#scope_file;
 #import "Basic";
+#scope_export;
 
-Bucket_Locator :: struct { index: int; }
-
-Bucket_Array :: struct ($T: Type, $BUCKET_SIZE: int) {
-    items: [..] T;
-    occupied: [..] bool;
-    count: int;
-    all_buckets: [..] int;
-    unfull_buckets: [..] int;
-    #assert BUCKET_SIZE > 0;
+Bucket_Array :: struct (type: Type, items_per_bucket: int, always_iterate_by_pointer := false) {
+    count: s64;
+    allocator: Allocator;
+    My_Bucket :: Bucket(type, items_per_bucket);
+    all_buckets: [..] *My_Bucket;
+    unfull_buckets: [..] *My_Bucket;
+    #assert items_per_bucket > 0;
 }
 
-bucket_array_add :: (array: *Bucket_Array($T, $BUCKET_SIZE), value: T) -> Bucket_Locator, *T {
-    index: int = -1;
-    while array.unfull_buckets.count > 0 && index < 0 {
-        entry: int = 0;
-        bucket := array.unfull_buckets[0];
-        for array.unfull_buckets {
-            if it < bucket { bucket = it; entry = it_index; }
-        }
-        begin := bucket * BUCKET_SIZE;
-        end := begin + BUCKET_SIZE;
-        if end > array.occupied.count end = array.occupied.count;
-        cursor := begin;
-        while cursor < end {
-            if !array.occupied[cursor] { index = cursor; break; }
-            cursor += 1;
-        }
-        if index < 0 {
-            if end < begin + BUCKET_SIZE break;
-            array_unordered_remove_by_index(*array.unfull_buckets, entry);
-        }
-    }
-    if index < 0 {
-        index = array.items.count;
-        if index % BUCKET_SIZE == 0 array_add(*array.all_buckets, index / BUCKET_SIZE);
-        array_add(*array.items, value);
-        array_add(*array.occupied, true);
-    } else {
-        array.items[index] = value;
-        array.occupied[index] = true;
-    }
-    array.count += 1;
-    bucket := index / BUCKET_SIZE;
-    bucket_end := (bucket + 1) * BUCKET_SIZE;
-    has_space := bucket_end > array.occupied.count;
-    if !has_space {
-        for slot: bucket * BUCKET_SIZE..bucket_end - 1 {
-            if !array.occupied[slot] { has_space = true; break; }
-        }
-    }
-    listed: int = -1;
-    for array.unfull_buckets if it == bucket { listed = it_index; break; }
-    if has_space && listed < 0 array_add(*array.unfull_buckets, bucket);
-    if !has_space && listed >= 0 array_unordered_remove_by_index(*array.unfull_buckets, listed);
-    return .{index}, *array.items[index];
+Bucket :: struct (type: Type, items_per_bucket: int) {
+    occupied: [items_per_bucket] bool;
+    data: [items_per_bucket] type = ---;
+    lowest_maybe_not_occupied: s32;
+    bucket_index: u32;
+    count := 0;
 }
 
-bucket_array_find :: (array: *Bucket_Array($T, $BUCKET_SIZE), locator: Bucket_Locator) -> T {
-    initial: T;
-    if locator.index < 0 || locator.index >= array.items.count return initial;
-    if !array.occupied[locator.index] return initial;
-    return array.items[locator.index];
+Bucket_Locator :: struct {
+    bucket_index: u32;
+    slot_index: s32;
 }
 
-bucket_array_remove :: (array: *Bucket_Array($T, $BUCKET_SIZE), locator: Bucket_Locator) {
-    index := locator.index;
-    if index < 0 || index >= array.occupied.count return;
-    if !array.occupied[index] return;
-    array.occupied[index] = false;
-    array.count -= 1;
-    bucket := index / BUCKET_SIZE;
-    for array.unfull_buckets if it == bucket return;
-    array_add(*array.unfull_buckets, bucket);
-}
-
-bucket_array_reset :: (array: *Bucket_Array($T, $BUCKET_SIZE)) {
-    array_reset(*array.items);
-    array_reset(*array.occupied);
-    array_reset(*array.all_buckets);
-    array_reset(*array.unfull_buckets);
-    array.count = 0;
-}
-
-// Additional cleanup helper; reset deliberately retains backing allocation.
-bucket_array_free :: (array: *Bucket_Array($T, $BUCKET_SIZE)) {
-    array_free(array.items);
-    array_free(array.occupied);
+bucket_array_reset :: (array: *Bucket_Array) {
+    allocator := array.allocator;
+    if !allocator.proc allocator = context.allocator;
+    for array.all_buckets free(it, allocator);
     array_free(array.all_buckets);
     array_free(array.unfull_buckets);
-    array.items = .{};
-    array.occupied = .{};
     array.all_buckets = .{};
     array.unfull_buckets = .{};
     array.count = 0;
 }
 
-operator *[] :: (array: Bucket_Array($T, $BUCKET_SIZE), index: int) -> *T {
-    assert(index >= 0 && index < array.items.count && array.occupied[index]);
-    return *array.items[index];
+bucket_array_add :: (array: *Bucket_Array, item: array.type) -> (Bucket_Locator, pointer: *array.type) {
+    pointer, locator := find_and_occupy_empty_slot(array, false);
+    <<pointer = item;
+    return locator, pointer;
 }
 
-for_expansion :: (array: *$S/Bucket_Array, body: Code, flags: For_Flags) #expand {
+bucket_array_find :: (array: *Bucket_Array, locator: Bucket_Locator) -> array.type {
+    assert(cast(s64)locator.bucket_index < array.all_buckets.count);
+    assert(locator.slot_index >= 0 && locator.slot_index < array.items_per_bucket);
+    bucket := array.all_buckets[locator.bucket_index];
+    assert(bucket.occupied[locator.slot_index]);
+    return bucket.data[locator.slot_index];
+}
+
+bucket_array_remove :: (array: *Bucket_Array, locator: Bucket_Locator) {
+    assert(cast(s64)locator.bucket_index < array.all_buckets.count);
+    assert(locator.slot_index >= 0 && locator.slot_index < array.items_per_bucket);
+    bucket := array.all_buckets[locator.bucket_index];
+    assert(bucket.occupied[locator.slot_index]);
+    if bucket.count == array.items_per_bucket array_add(*array.unfull_buckets, bucket);
+    bucket.occupied[locator.slot_index] = false;
+    bucket.count -= 1;
+    array.count -= 1;
+    if locator.slot_index < bucket.lowest_maybe_not_occupied {
+        bucket.lowest_maybe_not_occupied = locator.slot_index;
+    }
+}
+
+find_and_occupy_empty_slot :: (array: *Bucket_Array, $initialize := true) -> *array.type, Bucket_Locator {
+    if array.unfull_buckets.count == 0 add_bucket(array);
+    bucket := array.unfull_buckets[array.unfull_buckets.count - 1];
+    slot := bucket.lowest_maybe_not_occupied;
+    while slot < array.items_per_bucket && bucket.occupied[slot] slot += 1;
+    assert(slot < array.items_per_bucket);
+    bucket.occupied[slot] = true;
+    bucket.count += 1;
+    bucket.lowest_maybe_not_occupied = slot + 1;
+    array.count += 1;
+    if bucket.count == array.items_per_bucket array.unfull_buckets.count -= 1;
+    pointer := *bucket.data[slot];
+    #if initialize {
+        initial: array.type;
+        <<pointer = initial;
+    }
+    locator: Bucket_Locator = .{bucket.bucket_index, slot};
+    return pointer, locator;
+}
+
+operator *[] :: (array: Bucket_Array, index: int) -> *array.type {
+    assert(index >= 0);
+    bucket_index := index / array.items_per_bucket;
+    slot := index % array.items_per_bucket;
+    assert(bucket_index < array.all_buckets.count);
+    assert(array.all_buckets[bucket_index].occupied[slot]);
+    return *array.all_buckets[bucket_index].data[slot];
+}
+
+for_expansion :: (array: *$T/Bucket_Array, body: Code, flags: For_Flags) #expand {
     REVERSE :: (flags & .REVERSE) != 0;
-    POINTER :: (flags & .POINTER) != 0;
-    cursor: int = 0;
-    stride: int = 1;
+    POINTER :: ((flags & .POINTER) != 0) || array.always_iterate_by_pointer;
+    physical: s64 = 0;
+    stride: s64 = 1;
     `it_index: int = -1;
     #if REVERSE {
-        cursor = array.items.count - 1;
+        physical = array.all_buckets.count * array.items_per_bucket - 1;
         stride = -1;
         it_index = array.count;
     }
-    while cursor >= 0 && cursor < array.items.count {
-        index := cursor;
-        cursor += stride;
-        if !array.occupied[index] continue;
+    while physical >= 0 && physical < array.all_buckets.count * array.items_per_bucket {
+        bucket := array.all_buckets[physical / array.items_per_bucket];
+        slot := physical % array.items_per_bucket;
+        physical += stride;
+        if !bucket.occupied[slot] continue;
         #if REVERSE it_index -= 1;
         else it_index += 1;
         #if POINTER {
-            `it := *array.items[index];
+            `it := *bucket.data[slot];
             #insert body;
         } else {
-            `it := array.items[index];
+            `it := bucket.data[slot];
             #insert body;
         }
     }
+}
+
+#scope_file;
+
+add_bucket :: (array: *Bucket_Array) -> *array.My_Bucket {
+    if !array.allocator.proc array.allocator = context.allocator;
+    array.all_buckets.allocator = array.allocator;
+    array.unfull_buckets.allocator = array.allocator;
+    assert(array.all_buckets.count < 0xffff_ffff);
+    bucket := New(array.My_Bucket, true, array.allocator);
+    assert(bucket != null);
+    bucket.bucket_index = cast(u32)array.all_buckets.count;
+    array_add(*array.all_buckets, bucket);
+    array_add(*array.unfull_buckets, bucket);
+    return bucket;
 }

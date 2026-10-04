@@ -386,3 +386,4 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [jaic compiler workspaces](jaic-workspaces.md) — Workspace registry, `__jaic_*` Compiler-module primitives, events and output backends.
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
 - [jaic regression sweep](jaic-sweep.md) — `tools/jaic-sweep.py` sets (corpus, stdlib, upstream) and how to extend them.
+- [Basic calendar time and platform exports](stdlib-basic-time-and-platform.md) — to_calendar/calendar_to_apollo, working directory in Basic, Machine_X64 hooks, String scan, Bucket_Array shape.

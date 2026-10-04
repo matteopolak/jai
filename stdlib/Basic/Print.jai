@@ -871,3 +871,13 @@ log_error :: (section: *Log_Section, format_string: string, args: .. Any, loc :=
 log_warning :: (format: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
     count := log(format, ..args, loc = loc, flags = flags | .WARNING, user_flags = user_flags, section = section);
 }
+
+// Appends context.print_style.indentation_depth * format.indentation_width spaces.
+append_indentation :: (builder: *String_Builder, format: *FormatStruct) {
+    spaces16 :: "                ";
+    num_spaces := context.print_style.indentation_depth * format.indentation_width;
+    if num_spaces <= 0 return;
+    for 1..num_spaces / 16 append(builder, spaces16);
+    remainder := num_spaces % 16;
+    if remainder append(builder, spaces16.data, remainder);
+}

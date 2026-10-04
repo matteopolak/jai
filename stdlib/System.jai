@@ -9,15 +9,6 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
     OS_Error_Code :: Windows.OS_Error_Code;
     get_error_value :: Windows.GetLastError;
 
-    set_working_directory :: (path: string) -> bool { return Windows.SetCurrentDirectoryW(os_utf8_to_wide(path)) != 0; }
-    get_working_directory :: () -> string {
-        required := Windows.GetCurrentDirectoryW(0, null);
-        if !required return "";
-        buffer := cast(*u16) alloc((required + 1) * 2, temp);
-        actual := Windows.GetCurrentDirectoryW(required + 1, buffer);
-        if actual == 0 || actual > required return "";
-        return os_wide_to_utf8(buffer, xx actual);
-    }
     get_path_of_running_executable :: () -> string {
         capacity: s32 = 512;
         while capacity <= 32768 {
@@ -61,17 +52,6 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
     OS_Error_Code :: P.OS_Error_Code;
     get_error_value :: P.errno;
 
-    set_working_directory :: (path: string) -> bool { return P.chdir(temp_c_string(path)) == 0; }
-    get_working_directory :: () -> string {
-        capacity: s64 = 256;
-        while capacity <= 1048576 {
-            buffer := cast(*u8) alloc(capacity, temp);
-            if P.getcwd(buffer, xx capacity) return to_string(buffer);
-            if P.errno() != P.ERANGE return "";
-            capacity *= 2;
-        }
-        return "";
-    }
     get_path_of_running_executable :: () -> string {
         #if OS == .MACOS || OS == .IOS {
             count: u32;
@@ -96,6 +76,27 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
         result := P.sysconf(._SC_NPROCESSORS_ONLN);
         if result <= 0 return 0;
         return result;
+    }
+    #if OS == .LINUX || OS == .ANDROID || OS == .MACOS {
+        // Results live in temporary storage. An empty username means the current user.
+        get_passwd_for_user :: (username := "") -> (success: bool, p: P.passwd) {
+            buffer_size: s64 = 1024;
+            while true {
+                buffer := cast(*u8) alloc(buffer_size, temp);
+                result_pwd: *P.passwd;
+                pwd: P.passwd;
+                result: s32;
+                if username result = P.getpwnam_r(temp_c_string(username), *pwd, buffer, cast(u64) buffer_size, *result_pwd);
+                else result = P.getpwuid_r(P.getuid(), *pwd, buffer, cast(u64) buffer_size, *result_pwd);
+                if result != 0 {
+                    if P.errno() == P.ERANGE && buffer_size < 16384 { buffer_size *= 2; continue; }
+                    return false, .{};
+                }
+                if !result_pwd return false, pwd;
+                return true, pwd;
+            }
+            return false, .{};
+        }
     }
     get_username :: () -> string, success: bool {
         entry := P.getpwuid(P.getuid());
