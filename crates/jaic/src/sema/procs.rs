@@ -237,6 +237,53 @@ impl Compiler {
         Ok(sig)
     }
 
+    /// Does type `t` name one of the parameters (`-> type_of(asset)`, `p: cache.Proc`)?
+    fn mentions_param(&self, t: &ast::Expr, params: &[ParamInfo]) -> bool {
+        if (t.span.file.0 as usize) >= self.sources.len() {
+            return false;
+        }
+        let text = self.sources.snippet(t.span);
+        let word = |c: char| c.is_alphanumeric() || c == '_';
+        text.split(|c: char| !word(c)).any(|w| {
+            params
+                .iter()
+                .any(|p| p.name.is_some_and(|n| n.as_str() == w))
+        })
+    }
+
+    /// A parameter or result type naming parameters: checked with the parameters in scope
+    /// (only their types are known).
+    fn type_from_params(
+        &mut self,
+        scope: ScopeId,
+        t: &ast::Expr,
+        params: &[ParamInfo],
+    ) -> Result<TypeId> {
+        let module = self.scope(scope).module;
+        let inner = self.new_scope(ScopeKind::Block, Some(scope), module, None);
+        let mut scratch = self.scratch_ctx(inner);
+        let depth = self.scope(inner).proc_depth;
+        for param in params {
+            let Some(name) = param.name else {
+                continue;
+            };
+            let addr = scratch.b.iconst(ir::Ty::Ptr, 0);
+            self.add_entity(
+                inner,
+                name,
+                param.span,
+                EntityKind::Local {
+                    ty: param.ty,
+                    addr,
+                    depth,
+                },
+                false,
+            );
+        }
+        let op = self.check_expr(&mut scratch, inner, t, Some(TypeId::TYPE))?;
+        self.operand_as_type(op, t.span)
+    }
+
     fn build_signature(&mut self, id: ProcId) -> Result<Signature> {
         let p = self.proc(id);
         let header = p.lit.header.clone();
@@ -248,6 +295,9 @@ impl Compiler {
                 continue;
             }
             let ty = match (&param.ty, &param.default) {
+                (Some(t), _) if self.mentions_param(t, &params) => {
+                    self.type_from_params(scope, t, &params)?
+                }
                 (Some(t), _) => self.eval_type(scope, t)?,
                 (None, Some(d)) if matches!(d.kind, ast::ExprKind::CallerCode) => TypeId::CODE,
                 (None, Some(d)) => {
@@ -284,6 +334,9 @@ impl Compiler {
         let mut return_names = Vec::new();
         for r in &header.returns {
             let ty = match (&r.ty, &r.default) {
+                (Some(t), _) if self.mentions_param(t, &params) => {
+                    self.type_from_params(scope, t, &params)?
+                }
                 (Some(t), _) => self.eval_type(scope, t)?,
                 (None, Some(d)) => match self.eval_const(scope, d, None)? {
                     Operand::Const {
@@ -677,24 +730,6 @@ impl Compiler {
             BodyState::Queued
         };
         result
-    }
-
-    /// Typecheck a body that is not lowered yet without keeping its code, so syntax-tree
-    /// messages can report local declaration types (`local_decl_types`) before a
-    /// metaprogram gets the chance to modify the body. Errors surface on the real lowering.
-    pub fn typecheck_body_dry(&mut self, id: ProcId) {
-        let p = self.proc(id);
-        if matches!(p.body_state, BodyState::Lowering | BodyState::Done)
-            || p.is_poly
-            || p.is_macro
-            || p.lit.body.is_none()
-        {
-            return;
-        }
-        let state = p.body_state;
-        self.procs[id.0 as usize].body_state = BodyState::Lowering;
-        let _ = self.lower_body_code(id, None);
-        self.procs[id.0 as usize].body_state = state;
     }
 
     fn lower_body_inner(&mut self, id: ProcId) -> Result<()> {

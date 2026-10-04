@@ -50,7 +50,15 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
 - **compiler_modify_procedure**: Jai sends the record ids of `body.block.statements`; they are queued on the
   workspace and applied at its next step (`Compiler::modify_procedure`): statements exported from that body map
   back to their AST, `#code` roots are re-parsed from `__source` inside a dummy procedure. The procedure's
-  `ProcLit` is replaced if its body has not been lowered yet (procedures already used by `#run` keep their code).
+  `ProcLit` is replaced and, if the body was already lowered, lowered again into the same function.
+- **TYPECHECKED for procedures**: a procedure whose body is not lowered yet is reported with a null
+  `body_or_null` and queued in `ExportState::pending_bodies`. Each later `export_typechecked` reports the
+  queued bodies that have been lowered since (records carry local declaration types) and patches the header's
+  `body_or_null`. Bodies the program never reaches are never lowered, so their errors never surface — as in Jai.
+- **Phases**: when a workspace runs out of sources, `build.rs::step` first lowers everything reachable
+  (`Compiler::lower_reachable`). If that reports new declarations or bodies (a body may declare more through
+  `#insert,scope(...)`), the metaprogram gets another `TYPECHECKED_ALL_WE_CAN` and may add code; only a
+  lowering round that reports nothing new ends in `finish_program` and code generation.
 
 ## How to change it
 

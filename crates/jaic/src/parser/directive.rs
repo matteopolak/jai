@@ -277,7 +277,12 @@ impl Parser<'_> {
                 _ => {}
             }
         }
-        let ty = self.parse_unary()?;
+        // `#type (...)` is always a procedure type: `#type (*T)` takes one `*T` argument.
+        let ty = if self.at(P::LParen) {
+            self.parse_proc_expr(crate::ast::CallHintFlag::None)?
+        } else {
+            self.parse_unary()?
+        };
         let span = start.to(ty.span);
         Ok(mk(
             ExprKind::TypeDirective {

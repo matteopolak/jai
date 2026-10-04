@@ -223,6 +223,8 @@ pub struct Interp {
     /// Codes made by compile-time code (`compiler_get_code`): their index and the
     /// index of the code whose scope they take. The compiler adopts them lazily.
     pub made_codes: Vec<(usize, usize)>,
+    /// Set in the child process after compile-time code calls `fork`.
+    forked_child: bool,
 }
 
 impl Default for Interp {
@@ -249,6 +251,7 @@ impl Interp {
             workspaces: None,
             codes: Vec::new(),
             made_codes: Vec::new(),
+            forked_child: false,
         }
     }
 
@@ -448,7 +451,11 @@ impl Interp {
                 "foreign procedure '{symbol}' is not available here"
             ));
         }
-        self.call_native(addr, args, sig)
+        let result = self.call_native(addr, args, sig)?;
+        if &*symbol == "fork" && result.first() == Some(&0) {
+            self.forked_child = true;
+        }
+        Ok(result)
     }
 
     fn call_native(&mut self, addr: u64, args: &[u64], sig: &ir::Sig) -> Res<Vec<u64>> {
@@ -473,7 +480,23 @@ impl Interp {
             self.stack = vec![0u64; STACK_SIZE / 8].into_boxed_slice();
             self.sp = 0;
         }
-        self.exec(program, func, args)
+        let result = self.exec(program, func, args);
+        if self.forked_child {
+            // Compile-time code forked and the child came back here (its `exec*` failed
+            // or it trapped): it must not go on compiling alongside the parent.
+            if let Err(t) = &result {
+                eprintln!(
+                    "error in a process forked by compile-time code: {}",
+                    t.message
+                );
+            }
+            exit_forked_child(if result.is_ok() {
+                0
+            } else {
+                127
+            });
+        }
+        result
     }
 
     fn exec(&mut self, program: &Program, id: FuncId, args: &[u64]) -> Res<Vec<u64>> {
@@ -1028,4 +1051,17 @@ fn conv(op: ConvOp, from: Ty, to: Ty, v: u64) -> u64 {
         ConvOp::FExt | ConvOp::FTrunc => out_f(f(v)),
         ConvOp::Bitcast => mask(to, v),
     }
+}
+
+/// Leave a process forked by compile-time code without running the parent's cleanup.
+fn exit_forked_child(code: i32) -> ! {
+    #[cfg(unix)]
+    {
+        unsafe extern "C" {
+            fn _exit(code: i32) -> !;
+        }
+        unsafe { _exit(code) }
+    }
+    #[cfg(not(unix))]
+    std::process::exit(code)
 }
