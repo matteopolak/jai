@@ -92,6 +92,8 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   (they need a layout still in progress) stay queued and are reported by the final `drain_bodies`.
   `drain_bodies` itself retries failed bodies while other bodies still lower, since a later body may declare
   what an earlier one uses (`#insert,scope(Top)`); only a pass with no progress reports its first error.
+  Progress means a body that was queued when the pass began lowered: a failing body re-creates its nested
+  procedures on each retry, and counting those once made the loop run forever.
 - **Auto-dereference** (`convert.rs`): `*Thing` converts to a `Thing` value (structs only, one level), also to
   an `#as` member's value. Poly patterns (`Base`, `$T/Base`, `Base($T)`) accept `*Instance` the same way.
 - **Types naming parameters**: a parameter or result type that mentions an earlier parameter
