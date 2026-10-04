@@ -335,6 +335,7 @@ Public source corpora are input data.
 - [Source expression parsing](source-expression-parsing.md)
 - [Reference corpus tests](specs/jai/README.md)
 - [Right-handed GetRect (default `GetRect`)](specs/stdlib/README.md) — y-up geometry, `legacy/GetRect` forwarders, and overlay notes.
+- [GetRect shared implementation](specs/stdlib/README.md) — `GetRect_Common`, the `GETRECT_Y_UP` switch, and how both orientations and the legacy stubs use it.
 - [Right-handed GetRect UI](specs/stdlib/README.md) — widgets, upward-positive layout, and cached resource reads.
 
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
