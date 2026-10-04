@@ -114,7 +114,8 @@ impl Compiler {
         let is_poly = header
             .params
             .iter()
-            .any(|p| p.baked || p.ty.as_ref().is_some_and(has_poly));
+            .any(|p| p.baked || p.ty.as_ref().is_some_and(has_poly))
+            || header.returns.iter().any(|r| r.ty.as_ref().is_some_and(has_poly));
         let export = header
             .flags
             .program_export

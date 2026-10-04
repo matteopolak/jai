@@ -292,11 +292,13 @@ impl Compiler {
                 value,
                 untyped,
             } => {
-                let ty = if untyped && expected.is_none() {
-                    self.entity_mut(id).untyped_const = true;
-                    self.default_untyped(ty, &value)
-                } else {
-                    ty
+                let ty = match expected {
+                    Some(t) => t,
+                    None if untyped => {
+                        self.entity_mut(id).untyped_const = true;
+                        self.default_untyped(ty, &value)
+                    }
+                    None => ty,
                 };
                 let value = if self.types.is_float(ty) {
                     match value {
@@ -513,7 +515,8 @@ impl Compiler {
                 value: Value::Proc(_) | Value::Type(_) | Value::String(_),
                 ..
             }
-            | Operand::Type(_) => Ok(true),
+            | Operand::Type(_)
+            | Operand::Procs(_) => Ok(true),
             other => err(
                 expr.span,
                 format!(
