@@ -113,7 +113,7 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
     if !gamepad.generate_events && !(left_stick && gamepad.generate_left_stick_events) return;
     event: Input.Event;
     event.type = .KEYBOARD;
-    event.key_pressed = pressed;
+    event.key_pressed = xx (pressed);
     event.key_code = cast(Input.Key_Code) (cast(s64) Input.Key_Code.GAMEPAD_0_BEGIN + index);
     Input.publish_input_event(event);
 }

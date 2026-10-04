@@ -54,6 +54,14 @@ def main():
                     help="cases run at once (default: CPU count)")
     a = ap.parse_args()
     todo = [c for s in a.sets for c in cases(s) if a.filter in c[0]]
+    # Upstream cases may name setup commands (building a C library the program loads); they run
+    # once, serially, in the case's directory before any case starts.
+    if "upstream" in a.sets:
+        for c in json.loads((ROOT / "tools/upstream-cases.json").read_text()):
+            if a.filter in c["id"]:
+                for command in c.get("setup", []):
+                    subprocess.run(command, cwd=(ROOT / "corpus/upstream" / c["path"]).parent,
+                                   capture_output=True, stdin=subprocess.DEVNULL)
 
     def run(case):
         cid, path, mode, expect, extra = case

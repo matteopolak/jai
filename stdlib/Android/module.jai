@@ -77,7 +77,7 @@ Input :: #import "Input";
                 translated: Input.Event;
                 translated.type = .KEYBOARD;
                 translated.key_code = key;
-                translated.key_pressed = action == 0;
+                translated.key_pressed = xx (action == 0);
                 translated.repeat = AKeyEvent_getRepeatCount(event) > 0;
                 translated.shift_pressed = (meta & 1) != 0;
                 translated.alt_pressed = (meta & 2) != 0;
@@ -105,7 +105,7 @@ Input :: #import "Input";
                 if index == 0 button.key_code = .MOUSE_BUTTON_LEFT;
                 else if index == 1 button.key_code = .MOUSE_BUTTON_RIGHT;
                 else button.key_code = .MOUSE_BUTTON_MIDDLE;
-                button.key_pressed = (buttons & mask) != 0;
+                button.key_pressed = xx ((buttons & mask) != 0);
                 Input.queue_input_event(window, button);
             }
             _sdk_android_mouse_buttons = buttons;

@@ -71,7 +71,7 @@ x11_poll_input :: () {
         }
         event: Event;
         if native.type == X.KeyPress || native.type == X.KeyRelease {
-            event.type = .KEYBOARD; event.key_pressed = native.type == X.KeyPress;
+            event.type = .KEYBOARD; event.key_pressed = xx (native.type == X.KeyPress);
             event.key_code = x11_key_code(X.XLookupKeysym(*native.xkey, 0)); event.repeat = repeated;
             x11_modifiers(*event, native.xkey.state); queue_input_event(routed_window, event);
             if native.type == X.KeyPress {
@@ -107,7 +107,7 @@ x11_poll_input :: () {
                     x11_modifiers(*event, native.xbutton.state); queue_input_event(routed_window, event);
                 }
             } else if number >= 1 && number <= 3 {
-                event.type = .KEYBOARD; event.key_pressed = native.type == X.ButtonPress;
+                event.type = .KEYBOARD; event.key_pressed = xx (native.type == X.ButtonPress);
                 event.key_code = .MOUSE_BUTTON_LEFT;
                 if number == 2 event.key_code = .MOUSE_BUTTON_MIDDLE;
                 if number == 3 event.key_code = .MOUSE_BUTTON_RIGHT;

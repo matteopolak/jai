@@ -182,7 +182,7 @@ add_mapping :: (keymap: *Keymap, key: Key_Code, modifier_flags: Event.Modifier_F
 keymap_handle_event :: (keymap: Keymap, e: Event) -> bool {
     if !keymap.enabled || (e.type != .KEYBOARD && e.type != .TEXT_INPUT) return false;
     key := cast(u32) e.key_code;
-    pressed := e.key_pressed;
+    pressed := e.key_pressed != 0;
     if e.type == .TEXT_INPUT { key = e.utf32; pressed = true; if key < 128 return false; }
     if key >= 97 && key <= 122 key -= 32;
     index := keymap.mappings.count;

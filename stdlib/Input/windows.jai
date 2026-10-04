@@ -99,7 +99,7 @@ windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lp
         if message.message == Win.WM_CLOSE { event.type = .QUIT; queue_input_event(window, event); }
         if message.message == Win.WM_KEYDOWN || message.message == Win.WM_KEYUP || message.message == Win.WM_SYSKEYDOWN || message.message == Win.WM_SYSKEYUP {
             event.type = .KEYBOARD; event.key_code = windows_key_code(cast(u32) message.wParam);
-            event.key_pressed = message.message == Win.WM_KEYDOWN || message.message == Win.WM_SYSKEYDOWN;
+            event.key_pressed = xx (message.message == Win.WM_KEYDOWN || message.message == Win.WM_SYSKEYDOWN);
             event.repeat = event.key_pressed && (cast(u64) message.lParam & (cast(u64) 1 << 30)) != 0;
             windows_modifiers(*event); queue_input_event(window, event);
         } else if message.message == Win.WM_CHAR {
@@ -112,7 +112,7 @@ windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lp
             }
         } else if message.message == Win.WM_LBUTTONDOWN || message.message == Win.WM_LBUTTONUP || message.message == Win.WM_RBUTTONDOWN || message.message == Win.WM_RBUTTONUP || message.message == Win.WM_MBUTTONDOWN || message.message == Win.WM_MBUTTONUP {
             event.type = .KEYBOARD;
-            event.key_pressed = message.message == Win.WM_LBUTTONDOWN || message.message == Win.WM_RBUTTONDOWN || message.message == Win.WM_MBUTTONDOWN;
+            event.key_pressed = xx (message.message == Win.WM_LBUTTONDOWN || message.message == Win.WM_RBUTTONDOWN || message.message == Win.WM_MBUTTONDOWN);
             event.key_code = .MOUSE_BUTTON_LEFT;
             if message.message == Win.WM_RBUTTONDOWN || message.message == Win.WM_RBUTTONUP event.key_code = .MOUSE_BUTTON_RIGHT;
             if message.message == Win.WM_MBUTTONDOWN || message.message == Win.WM_MBUTTONUP event.key_code = .MOUSE_BUTTON_MIDDLE;

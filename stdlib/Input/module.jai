@@ -38,7 +38,7 @@ Window_Event :: struct {
         packed: u32 = 0;
     }
     type: Input_Event_Type;
-    key_pressed: bool;
+    key_pressed: u32;  // non-zero: pressed (else released)
     key_code: Key_Code;
     using modifier_flags: Modifier_Flags;
     utf32: u32;
@@ -240,8 +240,8 @@ publish_pending_event :: (pending: Pending_Input_Event) {
         key := cast(u32) event.key_code;
         if pending.associated {
             index := ensure_input_window(pending.window);
-            update_owner_key_state(*window_input_states[index].buttons[key], event.key_pressed);
-        } else update_owner_key_state(*unscoped_button_states[key], event.key_pressed);
+            update_owner_key_state(*window_input_states[index].buttons[key], event.key_pressed != 0);
+        } else update_owner_key_state(*unscoped_button_states[key], event.key_pressed != 0);
         state := *input_button_states[key];
         if event.key_pressed {
             if (state.* & .DOWN) == 0 state.* |= .START;
@@ -261,7 +261,7 @@ queued_window_key_down :: (window: Window_Type, key: u32) -> bool {
     if index >= 0 down = (window_input_states[index].buttons[key] & .DOWN) != 0;
     for pending: pending_events {
         if !pending.associated || pending.window != window || pending.event.type != .KEYBOARD || cast(u32) pending.event.key_code != key continue;
-        down = pending.event.key_pressed;
+        down = pending.event.key_pressed != 0;
     }
     return down;
 }
@@ -287,7 +287,7 @@ release_focus_buttons :: (window: Window_Type, scoped: bool) {
         if !down && !key_has_scoped_source(cast(u32) key) down = (input_button_states[key] & .DOWN) != 0;
         for pending: pending_events {
             if pending.associated || pending.event.type != .KEYBOARD || cast(s64) pending.event.key_code != key continue;
-            down = pending.event.key_pressed;
+            down = pending.event.key_pressed != 0;
         }
         if !down continue;
         event: Event; event.type = .KEYBOARD; event.key_code = cast(Key_Code) key;

@@ -100,7 +100,7 @@ macos_poll_input :: () {
             routed := cast(Window_Type) cast(u64) window;
             if kind == .NSEventTypeKeyDown || kind == .NSEventTypeKeyUp {
                 event.type=.KEYBOARD; event.key_code=mac_key_code(native);
-                event.key_pressed=kind==.NSEventTypeKeyDown;
+                event.key_pressed=xx (kind==.NSEventTypeKeyDown);
                 event.repeat=event.key_pressed && Mac.NSEvent.isARepeat(native)!=0;
                 queue_input_event(routed,event);
                 if event.key_pressed && !event.ctrl_pressed && !event.cmd_meta_pressed {
@@ -119,12 +119,12 @@ macos_poll_input :: () {
                 for mask,index: masks {
                     if ((flags ^ mac_modifier_mask)&mask)==0 continue;
                     modifier_event:=event; modifier_event.type=.KEYBOARD;
-                    modifier_event.key_code=codes[index]; modifier_event.key_pressed=(flags&mask)!=0;
+                    modifier_event.key_code=codes[index]; modifier_event.key_pressed=xx ((flags&mask)!=0);
                     queue_input_event(routed,modifier_event);
                 }
             } else if kind == .NSEventTypeLeftMouseDown || kind == .NSEventTypeLeftMouseUp || kind == .NSEventTypeRightMouseDown || kind == .NSEventTypeRightMouseUp || kind == .NSEventTypeOtherMouseDown || kind == .NSEventTypeOtherMouseUp {
                 event.type=.KEYBOARD;
-                event.key_pressed=kind==.NSEventTypeLeftMouseDown || kind==.NSEventTypeRightMouseDown || kind==.NSEventTypeOtherMouseDown;
+                event.key_pressed=xx (kind==.NSEventTypeLeftMouseDown || kind==.NSEventTypeRightMouseDown || kind==.NSEventTypeOtherMouseDown);
                 event.key_code=.MOUSE_BUTTON_LEFT;
                 if kind==.NSEventTypeRightMouseDown || kind==.NSEventTypeRightMouseUp event.key_code=.MOUSE_BUTTON_RIGHT;
                 if kind==.NSEventTypeOtherMouseDown || kind==.NSEventTypeOtherMouseUp event.key_code=.MOUSE_BUTTON_MIDDLE;

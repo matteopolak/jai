@@ -123,8 +123,10 @@ add_manifest_to_executable :: (exe_filename: string, options: Manifest_Options, 
     return sdk_end_update(update, .FALSE) != .FALSE;
 }
 
+// Call from a #run: links the executable for the Windows GUI subsystem, so no console opens.
 disable_runtime_console :: () {
-    sdk_free_console();
+    Compiler :: #import "Compiler";
+    Compiler.set_build_options_dc(.{append_linker_arguments = .["/SUBSYSTEM:windows", "/ENTRY:mainCRTStartup"]});
 }
 
 #scope_file
@@ -134,7 +136,6 @@ Files :: #import "File";
 sdk_begin_update :: (filename: *u16, delete_existing: BOOL) -> HANDLE #foreign kernel32 "BeginUpdateResourceW";
 sdk_update :: (update: HANDLE, resource_type: *u16, resource_name: *u16, language: u16, bytes: *void, count: DWORD) -> BOOL #foreign kernel32 "UpdateResourceW";
 sdk_end_update :: (update: HANDLE, discard: BOOL) -> BOOL #foreign kernel32 "EndUpdateResourceW";
-sdk_free_console :: () -> BOOL #foreign kernel32 "FreeConsole";
 kernel32 :: #system_library "kernel32";
 read_le16 :: (bytes: *u8) -> u16 { return cast(u16) bytes[0] | (cast(u16) bytes[1] << 8); }
 read_le32 :: (bytes: *u8) -> u32 { return cast(u32) bytes[0] | (cast(u32) bytes[1] << 8) | (cast(u32) bytes[2] << 16) | (cast(u32) bytes[3] << 24); }
