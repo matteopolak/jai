@@ -21,6 +21,7 @@ members = [
     "crates/jai-runtime",
     "crates/jai-wasm",
     "crates/jai-language-server",
+    "crates/jaic",
 ]
 
 [workspace.package]
