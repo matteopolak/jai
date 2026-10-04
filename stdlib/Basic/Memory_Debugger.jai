@@ -308,7 +308,7 @@ deinit_memory_debugger :: () {
     context.__basic_memory_debugger_hook = null;
 }
 
-#scope_file
+#scope_module
 MD_Heap :: struct { allocator: Allocator; destroyed: bool; next: *MD_Heap; }
 MD_Report_Row :: struct {
     record: *MD_Record;

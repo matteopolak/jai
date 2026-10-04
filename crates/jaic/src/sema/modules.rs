@@ -120,6 +120,18 @@ impl Compiler {
         if let Some(&id) = self.module_cache.get(&key) {
             return Ok(id);
         }
+        // A plain `#import "M"` joins an instance already configured elsewhere
+        // (`#import "Basic"()(MEMORY_DEBUGGER=true)` in the program applies to all).
+        if params.is_empty()
+            && let Some(id) = self
+                .module_cache
+                .iter()
+                .filter(|((path, _), _)| *path == key.0)
+                .map(|(_, &id)| id)
+                .min_by_key(|id| id.0)
+        {
+            return Ok(id);
+        }
         let id = ModuleId(self.modules.len() as u32);
         let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
         self.modules.push(Module {

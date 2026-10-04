@@ -78,7 +78,7 @@ overwriting_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_si
 retire :: (state: *Overwriting_Allocator, pointer: *void) -> bool {
     lock(*state.mutex);
     defer unlock(*state.mutex);
-    size, found := table_find(*state.table, pointer);
+    found, size := table_find(*state.table, pointer);
     if !found || size == 0xffff_ffff_ffff_ffff {
         assert(false, "invalid pointer or double free in overwriting allocator");
         return false;

@@ -160,14 +160,13 @@ events_per_window_update :: (window:Window_Type) {
 
 find_or_create_state :: ( $ T : Type , hash : u64 , start_using := true ) -> ( * T , created : bool ) {
     if state_stack.count>0 hash=combine_hashes(hash,cast,no_check(u64)state_stack[state_stack.count-1]);
-    for index:0..state_table.count-1 {
-        widget:=state_table.values[index];
-        if state_table.keys[index]==hash&&widget.widget_type==T {
+    for widget,key:state_table {
+        if key==hash&&widget.widget_type==T {
             if start_using start_using_state(widget); return cast(*T)widget,false;
         }
     }
     result:=New(T); result.widget_type=T;
-    Tables.table_add_duplicate(*state_table,hash,cast(*Active_Widget)result);
+    Tables.table_add(*state_table,hash,cast(*Active_Widget)result);
     if start_using start_using_state(cast(*Active_Widget)result);
     return result,true;
 }
@@ -740,7 +739,7 @@ ui_deinit :: () {
     for runtime:left_slider_runtimes { left_release_text_state(*runtime.editor); free(runtime); }
     array_reset(*left_slider_runtimes); array_reset(*left_text_views);
     for order:left_subwindow_orders free(order); array_reset(*left_subwindow_orders); left_raise_serial=0;
-    for widget:state_table.values {
+    for widget:state_table {
         if widget.widget_type==Text_Input_State left_release_text_state(cast(*Text_Input_State)widget);
         if widget.widget_type==Number_Input_State left_release_text_state(*(cast(*Number_Input_State)widget).text_input_state);
         if widget.widget_type==Color_Picker_State array_reset(*(cast(*Color_Picker_State)widget).stashed_colors);

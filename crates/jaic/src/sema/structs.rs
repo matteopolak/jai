@@ -737,7 +737,12 @@ impl Compiler {
         Ok(self.find_member(target, name, Span::default())?.is_some())
     }
 
-    fn apply_path(&mut self, f: &mut FnCtx, mut addr: ir::Val, path: &[PathStep]) -> ir::Val {
+    pub(super) fn apply_path(
+        &mut self,
+        f: &mut FnCtx,
+        mut addr: ir::Val,
+        path: &[PathStep],
+    ) -> ir::Val {
         for step in path {
             addr = match step {
                 PathStep::Offset(o) => f.b.ptr_offset(addr, *o),

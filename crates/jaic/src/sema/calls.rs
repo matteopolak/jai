@@ -66,6 +66,16 @@ impl Compiler {
         expected: Option<TypeId>,
         span: Span,
     ) -> Result<Operand> {
+        if args.iter().any(|a| a.context) {
+            // `f(x,, allocator = temp)`: call with a modified copy of the context.
+            let (overrides, plain): (Vec<ast::Arg>, Vec<ast::Arg>) =
+                args.iter().cloned().partition(|a| a.context);
+            let ctx = self.context_with_overrides(f, scope, &overrides, span)?;
+            let saved = f.context.replace(ctx);
+            let result = self.check_call(f, scope, callee, &plain, expected, span);
+            f.context = saved;
+            return result;
+        }
         let callee_op = self.check_expr(f, scope, callee, None)?;
         match callee_op {
             Operand::Builtin(b) => self.check_builtin(f, scope, b, args, expected, span),
@@ -93,6 +103,37 @@ impl Compiler {
                 self.call_indirect(f, ty, v, call_args, span)
             }
         }
+    }
+
+    /// A copy of the current context with fields replaced; an unnamed
+    /// override sets the allocator.
+    fn context_with_overrides(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        overrides: &[ast::Arg],
+        span: Span,
+    ) -> Result<ir::Val> {
+        let Some(current) = f.context else {
+            return err(
+                span,
+                "',,' context arguments need a context (not in #c_call code)",
+            );
+        };
+        let ctx_ty = self.context_type(span)?;
+        let copy = self.spill(f, ctx_ty, current, span)?;
+        for o in overrides {
+            let name = o.name.map_or_else(|| Sym::intern("allocator"), |n| n.name);
+            let Some((path, fty)) = self.find_member(ctx_ty, name, o.value.span)? else {
+                return err(o.value.span, format!("Context has no member '{name}'"));
+            };
+            let op = self.check_expr(f, scope, &o.value, Some(fty))?;
+            let op = self.convert(f, op, fty, o.value.span)?;
+            let (_, v) = self.rvalue(f, op, o.value.span)?;
+            let addr = self.apply_path(f, copy, &path);
+            self.store_value(f, fty, addr, v, o.value.span)?;
+        }
+        Ok(copy)
     }
 
     pub(super) fn precheck_args(
@@ -258,6 +299,11 @@ impl Compiler {
         })
     }
 
+    /// A `*Struct` argument passed to a by-value `Struct` parameter is dereferenced.
+    fn auto_deref_arg(&self, from: TypeId, param: TypeId) -> bool {
+        self.types.pointee(from) == Some(param) && self.types.as_struct(param).is_some()
+    }
+
     fn arg_cost(&mut self, arg: &CallArg, param: TypeId) -> Result<u32> {
         let Some(op) = &arg.op else {
             // Deferred arguments fit any plausible target; prefer exact-looking ones.
@@ -331,6 +377,9 @@ impl Compiler {
         let from = op.ty();
         if from == TypeId::F32 && untyped && param == TypeId::F32 {
             return Ok(convert::EXACT);
+        }
+        if self.auto_deref_arg(from, param) {
+            return Ok(convert::SUBTYPE);
         }
         self.implicit_cost(from, untyped, param).ok_or_else(|| {
             Box::new(Diagnostic::error(
@@ -831,7 +880,15 @@ impl Compiler {
         let op = match slot {
             Slot::Arg(a) | Slot::Spread(a) => {
                 let op = self.arg_operand(f, &args[*a], Some(param.ty))?;
-                self.convert(f, op, param.ty, args[*a].span)?
+                if self.auto_deref_arg(op.ty(), param.ty) {
+                    let (_, p) = self.rvalue(f, op, args[*a].span)?;
+                    Operand::Place {
+                        ty: param.ty,
+                        addr: p,
+                    }
+                } else {
+                    self.convert(f, op, param.ty, args[*a].span)?
+                }
             }
             Slot::Default => {
                 if param.variadic && param.default.is_none() {

@@ -1,5 +1,5 @@
 // Authored complete snapshots over the existing local visualization wire API.
-#scope_file
+#scope_module
 MD_Wire :: #import "Protocol_For_Memory_Visualization";
 MD_Channel :: #import "Shared_Memory_Channel";
 MD_Strings :: #import "Hash_Table";
@@ -55,8 +55,7 @@ vis_update :: () {
     version.default_allocator_proc = md_state.storage_allocator.proc;
     if !_vis_send(*version, size_of(version)) return;
     strings: MD_Strings.Table(string, s32);
-    strings.keys.allocator = md_state.storage_allocator;
-    strings.values.allocator = md_state.storage_allocator;
+    strings.allocator = md_state.storage_allocator;
     defer MD_Strings.deinit(*strings);
     for summary: report.sorted_summaries {
         if !_vis_trace(summary.alloc_site_trace, *strings) return;
@@ -144,7 +143,7 @@ _vis_send :: (data: *void, bytes: s64) -> bool {
     return true;
 }
 _vis_string :: (table: *MD_Strings.Table(string, s32), value: string) -> (index: s32, success: bool) {
-    existing, found := MD_Strings.table_find(table, value);
+    found, existing := MD_Strings.table_find(table, value);
     if found return existing, true;
     index := cast(s32)table.count;
     count := min(value.count, cast(s64)0x7fff_ffff);

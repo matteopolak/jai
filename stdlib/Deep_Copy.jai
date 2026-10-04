@@ -24,7 +24,7 @@ Deep_Copy :: (value: *$T, config: Deep_Copy_Config, preallocated_root: *void = n
     map := pointer_map;
     if !map map = *local_map;
     defer if !pointer_map deinit(*local_map.table);
-    existing, found := table_find(*map.table, value);
+    found, existing := table_find(*map.table, value);
     if found return cast(*T) existing;
     result := preallocated_root;
     if !result result = alloc(size_of(T));
@@ -56,7 +56,7 @@ clone_members :: (data: *void, info: *Type_Info, config: Deep_Copy_Config, map: 
             value.* = config.string_mapper_proc(value.*, config.string_mapper_data);
             return;
         }
-        replacement, found := table_find(*map.table, value.data);
+        found, replacement := table_find(*map.table, value.data);
         if !found {
             replacement = alloc(value.count);
             if !replacement return;
@@ -71,7 +71,7 @@ clone_members :: (data: *void, info: *Type_Info, config: Deep_Copy_Config, map: 
         slot := cast(**void) data;
         source := slot.*;
         if !source return;
-        destination, found := table_find(*map.table, source);
+        found, destination := table_find(*map.table, source);
         if found {
             slot.* = destination;
             return;
@@ -99,7 +99,7 @@ clone_members :: (data: *void, info: *Type_Info, config: Deep_Copy_Config, map: 
             count = descriptor.count;
             elements = descriptor.data;
             if !elements return;
-            replacement, found := table_find(*map.table, elements);
+            found, replacement := table_find(*map.table, elements);
             if found {
                 descriptor.data = cast(*u8) replacement;
                 return;
