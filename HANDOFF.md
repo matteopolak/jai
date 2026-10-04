@@ -64,3 +64,18 @@ That test run also printed a high number of unused/dead-code warnings in `jai-se
 - User preference for delegation: reuse existing agents where possible and prefer Luna agents for routine work; use Sol for harder tasks. The previous team had many long-lived or failed agents. Check agent status and ownership before starting more work, and treat frozen packets under `artifacts/agent-packets/` as uncompiled proposals unless a manifest proves they apply to the current source hashes and their integration tests pass.
 - The user asked for regular commits and pushes. Commit coherent, reviewable progress to `main` and verify `git status -sb` and the remote ref afterward.
 
+
+## Status 2026-10-04
+
+- focus-editor `first.jai` passes `jaic check` (case `focus-build` in `tools/upstream-cases.json`); sweep 143/144 (only the expected negative control fails).
+- The_Way_to_Jai: 42 of 315 example files fail `jaic check`. Some are expected: Windows-only code, missing raylib/glfw native libraries, intentional `#assert` failures, `.build/` artifacts. Real gaps found:
+  - void values: `print` of a `void` variable, `<< ptr` on `*void`
+  - `make_leak_report` should return `Leak_Report` only; the `-> string` overloads in `stdlib/Basic` are non-standard
+  - `#procedure_of_call` with runtime locals
+  - `Program_Print.print_expression`, `compiler_get_code`, `add_global_data`
+  - `#modify` require (26.32), a parse error in 26.5, `#insert,scope` (26.22/26.39)
+  - GetRect `ui_per_frame_update` on macOS (NSWindow)
+  - `Sound_Player`
+  - Mail `min` without a context
+  - a backtick name outside a macro (31.2)
+- Known open bug: forwarding a `for_expansion` body Code to another macro (`for_expansion(*a, body, flags)`) inserts nothing.
