@@ -10,7 +10,7 @@ Pinned source snapshots of recently maintained open-source Jai projects (focus-e
 
 Dependencies are pinned like projects: jai_parser for Jails; Linalg, Jolt-Jai and Jolt-Jai's JoltC submodule for Vk-Engine (JoltC has no Jai files; the fetcher takes its `CMakeLists.txt` and `Examples/`). `corpus/upstream` and the Git cache live in the main checkout (found through the Git common dir), so worktrees share them.
 
-`tools/verify_upstreams.py` re-hashes the fetched tree against the manifest and rejects modified or unlisted files.
+`tools/verify_upstreams.py` re-hashes the fetched tree against the manifest and rejects modified or missing files. Unlisted files are reported, not rejected: building the projects (sweep `build` cases, `build_native_libs.py`, `build_vk_engine_libs.py`) leaves libraries, executables and generated files next to the sources.
 
 ## How to change it
 
