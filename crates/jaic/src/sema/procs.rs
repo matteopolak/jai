@@ -703,17 +703,20 @@ impl Compiler {
     /// Lower all queued procedure bodies.
     /// A body that fails is retried while other bodies still lower: one lowered later may
     /// declare what it needs (`#insert,scope(...)` into a file). The first error of a pass
-    /// that made no progress is reported.
+    /// that made no progress is reported. Only bodies that existed when the pass started
+    /// count as progress: a failing body re-creates its nested procedures on every retry,
+    /// and lowering those must not keep the loop alive.
     pub fn drain_bodies(&mut self) -> Result<()> {
         loop {
             let mut failed = Vec::new();
             let mut progress = false;
+            let existing = self.procs.len();
             while let Some(id) = self.body_queue.pop() {
                 if self.proc(id).body_state != BodyState::Queued {
                     continue;
                 }
                 match self.lower_body(id) {
-                    Ok(()) => progress = true,
+                    Ok(()) => progress |= (id.0 as usize) < existing,
                     Err(e) => failed.push((id, e)),
                 }
             }

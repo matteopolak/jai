@@ -929,6 +929,19 @@
       "negative": {
         "check": "arithmetic overflow computing 251 + 10 as u8"
       }
+    },
+    {
+      "id": "failing-body-with-nested-procs",
+      "source": "negative/failing-body-with-nested-procs.jai",
+      "sha256": "70f0ab2125f473cd0090170f0a466baae0e30665fd93b6563b5fae9e69e91b62",
+      "suite": "negative",
+      "feature": "failing-body-with-nested-procs",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "unknown identifier 'undefined_name_here'"
+      }
     }
   ]
 }
