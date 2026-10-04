@@ -10,6 +10,8 @@
 
 mod native;
 pub use native::{library_dirs, set_library_dirs};
+#[cfg(not(target_arch = "wasm32"))]
+mod threads;
 
 use crate::ir::{
     self, BinOp, Callee, CmpOp, ConvOp, ForeignId, FuncId, GlobalId, Inst, Program, Term, Ty, UnOp,
@@ -251,6 +253,11 @@ pub struct Interp {
     forked_child: bool,
     /// Stack trace node data per procedure (`Stack_Trace_Procedure_Info`), built on first call.
     trace_infos: HashMap<FuncId, u64>,
+    /// Threads of the running program (created by the first `pthread_*` call).
+    #[cfg(not(target_arch = "wasm32"))]
+    sched: Option<Box<threads::Sched>>,
+    /// More than one thread exists: `run` offers the baton to the others now and then.
+    multi: bool,
 }
 
 impl Default for Interp {
@@ -279,6 +286,9 @@ impl Interp {
             made_codes: Vec::new(),
             forked_child: false,
             trace_infos: HashMap::new(),
+            #[cfg(not(target_arch = "wasm32"))]
+            sched: None,
+            multi: false,
         }
     }
 
@@ -494,6 +504,10 @@ impl Interp {
         sig: &ir::Sig,
     ) -> Res<Vec<u64>> {
         let symbol = program.foreigns[id.0 as usize].symbol.clone();
+        #[cfg(not(target_arch = "wasm32"))]
+        if let Some(result) = self.thread_foreign(program, &symbol, args) {
+            return result;
+        }
         if let Some(result) = self.host.foreign(&symbol, args, sig) {
             return result.map_err(|m| Trap {
                 message: m,
@@ -718,6 +732,10 @@ impl Interp {
             .copy_from_slice(&args[..args.len().min(func.sig.params.len())]);
         let mut block = 0usize;
         loop {
+            #[cfg(not(target_arch = "wasm32"))]
+            if self.multi {
+                self.preempt(program)?;
+            }
             let b = &func.blocks[block];
             for inst in &b.insts {
                 self.step(program, inst, &mut vals, frame, stack_base)?;
