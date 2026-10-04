@@ -376,6 +376,7 @@ version = "0.1.0"
 dependencies = [
  "jai-language-server",
  "jai-runtime",
+ "jaic",
 ]
 
 [[package]]
