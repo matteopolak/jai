@@ -111,12 +111,13 @@ for_expansion :: (array: *$T/Bucket_Array, body: Code, flags: For_Flags) #expand
         if !bucket.occupied[slot] continue;
         #if REVERSE it_index -= 1;
         else it_index += 1;
+        // `remove it` frees the slot; iteration continues with the next occupied one.
         #if POINTER {
             `it := *bucket.data[slot];
-            #insert body;
+            #insert (remove={ bucket_array_remove(array, .{cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot}); }) body;
         } else {
             `it := bucket.data[slot];
-            #insert body;
+            #insert (remove={ bucket_array_remove(array, .{cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot}); }) body;
         }
     }
 }

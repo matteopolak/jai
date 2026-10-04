@@ -54,7 +54,40 @@ fn is_deferred(expr: &ast::Expr) -> bool {
             }
             | E::Ifx { .. }
             | E::Lambda { .. }
-    )
+    ) || inferred_flags(expr)
+        || autocast_arithmetic(expr)
+}
+
+/// `xx a + 1`: arithmetic on an autocast and literals takes the parameter's type.
+fn autocast_arithmetic(expr: &ast::Expr) -> bool {
+    let E::Binary(ast::BinOp::Add | ast::BinOp::Sub | ast::BinOp::Mul | ast::BinOp::Div, a, b) =
+        &expr.kind
+    else {
+        return false;
+    };
+    let autocast = |e: &ast::Expr| {
+        matches!(
+            e.kind,
+            E::Cast {
+                ty: None,
+                ..
+            }
+        ) || autocast_arithmetic(e)
+    };
+    let literal = |e: &ast::Expr| matches!(e.kind, E::Int(_) | E::Float(_) | E::Char(_));
+    (autocast(a) && (literal(b) || autocast(b))) || (literal(a) && autocast(b))
+}
+
+/// `.A | .B`, `.A & ~.B`: enum flag arithmetic built only from inferred members.
+fn inferred_flags(expr: &ast::Expr) -> bool {
+    match &expr.kind {
+        E::InferredMember(_) => true,
+        E::Unary(ast::UnOp::BitNot, x) => inferred_flags(x),
+        E::Binary(ast::BinOp::BitOr | ast::BinOp::BitAnd | ast::BinOp::BitXor, a, b) => {
+            inferred_flags(a) && inferred_flags(b)
+        }
+        _ => false,
+    }
 }
 
 impl Compiler {
@@ -218,6 +251,30 @@ impl Compiler {
         Ok(out)
     }
 
+    /// Match `args` against each of `procs`: the cheapest candidates, and why the rest failed.
+    fn rank_candidates(
+        &mut self,
+        procs: &[ProcId],
+        args: &[CallArg],
+        span: Span,
+    ) -> (Vec<Candidate>, Vec<String>) {
+        let mut best: Vec<Candidate> = Vec::new();
+        let mut errors: Vec<String> = Vec::new();
+        for &proc in procs {
+            match self.match_candidate(proc, args, span) {
+                Ok(c) => {
+                    if best.first().is_none_or(|b| c.cost < b.cost) {
+                        best = vec![c];
+                    } else if best[0].cost == c.cost {
+                        best.push(c);
+                    }
+                }
+                Err(e) => errors.push(e.message.clone()),
+            }
+        }
+        (best, errors)
+    }
+
     /// Resolve and emit a call to one of `procs`.
     pub fn call_procs(
         &mut self,
@@ -229,38 +286,37 @@ impl Compiler {
         span: Span,
     ) -> Result<Operand> {
         let _ = expected;
-        // Multi-value call results expand into several arguments.
+        // A multi-value call result passes its first value; when nothing accepts that, the
+        // values expand into several arguments (kept for older corpus code).
+        let mut spread_args = None;
         if args.len() == 1
             && let Some(Operand::Multi(values)) = &args[0].op
         {
             let a = args[0].clone();
-            args = values
-                .iter()
-                .map(|&(ty, val)| CallArg {
-                    name: None,
-                    spread: false,
-                    expr: None,
-                    op: Some(Operand::Value {
-                        ty,
-                        val,
-                    }),
-                    span: a.span,
-                    scope: a.scope,
-                })
-                .collect();
+            let value_arg = |&(ty, val): &(TypeId, ir::Val)| CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(Operand::Value {
+                    ty,
+                    val,
+                }),
+                span: a.span,
+                scope: a.scope,
+            };
+            spread_args = Some(values.iter().map(value_arg).collect::<Vec<_>>());
+            args = vec![CallArg {
+                name: a.name,
+                ..value_arg(&values[0])
+            }];
         }
-        let mut best: Vec<Candidate> = Vec::new();
-        let mut errors: Vec<String> = Vec::new();
-        for &proc in procs {
-            match self.match_candidate(proc, &args, span) {
-                Ok(c) => {
-                    if best.first().is_none_or(|b| c.cost < b.cost) {
-                        best = vec![c];
-                    } else if best[0].cost == c.cost {
-                        best.push(c);
-                    }
-                }
-                Err(e) => errors.push(e.message.clone()),
+        let (mut best, mut errors) = self.rank_candidates(procs, &args, span);
+        if best.is_empty()
+            && let Some(spread) = spread_args
+        {
+            let (b, e) = self.rank_candidates(procs, &spread, span);
+            if !b.is_empty() {
+                (best, errors, args) = (b, e, spread);
             }
         }
         if best.is_empty() {
@@ -438,7 +494,7 @@ impl Compiler {
                         ..
                     },
                 ) => !scalar,
-                Some(E::InferredMember(_)) => matches!(
+                Some(_) if arg.expr.as_ref().is_some_and(inferred_flags) => matches!(
                     self.types.kind(param),
                     TypeKind::Enum(_) | TypeKind::Struct(_)
                 ),
@@ -571,6 +627,7 @@ impl Compiler {
         span: Span,
     ) -> Result<Vec<(Sym, Value, TypeId)>> {
         let mut bindings: Vec<(Sym, Value, TypeId)> = Vec::new();
+        let mut null_patterns: Vec<ast::Expr> = Vec::new();
         let def_scope = self.proc(proc).scope;
         let poly_vars = header_poly_names(header);
         for arg in args {
@@ -716,7 +773,26 @@ impl Compiler {
                 let Some(op) = &arg.op else {
                     continue;
                 };
+                // `null` binds nothing until the other arguments are seen.
+                if matches!(
+                    op,
+                    Operand::Const {
+                        value: Value::Null,
+                        untyped: true,
+                        ..
+                    }
+                ) && !param.variadic
+                {
+                    null_patterns.push(pattern.clone());
+                    continue;
+                }
                 let mut ty = match op {
+                    // `#char "x"` binds a type variable as `u8` (`split(s, #char ",")`).
+                    Operand::Const {
+                        ty: TypeId::U8,
+                        untyped: true,
+                        ..
+                    } => TypeId::U8,
                     Operand::Const {
                         ty,
                         value,
@@ -788,6 +864,17 @@ impl Compiler {
                     &mut bindings,
                     *span,
                 )?;
+            }
+        }
+        // A type variable seen only through `null` is `*void`.
+        let void_ptr = self.types.pointer(TypeId::VOID);
+        for pattern in null_patterns {
+            let mut probe = bindings.clone();
+            if self
+                .match_pattern(&pattern, void_ptr, &mut probe, def_scope)
+                .is_ok()
+            {
+                bindings = probe;
             }
         }
         // Defaults of the form `$T` without arguments are an error unless bound elsewhere.
@@ -1011,32 +1098,28 @@ impl Compiler {
                 args,
                 ..
             } => {
-                // `Table($K, $V)` against an instance of the same polymorphic struct.
-                let Some(s) = self.types.as_struct(ty) else {
-                    return err(
-                        span,
-                        format!("expected a struct instance, found {}", self.types.name(ty)),
-                    );
+                // `Table($K, $V)` against an instance of the same polymorphic struct
+                // (a `*Instance` argument is dereferenced for a by-value parameter).
+                let ty = match self.types.pointee(ty) {
+                    Some(p) if self.types.as_struct(p).is_some() => p,
+                    _ => ty,
                 };
-                let info = self.types.struct_info(s).clone();
-                let callee_ok = match &callee.kind {
-                    E::Ident(name) => {
-                        let ids = self.lookup(scope, *name)?;
-                        match ids.first() {
-                            Some(&e) => {
-                                matches!(self.resolve_entity(e)?, scope::Resolved::PolyStruct(ps) if self.poly_structs[ps.0 as usize].instances.values().any(|&t| t == ty))
-                            }
-                            None => false,
-                        }
-                    }
-                    _ => true,
+                // The instance itself, or (for a named struct) an `#as` member that is one.
+                let instance = match &callee.kind {
+                    E::Ident(name) => match self.ident_poly_struct(scope, *name)? {
+                        Some(ps) => self.instance_or_as_base(ps, ty),
+                        None => None,
+                    },
+                    _ => self.types.as_struct(ty).map(|_| ty),
                 };
-                if !callee_ok {
+                let Some(ty) = instance else {
                     return err(
                         span,
                         format!("{} is not an instance of this struct", self.types.name(ty)),
                     );
-                }
+                };
+                let s = self.types.as_struct(ty).unwrap();
+                let info = self.types.struct_info(s).clone();
                 for (i, a) in args.iter().enumerate() {
                     let Some(value) = info.poly_args.get(i) else {
                         break;
@@ -1284,12 +1367,71 @@ impl Compiler {
         }
     }
 
+    /// Place named arguments of a call through a procedure value and fill in the defaults its
+    /// type was written with.
+    fn order_indirect_args(
+        &mut self,
+        info: &ProcTypeParams,
+        args: Vec<CallArg>,
+        span: Span,
+    ) -> Result<Vec<CallArg>> {
+        let n = info.names.len();
+        let mut slots: Vec<Option<CallArg>> = vec![None; n];
+        let mut next = 0;
+        for arg in args {
+            let i = match arg.name {
+                Some(name) => info
+                    .names
+                    .iter()
+                    .position(|&p| p == Some(name))
+                    .ok_or_else(|| {
+                        Box::new(Diagnostic::error(
+                            arg.span,
+                            format!("no parameter named '{name}'"),
+                        ))
+                    })?,
+                None => {
+                    while next < n && slots[next].is_some() {
+                        next += 1;
+                    }
+                    next
+                }
+            };
+            if i >= n {
+                return err(
+                    arg.span,
+                    format!("too many arguments (expected at most {n})"),
+                );
+            }
+            slots[i] = Some(CallArg {
+                name: None,
+                ..arg
+            });
+        }
+        slots
+            .into_iter()
+            .enumerate()
+            .map(|(i, slot)| match (slot, &info.defaults[i]) {
+                (Some(arg), _) => Ok(arg),
+                (None, Some(default)) => Ok(CallArg {
+                    name: None,
+                    spread: false,
+                    expr: Some(default.clone()),
+                    op: None,
+                    span: default.span,
+                    scope: info.scope,
+                }),
+                (None, None) => err(span, format!("missing argument {}", i + 1)),
+            })
+            .collect()
+    }
+
     fn call_indirect(
         &mut self,
         f: &mut FnCtx,
         ty: TypeId,
         callee: ir::Val,
-        args: Vec<CallArg>,
+        mut args: Vec<CallArg>,
         span: Span,
     ) -> Result<Operand> {
         let TypeKind::Proc(pt) = self.types.kind(ty).clone() else {
@@ -1298,6 +1440,9 @@ impl Compiler {
                 format!("cannot call a value of type {}", self.types.name(ty)),
             );
         };
+        if let Some(info) = self.proc_type_params.get(&ty).cloned() {
+            args = self.order_indirect_args(&info, args, span)?;
+        }
         if args.len() < pt.params.len()
             || (!pt.c_varargs && !pt.variadic && args.len() > pt.params.len())
         {
@@ -1630,6 +1775,67 @@ impl Compiler {
     // Macros
     // -----------------------------------------------------------------------
 
+    /// Whether a block's source text may assign to (or take the address of) `name`:
+    /// `name =`, `name op=`, `name.field =` or `*name`. Conservative: comments and strings
+    /// count too.
+    fn text_may_write(&self, body: &ast::Block, name: Sym) -> bool {
+        let text = &self.sources.get(body.span.file).text;
+        let text = &text.as_bytes()[body.span.start as usize..body.span.end as usize];
+        let name = name.as_str();
+        let word = |c: u8| c.is_ascii_alphanumeric() || c == b'_';
+        let skip_ws = |mut i: usize| {
+            while i < text.len() && text[i].is_ascii_whitespace() {
+                i += 1;
+            }
+            i
+        };
+        let assigns = |i: usize| {
+            let i = skip_ws(i);
+            let rest = &text[i.min(text.len())..];
+            match rest {
+                [b'=', b'=', ..] => false,
+                [b'=', ..] => true,
+                [op, b'=', ..] => b"+-*/%|&^".contains(op),
+                [b'<' | b'>', b'<' | b'>', b'=', ..] => true,
+                _ => false,
+            }
+        };
+        let mut from = 0;
+        while let Some(pos) = text[from..]
+            .windows(name.len())
+            .position(|w| w == name.as_bytes())
+        {
+            let start = from + pos;
+            let end = start + name.len();
+            from = end;
+            if (start > 0 && word(text[start - 1])) || (end < text.len() && word(text[end])) {
+                continue;
+            }
+            let mut before = start;
+            while before > 0 && text[before - 1].is_ascii_whitespace() {
+                before -= 1;
+            }
+            if before > 0 && text[before - 1] == b'*' {
+                return true;
+            }
+            if assigns(end) {
+                return true;
+            }
+            // `name.field = ...`
+            let mut i = skip_ws(end);
+            if i < text.len() && text[i] == b'.' {
+                i = skip_ws(i + 1);
+                while i < text.len() && word(text[i]) {
+                    i += 1;
+                }
+                if assigns(i) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     fn expand_macro(
         &mut self,
         f: &mut FnCtx,
@@ -1760,6 +1966,12 @@ impl Compiler {
                         && self.types.is_integer(param.ty)))
             {
                 self.local_consts.insert(e, (value.clone(), param.ty));
+                // A constant string argument the body never writes keeps a constant `count`.
+                if let Value::String(s) = value
+                    && !self.text_may_write(&body, name)
+                {
+                    self.const_string_params.insert(e, s.len() as i64);
+                }
             }
             if param.using {
                 self.scope_mut(mscope)

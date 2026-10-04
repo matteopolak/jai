@@ -1,5 +1,5 @@
 //! Resolving global declarations: constants, globals, types, libraries.
-use super::lower::{FnCtx, Operand};
+use super::lower::Operand;
 use super::scope::{Builtin, EntityKind, EntityState, Resolved};
 use super::value::LibraryId;
 use super::*;
@@ -615,18 +615,7 @@ impl Compiler {
         expected: Option<TypeId>,
     ) -> Result<Operand> {
         let file = self.scope_file(scope);
-        let mut f = FnCtx::new(
-            "const".into(),
-            ir::Sig {
-                params: vec![],
-                returns: vec![],
-                conv: ir::Conv::Jai,
-                c_varargs: false,
-                c_abi: None,
-            },
-            file,
-        );
-        f.compile_time = true;
+        let mut f = self.thunk_ctx("const", file);
         // Runtime locals of the enclosing procedure are not visible to constants.
         let scope = self.thunk_scope(scope);
         let op = self.check_expr(&mut f, scope, expr, expected)?;

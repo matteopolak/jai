@@ -98,8 +98,20 @@ pub struct LoopFrame {
     pub continue_block: ir::BlockId,
     /// Defer depth at loop entry.
     pub defer_depth: usize,
-    /// For `remove`: (container place, index slot, element type).
-    pub remove: Option<(Operand, Val, TypeId)>,
+    /// For `remove`: (container place, index slot, element type, reverse loop).
+    pub remove: Option<(Operand, Val, TypeId, bool)>,
+}
+
+/// What `break`, `continue` and `remove` aimed at an inserted for-loop body become.
+#[derive(Clone)]
+pub struct InsertReplacements {
+    /// Index in `FnCtx::loops` of the body's loop frame.
+    pub loop_index: usize,
+    /// Scope of the `#insert` (the macro), where replacements are checked.
+    pub scope: ScopeId,
+    pub break_: Option<ast::Expr>,
+    pub continue_: Option<ast::Expr>,
+    pub remove: Option<ast::Expr>,
 }
 
 #[derive(Clone)]
@@ -126,13 +138,17 @@ pub struct FnCtx {
     pub compile_time: bool,
     /// Macro expansion stack: (caller scope, return block, result slots, defer depth).
     pub macros: Vec<MacroFrame>,
+    /// `#insert (break=..., continue=..., remove=...) body` of for_expansion macros being
+    /// expanded (innermost last).
+    pub insert_replacements: Vec<InsertReplacements>,
     /// Loop body handed to the next `for_expansion` macro expansion.
     pub pending_for_body: Option<ForBody>,
     /// Checking only for the type of an expression (`type_of`, `size_of`): no code is kept, so
     /// names that only exist as types, such as the fields of a struct being laid out, resolve.
     pub type_only: bool,
-    /// Constants declared ahead of their statement (see `check_block_stmts`).
-    pub hoisted_consts: std::collections::HashSet<ast::AstId>,
+    /// Block constants already declared ahead of their statement (`check_block_stmts`), per block scope (a
+    /// macro body expanded twice declares its constants in each expansion).
+    pub hoisted_consts: std::collections::HashSet<(ScopeId, ast::AstId)>,
 }
 
 #[derive(Clone)]
@@ -173,6 +189,7 @@ impl FnCtx {
             file,
             compile_time: false,
             macros: Vec::new(),
+            insert_replacements: Vec::new(),
             pending_for_body: None,
             type_only: false,
             hoisted_consts: Default::default(),

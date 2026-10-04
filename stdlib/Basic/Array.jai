@@ -127,10 +127,6 @@ array_ordered_remove_by_index :: (array_pointer: *[..] $T, index: s64) {
 array_find :: (array: [] $T, item: T) -> bool, s64 {
     return _array_find_index(array,item);
 }
-array_find :: (array: [..] $T, value: T) -> bool {
-    found,index := _array_find_index(array,value);
-    return found;
-}
 _array_find_index :: (array: [] $T, item: T) -> bool, s64 {
     for value, i: array if value == item return true, i;
     return false, -1;

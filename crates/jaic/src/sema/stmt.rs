@@ -1,6 +1,8 @@
 //! Statement checking and lowering.
 use super::calls::CallArg;
-use super::lower::{DeferEntry, FnCtx, ForBody, LoopFrame, MacroFrame, Operand};
+use super::lower::{
+    DeferEntry, FnCtx, ForBody, InsertReplacements, LoopFrame, MacroFrame, Operand,
+};
 use super::scope::{EntityKind, Resolved, ScopeKind, UsingEntry};
 use super::*;
 use crate::ast::{ExprKind as E, StmtKind as S};
@@ -23,7 +25,7 @@ impl Compiler {
             if let S::Decl(decl) = &stmt.kind
                 && decl.kind == ast::DeclKind::Const
                 && !decl.backtick
-                && f.hoisted_consts.insert(decl.id)
+                && f.hoisted_consts.insert((scope, decl.id))
             {
                 self.declare_local_consts(scope, scope, decl);
             }
@@ -120,9 +122,27 @@ impl Compiler {
                 body,
             } => self.check_while(f, scope, label.map(|l| l.name), cond, body),
             S::For(for_) => self.check_for(f, scope, for_, span),
-            S::Break(label) => self.check_break(f, label.map(|l| l.name), true, span),
-            S::Continue(label) => self.check_break(f, label.map(|l| l.name), false, span),
-            S::Remove(label) => self.check_remove(f, label.map(|l| l.name), span),
+            S::Break(label) => {
+                let label = label.map(|l| l.name);
+                if self.try_insert_replacement(f, label, |r| &r.break_, span)? {
+                    return Ok(());
+                }
+                self.check_break(f, label, true, span)
+            }
+            S::Continue(label) => {
+                let label = label.map(|l| l.name);
+                if self.try_insert_replacement(f, label, |r| &r.continue_, span)? {
+                    return Ok(());
+                }
+                self.check_break(f, label, false, span)
+            }
+            S::Remove(label) => {
+                let label = label.map(|l| l.name);
+                if self.try_insert_replacement(f, label, |r| &r.remove, span)? {
+                    return Ok(());
+                }
+                self.check_remove(f, label, span)
+            }
             S::Return {
                 values,
                 backtick,
@@ -208,8 +228,8 @@ impl Compiler {
                 value,
                 flags,
                 scope: target,
-                ..
-            } => self.check_insert(f, scope, value, flags, target.as_ref(), span),
+                replacements,
+            } => self.check_insert(f, scope, value, flags, target.as_ref(), replacements, span),
             S::Assert {
                 cond,
                 message,
@@ -373,7 +393,7 @@ impl Compiler {
             scope
         };
         if decl.kind == ast::DeclKind::Const {
-            if !f.hoisted_consts.contains(&decl.id) {
+            if !f.hoisted_consts.contains(&(scope, decl.id)) {
                 self.declare_local_consts(target, scope, decl);
             }
             return Ok(());
@@ -568,7 +588,12 @@ impl Compiler {
         if self.types.as_struct(self.types.repr_struct(st)).is_none() {
             return Ok(false);
         }
-        let setters = self.operator_candidates(scope, "[]=", &[bt])?;
+        let mut setters = self.operator_candidates(scope, "[]=", &[bt])?;
+        // Through a raw pointer only an operator taking that struct applies; otherwise
+        // `p[i] = v` writes memory.
+        if self.types.is_pointer(bt) {
+            setters.retain(|&p| self.first_param_accepts(p, st));
+        }
         if setters.is_empty() {
             return Ok(false);
         }
@@ -652,6 +677,27 @@ impl Compiler {
         let args = vec![arg(ptr_op), arg(index_op), arg(value)];
         self.call_procs(f, scope, &setters, args, None, span)?;
         Ok(true)
+    }
+
+    /// Can procedure `p`'s first parameter take a `ty` (or `*ty`)? Polymorphic patterns
+    /// are matched; plain types compared after resolution.
+    fn first_param_accepts(&mut self, p: ProcId, ty: TypeId) -> bool {
+        let info = self.proc(p);
+        let (scope, lit, is_poly) = (info.scope, info.lit.clone(), info.is_poly);
+        let Some(param_ty) = lit.header.params.first().and_then(|p| p.ty.clone()) else {
+            return false;
+        };
+        let pointer = self.types.pointer(ty);
+        if procs::has_poly(&param_ty) || is_poly {
+            [ty, pointer].into_iter().any(|t| {
+                let mut bindings = Vec::new();
+                self.match_pattern(&param_ty, t, &mut bindings, scope)
+                    .is_ok()
+            })
+        } else {
+            self.eval_type(scope, &param_ty)
+                .is_ok_and(|t| t == ty || t == pointer)
+        }
     }
 
     /// `a op= b` through a user-defined `operator op=` (called with `*a`, or `a` by value).
@@ -946,13 +992,24 @@ impl Compiler {
         let entry = match op {
             Operand::Module(m) => UsingEntry::Module(m),
             Operand::Type(t) => UsingEntry::Type(t),
-            Operand::Place {
-                ty,
-                addr,
-            } => {
-                // `using a.b;`: bind a hidden local pointing at the place.
-                let ptr = self.types.pointer(ty);
-                let slot = self.spill(f, ptr, addr, value.span)?;
+            op @ (Operand::Place {
+                ..
+            }
+            | Operand::Value {
+                ..
+            }) => {
+                // `using a.b;`: bind a hidden local pointing at the place (or holding the
+                // pointer itself when `a.b` is one).
+                let (ptr, ptr_value) = if self.types.pointee(op.ty()).is_some() {
+                    let ty = op.ty();
+                    let (_, v) = self.rvalue(f, op, value.span)?;
+                    (ty, v)
+                } else {
+                    let ty = self.types.pointer(op.ty());
+                    let (_, a) = self.address_of(f, op, value.span)?;
+                    (ty, a)
+                };
+                let slot = self.spill(f, ptr, ptr_value, value.span)?;
                 let depth = self.scope(scope).proc_depth;
                 let e = self.add_entity(
                     scope,
@@ -1265,10 +1322,11 @@ impl Compiler {
             Some(l) => f.loops.iter().rev().find(|lp| lp.label == Some(l)).cloned(),
             None => f.loops.last().cloned(),
         };
-        let Some((container, index_slot, elem)) = frame.and_then(|fr| fr.remove) else {
+        let Some((container, index_slot, elem, reverse)) = frame.and_then(|fr| fr.remove) else {
             return err(span, "remove is only valid inside a for loop over an array");
         };
-        // array[it_index] = array[count-1]; count -= 1; it_index -= 1;
+        // array[it_index] = array[count-1]; count -= 1; it_index -= 1 (going forward: the
+        // moved element is visited next; a reverse loop has already seen it).
         let Operand::Place {
             addr, ..
         } = container
@@ -1289,8 +1347,10 @@ impl Compiler {
         let src = f.b.ptr_add(data, off_l);
         f.b.copy(dst, src, size);
         f.b.store(Ty::I64, addr, last);
-        let idx2 = f.b.bin(ir::BinOp::Sub, Ty::I64, idx, one);
-        f.b.store(Ty::I64, index_slot, idx2);
+        if !reverse {
+            let idx2 = f.b.bin(ir::BinOp::Sub, Ty::I64, idx, one);
+            f.b.store(Ty::I64, index_slot, idx2);
+        }
         Ok(())
     }
 
@@ -1325,6 +1385,17 @@ impl Compiler {
         for_: &ast::For,
         span: Span,
     ) -> Result<()> {
+        // `for *=cond` / `for <=cond`: by pointer / in reverse when the constant holds.
+        if for_.pointer_if.is_some() || for_.reverse_if.is_some() {
+            let mut resolved = for_.clone();
+            if let Some(cond) = resolved.pointer_if.take() {
+                resolved.by_pointer |= self.eval_static_condition(scope, &cond)?;
+            }
+            if let Some(cond) = resolved.reverse_if.take() {
+                resolved.reverse |= self.eval_static_condition(scope, &cond)?;
+            }
+            return self.check_for(f, scope, &resolved, span);
+        }
         let it_name = for_.it.map_or_else(|| Sym::intern("it"), |i| i.name);
         let index_name = for_
             .index
@@ -1498,11 +1569,30 @@ impl Compiler {
         if for_.iterator.is_some() || is_struct {
             let procs = self.for_expansion_procs(scope, for_, &op, span)?;
             // `for_expansion :: (x: *T, ...)` iterates a struct value through its address.
-            let wants_pointer = procs.iter().all(|&p| {
-                self.proc(p).lit.header.params.first().is_some_and(|param| {
-                    matches!(&param.ty, Some(t) if matches!(t.kind, E::Unary(ast::UnOp::Star, _)))
-                })
-            });
+            // Unless an overload takes this very type by value (overloads for other types
+            // in the same set do not count).
+            let mut by_value = false;
+            let mut by_pointer = false;
+            for &p in &procs {
+                let Some(t) = self
+                    .proc(p)
+                    .lit
+                    .header
+                    .params
+                    .first()
+                    .and_then(|q| q.ty.clone())
+                else {
+                    continue;
+                };
+                if matches!(t.kind, E::Unary(ast::UnOp::Star, _)) {
+                    by_pointer = true;
+                } else if procs::has_poly(&t)
+                    || self.eval_type(self.proc(p).scope, &t).ok() == Some(cty)
+                {
+                    by_value = true;
+                }
+            }
+            let wants_pointer = by_pointer && !by_value;
             let op = if wants_pointer
                 && matches!(op, Operand::Place { .. })
                 && !self.types.is_pointer(cty)
@@ -1632,8 +1722,8 @@ impl Compiler {
             ],
             span,
         );
-        let remove = if fixed.is_none() && !for_.reverse {
-            Some((container.clone(), idx, elem))
+        let remove = if fixed.is_none() {
+            Some((container.clone(), idx, elem, for_.reverse))
         } else {
             None
         };
@@ -1787,6 +1877,7 @@ impl Compiler {
         value: &ast::Expr,
         flags: &[ast::Ident],
         target: Option<&ast::Expr>,
+        replacements: &[ast::Arg],
         span: Span,
     ) -> Result<()> {
         let op = self.eval_insert_operand(scope, value)?;
@@ -1801,7 +1892,20 @@ impl Compiler {
                 .iter()
                 .rposition(|m| m.for_body.as_ref().is_some_and(|b| b.code == code))
             {
-                return self.insert_for_body(f, frame_index, span);
+                let replacement = |name: &str| {
+                    replacements
+                        .iter()
+                        .find(|r| r.name.is_some_and(|n| n.name.as_str() == name))
+                        .map(|r| r.value.clone())
+                };
+                let replacements = InsertReplacements {
+                    loop_index: f.loops.len(),
+                    scope,
+                    break_: replacement("break"),
+                    continue_: replacement("continue"),
+                    remove: replacement("remove"),
+                };
+                return self.insert_for_body(f, frame_index, replacements, span);
             }
             let body = self.codes[code.0 as usize].clone();
             // Inserted code resolves names where it was written, unless `,scope()` names
@@ -1828,7 +1932,13 @@ impl Compiler {
         self.check_block_stmts(f, scope, &stmts)
     }
 
-    fn insert_for_body(&mut self, f: &mut FnCtx, frame_index: usize, span: Span) -> Result<()> {
+    fn insert_for_body(
+        &mut self,
+        f: &mut FnCtx,
+        frame_index: usize,
+        replacements: InsertReplacements,
+        span: Span,
+    ) -> Result<()> {
         let frame: MacroFrame = f.macros[frame_index].clone();
         let body = frame.for_body.clone().unwrap();
         // Alias custom iterator names to the macro's `it` / `it_index`.
@@ -1860,10 +1970,55 @@ impl Compiler {
             remove: None,
         });
         let saved = f.macros.split_off(frame_index);
+        f.insert_replacements.push(replacements);
         let result = self.check_scoped(f, body.scope, &body.body);
+        f.insert_replacements.pop();
         f.macros.extend(saved);
         f.loops.pop();
         result
+    }
+
+    /// A `break` / `continue` / `remove` aimed at an inserted for-loop body whose
+    /// `#insert` replaced it: check the replacement at the insertion site instead.
+    /// `which` picks the replacement; returns false when there is none.
+    fn try_insert_replacement(
+        &mut self,
+        f: &mut FnCtx,
+        label: Option<Sym>,
+        which: fn(&InsertReplacements) -> &Option<ast::Expr>,
+        span: Span,
+    ) -> Result<bool> {
+        let target = match label {
+            Some(l) => f.loops.iter().rposition(|lp| lp.label == Some(l)),
+            None => f.loops.len().checked_sub(1),
+        };
+        let Some(target) = target else {
+            return Ok(false);
+        };
+        let Some(pos) = f
+            .insert_replacements
+            .iter()
+            .rposition(|r| r.loop_index == target)
+        else {
+            return Ok(false);
+        };
+        let Some(code) = which(&f.insert_replacements[pos]).clone() else {
+            return Ok(false);
+        };
+        let scope = f.insert_replacements[pos].scope;
+        // The replacement runs as written in the macro: without the body's loop and the
+        // replacements of this and inner inserts.
+        let saved_loops = f.loops.split_off(target);
+        let saved_reps = f.insert_replacements.split_off(pos);
+        let inner = self.new_block_scope(scope);
+        let result = match &code.kind {
+            ast::ExprKind::Block(block) => self.check_block_stmts(f, inner, &block.stmts),
+            _ => self.check_expr(f, inner, &code, None).map(|_| ()),
+        };
+        f.loops.extend(saved_loops);
+        f.insert_replacements.extend(saved_reps);
+        let _ = span;
+        result.map(|()| true)
     }
 
     fn check_return(

@@ -124,6 +124,11 @@ pub struct Module {
     pub params: Vec<(Sym, Value, TypeId)>,
     /// Entities of `#module_parameters` (readable as `Module.NAME`).
     pub param_entities: Vec<scope::EntityId>,
+    /// Names of the second `#module_parameters` list: one value for the whole program,
+    /// so an import that only sets these joins the existing instance.
+    pub program_params: Vec<Sym>,
+    /// Exported top-level `using global;`: the global's members are visible to importers.
+    pub exported_usings: Vec<scope::UsingEntry>,
     pub files: Vec<FileId>,
 }
 
@@ -188,6 +193,9 @@ pub struct Compiler {
     /// innermost one. Only calls to procedures that use `#caller_code` are recorded.
     pub calls_in_flight: Vec<(Rc<ast::Expr>, ScopeId)>,
     pub local_consts: HashMap<EntityId, (Value, TypeId)>,
+    /// Macro parameters bound to a constant string the macro never writes: `name.count`
+    /// is a constant (`write(fd, message.data, message.count)` into a `u64`).
+    pub const_string_params: HashMap<EntityId, i64>,
     pub anonymous_types: HashMap<(ast::AstId, ScopeId), TypeId>,
     /// Scope each `Code` value was written in (parallel to `codes`).
     pub code_scopes: Vec<ScopeId>,
@@ -208,8 +216,26 @@ pub struct Compiler {
     /// Scopes with top-level items put back to waiting because they failed while
     /// procedure bodies were mid-lowering (retried by `expand_all`).
     pub deferred_pending: Vec<ScopeId>,
+    /// Why each deferred item failed; shown with a later error if it is never retried.
+    pub deferred_errors: Vec<Box<Diagnostic>>,
+    /// Parameter names and defaults written in procedure types (`(s: string, start := 0) -> s64`),
+    /// by type, for calls through procedure values. Types ignore them: the latest header with
+    /// defaults wins, and a procedure used as a value fills in a type no header described.
+    pub proc_type_params: HashMap<TypeId, Rc<ProcTypeParams>>,
+    /// Program parameters set by imports (`#import "Basic"()(MEMORY_DEBUGGER = DEBUG)`), by
+    /// module entry path: (name, value expression, scope it is evaluated in). Applied to
+    /// the module's instance as soon as both exist, before anything reads the parameter.
+    pub program_param_settings: Vec<(PathBuf, Sym, ast::Expr, ScopeId)>,
     /// Set while `expand_all` retries deferred items: failures are then final.
     pub retrying_pending: bool,
+}
+
+/// Names and default values of a procedure type's parameters (defaults evaluate in `scope`).
+#[derive(Debug)]
+pub struct ProcTypeParams {
+    pub names: Vec<Option<Sym>>,
+    pub defaults: Vec<Option<ast::Expr>>,
+    pub scope: ScopeId,
 }
 
 impl Compiler {
@@ -263,6 +289,7 @@ impl Compiler {
             anonymous_procs: HashMap::new(),
             calls_in_flight: Vec::new(),
             local_consts: HashMap::new(),
+            const_string_params: HashMap::new(),
             anonymous_types: HashMap::new(),
             code_scopes: Vec::new(),
             default_images: HashMap::new(),
@@ -275,6 +302,9 @@ impl Compiler {
             asm_regs: HashMap::new(),
             export: code_export::ExportState::default(),
             deferred_pending: Vec::new(),
+            deferred_errors: Vec::new(),
+            proc_type_params: HashMap::new(),
+            program_param_settings: Vec::new(),
             retrying_pending: false,
         };
         c.root_scope = c.new_scope(scope::ScopeKind::Root, None, ModuleId(u32::MAX), None);

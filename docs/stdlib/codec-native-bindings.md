@@ -16,6 +16,8 @@ Reference files were read only for declaration contracts. Original bodies, decod
 | --- | --- |
 | `freetype-2.12.1` | Pinned 2.12.1 records/constants and independently authored face-flag queries use `freetype`. Reviewed 2.14.3 basic symbols inform compatibility; OS-specific C `long` widths and full record ABI must match. |
 | `freetype255` | Genuine `freetype` symbols and the pinned 2.5.5 record prefixes; appended modern fields and full record interchange remain unverified. |
+| `freetype` | Alias module that loads `freetype-2.12.1` (the import name used by Simp and focus). |
+| `meow_hash` | Version constants and `MeowDefaultSeed` only; the AES hash itself needs x64 `#asm`, and callers select a portable fallback on ARM64/wasm. |
 | `lz4` | Genuine `lz4` symbols. Pinned 1.9.4 constants/stream declarations remain; reviewed 1.10.0 signatures include experimental static-API functions that an external build must expose. Private stream layout access remains version-sensitive. |
 | `meshoptimizer` | Genuine 1.3 `meshoptimizer` exports. Four Jai wrappers adapt simplification arguments and convert modern meshlet arrays to the pinned inline 64-vertex/126-triangle representation. The scan builder replaces the old builder; old partition/numeric equivalence is unverified. |
 | `stb_image` | Genuine 2.30 `stb_image` C exports, including stdio, HDR, GIF, 16-bit, zlib and thread-local APIs. Public callbacks are already C-call functions; `FILE` arguments are native C handles. |

@@ -1,98 +1,123 @@
-// Independently authored bit storage. The maintained words vector owns memory.
-#import "Basic";
+// A fixed-size array of bits stored in 64-bit slots.
+
 Bit_Array :: struct {
-    words: [..]u64;
+    slots: [] s64;
     count: int;
+
+    allocator: Allocator;
 }
-init_bit_array :: (bits:*Bit_Array,bit_count:int) {
-    assert(bit_count>=0);
-    array_reset(*bits.words);
-    array_resize(*bits.words,(bit_count+63)/64);
-    for *word:bits.words word.*=0;
-    bits.count=bit_count;
+
+// Allocates zeroed storage for `count` bits (from `array.allocator`, else the context's).
+init_bit_array :: (array: *Bit_Array, count: int) {
+    assert(count >= 0);
+    if !array.allocator.proc  array.allocator = context.allocator;
+    array.slots = Basic.NewArray((count + 63) >> 6, s64,, array.allocator);
+    array.count = count;
 }
-bit_index_in_range :: (bits:*Bit_Array,index:int)->bool { return index>=0 && index<bits.count; }
-get_bit :: (bits:*Bit_Array,index:int)->bool {
-    if !bit_index_in_range(bits,index) return false;
-    bit:=cast(u64)1 << (index%64);
-    return (bits.words[index/64]&bit)!=0;
-}
-set_bit :: (bits:*Bit_Array,index:int) {
-    assert(bit_index_in_range(bits,index));
-    bits.words[index/64]|=cast(u64)1<<(index%64);
-}
-clear_bit :: (bits:*Bit_Array,index:int) {
-    assert(bit_index_in_range(bits,index));
-    bits.words[index/64]&=~(cast(u64)1<<(index%64));
-}
-toggle_bit :: (bits:*Bit_Array,index:int) {
-    assert(bit_index_in_range(bits,index));
-    bits.words[index/64]^=cast(u64)1<<(index%64);
-}
-set_bit_to :: (bits:*Bit_Array,index:int,value:bool) {
-    if value set_bit(bits,index); else clear_bit(bits,index);
-}
-deinit :: (bits:*Bit_Array) {
-    array_reset(*bits.words);
-    bits.count=0;
-}
-make_bit_array :: (count:int)->Bit_Array #must {
-    result:Bit_Array;
-    init_bit_array(*result,count);
+
+make_bit_array :: (count: int) -> Bit_Array #must {
+    result: Bit_Array;
+    init_bit_array(*result, count);
     return result;
 }
-operator [] :: (a:Bit_Array,i:int)->bool {
-    assert(i>=0 && i<a.count);
-    return (a.words[i/64]&(cast(u64)1<<(i%64)))!=0;
+
+deinit :: (array: *Bit_Array) {
+    if array.slots.data  Basic.free(array.slots.data,, array.allocator);
+    array.slots = .[];
+    array.count = 0;
 }
-operator []= :: (a:*Bit_Array,i:int,value:bool) { set_bit_to(a,i,value); }
-clear_all_bits :: (array:*Bit_Array) { for *word:array.words word.*=0; }
-set_all_bits :: (array:*Bit_Array) {
-    for *word:array.words word.*=~cast(u64)0;
-    _mask_tail(array);
+
+set_bit :: (array: *Bit_Array, i: int) {
+    assert(i >= 0 && i < array.count);
+    array.slots[i >> 6] |= bit_mask(i);
 }
-toggle_all_bits :: (array:*Bit_Array) {
-    for *word:array.words word.*=~word.*;
-    _mask_tail(array);
+
+clear_bit :: (array: *Bit_Array, i: int) {
+    assert(i >= 0 && i < array.count);
+    array.slots[i >> 6] &= ~bit_mask(i);
 }
-for_expansion :: (array:*Bit_Array,body:Code,flags:For_Flags) #expand {
-    #assert(!(flags&.POINTER));
-    cursor:=0;
-    #if flags&.REVERSE cursor=array.count-1;
-    while cursor>=0 && cursor<array.count {
-        `it_index:=cursor;
-        `it:=get_bit(array,cursor);
-        #insert (remove={clear_bit(array,cursor);}) body;
-        #if flags&.REVERSE cursor-=1;
-        else cursor+=1;
+
+toggle_bit :: (array: *Bit_Array, i: int) {
+    assert(i >= 0 && i < array.count);
+    array.slots[i >> 6] ^= bit_mask(i);
+}
+
+set_bit_to :: (array: *Bit_Array, i: int, value: bool) {
+    assert(i >= 0 && i < array.count);
+    array.slots[i >> 6] = set_bits(array.slots[i >> 6], bit_mask(i), value);
+}
+
+operator [] :: (a: Bit_Array, i: int) -> bool {
+    assert(i >= 0 && i < a.count);
+    return (a.slots[i >> 6] & bit_mask(i)) != 0;
+}
+
+operator []= :: (a: *Bit_Array, i: int, value: bool) {
+    set_bit_to(a, i, value);
+}
+
+clear_all_bits :: (array: *Bit_Array) {
+    for * array.slots  it.* = 0;
+}
+
+set_all_bits :: (array: *Bit_Array) {
+    for * array.slots  it.* = -1;
+    mask_tail(array);
+}
+
+toggle_all_bits :: (array: *Bit_Array) {
+    for * array.slots  it.* = ~it.*;
+    mask_tail(array);
+}
+
+for_expansion :: (array: *Bit_Array, body: Code, flags: For_Flags) #expand {
+    #assert !(flags & .POINTER) "Bit_Array does not support iteration by pointer";
+    cursor := 0;
+    #if flags & .REVERSE  cursor = array.count - 1;
+    while cursor >= 0 && cursor < array.count {
+        `it_index := cursor;
+        `it := (array.*)[cursor];
+        #insert (remove={ clear_bit(array, cursor); }) body;
+        #if flags & .REVERSE  cursor -= 1;
+        else                  cursor += 1;
     }
 }
-for_expansion :: (array:Bit_Array,body:Code,flags:For_Flags) #expand {
-    for_expansion(*array,body,flags);
+
+// Iterate only the bits that are set (`for :only_set bits`) or clear (`for :only_unset bits`).
+only_set   :: #bake_arguments only_set_or_unset(target_value = true);
+only_unset :: #bake_arguments only_set_or_unset(target_value = false);
+
+set_bits :: inline (w: s64, m: s64, b: bool) -> s64 {
+    if b return w | m;
+    return w & ~m;
 }
-only_set :: (array:*Bit_Array,body:Code,flags:For_Flags) #expand {
-    only_set_or_unset(array,body,flags,true);
-}
-only_unset :: (array:*Bit_Array,body:Code,flags:For_Flags) #expand {
-    only_set_or_unset(array,body,flags,false);
-}
-set_bits :: (w:s64,m:s64,b:bool)->s64 { if b return w|m; return w&~m; }
+
 #scope_file
-_mask_tail :: (array:*Bit_Array) {
-    tail:=array.count%64;
-    if tail && array.words.count>0 array.words[array.words.count-1]&=(cast(u64)1<<tail)-1;
+
+Basic :: #import "Basic";
+assert :: Basic.assert;
+
+bit_mask :: inline (i: int) -> s64 {
+    return 1 << (i & 63);
 }
-only_set_or_unset :: (array:*Bit_Array,body:Code,flags:For_Flags,target_value:bool) #expand {
-    #assert(!(flags&.POINTER));
-    cursor:=0;
-    #if flags&.REVERSE cursor=array.count-1;
-    while cursor>=0 && cursor<array.count {
-        if get_bit(array,cursor)==target_value {
-            `it:=target_value;
-            `it_index:=cursor;
-            #insert (remove={set_bit_to(array,cursor,!target_value);}) body;
+
+// Bits past `count` in the last slot stay clear.
+mask_tail :: (array: *Bit_Array) {
+    tail := array.count & 63;
+    if tail && array.slots.count  array.slots[array.slots.count - 1] &= (1 << tail) - 1;
+}
+
+only_set_or_unset :: (array: *Bit_Array, body: Code, flags: For_Flags, target_value: bool) #expand {
+    #assert !(flags & .POINTER) "Bit_Array does not support iteration by pointer";
+    cursor := 0;
+    #if flags & .REVERSE  cursor = array.count - 1;
+    while cursor >= 0 && cursor < array.count {
+        if (array.*)[cursor] == target_value {
+            `it := target_value;
+            `it_index := cursor;
+            #insert (remove={ set_bit_to(array, cursor, !target_value); }) body;
         }
-        #if flags&.REVERSE cursor-=1;
-        else cursor+=1;
+        #if flags & .REVERSE  cursor -= 1;
+        else                  cursor += 1;
     }
 }

@@ -403,8 +403,27 @@ impl Compiler {
         self.insert_stmts_from(op, value.span)
     }
 
-    pub fn eval_insert_expr(&mut self, scope: ScopeId, value: &ast::Expr) -> Result<ast::Expr> {
-        match self.eval_insert_operand(scope, value)? {
+    /// The expression an expression-position `#insert` produces, and the scope it is checked
+    /// in: a `Code` value's own scope (where its names were written), else `scope`.
+    pub fn eval_insert_expr(
+        &mut self,
+        scope: ScopeId,
+        value: &ast::Expr,
+    ) -> Result<(ast::Expr, ScopeId)> {
+        let op = self.eval_insert_operand(scope, value)?;
+        if let Operand::Const {
+            value: Value::Code(code),
+            ..
+        } = &op
+        {
+            let code_scope = self.code_scopes[code.0 as usize];
+            return Ok((self.insert_expr_of(op, value)?, code_scope));
+        }
+        Ok((self.insert_expr_of(op, value)?, scope))
+    }
+
+    fn insert_expr_of(&mut self, op: Operand, value: &ast::Expr) -> Result<ast::Expr> {
+        match op {
             Operand::Const {
                 value: Value::Code(code),
                 ..

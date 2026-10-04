@@ -42,3 +42,23 @@ utf8_iter :: (s: *string, body: Code, flags: For_Flags) #expand {
         }
     }
 }
+
+// Classic UTF-8 decoding tables (the ConvertUTF names), exported for callers that
+// decode by hand. Continuation-byte count for each leading byte:
+trailingBytesForUTF8 :: #run -> [256] u8 {
+    table: [256] u8;
+    for 0..255 {
+        if it >= 0xFC      table[it] = 5;
+        else if it >= 0xF8 table[it] = 4;
+        else if it >= 0xF0 table[it] = 3;
+        else if it >= 0xE0 table[it] = 2;
+        else if it >= 0xC0 table[it] = 1;
+    }
+    return table;
+};
+// Payload bits of a leading byte, by continuation-byte count.
+utf8_inital_byte_mask :: u8.[0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01];
+// Marker bits subtracted after accumulating 6 bits per byte, by continuation-byte count.
+offsetsFromUTF8 : [6] u32 : .[0x0, 0x3080, 0xE2080, 0x3C82080, 0xFA082080, 0x82082080];
+// Leading-byte marker for an encoding of N bytes.
+firstByteMark : [7] u8 : .[0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC];

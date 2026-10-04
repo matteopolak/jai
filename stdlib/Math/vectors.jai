@@ -1,24 +1,42 @@
-// Maintained Euclidean vector fields; historical storage views live in legacy/Math.
+// Euclidean vectors and quaternions. Swizzle views (`xy`, `xyz`, ...) and `component`
+// overlay the named fields with #place, so `v.xyz` is an lvalue sharing v's storage.
 Vector2 :: struct {
-    x: float;
-    y: float;
+    x, y: float;
+#place x;
+    component: [2] float = ---;
 }
 Vector3 :: struct {
-    x: float;
-    y: float;
-    z: float;
+    x, y, z: float;
+#place x;
+    xy: Vector2 = ---;
+#place y;
+    yz: Vector2 = ---;
+#place x;
+    component: [3] float = ---;
 }
 Vector4 :: struct {
-    x: float;
-    y: float;
-    z: float;
-    w: float;
+    x, y, z, w: float;
+#place x;
+    xy: Vector2 = ---;
+#place y;
+    yz: Vector2 = ---;
+#place z;
+    zw: Vector2 = ---;
+#place x;
+    xyz: Vector3 = ---;
+#place y;
+    yzw: Vector3 = ---;
+#place x;
+    component: [4] float = ---;
 }
+// A default Quaternion is the identity rotation.
 Quaternion :: struct {
-    x: float;
-    y: float;
-    z: float;
-    w: float;
+    x, y, z: float;
+    w := 1.0;
+#place x;
+    component: [4] float = ---;
+#place x;
+    xyz: Vector3 = ---;
 }
 AnyVector2 :: struct { x, y: float; }
 dot :: dot_product;

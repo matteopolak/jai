@@ -8,3 +8,9 @@ main :: () {
     d: Derived; d.value = 41; d.extra = 1;
     assert(get(*d) + d.extra == 42);
 }
+
+value_of :: (b: *Base($T)) -> T { return b.value; }
+#run {
+    d: Derived; d.value = 5;
+    assert(value_of(*d) == 5);
+}

@@ -69,6 +69,26 @@ impl Compiler {
     /// Load the bootstrap modules and `sources`, then run every top-level
     /// directive: the program is parsed and its compile-time code has run.
     pub fn begin_sources(&mut self, sources: &[ProgramSource]) -> Result<()> {
+        let result = self.begin_sources_inner(sources);
+        self.with_deferred_errors(result)
+    }
+
+    /// A failure while top-level items still wait for a retry may be a consequence of
+    /// one of them (a missing import leaves a name undefined): show why they failed.
+    fn with_deferred_errors<T>(&mut self, result: Result<T>) -> Result<T> {
+        result.map_err(|mut e| {
+            for d in std::mem::take(&mut self.deferred_errors) {
+                e.notes.push((
+                    d.span,
+                    format!("a top-level item failed earlier: {}", d.message),
+                ));
+                e.notes.extend(d.notes);
+            }
+            e
+        })
+    }
+
+    fn begin_sources_inner(&mut self, sources: &[ProgramSource]) -> Result<()> {
         self.load_bootstrap()?;
         let m = self.new_module("main", None, Vec::new());
         self.main_module = Some(m);
@@ -122,6 +142,11 @@ impl Compiler {
 
     /// Lower everything reachable from the program's exports.
     pub fn finish_program(&mut self) -> Result<()> {
+        let result = self.finish_program_inner();
+        self.with_deferred_errors(result)
+    }
+
+    fn finish_program_inner(&mut self) -> Result<()> {
         // A program made only of `#run`/`#assert` directives has nothing to lower.
         let Some(m) = self.main_module else {
             return Ok(());

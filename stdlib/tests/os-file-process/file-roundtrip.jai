@@ -17,7 +17,8 @@ main :: () {
     Basic.assert(opened && Files.is_valid(stream));
     Basic.assert(Files.file_length(stream) == payload.count);
     buffer: [5] u8;
-    Basic.assert(Files.file_read(stream, buffer.data, buffer.count));
+    chunk_ok, read_count := Files.file_read(stream, buffer.data, buffer.count);
+    Basic.assert(chunk_ok && read_count == buffer.count);
     Basic.assert(memcmp(buffer.data, payload.data, payload.count) == 0);
     Basic.assert(Files.file_set_position(stream, 1));
     byte: u8;
