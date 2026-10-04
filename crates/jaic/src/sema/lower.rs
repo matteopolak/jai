@@ -323,6 +323,8 @@ impl Compiler {
     /// The natural type of an untyped literal.
     pub fn default_untyped(&self, ty: TypeId, value: &Value) -> TypeId {
         match value {
+            // `float64` only for literals too precise for `float32` (`float_literal_type`).
+            Value::Float(_) if ty == TypeId::F64 => ty,
             Value::Float(_) => TypeId::F32,
             Value::Int(_) if self.types.is_float(ty) => ty,
             Value::Int(_) => TypeId::S64,

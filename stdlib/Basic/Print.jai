@@ -296,7 +296,12 @@ __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -
         }
     }
     shortest := requested == -1 && fixed_after_point < 0;
-    if fixed_after_point >= 0 requested = result.exponent + 1 + fixed_after_point;
+    if fixed_after_point >= 0 {
+        // Like Jai's printer, fixed notation keeps at most 18 significant digits; the rest of the
+        // whole part prints as zeros (5.97219e24 -> 5972189887017193070000000).
+        requested = result.exponent + 1 + fixed_after_point;
+        if requested > 18 requested = 18;
+    }
     if !shortest && requested <= 0 {
         // At the cut before the leading digit, zero is the even candidate.
         round_up := false;

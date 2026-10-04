@@ -96,6 +96,9 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   (`procs.rs`, `type_from_params`; a text scan of the type span decides).
 - **`#bake_arguments` structs as restrictions**: `$V/Vec3` with `Vec3 :: #bake_arguments Vector(N = 3)` accepts
   instances of the origin whose parameters match the baked values (`instance_or_as_base`).
+- **Float literal types** (`float_literal_type` in `expr.rs`): a float literal is an untyped `float32` constant
+  unless it has more than 7 significant figures and `float32` cannot hold it exactly (`12342345234.0`,
+  `3.14159265358979`); then it defaults to `float64`. Either still converts to an expected float type.
 - **Literal overloads**: between `float32` and `float64` overloads an untyped literal picks `float32`
   (`log(2)`); integer parameters still win over floats.
 - **`!=` fallback**: with no matching `operator !=`, `a != b` is `!(a == b)` through `operator ==`.
