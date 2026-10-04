@@ -243,14 +243,11 @@ impl Compiler {
         match result {
             Ok(values) => Ok(values.first().map_or(0, |&v| v as u32 as i32)),
             Err(trap) => {
-                let mut msg = format!("runtime error: {}", trap.message);
-                if let Some((file, line, col)) = trap.loc {
-                    msg = format!(
-                        "{}:{line}:{col}: {msg}",
-                        self.sources.get(FileId(file)).path
-                    );
-                }
-                err(Span::default(), msg)
+                let span = trap.loc.map_or(Span::default(), |(file, line, col)| {
+                    let at = self.sources.get(FileId(file)).offset_of(line, col) as usize;
+                    Span::new(FileId(file), at, at + 1)
+                });
+                err(span, format!("runtime error: {}", trap.message))
             }
         }
     }
