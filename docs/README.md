@@ -17,6 +17,8 @@
 - [Standard-library API coverage](specs/stdlib/README.md)
 - [Selected standard-library protocol profiles](specs/stdlib/README.md)
 
+- [Declarations, polymorphism and #modify in sema](jaic-sema-poly-and-declarations.md)
+
 - [Deferred context pushes](deferred-context.md)
 
 - [Runtime parameter defaults](runtime-parameter-defaults.md)

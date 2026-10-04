@@ -77,6 +77,8 @@ pub struct Scope {
     pub usings: Vec<UsingEntry>,
     /// Procedure whose body this scope belongs to (locals are only visible inside it).
     pub proc_depth: u32,
+    /// The procedure whose parameters and body a `Proc` scope holds (for `#this`).
+    pub proc: Option<ProcId>,
 }
 
 #[derive(Clone, Debug)]
@@ -127,9 +129,17 @@ pub enum EntityKind {
 
 #[derive(Clone, Debug)]
 pub enum Resolved {
-    Const { value: Value, ty: TypeId },
+    Const {
+        value: Value,
+        ty: TypeId,
+    },
     Proc(ProcId),
-    Global { storage: ir::Storage, ty: TypeId },
+    /// An alias of an overload set (`dot :: dot_product;`).
+    ProcSet(Vec<ProcId>),
+    Global {
+        storage: ir::Storage,
+        ty: TypeId,
+    },
     Module(ModuleId),
     Library(value::LibraryId),
     PolyStruct(value::PolyStructId),
@@ -187,6 +197,7 @@ impl Compiler {
             pending: Vec::new(),
             usings: Vec::new(),
             proc_depth,
+            proc: None,
         });
         ScopeId(self.scopes.len() as u32 - 1)
     }

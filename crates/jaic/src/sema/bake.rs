@@ -23,7 +23,19 @@ impl Compiler {
                     (p.name, p.lit.clone(), p.bindings.unwrap_or(p.scope))
                 };
                 let params = lit.header.params.clone();
-                let (kept, consts) = self.bake_params(scope, def_scope, &params, args, span)?;
+                // `T = float` binds a polymorphic type variable rather than a parameter.
+                let poly_vars = calls::header_poly_names(&lit.header);
+                let (poly_args, param_args): (Vec<&ast::Arg>, Vec<&ast::Arg>) =
+                    args.iter().partition(|a| {
+                        a.name.is_some_and(|n| {
+                            poly_vars.contains(&n.name)
+                                && !params
+                                    .iter()
+                                    .any(|p| p.name.map(|pn| pn.name) == Some(n.name))
+                        })
+                    });
+                let (kept, consts) =
+                    self.bake_params(scope, def_scope, &params, &param_args, span)?;
                 let mut header = (*lit.header).clone();
                 header.params = kept;
                 // The copy is a new procedure, not another export of the original.
@@ -33,32 +45,45 @@ impl Compiler {
                     body: lit.body.clone(),
                 });
                 let baked_scope = self.const_scope(def_scope, consts, span);
-                Ok(Operand::Procs(vec![self.new_proc(
-                    name,
-                    lit,
-                    baked_scope,
-                    span,
-                )]))
+                let baked = self.new_proc(name, lit, baked_scope, span);
+                if poly_args.is_empty() {
+                    return Ok(Operand::Procs(vec![baked]));
+                }
+                let mut bindings = Vec::new();
+                for arg in poly_args {
+                    let ty = self.eval_type(scope, &arg.value)?;
+                    bindings.push((arg.name.unwrap().name, Value::Type(ty), TypeId::TYPE));
+                }
+                Ok(Operand::Procs(vec![
+                    self.instantiate(baked, bindings, span)?,
+                ]))
             }
             Operand::PolyStruct(ps) => {
                 let (name, lit, def_scope) = {
                     let p = &self.poly_structs[ps.0 as usize];
                     (p.name, p.lit.clone(), p.scope)
                 };
-                let (kept, consts) = self.bake_params(scope, def_scope, &lit.params, args, span)?;
-                let baked_scope = self.const_scope(def_scope, consts, span);
+                let args: Vec<&ast::Arg> = args.iter().collect();
+                let (kept, consts) =
+                    self.bake_params(scope, def_scope, &lit.params, &args, span)?;
+                // Constants baked earlier stay members of every instance.
+                let consts: Vec<_> = self.poly_structs[ps.0 as usize]
+                    .baked
+                    .iter()
+                    .cloned()
+                    .chain(consts)
+                    .collect();
+                let baked_scope = self.const_scope(def_scope, consts.clone(), span);
                 let mut lit = (*lit).clone();
                 lit.params = kept;
                 if lit.params.is_empty() {
                     let lit = Rc::new(lit);
-                    let ty = self.new_struct_type(name, lit, baked_scope, Vec::new(), None);
+                    let ty = self.new_struct_type(name, lit, baked_scope, consts, None);
                     return Ok(Operand::Type(ty));
                 }
-                Ok(Operand::PolyStruct(self.new_poly_struct(
-                    name,
-                    Rc::new(lit),
-                    baked_scope,
-                )))
+                let baked = self.new_poly_struct(name, Rc::new(lit), baked_scope);
+                self.poly_structs[baked.0 as usize].baked = consts;
+                Ok(Operand::PolyStruct(baked))
             }
             _ => err(
                 callee.span,
@@ -74,11 +99,11 @@ impl Compiler {
         scope: ScopeId,
         def_scope: ScopeId,
         params: &[ast::Param],
-        args: &[ast::Arg],
+        args: &[&ast::Arg],
         span: Span,
     ) -> Result<(Vec<ast::Param>, Vec<(Sym, Value, TypeId)>)> {
         let mut baked: Vec<Option<&ast::Arg>> = vec![None; params.len()];
-        for (i, arg) in args.iter().enumerate() {
+        for (i, &arg) in args.iter().enumerate() {
             let index = match arg.name {
                 Some(n) => params
                     .iter()

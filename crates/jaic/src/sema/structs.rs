@@ -25,6 +25,8 @@ pub struct PolyStruct {
     pub lit: Rc<ast::StructLit>,
     pub scope: ScopeId,
     pub instances: HashMap<Vec<Value>, TypeId>,
+    /// Parameters fixed by `#bake_arguments`: constants of every instance.
+    pub baked: Vec<(Sym, Value, TypeId)>,
 }
 
 /// One step of a member path through `using` fields.
@@ -135,6 +137,7 @@ impl Compiler {
             lit,
             scope,
             instances: HashMap::new(),
+            baked: Vec::new(),
         });
         PolyStructId(self.poly_structs.len() as u32 - 1)
     }
@@ -211,7 +214,7 @@ impl Compiler {
             }
             values[index] = Some(v);
         }
-        let mut bindings = Vec::new();
+        let mut bindings = self.poly_structs[ps.0 as usize].baked.clone();
         let mut key = Vec::new();
         for (i, p) in lit.params.iter().enumerate() {
             let pname = p.name.map(|n| n.name).unwrap_or_else(|| Sym::intern("_"));
@@ -405,6 +408,7 @@ impl Compiler {
             .cloned()
             .expect("struct without source");
         let mut items = Vec::new();
+        self.field_types.remove(&src.scope);
         self.collect_fields(src.scope, &src.lit.body, &mut items)?;
         for (decl, scope) in &src.extra {
             self.collect_decl_fields(*scope, decl, &mut items)?;
@@ -600,6 +604,10 @@ impl Compiler {
         };
         let notes: Vec<Rc<str>> = decl.notes.iter().map(|n| n.text.clone()).collect();
         for name in &decl.names {
+            self.field_types
+                .entry(scope)
+                .or_default()
+                .push((name.name, ty));
             out.push(FieldItem::Field(FieldDecl {
                 name: Some(name.name),
                 ty,

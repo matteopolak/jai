@@ -15,10 +15,41 @@ impl Compiler {
         scope: ScopeId,
         stmts: &[ast::Stmt],
     ) -> Result<()> {
+        // Constants are visible throughout their block, also before their declaration.
+        for stmt in stmts {
+            if let S::Decl(decl) = &stmt.kind
+                && decl.kind == ast::DeclKind::Const
+                && !decl.backtick
+                && f.hoisted_consts.insert(decl.id)
+            {
+                self.declare_local_consts(scope, scope, decl);
+            }
+        }
         for stmt in stmts {
             self.check_stmt(f, scope, stmt)?;
         }
         Ok(())
+    }
+
+    /// Declare the names of a local constant declaration in `target` (and `scope`).
+    fn declare_local_consts(&mut self, target: ScopeId, scope: ScopeId, decl: &Rc<ast::Decl>) {
+        for (index, name) in decl.names.iter().enumerate() {
+            for s in [target, scope] {
+                self.add_entity(
+                    s,
+                    name.name,
+                    name.span,
+                    EntityKind::Decl {
+                        decl: decl.clone(),
+                        index,
+                    },
+                    false,
+                );
+                if target == scope {
+                    break;
+                }
+            }
+        }
     }
 
     pub(super) fn new_block_scope(&mut self, parent: ScopeId) -> ScopeId {
@@ -289,22 +320,8 @@ impl Compiler {
             scope
         };
         if decl.kind == ast::DeclKind::Const {
-            for (index, name) in decl.names.iter().enumerate() {
-                for s in [target, scope] {
-                    self.add_entity(
-                        s,
-                        name.name,
-                        name.span,
-                        EntityKind::Decl {
-                            decl: decl.clone(),
-                            index,
-                        },
-                        false,
-                    );
-                    if target == scope {
-                        break;
-                    }
-                }
+            if !f.hoisted_consts.contains(&decl.id) {
+                self.declare_local_consts(target, scope, decl);
             }
             return Ok(());
         }
@@ -313,34 +330,32 @@ impl Compiler {
             Some(t) => Some(self.eval_type_in(f, scope, t)?),
             None => None,
         };
-        // Evaluate the initializer before the names come into scope.
-        let init = match &decl.value {
-            Some(v) if matches!(v.kind, E::Uninit) => None,
-            Some(v) => Some(self.check_expr(f, scope, v, declared)?),
-            None => None,
-        };
-        let mut values: Vec<Option<Operand>> = match init {
-            Some(Operand::Multi(vals)) if decl.names.len() > 1 => vals
-                .into_iter()
-                .map(|(ty, val)| {
-                    Some(Operand::Value {
-                        ty,
-                        val,
-                    })
-                })
-                .collect(),
-            Some(op) => {
-                let mut v = vec![Some(op)];
-                // `a, b := 0;` gives every name the same value.
-                for _ in 1..decl.names.len() {
-                    v.push(v[0].clone());
-                }
-                v
-            }
-            None => vec![None; decl.names.len()],
-        };
+        // Evaluate the initializers before the names come into scope.
+        let mut values = self.check_decl_values(f, scope, decl, declared)?;
         values.resize(decl.names.len(), None);
-        for (name, value) in decl.names.iter().zip(values) {
+        let existing = |i: usize| decl.existing.get(i).copied().unwrap_or(false);
+        for (i, (name, value)) in decl.names.iter().zip(values).enumerate() {
+            if existing(i) {
+                // `a=, b := ...` assigns to a variable that is already in scope.
+                let Some(value) = value else {
+                    return err(name.span, "assignment needs a value");
+                };
+                let place = self.check_ident(f, scope, name.name, name.span)?;
+                let Operand::Place {
+                    ty,
+                    addr,
+                } = place
+                else {
+                    return err(
+                        name.span,
+                        format!("cannot assign to {}", self.describe(&place)),
+                    );
+                };
+                let value = self.convert(f, value, ty, name.span)?;
+                let (_, v) = self.rvalue(f, value, name.span)?;
+                self.store_value(f, ty, addr, v, name.span)?;
+                continue;
+            }
             let ty = match (declared, &value) {
                 (Some(t), _) => t,
                 (None, Some(op)) => {
@@ -377,6 +392,12 @@ impl Compiler {
                 None if decl.value.is_none() => self.init_default(f, ty, addr, span)?,
                 None => {}
             }
+            if self.declares_local(target, name.name) {
+                return err(
+                    name.span,
+                    format!("'{}' is already declared in this scope", name.name),
+                );
+            }
             let depth = self.scope(target).proc_depth;
             let kind = EntityKind::Local {
                 ty,
@@ -396,6 +417,76 @@ impl Compiler {
             }
         }
         Ok(())
+    }
+
+    /// Whether `scope` itself already holds a runtime local called `name`.
+    fn declares_local(&self, scope: ScopeId, name: Sym) -> bool {
+        self.scope(scope).names.get(&name).is_some_and(|ids| {
+            ids.iter()
+                .any(|&e| matches!(self.entity(e).kind, EntityKind::Local { .. }))
+        })
+    }
+
+    /// The initializer operands of a declaration, one per name where the declaration gives
+    /// enough values: `a, b := f()` splits a multi-value call, `a, b := 0` repeats the value,
+    /// and `a, b := 1, 2` pairs them up.
+    fn check_decl_values(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        decl: &ast::Decl,
+        declared: Option<TypeId>,
+    ) -> Result<Vec<Option<Operand>>> {
+        let names = decl.names.len();
+        let Some(first) = &decl.value else {
+            return Ok(vec![None; names]);
+        };
+        if matches!(first.kind, E::Uninit) {
+            return Ok(vec![None; names]);
+        }
+        if !decl.extra_values.is_empty() {
+            let exprs: Vec<&ast::Expr> = std::iter::once(first).chain(&decl.extra_values).collect();
+            if exprs.len() != names {
+                return err(
+                    decl.span,
+                    format!("expected {names} values, found {}", exprs.len()),
+                );
+            }
+            let mut values = Vec::new();
+            for e in exprs {
+                let op = self.check_expr(f, scope, e, declared)?;
+                values.push(Some(if decl.existing.is_empty() {
+                    op
+                } else {
+                    // Snapshot, so assigning to an earlier name cannot change a later value.
+                    let op = self.settle_untyped(op, declared);
+                    let (ty, v) = self.rvalue(f, op, e.span)?;
+                    let tmp = self.spill(f, ty, v, e.span)?;
+                    let val = match self.ir_ty(ty) {
+                        Some(t) => f.b.load(t, tmp),
+                        None => tmp,
+                    };
+                    Operand::Value {
+                        ty,
+                        val,
+                    }
+                }));
+            }
+            return Ok(values);
+        }
+        Ok(match self.check_expr(f, scope, first, declared)? {
+            Operand::Multi(vals) if names > 1 => vals
+                .into_iter()
+                .map(|(ty, val)| {
+                    Some(Operand::Value {
+                        ty,
+                        val,
+                    })
+                })
+                .collect(),
+            // `a, b := 0;` gives every name the same value.
+            op => vec![Some(op); names],
+        })
     }
 
     /// `x[i] = v` / `x[i] op= v` through `operator []=` (and `operator []` to
@@ -506,6 +597,59 @@ impl Compiler {
         Ok(true)
     }
 
+    /// `a op= b` through a user-defined `operator op=` (called with `*a`, or `a` by value).
+    fn try_operator_assign(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        bin: ast::BinOp,
+        target: &ast::Expr,
+        rhs: &ast::Expr,
+        span: Span,
+    ) -> Result<bool> {
+        let Ok(probe) = self.check_expr_no_emit(scope, target) else {
+            return Ok(false);
+        };
+        if !self.overloadable(probe.ty()) {
+            return Ok(false);
+        }
+        let text = format!("{}=", calls::binop_text(bin));
+        let candidates = self.operator_candidates(scope, &text, &[probe.ty()])?;
+        if candidates.is_empty() {
+            return Ok(false);
+        }
+        let Operand::Place {
+            ty,
+            addr,
+        } = self.check_expr(f, scope, target, None)?
+        else {
+            return err(target.span, "cannot assign to this expression");
+        };
+        let value = self.check_expr(f, scope, rhs, None)?;
+        let arg = |op: Operand| CallArg {
+            name: None,
+            spread: false,
+            expr: None,
+            op: Some(op),
+            span,
+            scope,
+        };
+        let ptr = Operand::Value {
+            ty: self.types.pointer(ty),
+            val: addr,
+        };
+        let by_ptr = vec![arg(ptr), arg(value.clone())];
+        if self.try_call(f, scope, &candidates, by_ptr, span).is_err() {
+            let place = Operand::Place {
+                ty,
+                addr,
+            };
+            let by_value = vec![arg(place), arg(value)];
+            self.call_procs(f, scope, &candidates, by_value, None, span)?;
+        }
+        Ok(true)
+    }
+
     fn check_assign(
         &mut self,
         f: &mut FnCtx,
@@ -531,6 +675,9 @@ impl Compiler {
             }
             if lhs.len() != 1 || rhs.len() != 1 {
                 return err(span, "compound assignment takes one target and one value");
+            }
+            if self.try_operator_assign(f, scope, bin, &lhs[0], &rhs[0], span)? {
+                return Ok(());
             }
             // Evaluate the target once, then `*tmp = *tmp op rhs`.
             let place = self.check_expr(f, scope, &lhs[0], None)?;
@@ -1090,6 +1237,30 @@ impl Compiler {
         Ok(())
     }
 
+    /// Declare a loop's iterator and index. ``for `it, `it_index`` inside a macro also declares
+    /// them in the scope that called the macro, where the inserted loop body can see them.
+    fn declare_loop_vars(
+        &mut self,
+        f: &FnCtx,
+        loop_scope: ScopeId,
+        backtick: bool,
+        names: [Sym; 2],
+        kinds: [EntityKind; 2],
+        span: Span,
+    ) {
+        let caller = f
+            .macros
+            .last()
+            .map(|m| m.caller_scope)
+            .filter(|&c| backtick && c != loop_scope);
+        for (name, kind) in names.into_iter().zip(kinds) {
+            if let Some(caller) = caller {
+                self.add_entity(caller, name, span, kind.clone(), false);
+            }
+            self.add_entity(loop_scope, name, span, kind, false);
+        }
+    }
+
     fn check_for(
         &mut self,
         f: &mut FnCtx,
@@ -1177,27 +1348,25 @@ impl Compiler {
             );
             f.b.branch(c, body_block, exit);
             f.b.switch_to(body_block);
-            self.add_entity(
+            let names = [it_name, index_name];
+            self.declare_loop_vars(
+                f,
                 loop_scope,
-                it_name,
+                for_.backtick_names,
+                names,
+                [
+                    EntityKind::Local {
+                        ty,
+                        addr: it,
+                        depth,
+                    },
+                    EntityKind::Local {
+                        ty: TypeId::S64,
+                        addr: idx,
+                        depth,
+                    },
+                ],
                 span,
-                EntityKind::Local {
-                    ty,
-                    addr: it,
-                    depth,
-                },
-                false,
-            );
-            self.add_entity(
-                loop_scope,
-                index_name,
-                span,
-                EntityKind::Local {
-                    ty: TypeId::S64,
-                    addr: idx,
-                    depth,
-                },
-                false,
             );
             f.loops.push(LoopFrame {
                 label: Some(it_name),
@@ -1387,29 +1556,25 @@ impl Compiler {
             f.b.copy(slot, elem_addr, esize);
             (elem, slot)
         };
-        let it_entity = self.add_entity(
+        self.declare_loop_vars(
+            f,
             loop_scope,
-            it_name,
+            for_.backtick_names,
+            [it_name, index_name],
+            [
+                EntityKind::Local {
+                    ty: it_ty,
+                    addr: it_addr,
+                    depth,
+                },
+                EntityKind::Local {
+                    ty: TypeId::S64,
+                    addr: idx,
+                    depth,
+                },
+            ],
             span,
-            EntityKind::Local {
-                ty: it_ty,
-                addr: it_addr,
-                depth,
-            },
-            false,
         );
-        self.add_entity(
-            loop_scope,
-            index_name,
-            span,
-            EntityKind::Local {
-                ty: TypeId::S64,
-                addr: idx,
-                depth,
-            },
-            false,
-        );
-        let _ = it_entity;
         let remove = if fixed.is_none() && !for_.reverse {
             Some((container.clone(), idx, elem))
         } else {

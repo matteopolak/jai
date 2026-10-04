@@ -321,10 +321,7 @@ impl Compiler {
                 })
             }
             Operand::Procs(procs) if procs.len() == 1 => Ok(Resolved::Proc(procs[0])),
-            Operand::Procs(_) => err(
-                value.span,
-                "cannot alias an overload set with more than one procedure",
-            ),
+            Operand::Procs(procs) => Ok(Resolved::ProcSet(procs)),
             Operand::Module(m) => Ok(Resolved::Module(m)),
             Operand::PolyStruct(p) => Ok(Resolved::PolyStruct(p)),
             Operand::Library(l) => Ok(Resolved::Library(l)),
@@ -481,6 +478,16 @@ impl Compiler {
                 // A procedure name used as a type means its procedure type (e.g. `#type my_proc`).
                 self.proc_type(p[0], span)
             }
+            // A polymorphic struct whose parameters all have defaults is a type already.
+            Operand::PolyStruct(ps)
+                if self.poly_structs[ps.0 as usize]
+                    .lit
+                    .params
+                    .iter()
+                    .all(|p| p.default.is_some()) =>
+            {
+                self.instantiate_struct(ps, Vec::new(), span)
+            }
             other => err(
                 span,
                 format!("expected a type, found {}", self.describe(&other)),
@@ -601,6 +608,8 @@ impl Compiler {
             file,
         );
         f.compile_time = true;
+        // Runtime locals of the enclosing procedure are not visible to constants.
+        let scope = self.thunk_scope(scope);
         let op = self.check_expr(&mut f, scope, expr, expected)?;
         match op {
             Operand::Value {
