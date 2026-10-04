@@ -22,6 +22,8 @@ Coordinate the capsule with VM publication/hydration, LLVM globals, source const
 
 Runtime consumers must precharge extraction, type/layout closure, image mask/relocation encoding, retained recipe work, and pool cloning. A cached constant-node count does not bound decoding a wide zero-initialized aggregate. Use prepared VM layouts during warm execution; `selected_extent` is an admission check, not a warm execution cache.
 
+The shared [constant capture admission](constant-capture-admission.md) hooks reserve ordinary rollback and ancillary owners and carry immutable publication work into the VM fuel meter. Slice-specific backing pools, certified storage extraction, and the slice IR schema remain held for their coordinated integration window.
+
 Production integration remains held by the driver until all enum consumers and serialization paths are coherent. The eleven private tests pass in a standalone proof compiled with warnings denied. The [proof receipt](../artifacts/constant-slice-private-proof.json) records the exact trusted rewrite artifacts, before/after stability, source hashes, and private verification/disposal adapters used. This verifies the factory boundary; it is not production source, VM hydration, or native acceptance.
 
 ## Configuration

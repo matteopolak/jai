@@ -207,6 +207,8 @@ impl Module {
 pub struct GlobalDeclaration {
     pub declaration: Declaration,
     pub span: Span,
+    pub reset_policy: GlobalResetPolicy,
+    pub reset_policy_span: Option<Span>,
 }
 #[derive(Clone, Debug)]
 pub struct ConstantDeclaration {

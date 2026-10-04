@@ -11,11 +11,7 @@ their dedicated storage-bitcast representation.
 `ConstantKind::NativePointer` retains this payload for declaration defaults and
 global, record, or parameter initialization. Native emission normalizes against
 LLVM TargetData; the VM importer uses its explicit target layout. The helper's
-five focused tests pass; the newly activated source and native integration
-fixtures still await their shared-consumer test checkpoint.
-Two active IR integration proofs also pass: a capsule cannot be placed under a
-different pointer type, and conversion to an expression retains its source
-integer and exact cast mode.
+focused tests cover distinct cast modes, selected widths, foreign types, and deferred weak literals. Conversion to an expression retains a target normalization capsule with its exact pointer type, source strength, and cast mode.
 
 ## How it works
 

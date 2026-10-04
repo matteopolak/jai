@@ -24,6 +24,7 @@ use std::rc::Rc;
 mod owners;
 pub(crate) mod prototypes;
 mod provider;
+pub(crate) mod reflection_journal;
 mod results;
 mod suspension;
 pub use provider::ReadyProcedures;

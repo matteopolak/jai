@@ -1,5 +1,7 @@
 # Source Compiler intrinsics
 
+## What it is
+
 Source `#compiler` declarations bind to typed Rust VM intrinsics. The binding checks the declaration annotation, selected module identity, calling convention, context, and complete supported signature before registering its `ProcedureId`; an ordinary procedure with the same name keeps its ordinary body.
 
 ## How it works
@@ -53,6 +55,10 @@ Nonempty output slices also prepare their enclosing and selected target layouts 
 These are independently authored reduced source declarations, not a claim that the entire supplied Compiler module compiles. Its captured non-null `Code` scopes, complete Build_Options schema, AST/performance interception exports, and other catalog entries remain unsupported and produce diagnostics. No ignored suffix, empty successful response, or fabricated procedure body substitutes for those features. A marked procedure with a runtime fallback body retains that checked body; compile-time execution uses the catalog binding. The [message interception](compiler-message-interception.md) document explains the phase/completion subset and its host scheduling boundary.
 
 Catalog validation includes source parameter evaluation policy. A `#discard` formal cannot disappear from the runtime signature and accidentally turn a different source declaration into a recognized compiler binding.
+
+Private reflection adapters stage exact `get_type` and `compiler_set_type_info_flags` signature checks. The inverse Type lookup requires the adopted nominal header and an actual registered descriptor receipt; plausible header bytes are insufficient. The setter requires canonical `Type` plus the selected source `Type_Info_Flags` u32 enum with values 1, 2, and 4. Its source journal keeps arena-local type identities outside driver replay and retains one staged transaction per actual run. Accepted writes feed a typed immutable read overlay with an exact journal owner and revision. Subsequent reads in that run observe those writes while canonical policy publication remains atomic. RuntimeInfo retains the overlay revision reached by its request, and its descriptors use isolated cache state. A direct type-info expression prebound to a static descriptor still needs a reached execution adapter to honor this ordering. Full source activation also needs a compiler-only static Type operand and a publication handoff that releases the VM's shared type borrow before preparing the exclusive policy commit. These private adapters are not entries in the active supported subset yet.
+
+The private RuntimeInfo service issues a demand token only after execution reaches the API. It retains the actual schema, workspace, target, source frontier, and first-observed record policies through definition waiting. A catalog-bound native fallback without a selected layout retains a checked pending role at library finish; native code generation reports that layout dependency only when the role is reached. Neither pending state substitutes an empty table or a null native publication. The VM provider and source-finish attachment still require coordinated activation.
 
 Source-slot overload candidates retain their caller's genuine declaration or local procedure identity. The generic candidate helper changes only that identity carrier; Code slots, defaults, and parameter evaluation metadata remain the same.
 

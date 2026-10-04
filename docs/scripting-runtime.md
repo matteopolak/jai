@@ -27,6 +27,8 @@ cargo run --offline --locked -j 1 -p jai-runtime --bin jai-script -- run script.
 
 `SourceBundle` is a closed virtual source filesystem. Its relative source names map under `/jai-script`; normal `#load` and explicitly configured import roots resolve only supplied files. Missing files never fall back to the host filesystem. The native CLI instead opts into `jai_modules::Filesystem` to read source inputs. Reading source does not grant runtime file access.
 
+Virtual path normalization uses UTF-8 lexical POSIX rules independent of the Rust target's native path parser. In particular, a slash-prefixed path is not recognized as absolute by `wasm32-unknown-unknown`'s generic path implementation. Nested source loads and sibling imports must resolve against the virtual root, and `..` may never escape it.
+
 The portable runtime advertises no file, process, graphics or foreign-function capabilities. A reached foreign procedure or external global returns a typed `HostBindingRequired` with its checked identity. There is no arbitrary native FFI, supplied library loading, process launch or graphics emulation. Existing compiler host adapters are not automatically granted to script execution.
 
 The WebAssembly bridge uses bounded scalar byte channels for source text, relative source names and arguments. Exported functions never dereference JavaScript-provided pointers. Each run returns a real interpreter result or owned diagnostic bytes. The browser wrapper keeps the signed `i64` result as a JavaScript `BigInt`; the UI formats it as text. The interpreter runs in a worker so cancellation can terminate the whole worker. `engine.mjs` rejects modules that unexpectedly request host imports.
@@ -46,7 +48,7 @@ Extend source and entry behavior in `crates/jai-runtime/src/sources.rs` and `ent
 
 `jai-vm/src/execute/execution_phase.rs` owns the immutable phase and procedure checks. Constructor and retained-state hooks must preserve it; resumable boolean operations read it at execution time rather than freezing a true literal into the plan. Compile-time remains the default for existing callers.
 
-Host string slices are admitted in `execute/host_arguments.rs` using existing managed string backing and sequence byte images. Preserve allocation, work, metadata and value bounds before copying or installing storage. This is ordinary virtual storage, distinct from escaping sequence-pack temporaries.
+Host string slices are admitted in `execute/host_arguments.rs` using existing managed string backing and sequence byte images. Preserve allocation, work, metadata and value bounds before copying or installing storage. The sequence buffer needs an explicit byte projection even at offset zero: its legacy raw string backing must not become the first argument's descriptor. This is ordinary virtual storage, distinct from escaping sequence-pack temporaries.
 
 Implement host services through authenticated checked procedure capabilities and typed request/response handlers, following the existing file/process adapters. A matching function or library name alone must not authorize an adapter. Browser file access, graphics callbacks, process semantics and native FFI require separate implementations and tests; adding a `HostCapability` enum value does not implement a service.
 
@@ -61,8 +63,6 @@ The CLI accepts `--fuel <steps>` before `--`; everything following `--` is an ex
 `build_scripting_wasm.py --release` selects optimized Rust output; `--output <directory>` selects the staged runner directory and preserves relative output paths against the current working directory. `--target-dir` overrides a nonempty `CARGO_TARGET_DIR`, then pinned Cargo's configured target directory. Build commands and wasm artifact lookup use that same absolute path. On this host use `--target-dir /Volumes/CodexBuilds/targets/jai`; [build storage](build-storage.md) describes the verified APFS setup. The staged `build-metadata.json` records target selection, query/build commands, compiled/staged paths and the module hash. Builds remain offline, locked, single-job and non-incremental, and refuse to start below 2 GiB free on source, build or staging storage. The pinned wasm Rust target must already be installed.
 
 ## Dependencies
-
-Both packages are explicit members of the root Cargo workspace. The authored-package scope guard in `tools/check_rust_format.py` requires this registration, so workspace formatting, Clippy and test commands include their committed sources and tests. Keep the two local package records in `Cargo.lock` aligned with their manifests; this registration adds no registry dependency. It retains the existing one-shot `Script::prepare` API. Retained compiler controllers, platform host bindings and reflection receipt carriers require their own producer and consumer changes. A formatting check does not establish native, WebAssembly or browser execution acceptance.
 
 `jai-runtime` uses only internal frontend/type/IR/interpreter crates. `jai-wasm` depends only on `jai-runtime`. These dependency paths contain no `jai-codegen`, `jai-llvm`, `inkwell`, `llvm-sys`, browser package manager or third-party wasm binding dependency.
 

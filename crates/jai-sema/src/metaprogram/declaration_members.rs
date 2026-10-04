@@ -39,6 +39,8 @@ fn declaration(
         S::Declare(declaration) => D::Global(syntax::GlobalDeclaration {
             declaration: declaration.clone(),
             span: statement.span,
+            reset_policy: syntax::GlobalResetPolicy::Reset,
+            reset_policy_span: None,
         }),
         S::Constant(constant) => D::Constant(constant.clone()),
         S::Library(library) => D::Library(library.clone()),

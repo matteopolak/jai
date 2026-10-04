@@ -13,7 +13,7 @@ fn prepare(
     fields: &[RecordArgumentField],
     span: Span,
 ) -> Result<(PreparedLiteral, Vec<TypeId>), Diagnostic> {
-    crate::record_placements::require_record_construction_recipe(types, root, span)?;
+    crate::record_placements::require_record_storage_ready(types, root, span)?;
     if fields.len() > crate::constant_limits::MAX_CONSTANT_CELLS {
         return Err(Diagnostic::new(
             span,

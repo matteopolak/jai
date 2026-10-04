@@ -110,6 +110,17 @@ main::()->int{state:=0;value:Owner=.{x=tick(*state,1),middle=tick(*state,2),y=ti
 }
 
 #[test]
+fn placed_record_literals_materialize_overlapping_fields_in_record_order() {
+    assert_eq!(
+        run(r###"
+Storage::struct{first:u32;#place first;second:u32;}
+main::()->int{value:Storage=.{first=1,second=42};return cast(int)value.first+cast(int)value.second;}
+"###),
+        84
+    );
+}
+
+#[test]
 fn lazy_selected_arm() {
     assert_eq!(
         run(r###"
