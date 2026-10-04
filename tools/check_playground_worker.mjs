@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { Worker } from "node:worker_threads";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 export async function checkWorkers(directory) {
   const workers = new Set();
   function start() {
@@ -47,7 +48,10 @@ export async function checkWorkers(directory) {
     }
     const foreign = await run(restarted, 20, 'puts :: (s: *u8) -> s32 #foreign libc; libc :: #library "libc"; main :: () { puts("x"); }', { fuel: 1000000 });
     assert.equal(foreign.exitCode, null); assert(foreign.diagnostics.length > 0, "Native-only #foreign must fail with a diagnostic, not a crash");
-    return { actualWorker: true, immutableVfsSnapshot: true, actualLanguageWorker: true, executionCancellation: true, freshWorkerRestart: true };
+    // Every tests/stdlib program runs in a fresh engine; the pass set must equal tools/playground_stdlib_expected.json.
+    const sweep = spawnSync(process.execPath, [fileURLToPath(new URL("./check_playground_stdlib.mjs", import.meta.url)), path.resolve(directory)], { encoding: "utf8" });
+    assert.equal(sweep.status, 0, `stdlib pass set check failed:\n${sweep.stdout}${sweep.stderr}`);
+    return { stdlibPassSet: sweep.stdout.trim(), actualWorker: true, immutableVfsSnapshot: true, actualLanguageWorker: true, executionCancellation: true, freshWorkerRestart: true };
   } finally { await Promise.all([...workers].map(worker => worker.terminate())); }
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

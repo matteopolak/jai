@@ -22,6 +22,11 @@ playground. Memory is real host memory; foreign procedures are called natively (
   values are tagged addresses (`FUNC_TAG`); foreign procedures without a native address are tagged
   `FOREIGN_TAG` and trap with "foreign procedure '...' is not available here" when called.
 - `Host::foreign` may implement a foreign symbol itself (libc shims in `SandboxHost`, used in the browser).
+  `SandboxHost` (`interp/sandbox.rs`) is the browser's operating system: virtual clock, an in-memory file system
+  over a read-only base (`FileSystem::list_dir`; `FILE*`, descriptors, `DIR*`, `stat`, `getcwd`, `/tmp`),
+  `localtime_r` (UTC), `strtod`/`strtol` family, `sysconf` (one CPU), and the heap. `jaic run -os wasm file.jai`
+  runs a program on it natively, which is the fast way to debug browser-only behavior without a wasm build.
+  Threads: see [interpreter-threads.md](interpreter-threads.md).
 - `#compiler` procedures of the `Compiler` module are hooks (`Hook`, `run_hook`) handled in `build.rs`
   (`MetaOp`).
 - `codes` mirrors the compiler's `Code` values (AST and source text) so `compiler_get_nodes` can export them;
@@ -58,7 +63,9 @@ playground. Memory is real host memory; foreign procedures are called natively (
   and the matching `Ret` impl and thunk family in `native/callbacks.rs` (the two must stay mirror images).
 - Testing the x86-64 paths on an arm64 Mac: build an interpreter-only `jaic` (`cargo build -p jaic-cli
   --no-default-features --target x86_64-apple-darwin`, no LLVM needed) and run it with `arch -x86_64`.
-- New host-provided foreign procedures: `Host::foreign` implementations (`SandboxHost` for the browser).
+- New host-provided foreign procedures: `Host::foreign` implementations (`SandboxHost` for the browser). Add
+  a match arm in `sandbox.rs`; arguments arrive as raw `u64`s (pointers are host addresses, doubles are bits)
+  and errors are reported through `set_errno` (returns -1).
 - New compiler primitives: a `MetaOp` in `build.rs` plus a bodiless `#compiler` declaration in
   `stdlib/Compiler/records.jai`.
 

@@ -14,9 +14,10 @@ The shared language server (`jai_lsp_*`, `crates/jai-language-server`, built on 
    hence both trees. On wasm32 the script also links with a 256 MiB shadow stack (`-zstack-size`), because
    the compiler recurses deeply.
 2. `src/play.rs::run(files, main)` builds a `jaic::sema::VirtualFs` with the bundled files at `/stdlib/...`
-   and `/prelude/...` and the user files at `/workspace/<path>`. Options: import path `/stdlib`, preload
-   `/stdlib/Preload.jai`, target **WASM / Wasm** (`OS == .WASM`). It installs a `SharedHost` (wraps
-   `jaic::interp::SandboxHost`, which provides libc shims and captures stdout/stderr) as the interpreter host,
+   and `/prelude/...` and the user files at `/workspace/<path>`. Options: import paths `<main dir>/modules` then `/stdlib` (like the command
+   line, so a `modules/` folder of the workspace works), preload `/stdlib/Preload.jai`, target **WASM / Wasm**
+   (`OS == .WASM`). It installs a `SharedHost` (wraps
+   `jaic::interp::SandboxHost`, which provides libc shims, an in-memory file system and captures stdout/stderr) as the interpreter host,
    calls `compile_program` then `run_program`, and returns a `PlayResult`
    `{exitCode|null, stdout, stderr, rendered, diagnostics[{severity,file,line,column,message}]}` as JSON.
    Diagnostics with a `path:line:col:` message prefix (runtime traps) are split apart; others use the span.
@@ -58,12 +59,33 @@ Then open `http://127.0.0.1:8080/`. `tools/check_browser_release.mjs <staged-dir
   `The compiler crashed: <message>` with `compilerCrashed = true`, and `worker.mjs` drops its engine so the next
   Run instantiates a fresh module. `jai_play_panic_len/byte` read the message.
 - No real clock on wasm32 (`std::time::SystemTime::now` panics): `#cycle_counter` counts calls, and `SandboxHost`
-  implements `clock_gettime` (virtual, deterministic, +1 microsecond per call), `nanosleep` (no-op) and
-  `wasm_debug_break` (runtime error), so `current_time_monotonic`, `random_seed` and friends work.
-  Other native `#foreign` symbols fail with `foreign procedure 'x' is not available here` or `unknown library`.
+  implements `clock_gettime`/`gettimeofday`/`time` (virtual, deterministic, +1 microsecond per call), `nanosleep`/`usleep`
+  (advance the virtual clock, never block) and `wasm_debug_break` (runtime error), so `current_time_monotonic`,
+  `random_seed` and friends work. Other native `#foreign` symbols fail with `foreign procedure 'x' is not available here`
+  or `unknown library`.
+- **POSIX on WASM**: `OS == .WASM` is treated like Linux by `stdlib/POSIX` (Linux x86-64 bindings and struct layouts),
+  `File`, `File_Utilities`, `Thread`, `Basic` time, so those modules compile and call into `SandboxHost`. Windowing
+  and native-library modules still do not: `Window_Type` is `*void`, `Clipboard` is an in-memory string, `Window_Creation`,
+  FreeType, stb_image, libclang and `Process` have no browser backend.
+- **Files**: reads see the workspace (cwd is `/workspace`, so `read_entire_file("lib/data.txt")` works) and the bundled
+  stdlib (`/stdlib/...`); writes go to an in-memory overlay (`/tmp` exists) that lives for one Run. Nothing persists.
+- **Threads**: run one after another on the interpreter stack, see [interpreter threads](../compiler/interpreter-threads.md).
+  `Thread`, `Mutex`, `Condition_Variable`, `Semaphore` and `Thread_Group` work; a thread that busy-waits for a
+  thread lower on the stack hangs the worker (Cancel).
+- **Path semantics**: `normalize` clamps `..` at the root, so `#load "../../stdlib/X.jai"` from `/workspace/a.jai`
+  reaches `/stdlib/X.jai` as on a real file system.
 - The worker check (`tools/check_playground_worker.mjs`) smoke-tests Hash_Table, a `#run` workspace message loop, empty views and the virtual clock.
-- Regression sweep for the wasm build: run every `tests/stdlib/*.jai` through `engine.play` with a fresh engine each
-  (about 93 of 120 pass; the rest need threads, a clipboard, a POSIX-only module, `atof`, or multi-file module trees).
+- Regression sweep for the wasm build: `node tools/check_playground_stdlib.mjs <staged-dir>` runs every
+  `tests/stdlib/*.jai` through `engine.play` with a fresh wasm instance each (worker threads, 120 s timeout) and compares
+  the pass set with `tools/playground_stdlib_expected.json` (`pass` list plus `excluded`: name to written reason). Any
+  regression, any newly passing excluded test, or any test in neither list fails the check; `check_playground_worker.mjs`
+  runs it. After intentionally changing the set: `--update` rewrites `pass` (new failures get a `TODO explain` reason you
+  must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 136 of 146 pass. Excluded:
+  `bindings-generator-c`/`-cpp` (dlopen of libclang), `bindings-generator-cpp-classes` and `buildcpp-api` (start a compiler
+  process), `c-variadic-foreign-calls` (native C ABI test against libc, pipe, fcntl), `simp-compat-api` and
+  `getrect-right-handed-api`/`getrect-legacy-right-handed-surface` (FreeType and stb_image C libraries),
+  `getrect-text-display-compiles` (Window_Creation) and `getrect-rh-negative-control` (fails everywhere by design).
+- Debug browser-only behavior natively: `jaic run test.jai -os wasm` uses the same `SandboxHost`.
 
 ## Configuration
 
@@ -77,3 +99,6 @@ Then open `http://127.0.0.1:8080/`. `tools/check_browser_release.mjs <staged-dir
 
 `jaic` (no external crates), `jai-language-server`, CodeMirror bundle in
 `web/scripting-runtime/editor.bundle.mjs`.
+Rust's `wasm32-unknown-unknown` target has no filesystem or process services; the interpreter's
+`SandboxHost` supplies the libc subset the stdlib needs (virtual clock, in-memory files, cooperative threads).
+No Web Worker threads or `SharedArrayBuffer` are involved, so any static host works.

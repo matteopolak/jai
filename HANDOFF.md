@@ -54,8 +54,11 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   Jai versions had (6.6 `random_seed` result, 26.27 `builder_to_string(allocator=)`, 33.10 `Sound_Player` struct,
   51.2 GetRect `dropdown`), missing command-line arguments or import paths (30.14, 8.2, 12.8, the glfw ones), a
   missing `cpp_library.cpp`, and 31.2, which calls GL at compile time without a context (crashes in libGL).
-- **Browser**: wasm build and both checks pass; 93 of 120 stdlib tests run in the playground, the rest
-  need threads, native libraries or on-disk modules.
+- **Browser**: wasm build and both checks pass; 136 of 146 `tests/stdlib` programs run in the playground (threads
+  run cooperatively, files live in an in-memory FS, POSIX modules compile for `OS == .WASM`). The 10 exclusions
+  (libclang, compiler processes, FreeType/stb_image, Window_Creation, a libc ABI test, the negative control) are
+  listed with reasons in `tools/playground_stdlib_expected.json`, which `check_playground_worker.mjs` enforces
+  exactly. `jaic run -os wasm` reproduces the browser sandbox natively.
 
 ## Open work
 
