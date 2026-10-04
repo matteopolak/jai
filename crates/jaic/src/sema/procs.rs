@@ -622,6 +622,25 @@ impl Compiler {
         Ok(())
     }
 
+    /// Lower the queued bodies that can be lowered now, for compile-time code running in the
+    /// middle of checking. A body may need something still being computed (the layout of the
+    /// struct whose constant is being evaluated); it stays queued, so the final `drain_bodies`
+    /// reports its error. Returns the first such error.
+    pub fn drain_bodies_lenient(&mut self) -> Option<Box<Diagnostic>> {
+        let mut first = None;
+        let mut retry = Vec::new();
+        while let Some(id) = self.body_queue.pop() {
+            if self.proc(id).body_state == BodyState::Queued
+                && let Err(e) = self.lower_body(id)
+            {
+                first.get_or_insert(e);
+                retry.push(id);
+            }
+        }
+        self.body_queue.extend(retry);
+        first
+    }
+
     /// Lower one procedure body to IR.
     pub fn lower_body(&mut self, id: ProcId) -> Result<()> {
         self.procs[id.0 as usize].body_state = BodyState::Lowering;

@@ -15,10 +15,41 @@ impl Compiler {
         scope: ScopeId,
         stmts: &[ast::Stmt],
     ) -> Result<()> {
+        // Constants are visible throughout their block, also before their declaration.
+        for stmt in stmts {
+            if let S::Decl(decl) = &stmt.kind
+                && decl.kind == ast::DeclKind::Const
+                && !decl.backtick
+                && f.hoisted_consts.insert(decl.id)
+            {
+                self.declare_local_consts(scope, scope, decl);
+            }
+        }
         for stmt in stmts {
             self.check_stmt(f, scope, stmt)?;
         }
         Ok(())
+    }
+
+    /// Declare the names of a local constant declaration in `target` (and `scope`).
+    fn declare_local_consts(&mut self, target: ScopeId, scope: ScopeId, decl: &Rc<ast::Decl>) {
+        for (index, name) in decl.names.iter().enumerate() {
+            for s in [target, scope] {
+                self.add_entity(
+                    s,
+                    name.name,
+                    name.span,
+                    EntityKind::Decl {
+                        decl: decl.clone(),
+                        index,
+                    },
+                    false,
+                );
+                if target == scope {
+                    break;
+                }
+            }
+        }
     }
 
     pub(super) fn new_block_scope(&mut self, parent: ScopeId) -> ScopeId {
@@ -286,22 +317,8 @@ impl Compiler {
             scope
         };
         if decl.kind == ast::DeclKind::Const {
-            for (index, name) in decl.names.iter().enumerate() {
-                for s in [target, scope] {
-                    self.add_entity(
-                        s,
-                        name.name,
-                        name.span,
-                        EntityKind::Decl {
-                            decl: decl.clone(),
-                            index,
-                        },
-                        false,
-                    );
-                    if target == scope {
-                        break;
-                    }
-                }
+            if !f.hoisted_consts.contains(&decl.id) {
+                self.declare_local_consts(target, scope, decl);
             }
             return Ok(());
         }
@@ -1171,6 +1188,30 @@ impl Compiler {
         Ok(())
     }
 
+    /// Declare a loop's iterator and index. ``for `it, `it_index`` inside a macro also declares
+    /// them in the scope that called the macro, where the inserted loop body can see them.
+    fn declare_loop_vars(
+        &mut self,
+        f: &FnCtx,
+        loop_scope: ScopeId,
+        backtick: bool,
+        names: [Sym; 2],
+        kinds: [EntityKind; 2],
+        span: Span,
+    ) {
+        let caller = f
+            .macros
+            .last()
+            .map(|m| m.caller_scope)
+            .filter(|&c| backtick && c != loop_scope);
+        for (name, kind) in names.into_iter().zip(kinds) {
+            if let Some(caller) = caller {
+                self.add_entity(caller, name, span, kind.clone(), false);
+            }
+            self.add_entity(loop_scope, name, span, kind, false);
+        }
+    }
+
     fn check_for(
         &mut self,
         f: &mut FnCtx,
@@ -1258,27 +1299,25 @@ impl Compiler {
             );
             f.b.branch(c, body_block, exit);
             f.b.switch_to(body_block);
-            self.add_entity(
+            let names = [it_name, index_name];
+            self.declare_loop_vars(
+                f,
                 loop_scope,
-                it_name,
+                for_.backtick_names,
+                names,
+                [
+                    EntityKind::Local {
+                        ty,
+                        addr: it,
+                        depth,
+                    },
+                    EntityKind::Local {
+                        ty: TypeId::S64,
+                        addr: idx,
+                        depth,
+                    },
+                ],
                 span,
-                EntityKind::Local {
-                    ty,
-                    addr: it,
-                    depth,
-                },
-                false,
-            );
-            self.add_entity(
-                loop_scope,
-                index_name,
-                span,
-                EntityKind::Local {
-                    ty: TypeId::S64,
-                    addr: idx,
-                    depth,
-                },
-                false,
             );
             f.loops.push(LoopFrame {
                 label: Some(it_name),
@@ -1468,29 +1507,25 @@ impl Compiler {
             f.b.copy(slot, elem_addr, esize);
             (elem, slot)
         };
-        let it_entity = self.add_entity(
+        self.declare_loop_vars(
+            f,
             loop_scope,
-            it_name,
+            for_.backtick_names,
+            [it_name, index_name],
+            [
+                EntityKind::Local {
+                    ty: it_ty,
+                    addr: it_addr,
+                    depth,
+                },
+                EntityKind::Local {
+                    ty: TypeId::S64,
+                    addr: idx,
+                    depth,
+                },
+            ],
             span,
-            EntityKind::Local {
-                ty: it_ty,
-                addr: it_addr,
-                depth,
-            },
-            false,
         );
-        self.add_entity(
-            loop_scope,
-            index_name,
-            span,
-            EntityKind::Local {
-                ty: TypeId::S64,
-                addr: idx,
-                depth,
-            },
-            false,
-        );
-        let _ = it_entity;
         let remove = if fixed.is_none() && !for_.reverse {
             Some((container.clone(), idx, elem))
         } else {

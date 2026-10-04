@@ -383,11 +383,35 @@ impl Compiler {
             Found::Using(entry, member) => self.using_member(f, entry, member, span),
             Found::Entities(ids) => {
                 if ids.is_empty() {
+                    if f.type_only
+                        && let Some(ty) = self.struct_field_type(scope, name)
+                    {
+                        // Only the type is wanted, so the address is never used.
+                        let addr = f.b.iconst(Ty::Ptr, 0);
+                        return Ok(Operand::Place {
+                            ty,
+                            addr,
+                        });
+                    }
                     return err(span, format!("unknown identifier '{name}'"));
                 }
                 self.entities_operand(f, scope, &ids, span)
             }
         }
+    }
+
+    /// The type of field `name` of a struct whose body encloses `scope`, if already laid out.
+    fn struct_field_type(&self, scope: ScopeId, name: Sym) -> Option<TypeId> {
+        let mut s = Some(scope);
+        while let Some(sid) = s {
+            if let Some(fields) = self.field_types.get(&sid)
+                && let Some(&(_, ty)) = fields.iter().find(|(n, _)| *n == name)
+            {
+                return Some(ty);
+            }
+            s = self.scope(sid).parent;
+        }
+        None
     }
 
     pub fn entities_operand(
@@ -603,7 +627,9 @@ impl Compiler {
                 // `*x[i]` calls `operator *[]` when the base type has one.
                 if let E::Index(base, index) = &a.kind
                     && let Ok(probe) = self.check_expr_no_emit(scope, base)
-                    && !self.operator_candidates(scope, "*[]", &[probe.ty()])?.is_empty()
+                    && !self
+                        .operator_candidates(scope, "*[]", &[probe.ty()])?
+                        .is_empty()
                 {
                     let mut base_op = self.check_expr(f, scope, base, None)?;
                     if let Operand::Place {
@@ -617,9 +643,9 @@ impl Compiler {
                         };
                     }
                     let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
-                    if let Some(result) = self.try_index_operator_overload(
-                        f, scope, "*[]", &base_op, &index_op, span,
-                    )? {
+                    if let Some(result) = self
+                        .try_index_operator_overload(f, scope, "*[]", &base_op, &index_op, span)?
+                    {
                         return Ok(result);
                     }
                 }

@@ -29,7 +29,9 @@ impl Compiler {
                     args.iter().partition(|a| {
                         a.name.is_some_and(|n| {
                             poly_vars.contains(&n.name)
-                                && !params.iter().any(|p| p.name.map(|pn| pn.name) == Some(n.name))
+                                && !params
+                                    .iter()
+                                    .any(|p| p.name.map(|pn| pn.name) == Some(n.name))
                         })
                     });
                 let (kept, consts) =
@@ -52,7 +54,9 @@ impl Compiler {
                     let ty = self.eval_type(scope, &arg.value)?;
                     bindings.push((arg.name.unwrap().name, Value::Type(ty), TypeId::TYPE));
                 }
-                Ok(Operand::Procs(vec![self.instantiate(baked, bindings, span)?]))
+                Ok(Operand::Procs(vec![
+                    self.instantiate(baked, bindings, span)?,
+                ]))
             }
             Operand::PolyStruct(ps) => {
                 let (name, lit, def_scope) = {
@@ -60,7 +64,8 @@ impl Compiler {
                     (p.name, p.lit.clone(), p.scope)
                 };
                 let args: Vec<&ast::Arg> = args.iter().collect();
-                let (kept, consts) = self.bake_params(scope, def_scope, &lit.params, &args, span)?;
+                let (kept, consts) =
+                    self.bake_params(scope, def_scope, &lit.params, &args, span)?;
                 // Constants baked earlier stay members of every instance.
                 let consts: Vec<_> = self.poly_structs[ps.0 as usize]
                     .baked

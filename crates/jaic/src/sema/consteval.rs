@@ -86,13 +86,14 @@ impl Compiler {
         let func = f.b.finish();
         let id = self.program.reserve_func(func.name.clone());
         self.program.funcs[id.0 as usize] = Some(func);
-        self.drain_bodies()?;
+        let deferred = self.drain_bodies_lenient();
         let ctx = self.compile_time_context(span)?;
         self.interp.compile_time = true;
         let result = self.interp.call(&self.program, id, &[ctx]);
         self.flush_interp_output();
         match result {
             Ok(values) => Ok(values),
+            Err(_) if deferred.is_some() => Err(deferred.unwrap()),
             Err(trap) => {
                 let mut d = Diagnostic::error(
                     span,
@@ -218,7 +219,8 @@ impl Compiler {
                 });
             }
         }
-        self.drain_bodies()?;
+        // A body that fails here is reported by the final drain.
+        self.drain_bodies_lenient();
         let addr = self
             .interp
             .global_addr(&self.program, g)
