@@ -53,6 +53,4 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 - `Bindings_Generator` (libclang-based; libclang may be installed with Homebrew `llvm`).
 - GetRect / GetRect_LeftHanded share most code; deduplicate.
 - Retire the old `crates/jai-*` crates once nothing depends on them; clean up `.claude/worktrees`.
-- Typechecking does not wait across procedures: a body using a name another body declares through
-  `#insert,scope(...)` fails instead of waiting (only top-level items and `#placeholder`s wait).
 - Float printing details (TTWJ 5.2 / 6.5) are unverified.
