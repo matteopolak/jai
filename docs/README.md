@@ -376,6 +376,7 @@ Public source corpora are input data.
 
 - [jaic parser](jaic-parser.md) — Recursive-descent parser of the new compiler core: lookahead rules, terminators, and how to extend it.
 - [jaic LLVM backend](jaic-llvm-backend.md) — Native backend of the new compiler core: IR to LLVM lowering, C ABI for by-value aggregates, linking, and the `jaic build` command.
+- [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
 
 ## Language and library specifications
 
