@@ -316,7 +316,9 @@ impl Compiler {
                 }
                 (None, None) => return err(param.span, "parameter needs a type"),
             };
-            let ty = if param.variadic && !(header.flags.c_call || header.foreign.is_some()) {
+            let ty = if param.variadic
+                && !(header.flags.c_call || header.flags.cpp_method || header.foreign.is_some())
+            {
                 self.types.array(ty, ArrayKind::View)
             } else {
                 ty

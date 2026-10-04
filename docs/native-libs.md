@@ -26,6 +26,29 @@ python3 tools/build_native_libs.py              # all libraries
 python3 tools/build_native_libs.py stb_image    # just one
 ```
 
+## Slang (sgpu)
+
+The sgpu examples (`corpus/upstream/roeyb1--sgpu`) link `modules/slang/mac/libslang`, `Vulkan_With_VMA/libs/mac/libvulkan` and `Vulkan_With_VMA/mac/VkMemAlloc`, which upstream ships as prebuilt binaries that we do not download. `tools/build_slang.py` produces them:
+
+- Clones `shader-slang/slang` at the pinned tag (`TAG`, currently `v2025.24.2`, with submodules) into `artifacts/thirdparty/slang`, builds a Release shared library with CMake (tests, examples, gfx, slangd, slangi, replayer, CUDA/DXIL off; glslang on), and installs `libslang.dylib` plus the modules Slang `dlopen`s beside it (`libslang-glslang-*`, `libslang-glsl-module-*`) into `modules/slang/mac/`, ad-hoc signed.
+- Compiles `vk_mem_alloc.cpp` from the module's own sources into `libVkMemAlloc.a` / `libVkMemAlloc_DEBUG.a`, and copies Homebrew's Vulkan loader to `libs/mac/libvulkan.dylib`.
+- Idempotent: reuses the clone/build directory and skips installed outputs (`--force` reinstalls). Paths resolve through the git common dir, so it works from a worktree and writes into the main checkout's `artifacts/` and `corpus/`.
+
+Then build and run the examples (shaders and `sample.png` come from `tools/fetch_upstreams.py`; stb libraries from `build_native_libs.py`):
+
+```bash
+brew install cmake ninja molten-vk vulkan-loader vulkan-validationlayers
+python3 tools/build_slang.py
+python3 tools/build_native_libs.py
+cd corpus/upstream/roeyb1--sgpu/examples && jaic build build.jai
+export VK_ICD_FILENAMES=/opt/homebrew/etc/vulkan/icd.d/MoltenVK_icd.json \
+       VK_LAYER_PATH=/opt/homebrew/share/vulkan/explicit_layer.d \
+       DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/opt/vulkan-validationlayers/lib
+cd bin && ./02_compute          # run from bin/: shader paths are ../shaders/...
+```
+
+Examples request `VK_LAYER_KHRONOS_validation` (hence the layers). `04_mesh_shaders` needs `VK_EXT_mesh_shader`, which MoltenVK does not provide. `JAIC_NATIVE_LIBS` must point at the `build_native_libs.py` output when building from a worktree (the default is relative to the stdlib).
+
 ## How to change it
 
 - New library: add its sources under `sources` (compute sha256 with `shasum -a 256`) and an entry under

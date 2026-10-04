@@ -29,6 +29,8 @@ SUBMODULE_REVISIONS = {
 # by path prefix.
 RESOURCE_PREFIXES = {
     'focus-editor/focus': ('config/', 'fonts/', 'images/', 'themes/'),
+    # sgpu examples compile their Slang shaders at run time and one loads a sample texture.
+    'roeyb1/sgpu': ('examples/shaders/', 'examples/sample.png'),
 }
 # Submodule mount points: (consumer directory link, target relative to corpus/upstream).
 MODULE_LINKS = (

@@ -143,6 +143,15 @@ impl Compiler {
                     kind: ArrayKind::View,
                 },
             ) if fe == te => Some(POINTER),
+            // A fixed array decays to a pointer to its first element (`to_string(props.name)` on a
+            // C `char[256]` field); ranked below view conversions but above boxing into `Any`.
+            (
+                TypeKind::Array {
+                    elem: fe,
+                    kind: ArrayKind::Fixed(_),
+                },
+                TypeKind::Pointer(te),
+            ) if fe == te => Some(INT_TO_FLOAT),
             (TypeKind::Distinct(d), _) if self.types.distincts[d.0 as usize].isa => {
                 let base = self.types.distincts[d.0 as usize].base;
                 self.implicit_cost(base, false, to).map(|c| c + 1)
@@ -422,6 +431,19 @@ impl Compiler {
                 },
             ) => {
                 // A resizable array starts with (count, data): reuse its prefix.
+                let (_, addr) = self.address_of(f, op, span)?;
+                Ok(Operand::Value {
+                    ty: to,
+                    val: addr,
+                })
+            }
+            (
+                TypeKind::Array {
+                    kind: ArrayKind::Fixed(_),
+                    ..
+                },
+                TypeKind::Pointer(_),
+            ) => {
                 let (_, addr) = self.address_of(f, op, span)?;
                 Ok(Operand::Value {
                     ty: to,
