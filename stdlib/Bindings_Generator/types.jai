@@ -1,5 +1,8 @@
 // Options, declaration model and generator state.
 
+// Stands for clang's own builtin headers in `system_include_paths`; libclang adds them itself.
+GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH :: "<clang builtin headers>";
+
 Generate_Bindings_Options :: struct #type_info_none {
     os                    := OS;
     cpu                   := CPU;

@@ -107,6 +107,9 @@ Test: `tests/stdlib/bindings-generator-objc.jai` (builds a dylib with clang, the
 
 Native builds: a program importing `Bindings_Generator` builds with `jaic build`; `lower_intrinsic_wrapper` (`sema/procs.rs`) now emits a trap for `#compiler` hook procedures that have no intrinsic op, instead of returning undefined values (it caused "use of undefined value" on build).
 
+- `GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH` (newer jai API) may be listed in `system_include_paths`; it stands for clang's
+  builtin headers, which libclang adds itself, so the generator skips it.
+
 ## How to change it
 
 - New libclang query: add a function pointer to `Api` and a match arm in `clang::call` (`crates/jaic/src/clang.rs`), then call `clang("op", ...)` from Jai.

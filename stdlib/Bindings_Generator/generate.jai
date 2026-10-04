@@ -87,6 +87,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         }
     }
     for options.system_include_paths {
+        if it == GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH continue;  // libclang finds its own headers
         clang("add_arg", 0, 0, "-isystem");
         clang("add_arg", 0, 0, it);
     }
