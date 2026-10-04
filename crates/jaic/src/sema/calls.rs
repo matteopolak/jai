@@ -1591,6 +1591,11 @@ impl Compiler {
             .iter()
             .map(|&t| self.ir_ty(t).unwrap_or(Ty::Ptr))
             .collect();
+        if op == ir::Intrinsic::CompareAndSwap && values.len() == 3 {
+            // The interpreter needs the operand width: 1, 2, 4 or 8 bytes.
+            let width = self.size_of(sig.params[1].ty, span)?;
+            values.push(f.b.iconst(Ty::I64, width));
+        }
         let results = f.b.intrinsic(op, values, &returns);
         let outs = vec![None; sig.returns.len()];
         Ok(self.call_results(&sig.returns, results, outs))
