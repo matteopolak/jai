@@ -395,6 +395,12 @@ impl Compiler {
             ) => {
                 let n = *n;
                 let (_, addr) = self.address_of(f, op, span)?;
+                // An empty array views no storage (`.[]` is a null view, not a dangling address).
+                let addr = if n == 0 {
+                    f.b.iconst(Ty::Ptr, 0)
+                } else {
+                    addr
+                };
                 let view = f.b.alloca(16, 8);
                 let count = f.b.iconst(Ty::I64, n);
                 f.b.store(Ty::I64, view, count);

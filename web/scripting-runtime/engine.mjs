@@ -40,6 +40,14 @@ export async function createEngine(wasmBytes) {
     return decoder.decode(bytes);
   }
   function playCheck(status) { if (status !== 0) throw new Error(playRead("error") || "Playground boundary rejected the request."); }
+  function panicMessage() {
+    try {
+      const length = api.jai_play_panic_len();
+      const bytes = new Uint8Array(Math.min(length, 4096));
+      for (let i = 0; i < bytes.length; i++) bytes[i] = api.jai_play_panic_byte(i);
+      return decoder.decode(bytes);
+    } catch { return ""; }
+  }
   function playPush(channel, text) { for (const byte of encoder.encode(text)) playCheck(api.jai_play_push(channel, byte)); }
   return {
     ...(supportsPlay ? { play(files, main) {
@@ -50,7 +58,15 @@ export async function createEngine(wasmBytes) {
         playPush(0, name); playPush(1, text); playCheck(api.jai_play_finish_file());
       }
       playPush(2, main);
-      playCheck(api.jai_play_run());
+      try { playCheck(api.jai_play_run()); }
+      catch (error) {
+        if (error instanceof WebAssembly.RuntimeError) {
+          const crash = new Error(`The compiler crashed: ${panicMessage() || error.message}`);
+          crash.compilerCrashed = true; // the instance is unusable; callers must create a new engine
+          throw crash;
+        }
+        throw error;
+      }
       return JSON.parse(playRead("output"));
     } } : {}),
     ...(supportsLsp ? { lsp(message) {

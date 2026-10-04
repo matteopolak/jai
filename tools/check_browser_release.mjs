@@ -36,7 +36,7 @@ export async function inspectAssets(directory) {
     const patterns = name.endsWith(".html")
       ? [/<(?:script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi]
       : name.endsWith(".css") ? [/url\(\s*["']?([^\s"')]+)["']?\s*\)/gi]
-        : [/\b(?:import|export)\s+(?:[^;\n]*?\sfrom\s*)?["']([^"']+)["']/g,
+        : [/(?<![#\w.])\b(?:import|export)\s+(?:[^;\n]*?\sfrom\s*)?["']([^"']+)["']/g,
            /\b(?:import|fetch|Worker|URL)\s*\(\s*["']([^"']+)["']/g];
     for (const pattern of patterns) for (const match of text.matchAll(pattern)) relativeDependency(name, match[1], files);
   }
