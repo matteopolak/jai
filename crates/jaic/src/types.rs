@@ -106,6 +106,9 @@ pub struct EnumInfo {
     pub base: TypeId,
     pub members: Vec<(Sym, i128)>,
     pub is_flags: bool,
+    /// For `E.loose`: the strict enum type it mirrors. Loose enums convert implicitly to and
+    /// from integers.
+    pub loose_of: Option<TypeId>,
     pub span: Span,
 }
 
@@ -221,6 +224,25 @@ impl Types {
         let id = EnumId(self.enums.len() as u32);
         self.enums.push(info);
         self.intern(TypeKind::Enum(id))
+    }
+    /// The `E.loose` variant of enum type `ty` (created on first use).
+    pub fn loose_enum(&mut self, ty: TypeId) -> TypeId {
+        let TypeKind::Enum(e) = *self.kind(ty) else {
+            return ty;
+        };
+        if self.enums[e.0 as usize].loose_of.is_some() {
+            return ty;
+        }
+        if let Some(i) = self.enums.iter().position(|x| x.loose_of == Some(ty)) {
+            return self.intern(TypeKind::Enum(EnumId(i as u32)));
+        }
+        let mut info = self.enums[e.0 as usize].clone();
+        info.name = Sym::intern(&format!("{}.loose", info.name));
+        info.loose_of = Some(ty);
+        self.new_enum(info)
+    }
+    pub fn is_loose_enum(&self, ty: TypeId) -> bool {
+        matches!(self.kind(ty), TypeKind::Enum(e) if self.enums[e.0 as usize].loose_of.is_some())
     }
     pub fn new_distinct(&mut self, info: DistinctInfo) -> TypeId {
         let id = DistinctId(self.distincts.len() as u32);

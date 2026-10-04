@@ -307,6 +307,37 @@ impl Compiler {
     fn arg_cost(&mut self, arg: &CallArg, param: TypeId) -> Result<u32> {
         let Some(op) = &arg.op else {
             // Deferred arguments fit any plausible target; prefer exact-looking ones.
+            let scalar = matches!(
+                self.types.kind(self.types.repr_struct(param)),
+                TypeKind::Bool
+                    | TypeKind::Int { .. }
+                    | TypeKind::Float { .. }
+                    | TypeKind::String
+                    | TypeKind::Type
+            );
+            let enum_ = matches!(self.types.kind(param), TypeKind::Enum(_));
+            let fits = match arg.expr.as_ref().map(|e| &e.kind) {
+                // `.{...}` and `.[...]` build aggregates, `.NAME` picks an enum member.
+                Some(
+                    E::StructLit {
+                        ..
+                    }
+                    | E::ArrayLit {
+                        ..
+                    },
+                ) => !scalar,
+                Some(E::InferredMember(_)) => !scalar || enum_,
+                _ => true,
+            };
+            if !fits {
+                return err(
+                    arg.span,
+                    format!(
+                        "argument cannot be inferred as parameter type {}",
+                        self.types.name(param)
+                    ),
+                );
+            }
             return Ok(convert::LITERAL);
         };
         let untyped = matches!(
@@ -360,7 +391,9 @@ impl Compiler {
                         format!("constant {v} does not fit in {}", self.types.name(param)),
                     );
                 }
-                if matches!(self.types.kind(param), TypeKind::Enum(_)) {
+                if matches!(self.types.kind(param), TypeKind::Enum(_))
+                    && !self.types.is_loose_enum(param)
+                {
                     return err(
                         arg.span,
                         format!("an integer cannot be passed as {}", self.types.name(param)),
@@ -372,6 +405,11 @@ impl Compiler {
                     convert::LITERAL
                 });
             }
+            // A string literal is NUL-terminated, so it converts to a C string.
+            Operand::Const {
+                value: Value::String(_),
+                ..
+            } if self.types.pointee(param) == Some(TypeId::U8) => return Ok(convert::POINTER),
             _ => {}
         }
         let from = op.ty();

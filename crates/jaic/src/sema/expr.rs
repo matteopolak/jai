@@ -6,6 +6,23 @@ use crate::ast::{BinOp, ExprKind as E, UnOp};
 use crate::ir::{CmpOp, Ty};
 use crate::types::{ArrayKind, ProcType, TypeKind};
 
+/// `ifx cond else e` without a `then`: the interesting part of the condition is the value.
+/// `!x` and `!f(x)` give `x`, `x >= y` gives `x` and a call `f(x, ...)` gives `x`.
+fn implicit_then_expr(cond: &ast::Expr) -> Option<&ast::Expr> {
+    match &cond.kind {
+        E::Unary(ast::UnOp::Not, inner) => Some(implicit_then_expr(inner).unwrap_or(inner)),
+        E::Binary(
+            BinOp::Eq | BinOp::Ne | BinOp::Lt | BinOp::Le | BinOp::Gt | BinOp::Ge,
+            lhs,
+            _,
+        ) => Some(lhs),
+        E::Call {
+            args, ..
+        } => args.first().map(|a| &a.value),
+        _ => None,
+    }
+}
+
 impl Compiler {
     pub fn check_expr(
         &mut self,
@@ -107,7 +124,14 @@ impl Compiler {
                 ..
             } => match else_value {
                 Some(e) => self.check_ifx(f, scope, cond, then_value.as_deref(), e, expected, span),
-                None => err(span, "'ifx' without 'else' is only valid as a statement"),
+                None => {
+                    // `ifx c then a` / `ifx c`: the value, or zero when the condition is false.
+                    let zero = ast::Expr {
+                        kind: E::Int(0),
+                        span,
+                    };
+                    self.check_ifx(f, scope, cond, then_value.as_deref(), &zero, expected, span)
+                }
             },
             E::StructLit {
                 ty,
@@ -744,9 +768,16 @@ impl Compiler {
                 return Ok(f.b.cmp(CmpOp::Ne, Ty::I64, count, zero));
             }
             if let TypeKind::Array {
-                kind, ..
+                kind: ArrayKind::Fixed(n),
+                ..
             } = self.types.kind(ty)
-                && *kind != ArrayKind::Fixed(0)
+            {
+                // A fixed array's count is part of its type.
+                return Ok(f.b.iconst(Ty::I8, (*n != 0) as u64));
+            }
+            if let TypeKind::Array {
+                ..
+            } = self.types.kind(ty)
             {
                 let count = f.b.load(Ty::I64, v);
                 let zero = f.b.iconst(Ty::I64, 0);
@@ -938,6 +969,32 @@ impl Compiler {
         }
         if !is_cmp && self.types.is_pointer(rty) && op == BinOp::Add && self.types.is_integer(lty) {
             return self.check_binary(f, scope, op, b, a, expected, span);
+        }
+        // An integer variable meeting an untyped float constant (`n * 0.5`) is converted to float.
+        let is_float_lit = |o: &Operand| {
+            matches!(
+                o,
+                Operand::Const {
+                    value: Value::Float(_),
+                    untyped: true,
+                    ..
+                }
+            )
+        };
+        let is_int_value = |s: &Self, o: &Operand| {
+            !matches!(
+                o,
+                Operand::Const {
+                    untyped: true,
+                    ..
+                }
+            ) && s.types.is_integer(o.ty())
+                && !matches!(s.types.kind(o.ty()), TypeKind::Enum(_))
+        };
+        if !is_shift && is_float_lit(&rhs) && is_int_value(self, &lhs) {
+            lhs = self.explicit_cast(f, lhs, TypeId::F32, ast::CastFlags::default(), span)?;
+        } else if !is_shift && is_float_lit(&lhs) && is_int_value(self, &rhs) {
+            rhs = self.explicit_cast(f, rhs, TypeId::F32, ast::CastFlags::default(), span)?;
         }
         // Unify operand types.
         let ty = self.binary_operand_type(&lhs, &rhs, expected, is_shift, span)?;
@@ -1470,9 +1527,13 @@ impl Compiler {
         let done = f.b.new_block();
         f.b.branch(c, then_block, else_block);
         f.b.switch_to(then_block);
-        let then_op = match then_value {
-            Some(e) => self.check_expr(f, scope, e, expected)?,
-            None => Operand::Value {
+        let implicit_then = match then_value {
+            None => implicit_then_expr(cond),
+            Some(_) => None,
+        };
+        let then_op = match (then_value, implicit_then) {
+            (Some(e), _) | (None, Some(e)) => self.check_expr(f, scope, e, expected)?,
+            (None, None) => Operand::Value {
                 ty: cty,
                 val: cv,
             },
