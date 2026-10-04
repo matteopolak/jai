@@ -19,11 +19,13 @@ REPOSITORIES = (
 )
 # Libraries the projects above import from git submodules: pinned like the
 # projects but exempt from the recency cutoff.
-DEPENDENCIES = ('SogoCZE/jai_parser', 'ostef/Linalg', 'ostef/Jolt-Jai')
+DEPENDENCIES = ('SogoCZE/jai_parser', 'ostef/Linalg', 'ostef/Jolt-Jai', 'ostef/JoltC')
 # Dependencies pinned to the consumer's submodule commit (else the newest commit).
 SUBMODULE_REVISIONS = {
     'ostef/Linalg': '5f60c11f057787a804ce9582c5daeccc0e8de89a',
     'ostef/Jolt-Jai': '56d1cd47b92d6c08ecdab5b9057addce35dab41a',
+    # Jolt-Jai's Source/JoltC submodule: the C wrapper around Jolt Physics that libJoltC is built from.
+    'ostef/JoltC': 'd395f4138e1d29dfd46884f6ba00ff865248af08',
 }
 # Data files a project reads at compile time (`#run read_entire_file`, fonts...),
 # by path prefix.
@@ -31,6 +33,8 @@ RESOURCE_PREFIXES = {
     'focus-editor/focus': ('config/', 'fonts/', 'images/', 'themes/'),
     # sgpu examples compile their Slang shaders at run time and one loads a sample texture.
     'roeyb1/sgpu': ('examples/shaders/', 'examples/sample.png'),
+    # JoltC builds with CMake (tools/build_vk_engine_libs.py); Jolt Physics itself is cloned there.
+    'ostef/JoltC': ('CMakeLists.txt', 'Examples/'),
 }
 # Submodule mount points: (consumer directory link, target relative to corpus/upstream).
 MODULE_LINKS = (
@@ -39,8 +43,16 @@ MODULE_LINKS = (
     ('SogoCZE--Jails/modules/jai_parser', 'SogoCZE--jai_parser'),
     ('ostef--Vk-Engine/Modules/Linalg', 'ostef--Linalg'),
     ('ostef--Vk-Engine/Modules/JoltPhysics', 'ostef--Jolt-Jai'),
+    ('ostef--Jolt-Jai/Source/JoltC', 'ostef--JoltC'),
 )
 ROOT = Path(__file__).resolve().parents[1]
+
+def data_root() -> Path:
+    # Worktrees share the gitignored corpus/upstream and artifacts/ with the main checkout.
+    common = subprocess.run(['git', 'rev-parse', '--path-format=absolute', '--git-common-dir'],
+                            cwd=ROOT, capture_output=True, text=True)
+    return Path(common.stdout.strip()).parent if common.returncode == 0 else ROOT
+DATA = data_root()
 
 def git(cache: Path, *args: str) -> str:
     return subprocess.check_output(['git', '--git-dir', str(cache), *args], text=True).strip()
@@ -66,7 +78,7 @@ NATIVE_SOURCE_SUFFIXES = ('.c', '.h', '.m', '.mm', '.cpp', '.cc', '.hpp', '.inl'
 
 def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     key = repo.replace('/', '--')
-    cache = ROOT / 'artifacts/upstream-cache' / f'{key}.git'
+    cache = DATA / 'artifacts/upstream-cache' / f'{key}.git'
     cache.parent.mkdir(parents=True, exist_ok=True)
     if not cache.exists():
         subprocess.run(['git', 'clone', '--bare', '--filter=blob:none', '--depth=128', f'https://github.com/{repo}.git', str(cache)], check=True)
@@ -77,6 +89,8 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     if subprocess.run(['git', '--git-dir', str(cache), 'cat-file', '-e', revision + '^{commit}'], capture_output=True).returncode:
         subprocess.run(['git', '--git-dir', str(cache), 'fetch', '--filter=blob:none', '--depth=128', 'origin', revision], check=True)
     stamp = git(cache, 'log', '-1', '--format=%cI', revision, '--', '*.jai')
+    if not stamp and repo in DEPENDENCIES:
+        stamp = git(cache, 'log', '-1', '--format=%cI', revision)  # native-only dependency (no .jai files)
     if not stamp:
         raise ValueError(f'no Jai source changes in 128 commits: {repo}')
     source_date = datetime.fromisoformat(stamp)
@@ -87,7 +101,7 @@ def fetch(repo: str, since: datetime, pinned: dict | None = None) -> dict:
     paths = git(cache, 'ls-tree', '-r', '--name-only', revision).splitlines()
     selected = [p for p in paths if p.endswith('.jai') or p.endswith(NATIVE_SOURCE_SUFFIXES) or PurePosixPath(p).name.lower() in {'copying', 'readme.md'} or PurePosixPath(p).name.lower().startswith('license')
                 or (p.startswith(RESOURCE_PREFIXES.get(repo, ())) and not p.endswith('.psd'))]
-    destination = ROOT / 'corpus/upstream' / key
+    destination = DATA / 'corpus/upstream' / key
     def one(path: str) -> dict:
         expected = next((f for f in pinned['files'] if f['path'] == path), None) if pinned else None
         target = destination.joinpath(*safe_path(path).parts)
@@ -115,7 +129,7 @@ def main() -> None:
     for repo in REPOSITORIES + DEPENDENCIES:
         record = fetch(repo, since, pins.get(repo)); projects.append(record)
         print(f"{repo}: {record['selection']}, {len(record['files'])} text files at {record['revision']}", flush=True)
-    upstream = ROOT / 'corpus/upstream'
+    upstream = DATA / 'corpus/upstream'
     for link, target in MODULE_LINKS:
         path = upstream / link
         path.parent.mkdir(parents=True, exist_ok=True)

@@ -49,6 +49,10 @@ cd bin && ./02_compute          # run from bin/: shader paths are ../shaders/...
 
 Examples request `VK_LAYER_KHRONOS_validation` (hence the layers). `04_mesh_shaders` needs `VK_EXT_mesh_shader`, which MoltenVK does not provide. `JAIC_NATIVE_LIBS` must point at the `build_native_libs.py` output when building from a worktree (the default is relative to the stdlib).
 
+## Vk-Engine (ImGui, VMA, JoltC)
+
+`tools/build_vk_engine_libs.py` builds the C++ libraries Vk-Engine's `Build.jai` expects under `Modules/<M>/Libs/MacOS/` (`libImGui.dylib`, `libVkMemAlloc.a`, `libJoltC.dylib`, the last from JoltC + Jolt Physics v5.6.0 through CMake). Details and options: [Vk-Engine](../native/vk-engine.md).
+
 ## How to change it
 
 - New library: add its sources under `sources` (compute sha256 with `shasum -a 256`) and an entry under

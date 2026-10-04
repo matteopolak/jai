@@ -41,9 +41,11 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   Needs `python3 tools/build_native_libs.py` (stb libraries) and its own
   `modules/Objective_C/LightweightRenderingView/build.jai` run once (`jaic build build.jai` there). Debug builds
   need `~/Library/Application Support/dev.focus-editor` to exist (upstream creates `.../debug` non-recursively).
-- **Vk-Engine** (+ Linalg, Jolt-Jai): Core, Renderer, Game and Editor compile and their build metaprograms
-  complete. The ImGui / Vulkan binding generators now run and stop only on their C/C++ headers (the corpus now
-  fetches C-family sources, but not those submodules); the native `libImGui.so` / `libJoltC.so` are C++ builds.
+- **Vk-Engine** (+ Linalg, Jolt-Jai): `jaic check Build.jai -I Modules -I Source -os linux - Core|Renderer|Game|Editor`
+  passes (the ImGui and Vulkan generators run on the real headers). Native macOS stops in about 3 s: the upstream
+  `Vulkan`, `ImGui` and `JoltPhysics` modules and their `generate.jai` have no macOS branch (editing the upstream
+  project is out of scope). `python3 tools/build_vk_engine_libs.py` builds `libImGui`, `libVkMemAlloc` and `libJoltC`
+  for macOS. See `docs/vk-engine.md`.
 - **jaison**: tests and example run, also natively (`jaic build tests.jai`). **sgpu**: all examples check (host, linux, windows) and build natively on macOS
   after `python3 tools/build_slang.py` (Slang 2025.24.2, VMA and the Vulkan loader built from source); with MoltenVK
   all run except 04_mesh_shaders (MoltenVK has no `VK_EXT_mesh_shader`). Run commands: `docs/tools/native-libs.md`.

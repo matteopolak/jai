@@ -8,6 +8,8 @@ Pinned source snapshots of recently maintained open-source Jai projects (focus-e
 
 `tools/fetch_upstreams.py` downloads the pinned `.jai` files, READMEs, licenses, C-family sources (`NATIVE_SOURCE_SUFFIXES`, needed by native-library builds) and compile-time data files (`RESOURCE_PREFIXES`, e.g. focus's `config/` and `fonts/`) into `corpus/upstream/<owner>--<repo>/`. Existing pins in the manifest are kept; `--since YYYY-MM-DD` (default 2025-10-01) is the recency cutoff for newly added repositories, and `DEPENDENCIES` (submodules) are exempt. `MODULE_LINKS` symlinks dependencies into the consumers' `modules/` directories. Nothing from a project is built or executed by the fetcher.
 
+Dependencies are pinned like projects: jai_parser for Jails; Linalg, Jolt-Jai and Jolt-Jai's JoltC submodule for Vk-Engine (JoltC has no Jai files; the fetcher takes its `CMakeLists.txt` and `Examples/`). `corpus/upstream` and the Git cache live in the main checkout (found through the Git common dir), so worktrees share them.
+
 `tools/verify_upstreams.py` re-hashes the fetched tree against the manifest and rejects modified or unlisted files.
 
 ## How to change it
