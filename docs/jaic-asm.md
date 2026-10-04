@@ -5,8 +5,8 @@
 Support for Jai's `#asm { ... }` inline assembly in the new compiler core (`crates/jaic`). jaic never emits machine
 code for it: each x64 instruction is parsed into an AST and lowered to ordinary IR operations on the Jai variables used
 as operands. A block therefore behaves identically in the interpreter (`#run`, compile-time), the browser (wasm) and
-the LLVM backend, on any host CPU. Only scalar general-purpose instructions are supported; SIMD is rejected with an
-error naming the instruction.
+the LLVM backend, on any host CPU. Scalar general-purpose and common SSE/AVX/AVX-512 vector instructions are
+supported; anything else is rejected with an error naming the instruction.
 
 ## How it works
 
@@ -19,7 +19,8 @@ error naming the instruction.
   - Variables are read and written in place through their stack slots. Declared registers (`mov a:, 10`,
     `x: gpr`) are 64-bit locals added to the *enclosing* scope (blocks are not scopes; macros see them, later blocks
     reuse them). They start at zero. `Compiler::asm_regs` records which locals came from declarations so their size is
-    not "natural" (see below). `vec`/`str`/`omr` declarations are accepted but any use is an error.
+    not "natural" (see below). `vec` registers are 64-byte locals (see Vector instructions); `str`/`omr`/`kmask`
+    declarations are accepted but any use is an error.
   - Operation size: explicit suffix (`.b/.w/.d/.q`, `.8/.16/.32/.64`, or `?T` / `?BITS` for a type or bit count), else
     the size of the first Jai variable operand, else 64 bits. As on hardware, 32-bit writes zero-extend into a 64-bit
     destination and 8/16-bit writes merge into its low bits.
@@ -44,8 +45,27 @@ popcnt, lzcnt, tzcnt, bswap, blsr/blsi/blsmsk, imul (2- and 3-operand, and `imul
 int3, rdtsc/rdtscp (`rdtsc hi:, lo`; a monotonic counter), rdrand, cpuid (all four outputs 0), with an optional
 `lock_` prefix. `cmpxchg` takes the accumulator explicitly: `cmpxchg dest, src, acc` (or `acc, dest, src`).
 
-Not supported (compile error `unsupported #asm instruction 'x'`): everything else, notably SIMD (`movdqu`, `pxor`,
-`vpaddd`, gathers...), `div`/`idiv`, string instructions (`rep_movs`), `syscall`, 128-bit `cmpxchg16b`, shld/shrd.
+### Vector instructions
+
+`sema/asm/vec.rs` (entered from `asm_inst` when the mnemonic is not scalar). A `vec` register is a 64-byte local; each
+instruction runs lane by lane on memory into a scratch buffer that is then copied to the destination, so aliasing
+operands work. Size: `.x/.y/.z` (16/32/64 bytes), else 32 in a block with an AVX feature, 64 with AVX-512, otherwise
+16. `name:` in a vector position declares a `vec`. A leading `v` is accepted (`vpaddd`). Two operands mean
+`dst op= src`, three `dst = a op b`. With an AVX feature, a register write clears the bytes above the written size
+(VEX); otherwise they are kept. A Jai variable operand is memory at its address (integers act as general-purpose
+registers for `movd`/`movq`/`movmsk*`).
+
+Supported: moves (`movups/movaps/movupd/movapd/movdqu/movdqa` and the AVX-512 element-size variants, `lddqu`,
+`movnt*`), `movd`/`movq`, `movss`/`movsd`, broadcasts (`broadcastss/sd`, `pbroadcastb/w/d/q`, `broadcasti128`),
+float `add/sub/mul/div/min/max/sqrt` × `ps/pd/ss/sd`, bitwise `and/or/xor/andn` (`ps/pd`, `p*`, `p*d/q`),
+`padd/psub` b/w/d/q, `pmullw/d/q`, `pcmpeq/pcmpgt` b/w/d/q, `pmins/pmaxs/pminu/pmaxu` b/w/d, `pabs` b/w/d,
+`psll/psrl/psra` w/d/q (immediate or register count), `pshufd`, `shufps`, `cvtdq2ps`, `cvtps2dq` (round half to
+even), `cvttps2dq`, `movmskps/pd`, `pmovmskb`, gathers (`gatherdps/dpd/qps/qpd`, `pgatherdd/dq/qd/qq` with a
+`[base + vindex*scale]` operand; masked lanes keep their value and the mask is cleared), `zeroupper`. Not modeled:
+EVEX masking (`v: &* k`), embedded broadcast/rounding (`[p]!`, `!z`), mask registers, horizontal adds, `pshufb`,
+permutes, unpacks, blends, FMA.
+
+Not supported (compile error `unsupported #asm instruction 'x'`): everything else, notably `div`/`idiv`, string instructions (`rep_movs`), `syscall`, 128-bit `cmpxchg16b`, shld/shrd.
 `rcl/rcr` are unsupported. `imul`/`mul` set CF/OF from the full 128-bit product (`wide_mul`).
 
 ## How to change it
@@ -53,6 +73,8 @@ Not supported (compile error `unsupported #asm instruction 'x'`): everything els
 - New instruction: add an `Op` variant and its mnemonic to `lookup_op`, then a match arm in `asm_inst`. Reuse
   `asm_read`/`asm_write` (size-aware operand access), `rmw_begin`/`rmw_end` (atomic when `lock_`), and
   `asm_alu` for flag-setting arithmetic. Add a case to `tests/stdlib/lang-asm.jai`.
+- New vector instruction: a `VOp` (or a `Lane` for lane-wise binaries) in `sema/asm/vec.rs` and its mnemonic in
+  `lookup_vec`, then a match arm in `asm_vec_inst`. Add a case to `tests/stdlib/asm-vector-instructions.jai`.
 - New condition code: `Cond` + `lookup_cond` + `eval_cond`.
 - New operand syntax: `parser/asm.rs` (AST in `ast.rs`), then `asm_operand`/`asm_value`.
 - Gotchas: a `Val` defined inside a CAS retry loop is only valid after `rmw_end` (it dominates the exit block), so
@@ -70,4 +92,4 @@ simply not compiled).
 
 `ir` (builder, `Intrinsic::{CompareAndSwap, CycleCounter, Pause, DebugBreak, Popcount, Ctlz, Cttz, Bswap}`),
 `sema::calls` (macro expansion, `Code` parameters), `interp` and `jaic-llvm` for the intrinsics. Tests:
-`tests/stdlib/lang-asm.jai` (swept by `tools/jaic-sweep.py stdlib`) and the `asm_*` parser tests.
+`tests/stdlib/lang-asm.jai`, `tests/stdlib/asm-vector-instructions.jai` (swept by `tools/jaic-sweep.py stdlib`) and the `asm_*` parser tests.
