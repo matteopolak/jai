@@ -37,6 +37,7 @@
 - [Source procedure contracts](source-procedure-contracts.md)
 - [Procedure source queries](procedure-source-queries.md)
 - [Integer types and conversions](integer-types.md)
+- [Language conversions and assignment forms](language-conversions.md)
 - [Scoped arithmetic and array safety checks](safety-checks.md)
 - [Record conditionals and assertions](record-conditionals.md)
 - [Enum bodies and source file items](enum-file-items.md)

@@ -254,6 +254,28 @@ impl Compiler {
                         self.note_declaration(id, decl);
                     }
                 }
+                if decl.using
+                    && decl.kind == ast::DeclKind::Const
+                    && let [name] = decl.names.as_slice()
+                {
+                    // `using E :: enum {...}`: also bring the type's members into scope.
+                    self.scope_mut(target).pending.push(Pending {
+                        stmt: ast::Stmt {
+                            kind: ast::StmtKind::Using {
+                                value: ast::Expr {
+                                    kind: ast::ExprKind::Ident(name.name),
+                                    span: name.span,
+                                },
+                                filter: ast::UsingFilter::None,
+                            },
+                            span: stmt.span,
+                            notes: Vec::new(),
+                        },
+                        exported,
+                        file_scope,
+                        state: PendingState::Waiting,
+                    });
+                }
             }
             ast::StmtKind::Import(import) => {
                 if let Some(name) = import.name {
@@ -455,6 +477,25 @@ impl Compiler {
             } => {
                 let eval_scope = file_scope_for_eval(self, scope, file_scope);
                 let entry = self.using_target(eval_scope, value)?;
+                if exported
+                    && let super::scope::UsingEntry::Type(ty) = &entry
+                    && let crate::types::TypeKind::Enum(e) = *self.types.kind(*ty)
+                {
+                    // An exported `using Enum :: enum {...}` exports the members as constants.
+                    let members = self.types.enum_info(e).members.clone();
+                    for (name, v) in members {
+                        self.add_entity(
+                            scope,
+                            name,
+                            stmt.span,
+                            EntityKind::Const {
+                                value: Value::Int(v),
+                                ty: *ty,
+                            },
+                            true,
+                        );
+                    }
+                }
                 self.scope_mut(scope).usings.push(entry);
             }
             _ => unreachable!("only conditional items are pending"),

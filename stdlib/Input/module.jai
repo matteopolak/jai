@@ -1,7 +1,7 @@
 // Platform adapters enqueue events; this module owns frame lifetime and state.
 #module_parameters (ENABLE_NATIVE_INPUT_ADAPTERS := true);
 #import "Basic";
-Window_Type :: s64;
+#import "Window_Type";
 
 Input_Event_Type :: enum {
     QUIT :: 0; KEYBOARD :: 1; TEXT_INPUT :: 2; WINDOW :: 3;
@@ -62,9 +62,8 @@ routed_events_this_frame: [..] Routed_Input_Event;
 unrouted_events_this_frame: [..] Event;
 input_button_states: [NUM_BUTTON_STATES] Key_Current_State;
 input_application_has_focus := false;
-Window_Resize :: struct { window: Window_Type; width: int; height: int; }
-Window_Resize_Record :: Window_Resize;
-window_resizes_this_frame: [..] Window_Resize;
+Window_Resize_Record :: struct { window: Window_Type; width: s32; height: s32; }
+window_resizes_this_frame: [..] Window_Resize_Record;
 Window_Move_Record :: struct { window: Window_Type; x: s32; y: s32; }
 
 // Adapters run on the owner thread; drag-and-drop buffers transfer ownership.
@@ -98,7 +97,7 @@ set_input_focus :: (focused: bool) {
     unscoped_input_focus = focused;
     if !focused {
         for *record: window_input_states record.focused = false;
-        release_focus_buttons(0, false);
+        release_focus_buttons(INVALID_WINDOW, false);
     }
     refresh_application_focus();
 }
@@ -124,7 +123,7 @@ window_key_is_down :: (window: Window_Type, key: Key_Code) -> bool {
     return (get_window_key_state(window, key) & .DOWN) != 0;
 }
 
-get_window_resizes :: () -> [..] Window_Resize {
+get_window_resizes :: () -> [] Window_Resize_Record {
     return window_resizes_this_frame;
 }
 get_window_moves :: () -> [] Window_Move_Record {
@@ -170,18 +169,20 @@ init_input_system :: () {
     if input_initialize_source != null input_initialize_source();
 }
 
-// These explicit adapters are additional authored integration points.
+// These explicit adapters are additional authored integration points. The pointer
+// getters are named distinctly from Window_Creation's get_mouse_pointer_position, which
+// programs commonly import alongside Input.
 input_event_source: () = null;
 input_initialize_source: () = null;
 input_pointer_source: (window: Window_Type, client_area: bool) -> float, float = null;
 input_pointer_query_source: (window: Window_Type, client_area: bool) -> float, float, bool = null;
-get_mouse_pointer_position :: () -> float, float, bool {
-    if input_pointer_query_source != null return input_pointer_query_source(0, false);
+get_input_pointer_position :: () -> float, float, bool {
+    if input_pointer_query_source != null return input_pointer_query_source(INVALID_WINDOW, false);
     if input_pointer_source == null return 0, 0, false;
-    x, y := input_pointer_source(cast(Window_Type) 0, false);
+    x, y := input_pointer_source(INVALID_WINDOW, false);
     return x, y, true;
 }
-get_mouse_pointer_position :: (window: Window_Type, client_area := false) -> float, float {
+get_input_pointer_position :: (window: Window_Type, client_area := false) -> float, float {
     if input_pointer_query_source != null {
         x, y, success := input_pointer_query_source(window, client_area);
         assert(success, "Native pointer query failed");

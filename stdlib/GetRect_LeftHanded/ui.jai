@@ -643,7 +643,7 @@ slider :: (_r:Rect,value:*$T,min_value:T,max_value:T,spinbox_step:T,theme:*Slide
 slider_draw_background_default :: (r:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r,"",*state.background,state.background.status,*theme.background,null); }
 slider_draw_foreground_default :: (r_background:Rect,r_foreground:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r_foreground,"",*state.foreground,state.foreground.status,*theme.foreground,null); }
 slider_format_text_float_default :: (prefix:string,suffix:string,value:float64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
-    formatted:=Basic.formatFloat(value,trailing_width=clamp(theme.decimals,0,18),zero_removal=false);
+    formatted:=tprint("%",Basic.formatFloat(value,trailing_width=clamp(theme.decimals,0,18),zero_removal=.NO));
     if mode==.EDITING return formatted; return tprint("%%%",prefix,formatted,suffix);
 }
 slider_format_text_int_default :: (prefix:string,suffix:string,value:s64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
@@ -705,7 +705,7 @@ left_draw_text :: (font:*Font,x:s64,y:s64,text_color:Vector4,effects:Font_Effect
 left_get_font :: (memory:[]u8,pixel_height:int)->*Font { return Simp.get_font_at_size(memory,pixel_height); }
 left_get_pointer :: (window:Window_Type,right_handed:bool)->x:int,y:int,success:bool {
     if !Input.input_pointer_source return 0,0,false;
-    px,py:=Input.get_mouse_pointer_position(window,true);
+    px,py:=Input.get_input_pointer_position(window,true);
     if right_handed py=render_target_height-py;
     return cast(int)px,cast(int)py,true;
 }

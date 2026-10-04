@@ -519,6 +519,13 @@ impl Compiler {
             return Ok(());
         }
         if let ast::AssignOp::Op(bin) = op {
+            if lhs.len() > 1 && rhs.len() == 1 {
+                // `a, b += 1;` applies the operation to every target.
+                for target in lhs {
+                    self.check_assign(f, scope, op, std::slice::from_ref(target), rhs, span)?;
+                }
+                return Ok(());
+            }
             if lhs.len() != 1 || rhs.len() != 1 {
                 return err(span, "compound assignment takes one target and one value");
             }
@@ -600,6 +607,26 @@ impl Compiler {
             match self.check_expr(f, scope, &rhs[0], None)? {
                 Operand::Multi(v) => values = v,
                 other => {
+                    // `a, b = value;` assigns the one value to every target.
+                    if matches!(
+                        other,
+                        Operand::Value { .. } | Operand::Place { .. } | Operand::Const { .. }
+                    ) {
+                        for l in lhs {
+                            let place = self.check_expr(f, scope, l, None)?;
+                            let Operand::Place {
+                                ty,
+                                addr,
+                            } = place
+                            else {
+                                return err(l.span, "cannot assign to this expression");
+                            };
+                            let op = self.convert(f, other.clone(), ty, rhs[0].span)?;
+                            let (_, v) = self.rvalue(f, op, l.span)?;
+                            self.store_value(f, ty, addr, v, l.span)?;
+                        }
+                        return Ok(());
+                    }
                     return err(
                         rhs[0].span,
                         format!(
@@ -611,8 +638,27 @@ impl Compiler {
                 }
             }
         } else {
-            for r in rhs {
+            for (r, l) in rhs.iter().zip(lhs) {
                 let op = self.check_expr(f, scope, r, None)?;
+                // Untyped constants take the type of their own target (`v.x, v.y = 42, 108;`).
+                let target = match &l.kind {
+                    E::Ident(name) if name.as_str() == "_" => None,
+                    _ => match self.check_expr(f, scope, l, None)? {
+                        Operand::Place {
+                            ty, ..
+                        } => Some(ty),
+                        _ => None,
+                    },
+                };
+                let op = match (&op, target) {
+                    (
+                        Operand::Const {
+                            untyped: true, ..
+                        },
+                        Some(ty),
+                    ) => self.convert(f, op, ty, r.span)?,
+                    _ => op,
+                };
                 let op = self.settle_untyped(op, None);
                 let (ty, v) = self.rvalue(f, op, r.span)?;
                 let tmp = self.spill(f, ty, v, r.span)?;

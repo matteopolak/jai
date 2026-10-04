@@ -647,7 +647,7 @@ slider :: (_r:Rect,value:*$T,min_value:T,max_value:T,spinbox_step:T,theme:*Slide
 slider_draw_background_default :: (r:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r,"",*state.background,state.background.status,*theme.background,null); }
 slider_draw_foreground_default :: (r_background:Rect,r_foreground:Rect,theme:*Slider_Theme,state:*Slider_State) { core_draw_button(r_foreground,"",*state.foreground,state.foreground.status,*theme.foreground,null); }
 slider_format_text_float_default :: (prefix:string,suffix:string,value:float64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
-    formatted:=Basic.formatFloat(value,trailing_width=clamp(theme.decimals,0,18),zero_removal=false);
+    formatted:=tprint("%",Basic.formatFloat(value,trailing_width=clamp(theme.decimals,0,18),zero_removal=.NO));
     if mode==.EDITING return formatted; return tprint("%%%",prefix,formatted,suffix);
 }
 slider_format_text_int_default :: (prefix:string,suffix:string,value:s64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {

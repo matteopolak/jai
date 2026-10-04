@@ -24,7 +24,7 @@ rp_records: *Allocation_Record;
 rp_records_lock: s32;
 rp_initialized: bool;
 rp_public_config: rpmalloc_config_t;
-rp_callback_context: Context;
+rp_callback_context: #Context;
 rp_page_name: *u8;
 rp_huge_page_name: *u8;
 rp_main_heap: *void;
