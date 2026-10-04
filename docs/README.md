@@ -1,5 +1,11 @@
 # Developer documentation
 
+> **Note on older pages.** Many pages below were written for an earlier multi-crate architecture
+> (`jai-source`, `jai-vm`, `jai-sema`, `jai-driver`, ...) that has been removed; the compiler is now
+> `crates/jaic` (see [compiler architecture](compiler-architecture.md)). Those pages still describe language
+> behavior and design intent, but their crate names, file paths, test counts and CLI commands are historical.
+> For current status read `HANDOFF.md`.
+
 - [Persistent source checkpoints](source-checkpoints.md)
 - [Build storage](build-storage.md)
 
@@ -144,8 +150,6 @@
 - [Dependencies and build policy](dependency-policy.md)
 - [Compiler build profiles](compiler-build-profiles.md)
 - [Typed compiler boundaries](type-safety.md)
-- [Compiler, VM and discovery benchmarks](benchmarks.md)
-- [Bounded compiler and interpreter fuzzing](fuzz-targets.md)
 - [Recent upstream source corpus](upstream-corpus.md)
 - [Native project dependencies and source rebuild evidence](native-project-dependencies.md)
 - [Fresh SDL2 source and CPU SDK witness](native-sdl-witness.md)

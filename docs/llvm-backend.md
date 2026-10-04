@@ -2,11 +2,11 @@
 
 ## What it is
 
-`jai-codegen` constructs modules through LLVM's typed Rust API using Inkwell. LLVM performs instruction construction, verification and serialization; the compiler does not concatenate instruction text.
+`crates/jaic-llvm` (driven by `jaic build`) constructs modules through LLVM's typed Rust API using Inkwell. LLVM performs instruction construction, verification and serialization; the compiler does not concatenate instruction text.
 
 ## How it works
 
-`lower(&Context, &Program)` declares all procedure signatures first, then lowers checked bodies into LLVM basic blocks and values. Forward and recursive calls target existing function handles. Local storage is allocated once in entry blocks. Branches implement conditionals, loops and short-circuit expressions. Phi nodes use the actual end blocks of nested expressions. Fully terminating conditionals do not create unused unterminated joins. Typed exit records emit scope cleanup before branching or returning, after saving any scalar return value.
+`jaic-llvm` lowers the `jaic` IR (earlier text here described the retired `jai-codegen` crate; the structure below carries over): it declares all procedure signatures first, then lowers checked bodies into LLVM basic blocks and values. Forward and recursive calls target existing function handles. Local storage is allocated once in entry blocks. Branches implement conditionals, loops and short-circuit expressions. Phi nodes use the actual end blocks of nested expressions. Fully terminating conditionals do not create unused unterminated joins. Typed exit records emit scope cleanup before branching or returning, after saving any scalar return value.
 
 Private integer/Boolean value and storage wrappers preserve language widths because LLVM uses one Rust value type for both. Enums select operations and comparison predicates. Strings name modules, functions and instructions for diagnostics; they do not select types or encode LLVM syntax.
 
@@ -27,11 +27,11 @@ brew install llvm@22
 export LLVM_SYS_221_PREFIX="$(brew --prefix llvm@22)"
 export PATH="$LLVM_SYS_221_PREFIX/bin:$PATH"
 python3 tools/check_dependency_age.py
-cargo build -p jai-cli --locked
+cargo build -p jaic-cli --locked
 ```
 
 For another LLVM 22.1 installation, set `LLVM_SYS_221_PREFIX` to its root containing `bin/llvm-config` and `lib/`, then put its `bin/` on `PATH`. The development machine uses `/opt/homebrew/opt/llvm` (22.1.1). CI configures macOS and Linux on ARM64 and x86-64 with the [native host setup](native-hosts.md); completed hosted runs establish execution on those runners. Missing/incompatible LLVM fails at build time. Dynamic linking requires its library at runtime. Keep tool/library paths outside supplied `reference/`, `vendor/`, and `corpus/upstream/` inputs.
 
 ## Dependencies
 
-Inkwell 0.10.0, llvm-sys 221.1.0, independently installed LLVM 22.1, and `jai-sema`/`jai-syntax`. Run the locked dependency-age guard before compilation, including after lockfile changes. Inkwell and llvm-sys use unsafe FFI internally; workspace code forbids unsafe Rust. See [Inkwell](https://github.com/TheDan64/inkwell) and [Homebrew LLVM 22](https://formulae.brew.sh/formula/llvm@22).
+Inkwell 0.10.0, llvm-sys 221.1.0, independently installed LLVM 22.1, and the `jaic` IR. Run the locked dependency-age guard before compilation, including after lockfile changes. Inkwell and llvm-sys use unsafe FFI internally; workspace code forbids unsafe Rust. See [Inkwell](https://github.com/TheDan64/inkwell) and [Homebrew LLVM 22](https://formulae.brew.sh/formula/llvm@22).

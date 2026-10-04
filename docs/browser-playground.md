@@ -5,7 +5,7 @@
 The browser Run button compiles and interprets the workspace with the new compiler core `crates/jaic`
 (lexer, parser, sema, interpreter) compiled to WebAssembly inside `crates/jai-wasm`. The full `stdlib/`
 (and `prelude/`) are embedded in the wasm module, so `#import "Basic"` and friends work offline.
-The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_*`) are still exported.
+The shared language server (`jai_lsp_*`, `crates/jai-language-server`, built on the same `jaic` lexer and parser) is the only other export.
 
 ## How it works
 
@@ -23,8 +23,8 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
 3. `src/play_exports.rs` is the pointer-free scalar ABI (same style as the other exports):
    `jai_play_reset`, `jai_play_push(channel, byte)` (0 = path, 1 = contents, 2 = main path),
    `jai_play_finish_file`, `jai_play_run`, then `jai_play_output_len/byte` (JSON) and `jai_play_error_len/byte`.
-4. `web/scripting-runtime/engine.mjs` exposes `play(files, main)`; `worker.mjs` answers `run` messages with
-   `{type:"run", play}` when available; `editor.mjs::showPlay` prints stdout, stderr, rendered errors and
+4. `web/scripting-runtime/engine.mjs` exposes `play(files, main)` (and `lsp(message)`); `worker.mjs` answers `run` messages with
+   `{type:"run", play}`; `editor.mjs::showPlay` prints stdout, stderr, rendered errors and
    the exit code in the Output panel, and puts positioned diagnostics in the Problems panel and editor
    (kept in `runDiagnostics`, separate from language-server diagnostics, cleared when the file is edited).
 
@@ -35,7 +35,7 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
 - Result shape: change `PlayResult::to_json` and `showPlay` together.
 - Gotchas: under `OS == .WASM`, Runtime_Support writes output through the foreign
   `wasm_write_string(count, data, to_standard_error)`, which `SandboxHost` implements. The jaic interpreter stores
-  host pointers in 64-bit slots, which works on wasm32. The "Step limit" option is currently ignored by this path.
+  host pointers in 64-bit slots, which works on wasm32. There is no step limit or argument list: the playground has no run options.
   Infinite loops hang the worker; use Cancel (terminates the worker).
 - Panics: wasm32 panics abort, so a compiler bug traps the instance (`RuntimeError: unreachable`). `jai_play_reset`
   installs a panic hook (wasm32 only) that records the message; `engine.mjs::play` catches the trap and throws
@@ -45,8 +45,7 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
   implements `clock_gettime` (virtual, deterministic, +1 microsecond per call), `nanosleep` (no-op) and
   `wasm_debug_break` (runtime error), so `current_time_monotonic`, `random_seed` and friends work.
   Other native `#foreign` symbols fail with `foreign procedure 'x' is not available here` or `unknown library`.
-- The worker check (`tools/check_playground_worker.mjs`) accepts both the `play` result and the legacy runtime result
-  and smoke-tests Hash_Table, a `#run` workspace message loop, empty views and the virtual clock.
+- The worker check (`tools/check_playground_worker.mjs`) smoke-tests Hash_Table, a `#run` workspace message loop, empty views and the virtual clock.
 - Regression sweep for the wasm build: run every `tests/stdlib/*.jai` through `engine.play` with a fresh engine each
   (about 93 of 120 pass; the rest need threads, a clipboard, a POSIX-only module, `atof`, or multi-file module trees).
 
@@ -55,10 +54,10 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
 - Build: `cargo build -p jai-wasm --release --target wasm32-unknown-unknown` (or
   `python3 tools/build_scripting_wasm.py --release`, which stages `web/scripting-runtime/` plus `jai_wasm.wasm`).
 - Serve the staged directory with any static server and open `index.html`.
-- Native test: `cargo test -p jai-wasm play` (hello world, sibling `#load`, positioned diagnostics, scalar ABI).
+- Native test: `cargo test -p jai-wasm play`; `node tools/check_scripting_wasm.mjs <jai_wasm.wasm>` runs fixtures against the built module (hello world, sibling `#load`, positioned diagnostics, scalar ABI).
 - The wasm is about 30 MB because the stdlib is embedded.
 
 ## Dependencies
 
-`jaic` (no external crates), `jai-runtime` and `jai-language-server` (legacy exports), CodeMirror bundle in
+`jaic` (no external crates), `jai-language-server`, CodeMirror bundle in
 `web/scripting-runtime/editor.bundle.mjs`.

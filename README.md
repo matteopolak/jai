@@ -68,65 +68,43 @@ An independently authored standard library is included in [`stdlib/`](stdlib/). 
 
 ## Try it
 
-You need [Rustup](https://rustup.rs/), Python 3.11 or newer, and an independently installed LLVM 22 with Clang. Rustup uses this repository's pinned toolchain automatically.
-
-On macOS, install LLVM with Homebrew and set `LLVM_SYS_221_PREFIX` to its installation directory. See the [LLVM setup guide](docs/llvm-backend.md) for exact commands and troubleshooting.
+You need [Rustup](https://rustup.rs/) (it picks up this repository's pinned toolchain) and, for native builds, an independently installed LLVM 22 with Clang; see the [LLVM setup guide](docs/llvm-backend.md).
 
 ```sh
 git clone https://github.com/matteopolak/jai.git
 cd jai
-
-# Check dependency release dates before building.
-python3 tools/check_dependency_age.py
-cargo build -p jai-cli --locked
+python3 tools/check_dependency_age.py   # check dependency release dates before building
+cargo build -p jaic-cli --locked
 ```
 
-The example above is included as `examples/sum.jai`:
+The example above is included as `examples/sum.jai`. `jaic run` executes it in the interpreter, `check` only type-checks it:
 
 ```sh
-cargo run -p jai-cli -- check examples/sum.jai
-cargo run -p jai-cli -- build examples/sum.jai sum
-./sum
-echo $? # 45
-```
-
-The source interpreter can run the same authored example without the native backend:
-
-```sh
-cargo run -p jai-runtime --bin jai-script -- run examples/sum.jai --fuel 1000000
+cargo run -p jaic-cli -- check examples/sum.jai
+cargo run -p jaic-cli -- run examples/sum.jai
 ```
 
 To build and serve the standalone browser playground, follow the [browser editor setup](docs/browser-editor.md). Its compiler and language service run locally in WebAssembly.
 
-You can inspect tokens with `lex`, check one file's syntax with `parse`, or save its LLVM output with `emit-llvm`:
-
-```sh
-cargo run -p jai-cli -- emit-llvm examples/sum.jai sum.ll
-```
+The same lexer and parser power the `jai-lsp` language server (`cargo run -p jai-language-server --bin jai-lsp`); see [language-server.md](docs/language-server.md).
 
 ## Compatibility and performance
 
 The local Jai distribution helps establish language behavior. Newer, maintained Jai projects guide compatibility when they differ from that older reference. The [upstream corpus](docs/upstream-corpus.md) records the projects and exact revisions used.
 
-Tests cover rejected programs and the behavior of newly compiled programs. Benchmarks cover compiler stages, module discovery, interpreter execution, and memory use; broader native workloads are being verified. Unsupported features produce errors instead of counting as successful builds.
+Tests cover rejected programs and the behavior of newly compiled programs. Unsupported features produce errors instead of counting as successful builds.
 
 The compiler uses an independently authored [source prelude](docs/compiler-prelude.md) split into protocol components under `prelude/`. Supplied source distributions remain external compatibility inputs. The retired reference probe used an authorized compiler asset for isolated static inspection and bounded developer-help experiments; [binary inspection](docs/binary-inspection.md) preserves those findings and their limits.
 
 ## Working on the compiler
 
-For a public checkout:
-
 ```sh
-cargo test --workspace --locked --no-fail-fast -- \
-  --skip lex_entire_reference_without_executing_it
+cargo test --workspace --locked --no-fail-fast
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
-cargo bench -p jai-bench --bench compiler --locked -- --test --skip reference_lex
-cargo bench -p jai-bench --bench vm --locked -- --test
+python3 tools/jaic-sweep.py corpus stdlib upstream --timeout 900   # expect only the negative control to fail
 ```
 
-The skipped lexer test requires the separately supplied reference files. Native-path rejection tests run in public checkouts too. Local reference checks run without the lexer filter.
+The workspace is `crates/jaic` (lexer, parser, semantic analysis, IR, interpreter), `crates/jaic-cli` (the `jaic` binary), `crates/jaic-llvm` (native backend), `crates/jai-language-server` and `crates/jai-wasm` (browser build). Start with the [developer guide](docs/README.md) and [compiler architecture](docs/compiler-architecture.md). Rustfmt keeps code formatting consistent, and Cargo enforces a minimum dependency release age of 14 days.
 
-The standalone [fuzz targets](docs/fuzz-targets.md) exercise lexer/parser source, closed virtual module loading, constants and the checked IR interpreter with authored seeds, bounded resources and AddressSanitizer. Their mutable corpora and crash inputs are retained separately from benchmarks; completed campaigns and deterministic replay provide different evidence from build or target registration.
-
-Start with the [developer guide](docs/README.md) for architecture, language coverage, benchmarks, and dependency policy. Rustfmt keeps code formatting consistent, and Cargo enforces a minimum dependency release age of 14 days.
+Many pages under `docs/` were written for an earlier multi-crate architecture (`jai-source`, `jai-vm`, `jai-sema`, ...) that has been removed. They still describe language behavior and design intent, but their crate and file references are historical; [compiler architecture](docs/compiler-architecture.md) maps them to `jaic`.

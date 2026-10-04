@@ -18,7 +18,7 @@ The same checkpoint checks 253 library/example entrypoints and fixtures under tw
 
 Preserve reference files. Use an explicit module/library overlay to supply genuine missing public dependencies such as OpenXR and Vulkan Memory Allocator bindings; implement behavior rather than no-op stubs. Rebuild third-party machine code from inspected source with reproducible inputs. Treat intentionally remapped imports and inactive platform branches differently from genuinely missing dependencies.
 
-The implementation order is source/diagnostics and grammar, dependency-driven name/type resolution and polymorphism, typed IR and native ABI, compile-time VM and compiler workspaces, source insertion/reflection/hooks, complete runtime/preload integration, platform libraries and corpus builds. Tests must accompany each feature, including rejection cases. [Allocation-aware benchmarks](benchmarks.md) measure implemented stages; no benchmark parity has been claimed.
+The implementation order is source/diagnostics and grammar, dependency-driven name/type resolution and polymorphism, typed IR and native ABI, compile-time VM and compiler workspaces, source insertion/reflection/hooks, complete runtime/preload integration, platform libraries and corpus builds. Tests must accompany each feature, including rejection cases.
 
 ## Configuration
 
