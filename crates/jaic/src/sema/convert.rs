@@ -420,13 +420,13 @@ impl Compiler {
             let fr = self.types.repr(op.ty());
             let folded = match value {
                 // `cast,force` between same-size ints and floats reinterprets the bits.
-                Value::Int(i) if flags.force && self.types.is_float(tr) => Some(Value::Float(
-                    if tr == TypeId::F32 {
+                Value::Int(i) if flags.force && self.types.is_float(tr) => {
+                    Some(Value::Float(if tr == TypeId::F32 {
                         f32::from_bits(*i as u32) as f64
                     } else {
                         f64::from_bits(*i as u64)
-                    },
-                )),
+                    }))
+                }
                 Value::Float(x) if flags.force && self.types.is_integer(tr) => {
                     let bits = if fr == TypeId::F32 {
                         (*x as f32).to_bits() as i128

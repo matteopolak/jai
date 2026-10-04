@@ -105,6 +105,12 @@ impl Host for SandboxHost {
                 self.write(&bytes, fd == 2);
                 len as u64
             }
+            "wasm_write_string" => {
+                let (len, ptr, to_stderr) = (arg(0) as usize, arg(1), arg(2) & 1 != 0);
+                let bytes = unsafe { std::slice::from_raw_parts(ptr as *const u8, len) }.to_vec();
+                self.write(&bytes, to_stderr);
+                0
+            }
             "malloc" => self.alloc(arg(0) as usize),
             "calloc" => self.alloc(arg(0) as usize * arg(1) as usize),
             "realloc" => {

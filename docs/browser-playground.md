@@ -15,7 +15,7 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
    the compiler recurses deeply.
 2. `src/play.rs::run(files, main)` builds a `jaic::sema::VirtualFs` with the bundled files at `/stdlib/...`
    and `/prelude/...` and the user files at `/workspace/<path>`. Options: import path `/stdlib`, preload
-   `/stdlib/Preload.jai`, target **Linux / Arm64** (see gotchas). It installs a `SharedHost` (wraps
+   `/stdlib/Preload.jai`, target **WASM / Wasm** (`OS == .WASM`). It installs a `SharedHost` (wraps
    `jaic::interp::SandboxHost`, which provides libc shims and captures stdout/stderr) as the interpreter host,
    calls `compile_program` then `run_program`, and returns a `PlayResult`
    `{exitCode|null, stdout, stderr, rendered, diagnostics[{severity,file,line,column,message}]}` as JSON.
@@ -33,9 +33,8 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
 - Different target or options: `options()` in `play.rs`.
 - More host services (files, time): extend `SharedHost`/`SandboxHost::foreign` in `crates/jaic/src/interp/mod.rs`.
 - Result shape: change `PlayResult::to_json` and `showPlay` together.
-- Gotchas: target `OS == .WASM` is not usable yet; `Runtime_Support.jai` fails to check under it
-  (`amount` is unresolved after the wasm branch), and x64 fails on `#asm`. Linux/Arm64 checks and runs because
-  output goes through the foreign `write`, which `SandboxHost` implements. The jaic interpreter stores
+- Gotchas: under `OS == .WASM`, Runtime_Support writes output through the foreign
+  `wasm_write_string(count, data, to_standard_error)`, which `SandboxHost` implements. The jaic interpreter stores
   host pointers in 64-bit slots, which works on wasm32. The "Step limit" option is currently ignored by this path.
   Infinite loops hang the worker; use Cancel (terminates the worker).
 - `tools/check_playground_worker.mjs` and `tools/check_browser_release.mjs` still assert the old run result shape.

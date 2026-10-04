@@ -125,8 +125,8 @@ fn virtual_fs(files: &BTreeMap<String, Vec<u8>>) -> VirtualFs {
 
 fn options() -> Options {
     let mut options = Options::host();
-    options.os = TargetOs::Linux;
-    options.cpu = TargetCpu::Arm64;
+    options.os = TargetOs::Wasm;
+    options.cpu = TargetCpu::Wasm;
     options.import_paths = vec![PathBuf::from(STDLIB_ROOT)];
     options.preload = Some(PathBuf::from(format!("{STDLIB_ROOT}/Preload.jai")));
     options

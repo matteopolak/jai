@@ -104,27 +104,28 @@ __arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s6
 }
 
 write_string_unsynchronized :: (s: string, to_standard_error := false) #no_context {
-    cursor: s64;
-    while cursor < s.count {
-        #if OS == .WINDOWS {
-            handle := GetStdHandle(ifx to_standard_error then -12 else -11);
-            remaining := s.count - cursor;
-            if remaining > 0x7fff_ffff remaining = 0x7fff_ffff;
-            requested := cast(u32) remaining;
-            transferred: u32;
-            if WriteFile(handle, s.data + cursor, requested, *transferred, null) == 0 return;
-            amount := cast(s64) transferred;
-        } else #if OS_IS_UNIX {
-            amount := host_write(ifx to_standard_error then 2 else 1, s.data + cursor, cast(u64) (s.count - cursor));
-        } else #if OS == .WASM {
-            wasm_write_string(s.count, s.data, to_standard_error);
-            return;
-        } else {
-            #assert false "Runtime output requires a host adapter for this target";
+    #if OS == .WASM {
+        wasm_write_string(s.count, s.data, to_standard_error);
+    } else {
+        cursor: s64;
+        while cursor < s.count {
+            #if OS == .WINDOWS {
+                handle := GetStdHandle(ifx to_standard_error then -12 else -11);
+                remaining := s.count - cursor;
+                if remaining > 0x7fff_ffff remaining = 0x7fff_ffff;
+                requested := cast(u32) remaining;
+                transferred: u32;
+                if WriteFile(handle, s.data + cursor, requested, *transferred, null) == 0 return;
+                amount := cast(s64) transferred;
+            } else #if OS_IS_UNIX {
+                amount := host_write(ifx to_standard_error then 2 else 1, s.data + cursor, cast(u64) (s.count - cursor));
+            } else {
+                #assert false "Runtime output requires a host adapter for this target";
+            }
+            // A failed or zero write cannot make forward progress.
+            if amount <= 0 return;
+            cursor += amount;
         }
-        // A failed or zero write cannot make forward progress.
-        if amount <= 0 return;
-        cursor += amount;
     }
 }
 
