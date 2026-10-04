@@ -61,9 +61,10 @@ impl Parser<'_> {
             }
             "as" => self.parse_terminated_simple(),
             "no_abc" | "no_aoc" if self.at_n(1, P::LBrace) => {
-                // `#no_aoc { ... }`: a block with checks disabled; the flag itself is not kept.
+                // `#no_abc { ... }` turns bounds checks off in the block; `#no_aoc` is not kept.
                 self.bump();
-                self.parse_stmt()
+                let body = self.parse_stmt()?;
+                Ok(super::stmt::no_abc_if(body, name == "no_abc"))
             }
             "no_reset" | "program_export"
                 if self.decl_ahead(1)

@@ -56,6 +56,7 @@ pub fn lambda_lit(header: &ast::ProcHeader, body: &ast::Expr) -> Rc<ast::ProcLit
                     notes: Vec::new(),
                 }],
                 span: body.span,
+                no_abc: false,
             }
         }
     };

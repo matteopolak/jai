@@ -125,6 +125,7 @@ impl Parser<'_> {
                     RunBody::Block(Block {
                         stmts: vec![other],
                         span,
+                        no_abc: false,
                     })
                 }
             }
@@ -155,6 +156,7 @@ impl Parser<'_> {
             CodeBody::Block(Block {
                 stmts: vec![statement],
                 span,
+                no_abc: false,
             })
         } else {
             // `#code a := 1` and `#code x = x + 1` are statements without a terminator.
@@ -166,6 +168,7 @@ impl Parser<'_> {
                     CodeBody::Block(Block {
                         stmts: vec![stmt],
                         span,
+                        no_abc: false,
                     })
                 }
             }
@@ -236,6 +239,7 @@ impl Parser<'_> {
             ExprKind::Block(Block {
                 stmts: vec![super::stmt::stmt(make(label), span)],
                 span,
+                no_abc: false,
             }),
             span,
         ))
@@ -249,6 +253,7 @@ impl Parser<'_> {
             ExprKind::Block(Block {
                 stmts: vec![assert],
                 span,
+                no_abc: false,
             }),
             span,
         ))
