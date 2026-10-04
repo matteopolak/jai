@@ -1,5 +1,5 @@
 Basic :: #import "Basic";
-Tables :: #import "legacy/Hash_Table" (COUNT_COLLISIONS=true);
+Tables :: #import "Hash_Table" (COUNT_COLLISIONS=true);
 constant_hash :: (key:s64)->u32 { return 9; }
 main :: () -> s64 {
     table:Tables.Table(s64,s64,constant_hash);
@@ -15,13 +15,13 @@ main :: () -> s64 {
     if table.count!=3 || table.slots_filled!=3 return 4;
     for i:4..80 Tables.table_set(*table,i,i*10);
     for i:4..80 {
-        found,ok:=Tables.table_find(*table,i);
+        ok,found:=Tables.table_find(*table,i);
         if !ok || found!=i*10 return 5;
     }
     pointer,newly:=Tables.find_or_add(*table,99);
     if !newly return 6;
     pointer.*=123;
-    found,ok:=Tables.table_find(*table,99);
+    ok,found:=Tables.table_find(*table,99);
     if !ok || found!=123 return 7;
     if table.add_collisions==0 || table.find_collisions==0 return 8;
     Tables.table_reset(*table);

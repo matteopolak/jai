@@ -83,7 +83,7 @@ Then open `http://127.0.0.1:8080/`. `tools/check_browser_release.mjs <staged-dir
   must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 136 of 146 pass. Excluded:
   `bindings-generator-c`/`-cpp` (dlopen of libclang), `bindings-generator-cpp-classes` and `buildcpp-api` (start a compiler
   process), `c-variadic-foreign-calls` (native C ABI test against libc, pipe, fcntl), `simp-compat-api` and
-  `getrect-right-handed-api`/`getrect-legacy-right-handed-surface` (FreeType and stb_image C libraries),
+  `getrect-right-handed-api`/`getrect-right-handed-surface` (FreeType and stb_image C libraries),
   `getrect-text-display-compiles` (Window_Creation) and `getrect-rh-negative-control` (fails everywhere by design).
 - Debug browser-only behavior natively: `jaic run test.jai -os wasm` uses the same `SandboxHost`.
 
