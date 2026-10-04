@@ -69,7 +69,8 @@ pixel_read_end :: (reader: *Pixel_Read, bitmap: *Bitmap) {
     for y:0..reader.dest_height-1 for x:0..reader.dest_width-1 {
         sx:=min(cast(int)x*record.raw.width/reader.dest_width,record.raw.width-1);
         sy:=min(cast(int)y*record.raw.height/reader.dest_height,record.raw.height-1);
-        if record.top_first!=reader.flip sy=record.raw.height-1-sy;
+        // Without `flip` the result is the upright image, top row first; rows are stored either way.
+        if record.top_first==reader.flip sy=record.raw.height-1-sy;
         color:=readback_bitmap_color(*record.raw,sx,sy);
         if record.source_srgb!=reader.dest_srgb {
             if record.source_srgb { color.x=readback_decode_srgb(color.x); color.y=readback_decode_srgb(color.y); color.z=readback_decode_srgb(color.z); }
@@ -119,10 +120,11 @@ readback_store_color :: (bitmap:*Bitmap,x:int,y:int,color:Vector4) {
     if count>3 p[3]=readback_byte(color.w);
 }
 #if render_api==.OPENGL {
+// Starts an asynchronous copy of the source's pixels into a pixel-pack buffer (RGBA8, whatever the source
+// format). Window rows come back bottom first; textures are stored top first.
 gl_readback_begin :: (record:*Pixel_Read_Record,source:*Texture)->bool {
     if !gl_api return false;
-    if !gl_api.glReadPixels||!gl_api.glFenceSync||!gl_api.glMapBufferRange||!gl_api.glClientWaitSync||!gl_api.glDeleteSync||!gl_api.glFlush||!gl_api.glGetIntegerv||!gl_api.glBindFramebuffer||!gl_api.glBindBuffer||!gl_api.glBufferData||!gl_api.glPixelStorei||!gl_api.glGenFramebuffers||!gl_api.glFramebufferTexture2D||!gl_api.glCheckFramebufferStatus||!gl_api.glReadBuffer||!gl_api.glGenBuffers||!gl_api.glDeleteFramebuffers||!gl_api.glDeleteBuffers||!gl_api.glUnmapBuffer||!gl_api.glGetError return false;
-    if gl_api.glGetError()!=GL.GL_NO_ERROR return false;
+    gl_api.glGetError();
     old_framebuffer:s32; old_buffer:s32; old_alignment:s32; old_row_length:s32;
     gl_api.glGetIntegerv(GL.GL_READ_FRAMEBUFFER_BINDING,*old_framebuffer); gl_api.glGetIntegerv(GL.GL_PIXEL_PACK_BUFFER_BINDING,*old_buffer);
     gl_api.glGetIntegerv(GL.GL_PACK_ALIGNMENT,*old_alignment); gl_api.glGetIntegerv(GL.GL_PACK_ROW_LENGTH,*old_row_length);
@@ -130,20 +132,32 @@ gl_readback_begin :: (record:*Pixel_Read_Record,source:*Texture)->bool {
         gl_api.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER,cast(u32)old_framebuffer); gl_api.glBindBuffer(GL.GL_PIXEL_PACK_BUFFER,cast(u32)old_buffer);
         gl_api.glPixelStorei(GL.GL_PACK_ALIGNMENT,old_alignment); gl_api.glPixelStorei(GL.GL_PACK_ROW_LENGTH,old_row_length);
     }
-    if source {
-        if !source.gl_handle return false;
-        gl_api.glGenFramebuffers(1,*record.reader.dest_fbo_handle);
-        if !record.reader.dest_fbo_handle return false;
-        gl_api.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER,record.reader.dest_fbo_handle);
-        gl_api.glFramebufferTexture2D(GL.GL_READ_FRAMEBUFFER,GL.GL_COLOR_ATTACHMENT0,GL.GL_TEXTURE_2D,source.gl_handle,0);
-        if gl_api.glCheckFramebufferStatus(GL.GL_READ_FRAMEBUFFER)!=GL.GL_FRAMEBUFFER_COMPLETE return false;
+    from_texture := source;
+    if !from_texture from_texture = context.simp.texture_render_target;
+    if from_texture {
+        record.top_first = true;
+        if from_texture.framebuffer {
+            gl_api.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER,from_texture.framebuffer);
+        } else {
+            // A plain texture: attach it to a scratch framebuffer for the read.
+            gl_upload_pending(from_texture);
+            if !from_texture.gl_handle return false;
+            gl_api.glGenFramebuffers(1,*record.reader.dest_fbo_handle);
+            if !record.reader.dest_fbo_handle return false;
+            gl_api.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER,record.reader.dest_fbo_handle);
+            gl_api.glFramebufferTexture2D(GL.GL_READ_FRAMEBUFFER,GL.GL_COLOR_ATTACHMENT0,GL.GL_TEXTURE_2D,from_texture.gl_handle,0);
+            if gl_api.glCheckFramebufferStatus(GL.GL_READ_FRAMEBUFFER)!=GL.GL_FRAMEBUFFER_COMPLETE return false;
+        }
         gl_api.glReadBuffer(GL.GL_COLOR_ATTACHMENT0);
+    } else {
+        gl_api.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER,0);
+        gl_api.glReadBuffer(GL.GL_BACK);
     }
     gl_api.glGenBuffers(1,*record.reader.pbo); if !record.reader.pbo return false;
     gl_api.glBindBuffer(GL.GL_PIXEL_PACK_BUFFER,record.reader.pbo);
     gl_api.glBufferData(GL.GL_PIXEL_PACK_BUFFER,record.raw.data.count,null,GL.GL_STREAM_READ);
     gl_api.glPixelStorei(GL.GL_PACK_ALIGNMENT,1); gl_api.glPixelStorei(GL.GL_PACK_ROW_LENGTH,0);
-    gl_api.glReadPixels(0,0,record.raw.width,record.raw.height,GL.GL_RGBA,GL.GL_UNSIGNED_BYTE,null);
+    gl_api.glReadPixels(0,0,cast(u32)record.raw.width,cast(u32)record.raw.height,GL.GL_RGBA,GL.GL_UNSIGNED_BYTE,null);
     if gl_api.glGetError()!=GL.GL_NO_ERROR return false;
     record.fence=gl_api.glFenceSync(GL.GL_SYNC_GPU_COMMANDS_COMPLETE,0);
     if !record.fence return false;

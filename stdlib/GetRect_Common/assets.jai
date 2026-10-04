@@ -54,11 +54,21 @@ right_cached_asset :: (index:int)->(memory:string,success:bool) {
         assert(same,"Asset path changed while borrowed data is retained; release asset data before reconfiguration");
         return right_asset_buffers[index],same;
     }
-    bytes,loaded:=RH_Assets_File.read_entire_file(path,log_errors=true);
-    if !loaded||bytes.count==0 { free(bytes.data,allocator=owner); return "",false; }
+    bytes,loaded:=RH_Assets_File.read_entire_file(path,log_errors=index!=4);
+    // The UI font is the one asset every program needs; without the shipped file use a system font.
+    if !loaded&&index==4 { bytes,loaded=right_read_system_font(); }
+    if !loaded||bytes.count==0 { if loaded free(bytes.data,allocator=owner); return "",false; }
     right_asset_allocators[index]=owner;
     right_asset_buffers[index]=bytes; right_asset_paths[index]=path; transferred=true;
     return bytes,true;
+}
+right_read_system_font :: ()->(memory:string,success:bool) {
+    candidates:=string.["/System/Library/Fonts/Supplemental/Arial.ttf","/System/Library/Fonts/Helvetica.ttc","/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf","/usr/share/fonts/TTF/DejaVuSans.ttf","/usr/share/fonts/dejavu/DejaVuSans.ttf","C:/Windows/Fonts/arial.ttf"];
+    for candidate:candidates {
+        memory,success:=RH_Assets_File.read_entire_file(candidate,log_errors=false);
+        if success&&memory.count>0 return memory,true;
+    }
+    return "",false;
 }
 get_global_data :: ()->string,string,string,string,string,string,string,string,string {
     for name,index:getrect_asset_filenames {

@@ -92,6 +92,7 @@ The independently written `stdlib/`.
 - [Threads, atomics, sockets and input](stdlib/threads-sockets-input.md)
 - [Tooling modules: Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report](stdlib/tooling-modules.md)
 - [Drawing, windows and audio](stdlib/ui-and-drawing.md)
+- [Simp (2D renderer)](stdlib/simp.md)
 
 ## Browser
 

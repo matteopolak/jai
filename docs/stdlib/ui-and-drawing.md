@@ -2,7 +2,7 @@
 
 ## What it is
 
-`Simp` is the immediate-mode 2D renderer: queued triangles and quads, shaders, textures, bitmaps, fonts and a CPU backend. `Window_Creation` and `Window_Type` create and identify native windows. `Sound_Player` plays audio; the `SDL` and `GL` bindings sit beside them. The widget library on top is [getrect](getrect.md).
+`Simp` is the immediate-mode 2D renderer: queued triangles and quads, shaders, textures, bitmaps, fonts and a CPU backend. `Window_Creation` and `Window_Type` create and identify native windows. `Sound_Player` plays audio; the `SDL` and `GL` bindings sit beside them. The widget library on top is [getrect](getrect.md). Simp is documented in detail in [simp](simp.md).
 
 ## How it works
 

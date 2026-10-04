@@ -11,10 +11,10 @@ readback_cases :: ()->bool {
     }
     reader:=S.pixel_read_begin(texture,.BGRA8,1,2,false,true); if !reader||!S.pixel_read_is_done(reader) return false;
     result:=S.pixel_read_end(reader); defer S.deinit(*result);
-    if result.width!=1||result.height!=2||result.stride!=4||result.data[2]!=255||result.data[4]!=255 return false;
+    if result.width!=1||result.height!=2||result.stride!=4||result.data[0]!=255||result.data[6]!=255 return false;
     reader=S.pixel_read_begin(texture,.RGBA8,2,2,false,false); if !reader return false;
     result2:=S.pixel_read_end(reader); defer S.deinit(*result2);
-    if result2.data[2]!=255||result2.data[result2.stride]!=255 return false;
+    if result2.data[0]!=255||result2.data[result2.stride+2]!=255 return false;
     if S.pixel_read_begin(texture,.BC1)!=null return false;
     reader=S.pixel_read_begin(texture,.RGB8); if !reader return false; S.pixel_read_cancel(reader);
     return true;

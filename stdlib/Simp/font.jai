@@ -44,6 +44,7 @@ Dynamic_Font :: struct {
     temporary_glyphs: [..] *Glyph_Data;
     temporary_glyphs.allocator = temp;
     current_quads: [..] Font_Quad;
+    loaded: *Loaded_Font;   // The file or memory this font was made from.
 }
 Loaded_Font :: struct { name: string; face: FT_Face; data: [] u8; }
 Font_Range_Record :: struct { start, end: s32; start_coverage_index: s32; }
@@ -85,45 +86,54 @@ init_fonts :: (_page_size_x: s32 = -1, _page_size_y: s32 = -1) {
 }
 ensure_fonts_are_initted :: () { if !fonts_initted init_fonts(); }
 is_latin :: (utf32: u32) -> bool { return utf32 <= 0x24f || (utf32 >= 0x2000 && utf32 <= 0x218f); }
-get_font_at_size :: (name: string, font_data: string, pixel_height: int) -> *Dynamic_Font {
-    if pixel_height <= 0 || pixel_height > 32767 || font_data.count == 0 return null;
+// Fonts are cached by name and pixel height; `path` and `name` are joined to find the file.
+get_font_at_size :: (path: string, name: string, pixel_height: int) -> *Dynamic_Font {
     ensure_fonts_are_initted(); if !fonts_initted return null;
-    for record: font_records if record.font.name == name && record.font.character_height == pixel_height && record.bytes == font_data return record.font;
-    record := New(Font_Record); record.bytes=copy_string(font_data); record.font=New(Dynamic_Font);
-    font:=record.font;
-    error:=FT.FT_New_Memory_Face(ft_library,record.bytes.data,record.bytes.count,0,*font.face);
-    if error { free(record.bytes.data); free(font); free(record); return null; }
-    if FT.FT_Set_Pixel_Sizes(font.face,0,cast(u32)pixel_height) {
-        FT.FT_Done_Face(font.face); free(record.bytes.data); free(font); free(record); return null;
-    }
-    font.name=copy_string(name); font.character_height=pixel_height;
-    metrics:=font.face.size.metrics;
-    font.default_line_spacing=max(cast(int)(metrics.height>>6),pixel_height);
-    font.max_ascender=cast(int)(metrics.ascender>>6); font.max_descender=cast(int)(-metrics.descender>>6);
-    font.typical_ascender=font.max_ascender; font.typical_descender=font.max_descender;
-    font.em_width=pixel_height; font.x_advance=max(pixel_height/2,1);
-    font.y_offset_for_centering=(font.max_ascender-font.max_descender)/2;
-    font.glyph_index_for_unknown_character=FT.FT_Get_Char_Index(font.face,0xfffd);
-    array_add(*font_records,record);
-    space:=find_or_create_glyph(font,32); if space font.x_advance=space.advance;
-    return font;
+    for dynamic_fonts if it.character_height == pixel_height && it.name == name return it;
+    result := load_font(path, name, pixel_height);
+    if !result log_error("Unable to load font '%' from '%'. Returning null.\n", name, path);
+    return result;
 }
+// The memory must stay alive as long as the font is used.
 get_font_at_size :: (memory: [] u8, pixel_height: int) -> *Dynamic_Font {
-    return get_font_at_size("",cast(string)memory,pixel_height);
+    ensure_fonts_are_initted(); if !fonts_initted return null;
+    loaded: *Loaded_Font;
+    for loaded_memory_fonts if it.data.count == memory.count && it.data.data == memory.data { loaded = it; break; }
+    if !loaded {
+        loaded = make_loaded_font("", memory);
+        if !loaded return null;
+        array_add(*loaded_memory_fonts, loaded);
+    }
+    for dynamic_fonts if it.character_height == pixel_height && it.loaded == loaded return it;
+    return create_dynamic_font(loaded, "", pixel_height);
 }
-load_font_part_2 :: (result:*Dynamic_Font,pixel_height:int) {
-    assert(result!=null&&result.face!=null&&pixel_height>0);
-    if !result||!result.face||pixel_height<=0 return;
-    error:=FT.FT_Set_Pixel_Sizes(result.face,0,cast(u32)pixel_height);
-    assert(error==0,"FreeType pixel sizing failed: %",error);
+load_font_part_2 :: (result: *Dynamic_Font, pixel_height: int) {
+    assert(result != null && result.face != null && pixel_height > 0);
+    if !result || !result.face || pixel_height <= 0 return;
+    error := FT.FT_Set_Pixel_Sizes(result.face, 0, cast(u32) pixel_height);
+    assert(error == 0, "FreeType pixel sizing failed: %", error);
     if error return;
-    result.character_height=pixel_height;
-    metrics:=result.face.size.metrics;
-    result.default_line_spacing=max(cast(int)(metrics.height>>6),pixel_height);
-    result.max_ascender=cast(int)(metrics.ascender>>6); result.max_descender=cast(int)(-metrics.descender>>6);
-    result.typical_ascender=result.max_ascender; result.typical_descender=result.max_descender;
-    result.em_width=pixel_height; result.y_offset_for_centering=(result.max_ascender-result.max_descender)/2;
-    space:=find_or_create_glyph(result,32); if space result.x_advance=space.advance;
+    result.character_height = pixel_height;
+    metrics := result.face.size.metrics;
+    result.default_line_spacing = max(cast(int) (metrics.height >> 6), pixel_height);
+    result.max_ascender = cast(int) (metrics.ascender >> 6); result.max_descender = cast(int) (-metrics.descender >> 6);
+    result.typical_ascender = result.max_ascender; result.typical_descender = result.max_descender;
+    result.em_width = pixel_height; result.x_advance = max(pixel_height / 2, 1);
+    result.y_offset_for_centering = (result.max_ascender - result.max_descender) / 2;
+    result.glyph_index_for_unknown_character = FT.FT_Get_Char_Index(result.face, 0xfffd);
+    space := find_or_create_glyph(result, 32); if space result.x_advance = space.advance;
+}
+create_dynamic_font :: (loaded: *Loaded_Font, name: string, pixel_height: int) -> *Dynamic_Font {
+    if !loaded || pixel_height <= 0 || pixel_height > 32767 return null;
+    font := New(Dynamic_Font);
+    error := FT.FT_New_Memory_Face(ft_library, loaded.data.data, cast(s32) loaded.data.count, 0, *font.face);
+    if error { free(font); return null; }
+    if FT.FT_Set_Pixel_Sizes(font.face, 0, cast(u32) pixel_height) { FT.FT_Done_Face(font.face); free(font); return null; }
+    font.name = copy_string(name); font.loaded = loaded;
+    record := New(Font_Record); record.font = font;
+    array_add(*font_records, record); array_add(*dynamic_fonts, font);
+    load_font_part_2(font, pixel_height);
+    return font;
 }
 set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
     if !font || !font.face return false;
@@ -131,8 +141,7 @@ set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
     font.glyph_index_for_unknown_character=index; return true;
 }
 convert_to_temporary_glyphs :: (font: *Dynamic_Font,s: string) -> width_in_pixels: s64 { return prepare_text(font,s); }
-prepare_text :: (font: *Dynamic_Font,text: string) -> width: s64 { return prepare_text(font,text,cast(Font_Effects)0); }
-prepare_text :: (font: *Dynamic_Font,text: string,effects: Font_Effects) -> width: s64 {
+prepare_text :: (font: *Dynamic_Font,text: string,effects: Font_Effects = 0) -> width: s64 {
     if !font return 0;
     assert((effects & ~Font_Effects.NO_KERNING) == 0, "Legacy SMALLCAPS/LINING_FIGURES/LEFT_JUSTIFIED substitutions are not implemented");
     record:=font_record(font); if !record return 0;
@@ -165,29 +174,47 @@ get_cursor_pos_for_width :: (font: *Dynamic_Font,s: string,requested_width: s64)
     for glyph,i:font.temporary_glyphs if requested_width < record.starts[i]+glyph.advance/2 return record.byte_offsets[i];
     return cast(s32)s.count;
 }
-generate_quads_for_prepared_text :: (font: *Dynamic_Font,x: s64,y: s64) {
+generate_quads_for_prepared_text :: (font: *Dynamic_Font,x: s64,y: s64,effects: Font_Effects = 0) {
     if !font return;
     record:=font_record(font); if !record return;
     font.current_quads.count=0;
+    left_handed := context.simp && context.simp.coordinate_system == .LEFT_HANDED;
     for glyph,i:font.temporary_glyphs {
         if !glyph.page || glyph.width == 0 || glyph.height == 0 continue;
         width:=cast(float)glyph.width; if record.lcd_keys[i] width/=3;
-        x0:=cast(float)(x+record.starts[i]+glyph.offset_x); y1:=cast(float)(y+glyph.ascent); y0:=y1-cast(float)glyph.height;
+        x0:=cast(float)(x+record.starts[i]+glyph.offset_x); x1:=x0+width;
         page:=glyph.page.bitmap_data;
-        array_add(*font.current_quads,.{p0=.{x0,y0},p1=.{x0+width,y0},p2=.{x0+width,y1},p3=.{x0,y1},
-            u0=cast(float)glyph.x0/page.width,v0=(cast(float)glyph.y0+cast(float)glyph.height)/page.height,
-            u1=(cast(float)glyph.x0+width)/page.width,v1=cast(float)glyph.y0/page.height,glyph=glyph});
+        // The page stores each glyph with its top row first. In the y-up system the quad's
+        // lower edge carries the glyph's bottom rows; y-down is the other way round.
+        top_v:=cast(float)glyph.y0/page.height; bottom_v:=(cast(float)glyph.y0+cast(float)glyph.height)/page.height;
+        quad:Font_Quad; quad.glyph=glyph;
+        quad.u0=cast(float)glyph.x0/page.width; quad.u1=(cast(float)glyph.x0+width)/page.width;
+        if left_handed {
+            y0:=cast(float)(y-glyph.ascent); y1:=y0+cast(float)glyph.height;
+            quad.p0=.{x0,y0}; quad.p1=.{x1,y0}; quad.p2=.{x1,y1}; quad.p3=.{x0,y1};
+            quad.v0=top_v; quad.v1=bottom_v;
+        } else {
+            y1:=cast(float)(y+glyph.ascent); y0:=y1-cast(float)glyph.height;
+            quad.p0=.{x0,y0}; quad.p1=.{x1,y0}; quad.p2=.{x1,y1}; quad.p3=.{x0,y1};
+            quad.v0=bottom_v; quad.v1=top_v;
+        }
+        array_add(*font.current_quads,quad);
     }
 }
 draw_generated_quads :: (font: *Dynamic_Font,color: u8) {
     if color >= COLOR_MAP.count return; draw_generated_quads(font,COLOR_MAP[color]);
 }
-draw_generated_quads :: (font: *Dynamic_Font,color: Vector4) {
+draw_generated_quads :: (font: *Dynamic_Font,color := Vector4.{1,1,1,1}) {
     if !font return;
+    CheckInit();
+    if context.simp.current_shader immediate_flush();
     set_shader_for_text();
+    immediate_begin();
     for quad:font.current_quads {
         page:=quad.glyph.page;
+        if page.bitmap_data.width <= 1 || page.bitmap_data.height <= 1 continue;
         if page.dirty {
+            page.texture.nearest = true;  // Glyph pixels map one to one onto screen pixels; do not blur them.
             if !texture_load_from_bitmap(*page.texture,page.bitmap_data) return;
             page.dirty=false;
         }
@@ -238,7 +265,8 @@ deinit :: (font: *Dynamic_Font) {
     // temporary_glyphs uses temp storage, which is released by its allocator.
     font.temporary_glyphs = .{};
     if font.face FT.FT_Done_Face(font.face);
-    free(font.name.data); free(record.bytes.data);
+    free(font.name.data);
+    for dynamic_fonts if it == font { array_unordered_remove_by_index(*dynamic_fonts, it_index); break; }
     array_reset(*record.starts); array_reset(*record.byte_offsets); array_reset(*record.lcd_keys);
     record.font=null; font.*=.{};
 }
@@ -248,7 +276,10 @@ deinit_fonts :: () {
         if record.font { font:=record.font; deinit(font); free(font); }
         free(record);
     }
-    array_reset(*font_records);
+    array_reset(*font_records); array_reset(*dynamic_fonts);
+    for loaded:loaded_file_fonts { FT.FT_Done_Face(loaded.face); free(loaded.data.data); destroy(loaded); free(loaded); }
+    for loaded:loaded_memory_fonts { FT.FT_Done_Face(loaded.face); destroy(loaded); free(loaded); }
+    array_reset(*loaded_file_fonts); array_reset(*loaded_memory_fonts);
     for page:font_pages {
         deinit(*page.texture); deinit(page.bitmap_data); free(page.bitmap_data);
         for line:page.lines free(line);
@@ -337,7 +368,7 @@ accumulate_glyphs_from_font :: (source: *Dynamic_Font, dest: *Dynamic_Font) {
     }
 }
 
-// Loads `<path>/<basename>` at the given pixel height.
+// Loads `<path>/<basename>` at the given pixel height, as a new font (get_font_at_size caches).
 load_font :: (path: string, basename: string, pixel_height: int) -> font: *Dynamic_Font {
     ensure_fonts_are_initted();
     font_name := tprint("%/%", path, basename);
@@ -346,7 +377,7 @@ load_font :: (path: string, basename: string, pixel_height: int) -> font: *Dynam
     if !loaded loaded = make_loaded_font(font_name);
     if !loaded return null;
 
-    return get_font_at_size(basename, cast(string) loaded.data, pixel_height);
+    return create_dynamic_font(loaded, basename, pixel_height);
 }
 
 release_font :: (font: *Dynamic_Font) {}  // Fonts are cached for the program's lifetime; see deinit_fonts().
@@ -354,8 +385,10 @@ release_font :: (font: *Dynamic_Font) {}  // Fonts are cached for the program's 
 get_baseline_height :: (font: *Dynamic_Font) -> s64 { return font.character_height / 4; }
 
 #scope_module
-Font_Record :: struct { font:*Dynamic_Font; bytes:string; starts:[..]s64; byte_offsets:[..]s32; lcd_keys:[..]bool; width:s64; text_bytes:s32; }
+Font_Record :: struct { font:*Dynamic_Font; starts:[..]s64; byte_offsets:[..]s32; lcd_keys:[..]bool; width:s64; text_bytes:s32; }
 font_records:[..]*Font_Record;
+dynamic_fonts:[..]*Dynamic_Font;
+loaded_memory_fonts:[..]*Loaded_Font;
 font_pages:[..]*Font_Page;
 fonts_initted:=false;
 ft_library:FT.FT_Library;

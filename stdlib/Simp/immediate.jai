@@ -1,3 +1,5 @@
+// Per-thread immediate-mode state lives in the Context so queueing vertices is thread safe;
+// the pointer stays null (and costs nothing) for threads that never draw.
 Backend_Platform_Specific :: struct {
     software_target: *Bitmap;
     texture: *Texture;
@@ -18,6 +20,8 @@ Immediate_State :: struct {
     vertices: [MAX_VERTICES] Immediate_Vertex;
     specific: Backend_Platform_Specific;
 }
+// The vertex is deliberately wasteful (every shader reads what it needs and ignores the rest);
+// fast rendering belongs to pre-baked meshes. The rect fields feed the rounded-rectangle shader.
 Immediate_Vertex :: struct {
     position: Vector2;
     color_scale: Vector4;
@@ -28,56 +32,66 @@ Immediate_Vertex :: struct {
     rect_edge_softness: float = 1.0;
 }
 #add_context simp: *Immediate_State;
+// Every entry point calls CheckInit, so nobody needs an init function.
 CheckInit :: () #expand { if !context.simp per_thread_init(); }
-per_thread_init :: () { context.simp = New(Immediate_State); }
+per_thread_init :: () { context.simp = New(Immediate_State); shaders_set_defaults(); }
 // Start of an immediate-mode batch; vertices are triangles, three at a time.
 immediate_begin :: () { CheckInit(); }
-// One triangle corner. This 2D renderer uses position.x/.y and the uv; the normal is accepted and ignored.
+// One triangle corner. The renderer is 2D: it uses position.x/.y and the uv; the normal is ignored.
 immediate_vertex :: (position: Vector3, color_scale: Vector4, uv: Vector2 = .{}, normal: Vector3 = .{}) {
     vertex := reserve_vertices(1);
     put_vertex(vertex, .{position.x, position.y}, color_scale, uv.x, uv.y);
 }
 immediate_reset :: () {
-    CheckInit(); immediate_flush(); context.simp.current_shader = null;
+    CheckInit(); context.simp.current_shader = null;
 }
 immediate_set_texture :: (texture: *Texture) {
     CheckInit();
+    shader := context.simp.current_shader;
+    if !shader {
+        log_error("Attempted to immediate_set_texture when no shader was set.\n");
+        return;
+    }
     if context.simp.specific.texture != texture {
         immediate_flush(); context.simp.specific.texture = texture;
     }
-    #if render_api == .OPENGL { gl_bind_texture(texture); }
+    #if render_api == .OPENGL { backend_set_texture(shader, texture); }
 }
 immediate_set_shader :: (s: *Shader) {
     CheckInit();
-    if context.simp.current_shader != s { immediate_flush(); context.simp.current_shader = s; }
-    #if render_api == .OPENGL { gl_use_shader(s); }
+    if context.simp.current_shader && context.simp.current_shader != s immediate_flush();
+    context.simp.current_shader = s;
+    #if render_api == .OPENGL { gl_find_shader_locations(s); }
+    backend_use_shader(s);
 }
 immediate_flush :: () {
     CheckInit(); state := context.simp;
     if state.num_vertices == 0 return;
-    assert(state.current_shader != null, "Set a Simp shader before emitting vertices");
+    assert(state.current_shader != null, "Tried to immediate_flush when no shader was set.");
     if !state.current_shader { state.num_vertices = 0; return; }
     #if render_api == .OPENGL { gl_submit(state); }
     else #if render_api == .SOFTWARE { software_submit(state); }
     else { assert(false, "Simp backend is unavailable"); }
     state.num_vertices = 0;
 }
-set_vertex_format :: (shader: *Shader) {
-    #if render_api == .OPENGL { gl_vertex_format(shader); }
-    else { assert(shader != null); }
-}
 put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector2, color: Vector4, u: float, v: float) {
     vertex.* = .{position = p, color_scale = color, uv0 = .{u,v}};
+}
+put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector3, color: Vector4, u: float, v: float) {
+    vertex.* = .{position = .{p.x, p.y}, color_scale = color, uv0 = .{u,v}};
 }
 put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector2, color: Vector4, center: Vector2, size: Vector2, radius: float, softness: float) {
     vertex.* = .{position = p, color_scale = color, rect_center = center, rect_size = size, rect_corner_radius = radius, rect_edge_softness = softness};
 }
+// An axis-aligned quad from two corners.
 immediate_quad :: (x0: float, y0: float, x1: float, y1: float, color: Vector4) {
     immediate_quad(.{x0,y0}, .{x1,y0}, .{x1,y1}, .{x0,y1}, color);
 }
+// Four 2D points of a convex quad, a color, and optional uv coordinates for a texture.
 immediate_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, color := Vector4.{1,1,1,1}, uv0 := Vector2.{0,0}, uv1 := Vector2.{1,0}, uv2 := Vector2.{1,1}, uv3 := Vector2.{0,1}) {
     immediate_quad(p0,p1,p2,p3,color,color,color,color,uv0,uv1,uv2,uv3);
 }
+// A 2D quad with a color at each corner.
 immediate_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, c0: Vector4, c1: Vector4, c2: Vector4, c3: Vector4, uv0 := Vector2.{0,0}, uv1 := Vector2.{1,0}, uv2 := Vector2.{1,1}, uv3 := Vector2.{0,1}) {
     first := reserve_vertices(6);
     points := Vector2.[p0,p1,p2,p0,p2,p3]; colors := Vector4.[c0,c1,c2,c0,c2,c3]; uvs := Vector2.[uv0,uv1,uv2,uv0,uv2,uv3];
@@ -85,6 +99,13 @@ immediate_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, c0: Vecto
 }
 immediate_quad :: (x0: float, y0: float, x1: float, y1: float, c00: Vector4, c01: Vector4, c10: Vector4, c11: Vector4) {
     immediate_quad(.{x0,y0}, .{x1,y0}, .{x1,y1}, .{x0,y1}, c00,c10,c11,c01);
+}
+// Three-dimensional spellings of the quad. The renderer is 2D, so z, the normal and the tangent are accepted and dropped.
+immediate_quad :: (p0: Vector3, p1: Vector3, p2: Vector3, p3: Vector3, color: Vector4, uv0 := Vector2.{0,0}, uv1 := Vector2.{1,0}, uv2 := Vector2.{1,1}, uv3 := Vector2.{0,1}, normal := Vector3.{z=1}) {
+    immediate_quad(.{p0.x,p0.y}, .{p1.x,p1.y}, .{p2.x,p2.y}, .{p3.x,p3.y}, color, uv0, uv1, uv2, uv3);
+}
+immediate_quad :: (p0: Vector3, p1: Vector3, p2: Vector3, p3: Vector3, color: Vector4, uv0: Vector2, uv1: Vector2, uv2: Vector2, uv3: Vector2, st0: Vector2, st1: Vector2, st2: Vector2, st3: Vector2, normal: Vector3, tangent: Vector4) {
+    immediate_quad(.{p0.x,p0.y}, .{p1.x,p1.y}, .{p2.x,p2.y}, .{p3.x,p3.y}, color, uv0, uv1, uv2, uv3);
 }
 immediate_rounded_rect :: (p0: Vector2, p2: Vector2, color: Vector4, center: Vector2, size: Vector2, radius: float, softness := 1.0) {
     first := reserve_vertices(6);
@@ -98,24 +119,52 @@ immediate_triangle_fan :: (base: Vector2, points: [] Vector2, color: Vector4, ba
         put_vertex(first,base,base_color,0,0); put_vertex(first+1,points[i-1],color,0,0); put_vertex(first+2,points[i],color,0,0);
     }
 }
-// Explicit additive compatibility with the old three-dimensional triangle input.
-immediate_triangle :: (p0: Vector3, p1: Vector3, p2: Vector3, c0 := Vector4.{1,1,1,1}, c1 := Vector4.{1,1,1,1}, c2 := Vector4.{1,1,1,1}, uv0 := Vector2.{}, uv1 := Vector2.{}, uv2 := Vector2.{}, normal := Vector3.{z=1}) {
+// One triangle with a color per corner.
+immediate_triangle :: (p0: Vector3, p1: Vector3, p2: Vector3, c0: Vector4, c1: Vector4, c2: Vector4, uv0 := Vector2.{}, uv1 := Vector2.{}, uv2 := Vector2.{}, normal := Vector3.{z=1}) {
     first := reserve_vertices(3);
-    put_vertex(first,.{p0.x,p0.y},c0,uv0.x,uv0.y); put_vertex(first+1,.{p1.x,p1.y},c1,uv1.x,uv1.y); put_vertex(first+2,.{p2.x,p2.y},c2,uv2.x,uv2.y);
+    put_vertex(first,p0,c0,uv0.x,uv0.y); put_vertex(first+1,p1,c1,uv1.x,uv1.y); put_vertex(first+2,p2,c2,uv2.x,uv2.y);
 }
+// One triangle in a single color.
+immediate_triangle :: (p0: Vector3, p1: Vector3, p2: Vector3, color := Vector4.{1,1,1,1}, uv0 := Vector2.{}, uv1 := Vector2.{}, uv2 := Vector2.{}, normal := Vector3.{z=1}) {
+    immediate_triangle(p0,p1,p2,color,color,color,uv0,uv1,uv2,normal);
+}
+// Sets the orthographic projection of the current shader for a render target of this size: the
+// origin is the bottom-left corner for RIGHT_HANDED and the top-left corner for LEFT_HANDED.
 immediate_set_2d_projection :: (render_target_width: s32, render_target_height: s32) {
-    CheckInit(); context.simp.specific.projection = .{cast(float)render_target_width,cast(float)render_target_height};
-    #if render_api == .OPENGL { gl_set_projection(render_target_width,render_target_height); }
+    CheckInit();
+    shader := context.simp.current_shader;
+    if !shader {
+        assert(false, "Tried to immediate_set_2d_projection when no shader was set.");
+        context.simp.num_vertices = 0;
+        return;
+    }
+    width := cast(float) render_target_width; height := cast(float) render_target_height;
+    context.simp.specific.projection = .{width, height};
+    m: Matrix4 = ---;
+    if context.simp.coordinate_system == .LEFT_HANDED m = orthographic_projection_matrix(0, width, height, 0, -1.0, 1.0);
+    else m = orthographic_projection_matrix(0, width, 0, height, -1.0, 1.0);
+    backend_tweak_projection_matrix(*m);
+    set_parameter(shader, "projection", m);
 }
 immediate_letter_quad :: (using quad: Font_Quad, color: Vector4) {
     immediate_quad(quad.p0,quad.p1,quad.p2,quad.p3,color,.{quad.u0,quad.v0},.{quad.u1,quad.v0},.{quad.u1,quad.v1},.{quad.u0,quad.v1});
 }
 #scope_module
+immediate_vertex_pointer :: inline (index: s32) -> *Immediate_Vertex { return context.simp.vertices.data + index; }
 reserve_vertices :: (count: s32) -> *Immediate_Vertex {
     CheckInit(); assert(count > 0 && count <= Immediate_State.MAX_VERTICES);
     if context.simp.num_vertices + count > Immediate_State.MAX_VERTICES immediate_flush();
     result := *context.simp.vertices[context.simp.num_vertices]; context.simp.num_vertices += count;
     return result;
+}
+// Rendering to a texture stores the image top row first, so the projection flips vertically.
+backend_tweak_projection_matrix :: (m: *Matrix4) {
+    if context.simp.texture_render_target {
+        m._21 *= -1; m._22 *= -1; m._23 *= -1; m._24 *= -1;
+    }
+}
+backend_use_shader :: (s: *Shader) {
+    #if render_api == .OPENGL { gl_use_shader(s); }
 }
 software_submit :: (state: *Immediate_State) {
     target := state.specific.software_target;
@@ -145,11 +194,15 @@ software_triangle :: (state: *Immediate_State, target: *Bitmap, a: Immediate_Ver
         if wc == 0 && !owns_edge(a.position,b.position,area) continue;
         color := a.color_scale * wa + b.color_scale * wb + c.color_scale * wc;
         uv := a.uv0 * wa + b.uv0 * wb + c.uv0 * wc;
-        if state.current_shader == *shader_sprite || state.current_shader == *shader_text_normal || state.current_shader == *shader_text_lcd {
-            if state.current_shader == *shader_sprite uv.y=1-uv.y;
+        sprite := state.current_shader == *shader_sprite_right_handed || state.current_shader == *shader_sprite_left_handed;
+        if sprite || state.current_shader == *shader_text {
+            // The right-handed sprite shader flips v, because bitmaps are stored top row first.
+            if state.current_shader == *shader_sprite_right_handed uv.y=1-uv.y;
             sample := software_sample(state.specific.texture,uv);
-            if state.current_shader == *shader_sprite color = color * sample;
-            else color.w *= (sample.x+sample.y+sample.z)/3;
+            if sprite {
+                color = color * sample;
+                if color.w < 0.1 continue;
+            } else color.w *= (sample.x+sample.y+sample.z)/3;
         }
         if state.current_shader == *shader_rounded_rect {
             q := abs(p-a.rect_center) - a.rect_size + xy(a.rect_corner_radius);
@@ -158,7 +211,7 @@ software_triangle :: (state: *Immediate_State, target: *Bitmap, a: Immediate_Ver
             color.w *= 1-soft*soft*(3-2*soft);
         }
         if state.current_shader == *shader_gradient color = software_gradient(state,p,color);
-        pixel := target.data.data + (target.height-1-y) * target.stride + x*4;
+        pixel := target.data.data + software_row(y, target.height) * target.stride + x*4;
         red: int = 0; blue: int = 2; if target.format == .BGRA8 { red=2; blue=0; }
         color = saturate(color);
         if state.current_shader.alpha_blend {

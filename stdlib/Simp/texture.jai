@@ -1,9 +1,18 @@
 Texture_Flags :: enum_flags u16 {
     sRGB; Cube; Array; Volume; Buffer; Render_Target; Multisampled; No_Skip_Mipmaps; Display_Target;
 }
-Texture_Platform_Specific :: struct { gl_handle: GLuint; }
+// `gl_handle` is the OpenGL texture name (0 until the image reaches the GPU). `cpu` is the
+// image itself for the CPU backend, and an image waiting for a graphics context in OpenGL;
+// `framebuffer` belongs to render targets. Everything lives in the struct, so a Texture can be
+// copied around by value like the original.
+Texture_Platform_Specific :: struct {
+    gl_handle: GLuint;
+    framebuffer: GLuint;
+    cpu: *Bitmap;
+    nearest := false;   // Sample without filtering (set before the first upload).
+}
 Texture :: struct {
-    width, height, depth: s32 = 1;
+    width, height, depth: s32 = 1;  // 'depth' is in case this is a 3D texture.
     mipmap_count: u16 = 1;
     array_length: u16 = 1;
     format: Texture_Format;
@@ -26,26 +35,30 @@ texture_load_from_memory :: (texture: *Texture, memory: [] u8, srgb := false, bu
     if build_mipmaps bitmap_build_mipmaps(*bitmap);
     return texture_load_from_bitmap(texture, *bitmap);
 }
+// Uploads the bitmap (all its mipmap levels). With OpenGL the texture stays bound to the 2D
+// target afterwards, so a program can set sampling parameters right after loading. Loading
+// before any window exists is fine: the image waits and goes to the GPU when it is first used.
 texture_load_from_bitmap :: (using texture: *Texture, bitmap: *Bitmap) -> bool {
     if !texture || !bitmap || bitmap.width <= 0 || bitmap.height <= 0 || bitmap.mipmap_count <= 0 return false;
     if !is_supported(bitmap.format) return false;
-    bytes, stride := get_image_size(bitmap.format, bitmap.width, bitmap.height);
-    if bitmap.stride < stride || bitmap.data.count < bitmap.stride * bitmap.height return false;
+    bytes, row := get_image_size(bitmap.format, bitmap.width, bitmap.height);
+    if bitmap.stride < row || bitmap.data.count < bitmap.stride * bitmap.height return false;
     #if render_api == .OPENGL {
-        if !gl_upload_texture(texture, bitmap) return false;
+        if gl_api {
+            if !gl_upload_texture(texture, bitmap) return false;
+            texture_free_cpu(texture);
+        } else texture_set_cpu_copy(texture, bitmap);
     } else #if render_api == .SOFTWARE {
-        record := texture_record(texture, true);
-        deinit(*record.bitmap);
-        record.bitmap.* = bitmap.*;
-        record.bitmap.data = array_copy(bitmap.data);
-        record.bitmap.flags |= .FREE_DATA_ON_DEINIT;
+        texture_set_cpu_copy(texture, bitmap);
     } else { return false; }
     texture.width = bitmap.width; texture.height = bitmap.height; texture.depth = 1;
-    texture.mipmap_count = cast(u16)bitmap.mipmap_count; texture.format = bitmap.format;
+    texture.mipmap_count = cast(u16) bitmap.mipmap_count; texture.format = bitmap.format;
     if bitmap.flags & .IS_SRGB texture.flags |= .sRGB;
     else texture.flags &= ~Texture_Flags.sRGB;
     return true;
 }
+// Pass a format with the pixel layout you want to draw into. The target is an ordinary texture
+// afterwards (draw with it via set_shader_for_images) and is also what set_render_target takes.
 texture_create_render_target :: (width: s32, height: s32, format: Texture_Format, flags: Texture_Flags = 0) -> *Texture {
     if width <= 0 || height <= 0 || !is_supported(format) return null;
     CheckInit();
@@ -55,34 +68,38 @@ texture_create_render_target :: (width: s32, height: s32, format: Texture_Format
     #if render_api == .OPENGL {
         if !gl_create_render_target(texture) { free(texture); return null; }
     } else #if render_api == .SOFTWARE {
-        record := texture_record(texture, true); bitmap_alloc(*record.bitmap, width, height, format);
+        texture.cpu = New(Bitmap); bitmap_alloc(texture.cpu, width, height, format);
     } else { free(texture); return null; }
     return texture;
 }
+// Releases the GPU and CPU storage; the Texture struct itself belongs to the caller.
 deinit :: (texture: *Texture) {
     if !texture return;
     CheckInit();
     if context.simp.texture_render_target == texture { immediate_flush(); context.simp.texture_render_target = null; }
     #if render_api == .OPENGL { gl_delete_texture(texture); }
-    record := texture_record(texture, false);
-    if record { deinit(*record.bitmap); record.texture = null; }
+    texture_free_cpu(texture);
     texture.* = .{};
 }
 is_supported :: (format: Texture_Format) -> bool {
     #if render_api == .OPENGL { internal, external, type := gl_texture_format(format); return internal != 0; }
     return format == .R8 || format == .RG8 || format == .RGB8 || format == .RGBA8 || format == .BGRA8;
 }
-// Additional CPU inspection API, retaining the published Texture layout.
+// The CPU copy of the image: the pixels of a CPU render target, or an image not yet on the GPU.
 texture_bitmap :: (texture: *Texture) -> *Bitmap {
-    record := texture_record(texture, false); if !record return null;
-    return *record.bitmap;
+    if !texture return null;
+    return texture.cpu;
 }
 #scope_module
-Texture_Record :: struct { texture: *Texture; bitmap: Bitmap; framebuffer: u32; }
-texture_records: [..] *Texture_Record;
-texture_record :: (texture: *Texture, create: bool) -> *Texture_Record {
-    for record: texture_records if record.texture == texture return record;
-    if !create return null;
-    record := New(Texture_Record); record.texture = texture;
-    array_add(*texture_records, record); return record;
+texture_free_cpu :: (texture: *Texture) {
+    if !texture.cpu return;
+    deinit(texture.cpu); free(texture.cpu); texture.cpu = null;
+}
+texture_set_cpu_copy :: (texture: *Texture, bitmap: *Bitmap) {
+    texture_free_cpu(texture);
+    copy := New(Bitmap);
+    copy.* = bitmap.*;
+    copy.data = array_copy(bitmap.data);
+    copy.flags |= .FREE_DATA_ON_DEINIT;
+    texture.cpu = copy;
 }

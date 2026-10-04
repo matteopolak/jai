@@ -177,6 +177,8 @@
   "getrect-right-handed-api.jai": "native libraries: Simp (via GetRect) needs FreeType and stb_image (C code)",
   "getrect-right-handed-surface.jai": "native libraries: Simp (via GetRect) needs FreeType and stb_image (C code)",
   "getrect-text-display-compiles.jai": "native windows: imports Window_Creation, which has no browser backend",
+  "simp-left-handed-software.jai": "native libraries: Simp imports the window-system and GL modules, and texture loading needs stb_image (C code)",
+  "simp-window-program.jai": "needs a native window and an OpenGL context; only type-checked (jaic-cli native test)",
   "simp-compat-api.jai": "native libraries: Simp needs FreeType and stb_image (C code), and a window and GPU backend"
  }
 }
