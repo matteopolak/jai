@@ -2001,24 +2001,46 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
         if !matches!(self.statement(&cases.subject, depth + 1)?, Control::Next) {
             return Err(Error::InvalidIr("case subject transferred control").into());
         }
-        let mut through = false;
-        for arm in &cases.arms {
-            if through || self.boolean(&arm.condition, depth + 1)? {
-                match self.block(&arm.body, depth + 1)? {
-                    Control::Next => {}
-                    control => return Ok(control),
-                }
-                if !arm.through {
-                    return Ok(Control::Next);
-                }
-                through = true;
+        use jai_types::CaseTarget;
+        let order = cases
+            .order()
+            .map_err(|_| Error::InvalidIr("invalid case order"))?;
+        let mut target = CaseTarget::End;
+        for (index, arm) in cases.arms.iter().enumerate() {
+            if self.boolean(&arm.condition, depth + 1)? {
+                target = CaseTarget::Arm(index);
+                break;
             }
         }
-        if let Some(default) = &cases.default {
-            return self.block(default, depth + 1);
+        if target == CaseTarget::End {
+            if cases.default.is_some() {
+                target = CaseTarget::Default;
+            } else if cases.exhaustive {
+                return Err(Error::InvalidIr("exhaustive case did not match").into());
+            }
         }
-        if cases.exhaustive {
-            return Err(Error::InvalidIr("exhaustive case did not match").into());
+        while target != CaseTarget::End {
+            let (body, through) = match target {
+                CaseTarget::Arm(index) => (&cases.arms[index].body, cases.arms[index].through),
+                CaseTarget::Default => (
+                    cases
+                        .default
+                        .as_ref()
+                        .ok_or(Error::InvalidIr("missing case default"))?,
+                    cases.default_through,
+                ),
+                CaseTarget::End => unreachable!(),
+            };
+            match self.block(body, depth + 1)? {
+                Control::Next => {}
+                control => return Ok(control),
+            }
+            if !through {
+                break;
+            }
+            target = order
+                .following(target)
+                .map_err(|_| Error::InvalidIr("invalid case successor"))?;
         }
         Ok(Control::Next)
     }

@@ -37,6 +37,7 @@
 - [Integer types and conversions](integer-types.md)
 - [Scoped arithmetic and array safety checks](safety-checks.md)
 - [Record conditionals and assertions](record-conditionals.md)
+- [Enum bodies and source file items](enum-file-items.md)
 - [Record default overrides](record-default-overrides.md)
 - [Anonymous record members](anonymous-record-members.md)
 - [Promoted record literals](promoted-record-literals.md)
@@ -344,3 +345,8 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Declaration lists](declaration-lists.md)
 - [Statement termination](statement-termination.md)
 - [Runtime support bootstrap](runtime-support-bootstrap.md)
+- [Loop and case policy](loop-and-case-policy.md) — ordered defaults, fallthrough, transition loop policy, and implicit iterator removal.
+- [Source notes and compile-time assertions](source-notes-and-assertions.md) — retained names/selectors, nominal/member notes, selected assertion messages and postfix field alignment.
+- [Aggregate literals and selected record using](aggregate-literals-and-record-using.md)
+
+- [String source imports](string-source-imports.md) — Literal module sources, identities and relative resolution.

@@ -50,3 +50,8 @@ There are no case-specific environment variables. Target tags such as `OS` use t
 ## Dependencies
 
 The syntax parser, canonical `jai-types` identities, typed constants, semantic constant evaluation, retained module discovery, compile-time provider/readiness and effect replay, and source-specialization metadata. Source and native fixtures are independently authored; supplied reference native objects and libraries are never loaded or linked.
+
+
+## Ordered defaults and fallthrough
+
+A bare `case;` may occur anywhere in the original table. Its ordinal and `#through` flag remain attached through file/record insertion conversions. Selection still searches labeled cases first; the chosen body chain then follows original source order through a default without evaluating the next label. Duplicate defaults and physically last `#through` reject even in an inactive branch. This uses the shared `jai-types::CaseOrder` producer, with no source text rewriting or execution of supplied reference tools.

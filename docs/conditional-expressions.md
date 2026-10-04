@@ -2,36 +2,39 @@
 
 ## What it is
 
-`ifx` produces an integer or Boolean value from a condition. The current implementation supports expression arms, an optional `then` keyword and a default false arm when `else` is omitted.
+`ifx` selects a value without evaluating the unused runtime branch. It accepts explicit expression arms, an optional `then` keyword, an implicit true arm, and the result type's default value when `else` is omitted.
 
 ```jai
-factorial :: (n: int) -> int {
-    return ifx n <= 1 then 1 else n * factorial(n - 1);
+fallback :: (value: int) -> int {
+    return ifx value else 42;
 }
-
-main :: () -> int {
-    return factorial(5); // 120
+clamp :: (value: int) -> int {
+    return ifx value > 5 else 5;
 }
 ```
 
 ## How it works
 
-The parser records the condition, true expression and optional false expression. Resolution converts the condition to a Boolean using scalar truthiness and constructs either an integer conditional or a Boolean conditional. Both arms must supply compatible non-void types with range-preserving integer coercions, even when a constant condition would skip one arm. An omitted false arm becomes `0` or `false` according to the result type.
+An explicit arm stores its written expression. An implicit arm stores `ConditionalThenValue::ImplicitSubject` and borrows its subject from the original condition; it never synthesizes or clones a second source expression. Source dependency, expansion, quoted-source and metadata visitors traverse only the written children.
 
-The pure constant evaluator binds both arms before executing only the selected one. Constant dependencies from all arms participate in name resolution and cycle detection. LLVM lowering evaluates the condition once, emits separate branch blocks and joins their values with a correctly typed PHI. Nested conditional and short-circuit expressions contribute their actual final blocks to the PHI.
+For `ifx value`, the subject is `value`. One Boolean operator can expose its operand: `ifx value > 5 else 0` returns `value` when the comparison succeeds, and `ifx !value else 0` returns `value` when it is false. Direct calls expose their first written argument recursively. For `ifx accepts(add(value, other)) else 0`, the implicit true value is `value`. Only one Boolean operator is unwrapped, so `(value > 0) && enabled` exposes the left comparison's Boolean value.
 
-The recent Jails corpus uses this syntax for scalar expressions, for example its UTF-16 unit calculation in [memory-files handling](https://github.com/SogoCZE/Jails/blob/42fa76c816ad34c9f24a4bde586d145c992dc860/server/memory_files.jai). The local `025_ifx.jai` tutorial additionally describes block arms and implicit true values. Those forms, conditional cases and `#ifx` are still unsupported and produce diagnostics; this checkpoint does not compile the full tutorial or Jails project.
+Resolution captures that actual subject once using a checked, procedure-owned `ExpressionBindingId` and existing `ValueExpr::Bind`/`Bound` IR. The condition and selected true arm reuse the checked value. A scoped exact source-node match is retired before returning either a checked condition or a diagnostic. Captured callable contracts stay attached to the original checked producer. No new VM or native instruction is needed.
+
+Integer, Boolean, floating-point and pointer conditions retain their usual truth rules. Strings and sequence descriptors use their actual count, including fixed arrays. Missing false arms use the result's default: zero, false, null or the checked type's default descriptor. Both result arms still need compatible types and valid bindings. Scalar domain inference checks inactive bindings without reading their values and retains the implicit subject only once.
+
+First-argument extraction from an indirect callback is diagnosed because capturing it before the callback read would change evaluation order. `is_constant` extraction is diagnosed because its argument is an observation rather than a runtime producer. Write an explicit true arm for these cases. Existing `#expand` value-result limits remain in force. Branch blocks need statement-valued expression scopes and cleanup support; conditional cases and `#ifx` remain unsupported. Parsing a larger file does not imply those other features are implemented.
 
 ## How to change it
 
-Extend `ConditionalExpression` in `jai-syntax` for additional source forms, then update constant dependency traversal, `jai-eval` binding, `jai-sema` resolution and `jai-codegen` lowering. Preserve typed result branches and avoid duplicating evaluation when implementing implicit true values. Block arms will need expression-result scopes and cleanup handling before they can be accepted.
+Extend subject selection in `jai-syntax/src/conditional_expressions.rs` together with the ordered-subject checks in `jai-sema/src/implicit_conditionals.rs`. Preserve actual source allocation and written spans. Update source visitors through `expressions()`/`expressions_mut()` rather than visiting `then_source()` as another child: the latter borrows an existing condition child for implicit arms.
 
-Add rejection tests for incompatible or void arms and behavior tests for side effects, recursion, nested PHIs and omitted false arms. Keep allocation benchmarks separate from the existing baseline workloads.
+Pair any new producer form with its real evaluation order and callback contract before accepting it. Do not lower an implicit arm by inserting a second copy of its source. Keep `jai-eval` binding and domain inference aligned with the semantic resolver. The syntax, scalar and graph/VM fixtures in the corresponding `implicit-conditionals` tests cover capture counts, lazy fallback, nested calls, source delimiters and explicit unsupported forms. These authored tests require a compiler gate before execution behavior is claimed.
 
 ## Configuration
 
-There are no feature flags. The current result types are the compiler's eight integer widths and `bool` subset. `then` may be omitted when the two expressions parse unambiguously; parentheses can separate nested values. An `else` belongs to the nearest unmatched `ifx`.
+There are no feature flags. `then` can be omitted before a written true expression when the expressions are unambiguous. An implicit true arm ends at `else` or a normal expression delimiter; a written `then` still requires an expression. An `else` belongs to the nearest unmatched `ifx`. Existing parser depth, constant-depth, type and VM limits continue to apply; the semantic capture stack checks `MAX_CONSTANT_DEPTH`.
 
 ## Dependencies
 
-`jai-syntax`, `jai-eval`, `jai-sema`, `jai-codegen`, Inkwell/LLVM 22 and Divan. Native behavior tests use independently installed Clang; supplied reference binaries are not executed locally.
+The source path uses `jai-syntax`, `jai-source`, `jai-modules`, `jai-eval`, `jai-types`, `jai-ir` and `jai-sema`. Execution reuses the LLVM-free `jai-vm`; native compilation can use the existing `jai-codegen` LLVM 22 backend. No external package or original reference binary is required.

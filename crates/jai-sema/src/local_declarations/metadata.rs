@@ -36,6 +36,7 @@ impl Resolver<'_> {
             .ok_or_else(|| Diagnostic::new(span, "record declaration metadata is unavailable"))?
             .record(ty, span)?;
         Ok(RecordMetadata {
+            using: Vec::new(),
             name: None,
             kind: record.kind,
             fields: record
@@ -70,32 +71,9 @@ impl Resolver<'_> {
         if let Some(path) = self.reflection_field_path(ty, name, span)? {
             return Ok(Some(path));
         }
-        let mut pending = vec![(ty, Vec::new(), HashSet::new())];
-        let mut found = None;
-        while let Some((ty, prefix, mut ancestors)) = pending.pop() {
-            if !ancestors.insert(ty) {
-                return Err(Diagnostic::new(span, "cyclic using field promotion"));
-            }
-            let record = self.record_metadata(ty, span)?;
-            if let Some(field) = record.fields.iter().find(|field| field.name == Some(name)) {
-                let mut path = prefix.clone();
-                path.push(field.id);
-                if found.replace(path).is_some() {
-                    return Err(Diagnostic::new(span, "ambiguous promoted record member"));
-                }
-            }
-            for field in record
-                .fields
-                .iter()
-                .rev()
-                .filter(|field| field.syntax.using())
-            {
-                let mut path = prefix.clone();
-                path.push(field.id);
-                pending.push((field.ty, path, ancestors.clone()));
-            }
-        }
-        Ok(found)
+        crate::record_default_overrides::optional_field_path(ty, name, span, self.types, |ty| {
+            self.record_metadata(ty, span)
+        })
     }
 
     pub(crate) fn field_default_value(
