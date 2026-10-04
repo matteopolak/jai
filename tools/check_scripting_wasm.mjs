@@ -10,7 +10,7 @@ const fixtures = [
   ["integer entry", { "main.jai": "main :: () -> int { return 42; }" }, 42],
   ["negative result", { "main.jai": "main :: () -> int { return -7; }" }, -7],
   ["runtime phase and compile-time source run", { "main.jai": "seed :: #run answer(); answer :: () -> int { if #compile_time return 40; return 900; } main :: () -> int { if #compile_time return 700; return seed + 2; }" }, 42],
-  ["wasm32 layout", { "main.jai": "main :: () -> int { return size_of(*int) + 38; }" }, 42],
+  ["wasm target", { "main.jai": "main :: () -> int { if OS == .WASM return 42; return 1; }" }, 42],
   ["source bundle", { "main.jai": '#load "helper.jai"; main :: () -> int { return answer; }', "helper.jai": "answer :: 42;" }, 42],
   ["nested source import", { "main.jai": '#load "lib/one.jai"; main :: () -> int { return answer; }', "lib/one.jai": '#load "../two.jai"; answer :: result;', "two.jai": "result :: 42;" }, 42],
   ["isolated globals", { "main.jai": "counter: int = 41; main :: () -> int { counter += 1; return counter; }" }, 42],

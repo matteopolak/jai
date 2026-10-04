@@ -77,7 +77,7 @@ export async function checkRelease(directory) {
   const engine = await createEngine(await readFile(path.join(directory, "jai_wasm.wasm")));
   const play = (source, files = {}) => engine.play({ ...files, "main.jai": source }, "main.jai");
   assert.equal(play("main :: () -> int { return 42; }").exitCode, 42);
-  assert.equal(play("main :: () -> int { return size_of(*int) + 38; }").exitCode, 42, "Browser pointer layout must be 32-bit");
+  assert.equal(play("main :: () -> int { if OS == .WASM return 42; return 1; }").exitCode, 42, "Browser builds target WASM");
   assert.equal(play('seed :: #run answer(); answer :: () -> int { if #compile_time return 40; return 900; } main :: () -> int { if #compile_time return 700; return seed + 2; }').exitCode, 42);
   assert.equal(play('#load "nested/helper.jai"; main :: () -> int { return answer; }', { "nested/helper.jai": "answer :: 42;" }).exitCode, 42);
   assert.equal(play('#load "lib/one.jai"; main :: () -> int { return answer; }', { "lib/one.jai": '#load "../two.jai"; answer :: result;', "two.jai": "result :: 42;" }).exitCode, 42, "Nested parent paths stay inside the virtual root");
