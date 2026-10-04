@@ -19,6 +19,7 @@ mod convert;
 mod decls;
 mod driver;
 mod expr;
+mod lambda;
 mod lower;
 mod modules;
 mod procs;
@@ -170,6 +171,12 @@ pub struct Compiler {
     pub exports: Vec<ProcId>,
     /// Procedure literals and anonymous types, per (AST node, scope).
     pub anonymous_procs: HashMap<(ast::AstId, ScopeId), ProcId>,
+    /// Macro parameters whose argument was a compile-time constant: compile-time code in
+    /// the macro (`#insert -> string { ... }`) reads them even though they are locals.
+    /// User-written calls being emitted, innermost last: `#caller_code` evaluates to the
+    /// innermost one. Only calls to procedures that use `#caller_code` are recorded.
+    pub calls_in_flight: Vec<(Rc<ast::Expr>, ScopeId)>,
+    pub local_consts: HashMap<EntityId, (Value, TypeId)>,
     pub anonymous_types: HashMap<(ast::AstId, ScopeId), TypeId>,
     /// Scope each `Code` value was written in (parallel to `codes`).
     pub code_scopes: Vec<ScopeId>,
@@ -231,6 +238,8 @@ impl Compiler {
             entry_point: None,
             exports: Vec::new(),
             anonymous_procs: HashMap::new(),
+            calls_in_flight: Vec::new(),
+            local_consts: HashMap::new(),
             anonymous_types: HashMap::new(),
             code_scopes: Vec::new(),
             default_images: HashMap::new(),

@@ -184,8 +184,11 @@ impl Compiler {
                 )
             }
             S::Insert {
-                value, ..
-            } => self.check_insert(f, scope, value, span),
+                value,
+                flags,
+                scope: target,
+                ..
+            } => self.check_insert(f, scope, value, flags, target.as_ref(), span),
             S::Assert {
                 cond,
                 message,
@@ -1559,9 +1562,11 @@ impl Compiler {
         f: &mut FnCtx,
         scope: ScopeId,
         value: &ast::Expr,
+        flags: &[ast::Ident],
+        target: Option<&ast::Expr>,
         span: Span,
     ) -> Result<()> {
-        let op = self.eval_const(scope, value, None)?;
+        let op = self.eval_insert_operand(scope, value)?;
         if let Operand::Const {
             value: Value::Code(code),
             ..
@@ -1576,8 +1581,19 @@ impl Compiler {
                 return self.insert_for_body(f, frame_index, span);
             }
             let body = self.codes[code.0 as usize].clone();
-            let code_scope = self.code_scopes[code.0 as usize];
-            // Inserted code resolves names where it was written.
+            // Inserted code resolves names where it was written, unless `,scope()` names
+            // the insertion site or `,scope(other_code)` another code's scope.
+            let code_scope = match target {
+                Some(t) => match self.eval_const(scope, t, None)? {
+                    Operand::Const {
+                        value: Value::Code(other),
+                        ..
+                    } => self.code_scopes[other.0 as usize],
+                    _ => return err(t.span, "#insert,scope(...) needs a Code value"),
+                },
+                None if flags.iter().any(|fl| fl.name.as_str() == "scope") => scope,
+                None => self.code_scopes[code.0 as usize],
+            };
             let inner = self.new_block_scope(code_scope);
             self.scopes[inner.0 as usize].proc_depth = self.scope(scope).proc_depth;
             return match &*body {
@@ -1731,6 +1747,8 @@ impl Compiler {
                         val,
                     }))
                 }
+                // `return f();` of a procedure without results.
+                Operand::Void if values.len() == 1 => {}
                 other => ops.push(other),
             }
         }

@@ -53,6 +53,7 @@ fn is_deferred(expr: &ast::Expr) -> bool {
                 ..
             }
             | E::Ifx { .. }
+            | E::Lambda { .. }
     )
 }
 
@@ -84,14 +85,36 @@ impl Compiler {
                 for a in args {
                     values.push((
                         a.name.map(|n| n.name),
-                        self.eval_const_value(scope, &a.value)?,
+                        self.eval_const_or_run(scope, &a.value, None)?,
                     ));
                 }
                 Ok(Operand::Type(self.instantiate_struct(ps, values, span)?))
             }
             Operand::Procs(procs) => {
                 let call_args = self.precheck_args(f, scope, args)?;
-                self.call_procs(f, scope, &procs, call_args, expected, span)
+                let wants_code = procs.iter().any(|&p| {
+                    let header = &self.proc(p).lit.header;
+                    header.params.iter().any(|p| {
+                        p.default
+                            .as_ref()
+                            .is_some_and(|d| matches!(d.kind, E::CallerCode))
+                    })
+                });
+                if !wants_code {
+                    return self.call_procs(f, scope, &procs, call_args, expected, span);
+                }
+                let call = ast::Expr {
+                    kind: E::Call {
+                        callee: Box::new(callee.clone()),
+                        args: args.to_vec(),
+                        hint: ast::CallHint::None,
+                    },
+                    span,
+                };
+                self.calls_in_flight.push((Rc::new(call), scope));
+                let result = self.call_procs(f, scope, &procs, call_args, expected, span);
+                self.calls_in_flight.pop();
+                result
             }
             Operand::Type(t) => {
                 // `Type(x)` is not Jai; but `T.{}` etc are handled elsewhere.
@@ -306,6 +329,34 @@ impl Compiler {
 
     fn arg_cost(&mut self, arg: &CallArg, param: TypeId) -> Result<u32> {
         let Some(op) = &arg.op else {
+            if let Some(ast::Expr {
+                kind: E::Lambda {
+                    header, ..
+                },
+                ..
+            }) = &arg.expr
+            {
+                match self.types.kind(param) {
+                    TypeKind::Proc(pt) if pt.params.len() == header.params.len() => {}
+                    TypeKind::Proc(pt) => {
+                        return err(
+                            arg.span,
+                            format!(
+                                "lambda takes {} parameters, but {} expects {}",
+                                header.params.len(),
+                                self.types.name(param),
+                                pt.params.len()
+                            ),
+                        );
+                    }
+                    _ => {
+                        return err(
+                            arg.span,
+                            format!("a lambda cannot be passed as {}", self.types.name(param)),
+                        );
+                    }
+                }
+            }
             // Deferred arguments fit any plausible target; prefer exact-looking ones.
             let scalar = matches!(
                 self.types.kind(self.types.repr_struct(param)),
@@ -465,6 +516,12 @@ impl Compiler {
                 Slot::Variadic(list) => list.iter().map(|&a| &args[a]).collect(),
                 Slot::Default => Vec::new(),
             };
+            if param.baked && param.variadic {
+                let name = param.name.map(|n| n.name).unwrap();
+                let (value, ty) = self.baked_pack(def_scope, param, &arg_ops)?;
+                bindings.push((name, value, ty));
+                continue;
+            }
             if param.baked {
                 let name = param.name.map(|n| n.name).unwrap();
                 let Some(arg) = arg_ops.first() else {
@@ -479,6 +536,25 @@ impl Compiler {
                         format!("missing argument for baked parameter '{name}'"),
                     );
                 };
+                // `$c: Code` takes the argument expression itself, unevaluated.
+                if let Some(t) = &param.ty
+                    && !procs::has_poly(t)
+                    && self.eval_type(def_scope, t).ok() == Some(TypeId::CODE)
+                    && !matches!(
+                        arg.op,
+                        Some(Operand::Const {
+                            value: Value::Code(_),
+                            ..
+                        })
+                    )
+                    && let Some(expr) = &arg.expr
+                {
+                    let id = value::CodeId(self.codes.len() as u32);
+                    self.codes.push(Rc::new(ast::CodeBody::Expr(expr.clone())));
+                    self.code_scopes.push(arg.scope);
+                    bindings.push((name, Value::Code(id), TypeId::CODE));
+                    continue;
+                }
                 let op = match arg.op.clone() {
                     Some(op) => op,
                     None => {
@@ -582,6 +658,39 @@ impl Compiler {
                 }
             }
         }
+        // Lambdas are checked last: their parameter types come from the other bindings.
+        for (i, param) in header.params.iter().enumerate() {
+            let (Slot::Arg(a), Some(pattern)) = (&slots[i], &param.ty) else {
+                continue;
+            };
+            let CallArg {
+                op: None,
+                expr:
+                    Some(ast::Expr {
+                        kind:
+                            E::Lambda {
+                                header: lh,
+                                body,
+                            },
+                        ..
+                    }),
+                scope,
+                span,
+                ..
+            } = &args[*a]
+            else {
+                continue;
+            };
+            if procs::has_poly(pattern) {
+                self.infer_lambda_bindings(
+                    pattern,
+                    (*scope, lh, body),
+                    def_scope,
+                    &mut bindings,
+                    *span,
+                )?;
+            }
+        }
         // Defaults of the form `$T` without arguments are an error unless bound elsewhere.
         for param in &header.params {
             if let Some(t) = &param.ty {
@@ -595,6 +704,58 @@ impl Compiler {
         // `#modify` blocks could adjust bindings; not supported yet (accept as-is).
         let _ = f;
         Ok(bindings)
+    }
+
+    /// The value of a baked variadic parameter (`$types: ..Type`): a constant `[] T`
+    /// view over the arguments, each of which must be a compile-time constant.
+    fn baked_pack(
+        &mut self,
+        def_scope: ScopeId,
+        param: &ast::Param,
+        args: &[&CallArg],
+    ) -> Result<(Value, TypeId)> {
+        let span = param.span;
+        let elem = match &param.ty {
+            Some(t) if !procs::has_poly(t) => self.eval_type(def_scope, t)?,
+            _ => TypeId::TYPE,
+        };
+        let esize = self.size_of(elem, span)?;
+        let mut array = value::Aggregate {
+            bytes: vec![0; esize as usize * args.len()],
+            relocs: Vec::new(),
+        };
+        for (i, arg) in args.iter().enumerate() {
+            let op = match (&arg.op, &arg.expr) {
+                (Some(op), _) => op.clone(),
+                (None, Some(e)) => self.eval_const(arg.scope, e, Some(elem))?,
+                (None, None) => return err(arg.span, "missing value"),
+            };
+            let op = self.const_value_of_operand(arg.scope, op, elem, arg.span)?;
+            self.write_value(&mut array, i as u64 * esize, &op, elem, arg.span)?;
+        }
+        let align = self.align_of(elem, span)?;
+        let data = self.program.add_global(ir::Global {
+            name: "baked.pack".into(),
+            size: array.bytes.len().max(1) as u64,
+            align,
+            init: array.bytes,
+            relocs: array.relocs,
+            read_only: true,
+            export: None,
+        });
+        let mut view = value::Aggregate {
+            bytes: vec![0; 16],
+            relocs: vec![ir::Reloc {
+                offset: 8,
+                target: ir::RelocTarget::Global(data),
+                addend: 0,
+            }],
+        };
+        view.bytes[..8].copy_from_slice(&(args.len() as u64).to_le_bytes());
+        Ok((
+            Value::Bytes(Rc::new(view)),
+            self.types.array(elem, ArrayKind::View),
+        ))
     }
 
     /// Match a polymorphic type pattern against a concrete type, adding bindings.
@@ -1322,6 +1483,21 @@ impl Compiler {
                         self.code_scopes.push(caller);
                         id
                     }
+                    Slot::Default
+                        if param
+                            .default
+                            .as_ref()
+                            .is_some_and(|d| matches!(d.kind, E::CallerCode)) =>
+                    {
+                        let d = param.default.as_ref().unwrap();
+                        match self.check_expr(f, sig.scope, d, Some(TypeId::CODE))? {
+                            Operand::Const {
+                                value: Value::Code(code),
+                                ..
+                            } => code,
+                            _ => return err(d.span, "#caller_code did not produce Code"),
+                        }
+                    }
                     _ => return err(span, "Code parameter needs an argument"),
                 };
                 self.add_const(mscope, name, param.span, Value::Code(code), TypeId::CODE);
@@ -1356,6 +1532,19 @@ impl Compiler {
                 },
                 false,
             );
+            if let Slot::Arg(a) = slot
+                && let Some(Operand::Const {
+                    value,
+                    ty,
+                    untyped,
+                }) = &args[*a].op
+                && (*ty == param.ty
+                    || (*untyped
+                        && matches!(value, Value::Int(_))
+                        && self.types.is_integer(param.ty)))
+            {
+                self.local_consts.insert(e, (value.clone(), param.ty));
+            }
             if param.using {
                 self.scope_mut(mscope)
                     .usings

@@ -249,6 +249,7 @@ impl Compiler {
             }
             let ty = match (&param.ty, &param.default) {
                 (Some(t), _) => self.eval_type(scope, t)?,
+                (None, Some(d)) if matches!(d.kind, ast::ExprKind::CallerCode) => TypeId::CODE,
                 (None, Some(d)) => {
                     // Only the type matters; defaults like `context.allocator` are runtime values.
                     let op = self.check_expr_no_emit(scope, d)?;
@@ -298,6 +299,12 @@ impl Compiler {
                 returns.push(ty);
                 return_names.push(r.name.map(|n| n.name));
             }
+        }
+        if let Some(ty) = self.lambda_return_type(id, scope, &params)?
+            && ty != TypeId::VOID
+        {
+            returns.push(ty);
+            return_names.push(None);
         }
         let c_call = header.flags.c_call || header.foreign.is_some();
         let c_varargs = c_call && params.last().is_some_and(|p| p.variadic);

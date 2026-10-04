@@ -323,8 +323,22 @@ pub struct Foreign {
     pub name: ForeignName,
 }
 
+/// How a procedure literal was written when it is a desugared lambda.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum LambdaKind {
+    /// An ordinary procedure.
+    #[default]
+    None,
+    /// `(x) => expr`: the body is `return expr;` and the result type is inferred.
+    Expr,
+    /// `(x) => { ... }`: a block body; results come from the expected procedure type.
+    Block,
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct ProcFlags {
+    /// Set on the header of a lambda's desugared procedure literal.
+    pub lambda: LambdaKind,
     pub c_call: bool,
     pub no_context: bool,
     pub expand: bool,
