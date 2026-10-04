@@ -9,6 +9,20 @@ use crate::ast::ExprKind as E;
 use crate::ir::Ty;
 use crate::types::{ArrayKind, TypeKind};
 
+/// How a `$$` parameter is treated at one call.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum AutoBake {
+    Runtime,
+    Baked,
+    /// Constant argument with no `Value` (`"str".data`): runtime, but `is_constant` is true.
+    ConstRuntime,
+}
+
+/// The hidden constant marking parameter `name` as constant in an auto-bake variant.
+fn const_marker(name: Sym) -> Sym {
+    Sym::intern(&format!("$const:{name}"))
+}
+
 /// A call argument: either already checked, or deferred until the parameter
 /// type is known (`.MEMBER`, `.{...}`, `xx value`...).
 #[derive(Clone)]
@@ -394,6 +408,33 @@ impl Compiler {
             Vec::new()
         };
         let slots = assign_slots(&header.params, args, &poly_vars, span)?;
+        // `$$x` parameters receiving a constant argument: match a variant with them baked.
+        if header.params.iter().any(|p| p.auto_bake) {
+            let mut mask = vec![AutoBake::Runtime; header.params.len()];
+            for (i, p) in header.params.iter().enumerate() {
+                let Slot::Arg(a) = &slots[i] else {
+                    continue;
+                };
+                if !p.auto_bake {
+                    continue;
+                }
+                let arg = &args[*a];
+                mask[i] = match &arg.op {
+                    Some(op) if op.is_const() || matches!(op, Operand::Procs(_)) => AutoBake::Baked,
+                    Some(op) => match &arg.expr {
+                        Some(e) if self.is_constant_pointer(arg.scope, e, op) => {
+                            AutoBake::ConstRuntime
+                        }
+                        _ => AutoBake::Runtime,
+                    },
+                    None => AutoBake::Runtime,
+                };
+            }
+            if mask.iter().any(|&b| b != AutoBake::Runtime) {
+                let variant = self.auto_bake_variant(proc, mask);
+                return self.match_candidate(variant, args, span);
+            }
+        }
         let mut proc_id = proc;
         let mut extra = 0;
         let mut specificity = 0;
@@ -450,6 +491,130 @@ impl Compiler {
             cost,
             specificity,
         })
+    }
+
+    /// The copy of `proc` with the `$$` parameters flagged in `mask` turned into `$` ones.
+    fn auto_bake_variant(&mut self, proc: ProcId, mask: Vec<AutoBake>) -> ProcId {
+        if let Some(&v) = self.auto_bake_variants.get(&(proc, mask.clone())) {
+            return v;
+        }
+        let p = self.proc(proc);
+        let (name, lit, scope, span) =
+            (p.name, p.lit.clone(), p.bindings.unwrap_or(p.scope), p.span);
+        let mut header = (*lit.header).clone();
+        let mut consts = Vec::new();
+        for (param, &bake) in header.params.iter_mut().zip(&mask) {
+            match bake {
+                AutoBake::Baked => {
+                    param.baked = true;
+                    param.auto_bake = false;
+                }
+                AutoBake::ConstRuntime => {
+                    param.auto_bake = false;
+                    if let Some(n) = param.name {
+                        consts.push((const_marker(n.name), Value::Bool(true), TypeId::BOOL));
+                    }
+                }
+                AutoBake::Runtime => {}
+            }
+        }
+        header.flags.program_export = None;
+        let lit = Rc::new(ast::ProcLit {
+            header: Rc::new(header),
+            body: lit.body.clone(),
+        });
+        let scope = if consts.is_empty() {
+            scope
+        } else {
+            self.const_scope(scope, consts, span)
+        };
+        let v = self.new_proc(name, lit, scope, span);
+        self.auto_bake_variants.insert((proc, mask), v);
+        v
+    }
+
+    /// Constant expressions that have no `Value` to bake (addresses of globals, `.data` of
+    /// constants, `type_info(T)`...). `is_constant` is true for them; a `$$` parameter
+    /// receiving one stays a runtime parameter, marked constant.
+    pub(super) fn is_constant_pointer(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+        op: &Operand,
+    ) -> bool {
+        match &expr.kind {
+            E::Ident(name) => self
+                .lookup(scope, const_marker(*name))
+                .is_ok_and(|v| !v.is_empty()),
+            E::Member(base, member) => match member.name.as_str() {
+                "data" if self.types.is_pointer(op.ty()) => {
+                    let Ok(b) = self.check_expr_no_emit(scope, base) else {
+                        return false;
+                    };
+                    let fixed = matches!(
+                        self.types.kind(self.types.repr(b.ty())),
+                        TypeKind::Array {
+                            kind: ArrayKind::Fixed(_),
+                            ..
+                        }
+                    );
+                    b.is_const() || (fixed && self.is_global_var(scope, base))
+                }
+                // `type_info(T).type` / `.runtime_size` are constant.
+                "type" | "runtime_size" => {
+                    matches!(&base.kind, E::Call { callee, .. }
+                        if matches!(&callee.kind, E::Ident(n) if n.as_str() == "type_info"))
+                }
+                _ => false,
+            },
+            E::Unary(ast::UnOp::Star, inner) => self.is_global_var(scope, inner),
+            E::Cast {
+                value, ..
+            } if self.types.is_pointer(op.ty()) => self.is_constant_expr(scope, value),
+            E::Binary(ast::BinOp::Add | ast::BinOp::Sub, a, b)
+                if self.types.is_pointer(op.ty()) =>
+            {
+                self.is_constant_expr(scope, a) && self.is_constant_expr(scope, b)
+            }
+            E::Index(base, index) => {
+                let Ok(b) = self.check_expr_no_emit(scope, base) else {
+                    return false;
+                };
+                matches!(
+                    self.types.kind(self.types.repr(b.ty())),
+                    TypeKind::Array { .. } | TypeKind::String
+                ) && self.is_constant_expr(scope, base)
+                    && self.is_constant_expr(scope, index)
+            }
+            E::Call {
+                callee, ..
+            } => matches!(&callee.kind, E::Ident(n)
+                if matches!(n.as_str(), "type_info" | "initializer_of")),
+            _ => false,
+        }
+    }
+
+    fn is_constant_expr(&mut self, scope: ScopeId, expr: &ast::Expr) -> bool {
+        let Ok(op) = self.check_expr_no_emit(scope, expr) else {
+            return false;
+        };
+        op.is_const()
+            || matches!(op, Operand::Procs(_))
+            || self.is_constant_pointer(scope, expr, &op)
+    }
+
+    /// Is `expr` the name of a global variable (not a local or constant)?
+    fn is_global_var(&mut self, scope: ScopeId, expr: &ast::Expr) -> bool {
+        let E::Ident(name) = &expr.kind else {
+            return false;
+        };
+        let Ok(ids) = self.lookup(scope, *name) else {
+            return false;
+        };
+        matches!(ids[..], [id] if matches!(
+            &self.entity(id).kind,
+            EntityKind::Decl { decl, .. } if decl.kind == ast::DeclKind::Var
+        ))
     }
 
     /// A `*Struct` argument passed to a by-value `Struct` parameter is dereferenced.
@@ -1929,9 +2094,10 @@ impl Compiler {
             }
             BuiltinProc::IsConstant => {
                 let op = self.check_expr_no_emit(scope, &arg.value)?;
-                Ok(Operand::bool(
-                    op.is_const() || matches!(op, Operand::Procs(_)),
-                ))
+                let constant = op.is_const()
+                    || matches!(op, Operand::Procs(_))
+                    || self.is_constant_pointer(scope, &arg.value, &op);
+                Ok(Operand::bool(constant))
             }
             BuiltinProc::InitializerOf => {
                 let ty = self.eval_type_in(f, scope, &arg.value)?;

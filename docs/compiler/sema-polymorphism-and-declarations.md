@@ -151,3 +151,9 @@ None.
 ## Dependencies
 
 `interp` (compile-time execution), `parser/decl.rs` (mixed declaration lists), `calls.rs` (candidate matching).
+- **`$$x` auto-bake parameters**: the parser sets `Param::auto_bake`. In `match_candidate` (`calls.rs`), a constant argument
+  (`Operand::is_const`, a proc) selects `auto_bake_variant`, a copy of the procedure whose `$$` params are turned into
+  `$` ones, cached per (proc, `AutoBake` mask) so `#procedure_of_call` identity is per baked value. Non-constant calls
+  use the original proc (`is_constant(x)` false). Constants with no `Value` (`"s".data`, `*global`, `type_info(T)`,
+  constant pointer arithmetic: `is_constant_pointer`) keep the param at runtime but bind a hidden `$const:x` marker
+  that `is_constant` reads. Two procedure names now compare by address (`expr.rs`).

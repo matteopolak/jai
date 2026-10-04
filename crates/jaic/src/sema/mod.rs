@@ -186,6 +186,8 @@ pub struct Compiler {
     lenient_failures: HashMap<ProcId, (u64, Box<Diagnostic>)>,
     /// Scopes holding the bindings that a polymorphic parameter's default is evaluated in.
     default_scopes: HashMap<(ScopeId, Vec<Value>), ScopeId>,
+    /// `$$x` variants: (procedure, which auto-bake params are baked) -> procedure.
+    auto_bake_variants: HashMap<(ProcId, Vec<calls::AutoBake>), ProcId>,
     /// Body `#import`s already added to their file scope (by statement span).
     hoisted_imports: HashSet<Span>,
     /// Procedures that need their bodies lowered.
@@ -317,6 +319,7 @@ impl Compiler {
             added_sources: 0,
             lenient_failures: HashMap::new(),
             default_scopes: HashMap::new(),
+            auto_bake_variants: HashMap::new(),
             hoisted_imports: HashSet::new(),
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),
