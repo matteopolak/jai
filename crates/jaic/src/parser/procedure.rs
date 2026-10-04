@@ -100,6 +100,8 @@ impl Parser<'_> {
             {
                 true
             }
+            // `(cast,no_check(T) x ...)` is an expression, not `(cast, ...)` parameters.
+            Tok::Ident(name) if name.as_str() == "cast" => false,
             Tok::Ident(_)
                 if matches!(
                     tok(from + 1),
