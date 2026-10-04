@@ -191,6 +191,13 @@ impl Compiler {
                 let proc = self.new_proc(name, lit.clone(), scope, value.span);
                 return Ok(Resolved::Proc(proc));
             }
+            ast::ExprKind::Lambda {
+                header,
+                body,
+            } => {
+                let lit = lambda::lambda_lit(header, body);
+                return Ok(Resolved::Proc(self.new_proc(name, lit, scope, value.span)));
+            }
             ast::ExprKind::ProcType(header)
                 if header
                     .flags

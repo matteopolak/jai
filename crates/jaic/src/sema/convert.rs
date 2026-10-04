@@ -399,6 +399,17 @@ impl Compiler {
         flags: ast::CastFlags,
         span: Span,
     ) -> Result<Operand> {
+        // A procedure name casts like the procedure value it denotes.
+        let op = match op {
+            Operand::Procs(_) => {
+                let (ty, val) = self.rvalue(f, op, span)?;
+                Operand::Value {
+                    ty,
+                    val,
+                }
+            }
+            op => op,
+        };
         let from = op.ty();
         if from == to
             && !matches!(

@@ -77,6 +77,9 @@ impl Compiler {
                 ..
             } => self.check_call(f, scope, callee, args, expected, span),
             E::Member(base, member) => {
+                if let Some(op) = self.enclosing_local_constant(f, scope, base, member)? {
+                    return Ok(op);
+                }
                 let base_op = self.check_expr(f, scope, base, None)?;
                 self.member_access(f, scope, base_op, member.name, member.span)
             }
@@ -266,7 +269,7 @@ impl Compiler {
                     untyped: false,
                 })
             }
-            E::This => self.check_this(scope, span),
+            E::This => self.check_this(f, scope, span),
             E::CompileTime => {
                 if f.compile_time {
                     return Ok(Operand::bool(true));
@@ -299,7 +302,20 @@ impl Compiler {
                 ..
             } => self.check_bake(scope, callee, args, span),
             E::ProcedureOfCall(call) => self.check_procedure_of_call(f, scope, call),
-            E::CallerCode => err(span, "#caller_code is not supported yet"),
+            E::CallerCode => {
+                let Some((call, caller_scope)) = self.calls_in_flight.last().cloned() else {
+                    return err(span, "#caller_code is only valid as a parameter default");
+                };
+                let id = value::CodeId(self.codes.len() as u32);
+                self.codes
+                    .push(Rc::new(ast::CodeBody::Expr((*call).clone())));
+                self.code_scopes.push(caller_scope);
+                Ok(Operand::Const {
+                    ty: TypeId::CODE,
+                    value: Value::Code(id),
+                    untyped: false,
+                })
+            }
             E::UnknownDirective {
                 name, ..
             } if name.name.as_str() == "Context" => Ok(Operand::Type(self.context_type(span)?)),
@@ -314,8 +330,9 @@ impl Compiler {
             ),
             E::Asm => err(span, "#asm is not supported"),
             E::Lambda {
-                ..
-            } => err(span, "lambda expressions are not supported yet"),
+                header,
+                body,
+            } => self.check_lambda(scope, header, body, expected, span),
             E::Block(_) => err(span, "block expressions are only valid as macro arguments"),
         }
     }
@@ -404,6 +421,13 @@ impl Compiler {
                 depth,
             } => {
                 if depth != self.scope(scope).proc_depth {
+                    if let Some((value, ty)) = self.local_consts.get(&id).cloned() {
+                        return Ok(Operand::Const {
+                            ty,
+                            value,
+                            untyped: false,
+                        });
+                    }
                     return err(
                         span,
                         format!(
@@ -483,15 +507,70 @@ impl Compiler {
         }
     }
 
-    fn check_this(&mut self, scope: ScopeId, span: Span) -> Result<Operand> {
+    /// `local.CONSTANT` where `local` belongs to an enclosing procedure: compile-time code
+    /// (an `#insert` procedure) may read a constant member of the local's struct type,
+    /// since that needs the type but not the value.
+    fn enclosing_local_constant(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        base: &ast::Expr,
+        member: &ast::Ident,
+    ) -> Result<Option<Operand>> {
+        let E::Ident(name) = &base.kind else {
+            return Ok(None);
+        };
+        let Ok(ids) = self.lookup(scope, *name) else {
+            return Ok(None);
+        };
+        let [id] = ids[..] else {
+            return Ok(None);
+        };
+        let EntityKind::Local {
+            ty,
+            depth,
+            ..
+        } = self.entity(id).kind.clone()
+        else {
+            return Ok(None);
+        };
+        if depth == self.scope(scope).proc_depth {
+            return Ok(None);
+        }
+        let ty = self.types.pointee(ty).unwrap_or(ty);
+        if self.types.as_struct(ty).is_none() {
+            return Ok(None);
+        }
+        Ok(self
+            .member_access(f, scope, Operand::Type(ty), member.name, member.span)
+            .ok()
+            .filter(|op| {
+                matches!(
+                    op,
+                    Operand::Const { .. } | Operand::Type(_) | Operand::Procs(_)
+                )
+            }))
+    }
+
+    /// `#this`: the enclosing struct's type, or the current procedure when inside a
+    /// lambda (so a lambda can recurse) or outside any struct.
+    fn check_this(&mut self, f: &FnCtx, scope: ScopeId, span: Span) -> Result<Operand> {
+        let in_lambda = f
+            .proc
+            .is_some_and(|p| self.proc(p).lit.header.flags.lambda != ast::LambdaKind::None);
         let mut s = Some(scope);
         while let Some(sid) = s {
-            if let ScopeKind::Struct(t) = self.scope(sid).kind {
-                return Ok(Operand::Type(t));
+            match self.scope(sid).kind {
+                ScopeKind::Struct(t) => return Ok(Operand::Type(t)),
+                ScopeKind::Proc if in_lambda => break,
+                _ => {}
             }
             s = self.scope(sid).parent;
         }
-        err(span, "#this used outside of a struct")
+        match f.proc {
+            Some(p) => Ok(Operand::Procs(vec![p])),
+            None => err(span, "#this used outside of a struct or procedure"),
+        }
     }
 
     fn proc_type_from_header(
