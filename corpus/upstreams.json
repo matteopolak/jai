@@ -7618,6 +7618,94 @@
           "sha256": "73839f7975a97a804c4c6515d6df92a014142c7d771ec9da48abe599a2a05c13"
         }
       ]
+    },
+    {
+      "repository": "ostef/Linalg",
+      "revision": "5f60c11f057787a804ce9582c5daeccc0e8de89a",
+      "latest_jai_change": "2026-08-05T13:53:07+02:00",
+      "source_of_truth": "https://github.com/ostef/Linalg/tree/5f60c11f057787a804ce9582c5daeccc0e8de89a",
+      "selection": "recent-source",
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 1063,
+          "sha256": "70dc98b66cb89b6c33af937cf6221a5f5abd93006f87d5263eb5561f013ffbf2"
+        },
+        {
+          "path": "README.md",
+          "bytes": 59,
+          "sha256": "c12f6d269f40936b56cdc6c2bef74cf49a99e5ff81d06feb32f3a14c737556bd"
+        },
+        {
+          "path": "euler_angles.jai",
+          "bytes": 3976,
+          "sha256": "78409f935e6726d89d0eafd2442a7859ff25c38b84440fc7797a300a1d1fb7d7"
+        },
+        {
+          "path": "matrix.jai",
+          "bytes": 27830,
+          "sha256": "3c4639fd0044f5602c070853664dac0bd8a73c2ea8dd59ccb18fc0b3e2a3ebb9"
+        },
+        {
+          "path": "module.jai",
+          "bytes": 5054,
+          "sha256": "d951e4bb38135ff99d91d40bde3dcf8ea3dd09ba01da7df1d10469019c5e527c"
+        },
+        {
+          "path": "quaternion.jai",
+          "bytes": 12807,
+          "sha256": "2153b5aba1688320ccb25f6c8d2a2fda66eff9ded36046cd32dde8fda9fae628"
+        },
+        {
+          "path": "utils.jai",
+          "bytes": 4624,
+          "sha256": "6da30257554d4b6d490d707318baa4e403b3a6cec8115a4fefe053fa0ea69b8a"
+        },
+        {
+          "path": "vector.jai",
+          "bytes": 15755,
+          "sha256": "a2c9a5aee1c9281582ffd2d6960b8de1cb31028e7ef6fa861be2f07c73f02658"
+        }
+      ]
+    },
+    {
+      "repository": "ostef/Jolt-Jai",
+      "revision": "56d1cd47b92d6c08ecdab5b9057addce35dab41a",
+      "latest_jai_change": "2026-08-10T23:13:56+02:00",
+      "source_of_truth": "https://github.com/ostef/Jolt-Jai/tree/56d1cd47b92d6c08ecdab5b9057addce35dab41a",
+      "selection": "recent-source",
+      "files": [
+        {
+          "path": "Examples/hello_world.jai",
+          "bytes": 5976,
+          "sha256": "dfa38847ec1583de149278a1a993a66315c648ac7d680c5cca195732073e7b84"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 1074,
+          "sha256": "299d655e83913c5f8fd1a20d8bf1285041211501d147db3bfb707079aa23eae9"
+        },
+        {
+          "path": "README.md",
+          "bytes": 298,
+          "sha256": "1b2504ad2d456e53bba965ac4671c3c339388605525c2085457edf74e4db96d1"
+        },
+        {
+          "path": "generate.jai",
+          "bytes": 12632,
+          "sha256": "55aad4da47c9ca56e9a35edfec5bb0618ed29756ab1c6950f78a076fc62ff660"
+        },
+        {
+          "path": "jolt.jai",
+          "bytes": 159889,
+          "sha256": "cc990fc4baf70c8456abb8ee362b5b05d660b81ad2e1ca1fe57ce237030b9e8b"
+        },
+        {
+          "path": "module.jai",
+          "bytes": 2929,
+          "sha256": "b49def9d0e30e9329081b3b623a0eec91f60b62c7d6d111e02d1e69910381430"
+        }
+      ]
     }
   ]
 }
