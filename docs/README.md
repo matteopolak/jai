@@ -1,7 +1,5 @@
 # Developer documentation
 
-- [Bounded compiler and interpreter fuzzing](fuzz-targets.md)
-
 - [Persistent source checkpoints](source-checkpoints.md)
 - [Build storage](build-storage.md)
 
@@ -9,12 +7,14 @@
 - [Shared native and WebAssembly language server](language-server.md)
 - [Browser compiler releases](browser-compiler-releases.md)
 - [Browser editor](browser-editor.md)
-- [Scripting runtime](scripting-runtime.md)
 
 - [Code formatting](code-formatting.md)
 
+- [Platform source and host services](platform-services.md)
+
 - [Independent standard library](stdlib/architecture.md)
 - [Standard-library API coverage](stdlib/api-coverage.md)
+- [Selected standard-library protocol profiles](stdlib/protocol-profiles.md)
 
 - [Deferred context pushes](deferred-context.md)
 
@@ -31,6 +31,7 @@
 - [Independent frozen component checks](parallel-component-checks.md)
 - [Callable aliases in overload groups](callable-overload-aliases.md)
 - [Source declaration phases](source-declaration-phases.md)
+- [Retained global initializer jobs](global-initializer-jobs.md)
 - [Type restriction facts](type-restriction-facts.md)
 - [Source procedure contracts](source-procedure-contracts.md)
 - [Procedure source queries](procedure-source-queries.md)
@@ -61,6 +62,8 @@
 - [Immutable byte views](immutable-byte-views.md)
 - [Source placeholders](source-placeholders.md)
 - [Aggregate literal source targets](aggregate-literal-source-targets.md)
+- [Frontend header grammar](frontend-header-grammar.md)
+- [Remaining frontend grammar](frontend-grammar-frontiers.md)
 - [Target type layouts](type-layout.md)
 - [Record placement layout](record-placement-layout.md)
 - [Record overlays](record-overlays.md)
@@ -85,6 +88,7 @@
 - [Procedure calls](procedure-calls.md)
 - [Anonymous source procedures](anonymous-procedures.md)
 - [Procedure source notes](procedure-notes.md)
+- [Baked procedure arguments (staged)](baked-procedure-arguments.md)
 - [Short lambdas and contextual inference](short-lambdas.md)
 - [Canonical callback preview](callback-preview.md)
 - [Compilation units](compilation-units.md)
@@ -92,6 +96,7 @@
 - [Filesystem and generated source providers](source-providers.md)
 - [Incremental source discovery](source-discovery.md)
 - [Declaration insertion](declaration-insertion.md)
+- [Insertion admission](insertion-admission.md)
 - [Compiler Code results](compiler-code-results.md)
 - [Corpus feature inventory and acceptance matrix](corpus-feature-matrix.md)
 - [Recent-project requirements and parallel ownership](project-requirements.md)
@@ -108,6 +113,7 @@
 - [Cast modifiers and truncation](cast-modifiers.md)
 - [Storage bitcasts](storage-bitcasts.md)
 - [Type values](type-values.md)
+- [Canonical Type equality](canonical-type-equality.md) — nominal equality across immutable descriptor revisions and physical pointer casts.
 - [Using record fields](using-fields.md)
 - [Aggregate type resolution](aggregate-type-resolution.md)
 - [Constants and global storage](constants-and-globals.md)
@@ -133,6 +139,7 @@
 - [Compiler build profiles](compiler-build-profiles.md)
 - [Typed compiler boundaries](type-safety.md)
 - [Compiler, VM and discovery benchmarks](benchmarks.md)
+- [Bounded compiler and interpreter fuzzing](fuzz-targets.md)
 - [Recent upstream source corpus](upstream-corpus.md)
 - [Native project dependencies and source rebuild evidence](native-project-dependencies.md)
 - [Fresh SDL2 source and CPU SDK witness](native-sdl-witness.md)
@@ -154,6 +161,7 @@
 - [Compile-time host file and process effects](compile-time-host-io.md)
 - [Virtual stdio state](virtual-stdio.md)
 - [Virtual C allocator storage and source receipts](virtual-heap.md)
+- [Opaque numeric pointer values](opaque-numeric-pointers.md)
 - [Pool allocation intrinsics](pool-intrinsics.md)
 - [Virtual POSIX process execution protocol](virtual-process-protocol.md)
 - [Process ABI binding proofs](process-abi-bindings.md)
@@ -163,13 +171,16 @@
 - [Workspace source scheduling](workspace-scheduler.md)
 - [Compiler transaction continuations](compiler-continuations.md)
 - [Retained semantic preparation and header readiness](semantic-preparation.md)
-- [Initial type readiness (staged)](initial-type-readiness.md)
+- [Initial type readiness](initial-type-readiness.md)
+- [Retained source-run prefix](source-run-prefix.md)
 - [Workspace lifecycle](workspace-lifecycle.md)
 - [Compiler implementation version](compiler-version.md) — checked version string and caller-owned Version_Info writes.
 - [Compiler message interception](compiler-message-interception.md) — checked event schemas, owned responses, and VM message snapshots.
 - [Compiler runtime information](compiler-runtime-info.md) — certified type-table snapshots and explicit external program-data boundaries.
 - [Native runtime-info publication](native-runtime-info-publication.md) — exact fallback ownership, shared descriptor relocations and actual global byte ranges.
 - [Reflection source catalog](reflection-source-catalog.md) — source-visible type promotion and bounded immutable checkpoints.
+- [Reflection publication](reflection-publication.md) — owned VM detachment and prepared source policy guards.
+- [Static catalog ownership](static-catalog-ownership.md) — complete immutable allocation footprints and cumulative retained-root admission.
 - [Compiler API coverage and extension boundaries](compiler-api-coverage.md)
 - [CLI workspace artifacts](workspace-artifacts.md)
 - [Program exports](program-exports.md)
@@ -182,13 +193,14 @@
 - [Local nominal types and declarations](local-declarations.md)
 - [Native host checks and LLVM setup](native-hosts.md)
 - [Native test tools](native-test-tools.md)
-- [Bounded reference probes](reference-probes.md)
+- [Bounded reference probe history](reference-probes.md)
 
 The reference is an input corpus, not executable tooling. Do not execute or load its compiler, linkers, installers, native libraries, or native objects without the user's explicit approval after an inspection report.
 - [Semantic IR](semantic-ir.md): frozen type ownership and shared checked storage/place representation.
 - [Compile-time VM](compile-time-vm.md)
 - [Resumable VM execution](resumable-vm.md)
 - [Private VM fork snapshots](private-vm-fork-snapshots.md)
+- [VM snapshot budgets](vm-snapshot-budgets.md)
 - [Compile-time sequences](compile-time-sequences.md)
 - [Virtual byte memory](virtual-byte-memory.md)
 - [Virtual code addresses](virtual-code-addresses.md)
@@ -234,6 +246,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 
 - [Implicit Preload bootstrap](preload-bootstrap.md)
 - [Compiler prelude](compiler-prelude.md)
+- [Scripting runtime](scripting-runtime.md)
 - [Source-only compatibility probes](source-only-probes.md)
 
 - [Runtime intrinsics](runtime-intrinsics.md)
@@ -273,49 +286,53 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Scalar domain inference](scalar-domain-inference.md)
 - [Float and SIMD source validation](float-simd-source-validation.md)
 - [Constant slices](constant-slices.md)
+- [Constant capture admission](constant-capture-admission.md) — complete retained-root quotas and cumulative fuel for selected compiler constants.
 
 - [Basic and collection modules](stdlib/basic-collections.md)
+
 - [Binary formats and hashing](stdlib/binary-formats.md)
+
 - [Codec and native bindings](stdlib/codec-native-bindings.md)
+
 - [Command-line arguments](stdlib/command-line.md)
+
 - [Metaprogram tooling](stdlib/metaprogram-tooling.md)
+
 - [Window and audio bindings](stdlib/window-audio-bindings.md)
+
 - [Allocation, memory, and hashing](stdlib/allocation-memory.md)
+
 - [Math and numeric modules](stdlib/math-numeric.md)
+
 - [Platform SDK bindings](stdlib/platform-sdk-bindings.md)
+
 - [Strings, Unicode, and text files](stdlib/strings-serialization.md)
+
 - [UI widgets, drawing, fonts, and textures](stdlib/ui-drawing.md)
+
 - [Compiler and reflection support](stdlib/compiler-reflection.md)
+
 - [Files, processes, and OS services](stdlib/os-file-process.md)
+
 - [Threads, sockets, and input](stdlib/thread-socket.md)
+
 - [Native platform and graphics bindings](stdlib/native-platform-bindings.md)
-
-- [Global initializer jobs](global-initializer-jobs.md)
-
-- [Insertion admission](insertion-admission.md)
-
-- [Source run prefix](source-run-prefix.md)
-
-- [VM snapshot budgets](vm-snapshot-budgets.md)
-- [Opaque numeric pointers](opaque-numeric-pointers.md)
-
-- [Constant capture admission](constant-capture-admission.md)
 - [Source parameter defaults](source-parameter-defaults.md) — selected original ordinary defaults retained through early type preparation and source-prefix publication.
 - [Initializer source lookup](initializer-source-lookup.md) — original initializer and selected body lookup demands before genuine source-run publication.
 - [Compile-time resource limits](compile-time-resource-limits.md)
 - [Continuous integration](continuous-integration.md) — hosted correctness checks and strict lint enforcement.
-- [Source expression parsing](source-expression-parsing.md) — callable disambiguation and typed array targets.
+- [Source expression parsing](source-expression-parsing.md)
 - [Reference corpus tests](reference-corpus-tests.md)
 - [Historical right-handed GetRect](stdlib/getrect-legacy-right-handed.md) — versioned geometry and focused source overlay.
 - [Historical right-handed UI](stdlib/getrect-legacy-right-handed-ui.md) — retained widgets, upward-positive layout, and cached resource reads.
+
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
+
 - [Nested source namespaces](nested-source-namespaces.md) — canonical nested type reservations through original early source aliases.
 
 - [Return type parameters](return-type-parameters.md)
-
 - [Source allocation origins](source-allocation-origins.md)
 - [Retained source identity](retained-source-identity.md)
-- [Static catalog ownership](static-catalog-ownership.md)
 - [Retained source providers](retained-source-providers.md)
 - [C++ record return ABI](cpp-return-abi.md) — typed foreign return policy and paired native result carriers.
 - [Microsoft C++ result classification](cpp-return-classification.md)
@@ -325,11 +342,17 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 
 - [Baked argument syntax](baked-argument-syntax.md)
 
+- [Platform source and host services](platform-services.md)
+- [Selected standard-library protocol profiles](stdlib/protocol-profiles.md)
 - [Retained global initializer jobs](global-initializer-jobs.md)
+- [Frontend header grammar](frontend-header-grammar.md)
+- [Remaining frontend grammar](frontend-grammar-frontiers.md)
 - [Baked procedure arguments (staged)](baked-procedure-arguments.md)
+- [Canonical Type equality](canonical-type-equality.md) — nominal equality across immutable descriptor revisions and physical pointer casts.
 - [Opaque numeric pointer values](opaque-numeric-pointers.md)
 - [Initial type readiness](initial-type-readiness.md)
 - [Retained source-run prefix](source-run-prefix.md)
+- [Reflection publication](reflection-publication.md) — owned VM detachment and prepared source policy guards.
 - [Static catalog ownership](static-catalog-ownership.md) — complete immutable allocation footprints and cumulative retained-root admission.
 - [Bounded reference probe history](reference-probes.md)
 - [Constant capture admission](constant-capture-admission.md) — complete retained-root quotas and cumulative fuel for selected compiler constants.
@@ -342,6 +365,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Source reflection factory](reflection-source-factory.md)
 
 - [Latest corpus frontier](corpus-breadth-frontier.md) — matched source cohorts, stage results, and remaining language coverage.
+
 - [Declaration lists](declaration-lists.md)
 - [Statement termination](statement-termination.md)
 - [Runtime support bootstrap](runtime-support-bootstrap.md)

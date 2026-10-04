@@ -8,6 +8,7 @@ Allocator_Mode :: Protocol.Allocator_Mode;
 Allocator_Caps :: Protocol.Allocator_Caps;
 Allocator_Proc :: Protocol.Allocator_Proc;
 Allocator :: Protocol.Allocator;
+Context :: #Context;
 Temporary_Storage :: Protocol_Runtime.Temporary_Storage;
 Type_Info_Tag :: Protocol.Type_Info_Tag;
 Type_Info :: Protocol.Type_Info;

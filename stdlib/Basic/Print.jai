@@ -62,6 +62,23 @@ FormatArray :: struct {
     stop_printing_after_this_many_elements := 100;
 }
 
+// Kept in a separate namespace because the maintained same-name factories
+// return strings. These factories preserve the legacy Any payload descriptor.
+Legacy_Print :: struct {
+    formatInt :: (value: Any, base := 10, minimum_digits := 1, padding: u8 = #char "0", digits_per_comma: u16 = 0, comma_string := "") -> FormatInt {
+        return FormatInt.{value = value, base = base, minimum_digits = minimum_digits,
+            padding = padding, digits_per_comma = digits_per_comma, comma_string = comma_string};
+    }
+    formatFloat :: (value: Any, width := -1, trailing_width := -1,
+        mode := FormatFloat.Mode.DECIMAL, zero_removal := FormatFloat.Zero_Removal.YES) -> FormatFloat {
+        return FormatFloat.{value = value, width = width, trailing_width = trailing_width, mode = mode, zero_removal = zero_removal};
+    }
+    formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5, use_newlines_if_long_form := false) -> FormatStruct {
+        return FormatStruct.{value = value, use_long_form_if_more_than_this_many_members = use_long_form_if_more_than_this_many_members,
+            use_newlines_if_long_form = use_newlines_if_long_form};
+    }
+}
+
 get_s64_from_void_pointer :: (pointer: *void, size_in_bytes: int) -> s64 {
     if size_in_bytes == 1 return (cast(*s8) pointer).*;
     if size_in_bytes == 2 return (cast(*s16) pointer).*;
@@ -88,7 +105,7 @@ print_u64_base_n :: (builder: *String_Builder, v: u64, format: FormatInt) {
     count: s64 = 0;
     remaining := v;
     while true {
-        digits[count] = alphabet[remaining % cast(u64) format.base];
+        digits[count] = alphabet[cast(s64) (remaining % cast(u64) format.base)];
         count += 1;
         remaining /= cast(u64) format.base;
         if remaining == 0 break;
@@ -120,60 +137,291 @@ print_integer :: (builder: *String_Builder, format: FormatInt) {
     print_u64_base_n(builder, magnitude, format);
 }
 
-// Fixed decimal rounding up to 18 fractional digits. Large finite magnitudes
-// use scientific notation; SHORTEST is a compact approximation, not Ryu.
-__append_float_value :: (builder: *String_Builder, value: float64, format: FormatFloat) {
-    if value != value { append(builder, "nan"); return; }
-    magnitude := value;
-    negative := (cast,force(u64) value & 0x8000_0000_0000_0000) != 0;
-    if negative { append(builder, cast(u8) #char "-"); magnitude = -magnitude; }
-    else if format.positive_number_prefix == .PLUS append(builder, cast(u8) #char "+");
-    else if format.positive_number_prefix == .SPACE append(builder, cast(u8) #char " ");
-    if magnitude > 1.7976931348623157e308 { append(builder, "inf"); return; }
-    precision := format.trailing_width;
-    if precision < 0 precision = 6;
-    if precision > 18 { append(builder, "<unsupported float precision>"); builder.failed = true; return; }
-    exponent: s64 = 0;
-    scientific := format.mode == .SCIENTIFIC || magnitude >= 1.0e18;
-    if scientific && magnitude != 0 {
-        while magnitude >= 10 { magnitude /= 10; exponent += 1; }
-        while magnitude < 1 { magnitude *= 10; exponent -= 1; }
+// Independently authored exact binary64-to-decimal conversion. All arithmetic
+// after IEEE bit decomposition is bounded integer arithmetic. 36 radix-2^32
+// limbs cover binary64's denominator through 2^1076 with normalization slack.
+__Float_Wide :: struct { words: [36] u32; used: s64; }
+__Float_Digits :: struct { digits: [344] u8; count: s64; exponent: s64; valid: bool; }
+
+__float_wide_set :: (a: *__Float_Wide, value: u64) {
+    a.* = .{};
+    if value == 0 return;
+    a.words[0] = cast,no_check(u32) value;
+    a.used = 1;
+    if value >> 32 != 0 { a.words[1] = cast(u32) (value >> 32); a.used = 2; }
+}
+__float_wide_compare :: (a: *__Float_Wide, b: *__Float_Wide) -> s64 {
+    if a.used < b.used return -1;
+    if a.used > b.used return 1;
+    i := a.used - 1;
+    while i >= 0 {
+        if a.words[i] < b.words[i] return -1;
+        if a.words[i] > b.words[i] return 1;
+        i -= 1;
     }
-    scale: u64 = 1;
-    for i: 0..precision-1 scale *= 10;
-    whole := cast(u64) magnitude;
-    fraction := cast(u64) ((magnitude - cast(float64) whole) * cast(float64) scale + 0.5);
-    if fraction >= scale { whole += 1; fraction = 0; }
-    if scientific && whole == 10 { whole = 1; exponent += 1; }
-    integer_format: FormatInt;
-    if format.thousand_separators {
-        integer_format.digits_per_comma = 3;
-        byte := format.thousand_separator_character;
-        integer_format.comma_string = to_string(*byte, 1);
-        print_u64_base_n(builder, whole, integer_format);
-    } else print_u64_base_n(builder, whole, integer_format);
-    fractional_digits: [18] u8;
-    index := precision - 1;
-    while index >= 0 {
-        fractional_digits[index] = cast(u8) (fraction % 10) + #char "0";
-        fraction /= 10; index -= 1;
+    return 0;
+}
+__float_wide_multiply :: (a: *__Float_Wide, factor: u32) -> bool {
+    carry: u64 = 0;
+    for i: 0..a.used-1 {
+        product := cast(u64) a.words[i] * cast(u64) factor + carry;
+        a.words[i] = cast,no_check(u32) product;
+        carry = product >> 32;
     }
-    visible := precision;
+    if carry != 0 {
+        if a.used == 36 return false;
+        a.words[a.used] = cast(u32) carry;
+        a.used += 1;
+    }
+    return true;
+}
+__float_wide_add :: (a: *__Float_Wide, b: *__Float_Wide) -> bool {
+    count := a.used;
+    if b.used > count count = b.used;
+    carry: u64 = 0;
+    for i: 0..count-1 {
+        left: u64 = 0;
+        right: u64 = 0;
+        if i < a.used left = a.words[i];
+        if i < b.used right = b.words[i];
+        sum := left + right + carry;
+        a.words[i] = cast,no_check(u32) sum;
+        carry = sum >> 32;
+    }
+    a.used = count;
+    if carry != 0 {
+        if count == 36 return false;
+        a.words[count] = cast(u32) carry;
+        a.used += 1;
+    }
+    return true;
+}
+__float_wide_subtract :: (a: *__Float_Wide, b: *__Float_Wide) {
+    // Callers compare first. Adding 2^32 keeps every limb subtraction bounded.
+    borrow: u64 = 0;
+    for i: 0..a.used-1 {
+        right: u64 = 0;
+        if i < b.used right = b.words[i];
+        difference := cast(u64) a.words[i] + 0x1_0000_0000 - right - borrow;
+        a.words[i] = cast,no_check(u32) difference;
+        borrow = 1 - (difference >> 32);
+    }
+    while a.used > 0 && a.words[a.used-1] == 0 a.used -= 1;
+}
+__float_round_digits :: (result: *__Float_Digits) {
+    i := result.count - 1;
+    while i >= 0 && result.digits[i] == 9 { result.digits[i] = 0; i -= 1; }
+    if i >= 0 result.digits[i] += 1;
+    else { result.digits[0] = 1; result.exponent += 1; }
+}
+
+// requested = -1 selects the least number of digits inside the nearest-even
+// rounding interval. fixed_after_point supplies DECIMAL precision; otherwise
+// requested is the required significant digit count.
+__float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -1) -> __Float_Digits {
+    result: __Float_Digits;
+    fraction := bits & 0x000f_ffff_ffff_ffff;
+    binary_exponent := cast(s64) ((bits >> 52) & 0x7ff);
+    if binary_exponent == 0x7ff return result;
+    if binary_exponent == 0 && fraction == 0 {
+        result.count = 1; result.valid = true;
+        return result;
+    }
+    mantissa := fraction;
+    power: s64 = -1076;
+    if binary_exponent > 0 { mantissa |= 0x0010_0000_0000_0000; power = binary_exponent - 1077; }
+    r, s, below, above: __Float_Wide;
+    __float_wide_set(*r, mantissa * 4);
+    __float_wide_set(*s, 1);
+    __float_wide_set(*below, 2);
+    __float_wide_set(*above, 2);
+    // Powers of two above the smallest normal have half-sized lower spacing.
+    if fraction == 0 && binary_exponent > 1 __float_wide_set(*below, 1);
+    if power >= 0 {
+        for i: 0..power-1 {
+            if !__float_wide_multiply(*r, 2) || !__float_wide_multiply(*below, 2) || !__float_wide_multiply(*above, 2) return result;
+        }
+    } else {
+        for i: 0..(-power)-1 if !__float_wide_multiply(*s, 2) return result;
+    }
+    if __float_wide_compare(*r, *s) >= 0 {
+        while true {
+            next := s;
+            if !__float_wide_multiply(*next, 10) return result;
+            if __float_wide_compare(*r, *next) < 0 break;
+            s = next; result.exponent += 1;
+        }
+    } else {
+        while __float_wide_compare(*r, *s) < 0 {
+            if !__float_wide_multiply(*r, 10) || !__float_wide_multiply(*below, 10) || !__float_wide_multiply(*above, 10) return result;
+            result.exponent -= 1;
+        }
+    }
+    shortest := requested == -1 && fixed_after_point < 0;
+    if fixed_after_point >= 0 requested = result.exponent + 1 + fixed_after_point;
+    if !shortest && requested <= 0 {
+        // At the cut before the leading digit, zero is the even candidate.
+        round_up := false;
+        if requested == 0 {
+            twice := r;
+            threshold := s;
+            if !__float_wide_multiply(*twice, 2) || !__float_wide_multiply(*threshold, 10) return result;
+            round_up = __float_wide_compare(*twice, *threshold) > 0;
+        }
+        result.count = 1;
+        if round_up { result.digits[0] = 1; result.exponent = -fixed_after_point; }
+        else result.exponent = 0;
+        result.valid = true;
+        return result;
+    }
+    if requested > 344 return result;
+    boundary_inclusive := (mantissa & 1) == 0;
+    while result.count < 344 {
+        digit: u8 = 0;
+        while __float_wide_compare(*r, *s) >= 0 { __float_wide_subtract(*r, *s); digit += 1; }
+        result.digits[result.count] = digit;
+        result.count += 1;
+        stop := false;
+        round_up := false;
+        if shortest {
+            low_comparison := __float_wide_compare(*r, *below);
+            high := r;
+            if !__float_wide_add(*high, *above) return result;
+            high_comparison := __float_wide_compare(*high, *s);
+            low := low_comparison < 0 || (low_comparison == 0 && boundary_inclusive);
+            high_allowed := high_comparison > 0 || (high_comparison == 0 && boundary_inclusive);
+            stop = low || high_allowed;
+            if high_allowed && !low round_up = true;
+            else if high_allowed && low {
+                twice := r;
+                if !__float_wide_multiply(*twice, 2) return result;
+                comparison := __float_wide_compare(*twice, *s);
+                round_up = comparison > 0 || (comparison == 0 && (digit & 1) != 0);
+            }
+        } else if result.count == requested {
+            stop = true;
+            twice := r;
+            if !__float_wide_multiply(*twice, 2) return result;
+            comparison := __float_wide_compare(*twice, *s);
+            round_up = comparison > 0 || (comparison == 0 && (digit & 1) != 0);
+        }
+        if stop {
+            if round_up __float_round_digits(*result);
+            if shortest while result.count > 1 && result.digits[result.count-1] == 0 result.count -= 1;
+            result.valid = true;
+            return result;
+        }
+        if !__float_wide_multiply(*r, 10) return result;
+        if shortest {
+            if !__float_wide_multiply(*below, 10) || !__float_wide_multiply(*above, 10) return result;
+            // Every finite binary64 has a round-trip string with <=17 digits.
+            if result.count == 17 return result;
+        }
+    }
+    return result;
+}
+__float_digit_at :: (digits: *__Float_Digits, index: s64) -> u8 {
+    if index < 0 || index >= digits.count return 0;
+    return digits.digits[index];
+}
+
+// Exact IEEE-754 binary64 rounding is shared by the three maintained modes.
+// SHORTEST is general notation with a significant-digit precision, matching
+// maintained consumers; the explicit roundtrip helper selects the exact
+// rounding interval rather than changing that mode's default precision.
+__append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, scientific: bool, fractional: s64, format: FormatFloat) {
+    whole: s64 = 1;
+    if !scientific && digits.exponent >= 0 whole = digits.exponent + 1;
+    for i: 0..whole-1 {
+        digit: u8 = 0;
+        if scientific digit = __float_digit_at(digits, i);
+        else if digits.exponent >= 0 digit = __float_digit_at(digits, i);
+        append(builder, digit + #char "0");
+        if !scientific && format.thousand_separators && i < whole-1 && (whole-i-1) % 3 == 0 append(builder, format.thousand_separator_character);
+    }
+    visible := fractional;
     if format.zero_removal != .NO {
         minimum: s64 = 0;
-        if format.zero_removal == .ONE_ZERO_AFTER_DECIMAL minimum = 1;
-        while visible > minimum && visible > 0 && fractional_digits[visible-1] == #char "0" visible -= 1;
+        if format.zero_removal == .ONE_ZERO_AFTER_DECIMAL && fractional > 0 minimum = 1;
+        while visible > minimum {
+            index := digits.exponent + visible;
+            if scientific index = visible;
+            if __float_digit_at(digits, index) != 0 break;
+            visible -= 1;
+        }
     }
     if visible > 0 {
         append(builder, format.decimal_separator_character);
-        append(builder, fractional_digits.data, visible);
+        for i: 1..visible {
+            index := digits.exponent + i;
+            if scientific index = i;
+            append(builder, __float_digit_at(digits, index) + #char "0");
+        }
     }
     if scientific {
         append(builder, format.exponent_character);
+        exponent := digits.exponent;
         if exponent < 0 { append(builder, cast(u8) #char "-"); exponent = -exponent; }
         else append(builder, cast(u8) #char "+");
         print_u64_base_n(builder, cast(u64) exponent, FormatInt.{minimum_digits = 2});
     }
+}
+__append_float_value :: (builder: *String_Builder, value: float64, format: FormatFloat) {
+    bits := cast,force(u64) value;
+    magnitude := bits & 0x7fff_ffff_ffff_ffff;
+    exponent_bits := magnitude >> 52;
+    fraction_bits := magnitude & 0x000f_ffff_ffff_ffff;
+    if exponent_bits == 0x7ff && fraction_bits != 0 { append(builder, "nan"); return; }
+    if (bits & 0x8000_0000_0000_0000) != 0 append(builder, cast(u8) #char "-");
+    else if format.positive_number_prefix == .PLUS append(builder, cast(u8) #char "+");
+    else if format.positive_number_prefix == .SPACE append(builder, cast(u8) #char " ");
+    if exponent_bits == 0x7ff { append(builder, "inf"); return; }
+    precision := format.trailing_width;
+    if precision < 0 precision = 6;
+    if precision > 18 { append(builder, "<unsupported float precision>"); builder.failed = true; return; }
+    scientific := format.mode == .SCIENTIFIC;
+    general := format.mode == .SHORTEST;
+    requested := precision + 1;
+    fixed: s64 = -1;
+    if general { requested = precision; if requested == 0 requested = 1; }
+    else if !scientific fixed = precision;
+    digits := __float_decimal_digits(magnitude, requested, fixed);
+    if !digits.valid { append(builder, "<float conversion capacity exceeded>"); builder.failed = true; return; }
+    fractional := precision;
+    if general {
+        scientific = digits.exponent < -4 || digits.exponent >= requested;
+        fractional = requested - digits.exponent - 1;
+        if scientific fractional = requested - 1;
+        if fractional < 0 fractional = 0;
+    }
+    __append_float_digits(builder, *digits, scientific, fractional, format);
+}
+__append_float_roundtrip :: (builder: *String_Builder, value: float64) {
+    bits := cast,force(u64) value;
+    magnitude := bits & 0x7fff_ffff_ffff_ffff;
+    exponent_bits := magnitude >> 52;
+    fraction_bits := magnitude & 0x000f_ffff_ffff_ffff;
+    if exponent_bits == 0x7ff && fraction_bits != 0 { append(builder, "nan"); return; }
+    if (bits & 0x8000_0000_0000_0000) != 0 append(builder, cast(u8) #char "-");
+    if exponent_bits == 0x7ff { append(builder, "inf"); return; }
+    digits := __float_decimal_digits(magnitude, -1);
+    if !digits.valid { append(builder, "<float conversion capacity exceeded>"); builder.failed = true; return; }
+    // Pick the shorter spelling using this module's signed, >=2-digit exponent
+    // convention. Both spellings use the same least significant-digit sequence.
+    fixed_length := digits.exponent + 1;
+    if digits.exponent < 0 fixed_length = 1 - digits.exponent + digits.count;
+    else if digits.count > fixed_length fixed_length = digits.count + 1;
+    exponent := digits.exponent;
+    if exponent < 0 exponent = -exponent;
+    exponent_digits: s64 = 2;
+    if exponent >= 100 exponent_digits = 3;
+    scientific_length := digits.count + 2 + exponent_digits;
+    if digits.count > 1 scientific_length += 1;
+    scientific := scientific_length < fixed_length;
+    fractional := digits.count - digits.exponent - 1;
+    if scientific fractional = digits.count - 1;
+    if fractional < 0 fractional = 0;
+    __append_float_digits(builder, *digits, scientific, fractional, .{});
 }
 print_float :: (builder: *String_Builder, format: FormatFloat) {
     item := format.value;
@@ -189,7 +437,8 @@ print_float :: (builder: *String_Builder, format: FormatFloat) {
     failed := scratch.failed;
     rendered := builder_to_string(*scratch);
     // Width is a minimum total byte count, with spaces before the number.
-    spaces := max(cast(s64) format.width - rendered.count, 0);
+    spaces: s64 = 0;
+    if format.width > rendered.count spaces = format.width - rendered.count;
     for i: 0..spaces-1 append(builder, cast(u8) #char " ");
     append(builder, rendered);
     free(rendered); free_buffers(*scratch);
@@ -228,12 +477,34 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
         print_u64_base_n(builder, cast(u64) (info.runtime_size*8), .{}); return;
     }
     if info.type == .FLOAT { append(builder, "float"); print_u64_base_n(builder, cast(u64) (info.runtime_size*8), .{}); return; }
+    if info.type == .PROCEDURE {
+        procedure := cast(*Type_Info_Procedure) info;
+        append(builder, "(");
+        for i: 0..procedure.argument_types.count-1 {
+            if i > 0 append(builder, ", ");
+            __append_type(builder, procedure.argument_types[i], depth+1);
+        }
+        append(builder, ")");
+        if procedure.return_types.count == 1 {
+            append(builder, " -> "); __append_type(builder, procedure.return_types[0], depth+1);
+        } else if procedure.return_types.count > 1 {
+            append(builder, " -> (");
+            for i: 0..procedure.return_types.count-1 {
+                if i > 0 append(builder, ", ");
+                __append_type(builder, procedure.return_types[i], depth+1);
+            }
+            append(builder, ")");
+        }
+        if (procedure.procedure_flags & .IS_C_CALL) != 0 append(builder, " #c_call");
+        if (procedure.procedure_flags & .HAS_NO_CONTEXT) != 0 append(builder, " #no_context");
+        if (procedure.procedure_flags & .IS_COMPILE_TIME_ONLY) != 0 append(builder, " #compile_time");
+        return;
+    }
     if info.type == .BOOL append(builder, "bool");
     else if info.type == .STRING append(builder, "string");
     else if info.type == .VOID append(builder, "void");
     else if info.type == .TYPE append(builder, "Type");
     else if info.type == .ANY append(builder, "Any");
-    else if info.type == .PROCEDURE append(builder, "procedure");
     else { append(builder, "<unsupported type>"); builder.failed = true; }
 }
 print_type_to_builder :: (builder: *String_Builder, info: *Type_Info) { __append_type(builder, info, 0); }
@@ -311,7 +582,15 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
     if item.type == type_info(FormatFloat) { print_float(builder, (cast(*FormatFloat) item.value_pointer).*); return; }
     if item.type == type_info(FormatStruct) {
         format := (cast(*FormatStruct) item.value_pointer).*;
-        if format.value.type && format.value.type.type == .STRUCT __append_struct(builder, cast(*Type_Info_Struct) format.value.type, format.value.value_pointer, format, depth);
+        value := format.value;
+        if value.type && value.type.type == .POINTER && value.value_pointer {
+            pointee := (cast(*Type_Info_Pointer) value.type).pointer_to;
+            if pointee && pointee.type == .STRUCT {
+                value.value_pointer = (cast(**void) value.value_pointer).*;
+                value.type = pointee;
+            }
+        }
+        if value.type && value.type.type == .STRUCT && value.value_pointer __append_struct(builder, cast(*Type_Info_Struct) value.type, value.value_pointer, format, depth);
         else { append(builder, "<non-struct formatter>"); builder.failed = true; }
         return;
     }
@@ -319,6 +598,10 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         format := (cast(*FormatArray) item.value_pointer).*;
         if format.value.type && format.value.type.type == .ARRAY __append_array(builder, format.value, cast(*Type_Info_Array) format.value.type, format, false, depth);
         else { append(builder, "<non-array formatter>"); builder.failed = true; }
+        return;
+    }
+    if item.type == type_info(Formatter) {
+        __append_item(builder, (cast(*Formatter) item.value_pointer).value, nested, false, depth+1);
         return;
     }
     tag := item.type.type;
@@ -348,16 +631,43 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         if !value append(builder, "null");
         else { append(builder, "0x"); print_u64_base_n(builder, cast(u64) value, FormatInt.{base = 16}); }
     } else if tag == .STRUCT {
+        // A using/#as Formatter field is an explicit formatting view. Locate
+        // its real byte offset rather than assuming it is the first field.
+        info := cast(*Type_Info_Struct) item.type;
+        formatter_member := isFormatter(info);
+        if formatter_member {
+            view := cast(*Formatter) (cast(*u8) item.value_pointer + formatter_member.offset_in_bytes);
+            __append_item(builder, view.value, nested, false, depth+1);
+            return;
+        }
         settings: FormatStruct;
         custom := context.print_style.default_format_struct;
         if custom settings.draw_type_name = custom.draw_type_name;
-        __append_struct(builder, cast(*Type_Info_Struct) item.type, item.value_pointer, settings, depth);
+        __append_struct(builder, info, item.value_pointer, settings, depth);
     } else if tag == .ARRAY __append_array(builder, item, cast(*Type_Info_Array) item.type, .{}, false, depth);
     else if tag == .ENUM {
         info := cast(*Type_Info_Enum) item.type;
-        value := get_s64_from_void_pointer(item.value_pointer, info.runtime_size);
+        value := get_u64_from_void_pointer(item.value_pointer, info.runtime_size);
+        mask: u64 = 0xffff_ffff_ffff_ffff;
+        if info.runtime_size < 8 mask = (cast(u64) 1 << cast(u8) (8*info.runtime_size)) - 1;
         for i: 0..info.names.count-1 {
-            if info.values[i] == value { append(builder, info.names[i]); return; }
+            if (cast,no_check(u64) info.values[i] & mask) == value { append(builder, info.names[i]); return; }
+        }
+        if (info.enum_type_flags & .FLAGS) != 0 {
+            remainder := value;
+            first := true;
+            for i: 0..info.names.count-1 {
+                flag := cast,no_check(u64) info.values[i] & mask;
+                if flag == 0 || (remainder & flag) != flag continue;
+                if !first append(builder, " | ");
+                append(builder, info.names[i]);
+                remainder &= ~flag; first = false;
+            }
+            if remainder != 0 {
+                if !first append(builder, " | ");
+                append(builder, "0x"); print_u64_base_n(builder, remainder, FormatInt.{base = 16});
+            } else if first append(builder, "0");
+            return;
         }
         print_integer(builder, FormatInt.{value = item});
     } else if tag == .VARIANT {
@@ -385,8 +695,11 @@ parse_number :: (s: string, cursor: s64) -> (end_cursor: s64, sum: s64) {
     return position, value;
 }
 isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
+    if !info return null;
     for i: 0..info.members.count-1 {
-        if info.members[i].type == type_info(Formatter) return *info.members[i];
+        member := *info.members[i];
+        if (member.flags & .CONSTANT) != 0 || member.offset_in_bytes < 0 continue;
+        if member.type == type_info(Formatter) && (member.flags & .AS) != 0 return member;
     }
     return null;
 }
@@ -406,8 +719,9 @@ __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) 
         if position < format.count && is_digit(format[position]) {
             index = 0;
             while position < format.count && is_digit(format[position]) {
-                if index > 0x0ccc_cccc_cccc_cccc { builder.failed = true; return false; }
-                index = index*10 + format[position]-#char "0"; position += 1;
+                digit := format[position] - #char "0";
+                if index > (0x7fff_ffff_ffff_ffff - digit) / 10 { builder.failed = true; return false; }
+                index = index*10 + digit; position += 1;
             }
         } else implicit += 1;
         if index < 0 || index >= args.count {
@@ -483,6 +797,30 @@ formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5,
         long_form_separator_between_fields = long_form_separator_between_fields, begin_string = begin_string, end_string = end_string,
         indentation_width = cast(s32) indentation_width, use_newlines_if_long_form = use_newlines_if_long_form, draw_type_name = draw_type_name};
     return tprint("%", settings);
+}
+// Explicit independent extension: least digits that round back to binary64.
+// It does not use string_to_float64, whose conversion remains approximate.
+formatFloatRoundtrip :: (value: float64, width: s64 = 0) -> string {
+    builder: String_Builder;
+    init_string_builder(*builder);
+    __append_float_roundtrip(*builder, value);
+    owned := builder_to_string(*builder);
+    free_buffers(*builder);
+    padding: s64 = 0;
+    if width > owned.count padding = width - owned.count;
+    if padding == 0 {
+        result := copy_temporary_string(owned);
+        free(owned);
+        return result;
+    }
+    init_string_builder(*builder);
+    for i: 0..padding-1 append(*builder, cast(u8) #char " ");
+    append(*builder, owned);
+    free(owned);
+    rendered := builder_to_string(*builder);
+    result := copy_temporary_string(rendered);
+    free(rendered); free_buffers(*builder);
+    return result;
 }
 type_to_string :: (type: Type) -> string { return type_to_string(type_info(type)); }
 type_to_string :: (info: *Type_Info) -> string {

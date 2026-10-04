@@ -25,7 +25,7 @@ array_free :: (array: [..] $T) {
     if array.data {
         a := array.allocator;
         if !a.proc a = context.allocator;
-        a.proc(.FREE, 0, array.allocated*size_of(T), array.data, a.data);
+        free(array.data, a);
     }
 }
 array_reset :: (array: *[] $T) {
@@ -47,11 +47,11 @@ array_reserve :: (array: *Resizable_Array, desired_items: s64, element_size: s64
     if desired_items <= array.allocated return;
     if !array.allocator.proc array.allocator = context.allocator;
     next := max(desired_items, max(8, array.allocated+array.allocated/2));
-    block := array.allocator.proc(.ALLOCATE, next*element_size, 0, null, array.allocator.data);
+    block := alloc(next*element_size, array.allocator);
     assert(block != null, "array allocation failed");
     if !block return;
     if array.count > 0 memcpy(block, array.data, array.count*element_size);
-    if array.data array.allocator.proc(.FREE, 0, array.allocated*element_size, array.data, array.allocator.data);
+    if array.data free(array.data, array.allocator);
     array.data = block;
     array.allocated = next;
 }

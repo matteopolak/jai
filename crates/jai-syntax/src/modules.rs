@@ -293,11 +293,35 @@ impl Parser<'_> {
             if self.token().kind == Kind::UnknownDirective {
                 return Err(self.error(format!("unknown directive '{}'", self.text())));
             }
+            let reset_policy_span = if self.token().kind == Kind::Directive(Directive::NoReset) {
+                let span = self.token().span;
+                self.at += 1;
+                Some(span)
+            } else {
+                None
+            };
+            let reset_policy = if reset_policy_span.is_some() {
+                GlobalResetPolicy::Preserve
+            } else {
+                GlobalResetPolicy::Reset
+            };
             let program_export = if self.token().kind == Kind::Directive(Directive::ProgramExport) {
                 Some(self.program_export()?)
             } else {
                 None
             };
+            if reset_policy_span.is_some() && program_export.is_some() {
+                return Err(Diagnostic::new(
+                    reset_policy_span.unwrap(),
+                    "#no_reset cannot be combined with #program_export",
+                ));
+            }
+            if reset_policy_span.is_some() && self.token().kind != Kind::Ident {
+                return Err(Diagnostic::new(
+                    reset_policy_span.unwrap(),
+                    "#no_reset requires a file global declaration",
+                ));
+            }
             if program_export.is_some() && self.import_prefix() {
                 return Err(self.error("#program_export cannot annotate an import"));
             }
@@ -468,13 +492,21 @@ impl Parser<'_> {
                         self.error("using and #program_export require an individual declaration")
                     );
                 }
-                for member in self.file_data_declarations()? {
+                for member in
+                    self.file_data_declarations_with_reset_policy(reset_policy, reset_policy_span)?
+                {
                     let (kind, span) = match member {
                         declaration_lists::GlobalOrConstant::Global(global) => {
                             let span = global.span;
                             (FileDeclarationKind::Global(global), span)
                         }
                         declaration_lists::GlobalOrConstant::Constant(constant) => {
+                            if let Some(span) = reset_policy_span {
+                                return Err(Diagnostic::new(
+                                    span,
+                                    "#no_reset requires a file global declaration",
+                                ));
+                            }
                             let span = constant.span;
                             (FileDeclarationKind::Constant(constant), span)
                         }
@@ -515,6 +547,8 @@ impl Parser<'_> {
                         FileDeclarationKind::Global(GlobalDeclaration {
                             declaration,
                             span,
+                            reset_policy,
+                            reset_policy_span,
                         })
                     }
                     StatementKind::Constant(declaration) => {
@@ -523,6 +557,12 @@ impl Parser<'_> {
                     _ => unreachable!("data declaration produces declaration"),
                 }
             };
+            if reset_policy_span.is_some() && !matches!(kind, FileDeclarationKind::Global(_)) {
+                return Err(Diagnostic::new(
+                    reset_policy_span.unwrap(),
+                    "#no_reset requires a file global declaration",
+                ));
+            }
             let declaration = FileDeclaration {
                 program_export: match (&kind, program_export) {
                     (

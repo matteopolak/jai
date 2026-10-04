@@ -43,17 +43,28 @@ operator <= :: (a: U128, b: U128) -> bool { return !(b < a); }
 operator > :: (a: U128, b: U128) -> bool { return b < a; }
 operator >= :: (a: U128, b: U128) -> bool { return !(a < b); }
 
+// Split addition into bounded 32-bit sums so wrapping is explicit even when
+// the calling compiler enables arithmetic overflow checks by default.
+__u128_add_limb :: (a: u64, b: u64, carry: u64 = 0) -> value: u64, carry_out: u64 {
+    low := (a & 0xffff_ffff) + (b & 0xffff_ffff) + carry;
+    high := (a >> 32) + (b >> 32) + (low >> 32);
+    return ((high & 0xffff_ffff) << 32) | (low & 0xffff_ffff), high >> 32;
+}
+__u128_subtract_limb :: (a: u64, b: u64, borrow: u64 = 0) -> value: u64, borrow_out: u64 {
+    value, carry := __u128_add_limb(a, ~b, 1 - borrow);
+    return value, 1 - carry;
+}
 operator + :: (a: U128, b: U128) -> U128 {
-    result := U128.{a.low + b.low, a.high + b.high};
-    if result.low < a.low result.high += 1;
-    return result;
+    low, carry := __u128_add_limb(a.low, b.low);
+    high, discarded := __u128_add_limb(a.high, b.high, carry);
+    return U128.{low, high};
 }
 operator + :: (a: U128, b: u64) -> U128 { return a + U128.{b, 0}; }
 operator + :: inline (a: S128, b: S128) -> S128 { return to_s128(to_u128(a) + to_u128(b)); }
 operator - :: inline (a: U128, b: U128) -> U128 {
-    result := U128.{a.low - b.low, a.high - b.high};
-    if a.low < b.low result.high -= 1;
-    return result;
+    low, borrow := __u128_subtract_limb(a.low, b.low);
+    high, discarded := __u128_subtract_limb(a.high, b.high, borrow);
+    return U128.{low, high};
 }
 operator - :: inline (a: S128, b: S128) -> S128 { return to_s128(to_u128(a) - to_u128(b)); }
 operator - :: inline (a: S128) -> S128 { return to_s128(U128.{} - to_u128(a)); }
@@ -61,25 +72,39 @@ operator - :: inline (a: S128) -> S128 { return to_s128(U128.{} - to_u128(a)); }
 operator << :: inline (a: U128, $$x: u8) -> U128 {
     if x == 0 return a;
     if x >= 128 return U128.{};
-    if x >= 64 return U128.{0, a.low << (x - 64)};
-    return U128.{a.low << x, (a.high << x) | (a.low >> (64 - x))};
+    shift := x & 63;
+    reverse_shift := (64 - shift) & 63;
+    if x >= 64 return U128.{0, a.low << shift};
+    return U128.{a.low << shift, (a.high << shift) | (a.low >> reverse_shift)};
 }
-operator << :: (a: S128, $$x: u8) -> S128 { return to_s128(to_u128(a) << x); }
+operator << :: (a: S128, $$x: u8) -> S128 {
+    bits: U128 = to_u128(a);
+    shifted: U128 = bits << x;
+    return to_s128(shifted);
+}
 operator >> :: (a: U128, $$x: u8) -> U128 {
     if x == 0 return a;
     if x >= 128 return U128.{};
-    if x >= 64 return U128.{a.high >> (x - 64), 0};
-    return U128.{(a.low >> x) | (a.high << (64 - x)), a.high >> x};
+    shift := x & 63;
+    reverse_shift := (64 - shift) & 63;
+    if x >= 64 return U128.{a.high >> shift, 0};
+    return U128.{(a.low >> shift) | (a.high << reverse_shift), a.high >> shift};
 }
 operator >> :: (a: S128, $$x: u8) -> S128 {
     if x == 0 return a;
     sign: s64 = 0;
     if a.high < 0 sign = -1;
     if x >= 128 return S128.{cast,no_check(u64) sign, sign};
-    if x >= 64 return S128.{cast,no_check(u64) (a.high >> (x - 64)), sign};
-    return S128.{(a.low >> x) | (cast,no_check(u64) a.high << (64 - x)), a.high >> x};
+    shift := x & 63;
+    reverse_shift := (64 - shift) & 63;
+    if x >= 64 return S128.{cast,no_check(u64) (a.high >> shift), sign};
+    return S128.{(a.low >> shift) | (cast,no_check(u64) a.high << reverse_shift), a.high >> shift};
 }
-logical_shift_right :: (a: S128, $$x: u8) -> S128 { return to_s128(to_u128(a) >> x); }
+logical_shift_right :: (a: S128, $$x: u8) -> S128 {
+    bits: U128 = to_u128(a);
+    shifted: U128 = bits >> x;
+    return to_s128(shifted);
+}
 
 // Shift-and-add avoids architecture-specific multiply instructions.
 operator * :: (_a: U128, _b: U128) -> U128 {
@@ -112,13 +137,13 @@ unsigned_divide_with_remainder :: (u: U128, v: U128) -> quotient: U128, remainde
         carry := (remainder.high >> 63) != 0;
         remainder = remainder << 1;
         incoming: u64 = 0;
-        if bit >= 64 incoming = (u.high >> (bit - 64)) & 1;
-        else incoming = (u.low >> bit) & 1;
+        if bit >= 64 incoming = (u.high >> cast(u8) (bit - 64)) & 1;
+        else incoming = (u.low >> cast(u8) bit) & 1;
         remainder.low |= incoming;
         if carry || remainder >= v {
             remainder = remainder - v;
-            if bit >= 64 quotient.high |= cast(u64) 1 << (bit - 64);
-            else quotient.low |= cast(u64) 1 << bit;
+            if bit >= 64 quotient.high |= cast(u64) 1 << cast(u8) (bit - 64);
+            else quotient.low |= cast(u64) 1 << cast(u8) bit;
         }
         bit -= 1;
     }

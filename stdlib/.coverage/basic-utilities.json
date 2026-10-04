@@ -45,7 +45,7 @@
       ]
     },
     "Basic/Int128.jai": {
-      "state": "authored-source-parser-pass",
+      "state": "semantic-vm-native-boundary-fixture-pass",
       "apis": [
         "S128",
         "U128",
@@ -72,7 +72,7 @@
       ],
       "limits": [
         "Primitive conversions are intended for integers up to 64 bits; float conversions are not supported.",
-        "Arithmetic wraps modulo 2^128. Division reports zero divisor and signed minimum/-1 overflow. Shifts at least 128 saturate to zero or signed fill.",
+        "Arithmetic wraps modulo 2^128 through bounded explicit carry/borrow helpers, without requiring #no_aoc. Division reports zero divisor and signed minimum/-1 overflow. Shifts at least 128 saturate to zero or signed fill.",
         "Portable shift-add multiplication and restoring division replace CPU assembly; no performance equivalence established."
       ]
     },
@@ -114,7 +114,7 @@
       ]
     },
     "Basic/Print.jai": {
-      "state": "authored-source-parser-pass-partial-formatting",
+      "state": "authored-source-parser-pass-formatting-behavior-pending",
       "apis": [
         "Format_Int",
         "Format_Float",
@@ -151,21 +151,31 @@
         "get_u64_from_void_pointer",
         "my_is_digit",
         "parse_number",
-        "isFormatter"
+        "isFormatter",
+        "Legacy_Print.formatInt(Any)->FormatInt",
+        "Legacy_Print.formatFloat(Any)->FormatFloat",
+        "Legacy_Print.formatStruct(Any)->FormatStruct",
+        "metadata Formatter #as view unwrapping",
+        "enum flag decomposition",
+        "procedure argument/result descriptor rendering",
+        "formatStruct(pointer-to-struct)",
+        "formatFloatRoundtrip(float64)->string"
       ],
       "limits": [
-        "Newer format factories return temporary strings; legacy factories returning formatting records are incompatible and not exported. Legacy records remain usable as literals.",
+        "Newer format factories return temporary strings. Exact legacy factory parameters/defaults and formatter-record returns are available under Legacy_Print; same-name unqualified factories intentionally remain maintained string contracts.",
         "Print_Style retains maintained three-pointer layout; legacy by-value defaults, array formatting default, custom struct callback, indentation state, and log_runtime_errors are not retained.",
         "Adds only print_style to compiler-managed context rather than duplicating newer divergent Context/Type_Info schemas.",
         "Formatting supports lone %, zero-based %N, and %% escapes. Exact undocumented upstream selector semantics are unverified.",
         "Integer bases are 2 through 36 and digit grouping is at most 65535.",
-        "Float formatting supports up to 18 trailing digits; large decimal magnitudes use scientific notation. SHORTEST is compact approximation, not a proven shortest-round-trip algorithm.",
+        "Float precision is limited to 18 requested digits. DECIMAL rounds at fractional precision, SCIENTIFIC at fractional significand precision, and maintained SHORTEST uses general notation with significant-digit precision (six by default), rather than round-trip shortest. Independently authored exact integer conversion bodies are syntax-accepted but not behavior-validated.",
         "Float width means left space padding to minimum total bytes; exact legacy width semantics unverified.",
-        "Records skip constants/imports and cap recursion at 16; unions fail explicitly because active-member metadata is absent. Named enum values work; flag decomposition and complete procedure type rendering are absent.",
-        "Strings are quoted/escaped inside arrays and records. Pointer values are displayed without dereference.",
+        "Records skip constants/imports and cap recursion at 16; unions fail explicitly because active-member metadata is absent. Named enum values and flags are supported. Procedure type descriptors render parameter/result types and represented calling flags; source names/defaults/variadic details absent from metadata cannot be reconstructed.",
+        "Strings are quoted/escaped inside arrays and records. Ordinary pointer values print addresses; explicit formatStruct pointer arguments read their declared struct pointee.",
         "Original buffer_to_string_without_copy(value builder) and append_indentation(context legacy depth) unavailable; no unsafe stack view or fabricated indentation state.",
         "print/log counts represent submitted bytes because Runtime_Support.write_string returns void; OS write failure counts cannot be reported by this API.",
-        "Formatting errors append explicit markers and return false/-1 where the public result supports status; sprint/tprint retain rendered diagnostics."
+        "Formatting errors append explicit markers and return false/-1 where the public result supports status; sprint/tprint retain rendered diagnostics.",
+        "Explicit formatFloatRoundtrip uses adjacent IEEE binary64 rounding intervals to select up to 17 significant digits and a compact fixed/scientific spelling; actual module behavior has not yet executed.",
+        "Finite conversion uses a bounded 36-u32-limb integer workspace and 344 output digits; portability assumes IEEE-754 binary64 representation. Exact large DECIMAL expansion can differ from upstream approximate recorded expansions."
       ]
     }
   },
@@ -176,18 +186,160 @@
     "Runtime_Support write_string and context logger"
   ],
   "verification": {
-    "kind": "syntax-only",
+    "kind": "syntax-plus-scoped-int128-semantic-vm-native",
     "command": "target/debug/examples/source-check stdlib/Basic/<file>.jai",
     "tool_sha256": "84ead95ddd5eec75b1330662e52671de6aa99c585b9e655b98a5981760eedeb6",
     "top_level_items": {
       "Simple_String.jai": 20,
-      "Int128.jai": 40,
+      "Int128.jai": 42,
       "Apollo_Time.jai": 29,
-      "Print.jai": 47
+      "Print.jai": 61
     },
     "semantic_checked": false,
     "runtime_checked": false,
     "reference_native_code_executed": false,
-    "cargo_build_performed": false
+    "cargo_build_performed": false,
+    "source_sha256": {
+      "stdlib/Basic/Simple_String.jai": "96d4ff7dd24a7abf2fa93606d9c80a2822f3713ba2bcf9bfbe04114951d6ea06",
+      "stdlib/Basic/Int128.jai": "4a7ff35ea7950e443796e0fa57e99919b19cf4a676c05134a1d23df7c01a2fe3",
+      "stdlib/Basic/Apollo_Time.jai": "57a5c0378754bd778301e4903467e15c02c30586fab239ebd2efc822efc65f7f",
+      "stdlib/Basic/Print.jai": "c78e142aad039fc0fc12be0fd1111fad2add90b1f48c3afe51d2f83b4cd71ac6"
+    },
+    "behavior_fixtures": [
+      {
+        "path": "tests/stdlib/int128-arithmetic.jai",
+        "sha256": "28a6c1772bad9dca807917a529e719ebad4faee56ac1754c4e510a1c4e07780e",
+        "expected_exit": 0,
+        "failure_cases": 20,
+        "syntax_checked": true,
+        "behavior_executed": true,
+        "vm_passed": true,
+        "native_passed_optimizations": [
+          "O0",
+          "O2"
+        ]
+      },
+      {
+        "path": "tests/stdlib/basic-string-parsing.jai",
+        "sha256": "555cae89fffab16d191b991ab52a15c3dbcf088e5639a4b9d1a59c6a43217e86",
+        "expected_exit": 0,
+        "failure_cases": 14,
+        "syntax_checked": true,
+        "behavior_executed": false
+      },
+      {
+        "path": "tests/stdlib/basic-formatters.jai",
+        "sha256": "7a9cb2ef6447dc5f24204bdc24dc1a5494c58982bc09385b1bbaff5540b00d6a",
+        "expected_exit": 0,
+        "failure_cases": 18,
+        "syntax_checked": true,
+        "behavior_executed": false
+      },
+      {
+        "path": "tests/stdlib/basic-apollo-time.jai",
+        "sha256": "d6a7d340d95d8ef782d7941f7602bdb772577c7605e7263f14564008f929f755",
+        "expected_exit": 0,
+        "failure_cases": 8,
+        "syntax_checked": true,
+        "behavior_executed": false
+      },
+      {
+        "path": "tests/stdlib/basic-float-conversion.jai",
+        "sha256": "e2a6cc4bef86e75f28acc1674bd13197b4ccac4be03463f8df155de14a8ce638",
+        "expected_exit": 0,
+        "failure_cases": 10,
+        "syntax_checked": true,
+        "behavior_executed": false
+      }
+    ],
+    "evidence_boundary": "Actual unchanged Int128 source/20-boundary fixture passed semantic checking, compiler VM #assert main()==0, and newly generated native O0/O2 execution. Latest Print/String changes and real float fixture have only passed syntax checks. Earlier actual Basic string/formatter/Apollo checks on verified017353c4 stopped at canonical #caller_location alias inference before utility bodies; those receipts are historical and do not validate the latest formatter/string bodies.",
+    "int128_behavior": {
+      "compiler_sha256": "017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381",
+      "compiler_receipt": "target/standard-library-snapshots/017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381/snapshot.json",
+      "source_sha256": "4a7ff35ea7950e443796e0fa57e99919b19cf4a676c05134a1d23df7c01a2fe3",
+      "fixture_path": "tests/stdlib/int128-arithmetic.jai",
+      "fixture_sha256": "28a6c1772bad9dca807917a529e719ebad4faee56ac1754c4e510a1c4e07780e",
+      "failure_cases": 20,
+      "environment": {
+        "JAI_RS_STDLIB": "/Users/matthew/projects/jai/stdlib",
+        "JAI_RS_PRELOAD": "/Users/matthew/projects/jai/prelude/Preload.jai",
+        "JAI_RS_RUNTIME_SUPPORT": "off"
+      },
+      "evidence": [
+        "artifacts/stdlib-rewrite/basic-utilities/int128-actual-check.json",
+        "artifacts/stdlib-rewrite/basic-utilities/int128-actual-vm.json",
+        "artifacts/stdlib-rewrite/basic-utilities/int128-actual-native-o0.json",
+        "artifacts/stdlib-rewrite/basic-utilities/int128-actual-native-o2.json"
+      ],
+      "semantic_exit": 0,
+      "vm_assertion_passed": true,
+      "native_exits": {
+        "O0": 0,
+        "O2": 0
+      },
+      "native_runtime_output": "empty",
+      "limits": [
+        "20 specified arithmetic/conversion boundaries, not exhaustive correctness proof.",
+        "System linker emitted macOS deployment version warning28vs27; generated executables completed successfully.",
+        "No original compiler, object, native library, or upstream script executed."
+      ]
+    },
+    "other_actual_checks": {
+      "basic-string-parsing": "artifacts/stdlib-rewrite/basic-utilities/basic-string-parsing-actual.json",
+      "basic-formatters": "artifacts/stdlib-rewrite/basic-utilities/basic-formatters-actual.json",
+      "basic-apollo-time": "artifacts/stdlib-rewrite/basic-utilities/basic-apollo-time-actual.json"
+    },
+    "other_actual_checks_state": "Historical verified017353c4 pre-latest-Print/String boundary failures; no utility behavior executed.",
+    "float_conversion": {
+      "state": "authored-syntax-accepted-behavior-unexecuted",
+      "evidence": "artifacts/stdlib-rewrite/basic-utilities/float-conversion-merge.json",
+      "maintained_mode_contract": "SHORTEST defaults to six significant digits and general fixed/scientific notation, matching the public recorded 1234567.89 -> 1.23457e+06 consumer; explicit formatFloatRoundtrip is an additive extension.",
+      "kernel": "IEEE-754 mantissa/exponent decomposition; bounded rational radix digit extraction; nearest-even precision rounding; round-trip interval termination uses even-mantissa inclusive midpoint bounds and asymmetric lower spacing at powers of two.",
+      "workspace": {
+        "u32_limbs": 36,
+        "decimal_digit_capacity": 344
+      },
+      "limits": [
+        "Syntax checking is not behavioral proof.",
+        "Public decimal parsing remains approximate and is not used as a round-trip oracle.",
+        "Exact huge fixed DECIMAL digits can differ from upstream approximate recorded expansion.",
+        "Historical zero-removal whitespace details remain unverified."
+      ],
+      "reference_implementation_code_copied": false,
+      "high_level_background": [
+        "https://fmt.dev/papers/p372-steele.pdf",
+        "https://www.netlib.org/fp/"
+      ]
+    }
+  },
+  "revision_notes": [
+    "Legacy factory signatures/defaults now available under Legacy_Print, preserving maintained same-name factories.",
+    "Formatter reflection unwrap uses actual stored #as Formatter member byte offset; direct Formatter boxes are also supported.",
+    "Int128 carry/borrow now explicit through bounded 32-bit sums, independent of arithmetic overflow-check policy.",
+    "Signed negative zero integer parsing no longer performs an overflowing ~0+1.",
+    "Enum flags decompose through declared values with an explicit hexadecimal remainder; procedure type rendering uses actual argument and result descriptors; explicit struct pointers accepted by formatStruct.",
+    "Int128 division bit indices cast to bounded u8 counts so signed counters do not mix with u64 operands.",
+    "Baked shifts normalize counts with x&63 and (64-shift)&63, preserving the public $$x:u8 signatures while avoiding specialization-time underflow in skipped runtime branches.",
+    "Signed left/logical shifts use explicit U128 intermediates so their nominal operator input is retained by the current source binder.",
+    "String integer width masks and enum width masks cast bounded bit counts to u8; integer alphabet indexing converts bounded remainders to the signed indexing domain.",
+    "Format selector accumulation checks (INT64_MAX-digit)/10 before multiplication, including the final overflowing 8/9 boundary.",
+    "Exact bounded integer finite formatting preserves maintained mode signatures and SHORTEST six-significant default; additive formatFloatRoundtrip opts into interval-based round-trip digit generation.",
+    "Float special-value handling reads IEEE exponent/fraction bits, preserves signed zero, and avoids floating-to-integer casts of nonfinite values.",
+    "Finite DECIMAL remains fixed across binary64 magnitudes rather than falling back to scientific at 1e18; exact precision rounding uses nearest-even.",
+    "Negative width values are checked before subtracting rendered byte counts, avoiding signed underflow."
+  ],
+  "calendar_schema_evidence": {
+    "query": "(?m)^\\s*Calendar\\s*::",
+    "roots": [
+      "corpus/upstream/withlang-dev--open-jai/modules",
+      "reference/modules"
+    ],
+    "jai_files_scanned": 586,
+    "named_declaration_matches": [],
+    "maintained_public_references": [
+      "to_calendar(time: Apollo_Time, local_time := true) -> Calendar",
+      "calendar_to_string(calendar: Calendar) -> string"
+    ],
+    "decision": "No Calendar declaration or stored fields supplied by these contract inputs; current Calendar APIs remain unimplemented rather than inventing a layout. Declared Calendar_Time is explicitly legacy."
   }
 }

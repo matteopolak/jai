@@ -3,6 +3,32 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
+  scripting-wasm:
+    name: scripting interpreter (LLVM-free WebAssembly)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CARGO_INCREMENTAL: '0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the pinned Rust toolchain and wasm target
+        run: |
+          rustup toolchain install nightly-2026-08-29 --profile minimal --component rustfmt --component clippy
+          rustup target add wasm32-unknown-unknown --toolchain nightly-2026-08-29
+      - name: Validate dependency ages and public source inputs
+        run: |
+          python3 tools/check_dependency_age.py
+          python3 tools/check_ci_sources.py
+      - name: Verify the native scripting API and wasm boundary
+        run: cargo test --locked -j 1 -p jai-runtime -p jai-wasm
+      - name: Build the real WebAssembly interpreter without the native backend
+        run: cargo build --locked -j 1 -p jai-wasm --target wasm32-unknown-unknown
+      - name: Execute the real WebAssembly module
+        run: |
+          node --version
+          node tools/check_scripting_wasm.mjs target/wasm32-unknown-unknown/debug/jai_wasm.wasm
   test:
     name: compiler (${{ matrix.runner }})
     strategy:

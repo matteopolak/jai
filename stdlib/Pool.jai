@@ -1,4 +1,4 @@
-// Maintained OpenJai fields backed by reusable, independently allocated blocks.
+// Maintained four-field record; real blocks carry private backing metadata.
 #scope_file;
 #import "Basic";
 #scope_export;
@@ -10,107 +10,115 @@ Pool :: struct {
     bytes_left: int;
     current_block: *void;
     current_pos: int;
-    blocks: *Pool_Block;
-    active: *Pool_Block;
-    block_allocator: Allocator;
 }
 
 set_allocators :: (pool: *Pool) {
     if !pool return;
-    assert(pool.blocks == null);
+    assert(pool.current_block == null);
     pool.memblock_size = POOL_BUCKET_SIZE_DEFAULT;
     pool.bytes_left = 0;
-    pool.block_allocator = context.allocator;
+    assert(initialize_pool(pool, context.allocator));
 }
 
 // Compatible convenience overload for selecting a source allocator explicitly.
 set_allocators :: (pool: *Pool, block_allocator: Allocator) {
-    set_allocators(pool);
-    if block_allocator.proc pool.block_allocator = block_allocator;
+    if !pool return;
+    assert(pool.current_block == null);
+    pool.memblock_size = POOL_BUCKET_SIZE_DEFAULT;
+    pool.bytes_left = 0;
+    assert(initialize_pool(pool, block_allocator));
 }
 
 get :: (pool: *Pool, size: int) -> *void {
-    assert(pool != null && size >= 0);
-    if !pool.block_allocator.proc pool.block_allocator = context.allocator;
-    assert(pool.block_allocator.proc != pool_allocator_proc || pool.block_allocator.data != pool);
+    if !pool || size < 0 || size > MAX_ALLOCATION_SIZE return null;
     if pool.memblock_size <= 0 pool.memblock_size = POOL_BUCKET_SIZE_DEFAULT;
-    if !pool.active pool.active = pool.blocks;
+    if !pool.current_block && !initialize_pool(pool, context.allocator) return null;
+    active := block_header(pool.current_block);
     position := (pool.current_pos + 7) & ~7;
-    if !pool.active || position > pool.active.capacity || size > pool.active.capacity - position {
-        previous := pool.active;
-        candidate: *Pool_Block;
-        if previous candidate = previous.next;
-        while candidate && candidate.capacity < size { previous = candidate; candidate = candidate.next; }
+    if position < BLOCK_START position = BLOCK_START;
+    if position > active.capacity || size > active.capacity - position {
+        previous := active;
+        candidate := previous.next;
+        while candidate && (candidate.capacity < BLOCK_START || size > candidate.capacity - BLOCK_START) {
+            previous = candidate;
+            candidate = candidate.next;
+        }
         if !candidate {
             capacity := pool.memblock_size;
-            if capacity < size capacity = size;
-            candidate = New(Pool_Block, true, pool.block_allocator);
-            assert(candidate != null);
-            candidate.memory = alloc(capacity, pool.block_allocator);
-            assert(candidate.memory != null);
-            candidate.capacity = capacity;
-            if previous previous.next = candidate;
-            else pool.blocks = candidate;
+            if capacity < size + BLOCK_START capacity = size + BLOCK_START;
+            candidate = allocate_block(capacity, previous.allocator);
+            if !candidate return null;
+            candidate.previous = previous;
+            previous.next = candidate;
         }
-        pool.active = candidate;
-        position = 0;
+        active = candidate;
+        position = BLOCK_START;
     }
-    pool.current_block = pool.active.memory;
+    pool.current_block = block_memory(active);
     pool.current_pos = position + size;
-    pool.bytes_left = pool.active.capacity - pool.current_pos;
+    pool.bytes_left = active.capacity - pool.current_pos;
     return cast(*u8)pool.current_block + position;
 }
 
 reset :: (pool: *Pool) {
     if !pool return;
-    pool.active = pool.blocks;
+    if !pool.current_block { pool.current_pos = 0; pool.bytes_left = 0; return; }
+    first := first_block(block_header(pool.current_block));
+    if first.capacity == 0 && first.next first = first.next;
+    pool.current_block = block_memory(first);
     pool.current_pos = 0;
-    pool.current_block = null;
     pool.bytes_left = 0;
-    if pool.active {
-        pool.current_block = pool.active.memory;
-        pool.bytes_left = pool.active.capacity;
+    if first.capacity > 0 {
+        pool.current_pos = BLOCK_START;
+        pool.bytes_left = first.capacity - BLOCK_START;
     }
 }
 
 release :: (pool: *Pool) {
     if !pool return;
-    cursor := pool.blocks;
+    cursor: *Pool_Block;
+    if pool.current_block cursor = first_block(block_header(pool.current_block));
     while cursor {
         next := cursor.next;
-        free(cursor.memory, pool.block_allocator);
-        free(cursor, pool.block_allocator);
+        allocator := cursor.allocator;
+        free(cursor, allocator);
         cursor = next;
     }
-    pool.blocks = null;
-    pool.active = null;
     pool.current_block = null;
     pool.current_pos = 0;
     pool.bytes_left = 0;
 }
 
 pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
+    if mode == .CAPS {
+        if old_memory { name := cast(*string)old_memory; name.* = "modules/Pool"; }
+        return cast(*void)cast(u64)(Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
+    }
+    if mode == .FREE return null;
     pool := cast(*Pool)allocator_data;
     assert(pool != null);
     if mode == .ALLOCATE return get(pool, requested_size);
     if mode == .RESIZE {
-        assert(requested_size >= 0 && old_size >= 0);
+        if requested_size < 0 || old_size < 0 || requested_size > MAX_ALLOCATION_SIZE return null;
         if old_memory && requested_size <= old_size return old_memory;
         replacement := get(pool, requested_size);
-        if old_memory && old_size > 0 memcpy(replacement, old_memory, old_size);
+        if replacement && old_memory && old_size > 0 memcpy(replacement, old_memory, old_size);
         return replacement;
     }
-    if mode == .FREE return null;
     if mode == .STARTUP {
-        if !pool.block_allocator.proc set_allocators(pool);
+        if !pool.current_block {
+            if pool.memblock_size <= 0 pool.memblock_size = POOL_BUCKET_SIZE_DEFAULT;
+            assert(initialize_pool(pool, context.allocator));
+        }
         return null;
     }
     if mode == .SHUTDOWN { release(pool); return null; }
-    if mode == .CAPS return cast(*void)cast(u64)(Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
     if mode == .IS_THIS_YOURS {
-        cursor := pool.blocks;
+        if !old_memory || !pool.current_block return null;
+        cursor := first_block(block_header(pool.current_block));
         while cursor {
-            if old_memory != null && cast(u64)old_memory >= cast(u64)cursor.memory && cast(u64)old_memory - cast(u64)cursor.memory < cast(u64)cursor.capacity return cast(*void)1;
+            begin := block_memory(cursor) + BLOCK_START;
+            if cursor.capacity >= BLOCK_START && cast(u64)old_memory >= cast(u64)begin && cast(u64)old_memory - cast(u64)begin < cast(u64)(cursor.capacity - BLOCK_START) return cast(*void)1;
             cursor = cursor.next;
         }
         return null;
@@ -123,6 +131,46 @@ pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64
 
 Pool_Block :: struct {
     next: *Pool_Block;
-    memory: *void;
+    previous: *Pool_Block;
     capacity: int;
+    allocator: Allocator;
+}
+
+PRIVATE_HEADER_SIZE :: (size_of(Pool_Block) + 7) & ~7;
+BLOCK_START :: (size_of(*void) + 7) & ~7;
+MAX_ALLOCATION_SIZE :: 0x7fff_ffff_ffff_ffff - PRIVATE_HEADER_SIZE - BLOCK_START;
+
+block_header :: (memory: *void) -> *Pool_Block {
+    return cast(*Pool_Block)(cast(*u8)memory - PRIVATE_HEADER_SIZE);
+}
+
+block_memory :: (block: *Pool_Block) -> *u8 { return cast(*u8)block + PRIVATE_HEADER_SIZE; }
+
+first_block :: (block: *Pool_Block) -> *Pool_Block {
+    while block.previous block = block.previous;
+    return block;
+}
+
+allocate_block :: (capacity: int, allocator: Allocator) -> *Pool_Block {
+    if capacity < 0 || capacity > MAX_ALLOCATION_SIZE return null;
+    allocated := capacity;
+    if allocated < BLOCK_START allocated = BLOCK_START;
+    block := cast(*Pool_Block)alloc(PRIVATE_HEADER_SIZE + allocated, allocator);
+    if !block return null;
+    memset(block, 0, PRIVATE_HEADER_SIZE);
+    block.capacity = capacity;
+    block.allocator = allocator;
+    return block;
+}
+
+initialize_pool :: (pool: *Pool, allocator: Allocator) -> bool {
+    if !allocator.proc || (allocator.proc == pool_allocator_proc && allocator.data == pool) allocator = context.default_allocator;
+    if !allocator.proc || (allocator.proc == pool_allocator_proc && allocator.data == pool) return false;
+    // A real zero-capacity root retains the backing allocator before context switches.
+    root := allocate_block(0, allocator);
+    if !root return false;
+    pool.current_block = block_memory(root);
+    pool.current_pos = 0;
+    pool.bytes_left = 0;
+    return true;
 }

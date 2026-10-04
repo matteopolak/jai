@@ -436,8 +436,7 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                 return Err(Error::InvalidIr("global IDs are not dense"));
             }
             if let Some(old) = state.definitions.get(index)
-                && (old.ty() != global.ty()
-                    || !same_initializer(old.initializer(), global.initializer()))
+                && (old.ty() != global.ty() || old != global)
             {
                 return Err(Error::InvalidIr("VM state global definition changed"));
             }
@@ -1286,7 +1285,18 @@ impl<'a, P: ProcedureProvider + ?Sized, E: CompilerEffects> Vm<'a, P, E> {
                         .globals()
                         .get(id.index())
                         .ok_or(Error::InvalidIr("missing global definition"))?;
-                    let value = self.global_value(global.initializer(), depth + 1)?;
+                    let initializer = if self.execution_phase == ExecutionPhase::Runtime {
+                        global
+                            .runtime_initializer()
+                            .cloned()
+                            .map(GlobalInitializer::Value)
+                    } else {
+                        None
+                    };
+                    let value = self.global_value(
+                        initializer.as_ref().unwrap_or_else(|| global.initializer()),
+                        depth + 1,
+                    )?;
                     let value = self.normalize_storage_value(value, depth + 1)?;
                     self.prepare_layout(global.ty())?;
                     let pointer = self.memory.allocate_with_alignment(
@@ -2070,15 +2080,6 @@ fn preflight_provider(
     Ok(())
 }
 
-fn same_initializer(a: &GlobalInitializer, b: &GlobalInitializer) -> bool {
-    match (a, b) {
-        (GlobalInitializer::Int(a), GlobalInitializer::Int(b)) => a == b,
-        (GlobalInitializer::Bool(a), GlobalInitializer::Bool(b)) => a == b,
-        (GlobalInitializer::Value(a), GlobalInitializer::Value(b)) => a == b,
-        (GlobalInitializer::External(a), GlobalInitializer::External(b)) => a == b,
-        _ => false,
-    }
-}
 
 fn verification_outcome(error: IrError) -> Execution {
     let outcome = match error {

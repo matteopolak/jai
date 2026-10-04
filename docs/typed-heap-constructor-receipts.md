@@ -20,6 +20,9 @@ order, extent, alignment, default source scope and an optional initializer step.
 The semantic source issuer separately validates the selected original module
 instance and its accepted constructor/initializer/default substitutions. This IR
 carrier does not recover those bindings from a type descriptor or record shape.
+The initializer binding values travel together in `TypedConstructorBinding`; both
+initial issuance and arena rebinding use that request, so the checked source roles,
+storage pointer, and emitted parameter stay associated as one operation.
 
 Native completion must match `same_issuance()` on the exact step payload. Graph
 rebinding preserves `same_source_issuance()` while creating a new checked payload;

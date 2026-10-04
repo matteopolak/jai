@@ -1,0 +1,2272 @@
+{
+  "schema_version": 1,
+  "area": "memory-debugger",
+  "status": "authored_source_bodies_pending_compiler_provider_and_behavior_proof",
+  "implementation_origin": "independent authored Jai; reference/public declarations inspected for contracts only",
+  "no_reference_or_original_native_execution": true,
+  "source_authority": "maintained zero-argument text API first; original records/hooks and explicit options retained",
+  "files": [
+    {
+      "path": "stdlib/Basic/module.jai",
+      "sha256": "afe92b783778d9fa41e67a853430914cec7a98d951de76a43546655e82d695af",
+      "declarations": [
+        {
+          "name": "Memory_Debugger",
+          "kind": "record",
+          "line": 41,
+          "header_sha256": "da491cd52c642cab913e616a947a382ba765188362022aa93c03d1cf14f5dff8",
+          "members": [
+            {
+              "name": "check_alloc",
+              "kind": "constant",
+              "line": 42,
+              "header_sha256": "01420587387c8e9455411cc473e5c466ef5dab690b08b5452a2e85b742a38ee1",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "192059d3b83a09abc2b1dbc372c2a519e0f7fc183d8a1d17a18178f1a1092830"
+            },
+            {
+              "name": "check_free",
+              "kind": "constant",
+              "line": 43,
+              "header_sha256": "1993bcf873ded8e4503ee971e3c818bae8efd47e338053d8e349394cdb3c0711",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "2be659732ac1e5893e52490f61d905d8ea3d07133494edd143ddbe4ee5473911"
+            },
+            {
+              "name": "check_realloc",
+              "kind": "constant",
+              "line": 44,
+              "header_sha256": "fa812f0ee752ed06a13f84e66d4cdca2a511a615758d8c9f2cccc48185cb81ef",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "2c2bd4c8e4ff4bcd8f8febfab3af1ceb5104cd57f7088edfdf77bbc0b71040e4"
+            },
+            {
+              "name": "check_create_heap",
+              "kind": "constant",
+              "line": 45,
+              "header_sha256": "af98c2b357af8e6c6fef7e9e0cd84df84616b9bc60e7865bca01f1ccc276a63d",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "665f33879bcb721c17f5e0ce62c221feb637007b656b3f7b010224a63ccf57ec"
+            },
+            {
+              "name": "check_destroy_heap",
+              "kind": "constant",
+              "line": 46,
+              "header_sha256": "8f3c62f16ec6b9fd49b20e5dc2bac504b6e027e8a0f9be7691e8c3c820056b50",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d908abe6681ac7d64f66e7756a93ada86c224615bbc522cc14bae78090b24e69"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "e0790175b596acf0e8d9bf91a7ad1a345158bd69439ed68622161e5f285bc0c1"
+        },
+        {
+          "name": "SET_STORAGE_MARK_STAMP",
+          "kind": "constant",
+          "line": 54,
+          "header_sha256": "68b7a84e934d0e0f526ecc93b60a8354e456597dcdfdd6b4b57e19969966a4aa",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "507cda8d588a8e1a0627854beee98f30874d819526b89bc5165f08993095ea2c"
+        },
+        {
+          "name": "RESET_STORAGE_STAMP",
+          "kind": "constant",
+          "line": 55,
+          "header_sha256": "550543f06fe6c5b2e3c3237ac1b4b5f4b0b2ed493e4e77069cd9d402b2adb15f",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "de46d0c56f52bf64977c40ecfd772144744e5e72195c437443fb4447600d38c7"
+        },
+        {
+          "name": "FREE_PAGE_STAMP",
+          "kind": "constant",
+          "line": 56,
+          "header_sha256": "55f90e8f444aa4aecfb4b2e812c56e72a63ed4d1d44ca22183e131e2a52204ed",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "d274b106337056c1a84972df9a5864c6e79723de92bca535bfeccaf8358930db"
+        },
+        {
+          "name": "write_string",
+          "kind": "constant",
+          "line": 57,
+          "header_sha256": "8b3849813c5bb822d61b6630d47ee41d1a6bafcb11491506ee33224e8a055e71",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "06a8b3295aec341901463f4ee2948404b9310517387f529d90a940d0ffdd21a2"
+        },
+        {
+          "name": "write_strings",
+          "kind": "constant",
+          "line": 58,
+          "header_sha256": "cc76b247a0be3586183d9db0d4e87dd0e783d3ec5e837b85603499fef379367a",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "ab6d21f4db49301bfb0b3974849d16a0c4dd0e4ea783d9b95a98c76deeec4e67"
+        },
+        {
+          "name": "debug_break",
+          "kind": "constant",
+          "line": 59,
+          "header_sha256": "0ba6111ec645f482dad1525b977f7e78e07a62d8d3a515f3461b8a75cf20aef3",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "549020be932b789e26c2e8caf5d12b6f4c14dfa7e66ab06e314d57d534c0a6f4"
+        },
+        {
+          "name": "make_leak_report",
+          "kind": "procedure",
+          "line": 62,
+          "header_sha256": "b6d14f3880d79114d358c4c80d206616a396103f0f8916b1e6e4161f65762366",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "7dca904040378efd143c60f0608c5a2dcb1eab20dcd8e569ad1268410ac996df"
+        },
+        {
+          "name": "log_leak_report",
+          "kind": "procedure",
+          "line": 63,
+          "header_sha256": "3b80a175e2135be714f367dbec16f1c744e43d639bd21e8ab605a5c5e67cb1dc",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "d760ffac5a57025cf1c5d2ed1f8c90d93a663c30d6e47c76cd915068071a516e"
+        },
+        {
+          "name": "this_allocation_is_not_a_leak",
+          "kind": "procedure",
+          "line": 64,
+          "header_sha256": "b50b15ff187c27e31269a3b8ebab4fd7823cbe45b5905f489ba1c9027d03dd77",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e77976462e1269f2dafb88058af8c93212812e7404587c1d9c12c2e8111f51ea"
+        },
+        {
+          "name": "this_allocation_leaks_todo",
+          "kind": "procedure",
+          "line": 65,
+          "header_sha256": "b260d86296cba231e72a799b14ab13080998b94d5a6cc91b26945b469cf716b5",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "13116a6461e6eb73542a90f8e28821e32595b662a3c625963a36ed58da2678bc"
+        },
+        {
+          "name": "this_allocation_does_not_propagate_leak_ownership",
+          "kind": "procedure",
+          "line": 66,
+          "header_sha256": "1aa5887f269d94687ef572f6a28b0d042faf9c3303d0047f44e3a9d9e3ba157d",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "9d4f082c539a5bed48422d2bdd623e40f09afde9ab50a3cb94e7e32e318a9e25"
+        },
+        {
+          "name": "memory_visualizer_per_frame_update",
+          "kind": "procedure",
+          "line": 69,
+          "header_sha256": "be31fa4916591a51398dd274ab650dd49014e4afdb6f1c7feb807b5f3568273f",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "00156c2ce053527066c0f999625140cc2907a3a72b9d2a9fb7658e1e1cf19393"
+        },
+        {
+          "name": "assert_helper",
+          "kind": "procedure",
+          "line": 72,
+          "header_sha256": "d106cf07469eaa443421fdc56306454bdc163881a0abace6d8682fde407ae222",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "4de7dfc952bb87a9543aca8d9b0034f180d23305af2e06027a8e50fab352a2fd"
+        },
+        {
+          "name": "assert",
+          "kind": "procedure",
+          "line": 80,
+          "header_sha256": "16d3c3946887c0fde74e39e01d659f4a61fccab2f15079300f56617edfa05f0c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "aaf1956714a6456015ff3873c8c8fe5d695287bba4604ddcab1296b55a135b6f"
+        },
+        {
+          "name": "get_command_line_arguments",
+          "kind": "procedure",
+          "line": 87,
+          "header_sha256": "6099f092f0aa27e878bfed45518e71bf7297be06548314689f0887f0cee3ba96",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "8847abc233bb4d323082924139c0c8cb55b3a52bdd2084d13e7418b0a455268f"
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 96,
+          "header_sha256": "1e7a325dafac58b135c2c864845a4587579850e8ce4791491569ab7485c75b71",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e2cd0da0a055b51e73a92cd106fdfc01dbe54ef10a182625b23fc8e9272ca8e5"
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 97,
+          "header_sha256": "5927ec5cb15c3ab4862d06941d1f45dfb8fb8bdfb04961ce74031c165afbe069",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "ef46cf8f358d547ddc7f1885321b08d97797ba71b76c0bcdab15897db1284b08"
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 98,
+          "header_sha256": "f269b0abd2ce50420af369bb4236262a8c97eb32996f3e6756f1c31826acb9bb",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "efd70a94b922e592ffd46b56d579464c1491a85b7306f12b9eebe7503d4b0278"
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 99,
+          "header_sha256": "8c235d0e7a370d66430d35ad8e26603211cab7163a84eb00541e43949b42e033",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e7e77c4174d1d45c4b554568a9e8e33efc7738ee0104c970a5efc58a54ec0b62"
+        },
+        {
+          "name": "Min",
+          "kind": "constant",
+          "line": 100,
+          "header_sha256": "8cd4854e2f237c7f3512de186b685609e2f6c8022a503ab9fa2aa2b41d381332",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "cbbda36ef4147a08391adc9ffe9bf332a23ea9e79e5aaf10417d3d2c10b800c2"
+        },
+        {
+          "name": "Max",
+          "kind": "constant",
+          "line": 101,
+          "header_sha256": "2a7515de91f10564ff2721dd7a4114703634d5d4b00707ca53d430685cc1c6d1",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "24e4edd7eeea9f490b22b1fa778422a78a2831d03df66a8dbdb26879aedd540f"
+        },
+        {
+          "name": "clamp",
+          "kind": "procedure",
+          "line": 102,
+          "header_sha256": "f63313b85d4a6fd3bb7e7e74554a0c84eabdcb2da473cc35b6edfe30ffd7f7da",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "b7bb4a46b550bd71631c5b581cab7f4bd9d74980e01b8c0be3af1a085cccf465"
+        },
+        {
+          "name": "Swap",
+          "kind": "procedure",
+          "line": 103,
+          "header_sha256": "09e836921232c19a97deef2051b8c3b5d5cb6f6618c38a30080d46efe9ac40aa",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "c583fc6f35c819ab777d84c9aa273e647448c49a31429e0ffa159389a78f38b0"
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 104,
+          "header_sha256": "55980fd27fb30d7ee33954908a2c430288941b1abdc77cbc1345a0cf4e28b9f6",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "4d16384a49162f5d5d16fbec675f402ba9a929ba6effa3b20b96b01ac3766dc5"
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 105,
+          "header_sha256": "4281d41e2aef67c0c643d4b9fc2c459f54474873cefbca366145bcfac576cc19",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f89542c4331222600156b44b19f2a611f0c8ce7cc5e76c7289c1bcf6891374f5"
+        },
+        {
+          "name": "IsScalar",
+          "kind": "procedure",
+          "line": 106,
+          "header_sha256": "4f7b35c40d8a19b0a5954f9284a49f78c5c6cfbc58649b86d47efb39a1efb0de",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e64fe56a31c9b0fdab3b50e60a82eaee5fdff902dd8b95c48dff2043e144b90a"
+        },
+        {
+          "name": "get_field_with_offset",
+          "kind": "procedure",
+          "line": 110,
+          "header_sha256": "4b304601d5f89a894d3659bc2e1cae18d48277210b8a56a2e7d8960454aea698",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "9b616d0cfd639fd486dc8ec548c55e38904eea441a51c11d3091f7b457b55e8c"
+        },
+        {
+          "name": "get_field",
+          "kind": "procedure",
+          "line": 114,
+          "header_sha256": "e76b4e9050454a72579482f57ebdee97c80b3c1eaa62b379c15ae99f0bbae3d2",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "fac16b36921e0e362ced04dc9eedfadc0721528847ecd44e7addcf2451e6bb3d"
+        },
+        {
+          "name": "enum_names",
+          "kind": "procedure",
+          "line": 118,
+          "header_sha256": "1c124ee6afab5194d9c804ec48a7a306393cc7d2ee62fbba1a5753c325142496",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "9db4bcbefe83e963acbb5c4cbe800ffa91737cf465df733a793690cb34180883"
+        },
+        {
+          "name": "enum_values_as_s64",
+          "kind": "procedure",
+          "line": 119,
+          "header_sha256": "05571d50f6bda9dbd4d9dc50d0da70768c17f4f0c7c6c5b25dfa6aaf510d25a0",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "31dd7d130f159a4eae73d70a58aa2b2d1f7afaa6c4942ed513fcdff58364d0c6"
+        },
+        {
+          "name": "enum_values_as_enum",
+          "kind": "procedure",
+          "line": 120,
+          "header_sha256": "3e6804893ce7a7adf11ef3d0ddec1a4c6308e434b689fe04c62902dc8810f139",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "346bf7b856c9f4fb172e12e3efdcd645c896f46c7f792f7bd392d38fa54d224b"
+        },
+        {
+          "name": "enum_range_given_info",
+          "kind": "procedure",
+          "line": 126,
+          "header_sha256": "8d11c0797be768b7ac3000fb0fcad0a9c214b400746aaf2864941a5da630d093",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "d2eeca2e7258ebe31fecbd920d9ce5e79130421b74883150b73a40f6d0ea93ef"
+        },
+        {
+          "name": "enum_range",
+          "kind": "procedure",
+          "line": 132,
+          "header_sha256": "8a11cfcd39ccc7f33c365d4c2fdc0ee46a07fcc324629f2d812b52408873cfd6",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "5b7d230a073e0a2a5b41db2b5da848d68b595e8770a0c998fd18d12e9531e851"
+        },
+        {
+          "name": "enum_highest_value",
+          "kind": "procedure",
+          "line": 133,
+          "header_sha256": "f73a6ee9473189aa57977ac0ae4c3ebb091d900ce809a6e66920ce867d3a8822",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "66fc8e703e79a11c391bd3ccf7ceb9148094a68e1d579d5af91eca8d0d2e4777"
+        },
+        {
+          "name": "remember_allocators",
+          "kind": "procedure",
+          "line": 134,
+          "header_sha256": "aa0bc56954d4a078893e7b45cacae9ffacd5ce9d2bf3f96d7feadd139784bc7f",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "5175429d9f2a59447c1daaa567601f7cfc401c36f079d39181bc3df57867de9f"
+        },
+        {
+          "name": "resizable",
+          "kind": "procedure",
+          "line": 137,
+          "header_sha256": "d2b90fffce0dc54d65343c08d1eff1b2fd6407cb320843fe7953b1d4c6ccb866",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "d5c45d9724c04d14be7f059767212ffb80f9dd9f4ba7b0ebd28d4d7da3b2bab6"
+        },
+        {
+          "name": "is_integer_type",
+          "kind": "procedure",
+          "line": 143,
+          "header_sha256": "a2654b6b62fb17ac5b9b54ad44f5649a63d81a2e0d551b16c83d0f6e0495fee1",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "902626c884861d33c8eaf8116c53277a1df8a49a91075a406cb1d70c196d4572"
+        },
+        {
+          "name": "get_integer_range",
+          "kind": "procedure",
+          "line": 149,
+          "header_sha256": "6e1b98c2f7419232577986c0c412093d44dd5091d6fc7aa03ac5d4a05860031e",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "9b1b12e4b9e483d6c4d15077195afa95167237f5e2c2a9382eff77dcf0eb71d1"
+        },
+        {
+          "name": "clamp_to_another_integer_type",
+          "kind": "procedure",
+          "line": 158,
+          "header_sha256": "30ac77d1dc1c2a2a35aabd97c102a76b07519ce965883101e1b6029d38f3df38",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "7c7f378b26d112200fd5676d10c124a91e99ec00ff91ec38da7d6d0c65cc3993"
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 171,
+          "header_sha256": "a77e30c86d89c55526a478dd0b920245974f0521d20935d571dc0fc8d7c80de4",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f83abe2c07053f78dca4b4f368f72841769c1a643f33c4cf74fe2c69e37bdf54"
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 172,
+          "header_sha256": "1be4327e05cdd01b5f2e0ebf50333ee14d1d4c19a1268910c3fea51c5b7f2da3",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "5c657e3bf2c5d13cdc775dcdc0d5d6f0a2385216862f7b17f6da9f34343409a8"
+        },
+        {
+          "name": "print_stack_trace",
+          "kind": "procedure",
+          "line": 185,
+          "header_sha256": "abb85838406243800196486bf8054a5fde598526b791d142f6fbefb5d1ef95d6",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "a07d2b11de8d95f15bc13ea412c2a233f435792b6b36639610fc2341a3122294"
+        },
+        {
+          "name": "get_stack_trace_string",
+          "kind": "procedure",
+          "line": 192,
+          "header_sha256": "b6e20c43b4bd2a46ca4f0f5bcef2498446a6606d322e2e881080a9a52e9b1511",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "74f47822024942b46cb711716f273de4b810b500eefe043c8cf9d2c9566b078b"
+        },
+        {
+          "name": "log_stack_trace",
+          "kind": "procedure",
+          "line": 201,
+          "header_sha256": "8a96f5606a2fd6d51905879b35ed8da0b38198739738415003e3164cb7f0bd0f",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "a0238faddb160805655316bc63c922179cfe990e17e9d89bb7b1d335a7d54e54"
+        }
+      ],
+      "loads": [
+        {
+          "line": 26,
+          "flags": [],
+          "target": "protocol.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/protocol.jai",
+          "source_exists": true
+        },
+        {
+          "line": 27,
+          "flags": [],
+          "target": "allocation.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/allocation.jai",
+          "source_exists": true
+        },
+        {
+          "line": 28,
+          "flags": [],
+          "target": "Array.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Array.jai",
+          "source_exists": true
+        },
+        {
+          "line": 29,
+          "flags": [],
+          "target": "Simple_String.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Simple_String.jai",
+          "source_exists": true
+        },
+        {
+          "line": 30,
+          "flags": [],
+          "target": "String_Builder.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/String_Builder.jai",
+          "source_exists": true
+        },
+        {
+          "line": 31,
+          "flags": [],
+          "target": "Print.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Print.jai",
+          "source_exists": true
+        },
+        {
+          "line": 32,
+          "flags": [],
+          "target": "Int128.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Int128.jai",
+          "source_exists": true
+        },
+        {
+          "line": 33,
+          "flags": [],
+          "target": "Apollo_Time.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Apollo_Time.jai",
+          "source_exists": true
+        },
+        {
+          "line": 34,
+          "flags": [],
+          "target": "platform-time.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/platform-time.jai",
+          "source_exists": true
+        },
+        {
+          "line": 38,
+          "flags": [],
+          "target": "Memory_Debugger.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Memory_Debugger.jai",
+          "source_exists": true
+        },
+        {
+          "line": 39,
+          "flags": [],
+          "target": "Visualize_Memory_Debugger.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Visualize_Memory_Debugger.jai",
+          "source_exists": true
+        }
+      ],
+      "imports": [
+        {
+          "line": 205,
+          "flags": [],
+          "target": "Runtime_Support",
+          "dynamic": false,
+          "here_string": false
+        }
+      ],
+      "module_parameters": [
+        {
+          "name": "MEMORY_DEBUGGER",
+          "line": 2,
+          "required": false,
+          "default_scalar": false,
+          "default_references": [],
+          "type_references": []
+        },
+        {
+          "name": "ENABLE_ASSERT",
+          "line": 2,
+          "required": false,
+          "default_scalar": true,
+          "default_references": [],
+          "type_references": []
+        },
+        {
+          "name": "REPLACEMENT_INTERFACE",
+          "line": 2,
+          "required": false,
+          "default_scalar": null,
+          "default_references": [
+            "Memory_Debugger_Interface"
+          ],
+          "type_references": [
+            "I",
+            "Memory_Debugger_Interface",
+            "interface"
+          ]
+        },
+        {
+          "name": "VISUALIZE_MEMORY_DEBUGGER",
+          "line": 2,
+          "required": false,
+          "default_scalar": true,
+          "default_references": [],
+          "type_references": []
+        },
+        {
+          "name": "TEMP_ALLOCATOR_POISON_FREED_MEMORY",
+          "line": 2,
+          "required": false,
+          "default_scalar": false,
+          "default_references": [],
+          "type_references": []
+        }
+      ]
+    },
+    {
+      "path": "stdlib/Basic/Array.jai",
+      "sha256": "f6b6fc75c4bc135f6b28f4258bc61e94cc6213a9f4f7b1afeb91be25bb4ef556",
+      "declarations": [
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 2,
+          "header_sha256": "34e9508cb4ddcd877b7a92683537148875bf11cb10bcdf754762744af0d20ebf",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f3f123830d658cf99280ab3ffce5bed5e5342ba7bf6afa030f1d7b0a0b1230d0"
+        },
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 7,
+          "header_sha256": "b3c0055b3cf740c82385efd95b62e72383c4f3dd4e017a1accb860e26f3b621f",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "56e638f44ab884667fbff27b010c0d5725b1c88ac9135467ffc6eeaadf22c57f"
+        },
+        {
+          "name": "array_copy",
+          "kind": "procedure",
+          "line": 12,
+          "header_sha256": "457298c7183c849ad6b07b79a8ec8695a01fd8daca25a3971a9810ede838e46a",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "0d469cdb26cd24a2eeff0f3a4e99b7cfc698b8f6a57712fb7e059953dec24802"
+        },
+        {
+          "name": "array_view",
+          "kind": "constant",
+          "line": 16,
+          "header_sha256": "9be2b07bd20de161e4e8cdff8c50c3293ba13da95ab713538533f8295718f62b",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "32d50dbe6c2844f69e538378a106fff32814d9212781774a2ed2520ee6f3cb4f"
+        }
+      ],
+      "loads": [],
+      "imports": [],
+      "module_parameters": []
+    },
+    {
+      "path": "stdlib/Basic/allocation.jai",
+      "sha256": "d45452ded4da563e112c637b42e82480bfc52432baec016b19e6af5788a0ebc6",
+      "declarations": [
+        {
+          "name": "alloc",
+          "kind": "procedure",
+          "line": 2,
+          "header_sha256": "51c8f3476f43febe23fbe3f5fba42a09c731309d5d4f57a899a292facef6d114",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "343d0d1f702cdfb503a90f8bc4a605de997611cf5a66c8643e701985eaa2c121"
+        },
+        {
+          "name": "free",
+          "kind": "procedure",
+          "line": 14,
+          "header_sha256": "9a746b0c239dfbfd9f8a0f31ba66458598efbdc655b7d67c068a586e4667907a",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "a75d21f38c3ec2dd64950ec18e95572ffcc4423bfc010fb3495b940a35c1c267"
+        },
+        {
+          "name": "free",
+          "kind": "constant",
+          "line": 26,
+          "header_sha256": "789dc9b4b46993275df0d9257ad2edff22647cb97b3370887f1dccaae7705fa5",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "5191442d5f75cacbfc5322584361fbd422ac021c12b11d55ef455aef04f60cc5"
+        },
+        {
+          "name": "__temporary_allocator",
+          "kind": "constant",
+          "line": 157,
+          "header_sha256": "b8a83fba685e8be6f2e681c44ed0effc54ee8cb0b8ba0bbad35fa1a4c023f933",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "29967dcafb15a0670a583d69206febbde7b273429680e0ebbfeb68e763c816a0"
+        },
+        {
+          "name": "temporary_allocator",
+          "kind": "constant",
+          "line": 158,
+          "header_sha256": "2dd869dbad6563b126c18ff3d7075ca31f345b682b0e79312c4d700c391af326",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "f2f09955ca3f7a55f74f1573331b819ae2612c2e6cd86a2a8db8af7c7f83db3b"
+        },
+        {
+          "name": "Temporary_Storage_State",
+          "kind": "record",
+          "line": 160,
+          "header_sha256": "cb2c7c01110e7f5ffb5d3e01e84a999c5a883260cf92d6bbd10ba8276471a960",
+          "members": [
+            {
+              "name": "top_overflow_page",
+              "kind": "field",
+              "line": 161,
+              "header_sha256": "84af2c4505be53bef031d35991ff564965ba2b10b99e0c39e09acaeaabb2f1d0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "e4fc9856b4ec502c012dafa89b4f9b9b2c68d2e9860e22746028250a81aa8087"
+            },
+            {
+              "name": "current_page_bytes_occupied",
+              "kind": "field",
+              "line": 162,
+              "header_sha256": "080f8017f11e05006bdfe510ffd7de4b3a38743492943390d06f55e05927eefc",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "1af41d254c9d77fe9a6cf1a82ecdf8af0006b94a8438a821866936a3e0f085d7"
+            },
+            {
+              "name": "total_bytes_occupied",
+              "kind": "field",
+              "line": 163,
+              "header_sha256": "e0a42cd605dc3803abb0521a784836b3f55b29d01ec0c065d33975a28c2d0749",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "969b61d51ad5d20d5158ee6bc970796a0945389eb92800cb2ee80fa112e41395"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "223ae2d1ab1f36bd959e5231ca90fc717d6de92cc7846361e39f37541e20e16a"
+        },
+        {
+          "name": "temporary_allocator_proc",
+          "kind": "procedure",
+          "line": 166,
+          "header_sha256": "ba9577513b36d49fcbe42d7f62f28833d12a4c13c6d2ab8f4d197bee15b2bf9c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f193c92a0d79346b4a0b4491e142524b57b67f4cfdece90e57af2a3c7a70665c"
+        },
+        {
+          "name": "get_temporary_storage_mark",
+          "kind": "constant",
+          "line": 212,
+          "header_sha256": "66c335239bb57ba1d718072e451f6f835595a81d612eafeb400af51e317a8a91",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "93e62e494f8981ec603ec5558004088f0075fd20fff7bda2650e307d6bc97d81"
+        },
+        {
+          "name": "temporary_range_contains",
+          "kind": "procedure",
+          "line": 273,
+          "header_sha256": "3d62d49199c9bc001e002506202f771bb98868b010e2d46ad43c41dae77d8370",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "c49d5ecf08c65fb3b88d9b33dc0d2a22077c401a815523f1307da933dbeb64b6"
+        },
+        {
+          "name": "add_temporary_page",
+          "kind": "procedure",
+          "line": 281,
+          "header_sha256": "965a1394530024e36488dc4a246d80a045792d82a65acc4a70165fa46db8046c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "cdf6a95b73a0f4f8dd1bb6e9af77538f9979287ad86baa5e8e6ffeb58aee2e24"
+        },
+        {
+          "name": "release_temporary_pages",
+          "kind": "procedure",
+          "line": 300,
+          "header_sha256": "8ac20fc71dbefeb96b5f3691f87c0c4d7ec3da0ce12d24a22b18481839f3ff4a",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f72737e975d5c3602b3c2a3a7b23e36cd32315d52e4f416fab49af49c254da8f"
+        }
+      ],
+      "loads": [],
+      "imports": [],
+      "module_parameters": []
+    },
+    {
+      "path": "stdlib/Runtime_Support.jai",
+      "sha256": "7e31b35702f221cda32fd0d9c6a429ec4d65f178653751a039718f39850690ef",
+      "declarations": [
+        {
+          "name": "OS_IS_UNIX",
+          "kind": "constant",
+          "line": 4,
+          "header_sha256": "d73dbf9fd42fdefd8c415f3d3ddc3023e6715c10c212f967b39e168c74417ea7",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "60573c69eaa8d37248e7db22157f97e7fa1b7b93d87d1e10e068553bc3ebf0fb"
+        },
+        {
+          "name": "__element_duplicate",
+          "kind": "procedure",
+          "line": 6,
+          "header_sha256": "1b4016119c2bc5c1bfdd48ab24c7713ccba1da1f0b6d7b1daf79fa8d8c939757",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "dff13413b6ca5f704b36fbf2997aef2aa42733494b1395b277c1eada514ae391"
+        },
+        {
+          "name": "write_nonnegative_number",
+          "kind": "procedure",
+          "line": 15,
+          "header_sha256": "0e3fecfbd9446133776db82c4e4781707028982db204cce5f439b52ec8fc4fee",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "1c6f612be43e49f764e37bf8eac898fcef9f507ab78f1a769e1260cd38406ad2"
+        },
+        {
+          "name": "write_number",
+          "kind": "procedure",
+          "line": 36,
+          "header_sha256": "d3958a46b8b34d9fe98c0a03ab13bb1e60024024c4e8d2dd05f6642c5c07d6f5",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "2061f25aab6992143fdcfe2308a83a0bfa5265c6bf8c71f09e219b745d971ac7"
+        },
+        {
+          "name": "runtime_support_assertion_failed",
+          "kind": "procedure",
+          "line": 45,
+          "header_sha256": "e1d95774b1a00b662edfa0e3586ace5df4e478219b94638b005304d72c5510b0",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "cad5e02d4de34f3ce51e3f2458f2e7ec0c3299c5aecaeaac9a39feb830fcc6df"
+        },
+        {
+          "name": "runtime_support_default_logger",
+          "kind": "procedure",
+          "line": 52,
+          "header_sha256": "c5433086676af2b6a201b2e441d2d7f539bf730194b0df5727f5fe3401f78f72",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "8270ba7d38669872d26ee76052bdfc654f0c5bcbd58ac314c3afce7bd0560094"
+        },
+        {
+          "name": "c_style_strlen",
+          "kind": "procedure",
+          "line": 59,
+          "header_sha256": "4c710b80515b6765137aee2871edc17efc1abdbd4b04ead5ce0b0ef0fb2cd274",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "4418b421eb9e8abe02eeeede9906798c118c7d788fbc55524273dc517d34fa2b"
+        },
+        {
+          "name": "to_string",
+          "kind": "procedure",
+          "line": 65,
+          "header_sha256": "266f311e7ae89618bf826f9903ef81809349099873cf181bd1c5aade810517b6",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "db611a1adf0f1ed7be0dae32e70b74ffe92dc93233b3d1b03f2f4eceaeade788"
+        },
+        {
+          "name": "__array_bounds_check_fail",
+          "kind": "procedure",
+          "line": 72,
+          "header_sha256": "11c7482cf14735a078aed1fdda58df83b9b2b617c577cda9193f57352b334618",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "a0ebe1b65f13f48b3ba11a9360d618f8cf5fd8754e726f052df62e100b237545"
+        },
+        {
+          "name": "__cast_bounds_check_fail",
+          "kind": "procedure",
+          "line": 81,
+          "header_sha256": "1da04e1b52d9da7281dc5172c64595a2c783057b241b7e7800a2d3430843b11c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "8d641ace9775fe467d27dcf767c4c43ba0fe00d1fc1597f16a937d9770299276"
+        },
+        {
+          "name": "__null_pointer_check_fail",
+          "kind": "procedure",
+          "line": 90,
+          "header_sha256": "987aba40a50ac8a0b7b65491c6c827d450fababaa2dfe793baab1b2e62433e5c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "ff80c481d01543f67369771a1b6f55c7fe345403430e932b241f8d5fbadf3c2e"
+        },
+        {
+          "name": "__arithmetic_overflow",
+          "kind": "procedure",
+          "line": 97,
+          "header_sha256": "cd9d7fa43e5527bed0943f39cf074c25dd5a79df9470842e6f30f7a5d4fe9615",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "c5b5b353e23dd95738adde13055b2d4c28f770fa70afb8c5d0b7dfc6db089327"
+        },
+        {
+          "name": "write_string_unsynchronized",
+          "kind": "procedure",
+          "line": 106,
+          "header_sha256": "5fad91d1127ef24dcde09776d009d257b97560e127f1c7abb27a7be09d327a5a",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "70f4805f3172e1439abcc36d7357bb4ba37f20485ece641ec8ec87f86f768bea"
+        },
+        {
+          "name": "write_string",
+          "kind": "procedure",
+          "line": 131,
+          "header_sha256": "966e9e7bb8429a7b5d46441bfde88f1ad6e48fc4fb1096898e901a3e1d75304f",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "b1ebe3db3bb9dc966015f217e6600037ce50dcf693927ba45d8bffbec0cbb98d"
+        },
+        {
+          "name": "write_strings",
+          "kind": "procedure",
+          "line": 136,
+          "header_sha256": "c3bb5c58e451640691c456ac71c85e63507b7a906f2591fa18bde799c9ab148c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "61d4bb158f59b981004170d6476a6762b03011ae20723d8054cf2fade9c8af57"
+        },
+        {
+          "name": "compile_time_debug_break",
+          "kind": "procedure",
+          "line": 142,
+          "header_sha256": "7b1e746f6807b0c2ba7468f295ef154a3121abd111eadc408638980668938493",
+          "members": [],
+          "implementation_form": "compiler-declaration",
+          "contract_sha256": "0e7cce1d3586071785b7ef4ff9969a0eaa5f7d637b5e630d5aefcff2f78485fc"
+        },
+        {
+          "name": "debug_break",
+          "kind": "procedure",
+          "line": 143,
+          "header_sha256": "3b60a6a13c98185a9a80fd6fd24c99386351f1d3eaee1cb98505eeddd06cb9ff",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "27b843a3baba6573cfaf7f11c31fff87b3a5bf7826c911fc5e42390e5971ab21"
+        },
+        {
+          "name": "one_time_init",
+          "kind": "procedure",
+          "line": 159,
+          "header_sha256": "b86f04c70e4de697584a4017526bd30bba0b7f5a7ec96f57611c3426255b3c8b",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "6b519571c432d3f67ecd61020f08e0b683aaa6ada754e037154f83293788a911"
+        },
+        {
+          "name": "Context_Base",
+          "kind": "record",
+          "line": 172,
+          "header_sha256": "ddaeb367ec4504ff2e06fef03b517a5f97322bb8114c7ebfe7206b0c3df3469e",
+          "members": [
+            {
+              "name": "context_info",
+              "kind": "field",
+              "line": 173,
+              "header_sha256": "c224ec50c8239617d4b16d45680c1626d6fbcf80a9bd9565b7ea8ece520fdbf9",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d787f35f458f1354645741c3dc9bd8da456c5e7087b6cb52e34e3ee84f7a1417"
+            },
+            {
+              "name": "thread_index",
+              "kind": "field",
+              "line": 174,
+              "header_sha256": "230250280378843b49dd3b51aa96176084f4e8d2603682101407404579116815",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "44102fb8f3d177fdd012c0a9575fe7a802b1f9231b88c9137ece47b821f18ce1"
+            },
+            {
+              "name": "allocator",
+              "kind": "storage",
+              "line": 175,
+              "header_sha256": "538bbc30c221b1ba9fe08c5e12038a25bf0ad6e3a5feb4a71d558a131bcbeeb2",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "03a1807148cd53ad6865be3a9bef924fd947e0f53fac9079671a5f4f52eacc7d"
+            },
+            {
+              "name": "logger",
+              "kind": "storage",
+              "line": 176,
+              "header_sha256": "d988f2fa8b228809107cb5f74d52e3874ed179710faea873f2de97c08d4e1593",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "4abccd5d67c62fceb0470a7e5c7a320f945b3cb5345c4e82827b3568b9319e4e"
+            },
+            {
+              "name": "logger_data",
+              "kind": "field",
+              "line": 177,
+              "header_sha256": "45421e3ee7fa188f398bd9a671d249b699f0798bbf6b3c699e2e476ae04e81d3",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "521a75368728d7596532769cac7027dc574a856e19600cfae194f5a6bea6b4dc"
+            },
+            {
+              "name": "log_source_identifier",
+              "kind": "field",
+              "line": 178,
+              "header_sha256": "1c8095dd8820eaf93aa92e5e29b554e4889f228adf8152cfb802c2e3f561f2f0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f4123cf0df984e10316f8403d5398d14a263d1c5c8d41f4cb6f7d1c553e6817a"
+            },
+            {
+              "name": "log_level",
+              "kind": "field",
+              "line": 179,
+              "header_sha256": "1de87fa3f8755abdc0e24ff7ebbff2abdecf8041558ed8d3151ede2c5cd4e43b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "81d46eceefb3d3deb0f6b8dcf6f51353e78eeafc731d497f8e2b8dbb187e053d"
+            },
+            {
+              "name": "temporary_storage",
+              "kind": "field",
+              "line": 180,
+              "header_sha256": "f7ae80a4c94f928e20dc33bc76a8f99e79989772e89776b55c76790da8eab355",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "edea302a7491d267d3985045c7fffe6e826ab07194bc87c66b9c79d746e2b82e"
+            },
+            {
+              "name": "stack_trace",
+              "kind": "field",
+              "line": 181,
+              "header_sha256": "f59643a513fa62bedf19e4a52a03a7ea9fe96f6a942816b0d2c5eecb9b7396a4",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "ea2a68dfaf9e6abe8be7221c7b04873b5d39b849663b82e090074db8eed17e98"
+            },
+            {
+              "name": "assertion_failed",
+              "kind": "storage",
+              "line": 182,
+              "header_sha256": "f1aaced864db59ee7262672a56d34169b6d9b9690cde8a0d6281139111c2c9e9",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "aad60f5cf577e4e87d34f2eb3a14833784d8dd2fc7e4d62d3710a29f108199e3"
+            },
+            {
+              "name": "handling_assertion_failure",
+              "kind": "storage",
+              "line": 183,
+              "header_sha256": "87f8ca45bb720a15098f0eb42434521e6614717957d21eeb121c5c865e4b0f91",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d5d09d16b17589fbef7d707ac5b2b5a404715dd56c6db80d4a4b19289587fd81"
+            },
+            {
+              "name": "default_allocator",
+              "kind": "constant",
+              "line": 184,
+              "header_sha256": "25bbe6d0e0e8355749124993bcd9cba36d0d6a996098a0f59057e4eb8758928f",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "0301eed52a43c859774de1b642bd79a4faa65d2f7db00fbb5e45654f5589bcac"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "fb8f9de652207b8075eaf00e08dc9b906f124debfe55beb69efce3aec8782083"
+        },
+        {
+          "name": "Temporary_Storage",
+          "kind": "record",
+          "line": 186,
+          "header_sha256": "f9b55379ad312b66d5fd2f56c08bc8734c69c3605813c69c9b9fb75a0719298e",
+          "members": [
+            {
+              "name": "data",
+              "kind": "field",
+              "line": 187,
+              "header_sha256": "a8d6692ad179182670967ac9419f27ee2843fe279d398b03e3d6ef8ca44b6cb5",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "1ae2404f03a15314fdc859b2c292fd13c194be8a79f5534291efe4b84ffb7c66"
+            },
+            {
+              "name": "size",
+              "kind": "field",
+              "line": 188,
+              "header_sha256": "9a75dda5a9af7580cd8271ffe47bb3ed2aa80b4826e173c5d0c245a4775bbec6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f3bde9c858967dab2e44920581b4b7e9f5a4b1d71b292dea70f39f7ceac39a36"
+            },
+            {
+              "name": "current_page_bytes_occupied",
+              "kind": "field",
+              "line": 189,
+              "header_sha256": "080f8017f11e05006bdfe510ffd7de4b3a38743492943390d06f55e05927eefc",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "1af41d254c9d77fe9a6cf1a82ecdf8af0006b94a8438a821866936a3e0f085d7"
+            },
+            {
+              "name": "total_bytes_occupied",
+              "kind": "field",
+              "line": 190,
+              "header_sha256": "e0a42cd605dc3803abb0521a784836b3f55b29d01ec0c065d33975a28c2d0749",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "969b61d51ad5d20d5158ee6bc970796a0945389eb92800cb2ee80fa112e41395"
+            },
+            {
+              "name": "high_water_mark",
+              "kind": "field",
+              "line": 191,
+              "header_sha256": "0903990fa3dea95becb066b60e796062a41af3278f64d0fa125f024a0ccc10ee",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3c5ce7085f68e306bab6a33b5f17d134ede2b8d394a8a8eb89da513e0000cc92"
+            },
+            {
+              "name": "last_set_mark_location",
+              "kind": "field",
+              "line": 192,
+              "header_sha256": "43754e9eb7d8a01d50568e4b03f5609cf9d1a406c459c63fa7ffd5f3252cd4e8",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b85993adfbc4b987a437d8e00b1ce07adc381c0d4ee7ed055c322de3e7962826"
+            },
+            {
+              "name": "overflow_allocator",
+              "kind": "field",
+              "line": 193,
+              "header_sha256": "b4402994c17a5d907f811a5d1764d8bb1656c7064f012dcda835b3bcbcd8a58f",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "729c321a19ad65ddcff2d80cf3b660f7644698fbc8c279e6ee2b121deaaf41c9"
+            },
+            {
+              "name": "overflow_pages",
+              "kind": "field",
+              "line": 194,
+              "header_sha256": "7a98b7090a9056d2f959d6212ff6addac90c141ce7f433887d31be71b3ec2a24",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "7f84d56c7efe879be535b01616db733536d9491c4742a9663e08e9ff5dfda8f7"
+            },
+            {
+              "name": "original_data",
+              "kind": "field",
+              "line": 195,
+              "header_sha256": "ad21af9bca4d73cdb5ee6c2bbc3a6403f122b088a2f4aa7078d8b256facdaad6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "003dc661bb7afd78567f61029fac0db0ca6d8c9237c003358f3afd087dc11a3a"
+            },
+            {
+              "name": "original_size",
+              "kind": "field",
+              "line": 196,
+              "header_sha256": "e40946ef3fede5afc6d86d6cedb024e4671839fa2010c2e65e8247e217528547",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "c50a8900cda41b062f0ea5dae8c3adac1fa1c377bde813769c07ab0db3472649"
+            },
+            {
+              "name": "Overflow_Page",
+              "kind": "record",
+              "line": 197,
+              "header_sha256": "1249040f0e35cf4e24ed45e2d0ad870711cc0f1ef87426ebc6e279050019d6a5",
+              "members": [
+                {
+                  "name": "next",
+                  "kind": "field",
+                  "line": 198,
+                  "header_sha256": "f7739d2d373452ee9854b7744acb37394551704d6118778e3e540bfbed364fbc",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "a74ca15a351b4d1cbb03ba3fa188b744ba3f682301187ec9fbe96c057b18d820"
+                },
+                {
+                  "name": "allocator",
+                  "kind": "field",
+                  "line": 199,
+                  "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+                },
+                {
+                  "name": "size",
+                  "kind": "field",
+                  "line": 200,
+                  "header_sha256": "9a75dda5a9af7580cd8271ffe47bb3ed2aa80b4826e173c5d0c245a4775bbec6",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "f3bde9c858967dab2e44920581b4b7e9f5a4b1d71b292dea70f39f7ceac39a36"
+                }
+              ],
+              "implementation_form": "declaration",
+              "contract_sha256": "9c3c1bc25b5ff544e8483e0a28895cf8260fca58875516843eecbccc906bab60"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "f213772efa284de3a9950617e07cbf1a3c94d00c494199851e940023589996ac"
+        },
+        {
+          "name": "set_initial_data",
+          "kind": "procedure",
+          "line": 203,
+          "header_sha256": "5054bc6d0096cc1998a2ea37c5c6dbbce3ae7e8baf7cba6c67f576c3fe25d2be",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "c90f358b6cf02ee62a4b770fb7754f006e6258128a9b89ab0d95af2a72fbfa95"
+        },
+        {
+          "name": "runtime_support_default_allocator_proc",
+          "kind": "constant",
+          "line": 210,
+          "header_sha256": "fc8fc25b7966a8993b303a67ee14e326c960c368d7aafeb6c9e8b26660ae134d",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "491512c690ce5eb93e3a3b00f1c0acddb1b188932671159ebc02a3b9da3369c7"
+        },
+        {
+          "name": "first_thread_context",
+          "kind": "storage",
+          "line": 213,
+          "header_sha256": "1e50b4c624574e8a9a65f1f06cff8f7dfec5b84e05bc6eef6621806ee54b73f0",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "2fdb11e6c228f0fe3c945bebd08a166e40e6e3e1db27c33e8788015c4693c4a0"
+        },
+        {
+          "name": "first_thread_temporary_storage",
+          "kind": "storage",
+          "line": 214,
+          "header_sha256": "6575f74e80afc49bc6c0747bf5088e18eaca5d1780de5f19150a4e69a2404006",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "f30d482d22533543f3c5a05e490fbd255ee3d0a4d58adc0c8af1579015e22e95"
+        },
+        {
+          "name": "first_thread_temporary_storage_data",
+          "kind": "storage",
+          "line": 215,
+          "header_sha256": "297f580340f29e160b4ab1441c4f909c6832f793cd40ef45ffafc5ba071009ab",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "39dc13be655bd5b4b1d7979e8f160f49a0f50fab24a8102d0b60f3fb5457ef6c"
+        },
+        {
+          "name": "__jai_runtime_init",
+          "kind": "procedure",
+          "line": 217,
+          "header_sha256": "5e637369b8965f4635bde3d998eb45266fae2c693c9014d4ecde7f73632bfefe",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "b93661b3a9408c3dbc3ea4fe85f16904a6515cdfd3d967b131889749126324e9"
+        },
+        {
+          "name": "__jai_runtime_fini",
+          "kind": "procedure",
+          "line": 225,
+          "header_sha256": "317526cbb4a0ac751e3d0f3262ae7c1ae1f6863383b85a0fd0bc0e81a4b898e7",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "329d0f69cd03780ce8ce7d96009579b4ad22873856b4f7468c2119e2cd10f05e"
+        },
+        {
+          "name": "runtime_startup_first_hooks",
+          "kind": "storage",
+          "line": 247,
+          "header_sha256": "6c48bfbdb2ecfb9ad4bf5d128f27e6b6e5e7a5735ce3a5f04bacf57437685b28",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "68537bb099bbe039c4901a1df579c4e237ce0afbe2259e68d1d52a8912400155"
+        },
+        {
+          "name": "runtime_startup_second_hooks",
+          "kind": "storage",
+          "line": 248,
+          "header_sha256": "b7c899ae98f24470b13ec87944bc7467b40ba9d7309feea97b0f49a26c854a12",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "053b1a17b44367a3808c59eafebe9b7ddbd7224c30f18d73fd2991428bf5aea6"
+        },
+        {
+          "name": "__instrumentation_first",
+          "kind": "procedure",
+          "line": 249,
+          "header_sha256": "f7f22982530a2d666109629c41b223098d895b5bef8378dfc482962e83830a47",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "6e29fc1b6e92aa73237521086bf5ddc8e0d611b676af0010c1cfbd9349a06286"
+        },
+        {
+          "name": "__instrumentation_second",
+          "kind": "procedure",
+          "line": 252,
+          "header_sha256": "53ce7e8c0d3471215eccf4caa826b92aeaad0b33b6084fac19217a28a4e85695",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e2e263de250ae820113acc6c59d49cbc716fc76996ccba3f7de0ff7531aab84a"
+        },
+        {
+          "name": "__system_entry_point",
+          "kind": "procedure",
+          "line": 258,
+          "header_sha256": "83b05aad029af6f950a72d4f4a9e88116a8351b9d3416d733d5c78a3f4f93e81",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "0860e4bd13b266f24609b7e61265915d79abfa6aa185a8d3a4d24f31410f6ad6"
+        },
+        {
+          "name": "notify_allocator_event",
+          "kind": "procedure",
+          "line": 280,
+          "header_sha256": "b8c47cac8583d3f6725c42deb5b7c2d5ac91038105448fc8d4e3ceb110ba017c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "5f9ec7a46e9d4fbc3d960dce67972f3eb870bc09bced7350ca137c04de0cbfde"
+        }
+      ],
+      "loads": [],
+      "imports": [
+        {
+          "line": 262,
+          "flags": [],
+          "target": "Runtime_Support_Crash_Handler",
+          "dynamic": false,
+          "here_string": false
+        },
+        {
+          "line": 293,
+          "flags": [],
+          "target": "Default_Allocator",
+          "dynamic": false,
+          "here_string": false
+        }
+      ],
+      "module_parameters": [
+        {
+          "name": "DEFINE_SYSTEM_ENTRY_POINT",
+          "line": 2,
+          "required": true,
+          "default_scalar": null,
+          "default_references": [],
+          "type_references": [
+            "bool"
+          ]
+        },
+        {
+          "name": "DEFINE_INITIALIZATION",
+          "line": 2,
+          "required": true,
+          "default_scalar": null,
+          "default_references": [],
+          "type_references": [
+            "bool"
+          ]
+        },
+        {
+          "name": "ENABLE_BACKTRACE_ON_CRASH",
+          "line": 2,
+          "required": true,
+          "default_scalar": null,
+          "default_references": [],
+          "type_references": [
+            "bool"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "stdlib/Basic/Memory_Debugger_Core.jai",
+      "sha256": "6dc5bc76eae2cb17fea1075d60dde5ab3997c9d8626f217592ba83937f6fd81b",
+      "declarations": [
+        {
+          "name": "Allocation",
+          "kind": "record",
+          "line": 2,
+          "header_sha256": "04a40aa8c9bdfcdb19b41dff830f4d83cd22a8595d9c076a7add1b446a22e859",
+          "members": [
+            {
+              "name": "pointer",
+              "kind": "field",
+              "line": 3,
+              "header_sha256": "a28842a3faff5cf3bb021bbe98d6821427594df9311ea26b8c52a989150917af",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f5735b0b3f31fbb229c82bcd0555c2bae1a8855c8f0fece3027ae613310d54f0"
+            },
+            {
+              "name": "size",
+              "kind": "field",
+              "line": 4,
+              "header_sha256": "9a75dda5a9af7580cd8271ffe47bb3ed2aa80b4826e173c5d0c245a4775bbec6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f3bde9c858967dab2e44920581b4b7e9f5a4b1d71b292dea70f39f7ceac39a36"
+            },
+            {
+              "name": "index",
+              "kind": "field",
+              "line": 5,
+              "header_sha256": "185746a85a7a42fa5e04d5810cfb1747eecf248b9e3b28f0920dba741d5f3f25",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "377b77464b5e19d1f12a425e30458787957038c46014348bbe10fb1f1b185f89"
+            },
+            {
+              "name": "alloc_site_trace",
+              "kind": "field",
+              "line": 6,
+              "header_sha256": "736161269566c8972a3827da1ad98fc045997f2d557072a99da00c4ff769d593",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8ea66a27ef632fafedeb705959be68a986b5d4ba7a608822b0a729628b8b4d75"
+            },
+            {
+              "name": "free_site_trace",
+              "kind": "field",
+              "line": 7,
+              "header_sha256": "7d41d02bce700ec336dc2eddc4d614fd941aee4c2760c9e284bbb0a1db8749c0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "fe32ee862d90fb4dd1e8f4fcaa386def2306308808e7235b0aacdc4ca3f0da52"
+            },
+            {
+              "name": "thread_index",
+              "kind": "field",
+              "line": 8,
+              "header_sha256": "230250280378843b49dd3b51aa96176084f4e8d2603682101407404579116815",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "44102fb8f3d177fdd012c0a9575fe7a802b1f9231b88c9137ece47b821f18ce1"
+            },
+            {
+              "name": "propagates_leak_ownership",
+              "kind": "storage",
+              "line": 9,
+              "header_sha256": "44621e3ac28f4a31ff4eee038b82dc77781ee1c6f9dc31109e42bb84d810bb52",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "339c608ef2f47cce481153080074060d8e5fbebee96e0d03167f1b759a94c321"
+            },
+            {
+              "name": "is_live",
+              "kind": "field",
+              "line": 10,
+              "header_sha256": "09a9c29302eea2b01de45753383b027a5c8c804bae8c66ebcfbe6ebf7c609f63",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "07f4f9bf800fccb3f6adee60ac8d5b75104dfc95c20d2121546edaca70ce49e9"
+            },
+            {
+              "name": "vis_reported_freed",
+              "kind": "field",
+              "line": 11,
+              "header_sha256": "049690e49d15ecd921012676e9cfec0a10fd248f2ebd7c30543e0a341f12d809",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "cc9ef54ca7e3130d654ce66889ff68e2ff08ffecc04ec932c53043760ea3e513"
+            },
+            {
+              "name": "visualization_update_cycle",
+              "kind": "field",
+              "line": 12,
+              "header_sha256": "7cede246b39ca12f5fa5ad154d96fd8f63f7aee50b662d92fedd6647a2dbe704",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "c1395dfa7f403ee1d8740f9e60780b2e44793d663af1ce5d20dd0808cedbd395"
+            },
+            {
+              "name": "allocator",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "424cb2ea343810106c5cab8a1009303d943a6649825cd2089a877ca827358e10"
+        },
+        {
+          "name": "Packed_Stack_Trace",
+          "kind": "record",
+          "line": 15,
+          "header_sha256": "8dca00e19b8aa9841d40cc97cec018642ab8e0f1223c1ef6209b5ce87289a778",
+          "members": [
+            {
+              "name": "hash",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "201f149966a1fd4ca277b9bd1ddaf7f950dd80e40d39de1540cdbf94194a5451",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3386daa32c865a235befb05f9cc5f18d7e87b9636fc99ef1de85595850038402"
+            },
+            {
+              "name": "nodes",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "3e94381f9c23438f29ae7f509800f202293d708735bee7fd3c5d6756d268d18e",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "77acffecae9100e23170af1204cf3efe3d5c90254541a89aab61cef1d451ca06"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "fec8e13ca65c8d9475d3795ce42ac7e659e49aa0c4871e9b571ca873dc1d9e37"
+        }
+      ],
+      "loads": [],
+      "imports": [],
+      "module_parameters": []
+    },
+    {
+      "path": "stdlib/Basic/Memory_Debugger.jai",
+      "sha256": "3d6742a12d6c2e41283c6d4a38b12f6cd0ab4812c1cba5536f9cc3b65862f1fc",
+      "declarations": [
+        {
+          "name": "inside_memory_debugger",
+          "kind": "storage",
+          "line": 7,
+          "header_sha256": "dd787cbb728f7e717d91d68951117a4f635d4c54588e1d00175fb61446afa455",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "ebb7b33f3d0a99a6f9ad46dae22432e84178f744c2a49b1f20df8ab10954907f"
+        },
+        {
+          "name": "__basic_memory_debugger_lock_owned",
+          "kind": "storage",
+          "line": 8,
+          "header_sha256": "ade20e9315dfa77c57464f59af87b2afbe1319f4e10063b31cc0f235082bf2af",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "954226f51593a5436871385300b6d53a78db64e0d022e3e7ada4cc0fdfcb148b"
+        },
+        {
+          "name": "__basic_memory_debugger_hook",
+          "kind": "procedure",
+          "line": 9,
+          "header_sha256": "c960ddbe0d08ff84d4c821eb98ea5c0a71c2aa6847ed334d2616e234c192af0e",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "d456b1f1c220d9bb77d4bbd82e931cee854a4ce0f2358158b217f11af998f4a2"
+        },
+        {
+          "name": "Procedure_To_Elide",
+          "kind": "record",
+          "line": 13,
+          "header_sha256": "a944c3a03e8b8479ab5b75416e48d005e49122d5c706ac7f6bd703237340954f",
+          "members": [
+            {
+              "name": "procedure_name",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "cc160041c9335e4c3c62411e60ea6efb972f5a3c06dc4ebf230ec3c0df97fd2a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3815557e33a20073dee237b96109b8f3502da065f552dac0ff97657af9285c18"
+            },
+            {
+              "name": "module_name",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "63adc0b2c52d99d2e6d43402403b283ddb916e338485986669c42a21c4ca3230",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "bb4ba923eb94fe2dc2bc1a86765f0720fd7dd215a01edf251d20b3f18aa764c7"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "d3a1b07f0bad17cf3f30df735c6f9797f7b5b2fb5e0e13c6f214b6c78199fa24"
+        },
+        {
+          "name": "Leak_Report_Options",
+          "kind": "record",
+          "line": 14,
+          "header_sha256": "3bce4ac52b2bd571c4a09fa7e313e07228b661813345dd37fc7c68fddfef1aa3",
+          "members": [
+            {
+              "name": "known_allocation_leaves",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "818aea1610bca343a9256dfbde3460aa1dc617aac59aff60f7a490e999e35e5a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "e8a780c9c3b651917bf6706a14e96f7b12817563f1ad01c16ee41c007e8b74ad"
+            },
+            {
+              "name": "roots_to_skip",
+              "kind": "field",
+              "line": 16,
+              "header_sha256": "002439ee6ecc2fbb1c89657f45b532e613ab4696ec39e72b8c68740c5fef0519",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f4d81e98aa0e7e4081f2cb62c3e9afc6eb68efbe3fd626d96e10571925605751"
+            },
+            {
+              "name": "group_by_these_calls",
+              "kind": "field",
+              "line": 17,
+              "header_sha256": "e9755209983d320b76f34c74ea93253b85ecf204fbcf31d508644a64aab36b4a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "de42126f44858dec1f14c2a5591174308aa32a4912a1a56db1e2126225e2d24a"
+            },
+            {
+              "name": "scan_global_memory_to_remove_leaks",
+              "kind": "storage",
+              "line": 18,
+              "header_sha256": "f61312addc07952f4610d8638048a991582e9433e423c89f2d2d13ce2c18fcf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "10e4cab8f660c632bc5b661c955dba5780c9e650f59b537d9068f1f2bb3e4a2a"
+            },
+            {
+              "name": "scan_leaks_to_combine",
+              "kind": "storage",
+              "line": 19,
+              "header_sha256": "762e46666e955aa2da35a7a2d6a6c2d4c1b5a0e509ad8f82d1f0f646e341d53e",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "394564af5293bcd87e1df074f57e1ce2e58fc1b224ab0bc79f49b8a9fa86a522"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "b4cee1211ee96135df02f4d1664e4e8b07a5fc8def43bd9078b4a55f37467641"
+        },
+        {
+          "name": "Leak_Combiner_Record",
+          "kind": "record",
+          "line": 21,
+          "header_sha256": "c22b9297179d602e75e3b8a78d75335a17c64fc6b12ae6466a07a4bd6a8e48e6",
+          "members": [
+            {
+              "name": "child_count",
+              "kind": "field",
+              "line": 22,
+              "header_sha256": "588a996c61bd1b3406fb168c7e5f44b481e18cb19576da3793e33d8da20e3283",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "49d47233e51d3fea71f32cf4c29f40d2f98b789214a935b67e2c17021d847521"
+            },
+            {
+              "name": "child_bytes",
+              "kind": "field",
+              "line": 23,
+              "header_sha256": "3a637f3cbd6f01c02bc7d700d964bbfc6179a01278e96604eb91cd03abe26365",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b356849a5d3b23eb25b59f97a19e5d63cca5e2953d21045cdbc625126be790cf"
+            },
+            {
+              "name": "my_bytes_were_combined_into_this_parent",
+              "kind": "field",
+              "line": 24,
+              "header_sha256": "297df8a210c450cda3811f4e6201c38d3a80ec654abcc0d05ab3a508dd505e6c",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "aa2dd8b1744640d9e6c99612effddc57fee740df5d2df5a02ea7c86b7dbb6b89"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "bf81d62cbb412e50815e4264f1ae4c76bbba3e93a6b9bb4195a2ce9ca69a2be6"
+        },
+        {
+          "name": "Leak_Report",
+          "kind": "record",
+          "line": 26,
+          "header_sha256": "e9a9d4b907b003bd3c16988f0e0386f16134416eb4101cc0455bca82bf3bf8e4",
+          "members": [
+            {
+              "name": "marked_as_non_leak_allocations",
+              "kind": "field",
+              "line": 27,
+              "header_sha256": "70c09501bbfdb0b282b788db06d23ede51e019cf68a32ebc29d3b81d7927a81c",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "85163d4cd39e0fcc50fec3262ee2f0c0da621c25b668ab1a6ac6718ae21aea9e"
+            },
+            {
+              "name": "marked_as_non_leak_bytes",
+              "kind": "field",
+              "line": 28,
+              "header_sha256": "54fabf5cd8034566305232a13a6980ed8497964c563502d723d4762e4007a358",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a78066f1542c4c45062218da5dc3a5d4bf640f7809088f46be8ac3e1de30f537"
+            },
+            {
+              "name": "sorted_summaries",
+              "kind": "field",
+              "line": 29,
+              "header_sha256": "fe13f6418c07c7ceefc7d6bcc8e27db66e66ace1188981423faf531c8572cbf0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3fd51fc92590786d4e8ad3352a18be060ea75a3bd6b43977051bb12183124780"
+            },
+            {
+              "name": "leak_combiner_table",
+              "kind": "field",
+              "line": 30,
+              "header_sha256": "03a382c1cf6aeb409c65bfefa8c2553db614e6b650291f6fbd331fcf341eaa56",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "df29800f70c9d514b50e92f5fa8f9b1e89f7c4f9ea216a2b9039523d806be395"
+            },
+            {
+              "name": "pool",
+              "kind": "field",
+              "line": 31,
+              "header_sha256": "b4bd0be4d460ca74b3176f5eeac8b1dab3e1253984cc9f5e74a4aacd17194110",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "ea599e7bc896bb798af767210afe0ca1d30da2f72fb7064617cd2d9cb5767d7b"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "27d62604e35ec0daf71a947a3c922b14adb763b10be88a85090ae80b1487bd96"
+        },
+        {
+          "name": "Leak_Summary",
+          "kind": "record",
+          "line": 33,
+          "header_sha256": "7bc68e8cdf6a46becf85ee4a51584eedac0e92f88a1ca4cdfc8b03ae4d7194b7",
+          "members": [
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 34,
+              "header_sha256": "8578f69779c21194f1bdf4b3cc8270b5abccc5c7968ef5bf691fd87151c22f57",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b7eeb9dabd38b8c211ffd1d236c03804947443e6a76623d835ec20253480874f"
+            },
+            {
+              "name": "bytes",
+              "kind": "field",
+              "line": 35,
+              "header_sha256": "4a08144e315821db393a464715ba992ecc61475efb6e6a54fc63e1203d7dd686",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "0092cc8a5908261e82b3d42f69ebf6a226d53089088b05e4dd54a2f1fd8b4032"
+            },
+            {
+              "name": "allocations_since_last_visualizer_update",
+              "kind": "field",
+              "line": 36,
+              "header_sha256": "4a2a83325cf310f30efb465ee13bdcf7877c15f1a988f63cc503b4dad305e3af",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "038a6633a0fad64343f7ebb77c6e44d874dd1d585b815325d81bdc5737a9296e"
+            },
+            {
+              "name": "bytes_allocated_since_last_visualizer_update",
+              "kind": "field",
+              "line": 37,
+              "header_sha256": "e2612e627efe6207c24f8934214482d84db53b0ac73db993d14484a0fe2d8be4",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "e970815fe1ca0d800efe190ad1db649ff1f34242614f69800af3ce833ad1104d"
+            },
+            {
+              "name": "alloc_site_trace",
+              "kind": "field",
+              "line": 38,
+              "header_sha256": "736161269566c8972a3827da1ad98fc045997f2d557072a99da00c4ff769d593",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8ea66a27ef632fafedeb705959be68a986b5d4ba7a608822b0a729628b8b4d75"
+            },
+            {
+              "name": "allocator_proc",
+              "kind": "field",
+              "line": 39,
+              "header_sha256": "15ec39697af896f4e7180eb0f42fb2ab44d97a8de240219f206d47f013d4403f",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "29d4c300e3aa461069df8550feaacfb83e0b605b808b0fd0ced12b698dbb9a5c"
+            },
+            {
+              "name": "group_info",
+              "kind": "field",
+              "line": 40,
+              "header_sha256": "680434b358e8de0a1370c54d24747d3a2187ce64587568c12c843425a9a54fd1",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "84039a0ae68faab7394008447555469320814344027822705c0bdd7b4c40a3fa"
+            },
+            {
+              "name": "child_count",
+              "kind": "field",
+              "line": 41,
+              "header_sha256": "588a996c61bd1b3406fb168c7e5f44b481e18cb19576da3793e33d8da20e3283",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "49d47233e51d3fea71f32cf4c29f40d2f98b789214a935b67e2c17021d847521"
+            },
+            {
+              "name": "child_bytes",
+              "kind": "field",
+              "line": 42,
+              "header_sha256": "3a637f3cbd6f01c02bc7d700d964bbfc6179a01278e96604eb91cd03abe26365",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b356849a5d3b23eb25b59f97a19e5d63cca5e2953d21045cdbc625126be790cf"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "bc8447df878bb071bf6ac2450cf0cdc6b774bfbcb2ffe28f6c0598cb30df7ac6"
+        },
+        {
+          "name": "Group_Info",
+          "kind": "record",
+          "line": 44,
+          "header_sha256": "989aff6c8cc858bb9ea9600949e17eeedb068a629c9ac07e4015a7869691050d",
+          "members": [
+            {
+              "name": "procedure",
+              "kind": "field",
+              "line": 45,
+              "header_sha256": "da4acaba6661cbbbe27bd68f822c1408e6baf44f8822d9603976dda5b0492208",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b2e57c2fd80be81fadff1fb9dd0fc8b4e0c0c9dc0992393d6472ca31ac93d6ea"
+            },
+            {
+              "name": "sub_summaries",
+              "kind": "field",
+              "line": 46,
+              "header_sha256": "890ae237531ebcd5bef6c71513f60e19d5575e3d5f3578b14bfb23d885c045c6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a14387f28d325cb3cf835be23b0705333ceed490e7f2dcf320858972f429aef9"
+            },
+            {
+              "name": "root_nodes_in_common",
+              "kind": "field",
+              "line": 47,
+              "header_sha256": "77fe79b4c8ecfb1cf388d37c4a1c87495bfeea5af1dc170604dca0109704c889",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a638150369a918986f3922548dc5462fb76932df111889fcb476c49b645a36fb"
+            },
+            {
+              "name": "leaf_nodes_in_common",
+              "kind": "field",
+              "line": 48,
+              "header_sha256": "857574397f4e71980690cc391db5e397b3ff8a4e015c479d36283379b99c3b9b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "95cdde85050874c3afb108f3b8ae64bdfb6ee08bc75ecac91aa0bf3620ceff1c"
+            }
+          ],
+          "implementation_form": "declaration",
+          "contract_sha256": "95c642c5cf144f1fe8d982f09910c062b2046991ff9b2d1abbf2a0bd6aea6e4a"
+        },
+        {
+          "name": "Preamble",
+          "kind": "procedure",
+          "line": 51,
+          "header_sha256": "083905fa5c30b603a67645ff1c970942f2ec07ef4a4a584a8cb410314f67ef29",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "0d40e9de4a56af2c270162baacf59d4ab8f309de823d2697ebeb70d00f2872e7"
+        },
+        {
+          "name": "add_allocation_to_table",
+          "kind": "procedure",
+          "line": 57,
+          "header_sha256": "dcc29bdc2f27ba3823d36535993afd7b1cba7fb18abd74d8b71f9725f345bc9e",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "87b8016e0bf79052d5a9d9857585fb4665b5b950a1bdb6d0f1a806ac22066f2e"
+        },
+        {
+          "name": "add_allocation_this_frame",
+          "kind": "procedure",
+          "line": 63,
+          "header_sha256": "cd56894bf97b2667c9b2158e1ca29dbb00fec8d0048a580a5ee96b86069f4ad7",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "b8fa51750af19ead9e3125c31cc5baf2553b5ff36fd55b4a0c8ae5e50e0d4775"
+        },
+        {
+          "name": "add_free_this_frame",
+          "kind": "procedure",
+          "line": 72,
+          "header_sha256": "3916308e1a2f29b4ea171e65db87cc5e656b8779420d2664fb3657fc219ab18c",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "22a6e653d020c697cd72da96c5ef28b32015f059f06ae128a46b57bda4abc6dd"
+        },
+        {
+          "name": "_check_alloc",
+          "kind": "constant",
+          "line": 82,
+          "header_sha256": "c0952d9151f1955c73e76bf1000e8cf37cfdf6622223749aa3fe6f6500006e19",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "cf3e7ee69aaeb3566d3ce64bf3a928e13d06f2a0f802288fc711322917abb0ab"
+        },
+        {
+          "name": "md_heaps",
+          "kind": "storage",
+          "line": 323,
+          "header_sha256": "d167ddd425093cde67e73bbb0cf016c7b65926f02a079bc667f0a6b5fc675184",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "180495cbb20664f8128a80216f959630e4ad5fb870de4ae498393e7094fac781"
+        },
+        {
+          "name": "md_owner_context",
+          "kind": "storage",
+          "line": 324,
+          "header_sha256": "85bf7b72c795e176c6e6b908dd016a5241591acf654e4abb4daf923eb03d135f",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "9d1e9fd814731eed649594d92e884dc50217a9f8d69211175ace4d94cdcf2299"
+        },
+        {
+          "name": "md_owner_thread_index",
+          "kind": "storage",
+          "line": 325,
+          "header_sha256": "8868efd7e24566c0c2ce987a23a7b910bba536bcd605974a7c25283a96d99fb9",
+          "members": [],
+          "implementation_form": "declaration",
+          "contract_sha256": "37f4c83a8f39c499b7f8588b8d92c182728480cb0be31c1db9f5afc218bf1af7"
+        },
+        {
+          "name": "_md_begin",
+          "kind": "procedure",
+          "line": 327,
+          "header_sha256": "a4bf9bd4f717132721a0a2b7999033bde2e91cab3868411f27a815bd1297b8cb",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "72288db99c3ed53de42fe9c4f490adf0cb8d8d5b24fdbf5fbb2dda2734ff90a9"
+        },
+        {
+          "name": "_md_acquire",
+          "kind": "procedure",
+          "line": 335,
+          "header_sha256": "87fc7dbd39f942597dd9f078f001408d2a4090b1b4168d729a0c14661bd79bf6",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "41142ef51bb8f1eff0be0934442bacc38566a83c20bb32d34859e67458400e8b"
+        },
+        {
+          "name": "_md_prepare_state",
+          "kind": "procedure",
+          "line": 343,
+          "header_sha256": "e0a546a9cb78d80366d645c29bc5fabe1ea46f58e67616e71a453b9dd615f7cb",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "8b72d60e928d8bdf285a55043dc291c2c0bdca7a40d2b53bef1be9387e2dcc3b"
+        },
+        {
+          "name": "_md_end",
+          "kind": "procedure",
+          "line": 347,
+          "header_sha256": "ebaf38991552809064438b3ec9cae100513228ecb3721274b9131359a0f7be8a",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "e57735b674f2084e2c4c7acbe4affc1149ccc408ba948048c5a7882b0918b7a7"
+        },
+        {
+          "name": "_md_release",
+          "kind": "procedure",
+          "line": 351,
+          "header_sha256": "ee1ca0846f25c6d246cabad43acec3866d625a7085176cb8b58c8f7b69d7c5f4",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "13cbf59bf3952fa136f41b060f83436afc8babf36641d3c069224fd5a2ce42e9"
+        },
+        {
+          "name": "_md_ignore_allocator",
+          "kind": "procedure",
+          "line": 356,
+          "header_sha256": "817d80e55c371c162b596a038d3b271be973c0ac1e62acd9c935a20b0a4f8ad7",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "754d6c507e80c144753d5ba6a51cd25e2c204fceb37affe384fc9c147cb783f9"
+        },
+        {
+          "name": "_md_compat_begin",
+          "kind": "procedure",
+          "line": 364,
+          "header_sha256": "6a5d5e2f9f227f02817f2fc894ef0b1f52358907b53976197093dd11c657ce82",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "f8e55178de32df1aeed939a7ef2510ad2288ac8c27fe507b80257015ac49ad35"
+        },
+        {
+          "name": "_md_compat_end",
+          "kind": "procedure",
+          "line": 384,
+          "header_sha256": "1f88cebc53c0f2aeb64ab5dc5e59567935096a2bc0eeb7b2f6c0e136925b4d18",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "3a7c73f2704b0cdb3ef77025a857d9784eb29017eda595c25b05463f61461eb5"
+        },
+        {
+          "name": "_md_retire_backing",
+          "kind": "procedure",
+          "line": 388,
+          "header_sha256": "8dc47877d4286fe14a220c9484bf284dc432a45dc5d9cda7bfa9ad6d5fc86ef0",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "a833aa17871e8223e3b5faec9d4e07071321007a8e210b49a747f2d164929e87"
+        },
+        {
+          "name": "_md_dispatch",
+          "kind": "procedure",
+          "line": 397,
+          "header_sha256": "5b8d49b7c138d0156f6c538b1d2ce27853dd768ec3d35d6b16e533de71f42822",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "0ca00f56d7ef97a899faf2bffa765f1e8ee72c541eca9d357b73df13ac61d263"
+        }
+      ],
+      "loads": [
+        {
+          "line": 10,
+          "flags": [],
+          "target": "Memory_Debugger_Core.jai",
+          "dynamic": false,
+          "here_string": false,
+          "resolved_path": "/Users/matthew/projects/jai/stdlib/Basic/Memory_Debugger_Core.jai",
+          "source_exists": true
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "flags": [],
+          "target": "legacy/Hash_Table",
+          "dynamic": false,
+          "here_string": false
+        },
+        {
+          "line": 4,
+          "flags": [],
+          "target": "legacy/Pool",
+          "dynamic": false,
+          "here_string": false
+        },
+        {
+          "line": 5,
+          "flags": [],
+          "target": "legacy/Compiler",
+          "dynamic": false,
+          "here_string": false
+        }
+      ],
+      "module_parameters": []
+    },
+    {
+      "path": "stdlib/Basic/Visualize_Memory_Debugger.jai",
+      "sha256": "226c7bff64e763fd7e82494a2b4fe987ef0320318db1f9a9af85737019b33283",
+      "declarations": [
+        {
+          "name": "memory_visualizer_per_frame_update",
+          "kind": "procedure",
+          "line": 194,
+          "header_sha256": "977dff0fea4b29468c65c6bd210c5308f4ea46730479a9ac442f2d69695b26ce",
+          "members": [],
+          "implementation_form": "source-body",
+          "contract_sha256": "00b7de1389a7d3fd5244ee6f11ae451a15d0f605ffde8edaa7e7fc170b7f5e2b"
+        }
+      ],
+      "loads": [],
+      "imports": [
+        {
+          "line": 3,
+          "flags": [],
+          "target": "Protocol_For_Memory_Visualization",
+          "dynamic": false,
+          "here_string": false
+        },
+        {
+          "line": 4,
+          "flags": [],
+          "target": "Shared_Memory_Channel",
+          "dynamic": false,
+          "here_string": false
+        },
+        {
+          "line": 5,
+          "flags": [],
+          "target": "Hash_Table",
+          "dynamic": false,
+          "here_string": false
+        }
+      ],
+      "module_parameters": []
+    }
+  ],
+  "maintained_apis": [
+    {
+      "name": "make_leak_report",
+      "signature": "() -> string",
+      "body": "actual generated temporary leak text; explicit disabled policy text when tracking false",
+      "status": "authored_unverified_overload_selection"
+    },
+    {
+      "name": "log_leak_report",
+      "signature": "()",
+      "body": "writes actual maintained text result",
+      "status": "authored_unverified"
+    }
+  ],
+  "historical_apis": [
+    "Procedure_To_Elide",
+    "Leak_Report_Options",
+    "Leak_Report",
+    "Leak_Summary",
+    "Group_Info",
+    "Leak_Combiner_Record",
+    "Allocation",
+    "Packed_Stack_Trace",
+    "Preamble",
+    "_check_alloc",
+    "_check_free",
+    "_check_realloc",
+    "_check_create_heap",
+    "_check_destroy_heap",
+    "add_allocation_to_table",
+    "add_allocation_this_frame",
+    "add_free_this_frame",
+    "allocations_before_this_call_will_not_be_considered_leaks",
+    "this_allocation_is_not_a_leak",
+    "this_allocation_leaks_todo",
+    "this_allocation_does_not_propagate_leak_ownership",
+    "report_memory_leaks",
+    "make_leak_report(options,for_visualizer)",
+    "log_leak_report(report,options)",
+    "deinit(report)",
+    "init",
+    "memory_visualizer_per_frame_update"
+  ],
+  "source_behaviors": [
+    "actual real allocator procedure/data pairs, null/failed allocation handling and strict unknown/double/owner/size checks",
+    "captured stack node copies and retained free history until quiescent teardown",
+    "failed realloc leaves old live; confirmed moves retire old even history storage OOM; heap destroy retires all despite stack OOM",
+    "ordinary resizable arrays and default Basic(false) wrappers reach actual chosen callback",
+    "default-initialized genuine source Context procedure; no callback IDs or fabricated nominal records",
+    "actual Context address is atomic pointer gate; thread-index facts also CAS; copied booleans cannot grant ownership",
+    "known runtime retirement of actual temporary pages; absent/nonlive unobserved backing does not impersonate ordinary strict frees",
+    "owned report pool and trace copies, real allocation-base pointer scanning from explicit annotations and genuine compiler global segments",
+    "acyclic ownership combinations with a root for cycles, actual stack grouping/sorting/trimmed logging",
+    "complete local visualization wire snapshots; frame allocation/free accounting and retry after queue pressure"
+  ],
+  "public_shape_notes": [
+    "Memory_Debugger_Interface exposes constant procedures, restoring zero stored fields rather than five appended proc slots",
+    "old public leak records preserve ordered stored fields",
+    "private Context extensions are genuine source members; selected Context/Preload schema differences remain explicit in basic-collections.json",
+    "Runtime observer private protocol has seven genuine formals including actual finalization-retirement boolean; original five allocator hook signatures unchanged",
+    "make_leak_report() text overload coexists with original defaulted-options record overload; typed selection pending"
+  ],
+  "configuration": {
+    "MEMORY_DEBUGGER": false,
+    "VISUALIZE_MEMORY_DEBUGGER": true,
+    "REPLACEMENT_INTERFACE": "Memory_Debugger_Interface"
+  },
+  "dependencies": [
+    "selected canonical Preload protocols and actual #Context construction",
+    "Runtime_Support real callback member metadata and default initializer",
+    "certified ordinary descriptor-to-Type inverse and nominal comparison",
+    "canonical compare_and_swap pointer scalars",
+    "legacy/Pool and legacy/Hash_Table",
+    "legacy/Compiler genuine RuntimeInfo global-data ranges",
+    "Basic stack metadata/formatting/temporary allocator and clocks",
+    "Shared_Memory_Channel and Protocol_For_Memory_Visualization for optional client"
+  ],
+  "incomplete_or_limited": [
+    {
+      "api": "semantic/VM/native/default-context assembly",
+      "status": "unverified",
+      "reason": "True callback/default producer, canonical inverse, caller-value macros, RuntimeInfo publication and overloaded result selection await integrated compiler candidate."
+    },
+    {
+      "api": "global/interior roots",
+      "status": "limited_source_behavior",
+      "reason": "Scanner recognizes aligned allocation-base pointer words; interior and unaligned references remain unsupported."
+    },
+    {
+      "api": "module filter",
+      "status": "selected_schema_adaptation",
+      "reason": "Stack metadata lacks original module field; exact source path components/.jai basename match instead."
+    },
+    {
+      "api": "deinit and copied contexts",
+      "status": "quiescent_lifecycle_requirement",
+      "reason": "Clears shared history and current context callback. Copied contexts retain static procedure and may start fresh history; concurrent live old ownership at teardown loses history."
+    },
+    {
+      "api": "replacement finalization",
+      "status": "replacement_policy_responsibility",
+      "reason": "Custom five-hook replacement receives actual runtime backing frees and decides its own observation/retirement policy."
+    },
+    {
+      "api": "visualization/client/concurrent execution",
+      "status": "unverified",
+      "reason": "Actual channel/client and concurrent native paths not yet run."
+    }
+  ],
+  "validation": {
+    "syntax_receipt": "artifacts/stdlib-rewrite/basic-collections/debugger-syntax-merged-20261002.json",
+    "architecture_review": "read_only_design_review_approved; no runtime certification",
+    "historical_core_check": "artifacts/stdlib-rewrite/basic-collections/memory-debugger-core-historical-check.json",
+    "historical_core_result": "earlier source hash hit readiness panic before assertions; current26case source not executed",
+    "fixtures": [
+      {
+        "path": "tests/stdlib/memory-debugger-core.jai",
+        "sha256": "fef2d684f27826ce2f34c116af040e5f0860c9cd4c4b72a0b64cc9d4d32b921e",
+        "status": "syntax_passed_behavior_unexecuted"
+      },
+      {
+        "path": "tests/stdlib/memory-debugger-disabled.jai",
+        "sha256": "facc5b141d903fa6aa8949396c7ca761110539f09e191b3cc60a125354b71237",
+        "status": "syntax_passed_behavior_unexecuted"
+      },
+      {
+        "path": "tests/stdlib/memory-debugger-retirement.jai",
+        "sha256": "23c09a071808cda6404cf9d3177381b856b2d58bc0d961150c999751b924627c",
+        "status": "syntax_passed_behavior_unexecuted"
+      },
+      {
+        "path": "tests/stdlib/memory-debugger-shared-context.jai",
+        "sha256": "0f978d66546c5edf1e61e1734b9a7f22f8025eb2ce01f59f029ac287ba75acc7",
+        "status": "syntax_passed_behavior_unexecuted"
+      },
+      {
+        "path": "tests/stdlib/memory-debugger-text.jai",
+        "sha256": "42dbb81953b3a156e1ccd09829a15dd21a3947ec046f46a5d169a97b0a250247",
+        "status": "syntax_passed_behavior_unexecuted"
+      },
+      {
+        "path": "tests/stdlib/memory-debugger-tracking.jai",
+        "sha256": "d210099a05ed1045ef8733362b7bd9d770322cc53cfdc9b78e49cf00abf2a29d",
+        "status": "syntax_passed_behavior_unexecuted"
+      }
+    ],
+    "semantic_vm_native": "none claimed"
+  },
+  "documentation": "docs/stdlib/basic-collections.md"
+}

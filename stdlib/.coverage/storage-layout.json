@@ -48,17 +48,18 @@
         "pool_allocator_proc"
       ],
       "implemented_behaviors": [
-        "maintained memblock_size, bytes_left, current_block, and integer current_pos fields",
-        "reusable heap block chain",
+        "exact maintained four-field stored record and zero defaults",
+        "private bidirectional backing headers with captured allocators",
+        "pointer-sized logical block prefix accounting",
         "8-byte allocation alignment",
-        "lazy initialization",
-        "whole-pool reset and release",
-        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+        "reusable blocks and reset cursor reuse",
+        "self-context lazy initialization through context.default_allocator",
+        "allocator allocation, resize-copy, lifecycle, named capability, and ownership modes",
+        "nullable allocation failure retaining existing blocks"
       ],
       "compatibility_gaps": [
         "pool_allocator_proc is a callable procedure rather than the maintained source's integer intrinsic marker.",
-        "Source management fields blocks, active, and block_allocator are appended; exact binary layout is different.",
-        "Thread and independent heap allocator modes reject explicitly.",
+        "Thread and independent heap allocator modes reject explicitly and are not advertised.",
         "Old configurable pool layout requires legacy/Pool."
       ]
     },
@@ -77,18 +78,19 @@
         "init"
       ],
       "implemented_behaviors": [
-        "maintained integer position and capacity fields",
-        "alignment default 8",
-        "single contiguous heap reservation",
-        "lazy initialization",
-        "reset stamping",
-        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+        "exact maintained five-field stored record and alignment default 8",
+        "65536-byte lazy block default",
+        "private aligned backing headers with captured allocators",
+        "aligned growing and reusable heap blocks",
+        "poison reset covers every retained block",
+        "configuration retained after fini",
+        "self-context lazy initialization through context.default_allocator",
+        "allocator allocation, resize-copy, lifecycle, named capability, and ownership modes"
       ],
       "compatibility_gaps": [
         "flat_pool_allocator_proc is a callable procedure rather than the maintained source's integer intrinsic marker.",
-        "A source backing_allocator field is appended; exact binary layout is different.",
-        "Reservation is eager heap memory, not native virtual-page reservation or incremental commitment.",
-        "Thread and independent heap allocator modes reject explicitly.",
+        "Heap blocks replace native virtual-page reservation or incremental commitment.",
+        "Thread and independent heap allocator modes reject explicitly and are not advertised.",
         "Old pointer-position layout and module parameters require legacy/Flat_Pool."
       ]
     },
@@ -140,20 +142,26 @@
         "CAPS_VERSION_STRING"
       ],
       "implemented_behaviors": [
-        "legacy public fields and defaults",
+        "exact historical Pool public fields and defaults",
+        "historical logical Memblock next pointer with zero-sized data member and HEADER_SIZE 8 on the 64-bit target",
+        "private in-allocation ownership headers capturing true raw pointers and block allocators",
         "configurable power-of-two alignment",
-        "retained unused blocks",
+        "retained unused blocks with historical used-list reuse order",
         "oversized allocation list",
         "reset stamping and optional block freeing",
         "oversized allocation logging hooks",
-        "consumed in-band byte and oversized-object counts",
-        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+        "logical used-block-count times memblock_size minus bytes_left accounting and oversized-object count",
+        "nullable backing allocation failure before block linking",
+        "allocator allocation, always-acquire resize-copy, named capability, and ownership modes",
+        "historical no-op FREE, STARTUP, and SHUTDOWN callbacks with explicit release cleanup"
       ],
       "compatibility_gaps": [
         "USE_UNMAPPING_ALLOCATOR=true rejects at compile time; no native unmapping dependency is supplied.",
-        "Private Memblock metadata and HEADER_SIZE differ from the supplied implementation.",
-        "Thread and independent heap allocator modes reject explicitly."
-      ]
+        "Private physical ownership headers add heap bytes outside logical memblock_size and calculate_used_memory accounting.",
+        "IS_THIS_YOURS includes retained unused and oversized allocation storage beyond the historical used-list-only check.",
+        "Thread and independent heap allocator modes reject explicitly and are not advertised."
+      ],
+      "status": "source-implementation-pending-semantic-runtime-validation"
     },
     {
       "name": "legacy/Flat_Pool",
@@ -169,18 +177,23 @@
         "CAPS_VERSION_STRING"
       ],
       "implemented_behaviors": [
-        "legacy pointer-position fields",
-        "legacy module defaults",
-        "single contiguous heap reservation",
-        "alignment",
-        "reset stamping",
-        "allocator allocation, resize-copy, lifecycle, capability, and ownership modes"
+        "exact historical five-field pointer-position record without appended ownership fields",
+        "historical module defaults and 4096-byte reserve rounding",
+        "private in-allocation ownership header capturing true raw allocation and allocator",
+        "single contiguous eager heap reservation",
+        "aligned pointer cursors preserving backing allocation provenance",
+        "reset stamps consumed span while retaining backing storage",
+        "fini clears pointer fields while retaining alignment",
+        "self-context lazy initialization through context.default_allocator",
+        "allocator allocation, always-acquire resize-copy, named capability, and ownership modes",
+        "historical no-op FREE, STARTUP, and SHUTDOWN callbacks with explicit fini cleanup"
       ],
       "compatibility_gaps": [
         "Reservation is eager heap memory; first_uncommitted_page equals address_limit because the complete reservation is backed immediately.",
-        "A source backing_allocator field is appended; exact binary layout is different.",
-        "Thread and independent heap allocator modes reject explicitly."
-      ]
+        "Native virtual-page reservation, incremental commitment, and unmapping are not supplied.",
+        "Thread and independent heap allocator modes reject explicitly and are not advertised."
+      ],
+      "status": "source-implementation-pending-semantic-runtime-validation"
     },
     {
       "name": "Treemap",
@@ -201,25 +214,32 @@
         "get_index"
       ],
       "implemented_behaviors": [
+        "exact original Treemap and Treemap_Display stored records",
         "stable hierarchy nodes using legacy/Bucket_Array",
         "recursive parent weight aggregation",
         "stable descending child weight sorting",
         "independently authored squarified rows",
         "intrusive border callbacks",
         "zero-weight and zero-size rectangles",
-        "dirty revision tracking across multiple displays"
+        "private source-owned dirty generations keyed by actual tree and display addresses",
+        "independent multi-display invalidation and callback identity changes",
+        "explicit cleanup retires private cache entries and backing storage"
       ],
       "compatibility_gaps": [
-        "Source revision fields are appended to Treemap and Treemap_Display; exact binary layouts differ.",
-        "Raw bucket removal and cyclic hierarchy mutation are unsupported; there is no public tree deletion API.",
+        "Raw bucket removal and cyclic hierarchy mutation are unsupported.",
+        "Private side state is single-threaded; use cleanup helpers to retire owner registrations.",
         "Geometry has not been checked against legacy outputs or a rendered treemap."
+      ],
+      "additional_apis": [
+        "free_treemap",
+        "free_treemap_display"
       ]
     },
     {
       "name": "Soa",
       "path": "stdlib/Soa.jai",
       "contract_source": "reference/modules/Soa.jai",
-      "status": "partial-source-implementation",
+      "status": "generated-source-implementation-pending-admission",
       "implemented_apis": [
         "Soa",
         "operator []",
@@ -227,17 +247,15 @@
         "for_expansion"
       ],
       "implemented_behaviors": [
-        "fixed packed member columns",
-        "default row initialization before first assignment",
-        "indexed reconstruction and assignment",
-        "overlapping member aliases skipped",
+        "named fixed physical member columns generated through #insert #run soa_columns(T,N)",
+        "original Soa public record without storage or written fields",
+        "one representative storage member per overlapping interval including union representatives",
+        "indexed gather and scatter using actual generated column names and descriptors",
         "forward and reverse value iteration",
         "mutable temporary pointer iteration with writeback"
       ],
       "compatibility_gaps": [
-        "Generated named member arrays such as soa.x are not implemented.",
-        "Physical storage uses byte columns plus a written bitmap and does not match the supplied generated record layout.",
-        "Union records reject explicitly."
+        "Declaration-string insertion and generated-body admission remain pending the compiler provider; generated specializations have no VM or native proof."
       ]
     },
     {
@@ -266,34 +284,161 @@
   ],
   "validation": {
     "syntax": {
-      "status": "passed",
-      "compiler": "target/standard-library-snapshots/b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13/jai-rs",
+      "status": "passed-source-syntax-only",
+      "compiler": "target/standard-library-snapshots/017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381/jai-rs",
+      "compiler_sha256": "017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381",
+      "receipt": "target/standard-library-snapshots/017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381/snapshot.json",
       "command": "jai-rs parse FILE",
-      "files_passed": 9,
-      "compiler_sha256": "b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13"
+      "files_passed": 17,
+      "files": [
+        "stdlib/Bucket_Array.jai",
+        "stdlib/Pool.jai",
+        "stdlib/Flat_Pool.jai",
+        "stdlib/Treemap.jai",
+        "stdlib/Soa.jai",
+        "stdlib/Relative_Pointers.jai",
+        "stdlib/legacy/Bucket_Array.jai",
+        "stdlib/legacy/Pool.jai",
+        "stdlib/legacy/Flat_Pool.jai",
+        "tests/stdlib/storage-allocator-tracker.jai",
+        "tests/stdlib/storage-pool-contract.jai",
+        "tests/stdlib/storage-flat-pool-contract.jai",
+        "tests/stdlib/storage-treemap-contract.jai",
+        "tests/stdlib/soa-generated-columns.jai",
+        "tests/stdlib/soa-generated-overlap.jai",
+        "tests/stdlib/storage-legacy-pool-contract.jai",
+        "tests/stdlib/storage-legacy-flat-pool-contract.jai"
+      ],
+      "latest_narrow_pass": [
+        "stdlib/legacy/Pool.jai",
+        "stdlib/legacy/Flat_Pool.jai",
+        "tests/stdlib/storage-legacy-pool-contract.jai",
+        "tests/stdlib/storage-legacy-flat-pool-contract.jai"
+      ]
     },
     "semantic": {
-      "status": "not-run",
-      "reason": "delegated scope authorizes source-only parser checks"
+      "status": "blocked-before-owned-bodies",
+      "compiler_sha256": "017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381",
+      "scope": "private captured authored stdlib and prelude dependency overlay",
+      "diagnostic": "Basic/module.jai:35:55: #caller_location requires a visible source Source_Code_Location type",
+      "dependency_snapshot": "/private/tmp/jai-storage-layout-j7msepif",
+      "limitations": [
+        "Current combined-source semantic admission remains unverified."
+      ],
+      "current_revision_note": "Latest merged legacy Pool/Flat_Pool bodies and paired consumer fixtures have source-parser evidence only; no new combined-source semantic admission was attempted."
     },
     "runtime": {
       "status": "not-run",
-      "reason": "delegated scope authorizes source-only parser checks"
+      "reason": "Prepared authored #run/native consumers are blocked by shared dependency admission."
     },
     "native": {
       "status": "not-run",
-      "reason": "no supplied original binary or native artifact executed"
+      "reason": "No supplied original binary or native artifact executed; authored native fixtures prepared only."
     }
   },
   "authored_source_sha256": {
     "stdlib/Bucket_Array.jai": "832e00af6ae1ed1bca2b980b6c9c806db14dce7b28085db1b605800ec2e92f87",
-    "stdlib/Pool.jai": "5d9c8b0339f3a73c3dbe8981df0272a664ff18550d444ee3c023d223f0b51a10",
-    "stdlib/Flat_Pool.jai": "4493ec85040a34ccdab2cdbbb7a0ba53bff72a27a3feeca9b6ebeab0be09b8b4",
+    "stdlib/Pool.jai": "d29e738a823f08502fa7b08e4634fc27d716fe1c2bb2a2c870788b2994964d05",
+    "stdlib/Flat_Pool.jai": "d1c3c65e5e5252d17d75ee57089e242e5193c59deb52459d2e632dec9de27fa2",
     "stdlib/legacy/Bucket_Array.jai": "9c400aa1d78c801c4728c9b9781fb969aa7e80243b662837aca9989c2112200e",
-    "stdlib/legacy/Pool.jai": "8a986ef97a1994a9f5a3a11b78be33aeac50caf03e098da8c70799a9e9619596",
-    "stdlib/legacy/Flat_Pool.jai": "12700f1cd3a3448f4217ed749f48572f1869ed1bb39f2f5a0556ce3cf9e7175d",
-    "stdlib/Treemap.jai": "642b46355d67f6e9686d4094c85fbd7efb79f32c968c3091a0d1c3c262353fec",
-    "stdlib/Soa.jai": "8997c59b6ffb92ed34dc09a25cf5b859f50a929c9b85ddcaa57aee4c3c8ff491",
+    "stdlib/legacy/Pool.jai": "106dc5f0ebe6ff55e9a979f7d8b494e7f1782538eedeb777b7f90710a7c7faca",
+    "stdlib/legacy/Flat_Pool.jai": "18011b62d8be181652fc140e5e0ac1a7d36ad1da85795a73f0f5f55484e33788",
+    "stdlib/Treemap.jai": "8d5e415da7ba08c37eaf2ea9bfc0501849bb39a91637d649e00e15d06536ee09",
+    "stdlib/Soa.jai": "5ac1478c890082d044e2e20ae59f0e2b26293aeba1c38253e3d8b17a7bc09711",
     "stdlib/Relative_Pointers.jai": "af7883ede7edfeaae148cf22fdc9e45e9810e1bfbc9ec4ac948f57c00e164f05"
-  }
+  },
+  "consumer_requirements": [
+    {
+      "source": "corpus/upstream/withlang-dev--open-jai/examples/21/21.3_allocators_check.jai",
+      "requirements": [
+        "Allocator callback construction",
+        "IS_THIS_YOURS membership",
+        "CAPS flags and name output"
+      ]
+    },
+    {
+      "source": "corpus/upstream/withlang-dev--open-jai/examples/34/34.3_pool.jai",
+      "requirements": [
+        "zero initialized Pool",
+        "context allocator switching",
+        "set_allocators captures backing allocation source",
+        "byte accounting and release"
+      ]
+    },
+    {
+      "source": "corpus/upstream/withlang-dev--open-jai/examples/34/34.4_struct_pool.jai",
+      "requirements": [
+        "New with pool allocator preserves struct defaults"
+      ]
+    },
+    {
+      "source": "corpus/upstream/withlang-dev--open-jai/examples/34/34.6_flat_pool.jai",
+      "requirements": [
+        "typed Flat_Pool allocation",
+        "New with flat allocator",
+        "overwrite reset retains live backing",
+        "fini cleanup"
+      ]
+    },
+    {
+      "source": "crates/jai-codegen/tests/runtime_intrinsics_source.rs",
+      "requirements": [
+        "128 byte Pool blocks retain 56 bytes after a 64 byte allocation with logical prefix",
+        "Pool reset reuses first block with contents retained",
+        "Flat reset stamps retained memory and reuses first block"
+      ]
+    }
+  ],
+  "prepared_fixtures": [
+    {
+      "path": "tests/stdlib/storage-allocator-tracker.jai",
+      "status": "authored-source-prepared",
+      "sha256": "f2b18287342bf4eed3f16e8e78dfbd42484ed4ebb98f921fc3885e8d8655e50c",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/storage-pool-contract.jai",
+      "status": "authored-source-prepared",
+      "sha256": "5bf4d05aaa959f4ec02e7636ee7930110d7c0d7b03fc2da9c19684fa6e4592b3",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/storage-flat-pool-contract.jai",
+      "status": "authored-source-prepared",
+      "sha256": "ce1e981d464628f298ce7292ced8db119cc0441894284324f0d3ce461e120982",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/storage-treemap-contract.jai",
+      "status": "authored-source-prepared",
+      "sha256": "0a2d1532fb5130a4735f8f1f219b6b3e060c7331fb5fd88e21726d571e81b4da",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/soa-generated-columns.jai",
+      "status": "authored-source-prepared",
+      "sha256": "c3958bdd0395527d903b8cb6aee94d3127845c1319207714e6de19b7a49ef2a0",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/soa-generated-overlap.jai",
+      "status": "authored-source-prepared",
+      "sha256": "2eab33b38c816f62bc38f3d3b28317924076cbceda9b2411f5f30fff0ecbeea5",
+      "syntax": "passed-source-syntax-only"
+    },
+    {
+      "path": "tests/stdlib/storage-legacy-pool-contract.jai",
+      "status": "authored-source-prepared",
+      "sha256": "944c835bf136a1b5c4eb57ae37bc0ec5d8670d8762f6834ff0473363eb55c3d3",
+      "syntax": "passed-source-syntax-only",
+      "semantic_runtime_native": "not-run"
+    },
+    {
+      "path": "tests/stdlib/storage-legacy-flat-pool-contract.jai",
+      "status": "authored-source-prepared",
+      "sha256": "bbe02cde1f78faac1c1bc9d40e73e8d6b9ac64d83656d7b8a955493363276e2f",
+      "syntax": "passed-source-syntax-only",
+      "semantic_runtime_native": "not-run"
+    }
+  ]
 }

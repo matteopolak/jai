@@ -229,6 +229,9 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
         page := arena.overflow_pages;
         while page {
             next := page.next;
+            push_context state.* {
+                notify_allocator_event(.FREE, page.allocator, page, 0, null, 0, is_retirement=true);
+            }
             page.allocator.proc(.FREE, 0, page.size, page, page.allocator.data);
             page = next;
         }
@@ -269,6 +272,23 @@ __instrumentation_second :: () {
     }
 }
 
+#scope_module
+Allocator_Event_Observer :: #type (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement: bool);
+#scope_export
+// The optional real procedure lives in synthesized Context, avoiding an import
+// cycle or callback globals duplicated by different runtime module parameters.
+notify_allocator_event :: (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement := false) {
+    info := cast(*Type_Info_Struct)type_info(#Context);
+    for member: info.members {
+        if member.name != "__basic_memory_debugger_hook" continue;
+        // The checked cast reifies only a registered descriptor's real Type.
+        // Descriptor addresses themselves are not a nominal identity check.
+        if cast(Type)member.type != Allocator_Event_Observer { debug_break(); return; }
+        stored := cast(*Allocator_Event_Observer)(cast(*u8)*context + member.offset_in_bytes);
+        if stored.* stored.*(mode, allocator, old_memory, old_size, new_memory, new_size, is_retirement);
+        return;
+    }
+}
 #scope_module
 Default_Allocator :: #import "Default_Allocator";
 output_lock: s32;

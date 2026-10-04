@@ -19,7 +19,6 @@ Treemap_Display :: struct {
     treemap: *Treemap;
     outer_size: Vector2;
     dirty := true;
-    revision: s64 = -1;
 }
 
 Treemap_Node :: struct {
@@ -37,7 +36,6 @@ Treemap :: struct {
     nodes: Legacy_Buckets.Bucket_Array(Treemap_Node, 1024);
     root: *Treemap_Node;
     dirty := true;
-    revision: s64;
 }
 
 Border_Proc :: #type (corner: Vector2, outer_dimensions: Vector2, node: *Treemap_Node, parent: *Display_Node, border_values: *[4] float);
@@ -64,7 +62,8 @@ add_node :: (treemap: *Treemap, name: string, parent: *Treemap_Node) -> *Treemap
 recompute_if_dirty :: (treemap: *Treemap) {
     if !treemap.dirty return;
     if treemap.root recompute_sizes(treemap.root);
-    treemap.revision += 1;
+    state := tree_state_index(treemap);
+    tree_states[state].generation += 1;
     treemap.dirty = false;
 }
 
@@ -78,7 +77,10 @@ recompute_if_dirty :: (display: *Treemap_Display, outer_size: Vector2, border_pr
     assert(display.treemap != null && outer_size.x >= 0 && outer_size.y >= 0);
     treemap := display.treemap;
     recompute_if_dirty(treemap);
-    if !force && !display.dirty && display.revision == treemap.revision && display.outer_size.x == outer_size.x && display.outer_size.y == outer_size.y return;
+    tree_state := tree_state_index(treemap);
+    state := display_state_index(display);
+    generation := tree_states[tree_state].generation;
+    if !force && !display.dirty && display_states[state].tree == treemap && display_states[state].generation == generation && display_states[state].data == display.nodes.data && display_states[state].border_proc == border_proc && display.nodes.count == treemap.nodes.count && display.outer_size.x == outer_size.x && display.outer_size.y == outer_size.y return;
     array_reset(*display.nodes);
     for index: 0..treemap.nodes.count - 1 {
         bucket := treemap.nodes.all_buckets[index / 1024];
@@ -93,7 +95,10 @@ recompute_if_dirty :: (display: *Treemap_Display, outer_size: Vector2, border_pr
         display.nodes[root_index].size = outer_size;
         size_children(treemap, treemap.root, display, border_proc);
     }
-    display.revision = treemap.revision;
+    display_states[state].tree = treemap;
+    display_states[state].generation = generation;
+    display_states[state].data = display.nodes.data;
+    display_states[state].border_proc = border_proc;
     display.dirty = false;
 }
 
@@ -186,7 +191,76 @@ get_index :: (treemap: *Treemap, node: *Treemap_Node) -> s64 {
     return cast(s64)node.locator.bucket_index * treemap.nodes.items_per_bucket + node.locator.slot_index;
 }
 
+// These helpers also retire private cache state for the supplied owner address.
+free_treemap_display :: (display: *Treemap_Display) {
+    if !display return;
+    array_free(display.nodes);
+    display.nodes = .{};
+    display.dirty = true;
+    index: int = 0;
+    while index < display_states.count {
+        if display_states[index].display == display array_unordered_remove_by_index(*display_states, index);
+        else index += 1;
+    }
+    if display_states.count == 0 { array_free(display_states); display_states = .{}; }
+}
+
+free_treemap :: (treemap: *Treemap) {
+    if !treemap return;
+    for treemap.nodes.all_buckets {
+        bucket := it;
+        for slot: 0..treemap.nodes.items_per_bucket - 1 {
+            if bucket.occupied[slot] array_free(bucket.data[slot].children);
+        }
+    }
+    Legacy_Buckets.bucket_array_reset(*treemap.nodes);
+    treemap.root = null;
+    treemap.dirty = true;
+    index: int = 0;
+    while index < tree_states.count {
+        if tree_states[index].tree == treemap array_unordered_remove_by_index(*tree_states, index);
+        else index += 1;
+    }
+    index = 0;
+    while index < display_states.count {
+        if display_states[index].tree == treemap array_unordered_remove_by_index(*display_states, index);
+        else index += 1;
+    }
+    if tree_states.count == 0 { array_free(tree_states); tree_states = .{}; }
+    if display_states.count == 0 { array_free(display_states); display_states = .{}; }
+}
+
 #scope_file;
+
+Tree_State :: struct { tree: *Treemap; generation: s64; }
+Display_State :: struct {
+    display: *Treemap_Display;
+    tree: *Treemap;
+    generation: s64 = -1;
+    data: *Display_Node;
+    border_proc: Border_Proc;
+}
+tree_states: [..] Tree_State;
+display_states: [..] Display_State;
+
+tree_state_index :: (tree: *Treemap) -> int {
+    for tree_states if it.tree == tree return it_index;
+    tree_states.allocator = context.default_allocator;
+    record: Tree_State;
+    record.tree = tree;
+    array_add(*tree_states, record);
+    return tree_states.count - 1;
+}
+
+display_state_index :: (display: *Treemap_Display) -> int {
+    for display_states if it.display == display return it_index;
+    display_states.allocator = context.default_allocator;
+    record: Display_State;
+    record.display = display;
+    record.tree = display.treemap;
+    array_add(*display_states, record);
+    return display_states.count - 1;
+}
 
 recompute_sizes :: (node: *Treemap_Node) {
     if node.children.count == 0 {

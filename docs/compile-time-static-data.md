@@ -16,6 +16,14 @@ The initialized-prefix cache and object-pointer cache survive `VmState` transfer
 
 Top-level expression verification still performs bounded full-graph validation before beginning an execution transaction. This is the admission boundary, separate from the cached address reads inside a running procedure.
 
+LLVM materializes the same immutable graphs as private constant globals. Reuse
+requires the expected physical type and selected target ABI alignment, as well as
+private immutable linkage. A source `#elsewhere` declaration cannot gain owned
+storage by claiming a generated static-object symbol; a collision fails before
+initialization and leaves the foreign declaration unresolved. Function symbols
+share LLVM's data namespace, so a matching function also rejects reservation
+before LLVM can silently rename the new data global.
+
 ## How to change it
 
 Materialization lives in `crates/jai-vm/src/execute/static_data.rs`. Its `static_address` helper owns suffix initialization; `static_projection` charges and checks each requested projection; `static_value` builds graph nodes. Add independent checked-IR fixtures in `crates/jai-vm/src/static_publication_regressions.rs` for cache growth, retries, lifetimes, or work accounting.
@@ -23,6 +31,13 @@ Materialization lives in `crates/jai-vm/src/execute/static_data.rs`. Its `static
 Keep both passes over the new suffix. Advancing the cached prefix before initialization completes would cause a retry to skip missing storage. Normalize ordinary strings before freezing static descriptors, while preserving the independent raw-byte backing used by the literal pool.
 
 Changes to arena publication invariants belong in `crates/jai-ir/src/static_data.rs`. The VM cache assumes that one arena identity cannot replace a previously published object's value or reuse its index.
+
+Native graph reservation lives in `crates/jai-codegen/src/static_data.rs`. Preserve
+its ownership and alignment checks when changing physical initializer planning.
+The authored source collision fixture in `static_data/tests.rs` deliberately
+aliases foreign data to an actual arena/object symbol, rejects a function
+namespace collision across repeated reservations, and separately verifies
+that a genuine private reservation remains reusable.
 
 ## Configuration
 

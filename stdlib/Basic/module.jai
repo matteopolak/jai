@@ -1,14 +1,28 @@
 // Independently authored Basic module; supplied distributions are API inputs only.
 #module_parameters () (MEMORY_DEBUGGER := false, ENABLE_ASSERT := true, REPLACEMENT_INTERFACE: $I/interface Memory_Debugger_Interface = Memory_Debugger_Interface, VISUALIZE_MEMORY_DEBUGGER := true, TEMP_ALLOCATOR_POISON_FREED_MEMORY := false) {
     Memory_Debugger_Interface :: struct {
-        check_alloc: (allocator: Allocator, memory: *void, size: s64);
-        check_free: (allocator: Allocator, memory: *void);
-        check_realloc: (allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64);
-        check_create_heap: (a: Allocator);
-        check_destroy_heap: (a: Allocator);
+        check_alloc :: inline (allocator: Allocator, memory: *void, size: s64) {
+            #if MEMORY_DEBUGGER _check_alloc(allocator, memory, size);
+            else #assert(!MEMORY_DEBUGGER);
+        }
+        check_free :: inline (allocator: Allocator, memory: *void) {
+            #if MEMORY_DEBUGGER _check_free(allocator, memory);
+            else #assert(!MEMORY_DEBUGGER);
+        }
+        check_realloc :: inline (allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64) {
+            #if MEMORY_DEBUGGER _check_realloc(allocator, old_memory, old_size, new_memory, new_size);
+            else #assert(!MEMORY_DEBUGGER);
+        }
+        check_create_heap :: inline (a: Allocator) {
+            #if MEMORY_DEBUGGER _check_create_heap(a);
+            else #assert(!MEMORY_DEBUGGER);
+        }
+        check_destroy_heap :: inline (a: Allocator) {
+            #if MEMORY_DEBUGGER _check_destroy_heap(a);
+            else #assert(!MEMORY_DEBUGGER);
+        }
     }
 };
-#assert(!MEMORY_DEBUGGER, "independent memory debugger is not implemented");
 #load "protocol.jai";
 #load "allocation.jai";
 #load "Array.jai";
@@ -20,6 +34,23 @@
 #load "platform-time.jai";
 #scope_export
 
+#if MEMORY_DEBUGGER {
+    #load "Memory_Debugger.jai";
+    #if VISUALIZE_MEMORY_DEBUGGER #load "Visualize_Memory_Debugger.jai";
+    #if REPLACEMENT_INTERFACE == Memory_Debugger_Interface {
+        Memory_Debugger :: struct {
+            check_alloc :: _check_alloc;
+            check_free :: _check_free;
+            check_realloc :: _check_realloc;
+            check_create_heap :: _check_create_heap;
+            check_destroy_heap :: _check_destroy_heap;
+        }
+    } else {
+        Memory_Debugger :: REPLACEMENT_INTERFACE;
+    }
+}
+#scope_export
+
 SET_STORAGE_MARK_STAMP :: 0xda;
 RESET_STORAGE_STAMP :: 0xdb;
 FREE_PAGE_STAMP :: 0xdc;
@@ -27,10 +58,16 @@ write_string :: Runtime_Support.write_string;
 write_strings :: Runtime_Support.write_strings;
 debug_break :: Runtime_Support.debug_break;
 // Leak hints have intentionally no runtime effect when tracking is disabled.
-this_allocation_is_not_a_leak :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
-this_allocation_leaks_todo :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
-this_allocation_does_not_propagate_leak_ownership :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
-memory_visualizer_per_frame_update :: () #expand { #assert(!MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER); }
+#if !MEMORY_DEBUGGER {
+    make_leak_report :: () -> string { return "Memory debugging disabled\n"; }
+    log_leak_report :: () { write_string(make_leak_report(), to_standard_error=true); }
+    this_allocation_is_not_a_leak :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
+    this_allocation_leaks_todo :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
+    this_allocation_does_not_propagate_leak_ownership :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
+}
+#if !MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER {
+    memory_visualizer_per_frame_update :: () #expand { #assert(!MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER); }
+}
 
 assert_helper :: (message := "", args: .. Any, loc := #caller_location) -> bool {
     if context.handling_assertion_failure return false;

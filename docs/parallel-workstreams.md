@@ -73,7 +73,7 @@ Reassign a finished owner to a remaining acceptance gap and update this table. K
 
 Agents share the same working tree and Cargo target directory. Use narrow file ownership and coordinate mutations; do not reset another lane's changes. Tests use the pinned Rust toolchain and LLVM setup described in [dependencies](dependency-policy.md) and [LLVM setup](llvm-backend.md).
 
-Original reference binaries and native libraries remain static inputs on the development host. Original source uploads remain limited to the authorized vendored Preload file.
+Original reference binaries and native libraries remain static inputs on the development host. The former vendor Preload exception is retired; current public bootstrap sources are independently authored. Other original source uploads are not authorized.
 
 ## Dependencies
 

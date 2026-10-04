@@ -12,6 +12,8 @@ This checkpoint validates the rewritten compiler's scalar domain API and actual 
 
 The [original-source receipt](../artifacts/component-checkpoints/scalar-domains-20261002/original-source-checks.json) freezes the rewritten CLI by SHA-256 and checks genuine unmodified modules with genuine search paths and Preload. Upstream Math parses and passes `check-library`. Supplied Float16 and Math encounter parser diagnostics in that CLI snapshot. The SIMD example parses but fails checking in its Basic dependency at missing `Calendar`; the standalone upstream SIMD test parses but requires its actual `expect_program_output` harness binding. These failures remain failures; neither synthetic modules nor replacement harness declarations establish acceptance.
 
+The [refreshed original-source receipt](../artifacts/source-checks/float-simd-20261002T1756/original-source-checks.json) repeats those five genuine source checks against the rewritten CLI rebuilt at 17:56. It confirms the same boundaries after the modular checkpoint: the canonical record-member route still lacks `#place` dispatch, and local anonymous union storage still fails statement parsing. Those remaining grammar gaps are assigned to the record and frontend owners.
+
 These are component and source-only results. They do not establish integrated workspace acceptance, reference compiler parity, full original-library specialization, or x86 execution on an ARM host.
 
 ## How to change it

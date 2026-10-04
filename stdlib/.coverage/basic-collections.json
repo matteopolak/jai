@@ -7,17 +7,526 @@
   "implemented_sources": [
     "stdlib/Basic/module.jai",
     "stdlib/Basic/Array.jai",
+    "stdlib/Basic/protocol.jai",
     "stdlib/Bit_Array.jai",
     "stdlib/Hash_Table.jai",
     "stdlib/Sort.jai",
     "stdlib/IntroSort.jai",
     "stdlib/RadixSort.jai",
-    "stdlib/Basic/protocol.jai"
+    "stdlib/legacy/Hash_Table.jai",
+    "stdlib/legacy/Bit_Array.jai",
+    "stdlib/legacy/RadixSort.jai",
+    "stdlib/Basic/Memory_Debugger_Core.jai",
+    "stdlib/Basic/Memory_Debugger.jai",
+    "stdlib/Basic/Visualize_Memory_Debugger.jai"
   ],
   "files": [
     {
+      "path": "stdlib/Basic/module.jai",
+      "sha256": "afe92b783778d9fa41e67a853430914cec7a98d951de76a43546655e82d695af",
+      "authored_declarations": [
+        {
+          "name": "Memory_Debugger",
+          "kind": "record",
+          "line": 41,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "check_alloc",
+              "kind": "constant",
+              "line": 42,
+              "header_sha256": "01420587387c8e9455411cc473e5c466ef5dab690b08b5452a2e85b742a38ee1",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "192059d3b83a09abc2b1dbc372c2a519e0f7fc183d8a1d17a18178f1a1092830"
+            },
+            {
+              "name": "check_free",
+              "kind": "constant",
+              "line": 43,
+              "header_sha256": "1993bcf873ded8e4503ee971e3c818bae8efd47e338053d8e349394cdb3c0711",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "2be659732ac1e5893e52490f61d905d8ea3d07133494edd143ddbe4ee5473911"
+            },
+            {
+              "name": "check_realloc",
+              "kind": "constant",
+              "line": 44,
+              "header_sha256": "fa812f0ee752ed06a13f84e66d4cdca2a511a615758d8c9f2cccc48185cb81ef",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "2c2bd4c8e4ff4bcd8f8febfab3af1ceb5104cd57f7088edfdf77bbc0b71040e4"
+            },
+            {
+              "name": "check_create_heap",
+              "kind": "constant",
+              "line": 45,
+              "header_sha256": "af98c2b357af8e6c6fef7e9e0cd84df84616b9bc60e7865bca01f1ccc276a63d",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "665f33879bcb721c17f5e0ce62c221feb637007b656b3f7b010224a63ccf57ec"
+            },
+            {
+              "name": "check_destroy_heap",
+              "kind": "constant",
+              "line": 46,
+              "header_sha256": "8f3c62f16ec6b9fd49b20e5dc2bac504b6e027e8a0f9be7691e8c3c820056b50",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d908abe6681ac7d64f66e7756a93ada86c224615bbc522cc14bae78090b24e69"
+            }
+          ],
+          "header_sha256": "da491cd52c642cab913e616a947a382ba765188362022aa93c03d1cf14f5dff8",
+          "contract_sha256": "e0790175b596acf0e8d9bf91a7ad1a345158bd69439ed68622161e5f285bc0c1"
+        },
+        {
+          "name": "SET_STORAGE_MARK_STAMP",
+          "kind": "constant",
+          "line": 54,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "68b7a84e934d0e0f526ecc93b60a8354e456597dcdfdd6b4b57e19969966a4aa",
+          "contract_sha256": "507cda8d588a8e1a0627854beee98f30874d819526b89bc5165f08993095ea2c"
+        },
+        {
+          "name": "RESET_STORAGE_STAMP",
+          "kind": "constant",
+          "line": 55,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "550543f06fe6c5b2e3c3237ac1b4b5f4b0b2ed493e4e77069cd9d402b2adb15f",
+          "contract_sha256": "de46d0c56f52bf64977c40ecfd772144744e5e72195c437443fb4447600d38c7"
+        },
+        {
+          "name": "FREE_PAGE_STAMP",
+          "kind": "constant",
+          "line": 56,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "55f90e8f444aa4aecfb4b2e812c56e72a63ed4d1d44ca22183e131e2a52204ed",
+          "contract_sha256": "d274b106337056c1a84972df9a5864c6e79723de92bca535bfeccaf8358930db"
+        },
+        {
+          "name": "write_string",
+          "kind": "constant",
+          "line": 57,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8b3849813c5bb822d61b6630d47ee41d1a6bafcb11491506ee33224e8a055e71",
+          "contract_sha256": "06a8b3295aec341901463f4ee2948404b9310517387f529d90a940d0ffdd21a2"
+        },
+        {
+          "name": "write_strings",
+          "kind": "constant",
+          "line": 58,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "cc76b247a0be3586183d9db0d4e87dd0e783d3ec5e837b85603499fef379367a",
+          "contract_sha256": "ab6d21f4db49301bfb0b3974849d16a0c4dd0e4ea783d9b95a98c76deeec4e67"
+        },
+        {
+          "name": "debug_break",
+          "kind": "constant",
+          "line": 59,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "0ba6111ec645f482dad1525b977f7e78e07a62d8d3a515f3461b8a75cf20aef3",
+          "contract_sha256": "549020be932b789e26c2e8caf5d12b6f4c14dfa7e66ab06e314d57d534c0a6f4"
+        },
+        {
+          "name": "make_leak_report",
+          "kind": "procedure",
+          "line": 62,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b6d14f3880d79114d358c4c80d206616a396103f0f8916b1e6e4161f65762366",
+          "contract_sha256": "7dca904040378efd143c60f0608c5a2dcb1eab20dcd8e569ad1268410ac996df"
+        },
+        {
+          "name": "log_leak_report",
+          "kind": "procedure",
+          "line": 63,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3b80a175e2135be714f367dbec16f1c744e43d639bd21e8ab605a5c5e67cb1dc",
+          "contract_sha256": "d760ffac5a57025cf1c5d2ed1f8c90d93a663c30d6e47c76cd915068071a516e"
+        },
+        {
+          "name": "this_allocation_is_not_a_leak",
+          "kind": "procedure",
+          "line": 64,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b50b15ff187c27e31269a3b8ebab4fd7823cbe45b5905f489ba1c9027d03dd77",
+          "contract_sha256": "e77976462e1269f2dafb88058af8c93212812e7404587c1d9c12c2e8111f51ea"
+        },
+        {
+          "name": "this_allocation_leaks_todo",
+          "kind": "procedure",
+          "line": 65,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b260d86296cba231e72a799b14ab13080998b94d5a6cc91b26945b469cf716b5",
+          "contract_sha256": "13116a6461e6eb73542a90f8e28821e32595b662a3c625963a36ed58da2678bc"
+        },
+        {
+          "name": "this_allocation_does_not_propagate_leak_ownership",
+          "kind": "procedure",
+          "line": 66,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1aa5887f269d94687ef572f6a28b0d042faf9c3303d0047f44e3a9d9e3ba157d",
+          "contract_sha256": "9d4f082c539a5bed48422d2bdd623e40f09afde9ab50a3cb94e7e32e318a9e25"
+        },
+        {
+          "name": "memory_visualizer_per_frame_update",
+          "kind": "procedure",
+          "line": 69,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "be31fa4916591a51398dd274ab650dd49014e4afdb6f1c7feb807b5f3568273f",
+          "contract_sha256": "00156c2ce053527066c0f999625140cc2907a3a72b9d2a9fb7658e1e1cf19393"
+        },
+        {
+          "name": "assert_helper",
+          "kind": "procedure",
+          "line": 72,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d106cf07469eaa443421fdc56306454bdc163881a0abace6d8682fde407ae222",
+          "contract_sha256": "4de7dfc952bb87a9543aca8d9b0034f180d23305af2e06027a8e50fab352a2fd"
+        },
+        {
+          "name": "assert",
+          "kind": "procedure",
+          "line": 80,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "16d3c3946887c0fde74e39e01d659f4a61fccab2f15079300f56617edfa05f0c",
+          "contract_sha256": "aaf1956714a6456015ff3873c8c8fe5d695287bba4604ddcab1296b55a135b6f"
+        },
+        {
+          "name": "get_command_line_arguments",
+          "kind": "procedure",
+          "line": 87,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6099f092f0aa27e878bfed45518e71bf7297be06548314689f0887f0cee3ba96",
+          "contract_sha256": "8847abc233bb4d323082924139c0c8cb55b3a52bdd2084d13e7418b0a455268f"
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 96,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1e7a325dafac58b135c2c864845a4587579850e8ce4791491569ab7485c75b71",
+          "contract_sha256": "e2cd0da0a055b51e73a92cd106fdfc01dbe54ef10a182625b23fc8e9272ca8e5"
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 97,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "5927ec5cb15c3ab4862d06941d1f45dfb8fb8bdfb04961ce74031c165afbe069",
+          "contract_sha256": "ef46cf8f358d547ddc7f1885321b08d97797ba71b76c0bcdab15897db1284b08"
+        },
+        {
+          "name": "min",
+          "kind": "procedure",
+          "line": 98,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "f269b0abd2ce50420af369bb4236262a8c97eb32996f3e6756f1c31826acb9bb",
+          "contract_sha256": "efd70a94b922e592ffd46b56d579464c1491a85b7306f12b9eebe7503d4b0278"
+        },
+        {
+          "name": "max",
+          "kind": "procedure",
+          "line": 99,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8c235d0e7a370d66430d35ad8e26603211cab7163a84eb00541e43949b42e033",
+          "contract_sha256": "e7e77c4174d1d45c4b554568a9e8e33efc7738ee0104c970a5efc58a54ec0b62"
+        },
+        {
+          "name": "Min",
+          "kind": "constant",
+          "line": 100,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8cd4854e2f237c7f3512de186b685609e2f6c8022a503ab9fa2aa2b41d381332",
+          "contract_sha256": "cbbda36ef4147a08391adc9ffe9bf332a23ea9e79e5aaf10417d3d2c10b800c2"
+        },
+        {
+          "name": "Max",
+          "kind": "constant",
+          "line": 101,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "2a7515de91f10564ff2721dd7a4114703634d5d4b00707ca53d430685cc1c6d1",
+          "contract_sha256": "24e4edd7eeea9f490b22b1fa778422a78a2831d03df66a8dbdb26879aedd540f"
+        },
+        {
+          "name": "clamp",
+          "kind": "procedure",
+          "line": 102,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "f63313b85d4a6fd3bb7e7e74554a0c84eabdcb2da473cc35b6edfe30ffd7f7da",
+          "contract_sha256": "b7bb4a46b550bd71631c5b581cab7f4bd9d74980e01b8c0be3af1a085cccf465"
+        },
+        {
+          "name": "Swap",
+          "kind": "procedure",
+          "line": 103,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "09e836921232c19a97deef2051b8c3b5d5cb6f6618c38a30080d46efe9ac40aa",
+          "contract_sha256": "c583fc6f35c819ab777d84c9aa273e647448c49a31429e0ffa159389a78f38b0"
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 104,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "55980fd27fb30d7ee33954908a2c430288941b1abdc77cbc1345a0cf4e28b9f6",
+          "contract_sha256": "4d16384a49162f5d5d16fbec675f402ba9a929ba6effa3b20b96b01ac3766dc5"
+        },
+        {
+          "name": "swap",
+          "kind": "procedure",
+          "line": 105,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "4281d41e2aef67c0c643d4b9fc2c459f54474873cefbca366145bcfac576cc19",
+          "contract_sha256": "f89542c4331222600156b44b19f2a611f0c8ce7cc5e76c7289c1bcf6891374f5"
+        },
+        {
+          "name": "IsScalar",
+          "kind": "procedure",
+          "line": 106,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "4f7b35c40d8a19b0a5954f9284a49f78c5c6cfbc58649b86d47efb39a1efb0de",
+          "contract_sha256": "e64fe56a31c9b0fdab3b50e60a82eaee5fdff902dd8b95c48dff2043e144b90a"
+        },
+        {
+          "name": "get_field_with_offset",
+          "kind": "procedure",
+          "line": 110,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "4b304601d5f89a894d3659bc2e1cae18d48277210b8a56a2e7d8960454aea698",
+          "contract_sha256": "9b616d0cfd639fd486dc8ec548c55e38904eea441a51c11d3091f7b457b55e8c"
+        },
+        {
+          "name": "get_field",
+          "kind": "procedure",
+          "line": 114,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "e76b4e9050454a72579482f57ebdee97c80b3c1eaa62b379c15ae99f0bbae3d2",
+          "contract_sha256": "fac16b36921e0e362ced04dc9eedfadc0721528847ecd44e7addcf2451e6bb3d"
+        },
+        {
+          "name": "enum_names",
+          "kind": "procedure",
+          "line": 118,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1c124ee6afab5194d9c804ec48a7a306393cc7d2ee62fbba1a5753c325142496",
+          "contract_sha256": "9db4bcbefe83e963acbb5c4cbe800ffa91737cf465df733a793690cb34180883"
+        },
+        {
+          "name": "enum_values_as_s64",
+          "kind": "procedure",
+          "line": 119,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "05571d50f6bda9dbd4d9dc50d0da70768c17f4f0c7c6c5b25dfa6aaf510d25a0",
+          "contract_sha256": "31dd7d130f159a4eae73d70a58aa2b2d1f7afaa6c4942ed513fcdff58364d0c6"
+        },
+        {
+          "name": "enum_values_as_enum",
+          "kind": "procedure",
+          "line": 120,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3e6804893ce7a7adf11ef3d0ddec1a4c6308e434b689fe04c62902dc8810f139",
+          "contract_sha256": "346bf7b856c9f4fb172e12e3efdcd645c896f46c7f792f7bd392d38fa54d224b"
+        },
+        {
+          "name": "enum_range_given_info",
+          "kind": "procedure",
+          "line": 126,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8d11c0797be768b7ac3000fb0fcad0a9c214b400746aaf2864941a5da630d093",
+          "contract_sha256": "d2eeca2e7258ebe31fecbd920d9ce5e79130421b74883150b73a40f6d0ea93ef"
+        },
+        {
+          "name": "enum_range",
+          "kind": "procedure",
+          "line": 132,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8a11cfcd39ccc7f33c365d4c2fdc0ee46a07fcc324629f2d812b52408873cfd6",
+          "contract_sha256": "5b7d230a073e0a2a5b41db2b5da848d68b595e8770a0c998fd18d12e9531e851"
+        },
+        {
+          "name": "enum_highest_value",
+          "kind": "procedure",
+          "line": 133,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "f73a6ee9473189aa57977ac0ae4c3ebb091d900ce809a6e66920ce867d3a8822",
+          "contract_sha256": "66fc8e703e79a11c391bd3ccf7ceb9148094a68e1d579d5af91eca8d0d2e4777"
+        },
+        {
+          "name": "remember_allocators",
+          "kind": "procedure",
+          "line": 134,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "aa0bc56954d4a078893e7b45cacae9ffacd5ce9d2bf3f96d7feadd139784bc7f",
+          "contract_sha256": "5175429d9f2a59447c1daaa567601f7cfc401c36f079d39181bc3df57867de9f"
+        },
+        {
+          "name": "resizable",
+          "kind": "procedure",
+          "line": 137,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d2b90fffce0dc54d65343c08d1eff1b2fd6407cb320843fe7953b1d4c6ccb866",
+          "contract_sha256": "d5c45d9724c04d14be7f059767212ffb80f9dd9f4ba7b0ebd28d4d7da3b2bab6"
+        },
+        {
+          "name": "is_integer_type",
+          "kind": "procedure",
+          "line": 143,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "a2654b6b62fb17ac5b9b54ad44f5649a63d81a2e0d551b16c83d0f6e0495fee1",
+          "contract_sha256": "902626c884861d33c8eaf8116c53277a1df8a49a91075a406cb1d70c196d4572"
+        },
+        {
+          "name": "get_integer_range",
+          "kind": "procedure",
+          "line": 149,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6e1b98c2f7419232577986c0c412093d44dd5091d6fc7aa03ac5d4a05860031e",
+          "contract_sha256": "9b1b12e4b9e483d6c4d15077195afa95167237f5e2c2a9382eff77dcf0eb71d1"
+        },
+        {
+          "name": "clamp_to_another_integer_type",
+          "kind": "procedure",
+          "line": 158,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "30ac77d1dc1c2a2a35aabd97c102a76b07519ce965883101e1b6029d38f3df38",
+          "contract_sha256": "7c7f378b26d112200fd5676d10c124a91e99ec00ff91ec38da7d6d0c65cc3993"
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 171,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "a77e30c86d89c55526a478dd0b920245974f0521d20935d571dc0fc8d7c80de4",
+          "contract_sha256": "f83abe2c07053f78dca4b4f368f72841769c1a643f33c4cf74fe2c69e37bdf54"
+        },
+        {
+          "name": "pack_stack_trace",
+          "kind": "procedure",
+          "line": 172,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1be4327e05cdd01b5f2e0ebf50333ee14d1d4c19a1268910c3fea51c5b7f2da3",
+          "contract_sha256": "5c657e3bf2c5d13cdc775dcdc0d5d6f0a2385216862f7b17f6da9f34343409a8"
+        },
+        {
+          "name": "print_stack_trace",
+          "kind": "procedure",
+          "line": 185,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "abb85838406243800196486bf8054a5fde598526b791d142f6fbefb5d1ef95d6",
+          "contract_sha256": "a07d2b11de8d95f15bc13ea412c2a233f435792b6b36639610fc2341a3122294"
+        },
+        {
+          "name": "get_stack_trace_string",
+          "kind": "procedure",
+          "line": 192,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b6e20c43b4bd2a46ca4f0f5bcef2498446a6606d322e2e881080a9a52e9b1511",
+          "contract_sha256": "74f47822024942b46cb711716f273de4b810b500eefe043c8cf9d2c9566b078b"
+        },
+        {
+          "name": "log_stack_trace",
+          "kind": "procedure",
+          "line": 201,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8a96f5606a2fd6d51905879b35ed8da0b38198739738415003e3164cb7f0bd0f",
+          "contract_sha256": "a0238faddb160805655316bc63c922179cfe990e17e9d89bb7b1d335a7d54e54"
+        }
+      ],
+      "syntax": "passed_verified_017353_source_parser"
+    },
+    {
       "path": "stdlib/Basic/Array.jai",
-      "sha256": "83613337b203e41d5193b92ec6f8adc686b97bd927884ab409002749f18438b3",
+      "sha256": "f6b6fc75c4bc135f6b28f4258bc61e94cc6213a9f4f7b1afeb91be25bb4ef556",
       "authored_declarations": [
         {
           "name": "array_copy",
@@ -25,7 +534,9 @@
           "line": 2,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "34e9508cb4ddcd877b7a92683537148875bf11cb10bcdf754762744af0d20ebf",
+          "contract_sha256": "f3f123830d658cf99280ab3ffce5bed5e5342ba7bf6afa030f1d7b0a0b1230d0"
         },
         {
           "name": "array_copy",
@@ -33,7 +544,9 @@
           "line": 7,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b3c0055b3cf740c82385efd95b62e72383c4f3dd4e017a1accb860e26f3b621f",
+          "contract_sha256": "56e638f44ab884667fbff27b010c0d5725b1c88ac9135467ffc6eeaadf22c57f"
         },
         {
           "name": "array_copy",
@@ -41,7 +554,9 @@
           "line": 12,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "457298c7183c849ad6b07b79a8ec8695a01fd8daca25a3971a9810ede838e46a",
+          "contract_sha256": "0d469cdb26cd24a2eeff0f3a4e99b7cfc698b8f6a57712fb7e059953dec24802"
         },
         {
           "name": "array_view",
@@ -49,10 +564,429 @@
           "line": 16,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "9be2b07bd20de161e4e8cdff8c50c3293ba13da95ab713538533f8295718f62b",
+          "contract_sha256": "32d50dbe6c2844f69e538378a106fff32814d9212781774a2ed2520ee6f3cb4f"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
+    },
+    {
+      "path": "stdlib/Basic/protocol.jai",
+      "sha256": "a2b82c3eacd918c1ee18a150e54c64e1b08e49fb7a0e78bc899132b9913eef92",
+      "authored_declarations": [
+        {
+          "name": "Allocator_Mode",
+          "kind": "constant",
+          "line": 7,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "4286791fbf193450ac4e6d45caff2238b84d9332016fc9d6bf325a40ee8e66cc",
+          "contract_sha256": "528cb36fa5355296c4da6dd646aee3c816265118322850782c75a308b0cd2e08"
+        },
+        {
+          "name": "Allocator_Caps",
+          "kind": "constant",
+          "line": 8,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "2b757bfc6670c62811e19ca860a7a154d58a589b0c22df83d419f79ba5b25a2c",
+          "contract_sha256": "efcaf2b1740ec0bfa0a2c8e86e01a12d87512c9c99a15866e74c6360d1eece48"
+        },
+        {
+          "name": "Allocator_Proc",
+          "kind": "constant",
+          "line": 9,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "472278fb90994baaa2995b1c55f476965589e682b90dca26b09ab3bd12a1065c",
+          "contract_sha256": "3c3322d733670a97fd37f434ee4934ba9647887f25baf72f38633c3b95a1f6b6"
+        },
+        {
+          "name": "Allocator",
+          "kind": "constant",
+          "line": 10,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "7d75aee6d0d8afbbc0f558cc52550345435cdb453866c0fa414e1ff7d1e373b1",
+          "contract_sha256": "667b17763b055fd3519464150a603b8b9039f66d683fdaf8187e9db99bdf9dd8"
+        },
+        {
+          "name": "Context",
+          "kind": "constant",
+          "line": 11,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "a0b80728206ad2fa12c166b315dbe804b1b892b1b1fc38a4a4162fb8af49c5ee",
+          "contract_sha256": "3aacf22031911339b72cf846fb9103b50ae4283f8082de3f72fbb75f427e2bfa"
+        },
+        {
+          "name": "Temporary_Storage",
+          "kind": "constant",
+          "line": 12,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "46fd60699b4b205fce6f7e88acaded4c9ab2f45c4fa7e187764c0867908380ba",
+          "contract_sha256": "56c26aa40868f2d217b0331abab1dbe06d2aff18b0ddb3724a814ca7fe6f188a"
+        },
+        {
+          "name": "Type_Info_Tag",
+          "kind": "constant",
+          "line": 13,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3b8b46c4d58f372dd3b150451e426e5e4f2396abfe4e55e2b7d2caf08f86ec3d",
+          "contract_sha256": "72ffc436520b929ad6bfa07791eedb588b5b521fd7a8110b19983b418f05d4c8"
+        },
+        {
+          "name": "Type_Info",
+          "kind": "constant",
+          "line": 14,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "20263de21fa0c7c6bc2c14676136d4fc0f525f8e07ced324f007e0da304c3283",
+          "contract_sha256": "9165adfa9dc7b970053fdcf0c5fc10f789b3277759b1e02dee837ae0a936a839"
+        },
+        {
+          "name": "Type_Info_Integer",
+          "kind": "constant",
+          "line": 15,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "600d324bc89851403a10fb4000cc1d791ac034c1e9863d8566a838f95918f299",
+          "contract_sha256": "3a43b88f8cbd801d4ef0288a34ead4e705620cfea5bb5fb943d219b70b1dfb6a"
+        },
+        {
+          "name": "Type_Info_Float",
+          "kind": "constant",
+          "line": 16,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "609d1260abbbf3b6a99c171c04c0eba6009fec0456b1b4d936ad20c7efcc5de8",
+          "contract_sha256": "9c50a51ee62013bdc0ed926c93dc4a7a3196437148e4afd3fd75d359dcd479cc"
+        },
+        {
+          "name": "Type_Info_String",
+          "kind": "constant",
+          "line": 17,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "c3b068ca9f33db37fd68dfda6a775ebdb3f211b0ca1703a2cca84c2d0639f01a",
+          "contract_sha256": "da4400689f29e7ca28f96f27e906ce01b92a3fd5cc11949397c56978feec25d9"
+        },
+        {
+          "name": "Type_Info_Pointer",
+          "kind": "constant",
+          "line": 18,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "bf84465b1b721c89a088f4a8a5d16eea48119c260f43222bfa0afb94c4deb258",
+          "contract_sha256": "d82a3011e0937c3b81c57dfaa91c5d9224f404f715936d00e64979d8077cda29"
+        },
+        {
+          "name": "Type_Info_Array",
+          "kind": "constant",
+          "line": 19,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "63b654a8c44ed926fac23eecc9067143afd886e715eb2d7fd741a711d9afd909",
+          "contract_sha256": "293e4721933200c39a270dea363b147c119a7b5a87239f5b70d53025a9ea6cbe"
+        },
+        {
+          "name": "Type_Info_Procedure",
+          "kind": "constant",
+          "line": 20,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3f1ef223b7c1bb00e1e9ed32ec51171333be5b04d73c05a04694687a6ac886e5",
+          "contract_sha256": "55efc768a5e8eb23c4218ca54d0e7d6a0676443b970b30ecad07ab5ccb024ab7"
+        },
+        {
+          "name": "Type_Info_Enum",
+          "kind": "constant",
+          "line": 21,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "bbe19d91099643677f32abacc2996d72d0526e4e82706b086beafcf6a4a81cd6",
+          "contract_sha256": "358eb38464921adfe8b65877df99953e4ecf61ad8450b7d42c008c610f432065"
+        },
+        {
+          "name": "Type_Info_Variant",
+          "kind": "constant",
+          "line": 22,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "60049bebb8cb04aac8057d2a93b88405afbf2f69944771ea44a92d9e54a5a4cc",
+          "contract_sha256": "24e2409aa2a5986780f6b368d7292abad7b6e109fd2dff3cb27a213259632d3e"
+        },
+        {
+          "name": "Type_Info_Variant_Flags",
+          "kind": "constant",
+          "line": 23,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "e021badec2c0f6819d3df4b3dd60a639754e63b7cb2bcee26e0cd2747492a7bb",
+          "contract_sha256": "857a5caa5fd19e52253b6d9e7cb13b1c0363d9fd22f6a0fd9cf0826a64fd6733"
+        },
+        {
+          "name": "Type_Info_Struct_Member",
+          "kind": "constant",
+          "line": 24,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d6057ad35ce668b4e44e3858dd56c141bd3d504da42ea9ab73fb07b64bfc0f78",
+          "contract_sha256": "9b4150412615783243b29c32081aeadeedf3bb3a37eebffa4fcf38839c7f1c83"
+        },
+        {
+          "name": "Type_Info_Struct",
+          "kind": "constant",
+          "line": 25,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6ea545b295b2e18f32f99e2d38c2f28f3cfefc3a1784b52aa4368eba75bdde38",
+          "contract_sha256": "5524a383b7709711faa51ad24c5b72267501ec4bb2282a681368545a36782df9"
+        },
+        {
+          "name": "Struct_Status_Flags",
+          "kind": "constant",
+          "line": 26,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6c6f18ab84873851f471ca9bf3366278fabc960083322049f47f147c09d4a8f2",
+          "contract_sha256": "38452b8c8190e77f8c88a1b995f1d3b4c33624d56fa63ef81d04d67ff5b69a19"
+        },
+        {
+          "name": "Struct_Nontextual_Flags",
+          "kind": "constant",
+          "line": 27,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "ce89cc51f30c61a56ea985063f5801773bcf719da86322051c143d3958a43979",
+          "contract_sha256": "76ecac8d7a10b49131bb4e7087267c432997ef01473d995c5f2bd73946fa1034"
+        },
+        {
+          "name": "Struct_Textual_Flags",
+          "kind": "constant",
+          "line": 28,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "eb6a4b34784cea106598ed9055fa02f4ed31c32b2a8f5e123b938f9ab5594c2a",
+          "contract_sha256": "65fb9ea6df998b1d045f8f97d5c77b7ff8c4dba48897233e0121ee52900b9564"
+        },
+        {
+          "name": "Enum_Status_Flags",
+          "kind": "constant",
+          "line": 29,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "4fc98a940c9c737be735d7682dabdffe1bf80c6dca5735042cbcd04daec9b99e",
+          "contract_sha256": "e4421116b26a6a3efc2cf53d1b2833932ba0ae497c300839de64d95736eafd62"
+        },
+        {
+          "name": "Enum_Type_Flags",
+          "kind": "constant",
+          "line": 30,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d84d53d9411592fc44676655f619a70d949af563ebc803d13430b563d6d629f9",
+          "contract_sha256": "eb34290a08b784d90d7b112e4212fc843b17d53f550a3004c09602429dc8f85b"
+        },
+        {
+          "name": "Any_Struct",
+          "kind": "constant",
+          "line": 31,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b7b159f3e1d02f6bbe989d8f902b2a26d0361d61d1450c7a98214b5f5d85400b",
+          "contract_sha256": "61691a1cfbeb1f81407b96dc5fb8525792b6072e20cf6013e35b67af9ff68084"
+        },
+        {
+          "name": "Any",
+          "kind": "constant",
+          "line": 32,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "772640cd1354152a5ff2c0335e193a7f0cf251edf0ce5d66f3b1d2356d5ad053",
+          "contract_sha256": "d90b539ff3a450a9725303a0d2d069c7cfc36fe95c5ecf4a93bf8ccfde2c0716"
+        },
+        {
+          "name": "Source_Code_Location",
+          "kind": "constant",
+          "line": 33,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b0aab3c738a78adf099da98288a6873f5955029c0ebfdd8706a58b9db38053fc",
+          "contract_sha256": "aa0a133650d3cf5f671a22079b9048b601773a490add9b9fa75cf69e82821ffd"
+        },
+        {
+          "name": "Source_Code_Range",
+          "kind": "constant",
+          "line": 34,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "68842e471b361e547a6767c95d45f54b054f984ed357483e1655f40817d44c21",
+          "contract_sha256": "09cf1f0ba6986181333e6da14606afb6209d8ea63c2780fcaa5d337579a6decf"
+        },
+        {
+          "name": "Log_Level",
+          "kind": "constant",
+          "line": 35,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3f56c81fe8ea714b3d4ca719bbe57fee127c2b52e3e6b06642a70acf817d3752",
+          "contract_sha256": "82c4f3a1d90cdead0cb52e315ea6e36f2f44d5aa0f55538d13d7856b3c27f933"
+        },
+        {
+          "name": "Log_Flags",
+          "kind": "constant",
+          "line": 36,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "5e6c78f14a416e0aca17791a3824934f7e7893ccc664eb9ae9f8a656fe7949b3",
+          "contract_sha256": "176126bd94de52fa14c599a4d2729acc77fa793381a85ffcbba5ed182569155c"
+        },
+        {
+          "name": "Log_Section",
+          "kind": "constant",
+          "line": 37,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3941be7dd413f0ed9073fd4545f8e021ff5b230720057eab2ca99b1144867cc9",
+          "contract_sha256": "69d49279ea1f14a2daae75ba4fb9d007e4b3259aa18efab3f0501069acf59018"
+        },
+        {
+          "name": "Log_Info",
+          "kind": "constant",
+          "line": 38,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "9204bac476b630e561d672d9376e93560480b79eee665e838c177771d4c752c6",
+          "contract_sha256": "699790608d0ae6ad00d4554ac09e879515d6e31a908eb1cc3f231ae729460c02"
+        },
+        {
+          "name": "Logger",
+          "kind": "constant",
+          "line": 39,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d6dad12438d1e0be31d2302294322df60ac54ab099cdd2f4edb842451048ab38",
+          "contract_sha256": "4bb31f0022ba00b61b9a6dcc7873f8e32277fbb416e1ca136774edd569c2362a"
+        },
+        {
+          "name": "Stack_Trace_Procedure_Info",
+          "kind": "constant",
+          "line": 40,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "219c4ef89d577fee3f36593b13d33f909ff1226eeb844f77def3e4cb52b96ab5",
+          "contract_sha256": "da244c3a0fbd90cc15bf0d2e25cad04ab97b3b0c668aef2d907559245cbfe962"
+        },
+        {
+          "name": "Stack_Trace_Node",
+          "kind": "constant",
+          "line": 41,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d6fff46d36f102022360a3cdbb6e5fa1e15c1cf0cfec47d5786e2894e06e6c88",
+          "contract_sha256": "5acbfb05359e3173e57c456b4dfe512b57876dc8dcc92ec55bcac12e8d68f251"
+        },
+        {
+          "name": "Procedure_With_Data",
+          "kind": "constant",
+          "line": 42,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3ad32401474af877e161f87c7c81d38df4a0ee3d87c334802fb091693e797cdc",
+          "contract_sha256": "f46b592f0d429c4964dc18633f79903d7585365b061df85d7b32818294e6f2f9"
+        },
+        {
+          "name": "Newstring",
+          "kind": "constant",
+          "line": 43,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "a837fc5a3e77f6bc8fff0bed922d6850b6c2d447ea1b0f46d873f53cdc438f05",
+          "contract_sha256": "4c54df972f61847d392cd6938936ca2f584cc94fed05a3d11396a2ecc8212b85"
+        },
+        {
+          "name": "Array_View_64",
+          "kind": "constant",
+          "line": 44,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "42909026c0b0408ea7227c4073001362fe8e985bde77f455bad1200d8e2613e7",
+          "contract_sha256": "31d17052e2bdd25aea85292dce84a7b92d3fe0a92e16a6fdd5ff5ffc6456465a"
+        },
+        {
+          "name": "Resizable_Array",
+          "kind": "constant",
+          "line": 45,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "87a4fab59f0572fb21283ab839867455fd8b4b4bdf24fb3f3de532723c56306f",
+          "contract_sha256": "e721e33e31e10fecc50e9c0dee90ff48eb40894510ef10747d3c2e6320f9ad6e"
+        },
+        {
+          "name": "Name_Mapper",
+          "kind": "constant",
+          "line": 46,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "7b1e503a1636248d7fa6b0bbd9b73bfc261569f4e842e9cda66472db560f631d",
+          "contract_sha256": "751729f2a7bee8a7a2ed4e8678cab46d3a28631762ad3c5fac3f09e5689a06cf"
+        },
+        {
+          "name": "For_Flags",
+          "kind": "constant",
+          "line": 47,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d2e797a785e7ea095b94056982941bf25d22604166e022518afc637ca80425b3",
+          "contract_sha256": "9fb70f1c5c7fe6e635ec4e4f4a4088a5e3d4cc4f2e81dd79e2e89451885128d7"
+        }
+      ],
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
       "path": "stdlib/Bit_Array.jai",
@@ -65,9 +999,27 @@
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
           "members": [
-            "words",
-            "count"
-          ]
+            {
+              "name": "words",
+              "kind": "field",
+              "line": 4,
+              "header_sha256": "59da66672097cde291affaee70a009c07d4fc3035c7c75c1f4614f3fb7908ee2",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "4442f9a0b59dad9c386da1793e9c25df4a1f35f3b0835742ce6d3fd98d7737c3"
+            },
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 5,
+              "header_sha256": "def83d6967c160bb7b508e7b95d04d77adf5573f245fe02dcfa1f3befb6f2259",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d553e4f2ca6384a53d49dddcd4f7bbe4ea1e0ae4eed7e85ca139f2c98c900800"
+            }
+          ],
+          "header_sha256": "690d1f4aed609be2ffa31017a593ddf179561fce84d9bc8b5b7c3ee34edfd588",
+          "contract_sha256": "a556c16eaa1025d3fc06708278264cc360f6d36d385e15e1fb046ea8927e9d88"
         },
         {
           "name": "init_bit_array",
@@ -75,7 +1027,9 @@
           "line": 7,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c6f6e4cccc72d79f0ba043724d3e227b56c7ba6fea5011960d0f4e8eb30c3c65",
+          "contract_sha256": "4b02806ea18428d3a361198962cf8547d51201dce1d4bd50c6b0f532950ee4b7"
         },
         {
           "name": "bit_index_in_range",
@@ -83,7 +1037,9 @@
           "line": 14,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "d835ed2c06fc7494aad99f9fdcbddc2f7f6f224b216d13c607a7e1f7579ee458",
+          "contract_sha256": "52c4b8a38061b00c8682b7bf69d12c08ea969904d31cc536d9d0c5ebd1e1c285"
         },
         {
           "name": "get_bit",
@@ -91,7 +1047,9 @@
           "line": 15,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "898cc26642bdbf6eb2d5bb6d0ca5c77b8847134424cf60f2a954be6c3537103f",
+          "contract_sha256": "2e08fd9559d37780cb5f17f87daed4f1b3243df0d746acb32fad5386041ccb7c"
         },
         {
           "name": "set_bit",
@@ -99,7 +1057,9 @@
           "line": 20,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "6fc4a85e76ed0234ea9395025390fb034b7554f65ec18adcde38270fc27b36ed",
+          "contract_sha256": "9b2801c6278c5aa8fb718beb5699d0d148508b5d145b9854b1ba28efcbb837f9"
         },
         {
           "name": "clear_bit",
@@ -107,7 +1067,9 @@
           "line": 24,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "d18e2750810fe2786a2b994c2762c0e852c0668f25d05b29def2696e61309c39",
+          "contract_sha256": "72264cc64a41710a210acb7cd689b6324025aad07569061ab910676ee9041427"
         },
         {
           "name": "toggle_bit",
@@ -115,7 +1077,9 @@
           "line": 28,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "0a55472dcb5f6168bc8790368f83aeef53b65733fa3b81ab0b9eb016b5507e05",
+          "contract_sha256": "0d8c6ed6e39255b1158c5f55bb8b828b0125b76a90d8104f0690b03146b8b976"
         },
         {
           "name": "set_bit_to",
@@ -123,7 +1087,9 @@
           "line": 32,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "acf6ed5b08be76f643a4032049841e68f649b271237c38e8165e6bbfcce865aa",
+          "contract_sha256": "480d11101f620ca97bdb77461d93efe5f014f1c54cd1d4ac68476c80218a2ec2"
         },
         {
           "name": "deinit",
@@ -131,7 +1097,9 @@
           "line": 35,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "36f1a289315e4ba7dc4fcb4a851bf3dc26fc5ab2572a357ec719c8288c6225f9",
+          "contract_sha256": "59aefc6eae8437bfe3a2d7aa17108b2004d5cfa4f26b3eaf6173534a607fe0a4"
         },
         {
           "name": "make_bit_array",
@@ -139,7 +1107,9 @@
           "line": 39,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "6c99de91b6e7aae1c2005554d5ce21b84e2031c8e5446ae267311e51cccbddca",
+          "contract_sha256": "a4e5694dc158371079e022b87362785a78bf6810a74dd90ced38183fcf2077ad"
         },
         {
           "name": "operator[]",
@@ -147,7 +1117,9 @@
           "line": 44,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "133cc3fc526729e7619d90417f77d9785bc4480aa1209d6ece9d23ba6549babe",
+          "contract_sha256": "7b2f40b3810d7bd8131908db312f79a40f58df4bd40dc8d0d298867f6f9507ba"
         },
         {
           "name": "operator[]=",
@@ -155,7 +1127,9 @@
           "line": 48,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "71ccc3dda822fa29db824a905192f7d9fbe3ccf587e900f52e75de71a5027cad",
+          "contract_sha256": "dbcbf1c0fe0cd06186c7f969811c7c53b5cff78334106f337efbfa56b9639b24"
         },
         {
           "name": "clear_all_bits",
@@ -163,7 +1137,9 @@
           "line": 49,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "9d98bb52b9a221a4263b7232c337fa148d94b7e4aa8af1c5daf75666252b6d17",
+          "contract_sha256": "be398922d07288e9c9a7fb09844af15b994a1e723243486bd63d4229d802f3c2"
         },
         {
           "name": "set_all_bits",
@@ -171,7 +1147,9 @@
           "line": 50,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "7208ae77af9aff4ac86e0ad69021941c4f6a602280aa4a276733c05374637a38",
+          "contract_sha256": "b0afdf5395de7fa15750718027cc1b2f726c8ed9760d6cf18293adad48136897"
         },
         {
           "name": "toggle_all_bits",
@@ -179,7 +1157,9 @@
           "line": 54,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "af7c499d60a7c4f5834ce0b168d1f6405d1c03b936442c58169dbe3901c3212a",
+          "contract_sha256": "f6b40b86b6b6d50f3eb9a3aad20d945c45dfffbde30a83adf7f1fb556013a614"
         },
         {
           "name": "for_expansion",
@@ -187,7 +1167,9 @@
           "line": 58,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "fb71c13d9ab126c5d97ea5ea8047cdb43a99a9fc73f0f9565064bab6de125dcb",
+          "contract_sha256": "d5338dcbe9ecdffee62a99d90e1cd5149824b57b9d03b8b3d43e8cf9d3e3fbac"
         },
         {
           "name": "for_expansion",
@@ -195,7 +1177,9 @@
           "line": 70,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "23bb06534369521761f3c35162ab6213a888b7de7fb0bff53242fe6f38c99704",
+          "contract_sha256": "c91b06dab504cf22213f5040c71f893e7991a50e23a1ef6ddc2f582f31b03d14"
         },
         {
           "name": "only_set",
@@ -203,7 +1187,9 @@
           "line": 73,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "e03c4498421b6dee4ffd21f23a950607600ffb1b0c3f9da4b67b1e2176df60d8",
+          "contract_sha256": "088ab0b0779368a54e2c68801a6978c7f919f0dea2c34d4745a3adc070a90a92"
         },
         {
           "name": "only_unset",
@@ -211,7 +1197,9 @@
           "line": 76,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "cb35c3ce3e48862e9e045953e728674f2ba0831b706b7e2a9f8dee5db8c2d2b8",
+          "contract_sha256": "7aacb77dab16c391f17d5b3a0af6302d3fa0cda306974dc69c444c6495fc9a26"
         },
         {
           "name": "set_bits",
@@ -219,10 +1207,12 @@
           "line": 79,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "946aef207aa0af402b41d5c2c48bd5f6687d43db46f67a2c4bf60dc4570b9621",
+          "contract_sha256": "563c25ef97bb38c29caebe8d2e643e115b5bca3db9a35f455728a0802c7ba3ae"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
       "path": "stdlib/Hash_Table.jai",
@@ -235,10 +1225,36 @@
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
           "members": [
-            "keys",
-            "values",
-            "count"
-          ]
+            {
+              "name": "keys",
+              "kind": "field",
+              "line": 3,
+              "header_sha256": "c94e26ab9f9851cc9adad4bcdaeedbf49b6005bd854ca9c23f8984032012728f",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "646cd607b937d7d3907d71327c9e3cf761d72895590433c8d582d482f5296b34"
+            },
+            {
+              "name": "values",
+              "kind": "field",
+              "line": 4,
+              "header_sha256": "078786ee46113960aede4c55fda6dd70f1ffd975a2cf5618391f8aea8afb0268",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "da26fa8bfc08a153f92d18e84860aa31bdcd80aa644c512887e111f2f28a5643"
+            },
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 5,
+              "header_sha256": "def83d6967c160bb7b508e7b95d04d77adf5573f245fe02dcfa1f3befb6f2259",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d553e4f2ca6384a53d49dddcd4f7bbe4ea1e0ae4eed7e85ca139f2c98c900800"
+            }
+          ],
+          "header_sha256": "8a9e688c4b093697533acc2398b8b24ef8fa8e5b9fd20b5d702709e27e9cacb8",
+          "contract_sha256": "30e70bf9d04ba8de8b9b867f67ab6939ff7f1c9601cbac99e349edcf7c77124d"
         },
         {
           "name": "init",
@@ -246,7 +1262,9 @@
           "line": 7,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "e52ee98df5a32094ec5b7a04187f1e8ed24b6f78be3b10045c7a158fe8bae58a",
+          "contract_sha256": "5fbb22b30e306f9a6fa8a1c83607714fc2ad3e99dfc5fca2a3f317070f42a8e3"
         },
         {
           "name": "deinit",
@@ -254,7 +1272,9 @@
           "line": 11,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c8837f40183c3c1985eddb2d4329dd8bb9affaeca3f00c7e2bce0ed1d8660127",
+          "contract_sha256": "bc4ed4104d8cf7cb8e56726cec6b8715400a66926e4c2439c09dc7870b93f485"
         },
         {
           "name": "table_add",
@@ -262,7 +1282,9 @@
           "line": 15,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "53b04345543addfc627a23ae268000ed32f1aed69296c27a47a05143b1123340",
+          "contract_sha256": "e44df1a01c46659f57932f9ce5c1b2738865c8b77e577b40e479cf519d6d6299"
         },
         {
           "name": "table_set",
@@ -270,7 +1292,9 @@
           "line": 20,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b405dbe7fd44495e390393fa628a7c941ce6c7375d5a68fa07ab1114ee01a44c",
+          "contract_sha256": "ebbb7e7c1e66b715d69d49879cd9818fb53133f937704ff884e694f276f93227"
         },
         {
           "name": "table_find",
@@ -278,7 +1302,9 @@
           "line": 21,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b58591123df1a8d8e2a9efd5a520e707ea125e1eca7e9c3de3cb2af74753a271",
+          "contract_sha256": "bc0f1b79f2b2baa3b51cd0c0832875eb20b7bd22b8fe851ef4e778cd20304936"
         },
         {
           "name": "table_find_pointer",
@@ -286,7 +1312,9 @@
           "line": 27,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "179c3280a83e44908d7007c5e025b2aec6ee51449f9aacb6b83f355ed5df5f5c",
+          "contract_sha256": "170ec393d8efaffbc3fedd1febe88088da82a8cbc923b1914c3393a6cb13bf7c"
         },
         {
           "name": "table_contains",
@@ -294,7 +1322,9 @@
           "line": 32,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "7620ae89de99b2efb4af75807db9e433194287254ea6cfa76c68a4af8ecdb5d7",
+          "contract_sha256": "df738438b7048e76a5d83984f296bf01a51119a60faaf0a3f7c3e49fd07d1c86"
         },
         {
           "name": "table_remove",
@@ -302,7 +1332,9 @@
           "line": 33,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "833fa307f616faea69203fcaf0fd33f11efd6f017cdf505d7a04fb77799a6881",
+          "contract_sha256": "008602f1b44e0771d9f8e43042617940788389a04e7d9ed069148a558d682283"
         },
         {
           "name": "resize",
@@ -310,7 +1342,9 @@
           "line": 42,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c269801c734acd77a7178c9549f679bd8966f57053929643d24d28f6ef4c5eec",
+          "contract_sha256": "672d80730f169d1243f565b7185ca067cf46ad06f76ce880c38161cb4badabc3"
         },
         {
           "name": "table_reset",
@@ -318,7 +1352,9 @@
           "line": 45,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "04fcb3b316c455b8a45f6b11e6b8138008fe0ff9b7143ecdb6f97ebd5b558128",
+          "contract_sha256": "070a0641c8233753e61eed3e66b300483618017a8362ab5b21c4fa357aa53085"
         },
         {
           "name": "table_ensure_space",
@@ -326,7 +1362,9 @@
           "line": 48,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "470a16f4696c5c9f615906571b718bc911c895e21ff44fb65ce6a9e03934fba6",
+          "contract_sha256": "479d9fe25bf540e301da6584d2bed38ca299a8fe52498e766e4eb320e40c1c70"
         },
         {
           "name": "table_add_duplicate",
@@ -334,7 +1372,9 @@
           "line": 53,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "8c8de975f1fc40d631f6e011c0a43d668bfebfb86642af74e8ca5a3c86034617",
+          "contract_sha256": "32730134c1c4d1d2a9b514f3558c04b28730e0ad0fb99e6d9305b7b96ff34c3a"
         },
         {
           "name": "table_find_multiple",
@@ -342,7 +1382,9 @@
           "line": 54,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "d6e06ba846bca786f933086391cebb100359bc5d31c964aec577508a1d24d03c",
+          "contract_sha256": "067228d3648c5e96725761beef0d0917c969576385c61aa9b6c8be4baa657ea0"
         },
         {
           "name": "find_or_add",
@@ -350,7 +1392,9 @@
           "line": 59,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "a738b58474414b84d404c80e8f32c00ba55857f718f96462a94ad854c2212d31",
+          "contract_sha256": "fd5ca6d2c5679c8e76d60567dc68687b20e9ff2c0f5db0dd6b3f25e33f552e04"
         },
         {
           "name": "for_expansion",
@@ -358,7 +1402,9 @@
           "line": 65,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "2c6fb414b41bc9bd9efea26f5e957f8960c4ffc86f61e47194806fa45a86a1f8",
+          "contract_sha256": "b5b94d56fec2614bae1a2bac7b1ace9359700a0ee6c7d272852597b471797e81"
         },
         {
           "name": "NEVER_OCCUPIED_HASH",
@@ -366,7 +1412,9 @@
           "line": 77,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "af3178c437edea3430466cd30a71495280021291ff11d31f2b66b553c7a7d92f",
+          "contract_sha256": "03c88f9c2f16248680a86d6b81096544744559c3b45d210a00fa87c56a46dd81"
         },
         {
           "name": "REMOVED_HASH",
@@ -374,7 +1422,9 @@
           "line": 78,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "61c67a2a7819b34f9362dd87968e525d6933ca428992a2c13438b741d0531310",
+          "contract_sha256": "0af3455d91c33cdf9e5df1fbc6ad7e26de4eab77646c342352e0c05bcaa58df9"
         },
         {
           "name": "FIRST_VALID_HASH",
@@ -382,7 +1432,9 @@
           "line": 79,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "cbf4ea2ddab12926aefcbd56f8b4b1fd66520ab0991be146708ad4e70b0ed3ed",
+          "contract_sha256": "e706f4dbc8887681405a1f2b95ae5d0a113666da7873bec73af8808994b215a3"
         },
         {
           "name": "expand",
@@ -390,7 +1442,9 @@
           "line": 80,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "f9fbe9fdcde7e2a58768dc0d37ba3d5e11bec49c16cb0c5db98e083ddbc807cb",
+          "contract_sha256": "f5f02b6cb06b974015d3b64ef08526f22d08910d3648fabdbd6b753eeeeed128"
         },
         {
           "name": "next_power_of_two",
@@ -398,10 +1452,12 @@
           "line": 83,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "aebcdbd3dad9dc20d375bacb926b19ef4934ebfafeb52618ea150eab06bda02e",
+          "contract_sha256": "6b3b683e03ea382d2e93d73f8cbe9d04f90ea8d34a456f64bb0ff3a9c930b3a7"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
       "path": "stdlib/Sort.jai",
@@ -413,7 +1469,9 @@
           "line": 3,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "2b02d5873167c5115039e6900b13ac2da4c4789aa9a9438640d7219a85ae936f",
+          "contract_sha256": "bcc1fd91f9108f879f4d1bd4d5b2cc86d1ee355d58a4203eefaa3cdca2f9719c"
         },
         {
           "name": "compare_strings",
@@ -421,7 +1479,9 @@
           "line": 4,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "09cfeed32b78aa973873dd2e06ff7101c9ac998726bf15867e77595667dc019e",
+          "contract_sha256": "f0947cf1a74bd05e648913045876c78916b8eba57c5842c30e3c55c08afb0f12"
         },
         {
           "name": "bubble_sort",
@@ -429,7 +1489,9 @@
           "line": 14,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "4b18e08090fd8c9c8733d4b66a00e644232339a247ef6e5e92cef7d1aedfa1d8",
+          "contract_sha256": "eaa51b1f532ea4414501c06991e7e883aa63215db6a4837a456041dec1187fd1"
         },
         {
           "name": "quick_sort",
@@ -437,7 +1499,9 @@
           "line": 27,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c08374275505cc10b29449dade0b47dd88f7bafc806d1fb253cf494309a7f975",
+          "contract_sha256": "a9e9334e8eefd98c7f3e4365807798cca6dae092b049eef2a84d76d96049567e"
         },
         {
           "name": "quick_sort",
@@ -445,10 +1509,12 @@
           "line": 50,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "0438d94d69d72beecd4ae47a3ecb4d45f2c6286265278decb61656e4128d1f2f",
+          "contract_sha256": "d1cb32aaba8f9f375dc2210c0b7a8e5480d88cf62896e4a480594e462e51dea8"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
       "path": "stdlib/IntroSort.jai",
@@ -460,7 +1526,9 @@
           "line": 2,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "81a9e55d6dbdb5f754686a9944df3da614754dcc46a09fd714c82ea81331367d",
+          "contract_sha256": "529267b077d4628e1de53f8f263f4750fee07d19c0ecdeff1a37050f23d3ae66"
         },
         {
           "name": "intro_sort",
@@ -468,7 +1536,9 @@
           "line": 3,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c8d4f57ab05e11f315d50c68bf7f130482cf724db48bf23fffeca8407336714b",
+          "contract_sha256": "76bfabefb8ef697b7ba11457523a94c0f137ae8caa788f049885e37872535a99"
         },
         {
           "name": "insertion_sort",
@@ -476,7 +1546,9 @@
           "line": 6,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b611ec9f09e4eec8eade48d45acacb64adf213dd734fcdf10f2685c2810d2c1e",
+          "contract_sha256": "93ebb52969911fcfbb920b42cb9e029c448c4d3ce1669efb8f11b45603918620"
         },
         {
           "name": "intro_sort",
@@ -484,7 +1556,9 @@
           "line": 7,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "0ba87d77ff49fb322e19b489ff5065c9417ccf6caf9aff0529a3cf075ec5dffc",
+          "contract_sha256": "2d2780fc96e3b6929ced3852f7ec24c1b0f3e934edc8709c662ea235501e1c0e"
         },
         {
           "name": "insertion_sort",
@@ -492,10 +1566,12 @@
           "line": 10,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "29fa041ee3ea964ef25fa3f2b7d4652abbd96fe883536357678d3f7a381d038a",
+          "contract_sha256": "484917b84b39009c3eb95dfb3b2faed2e04a3a388aff568b6cbd47f22ca5792a"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
       "path": "stdlib/RadixSort.jai",
@@ -507,7 +1583,9 @@
           "line": 3,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "8332aa81dc8cf76892dfcd576759e484b778c89834bd56f5ad4309995d9b5cb3",
+          "contract_sha256": "3d7b8619ab7379de4e73b422ad347239d2cb4ae0c98642a59ed11e8a1cc567fa"
         },
         {
           "name": "RadixSort",
@@ -516,9 +1594,27 @@
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
           "members": [
-            "ranks",
-            "count"
-          ]
+            {
+              "name": "ranks",
+              "kind": "field",
+              "line": 5,
+              "header_sha256": "e5af070e4cd04367dd58839700bcc65502e4070b837d05b2ec40a8cc948fac14",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d7aa1dd2dc5fabca0334727c0e17d07c70fe473a13ca9f01d7636deb3af50b9c"
+            },
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 6,
+              "header_sha256": "c616dfb6b593e46088557135293e6ecaf609bbb31b2009fdeca656ac3b90132b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "c7c8b0082e00c1cbc5bf750c473fc7f2eb4ba7da05011b623a0f32983effa643"
+            }
+          ],
+          "header_sha256": "9257af30cc06c90fabbadce6ab9355467e99b7df348a92c4175ba2fdd9f056c4",
+          "contract_sha256": "78323e62e2a66ec6cbbf2d1b690bd1e29d42dd88915d8e0aaa78d2ec55d0f81a"
         },
         {
           "name": "sort",
@@ -526,7 +1622,9 @@
           "line": 8,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c1f2f44e74cae3236461af93bf44d15a50c26f76eb65bab97c8f2ce7fd0c5f30",
+          "contract_sha256": "042e0a55fa428d47a9a52bdb2a4ab3e0ba5c7f63b6fb50c1b179d32069f29541"
         },
         {
           "name": "rank",
@@ -534,7 +1632,9 @@
           "line": 9,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "669e80df5ea82337da4f5f3d7b6a57ceb8ff49bd53d0167ccaf85c25e71a760f",
+          "contract_sha256": "089405b30b7c3b423d3a3053229d75baa59b38369c8b5c1f97cc424a7e4a3b7b"
         },
         {
           "name": "free_resources",
@@ -542,7 +1642,9 @@
           "line": 10,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "5f0df506a7838117f96576478cae90686447b752740493d1fe08ecccab8fff03",
+          "contract_sha256": "7ff9b679848985558600643bd2bc12a0887ebb582bafee51b85f5da21c6a5568"
         },
         {
           "name": "reset",
@@ -550,7 +1652,9 @@
           "line": 14,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "8653d156db4e063806c16977b1f61744cbf7027c27c4c4078c2e3aa08ab04acb",
+          "contract_sha256": "9e2799c42fc65c6d44dd353c02c8d6ef260583de30c84c0902a95f00da7b1f86"
         },
         {
           "name": "resize",
@@ -558,7 +1662,9 @@
           "line": 15,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "16765434f0515772553a3d243c4fa38db493ff5dc5a9907d4ed06a5cede5d2e1",
+          "contract_sha256": "c3e9509a943ae793bd0e8153eea74b6fad62517b1edfd035c50680d116748bf2"
         },
         {
           "name": "operator[]",
@@ -566,7 +1672,9 @@
           "line": 20,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "8a491091e051d20e36c0f6ef41d97b0c47c55aec8a8d5c0b9ad4786f8b516fc6",
+          "contract_sha256": "c6aea08a0e5c1906bea1f4b5ebc7fb20e5bf4aadcd1c94255965508a0560a3ed"
         },
         {
           "name": "sort",
@@ -574,7 +1682,9 @@
           "line": 21,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "2a9662f400dc9a017b777348c0d815e7b91439930add7b7c68790be3150bdec9",
+          "contract_sha256": "5e76ef8371fa24f36d22f0f20d21e1025be27b37e8593c0c717480d87c3c93d3"
         },
         {
           "name": "sort",
@@ -582,7 +1692,9 @@
           "line": 22,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c6d11566e481cd9592435c1b1711fa4d9aea69bcf3854e2445004dd7c555f222",
+          "contract_sha256": "73c4258535e354fd2419f5487a169717c15888445f9430cbff286c3a43dc571b"
         },
         {
           "name": "sort",
@@ -590,7 +1702,9 @@
           "line": 23,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b61da586cd0a2e29430d33cbc5582904ae2a5c64b1db6a4b30e05a4cb151a3e6",
+          "contract_sha256": "5ad010e4a06f19883d923be5470363dbdec07478274f1c741ab7e57e8cfb2527"
         },
         {
           "name": "sort",
@@ -598,7 +1712,9 @@
           "line": 24,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b062694ff0fc8e0d161a861c4672e425399c2a7e853f97f1ef765b6be19541f5",
+          "contract_sha256": "47aae4821c14b91758cdf1c032f12ede187decf9fef4c978adb6a3fb1e3d3a1c"
         },
         {
           "name": "sort",
@@ -606,7 +1722,9 @@
           "line": 25,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "10fc881ef158141b42fd81f054b5ef0ff51e3d91dadadc3e8c026e33e9ca5afa",
+          "contract_sha256": "cc71e37975f2d38e9935e68e9881d492d4c2ce174a7f5560b68c4f720a0a0a99"
         },
         {
           "name": "reorder",
@@ -614,680 +1732,1384 @@
           "line": 26,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "c0dc7ef64dd5c158f943255693bf704ac6c5ebab8cfe74d11fbfd40ae413acfa",
+          "contract_sha256": "77aa204ec7108ace965ef5d47c65860338a4367c322eebce8419685c43e1066c"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "passed_verified_017353_source_parser"
     },
     {
-      "path": "stdlib/Basic/protocol.jai",
-      "sha256": "2b2ebff038d8652d1b8d6dd19a61ff7de27b54a5f74463268afd7f6f060f8511",
+      "path": "stdlib/legacy/Hash_Table.jai",
+      "sha256": "d299309458a4eae5426beecadb6cadab09682e664116d7a6ebe1d26570f7f94e",
       "authored_declarations": [
         {
-          "name": "Allocator_Mode",
-          "kind": "constant",
-          "line": 7,
+          "name": "Table",
+          "kind": "record",
+          "line": 3,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 7,
+              "header_sha256": "def83d6967c160bb7b508e7b95d04d77adf5573f245fe02dcfa1f3befb6f2259",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d553e4f2ca6384a53d49dddcd4f7bbe4ea1e0ae4eed7e85ca139f2c98c900800"
+            },
+            {
+              "name": "allocated",
+              "kind": "field",
+              "line": 8,
+              "header_sha256": "718adbc595448182548d82dede7df4d5b35c9d1e413800b8f211c605064acc2a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "fa4d7c993ad390e9a00fa8895ef751586684c2f14d6d73e0c00de7b2bfea95af"
+            },
+            {
+              "name": "slots_filled",
+              "kind": "field",
+              "line": 9,
+              "header_sha256": "a0daebf3530a24ce621831425e67e40aeb52821955bd6827f52281d09b656eac",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "9372e09e9c69564f2a5ec941072a5301a97ef2ce61c4b20209d49cc2e4f19bc5"
+            },
+            {
+              "name": "allocator",
+              "kind": "field",
+              "line": 10,
+              "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+            },
+            {
+              "name": "Entry",
+              "kind": "record",
+              "line": 11,
+              "header_sha256": "a8bf7aa8852dda5f0c8d49a1f313aeb0dd6e1bf5bacbbb3d27328cd2277e51f3",
+              "members": [
+                {
+                  "name": "hash",
+                  "kind": "field",
+                  "line": 11,
+                  "header_sha256": "5316f4c339d7ce99abd550db9addd001231822baed13c2b04ece17295fe1fb3c",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "06b59fd33c8d8ba73af0d3d339bd1fbabfa7d753fc79169a72337fc9a913161a"
+                },
+                {
+                  "name": "key",
+                  "kind": "field",
+                  "line": 11,
+                  "header_sha256": "08c999b1506ba6fa19880071a99524528fe027c74af819301f6bd578cbf2db8d",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "6552bd3f29ecc3ef5b3960c67e02bddd5d77d6ed93e79bb9aa58a90c2fe46600"
+                },
+                {
+                  "name": "value",
+                  "kind": "field",
+                  "line": 11,
+                  "header_sha256": "3c4139fdfb439202784a300117405fbec802c41e0faf08dfcf15c467ae7abfc8",
+                  "members": [],
+                  "implementation_form": "declaration",
+                  "contract_sha256": "722107bd69bdda25441ea71820ecf24f5cb15481177eac96543f9bead7d20df1"
+                }
+              ],
+              "implementation_form": "declaration",
+              "contract_sha256": "af146229f1e809876ff8318119d4bbc78de5bb940ccbd406c813fa76cbed0cd9"
+            },
+            {
+              "name": "entries",
+              "kind": "field",
+              "line": 12,
+              "header_sha256": "7506a7820793ea62028a4167949fad4fd2228d179f21159292792944960c7748",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a3ec7cc705f75cc0804b221c19f2c5ab168e02d986bf73b057ec5a540606d268"
+            },
+            {
+              "name": "hash_function",
+              "kind": "constant",
+              "line": 13,
+              "header_sha256": "e2166456feed27d19e3af89d54416fde764986c1000af15dec4f59b0d1972324",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8494c523e37a2c3926f177b49ac9a372d29aab180c611007bc027922bef1a909"
+            },
+            {
+              "name": "compare_function",
+              "kind": "constant",
+              "line": 15,
+              "header_sha256": "1009cd037937182d41c6813087ce1e62212fd84e572e38932a45b789d095645b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "cd9d70719636755e5b7073bb3f5ddfa17fb4153ba1457d9f99a19aa8da37a0e3"
+            },
+            {
+              "name": "_collisions",
+              "kind": "field",
+              "line": 17,
+              "header_sha256": "9ccabe77a98ae1150a6816049ba5a5de9bb421b75b0679a3c89bd2ee83b8e2a1",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "0a39742093db03906f4848a26abd9c37d1627d5fd32234dde78414bc50f746ff"
+            },
+            {
+              "name": "find_collisions",
+              "kind": "field",
+              "line": 17,
+              "header_sha256": "8674267135ecf60bb9abd1c2c64b49a1be2e2ee37e440dc8ff91c2ec009894e7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f41e4f744c4c86d35f49bd7147da2a5383efd0b6984a448838bf9810f4fe22c3"
+            },
+            {
+              "name": "SIZE_MIN",
+              "kind": "constant",
+              "line": 18,
+              "header_sha256": "4eb51b93090b6eb3236f447bdae1c645edb47209cd50068bc4cf1f941ee1ef1b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "7a47995999f3b6071899a37c52fbf32ca73b09cae3de29e5a5f13836d05d0237"
+            }
+          ],
+          "header_sha256": "98e947b08202c28e627f0e138140d638503a42f9b2f45b6c5c3743b025bb398f",
+          "contract_sha256": "9cdfd20b0127f1579bf0a102cbb094a08f8eeb5f2fef2458b14b04353e012959"
         },
         {
-          "name": "Allocator_Caps",
-          "kind": "constant",
-          "line": 8,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Allocator_Proc",
-          "kind": "constant",
-          "line": 9,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Allocator",
-          "kind": "constant",
-          "line": 10,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Temporary_Storage",
-          "kind": "constant",
-          "line": 11,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Tag",
-          "kind": "constant",
-          "line": 12,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info",
-          "kind": "constant",
-          "line": 13,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Integer",
-          "kind": "constant",
-          "line": 14,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Float",
-          "kind": "constant",
-          "line": 15,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_String",
-          "kind": "constant",
-          "line": 16,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Pointer",
-          "kind": "constant",
-          "line": 17,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Array",
-          "kind": "constant",
-          "line": 18,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Procedure",
-          "kind": "constant",
-          "line": 19,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Enum",
-          "kind": "constant",
-          "line": 20,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Type_Info_Variant",
+          "name": "NEVER_OCCUPIED_HASH",
           "kind": "constant",
           "line": 21,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "af3178c437edea3430466cd30a71495280021291ff11d31f2b66b553c7a7d92f",
+          "contract_sha256": "03c88f9c2f16248680a86d6b81096544744559c3b45d210a00fa87c56a46dd81"
         },
         {
-          "name": "Type_Info_Variant_Flags",
+          "name": "REMOVED_HASH",
           "kind": "constant",
           "line": 22,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "61c67a2a7819b34f9362dd87968e525d6933ca428992a2c13438b741d0531310",
+          "contract_sha256": "0af3455d91c33cdf9e5df1fbc6ad7e26de4eab77646c342352e0c05bcaa58df9"
         },
         {
-          "name": "Type_Info_Struct_Member",
+          "name": "FIRST_VALID_HASH",
           "kind": "constant",
           "line": 23,
           "body": "declaration",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "cbf4ea2ddab12926aefcbd56f8b4b1fd66520ab0991be146708ad4e70b0ed3ed",
+          "contract_sha256": "e706f4dbc8887681405a1f2b95ae5d0a113666da7873bec73af8808994b215a3"
         },
         {
-          "name": "Type_Info_Struct",
-          "kind": "constant",
+          "name": "init",
+          "kind": "procedure",
           "line": 24,
-          "body": "declaration",
+          "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "de6936b05d2f7ddda3150abe4ec428d1d2ba010c4873406807460df7442b7ace",
+          "contract_sha256": "aca755dfc11a071ec58edd9060043d12afbbd8a908d03493fb053ed389bb43b2"
         },
         {
-          "name": "Struct_Status_Flags",
-          "kind": "constant",
-          "line": 25,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Struct_Nontextual_Flags",
-          "kind": "constant",
-          "line": 26,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Struct_Textual_Flags",
-          "kind": "constant",
-          "line": 27,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Enum_Status_Flags",
-          "kind": "constant",
+          "name": "resize",
+          "kind": "procedure",
           "line": 28,
-          "body": "declaration",
+          "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "e79bb2b1373ed6a14fb6fe03176de6ce970c26861643274112f05f1de9961e94",
+          "contract_sha256": "c2b8c9c5af4b0eb5a4d0c14c6354d938e529d6be23de3f3b32d67ebcb72b8062"
         },
         {
-          "name": "Enum_Type_Flags",
-          "kind": "constant",
-          "line": 29,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Any_Struct",
-          "kind": "constant",
-          "line": 30,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Any",
-          "kind": "constant",
-          "line": 31,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Source_Code_Location",
-          "kind": "constant",
-          "line": 32,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Source_Code_Range",
-          "kind": "constant",
-          "line": 33,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Log_Level",
-          "kind": "constant",
-          "line": 34,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Log_Flags",
-          "kind": "constant",
-          "line": 35,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Log_Section",
-          "kind": "constant",
-          "line": 36,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Log_Info",
-          "kind": "constant",
-          "line": 37,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Logger",
-          "kind": "constant",
+          "name": "deinit",
+          "kind": "procedure",
           "line": 38,
-          "body": "declaration",
+          "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "0385b19c26670ec0fd9e394e4f95cfb7a7f347ad66fb6ac8b228c84e8446c01b",
+          "contract_sha256": "2e5de47d28057b258aafa24b11bacc024e685871f31da160457f319f9d98f91b"
         },
         {
-          "name": "Stack_Trace_Procedure_Info",
-          "kind": "constant",
-          "line": 39,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Stack_Trace_Node",
-          "kind": "constant",
-          "line": 40,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Procedure_With_Data",
-          "kind": "constant",
-          "line": 41,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Newstring",
-          "kind": "constant",
+          "name": "table_reset",
+          "kind": "procedure",
           "line": 42,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Array_View_64",
-          "kind": "constant",
-          "line": 43,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Resizable_Array",
-          "kind": "constant",
-          "line": 44,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Name_Mapper",
-          "kind": "constant",
-          "line": 45,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "For_Flags",
-          "kind": "constant",
-          "line": 46,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        }
-      ],
-      "syntax": "passed_frozen_source_parser"
-    },
-    {
-      "path": "stdlib/Basic/module.jai",
-      "sha256": "639535ed1a4370cccad6e590d7c18747702703ae802c2e93017dc75e6efcdd62",
-      "authored_declarations": [
-        {
-          "name": "SET_STORAGE_MARK_STAMP",
-          "kind": "constant",
-          "line": 23,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "RESET_STORAGE_STAMP",
-          "kind": "constant",
-          "line": 24,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "FREE_PAGE_STAMP",
-          "kind": "constant",
-          "line": 25,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "write_string",
-          "kind": "constant",
-          "line": 26,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "write_strings",
-          "kind": "constant",
-          "line": 27,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "debug_break",
-          "kind": "constant",
-          "line": 28,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "this_allocation_is_not_a_leak",
-          "kind": "procedure",
-          "line": 30,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "7b89bdc80928db438fbb7b91f8c260dfb30cc806898b9f4b5b8c10cf5d59a93b",
+          "contract_sha256": "6da8182dd67071febc68fe84be68702831d5bc871d0b01039c986079bee2305f"
         },
         {
-          "name": "this_allocation_leaks_todo",
+          "name": "table_ensure_space",
           "kind": "procedure",
-          "line": 31,
+          "line": 47,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "ce55207473708d9bf6a767d579efbda58ebae8b40be2f1fe39b472dae31befe1",
+          "contract_sha256": "ccae55fa055e5f26574e13034b9e8a7b24cbf1695c78b9d1050df871ce304e87"
         },
         {
-          "name": "this_allocation_does_not_propagate_leak_ownership",
+          "name": "table_add",
           "kind": "procedure",
-          "line": 32,
+          "line": 52,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "892ffbb6cba4f77398c730dfb6175ccb601908e5b2a500c55fd25c36847eabd3",
+          "contract_sha256": "4b07cd6fc76b757cdca48199205e67a8497626bf029d3783804037f09dbe9608"
         },
         {
-          "name": "memory_visualizer_per_frame_update",
+          "name": "table_set",
           "kind": "procedure",
-          "line": 33,
+          "line": 58,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "b36505b06979b157331d966ba153cb8eed42aa9a38722af1295ef61025103a4b",
+          "contract_sha256": "6cf0a558f5b95678b6df4698b215a35485ec8f9f7b24c74516a204ff6f115876"
         },
         {
-          "name": "assert_helper",
+          "name": "table_find_pointer",
           "kind": "procedure",
-          "line": 35,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "assert",
-          "kind": "procedure",
-          "line": 43,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "get_command_line_arguments",
-          "kind": "procedure",
-          "line": 50,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "min",
-          "kind": "procedure",
-          "line": 59,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "max",
-          "kind": "procedure",
-          "line": 60,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "min",
-          "kind": "procedure",
-          "line": 61,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "max",
-          "kind": "procedure",
-          "line": 62,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Min",
-          "kind": "constant",
           "line": 63,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "Max",
-          "kind": "constant",
-          "line": 64,
-          "body": "declaration",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "clamp",
-          "kind": "procedure",
-          "line": 65,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "a1dea62072f8f5a1475d2428e0964be7ccd4170d213fec42b31ae5e6f476b0dc",
+          "contract_sha256": "829bcaee97ec786f1bd01012d5a7b4f9c1995186cd98a67e589f48defb9647cb"
         },
         {
-          "name": "Swap",
-          "kind": "procedure",
-          "line": 66,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "swap",
-          "kind": "procedure",
-          "line": 67,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "swap",
+          "name": "table_find",
           "kind": "procedure",
           "line": 68,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "64bb2ac59fcba616e3643a534fc263e2ccc3cd05a07a97972aca9896ab5f6aa1",
+          "contract_sha256": "32695271e4515b45de25f0fe1e3bfb461b308a0a7231f5a5435bf2d45710d5f5"
         },
         {
-          "name": "IsScalar",
+          "name": "table_contains",
           "kind": "procedure",
-          "line": 69,
+          "line": 74,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "be2e0a6fc07f8d5094696c6326be832a02d151061a6c55028d9cdd77aacb40b5",
+          "contract_sha256": "4cceec6d19c67d29e5ea6cae2353e77139a2b41083c8e2e53dc0954e7e392a12"
         },
         {
-          "name": "get_field_with_offset",
+          "name": "table_find_multiple",
           "kind": "procedure",
-          "line": 73,
+          "line": 75,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "6745d9306269d97e1c92ce860bae39bb372172d94fd34d098f6381c4d0875766",
+          "contract_sha256": "d1b3137949d8dbd14a1b1e7d8ca7356e0ea8ac0cd7c6187e3efdf3283a927a29"
         },
         {
-          "name": "get_field",
-          "kind": "procedure",
-          "line": 77,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "enum_names",
-          "kind": "procedure",
-          "line": 81,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "enum_values_as_s64",
-          "kind": "procedure",
-          "line": 82,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "enum_values_as_enum",
-          "kind": "procedure",
-          "line": 83,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "enum_range_given_info",
+          "name": "table_remove",
           "kind": "procedure",
           "line": 89,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "744649c5dc459f9ee62681679e4429ba4b9cbb4c65c6b10dbdcb407d00e107bb",
+          "contract_sha256": "1b924a42a0da684a21b3edda2523f96b0f3592500d17347300841386cb5e9275"
         },
         {
-          "name": "enum_range",
-          "kind": "procedure",
-          "line": 95,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "enum_highest_value",
-          "kind": "procedure",
-          "line": 96,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "remember_allocators",
+          "name": "find_or_add",
           "kind": "procedure",
           "line": 97,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "765bc16e0487acdc454037b42ff14ddc2421fd9584b8eb4a99ea79ce302ba6f1",
+          "contract_sha256": "186979917ab8b8b87339fc9626dee80447d4cd920b0dbe79d83b71d86b41bc03"
         },
         {
-          "name": "resizable",
+          "name": "for_expansion",
           "kind": "procedure",
-          "line": 100,
+          "line": 103,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "2c6fb414b41bc9bd9efea26f5e957f8960c4ffc86f61e47194806fa45a86a1f8",
+          "contract_sha256": "b5b94d56fec2614bae1a2bac7b1ace9359700a0ee6c7d272852597b471797e81"
         },
         {
-          "name": "is_integer_type",
+          "name": "Walk_Table",
           "kind": "procedure",
-          "line": 106,
+          "line": 115,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "8721ab7b0da6f5c467e531143cbb7a6d9ef110ae1e14b7b6d81e831fb1b6a44a",
+          "contract_sha256": "3e197d4c0976ba6349a571fabdcfd185c8bf085208a454cee5b0a35b9bf1fc7d"
         },
         {
-          "name": "get_integer_range",
+          "name": "expand",
           "kind": "procedure",
-          "line": 112,
+          "line": 126,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "f35bd13077d328f19a723181206dccfcc9243211f466a5dddfb9ddfde858130b",
+          "contract_sha256": "03519fec8f97ea4e511059ba9ac773e5579486b101b5ce813d76112085cc9c1a"
         },
         {
-          "name": "clamp_to_another_integer_type",
+          "name": "next_power_of_two",
           "kind": "procedure",
-          "line": 121,
+          "line": 127,
           "body": "source-body",
           "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "pack_stack_trace",
-          "kind": "procedure",
-          "line": 134,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "pack_stack_trace",
-          "kind": "procedure",
-          "line": 135,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "print_stack_trace",
-          "kind": "procedure",
-          "line": 148,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "get_stack_trace_string",
-          "kind": "procedure",
-          "line": 155,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
-        },
-        {
-          "name": "log_stack_trace",
-          "kind": "procedure",
-          "line": 164,
-          "body": "source-body",
-          "status": "authored_source_unverified_semantics",
-          "members": []
+          "members": [],
+          "header_sha256": "aebcdbd3dad9dc20d375bacb926b19ef4934ebfafeb52618ea150eab06bda02e",
+          "contract_sha256": "6b3b683e03ea382d2e93d73f8cbe9d04f90ea8d34a456f64bb0ff3a9c930b3a7"
         }
       ],
-      "syntax": "passed_frozen_source_parser"
+      "syntax": "provider_syntax_gap"
+    },
+    {
+      "path": "stdlib/legacy/Bit_Array.jai",
+      "sha256": "6136d79c7c8e1aa4cf49f4262ba6db46e874571fa3093c3dc69ab6c8a648f93d",
+      "authored_declarations": [
+        {
+          "name": "Bit_Array",
+          "kind": "record",
+          "line": 6,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "slots",
+              "kind": "field",
+              "line": 7,
+              "header_sha256": "1ad7bd8919ef9076e53d45972127186fcf92ba08c895b6566dacf73e75d7c8dd",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "1ec670126515bc396d7eebca540095a8a73f95771b8b704cff9000e06760f44b"
+            },
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 8,
+              "header_sha256": "def83d6967c160bb7b508e7b95d04d77adf5573f245fe02dcfa1f3befb6f2259",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "d553e4f2ca6384a53d49dddcd4f7bbe4ea1e0ae4eed7e85ca139f2c98c900800"
+            },
+            {
+              "name": "allocator",
+              "kind": "field",
+              "line": 9,
+              "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+            }
+          ],
+          "header_sha256": "690d1f4aed609be2ffa31017a593ddf179561fce84d9bc8b5b7c3ee34edfd588",
+          "contract_sha256": "ea7e7ab08814b697730229038dfb282dc1efb2d36cd7c720fcf3c70fc66b3bb0"
+        },
+        {
+          "name": "init_bit_array",
+          "kind": "procedure",
+          "line": 12,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "e9d0917690e82b860dbe3c361918bc2dc4eaaf672715461b8618862b563d0f49",
+          "contract_sha256": "ac7209d1619c56a71ba5dee4cc04e707eded1580a38f24ab73449b10314567db"
+        },
+        {
+          "name": "make_bit_array",
+          "kind": "procedure",
+          "line": 20,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6c99de91b6e7aae1c2005554d5ce21b84e2031c8e5446ae267311e51cccbddca",
+          "contract_sha256": "a4e5694dc158371079e022b87362785a78bf6810a74dd90ced38183fcf2077ad"
+        },
+        {
+          "name": "deinit",
+          "kind": "procedure",
+          "line": 25,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "2a117fa98d02588179e3526452a6d6f7f7f832e4638780c1e4309ca3980c5422",
+          "contract_sha256": "edbdac60cfdf7a2dd1a3b19c4c432dc1cb23dc188e4155e12bc5cb4aeccaf83c"
+        },
+        {
+          "name": "set_bit",
+          "kind": "procedure",
+          "line": 30,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "422836e0cf6d81ce046ab793c89315f481421f226243ff6ce72a0e9495f0c304",
+          "contract_sha256": "6cde05b5ca92628cf965b7a4ddf9e2053b22d3690ba5a289016763b03c878ee5"
+        },
+        {
+          "name": "clear_bit",
+          "kind": "procedure",
+          "line": 34,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "7ecf222981431a1240079d94fef781d37200401b727689f8d55cb2dd25f59883",
+          "contract_sha256": "759c4d22a0f6ec409a3577bc7a7fcf10439d0b03fbdb031092f9a79f2707639a"
+        },
+        {
+          "name": "toggle_bit",
+          "kind": "procedure",
+          "line": 38,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "2696e5eaf7b8f82d15ca76a654be389155acb7d4d17d546146fbec58b661292f",
+          "contract_sha256": "6b1063d144933e710ff439edb33ab68271b50f9e1111f2dbd505201b7a4feb2f"
+        },
+        {
+          "name": "set_bit_to",
+          "kind": "procedure",
+          "line": 42,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b9cd2f9d2e14e4ababa5e1c0deb0911372888ae4049d0c86f123334094f83a43",
+          "contract_sha256": "034c49d0292892aa4539b52f9425ef9a71fd883e769c897a2767672d7eaf1cb3"
+        },
+        {
+          "name": "operator[]",
+          "kind": "procedure",
+          "line": 46,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "133cc3fc526729e7619d90417f77d9785bc4480aa1209d6ece9d23ba6549babe",
+          "contract_sha256": "7b2f40b3810d7bd8131908db312f79a40f58df4bd40dc8d0d298867f6f9507ba"
+        },
+        {
+          "name": "operator[]=",
+          "kind": "constant",
+          "line": 50,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8252ac59a6e03bf255a01a5351615eceede05208ad43ddc192a7ffcf08344515",
+          "contract_sha256": "827bd8b2f93ed53bcfe44f1679581e70abe702e48a36906d472cf012d536cd7c"
+        },
+        {
+          "name": "only_unset",
+          "kind": "constant",
+          "line": 66,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1f66b50e25b0a24ce437011d15ce22eb80e9782410b104c789c697cd72d27425",
+          "contract_sha256": "81332329e6df8e6fbaa8691376cdae35c1667d008e437f8ec98c93133119d0ed"
+        }
+      ],
+      "syntax": "provider_syntax_gap"
+    },
+    {
+      "path": "stdlib/legacy/RadixSort.jai",
+      "sha256": "ae0fd519861c5466efa7349a68fb686b8f1bed22867d0d0f3bf03ba5e31fd9b4",
+      "authored_declarations": [
+        {
+          "name": "RadixSort",
+          "kind": "record",
+          "line": 6,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "ranks",
+              "kind": "field",
+              "line": 7,
+              "header_sha256": "7c2648a40d51794586a829471d18b48a3027bfe4da045278ad9483231d65b8d7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3d5c655f3a75b55906a27b3170ab4b2c0f5dbf467df747e1706c7ad622ff8578"
+            },
+            {
+              "name": "ranks2",
+              "kind": "field",
+              "line": 8,
+              "header_sha256": "890dfcd06721e40ae7fa9bbb7f5d83135ae76607899f76774bbf86eb5b6e40bf",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8ee27f1d2af8f21794ce4efcda1ec48e5cfcaa237c51ff726e75bd6d854f931d"
+            },
+            {
+              "name": "valid_ranks",
+              "kind": "field",
+              "line": 9,
+              "header_sha256": "35f2e1883356fb1578e91feffadf6531bec87add9966d609f53ae749a0040c4b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "45d863cf438d339b9f9a7c8a4d1586b2462df9f9a80050f371c33bf32bc70dce"
+            },
+            {
+              "name": "allocator",
+              "kind": "field",
+              "line": 10,
+              "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+            }
+          ],
+          "header_sha256": "9257af30cc06c90fabbadce6ab9355467e99b7df348a92c4175ba2fdd9f056c4",
+          "contract_sha256": "4fc06058ec3502466be06a13c4766da3167b8fd824f181c37c96f932abf992ba"
+        },
+        {
+          "name": "reset",
+          "kind": "procedure",
+          "line": 12,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "42021a9d59dbdf8ce7c0d79de9eeee06e85b654e8d14a29125ca70a13df4c7ec",
+          "contract_sha256": "f18397384fae0fe0533eb8e747a3224e54e37559a71ff4b374cd77f12e8467a3"
+        },
+        {
+          "name": "resize",
+          "kind": "procedure",
+          "line": 13,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "9b001b18a98d892abf07b3232d73ee9fda0312808dfb4205db56b7991b5b0f96",
+          "contract_sha256": "8be5f706aa7c5eba19312c7085a3d5d37bd1b7c0adb8ce757d6bc98e04b60eb1"
+        },
+        {
+          "name": "free_resources",
+          "kind": "procedure",
+          "line": 24,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3ff29068c18107112638cf52908f7bd596ced03692298a3e16e1d94a4f2750f6",
+          "contract_sha256": "b06caf93dbfeebc79d1fa83e318b5d1277b5b702815954895a94b3e64858750d"
+        },
+        {
+          "name": "operator[]",
+          "kind": "procedure",
+          "line": 31,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "b62100788723133c9d5e09c4659fb826fe63f8731f9eeb427020bc5022bb7282",
+          "contract_sha256": "7bfe5b749f38ce0452ddd246c2ec72694b1239f568b2179a9df2e3551b72f8f6"
+        },
+        {
+          "name": "rank",
+          "kind": "procedure",
+          "line": 35,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "75116b0551c0fa9243a5d32b3f30336118fef17b517c1c4860606da6b7d43337",
+          "contract_sha256": "57edff8057aec9b44ab73712cf3066ed99d5f7267cb6f4dfd16dbed9b1971630"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 39,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8f1416773a4b7fea1c082cb6f7cf02bc8256606d142d04f0d58609b2fee69138",
+          "contract_sha256": "f437fa6e44c77f52297d35c8dc7cb26a12ea61c316d705ff634e7268f70091d0"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 40,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6b60714f444fdb7bd16b0fcabdc36319460657938ccde7f8198cba1fa329873b",
+          "contract_sha256": "7b6eed451604e6c382471c5a2d295cd1e1aa6e66803b56d0da3d47c2aeae49db"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 41,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1026b2467fab25148edb0f18ff48b212039eb4ad52cd4ab121734e4cbf71b899",
+          "contract_sha256": "0c3652387d4d404de7fd47a7ad06634ef9b5b6a6e1a9051e5f95c8750908bc21"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 42,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "778484b8587b832a62e335f8d67deb3a2c5154b4ef09a8a186606e08189d24bc",
+          "contract_sha256": "152c05125d91ff737dafedb0dfe41c77f61b1142e2103c0a611ea5bd9a428816"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 43,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1a5419de482463650900f8435fc939f3e31ebf93734c11463df278954292584a",
+          "contract_sha256": "dad3aab981a630a93dea3f7ab10b5a236a31a0b443346874247c01ad089c181d"
+        },
+        {
+          "name": "sort",
+          "kind": "procedure",
+          "line": 44,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "031beffc7b3e276a99b32dcd7aaec4066dc2e6ae76a06ec22d7d70ec5ef37c84",
+          "contract_sha256": "fa057bc9ea977bd6ccc12b711de8ea2952aa60e3f6781bad6ba4613a6315d913"
+        },
+        {
+          "name": "reorder",
+          "kind": "procedure",
+          "line": 45,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "c0dc7ef64dd5c158f943255693bf704ac6c5ebab8cfe74d11fbfd40ae413acfa",
+          "contract_sha256": "77aa204ec7108ace965ef5d47c65860338a4367c322eebce8419685c43e1066c"
+        },
+        {
+          "name": "radix_tests",
+          "kind": "procedure",
+          "line": 54,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d9c7a5d6b43b2475c79413f354be7834123eb397c985e0a29be9d5e8573a1fb6",
+          "contract_sha256": "0fe652d38a9b95b5e93d0ca65b5e150a9b772d6def83f78963f19e6ff9371391"
+        }
+      ],
+      "syntax": "passed_verified_017353_source_parser"
+    },
+    {
+      "path": "stdlib/Basic/Memory_Debugger_Core.jai",
+      "sha256": "6dc5bc76eae2cb17fea1075d60dde5ab3997c9d8626f217592ba83937f6fd81b",
+      "authored_declarations": [
+        {
+          "name": "Allocation",
+          "kind": "record",
+          "line": 2,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "pointer",
+              "kind": "field",
+              "line": 3,
+              "header_sha256": "a28842a3faff5cf3bb021bbe98d6821427594df9311ea26b8c52a989150917af",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f5735b0b3f31fbb229c82bcd0555c2bae1a8855c8f0fece3027ae613310d54f0"
+            },
+            {
+              "name": "size",
+              "kind": "field",
+              "line": 4,
+              "header_sha256": "9a75dda5a9af7580cd8271ffe47bb3ed2aa80b4826e173c5d0c245a4775bbec6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f3bde9c858967dab2e44920581b4b7e9f5a4b1d71b292dea70f39f7ceac39a36"
+            },
+            {
+              "name": "index",
+              "kind": "field",
+              "line": 5,
+              "header_sha256": "185746a85a7a42fa5e04d5810cfb1747eecf248b9e3b28f0920dba741d5f3f25",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "377b77464b5e19d1f12a425e30458787957038c46014348bbe10fb1f1b185f89"
+            },
+            {
+              "name": "alloc_site_trace",
+              "kind": "field",
+              "line": 6,
+              "header_sha256": "736161269566c8972a3827da1ad98fc045997f2d557072a99da00c4ff769d593",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8ea66a27ef632fafedeb705959be68a986b5d4ba7a608822b0a729628b8b4d75"
+            },
+            {
+              "name": "free_site_trace",
+              "kind": "field",
+              "line": 7,
+              "header_sha256": "7d41d02bce700ec336dc2eddc4d614fd941aee4c2760c9e284bbb0a1db8749c0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "fe32ee862d90fb4dd1e8f4fcaa386def2306308808e7235b0aacdc4ca3f0da52"
+            },
+            {
+              "name": "thread_index",
+              "kind": "field",
+              "line": 8,
+              "header_sha256": "230250280378843b49dd3b51aa96176084f4e8d2603682101407404579116815",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "44102fb8f3d177fdd012c0a9575fe7a802b1f9231b88c9137ece47b821f18ce1"
+            },
+            {
+              "name": "propagates_leak_ownership",
+              "kind": "storage",
+              "line": 9,
+              "header_sha256": "44621e3ac28f4a31ff4eee038b82dc77781ee1c6f9dc31109e42bb84d810bb52",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "339c608ef2f47cce481153080074060d8e5fbebee96e0d03167f1b759a94c321"
+            },
+            {
+              "name": "is_live",
+              "kind": "field",
+              "line": 10,
+              "header_sha256": "09a9c29302eea2b01de45753383b027a5c8c804bae8c66ebcfbe6ebf7c609f63",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "07f4f9bf800fccb3f6adee60ac8d5b75104dfc95c20d2121546edaca70ce49e9"
+            },
+            {
+              "name": "vis_reported_freed",
+              "kind": "field",
+              "line": 11,
+              "header_sha256": "049690e49d15ecd921012676e9cfec0a10fd248f2ebd7c30543e0a341f12d809",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "cc9ef54ca7e3130d654ce66889ff68e2ff08ffecc04ec932c53043760ea3e513"
+            },
+            {
+              "name": "visualization_update_cycle",
+              "kind": "field",
+              "line": 12,
+              "header_sha256": "7cede246b39ca12f5fa5ad154d96fd8f63f7aee50b662d92fedd6647a2dbe704",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "c1395dfa7f403ee1d8740f9e60780b2e44793d663af1ce5d20dd0808cedbd395"
+            },
+            {
+              "name": "allocator",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "f12ed5146c44931ff5b31490861e1557b003d248bf2c57a12eebaea43372ddf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "64f004057c44536e68e001fde436363f40f548b0d26a0110c79b117d389fbe1c"
+            }
+          ],
+          "header_sha256": "04a40aa8c9bdfcdb19b41dff830f4d83cd22a8595d9c076a7add1b446a22e859",
+          "contract_sha256": "424cb2ea343810106c5cab8a1009303d943a6649825cd2089a877ca827358e10"
+        },
+        {
+          "name": "Packed_Stack_Trace",
+          "kind": "record",
+          "line": 15,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "hash",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "201f149966a1fd4ca277b9bd1ddaf7f950dd80e40d39de1540cdbf94194a5451",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3386daa32c865a235befb05f9cc5f18d7e87b9636fc99ef1de85595850038402"
+            },
+            {
+              "name": "nodes",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "3e94381f9c23438f29ae7f509800f202293d708735bee7fd3c5d6756d268d18e",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "77acffecae9100e23170af1204cf3efe3d5c90254541a89aab61cef1d451ca06"
+            }
+          ],
+          "header_sha256": "8dca00e19b8aa9841d40cc97cec018642ab8e0f1223c1ef6209b5ce87289a778",
+          "contract_sha256": "fec8e13ca65c8d9475d3795ce42ac7e659e49aa0c4871e9b571ca873dc1d9e37"
+        }
+      ],
+      "syntax": "passed_verified_017353_source_parser"
+    },
+    {
+      "path": "stdlib/Basic/Memory_Debugger.jai",
+      "sha256": "3d6742a12d6c2e41283c6d4a38b12f6cd0ab4812c1cba5536f9cc3b65862f1fc",
+      "authored_declarations": [
+        {
+          "name": "inside_memory_debugger",
+          "kind": "storage",
+          "line": 7,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "dd787cbb728f7e717d91d68951117a4f635d4c54588e1d00175fb61446afa455",
+          "contract_sha256": "ebb7b33f3d0a99a6f9ad46dae22432e84178f744c2a49b1f20df8ab10954907f"
+        },
+        {
+          "name": "__basic_memory_debugger_lock_owned",
+          "kind": "storage",
+          "line": 8,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "ade20e9315dfa77c57464f59af87b2afbe1319f4e10063b31cc0f235082bf2af",
+          "contract_sha256": "954226f51593a5436871385300b6d53a78db64e0d022e3e7ada4cc0fdfcb148b"
+        },
+        {
+          "name": "__basic_memory_debugger_hook",
+          "kind": "procedure",
+          "line": 9,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "c960ddbe0d08ff84d4c821eb98ea5c0a71c2aa6847ed334d2616e234c192af0e",
+          "contract_sha256": "d456b1f1c220d9bb77d4bbd82e931cee854a4ce0f2358158b217f11af998f4a2"
+        },
+        {
+          "name": "Procedure_To_Elide",
+          "kind": "record",
+          "line": 13,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "procedure_name",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "cc160041c9335e4c3c62411e60ea6efb972f5a3c06dc4ebf230ec3c0df97fd2a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3815557e33a20073dee237b96109b8f3502da065f552dac0ff97657af9285c18"
+            },
+            {
+              "name": "module_name",
+              "kind": "field",
+              "line": 13,
+              "header_sha256": "63adc0b2c52d99d2e6d43402403b283ddb916e338485986669c42a21c4ca3230",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "bb4ba923eb94fe2dc2bc1a86765f0720fd7dd215a01edf251d20b3f18aa764c7"
+            }
+          ],
+          "header_sha256": "a944c3a03e8b8479ab5b75416e48d005e49122d5c706ac7f6bd703237340954f",
+          "contract_sha256": "d3a1b07f0bad17cf3f30df735c6f9797f7b5b2fb5e0e13c6f214b6c78199fa24"
+        },
+        {
+          "name": "Leak_Report_Options",
+          "kind": "record",
+          "line": 14,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "known_allocation_leaves",
+              "kind": "field",
+              "line": 15,
+              "header_sha256": "818aea1610bca343a9256dfbde3460aa1dc617aac59aff60f7a490e999e35e5a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "e8a780c9c3b651917bf6706a14e96f7b12817563f1ad01c16ee41c007e8b74ad"
+            },
+            {
+              "name": "roots_to_skip",
+              "kind": "field",
+              "line": 16,
+              "header_sha256": "002439ee6ecc2fbb1c89657f45b532e613ab4696ec39e72b8c68740c5fef0519",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "f4d81e98aa0e7e4081f2cb62c3e9afc6eb68efbe3fd626d96e10571925605751"
+            },
+            {
+              "name": "group_by_these_calls",
+              "kind": "field",
+              "line": 17,
+              "header_sha256": "e9755209983d320b76f34c74ea93253b85ecf204fbcf31d508644a64aab36b4a",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "de42126f44858dec1f14c2a5591174308aa32a4912a1a56db1e2126225e2d24a"
+            },
+            {
+              "name": "scan_global_memory_to_remove_leaks",
+              "kind": "storage",
+              "line": 18,
+              "header_sha256": "f61312addc07952f4610d8638048a991582e9433e423c89f2d2d13ce2c18fcf7",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "10e4cab8f660c632bc5b661c955dba5780c9e650f59b537d9068f1f2bb3e4a2a"
+            },
+            {
+              "name": "scan_leaks_to_combine",
+              "kind": "storage",
+              "line": 19,
+              "header_sha256": "762e46666e955aa2da35a7a2d6a6c2d4c1b5a0e509ad8f82d1f0f646e341d53e",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "394564af5293bcd87e1df074f57e1ce2e58fc1b224ab0bc79f49b8a9fa86a522"
+            }
+          ],
+          "header_sha256": "3bce4ac52b2bd571c4a09fa7e313e07228b661813345dd37fc7c68fddfef1aa3",
+          "contract_sha256": "b4cee1211ee96135df02f4d1664e4e8b07a5fc8def43bd9078b4a55f37467641"
+        },
+        {
+          "name": "Leak_Combiner_Record",
+          "kind": "record",
+          "line": 21,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "child_count",
+              "kind": "field",
+              "line": 22,
+              "header_sha256": "588a996c61bd1b3406fb168c7e5f44b481e18cb19576da3793e33d8da20e3283",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "49d47233e51d3fea71f32cf4c29f40d2f98b789214a935b67e2c17021d847521"
+            },
+            {
+              "name": "child_bytes",
+              "kind": "field",
+              "line": 23,
+              "header_sha256": "3a637f3cbd6f01c02bc7d700d964bbfc6179a01278e96604eb91cd03abe26365",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b356849a5d3b23eb25b59f97a19e5d63cca5e2953d21045cdbc625126be790cf"
+            },
+            {
+              "name": "my_bytes_were_combined_into_this_parent",
+              "kind": "field",
+              "line": 24,
+              "header_sha256": "297df8a210c450cda3811f4e6201c38d3a80ec654abcc0d05ab3a508dd505e6c",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "aa2dd8b1744640d9e6c99612effddc57fee740df5d2df5a02ea7c86b7dbb6b89"
+            }
+          ],
+          "header_sha256": "c22b9297179d602e75e3b8a78d75335a17c64fc6b12ae6466a07a4bd6a8e48e6",
+          "contract_sha256": "bf81d62cbb412e50815e4264f1ae4c76bbba3e93a6b9bb4195a2ce9ca69a2be6"
+        },
+        {
+          "name": "Leak_Report",
+          "kind": "record",
+          "line": 26,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "marked_as_non_leak_allocations",
+              "kind": "field",
+              "line": 27,
+              "header_sha256": "70c09501bbfdb0b282b788db06d23ede51e019cf68a32ebc29d3b81d7927a81c",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "85163d4cd39e0fcc50fec3262ee2f0c0da621c25b668ab1a6ac6718ae21aea9e"
+            },
+            {
+              "name": "marked_as_non_leak_bytes",
+              "kind": "field",
+              "line": 28,
+              "header_sha256": "54fabf5cd8034566305232a13a6980ed8497964c563502d723d4762e4007a358",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a78066f1542c4c45062218da5dc3a5d4bf640f7809088f46be8ac3e1de30f537"
+            },
+            {
+              "name": "sorted_summaries",
+              "kind": "field",
+              "line": 29,
+              "header_sha256": "fe13f6418c07c7ceefc7d6bcc8e27db66e66ace1188981423faf531c8572cbf0",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "3fd51fc92590786d4e8ad3352a18be060ea75a3bd6b43977051bb12183124780"
+            },
+            {
+              "name": "leak_combiner_table",
+              "kind": "field",
+              "line": 30,
+              "header_sha256": "03a382c1cf6aeb409c65bfefa8c2553db614e6b650291f6fbd331fcf341eaa56",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "df29800f70c9d514b50e92f5fa8f9b1e89f7c4f9ea216a2b9039523d806be395"
+            },
+            {
+              "name": "pool",
+              "kind": "field",
+              "line": 31,
+              "header_sha256": "b4bd0be4d460ca74b3176f5eeac8b1dab3e1253984cc9f5e74a4aacd17194110",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "ea599e7bc896bb798af767210afe0ca1d30da2f72fb7064617cd2d9cb5767d7b"
+            }
+          ],
+          "header_sha256": "e9a9d4b907b003bd3c16988f0e0386f16134416eb4101cc0455bca82bf3bf8e4",
+          "contract_sha256": "27d62604e35ec0daf71a947a3c922b14adb763b10be88a85090ae80b1487bd96"
+        },
+        {
+          "name": "Leak_Summary",
+          "kind": "record",
+          "line": 33,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "count",
+              "kind": "field",
+              "line": 34,
+              "header_sha256": "8578f69779c21194f1bdf4b3cc8270b5abccc5c7968ef5bf691fd87151c22f57",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b7eeb9dabd38b8c211ffd1d236c03804947443e6a76623d835ec20253480874f"
+            },
+            {
+              "name": "bytes",
+              "kind": "field",
+              "line": 35,
+              "header_sha256": "4a08144e315821db393a464715ba992ecc61475efb6e6a54fc63e1203d7dd686",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "0092cc8a5908261e82b3d42f69ebf6a226d53089088b05e4dd54a2f1fd8b4032"
+            },
+            {
+              "name": "allocations_since_last_visualizer_update",
+              "kind": "field",
+              "line": 36,
+              "header_sha256": "4a2a83325cf310f30efb465ee13bdcf7877c15f1a988f63cc503b4dad305e3af",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "038a6633a0fad64343f7ebb77c6e44d874dd1d585b815325d81bdc5737a9296e"
+            },
+            {
+              "name": "bytes_allocated_since_last_visualizer_update",
+              "kind": "field",
+              "line": 37,
+              "header_sha256": "e2612e627efe6207c24f8934214482d84db53b0ac73db993d14484a0fe2d8be4",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "e970815fe1ca0d800efe190ad1db649ff1f34242614f69800af3ce833ad1104d"
+            },
+            {
+              "name": "alloc_site_trace",
+              "kind": "field",
+              "line": 38,
+              "header_sha256": "736161269566c8972a3827da1ad98fc045997f2d557072a99da00c4ff769d593",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "8ea66a27ef632fafedeb705959be68a986b5d4ba7a608822b0a729628b8b4d75"
+            },
+            {
+              "name": "allocator_proc",
+              "kind": "field",
+              "line": 39,
+              "header_sha256": "15ec39697af896f4e7180eb0f42fb2ab44d97a8de240219f206d47f013d4403f",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "29d4c300e3aa461069df8550feaacfb83e0b605b808b0fd0ced12b698dbb9a5c"
+            },
+            {
+              "name": "group_info",
+              "kind": "field",
+              "line": 40,
+              "header_sha256": "680434b358e8de0a1370c54d24747d3a2187ce64587568c12c843425a9a54fd1",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "84039a0ae68faab7394008447555469320814344027822705c0bdd7b4c40a3fa"
+            },
+            {
+              "name": "child_count",
+              "kind": "field",
+              "line": 41,
+              "header_sha256": "588a996c61bd1b3406fb168c7e5f44b481e18cb19576da3793e33d8da20e3283",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "49d47233e51d3fea71f32cf4c29f40d2f98b789214a935b67e2c17021d847521"
+            },
+            {
+              "name": "child_bytes",
+              "kind": "field",
+              "line": 42,
+              "header_sha256": "3a637f3cbd6f01c02bc7d700d964bbfc6179a01278e96604eb91cd03abe26365",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b356849a5d3b23eb25b59f97a19e5d63cca5e2953d21045cdbc625126be790cf"
+            }
+          ],
+          "header_sha256": "7bc68e8cdf6a46becf85ee4a51584eedac0e92f88a1ca4cdfc8b03ae4d7194b7",
+          "contract_sha256": "bc8447df878bb071bf6ac2450cf0cdc6b774bfbcb2ffe28f6c0598cb30df7ac6"
+        },
+        {
+          "name": "Group_Info",
+          "kind": "record",
+          "line": 44,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [
+            {
+              "name": "procedure",
+              "kind": "field",
+              "line": 45,
+              "header_sha256": "da4acaba6661cbbbe27bd68f822c1408e6baf44f8822d9603976dda5b0492208",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "b2e57c2fd80be81fadff1fb9dd0fc8b4e0c0c9dc0992393d6472ca31ac93d6ea"
+            },
+            {
+              "name": "sub_summaries",
+              "kind": "field",
+              "line": 46,
+              "header_sha256": "890ae237531ebcd5bef6c71513f60e19d5575e3d5f3578b14bfb23d885c045c6",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a14387f28d325cb3cf835be23b0705333ceed490e7f2dcf320858972f429aef9"
+            },
+            {
+              "name": "root_nodes_in_common",
+              "kind": "field",
+              "line": 47,
+              "header_sha256": "77fe79b4c8ecfb1cf388d37c4a1c87495bfeea5af1dc170604dca0109704c889",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "a638150369a918986f3922548dc5462fb76932df111889fcb476c49b645a36fb"
+            },
+            {
+              "name": "leaf_nodes_in_common",
+              "kind": "field",
+              "line": 48,
+              "header_sha256": "857574397f4e71980690cc391db5e397b3ff8a4e015c479d36283379b99c3b9b",
+              "members": [],
+              "implementation_form": "declaration",
+              "contract_sha256": "95cdde85050874c3afb108f3b8ae64bdfb6ee08bc75ecac91aa0bf3620ceff1c"
+            }
+          ],
+          "header_sha256": "989aff6c8cc858bb9ea9600949e17eeedb068a629c9ac07e4015a7869691050d",
+          "contract_sha256": "95c642c5cf144f1fe8d982f09910c062b2046991ff9b2d1abbf2a0bd6aea6e4a"
+        },
+        {
+          "name": "Preamble",
+          "kind": "procedure",
+          "line": 51,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "083905fa5c30b603a67645ff1c970942f2ec07ef4a4a584a8cb410314f67ef29",
+          "contract_sha256": "0d40e9de4a56af2c270162baacf59d4ab8f309de823d2697ebeb70d00f2872e7"
+        },
+        {
+          "name": "add_allocation_to_table",
+          "kind": "procedure",
+          "line": 57,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "dcc29bdc2f27ba3823d36535993afd7b1cba7fb18abd74d8b71f9725f345bc9e",
+          "contract_sha256": "87b8016e0bf79052d5a9d9857585fb4665b5b950a1bdb6d0f1a806ac22066f2e"
+        },
+        {
+          "name": "add_allocation_this_frame",
+          "kind": "procedure",
+          "line": 63,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "cd56894bf97b2667c9b2158e1ca29dbb00fec8d0048a580a5ee96b86069f4ad7",
+          "contract_sha256": "b8fa51750af19ead9e3125c31cc5baf2553b5ff36fd55b4a0c8ae5e50e0d4775"
+        },
+        {
+          "name": "add_free_this_frame",
+          "kind": "procedure",
+          "line": 72,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "3916308e1a2f29b4ea171e65db87cc5e656b8779420d2664fb3657fc219ab18c",
+          "contract_sha256": "22a6e653d020c697cd72da96c5ef28b32015f059f06ae128a46b57bda4abc6dd"
+        },
+        {
+          "name": "_check_alloc",
+          "kind": "constant",
+          "line": 82,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "c0952d9151f1955c73e76bf1000e8cf37cfdf6622223749aa3fe6f6500006e19",
+          "contract_sha256": "cf3e7ee69aaeb3566d3ce64bf3a928e13d06f2a0f802288fc711322917abb0ab"
+        },
+        {
+          "name": "md_heaps",
+          "kind": "storage",
+          "line": 323,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "d167ddd425093cde67e73bbb0cf016c7b65926f02a079bc667f0a6b5fc675184",
+          "contract_sha256": "180495cbb20664f8128a80216f959630e4ad5fb870de4ae498393e7094fac781"
+        },
+        {
+          "name": "md_owner_context",
+          "kind": "storage",
+          "line": 324,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "85bf7b72c795e176c6e6b908dd016a5241591acf654e4abb4daf923eb03d135f",
+          "contract_sha256": "9d1e9fd814731eed649594d92e884dc50217a9f8d69211175ace4d94cdcf2299"
+        },
+        {
+          "name": "md_owner_thread_index",
+          "kind": "storage",
+          "line": 325,
+          "body": "declaration",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8868efd7e24566c0c2ce987a23a7b910bba536bcd605974a7c25283a96d99fb9",
+          "contract_sha256": "37f4c83a8f39c499b7f8588b8d92c182728480cb0be31c1db9f5afc218bf1af7"
+        },
+        {
+          "name": "_md_begin",
+          "kind": "procedure",
+          "line": 327,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "a4bf9bd4f717132721a0a2b7999033bde2e91cab3868411f27a815bd1297b8cb",
+          "contract_sha256": "72288db99c3ed53de42fe9c4f490adf0cb8d8d5b24fdbf5fbb2dda2734ff90a9"
+        },
+        {
+          "name": "_md_acquire",
+          "kind": "procedure",
+          "line": 335,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "87fc7dbd39f942597dd9f078f001408d2a4090b1b4168d729a0c14661bd79bf6",
+          "contract_sha256": "41142ef51bb8f1eff0be0934442bacc38566a83c20bb32d34859e67458400e8b"
+        },
+        {
+          "name": "_md_prepare_state",
+          "kind": "procedure",
+          "line": 343,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "e0a546a9cb78d80366d645c29bc5fabe1ea46f58e67616e71a453b9dd615f7cb",
+          "contract_sha256": "8b72d60e928d8bdf285a55043dc291c2c0bdca7a40d2b53bef1be9387e2dcc3b"
+        },
+        {
+          "name": "_md_end",
+          "kind": "procedure",
+          "line": 347,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "ebaf38991552809064438b3ec9cae100513228ecb3721274b9131359a0f7be8a",
+          "contract_sha256": "e57735b674f2084e2c4c7acbe4affc1149ccc408ba948048c5a7882b0918b7a7"
+        },
+        {
+          "name": "_md_release",
+          "kind": "procedure",
+          "line": 351,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "ee1ca0846f25c6d246cabad43acec3866d625a7085176cb8b58c8f7b69d7c5f4",
+          "contract_sha256": "13cbf59bf3952fa136f41b060f83436afc8babf36641d3c069224fd5a2ce42e9"
+        },
+        {
+          "name": "_md_ignore_allocator",
+          "kind": "procedure",
+          "line": 356,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "817d80e55c371c162b596a038d3b271be973c0ac1e62acd9c935a20b0a4f8ad7",
+          "contract_sha256": "754d6c507e80c144753d5ba6a51cd25e2c204fceb37affe384fc9c147cb783f9"
+        },
+        {
+          "name": "_md_compat_begin",
+          "kind": "procedure",
+          "line": 364,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "6a5d5e2f9f227f02817f2fc894ef0b1f52358907b53976197093dd11c657ce82",
+          "contract_sha256": "f8e55178de32df1aeed939a7ef2510ad2288ac8c27fe507b80257015ac49ad35"
+        },
+        {
+          "name": "_md_compat_end",
+          "kind": "procedure",
+          "line": 384,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "1f88cebc53c0f2aeb64ab5dc5e59567935096a2bc0eeb7b2f6c0e136925b4d18",
+          "contract_sha256": "3a7c73f2704b0cdb3ef77025a857d9784eb29017eda595c25b05463f61461eb5"
+        },
+        {
+          "name": "_md_retire_backing",
+          "kind": "procedure",
+          "line": 388,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "8dc47877d4286fe14a220c9484bf284dc432a45dc5d9cda7bfa9ad6d5fc86ef0",
+          "contract_sha256": "a833aa17871e8223e3b5faec9d4e07071321007a8e210b49a747f2d164929e87"
+        },
+        {
+          "name": "_md_dispatch",
+          "kind": "procedure",
+          "line": 397,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "5b8d49b7c138d0156f6c538b1d2ce27853dd768ec3d35d6b16e533de71f42822",
+          "contract_sha256": "0ca00f56d7ef97a899faf2bffa765f1e8ee72c541eca9d357b73df13ac61d263"
+        }
+      ],
+      "syntax": "provider_syntax_gap"
+    },
+    {
+      "path": "stdlib/Basic/Visualize_Memory_Debugger.jai",
+      "sha256": "226c7bff64e763fd7e82494a2b4fe987ef0320318db1f9a9af85737019b33283",
+      "authored_declarations": [
+        {
+          "name": "memory_visualizer_per_frame_update",
+          "kind": "procedure",
+          "line": 194,
+          "body": "source-body",
+          "status": "authored_source_unverified_semantics",
+          "members": [],
+          "header_sha256": "977dff0fea4b29468c65c6bd210c5308f4ea46730479a9ac442f2d69695b26ce",
+          "contract_sha256": "00b7de1389a7d3fd5244ee6f11ae451a15d0f605ffde8edaa7e7fc170b7f5e2b"
+        }
+      ],
+      "syntax": "passed_verified_017353_source_parser"
     }
   ],
   "maintained_contract_inputs": [
@@ -1441,18 +3263,19 @@
     "Sort: maintained comparator entry points with stable merge and heap algorithms, historical selector overload.",
     "RadixSort: maintained fixed ranks/count and capacity constant, stable rank merge, u64/float additional overloads, reorder helper.",
     "Basic: assertion failure dispatch, enumeration/range reflection, allocator capture traversal, integer clamping, stack trace packing/formatting.",
-    "Basic qualified protocol aliases use genuine selected Preload declarations; no copied records or fabricated nominal IDs. Basic.Any names builtin any; Temporary_Storage aliases Runtime_Support source."
+    "Basic qualified protocol aliases use genuine selected Preload declarations; no copied records or fabricated nominal IDs. Basic.Any names builtin any; Temporary_Storage aliases Runtime_Support source.",
+    "Memory debugging: actual public five-hook dispatch across default/selected Basic instances, actual initialized Context procedure value, atomic context pointer gate, copied trace/history lifetime and strict ordinary frees, known runtime temporary backing retirement, leaks/groups/ownership and full wire snapshots. Implemented source, no runtime proof."
   ],
   "incomplete_or_different_contracts": [
     {
       "api": "Basic.MEMORY_DEBUGGER=true",
-      "status": "explicitly_rejected",
-      "reason": "Full allocation/leak tracking and visualization integration is not authored; false-policy leak hints are intentionally guarded no-op macros."
+      "status": "authored_genuine_tracker_pending_compiler_provider_and_runtime_validation",
+      "reason": "Real captured-allocator hook dispatch, Context callback default, atomic genuine context-pointer gate, strict lifecycle history, raw backing ownership, actual leak reachability/combining/groups, and complete visualization snapshots are authored. Actual Context defaults, descriptor Type inverse, caller expressions, RuntimeInfo global ranges, overloaded APIs, VM/native/concurrent/client acceptance remain pending. See memory-debugger.json."
     },
     {
       "api": "Basic qualified protocol schema compatibility",
       "status": "actual_selected_source_aliases_authored_schema_differences_explicit",
-      "reason": "Allocator/Type_Info descriptors alias canonical selected Preload declarations, Any names builtin any, Temporary_Storage aliases genuine Runtime_Support. Maintained FREE_ALL is absent (selected value 3 is STARTUP), reflection tag ordinals/layouts differ, Struct_Member type/flags and Struct members view differ, Pointer.pointer_to differs from points_to, Procedure flags and Runtime temporary storage fields differ. Qualified Context remains absent pending verified synthesized identity."
+      "reason": "Allocator/Type_Info descriptors alias canonical selected Preload declarations, Any names builtin any, Temporary_Storage aliases genuine Runtime_Support. Maintained FREE_ALL is absent (selected value 3 is STARTUP), reflection tag ordinals/layouts differ, Struct_Member type/flags and Struct members view differ, Pointer.pointer_to differs from points_to, Procedure flags and Runtime temporary storage fields differ. Context :: #Context genuinely aliases the canonical context builtin; imported identity body fixture is prepared but has not executed."
     },
     {
       "api": "Basic.get_field historical two-result signature",
@@ -1466,8 +3289,8 @@
     },
     {
       "api": "Hash_Table legacy entries layout/tombstone counters",
-      "status": "legacy_layout_absent",
-      "reason": "Maintained packed keys/values/count are canonical; default storage has no extra fields and no tombstones."
+      "status": "authored_legacy_namespace_provider_admission_pending",
+      "reason": "stdlib/legacy/Hash_Table.jai independently implements actual double-hash probing, custom callbacks, load/refill policy, tombstones, collision counters, duplicate additions, and Walk_Table. Fresh017 parser does not yet admit required caller-reference expressions; no behavior proof claimed."
     },
     {
       "api": "Hash_Table.table_add historical duplicate+pointer convention",
@@ -1476,13 +3299,13 @@
     },
     {
       "api": "Hash_Table.Walk_Table caller capture",
-      "status": "absent_legacy_macro",
-      "reason": "Caller-capture macro depends on the incompatible historical entries/hash layout and is not exported by default."
+      "status": "authored_legacy_namespace_provider_admission_pending",
+      "reason": "stdlib/legacy/Hash_Table.jai independently implements actual double-hash probing, custom callbacks, load/refill policy, tombstones, collision counters, duplicate additions, and Walk_Table. Fresh017 parser does not yet admit required caller-reference expressions; no behavior proof claimed."
     },
     {
       "api": "Hash_Table generic LOAD_FACTOR_PERCENT/REFILL_REMOVED/COUNT_COLLISIONS",
-      "status": "absent_legacy_configuration",
-      "reason": "Default follows maintained two type parameters and no module parameters; historical custom hash/equality, load-factor, tombstone, collision configurations require a separate legacy implementation."
+      "status": "authored_legacy_namespace_provider_admission_pending",
+      "reason": "stdlib/legacy/Hash_Table.jai independently implements actual double-hash probing, custom callbacks, load/refill policy, tombstones, collision counters, duplicate additions, and Walk_Table. Fresh017 parser does not yet admit required caller-reference expressions; no behavior proof claimed."
     },
     {
       "api": "Sort.quick_sort historical two-argument comparator slice result",
@@ -1491,40 +3314,62 @@
     },
     {
       "api": "RadixSort historical dynamic ranks/ranks2/allocator layout",
-      "status": "legacy_layout_absent",
-      "reason": "Default preserves maintained fixed 65536 ranks+count; resizable rank metadata is incompatible."
+      "status": "authored_legacy_namespace_behavior_unverified",
+      "reason": "stdlib/legacy/RadixSort.jai preserves ranks/ranks2/valid_ranks/allocator and provides stable merge, temporal equal-key rank coherence, resize/reset/reorder/free. Source parses; behavior fixture awaits Basic admission."
     },
     {
       "api": "Bit_Array historical slots/allocator record fields",
-      "status": "legacy_layout_absent",
-      "reason": "Default stores exactly maintained words/count fields; historical signed slots and separate allocator are incompatible."
+      "status": "authored_legacy_namespace_provider_admission_pending",
+      "reason": "stdlib/legacy/Bit_Array.jai preserves signed slots/count/allocator and actual bit/tail/iteration bodies. The exact named bool #bake_arguments expansion aliases need compiler parser/provider admission."
     },
     {
       "api": "all authored source behaviors",
       "status": "runtime_unverified",
-      "reason": "No semantic, native, or VM execution proof claimed; only independently built frozen source parser ran."
+      "reason": "Collection/debugger behavior remains unverified. Separate basic-utilities report retains unchanged actual Int128 semantic/VM/O0/O2 evidence. Current source parsing is reported separately and never establishes behavior."
+    },
+    {
+      "api": "Basic.make_leak_report zero-argument historical return",
+      "status": "maintained_text_overload_and_historical_owned_report_authored_selection_unverified",
+      "reason": "Maintained zero-argument string and log form are authored, while explicit-options returns the historical owned Leak_Report. The old defaulted options signature is retained; actual overload/expected-result selection awaits paired compiler proof. Text is temporary until storage reset; disabled policy is reported explicitly."
     }
   ],
   "validation": {
-    "compiler_snapshot": "b1b820444e2a6585cda11d8efc2bf2186c5a6623cf54312552ba403d4e64fd13",
-    "parse": "all_eight_owned_sources_and_both_authored_smokes_passed",
+    "compiler_snapshot": "017353c4ebe0f82577b3604efaaa18a95ecd2c304a68bf0764c0d407ff1dc381",
+    "build_inputs_verified": true,
+    "parse": "Current main owned module/array/core/visualization and fixtures parse with verified017. Memory_Debugger Preamble caller-value expression, legacy Hash_Table caller-value expressions, legacy Bit_Array baked macro aliases remain authentic provider syntax gaps.",
     "source_check": {
-      "status": "blocked_at_dependency",
-      "diagnostic": "stdlib/Basic/String_Builder.jai:2:38: this constant expression requires typed compile-time evaluation",
+      "status": "historical_pre_latest_sources_provider_failure",
+      "diagnostic": "stdlib/Basic/module.jai:35:55: #caller_location requires a visible source Source_Code_Location type",
       "environment": {
-        "JAI_RS_MODULE_PATH": "/Users/matthew/projects/jai/stdlib",
+        "JAI_RS_STDLIB": "/Users/matthew/projects/jai/stdlib",
         "JAI_RS_PRELOAD": "/Users/matthew/projects/jai/prelude/Preload.jai",
         "JAI_RS_RUNTIME_SUPPORT": "off"
-      }
+      },
+      "evidence_scope": "This retained diagnostic predates latest debugger/formatter source bodies; not a current semantic check."
     },
-    "behavior_smoke": "tests/stdlib/basic-collections.jai",
-    "runtime": "not_verified",
-    "protocol_alias_body": "tests/stdlib/basic-protocol-aliases.jai; syntax passed; root new-CLI semantic/body run pending"
+    "runtime": "Collections and qualified protocol consumers remain unverified; separate basic-utilities report establishes actual Int128 20-case semantic/VM/O0/O2 proof.",
+    "fixtures": [
+      "tests/stdlib/basic-collections.jai",
+      "tests/stdlib/basic-protocol-aliases.jai",
+      "tests/stdlib/basic-context-identity.jai",
+      "tests/stdlib/legacy-hash-table.jai",
+      "tests/stdlib/legacy-bit-array.jai",
+      "tests/stdlib/legacy-rank-sort.jai",
+      "tests/stdlib/soa-generated-columns.jai",
+      "tests/stdlib/soa-generated-overlap.jai",
+      "tests/stdlib/memory-debugger-core.jai",
+      "tests/stdlib/memory-debugger-disabled.jai",
+      "tests/stdlib/memory-debugger-retirement.jai",
+      "tests/stdlib/memory-debugger-shared-context.jai",
+      "tests/stdlib/memory-debugger-text.jai",
+      "tests/stdlib/memory-debugger-tracking.jai"
+    ]
   },
   "related_reports": [
     "stdlib/.coverage/basic-utilities.json",
-    "stdlib/.coverage/storage-layout.json"
+    "stdlib/.coverage/storage-layout.json",
+    "stdlib/.coverage/memory-debugger.json"
   ],
   "documentation": "docs/stdlib/basic-collections.md",
-  "protocol_alias_identity_evidence": "Parent integration established canonical named Preload source identity with sixteen main gates; current frozen b1 CLI predates that fix, so this report claims syntax only for newly authored Basic aliases."
+  "protocol_alias_identity_evidence": "Root canonical named Preload source identity gates preserve genuine source DeclarationId; Context names reserved canonical #Context. Basic imported body fixtures still await qualified alias/default provider admission."
 }

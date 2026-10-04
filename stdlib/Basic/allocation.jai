@@ -1,12 +1,25 @@
 // Allocator selection remains ordinary Jai source and follows the active context.
 alloc :: (size: s64, allocator := context.allocator) -> *void {
     if size < 0 || !allocator.proc return null;
-    return allocator.proc(.ALLOCATE, size, 0, null, allocator.data);
+    memory := allocator.proc(.ALLOCATE, size, 0, null, allocator.data);
+    #if MEMORY_DEBUGGER {
+        install_memory_debugger_hook();
+        Memory_Debugger.check_alloc(allocator, memory, size);
+    } else {
+        Runtime_Support.notify_allocator_event(.ALLOCATE, allocator, null, 0, memory, size);
+    }
+    return memory;
 }
 
 free :: (ptr: *void, allocator := context.allocator) {
     if !ptr return;
     assert(allocator.proc != null, "free requires an allocator");
+    #if MEMORY_DEBUGGER {
+        install_memory_debugger_hook();
+        Memory_Debugger.check_free(allocator, ptr);
+    } else {
+        Runtime_Support.notify_allocator_event(.FREE, allocator, ptr, 0, null, 0);
+    }
     allocator.proc(.FREE, 0, 0, ptr, allocator.data);
 }
 
@@ -16,16 +29,36 @@ free :: inline (s: string, allocator := context.allocator) {
 
 realloc :: (memory: *void, size: s64, old_size: s64, allocator := context.allocator) -> *void {
     if size < 0 || old_size < 0 || !allocator.proc return null;
-    return allocator.proc(.RESIZE, size, old_size, memory, allocator.data);
+    replacement := allocator.proc(.RESIZE, size, old_size, memory, allocator.data);
+    #if MEMORY_DEBUGGER {
+        install_memory_debugger_hook();
+        Memory_Debugger.check_realloc(allocator, memory, old_size, replacement, size);
+    } else {
+        Runtime_Support.notify_allocator_event(.RESIZE, allocator, memory, old_size, replacement, size);
+    }
+    return replacement;
 }
 
 create_heap :: (a: Allocator) -> Allocator {
     caps, name := get_capabilities_info(a);
     assert(caps & .CREATE_HEAP, "allocator does not support separate heaps");
-    return .{a.proc, a.proc(.CREATE_HEAP, 0, 0, null, a.data)};
+    heap: Allocator = .{a.proc, a.proc(.CREATE_HEAP, 0, 0, null, a.data)};
+    #if MEMORY_DEBUGGER {
+        install_memory_debugger_hook();
+        Memory_Debugger.check_create_heap(heap);
+    } else {
+        Runtime_Support.notify_allocator_event(.CREATE_HEAP, heap, null, 0, null, 0);
+    }
+    return heap;
 }
 
 destroy_heap :: (b: Allocator) {
+    #if MEMORY_DEBUGGER {
+        install_memory_debugger_hook();
+        Memory_Debugger.check_destroy_heap(b);
+    } else {
+        Runtime_Support.notify_allocator_event(.DESTROY_HEAP, b, null, 0, null, 0);
+    }
     b.proc(.DESTROY_HEAP, 0, 0, null, b.data);
 }
 
@@ -156,7 +189,8 @@ temporary_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
     if !storage {
         fallback := context.allocator;
         if fallback.proc == temporary_allocator_proc fallback = Context_Base.default_allocator;
-        return fallback.proc(mode, requested_size, old_size, old_memory, fallback.data);
+        if mode == .ALLOCATE return alloc(requested_size, fallback);
+        return realloc(old_memory, requested_size, old_size, fallback);
     }
     if mode == .RESIZE && old_memory && requested_size <= align_forward(old_size, 8) return old_memory;
     size := align_forward(requested_size, 8);
