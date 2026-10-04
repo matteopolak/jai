@@ -1743,6 +1743,7 @@ impl Compiler {
                 returns: vec![],
                 conv: ir::Conv::Jai,
                 c_varargs: false,
+                c_fixed: 0,
                 c_abi: None,
             },
             file,

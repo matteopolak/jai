@@ -35,8 +35,10 @@ playground. Memory is real host memory; foreign procedures are called natively (
   `jaic::abi` (shared with `jaic-llvm`): scalars and register-sized struct pieces fill the integer/float files
   in order, larger structs are copied and passed by pointer (`Indirect`, arm64). The return shape is chosen
   from the classification (`II`, `IF`, `FI`, `FF`, `FFF`, `FFFF`, or a 512-byte `Sret` buffer) and copied to
-  the IR out-pointer. Limits: more than 8 integer or float registers is an error (no stack arguments), and
-  x86-64 `byval` stack structs are not supported.
+  the IR out-pointer. The prototype ends with 16 8-byte stack slots: on Apple arm64 the variadic
+  arguments of a C variadic call (`Sig::c_varargs`, those after `Sig::c_fixed`) go there, as that ABI
+  requires (elsewhere they travel like fixed arguments). Limits: more than 8 integer or float registers
+  or 16 variadic arguments is an error, and x86-64 `byval` stack structs are not supported.
 
 ## How to change it
 

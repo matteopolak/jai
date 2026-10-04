@@ -181,8 +181,10 @@ pub struct Sig {
     pub params: Vec<Ty>,
     pub returns: Vec<Ty>,
     pub conv: Conv,
-    /// C variadic: `params` lists only the fixed parameters.
+    /// C variadic. A call site appends its variadic arguments' classes to `params`; the first
+    /// `c_fixed` are the declared parameters (Apple arm64 passes the rest on the stack).
     pub c_varargs: bool,
+    pub c_fixed: u32,
     /// Per-parameter C ABI aggregate descriptions (for by-value structs in C calls).
     pub c_abi: Option<Box<CAbi>>,
 }

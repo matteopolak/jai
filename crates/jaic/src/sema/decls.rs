@@ -475,6 +475,7 @@ impl Compiler {
                 returns: Vec::new(),
                 conv: ir::Conv::C,
                 c_varargs: false,
+                c_fixed: 0,
                 c_abi: None,
             },
             is_data: true,
