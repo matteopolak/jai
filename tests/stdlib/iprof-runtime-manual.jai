@@ -1,7 +1,7 @@
 // Iprof runtime in MANUAL_MODE: hand-placed zones, per-frame update, report generation.
 #import "Basic";
 #import "Math";
-Iprof :: #import "Iprof"(IMPORT_MODE = 1, MANUAL_MODE = true, USE_GRAPHICS = true);
+Iprof :: #import "Iprof"(IMPORT_MODE = .CLIENT, MANUAL_MODE = true, USE_GRAPHICS = true);
 
 work :: (n: int) -> int {
     Iprof.zone_begin(1);

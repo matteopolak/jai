@@ -116,7 +116,7 @@ impl Compiler {
         &mut self,
         name: &str,
         entry: &Path,
-        params: Vec<(Sym, Value)>,
+        params: Vec<(Sym, Value, TypeId)>,
         span: Span,
     ) -> Result<ModuleId> {
         let key = (self.fs.canonical(entry), params.clone());
@@ -275,7 +275,10 @@ impl Compiler {
                         kind: ast::ExprKind::Enum(lit),
                         ..
                     }) = &decl.value
-                    && lit.items.iter().all(|i| matches!(i, ast::EnumItem::Member(_)))
+                    && lit
+                        .items
+                        .iter()
+                        .all(|i| matches!(i, ast::EnumItem::Member(_)))
                 {
                     // `using E :: enum { A; B; }`: the member names are known now, so declare
                     // `A :: E.A;` aliases at once; other declarations (even other enums'
@@ -344,12 +347,23 @@ impl Compiler {
                         exported,
                     );
                     self.entity_mut(id).home = file_scope;
+                    if let Some(filter) = &import.using {
+                        // `using Name :: #import "M"` also brings the module's names into scope.
+                        self.scope_mut(target).imports.push(ImportEntry {
+                            import: import.clone(),
+                            module: None,
+                            loading: false,
+                            from_scope: file_scope,
+                            filter: filter.clone(),
+                        });
+                    }
                 } else {
                     self.scope_mut(target).imports.push(ImportEntry {
                         import: import.clone(),
                         module: None,
                         loading: false,
                         from_scope: file_scope,
+                        filter: ast::UsingFilter::None,
                     });
                 }
             }
@@ -486,8 +500,8 @@ impl Compiler {
         let provided = self.modules[module.0 as usize]
             .params
             .iter()
-            .find(|(n, _)| *n == name.name || n.as_str() == format!("${position}"))
-            .map(|(_, v)| v.clone());
+            .find(|(n, ..)| *n == name.name || n.as_str() == format!("${position}"))
+            .map(|(_, v, ty)| (v.clone(), *ty));
         let decl = Rc::new(ast::Decl {
             id: ast::AstId::fresh(),
             names: vec![name],
@@ -519,7 +533,7 @@ impl Compiler {
             false,
         );
         self.modules[module.0 as usize].param_entities.push(id);
-        if let Some(Value::String(text)) = &provided
+        if let Some((Value::String(text), _)) = &provided
             && let Some(member) = std::str::from_utf8(text)
                 .ok()
                 .and_then(|t| t.strip_prefix(INFERRED_PARAM))
@@ -564,10 +578,10 @@ impl Compiler {
             });
             return Ok(());
         }
-        if let Some(value) = provided {
+        if let Some((value, ty)) = provided {
             self.entity_mut(id).kind = EntityKind::Const {
                 value,
-                ty: TypeId::VOID,
+                ty,
             };
         }
         Ok(())
@@ -679,16 +693,31 @@ impl Compiler {
         let mut params = Vec::new();
         for (position, arg) in import.params.iter().enumerate() {
             // `.Member` needs the parameter's type, known only once the module is read.
-            let value = match &arg.value.kind {
-                ast::ExprKind::InferredMember(member) => {
-                    Value::String(format!("{INFERRED_PARAM}{}", member.name).as_bytes().into())
+            let (value, ty) = match &arg.value.kind {
+                ast::ExprKind::InferredMember(member) => (
+                    Value::String(format!("{INFERRED_PARAM}{}", member.name).as_bytes().into()),
+                    TypeId::VOID,
+                ),
+                _ => {
+                    // Aggregates (`.[...]`) and enums carry their type along; scalars take
+                    // theirs from the value.
+                    let (value, ty) = self.eval_const_typed(from_scope, &arg.value)?;
+                    let typed = matches!(value, Value::Bytes(_))
+                        || matches!(self.types.kind(ty), crate::types::TypeKind::Enum(_));
+                    (
+                        value,
+                        if typed {
+                            ty
+                        } else {
+                            TypeId::VOID
+                        },
+                    )
                 }
-                _ => self.eval_const_value(from_scope, &arg.value)?,
             };
             let name = arg
                 .name
                 .map_or_else(|| Sym::intern(&format!("${position}")), |n| n.name);
-            params.push((name, value));
+            params.push((name, value, ty));
         }
         match &import.source {
             ast::ImportSource::Module(name)
@@ -731,7 +760,7 @@ impl Compiler {
         &mut self,
         name: &str,
         path: Option<PathBuf>,
-        params: Vec<(Sym, Value)>,
+        params: Vec<(Sym, Value, TypeId)>,
     ) -> ModuleId {
         let id = ModuleId(self.modules.len() as u32);
         let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);

@@ -65,3 +65,9 @@ The CLI selects module search directories with platform-separated `JAI_RS_MODULE
 ## Dependencies
 
 This foundation uses standard Rust, `jai-source`, `jai-lexer`, and the existing `jai-types` scalar types. It adds no external dependencies. `jai-modules` depends on source, syntax, lexer, shared `jai-types`, and the pure `jai-eval` evaluator, allowing sema to consume it without depending on the driver. The driver reexports it as `jai_driver::modules` and resolves checked programs through the graph-aware semantic APIs.
+
+## Semantic notes (module arguments and named imports)
+
+- Module arguments keep their type when it matters: array literals (`X = .["a"]`) and enum values carry the type of the evaluated argument into `Module.params` (the third tuple field) so the parameter entity is not `void`. `.Member` arguments are still deferred and typechecked against the parameter's declared type or its default's type.
+- `using[,only(..)|,except(..)] Name :: #import "M"` binds `Name` and also adds an anonymous `ImportEntry` carrying the filter (`only`/`except` name lists; `map` and computed filters bring everything in). `Parser::parse_modified_decl` records `Import::using` for every `using` import, even without a filter.
+- File-scoped imports stay visible only in their own file; default/export-scope imports are visible to all files of the module.
