@@ -32,18 +32,13 @@ Thread :: struct {
     owns_temporary_storage: bool;
     initialized: bool;
 }
+// With DEBUG off (as in `jai`), a mutex or condition variable is exactly the OS object, so printing
+// one shows the same fields `jai` shows.
 Mutex :: struct {
-    debug_name: int;
-    order: int;
-    lock_count: int;
-    recursion_count: int;
-    locked: bool;
     csection: Per_OS_Critical_Section_Type;
-    initialized: bool;
 }
 Condition_Variable :: struct {
     condition_variable: Per_OS_Condition_Variable_Type;
-    initialized: bool;
 }
 Semaphore :: struct {
     owner: u32;
@@ -119,44 +114,19 @@ thread_deinit :: (thread: *Thread) {
 }
 thread_destroy :: (thread: *Thread) { thread_deinit(thread); }
 
-init :: (mutex: *Mutex, name: string = "", order: int = 0) -> bool {
-    if mutex == null || mutex.initialized return false;
-    if !initialize_mutex(*mutex.csection) return false;
-    mutex.debug_name = name.count; mutex.order = order;
-    mutex.lock_count = 0; mutex.recursion_count = 0; mutex.locked = false;
-    mutex.initialized = true;
-    return true;
+init :: (mutex: *Mutex, name: string = "", order: Mutex_Order = -1) {
+    ok := initialize_mutex(*mutex.csection);
+    assert(ok, "could not initialize mutex");
 }
-destroy :: (using m: *Mutex) {
-    if !initialized return;
-    destroy_mutex(*csection); initialized = false;
+destroy :: (mutex: *Mutex) { destroy_mutex(*mutex.csection); }
+lock :: (mutex: *Mutex) { csection_lock(*mutex.csection); }
+unlock :: (mutex: *Mutex) { csection_unlock(*mutex.csection); }
+init :: (cv: *Condition_Variable, desired_name := "") {
+    ok := initialize_condition(*cv.condition_variable);
+    assert(ok, "could not initialize condition variable");
 }
-lock :: (mutex: *Mutex) {
-    assert(mutex != null && mutex.initialized);
-    csection_lock(*mutex.csection);
-    mutex.locked = true; mutex.lock_count += 1; mutex.recursion_count += 1;
-}
-unlock :: (mutex: *Mutex) {
-    assert(mutex != null && mutex.initialized && mutex.locked);
-    mutex.recursion_count -= 1;
-    mutex.locked = mutex.recursion_count != 0;
-    csection_unlock(*mutex.csection);
-}
-init :: (using cv: *Condition_Variable, desired_name := "") -> bool {
-    if initialized return false;
-    initialized = initialize_condition(*condition_variable);
-    return initialized;
-}
-destroy :: (using cv: *Condition_Variable) {
-    if !initialized return;
-    destroy_condition(*condition_variable); initialized = false;
-}
-wait :: (c: *Condition_Variable, m: *Mutex) {
-    assert(c.initialized && m.initialized && m.recursion_count == 1);
-    m.locked = false; m.recursion_count = 0;
-    cvariable_wait(*c.condition_variable, *m.csection);
-    m.locked = true; m.recursion_count = 1;
-}
+destroy :: (cv: *Condition_Variable) { destroy_condition(*cv.condition_variable); }
+wait :: (c: *Condition_Variable, m: *Mutex) { cvariable_wait(*c.condition_variable, *m.csection); }
 wake :: (c: *Condition_Variable) { cvariable_wake(*c.condition_variable); }
 wake_all :: (c: *Condition_Variable) { cvariable_wake_all(*c.condition_variable); }
 csection_lock :: (csection: *Per_OS_Critical_Section_Type) #expand {

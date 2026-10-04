@@ -35,7 +35,7 @@ initialize_queue :: ($User_Data: Type) -> *Queue(User_Data), result := Error.{} 
     queue.requests.allocator = queue.allocator;
     queue.completions.allocator = queue.allocator;
     queue.open_files.allocator = queue.allocator;
-    if !Threads.init(*queue.mutex) { free(queue); return null, error(.Catastrophic); }
+    Threads.init(*queue.mutex);
     if !Threads.init(*queue.submitted) { Threads.destroy(*queue.mutex); free(queue); return null, error(.Catastrophic); }
     if !Threads.init(*queue.completed) { Threads.destroy(*queue.submitted); Threads.destroy(*queue.mutex); free(queue); return null, error(.Catastrophic); }
     worker :: (thread: *Threads.Thread) -> s64 {

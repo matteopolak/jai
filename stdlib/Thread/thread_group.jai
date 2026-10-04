@@ -176,7 +176,7 @@ shutdown :: (using group: *Thread_Group, timeout_milliseconds: s32 = -1) -> bool
 
 #scope_file
 init_work_list :: (list: *Work_List) -> bool {
-    if !init(*list.mutex) return false;
+    init(*list.mutex);
     if !init(*list.semaphore) { destroy(*list.mutex); return false; }
     list.first = null; list.last = null; list.count = 0;
     return true;
