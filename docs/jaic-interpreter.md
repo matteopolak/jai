@@ -30,13 +30,20 @@ playground. Memory is real host memory; foreign procedures are called natively (
   back to the compiler instead of `exec`ing (exec failed, or it trapped, e.g. on a foreign procedure that the
   host lacks), `Interp::call` ends the child with `_exit` instead of letting it carry on as a second
   compiler. The flag is set when a native `fork` returns 0 in `call_foreign`.
+- **Native foreign calls** (`native.rs`): every call goes through one C prototype with 8 integer and 8
+  `double` register arguments (the extra registers are ignored by the callee). Arguments are classified with
+  `jaic::abi` (shared with `jaic-llvm`): scalars and register-sized struct pieces fill the integer/float files
+  in order, larger structs are copied and passed by pointer (`Indirect`, arm64). The return shape is chosen
+  from the classification (`II`, `IF`, `FI`, `FF`, `FFF`, `FFFF`, or a 512-byte `Sret` buffer) and copied to
+  the IR out-pointer. Limits: more than 8 integer or float registers is an error (no stack arguments), and
+  x86-64 `byval` stack structs are not supported.
 
 ## How to change it
 
+- New return shape or calling convention for native calls: `call_as` and the shape structs in `native.rs`.
 - New host-provided foreign procedures: `Host::foreign` implementations (`SandboxHost` for the browser).
 - New compiler primitives: a `MetaOp` in `build.rs` plus a bodiless `#compiler` declaration in
   `stdlib/Compiler/records.jai`.
-- Calls with by-value struct arguments to native code are not supported yet (`call_native` traps).
 
 ## Configuration
 

@@ -3,7 +3,7 @@
 //! Covers the two 64-bit ABIs the compiler targets: AArch64 AAPCS64 (Apple
 //! flavour) and x86-64 System V. The IR describes an aggregate only by its
 //! flattened scalar fields (`AggLayout`), which is all either ABI looks at.
-use jaic::ir::{AggLayout, Ty};
+use crate::ir::{AggLayout, Ty};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Arch {
@@ -12,6 +12,17 @@ pub enum Arch {
 }
 
 impl Arch {
+    /// The architecture this compiler runs on (for the interpreter's native calls).
+    pub fn host() -> Option<Arch> {
+        if cfg!(target_arch = "aarch64") {
+            Some(Arch::Aarch64)
+        } else if cfg!(target_arch = "x86_64") {
+            Some(Arch::X86_64)
+        } else {
+            None
+        }
+    }
+
     pub fn from_triple(triple: &str) -> Option<Arch> {
         let cpu = triple.split('-').next()?;
         match cpu {
