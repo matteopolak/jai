@@ -403,7 +403,29 @@ impl Compiler {
                 },
             ) => {
                 let n = *n;
-                let (_, addr) = self.address_of(f, op, span)?;
+                // A constant literal viewed as `[] T` lives in its own writable global, as in jai:
+                // the view outlives the procedure (`return .["a", "b"];`) and may be written.
+                let addr = match &op {
+                    Operand::Const {
+                        value: Value::Bytes(agg),
+                        ..
+                    } if n > 0 => {
+                        let size = self.size_of(from, span)?;
+                        let align = self.align_of(from, span)?;
+                        let name = format!("array_literal.{}", self.program.globals.len());
+                        let global = self.program.add_global(ir::Global {
+                            name,
+                            size,
+                            align,
+                            init: agg.bytes.clone(),
+                            relocs: agg.relocs.clone(),
+                            read_only: false,
+                            export: None,
+                        });
+                        f.b.global_addr(global)
+                    }
+                    _ => self.address_of(f, op, span)?.1,
+                };
                 // An empty array views no storage (`.[]` is a null view, not a dangling address).
                 let addr = if n == 0 {
                     f.b.iconst(Ty::Ptr, 0)

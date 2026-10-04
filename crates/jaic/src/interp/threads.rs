@@ -48,6 +48,7 @@ struct Saved {
     sp: u64,
     depth: usize,
     loc: Option<(u32, u32, u32)>,
+    trace_loc: Option<Option<(u32, u32, u32)>>,
 }
 
 struct GThread {
@@ -90,6 +91,7 @@ impl Sched {
                     sp: 0,
                     depth: 0,
                     loc: None,
+                    trace_loc: None,
                 },
             }],
             current: 0,
@@ -199,6 +201,7 @@ impl Interp {
                     sp: 0,
                     depth: 0,
                     loc: None,
+                    trace_loc: None,
                 },
             });
             sched.threads.len() - 1
@@ -424,6 +427,7 @@ impl Interp {
             sp: self.sp,
             depth: self.depth,
             loc: self.loc,
+            trace_loc: self.trace_loc,
         };
         let baton = {
             let sched = self.sched();
@@ -447,6 +451,7 @@ impl Interp {
                     sp: 0,
                     depth: 0,
                     loc: None,
+                    trace_loc: None,
                 },
             )
         };
@@ -454,6 +459,7 @@ impl Interp {
         self.sp = saved.sp;
         self.depth = saved.depth;
         self.loc = saved.loc;
+        self.trace_loc = saved.trace_loc;
     }
 
     /// The thread `me` has ended: wake its joiners and pass the baton on for good.

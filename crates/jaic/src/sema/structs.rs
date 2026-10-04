@@ -1125,8 +1125,16 @@ impl Compiler {
             match name.as_str() {
                 "count" => return Ok(Operand::untyped_int(n as i128)),
                 "data" => {
-                    let (_, addr) = self.address_of(f, base, span)?;
                     let p = self.types.pointer(elem);
+                    // An empty array has no storage: its data is null, as for an empty view.
+                    if n == 0 {
+                        return Ok(Operand::Const {
+                            ty: p,
+                            value: Value::Null,
+                            untyped: false,
+                        });
+                    }
+                    let (_, addr) = self.address_of(f, base, span)?;
                     return Ok(Operand::Value {
                         ty: p,
                         val: addr,

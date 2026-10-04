@@ -10,6 +10,9 @@ failures and the memory debugger's leak reports read it.
 
 - At lowering (`sema/procs.rs`, `lower_body_code`) every procedure that takes a context, and is
   not `inline` or `#no_debug`, gets `Func.trace = Some(TraceInfo { name, file, line, col })`.
+- The interpreter tracks `trace_loc`: inside untraced procedures (`inline`, `#no_debug`) it holds the
+  location of the call that entered them, so a traced call made there records the caller's own line
+  (test: `tests/stdlib/stack-trace-line-through-inline.jai`).
 - `Interp::exec` (`interp/mod.rs`) pushes a node when such a function is entered. The node lives in
   the callee's interpreter stack frame (32 bytes after the frame). Its fields: `next` (the
   previous top), `info` (a leaked `Stack_Trace_Procedure_Info` cached per `FuncId`), `hash`,
