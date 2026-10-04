@@ -459,6 +459,8 @@ impl Interp {
             ));
         }
         #[cfg(target_os = "macos")]
+        native::main_thread::note_symbol(&symbol);
+        #[cfg(target_os = "macos")]
         let result = if matches!(&*symbol, "fork" | "vfork") {
             native::main_thread::direct(|| self.call_native(program, addr, args, sig))?
         } else {
