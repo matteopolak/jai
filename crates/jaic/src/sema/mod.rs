@@ -15,6 +15,7 @@ pub mod value;
 mod asm;
 mod bake;
 mod calls;
+pub mod code_export;
 mod consteval;
 mod convert;
 mod decls;
@@ -202,6 +203,8 @@ pub struct Compiler {
     pub export_entities: Vec<EntityId>,
     /// Locals declared by `#asm` register declarations (`x: gpr`).
     pub asm_regs: HashMap<EntityId, asm::AsmReg>,
+    /// Syntax trees and types already handed to metaprograms as records.
+    pub export: code_export::ExportState,
 }
 
 impl Compiler {
@@ -265,10 +268,30 @@ impl Compiler {
             ct_context: None,
             export_entities: Vec::new(),
             asm_regs: HashMap::new(),
+            export: code_export::ExportState::default(),
         };
         c.root_scope = c.new_scope(scope::ScopeKind::Root, None, ModuleId(u32::MAX), None);
         c.declare_builtins();
         c
+    }
+
+    /// A new `Code` value. The interpreter keeps the body and its text too
+    /// (`compiler_get_nodes` exports it from compile-time code).
+    pub fn add_code(&mut self, body: Rc<ast::CodeBody>, scope: ScopeId) -> value::CodeId {
+        let id = value::CodeId(self.codes.len() as u32);
+        let span = match &*body {
+            ast::CodeBody::Expr(e) => e.span,
+            ast::CodeBody::Block(b) => b.span,
+        };
+        let text: Rc<str> = if (span.file.0 as usize) < self.sources.len() {
+            self.sources.snippet(span).into()
+        } else {
+            "".into()
+        };
+        self.interp.codes.push((body.clone(), text));
+        self.codes.push(body);
+        self.code_scopes.push(scope);
+        id
     }
 
     pub fn render(&self, d: &Diagnostic) -> String {

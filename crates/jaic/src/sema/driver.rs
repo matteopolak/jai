@@ -10,6 +10,8 @@ use std::path::Path;
 pub enum ProgramSource {
     File(std::path::PathBuf),
     String(String),
+    /// Source text added to a module of the workspace (`add_build_string` with a message).
+    ModuleString(String, u32),
 }
 
 impl Compiler {
@@ -74,6 +76,10 @@ impl Compiler {
             ProgramSource::String(text) => {
                 let label = format!("<added string {}>", self.added_sources);
                 self.load_string(&label, text, m)
+            }
+            ProgramSource::ModuleString(text, module) => {
+                let label = format!("<added string {}>", self.added_sources);
+                self.load_string(&label, text, ModuleId(*module))
             }
         }
     }

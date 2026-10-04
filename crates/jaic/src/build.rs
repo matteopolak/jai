@@ -12,6 +12,7 @@
 //! on top of them in `stdlib/Compiler/module.jai`.
 use crate::interp::{Host, Interp, Trap};
 use crate::ir;
+use crate::records::{Field, Item, Records};
 use crate::sema::{Compiler, FileSystem, Options, ProgramSource, TargetCpu, TargetOs};
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -120,10 +121,10 @@ struct Workspace {
     stage: Stage,
     /// The workspace's compiler between steps (taken out while it runs).
     compiler: Option<Box<Compiler>>,
-    /// Files already announced with FILE events.
-    files_reported: usize,
     events: VecDeque<Event>,
     failed: bool,
+    /// `compiler_modify_procedure` calls not applied yet: (body record, statement records).
+    modifications: Vec<(i64, Vec<i64>)>,
 }
 
 impl Workspace {
@@ -135,9 +136,9 @@ impl Workspace {
             intercepted: false,
             stage: Stage::Open,
             compiler: None,
-            files_reported: 0,
             events: VecDeque::new(),
             failed: false,
+            modifications: Vec::new(),
         }
     }
 }
@@ -153,6 +154,8 @@ pub struct Event {
 pub const EVENT_FILE: i64 = 1;
 pub const EVENT_PHASE: i64 = 2;
 pub const EVENT_COMPLETE: i64 = 3;
+pub const EVENT_IMPORT: i64 = 4;
+pub const EVENT_TYPECHECKED: i64 = 5;
 
 const PHASE_ALL_SOURCE_CODE_PARSED: i64 = 0;
 const PHASE_TYPECHECKED_ALL_WE_CAN: i64 = 1;
@@ -170,6 +173,8 @@ pub struct Workspaces {
     event: Event,
     /// Strings handed to Jai code; kept alive for the whole compilation.
     strings: Vec<Box<[u8]>>,
+    /// Messages, syntax trees and types exported to metaprograms.
+    records: Records,
 }
 
 pub type SharedWorkspaces = Rc<RefCell<Workspaces>>;
@@ -191,6 +196,18 @@ pub enum MetaOp {
     Report,
     CompilerVersion,
     CustomLinkComplete,
+    AddStringToModule,
+    CodeNodes,
+    ModifyProcedure,
+    RecTag,
+    RecField,
+    RecInt,
+    RecString,
+    RecRef,
+    RecCount,
+    RecItemInt,
+    RecItemString,
+    RecItemRef,
 }
 
 impl MetaOp {
@@ -210,6 +227,18 @@ impl MetaOp {
             "__jaic_report" => Self::Report,
             "__jaic_compiler_version" => Self::CompilerVersion,
             "__jaic_custom_link_complete" => Self::CustomLinkComplete,
+            "__jaic_workspace_add_string_to_module" => Self::AddStringToModule,
+            "__jaic_code_nodes" => Self::CodeNodes,
+            "__jaic_modify_procedure" => Self::ModifyProcedure,
+            "__jaic_rec_tag" => Self::RecTag,
+            "__jaic_rec_field" => Self::RecField,
+            "__jaic_rec_int" => Self::RecInt,
+            "__jaic_rec_string" => Self::RecString,
+            "__jaic_rec_ref" => Self::RecRef,
+            "__jaic_rec_count" => Self::RecCount,
+            "__jaic_rec_item_int" => Self::RecItemInt,
+            "__jaic_rec_item_string" => Self::RecItemString,
+            "__jaic_rec_item_ref" => Self::RecItemRef,
             _ => return None,
         })
     }
@@ -229,6 +258,7 @@ impl Workspaces {
             current: vec![1],
             event: Event::default(),
             strings: Vec::new(),
+            records: Records::default(),
         }))
     }
 
@@ -353,6 +383,14 @@ fn new_compiler(shared: &SharedWorkspaces, id: i64) -> Result<Box<Compiler>, Str
     Ok(compiler)
 }
 
+fn record_event(kind: i64, record: i64) -> Event {
+    Event {
+        kind,
+        ints: vec![record],
+        strings: Vec::new(),
+    }
+}
+
 fn phase(p: i64) -> Event {
     Event {
         kind: EVENT_PHASE,
@@ -365,7 +403,7 @@ fn phase(p: i64) -> Event {
 /// Open → (load, run directives) Checked → (more sources, or generate code
 /// and write output) Done. Errors are reported and end in a failed COMPLETE.
 fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
-    let (stage, mut compiler, pending) = {
+    let (stage, mut compiler, pending, modifications) = {
         let mut reg = shared.borrow_mut();
         let ws = reg.ws(id)?;
         if ws.stage == Stage::Done {
@@ -375,6 +413,7 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
             ws.stage,
             ws.compiler.take(),
             std::mem::take(&mut ws.pending),
+            std::mem::take(&mut ws.modifications),
         )
     };
     let mut compiler = match compiler.take() {
@@ -385,7 +424,13 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
     // The registry borrow is released while the compiler runs: its
     // compile-time code may call back into the registry.
     shared.borrow_mut().current.push(id);
-    let result = match stage {
+    let modified = {
+        let reg = shared.borrow();
+        modifications
+            .iter()
+            .try_for_each(|(body, stmts)| compiler.modify_procedure(&reg.records, *body, stmts))
+    };
+    let result = modified.and_then(|()| match stage {
         Stage::Open => compiler.begin_sources(&pending).map(|()| {
             events.push(phase(PHASE_ALL_SOURCE_CODE_PARSED));
             events.push(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
@@ -401,19 +446,45 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
             }),
         Stage::Checked => compiler.finish_program().map(|()| Stage::Done),
         Stage::Done => unreachable!(),
-    };
+    });
+    let intercepted = shared.borrow_mut().ws(id)?.intercepted;
+    let mut file_events = Vec::new();
+    if intercepted {
+        // The registry's records are taken out while the compiler exports:
+        // resolving declarations may run compile-time code.
+        let mut records = std::mem::take(&mut shared.borrow_mut().records);
+        for (kind, record) in compiler.export_file_events(&mut records) {
+            file_events.push(record_event(
+                if kind == crate::sema::code_export::message_kind::IMPORT {
+                    EVENT_IMPORT
+                } else {
+                    EVENT_FILE
+                },
+                record,
+            ));
+        }
+        if matches!(result, Ok(Stage::Checked)) {
+            if let Some(message) = compiler.export_typechecked(&mut records) {
+                // Before TYPECHECKED_ALL_WE_CAN, after any files the export loaded.
+                for (kind, record) in compiler.export_file_events(&mut records) {
+                    file_events.push(record_event(
+                        if kind == crate::sema::code_export::message_kind::IMPORT {
+                            EVENT_IMPORT
+                        } else {
+                            EVENT_FILE
+                        },
+                        record,
+                    ));
+                }
+                let at = events.len().saturating_sub(1);
+                events.insert(at, record_event(EVENT_TYPECHECKED, message));
+            }
+        }
+        let mut reg = shared.borrow_mut();
+        let added = std::mem::replace(&mut reg.records, records);
+        debug_assert!(added.is_empty());
+    }
     shared.borrow_mut().current.pop();
-
-    let reported = shared.borrow_mut().ws(id)?.files_reported;
-    let mut file_events: Vec<Event> = compiler.files[reported.min(compiler.files.len())..]
-        .iter()
-        .map(|file| Event {
-            kind: EVENT_FILE,
-            ints: Vec::new(),
-            strings: vec![file.path.display().to_string().into_bytes()],
-        })
-        .collect();
-    let files = compiler.files.len();
     let mut failed = false;
     let next = match result {
         Ok(Stage::Done) => {
@@ -438,7 +509,6 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
     file_events.extend(events);
     let mut reg = shared.borrow_mut();
     let ws = reg.ws(id)?;
-    ws.files_reported = files;
     ws.events.extend(file_events);
     ws.failed |= failed;
     ws.stage = next;
@@ -583,7 +653,9 @@ pub fn call(
             // Resolved now: the metaprogram may change directory before it compiles.
             let path = fs.canonical(&PathBuf::from(&value));
             if op == MetaOp::AddFile && !fs.is_file(&path) {
-                return Err(trap(format!("add_build_file: could not read file '{value}'")));
+                return Err(trap(format!(
+                    "add_build_file: could not read file '{value}'"
+                )));
             }
             let ws = reg.ws(id).map_err(trap)?;
             ws.pending.push(if op == MetaOp::AddFile {
@@ -684,5 +756,89 @@ pub fn call(
             Ok(Vec::new())
         }
         MetaOp::CustomLinkComplete => Ok(Vec::new()),
+        MetaOp::AddStringToModule => {
+            let (id, value, record) = (arg(0) as i64, text(interp, 1), arg(2) as i64);
+            let mut reg = shared.borrow_mut();
+            // A FILE message stands for its module (the enclosing import).
+            let records = &reg.records;
+            let message = match records.item(record, "enclosing_import", None) {
+                Some(Item::Ref(import)) => *import,
+                _ => record,
+            };
+            let module = match records.item(message, "__module", None) {
+                Some(Item::Int(m)) => *m as u32,
+                _ => return Err(trap("add_build_string: the message names no module".into())),
+            };
+            let ws = reg.ws(id).map_err(trap)?;
+            ws.pending.push(ProgramSource::ModuleString(value, module));
+            Ok(Vec::new())
+        }
+        MetaOp::CodeNodes => {
+            let Some((body, text)) = interp.codes.get(arg(0) as usize).cloned() else {
+                return Err(trap("compiler_get_nodes: not a Code value".into()));
+            };
+            let mut reg = shared.borrow_mut();
+            let (root, nodes) =
+                crate::sema::code_export::export_code(&mut reg.records, &body, &text);
+            let mut result = crate::records::Record::new("Code_Nodes");
+            result.ptr("root", root).refs("expressions", nodes);
+            Ok(vec![reg.records.add(result) as u64])
+        }
+        MetaOp::ModifyProcedure => {
+            let (id, body, data, count) = (arg(0) as i64, arg(1) as i64, arg(2), arg(3));
+            let stmts = (0..count)
+                .map(|i| interp.read_u64(data + i * 8) as i64)
+                .collect();
+            let mut reg = shared.borrow_mut();
+            reg.ws(id).map_err(trap)?.modifications.push((body, stmts));
+            Ok(Vec::new())
+        }
+        MetaOp::RecTag => {
+            let tag = shared
+                .borrow()
+                .records
+                .get(arg(0) as i64)
+                .map_or("", |r| r.tag);
+            return_string(interp, tag.as_bytes(), 1);
+            Ok(Vec::new())
+        }
+        MetaOp::RecField => {
+            let name = text(interp, 1);
+            Ok(vec![
+                shared.borrow().records.kind(arg(0) as i64, &name) as u64
+            ])
+        }
+        MetaOp::RecCount => {
+            let name = text(interp, 1);
+            let reg = shared.borrow();
+            Ok(vec![match reg.records.field(arg(0) as i64, &name) {
+                Some(Field::List(items)) => items.len() as u64,
+                _ => 0,
+            }])
+        }
+        MetaOp::RecInt | MetaOp::RecRef | MetaOp::RecItemInt | MetaOp::RecItemRef => {
+            let name = text(interp, 1);
+            let index =
+                matches!(op, MetaOp::RecItemInt | MetaOp::RecItemRef).then(|| arg(2) as usize);
+            let reg = shared.borrow();
+            Ok(vec![match reg.records.item(arg(0) as i64, &name, index) {
+                Some(Item::Int(v) | Item::Ref(v)) => *v as u64,
+                _ => 0,
+            }])
+        }
+        MetaOp::RecString | MetaOp::RecItemString => {
+            let name = text(interp, 1);
+            let (index, out) = if op == MetaOp::RecItemString {
+                (Some(arg(2) as usize), 3)
+            } else {
+                (None, 2)
+            };
+            let bytes = match shared.borrow().records.item(arg(0) as i64, &name, index) {
+                Some(Item::Str(s)) => s.to_vec(),
+                _ => Vec::new(),
+            };
+            return_string(interp, &bytes, out);
+            Ok(Vec::new())
+        }
     }
 }

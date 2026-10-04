@@ -10,6 +10,7 @@ pub mod interp;
 pub mod ir;
 pub mod lexer;
 pub mod parser;
+pub mod records;
 pub mod sema;
 pub mod source;
 pub mod types;

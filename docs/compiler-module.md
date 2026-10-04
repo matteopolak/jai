@@ -72,16 +72,16 @@ Messages live in module-level records (one per kind), so a message and the strin
 
 `compiler_get_version_info(*info)` returns `__jaic_compiler_version()` unchanged and parses the first digit run split on dots (`"beta 0.2.025, jaic"` gives 0, 2, 25).
 
-### Syntax-tree and other unsupported APIs
+### Syntax trees and unsupported APIs
 
-jaic exposes no syntax tree yet. These keep the public signatures but call `unsupported()`, which issues a fatal `__jaic_report` ("... is not supported by jaic yet") only when invoked: `compiler_get_nodes`, `compiler_get_code`, `code_to_string`, `print_expression`, `get_root_type`, `get_type`, `compiler_set_type_info_flags`, `compiler_modify_procedure`, `compiler_make_procedure_live`, `compiler_get_struct_location`, `compiler_report_errors_for_*`, `compiler_set_memory_breakpoint`, `compiler_add_library_search_directory`, `compiler_get_base_path`, `remap_import`, `provide_import`, `add_global_data`, `add_data_segment`. `Message_Typechecked` and the `Code_*` structs are declared faithfully so code that switches on them type-checks, but jaic never produces `TYPECHECKED` messages. `add_build_string`'s `code` and `message` scoping arguments are accepted and ignored (the text goes to the workspace's top level).
+Messages and syntax trees are built from compiler records (`records.jai`, see [compiler-records.md](compiler-records.md)): FILE, IMPORT and TYPECHECKED messages, `compiler_get_nodes` and `compiler_modify_procedure` work. `add_build_string(text, w, message)` with a FILE or IMPORT message adds the text to that message's module; other `code`/`message` scoping goes to the workspace's top level. These keep the public signatures but call `unsupported()`, which issues a fatal `__jaic_report` only when invoked: `compiler_get_code`, `code_to_string`, `print_expression`, `get_root_type`, `compiler_set_type_info_flags`, `compiler_make_procedure_live`, `compiler_get_struct_location`, `compiler_report_errors_for_*`, `compiler_set_memory_breakpoint`, `compiler_add_library_search_directory`, `compiler_get_base_path`, `remap_import`, `provide_import`, `add_global_data`, `add_data_segment`.
 
 `get_name(w)` is answered from names remembered by `compiler_create_workspace`. `get_runtime_info` / `get_type_table` read the `#elsewhere` `__runtime_info` symbol like the original API.
 
 ## How to change it
 
 - New option forwarded to Rust: add the field in `options.jai` (keep member order and defaults of the public API), then add a `__jaic_workspace_set_option` line in `forward_options` and handle the key on the Rust side. Update the table above.
-- New event kind: add an `EVENT_*` constant and a `case` in `build_message`; give the message record a module-level instance in the `#scope_module` section of `workspace.jai`.
+- New event kind: add an `EVENT_*` constant and a `case` in `build_message`. Prefer a record payload built with `record_struct` (pointer identity is kept across messages) over a reused module-level instance.
 - When a primitive for an unsupported API appears, replace the `unsupported(...)` body with the real call. Do not change the signature.
 - Anonymous enums inside `Build_Options` / `Message_*` cannot be named in other declarations, so helper state stores their values as integers (`last_complete_error`) or uses the polymorphic `enum_member_name`.
 - Gotchas: workspace id `-1` means the current workspace (`resolve_workspace`); `jaic check` only type-checks code reachable from `main`, so probes must call new procedures behind a runtime (non-constant) condition.
