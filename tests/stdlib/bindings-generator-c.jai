@@ -39,7 +39,7 @@ main :: () {
     assert(ok);
 
     assert(has(text, "LIMIT :: 5;"));
-    assert(has(text, "MASK :: (LIMIT << 2);"));
+    assert(has(text, "MASK :: LIMIT << 2;"));
     assert(has(text, "NAME :: \"hello\";"));
     assert(!has(text, "UNKNOWN_CALL"));
     assert(has(text, "Node :: struct {"));
