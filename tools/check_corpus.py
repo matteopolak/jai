@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Local staged acceptance using only this repository's Rust compiler."""
+"""Legacy staged acceptance harness for the retired `jai-rs` binary.
+
+The compiler it drove (crates `jai-*`) was removed; the helpers here (`ROOT`, `inventory`, `digest`) are
+still imported by the inventory tools. Use `tools/jaic-sweep.py` to exercise the current compiler.
+"""
 from __future__ import annotations
 
 import argparse
@@ -307,7 +311,7 @@ def main() -> int:
     if not compiler.is_relative_to((ROOT / 'target').resolve()) or compiler.name != 'jai-rs':
         parser.error('compiler must be the repository-built target/.../jai-rs')
     if not compiler.is_file():
-        parser.error('build our compiler first: cargo build -p jai-cli --locked')
+        parser.error('the jai-rs compiler was removed; use tools/jaic-sweep.py with jaic')
     if args.timeout <= 0:
         parser.error('timeout must be positive')
     report = args.report.resolve()
