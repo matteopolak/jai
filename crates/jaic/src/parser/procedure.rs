@@ -19,6 +19,7 @@ const HEADER_DIRECTIVES: &[&str] = &[
     "foreign",
     "symmetric",
     "cpp_method",
+    "cpp_return_type_is_non_pod",
     "runtime_support",
     "no_debug",
     "no_abc",

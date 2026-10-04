@@ -359,7 +359,7 @@ impl Compiler {
             returns.push(ty);
             return_names.push(None);
         }
-        let c_call = header.flags.c_call || header.foreign.is_some();
+        let c_call = header.flags.c_call || header.flags.cpp_method || header.foreign.is_some();
         let c_varargs = c_call && params.last().is_some_and(|p| p.variadic);
         let has_context = !c_call && !header.flags.no_context && !header.flags.intrinsic;
         let proc_type = ProcType {
@@ -373,6 +373,7 @@ impl Compiler {
             c_varargs,
             c_call,
             no_context: !has_context,
+            non_pod_return: header.flags.cpp_return_type_is_non_pod,
         };
         let ty = self.types.intern(TypeKind::Proc(Rc::new(proc_type)));
         Ok(Signature {
@@ -438,6 +439,7 @@ impl Compiler {
                     params.push(Ty::Ptr);
                     if p.c_call && i == 0 {
                         c_abi.ret = Some(self.agg_layout(t, span)?);
+                        c_abi.ret_indirect = p.non_pod_return;
                     }
                     c_abi.params.push(None);
                 }

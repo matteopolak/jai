@@ -351,6 +351,7 @@ Function :: struct {
     base_foreign_name: string;
 
     is_virtual: bool;
+    is_operator: bool;   // Printed as a Jai operator overload after its struct.
 }
 
 Typedef :: struct {
@@ -425,6 +426,15 @@ Struct :: struct {
     }
 }
 
+// Per-struct vtable layout, computed lazily while printing (C++ class hierarchies).
+Struct_Extra_Info :: struct {
+    vtable: [..] *Function;
+    vtable_name: string;
+    vtable_parent: *Struct;
+    vtable_parent_info: *Struct_Extra_Info;
+    vtable_parent_declaration: *Declaration;
+}
+
 Namespace :: struct {
     #as using declaration: Declaration;
     kind = .NAMESPACE;
@@ -486,6 +496,10 @@ Generator_State :: struct #type_info_none {
 
     structs_to_check: [..] *Struct;
     pending_anon_enums: [..] *Enum;
+
+    extra_infos: Table(*Struct, *Struct_Extra_Info);
+    template_depth := 0;
+    template_params: Table(Cursor, *Struct);   // Placeholder structs standing for template parameters.
 
     tab_depth := 0;
 

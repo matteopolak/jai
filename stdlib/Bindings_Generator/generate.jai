@@ -248,6 +248,15 @@ assign_libraries :: (g: *Generator_State, scope: *[..] *Declaration, options: *G
         if decl.kind == .NAMESPACE {
             ns := cast(*Namespace) decl;
             assign_libraries(g, *ns.declarations, options);
+        } else if decl.kind == .STRUCT {
+            // Member functions bind like free functions; virtual ones are reached
+            // through the vtable and are never stripped for a missing symbol.
+            st := cast(*Struct) decl;
+            assign_libraries(g, *st.declarations, options);
+            for st.virtual_functions {
+                lib := find_library_for_symbol(g, ifx it.foreign_name then it.foreign_name else it.name);
+                if lib it.library = lib;
+            }
         }
         if decl.kind == .FUNCTION || (decl.kind == .DECLARATION && decl.storage_class == .Extern) {
             symbol := decl.foreign_name;
@@ -357,6 +366,7 @@ print_struct_checks :: (builder: *String_Builder, g: *Generator_State) {
     checks: [..] *Struct;
     for g.structs_to_check {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        if (it.decl_flags & .TEMPLATE) || (it.flags & .NO_STRUCT_CHECKS) continue;
         if !it.name || (it.flags & .IS_INCOMPLETE) || !it.type || it.type.size <= 0 continue;
         if !table_contains(*g.added_to_scope, it) continue;
         array_add(*checks, it);
@@ -365,7 +375,7 @@ print_struct_checks :: (builder: *String_Builder, g: *Generator_State) {
 
     append(builder, "\n\n#scope_file\n\n#import \"Basic\"; // For assert\n\n#run {\n");
     for s: checks {
-        name := s.output_name;
+        name := join(parent_path(s), s.output_name);
         append(builder, "    assert(size_of(");
         append(builder, name);
         print_to_builder(builder, ") == %, \"", s.type.size);

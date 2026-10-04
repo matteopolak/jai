@@ -1541,6 +1541,7 @@ impl Compiler {
                 c_varargs: false,
                 c_call: false,
                 no_context: true,
+                non_pod_return: false,
             })));
         if let Some(&func) = self.initializers.get(&ty) {
             return Ok((func, proc_ty));
