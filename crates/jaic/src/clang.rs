@@ -182,6 +182,13 @@ struct Api {
     template_arg_type: unsafe extern "C" fn(CxType, c_uint) -> CxType,
     access_specifier: unsafe extern "C" fn(CxCursor) -> c_int,
     function_inlined: unsafe extern "C" fn(CxCursor) -> c_uint,
+    cursor_result_type: unsafe extern "C" fn(CxCursor) -> CxType,
+    objc_base_type: unsafe extern "C" fn(CxType) -> CxType,
+    objc_num_protocols: unsafe extern "C" fn(CxType) -> c_uint,
+    objc_protocol: unsafe extern "C" fn(CxType, c_uint) -> CxCursor,
+    objc_num_type_args: unsafe extern "C" fn(CxType) -> c_uint,
+    objc_type_arg: unsafe extern "C" fn(CxType, c_uint) -> CxType,
+    modified_type: unsafe extern "C" fn(CxType) -> CxType,
 }
 
 #[repr(C)]
@@ -362,6 +369,13 @@ fn open_api(explicit: &str) -> Result<(Api, String), String> {
             template_arg_type: sym!("clang_Type_getTemplateArgumentAsType"),
             access_specifier: sym!("clang_getCXXAccessSpecifier"),
             function_inlined: sym!("clang_Cursor_isFunctionInlined"),
+            cursor_result_type: sym!("clang_getCursorResultType"),
+            objc_base_type: sym!("clang_Type_getObjCObjectBaseType"),
+            objc_num_protocols: sym!("clang_Type_getNumObjCProtocolRefs"),
+            objc_protocol: sym!("clang_Type_getObjCProtocolDecl"),
+            objc_num_type_args: sym!("clang_Type_getNumObjCTypeArgs"),
+            objc_type_arg: sym!("clang_Type_getObjCTypeArg"),
+            modified_type: sym!("clang_Type_getModifiedType"),
         };
         return Ok((api, path));
     }
@@ -854,6 +868,35 @@ pub fn call(op: &str, a: i64, b: i64, text: &[u8]) -> Result<i64, String> {
             },
             "t_template_arg" => {
                 let t = unsafe { (api.template_arg_type)(s.ty(a), b as c_uint) };
+                s.type_id(t)
+            }
+            // Objective-C: the declared result type of a method cursor, and the pieces of
+            // `id<P>` / `Base<Arg>` object types.
+            "cursor_result_type" => {
+                let t = unsafe { (api.cursor_result_type)(s.cursor(a)) };
+                s.type_id(t)
+            }
+            "t_objc_base" => {
+                let t = unsafe { (api.objc_base_type)(s.ty(a)) };
+                s.type_id(t)
+            }
+            "t_objc_num_protocols" => unsafe { (api.objc_num_protocols)(s.ty(a)) as i64 },
+            "t_objc_protocol" => {
+                let c = unsafe { (api.objc_protocol)(s.ty(a), b as c_uint) };
+                if (70..=73).contains(&c.kind) {
+                    0
+                } else {
+                    s.cursor_id(c)
+                }
+            }
+            "t_objc_num_type_args" => unsafe { (api.objc_num_type_args)(s.ty(a)) as i64 },
+            "t_objc_type_arg" => {
+                let t = unsafe { (api.objc_type_arg)(s.ty(a), b as c_uint) };
+                s.type_id(t)
+            }
+            // The type an attributed type (`T _Nonnull`) was made from.
+            "t_modified" => {
+                let t = unsafe { (api.modified_type)(s.ty(a)) };
                 s.type_id(t)
             }
             "t_num_template_args" => unsafe { (api.num_template_args)(s.ty(a)) as i64 },

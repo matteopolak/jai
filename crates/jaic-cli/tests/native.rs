@@ -190,3 +190,34 @@ fn c_variadic_calls() {
         String::from_utf8_lossy(&output.stderr)
     );
 }
+
+/// A program that imports the Bindings_Generator module builds natively (its libclang bridge
+/// primitives are compile-time only and get trapping stubs), and the bindings it generated at
+/// compile time work in the native binary.
+fn native_bindings_generator_test(name: &str) {
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join(format!("native-{name}"));
+    std::fs::create_dir_all(&dir).unwrap();
+    let source = repo_root().join(format!("tests/stdlib/{name}.jai"));
+    let output = build_and_run(&source, &dir, name).unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        "ok\n",
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
+fn bindings_generator_bitfields() {
+    native_bindings_generator_test("bindings-generator-bitfields");
+}
+
+#[test]
+fn bindings_generator_cpp_raw() {
+    native_bindings_generator_test("bindings-generator-cpp-raw");
+}
+
+#[test]
+fn bindings_generator_objc() {
+    native_bindings_generator_test("bindings-generator-objc");
+}
