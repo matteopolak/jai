@@ -138,9 +138,12 @@
   "void-values-print.jai"
  ],
  "excluded": {
+  "bindings-generator-bitfields.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai) and a C compiler; the browser has no dynamic linker",
   "bindings-generator-c.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
   "bindings-generator-cpp-classes.jai": "starts a C++ compiler process at compile time (Process: pipe, fork, exec); the browser has no processes",
+  "bindings-generator-cpp-raw.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai) and a C compiler; the browser has no dynamic linker",
   "bindings-generator-cpp.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
+  "bindings-generator-objc.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai) and a C compiler; the browser has no dynamic linker",
   "buildcpp-api.jai": "starts a C compiler process (Process: pipe, fork, exec); the browser has no processes",
   "c-callbacks-interpreted.jai": "native library: C qsort/bsearch calling back into interpreted procedures needs the native libc and callback thunks",
   "c-variadic-foreign-calls.jai": "tests the native C variadic call ABI against the real libc (snprintf, pipe, fcntl); not meaningful without a native libc",
