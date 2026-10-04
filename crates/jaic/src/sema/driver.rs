@@ -227,8 +227,13 @@ impl Compiler {
     }
 
     /// Tell the interpreter where `context.stack_trace` is and how to name source files.
-    fn enable_stack_traces(&mut self, span: Span) {
+    pub(super) fn enable_stack_traces(&mut self, span: Span) {
         if !self.options.stack_trace {
+            return;
+        }
+        if self.program.stack_trace_offset.is_some()
+            && self.program.file_paths.len() == self.sources.len()
+        {
             return;
         }
         let Ok(context) = self.context_type(span) else {

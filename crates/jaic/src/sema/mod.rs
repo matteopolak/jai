@@ -189,6 +189,8 @@ pub struct Compiler {
     pub interp: crate::interp::Interp,
     /// Type_Info globals per type.
     pub type_infos: HashMap<TypeId, ir::GlobalId>,
+    /// `compiler_set_type_info_flags` bits per struct (`Type_Info_Flags`).
+    pub type_info_flags: HashMap<TypeId, u32>,
     /// String literal globals, deduplicated.
     pub strings: HashMap<Rc<[u8]>, ir::GlobalId>,
     pub output: Vec<u8>,
@@ -310,6 +312,7 @@ impl Compiler {
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::new(),
+            type_info_flags: HashMap::new(),
             strings: HashMap::new(),
             output: Vec::new(),
             warnings: Vec::new(),

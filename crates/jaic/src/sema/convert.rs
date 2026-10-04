@@ -676,6 +676,27 @@ impl Compiler {
                 val,
             });
         }
+        // A string constant cast to a fixed byte array of matching length.
+        if let Operand::Const {
+            value: Value::String(bytes),
+            ..
+        } = &op
+            && let TypeKind::Array {
+                elem,
+                kind: ArrayKind::Fixed(n),
+            } = self.types.kind(tr).clone()
+            && (elem == TypeId::U8 || elem == TypeId::S8)
+            && n as usize == bytes.len()
+        {
+            return Ok(Operand::Const {
+                ty: to,
+                value: Value::Bytes(std::rc::Rc::new(crate::sema::value::Aggregate {
+                    bytes: bytes.to_vec(),
+                    relocs: Vec::new(),
+                })),
+                untyped: false,
+            });
+        }
         // Strings and arrays cast to `bool` as "is non-empty".
         if tr == TypeId::BOOL && self.ir_ty(fr).is_none() && fr != TypeId::ANY {
             let (ty, v) = self.rvalue(f, op, span)?;

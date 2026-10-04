@@ -133,6 +133,8 @@ pub struct Interp {
     loc: Option<(u32, u32, u32)>,
     /// True while evaluating compile-time code (`#compile_time`).
     pub compile_time: bool,
+    /// `compiler_set_type_info_flags` calls (type descriptor global, flags) not applied yet.
+    pub pending_type_flags: Vec<(GlobalId, u32)>,
     /// Workspace registry for the `Compiler` module, when the embedder has one.
     pub workspaces: Option<crate::build::SharedWorkspaces>,
     /// Bodies and source text of the compiler's `Code` values, by `CodeId`.
@@ -174,6 +176,7 @@ impl Interp {
             depth: 0,
             loc: None,
             compile_time: true,
+            pending_type_flags: Vec::new(),
             workspaces: None,
             codes: Vec::new(),
             made_codes: Vec::new(),
@@ -234,6 +237,34 @@ impl Interp {
             unsafe { std::ptr::write_unaligned((addr + r.offset) as *mut u64, value) };
         }
         Ok(addr)
+    }
+
+    /// Reload an already materialized global from its (rebuilt) initial contents, in place.
+    pub fn refresh_global(&mut self, program: &Program, g: GlobalId) -> Res<()> {
+        let i = g.0 as usize;
+        let Some(Some(m)) = self.globals.get(i) else {
+            return Ok(());
+        };
+        let addr = m.addr;
+        let global = &program.globals[i];
+        unsafe {
+            std::ptr::write_bytes(addr as *mut u8, 0, global.size as usize);
+            std::ptr::copy_nonoverlapping(
+                global.init.as_ptr(),
+                addr as *mut u8,
+                global.init.len().min(global.size as usize),
+            )
+        };
+        for r in &global.relocs {
+            let target = match r.target {
+                ir::RelocTarget::Global(t) => self.global_addr(program, t)?,
+                ir::RelocTarget::Func(f) => FUNC_TAG | f.0 as u64,
+                ir::RelocTarget::Foreign(f) => self.foreign_addr(program, f)?,
+            };
+            let value = target.wrapping_add(r.addend as u64);
+            unsafe { std::ptr::write_unaligned((addr + r.offset) as *mut u64, value) };
+        }
+        Ok(())
     }
 
     /// Put every resettable global back to its initial contents (compile-time execution
@@ -555,7 +586,7 @@ impl Interp {
         let offset = program.stack_trace_offset?;
         let info = func.trace.as_ref()?;
         let context = *args.first()?;
-        if context == 0 || self.compile_time {
+        if context == 0 {
             return None;
         }
         let slot = context + offset;
