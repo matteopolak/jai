@@ -13,6 +13,10 @@ pub trait FileSystem {
     fn canonical(&self, path: &Path) -> PathBuf {
         normalize(path)
     }
+    /// Names (and whether each is a directory) directly inside `path`; used by the sandbox host.
+    fn list_dir(&self, _path: &Path) -> Vec<(String, bool)> {
+        Vec::new()
+    }
 }
 
 pub struct NativeFs;
@@ -28,6 +32,20 @@ impl FileSystem for NativeFs {
     }
     fn canonical(&self, path: &Path) -> PathBuf {
         std::fs::canonicalize(path).unwrap_or_else(|_| normalize(path))
+    }
+    fn list_dir(&self, path: &Path) -> Vec<(String, bool)> {
+        let Ok(entries) = std::fs::read_dir(path) else {
+            return Vec::new();
+        };
+        entries
+            .filter_map(|e| e.ok())
+            .map(|e| {
+                (
+                    e.file_name().to_string_lossy().into_owned(),
+                    e.path().is_dir(),
+                )
+            })
+            .collect()
     }
 }
 
@@ -51,6 +69,24 @@ impl FileSystem for VirtualFs {
         let p = normalize(path);
         self.files.keys().any(|k| k.starts_with(&p) && k != &p)
     }
+    fn list_dir(&self, path: &Path) -> Vec<(String, bool)> {
+        let p = normalize(path);
+        let mut out: std::collections::BTreeMap<String, bool> = Default::default();
+        for key in self.files.keys() {
+            let Ok(rest) = key.strip_prefix(&p) else {
+                continue;
+            };
+            let mut parts = rest.components();
+            let Some(first) = parts.next() else {
+                continue;
+            };
+            let nested = parts.next().is_some();
+            let name = first.as_os_str().to_string_lossy().into_owned();
+            let entry = out.entry(name).or_insert(false);
+            *entry |= nested;
+        }
+        out.into_iter().collect()
+    }
 }
 
 /// Lexically normalize `a/./b/../c` without touching the filesystem.
@@ -60,7 +96,9 @@ pub fn normalize(path: &Path) -> PathBuf {
         match component {
             std::path::Component::CurDir => {}
             std::path::Component::ParentDir => {
-                if !out.pop() {
+                // `/..` is `/`, as on a real filesystem; a relative path keeps leading `..`.
+                if out.has_root() && out.parent().is_none() {
+                } else if !out.pop() {
                     out.push("..");
                 }
             }
