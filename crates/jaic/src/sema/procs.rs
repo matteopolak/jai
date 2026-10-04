@@ -1,7 +1,7 @@
 //! Procedures: signatures, IR function/foreign targets, polymorphic
 //! instantiation and body lowering.
 use super::lower::{FnCtx, Operand};
-use super::scope::{EntityKind, ScopeKind, UsingEntry};
+use super::scope::{EntityKind, Resolved, ScopeKind, UsingEntry};
 use super::*;
 use crate::ir::{Conv, Sig, Ty};
 use crate::types::{ArrayKind, ProcType, TypeKind};
@@ -42,6 +42,8 @@ pub struct ProcInfo {
     pub scope: ScopeId,
     pub span: Span,
     pub is_poly: bool,
+    /// Parameter types were checked for bare polymorphic structs (implicit polymorphism).
+    pub poly_checked: bool,
     pub is_macro: bool,
     pub sig: Option<Rc<Signature>>,
     pub sig_resolving: bool,
@@ -128,6 +130,7 @@ impl Compiler {
             scope,
             span,
             is_poly,
+            poly_checked: is_poly,
             is_macro: header.flags.expand,
             sig: None,
             sig_resolving: false,
@@ -142,6 +145,62 @@ impl Compiler {
         }
         id
     }
+    /// A parameter typed with a bare polymorphic struct (`t: *Table`) makes the
+    /// procedure polymorphic; that needs name resolution, so it is decided lazily.
+    pub fn refresh_implicit_poly(&mut self, id: ProcId) -> Result<()> {
+        if self.proc(id).poly_checked {
+            return Ok(());
+        }
+        self.procs[id.0 as usize].poly_checked = true;
+        let header = self.proc(id).lit.header.clone();
+        let scope = self.proc(id).scope;
+        for p in &header.params {
+            if let Some(t) = &p.ty
+                && self.mentions_poly_struct(scope, t)?
+            {
+                self.procs[id.0 as usize].is_poly = true;
+                break;
+            }
+        }
+        Ok(())
+    }
+
+    /// Does a type expression name a polymorphic struct without parameters?
+    pub fn mentions_poly_struct(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<bool> {
+        use ast::ExprKind as E;
+        Ok(match &expr.kind {
+            E::Ident(name) => self.ident_poly_struct(scope, *name)?.is_some(),
+            E::Unary(_, e) => self.mentions_poly_struct(scope, e)?,
+            E::ArrayType {
+                elem, ..
+            } => self.mentions_poly_struct(scope, elem)?,
+            E::TypeDirective {
+                ty, ..
+            } => self.mentions_poly_struct(scope, ty)?,
+            _ => false,
+        })
+    }
+
+    pub fn ident_poly_struct(
+        &mut self,
+        scope: ScopeId,
+        name: Sym,
+    ) -> Result<Option<value::PolyStructId>> {
+        let Ok(ids) = self.lookup(scope, name) else {
+            return Ok(None);
+        };
+        let [id] = ids[..] else {
+            return Ok(None);
+        };
+        if matches!(self.entity(id).kind, EntityKind::Local { .. }) {
+            return Ok(None);
+        }
+        Ok(match self.resolve_entity(id) {
+            Ok(Resolved::PolyStruct(ps)) => Some(ps),
+            _ => None,
+        })
+    }
+
     pub fn proc(&self, id: ProcId) -> &ProcInfo {
         &self.procs[id.0 as usize]
     }
@@ -771,6 +830,7 @@ impl Compiler {
             scope: parent,
             span: pspan,
             is_poly: false,
+            poly_checked: true,
             is_macro,
             sig: None,
             sig_resolving: false,

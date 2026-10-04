@@ -877,6 +877,13 @@ impl Compiler {
         name: Sym,
         span: Span,
     ) -> Result<Operand> {
+        // `array.type` where `array: *Struct(...)` is bound as a type (implicit polymorphs).
+        if let Some(p) = self.types.pointee(t)
+            && self.types.as_struct(p).is_some()
+            && let Some(ids) = self.struct_constant(p, name)?
+        {
+            return self.entities_operand(f, scope, &ids, span);
+        }
         match self.types.kind(t).clone() {
             TypeKind::Enum(e) => {
                 if let Some(&(_, v)) = self

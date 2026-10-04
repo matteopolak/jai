@@ -1080,6 +1080,21 @@ impl Compiler {
             return Ok(());
         }
         let c = collection.unwrap();
+        // `for iterate(x)`: a call to a for_expansion-shaped macro (body: Code second).
+        if for_.iterator.is_none()
+            && let ast::ExprKind::Call {
+                callee,
+                args,
+                ..
+            } = &c.kind
+            && let Ok(Operand::Procs(procs)) = self.check_expr_no_emit(scope, callee)
+            && !procs.is_empty()
+            && procs.iter().all(|&p| self.proc_takes_for_body(p))
+        {
+            let leading = self.precheck_args(f, scope, args)?;
+            return self
+                .check_for_expansion(f, scope, for_, procs, leading, it_name, index_name, span);
+        }
         let op = self.check_expr(f, scope, c, None)?;
         let cty = op.ty();
         let target = self.types.pointee(cty).unwrap_or(cty);
@@ -1088,7 +1103,35 @@ impl Compiler {
             TypeKind::Struct(_)
         );
         if for_.iterator.is_some() || is_struct {
-            return self.check_for_expansion(f, scope, for_, op, it_name, index_name, span);
+            let procs = self.for_expansion_procs(scope, for_, &op, span)?;
+            // `for_expansion :: (x: *T, ...)` iterates a struct value through its address.
+            let wants_pointer = procs.iter().all(|&p| {
+                self.proc(p).lit.header.params.first().is_some_and(|param| {
+                    matches!(&param.ty, Some(t) if matches!(t.kind, E::Unary(ast::UnOp::Star, _)))
+                })
+            });
+            let op = if wants_pointer
+                && matches!(op, Operand::Place { .. })
+                && !self.types.is_pointer(cty)
+            {
+                let (_, addr) = self.address_of(f, op, span)?;
+                Operand::Value {
+                    ty: self.types.pointer(cty),
+                    val: addr,
+                }
+            } else {
+                op
+            };
+            let leading = vec![CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(op),
+                span,
+                scope,
+            }];
+            return self
+                .check_for_expansion(f, scope, for_, procs, leading, it_name, index_name, span);
         }
         let (elem, fixed) = match self.types.kind(self.types.repr(cty)).clone() {
             TypeKind::Array {
@@ -1237,20 +1280,24 @@ impl Compiler {
 
     /// `for x: collection` over a struct: expand its `for_expansion` macro.
     #[allow(clippy::too_many_arguments)]
-    fn check_for_expansion(
+    /// `for_expansion` (or the `for :name` iterator) visible at the loop.
+    fn for_expansion_procs(
         &mut self,
-        f: &mut FnCtx,
         scope: ScopeId,
         for_: &ast::For,
-        collection: Operand,
-        it_name: Sym,
-        index_name: Sym,
+        collection: &Operand,
         span: Span,
-    ) -> Result<()> {
+    ) -> Result<Vec<ProcId>> {
         let macro_name = for_
             .iterator
             .map_or_else(|| Sym::intern("for_expansion"), |i| i.name);
-        let ids = self.lookup(scope, macro_name)?;
+        let mut ids = self.lookup(scope, macro_name)?;
+        if ids.is_empty()
+            && for_.iterator.is_none()
+            && let Some(home) = self.struct_home_scope(collection.ty())
+        {
+            ids = self.lookup(home, macro_name)?;
+        }
         let mut procs = Vec::new();
         for id in ids {
             if let Resolved::Proc(p) = self.resolve_entity(id)? {
@@ -1266,6 +1313,32 @@ impl Compiler {
                 ),
             );
         }
+        Ok(procs)
+    }
+
+    /// A macro whose second parameter is the loop body (`(x, body: Code, flags)`).
+    fn proc_takes_for_body(&self, p: ProcId) -> bool {
+        let info = self.proc(p);
+        info.is_macro
+            && info.lit.header.params.get(1).is_some_and(|param| {
+                matches!(&param.ty, Some(t) if matches!(&t.kind, ast::ExprKind::Ident(n) if n.as_str() == "Code"))
+            })
+    }
+
+    /// Expand a for loop through `procs`, called with `leading` arguments
+    /// followed by the body as Code and the For_Flags.
+    #[allow(clippy::too_many_arguments)]
+    fn check_for_expansion(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        for_: &ast::For,
+        procs: Vec<ProcId>,
+        leading: Vec<CallArg>,
+        it_name: Sym,
+        index_name: Sym,
+        span: Span,
+    ) -> Result<()> {
         // The body becomes a Code value; names declared with backticks land in the loop scope.
         let loop_scope = self.new_block_scope(scope);
         let code = value::CodeId(self.codes.len() as u32);
@@ -1277,15 +1350,8 @@ impl Compiler {
         self.code_scopes.push(loop_scope);
         let flags_value = (for_.by_pointer as i128) | ((for_.reverse as i128) << 1);
         let flags_ty = self.preload_type("For_Flags", span).unwrap_or(TypeId::U8);
-        let args = vec![
-            CallArg {
-                name: None,
-                spread: false,
-                expr: None,
-                op: Some(collection),
-                span,
-                scope,
-            },
+        let mut args = leading;
+        args.extend([
             CallArg {
                 name: None,
                 spread: false,
@@ -1310,7 +1376,7 @@ impl Compiler {
                 span,
                 scope,
             },
-        ];
+        ]);
         f.pending_for_body = Some(ForBody {
             code,
             body: body_stmt,
