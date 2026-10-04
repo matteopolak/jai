@@ -282,7 +282,14 @@ print_literal_to_builder :: (builder: *String_Builder, lit: *Literal, target_typ
         case .NULL;
             append(builder, "null");
         case .INTEGER;
-            print_to_builder(builder, "%", lit.int_value);
+            stripped_target := strip_type(target_type, typedefs = true);
+            if stripped_target && stripped_target.pointer_to && lit.int_value == 0 {
+                append(builder, "null");
+            } else if stripped_target && stripped_target == context.generator.type_def_bool {
+                append(builder, ifx lit.int_value == 0 then "false" else "true");
+            } else {
+                print_to_builder(builder, "%", lit.int_value);
+            }
         case .FLOAT;
             append(builder, float_to_text(lit.float_value));
         case .STRING;
@@ -428,7 +435,7 @@ print_declaration_to_builder :: (builder: *String_Builder, decl: *Declaration, c
 }
 
 append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string) {
-    append(builder, " #foreign");
+    append(builder, ifx decl.kind == .FUNCTION then " #foreign" else " #elsewhere");
     if decl.library {
         append(builder, " ");
         append(builder, library_identifier(decl.library));

@@ -68,8 +68,10 @@ Cursor_Kind :: enum s32 {
     CSTYLE_CAST_EXPR      :: 117;
     UNEXPOSED_EXPR        :: 100;
     CALL_EXPR             :: 103;
-    CXX_BOOL_LITERAL      :: 120;
-    CXX_NULLPTR_LITERAL   :: 123;
+    CXX_BOOL_LITERAL      :: 130;
+    CXX_NULLPTR_LITERAL   :: 131;
+    CXX_FUNCTIONAL_CAST   :: 128;
+    GNU_NULL_EXPR         :: 123;
     MACRO_DEFINITION      :: 501;
 }
 

@@ -185,7 +185,32 @@ omit_unnecessary_typedefs_and_macros :: (decl: *Declaration, parent: *Declaratio
     return .RECURSE;
 }
 
+register_type_names :: (g: *Generator_State, members: [] *Declaration) {
+    for members {
+        if it.kind == .NAMESPACE {
+            register_type_names(g, (cast(*Namespace) it).declarations);
+        } else if (it.kind == .STRUCT || it.kind == .ENUM || it.kind == .TYPEDEF) && it.name && !(it.decl_flags & .OMIT_FROM_OUTPUT) {
+            table_set(*g.known_types, it.name, it.output_name);
+        }
+    }
+}
+
 post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
+    // Macros that name types can only be resolved now that every declaration exists.
+    register_type_names(g, g.global_scope.members);
+    for decl: g.global_scope.members {
+        if decl.kind != .MACRO_DEFINITION || decl.macro_value_result != .NEEDS_CHECKING continue;
+        lit := cast(*Literal) decl.expression;
+        converted, ok := convert_macro_body(lit.macro_value.tokens);
+        if ok && converted != decl.output_name {
+            lit.raw_value = converted;
+            decl.macro_value_result = .KEEP;
+            table_set(*g.known_constants, decl.name, true);
+        } else {
+            decl.macro_value_result = .DISCARD;
+        }
+    }
+
     // Drop macros that are not constants, convert macros to enums, apply unwrap prefixes.
     kept: [..] *Declaration;
     for decl: g.global_scope.members {
@@ -336,8 +361,14 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
 
 // Symbol names come from `nm`; this keeps the module free of object-file parsers.
 read_symbols :: (lib: *Library_Info, path: string, strip_underscore: bool) {
-    result, output := run_command("nm", "-g", path, capture_and_return_output = true);
-    if result.exit_code != 0 {
+    // The listing goes through a file, not a captured pipe: on macOS the interpreter
+    // cannot yet set FD_CLOEXEC (variadic `fcntl`), and a pipe-captured child that
+    // writes more than the 64 KB pipe buffer deadlocks against the launch handshake.
+    listing := tprint("%.symbols.tmp", path);
+    result := run_command("sh", "-c", tprint("nm -g \"%\" > \"%\" 2>/dev/null", path, listing));
+    output, read_ok := read_entire_file(listing, false);
+    run_command("rm", "-f", listing);
+    if result.exit_code != 0 || !read_ok {
         lib.symbols_known = false;
         return;
     }

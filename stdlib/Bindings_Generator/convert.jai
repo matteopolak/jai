@@ -873,7 +873,7 @@ create_int_literal :: (value: s64) -> *Literal {
 create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression {
     kind := cursor_kind(c);
 
-    if kind == .CXX_NULLPTR_LITERAL return create_null_literal();
+    if kind == .CXX_NULLPTR_LITERAL || kind == .GNU_NULL_EXPR return create_null_literal();
     if kind == .CXX_BOOL_LITERAL {
         tokens := tokens_of(c);
         lit := New(Literal);
@@ -904,6 +904,20 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
         }
     }
 
+    // `(const T*)0` and friends.
+    if kind == .CSTYLE_CAST_EXPR || kind == .CXX_FUNCTIONAL_CAST {
+        cast_children := get_children(c);
+        for cast_children {
+            if !is_expression_kind(xx cursor_kind(it)) continue;
+            inner := create_expression_from_cursor(it, null);
+            if inner && inner.kind == .LITERAL {
+                inner_lit := cast(*Literal) inner;
+                if inner_lit.literal_kind == .NULL || (inner_lit.literal_kind == .INTEGER && inner_lit.int_value == 0 && target_type && target_type.pointer_to) return create_null_literal();
+            }
+            break;
+        }
+    }
+
     result := clang("evaluate", c);
     // CXEval_Int = 1, Float = 2, StrLiteral = 4
     if result == 1 {
@@ -925,6 +939,10 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
     // Constructor calls with literal arguments: T(a, b) -> T.{a, b}
     if kind == .CALL_EXPR || kind == .UNEXPOSED_EXPR {
         children := get_children(c);
+        // Implicit wrappers (casts, temporaries, cleanups) show up as one-child unexposed expressions.
+        if kind == .UNEXPOSED_EXPR && children.count == 1 && is_expression_kind(xx cursor_kind(children[0])) {
+            return create_expression_from_cursor(children[0], target_type);
+        }
         values: [..] *Expression;
         type_name := "";
         ok := true;
@@ -934,18 +952,25 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
                 type_name = cursor_name(it);
                 continue;
             }
-            if k == .UNEXPOSED_EXPR && children.count == 1 {
-                return create_expression_from_cursor(it, target_type);
-            }
             if is_expression_kind(xx k) {
                 e := create_expression_from_cursor(it, null);
                 if !e { ok = false; break; }
                 array_add(*values, e);
             }
         }
+        // `T()` and `{}` have no type reference child; ask the expression's own type.
+        if ok && !type_name && kind == .CALL_EXPR {
+            type_name = type_name_of(clang("type", c));
+            if begins_with(type_name, "const ") type_name = advance(type_name, 6);
+        }
+        // A copy or move of a temporary: `T(T(a, b))` is just `T(a, b)`.
+        if ok && kind == .CALL_EXPR && values.count == 1 && values[0].kind == .STRUCT_LITERAL {
+            inner_literal := cast(*Struct_Literal) values[0];
+            if inner_literal.type_name == stripped_name(strip_elaborated_keyword(type_name)) || !type_name return inner_literal;
+        }
         if ok && type_name && kind == .CALL_EXPR {
             lit := New(Struct_Literal);
-            lit.type_name = stripped_name(type_name);
+            lit.type_name = stripped_name(strip_elaborated_keyword(type_name));
             lit.values = values;
             return lit;
         }
@@ -972,6 +997,13 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
     for tokens  append(*builder, it.spelling);
     lit.raw_value = builder_to_string(*builder);
     return lit;
+}
+
+strip_elaborated_keyword :: (name: string) -> string {
+    for string.["struct ", "class ", "union ", "enum "] {
+        if begins_with(name, it) return advance(name, it.count);
+    }
+    return name;
 }
 
 // Tokens covering the extent of a cursor.
@@ -1474,6 +1506,8 @@ Macro_Parser :: struct {
     tokens: [] Macro_Token;
     index: s64;
     ok := true;
+    // An identifier that is not (yet) known; the macro is rechecked once all declarations exist.
+    unresolved := false;
 }
 
 CAST_TYPE_WORDS :: string.["int", "unsigned", "long", "short", "char", "signed", "float", "double", "void", "const",
@@ -1523,6 +1557,28 @@ macro_primary :: (p: *Macro_Parser) -> string {
     s := t.spelling;
 
     if s == "(" {
+        // Cast to a named type: `(ImGuiID)0`.
+        if p.index + 2 < p.tokens.count && p.tokens[p.index + 1].kind == 2 {
+            name := p.tokens[p.index + 1].spelling;
+            k := p.index + 2;
+            stars := 0;
+            while k < p.tokens.count && p.tokens[k].spelling == "*" { stars += 1; k += 1; }
+            if k < p.tokens.count && p.tokens[k].spelling == ")" && !table_contains(*context.generator.known_constants, name) {
+                is_type, type_name := table_find(*context.generator.known_types, name);
+                if !is_type {
+                    p.ok = false;
+                    p.unresolved = true;
+                    return "";
+                }
+                p.index = k + 1;
+                operand_text := peek_token(p);
+                operand := macro_unary(p);
+                stars_text := "";
+                for 1..stars stars_text = join(stars_text, "*");
+                trunc := ifx operand_text == "-" || operand_text == "~" then ",trunc" else "";
+                return tprint("cast%(%%) %", trunc, stars_text, type_name, operand);
+            }
+        }
         // Cast or parenthesized expression.
         j := p.index + 1;
         words: [..] string;
@@ -1573,8 +1629,16 @@ macro_primary :: (p: *Macro_Parser) -> string {
     if t.kind == 2 {
         // Identifier: only names that will exist in the output.
         found := table_contains(*context.generator.known_constants, s);
-        if !found { p.ok = false; return ""; }
-        return s;
+        if found return s;
+        is_type, type_name := table_find(*context.generator.known_types, s);
+        if is_type return type_name;
+        p.ok = false;
+        p.unresolved = true;
+        return "";
+    }
+    if t.kind == 1 {
+        if s == "int" return "s32";
+        if s == "void" return "void";
     }
     p.ok = false;
     return "";
@@ -1619,23 +1683,40 @@ macro_expression :: (p: *Macro_Parser) -> string {
 }
 
 // The Jai text of a macro body, or ok = false when it is not a constant expression.
-convert_macro_body :: (tokens: [] Macro_Token) -> string, bool {
-    if tokens.count == 0 return "", false;
+// True when the first token's parenthesis closes at the last token.
+is_wrapped_in_parens :: (tokens: [] Macro_Token) -> bool {
+    if tokens.count < 3 || tokens[0].spelling != "(" || tokens[tokens.count - 1].spelling != ")" return false;
+    depth := 0;
+    for tokens {
+        if it.spelling == "(" depth += 1;
+        else if it.spelling == ")" {
+            depth -= 1;
+            if depth == 0 return it_index == tokens.count - 1;
+        }
+    }
+    return false;
+}
+
+convert_macro_body :: (tokens_in: [] Macro_Token) -> string, bool, bool {
+    tokens := tokens_in;
+    // `(X)` is the value X; a cast like `(int)(X)` closes its first paren earlier.
+    while is_wrapped_in_parens(tokens) tokens = array_view(tokens, 1, tokens.count - 2);
+    if tokens.count == 0 return "", false, false;
     p: Macro_Parser;
     p.tokens = tokens;
     // Adjacent string literals concatenate.
     if tokens.count > 1 && tokens[0].kind == 3 && begins_with(tokens[0].spelling, "\"") {
         builder: String_Builder;
         for tokens {
-            if it.kind != 3 || !begins_with(it.spelling, "\"") return "", false;
+            if it.kind != 3 || !begins_with(it.spelling, "\"") return "", false, false;
             body := slice(it.spelling, 1, it.spelling.count - 2);
             append(*builder, body);
         }
-        return tprint("\"%\"", builder_to_string(*builder)), true;
+        return tprint("\"%\"", builder_to_string(*builder)), true, false;
     }
     result := macro_expression(*p);
-    if !p.ok || p.index != tokens.count return "", false;
-    return result, true;
+    if !p.ok || p.index != tokens.count return "", false, p.unresolved;
+    return result, true, false;
 }
 
 create_macro_definition :: (c: Cursor) -> *Declaration {
@@ -1659,16 +1740,22 @@ create_macro_definition :: (c: Cursor) -> *Declaration {
     decl.location = cursor_location(c);
     fill_comment(*decl.comment, c, decl.location);
 
-    converted, ok := convert_macro_body(body);
-    if !ok {
-        decl.macro_value_result = .DISCARD;
-        return decl;
-    }
+    converted, ok, unresolved := convert_macro_body(body);
     lit := New(Literal);
     lit.literal_kind = .MACRO;
     lit.macro_value.tokens = body;
     lit.raw_value = converted;
     decl.expression = lit;
+    if !ok {
+        // Identifiers naming types are resolved once every declaration exists (post_process).
+        if unresolved {
+            decl.macro_value_result = .NEEDS_CHECKING;
+        } else {
+            decl.macro_value_result = .DISCARD;
+            decl.expression = null;
+        }
+        return decl;
+    }
     decl.macro_value_result = .KEEP;
     table_set(*context.generator.known_constants, name, true);
     return decl;

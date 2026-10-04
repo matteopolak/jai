@@ -487,6 +487,7 @@ Generator_State :: struct #type_info_none {
     unwrapped_typedefs: Table(string, *Typedef);
     added_to_scope: Table(*Declaration, bool);
     known_constants: Table(string, bool);
+    known_types: Table(string, string); // C name -> output name of emitted structs, enums and typedefs
 
     libraries: [..] *Library_Info;
     library_ids: [..] string;

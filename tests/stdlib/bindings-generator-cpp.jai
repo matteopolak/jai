@@ -12,6 +12,21 @@ namespace Gui {
     bool Begin(const char* name, bool* p_open = nullptr, int flags = 0);
     float Scale(float s = 1.5f, int n = 3);
 }
+
+// Default arguments that are temporaries, null casts and bools; macros that name types.
+struct P2 { float x, y; P2() : x(0), y(0) {} P2(float a, float b) : x(a), y(b) {} };
+struct WC;
+typedef unsigned int Id;
+enum E_ { E_None = 0, E_A = 1 };
+void f1(Id id, const P2& size = P2(0, 0), const WC* wc = nullptr);
+void f2(const WC* wc = (const WC*)0, bool c = true, E_ e = E_None);
+void f3(P2 a = P2(1.0f, -1.0f), const P2& b = P2());
+#define GUI_TAB (4)
+#define GUI_NEG (-1.0)
+#define GUI_ID_ANY ((Id)0)
+#define GUI_ID_NONE ((Id)-1)
+#define GUI_INDEX_TYPE int
+#define GUI_ID_TYPE Id
 END;
 
 visited: int;
@@ -45,5 +60,14 @@ main :: () {
     assert(contains(text, "Button :: (label: *u8, size: *Vec2) -> bool #foreign \"_ZN3Gui6ButtonEPKcRK4Vec2\";"));
     assert(contains(text, "Begin :: (name: *u8, p_open: *bool = null, flags: s32 = 0) -> bool #foreign"));
     assert(!contains(text, "Scale"));
+    assert(contains(text, "f1 :: (id: Id, size: P2 = P2.{0.0, 0.0}, wc: *WC = null) #no_context"));
+    assert(contains(text, "f2 :: (wc: *WC = null, c: bool = true, e: E_ = .None)"));
+    assert(contains(text, "f3 :: (a: P2 = P2.{1.0, -1.0}, b: P2 = P2.{}) #no_context"));
+    assert(contains(text, "GUI_TAB :: 4;"));
+    assert(contains(text, "GUI_NEG :: -1.0;"));
+    assert(contains(text, "GUI_ID_ANY :: cast(Id) 0;"));
+    assert(contains(text, "GUI_ID_NONE :: cast,trunc(Id) -1;"));
+    assert(contains(text, "GUI_INDEX_TYPE :: s32;"));
+    assert(contains(text, "GUI_ID_TYPE :: Id;"));
     print("ok\n");
 }
