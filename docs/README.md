@@ -303,6 +303,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Command-line arguments](stdlib/command-line.md)
 
 - [Metaprogram tooling](stdlib/metaprogram-tooling.md)
+- [Bindings generator](stdlib/bindings-generator.md)
 - [Program_Print source printer](stdlib/program-print.md)
 
 - [Window and audio bindings](stdlib/window-audio-bindings.md)

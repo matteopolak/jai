@@ -1275,6 +1275,31 @@ impl Compiler {
     // Default values
     // -----------------------------------------------------------------------
 
+    /// Offset and type of the member `name` of a `using` field of `s` (searched through nested `using`s).
+    fn find_used_member(
+        &mut self,
+        s: StructId,
+        name: Sym,
+        span: Span,
+    ) -> Result<Option<(u64, TypeId)>> {
+        self.layout_struct(s, span)?;
+        let fields = self.types.struct_info(s).fields.clone();
+        for f in fields.iter().filter(|f| f.using) {
+            let Some(inner) = self.types.as_struct(f.ty) else {
+                continue;
+            };
+            self.layout_struct(inner, span)?;
+            let inner_fields = self.types.struct_info(inner).fields.clone();
+            if let Some(m) = inner_fields.iter().find(|m| m.name == Some(name)) {
+                return Ok(Some((f.offset + m.offset, m.ty)));
+            }
+            if let Some((o, t)) = self.find_used_member(inner, name, span)? {
+                return Ok(Some((f.offset + o, t)));
+            }
+        }
+        Ok(None)
+    }
+
     /// Constant image of a default-initialized value (`None` = all zero).
     pub fn default_initializer(&mut self, ty: TypeId, span: Span) -> Result<Option<Rc<Aggregate>>> {
         if let Some(img) = self.default_images.get(&ty) {
@@ -1305,6 +1330,33 @@ impl Compiler {
                                 nonzero = true;
                             }
                         }
+                    }
+                }
+                // `member = value;` in the body overrides the default of a member
+                // reached through a `using` field.
+                let (lit, scope) = {
+                    let src = &self.struct_asts[&s];
+                    (src.lit.clone(), src.scope)
+                };
+                for stmt in &lit.body {
+                    let ast::StmtKind::Assign {
+                        op: ast::AssignOp::Assign,
+                        lhs,
+                        rhs,
+                    } = &stmt.kind
+                    else {
+                        continue;
+                    };
+                    let ([l], [r]) = (lhs.as_slice(), rhs.as_slice()) else {
+                        continue;
+                    };
+                    let E::Ident(name) = &l.kind else {
+                        continue;
+                    };
+                    if let Some((offset, fty)) = self.find_used_member(s, *name, span)? {
+                        let value = self.const_value_of_type(scope, r, fty)?;
+                        self.write_value(&mut agg, offset, &value, fty, r.span)?;
+                        nonzero = true;
                     }
                 }
                 nonzero.then(|| Rc::new(agg))

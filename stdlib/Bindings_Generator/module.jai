@@ -1,17 +1,18 @@
-// Newer public configuration schema. libclang execution is deliberately absent.
-GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH :: "/usr/include";
+// Bindings_Generator: turns C (and a little C++) headers into Jai declarations.
+//
+// The public surface follows the reference module: fill in a
+// `Generate_Bindings_Options`, optionally install a `visitor`, then call
+// `generate_bindings`. Headers are parsed with the host libclang through the
+// bridge in clang.jai. See docs/stdlib/bindings-generator.md.
 
-Binding_Generator_Strip_Flags :: enum_flags {
-    INLINED_FUNCTIONS;
-}
+#import "Basic";
+#import "String";
+#import "File";
+#import "Hash_Table";
+#import "Process";
 
-Generate_Bindings_Options :: struct {
-    libpaths: [..] string;
-    libnames: [..] string;
-    include_paths: [..] string;
-    source_files: [..] string;
-    system_include_paths: [..] string;
-    extra_clang_arguments: [..] string;
-    strip_flags: Binding_Generator_Strip_Flags;
-    header: string;
-}
+#load "clang.jai";
+#load "types.jai";
+#load "convert.jai";
+#load "print.jai";
+#load "generate.jai";
