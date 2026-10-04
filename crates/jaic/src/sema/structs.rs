@@ -1917,6 +1917,9 @@ impl Compiler {
         let size = self.size_of(ty, span)?;
         let o = offset as usize;
         let r = self.types.repr(ty);
+        // Overwriting (a literal field over the struct's default): drop the old pointers there.
+        agg.relocs
+            .retain(|reloc| reloc.offset < offset || reloc.offset >= offset + size);
         match value {
             Value::Int(i) => {
                 if self.types.is_float(r) {
