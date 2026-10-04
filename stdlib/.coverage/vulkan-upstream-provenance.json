@@ -1,7 +1,0 @@
-{
-  "registry_url": "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/main/registry/vk.xml",
-  "registry_sha256": "4ab953836756807a93cee72bc3c63554826b445af43003e0d7d7e876818428ca",
-  "registry_header_version": "365",
-  "used_for": "Existing Vulkan API macro and sType declaration verification; optional API expansion excluded from public stdlib.",
-  "no_upstream_implementation_execution": true
-}

@@ -2,7 +2,7 @@
 """Build the third-party C libraries the stdlib binds (stb_image, ...) from pinned sources.
 
 Output: artifacts/native-libs/<os>-<arch>/lib<name>.a and lib<name>.<dylib|so>, which `jaic`
-searches for `#system_library` / `#library` names (see docs/native-libs.md).
+searches for `#system_library` / `#library` names (see docs/tools/native-libs.md).
 """
 from __future__ import annotations
 
