@@ -209,6 +209,8 @@ pub enum MetaOp {
     RecItemInt,
     RecItemString,
     RecItemRef,
+    Clang,
+    ClangText,
 }
 
 impl MetaOp {
@@ -241,6 +243,8 @@ impl MetaOp {
             "__jaic_rec_item_int" => Self::RecItemInt,
             "__jaic_rec_item_string" => Self::RecItemString,
             "__jaic_rec_item_ref" => Self::RecItemRef,
+            "__jaic_clang" => Self::Clang,
+            "__jaic_clang_text" => Self::ClangText,
             _ => return None,
         })
     }
@@ -827,6 +831,16 @@ pub fn call(
                 .collect();
             let mut reg = shared.borrow_mut();
             reg.ws(id).map_err(trap)?.modifications.push((body, stmts));
+            Ok(Vec::new())
+        }
+        MetaOp::Clang => {
+            let (name, bytes) = (text(interp, 0), string(interp, 3));
+            crate::clang::call(&name, arg(1) as i64, arg(2) as i64, &bytes)
+                .map(|v| vec![v as u64])
+                .map_err(trap)
+        }
+        MetaOp::ClangText => {
+            return_string(interp, &crate::clang::last_text(), 0);
             Ok(Vec::new())
         }
         MetaOp::RecTag => {
