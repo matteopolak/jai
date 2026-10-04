@@ -27,12 +27,25 @@ impl Compiler {
                 return err(span, "Runtime_Support module not found on the import path");
             };
             let params = vec![
-                (Sym::intern("DEFINE_SYSTEM_ENTRY_POINT"), Value::Bool(true)),
-                (Sym::intern("DEFINE_INITIALIZATION"), Value::Bool(true)),
-                (Sym::intern("ENABLE_BACKTRACE_ON_CRASH"), Value::Bool(false)),
+                (
+                    Sym::intern("DEFINE_SYSTEM_ENTRY_POINT"),
+                    Value::Bool(true),
+                    TypeId::BOOL,
+                ),
+                (
+                    Sym::intern("DEFINE_INITIALIZATION"),
+                    Value::Bool(true),
+                    TypeId::BOOL,
+                ),
+                (
+                    Sym::intern("ENABLE_BACKTRACE_ON_CRASH"),
+                    Value::Bool(false),
+                    TypeId::BOOL,
+                ),
                 (
                     Sym::intern("TEMPORARY_STORAGE_SIZE"),
                     Value::Int(self.options.temporary_storage_size as i128),
+                    TypeId::S64,
                 ),
             ];
             let m = self.load_module("Runtime_Support", &entry, params, span)?;

@@ -904,6 +904,10 @@ impl Compiler {
             _ => {}
         }
         let ty = base.ty();
+        // `value.MEMBER` on an enum value yields the member constant (`flags.POLYMORPHIC`).
+        if matches!(self.types.kind(ty), TypeKind::Enum(_)) && self.type_has_member(ty, name)? {
+            return self.type_member(f, scope, ty, name, span);
+        }
         // Fixed arrays: count is constant, data is the base address.
         if let TypeKind::Array {
             elem,

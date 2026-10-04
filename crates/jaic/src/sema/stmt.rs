@@ -313,6 +313,7 @@ impl Compiler {
                             module: None,
                             loading: false,
                             from_scope: file_scope,
+                            filter: ast::UsingFilter::None,
                         });
                     }
                 }

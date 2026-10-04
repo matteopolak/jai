@@ -10,6 +10,7 @@ pub const LITERAL: u32 = 1;
 pub const WIDEN: u32 = 2;
 pub const POINTER: u32 = 3;
 pub const SUBTYPE: u32 = 4;
+pub const INT_TO_FLOAT: u32 = 5;
 pub const TO_ANY: u32 = 6;
 
 impl Compiler {
@@ -68,6 +69,23 @@ impl Compiler {
                     bits: 64,
                 },
             ) => Some(WIDEN),
+            // Integers convert to a float only when every value is exactly representable.
+            (
+                TypeKind::Int {
+                    bits: fb, ..
+                },
+                TypeKind::Float {
+                    bits: tb,
+                },
+            ) if *fb
+                <= if *tb == 64 {
+                    32
+                } else {
+                    16
+                } =>
+            {
+                Some(INT_TO_FLOAT)
+            }
             (TypeKind::Pointer(_), TypeKind::Pointer(t)) if *t == TypeId::VOID => Some(POINTER),
             (TypeKind::Pointer(f), TypeKind::Pointer(_)) if *f == TypeId::VOID => Some(POINTER),
             (TypeKind::Pointer(f), TypeKind::Pointer(t)) => {

@@ -51,6 +51,8 @@ pub struct ImportEntry {
     pub loading: bool,
     /// The file that wrote the import (for relative paths and parameter evaluation).
     pub from_scope: ScopeId,
+    /// `using,only(..)` / `using,except(..)` on a named import that also brings its names in.
+    pub filter: ast::UsingFilter,
 }
 
 /// `using x;` inside a body/struct: names are looked up as members of `value`.
@@ -426,6 +428,14 @@ impl Compiler {
             let imports = self.scope(sid).imports.len();
             for i in 0..imports {
                 if let Some(module) = self.import_module(sid, i)? {
+                    let hidden = match &self.scope(sid).imports[i].filter {
+                        ast::UsingFilter::Only(names) => names.iter().all(|n| n.name != name),
+                        ast::UsingFilter::Except(names) => names.iter().any(|n| n.name == name),
+                        _ => false,
+                    };
+                    if hidden {
+                        continue;
+                    }
                     let ids = self.module_exports(module, name)?;
                     if !ids.is_empty() && self.collect(&mut found, &ids) {
                         return Ok(Found::Entities(found));
