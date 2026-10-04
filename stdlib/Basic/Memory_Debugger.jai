@@ -6,7 +6,6 @@ MD_Compiler :: #import "Compiler";
 #scope_export
 #add_context inside_memory_debugger := false;
 #add_context __basic_memory_debugger_lock_owned := false;
-#add_context __basic_memory_debugger_hook: (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement: bool) = _md_dispatch;
 #load "Memory_Debugger_Core.jai";
 #scope_export
 
@@ -305,7 +304,6 @@ deinit_memory_debugger :: () {
     }
     md_heaps = null;
     md_deinit(*md_state);
-    context.__basic_memory_debugger_hook = null;
 }
 
 #scope_module
@@ -342,7 +340,6 @@ _md_acquire :: () {
 }
 _md_prepare_state :: () {
     if !md_state.storage_allocator.proc md_state.storage_allocator = Runtime_Support.Context_Base.default_allocator;
-    install_memory_debugger_hook();
 }
 _md_end :: () {
     _md_release();
@@ -385,30 +382,6 @@ _md_compat_end :: (mode: u8) {
     if mode == 1 _md_end();
     else if mode == 3 _md_release();
 }
-_md_retire_backing :: (allocator: Allocator, memory: *void) {
-    if !memory || !_md_begin(allocator) return;
-    defer _md_end();
-    // Startup and debugger-suppressed temporary pages have no history. Their
-    // known runtime retirement differs from a caller freeing unknown memory.
-    record := md_find(*md_state, memory);
-    if !record || !record.allocation.is_live return;
-    _md_diagnose(md_free(*md_state, allocator, memory, context.stack_trace), "retire_temporary_backing", memory);
-}
-_md_dispatch :: (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement: bool) {
-    if is_retirement && mode == .FREE {
-        #if REPLACEMENT_INTERFACE == Memory_Debugger_Interface {
-            _md_retire_backing(allocator, old_memory);
-            return;
-        }
-    }
-    if mode == .ALLOCATE Memory_Debugger.check_alloc(allocator, new_memory, new_size);
-    else if mode == .FREE Memory_Debugger.check_free(allocator, old_memory);
-    else if mode == .RESIZE Memory_Debugger.check_realloc(allocator, old_memory, old_size, new_memory, new_size);
-    else if mode == .CREATE_HEAP Memory_Debugger.check_create_heap(allocator);
-    else if mode == .DESTROY_HEAP Memory_Debugger.check_destroy_heap(allocator);
-}
-#scope_module
-install_memory_debugger_hook :: () { context.__basic_memory_debugger_hook = _md_dispatch; }
 #scope_file
 _md_diagnose :: (status: MD_Status, operation: string, memory: *void) {
     if status == .OK return;

@@ -184,28 +184,14 @@ Context_Base :: struct {
     handling_assertion_failure := false;
     default_allocator :: Allocator.{runtime_support_default_allocator_proc, null};
 }
+// The arena bookkeeping lives in `implementation_data`, owned by Basic's temporary allocator.
 Temporary_Storage :: struct {
     data: *u8;
     size: s64;
-    current_page_bytes_occupied: s64;
     total_bytes_occupied: s64;
     high_water_mark: s64;
     last_set_mark_location: Source_Code_Location;
-    overflow_allocator: Allocator;
-    overflow_pages: *Overflow_Page;
-    original_data: *u8;
-    original_size: s64;
-    Overflow_Page :: struct {
-        next: *Overflow_Page;
-        allocator: Allocator;
-        size: s64;
-    }
-}
-set_initial_data :: (ts: *Temporary_Storage, count: s64, data: *u8) #no_context {
-    ts.original_data = data;
-    ts.original_size = count;
-    ts.data = data;
-    ts.size = count;
+    implementation_data: [256] u8;
 }
 
 runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
@@ -218,29 +204,13 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
     __jai_runtime_init :: (argc: s32, argv: **u8) -> *#Context #c_call {
         initializer_of(#Context)(*first_thread_context);
         __command_line_arguments = .{argc, argv};
-        set_initial_data(*first_thread_temporary_storage, TEMPORARY_STORAGE_SIZE, first_thread_temporary_storage_data.data);
+        first_thread_temporary_storage.data = first_thread_temporary_storage_data.data;
+        first_thread_temporary_storage.size = TEMPORARY_STORAGE_SIZE;
         first_thread_context.temporary_storage = *first_thread_temporary_storage;
         return *first_thread_context;
     }
     #program_export
     __jai_runtime_fini :: (_context: *void) #c_call {
-        state := cast(*#Context) _context;
-        if !state || !state.temporary_storage return;
-        arena := state.temporary_storage;
-        page := arena.overflow_pages;
-        while page {
-            next := page.next;
-            push_context state.* {
-                notify_allocator_event(.FREE, page.allocator, page, 0, null, 0, is_retirement=true);
-            }
-            page.allocator.proc(.FREE, 0, page.size, page, page.allocator.data);
-            page = next;
-        }
-        arena.overflow_pages = null;
-        arena.data = arena.original_data;
-        arena.size = arena.original_size;
-        arena.current_page_bytes_occupied = 0;
-        arena.total_bytes_occupied = 0;
     }
 }
 
@@ -276,23 +246,6 @@ __instrumentation_second :: () {
     }
 }
 
-#scope_module
-Allocator_Event_Observer :: #type (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement: bool);
-#scope_export
-// The optional real procedure lives in synthesized Context, avoiding an import
-// cycle or callback globals duplicated by different runtime module parameters.
-notify_allocator_event :: (mode: Allocator_Mode, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, is_retirement := false) {
-    info := cast(*Type_Info_Struct)type_info(#Context);
-    for member: info.members {
-        if member.name != "__basic_memory_debugger_hook" continue;
-        // The checked cast reifies only a registered descriptor's real Type.
-        // Descriptor addresses themselves are not a nominal identity check.
-        if cast(Type)member.type != Allocator_Event_Observer { debug_break(); return; }
-        stored := cast(*Allocator_Event_Observer)(cast(*u8)*context + member.offset_in_bytes);
-        if stored.* stored.*(mode, allocator, old_memory, old_size, new_memory, new_size, is_retirement);
-        return;
-    }
-}
 #scope_module
 Default_Allocator :: #import "Default_Allocator";
 output_lock: s32;

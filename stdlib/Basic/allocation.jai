@@ -3,10 +3,7 @@ alloc :: (size: s64, allocator := context.allocator) -> *void {
     if size < 0 || !allocator.proc return null;
     memory := allocator.proc(.ALLOCATE, size, 0, null, allocator.data);
     #if MEMORY_DEBUGGER {
-        install_memory_debugger_hook();
         Memory_Debugger.check_alloc(allocator, memory, size);
-    } else {
-        Runtime_Support.notify_allocator_event(.ALLOCATE, allocator, null, 0, memory, size);
     }
     return memory;
 }
@@ -15,10 +12,7 @@ free :: (ptr: *void, allocator := context.allocator) {
     if !ptr return;
     assert(allocator.proc != null, "free requires an allocator");
     #if MEMORY_DEBUGGER {
-        install_memory_debugger_hook();
         Memory_Debugger.check_free(allocator, ptr);
-    } else {
-        Runtime_Support.notify_allocator_event(.FREE, allocator, ptr, 0, null, 0);
     }
     allocator.proc(.FREE, 0, 0, ptr, allocator.data);
 }
@@ -31,10 +25,7 @@ realloc :: (memory: *void, size: s64, old_size: s64, allocator := context.alloca
     if size < 0 || old_size < 0 || !allocator.proc return null;
     replacement := allocator.proc(.RESIZE, size, old_size, memory, allocator.data);
     #if MEMORY_DEBUGGER {
-        install_memory_debugger_hook();
         Memory_Debugger.check_realloc(allocator, memory, old_size, replacement, size);
-    } else {
-        Runtime_Support.notify_allocator_event(.RESIZE, allocator, memory, old_size, replacement, size);
     }
     return replacement;
 }
@@ -44,20 +35,14 @@ create_heap :: (a: Allocator) -> Allocator {
     assert(caps & .CREATE_HEAP, "allocator does not support separate heaps");
     heap: Allocator = .{a.proc, a.proc(.CREATE_HEAP, 0, 0, null, a.data)};
     #if MEMORY_DEBUGGER {
-        install_memory_debugger_hook();
         Memory_Debugger.check_create_heap(heap);
-    } else {
-        Runtime_Support.notify_allocator_event(.CREATE_HEAP, heap, null, 0, null, 0);
     }
     return heap;
 }
 
 destroy_heap :: (b: Allocator) {
     #if MEMORY_DEBUGGER {
-        install_memory_debugger_hook();
         Memory_Debugger.check_destroy_heap(b);
-    } else {
-        Runtime_Support.notify_allocator_event(.DESTROY_HEAP, b, null, 0, null, 0);
     }
     b.proc(.DESTROY_HEAP, 0, 0, null, b.data);
 }
@@ -157,7 +142,7 @@ __temporary_allocator :: temp;
 temporary_allocator :: temp;
 
 Temporary_Storage_State :: struct {
-    top_overflow_page: *Temporary_Storage.Overflow_Page;
+    top_overflow_page: *Temporary_Page;
     current_page_bytes_occupied: s64;
     total_bytes_occupied: s64;
 }
@@ -173,8 +158,9 @@ temporary_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
     }
     if mode == .IS_THIS_YOURS {
         if !storage || !old_memory return null;
-        if temporary_range_contains(storage.original_data, storage.original_size, old_memory) return cast(*void) 1;
-        page := storage.overflow_pages;
+        arena := temporary_arena(storage);
+        if temporary_range_contains(arena.original_data, arena.original_size, old_memory) return cast(*void) 1;
+        page := arena.overflow_pages;
         while page {
             start := cast(*u8) page + ALIGNED_OVERFLOW_PAGE_ALLOCATION;
             if temporary_range_contains(start, page.size, old_memory) return cast(*void) 1;
@@ -192,17 +178,18 @@ temporary_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
         return realloc(old_memory, requested_size, old_size, fallback);
     }
     if mode == .RESIZE && old_memory && requested_size <= align_forward(old_size, 8) return old_memory;
+    arena := temporary_arena(storage);
     size := align_forward(requested_size, 8);
-    if size > storage.size - storage.current_page_bytes_occupied {
+    if size > storage.size - arena.current_page_bytes_occupied {
         if !add_temporary_page(storage, size) return null;
     }
-    result := storage.data + storage.current_page_bytes_occupied;
+    result := storage.data + arena.current_page_bytes_occupied;
     if mode == .RESIZE && old_memory {
         retained := old_size;
         if requested_size < retained retained = requested_size;
         if retained > 0 memcpy(result, old_memory, retained);
     }
-    storage.current_page_bytes_occupied += size;
+    arena.current_page_bytes_occupied += size;
     storage.total_bytes_occupied += size;
     if storage.total_bytes_occupied > storage.high_water_mark storage.high_water_mark = storage.total_bytes_occupied;
     return result;
@@ -211,26 +198,28 @@ temporary_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
 get_temporary_storage_mark :: inline () -> Temporary_Storage_State {
     storage := context.temporary_storage;
     if !storage return .{};
-    return .{storage.overflow_pages, storage.current_page_bytes_occupied, storage.total_bytes_occupied};
+    arena := temporary_arena(storage);
+    return .{arena.overflow_pages, arena.current_page_bytes_occupied, storage.total_bytes_occupied};
 }
 
 set_temporary_storage_mark :: inline (state: Temporary_Storage_State, loc := #caller_location) {
     storage := context.temporary_storage;
     if !storage return;
     if !release_temporary_pages(storage, state.top_overflow_page) return;
+    arena := temporary_arena(storage);
     page := state.top_overflow_page;
     if page {
         storage.data = cast(*u8) page + ALIGNED_OVERFLOW_PAGE_ALLOCATION;
         storage.size = page.size;
     } else {
-        storage.data = storage.original_data;
-        storage.size = storage.original_size;
+        storage.data = arena.original_data;
+        storage.size = arena.original_size;
     }
     assert(state.current_page_bytes_occupied >= 0 && state.current_page_bytes_occupied <= storage.size, "invalid temporary storage mark");
-    storage.current_page_bytes_occupied = state.current_page_bytes_occupied;
+    arena.current_page_bytes_occupied = state.current_page_bytes_occupied;
     storage.total_bytes_occupied = state.total_bytes_occupied;
     storage.last_set_mark_location = loc;
-    #if TEMP_ALLOCATOR_POISON_FREED_MEMORY memset(storage.data + storage.current_page_bytes_occupied, SET_STORAGE_MARK_STAMP, storage.size - storage.current_page_bytes_occupied);
+    #if TEMP_ALLOCATOR_POISON_FREED_MEMORY memset(storage.data + arena.current_page_bytes_occupied, SET_STORAGE_MARK_STAMP, storage.size - arena.current_page_bytes_occupied);
 }
 
 reset_temporary_storage :: () {
@@ -253,51 +242,79 @@ init_temporary_storage :: (ts: *Temporary_Storage, size: s64 = 16384, starting_s
     data := starting_storage;
     if !data && size > 0 data = cast(*u8) alloc(size, allocator);
     if !data && size > 0 return false;
-    ts.original_data = data;
-    ts.original_size = size;
     ts.data = data;
     ts.size = size;
-    ts.overflow_allocator = allocator;
+    arena := temporary_arena(ts);
+    arena.original_data = data;
+    arena.original_size = size;
+    arena.overflow_allocator = allocator;
     return true;
 }
 
 deinit_temporary_storage :: (ts: *Temporary_Storage, allocator := context.allocator, free_original := false) {
     release_temporary_pages(ts, null);
-    if free_original free(ts.original_data, allocator);
+    if free_original free(temporary_arena(ts).original_data, allocator);
     ts.* = .{};
 }
 
 #scope_module
 ALIGNED_OVERFLOW_PAGE_ALLOCATION :: 32;
-temporary_range_contains :: (base: *u8, size: s64, pointer: *void) -> bool {
-    offset: s64 = 0;
-    while offset < size {
-        if base + offset == pointer return true;
-        offset += 1;
-    }
-    return false;
+
+// Temporary_Storage (Runtime_Support) has only the public fields plus an opaque
+// `implementation_data` blob, as in Jai 0.2.029+; the arena bookkeeping inside it belongs to Basic.
+// Overflow pages come straight from the overflow allocator, so the memory debugger never sees them.
+Temporary_Page :: struct {
+    next: *Temporary_Page;
+    allocator: Allocator;
+    size: s64;
 }
+Temporary_Arena :: struct {
+    current_page_bytes_occupied: s64;
+    overflow_allocator: Allocator;
+    overflow_pages: *Temporary_Page;
+    original_data: *u8;
+    original_size: s64;
+}
+#assert size_of(Temporary_Arena) <= size_of(type_of(Temporary_Storage.implementation_data));
+
+temporary_arena :: (ts: *Temporary_Storage) -> *Temporary_Arena {
+    arena := cast(*Temporary_Arena) ts.implementation_data.data;
+    // The runtime only fills `data`/`size`; adopt them as the original page on first use.
+    if !arena.original_data && !arena.overflow_pages {
+        arena.original_data = ts.data;
+        arena.original_size = ts.size;
+    }
+    return arena;
+}
+
+temporary_range_contains :: (base: *u8, size: s64, pointer: *void) -> bool {
+    p := cast(*u8) pointer;
+    return base != null && p >= base && p < base + size;
+}
+
 add_temporary_page :: (storage: *Temporary_Storage, required: s64) -> bool {
-    capacity := storage.original_size;
+    arena := temporary_arena(storage);
+    capacity := arena.original_size;
     if capacity < 16384 capacity = 16384;
     if capacity < required capacity = required;
-    allocator := storage.overflow_allocator;
+    allocator := arena.overflow_allocator;
     if !allocator.proc || allocator.proc == temporary_allocator_proc allocator = Context_Base.default_allocator;
-    base := alloc(capacity + ALIGNED_OVERFLOW_PAGE_ALLOCATION, allocator);
+    base := allocator.proc(.ALLOCATE, capacity + ALIGNED_OVERFLOW_PAGE_ALLOCATION, 0, null, allocator.data);
     if !base return false;
-    page := cast(*Temporary_Storage.Overflow_Page) base;
-    page.next = storage.overflow_pages;
+    page := cast(*Temporary_Page) base;
+    page.next = arena.overflow_pages;
     page.allocator = allocator;
     page.size = capacity;
-    storage.overflow_pages = page;
+    arena.overflow_pages = page;
     storage.data = cast(*u8) base + ALIGNED_OVERFLOW_PAGE_ALLOCATION;
     storage.size = capacity;
-    storage.current_page_bytes_occupied = 0;
+    arena.current_page_bytes_occupied = 0;
     return true;
 }
 
-release_temporary_pages :: (storage: *Temporary_Storage, stop: *Temporary_Storage.Overflow_Page) -> bool {
-    probe := storage.overflow_pages;
+release_temporary_pages :: (storage: *Temporary_Storage, stop: *Temporary_Page) -> bool {
+    arena := temporary_arena(storage);
+    probe := arena.overflow_pages;
     while probe != stop {
         if !probe {
             assert(false, "temporary mark belongs to a different storage arena");
@@ -305,12 +322,12 @@ release_temporary_pages :: (storage: *Temporary_Storage, stop: *Temporary_Storag
         }
         probe = probe.next;
     }
-    while storage.overflow_pages != stop {
-        page := storage.overflow_pages;
-        storage.overflow_pages = page.next;
+    while arena.overflow_pages != stop {
+        page := arena.overflow_pages;
+        arena.overflow_pages = page.next;
         allocator := page.allocator;
         #if TEMP_ALLOCATOR_POISON_FREED_MEMORY memset(cast(*u8) page + ALIGNED_OVERFLOW_PAGE_ALLOCATION, FREE_PAGE_STAMP, page.size);
-        free(page, allocator);
+        allocator.proc(.FREE, 0, page.size + ALIGNED_OVERFLOW_PAGE_ALLOCATION, page, allocator.data);
     }
     return true;
 }
