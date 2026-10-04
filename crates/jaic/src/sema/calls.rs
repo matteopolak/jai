@@ -95,7 +95,7 @@ impl Compiler {
         }
     }
 
-    fn precheck_args(
+    pub(super) fn precheck_args(
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,
@@ -205,6 +205,7 @@ impl Compiler {
         let slots = assign_slots(&header.params, args, span)?;
         let mut proc_id = proc;
         let mut extra = 0;
+        self.refresh_implicit_poly(proc)?;
         if self.proc(proc).is_poly {
             let bindings = self.infer_bindings(f, proc, &header, &slots, args, span)?;
             proc_id = self.instantiate(proc, bindings, span)?;
@@ -423,7 +424,9 @@ impl Compiler {
             let Some(pattern) = &param.ty else {
                 continue;
             };
-            if !procs::has_poly(pattern) {
+            let implicit =
+                !procs::has_poly(pattern) && self.mentions_poly_struct(def_scope, pattern)?;
+            if !procs::has_poly(pattern) && !implicit {
                 continue;
             }
             for (k, arg) in arg_ops.iter().enumerate() {
@@ -461,6 +464,14 @@ impl Compiler {
                     }
                 }
                 self.match_pattern(pattern, ty, &mut bindings, def_scope)?;
+                // Later parameter types may use this one's instance (`item: array.type`).
+                if implicit
+                    && k == 0
+                    && let Some(n) = param.name
+                    && !bindings.iter().any(|(b, _, _)| *b == n.name)
+                {
+                    bindings.push((n.name, Value::Type(ty), TypeId::TYPE));
+                }
             }
         }
         // Defaults of the form `$T` without arguments are an error unless bound elsewhere.
@@ -513,6 +524,23 @@ impl Compiler {
             E::PolyVar {
                 name, ..
             } => bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE),
+            // A bare polymorphic struct matches any of its instances; binding its
+            // name makes the instance signature name the instance.
+            E::Ident(name) => match self.ident_poly_struct(scope, *name)? {
+                Some(ps)
+                    if self.poly_structs[ps.0 as usize]
+                        .instances
+                        .values()
+                        .any(|&t| t == ty) =>
+                {
+                    bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
+                }
+                Some(_) => err(
+                    span,
+                    format!("{} is not an instance of '{name}'", self.types.name(ty)),
+                ),
+                None => Ok(()),
+            },
             E::PolyRestricted {
                 name, ..
             } => bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE),
@@ -1138,8 +1166,18 @@ impl Compiler {
             if param.ty == TypeId::CODE {
                 // Code arguments are passed unevaluated, bound to the caller's scope.
                 let code = match slot {
+                    Slot::Arg(a)
+                        if let Some(Operand::Const {
+                            value: Value::Code(code),
+                            ..
+                        }) = &args[*a].op =>
+                    {
+                        *code
+                    }
                     Slot::Arg(a) => {
-                        let expr = args[*a].expr.clone().unwrap();
+                        let Some(expr) = args[*a].expr.clone() else {
+                            return err(args[*a].span, "Code parameter needs a code argument");
+                        };
                         let id = value::CodeId(self.codes.len() as u32);
                         match &expr.kind {
                             E::Code(c) => self.codes.push(c.clone()),
@@ -1151,6 +1189,17 @@ impl Compiler {
                     _ => return err(span, "Code parameter needs an argument"),
                 };
                 self.add_const(mscope, name, param.span, Value::Code(code), TypeId::CODE);
+                continue;
+            }
+            // A for_expansion's `flags` is a compile-time constant (`#assert(flags == 0)`).
+            if let Slot::Arg(a) = slot
+                && let Some(Operand::Const {
+                    value: value @ Value::Int(_),
+                    ..
+                }) = &args[*a].op
+                && self.preload_type("For_Flags", span).ok() == Some(param.ty)
+            {
+                self.add_const(mscope, name, param.span, value.clone(), param.ty);
                 continue;
             }
             let v = self.param_value(f, &sig, &param, slot, &args, span)?;
@@ -1227,12 +1276,46 @@ impl Compiler {
     // Operator overloading
     // -----------------------------------------------------------------------
 
-    fn operator_candidates(&mut self, scope: ScopeId, text: &str) -> Result<Vec<ProcId>> {
-        let ids = self.lookup(scope, Sym::intern(&format!("operator{text}")))?;
+    /// Scope a struct (or pointer to one) was declared in, for names that
+    /// travel with the type: operator overloads and `for_expansion`.
+    pub fn struct_home_scope(&self, t: TypeId) -> Option<ScopeId> {
+        let t = self.types.pointee(t).unwrap_or(t);
+        let s = self.types.as_struct(self.types.repr_struct(t))?;
+        self.struct_asts.get(&s).map(|src| src.scope)
+    }
+
+    /// Operator overloads visible from the use site, plus those visible where
+    /// the operand struct types were declared (`Bit_Array` brings its `operator []`).
+    fn operator_candidates(
+        &mut self,
+        scope: ScopeId,
+        text: &str,
+        operands: &[TypeId],
+    ) -> Result<Vec<ProcId>> {
+        let name = Sym::intern(&format!("operator{text}"));
+        let mut scopes = vec![scope];
+        for &t in operands {
+            if let Some(home) = self.struct_home_scope(t)
+                && !scopes.contains(&home)
+            {
+                scopes.push(home);
+            }
+        }
         let mut procs = Vec::new();
-        for id in ids {
-            if let scope::Resolved::Proc(p) = self.resolve_entity(id)? {
-                procs.push(p);
+        for sc in scopes {
+            let r = self.lookup(sc, name);
+            for id in r.unwrap_or_default() {
+                let p = match self.resolve_entity(id)? {
+                    scope::Resolved::Proc(p)
+                    | scope::Resolved::Const {
+                        value: Value::Proc(p),
+                        ..
+                    } => p,
+                    _ => continue,
+                };
+                if !procs.contains(&p) {
+                    procs.push(p);
+                }
             }
         }
         Ok(procs)
@@ -1268,7 +1351,7 @@ impl Compiler {
             return Ok(None);
         }
         let text = binop_text(op);
-        let procs = self.operator_candidates(scope, text)?;
+        let procs = self.operator_candidates(scope, text, &[lt, rt])?;
         if procs.is_empty() {
             return Ok(None);
         }
@@ -1355,7 +1438,7 @@ impl Compiler {
             ast::UnOp::BitNot => "~",
             _ => return Ok(None),
         };
-        let procs = self.operator_candidates(scope, text)?;
+        let procs = self.operator_candidates(scope, text, &[operand.ty()])?;
         if procs.is_empty() {
             return Ok(None);
         }
@@ -1384,7 +1467,7 @@ impl Compiler {
         if !matches!(self.types.kind(target), TypeKind::Struct(_)) {
             return Ok(None);
         }
-        let procs = self.operator_candidates(scope, "[]")?;
+        let procs = self.operator_candidates(scope, "[]", &[bt])?;
         if procs.is_empty() {
             return Ok(None);
         }

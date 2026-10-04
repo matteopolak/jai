@@ -12,6 +12,7 @@
 //! global initializers) lowers a thunk procedure and runs it in `interp`.
 pub mod value;
 
+mod bake;
 mod calls;
 mod consteval;
 mod convert;

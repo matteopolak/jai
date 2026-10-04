@@ -294,8 +294,10 @@ impl Compiler {
                 self.check_expr(f, caller, inner, expected)
             }
             E::Bake {
+                callee,
+                args,
                 ..
-            } => err(span, "#bake_arguments is not supported yet"),
+            } => self.check_bake(scope, callee, args, span),
             E::ProcedureOfCall(call) => self.check_procedure_of_call(f, scope, call),
             E::CallerCode => err(span, "#caller_code is not supported yet"),
             E::UnknownDirective {
