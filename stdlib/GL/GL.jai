@@ -1,4 +1,10 @@
 // Independently normalized ABI contract. No reference procedure bodies or binaries.
+#if OS == .WINDOWS {
+    #import "Windows" ;
+}
+#if OS == .LINUX {
+    #import "X11" ;
+}
 #if ENABLE_ALL_EXTENSIONS {
     #load "glad_all.jai" ;
 }

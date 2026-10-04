@@ -1,7 +1,7 @@
 // Independent GLX context creation against the system X11/GL implementations.
 #if OS == .LINUX {
-    glx_create_context :: (window: Window_Type, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false) -> GLXContext, GLXFBConfig, chosen_msaa: s32 {
-        return _glx_create_context_with_msaa(window, major_version, minor_version, compatibility, debug, DEFAULT_MSAA);
+    glx_create_context :: (window: Window_Type, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> GLXContext, GLXFBConfig, chosen_msaa: s32 {
+        return _glx_create_context_with_msaa(window, major_version, minor_version, compatibility, debug, wanted_msaa);
     }
 
     #scope_module

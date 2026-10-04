@@ -106,7 +106,7 @@ join :: (values: .. string, separator := "", before_first := false, after_last :
         if !append(*builder, values[i]) { free_buffers(*builder); return ""; }
     }
     if values.count > 0 && after_last && !append(*builder, separator) { free_buffers(*builder); return ""; }
-    result := builder_to_string(*builder); free_buffers(*builder); return result;
+    result := builder_to_string(*builder, context.allocator); free_buffers(*builder); return result;
 }
 normalize_line_endings :: (s: *string) {
     write := 0; read := 0;

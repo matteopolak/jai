@@ -6,3 +6,4 @@
 #load "mac-context.jai";
 #load "windows-context.jai";
 #load "linux-context.jai";
+#load "context.jai";

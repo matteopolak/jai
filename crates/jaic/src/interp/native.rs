@@ -348,7 +348,113 @@ pub fn call(
     sig: &Sig,
     reenter: &mut Reenter<'_>,
 ) -> Result<Vec<u64>, String> {
+    #[cfg(target_os = "macos")]
+    if let Some(result) = main_thread::forward(addr, args, sig, reenter) {
+        return result;
+    }
     callbacks::with_reenter(reenter, || call_with(addr, args, sig))
+}
+
+/// AppKit only works on the process's main thread, but the interpreter runs on a worker
+/// with a big stack. The driver parks the main thread in `main_thread::serve`, and the
+/// program's primary thread hands every foreign call over to it (the worker waits, so the
+/// interpreter is never running on two threads at once).
+#[cfg(target_os = "macos")]
+pub mod main_thread {
+    use super::*;
+    use std::sync::mpsc::{Receiver, Sender, channel};
+    use std::sync::{Mutex, OnceLock};
+
+    type Job = Box<dyn FnOnce() + Send>;
+
+    struct Route {
+        jobs: Mutex<Sender<Job>>,
+        worker: std::thread::ThreadId,
+    }
+
+    static ROUTE: OnceLock<Route> = OnceLock::new();
+
+    static DISABLED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+    /// Stop forwarding for good (a forked child has no main thread serving jobs).
+    pub fn disable() {
+        DISABLED.store(true, std::sync::atomic::Ordering::SeqCst);
+    }
+
+    thread_local! {
+        static DIRECT: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+    }
+
+    /// Run `f` with foreign calls made on the calling thread. `fork` needs this: the child
+    /// only has the forking thread, so the call must come from the interpreter's own thread.
+    pub fn direct<T>(f: impl FnOnce() -> T) -> T {
+        let before = DIRECT.with(|d| d.replace(true));
+        let result = f();
+        DIRECT.with(|d| d.set(before));
+        result
+    }
+
+    /// Run `body` on a new thread (`stack` bytes) while this thread serves its foreign calls.
+    pub fn serve<T: Send + 'static>(
+        stack: usize,
+        body: impl FnOnce() -> T + Send + 'static,
+    ) -> Option<T> {
+        let (tx, rx): (Sender<Job>, Receiver<Job>) = channel();
+        let worker = std::thread::Builder::new()
+            .stack_size(stack)
+            .spawn(move || {
+                let _ = ROUTE.set(Route {
+                    jobs: Mutex::new(tx),
+                    worker: std::thread::current().id(),
+                });
+                body()
+            });
+        let handle = worker.ok()?;
+        loop {
+            match rx.recv_timeout(std::time::Duration::from_millis(5)) {
+                Ok(job) => job(),
+                Err(_) if handle.is_finished() => break,
+                Err(_) => {}
+            }
+        }
+        handle.join().ok()
+    }
+
+    struct Carry<T>(T);
+    // SAFETY: the sending thread blocks until the job finishes, so the pointers are never
+    // used from two threads at once.
+    unsafe impl<T> Send for Carry<T> {
+    }
+
+    pub(super) fn forward(
+        addr: u64,
+        args: &[u64],
+        sig: &Sig,
+        reenter: &mut Reenter<'_>,
+    ) -> Option<Result<Vec<u64>, String>> {
+        let route = ROUTE.get()?;
+        if DISABLED.load(std::sync::atomic::Ordering::SeqCst) || DIRECT.with(|d| d.get()) {
+            return None;
+        }
+        if std::thread::current().id() != route.worker {
+            return None;
+        }
+        let (done_tx, done_rx) = channel();
+        let reenter: *mut Reenter<'_> = reenter;
+        // SAFETY: this frame waits for the job, so the callback outlives its use.
+        let reenter: *mut Reenter<'static> = unsafe { std::mem::transmute(reenter) };
+        let carried = Carry((args as *const [u64], sig as *const Sig, reenter));
+        let job: Job = Box::new(move || {
+            let carried = carried;
+            let (args, sig, reenter) = carried.0;
+            // SAFETY: see `Carry`; the caller's borrows outlive this job.
+            let (args, sig, reenter) = unsafe { (&*args, &*sig, &mut *reenter) };
+            let result = callbacks::with_reenter(reenter, || call_with(addr, args, sig));
+            let _ = done_tx.send(Carry(result));
+        });
+        route.jobs.lock().ok()?.send(job).ok()?;
+        done_rx.recv().ok().map(|c| c.0)
+    }
 }
 
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
