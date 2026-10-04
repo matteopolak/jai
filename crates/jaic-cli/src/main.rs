@@ -177,9 +177,10 @@ fn build(
     });
     if let Some(level) = cli.opt_level {
         settings.optimization = match level {
-            OptLevel::O0 => "DEBUG",
-            OptLevel::O1 | OptLevel::O2 => "OPTIMIZED",
-            OptLevel::O3 => "VERY_OPTIMIZED",
+            OptLevel::O0 => "O0",
+            OptLevel::O1 => "O1",
+            OptLevel::O2 => "O2",
+            OptLevel::O3 => "O3",
         }
         .into();
     }
@@ -216,8 +217,10 @@ impl OutputBackend for LlvmBackend {
             with_ext(".o")
         };
         let opt_level = match settings.optimization.as_str() {
-            "OPTIMIZED" | "OPTIMIZED_SMALL" => OptLevel::O2,
-            "VERY_OPTIMIZED" | "OPTIMIZED_VERY_SMALL" => OptLevel::O3,
+            // `llvm_options.bitcode_optimization_setting` member names.
+            "O1" => OptLevel::O1,
+            "O2" | "OS" | "OZ" => OptLevel::O2,
+            "O3" => OptLevel::O3,
             _ => OptLevel::O0,
         };
         let options = jaic_llvm::Options {

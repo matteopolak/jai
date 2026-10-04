@@ -53,7 +53,7 @@ pub struct BuildSettings {
     pub import_paths: Option<Vec<PathBuf>>,
     pub os: Option<TargetOs>,
     pub cpu: Option<TargetCpu>,
-    /// `DEBUG`, `VERY_DEBUG`, `OPTIMIZED`, `VERY_OPTIMIZED`... as sent by the module.
+    /// `O0`..`O3`, `OS`, `OZ` (`bitcode_optimization_setting` names).
     pub optimization: String,
     pub additional_linker_arguments: Vec<String>,
     pub temporary_storage_size: Option<i64>,

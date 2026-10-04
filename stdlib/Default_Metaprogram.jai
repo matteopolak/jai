@@ -11,6 +11,7 @@ build :: () {
     options := get_build_options(workspace);
     files: [..] string;
     added: [..] string;
+    import_paths: [..] string;
     program_arguments: [..] string;
     cursor: s64;
     while cursor < args.count {
@@ -23,9 +24,9 @@ build :: () {
         if argument == "-help" || argument == "--help" { Basic.write_string(HELP_STRING); return; }
         if argument == "-release" { set_optimization(*options, .OPTIMIZED); continue; }
         if argument == "-debug" { set_optimization(*options, .DEBUG, true); continue; }
-        if argument == "-x64" { options.backend = "X64"; continue; }
-        if argument == "-llvm" { options.backend = "LLVM"; continue; }
-        if argument == "-no_output" { options.do_output = false; continue; }
+        if argument == "-x64" { options.backend = .X64; continue; }
+        if argument == "-llvm" { options.backend = .LLVM; continue; }
+        if argument == "-no_output" { options.output_type = .NO_OUTPUT; continue; }
         if argument == "-verbose" { verbose = true; continue; }
         if argument == "-no_cwd" continue;
         if argument == "-output" || argument == "-output_path" || argument == "-import_dir" || argument == "-add" {
@@ -34,7 +35,7 @@ build :: () {
             cursor += 1;
             if argument == "-output" options.output_executable_name = value;
             else if argument == "-output_path" options.output_path = value;
-            else if argument == "-import_dir" Basic.array_add(*options.import_path, value);
+            else if argument == "-import_dir" Basic.array_add(*import_paths, value);
             else Basic.array_add(*added, value);
             continue;
         }
@@ -47,6 +48,7 @@ build :: () {
     if files.count == 0 && added.count == 0 { compiler_report("No input source was supplied."); return; }
     if options.output_executable_name.count == 0 && files.count > 0 options.output_executable_name = filename_stem(files[0]);
     options.compile_time_command_line = program_arguments;
+    if import_paths.count > 0 options.import_path = import_paths;
     set_build_options(options, workspace);
     compiler_begin_intercept(workspace);
     for source: files add_build_file(source, workspace);
@@ -59,13 +61,13 @@ message_loop :: (w: Workspace) {
         message := compiler_wait_for_message();
         if !message { compiler_report("The compiler message stream ended without a completion message."); return; }
         if message.workspace != w continue;
-        if message.kind == "DEBUG_DUMP" {
+        if message.kind == .DEBUG_DUMP {
             dump := cast(*Message_Debug_Dump) message;
             Basic.write_string(dump.dump_text);
         }
-        if message.kind == "COMPLETE" {
+        if message.kind == .COMPLETE {
             complete := cast(*Message_Complete) message;
-            if complete.error_code != 0 compiler_set_workspace_status(1, w);
+            if complete.error_code != .NONE compiler_set_workspace_status(.FAILED, w);
             return;
         }
     }

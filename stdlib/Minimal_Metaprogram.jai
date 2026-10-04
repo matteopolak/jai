@@ -12,8 +12,8 @@ build :: () {
     for option: input.compile_time_command_line {
         if option == "-release" set_optimization(*options, .OPTIMIZED);
         else if option == "-debug" set_optimization(*options, .DEBUG);
-        else if option == "-x64" options.backend = "X64";
-        else if option == "-llvm" options.backend = "LLVM";
+        else if option == "-x64" options.backend = .X64;
+        else if option == "-llvm" options.backend = .LLVM;
         else if option == "-no_cwd" continue;
         else if option.count > 0 && option[0] == #char "-" compiler_report("Unknown minimal metaprogram option.");
         else Basic.array_add(*sources, option);
