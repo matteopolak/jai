@@ -295,7 +295,7 @@ set_build_options_dc :: (options: Build_Options_During_Compile, w: Workspace = -
 option_store: [..] Build_Options;
 option_store_ready: [..] bool;
 
-// Slot 1 is the metaprogram's own workspace: its defaults describe the host target and
+// Slot 2 (the target program, as in `jai`) is the metaprogram's own workspace: its defaults describe the host target and
 // carry the command line the compiler was started with.
 ensure_option_slot :: (id: s64) {
     while option_store.count <= id {
@@ -306,7 +306,7 @@ ensure_option_slot :: (id: s64) {
     if option_store_ready[id] return;
     option_store_ready[id] = true;
 
-    if id == 1 {
+    if id == 2 {
         option_store[id].compile_time_command_line = collect_command_line();
     }
 }

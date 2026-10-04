@@ -54,13 +54,29 @@ pub struct Options {
     pub emit_ir: Option<PathBuf>,
 }
 
+/// The host triple. On macOS LLVM's default names the Darwin kernel version, which it maps to
+/// a newer macOS than the SDK the linker targets (a warning per link); objects are built for a
+/// deployment target instead (`MACOSX_DEPLOYMENT_TARGET`, default 11.0, the first arm64 macOS).
+fn host_triple() -> TargetTriple {
+    let default = TargetMachine::get_default_triple();
+    let text = default.as_str().to_string_lossy().into_owned();
+    match text.split_once("-apple-darwin") {
+        Some((arch, _)) => {
+            let version =
+                std::env::var("MACOSX_DEPLOYMENT_TARGET").unwrap_or_else(|_| "11.0".into());
+            TargetTriple::create(&format!("{arch}-apple-macosx{version}"))
+        }
+        None => default,
+    }
+}
+
 /// Translate `program` to a native object file at `path`.
 pub fn emit_object(program: &Program, options: &Options, path: &Path) -> Result<(), String> {
     Target::initialize_all(&InitializationConfig::default());
     let host = options.target.is_none();
     let triple = match &options.target {
         Some(t) => TargetTriple::create(t),
-        None => TargetMachine::get_default_triple(),
+        None => host_triple(),
     };
     let triple_str = triple.as_str().to_string_lossy().into_owned();
     let arch = jaic::abi::Arch::from_triple(&triple_str)
