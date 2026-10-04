@@ -52,7 +52,7 @@ impl Compiler {
                 }
             }
             E::Float(v) => Ok(Operand::Const {
-                ty: TypeId::F32,
+                ty: self.float_literal_type(*v, expr.span),
                 value: Value::Float(*v),
                 untyped: true,
             }),
@@ -1008,6 +1008,31 @@ impl Compiler {
     }
 
     /// Give an untyped constant a concrete type from context (or its default).
+    /// The default type of a float literal: `float32`, unless the literal has more significant
+    /// figures than `float32` holds (`12342345234.0`), which makes it `float64` as in Jai.
+    fn float_literal_type(&self, v: f64, span: Span) -> TypeId {
+        if (v as f32) as f64 == v {
+            return TypeId::F32;
+        }
+        let text = self.sources.snippet(span);
+        if text.starts_with("0h") || text.starts_with("0H") {
+            return TypeId::F32;
+        }
+        let mantissa = text.split(['e', 'E']).next().unwrap_or("");
+        let digits: Vec<u8> = mantissa.bytes().filter(u8::is_ascii_digit).collect();
+        let first = digits.iter().position(|&d| d != b'0');
+        let last = digits.iter().rposition(|&d| d != b'0');
+        let significant = match (first, last) {
+            (Some(a), Some(b)) => b - a + 1,
+            _ => 0,
+        };
+        if significant > 7 {
+            TypeId::F64
+        } else {
+            TypeId::F32
+        }
+    }
+
     pub fn settle_untyped(&self, op: Operand, expected: Option<TypeId>) -> Operand {
         match op {
             Operand::Const {
