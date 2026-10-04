@@ -17,7 +17,7 @@
 - New report column or mode: `Report_Mode`, `create_report`, `propagate_to_zone` in `runtime.jai`, then the text/CSV writers in `reports.jai` and `draw` in `draw.jai`.
 - Instrumentation policy (what gets a zone): `message` in `instrument.jai`.
 - Gotchas:
-  - `jaic` types literal module-argument values as `s64`, so `IMPORT_MODE=.CLIENT` fails to resolve at an importing site (also affects `Codex(USAGE_MODE=...)`, `Simp(render_api=...)`). `module.jai` therefore compares `cast(s64) IMPORT_MODE == 1`; client code written for jaic passes `IMPORT_MODE=1`. The injected import string in `instrument.jai` keeps the original `.CLIENT` spelling.
+  - `.Member` module arguments (`IMPORT_MODE=.CLIENT`) are typechecked against the parameter's type, so `module.jai` compares `IMPORT_MODE == .CLIENT` directly; aggregate and enum-valued arguments keep their type.
   - Files loaded by `#load` need their own `#import`s; file-scope imports of the loading file are not visible (see the imports at the top of `reports.jai`).
   - Float math needs explicit `cast(float)` where the original relied on implicit int-to-float conversion.
 

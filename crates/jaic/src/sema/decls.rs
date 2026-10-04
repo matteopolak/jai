@@ -544,13 +544,24 @@ impl Compiler {
     }
 
     pub fn eval_const_value(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Value> {
+        Ok(self.eval_const_typed(scope, expr)?.0)
+    }
+
+    /// Like `eval_const_value`, also giving the constant's type (`VOID` when it has none).
+    pub fn eval_const_typed(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<(Value, TypeId)> {
         let op = self.eval_const_or_run(scope, expr, None)?;
         match op {
-            Operand::Type(t) => Ok(Value::Type(t)),
+            Operand::Type(t) => Ok((Value::Type(t), TypeId::VOID)),
             Operand::Const {
-                value, ..
-            } => Ok(value),
-            Operand::Procs(p) if p.len() == 1 => Ok(Value::Proc(p[0])),
+                value,
+                ty,
+                ..
+            } => Ok((value, ty)),
+            Operand::Procs(p) if p.len() == 1 => Ok((Value::Proc(p[0]), TypeId::VOID)),
             other => err(
                 expr.span,
                 format!("expected a constant, found {}", self.describe(&other)),

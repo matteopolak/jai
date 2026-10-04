@@ -120,7 +120,7 @@ pub struct Module {
     pub path: Option<PathBuf>,
     /// Names visible module-wide (`#scope_export` and `#scope_module`).
     pub scope: ScopeId,
-    pub params: Vec<(Sym, Value)>,
+    pub params: Vec<(Sym, Value, TypeId)>,
     /// Entities of `#module_parameters` (readable as `Module.NAME`).
     pub param_entities: Vec<scope::EntityId>,
     pub files: Vec<FileId>,
@@ -135,7 +135,7 @@ pub struct Compiler {
     pub files: Vec<FileInfo>,
     file_by_path: HashMap<(PathBuf, ModuleId), usize>,
     pub modules: Vec<Module>,
-    module_cache: HashMap<(PathBuf, Vec<(Sym, Value)>), ModuleId>,
+    module_cache: HashMap<(PathBuf, Vec<(Sym, Value, TypeId)>), ModuleId>,
     pub scopes: Vec<scope::Scope>,
     pub entities: Vec<scope::Entity>,
     pub procs: Vec<procs::ProcInfo>,
