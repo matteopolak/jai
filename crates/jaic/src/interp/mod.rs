@@ -217,6 +217,9 @@ struct Frame {
     size: u64,
 }
 
+/// Size of a `Stack_Trace_Node`.
+const TRACE_NODE_SIZE: u64 = 32;
+
 struct GlobalMem {
     _storage: Box<[u64]>,
     addr: u64,
@@ -246,6 +249,8 @@ pub struct Interp {
     pub made_codes: Vec<(usize, usize)>,
     /// Set in the child process after compile-time code calls `fork`.
     forked_child: bool,
+    /// Stack trace node data per procedure (`Stack_Trace_Procedure_Info`), built on first call.
+    trace_infos: HashMap<FuncId, u64>,
 }
 
 impl Default for Interp {
@@ -273,6 +278,7 @@ impl Interp {
             codes: Vec::new(),
             made_codes: Vec::new(),
             forked_child: false,
+            trace_infos: HashMap::new(),
         }
     }
 
@@ -324,6 +330,34 @@ impl Interp {
             unsafe { std::ptr::write_unaligned((addr + r.offset) as *mut u64, value) };
         }
         Ok(addr)
+    }
+
+    /// Put every resettable global back to its initial contents (compile-time execution
+    /// leaves no state behind in the program that then runs; `#no_reset` opts out).
+    pub fn reset_globals(&mut self, program: &Program) -> Res<()> {
+        for &g in &program.reset_globals {
+            let i = g.0 as usize;
+            let Some(Some(m)) = self.globals.get(i) else {
+                continue;
+            };
+            let addr = m.addr;
+            let global = &program.globals[i];
+            let init = global.init.len().min(global.size as usize);
+            unsafe {
+                std::ptr::write_bytes(addr as *mut u8, 0, global.size as usize);
+                std::ptr::copy_nonoverlapping(global.init.as_ptr(), addr as *mut u8, init);
+            }
+            for r in &global.relocs {
+                let target = match r.target {
+                    ir::RelocTarget::Global(t) => self.global_addr(program, t)?,
+                    ir::RelocTarget::Func(f) => FUNC_TAG | f.0 as u64,
+                    ir::RelocTarget::Foreign(f) => self.foreign_addr(program, f)?,
+                };
+                let value = target.wrapping_add(r.addend as u64);
+                unsafe { std::ptr::write_unaligned((addr + r.offset) as *mut u64, value) };
+            }
+        }
+        Ok(())
     }
 
     /// The global containing `addr`, with the offset into it.
@@ -534,16 +568,101 @@ impl Interp {
         }
         let frame = self.frame(program, id);
         let base = self.sp;
-        if base + frame.size > (self.stack.len() * 8) as u64 {
+        let traced = func.trace.is_some() && program.stack_trace_offset.is_some();
+        let node_size = if traced {
+            TRACE_NODE_SIZE
+        } else {
+            0
+        };
+        if base + frame.size + node_size > (self.stack.len() * 8) as u64 {
             return self.trap("interpreter stack overflow");
         }
-        self.sp += frame.size;
+        self.sp += frame.size + node_size;
         self.depth += 1;
         let stack_base = self.stack.as_mut_ptr() as u64 + base;
+        let saved_loc = self.loc;
+        let pushed = if traced {
+            self.trace_enter(program, id, func, args, stack_base + frame.size)
+        } else {
+            None
+        };
         let result = self.run(program, func, &frame, stack_base, args);
+        if let Some((slot, previous)) = pushed {
+            unsafe { std::ptr::write_unaligned(slot as *mut u64, previous) };
+        }
+        self.loc = saved_loc;
         self.depth -= 1;
         self.sp = base;
         result
+    }
+
+    /// Push this call onto `context.stack_trace`: the node lives in the caller-visible stack
+    /// frame at `node`, and the caller's node learns the line the call was made from.
+    /// Returns the context slot and the previous top, to restore on return.
+    fn trace_enter(
+        &mut self,
+        program: &Program,
+        id: FuncId,
+        func: &ir::Func,
+        args: &[u64],
+        node: u64,
+    ) -> Option<(u64, u64)> {
+        let offset = program.stack_trace_offset?;
+        let info = func.trace.as_ref()?;
+        let context = *args.first()?;
+        if context == 0 || self.compile_time {
+            return None;
+        }
+        let slot = context + offset;
+        let line = self.loc.map_or(0, |(_, line, _)| line);
+        unsafe {
+            let previous = std::ptr::read_unaligned(slot as *const u64);
+            let (mut depth, mut hash) = (1u32, 0xcbf2_9ce4_8422_2325u64);
+            if previous != 0 {
+                std::ptr::write_unaligned((previous + 28) as *mut u32, line);
+                depth = std::ptr::read_unaligned((previous + 24) as *const u32).wrapping_add(1);
+                hash = std::ptr::read_unaligned((previous + 16) as *const u64);
+            }
+            hash = (hash ^ (id.0 as u64) ^ ((line as u64) << 32)).wrapping_mul(0x0100_0000_01b3);
+            let info_addr = self.trace_info(program, id, info);
+            std::ptr::write_unaligned(node as *mut u64, previous);
+            std::ptr::write_unaligned((node + 8) as *mut u64, info_addr);
+            std::ptr::write_unaligned((node + 16) as *mut u64, hash);
+            std::ptr::write_unaligned((node + 24) as *mut u32, depth);
+            std::ptr::write_unaligned((node + 28) as *mut u32, info.line);
+            std::ptr::write_unaligned(slot as *mut u64, node);
+            Some((slot, previous))
+        }
+    }
+
+    /// The `Stack_Trace_Procedure_Info` of a procedure (name, declaration site, address).
+    fn trace_info(&mut self, program: &Program, id: FuncId, info: &ir::TraceInfo) -> u64 {
+        if let Some(&addr) = self.trace_infos.get(&id) {
+            return addr;
+        }
+        fn leak(text: &str) -> u64 {
+            Box::leak(text.as_bytes().to_vec().into_boxed_slice()).as_ptr() as u64
+        }
+        let path = program
+            .file_paths
+            .get(info.file as usize)
+            .map_or("", String::as_str);
+        let words: [u64; 7] = [
+            leak(&info.name),
+            info.name.len() as u64,
+            leak(path),
+            path.len() as u64,
+            info.line as u64,
+            info.col as u64,
+            FUNC_TAG | id.0 as u64,
+        ];
+        // `name` is {count, data}.
+        let layout = [
+            words[1], words[0], words[3], words[2], words[4], words[5], words[6],
+        ];
+        let addr = Box::leak(Box::new(layout)).as_ptr() as u64;
+        self.trace_infos.insert(id, addr);
+        addr
     }
 
     fn run_hook(&mut self, hook: Hook, args: &[u64]) -> Res<Vec<u64>> {

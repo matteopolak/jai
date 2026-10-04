@@ -226,6 +226,34 @@ impl Compiler {
             })
     }
 
+    /// Tell the interpreter where `context.stack_trace` is and how to name source files.
+    fn enable_stack_traces(&mut self, span: Span) {
+        if !self.options.stack_trace {
+            return;
+        }
+        let Ok(context) = self.context_type(span) else {
+            return;
+        };
+        let Ok(Some((path, _))) = self.find_member(context, Sym::intern("stack_trace"), span)
+        else {
+            return;
+        };
+        let offset = path
+            .iter()
+            .map(|step| {
+                if let structs::PathStep::Offset(o) = step {
+                    *o
+                } else {
+                    0
+                }
+            })
+            .sum();
+        self.program.file_paths = (0..self.sources.len())
+            .map(|i| self.sources.get(FileId(i as u32)).path.clone())
+            .collect();
+        self.program.stack_trace_offset = Some(offset);
+    }
+
     /// Run the compiled program in the interpreter; returns its exit code.
     pub fn run_program(&mut self) -> Result<i32> {
         let Some(main) = self.exported_func("main") else {
@@ -239,6 +267,10 @@ impl Compiler {
             );
         };
         self.interp.compile_time = false;
+        self.enable_stack_traces(Span::default());
+        if let Err(trap) = self.interp.reset_globals(&self.program) {
+            return err(Span::default(), format!("runtime error: {}", trap.message));
+        }
         let result = self.interp.call(&self.program, main, &[0, 0]);
         match result {
             Ok(values) => Ok(values.first().map_or(0, |&v| v as u32 as i32)),

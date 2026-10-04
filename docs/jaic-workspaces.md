@@ -11,7 +11,7 @@ strings, set build options, and read compiler messages. Implemented in `crates/j
 
 - `Workspaces` (shared as `Rc<RefCell<..>>`, `SharedWorkspaces`) is created by the embedder with a `BuildEnv`
   (file system, base `Options`, optional `OutputBackend`, command-line args after `-`, a host factory, a report sink).
-  Workspace 1 is the top-level program. `Compiler::attach_workspaces` gives the compile-time interpreter access.
+  Workspace 2 is the top-level program (workspace 1 is reserved, as in `jai`, so the first workspace a metaprogram creates is 3; see `build::TOP_LEVEL_WORKSPACE`). `Compiler::attach_workspaces` gives the compile-time interpreter access.
 - Bodiless `#compiler` procedures named `__jaic_*` are bound to `Hook::Meta(MetaOp, has_context)` in
   `sema/procs.rs::proc_func`; `interp::run_hook` forwards them to `build::call`. ABI: optional context pointer, then
   params (memory types such as `string` by address), then out-addresses for memory-typed results.
@@ -51,7 +51,7 @@ strings, set build options, and read compiler messages. Implemented in `crates/j
   with the IR program and `BuildSettings` (path = `output_path/output_executable_name`). `jaic build` passes an LLVM
   backend (object, `cc` link, `-shared` for DYNAMIC_LIBRARY, `ar` for STATIC_LIBRARY); `jaic run/check` and the
   browser pass none (workspaces are only checked).
-- The top-level program's own settings (workspace 1) decide whether `jaic build` writes it: a metaprogram calling
+- The top-level program's own settings (workspace 2) decide whether `jaic build` writes it: a metaprogram calling
   `set_build_options_dc(.{do_output = false})` produces no output of its own.
 
 ## How to change it

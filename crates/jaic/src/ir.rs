@@ -355,6 +355,18 @@ pub struct Func {
     pub vals: Vec<Ty>,
     /// The first `sig.params.len()` vals are the parameters, in order.
     pub source_file: u32,
+    /// Present for procedures that take a context: what a stack trace node says about it.
+    pub trace: Option<TraceInfo>,
+}
+
+/// Name and declaration site of a procedure, for `context.stack_trace` nodes.
+#[derive(Clone, Debug)]
+pub struct TraceInfo {
+    /// Empty for an anonymous procedure.
+    pub name: String,
+    pub file: u32,
+    pub line: u32,
+    pub col: u32,
 }
 
 impl Func {
@@ -431,6 +443,13 @@ pub struct Program {
     pub globals: Vec<Global>,
     pub foreigns: Vec<Foreign>,
     pub libraries: Vec<Library>,
+    /// Variables whose compile-time state is discarded when the program runs
+    /// (every user global except those declared `#no_reset`).
+    pub reset_globals: Vec<GlobalId>,
+    /// Path of each source file by `FileId`, for stack trace nodes.
+    pub file_paths: Vec<String>,
+    /// Byte offset of `stack_trace` in the Context (`None`: stack traces are off).
+    pub stack_trace_offset: Option<u64>,
 }
 
 impl Program {
@@ -476,6 +495,7 @@ impl Builder {
             }],
             vals,
             source_file: 0,
+            trace: None,
         };
         Self {
             func,

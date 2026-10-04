@@ -36,7 +36,7 @@ impl Compiler {
                 ..
             } => "Type_Info_Float",
             TypeKind::String => "Type_Info_String",
-            TypeKind::Pointer(_) => "Type_Info_Pointer",
+            TypeKind::Pointer(_) | TypeKind::Null => "Type_Info_Pointer",
             TypeKind::Proc(_) => "Type_Info_Procedure",
             TypeKind::Struct(_) => "Type_Info_Struct",
             TypeKind::Array {
@@ -271,6 +271,9 @@ impl Compiler {
                 signed, ..
             } => self.set_field(&mut agg, desc, "signed", Value::Bool(signed), span)?,
             TypeKind::Pointer(to) => self.set_info_ptr(&mut agg, desc, "pointer_to", to, span)?,
+            TypeKind::Null => {
+                self.set_info_ptr(&mut agg, desc, "pointer_to", TypeId::VOID, span)?
+            }
             TypeKind::Array {
                 elem,
                 kind,
