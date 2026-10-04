@@ -15,6 +15,9 @@ impl Compiler {
         scope: ScopeId,
         stmts: &[ast::Stmt],
     ) -> Result<()> {
+        // `#import` in a body is visible to the whole file, also before the statement.
+        let file_scope = self.file_scope_of(scope);
+        self.hoist_body_imports(file_scope, stmts, false);
         // Constants are visible throughout their block, also before their declaration.
         for stmt in stmts {
             if let S::Decl(decl) = &stmt.kind
@@ -261,15 +264,8 @@ impl Compiler {
                             false,
                         );
                     }
-                    None => {
-                        let file_scope = self.file_scope_of(scope);
-                        self.scope_mut(scope).imports.push(scope::ImportEntry {
-                            import: import.clone(),
-                            module: None,
-                            loading: false,
-                            from_scope: file_scope,
-                        });
-                    }
+                    // Hoisted to the file scope by `check_block_stmts`.
+                    None => {}
                 }
                 Ok(())
             }
@@ -291,7 +287,53 @@ impl Compiler {
         }
     }
 
-    fn file_scope_of(&self, mut scope: ScopeId) -> ScopeId {
+    /// Add the unnamed `#import`s among `stmts` (and, when `nested`, inside their plain
+    /// blocks and control flow, but not `#if` branches) to `file_scope`, once each.
+    pub(super) fn hoist_body_imports(
+        &mut self,
+        file_scope: ScopeId,
+        stmts: &[ast::Stmt],
+        nested: bool,
+    ) {
+        for stmt in stmts {
+            match &stmt.kind {
+                S::Import(import) if import.name.is_none() => {
+                    if self.hoisted_imports.insert(import.span) {
+                        self.scope_mut(file_scope).imports.push(scope::ImportEntry {
+                            import: import.clone(),
+                            module: None,
+                            loading: false,
+                            from_scope: file_scope,
+                        });
+                    }
+                }
+                _ if !nested => {}
+                S::Block(block) => self.hoist_body_imports(file_scope, &block.stmts, true),
+                S::If {
+                    then_branch,
+                    else_branch,
+                    ..
+                } => {
+                    self.hoist_body_imports(file_scope, std::slice::from_ref(then_branch), true);
+                    if let Some(e) = else_branch {
+                        self.hoist_body_imports(file_scope, std::slice::from_ref(e), true);
+                    }
+                }
+                S::While {
+                    body, ..
+                }
+                | S::Defer {
+                    body, ..
+                } => self.hoist_body_imports(file_scope, std::slice::from_ref(body), true),
+                S::For(f) => {
+                    self.hoist_body_imports(file_scope, std::slice::from_ref(&f.body), true)
+                }
+                _ => {}
+            }
+        }
+    }
+
+    pub(super) fn file_scope_of(&self, mut scope: ScopeId) -> ScopeId {
         loop {
             let s = self.scope(scope);
             if s.kind == ScopeKind::File {
@@ -369,9 +411,8 @@ impl Compiler {
                                 "cannot declare a variable from an expression with no value",
                             );
                         }
-                        ref o if o.ty() == TypeId::NULL => {
-                            return err(span, "cannot infer a type from null");
-                        }
+                        // `p := null;` declares a `*void`.
+                        ref o if o.ty() == TypeId::NULL => self.types.pointer(TypeId::VOID),
                         other => other.ty(),
                     }
                 }
@@ -391,6 +432,10 @@ impl Compiler {
                 }
                 None if decl.value.is_none() => self.init_default(f, ty, addr, span)?,
                 None => {}
+            }
+            // `_` discards a value: it names no local.
+            if name.name.as_str() == "_" {
+                continue;
             }
             if self.declares_local(target, name.name) {
                 return err(
