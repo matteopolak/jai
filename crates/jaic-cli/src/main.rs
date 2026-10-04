@@ -2,7 +2,6 @@
 use jaic::build::{BuildEnv, BuildSettings, OutputBackend, OutputType, Workspaces};
 use jaic::interp::NativeHost;
 use jaic::sema::{Compiler, FileSystem, NativeFs, Options, TargetOs};
-use jaic_llvm::OptLevel;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::rc::Rc;
@@ -57,8 +56,8 @@ struct Cli {
     file: String,
     imports: Vec<PathBuf>,
     output: Option<PathBuf>,
-    /// `None`: what the metaprogram chose (default: unoptimized).
-    opt_level: Option<OptLevel>,
+    /// `-O0`..`-O3`; `None`: what the metaprogram chose (default: unoptimized).
+    opt_level: Option<&'static str>,
     emit_ir: Option<PathBuf>,
     /// Arguments after `-`, for the metaprogram (`compiler_get_command_line`).
     command_line: Vec<String>,
@@ -102,10 +101,10 @@ fn parse(args: &[String]) -> Option<Cli> {
             "--emit-ir" if command == Command::Build => {
                 cli.emit_ir = Some(PathBuf::from(rest.next()?))
             }
-            "-O0" if command == Command::Build => cli.opt_level = Some(OptLevel::O0),
-            "-O1" if command == Command::Build => cli.opt_level = Some(OptLevel::O1),
-            "-O2" if command == Command::Build => cli.opt_level = Some(OptLevel::O2),
-            "-O3" if command == Command::Build => cli.opt_level = Some(OptLevel::O3),
+            "-O0" if command == Command::Build => cli.opt_level = Some("O0"),
+            "-O1" if command == Command::Build => cli.opt_level = Some("O1"),
+            "-O2" if command == Command::Build => cli.opt_level = Some("O2"),
+            "-O3" if command == Command::Build => cli.opt_level = Some("O3"),
             _ => return None,
         }
     }
@@ -154,11 +153,8 @@ fn run(mut cli: Cli) -> ExitCode {
     options.preload = Some(stdlib.join("Preload.jai"));
     let fs: Rc<dyn FileSystem> = Rc::new(NativeFs);
     // Workspaces created by metaprograms are written only by `build`.
-    let backend: Option<Box<dyn OutputBackend>> = (cli.command == Command::Build).then(|| {
-        Box::new(LlvmBackend {
-            emit_ir: cli.emit_ir.clone(),
-        }) as Box<dyn OutputBackend>
-    });
+    let backend: Option<Box<dyn OutputBackend>> = (cli.command == Command::Build)
+        .then(|| Box::new(native_backend(&cli)) as Box<dyn OutputBackend>);
     let workspaces = Workspaces::new(BuildEnv {
         fs: fs.clone(),
         options: options.clone(),
@@ -227,25 +223,47 @@ fn build(
         PathBuf::from(&settings.output_path).join(name)
     });
     if let Some(level) = cli.opt_level {
-        settings.optimization = match level {
-            OptLevel::O0 => "O0",
-            OptLevel::O1 => "O1",
-            OptLevel::O2 => "O2",
-            OptLevel::O3 => "O3",
-        }
-        .into();
+        settings.optimization = level.into();
     }
+    native_backend(cli).write_output(&compiler.program, &settings, &output)
+}
+
+#[cfg(feature = "llvm")]
+fn native_backend(cli: &Cli) -> LlvmBackend {
     LlvmBackend {
         emit_ir: cli.emit_ir.clone(),
     }
-    .write_output(&compiler.program, &settings, &output)
+}
+
+/// Without the `llvm` feature (an interpreter-only build, e.g. for a host without LLVM
+/// libraries) `build` reports that it cannot write native output.
+#[cfg(not(feature = "llvm"))]
+fn native_backend(_cli: &Cli) -> NoBackend {
+    NoBackend
+}
+
+#[cfg(not(feature = "llvm"))]
+struct NoBackend;
+
+#[cfg(not(feature = "llvm"))]
+impl OutputBackend for NoBackend {
+    fn write_output(
+        &mut self,
+        _program: &jaic::ir::Program,
+        _settings: &BuildSettings,
+        _output: &Path,
+    ) -> Result<(), String> {
+        Err("this jaic was built without the `llvm` feature and cannot write native output".into())
+    }
 }
 
 /// Native output through `jaic-llvm` and the system linker.
+#[cfg(feature = "llvm")]
 struct LlvmBackend {
     emit_ir: Option<PathBuf>,
 }
 
+#[cfg(feature = "llvm")]
 impl OutputBackend for LlvmBackend {
     fn write_output(
         &mut self,
@@ -267,6 +285,7 @@ impl OutputBackend for LlvmBackend {
         } else {
             with_ext(".o")
         };
+        use jaic_llvm::OptLevel;
         let opt_level = match settings.optimization.as_str() {
             // `llvm_options.bitcode_optimization_setting` member names.
             "O1" => OptLevel::O1,

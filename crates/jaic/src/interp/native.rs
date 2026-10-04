@@ -15,6 +15,9 @@
 use crate::abi::{self, Arch, Passing, Piece, PieceTy};
 use crate::ir::{Sig, Ty};
 
+mod callbacks;
+pub use callbacks::{Reenter, callback_addr};
+
 #[derive(Clone)]
 pub struct Library {
     handle: usize,
@@ -131,27 +134,53 @@ pub fn lookup(_lib: Option<&Library>, _symbol: &str) -> Option<u64> {
     None
 }
 
-/// Stack argument slots after the registers (variadic arguments on Apple arm64).
+/// Stack argument slots the call prototype passes after its registers.
 const STACK_SLOTS: usize = 16;
 
 /// Apple's arm64 ABI passes every variadic argument on the stack, in 8-byte slots.
 const VARARGS_ON_STACK: bool = cfg!(all(target_vendor = "apple", target_arch = "aarch64"));
 
-/// The arguments of one call: 8 integer and 8 floating-point registers, then stack slots.
-#[derive(Default)]
+/// x86-64 System V has six integer argument registers; the prototype's last two integer
+/// parameters are then its first two stack slots.
+const X86_64: bool = cfg!(target_arch = "x86_64");
+
+/// Arguments past the registers go to the stack in 8-byte slots, except that Apple's arm64
+/// ABI packs those smaller than 8 bytes, which the prototype cannot express.
+const PACKED_STACK: bool = VARARGS_ON_STACK;
+
+/// The arguments of one call: integer and floating-point registers, then 8-byte stack slots
+/// in argument order.
 struct Regs {
     ints: [u64; 8],
     floats: [u64; 8],
-    stack: [u64; STACK_SLOTS],
+    stack: [u64; STACK_SLOTS + 8],
     ni: usize,
     nf: usize,
     ns: usize,
+    /// Integer registers available to arguments (on x86-64, one fewer when a hidden result
+    /// pointer takes `rdi`).
+    int_regs: usize,
 }
 
 impl Regs {
+    fn new(sret: bool) -> Regs {
+        Regs {
+            ints: [0; 8],
+            floats: [0; 8],
+            stack: [0; STACK_SLOTS + 8],
+            ni: 0,
+            nf: 0,
+            ns: 0,
+            int_regs: if X86_64 {
+                6 - sret as usize
+            } else {
+                8
+            },
+        }
+    }
     fn int(&mut self, v: u64) -> Result<(), String> {
-        if self.ni == 8 {
-            return Err("foreign call has more than 8 integer arguments".into());
+        if self.ni == self.int_regs {
+            return self.stack(v);
         }
         self.ints[self.ni] = v;
         self.ni += 1;
@@ -160,21 +189,49 @@ impl Regs {
     /// An `f32` travels in the low half of the register.
     fn float(&mut self, bits: u64) -> Result<(), String> {
         if self.nf == 8 {
-            return Err("foreign call has more than 8 floating-point arguments".into());
+            return self.stack(bits);
         }
         self.floats[self.nf] = bits;
         self.nf += 1;
         Ok(())
     }
     fn stack(&mut self, v: u64) -> Result<(), String> {
-        if self.ns == STACK_SLOTS {
-            return Err(format!(
-                "foreign call has more than {STACK_SLOTS} variadic arguments"
-            ));
+        // The prototype's integer parameters past `int_regs` are stack slots too.
+        if self.ns == STACK_SLOTS + 8 - self.int_regs {
+            return Err("foreign call has too many stack arguments".into());
         }
         self.stack[self.ns] = v;
         self.ns += 1;
         Ok(())
+    }
+    /// Whether `pieces` of one aggregate all fit the remaining registers: an aggregate goes
+    /// entirely in registers or entirely on the stack.
+    fn fits(&self, pieces: &[Piece]) -> bool {
+        let ints = pieces.iter().filter(|p| p.ty == PieceTy::I64).count();
+        self.ni + ints <= self.int_regs && self.nf + pieces.len() - ints <= 8
+    }
+    /// After an aggregate went to the stack, AAPCS64 gives later arguments of its register
+    /// class no registers either.
+    fn exhaust(&mut self, pieces: &[Piece]) {
+        if X86_64 {
+            return;
+        }
+        if pieces.iter().any(|p| p.ty == PieceTy::I64) {
+            self.ni = self.int_regs;
+        } else {
+            self.nf = 8;
+        }
+    }
+    /// The prototype's arguments: its 8 integer parameters (registers, then stack slots
+    /// when there are fewer integer registers), 8 floats, and `STACK_SLOTS` more slots.
+    fn prototype(&self) -> ([u64; 8], [f64; 8], [u64; STACK_SLOTS]) {
+        let mut ints = [0; 8];
+        let spill = 8 - self.int_regs;
+        ints[..self.int_regs].copy_from_slice(&self.ints[..self.int_regs]);
+        ints[self.int_regs..].copy_from_slice(&self.stack[..spill]);
+        let mut stack = [0; STACK_SLOTS];
+        stack.copy_from_slice(&self.stack[spill..spill + STACK_SLOTS]);
+        (ints, self.floats.map(f64::from_bits), stack)
     }
 }
 
@@ -222,22 +279,16 @@ const SRET_WORDS: usize = 64;
 #[derive(Clone, Copy)]
 struct Sret([u64; SRET_WORDS]);
 
-/// Call `addr` through a prototype taking 8 integer and 8 float registers followed by
-/// `STACK_SLOTS` 8-byte stack slots (with all integer registers taken, further `u64`s go to
-/// the stack in order), returning `R`.
+/// Call `addr` through a prototype taking 8 integer and 8 float parameters followed by
+/// `STACK_SLOTS` 8-byte stack slots, returning `R` (see `Regs::prototype`).
+///
+/// On x86-64 the prototype is variadic after its first parameter: register assignment is the
+/// same, and the caller then also sets `al`, which a variadic callee reads to find its
+/// vector-register arguments.
 ///
 /// SAFETY: `addr` is a C function whose arguments fit the registers and slots in `regs`.
 unsafe fn call_as<R>(addr: u64, regs: &Regs) -> R {
-    #[rustfmt::skip]
-    type Proto<R> = unsafe extern "C" fn(
-        u64, u64, u64, u64, u64, u64, u64, u64,
-        f64, f64, f64, f64, f64, f64, f64, f64,
-        u64, u64, u64, u64, u64, u64, u64, u64,
-        u64, u64, u64, u64, u64, u64, u64, u64,
-    ) -> R;
-    let f: Proto<R> = unsafe { std::mem::transmute::<usize, Proto<R>>(addr as usize) };
-    let [i0, i1, i2, i3, i4, i5, i6, i7] = regs.ints;
-    let [f0, f1, f2, f3, f4, f5, f6, f7] = regs.floats.map(f64::from_bits);
+    let ([i0, i1, i2, i3, i4, i5, i6, i7], [f0, f1, f2, f3, f4, f5, f6, f7], s) = regs.prototype();
     let [
         s0,
         s1,
@@ -255,24 +306,62 @@ unsafe fn call_as<R>(addr: u64, regs: &Regs) -> R {
         s13,
         s14,
         s15,
-    ] = regs.stack;
-    unsafe {
-        f(
-            i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7, s0, s1, s2, s3, s4, s5,
-            s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
-        )
+    ] = s;
+    #[cfg(target_arch = "x86_64")]
+    {
+        type Proto<R> = unsafe extern "C" fn(u64, ...) -> R;
+        let f: Proto<R> = unsafe { std::mem::transmute::<usize, Proto<R>>(addr as usize) };
+        unsafe {
+            f(
+                i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7, s0, s1, s2, s3, s4,
+                s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
+            )
+        }
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        #[rustfmt::skip]
+        type Proto<R> = unsafe extern "C" fn(
+            u64, u64, u64, u64, u64, u64, u64, u64,
+            f64, f64, f64, f64, f64, f64, f64, f64,
+            u64, u64, u64, u64, u64, u64, u64, u64,
+            u64, u64, u64, u64, u64, u64, u64, u64,
+        ) -> R;
+        let f: Proto<R> = unsafe { std::mem::transmute::<usize, Proto<R>>(addr as usize) };
+        unsafe {
+            f(
+                i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7, s0, s1, s2, s3, s4,
+                s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
+            )
+        }
     }
 }
 
 /// Call the C function at `addr`. Arguments are raw IR values classified by `sig`; a
 /// by-value struct argument is a pointer to its memory, and a struct result is written
-/// through the last IR argument (the out-pointer).
+/// through the last IR argument (the out-pointer). Interpreted procedures the callee calls
+/// back (see `callback_addr`) run through `reenter`.
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
+pub fn call(
+    addr: u64,
+    args: &[u64],
+    sig: &Sig,
+    reenter: &mut Reenter<'_>,
+) -> Result<Vec<u64>, String> {
+    callbacks::with_reenter(reenter, || call_with(addr, args, sig))
+}
+
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+fn call_with(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
     let arch = Arch::host().ok_or("native foreign calls are not available on this CPU")?;
     let cabi = sig.c_abi.as_deref();
     let ret_layout = cabi.and_then(|c| c.ret.as_ref());
-    let mut regs = Regs::default();
+    // `#cpp_return_type_is_non_pod` results always use the hidden result pointer.
+    let forced_sret = cabi.is_some_and(|c| c.ret_indirect);
+    let ret_pieces = ret_layout
+        .filter(|_| !forced_sret)
+        .and_then(|l| abi::classify_ret(arch, l));
+    let mut regs = Regs::new(ret_layout.is_some() && ret_pieces.is_none());
     // Copies of large aggregates passed by address; alive until the call returns.
     let mut copies: Vec<Vec<u64>> = Vec::new();
     let mut out_ptr = 0;
@@ -287,7 +376,19 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
         }
         let layout = cabi.and_then(|c| c.params.get(i)).and_then(Option::as_ref);
         let Some(layout) = layout else {
-            if sig.params.get(i).is_some_and(|t| t.is_float()) {
+            let ty = sig.params.get(i).copied().unwrap_or(Ty::I64);
+            let full = if ty.is_float() {
+                regs.nf == 8
+            } else {
+                regs.ni == regs.int_regs
+            };
+            if full && PACKED_STACK && ty.size() < 8 {
+                return Err(
+                    "the interpreter cannot pass arguments smaller than 8 bytes on the stack on this CPU"
+                        .into(),
+                );
+            }
+            if ty.is_float() {
                 regs.float(a)?;
             } else {
                 regs.int(a)?;
@@ -295,6 +396,13 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
             continue;
         };
         match abi::classify_arg(arch, layout) {
+            Passing::Registers(pieces) if !regs.fits(&pieces) => {
+                regs.exhaust(&pieces);
+                // SAFETY: as below.
+                for k in 0..layout.size.div_ceil(8) {
+                    regs.stack(unsafe { read_bytes(a + k * 8, layout.size - k * 8) })?;
+                }
+            }
             Passing::Registers(pieces) => {
                 for p in pieces {
                     // SAFETY: `a` points at the aggregate, `layout.size` bytes long.
@@ -319,11 +427,18 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
                 regs.int(copy.as_ptr() as u64)?;
                 copies.push(copy);
             }
+            // x86-64 `byval`: the aggregate's bytes are copied into the stack argument area.
             Passing::ByVal => {
-                return Err(
-                    "the interpreter cannot pass a struct larger than 16 bytes by value on x86-64"
-                        .into(),
-                );
+                if layout.align > 8 {
+                    return Err(format!(
+                        "the interpreter cannot pass a {}-byte aligned struct by value",
+                        layout.align
+                    ));
+                }
+                for k in 0..layout.size.div_ceil(8) {
+                    // SAFETY: `a` points at the aggregate, `layout.size` bytes long.
+                    regs.stack(unsafe { read_bytes(a + k * 8, layout.size - k * 8) })?;
+                }
             }
         }
     }
@@ -331,13 +446,7 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
         return Ok(scalar_call(addr, &regs, sig.returns.first().copied()));
     };
     // SAFETY (all calls below): the callee's declared C signature matches these registers.
-    // `#cpp_return_type_is_non_pod` results always use the hidden result pointer.
-    let forced_sret = cabi.is_some_and(|c| c.ret_indirect);
-    match if forced_sret {
-        None
-    } else {
-        abi::classify_ret(arch, layout)
-    } {
+    match ret_pieces {
         None => {
             if layout.size as usize > SRET_WORDS * 8 {
                 return Err(format!(
@@ -434,6 +543,11 @@ fn scalar_call(addr: u64, regs: &Regs, ret: Option<Ty>) -> Vec<u64> {
 }
 
 #[cfg(not(any(target_arch = "x86_64", target_arch = "aarch64")))]
-pub fn call(_addr: u64, _args: &[u64], _sig: &Sig) -> Result<Vec<u64>, String> {
+pub fn call(
+    _addr: u64,
+    _args: &[u64],
+    _sig: &Sig,
+    _reenter: &mut Reenter<'_>,
+) -> Result<Vec<u64>, String> {
     Err("native foreign calls are not available on this platform".into())
 }

@@ -37,7 +37,11 @@ cargo run -p jaic-cli -- check file.jai [-I dir] [-os linux|windows|macos]
 cargo run -p jaic-cli -- run file.jai [- metaprogram args]
 ```
 
-Native builds need an independently installed LLVM 22 (see [llvm-backend.md](llvm-backend.md)).
+Native builds need an independently installed LLVM 22 (see [llvm-backend.md](llvm-backend.md)). The
+`jaic-cli` feature `llvm` (on by default) pulls in `jaic-llvm`; `--no-default-features` builds a `jaic`
+that only checks and interprets (`build` reports that it cannot write native output), for hosts or
+targets without LLVM libraries, such as an x86-64 `jaic` run under Rosetta to test the interpreter's
+x86-64 foreign calls.
 
 ## Dependencies
 

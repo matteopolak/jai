@@ -35,14 +35,29 @@ playground. Memory is real host memory; foreign procedures are called natively (
   `jaic::abi` (shared with `jaic-llvm`): scalars and register-sized struct pieces fill the integer/float files
   in order, larger structs are copied and passed by pointer (`Indirect`, arm64). The return shape is chosen
   from the classification (`II`, `IF`, `FI`, `FF`, `FFF`, `FFFF`, or a 512-byte `Sret` buffer) and copied to
-  the IR out-pointer. The prototype ends with 16 8-byte stack slots: on Apple arm64 the variadic
-  arguments of a C variadic call (`Sig::c_varargs`, those after `Sig::c_fixed`) go there, as that ABI
-  requires (elsewhere they travel like fixed arguments). Limits: more than 8 integer or float registers
-  or 16 variadic arguments is an error, and x86-64 `byval` stack structs are not supported.
+  the IR out-pointer. The prototype ends with 16 8-byte stack slots, filled in argument order with what
+  does not fit the registers: arguments past the registers, aggregates that no longer fit (all-or-nothing;
+  on arm64 their register class is then closed, as AAPCS64 says), x86-64 `byval` structs (larger than
+  16 bytes), and on Apple arm64 the variadic arguments of a C variadic call (`Sig::c_varargs`, those after
+  `Sig::c_fixed`). x86-64 has only six integer registers (five with a hidden result pointer), so there the
+  prototype's last integer parameters are its first stack slots (`Regs::prototype`), and the prototype is
+  declared variadic so the caller sets `al` for variadic callees. Limits: about 18 stack words, and on
+  Apple arm64 a stack argument smaller than 8 bytes (that ABI packs them) is an error.
+- **Callbacks from C** (`native/callbacks.rs`): a `#c_call` procedure value passed to a foreign
+  procedure is replaced by a thunk, a real C function with the same prototype that unpacks its arguments
+  the way `call` packs them, runs the procedure through the suspended interpreter (`Reenter`, kept in a
+  thread-local for the duration of the native call) and returns its result in the shape the C caller
+  expects. There is one family of 64 thunks per return shape; slots are assigned per procedure on first
+  use. A trap inside a callback cannot unwind through C, so it prints the error and exits. Not covered:
+  callbacks stored in memory before the call (only arguments are translated), calls from other native
+  threads, variadic callbacks, and on arm64 callbacks that return a struct through a hidden pointer.
 
 ## How to change it
 
-- New return shape or calling convention for native calls: `call_as` and the shape structs in `native.rs`.
+- New return shape or calling convention for native calls: `call_as` and the shape structs in `native.rs`,
+  and the matching `Ret` impl and thunk family in `native/callbacks.rs` (the two must stay mirror images).
+- Testing the x86-64 paths on an arm64 Mac: build an interpreter-only `jaic` (`cargo build -p jaic-cli
+  --no-default-features --target x86_64-apple-darwin`, no LLVM needed) and run it with `arch -x86_64`.
 - New host-provided foreign procedures: `Host::foreign` implementations (`SandboxHost` for the browser).
 - New compiler primitives: a `MetaOp` in `build.rs` plus a bodiless `#compiler` declaration in
   `stdlib/Compiler/records.jai`.

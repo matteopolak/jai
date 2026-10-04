@@ -522,15 +522,46 @@ impl Interp {
                 "foreign procedure '{symbol}' is not available here"
             ));
         }
-        let result = self.call_native(addr, args, sig)?;
+        let result = self.call_native(program, addr, args, sig)?;
         if &*symbol == "fork" && result.first() == Some(&0) {
             self.forked_child = true;
         }
         Ok(result)
     }
 
-    fn call_native(&mut self, addr: u64, args: &[u64], sig: &ir::Sig) -> Res<Vec<u64>> {
-        native::call(addr, args, sig).map_err(|m| Trap {
+    fn call_native(
+        &mut self,
+        program: &Program,
+        addr: u64,
+        args: &[u64],
+        sig: &ir::Sig,
+    ) -> Res<Vec<u64>> {
+        // `#c_call` procedures handed to C become native thunks that call back in here.
+        let mut argv = args.to_vec();
+        for v in &mut argv {
+            if *v & TAG_MASK != FUNC_TAG {
+                continue;
+            }
+            let id = FuncId((*v & !TAG_MASK) as u32);
+            let Some(func) = program.funcs.get(id.0 as usize).and_then(Option::as_ref) else {
+                continue;
+            };
+            if func.sig.conv == ir::Conv::C {
+                let identity = program as *const Program as u64;
+                *v = native::callback_addr(identity, id, &func.sig).map_err(|m| Trap {
+                    message: m,
+                    loc: self.loc,
+                })?;
+            }
+        }
+        let me: *mut Interp = self;
+        let mut reenter = |func: FuncId, args: &[u64]| {
+            // SAFETY: this interpreter is suspended in the native call below; C calls back on
+            // this thread before that call returns.
+            let interp = unsafe { &mut *me };
+            interp.exec(program, func, args).map_err(|t| t.message)
+        };
+        native::call(addr, &argv, sig, &mut reenter).map_err(|m| Trap {
             message: m,
             loc: self.loc,
         })
@@ -927,7 +958,7 @@ impl Interp {
                             _ if addr < 4096 => {
                                 return self.trap("call through a null procedure pointer");
                             }
-                            _ => self.call_native(addr, &argv, sig)?,
+                            _ => self.call_native(program, addr, &argv, sig)?,
                         }
                     }
                 };
@@ -941,8 +972,6 @@ impl Interp {
                 args,
             } => {
                 let argv: Vec<u64> = args.iter().map(|a| vals[a.0 as usize]).collect();
-                let tys: Vec<Ty> = args.iter().map(|_| Ty::I64).collect();
-                let _ = tys;
                 let out = self.intrinsic(*op, &argv, results.first().map(|_| ()).is_some())?;
                 for (r, v) in results.iter().zip(out) {
                     vals[r.0 as usize] = v;
