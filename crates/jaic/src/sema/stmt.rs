@@ -2046,6 +2046,29 @@ impl Compiler {
     ) -> Result<()> {
         let frame: MacroFrame = f.macros[frame_index].clone();
         let body = frame.for_body.clone().unwrap();
+        // A for_expansion that forwards its body (`for_expansion(*inner, body, flags)`):
+        // the macro inserting it declared `it` / `it_index` in its own caller's scope.
+        let mut borrowed = Vec::new();
+        if frame_index + 1 < f.macros.len() {
+            let inserter = f.macros.last().unwrap().caller_scope;
+            for name in ["it", "it_index"] {
+                let name = Sym::intern(name);
+                let missing = self
+                    .scope(body.scope)
+                    .names
+                    .get(&name)
+                    .is_none_or(|ids| ids.is_empty());
+                let found = self
+                    .scope(inserter)
+                    .names
+                    .get(&name)
+                    .and_then(|ids| ids.last().copied());
+                if missing && let Some(id) = found {
+                    let kind = self.entity(id).kind.clone();
+                    borrowed.push((name, self.add_entity(body.scope, name, span, kind, false)));
+                }
+            }
+        }
         // Alias custom iterator names to the macro's `it` / `it_index`. The renamed
         // originals are hidden from the body, so an enclosing `it_index` stays visible.
         let mut hidden = Vec::new();
@@ -2090,6 +2113,11 @@ impl Compiler {
                 .entry(original)
                 .or_default()
                 .push(id);
+        }
+        for (name, id) in borrowed {
+            if let Some(names) = self.scope_mut(body.scope).names.get_mut(&name) {
+                names.retain(|&e| e != id);
+            }
         }
         f.insert_replacements.pop();
         f.macros.extend(saved);

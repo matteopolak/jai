@@ -1,81 +1,58 @@
 # Jai compiler handoff
 
-## Current checkpoint
+## Rules
 
-The repository is on `main` at commit `13ae2fa` (`Stabilize compiler integration checkpoint`), pushed to `origin/main`. The working tree was clean after the push. This is a substantial integration checkpoint, not a finished compiler: Rust crates compile, but the full test suite is not green and standard-library/upstream project acceptance remains incomplete.
+- Never run binaries under `reference/` (the reference Jai distribution). Reading its `.jai` modules,
+  `how_to/` and `CHANGELOG.txt` to learn semantics is fine; never copy its text into `stdlib/`.
+- Keep `docs/` current (kebab-case files; What it is / How it works / How to change it / Configuration /
+  Dependencies; index in `docs/README.md`).
+- Commit coherent progress to `main` and push, without attribution lines. Format with
+  `rustup run nightly-2026-08-29 cargo fmt --all`.
 
-Do not run any supplied reference binaries. The user explicitly asked that they remain unexecuted unless they first review static-analysis findings and approve execution. Reference source files may be inspected as compatibility inputs.
+## What is where
 
-## What is in the repository
+- `crates/jaic`: the compiler — `parser/`, `sema/` (checking and lowering to IR), `interp/` (IR interpreter,
+  used for `#run`, metaprograms and `jaic run`), `build.rs` (workspaces and compiler messages for
+  metaprograms). `crates/jaic-cli`: the `jaic` binary. `crates/jai-wasm` + `web/scripting-runtime`: the
+  browser playground. The other `crates/jai-*` are an older architecture kept for reference; new work goes
+  into `jaic`.
+- `stdlib/`: our independently written standard library; `prelude/`: runtime type definitions.
+- `tests/stdlib/*.jai`: regression programs, each must exit 0 (except `getrect-rh-negative-control.jai`,
+  a negative control that must fail).
+- `corpus/upstream/` (gitignored): the open-source Jai projects we compile.
 
-The workspace separates the lexer/parser, source and type identities, modules, semantic analysis, typed IR, VM, LLVM code generation, compiler driver, native CLI, runtime, platform services, LSP, Wasm bridge, and benchmarks into crates under `crates/`. Start with [README.md](README.md), [docs/README.md](docs/README.md), [compiler architecture](docs/compiler-architecture.md), and [completion plan](docs/completion-plan.md).
-
-The repository also includes an independently authored standard library in `stdlib/`, examples, local reference inputs in `reference/`, pinned upstream project inputs, fuzz targets, and several benchmark suites. The reference standard library was not copied as the implementation; however, the included authored standard library and requested upstream projects have not all passed compilation or runtime acceptance.
-
-The root `docs/` folder contains subsystem design and change guides. Update the relevant feature document and `docs/README.md` when making meaningful changes. Rust formatting uses the pinned nightly toolchain; run `rustup run nightly-2026-08-29 cargo fmt --all -- --check`.
-
-## Verification at this checkpoint
-
-Formatting and `git diff --check` passed before commit. The full workspace test command compiled the crates and ran all test targets without fail-fast:
+## Commands
 
 ```sh
-env RUSTC_WRAPPER= CARGO_INCREMENTAL=0 \
-  CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai \
-  LLVM_SYS_221_PREFIX=/opt/homebrew/opt/llvm \
-  rustup run nightly-2026-08-29 cargo test --workspace --no-fail-fast --locked -j 1
+env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo build -q -p jaic-cli
+/Volumes/CodexBuilds/targets/jai-dev/debug/jaic run|check|build file.jai [-I dir] [-os linux|windows|macos] [- metaprogram args]
+env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo test -q -p jaic -p jai-wasm
+python3 tools/jaic-sweep.py corpus stdlib upstream --timeout 900   # expect only the negative control to fail
+env RUSTC_WRAPPER= /opt/homebrew/bin/python3.14 tools/build_scripting_wasm.py --release   # needs python >= 3.11
+node tools/check_playground_worker.mjs; node tools/check_browser_release.mjs
+python3 tools/openjai-tests.py   # open-jai expectation harness (open-jai is a separate dialect)
 ```
 
-It exited with 39 failing test targets. Many other targets passed, including the native CLI, large sections of codegen and VM behavior, and the LSP protocol/source/stdio tests. The Wasm crate's two tests passed, but a separate browser acceptance run was not performed. Do not treat those passes as proof that all requested features work.
-
-The failing targets reported at the end of that run were:
-
-```text
-jai-codegen: loop_control_replacements, native_global_reachability,
-  native_pointer_constants, operator_overloads, parameterized_records,
-  procedure_values, source_run, standalone_using, storage_alignment,
-  storage_bitcasts_ir, typed_record_constants
-jai-driver: lib, file_abi, heap_abi, module-parameter-discovery, process_fcntl
-jai-modules: lib
-jai-sema: lib, any_values, context-bootstrap, context-default-readiness,
-  emitted-debug-sources, local-record-conditions, operator-overloads,
-  ordered-record-source-metadata, parameterized-records,
-  promoted-record-literals, reflection, source-external-data, source-run,
-  stallable_runs, storage_bitcasts, type-restriction-facts,
-  using-prefix-environments
-jai-syntax: lib, external-data, inline-storage-boundaries, project_source_forms
-jai-vm: lib
-```
-
-That test run also printed a high number of unused/dead-code warnings in `jai-sema` and several neighboring crates. The tree contains new or partially connected modules, so check whether an item is deliberately awaiting integration before adding more suppression or duplicate APIs.
-
-## Highest-value next steps
-
-1. Re-run the full test command on the committed tree and save its complete output to a temporary log so all diagnostics can be triaged together. Use the T7 target directory if it is mounted; otherwise select a writable target and avoid the shared target used by other projects.
-2. Group failures by root cause before editing. Several failures share clear themes: fixture/bootstrap code expects `TEMPORARY_STORAGE_SIZE`; record placement and promoted-literal behavior disagree across sema, IR, VM and codegen; and source `#run`/workspace effect scheduling still has unresolved suspension and publication cases. Other failures concern type/member lookup, aliases, alignment dependencies, and pointer provenance. Fix one cross-crate contract at a time and run its focused tests, then repeat the complete no-fail-fast suite.
-3. Keep the CLI and host-services boundary honest. A prior working-tree attempt wired `--host-file-*` options to a nonexistent `WorkspaceScheduler::with_host_services` method; that CLI wiring was removed before commit. `jai-driver/src/platform_session.rs` and related pending tests exist, but do not claim they are integrated into the native CLI or browser virtual filesystem until the scheduler, source provider, suspension lifecycle, and both callers are connected and tested.
-4. Check the public CI workflow on this pushed commit. It runs format, clippy, no-fail-fast tests, policy checks, benchmark smoke checks, and a separate LLVM-free Wasm build/execution job. The workflow deliberately reports all gate outcomes; local test success alone does not establish hosted status.
-5. Resume acceptance in compiler stages: tokenize recent upstream projects, parse them, typecheck them, then execute/compile real programs. Keep the project's compatibility matrix and standard-library coverage docs tied to measured results. The README and [completion plan](docs/completion-plan.md) already state that full library and project acceptance is pending.
-6. Do not spend time on isolated micro-optimizations until correctness reaches the relevant stage. Benchmarks are present; use them after focused correctness fixes to detect regressions.
-
-## Notes for future integrations
-
-- The user's design preference is typed boundaries and enums over stringly typed protocols, with “parse, don't validate” as a guiding principle. Keep compiler-independent core logic free of operating-system assumptions; platform access should pass through explicit host/source-provider interfaces that native and browser implementations can provide.
-- The browser playground should have a file tree on the left, a capable Jai editor, and the Run button at the editor's upper-right. The user specifically asked to move Run out of the terminal. The portfolio integration is a separate repository/task; the Jai repository's Wasm and LSP outputs must be verified before updating its asset pointers.
-- User preference for delegation: reuse existing agents where possible and prefer Luna agents for routine work; use Sol for harder tasks. The previous team had many long-lived or failed agents. Check agent status and ownership before starting more work, and treat frozen packets under `artifacts/agent-packets/` as uncompiled proposals unless a manifest proves they apply to the current source hashes and their integration tests pass.
-- The user asked for regular commits and pushes. Commit coherent, reviewable progress to `main` and verify `git status -sb` and the remote ref afterward.
-
+Vk-Engine (use a `--release` build; ~45 s per module):
+`cd corpus/upstream/ostef--Vk-Engine && jaic check Build.jai -I Modules -I Source -os linux - Core|Renderer|Game|Editor`.
 
 ## Status 2026-10-04
 
-- focus-editor `first.jai` passes `jaic check` (case `focus-build` in `tools/upstream-cases.json`); sweep 143/144 (only the expected negative control fails).
-- The_Way_to_Jai: 42 of 315 example files fail `jaic check`. Some are expected: Windows-only code, missing raylib/glfw native libraries, intentional `#assert` failures, `.build/` artifacts. Real gaps found:
-  - void values: `print` of a `void` variable, `<< ptr` on `*void`
-  - `make_leak_report` should return `Leak_Report` only; the `-> string` overloads in `stdlib/Basic` are non-standard
-  - `#procedure_of_call` with runtime locals
-  - `Program_Print.print_expression`, `compiler_get_code`, `add_global_data`
-  - `#modify` require (26.32), a parse error in 26.5, `#insert,scope` (26.22/26.39)
-  - GetRect `ui_per_frame_update` on macOS (NSWindow)
-  - `Sound_Player`
-  - Mail `min` without a context
-  - a backtick name outside a macro (31.2)
-- Known open bug: forwarding a `for_expansion` body Code to another macro (`for_expansion(*a, body, flags)`) inserts nothing.
+- **focus-editor**: `first.jai` checks.
+- **Vk-Engine** (+ Linalg, Jolt-Jai): Core, Renderer, Game and Editor compile and their build metaprograms
+  complete. Remaining: the native `libImGui.so` / `libJoltC.so` (C++ builds) and bindings generation.
+- **jaison**: tests and example run. **sgpu**: all examples check (host, linux, windows).
+  **Jails**: server and build check; `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
+- **The_Way_to_Jai**: 26 of 315 examples fail `check`; mostly Windows-only APIs, SIMD, missing native
+  libraries, intentional `#assert` failures, and an older GetRect `dropdown` API (51.2).
+- **Browser**: wasm build and both checks pass; 93 of 120 stdlib tests run in the playground, the rest
+  need threads, native libraries or on-disk modules.
+
+## Open work
+
+- `Bindings_Generator` (libclang-based; libclang may be installed with Homebrew `llvm`).
+- GetRect / GetRect_LeftHanded share most code; deduplicate.
+- Retire the old `crates/jai-*` crates once nothing depends on them; clean up `.claude/worktrees`.
+- Typechecking does not wait across procedures: a body using a name another body declares through
+  `#insert,scope(...)` fails instead of waiting (only top-level items and `#placeholder`s wait).
+- Float printing details (TTWJ 5.2 / 6.5) are unverified.
