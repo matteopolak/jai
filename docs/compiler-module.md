@@ -74,7 +74,7 @@ Messages live in module-level records (one per kind), so a message and the strin
 
 ### Syntax trees and unsupported APIs
 
-Messages and syntax trees are built from compiler records (`records.jai`, see [compiler-records.md](compiler-records.md)): FILE, IMPORT and TYPECHECKED messages, `compiler_get_nodes` and `compiler_modify_procedure` work. `add_build_string(text, w, message)` with a FILE or IMPORT message adds the text to that message's module; other `code`/`message` scoping goes to the workspace's top level. These keep the public signatures but call `unsupported()`, which issues a fatal `__jaic_report` only when invoked: `compiler_get_code`, `code_to_string`, `print_expression`, `get_root_type`, `compiler_set_type_info_flags`, `compiler_make_procedure_live`, `compiler_get_struct_location`, `compiler_report_errors_for_*`, `compiler_set_memory_breakpoint`, `compiler_add_library_search_directory`, `compiler_get_base_path`, `remap_import`, `provide_import`, `add_global_data`, `add_data_segment`.
+Messages and syntax trees are built from compiler records (`records.jai`, see [compiler-records.md](compiler-records.md)): FILE, IMPORT and TYPECHECKED messages, `compiler_get_nodes`, `compiler_get_code`, `code_to_string`, `print_expression` (through `Program_Print`), `add_global_data` and `compiler_modify_procedure` work. `add_build_string(text, w, message)` with a FILE or IMPORT message adds the text to that message's module; other `code`/`message` scoping goes to the workspace's top level. These keep the public signatures but call `unsupported()`, which issues a fatal `__jaic_report` only when invoked: `get_root_type`, `compiler_set_type_info_flags`, `compiler_make_procedure_live`, `compiler_get_struct_location`, `compiler_report_errors_for_*`, `compiler_set_memory_breakpoint`, `compiler_add_library_search_directory`, `compiler_get_base_path`, `remap_import`, `provide_import`, `add_data_segment`.
 
 `get_name(w)` is answered from names remembered by `compiler_create_workspace`. `get_runtime_info` / `get_type_table` read the `#elsewhere` `__runtime_info` symbol like the original API.
 
@@ -88,7 +88,7 @@ Messages and syntax trees are built from compiler records (`records.jai`, see [c
 
 ## Configuration
 
-No environment variables. Behaviour depends on the build target constants `OS` and `CPU` (default `os_target` / `cpu_target`) and on `MACHINE_OPTIONS_SIZE` (size of `machine_options`, a layout placeholder). Command-line arguments come from the compiler through `__jaic_command_line_count` / `__jaic_command_line_arg`.
+No environment variables. Behaviour depends on the build target constants `OS` and `CPU` (default `os_target` / `cpu_target`) and on `MACHINE_OPTIONS_SIZE` (size of `machine_options`, a layout placeholder). `jaic check file.jai -os linux|windows|macos` sets the target `OS` (for checking code written for another platform; compile-time code still runs on the host). Command-line arguments come from the compiler through `__jaic_command_line_count` / `__jaic_command_line_arg`.
 
 ## Dependencies
 

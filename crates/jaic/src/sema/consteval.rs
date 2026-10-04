@@ -553,9 +553,12 @@ impl Compiler {
                 let p = self.interp.read_u64(addr);
                 self.type_at(p, span).map(Value::Type)
             }
-            TypeKind::Code => Ok(Value::Code(
-                value::CodeId(self.interp.read_u64(addr) as u32),
-            )),
+            TypeKind::Code => {
+                self.adopt_made_codes();
+                Ok(Value::Code(
+                    value::CodeId(self.interp.read_u64(addr) as u32),
+                ))
+            }
             TypeKind::String => {
                 let count = self.interp.read_u64(addr) as usize;
                 let data = self.interp.read_u64(addr + 8);

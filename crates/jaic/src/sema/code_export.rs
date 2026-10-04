@@ -1185,7 +1185,7 @@ impl Exporter<'_> {
             .c
             .as_deref()
             .and_then(|c| c.local_decl_types.get(&d.id).copied());
-        self.decl(d, name, ty, None)
+        self.decl(d, name, ty, None, true)
     }
 
     fn decl(
@@ -1194,6 +1194,7 @@ impl Exporter<'_> {
         name: Sym,
         ty: Option<TypeId>,
         expression: Option<i64>,
+        statement: bool,
     ) -> i64 {
         let type_inst = d.ty.as_ref().map_or(0, |t| self.type_inst(t));
         let expression = match expression {
@@ -1226,6 +1227,9 @@ impl Exporter<'_> {
             .ptr("expression", expression)
             .int("flags", flags)
             .refs("notes", notes);
+        if statement {
+            rec.int("node_flags", 0x4); // ALLOWED_BY_CONTEXT
+        }
         self.add(rec)
     }
 
@@ -1271,7 +1275,7 @@ impl Exporter<'_> {
             } => (Some(*ty), None),
             _ => (None, None),
         };
-        self.decl(d, name, ty, expression)
+        self.decl(d, name, ty, expression, false)
     }
 
     /// A struct literal. Without a concrete type (polymorphic structs, anonymous
@@ -1346,7 +1350,7 @@ impl Exporter<'_> {
                 span: param.span,
             };
             let name = param.name.map_or(Sym::intern(""), |n| n.name);
-            arguments.push(self.decl(&decl, name, ty, None));
+            arguments.push(self.decl(&decl, name, ty, None, false));
         }
         let mut returns = Vec::new();
         for (i, ret) in h.returns.iter().enumerate() {
@@ -1371,7 +1375,7 @@ impl Exporter<'_> {
                 span: ret.span,
             };
             let name = ret.name.map_or(Sym::intern(""), |n| n.name);
-            returns.push(self.decl(&decl, name, ty, None));
+            returns.push(self.decl(&decl, name, ty, None, false));
         }
         let mut notes: Vec<&ast::Note> = h.notes.iter().collect();
         for n in decl_notes {
