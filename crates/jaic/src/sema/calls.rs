@@ -360,7 +360,6 @@ impl Compiler {
                     | TypeKind::String
                     | TypeKind::Type
             );
-            let enum_ = matches!(self.types.kind(param), TypeKind::Enum(_));
             let fits = match arg.expr.as_ref().map(|e| &e.kind) {
                 // `.{...}` and `.[...]` build aggregates, `.NAME` picks an enum member.
                 Some(
@@ -371,7 +370,10 @@ impl Compiler {
                         ..
                     },
                 ) => !scalar,
-                Some(E::InferredMember(_)) => !scalar || enum_,
+                Some(E::InferredMember(_)) => matches!(
+                    self.types.kind(param),
+                    TypeKind::Enum(_) | TypeKind::Struct(_)
+                ),
                 _ => true,
             };
             if !fits {
@@ -443,13 +445,12 @@ impl Compiler {
                         format!("constant {v} does not fit in {}", self.types.name(param)),
                     );
                 }
+                // Jai lets an untyped integer constant (`#char ","`, `3`) stand for an
+                // enum value; rank it below every ordinary integer conversion.
                 if matches!(self.types.kind(param), TypeKind::Enum(_))
                     && !self.types.is_loose_enum(param)
                 {
-                    return err(
-                        arg.span,
-                        format!("an integer cannot be passed as {}", self.types.name(param)),
-                    );
+                    return Ok(convert::SUBTYPE);
                 }
                 return Ok(if param == TypeId::S64 {
                     convert::EXACT
@@ -1317,6 +1318,11 @@ impl Compiler {
             }
             BuiltinProc::TypeOf => {
                 if let Some(t) = self.type_field_type(scope, &arg.value)? {
+                    return Ok(Operand::Type(t));
+                }
+                // Only the type is needed, so an enclosing procedure's local is fine
+                // (`#run f(type_of(local))` inside a body).
+                if let Some(t) = self.outer_local_type(scope, &arg.value)? {
                     return Ok(Operand::Type(t));
                 }
                 let op = self.check_expr_no_emit(scope, &arg.value)?;

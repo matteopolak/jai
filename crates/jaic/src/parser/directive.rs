@@ -102,6 +102,18 @@ impl Parser<'_> {
             .collect();
         let body = if self.at(P::LBrace) {
             RunBody::Block(self.parse_block()?)
+        } else if self.at(P::Arrow) {
+            // `#run -> T { ... }`: run an anonymous procedure and use its result.
+            let proc = self.parse_proc_expr(Default::default())?;
+            let span = proc.span;
+            RunBody::Expr(mk(
+                ExprKind::Call {
+                    callee: Box::new(proc),
+                    args: Vec::new(),
+                    hint: crate::ast::CallHint::None,
+                },
+                span,
+            ))
         } else if allow_stmt {
             match self.parse_simple_stmt()? {
                 crate::ast::Stmt {

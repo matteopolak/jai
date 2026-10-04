@@ -632,6 +632,16 @@ impl Compiler {
                 addr,
             });
         }
+        // `xx bytes` where `bytes: [N] u8` / `[..] u8`: view the array, then as a string.
+        if to == TypeId::STRING
+            && let TypeKind::Array {
+                elem: TypeId::U8, ..
+            } = self.types.kind(fr)
+        {
+            let view = self.types.array(TypeId::U8, ArrayKind::View);
+            let op = self.explicit_cast(f, op, view, flags, span)?;
+            return self.explicit_cast(f, op, to, flags, span);
+        }
         // `cast,force` reinterprets an aggregate as another of the same size.
         if flags.force
             && self.ir_ty(fr).is_none()
