@@ -346,7 +346,27 @@ impl Compiler {
                 };
                 Ok(Operand::bool(exists))
             }
-            E::Bytes(e) => self.check_expr(f, scope, e, expected),
+            E::Bytes(e) => {
+                // Raw machine code cannot run here; the debug-trap encodings (x64 `int3`,
+                // arm64 `brk #0`) still trap.
+                if let E::ArrayLit {
+                    elems, ..
+                } = &e.kind
+                {
+                    let bytes: Vec<u128> = elems
+                        .iter()
+                        .filter_map(|el| match el.kind {
+                            E::Int(v) => Some(v),
+                            _ => None,
+                        })
+                        .collect();
+                    if bytes == [0xCC] || bytes == [0x20, 0x00, 0x20, 0xD4] {
+                        f.b.intrinsic(ir::Intrinsic::DebugBreak, Vec::new(), &[]);
+                        return Ok(Operand::Void);
+                    }
+                }
+                self.check_expr(f, scope, e, expected)
+            }
             E::Backtick(inner) => {
                 let caller = match (f.macros.last(), f.backtick_scope) {
                     (_, Some(s)) => s,
