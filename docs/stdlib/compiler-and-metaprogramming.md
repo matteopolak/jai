@@ -33,7 +33,6 @@ build :: () {
 - A new compiler-facing capability needs a `__jaic_*` primitive in `crates/jaic` plus a wrapper here; declaring the primitive in Jai alone does nothing.
 - Keep `Code_Node` field layouts in sync with the exporter in `crates/jaic/src/sema/code_export.rs`; `Program_Print` and `Code_Visit` read those fields.
 - Tests: `tests/stdlib/compiler-api-shapes.jai`, `compiler-get-code.jai`, `compiler-typechecked-messages.jai`, `compiler-workspace-ids.jai`, `compiler-reflection-pure.jai`, `compiler-enum-external-type.jai`, `autorun-plugin.jai`, `performance-report-plugin.jai`, `runtime-support-source.jai`, `runtime-support-output.jai`.
-- `stdlib/legacy/{Compiler,Check,Code_Visit}` are the older shapes; new code uses the unprefixed modules.
 
 ## Configuration
 

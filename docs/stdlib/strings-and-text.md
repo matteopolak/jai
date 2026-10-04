@@ -12,7 +12,7 @@ Byte-string utilities (`String`), UTF-8 scalar conversion (`Unicode`), Base64, a
 
 `Unicode/utf8-core.jai` validates scalar values: overlong forms, surrogates and truncated input make `utf8_next_character` fail without advancing. `character_utf8_to_utf32` and `character_utf32_to_utf8` convert single characters, and `utf8_iter` is the iteration macro.
 
-`Base64.jai` provides `base64_encode`, `base64_decode` (accepts whitespace, padded or unpadded input, rejects bad padding bits) and `base64url_encode`/`base64url_decode` (no padding), plus `_with_alphabet`/`_with_table` variants.
+`Base64.jai` provides `base64_encode`, `base64_decode` (accepts whitespace, padded or unpadded input, rejects bad padding bits) and `base64url_encode`/`base64url_decode` (no padding), plus `_with_alphabet` variants; `base64_decode` takes an optional 256-entry decoder table.
 
 `Text_File_Handler` reads CR, LF or CRLF lines with `start_file`/`start_from_memory` and `consume_next_line`, tracks line numbers, strips comments, can skip blank lines and reads an optional leading `[version]`. `file_to_array` and `file_to_table` copy each line, so callers own the strings. `Print_Color` emits ANSI SGR sequences (`print_color`, `set_console_color`, `with_console_color`, `reset_console_color`). `Print_Vars` prints expression text, value and type using `Compiler` node inspection and `Program_Print`.
 
@@ -30,8 +30,7 @@ main :: () {
 
 - Keep allocation-free logic in `byte-core.jai` (it is also loaded directly by `stdlib/tests/string-byte-core.jai`); allocating helpers go in `String/module.jai`.
 - Extend UTF-8 handling together with `stdlib/tests/utf8-scalar.jai` and `tests/stdlib/unicode-utf8-tables.jai`. Do not weaken scalar validity; add a separate API for other encodings.
-- New Base64 alphabets go through `base64_encode_with_alphabet`/`base64_decode_with_table`.
-- `stdlib/legacy/String`, `legacy/Base64` and `legacy/Unicode` keep older signatures. Do not load two String modules into one namespace.
+- New Base64 alphabets go through `base64_encode_with_alphabet`/`base64_decode_with_alphabet`, or pass a decoder table to `base64_decode`.
 - Related regression programs: `tests/stdlib/string-scan.jai`, `basic-string-parsing.jai`, `basic-formatters.jai`, `one-char-string-as-byte.jai`, `no-break-space.jai`.
 
 ## Configuration

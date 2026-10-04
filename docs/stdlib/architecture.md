@@ -24,7 +24,7 @@ Modules fall into families, each with a page here:
 | UI | `Simp`, `Window_Creation`, `GetRect`, `GetRect_LeftHanded` | [ui-and-drawing](ui-and-drawing.md), [getrect](getrect.md) |
 | Native bindings | `POSIX`, `macos`, `Windows`, `Linux`, `Android`, `Objective_C`, `SDL`, `GL`, `Vulkan`, `ImGui`, `stb_*`, `freetype`, ... | [native-bindings](native-bindings.md), [bindings-generator](bindings-generator.md) |
 
-`stdlib/legacy/` holds older variants of a few modules (`Base64`, `Bit_Array`, `Bucket_Array`, `Flat_Pool`, `Hash_Table`, `Pool`, `RadixSort`, `Unicode`, `Wav_File`, `Math`, `String`, `GetRect`, `Compiler`, `Check`, `Code_Visit`, `Debug`), imported as `#import "legacy/Name"`. Some modules use them internally: `Keymap` and `Treemap` import `legacy/Bucket_Array` because its sections keep stable addresses.
+There is no `legacy/` folder: every module has exactly one implementation under `stdlib/`, shaped like the corresponding module in the reference distribution (field order, procedure names and return order are API). Where a program needs stable addresses (`Treemap`, `Keymap`) it imports `Bucket_Array`.
 
 Module parameters (`#module_parameters`) select behavior at import time, for example `#import "Basic"(MEMORY_DEBUGGER=true)`. Each page lists the parameters that matter.
 

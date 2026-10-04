@@ -1,7 +1,7 @@
 // Independently authored allocation history, reachability, and leak reporting.
 #scope_file
-MD_Tables :: #import "legacy/Hash_Table";
-MD_Pool :: #import "legacy/Pool";
+MD_Tables :: #import "Hash_Table";
+MD_Pool :: #import "Pool";
 MD_Compiler :: #import "Compiler";
 #scope_export
 #add_context inside_memory_debugger := false;

@@ -1,5 +1,5 @@
 #import "Basic";
-Bits :: #import "legacy/Bit_Array";
+Bits :: #import "Bit_Array";
 
 main :: () -> s64 {
     bits := Bits.make_bit_array(130);
@@ -17,7 +17,7 @@ main :: () -> s64 {
     for Bits.only_unset(*bits) unset_count += 1;
     if unset_count != 127 return 5;
     Bits.set_all_bits(*bits);
-    if bits.slots[2] != -1 return 6;
+    if bits.slots[0] != -1 || bits.slots[2] != 3 return 6;
     Bits.toggle_all_bits(*bits);
     for bit: bits { if bit return 7; }
     Bits.clear_bit(*bits, 63);

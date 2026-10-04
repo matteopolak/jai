@@ -1,5 +1,5 @@
 #import "Basic";
-Ranks :: #import "legacy/RadixSort";
+Ranks :: #import "RadixSort";
 
 main :: () -> s64 {
     sorter: Ranks.RadixSort;

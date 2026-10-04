@@ -49,4 +49,4 @@ main :: () {
 
 ## Dependencies
 
-`Basic`, `Atomics`, `POSIX`/`Windows` bindings, `Math` and `File`/`Text_File_Handler` (Keymap), `legacy/Bucket_Array` (Keymap). Native input needs X11, AppKit or Win32; gamepads additionally need XInput, libevdev, GameController or SDL2.
+`Basic`, `Atomics`, `POSIX`/`Windows` bindings, `Math` and `File`/`Text_File_Handler` (Keymap), `Bucket_Array` (Keymap). Native input needs X11, AppKit or Win32; gamepads additionally need XInput, libevdev, GameController or SDL2.

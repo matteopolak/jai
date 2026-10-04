@@ -30,8 +30,8 @@ main :: () {
 
 - Add Basic functionality to the matching part file, not `module.jai`.
 - When two `Basic`-level builders exist (`Basic.String_Builder` and the newer one in `String`), qualify the type if both modules are imported.
-- Container changes need a matching case in `tests/stdlib/` (`basic-collections.jai`, `bit-array-standard.jai`, `bucket-array-*.jai`, `legacy-hash-table.jai`, `intro-sort-api.jai`, `legacy-rank-sort.jai`, `sort-entry-points.jai`, `soa-generated-*.jai`, `tagged-union-layout.jai`, `storage-treemap-contract.jai`).
-- `stdlib/legacy/` holds older `Hash_Table`, `Bit_Array`, `Bucket_Array` and `RadixSort`; keep them in sync only where another module still imports them (the memory debugger uses `legacy/Hash_Table`).
+- Container changes need a matching case in `tests/stdlib/` (`basic-collections.jai`, `bit-array-standard.jai`, `bucket-array-*.jai`, `hash-table-collisions.jai`, `intro-sort-api.jai`, `radix-sort-ranks.jai`, `bit-array-slots.jai`, `sort-entry-points.jai`, `soa-generated-*.jai`, `tagged-union-layout.jai`, `storage-treemap-contract.jai`).
+- `Hash_Table.table_find` returns `(success, value)` (success first), the order the upstream corpus programs expect; `table_remove` returns `(success, value)` too. `RadixSort` follows the reference record (`ranks`, `ranks2`, `valid_ranks`, `allocator`) and merges stably, so re-sorting keeps the previous order of equal keys. `Bit_Array.set_all_bits` and `toggle_all_bits` keep the unused tail bits of the last slot clear.
 
 ## Configuration
 

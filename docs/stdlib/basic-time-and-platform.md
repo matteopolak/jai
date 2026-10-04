@@ -24,7 +24,7 @@ Public API parity work for `stdlib/Basic`: `to_calendar` / `calendar_to_apollo`,
   `prefetch` is a no-op, `rdseed` falls back to `rdrand`, and `get_cpu_info` runs `cpuid`, which jaic lowers to zeros
   (vendor `.UNKNOWN`, no feature bits).
 - **Bucket_Array**: same layout as the reference (`count`, `allocator`, `all_buckets`, `unfull_buckets`, `Bucket`,
-  `Bucket_Locator{bucket_index, slot_index}`); `legacy/Bucket_Array.jai` is a separate older copy that Treemap and Keymap still import.
+  `Bucket_Locator{bucket_index, slot_index}`); `Treemap` and `Keymap` import it for its stable element addresses (`remove` inside `for` is supported too).
 
 ## How to change it
 

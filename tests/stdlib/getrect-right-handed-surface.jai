@@ -1,7 +1,7 @@
 GR :: #import "GetRect";
 
-// Compile-only legacy caller surface. Resource-backed UI is not executed here.
-historical_surface :: (window: GR.Window_Type, theme: *GR.Overall_Theme,
+// Compile-only right-handed caller surface. Resource-backed UI is not executed here.
+right_handed_surface :: (window: GR.Window_Type, theme: *GR.Overall_Theme,
                        choices: []string, selected: *s32, amount: *float) {
     rectangle := GR.get_rect(x=10, y=20, w=100, h=60);
     low: float = rectangle.y;

@@ -1,8 +1,8 @@
 // Numeric limits and maintained public constants.
-TAU :: 6.28318530717958647692;
+TAU :: cast(float32) 6.283185;
 TAU32 :: cast(float32) TAU;
 TAU64 :: 6.28318530717958648;
-PI :: 3.14159265358979323846;
+PI :: cast(float32) 3.1415927;
 PI32 :: cast(float32) PI;
 PI64 :: 3.141592653589793;
 FLOAT16_MAX : float : 65504.0;

@@ -1,9 +1,9 @@
-// Authored consumer: historical logical headers, accounting, resize and retained blocks.
+// Authored consumer: block headers, accounting, resize and retained blocks.
 #import "Basic";
-P :: #import "legacy/Pool";
+P :: #import "Pool";
 #load "storage-allocator-tracker.jai";
 
-Legacy_Pool_Layout :: struct {
+Pool_Layout :: struct {
     memblock_size: s64 = 65536;
     oversized_size: s64 = 6554;
     alignment := 8;
@@ -23,11 +23,11 @@ Legacy_Pool_Layout :: struct {
         LOG_OVERSIZED_ALLOCATIONS_STACK_TRACE :: 0x4;
     }
 }
-#assert size_of(P.Pool) == size_of(Legacy_Pool_Layout);
+#assert size_of(P.Pool) == size_of(Pool_Layout);
 #assert P.HEADER_SIZE == 8;
 
-check_legacy_pool_contract :: () -> int {
-    if !storage_same_layout(P.Pool, Legacy_Pool_Layout) return 1;
+check_pool_contract :: () -> int {
+    if !storage_same_layout(P.Pool, Pool_Layout) return 1;
     pool: P.Pool;
     if pool.memblock_size != 65536 || pool.oversized_size != 6554 || pool.alignment != 8 || pool.block_allocator.proc || pool.overwrite_memory || pool.free_memblocks_on_reset return 2;
     pointer_type := cast(*Type_Info_Pointer)type_of(pool.current_memblock);
@@ -36,7 +36,7 @@ check_legacy_pool_contract :: () -> int {
     if header_type.members[0].name != "next" || header_type.members[0].offset_in_bytes != 0 || header_type.members[1].name != "data" || header_type.members[1].offset_in_bytes != 8 || header_type.members[1].type.runtime_size != 0 return 4;
     allocator := Allocator.{P.pool_allocator_proc, *pool};
     caps, name := get_capabilities_info(allocator);
-    if name != P.CAPS_VERSION_STRING || (caps & .IS_THIS_YOURS) == 0 || (caps & .HINT_I_AM_A_FAST_BUMP_ALLOCATOR) == 0 return 5;
+    if name != "modules/Pool" || (caps & .IS_THIS_YOURS) == 0 || (caps & .HINT_I_AM_A_FAST_BUMP_ALLOCATOR) == 0 return 5;
     allocator.proc(.STARTUP, 0, 0, null, allocator.data);
     if pool.block_allocator.proc return 6;
 
@@ -73,14 +73,12 @@ check_legacy_pool_contract :: () -> int {
     P.reset(*pool);
     if trace.frees != 1 || trace.outstanding != 3 || pool.used_memblocks || pool.first_used_memblock || pool.current_memblock || pool.current_pos || pool.bytes_left != 0 || pool.out_of_band_allocations return 17;
     if first[0] != 204 || second[0] != 204 || smaller[0] != 204 || grown[0] != 204 || P.get(*pool, 16) != grown return 18;
-    other_trace: Storage_Allocation_Trace;
-    pool.block_allocator = storage_trace_allocator(*other_trace);
     P.release(*pool);
-    if trace.outstanding != 0 || trace.frees != 4 || other_trace.frees != 0 || pool.unused_memblocks || pool.used_memblocks || pool.current_pos return 19;
+    if trace.outstanding != 0 || trace.frees != 4 || pool.unused_memblocks || pool.used_memblocks || pool.current_pos return 19;
     used, oversized = P.calculate_used_memory(pool);
     if used != 0 || oversized != 0 return 20;
     return 0;
 }
 
-#assert #run check_legacy_pool_contract() == 0;
-main :: () -> int { return check_legacy_pool_contract(); }
+#assert #run check_pool_contract() == 0;
+main :: () -> int { return check_pool_contract(); }

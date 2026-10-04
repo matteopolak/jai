@@ -2,13 +2,12 @@
 
 ## What it is
 
-`GetRect` is the immediate-mode UI library: float32 `Rect` layout (`cut_top`, `cut_left`, ...), widgets (buttons, sliders, dropdowns, text inputs, scrollable and slidable regions, subwindows, color pickers, flowed text), themes and a per-frame `ui_per_frame_update`. Two modules expose the same API and differ only in coordinate orientation: `GetRect` (right-handed, y up) and `GetRect_LeftHanded` (y down). Both are thin entry points over one implementation in `stdlib/GetRect_Common`. `stdlib/legacy/GetRect` is a forwarding stub onto `GetRect`.
+`GetRect` is the immediate-mode UI library: float32 `Rect` layout (`cut_top`, `cut_left`, ...), widgets (buttons, sliders, dropdowns, text inputs, scrollable and slidable regions, subwindows, color pickers, flowed text), themes and a per-frame `ui_per_frame_update`. Two modules expose the same API and differ only in coordinate orientation: `GetRect` (right-handed, y up) and `GetRect_LeftHanded` (y down). Both are thin entry points over one implementation in `stdlib/GetRect_Common`.
 
 ```text
 stdlib/GetRect/module.jai             GETRECT_Y_UP :: true;   + #load of the common files
 stdlib/GetRect_LeftHanded/module.jai  GETRECT_Y_UP :: false;  + #load of the common files
 stdlib/GetRect_Common/*.jai           the implementation (never imported directly)
-stdlib/legacy/GetRect/*.jai           module (loads ../../GetRect/module.jai), geometry, orientation
 ```
 
 ## How it works
@@ -32,11 +31,11 @@ Assets: `get_rect_get_global_data()` returns nine strings (radio full/empty, che
 - Orientation-specific behavior: put both variants next to each other behind `GETRECT_Y_UP`, and keep the other module's variant unchanged.
 - A public symbol that must exist in one module only needs `#if GETRECT_Y_UP` (or `#if !GETRECT_Y_UP`) around the declaration, not just around its uses; do not reference y-up-only symbols without it, because the y-down build type-checks them.
 - A new common file is `#load`ed from `ui.jai` and sets `#scope_module`/`#scope_export` explicitly at its top.
-- Tests: `tests/stdlib/getrect-right-handed-api.jai` (API surface), `getrect-legacy-right-handed-geometry.jai` (rectangle, color and hash assertions on `legacy/GetRect/geometry.jai`), `getrect-legacy-right-handed-surface.jai`, `getrect-text-display-compiles.jai`, and `stdlib/GetRect/tests/orientation-tests.jai`. `getrect-rh-negative-control.jai` is the same geometry check with a deliberately wrong expectation and must fail with `#assert failed`. They are mostly compile- and geometry-level; widget behavior needs a stubbed `Draw_Procs` harness when you change layout code.
+- Tests: `tests/stdlib/getrect-right-handed-api.jai` (API surface), `getrect-right-handed-geometry.jai` (rectangle, color and hash assertions that `#load` `GetRect_Common/geometry.jai` with `GETRECT_Y_UP :: true`), `getrect-right-handed-surface.jai`, `getrect-text-display-compiles.jai`, and `stdlib/GetRect/tests/orientation-tests.jai`. `getrect-rh-negative-control.jai` is the same geometry check with a deliberately wrong expectation and must fail with `#assert failed`. They are mostly compile- and geometry-level; widget behavior needs a stubbed `Draw_Procs` harness when you change layout code.
 
 ## Configuration
 
-The `Type_Indicator` module parameter on both public modules, `GETRECT_Y_UP` (private, set only in the two `module.jai` files and `legacy/GetRect/geometry.jai`), and the asset root and file names (`getrect_asset_root`, `getrect_asset_filenames`; y-up module only).
+The `Type_Indicator` module parameter on both public modules, `GETRECT_Y_UP` (private, set only in the two `module.jai` files and in the geometry tests that load `GetRect_Common` directly), and the asset root and file names (`getrect_asset_root`, `getrect_asset_filenames`; y-up module only).
 
 ## Dependencies
 

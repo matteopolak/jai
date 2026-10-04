@@ -2,7 +2,7 @@
 #import "Input";
 #import "Gamepad";
 #import "Text_File_Handler";
-#import "legacy/Bucket_Array";
+#import "Bucket_Array";
 File :: #import "File";
 #load "save.jai";
 

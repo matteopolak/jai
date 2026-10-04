@@ -1,44 +1,32 @@
-// Euclidean vectors and quaternions. Swizzle views (`xy`, `xyz`, ...) and `component`
-// overlay the named fields with #place, so `v.xyz` is an lvalue sharing v's storage.
+// Row-independent Euclidean vectors with overlapping public views.
 Vector2 :: struct {
     x, y: float;
-#place x;
-    component: [2] float = ---;
+    #place x; component: [2] float = ---;
 }
 Vector3 :: struct {
     x, y, z: float;
-#place x;
-    xy: Vector2 = ---;
-#place y;
-    yz: Vector2 = ---;
-#place x;
-    component: [3] float = ---;
+    #place x; xy: Vector2 = ---;
+    #place y; yz: Vector2 = ---;
+    #place x; component: [3] float = ---;
 }
 Vector4 :: struct {
     x, y, z, w: float;
-#place x;
-    xy: Vector2 = ---;
-#place y;
-    yz: Vector2 = ---;
-#place z;
-    zw: Vector2 = ---;
-#place x;
-    xyz: Vector3 = ---;
-#place y;
-    yzw: Vector3 = ---;
-#place x;
-    component: [4] float = ---;
+    #place x; xy: Vector2 = ---;
+    #place y; yz: Vector2 = ---;
+    #place z; zw: Vector2 = ---;
+    #place x; xyz: Vector3 = ---;
+    #place y; yzw: Vector3 = ---;
+    #place x; component: [4] float = ---;
 }
-// A default Quaternion is the identity rotation.
 Quaternion :: struct {
     x, y, z: float;
     w := 1.0;
-#place x;
-    component: [4] float = ---;
-#place x;
-    xyz: Vector3 = ---;
+    #place x; component: [4] float = ---;
+    #place x; xyz: Vector3 = ---;
 }
+Complex :: #type,isa Vector2;
 AnyVector2 :: struct { x, y: float; }
+operator * :: (a: Complex, b: Complex) -> Complex { return .{a.x * b.x - a.y * b.y, a.y * b.x + a.x * b.y}; }
 dot :: dot_product;
 cross :: cross_product;
 rgb :: xyz;
@@ -56,8 +44,8 @@ operator * :: (a: Vector2, k: float) -> Vector2 #symmetric { return .{a.x * k, a
 operator / :: (a: Vector2, k: float) -> Vector2 { return .{a.x / k, a.y / k}; }
 operator / :: (k: float, a: Vector2) -> Vector2 { return .{k / a.x, k / a.y}; }
 operator == :: (a: Vector2, b: Vector2) -> bool { return a.x == b.x && a.y == b.y; }
-min :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{min(v1.x, v2.x), min(v1.y, v2.y)}; }
-max :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{max(v1.x, v2.x), max(v1.y, v2.y)}; }
+min :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y)}; }
+max :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y)}; }
 abs :: (a: Vector2) -> Vector2 { return .{abs(a.x), abs(a.y)}; }
 saturate :: (a: Vector2) -> Vector2 { return .{saturate(a.x), saturate(a.y)}; }
 length_squared :: (v: Vector2) -> float { return dot(v, v); }
@@ -79,8 +67,8 @@ operator * :: (a: Vector3, k: float) -> Vector3 #symmetric { return .{a.x * k, a
 operator / :: (a: Vector3, k: float) -> Vector3 { return .{a.x / k, a.y / k, a.z / k}; }
 operator / :: (k: float, a: Vector3) -> Vector3 { return .{k / a.x, k / a.y, k / a.z}; }
 operator == :: (a: Vector3, b: Vector3) -> bool { return a.x == b.x && a.y == b.y && a.z == b.z; }
-min :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{min(v1.x, v2.x), min(v1.y, v2.y), min(v1.z, v2.z)}; }
-max :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{max(v1.x, v2.x), max(v1.y, v2.y), max(v1.z, v2.z)}; }
+min :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y), Basic.min(v1.z, v2.z)}; }
+max :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y), Basic.max(v1.z, v2.z)}; }
 abs :: (a: Vector3) -> Vector3 { return .{abs(a.x), abs(a.y), abs(a.z)}; }
 saturate :: (a: Vector3) -> Vector3 { return .{saturate(a.x), saturate(a.y), saturate(a.z)}; }
 length_squared :: (v: Vector3) -> float { return dot(v, v); }
@@ -102,8 +90,8 @@ operator * :: (a: Vector4, k: float) -> Vector4 #symmetric { return .{a.x * k, a
 operator / :: (a: Vector4, k: float) -> Vector4 { return .{a.x / k, a.y / k, a.z / k, a.w / k}; }
 operator / :: (k: float, a: Vector4) -> Vector4 { return .{k / a.x, k / a.y, k / a.z, k / a.w}; }
 operator == :: (a: Vector4, b: Vector4) -> bool { return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; }
-min :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{min(v1.x, v2.x), min(v1.y, v2.y), min(v1.z, v2.z), min(v1.w, v2.w)}; }
-max :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{max(v1.x, v2.x), max(v1.y, v2.y), max(v1.z, v2.z), max(v1.w, v2.w)}; }
+min :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y), Basic.min(v1.z, v2.z), Basic.min(v1.w, v2.w)}; }
+max :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y), Basic.max(v1.z, v2.z), Basic.max(v1.w, v2.w)}; }
 abs :: (a: Vector4) -> Vector4 { return .{abs(a.x), abs(a.y), abs(a.z), abs(a.w)}; }
 saturate :: (a: Vector4) -> Vector4 { return .{saturate(a.x), saturate(a.y), saturate(a.z), saturate(a.w)}; }
 length_squared :: (v: Vector4) -> float { return dot(v, v); }
@@ -122,48 +110,16 @@ make_vector4 :: (using v: Vector2, z: float, w: float) -> Vector4 { return xyzw(
 make_vector4 :: (using v: Vector3, w: float) -> Vector4 { return xyzw(v, w); }
 lerp :: (a: float, b: float, t: float) -> float { return (1 - t) * a + t * b; }
 lerp :: (a: float64, b: float64, t: float64) -> float64 { return (1 - t) * a + t * b; }
-normalize :: (v: *Vector2, epsilon := 0.0, fallback := Vector2.{}) -> float {
-    original_length:=length(v.*);
-    if original_length<=epsilon || !is_finite(original_length) { v.*=fallback; return original_length; }
-    v.*=v.**(1/original_length);
+lerp :: (a: $R, b: R, t: float) -> R { return cast(R) ((1 - t) * cast(float64) a + t * cast(float64) b); }
+normalize :: (v: *$T/MyVectors, epsilon := 0.0, fallback := T.{}) -> float {
+    original_length := length(v.*);
+    if original_length <= epsilon || !is_finite(original_length) { v.* = fallback; return original_length; }
+    for i: 0..v.component.count-1 v.component[i] /= original_length;
     return original_length;
 }
-normalize :: (v: Vector2, epsilon := 0.0, fallback := Vector2.{}) -> Vector2 {
-    result:=v;
-    normalize(*result,epsilon,fallback);
-    return result;
-}
-normalize :: (v: *Vector3, epsilon := 0.0, fallback := Vector3.{}) -> float {
-    original_length:=length(v.*);
-    if original_length<=epsilon || !is_finite(original_length) { v.*=fallback; return original_length; }
-    v.*=v.**(1/original_length);
-    return original_length;
-}
-normalize :: (v: Vector3, epsilon := 0.0, fallback := Vector3.{}) -> Vector3 {
-    result:=v;
-    normalize(*result,epsilon,fallback);
-    return result;
-}
-normalize :: (v: *Vector4, epsilon := 0.0, fallback := Vector4.{}) -> float {
-    original_length:=length(v.*);
-    if original_length<=epsilon || !is_finite(original_length) { v.*=fallback; return original_length; }
-    v.*=v.**(1/original_length);
-    return original_length;
-}
-normalize :: (v: Vector4, epsilon := 0.0, fallback := Vector4.{}) -> Vector4 {
-    result:=v;
-    normalize(*result,epsilon,fallback);
-    return result;
-}
-normalize :: (v: *Quaternion, epsilon := 0.0, fallback := Quaternion.{}) -> float {
-    original_length:=length(v.*);
-    if original_length<=epsilon || !is_finite(original_length) { v.*=fallback; return original_length; }
-    v.*=v.**(1/original_length);
-    return original_length;
-}
-normalize :: (v: Quaternion, epsilon := 0.0, fallback := Quaternion.{}) -> Quaternion {
-    result:=v;
-    normalize(*result,epsilon,fallback);
+normalize :: (v: $T/MyVectors, epsilon := 0.0, fallback := T.{}) -> T {
+    result := v;
+    normalize(*result, epsilon, fallback);
     return result;
 }
 unit_vector :: (v: Vector2) -> Vector2 { return normalize(v); }
@@ -186,9 +142,8 @@ operator - :: (using a: Quaternion) -> Quaternion { return .{-x, -y, -z, -w}; }
 operator * :: (a: Quaternion, k: float) -> Quaternion #symmetric { return .{a.x*k, a.y*k, a.z*k, a.w*k}; }
 operator == :: (a: Quaternion, b: Quaternion) -> bool { return a.x==b.x && a.y==b.y && a.z==b.z && a.w==b.w; }
 operator * :: (m: Quaternion, a: Quaternion) -> Quaternion {
-    first:=xyz(m.x,m.y,m.z); second:=xyz(a.x,a.y,a.z);
-    vector := first * a.w + second * m.w + cross(first,second);
-    return .{vector.x, vector.y, vector.z, m.w * a.w - dot(first,second)};
+    vector := m.xyz * a.w + a.xyz * m.w + cross(m.xyz, a.xyz);
+    return .{vector.x, vector.y, vector.z, m.w * a.w - dot(m.xyz, a.xyz)};
 }
 conjugate :: (using q: Quaternion) -> Quaternion { return .{-x, -y, -z, w}; }
 normalize_or_identity :: (using q: *Quaternion) -> float { return normalize(q, 0.0, Quaternion_Identity); }
@@ -203,7 +158,7 @@ slerp :: (a: Quaternion, b: Quaternion, t: float) -> Quaternion {
     cosine := dot(a, b);
     if cosine < 0 { target = -target; cosine = -cosine; }
     if cosine >= 0.9995 return nlerp(a, target, t);
-    angle := acos(clamp(cosine, -1.0, 1.0));
+    angle := acos(Basic.clamp(cosine, -1.0, 1.0));
     inverse_sine := 1 / sin(angle);
     return a * (sin((1-t) * angle) * inverse_sine) + target * (sin(t * angle) * inverse_sine);
 }
@@ -215,21 +170,20 @@ set_from_axis_and_angle :: (using q: *Quaternion, axis: Vector3, angle: float) {
 set_from_axis_and_angle :: (q: *Quaternion, x: float, y: float, z: float, theta: float) { set_from_axis_and_angle(q, xyz(x,y,z), theta); }
 get_axis_and_angle :: (using q: Quaternion) -> x: float64, y: float64, z: float64, theta: float64 {
     normalized := normalize(q);
-    cosine := clamp(cast(float64) normalized.w, -1.0, 1.0);
+    cosine := Basic.clamp(cast(float64) normalized.w, -1.0, 1.0);
     sine := sqrt(1 - cosine * cosine);
     if sine < 1e-12 return 1, 0, 0, 0;
     return normalized.x / sine, normalized.y / sine, normalized.z / sine, 2 * acos(cosine);
 }
 rotate :: (v: Vector3, q: Quaternion) -> Vector3 {
     rotated := q * Quaternion.{v.x, v.y, v.z, 0} * conjugate(q);
-    return xyz(rotated.x,rotated.y,rotated.z);
+    return rotated.xyz;
 }
 rotate :: (v: *Vector3, q: Quaternion) { v.* = rotate(v.*, q); }
 make_an_orthonormal_basis :: (x_axis: Vector3) -> (y_axis: Vector3, z_axis: Vector3) {
     auxiliary := xyz(0, 0, 1);
     if abs(x_axis.z) > 0.75 auxiliary = xyz(0, 1, 0);
-    y,z:=make_an_orthonormal_basis(x_axis, auxiliary);
-    return y,z;
+    return make_an_orthonormal_basis(x_axis, auxiliary);
 }
 make_an_orthonormal_basis :: (x_axis: Vector3, approximate_axis: Vector3) -> (y_axis: Vector3, z_axis: Vector3) {
     x := normalize(x_axis, fallback=.{x=1});

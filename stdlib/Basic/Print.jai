@@ -703,6 +703,9 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         if !value append(builder, "null");
         else print_u64_base_n(builder, cast(u64) value, __default_format_pointer());
     } else if tag == .STRUCT {
+        // A user-installed struct printer (for example Math's math_struct_printer) gets the first chance.
+        printer := context.print_style.struct_printer;
+        if printer && printer(builder, item, context.print_style.struct_printer_data) return;
         // A using/#as Formatter field is an explicit formatting view. Locate
         // its real byte offset rather than assuming it is the first field.
         info := cast(*Type_Info_Struct) item.type;

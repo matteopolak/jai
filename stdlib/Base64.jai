@@ -1,4 +1,4 @@
-// RFC 4648 bit packing with checked alphabets and padding.
+// Base64 and base64url encode/decode; base64_decode takes an optional 256-entry decoder table.
 #scope_file
 Basic :: #import "Basic";
 #scope_export
@@ -47,9 +47,9 @@ base64_decode_with_alphabet :: (text: string, alphabet: string) -> string, bool 
         table[alphabet[i]] = cast(u8) i;
     }
     table[9] = WHITESPACE; table[10] = WHITESPACE; table[13] = WHITESPACE; table[32] = WHITESPACE; table[61] = EQUALS;
-    result, success := base64_decode_with_table(text, table); return result, success;
+    return base64_decode(text, table);
 }
-base64_decode_with_table :: (input: string, table: [256] u8 = BASE64_DECODER_TABLE) -> string #must, success: bool {
+base64_decode :: (input: string, table: [256] u8 = BASE64_DECODER_TABLE) -> string #must, success: bool {
     builder: Basic.String_Builder;
     bits: u32 = 0; bit_count := 0; symbols := 0; padding := 0; ended := false;
     for c: input {
@@ -72,7 +72,7 @@ base64_decode_with_table :: (input: string, table: [256] u8 = BASE64_DECODER_TAB
     if builder.failed { Basic.reset(*builder); return "", false; }
     return Basic.builder_to_string(*builder), true;
 }
-base64url_decode :: (input: string) -> string, success: bool { result, success := base64_decode_with_table(input, BASE64URL_DECODER_TABLE); return result, success; }
+base64url_decode :: (input: string) -> string, success: bool { return base64_decode(input, BASE64URL_DECODER_TABLE); }
 test_base64_module :: () {
     encoded := base64_encode("foobar");
     Basic.assert(encoded == "Zm9vYmFy");
@@ -116,5 +116,3 @@ BASE64URL_DECODER_TABLE :: u8.[
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
 ];
-
-base64_decode :: (text: string) -> string, bool { result, success := base64_decode_with_table(text, BASE64_DECODER_TABLE); return result, success; }
