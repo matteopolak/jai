@@ -45,8 +45,11 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 - **Vk-Engine** (+ Linalg, Jolt-Jai): Core, Renderer, Game and Editor compile and their build metaprograms
   complete. The ImGui / Vulkan binding generators now run and stop only on their C/C++ headers (the corpus now
   fetches C-family sources, but not those submodules); the native `libImGui.so` / `libJoltC.so` are C++ builds.
-- **jaison**: tests and example run. **sgpu**: all examples check (host, linux, windows).
-  **Jails**: server and build check; `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
+- **jaison**: tests and example run, also natively (`jaic build tests.jai`). **sgpu**: all examples check (host,
+  linux, windows); native builds stop at linking the Slang library, which upstream ships prebuilt
+  (`modules/slang/mac/libslang.dylib`, not fetched) and Homebrew does not package.
+- **Jails**: `jaic build build.jai` produces a native `bin/jails` that answers LSP requests.
+  Jails `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
 - **The_Way_to_Jai**: 21 of 313 examples fail `check`, none a compiler bug: Windows-only APIs (19.8, 33.2C, 33.6,
   50.1), the Windows-only raylib module (35.1, 52.2, 30/jai_raylib), intentional failures (20.2, 30.9), APIs older
   Jai versions had (6.6 `random_seed` result, 26.27 `builder_to_string(allocator=)`, 33.10 `Sound_Player` struct,
