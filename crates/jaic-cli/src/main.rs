@@ -15,7 +15,7 @@ fn stdlib_dir() -> PathBuf {
 }
 
 fn usage() -> ExitCode {
-    eprintln!("usage: jaic <run|check> <file.jai> [-I dir]... [- metaprogram args...]");
+    eprintln!("usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [- metaprogram args...]");
     eprintln!(
         "       jaic build <file.jai> [-I dir]... [-o output] [-O0|-O1|-O2|-O3] [--emit-ir file.ll]"
     );
@@ -64,7 +64,7 @@ fn parse(args: &[String]) -> Option<Cli> {
             "-" => {
                 cli.command_line.extend(rest.by_ref().cloned());
             }
-            "-I" => cli.imports.extend(rest.next().map(PathBuf::from)),
+            "-I" | "-import_dir" => cli.imports.extend(rest.next().map(PathBuf::from)),
             "-o" if command == Command::Build => cli.output = Some(PathBuf::from(rest.next()?)),
             "--emit-ir" if command == Command::Build => {
                 cli.emit_ir = Some(PathBuf::from(rest.next()?))
@@ -94,10 +94,25 @@ fn main() -> ExitCode {
     }
 }
 
-fn run(cli: Cli) -> ExitCode {
+fn run(mut cli: Cli) -> ExitCode {
     let stdlib = stdlib_dir();
+    let path = std::fs::canonicalize(&cli.file).unwrap_or_else(|_| PathBuf::from(&cli.file));
+    // Like `jai`, run from the main file's directory (so the program's meaning does not
+    // depend on where the compiler was started); paths given on the command line stay
+    // relative to the original directory.
+    let absolute = |p: &PathBuf| std::path::absolute(p).unwrap_or_else(|_| p.clone());
+    cli.imports = cli.imports.iter().map(absolute).collect();
+    cli.output = cli.output.as_ref().map(absolute);
+    cli.emit_ir = cli.emit_ir.as_ref().map(absolute);
+    let main_dir = path.parent().map(PathBuf::from).unwrap_or_default();
+    if !main_dir.as_os_str().is_empty() && std::env::set_current_dir(&main_dir).is_err() {
+        eprintln!("error: cannot change directory to {}", main_dir.display());
+        return ExitCode::from(1);
+    }
     let mut options = Options::host();
-    options.import_paths = cli.imports.clone();
+    // The local `modules` folder is searched first, then `-import_dir`s, then the stdlib.
+    options.import_paths = vec![main_dir.join("modules")];
+    options.import_paths.extend(cli.imports.iter().cloned());
     options.import_paths.push(stdlib.clone());
     options.preload = Some(stdlib.join("Preload.jai"));
     let fs: Rc<dyn FileSystem> = Rc::new(NativeFs);
@@ -117,7 +132,6 @@ fn run(cli: Cli) -> ExitCode {
     });
     let mut compiler = Compiler::new(options, fs);
     compiler.attach_workspaces(workspaces.clone());
-    let path = std::fs::canonicalize(&cli.file).unwrap_or_else(|_| PathBuf::from(&cli.file));
     if let Err(d) = compiler.compile_program(&path) {
         eprintln!("{}", compiler.render(&d));
         return ExitCode::from(1);

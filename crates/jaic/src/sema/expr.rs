@@ -1028,6 +1028,23 @@ impl Compiler {
                 expected
             }),
         )?;
+        // `s[0] == "-"`: a one-byte string constant compares as that byte.
+        if is_cmp {
+            let byte_of = |c: &Compiler, op: &Operand, other: &Operand| match op {
+                Operand::Const {
+                    value: Value::String(bytes),
+                    ..
+                } if bytes.len() == 1 && c.types.is_integer(other.ty()) => {
+                    Some(Operand::untyped_int(bytes[0] as i128))
+                }
+                _ => None,
+            };
+            if let Some(b) = byte_of(self, &rhs, &lhs) {
+                rhs = b;
+            } else if let Some(b) = byte_of(self, &lhs, &rhs) {
+                lhs = b;
+            }
+        }
         if matches!(
             lhs,
             Operand::Const {

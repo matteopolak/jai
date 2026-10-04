@@ -106,23 +106,10 @@ impl Compiler {
             S::StaticSwitch {
                 value,
                 cases,
-            } => {
-                let v = self.eval_const(scope, value, None)?;
-                for case in cases {
-                    let hit = case.values.is_empty() || {
-                        let mut any = false;
-                        for cv in &case.values {
-                            let c = self.eval_const(scope, cv, Some(v.ty()))?;
-                            any |= self.const_equal(&v, &c);
-                        }
-                        any
-                    };
-                    if hit {
-                        return self.check_block_stmts(f, scope, &case.body);
-                    }
-                }
-                Ok(())
-            }
+            } => match self.static_switch_case(scope, value, cases)? {
+                Some(case) => self.check_block_stmts(f, scope, &case.body),
+                None => Ok(()),
+            },
             S::Overlay(_) => err(span, "#overlay is not supported"),
             S::PushContextDefer {
                 ..
@@ -287,6 +274,28 @@ impl Compiler {
         }
     }
 
+    /// The case of `#if value == { case ...; }` that is compiled, if any.
+    pub(super) fn static_switch_case<'a>(
+        &mut self,
+        scope: ScopeId,
+        value: &ast::Expr,
+        cases: &'a [ast::Case],
+    ) -> Result<Option<&'a ast::Case>> {
+        let v = self.eval_const(scope, value, None)?;
+        for case in cases {
+            if case.values.is_empty() {
+                return Ok(Some(case));
+            }
+            for cv in &case.values {
+                let c = self.eval_const(scope, cv, Some(v.ty()))?;
+                if self.const_equal(&v, &c) {
+                    return Ok(Some(case));
+                }
+            }
+        }
+        Ok(None)
+    }
+
     /// Add the unnamed `#import`s among `stmts` (and, when `nested`, inside their plain
     /// blocks and control flow, but not `#if` branches) to `file_scope`, once each.
     pub(super) fn hoist_body_imports(
@@ -433,11 +442,12 @@ impl Compiler {
                 None if decl.value.is_none() => self.init_default(f, ty, addr, span)?,
                 None => {}
             }
-            // `_` discards a value: it names no local.
-            if name.name.as_str() == "_" {
+            // `_` discards a value: it names no local (but `using _ := *x;` still uses).
+            let discard = name.name.as_str() == "_";
+            if discard && !decl.using {
                 continue;
             }
-            if self.declares_local(target, name.name) {
+            if !discard && self.declares_local(target, name.name) {
                 return err(
                     name.span,
                     format!("'{}' is already declared in this scope", name.name),
