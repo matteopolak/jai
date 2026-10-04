@@ -682,6 +682,7 @@ impl Compiler {
         span: Span,
     ) -> Result<Vec<(Sym, Value, TypeId)>> {
         let mut bindings: Vec<(Sym, Value, TypeId)> = Vec::new();
+        let mut deferred_procs = Vec::new();
         let mut null_patterns: Vec<ast::Expr> = Vec::new();
         let def_scope = self.proc(proc).scope;
         let poly_vars = header_poly_names(header);
@@ -836,7 +837,11 @@ impl Compiler {
                 if let Some(t) = &param.ty
                     && procs::has_poly(t)
                 {
-                    let vt = self.type_of_value(&value);
+                    // Aggregate constants (`.[1, 2]`) carry no type of their own.
+                    let vt = match self.type_of_value(&value) {
+                        TypeId::VOID => op_ty,
+                        vt => vt,
+                    };
                     self.match_pattern(t, vt, &mut bindings, def_scope)?;
                 }
                 bindings.push((name, value, ty));
@@ -865,6 +870,15 @@ impl Compiler {
                 ) && !param.variadic
                 {
                     null_patterns.push(pattern.clone());
+                    continue;
+                }
+                // An overloaded or polymorphic procedure passed for a procedure-typed
+                // parameter is resolved once the other bindings are known.
+                if let Operand::Procs(ps) = op
+                    && (ps.len() > 1 || self.proc(ps[0]).is_poly)
+                    && matches!(pattern.kind, E::ProcType(_))
+                {
+                    deferred_procs.push((pattern.clone(), ps.clone(), arg.span));
                     continue;
                 }
                 let mut ty = match op {
@@ -946,6 +960,34 @@ impl Compiler {
                     *span,
                 )?;
             }
+        }
+        for (pattern, ps, arg_span) in deferred_procs {
+            let E::ProcType(ph) = &pattern.kind else {
+                continue;
+            };
+            let known = self.const_scope(def_scope, bindings.clone(), arg_span);
+            let mut params = Vec::new();
+            for p in &ph.params {
+                let Some(t) = &p.ty else {
+                    return err(
+                        arg_span,
+                        "cannot infer the parameter types of this procedure",
+                    );
+                };
+                params.push(self.eval_type(known, t)?);
+            }
+            let mut matched = None;
+            for p in ps {
+                if let Some(inst) = self.proc_for_param_types(p, &params, arg_span) {
+                    matched = Some(inst);
+                    break;
+                }
+            }
+            let Some(inst) = matched else {
+                return err(arg_span, "no overload matches the procedure parameter");
+            };
+            let ty = self.proc_type(inst, arg_span)?;
+            self.match_pattern(&pattern, ty, &mut bindings, def_scope)?;
         }
         // A type variable seen only through `null` is `*void`.
         let void_ptr = self.types.pointer(TypeId::VOID);
@@ -1847,6 +1889,9 @@ impl Compiler {
                         value,
                         untyped: true,
                     } => self.default_untyped(ty, &value),
+                    Operand::Procs(p) if p.len() == 1 && self.proc(p[0]).is_poly => {
+                        self.poly_proc_type(p[0])
+                    }
                     Operand::Procs(p) if p.len() == 1 => self.proc_type(p[0], span)?,
                     other => other.ty(),
                 };
@@ -1982,11 +2027,55 @@ impl Compiler {
         let TypeKind::Proc(info) = self.types.kind(target).clone() else {
             return None;
         };
+        let inst = self.proc_for_param_types(proc, &info.params, span)?;
+        let ty = self.proc_type(inst, span).ok()?;
+        (ty == target || self.proc_types_compatible(ty, target)).then_some(inst)
+    }
+
+    /// The type of a polymorphic procedure for compile-time inspection (`type_of(poly)`):
+    /// parameters and results that mention a type variable are shown as `void`.
+    fn poly_proc_type(&mut self, proc: ProcId) -> TypeId {
+        let header = self.proc(proc).lit.header.clone();
+        let scope = self.proc(proc).scope;
+        let eval = |c: &mut Self, t: &Option<ast::Expr>| match t {
+            Some(t) if !procs::has_poly(t) => c.eval_type(scope, t).unwrap_or(TypeId::VOID),
+            _ => TypeId::VOID,
+        };
+        let params: Vec<TypeId> = header
+            .params
+            .iter()
+            .filter(|p| !p.baked)
+            .map(|p| eval(self, &p.ty))
+            .collect();
+        let returns: Vec<TypeId> = header
+            .returns
+            .iter()
+            .map(|r| eval(self, &r.ty))
+            .filter(|&t| t != TypeId::VOID)
+            .collect();
+        self.types
+            .intern(TypeKind::Proc(Rc::new(crate::types::ProcType {
+                params,
+                returns,
+                variadic: false,
+                c_varargs: false,
+                c_call: false,
+                no_context: false,
+                non_pod_return: false,
+            })))
+    }
+
+    /// The instance of `proc` (or `proc` itself) callable with arguments of the given types.
+    pub fn proc_for_param_types(
+        &mut self,
+        proc: ProcId,
+        params: &[TypeId],
+        span: Span,
+    ) -> Option<ProcId> {
         let scope = self.proc(proc).scope;
         let scratch = self.scratch_ctx(scope);
         let placeholder = scratch.b.param(0);
-        let args: Vec<CallArg> = info
-            .params
+        let args: Vec<CallArg> = params
             .iter()
             .map(|&ty| CallArg {
                 name: None,
@@ -2000,9 +2089,7 @@ impl Compiler {
                 scope,
             })
             .collect();
-        let candidate = self.match_candidate(proc, &args, span).ok()?;
-        let ty = self.proc_type(candidate.proc, span).ok()?;
-        (ty == target || self.proc_types_compatible(ty, target)).then_some(candidate.proc)
+        Some(self.match_candidate(proc, &args, span).ok()?.proc)
     }
 
     pub fn check_procedure_of_call(
@@ -2772,9 +2859,11 @@ fn assign_slots(
                 Slot::Arg(i)
             });
             // Positional arguments after a named one continue from the next parameter.
-            if Some(p) != variadic_index {
-                positional = p + 1;
-            }
+            positional = if Some(p) == variadic_index {
+                p
+            } else {
+                p + 1
+            };
             continue;
         }
         while positional < params.len()

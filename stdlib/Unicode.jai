@@ -22,23 +22,28 @@ unicode_next_character :: (s: *u8) -> *u8 {
     return s + length;
 }
 utf8_iter :: (s: *string, body: Code, flags: For_Flags) #expand {
+    `it: u32;
+    `it_index: s64;
     if flags & .REVERSE {
+        // it_index is not tracked backwards.
+        `it_index = -1;
         index := s.count;
         while index > 0 {
             end := index; index -= 1;
             while index > 0 && (s.data[index] & 0xC0) == 0x80 index -= 1;
-            it, consumed, status := character_utf8_to_utf32(s.data+index, end-index);
-            it_index := index;
+            code, consumed, status := character_utf8_to_utf32(s.data+index, end-index);
             if status != .CONVERSION_OK break;
+            `it = code;
             #insert body;
         }
     } else {
-        cursor := s.*; it_index := 0;
+        cursor := s.*; `it_index = 0;
         while cursor.count > 0 {
-            it, consumed, status := character_utf8_to_utf32(cursor.data, cursor.count);
+            code, consumed, status := character_utf8_to_utf32(cursor.data, cursor.count);
             if status != .CONVERSION_OK break;
+            `it = code;
             #insert body;
-            cursor.data += consumed; cursor.count -= consumed; it_index += consumed;
+            cursor.data += consumed; cursor.count -= consumed; `it_index += 1;
         }
     }
 }

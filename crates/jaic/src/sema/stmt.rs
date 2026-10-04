@@ -1734,10 +1734,7 @@ impl Compiler {
                 }
             }
             let wants_pointer = by_pointer && !by_value;
-            let op = if wants_pointer
-                && matches!(op, Operand::Place { .. })
-                && !self.types.is_pointer(cty)
-            {
+            let op = if wants_pointer && !self.types.is_pointer(cty) {
                 let (_, addr) = self.address_of(f, op, span)?;
                 Operand::Value {
                     ty: self.types.pointer(cty),

@@ -126,6 +126,18 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **`using _ :: struct {...}`** at top level may repeat: each gets a hidden entity name (`__using_N`).
 
 - Compile-time pointer constants that are plain integers (handle-like values such as `cast(*void) 32512` or `cast(HANDLE) -1`) are frozen as raw values by `freeze_pointer` in `sema/consteval.rs` instead of erroring with "unknown size".
+- **Overloaded / polymorphic procedure arguments**: for a procedure-typed polymorphic parameter
+  (`f: (T) -> $R`), an overload set or polymorphic procedure/lambda is resolved after the other bindings are known
+  (`deferred_procs` in `infer_bindings`, `proc_for_param_types`), then `$R` is bound from the chosen instance.
+- **Named variadics**: after `v = x`, further positional arguments extend the variadic until a later named argument
+  (`assign_slots`).
+- **Pointer for_expansion parameters**: `for :iter CONST` / any non-pointer iterable passed to a `*T` expansion
+  parameter is spilled to a temporary and its address taken (`stmt.rs`, `wants_pointer`). `utf8_iter` follows jai: it
+  backtick-declares `it` / `it_index` (character count; `-1` backwards).
+- **Aggregate baked arguments**: `$a: [$N] float` bound to `.[...]` infers `N` from the literal's own type.
+- **`type_of(poly_proc)`** gives a procedure type with `void` for type-variable parameters (`poly_proc_type`), for
+  compile-time inspection only.
+- **Proc vs `*void`**: `proc == ptr` compares addresses (`binary_operand_type` in `expr.rs`).
 
 ## How to change it
 

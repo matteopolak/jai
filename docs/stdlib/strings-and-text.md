@@ -10,7 +10,7 @@ Byte-string utilities (`String`), UTF-8 scalar conversion (`Unicode`), Base64, a
 
 `String/module.jai` adds the allocating operations (`join`, `replace`, `split`, `copy_string`, `to_lower_copy`, `normalize_line_endings`), the `parse_int`/`parse_float`/`parse_enum` family that consumes from a `*string`, `scan`/`scan2`, `atof`, and its own contiguous `String_Builder` (`init_string_builder`, `append`, `print_to_builder`, `builder_to_string(builder, allocator := Basic.temp)`, `free_buffers`). `Basic` has a separate `String_Builder` with a different layout; qualify the type (`Basic.String_Builder`) when both modules are imported.
 
-`Unicode/utf8-core.jai` validates scalar values: overlong forms, surrogates and truncated input make `utf8_next_character` fail without advancing. `character_utf8_to_utf32` and `character_utf32_to_utf8` convert single characters, and `utf8_iter` is the iteration macro.
+`Unicode/utf8-core.jai` validates scalar values: overlong forms, surrogates and truncated input make `utf8_next_character` fail without advancing. `character_utf8_to_utf32` and `character_utf32_to_utf8` convert single characters, and `utf8_iter` is the iteration macro (`it` is the code point, `it_index` the character index, `-1` when reversed).
 
 `Base64.jai` provides `base64_encode`, `base64_decode` (accepts whitespace, padded or unpadded input, rejects bad padding bits) and `base64url_encode`/`base64url_decode` (no padding), plus `_with_alphabet` variants; `base64_decode` takes an optional 256-entry decoder table.
 
