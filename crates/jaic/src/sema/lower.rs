@@ -325,11 +325,16 @@ impl Compiler {
             Value::Bool(v) => Ok(f.b.iconst(Ty::I8, *v as u64)),
             Value::Null => Ok(f.b.iconst(Ty::Ptr, 0)),
             Value::String(bytes) => {
-                let data = self.string_global(bytes);
                 let addr = f.b.alloca(16, 8);
                 let count = f.b.iconst(Ty::I64, bytes.len() as u64);
                 f.b.store(Ty::I64, addr, count);
-                let ptr = f.b.global_addr(data);
+                // `""` has a null data pointer (so e.g. `free("")` is a no-op).
+                let ptr = if bytes.is_empty() {
+                    f.b.iconst(Ty::Ptr, 0)
+                } else {
+                    let data = self.string_global(bytes);
+                    f.b.global_addr(data)
+                };
                 let field = f.b.ptr_offset(addr, 8);
                 f.b.store(Ty::Ptr, field, ptr);
                 Ok(addr)
