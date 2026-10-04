@@ -107,7 +107,7 @@ Text_Display_Theme :: struct {
 }
 
 Text_Display_State :: struct #type_info_none {
-    using widget: Active_Widget;
+    #as using widget: Active_Widget;
     rect: Rect;
     text: *Flowable_Text;
     selecting := false;
