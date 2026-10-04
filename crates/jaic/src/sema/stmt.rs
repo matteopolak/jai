@@ -310,34 +310,32 @@ impl Compiler {
             Some(t) => Some(self.eval_type_in(f, scope, t)?),
             None => None,
         };
-        // Evaluate the initializer before the names come into scope.
-        let init = match &decl.value {
-            Some(v) if matches!(v.kind, E::Uninit) => None,
-            Some(v) => Some(self.check_expr(f, scope, v, declared)?),
-            None => None,
-        };
-        let mut values: Vec<Option<Operand>> = match init {
-            Some(Operand::Multi(vals)) if decl.names.len() > 1 => vals
-                .into_iter()
-                .map(|(ty, val)| {
-                    Some(Operand::Value {
-                        ty,
-                        val,
-                    })
-                })
-                .collect(),
-            Some(op) => {
-                let mut v = vec![Some(op)];
-                // `a, b := 0;` gives every name the same value.
-                for _ in 1..decl.names.len() {
-                    v.push(v[0].clone());
-                }
-                v
-            }
-            None => vec![None; decl.names.len()],
-        };
+        // Evaluate the initializers before the names come into scope.
+        let mut values = self.check_decl_values(f, scope, decl, declared)?;
         values.resize(decl.names.len(), None);
-        for (name, value) in decl.names.iter().zip(values) {
+        let existing = |i: usize| decl.existing.get(i).copied().unwrap_or(false);
+        for (i, (name, value)) in decl.names.iter().zip(values).enumerate() {
+            if existing(i) {
+                // `a=, b := ...` assigns to a variable that is already in scope.
+                let Some(value) = value else {
+                    return err(name.span, "assignment needs a value");
+                };
+                let place = self.check_ident(f, scope, name.name, name.span)?;
+                let Operand::Place {
+                    ty,
+                    addr,
+                } = place
+                else {
+                    return err(
+                        name.span,
+                        format!("cannot assign to {}", self.describe(&place)),
+                    );
+                };
+                let value = self.convert(f, value, ty, name.span)?;
+                let (_, v) = self.rvalue(f, value, name.span)?;
+                self.store_value(f, ty, addr, v, name.span)?;
+                continue;
+            }
             let ty = match (declared, &value) {
                 (Some(t), _) => t,
                 (None, Some(op)) => {
@@ -374,6 +372,12 @@ impl Compiler {
                 None if decl.value.is_none() => self.init_default(f, ty, addr, span)?,
                 None => {}
             }
+            if self.declares_local(target, name.name) {
+                return err(
+                    name.span,
+                    format!("'{}' is already declared in this scope", name.name),
+                );
+            }
             let depth = self.scope(target).proc_depth;
             let kind = EntityKind::Local {
                 ty,
@@ -393,6 +397,76 @@ impl Compiler {
             }
         }
         Ok(())
+    }
+
+    /// Whether `scope` itself already holds a runtime local called `name`.
+    fn declares_local(&self, scope: ScopeId, name: Sym) -> bool {
+        self.scope(scope).names.get(&name).is_some_and(|ids| {
+            ids.iter()
+                .any(|&e| matches!(self.entity(e).kind, EntityKind::Local { .. }))
+        })
+    }
+
+    /// The initializer operands of a declaration, one per name where the declaration gives
+    /// enough values: `a, b := f()` splits a multi-value call, `a, b := 0` repeats the value,
+    /// and `a, b := 1, 2` pairs them up.
+    fn check_decl_values(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        decl: &ast::Decl,
+        declared: Option<TypeId>,
+    ) -> Result<Vec<Option<Operand>>> {
+        let names = decl.names.len();
+        let Some(first) = &decl.value else {
+            return Ok(vec![None; names]);
+        };
+        if matches!(first.kind, E::Uninit) {
+            return Ok(vec![None; names]);
+        }
+        if !decl.extra_values.is_empty() {
+            let exprs: Vec<&ast::Expr> = std::iter::once(first).chain(&decl.extra_values).collect();
+            if exprs.len() != names {
+                return err(
+                    decl.span,
+                    format!("expected {names} values, found {}", exprs.len()),
+                );
+            }
+            let mut values = Vec::new();
+            for e in exprs {
+                let op = self.check_expr(f, scope, e, declared)?;
+                values.push(Some(if decl.existing.is_empty() {
+                    op
+                } else {
+                    // Snapshot, so assigning to an earlier name cannot change a later value.
+                    let op = self.settle_untyped(op, declared);
+                    let (ty, v) = self.rvalue(f, op, e.span)?;
+                    let tmp = self.spill(f, ty, v, e.span)?;
+                    let val = match self.ir_ty(ty) {
+                        Some(t) => f.b.load(t, tmp),
+                        None => tmp,
+                    };
+                    Operand::Value {
+                        ty,
+                        val,
+                    }
+                }));
+            }
+            return Ok(values);
+        }
+        Ok(match self.check_expr(f, scope, first, declared)? {
+            Operand::Multi(vals) if names > 1 => vals
+                .into_iter()
+                .map(|(ty, val)| {
+                    Some(Operand::Value {
+                        ty,
+                        val,
+                    })
+                })
+                .collect(),
+            // `a, b := 0;` gives every name the same value.
+            op => vec![Some(op); names],
+        })
     }
 
     /// `x[i] = v` / `x[i] op= v` through `operator []=` (and `operator []` to

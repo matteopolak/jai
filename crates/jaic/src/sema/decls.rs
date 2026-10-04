@@ -547,6 +547,8 @@ impl Compiler {
             file,
         );
         f.compile_time = true;
+        // Runtime locals of the enclosing procedure are not visible to constants.
+        let scope = self.thunk_scope(scope);
         let op = self.check_expr(&mut f, scope, expr, expected)?;
         match op {
             Operand::Value {

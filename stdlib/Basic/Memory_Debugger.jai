@@ -350,7 +350,7 @@ _md_end :: () {
 }
 _md_release :: () {
     unindexed, previous := compare_and_swap(*md_owner_thread_index, context.thread_index, cast(u32)0);
-    released, previous := compare_and_swap(*md_owner_context, cast(*void)*context, cast(*void)null);
+    released, previous_context := compare_and_swap(*md_owner_context, cast(*void)*context, cast(*void)null);
     context.__basic_memory_debugger_lock_owned = false;
 }
 _md_ignore_allocator :: (allocator: Allocator) -> bool {

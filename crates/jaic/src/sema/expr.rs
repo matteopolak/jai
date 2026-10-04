@@ -77,6 +77,20 @@ impl Compiler {
                 ..
             } => self.check_call(f, scope, callee, args, expected, span),
             E::Member(base, member) => {
+                // Compile-time code may read type-level constants through a runtime local
+                // (`#if table.FLAG`): only the local's type is needed.
+                if f.compile_time
+                    && let Some(ty) = self.outer_local_type(scope, base)?
+                    && let Ok(op) = self.member_access(
+                        f,
+                        scope,
+                        Operand::Type(self.types.pointee(ty).unwrap_or(ty)),
+                        member.name,
+                        member.span,
+                    )
+                {
+                    return Ok(op);
+                }
                 let base_op = self.check_expr(f, scope, base, None)?;
                 self.member_access(f, scope, base_op, member.name, member.span)
             }
@@ -320,6 +334,24 @@ impl Compiler {
         }
     }
 
+    /// The type of `expr` if it names a runtime local of an enclosing procedure.
+    fn outer_local_type(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Option<TypeId>> {
+        let E::Ident(name) = &expr.kind else {
+            return Ok(None);
+        };
+        Ok(match self.lookup(scope, *name)?.as_slice() {
+            [id] => match self.entity(*id).kind {
+                EntityKind::Local {
+                    ty,
+                    depth,
+                    ..
+                } if depth != self.scope(scope).proc_depth => Some(ty),
+                _ => None,
+            },
+            _ => None,
+        })
+    }
+
     /// Evaluate a type expression inside a body.
     pub fn eval_type_in(
         &mut self,
@@ -340,7 +372,7 @@ impl Compiler {
         self.operand_as_type(op, expr.span)
     }
 
-    fn check_ident(
+    pub(super) fn check_ident(
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,
@@ -404,12 +436,16 @@ impl Compiler {
                 depth,
             } => {
                 if depth != self.scope(scope).proc_depth {
+                    let name = self.entity(id).name;
                     return err(
                         span,
-                        format!(
-                            "cannot access local '{}' of an enclosing procedure",
-                            self.entity(id).name
-                        ),
+                        if f.compile_time {
+                            format!(
+                                "cannot use local '{name}' in a compile-time expression: its value is only known at runtime"
+                            )
+                        } else {
+                            format!("cannot access local '{name}' of an enclosing procedure")
+                        },
                     );
                 }
                 return Ok(Operand::Place {
