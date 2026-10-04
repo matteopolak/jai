@@ -286,14 +286,25 @@ impl Compiler {
     pub fn run_top_level(&mut self) -> Result<()> {
         while self.runs_done < self.top_level_runs.len() {
             let (expr, scope) = self.top_level_runs[self.runs_done].clone();
+            let misses = self.placeholder_misses;
+            let result = self.eval_const(scope, &expr, None);
+            // Needs a `#placeholder` a metaprogram may define later: retry at the next settle.
+            if result.is_err() && !self.placeholders_final && self.placeholder_misses != misses {
+                return Ok(());
+            }
             self.runs_done += 1;
-            self.eval_const(scope, &expr, None)?;
+            result?;
             self.pull_workspace_sources()?;
         }
         while self.asserts_done < self.asserts.len() {
             let (cond, message, scope) = self.asserts[self.asserts_done].clone();
+            let misses = self.placeholder_misses;
+            let holds = self.eval_static_condition(scope, &cond);
+            if holds.is_err() && !self.placeholders_final && self.placeholder_misses != misses {
+                return Ok(());
+            }
             self.asserts_done += 1;
-            if !self.eval_static_condition(scope, &cond)? {
+            if !holds? {
                 let msg = match message {
                     Some(m) => match self.eval_const_value(scope, &m)? {
                         Value::String(s) => String::from_utf8_lossy(&s).into_owned(),

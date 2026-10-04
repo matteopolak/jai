@@ -61,10 +61,14 @@ impl Compiler {
                 span,
                 format!("internal: local '{name}' resolved as a declaration"),
             ),
-            EntityKind::Placeholder => err(
-                span,
-                format!("'{name}' is a #placeholder that was never defined"),
-            ),
+            EntityKind::Placeholder => {
+                // Top-level items that needed it wait for the metaprogram to define it.
+                self.placeholder_misses += 1;
+                err(
+                    span,
+                    format!("'{name}' is a #placeholder that was never defined"),
+                )
+            }
             EntityKind::Import(import) => {
                 Ok(Resolved::Module(self.resolve_import(scope, &import)?))
             }

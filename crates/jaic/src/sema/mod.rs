@@ -238,6 +238,11 @@ pub struct Compiler {
     pub program_param_settings: Vec<(PathBuf, Sym, ast::Expr, ScopeId)>,
     /// Set while `expand_all` retries deferred items: failures are then final.
     pub retrying_pending: bool,
+    /// Lookups that reached an undefined `#placeholder`: a pending top-level item whose
+    /// expansion did so waits (a metaprogram may define it later) until `finish_program`.
+    pub placeholder_misses: u64,
+    /// Set by `finish_program`: pending items no longer wait for placeholders.
+    pub placeholders_final: bool,
 }
 
 /// Names and default values of a procedure type's parameters (defaults evaluate in `scope`).
@@ -319,6 +324,8 @@ impl Compiler {
             proc_type_params: HashMap::new(),
             program_param_settings: Vec::new(),
             retrying_pending: false,
+            placeholder_misses: 0,
+            placeholders_final: false,
         };
         c.root_scope = c.new_scope(scope::ScopeKind::Root, None, ModuleId(u32::MAX), None);
         c.declare_builtins();

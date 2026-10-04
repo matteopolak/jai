@@ -915,16 +915,7 @@ impl Exporter<'_> {
             }
             E::Block(block) => return self.block(&block.stmts, 1, block.span),
             E::Struct(lit) => return self.struct_lit(lit, None, Sym::intern("")),
-            E::Enum(lit) => {
-                let notes: Vec<&ast::Note> = lit.notes.iter().collect();
-                let notes = self.notes(&notes);
-                let mut rec = self.node("Code_Enum", node::ENUM, span);
-                rec.refs("notes", notes)
-                    .int("marked_as_complete", lit.complete as i64)
-                    .int("marked_as_specified", lit.specified as i64)
-                    .int("is_flags", lit.flags_enum as i64);
-                rec
-            }
+            E::Enum(lit) => return self.enum_lit(lit, None, span),
             E::Run {
                 ..
             } => self.node("Code_Directive_Run", node::DIRECTIVE_RUN, span),
@@ -1282,6 +1273,7 @@ impl Exporter<'_> {
             } => {
                 let expression = match d.value.as_ref().map(|v| &v.kind) {
                     Some(ast::ExprKind::Struct(lit)) => Some(self.struct_lit(lit, Some(*t), name)),
+                    Some(ast::ExprKind::Enum(lit)) => Some(self.enum_lit(lit, Some(*t), span)),
                     _ => None,
                 };
                 (Some(*ty), expression)
@@ -1302,6 +1294,26 @@ impl Exporter<'_> {
             _ => (None, None),
         };
         self.decl(d, name, ty, expression, false)
+    }
+
+    /// An enum literal; `external_type` is its type when the declaration resolved to one.
+    fn enum_lit(&mut self, lit: &ast::EnumLit, defined: Option<TypeId>, span: Span) -> i64 {
+        let notes: Vec<&ast::Note> = lit.notes.iter().collect();
+        let notes = self.notes(&notes);
+        let external = defined
+            .filter(|&t| {
+                self.c
+                    .as_deref()
+                    .is_some_and(|c| matches!(c.types.kind(t), TypeKind::Enum(_)))
+            })
+            .map_or(0, |t| self.ty(t));
+        let mut rec = self.node("Code_Enum", node::ENUM, span);
+        rec.refs("notes", notes)
+            .ptr("external_type", external)
+            .int("marked_as_complete", lit.complete as i64)
+            .int("marked_as_specified", lit.specified as i64)
+            .int("is_flags", lit.flags_enum as i64);
+        self.add(rec)
     }
 
     /// A struct literal. Without a concrete type (polymorphic structs, anonymous
