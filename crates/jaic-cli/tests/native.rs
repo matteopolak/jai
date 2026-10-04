@@ -116,6 +116,35 @@ fn hello_world_builds_and_prints() {
     assert_eq!(output.status.code(), Some(0));
 }
 
+/// Compiled code maintains `context.stack_trace` (`jaic::stack_trace::instrument`): call lines, depth,
+/// a trace through an inline procedure, and the trace an assertion prints.
+#[test]
+fn stack_traces() {
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-stack-trace");
+    std::fs::create_dir_all(&dir).unwrap();
+    let ok = repo_root().join("tests/stdlib/stack-trace-line-through-inline.jai");
+    let output = build_and_run(&ok, &dir, "through-inline").unwrap();
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "ok\n");
+    let source = dir.join("trace.jai");
+    std::fs::write(
+        &source,
+        "#import \"Basic\";\n\
+         depth :: () -> int { n := 0; node := context.stack_trace; while node { n += 1; node = node.next; } return n; }\n\
+         inner :: () -> int { return depth(); }\n\
+         main :: () {\n\
+             print(\"% %\\n\", depth(), inner());\n\
+             assert(false, \"boom\");\n\
+         }\n",
+    )
+    .unwrap();
+    let output = build_and_run(&source, &dir, "trace").unwrap();
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "2 3\n");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("Stack trace:"), "{stderr}");
+    assert!(stderr.contains("trace.jai:6: main"), "{stderr}");
+    assert!(!output.status.success());
+}
+
 /// C structs by value across the C ABI: foreign calls from the interpreter and from native code, and
 /// native `#c_call` definitions called back from C. Skipped when no C compiler is installed.
 #[test]

@@ -549,7 +549,7 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
     let mut failed = false;
     let next = match result {
         Ok(Stage::Done) => {
-            failed = !write_output(shared, id, &compiler, &mut events)?;
+            failed = !write_output(shared, id, &mut compiler, &mut events)?;
             Stage::Done
         }
         Ok(next) => next,
@@ -584,7 +584,7 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
 fn write_output(
     shared: &SharedWorkspaces,
     id: i64,
-    compiler: &Compiler,
+    compiler: &mut Compiler,
     events: &mut Vec<Event>,
 ) -> Result<bool, String> {
     events.push(phase(PHASE_ALL_TARGET_CODE_BUILT));
@@ -599,6 +599,7 @@ fn write_output(
         ints: vec![PHASE_PRE_WRITE_EXECUTABLE, 0],
         strings: vec![name.clone()],
     });
+    compiler.prepare_compiled_output();
     let written = {
         let mut reg = shared.borrow_mut();
         match reg.env.backend.as_mut() {
