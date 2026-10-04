@@ -417,7 +417,25 @@ impl Compiler {
         } = &op
         {
             let tr = self.types.repr(to);
+            let fr = self.types.repr(op.ty());
             let folded = match value {
+                // `cast,force` between same-size ints and floats reinterprets the bits.
+                Value::Int(i) if flags.force && self.types.is_float(tr) => Some(Value::Float(
+                    if tr == TypeId::F32 {
+                        f32::from_bits(*i as u32) as f64
+                    } else {
+                        f64::from_bits(*i as u64)
+                    },
+                )),
+                Value::Float(x) if flags.force && self.types.is_integer(tr) => {
+                    let bits = if fr == TypeId::F32 {
+                        (*x as f32).to_bits() as i128
+                    } else {
+                        x.to_bits() as i128
+                    };
+                    let (width, signed) = self.types.int_info(tr).unwrap();
+                    Some(Value::Int(expr::wrap_int(bits, width, signed)))
+                }
                 Value::Int(i) if self.types.is_integer(tr) => {
                     let (bits, signed) = self.types.int_info(tr).unwrap();
                     Some(Value::Int(expr::wrap_int(*i, bits, signed)))
@@ -477,6 +495,18 @@ impl Compiler {
         // Same-representation reinterpretations (distinct/enum/struct-of-same-size are not allowed except via pointer).
         let fr = self.types.repr(from);
         let tr = self.types.repr(to);
+        if flags.force
+            && let (Some(fi), Some(ti)) = (self.ir_ty(fr), self.ir_ty(tr))
+            && fi.is_float() != ti.is_float()
+            && self.size_of(fr, span)? == self.size_of(tr, span)?
+        {
+            let (_, v) = self.rvalue(f, op, span)?;
+            let val = f.b.conv(ConvOp::Bitcast, fi, ti, v);
+            return Ok(Operand::Value {
+                ty: to,
+                val,
+            });
+        }
         if self.ir_ty(fr).is_some() && self.ir_ty(tr).is_some() {
             let op = self.settle_untyped(op, Some(to));
             return self.scalar_convert(f, op, to, span);
