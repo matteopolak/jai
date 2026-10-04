@@ -49,7 +49,10 @@ struct FieldDecl {
 
 enum FieldItem {
     Field(FieldDecl),
+    /// `#place f;`: following fields start at `f`'s offset.
     Place(Sym, Span),
+    /// `#overlay(f)`: the next field shares `f`'s storage.
+    Overlay(Sym, Span),
 }
 
 impl Compiler {
@@ -378,29 +381,35 @@ impl Compiler {
         let mut cursor = 0u64;
         let mut end = 0u64;
         let mut align = 1u64;
+        let mut overlay = None;
         for item in items {
             match item {
-                FieldItem::Place(name, span) => {
+                FieldItem::Place(name, span) | FieldItem::Overlay(name, span) => {
                     let Some(f) = fields.iter().find(|f: &&Field| f.name == Some(name)) else {
-                        return err(
-                            span,
-                            format!("#place: no field named '{name}' before this point"),
-                        );
+                        return err(span, format!("no field named '{name}' before this point"));
                     };
-                    cursor = f.offset;
+                    if matches!(item, FieldItem::Place(..)) {
+                        cursor = f.offset;
+                    } else {
+                        overlay = Some(f.offset);
+                    }
                 }
                 FieldItem::Field(d) => {
                     let size = self.size_of(d.ty, d.span)?;
                     let a = self.align_of(d.ty, d.span)?.max(d.align.unwrap_or(1));
                     align = align.max(a);
-                    let offset = if is_union {
+                    let offset = if let Some(offset) = overlay.take() {
+                        // Shares storage: the cursor stays where it was.
+                        end = end.max(offset + size);
+                        offset
+                    } else if is_union {
                         0
                     } else if no_padding {
                         cursor
                     } else {
                         cursor.next_multiple_of(a)
                     };
-                    if !is_union {
+                    if !is_union && offset >= cursor {
                         cursor = offset + size;
                     }
                     end = end.max(offset + size);
@@ -473,6 +482,12 @@ impl Compiler {
                         return err(e.span, "#place needs a field name");
                     };
                     out.push(FieldItem::Place(*name, e.span));
+                }
+                ast::StmtKind::Overlay(e) => {
+                    let E::Ident(name) = &e.kind else {
+                        return err(e.span, "#overlay needs a field name");
+                    };
+                    out.push(FieldItem::Overlay(*name, e.span));
                 }
                 ast::StmtKind::Expr(e) => match &e.kind {
                     E::Struct(lit) => {
