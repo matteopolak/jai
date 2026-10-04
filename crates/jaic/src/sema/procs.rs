@@ -258,6 +258,8 @@ impl Compiler {
                             value,
                             untyped: true,
                         } => self.default_untyped(ty, &value),
+                        Operand::Procs(p) if p.len() == 1 => self.proc_type(p[0], param.span)?,
+                        Operand::Type(_) => TypeId::TYPE,
                         other => other.ty(),
                     }
                 }
@@ -723,18 +725,21 @@ impl Compiler {
                     }
                     None => self.init_default(&mut f, rt, addr, span)?,
                 }
-                let depth = self.scope(scope).proc_depth;
-                self.add_entity(
-                    scope,
-                    name,
-                    span,
-                    EntityKind::Local {
-                        ty: rt,
-                        addr,
-                        depth,
-                    },
-                    false,
-                );
+                // A result named like a parameter is only reachable through `return`.
+                if !self.scope(scope).names.contains_key(&name) {
+                    let depth = self.scope(scope).proc_depth;
+                    self.add_entity(
+                        scope,
+                        name,
+                        span,
+                        EntityKind::Local {
+                            ty: rt,
+                            addr,
+                            depth,
+                        },
+                        false,
+                    );
+                }
                 f.named_results.push(Some(addr));
             } else {
                 f.named_results.push(None);
