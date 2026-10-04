@@ -746,12 +746,8 @@ impl Compiler {
                 f.named_results.push(None);
             }
         }
-        // Named results live in the parameter scope; the body may shadow them.
-        let body_scope = if f.named_results.iter().any(Option::is_some) {
-            self.new_block_scope(scope)
-        } else {
-            scope
-        };
+        // Parameters and named results live in an outer scope; the body may shadow them.
+        let body_scope = self.new_block_scope(scope);
         self.check_block_stmts(&mut f, body_scope, &body.stmts)?;
         if !f.b.is_terminated() {
             self.emit_fallthrough_return(&mut f, body.span)?;
