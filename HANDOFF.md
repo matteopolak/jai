@@ -26,7 +26,7 @@
 env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo build -q -p jaic-cli
 /Volumes/CodexBuilds/targets/jai-dev/debug/jaic run|check|build file.jai [-I dir] [-os linux|windows|macos] [- metaprogram args]
 env RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev rustup run nightly-2026-08-29 cargo test -q --workspace
-python3 tools/jaic-sweep.py corpus stdlib modules upstream --timeout 900   # expect only the negative control to fail
+python3 tools/jaic-sweep.py corpus negative stdlib modules upstream --timeout 900   # expect only the negative control to fail
 env RUSTC_WRAPPER= /opt/homebrew/bin/python3.14 tools/build_scripting_wasm.py --release   # needs python >= 3.11
 node tools/check_playground_worker.mjs artifacts/scripting-runtime   # check_browser_release.mjs needs a packaged dir with release.json
 python3 tools/openjai-tests.py   # open-jai expectation harness (open-jai is a separate dialect)

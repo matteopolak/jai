@@ -99,7 +99,7 @@ The compiler loads an independently authored prelude from `prelude/` and standar
 cargo test --workspace --locked --no-fail-fast
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
-python3 tools/jaic-sweep.py corpus stdlib modules upstream --timeout 900   # expect only the negative control to fail
+python3 tools/jaic-sweep.py corpus negative stdlib modules upstream --timeout 900   # expect only the negative control to fail
 ```
 
 The workspace is `crates/jaic` (lexer, parser, semantic analysis, IR, interpreter), `crates/jaic-cli` (the `jaic` binary), `crates/jaic-llvm` (native backend), `crates/jai-language-server` and `crates/jai-wasm` (browser build). Start with the [developer guide](docs/README.md) and [compiler architecture](docs/compiler/architecture.md). Rustfmt keeps code formatting consistent, and Cargo enforces a minimum dependency release age of 14 days.
