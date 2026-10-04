@@ -100,23 +100,46 @@ pub struct BuildEnv {
     pub report: Box<dyn FnMut(&str)>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Stage {
-    /// Collecting files/strings/options.
+    /// Collecting files/strings/options; nothing compiled yet.
     Open,
-    /// Compiled; events left to deliver.
-    Delivering,
-    Finished,
+    /// Sources loaded and their compile-time code run; more sources may be
+    /// added (after `TYPECHECKED_ALL_WE_CAN`) before code generation.
+    Checked,
+    /// Output written (or failed); only queued events remain.
+    Done,
 }
 
 struct Workspace {
     name: String,
-    sources: Vec<ProgramSource>,
+    /// Sources added and not yet loaded into the workspace's compiler.
+    pending: Vec<ProgramSource>,
     settings: BuildSettings,
     intercepted: bool,
     stage: Stage,
+    /// The workspace's compiler between steps (taken out while it runs).
+    compiler: Option<Box<Compiler>>,
+    /// Files already announced with FILE events.
+    files_reported: usize,
     events: VecDeque<Event>,
     failed: bool,
+}
+
+impl Workspace {
+    fn new(name: String) -> Self {
+        Workspace {
+            name,
+            pending: Vec::new(),
+            settings: BuildSettings::default(),
+            intercepted: false,
+            stage: Stage::Open,
+            compiler: None,
+            files_reported: 0,
+            events: VecDeque::new(),
+            failed: false,
+        }
+    }
 }
 
 /// One compiler message, in primitive form.
@@ -197,20 +220,12 @@ pub const COMPILER_VERSION: &str = "beta 0.2.025, jaic";
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.
     pub fn new(env: BuildEnv) -> SharedWorkspaces {
-        let blank = || Workspace {
-            name: String::new(),
-            sources: Vec::new(),
-            settings: BuildSettings::default(),
-            intercepted: false,
-            stage: Stage::Open,
-            events: VecDeque::new(),
-            failed: false,
-        };
-        let mut top = blank();
-        top.name = "Main Workspace".into();
+        let mut top = Workspace::new("Main Workspace".into());
+        // The embedder compiles the top-level program itself.
+        top.stage = Stage::Checked;
         Rc::new(RefCell::new(Workspaces {
             env,
-            list: vec![blank(), top],
+            list: vec![Workspace::new(String::new()), top],
             current: vec![1],
             event: Event::default(),
             strings: Vec::new(),
@@ -294,24 +309,23 @@ impl Workspaces {
     }
 }
 
-/// Compile workspace `id` if it has not been, queueing its messages.
-fn ensure_compiled(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
-    let (sources, settings, mut options, fs, host) = {
+/// Sources added to workspace `id` by its own compile-time code, for the
+/// compiler that is building it (`Compiler::pull_workspace_sources`).
+pub fn take_own_sources(shared: &SharedWorkspaces, id: i64) -> Vec<ProgramSource> {
+    let mut reg = shared.borrow_mut();
+    match reg.list.get_mut(id as usize) {
+        Some(ws) if ws.stage != Stage::Open => std::mem::take(&mut ws.pending),
+        _ => Vec::new(),
+    }
+}
+
+/// A compiler for workspace `id` with its build settings applied.
+fn new_compiler(shared: &SharedWorkspaces, id: i64) -> Result<Box<Compiler>, String> {
+    let (settings, mut options, fs, host) = {
         let mut reg = shared.borrow_mut();
-        let ws = reg.ws(id)?;
-        if ws.stage != Stage::Open {
-            return Ok(());
-        }
-        ws.stage = Stage::Delivering;
-        let (sources, settings) = (ws.sources.clone(), ws.settings.clone());
+        let settings = reg.ws(id)?.settings.clone();
         let options = reg.env.options.clone();
-        (
-            sources,
-            settings,
-            options,
-            reg.env.fs.clone(),
-            (reg.env.make_host)(),
-        )
+        (settings, options, reg.env.fs.clone(), (reg.env.make_host)())
     };
     if let Some(paths) = &settings.import_paths {
         // The module search path the metaprogram set, then the defaults (stdlib).
@@ -332,91 +346,158 @@ fn ensure_compiled(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
     if let Some(size) = settings.temporary_storage_size {
         options.temporary_storage_size = size;
     }
-    let mut compiler = Compiler::new(options, fs);
+    let mut compiler = Box::new(Compiler::new(options, fs));
     compiler.interp.host = host;
+    compiler.workspace = id;
     compiler.attach_workspaces(shared.clone());
-    shared.borrow_mut().current.push(id);
-    let result = compiler.compile_sources(&sources);
-    shared.borrow_mut().current.pop();
+    Ok(compiler)
+}
 
-    let mut events = VecDeque::new();
-    for file in &compiler.files {
-        events.push_back(Event {
-            kind: EVENT_FILE,
-            ints: Vec::new(),
-            strings: vec![file.path.display().to_string().into_bytes()],
-        });
-    }
-    let phase = |p: i64| Event {
+fn phase(p: i64) -> Event {
+    Event {
         kind: EVENT_PHASE,
         ints: vec![p, 0],
         strings: Vec::new(),
+    }
+}
+
+/// Advance workspace `id` by one step, queueing the messages it produces:
+/// Open → (load, run directives) Checked → (more sources, or generate code
+/// and write output) Done. Errors are reported and end in a failed COMPLETE.
+fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
+    let (stage, mut compiler, pending) = {
+        let mut reg = shared.borrow_mut();
+        let ws = reg.ws(id)?;
+        if ws.stage == Stage::Done {
+            return Ok(());
+        }
+        (
+            ws.stage,
+            ws.compiler.take(),
+            std::mem::take(&mut ws.pending),
+        )
     };
+    let mut compiler = match compiler.take() {
+        Some(c) => c,
+        None => new_compiler(shared, id)?,
+    };
+    let mut events = Vec::new();
+    // The registry borrow is released while the compiler runs: its
+    // compile-time code may call back into the registry.
+    shared.borrow_mut().current.push(id);
+    let result = match stage {
+        Stage::Open => compiler.begin_sources(&pending).map(|()| {
+            events.push(phase(PHASE_ALL_SOURCE_CODE_PARSED));
+            events.push(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
+            Stage::Checked
+        }),
+        Stage::Checked if !pending.is_empty() => pending
+            .iter()
+            .try_for_each(|source| compiler.add_source(source))
+            .and_then(|()| compiler.settle())
+            .map(|()| {
+                events.push(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
+                Stage::Checked
+            }),
+        Stage::Checked => compiler.finish_program().map(|()| Stage::Done),
+        Stage::Done => unreachable!(),
+    };
+    shared.borrow_mut().current.pop();
+
+    let reported = shared.borrow_mut().ws(id)?.files_reported;
+    let mut file_events: Vec<Event> = compiler.files[reported.min(compiler.files.len())..]
+        .iter()
+        .map(|file| Event {
+            kind: EVENT_FILE,
+            ints: Vec::new(),
+            strings: vec![file.path.display().to_string().into_bytes()],
+        })
+        .collect();
+    let files = compiler.files.len();
     let mut failed = false;
-    match result {
+    let next = match result {
+        Ok(Stage::Done) => {
+            failed = !write_output(shared, id, &compiler, &mut events)?;
+            Stage::Done
+        }
+        Ok(next) => next,
         Err(d) => {
             let text = compiler.render(&d);
             (shared.borrow_mut().env.report)(&text);
             failed = true;
+            Stage::Done
         }
-        Ok(()) => {
-            events.push_back(phase(PHASE_ALL_SOURCE_CODE_PARSED));
-            events.push_back(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
-            events.push_back(phase(PHASE_ALL_TARGET_CODE_BUILT));
-            if settings.do_output && settings.output_type != OutputType::NoOutput {
-                let output = output_path(&settings, &sources);
-                let name = output.display().to_string().into_bytes();
-                events.push_back(Event {
-                    kind: EVENT_PHASE,
-                    ints: vec![PHASE_PRE_WRITE_EXECUTABLE, 0],
-                    strings: vec![name.clone()],
-                });
-                let written = {
-                    let mut reg = shared.borrow_mut();
-                    match reg.env.backend.as_mut() {
-                        Some(backend) => {
-                            backend.write_output(&compiler.program, &settings, &output)
-                        }
-                        None => Ok(()), // No backend (browser): checking only.
-                    }
-                };
-                if let Err(message) = written {
-                    (shared.borrow_mut().env.report)(&format!(
-                        "error: writing {}: {message}",
-                        output.display()
-                    ));
-                    failed = true;
-                }
-                events.push_back(Event {
-                    kind: EVENT_PHASE,
-                    ints: vec![PHASE_POST_WRITE_EXECUTABLE, 0],
-                    strings: vec![name],
-                });
-            }
-        }
+    };
+    if next == Stage::Done {
+        events.push(Event {
+            kind: EVENT_COMPLETE,
+            ints: vec![failed as i64],
+            strings: Vec::new(),
+        });
     }
-    events.push_back(Event {
-        kind: EVENT_COMPLETE,
-        ints: vec![failed as i64],
-        strings: Vec::new(),
-    });
+    file_events.extend(events);
     let mut reg = shared.borrow_mut();
     let ws = reg.ws(id)?;
-    ws.events = events;
-    ws.failed = failed;
+    ws.files_reported = files;
+    ws.events.extend(file_events);
+    ws.failed |= failed;
+    ws.stage = next;
+    if next != Stage::Done {
+        ws.compiler = Some(compiler);
+    }
     Ok(())
+}
+
+/// Code generation is done: queue the write phases and call the backend.
+/// Returns whether the output was written (or not wanted).
+fn write_output(
+    shared: &SharedWorkspaces,
+    id: i64,
+    compiler: &Compiler,
+    events: &mut Vec<Event>,
+) -> Result<bool, String> {
+    events.push(phase(PHASE_ALL_TARGET_CODE_BUILT));
+    let settings = shared.borrow_mut().ws(id)?.settings.clone();
+    if !settings.do_output || settings.output_type == OutputType::NoOutput {
+        return Ok(true);
+    }
+    let output = output_path(&settings, compiler);
+    let name = output.display().to_string().into_bytes();
+    events.push(Event {
+        kind: EVENT_PHASE,
+        ints: vec![PHASE_PRE_WRITE_EXECUTABLE, 0],
+        strings: vec![name.clone()],
+    });
+    let written = {
+        let mut reg = shared.borrow_mut();
+        match reg.env.backend.as_mut() {
+            Some(backend) => backend.write_output(&compiler.program, &settings, &output),
+            None => Ok(()), // No backend (browser): checking only.
+        }
+    };
+    if let Err(message) = &written {
+        (shared.borrow_mut().env.report)(&format!(
+            "error: writing {}: {message}",
+            output.display()
+        ));
+    }
+    events.push(Event {
+        kind: EVENT_PHASE,
+        ints: vec![PHASE_POST_WRITE_EXECUTABLE, 0],
+        strings: vec![name],
+    });
+    Ok(written.is_ok())
 }
 
 /// Where a workspace's output goes: `output_path/output_executable_name`
 /// (default name: the first source file's stem).
-fn output_path(settings: &BuildSettings, sources: &[ProgramSource]) -> PathBuf {
+fn output_path(settings: &BuildSettings, compiler: &Compiler) -> PathBuf {
     let name = if settings.output_executable_name.is_empty() {
-        sources
-            .iter()
-            .find_map(|s| match s {
-                ProgramSource::File(p) => p.file_stem().map(|s| s.to_string_lossy().into_owned()),
-                ProgramSource::String(_) => None,
-            })
+        compiler
+            .main_module
+            .and_then(|m| compiler.files.iter().find(|f| f.module == m))
+            .and_then(|f| f.path.file_stem())
+            .map(|s| s.to_string_lossy().into_owned())
             .unwrap_or_else(|| "output".into())
     } else {
         settings.output_executable_name.clone()
@@ -428,15 +509,14 @@ fn output_path(settings: &BuildSettings, sources: &[ProgramSource]) -> PathBuf {
 /// (Jai compiles them after the metaprogram's `#run` returns).
 pub fn finish_all(shared: &SharedWorkspaces) -> Result<(), String> {
     let mut id = 2;
-    loop {
-        let count = shared.borrow().list.len() as i64;
-        if id >= count {
-            return Ok(());
+    while id < shared.borrow().list.len() as i64 {
+        while shared.borrow().list[id as usize].stage != Stage::Done {
+            step(shared, id)?;
         }
-        ensure_compiled(shared, id)?;
-        shared.borrow_mut().list[id as usize].stage = Stage::Finished;
+        shared.borrow_mut().list[id as usize].events.clear();
         id += 1;
     }
+    Ok(())
 }
 
 /// Execute a primitive. `args` follow the IR calling convention: the context
@@ -483,16 +563,7 @@ pub fn call(
         MetaOp::WorkspaceCreate => {
             let name = text(interp, 0);
             let mut reg = shared.borrow_mut();
-            let mut ws = Workspace {
-                name,
-                sources: Vec::new(),
-                settings: BuildSettings::default(),
-                intercepted: false,
-                stage: Stage::Open,
-                events: VecDeque::new(),
-                failed: false,
-            };
-            ws.settings.import_paths = None;
+            let ws = Workspace::new(name);
             reg.list.push(ws);
             Ok(vec![reg.list.len() as u64 - 1])
         }
@@ -502,13 +573,13 @@ pub fn call(
             let value = text(interp, 1);
             let mut reg = shared.borrow_mut();
             let ws = reg.ws(id).map_err(trap)?;
-            if ws.stage != Stage::Open {
+            if ws.stage == Stage::Done {
                 return Err(trap(format!(
-                    "workspace '{}' was already compiled; add sources before reading its messages",
+                    "workspace '{}' is already complete; sources can no longer be added",
                     ws.name
                 )));
             }
-            ws.sources.push(if op == MetaOp::AddFile {
+            ws.pending.push(if op == MetaOp::AddFile {
                 ProgramSource::File(PathBuf::from(value))
             } else {
                 ProgramSource::String(value)
@@ -533,22 +604,23 @@ pub fn call(
         }
         MetaOp::NextEvent => {
             let id = arg(0) as i64;
-            ensure_compiled(shared, id).map_err(trap)?;
-            let mut reg = shared.borrow_mut();
-            let ws = reg.ws(id).map_err(trap)?;
-            match ws.events.pop_front() {
-                Some(event) => {
+            if id == shared.borrow().current_id() || id == 1 {
+                // A workspace cannot wait on its own compilation.
+                return Ok(vec![0]);
+            }
+            loop {
+                let mut reg = shared.borrow_mut();
+                let ws = reg.ws(id).map_err(trap)?;
+                if let Some(event) = ws.events.pop_front() {
                     let kind = event.kind;
-                    if ws.events.is_empty() {
-                        ws.stage = Stage::Finished;
-                    }
                     reg.event = event;
-                    Ok(vec![kind as u64])
+                    return Ok(vec![kind as u64]);
                 }
-                None => {
-                    ws.stage = Stage::Finished;
-                    Ok(vec![0])
+                if ws.stage == Stage::Done {
+                    return Ok(vec![0]);
                 }
+                drop(reg);
+                step(shared, id).map_err(trap)?;
             }
         }
         MetaOp::EventInt => {

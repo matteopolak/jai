@@ -6,10 +6,10 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
     for arg, index: args argv[index] = temp_c_string(arg);
     argv[args.count] = null;
     directory := temp_c_string(working_directory);
-    child_input: [2] s32 = .{-1, -1};
-    child_output: [2] s32 = .{-1, -1};
-    child_error: [2] s32 = .{-1, -1};
-    launch_error: [2] s32 = .{-1, -1};
+    child_input: [2] s32 = .[-1, -1];
+    child_output: [2] s32 = .[-1, -1];
+    child_error: [2] s32 = .[-1, -1];
+    launch_error: [2] s32 = .[-1, -1];
     defer close_pair(*launch_error);
     if !safe_pipe(*launch_error) return false;
     if capture_and_return_output {
@@ -90,8 +90,8 @@ write_to_process :: (process: *Process, data: [] u8) -> success: bool, bytes_wri
     if P.pthread_sigmask(P.SIG_BLOCK, *blocked, *previous) != 0 return false, 0;
     defer P.pthread_sigmask(P.SIG_SETMASK, *previous, null);
     originally_pending := P.sigpending(*before) == 0 && P.sigismember(*before, P.SIGPIPE) == 1;
-    amount := P.write(process.input.handle, data.data, data.count);
-    while amount < 0 && P.errno() == P.EINTR amount = P.write(process.input.handle, data.data, data.count);
+    amount := P.write(process.input.handle, data.data, cast(u64) data.count);
+    while amount < 0 && P.errno() == P.EINTR amount = P.write(process.input.handle, data.data, cast(u64) data.count);
     if amount < 0 && P.errno() == P.EPIPE && !originally_pending {
         pending: P.sigset_t;
         ignored: s32;
@@ -103,8 +103,8 @@ read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: 
     if pipe.eof return true, 0;
     if pipe.handle < 0 return false, 0;
     if buffer.count == 0 return true, 0;
-    amount := P.read(pipe.handle, buffer.data, buffer.count);
-    while amount < 0 && P.errno() == P.EINTR amount = P.read(pipe.handle, buffer.data, buffer.count);
+    amount := P.read(pipe.handle, buffer.data, cast(u64) buffer.count);
+    while amount < 0 && P.errno() == P.EINTR amount = P.read(pipe.handle, buffer.data, cast(u64) buffer.count);
     if amount == 0 { deinit(pipe); return true, 0; }
     return amount >= 0, cast(int) max(0, amount);
 }
@@ -166,17 +166,19 @@ close_and_reset :: (fd: *s32, loc := #caller_location) {
 }
 
 #scope_module
-close_pair :: (pair: *[2] s32) { close_and_reset(*pair[0]); close_and_reset(*pair[1]); }
+close_pair :: (pair: *[2] s32) { close_and_reset(*(<<pair)[0]); close_and_reset(*(<<pair)[1]); }
 safe_pipe :: (pair: *[2] s32) -> bool {
     if P.pipe(pair) != 0 return false;
+    fds := pair;
     for i: 0..1 {
-        if pair[i] < 3 {
-            replacement := P.fcntl(pair[i], P.F_DUPFD, cast(s32) 3);
+        fd := *(<<fds)[i];
+        if <<fd < 3 {
+            replacement := P.fcntl(<<fd, P.F_DUPFD, cast(s32) 3);
             if replacement < 0 { close_pair(pair); return false; }
-            P.close(pair[i]);
-            pair[i] = replacement;
+            P.close(<<fd);
+            <<fd = replacement;
         }
-        if P.fcntl(pair[i], P.F_SETFD, cast(s32) P.FD_CLOEXEC) < 0 { close_pair(pair); return false; }
+        if P.fcntl(<<fd, P.F_SETFD, cast(s32) P.FD_CLOEXEC) < 0 { close_pair(pair); return false; }
     }
     return true;
 }
@@ -184,7 +186,7 @@ process_monotonic_ms :: () -> s64 {
     time: P.timespec;
     clock_id: s32 = 1;
     #if OS == .MACOS { clock_id = 6; }
-    if P.clock_gettime(clock_id, *time) != 0 return 0;
+    if P.clock_gettime(xx clock_id, *time) != 0 return 0;
     return time.tv_sec * 1000 + time.tv_nsec / 1000000;
 }
 #if OS == .LINUX {

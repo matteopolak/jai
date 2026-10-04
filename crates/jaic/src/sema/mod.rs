@@ -145,6 +145,13 @@ pub struct Compiler {
     pub context_type: Option<TypeId>,
     pub top_level_runs: Vec<(ast::Expr, ScopeId)>,
     pub asserts: Vec<(ast::Expr, Option<ast::Expr>, ScopeId)>,
+    /// How many of `top_level_runs`/`asserts` already executed.
+    runs_done: usize,
+    asserts_done: usize,
+    /// Id of the workspace this compiler builds (1: the top-level program).
+    pub workspace: i64,
+    /// Sources added so far (labels of added strings).
+    added_sources: usize,
     /// Procedures that need their bodies lowered.
     pub body_queue: Vec<ProcId>,
     pub interp: crate::interp::Interp,
@@ -206,6 +213,10 @@ impl Compiler {
             context_type: None,
             top_level_runs: Vec::new(),
             asserts: Vec::new(),
+            runs_done: 0,
+            asserts_done: 0,
+            workspace: 1,
+            added_sources: 0,
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::new(),

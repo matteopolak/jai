@@ -47,20 +47,65 @@ impl Compiler {
     /// Compile a program made of several files and source strings, all loaded
     /// into the main module (a workspace's `add_build_file`/`add_build_string`).
     pub fn compile_sources(&mut self, sources: &[ProgramSource]) -> Result<()> {
+        self.begin_sources(sources)?;
+        self.finish_program()
+    }
+
+    /// Load the bootstrap modules and `sources`, then run every top-level
+    /// directive: the program is parsed and its compile-time code has run.
+    pub fn begin_sources(&mut self, sources: &[ProgramSource]) -> Result<()> {
         self.load_bootstrap()?;
         let m = self.new_module("main", None, Vec::new());
         self.main_module = Some(m);
-        for (i, source) in sources.iter().enumerate() {
-            match source {
-                ProgramSource::File(path) => self.load_file(path, m, Span::default())?,
-                ProgramSource::String(text) => {
-                    self.load_string(&format!("<added string {}>", i + 1), text, m)?
-                }
+        for source in sources {
+            self.add_source(source)?;
+        }
+        self.settle()
+    }
+
+    /// Load one more file or string into the main module; `settle` runs it.
+    pub fn add_source(&mut self, source: &ProgramSource) -> Result<()> {
+        let Some(m) = self.main_module else {
+            return err(Span::default(), "no main module to add sources to");
+        };
+        self.added_sources += 1;
+        match source {
+            ProgramSource::File(path) => self.load_file(path, m, Span::default()),
+            ProgramSource::String(text) => {
+                let label = format!("<added string {}>", self.added_sources);
+                self.load_string(&label, text, m)
             }
         }
+    }
+
+    /// Expand declarations and run pending top-level directives.
+    pub fn settle(&mut self) -> Result<()> {
         self.expand_all()?;
-        self.run_top_level()?;
+        self.run_top_level()
+    }
+
+    /// Load sources that compile-time code added to this compiler's own
+    /// workspace (`add_build_string(s)` from inside a `#run`).
+    pub(super) fn pull_workspace_sources(&mut self) -> Result<()> {
+        let Some(workspaces) = self.interp.workspaces.clone() else {
+            return Ok(());
+        };
+        let added = crate::build::take_own_sources(&workspaces, self.workspace);
+        if added.is_empty() {
+            return Ok(());
+        }
+        for source in &added {
+            self.add_source(source)?;
+        }
+        self.expand_all()
+    }
+
+    /// Lower everything reachable from the program's exports.
+    pub fn finish_program(&mut self) -> Result<()> {
         // A program made only of `#run`/`#assert` directives has nothing to lower.
+        let Some(m) = self.main_module else {
+            return Ok(());
+        };
         let scope = self.modules[m.0 as usize].scope;
         if self.lookup(scope, Sym::intern("main"))?.is_empty() {
             return Ok(());

@@ -487,6 +487,7 @@ EVENT_COMPLETE :: 3;
 EVENT_IMPORT   :: 4;
 
 PHASE_PRE_WRITE_EXECUTABLE         :: 3;
+PHASE_POST_WRITE_EXECUTABLE        :: 4;
 PHASE_READY_FOR_CUSTOM_LINK_COMMAND :: 5;
 
 workspace_names: [..] string;
@@ -563,6 +564,8 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
                 for 0..count-1  array_add(*phase_object_files, __jaic_event_string(it));
                 message_phase.compiler_generated_object_files = phase_object_files;
                 message_phase.executable_name = __jaic_event_string(count);
+            } else if phase == PHASE_POST_WRITE_EXECUTABLE {
+                message_phase.executable_name = __jaic_event_string(0);
             }
             return *message_phase;
 

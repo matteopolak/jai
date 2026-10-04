@@ -271,16 +271,18 @@ impl Compiler {
     }
 
     /// Execute top-level `#run` directives (in declaration order).
+    /// Execute the `#run`/`#assert` directives not executed yet. Sources a
+    /// `#run` adds to this compiler's own workspace are loaded right after it.
     pub fn run_top_level(&mut self) -> Result<()> {
-        let mut i = 0;
-        while i < self.top_level_runs.len() {
-            let (expr, scope) = self.top_level_runs[i].clone();
+        while self.runs_done < self.top_level_runs.len() {
+            let (expr, scope) = self.top_level_runs[self.runs_done].clone();
+            self.runs_done += 1;
             self.eval_const(scope, &expr, None)?;
-            i += 1;
+            self.pull_workspace_sources()?;
         }
-        let mut i = 0;
-        while i < self.asserts.len() {
-            let (cond, message, scope) = self.asserts[i].clone();
+        while self.asserts_done < self.asserts.len() {
+            let (cond, message, scope) = self.asserts[self.asserts_done].clone();
+            self.asserts_done += 1;
             if !self.eval_static_condition(scope, &cond)? {
                 let msg = match message {
                     Some(m) => match self.eval_const_value(scope, &m)? {
@@ -301,7 +303,6 @@ impl Compiler {
                     ),
                 );
             }
-            i += 1;
         }
         Ok(())
     }
