@@ -195,7 +195,7 @@ impl Compiler {
         let mut best: Vec<Candidate> = Vec::new();
         let mut errors: Vec<String> = Vec::new();
         for &proc in procs {
-            match self.match_candidate(f, proc, &args, span) {
+            match self.match_candidate(proc, &args, span) {
                 Ok(c) => {
                     if best.first().is_none_or(|b| c.cost < b.cost) {
                         best = vec![c];
@@ -237,7 +237,6 @@ impl Compiler {
     /// Check whether `proc` accepts `args`, instantiating polymorphic procedures.
     fn match_candidate(
         &mut self,
-        f: &mut FnCtx,
         proc: ProcId,
         args: &[CallArg],
         span: Span,
@@ -253,7 +252,7 @@ impl Compiler {
         let mut proc_id = proc;
         let mut extra = 0;
         if self.proc(proc).is_poly {
-            let bindings = self.infer_bindings(f, proc, &header, &slots, args, span)?;
+            let bindings = self.infer_bindings(proc, &header, &slots, args, span)?;
             proc_id = self.instantiate(proc, bindings, span)?;
             extra = 1;
         }
@@ -403,7 +402,6 @@ impl Compiler {
     /// Infer `$T` bindings of a polymorphic procedure from its arguments.
     fn infer_bindings(
         &mut self,
-        f: &mut FnCtx,
         proc: ProcId,
         header: &ast::ProcHeader,
         slots: &[Slot],
@@ -552,18 +550,22 @@ impl Compiler {
             }
         }
         // Defaults of the form `$T` without arguments are an error unless bound elsewhere.
-        for param in &header.params {
-            if let Some(t) = &param.ty {
-                for name in poly_names(t) {
-                    if !bindings.iter().any(|(n, _, _)| *n == name) {
-                        return err(span, format!("could not infer polymorphic type '${name}'"));
+        // A `#modify` block may still bind what the arguments did not determine.
+        if header.modify.is_none() {
+            for param in &header.params {
+                if let Some(t) = &param.ty {
+                    for name in poly_names(t) {
+                        if !bindings.iter().any(|(n, _, _)| *n == name) {
+                            return err(span, format!("could not infer polymorphic type '${name}'"));
+                        }
                     }
                 }
             }
         }
-        // `#modify` blocks could adjust bindings; not supported yet (accept as-is).
-        let _ = f;
-        Ok(bindings)
+        match &header.modify {
+            Some(block) => self.run_modify(proc, header, block, bindings, span),
+            None => Ok(bindings),
+        }
     }
 
     /// Match a polymorphic type pattern against a concrete type, adding bindings.
@@ -1225,7 +1227,7 @@ impl Compiler {
             return None;
         };
         let scope = self.proc(proc).scope;
-        let mut scratch = self.scratch_ctx(scope);
+        let scratch = self.scratch_ctx(scope);
         let placeholder = scratch.b.param(0);
         let args: Vec<CallArg> = info
             .params
@@ -1242,7 +1244,7 @@ impl Compiler {
                 scope,
             })
             .collect();
-        let candidate = self.match_candidate(&mut scratch, proc, &args, span).ok()?;
+        let candidate = self.match_candidate(proc, &args, span).ok()?;
         let ty = self.proc_type(candidate.proc, span).ok()?;
         (ty == target || self.proc_types_compatible(ty, target)).then_some(candidate.proc)
     }
@@ -1267,7 +1269,7 @@ impl Compiler {
         };
         let call_args = self.precheck_args(f, scope, args)?;
         for &p in &procs {
-            if let Ok(c) = self.match_candidate(f, p, &call_args, call.span) {
+            if let Ok(c) = self.match_candidate(p, &call_args, call.span) {
                 return Ok(Operand::Procs(vec![c.proc]));
             }
         }
@@ -1558,7 +1560,7 @@ impl Compiler {
     ) -> Result<Operand> {
         let mut best: Option<Candidate> = None;
         for &p in procs {
-            if let Ok(c) = self.match_candidate(f, p, &args, span)
+            if let Ok(c) = self.match_candidate(p, &args, span)
                 && best.as_ref().is_none_or(|b| c.cost < b.cost)
             {
                 best = Some(c);

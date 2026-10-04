@@ -20,6 +20,7 @@ mod decls;
 mod driver;
 mod expr;
 mod lower;
+mod modify;
 mod modules;
 mod procs;
 mod scope;
