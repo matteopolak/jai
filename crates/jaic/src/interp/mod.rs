@@ -16,6 +16,8 @@ mod threads_inline;
 use crate::ir::{
     self, BinOp, Callee, CmpOp, ConvOp, ForeignId, FuncId, GlobalId, Inst, Program, Term, Ty, UnOp,
 };
+#[cfg(target_os = "macos")]
+pub use native::main_thread;
 pub use native::{library_dirs, set_library_dirs};
 pub use sandbox::{SandboxHost, SharedHost};
 use std::collections::{BTreeMap, HashMap};
@@ -456,9 +458,18 @@ impl Interp {
                 "foreign procedure '{symbol}' is not available here"
             ));
         }
+        #[cfg(target_os = "macos")]
+        let result = if matches!(&*symbol, "fork" | "vfork") {
+            native::main_thread::direct(|| self.call_native(program, addr, args, sig))?
+        } else {
+            self.call_native(program, addr, args, sig)?
+        };
+        #[cfg(not(target_os = "macos"))]
         let result = self.call_native(program, addr, args, sig)?;
         if &*symbol == "fork" && result.first() == Some(&0) {
             self.forked_child = true;
+            #[cfg(target_os = "macos")]
+            native::main_thread::disable();
         }
         Ok(result)
     }

@@ -119,12 +119,21 @@ fn main() -> ExitCode {
         return usage();
     };
     // Deeply recursive programs and checking need a large stack.
-    let worker = std::thread::Builder::new()
-        .stack_size(1 << 30)
-        .spawn(move || run(cli));
-    match worker.map(|h| h.join()) {
-        Ok(Ok(code)) => code,
-        _ => ExitCode::from(101),
+    // On macOS the main thread stays free to run the program's foreign calls (AppKit only
+    // works there); see `jaic::interp::main_thread`.
+    #[cfg(target_os = "macos")]
+    {
+        jaic::interp::main_thread::serve(1 << 30, move || run(cli)).unwrap_or(ExitCode::from(101))
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let worker = std::thread::Builder::new()
+            .stack_size(1 << 30)
+            .spawn(move || run(cli));
+        match worker.map(|h| h.join()) {
+            Ok(Ok(code)) => code,
+            _ => ExitCode::from(101),
+        }
     }
 }
 
