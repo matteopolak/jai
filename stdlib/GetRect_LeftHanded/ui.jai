@@ -369,8 +369,8 @@ dropdown :: (r:Rect,choices:[]string,current_value_pointer:*s32,theme:*Dropdown_
     if active_widget==cast(*Active_Widget)state {
         for event,event_index:events_to_handle_this_frame if event.type==.KEYBOARD&&event.key_pressed&&left_event_window(event_index)==state.window {
             if event.key_code==.ESCAPE state.open=false;
-            if choices.count>0&&event.key_code==.ARROW_DOWN current_value_pointer.*=cast(s32)min(current_value_pointer.*+1,choices.count-1);
-            if choices.count>0&&event.key_code==.ARROW_UP current_value_pointer.*=max(current_value_pointer.*-1,0);
+            if choices.count>0&&event.key_code==.ARROW_DOWN current_value_pointer.*=cast(s32)min(cast(int)current_value_pointer.*+1,choices.count-1);
+            if choices.count>0&&event.key_code==.ARROW_UP current_value_pointer.*=cast(s32)max(cast(int)current_value_pointer.*-1,0);
         }
     }
     return current_value_pointer.*!=before,state.*;

@@ -5,7 +5,7 @@ left_pointers_initialized:bool;
 left_pointer_requested:bool;
 left_request_cursor :: (image:Pointer_Image,widget:*Active_Widget) { left_pointer_requested=true; if draw_procs.set_pointer_image draw_procs.set_pointer_image(image,widget); }
 #if OS==.MACOS {
-    Cursor_ObjC :: #import "Objective_C";
+    Cursor_ObjC :: #import "Objective_C/AppKit";
     using Cursor_ObjC;
 }
 #scope_export

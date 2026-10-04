@@ -146,14 +146,23 @@ impl Compiler {
         self.with_deferred_errors(result)
     }
 
-    fn finish_program_inner(&mut self) -> Result<()> {
+    /// Lower the procedures reachable from the program's exports, without generating
+    /// the program: their bodies may declare more (`#insert,scope(...)`) for a
+    /// metaprogram to see before it stops adding code.
+    pub fn lower_reachable(&mut self) -> Result<()> {
+        let result = self.lower_reachable_inner().map(|_| ());
+        self.with_deferred_errors(result)
+    }
+
+    /// False when there is no program to lower.
+    fn lower_reachable_inner(&mut self) -> Result<bool> {
         // A program made only of `#run`/`#assert` directives has nothing to lower.
         let Some(m) = self.main_module else {
-            return Ok(());
+            return Ok(false);
         };
         let scope = self.modules[m.0 as usize].scope;
         if self.lookup(scope, Sym::intern("main"))?.is_empty() {
-            return Ok(());
+            return Ok(false);
         }
         let mut i = 0;
         while i < self.export_entities.len() {
@@ -168,7 +177,13 @@ impl Compiler {
             i += 1;
         }
         self.drain_bodies()?;
-        self.fill_runtime_info();
+        Ok(true)
+    }
+
+    fn finish_program_inner(&mut self) -> Result<()> {
+        if self.lower_reachable_inner()? {
+            self.fill_runtime_info();
+        }
         Ok(())
     }
 

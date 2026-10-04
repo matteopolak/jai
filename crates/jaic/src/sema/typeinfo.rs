@@ -395,11 +395,12 @@ impl Compiler {
                 let member_ty = self.preload_type("Type_Info_Struct_Member", span)?;
                 let msize = self.size_of(member_ty, span)?;
                 let malign = self.align_of(member_ty, span)?;
+                let (fields, bindings) = self.tagged_union_members(s, &info.fields, span)?;
                 let mut members = Aggregate {
-                    bytes: vec![0; (msize as usize) * info.fields.len()],
+                    bytes: vec![0; (msize as usize) * fields.len()],
                     relocs: Vec::new(),
                 };
-                for (i, field) in info.fields.iter().enumerate() {
+                for (i, field) in fields.iter().enumerate() {
                     let mut m = Aggregate {
                         bytes: vec![0; msize as usize],
                         relocs: Vec::new(),
@@ -444,13 +445,26 @@ impl Compiler {
                     &mut agg,
                     desc,
                     "members",
-                    info.fields.len(),
+                    fields.len(),
                     members,
                     malign,
                     span,
                 )?;
-                if info.is_union {
-                    self.set_field(&mut agg, desc, "textual_flags", Value::Int(0x2), span)?;
+                if !bindings.is_empty() {
+                    self.set_tagged_union_bindings(&mut agg, desc, &bindings, span)?;
+                }
+                // A tagged union (`union(tag) {..}`) is laid out as a struct.
+                let tagged = self
+                    .struct_asts
+                    .get(&s)
+                    .is_some_and(|src| src.lit.tag.is_some());
+                if info.is_union || tagged {
+                    let flags = if tagged {
+                        0x42
+                    } else {
+                        0x2
+                    };
+                    self.set_field(&mut agg, desc, "textual_flags", Value::Int(flags), span)?;
                 }
                 if !info.poly_args.is_empty() {
                     self.poly_struct_info(&mut agg, desc, s, span)?;
@@ -479,6 +493,103 @@ impl Compiler {
             _ => {}
         }
         Ok(agg)
+    }
+
+    /// The members a struct's type info lists. A tagged union lists its tag, then each
+    /// variant member directly (not the anonymous union holding them), with the
+    /// `(tag value, member index)` pairs selecting them.
+    #[allow(clippy::type_complexity)]
+    fn tagged_union_members(
+        &mut self,
+        s: crate::types::StructId,
+        fields: &[crate::types::Field],
+        span: Span,
+    ) -> Result<(Vec<crate::types::Field>, Vec<(i128, usize)>)> {
+        let Some(src) = self.struct_asts.get(&s).cloned() else {
+            return Ok((fields.to_vec(), Vec::new()));
+        };
+        let (Some(_), [tag, variants]) = (&src.lit.tag, fields) else {
+            return Ok((fields.to_vec(), Vec::new()));
+        };
+        let Some(vs) = self.types.as_struct(variants.ty) else {
+            return Ok((fields.to_vec(), Vec::new()));
+        };
+        self.layout_struct(vs, span)?;
+        let mut flat = vec![tag.clone()];
+        for f in &self.types.struct_info(vs).fields {
+            let mut f = f.clone();
+            f.offset += variants.offset;
+            flat.push(f);
+        }
+        let tag_members = match self.types.kind(tag.ty) {
+            TypeKind::Enum(e) => self.types.enum_info(*e).members.clone(),
+            _ => Vec::new(),
+        };
+        let mut bindings = Vec::new();
+        for stmt in &src.lit.body {
+            let ast::StmtKind::Decl(d) = &stmt.kind else {
+                continue;
+            };
+            let Some(t) = d.union_tag else {
+                continue;
+            };
+            let Some(&(_, value)) = tag_members.iter().find(|(n, _)| *n == t.name) else {
+                continue;
+            };
+            for n in &d.names {
+                if let Some(index) = flat.iter().position(|f| f.name == Some(n.name)) {
+                    bindings.push((value, index));
+                }
+            }
+        }
+        Ok((flat, bindings))
+    }
+
+    /// `tagged_union_bindings` of a tagged union's descriptor.
+    fn set_tagged_union_bindings(
+        &mut self,
+        agg: &mut Aggregate,
+        desc: TypeId,
+        bindings: &[(i128, usize)],
+        span: Span,
+    ) -> Result<()> {
+        let binding_ty = self.preload_type("Type_Info_Tagged_Union_Binding", span)?;
+        let size = self.size_of(binding_ty, span)?;
+        let align = self.align_of(binding_ty, span)?;
+        let mut items = Aggregate {
+            bytes: vec![0; size as usize * bindings.len()],
+            relocs: Vec::new(),
+        };
+        for (i, &(value, index)) in bindings.iter().enumerate() {
+            let mut b = Aggregate {
+                bytes: vec![0; size as usize],
+                relocs: Vec::new(),
+            };
+            self.set_field(
+                &mut b,
+                binding_ty,
+                "constant_value",
+                Value::Int(value),
+                span,
+            )?;
+            self.set_field(
+                &mut b,
+                binding_ty,
+                "member_index",
+                Value::Int(index as i128),
+                span,
+            )?;
+            structs::write_agg(&mut items, i as u64 * size, &b);
+        }
+        self.set_view(
+            agg,
+            desc,
+            "tagged_union_bindings",
+            bindings.len(),
+            items,
+            align,
+            span,
+        )
     }
 
     /// The parameter bindings of a polymorphic struct instance, in declaration

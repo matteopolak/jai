@@ -49,7 +49,13 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   overload only if both branches do.
 - **Tagged unions** (`union kind: Kind { .A ,, a: X; }`): laid out as a struct holding the tag field, then an
   anonymous union of the members (`layout_struct_inner`). Tags on members are parsed but not enforced.
+  Type info flattens it: `members` lists the tag, then each variant at its offset; `textual_flags` has
+  `UNION | UNION_IS_TAGGED`; `tagged_union_bindings` pairs each tag value with its member index
+  (`typeinfo.rs`, `tagged_union_members`).
 - **`#poke_name Module name`** adds the importer's entity itself to the module scope, so both see one type.
+- **Member aliases in structs**: `using,only(width, height) texture.desc;` (also `except` / `map` / no
+  filter) in a struct body, where the path starts at a field, makes those members of the nested field
+  reachable on the struct (`Compiler::member_aliases`, followed last by `find_member`). No storage is added.
 - **Struct field types in constants**: while a struct is laid out, earlier field types are recorded in
   `Compiler::field_types`, so `type_of(field)` works in a struct constant (`FnCtx::type_only`).
 - **Macros**: constants declared in a macro body exist once per expansion (`hoisted_consts` is keyed by scope).
@@ -81,6 +87,26 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
   that take one. `type_of(local.*)` in compile-time code only needs the local's type.
 - **Thunks and queued bodies**: `drain_bodies_lenient` lowers what it can before a thunk runs; bodies that fail
   (they need a layout still in progress) stay queued and are reported by the final `drain_bodies`.
+- **Auto-dereference** (`convert.rs`): `*Thing` converts to a `Thing` value (structs only, one level), also to
+  an `#as` member's value. Poly patterns (`Base`, `$T/Base`, `Base($T)`) accept `*Instance` the same way.
+- **Types naming parameters**: a parameter or result type that mentions an earlier parameter
+  (`proc: cache.Proc`, `-> type_of(asset)`) is checked with the parameters in a scratch scope
+  (`procs.rs`, `type_from_params`; a text scan of the type span decides).
+- **`#bake_arguments` structs as restrictions**: `$V/Vec3` with `Vec3 :: #bake_arguments Vector(N = 3)` accepts
+  instances of the origin whose parameters match the baked values (`instance_or_as_base`).
+- **Literal overloads**: between `float32` and `float64` overloads an untyped literal picks `float32`
+  (`log(2)`); integer parameters still win over floats.
+- **`!=` fallback**: with no matching `operator !=`, `a != b` is `!(a == b)` through `operator ==`.
+- **`Type.field`** names the field's type, so `Anim.joints.Load_Factor` reaches its constants. Reading a
+  runtime local's field in compile-time code is still an error (`names_field` keeps the local shortcuts to
+  constants), so a field read cannot bind a baked parameter.
+- **Enum bodies**: `#insert -> string { ... }` inside an enum adds members (parsed as an enum body).
+- **`push_context,defer_pop ctx;`** holds the context for the rest of its block (`check_block_stmts`).
+- **Named for-expansion iterators**: `for slot, _ : list` hides the expansion's own `it_index` from the body,
+  so an enclosing `it_index` stays visible (`insert_for_body`).
+- **Parenthesized types**: `x: (*T);` and `#type (*T)` are procedure types (`parse_param_type`).
+- **`#insert,scope(Top)`** where `Top :: #code()` is top-level: the code (also a string) is checked in that
+  file's scope and its constants are declared there, so the metaprogram sees them as top-level declarations.
 
 ## How to change it
 

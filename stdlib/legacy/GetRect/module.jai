@@ -1,7 +1,3 @@
-// Versioned historical RH contract. The default GetRect remains maintained.
+// Compatibility alias: the historical right-handed GetRect now lives in stdlib/GetRect.
 #module_parameters ()(Type_Indicator: Type = void);
-Math :: #import "Math";
-#import "Math";
-Basic :: #import "Basic";
-#load "geometry.jai";
-#load "ui.jai";
+#load "../../GetRect/module.jai";

@@ -22,6 +22,7 @@ Type_Info_Enum :: Protocol.Type_Info_Enum;
 Type_Info_Variant :: Protocol.Type_Info_Variant;
 Type_Info_Variant_Flags :: Protocol.Type_Info_Variant_Flags;
 Type_Info_Struct_Member :: Protocol.Type_Info_Struct_Member;
+Type_Info_Tagged_Union_Binding :: Protocol.Type_Info_Tagged_Union_Binding;
 Type_Info_Struct :: Protocol.Type_Info_Struct;
 Struct_Status_Flags :: Protocol.Struct_Status_Flags;
 Struct_Nontextual_Flags :: Protocol.Struct_Nontextual_Flags;

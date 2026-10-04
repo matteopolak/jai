@@ -2,7 +2,7 @@
 
 ## What it is
 
-`stdlib/legacy/GetRect` is the explicit historical right-handed version for retained examples and older callers. The maintained default `stdlib/GetRect` keeps its float64 rectangle and smaller canonical public surface. This packet is private and has not been activated in the shared workspace.
+`stdlib/GetRect` is the standard right-handed (y-up) GetRect module: float32 `Rect`, `ui_per_frame_update(window: Window_Type, ...)`, and the full widget/theme/region/color/text surface. It was formerly a small float64 module; the complete historical right-handed implementation now lives here. `stdlib/legacy/GetRect` is kept only as forwarding stubs (`module.jai`, `geometry.jai`, `orientation.jai`) so `#import "legacy/GetRect"` and older `#load` paths keep working. `stdlib/GetRect_LeftHanded` is the separate y-down variant and is not an alias of this module.
 
 The historical rectangle is 16 bytes: `x, y: float` and `w, h: float`. Its module parameter remains `Type_Indicator: Type = void`; a supplied indicator selects caller-owned window, font, texture, and font-effects types. Geometry and widget state use upward-positive coordinates. They are not aliases of the left-handed module.
 
@@ -16,13 +16,13 @@ The paired widget tree is owned by the UI lane. It must preserve historical call
 
 ## How to change it
 
-Change geometry in `geometry.jai`, preserving the float32 public layout and named arguments. Keep `get_hash`'s public declaration separate from its private wrapping-arithmetic body. Geometry aliases and movement helpers are module-private, following the historical scopes. The source includes 25 exported geometry contracts that match the historical lexical declarations exactly.
+Everything lives under `stdlib/GetRect/` (`ui.jai`, `legacy-layouts.jai`, `regions.jai`, `orientation.jai`, ...). Change geometry in `geometry.jai`, preserving the float32 public layout and named arguments. Keep `get_hash`'s public declaration separate from its private wrapping-arithmetic body. Geometry aliases and movement helpers are module-private, following the historical scopes. The source includes 25 exported geometry contracts that match the historical lexical declarations exactly.
 
 Change UI state and behavior in the paired authored UI fragments. Do not forward the public module to GetRect_LeftHanded. An orientation flag or common private helper is valid only when every row, text baseline, popup direction, resize edge, scroll limit, input position, and drawing callback follows the selected orientation. Keep direct consumer checks in addition to contract comparisons: lexical equality does not prove overload admission or interaction behavior.
 
 ## Configuration
 
-An explicit legacy module search overlay selects this version for unchanged `#import "GetRect"` source:
+`#import "GetRect"` selects this version directly; no overlay is needed. The legacy overlay below is only relevant for the frozen reference CLI:
 
 ```sh
 JAI_RS_MODULE_PATH="/path/to/overlays/getrect-right-handed:/path/to/stdlib" \

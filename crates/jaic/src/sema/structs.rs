@@ -32,6 +32,46 @@ pub struct PolyStruct {
     pub origin: Option<PolyStructId>,
 }
 
+/// Names of a struct that stand for members reached through a path of its fields
+/// (`using,only(width, height) texture.desc;`).
+#[derive(Clone, Debug)]
+pub struct MemberAlias {
+    /// Field names from the struct to the member whose members are reused.
+    pub path: Vec<Sym>,
+    pub filter: ast::UsingFilter,
+}
+
+impl MemberAlias {
+    /// The member of the target that `name` stands for, if the filter lets it through.
+    fn target_name(&self, name: Sym) -> Option<Sym> {
+        match &self.filter {
+            ast::UsingFilter::None => Some(name),
+            ast::UsingFilter::Only(names) => names.iter().any(|n| n.name == name).then_some(name),
+            ast::UsingFilter::Except(names) => {
+                (!names.iter().any(|n| n.name == name)).then_some(name)
+            }
+            ast::UsingFilter::Map(pairs) => pairs
+                .iter()
+                .find(|(new, _)| new.name == name)
+                .map(|(_, old)| old.name),
+            ast::UsingFilter::Computed(_) => None,
+        }
+    }
+}
+
+/// The names of a member path expression (`a.b.c`), or `None`.
+fn member_path(e: &ast::Expr) -> Option<Vec<Sym>> {
+    match &e.kind {
+        E::Ident(name) => Some(vec![*name]),
+        E::Member(base, field) => {
+            let mut path = member_path(base)?;
+            path.push(field.name);
+            Some(path)
+        }
+        _ => None,
+    }
+}
+
 /// One step of a member path through `using` fields.
 #[derive(Clone, Copy, Debug)]
 pub enum PathStep {
@@ -54,6 +94,8 @@ struct FieldDecl {
 
 enum FieldItem {
     Field(FieldDecl),
+    /// `using,only(a, b) field.inner;`: names reached through a path of members.
+    Alias(MemberAlias),
     /// `#place f;`: following fields start at `f`'s offset.
     Place(Sym, Span),
     /// `#overlay(f)`: the next field shares `f`'s storage.
@@ -368,7 +410,8 @@ impl Compiler {
                     self.types.enums[e.0 as usize].members = out.clone();
                 }
                 ast::EnumItem::Insert(e) => {
-                    return err(e.span, "#insert inside an enum body is not supported yet");
+                    let inserted = self.eval_insert_enum_items(scope, e)?;
+                    self.enum_items(&inserted, scope, ty, flags, next, out)?;
                 }
                 ast::EnumItem::If {
                     cond,
@@ -392,6 +435,37 @@ impl Compiler {
             }
         }
         Ok(())
+    }
+
+    /// The members an enum-body `#insert` of a string produces.
+    fn eval_insert_enum_items(
+        &mut self,
+        scope: ScopeId,
+        value: &ast::Expr,
+    ) -> Result<Vec<ast::EnumItem>> {
+        let Operand::Const {
+            value: Value::String(s),
+            ..
+        } = self.eval_insert_operand(scope, value)?
+        else {
+            return err(value.span, "#insert in an enum body needs a string");
+        };
+        let text = format!(
+            "__jaic_enum :: enum {{\n{}\n}};",
+            String::from_utf8_lossy(&s)
+        );
+        let file = self.sources.add(
+            format!("<#insert at {}>", self.sources.get(value.span.file).path),
+            text.clone().into(),
+        );
+        let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
+        match ast.stmts.first().map(|s| &s.kind) {
+            Some(ast::StmtKind::Decl(d)) => match d.value.as_ref().map(|v| &v.kind) {
+                Some(E::Enum(lit)) => Ok(lit.items.clone()),
+                _ => err(value.span, "could not parse inserted enum members"),
+            },
+            _ => err(value.span, "could not parse inserted enum members"),
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -468,8 +542,10 @@ impl Compiler {
         let mut end = 0u64;
         let mut align = 1u64;
         let mut overlay = None;
+        let mut aliases = Vec::new();
         for item in items {
             match item {
+                FieldItem::Alias(alias) => aliases.push(alias),
                 FieldItem::Place(name, span) | FieldItem::Overlay(name, span) => {
                     let Some(f) = fields.iter().find(|f: &&Field| f.name == Some(name)) else {
                         return err(span, format!("no field named '{name}' before this point"));
@@ -523,6 +599,9 @@ impl Compiler {
         };
         let info = self.types.struct_info_mut(s);
         info.fields = fields;
+        if !aliases.is_empty() {
+            self.member_aliases.insert(s, aliases);
+        }
         info.size = size;
         info.align = align;
         info.layout = LayoutState::Done;
@@ -600,8 +679,21 @@ impl Compiler {
                     _ => return err(e.span, "unexpected expression in struct body"),
                 },
                 ast::StmtKind::Using {
-                    value, ..
+                    value,
+                    filter,
                 } => {
+                    // `using inner.member;` naming fields of this struct: an alias.
+                    if let Some(path) = member_path(value)
+                        && out.iter().any(
+                            |item| matches!(item, FieldItem::Field(d) if d.name == Some(path[0])),
+                        )
+                    {
+                        out.push(FieldItem::Alias(MemberAlias {
+                            path,
+                            filter: filter.clone(),
+                        }));
+                        continue;
+                    }
                     // `using Other_Struct;` imports another struct's fields.
                     let t = self.eval_type(scope, value)?;
                     out.push(FieldItem::Field(FieldDecl {
@@ -793,6 +885,32 @@ impl Compiler {
                 full.append(&mut path);
                 return Ok(Some((full, t)));
             }
+        }
+        let aliases = self.member_aliases.get(&s).cloned().unwrap_or_default();
+        for alias in aliases {
+            let Some(target) = alias.target_name(name) else {
+                continue;
+            };
+            let mut full = Vec::new();
+            let mut at = ty;
+            for &step in alias.path.iter().chain([&target]) {
+                // A pointer field on the path is followed.
+                if let Some(p) = self.types.pointee(at)
+                    && self.types.as_struct(p).is_some()
+                {
+                    full.push(PathStep::Deref);
+                    at = p;
+                }
+                let Some((mut path, t)) = self.find_member(at, step, span)? else {
+                    return err(
+                        span,
+                        format!("'{step}' is not a member of {}", self.types.name(at)),
+                    );
+                };
+                full.append(&mut path);
+                at = t;
+            }
+            return Ok(Some((full, at)));
         }
         Ok(None)
     }
@@ -1053,6 +1171,11 @@ impl Compiler {
             TypeKind::Struct(_) => {
                 if let Some(ids) = self.struct_constant(t, name)? {
                     return self.entities_operand(f, scope, &ids, span);
+                }
+                // `Type.field` without an instance names the field's type, for reaching its
+                // constants (`Anim.joint_map.Entry`).
+                if let Some((_, field_ty)) = self.find_member(t, name, span)? {
+                    return Ok(Operand::Type(field_ty));
                 }
                 err(
                     span,

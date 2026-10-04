@@ -207,6 +207,8 @@ pub struct Compiler {
     pub anonymous_types: HashMap<(ast::AstId, ScopeId), TypeId>,
     /// Scope each `Code` value was written in (parallel to `codes`).
     pub code_scopes: Vec<ScopeId>,
+    /// `using,only(...) field.path;` aliases declared in struct bodies.
+    pub member_aliases: HashMap<crate::types::StructId, Vec<structs::MemberAlias>>,
     pub default_images: HashMap<TypeId, Option<Rc<value::Aggregate>>>,
     pub default_globals: HashMap<TypeId, ir::GlobalId>,
     pub initializers: HashMap<TypeId, ir::FuncId>,
@@ -302,6 +304,7 @@ impl Compiler {
             local_decl_types: HashMap::new(),
             anonymous_types: HashMap::new(),
             code_scopes: Vec::new(),
+            member_aliases: HashMap::new(),
             default_images: HashMap::new(),
             default_globals: HashMap::new(),
             initializers: HashMap::new(),

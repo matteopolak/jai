@@ -110,6 +110,7 @@ Struct_Textual_Flags :: enum u32 {
     TYPE_INFO_NONE :: 0x8;
     TYPE_INFO_NO_SIZE_COMPLAINT :: 0x10;
     TYPE_INFO_PROCEDURES_ARE_VOID_POINTERS :: 0x20;
+    UNION_IS_TAGGED :: 0x40;
 }
 Type_Info_Struct_Member :: struct {
     Flags :: enum_flags u32 {
@@ -138,6 +139,12 @@ Type_Info_Struct :: struct {
     initializer: (*void) #no_context;
     constant_storage: [] u8;
     notes: [] string;
+    // Tagged unions: which member each tag value selects.
+    tagged_union_bindings: [] Type_Info_Tagged_Union_Binding;
+}
+Type_Info_Tagged_Union_Binding :: struct {
+    constant_value: u64;
+    member_index: s32;
 }
 
 // The semantic binder certifies this mirror against builtin Any storage.

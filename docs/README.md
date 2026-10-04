@@ -330,8 +330,8 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Continuous integration](continuous-integration.md) — hosted correctness checks and strict lint enforcement.
 - [Source expression parsing](source-expression-parsing.md)
 - [Reference corpus tests](reference-corpus-tests.md)
-- [Historical right-handed GetRect](stdlib/getrect-legacy-right-handed.md) — versioned geometry and focused source overlay.
-- [Historical right-handed UI](stdlib/getrect-legacy-right-handed-ui.md) — retained widgets, upward-positive layout, and cached resource reads.
+- [Right-handed GetRect (default `GetRect`)](stdlib/getrect-legacy-right-handed.md) — y-up geometry, `legacy/GetRect` forwarders, and overlay notes.
+- [Right-handed GetRect UI](stdlib/getrect-legacy-right-handed-ui.md) — widgets, upward-positive layout, and cached resource reads.
 
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.
 
@@ -389,6 +389,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
 - [Compiler records](compiler-records.md) — Messages, Code_* syntax trees and target Type_Info exported as records; compiler_get_nodes and compiler_modify_procedure.
 - [jaic regression sweep](jaic-sweep.md) — `tools/jaic-sweep.py` sets (corpus, stdlib, upstream) and how to extend them.
+- [jaic interpreter](jaic-interpreter.md) — IR interpreter for compile-time code, `jaic run` and the browser; foreign calls, hooks, fork handling.
 - [open-jai expectation harness](openjai-expectations.md) — runs open-jai test-suite `expect_*` output checks against jaic.
 - [Basic calendar time and platform exports](stdlib-basic-time-and-platform.md) — to_calendar/calendar_to_apollo, working directory in Basic, Machine_X64 hooks, String scan, Bucket_Array shape.
 - [Iprof profiler](iprof.md) — Instrumenting frame-based profiler: runtime, drawing callbacks, metaprogram plugin, import-mode gotchas.

@@ -20,7 +20,7 @@ occlusion_per_window_update :: (window:Window_Type) {
     }
 }
 occluder_start :: (widget:*Active_Widget,rect:Rect) {
-    assert(widget,"An occluder needs a retained widget"); if !widget return;
+    assert(widget!=null,"An occluder needs a retained widget"); if !widget return;
     array_add(*occlusions_next_frame,.{serial=cast(s32)occlusions_next_frame.count+1,rect=rect,widget=widget});
     array_add(*left_occluder_stack,widget); occluder_being_drawn=widget;
 }

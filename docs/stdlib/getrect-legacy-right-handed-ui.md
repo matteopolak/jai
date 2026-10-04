@@ -2,7 +2,7 @@
 
 ## What it is
 
-`stdlib/legacy/GetRect` supplies the older GetRect widgets with float32 rectangles, upward-positive coordinates, historical state/theme layouts, and the `Type_Indicator` drawing protocol. Select this version through the focused GetRect module-search overlay described in [historical geometry](getrect-legacy-right-handed.md); the maintained default GetRect retains its own API.
+`stdlib/GetRect` (also reachable as `legacy/GetRect`) supplies the GetRect widgets with float32 rectangles, upward-positive coordinates, historical state/theme layouts, and the `Type_Indicator` drawing protocol. This is now the default `#import "GetRect"`; see [right-handed GetRect](getrect-legacy-right-handed.md).
 
 The complete historical closure has 268 matching lexical declaration contracts. This count covers names, fields, defaults, modifiers, argument and result spelling; it does not establish semantic API admission or widget behavior. Source bodies are independently authored. Read-only original declarations and resource roles were inspected, while supplied implementation bodies, compilers, native outputs, images, and fonts were not reused.
 

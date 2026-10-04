@@ -981,10 +981,22 @@ impl Compiler {
     /// `ty` if it is an instance of `ps`, else the first `#as` member (searched
     /// depth-first) that is one.
     fn instance_or_as_base(&mut self, ps: value::PolyStructId, ty: TypeId) -> Option<TypeId> {
-        if self.poly_structs[ps.0 as usize]
+        // A `#bake_arguments` struct's instances are its origin's with the baked values.
+        let poly = &self.poly_structs[ps.0 as usize];
+        let (origin, baked) = match poly.origin {
+            Some(origin) => (origin, poly.baked.clone()),
+            None => (ps, Vec::new()),
+        };
+        if self.poly_structs[origin.0 as usize]
             .instances
             .values()
             .any(|&t| t == ty)
+            && (baked.is_empty() || {
+                let bindings = self.poly_struct_bindings(self.types.as_struct(ty)?);
+                baked.iter().all(|(name, value, _)| {
+                    bindings.iter().any(|(n, v, _)| n == name && v == value)
+                })
+            })
         {
             return Some(ty);
         }
@@ -1058,15 +1070,22 @@ impl Compiler {
             } => {
                 // `$T/Table`: T must be an instance of the polymorphic struct `Table` (or hold one
                 // as an `#as` member).
+                let mut ty = ty;
                 if !interface
                     && let E::Ident(r) = &restriction.kind
                     && let Some(ps) = self.ident_poly_struct(scope, *r)?
                     && self.instance_or_as_base(ps, ty).is_none()
                 {
-                    return err(
-                        span,
-                        format!("{} is not an instance of '{r}'", self.types.name(ty)),
-                    );
+                    // A `*Instance` argument is dereferenced for a by-value parameter.
+                    match self.types.pointee(ty) {
+                        Some(p) if self.instance_or_as_base(ps, p).is_some() => ty = p,
+                        _ => {
+                            return err(
+                                span,
+                                format!("{} is not an instance of '{r}'", self.types.name(ty)),
+                            );
+                        }
+                    }
                 }
                 bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
             }
@@ -1710,7 +1729,7 @@ impl Compiler {
     }
 
     /// A throwaway function context for checking code whose output is discarded.
-    fn scratch_ctx(&self, scope: ScopeId) -> FnCtx {
+    pub(super) fn scratch_ctx(&self, scope: ScopeId) -> FnCtx {
         let file = self.scope_file(scope);
         let mut scratch = FnCtx::new(
             "scratch".into(),
@@ -2184,7 +2203,13 @@ impl Compiler {
         }
         let text = binop_text(op);
         let procs = self.operator_candidates(scope, text, &[lt, rt])?;
-        if procs.is_empty() {
+        // `a != b` without a matching `operator !=` is `!(a == b)`.
+        let ne_fallback = if op == ast::BinOp::Ne {
+            self.operator_candidates(scope, "==", &[lt, rt])?
+        } else {
+            Vec::new()
+        };
+        if procs.is_empty() && ne_fallback.is_empty() {
             return Ok(None);
         }
         let args = vec![
@@ -2205,8 +2230,24 @@ impl Compiler {
                 scope,
             },
         ];
-        if let Ok(r) = self.try_call(f, scope, &procs, args.clone(), span) {
+        if !procs.is_empty()
+            && let Ok(r) = self.try_call(f, scope, &procs, args.clone(), span)
+        {
             return Ok(Some(r));
+        }
+        if !ne_fallback.is_empty()
+            && let Ok(r) = self.try_call(f, scope, &ne_fallback, args.clone(), span)
+        {
+            let (ty, v) = self.rvalue(f, r, span)?;
+            let b = self.truthy(f, ty, v, span)?;
+            let one = f.b.iconst(ir::Ty::I8, 1);
+            return Ok(Some(Operand::Value {
+                ty: TypeId::BOOL,
+                val: f.b.bin(ir::BinOp::Xor, ir::Ty::I8, b, one),
+            }));
+        }
+        if procs.is_empty() {
+            return Ok(None);
         }
         // #symmetric operators accept swapped operands.
         let symmetric: Vec<ProcId> = procs

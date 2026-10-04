@@ -418,6 +418,7 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
             std::mem::take(&mut ws.modifications),
         )
     };
+    let mut lowering = false;
     let mut compiler = match compiler.take() {
         Some(c) => c,
         None => new_compiler(shared, id)?,
@@ -446,11 +447,17 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
                 events.push(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
                 Stage::Checked
             }),
-        Stage::Checked => compiler.finish_program().map(|()| Stage::Done),
+        // Out of sources: lower what is reachable first; what that reports may make
+        // the metaprogram add more before the program is generated.
+        Stage::Checked => compiler.lower_reachable().map(|()| {
+            lowering = true;
+            Stage::Checked
+        }),
         Stage::Done => unreachable!(),
     });
     let intercepted = shared.borrow_mut().ws(id)?.intercepted;
     let mut file_events = Vec::new();
+    let mut reported = false;
     if intercepted {
         // The registry's records are taken out while the compiler exports:
         // resolving declarations may run compile-time code.
@@ -465,8 +472,10 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
                 record,
             ));
         }
-        if matches!(result, Ok(Stage::Checked)) {
+        // After the final lowering too: procedure bodies are reported once lowered.
+        if matches!(result, Ok(Stage::Checked | Stage::Done)) {
             if let Some(message) = compiler.export_typechecked(&mut records) {
+                reported = true;
                 // Before TYPECHECKED_ALL_WE_CAN, after any files the export loaded.
                 for (kind, record) in compiler.export_file_events(&mut records) {
                     file_events.push(record_event(
@@ -486,6 +495,16 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
         let added = std::mem::replace(&mut reg.records, records);
         debug_assert!(added.is_empty());
     }
+    // Lowering reported more: the metaprogram gets another TYPECHECKED_ALL_WE_CAN to
+    // add code. Otherwise the program is complete.
+    let result = match result {
+        Ok(_) if lowering && reported => {
+            events.push(phase(PHASE_TYPECHECKED_ALL_WE_CAN));
+            Ok(Stage::Checked)
+        }
+        Ok(_) if lowering => compiler.finish_program().map(|()| Stage::Done),
+        other => other,
+    };
     shared.borrow_mut().current.pop();
     let mut failed = false;
     let next = match result {

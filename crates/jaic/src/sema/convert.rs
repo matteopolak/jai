@@ -35,14 +35,25 @@ impl Compiler {
                 )
                 .then_some(LITERAL);
             }
+            // Between float overloads a literal prefers float32 (`log(2)` is `log(float32)`).
+            let float_cost = |c: &Self| {
+                if c.types.repr(to) == TypeId::F64 {
+                    LITERAL + 1
+                } else {
+                    LITERAL
+                }
+            };
             if self.types.is_integer(from) {
-                if self.types.is_integer(to) || self.types.is_float(to) {
+                if self.types.is_integer(to) {
                     return Some(LITERAL);
+                }
+                if self.types.is_float(to) {
+                    return Some(float_cost(self));
                 }
                 return None;
             }
             if self.types.is_float(from) {
-                return self.types.is_float(to).then_some(LITERAL);
+                return self.types.is_float(to).then(|| float_cost(self));
             }
         }
         match (&fk, &tk) {
@@ -137,6 +148,14 @@ impl Compiler {
                 self.implicit_cost(base, false, to).map(|c| c + 1)
             }
             (TypeKind::Struct(_), _) => self.as_offset(from, to).map(|_| SUBTYPE),
+            // Auto-dereference: `*Thing` → `Thing` (structs only), also through `#as`.
+            (TypeKind::Pointer(f), TypeKind::Struct(_)) => {
+                let f = *f;
+                if f == to {
+                    return Some(SUBTYPE + 1);
+                }
+                self.as_offset(f, to).map(|_| SUBTYPE + 1)
+            }
             (TypeKind::Proc(a), TypeKind::Proc(b)) => (a == b).then_some(EXACT),
             _ => None,
         }
@@ -410,6 +429,18 @@ impl Compiler {
                 Ok(Operand::Place {
                     ty: to,
                     addr: field,
+                })
+            }
+            (TypeKind::Pointer(inner), TypeKind::Struct(_)) => {
+                let offset = if *inner == to {
+                    0
+                } else {
+                    self.as_offset(*inner, to).unwrap()
+                };
+                let (_, v) = self.rvalue(f, op, span)?;
+                Ok(Operand::Place {
+                    ty: to,
+                    addr: f.b.ptr_offset(v, offset),
                 })
             }
             (TypeKind::Pointer(inner), TypeKind::Pointer(target))

@@ -88,7 +88,7 @@ sanitize :: (s:string)->string {
 }
 get_insert_point_for_cursor :: (state:*Text_Input_State,font:*Font,text:string,current_frame_text_x:float,cursor_x:int,effect:Font_Effects,glyphs_prepped:=false)->int {
     if !font return 0;
-    assert(draw_procs.prepare_text,"Cursor mapping needs prepare_text"); if !draw_procs.prepare_text return 0;
+    assert(draw_procs.prepare_text!=null,"Cursor mapping needs prepare_text"); if !draw_procs.prepare_text return 0;
     defer draw_procs.prepare_text(font,text,effect);
     width_before:float; at:=0; x:=cursor_x-current_frame_text_x;
     while at<text.count {

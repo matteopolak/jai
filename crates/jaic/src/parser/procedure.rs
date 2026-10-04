@@ -254,9 +254,9 @@ impl Parser<'_> {
         Ok(params)
     }
 
-    /// A parameter's type. A bare parenthesized list, as in `f: (*Vector3)`, is a procedure type
+    /// A parameter or declaration type. A bare parenthesized list, as in `f: (*Vector3)`, is a procedure type
     /// returning nothing; parentheses around a type mean nothing here.
-    fn parse_param_type(&mut self) -> PResult<Expr> {
+    pub(super) fn parse_param_type(&mut self) -> PResult<Expr> {
         if self.at(P::LParen) && !self.paren_starts_header(0) {
             let closes_type = self.matching_paren(0).is_some_and(|close| {
                 matches!(

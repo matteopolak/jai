@@ -114,6 +114,7 @@ impl Compiler {
                 // (`#if table.FLAG`): only the local's type is needed.
                 if f.compile_time
                     && let Some(ty) = self.outer_local_type(scope, base)?
+                    && !self.names_field(self.types.pointee(ty).unwrap_or(ty), member.name)?
                     && let Ok(op) = self.member_access(
                         f,
                         scope,
@@ -669,6 +670,13 @@ impl Compiler {
         }
     }
 
+    /// Is `name` a field (not a constant) of struct type `ty`? Reading one needs a value.
+    fn names_field(&mut self, ty: TypeId, name: Sym) -> Result<bool> {
+        Ok(self.types.as_struct(ty).is_some()
+            && self.struct_constant(ty, name)?.is_none()
+            && self.find_member(ty, name, Span::default())?.is_some())
+    }
+
     /// `local.CONSTANT` where `local` belongs to an enclosing procedure: compile-time code
     /// (an `#insert` procedure) may read a constant member of the local's struct type,
     /// since that needs the type but not the value.
@@ -700,7 +708,7 @@ impl Compiler {
             return Ok(None);
         }
         let ty = self.types.pointee(ty).unwrap_or(ty);
-        if self.types.as_struct(ty).is_none() {
+        if self.types.as_struct(ty).is_none() || self.names_field(ty, member.name)? {
             return Ok(None);
         }
         Ok(self

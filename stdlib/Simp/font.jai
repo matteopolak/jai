@@ -175,7 +175,7 @@ generate_quads_for_prepared_text :: (font: *Dynamic_Font,x: s64,y: s64) {
         x0:=cast(float)(x+record.starts[i]+glyph.offset_x); y1:=cast(float)(y+glyph.ascent); y0:=y1-cast(float)glyph.height;
         page:=glyph.page.bitmap_data;
         array_add(*font.current_quads,.{p0=.{x0,y0},p1=.{x0+width,y0},p2=.{x0+width,y1},p3=.{x0,y1},
-            u0=cast(float)glyph.x0/page.width,v0=cast(float)(glyph.y0+glyph.height)/page.height,
+            u0=cast(float)glyph.x0/page.width,v0=(cast(float)glyph.y0+cast(float)glyph.height)/page.height,
             u1=(cast(float)glyph.x0+width)/page.width,v1=cast(float)glyph.y0/page.height,glyph=glyph});
     }
 }
