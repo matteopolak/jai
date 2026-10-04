@@ -84,6 +84,9 @@ pub struct SandboxHost {
     pub stdout: Vec<u8>,
     pub stderr: Vec<u8>,
     allocations: HashMap<u64, (Box<[u64]>, usize)>,
+    /// Virtual clock ticks (nanoseconds) handed out by `clock_gettime`; the sandbox has no real
+    /// time source on wasm32, so every query advances this by one microsecond.
+    clock_ns: u64,
 }
 
 impl Host for SandboxHost {
@@ -157,6 +160,23 @@ impl Host for SandboxHost {
             | "pthread_mutex_init"
             | "pthread_mutex_destroy" => 0,
             "isatty" => 0,
+            "wasm_debug_break" => return Some(Err("debug_break() was called".into())),
+            "nanosleep" if cfg!(target_arch = "wasm32") => 0,
+            "clock_gettime" if cfg!(target_arch = "wasm32") => {
+                // struct timespec { tv_sec: s64; tv_nsec: s64 }; a fixed epoch plus the virtual
+                // clock keeps runs deterministic.
+                self.clock_ns += 1_000;
+                let ns = self.clock_ns + 1_700_000_000u64 * 1_000_000_000;
+                let out = arg(1);
+                if out == 0 {
+                    return Some(Ok(vec![u64::MAX]));
+                }
+                unsafe {
+                    std::ptr::write_unaligned(out as *mut u64, ns / 1_000_000_000);
+                    std::ptr::write_unaligned((out + 8) as *mut u64, ns % 1_000_000_000);
+                }
+                0
+            }
             _ => return None,
         }]))
     }
@@ -938,11 +958,7 @@ impl Interp {
             I::Trunc => vec![f64_of(a[0]).trunc().to_bits()],
             I::Fabs => vec![f64_of(a[0]).abs().to_bits()],
             I::ReturnAddress => vec![0],
-            I::CycleCounter => vec![
-                std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .map_or(0, |d| d.as_nanos() as u64),
-            ],
+            I::CycleCounter => vec![cycle_counter()],
             I::Pause => vec![],
             I::Popcount => vec![a[0].count_ones() as u64],
             I::Ctlz => {
@@ -958,6 +974,26 @@ impl Interp {
             I::Bswap => vec![a[0].swap_bytes() >> (64 - a[1] as u32)],
             I::IsCompileTime => vec![self.compile_time as u64],
         })
+    }
+}
+
+/// Native: nanoseconds since the epoch. wasm32 has no clock (`SystemTime::now` panics there), so
+/// it counts calls instead.
+fn cycle_counter() -> u64 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        use std::cell::Cell;
+        thread_local! { static TICKS: Cell<u64> = const { Cell::new(0) }; }
+        TICKS.with(|t| {
+            t.set(t.get() + 1);
+            t.get()
+        })
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |d| d.as_nanos() as u64)
     }
 }
 

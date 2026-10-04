@@ -26,6 +26,8 @@ self.onmessage = ({ data }) => {
       }
       const result = runtime.run(data.source, data.options);
       self.postMessage({ type: "run", id: data.id, result: { exitCode: result.exitCode.toString(), steps: result.steps.toString() } });
-    } catch (error) { self.postMessage({ type: data.type ?? "run", id: data.id, error: error instanceof Error ? error.message : String(error) }); }
+    } catch (error) {
+      if (error?.compilerCrashed) enginePromise = undefined; // the Wasm instance trapped; start fresh on the next request
+      self.postMessage({ type: data.type ?? "run", id: data.id, error: error instanceof Error ? error.message : String(error) }); }
   });
 };

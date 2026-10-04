@@ -37,7 +37,18 @@ The old `jai-runtime` bridge (`jai_script_*`) and the language server (`jai_lsp_
   `wasm_write_string(count, data, to_standard_error)`, which `SandboxHost` implements. The jaic interpreter stores
   host pointers in 64-bit slots, which works on wasm32. The "Step limit" option is currently ignored by this path.
   Infinite loops hang the worker; use Cancel (terminates the worker).
-- `tools/check_playground_worker.mjs` and `tools/check_browser_release.mjs` still assert the old run result shape.
+- Panics: wasm32 panics abort, so a compiler bug traps the instance (`RuntimeError: unreachable`). `jai_play_reset`
+  installs a panic hook (wasm32 only) that records the message; `engine.mjs::play` catches the trap and throws
+  `The compiler crashed: <message>` with `compilerCrashed = true`, and `worker.mjs` drops its engine so the next
+  Run instantiates a fresh module. `jai_play_panic_len/byte` read the message.
+- No real clock on wasm32 (`std::time::SystemTime::now` panics): `#cycle_counter` counts calls, and `SandboxHost`
+  implements `clock_gettime` (virtual, deterministic, +1 microsecond per call), `nanosleep` (no-op) and
+  `wasm_debug_break` (runtime error), so `current_time_monotonic`, `random_seed` and friends work.
+  Other native `#foreign` symbols fail with `foreign procedure 'x' is not available here` or `unknown library`.
+- The worker check (`tools/check_playground_worker.mjs`) accepts both the `play` result and the legacy runtime result
+  and smoke-tests Hash_Table, a `#run` workspace message loop, empty views and the virtual clock.
+- Regression sweep for the wasm build: run every `tests/stdlib/*.jai` through `engine.play` with a fresh engine each
+  (about 93 of 120 pass; the rest need threads, a clipboard, a POSIX-only module, `atof`, or multi-file module trees).
 
 ## Configuration
 
