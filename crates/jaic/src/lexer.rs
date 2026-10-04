@@ -341,6 +341,9 @@ impl<'a> Lexer<'a> {
                 self.at += 1;
             } else if c == b' ' || c == b'\t' || c == b'\r' || c == 0x0c || c == 0x0b {
                 self.at += 1;
+            } else if c == 0xc2 && self.peek(1) == 0xa0 {
+                // U+00A0 (no-break space) separates tokens like a space.
+                self.at += 2;
             } else if c == b'/' && self.peek(1) == b'/' {
                 while self.at < self.src.len() && self.src[self.at] != b'\n' {
                     self.at += 1;

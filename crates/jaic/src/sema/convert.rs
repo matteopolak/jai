@@ -89,6 +89,21 @@ impl Compiler {
             (TypeKind::Pointer(_), TypeKind::Pointer(t)) if *t == TypeId::VOID => Some(POINTER),
             (TypeKind::Pointer(f), TypeKind::Pointer(_)) if *f == TypeId::VOID => Some(POINTER),
             (TypeKind::Pointer(f), TypeKind::Pointer(t)) => {
+                // `*[..] T` → `*[] T`: a resizable array starts with its view.
+                if let (
+                    TypeKind::Array {
+                        elem: fe,
+                        kind: ArrayKind::Resizable,
+                    },
+                    TypeKind::Array {
+                        elem: te,
+                        kind: ArrayKind::View,
+                    },
+                ) = (self.types.kind(*f), self.types.kind(*t))
+                    && fe == te
+                {
+                    return Some(POINTER);
+                }
                 // *Derived → *Base through `#as` members.
                 self.as_offset(*f, *t).map(|_| SUBTYPE)
             }
@@ -165,6 +180,16 @@ impl Compiler {
             )
         {
             return Ok(op);
+        }
+        // A one-character string constant is a `u8` (`case "'";` on a byte).
+        if to == TypeId::U8
+            && let Operand::Const {
+                value: Value::String(s),
+                ..
+            } = &op
+            && s.len() == 1
+        {
+            return Ok(Operand::int(s[0] as i128, TypeId::U8));
         }
         match op {
             Operand::Type(t) if to == TypeId::TYPE => return Ok(Operand::Type(t)),

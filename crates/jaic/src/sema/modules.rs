@@ -477,11 +477,13 @@ impl Compiler {
                 return err(module_expr.span, "#poke_name needs a module");
             };
             let module_scope = self.modules[module.0 as usize].scope;
+            // The module sees the same entity (a copy would resolve to a second,
+            // distinct type).
             for id in self.lookup(file_scope, name)? {
-                let poked = self.entity(id);
-                let (span, kind, home) = (poked.span, poked.kind.clone(), poked.home);
-                let copy = self.add_entity(module_scope, name, span, kind, true);
-                self.entity_mut(copy).home = home;
+                let names = self.scope_mut(module_scope).names.entry(name).or_default();
+                if !names.contains(&id) {
+                    names.push(id);
+                }
             }
         }
         Ok(())
