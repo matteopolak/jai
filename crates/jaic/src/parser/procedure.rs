@@ -254,26 +254,21 @@ impl Parser<'_> {
         Ok(params)
     }
 
-    /// A declared parameter type. `f: (T)` is a procedure type taking one `T`
-    /// (and no results), not a parenthesized type.
+    /// A parameter's type. A bare parenthesized list, as in `f: (*Vector3)`, is a procedure type
+    /// returning nothing; parentheses around a type mean nothing here.
     fn parse_param_type(&mut self) -> PResult<Expr> {
-        let single_ident_parens = self.at(P::LParen)
-            && matches!(self.tok_at(1), Tok::Ident(_))
-            && self.at_n(2, P::RParen)
-            && matches!(
-                self.tok_at(3),
-                Tok::Punct(P::Comma | P::RParen | P::Semi | P::Eq)
-            );
-        if !single_ident_parens {
-            return self.parse_expr();
+        if self.at(P::LParen) && !self.paren_starts_header(0) {
+            let closes_type = self.matching_paren(0).is_some_and(|close| {
+                matches!(
+                    self.toks[close + 1].tok,
+                    Tok::Punct(P::Comma | P::Semi | P::RParen | P::Eq)
+                )
+            });
+            if closes_type {
+                return self.parse_proc_expr(Default::default());
+            }
         }
-        let start = self.span();
-        self.bump();
-        let mut header = new_header(start, CallHintFlag::None);
-        header.params = self.parse_params(P::RParen)?;
-        header.span = start.to(self.prev_span());
-        let span = header.span;
-        Ok(mk(ExprKind::ProcType(Rc::new(header)), span))
+        self.parse_expr()
     }
 
     /// `a, b: T = v`, `$T: Type`, `using x: *X`, `args: ..Any` or a bare type (procedure types).
@@ -295,7 +290,7 @@ impl Parser<'_> {
         }
         if !self.named_param_ahead() {
             let variadic = self.eat(P::DotDot);
-            let ty = self.parse_expr()?;
+            let ty = self.parse_param_type()?;
             let span = start.to(ty.span);
             out.push(Param {
                 name: None,

@@ -62,30 +62,7 @@ impl Compiler {
             out = Some(g);
         }
         f.b.ret(Vec::new());
-        let func = f.b.finish();
-        let id = self.program.reserve_func(func.name.clone());
-        self.program.funcs[id.0 as usize] = Some(func);
-        self.drain_bodies()?;
-        let ctx = self.compile_time_context(span)?;
-        self.interp.compile_time = true;
-        let result = self.interp.call(&self.program, id, &[ctx]);
-        self.flush_interp_output();
-        if let Err(trap) = result {
-            let mut d = Diagnostic::error(
-                span,
-                format!("error during compile-time execution: {}", trap.message),
-            );
-            if let Some((file, line, _)) = trap.loc {
-                d = d.with_note(
-                    span,
-                    format!(
-                        "while executing {}:{line}",
-                        self.sources.get(FileId(file)).path
-                    ),
-                );
-            }
-            return Err(Box::new(d));
-        }
+        self.call_thunk(f, span)?;
         let Some(g) = out else {
             return Ok(Operand::Void);
         };
@@ -102,6 +79,38 @@ impl Compiler {
                 untyped: false,
             },
         })
+    }
+
+    /// Finish the compile-time function `f` and run it; returns its scalar results.
+    pub fn call_thunk(&mut self, f: FnCtx, span: Span) -> Result<Vec<u64>> {
+        let func = f.b.finish();
+        let id = self.program.reserve_func(func.name.clone());
+        self.program.funcs[id.0 as usize] = Some(func);
+        let deferred = self.drain_bodies_lenient();
+        let ctx = self.compile_time_context(span)?;
+        self.interp.compile_time = true;
+        let result = self.interp.call(&self.program, id, &[ctx]);
+        self.flush_interp_output();
+        match result {
+            Ok(values) => Ok(values),
+            Err(_) if deferred.is_some() => Err(deferred.unwrap()),
+            Err(trap) => {
+                let mut d = Diagnostic::error(
+                    span,
+                    format!("error during compile-time execution: {}", trap.message),
+                );
+                if let Some((file, line, _)) = trap.loc {
+                    d = d.with_note(
+                        span,
+                        format!(
+                            "while executing {}:{line}",
+                            self.sources.get(FileId(file)).path
+                        ),
+                    );
+                }
+                Err(Box::new(d))
+            }
+        }
     }
 
     fn flush_interp_output(&mut self) {
@@ -210,7 +219,8 @@ impl Compiler {
                 });
             }
         }
-        self.drain_bodies()?;
+        // A body that fails here is reported by the final drain.
+        self.drain_bodies_lenient();
         let addr = self
             .interp
             .global_addr(&self.program, g)

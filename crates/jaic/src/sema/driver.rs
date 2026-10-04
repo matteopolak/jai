@@ -81,6 +81,7 @@ impl Compiler {
     /// Expand declarations and run pending top-level directives.
     pub fn settle(&mut self) -> Result<()> {
         self.expand_all()?;
+        self.apply_pokes()?;
         self.run_top_level()
     }
 

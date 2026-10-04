@@ -633,6 +633,25 @@ impl Compiler {
         Ok(())
     }
 
+    /// Lower the queued bodies that can be lowered now, for compile-time code running in the
+    /// middle of checking. A body may need something still being computed (the layout of the
+    /// struct whose constant is being evaluated); it stays queued, so the final `drain_bodies`
+    /// reports its error. Returns the first such error.
+    pub fn drain_bodies_lenient(&mut self) -> Option<Box<Diagnostic>> {
+        let mut first = None;
+        let mut retry = Vec::new();
+        while let Some(id) = self.body_queue.pop() {
+            if self.proc(id).body_state == BodyState::Queued
+                && let Err(e) = self.lower_body(id)
+            {
+                first.get_or_insert(e);
+                retry.push(id);
+            }
+        }
+        self.body_queue.extend(retry);
+        first
+    }
+
     /// Lower one procedure body to IR.
     pub fn lower_body(&mut self, id: ProcId) -> Result<()> {
         self.procs[id.0 as usize].body_state = BodyState::Lowering;
@@ -667,6 +686,7 @@ impl Compiler {
         f.b.func.source_file = file.0;
         let module = self.scope(sig.scope).module;
         let scope = self.new_scope(ScopeKind::Proc, Some(sig.scope), module, None);
+        self.scope_mut(scope).proc = Some(id);
         let Some(body) = &lit.body else {
             // Intrinsic or #compiler without a body: synthesize a forwarding body.
             return self.lower_intrinsic_wrapper(id, func_id, f, &sig, &header);
@@ -757,12 +777,8 @@ impl Compiler {
                 f.named_results.push(None);
             }
         }
-        // Named results live in the parameter scope; the body may shadow them.
-        let body_scope = if f.named_results.iter().any(Option::is_some) {
-            self.new_block_scope(scope)
-        } else {
-            scope
-        };
+        // Parameters and named results live in an outer scope; the body may shadow them.
+        let body_scope = self.new_block_scope(scope);
         self.check_block_stmts(&mut f, body_scope, &body.stmts)?;
         if !f.b.is_terminated() {
             self.emit_fallthrough_return(&mut f, body.span)?;

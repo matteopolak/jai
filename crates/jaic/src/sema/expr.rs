@@ -97,6 +97,20 @@ impl Compiler {
                 if let Some(op) = self.enclosing_local_constant(f, scope, base, member)? {
                     return Ok(op);
                 }
+                // Compile-time code may read type-level constants through a runtime local
+                // (`#if table.FLAG`): only the local's type is needed.
+                if f.compile_time
+                    && let Some(ty) = self.outer_local_type(scope, base)?
+                    && let Ok(op) = self.member_access(
+                        f,
+                        scope,
+                        Operand::Type(self.types.pointee(ty).unwrap_or(ty)),
+                        member.name,
+                        member.span,
+                    )
+                {
+                    return Ok(op);
+                }
                 let base_op = self.check_expr(f, scope, base, None)?;
                 self.member_access(f, scope, base_op, member.name, member.span)
             }
@@ -293,7 +307,7 @@ impl Compiler {
                     untyped: false,
                 })
             }
-            E::This => self.check_this(f, scope, span),
+            E::This => self.check_this(scope, span),
             E::CompileTime => {
                 if f.compile_time {
                     return Ok(Operand::bool(true));
@@ -361,6 +375,24 @@ impl Compiler {
         }
     }
 
+    /// The type of `expr` if it names a runtime local of an enclosing procedure.
+    fn outer_local_type(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<Option<TypeId>> {
+        let E::Ident(name) = &expr.kind else {
+            return Ok(None);
+        };
+        Ok(match self.lookup(scope, *name)?.as_slice() {
+            [id] => match self.entity(*id).kind {
+                EntityKind::Local {
+                    ty,
+                    depth,
+                    ..
+                } if depth != self.scope(scope).proc_depth => Some(ty),
+                _ => None,
+            },
+            _ => None,
+        })
+    }
+
     /// Evaluate a type expression inside a body.
     pub fn eval_type_in(
         &mut self,
@@ -381,7 +413,7 @@ impl Compiler {
         self.operand_as_type(op, expr.span)
     }
 
-    fn check_ident(
+    pub(super) fn check_ident(
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,
@@ -392,11 +424,35 @@ impl Compiler {
             Found::Using(entry, member) => self.using_member(f, entry, member, span),
             Found::Entities(ids) => {
                 if ids.is_empty() {
+                    if f.type_only
+                        && let Some(ty) = self.struct_field_type(scope, name)
+                    {
+                        // Only the type is wanted, so the address is never used.
+                        let addr = f.b.iconst(Ty::Ptr, 0);
+                        return Ok(Operand::Place {
+                            ty,
+                            addr,
+                        });
+                    }
                     return err(span, format!("unknown identifier '{name}'"));
                 }
                 self.entities_operand(f, scope, &ids, span)
             }
         }
+    }
+
+    /// The type of field `name` of a struct whose body encloses `scope`, if already laid out.
+    fn struct_field_type(&self, scope: ScopeId, name: Sym) -> Option<TypeId> {
+        let mut s = Some(scope);
+        while let Some(sid) = s {
+            if let Some(fields) = self.field_types.get(&sid)
+                && let Some(&(_, ty)) = fields.iter().find(|(n, _)| *n == name)
+            {
+                return Some(ty);
+            }
+            s = self.scope(sid).parent;
+        }
+        None
     }
 
     pub fn entities_operand(
@@ -415,6 +471,7 @@ impl Compiler {
                         value: Value::Proc(p),
                         ..
                     } => procs.push(p),
+                    Resolved::ProcSet(set) => procs.extend(set),
                     _ => {
                         if ids.len() == 1 {
                             return self.entity_operand(f, scope, id, span);
@@ -452,12 +509,16 @@ impl Compiler {
                             untyped: false,
                         });
                     }
+                    let name = self.entity(id).name;
                     return err(
                         span,
-                        format!(
-                            "cannot access local '{}' of an enclosing procedure",
-                            self.entity(id).name
-                        ),
+                        if f.compile_time {
+                            format!(
+                                "cannot use local '{name}' in a compile-time expression: its value is only known at runtime"
+                            )
+                        } else {
+                            format!("cannot access local '{name}' of an enclosing procedure")
+                        },
                     );
                 }
                 return Ok(Operand::Place {
@@ -486,6 +547,7 @@ impl Compiler {
                 untyped: self.entity(id).untyped_const,
             },
             Resolved::Proc(p) => Operand::Procs(vec![p]),
+            Resolved::ProcSet(set) => Operand::Procs(set),
             Resolved::Global {
                 storage,
                 ty,
@@ -576,25 +638,22 @@ impl Compiler {
             }))
     }
 
-    /// `#this`: the enclosing struct's type, or the current procedure when inside a
-    /// lambda (so a lambda can recurse) or outside any struct.
-    fn check_this(&mut self, f: &FnCtx, scope: ScopeId, span: Span) -> Result<Operand> {
-        let in_lambda = f
-            .proc
-            .is_some_and(|p| self.proc(p).lit.header.flags.lambda != ast::LambdaKind::None);
+    /// `#this`: the innermost enclosing struct type or, inside a procedure body, the procedure.
+    fn check_this(&mut self, scope: ScopeId, span: Span) -> Result<Operand> {
         let mut s = Some(scope);
         while let Some(sid) = s {
             match self.scope(sid).kind {
                 ScopeKind::Struct(t) => return Ok(Operand::Type(t)),
-                ScopeKind::Proc if in_lambda => break,
+                ScopeKind::Proc => {
+                    if let Some(p) = self.scope(sid).proc {
+                        return Ok(Operand::Procs(vec![p]));
+                    }
+                }
                 _ => {}
             }
             s = self.scope(sid).parent;
         }
-        match f.proc {
-            Some(p) => Ok(Operand::Procs(vec![p])),
-            None => err(span, "#this used outside of a struct or procedure"),
-        }
+        err(span, "#this used outside of a struct or procedure")
     }
 
     fn proc_type_from_header(
@@ -658,6 +717,31 @@ impl Compiler {
     ) -> Result<Operand> {
         match op {
             UnOp::Star => {
+                // `*x[i]` calls `operator *[]` when the base type has one.
+                if let E::Index(base, index) = &a.kind
+                    && let Ok(probe) = self.check_expr_no_emit(scope, base)
+                    && !self
+                        .operator_candidates(scope, "*[]", &[probe.ty()])?
+                        .is_empty()
+                {
+                    let mut base_op = self.check_expr(f, scope, base, None)?;
+                    if let Operand::Place {
+                        ty,
+                        addr,
+                    } = base_op
+                    {
+                        base_op = Operand::Value {
+                            ty: self.types.pointer(ty),
+                            val: addr,
+                        };
+                    }
+                    let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
+                    if let Some(result) = self
+                        .try_index_operator_overload(f, scope, "*[]", &base_op, &index_op, span)?
+                    {
+                        return Ok(result);
+                    }
+                }
                 let inner = self.check_expr(f, scope, a, None)?;
                 match inner {
                     Operand::Type(t) => Ok(Operand::Type(self.types.pointer(t))),
@@ -1695,7 +1779,7 @@ impl Compiler {
         }
         let bty = base_op.ty();
         if let Some(result) =
-            self.try_index_operator_overload(f, scope, &base_op, &index_op, span)?
+            self.try_index_operator_overload(f, scope, "[]", &base_op, &index_op, span)?
         {
             return Ok(result);
         }

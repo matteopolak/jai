@@ -21,6 +21,7 @@ mod driver;
 mod expr;
 mod lambda;
 mod lower;
+mod modify;
 mod modules;
 mod procs;
 mod runtime_info;
@@ -144,6 +145,10 @@ pub struct Compiler {
     pub main_module: Option<ModuleId>,
     /// `#add_context` declarations with their declaring scope, in load order.
     pub add_contexts: Vec<(Rc<ast::Decl>, ScopeId)>,
+    /// `#poke_name Module name;` directives: (module expression, name, declaring file scope).
+    pub pokes: Vec<(ast::Expr, Sym, ScopeId)>,
+    /// Types of the fields of a struct body laid out so far, by struct scope.
+    pub field_types: HashMap<ScopeId, Vec<(Sym, TypeId)>>,
     pub context_type: Option<TypeId>,
     pub top_level_runs: Vec<(ast::Expr, ScopeId)>,
     pub asserts: Vec<(ast::Expr, Option<ast::Expr>, ScopeId)>,
@@ -220,6 +225,8 @@ impl Compiler {
             runtime_support: None,
             main_module: None,
             add_contexts: Vec::new(),
+            pokes: Vec::new(),
+            field_types: HashMap::new(),
             context_type: None,
             top_level_runs: Vec::new(),
             asserts: Vec::new(),
