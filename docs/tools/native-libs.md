@@ -3,7 +3,7 @@
 ## What it is
 
 The stdlib binds some C libraries that no system ships (`stb_image`, `stb_image_write`,
-`stb_image_resize`, `stb_vorbis`). `tools/build_native_libs.py` builds them from pinned, hash-checked
+`stb_image_resize`, `stb_vorbis`, and `rpmalloc` 1.4.5 built with first-class heaps). `tools/build_native_libs.py` builds them from pinned, hash-checked
 sources into `artifacts/native-libs/<os>-<arch>/`, and `jaic` searches that directory when it resolves a
 library name, both for foreign calls at compile time / under `jaic run` and when linking `jaic build`
 output. Without it, programs that use those modules check fine but cannot call into them or link.

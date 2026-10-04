@@ -30,7 +30,7 @@ resize :: (using table:*Table,slots_to_allocate:s64=0) {
     capacity:=next_power_of_two(Basic.max(SIZE_MIN,slots_to_allocate));
     while count*100>=capacity*LOAD_FACTOR_PERCENT capacity*=2;
     previous:=entries;
-    replacement,base:=Basic.NewArray(capacity,Entry,true,allocator=allocator);
+    replacement,base:=Basic.NewArray(capacity,Entry,true,,allocator);
     entries=replacement; allocated=capacity; count=0; slots_filled=0;
     for old:previous if old.hash>=FIRST_VALID_HASH _place_entry(table,old);
     if previous.data Basic.free(previous.data,allocator=allocator);

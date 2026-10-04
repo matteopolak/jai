@@ -14,7 +14,7 @@ init_bit_array :: (array: *Bit_Array, count: int) {
     if !array.allocator.proc array.allocator = context.allocator;
     words := count / 64;
     if count % 64 != 0 words += 1;
-    array.slots = NewArray(words, s64, allocator=array.allocator);
+    array.slots = NewArray(words, s64,, array.allocator);
     array.count = count;
 }
 make_bit_array :: (count: int) -> Bit_Array #must {

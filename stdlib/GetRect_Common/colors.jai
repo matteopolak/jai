@@ -106,12 +106,12 @@ set_keyframes :: (state:*Color_Animation_Editor_State,frames:[]Color_Keyframe) {
     state.dragging_in_strip=false; state.color_picker_subwindow_info.open=false;
 }
 get_keyframes :: (state:*Color_Animation_Editor_State)->[]Color_Keyframe {
-    sorted:=get_sorted_keyframes(state); result:=NewArray(sorted.count,Color_Keyframe,allocator=Basic.temp);
+    sorted:=get_sorted_keyframes(state); result:=NewArray(sorted.count,Color_Keyframe,,Basic.temp);
     for frame,index:sorted result[index]=frame.base;
     return result;
 }
 get_sorted_keyframes :: (state:*Color_Animation_Editor_State,index_to_ignore:=-1)->[]*Augmented_Keyframe {
-    result:=NewArray(state.color_keyframes.count,*Augmented_Keyframe,allocator=Basic.temp); result.count=0;
+    result:=NewArray(state.color_keyframes.count,*Augmented_Keyframe,,Basic.temp); result.count=0;
     for *frame,index:state.color_keyframes if index!=index_to_ignore { result[result.count]=frame; result.count+=1; }
     for i:1..result.count-1 { item:=result[i]; j:=i; while j>0&&result[j-1].t>item.t { result[j]=result[j-1]; j-=1; } result[j]=item; }
     return result;
@@ -218,8 +218,8 @@ time_view_callback_body :: (r:Rect,data:*void) {
     samples:[1]Vector4; frame:=Color_Keyframe.{t=cast(float)frac(editor.time_view_current_time/max(editor.time_view_period,0.001))};
     sorted:=get_sorted_keyframes(editor); interp:=get_interpolation(editor);
     // Sampling a shifted cyclic pair uses the same interpolation implementation.
-    shifted:=NewArray(sorted.count,*Color_Keyframe,allocator=Basic.temp);
-    storage:=NewArray(sorted.count,Color_Keyframe,allocator=Basic.temp);
+    shifted:=NewArray(sorted.count,*Color_Keyframe,,Basic.temp);
+    storage:=NewArray(sorted.count,Color_Keyframe,,Basic.temp);
     for value,index:sorted { storage[index]=value.base; storage[index].t-=frame.t; shifted[index]=*storage[index]; }
     generate_color_samples(shifted,interp,samples); left_color_fill(r,samples[0]);
 }
@@ -228,7 +228,7 @@ copy_output_to_clipboard :: (state:*Color_Animation_Editor_State,output_type:Out
     builder:String.String_Builder;
     if output_type==.SOURCE_KEYFRAMES for frame:get_keyframes(state) String.append(*builder,tprint(".{.{%,%,%,%},%},\n",frame.color_rgb.x,frame.color_rgb.y,frame.color_rgb.z,frame.color_rgb.w,frame.t));
     else {
-        samples:=NewArray(max(state.num_clipboard_samples,1),Vector4,allocator=Basic.temp); generate_color_samples(get_sorted_keyframes(state),get_interpolation(state),samples);
+        samples:=NewArray(max(state.num_clipboard_samples,1),Vector4,,Basic.temp); generate_color_samples(get_sorted_keyframes(state),get_interpolation(state),samples);
         for color:samples String.append(*builder,tprint(".{%,%,%,%},\n",color.x,color.y,color.z,color.w));
     }
     text:=String.builder_to_string(*builder); Left_Clipboard.os_clipboard_set_text(text); String.free_buffers(*builder);

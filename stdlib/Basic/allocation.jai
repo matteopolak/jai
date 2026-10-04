@@ -91,18 +91,17 @@ New :: ($T: Type, $initialized := true, allocator := context.allocator) -> *T {
     return pointer;
 }
 
-NewArray :: (count: s64, $T: Type, $initialized: bool, alignment: s32 = -1, allocator := context.allocator) -> (result: [] T, unaligned_base: *void) {
+// Allocates from context.allocator. With `alignment`, the array starts at that alignment
+// inside a slightly larger block; free `unaligned_base`, not `result.data`.
+NewArray :: (count: s64, $T: Type, $initialized := true, alignment: s32 = -1) -> (result: [] T, unaligned_base: *void) {
     if count <= 0 return .[], null;
     extra: s64 = 0;
-    if alignment > 0 extra = alignment - 1;
+    if alignment > 0 extra = alignment;
     if size_of(T) != 0 && count > (0x7fff_ffff_ffff_ffff - extra) / size_of(T) return .[], null;
-    base := alloc(count * size_of(T) + extra, allocator);
+    base := alloc(count * size_of(T) + extra);
     if !base return .[], null;
     data := base;
-    if alignment > 0 {
-        address := cast(s64) base;
-        data = cast(*void) align_forward(address, alignment);
-    }
+    if alignment > 0 data = cast(*void) align_forward(cast(s64) base, alignment);
     result: [] T;
     result.count = count;
     result.data = cast(*T) data;
@@ -114,16 +113,6 @@ NewArray :: (count: s64, $T: Type, $initialized: bool, alignment: s32 = -1, allo
         }
     }
     return result, base;
-}
-
-NewArray :: (count: s64, $T: Type, allocator := context.allocator, alignment := 0) -> [] T {
-    assert(alignment <= 0, "use the initialized tuple overload for custom alignment and retain its base pointer");
-    result, base := NewArray(count, T, true, -1, allocator);
-    return result;
-}
-
-NewArray :: ($T: Type, count: s64, allocator := context.allocator, alignment := 0) -> [] T {
-    return NewArray(count, T, allocator, alignment);
 }
 
 align_forward :: (orig_size: s64, alignment: s64) -> s64 {

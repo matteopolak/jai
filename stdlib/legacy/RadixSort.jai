@@ -13,8 +13,8 @@ reset :: (using radix: *RadixSort) { valid_ranks = false; }
 resize :: (using radix: *RadixSort, new_size: u32) {
     if ranks.count == new_size return;
     if !allocator.proc allocator = context.allocator;
-    replacement := NewArray(new_size, u32, allocator=allocator);
-    scratch := NewArray(new_size, u32, allocator=allocator);
+    replacement := NewArray(new_size, u32,, allocator);
+    scratch := NewArray(new_size, u32,, allocator);
     if ranks.data free(ranks.data, allocator=allocator);
     if ranks2.data free(ranks2.data, allocator=allocator);
     ranks = replacement;

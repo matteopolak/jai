@@ -68,7 +68,7 @@ update_keyframes :: (rect:Rect,theme:*Color_Animation_Editor_Theme,state:*Color_
     update_keyframe_color_due_to_open_color_picker(state);
 }
 my_color_slider :: (rect:Rect,alpha:float,theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State)->(changed:bool) {
-    before:=NewArray(state.color_keyframes.count,Color_Keyframe,allocator=Basic.temp);
+    before:=NewArray(state.color_keyframes.count,Color_Keyframe,,Basic.temp);
     for frame,index:state.color_keyframes before[index]=frame.base;
     update_keyframes(rect,theme,state); left_color_strip(rect,state,clamp(alpha,0.0,1.0));
     for frame,index:state.color_keyframes draw_color_keyframe(index,rect,theme,state);
@@ -83,7 +83,7 @@ left_color_strip :: (rect:Rect,state:*Color_Animation_Editor_State,alpha:float) 
     for color,index:state.color_samples { color.w*=alpha; left_color_fill(.{rect.x+rect.w*index/count,rect.y,rect.w/count+1,rect.h},color); }
 }
 left_color_sample_at :: (sorted:[]*Augmented_Keyframe,interp:Interpolation,t:float)->Vector4 {
-    shifted:=NewArray(sorted.count,*Color_Keyframe,allocator=Basic.temp); values:=NewArray(sorted.count,Color_Keyframe,allocator=Basic.temp);
+    shifted:=NewArray(sorted.count,*Color_Keyframe,,Basic.temp); values:=NewArray(sorted.count,Color_Keyframe,,Basic.temp);
     for frame,index:sorted { values[index]=frame.base; values[index].t-=t; shifted[index]=*values[index]; }
     output:[1]Vector4; generate_color_samples(shifted,interp,output); return output[0];
 }

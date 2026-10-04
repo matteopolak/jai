@@ -306,6 +306,13 @@ impl Compiler {
             key.push(value.clone());
             bindings.push((pname, value, ty));
         }
+        if let Some(block) = &lit.modify {
+            let baked = self.poly_structs[ps.0 as usize].baked.len();
+            let params = bindings.split_off(baked);
+            let modified = self.run_struct_modify(def_scope, name, block, params, span)?;
+            key = modified.iter().map(|(_, v, _)| v.clone()).collect();
+            bindings.extend(modified);
+        }
         if let Some(&t) = self.poly_structs[ps.0 as usize].instances.get(&key) {
             return Ok(t);
         }
