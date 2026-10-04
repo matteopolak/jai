@@ -22,6 +22,5 @@ Operating_System_Tag :: enum u32 {
     WASM :: 11;
 }
 
-// Workspace handles are compiler values; register operands remain nominal.
+// Workspace handles are compiler values.
 Workspace :: s64;
-__reg :: #type,distinct u16;

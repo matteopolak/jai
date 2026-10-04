@@ -312,7 +312,7 @@ impl Compiler {
                     name.name
                 ),
             ),
-            E::Asm => err(span, "#asm is not supported"),
+            E::Asm(block) => self.check_asm(f, scope, block),
             E::Lambda {
                 ..
             } => err(span, "lambda expressions are not supported yet"),

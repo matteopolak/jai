@@ -8,12 +8,14 @@
 //! Layout:
 //! - `expr`      precedence climbing, unary/postfix operators, primaries
 //! - `directive` `#directive` expressions (`#run`, `#code`, `#type`, ...)
+//! - `asm`       `#asm` blocks (instructions, operands, register declarations)
 //! - `procedure` procedure headers, parameters, return lists, lambdas
 //! - `aggregate` struct/union/enum literals
 //! - `stmt`      statements and control flow
 //! - `decl`      declarations (names, types, values, `using` / `#as` modifiers, flags)
 //! - `directive_stmt` statement-level directives (`#import`, `#load`, `#if`, `#run`, ...)
 mod aggregate;
+mod asm;
 mod decl;
 mod directive;
 mod directive_stmt;

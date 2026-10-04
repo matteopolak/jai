@@ -780,6 +780,13 @@ formatInt :: (value: s64, base := 10, minimum_digits := 0, digits_per_comma := 0
         digits_per_comma = cast(u16) digits_per_comma, comma_string = comma_string, padding = cast(u8) padding};
     return tprint("%", settings);
 }
+// Unsigned 64-bit values keep their full range (a u64 does not convert to s64 implicitly).
+formatInt :: (value: u64, base := 10, minimum_digits := 0, digits_per_comma := 0, comma_string := ",", padding := #char "0") -> string {
+    if digits_per_comma < 0 || digits_per_comma > 65535 return "<invalid digit group size>";
+    settings := FormatInt.{value = value, base = base, minimum_digits = minimum_digits,
+        digits_per_comma = cast(u16) digits_per_comma, comma_string = comma_string, padding = cast(u8) padding};
+    return tprint("%", settings);
+}
 formatFloat :: (value: float64, width := 0, trailing_width := 6, zero_removal := true, mode := 0) -> string {
     settings := FormatFloat.{value = value, width = width, trailing_width = trailing_width};
     if !zero_removal settings.zero_removal = .NO;
