@@ -1765,13 +1765,11 @@ fn assign_slots(
     let mut slots: Vec<Option<Slot>> = vec![None; params.len()];
     let variadic_index = params.iter().position(|p| p.variadic);
     let mut positional = 0usize;
-    let mut seen_named = false;
     for (i, arg) in args.iter().enumerate() {
         if is_poly_var_arg(params, arg, poly_vars) {
             continue;
         }
         if let Some(name) = arg.name {
-            seen_named = true;
             let Some(p) = params
                 .iter()
                 .position(|p| p.name.map(|n| n.name) == Some(name))
@@ -1786,10 +1784,11 @@ fn assign_slots(
             } else {
                 Slot::Arg(i)
             });
+            // Positional arguments after a named one continue from the next parameter.
+            if Some(p) != variadic_index {
+                positional = p + 1;
+            }
             continue;
-        }
-        if seen_named && variadic_index.is_none() {
-            return err(arg.span, "positional argument after named argument");
         }
         while positional < params.len()
             && slots[positional].is_some()
