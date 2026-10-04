@@ -103,7 +103,9 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **Enum bodies**: `#insert -> string { ... }` inside an enum adds members (parsed as an enum body).
 - **`push_context,defer_pop ctx;`** holds the context for the rest of its block (`check_block_stmts`).
 - **Named for-expansion iterators**: `for slot, _ : list` hides the expansion's own `it_index` from the body,
-  so an enclosing `it_index` stays visible (`insert_for_body`).
+  so an enclosing `it_index` stays visible (`insert_for_body`). A for_expansion may forward its body
+  (`for_expansion(*inner, body, flags)`): the inserting macro's `it` / `it_index` are borrowed into the
+  loop scope for that insertion.
 - **Parenthesized types**: `x: (*T);` and `#type (*T)` are procedure types (`parse_param_type`).
 - **`#insert,scope(Top)`** where `Top :: #code()` is top-level: the code (also a string) is checked in that
   file's scope and its constants are declared there, so the metaprogram sees them as top-level declarations.
