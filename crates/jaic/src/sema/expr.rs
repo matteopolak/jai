@@ -327,7 +327,21 @@ impl Compiler {
                     untyped: false,
                 })
             }
-            E::This => self.check_this(scope, span),
+            E::This => {
+                // In a macro body `#this` is the procedure the macro expanded into.
+                let mut result = self.check_this(scope, span);
+                for frame in f.macros.iter().rev() {
+                    if result.is_ok() {
+                        break;
+                    }
+                    result = self.check_this(frame.caller_scope, span);
+                }
+                if let (Err(_), Some(caller)) = (&result, f.backtick_scope) {
+                    // A deferred macro statement runs after its frame is gone.
+                    result = self.check_this(caller, span);
+                }
+                result
+            }
             E::CompileTime => {
                 if f.compile_time {
                     return Ok(Operand::bool(true));
@@ -1161,7 +1175,20 @@ impl Compiler {
         } else {
             expected
         };
-        let mut lhs = self.check_expr(f, scope, a, lhs_expected)?;
+        // `.FIRST == x`: an inferred member on the left takes the right operand's type, so
+        // the right side is checked first.
+        let mut early_rhs = None;
+        let mut lhs = if is_cmp
+            && matches!(a.kind, E::InferredMember(_))
+            && !matches!(b.kind, E::InferredMember(_))
+        {
+            let r = self.check_expr(f, scope, b, None)?;
+            let l = self.check_expr(f, scope, a, Some(r.ty()))?;
+            early_rhs = Some(r);
+            l
+        } else {
+            self.check_expr(f, scope, a, lhs_expected)?
+        };
         // Inferred enum members on the right take the left operand's type.
         let pointer_offset = matches!(op, BinOp::Add | BinOp::Sub)
             && self.types.is_pointer(self.types.repr(lhs.ty()));
@@ -1181,16 +1208,19 @@ impl Compiler {
                 )
             })
         };
-        let mut rhs = self.check_expr(
-            f,
-            scope,
-            b,
-            rhs_expected.or(if is_cmp || is_shift {
-                None
-            } else {
-                expected
-            }),
-        )?;
+        let mut rhs = match early_rhs {
+            Some(r) => r,
+            None => self.check_expr(
+                f,
+                scope,
+                b,
+                rhs_expected.or(if is_cmp || is_shift {
+                    None
+                } else {
+                    expected
+                }),
+            )?,
+        };
         // `s[0] == "-"`: a one-byte string constant compares as that byte.
         if is_cmp {
             let byte_of = |c: &Compiler, op: &Operand, other: &Operand| match op {

@@ -117,10 +117,15 @@ impl Compiler {
             Operand::Builtin(b) => self.check_builtin(f, scope, b, args, expected, span),
             Operand::PolyStruct(ps) => {
                 let mut values = Vec::new();
-                for a in args {
+                for (i, a) in args.iter().enumerate() {
+                    let expected = if matches!(a.value.kind, E::InferredMember(_)) {
+                        self.poly_struct_param_type(ps, i, a.name.map(|n| n.name))
+                    } else {
+                        None
+                    };
                     values.push((
                         a.name.map(|n| n.name),
-                        self.eval_const_or_run(scope, &a.value, None)?,
+                        self.eval_const_or_run(scope, &a.value, expected)?,
                     ));
                 }
                 Ok(Operand::Type(self.instantiate_struct(ps, values, span)?))
@@ -628,6 +633,15 @@ impl Compiler {
                 value: Value::String(_),
                 ..
             } if self.types.pointee(param) == Some(TypeId::U8) => return Ok(convert::POINTER),
+            // A string literal converts to a `#type,distinct` / `#type,isa` string variant.
+            Operand::Const {
+                value: Value::String(_),
+                ..
+            } if matches!(self.types.kind(param), TypeKind::Distinct(_))
+                && self.types.repr(param) == TypeId::STRING =>
+            {
+                return Ok(convert::LITERAL);
+            }
             _ => {}
         }
         let from = op.ty();
@@ -1021,6 +1035,36 @@ impl Compiler {
     /// Match a polymorphic type pattern against a concrete type, adding bindings.
     /// `ty` if it is an instance of `ps`, else the first `#as` member (searched
     /// depth-first) that is one.
+    /// Whether struct `ty` is `want` or reaches it through `#as` members.
+    fn has_as_base(&mut self, ty: TypeId, want: TypeId) -> bool {
+        if ty == want {
+            return true;
+        }
+        let Some(s) = self.types.as_struct(ty) else {
+            return false;
+        };
+        if self.layout_struct(s, Span::default()).is_err() {
+            return false;
+        }
+        let fields = self.types.struct_info(s).fields.clone();
+        fields
+            .iter()
+            .filter(|f| f.as_)
+            .any(|f| self.has_as_base(f.ty, want))
+    }
+
+    /// The polymorphic struct a type expression names, if it is a bare identifier for one.
+    fn ident_poly_struct_expr(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<Option<value::PolyStructId>> {
+        match &expr.kind {
+            E::Ident(name) => self.ident_poly_struct(scope, *name),
+            _ => Ok(None),
+        }
+    }
+
     fn instance_or_as_base(&mut self, ps: value::PolyStructId, ty: TypeId) -> Option<TypeId> {
         // A `#bake_arguments` struct's instances are its origin's with the baked values.
         let poly = &self.poly_structs[ps.0 as usize];
@@ -1127,6 +1171,24 @@ impl Compiler {
                             );
                         }
                     }
+                }
+                // `$T/Entity`: a struct argument must be `Entity` or have it as an `#as` base.
+                if !interface
+                    && let E::Ident(_) | E::Member(..) = &restriction.kind
+                    && self.ident_poly_struct_expr(scope, restriction)?.is_none()
+                    && let Ok(want) = self.eval_type(scope, restriction)
+                    && self.types.as_struct(want).is_some()
+                    && self.types.as_struct(ty).is_some()
+                    && !self.has_as_base(ty, want)
+                {
+                    return err(
+                        span,
+                        format!(
+                            "{} does not satisfy the restriction '{}'",
+                            self.types.name(ty),
+                            self.types.name(want)
+                        ),
+                    );
                 }
                 bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
             }
@@ -1261,7 +1323,32 @@ impl Compiler {
         let header = self.proc(proc).lit.header.clone();
         let must: Vec<bool> = header.returns.iter().map(|r| r.must).collect();
         let name = self.proc(proc).name;
+        // `pa + pb` on `#type,isa` variants of a base type calls the base's operator; a result
+        // of exactly the base type is cast back up to the variant.
+        let variant = args.iter().find_map(|a| {
+            let ty = a.op.as_ref()?.ty();
+            match self.types.kind(ty) {
+                TypeKind::Distinct(d) if self.types.distincts[d.0 as usize].isa => {
+                    Some((ty, self.types.distincts[d.0 as usize].base))
+                }
+                _ => None,
+            }
+        });
+        let is_macro = self.proc(proc).is_macro;
         let result = self.emit_call_inner(f, scope, c, args, span);
+        let result = match (result, variant) {
+            (
+                Ok(Operand::Value {
+                    ty,
+                    val,
+                }),
+                Some((variant, base)),
+            ) if ty == base && !is_macro && header.returns.len() == 1 => Ok(Operand::Value {
+                ty: variant,
+                val,
+            }),
+            (result, _) => result,
+        };
         self.last_call_must = must.iter().any(|&m| m).then_some((span, name, must));
         result
     }
@@ -1746,7 +1833,13 @@ impl Compiler {
                 if let Some(t) = self.outer_local_type(scope, &arg.value)? {
                     return Ok(Operand::Type(t));
                 }
-                let op = self.check_expr_no_emit(scope, &arg.value)?;
+                let op = match self.check_expr_no_emit(scope, &arg.value) {
+                    Ok(op) => op,
+                    Err(e) => match self.enclosing_struct_field_type(scope, &arg.value)? {
+                        Some(t) => return Ok(Operand::Type(t)),
+                        None => return Err(e),
+                    },
+                };
                 let ty = match op {
                     Operand::Type(_) => TypeId::TYPE,
                     Operand::Const {
@@ -1827,6 +1920,27 @@ impl Compiler {
             && let Some((_, fty)) = self.find_member(t, field.name, expr.span)?
         {
             return Ok(Some(fty));
+        }
+        Ok(None)
+    }
+
+    /// `type_of(x)` inside a procedure nested in a struct: `x` is a field of that struct, which
+    /// has a type though not a value.
+    fn enclosing_struct_field_type(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<Option<TypeId>> {
+        if let E::Ident(name) = &expr.kind {
+            let mut s = Some(scope);
+            while let Some(sid) = s {
+                if let ScopeKind::Struct(t) = self.scope(sid).kind
+                    && let Some((_, fty)) = self.find_member(t, *name, expr.span)?
+                {
+                    return Ok(Some(fty));
+                }
+                s = self.scope(sid).parent;
+            }
         }
         Ok(None)
     }

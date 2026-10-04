@@ -725,6 +725,8 @@ pub enum StmtKind {
     },
     While {
         label: Option<Ident>,
+        /// `while name := cond`: `name` also holds the condition's value inside the loop.
+        bind_label: bool,
         cond: Expr,
         body: Box<Stmt>,
     },

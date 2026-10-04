@@ -33,6 +33,9 @@ Top-level conditionals, all verified on macOS:
 
 `#if` conditions that are plain constants are expanded first, before any `#run`, so a conditional `#load` (and any `#add_context` in it) lands before the Context type is laid out.
 
+- `#this` inside an `#expand` macro (including in a backtick `defer`) is the procedure the macro was expanded into: `E::This` retries `check_this` from each macro frame's caller scope and from `backtick_scope`.
+- `type_of(field)` in a procedure nested in a struct names the field's type (`type_field_type` in `sema/calls.rs` walks enclosing struct scopes when the name is not otherwise visible); no value is needed.
+
 ## How to change it
 
 Entity creation and visibility are in `declare_stmt` (`crates/jaic/src/sema/modules.rs`; `file_private`, `target_scope`). Lookup is in `crates/jaic/src/sema/scope.rs` (`Found::Using`, `module_exports`). Conditional expansion is `expand_pending` / `expand_plain_ifs` in the same file; keep `plain_condition` free of calls so the early pass stays safe.

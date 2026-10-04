@@ -44,6 +44,8 @@ A match runs only its own body unless `#through` is used; `case;` without a valu
 
 Custom iteration: `for x: value` on a type with a `for_expansion` macro runs `check_for_expansion`. The macro may rewrite the body's jumps with `#insert (break=..., continue=..., remove=...) body;`; see `tests/stdlib/insert-replacements.jai` and `tests/stdlib/for-expansion-renamed-index.jai`, and [macros and custom iteration](macros-and-custom-iteration.md). Gotcha: a `continue` coming from the user body jumps to your macro's loop head, so put the index increment in a `defer` or at the top of the loop, otherwise the iteration never advances.
 
+- `while name := cond` also binds `name` as a local holding the condition's value (re-evaluated each iteration) besides naming the loop for `break name` / `continue name`; `while :name cond` only labels (`bind_label` on `StmtKind::While`, `check_while` in `sema/stmt.rs`).
+
 ## How to change it
 
 Add syntax in `parser/stmt.rs` (and a parser test in `parser/tests.rs`), then handle the new `StmtKind` in `check_stmt`-style dispatch in `sema/stmt.rs`. Loop bodies that macros may rewrite are plumbed through `ForBody` in `sema/lower.rs`. Add a regression program under `tests/stdlib/` that exits 0.

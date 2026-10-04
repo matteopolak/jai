@@ -515,7 +515,6 @@ impl Compiler {
                         self.entity_mut(id).home = file_scope;
                     }
                 } else if decl.using
-                    && decl.kind == ast::DeclKind::Const
                     && let [name] = decl.names.as_slice()
                 {
                     // `using E :: enum {...}`: also bring the type's members into scope.
