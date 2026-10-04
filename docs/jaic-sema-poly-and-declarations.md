@@ -107,6 +107,11 @@ procedure arguments, `#bake_constants`, `#modify`, `#poke_name` and a few operat
 - **Parenthesized types**: `x: (*T);` and `#type (*T)` are procedure types (`parse_param_type`).
 - **`#insert,scope(Top)`** where `Top :: #code()` is top-level: the code (also a string) is checked in that
   file's scope and its constants are declared there, so the metaprogram sees them as top-level declarations.
+- **Waiting for `#placeholder`s**: resolving an undefined placeholder bumps `placeholder_misses`. A pending
+  top-level item, top-level `#run` or `#assert` whose failure reached one stays waiting (a metaprogram may
+  define the name at `TYPECHECKED_ALL_WE_CAN`) and is retried at the next settle; `finish_program` sets
+  `placeholders_final` and settles once more, so a placeholder never defined is still an error.
+- **`using _ :: struct {...}`** at top level may repeat: each gets a hidden entity name (`__using_N`).
 
 ## How to change it
 

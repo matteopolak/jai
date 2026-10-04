@@ -449,10 +449,11 @@ fn step(shared: &SharedWorkspaces, id: i64) -> Result<(), String> {
             }),
         // Out of sources: lower what is reachable first; what that reports may make
         // the metaprogram add more before the program is generated.
-        Stage::Checked => compiler.lower_reachable().map(|()| {
+        Stage::Checked => {
+            compiler.lower_reachable();
             lowering = true;
-            Stage::Checked
-        }),
+            Ok(Stage::Checked)
+        }
         Stage::Done => unreachable!(),
     });
     let intercepted = shared.borrow_mut().ws(id)?.intercepted;

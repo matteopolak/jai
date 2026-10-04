@@ -372,10 +372,21 @@ impl Compiler {
         match &stmt.kind {
             ast::StmtKind::Scope(kind) => return Ok(*kind),
             ast::StmtKind::Decl(decl) => {
+                // `using _ :: struct {...}` may appear many times: each gets its own name.
+                let entity_name = |c: &Self, name: Sym| {
+                    if decl.using && name.as_str() == "_" {
+                        Sym::intern(&format!("__using_{}", c.entities.len()))
+                    } else {
+                        name
+                    }
+                };
+                let mut using_name = None;
                 for (index, name) in decl.names.iter().enumerate() {
+                    let named = entity_name(self, name.name);
+                    using_name.get_or_insert(named);
                     let id = self.add_entity(
                         target,
-                        name.name,
+                        named,
                         name.span,
                         EntityKind::Decl {
                             decl: decl.clone(),
@@ -462,7 +473,7 @@ impl Compiler {
                         stmt: ast::Stmt {
                             kind: ast::StmtKind::Using {
                                 value: ast::Expr {
-                                    kind: ast::ExprKind::Ident(name.name),
+                                    kind: ast::ExprKind::Ident(using_name.unwrap_or(name.name)),
                                     span: name.span,
                                 },
                                 filter: ast::UsingFilter::None,

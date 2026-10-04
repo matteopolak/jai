@@ -149,13 +149,14 @@ impl Compiler {
     /// Lower the procedures reachable from the program's exports, without generating
     /// the program: their bodies may declare more (`#insert,scope(...)`) for a
     /// metaprogram to see before it stops adding code.
-    pub fn lower_reachable(&mut self) -> Result<()> {
-        let result = self.lower_reachable_inner().map(|_| ());
-        self.with_deferred_errors(result)
+    /// Lenient: a body that fails (it may need a `#placeholder` the metaprogram defines
+    /// later) stays queued, and `finish_program` reports it if it still fails.
+    pub fn lower_reachable(&mut self) {
+        let _ = self.lower_reachable_inner(true);
     }
 
     /// False when there is no program to lower.
-    fn lower_reachable_inner(&mut self) -> Result<bool> {
+    fn lower_reachable_inner(&mut self, lenient: bool) -> Result<bool> {
         // A program made only of `#run`/`#assert` directives has nothing to lower.
         let Some(m) = self.main_module else {
             return Ok(false);
@@ -176,12 +177,19 @@ impl Compiler {
             self.proc_func(p, self.proc(p).span)?;
             i += 1;
         }
-        self.drain_bodies()?;
+        if lenient {
+            self.drain_bodies_lenient();
+        } else {
+            self.drain_bodies()?;
+        }
         Ok(true)
     }
 
     fn finish_program_inner(&mut self) -> Result<()> {
-        if self.lower_reachable_inner()? {
+        // No more code is coming: items still waiting for a `#placeholder` fail now.
+        self.placeholders_final = true;
+        self.settle()?;
+        if self.lower_reachable_inner(false)? {
             self.fill_runtime_info();
         }
         Ok(())

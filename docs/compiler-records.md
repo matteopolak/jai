@@ -55,8 +55,9 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
   `body_or_null` and queued in `ExportState::pending_bodies`. Each later `export_typechecked` reports the
   queued bodies that have been lowered since (records carry local declaration types) and patches the header's
   `body_or_null`. Bodies the program never reaches are never lowered, so their errors never surface — as in Jai.
+- **Enums**: a top-level enum declaration's `Code_Enum.external_type` is its `Type_Info_Enum`.
 - **Phases**: when a workspace runs out of sources, `build.rs::step` first lowers everything reachable
-  (`Compiler::lower_reachable`). If that reports new declarations or bodies (a body may declare more through
+  (`Compiler::lower_reachable`, lenient: a failing body stays queued). If that reports new declarations or bodies (a body may declare more through
   `#insert,scope(...)`), the metaprogram gets another `TYPECHECKED_ALL_WE_CAN` and may add code; only a
   lowering round that reports nothing new ends in `finish_program` and code generation.
 
