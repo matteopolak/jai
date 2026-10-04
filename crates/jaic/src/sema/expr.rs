@@ -519,15 +519,22 @@ impl Compiler {
         }
     }
 
+    /// `#this`: the innermost enclosing struct type or, inside a procedure body, the procedure.
     fn check_this(&mut self, scope: ScopeId, span: Span) -> Result<Operand> {
         let mut s = Some(scope);
         while let Some(sid) = s {
-            if let ScopeKind::Struct(t) = self.scope(sid).kind {
-                return Ok(Operand::Type(t));
+            match self.scope(sid).kind {
+                ScopeKind::Struct(t) => return Ok(Operand::Type(t)),
+                ScopeKind::Proc => {
+                    if let Some(p) = self.scope(sid).proc {
+                        return Ok(Operand::Procs(vec![p]));
+                    }
+                }
+                _ => {}
             }
             s = self.scope(sid).parent;
         }
-        err(span, "#this used outside of a struct")
+        err(span, "#this used outside of a struct or procedure")
     }
 
     fn proc_type_from_header(
