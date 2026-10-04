@@ -1746,7 +1746,7 @@ fn poly_names(expr: &ast::Expr) -> Vec<Sym> {
 
 /// Map call arguments onto declared parameters.
 /// Every `$T` binder in a header's parameter and result types.
-fn header_poly_names(header: &ast::ProcHeader) -> Vec<Sym> {
+pub(super) fn header_poly_names(header: &ast::ProcHeader) -> Vec<Sym> {
     let mut names = Vec::new();
     for t in header
         .params
