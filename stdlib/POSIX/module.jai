@@ -1,10 +1,12 @@
 // Normalized API contracts; reference procedure bodies were discarded.
-#assert(OS == .LINUX || OS == .ANDROID || OS == .MACOS);
+// The browser target (OS == .WASM) uses the Linux x86-64 layouts; the interpreter's sandbox host
+// implements the libc subset in crates/jaic/src/interp/sandbox.rs.
+#assert(OS == .LINUX || OS == .ANDROID || OS == .MACOS || OS == .WASM);
 OS_Error_Code :: #type,isa s32;
 size_t :: u64;
 ssize_t :: s64;
 off_t :: s64;
-#if OS == .LINUX {
+#if OS == .LINUX || OS == .WASM {
     #load "bindings/linux/base.jai";
     #load "bindings/linux/stdio.jai";
     #load "bindings/linux/stdlib.jai";
@@ -50,7 +52,7 @@ else #if OS == .ANDROID {
         #load "bindings/android/x64/resource.jai";
     }
 }
-#if OS == .LINUX || OS == .ANDROID {
+#if OS == .LINUX || OS == .ANDROID || OS == .WASM {
     #scope_file
     __WCOREFLAG :: 0x80;
     __W_CONTINUED :: 0xffff;

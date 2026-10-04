@@ -104,7 +104,7 @@
     timespec_to_apollo :: (stamp: $T) -> Apollo_Time {
         return APOLLO_TIME_FOR_JAN_1_1970 + seconds_to_apollo(stamp.tv_sec) + nanoseconds_to_apollo(stamp.tv_nsec);
     }
-    #if OS == .LINUX || OS == .MACOS || OS == .ANDROID {
+    #if OS == .LINUX || OS == .MACOS || OS == .ANDROID || OS == .WASM {
         // Seconds east of UTC in the system local zone at the given instant (includes DST), via localtime_r.
         os_local_offset_seconds :: (utc_seconds: s64) -> s64 {
             when := utc_seconds;
@@ -164,7 +164,7 @@
     native_time_exit :: (status: s32) #foreign native_time_libc "exit";
     clock_chdir :: (path: *u8) -> s32 #foreign native_time_libc "chdir";
     clock_getcwd :: (buffer: *u8, size: u64) -> *u8 #foreign native_time_libc "getcwd";
-    #if OS == .LINUX || OS == .MACOS || OS == .ANDROID {
+    #if OS == .LINUX || OS == .MACOS || OS == .ANDROID || OS == .WASM {
         Clock_Posix :: #import "POSIX";
         Clock_Tm :: Clock_Posix.tm;
     }

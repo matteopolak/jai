@@ -9,13 +9,15 @@
 #![allow(unsafe_code)]
 
 mod native;
-pub use native::{library_dirs, set_library_dirs};
+mod sandbox;
 #[cfg(not(target_arch = "wasm32"))]
 mod threads;
-
+mod threads_inline;
 use crate::ir::{
     self, BinOp, Callee, CmpOp, ConvOp, ForeignId, FuncId, GlobalId, Inst, Program, Term, Ty, UnOp,
 };
+pub use native::{library_dirs, set_library_dirs};
+pub use sandbox::{SandboxHost, SharedHost};
 use std::collections::{BTreeMap, HashMap};
 use std::rc::Rc;
 
@@ -53,6 +55,18 @@ pub trait Host {
     ) -> Option<Result<Vec<u64>, String>>;
     /// Whether foreign symbols may be resolved through the native dynamic linker.
     fn native_linking(&self) -> bool;
+    /// Run threads on the interpreter's own stack, one after another (no OS threads); see
+    /// `threads_inline.rs`. The sandbox says yes.
+    fn cooperative_threads(&self) -> bool {
+        false
+    }
+    /// Move the virtual clock forward (sleeping). Hosts with a real clock ignore it.
+    fn advance_clock(&mut self, _nanoseconds: u64) {
+    }
+    /// The virtual clock's reading, nanoseconds since the epoch, if the host has one.
+    fn virtual_now_ns(&mut self) -> Option<u64> {
+        None
+    }
 }
 
 /// Writes to the process's stdout/stderr and links natively.
@@ -78,129 +92,6 @@ impl Host for NativeHost {
     }
     fn native_linking(&self) -> bool {
         cfg!(unix)
-    }
-}
-
-/// Collects output in memory and implements a small libc for sandboxed runs.
-#[derive(Default)]
-pub struct SandboxHost {
-    pub stdout: Vec<u8>,
-    pub stderr: Vec<u8>,
-    allocations: HashMap<u64, (Box<[u64]>, usize)>,
-    /// Virtual clock ticks (nanoseconds) handed out by `clock_gettime`; the sandbox has no real
-    /// time source on wasm32, so every query advances this by one microsecond.
-    clock_ns: u64,
-}
-
-impl Host for SandboxHost {
-    fn write(&mut self, bytes: &[u8], to_stderr: bool) {
-        if to_stderr {
-            self.stderr.extend_from_slice(bytes);
-        } else {
-            self.stdout.extend_from_slice(bytes);
-        }
-    }
-    fn foreign(
-        &mut self,
-        symbol: &str,
-        args: &[u64],
-        _sig: &ir::Sig,
-    ) -> Option<Result<Vec<u64>, String>> {
-        let arg = |i: usize| args.get(i).copied().unwrap_or(0);
-        Some(Ok(vec![match symbol {
-            "write" => {
-                let (fd, ptr, len) = (arg(0), arg(1), arg(2) as usize);
-                let bytes = unsafe { std::slice::from_raw_parts(ptr as *const u8, len) }.to_vec();
-                self.write(&bytes, fd == 2);
-                len as u64
-            }
-            "wasm_write_string" => {
-                let (len, ptr, to_stderr) = (arg(0) as usize, arg(1), arg(2) & 1 != 0);
-                let bytes = unsafe { std::slice::from_raw_parts(ptr as *const u8, len) }.to_vec();
-                self.write(&bytes, to_stderr);
-                0
-            }
-            "malloc" => self.alloc(arg(0) as usize),
-            "calloc" => self.alloc(arg(0) as usize * arg(1) as usize),
-            "realloc" => {
-                let (old, size) = (arg(0), arg(1) as usize);
-                let new = self.alloc(size);
-                if let Some((_, old_size)) = self.allocations.get(&old) {
-                    unsafe {
-                        std::ptr::copy_nonoverlapping(
-                            old as *const u8,
-                            new as *mut u8,
-                            (*old_size).min(size),
-                        )
-                    };
-                    self.allocations.remove(&old);
-                }
-                new
-            }
-            "free" => {
-                self.allocations.remove(&arg(0));
-                0
-            }
-            "memcpy" | "memmove" => {
-                unsafe { std::ptr::copy(arg(1) as *const u8, arg(0) as *mut u8, arg(2) as usize) };
-                arg(0)
-            }
-            "memset" => {
-                unsafe { std::ptr::write_bytes(arg(0) as *mut u8, arg(1) as u8, arg(2) as usize) };
-                arg(0)
-            }
-            "strlen" => {
-                let mut n = 0;
-                while unsafe { *((arg(0) + n) as *const u8) } != 0 {
-                    n += 1;
-                }
-                n
-            }
-            "exit" | "_exit" => return Some(Err(format!("exit({})", arg(0) as i32))),
-            "abort" => return Some(Err("abort()".into())),
-            "pthread_mutex_lock"
-            | "pthread_mutex_unlock"
-            | "pthread_mutex_init"
-            | "pthread_mutex_destroy" => 0,
-            "isatty" => 0,
-            "wasm_debug_break" => return Some(Err("debug_break() was called".into())),
-            "nanosleep" if cfg!(target_arch = "wasm32") => 0,
-            "clock_gettime" if cfg!(target_arch = "wasm32") => {
-                // struct timespec { tv_sec: s64; tv_nsec: s64 }; a fixed epoch plus the virtual
-                // clock keeps runs deterministic.
-                self.clock_ns += 1_000;
-                let ns = self.clock_ns + 1_700_000_000u64 * 1_000_000_000;
-                let out = arg(1);
-                if out == 0 {
-                    return Some(Ok(vec![u64::MAX]));
-                }
-                unsafe {
-                    std::ptr::write_unaligned(out as *mut u64, ns / 1_000_000_000);
-                    std::ptr::write_unaligned((out + 8) as *mut u64, ns % 1_000_000_000);
-                }
-                0
-            }
-            _ => return None,
-        }]))
-    }
-    fn native_linking(&self) -> bool {
-        false
-    }
-}
-
-impl SandboxHost {
-    fn alloc(&mut self, size: usize) -> u64 {
-        let words = size.div_ceil(8).max(1) + 1;
-        let mut block = vec![0u64; words].into_boxed_slice();
-        // 16-byte alignment: skip one word when needed.
-        let base = block.as_mut_ptr() as u64;
-        let addr = if base % 16 == 0 {
-            base
-        } else {
-            base + 8
-        };
-        self.allocations.insert(addr, (block, size));
-        addr
     }
 }
 
@@ -256,8 +147,9 @@ pub struct Interp {
     /// Threads of the running program (created by the first `pthread_*` call).
     #[cfg(not(target_arch = "wasm32"))]
     sched: Option<Box<threads::Sched>>,
+    /// Threads of the running program when the host schedules them cooperatively.
+    isched: Option<Box<threads_inline::InlineSched>>,
     /// More than one thread exists: `run` offers the baton to the others now and then.
-    #[cfg(not(target_arch = "wasm32"))]
     multi: bool,
 }
 
@@ -289,7 +181,7 @@ impl Interp {
             trace_infos: HashMap::new(),
             #[cfg(not(target_arch = "wasm32"))]
             sched: None,
-            #[cfg(not(target_arch = "wasm32"))]
+            isched: None,
             multi: false,
         }
     }
@@ -506,9 +398,15 @@ impl Interp {
         sig: &ir::Sig,
     ) -> Res<Vec<u64>> {
         let symbol = program.foreigns[id.0 as usize].symbol.clone();
-        #[cfg(not(target_arch = "wasm32"))]
-        if let Some(result) = self.thread_foreign(program, &symbol, args) {
-            return result;
+        if self.host.cooperative_threads() {
+            if let Some(result) = self.inline_thread_foreign(program, &symbol, args) {
+                return result;
+            }
+        } else {
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Some(result) = self.thread_foreign(program, &symbol, args) {
+                return result;
+            }
         }
         if let Some(result) = self.host.foreign(&symbol, args, sig) {
             return result.map_err(|m| Trap {
@@ -765,9 +663,13 @@ impl Interp {
             .copy_from_slice(&args[..args.len().min(func.sig.params.len())]);
         let mut block = 0usize;
         loop {
-            #[cfg(not(target_arch = "wasm32"))]
             if self.multi {
-                self.preempt(program)?;
+                if self.host.cooperative_threads() {
+                    self.inline_preempt(program)?;
+                } else {
+                    #[cfg(not(target_arch = "wasm32"))]
+                    self.preempt(program)?;
+                }
             }
             let b = &func.blocks[block];
             for inst in &b.insts {

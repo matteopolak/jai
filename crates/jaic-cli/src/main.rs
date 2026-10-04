@@ -1,7 +1,8 @@
 //! `jaic` command line: `jaic <run|check|build> <file.jai> [-I dir]... [-o out]`.
 use jaic::build::{BuildEnv, BuildSettings, OutputBackend, OutputType, Workspaces};
-use jaic::interp::NativeHost;
+use jaic::interp::{NativeHost, SandboxHost, SharedHost};
 use jaic::sema::{Compiler, FileSystem, NativeFs, Options, TargetOs};
+use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::rc::Rc;
@@ -35,7 +36,7 @@ fn native_lib_dirs(stdlib: &Path) -> Vec<PathBuf> {
 
 fn usage() -> ExitCode {
     eprintln!(
-        "usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [-os linux|windows|macos] [- metaprogram args...]"
+        "usage: jaic <run|check> <file.jai> [-I|-import_dir dir]... [-os linux|windows|macos|wasm] [- metaprogram args...]"
     );
     eprintln!(
         "       jaic build <file.jai> [-I dir]... [-o output] [-O0|-O1|-O2|-O3] [--emit-ir file.ll]"
@@ -89,11 +90,12 @@ fn parse(args: &[String]) -> Option<Cli> {
                 cli.command_line.extend(rest.by_ref().cloned());
             }
             "-I" | "-import_dir" => cli.imports.extend(rest.next().map(PathBuf::from)),
-            "-os" if command == Command::Check => {
+            "-os" => {
                 cli.os = Some(match rest.next()?.as_str() {
                     "linux" => TargetOs::Linux,
                     "windows" => TargetOs::Windows,
                     "macos" => TargetOs::MacOS,
+                    "wasm" => TargetOs::Wasm,
                     _ => return None,
                 })
             }
@@ -155,15 +157,31 @@ fn run(mut cli: Cli) -> ExitCode {
     // Workspaces created by metaprograms are written only by `build`.
     let backend: Option<Box<dyn OutputBackend>> = (cli.command == Command::Build)
         .then(|| Box::new(native_backend(&cli)) as Box<dyn OutputBackend>);
+    // `-os wasm` runs the program the way the browser does: in the sandbox host (virtual clock and
+    // files, cooperative threads), with its output printed when the run ends.
+    let sandbox = (options.os == TargetOs::Wasm).then(|| {
+        let cwd = std::env::current_dir().unwrap_or_default();
+        Rc::new(RefCell::new(SandboxHost::with_files(
+            fs.clone(),
+            &cwd.to_string_lossy(),
+        )))
+    });
+    let workspace_sandbox = sandbox.clone();
     let workspaces = Workspaces::new(BuildEnv {
         fs: fs.clone(),
         options: options.clone(),
         backend,
         command_line: cli.command_line.clone(),
-        make_host: Box::new(|| Box::new(NativeHost)),
+        make_host: Box::new(move || match &workspace_sandbox {
+            Some(host) => Box::new(SharedHost(host.clone())),
+            None => Box::new(NativeHost),
+        }),
         report: Box::new(|text| eprintln!("{text}")),
     });
     let mut compiler = Compiler::new(options, fs);
+    if let Some(host) = &sandbox {
+        compiler.interp.host = Box::new(SharedHost(host.clone()));
+    }
     compiler.attach_workspaces(workspaces.clone());
     if let Err(d) = compiler.compile_program(&path) {
         eprintln!("{}", compiler.render(&d));
@@ -179,13 +197,22 @@ fn run(mut cli: Cli) -> ExitCode {
     let settings = workspaces.borrow().top_level_settings();
     match cli.command {
         Command::Check => ExitCode::SUCCESS,
-        Command::Run => match compiler.run_program() {
-            Ok(code) => ExitCode::from(code as u8),
-            Err(d) => {
-                eprintln!("{}", compiler.render(&d));
-                ExitCode::from(1)
+        Command::Run => {
+            let outcome = compiler.run_program();
+            if let Some(host) = &sandbox {
+                use std::io::Write;
+                let host = host.borrow();
+                let _ = std::io::stdout().write_all(&host.stdout);
+                let _ = std::io::stderr().write_all(&host.stderr);
             }
-        },
+            match outcome {
+                Ok(code) => ExitCode::from(code as u8),
+                Err(d) => {
+                    eprintln!("{}", compiler.render(&d));
+                    ExitCode::from(1)
+                }
+            }
+        }
         // A metaprogram that turned its own output off has nothing to write.
         Command::Build if !settings.do_output || settings.output_type == OutputType::NoOutput => {
             ExitCode::SUCCESS

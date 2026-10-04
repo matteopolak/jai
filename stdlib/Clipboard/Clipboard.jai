@@ -171,8 +171,23 @@
     }
     slice_array :: (array: [] string, index: int, count: int) -> [] string { return .{count, array.data + index}; }
     #scope_export
+} else #if OS == .WASM {
+    // The browser build keeps the clipboard in memory: the page owns the real clipboard.
+    os_clipboard_get_text :: () -> string { return copy_string(wasm_clipboard_text); }
+    os_clipboard_set_text :: (text: string) {
+        free(wasm_clipboard_text);
+        wasm_clipboard_text = copy_string(text);
+    }
+    os_clipboard_empty :: () {
+        free(wasm_clipboard_text);
+        wasm_clipboard_text = "";
+    }
+    os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {}
+    #scope_file
+    wasm_clipboard_text: string;
+    #scope_export
 } else {
-    #assert(false, "Clipboard requires Windows, macOS AppKit, or Linux clipboard helpers");
+    #assert(false, "Clipboard requires Windows, macOS AppKit, Linux clipboard helpers, or the in-memory browser clipboard");
 }
 
 #scope_file

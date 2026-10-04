@@ -32,6 +32,13 @@ else #if OS == . PS5 {
     Window_Type :: * void ;
     INVALID_WINDOW : Window_Type : null ;
 }
+else #if OS == . WASM {
+    // The browser has no native windows; programs that draw use a canvas the page owns.
+    #scope_export
+    ;
+    Window_Type :: * void ;
+    INVALID_WINDOW : Window_Type : null ;
+}
 else #if OS == . ANDROID {
     #scope_module
     ;

@@ -1,6 +1,6 @@
 // Independent compatibility wrappers over the public modern libc stat API.
 // The declared stat_t layout is the supplied Linux x64 ABI contract.
-#if OS == .LINUX {
+#if OS == .LINUX || OS == .WASM {
     stat :: (path: *u8, buf: *stat_t) -> s64 {
         return cast(s64) sdk_stat(path, buf);
     }
