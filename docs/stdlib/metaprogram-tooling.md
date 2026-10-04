@@ -11,7 +11,9 @@ The [machine-readable API inventory](../../stdlib/.coverage/metaprogram-tooling.
 | Component | Implemented behavior | Remaining work |
 | --- | --- | --- |
 | `Example_Plugin` | Allocates a real `Metaprogram_Plugin`, registers callbacks, counts messages, reports phases and typecheck counts, handles `-option arg`, and frees the plugin at shutdown. | Running a complete compilation with the legacy message service. |
-| `Program_Print` | Appends escaped string-literal contents to a `String_Builder`. The caller supplies quotation marks. Legacy `print_procedure_bodies` is retained. | The newer `print_expression(builder: *String_Builder, node: *Code_Node)` needs a genuine compiler AST printing provider. AST reconstruction and plugin output are absent. |
+| `Program_Print` | Prints `Code_Node` trees as Jai source: `print_expression`, `print_declaration`, `print_string_literal`, `print_procedure_bodies`. See [program-print](program-print.md). | Plugin output (`-plug Program_Print`) is absent. |
+| `Check` | The standard `do_error_checking(p, message)` plugin entry: house-rule checks over typechecked code (pointer indirection depth and similar). Procedure bodies are typechecked without lowering (`typecheck_body_dry`) so their local declaration types are exported. | Further house rules. |
+| `Compiler.add_global_data` | Copies the bytes into a new allocation and returns a view of them. | Read-only placement. |
 | `Toolchains/macOS.jai` | Produces target triples and converts macOS/iOS versions to Darwin versions. | SDK discovery and subprocess execution. |
 | `MacOS_Bundler` | Writes plist XML keys, strings, booleans, and complete document wrappers. Text escapes `&`, `<`, and `>`. Unsupported `Any` types return `false` before appending a key. | App directories, executable/resource copies, and icon conversion. |
 | `Project_Generator` | Derives the legacy project-filter folder for a source path, with substring trimming for `modules` and `doc` and rejection of `..`. | Solution, project, filter, and user-file generation and writing. |

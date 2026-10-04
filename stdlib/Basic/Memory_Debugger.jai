@@ -142,32 +142,6 @@ report_memory_leaks :: (options: Leak_Report_Options = .{}) {
     defer deinit(*report);
     log_leak_report(report, options);
 }
-// The maintained zero-argument surface returns temporary text. Explicit
-// options select the historical owned report, whose deinit stays separate.
-make_leak_report :: () -> string {
-    options: Leak_Report_Options;
-    report := make_leak_report(options);
-    defer deinit(*report);
-    previous_guard := context.inside_memory_debugger;
-    context.inside_memory_debugger = true;
-    defer context.inside_memory_debugger = previous_guard;
-    previous_allocator := context.allocator;
-    context.allocator = temp;
-    defer context.allocator = previous_allocator;
-    builder: String_Builder;
-    init_string_builder(*builder);
-    defer free_buffers(*builder);
-    count: s64;
-    bytes: s64;
-    for summary: report.sorted_summaries {
-        count += summary.count + summary.child_count;
-        bytes += summary.bytes + summary.child_bytes;
-    }
-    print_to_builder(*builder, "Memory leaks: % allocations, % bytes\n", count, bytes);
-    for summary: report.sorted_summaries _md_append_summary(*builder, summary);
-    return builder_to_string(*builder);
-}
-log_leak_report :: () { write_string(make_leak_report(), to_standard_error=true); }
 make_leak_report :: (options: Leak_Report_Options = .{}, for_visualizer := false) -> Leak_Report {
     report: Leak_Report;
     if !_md_begin(.{}) return report;

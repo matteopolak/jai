@@ -17,7 +17,9 @@ How `crates/jaic/src/sema` loads modules, binds module parameters, and expands t
 - **Typed module parameters**: a scalar argument for `$X: T` becomes the declaration's literal value with its
   declared type kept.
 - **Exported `using`**: a module-level `using global;` outside `#scope_file` is recorded in
-  `Module.exported_usings`, so importers find the members (`Found::Using`).
+  `Module.exported_usings`, so importers find the members (`Found::Using`). An exported
+  `using X :: #import "Y";` re-exports `Y`'s names (`Module.exported_using_imports`, followed by
+  `module_exports` with a cycle guard).
 - **Top-level expansion** (`expand_all`): first a pass over every scope expands `#if` items whose condition is a
   plain constant (`expand_plain_ifs`, no calls or `#run`), and imports. Then lookups expand pending items lazily
   (`expand_pending`). This ordering makes a module's `#if FLAG #load "x.jai"` (and an `#add_context` in it) land
@@ -41,7 +43,7 @@ resolve.
 
 ## Configuration
 
-Import directories come from `Options::import_dirs` (CLI `--import-dir`), plus `<file dir>/modules`.
+Import directories come from `Options::import_dirs` (CLI `-I dir`, after the file), plus `<file dir>/modules`.
 
 ## Dependencies
 

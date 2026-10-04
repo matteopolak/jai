@@ -499,7 +499,7 @@ __append_quoted :: (builder: *String_Builder, text: string) {
 __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     if !info { append(builder, "<null type>"); return; }
     if depth >= 16 { append(builder, "..."); return; }
-    if info.type == .STRUCT { append(builder, (cast(*Type_Info_Struct) info).name); return; }
+    if info.type == .STRUCT { __append_struct_type(builder, cast(*Type_Info_Struct) info); return; }
     if info.type == .ENUM { append(builder, (cast(*Type_Info_Enum) info).name); return; }
     if info.type == .VARIANT { append(builder, (cast(*Type_Info_Variant) info).name); return; }
     if info.type == .POINTER { append(builder, "*"); __append_type(builder, (cast(*Type_Info_Pointer) info).pointer_to, depth+1); return; }
@@ -517,7 +517,7 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     if info.type == .FLOAT { append(builder, "float"); print_u64_base_n(builder, cast(u64) (info.runtime_size*8), .{}); return; }
     if info.type == .PROCEDURE {
         procedure := cast(*Type_Info_Procedure) info;
-        append(builder, "(");
+        append(builder, "procedure (");
         for i: 0..procedure.argument_types.count-1 {
             if i > 0 append(builder, ", ");
             __append_type(builder, procedure.argument_types[i], depth+1);
@@ -545,40 +545,61 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     else if info.type == .ANY append(builder, "Any");
     else { append(builder, "<unsupported type>"); builder.failed = true; }
 }
+__append_struct_type :: (builder: *String_Builder, info: *Type_Info_Struct) {
+    if info.name append(builder, info.name);
+    else if info.textual_flags & .UNION append(builder, "(anonymous union)");
+    else append(builder, "(anonymous struct)");
+    if !info.polymorph_source_struct return;
+    append(builder, "(");
+    for * param: info.specified_parameters {
+        if it_index append(builder, ", ");
+        append(builder, param.name);
+        append(builder, "=");
+        if param.offset_into_constant_storage >= 0 {
+            value: Any = ---;
+            value.type = param.type;
+            value.value_pointer = info.constant_storage.data + param.offset_into_constant_storage;
+            print_item_to_builder(builder, value);
+        }
+    }
+    append(builder, ")");
+}
 print_type_to_builder :: (builder: *String_Builder, info: *Type_Info) { __append_type(builder, info, 0); }
 
+// Members that print: not constants or imports, not zero-sized, and not overlapping an
+// earlier member (`#place` views and the later members of a union are skipped).
+__printable_member :: (member: *Type_Info_Struct_Member, end_of_last: *s64) -> bool {
+    if (member.flags & .CONSTANT) || (member.flags & .IMPORTED) return false;
+    if member.offset_in_bytes < end_of_last.* return false;
+    if !member.type || member.type.runtime_size == 0 return false;
+    end_of_last.* = member.offset_in_bytes + member.type.runtime_size;
+    return true;
+}
 __append_struct :: (builder: *String_Builder, info: *Type_Info_Struct, pointer: *void, format: FormatStruct, depth: s64) {
-    if (cast(u32) info.textual_flags & cast(u32) Struct_Textual_Flags.UNION) != 0 {
-        append(builder, "<union has no active-member metadata>"); builder.failed = true; return;
-    }
     if format.draw_type_name { append(builder, info.name); append(builder, " "); }
     append(builder, format.begin_string);
     count: s64 = 0;
-    for member: info.members {
-        if (member.flags & .CONSTANT) != 0 || (member.flags & .IMPORTED) != 0 || member.offset_in_bytes < 0 continue;
-        count += 1;
-    }
+    end_of_last: s64 = -1;
+    for * member: info.members  if __printable_member(member, *end_of_last) count += 1;
     long_form := format.use_long_form_if_more_than_this_many_members < 0 || count > format.use_long_form_if_more_than_this_many_members;
-    first := true;
-    for member: info.members {
-        if (member.flags & .CONSTANT) != 0 || (member.flags & .IMPORTED) != 0 || member.offset_in_bytes < 0 continue;
-        if !first {
-            if long_form append(builder, format.long_form_separator_between_fields);
-            else append(builder, format.short_form_separator_between_fields);
-        }
-        if long_form && format.use_newlines_if_long_form {
-            append(builder, "\n");
-            for i: 0..(depth+1)*format.indentation_width-1 append(builder, cast(u8) #char " ");
-        }
-        append(builder, member.name); append(builder, format.separator_between_name_and_value);
+    newlines := long_form && format.use_newlines_if_long_form;
+    if newlines append(builder, "\n");
+    printed := 0;
+    end_of_last = -1;
+    for * member: info.members {
+        if !__printable_member(member, *end_of_last) continue;
+        if newlines for i: 0..(depth+1)*format.indentation_width-1 append(builder, cast(u8) #char " ");
+        if long_form { append(builder, member.name); append(builder, format.separator_between_name_and_value); }
+        uninitialized := false;
+        for note: member.notes if note == "---" uninitialized = true;
         item: Any = .{type = member.type, value_pointer = cast(*u8) pointer + member.offset_in_bytes};
-        __append_item(builder, item, true, false, depth+1);
-        first = false;
+        __append_item(builder, item, true, uninitialized, depth+1);
+        printed += 1;
+        if long_form append(builder, format.long_form_separator_between_fields);
+        else if printed < count append(builder, format.short_form_separator_between_fields);
+        if newlines append(builder, "\n");
     }
-    if long_form && format.use_newlines_if_long_form && !first {
-        append(builder, "\n");
-        for i: 0..depth*format.indentation_width-1 append(builder, cast(u8) #char " ");
-    }
+    if newlines for i: 0..depth*format.indentation_width-1 append(builder, cast(u8) #char " ");
     append(builder, format.end_string);
 }
 append_struct_info :: (builder: *String_Builder, info: *Type_Info_Struct, base_pointer: *void, format: *FormatStruct = null) {
@@ -615,6 +636,7 @@ __append_array :: (builder: *String_Builder, item: Any, info: *Type_Info_Array, 
 __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitialized: bool, depth: s64) {
     if depth >= 16 { append(builder, "..."); return; }
     if uninitialized { append(builder, "<uninitialized>"); return; }
+    if item.type && item.type.type == .VOID { append(builder, "void"); return; }
     if !item.type || !item.value_pointer { append(builder, "null"); return; }
     if item.type == type_info(FormatInt) { print_integer(builder, (cast(*FormatInt) item.value_pointer).*); return; }
     if item.type == type_info(FormatFloat) { print_float(builder, (cast(*FormatFloat) item.value_pointer).*); return; }

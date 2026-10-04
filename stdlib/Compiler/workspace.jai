@@ -387,12 +387,16 @@ compiler_get_code :: (node: *Code_Node, code_to_copy_scope_from: Code = #code,nu
 }
 
 code_to_string :: (code: Code) -> string {
-    unsupported("code_to_string");
-    return "";
+    PP :: #import "Program_Print";
+    root, expressions := compiler_get_nodes(code);
+    builder: String_Builder;
+    PP.print_expression(*builder, root);
+    return builder_to_string(*builder);
 }
 
 print_expression :: (builder: *String_Builder, node: *Code_Node) {
-    unsupported("print_expression");
+    PP :: #import "Program_Print";
+    PP.print_expression(builder, node);
 }
 
 get_root_type :: (code: Code) -> (status: Get_Root_Type_Status, type: Type) {
@@ -467,10 +471,15 @@ provide_import :: (w: Workspace, message: *Message_Failed_Import, type: Provided
     unsupported("provide_import");
 }
 
+// The copy lives in compile-time memory; a constant holding the returned view (`data ::
+// #run add_global_data(...)`) is emitted into the program's data with its bytes.
+// Segments other than the defaults are not modelled.
 add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Data_Segment = null, w: Workspace = -1) -> [] u8 {
-    unsupported("add_global_data");
-    nothing: [] u8;
-    return nothing;
+    result: [] u8;
+    result.data  = alloc(data.count);
+    result.count = data.count;
+    memcpy(result.data, data.data, data.count);
+    return result;
 }
 
 add_data_segment :: (section_name: string, characteristics := Data_Segment_Characteristics.READ | .WRITE, alignment: s32 = 16, w: Workspace = -1) -> (segment: *Data_Segment, actual_segment_will_be_created: bool) {

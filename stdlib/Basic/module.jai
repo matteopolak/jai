@@ -59,8 +59,6 @@ write_strings :: Runtime_Support.write_strings;
 debug_break :: Runtime_Support.debug_break;
 // Leak hints have intentionally no runtime effect when tracking is disabled.
 #if !MEMORY_DEBUGGER {
-    make_leak_report :: () -> string { return "Memory debugging disabled\n"; }
-    log_leak_report :: () { write_string(make_leak_report(), to_standard_error=true); }
     this_allocation_is_not_a_leak :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
     this_allocation_leaks_todo :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }
     this_allocation_does_not_propagate_leak_ownership :: (memory:*void) #expand { #assert(!MEMORY_DEBUGGER); }

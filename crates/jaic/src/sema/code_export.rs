@@ -209,6 +209,9 @@ impl Compiler {
             {
                 continue;
             }
+            if let Resolved::Proc(p) = resolved {
+                self.typecheck_body_dry(p);
+            }
             let (rec, sub) = {
                 let mut ex = Exporter {
                     c: Some(self),
@@ -326,36 +329,16 @@ impl Compiler {
     /// (`Type` parameters) are listed in `__constant_pointers` as (offset,
     /// record) pairs for the metaprogram to patch.
     fn poly_parameters(&mut self, r: &mut Records, s: crate::types::StructId, rec: &mut Record) {
-        let Some((lit, scope)) = self
-            .struct_asts
-            .get(&s)
-            .map(|src| (src.lit.clone(), src.scope))
-        else {
+        let Some(span) = self.struct_asts.get(&s).map(|src| src.lit.span) else {
             return;
         };
-        let span = lit.span;
         let mut storage = value::Aggregate {
             bytes: Vec::new(),
             relocs: Vec::new(),
         };
         let mut params = Vec::new();
         let mut pointers = Vec::new();
-        // The bindings of the instance, baked ones (`#bake_arguments`) first.
-        let mut bindings: Vec<(EntityId, Sym, Value, TypeId)> = self
-            .scope(scope)
-            .names
-            .iter()
-            .flat_map(|(&name, ids)| ids.iter().map(move |&e| (name, e)))
-            .filter_map(|(name, e)| match &self.entity(e).kind {
-                EntityKind::Const {
-                    value,
-                    ty,
-                } => Some((e, name, value.clone(), *ty)),
-                _ => None,
-            })
-            .collect();
-        bindings.sort_by_key(|b| b.0);
-        for (_, name, value, mut ty) in bindings {
+        for (name, value, mut ty) in self.poly_struct_bindings(s) {
             if self.size_of(ty, span).is_err() {
                 ty = self.type_of_value(&value); // Untyped literal arguments.
             }
@@ -1195,10 +1178,14 @@ impl Exporter<'_> {
         self.add(rec)
     }
 
-    /// A declaration inside a body or struct (no resolved type).
+    /// A declaration inside a body or struct, with its type once the body was lowered.
     fn local_decl(&mut self, d: &ast::Decl) -> i64 {
         let name = d.names.first().map_or(Sym::intern(""), |n| n.name);
-        self.decl(d, name, None, None)
+        let ty = self
+            .c
+            .as_deref()
+            .and_then(|c| c.local_decl_types.get(&d.id).copied());
+        self.decl(d, name, ty, None)
     }
 
     fn decl(
@@ -1499,6 +1486,13 @@ pub fn export_code(r: &mut Records, body: &ast::CodeBody, source: &str) -> (i64,
     };
     let root = match body {
         ast::CodeBody::Expr(e) => ex.expr(e),
+        // `#code a := 1;` without braces is the bare statement, not a block.
+        ast::CodeBody::Block(b) if b.stmts.len() == 1 && !source.trim_start().starts_with('{') => {
+            match ex.stmt(&b.stmts[0]) {
+                Some(id) => id,
+                None => ex.block(&b.stmts, 1, b.span),
+            }
+        }
         ast::CodeBody::Block(b) => ex.block(&b.stmts, 1, b.span),
     };
     let sub = std::mem::take(&mut ex.sub);

@@ -620,7 +620,7 @@ impl Compiler {
     pub fn module_exports(&mut self, module: ModuleId, name: Sym) -> Result<Vec<EntityId>> {
         let scope = self.modules[module.0 as usize].scope;
         self.expand_pending(scope)?;
-        Ok(self
+        let own: Vec<EntityId> = self
             .scope(scope)
             .names
             .get(&name)
@@ -630,7 +630,33 @@ impl Compiler {
                     .filter(|&e| self.entity(e).exported)
                     .collect()
             })
-            .unwrap_or_default())
+            .unwrap_or_default();
+        if !own.is_empty() {
+            return Ok(own);
+        }
+        // Names of modules this one re-exports with `using M :: #import "M";` (each module
+        // once per lookup, so re-export cycles end).
+        if self.reexport_visiting.contains(&module) {
+            return Ok(own);
+        }
+        self.reexport_visiting.push(module);
+        let mut result = Ok(own);
+        for index in self.modules[module.0 as usize]
+            .exported_using_imports
+            .clone()
+        {
+            let ids = match self.import_module(scope, index) {
+                Ok(Some(inner)) => self.module_exports(inner, name),
+                Ok(None) => continue,
+                Err(e) => Err(e),
+            };
+            if !matches!(&ids, Ok(ids) if ids.is_empty()) {
+                result = ids;
+                break;
+            }
+        }
+        self.reexport_visiting.pop();
+        result
     }
 
     /// Names visible inside a module from one of its files (export + module scope).

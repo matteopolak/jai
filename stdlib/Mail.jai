@@ -68,7 +68,9 @@ Upload_Context :: struct { data: string; cursor: s64; }
 payload_source :: (ptr: *u8, size: u64, nmemb: u64, userp: *void) -> u64 #c_call {
     if size == 0 || nmemb == 0 || nmemb > 0xffff_ffff_ffff_ffff / size return 0;
     source := cast(*Upload_Context) userp;
-    capacity := min(size * nmemb, cast(u64) (source.data.count - source.cursor));
+    capacity := size * nmemb;
+    remaining := cast(u64) (source.data.count - source.cursor);
+    if remaining < capacity capacity = remaining;
     if capacity > 0 memcpy(ptr, source.data.data + source.cursor, xx capacity);
     source.cursor += cast(s64) capacity;
     return capacity;

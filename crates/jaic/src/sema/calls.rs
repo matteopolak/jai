@@ -34,6 +34,8 @@ struct Candidate {
     proc: ProcId,
     slots: Vec<Slot>,
     cost: u32,
+    /// How much type structure a polymorphic header pins down (`*$T` beats `$T`).
+    specificity: u32,
 }
 
 fn is_deferred(expr: &ast::Expr) -> bool {
@@ -341,7 +343,12 @@ impl Compiler {
         }
         if best.len() > 1 {
             // Prefer non-polymorphic and more specific candidates; otherwise take the first.
-            best.sort_by_key(|c| self.proc(c.proc).bindings.is_some() as u32);
+            best.sort_by_key(|c| {
+                (
+                    self.proc(c.proc).bindings.is_some() as u32,
+                    std::cmp::Reverse(c.specificity),
+                )
+            });
         }
         let chosen = best.swap_remove(0);
         self.emit_call(f, scope, chosen, args, span)
@@ -359,7 +366,14 @@ impl Compiler {
         let slots = assign_slots(&header.params, args, &poly_vars, span)?;
         let mut proc_id = proc;
         let mut extra = 0;
+        let mut specificity = 0;
         if self.proc(proc).is_poly {
+            specificity = header
+                .params
+                .iter()
+                .filter_map(|p| p.ty.as_ref())
+                .map(pattern_specificity)
+                .sum();
             let bindings = self.infer_bindings(proc, &header, &slots, args, span)?;
             proc_id = self.instantiate(proc, bindings, span)?;
             extra = 1;
@@ -404,6 +418,7 @@ impl Compiler {
             proc: proc_id,
             slots,
             cost,
+            specificity,
         })
     }
 
@@ -519,6 +534,7 @@ impl Compiler {
             }
         );
         match op {
+            Operand::Void => return err(arg.span, "the argument has no value"),
             Operand::Type(_) if param == TypeId::TYPE => return Ok(convert::EXACT),
             Operand::Type(_) if param == TypeId::ANY => return Ok(convert::TO_ANY),
             Operand::Procs(procs) => {
@@ -1030,14 +1046,12 @@ impl Compiler {
                 restriction,
                 interface,
             } => {
-                // `$T/Table`: T must be an instance of the polymorphic struct `Table`.
+                // `$T/Table`: T must be an instance of the polymorphic struct `Table` (or hold one
+                // as an `#as` member).
                 if !interface
                     && let E::Ident(r) = &restriction.kind
                     && let Some(ps) = self.ident_poly_struct(scope, *r)?
-                    && !self.poly_structs[ps.0 as usize]
-                        .instances
-                        .values()
-                        .any(|&t| t == ty)
+                    && self.instance_or_as_base(ps, ty).is_none()
                 {
                     return err(
                         span,
@@ -1762,7 +1776,9 @@ impl Compiler {
         let Operand::Procs(procs) = callee_op else {
             return err(call.span, "#procedure_of_call needs a procedure call");
         };
-        let call_args = self.precheck_args(f, scope, args)?;
+        // Only the argument types matter: runtime locals are fine in a constant.
+        let mut scratch = self.scratch_ctx(scope);
+        let call_args = self.precheck_args(&mut scratch, scope, args)?;
         for &p in &procs {
             if let Ok(c) = self.match_candidate(p, &call_args, call.span) {
                 return Ok(Operand::Procs(vec![c.proc]));
@@ -1781,6 +1797,10 @@ impl Compiler {
     fn text_may_write(&self, body: &ast::Block, name: Sym) -> bool {
         let text = &self.sources.get(body.span.file).text;
         let text = &text.as_bytes()[body.span.start as usize..body.span.end as usize];
+        // `#asm` operands may write any name they mention.
+        if text.windows(4).any(|w| w == b"#asm") {
+            return true;
+        }
         let name = name.as_str();
         let word = |c: u8| c.is_ascii_alphanumeric() || c == b'_';
         let skip_ws = |mut i: usize| {
@@ -1882,11 +1902,29 @@ impl Compiler {
                         let Some(expr) = args[*a].expr.clone() else {
                             return err(args[*a].span, "Code parameter needs a code argument");
                         };
-                        let body = match &expr.kind {
-                            E::Code(c) => c.clone(),
-                            _ => Rc::new(ast::CodeBody::Expr(expr)),
+                        // A name of a `#code` constant passes that code.
+                        let named = match &expr.kind {
+                            E::Ident(_) | E::Member(..) => {
+                                match self.check_expr_no_emit(args[*a].scope, &expr) {
+                                    Ok(Operand::Const {
+                                        value: Value::Code(code),
+                                        ..
+                                    }) => Some(code),
+                                    _ => None,
+                                }
+                            }
+                            _ => None,
                         };
-                        self.add_code(body, caller)
+                        match named {
+                            Some(code) => code,
+                            None => {
+                                let body = match &expr.kind {
+                                    E::Code(c) => c.clone(),
+                                    _ => Rc::new(ast::CodeBody::Expr(expr)),
+                                };
+                                self.add_code(body, caller)
+                            }
+                        }
                     }
                     Slot::Default
                         if param
@@ -1966,11 +2004,13 @@ impl Compiler {
                         && self.types.is_integer(param.ty)))
             {
                 self.local_consts.insert(e, (value.clone(), param.ty));
-                // A constant string argument the body never writes keeps a constant `count`.
-                if let Value::String(s) = value
-                    && !self.text_may_write(&body, name)
+                // A constant argument the body never writes stays a constant.
+                if matches!(
+                    value,
+                    Value::String(_) | Value::Int(_) | Value::Bool(_) | Value::Float(_)
+                ) && !self.text_may_write(&body, name)
                 {
-                    self.const_string_params.insert(e, s.len() as i64);
+                    self.const_macro_params.insert(e, (value.clone(), param.ty));
                 }
             }
             if param.using {
@@ -1998,7 +2038,10 @@ impl Compiler {
             caller_macro_depth: f.macros.len(),
             for_body: f.pending_for_body.take(),
         });
+        // Backticks inside this expansion refer to its caller, not to a running `` `defer ``.
+        let saved_backtick = f.backtick_scope.take();
         let result = self.check_block_stmts(f, mscope, &body.stmts);
+        f.backtick_scope = saved_backtick;
         let frame = f.macros.pop().unwrap();
         result?;
         if !f.b.is_terminated() {
@@ -2353,6 +2396,29 @@ fn poly_names(expr: &ast::Expr) -> Vec<Sym> {
     }
     walk(expr, &mut out);
     out
+}
+
+/// Type constructors wrapped around the polymorphic variables of a parameter type.
+fn pattern_specificity(expr: &ast::Expr) -> u32 {
+    match &expr.kind {
+        E::PolyRestricted {
+            ..
+        } => 1,
+        E::Unary(_, x) => 1 + pattern_specificity(x),
+        E::ArrayType {
+            elem, ..
+        } => 1 + pattern_specificity(elem),
+        E::Call {
+            args, ..
+        } => {
+            1 + args
+                .iter()
+                .map(|a| pattern_specificity(&a.value))
+                .sum::<u32>()
+        }
+        E::ProcType(_) => 1,
+        _ => 0,
+    }
 }
 
 /// Map call arguments onto declared parameters.
