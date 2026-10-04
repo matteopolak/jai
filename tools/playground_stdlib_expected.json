@@ -146,6 +146,7 @@
   "string-scan.jai",
   "struct-body-member-path-override.jai",
   "struct-level-notes.jai",
+  "struct-literal-overrides-default-string.jai",
   "struct-modify.jai",
   "struct-using-member-path.jai",
   "tagged-union-layout.jai",

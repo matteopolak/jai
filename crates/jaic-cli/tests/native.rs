@@ -116,6 +116,26 @@ fn hello_world_builds_and_prints() {
     assert_eq!(output.status.code(), Some(0));
 }
 
+/// Self-checking stdlib tests whose bugs showed only in compiled code; each prints "ok".
+#[test]
+fn stdlib_tests_run_natively() {
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-stdlib-tests");
+    std::fs::create_dir_all(&dir).unwrap();
+    for name in [
+        "struct-literal-overrides-default-string",
+        "array-literal-view-lifetime",
+    ] {
+        let source = repo_root().join(format!("tests/stdlib/{name}.jai"));
+        let output = build_and_run(&source, &dir, name).unwrap();
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout),
+            "ok\n",
+            "{name}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+}
+
 /// Compiled code maintains `context.stack_trace` (`jaic::stack_trace::instrument`): call lines, depth,
 /// a trace through an inline procedure, and the trace an assertion prints.
 #[test]
