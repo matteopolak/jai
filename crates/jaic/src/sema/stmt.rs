@@ -1,0 +1,1521 @@
+//! Statement checking and lowering.
+use super::calls::CallArg;
+use super::lower::{DeferEntry, FnCtx, ForBody, LoopFrame, MacroFrame, Operand};
+use super::scope::{EntityKind, Resolved, ScopeKind, UsingEntry};
+use super::*;
+use crate::ast::{ExprKind as E, StmtKind as S};
+use crate::ir::{CmpOp, Ty};
+use crate::types::{ArrayKind, TypeKind};
+
+impl Compiler {
+    /// Check statements in `scope` (no new scope is opened).
+    pub fn check_block_stmts(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        stmts: &[ast::Stmt],
+    ) -> Result<()> {
+        for stmt in stmts {
+            self.check_stmt(f, scope, stmt)?;
+        }
+        Ok(())
+    }
+
+    fn new_block_scope(&mut self, parent: ScopeId) -> ScopeId {
+        let module = self.scope(parent).module;
+        self.new_scope(ScopeKind::Block, Some(parent), module, None)
+    }
+
+    /// Check a statement in a fresh block scope, running its defers at the end.
+    fn check_scoped(&mut self, f: &mut FnCtx, scope: ScopeId, stmt: &ast::Stmt) -> Result<()> {
+        let inner = self.new_block_scope(scope);
+        let depth = f.defers.len();
+        match &stmt.kind {
+            S::Block(b) => self.check_block_stmts(f, inner, &b.stmts)?,
+            _ => self.check_stmt(f, inner, stmt)?,
+        }
+        if !f.b.is_terminated() {
+            self.emit_defers(f, depth, stmt.span)?;
+        }
+        f.defers.truncate(depth);
+        Ok(())
+    }
+
+    pub fn check_stmt(&mut self, f: &mut FnCtx, scope: ScopeId, stmt: &ast::Stmt) -> Result<()> {
+        let span = stmt.span;
+        if span.file == f.file && !f.b.is_terminated() {
+            let (line, col) = self.sources.get(span.file).line_col(span.start);
+            f.b.loc(span.file.0, line as u32, col as u32);
+        }
+        match &stmt.kind {
+            S::Decl(decl) => self.check_local_decl(f, scope, decl),
+            S::Expr(e) => {
+                self.check_expr(f, scope, e, None)?;
+                Ok(())
+            }
+            S::Assign {
+                op,
+                lhs,
+                rhs,
+            } => self.check_assign(f, scope, *op, lhs, rhs, span),
+            S::Block(_) => self.check_scoped(f, scope, stmt),
+            S::If {
+                cond,
+                then_branch,
+                else_branch,
+            } => self.check_if(f, scope, cond, then_branch, else_branch.as_deref()),
+            S::Switch {
+                value,
+                cases,
+                ..
+            } => self.check_switch(f, scope, value, cases, span),
+            S::StaticSwitch {
+                value,
+                cases,
+            } => {
+                let v = self.eval_const(scope, value, None)?;
+                for case in cases {
+                    let hit = case.values.is_empty() || {
+                        let mut any = false;
+                        for cv in &case.values {
+                            let c = self.eval_const(scope, cv, Some(v.ty()))?;
+                            any |= self.const_equal(&v, &c);
+                        }
+                        any
+                    };
+                    if hit {
+                        return self.check_block_stmts(f, scope, &case.body);
+                    }
+                }
+                Ok(())
+            }
+            S::Overlay(_) => err(span, "#overlay is not supported"),
+            S::PushContextDefer {
+                ..
+            } => err(span, "push_context without a block is not supported yet"),
+            S::While {
+                label,
+                cond,
+                body,
+            } => self.check_while(f, scope, label.map(|l| l.name), cond, body),
+            S::For(for_) => self.check_for(f, scope, for_, span),
+            S::Break(label) => self.check_break(f, label.map(|l| l.name), true, span),
+            S::Continue(label) => self.check_break(f, label.map(|l| l.name), false, span),
+            S::Remove(label) => self.check_remove(f, label.map(|l| l.name), span),
+            S::Return {
+                values,
+                backtick,
+            } => self.check_return(f, scope, values, *backtick, span),
+            S::Defer {
+                body,
+                backtick,
+            } => {
+                let entry = DeferEntry {
+                    stmt: (**body).clone(),
+                    scope,
+                };
+                if *backtick && let Some(frame) = f.macros.last_mut() {
+                    // Runs when the macro caller's block exits.
+                    let at = frame.defer_depth;
+                    f.defers.insert(at, entry);
+                    frame.defer_depth += 1;
+                } else {
+                    f.defers.push(entry);
+                }
+                Ok(())
+            }
+            S::Using {
+                value, ..
+            } => self.check_using(f, scope, value),
+            S::PushContext {
+                context,
+                body,
+            } => {
+                let op = self.check_expr(f, scope, context, None)?;
+                let ctx_ty = self.context_type(span)?;
+                let op = match op.ty() {
+                    t if t == ctx_ty => op,
+                    t if self.types.pointee(t) == Some(ctx_ty) => {
+                        let (_, p) = self.rvalue(f, op, span)?;
+                        Operand::Place {
+                            ty: ctx_ty,
+                            addr: p,
+                        }
+                    }
+                    t => {
+                        return err(
+                            context.span,
+                            format!("push_context needs a Context, found {}", self.types.name(t)),
+                        );
+                    }
+                };
+                let (_, addr) = self.address_of(f, op, span)?;
+                let saved = f.context.replace(addr);
+                let result = self.check_scoped(f, scope, body);
+                f.context = saved;
+                result
+            }
+            S::StaticIf {
+                cond,
+                then_branch,
+                else_branch,
+            } => {
+                let taken = self.eval_static_condition(scope, cond)?;
+                self.check_block_stmts(
+                    f,
+                    scope,
+                    if taken {
+                        then_branch
+                    } else {
+                        else_branch
+                    },
+                )
+            }
+            S::Insert {
+                value, ..
+            } => self.check_insert(f, scope, value, span),
+            S::Assert {
+                cond,
+                message,
+            } => {
+                if !self.eval_static_condition(scope, cond)? {
+                    let msg = match message {
+                        Some(m) => match self.eval_const_value(scope, m)? {
+                            Value::String(s) => String::from_utf8_lossy(&s).into_owned(),
+                            _ => String::new(),
+                        },
+                        None => String::new(),
+                    };
+                    return err(
+                        span,
+                        format!(
+                            "#assert failed{}{msg}",
+                            if msg.is_empty() {
+                                ""
+                            } else {
+                                ": "
+                            }
+                        ),
+                    );
+                }
+                Ok(())
+            }
+            S::Run(e) => {
+                self.check_expr(f, scope, e, None)?;
+                Ok(())
+            }
+            S::Import(import) => {
+                match import.name {
+                    Some(name) => {
+                        self.add_entity(
+                            scope,
+                            name.name,
+                            name.span,
+                            EntityKind::Import(import.clone()),
+                            false,
+                        );
+                    }
+                    None => {
+                        let file_scope = self.file_scope_of(scope);
+                        self.scope_mut(scope).imports.push(scope::ImportEntry {
+                            import: import.clone(),
+                            module: None,
+                            loading: false,
+                            from_scope: file_scope,
+                        });
+                    }
+                }
+                Ok(())
+            }
+            S::Load {
+                ..
+            } => err(span, "#load is only allowed at file scope"),
+            S::AddContext(_) => err(span, "#add_context is only allowed at file scope"),
+            S::ModuleParameters {
+                ..
+            } => err(span, "#module_parameters is only allowed at file scope"),
+            S::Placeholder(_)
+            | S::Scope(_)
+            | S::Place(_)
+            | S::Through
+            | S::Directive {
+                ..
+            }
+            | S::Empty => Ok(()),
+        }
+    }
+
+    fn file_scope_of(&self, mut scope: ScopeId) -> ScopeId {
+        loop {
+            let s = self.scope(scope);
+            if s.kind == ScopeKind::File {
+                return scope;
+            }
+            match s.parent {
+                Some(p) => scope = p,
+                None => return scope,
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Declarations and assignment
+    // -----------------------------------------------------------------------
+
+    fn check_local_decl(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        decl: &Rc<ast::Decl>,
+    ) -> Result<()> {
+        let target = if decl.backtick {
+            f.macros.last().map_or(scope, |m| m.caller_scope)
+        } else {
+            scope
+        };
+        if decl.kind == ast::DeclKind::Const {
+            for (index, name) in decl.names.iter().enumerate() {
+                self.add_entity(
+                    target,
+                    name.name,
+                    name.span,
+                    EntityKind::Decl {
+                        decl: decl.clone(),
+                        index,
+                    },
+                    false,
+                );
+            }
+            return Ok(());
+        }
+        let span = decl.span;
+        let declared = match &decl.ty {
+            Some(t) => Some(self.eval_type_in(f, scope, t)?),
+            None => None,
+        };
+        // Evaluate the initializer before the names come into scope.
+        let init = match &decl.value {
+            Some(v) if matches!(v.kind, E::Uninit) => None,
+            Some(v) => Some(self.check_expr(f, scope, v, declared)?),
+            None => None,
+        };
+        let mut values: Vec<Option<Operand>> = match init {
+            Some(Operand::Multi(vals)) if decl.names.len() > 1 => vals
+                .into_iter()
+                .map(|(ty, val)| {
+                    Some(Operand::Value {
+                        ty,
+                        val,
+                    })
+                })
+                .collect(),
+            Some(op) => {
+                let mut v = vec![Some(op)];
+                // `a, b := 0;` gives every name the same value.
+                for _ in 1..decl.names.len() {
+                    v.push(v[0].clone());
+                }
+                v
+            }
+            None => vec![None; decl.names.len()],
+        };
+        values.resize(decl.names.len(), None);
+        for (name, value) in decl.names.iter().zip(values) {
+            let ty = match (declared, &value) {
+                (Some(t), _) => t,
+                (None, Some(op)) => {
+                    let settled = self.settle_untyped(op.clone(), None);
+                    match settled {
+                        Operand::Procs(p) if p.len() == 1 => self.proc_type(p[0], span)?,
+                        Operand::Type(_) => TypeId::TYPE,
+                        Operand::Void => {
+                            return err(
+                                span,
+                                "cannot declare a variable from an expression with no value",
+                            );
+                        }
+                        ref o if o.ty() == TypeId::NULL => {
+                            return err(span, "cannot infer a type from null");
+                        }
+                        other => other.ty(),
+                    }
+                }
+                (None, None) => return err(span, "declaration needs a type or a value"),
+            };
+            let size = self.size_of(ty, span)?;
+            let mut align = self.align_of(ty, span)?;
+            if let Some(a) = &decl.align {
+                align = align.max(self.eval_int(scope, a)? as u64);
+            }
+            let addr = f.b.alloca(size.max(1), align);
+            match value {
+                Some(op) => {
+                    let op = self.convert(f, op, ty, span)?;
+                    let (_, v) = self.rvalue(f, op, span)?;
+                    self.store_value(f, ty, addr, v, span)?;
+                }
+                None if decl.value.is_none() => self.init_default(f, ty, addr, span)?,
+                None => {}
+            }
+            let depth = self.scope(target).proc_depth;
+            let e = self.add_entity(
+                target,
+                name.name,
+                name.span,
+                EntityKind::Local {
+                    ty,
+                    addr,
+                    depth,
+                },
+                false,
+            );
+            if decl.using {
+                self.scope_mut(target).usings.push(UsingEntry::Place {
+                    ty,
+                    entity: e,
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn check_assign(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        op: ast::AssignOp,
+        lhs: &[ast::Expr],
+        rhs: &[ast::Expr],
+        span: Span,
+    ) -> Result<()> {
+        if let ast::AssignOp::Op(bin) = op {
+            if lhs.len() != 1 || rhs.len() != 1 {
+                return err(span, "compound assignment takes one target and one value");
+            }
+            // Evaluate the target once, then `*tmp = *tmp op rhs`.
+            let place = self.check_expr(f, scope, &lhs[0], None)?;
+            let Operand::Place {
+                ty,
+                addr,
+            } = place
+            else {
+                return err(lhs[0].span, "cannot assign to this expression");
+            };
+            let inner = self.new_block_scope(scope);
+            let ptr_ty = self.types.pointer(ty);
+            let slot = self.spill(f, ptr_ty, addr, span)?;
+            let tmp = Sym::intern("\u{0}lhs");
+            let depth = self.scope(inner).proc_depth;
+            self.add_entity(
+                inner,
+                tmp,
+                span,
+                EntityKind::Local {
+                    ty: ptr_ty,
+                    addr: slot,
+                    depth,
+                },
+                false,
+            );
+            let target = ast::Expr {
+                kind: E::Unary(
+                    ast::UnOp::Deref,
+                    Box::new(ast::Expr {
+                        kind: E::Ident(tmp),
+                        span: lhs[0].span,
+                    }),
+                ),
+                span: lhs[0].span,
+            };
+            let value = ast::Expr {
+                kind: E::Binary(bin, Box::new(target), Box::new(rhs[0].clone())),
+                span,
+            };
+            let result = self.check_expr(f, inner, &value, Some(ty))?;
+            let result = self.convert(f, result, ty, span)?;
+            let (_, v) = self.rvalue(f, result, span)?;
+            self.store_value(f, ty, addr, v, span)?;
+            return Ok(());
+        }
+        if lhs.len() == 1 && rhs.len() == 1 {
+            let place = self.check_expr(f, scope, &lhs[0], None)?;
+            let Operand::Place {
+                ty,
+                addr,
+            } = place
+            else {
+                return err(
+                    lhs[0].span,
+                    format!("cannot assign to {}", self.describe(&place)),
+                );
+            };
+            let value = self.check_expr(f, scope, &rhs[0], Some(ty))?;
+            let value = self.convert(f, value, ty, rhs[0].span)?;
+            let (_, v) = self.rvalue(f, value, span)?;
+            // Copy through a temporary when the source may overlap the target.
+            if self.is_memory_type(ty) {
+                let size = self.size_of(ty, span)?;
+                let align = self.align_of(ty, span)?;
+                let tmp = f.b.alloca(size.max(1), align);
+                f.b.copy(tmp, v, size);
+                f.b.copy(addr, tmp, size);
+            } else {
+                self.store_value(f, ty, addr, v, span)?;
+            }
+            return Ok(());
+        }
+        // Multiple assignment: evaluate every value first.
+        let mut values: Vec<(TypeId, ir::Val)> = Vec::new();
+        if rhs.len() == 1 {
+            match self.check_expr(f, scope, &rhs[0], None)? {
+                Operand::Multi(v) => values = v,
+                other => {
+                    return err(
+                        rhs[0].span,
+                        format!(
+                            "expected {} values, found {}",
+                            lhs.len(),
+                            self.describe(&other)
+                        ),
+                    );
+                }
+            }
+        } else {
+            for r in rhs {
+                let op = self.check_expr(f, scope, r, None)?;
+                let op = self.settle_untyped(op, None);
+                let (ty, v) = self.rvalue(f, op, r.span)?;
+                let tmp = self.spill(f, ty, v, r.span)?;
+                let v = match self.ir_ty(ty) {
+                    Some(t) => f.b.load(t, tmp),
+                    None => tmp,
+                };
+                values.push((ty, v));
+            }
+        }
+        if values.len() < lhs.len() {
+            return err(
+                span,
+                format!("expected {} values, found {}", lhs.len(), values.len()),
+            );
+        }
+        for (l, (vty, v)) in lhs.iter().zip(values) {
+            if let E::Ident(name) = &l.kind
+                && name.as_str() == "_"
+            {
+                continue;
+            }
+            let place = self.check_expr(f, scope, l, None)?;
+            let Operand::Place {
+                ty,
+                addr,
+            } = place
+            else {
+                return err(l.span, "cannot assign to this expression");
+            };
+            let op = self.convert(
+                f,
+                Operand::Value {
+                    ty: vty,
+                    val: v,
+                },
+                ty,
+                l.span,
+            )?;
+            let (_, v) = self.rvalue(f, op, l.span)?;
+            self.store_value(f, ty, addr, v, l.span)?;
+        }
+        Ok(())
+    }
+
+    fn check_using(&mut self, f: &mut FnCtx, scope: ScopeId, value: &ast::Expr) -> Result<()> {
+        if let E::Ident(name) = &value.kind {
+            let ids = self.lookup(scope, *name)?;
+            if let Some(&id) = ids.first() {
+                match self.entity(id).kind.clone() {
+                    EntityKind::Local {
+                        ty, ..
+                    } => {
+                        let target = self.types.pointee(ty).unwrap_or(ty);
+                        let _ = target;
+                        self.scope_mut(scope).usings.push(UsingEntry::Place {
+                            ty,
+                            entity: id,
+                        });
+                        return Ok(());
+                    }
+                    _ => {
+                        if let Resolved::Global {
+                            ty, ..
+                        } = self.resolve_entity(id)?
+                        {
+                            self.scope_mut(scope).usings.push(UsingEntry::Place {
+                                ty,
+                                entity: id,
+                            });
+                            return Ok(());
+                        }
+                    }
+                }
+            }
+        }
+        let op = self.check_expr(f, scope, value, None)?;
+        let entry = match op {
+            Operand::Module(m) => UsingEntry::Module(m),
+            Operand::Type(t) => UsingEntry::Type(t),
+            Operand::Place {
+                ty,
+                addr,
+            } => {
+                // `using a.b;`: bind a hidden local pointing at the place.
+                let ptr = self.types.pointer(ty);
+                let slot = self.spill(f, ptr, addr, value.span)?;
+                let depth = self.scope(scope).proc_depth;
+                let e = self.add_entity(
+                    scope,
+                    Sym::intern("\u{0}using"),
+                    value.span,
+                    EntityKind::Local {
+                        ty: ptr,
+                        addr: slot,
+                        depth,
+                    },
+                    false,
+                );
+                UsingEntry::Place {
+                    ty: ptr,
+                    entity: e,
+                }
+            }
+            other => {
+                return err(
+                    value.span,
+                    format!("cannot use 'using' on {}", self.describe(&other)),
+                );
+            }
+        };
+        self.scope_mut(scope).usings.push(entry);
+        Ok(())
+    }
+
+    // -----------------------------------------------------------------------
+    // Control flow
+    // -----------------------------------------------------------------------
+
+    fn const_truth(op: &Operand) -> Option<bool> {
+        match op {
+            Operand::Const {
+                value: Value::Bool(b),
+                ..
+            } => Some(*b),
+            Operand::Const {
+                value: Value::Int(i),
+                ..
+            } => Some(*i != 0),
+            Operand::Const {
+                value: Value::Null,
+                ..
+            } => Some(false),
+            _ => None,
+        }
+    }
+
+    fn check_if(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        cond: &ast::Expr,
+        then_branch: &ast::Stmt,
+        else_branch: Option<&ast::Stmt>,
+    ) -> Result<()> {
+        let c = self.check_expr(f, scope, cond, Some(TypeId::BOOL))?;
+        if let Some(t) = Self::const_truth(&c) {
+            if t {
+                return self.check_scoped(f, scope, then_branch);
+            }
+            if let Some(e) = else_branch {
+                return self.check_scoped(f, scope, e);
+            }
+            return Ok(());
+        }
+        let c = self.settle_untyped(c, None);
+        let (ty, v) = self.rvalue(f, c, cond.span)?;
+        let c = self.truthy(f, ty, v, cond.span)?;
+        let then_block = f.b.new_block();
+        let done = f.b.new_block();
+        let else_block = if else_branch.is_some() {
+            f.b.new_block()
+        } else {
+            done
+        };
+        f.b.branch(c, then_block, else_block);
+        f.b.switch_to(then_block);
+        self.check_scoped(f, scope, then_branch)?;
+        f.b.jump(done);
+        if let Some(e) = else_branch {
+            f.b.switch_to(else_block);
+            self.check_scoped(f, scope, e)?;
+            f.b.jump(done);
+        }
+        f.b.switch_to(done);
+        Ok(())
+    }
+
+    fn check_switch(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        value: &ast::Expr,
+        cases: &[ast::Case],
+        span: Span,
+    ) -> Result<()> {
+        let v = self.check_expr(f, scope, value, None)?;
+        // Constant switch (types, constants): pick the case at compile time.
+        if v.is_const() {
+            let mut matched = None;
+            let mut default = None;
+            'outer: for (i, case) in cases.iter().enumerate() {
+                if case.values.is_empty() {
+                    default = Some(i);
+                    continue;
+                }
+                for cv in &case.values {
+                    let c = self.check_expr(f, scope, cv, Some(v.ty()))?;
+                    if !c.is_const() {
+                        matched = None;
+                        default = None;
+                        break 'outer;
+                    }
+                    if self.const_equal(&v, &c) {
+                        matched = Some(i);
+                        break 'outer;
+                    }
+                }
+            }
+            if let Some(start) = matched.or(default) {
+                let mut i = start;
+                loop {
+                    let inner = self.new_block_scope(scope);
+                    let depth = f.defers.len();
+                    self.check_block_stmts(f, inner, &cases[i].body)?;
+                    if !f.b.is_terminated() {
+                        self.emit_defers(f, depth, span)?;
+                    }
+                    f.defers.truncate(depth);
+                    if !cases[i].through || i + 1 >= cases.len() {
+                        break;
+                    }
+                    i += 1;
+                }
+                return Ok(());
+            }
+            if cases.iter().all(|c| !c.values.is_empty()) {
+                return Ok(());
+            }
+        }
+        let v = self.settle_untyped(v, None);
+        let vty = v.ty();
+        let (_, val) = self.rvalue(f, v, value.span)?;
+        let done = f.b.new_block();
+        let bodies: Vec<ir::BlockId> = cases.iter().map(|_| f.b.new_block()).collect();
+        let mut default = done;
+        for (i, case) in cases.iter().enumerate() {
+            if case.values.is_empty() {
+                default = bodies[i];
+                continue;
+            }
+            for cv in &case.values {
+                let c = self.check_expr(f, scope, cv, Some(vty))?;
+                let c = self.convert(f, c, vty, cv.span)?;
+                let (_, cval) = self.rvalue(f, c, cv.span)?;
+                let eq = self.runtime_equal(f, vty, val, cval, cv.span)?;
+                let next = f.b.new_block();
+                f.b.branch(eq, bodies[i], next);
+                f.b.switch_to(next);
+            }
+        }
+        f.b.jump(default);
+        for (i, case) in cases.iter().enumerate() {
+            f.b.switch_to(bodies[i]);
+            let inner = self.new_block_scope(scope);
+            let depth = f.defers.len();
+            self.check_block_stmts(f, inner, &case.body)?;
+            if !f.b.is_terminated() {
+                self.emit_defers(f, depth, span)?;
+            }
+            f.defers.truncate(depth);
+            let next = if case.through && i + 1 < cases.len() {
+                bodies[i + 1]
+            } else {
+                done
+            };
+            f.b.jump(next);
+        }
+        f.b.switch_to(done);
+        Ok(())
+    }
+
+    fn const_equal(&self, a: &Operand, b: &Operand) -> bool {
+        match (a.const_value(), b.const_value()) {
+            (Some(Value::Int(x)), Some(Value::Float(y)))
+            | (Some(Value::Float(y)), Some(Value::Int(x))) => x as f64 == y,
+            (Some(x), Some(y)) => x == y,
+            _ => false,
+        }
+    }
+
+    /// Runtime `a == b` for switch cases.
+    fn runtime_equal(
+        &mut self,
+        f: &mut FnCtx,
+        ty: TypeId,
+        a: ir::Val,
+        b: ir::Val,
+        span: Span,
+    ) -> Result<ir::Val> {
+        match self.ir_ty(ty) {
+            Some(t) if t.is_float() => Ok(f.b.cmp(CmpOp::FEq, t, a, b)),
+            Some(t) => Ok(f.b.cmp(CmpOp::Eq, t, a, b)),
+            None if ty == TypeId::STRING => {
+                let r = self.string_equal(f, a, b);
+                Ok(r)
+            }
+            None => {
+                let size = self.size_of(ty, span)?;
+                let n = f.b.iconst(Ty::I64, size);
+                let r =
+                    f.b.intrinsic(ir::Intrinsic::Memcmp, vec![a, b, n], &[Ty::I16]);
+                let zero = f.b.iconst(Ty::I16, 0);
+                Ok(f.b.cmp(CmpOp::Eq, Ty::I16, r[0], zero))
+            }
+        }
+    }
+
+    fn string_equal(&mut self, f: &mut FnCtx, x: ir::Val, y: ir::Val) -> ir::Val {
+        let result = f.b.alloca(1, 1);
+        let lc = f.b.load(Ty::I64, x);
+        let rc = f.b.load(Ty::I64, y);
+        let same = f.b.cmp(CmpOp::Eq, Ty::I64, lc, rc);
+        f.b.store(Ty::I8, result, same);
+        let cmp_block = f.b.new_block();
+        let done = f.b.new_block();
+        f.b.branch(same, cmp_block, done);
+        f.b.switch_to(cmp_block);
+        let xp = f.b.ptr_offset(x, 8);
+        let xd = f.b.load(Ty::Ptr, xp);
+        let yp = f.b.ptr_offset(y, 8);
+        let yd = f.b.load(Ty::Ptr, yp);
+        let r =
+            f.b.intrinsic(ir::Intrinsic::Memcmp, vec![xd, yd, lc], &[Ty::I16]);
+        let zero = f.b.iconst(Ty::I16, 0);
+        let eq = f.b.cmp(CmpOp::Eq, Ty::I16, r[0], zero);
+        f.b.store(Ty::I8, result, eq);
+        f.b.jump(done);
+        f.b.switch_to(done);
+        f.b.load(Ty::I8, result)
+    }
+
+    fn check_while(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        label: Option<Sym>,
+        cond: &ast::Expr,
+        body: &ast::Stmt,
+    ) -> Result<()> {
+        let head = f.b.new_block();
+        let body_block = f.b.new_block();
+        let exit = f.b.new_block();
+        f.b.jump(head);
+        f.b.switch_to(head);
+        let c = self.check_condition(f, scope, cond)?;
+        f.b.branch(c, body_block, exit);
+        f.b.switch_to(body_block);
+        f.loops.push(LoopFrame {
+            label,
+            break_block: exit,
+            continue_block: head,
+            defer_depth: f.defers.len(),
+            remove: None,
+        });
+        let result = self.check_scoped(f, scope, body);
+        f.loops.pop();
+        result?;
+        f.b.jump(head);
+        f.b.switch_to(exit);
+        Ok(())
+    }
+
+    fn check_break(
+        &mut self,
+        f: &mut FnCtx,
+        label: Option<Sym>,
+        is_break: bool,
+        span: Span,
+    ) -> Result<()> {
+        let frame = match label {
+            Some(l) => f.loops.iter().rev().find(|lp| lp.label == Some(l)).cloned(),
+            None => f.loops.last().cloned(),
+        };
+        let Some(frame) = frame else {
+            let what = if is_break {
+                "break"
+            } else {
+                "continue"
+            };
+            return match label {
+                Some(l) => err(span, format!("{what}: no enclosing loop named '{l}'")),
+                None => err(span, format!("{what} outside of a loop")),
+            };
+        };
+        self.emit_defers(f, frame.defer_depth, span)?;
+        f.b.jump(if is_break {
+            frame.break_block
+        } else {
+            frame.continue_block
+        });
+        Ok(())
+    }
+
+    fn check_remove(&mut self, f: &mut FnCtx, label: Option<Sym>, span: Span) -> Result<()> {
+        let frame = match label {
+            Some(l) => f.loops.iter().rev().find(|lp| lp.label == Some(l)).cloned(),
+            None => f.loops.last().cloned(),
+        };
+        let Some((container, index_slot, elem)) = frame.and_then(|fr| fr.remove) else {
+            return err(span, "remove is only valid inside a for loop over an array");
+        };
+        // array[it_index] = array[count-1]; count -= 1; it_index -= 1;
+        let Operand::Place {
+            addr, ..
+        } = container
+        else {
+            return err(span, "remove needs an addressable array");
+        };
+        let count = f.b.load(Ty::I64, addr);
+        let dp = f.b.ptr_offset(addr, 8);
+        let data = f.b.load(Ty::Ptr, dp);
+        let size = self.size_of(elem, span)?;
+        let s = f.b.iconst(Ty::I64, size);
+        let one = f.b.iconst(Ty::I64, 1);
+        let last = f.b.bin(ir::BinOp::Sub, Ty::I64, count, one);
+        let idx = f.b.load(Ty::I64, index_slot);
+        let off_i = f.b.bin(ir::BinOp::Mul, Ty::I64, idx, s);
+        let off_l = f.b.bin(ir::BinOp::Mul, Ty::I64, last, s);
+        let dst = f.b.ptr_add(data, off_i);
+        let src = f.b.ptr_add(data, off_l);
+        f.b.copy(dst, src, size);
+        f.b.store(Ty::I64, addr, last);
+        let idx2 = f.b.bin(ir::BinOp::Sub, Ty::I64, idx, one);
+        f.b.store(Ty::I64, index_slot, idx2);
+        Ok(())
+    }
+
+    fn check_for(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        for_: &ast::For,
+        span: Span,
+    ) -> Result<()> {
+        let it_name = for_.it.map_or_else(|| Sym::intern("it"), |i| i.name);
+        let index_name = for_
+            .index
+            .map_or_else(|| Sym::intern("it_index"), |i| i.name);
+        let (lo, hi, collection) = match &for_.over {
+            ast::ForOver::Range(a, b) => (Some(a), Some(b), None),
+            ast::ForOver::Collection(c) => (None, None, Some(c)),
+        };
+        let loop_scope = self.new_block_scope(scope);
+        let depth = self.scope(loop_scope).proc_depth;
+        if let (Some(a), Some(b)) = (lo, hi) {
+            // Integer range, inclusive.
+            let av = self.check_expr(f, scope, a, None)?;
+            let bv = self.check_expr(f, scope, b, None)?;
+            let ty = match (&av, &bv) {
+                (
+                    Operand::Const {
+                        untyped: true, ..
+                    },
+                    Operand::Const {
+                        untyped: true, ..
+                    },
+                ) => TypeId::S64,
+                (
+                    Operand::Const {
+                        untyped: true, ..
+                    },
+                    other,
+                ) => other.ty(),
+                (other, _) => other.ty(),
+            };
+            let ty = if self.types.is_integer(ty) {
+                ty
+            } else {
+                TypeId::S64
+            };
+            let av = self.convert(f, av, ty, a.span)?;
+            let bv = self.convert(f, bv, ty, b.span)?;
+            let (_, start) = self.rvalue(f, av, a.span)?;
+            let (_, end) = self.rvalue(f, bv, b.span)?;
+            let t = self.ir_ty(ty).unwrap();
+            let signed = self.types.int_info(ty).is_some_and(|i| i.1);
+            let it = f.b.alloca(t.size(), t.size());
+            let idx = f.b.alloca(8, 8);
+            f.b.store(
+                t,
+                it,
+                if for_.reverse {
+                    end
+                } else {
+                    start
+                },
+            );
+            let zero = f.b.iconst(Ty::I64, 0);
+            f.b.store(Ty::I64, idx, zero);
+            let head = f.b.new_block();
+            let body_block = f.b.new_block();
+            let step = f.b.new_block();
+            let exit = f.b.new_block();
+            f.b.jump(head);
+            f.b.switch_to(head);
+            let cur = f.b.load(t, it);
+            let op = match (for_.reverse, signed) {
+                (false, true) => CmpOp::SLe,
+                (false, false) => CmpOp::ULe,
+                (true, true) => CmpOp::SGe,
+                (true, false) => CmpOp::UGe,
+            };
+            let c = f.b.cmp(
+                op,
+                t,
+                cur,
+                if for_.reverse {
+                    start
+                } else {
+                    end
+                },
+            );
+            f.b.branch(c, body_block, exit);
+            f.b.switch_to(body_block);
+            self.add_entity(
+                loop_scope,
+                it_name,
+                span,
+                EntityKind::Local {
+                    ty,
+                    addr: it,
+                    depth,
+                },
+                false,
+            );
+            self.add_entity(
+                loop_scope,
+                index_name,
+                span,
+                EntityKind::Local {
+                    ty: TypeId::S64,
+                    addr: idx,
+                    depth,
+                },
+                false,
+            );
+            f.loops.push(LoopFrame {
+                label: Some(it_name),
+                break_block: exit,
+                continue_block: step,
+                defer_depth: f.defers.len(),
+                remove: None,
+            });
+            let result = self.check_scoped(f, loop_scope, &for_.body);
+            f.loops.pop();
+            result?;
+            f.b.jump(step);
+            f.b.switch_to(step);
+            // Stop before wrapping past the bound.
+            let cur = f.b.load(t, it);
+            let at_end = f.b.cmp(
+                CmpOp::Eq,
+                t,
+                cur,
+                if for_.reverse {
+                    start
+                } else {
+                    end
+                },
+            );
+            let advance = f.b.new_block();
+            f.b.branch(at_end, exit, advance);
+            f.b.switch_to(advance);
+            let one = f.b.iconst(t, 1);
+            let next = f.b.bin(
+                if for_.reverse {
+                    ir::BinOp::Sub
+                } else {
+                    ir::BinOp::Add
+                },
+                t,
+                cur,
+                one,
+            );
+            f.b.store(t, it, next);
+            let i = f.b.load(Ty::I64, idx);
+            let one64 = f.b.iconst(Ty::I64, 1);
+            let i2 = f.b.bin(ir::BinOp::Add, Ty::I64, i, one64);
+            f.b.store(Ty::I64, idx, i2);
+            f.b.jump(head);
+            f.b.switch_to(exit);
+            return Ok(());
+        }
+        let c = collection.unwrap();
+        let op = self.check_expr(f, scope, c, None)?;
+        let cty = op.ty();
+        let target = self.types.pointee(cty).unwrap_or(cty);
+        let is_struct = matches!(
+            self.types.kind(self.types.repr_struct(target)),
+            TypeKind::Struct(_)
+        );
+        if for_.iterator.is_some() || is_struct {
+            return self.check_for_expansion(f, scope, for_, op, it_name, index_name, span);
+        }
+        let (elem, fixed) = match self.types.kind(self.types.repr(cty)).clone() {
+            TypeKind::Array {
+                elem,
+                kind: ArrayKind::Fixed(n),
+            } => (elem, Some(n)),
+            TypeKind::Array {
+                elem, ..
+            } => (elem, None),
+            TypeKind::String => (TypeId::U8, None),
+            _ => {
+                return err(
+                    c.span,
+                    format!(
+                        "cannot iterate over a value of type {}",
+                        self.types.name(cty)
+                    ),
+                );
+            }
+        };
+        let container = match op {
+            p @ Operand::Place {
+                ..
+            } => p,
+            other => {
+                let (ty, addr) = self.address_of(f, other, c.span)?;
+                Operand::Place {
+                    ty,
+                    addr,
+                }
+            }
+        };
+        let Operand::Place {
+            addr: caddr, ..
+        } = container
+        else {
+            unreachable!()
+        };
+        let esize = self.size_of(elem, span)?;
+        let idx = f.b.alloca(8, 8);
+        let load_count = |f: &mut FnCtx| match fixed {
+            Some(n) => f.b.iconst(Ty::I64, n),
+            None => f.b.load(Ty::I64, caddr),
+        };
+        let start = if for_.reverse {
+            let n = load_count(f);
+            let one = f.b.iconst(Ty::I64, 1);
+            f.b.bin(ir::BinOp::Sub, Ty::I64, n, one)
+        } else {
+            f.b.iconst(Ty::I64, 0)
+        };
+        f.b.store(Ty::I64, idx, start);
+        let head = f.b.new_block();
+        let body_block = f.b.new_block();
+        let step = f.b.new_block();
+        let exit = f.b.new_block();
+        f.b.jump(head);
+        f.b.switch_to(head);
+        let i = f.b.load(Ty::I64, idx);
+        let c = if for_.reverse {
+            let zero = f.b.iconst(Ty::I64, 0);
+            f.b.cmp(CmpOp::SGe, Ty::I64, i, zero)
+        } else {
+            let n = load_count(f);
+            f.b.cmp(CmpOp::SLt, Ty::I64, i, n)
+        };
+        f.b.branch(c, body_block, exit);
+        f.b.switch_to(body_block);
+        let data = match fixed {
+            Some(_) => caddr,
+            None => {
+                let p = f.b.ptr_offset(caddr, 8);
+                f.b.load(Ty::Ptr, p)
+            }
+        };
+        let i = f.b.load(Ty::I64, idx);
+        let s = f.b.iconst(Ty::I64, esize);
+        let off = f.b.bin(ir::BinOp::Mul, Ty::I64, i, s);
+        let elem_addr = f.b.ptr_add(data, off);
+        let (it_ty, it_addr) = if for_.by_pointer {
+            let pt = self.types.pointer(elem);
+            (pt, self.spill(f, pt, elem_addr, span)?)
+        } else {
+            let align = self.align_of(elem, span)?;
+            let slot = f.b.alloca(esize.max(1), align);
+            f.b.copy(slot, elem_addr, esize);
+            (elem, slot)
+        };
+        let it_entity = self.add_entity(
+            loop_scope,
+            it_name,
+            span,
+            EntityKind::Local {
+                ty: it_ty,
+                addr: it_addr,
+                depth,
+            },
+            false,
+        );
+        self.add_entity(
+            loop_scope,
+            index_name,
+            span,
+            EntityKind::Local {
+                ty: TypeId::S64,
+                addr: idx,
+                depth,
+            },
+            false,
+        );
+        let _ = it_entity;
+        let remove = if fixed.is_none() && !for_.reverse {
+            Some((container.clone(), idx, elem))
+        } else {
+            None
+        };
+        f.loops.push(LoopFrame {
+            label: Some(it_name),
+            break_block: exit,
+            continue_block: step,
+            defer_depth: f.defers.len(),
+            remove,
+        });
+        let result = self.check_scoped(f, loop_scope, &for_.body);
+        f.loops.pop();
+        result?;
+        f.b.jump(step);
+        f.b.switch_to(step);
+        let i = f.b.load(Ty::I64, idx);
+        let one = f.b.iconst(Ty::I64, 1);
+        let next = f.b.bin(
+            if for_.reverse {
+                ir::BinOp::Sub
+            } else {
+                ir::BinOp::Add
+            },
+            Ty::I64,
+            i,
+            one,
+        );
+        f.b.store(Ty::I64, idx, next);
+        f.b.jump(head);
+        f.b.switch_to(exit);
+        Ok(())
+    }
+
+    /// `for x: collection` over a struct: expand its `for_expansion` macro.
+    #[allow(clippy::too_many_arguments)]
+    fn check_for_expansion(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        for_: &ast::For,
+        collection: Operand,
+        it_name: Sym,
+        index_name: Sym,
+        span: Span,
+    ) -> Result<()> {
+        let macro_name = for_
+            .iterator
+            .map_or_else(|| Sym::intern("for_expansion"), |i| i.name);
+        let ids = self.lookup(scope, macro_name)?;
+        let mut procs = Vec::new();
+        for id in ids {
+            if let Resolved::Proc(p) = self.resolve_entity(id)? {
+                procs.push(p);
+            }
+        }
+        if procs.is_empty() {
+            return err(
+                span,
+                format!(
+                    "no '{macro_name}' is visible for iterating over {}",
+                    self.types.name(collection.ty())
+                ),
+            );
+        }
+        // The body becomes a Code value; names declared with backticks land in the loop scope.
+        let loop_scope = self.new_block_scope(scope);
+        let code = value::CodeId(self.codes.len() as u32);
+        let body_stmt = Rc::new((*for_.body).clone());
+        self.codes.push(Rc::new(ast::CodeBody::Block(ast::Block {
+            stmts: vec![(*for_.body).clone()],
+            span: for_.body.span,
+        })));
+        self.code_scopes.push(loop_scope);
+        let flags_value = (for_.by_pointer as i128) | ((for_.reverse as i128) << 1);
+        let flags_ty = self.preload_type("For_Flags", span).unwrap_or(TypeId::U8);
+        let args = vec![
+            CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(collection),
+                span,
+                scope,
+            },
+            CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(Operand::Const {
+                    ty: TypeId::CODE,
+                    value: Value::Code(code),
+                    untyped: false,
+                }),
+                span,
+                scope,
+            },
+            CallArg {
+                name: None,
+                spread: false,
+                expr: None,
+                op: Some(Operand::Const {
+                    ty: flags_ty,
+                    value: Value::Int(flags_value),
+                    untyped: false,
+                }),
+                span,
+                scope,
+            },
+        ];
+        f.pending_for_body = Some(ForBody {
+            code,
+            body: body_stmt,
+            scope: loop_scope,
+            it_name,
+            index_name,
+            label: Some(it_name),
+        });
+        let result = self.call_procs(f, loop_scope, &procs, args, None, span);
+        f.pending_for_body = None;
+        result.map(|_| ())
+    }
+
+    fn check_insert(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        value: &ast::Expr,
+        span: Span,
+    ) -> Result<()> {
+        let op = self.eval_const(scope, value, None)?;
+        if let Operand::Const {
+            value: Value::Code(code),
+            ..
+        } = op
+        {
+            // The body of a for_expansion loop.
+            if let Some(frame_index) = f
+                .macros
+                .iter()
+                .rposition(|m| m.for_body.as_ref().is_some_and(|b| b.code == code))
+            {
+                return self.insert_for_body(f, frame_index, span);
+            }
+            let body = self.codes[code.0 as usize].clone();
+            let code_scope = self.code_scopes[code.0 as usize];
+            // Inserted code resolves names where it was written.
+            let inner = self.new_block_scope(code_scope);
+            self.scopes[inner.0 as usize].proc_depth = self.scope(scope).proc_depth;
+            return match &*body {
+                ast::CodeBody::Expr(e) => self.check_expr(f, inner, e, None).map(|_| ()),
+                ast::CodeBody::Block(b) => self.check_block_stmts(f, inner, &b.stmts),
+            };
+        }
+        let stmts = self.insert_stmts_from(op, value.span)?;
+        self.check_block_stmts(f, scope, &stmts)
+    }
+
+    fn insert_for_body(&mut self, f: &mut FnCtx, frame_index: usize, span: Span) -> Result<()> {
+        let frame: MacroFrame = f.macros[frame_index].clone();
+        let body = frame.for_body.clone().unwrap();
+        // Alias custom iterator names to the macro's `it` / `it_index`.
+        for (alias, original) in [(body.it_name, "it"), (body.index_name, "it_index")] {
+            if alias.as_str() == original {
+                continue;
+            }
+            let ids = self
+                .scope(body.scope)
+                .names
+                .get(&Sym::intern(original))
+                .cloned()
+                .unwrap_or_default();
+            if let Some(&id) = ids.last() {
+                let kind = self.entity(id).kind.clone();
+                self.add_entity(body.scope, alias, span, kind, false);
+            }
+        }
+        // break/continue in the body target the macro's innermost loop.
+        let (brk, cont) = match f.loops.last() {
+            Some(l) if f.loops.len() > frame.loop_depth => (l.break_block, l.continue_block),
+            _ => (frame.exit_block, frame.exit_block),
+        };
+        f.loops.push(LoopFrame {
+            label: body.label,
+            break_block: brk,
+            continue_block: cont,
+            defer_depth: f.defers.len(),
+            remove: None,
+        });
+        let saved = f.macros.split_off(frame_index);
+        let result = self.check_scoped(f, body.scope, &body.body);
+        f.macros.extend(saved);
+        f.loops.pop();
+        result
+    }
+
+    fn check_return(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        values: &[ast::Arg],
+        backtick: bool,
+        span: Span,
+    ) -> Result<()> {
+        if let Some(frame) = f.macros.last().cloned()
+            && !backtick
+        {
+            // Return from a macro: store results and leave the expansion.
+            let mut ops = Vec::new();
+            for (i, v) in values.iter().enumerate() {
+                let expected = frame.result_slots.get(i).map(|s| s.0);
+                ops.push(self.check_expr(f, scope, &v.value, expected)?);
+            }
+            for (op, (ty, slot)) in ops.into_iter().zip(&frame.result_slots) {
+                let op = self.convert(f, op, *ty, span)?;
+                let (_, v) = self.rvalue(f, op, span)?;
+                self.store_value(f, *ty, *slot, v, span)?;
+            }
+            self.emit_defers(f, frame.defer_depth, span)?;
+            f.b.jump(frame.exit_block);
+            return Ok(());
+        }
+        let saved_macros = if backtick {
+            std::mem::take(&mut f.macros)
+        } else {
+            Vec::new()
+        };
+        let result = self.check_proc_return(f, scope, values, span);
+        if backtick {
+            f.macros = saved_macros;
+        }
+        result
+    }
+
+    fn check_proc_return(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        values: &[ast::Arg],
+        span: Span,
+    ) -> Result<()> {
+        let types = f.return_types.clone();
+        let mut ops: Vec<Operand> = Vec::new();
+        for (i, v) in values.iter().enumerate() {
+            let op = self.check_expr(f, scope, &v.value, types.get(i).copied())?;
+            match op {
+                Operand::Multi(vals) if values.len() == 1 => {
+                    ops.extend(vals.into_iter().map(|(ty, val)| Operand::Value {
+                        ty,
+                        val,
+                    }))
+                }
+                other => ops.push(other),
+            }
+        }
+        if ops.is_empty() && !types.is_empty() && f.named_results.iter().all(Option::is_some) {
+            self.emit_fallthrough_return(f, span)?;
+            return Ok(());
+        }
+        if ops.len() > types.len() {
+            return err(
+                span,
+                format!("too many return values (procedure returns {})", types.len()),
+            );
+        }
+        if ops.len() < types.len() && !ops.is_empty() {
+            // Remaining results take their named defaults.
+            for i in ops.len()..types.len() {
+                if f.named_results[i].is_none() {
+                    return err(
+                        span,
+                        format!("missing return value {} of {}", i + 1, types.len()),
+                    );
+                }
+            }
+        } else if ops.is_empty() && !types.is_empty() {
+            return err(span, "missing return value");
+        }
+        let mut scalars = Vec::new();
+        for (i, &ty) in types.iter().enumerate() {
+            let v = match ops.get(i) {
+                Some(op) => {
+                    let op = self.convert(f, op.clone(), ty, span)?;
+                    let (_, v) = self.rvalue(f, op, span)?;
+                    v
+                }
+                None => {
+                    let addr = f.named_results[i].unwrap();
+                    match self.ir_ty(ty) {
+                        Some(t) => f.b.load(t, addr),
+                        None => addr,
+                    }
+                }
+            };
+            match f.return_outs[i] {
+                Some(out) => self.store_value(f, ty, out, v, span)?,
+                None => {
+                    // Keep the value safe from defers that modify locals.
+                    let t = self.ir_ty(ty).unwrap();
+                    let slot = f.b.alloca(t.size(), t.size());
+                    f.b.store(t, slot, v);
+                    scalars.push((t, slot));
+                }
+            }
+        }
+        self.emit_defers(f, 0, span)?;
+        let mut rets = Vec::new();
+        for (t, slot) in scalars {
+            rets.push(f.b.load(t, slot));
+        }
+        f.b.ret(rets);
+        Ok(())
+    }
+
+    /// Emit deferred statements registered above `depth`, innermost first.
+    pub fn emit_defers(&mut self, f: &mut FnCtx, depth: usize, _span: Span) -> Result<()> {
+        if f.defers.len() <= depth {
+            return Ok(());
+        }
+        let saved = f.defers.clone();
+        for i in (depth..saved.len()).rev() {
+            f.defers.truncate(i);
+            let entry = saved[i].clone();
+            let inner = self.new_block_scope(entry.scope);
+            self.check_stmt(f, inner, &entry.stmt)?;
+        }
+        f.defers = saved;
+        Ok(())
+    }
+}

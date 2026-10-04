@@ -201,8 +201,10 @@ get_stack_trace_string :: (node:*Stack_Trace_Node) -> string {
 log_stack_trace :: (node:*Stack_Trace_Node,log_flags:=Log_Flags.ERROR,prefix:="") {
     log("%%",prefix,get_stack_trace_string(node),flags=log_flags);
 }
+#scope_module
+// Shared by Basic's loaded files (allocation.jai, Memory_Debugger.jai...).
+Runtime_Support :: #import "Runtime_Support";
 #scope_file
-Runtime_Support :: #import "Runtime_Support" (DEFINE_SYSTEM_ENTRY_POINT=false, DEFINE_INITIALIZATION=false, ENABLE_BACKTRACE_ON_CRASH=false);
 _remember_allocators_by_info :: (memory:*void,info:*Type_Info) {
     if info.type==.STRUCT {
         record:=cast(*Type_Info_Struct)info;

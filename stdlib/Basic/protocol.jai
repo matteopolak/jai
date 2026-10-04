@@ -29,7 +29,6 @@ Struct_Textual_Flags :: Protocol.Struct_Textual_Flags;
 Enum_Status_Flags :: Protocol.Enum_Status_Flags;
 Enum_Type_Flags :: Protocol.Enum_Type_Flags;
 Any_Struct :: Protocol.Any_Struct;
-Any :: #type any;
 Source_Code_Location :: Protocol.Source_Code_Location;
 Source_Code_Range :: Protocol.Source_Code_Range;
 Log_Level :: Protocol.Log_Level;

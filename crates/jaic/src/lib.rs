@@ -5,6 +5,10 @@
 //! execution, scripting, browser) or the LLVM backend in `jaic-llvm`.
 pub mod ast;
 pub mod intern;
+pub mod interp;
+pub mod ir;
 pub mod lexer;
 pub mod parser;
+pub mod sema;
 pub mod source;
+pub mod types;

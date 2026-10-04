@@ -985,3 +985,15 @@ fn diagnostics_name_the_expected_and_found_tokens() {
         "expected string literal after '#import', found number"
     );
 }
+
+#[test]
+fn parenthesized_cast_with_flags_is_not_a_header() {
+    let stmts = parse("x := (cast,no_check(u64) a & m);");
+    let StmtKind::Decl(decl) = &stmts[0].kind else {
+        panic!("expected a declaration")
+    };
+    assert!(matches!(
+        decl.value.as_ref().unwrap().kind,
+        ExprKind::Binary(..)
+    ));
+}

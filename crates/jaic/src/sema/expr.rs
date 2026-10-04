@@ -1,0 +1,1739 @@
+//! Expression checking and lowering.
+use super::lower::{FnCtx, Operand};
+use super::scope::{EntityKind, Found, Resolved, ScopeKind};
+use super::*;
+use crate::ast::{BinOp, ExprKind as E, UnOp};
+use crate::ir::{CmpOp, Ty};
+use crate::types::{ArrayKind, ProcType, TypeKind};
+
+impl Compiler {
+    pub fn check_expr(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        expr: &ast::Expr,
+        expected: Option<TypeId>,
+    ) -> Result<Operand> {
+        let span = expr.span;
+        match &expr.kind {
+            E::Ident(name) => self.check_ident(f, scope, *name, span),
+            E::PolyVar {
+                name, ..
+            } => self.check_ident(f, scope, *name, span),
+            E::PolyRestricted {
+                name, ..
+            } => self.check_ident(f, scope, *name, span),
+            E::Int(v) => {
+                let v = *v as i128;
+                match expected.map(|t| self.types.repr(t)) {
+                    Some(t) if self.types.is_float(t) => Ok(Operand::Const {
+                        ty: t,
+                        value: Value::Float(v as f64),
+                        untyped: true,
+                    }),
+                    _ => Ok(Operand::untyped_int(v)),
+                }
+            }
+            E::Float(v) => Ok(Operand::Const {
+                ty: TypeId::F32,
+                value: Value::Float(*v),
+                untyped: true,
+            }),
+            E::Char(c) => Ok(Operand::Const {
+                ty: TypeId::U8,
+                value: Value::Int(*c as i128),
+                untyped: true,
+            }),
+            E::Str(s) => Ok(Operand::Const {
+                ty: TypeId::STRING,
+                value: Value::String(s.clone()),
+                untyped: false,
+            }),
+            E::Bool(b) => Ok(Operand::bool(*b)),
+            E::Null => Ok(Operand::Const {
+                ty: TypeId::NULL,
+                value: Value::Null,
+                untyped: true,
+            }),
+            E::Uninit => err(span, "'---' is only allowed as a declaration initializer"),
+            E::Context => {
+                let ty = self.context_type(span)?;
+                let Some(ctx) = f.context else {
+                    return err(
+                        span,
+                        "'context' is not available here (procedure is #c_call or #no_context; use push_context)",
+                    );
+                };
+                Ok(Operand::Place {
+                    ty,
+                    addr: ctx,
+                })
+            }
+            E::Binary(op, a, b) => self.check_binary(f, scope, *op, a, b, expected, span),
+            E::Unary(op, a) => self.check_unary(f, scope, *op, a, expected, span),
+            E::Call {
+                callee,
+                args,
+                ..
+            } => self.check_call(f, scope, callee, args, expected, span),
+            E::Member(base, member) => {
+                let base_op = self.check_expr(f, scope, base, None)?;
+                self.member_access(f, scope, base_op, member.name, member.span)
+            }
+            E::InferredMember(name) => self.check_inferred_member(f, scope, name, expected),
+            E::Index(base, index) => self.check_index(f, scope, base, index, span),
+            E::Cast {
+                ty,
+                value,
+                flags,
+            } => {
+                let target = match ty {
+                    Some(t) => self.eval_type_in(f, scope, t)?,
+                    None => match expected {
+                        Some(t) => t,
+                        None => {
+                            // `xx` without a target: leave the value as-is (the caller converts).
+                            return self.check_expr(f, scope, value, None);
+                        }
+                    },
+                };
+                let op = self.check_expr(f, scope, value, Some(target))?;
+                self.explicit_cast(f, op, target, *flags, span)
+            }
+            E::Ifx {
+                cond,
+                then_value,
+                else_value,
+                ..
+            } => match else_value {
+                Some(e) => self.check_ifx(f, scope, cond, then_value.as_deref(), e, expected, span),
+                None => err(span, "'ifx' without 'else' is only valid as a statement"),
+            },
+            E::StructLit {
+                ty,
+                fields,
+            } => self.check_struct_literal(f, scope, ty.as_deref(), fields, expected, span),
+            E::ArrayLit {
+                ty,
+                elems,
+            } => self.check_array_literal(f, scope, ty.as_deref(), elems, expected, span),
+            E::ArrayType {
+                size,
+                elem,
+            } => {
+                let elem = self.eval_type_in(f, scope, elem)?;
+                let kind = match size {
+                    ast::ArraySize::View => ArrayKind::View,
+                    ast::ArraySize::Resizable => ArrayKind::Resizable,
+                    ast::ArraySize::Fixed(n) => {
+                        let n = self.check_expr(f, scope, n, Some(TypeId::S64))?;
+                        match n {
+                            Operand::Const {
+                                value: Value::Int(n),
+                                ..
+                            } if n >= 0 => ArrayKind::Fixed(n as u64),
+                            other => {
+                                return err(
+                                    span,
+                                    format!(
+                                        "array size must be a non-negative constant, found {}",
+                                        self.describe(&other)
+                                    ),
+                                );
+                            }
+                        }
+                    }
+                };
+                Ok(Operand::Type(self.types.array(elem, kind)))
+            }
+            E::ProcType(header) => Ok(Operand::Type(self.proc_type_from_header(f, scope, header)?)),
+            E::Proc(lit) => {
+                let name = Sym::intern("anonymous_procedure");
+                let key = lit.header.id;
+                let proc = match self.anonymous_procs.get(&(key, scope)) {
+                    Some(&p) => p,
+                    None => {
+                        let p = self.new_proc(name, lit.clone(), scope, span);
+                        self.anonymous_procs.insert((key, scope), p);
+                        p
+                    }
+                };
+                Ok(Operand::Procs(vec![proc]))
+            }
+            E::Struct(lit) => {
+                if let Some(&t) = self.anonymous_types.get(&(lit.id, scope)) {
+                    return Ok(Operand::Type(t));
+                }
+                let t = self.new_struct_type(
+                    Sym::intern("struct"),
+                    lit.clone(),
+                    scope,
+                    Vec::new(),
+                    None,
+                );
+                self.anonymous_types.insert((lit.id, scope), t);
+                Ok(Operand::Type(t))
+            }
+            E::Enum(lit) => {
+                if let Some(&t) = self.anonymous_types.get(&(lit.id, scope)) {
+                    return Ok(Operand::Type(t));
+                }
+                let t = self.new_enum_type(Sym::intern("enum"), lit, scope)?;
+                self.anonymous_types.insert((lit.id, scope), t);
+                Ok(Operand::Type(t))
+            }
+            E::TypeDirective {
+                modifier,
+                ty,
+            } => {
+                let base = self.eval_type_in(f, scope, ty)?;
+                match modifier {
+                    ast::TypeModifier::Plain => Ok(Operand::Type(base)),
+                    _ => {
+                        let isa = *modifier == ast::TypeModifier::Isa;
+                        let t = self.types.new_distinct(crate::types::DistinctInfo {
+                            name: Sym::intern("distinct"),
+                            base,
+                            isa,
+                        });
+                        Ok(Operand::Type(t))
+                    }
+                }
+            }
+            E::Run {
+                body, ..
+            } => self.check_run(scope, body, expected, span),
+            E::Code(body) => {
+                let id = value::CodeId(self.codes.len() as u32);
+                self.codes.push(body.clone());
+                self.code_scopes.push(scope);
+                Ok(Operand::Const {
+                    ty: TypeId::CODE,
+                    value: Value::Code(id),
+                    untyped: false,
+                })
+            }
+            E::Insert {
+                value, ..
+            } => {
+                let inserted = self.eval_insert_expr(scope, value)?;
+                self.check_expr(f, scope, &inserted, expected)
+            }
+            E::Location(target) => {
+                let loc_span = match target {
+                    Some(e) => e.span,
+                    None => span,
+                };
+                self.location_operand(f, loc_span)
+            }
+            E::CallerLocation => self.location_operand(f, span),
+            E::File => {
+                let path = self.sources.get(span.file).path.clone();
+                let name = std::path::Path::new(&path)
+                    .file_name()
+                    .map(|n| n.to_string_lossy().into_owned())
+                    .unwrap_or(path);
+                Ok(Operand::Const {
+                    ty: TypeId::STRING,
+                    value: Value::String(name.as_bytes().into()),
+                    untyped: false,
+                })
+            }
+            E::Filepath => {
+                let path = self.sources.get(span.file).path.clone();
+                let dir = std::path::Path::new(&path)
+                    .parent()
+                    .map(|p| format!("{}/", p.display()))
+                    .unwrap_or_default();
+                Ok(Operand::Const {
+                    ty: TypeId::STRING,
+                    value: Value::String(dir.as_bytes().into()),
+                    untyped: false,
+                })
+            }
+            E::Line => {
+                let (line, _) = self.sources.get(span.file).line_col(span.start);
+                Ok(Operand::untyped_int(line as i128))
+            }
+            E::ProcedureName(_) => {
+                let name = f
+                    .proc
+                    .map(|p| self.proc(p).name.to_string())
+                    .unwrap_or_default();
+                Ok(Operand::Const {
+                    ty: TypeId::STRING,
+                    value: Value::String(name.as_bytes().into()),
+                    untyped: false,
+                })
+            }
+            E::This => self.check_this(scope, span),
+            E::CompileTime => {
+                if f.compile_time {
+                    return Ok(Operand::bool(true));
+                }
+                let v =
+                    f.b.intrinsic(ir::Intrinsic::IsCompileTime, Vec::new(), &[Ty::I8]);
+                Ok(Operand::Value {
+                    ty: TypeId::BOOL,
+                    val: v[0],
+                })
+            }
+            E::Exists(e) => {
+                let exists = match &e.kind {
+                    E::Ident(name) => !self.lookup(scope, *name)?.is_empty(),
+                    _ => self.check_expr(f, scope, e, None).is_ok(),
+                };
+                Ok(Operand::bool(exists))
+            }
+            E::Bytes(e) => self.check_expr(f, scope, e, expected),
+            E::Backtick(inner) => {
+                let Some(frame) = f.macros.last() else {
+                    return err(span, "backtick names are only valid inside macros");
+                };
+                let caller = frame.caller_scope;
+                self.check_expr(f, caller, inner, expected)
+            }
+            E::Bake {
+                ..
+            } => err(span, "#bake_arguments is not supported yet"),
+            E::ProcedureOfCall(call) => self.check_procedure_of_call(f, scope, call),
+            E::CallerCode => err(span, "#caller_code is not supported yet"),
+            E::UnknownDirective {
+                name, ..
+            } if name.name.as_str() == "Context" => Ok(Operand::Type(self.context_type(span)?)),
+            E::UnknownDirective {
+                name, ..
+            } => err(
+                name.span,
+                format!(
+                    "directive '#{}' is not supported in this position",
+                    name.name
+                ),
+            ),
+            E::Asm => err(span, "#asm is not supported"),
+            E::Lambda {
+                ..
+            } => err(span, "lambda expressions are not supported yet"),
+            E::Block(_) => err(span, "block expressions are only valid as macro arguments"),
+        }
+    }
+
+    /// Evaluate a type expression inside a body.
+    pub fn eval_type_in(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<TypeId> {
+        let op = self.check_expr(f, scope, expr, Some(TypeId::TYPE))?;
+        if let Operand::Value {
+            ty: TypeId::TYPE, ..
+        }
+        | Operand::Place {
+            ty: TypeId::TYPE, ..
+        } = op
+        {
+            return err(expr.span, "type must be known at compile time");
+        }
+        self.operand_as_type(op, expr.span)
+    }
+
+    fn check_ident(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        name: Sym,
+        span: Span,
+    ) -> Result<Operand> {
+        match self.lookup_full(scope, name)? {
+            Found::Using(entry, member) => self.using_member(f, entry, member, span),
+            Found::Entities(ids) => {
+                if ids.is_empty() {
+                    return err(span, format!("unknown identifier '{name}'"));
+                }
+                self.entities_operand(f, scope, &ids, span)
+            }
+        }
+    }
+
+    pub fn entities_operand(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        ids: &[EntityId],
+        span: Span,
+    ) -> Result<Operand> {
+        if ids.len() > 1 || self.entity_is_overloadable(ids[0]) {
+            let mut procs = Vec::new();
+            for &id in ids {
+                match self.resolve_entity(id)? {
+                    Resolved::Proc(p) => procs.push(p),
+                    Resolved::Const {
+                        value: Value::Proc(p),
+                        ..
+                    } => procs.push(p),
+                    _ => {
+                        if ids.len() == 1 {
+                            return self.entity_operand(f, scope, id, span);
+                        }
+                        return err(
+                            span,
+                            format!("'{}' is declared more than once", self.entity(id).name),
+                        );
+                    }
+                }
+            }
+            return Ok(Operand::Procs(procs));
+        }
+        self.entity_operand(f, scope, ids[0], span)
+    }
+
+    fn entity_operand(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        id: EntityId,
+        span: Span,
+    ) -> Result<Operand> {
+        match self.entity(id).kind.clone() {
+            EntityKind::Local {
+                ty,
+                addr,
+                depth,
+            } => {
+                if depth != self.scope(scope).proc_depth {
+                    return err(
+                        span,
+                        format!(
+                            "cannot access local '{}' of an enclosing procedure",
+                            self.entity(id).name
+                        ),
+                    );
+                }
+                return Ok(Operand::Place {
+                    ty,
+                    addr,
+                });
+            }
+            EntityKind::Builtin(scope::Builtin::Proc(p)) => return Ok(Operand::Builtin(p)),
+            _ => {}
+        }
+        Ok(match self.resolve_entity(id)? {
+            Resolved::Const {
+                value: Value::Type(t),
+                ..
+            } => Operand::Type(t),
+            Resolved::Const {
+                value: Value::Proc(p),
+                ..
+            } => Operand::Procs(vec![p]),
+            Resolved::Const {
+                value,
+                ty,
+            } => Operand::Const {
+                ty,
+                value,
+                untyped: false,
+            },
+            Resolved::Proc(p) => Operand::Procs(vec![p]),
+            Resolved::Global {
+                global,
+                ty,
+            } => {
+                let addr = f.b.global_addr(global);
+                Operand::Place {
+                    ty,
+                    addr,
+                }
+            }
+            Resolved::Module(m) => Operand::Module(m),
+            Resolved::Library(l) => Operand::Library(l),
+            Resolved::PolyStruct(p) => Operand::PolyStruct(p),
+        })
+    }
+
+    fn check_inferred_member(
+        &mut self,
+        f: &mut FnCtx,
+        _scope: ScopeId,
+        name: &ast::Ident,
+        expected: Option<TypeId>,
+    ) -> Result<Operand> {
+        let Some(t) = expected else {
+            return err(
+                name.span,
+                format!("cannot infer the type of '.{}' here", name.name),
+            );
+        };
+        // Allow pointer-to-enum targets? No: enums only, but look through distinct.
+        match self.types.kind(t).clone() {
+            TypeKind::Enum(_) | TypeKind::Struct(_) => {
+                self.member_access(f, ScopeId(0), Operand::Type(t), name.name, name.span)
+            }
+            _ => err(
+                name.span,
+                format!(
+                    "cannot infer '.{}' for type {}",
+                    name.name,
+                    self.types.name(t)
+                ),
+            ),
+        }
+    }
+
+    fn check_this(&mut self, scope: ScopeId, span: Span) -> Result<Operand> {
+        let mut s = Some(scope);
+        while let Some(sid) = s {
+            if let ScopeKind::Struct(t) = self.scope(sid).kind {
+                return Ok(Operand::Type(t));
+            }
+            s = self.scope(sid).parent;
+        }
+        err(span, "#this used outside of a struct")
+    }
+
+    fn proc_type_from_header(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        header: &ast::ProcHeader,
+    ) -> Result<TypeId> {
+        let c_call = header.flags.c_call || header.foreign.is_some();
+        let mut params = Vec::new();
+        let mut variadic = false;
+        let mut c_varargs = false;
+        for p in &header.params {
+            let Some(t) = &p.ty else {
+                return err(p.span, "procedure type parameter needs a type");
+            };
+            let ty = self.eval_type_in(f, scope, t)?;
+            if p.variadic {
+                if c_call {
+                    c_varargs = true;
+                    continue;
+                }
+                variadic = true;
+                params.push(self.types.array(ty, ArrayKind::View));
+            } else {
+                params.push(ty);
+            }
+        }
+        let mut returns = Vec::new();
+        for r in &header.returns {
+            let Some(rt) = &r.ty else {
+                return err(r.span, "procedure type result needs a type");
+            };
+            let t = self.eval_type_in(f, scope, rt)?;
+            if t != TypeId::VOID {
+                returns.push(t);
+            }
+        }
+        Ok(self.types.intern(TypeKind::Proc(Rc::new(ProcType {
+            params,
+            returns,
+            variadic,
+            c_varargs,
+            c_call,
+            no_context: c_call || header.flags.no_context,
+        }))))
+    }
+
+    // -----------------------------------------------------------------------
+    // Operators
+    // -----------------------------------------------------------------------
+
+    fn check_unary(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        op: UnOp,
+        a: &ast::Expr,
+        expected: Option<TypeId>,
+        span: Span,
+    ) -> Result<Operand> {
+        match op {
+            UnOp::Star => {
+                let inner = self.check_expr(f, scope, a, None)?;
+                match inner {
+                    Operand::Type(t) => Ok(Operand::Type(self.types.pointer(t))),
+                    Operand::Place {
+                        ty,
+                        addr,
+                    } => Ok(Operand::Value {
+                        ty: self.types.pointer(ty),
+                        val: addr,
+                    }),
+                    Operand::Procs(p) if p.len() == 1 => {
+                        let op = Operand::Procs(p);
+                        let (ty, v) = self.rvalue(f, op, span)?;
+                        Ok(Operand::Value {
+                            ty,
+                            val: v,
+                        })
+                    }
+                    other => {
+                        // Address of a temporary.
+                        let (ty, addr) = self.address_of(f, other, span)?;
+                        Ok(Operand::Value {
+                            ty: self.types.pointer(ty),
+                            val: addr,
+                        })
+                    }
+                }
+            }
+            UnOp::Deref => {
+                let inner = self.check_expr(f, scope, a, None)?;
+                let (ty, v) = self.rvalue(f, inner, span)?;
+                let Some(pointee) = self.types.pointee(ty) else {
+                    return err(
+                        span,
+                        format!("cannot dereference a value of type {}", self.types.name(ty)),
+                    );
+                };
+                if pointee == TypeId::VOID {
+                    return err(span, "cannot dereference *void");
+                }
+                Ok(Operand::Place {
+                    ty: pointee,
+                    addr: v,
+                })
+            }
+            UnOp::Plus => self.check_expr(f, scope, a, expected),
+            UnOp::Neg | UnOp::Not | UnOp::BitNot => {
+                let inner = self.check_expr(
+                    f,
+                    scope,
+                    a,
+                    if op == UnOp::Not {
+                        None
+                    } else {
+                        expected
+                    },
+                )?;
+                if let Operand::Const {
+                    ty,
+                    value,
+                    untyped,
+                } = &inner
+                {
+                    let folded = match (op, value) {
+                        (UnOp::Neg, Value::Int(v)) => Some(Value::Int(-v)),
+                        (UnOp::Neg, Value::Float(v)) => Some(Value::Float(-v)),
+                        (UnOp::Not, Value::Bool(v)) => Some(Value::Bool(!v)),
+                        (UnOp::Not, Value::Int(v)) => Some(Value::Bool(*v == 0)),
+                        (UnOp::Not, Value::Null) => Some(Value::Bool(true)),
+                        (UnOp::BitNot, Value::Int(v)) => {
+                            let (bits, signed) = self.types.int_info(*ty).unwrap_or((64, true));
+                            let bits = if *untyped {
+                                expected
+                                    .and_then(|e| self.types.int_info(e))
+                                    .map_or(bits, |i| i.0)
+                            } else {
+                                bits
+                            };
+                            Some(Value::Int(wrap_int(!v, bits, signed && !*untyped)))
+                        }
+                        _ => None,
+                    };
+                    if let Some(value) = folded {
+                        let ty = if op == UnOp::Not {
+                            TypeId::BOOL
+                        } else {
+                            *ty
+                        };
+                        return Ok(Operand::Const {
+                            ty,
+                            value,
+                            untyped: *untyped && op != UnOp::Not,
+                        });
+                    }
+                }
+                if let Some(result) =
+                    self.try_unary_operator_overload(f, scope, op, &inner, span)?
+                {
+                    return Ok(result);
+                }
+                let inner = self.settle_untyped(inner, expected);
+                let (ty, v) = self.rvalue(f, inner, span)?;
+                match op {
+                    UnOp::Not => {
+                        let b = self.truthy(f, ty, v, span)?;
+                        let one = f.b.iconst(Ty::I8, 1);
+                        Ok(Operand::Value {
+                            ty: TypeId::BOOL,
+                            val: f.b.bin(ir::BinOp::Xor, Ty::I8, b, one),
+                        })
+                    }
+                    UnOp::Neg => {
+                        let t = self.ir_ty(ty).ok_or_else(|| {
+                            Box::new(Diagnostic::error(
+                                span,
+                                format!("cannot negate {}", self.types.name(ty)),
+                            ))
+                        })?;
+                        let op = if t.is_float() {
+                            ir::UnOp::FNeg
+                        } else {
+                            ir::UnOp::Neg
+                        };
+                        Ok(Operand::Value {
+                            ty,
+                            val: f.b.un(op, t, v),
+                        })
+                    }
+                    _ => {
+                        let t = self.ir_ty(ty).filter(|t| !t.is_float()).ok_or_else(|| {
+                            Box::new(Diagnostic::error(
+                                span,
+                                format!("cannot bit-complement {}", self.types.name(ty)),
+                            ))
+                        })?;
+                        Ok(Operand::Value {
+                            ty,
+                            val: f.b.un(ir::UnOp::Not, t, v),
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    /// Give an untyped constant a concrete type from context (or its default).
+    pub fn settle_untyped(&self, op: Operand, expected: Option<TypeId>) -> Operand {
+        match op {
+            Operand::Const {
+                ty,
+                value,
+                untyped: true,
+            } => {
+                let target = expected.filter(|&e| {
+                    let r = self.types.repr(e);
+                    match &value {
+                        Value::Int(_) => self.types.is_integer(r) || self.types.is_float(r),
+                        Value::Float(_) => self.types.is_float(r),
+                        Value::Null => {
+                            self.types.is_pointer(r)
+                                || matches!(self.types.kind(r), TypeKind::Proc(_))
+                        }
+                        _ => false,
+                    }
+                });
+                let ty = target.unwrap_or_else(|| self.default_untyped(ty, &value));
+                let value = match value {
+                    Value::Int(i) if self.types.is_float(ty) => Value::Float(i as f64),
+                    v => v,
+                };
+                Operand::Const {
+                    ty,
+                    value,
+                    untyped: false,
+                }
+            }
+            other => other,
+        }
+    }
+
+    /// Convert a scalar value to a 0/1 `I8` condition.
+    pub fn truthy(&mut self, f: &mut FnCtx, ty: TypeId, v: ir::Val, span: Span) -> Result<ir::Val> {
+        let Some(t) = self.ir_ty(ty) else {
+            if ty == TypeId::STRING {
+                let count = f.b.load(Ty::I64, v);
+                let zero = f.b.iconst(Ty::I64, 0);
+                return Ok(f.b.cmp(CmpOp::Ne, Ty::I64, count, zero));
+            }
+            if let TypeKind::Array {
+                kind, ..
+            } = self.types.kind(ty)
+                && *kind != ArrayKind::Fixed(0)
+            {
+                let count = f.b.load(Ty::I64, v);
+                let zero = f.b.iconst(Ty::I64, 0);
+                return Ok(f.b.cmp(CmpOp::Ne, Ty::I64, count, zero));
+            }
+            return err(
+                span,
+                format!(
+                    "a value of type {} cannot be used as a condition",
+                    self.types.name(ty)
+                ),
+            );
+        };
+        if ty == TypeId::BOOL {
+            return Ok(v);
+        }
+        if t.is_float() {
+            let zero = f.b.fconst(t, 0.0);
+            return Ok(f.b.cmp(CmpOp::FNe, t, v, zero));
+        }
+        let zero = f.b.iconst(t, 0);
+        Ok(f.b.cmp(CmpOp::Ne, t, v, zero))
+    }
+
+    /// Check an expression used as a condition, producing an `I8`.
+    pub fn check_condition(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        expr: &ast::Expr,
+    ) -> Result<ir::Val> {
+        let op = self.check_expr(f, scope, expr, Some(TypeId::BOOL))?;
+        let op = self.settle_untyped(op, None);
+        let (ty, v) = self.rvalue(f, op, expr.span)?;
+        self.truthy(f, ty, v, expr.span)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn check_binary(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        op: BinOp,
+        a: &ast::Expr,
+        b: &ast::Expr,
+        expected: Option<TypeId>,
+        span: Span,
+    ) -> Result<Operand> {
+        if matches!(op, BinOp::And | BinOp::Or) {
+            return self.check_logical(f, scope, op, a, b, span);
+        }
+        let is_cmp = matches!(
+            op,
+            BinOp::Eq | BinOp::Ne | BinOp::Lt | BinOp::Le | BinOp::Gt | BinOp::Ge
+        );
+        let is_shift = matches!(op, BinOp::Shl | BinOp::Shr | BinOp::Rotl | BinOp::Rotr);
+        let lhs_expected = if is_cmp {
+            None
+        } else {
+            expected
+        };
+        let mut lhs = self.check_expr(f, scope, a, lhs_expected)?;
+        // Inferred enum members on the right take the left operand's type.
+        let rhs_expected = if is_shift {
+            None
+        } else {
+            Some(lhs.ty()).filter(|_| {
+                !matches!(
+                    lhs,
+                    Operand::Const {
+                        untyped: true,
+                        ..
+                    }
+                )
+            })
+        };
+        let mut rhs = self.check_expr(
+            f,
+            scope,
+            b,
+            rhs_expected.or(if is_cmp {
+                None
+            } else {
+                expected
+            }),
+        )?;
+        if matches!(
+            lhs,
+            Operand::Const {
+                untyped: true,
+                ..
+            }
+        ) && !matches!(
+            rhs,
+            Operand::Const {
+                untyped: true,
+                ..
+            }
+        ) && !is_shift
+        {
+            // Re-check the left side with the right side's type for inferred members.
+            if matches!(a.kind, E::InferredMember(_)) {
+                lhs = self.check_expr(f, scope, a, Some(rhs.ty()))?;
+            }
+        }
+        if matches!(a.kind, E::InferredMember(_)) && !matches!(b.kind, E::InferredMember(_)) {
+            lhs = self.check_expr(f, scope, a, Some(rhs.ty()))?;
+        }
+        if matches!(b.kind, E::InferredMember(_)) {
+            rhs = self.check_expr(f, scope, b, Some(lhs.ty()))?;
+        }
+        // Type comparisons fold at compile time.
+        if let (Operand::Type(x), Operand::Type(y)) = (&lhs, &rhs) {
+            return match op {
+                BinOp::Eq => Ok(Operand::bool(x == y)),
+                BinOp::Ne => Ok(Operand::bool(x != y)),
+                _ => err(span, "types can only be compared with == and !="),
+            };
+        }
+        if let Some(result) = self.try_binary_operator_overload(f, scope, op, &lhs, &rhs, span)? {
+            return Ok(result);
+        }
+        if let (
+            Operand::Const {
+                ..
+            },
+            Operand::Const {
+                ..
+            },
+        ) = (&lhs, &rhs)
+            && let Some(folded) = self.fold_binary(op, &lhs, &rhs, expected, span)?
+        {
+            return Ok(folded);
+        }
+        // Procedure names compared with procedure values take the value's type.
+        if matches!(rhs, Operand::Procs(_)) && !matches!(lhs, Operand::Procs(_)) {
+            let converted = self.convert(f, rhs, lhs.ty(), span)?;
+            let (ty, val) = self.rvalue(f, converted, span)?;
+            rhs = Operand::Value {
+                ty,
+                val,
+            };
+        } else if matches!(lhs, Operand::Procs(_)) && !matches!(rhs, Operand::Procs(_)) {
+            let converted = self.convert(f, lhs, rhs.ty(), span)?;
+            let (ty, val) = self.rvalue(f, converted, span)?;
+            lhs = Operand::Value {
+                ty,
+                val,
+            };
+        }
+        let (lty, rty) = (lhs.ty(), rhs.ty());
+        // Pointer arithmetic.
+        if !is_cmp && self.types.is_pointer(lty) && matches!(op, BinOp::Add | BinOp::Sub) {
+            let (_, base) = self.rvalue(f, lhs, span)?;
+            if op == BinOp::Sub && self.types.is_pointer(rty) {
+                let (_, other) = self.rvalue(f, rhs, span)?;
+                let pointee = self.types.pointee(lty).unwrap();
+                let size = if pointee == TypeId::VOID {
+                    1
+                } else {
+                    self.size_of(pointee, span)?.max(1)
+                };
+                let x = f.b.conv(ir::ConvOp::Bitcast, Ty::Ptr, Ty::I64, base);
+                let y = f.b.conv(ir::ConvOp::Bitcast, Ty::Ptr, Ty::I64, other);
+                let diff = f.b.bin(ir::BinOp::Sub, Ty::I64, x, y);
+                let s = f.b.iconst(Ty::I64, size);
+                return Ok(Operand::Value {
+                    ty: TypeId::S64,
+                    val: f.b.bin(ir::BinOp::SDiv, Ty::I64, diff, s),
+                });
+            }
+            let rhs = self.convert(f, rhs, TypeId::S64, span)?;
+            let (_, idx) = self.rvalue(f, rhs, span)?;
+            let pointee = self.types.pointee(lty).unwrap();
+            let size = if pointee == TypeId::VOID {
+                1
+            } else {
+                self.size_of(pointee, span)?
+            };
+            let s = f.b.iconst(Ty::I64, size);
+            let mut off = f.b.bin(ir::BinOp::Mul, Ty::I64, idx, s);
+            if op == BinOp::Sub {
+                off = f.b.un(ir::UnOp::Neg, Ty::I64, off);
+            }
+            return Ok(Operand::Value {
+                ty: lty,
+                val: f.b.ptr_add(base, off),
+            });
+        }
+        if !is_cmp && self.types.is_pointer(rty) && op == BinOp::Add && self.types.is_integer(lty) {
+            return self.check_binary(f, scope, op, b, a, expected, span);
+        }
+        // Unify operand types.
+        let ty = self.binary_operand_type(&lhs, &rhs, expected, is_shift, span)?;
+        let rhs_ty = if is_shift {
+            self.shift_amount_type(&rhs, ty)
+        } else {
+            ty
+        };
+        let lhs = self.convert(f, lhs, ty, span)?;
+        let rhs = self.convert(f, rhs, rhs_ty, span)?;
+        let (_, x) = self.rvalue(f, lhs, span)?;
+        let (_, y) = self.rvalue(f, rhs, span)?;
+        if ty == TypeId::STRING && is_cmp {
+            return self.string_compare(f, op, x, y, span);
+        }
+        let Some(t) = self.ir_ty(ty) else {
+            if is_cmp && matches!(op, BinOp::Eq | BinOp::Ne) {
+                // Aggregate equality: bytewise.
+                let size = self.size_of(ty, span)?;
+                let n = f.b.iconst(Ty::I64, size);
+                let r =
+                    f.b.intrinsic(ir::Intrinsic::Memcmp, vec![x, y, n], &[Ty::I16]);
+                let zero = f.b.iconst(Ty::I16, 0);
+                let cmp = if op == BinOp::Eq {
+                    CmpOp::Eq
+                } else {
+                    CmpOp::Ne
+                };
+                return Ok(Operand::Value {
+                    ty: TypeId::BOOL,
+                    val: f.b.cmp(cmp, Ty::I16, r[0], zero),
+                });
+            }
+            return err(
+                span,
+                format!(
+                    "operator {:?} is not defined for {}",
+                    op,
+                    self.types.name(ty)
+                ),
+            );
+        };
+        let signed = self.types.int_info(ty).is_some_and(|(_, s)| s);
+        if is_cmp {
+            let cmp = cmp_op(op, t.is_float(), signed);
+            return Ok(Operand::Value {
+                ty: TypeId::BOOL,
+                val: f.b.cmp(cmp, t, x, y),
+            });
+        }
+        let ir_op = arith_op(op, t.is_float(), signed).ok_or_else(|| {
+            Box::new(Diagnostic::error(
+                span,
+                format!(
+                    "operator {:?} is not defined for {}",
+                    op,
+                    self.types.name(ty)
+                ),
+            ))
+        })?;
+        if t == Ty::Ptr {
+            return err(
+                span,
+                format!(
+                    "arithmetic operator {:?} is not defined for {}",
+                    op,
+                    self.types.name(ty)
+                ),
+            );
+        }
+        let y = if is_shift {
+            let rt = self.ir_ty(rhs_ty).unwrap();
+            if rt.size() != t.size() {
+                let conv = if rt.size() > t.size() {
+                    ir::ConvOp::Trunc
+                } else {
+                    ir::ConvOp::ZExt
+                };
+                f.b.conv(conv, rt, t, y)
+            } else {
+                y
+            }
+        } else {
+            y
+        };
+        Ok(Operand::Value {
+            ty,
+            val: f.b.bin(ir_op, t, x, y),
+        })
+    }
+
+    /// The type an untyped literal takes next to a typed operand: the operand's
+    /// type, or a 64-bit integer when the literal does not fit.
+    fn literal_meets(&self, lit: &Operand, ty: TypeId) -> TypeId {
+        if let Operand::Const {
+            value: Value::Int(v),
+            ..
+        } = lit
+            && let Some((bits, signed)) = self.types.int_info(ty)
+            && !super::convert::int_fits(*v, bits, signed)
+            && !matches!(self.types.kind(ty), TypeKind::Enum(_))
+        {
+            return if super::convert::int_fits(*v, 64, true) {
+                TypeId::S64
+            } else {
+                TypeId::U64
+            };
+        }
+        ty
+    }
+
+    fn shift_amount_type(&self, rhs: &Operand, lhs_ty: TypeId) -> TypeId {
+        match rhs {
+            Operand::Const {
+                untyped: true, ..
+            } => lhs_ty,
+            other => {
+                let t = other.ty();
+                if self.types.is_integer(t) {
+                    t
+                } else {
+                    lhs_ty
+                }
+            }
+        }
+    }
+
+    /// The common type of a binary operation.
+    fn binary_operand_type(
+        &mut self,
+        lhs: &Operand,
+        rhs: &Operand,
+        expected: Option<TypeId>,
+        is_shift: bool,
+        span: Span,
+    ) -> Result<TypeId> {
+        let lu = matches!(
+            lhs,
+            Operand::Const {
+                untyped: true,
+                ..
+            }
+        );
+        let ru = matches!(
+            rhs,
+            Operand::Const {
+                untyped: true,
+                ..
+            }
+        );
+        let (lt, rt) = (lhs.ty(), rhs.ty());
+        if is_shift {
+            if lu {
+                return Ok(expected
+                    .filter(|&e| self.types.is_integer(e))
+                    .unwrap_or(TypeId::S64));
+            }
+            return Ok(lt);
+        }
+        match (lu, ru) {
+            (true, true) => {
+                let lf = matches!(
+                    lhs,
+                    Operand::Const {
+                        value: Value::Float(_),
+                        ..
+                    }
+                );
+                let rf = matches!(
+                    rhs,
+                    Operand::Const {
+                        value: Value::Float(_),
+                        ..
+                    }
+                );
+                if lt == TypeId::NULL || rt == TypeId::NULL {
+                    return Ok(TypeId::VOID_PTR);
+                }
+                Ok(if lf || rf {
+                    expected
+                        .filter(|&e| self.types.is_float(e))
+                        .unwrap_or(TypeId::F32)
+                } else {
+                    expected
+                        .filter(|&e| self.types.is_integer(e) || self.types.is_float(e))
+                        .unwrap_or(TypeId::S64)
+                })
+            }
+            (true, false) => Ok(self.literal_meets(lhs, rt)),
+            (false, true) => Ok(self.literal_meets(rhs, lt)),
+            (false, false) => {
+                if lt == rt {
+                    return Ok(lt);
+                }
+                // Widening within the same class.
+                if self.implicit_cost(rt, false, lt).is_some() {
+                    return Ok(lt);
+                }
+                if self.implicit_cost(lt, false, rt).is_some() {
+                    return Ok(rt);
+                }
+                let (li, ri) = (self.types.int_info(lt), self.types.int_info(rt));
+                if let (Some((lb, _)), Some((rb, _))) = (li, ri) {
+                    // Mixed signedness: Jai requires a cast, but comparisons with
+                    // literals are common; pick the wider type.
+                    return Ok(if lb >= rb {
+                        lt
+                    } else {
+                        rt
+                    });
+                }
+                err(
+                    span,
+                    format!(
+                        "type mismatch: {} and {}",
+                        self.types.name(lt),
+                        self.types.name(rt)
+                    ),
+                )
+            }
+        }
+    }
+
+    fn fold_binary(
+        &mut self,
+        op: BinOp,
+        lhs: &Operand,
+        rhs: &Operand,
+        expected: Option<TypeId>,
+        span: Span,
+    ) -> Result<Option<Operand>> {
+        let (
+            Operand::Const {
+                ty: lt,
+                value: lv,
+                untyped: lu,
+            },
+            Operand::Const {
+                ty: rt,
+                value: rv,
+                untyped: ru,
+            },
+        ) = (lhs, rhs)
+        else {
+            return Ok(None);
+        };
+        let untyped = *lu && *ru;
+        let is_shift = matches!(op, BinOp::Shl | BinOp::Shr | BinOp::Rotl | BinOp::Rotr);
+        let ty = if *lu && !*ru && !is_shift {
+            *rt
+        } else {
+            *lt
+        };
+        let cmp = |o: std::cmp::Ordering| -> Option<Value> {
+            use std::cmp::Ordering::*;
+            Some(Value::Bool(match op {
+                BinOp::Eq => o == Equal,
+                BinOp::Ne => o != Equal,
+                BinOp::Lt => o == Less,
+                BinOp::Le => o != Greater,
+                BinOp::Gt => o == Greater,
+                BinOp::Ge => o != Less,
+                _ => return None,
+            }))
+        };
+        let result = match (lv, rv) {
+            (Value::Int(a), Value::Int(b)) if !self.types.is_float(ty) => {
+                let (a, b) = (*a, *b);
+                let v = match op {
+                    BinOp::Add => Some(Value::Int(a.wrapping_add(b))),
+                    BinOp::Sub => Some(Value::Int(a.wrapping_sub(b))),
+                    BinOp::Mul => Some(Value::Int(a.wrapping_mul(b))),
+                    BinOp::Div => {
+                        if b == 0 {
+                            return err(span, "division by zero in constant expression");
+                        }
+                        Some(Value::Int(a / b))
+                    }
+                    BinOp::Rem => {
+                        if b == 0 {
+                            return err(span, "division by zero in constant expression");
+                        }
+                        Some(Value::Int(a % b))
+                    }
+                    BinOp::BitAnd => Some(Value::Int(a & b)),
+                    BinOp::BitOr => Some(Value::Int(a | b)),
+                    BinOp::BitXor => Some(Value::Int(a ^ b)),
+                    BinOp::Shl => Some(Value::Int(if b >= 128 {
+                        0
+                    } else {
+                        a << b
+                    })),
+                    BinOp::Shr => Some(Value::Int(if b >= 128 {
+                        0
+                    } else {
+                        a >> b
+                    })),
+                    BinOp::Rotl | BinOp::Rotr => None,
+                    _ => cmp(a.cmp(&b)),
+                };
+                // Wrap typed results to their width.
+                match v {
+                    Some(Value::Int(x)) if !untyped => {
+                        let (bits, signed) = self.types.int_info(ty).unwrap_or((64, true));
+                        Some(Value::Int(wrap_int(x, bits, signed)))
+                    }
+                    Some(Value::Int(x)) => {
+                        if let Some((bits, signed)) = expected.and_then(|e| self.types.int_info(e))
+                        {
+                            let _ = (bits, signed);
+                        }
+                        Some(Value::Int(x))
+                    }
+                    other => other,
+                }
+            }
+            (Value::Int(_) | Value::Float(_), Value::Int(_) | Value::Float(_)) => {
+                let a = num(lv);
+                let b = num(rv);
+                match op {
+                    BinOp::Add => Some(Value::Float(a + b)),
+                    BinOp::Sub => Some(Value::Float(a - b)),
+                    BinOp::Mul => Some(Value::Float(a * b)),
+                    BinOp::Div => Some(Value::Float(a / b)),
+                    _ => a.partial_cmp(&b).and_then(cmp),
+                }
+            }
+            (Value::Bool(a), Value::Bool(b)) => match op {
+                BinOp::Eq => Some(Value::Bool(a == b)),
+                BinOp::Ne => Some(Value::Bool(a != b)),
+                BinOp::BitAnd => Some(Value::Bool(*a & *b)),
+                BinOp::BitOr => Some(Value::Bool(*a | *b)),
+                BinOp::BitXor => Some(Value::Bool(*a ^ *b)),
+                _ => None,
+            },
+            (Value::String(a), Value::String(b)) => match op {
+                BinOp::Eq => Some(Value::Bool(a == b)),
+                BinOp::Ne => Some(Value::Bool(a != b)),
+                _ => None,
+            },
+            (Value::Null, Value::Null) => cmp(std::cmp::Ordering::Equal),
+            (Value::Proc(a), Value::Proc(b)) => match op {
+                BinOp::Eq => Some(Value::Bool(a == b)),
+                BinOp::Ne => Some(Value::Bool(a != b)),
+                _ => None,
+            },
+            _ => None,
+        };
+        let Some(value) = result else {
+            return Ok(None);
+        };
+        let is_bool = matches!(value, Value::Bool(_));
+        let rty = if is_bool
+            && !matches!((lv, rv), (Value::Bool(_), Value::Bool(_)) if !matches!(op, BinOp::Eq | BinOp::Ne))
+        {
+            TypeId::BOOL
+        } else if matches!(value, Value::Float(_)) && !self.types.is_float(ty) {
+            if self.types.is_float(*rt) {
+                *rt
+            } else {
+                TypeId::F32
+            }
+        } else {
+            ty
+        };
+        Ok(Some(Operand::Const {
+            ty: rty,
+            value,
+            untyped: untyped && !is_bool,
+        }))
+    }
+
+    fn check_logical(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        op: BinOp,
+        a: &ast::Expr,
+        b: &ast::Expr,
+        span: Span,
+    ) -> Result<Operand> {
+        let lhs = self.check_expr(f, scope, a, Some(TypeId::BOOL))?;
+        if let Operand::Const {
+            value, ..
+        } = &lhs
+        {
+            let truth = match value {
+                Value::Bool(v) => Some(*v),
+                Value::Int(v) => Some(*v != 0),
+                Value::Null => Some(false),
+                _ => None,
+            };
+            if let Some(t) = truth {
+                // Short-circuit at compile time.
+                if (op == BinOp::And && !t) || (op == BinOp::Or && t) {
+                    return Ok(Operand::bool(t));
+                }
+                let rhs = self.check_expr(f, scope, b, Some(TypeId::BOOL))?;
+                if let Operand::Const {
+                    value, ..
+                } = &rhs
+                {
+                    let r = match value {
+                        Value::Bool(v) => *v,
+                        Value::Int(v) => *v != 0,
+                        Value::Null => false,
+                        _ => true,
+                    };
+                    return Ok(Operand::bool(r));
+                }
+                let rhs = self.settle_untyped(rhs, None);
+                let (ty, v) = self.rvalue(f, rhs, span)?;
+                let v = self.truthy(f, ty, v, span)?;
+                return Ok(Operand::Value {
+                    ty: TypeId::BOOL,
+                    val: v,
+                });
+            }
+        }
+        let lhs = self.settle_untyped(lhs, None);
+        let (lty, lv) = self.rvalue(f, lhs, span)?;
+        let lc = self.truthy(f, lty, lv, span)?;
+        let result = f.b.alloca(1, 1);
+        f.b.store(Ty::I8, result, lc);
+        let rhs_block = f.b.new_block();
+        let done = f.b.new_block();
+        if op == BinOp::And {
+            f.b.branch(lc, rhs_block, done);
+        } else {
+            f.b.branch(lc, done, rhs_block);
+        }
+        f.b.switch_to(rhs_block);
+        let rhs = self.check_expr(f, scope, b, Some(TypeId::BOOL))?;
+        let rhs = self.settle_untyped(rhs, None);
+        let (rty, rv) = self.rvalue(f, rhs, span)?;
+        let rc = self.truthy(f, rty, rv, span)?;
+        f.b.store(Ty::I8, result, rc);
+        f.b.jump(done);
+        f.b.switch_to(done);
+        Ok(Operand::Value {
+            ty: TypeId::BOOL,
+            val: f.b.load(Ty::I8, result),
+        })
+    }
+
+    fn string_compare(
+        &mut self,
+        f: &mut FnCtx,
+        op: BinOp,
+        x: ir::Val,
+        y: ir::Val,
+        span: Span,
+    ) -> Result<Operand> {
+        if !matches!(op, BinOp::Eq | BinOp::Ne) {
+            return err(span, "strings can only be compared with == and !=");
+        }
+        let result = f.b.alloca(1, 1);
+        let lc = f.b.load(Ty::I64, x);
+        let rc = f.b.load(Ty::I64, y);
+        let same_len = f.b.cmp(CmpOp::Eq, Ty::I64, lc, rc);
+        f.b.store(Ty::I8, result, same_len);
+        let cmp_block = f.b.new_block();
+        let done = f.b.new_block();
+        f.b.branch(same_len, cmp_block, done);
+        f.b.switch_to(cmp_block);
+        let xp = f.b.ptr_offset(x, 8);
+        let xd = f.b.load(Ty::Ptr, xp);
+        let yp = f.b.ptr_offset(y, 8);
+        let yd = f.b.load(Ty::Ptr, yp);
+        let r =
+            f.b.intrinsic(ir::Intrinsic::Memcmp, vec![xd, yd, lc], &[Ty::I16]);
+        let zero = f.b.iconst(Ty::I16, 0);
+        let eq = f.b.cmp(CmpOp::Eq, Ty::I16, r[0], zero);
+        f.b.store(Ty::I8, result, eq);
+        f.b.jump(done);
+        f.b.switch_to(done);
+        let mut v = f.b.load(Ty::I8, result);
+        if op == BinOp::Ne {
+            let one = f.b.iconst(Ty::I8, 1);
+            v = f.b.bin(ir::BinOp::Xor, Ty::I8, v, one);
+        }
+        Ok(Operand::Value {
+            ty: TypeId::BOOL,
+            val: v,
+        })
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn check_ifx(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        cond: &ast::Expr,
+        then_value: Option<&ast::Expr>,
+        else_value: &ast::Expr,
+        expected: Option<TypeId>,
+        span: Span,
+    ) -> Result<Operand> {
+        let cond_op = self.check_expr(
+            f,
+            scope,
+            cond,
+            then_value.map_or(expected, |_| Some(TypeId::BOOL)),
+        )?;
+        // Compile-time condition: only check the taken branch.
+        if let Operand::Const {
+            value, ..
+        } = &cond_op
+            && then_value.is_some()
+        {
+            let taken = match value {
+                Value::Bool(b) => Some(*b),
+                Value::Int(i) => Some(*i != 0),
+                Value::Null => Some(false),
+                _ => None,
+            };
+            if let Some(t) = taken {
+                return if t {
+                    self.check_expr(f, scope, then_value.unwrap(), expected)
+                } else {
+                    self.check_expr(f, scope, else_value, expected)
+                };
+            }
+        }
+        let cond_op = self.settle_untyped(cond_op, None);
+        let (cty, cv) = self.rvalue(f, cond_op, span)?;
+        let c = self.truthy(f, cty, cv, span)?;
+        let then_block = f.b.new_block();
+        let else_block = f.b.new_block();
+        let done = f.b.new_block();
+        f.b.branch(c, then_block, else_block);
+        f.b.switch_to(then_block);
+        let then_op = match then_value {
+            Some(e) => self.check_expr(f, scope, e, expected)?,
+            None => Operand::Value {
+                ty: cty,
+                val: cv,
+            },
+        };
+        let then_ty = match &then_op {
+            Operand::Const {
+                untyped: true, ..
+            } => None,
+            other => Some(other.ty()),
+        };
+        let result_ty = then_ty.or(expected);
+        let then_end = f.b.current;
+        // Check else first to learn its type when then is untyped.
+        f.b.switch_to(else_block);
+        let else_op = self.check_expr(f, scope, else_value, result_ty.or(expected))?;
+        let ty = match result_ty {
+            Some(t) => t,
+            None => {
+                let s = self.settle_untyped(else_op.clone(), None);
+                s.ty()
+            }
+        };
+        let size = self.size_of(ty, span)?;
+        let align = self.align_of(ty, span)?;
+        // The result slot must be allocated before both branches use it; slots are function-wide.
+        let slot = f.b.slot(size.max(1), align);
+        let else_converted = self.convert(f, else_op, ty, else_value.span)?;
+        let (_, ev) = self.rvalue(f, else_converted, span)?;
+        let addr = f.b.slot_addr(slot);
+        self.store_value(f, ty, addr, ev, span)?;
+        f.b.jump(done);
+        f.b.switch_to(then_end);
+        let then_converted = self.convert(f, then_op, ty, span)?;
+        let (_, tv) = self.rvalue(f, then_converted, span)?;
+        let addr = f.b.slot_addr(slot);
+        self.store_value(f, ty, addr, tv, span)?;
+        f.b.jump(done);
+        f.b.switch_to(done);
+        let addr = f.b.slot_addr(slot);
+        match self.ir_ty(ty) {
+            Some(t) => Ok(Operand::Value {
+                ty,
+                val: f.b.load(t, addr),
+            }),
+            None => Ok(Operand::Value {
+                ty,
+                val: addr,
+            }),
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Indexing
+    // -----------------------------------------------------------------------
+
+    fn check_index(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        base: &ast::Expr,
+        index: &ast::Expr,
+        span: Span,
+    ) -> Result<Operand> {
+        let base_op = self.check_expr(f, scope, base, None)?;
+        let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
+        // Constant string indexing folds.
+        if let (
+            Operand::Const {
+                value: Value::String(s),
+                ..
+            },
+            Operand::Const {
+                value: Value::Int(i),
+                ..
+            },
+        ) = (&base_op, &index_op)
+            && (*i as usize) < s.len()
+        {
+            return Ok(Operand::int(s[*i as usize] as i128, TypeId::U8));
+        }
+        let bty = base_op.ty();
+        if let Some(result) =
+            self.try_index_operator_overload(f, scope, &base_op, &index_op, span)?
+        {
+            return Ok(result);
+        }
+        let index_op = self.settle_untyped(index_op, Some(TypeId::S64));
+        let ity = index_op.ty();
+        if !self.types.is_integer(ity)
+            && !matches!(self.types.kind(self.types.repr(ity)), TypeKind::Enum(_))
+        {
+            return err(
+                index.span,
+                format!(
+                    "array index must be an integer, found {}",
+                    self.types.name(ity)
+                ),
+            );
+        }
+        let index_op = self.explicit_cast(
+            f,
+            index_op,
+            TypeId::S64,
+            ast::CastFlags {
+                no_check: true,
+                ..Default::default()
+            },
+            span,
+        )?;
+        let (_, idx) = self.rvalue(f, index_op, span)?;
+        let (elem, data) = match self.types.kind(self.types.repr(bty)).clone() {
+            TypeKind::Array {
+                elem,
+                kind: ArrayKind::Fixed(_),
+            } => {
+                let (_, addr) = self.address_of(f, base_op, span)?;
+                (elem, addr)
+            }
+            TypeKind::Array {
+                elem, ..
+            } => {
+                let (_, addr) = self.address_of(f, base_op, span)?;
+                let p = f.b.ptr_offset(addr, 8);
+                (elem, f.b.load(Ty::Ptr, p))
+            }
+            TypeKind::String => {
+                let (_, addr) = self.address_of(f, base_op, span)?;
+                let p = f.b.ptr_offset(addr, 8);
+                (TypeId::U8, f.b.load(Ty::Ptr, p))
+            }
+            TypeKind::Pointer(elem) => {
+                let (_, p) = self.rvalue(f, base_op, span)?;
+                (elem, p)
+            }
+            _ => {
+                return err(
+                    span,
+                    format!("cannot index a value of type {}", self.types.name(bty)),
+                );
+            }
+        };
+        let size = self.size_of(elem, span)?;
+        let s = f.b.iconst(Ty::I64, size);
+        let off = f.b.bin(ir::BinOp::Mul, Ty::I64, idx, s);
+        Ok(Operand::Place {
+            ty: elem,
+            addr: f.b.ptr_add(data, off),
+        })
+    }
+
+    /// `#location` / `#caller_location` as a `Source_Code_Location` constant.
+    pub fn location_operand(&mut self, f: &mut FnCtx, span: Span) -> Result<Operand> {
+        let ty = self.preload_type("Source_Code_Location", span)?;
+        let file = self.sources.get(span.file);
+        let (line, col) = file.line_col(span.start);
+        let path = file.path.clone();
+        let _ = f;
+        let value = self.build_location_value(ty, &path, line as i64, col as i64, span)?;
+        Ok(Operand::Const {
+            ty,
+            value,
+            untyped: false,
+        })
+    }
+
+    pub fn preload_type(&mut self, name: &str, span: Span) -> Result<TypeId> {
+        let Some(preload) = self.preload else {
+            return err(span, format!("'{name}' requires Preload"));
+        };
+        let ids = self.module_exports(preload, Sym::intern(name))?;
+        let Some(&id) = ids.first() else {
+            return err(span, format!("Preload does not define '{name}'"));
+        };
+        match self.resolve_entity(id)? {
+            Resolved::Const {
+                value: Value::Type(t),
+                ..
+            } => Ok(t),
+            _ => err(span, format!("Preload's '{name}' is not a type")),
+        }
+    }
+}
+
+fn num(v: &Value) -> f64 {
+    match v {
+        Value::Int(i) => *i as f64,
+        Value::Float(f) => *f,
+        _ => 0.0,
+    }
+}
+
+pub fn wrap_int(v: i128, bits: u8, signed: bool) -> i128 {
+    if bits >= 128 {
+        return v;
+    }
+    let mask = (1i128 << bits) - 1;
+    let x = v & mask;
+    if signed && bits > 0 && (x >> (bits - 1)) & 1 == 1 {
+        x - (1i128 << bits)
+    } else {
+        x
+    }
+}
+
+fn cmp_op(op: BinOp, float: bool, signed: bool) -> CmpOp {
+    match (op, float, signed) {
+        (BinOp::Eq, true, _) => CmpOp::FEq,
+        (BinOp::Ne, true, _) => CmpOp::FNe,
+        (BinOp::Lt, true, _) => CmpOp::FLt,
+        (BinOp::Le, true, _) => CmpOp::FLe,
+        (BinOp::Gt, true, _) => CmpOp::FGt,
+        (BinOp::Ge, true, _) => CmpOp::FGe,
+        (BinOp::Eq, _, _) => CmpOp::Eq,
+        (BinOp::Ne, _, _) => CmpOp::Ne,
+        (BinOp::Lt, _, true) => CmpOp::SLt,
+        (BinOp::Le, _, true) => CmpOp::SLe,
+        (BinOp::Gt, _, true) => CmpOp::SGt,
+        (BinOp::Ge, _, true) => CmpOp::SGe,
+        (BinOp::Lt, _, false) => CmpOp::ULt,
+        (BinOp::Le, _, false) => CmpOp::ULe,
+        (BinOp::Gt, _, false) => CmpOp::UGt,
+        _ => CmpOp::UGe,
+    }
+}
+
+fn arith_op(op: BinOp, float: bool, signed: bool) -> Option<ir::BinOp> {
+    use ir::BinOp as I;
+    Some(match (op, float) {
+        (BinOp::Add, true) => I::FAdd,
+        (BinOp::Sub, true) => I::FSub,
+        (BinOp::Mul, true) => I::FMul,
+        (BinOp::Div, true) => I::FDiv,
+        (_, true) => return None,
+        (BinOp::Add, _) => I::Add,
+        (BinOp::Sub, _) => I::Sub,
+        (BinOp::Mul, _) => I::Mul,
+        (BinOp::Div, _) => {
+            if signed {
+                I::SDiv
+            } else {
+                I::UDiv
+            }
+        }
+        (BinOp::Rem, _) => {
+            if signed {
+                I::SRem
+            } else {
+                I::URem
+            }
+        }
+        (BinOp::BitAnd, _) => I::And,
+        (BinOp::BitOr, _) => I::Or,
+        (BinOp::BitXor, _) => I::Xor,
+        (BinOp::Shl, _) => I::Shl,
+        (BinOp::Shr, _) => {
+            if signed {
+                I::AShr
+            } else {
+                I::LShr
+            }
+        }
+        (BinOp::Rotl, _) => I::Rotl,
+        (BinOp::Rotr, _) => I::Rotr,
+        _ => return None,
+    })
+}
