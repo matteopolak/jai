@@ -403,6 +403,8 @@ END
                 "{name}: unexpected report {err:?}"
             );
         }
+    }
+}
 
 /// Window programs using Simp's automatic GL context creation type-check for every desktop
 /// OS (the GLX/WGL paths cannot run here, but they must keep compiling).

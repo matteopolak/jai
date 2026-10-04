@@ -19,7 +19,7 @@
 - New backend: add a `render_api` value, a `backend/<name>.jai` loaded behind `#if render_api == ...` in `module.jai`, and implement the same `backend_*` procedures.
 - New shader: add the global and `set_shader_for_*` in `shader.jai` and the GLSL in `backend/gl.jai`; `shaders_set_defaults` resets parameters.
 - Gotcha: on macOS `Window_Creation.init_mac_app` references `NSApplicationMain` on purpose so AppKit is linked and loaded; do not remove it.
-- Gotcha: `jaic run` executes foreign calls on the process main thread (AppKit requires it); see `crates/jaic/src/interp/native.rs` (`main_thread`).
+- Gotcha: on macOS `jaic run` executes foreign calls on the process main thread (AppKit requires it) once the program first calls an `objc_`/`sel_`/`NS`/`CGL` symbol; earlier calls stay on the interpreter's thread, since each handoff costs microseconds. See `crates/jaic/src/interp/native.rs` (`main_thread`).
 - Tests: `stdlib/Simp/tests/*.jai` (compile-time), `tests/stdlib/simp-compat-api.jai`, `tests/stdlib/simp-left-handed-software.jai`, and `tests/stdlib/simp-window-program.jai`, which `crates/jaic-cli/tests/native.rs` type-checks for linux, windows and macos. A real window needs a display; verify visually by reading the frame back with `pixel_read_begin(null, .RGBA8)` and `bitmap_save`.
 
 ## Configuration

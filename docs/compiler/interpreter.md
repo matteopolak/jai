@@ -57,6 +57,10 @@ playground. Memory is real host memory; foreign procedures are called natively (
   callbacks stored in memory before the call (only arguments are translated), calls from other native
   threads, variadic callbacks, and on arm64 callbacks that return a struct through a hidden pointer.
 
+- **macOS main thread** (`native::main_thread`): `jaic` parks the process main thread in `serve` and runs the
+  compiler on a 1 GiB worker. After the first Objective-C/AppKit call (`note_symbol`), the program's foreign
+  calls are handed to the main thread (AppKit and GL contexts need it); `fork` always runs on the worker.
+
 ## How to change it
 
 - New return shape or calling convention for native calls: `call_as` and the shape structs in `native.rs`,
