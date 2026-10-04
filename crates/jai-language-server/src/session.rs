@@ -58,7 +58,7 @@ impl Session {
             Document {
                 version,
                 index: LineIndex::new(&text),
-                text: text,
+                text,
             },
         );
         self.rebuild();
@@ -115,7 +115,7 @@ impl Session {
         *current = Document {
             version,
             index: LineIndex::new(&text),
-            text: text,
+            text,
         };
         self.rebuild();
         Ok(())
