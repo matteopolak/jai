@@ -1762,6 +1762,19 @@ impl Compiler {
     ) -> Result<Operand> {
         let base_op = self.check_expr(f, scope, base, None)?;
         let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
+        self.index_operand(f, scope, base_op, index_op, index.span, span)
+    }
+
+    /// `base[index]` on checked operands.
+    pub(super) fn index_operand(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        base_op: Operand,
+        index_op: Operand,
+        index_span: Span,
+        span: Span,
+    ) -> Result<Operand> {
         // Constant string indexing folds.
         if let (
             Operand::Const {
@@ -1789,7 +1802,7 @@ impl Compiler {
             && !matches!(self.types.kind(self.types.repr(ity)), TypeKind::Enum(_))
         {
             return err(
-                index.span,
+                index_span,
                 format!(
                     "array index must be an integer, found {}",
                     self.types.name(ity)

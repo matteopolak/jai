@@ -821,7 +821,16 @@ impl Compiler {
         match base {
             Operand::Type(t) => return self.type_member(f, scope, t, name, span),
             Operand::Module(m) => {
-                let ids = self.module_exports(m, name)?;
+                let mut ids = self.module_exports(m, name)?;
+                if ids.is_empty() {
+                    // Module parameters: `Basic.MEMORY_DEBUGGER`.
+                    ids = self.modules[m.0 as usize]
+                        .param_entities
+                        .iter()
+                        .copied()
+                        .filter(|&e| self.entity(e).name == name)
+                        .collect();
+                }
                 if ids.is_empty() {
                     return err(
                         span,
@@ -1336,6 +1345,9 @@ impl Compiler {
         // Check each argument against its member type.
         let mut values: Vec<(Vec<PathStep>, TypeId, Operand, Span)> = Vec::new();
         let mut positional = 0;
+        // `.{a.b = v, xs[1] = w}`: assigned after the ordinary fields.
+        let (targeted, args): (Vec<&ast::Arg>, Vec<&ast::Arg>) =
+            args.iter().partition(|a| a.target.is_some());
         for arg in args {
             let (path, mty) = match arg.name {
                 Some(n) => match self.find_member(ty, n.name, n.span)? {
@@ -1366,7 +1378,7 @@ impl Compiler {
             path.iter().all(|s| matches!(s, PathStep::Offset(_)))
                 && (op.is_const() || matches!(op, Operand::Procs(p) if p.len() == 1))
         });
-        if all_const {
+        if all_const && targeted.is_empty() {
             let mut agg = match self.default_initializer(ty, span)? {
                 Some(img) => (*img).clone(),
                 None => Aggregate {
@@ -1405,10 +1417,58 @@ impl Compiler {
             let (_, v) = self.rvalue(f, op, vspan)?;
             self.store_value(f, mty, at, v, vspan)?;
         }
+        for arg in targeted {
+            let target = arg.target.as_ref().unwrap();
+            let Operand::Place {
+                ty: pty,
+                addr,
+            } = self.literal_target(f, scope, ty, tmp, target)?
+            else {
+                return err(target.span, "this field target cannot be assigned");
+            };
+            let op = self.check_expr(f, scope, &arg.value, Some(pty))?;
+            let op = self.convert(f, op, pty, arg.value.span)?;
+            let (_, v) = self.rvalue(f, op, arg.value.span)?;
+            self.store_value(f, pty, addr, v, arg.value.span)?;
+        }
         Ok(Operand::Value {
             ty,
             val: tmp,
         })
+    }
+
+    /// The place a literal field target (`a.b`, `xs[i]`) names inside the
+    /// literal being built at `base`.
+    fn literal_target(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        ty: TypeId,
+        base: ir::Val,
+        target: &ast::Expr,
+    ) -> Result<Operand> {
+        match &target.kind {
+            E::Ident(name) => {
+                let whole = Operand::Place {
+                    ty,
+                    addr: base,
+                };
+                self.member_access(f, scope, whole, *name, target.span)
+            }
+            E::Member(inner, member) => {
+                let inner = self.literal_target(f, scope, ty, base, inner)?;
+                self.member_access(f, scope, inner, member.name, member.span)
+            }
+            E::Index(inner, index) => {
+                let inner = self.literal_target(f, scope, ty, base, inner)?;
+                let index_op = self.check_expr(f, scope, index, Some(TypeId::S64))?;
+                self.index_operand(f, scope, inner, index_op, index.span, target.span)
+            }
+            _ => err(
+                target.span,
+                "a literal field target must be a member or index path",
+            ),
+        }
     }
 
     #[allow(clippy::too_many_arguments)]

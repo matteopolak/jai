@@ -56,5 +56,4 @@ init_plugins :: (names: [] string, results: *[..] *Metaprogram_Plugin, w: Worksp
 #scope_module
 Compiler :: #import "Compiler";
 Metaprogram_Plugin :: Compiler.Metaprogram_Plugin;
-Workspace :: Compiler.Workspace;
 #import "Basic";

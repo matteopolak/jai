@@ -139,6 +139,7 @@ impl Compiler {
             path: Some(entry.to_path_buf()),
             scope,
             params,
+            param_entities: Vec::new(),
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
@@ -458,6 +459,7 @@ impl Compiler {
             },
             false,
         );
+        self.modules[module.0 as usize].param_entities.push(id);
         if let Some(value) = provided {
             self.entity_mut(id).kind = EntityKind::Const {
                 value,
@@ -619,6 +621,7 @@ impl Compiler {
             path,
             scope,
             params,
+            param_entities: Vec::new(),
             files: Vec::new(),
         });
         id
