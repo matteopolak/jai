@@ -33,6 +33,7 @@ Details:
 - Vector width comes from `.x/.y/.z` (16/32/64 bytes), else the block default (a block with an `AVX` feature modifier defaults to 256 bits). A leading `v` (`vaddps`) is accepted. Two operands mean `dst op= src`, three mean `dst = a op b`.
 - Flags (CF, ZF, SF, OF) are tracked as IR values within one block; `setcc`/`cmovcc` read them. `lock_`-prefixed memory operations use a compare-and-swap loop.
 - Feature modifiers after `#asm` (`AVX`, `AVX2`, `AVX512F`, `BMI2`, ...) are listed in `FEATURES` in `asm.rs`; they never change lowering except for VEX zeroing of upper register bytes.
+- EVEX decorations (`AsmInst.evex`, `AsmMem.broadcast`): `[mem]!` broadcasts one element to every lane, `v !z` / `!n` / `!d` / `!u` pick the rounding of `cvtps2dq`, and `dst: &* mask` / `& mask` zero or merge the masked-off lanes after the instruction ran (the mask register is a vec-class local; `kmovb/w/d/q` move to and from it). Test: `tests/stdlib/asm-evex-decorations.jai`.
 - Unsupported instructions (string ops, division, x87, mask registers) are a compile error naming the instruction.
 
 The executable examples are `tests/stdlib/lang-asm.jai`, `tests/stdlib/asm-vector-instructions.jai` and `tests/stdlib/machine-x64-intrinsics.jai`; the first two print `ok` under `jaic run`.

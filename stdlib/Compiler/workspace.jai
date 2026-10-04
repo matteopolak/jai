@@ -422,8 +422,10 @@ get_type :: (ti: *Type_Info) -> Type {
 }
 
 compiler_set_type_info_flags :: (type: Type, flags: Type_Info_Flags) {
-    unsupported("compiler_set_type_info_flags");
+    __jaic_set_type_info_flags(type, cast(s64) flags);
 }
+
+__jaic_set_type_info_flags :: (type: Type, flags: s64) #compiler;
 
 // Replaces the procedure's statements with `body.block.statements`, which may mix the
 // body's own statements with nodes from compiler_get_nodes. Only the top-level

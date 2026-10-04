@@ -99,6 +99,17 @@ enum VOp {
     /// (index size, element size).
     Gather(u64, u64),
     Nop,
+    /// `kmovb/w/d/q`: mask registers are 64-bit vector-class locals (bytes moved).
+    Kmov(u64),
+}
+
+/// Lane size in bytes, for EVEX broadcast and masking.
+fn elem_size(op: VOp) -> u64 {
+    match op {
+        VOp::Bin(_, ty, _) | VOp::Sqrt(ty, _) | VOp::Abs(ty) | VOp::Shift(_, ty) => ty.size(),
+        VOp::Broadcast(size) | VOp::Movmsk(size) => size,
+        _ => 4,
+    }
 }
 
 fn lookup_vec(name: &str) -> Option<VOp> {
@@ -149,6 +160,10 @@ fn lookup_vec(name: &str) -> Option<VOp> {
         "gatherdpd" | "pgatherdq" => VOp::Gather(4, 8),
         "gatherqps" | "pgatherqd" => VOp::Gather(8, 4),
         "gatherqpd" | "pgatherqq" => VOp::Gather(8, 8),
+        "kmovb" => VOp::Kmov(1),
+        "kmovw" => VOp::Kmov(2),
+        "kmovd" => VOp::Kmov(4),
+        "kmovq" => VOp::Kmov(8),
         "zeroupper" | "zeroall" | "emms" => VOp::Nop,
         _ => {
             // Float arithmetic: add/sub/mul/div/min/max/sqrt + ps/pd/ss/sd.
@@ -306,10 +321,15 @@ fn lane_op(f: &mut FnCtx, op: Lane, ty: Ty, a: Val, b: Val) -> Val {
 }
 
 /// `f32` → `s32` the way `cvtps2dq` / `cvttps2dq` do: NaN and out-of-range give `0x8000_0000`.
-fn float_to_s32(f: &mut FnCtx, x: Val, truncate: bool) -> Val {
+fn float_to_s32(f: &mut FnCtx, x: Val, mode: char) -> Val {
     let x = f.b.conv(ConvOp::FExt, Ty::F32, Ty::F64, x);
-    let r = if truncate {
-        f.b.intrinsic(Intrinsic::Trunc, vec![x], &[Ty::F64])[0]
+    let r = if matches!(mode, 'z' | 'd' | 'u') {
+        let op = match mode {
+            'd' => Intrinsic::Floor,
+            'u' => Intrinsic::Ceil,
+            _ => Intrinsic::Trunc,
+        };
+        f.b.intrinsic(op, vec![x], &[Ty::F64])[0]
     } else {
         // Round half to even: `Round` rounds half away from zero, so step back on odd ties.
         let away = f.b.intrinsic(Intrinsic::Round, vec![x], &[Ty::F64])[0];
@@ -390,13 +410,58 @@ impl Compiler {
             }
             Ok(())
         };
-        let mut ops = Vec::with_capacity(n);
+        let mut ops: Vec<VOpd> = Vec::with_capacity(n);
         for o in &inst.operands {
             ops.push(self.vec_operand(f, cx, o)?);
         }
+        let es = elem_size(op);
+        for (i, o) in inst.operands.iter().enumerate() {
+            if let AsmOperand::Mem(m) = o
+                && m.broadcast
+                && let VOpd::Mem(addr) = ops[i]
+            {
+                let src = ptr_of(f, addr);
+                let buf = f.b.alloca(64, 16);
+                for k in 0..64 / es {
+                    let p = lane_addr(f, buf, k * es);
+                    f.b.copy(p, src, es);
+                }
+                ops[i] = VOpd::Reg(buf);
+            }
+        }
+        // `{k}` masking: remember the destination, then merge or zero the masked-off lanes.
+        let masked = match (&inst.evex.mask, ops.first()) {
+            (Some((m, zeroing)), Some(&VOpd::Reg(dst))) => {
+                let mask = match self.vec_operand(f, cx, m)? {
+                    VOpd::Reg(p) => f.b.load(Ty::I64, p),
+                    VOpd::Gpr(opd) => self.asm_read(f, opd, Ty::I64, span)?,
+                    _ => return err(span, "expected a mask register"),
+                };
+                let old = f.b.alloca(64, 16);
+                f.b.copy(old, dst, 64);
+                Some((mask, *zeroing, dst, old))
+            }
+            (Some(_), _) => return err(span, "a masked instruction needs a vector destination"),
+            _ => None,
+        };
         let tmp = f.b.alloca(64, 16);
         match op {
             VOp::Nop => want(0, 0)?,
+            VOp::Kmov(size) => {
+                want(2, 2)?;
+                let ty = Ty::int(size);
+                let v = match ops[1] {
+                    VOpd::Reg(p) => f.b.load(ty, p),
+                    src => self.vec_scalar_read(f, src, ty, span)?,
+                };
+                match ops[0] {
+                    VOpd::Reg(p) => {
+                        f.b.zero(p, 8);
+                        f.b.store(ty, p, v);
+                    }
+                    dst => self.vec_scalar_write(f, dst, ty, v, span)?,
+                }
+            }
             VOp::Move => {
                 want(2, 2)?;
                 let src = self.vec_ptr(f, ops[1], span)?;
@@ -610,7 +675,12 @@ impl Compiler {
                         }
                         Cvt::FloatToInt | Cvt::FloatToIntTrunc => {
                             let x = load_lane(f, src, i, Ty::F32);
-                            let v = float_to_s32(f, x, kind == Cvt::FloatToIntTrunc);
+                            let mode = match (kind, inst.evex.round) {
+                                (_, Some(Some(m))) => m,
+                                (Cvt::FloatToIntTrunc, _) => 'z',
+                                _ => 'n',
+                            };
+                            let v = float_to_s32(f, x, mode);
                             bitcast(f, Ty::I32, Ty::F32, v)
                         }
                     };
@@ -682,6 +752,25 @@ impl Compiler {
                 let zeros = f.b.alloca(64, 16);
                 f.b.zero(zeros, 64);
                 self.vec_store(f, cx, ops[2], zeros, 64, span)?;
+            }
+        }
+        if let Some((mask, zeroing, dst, old)) = masked {
+            let one = konst(f, Ty::I64, 1);
+            let ity = Ty::int(es);
+            for k in 0..width / es {
+                let at = konst(f, Ty::I64, k);
+                let bit = bin(f, BinOp::LShr, Ty::I64, mask, at);
+                let bit = bin(f, BinOp::And, Ty::I64, bit, one);
+                let zero = konst(f, Ty::I64, 0);
+                let on = cmp(f, CmpOp::Ne, Ty::I64, bit, zero);
+                let new = load_lane(f, dst, k, ity);
+                let prev = if zeroing {
+                    konst(f, ity, 0)
+                } else {
+                    load_lane(f, old, k, ity)
+                };
+                let r = select(f, ity, on, new, prev);
+                store_lane(f, dst, k, ity, r);
             }
         }
         Ok(true)

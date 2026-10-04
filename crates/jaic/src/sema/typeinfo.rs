@@ -398,7 +398,26 @@ impl Compiler {
                 let member_ty = self.preload_type("Type_Info_Struct_Member", span)?;
                 let msize = self.size_of(member_ty, span)?;
                 let malign = self.align_of(member_ty, span)?;
-                let (fields, bindings) = self.tagged_union_members(s, &info.fields, span)?;
+                // `Type_Info_Flags` from `compiler_set_type_info_flags` plus the directives.
+                let mut tflags = self.type_info_flags.get(&ty).copied().unwrap_or(0);
+                if let Some(src) = self.struct_asts.get(&s) {
+                    if src.lit.flags.type_info_none {
+                        tflags |= 0x1;
+                    }
+                    if src.lit.flags.type_info_procedures_are_void_pointers {
+                        tflags |= 0x2;
+                    }
+                }
+                let (mut fields, bindings) = self.tagged_union_members(s, &info.fields, span)?;
+                if tflags & 0x1 != 0 {
+                    fields.clear();
+                } else if tflags & 0x2 != 0 {
+                    for field in fields.iter_mut() {
+                        if matches!(self.types.kind(field.ty), TypeKind::Proc(_)) {
+                            field.ty = TypeId::VOID_PTR;
+                        }
+                    }
+                }
                 let mut members = Aggregate {
                     bytes: vec![0; (msize as usize) * fields.len()],
                     relocs: Vec::new(),
@@ -770,6 +789,30 @@ impl Compiler {
             target: ir::RelocTarget::Global(g),
             addend: 0,
         });
+        Ok(())
+    }
+
+    /// Apply `compiler_set_type_info_flags` calls made by the `#run` that just returned:
+    /// the struct's flags are or-ed in and an already built descriptor is rebuilt.
+    pub fn apply_type_info_flags(&mut self, span: Span) -> Result<()> {
+        for (g, flags) in std::mem::take(&mut self.interp.pending_type_flags) {
+            let Some(ty) = self.type_from_info_global(g) else {
+                continue;
+            };
+            if !matches!(self.types.kind(ty), TypeKind::Struct(_)) {
+                continue;
+            }
+            *self.type_info_flags.entry(ty).or_insert(0) |= flags;
+            let desc = self.type_info_struct_type(ty, span)?;
+            let size = self.size_of(desc, span)?;
+            let agg = self.build_type_info(ty, desc, size, span)?;
+            let global = &mut self.program.globals[g.0 as usize];
+            global.init = agg.bytes;
+            global.relocs = agg.relocs;
+            self.interp
+                .refresh_global(&self.program, g)
+                .map_err(|t| Box::new(Diagnostic::error(span, t.message)))?;
+        }
         Ok(())
     }
 

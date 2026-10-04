@@ -89,9 +89,13 @@ impl Compiler {
         self.program.funcs[id.0 as usize] = Some(func);
         let deferred = self.drain_bodies_lenient();
         let ctx = self.compile_time_context(span)?;
+        self.enable_stack_traces(span);
         self.interp.compile_time = true;
         let result = self.interp.call(&self.program, id, &[ctx]);
         self.flush_interp_output();
+        if !self.interp.pending_type_flags.is_empty() {
+            self.apply_type_info_flags(span)?;
+        }
         match result {
             Ok(values) => Ok(values),
             Err(_) if deferred.is_some() => Err(deferred.unwrap()),

@@ -292,7 +292,17 @@ pub struct AsmInst {
     /// `.q`, `.64` or `?T` operand size.
     pub size: Option<AsmSize>,
     pub operands: Vec<AsmOperand>,
+    /// EVEX decorations: `{k}` masking (`v: &* mask`) and SAE / rounding (`v !z`).
+    pub evex: AsmEvex,
     pub span: Span,
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct AsmEvex {
+    /// `&` (merging) or `&*` (zeroing, `true`) with the mask register operand.
+    pub mask: Option<(Box<AsmOperand>, bool)>,
+    /// `!` / `!n` / `!d` / `!u` / `!z`: the mode letter, or `None` for plain SAE.
+    pub round: Option<Option<char>>,
 }
 
 #[derive(Clone, Debug)]
@@ -333,6 +343,8 @@ pub enum AsmPin {
 #[derive(Clone, Debug)]
 pub struct AsmMem {
     pub terms: Vec<AsmMemTerm>,
+    /// `[mem]!`: EVEX broadcast of a single element.
+    pub broadcast: bool,
     pub span: Span,
 }
 

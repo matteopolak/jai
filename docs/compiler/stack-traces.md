@@ -20,8 +20,9 @@ failures and the memory debugger's leak reports read it.
 - On return `context.stack_trace` is restored to `next`. `exec` also restores `self.loc` so a
   statement with several calls reports the right line for each.
 - `Program.stack_trace_offset` (byte offset of `stack_trace` in `#Context`) and
-  `Program.file_paths` are filled by `Compiler::enable_stack_traces` in `run_program`. Nothing is
-  pushed at compile time (`Interp.compile_time`), and nothing when the offset is `None`.
+  `Program.file_paths` are filled by `Compiler::enable_stack_traces`, called from `run_program` and
+  from `call_thunk` (so `#run` code also gets traces; the thunk itself has no node, so the first
+  node's `next` is null). Nothing is pushed when the offset is `None`.
 - `runtime_support_assertion_failed` (`stdlib/Runtime_Support.jai`) prints
   `path:line,col: Assertion failed: message` then `Stack trace:` and one `path:line: name` per
   node, in the format of `jai`.
@@ -42,4 +43,4 @@ failures and the memory debugger's leak reports read it.
 ## Dependencies
 
 `ir::Func::trace`, `ir::Program::{file_paths, stack_trace_offset}`, `interp::Interp::trace_enter`.
-Test: `tests/stdlib/stack-trace-nodes.jai`.
+Tests: `tests/stdlib/stack-trace-nodes.jai`, `tests/stdlib/compile-time-stack-trace.jai`.
