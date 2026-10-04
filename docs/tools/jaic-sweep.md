@@ -17,7 +17,7 @@ Each set yields `(id, path, mode, expectation, extra args)`; the tool runs `jaic
 | `upstream` | `tools/upstream-cases.json` (paths under `corpus/upstream/`; every The_Way_to_Jai example that works, plus project entry points) | per case (`run` or `check`, optional `args`), exit code 0 |
 | a path | that file | run |
 
-Expected result of `corpus stdlib modules upstream`: everything passes except `getrect-rh-negative-control`, a negative control that must fail.
+Expected result of `corpus negative stdlib modules upstream howto`: everything passes except `getrect-rh-negative-control`, a negative control that must fail.
 
 ## How to change it
 
