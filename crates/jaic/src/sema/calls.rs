@@ -370,8 +370,28 @@ impl Compiler {
                         format!("missing argument for baked parameter '{name}'"),
                     );
                 };
-                let Some(op) = arg.op.clone() else {
-                    return err(arg.span, "baked argument must be a constant");
+                let op = match arg.op.clone() {
+                    Some(op) => op,
+                    None => {
+                        // `.{...}` / `.X` for a baked parameter: check against its declared type.
+                        let declared = match &param.ty {
+                            Some(t) if !procs::has_poly(t) => Some(self.eval_type(def_scope, t)?),
+                            _ => None,
+                        };
+                        let expr = arg.expr.clone().unwrap();
+                        let op = self.eval_const(arg.scope, &expr, declared)?;
+                        match declared {
+                            Some(t) => {
+                                let value = self.const_value_of_type(arg.scope, &expr, t)?;
+                                Operand::Const {
+                                    ty: t,
+                                    value,
+                                    untyped: false,
+                                }
+                            }
+                            None => op,
+                        }
+                    }
                 };
                 let value = match op {
                     Operand::Type(t) => Value::Type(t),
@@ -987,7 +1007,26 @@ impl Compiler {
                 Ok(Operand::Type(ty))
             }
             BuiltinProc::TypeInfo => {
-                let ty = self.eval_type_in(f, scope, &arg.value)?;
+                let op = self.check_expr(f, scope, &arg.value, Some(TypeId::TYPE))?;
+                if matches!(
+                    op,
+                    Operand::Value {
+                        ty: TypeId::TYPE,
+                        ..
+                    } | Operand::Place {
+                        ty: TypeId::TYPE,
+                        ..
+                    }
+                ) {
+                    // A runtime `Type` is already a `*Type_Info`.
+                    let (_, v) = self.rvalue(f, op, span)?;
+                    let info = self.preload_type("Type_Info", span)?;
+                    return Ok(Operand::Value {
+                        ty: self.types.pointer(info),
+                        val: v,
+                    });
+                }
+                let ty = self.operand_as_type(op, arg.value.span)?;
                 let info_ty = self.type_info_struct_type(ty, span)?;
                 let ptr = self.types.pointer(info_ty);
                 let global = self.type_info_global(ty, span)?;

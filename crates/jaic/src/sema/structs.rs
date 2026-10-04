@@ -694,18 +694,29 @@ impl Compiler {
 
     /// Constant members of a struct type (declared in its body), including through `using`.
     fn struct_constant(&mut self, ty: TypeId, name: Sym) -> Result<Option<Vec<EntityId>>> {
+        let ty = self.types.repr_struct(ty);
         let Some(s) = self.types.as_struct(ty) else {
             return Ok(None);
         };
-        let Some(src) = self.struct_asts.get(&s) else {
-            return Ok(None);
-        };
-        let scope = src.scope;
-        self.expand_pending(scope)?;
-        if let Some(ids) = self.scope(scope).names.get(&name)
-            && !ids.is_empty()
-        {
-            return Ok(Some(ids.clone()));
+        if let Some(src) = self.struct_asts.get(&s) {
+            let scope = src.scope;
+            self.expand_pending(scope)?;
+            if let Some(ids) = self.scope(scope).names.get(&name)
+                && !ids.is_empty()
+            {
+                return Ok(Some(ids.clone()));
+            }
+        }
+        // Constants of `using` fields are reachable too (`context.default_allocator`).
+        self.layout_struct(s, Span::default())?;
+        let fields = self.types.struct_info(s).fields.clone();
+        for f in fields.iter().filter(|f| f.using) {
+            let inner = self.types.pointee(f.ty).unwrap_or(f.ty);
+            if inner != ty
+                && let Some(ids) = self.struct_constant(inner, name)?
+            {
+                return Ok(Some(ids));
+            }
         }
         Ok(None)
     }

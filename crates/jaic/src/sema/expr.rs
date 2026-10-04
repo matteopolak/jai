@@ -433,7 +433,7 @@ impl Compiler {
             } => Operand::Const {
                 ty,
                 value,
-                untyped: false,
+                untyped: self.entity(id).untyped_const,
             },
             Resolved::Proc(p) => Operand::Procs(vec![p]),
             Resolved::Global {

@@ -82,11 +82,12 @@ impl Compiler {
     /// Load a file into `module`, declaring its top-level statements.
     pub fn load_file(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
         let path = self.fs.canonical(path);
-        if self.file_by_path.contains_key(&path) {
+        if self.file_by_path.contains_key(&(path.clone(), module)) {
             return Ok(()); // `#load` of an already-loaded file is a no-op.
         }
         let file = self.read_source(&path, span)?;
-        self.file_by_path.insert(path.clone(), self.files.len());
+        self.file_by_path
+            .insert((path.clone(), module), self.files.len());
         let text = self.sources.get(file).text.clone();
         let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
         let module_scope = self.modules[module.0 as usize].scope;
@@ -293,11 +294,15 @@ impl Compiler {
             ast::StmtKind::ModuleParameters {
                 params,
                 runtime_params,
-                ..
+                body,
             } => {
                 let module = self.scope(scope).module;
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
                     self.declare_module_parameter(scope, module, position, param)?;
+                }
+                // The trailing block declares names the parameter defaults may use.
+                if let Some(body) = body {
+                    self.declare_stmts(scope, file_scope, &body.stmts, vis)?;
                 }
             }
             ast::StmtKind::Placeholder(names) => {
@@ -357,7 +362,8 @@ impl Compiler {
             id: ast::AstId::fresh(),
             names: vec![name],
             kind: ast::DeclKind::Const,
-            ty: param.ty.clone(),
+            // `X: $I/interface T = v` takes its type from the value.
+            ty: param.ty.clone().filter(|t| !procs::has_poly(t)),
             value: param.default.clone(),
             extra_values: Vec::new(),
             existing: Vec::new(),
@@ -531,8 +537,8 @@ impl Compiler {
     /// top-level items, until nothing changes.
     pub fn expand_all(&mut self) -> Result<()> {
         let mut scope_index = 0;
+        let mut entity_index = 0;
         loop {
-            let mut progressed = false;
             while scope_index < self.scopes.len() {
                 let sid = ScopeId(scope_index as u32);
                 if matches!(self.scope(sid).kind, ScopeKind::Module | ScopeKind::File) {
@@ -540,13 +546,23 @@ impl Compiler {
                     for i in 0..self.scope(sid).imports.len() {
                         self.import_module(sid, i)?;
                     }
-                    progressed = true;
                 }
                 scope_index += 1;
             }
-            // Named imports (`X :: #import`) are resolved lazily by lookup.
-            if !progressed {
-                return Ok(());
+            // Named imports (`X :: #import`) load eagerly too, so every module's
+            // `#add_context` is known before the Context type is laid out.
+            while entity_index < self.entities.len() {
+                let id = EntityId(entity_index as u32);
+                entity_index += 1;
+                let e = self.entity(id);
+                if matches!(e.kind, EntityKind::Import(_))
+                    && matches!(
+                        self.scope(e.scope).kind,
+                        ScopeKind::Module | ScopeKind::File
+                    )
+                {
+                    self.resolve_entity(id)?;
+                }
             }
             if scope_index == self.scopes.len() {
                 return Ok(());

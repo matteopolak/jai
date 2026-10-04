@@ -474,7 +474,6 @@ impl Compiler {
         {
             return self.convert(f, op, to, span);
         }
-        let _ = flags;
         // Same-representation reinterpretations (distinct/enum/struct-of-same-size are not allowed except via pointer).
         let fr = self.types.repr(from);
         let tr = self.types.repr(to);
@@ -508,6 +507,18 @@ impl Compiler {
         }
         if self.implicit_cost(from, untyped, to).is_some() {
             return self.convert(f, op, to, span);
+        }
+        // `cast,force` reinterprets an aggregate as another of the same size.
+        if flags.force
+            && self.ir_ty(fr).is_none()
+            && self.ir_ty(tr).is_none()
+            && self.size_of(from, span)? == self.size_of(to, span)?
+        {
+            let (_, addr) = self.address_of(f, op, span)?;
+            return Ok(Operand::Place {
+                ty: to,
+                addr,
+            });
         }
         err(
             span,

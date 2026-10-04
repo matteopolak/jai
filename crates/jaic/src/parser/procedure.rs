@@ -402,7 +402,9 @@ impl Parser<'_> {
             let ty = self.parse_expr()?;
             (
                 Some(ty),
-                if self.eat(P::Eq) {
+                // Only named results take defaults; `(K) -> bool = null` in a
+                // parameter list is the parameter's default instead.
+                if name.is_some() && self.eat(P::Eq) {
                     Some(self.parse_expr()?)
                 } else {
                     None
