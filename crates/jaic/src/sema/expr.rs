@@ -140,15 +140,17 @@ impl Compiler {
                 else_value,
                 ..
             } => match else_value {
-                Some(e) => self.check_ifx(f, scope, cond, then_value.as_deref(), e, expected, span),
-                None => {
-                    // `ifx c then a` / `ifx c`: the value, or zero when the condition is false.
-                    let zero = ast::Expr {
-                        kind: E::Int(0),
-                        span,
-                    };
-                    self.check_ifx(f, scope, cond, then_value.as_deref(), &zero, expected, span)
-                }
+                Some(e) => self.check_ifx(
+                    f,
+                    scope,
+                    cond,
+                    then_value.as_deref(),
+                    Some(e),
+                    expected,
+                    span,
+                ),
+                // `ifx c then a` / `ifx c`: the value, or zero when the condition is false.
+                None => self.check_ifx(f, scope, cond, then_value.as_deref(), None, expected, span),
             },
             E::StructLit {
                 ty,
@@ -1670,7 +1672,7 @@ impl Compiler {
         scope: ScopeId,
         cond: &ast::Expr,
         then_value: Option<&ast::Expr>,
-        else_value: &ast::Expr,
+        else_value: Option<&ast::Expr>,
         expected: Option<TypeId>,
         span: Span,
     ) -> Result<Operand> {
@@ -1695,8 +1697,21 @@ impl Compiler {
             if let Some(t) = taken {
                 return if t {
                     self.check_expr(f, scope, then_value.unwrap(), expected)
-                } else {
+                } else if let Some(else_value) = else_value {
                     self.check_expr(f, scope, else_value, expected)
+                } else {
+                    // No `else`: the zero value of the then-value's type.
+                    let then_op = self.check_expr(f, scope, then_value.unwrap(), expected)?;
+                    let ty = self.settle_untyped(then_op, None).ty();
+                    let slot =
+                        f.b.slot(self.size_of(ty, span)?.max(1), self.align_of(ty, span)?);
+                    let addr = f.b.slot_addr(slot);
+                    self.init_default(f, ty, addr, span)?;
+                    let load = self.ir_ty(ty).map(|t| f.b.load(t, addr));
+                    Ok(Operand::Value {
+                        ty,
+                        val: load.unwrap_or(addr),
+                    })
                 };
             }
         }
@@ -1729,22 +1744,29 @@ impl Compiler {
         let then_end = f.b.current;
         // Check else first to learn its type when then is untyped.
         f.b.switch_to(else_block);
-        let else_op = self.check_expr(f, scope, else_value, result_ty.or(expected))?;
-        let ty = match result_ty {
-            Some(t) => t,
-            None => {
-                let s = self.settle_untyped(else_op.clone(), None);
-                s.ty()
-            }
+        let else_op = match else_value {
+            Some(e) => Some(self.check_expr(f, scope, e, result_ty.or(expected))?),
+            None => None,
+        };
+        let ty = match (result_ty, &else_op) {
+            (Some(t), _) => t,
+            (None, Some(op)) => self.settle_untyped(op.clone(), None).ty(),
+            // `ifx c then 5`: an untyped then-value takes its default type.
+            (None, None) => self.settle_untyped(then_op.clone(), None).ty(),
         };
         let size = self.size_of(ty, span)?;
         let align = self.align_of(ty, span)?;
         // The result slot must be allocated before both branches use it; slots are function-wide.
         let slot = f.b.slot(size.max(1), align);
-        let else_converted = self.convert(f, else_op, ty, else_value.span)?;
-        let (_, ev) = self.rvalue(f, else_converted, span)?;
         let addr = f.b.slot_addr(slot);
-        self.store_value(f, ty, addr, ev, span)?;
+        match (else_op, else_value) {
+            (Some(else_op), Some(else_value)) => {
+                let else_converted = self.convert(f, else_op, ty, else_value.span)?;
+                let (_, ev) = self.rvalue(f, else_converted, span)?;
+                self.store_value(f, ty, addr, ev, span)?;
+            }
+            _ => self.init_default(f, ty, addr, span)?,
+        }
         f.b.jump(done);
         f.b.switch_to(then_end);
         let then_converted = self.convert(f, then_op, ty, span)?;

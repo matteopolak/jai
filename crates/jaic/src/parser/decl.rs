@@ -128,20 +128,19 @@ impl Parser<'_> {
             }
         }
         let mut declaration = self.parse_decl(using, as_)?;
-        if !matches!(filter, UsingFilter::None) {
-            match &mut declaration.kind {
-                StmtKind::Decl(decl) => {
-                    if let Some(decl) = Rc::get_mut(decl) {
-                        decl.using_filter = Some(filter);
-                    }
+        match &mut declaration.kind {
+            StmtKind::Decl(decl) if !matches!(filter, UsingFilter::None) => {
+                if let Some(decl) = Rc::get_mut(decl) {
+                    decl.using_filter = Some(filter);
                 }
-                StmtKind::Import(import) => {
-                    if let Some(import) = Rc::get_mut(import) {
-                        import.using = Some(filter);
-                    }
-                }
-                _ => {}
             }
+            // `using X :: #import "M"` (with or without a filter) imports the names too.
+            StmtKind::Import(import) if using => {
+                if let Some(import) = Rc::get_mut(import) {
+                    import.using = Some(filter);
+                }
+            }
+            _ => {}
         }
         Ok(declaration)
     }

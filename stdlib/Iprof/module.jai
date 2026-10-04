@@ -15,9 +15,7 @@
     }
 };
 
-// (Compared as integers: jaic types a literal module argument as s64 rather than as the parameter type,
-// so `IMPORT_MODE=.CLIENT` fails to resolve at the importing site; plain `IMPORT_MODE=1` works.)
-IMPORT_MODE_IS_CLIENT :: cast(s64) IMPORT_MODE == 1;
+IMPORT_MODE_IS_CLIENT :: IMPORT_MODE == .CLIENT;
 
 #if !IMPORT_MODE_IS_CLIENT {
     #load "instrument.jai";
