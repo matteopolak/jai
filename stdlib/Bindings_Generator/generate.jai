@@ -66,12 +66,20 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     }
     clang("reset");
 
-    if options.os == .MACOS {
+    // The SDK of the host's toolchain, also when generating for another OS (cross-compiling from
+    // macOS): libclang then parses the headers with the host's system headers rather than none.
+    if options.os == .MACOS || file_exists("/usr/bin/xcrun") {
         has_sysroot := false;
         for options.extra_clang_arguments if it == "-isysroot" has_sysroot = true;
         if !has_sysroot {
             result, output := run_command("xcrun", "--show-sdk-path", capture_and_return_output = true);
             sdk := trim(output);
+            if !sdk {
+                // `run_command` is unavailable when the program targets another OS: use the
+                // Command Line Tools SDK where it is installed.
+                default_sdk :: "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk";
+                if file_exists(join(default_sdk, "/usr/include/stdio.h")) sdk = default_sdk;
+            }
             if sdk {
                 clang("add_arg", 0, 0, "-isysroot");
                 clang("add_arg", 0, 0, sdk);
