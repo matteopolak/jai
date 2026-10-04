@@ -143,11 +143,3 @@ file_read :: (file: File, buffer: *u8, byte_count: s64) -> bool {
     return success && count == byte_count;
 }
 
-set_working_directory :: (path: string) -> bool {
-    System :: #import "System";
-    return System.set_working_directory(path);
-}
-get_working_directory :: () -> string {
-    System :: #import "System";
-    return System.get_working_directory();
-}

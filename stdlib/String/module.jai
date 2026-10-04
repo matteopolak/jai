@@ -162,3 +162,110 @@ parse_int :: (value: *string) -> int, bool {
     number, success := parse_int(value, int);
     return number, success;
 }
+
+// C runtime string-to-double, as in the reference String module.
+#scope_file
+string_crt :: #system_library "libc";
+#scope_export
+atof :: (s: *u8) -> float64 #foreign string_crt;
+
+// Supports %f (float), %d/%i (int), %b (true/false), %s (double-quoted string, no escapes) and %% (literal %).
+// The returned array and the copied values live in temporary storage.
+scan :: (format: string, text: string) -> bool, [] Any {
+    result: [..] Any;
+    result.allocator = Basic.temp;
+    format_cursor := format;
+    text_cursor := text;
+    // Both strings empty is a trivial match; one empty and not the other is a mismatch.
+    if format_cursor.count == 0 && text_cursor.count == 0 return true, result;
+    if format_cursor.count == 0 || text_cursor.count == 0 return false, result;
+    while true {
+        if format_cursor[0] == #char "%" {
+            if format_cursor.count == 1 return false, result;
+            success := false;
+            value: Any;
+            kind := format_cursor[1];
+            if kind == #char "f" {
+                number, ok, rest := Basic.string_to_float(text_cursor);
+                success = ok; text_cursor = rest;
+                if ok value = scan_copy_any(number);
+            } else if kind == #char "d" || kind == #char "i" {
+                number, ok, rest := Basic.string_to_int(text_cursor);
+                success = ok; text_cursor = rest;
+                if ok value = scan_copy_any(number);
+            } else if kind == #char "b" {
+                if begins_with(text_cursor, "true") { success = true; text_cursor = slice(text_cursor, 4, text_cursor.count - 4); value = scan_copy_any(true); }
+                else if begins_with(text_cursor, "false") { success = true; text_cursor = slice(text_cursor, 5, text_cursor.count - 5); value = scan_copy_any(false); }
+            } else if kind == #char "s" {
+                if text_cursor[0] == #char "\"" {
+                    i := 1;
+                    while i < text_cursor.count && text_cursor[i] != #char "\"" i += 1;
+                    if i < text_cursor.count {
+                        success = true;
+                        value = scan_copy_any(slice(text_cursor, 1, i - 1));
+                        text_cursor = slice(text_cursor, i + 1, text_cursor.count - i - 1);
+                    }
+                }
+            } else if kind == #char "%" {
+                if text_cursor[0] != #char "%" return false, result;
+                success = true;
+                text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
+            }
+            if !success return false, result;
+            if kind != #char "%" Basic.array_add(*result, value);
+            format_cursor = slice(format_cursor, 2, format_cursor.count - 2);
+        } else {
+            if text_cursor[0] != format_cursor[0] return false, result;
+            format_cursor = slice(format_cursor, 1, format_cursor.count - 1);
+            text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
+        }
+        if format_cursor.count == 0 && text_cursor.count == 0 return true, result;
+        if format_cursor.count == 0 || text_cursor.count == 0 return false, result;
+    }
+    return false, result;
+}
+
+// Matches by the type of each pointer argument: scan2("(1 2)", "(% %)", *a, *b).
+scan2 :: (text: string, format: string, args: ..Any) -> bool {
+    format_cursor := format;
+    text_cursor := text;
+    n := 0;
+    while true {
+        if format_cursor[0] == #char "%" {
+            if format_cursor.count > 1 && format_cursor[1] == #char "%" {
+                if text_cursor[0] != #char "%" return false;
+                format_cursor = slice(format_cursor, 2, format_cursor.count - 2);
+                text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
+            } else {
+                if n >= args.count return false;
+                if args[n].type.type != .POINTER return false;
+                any: Any;
+                any.type = (cast(*Type_Info_Pointer) args[n].type).pointer_to;
+                any.value_pointer = (cast(**void) args[n].value_pointer).*;
+                if !Reflection.set_value_from_string(any, *text_cursor) return false;
+                format_cursor = slice(format_cursor, 1, format_cursor.count - 1);
+                n += 1;
+            }
+        } else {
+            if text_cursor[0] != format_cursor[0] return false;
+            format_cursor = slice(format_cursor, 1, format_cursor.count - 1);
+            text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
+        }
+        if format_cursor.count == 0 && text_cursor.count == 0 return true;
+        if format_cursor.count == 0 || text_cursor.count == 0 return false;
+    }
+    return true;
+}
+
+#scope_file
+Reflection :: #import "Reflection";
+// Copies a value into temporary storage and returns an Any that points at the copy.
+scan_copy_any :: (value: $T) -> Any {
+    holder := cast(*T) Basic.temporary_alloc(size_of(T));
+    holder.* = value;
+    any: Any;
+    any.type = type_info(T);
+    any.value_pointer = holder;
+    return any;
+}
+#scope_export

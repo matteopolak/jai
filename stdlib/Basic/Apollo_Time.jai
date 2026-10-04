@@ -115,3 +115,80 @@ calendar_to_iso_string :: (ct: Calendar_Time) -> string {
         FormatInt.{value = ct.hour, minimum_digits = 2}, FormatInt.{value = ct.minute, minimum_digits = 2},
         FormatInt.{value = ct.second, minimum_digits = 2}, FormatInt.{value = ct.millisecond, minimum_digits = 3}, zone);
 }
+
+// Calendar conversion. UTC uses the proleptic Gregorian civil-date algorithm below, so it is exact and
+// identical on every OS. LOCAL asks the OS only for the UTC offset (os_local_offset_seconds).
+#scope_module
+civil_floor_div :: (a: s64, b: s64) -> s64 {
+    q := a / b;
+    if a % b != 0 && (a < 0) != (b < 0) q -= 1;
+    return q;
+}
+// Days since 1970-01-01 of the given civil date (month is 1-12, day may be out of range and is linear).
+civil_days_from_date :: (year: s64, month: s64, day: s64) -> s64 {
+    y := year;
+    if month <= 2 y -= 1;
+    era := civil_floor_div(y, 400);
+    yoe := y - era * 400;
+    mp := (month + 9) % 12;
+    doy := (153 * mp + 2) / 5;
+    doe := yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097 + doe - 719468 + (day - 1);
+}
+civil_date_from_days :: (days: s64) -> (year: s64, month: s64, day: s64) {
+    z := days + 719468;
+    era := civil_floor_div(z, 146097);
+    doe := z - era * 146097;
+    yoe := (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    y := yoe + era * 400;
+    doy := doe - (365 * yoe + yoe / 4 - yoe / 100);
+    mp := (5 * doy + 2) / 153;
+    d := doy - (153 * mp + 2) / 5 + 1;
+    m := mp + 3;
+    if m > 12 m -= 12;
+    if m <= 2 y += 1;
+    return y, m, d;
+}
+calendar_from_unix_milliseconds :: (unix_ms: s64, time_zone: Time_Zone) -> Calendar_Time {
+    total_seconds := civil_floor_div(unix_ms, 1000);
+    millis := unix_ms - total_seconds * 1000;
+    local_seconds := total_seconds;
+    if time_zone == .LOCAL local_seconds += os_local_offset_seconds(total_seconds);
+    days := civil_floor_div(local_seconds, 86400);
+    second_of_day := local_seconds - days * 86400;
+    year, month, day := civil_date_from_days(days);
+    ct: Calendar_Time;
+    ct.year = cast,no_check(s32) year;
+    ct.month_starting_at_0 = cast,no_check(s8) (month - 1);
+    ct.day_of_month_starting_at_0 = cast,no_check(s8) (day - 1);
+    ct.day_of_week_starting_at_0 = cast,no_check(s8) ((days % 7 + 11) % 7); // 1970-01-01 was a Thursday.
+    ct.hour = cast,no_check(s8) (second_of_day / 3600);
+    ct.minute = cast,no_check(s8) (second_of_day % 3600 / 60);
+    ct.second = cast,no_check(s8) (second_of_day % 60);
+    ct.millisecond = cast,no_check(s16) millis;
+    ct.time_zone = time_zone;
+    return ct;
+}
+#scope_export
+
+// Millisecond precision (rounded to nearest). An out-of-range input yields an all-zero Calendar_Time.
+to_calendar :: (at: Apollo_Time, time_zone := Time_Zone.UTC) -> Calendar_Time {
+    unix_ms, ok := to_milliseconds(at - APOLLO_TIME_FOR_JAN_1_1970, DO_ROUNDING = true);
+    if !ok || at == APOLLO_TIME_INVALID return .{};
+    return calendar_from_unix_milliseconds(unix_ms, time_zone);
+}
+
+// Out-of-range fields (e.g. month 12, hour 25) are normalized. Returns a zero Apollo_Time when the date overflows.
+calendar_to_apollo :: (ct: Calendar_Time) -> Apollo_Time {
+    month_index := cast(s64) ct.month_starting_at_0;
+    year := cast(s64) ct.year + civil_floor_div(month_index, 12);
+    month_index -= civil_floor_div(month_index, 12) * 12;
+    days := civil_days_from_date(year, month_index + 1, cast(s64) ct.day_of_month_starting_at_0 + 1);
+    seconds := days * 86400 + cast(s64) ct.hour * 3600 + cast(s64) ct.minute * 60 + cast(s64) ct.second;
+    if ct.time_zone == .LOCAL {
+        // Treat the fields as UTC first, then correct by the zone offset in effect at the resulting instant.
+        guess := seconds - os_local_offset_seconds(seconds);
+        seconds -= os_local_offset_seconds(guess);
+    }
+    return APOLLO_TIME_FOR_JAN_1_1970 + seconds_to_apollo(seconds) + milliseconds_to_apollo(cast(s64) ct.millisecond);
+}

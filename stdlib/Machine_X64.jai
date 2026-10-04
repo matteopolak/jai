@@ -233,6 +233,127 @@ disable_feature :: (leaves: *[x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Fl
     leaves.*[index/32] &= ~(cast(u32) 1 << cast(u32) (index%32));
 }
 Prefetch_Hint :: enum { T0 :: 0; T1 :: 1; T2 :: 2; NTA :: 3; }
+get_cpu_info :: () -> Cpu_X86 {
+    cpu: Cpu_X86;
+    // cpuid with an out-of-range leaf returns junk, so the maximum basic/extended leaves are checked first.
+    max_basic_info: u32 = 0;
+    max_extended_info: u32 = 0;
+    vendor_chunk_0: u32 = 0;
+    vendor_chunk_1: u32 = 0;
+    vendor_chunk_2: u32 = 0;
+    #asm {
+        xor.d a: gpr === a, a;
+        xor.d c: gpr === c, c;
+        cpuid a, b:, c, d:;
+        mov.d max_basic_info, a;
+        mov.d vendor_chunk_0, b;
+        mov.d vendor_chunk_1, d;
+        mov.d vendor_chunk_2, c;
+        mov.d a, 0x80000000;
+        xor.d c, c;
+        cpuid a, b, c, d;
+        mov.d max_extended_info, a;
+    }
+    if vendor_chunk_0 == 0x756E6547 && vendor_chunk_1 == 0x49656E69 && vendor_chunk_2 == 0x6C65746E cpu.vendor = .INTEL; // GenuineIntel
+    if vendor_chunk_0 == 0x68747541 && vendor_chunk_1 == 0x69746E65 && vendor_chunk_2 == 0x444D4163 cpu.vendor = .AMD;   // AuthenticAMD
+
+    leaf_a, leaf_b, leaf_c, leaf_d: u32;
+    if max_basic_info >= 0x01 {
+        cpuid_query(0x01, 0, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._01H_EDX] = leaf_d;
+        cpu.feature_leaves[x86_Feature_Leaf._01H_ECX] = leaf_c;
+    }
+    if max_basic_info >= 0x19 {
+        cpuid_query(0x19, 0, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._19H_EBX] = leaf_b;
+    }
+    if max_extended_info >= 0x80000001 {
+        cpuid_query(0x80000001, 0, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._01H_EXT_EDX] = leaf_d;
+        cpu.feature_leaves[x86_Feature_Leaf._01H_EXT_ECX] = leaf_c;
+    }
+    if max_extended_info >= 0x80000008 {
+        cpuid_query(0x80000008, 0, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._08H_EXT_EBX] = leaf_b;
+    }
+    if max_basic_info >= 0x07 {
+        cpuid_query(0x07, 0, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._07H_00H_EBX] = leaf_b;
+        cpu.feature_leaves[x86_Feature_Leaf._07H_00H_ECX] = leaf_c;
+        cpu.feature_leaves[x86_Feature_Leaf._07H_00H_EDX] = leaf_d;
+        cpuid_query(0x07, 1, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._07H_01H_EAX] = leaf_a;
+    }
+    if max_basic_info >= 0x0D {
+        cpuid_query(0x0D, 1, *leaf_a, *leaf_b, *leaf_c, *leaf_d);
+        cpu.feature_leaves[x86_Feature_Leaf._0DH_01H_EAX] = leaf_a;
+    }
+    return cpu;
+}
+
+cpuid_query :: (leaf: u32, subleaf: u32, out_a: *u32, out_b: *u32, out_c: *u32, out_d: *u32) {
+    ra, rb, rc, rd: u32 = 0;
+    #asm {
+        mov.d a: gpr === a, leaf;
+        mov.d c: gpr === c, subleaf;
+        cpuid a, b:, c, d:;
+        mov.d ra, a;
+        mov.d rb, b;
+        mov.d rc, c;
+        mov.d rd, d;
+    }
+    out_a.* = ra; out_b.* = rb; out_c.* = rc; out_d.* = rd;
+}
+
+// Lower-level instruction hooks. jaic lowers #asm to portable IR: prefetch has no observable effect so it is a
+// no-op, rdseed falls back to rdrand (jaic has no rdseed), the rest map directly.
+prefetch :: (pointer: *void, $hint: Prefetch_Hint) #expand {
+    #if hint == .NTA || hint == .T0 || hint == .T1 || hint == .T2 {
+    } else {
+        #assert false "'hint' argument to prefetch is out of range.";
+    }
+}
+
+rdtsc :: () -> u64 {
+    low: u64 = 0;
+    #asm {
+        rdtsc high:, low;
+        shl.q high, 32;
+        or.q low, high;
+    }
+    return low;
+}
+
+rdtscp :: () -> (timestamp: u64, msr: u32) {
+    low: u64 = 0;
+    msr: u32 = 0;
+    #asm {
+        rdtscp high:, low, msr;
+        shl.q high, 32;
+        or.q low, high;
+    }
+    return low, msr;
+}
+
+rdseed :: () -> (success: bool, value: u64) {
+    return rdrand();
+}
+
+rdrand :: () -> (success: bool, value: u64) {
+    success: bool = false;
+    value: u64 = 0;
+    #asm {
+        rdrand.q value;
+        setc success;
+    }
+    return success, value;
+}
+
+mfence :: () { #asm { mfence; } }
+lfence :: () { #asm { lfence; } }
+sfence :: () { #asm { sfence; } }
+pause :: () { #asm { pause; } }
+
 X86_Features :: struct { leaves: [x86_Feature_Leaf.NUMBER] u32; }
 Machine_Options_X86 :: struct { features: X86_Features; }
 get_machine_options_x86 :: (build_options: *$T) -> *Machine_Options_X86 {

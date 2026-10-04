@@ -5,7 +5,8 @@ UNI_MAX_BMP :: 0xFFFF;
 UNI_MAX_UTF16 :: 0x10FFFF;
 UNI_MAX_UTF32 :: 0x7FFFFFFF;
 
-character_utf8_to_utf32 :: (data: *u8, count: int) -> u32, int, Unicode_Result {
+// strict is accepted for signature parity; this decoder always validates (overlongs, surrogates, range).
+character_utf8_to_utf32 :: (data: *u8, count: int, $strict := false) -> u32, int, Unicode_Result {
     if count <= 0 return 0, 0, .SOURCE_EXHAUSTED;
     first := data[0]; length := 0; code: u32 = 0; minimum: u32 = 0;
     if first < 0x80 return first, 1, .CONVERSION_OK;
