@@ -77,6 +77,8 @@ pub struct Options {
     /// Load Runtime_Support (entry point, context initialization) for programs.
     pub runtime_support: bool,
     pub temporary_storage_size: i64,
+    /// Emit array bounds checks (`Build_Options.array_bounds_check != .OFF`).
+    pub array_bounds_check: bool,
 }
 
 impl Options {
@@ -104,6 +106,7 @@ impl Options {
             preload: None,
             runtime_support: true,
             temporary_storage_size: 32768,
+            array_bounds_check: true,
         }
     }
 }

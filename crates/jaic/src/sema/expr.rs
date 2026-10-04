@@ -2076,23 +2076,37 @@ impl Compiler {
             span,
         )?;
         let (_, idx) = self.rvalue(f, index_op, span)?;
+        // Views, dynamic arrays and strings start with their count.
+        let check = !f.no_abc && !f.type_only;
         let (elem, data) = match self.types.kind(self.types.repr(bty)).clone() {
             TypeKind::Array {
                 elem,
-                kind: ArrayKind::Fixed(_),
+                kind: ArrayKind::Fixed(n),
             } => {
                 let (_, addr) = self.address_of(f, base_op, span)?;
+                if check {
+                    let count = f.b.iconst(Ty::I64, n as u64);
+                    f.b.intrinsic(ir::Intrinsic::BoundsCheck, vec![idx, count], &[]);
+                }
                 (elem, addr)
             }
             TypeKind::Array {
                 elem, ..
             } => {
                 let (_, addr) = self.address_of(f, base_op, span)?;
+                if check {
+                    let count = f.b.load(Ty::I64, addr);
+                    f.b.intrinsic(ir::Intrinsic::BoundsCheck, vec![idx, count], &[]);
+                }
                 let p = f.b.ptr_offset(addr, 8);
                 (elem, f.b.load(Ty::Ptr, p))
             }
             TypeKind::String => {
                 let (_, addr) = self.address_of(f, base_op, span)?;
+                if check {
+                    let count = f.b.load(Ty::I64, addr);
+                    f.b.intrinsic(ir::Intrinsic::BoundsCheck, vec![idx, count], &[]);
+                }
                 let p = f.b.ptr_offset(addr, 8);
                 (TypeId::U8, f.b.load(Ty::Ptr, p))
             }

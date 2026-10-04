@@ -154,6 +154,8 @@ pub struct FnCtx {
     /// Block constants already declared ahead of their statement (`check_block_stmts`), per block scope (a
     /// macro body expanded twice declares its constants in each expansion).
     pub hoisted_consts: std::collections::HashSet<(ScopeId, ast::AstId)>,
+    /// Array bounds checks are off (`#no_abc` on the procedure or an enclosing `for`).
+    pub no_abc: bool,
 }
 
 #[derive(Clone)]
@@ -199,6 +201,7 @@ impl FnCtx {
             type_only: false,
             backtick_scope: None,
             hoisted_consts: Default::default(),
+            no_abc: false,
         }
     }
 }

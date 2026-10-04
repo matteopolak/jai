@@ -771,6 +771,7 @@ impl Compiler {
         };
         let mut f = FnCtx::new(name, ir_sig, file);
         f.proc = Some(id);
+        f.no_abc = header.flags.no_abc || !self.options.array_bounds_check;
         if let Some(name) = &self.proc(id).export {
             f.b.func.linkage = ir::Linkage::Export(name.clone());
         }

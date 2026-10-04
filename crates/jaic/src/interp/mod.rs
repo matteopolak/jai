@@ -944,6 +944,16 @@ impl Interp {
             }
             I::DebugBreak => return self.trap("debug_break() was called"),
             I::Trap => return self.trap("runtime check failed"),
+            I::BoundsCheck => {
+                let (index, count) = (a[0] as i64, a[1] as i64);
+                if index < 0 || index >= count {
+                    return self.trap(format!(
+                        "array bounds check failed: index {index} is outside an array of {count} element{}",
+                        if count == 1 { "" } else { "s" }
+                    ));
+                }
+                vec![]
+            }
             I::CompilerWrite => {
                 let bytes = self.read(a[0], a[1] as usize);
                 self.host.write(&bytes, a.get(2).is_some_and(|&v| v != 0));
