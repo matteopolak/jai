@@ -827,8 +827,26 @@ impl Compiler {
                 None => Ok(()),
             },
             E::PolyRestricted {
-                name, ..
-            } => bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE),
+                name,
+                restriction,
+                interface,
+            } => {
+                // `$T/Table`: T must be an instance of the polymorphic struct `Table`.
+                if !interface
+                    && let E::Ident(r) = &restriction.kind
+                    && let Some(ps) = self.ident_poly_struct(scope, *r)?
+                    && !self.poly_structs[ps.0 as usize]
+                        .instances
+                        .values()
+                        .any(|&t| t == ty)
+                {
+                    return err(
+                        span,
+                        format!("{} is not an instance of '{r}'", self.types.name(ty)),
+                    );
+                }
+                bind(self, bindings, *name, Value::Type(ty), TypeId::TYPE)
+            }
             E::Unary(ast::UnOp::Star, inner) => match self.types.kind(ty).clone() {
                 TypeKind::Pointer(p) => self.match_pattern(inner, p, bindings, scope),
                 _ => err(
@@ -1575,6 +1593,23 @@ impl Compiler {
                 && self.preload_type("For_Flags", span).ok() == Some(param.ty)
             {
                 self.add_const(mscope, name, param.span, value.clone(), param.ty);
+                continue;
+            }
+            // `v: $T` given an untyped literal stays a literal inside the macro, so
+            // `` `return ERR, v `` adapts `0` to the caller's (e.g. distinct) result type.
+            if let Slot::Arg(a) = slot
+                && let Some(Operand::Const {
+                    value,
+                    untyped: true,
+                    ..
+                }) = &args[*a].op
+                && matches!(
+                    header.params[i].ty.as_ref().map(|t| &t.kind),
+                    Some(E::PolyVar { .. })
+                )
+            {
+                let e = self.add_const(mscope, name, param.span, value.clone(), param.ty);
+                self.entity_mut(e).untyped_const = true;
                 continue;
             }
             let v = self.param_value(f, &sig, &param, slot, &args, span)?;

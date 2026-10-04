@@ -39,7 +39,7 @@ use crate::types::{TypeId, Types};
 pub use driver::ProgramSource;
 pub use modules::{FileSystem, NativeFs, VirtualFs};
 pub use scope::{EntityId, ScopeId};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::rc::Rc;
 pub use value::{ModuleId, ProcId, Value};
@@ -164,6 +164,8 @@ pub struct Compiler {
     pub workspace: i64,
     /// Sources added so far (labels of added strings).
     added_sources: usize,
+    /// Body `#import`s already added to their file scope (by statement span).
+    hoisted_imports: HashSet<Span>,
     /// Procedures that need their bodies lowered.
     pub body_queue: Vec<ProcId>,
     pub interp: crate::interp::Interp,
@@ -240,6 +242,7 @@ impl Compiler {
             workspace: 1,
             runtime_info: None,
             added_sources: 0,
+            hoisted_imports: HashSet::new(),
             body_queue: Vec::new(),
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::new(),

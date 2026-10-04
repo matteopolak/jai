@@ -255,6 +255,16 @@ impl Compiler {
                         self.note_declaration(id, decl);
                     }
                 }
+                // A procedure's body `#import`s are visible to the whole file (`#if`-guarded
+                // ones once their branch is checked).
+                if let Some(ast::Expr {
+                    kind: ast::ExprKind::Proc(lit),
+                    ..
+                }) = &decl.value
+                    && let Some(body) = &lit.body
+                {
+                    self.hoist_body_imports(file_scope, &body.stmts, true);
+                }
                 if decl.using
                     && decl.kind == ast::DeclKind::Const
                     && let [name] = decl.names.as_slice()
