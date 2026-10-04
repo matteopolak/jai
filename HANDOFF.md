@@ -45,9 +45,9 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 - **Vk-Engine** (+ Linalg, Jolt-Jai): Core, Renderer, Game and Editor compile and their build metaprograms
   complete. The ImGui / Vulkan binding generators now run and stop only on their C/C++ headers (the corpus now
   fetches C-family sources, but not those submodules); the native `libImGui.so` / `libJoltC.so` are C++ builds.
-- **jaison**: tests and example run, also natively (`jaic build tests.jai`). **sgpu**: all examples check (host,
-  linux, windows); native builds stop at linking the Slang library, which upstream ships prebuilt
-  (`modules/slang/mac/libslang.dylib`, not fetched) and Homebrew does not package.
+- **jaison**: tests and example run, also natively (`jaic build tests.jai`). **sgpu**: all examples check (host, linux, windows) and build natively on macOS
+  after `python3 tools/build_slang.py` (Slang 2025.24.2, VMA and the Vulkan loader built from source); with MoltenVK
+  all run except 04_mesh_shaders (MoltenVK has no `VK_EXT_mesh_shader`). Run commands: `docs/native-libs.md`.
 - **Jails**: `jaic build build.jai` produces a native `bin/jails` that answers LSP requests.
   Jails `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
 - **The_Way_to_Jai**: 21 of 313 examples fail `check`, none a compiler bug: Windows-only APIs (19.8, 33.2C, 33.6,
@@ -60,7 +60,8 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 ## Open work
 
-- `Bindings_Generator`: C and minimal C++ work (see `docs/stdlib/bindings-generator.md`); C++ methods,
-  templates and inheritance, and Objective-C are missing. Untested on the real Vulkan/ImGui headers (absent here).
+- `Bindings_Generator`: C and C++ (methods, ctors/dtors, vtables, inheritance, templates, operators) work and
+  were run on the real Vulkan and ImGui headers (`docs/stdlib/bindings-generator.md`). Missing: bitfield accessors,
+  tail-padding `__RAW` structs, Objective-C.
 - `stdlib/api-coverage.json` and `stdlib/.coverage/` are historical records from the old architecture (not
   checked by anything). `tools/check_corpus.py` and its inventory helpers are legacy (they drove the removed `jai-rs` binary).
