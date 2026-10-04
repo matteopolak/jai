@@ -49,12 +49,15 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   all run except 04_mesh_shaders (MoltenVK has no `VK_EXT_mesh_shader`). Run commands: `docs/tools/native-libs.md`.
 - **Jails**: `jaic build build.jai` produces a native `bin/jails` that answers LSP requests.
   Jails `-os windows` needs a Windows host (compile-time `MultiByteToWideChar`).
-- **The_Way_to_Jai**: 21 of 313 examples fail `check`, none a compiler bug: Windows-only APIs (19.8, 33.2C, 33.6,
-  50.1), the Windows-only raylib module (35.1, 52.2, 30/jai_raylib), intentional failures (20.2, 30.9), APIs older
-  Jai versions had (6.6 `random_seed` result, 26.27 `builder_to_string(allocator=)`, 33.10 `Sound_Player` struct,
-  51.2 GetRect `dropdown`), missing command-line arguments or import paths (30.14, 8.2, 12.8, the glfw ones), a
-  missing `cpp_library.cpp`, and 31.2, which calls GL at compile time without a context (crashes in libGL).
-- **Browser**: wasm build and both checks pass; 136 of 146 `tests/stdlib` programs run in the playground (threads
+- **The_Way_to_Jai**: 343 entry points are sweep cases (`tools/upstream-cases.json`): 316 run to completion,
+  the rest check (windowed Simp programs, interactive or endless ones, deliberate crashes, user-built libraries).
+  The files that fail `check` are not compiler bugs: Windows-only APIs (19.8, 33.2C, 33.6, 50.1), the Windows-only
+  raylib module (35.1, 52.2, 30/jai_raylib), intentional failures (20.2, 30.9, exercises/22), APIs older Jai versions
+  had (6.6 `random_seed` result, 26.27 and exercises/30 `builder_to_string(allocator=)`, 33.10 `Sound_Player`
+  struct, 51.2 GetRect `dropdown`), missing command-line arguments (30.14, 8.2, 12.8), a missing
+  `cpp_library.cpp`, and 31.2, which calls GL at compile time without a context (crashes in libGL). 19.5 frees an
+  advanced pointer and 27/foldera writes through null (both upstream bugs).
+- **Browser**: wasm build and both checks pass; 142 of 155 `tests/stdlib` programs run in the playground (threads
   run cooperatively, files live in an in-memory FS, POSIX modules compile for `OS == .WASM`). The 10 exclusions
   (libclang, compiler processes, FreeType/stb_image, Window_Creation, a libc ABI test, the negative control) are
   listed with reasons in `tools/playground_stdlib_expected.json`, which `check_playground_worker.mjs` enforces

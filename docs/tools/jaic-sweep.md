@@ -14,7 +14,7 @@ Each set yields `(id, path, mode, expectation, extra args)`; the tool runs `jaic
 | `negative` | `kind: negative` cases of `tests/corpus/manifest.json` (`tests/corpus/negative/*.jai`) | check, non-zero exit and the recorded text in stderr |
 | `stdlib` | `tests/stdlib/*.jai` | run, exit code 0 |
 | `modules` | the stdlib's own tests: `stdlib/<Module>/tests/*.jai`, `stdlib/tests/**/*.jai` (not under a `modules/` folder, which holds a test directory's mock modules) | run, exit code 0 |
-| `upstream` | `tools/upstream-cases.json` (paths under `corpus/upstream/`) | per case, exit code 0 |
+| `upstream` | `tools/upstream-cases.json` (paths under `corpus/upstream/`; every The_Way_to_Jai example that works, plus project entry points) | per case (`run` or `check`, optional `args`), exit code 0 |
 | `howto` | `reference/how_to/*.jai` | check |
 | a path | that file | run |
 
