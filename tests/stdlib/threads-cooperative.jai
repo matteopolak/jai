@@ -18,7 +18,11 @@ worker :: (thread: *Thread) -> s64 {
 }
 
 main :: () {
+    // As in `jai` (with Thread's DEBUG off), a mutex is just the OS lock and is recursive.
+    #assert size_of(Mutex) == size_of(Per_OS_Critical_Section_Type);
+    #assert type_info(Mutex).members.count == 1;
     init(*mutex);
+    lock(*mutex); lock(*mutex); unlock(*mutex); unlock(*mutex);
     threads: [3] Thread;
     for *threads {
         thread_init(it, worker);
