@@ -171,6 +171,23 @@ struct Api {
     type_offset_of: unsafe extern "C" fn(CxType, *const c_char) -> i64,
     num_template_args: unsafe extern "C" fn(CxType) -> c_int,
     cxx_method_static: unsafe extern "C" fn(CxCursor) -> c_uint,
+    cxx_method_virtual: unsafe extern "C" fn(CxCursor) -> c_uint,
+    cxx_method_pure_virtual: unsafe extern "C" fn(CxCursor) -> c_uint,
+    cxx_method_const: unsafe extern "C" fn(CxCursor) -> c_uint,
+    ctor_copy: unsafe extern "C" fn(CxCursor) -> c_uint,
+    ctor_move: unsafe extern "C" fn(CxCursor) -> c_uint,
+    cxx_manglings: unsafe extern "C" fn(CxCursor) -> *mut CxStringSet,
+    dispose_string_set: unsafe extern "C" fn(*mut CxStringSet),
+    specialized_template: unsafe extern "C" fn(CxCursor) -> CxCursor,
+    template_arg_type: unsafe extern "C" fn(CxType, c_uint) -> CxType,
+    access_specifier: unsafe extern "C" fn(CxCursor) -> c_int,
+    function_inlined: unsafe extern "C" fn(CxCursor) -> c_uint,
+}
+
+#[repr(C)]
+struct CxStringSet {
+    strings: *mut CxString,
+    count: c_uint,
 }
 
 struct State {
@@ -188,6 +205,7 @@ struct State {
     last_text: Vec<u8>,
     last_count: i64,
     tokens: Vec<(i32, Vec<u8>)>,
+    manglings: Vec<Vec<u8>>,
     lists: Vec<Vec<i64>>,
     eval: *mut c_void,
 }
@@ -333,6 +351,17 @@ fn open_api(explicit: &str) -> Result<(Api, String), String> {
             type_offset_of: sym!("clang_Type_getOffsetOf"),
             num_template_args: sym!("clang_Type_getNumTemplateArguments"),
             cxx_method_static: sym!("clang_CXXMethod_isStatic"),
+            cxx_method_virtual: sym!("clang_CXXMethod_isVirtual"),
+            cxx_method_pure_virtual: sym!("clang_CXXMethod_isPureVirtual"),
+            cxx_method_const: sym!("clang_CXXMethod_isConst"),
+            ctor_copy: sym!("clang_CXXConstructor_isCopyConstructor"),
+            ctor_move: sym!("clang_CXXConstructor_isMoveConstructor"),
+            cxx_manglings: sym!("clang_Cursor_getCXXManglings"),
+            dispose_string_set: sym!("clang_disposeStringSet"),
+            specialized_template: sym!("clang_getSpecializedCursorTemplate"),
+            template_arg_type: sym!("clang_Type_getTemplateArgumentAsType"),
+            access_specifier: sym!("clang_getCXXAccessSpecifier"),
+            function_inlined: sym!("clang_Cursor_isFunctionInlined"),
         };
         return Ok((api, path));
     }
@@ -465,6 +494,7 @@ pub fn call(op: &str, a: i64, b: i64, text: &[u8]) -> Result<i64, String> {
                 last_text: Vec::new(),
                 last_count: 0,
                 tokens: Vec::new(),
+                manglings: Vec::new(),
                 lists: Vec::new(),
                 eval: std::ptr::null_mut(),
             });
@@ -660,6 +690,47 @@ pub fn call(op: &str, a: i64, b: i64, text: &[u8]) -> Result<i64, String> {
             },
             "field_offset" => unsafe { (api.field_offset)(s.cursor(a)) },
             "is_static_method" => unsafe { (api.cxx_method_static)(s.cursor(a)) as i64 },
+            "is_virtual" => unsafe { (api.cxx_method_virtual)(s.cursor(a)) as i64 },
+            "is_pure_virtual" => unsafe { (api.cxx_method_pure_virtual)(s.cursor(a)) as i64 },
+            "is_const_method" => unsafe { (api.cxx_method_const)(s.cursor(a)) as i64 },
+            "is_copy_ctor" => unsafe { (api.ctor_copy)(s.cursor(a)) as i64 },
+            "is_move_ctor" => unsafe { (api.ctor_move)(s.cursor(a)) as i64 },
+            "is_inlined" => unsafe { (api.function_inlined)(s.cursor(a)) as i64 },
+            "access" => unsafe { (api.access_specifier)(s.cursor(a)) as i64 },
+            // All C++ manglings of a constructor/destructor (Itanium: C1/C2, D0/D1/D2).
+            // Returns the count; read them with `mangling_item`.
+            "manglings" => unsafe {
+                s.manglings.clear();
+                let set = (api.cxx_manglings)(s.cursor(a));
+                if !set.is_null() {
+                    let n = (*set).count as usize;
+                    for i in 0..n {
+                        let cs = *(*set).strings.add(i);
+                        // The set owns its strings: read without disposing.
+                        let p = (api.get_cstring)(cs);
+                        s.manglings.push(if p.is_null() {
+                            Vec::new()
+                        } else {
+                            CStr::from_ptr(p).to_bytes().to_vec()
+                        });
+                    }
+                    (api.dispose_string_set)(set);
+                }
+                s.manglings.len() as i64
+            },
+            "mangling_item" => {
+                s.last_text = s.manglings.get(a as usize).cloned().unwrap_or_default();
+                0
+            }
+            // The template a specialization or instantiation was made from (0 if none).
+            "specialized_template" => {
+                let c = unsafe { (api.specialized_template)(s.cursor(a)) };
+                if (70..=73).contains(&c.kind) {
+                    0
+                } else {
+                    s.cursor_id(c)
+                }
+            }
             "tokenize" => unsafe {
                 let c = s.cursor(a);
                 let range = (api.cursor_extent)(c);
@@ -781,6 +852,10 @@ pub fn call(op: &str, a: i64, b: i64, text: &[u8]) -> Result<i64, String> {
                 let name = CString::new(text).map_err(|_| "name contains NUL")?;
                 (api.type_offset_of)(s.ty(a), name.as_ptr())
             },
+            "t_template_arg" => {
+                let t = unsafe { (api.template_arg_type)(s.ty(a), b as c_uint) };
+                s.type_id(t)
+            }
             "t_num_template_args" => unsafe { (api.num_template_args)(s.ty(a)) as i64 },
             other => return Err(format!("unknown clang operation '{other}'")),
         };

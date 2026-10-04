@@ -195,6 +195,9 @@ pub struct CAbi {
     pub params: Vec<Option<AggLayout>>,
     /// The single C return value is an aggregate returned through the last IR param (out-pointer).
     pub ret: Option<AggLayout>,
+    /// The aggregate result is returned through a hidden result pointer whatever its
+    /// size (`#cpp_return_type_is_non_pod`).
+    pub ret_indirect: bool,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]

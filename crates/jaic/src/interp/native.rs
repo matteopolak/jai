@@ -299,7 +299,9 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
         return Ok(scalar_call(addr, &regs, sig.returns.first().copied()));
     };
     // SAFETY (all calls below): the callee's declared C signature matches these registers.
-    match abi::classify_ret(arch, layout) {
+    // `#cpp_return_type_is_non_pod` results always use the hidden result pointer.
+    let forced_sret = cabi.is_some_and(|c| c.ret_indirect);
+    match if forced_sret { None } else { abi::classify_ret(arch, layout) } {
         None => {
             if layout.size as usize > SRET_WORDS * 8 {
                 return Err(format!(
