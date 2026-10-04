@@ -146,6 +146,12 @@ impl Compiler {
         let inner = self.new_block_scope(scope);
         let depth = f.defers.len();
         match &stmt.kind {
+            S::Block(b) if b.no_abc && !f.no_abc => {
+                f.no_abc = true;
+                let result = self.check_block_stmts(f, inner, &b.stmts);
+                f.no_abc = false;
+                result?
+            }
             S::Block(b) => self.check_block_stmts(f, inner, &b.stmts)?,
             _ => self.check_stmt(f, inner, stmt)?,
         }
@@ -1890,6 +1896,7 @@ impl Compiler {
             Rc::new(ast::CodeBody::Block(ast::Block {
                 stmts: vec![(*for_.body).clone()],
                 span: for_.body.span,
+                no_abc: false,
             })),
             loop_scope,
         );
@@ -1960,6 +1967,7 @@ impl Compiler {
             let block = ast::Block {
                 stmts,
                 span: value.span,
+                no_abc: false,
             };
             let code = self.add_code(Rc::new(ast::CodeBody::Block(block)), scope);
             op = Operand::Const {

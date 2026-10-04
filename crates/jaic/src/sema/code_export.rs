@@ -319,6 +319,7 @@ impl Compiler {
             body: Some(ast::Block {
                 stmts: new_stmts,
                 span: old_body.span,
+                no_abc: old_body.no_abc,
             }),
         };
         self.procs[p.0 as usize].lit = Rc::new(lit);

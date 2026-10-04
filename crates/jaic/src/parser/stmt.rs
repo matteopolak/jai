@@ -42,6 +42,7 @@ impl Parser<'_> {
         Ok(Block {
             stmts,
             span: start.to(end),
+            no_abc: false,
         })
     }
 
@@ -225,9 +226,10 @@ impl Parser<'_> {
         if self.at(P::EqEq) {
             return self.parse_switch(start, cond, complete_first);
         }
-        self.skip_check_flags(&mut Vec::new());
+        let mut flags = Vec::new();
+        self.skip_check_flags(&mut flags);
         self.eat_kw("then");
-        let then_branch = Box::new(self.parse_stmt()?);
+        let then_branch = Box::new(no_abc_if(self.parse_stmt()?, has_no_abc(&flags)));
         let else_branch = if self.eat_kw("else") {
             Some(Box::new(self.parse_stmt()?))
         } else {
@@ -338,9 +340,10 @@ impl Parser<'_> {
             label
         };
         let cond = self.parse_expr()?;
-        self.skip_check_flags(&mut Vec::new());
+        let mut flags = Vec::new();
+        self.skip_check_flags(&mut flags);
         self.eat_kw("then");
-        let body = Box::new(self.parse_stmt()?);
+        let body = Box::new(no_abc_if(self.parse_stmt()?, has_no_abc(&flags)));
         let span = start.to(self.prev_span());
         Ok(stmt(
             StmtKind::While {
@@ -597,5 +600,36 @@ impl Parser<'_> {
             "except" => UsingFilter::Except(names),
             _ => UsingFilter::Map(pairs),
         })
+    }
+}
+
+fn has_no_abc(flags: &[Ident]) -> bool {
+    flags.iter().any(|f| f.name.as_str() == "no_abc")
+}
+
+/// With `no_abc`, `body` as a block with bounds checks off (`#no_abc { }`, a flagged loop or `if`).
+pub(super) fn no_abc_if(body: Stmt, no_abc: bool) -> Stmt {
+    if !no_abc {
+        return body;
+    }
+    match body.kind {
+        StmtKind::Block(mut block) => {
+            block.no_abc = true;
+            Stmt {
+                kind: StmtKind::Block(block),
+                ..body
+            }
+        }
+        _ => {
+            let span = body.span;
+            stmt(
+                StmtKind::Block(Block {
+                    stmts: vec![body],
+                    span,
+                    no_abc: true,
+                }),
+                span,
+            )
+        }
     }
 }
