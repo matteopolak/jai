@@ -276,8 +276,10 @@ impl Parser<'_> {
         }
         let mut names = Vec::new();
         loop {
-            let baked = matches!(self.tok(), Tok::Punct(P::Dollar | P::DollarDollar));
-            if baked {
+            // `$$x` bakes only constant arguments; jaic passes it at runtime
+            // (the body sees `is_constant(x) == false`).
+            let baked = matches!(self.tok(), Tok::Punct(P::Dollar));
+            if baked || matches!(self.tok(), Tok::Punct(P::DollarDollar)) {
                 self.bump();
             }
             names.push((self.ident("as parameter name")?, baked));
