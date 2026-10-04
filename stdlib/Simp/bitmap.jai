@@ -70,7 +70,7 @@ bitmap_build_mipmaps :: (bitmap: *Bitmap) {
                 if bitmap.flags & .IS_SRGB && !(channels == 4 && c == 3) value = pow(value, 2.2);
                 sum += value; samples += 1;
             }
-            value := sum / samples;
+            value := sum / cast(float64) samples;
             if bitmap.flags & .IS_SRGB && !(channels == 4 && c == 3) value = pow(value, 1 / 2.2);
             dest[(y * dest_w + x) * channels + c] = cast(u8)clamp(floor(value * 255 + 0.5), 0.0, 255.0);
         }

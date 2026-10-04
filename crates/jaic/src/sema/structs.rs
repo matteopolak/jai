@@ -236,6 +236,7 @@ impl Compiler {
             base,
             members: Vec::new(),
             is_flags: lit.flags_enum,
+            loose_of: None,
             span: lit.span,
         });
         let TypeKind::Enum(e) = *self.types.kind(ty) else {
@@ -890,6 +891,9 @@ impl Compiler {
             return self.entities_operand(f, scope, &ids, span);
         }
         match self.types.kind(t).clone() {
+            TypeKind::Enum(_) if name.as_str() == "loose" => {
+                Ok(Operand::Type(self.types.loose_enum(t)))
+            }
             TypeKind::Enum(e) => {
                 if let Some(&(_, v)) = self
                     .types

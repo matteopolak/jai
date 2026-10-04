@@ -28,7 +28,7 @@ Keep allocator dispatch in Jai. Add a host primitive only when its exact signatu
 
 Heap ownership changes belong in `Default_Allocator/module.jai`; temporary lifetime changes belong in `Basic/allocation.jai`. Keep the `Temporary_Storage` layout synchronized with the independent `Runtime_Support` schema. Guard-page ports need the target's actual mapping flags and page-size query; do not substitute poison bytes for memory protection.
 
-The maintained source conflicts with the older source in three places. `crc64` uses CRC-64/ECMA-182; `crc64_we` explicitly preserves the older CRC-64/WE convention. Default `NewArray(count,T)` returns a single view, while the older tuple overload requires an explicit baked `initialized` argument. The maintained `get_capabilities` returns `(bool,string)`; `get_capabilities_info` retains the allocator flag result. The current `xxHash` state layouts omit the older reserved fields and its update declarations use `input_ptr:*u8`.
+The maintained source conflicts with the older source in three places. `crc64` uses CRC-64/ECMA-182; `crc64_we` explicitly preserves the older CRC-64/WE convention. Default `NewArray(count,T)` returns a single view, while the older tuple overload requires an explicit baked `initialized` argument. `get_capabilities` returns `(Allocator_Caps,string)` as in the pinned Basic module (the `Way_to_Jai` examples rely on this); `get_capabilities_info` is an equivalent alias. The current `xxHash` state layouts omit the older reserved fields and its update declarations use `input_ptr:*u8`.
 
 Run the portable source acceptance fixture with the independently authored prelude:
 

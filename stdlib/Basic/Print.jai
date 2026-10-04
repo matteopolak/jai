@@ -1,21 +1,5 @@
-// Independently authored formatting. Newer OpenJai factories return strings;
-// legacy formatter records remain available for literal-based formatting.
-Format_Int :: struct {
-    base: s64;
-    minimum_digits: s64;
-    digits_per_comma: s64;
-    comma_string: string;
-    padding: u8;
-}
-Format_Float :: struct { width: s64; trailing_width: s64; }
-Format_Struct :: struct { draw_type_name: bool; }
-Print_Style :: struct {
-    default_format_int: *Format_Int;
-    default_format_float: *Format_Float;
-    default_format_struct: *Format_Struct;
-}
-#add_context print_style: Print_Style;
-
+// Independently authored formatting. The format* factories return formatter
+// records, as in the maintained Basic module.
 Formatter :: struct { value: Any; }
 FormatInt :: struct {
     using #as formatter: Formatter;
@@ -62,21 +46,75 @@ FormatArray :: struct {
     stop_printing_after_this_many_elements := 100;
 }
 
-// Kept in a separate namespace because the maintained same-name factories
-// return strings. These factories preserve the legacy Any payload descriptor.
-Legacy_Print :: struct {
-    formatInt :: (value: Any, base := 10, minimum_digits := 1, padding: u8 = #char "0", digits_per_comma: u16 = 0, comma_string := "") -> FormatInt {
-        return FormatInt.{value = value, base = base, minimum_digits = minimum_digits,
-            padding = padding, digits_per_comma = digits_per_comma, comma_string = comma_string};
-    }
-    formatFloat :: (value: Any, width := -1, trailing_width := -1,
-        mode := FormatFloat.Mode.DECIMAL, zero_removal := FormatFloat.Zero_Removal.YES) -> FormatFloat {
-        return FormatFloat.{value = value, width = width, trailing_width = trailing_width, mode = mode, zero_removal = zero_removal};
-    }
-    formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5, use_newlines_if_long_form := false) -> FormatStruct {
-        return FormatStruct.{value = value, use_long_form_if_more_than_this_many_members = use_long_form_if_more_than_this_many_members,
-            use_newlines_if_long_form = use_newlines_if_long_form};
-    }
+Print_Style :: struct {
+    // default_format_* ignore the Formatter part of each type; they only configure
+    // base, width, etc. for values printed without an explicit formatter.
+    default_format_int: FormatInt;
+    default_format_float: FormatFloat;
+    default_format_struct: FormatStruct;
+    default_format_array: FormatArray;
+
+    struct_printer: (builder: *String_Builder, any: Any, struct_printer_data: *void) -> bool;
+    struct_printer_data: *void;
+    indentation_depth: s32;
+    log_runtime_errors := true;
+}
+#add_context print_style: Print_Style;
+
+// Several configured instances of Basic can coexist, but the context field has the type
+// declared by only one of them. Copy the style member by member into this instance's types.
+__default_format_int :: () -> FormatInt {
+    source := context.print_style.default_format_int;
+    result: FormatInt;
+    result.base = source.base;
+    result.minimum_digits = source.minimum_digits;
+    result.padding = source.padding;
+    result.digits_per_comma = source.digits_per_comma;
+    result.comma_string = source.comma_string;
+    return result;
+}
+__default_format_float :: () -> FormatFloat {
+    source := context.print_style.default_format_float;
+    result: FormatFloat;
+    result.width = source.width;
+    result.trailing_width = source.trailing_width;
+    result.zero_removal = cast(FormatFloat.Zero_Removal) cast(s64) source.zero_removal;
+    result.mode = cast(FormatFloat.Mode) cast(s64) source.mode;
+    result.thousand_separators = source.thousand_separators;
+    result.thousand_separator_character = source.thousand_separator_character;
+    result.decimal_separator_character = source.decimal_separator_character;
+    result.exponent_character = source.exponent_character;
+    result.positive_number_prefix = cast(FormatFloat.Positive_Number_Prefix) cast(s64) source.positive_number_prefix;
+    return result;
+}
+__default_format_struct :: () -> FormatStruct {
+    source := context.print_style.default_format_struct;
+    result: FormatStruct;
+    result.draw_type_name = source.draw_type_name;
+    result.use_long_form_if_more_than_this_many_members = source.use_long_form_if_more_than_this_many_members;
+    result.separator_between_name_and_value = source.separator_between_name_and_value;
+    result.short_form_separator_between_fields = source.short_form_separator_between_fields;
+    result.long_form_separator_between_fields = source.long_form_separator_between_fields;
+    result.begin_string = source.begin_string;
+    result.end_string = source.end_string;
+    result.indentation_width = source.indentation_width;
+    result.use_newlines_if_long_form = source.use_newlines_if_long_form;
+    return result;
+}
+
+// Formatter factories. They only wrap the value; formatting happens in print.
+
+formatInt :: (value: Any, base := 10, minimum_digits := 1, padding: u8 = #char "0", digits_per_comma: u16 = 0, comma_string := "") -> FormatInt {
+    return FormatInt.{value = value, base = base, minimum_digits = minimum_digits,
+        padding = padding, digits_per_comma = digits_per_comma, comma_string = comma_string};
+}
+formatFloat :: (value: Any, width := -1, trailing_width := -1,
+    mode := FormatFloat.Mode.DECIMAL, zero_removal := FormatFloat.Zero_Removal.YES) -> FormatFloat {
+    return FormatFloat.{value = value, width = width, trailing_width = trailing_width, mode = mode, zero_removal = zero_removal};
+}
+formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5, use_newlines_if_long_form := false) -> FormatStruct {
+    return FormatStruct.{value = value, use_long_form_if_more_than_this_many_members = use_long_form_if_more_than_this_many_members,
+        use_newlines_if_long_form = use_newlines_if_long_form};
 }
 
 get_s64_from_void_pointer :: (pointer: *void, size_in_bytes: int) -> s64 {
@@ -611,20 +649,12 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
     } else if tag == .BOOL {
         if (cast(*bool) item.value_pointer).* append(builder, "true"); else append(builder, "false");
     } else if tag == .INTEGER {
-        settings := FormatInt.{value = item};
-        custom := context.print_style.default_format_int;
-        if custom {
-            if custom.base >= 2 settings.base = custom.base;
-            settings.minimum_digits = custom.minimum_digits;
-            settings.padding = custom.padding;
-            if custom.digits_per_comma >= 0 && custom.digits_per_comma <= 65535 settings.digits_per_comma = cast(u16) custom.digits_per_comma;
-            settings.comma_string = custom.comma_string;
-        }
+        settings := __default_format_int();
+        settings.value = item;
         print_integer(builder, settings);
     } else if tag == .FLOAT {
-        settings := FormatFloat.{value = item};
-        custom := context.print_style.default_format_float;
-        if custom { settings.width = custom.width; settings.trailing_width = custom.trailing_width; }
+        settings := __default_format_float();
+        settings.value = item;
         print_float(builder, settings);
     } else if tag == .POINTER || tag == .PROCEDURE {
         value := (cast(**void) item.value_pointer).*;
@@ -640,9 +670,7 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
             __append_item(builder, view.value, nested, false, depth+1);
             return;
         }
-        settings: FormatStruct;
-        custom := context.print_style.default_format_struct;
-        if custom settings.draw_type_name = custom.draw_type_name;
+        settings := __default_format_struct();
         __append_struct(builder, info, item.value_pointer, settings, depth);
     } else if tag == .ARRAY __append_array(builder, item, cast(*Type_Info_Array) item.type, .{}, false, depth);
     else if tag == .ENUM {
@@ -774,30 +802,6 @@ print_bytes :: (a: *void, length: int, format_string := "% ") {
     for i: 0..length-1 count := print(format_string, bytes[i]);
 }
 
-formatInt :: (value: s64, base := 10, minimum_digits := 0, digits_per_comma := 0, comma_string := ",", padding := #char "0") -> string {
-    if digits_per_comma < 0 || digits_per_comma > 65535 return "<invalid digit group size>";
-    settings := FormatInt.{value = value, base = base, minimum_digits = minimum_digits,
-        digits_per_comma = cast(u16) digits_per_comma, comma_string = comma_string, padding = cast(u8) padding};
-    return tprint("%", settings);
-}
-formatFloat :: (value: float64, width := 0, trailing_width := 6, zero_removal := true, mode := 0) -> string {
-    settings := FormatFloat.{value = value, width = width, trailing_width = trailing_width};
-    if !zero_removal settings.zero_removal = .NO;
-    if mode == 1 settings.mode = .SCIENTIFIC;
-    else if mode == 2 settings.mode = .SHORTEST;
-    else if mode != 0 return "<invalid float mode>";
-    return tprint("%", settings);
-}
-formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5,
-    separator_between_name_and_value := " = ", short_form_separator_between_fields := ", ",
-    long_form_separator_between_fields := "; ", begin_string := "{", end_string := "}",
-    indentation_width := 4, use_newlines_if_long_form := false, draw_type_name := false) -> string {
-    settings := FormatStruct.{value = value, use_long_form_if_more_than_this_many_members = use_long_form_if_more_than_this_many_members,
-        separator_between_name_and_value = separator_between_name_and_value, short_form_separator_between_fields = short_form_separator_between_fields,
-        long_form_separator_between_fields = long_form_separator_between_fields, begin_string = begin_string, end_string = end_string,
-        indentation_width = cast(s32) indentation_width, use_newlines_if_long_form = use_newlines_if_long_form, draw_type_name = draw_type_name};
-    return tprint("%", settings);
-}
 // Explicit independent extension: least digits that round back to binary64.
 // It does not use string_to_float64, whose conversion remains approximate.
 formatFloatRoundtrip :: (value: float64, width: s64 = 0) -> string {

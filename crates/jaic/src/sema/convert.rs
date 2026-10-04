@@ -75,6 +75,19 @@ impl Compiler {
                 self.as_offset(*f, *t).map(|_| SUBTYPE)
             }
             (TypeKind::Null, TypeKind::Pointer(_) | TypeKind::Proc(_)) => Some(LITERAL),
+            // Loose enums are integer-compatible.
+            (
+                TypeKind::Enum(_),
+                TypeKind::Int {
+                    ..
+                },
+            ) if self.types.is_loose_enum(from) => Some(WIDEN),
+            (
+                TypeKind::Int {
+                    ..
+                },
+                TypeKind::Enum(_),
+            ) if self.types.is_loose_enum(to) => Some(WIDEN),
             (
                 TypeKind::Array {
                     elem: fe,
@@ -166,6 +179,18 @@ impl Compiler {
                 if to == TypeId::ANY {
                     return self.box_any(f, op, span);
                 }
+            }
+            Operand::Const {
+                value: Value::String(ref bytes),
+                ..
+            } if self.types.pointee(to) == Some(TypeId::U8) => {
+                // String literals are NUL-terminated: their data pointer is a C string.
+                let global = self.string_global(bytes);
+                let val = f.b.global_addr(global);
+                return Ok(Operand::Value {
+                    ty: to,
+                    val,
+                });
             }
             Operand::Const {
                 ty,
@@ -468,6 +493,33 @@ impl Compiler {
                 });
             }
         }
+        if matches!(
+            op,
+            Operand::Const {
+                value: Value::String(_),
+                ..
+            }
+        ) && self.types.pointee(to) == Some(TypeId::U8)
+        {
+            return self.convert(f, op, to, span);
+        }
+        if let Operand::Procs(procs) = &op
+            && procs.len() == 1
+            && matches!(
+                self.types.kind(to),
+                TypeKind::Proc(_) | TypeKind::Pointer(_)
+            )
+        {
+            // Casting a procedure to another procedure type (or a pointer) reinterprets its address.
+            if let Ok(c) = self.convert(f, op.clone(), to, span) {
+                return Ok(c);
+            }
+            let (_, v) = self.rvalue(f, op, span)?;
+            return Ok(Operand::Value {
+                ty: to,
+                val: v,
+            });
+        }
         if let Operand::Type(t) = op {
             if to == TypeId::TYPE {
                 return Ok(Operand::Type(t));
@@ -507,6 +559,15 @@ impl Compiler {
                 val,
             });
         }
+        // Strings and arrays cast to `bool` as "is non-empty".
+        if tr == TypeId::BOOL && self.ir_ty(fr).is_none() && fr != TypeId::ANY {
+            let (ty, v) = self.rvalue(f, op, span)?;
+            let val = self.truthy(f, ty, v, span)?;
+            return Ok(Operand::Value {
+                ty: to,
+                val,
+            });
+        }
         if self.ir_ty(fr).is_some() && self.ir_ty(tr).is_some() {
             let op = self.settle_untyped(op, Some(to));
             return self.scalar_convert(f, op, to, span);
@@ -537,6 +598,25 @@ impl Compiler {
         }
         if self.implicit_cost(from, untyped, to).is_some() {
             return self.convert(f, op, to, span);
+        }
+        // `string` and `[] u8` share the same layout (count, data).
+        let is_bytes_view = |s: &Self, t: TypeId| {
+            matches!(
+                s.types.kind(t),
+                TypeKind::Array {
+                    elem,
+                    kind: ArrayKind::View,
+                } if *elem == TypeId::U8
+            )
+        };
+        if (from == TypeId::STRING && is_bytes_view(self, to))
+            || (to == TypeId::STRING && is_bytes_view(self, from))
+        {
+            let (_, addr) = self.address_of(f, op, span)?;
+            return Ok(Operand::Place {
+                ty: to,
+                addr,
+            });
         }
         // `cast,force` reinterprets an aggregate as another of the same size.
         if flags.force

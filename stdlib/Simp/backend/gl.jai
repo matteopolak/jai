@@ -143,7 +143,7 @@ gl_upload_texture :: (texture:*Texture,bitmap:*Bitmap)->bool {
     for level:0..bitmap.mipmap_count-1 {
         stride:=w*get_image_bytes_per_texel(bitmap.format); if level==0 stride=bitmap.stride;
         bytes:=stride*h; if offset+bytes>bitmap.data.count return false;
-        gl_api.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH,stride/cast(s32)get_image_bytes_per_texel(bitmap.format));
+        gl_api.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH,cast(s32)(stride/get_image_bytes_per_texel(bitmap.format)));
         gl_api.glTexImage2D(GL.GL_TEXTURE_2D,level,cast(s32)internal,cast(u32)w,cast(u32)h,0,external,type,bitmap.data.data+offset);
         offset+=bytes; w=max(w/2,1); h=max(h/2,1);
     }
