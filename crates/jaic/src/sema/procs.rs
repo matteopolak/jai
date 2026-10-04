@@ -400,8 +400,8 @@ impl Compiler {
         let name = self.proc(id).name;
         // `#entry_point` declarations stand for the program's `main`.
         if lit_is_entry_point(&header) && self.proc(id).lit.body.is_none() {
-            let main = self.program_main(span)?;
-            let target = self.proc_func(main, span)?;
+            let func = self.entry_point_wrapper(id, span)?;
+            let target = ProcTarget::Func(func);
             self.procs[id.0 as usize].target = Some(target);
             return Ok(target);
         }
@@ -460,6 +460,66 @@ impl Compiler {
             }
         }
         Ok(target)
+    }
+
+    /// Body of an `#entry_point` declaration: call the program's `main` and
+    /// convert its result (if any) to the declared return type.
+    fn entry_point_wrapper(&mut self, id: ProcId, span: Span) -> Result<ir::FuncId> {
+        let sig = self.signature(id, span)?;
+        let ir_sig = self.ir_sig(sig.ty, span)?;
+        let func = self.program.reserve_func("__entry_point".into());
+        self.procs[id.0 as usize].target = Some(ProcTarget::Func(func));
+        let main = self.program_main(span)?;
+        let main_sig = self.signature(main, span)?;
+        if !main_sig.params.is_empty() {
+            return err(self.proc(main).span, "'main' must not take parameters");
+        }
+        let ProcTarget::Func(main_func) = self.proc_func(main, span)? else {
+            return err(span, "'main' must have a body");
+        };
+        let main_ir = self.ir_sig(main_sig.ty, span)?;
+        let mut f = FnCtx::new("__entry_point".into(), ir_sig, FileId(0));
+        let mut args = Vec::new();
+        if main_sig.has_context {
+            args.push(if sig.has_context {
+                f.b.param(0)
+            } else {
+                f.b.iconst(Ty::Ptr, 0)
+            });
+        }
+        let results =
+            f.b.call(ir::Callee::Func(main_func), args, &main_ir.returns);
+        let mut rets = Vec::new();
+        if let Some(&rt) = sig.returns.first() {
+            let want = self.ir_ty(rt).unwrap_or(Ty::I32);
+            let v = match (results.first(), main_sig.returns.first()) {
+                (Some(&r), Some(&mt)) if self.types.is_integer(mt) => {
+                    let have = f.b.val_ty(r);
+                    if have.size() > want.size() {
+                        f.b.conv(ir::ConvOp::Trunc, have, want, r)
+                    } else if have.size() < want.size() {
+                        let signed = self.types.int_info(mt).is_some_and(|i| i.1);
+                        f.b.conv(
+                            if signed {
+                                ir::ConvOp::SExt
+                            } else {
+                                ir::ConvOp::ZExt
+                            },
+                            have,
+                            want,
+                            r,
+                        )
+                    } else {
+                        r
+                    }
+                }
+                _ => f.b.iconst(want, 0),
+            };
+            rets.push(v);
+        }
+        f.b.ret(rets);
+        self.program.funcs[func.0 as usize] = Some(f.b.finish());
+        Ok(func)
     }
 
     fn proc_display_name(&self, id: ProcId) -> String {
