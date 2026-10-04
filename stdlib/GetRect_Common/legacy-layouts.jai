@@ -182,7 +182,7 @@ Button_Theme :: struct {
     text_color_over          := Vector4.{.95, .95, .95, 1.0};
     text_color_pressed       := Vector4.{.99, .99, .99, 1.0};
 
-    text_offset_down         := Vector2.{.12, -.12};
+    text_offset_down         := Vector2.{.12, ifx GETRECT_Y_UP then -.12 else .12};
 
 
     frame_thickness_over     := .04;
@@ -413,6 +413,7 @@ Dropdown_State :: struct #type_info_none {
     loc:       Source_Code_Location;
     z:         s32;
 
+    #if !GETRECT_Y_UP { original_value: s32 = -1; }
     current_value_pointer: *s32;
     current_value_state:   *Button_State;
 }

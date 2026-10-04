@@ -28,14 +28,14 @@ toggle_rectangle_picker_mode :: (state:*Color_Picker_State) { state.hsv_picker_i
 toggle_circle_picker_mode :: (state:*Color_Picker_State) { state.circle_picker_in_warped_mode=!state.circle_picker_in_warped_mode; state.disc_point=backsolve_disc_point_from_rgb(state,state.current_rgb_color); }
 color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_Theme=null,identifier:s64=0,loc:=#caller_location)->(applied:bool,still_dragging:bool,state:*Color_Picker_State) {
     if !theme theme=*default_overall_theme.color_picker_theme;
-    assert(input_and_output_color_rgb); if !input_and_output_color_rgb return false,false,null;
+    assert(input_and_output_color_rgb != null); if !input_and_output_color_rgb return false,false,null;
     state,created:=find_or_create_state(Color_Picker_State,get_hash(loc,identifier)); defer stop_using_state(state);
     if created { set_original_and_current_color_rgb(state,input_and_output_color_rgb.*); state.color_pick_mode=theme.starting_color_pick_mode; for color:theme.initial_stashed_colors stash_color(state,color); }
     rounded_rectangle(r,theme.background.shape,theme.background.color,theme.background.frame_color);
     pad_x:=r.w*theme.horizontal_padding; pad_y:=r.h*theme.vertical_padding;
     content:=shrink_xy(r,pad_x,pad_y); controls_height:=max(content.h*0.12,18.0);
-    color_area:=content; color_area.y+=controls_height*2; color_area.h=max(content.h-controls_height*2,0.0); color_area.w*=1-theme.stashed_color_width-theme.margin_between_color_input_and_stashed_colors;
-    mode_row:=Rect.{content.x,color_area.y-controls_height,color_area.w,controls_height};
+    color_area:=content; if GETRECT_Y_UP color_area.y+=controls_height*2; color_area.h=max(content.h-controls_height*2,0.0); color_area.w*=1-theme.stashed_color_width-theme.margin_between_color_input_and_stashed_colors;
+    mode_row:=Rect.{content.x,ifx GETRECT_Y_UP then color_area.y-controls_height else color_area.y+color_area.h,color_area.w,controls_height};
     modes:=string.["Circle","HSV","RGB","Numbers"];
     for name,index:modes {
         cell:=mode_row; cell.w/=4; cell.x+=cell.w*index;
@@ -46,14 +46,14 @@ color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_
     else if state.color_pick_mode==.HSV_SLIDERS draw_hsv_sliders(color_area,theme,state);
     else if state.color_pick_mode==.RGB_SLIDERS draw_rgb_sliders(color_area,theme,state);
     else draw_type_ins(color_area,theme,state);
-    stash_area:=content; stash_area.x=color_area.x+color_area.w+content.w*theme.margin_between_color_input_and_stashed_colors; stash_area.w=max(content.x+content.w-stash_area.x,0.0); stash_area.h=color_area.h; stash_area.y=color_area.y;
+    stash_area:=content; stash_area.x=color_area.x+color_area.w+content.w*theme.margin_between_color_input_and_stashed_colors; stash_area.w=max(content.x+content.w-stash_area.x,0.0); stash_area.h=color_area.h; if GETRECT_Y_UP stash_area.y=color_area.y;
     count:=max(state.stashed_colors.count,1); height:=stash_area.h/count;
     for color,index:state.stashed_colors {
-        cell:=Rect.{stash_area.x,stash_area.y+stash_area.h-(index+1)*height,stash_area.w,height};
+        cell:=Rect.{stash_area.x,ifx GETRECT_Y_UP then stash_area.y+stash_area.h-(index+1)*height else stash_area.y+index*height,stash_area.w,height};
         rounded_rectangle(cell,theme.stashed_colors_shape,.{color.x,color.y,color.z,1},.{});
         if get_status_flags(cell,state)&.PRESSED set_current_color_rgb(state,theme,color);
     }
-    actions:=Rect.{content.x,mode_row.y-controls_height,content.w/3,controls_height}; applied:=false;
+    actions:=Rect.{content.x,ifx GETRECT_Y_UP then mode_row.y-controls_height else mode_row.y+mode_row.h,content.w/3,controls_height}; applied:=false;
     pressed,button_state,released:=button(actions,theme.apply_string,*theme.apply_and_revert_button_theme,identifier*37+201,loc);
     if pressed { input_and_output_color_rgb.*=state.current_rgb_color; state.original_rgb_color=state.current_rgb_color; applied=true; }
     actions.x+=actions.w;
@@ -66,38 +66,38 @@ color_picker :: (r:Rect,input_and_output_color_rgb:*Vector3,theme:*Color_Picker_
     return applied,dragging,state;
 }
 draw_hsv_sliders :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=4; row.y=area.y+area.h-row.h; hsv:=state.current_hsv_color;
+    row:=area; row.h/=4; if GETRECT_Y_UP row.y=area.y+area.h-row.h; hsv:=state.current_hsv_color;
     changed:=slider(row,*hsv.x,theme.slider_hue_min,theme.slider_hue_max,1.0,*default_overall_theme.slider_theme,"H ","",1);
     if changed set_current_color_hsv(state,hsv);
-    row.y-=row.h; zoom:=state.current_hsv_color.x; half:=max(theme.hue_range_in_zoomed_slider/2,EPSILON);
+    advance_row(*row); zoom:=state.current_hsv_color.x; half:=max(theme.hue_range_in_zoomed_slider/2,EPSILON);
     zoom_changed:=slider(row,*zoom,state.zoom_hue_center-half,state.zoom_hue_center+half,0.1,*default_overall_theme.slider_theme,"H zoom ","",4);
     if zoom_changed { hsv=state.current_hsv_color; hsv.x=zoom; set_current_color_hsv(state,hsv,false); }
-    row.y-=row.h;
+    advance_row(*row);
     if state.hsv_picker_in_rectangle_mode {
-        plane:=row; plane.y=area.y; plane.h*=2; status:=get_status_flags(plane,state);
+        plane:=row; if GETRECT_Y_UP plane.y=area.y; plane.h*=2; status:=get_status_flags(plane,state);
         if status&.PRESSED { state.dragging_in_hsv_rectangle=true; active_widget_add(state,true); }
         if state.dragging_in_hsv_rectangle left_sv_drag(plane,state,false);
         if mouse_button_left_state&.END { state.dragging_in_hsv_rectangle=false; active_widget_remove(state); }
         left_sv_surface(plane,state,false);
     } else {
         hsv=state.current_hsv_color; changed=slider(row,*hsv.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"S ","",2);
-        row.y-=row.h; changed=slider(row,*hsv.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"V ","",3)||changed;
+        advance_row(*row); changed=slider(row,*hsv.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"V ","",3)||changed;
         if changed set_current_color_hsv(state,hsv,false);
     }
     if mouse_button_right_state&.START&&has_focus(area) toggle_rectangle_picker_mode(state);
 }
 draw_rgb_sliders :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=3; row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
+    row:=area; row.h/=3; if GETRECT_Y_UP row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
     changed:=slider(row,*rgb.x,0.0,1.0,0.01,*default_overall_theme.slider_theme,"R ","",1);
-    row.y-=row.h; changed=slider(row,*rgb.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"G ","",2)||changed;
-    row.y-=row.h; changed=slider(row,*rgb.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"B ","",3)||changed;
+    advance_row(*row); changed=slider(row,*rgb.y,0.0,1.0,0.01,*default_overall_theme.slider_theme,"G ","",2)||changed;
+    advance_row(*row); changed=slider(row,*rgb.z,0.0,1.0,0.01,*default_overall_theme.slider_theme,"B ","",3)||changed;
     if changed set_current_color_rgb(state,theme,rgb);
 }
 draw_type_ins :: (area:Rect,theme:*Color_Picker_Theme,state:*Color_Picker_State) {
-    row:=area; row.h/=3; row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
+    row:=area; row.h/=3; if GETRECT_Y_UP row.y=area.y+area.h-row.h; rgb:=state.current_rgb_color;
     changed:=number_input(row,tprint("%",rgb.x),*rgb.x,0.0,1.0,*theme.type_ins_input_theme,1);
-    row.y-=row.h; changed=number_input(row,tprint("%",rgb.y),*rgb.y,0.0,1.0,*theme.type_ins_input_theme,2)||changed;
-    row.y-=row.h; changed=number_input(row,tprint("%",rgb.z),*rgb.z,0.0,1.0,*theme.type_ins_input_theme,3)||changed;
+    advance_row(*row); changed=number_input(row,tprint("%",rgb.y),*rgb.y,0.0,1.0,*theme.type_ins_input_theme,2)||changed;
+    advance_row(*row); changed=number_input(row,tprint("%",rgb.z),*rgb.z,0.0,1.0,*theme.type_ins_input_theme,3)||changed;
     if changed set_current_color_rgb(state,theme,rgb);
 }
 set_keyframes :: (state:*Color_Animation_Editor_State,frames:[]Color_Keyframe) {
@@ -158,16 +158,19 @@ color_animation_editor :: (r:Rect,theme:*Color_Animation_Editor_Theme=null,ident
     state,created:=find_or_create_state(Color_Animation_Editor_State,get_hash(loc,identifier)); defer stop_using_state(state); state.theme=theme;
     if created { set_keyframes(state,theme.default_keyframes); set_interpolation(state,theme.default_interpolation); state.num_clipboard_samples=theme.default_num_clipboard_samples; state.time_view_period=theme.default_time_view_period; }
     rounded_rectangle(r,theme.background.shape,theme.background.color,theme.background.frame_color);
-    bar:=shrink_xy(r,r.w*theme.horizontal_padding,r.h*theme.vertical_padding); bar.y+=bar.h*0.50; bar.h*=0.50;
+    bar:=shrink_xy(r,r.w*theme.horizontal_padding,r.h*theme.vertical_padding); if GETRECT_Y_UP bar.y+=bar.h*0.50; bar.h*=0.50;
     my_color_slider(bar,1.0,theme,state);
-    row:=r; row.h=max((bar.y-r.y)/2,0.0); row.y=bar.y-row.h; row.w=r.w/3;
+    row:=r;
+    if GETRECT_Y_UP { row.h=max((bar.y-r.y)/2,0.0); row.y=bar.y-row.h; }
+    else { row.y=bar.y+bar.h; row.h=(r.y+r.h-row.y)/2; }
+    row.w=r.w/3;
     if theme.draw_subwidgets_flags&.INTERPOLATION_CONTROLS {
         spaces:=string.["RGB","HSV","Oklab"]; geometries:=string.["Linear","Quadric","Hermite"];
         dropdown(row,spaces,*state.interpolation_color_space_s32,*theme.dropdown_theme,identifier*41+1,100,loc); row.x+=row.w;
         dropdown(row,geometries,*state.interpolation_geometry_s32,*theme.dropdown_theme,identifier*41+2,100,loc); row.x+=row.w;
         checkbox(row,"Wrap",*state.interpolation_wrapping,*theme.checkbox_theme,identifier*41+3,loc);
     }
-    row.x=r.x; row.y-=row.h;
+    row.x=r.x; advance_row(*row);
     if theme.draw_subwidgets_flags&.SAMPLING_CONTROLS number_input(row,tprint("%",state.num_clipboard_samples),*state.num_clipboard_samples,1,4096,*theme.number_input_theme,identifier*41+4,loc);
     row.x+=row.w;
     if theme.draw_subwidgets_flags&.TIME_VIEW {
@@ -184,11 +187,15 @@ open_color_picker :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation
     state.color_picker_keyframe_index=keyframe_index;
     color:=state.color_keyframes[keyframe_index].color_rgb; state.color_picker_editing_color_applied=.{color.x,color.y,color.z};
     info:=*state.color_picker_subwindow_info;
-    if !state.color_picker_subwindow_rect_initialized { info.rect=.{bar_rect.x,bar_rect.y-max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0),bar_rect.w,max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0)}; state.color_picker_subwindow_rect_initialized=true; }
+    if !state.color_picker_subwindow_rect_initialized { info.rect=.{bar_rect.x,ifx GETRECT_Y_UP then bar_rect.y-max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0) else bar_rect.y+bar_rect.h,bar_rect.w,max(bar_rect.w/get_desired_aspect_ratio(*theme.color_picker_theme),64.0)}; state.color_picker_subwindow_rect_initialized=true; }
     info.open=true; info.title_text="Keyframe color"; info.draw=draw_callback_color_picker; info.user_data=state;
 }
 draw_color_picker :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State) { if state.color_picker_subwindow_info.open add_subwindow(*state.color_picker_subwindow_info,*theme.color_picker_subwindow_theme,cast(s64)state); }
-draw_callback_color_picker :: (state:*Subwindow_State,r:Rect,data:*void) {
+// The subwindow draw callback takes the Subwindow_State first only in y-up modules.
+#if GETRECT_Y_UP { draw_callback_color_picker :: (state:*Subwindow_State,r:Rect,data:*void) { color_picker_callback_body(r,data); } }
+else { draw_callback_color_picker :: (r:Rect,data:*void) { color_picker_callback_body(r,data); } }
+#scope_module
+color_picker_callback_body :: (r:Rect,data:*void) {
     editor:=cast(*Color_Animation_Editor_State)data;
     applied,dragging,picker:=color_picker(r,*editor.color_picker_editing_color_applied,*editor.theme.color_picker_theme,712);
     editor.last_color_picker_state=picker;
@@ -196,12 +203,17 @@ draw_callback_color_picker :: (state:*Subwindow_State,r:Rect,data:*void) {
         color:=editor.color_picker_editing_color_applied; editor.color_keyframes[editor.color_picker_keyframe_index].color_rgb=.{color.x,color.y,color.z,1};
     }
 }
+#scope_export
 open_time_view :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State,bar_rect:Rect) {
     info:=*state.time_view_subwindow_info; info.open=true; info.title_text="Color over time"; info.draw=draw_callback_time_view; info.user_data=state;
-    if info.rect.w<=0 info.rect=.{bar_rect.x,bar_rect.y-max(bar_rect.h,64.0),bar_rect.w,max(bar_rect.h,64.0)};
+    if info.rect.w<=0 info.rect=.{bar_rect.x,ifx GETRECT_Y_UP then bar_rect.y-max(bar_rect.h,64.0) else bar_rect.y+bar_rect.h,bar_rect.w,max(bar_rect.h,64.0)};
 }
 draw_time_view :: (theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State) { if state.time_view_subwindow_info.open add_subwindow(*state.time_view_subwindow_info,*theme.time_view_subwindow_theme,cast(s64)state+713); }
-draw_callback_time_view :: (state:*Subwindow_State,r:Rect,data:*void) {
+#scope_export
+#if GETRECT_Y_UP { draw_callback_time_view :: (state:*Subwindow_State,r:Rect,data:*void) { time_view_callback_body(r,data); } }
+else { draw_callback_time_view :: (r:Rect,data:*void) { time_view_callback_body(r,data); } }
+#scope_module
+time_view_callback_body :: (r:Rect,data:*void) {
     editor:=cast(*Color_Animation_Editor_State)data; if editor.time_view_playing editor.time_view_current_time+=current_dt;
     samples:[1]Vector4; frame:=Color_Keyframe.{t=cast(float)frac(editor.time_view_current_time/max(editor.time_view_period,0.001))};
     sorted:=get_sorted_keyframes(editor); interp:=get_interpolation(editor);
@@ -211,6 +223,7 @@ draw_callback_time_view :: (state:*Subwindow_State,r:Rect,data:*void) {
     for value,index:sorted { storage[index]=value.base; storage[index].t-=frame.t; shifted[index]=*storage[index]; }
     generate_color_samples(shifted,interp,samples); left_color_fill(r,samples[0]);
 }
+#scope_export
 copy_output_to_clipboard :: (state:*Color_Animation_Editor_State,output_type:Output_Type) {
     builder:String.String_Builder;
     if output_type==.SOURCE_KEYFRAMES for frame:get_keyframes(state) String.append(*builder,tprint(".{.{%,%,%,%},%},\n",frame.color_rgb.x,frame.color_rgb.y,frame.color_rgb.z,frame.color_rgb.w,frame.t));
@@ -256,3 +269,6 @@ left_color_space_inverse :: (value:Vector3,interp:Interpolation)->Vector3 {
     if interp.color_space==.OKLAB { linear:=oklab_to_linear_srgb(value); return left_clip_rgb(.{left_encode_channel(linear.x),left_encode_channel(linear.y),left_encode_channel(linear.z)}); }
     return left_clip_rgb(value);
 }
+#scope_module
+// Moves a row to the next one down the screen (y-up decreases y, y-down increases it).
+advance_row :: (row:*Rect) { if GETRECT_Y_UP row.y-=row.h; else row.y+=row.h; }

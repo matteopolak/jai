@@ -1,2 +1,2 @@
-// Forwarder: see stdlib/GetRect/orientation.jai.
-#load "../../GetRect/orientation.jai";
+// Forwarder: see stdlib/GetRect_Common/orientation.jai.
+#load "../../GetRect_Common/orientation.jai";

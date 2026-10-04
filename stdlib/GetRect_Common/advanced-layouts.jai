@@ -30,7 +30,9 @@ Subwindow_Info :: struct {
     snap_to_size: Vector2;
 
     user_data: *void;
-    draw: (state: *Subwindow_State, content_rect: Rect, user_data: *void);
+    // Y-up modules pass the subwindow state so the callback can call draw_proc_adjust_y1.
+    #if GETRECT_Y_UP { draw: (state: *Subwindow_State, content_rect: Rect, user_data: *void); }
+    else { draw: (content_rect: Rect, user_data: *void); }
 
     open := true;
 
@@ -67,8 +69,10 @@ Subwindow_State :: struct #type_info_none {
 
     theme: Subwindow_Theme;
 
-    draw_proc_adjusted_y := false;
-    draw_proc_new_y1     := 0.0;
+    #if GETRECT_Y_UP {
+        draw_proc_adjusted_y := false;
+        draw_proc_new_y1     := 0.0;
+    }
 }
 
 Slidable_Region_State :: struct #type_info_none {

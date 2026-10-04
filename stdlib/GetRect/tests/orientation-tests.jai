@@ -1,8 +1,8 @@
 // Loads actual production math without constructing a renderer or native window.
 Math :: #import "Math";
 #import "Math";
-#load "../geometry.jai";
-#load "../orientation.jai";
+#load "../../GetRect_Common/geometry.jai";
+#load "../../GetRect_Common/orientation.jai";
 right_orientation_cases :: ()->bool {
     r:=get_rect(10,20,100,80);
     top,divider,bottom:=right_divider_rects(r,false,0.25,8);

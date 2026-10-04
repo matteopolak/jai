@@ -24,6 +24,7 @@ using Tables;
 }
 #load "legacy-layouts.jai";
 #load "orientation.jai";
+#if GETRECT_Y_UP { #load "assets.jai"; }
 #load "regions.jai";
 #load "colors.jai";
 #load "text-interaction.jai";
@@ -32,8 +33,8 @@ using Tables;
 #load "compatibility.jai";
 #load "occlusion.jai";
 #load "cursors.jai";
-#load "assets.jai";
-#add_context getrect_current_window: Window_Type = WT.INVALID_WINDOW;
+#if GETRECT_Y_UP { #add_context getrect_current_window: Window_Type = WT.INVALID_WINDOW; }
+else { #add_context getrect_current_window: Window_Type = cast(Window_Type)0; }
 default_overall_theme: Overall_Theme;
 draw_procs: Draw_Procs;
 scissor_stack: [..] Rect;
@@ -74,8 +75,12 @@ ui_init :: (default_font := "",procs:*Draw_Procs=null) {
         if !draw_procs.set_pointer_image draw_procs.set_pointer_image=getrect_set_pointer_image;
     }
     assert(draw_procs.set_scissor&&draw_procs.clear_scissor&&draw_procs.set_shader_for_color&&draw_procs.immediate_quad&&draw_procs.immediate_flush,"GetRect drawing callbacks are required");
-    if default_font.count>0 default_font_data=default_font;
-    else { memory,loaded:=right_cached_asset(4); assert(loaded&&memory.count>0,"Default font resource is required"); if !loaded||memory.count==0 return; default_font_data=memory; }
+    #if GETRECT_Y_UP {
+        if default_font.count>0 default_font_data=default_font;
+        else { memory,loaded:=right_cached_asset(4); assert(loaded&&memory.count>0,"Default font resource is required"); if !loaded||memory.count==0 return; default_font_data=memory; }
+    } else {
+        default_font_data=default_font;
+    }
     initialized=true;
 }
 set_default_theme :: (theme:Overall_Theme) { default_overall_theme=theme; }
@@ -121,7 +126,7 @@ switch_window :: (window:Window_Type,_render_target_width:s32,_render_target_hei
     if !global_initial_divider_position_in_pixels_is_set global_initial_divider_position_in_pixels=render_target_width*0.25;
     if !global_slider_nub_thickness_in_pixels_is_set global_slider_nub_thickness_in_pixels=render_target_height*0.03;
     if draw_procs.get_mouse_pointer_position {
-        x,y,success:=draw_procs.get_mouse_pointer_position(window,true);
+        x,y,success:=draw_procs.get_mouse_pointer_position(window,GETRECT_Y_UP);
         if success {
             mouse_x=cast(s32)x; mouse_y=cast(s32)y; mouse_x_float=cast(float)x; mouse_y_float=cast(float)y;
             mouse_delta_x_float=0; mouse_delta_y_float=0;
@@ -250,7 +255,7 @@ text_origin :: ( theme : * Label_Theme , font : * Font , r : Rect , text_width :
     if position==FLOAT32_INFINITY position=default_text_baseline(font,r.h); else position*=r.h;
     return floor(x+0.5),floor(r.y+position+0.5);
 }
-default_text_baseline :: (font:*Font,height:float)->float { if !font return 0; return (height-font.max_ascender-font.max_descender)*0.5+font.max_descender; }
+default_text_baseline :: (font:*Font,height:float)->float { if !font return 0; return (height-font.max_ascender-font.max_descender)*0.5+ifx GETRECT_Y_UP then font.max_descender else font.max_ascender; }
 label :: (r:Rect,text:string,theme:*Label_Theme,do_scissor:=true)->desired_width:float {
     if !theme theme=*default_overall_theme.label_theme;
     font:=theme.font; if !font font=get_default_font_at_size(r.h*0.65);
@@ -473,13 +478,13 @@ move_cursor_left :: ( using state : * Text_Input_State , want_selection := false
 move_cursor_right :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,seek_right_one_utf8_character(state.text,state.insert_point),want_selection); }
 move_cursor_to_beginning :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,0,want_selection); }
 move_cursor_to_end :: (state:*Text_Input_State,want_selection:=false) { move_cursor_to(state,state.text.count,want_selection); }
-backspace_from_cursor :: (using state:*Text_Input_State,by_word:bool) {
+backspace_from_cursor :: (using state:*Text_Input_State,by_word:=false) {
     if nonempty(state.selection) { replace_selection(state,""); return; }
     if state.insert_point==0 return;
     state.selection=.{start_character=ifx by_word then seek_left_one_word(state.text,state.insert_point) else seek_left_one_utf8_character(state.text,state.insert_point),end_character=state.insert_point,active=true};
     replace_selection(state,"");
 }
-delete_from_cursor :: (using state:*Text_Input_State,by_word:bool) {
+delete_from_cursor :: (using state:*Text_Input_State,by_word:=false) {
     if nonempty(state.selection) { replace_selection(state,""); return; }
     if state.insert_point>=state.text.count return;
     state.selection=.{start_character=state.insert_point,end_character=ifx by_word then seek_right_one_word(state.text,state.insert_point) else seek_right_one_utf8_character(state.text,state.insert_point),active=true};
@@ -667,7 +672,7 @@ left_round_fill :: (r:Rect,shape:Rectangle_Shape,radius:float,color:Vector4) {
     radius=min(radius,min(r.w,r.h)*0.5);
     points:[..]Vector2; center:=xy(r.x+r.w*0.5,r.y+r.h*0.5);
     corners:=Vector2.[.{r.x+radius,r.y+radius},.{r.x+r.w-radius,r.y+radius},.{r.x+r.w-radius,r.y+r.h-radius},.{r.x+radius,r.y+r.h-radius}];
-    flags:=Rectangle_Shape.Rounding_Flags.[.SOUTHWEST,.SOUTHEAST,.NORTHEAST,.NORTHWEST];
+    flags:=ifx GETRECT_Y_UP then Rectangle_Shape.Rounding_Flags.[.SOUTHWEST,.SOUTHEAST,.NORTHEAST,.NORTHWEST] else Rectangle_Shape.Rounding_Flags.[.NORTHWEST,.NORTHEAST,.SOUTHEAST,.SOUTHWEST];
     segments:=max(cast(int)ceil(radius*PI*0.5/max(shape.pixels_per_edge_segment,1.0)),1);
     for corner:0..3 {
         if !(shape.rounding_flags&flags[corner]) {
@@ -693,7 +698,7 @@ draw_dropdown_popup :: ( _state : * void ) {
     if !state.open return;
     start_using_state(state); defer stop_using_state(state);
     for choice,index:state.choices {
-        r:=state.base_rect; r.y-=r.h*(index+1);
+        r:=state.base_rect; r.y+=r.h*(index+1)*ifx GETRECT_Y_UP then -1.0 else 1.0;
         theme:=*state.theme.theme_for_each_choice; if index==state.current_value_pointer.* theme=*state.theme.theme_for_current_choice;
         clicked,button_state,released:=button(r,choice,theme,cast(s64)index+100,state.loc);
         if clicked { state.current_value_pointer.*=cast(s32)index; state.open=false; active_widget_remove(state); }
@@ -704,19 +709,30 @@ draw_dropdown_popup :: ( _state : * void ) {
 #if USE_SIMP {
 left_shader_color :: (enable_blend:=false) { Simp.set_shader_for_color(enable_blend); }
 left_prepare_text :: (font:*Font,text:string,effects:Font_Effects=0)->s64 { return Simp.prepare_text(font,text,effects); }
-left_draw_text :: (font:*Font,x:s64,y:s64,text_color:Vector4,effects:Font_Effects=0) { Simp.draw_prepared_text(font,x,y,text_color,effects); }
+left_draw_text :: (font:*Font,x:s64,y:s64,text_color:Vector4,effects:Font_Effects=0) { Simp.draw_prepared_text(font,x,left_flip_y(y),text_color,effects); }
 left_get_font :: (memory:[]u8,pixel_height:int)->*Font { return Simp.get_font_at_size(memory,pixel_height); }
-Right_Windows :: #import "Window_Creation";
-left_get_pointer :: (window:Window_Type,right_handed:bool)->x:int,y:int,success:bool {
-    return Right_Windows.get_mouse_pointer_position(window,right_handed);
+// Simp and the window layer are y-up; y-down modules flip at the render target height.
+left_flip_y :: (y: $T) -> T { if GETRECT_Y_UP return y; return render_target_height-y; }
+#if GETRECT_Y_UP {
+    Right_Windows :: #import "Window_Creation";
+    left_get_pointer :: (window:Window_Type,right_handed:bool)->x:int,y:int,success:bool {
+        return Right_Windows.get_mouse_pointer_position(window,right_handed);
+    }
+} else {
+    left_get_pointer :: (window:Window_Type,right_handed:bool)->x:int,y:int,success:bool {
+        if !Input.input_pointer_source return 0,0,false;
+        px,py:=Input.get_input_pointer_position(window,true);
+        if right_handed py=render_target_height-py;
+        return cast(int)px,cast(int)py,true;
+    }
 }
-left_set_scissor :: (x0:s32,y0:s32,x1:s32,y1:s32) { Simp.set_scissor(x0,y0,x1,y1); }
+left_set_scissor :: (x0:s32,y0:s32,x1:s32,y1:s32) { #if GETRECT_Y_UP Simp.set_scissor(x0,y0,x1,y1); else Simp.set_scissor(x0,render_target_height-y1,x1,render_target_height-y0); }
 left_triangle :: (p0:Vector3,p1:Vector3,p2:Vector3,c0:=Vector4.{1,1,1,1},c1:=Vector4.{1,1,1,1},c2:=Vector4.{1,1,1,1},uv0:=Vector2.{},uv1:=Vector2.{},uv2:=Vector2.{},normal:=Vector3.{z=1}) {
-    a:=p0; b:=p1; c:=p2;
+    a:=p0; b:=p1; c:=p2; a.y=left_flip_y(a.y); b.y=left_flip_y(b.y); c.y=left_flip_y(c.y);
     Simp.immediate_triangle(a,b,c,c0,c1,c2,uv0,uv1,uv2,normal);
 }
 left_quad :: (p0:Vector2,p1:Vector2,p2:Vector2,p3:Vector2,color:=Vector4.{1,1,1,1},uv0:=Vector2.{0,0},uv1:=Vector2.{1,0},uv2:=Vector2.{1,1},uv3:=Vector2.{0,1}) {
-    a:=p0;b:=p1;c:=p2;d:=p3;
+    a:=p0;b:=p1;c:=p2;d:=p3; a.y=left_flip_y(a.y);b.y=left_flip_y(b.y);c.y=left_flip_y(c.y);d.y=left_flip_y(d.y);
     Simp.immediate_quad(a,b,c,d,color,uv0,uv1,uv2,uv3);
 }
 }
@@ -751,7 +767,7 @@ ui_deinit :: () {
     Tables.deinit(*state_table); array_reset(*state_stack); array_reset(*scissor_stack); array_reset(*popups);
     array_reset(*events_to_handle_this_frame); array_reset(*left_event_windows); array_reset(*left_window_buttons);
     array_reset(*this_frame_per_window_states); array_reset(*last_frame_per_window_states);
-    default_font_data=""; right_release_assets(); right_release_asset_root();
+    #if GETRECT_Y_UP { default_font_data=""; right_release_assets(); right_release_asset_root(); }
     active_widget=null; active_widget_is_grabbing=false; initialized=false; left_scoped_input=false;
 }
 #scope_module
@@ -760,6 +776,3 @@ left_release_text_state :: (state:*Text_Input_State) {
     for command:state.command_history free(command.data); array_reset(*state.command_history); array_reset(*state.buffered_events);
 }
 
-#scope_export
-backspace_from_cursor :: (using state:*Text_Input_State) { backspace_from_cursor(state,false); }
-delete_from_cursor :: (using state:*Text_Input_State) { delete_from_cursor(state,false); }

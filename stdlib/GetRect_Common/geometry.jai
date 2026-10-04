@@ -1,4 +1,4 @@
-// Historical right-handed geometry, independently authored.
+// Rectangle, hash and color helpers shared by GetRect and GetRect_LeftHanded (GETRECT_Y_UP selects the vertical axis).
 Rect :: struct { x, y: float; w, h: float; }
 get_rect :: (x: float, y: float, w: float, h: float) -> Rect { return .{x,y,w,h}; }
 expand :: (rect: Rect, amount: float) -> Rect { return .{rect.x-amount,rect.y-amount,rect.w+2*amount,rect.h+2*amount}; }
@@ -13,11 +13,14 @@ cut_left :: (rect: Rect, amount: float, margin := 0.0) -> (left: Rect, remainder
 cut_right :: (rect: Rect, amount: float, margin := 0.0) -> (right: Rect, remainder: Rect) {
     return .{rect.x+rect.w-amount,rect.y,amount,rect.h}, .{rect.x,rect.y,rect.w-amount-margin,rect.h};
 }
+// The top edge has the largest y when y points up and the smallest when it points down.
 cut_top :: (rect: Rect, amount: float, margin := 0.0) -> (top: Rect, remainder: Rect) {
-    return .{rect.x,rect.y+rect.h-amount,rect.w,amount}, .{rect.x,rect.y,rect.w,rect.h-amount-margin};
+    if GETRECT_Y_UP return .{rect.x,rect.y+rect.h-amount,rect.w,amount}, .{rect.x,rect.y,rect.w,rect.h-amount-margin};
+    return .{rect.x,rect.y,rect.w,amount}, .{rect.x,rect.y+amount+margin,rect.w,rect.h-amount-margin};
 }
 cut_bottom :: (rect: Rect, amount: float, margin := 0.0) -> (bottom: Rect, remainder: Rect) {
-    return .{rect.x,rect.y,rect.w,amount}, .{rect.x,rect.y+amount+margin,rect.w,rect.h-amount-margin};
+    if GETRECT_Y_UP return .{rect.x,rect.y,rect.w,amount}, .{rect.x,rect.y+amount+margin,rect.w,rect.h-amount-margin};
+    return .{rect.x,rect.y+rect.h-amount,rect.w,amount}, .{rect.x,rect.y,rect.w,rect.h-amount-margin};
 }
 is_inside :: (x: float, y: float, r: Rect) -> bool { return x>=r.x && y>=r.y && x<r.x+r.w && y<r.y+r.h; }
 intersect :: (a: Rect, b: Rect) -> Rect {
@@ -88,18 +91,3 @@ rgb_to_hsv :: (r: float, g: float, b: float) -> (h: float, s: float, v: float) {
     else hue=4+(r-g)/delta;
     return Math.frac(hue/6),delta/maximum,maximum;
 }
-#scope_module
-move_toward :: (a: float, b: float, amount_increasing: float, amount_decreasing := -1.0) -> float {
-    falling:=amount_decreasing;
-    if falling<0 falling=amount_increasing;
-    if b>a return Math.min(b,a+amount_increasing);
-    return Math.max(b,a-falling);
-}
-move_toward :: (a_pointer: *float, target: float, dt: float, rate_up: float, rate_down: float = -1.0) {
-    falling:=rate_down; if falling<0 falling=rate_up;
-    a_pointer.*=move_toward(a_pointer.*,target,dt*rate_up,dt*falling);
-}
-v2 :: xy;
-v3 :: xyz;
-v4 :: xyzw;
-fract :: inline (x: float) -> float { return Math.frac(x); }

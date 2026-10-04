@@ -336,6 +336,7 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Source expression parsing](source-expression-parsing.md)
 - [Reference corpus tests](reference-corpus-tests.md)
 - [Right-handed GetRect (default `GetRect`)](stdlib/getrect-legacy-right-handed.md) — y-up geometry, `legacy/GetRect` forwarders, and overlay notes.
+- [GetRect shared implementation](stdlib/getrect-shared-implementation.md) — `GetRect_Common`, the `GETRECT_Y_UP` switch, and how both orientations and the legacy stubs use it.
 - [Right-handed GetRect UI](stdlib/getrect-legacy-right-handed-ui.md) — widgets, upward-positive layout, and cached resource reads.
 
 - [Enum source namespaces](enum-source-namespaces.md) — original enum alias type facts for inferred source header defaults.

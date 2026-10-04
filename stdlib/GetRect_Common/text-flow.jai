@@ -43,7 +43,7 @@ text_display :: (r:Rect,text:*Flowable_Text,offset_y:float,line_stride:float,the
     left:=get_float_parameter(r,theme.left_margin_type,theme.left_margin,theme.left_margin);
     right:=get_float_parameter(r,theme.right_margin_type,theme.right_margin,theme.right_margin);
     top:=get_float_parameter(r,theme.top_margin_type,theme.top_margin,theme.top_margin);
-    content.x+=left; content.w=max(content.w-left-right,0.0); content.y+=top; content.h=max(content.h-top,0.0);
+    content.x+=left; content.w=max(content.w-left-right,0.0); if !GETRECT_Y_UP content.y+=top; content.h=max(content.h-top,0.0);
     if theme.auto_reflow_text maybe_reflow_text_if_rect_dimensions_changed(text,content);
     view:=left_text_view(state); view.content=content; view.offset=offset_y; view.stride=line_stride;
     status:=get_status_flags(content,state);
@@ -52,7 +52,7 @@ text_display :: (r:Rect,text:*Flowable_Text,offset_y:float,line_stride:float,the
     for event,index:events_to_handle_this_frame if left_event_window(index)==state.window text_display_handle_event(state,event);
     push_scissor(content); defer pop_scissor();
     for line,line_index:text.flowed_lines {
-        y:=content.y+offset_y+line_index*line_stride; if y+line_stride<content.y||y>=content.y+content.h continue;
+        y:=ifx GETRECT_Y_UP then right_flow_line_y(content,offset_y,line_stride,line_index) else content.y+offset_y+line_index*line_stride; if y+line_stride<content.y||y>=content.y+content.h continue;
         x:=content.x; character:int;
         selected:=make_forward_selection(view.selection);
         for piece:line.pieces {
@@ -72,7 +72,7 @@ text_display :: (r:Rect,text:*Flowable_Text,offset_y:float,line_stride:float,the
 }
 find_line_and_character :: (text:*Flowable_Text,rt_width:int,rt_height:int,cursor_x:int,cursor_y:int)->(found:bool,line:int,character:int) {
     view:=left_text_view_for_text(text); if !view||text.flowed_lines.count==0 return false,0,0;
-    index:=clamp(cast(int)floor((cursor_y-view.content.y-view.offset)/view.stride),0,text.flowed_lines.count-1);
+    index:=ifx GETRECT_Y_UP then right_flow_line_index(view.content,view.offset,view.stride,cursor_y,text.flowed_lines.count) else clamp(cast(int)floor((cursor_y-view.content.y-view.offset)/view.stride),0,text.flowed_lines.count-1);
     x:=view.content.x; column:int;
     for piece:text.flowed_lines[index].pieces {
         if !piece.font continue; point:=0; previous:float;

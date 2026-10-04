@@ -1,15 +1,6 @@
-// Left-handed (y-down) GetRect: same API as GetRect with a downward-positive vertical axis.
-// Shared implementation lives in ../GetRect_Common; see docs/stdlib/getrect-shared-implementation.md.
-#module_parameters ()(Type_Indicator: Type = void);
-Math :: #import "Math";
-using Math;
-Basic :: #import "Basic";
+// Small math helpers, module-private like the reference GetRect.
+// GetRect_LeftHanded has always exported these, so its module.jai carries an exported copy.
 #scope_module
-GETRECT_Y_UP :: false;
-#scope_export
-#load "../GetRect_Common/ui.jai";
-#load "../GetRect_Common/geometry.jai";
-// Exported here (unlike GetRect, where geometry-helpers.jai keeps them module-private).
 move_toward :: (a: float, b: float, amount_increasing: float, amount_decreasing := -1.0) -> float {
     falling:=amount_decreasing;
     if falling<0 falling=amount_increasing;

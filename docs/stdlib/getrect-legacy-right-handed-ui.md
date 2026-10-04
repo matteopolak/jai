@@ -8,7 +8,7 @@ The complete historical closure has 268 matching lexical declaration contracts. 
 
 ## How it works
 
-The module keeps stable widget states, balanced draw/scissor stacks, active-widget capture, frame-buffered occlusion, popup ordering, text editing, region layouts, subwindows, and color controls. It shares the implementation's historical left-handed algorithms through separately authored source copies, with concrete right-handed layout changes. Public rectangles and the three-argument subwindow draw callbacks retain upward-positive coordinates throughout.
+The module keeps stable widget states, balanced draw/scissor stacks, active-widget capture, frame-buffered occlusion, popup ordering, text editing, region layouts, subwindows, and color controls. The y-up and y-down modules now share one source tree; right-handed layout differences are `GETRECT_Y_UP` branches. Public rectangles and the three-argument subwindow draw callbacks retain upward-positive coordinates throughout.
 
 `orientation.jai` contains the pure layout math actually called by the widgets. A vertical divider's first rectangle is the high-y slice. The horizontal scrollbar occupies the low edge. `end_scrollable_region(state,max_x,min_y,scroll_value)` receives the lowest drawn content y; positive scroll translates content upward. A vertical nib starts at the track's upper end and travels downward as scroll increases. The caller applies the returned/current scroll displacement to its content before reporting the drawn bounds.
 
@@ -32,15 +32,15 @@ The asset-path ownership follow-up releases the temporary default-directory join
 
 ## How to change it
 
-Preserve exact public declarations in `legacy-layouts.jai` and `advanced-layouts.jai`. Change region/subwindow flow in `regions.jai`, pointer and drawing adapters in `ui.jai`, editing in `text-interaction.jai`, flowed display in `text-flow.jai`, color interaction in `colors.jai`, and geometry conversion in `orientation.jai` or `color-surfaces.jai`. Keep callback geometry right-handed, retain borrowed/owned distinctions, and unwind matching state, scissor, and occluder operations in order.
+The files below live in `stdlib/GetRect_Common/` and are shared with the y-down module through `GETRECT_Y_UP` ([shared implementation](getrect-shared-implementation.md)); the assets provider is compiled only for y-up. Preserve exact public declarations in `legacy-layouts.jai` and `advanced-layouts.jai`. Change region/subwindow flow in `regions.jai`, pointer and drawing adapters in `ui.jai`, editing in `text-interaction.jai`, flowed display in `text-flow.jai`, color interaction in `colors.jai`, and geometry conversion in `orientation.jai` or `color-surfaces.jai`. Keep callback geometry right-handed, retain borrowed/owned distinctions, and unwind matching state, scissor, and occluder operations in order.
 
-`tests/orientation-tests.jai` loads the real geometry and production orientation helpers without replacing a renderer or constructing a native window. Its assertions cover asymmetric top/bottom layouts, nib positions and drag mapping, edge clamping, anchored content fitting, descending lines, and HSV coordinate mapping. Extend this fixture for new coordinate behavior, and test the real rendered result separately when the full source graph and native dependencies are available.
+`stdlib/GetRect/tests/orientation-tests.jai` loads the real geometry and production orientation helpers without replacing a renderer or constructing a native window. Its assertions cover asymmetric top/bottom layouts, nib positions and drag mapping, edge clamping, anchored content fitting, descending lines, and HSV coordinate mapping. Extend this fixture for new coordinate behavior, and test the real rendered result separately when the full source graph and native dependencies are available.
 
 The RH UI source receipt and exact hashes are recorded separately in `stdlib/.coverage/getrect-legacy-right-handed-ui.json`. The geometry lane retains its own passing geometric assertions. Do not turn a copied passing geometry receipt into an RH widget, resource, or native acceptance claim.
 
 ## Configuration
 
-Without configuration, assets resolve from `data/` beside this module's `assets.jai`, using its retained `#filepath` source directory. Required default filenames are:
+Without configuration, assets resolve from `stdlib/GetRect/data/` (`GetRect_Common/assets.jai` reaches it through `#filepath` plus `../GetRect/data`). Required default filenames are:
 
 ```text
 ui_radiobox_full.png

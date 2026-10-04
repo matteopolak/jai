@@ -1,4 +1,4 @@
-#load "../color-math.jai";
+#load "../../GetRect_Common/color-math.jai";
 M :: #import "Math";
 color_math_cases :: ()->bool {
     white:=linear_srgb_to_oklab(M.Vector3.{1,1,1});

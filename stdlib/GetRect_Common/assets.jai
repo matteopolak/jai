@@ -28,7 +28,7 @@ right_asset_path :: (filename:string)->string {
     default_root:string;
     defer free(default_root.data,allocator=owner);
     if root.count==0 {
-        default_root=String.join(#filepath,"data",separator="/");
+        default_root=String.join(#filepath,"../GetRect/data",separator="/");
         if default_root.count==0 return "";
         root=default_root;
     }

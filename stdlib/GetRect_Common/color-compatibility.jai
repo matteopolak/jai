@@ -30,7 +30,7 @@ init_color_by_interpolation :: (state:*Color_Animation_Editor_State,keyframe_ind
     state.color_keyframes[keyframe_index].color_rgb=left_color_sample_at(sorted,get_interpolation(state),state.color_keyframes[keyframe_index].t);
 }
 draw_color_gradient_bar :: (area:Rect,theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State,top_margin:float) {
-    area.h=max(area.h-max(top_margin,0.0),0.0); left_color_strip(area,state,1.0);
+    if !GETRECT_Y_UP area.y+=max(top_margin,0.0); area.h=max(area.h-max(top_margin,0.0),0.0); left_color_strip(area,state,1.0);
 }
 draw_color_keyframe :: (index:int,rect:Rect,theme:*Color_Animation_Editor_Theme,state:*Color_Animation_Editor_State) {
     if index<0||index>=state.color_keyframes.count return;

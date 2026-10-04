@@ -14,7 +14,7 @@ get_roundedness_for_rect :: (r:Rect,type:Size_Computation,roundedness:float,glob
     amount:=get_float_parameter(r,type,roundedness,global_value); return clamp(amount,0.0,max(min(r.w,r.h)*limit,0.0));
 }
 get_y_range :: (font:*Font,text_y:float)->(y0:float,y1:float) {
-    if !font return text_y,text_y; return text_y-font.max_ascender,text_y+font.max_descender;
+    if !font return text_y,text_y; if GETRECT_Y_UP return text_y-font.max_descender,text_y+font.max_ascender; return text_y-font.max_ascender,text_y+font.max_descender;
 }
 my_draw_text :: (font:*Font,x:s64,y:s64,text:string,color:Vector4,effects:Font_Effects=0) {
     assert(font&&draw_procs.prepare_text&&draw_procs.draw_prepared_text,"Text renderer callbacks and font are required");
