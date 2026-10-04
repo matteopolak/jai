@@ -137,10 +137,44 @@ impl Compiler {
     }
 
     /// `Table(int, string)`: instantiate a polymorphic struct.
+    /// The constant value of a polymorphic struct argument. An aggregate whose type
+    /// differs from the parameter's (a fixed array for a `[] T` parameter) is converted.
+    fn struct_arg_value(
+        &mut self,
+        scope: ScopeId,
+        op: Operand,
+        ty: TypeId,
+        span: Span,
+    ) -> Result<Value> {
+        let converts = ty != TypeId::VOID
+            && op.ty() != ty
+            && matches!(
+                op,
+                Operand::Const {
+                    value: Value::Bytes(_),
+                    ..
+                }
+            );
+        if converts {
+            return self.const_value_of_operand(scope, op, ty, span);
+        }
+        match op {
+            Operand::Type(t) => Ok(Value::Type(t)),
+            Operand::Const {
+                value, ..
+            } => Ok(value),
+            Operand::Procs(p) if p.len() == 1 => Ok(Value::Proc(p[0])),
+            other => err(
+                span,
+                format!("expected a constant, found {}", self.describe(&other)),
+            ),
+        }
+    }
+
     pub fn instantiate_struct(
         &mut self,
         ps: PolyStructId,
-        args: Vec<(Option<Sym>, Value)>,
+        args: Vec<(Option<Sym>, Operand)>,
         span: Span,
     ) -> Result<TypeId> {
         let (name, lit, def_scope) = {
@@ -149,7 +183,7 @@ impl Compiler {
         };
         let module = self.scope(def_scope).module;
         let param_scope = self.new_scope(ScopeKind::StructParams, Some(def_scope), module, None);
-        let mut values: Vec<Option<Value>> = vec![None; lit.params.len()];
+        let mut values: Vec<Option<Operand>> = vec![None; lit.params.len()];
         let mut next = 0;
         for (n, v) in args {
             let index = match n {
@@ -183,7 +217,7 @@ impl Compiler {
                 None => TypeId::VOID,
             };
             let value = match values[i].take() {
-                Some(v) => v,
+                Some(op) => self.struct_arg_value(param_scope, op, ty, p.span)?,
                 None => match &p.default {
                     Some(d) => self.eval_const_value(param_scope, d)?,
                     None => {
@@ -779,6 +813,26 @@ impl Compiler {
                 value: Value::String(ref s),
                 ..
             } if name.as_str() == "count" => return Ok(Operand::untyped_int(s.len() as i128)),
+            // `code.type`: the type of a Code expression, checked where it was written.
+            Operand::Const {
+                value: Value::Code(code),
+                ..
+            } if name.as_str() == "type" => {
+                let body = self.codes[code.0 as usize].clone();
+                let ast::CodeBody::Expr(e) = &*body else {
+                    return err(span, "only a Code expression has a type");
+                };
+                let code_scope = self.code_scopes[code.0 as usize];
+                let ty = match self.check_expr_no_emit(code_scope, e)? {
+                    Operand::Const {
+                        ty,
+                        value,
+                        untyped: true,
+                    } => self.default_untyped(ty, &value),
+                    other => other.ty(),
+                };
+                return Ok(Operand::Type(ty));
+            }
             Operand::Const {
                 ty, ..
             } if matches!(
@@ -1080,6 +1134,17 @@ impl Compiler {
         ty: TypeId,
     ) -> Result<Value> {
         let op = self.eval_const(scope, expr, Some(ty))?;
+        self.const_value_of_operand(scope, op, ty, expr.span)
+    }
+
+    /// Convert an evaluated constant operand to type `ty` and read its value.
+    pub fn const_value_of_operand(
+        &mut self,
+        scope: ScopeId,
+        op: Operand,
+        ty: TypeId,
+        span: Span,
+    ) -> Result<Value> {
         let file = self.scope_file(scope);
         let mut scratch = FnCtx::new(
             "const".into(),
@@ -1094,7 +1159,7 @@ impl Compiler {
         );
         scratch.compile_time = true;
         scratch.context = Some(scratch.b.param(0));
-        let converted = self.convert(&mut scratch, op, ty, expr.span)?;
+        let converted = self.convert(&mut scratch, op, ty, span)?;
         match converted {
             Operand::Const {
                 value, ..
@@ -1103,13 +1168,13 @@ impl Compiler {
             Operand::Procs(p) if p.len() == 1 => Ok(Value::Proc(p[0])),
             other => {
                 // Conversions that need code (e.g. boxing into Any) run as a thunk.
-                let op = self.run_thunk(scratch, other, expr.span)?;
+                let op = self.run_thunk(scratch, other, span)?;
                 match op {
                     Operand::Const {
                         value, ..
                     } => Ok(value),
                     other => err(
-                        expr.span,
+                        span,
                         format!("expected a constant, found {}", self.describe(&other)),
                     ),
                 }

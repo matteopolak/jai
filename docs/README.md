@@ -88,6 +88,7 @@
 - [Source type aliases](type-aliases.md)
 - [Procedure calls](procedure-calls.md)
 - [Anonymous source procedures](anonymous-procedures.md)
+- [jaic lambdas, #insert procedures and #caller_code](jaic-lambdas-and-insert-blocks.md)
 - [Procedure source notes](procedure-notes.md)
 - [Baked procedure arguments (staged)](baked-procedure-arguments.md)
 - [Short lambdas and contextual inference](short-lambdas.md)

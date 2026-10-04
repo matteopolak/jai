@@ -109,7 +109,7 @@ calendar_to_string :: (ct: Calendar_Time) -> string {
 calendar_to_iso_string :: (ct: Calendar_Time) -> string {
     zone := "";
     if ct.time_zone == .UTC zone = "Z";
-    return tprint("%0-%1-%2T%3:%4:%5.%6%7", FormatInt.{value = ct.year, minimum_digits = 4},
+    return tprint("%1-%2-%3T%4:%5:%6.%7%8", FormatInt.{value = ct.year, minimum_digits = 4},
         FormatInt.{value = ct.month_starting_at_0 + 1, minimum_digits = 2},
         FormatInt.{value = ct.day_of_month_starting_at_0 + 1, minimum_digits = 2},
         FormatInt.{value = ct.hour, minimum_digits = 2}, FormatInt.{value = ct.minute, minimum_digits = 2},

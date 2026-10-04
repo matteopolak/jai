@@ -163,7 +163,7 @@ fn decl_is_proc(decl: &ast::Decl) -> bool {
     decl.kind == ast::DeclKind::Const
         && matches!(
             decl.value.as_ref().map(|v| &v.kind),
-            Some(ast::ExprKind::Proc(_))
+            Some(ast::ExprKind::Proc(_) | ast::ExprKind::Lambda { .. })
         )
 }
 

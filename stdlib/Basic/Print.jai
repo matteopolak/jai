@@ -704,8 +704,9 @@ isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
     return null;
 }
 
-// A lone '%' consumes the next argument; '%N' selects a zero-based index;
-// '%%' emits one literal percent. Out-of-range selectors fail explicitly.
+// A lone '%' consumes the next argument; '%N' selects the one-based argument N and the
+// next lone '%' continues after it; '%0' is a lone '%'; '%00' emits nothing; '%%' emits
+// one literal percent. Out-of-range selectors fail explicitly.
 __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) -> bool {
     position: s64 = 0;
     implicit: s64 = 0;
@@ -717,17 +718,24 @@ __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) 
         }
         index := implicit;
         if position < format.count && is_digit(format[position]) {
-            index = 0;
-            while position < format.count && is_digit(format[position]) {
-                digit := format[position] - #char "0";
-                if index > (0x7fff_ffff_ffff_ffff - digit) / 10 { builder.failed = true; return false; }
-                index = index*10 + digit; position += 1;
+            if format[position] == #char "0" {
+                position += 1;
+                if position < format.count && format[position] == #char "0" { position += 1; continue; }
+            } else {
+                number: s64 = 0;
+                while position < format.count && is_digit(format[position]) {
+                    digit := format[position] - #char "0";
+                    if number > (0x7fff_ffff_ffff_ffff - digit) / 10 { builder.failed = true; return false; }
+                    number = number*10 + digit; position += 1;
+                }
+                index = number - 1;
             }
-        } else implicit += 1;
+        }
         if index < 0 || index >= args.count {
             append(builder, "<missing format argument>"); builder.failed = true; return false;
         }
         __append_item(builder, args[index], false, false, 0);
+        implicit = index + 1;
         if builder.failed return false;
     }
     return !builder.failed;
