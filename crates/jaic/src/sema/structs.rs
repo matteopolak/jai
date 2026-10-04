@@ -224,6 +224,29 @@ impl Compiler {
         }
     }
 
+    /// The declared type of a polymorphic struct's value parameter (by position or name), when
+    /// it can be evaluated outside the parameter scope; used to type `.MEMBER` arguments.
+    pub fn poly_struct_param_type(
+        &mut self,
+        ps: PolyStructId,
+        index: usize,
+        name: Option<Sym>,
+    ) -> Option<TypeId> {
+        let (lit, scope) = {
+            let p = &self.poly_structs[ps.0 as usize];
+            (p.lit.clone(), p.scope)
+        };
+        let param = match name {
+            Some(n) => lit
+                .params
+                .iter()
+                .find(|p| p.name.map(|i| i.name) == Some(n))?,
+            None => lit.params.get(index)?,
+        };
+        let ty = param.ty.as_ref()?;
+        self.eval_type(scope, ty).ok()
+    }
+
     pub fn instantiate_struct(
         &mut self,
         ps: PolyStructId,
@@ -277,6 +300,29 @@ impl Compiler {
         let mut key = Vec::new();
         for (i, p) in lit.params.iter().enumerate() {
             let pname = p.name.map(|n| n.name).unwrap_or_else(|| Sym::intern("_"));
+            // `x: $T`: the argument's type binds `T` (also `[$N] $T` and other patterns).
+            if let Some(t) = &p.ty
+                && super::procs::has_poly(t)
+                && let Some(op) = &values[i]
+            {
+                let arg_ty = match op {
+                    Operand::Const {
+                        ty,
+                        value,
+                        untyped: true,
+                    } => self.default_untyped(*ty, value),
+                    Operand::Procs(procs) if procs.len() == 1 => self.proc_type(procs[0], span)?,
+                    Operand::Type(_) => TypeId::TYPE,
+                    other => other.ty(),
+                };
+                let mut found = Vec::new();
+                self.match_pattern(t, arg_ty, &mut found, param_scope)?;
+                for (n, v, vty) in found {
+                    self.add_const(param_scope, n, p.span, v.clone(), vty);
+                    key.push(v.clone());
+                    bindings.push((n, v, vty));
+                }
+            }
             let ty = match &p.ty {
                 Some(t) => self.eval_type(param_scope, t)?,
                 None => TypeId::VOID,
@@ -284,7 +330,12 @@ impl Compiler {
             let value = match values[i].take() {
                 Some(op) => self.struct_arg_value(param_scope, op, ty, p.span)?,
                 None => match &p.default {
-                    Some(d) => self.eval_const_value(param_scope, d)?,
+                    Some(d) => {
+                        // The declared type lets `.FIRST` defaults find their enum.
+                        let expected = (ty != TypeId::VOID).then_some(ty);
+                        let op = self.eval_const_or_run(param_scope, d, expected)?;
+                        self.struct_arg_value(param_scope, op, ty, d.span)?
+                    }
                     None => {
                         return err(
                             span,
@@ -1798,7 +1849,15 @@ impl Compiler {
             );
         };
         let n = ops.len() as u64;
-        let ty = self.types.array(elem, ArrayKind::Fixed(n));
+        let mut ty = self.types.array(elem, ArrayKind::Fixed(n));
+        // `g: Grid3i = .[1, 4, 9]`: a literal takes a `#type,distinct` variant of its own type.
+        if ty_expr.is_none()
+            && let Some(e) = expected
+            && matches!(self.types.kind(e), TypeKind::Distinct(_))
+            && self.types.repr(e) == ty
+        {
+            ty = e;
+        }
         let esize = self.size_of(elem, span)?;
         if ops
             .iter()

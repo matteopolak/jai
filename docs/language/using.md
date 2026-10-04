@@ -35,6 +35,9 @@ Both `Derived` and `New(Derived)` get `kind == .B` while `extra` keeps `Base`'s 
 
 `using` on a parameter (`move :: (using p: *Pt, dx: int) { x += dx; }`) or a local statement (`using p;` in a block) brings the fields into that scope. `using` of a module or struct constant at file scope is covered by `tests/stdlib/module-using-global.jai`, `module-using-import-reexport.jai` and `using-discard-struct-constants.jai`.
 
+- `using Type.{...};` in a procedure copies the literal into an anonymous local and uses it (`check_using`, `sema/stmt.rs`); it is writable, unlike the read-only literal data real Jai uses.
+- `using name := value;` at file scope registers the `using` for variables too, not only constants (`sema/modules.rs`).
+
 ## How to change it
 
 Member lookup order lives in `find_member`; promoted members come after direct ones, so a direct member shadows a promoted one. Default overrides resolve through `override_target`/`override_path` and are applied when the default initializer is built (`default_initializer`). Gotcha: `using` is a declaration modifier, so `#as` must appear next to it (`using #as x` and `#as using x` both parse).

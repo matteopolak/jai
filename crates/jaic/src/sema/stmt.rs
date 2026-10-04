@@ -212,9 +212,10 @@ impl Compiler {
             ),
             S::While {
                 label,
+                bind_label,
                 cond,
                 body,
-            } => self.check_while(f, scope, label.map(|l| l.name), cond, body),
+            } => self.check_while(f, scope, label.map(|l| l.name), *bind_label, cond, body),
             S::For(for_) => self.check_for(f, scope, for_, span),
             S::Break(label) => {
                 let label = label.map(|l| l.name);
@@ -1103,6 +1104,34 @@ impl Compiler {
                     entity: e,
                 }
             }
+            Operand::Const {
+                ty, ..
+            } if self.types.as_struct(ty).is_some() => {
+                // `using Ice_Cream.{...};`: the literal lives in an anonymous local.
+                let (ty, v) = self.rvalue(f, op, value.span)?;
+                let size = self.size_of(ty, value.span)?;
+                let align = self.align_of(ty, value.span)?;
+                let addr = f.b.alloca(size.max(1), align);
+                self.store_value(f, ty, addr, v, value.span)?;
+                let ptr = self.types.pointer(ty);
+                let slot = self.spill(f, ptr, addr, value.span)?;
+                let depth = self.scope(scope).proc_depth;
+                let e = self.add_entity(
+                    scope,
+                    Sym::intern("\u{0}using"),
+                    value.span,
+                    EntityKind::Local {
+                        ty: ptr,
+                        addr: slot,
+                        depth,
+                    },
+                    false,
+                );
+                UsingEntry::Place {
+                    ty: ptr,
+                    entity: e,
+                }
+            }
             other => {
                 return err(
                     value.span,
@@ -1336,6 +1365,7 @@ impl Compiler {
         f: &mut FnCtx,
         scope: ScopeId,
         label: Option<Sym>,
+        bind_label: bool,
         cond: &ast::Expr,
         body: &ast::Stmt,
     ) -> Result<()> {
@@ -1344,7 +1374,33 @@ impl Compiler {
         let exit = f.b.new_block();
         f.b.jump(head);
         f.b.switch_to(head);
-        let c = self.check_condition(f, scope, cond)?;
+        let (scope, c) = match label.filter(|_| bind_label) {
+            Some(name) => {
+                // `while s := next()`: the value is a local of the loop, besides being its label.
+                let op = self.check_expr(f, scope, cond, Some(TypeId::BOOL))?;
+                let op = self.settle_untyped(op, None);
+                let (ty, v) = self.rvalue(f, op, cond.span)?;
+                let size = self.size_of(ty, cond.span)?;
+                let align = self.align_of(ty, cond.span)?;
+                let addr = f.b.alloca(size.max(1), align);
+                self.store_value(f, ty, addr, v, cond.span)?;
+                let inner = self.new_block_scope(scope);
+                let depth = self.scope(inner).proc_depth;
+                self.add_entity(
+                    inner,
+                    name,
+                    cond.span,
+                    EntityKind::Local {
+                        ty,
+                        addr,
+                        depth,
+                    },
+                    false,
+                );
+                (inner, self.truthy(f, ty, v, cond.span)?)
+            }
+            None => (scope, self.check_condition(f, scope, cond)?),
+        };
         f.b.branch(c, body_block, exit);
         f.b.switch_to(body_block);
         f.loops.push(LoopFrame {

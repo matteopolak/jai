@@ -30,6 +30,9 @@ Pointers and integers convert both ways: `cast(s64) ptr`, `cast(*u8) addr`, and 
 
 A string literal converts to `*u8`; a `string` variable does not (see [strings-and-literals.md](strings-and-literals.md)).
 
+- String literals convert implicitly to `#type,distinct` / `#type,isa` string variants (call matching returns `LITERAL` cost; `convert_const` retags the constant), and `.[...]` literals take an expected distinct array type of the same shape.
+- A call to a procedure with an `#type,isa` variant argument whose single non-macro result has exactly the variant's base type returns the variant (`pa + pb` on `Position3` stays `Position3`); see `emit_call` in `sema/calls.rs`.
+
 ## How to change it
 
 Add a scalar conversion in `scalar_convert`, or a new aggregate/array case in the later branches of `explicit_cast`. Implicit conversions are priced by `implicit_cost`; overload resolution uses that cost, so changing it changes which overload wins. Constant operands are folded at the top of `explicit_cast`; update that table together with the runtime path or `#run` results and runtime results will diverge.
