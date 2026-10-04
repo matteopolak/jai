@@ -15,7 +15,7 @@ file_write :: inline (file: *File, data: string) -> bool {
 }
 
 file_write :: (file: *File, builder: *String_Builder, do_reset := true) -> bool {
-    if do_reset defer reset(builder);
+    defer if do_reset reset(builder);
     part := get_base_buffer(builder);
     while part {
         if !file_write(file, get_buffer_data(part), part.count) return false;
@@ -38,7 +38,7 @@ write_entire_file :: (name: string, data: *void, count: int) -> bool {
 }
 
 write_entire_file :: (name: string, builder: *String_Builder, do_reset := true) -> bool {
-    if do_reset defer reset(builder);
+    defer if do_reset reset(builder);
     output, opened := file_open(name, for_writing = true);
     if !opened return false;
     written := file_write(*output, builder, false);

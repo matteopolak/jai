@@ -88,8 +88,15 @@ set_window_dimensions :: (window: Window_Type, width: s32, height: s32) {
         set_projection();
     }
 }
-set_render_target :: (window: Window_Type) {
+// LEFT_HANDED (y down) will eventually become the default. The value is recorded in
+// context.simp.coordinate_system; this implementation's projection and text quads stay right-handed (y up).
+Simp_Coordinate_System :: enum u8 {
+    LEFT_HANDED  :: 0;
+    RIGHT_HANDED :: 1;
+}
+set_render_target :: (window: Window_Type, coords := Simp_Coordinate_System.RIGHT_HANDED) {
     CheckInit(); immediate_flush();
+    context.simp.coordinate_system = coords;
     info, added := find_or_add_window_info(window);
     if window_dimension_query {
         info.window_width, info.window_height = window_dimension_query(window);
@@ -99,10 +106,11 @@ set_render_target :: (window: Window_Type) {
     context.simp.current_shader = null;
     backend_select_window(info);
 }
-set_render_target :: (texture: *Texture) {
+set_render_target :: (texture: *Texture, coords := Simp_Coordinate_System.RIGHT_HANDED) {
     assert(texture != null && (texture.flags & .Render_Target) != 0, "Simp requires a render-target texture");
     if !texture || !(texture.flags & .Render_Target) return;
     CheckInit(); immediate_flush();
+    context.simp.coordinate_system = coords;
     context.simp.texture_render_target = texture;
     context.simp.current_shader = null;
     backend_select_texture(texture);
