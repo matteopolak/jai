@@ -447,6 +447,7 @@ impl Compiler {
         }
         let needs_abi =
             p.c_call && (c_abi.ret.is_some() || c_abi.params.iter().any(Option::is_some));
+        let c_fixed = params.len() as u32;
         Ok(Sig {
             params,
             returns,
@@ -456,6 +457,7 @@ impl Compiler {
                 Conv::Jai
             },
             c_varargs: p.c_varargs,
+            c_fixed,
             c_abi: needs_abi.then(|| Box::new(c_abi)),
         })
     }

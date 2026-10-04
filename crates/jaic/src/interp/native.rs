@@ -131,13 +131,21 @@ pub fn lookup(_lib: Option<&Library>, _symbol: &str) -> Option<u64> {
     None
 }
 
-/// The register arguments of one call: 8 integer and 8 floating-point registers.
+/// Stack argument slots after the registers (variadic arguments on Apple arm64).
+const STACK_SLOTS: usize = 16;
+
+/// Apple's arm64 ABI passes every variadic argument on the stack, in 8-byte slots.
+const VARARGS_ON_STACK: bool = cfg!(all(target_vendor = "apple", target_arch = "aarch64"));
+
+/// The arguments of one call: 8 integer and 8 floating-point registers, then stack slots.
 #[derive(Default)]
 struct Regs {
     ints: [u64; 8],
     floats: [u64; 8],
+    stack: [u64; STACK_SLOTS],
     ni: usize,
     nf: usize,
+    ns: usize,
 }
 
 impl Regs {
@@ -156,6 +164,16 @@ impl Regs {
         }
         self.floats[self.nf] = bits;
         self.nf += 1;
+        Ok(())
+    }
+    fn stack(&mut self, v: u64) -> Result<(), String> {
+        if self.ns == STACK_SLOTS {
+            return Err(format!(
+                "foreign call has more than {STACK_SLOTS} variadic arguments"
+            ));
+        }
+        self.stack[self.ns] = v;
+        self.ns += 1;
         Ok(())
     }
 }
@@ -204,34 +222,44 @@ const SRET_WORDS: usize = 64;
 #[derive(Clone, Copy)]
 struct Sret([u64; SRET_WORDS]);
 
-/// Call `addr` through a prototype taking 8 integer and 8 float registers, returning `R`.
+/// Call `addr` through a prototype taking 8 integer and 8 float registers followed by
+/// `STACK_SLOTS` 8-byte stack slots (with all integer registers taken, further `u64`s go to
+/// the stack in order), returning `R`.
 ///
-/// SAFETY: `addr` is a C function whose arguments fit the registers in `regs`.
+/// SAFETY: `addr` is a C function whose arguments fit the registers and slots in `regs`.
 unsafe fn call_as<R>(addr: u64, regs: &Regs) -> R {
+    #[rustfmt::skip]
     type Proto<R> = unsafe extern "C" fn(
-        u64,
-        u64,
-        u64,
-        u64,
-        u64,
-        u64,
-        u64,
-        u64,
-        f64,
-        f64,
-        f64,
-        f64,
-        f64,
-        f64,
-        f64,
-        f64,
+        u64, u64, u64, u64, u64, u64, u64, u64,
+        f64, f64, f64, f64, f64, f64, f64, f64,
+        u64, u64, u64, u64, u64, u64, u64, u64,
+        u64, u64, u64, u64, u64, u64, u64, u64,
     ) -> R;
     let f: Proto<R> = unsafe { std::mem::transmute::<usize, Proto<R>>(addr as usize) };
     let [i0, i1, i2, i3, i4, i5, i6, i7] = regs.ints;
     let [f0, f1, f2, f3, f4, f5, f6, f7] = regs.floats.map(f64::from_bits);
+    let [
+        s0,
+        s1,
+        s2,
+        s3,
+        s4,
+        s5,
+        s6,
+        s7,
+        s8,
+        s9,
+        s10,
+        s11,
+        s12,
+        s13,
+        s14,
+        s15,
+    ] = regs.stack;
     unsafe {
         f(
-            i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7,
+            i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7, s0, s1, s2, s3, s4, s5,
+            s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
         )
     }
 }
@@ -251,6 +279,10 @@ pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
     for (i, &a) in args.iter().enumerate() {
         if ret_layout.is_some() && i + 1 == sig.params.len() {
             out_ptr = a;
+            continue;
+        }
+        if VARARGS_ON_STACK && sig.c_varargs && i >= sig.c_fixed as usize {
+            regs.stack(a)?;
             continue;
         }
         let layout = cabi.and_then(|c| c.params.get(i)).and_then(Option::as_ref);

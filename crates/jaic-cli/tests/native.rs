@@ -173,3 +173,18 @@ fn c_structs_by_value() {
         "{111, 47} {10, 20, 30, 40} {8, 4}\n"
     );
 }
+
+/// C variadic foreign calls in a native build (Apple arm64 passes variadic arguments on the stack).
+#[test]
+fn c_variadic_calls() {
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-varargs");
+    std::fs::create_dir_all(&dir).unwrap();
+    let source = repo_root().join("tests/stdlib/c-variadic-foreign-calls.jai");
+    let output = build_and_run(&source, &dir, "varargs").unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        "ok\n",
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}

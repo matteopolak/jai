@@ -193,7 +193,12 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             None => RetPlan::Scalars(sig.returns.clone()),
         };
         let mut params = Vec::new();
+        // Variadic arguments are not part of the LLVM function type.
+        let mut fixed = None;
         for (i, &ty) in sig.params.iter().enumerate() {
+            if sig.c_varargs && i == sig.c_fixed as usize {
+                fixed = Some(llvm_params.len());
+            }
             if ret_agg.is_some() && i + 1 == sig.params.len() {
                 params.push(ParamPlan::Dropped);
                 continue;
@@ -225,13 +230,14 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                 }
             }
         }
+        let fixed_params = &llvm_params[..fixed.unwrap_or(llvm_params.len())];
         let fn_ty = match &ret {
-            RetPlan::Scalars(tys) => self.fn_type(self.ret_type(tys), &llvm_params, sig.c_varargs),
+            RetPlan::Scalars(tys) => self.fn_type(self.ret_type(tys), fixed_params, sig.c_varargs),
             RetPlan::Registers(_, pieces) => {
                 let tys: Vec<BasicTypeEnum> = pieces.iter().map(|p| self.piece_ty(p.ty)).collect();
-                self.fn_type(self.ret_type_of(&tys), &llvm_params, sig.c_varargs)
+                self.fn_type(self.ret_type_of(&tys), fixed_params, sig.c_varargs)
             }
-            RetPlan::Sret => self.fn_type(None, &llvm_params, sig.c_varargs),
+            RetPlan::Sret => self.fn_type(None, fixed_params, sig.c_varargs),
         };
         Lowered {
             fn_ty,

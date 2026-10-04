@@ -25,6 +25,7 @@ impl Compiler {
             returns: vec![Ty::I8],
             conv: ir::Conv::Jai,
             c_varargs: false,
+            c_fixed: 0,
             c_abi: None,
         };
         let mut f = FnCtx::new("modify".into(), sig, self.scope_file(def_scope));

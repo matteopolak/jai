@@ -33,7 +33,7 @@ Lowering rules (`lower.rs`):
 | > 16 bytes arg | caller copy, pointer passed | `byval` pointer |
 | return | chunk(s) in registers, else `sret` | same |
 
-The IR passes aggregates by pointer, so the call site copies into a scratch temp, loads the chunks and passes them as separate LLVM arguments; returned chunks are stored to a temp and copied through the IR out-pointer (the last IR parameter, which is dropped from the LLVM signature). Variadic calls use a vararg function type.
+The IR passes aggregates by pointer, so the call site copies into a scratch temp, loads the chunks and passes them as separate LLVM arguments; returned chunks are stored to a temp and copied through the IR out-pointer (the last IR parameter, which is dropped from the LLVM signature). Variadic calls use a vararg function type whose parameters are only the declared ones (`Sig::c_fixed`; the call site appends the variadic arguments to `Sig::params`), so LLVM applies the platform's variadic convention (stack slots on Apple arm64). Test: `c_variadic_calls`.
 
 Definitions with such signatures (`#c_call` callbacks C calls with structs) do the reverse in `bind_params`: register pieces are stored into an entry-block temp whose address stands in for the IR parameter, and `Ret` loads the return pieces from the IR out-pointer temp (`FnState::reg_ret`). `sret`/`byval` pointers are used directly. The classification lives in the `jaic` crate (`crates/jaic/src/abi.rs`) because the interpreter's native foreign calls use it too.
 
