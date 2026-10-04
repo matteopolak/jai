@@ -1,4 +1,4 @@
-//! Corpus sweep: `JAIC_CORPUS_STAGE=lex|parse cargo test -p jaic --test corpus -- --ignored --nocapture`.
+//! Corpus sweep: `JAIC_CORPUS_ROOT=<repo> JAIC_CORPUS_STAGE=lex|parse cargo test -p jaic --test corpus -- --ignored --nocapture`.
 //! Walks corpus/upstream/ and stdlib/ and reports failures.
 use std::path::{Path, PathBuf};
 
@@ -17,7 +17,9 @@ fn collect(dir: &Path, out: &mut Vec<PathBuf>) {
 #[test]
 #[ignore]
 fn corpus_sweep() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    // `JAIC_CORPUS_ROOT` points the sweep at another checkout (the corpora are gitignored).
+    let root = std::env::var_os("JAIC_CORPUS_ROOT")
+        .map_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."), PathBuf::from);
     let mut files = Vec::new();
     for dir in ["corpus/upstream", "stdlib"] {
         collect(&root.join(dir), &mut files);

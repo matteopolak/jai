@@ -208,7 +208,7 @@ impl<'a> Lexer<'a> {
             if is_ident_start(c) {
                 let name = self.ident_with_separators();
                 self.push(Tok::Ident(Sym::intern(&name)), start);
-            } else if c.is_ascii_digit() {
+            } else if c.is_ascii_digit() || self.at_leading_dot_float() {
                 let tok = self.number(start)?;
                 self.push(tok, start);
             } else if c == b'"' {
@@ -272,6 +272,14 @@ impl<'a> Lexer<'a> {
                 self.push(Tok::Punct(p), start);
             }
         }
+    }
+    /// `.5` is a float literal unless the dot continues an expression (`x.5`, `1..5`).
+    fn at_leading_dot_float(&self) -> bool {
+        let after_operand = self.at > 0 && {
+            let prev = self.src[self.at - 1];
+            is_ident_char(prev) || matches!(prev, b')' | b']' | b'.' | b'"')
+        };
+        self.peek(0) == b'.' && self.peek(1).is_ascii_digit() && !after_operand
     }
     fn ident(&mut self) -> &'a str {
         let s = self.at;
@@ -561,6 +569,13 @@ mod tests {
         assert_eq!(t[12], Tok::Float(1500.0));
         assert_eq!(t[14], Tok::Directive(Sym::intern("run")));
         assert!(matches!(&t[19], Tok::Note(n) if &**n == "note"));
+    }
+    #[test]
+    fn leading_dot_floats() {
+        let t = kinds("x := .5; y := a.b; z := 1..2;");
+        assert_eq!(t[2], Tok::Float(0.5));
+        assert_eq!(t[8], Tok::Punct(P::Dot));
+        assert_eq!(t[13], Tok::Punct(P::DotDot));
     }
     #[test]
     fn here_strings() {
