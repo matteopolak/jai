@@ -343,6 +343,11 @@ impl Compiler {
     pub fn expand_pending(&mut self, scope: ScopeId) -> Result<()> {
         let mut i = 0;
         while i < self.scope(scope).pending.len() {
+            // Items expand in source order: a re-entrant expansion (from inside an
+            // item's own condition or lookup) must not run later items early.
+            if self.scope(scope).pending[i].state == PendingState::Expanding {
+                return Ok(());
+            }
             if self.scope(scope).pending[i].state == PendingState::Waiting {
                 self.scope_mut(scope).pending[i].state = PendingState::Expanding;
                 let stmt = self.scope(scope).pending[i].stmt.clone();
