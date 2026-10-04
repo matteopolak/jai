@@ -138,9 +138,16 @@ pub enum ExprKind {
     Ident(Sym),
     /// `$T` introduces a polymorphic variable; `$$x` is a baked argument
     /// (`baked` = true when `$$`).
-    PolyVar { name: Sym, baked: bool },
+    PolyVar {
+        name: Sym,
+        baked: bool,
+    },
     /// `$T/Interface` or `$T/interface Interface` restriction.
-    PolyRestricted { name: Sym, restriction: Box<Expr>, interface: bool },
+    PolyRestricted {
+        name: Sym,
+        restriction: Box<Expr>,
+        interface: bool,
+    },
     Int(u128),
     Float(f64),
     Str(Rc<[u8]>),
@@ -162,34 +169,66 @@ pub enum ExprKind {
     InferredMember(Ident),
     Index(Box<Expr>, Box<Expr>),
     /// `cast(T) x`, `cast,no_check(T) x`. `ty == None` is `xx x`.
-    Cast { ty: Option<Box<Expr>>, value: Box<Expr>, flags: CastFlags },
+    Cast {
+        ty: Option<Box<Expr>>,
+        value: Box<Expr>,
+        flags: CastFlags,
+    },
     /// `ifx c then a else b`; `then_value == None` means the condition value is reused.
     /// `#ifx` sets `is_static` (the condition is a compile-time constant).
     /// `else_value == None` is `ifx c then a` (the type's zero value when false).
-    Ifx { cond: Box<Expr>, then_value: Option<Box<Expr>>, else_value: Option<Box<Expr>>, is_static: bool },
+    Ifx {
+        cond: Box<Expr>,
+        then_value: Option<Box<Expr>>,
+        else_value: Option<Box<Expr>>,
+        is_static: bool,
+    },
     /// `T.{...}` / `.{...}`
-    StructLit { ty: Option<Box<Expr>>, fields: Vec<Arg> },
+    StructLit {
+        ty: Option<Box<Expr>>,
+        fields: Vec<Arg>,
+    },
     /// `T.[...]` / `.[...]`
-    ArrayLit { ty: Option<Box<Expr>>, elems: Vec<Expr> },
-    ArrayType { size: ArraySize, elem: Box<Expr> },
+    ArrayLit {
+        ty: Option<Box<Expr>>,
+        elems: Vec<Expr>,
+    },
+    ArrayType {
+        size: ArraySize,
+        elem: Box<Expr>,
+    },
     /// A procedure header without a body (a procedure type).
     ProcType(Rc<ProcHeader>),
     /// A procedure literal (header + body, or a foreign/compiler declaration).
     Proc(Rc<ProcLit>),
     /// Short lambda: `x => x + 1`, `(a, b) => { ... }`. Parameter types are usually absent.
-    Lambda { header: Rc<ProcHeader>, body: Box<Expr> },
+    Lambda {
+        header: Rc<ProcHeader>,
+        body: Box<Expr>,
+    },
     /// A block in value position: `#ifx c { ...; value } else { ... }`, lambda bodies.
     Block(Block),
     Struct(Rc<StructLit>),
     Enum(Rc<EnumLit>),
-    TypeDirective { modifier: TypeModifier, ty: Box<Expr> },
+    TypeDirective {
+        modifier: TypeModifier,
+        ty: Box<Expr>,
+    },
     /// `#run expr` or `#run { ... }`.
-    Run { body: Rc<RunBody>, flags: Vec<Ident> },
+    Run {
+        body: Rc<RunBody>,
+        flags: Vec<Ident>,
+    },
     /// `#code expr`, `#code { ... }`.
     Code(Rc<CodeBody>),
     /// `#insert expr` in expression position. `scope` is the `,scope(x)` operand;
     /// `replacements` are the `(remove = ..., break = ...)` arguments before the code.
-    Insert { value: Box<Expr>, flags: Vec<Ident>, scope: Option<Box<Expr>>, replacements: Vec<Arg> },
+    Insert {
+        value: Box<Expr>,
+        flags: Vec<Ident>,
+        scope: Option<Box<Expr>>,
+        replacements: Vec<Arg>,
+    },
     /// `#char "x"`
     Char(u32),
     /// `#location(expr)` (`None` = location of the directive itself).
@@ -203,7 +242,11 @@ pub enum ExprKind {
     This,
     CompileTime,
     /// `#bake_arguments f(a = 1)` / `#bake_constants`.
-    Bake { callee: Box<Expr>, args: Vec<Arg>, constants: bool },
+    Bake {
+        callee: Box<Expr>,
+        args: Vec<Arg>,
+        constants: bool,
+    },
     /// `#procedure_of_call f(x)`
     ProcedureOfCall(Box<Expr>),
     /// `#exists(name)`
@@ -211,7 +254,10 @@ pub enum ExprKind {
     /// `#bytes "..."` or `#bytes .[...]`
     Bytes(Box<Expr>),
     /// `#placeholder`-style or unrecognized directive with an optional operand.
-    UnknownDirective { name: Ident, operand: Option<Box<Expr>> },
+    UnknownDirective {
+        name: Ident,
+        operand: Option<Box<Expr>>,
+    },
     /// `` `x ``: refer to the macro caller's scope.
     Backtick(Box<Expr>),
     /// `#asm { ... }`: kept as raw tokens' source span; unsupported semantically.
@@ -240,6 +286,8 @@ pub struct Param {
     /// `$name: T` (the parameter's value must be a compile-time constant).
     pub baked: bool,
     pub using: bool,
+    /// `using,except(x) q: T`
+    pub using_filter: Option<UsingFilter>,
     /// `#discard` parameter flag (the argument is not evaluated when unused).
     pub discard: bool,
     /// `..` variadic: `args: ..Any` (or `..$T`).
@@ -294,6 +342,8 @@ pub struct ProcFlags {
     pub deprecated: Option<Option<Rc<[u8]>>>,
     pub program_export: Option<Option<Rc<[u8]>>>,
     pub no_call: bool,
+    /// The string after `#compiler "name"` / `#intrinsic "name"` selecting the builtin.
+    pub builtin_name: Option<Rc<str>>,
     /// Any other `#directive` flag (`#dump`, `#entry_point`, `#no_alias`, ...), kept by name.
     pub other: Vec<Ident>,
     pub type_info_none: bool,
@@ -380,7 +430,11 @@ pub enum EnumItem {
     /// `#insert` inside an enum body generating members.
     Insert(Expr),
     /// `#if` inside an enum body.
-    If { cond: Expr, then_items: Vec<EnumItem>, else_items: Vec<EnumItem> },
+    If {
+        cond: Expr,
+        then_items: Vec<EnumItem>,
+        else_items: Vec<EnumItem>,
+    },
 }
 
 #[derive(Clone, Debug)]
@@ -529,48 +583,98 @@ pub enum UsingFilter {
     Only(Vec<Ident>),
     Except(Vec<Ident>),
     Map(Vec<(Ident, Ident)>),
-    /// `using,only(.["+", "-"]) Basic;` operator list.
-    Operators(Expr),
+    /// A filter given as an expression: `using,only(.["+", "-"]) Basic;`, `using,except NAMES x: T;`.
+    Computed(Expr),
 }
 
 #[derive(Clone, Debug)]
 pub enum StmtKind {
     Decl(Rc<Decl>),
     Expr(Expr),
-    Assign { op: AssignOp, lhs: Vec<Expr>, rhs: Vec<Expr> },
+    Assign {
+        op: AssignOp,
+        lhs: Vec<Expr>,
+        rhs: Vec<Expr>,
+    },
     Block(Block),
-    If { cond: Expr, then_branch: Box<Stmt>, else_branch: Option<Box<Stmt>> },
+    If {
+        cond: Expr,
+        then_branch: Box<Stmt>,
+        else_branch: Option<Box<Stmt>>,
+    },
     /// `if x == { case ...; }`
-    Switch { value: Expr, cases: Vec<Case>, complete: bool },
+    Switch {
+        value: Expr,
+        cases: Vec<Case>,
+        complete: bool,
+    },
     /// `#if x == { case ...; }`: only the matching case's statements are compiled.
-    StaticSwitch { value: Expr, cases: Vec<Case> },
-    While { label: Option<Ident>, cond: Expr, body: Box<Stmt> },
+    StaticSwitch {
+        value: Expr,
+        cases: Vec<Case>,
+    },
+    While {
+        label: Option<Ident>,
+        cond: Expr,
+        body: Box<Stmt>,
+    },
     For(Box<For>),
     Break(Option<Ident>),
     Continue(Option<Ident>),
     /// `remove;` / `remove it;` in for loops.
     Remove(Option<Ident>),
-    Return { values: Vec<Arg>, backtick: bool },
-    Defer { body: Box<Stmt>, backtick: bool },
+    Return {
+        values: Vec<Arg>,
+        backtick: bool,
+    },
+    Defer {
+        body: Box<Stmt>,
+        backtick: bool,
+    },
     /// `using expr;` (filters: `using,only(a,b) x;`)
-    Using { value: Expr, filter: UsingFilter },
-    PushContext { context: Expr, body: Box<Stmt> },
+    Using {
+        value: Expr,
+        filter: UsingFilter,
+    },
+    PushContext {
+        context: Expr,
+        body: Box<Stmt>,
+    },
     /// `#if cond { } else { }`, also at file and struct scope.
-    StaticIf { cond: Expr, then_branch: Vec<Stmt>, else_branch: Vec<Stmt> },
+    StaticIf {
+        cond: Expr,
+        then_branch: Vec<Stmt>,
+        else_branch: Vec<Stmt>,
+    },
     /// `#insert expr;` (flags e.g. `,scope(x)`).
-    Insert { value: Expr, flags: Vec<Ident>, scope: Option<Expr>, replacements: Vec<Arg> },
+    Insert {
+        value: Expr,
+        flags: Vec<Ident>,
+        scope: Option<Expr>,
+        replacements: Vec<Arg>,
+    },
     /// `#assert cond "message";`
-    Assert { cond: Expr, message: Option<Expr> },
+    Assert {
+        cond: Expr,
+        message: Option<Expr>,
+    },
     /// Top-level `#run expr;`
     Run(Expr),
     Import(Rc<Import>),
     /// `#load "file.jai";`
-    Load { path: Rc<str>, span: Span },
+    Load {
+        path: Rc<str>,
+        span: Span,
+    },
     Scope(ScopeKind),
     /// `#add_context name: T = v;`
     AddContext(Rc<Decl>),
     /// `#module_parameters (A := 1) (B := 2);` second list = parameters visible to importers' runtime.
-    ModuleParameters { params: Vec<Param>, runtime_params: Vec<Param>, body: Option<Block> },
+    ModuleParameters {
+        params: Vec<Param>,
+        runtime_params: Vec<Param>,
+        body: Option<Block>,
+    },
     /// `#placeholder name;`
     Placeholder(Vec<Ident>),
     /// `#place field;` inside struct bodies.
@@ -580,9 +684,15 @@ pub enum StmtKind {
     /// `#through;` (normally folded into `Case::through`).
     Through,
     /// `#program_export`-style top-level directives we keep for completeness.
-    Directive { name: Ident, flags: Vec<Ident>, args: Vec<Expr> },
+    Directive {
+        name: Ident,
+        flags: Vec<Ident>,
+        args: Vec<Expr>,
+    },
     /// `push_context,defer_pop ctx;`: push now, pop at the end of the scope (`None`: restore the saved context).
-    PushContextDefer { context: Option<Expr> },
+    PushContextDefer {
+        context: Option<Expr>,
+    },
     /// Empty statement (`;`).
     Empty,
 }

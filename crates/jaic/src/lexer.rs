@@ -133,7 +133,11 @@ const PUNCT: &[(&str, P)] = &[
 
 impl P {
     pub fn text(self) -> &'static str {
-        PUNCT.iter().find(|(_, p)| *p == self).map(|(s, _)| *s).unwrap()
+        PUNCT
+            .iter()
+            .find(|(_, p)| *p == self)
+            .map(|(s, _)| *s)
+            .unwrap()
     }
 }
 
@@ -160,7 +164,13 @@ pub struct Token {
 }
 
 pub fn lex(file: FileId, text: &str) -> Result<Vec<Token>, Diagnostic> {
-    let mut lx = Lexer { file, src: text.as_bytes(), at: 0, out: Vec::new(), newline: true };
+    let mut lx = Lexer {
+        file,
+        src: text.as_bytes(),
+        at: 0,
+        out: Vec::new(),
+        newline: true,
+    };
     lx.run()?;
     Ok(lx.out)
 }
@@ -182,13 +192,24 @@ fn is_ident_char(c: u8) -> bool {
 
 impl<'a> Lexer<'a> {
     fn err(&self, start: usize, msg: &str) -> Diagnostic {
-        Diagnostic::error(Span::new(self.file, start, self.at.max(start + 1).min(self.src.len().max(start + 1))), msg)
+        Diagnostic::error(
+            Span::new(
+                self.file,
+                start,
+                self.at.max(start + 1).min(self.src.len().max(start + 1)),
+            ),
+            msg,
+        )
     }
     fn peek(&self, n: usize) -> u8 {
         *self.src.get(self.at + n).unwrap_or(&0)
     }
     fn push(&mut self, tok: Tok, start: usize) {
-        self.out.push(Token { tok, span: Span::new(self.file, start, self.at), newline_before: self.newline });
+        self.out.push(Token {
+            tok,
+            span: Span::new(self.file, start, self.at),
+            newline_before: self.newline,
+        });
         self.newline = false;
     }
     fn run(&mut self) -> Result<(), Diagnostic> {
@@ -254,7 +275,14 @@ impl<'a> Lexer<'a> {
                                 break;
                             }
                             depth -= 1;
-                        } else if depth == 0 && !(is_ident_char(ch) || ch == b'.' || ch == b'-' || ch == b'/' || ch == b':' || ch == b'=') {
+                        } else if depth == 0
+                            && !(is_ident_char(ch)
+                                || ch == b'.'
+                                || ch == b'-'
+                                || ch == b'/'
+                                || ch == b':'
+                                || ch == b'=')
+                        {
                             break;
                         }
                         self.at += 1;
@@ -264,7 +292,8 @@ impl<'a> Lexer<'a> {
                 self.push(Tok::Note(note), start);
             } else {
                 let rest = &self.src[self.at..];
-                let Some(&(text, p)) = PUNCT.iter().find(|(t, _)| rest.starts_with(t.as_bytes())) else {
+                let Some(&(text, p)) = PUNCT.iter().find(|(t, _)| rest.starts_with(t.as_bytes()))
+                else {
                     self.at += 1;
                     return Err(self.err(start, &format!("unexpected character '{}'", c as char)));
                 };
@@ -354,7 +383,11 @@ impl<'a> Lexer<'a> {
         {
             self.at += 2;
             let digits_start = self.at;
-            let base = if radix == 0 { 16 } else { radix };
+            let base = if radix == 0 {
+                16
+            } else {
+                radix
+            };
             let mut value: u128 = 0;
             while self.at < self.src.len() {
                 let ch = self.src[self.at];
@@ -362,7 +395,9 @@ impl<'a> Lexer<'a> {
                     self.at += 1;
                     continue;
                 }
-                let Some(d) = (ch as char).to_digit(base) else { break };
+                let Some(d) = (ch as char).to_digit(base) else {
+                    break;
+                };
                 value = value.wrapping_mul(base as u128).wrapping_add(d as u128);
                 self.at += 1;
             }
@@ -370,7 +405,10 @@ impl<'a> Lexer<'a> {
                 return Err(self.err(start, "expected digits after numeric prefix"));
             }
             if radix == 0 {
-                let ndigits = self.src[digits_start..self.at].iter().filter(|&&c| c != b'_').count();
+                let ndigits = self.src[digits_start..self.at]
+                    .iter()
+                    .filter(|&&c| c != b'_')
+                    .count();
                 return Ok(if ndigits <= 8 {
                     Tok::Float(f32::from_bits(value as u32) as f64)
                 } else {
@@ -389,12 +427,18 @@ impl<'a> Lexer<'a> {
             } else if ch == b'.' && !is_float && self.peek(1).is_ascii_digit() {
                 is_float = true;
                 text.push('.');
-            } else if ch == b'.' && !is_float && self.peek(1) != b'.' && !is_ident_start(self.peek(1)) {
+            } else if ch == b'.'
+                && !is_float
+                && self.peek(1) != b'.'
+                && !is_ident_start(self.peek(1))
+            {
                 // `1.` is a float literal; `1..2` is a range; `1.foo` is a member access.
                 is_float = true;
                 text.push('.');
             } else if (ch == b'e' || ch == b'E')
-                && (self.peek(1).is_ascii_digit() || ((self.peek(1) == b'-' || self.peek(1) == b'+') && self.peek(2).is_ascii_digit()))
+                && (self.peek(1).is_ascii_digit()
+                    || ((self.peek(1) == b'-' || self.peek(1) == b'+')
+                        && self.peek(2).is_ascii_digit()))
             {
                 is_float = true;
                 text.push('e');
@@ -406,9 +450,13 @@ impl<'a> Lexer<'a> {
             self.at += 1;
         }
         if is_float {
-            text.parse::<f64>().map(Tok::Float).map_err(|_| self.err(start, "invalid float literal"))
+            text.parse::<f64>()
+                .map(Tok::Float)
+                .map_err(|_| self.err(start, "invalid float literal"))
         } else {
-            text.parse::<u128>().map(Tok::Int).map_err(|_| self.err(start, "integer literal too large"))
+            text.parse::<u128>()
+                .map(Tok::Int)
+                .map_err(|_| self.err(start, "integer literal too large"))
         }
     }
     fn string_body(&mut self, start: usize) -> Result<Vec<u8>, Diagnostic> {
@@ -447,7 +495,9 @@ impl<'a> Lexer<'a> {
                             for _ in 0..3 {
                                 let d = self.peek(0);
                                 if !d.is_ascii_digit() {
-                                    return Err(self.err(start, "expected three decimal digits after \\d"));
+                                    return Err(
+                                        self.err(start, "expected three decimal digits after \\d")
+                                    );
                                 }
                                 v = v * 10 + (d - b'0') as u32;
                                 self.at += 1;
@@ -455,13 +505,23 @@ impl<'a> Lexer<'a> {
                             out.push(v as u8);
                         }
                         b'u' | b'U' => {
-                            let n = if e == b'u' { 4 } else { 8 };
+                            let n = if e == b'u' {
+                                4
+                            } else {
+                                8
+                            };
                             let v = self.hex_digits(n, start)?;
-                            let ch = char::from_u32(v).ok_or_else(|| self.err(start, "invalid unicode escape"))?;
+                            let ch = char::from_u32(v)
+                                .ok_or_else(|| self.err(start, "invalid unicode escape"))?;
                             let mut buf = [0; 4];
                             out.extend_from_slice(ch.encode_utf8(&mut buf).as_bytes());
                         }
-                        _ => return Err(self.err(self.at - 2, &format!("unknown escape sequence '\\{}'", e as char))),
+                        _ => {
+                            return Err(self.err(
+                                self.at - 2,
+                                &format!("unknown escape sequence '\\{}'", e as char),
+                            ));
+                        }
                     }
                 }
                 b'\n' => {
@@ -475,7 +535,9 @@ impl<'a> Lexer<'a> {
     fn hex_digits(&mut self, n: usize, start: usize) -> Result<u32, Diagnostic> {
         let mut v = 0u32;
         for _ in 0..n {
-            let d = (self.peek(0) as char).to_digit(16).ok_or_else(|| self.err(start, "expected hex digits in escape"))?;
+            let d = (self.peek(0) as char)
+                .to_digit(16)
+                .ok_or_else(|| self.err(start, "expected hex digits in escape"))?;
             v = v * 16 + d;
             self.at += 1;
         }
@@ -517,11 +579,18 @@ impl<'a> Lexer<'a> {
         self.at += 1;
         let body_start = self.at.min(self.src.len());
         while self.at < self.src.len() {
-            let line_end = self.src[self.at..].iter().position(|&c| c == b'\n').map_or(self.src.len(), |p| self.at + p);
+            let line_end = self.src[self.at..]
+                .iter()
+                .position(|&c| c == b'\n')
+                .map_or(self.src.len(), |p| self.at + p);
             let line = &self.src[self.at..line_end];
-            let indent = line.iter().take_while(|&&c| c == b' ' || c == b'\t').count();
+            let indent = line
+                .iter()
+                .take_while(|&&c| c == b' ' || c == b'\t')
+                .count();
             let trimmed = &line[indent..];
-            if trimmed.starts_with(tag) && trimmed.get(tag.len()).is_none_or(|&c| !is_ident_char(c)) {
+            if trimmed.starts_with(tag) && trimmed.get(tag.len()).is_none_or(|&c| !is_ident_char(c))
+            {
                 let body_end = self.at.saturating_sub(1).max(body_start);
                 let mut body = self.src[body_start..body_end].to_vec();
                 if body.last() == Some(&b'\r') {
@@ -556,7 +625,11 @@ impl<'a> Lexer<'a> {
 mod tests {
     use super::*;
     fn kinds(s: &str) -> Vec<Tok> {
-        lex(FileId(0), s).unwrap().into_iter().map(|t| t.tok).collect()
+        lex(FileId(0), s)
+            .unwrap()
+            .into_iter()
+            .map(|t| t.tok)
+            .collect()
     }
     #[test]
     fn basics() {
@@ -574,7 +647,7 @@ mod tests {
     fn leading_dot_floats() {
         let t = kinds("x := .5; y := a.b; z := 1..2;");
         assert_eq!(t[2], Tok::Float(0.5));
-        assert_eq!(t[8], Tok::Punct(P::Dot));
+        assert_eq!(t[7], Tok::Punct(P::Dot));
         assert_eq!(t[13], Tok::Punct(P::DotDot));
     }
     #[test]

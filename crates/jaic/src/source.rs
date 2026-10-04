@@ -14,10 +14,18 @@ pub struct Span {
 
 impl Span {
     pub fn new(file: FileId, start: usize, end: usize) -> Self {
-        Self { file, start: start as u32, end: end as u32 }
+        Self {
+            file,
+            start: start as u32,
+            end: end as u32,
+        }
     }
     pub fn to(self, other: Span) -> Span {
-        Span { file: self.file, start: self.start.min(other.start), end: self.end.max(other.end) }
+        Span {
+            file: self.file,
+            start: self.start.min(other.start),
+            end: self.end.max(other.end),
+        }
     }
 }
 
@@ -35,7 +43,11 @@ impl SourceFile {
                 line_starts.push(i as u32 + 1);
             }
         }
-        Self { path, text, line_starts }
+        Self {
+            path,
+            text,
+            line_starts,
+        }
     }
     /// One-based line and column of a byte offset.
     pub fn line_col(&self, offset: u32) -> (u32, u32) {
@@ -47,7 +59,10 @@ impl SourceFile {
     }
     pub fn line_text(&self, line: u32) -> &str {
         let start = self.line_starts[(line - 1) as usize] as usize;
-        let end = self.line_starts.get(line as usize).map_or(self.text.len(), |&e| e as usize);
+        let end = self
+            .line_starts
+            .get(line as usize)
+            .map_or(self.text.len(), |&e| e as usize);
         self.text[start..end].trim_end_matches(['\n', '\r'])
     }
 }
@@ -94,10 +109,20 @@ pub struct Diagnostic {
 
 impl Diagnostic {
     pub fn error(span: Span, message: impl Into<String>) -> Self {
-        Self { severity: Severity::Error, span, message: message.into(), notes: Vec::new() }
+        Self {
+            severity: Severity::Error,
+            span,
+            message: message.into(),
+            notes: Vec::new(),
+        }
     }
     pub fn warning(span: Span, message: impl Into<String>) -> Self {
-        Self { severity: Severity::Warning, span, message: message.into(), notes: Vec::new() }
+        Self {
+            severity: Severity::Warning,
+            span,
+            message: message.into(),
+            notes: Vec::new(),
+        }
     }
     pub fn with_note(mut self, span: Span, message: impl Into<String>) -> Self {
         self.notes.push((span, message.into()));
@@ -126,8 +151,19 @@ fn render_one(out: &mut String, sources: &SourceMap, span: Span, kind: &str, mes
         let _ = writeln!(out, "{}:{}:{}: {}: {}", file.path, line, col, kind, message);
         let text = file.line_text(line);
         let _ = writeln!(out, "    {text}");
-        let width = (span.end.saturating_sub(span.start)).clamp(1, (text.len() as u32 + 1).saturating_sub(col).max(1));
-        let pad: String = text.chars().take(col as usize - 1).map(|c| if c == '\t' { '\t' } else { ' ' }).collect();
+        let width = (span.end.saturating_sub(span.start))
+            .clamp(1, (text.len() as u32 + 1).saturating_sub(col).max(1));
+        let pad: String = text
+            .chars()
+            .take(col as usize - 1)
+            .map(|c| {
+                if c == '\t' {
+                    '\t'
+                } else {
+                    ' '
+                }
+            })
+            .collect();
         let _ = writeln!(out, "    {}{}", pad, "^".repeat(width as usize));
     } else {
         let _ = writeln!(out, "{kind}: {message}");

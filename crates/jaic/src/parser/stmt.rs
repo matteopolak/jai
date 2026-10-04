@@ -1,10 +1,16 @@
 //! Statements and control flow.
 use super::{PResult, Parser};
-use crate::ast::{AssignOp, BinOp, Block, Case, Expr, For, ForOver, Ident, Stmt, StmtKind, UsingFilter};
+use crate::ast::{
+    AssignOp, BinOp, Block, Case, Expr, For, ForOver, Ident, Stmt, StmtKind, UsingFilter,
+};
 use crate::lexer::{P, Tok};
 
 pub(super) fn stmt(kind: StmtKind, span: crate::source::Span) -> Stmt {
-    Stmt { kind, span, notes: Vec::new() }
+    Stmt {
+        kind,
+        span,
+        notes: Vec::new(),
+    }
 }
 
 fn assign_op(p: P) -> Option<AssignOp> {
@@ -33,7 +39,10 @@ impl Parser<'_> {
         let start = self.expect(P::LBrace, "to start a block")?;
         let stmts = self.parse_stmts_until_close()?;
         let end = self.expect(P::RBrace, "to end the block")?;
-        Ok(Block { stmts, span: start.to(end) })
+        Ok(Block {
+            stmts,
+            span: start.to(end),
+        })
     }
 
     /// Statements up to (not including) the closing `}`.
@@ -70,7 +79,9 @@ impl Parser<'_> {
                 let span = block.span;
                 Ok(stmt(StmtKind::Block(block), span))
             }
-            Tok::Punct(P::Backtick) if matches!(self.kw_at(1), Some("return" | "defer" | "push_context")) => {
+            Tok::Punct(P::Backtick)
+                if matches!(self.kw_at(1), Some("return" | "defer" | "push_context")) =>
+            {
                 self.bump();
                 self.parse_keyword_stmt(true)
             }
@@ -85,9 +96,9 @@ impl Parser<'_> {
             Some("if") => self.parse_if(),
             Some("while") => self.parse_while(),
             Some("for") => self.parse_for(),
-            Some("break") => self.parse_jump(|label| StmtKind::Break(label)),
-            Some("continue") => self.parse_jump(|label| StmtKind::Continue(label)),
-            Some("remove") => self.parse_jump(|label| StmtKind::Remove(label)),
+            Some("break") => self.parse_jump(StmtKind::Break),
+            Some("continue") => self.parse_jump(StmtKind::Continue),
+            Some("remove") => self.parse_jump(StmtKind::Remove),
             Some("return") => self.parse_return(backtick),
             Some("defer") => self.parse_defer(backtick),
             Some("using") => self.parse_using(),
@@ -156,12 +167,13 @@ impl Parser<'_> {
             _ => None,
         };
         let Some(op) = op else {
-            if lhs.len() == 1 {
-                let expr = lhs.pop().unwrap_or_else(|| unreachable!());
-                let span = expr.span;
-                return Ok(stmt(StmtKind::Expr(expr), span));
-            }
-            return Err(self.expected("an assignment", "after the expression list"));
+            return match <[Expr; 1]>::try_from(lhs) {
+                Ok([expr]) => {
+                    let span = expr.span;
+                    Ok(stmt(StmtKind::Expr(expr), span))
+                }
+                Err(_) => Err(self.expected("an assignment", "after the expression list")),
+            };
         };
         self.bump();
         let mut rhs = vec![self.parse_expr()?];
@@ -169,12 +181,22 @@ impl Parser<'_> {
             rhs.push(self.parse_expr()?);
         }
         let span = start.to(self.prev_span());
-        Ok(stmt(StmtKind::Assign { op, lhs, rhs }, span))
+        Ok(stmt(
+            StmtKind::Assign {
+                op,
+                lhs,
+                rhs,
+            },
+            span,
+        ))
     }
 
     /// `.TAG ,, member: T;` inside a tagged union.
     fn tagged_member_ahead(&self) -> bool {
-        self.at(P::Dot) && matches!(self.tok_at(1), Tok::Ident(_)) && self.at_n(2, P::Comma) && self.at_n(3, P::Comma)
+        self.at(P::Dot)
+            && matches!(self.tok_at(1), Tok::Ident(_))
+            && self.at_n(2, P::Comma)
+            && self.at_n(3, P::Comma)
     }
 
     fn parse_tagged_member(&mut self) -> PResult<Stmt> {
@@ -206,13 +228,29 @@ impl Parser<'_> {
         self.skip_check_flags(&mut Vec::new());
         self.eat_kw("then");
         let then_branch = Box::new(self.parse_stmt()?);
-        let else_branch = if self.eat_kw("else") { Some(Box::new(self.parse_stmt()?)) } else { None };
+        let else_branch = if self.eat_kw("else") {
+            Some(Box::new(self.parse_stmt()?))
+        } else {
+            None
+        };
         let span = start.to(self.prev_span());
-        Ok(stmt(StmtKind::If { cond, then_branch, else_branch }, span))
+        Ok(stmt(
+            StmtKind::If {
+                cond,
+                then_branch,
+                else_branch,
+            },
+            span,
+        ))
     }
 
     /// At `==` of `if value == { case ...; }`.
-    fn parse_switch(&mut self, start: crate::source::Span, value: Expr, complete_first: bool) -> PResult<Stmt> {
+    fn parse_switch(
+        &mut self,
+        start: crate::source::Span,
+        value: Expr,
+        complete_first: bool,
+    ) -> PResult<Stmt> {
         self.bump();
         let complete = complete_first || self.at_directive("complete");
         if self.at_directive("complete") {
@@ -220,7 +258,14 @@ impl Parser<'_> {
         }
         let cases = self.parse_cases()?;
         let span = start.to(self.prev_span());
-        Ok(stmt(StmtKind::Switch { value, cases, complete }, span))
+        Ok(stmt(
+            StmtKind::Switch {
+                value,
+                cases,
+                complete,
+            },
+            span,
+        ))
     }
 
     /// `{ case a, b; ...; case; ... }` including both braces.
@@ -263,7 +308,12 @@ impl Parser<'_> {
             }
             body.push(self.parse_stmt()?);
         }
-        Ok(Case { values, body, through, span: start.to(self.prev_span()) })
+        Ok(Case {
+            values,
+            body,
+            through,
+            span: start.to(self.prev_span()),
+        })
     }
 
     fn parse_while(&mut self) -> PResult<Stmt> {
@@ -276,7 +326,10 @@ impl Parser<'_> {
         };
         // `while name := cond` labels the loop for `break name`.
         let tick = usize::from(self.at(P::Backtick));
-        let label = if label.is_none() && matches!(self.tok_at(tick), Tok::Ident(_)) && self.at_n(tick + 1, P::ColonEq) {
+        let label = if label.is_none()
+            && matches!(self.tok_at(tick), Tok::Ident(_))
+            && self.at_n(tick + 1, P::ColonEq)
+        {
             self.eat(P::Backtick);
             let name = self.ident("as loop name")?;
             self.bump();
@@ -289,7 +342,14 @@ impl Parser<'_> {
         self.eat_kw("then");
         let body = Box::new(self.parse_stmt()?);
         let span = start.to(self.prev_span());
-        Ok(stmt(StmtKind::While { label, cond, body }, span))
+        Ok(stmt(
+            StmtKind::While {
+                label,
+                cond,
+                body,
+            },
+            span,
+        ))
     }
 
     fn parse_for(&mut self) -> PResult<Stmt> {
@@ -305,7 +365,10 @@ impl Parser<'_> {
         loop {
             match self.tok() {
                 Tok::Directive(name) => {
-                    let ident = Ident { name: *name, span: self.span() };
+                    let ident = Ident {
+                        name: *name,
+                        span: self.span(),
+                    };
                     flags.push(ident);
                 }
                 Tok::Punct(P::Lt) => reverse = true,
@@ -313,12 +376,14 @@ impl Parser<'_> {
                 // Conditional forms: `for *=cond <=cond it: items`.
                 Tok::Punct(P::MulAssign) => {
                     self.bump();
-                    pointer_if = Some(self.parse_postfix(true)?);
+                    pointer_if = Some(self.parse_unary()?);
+                    self.eat(P::Comma);
                     continue;
                 }
                 Tok::Punct(P::Le) => {
                     self.bump();
-                    reverse_if = Some(self.parse_postfix(true)?);
+                    reverse_if = Some(self.parse_unary()?);
+                    self.eat(P::Comma);
                     continue;
                 }
                 _ => break,
@@ -337,18 +402,35 @@ impl Parser<'_> {
             self.bump();
         }
         let first = self.parse_expr()?;
-        let over = if self.eat(P::DotDot) { ForOver::Range(first, self.parse_expr()?) } else { ForOver::Collection(first) };
+        let over = if self.eat(P::DotDot) {
+            ForOver::Range(first, self.parse_expr()?)
+        } else {
+            ForOver::Collection(first)
+        };
         self.skip_check_flags(&mut flags);
         self.eat_kw("then");
         let body = Box::new(self.parse_stmt()?);
         let span = start.to(self.prev_span());
-        let node = For { it, index, by_pointer, reverse, pointer_if, reverse_if, iterator, backtick_names, over, body, flags };
+        let node = For {
+            it,
+            index,
+            by_pointer,
+            reverse,
+            pointer_if,
+            reverse_if,
+            iterator,
+            backtick_names,
+            over,
+            body,
+            flags,
+        };
         Ok(stmt(StmtKind::For(Box::new(node)), span))
     }
 
     /// At `name :` or `name, index :`.
     fn for_names_ahead(&self) -> bool {
-        let skip_tick = |i: usize| i + usize::from(matches!(self.tok_at(i), Tok::Punct(P::Backtick)));
+        let skip_tick =
+            |i: usize| i + usize::from(matches!(self.tok_at(i), Tok::Punct(P::Backtick)));
         let mut i = skip_tick(0);
         if !matches!(self.tok_at(i), Tok::Ident(_)) {
             return false;
@@ -368,7 +450,10 @@ impl Parser<'_> {
     fn skip_check_flags(&mut self, flags: &mut Vec<Ident>) {
         while matches!(self.directive(), Some("no_abc" | "no_aoc")) {
             if let Tok::Directive(name) = self.tok() {
-                flags.push(Ident { name: *name, span: self.span() });
+                flags.push(Ident {
+                    name: *name,
+                    span: self.span(),
+                });
             }
             self.bump();
         }
@@ -377,7 +462,11 @@ impl Parser<'_> {
     /// `break`, `continue` and `remove`, each with an optional label.
     fn parse_jump(&mut self, make: fn(Option<Ident>) -> StmtKind) -> PResult<Stmt> {
         let start = self.bump();
-        let label = if matches!(self.tok(), Tok::Ident(_)) { Some(self.ident("as label")?) } else { None };
+        let label = if matches!(self.tok(), Tok::Ident(_)) {
+            Some(self.ident("as label")?)
+        } else {
+            None
+        };
         self.end_stmt("after the statement")?;
         Ok(stmt(make(label), start.to(self.prev_span())))
     }
@@ -392,27 +481,66 @@ impl Parser<'_> {
             }
         }
         self.end_stmt("after 'return'")?;
-        Ok(stmt(StmtKind::Return { values, backtick }, start.to(self.prev_span())))
+        Ok(stmt(
+            StmtKind::Return {
+                values,
+                backtick,
+            },
+            start.to(self.prev_span()),
+        ))
     }
 
     fn parse_defer(&mut self, backtick: bool) -> PResult<Stmt> {
         let start = self.bump();
         let body = Box::new(self.parse_stmt()?);
-        Ok(stmt(StmtKind::Defer { body, backtick }, start.to(self.prev_span())))
+        Ok(stmt(
+            StmtKind::Defer {
+                body,
+                backtick,
+            },
+            start.to(self.prev_span()),
+        ))
     }
 
     fn parse_push_context(&mut self) -> PResult<Stmt> {
         let start = self.bump();
+        if self.at(P::LBrace) {
+            // `push_context { ... }` re-pushes the current context.
+            let context = super::expr::mk(crate::ast::ExprKind::Context, start);
+            let body = Box::new(self.parse_stmt()?);
+            return Ok(stmt(
+                StmtKind::PushContext {
+                    context,
+                    body,
+                },
+                start.to(self.prev_span()),
+            ));
+        }
         if self.at(P::Comma) && self.kw_at(1) == Some("defer_pop") {
             self.bump();
             self.bump();
-            let context = if self.at(P::Semi) { None } else { Some(self.parse_expr()?) };
+            let context = if self.at(P::Semi) {
+                None
+            } else {
+                Some(self.parse_expr()?)
+            };
             self.end_stmt("after 'push_context,defer_pop'")?;
-            return Ok(stmt(StmtKind::PushContextDefer { context }, start.to(self.prev_span())));
+            return Ok(stmt(
+                StmtKind::PushContextDefer {
+                    context,
+                },
+                start.to(self.prev_span()),
+            ));
         }
         let context = self.parse_expr()?;
         let body = Box::new(self.parse_stmt()?);
-        Ok(stmt(StmtKind::PushContext { context, body }, start.to(self.prev_span())))
+        Ok(stmt(
+            StmtKind::PushContext {
+                context,
+                body,
+            },
+            start.to(self.prev_span()),
+        ))
     }
 
     /// `using x;`, `using,only(a, b) x;`, or `using x: T;` (a declaration).
@@ -425,7 +553,13 @@ impl Parser<'_> {
         let filter = self.parse_using_filter()?;
         let value = self.parse_expr()?;
         self.end_stmt("after 'using'")?;
-        Ok(stmt(StmtKind::Using { value, filter }, start.to(self.prev_span())))
+        Ok(stmt(
+            StmtKind::Using {
+                value,
+                filter,
+            },
+            start.to(self.prev_span()),
+        ))
     }
 
     pub(super) fn parse_using_filter(&mut self) -> PResult<UsingFilter> {
@@ -434,11 +568,15 @@ impl Parser<'_> {
         }
         self.bump();
         let kind = self.ident("as using filter")?;
-        self.expect(P::LParen, "after the using filter")?;
+        // `using,except .["x", "y"] name: T;`
+        if !self.at(P::LParen) {
+            return Ok(UsingFilter::Computed(self.parse_postfix(true)?));
+        }
+        self.bump();
         if self.at(P::DotBracket) {
-            let operators = self.parse_expr()?;
+            let list = self.parse_expr()?;
             self.expect(P::RParen, "to end the using filter")?;
-            return Ok(UsingFilter::Operators(operators));
+            return Ok(UsingFilter::Computed(list));
         }
         let mut names = Vec::new();
         let mut pairs = Vec::new();

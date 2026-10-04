@@ -373,6 +373,8 @@ Public source corpora are input data.
 
 - [String source imports](string-source-imports.md) — Literal module sources, identities and relative resolution.
 
+- [jaic parser](jaic-parser.md) — Recursive-descent parser of the new compiler core: lookahead rules, terminators, and how to extend it.
+
 ## Language and library specifications
 
 - [Jai language guide](specs/jai/README.md)
