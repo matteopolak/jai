@@ -8,6 +8,10 @@ playground. Memory is real host memory; foreign procedures are called natively (
 
 ## How it works
 
+- **Traps**: `debug_break()` stops the program with a runtime error (exit 1), so a failed `assert` ends it
+  as in Jai. Runtime Support's `debug_break` is `#asm { int3; }` on x64 and `#bytes` `brk #0` on arm64; sema
+  turns both (and only those `#bytes` encodings) into the `DebugBreak` intrinsic, since raw machine code
+  cannot run in the interpreter.
 - `Interp::call` is the entry from the compiler; `exec` / `run` / `step` interpret functions. Procedure
   values are tagged addresses (`FUNC_TAG`); foreign procedures without a native address are tagged
   `FOREIGN_TAG` and trap with "foreign procedure '...' is not available here" when called.
