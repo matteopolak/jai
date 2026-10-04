@@ -44,7 +44,27 @@ write_number :: (n: s64, base := 10, to_standard_error := false) #no_context #no
 
 runtime_support_assertion_failed :: (loc: Source_Code_Location, message: string) -> bool {
     write_loc(loc, true);
-    write_strings(": assertion failed: ", message, "\n", to_standard_error = true);
+    write_string(": Assertion failed", true);
+    if message.count write_strings(": ", message, "\n", to_standard_error = true);
+    else write_string("!\n", true);
+
+    // The same walk as Basic's print_stack_trace, using only routines from this file.
+    node := context.stack_trace;
+    if node write_string("\nStack trace:\n", true);
+    else write_string("Exiting.\n", true);
+    while node {
+        if node.info {
+            write_string(node.info.location.fully_pathed_filename, true);
+            write_string(":", true);
+            write_number(node.line_number, to_standard_error = true);
+            write_string(": ", true);
+            if node.info.name.count write_string(node.info.name, true);
+            else write_string("(anonymous procedure)", true);
+            write_string("\n", true);
+        }
+        node = node.next;
+    }
+    __runtime_support_disable_stack_trace = true;
     debug_break();
     return false;
 }
@@ -263,7 +283,7 @@ write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context
     write_string(loc.fully_pathed_filename, to_standard_error);
     write_string(":", to_standard_error);
     write_number(loc.line_number, to_standard_error = to_standard_error);
-    write_string(":", to_standard_error);
+    write_string(",", to_standard_error);
     write_number(loc.character_number, to_standard_error = to_standard_error);
 }
 write_failure_location :: (filename: *u8, line: s64) #no_context {

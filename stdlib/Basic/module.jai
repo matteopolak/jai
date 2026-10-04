@@ -109,9 +109,15 @@ get_field_with_offset :: (info: *Type_Info_Struct, name: string) -> *Type_Info_S
     for *member: info.members if member.name == name return member, member.offset_in_bytes;
     return null,-1;
 }
-get_field :: (info:*Type_Info_Struct,name:string)->*Type_Info_Struct_Member {
-    member,offset:=get_field_with_offset(info,name);
-    return member;
+get_field :: (info: *Type_Info_Struct, name: string) -> *Type_Info_Struct_Member, offset_in_bytes: s64 {
+    for *member: info.members if member.name == name return member, member.offset_in_bytes;
+    for *member: info.members {
+        if (member.flags & .USING) && member.type.type == .STRUCT {
+            found, inner := get_field(cast(*Type_Info_Struct) member.type, name);
+            if found return found, member.offset_in_bytes + inner;
+        }
+    }
+    return null, 0;
 }
 enum_names :: ($t: Type) -> [] string { return (cast(*Type_Info_Enum) type_info(t)).names; }
 enum_values_as_s64 :: ($T: Type) -> [] s64 { return (cast(*Type_Info_Enum) type_info(T)).values; }

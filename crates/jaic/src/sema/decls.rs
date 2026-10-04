@@ -364,6 +364,9 @@ impl Compiler {
             Some(t) => Some(self.eval_type(scope, t)?),
             None => None,
         };
+        // A typed result of evaluating the initializer to find the type; reused so that
+        // `x := #run f();` runs `f` once.
+        let mut evaluated: Option<Value> = None;
         // Foreign data: `x: T #elsewhere lib;`
         let ty = match (&declared, &decl.value) {
             (Some(t), _) => *t,
@@ -378,6 +381,7 @@ impl Compiler {
                         if *untyped {
                             self.default_untyped(*ty, value)
                         } else {
+                            evaluated = Some(value.clone());
                             *ty
                         }
                     }
@@ -406,11 +410,23 @@ impl Compiler {
             read_only: false,
             export: None,
         });
+        if !decl.flags.iter().any(|f| f.name.as_str() == "no_reset") {
+            self.program.reset_globals.push(global);
+        }
         // Mark resolved before evaluating the initializer so self-references work.
         // The entity state is set by resolve_entity on return; initializers that
         // reference this global's address see it through `pending_globals`.
         let init = match &decl.value {
             Some(v) if matches!(v.kind, ast::ExprKind::Uninit) => None,
+            Some(_) if evaluated.is_some() => {
+                let size = self.size_of(ty, span)?;
+                let mut agg = super::value::Aggregate {
+                    bytes: vec![0; size as usize],
+                    relocs: Vec::new(),
+                };
+                self.write_value(&mut agg, 0, evaluated.as_ref().unwrap(), ty, span)?;
+                Some(Rc::new(agg))
+            }
             Some(v) => Some(self.global_initializer(scope, v, ty)?),
             None => self.default_initializer(ty, span)?,
         };

@@ -776,6 +776,19 @@ impl Compiler {
             f.b.func.linkage = ir::Linkage::Export(name.clone());
         }
         f.b.func.source_file = file.0;
+        if sig.has_context
+            && func_id.is_some()
+            && header.flags.inline != ast::CallHintFlag::Inline
+            && !header.flags.no_debug
+        {
+            let (line, col) = self.sources.get(span.file).line_col(span.start);
+            f.b.func.trace = Some(ir::TraceInfo {
+                name: self.proc(id).name.to_string(),
+                file: span.file.0,
+                line,
+                col,
+            });
+        }
         let module = self.scope(sig.scope).module;
         let scope = self.new_scope(ScopeKind::Proc, Some(sig.scope), module, None);
         self.scope_mut(scope).proc = Some(id);

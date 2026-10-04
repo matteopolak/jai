@@ -541,7 +541,7 @@ intercepted:        [..] Workspace;
 intercept_finished: [..] bool;
 intercept_cursor:   s64;
 
-last_complete_workspace: Workspace = 1;
+last_complete_workspace: Workspace = 2;
 last_complete_error:     s64;
 
 // Message storage. One record per kind is reused; callers may only rely on a message

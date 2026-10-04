@@ -401,3 +401,5 @@ The reference is an input corpus, not executable tooling. Do not execute or load
 - [Basic calendar time and platform exports](stdlib-basic-time-and-platform.md) — to_calendar/calendar_to_apollo, working directory in Basic, Machine_X64 hooks, String scan, Bucket_Array shape.
 - [Iprof profiler](iprof.md) — Instrumenting frame-based profiler: runtime, drawing callbacks, metaprogram plugin, import-mode gotchas.
 - [Tooling modules](stdlib-tooling-modules.md) — Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report, plus small Simp/Input/Socket/File compatibility additions.
+- [Stack traces](stack-traces.md) — `context.stack_trace` nodes pushed by the interpreter, assertion failure output.
+- [Compile-time globals reset](compile-time-globals-reset.md) — globals revert to initial values before `main`; `#no_reset`.

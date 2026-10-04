@@ -59,6 +59,7 @@ pub struct BuildSettings {
     pub additional_linker_arguments: Vec<String>,
     pub temporary_storage_size: Option<i64>,
     pub array_bounds_check: Option<bool>,
+    pub stack_trace: Option<bool>,
 }
 
 impl Default for BuildSettings {
@@ -75,6 +76,7 @@ impl Default for BuildSettings {
             additional_linker_arguments: Vec::new(),
             temporary_storage_size: None,
             array_bounds_check: None,
+            stack_trace: None,
         }
     }
 }
@@ -168,7 +170,8 @@ const PHASE_POST_WRITE_EXECUTABLE: i64 = 4;
 /// The workspace registry of one top-level compilation.
 pub struct Workspaces {
     env: BuildEnv,
-    /// Index = workspace id; 0 is unused, 1 is the top-level program.
+    /// Index = workspace id; 0 and 1 are unused (`jai` reserves workspace 1, so the top-level
+    /// program is workspace 2 and the first created workspace is 3).
     list: Vec<Workspace>,
     /// Workspace whose compile-time code is running.
     current: Vec<i64>,
@@ -252,27 +255,34 @@ impl MetaOp {
     }
 }
 
+/// Id of the program being compiled by the command line (workspace 1 is reserved, as in `jai`).
+pub const TOP_LEVEL_WORKSPACE: i64 = 2;
+
 pub const COMPILER_VERSION: &str = "beta 0.2.029, jaic";
 
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.
     pub fn new(env: BuildEnv) -> SharedWorkspaces {
-        let mut top = Workspace::new("Main Workspace".into());
+        let mut top = Workspace::new("Target Program".into());
         // The embedder compiles the top-level program itself.
         top.stage = Stage::Checked;
         Rc::new(RefCell::new(Workspaces {
             env,
-            list: vec![Workspace::new(String::new()), top],
-            current: vec![1],
+            list: vec![
+                Workspace::new(String::new()),
+                Workspace::new(String::new()),
+                top,
+            ],
+            current: vec![TOP_LEVEL_WORKSPACE],
             event: Event::default(),
             strings: Vec::new(),
             records: Records::default(),
         }))
     }
 
-    /// Settings of the top-level program (workspace 1).
+    /// Settings of the top-level program (workspace 2).
     pub fn top_level_settings(&self) -> BuildSettings {
-        self.list[1].settings.clone()
+        self.list[TOP_LEVEL_WORKSPACE as usize].settings.clone()
     }
 
     /// Whether any workspace compilation failed.
@@ -293,7 +303,7 @@ impl Workspaces {
     }
 
     fn current_id(&self) -> i64 {
-        *self.current.last().unwrap_or(&1)
+        *self.current.last().unwrap_or(&TOP_LEVEL_WORKSPACE)
     }
 
     fn set_option(&mut self, id: i64, key: &str, value: &str) -> Result<(), String> {
@@ -334,7 +344,8 @@ impl Workspaces {
             "additional_linker_argument" => s.additional_linker_arguments.push(value.into()),
             "temporary_storage_size" => s.temporary_storage_size = value.parse().ok(),
             "array_bounds_check" => s.array_bounds_check = Some(value != "OFF"),
-            // Accepted and ignored: checks, stack traces, added-string dumps...
+            "stack_trace" => s.stack_trace = Some(value == "true"),
+            // Accepted and ignored: checks, added-string dumps...
             _ => {}
         }
         Ok(())
@@ -387,6 +398,9 @@ fn new_compiler(shared: &SharedWorkspaces, id: i64) -> Result<Box<Compiler>, Str
     }
     if let Some(check) = settings.array_bounds_check {
         options.array_bounds_check = check;
+    }
+    if let Some(trace) = settings.stack_trace {
+        options.stack_trace = trace;
     }
     let mut compiler = Box::new(Compiler::new(options, fs));
     compiler.interp.host = host;
@@ -715,7 +729,7 @@ pub fn call(
         }
         MetaOp::NextEvent => {
             let id = arg(0) as i64;
-            if id == shared.borrow().current_id() || id == 1 {
+            if id == shared.borrow().current_id() || id == TOP_LEVEL_WORKSPACE {
                 // A workspace cannot wait on its own compilation.
                 return Ok(vec![0]);
             }

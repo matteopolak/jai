@@ -245,14 +245,44 @@ make_leak_report :: (options: Leak_Report_Options = .{}, for_visualizer := false
     return report;
 }
 log_leak_report :: (report: Leak_Report, options: Leak_Report_Options = .{}) {
-    total_count: s64;
-    total_bytes: s64;
+    bytes_total: s64;
+    leaks_total: s64;
     for summary: report.sorted_summaries {
-        total_count += summary.count + summary.child_count;
-        total_bytes += summary.bytes + summary.child_bytes;
+        from_root := -1;
+        from_leaf := -1;
+        grouped := "";
+        if summary.group_info {
+            info := summary.group_info;
+            grouped = tprint(", grouped from % stack traces for \"%\" in \"%\"", _md_commas(info.sub_summaries.count), info.procedure.procedure_name, info.procedure.module_name);
+            from_root = info.root_nodes_in_common;
+            from_leaf = info.leaf_nodes_in_common;
+        }
+        if summary.child_count {
+            bytes := summary.bytes + summary.child_bytes;
+            count := summary.count + summary.child_count;
+            log("\n----- % byte% in % allocation%% [including aggregated children pointed at by the original memory, which % % byte% in % allocation%] -----\n",
+                _md_commas(bytes), _md_plural(bytes), _md_commas(count), _md_plural(count), grouped,
+                ifx summary.count > 1 then "were" else "was", _md_commas(summary.bytes), _md_plural(summary.bytes), _md_commas(summary.count), _md_plural(summary.count));
+        } else {
+            log("\n----- % byte% in % allocation%% -----\n", _md_commas(summary.bytes), _md_plural(summary.bytes), _md_commas(summary.count), _md_plural(summary.count), grouped);
+        }
+        bytes_total += summary.bytes + summary.child_bytes;
+        leaks_total += summary.count + summary.child_count;
+
+        trace := summary.alloc_site_trace;
+        if !trace {
+            log("(stack trace unavailable)\n");
+            continue;
+        }
+        first := 0;
+        last := trace.nodes.count - 1;
+        if options.known_allocation_leaves || options.roots_to_skip || options.group_by_these_calls {
+            first, last = _md_trim_trace(options, trace);
+        }
+        _md_log_trace(trace, first, last, from_root, from_leaf, summary.group_info);
     }
-    log_warning("Memory leaks: % allocations, % bytes\n", total_count, total_bytes);
-    for summary: report.sorted_summaries _md_log_summary(summary, options, "  ");
+    log("\nTotal: % byte% in % allocation%.\n", _md_commas(bytes_total), _md_plural(bytes_total), _md_commas(leaks_total), _md_plural(leaks_total));
+    log("\nMarked as non-leaks: % byte% in % allocation%.\n", _md_commas(report.marked_as_non_leak_bytes), _md_plural(report.marked_as_non_leak_bytes), _md_commas(report.marked_as_non_leak_allocations), _md_plural(report.marked_as_non_leak_allocations));
 }
 deinit :: (report: *Leak_Report) {
     previous := context.inside_memory_debugger;
@@ -494,6 +524,104 @@ _md_sort_summaries :: (summaries: []*Leak_Summary) {
             position -= 1;
         }
         summaries[position] = saved;
+    }
+}
+_md_commas :: (n: Any) -> FormatInt {
+    result: FormatInt;
+    result.digits_per_comma = 3;
+    result.comma_string = ",";
+    result.value = n;
+    return result;
+}
+_md_plural :: (n: s64) -> string { return ifx n == 1 then "" else "s"; }
+// Returns the displayed [first, last] node range: roots in roots_to_skip are trimmed
+// from the end, and the leaf side starts after the rootmost known allocation leaf.
+_md_trim_trace :: (options: Leak_Report_Options, trace: *Packed_Stack_Trace) -> (first: s64, last: s64) {
+    last := trace.nodes.count - 1;
+    while last >= 0 {
+        node := trace.nodes[last];
+        if !node.info { last -= 1; continue; }
+        skip := false;
+        for options.roots_to_skip if _md_procedure_matches(it, node) { skip = true; break; }
+        if !skip break;
+        last -= 1;
+    }
+    i := last;
+    while i >= 0 {
+        for leaf: options.known_allocation_leaves if _md_procedure_matches(leaf, trace.nodes[i]) return i, last;
+        i -= 1;
+    }
+    return 0, last;
+}
+_md_log_trace :: (trace: *Packed_Stack_Trace, first_in: s64, last_in: s64, from_root: s64, from_leaf: s64, group_info: *Group_Info) {
+    first := first_in;
+    last := last_in;
+    ellipses_start := from_leaf;
+    if ellipses_start <= first && ellipses_start > 0 first = ellipses_start - 1;
+
+    longest := 0;
+    for i: first..last {
+        node := trace.nodes[i];
+        if node.info longest = max(longest, node.info.name.count);
+    }
+    longest = min(longest + 1, 44);
+
+    ellipses_end := -1;
+    if from_root >= 0 {
+        ellipses_end = trace.nodes.count - 1 - from_root;
+        if first >= ellipses_start first = max(0, ellipses_start - 1);
+        if last <= ellipses_end last = min(trace.nodes.count - 1, ellipses_end + 1);
+    }
+
+    SPACES :: "                                            ";
+    for i: first..last {
+        node := trace.nodes[i];
+        if !node.info continue;
+        if i >= ellipses_start && i <= ellipses_end {
+            if i == ellipses_start log("...\n");
+            continue;
+        }
+        padding := SPACES;
+        padding.count = max(0, longest - node.info.name.count);
+
+        // A grouped trace can reach one frame from several line numbers; list them all.
+        lines: [..] s64;
+        lines.allocator = __temporary_allocator;
+        if group_info {
+            initial := node.line_number;
+            for sub: group_info.sub_summaries {
+                other_trace := sub.alloc_site_trace;
+                j := i;
+                if i > ellipses_end {
+                    below := trace.nodes.count - 1 - i;
+                    j = other_trace.nodes.count - 1 - below;
+                    if j <= ellipses_start continue;
+                }
+                other := other_trace.nodes[j];
+                if other.line_number != initial {
+                    if !lines array_add(*lines, initial);
+                    array_add_if_unique(*lines, other.line_number);
+                }
+            }
+            // Insertion sort; the list is tiny.
+            for a: 1..lines.count-1 {
+                v := lines[a];
+                b := a;
+                while b > 0 && lines[b-1] > v { lines[b] = lines[b-1]; b -= 1; }
+                lines[b] = v;
+            }
+        }
+        if lines {
+            builder: String_Builder;
+            builder.allocator = __temporary_allocator;
+            for lines {
+                if it_index != 0 append(*builder, ", ");
+                print_to_builder(*builder, "%", it);
+            }
+            log("%1% %:(%)\n", node.info.name, padding, node.info.location.fully_pathed_filename, builder_to_string(*builder));
+        } else {
+            log("%1% %:%\n", node.info.name, padding, node.info.location.fully_pathed_filename, node.line_number);
+        }
     }
 }
 _md_log_summary :: (summary: *Leak_Summary, options: Leak_Report_Options, prefix: string) {

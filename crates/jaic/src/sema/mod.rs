@@ -79,6 +79,8 @@ pub struct Options {
     pub temporary_storage_size: i64,
     /// Emit array bounds checks (`Build_Options.array_bounds_check != .OFF`).
     pub array_bounds_check: bool,
+    /// Maintain `context.stack_trace` while the program runs (`Build_Options.stack_trace`).
+    pub stack_trace: bool,
 }
 
 impl Options {
@@ -107,6 +109,7 @@ impl Options {
             runtime_support: true,
             temporary_storage_size: 32768,
             array_bounds_check: true,
+            stack_trace: true,
         }
     }
 }
@@ -292,7 +295,7 @@ impl Compiler {
             asserts: Vec::new(),
             runs_done: 0,
             asserts_done: 0,
-            workspace: 1,
+            workspace: crate::build::TOP_LEVEL_WORKSPACE,
             runtime_info: None,
             added_sources: 0,
             hoisted_imports: HashSet::new(),

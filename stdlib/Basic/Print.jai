@@ -53,6 +53,8 @@ Print_Style :: struct {
     default_format_float: FormatFloat;
     default_format_struct: FormatStruct;
     default_format_array: FormatArray;
+    // Pointers print as hex with an underscore every 4 digits and no 0x prefix.
+    default_format_absolute_pointer: FormatInt = .{base = 16, digits_per_comma = 4, comma_string = "_"};
 
     struct_printer: (builder: *String_Builder, any: Any, struct_printer_data: *void) -> bool;
     struct_printer_data: *void;
@@ -65,6 +67,16 @@ Print_Style :: struct {
 // declared by only one of them. Copy the style member by member into this instance's types.
 __default_format_int :: () -> FormatInt {
     source := context.print_style.default_format_int;
+    result: FormatInt;
+    result.base = source.base;
+    result.minimum_digits = source.minimum_digits;
+    result.padding = source.padding;
+    result.digits_per_comma = source.digits_per_comma;
+    result.comma_string = source.comma_string;
+    return result;
+}
+__default_format_pointer :: () -> FormatInt {
+    source := context.print_style.default_format_absolute_pointer;
     result: FormatInt;
     result.base = source.base;
     result.minimum_digits = source.minimum_digits;
@@ -581,7 +593,9 @@ __printable_member :: (member: *Type_Info_Struct_Member, end_of_last: *s64) -> b
     return true;
 }
 __append_struct :: (builder: *String_Builder, info: *Type_Info_Struct, pointer: *void, format: FormatStruct, depth: s64) {
-    if format.draw_type_name { append(builder, info.name); append(builder, " "); }
+    // The contents of a union are unknowable without a tag, so only its kind is shown.
+    if info.textual_flags & .UNION { append(builder, "(union)"); return; }
+    if format.draw_type_name append(builder, info.name);
     append(builder, format.begin_string);
     count: s64 = 0;
     end_of_last: s64 = -1;
@@ -685,8 +699,9 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         print_float(builder, settings);
     } else if tag == .POINTER || tag == .PROCEDURE {
         value := (cast(**void) item.value_pointer).*;
+        if tag == .PROCEDURE && value append(builder, "procedure 0x");
         if !value append(builder, "null");
-        else { append(builder, "0x"); print_u64_base_n(builder, cast(u64) value, FormatInt.{base = 16}); }
+        else print_u64_base_n(builder, cast(u64) value, __default_format_pointer());
     } else if tag == .STRUCT {
         // A using/#as Formatter field is an explicit formatting view. Locate
         // its real byte offset rather than assuming it is the first field.
