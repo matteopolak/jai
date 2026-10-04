@@ -384,6 +384,8 @@ Public source corpora are input data.
 - [jaic compiler workspaces](jaic-workspaces.md) — Workspace registry, `__jaic_*` Compiler-module primitives, events and output backends.
 - [Compiler module (Jai side)](compiler-module.md) — Jai implementation of the `Compiler` module API over the `__jaic_*` primitives: option store, message interception, stubs.
 - [jaic regression sweep](jaic-sweep.md) — `tools/jaic-sweep.py` sets (corpus, stdlib, upstream) and how to extend them.
+- [Iprof profiler](iprof.md) — Instrumenting frame-based profiler: runtime, drawing callbacks, metaprogram plugin, import-mode gotchas.
+- [Tooling modules](stdlib-tooling-modules.md) — Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report, plus small Simp/Input/Socket/File compatibility additions.
 
 ## Language and library specifications
 
