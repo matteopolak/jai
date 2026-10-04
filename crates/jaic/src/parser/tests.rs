@@ -603,7 +603,7 @@ fn inferred_members_and_directive_primaries() {
     ));
     assert!(matches!(
         value("x := #asm { mov.q rax, 1; };").kind,
-        ExprKind::Asm
+        ExprKind::Asm(_)
     ));
     assert!(matches!(
         value("L :: #system_library \"libc\";").kind,
@@ -996,4 +996,71 @@ fn parenthesized_cast_with_flags_is_not_a_header() {
         decl.value.as_ref().unwrap().kind,
         ExprKind::Binary(..)
     ));
+}
+
+fn asm_block(src: &str) -> Rc<AsmBlock> {
+    match value(src).kind {
+        ExprKind::Asm(block) => block,
+        other => panic!("expected an #asm block, found {other:?}"),
+    }
+}
+
+#[test]
+fn asm_instruction_forms() {
+    let block = asm_block(
+        "x := #asm AVX, AVX2 { mov.q a, 1; lock_btr.d [p + i*8 - 16], n; popcnt?T r, v; mov.64 q:, 7; pause; };",
+    );
+    assert_eq!(block.features.len(), 2);
+    let AsmItem::Inst(mov) = &block.items[0] else {
+        panic!("expected an instruction");
+    };
+    assert_eq!(mov.mnemonic.name.as_str(), "mov");
+    assert!(matches!(&mov.size, Some(AsmSize::Suffix(s)) if s.name.as_str() == "q"));
+    let AsmItem::Inst(btr) = &block.items[1] else {
+        panic!("expected an instruction");
+    };
+    assert_eq!(btr.mnemonic.name.as_str(), "lock_btr");
+    let AsmOperand::Mem(mem) = &btr.operands[0] else {
+        panic!("expected a memory operand");
+    };
+    assert_eq!(mem.terms.len(), 3);
+    assert!(mem.terms[1].scale.is_some() && !mem.terms[1].negate);
+    assert!(mem.terms[2].negate);
+    let AsmItem::Inst(popcnt) = &block.items[2] else {
+        panic!("expected an instruction");
+    };
+    assert!(matches!(popcnt.size, Some(AsmSize::Dynamic(_))));
+    let AsmItem::Inst(wide) = &block.items[3] else {
+        panic!("expected an instruction");
+    };
+    assert!(matches!(&wide.size, Some(AsmSize::Suffix(s)) if s.name.as_str() == "64"));
+    assert!(matches!(&wide.operands[0], AsmOperand::Decl(d) if d.colon && d.class.is_none()));
+    assert_eq!(block.items.len(), 5);
+}
+
+#[test]
+fn asm_declarations_and_pins() {
+    let block = asm_block("x := #asm { t: gpr === a; u === c; mov w: gpr === 15, 10; v: vec; };");
+    let AsmItem::Decl(t) = &block.items[0] else {
+        panic!("expected a declaration");
+    };
+    assert!(t.colon && t.class.is_some() && matches!(t.pin, Some(AsmPin::Name(_))));
+    let AsmItem::Decl(u) = &block.items[1] else {
+        panic!("expected a pin");
+    };
+    assert!(!u.colon && u.pin.is_some());
+    let AsmItem::Inst(mov) = &block.items[2] else {
+        panic!("expected an instruction");
+    };
+    assert!(matches!(
+        &mov.operands[0],
+        AsmOperand::Decl(d) if matches!(d.pin, Some(AsmPin::Index(15)))
+    ));
+}
+
+#[test]
+fn asm_errors() {
+    assert!(error("x := #asm { mov a, 1 mov b, 2; };").contains("expected ';'"));
+    assert!(error("x := #asm { mov a, [b + ; };").contains("expected"));
+    assert!(error("x := #asm { mov a, 1;").contains("unterminated"));
 }

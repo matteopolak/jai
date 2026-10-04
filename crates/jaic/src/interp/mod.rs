@@ -914,6 +914,18 @@ impl Interp {
                     .map_or(0, |d| d.as_nanos() as u64),
             ],
             I::Pause => vec![],
+            I::Popcount => vec![a[0].count_ones() as u64],
+            I::Ctlz => {
+                let bits = a[1] as u32;
+                let lead = if a[0] == 0 {
+                    64
+                } else {
+                    a[0].leading_zeros()
+                };
+                vec![(lead - (64 - bits)) as u64]
+            }
+            I::Cttz => vec![(a[0].trailing_zeros()).min(a[1] as u32) as u64],
+            I::Bswap => vec![a[0].swap_bytes() >> (64 - a[1] as u32)],
             I::IsCompileTime => vec![self.compile_time as u64],
         })
     }

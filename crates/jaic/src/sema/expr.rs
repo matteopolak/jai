@@ -366,7 +366,7 @@ impl Compiler {
                     name.name
                 ),
             ),
-            E::Asm => err(span, "#asm is not supported"),
+            E::Asm(block) => self.check_asm(f, scope, block),
             E::Lambda {
                 header,
                 body,

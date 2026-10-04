@@ -350,30 +350,6 @@ impl Parser<'_> {
         }
     }
 
-    /// `#asm { ... }` is kept opaque: the body is skipped up to the matching brace.
-    fn parse_asm(&mut self) -> PResult<Expr> {
-        let start = self.bump();
-        while !self.at(P::LBrace) {
-            if self.at_eof() {
-                return Err(self.expected("'{'", "after '#asm'"));
-            }
-            self.bump();
-        }
-        let mut depth = 0usize;
-        loop {
-            match self.tok() {
-                Tok::Punct(P::LBrace | P::DotBrace) => depth += 1,
-                Tok::Punct(P::RBrace) => depth -= 1,
-                Tok::Eof => return Err(self.error("unterminated '#asm' block")),
-                _ => {}
-            }
-            let end = self.bump();
-            if depth == 0 {
-                return Ok(mk(ExprKind::Asm, start.to(end)));
-            }
-        }
-    }
-
     /// At `,flag,flag "string"`: flags that belong to the directive rather than to an argument list.
     fn flags_before_string_ahead(&self) -> bool {
         let mut i = 0;

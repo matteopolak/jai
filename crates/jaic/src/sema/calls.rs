@@ -471,6 +471,14 @@ impl Compiler {
         if self.auto_deref_arg(from, param) {
             return Ok(convert::SUBTYPE);
         }
+        // `__reg` (Code) macro parameters bind to the caller's variable by name.
+        if param == TypeId::CODE
+            && matches!(op, Operand::Place { .. })
+            && matches!(arg.expr.as_ref().map(|e| &e.kind), Some(E::Ident(_)))
+            && self.implicit_cost(from, untyped, param).is_none()
+        {
+            return Ok(convert::LITERAL);
+        }
         self.implicit_cost(from, untyped, param).ok_or_else(|| {
             Box::new(Diagnostic::error(
                 arg.span,
