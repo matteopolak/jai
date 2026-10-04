@@ -471,6 +471,7 @@ impl Parser<'_> {
             stmts: vec![statement],
             span,
             no_abc: false,
+            no_aoc: false,
         })
     }
 

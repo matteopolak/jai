@@ -1426,6 +1426,33 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                     .ok_or("bit intrinsic produced no value")?;
                 Ok(vec![v])
             }
+            Intrinsic::SAddOverflow
+            | Intrinsic::UAddOverflow
+            | Intrinsic::SSubOverflow
+            | Intrinsic::USubOverflow
+            | Intrinsic::SMulOverflow
+            | Intrinsic::UMulOverflow => {
+                // (a, b, width_bytes) -> overflowed, through the `*.with.overflow` intrinsics.
+                let name = match op {
+                    Intrinsic::SAddOverflow => "llvm.sadd.with.overflow",
+                    Intrinsic::UAddOverflow => "llvm.uadd.with.overflow",
+                    Intrinsic::SSubOverflow => "llvm.ssub.with.overflow",
+                    Intrinsic::USubOverflow => "llvm.usub.with.overflow",
+                    Intrinsic::SMulOverflow => "llvm.smul.with.overflow",
+                    _ => "llvm.umul.with.overflow",
+                };
+                let x = self.as_int(args[0])?;
+                let y = self.as_int(args[1])?;
+                let pair = self
+                    .call_intrinsic(name, &[x.get_type().into()], &[x.into(), y.into()])?
+                    .ok_or("overflow intrinsic produced no value")?;
+                let flag = b
+                    .build_extract_value(pair.into_struct_value(), 1, "")?
+                    .into_int_value();
+                Ok(vec![
+                    b.build_int_z_extend(flag, self.ctx.i8_type(), "")?.into(),
+                ])
+            }
             Intrinsic::IsCompileTime => {
                 let ty = want.first().copied().unwrap_or(Ty::I8);
                 Ok(vec![self.ll(ty).into_int_type().const_zero().into()])

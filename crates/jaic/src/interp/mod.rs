@@ -1049,6 +1049,33 @@ impl Interp {
             I::Cttz => vec![(a[0].trailing_zeros()).min(a[1] as u32) as u64],
             I::Bswap => vec![a[0].swap_bytes() >> (64 - a[1] as u32)],
             I::IsCompileTime => vec![self.compile_time as u64],
+            I::SAddOverflow | I::SSubOverflow | I::SMulOverflow => {
+                let bits = (a[2] as u32 * 8).min(64);
+                let wide = |v: u64| (((v as i128) << (128 - bits)) >> (128 - bits)) as i128;
+                let (x, y) = (wide(a[0]), wide(a[1]));
+                let r = match op {
+                    I::SAddOverflow => x + y,
+                    I::SSubOverflow => x - y,
+                    _ => x * y,
+                };
+                let limit = 1i128 << (bits - 1);
+                vec![(r < -limit || r >= limit) as u64]
+            }
+            I::UAddOverflow | I::USubOverflow | I::UMulOverflow => {
+                let bits = (a[2] as u32 * 8).min(64);
+                let keep = if bits == 64 {
+                    u64::MAX
+                } else {
+                    (1u64 << bits) - 1
+                };
+                let (x, y) = ((a[0] & keep) as i128, (a[1] & keep) as i128);
+                let r = match op {
+                    I::UAddOverflow => x + y,
+                    I::USubOverflow => x - y,
+                    _ => x * y,
+                };
+                vec![(r < 0 || r > keep as i128) as u64]
+            }
         })
     }
 }

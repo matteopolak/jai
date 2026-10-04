@@ -577,6 +577,15 @@ impl Compiler {
         id: EntityId,
         span: Span,
     ) -> Result<Operand> {
+        if self.discard_params.contains(&id) {
+            return err(
+                span,
+                format!(
+                    "'{}' is a #discard parameter and cannot be used in the procedure",
+                    self.entity(id).name
+                ),
+            );
+        }
         match self.entity(id).kind.clone() {
             EntityKind::Local {
                 ty,
@@ -1429,10 +1438,99 @@ impl Compiler {
         } else {
             y
         };
+        let val = f.b.bin(ir_op, t, x, y);
+        if self.options.arithmetic_overflow_check != 0
+            && !f.no_aoc
+            && !f.type_only
+            && matches!(ir_op, ir::BinOp::Add | ir::BinOp::Sub | ir::BinOp::Mul)
+            && self.types.is_integer(ty)
+            && !matches!(self.types.kind(ty), TypeKind::Enum(_))
+        {
+            self.emit_overflow_check(f, ir_op, signed, t, x, y, span)?;
+        }
         Ok(Operand::Value {
             ty,
-            val: f.b.bin(ir_op, t, x, y),
+            val,
         })
+    }
+
+    /// After `x op y` on integers of IR type `t`: call the runtime's `__arithmetic_overflow`
+    /// when the result did not fit (`Build_Options.arithmetic_overflow_check`).
+    #[allow(clippy::too_many_arguments)]
+    fn emit_overflow_check(
+        &mut self,
+        f: &mut FnCtx,
+        op: ir::BinOp,
+        signed: bool,
+        t: Ty,
+        x: ir::Val,
+        y: ir::Val,
+        span: Span,
+    ) -> Result<()> {
+        use ir::Intrinsic as I;
+        let (intrinsic, operator) = match (op, signed) {
+            (ir::BinOp::Add, true) => (I::SAddOverflow, 1u64),
+            (ir::BinOp::Add, false) => (I::UAddOverflow, 1),
+            (ir::BinOp::Sub, true) => (I::SSubOverflow, 2),
+            (ir::BinOp::Sub, false) => (I::USubOverflow, 2),
+            (ir::BinOp::Mul, true) => (I::SMulOverflow, 3),
+            _ => (I::UMulOverflow, 3),
+        };
+        let Some(runtime) = self.runtime_support else {
+            return Ok(());
+        };
+        let handler = self.module_exports(runtime, Sym::intern("__arithmetic_overflow"))?;
+        let Some(&entity) = handler.first() else {
+            return err(
+                span,
+                "Runtime_Support does not define '__arithmetic_overflow'",
+            );
+        };
+        let Resolved::Proc(proc) = self.resolve_entity(entity)? else {
+            return err(span, "'__arithmetic_overflow' is not a procedure");
+        };
+        let super::procs::ProcTarget::Func(func) = self.proc_func(proc, span)? else {
+            return err(span, "'__arithmetic_overflow' must be defined in Jai");
+        };
+        let width = f.b.iconst(Ty::I64, t.size());
+        let overflowed = f.b.intrinsic(intrinsic, vec![x, y, width], &[Ty::I8])[0];
+        let fail = f.b.new_block();
+        let cont = f.b.new_block();
+        f.b.branch(overflowed, fail, cont);
+        f.b.switch_to(fail);
+        let widen = if signed {
+            ir::ConvOp::SExt
+        } else {
+            ir::ConvOp::ZExt
+        };
+        let (left, right) = if t == Ty::I64 {
+            (x, y)
+        } else {
+            (
+                f.b.conv(widen, t, Ty::I64, x),
+                f.b.conv(widen, t, Ty::I64, y),
+            )
+        };
+        // Same layout as the reference: bit 15 fatal, bit 14 signed, bits 7-8 operator, low bits size.
+        let code = (u64::from(self.options.arithmetic_overflow_check == 2) << 15)
+            | (u64::from(signed) << 14)
+            | (operator << 7)
+            | t.size();
+        let code = f.b.iconst(Ty::I16, code);
+        let file = self.sources.get(span.file);
+        let (line, _) = file.line_col(span.start);
+        let path: Rc<[u8]> = Rc::from(file.path.as_bytes());
+        let line = f.b.iconst(Ty::I64, line as u64);
+        let global = self.string_global(&path);
+        let filename = f.b.global_addr(global);
+        f.b.call(
+            ir::Callee::Func(func),
+            vec![left, right, code, line, filename],
+            &[],
+        );
+        f.b.jump(cont);
+        f.b.switch_to(cont);
+        Ok(())
     }
 
     /// The type an untyped literal takes next to a typed operand: the operand's

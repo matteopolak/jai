@@ -221,3 +221,138 @@ fn bindings_generator_cpp_raw() {
 fn bindings_generator_objc() {
     native_bindings_generator_test("bindings-generator-objc");
 }
+
+/// Arithmetic overflow checks in a native build: `Build_Options.arithmetic_overflow_check` on a
+/// workspace that writes an executable, and `#no_aoc` switching them off again.
+#[test]
+fn arithmetic_overflow_checks() {
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-overflow");
+    std::fs::create_dir_all(&dir).unwrap();
+    // (name, mode, body of main, run succeeds, stdout, text stderr must contain)
+    let cases: [(&str, &str, &str, bool, &str, &str); 8] = [
+        (
+            "off",
+            "OFF",
+            "x: u8 = 250; y: u8 = 10; print(\"%\\n\", x + y);",
+            true,
+            "4\n",
+            "",
+        ),
+        (
+            "nonfatal",
+            "NONFATAL",
+            "x: u8 = 250; y: u8 = 10; print(\"%\\n\", x + y);",
+            true,
+            "4\n",
+            "arithmetic overflow computing 250 + 10 as u8",
+        ),
+        (
+            "fatal-add",
+            "FATAL",
+            "x: u8 = 250; y: u8 = 10; print(\"%\\n\", x + y);",
+            false,
+            "",
+            "arithmetic overflow computing 250 + 10 as u8",
+        ),
+        (
+            "fatal-sub",
+            "FATAL",
+            "x: s64 = -0x7fff_ffff_ffff_ffff; y: s64 = 5; print(\"%\\n\", x - y);",
+            false,
+            "",
+            "as s64",
+        ),
+        (
+            "fatal-mul",
+            "FATAL",
+            "x: u32 = 70000; print(\"%\\n\", x * x);",
+            false,
+            "",
+            "70000 * 70000 as u32",
+        ),
+        (
+            "in-range",
+            "FATAL",
+            "x: s16 = 32000; y: s16 = 767; a: u64 = 3; print(\"% %\\n\", x + y, a - 3);",
+            true,
+            "32767 0\n",
+            "",
+        ),
+        (
+            "no-aoc-block",
+            "FATAL",
+            "x: u8 = 250; y: u8 = 10; z: u8; #no_aoc { z = x + y; } print(\"%\\n\", z);",
+            true,
+            "4\n",
+            "",
+        ),
+        (
+            "no-aoc-loop",
+            "FATAL",
+            "x: u8 = 250; for 1..2 #no_aoc { x += 10; } print(\"%\\n\", x);",
+            true,
+            "14\n",
+            "",
+        ),
+    ];
+    for (name, mode, body, ok, stdout, stderr) in cases {
+        let meta = dir.join(format!("{name}.jai"));
+        std::fs::write(
+            &meta,
+            format!(
+                r##"#import "Basic";
+#import "Compiler";
+
+SOURCE :: #string END
+#import "Basic";
+main :: () {{
+    {body}
+}}
+END
+
+#run {{
+    set_build_options_dc(.{{do_output = false}});
+    w := compiler_create_workspace("prog");
+    options := get_build_options(w);
+    options.output_type = .EXECUTABLE;
+    options.output_executable_name = "{name}-prog";
+    options.output_path = ".";
+    options.arithmetic_overflow_check = .{mode};
+    set_build_options(options, w);
+    add_build_string(SOURCE, w);
+}}
+"##
+            ),
+        )
+        .unwrap();
+        let build = Command::new(JAIC)
+            .arg("build")
+            .arg(&meta)
+            .current_dir(&dir)
+            .output()
+            .unwrap();
+        assert!(
+            build.status.success(),
+            "{name}: build failed: {}",
+            String::from_utf8_lossy(&build.stderr)
+        );
+        let run = Command::new(dir.join(format!("{name}-prog")))
+            .output()
+            .unwrap();
+        let err = String::from_utf8_lossy(&run.stderr);
+        assert_eq!(
+            run.status.success(),
+            ok,
+            "{name}: status {:?}\n{err}",
+            run.status
+        );
+        assert_eq!(String::from_utf8_lossy(&run.stdout), stdout, "{name}");
+        assert!(err.contains(stderr), "{name}: stderr was {err:?}");
+        if stderr.is_empty() {
+            assert!(
+                !err.contains("overflow"),
+                "{name}: unexpected report {err:?}"
+            );
+        }
+    }
+}

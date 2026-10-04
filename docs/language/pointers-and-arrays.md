@@ -39,7 +39,7 @@ Gotcha: the checks live in the IR, so the interpreter and the LLVM backend agree
 
 ## Configuration
 
-`Build_Options.array_bounds_check` (read in `build.rs`) and the `#no_abc` directive. Nothing else.
+`Build_Options.array_bounds_check` (read in `build.rs`) and the `#no_abc` directive. Nothing else. The arithmetic counterpart, `#no_aoc`, uses the same placements; see [arithmetic-overflow-checks.md](arithmetic-overflow-checks.md).
 
 ## Dependencies
 

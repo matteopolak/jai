@@ -57,6 +57,7 @@ pub fn lambda_lit(header: &ast::ProcHeader, body: &ast::Expr) -> Rc<ast::ProcLit
                 }],
                 span: body.span,
                 no_abc: false,
+                no_aoc: false,
             }
         }
     };

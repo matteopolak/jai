@@ -79,6 +79,8 @@ pub struct Options {
     pub temporary_storage_size: i64,
     /// Emit array bounds checks (`Build_Options.array_bounds_check != .OFF`).
     pub array_bounds_check: bool,
+    /// `Build_Options.arithmetic_overflow_check`: 0 = off, 1 = nonfatal, 2 = fatal.
+    pub arithmetic_overflow_check: u8,
     /// Maintain `context.stack_trace` while the program runs (`Build_Options.stack_trace`).
     pub stack_trace: bool,
 }
@@ -109,6 +111,7 @@ impl Options {
             runtime_support: true,
             temporary_storage_size: 32768,
             array_bounds_check: true,
+            arithmetic_overflow_check: 0,
             stack_trace: true,
         }
     }
@@ -202,6 +205,11 @@ pub struct Compiler {
     /// innermost one. Only calls to procedures that use `#caller_code` are recorded.
     pub calls_in_flight: Vec<(Rc<ast::Expr>, ScopeId)>,
     pub local_consts: HashMap<EntityId, (Value, TypeId)>,
+    /// `#discard` parameters: naming one in the body is an error.
+    pub discard_params: HashSet<EntityId>,
+    /// The most recently emitted call that has `#must` results: call span, procedure name, and
+    /// which results are `#must`.
+    pub last_call_must: Option<(Span, Sym, Vec<bool>)>,
     /// Macro parameters bound to a constant argument the macro never writes: reading them
     /// gives the constant (`#if n <= 1` in a recursive macro; `message.count` of a constant
     /// string fits a `u64` parameter).
@@ -311,6 +319,8 @@ impl Compiler {
             anonymous_procs: HashMap::new(),
             calls_in_flight: Vec::new(),
             local_consts: HashMap::new(),
+            discard_params: HashSet::new(),
+            last_call_must: None,
             const_macro_params: HashMap::new(),
             reexport_visiting: Vec::new(),
             local_decl_types: HashMap::new(),

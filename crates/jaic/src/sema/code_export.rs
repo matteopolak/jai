@@ -320,6 +320,7 @@ impl Compiler {
                 stmts: new_stmts,
                 span: old_body.span,
                 no_abc: old_body.no_abc,
+                no_aoc: old_body.no_aoc,
             }),
         };
         self.procs[p.0 as usize].lit = Rc::new(lit);

@@ -59,6 +59,8 @@ pub struct BuildSettings {
     pub additional_linker_arguments: Vec<String>,
     pub temporary_storage_size: Option<i64>,
     pub array_bounds_check: Option<bool>,
+    /// 0 = OFF, 1 = NONFATAL, 2 = FATAL (`Options::arithmetic_overflow_check`).
+    pub arithmetic_overflow_check: Option<u8>,
     pub stack_trace: Option<bool>,
 }
 
@@ -76,6 +78,7 @@ impl Default for BuildSettings {
             additional_linker_arguments: Vec::new(),
             temporary_storage_size: None,
             array_bounds_check: None,
+            arithmetic_overflow_check: None,
             stack_trace: None,
         }
     }
@@ -344,6 +347,13 @@ impl Workspaces {
             "additional_linker_argument" => s.additional_linker_arguments.push(value.into()),
             "temporary_storage_size" => s.temporary_storage_size = value.parse().ok(),
             "array_bounds_check" => s.array_bounds_check = Some(value != "OFF"),
+            "arithmetic_overflow_check" => {
+                s.arithmetic_overflow_check = Some(match value {
+                    "NONFATAL" => 1,
+                    "FATAL" => 2,
+                    _ => 0,
+                })
+            }
             "stack_trace" => s.stack_trace = Some(value == "true"),
             // Accepted and ignored: checks, added-string dumps...
             _ => {}
@@ -398,6 +408,9 @@ fn new_compiler(shared: &SharedWorkspaces, id: i64) -> Result<Box<Compiler>, Str
     }
     if let Some(check) = settings.array_bounds_check {
         options.array_bounds_check = check;
+    }
+    if let Some(check) = settings.arithmetic_overflow_check {
+        options.arithmetic_overflow_check = check;
     }
     if let Some(trace) = settings.stack_trace {
         options.stack_trace = trace;

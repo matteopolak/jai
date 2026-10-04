@@ -27,7 +27,7 @@ error: constant 300 does not fit in u8              // c: u8 = 300;
 
 Division and remainder truncate toward zero (`-7/2` is `-3`, `-7 % 3` is `-1`). `u64` accepts literals up to `18446744073709551615`, and `-9223372036854775808` is a valid `s64` literal. `1_000`, `0xFF_FF` and `0b1010` literals are accepted. Float division by zero yields `inf` / `-inf`.
 
-Integer arithmetic always wraps at the declared width. There is no overflow trap: `v: u8 = 255; v += 1` gives `0`. The `#no_aoc` flag on a procedure or block is parsed (`crates/jaic/src/parser/procedure.rs`, `directive_stmt.rs`) but changes nothing, because there is no overflow check to disable.
+Integer arithmetic wraps at the declared width: `v: u8 = 255; v += 1` gives `0`. By default nothing is checked. A metaprogram can turn on overflow checks for `+`, `-` and `*` with `Build_Options.arithmetic_overflow_check` (`.NONFATAL` / `.FATAL`), and `#no_aoc` opts code out again; see [arithmetic-overflow-checks.md](arithmetic-overflow-checks.md).
 
 128-bit arithmetic is a library feature: `stdlib/Basic/Int128.jai`, exercised by `tests/stdlib/int128-arithmetic.jai`.
 
@@ -35,7 +35,7 @@ Integer arithmetic always wraps at the declared width. There is no overflow trap
 
 Constant folding of numeric operations lives in `crates/jaic/src/sema/expr.rs` (`wrap_int`) and conversions in `crates/jaic/src/sema/convert.rs` (`implicit_cost`, `scalar_convert`). Untyped constants carry `untyped: true` on `Operand::Const` until `settle_untyped` fixes a type; keep that flag when adding folding paths or a literal silently becomes `s64`.
 
-If you add overflow checking, it must apply identically in constant folding, the interpreter (`crates/jaic/src/interp/mod.rs`) and the LLVM backend, and `#no_aoc` would then need real plumbing from the parser flag through `FnCtx`.
+Overflow checking applies to runtime arithmetic only (constant folding still wraps, and literals that do not fit are errors); see [arithmetic-overflow-checks.md](arithmetic-overflow-checks.md).
 
 ## Configuration
 

@@ -553,6 +553,8 @@ pub struct Block {
     pub span: Span,
     /// `#no_abc { ... }`, or the body of a loop / `if` flagged `#no_abc`: no array bounds checks.
     pub no_abc: bool,
+    /// `#no_aoc { ... }`, or the body of a loop / `if` flagged `#no_aoc`: no arithmetic overflow checks.
+    pub no_aoc: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

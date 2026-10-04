@@ -67,7 +67,9 @@ strings, set build options, and read compiler messages. Implemented in `crates/j
 
 Option keys: `output_executable_name`, `output_path`, `output_type`, `do_output`, `import_path_clear`, `import_path`,
 `os_target`, `cpu_target`, `optimization`, `entry_point_name`, `temporary_storage_size`,
-`additional_linker_arguments_clear`, `additional_linker_argument`; unknown keys are ignored. CLI:
+`additional_linker_arguments_clear`, `additional_linker_argument`, `array_bounds_check`, `stack_trace`,
+`arithmetic_overflow_check` (`OFF`, `NONFATAL`, `FATAL`; applies to workspaces a metaprogram creates, not to the
+program's own workspace); unknown keys are ignored. CLI:
 `jaic build build.jai - arg1 arg2` passes args to the metaprogram.
 
 ## Dependencies

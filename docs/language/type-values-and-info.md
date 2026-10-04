@@ -21,7 +21,7 @@ type_of(d) == Derived   // true
 
 `Type` values can be stored, compared, printed and put in arrays (`tt: [2] Type = .[int, float]` prints `s64 float32`), but a variable holding a type cannot be used as a declaration type: `t := Inner; v: t;` is rejected with `type must be known at compile time`. `size_of(Type)` is 8 and `size_of(Any)` is 16. `Any.type` is a `*Type_Info`, so compare with `type_info(int)`, not `int`.
 
-`type_info(T)` returns the matching `Type_Info_*` struct. Checked here: `.type` (`STRUCT`, `ARRAY`, `INTEGER`, `ENUM`), `.name`, `.members` with `name`, `offset_in_bytes`, `type` and `flags` (`USING`, `AS`), per-member `notes`, plus the enum and tagged-union fields described in [enums.md](enums.md) and [unions.md](unions.md).
+`type_info(T)` returns the matching `Type_Info_*` struct. Checked here: `.type` (`STRUCT`, `ARRAY`, `INTEGER`, `ENUM`), `.name`, `.members` with `name`, `offset_in_bytes`, `type` and `flags` (`USING`, `AS`), per-member `notes` and the struct's own `notes` (`S :: struct @thing { }`), plus the enum and tagged-union fields described in [enums.md](enums.md) and [unions.md](unions.md).
 
 Sizes and alignments come from `Types::size_of` / `align_of`; struct layout is in [structs.md](structs.md).
 
