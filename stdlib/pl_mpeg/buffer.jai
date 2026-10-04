@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 Buffer_Mode :: enum {
 	FILE;
 	FIXED_MEM;

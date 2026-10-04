@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 NVTT_VERSION :: 20100;
 
 Format :: enum u32 {

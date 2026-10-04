@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 STBI_VERSION :: 1;
 
 STBI :: enum u32 {

@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 FT_Init_FreeType   :: (library: **FT_Library) -> FT_Error    #foreign ft;
 FT_New_Face        :: (library: *FT_Library, filepathname: *u8, face_index: FT_Long, aface: *FT_Face) -> FT_Error #foreign ft;
 FT_New_Memory_Face :: (library: *FT_Library, file_base: *void, file_size: FT_Long, face_index: FT_Long, aface: *FT_Face) -> FT_Error   #foreign ft;

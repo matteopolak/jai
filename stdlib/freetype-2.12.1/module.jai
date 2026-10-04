@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 FT_HAS_HORIZONTAL :: inline (face: FT_Face) -> bool {
     flags := face.face_flags;
     return (flags & FT_FACE_FLAG_HORIZONTAL) != 0;

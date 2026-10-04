@@ -1,5 +1,5 @@
 // Left-handed (y-down) GetRect: same API as GetRect with a downward-positive vertical axis.
-// Shared implementation lives in ../GetRect_Common; see docs/stdlib/getrect-shared-implementation.md.
+// Shared implementation lives in ../GetRect_Common; see docs/stdlib/getrect.md.
 #module_parameters ()(Type_Indicator: Type = void);
 Math :: #import "Math";
 using Math;

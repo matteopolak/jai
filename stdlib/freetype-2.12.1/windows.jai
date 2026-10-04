@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 FT_RENDER_POOL_SIZE :: 16384;
 
 FT_MAX_MODULES :: 32;

@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 #module_parameters (
     HEAP_ARRAY_SIZE         := 47,
     DEFAULT_SPAN_MAP_COUNT  := 64,

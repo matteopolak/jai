@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 FRAME_SYNC :: 0x7ff;
 
 MPEG_2_5 :: 0x0;

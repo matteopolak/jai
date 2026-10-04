@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 STB_VORBIS_MAX_CHANNELS :: 16;
 
 STB_VORBIS_PUSHDATA_CRC_COUNT :: 4;

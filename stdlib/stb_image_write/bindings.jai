@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 stbi_write_tga_with_rle: s32 #elsewhere stb_image_write;
 stbi_write_png_compression_level: s32 #elsewhere stb_image_write;
 stbi_write_force_png_filter: s32 #elsewhere stb_image_write;

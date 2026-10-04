@@ -3,7 +3,7 @@
 // jaic does not own a Build_Options record that Jai code can point into. Instead
 // this module keeps one Build_Options per workspace id and, on set_build_options,
 // forwards the subset the Rust side understands as (key, text value) pairs through
-// __jaic_workspace_set_option. See docs/compiler-module.md for the key table.
+// __jaic_workspace_set_option. See docs/metaprogramming/compiler-module.md for the key table.
 
 #scope_export
 

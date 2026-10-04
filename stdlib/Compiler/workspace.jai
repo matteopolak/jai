@@ -502,7 +502,7 @@ add_data_segment :: (section_name: string, characteristics := Data_Segment_Chara
 developer_debug :: (x: *void) {}
 
 // ---------------------------------------------------------------------------
-// Primitives bound by jaic (see docs/compiler-module.md). Not part of the public API.
+// Primitives bound by jaic (see docs/metaprogramming/compiler-module.md). Not part of the public API.
 // ---------------------------------------------------------------------------
 
 __jaic_workspace_create          :: (name: string) -> s64 #compiler;

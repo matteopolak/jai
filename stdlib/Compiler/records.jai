@@ -1,7 +1,7 @@
 // Turning compiler records into Message_*, Code_* and Type_Info_* structs.
 //
 // jaic exports messages, syntax trees and type descriptors as records: a tag naming
-// the struct to build and named fields (see docs/compiler-records.md). The structs are
+// the struct to build and named fields (see docs/metaprogramming/compiler-records.md). The structs are
 // filled by reflection, member by member, so the layouts in nodes.jai are the only
 // place that knows them. Each record is built once; pointers to the same record are
 // the same pointer for the rest of the compilation.

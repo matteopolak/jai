@@ -63,7 +63,7 @@ size_class_use_t :: struct {
         unused : int32_t;
     }
 }
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 RPMALLOC_FIRST_CLASS_HEAPS :: FIRST_CLASS_HEAPS;
 
 WIN32_LEAN_AND_MEAN :: PLATFORM_WINDOWS;

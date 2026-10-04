@@ -1,5 +1,5 @@
 // Right-handed (y-up) GetRect: the standard GetRect module API.
-// Shared implementation lives in ../GetRect_Common; see docs/stdlib/getrect-shared-implementation.md.
+// Shared implementation lives in ../GetRect_Common; see docs/stdlib/getrect.md.
 #module_parameters ()(Type_Indicator: Type = void);
 Math :: #import "Math";
 #import "Math";

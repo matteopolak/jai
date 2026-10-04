@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 MESHOPTIMIZER_VERSION :: 110;
 
 MESHOPTIMIZER_EXPERIMENTAL :: true;

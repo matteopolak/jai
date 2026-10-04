@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 Baker_Sampling_Mode :: enum u32 {
     Fragment_Sampling          :: 0;
     Vertex_Sampling_Randomized :: 1;

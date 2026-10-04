@@ -1,4 +1,4 @@
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 STBIR_ALPHA_CHANNEL_NONE :: -1;
 
 Resize_Flags :: enum_flags s32 {

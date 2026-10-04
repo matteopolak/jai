@@ -1,5 +1,5 @@
 #if ENABLE_THREAD_CACHE { SPAN_LARGE_CACHE_COUNT :: LARGE_CLASS_COUNT - 1; }
-// Independent declaration normalization; behavior status: docs/stdlib/codec-native-bindings.md.
+// Independent declaration normalization; see docs/stdlib/native-bindings.md.
 SMALL_GRANULARITY       :: 16;
 
 SMALL_GRANULARITY_SHIFT :: 4;
