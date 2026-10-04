@@ -186,6 +186,7 @@ impl Parser<'_> {
         header.params.push(Param {
             name: Some(name),
             baked: false,
+            auto_bake: false,
             using: false,
             using_filter: None,
             discard: false,
@@ -296,6 +297,7 @@ impl Parser<'_> {
             out.push(Param {
                 name: None,
                 baked: false,
+                auto_bake: false,
                 using,
                 using_filter,
                 discard,
@@ -309,13 +311,13 @@ impl Parser<'_> {
         }
         let mut names = Vec::new();
         loop {
-            // `$$x` bakes only constant arguments; jaic passes it at runtime
-            // (the body sees `is_constant(x) == false`).
+            // `$$x` bakes only constant arguments (decided per call in sema).
             let baked = matches!(self.tok(), Tok::Punct(P::Dollar));
-            if baked || matches!(self.tok(), Tok::Punct(P::DollarDollar)) {
+            let auto = matches!(self.tok(), Tok::Punct(P::DollarDollar));
+            if baked || auto {
                 self.bump();
             }
-            names.push((self.ident("as parameter name")?, baked));
+            names.push((self.ident("as parameter name")?, baked, auto));
             if !self.eat(P::Comma) {
                 break;
             }
@@ -338,11 +340,12 @@ impl Parser<'_> {
         }
         let notes = self.parse_notes();
         let end = self.prev_span();
-        for (name, baked) in names {
+        for (name, baked, auto_bake) in names {
             let (ty, default, notes) = (ty.clone(), default.clone(), notes.clone());
             out.push(Param {
                 name: Some(name),
                 baked,
+                auto_bake,
                 using,
                 using_filter: using_filter.clone(),
                 discard,

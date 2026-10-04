@@ -1286,6 +1286,25 @@ impl Compiler {
         {
             return Ok(folded);
         }
+        // Two procedure names compare as their addresses.
+        if let (Operand::Procs(l), Operand::Procs(r)) = (&lhs, &rhs)
+            && l.len() == 1
+            && r.len() == 1
+        {
+            let (lt, rt) = (self.proc_type(l[0], span)?, self.proc_type(r[0], span)?);
+            let converted = self.convert(f, lhs, lt, span)?;
+            let (ty, val) = self.rvalue(f, converted, span)?;
+            lhs = Operand::Value {
+                ty,
+                val,
+            };
+            let converted = self.convert(f, rhs, rt, span)?;
+            let (ty, val) = self.rvalue(f, converted, span)?;
+            rhs = Operand::Value {
+                ty,
+                val,
+            };
+        }
         // Procedure names compared with procedure values take the value's type.
         if matches!(rhs, Operand::Procs(_)) && !matches!(lhs, Operand::Procs(_)) {
             let converted = self.convert(f, rhs, lhs.ty(), span)?;

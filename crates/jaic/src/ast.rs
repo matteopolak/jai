@@ -377,6 +377,8 @@ pub struct Param {
     pub name: Option<Ident>,
     /// `$name: T` (the parameter's value must be a compile-time constant).
     pub baked: bool,
+    /// `$$name: T`: baked when the call's argument is a constant, else a runtime parameter.
+    pub auto_bake: bool,
     pub using: bool,
     /// `using,except(x) q: T`
     pub using_filter: Option<UsingFilter>,
