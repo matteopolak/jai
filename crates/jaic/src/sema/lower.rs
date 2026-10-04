@@ -156,6 +156,8 @@ pub struct FnCtx {
     pub hoisted_consts: std::collections::HashSet<(ScopeId, ast::AstId)>,
     /// Array bounds checks are off (`#no_abc` on the procedure or an enclosing `for`).
     pub no_abc: bool,
+    /// Arithmetic overflow checks are off (`#no_aoc` on the procedure, a block or a loop).
+    pub no_aoc: bool,
 }
 
 #[derive(Clone)]
@@ -202,6 +204,7 @@ impl FnCtx {
             backtick_scope: None,
             hoisted_consts: Default::default(),
             no_abc: false,
+            no_aoc: false,
         }
     }
 }

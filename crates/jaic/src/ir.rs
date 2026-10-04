@@ -165,6 +165,14 @@ pub enum Intrinsic {
     Bswap,
     /// 1 when executing at compile time (`#compile_time`).
     IsCompileTime,
+    /// `(a, b, width_bytes) -> bool`: 1 when the signed (`S`) or unsigned (`U`) operation does not
+    /// fit in `width_bytes` bytes. Used by arithmetic overflow checks.
+    SAddOverflow,
+    UAddOverflow,
+    SSubOverflow,
+    USubOverflow,
+    SMulOverflow,
+    UMulOverflow,
 }
 
 #[derive(Clone, Debug)]

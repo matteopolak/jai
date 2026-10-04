@@ -43,6 +43,7 @@ impl Parser<'_> {
             stmts,
             span: start.to(end),
             no_abc: false,
+            no_aoc: false,
         })
     }
 
@@ -229,7 +230,11 @@ impl Parser<'_> {
         let mut flags = Vec::new();
         self.skip_check_flags(&mut flags);
         self.eat_kw("then");
-        let then_branch = Box::new(no_abc_if(self.parse_stmt()?, has_no_abc(&flags)));
+        let then_branch = Box::new(no_checks_if(
+            self.parse_stmt()?,
+            has_flag(&flags, "no_abc"),
+            has_flag(&flags, "no_aoc"),
+        ));
         let else_branch = if self.eat_kw("else") {
             Some(Box::new(self.parse_stmt()?))
         } else {
@@ -343,7 +348,11 @@ impl Parser<'_> {
         let mut flags = Vec::new();
         self.skip_check_flags(&mut flags);
         self.eat_kw("then");
-        let body = Box::new(no_abc_if(self.parse_stmt()?, has_no_abc(&flags)));
+        let body = Box::new(no_checks_if(
+            self.parse_stmt()?,
+            has_flag(&flags, "no_abc"),
+            has_flag(&flags, "no_aoc"),
+        ));
         let span = start.to(self.prev_span());
         Ok(stmt(
             StmtKind::While {
@@ -603,18 +612,20 @@ impl Parser<'_> {
     }
 }
 
-fn has_no_abc(flags: &[Ident]) -> bool {
-    flags.iter().any(|f| f.name.as_str() == "no_abc")
+fn has_flag(flags: &[Ident], name: &str) -> bool {
+    flags.iter().any(|f| f.name.as_str() == name)
 }
 
-/// With `no_abc`, `body` as a block with bounds checks off (`#no_abc { }`, a flagged loop or `if`).
-pub(super) fn no_abc_if(body: Stmt, no_abc: bool) -> Stmt {
-    if !no_abc {
+/// `body` as a block with bounds checks (`no_abc`) and / or arithmetic overflow checks (`no_aoc`) off
+/// (`#no_abc { }`, a flagged loop or `if`).
+pub(super) fn no_checks_if(body: Stmt, no_abc: bool, no_aoc: bool) -> Stmt {
+    if !no_abc && !no_aoc {
         return body;
     }
     match body.kind {
         StmtKind::Block(mut block) => {
-            block.no_abc = true;
+            block.no_abc |= no_abc;
+            block.no_aoc |= no_aoc;
             Stmt {
                 kind: StmtKind::Block(block),
                 ..body
@@ -626,7 +637,8 @@ pub(super) fn no_abc_if(body: Stmt, no_abc: bool) -> Stmt {
                 StmtKind::Block(Block {
                     stmts: vec![body],
                     span,
-                    no_abc: true,
+                    no_abc,
+                    no_aoc,
                 }),
                 span,
             )

@@ -26,7 +26,7 @@ Verified with `jaic run`:
 - A nested procedure sees constants, types and globals of its enclosing scope but not its runtime locals: `cannot access local 'local' of an enclosing procedure` (`sema/expr.rs`). It is a plain procedure, not a closure.
 - `squares := #run make_squares();` computes the initial value at compile time (it printed `[0, 1, 4, 9]`). Changes that other compile-time code makes to a global do not reach the running program unless the variable is `#no_reset`; see `tests/stdlib/compile-time-globals-reset.jai`.
 - `#assert cond "message";` and `#assert(cond, "message");` run at compile time, and a failure is reported at the assertion: `#assert failed: Rec must be 8 bytes`.
-- Notes after a field (`v : s32 = 9 @Hidden;`) are visible through `type_info(T).members[i].notes`; the count was 1 for that field. Notes on the struct itself were not exposed (`ti.notes.count` was 0), so do not depend on them.
+- Notes after a field (`v : s32 = 9 @Hidden;`) are visible through `type_info(T).members[i].notes`; the count was 1 for that field. Notes on the struct itself (`S :: struct @thing { ... }`) are `type_info(S).notes`; see `tests/stdlib/struct-level-notes.jai`.
 
 ## How to change it
 

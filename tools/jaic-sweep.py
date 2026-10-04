@@ -2,7 +2,8 @@
 """Run jaic over test programs and summarize results.
 
 Usage: tools/jaic-sweep.py [--jaic PATH] [--filter TEXT] [--verbose] SET...
-Sets: corpus (tests/corpus/positive with expected runtime), stdlib (tests/stdlib,
+Sets: corpus (tests/corpus/positive with expected runtime), negative (tests/corpus/negative:
+`jaic check` must fail and report the recorded text), stdlib (tests/stdlib,
 run must succeed), modules (the stdlib's own tests: stdlib/tests and stdlib/<Module>/tests,
 run must succeed; a test directory's `modules/` folder holds its mock modules), howto (reference how_to programs, check only), upstream
 (tools/upstream-cases.json: upstream project entry points that must pass), or file paths.
@@ -19,6 +20,11 @@ def cases(name):
         for c in m["cases"]:
             if "runtime" in c:
                 yield c["id"], ROOT / "tests/corpus" / c["source"], "run", c["runtime"], []
+    elif name == "negative":
+        m = json.loads((ROOT / "tests/corpus/manifest.json").read_text())
+        for c in m["cases"]:
+            if c.get("kind") == "negative":
+                yield c["id"], ROOT / "tests/corpus" / c["source"], "check", {"negative": next(iter(c["negative"].values()))}, []
     elif name == "stdlib":
         for p in sorted((ROOT / "tests/stdlib").glob("*.jai")):
             yield p.stem, p, "run", None, []
@@ -59,6 +65,8 @@ def main():
             out, err, code = "", "timeout", -1
         if expect is None:
             ok = code == 0
+        elif "negative" in expect:
+            ok = code != 0 and code != -1 and expect["negative"] in err
         else:
             ok = code == expect.get("exit_code", 0) and out == expect.get("stdout", "")
         return cid, ok, out, err, code

@@ -98,6 +98,32 @@ __array_bounds_check_fail :: (index: s64, limit: s64, line_number: s64, filename
     write_string("\n", true);
     debug_break();
 }
+// Called by code compiled with Build_Options.arithmetic_overflow_check on, when `+`, `-` or `*` on
+// integers does not fit its type. `type_code` bit 15: fatal, bit 14: signed, bits 7-8: operator
+// (1 add, 2 sub, 3 mul), low bits: operand size in bytes.
+__arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s64, filename: *u8) #no_context #no_aoc {
+    fatal  := (type_code & 0x8000) != 0;
+    signed := (type_code & 0x4000) != 0;
+    operator_index := (type_code >> 7) & 0x3;
+    bits := cast(u64) (type_code & 0xf) * 8;
+
+    operator_text := " * ";
+    if operator_index == 1 operator_text = " + ";
+    else if operator_index == 2 operator_text = " - ";
+
+    write_failure_location(filename, line_number);
+    write_string("arithmetic overflow computing ", true);
+    if signed write_number(left, to_standard_error = true);
+    else write_nonnegative_number(cast,no_check(u64) left, to_standard_error = true);
+    write_string(operator_text, true);
+    if signed write_number(right, to_standard_error = true);
+    else write_nonnegative_number(cast,no_check(u64) right, to_standard_error = true);
+    write_string(ifx signed then " as s" else " as u", true);
+    write_nonnegative_number(bits, to_standard_error = true);
+    write_string(": the result does not fit\n", true);
+
+    if fatal my_panic();
+}
 __cast_bounds_check_fail :: (pre_value: s64, pre_flags: u32, post_value: s64, post_flags: u32, fatal: u8, line_number: s64, filename: *u8) #no_context {
     write_failure_location(filename, line_number);
     write_string("numeric cast changed value ", true);

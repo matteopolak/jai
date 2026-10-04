@@ -61,10 +61,14 @@ impl Parser<'_> {
             }
             "as" => self.parse_terminated_simple(),
             "no_abc" | "no_aoc" if self.at_n(1, P::LBrace) => {
-                // `#no_abc { ... }` turns bounds checks off in the block; `#no_aoc` is not kept.
+                // `#no_abc { ... }` / `#no_aoc { ... }` turn bounds / overflow checks off in the block.
                 self.bump();
                 let body = self.parse_stmt()?;
-                Ok(super::stmt::no_abc_if(body, name == "no_abc"))
+                Ok(super::stmt::no_checks_if(
+                    body,
+                    name == "no_abc",
+                    name == "no_aoc",
+                ))
             }
             "no_reset" | "program_export"
                 if self.decl_ahead(1)

@@ -37,13 +37,13 @@ where :: (l := #caller_location) { print("%,% in %\n", l.line_number, l.characte
 
 `#deprecated "msg"` and `#no_debug` are parsed as header flags (`flags.no_debug` is read in `sema/procs.rs` and `sema/code_export.rs`). A call to a `#deprecated` procedure compiles and runs; no warning was observed in `jaic run` output.
 
-`#discard` on a parameter is parsed (`parser/procedure.rs`). Observed limitation: with `noeval :: (#discard cond: bool) #expand {}`, the call `noeval(expensive())` still evaluates `expensive()`.
+`#discard` on a parameter: the argument is typechecked but never evaluated, and the procedure cannot name the parameter. `#must` on a result: discarding it is an error. Both are described in [must-and-discard.md](must-and-discard.md).
 
 ## How to change it
 
 - New header directive: add it to the table in `parser/procedure.rs`, set a field on the header flags in `ast.rs` (`no_debug` is the pattern), then consume it in `sema/procs.rs`.
 - Overload ranking lives in `sema/calls.rs` (`arg_cost`); changes there affect every call, so re-run the `tests/stdlib/*.jai` programs afterward.
-- Implementing real `#discard` semantics means skipping lowering of the argument expression in `calls.rs` while still type-checking it.
+- `#discard` and `#must` are enforced in `sema/calls.rs` and `sema/stmt.rs`; see [must-and-discard.md](must-and-discard.md).
 
 ## Configuration
 

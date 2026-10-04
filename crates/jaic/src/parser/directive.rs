@@ -126,6 +126,7 @@ impl Parser<'_> {
                         stmts: vec![other],
                         span,
                         no_abc: false,
+                        no_aoc: false,
                     })
                 }
             }
@@ -157,6 +158,7 @@ impl Parser<'_> {
                 stmts: vec![statement],
                 span,
                 no_abc: false,
+                no_aoc: false,
             })
         } else {
             // `#code a := 1` and `#code x = x + 1` are statements without a terminator.
@@ -169,6 +171,7 @@ impl Parser<'_> {
                         stmts: vec![stmt],
                         span,
                         no_abc: false,
+                        no_aoc: false,
                     })
                 }
             }
@@ -240,6 +243,7 @@ impl Parser<'_> {
                 stmts: vec![super::stmt::stmt(make(label), span)],
                 span,
                 no_abc: false,
+                no_aoc: false,
             }),
             span,
         ))
@@ -254,6 +258,7 @@ impl Parser<'_> {
                 stmts: vec![assert],
                 span,
                 no_abc: false,
+                no_aoc: false,
             }),
             span,
         ))

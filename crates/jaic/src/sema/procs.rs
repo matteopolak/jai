@@ -19,6 +19,8 @@ pub struct ParamInfo {
     pub default: Option<ast::Expr>,
     pub variadic: bool,
     pub using: bool,
+    /// `#discard`: callers pass no real value and the body may not name it.
+    pub discard: bool,
     pub span: Span,
 }
 
@@ -329,6 +331,7 @@ impl Compiler {
                 default: param.default.clone(),
                 variadic: param.variadic,
                 using: param.using,
+                discard: param.discard,
                 span: param.span,
             });
         }
@@ -778,6 +781,7 @@ impl Compiler {
         let mut f = FnCtx::new(name, ir_sig, file);
         f.proc = Some(id);
         f.no_abc = header.flags.no_abc || !self.options.array_bounds_check;
+        f.no_aoc = header.flags.no_aoc;
         if let Some(name) = &self.proc(id).export {
             f.b.func.linkage = ir::Linkage::Export(name.clone());
         }
@@ -813,6 +817,13 @@ impl Compiler {
         for param in &sig.params {
             let incoming = f.b.param(next);
             next += 1;
+            if param.discard {
+                if let Some(name) = param.name {
+                    let e = self.add_const(scope, name, param.span, Value::Int(0), TypeId::S64);
+                    self.discard_params.insert(e);
+                }
+                continue;
+            }
             let addr = if self.is_memory_type(param.ty) {
                 incoming
             } else {

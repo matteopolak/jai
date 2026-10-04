@@ -11,6 +11,7 @@ Each set yields `(id, path, mode, expectation, extra args)`; the tool runs `jaic
 | set | source | mode |
 |---|---|---|
 | `corpus` | `tests/corpus/manifest.json` cases with a `runtime` record | run, exact stdout + exit code |
+| `negative` | `kind: negative` cases of `tests/corpus/manifest.json` (`tests/corpus/negative/*.jai`) | check, non-zero exit and the recorded text in stderr |
 | `stdlib` | `tests/stdlib/*.jai` | run, exit code 0 |
 | `modules` | the stdlib's own tests: `stdlib/<Module>/tests/*.jai`, `stdlib/tests/**/*.jai` (not under a `modules/` folder, which holds a test directory's mock modules) | run, exit code 0 |
 | `upstream` | `tools/upstream-cases.json` (paths under `corpus/upstream/`) | per case, exit code 0 |
@@ -21,6 +22,7 @@ Expected result of `corpus stdlib modules upstream`: everything passes except `g
 
 ## How to change it
 
+- New negative program (must be rejected): drop it in `tests/corpus/negative/`, add a `kind: negative` entry with `sha256` and a `negative.check` string that appears in the diagnostic to `tests/corpus/manifest.json`.
 - New regression program: drop a self-checking `tests/stdlib/<name>.jai` (return non-zero / `assert` on failure).
 - An upstream entry point started working: add it to `tools/upstream-cases.json` so it stays working.
 

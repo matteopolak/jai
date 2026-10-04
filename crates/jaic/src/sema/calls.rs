@@ -127,7 +127,9 @@ impl Compiler {
             }
             Operand::Procs(procs) => {
                 let as_code = self.macro_code_args(&procs, args);
-                let call_args = self.precheck_args_deferring(f, scope, args, &as_code)?;
+                let discarded = self.discarded_args(&procs, args);
+                let call_args =
+                    self.precheck_args_deferring(f, scope, args, &as_code, &discarded)?;
                 let wants_code = procs.iter().any(|&p| {
                     let header = &self.proc(p).lit.header;
                     header.params.iter().any(|p| {
@@ -201,7 +203,27 @@ impl Compiler {
         scope: ScopeId,
         args: &[ast::Arg],
     ) -> Result<Vec<CallArg>> {
-        self.precheck_args_deferring(f, scope, args, &[])
+        self.precheck_args_deferring(f, scope, args, &[], &[])
+    }
+
+    /// Arguments passed to a `#discard` parameter of one of `procs`: they are typechecked
+    /// but generate no code.
+    fn discarded_args(&self, procs: &[ProcId], args: &[ast::Arg]) -> Vec<bool> {
+        args.iter()
+            .enumerate()
+            .map(|(i, arg)| {
+                procs.iter().any(|&p| {
+                    let params = &self.proc(p).lit.header.params;
+                    let param = match arg.name {
+                        Some(n) => params
+                            .iter()
+                            .find(|p| p.name.map(|pn| pn.name) == Some(n.name)),
+                        None => params.get(i),
+                    };
+                    param.is_some_and(|p| p.discard)
+                })
+            })
+            .collect()
     }
 
     /// Arguments that a macro among `procs` takes as a `Code` parameter: they are
@@ -233,11 +255,14 @@ impl Compiler {
         scope: ScopeId,
         args: &[ast::Arg],
         defer: &[bool],
+        discard: &[bool],
     ) -> Result<Vec<CallArg>> {
         let mut out = Vec::new();
         for (i, a) in args.iter().enumerate() {
             let op = if is_deferred(&a.value) || defer.get(i).copied().unwrap_or(false) {
                 None
+            } else if discard.get(i).copied().unwrap_or(false) {
+                Some(self.check_expr_no_emit(scope, &a.value)?)
             } else {
                 Some(self.check_expr(f, scope, &a.value, None)?)
             };
@@ -1207,8 +1232,44 @@ impl Compiler {
         }
     }
 
-    /// Emit a resolved call.
+    /// Emit a resolved call, recording which of its results are `#must`.
     fn emit_call(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        c: Candidate,
+        args: Vec<CallArg>,
+        span: Span,
+    ) -> Result<Operand> {
+        let proc = c.proc;
+        let header = self.proc(proc).lit.header.clone();
+        let must: Vec<bool> = header.returns.iter().map(|r| r.must).collect();
+        let name = self.proc(proc).name;
+        let result = self.emit_call_inner(f, scope, c, args, span);
+        self.last_call_must = must.iter().any(|&m| m).then_some((span, name, must));
+        result
+    }
+
+    /// Error when a call at `call_span` leaves one of its `#must` results unused; only the
+    /// first `used` results are taken (0 for a call statement). Checked when the call's code
+    /// is generated, so a violation inside never-expanded macro code is harmless.
+    pub(super) fn check_must_used(&mut self, call_span: Span, used: usize) -> Result<()> {
+        let Some((span, name, must)) = self.last_call_must.take() else {
+            return Ok(());
+        };
+        if span != call_span {
+            return Ok(());
+        }
+        if must.iter().skip(used).any(|&m| m) {
+            return err(
+                call_span,
+                format!("the result of '{name}' is marked #must and cannot be discarded"),
+            );
+        }
+        Ok(())
+    }
+
+    fn emit_call_inner(
         &mut self,
         f: &mut FnCtx,
         scope: ScopeId,
@@ -1348,6 +1409,10 @@ impl Compiler {
         args: &[CallArg],
         span: Span,
     ) -> Result<ir::Val> {
+        if param.discard {
+            // `#discard`: the argument (or default) is typechecked, never evaluated.
+            return self.zero_param(f, param.ty, span);
+        }
         let op = match slot {
             Slot::Arg(a) | Slot::Spread(a) => {
                 let op = self.arg_operand(f, &args[*a], Some(param.ty))?;
@@ -1408,6 +1473,23 @@ impl Compiler {
             let (_, v) = self.rvalue(f, op, span)?;
             Ok(v)
         }
+    }
+
+    /// An all-zero value of a parameter type, passed where an argument is discarded.
+    fn zero_param(&mut self, f: &mut FnCtx, ty: TypeId, span: Span) -> Result<ir::Val> {
+        if self.is_memory_type(ty) {
+            let size = self.size_of(ty, span)?;
+            let align = self.align_of(ty, span)?;
+            let slot = f.b.alloca(size.max(1), align);
+            f.b.zero(slot, size);
+            return Ok(slot);
+        }
+        let t = self.ir_ty(ty).unwrap_or(Ty::I64);
+        Ok(if t.is_float() {
+            f.b.fconst(t, 0.0)
+        } else {
+            f.b.iconst(t, 0)
+        })
     }
 
     /// Place named arguments of a call through a procedure value and fill in the defaults its
@@ -1922,6 +2004,11 @@ impl Compiler {
             let Some(name) = param.name else {
                 continue;
             };
+            if param.discard {
+                let e = self.add_const(mscope, name, param.span, Value::Int(0), TypeId::S64);
+                self.discard_params.insert(e);
+                continue;
+            }
             if param.ty == TypeId::CODE {
                 // Code arguments are passed unevaluated, bound to the caller's scope.
                 let code = match slot {

@@ -75,12 +75,15 @@ assert_helper :: (message := "", args: .. Any, loc := #caller_location) -> bool 
     context.handling_assertion_failure = false;
     return result;
 }
-assert :: (arg: bool, message := "", args: .. Any, loc := #caller_location) #expand {
-    #if ENABLE_ASSERT {
+// With assertions off the parameters are #discard: arguments are typechecked but never evaluated.
+#if ENABLE_ASSERT {
+    assert :: (arg: bool, message := "", args: .. Any, loc := #caller_location) #expand {
         if !arg {
             if assert_helper(message, ..args, loc) Runtime_Support.debug_break();
         }
     }
+} else {
+    assert :: (#discard arg: bool, #discard message := "", #discard args: .. Any, #discard loc := #caller_location) #expand {}
 }
 get_command_line_arguments :: () -> [] string {
     result, base := NewArray(__command_line_arguments.count, string, true);

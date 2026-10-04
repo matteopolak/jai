@@ -146,10 +146,12 @@ impl Compiler {
         let inner = self.new_block_scope(scope);
         let depth = f.defers.len();
         match &stmt.kind {
-            S::Block(b) if b.no_abc && !f.no_abc => {
-                f.no_abc = true;
+            S::Block(b) if (b.no_abc && !f.no_abc) || (b.no_aoc && !f.no_aoc) => {
+                let saved = (f.no_abc, f.no_aoc);
+                f.no_abc |= b.no_abc;
+                f.no_aoc |= b.no_aoc;
                 let result = self.check_block_stmts(f, inner, &b.stmts);
-                f.no_abc = false;
+                (f.no_abc, f.no_aoc) = saved;
                 result?
             }
             S::Block(b) => self.check_block_stmts(f, inner, &b.stmts)?,
@@ -171,7 +173,11 @@ impl Compiler {
         match &stmt.kind {
             S::Decl(decl) => self.check_local_decl(f, scope, decl),
             S::Expr(e) => {
+                self.last_call_must = None;
                 self.check_expr(f, scope, e, None)?;
+                if matches!(e.kind, E::Call { .. }) {
+                    self.check_must_used(e.span, 0)?;
+                }
                 Ok(())
             }
             S::Assign {
@@ -616,7 +622,12 @@ impl Compiler {
             }
             return Ok(values);
         }
-        Ok(match self.check_expr(f, scope, first, declared)? {
+        self.last_call_must = None;
+        let first_op = self.check_expr(f, scope, first, declared)?;
+        if matches!(first.kind, E::Call { .. }) {
+            self.check_must_used(first.span, names)?;
+        }
+        Ok(match first_op {
             Operand::Multi(vals) if names > 1 => vals
                 .into_iter()
                 .map(|(ty, val)| {
@@ -1461,10 +1472,13 @@ impl Compiler {
             }
             return self.check_for(f, scope, &resolved, span);
         }
-        if !f.no_abc && for_.flags.iter().any(|fl| fl.name.as_str() == "no_abc") {
-            f.no_abc = true;
+        let flagged = |name: &str| for_.flags.iter().any(|fl| fl.name.as_str() == name);
+        if (!f.no_abc && flagged("no_abc")) || (!f.no_aoc && flagged("no_aoc")) {
+            let saved = (f.no_abc, f.no_aoc);
+            f.no_abc |= flagged("no_abc");
+            f.no_aoc |= flagged("no_aoc");
             let result = self.check_for(f, scope, for_, span);
-            f.no_abc = false;
+            (f.no_abc, f.no_aoc) = saved;
             return result;
         }
         let it_name = for_.it.map_or_else(|| Sym::intern("it"), |i| i.name);
@@ -1897,6 +1911,7 @@ impl Compiler {
                 stmts: vec![(*for_.body).clone()],
                 span: for_.body.span,
                 no_abc: false,
+                no_aoc: false,
             })),
             loop_scope,
         );
@@ -1968,6 +1983,7 @@ impl Compiler {
                 stmts,
                 span: value.span,
                 no_abc: false,
+                no_aoc: false,
             };
             let code = self.add_code(Rc::new(ast::CodeBody::Block(block)), scope);
             op = Operand::Const {

@@ -472,6 +472,22 @@ impl Compiler {
                 if !info.poly_args.is_empty() {
                     self.poly_struct_info(&mut agg, desc, s, span)?;
                 }
+                // Notes written on the struct itself: `S :: struct @thing { ... }`.
+                let struct_notes: Vec<Rc<[u8]>> = self
+                    .struct_asts
+                    .get(&s)
+                    .map(|src| {
+                        src.lit
+                            .notes
+                            .iter()
+                            .map(|n| Rc::from(n.text.as_bytes()))
+                            .collect()
+                    })
+                    .unwrap_or_default();
+                if !struct_notes.is_empty() {
+                    let data = self.string_view(&struct_notes, span)?;
+                    self.set_view(&mut agg, desc, "notes", struct_notes.len(), data, 8, span)?;
+                }
                 let (func, _) = self.initializer_proc(ty, span)?;
                 let Some((path, _)) = self.find_member(desc, Sym::intern("initializer"), span)?
                 else {
