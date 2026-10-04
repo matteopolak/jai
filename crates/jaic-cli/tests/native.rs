@@ -115,3 +115,61 @@ fn hello_world_builds_and_prints() {
     assert_eq!(String::from_utf8_lossy(&output.stdout), "hello 42!\n");
     assert_eq!(output.status.code(), Some(0));
 }
+
+/// C structs by value across the C ABI: foreign calls from the interpreter and from native code, and
+/// native `#c_call` definitions called back from C. Skipped when no C compiler is installed.
+#[test]
+fn c_structs_by_value() {
+    let fixture = repo_root().join("tests/native/c-structs-by-value");
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-c-structs");
+    std::fs::create_dir_all(&dir).unwrap();
+    for name in [
+        "structs.c",
+        "types.jai",
+        "foreign_calls.jai",
+        "callbacks.jai",
+    ] {
+        std::fs::copy(fixture.join(name), dir.join(name)).unwrap();
+    }
+    let lib = if cfg!(target_os = "macos") {
+        "libstructs.dylib"
+    } else {
+        "libstructs.so"
+    };
+    let mut cc = Command::new("cc");
+    cc.args(["-shared", "-fPIC", "-o", lib, "structs.c"]);
+    if cfg!(target_os = "macos") {
+        // Found through the executable's rpath rather than relative to the working directory.
+        cc.arg("-Wl,-install_name,@rpath/libstructs.dylib");
+    }
+    let Ok(cc) = cc.current_dir(&dir).output() else {
+        eprintln!("skipping: no C compiler");
+        return;
+    };
+    assert!(
+        cc.status.success(),
+        "{}",
+        String::from_utf8_lossy(&cc.stderr)
+    );
+    let calls = "{11, 22} {2, 4, 6} {5, 6, 7, 8} 10 {-7, 9} {99, 2.5} {11, 22, 33}\n";
+    let interp = Command::new(JAIC)
+        .args(["run", "foreign_calls.jai"])
+        .current_dir(&dir)
+        .output()
+        .unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&interp.stdout),
+        calls,
+        "{}",
+        String::from_utf8_lossy(&interp.stderr)
+    );
+    let run_native = |name: &str| {
+        let output = build_and_run(&dir.join(format!("{name}.jai")), &dir, name).unwrap();
+        String::from_utf8_lossy(&output.stdout).into_owned()
+    };
+    assert_eq!(run_native("foreign_calls"), calls);
+    assert_eq!(
+        run_native("callbacks"),
+        "{111, 47} {10, 20, 30, 40} {8, 4}\n"
+    );
+}

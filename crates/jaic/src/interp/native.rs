@@ -4,7 +4,15 @@
 //! On the supported 64-bit C ABIs (System V x86-64 and AArch64) integer and
 //! floating-point arguments are assigned to separate register files, so any
 //! signature with at most 8 integer and 8 floating-point arguments can be
-//! called through one prototype taking 8 of each.
+//! called through one prototype taking 8 of each. Structs passed or returned by
+//! value are split into register pieces by `abi` (the same classification the
+//! LLVM backend uses); larger ones go by address or through a hidden result pointer.
+// The calling machinery is only reachable on the CPUs `call` supports (not on wasm).
+#![cfg_attr(
+    not(any(target_arch = "x86_64", target_arch = "aarch64")),
+    allow(dead_code, unused_imports)
+)]
+use crate::abi::{self, Arch, Passing, Piece, PieceTy};
 use crate::ir::{Sig, Ty};
 
 #[derive(Clone)]
@@ -107,100 +115,266 @@ pub fn lookup(_lib: Option<&Library>, _symbol: &str) -> Option<u64> {
     None
 }
 
-type IntFn = unsafe extern "C" fn(
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-) -> u64;
-type FloatFn = unsafe extern "C" fn(
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    u64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-    f64,
-) -> f64;
+/// The register arguments of one call: 8 integer and 8 floating-point registers.
+#[derive(Default)]
+struct Regs {
+    ints: [u64; 8],
+    floats: [u64; 8],
+    ni: usize,
+    nf: usize,
+}
 
-/// Call the C function at `addr`. Arguments are raw IR values classified by `sig`.
+impl Regs {
+    fn int(&mut self, v: u64) -> Result<(), String> {
+        if self.ni == 8 {
+            return Err("foreign call has more than 8 integer arguments".into());
+        }
+        self.ints[self.ni] = v;
+        self.ni += 1;
+        Ok(())
+    }
+    /// An `f32` travels in the low half of the register.
+    fn float(&mut self, bits: u64) -> Result<(), String> {
+        if self.nf == 8 {
+            return Err("foreign call has more than 8 floating-point arguments".into());
+        }
+        self.floats[self.nf] = bits;
+        self.nf += 1;
+        Ok(())
+    }
+}
+
+/// Little-endian bytes `[addr, addr + len)` (len <= 8) as a `u64`.
+///
+/// SAFETY: interpreter addresses are host addresses of live memory.
+unsafe fn read_bytes(addr: u64, len: u64) -> u64 {
+    let mut out = [0u8; 8];
+    let len = len.min(8) as usize;
+    unsafe { std::ptr::copy_nonoverlapping(addr as *const u8, out.as_mut_ptr(), len) };
+    u64::from_le_bytes(out)
+}
+
+/// SAFETY: as `read_bytes`.
+unsafe fn write_bytes(addr: u64, value: u64, len: u64) {
+    let bytes = value.to_le_bytes();
+    let len = len.min(8) as usize;
+    unsafe { std::ptr::copy_nonoverlapping(bytes.as_ptr(), addr as *mut u8, len) };
+}
+
+// Return shapes. A C aggregate returned in registers comes back as one of these: Rust lays
+// them out and classifies them like the C struct with the same register classes (an `f32`
+// member arrives in the low half of its `f64` register).
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct II(u64, u64);
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct IF(u64, f64);
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct FI(f64, u64);
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct FF(f64, f64);
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct FFF(f64, f64, f64);
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct FFFF(f64, f64, f64, f64);
+/// Large aggregates come back through a hidden pointer the callee fills.
+const SRET_WORDS: usize = 64;
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct Sret([u64; SRET_WORDS]);
+
+/// Call `addr` through a prototype taking 8 integer and 8 float registers, returning `R`.
+///
+/// SAFETY: `addr` is a C function whose arguments fit the registers in `regs`.
+unsafe fn call_as<R>(addr: u64, regs: &Regs) -> R {
+    type Proto<R> = unsafe extern "C" fn(
+        u64,
+        u64,
+        u64,
+        u64,
+        u64,
+        u64,
+        u64,
+        u64,
+        f64,
+        f64,
+        f64,
+        f64,
+        f64,
+        f64,
+        f64,
+        f64,
+    ) -> R;
+    let f: Proto<R> = unsafe { std::mem::transmute::<usize, Proto<R>>(addr as usize) };
+    let [i0, i1, i2, i3, i4, i5, i6, i7] = regs.ints;
+    let [f0, f1, f2, f3, f4, f5, f6, f7] = regs.floats.map(f64::from_bits);
+    unsafe {
+        f(
+            i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7,
+        )
+    }
+}
+
+/// Call the C function at `addr`. Arguments are raw IR values classified by `sig`; a
+/// by-value struct argument is a pointer to its memory, and a struct result is written
+/// through the last IR argument (the out-pointer).
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 pub fn call(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
-    let mut ints = [0u64; 8];
-    let mut floats = [0f64; 8];
-    let (mut ni, mut nf) = (0, 0);
+    let arch = Arch::host().ok_or("native foreign calls are not available on this CPU")?;
+    let cabi = sig.c_abi.as_deref();
+    let ret_layout = cabi.and_then(|c| c.ret.as_ref());
+    let mut regs = Regs::default();
+    // Copies of large aggregates passed by address; alive until the call returns.
+    let mut copies: Vec<Vec<u64>> = Vec::new();
+    let mut out_ptr = 0;
     for (i, &a) in args.iter().enumerate() {
-        let ty = sig.params.get(i).copied().unwrap_or(Ty::I64);
-        if ty.is_float() {
-            if nf == 8 {
-                return Err("foreign call has more than 8 floating-point arguments".into());
+        if ret_layout.is_some() && i + 1 == sig.params.len() {
+            out_ptr = a;
+            continue;
+        }
+        let layout = cabi.and_then(|c| c.params.get(i)).and_then(Option::as_ref);
+        let Some(layout) = layout else {
+            if sig.params.get(i).is_some_and(|t| t.is_float()) {
+                regs.float(a)?;
+            } else {
+                regs.int(a)?;
             }
-            // An f32 travels in the low half of the register.
-            floats[nf] = f64::from_bits(a);
-            nf += 1;
-        } else {
-            if ni == 8 {
-                return Err("foreign call has more than 8 integer arguments".into());
+            continue;
+        };
+        match abi::classify_arg(arch, layout) {
+            Passing::Registers(pieces) => {
+                for p in pieces {
+                    // SAFETY: `a` points at the aggregate, `layout.size` bytes long.
+                    let v = unsafe { read_bytes(a + p.offset, layout.size - p.offset) };
+                    if p.ty == PieceTy::I64 {
+                        regs.int(v)?;
+                    } else {
+                        regs.float(v)?;
+                    }
+                }
             }
-            ints[ni] = a;
-            ni += 1;
+            Passing::Indirect => {
+                let mut copy = vec![0u64; layout.size.div_ceil(8) as usize];
+                // SAFETY: as above; the copy is at least `layout.size` bytes.
+                unsafe {
+                    std::ptr::copy_nonoverlapping(
+                        a as *const u8,
+                        copy.as_mut_ptr() as *mut u8,
+                        layout.size as usize,
+                    )
+                };
+                regs.int(copy.as_ptr() as u64)?;
+                copies.push(copy);
+            }
+            Passing::ByVal => {
+                return Err(
+                    "the interpreter cannot pass a struct larger than 16 bytes by value on x86-64"
+                        .into(),
+                );
+            }
         }
     }
-    let [i0, i1, i2, i3, i4, i5, i6, i7] = ints;
-    let [f0, f1, f2, f3, f4, f5, f6, f7] = floats;
-    match sig.returns.first() {
-        Some(t) if t.is_float() => {
-            // SAFETY: the address comes from the dynamic linker for a declared foreign procedure.
-            let f: FloatFn = unsafe { std::mem::transmute::<usize, FloatFn>(addr as usize) };
-            let r = unsafe {
-                f(
-                    i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7,
+    let Some(layout) = ret_layout else {
+        return Ok(scalar_call(addr, &regs, sig.returns.first().copied()));
+    };
+    // SAFETY (all calls below): the callee's declared C signature matches these registers.
+    match abi::classify_ret(arch, layout) {
+        None => {
+            if layout.size as usize > SRET_WORDS * 8 {
+                return Err(format!(
+                    "the interpreter cannot return a {}-byte struct from a foreign procedure",
+                    layout.size
+                ));
+            }
+            let r: Sret = unsafe { call_as(addr, &regs) };
+            unsafe {
+                std::ptr::copy_nonoverlapping(
+                    r.0.as_ptr() as *const u8,
+                    out_ptr as *mut u8,
+                    layout.size as usize,
                 )
             };
-            let bits = r.to_bits();
-            Ok(vec![if *t == Ty::F32 {
+        }
+        Some(pieces) => {
+            let int = |p: &Piece| p.ty == PieceTy::I64;
+            let words: Vec<u64> = match pieces.as_slice() {
+                [] => {
+                    unsafe { call_as::<()>(addr, &regs) };
+                    Vec::new()
+                }
+                [a] if int(a) => vec![unsafe { call_as::<u64>(addr, &regs) }],
+                [_] => vec![unsafe { call_as::<f64>(addr, &regs) }.to_bits()],
+                [a, b] => match (int(a), int(b)) {
+                    (true, true) => {
+                        let r: II = unsafe { call_as(addr, &regs) };
+                        vec![r.0, r.1]
+                    }
+                    (true, false) => {
+                        let r: IF = unsafe { call_as(addr, &regs) };
+                        vec![r.0, r.1.to_bits()]
+                    }
+                    (false, true) => {
+                        let r: FI = unsafe { call_as(addr, &regs) };
+                        vec![r.0.to_bits(), r.1]
+                    }
+                    (false, false) => {
+                        let r: FF = unsafe { call_as(addr, &regs) };
+                        vec![r.0.to_bits(), r.1.to_bits()]
+                    }
+                },
+                [_, _, _] => {
+                    let r: FFF = unsafe { call_as(addr, &regs) };
+                    vec![r.0.to_bits(), r.1.to_bits(), r.2.to_bits()]
+                }
+                [_, _, _, _] => {
+                    let r: FFFF = unsafe { call_as(addr, &regs) };
+                    vec![r.0.to_bits(), r.1.to_bits(), r.2.to_bits(), r.3.to_bits()]
+                }
+                _ => return Err("unsupported C aggregate return shape".into()),
+            };
+            for (p, w) in pieces.iter().zip(words) {
+                let size = match p.ty {
+                    PieceTy::F32 => 4,
+                    _ => 8,
+                };
+                // SAFETY: the out-pointer addresses `layout.size` writable bytes.
+                unsafe { write_bytes(out_ptr + p.offset, w, size.min(layout.size - p.offset)) };
+            }
+        }
+    }
+    drop(copies);
+    Ok(Vec::new())
+}
+
+/// A call whose result is a scalar (or nothing).
+fn scalar_call(addr: u64, regs: &Regs, ret: Option<Ty>) -> Vec<u64> {
+    // SAFETY: the address comes from the dynamic linker for a declared foreign procedure.
+    match ret {
+        Some(t) if t.is_float() => {
+            let bits = unsafe { call_as::<f64>(addr, regs) }.to_bits();
+            vec![if t == Ty::F32 {
                 bits & 0xffff_ffff
             } else {
                 bits
-            }])
+            }]
         }
-        ret => {
-            let f: IntFn = unsafe { std::mem::transmute::<usize, IntFn>(addr as usize) };
-            let r = unsafe {
-                f(
-                    i0, i1, i2, i3, i4, i5, i6, i7, f0, f1, f2, f3, f4, f5, f6, f7,
-                )
-            };
-            Ok(match ret {
-                Some(t) => vec![match t {
-                    Ty::I8 => r & 0xff,
-                    Ty::I16 => r & 0xffff,
-                    Ty::I32 => r & 0xffff_ffff,
-                    _ => r,
-                }],
-                None => vec![],
-            })
+        Some(t) => {
+            let r = unsafe { call_as::<u64>(addr, regs) };
+            vec![match t {
+                Ty::I8 => r & 0xff,
+                Ty::I16 => r & 0xffff,
+                Ty::I32 => r & 0xffff_ffff,
+                _ => r,
+            }]
+        }
+        None => {
+            unsafe { call_as::<u64>(addr, regs) };
+            Vec::new()
         }
     }
 }

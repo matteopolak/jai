@@ -23,7 +23,7 @@ Lowering rules (`lower.rs`):
 - `Conv::Jai` functions map parameters and scalar results 1:1 (several results become a struct return).
 - Intrinsics: `Memcpy` is `memmove`, `Memcmp` calls libc `memcmp` and normalizes to -1/0/1 (`I16`), `CompilerWrite` calls `write(1|2, ...)`, `CompareAndSwap` is a seq_cst `cmpxchg` whose width comes from the operand type, `IsCompileTime` is the constant 0, `CycleCounter` reads `cntvct_el0` on AArch64 and `rdtsc` on x86-64. `Loc` markers are ignored (no debug info yet).
 
-### C ABI (`abi.rs`)
+### C ABI (`jaic::abi`)
 
 `Conv::C` signatures with `Sig::c_abi` set use the real calling convention for by-value aggregates:
 
@@ -35,12 +35,14 @@ Lowering rules (`lower.rs`):
 
 The IR passes aggregates by pointer, so the call site copies into a scratch temp, loads the chunks and passes them as separate LLVM arguments; returned chunks are stored to a temp and copied through the IR out-pointer (the last IR parameter, which is dropped from the LLVM signature). Variadic calls use a vararg function type.
 
+Definitions with such signatures (`#c_call` callbacks C calls with structs) do the reverse in `bind_params`: register pieces are stored into an entry-block temp whose address stands in for the IR parameter, and `Ret` loads the return pieces from the IR out-pointer temp (`FnState::reg_ret`). `sret`/`byval` pointers are used directly. The classification lives in the `jaic` crate (`crates/jaic/src/abi.rs`) because the interpreter's native foreign calls use it too.
+
 ## How to change it
 
 - New IR instruction/intrinsic: extend `Backend::inst` or `Backend::intrinsic` in `lower.rs`; keep semantics identical to `interp/mod.rs`.
 - New target architecture: add an `Arch` variant and classification in `abi.rs`, plus the inline-asm intrinsics in `lower.rs`.
 - Debug info: handle `Inst::Loc` (currently a no-op).
-- Gotchas: *defining* a function whose own signature has by-value C aggregates (for example a callback that C calls with a struct) is rejected; only calling foreign code with them is supported. Small signed integers are not sign/zero-extended according to the C ABI because the IR does not carry signedness. Windows is not supported.
+- Gotchas: Small signed integers are not sign/zero-extended according to the C ABI because the IR does not carry signedness. Windows is not supported.
 
 ## Configuration
 
@@ -52,4 +54,4 @@ The IR passes aggregates by pointer, so the call site copies into a scratch temp
 
 - `inkwell` (workspace dependency, LLVM 22) and the system `cc` for linking.
 - `jaic` for the IR. Libraries come from `Program::libraries`; only those referenced by a foreign symbol are linked (`-l<name>`, or by path when a non-system library sits next to its source). `libc` is implicit.
-- Tests: `cargo test -p jaic-cli --test native` builds every `tests/corpus/manifest.json` case that passes under the interpreter and compares exit code and stdout; `abi.rs` has unit tests for the classification.
+- Tests: `cargo test -p jaic-cli --test native` builds every `tests/corpus/manifest.json` case that passes under the interpreter and compares exit code and stdout; `abi.rs` has unit tests for the classification; `c_structs_by_value` (fixture `tests/native/c-structs-by-value`, needs `cc`) checks struct arguments/returns in foreign calls under the interpreter and natively, and native `#c_call` definitions called back from C.

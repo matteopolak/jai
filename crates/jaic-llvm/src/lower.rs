@@ -5,7 +5,6 @@
 //! every `Slot` an entry-block alloca, and every aggregate stays in memory.
 //! `Conv::C` signatures are translated to the real C ABI by [`Backend::lower_sig`].
 #![allow(clippy::too_many_arguments)]
-use crate::abi::{self, Arch, Passing, Piece, PieceTy};
 use inkwell::AddressSpace;
 use inkwell::AtomicOrdering;
 use inkwell::FloatPredicate;
@@ -23,6 +22,7 @@ use inkwell::values::{
     BasicMetadataValueEnum, BasicValue, BasicValueEnum, CallSiteValue, FunctionValue, GlobalValue,
     IntValue, PointerValue, ValueKind,
 };
+use jaic::abi::{self, Arch, Passing, Piece, PieceTy};
 use jaic::ir::{
     AggLayout, BinOp, BlockId, Callee, CmpOp, Conv, ConvOp, Foreign, Func, Global, Inst, Intrinsic,
     Linkage as IrLinkage, Program, RelocTarget, Sig, Term, Ty, UnOp, Val,
@@ -120,6 +120,8 @@ struct FnState<'ctx> {
     blocks: Vec<Option<BasicBlock<'ctx>>>,
     /// Builder positioned in the dedicated alloca block.
     allocas: Builder<'ctx>,
+    /// A C aggregate returned in registers: its pieces and the memory the IR writes it to.
+    reg_ret: Option<(Vec<Piece>, PointerValue<'ctx>)>,
 }
 
 impl<'ctx, 'p> Backend<'ctx, 'p> {
@@ -294,17 +296,6 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                 self.funcs.push(None);
                 continue;
             };
-            if func
-                .sig
-                .c_abi
-                .as_ref()
-                .is_some_and(|c| c.ret.is_some() || c.params.iter().any(Option::is_some))
-            {
-                return Err(Error(format!(
-                    "'{}': defining functions with by-value C aggregates is not supported",
-                    func.name
-                )));
-            }
             let lowered = self.lower_sig(&func.sig);
             let (name, linkage) = match &func.linkage {
                 IrLinkage::Export(name) => (name.clone(), Linkage::External),
@@ -313,6 +304,7 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             let f = self
                 .module
                 .add_function(&name, lowered.fn_ty, Some(linkage));
+            self.apply_attrs(&lowered, |loc, attr| f.add_attribute(loc, attr));
             self.funcs.push(Some(f));
         }
         Ok(())
@@ -474,10 +466,9 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             slots: Vec::new(),
             blocks,
             allocas,
+            reg_ret: None,
         };
-        for (i, p) in function.get_param_iter().enumerate() {
-            st.vals[i] = Some(p);
-        }
+        self.bind_params(&mut st, func, alloca_block)?;
         for slot in &func.slots {
             let p = self.entry_alloca(&st, slot.size, slot.align)?;
             st.slots.push(p);
@@ -493,6 +484,56 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
         }
         let entry = st.blocks[0].expect("entry block is reachable");
         st.allocas.build_unconditional_branch(entry)?;
+        Ok(())
+    }
+
+    /// Bind the IR parameters to the LLVM ones. With the C ABI, by-value aggregates arrive
+    /// in registers (stored to memory here), by `byval` pointer or as a caller copy; the IR
+    /// sees a pointer to each. An aggregate result is written through the IR's last
+    /// parameter: the `sret` pointer, or memory `Term::Ret` returns in registers.
+    fn bind_params(&self, st: &mut FnState<'ctx>, func: &Func, entry: BasicBlock<'ctx>) -> R<()> {
+        let lowered = self.lower_sig(&func.sig);
+        let params: Vec<BasicValueEnum<'ctx>> = st.function.get_param_iter().collect();
+        let mut k = 0;
+        if matches!(lowered.ret, RetPlan::Sret) {
+            k = 1;
+        }
+        self.builder.position_at_end(entry);
+        for (i, plan) in lowered.params.iter().enumerate() {
+            let value: BasicValueEnum<'ctx> = match plan {
+                ParamPlan::Scalar(_) => {
+                    k += 1;
+                    params[k - 1]
+                }
+                ParamPlan::Agg(layout, passing) => match passing {
+                    Passing::ByVal | Passing::Indirect => {
+                        k += 1;
+                        params[k - 1]
+                    }
+                    Passing::Registers(pieces) => {
+                        let tmp = self.call_temp(st, layout.size, layout.align)?;
+                        for p in pieces {
+                            self.builder
+                                .build_store(self.gep_const(tmp, p.offset)?, params[k])?;
+                            k += 1;
+                        }
+                        tmp.into()
+                    }
+                },
+                ParamPlan::Dropped => match &lowered.ret {
+                    RetPlan::Sret => params[0],
+                    RetPlan::Registers(layout, pieces) => {
+                        let tmp = self.call_temp(st, layout.size, layout.align)?;
+                        st.reg_ret = Some((pieces.clone(), tmp));
+                        tmp.into()
+                    }
+                    RetPlan::Scalars(_) => {
+                        return Err("aggregate out-pointer without a C return".into());
+                    }
+                },
+            };
+            st.vals[i] = Some(value);
+        }
         Ok(())
     }
 
@@ -1050,6 +1091,20 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                     .map(|(c, t)| Ok((v.get_type().const_int(*c, false), block(t)?)))
                     .collect::<R<Vec<_>>>()?;
                 b.build_switch(v, block(default)?, &cases)?;
+            }
+            Term::Ret(_) if st.reg_ret.is_some() => {
+                let (pieces, tmp) = st.reg_ret.as_ref().expect("checked");
+                let parts = pieces
+                    .iter()
+                    .map(|p| {
+                        Ok(b.build_load(self.piece_ty(p.ty), self.gep_const(*tmp, p.offset)?, "")?)
+                    })
+                    .collect::<R<Vec<_>>>()?;
+                match parts.as_slice() {
+                    [] => b.build_return(None)?,
+                    [one] => b.build_return(Some(one))?,
+                    many => b.build_aggregate_return(many)?,
+                };
             }
             Term::Ret(values) => {
                 let tys = &func.sig.returns;

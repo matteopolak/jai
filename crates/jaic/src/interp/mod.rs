@@ -479,11 +479,6 @@ impl Interp {
     }
 
     fn call_native(&mut self, addr: u64, args: &[u64], sig: &ir::Sig) -> Res<Vec<u64>> {
-        if let Some(abi) = &sig.c_abi
-            && (abi.ret.is_some() || abi.params.iter().any(Option::is_some))
-        {
-            return self.trap("calling foreign procedures with by-value structs is not supported by the interpreter yet");
-        }
         native::call(addr, args, sig).map_err(|m| Trap {
             message: m,
             loc: self.loc,

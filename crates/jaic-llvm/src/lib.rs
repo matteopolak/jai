@@ -3,7 +3,6 @@
 //! [`emit_object`] lowers an `ir::Program` to LLVM IR and writes a native
 //! object file; [`link`] turns object files into an executable with the
 //! system C compiler driver.
-mod abi;
 mod lower;
 
 use inkwell::OptimizationLevel;
@@ -64,7 +63,7 @@ pub fn emit_object(program: &Program, options: &Options, path: &Path) -> Result<
         None => TargetMachine::get_default_triple(),
     };
     let triple_str = triple.as_str().to_string_lossy().into_owned();
-    let arch = abi::Arch::from_triple(&triple_str)
+    let arch = jaic::abi::Arch::from_triple(&triple_str)
         .ok_or_else(|| format!("unsupported target architecture in '{triple_str}'"))?;
     let target = Target::from_triple(&triple).map_err(|e| e.to_string())?;
     let (cpu, features) = if host {
@@ -137,15 +136,15 @@ pub fn link(
         cmd.arg("-shared");
     }
     cmd.args(objects).arg("-o").arg(output);
-    let mut seen = Vec::new();
+    // Each library's argument group is added once (`-framework X` is two arguments).
+    let mut seen: Vec<Vec<String>> = Vec::new();
     for lib in libraries {
-        for arg in library_args(lib) {
-            if !seen.contains(&arg) {
-                seen.push(arg);
-            }
+        let args = library_args(lib);
+        if !args.is_empty() && !seen.contains(&args) {
+            seen.push(args);
         }
     }
-    cmd.args(&seen).args(extra_args);
+    cmd.args(seen.concat()).args(extra_args);
     let out = cmd
         .output()
         .map_err(|e| format!("could not run the system linker 'cc': {e}"))?;
@@ -188,16 +187,19 @@ fn library_args(lib: &Library) -> Vec<String> {
             }
         }
     }
+    // Apple frameworks (`AppKit`, `Metal`...) link with `-framework`; their directories exist on
+    // disk even though the binaries live in the shared cache.
+    if cfg!(target_os = "macos")
+        && Path::new(&format!("/System/Library/Frameworks/{name}.framework")).exists()
+    {
+        return vec!["-framework".to_string(), name.to_string()];
+    }
     let mut args = Vec::new();
     if cfg!(target_os = "macos") && Path::new("/opt/homebrew/lib").exists() {
         args.push("-L/opt/homebrew/lib".to_string());
     }
-    let name = match name {
-        "libm" => "m",
-        "libpthread" => "pthread",
-        "libdl" => "dl",
-        other => other,
-    };
+    // Jai names libraries either way (`"libobjc"` / `"objc"`); `-l` wants the bare name.
+    let name = name.strip_prefix("lib").unwrap_or(name);
     args.push(format!("-l{name}"));
     args
 }
