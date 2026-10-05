@@ -190,6 +190,9 @@ impl Compiler {
             _ if multiple => {}
             ast::ExprKind::Proc(lit) => {
                 let proc = self.new_proc(name, lit.clone(), scope, value.span);
+                if !decl.notes.is_empty() {
+                    self.proc_decl_notes.insert(proc, decl.notes.clone());
+                }
                 return Ok(Resolved::Proc(proc));
             }
             ast::ExprKind::Lambda {

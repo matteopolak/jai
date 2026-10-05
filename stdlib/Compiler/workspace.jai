@@ -585,7 +585,14 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
             return record_struct(__jaic_event_int(0), type_info(Message_Import));
 
         case EVENT_TYPECHECKED;
-            return record_struct(__jaic_event_int(0), type_info(Message_Typechecked));
+            typechecked := cast(*Message_Typechecked) record_struct(__jaic_event_int(0), type_info(Message_Typechecked));
+            // A body lowered after its header was reported reaches the header struct the
+            // metaprogram may still hold from that earlier message.
+            for typechecked.procedure_bodies {
+                body := it.expression;
+                if body && body.header  body.header.body_or_null = body;
+            }
+            return typechecked;
 
         case EVENT_PHASE;
             phase := __jaic_event_int(0);

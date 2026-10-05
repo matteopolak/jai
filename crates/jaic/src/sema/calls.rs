@@ -261,7 +261,7 @@ impl Compiler {
                             .find(|p| p.name.map(|pn| pn.name) == Some(n.name)),
                         None => params.get(i),
                     };
-                    info.is_macro && param.is_some_and(is_code)
+                    param.is_some_and(is_code)
                 })
             })
             .collect()
@@ -653,7 +653,8 @@ impl Compiler {
                     }
                 }
             }
-            if param == TypeId::CODE && macro_call {
+            // Any expression converts to a `Code` parameter (plain procedures too).
+            if param == TypeId::CODE {
                 return Ok(convert::LITERAL);
             }
             // `ifx c then a else b`: each branch must fit (`"-->"` does not fit a `u8`).
@@ -1770,6 +1771,24 @@ impl Compiler {
             return self.zero_param(f, param.ty, span);
         }
         let op = match slot {
+            Slot::Arg(a) if param.ty == TypeId::CODE && args[*a].op.is_none() => {
+                // An expression for a `Code` parameter is passed as code unless it is a Code.
+                let arg = &args[*a];
+                let expr = arg.expr.as_ref().unwrap();
+                match self.check_expr_no_emit(arg.scope, expr) {
+                    Ok(op) if op.ty() == TypeId::CODE => {
+                        self.arg_operand(f, arg, Some(param.ty))?
+                    }
+                    _ => {
+                        let body = Rc::new(ast::CodeBody::Expr(expr.clone()));
+                        Operand::Const {
+                            ty: TypeId::CODE,
+                            value: Value::Code(self.add_code(body, arg.scope)),
+                            untyped: false,
+                        }
+                    }
+                }
+            }
             Slot::Arg(a) | Slot::Spread(a) => {
                 let op = self.arg_operand(f, &args[*a], Some(param.ty))?;
                 if self.auto_deref_arg(op.ty(), param.ty) {

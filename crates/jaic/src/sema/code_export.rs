@@ -96,6 +96,13 @@ pub struct ExportState {
     resolved_decls: HashMap<EntityId, i64>,
 }
 
+impl ExportState {
+    /// Procedures whose header was reported and whose body is still waiting.
+    pub fn pending_procs(&self) -> impl Iterator<Item = ProcId> + '_ {
+        self.pending_bodies.iter().map(|&(p, _, _)| p)
+    }
+}
+
 /// A FILE or IMPORT message: (event kind, message record).
 pub type FileEvent = (i64, i64);
 
@@ -943,9 +950,21 @@ impl Exporter<'_> {
             flags |= 0x4000;
         }
         let ty = sig.as_ref().map_or(0, |s| self.ty(s.ty));
+        // Checkers such as MetaThreadSafe read the callee's notes (`@thread`).
+        let decl_notes = (self.c.as_deref())
+            .and_then(|c| c.proc_decl_notes.get(&p).cloned())
+            .unwrap_or_default();
+        let mut notes: Vec<&ast::Note> = h.notes.iter().collect();
+        for n in &decl_notes {
+            if !notes.iter().any(|m| m.span == n.span) {
+                notes.push(n);
+            }
+        }
+        let notes = self.notes(&notes);
         let mut rec = self.node("Code_Procedure_Header", node::PROCEDURE_HEADER, span);
         rec.refs("arguments", arguments)
             .refs("returns", returns)
+            .refs("notes", notes)
             .str("name", name.as_str().as_bytes())
             .ptr("type", ty)
             .int("procedure_flags", flags)
@@ -1649,6 +1668,18 @@ impl Exporter<'_> {
             .as_deref()
             .and_then(|c| c.local_decl_types.get(&(d.id, 0)).copied());
         let rec = self.decl(d, name, ty, None, true);
+        // `x := value`: the value has the declared type (its own typing may not see locals).
+        if d.ty.is_none()
+            && let Some(Field::Item(Item::Ref(ty))) = self.r.field(rec, "type").cloned()
+            && let Some(Field::Item(Item::Ref(value))) = self.r.field(rec, "expression").cloned()
+            && value != 0
+            && let Some(value) = self.r.get_mut(value)
+            && value
+                .field("type")
+                .is_none_or(|t| matches!(t, Field::Item(Item::Ref(0))))
+        {
+            value.ptr("type", ty);
+        }
         for n in &d.names {
             self.locals.push((n.name, rec));
         }
@@ -1934,6 +1965,7 @@ impl Exporter<'_> {
         let h = &lit.header;
         let sig = resolved.as_ref().and_then(|(_, s)| s.clone());
         let mut arguments = Vec::new();
+        let mut usings = Vec::new();
         for (i, param) in h.params.iter().enumerate() {
             let ty = sig.as_ref().and_then(|s| s.params.get(i)).map(|p| p.ty);
             let decl = ast::Decl {
@@ -1957,7 +1989,19 @@ impl Exporter<'_> {
                 span: param.span,
             };
             let name = param.name.map_or(Sym::intern(""), |n| n.name);
-            arguments.push(self.decl(&decl, name, ty, None, false));
+            let arg = self.decl(&decl, name, ty, None, false);
+            arguments.push(arg);
+            // `using p: T` parameters are listed again as `Code_Using` of the parameter.
+            if param.using {
+                let mut ident = self.node("Code_Ident", node::IDENT, param.span);
+                ident
+                    .str("name", name.as_str().as_bytes())
+                    .ptr("resolved_declaration", arg);
+                let ident = self.add(ident);
+                let mut using = self.node("Code_Using", node::USING, param.span);
+                using.ptr("expression", ident);
+                usings.push(self.add(using));
+            }
         }
         let mut returns = Vec::new();
         for (i, ret) in h.returns.iter().enumerate() {
@@ -2041,7 +2085,16 @@ impl Exporter<'_> {
             ast::CallHintFlag::NoInline => flags |= 0x200_0000,
             ast::CallHintFlag::None => {}
         }
-        let header_id = self.r.reserve("Code_Procedure_Header");
+        // One header record per procedure: calls that resolved to it before it was reported
+        // (`resolved_header`) and later ones see the reported header, body included.
+        let known = match (&resolved, self.c.as_deref()) {
+            (Some((p, _)), Some(c)) => c.export.resolved_headers.get(p).copied(),
+            _ => None,
+        };
+        let header_id = known.unwrap_or_else(|| self.r.reserve("Code_Procedure_Header"));
+        if let (Some((p, _)), Some(c)) = (&resolved, self.c.as_deref_mut()) {
+            c.export.resolved_headers.insert(*p, header_id);
+        }
         let mut body_id = 0;
         // A procedure's body is reported once it is lowered; until then only its header.
         let deferred = match (&resolved, self.c.as_deref()) {
@@ -2073,6 +2126,7 @@ impl Exporter<'_> {
             .unwrap_or("");
         let ty = sig.as_ref().map_or(0, |s| self.ty(s.ty));
         rec.refs("arguments", arguments)
+            .refs("parameter_usings", usings)
             .refs("returns", returns)
             .str("name", name.as_bytes())
             .str("foreign_function_name", &foreign_name)

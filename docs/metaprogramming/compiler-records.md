@@ -110,6 +110,18 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
   `body_or_null` and queued in `ExportState::pending_bodies`. Each later `export_typechecked` reports the
   queued bodies that have been lowered since (records carry local declaration types) and patches the header's
   `body_or_null`. Bodies the program never reaches are never lowered, so their errors never surface — as in Jai.
+  - Exception: procedures with notes (`@glsl`, `@thread`, header or after the body) whose headers went out are
+    lowered leniently when the workspace runs out of sources (`lower_reachable_inner`), because metaprograms
+    find shaders and checked procedures by note whether or not anything calls them (Jai-Shader-Transpiler).
+  - The Jai side (`workspace.jai`, TYPECHECKED) also sets `body.header.body_or_null` on the cached header
+    struct: a metaprogram may hold that header from the earlier message (MetaThreadSafe checks bodies at
+    COMPLETE).
+  - One header record per procedure: `ExportState::resolved_headers` maps a procedure to the header record
+    that both `resolved_procedure_expression` and the reported header use, so a checker following calls
+    reaches bodies. Resolved headers carry the procedure's notes, including notes after the body
+    (`Compiler::proc_decl_notes`, copied to polymorph instances).
+  - Headers list `using` parameters in `parameter_usings` (a `Code_Using` of an ident resolved to the
+    argument). In `x := value` the value takes the declaration's lowered type when it has none.
 - **Enums**: a top-level enum declaration's `Code_Enum.external_type` is its `Type_Info_Enum`.
 - **Phases**: when a workspace runs out of sources, `build.rs::step` first lowers everything reachable
   (`Compiler::lower_reachable`, lenient: a failing body stays queued). If that reports new declarations or bodies (a body may declare more through
