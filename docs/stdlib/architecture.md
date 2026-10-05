@@ -35,7 +35,8 @@ Module parameters (`#module_parameters`) select behavior at import time, for exa
 - Run the whole set with `python3 tools/jaic-sweep.py stdlib` (documented in `../tools/jaic-sweep.md`).
 - A declaration only gets compiler support if `jaic` recognizes it. New intrinsics need a Rust side in `crates/jaic` (see [compiler architecture](../compiler/architecture.md)); declaring an unknown intrinsic in Jai implements nothing.
 - Public record fields, parameter defaults and enum values are API: programs print and index them directly. Keep them stable when rewriting internals.
-- `reference/` is the reference distribution, for reading semantics only. Never run its binaries and never copy its text into `stdlib/`.
+- `reference/` is the reference distribution, for reading semantics only. Never run its binaries and never copy its text into `stdlib/`: not its comments, helper names, statement order or structure either. Learn the public behavior, then write your own implementation.
+- To check that a rewrite of an existing routine keeps behavior, run a probe program against both versions: extract the old `stdlib` and `prelude` trees from the last commit (`git archive HEAD stdlib prelude | tar -x -C /some/dir`), then run `JAIC_STDLIB=/some/dir/stdlib jaic run probe.jai` and plain `jaic run probe.jai` and diff the output. `JAIC_STDLIB` overrides where `jaic` finds the stdlib; the prelude must sit beside it as `../prelude`.
 
 ## Configuration
 

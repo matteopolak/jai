@@ -16,6 +16,8 @@ Allocation follows the reference: `join`, `replace`, `to_*_copy`, `normalize_lin
 
 `Text_File_Handler` reads CR, LF or CRLF lines with `start_file`/`start_from_memory` and `consume_next_line`, tracks line numbers, strips comments, can skip blank lines and reads an optional leading `[version]`. `file_to_array` and `file_to_table` copy each line, so callers own the strings. `Print_Color` emits ANSI SGR sequences (`print_color`, `set_console_color`, `with_console_color`, `reset_console_color`). `Print_Vars` prints expression text, value and type using `Compiler` node inspection and `Program_Print`.
 
+`scan2(text, format, ..pointers)` walks the format: literal bytes must match, `%%` matches one `%`, and each lone `%` parses text into the next argument (which must be a pointer; the pointee's type picks the parser through `Reflection.set_value_from_string`). It succeeds only if the format and all of `text` are consumed. `scan` is the older `%f`/`%d`/`%b`/`%s` variant that returns the parsed values as `[] Any` in temporary storage. `tests/stdlib/string-scan2-and-path-helpers.jai` covers `scan2`, the path helpers and the `parse_*` readers.
+
 ```jai
 #import "Basic";
 #import "String";

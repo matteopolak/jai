@@ -39,6 +39,13 @@ The memory debugger's visualizer (`Visualize_Memory_Debugger.jai`) does nothing 
 programs built with `MEMORY_DEBUGGER` do not pay for a leak report per allocation. `make_leak_report` merges
 identical stack traces through a hash table of trace hashes (`_md_trace_hash`), not a pairwise scan.
 
+`log_leak_report` prints one block per leak site: a `----- N bytes in M allocations -----` banner (totals include
+aggregated children), optional indented notes that split out the site's own bytes or name the call that grouped
+several traces, then the trimmed stack trace. It ends with `Total: ...` and `Marked as non-leaks: ...` lines.
+The banner and the two closing lines are matched by `tests/stdlib/memory-debugger-report-format.jai`; change the
+wording of the notes freely, but update that test if you touch those three lines. Counts go through `_md_quantity`
+(thousands separators plus `s` plural).
+
 `Basic` module parameters: `MEMORY_DEBUGGER` (false), `ENABLE_ASSERT` (true), `REPLACEMENT_INTERFACE`, `VISUALIZE_MEMORY_DEBUGGER` (true), `TEMP_ALLOCATOR_POISON_FREED_MEMORY` (false). `Hash_Table`: `COUNT_COLLISIONS` (false). `Tagged_Union`: `DEBUG`.
 
 ## Dependencies

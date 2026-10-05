@@ -194,13 +194,13 @@ Optimization_Type :: enum u8 {
 
 // Apply a whole build flavor at once: runtime checks, frame-pointer policy and the
 // LLVM pass levels. Callers can still tweak individual fields afterwards.
-set_optimization :: (options: *Build_Options, type: Optimization_Type, preserve_debug_info := true) {
+set_optimization :: (build_options: *Build_Options, type: Optimization_Type, preserve_debug_info := true) {
     for_shipping := type != .DEBUG && type != .VERY_DEBUG;
     wide_vectors := type == .VERY_OPTIMIZED;
 
     ir_level, codegen_level := optimization_levels_for(type);
 
-    backend := *options.llvm_options;
+    backend := *build_options.llvm_options;
     backend.bitcode_optimization_setting      = ir_level;
     backend.machine_code_optimization_setting = codegen_level;
     backend.preserve_debug_info       = preserve_debug_info;
@@ -213,21 +213,21 @@ set_optimization :: (options: *Build_Options, type: Optimization_Type, preserve_
 
     // Debug flavors leave arithmetic_overflow_check at whatever the caller chose.
     if for_shipping {
-        options.arithmetic_overflow_check = .OFF;
-        options.array_bounds_check        = .OFF;
-        options.null_pointer_check        = .OFF;
-        options.cast_bounds_check         = .OFF;
+        build_options.arithmetic_overflow_check = .OFF;
+        build_options.array_bounds_check        = .OFF;
+        build_options.null_pointer_check        = .OFF;
+        build_options.cast_bounds_check         = .OFF;
     } else {
-        options.array_bounds_check = .ON;
-        options.null_pointer_check = .ON;
-        options.cast_bounds_check  = .FATAL;
+        build_options.array_bounds_check = .ON;
+        build_options.null_pointer_check = .ON;
+        build_options.cast_bounds_check  = .FATAL;
     }
 
     // Unwinders and profilers on macOS expect frame pointers regardless of flavor.
-    options.enable_frame_pointers = preserve_debug_info || !for_shipping || OS == .MACOS;
-    options.x64_options.enable_unix_runtime_frame_information = !for_shipping;
+    build_options.enable_frame_pointers = preserve_debug_info || !for_shipping || OS == .MACOS;
+    build_options.x64_options.enable_unix_runtime_frame_information = !for_shipping;
 
-    if !preserve_debug_info  options.emit_debug_info = .NONE;
+    if !preserve_debug_info  build_options.emit_debug_info = .NONE;
 }
 
 // Copy only the fields a child workspace should inherit (no names, paths or imports).
