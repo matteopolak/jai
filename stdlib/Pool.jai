@@ -163,14 +163,12 @@ pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64
         if name_out  name_out.* = CAPS_VERSION_STRING;
         return cast(*void) (Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
 
-      case .THREAD_START; #through;
-      case .THREAD_STOP;  #through;
-      case .CREATE_HEAP;  #through;
-      case .DESTROY_HEAP;
-        assert(false, "Pool: allocator mode % is unsupported; a Pool is single-threaded and is not a heap factory.\n", mode);
     }
 
-    // FREE, STARTUP and SHUTDOWN need no work.
+    // FREE, STARTUP and SHUTDOWN need no work. Thread and heap modes are not meaningful
+    // for a single-threaded bump allocator and indicate a caller bug.
+    multi := mode == .THREAD_START || mode == .THREAD_STOP || mode == .CREATE_HEAP || mode == .DESTROY_HEAP;
+    assert(!multi, "Pool: allocator mode % is unsupported; a Pool is single-threaded and is not a heap factory.\n", mode);
     return null;
 }
 
