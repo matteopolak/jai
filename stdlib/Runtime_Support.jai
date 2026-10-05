@@ -250,6 +250,7 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
     __jai_runtime_init :: (argc: s32, argv: **u8) -> *#Context #c_call {
         initializer_of(#Context)(*first_thread_context);
         __command_line_arguments = .{argc, argv};
+        #if OS == .WINDOWS windows_utf8_arguments();
         first_thread_temporary_storage.data = first_thread_temporary_storage_data.data;
         first_thread_temporary_storage.size = TEMPORARY_STORAGE_SIZE;
         first_thread_context.temporary_storage = *first_thread_temporary_storage;
@@ -330,8 +331,40 @@ __panic_due_to_runtime_call_of_compile_time_procedure :: (line_number: s64, file
 
 #if OS == .WINDOWS {
     kernel32 :: #system_library "kernel32";
+    shell32 :: #system_library "shell32";
     GetStdHandle :: (handle: s32) -> *void #foreign kernel32;
     WriteFile :: (handle: *void, buffer: *void, buffer_length: u32, written_result: *u32, overlapped: *void) -> s32 #foreign kernel32;
+    GetCommandLineW :: () -> *u16 #foreign kernel32;
+    GetProcessHeap :: () -> *void #foreign kernel32;
+    HeapAlloc :: (heap: *void, flags: u32, bytes: u64) -> *void #foreign kernel32;
+    LocalFree :: (memory: *void) -> *void #foreign kernel32;
+    WideCharToMultiByte :: (code_page: u32, flags: u32, wide: *u16, wide_count: s32, bytes: *u8, byte_count: s32, default_char: *u8, used_default: *s32) -> s32 #foreign kernel32;
+    CommandLineToArgvW :: (command_line: *u16, count: *s32) -> **u16 #foreign shell32;
+
+    // The C runtime's `argv` is in the ANSI code page; Jai strings are UTF-8, so the arguments
+    // are re-read from the wide command line. The copies live as long as the process.
+    windows_utf8_arguments :: () #no_context {
+        CP_UTF8 :: 65001;
+        count: s32;
+        wide := CommandLineToArgvW(GetCommandLineW(), *count);
+        if !wide return;
+        heap := GetProcessHeap();
+        arguments := cast(**u8) HeapAlloc(heap, 0, cast(u64) (count + 1) * size_of(*u8));
+        if !arguments return;
+        index: s32;
+        while index < count {
+            bytes := WideCharToMultiByte(CP_UTF8, 0, wide[index], -1, null, 0, null, null);
+            text := cast(*u8) HeapAlloc(heap, 0, cast(u64) bytes + 1);
+            if !text return;
+            text[0] = 0;
+            WideCharToMultiByte(CP_UTF8, 0, wide[index], -1, text, bytes, null, null);
+            arguments[index] = text;
+            index += 1;
+        }
+        arguments[count] = null;
+        LocalFree(wide);
+        __command_line_arguments = .{count, arguments};
+    }
 } else #if OS_IS_UNIX {
     libc :: #system_library "c";
     host_write :: (fd: s32, bytes: *u8, count: u64) -> s64 #foreign libc "write";

@@ -1,18 +1,38 @@
 // Bootstrap crash handling uses compiler-generated context stack frames.
 init :: () {
-    for signal: fatal_signals host_signal(signal, install_handler);
-}
-handle_signal :: (sig: s32, info: *siginfo_t, secret: *void) #c_call {
-    write_string_unsynchronized("fatal runtime signal\n", true);
-    if !__runtime_support_disable_stack_trace {
-        frames: [64] *void;
-        found := host_backtrace(frames.data, frames.count);
-        for index: 0..found-1 {
-            write_address_unsynchronized(cast(u64) frames[index]);
-            write_string_unsynchronized("\n", true);
-        }
+    #if OS == .WINDOWS {
+        SetUnhandledExceptionFilter(handle_exception);
+    } else {
+        for signal: fatal_signals host_signal(signal, install_handler);
     }
-    host_exit(128 + sig);
+}
+#if OS == .WINDOWS {
+    // An unhandled structured exception (access violation, int3...): print the return addresses
+    // and exit with the exception code, as Windows itself would.
+    handle_exception :: (pointers: *EXCEPTION_POINTERS) -> s32 #c_call {
+        write_string_unsynchronized("fatal runtime exception 0x", true);
+        code := pointers.ExceptionRecord.ExceptionCode;
+        write_address_unsynchronized(code);
+        write_string_unsynchronized("\n", true);
+        write_frames();
+        ExitProcess(code);
+        return 1;
+    }
+} else {
+    handle_signal :: (sig: s32, info: *siginfo_t, secret: *void) #c_call {
+        write_string_unsynchronized("fatal runtime signal\n", true);
+        write_frames();
+        host_exit(128 + sig);
+    }
+}
+write_frames :: () #no_context {
+    if __runtime_support_disable_stack_trace return;
+    frames: [64] *void;
+    found := host_backtrace(frames.data, frames.count);
+    for index: 0..found-1 {
+        write_address_unsynchronized(cast(u64) frames[index]);
+        write_string_unsynchronized("\n", true);
+    }
 }
 #scope_file
 werr :: inline (s: string) #no_context {
@@ -34,6 +54,17 @@ werrs :: inline (s: ..string) #no_context {
     host_exit :: (status: s32) #foreign libc "_exit";
     host_backtrace :: (frames: **void, count: s32) -> s32 #foreign libc "backtrace";
     fatal_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
+} else #if OS == .WINDOWS {
+    kernel32 :: #system_library "kernel32";
+    EXCEPTION_RECORD :: struct { ExceptionCode: u32; }
+    EXCEPTION_POINTERS :: struct { ExceptionRecord: *EXCEPTION_RECORD; ContextRecord: *void; }
+    Exception_Filter :: #type (pointers: *EXCEPTION_POINTERS) -> s32 #c_call;
+    SetUnhandledExceptionFilter :: (filter: Exception_Filter) -> Exception_Filter #foreign kernel32;
+    ExitProcess :: (code: u32) #foreign kernel32;
+    RtlCaptureStackBackTrace :: (skip: u32, count: u32, frames: **void, hash: *u32) -> u16 #foreign kernel32;
+    host_backtrace :: (frames: **void, count: s32) -> s32 #no_context {
+        return RtlCaptureStackBackTrace(0, cast(u32) count, frames, null);
+    }
 } else {
     #assert false "Runtime crash handling requires a native host adapter for this target";
 }
