@@ -195,6 +195,10 @@ pub struct Compiler {
     hoisted_imports: HashSet<Span>,
     /// Procedures that need their bodies lowered.
     pub body_queue: Vec<ProcId>,
+    /// Queued bodies whose last lenient attempt failed at `parked_epoch`: skipped as a group by
+    /// `drain_bodies_lenient` until the epoch moves, instead of being looked at on every call.
+    parked_bodies: Vec<ProcId>,
+    parked_epoch: u64,
     pub interp: crate::interp::Interp,
     /// Type_Info globals per type.
     pub type_infos: HashMap<TypeId, ir::GlobalId>,
@@ -327,6 +331,8 @@ impl Compiler {
             auto_bake_variants: HashMap::new(),
             hoisted_imports: HashSet::new(),
             body_queue: Vec::new(),
+            parked_bodies: Vec::new(),
+            parked_epoch: 0,
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::new(),
             type_info_flags: HashMap::new(),
