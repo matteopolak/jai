@@ -13,6 +13,7 @@ docs/native/windows.md.
 import argparse
 import json
 import pathlib
+import shutil
 import subprocess
 import sys
 
@@ -44,22 +45,68 @@ def cases():
         yield path.stem, path, 0, "ok\n"
 
 
+# tests/native/c-structs-by-value: C structs by value both ways across the C ABI, against C
+# compiled by a Windows toolchain (same expectations as crates/jaic-cli/tests/native.rs).
+C_STRUCTS = {
+    "foreign_calls": "{11, 22} {2, 4, 6} {5, 6, 7, 8} 10 {-7, 9} {99, 2.5} {11, 22, 33}\n832\n",
+    "callbacks": "{111, 47} {10, 20, 30, 40} {8, 4}\n832\n",
+}
+
+
+def c_structs_library(args, work):
+    """Build the fixture's C library in `work`: a static `libstructs.lib` with Clang on a
+    Windows host, a `libstructs.dll` with MinGW-w64 GCC when cross-building (linked directly;
+    it must sit next to the executables at run time)."""
+    if args.host:
+        steps = [
+            ["clang", "-c", "-O1", "structs.c", "-o", "structs.o"],
+            ["llvm-ar", "rcs", "libstructs.lib", "structs.o"],
+        ]
+    else:
+        steps = [["x86_64-w64-mingw32-gcc", "-shared", "-O1", "-o", "libstructs.dll", "structs.c"]]
+    for step in steps:
+        result = subprocess.run(step, cwd=work, capture_output=True, text=True)
+        if result.returncode != 0:
+            return f"{' '.join(step)}: {result.stderr.strip()}"
+    return None
+
+
+def build_one(args, source, output):
+    target = [] if args.host else ["-os", "windows"]
+    result = subprocess.run(
+        [args.jaic, "build", str(source), *target, "-o", str(output)],
+        cwd=source.parent,
+        capture_output=True,
+        text=True,
+    )
+    return None if result.returncode == 0 else result.stderr.strip()
+
+
 def build(args):
     out = pathlib.Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     expected, failures = {}, []
     for case_id, source, exit_code, stdout in cases():
-        target = [] if args.host else ["-os", "windows"]
-        result = subprocess.run(
-            [args.jaic, "build", str(source), *target, "-o", str(out / case_id)],
-            cwd=source.parent,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            failures.append(f"{case_id}: {result.stderr.strip()}")
+        error = build_one(args, source, out / case_id)
+        if error:
+            failures.append(f"{case_id}: {error}")
             continue
         expected[case_id] = {"exit_code": exit_code, "stdout": stdout}
+    work = out / "c-structs-src"
+    shutil.copytree(ROOT / "tests/native/c-structs-by-value", work, dirs_exist_ok=True)
+    error = c_structs_library(args, work)
+    if error:
+        failures.append(f"c-structs library: {error}")
+    else:
+        if (work / "libstructs.dll").exists():
+            shutil.copy(work / "libstructs.dll", out / "libstructs.dll")
+        for name, stdout in C_STRUCTS.items():
+            case_id = f"c-structs-{name}"
+            error = build_one(args, work / f"{name}.jai", out / case_id)
+            if error:
+                failures.append(f"{case_id}: {error}")
+                continue
+            expected[case_id] = {"exit_code": 0, "stdout": stdout}
     (out / "expected.json").write_text(json.dumps(expected, indent=2))
     print(f"built {len(expected)} programs into {out}")
     for failure in failures:
@@ -74,7 +121,7 @@ def run(args):
     for case_id, want in sorted(expected.items()):
         exe = directory / f"{case_id}.exe"
         try:
-            result = subprocess.run([str(exe)], capture_output=True, timeout=60)
+            result = subprocess.run([str(exe)], cwd=directory, capture_output=True, timeout=60)
         except subprocess.TimeoutExpired:
             failures.append(f"{case_id}: timed out")
             continue
