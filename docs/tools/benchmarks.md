@@ -75,6 +75,7 @@ A second round on the front end (Focus check: 1.16B to about 0.41B interpreted i
 - **`Default_Allocator`** scanned a linked list of every live allocation on each free. It is a hash set now.
 - **Lenient body lowering** looked at every previously failed body before each compile-time call; unchanged failures are parked.
 - **Interpreter calls** no longer allocate a `Vec` for results or SipHash the stack-trace info.
+- **Hashing**: sema, the interner, the type table and the interpreter use `jaic::fxhash` (a multiply-rotate hasher) instead of SipHash; every name lookup hashes a `Sym` several times. Member lookup no longer clones the struct's field list.
 
 What is left is the interpreter's dispatch (`Interp::exec` is about half of native time, spread over ordinary instructions) and sema spread thin over many functions. The kind breakdown shows `Loc` (source positions, 10%) and `IConst`/`SlotAddr` (17% and 9%) as candidates for a denser IR, which would be a redesign rather than a fix.
 

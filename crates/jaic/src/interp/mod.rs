@@ -14,6 +14,7 @@ mod sandbox;
 #[cfg(not(target_arch = "wasm32"))]
 mod threads;
 mod threads_inline;
+use crate::fxhash::HashMap;
 use crate::ir::{
     self, BinOp, Callee, CmpOp, ConvOp, ForeignId, FuncId, GlobalId, Inst, Program, Term, Ty, UnOp,
 };
@@ -21,7 +22,7 @@ use crate::ir::{
 pub use native::main_thread;
 pub use native::{library_dirs, set_library_dirs};
 pub use sandbox::{SandboxHost, SharedHost};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 use std::rc::Rc;
 
 /// Tag bits marking an interpreted procedure address.
@@ -188,7 +189,7 @@ impl Interp {
             ranges: BTreeMap::new(),
             frames: Vec::new(),
             foreign_addrs: Vec::new(),
-            libraries: HashMap::new(),
+            libraries: HashMap::default(),
             hooks: Vec::new(),
             host,
             depth: 0,
