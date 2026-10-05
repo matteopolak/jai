@@ -516,13 +516,15 @@ print_block_literal_helper :: (builder: *String_Builder, s: *Struct) {
 }
 
 // Binds a declaration to its symbol: functions with `#foreign`, variables with `#elsewhere`.
-// The symbol is only spelled out when it is not the Jai name.
-append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string) {
+// The symbol is only spelled out when it is not the name the declaration is printed with
+// (`declared_name`, by default the output name).
+append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string, declared_name := "") {
     directive := "#elsewhere";
     if decl.kind == .FUNCTION  directive = "#foreign";
     print_to_builder(builder, " %", directive);
     if decl.library  print_to_builder(builder, " %", library_identifier(decl.library));
-    renamed := foreign_name.count > 0 && foreign_name != decl.output_name;
+    printed_as := ifx declared_name then declared_name else decl.output_name;
+    renamed := foreign_name.count > 0 && foreign_name != printed_as;
     if renamed  print_to_builder(builder, " \"%\"", foreign_name);
 }
 
@@ -647,10 +649,13 @@ print_function :: (builder: *String_Builder, func: *Function, current_scope: *De
         return;
     }
 
-    if func.is_virtual  append(builder, "virtual_");
-    print_to_builder(builder, "% :: ", bound_name);
+    declared_name := ifx func.is_virtual then join("virtual_", bound_name) else bound_name;
+    print_to_builder(builder, "% :: ", declared_name);
     print_function_type_to_builder(builder, type, current_scope, func, false);
-    append_elsewhere(builder, func, func.foreign_name);
+    // C symbols have no foreign_name; the Jai name differs from them for `name_CFormat`, after
+    // `strip_prefixes` and for names Jai reserves.
+    symbol := ifx func.foreign_name then func.foreign_name else func.name;
+    append_elsewhere(builder, func, symbol, declared_name);
     append(builder, ";");
 
     if printf_like {
