@@ -280,7 +280,10 @@ fn open_api(explicit: &str) -> Result<(Api, String), String> {
                 if p.is_null() {
                     return Err(format!("{path}: missing symbol {}", $name));
                 }
-                unsafe { std::mem::transmute(p) }
+                // The target is the `Api` field's function-pointer type, inferred per use.
+                #[allow(clippy::missing_transmute_annotations)]
+                let f = unsafe { std::mem::transmute(p) };
+                f
             }};
         }
         let api = Api {
