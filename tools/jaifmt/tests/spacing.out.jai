@@ -25,3 +25,7 @@ f :: (a: int, b: *int, c := 3) -> int {
     return x+y;
 }
 Distinct :: #type,isa u32;
+kernel :: #library,system "kernel32";
+raylib :: #foreign_library,no_dll "lib/raylib";
+Handle :: #type, distinct u64;
+where :: () { here := #location(code); report(#caller_location,z); }
