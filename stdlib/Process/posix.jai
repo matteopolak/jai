@@ -13,7 +13,9 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
     defer close_pair(*launch_error);
     if !safe_pipe(*launch_error) return false;
     if capture_and_return_output {
-        if !safe_pipe(*child_input) return false;
+        // The child's stdin is a stream socket, not a pipe: callers rely on that to pass
+        // messages and descriptors both ways (`send`/`recv`, `fstat` reporting S_IFSOCK).
+        if !safe_pipe(*child_input, socket = true) return false;
         if !safe_pipe(*child_output) { close_pair(*child_input); return false; }
         if !safe_pipe(*child_error) { close_pair(*child_input); close_pair(*child_output); return false; }
     }
@@ -101,13 +103,15 @@ write_to_process :: (process: *Process, data: [] u8) -> success: bool, bytes_wri
     }
     return amount >= 0, cast(int) max(0, amount);
 }
+// One read from a pipe. End of input and a non-blocking pipe with nothing to read both give
+// (true, 0); the handle stays open and `eof` is left to the caller, which knows whether the
+// pipe was reported readable (callers watching handles themselves keep them registered).
 read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: int {
-    if pipe.eof return true, 0;
     if pipe.handle < 0 return false, 0;
     if buffer.count == 0 return true, 0;
     amount := P.read(pipe.handle, buffer.data, cast(u64) buffer.count);
     while amount < 0 && P.errno() == P.EINTR amount = P.read(pipe.handle, buffer.data, cast(u64) buffer.count);
-    if amount == 0 { deinit(pipe); return true, 0; }
+    if amount < 0 && (P.errno() == P.EAGAIN || P.errno() == P.EWOULDBLOCK) return true, 0;
     return amount >= 0, cast(int) max(0, amount);
 }
 read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] u8, timeout_ms := -1) -> success: bool, output_bytes: int, error_bytes: int {
@@ -126,13 +130,16 @@ read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] 
     output_bytes: int;
     error_bytes: int;
     ok := true;
+    // Readable (or hung up) but nothing read: the writer closed its end.
     if descriptors[0].revents & (1 | 8 | 16) {
         success, output_bytes = read_pipe(*process.output, output_buffer);
         ok = ok && success;
+        if success && output_bytes == 0 process.output.eof = true;
     }
     if descriptors[1].revents & (1 | 8 | 16) {
         success, error_bytes = read_pipe(*process.error, error_buffer);
         ok = ok && success;
+        if success && error_bytes == 0 process.error.eof = true;
     }
     return ok, output_bytes, error_bytes;
 }
@@ -169,8 +176,12 @@ close_and_reset :: (fd: *s32, loc := #caller_location) {
 
 #scope_module
 close_pair :: (pair: *[2] s32) { close_and_reset(*(<<pair)[0]); close_and_reset(*(<<pair)[1]); }
-safe_pipe :: (pair: *[2] s32) -> bool {
-    if P.pipe(pair) != 0 return false;
+safe_pipe :: (pair: *[2] s32, socket := false) -> bool {
+    if socket {
+        if process_socketpair(1, 1, 0, pair) != 0 return false; // AF_UNIX, SOCK_STREAM
+    } else {
+        if P.pipe(pair) != 0 return false;
+    }
     fds := pair;
     for i: 0..1 {
         fd := *(<<fds)[i];
@@ -191,6 +202,8 @@ process_monotonic_ms :: () -> s64 {
     if P.clock_gettime(xx clock_id, *time) != 0 return 0;
     return time.tv_sec * 1000 + time.tv_nsec / 1000000;
 }
+process_socket_libc :: #system_library "libc";
+process_socketpair :: (domain: s32, type: s32, protocol: s32, pair: *[2] s32) -> s32 #foreign process_socket_libc "socketpair";
 #if OS == .LINUX {
     process_libc :: #system_library "c";
     process_prctl :: (option: s32, value: u64, extra1: u64, extra2: u64, extra3: u64) -> s32 #foreign process_libc "prctl";
