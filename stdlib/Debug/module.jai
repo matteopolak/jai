@@ -89,14 +89,14 @@ free_backtrace :: (trace_symbols: [] string) {
     free(trace_symbols.data);
 }
 
+// Stops in an attached debugger the first time this call site is reached. The site is
+// only remembered once a break actually happened, so running without a debugger first
+// does not use up the break.
 break_once :: inline (loc := #caller_location) -> bool {
-    value, exists := table_find(*ignored_asserts, loc);
-    if exists return false;
-    if breakpoint() {
-        table_add(*ignored_asserts, loc, true);
-        return true;
-    }
-    return false;
+    if table_contains(*ignored_asserts, loc)  return false;
+    stopped := breakpoint();
+    if stopped  table_set(*ignored_asserts, loc, true);
+    return stopped;
 }
 breakpoint :: () -> bool #expand #no_debug {
     if !is_debugger_present() return false;

@@ -20,28 +20,24 @@ Print_Vars_Config :: struct {
     name_indentation := Indentation.LEFT_JUSTIFIED;
     value_indentation := Indentation.LEFT_JUSTIFIED;
 }
-append_indented :: (builder: *Basic.String_Builder, field: string, indentation: Print_Vars_Config.Indentation, gap: s64) {
-    if indentation == .RIGHT_JUSTIFIED for i: 0..gap-1 Basic.append(builder, cast(u8) 32);
-    Basic.append(builder, field);
-    if indentation == .LEFT_JUSTIFIED for i: 0..gap-1 Basic.append(builder, cast(u8) 32);
+// One output line: each enabled column is prefix + text padded to the column width + suffix.
+print_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config, name_width: s64, value_width: s64, name: string, value: string, type: Type) {
+    flags := config.control_flags;
+    if flags & .PRINT_NAME   emit_column(builder, config.before_name, name, name_width, config.name_indentation, config.after_name);
+    if flags & .PRINT_VALUE  emit_column(builder, config.before_value, value, value_width, config.value_indentation, config.after_value);
+    if flags & .PRINT_TYPE   emit_column(builder, config.before_type, Basic.tprint("%", type), 0, .NONE, config.after_type);
+    Basic.append(builder, config.line_separator);
 }
-print_helper :: (builder: *Basic.String_Builder, using config: Print_Vars_Config, name_width: s64, value_width: s64, name: string, value: string, type: Type) {
-    if control_flags & .PRINT_NAME {
-        Basic.append(builder, before_name);
-        append_indented(builder, name, name_indentation, Basic.max(0, name_width-name.count));
-        Basic.append(builder, after_name);
-    }
-    if control_flags & .PRINT_VALUE {
-        Basic.append(builder, before_value);
-        append_indented(builder, value, value_indentation, Basic.max(0, value_width-value.count));
-        Basic.append(builder, after_value);
-    }
-    if control_flags & .PRINT_TYPE {
-        Basic.append(builder, before_type);
-        Basic.print_to_builder(builder, "%", type);
-        Basic.append(builder, after_type);
-    }
-    Basic.append(builder, line_separator);
+emit_column :: (builder: *Basic.String_Builder, prefix: string, text: string, width: s64, side: Print_Vars_Config.Indentation, suffix: string) {
+    Basic.append(builder, prefix);
+    fill := width - text.count;
+    if side == .RIGHT_JUSTIFIED  pad_spaces(builder, fill);
+    Basic.append(builder, text);
+    if side == .LEFT_JUSTIFIED   pad_spaces(builder, fill);
+    Basic.append(builder, suffix);
+}
+pad_spaces :: (builder: *Basic.String_Builder, n: s64) {
+    for 1..n  Basic.append(builder, " ");
 }
 get_code_name :: (code: Code) -> string #compile_time {
     root, expressions := Compiler.compiler_get_nodes(code);

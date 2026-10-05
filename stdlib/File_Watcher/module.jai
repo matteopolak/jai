@@ -40,17 +40,18 @@ File_Watcher :: struct(User_Data: Type = void) {
 
 init :: (watcher: *$T/File_Watcher, callback: T.File_Watcher_Callback, user_data: *T.User_Data = null, events_to_watch: File_Change_Event = .ALL_EVENTS, merge_window_seconds: float = 0.1, watch_recursively := true, verbose := false, event_buffer_size: s32 = DEFAULT_BUFFER_SIZE) -> success: bool {
     if !watcher || !callback || watcher.initialized || event_buffer_size <= 0 || merge_window_seconds < 0 return false;
-    watcher.callback = callback;
-    watcher.user_data = user_data;
-    watcher.events_to_watch = events_to_watch;
+    // Every list the watcher grows later lives in the allocator that was current at init.
+    owner := context.allocator;
+    watcher.allocator = owner;
+    watcher.changes.allocator, watcher.snapshot.allocator, watcher.roots.allocator = owner, owner, owner;
+
+    watcher.callback, watcher.user_data = callback, user_data;
+    watcher.events_to_watch      = events_to_watch;
+    watcher.watch_recursively    = watch_recursively;
     watcher.merge_window_seconds = merge_window_seconds;
-    watcher.watch_recursively = watch_recursively;
-    watcher.verbose = verbose;
-    watcher.buffer_size = event_buffer_size;
-    watcher.allocator = context.allocator;
-    watcher.roots.allocator = watcher.allocator;
-    watcher.snapshot.allocator = watcher.allocator;
-    watcher.changes.allocator = watcher.allocator;
+    watcher.buffer_size          = event_buffer_size;
+    watcher.verbose              = verbose;
+
     watcher.initialized = true;
     return true;
 }
@@ -119,22 +120,20 @@ process_changes :: (using watcher: *File_Watcher) -> changed: bool, needs_wait: 
     return emit_changes(watcher);
 }
 
-add_change :: (using watcher: *File_Watcher, full_path: string, events: File_Change_Event) {
-    selected := events & events_to_watch;
-    if selected == 0 return;
-    now := seconds_since_init();
-    for *change: changes {
-        if change.full_path == full_path {
-            change.events |= selected;
-            change.time_of_last_change = xx now;
-            return;
-        }
+// Queue the interesting subset of `events` for a path. Repeated events for a path that
+// is already queued are OR-ed into that entry and restart its merge-window clock.
+add_change :: (watcher: *File_Watcher, full_path: string, events: File_Change_Event) {
+    interesting := events & watcher.events_to_watch;
+    if interesting == 0 return;
+
+    entry: *File_Change;
+    for * watcher.changes  if it.full_path == full_path { entry = it; break; }
+    if !entry {
+        entry = array_add(*watcher.changes);
+        entry.full_path = owned_path(full_path, watcher.allocator);
     }
-    change: File_Change;
-    change.full_path = owned_path(full_path, allocator);
-    change.events = selected;
-    change.time_of_last_change = xx now;
-    array_add(*changes, change);
+    entry.events |= interesting;
+    entry.time_of_last_change = xx seconds_since_init();
 }
 
 emit_changes :: (using watcher: *$T/File_Watcher) -> changed: bool, needs_wait: bool, wait_seconds: float64 {

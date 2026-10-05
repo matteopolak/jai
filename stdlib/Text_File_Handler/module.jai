@@ -5,17 +5,21 @@ File :: #import "File";
 Hash_Table :: #import "Hash_Table";
 #scope_export
 Text_File_Handler :: struct {
-    short_name: string;
-    full_path: string;
+    // Set before start_file to change how lines are read.
     comment_character: u8 = #char "#";
-    do_version_number := true;
     strip_comments_from_ends_of_lines := true;
     auto_skip_blank_lines := true;
-    file_data_to_free: string;
-    file_data: string;
-    failed := false;
+    do_version_number := true;            // expect a "[N]" header line and store N in `version`
+
+    // Filled in by start_file / consume_next_line.
+    short_name: string;
+    full_path: string;
     version := -1;
     line_number := 0;
+    failed := false;
+
+    file_data: string;                    // the unread remainder
+    file_data_to_free: string;            // the whole buffer, released by deinit
 }
 deinit :: (using x: *Text_File_Handler) {
     Basic.free(file_data_to_free);

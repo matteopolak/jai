@@ -122,14 +122,16 @@ get_subexpressions :: (node: *Code_Node, pointers: *[..] *Code_Node) {
         add((cast(*Code_Directive_Modify) node).block);
     }
 }
+// Appends `node` and everything below it, one depth level at a time. The output array is
+// also the work list: each pass expands exactly the nodes the previous pass appended.
 get_recursive_nodes_breadth_first :: (node: *Code_Node, pointers: *[..] *Code_Node) {
     if !node return;
-    cursor := pointers.count;
+    level_start := pointers.count;
     Basic.array_add(pointers, node);
-    while cursor < pointers.count {
-        current := pointers.*[cursor];
-        get_subexpressions(current, pointers);
-        cursor += 1;
+    while level_start < pointers.count {
+        level_end := pointers.count;
+        for i: level_start..level_end-1  get_subexpressions(pointers.*[i], pointers);
+        level_start = level_end;
     }
 }
 get_recursive_nodes_depth_first :: (node: *Code_Node, pointers: *[..] *Code_Node) {

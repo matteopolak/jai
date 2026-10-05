@@ -339,14 +339,12 @@ rdseed :: () -> (success: bool, value: u64) {
     return rdrand();
 }
 
+// The CPU sets CF when it delivered a sample; a clear flag means "try again later".
 rdrand :: () -> (success: bool, value: u64) {
-    success: bool = false;
-    value: u64 = 0;
-    #asm {
-        rdrand.q value;
-        setc success;
-    }
-    return success, value;
+    sample: u64;
+    delivered: bool;
+    #asm { rdrand.q sample; setc delivered; }
+    return delivered, sample;
 }
 
 mfence :: () { #asm { mfence; } }

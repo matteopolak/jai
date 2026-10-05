@@ -83,7 +83,7 @@ for_expansion :: (array: *Bit_Array, body: Code, flags: For_Flags) #expand {
     }
 }
 
-// Iterate only the bits that are set (`for :only_set bits`) or clear (`for :only_unset bits`).
+// for_expansion variants that skip bits of the other value: `for :only_set flags { ... }`.
 only_set   :: #bake_arguments only_set_or_unset(target_value = true);
 only_unset :: #bake_arguments only_set_or_unset(target_value = false);
 
