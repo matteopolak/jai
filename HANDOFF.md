@@ -59,7 +59,7 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   struct, 51.2 GetRect `dropdown`), missing command-line arguments (30.14, 8.2, 12.8), a missing
   `cpp_library.cpp`, and 31.2, which calls GL at compile time without a context (crashes in libGL). 19.5 frees an
   advanced pointer and 27/foldera writes through null (both upstream bugs).
-- **Browser**: wasm build and both checks pass; 164 of 180 `tests/stdlib` programs run in the playground (threads
+- **Browser**: wasm build and both checks pass; 168 of 186 `tests/stdlib` programs run in the playground (threads
   run cooperatively, files live in an in-memory FS, POSIX modules compile for `OS == .WASM`). The exclusions are
   listed with reasons in `tools/playground_stdlib_expected.json`, which `check_playground_worker.mjs` enforces
   exactly. `jaic run -os wasm` reproduces the browser sandbox natively. Run results carry ordered
@@ -70,7 +70,8 @@ Vk-Engine (use a `--release` build; ~45 s per module):
 
 ## Open work
 
-- `Bindings_Generator`: C, C++ (methods, ctors/dtors, vtables, inheritance, templates, operators, bit fields with
-  accessors, tail-padding `__RAW` structs) and Objective-C (classes, protocols, categories, message-send wrappers)
-  work; C/C++ were run on the real Vulkan and ImGui headers (`docs/stdlib/bindings-generator.md`). Left: Objective-C
-  generics/ivars/blocks, x86-64 `objc_msgSend_stret`, `__RAW` with several bases, MSVC bit field layout.
+- `Bindings_Generator` covers C, C++ (methods, ctors/dtors, vtables, inheritance including `__RAW` tail padding
+  with several bases, templates, operators, Itanium and MSVC bit fields) and Objective-C (classes, protocols,
+  categories, generics, ivars, blocks, x86-64 `objc_msgSend_stret`); see `docs/stdlib/bindings-generator.md`.
+  Left: `objc_msgSend_fpret`, building block literals from Jai procedures, virtual/template bases and the
+  empty-base optimization (those fall back to a comment and `NO_STRUCT_CHECKS`).
