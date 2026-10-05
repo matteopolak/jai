@@ -363,6 +363,15 @@ pub fn link(
             cmd.args(["-fms-runtime-lib=dll", "-llegacy_stdio_definitions"]);
         }
     }
+    // Windows reserves 1 MiB for the main thread's stack (and threads created without a
+    // size); reserve the 8 MiB macOS and Linux give, so deep recursion behaves the same.
+    if flavor.is_windows() && !dynamic_library {
+        cmd.arg(match (msvc_style, flavor) {
+            (true, _) => "/STACK:8388608",
+            (false, LinkFlavor::Msvc) => "-Wl,/STACK:8388608",
+            _ => "-Wl,--stack,8388608",
+        });
+    }
     for arg in seen.concat() {
         render_link_arg(&mut cmd, &arg, msvc_style);
     }
@@ -407,8 +416,39 @@ pub fn write_dsym(output: &Path) -> Result<(), String> {
     }
 }
 
-/// Linker arguments for one Jai library reference.
-fn library_args(lib: &Library) -> Result<Vec<String>, String> {
+/// Archive object files into a static library for `target`: the system `ar` on macOS and
+/// Linux; for Windows a MinGW `ar`, `llvm-ar` or `lib.exe` (`JAIC_AR` overrides the choice).
+pub fn archive(objects: &[PathBuf], output: &Path, target: Option<&str>) -> Result<(), String> {
+    let program = match std::env::var("JAIC_AR") {
+        Ok(program) => program,
+        Err(_) if LinkFlavor::for_target(target).is_windows() => {
+            find_program(&["x86_64-w64-mingw32-ar", "llvm-ar", "llvm-lib", "lib"])
+                .ok_or("no archiver for Windows libraries found: install LLVM or mingw-w64")?
+        }
+        Err(_) => "ar".to_string(),
+    };
+    let stem = Path::new(&program)
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_ascii_lowercase())
+        .unwrap_or_default();
+    let mut cmd = Command::new(&program);
+    if matches!(stem.as_str(), "lib" | "llvm-lib") {
+        cmd.arg("/NOLOGO").arg(format!("/OUT:{}", output.display()));
+    } else {
+        // `ar` appends to an existing archive; start from an empty one.
+        let _ = std::fs::remove_file(output);
+        cmd.arg("rcs").arg(output);
+    }
+    let status = cmd
+        .args(objects)
+        .status()
+        .map_err(|e| format!("could not run '{program}': {e}"))?;
+    status
+        .success()
+        .then_some(())
+        .ok_or(format!("{program} failed ({status})"))
+}
+
 fn render_link_arg(cmd: &mut Command, arg: &LinkArg, msvc_style: bool) {
     match (arg, msvc_style) {
         (LinkArg::Lib(name), false) => cmd.arg(format!("-l{name}")),
@@ -493,14 +533,25 @@ fn linker_command(flavor: LinkFlavor, target: Option<&str>) -> Result<(String, C
     }
 }
 
-/// The file name extension executables (or shared libraries) get on `target`, where the
-/// platform uses one: `exe`/`dll` on Windows.
-pub fn output_extension(target: Option<&str>, dynamic_library: bool) -> Option<&'static str> {
-    match (LinkFlavor::for_target(target).is_windows(), dynamic_library) {
-        (true, false) => Some("exe"),
-        (true, true) => Some("dll"),
-        (false, _) => None,
+/// What a native build writes.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum OutputKind {
+    Executable,
+    DynamicLibrary,
+    StaticLibrary,
+}
+
+/// The file name extension an output gets on `target` when its name has none, where the
+/// platform expects one: `exe`, `dll` and `lib` on Windows.
+pub fn output_extension(target: Option<&str>, kind: OutputKind) -> Option<&'static str> {
+    if !LinkFlavor::for_target(target).is_windows() {
+        return None;
     }
+    Some(match kind {
+        OutputKind::Executable => "exe",
+        OutputKind::DynamicLibrary => "dll",
+        OutputKind::StaticLibrary => "lib",
+    })
 }
 
 /// Linker inputs for one Jai library reference. `cross`: the target is not the host, so the
@@ -639,11 +690,11 @@ mod tests {
             LinkFlavor::Unix
         );
         assert_eq!(
-            output_extension(Some(WINDOWS_CROSS_TRIPLE), false),
+            output_extension(Some(WINDOWS_CROSS_TRIPLE), OutputKind::Executable),
             Some("exe")
         );
         assert_eq!(
-            output_extension(Some(WINDOWS_CROSS_TRIPLE), true),
+            output_extension(Some(WINDOWS_CROSS_TRIPLE), OutputKind::DynamicLibrary),
             Some("dll")
         );
     }
