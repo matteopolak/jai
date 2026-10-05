@@ -45,6 +45,10 @@ Metaprogram_Plugin :: struct {
 
     handle_one_option: (p: *Metaprogram_Plugin, options: [] string, cursor: int) -> (new_cursor: int);
     log_help:          (p: *Metaprogram_Plugin);
+
+    // Newer plugins take all of their `-plug Name -- ...` options at once instead of
+    // through handle_one_option, and can refuse them.
+    init:              (p: *Metaprogram_Plugin, options: [] string) -> bool;
 }
 
 Get_Root_Type_Status :: enum u8 {
