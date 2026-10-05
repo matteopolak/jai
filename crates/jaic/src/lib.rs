@@ -7,6 +7,7 @@ pub mod abi;
 pub mod ast;
 pub mod build;
 pub mod clang;
+pub mod fxhash;
 pub mod intern;
 pub mod interp;
 pub mod ir;

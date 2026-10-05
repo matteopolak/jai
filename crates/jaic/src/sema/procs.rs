@@ -142,7 +142,7 @@ impl Compiler {
             sig_resolving: false,
             target: None,
             body_state: BodyState::NotNeeded,
-            instances: HashMap::new(),
+            instances: HashMap::default(),
             bindings: None,
             export,
         });
@@ -1066,7 +1066,7 @@ impl Compiler {
             sig_resolving: false,
             target: None,
             body_state: BodyState::NotNeeded,
-            instances: HashMap::new(),
+            instances: HashMap::default(),
             bindings: Some(scope),
             export: None,
         });
