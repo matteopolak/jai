@@ -1,62 +1,47 @@
-// Builds a macOS .app bundle directory layout (and optionally Info.plist / icns icon).
+// MacOS_Bundler: lays out a macOS application bundle in the working directory:
+//
+//     <app_name>.app/Contents/MacOS/<app_name>      the executable (made runnable)
+//     <app_name>.app/Contents/Resources/...         copied resources and the icon
+//     <app_name>.app/Contents/Info.plist            when write_plist is set
+//
+// Icons are converted to .icns with the system's `sips` tool. The plist_* helpers are
+// public so callers can write a richer Info.plist of their own.
 
-// only_copy_subdirectories_and_files == false puts the files of resource_directory_to_copy under
-// "Contents/Resources/<directory name>/", otherwise they go straight into "Contents/Resources".
+// With only_copy_subdirectories_and_files, the contents of resource_directory_to_copy land
+// directly in Resources; otherwise they keep a folder named after the source directory.
 create_app_bundle :: (app_name: string, app_exe_path: string, icon_file_path: string, resource_directory_to_copy: string, only_copy_subdirectories_and_files: bool, write_plist: bool) -> app_bundle_dir: string, resources_path: string {
-    app_bundle_name := tprint("%.app", app_name);
-    macos_path, resources_path := make_app_bundle_subdirectories(app_bundle_name);
+    bundle := tprint("%.app", app_name);
+    binaries, resources := make_app_bundle_subdirectories(bundle);
 
-    if resource_directory_to_copy.count {
-        if only_copy_subdirectories_and_files {
-            copy_files_recursively(resource_directory_to_copy, resources_path);
-        } else {
-            out_dir := tprint("%/%", resources_path, basename(resource_directory_to_copy));
-            make_directory_if_it_does_not_exist(out_dir);
-            copy_files_recursively(resource_directory_to_copy, out_dir);
-        }
+    install_executable(app_exe_path, tprint("%/%", binaries, app_name));
+
+    if resource_directory_to_copy {
+        target := resources;
+        if !only_copy_subdirectories_and_files  target = tprint("%/%", resources, last_path_component(resource_directory_to_copy));
+        copy_directory(resource_directory_to_copy, target);
     }
 
-    bundle_exe_path := tprint("%/%", macos_path, app_name);
-    copy_file(app_exe_path, bundle_exe_path);
-    chmod(temp_c_string(bundle_exe_path), 0x1FF);
+    // Only name the icon in Info.plist if the conversion actually produced it.
+    icon := "";
+    if icon_file_path && convert_image_to_icns(icon_file_path, tprint("%/%", resources, BUNDLE_ICON_NAME))  icon = BUNDLE_ICON_NAME;
 
-    icon_data_file_name: string;
-    if icon_file_path.count {
-        icon_data_file_name = "icon_data.icns";
-        convert_image_to_icns(icon_file_path, tprint("%/%", resources_path, icon_data_file_name));
-    }
-
-    if write_plist {
-        builder: String_Builder;
-        plist_start(*builder);
-        if icon_data_file_name.count {
-            success := plist_write_key_value(*builder, "CFBundleIconFile", icon_data_file_name);
-            assert(success);
-        }
-        plist_end(*builder);
-        output := builder_to_string(*builder);
-        write_entire_file(tprint("%/Contents/Info.plist", app_bundle_name), output);
-        free(output);
-    }
-
-    return app_bundle_name, resources_path;
+    if write_plist  write_info_plist(tprint("%/Contents/Info.plist", bundle), icon);
+    return bundle, resources;
 }
 
 make_app_bundle_subdirectories :: (app_bundle_name: string) -> macos_folder_path: string, resources_path: string {
-    resources_path := tprint("%/Contents/Resources", app_bundle_name);
-    macos_path     := tprint("%/Contents/MacOS", app_bundle_name);
-
-    make_directory_if_it_does_not_exist(app_bundle_name);
-    make_directory_if_it_does_not_exist(tprint("%/Contents", app_bundle_name));
-    make_directory_if_it_does_not_exist(macos_path);
-    make_directory_if_it_does_not_exist(resources_path);
-
-    return macos_path, resources_path;
+    contents  := tprint("%/Contents", app_bundle_name);
+    binaries  := tprint("%/MacOS", contents);
+    resources := tprint("%/Resources", contents);
+    // Recursive creation makes the bundle root and Contents on the way down.
+    make_directory_if_it_does_not_exist(binaries, recursive = true);
+    make_directory_if_it_does_not_exist(resources, recursive = true);
+    return binaries, resources;
 }
 
 convert_image_to_icns :: (input_path: string, output_path: string) -> bool {
-    process_result, output, error := run_command("sips", "-s", "format", "icns", input_path, "--out", output_path);
-    return process_result.exit_code == 0;
+    result := run_command("sips", "-s", "format", "icns", input_path, "--out", output_path);
+    return result.type == .EXITED && result.exit_code == 0;
 }
 
 plist_start :: (builder: *String_Builder) {
@@ -70,28 +55,24 @@ plist_end :: (builder: *String_Builder) {
 }
 
 plist_write_key_value :: (builder: *String_Builder, key: string, value: Any) -> success: bool {
-    if value.type.type != .BOOL && value.type.type != .STRING return false;
+    kind := value.type.type;
+    if kind != .BOOL && kind != .STRING  return false;
     plist_write_key(builder, key);
-    if value.type.type == .BOOL plist_write_bool(builder, (cast(*bool) value.value_pointer).*);
-    else plist_write_string(builder, (cast(*string) value.value_pointer).*);
+    if kind == .STRING  plist_write_string(builder, (cast(*string) value.value_pointer).*);
+    else                plist_write_bool(builder, (cast(*bool) value.value_pointer).*);
     return true;
 }
 
 plist_write_key :: (builder: *String_Builder, key: string) {
-    append(builder, "<key>");
-    append_xml_text(builder, key);
-    append(builder, "</key>");
+    xml_element(builder, "key", key);
 }
 
 plist_write_string :: (builder: *String_Builder, str: string) {
-    append(builder, "<string>\n");
-    append_xml_text(builder, str);
-    append(builder, "</string>\n");
+    xml_element(builder, "string", str);
 }
 
 plist_write_bool :: (builder: *String_Builder, value: bool) {
-    if value append(builder, "<true/>");
-    else append(builder, "<false/>");
+    append(builder, ifx value then "<true/>\n" else "<false/>\n");
 }
 
 #scope_file
@@ -102,28 +83,40 @@ plist_write_bool :: (builder: *String_Builder, value: bool) {
 #import "String";
 #import "POSIX";
 
-copy_files_recursively :: (source: string, dest: string) {
-    paths: [2] string;
-    paths[0] = source;
-    paths[1] = dest;
+BUNDLE_ICON_NAME :: "icon_data.icns";
 
-    visitor :: (info: *File_Visit_Info, paths: [2] string) {
-        relative_path := info.full_name;
-        advance(*relative_path, paths[0].count);
-        out_path := join(paths[1], "/", relative_path);
-        make_directory_if_it_does_not_exist(path_strip_filename(out_path), recursive = true);
-        copy_file(info.full_name, out_path);
-    }
-
-    res := visit_files(paths[0], true, paths, visitor);
-    assert(res);
+install_executable :: (source: string, destination: string) {
+    copy_file(source, destination);
+    chmod(temp_c_string(destination), 0x1ED);  // rwxr-xr-x
 }
 
-append_xml_text :: (builder: *String_Builder, text: string) {
+write_info_plist :: (path: string, icon: string) {
+    plist: String_Builder;
+    plist_start(*plist);
+    if icon  plist_write_key_value(*plist, "CFBundleIconFile", icon);
+    plist_end(*plist);
+    text := builder_to_string(*plist);
+    defer free(text);
+    write_entire_file(path, text);
+}
+
+// "assets/sounds/" -> "sounds"
+last_path_component :: (path: string) -> string {
+    trimmed := path;
+    while trimmed.count > 1 && (trimmed[trimmed.count - 1] == #char "/" || trimmed[trimmed.count - 1] == #char "\\")  trimmed.count -= 1;
+    return path_filename(trimmed);
+}
+
+// <tag>text</tag> on its own line, with the text escaped.
+xml_element :: (builder: *String_Builder, tag: string, text: string) {
+    print_to_builder(builder, "<%>", tag);
     for byte: text {
-        if byte == #char "&" append(builder, "&amp;");
-        else if byte == #char "<" append(builder, "&lt;");
-        else if byte == #char ">" append(builder, "&gt;");
-        else append(builder, *byte, 1);
+        if byte == {
+            case #char "&"; append(builder, "&amp;");
+            case #char "<"; append(builder, "&lt;");
+            case #char ">"; append(builder, "&gt;");
+            case;           append(builder, *byte, 1);
+        }
     }
+    print_to_builder(builder, "</%>\n", tag);
 }
