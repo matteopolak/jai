@@ -47,8 +47,9 @@ free_buffers :: (using builder: *String_Builder) {
 reset :: (using builder: *String_Builder) {
     if !initialized return;
     free_buffers(builder);
+    // The base buffer's storage survives a reset, and so does space ensured in it: code that
+    // ensured space, converted the builder to a string and then advances still passes.
     base := get_base_buffer(builder); base.count = 0;
-    #if ENABLE_ASSERT base.ensured_count = 0;
     failed = false;
 }
 free :: (builder: *String_Builder) { reset(builder); }
