@@ -1,184 +1,175 @@
-// Metaprogram plugin: asks the compiler for performance data and prints a text report
-// (time, #run, polymorph and bytecode statistics) once compilation completes.
-get_plugin :: () -> *Plugin {
-    p := New(My);
-    p.before_intercept = before_intercept;
-    p.message          = message;
-    return p;
+// Performance_Report: a metaprogram plugin that switches on the compiler's performance
+// statistics and prints them as plain text when the build is done. Sections: timings,
+// bytecode inlining, #run directives (slowest first) and polymorph instantiations
+// (most call sites first).
+get_plugin :: () -> *Metaprogram_Plugin {
+    state := New(Report_Plugin);
+    state.before_intercept = request_statistics;
+    state.message          = on_compiler_message;
+    return state;
 }
 
 #scope_module
 
-before_intercept :: (p: *Plugin, flags: *Intercept_Flags) {
-    flags.* |= .DO_PERFORMANCE_REPORT_POLYMORPHS | .DO_PERFORMANCE_REPORT_RUNS;
-}
-
-plural :: (x: s64) -> string {
-    if x != 1 return "s";
-    return "";
-}
-
-// The report arrives before COMPLETE; we hold on to it and print at the very end so the
-// output is not interleaved with link lines or other plugins.
-message :: (p: *Plugin, message: *Message) {
-    my := cast(*My) p;
-    if message.kind == {
-        case .PERFORMANCE_REPORT; my.report = cast(*Message_Performance_Report) message;
-        case .COMPLETE;           print_performance_report(my);
-    }
-}
-
-print_performance_report :: (my: *My) {
-    if !my.report {
-        write_string("Performance_Report did not receive a PERFORMANCE_REPORT message from the compiler, so no report can be generated. The plugin may not be initialized, or another plugin disabled the intercept flags.\n");
-        return;
-    }
-
-    builder: String_Builder;
-
-    print_time_report(my, *builder);
-
-    append(*builder, "\n");
-    if my.report.run_directive_report.reported  print_run_directive_report(my, *builder);
-    else append(*builder, "--- (#run Report was not selected, so this report is empty.) ---\n");
-
-    append(*builder, "\n");
-    if my.report.polymorph_report.reported  print_polymorph_report(my, *builder);
-
-    append(*builder, "\n");
-    print_bytecode_report(my, *builder);
-
-    result := builder_to_string(*builder);
-    write_string(result);
-    free(result);
-}
-
-print_time_report :: (my: *My, builder: *String_Builder) {
-    append(builder, "----- Time Report: -----\n");
-    time := *my.report.time_report;
-    print_to_builder(builder, "#runs:               %\n", time.run_directives);
-    print_to_builder(builder, "bytecode inlining:   %\n", time.bytecode_inlining);
-    print_to_builder(builder, "bytecode generating: %\n", time.bytecode_generating);
-}
-
-print_bytecode_report :: (my: *My, builder: *String_Builder) {
-    append(builder, "----- Bytecode Report: -----\n");
-    r := *my.report.bytecode_report;
-    print_to_builder(builder, "calls inlined:        %\n", r.num_calls_inlined);
-    print_to_builder(builder, "calls total:          %\n", r.num_calls_total);
-    print_to_builder(builder, "instructions inlined: %\n", r.num_instructions_inlined);
-    print_to_builder(builder, "instructions total:   %\n", r.num_instructions_total);
-}
-
-print_run_directive_report :: (my: *My, builder: *String_Builder) {
-    append(builder, "----- #run Report: -----\n");
-    runs := *my.report.run_directive_report;
-
-    // Sort a copy of pointers, never the compiler-owned records.
-    sorted: [..] *runs.Record;
-    array_reserve(*sorted, runs.records.count);
-    for * r: runs.records  array_add(*sorted, r);
-    quick_sort(sorted, x => -x.elapsed_time);
-
-    for r: sorted {
-        callee := r.callee;
-        print_to_builder(builder, "[%:%,%] stalls: % elapsed: %\n", callee.enclosing_load.fully_pathed_filename, callee.l0, callee.c0, r.num_stalls, r.elapsed_time);
-    }
-}
-
-print_polymorph_report :: (my: *My, builder: *String_Builder) {
-    append(builder, "----- Polymorph Report: -----\n");
-    poly := *my.report.polymorph_report;
-    print_to_builder(builder, "Solves invoked: %\n", poly.num_solves_invoked);
-    print_to_builder(builder, "Solves used:    %\n", poly.num_solves_used);
-    append(builder, "\n");
-
-    if !poly.reported {
-        append(builder, "--- (Polymorph Report was not selected, so the rest of this report is empty.) ---\n");
-        return;
-    }
-
-    old := Program_Print.print_procedure_bodies;
-    Program_Print.print_procedure_bodies = false;
-    defer Program_Print.print_procedure_bodies = old;
-
-    sorted: [..] *poly.Record;
-    array_reserve(*sorted, poly.records.count);
-    for * r: poly.records  array_add(*sorted, r);
-    quick_sort(sorted, x => -x.num_call_sites);
-
-    total_constants_dedup := 0;
-    total_bytecode_dedup  := 0;
-    total_polymorphs      := 0;
-
-    for r: sorted {
-        source := r.source;
-        print_to_builder(builder, "% [%:%,%]\n", source.name, source.enclosing_load.fully_pathed_filename, source.l0, source.c0);
-        print_to_builder(builder, "  % call site%, % constants_dedup, % bytecode_dedup\n", r.num_call_sites, plural(r.num_call_sites), r.num_deduplications_by_constants, r.num_deduplications_by_bytecode);
-
-        total_constants_dedup += r.num_deduplications_by_constants;
-        total_bytecode_dedup  += r.num_deduplications_by_bytecode;
-
-        count := r.distinct_polymorphs.count;
-        print_to_builder(builder, "  % polymorph%:\n", count, plural(count));
-        total_polymorphs += count;
-
-        for * distinct: r.distinct_polymorphs {
-            params := get_constants_block_string(distinct.polymorphed);
-            loc := distinct.location;
-            print_to_builder(builder, "    (%) [%:%,%]\n", params, loc.fully_pathed_filename, loc.line_number, loc.character_number);
-        }
-        append(builder, "\n");
-    }
-
-    print_to_builder(builder, "\nTotal constants dedup: %\nTotal bytecode dedup: %\nTotal polymorphs: %\n", total_constants_dedup, total_bytecode_dedup, total_polymorphs);
-    append(builder, "\n");
-}
-
-// Program_Print cannot yet reconstruct arbitrary expressions, so print the common
-// shapes of polymorph arguments (identifiers and literals) and elide the rest.
-print_simple_expression :: (builder: *String_Builder, node: *Code_Node) {
-    if !node { append(builder, "?"); return; }
-    if node.kind == {
-        case .IDENT;
-            append(builder, (cast(*Code_Ident) node).name);
-        case .LITERAL;
-            literal := cast(*Code_Literal) node;
-            if literal.value_type == {
-                case .NUMBER;  print_to_builder(builder, "%", literal._s64);
-                case .STRING;  print_to_builder(builder, "\"%\"", literal._string);
-                case .BOOLEAN; print_to_builder(builder, "%", literal._s64 != 0);
-                case;          append(builder, "...");
-            }
-        case;
-            append(builder, "...");
-    }
-}
-
-get_constants_block_string :: (header: *Code_Procedure_Header) -> string {
-    block := header.constants_block;
-    if !block.members return "";
-
-    builder: String_Builder;
-    for block.members {
-        decl := cast(*Code_Declaration) it;
-        assert(decl.kind == .DECLARATION);
-        if it_index > 0  append(*builder, ", ");
-        print_to_builder(*builder, "%=", decl.name);
-        print_simple_expression(*builder, decl.expression);
-    }
-    return builder_to_string(*builder);
-}
-
 #import "Basic";
 #import "Compiler";
 #import "Sort";
-
 Program_Print :: #import "Program_Print";
 
-Plugin :: Metaprogram_Plugin;
+Report_Plugin :: struct {
+    #as using plugin: Metaprogram_Plugin;
+    statistics: *Message_Performance_Report;
+}
 
-My :: struct {
-    #as using base: Plugin;
-    report: *Message_Performance_Report;
+// Width of the label column in "label   value" rows.
+LABEL_COLUMN :: 26;
+
+request_statistics :: (plugin: *Metaprogram_Plugin, flags: *Intercept_Flags) {
+    flags.* |= .DO_PERFORMANCE_REPORT_RUNS;
+    flags.* |= .DO_PERFORMANCE_REPORT_POLYMORPHS;
+}
+
+on_compiler_message :: (plugin: *Metaprogram_Plugin, message: *Message) {
+    state := cast(*Report_Plugin) plugin;
+
+    // The statistics arrive before COMPLETE. Holding them until then keeps the report
+    // after everything else the build prints.
+    if message.kind == .PERFORMANCE_REPORT {
+        state.statistics = cast(*Message_Performance_Report) message;
+        return;
+    }
+    if message.kind != .COMPLETE return;
+
+    if state.statistics == null {
+        write_string("Performance_Report: no performance statistics arrived from the compiler; nothing to report. (Was the plugin's before_intercept skipped, or the flags cleared by another plugin?)\n");
+        return;
+    }
+
+    out: String_Builder;
+    write_timings(*out, state.statistics);
+    write_bytecode(*out, state.statistics);
+    write_runs(*out, state.statistics);
+    write_polymorphs(*out, state.statistics);
+    text := builder_to_string(*out);
+    write_string(text);
+    free(text);
+}
+
+heading :: (out: *String_Builder, title: string) {
+    print_to_builder(out, "\n== % ==\n", title);
+}
+
+row :: (out: *String_Builder, label: string, value: Any) {
+    append(out, "  ");
+    append(out, label);
+    padding := LABEL_COLUMN - label.count;
+    while padding > 0 {
+        append(out, " ");
+        padding -= 1;
+    }
+    print_to_builder(out, "%\n", value);
+}
+
+write_timings :: (out: *String_Builder, stats: *Message_Performance_Report) {
+    heading(out, "Time");
+    row(out, "#run directives", stats.time_report.run_directives);
+    row(out, "bytecode generation", stats.time_report.bytecode_generating);
+    row(out, "bytecode inlining", stats.time_report.bytecode_inlining);
+}
+
+write_bytecode :: (out: *String_Builder, stats: *Message_Performance_Report) {
+    counts := stats.bytecode_report;
+    heading(out, "Bytecode");
+    row(out, "calls", counts.num_calls_total);
+    row(out, "calls inlined", counts.num_calls_inlined);
+    row(out, "instructions", counts.num_instructions_total);
+    row(out, "instructions inlined", counts.num_instructions_inlined);
+}
+
+Run_Record :: Run_Directive_Report.Record;
+Polymorph_Record :: Polymorph_Report.Record;
+
+slowest_first :: (a: Run_Record, b: Run_Record) -> s64 {
+    if a.elapsed_time > b.elapsed_time return -1;
+    if a.elapsed_time < b.elapsed_time return 1;
+    return 0;
+}
+
+busiest_first :: (a: Polymorph_Record, b: Polymorph_Record) -> s64 {
+    return b.num_call_sites - a.num_call_sites;
+}
+
+write_runs :: (out: *String_Builder, stats: *Message_Performance_Report) {
+    heading(out, "#run directives");
+    if !stats.run_directive_report.reported {
+        append(out, "  (not collected)\n");
+        return;
+    }
+
+    // Sort copies: the records belong to the compiler.
+    ordered: [..] Run_Record;
+    defer array_free(ordered);
+    array_add(*ordered, ..stats.run_directive_report.records);
+    quick_sort(ordered, slowest_first);
+
+    for ordered {
+        print_to_builder(out, "  %  %  (stalls: %)\n", it.elapsed_time, source_position(it.callee), it.num_stalls);
+    }
+}
+
+write_polymorphs :: (out: *String_Builder, stats: *Message_Performance_Report) {
+    report := *stats.polymorph_report;
+    heading(out, "Polymorphs");
+    row(out, "solves invoked", report.num_solves_invoked);
+    row(out, "solves used", report.num_solves_used);
+    if !report.reported {
+        append(out, "  (per-procedure detail not collected)\n");
+        return;
+    }
+
+    ordered: [..] Polymorph_Record;
+    defer array_free(ordered);
+    array_add(*ordered, ..report.records);
+    quick_sort(ordered, busiest_first);
+
+    instantiations, by_constants, by_bytecode: s64;
+    for record: ordered {
+        name := ifx record.source then record.source.name else "?";
+        print_to_builder(out, "\n  % at %\n", name, source_position(record.source));
+        print_to_builder(out, "    call sites: %; deduplicated: % by constants, % by bytecode\n",
+                         record.num_call_sites, record.num_deduplications_by_constants, record.num_deduplications_by_bytecode);
+        print_to_builder(out, "    distinct instantiations: %\n", record.distinct_polymorphs.count);
+        for record.distinct_polymorphs {
+            append(out, "      (");
+            write_constants(out, it.polymorphed);
+            print_to_builder(out, ") from %:%\n", it.location.fully_pathed_filename, it.location.line_number);
+        }
+        instantiations += record.distinct_polymorphs.count;
+        by_constants   += record.num_deduplications_by_constants;
+        by_bytecode    += record.num_deduplications_by_bytecode;
+    }
+
+    append(out, "\n");
+    row(out, "distinct instantiations", instantiations);
+    row(out, "deduplicated (constants)", by_constants);
+    row(out, "deduplicated (bytecode)", by_bytecode);
+}
+
+source_position :: (node: *Code_Node) -> string {
+    if !node return "<unknown>";
+    loc := make_location(node);
+    return tprint("%:%:%", loc.fully_pathed_filename, loc.line_number, loc.character_number);
+}
+
+// The baked constants of one instantiation, e.g. "T=float, N=3".
+write_constants :: (out: *String_Builder, header: *Code_Procedure_Header) {
+    if !header || !header.constants_block return;
+    separator := "";
+    for entry: header.constants_block.members {
+        if entry.kind != .DECLARATION continue;
+        declaration := cast(*Code_Declaration) entry;
+        print_to_builder(out, "%1%2=", separator, declaration.name);
+        separator = ", ";
+        if !Program_Print.print_expression(out, declaration.expression)  append(out, "?");
+    }
 }

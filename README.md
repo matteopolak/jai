@@ -104,7 +104,7 @@ The compiler loads an independently authored prelude from `prelude/` and standar
 
 ## Working on the compiler
 
-Never run binaries from a reference Jai distribution, and never copy its text into `stdlib/`: reading its modules and `how_to/` to learn behavior is fine.
+Never run binaries from a reference Jai distribution, and never copy its text into `stdlib/`: reading its modules and `how_to/` to learn behavior is fine. Run `python3 tools/check_reference_resemblance.py` before committing stdlib changes ([details](docs/tools/reference-resemblance.md)).
 
 ```sh
 cargo test --workspace --locked --no-fail-fast
