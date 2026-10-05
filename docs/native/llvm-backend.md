@@ -30,7 +30,7 @@ Lowering rules (`lower.rs`):
 - Globals are packed structs of byte runs and pointer relocations (`Reloc`), with the IR alignment and `read_only` flag. `#program_export` names stay external; everything else is internal and suffixed with its index.
 - Foreign functions/variables are external declarations, de-duplicated by symbol. All calls are emitted as indirect calls with a function type computed from the call's `Sig`, so one symbol can be called with several signatures.
 - `Conv::Jai` functions map parameters and scalar results 1:1 (several results become a struct return).
-- Intrinsics: `Memcpy` is `memmove`, `Memcmp` calls libc `memcmp` and normalizes to -1/0/1 (`I16`), `CompilerWrite` calls `write(1|2, ...)`, `CompareAndSwap` is a seq_cst `cmpxchg` whose width comes from the operand type, `IsCompileTime` is the constant 0, `CycleCounter` reads `cntvct_el0` on AArch64 and `rdtsc` on x86-64. `Loc` markers are ignored (no debug info yet).
+- Intrinsics: `Memcpy` is `memmove`, `Memcmp` calls libc `memcmp` and normalizes to -1/0/1 (`I16`), `CompilerWrite` calls `write(1|2, ...)`, `CompareAndSwap` is a seq_cst `cmpxchg` whose width comes from the operand type, `IsCompileTime` is the constant 0, `CycleCounter` reads `cntvct_el0` on AArch64 and `rdtsc` on x86-64. `Loc` markers set the debug location (see [debug info](debug-info.md)).
 
 ### C ABI (`jaic::abi`)
 
@@ -50,7 +50,7 @@ Definitions with such signatures (`#c_call` callbacks C calls with structs) do t
 
 - New IR instruction/intrinsic: extend `Backend::inst` or `Backend::intrinsic` in `lower.rs`; keep semantics identical to `interp/mod.rs`.
 - New target architecture: add an `Arch` variant and classification in `abi.rs`, plus the inline-asm intrinsics in `lower.rs`.
-- Debug info: handle `Inst::Loc` (currently a no-op).
+- Debug info lives in `debuginfo.rs` ([debug info](debug-info.md)); `lower.rs` only calls its hooks (`begin_function`, `declare_vars`, `enter_block`/`leave_block`, `loc`, `finish_entry`, `Backend::set` for watched addresses, `describe_globals`).
 - Anything new at module level (a global, a constructor list) must be emitted once, in unit 0, and declared in the other units. `Backend::internal_linkage` gives the linkage of internal symbols; use it for new ones so they can be referenced across units.
 - Check split codegen with `JAIC_CODEGEN_UNITS=4 cargo test -p jaic-cli --test native`. Small test programs otherwise use one unit.
 - Gotchas: Small signed integers are not sign/zero-extended according to the C ABI because the IR does not carry signedness. Windows is not supported.
@@ -58,7 +58,7 @@ Definitions with such signatures (`#c_call` callbacks C calls with structs) do t
 ## Configuration
 
 - `JAIC_CODEGEN_UNITS=N` forces the number of codegen units (`1` turns splitting off).
-- `jaic_llvm::Options { opt_level, target, emit_ir }`; CLI flags `-O0..-O3`, `--emit-ir file.ll`, `-o output`, `-I dir`.
+- `jaic_llvm::Options { opt_level, target, emit_ir, debug_info }`; CLI flags `-O0..-O3`, `--emit-ir file.ll`, `-o output`, `-I dir`, `--no-debug-info`.
 - `JAIC_STDLIB` overrides the standard library directory (as for `jaic run`).
 - `LLVM_SYS_221_PREFIX` must point at an LLVM 22 install when building (for example `/opt/homebrew/opt/llvm`).
 
