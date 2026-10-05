@@ -20,7 +20,7 @@ Zone :: struct {
     shown:     Sample64;    // Values picked by the last create_report() (or update(), for the graph).
     heat:      float64;     // 0..1, how far the latest frame strays from the long-run average.
     #if DO_HISTORY {
-        history: [NUM_FRAME_SLOTS] Frame_Sample;  // Ring buffer indexed by frame number.
+        history: [] Frame_Sample;  // NUM_FRAME_SLOTS entries once entered; a ring indexed by frame number.
     }
 }
 
@@ -108,7 +108,7 @@ init_runtime :: () {
 
     root_zone := *zones[0];
     if !root_zone.name  root_zone.name = "(root)";
-    root_zone.entered = true;
+    mark_entered(root_zone);
 
     root = .{};
     root.zone      = root_zone;
@@ -220,9 +220,17 @@ child_for :: (parent: *Call_Node, zone: *Zone) -> *Call_Node {
         above = above.parent;
     }
 
-    zone.entered = true;
+    if !zone.entered  mark_entered(zone);
     array_add(*every_node, child);
     return child;
+}
+
+mark_entered :: (zone: *Zone) {
+    zone.entered = true;
+    #if DO_HISTORY {
+        push_allocator(node_allocator);
+        zone.history = NewArray(NUM_FRAME_SLOTS, Frame_Sample);
+    }
 }
 
 // Nanoseconds from a monotonic clock.

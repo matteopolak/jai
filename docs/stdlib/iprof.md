@@ -45,7 +45,7 @@ CSV columns: `zone,self_ms,hier_ms,calls,indent,file,line`.
 - Gotchas:
   - jaic cannot use a module as an `#add_context` value, which is why the plugin imports the runtime per module instead of through the context.
   - jaic only exports bodies of user modules (not the stdlib directory), so `-modules` reaches your own modules but not `Basic` etc.
-  - Automatic zones live in a block of `MAX_AUTOMATIC_ZONES` allocated by `init_runtime`, so `*Zone` pointers stay valid while `zones.count` grows.
+  - Automatic zones live in a zeroed block of `MAX_AUTOMATIC_ZONES` allocated by `init_runtime`, so `*Zone` pointers stay valid while `zones.count` grows. A zone's `history` ring is allocated when it is first entered, which keeps that block small.
   - `#load`ed files need their own `#import`s. Float literals are `float32`; declare `float64` locals explicitly before mixing with `max`/`min`.
 
 ## Configuration
