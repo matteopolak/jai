@@ -96,6 +96,7 @@ The independently written `stdlib/`. Before committing any change under `stdlib/
 - [Tooling modules: Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report](stdlib/tooling-modules.md)
 - [Drawing, windows and audio](stdlib/ui-and-drawing.md)
 - [Simp (2D renderer)](stdlib/simp.md)
+- [Sound_Player (audio mixing and output)](stdlib/sound-player.md)
 
 ## Browser
 

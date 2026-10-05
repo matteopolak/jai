@@ -10,7 +10,7 @@
 
 Changing the shader, texture, render target or scissor flushes queued vertices first. CPU render targets store top-first rows while draw coordinates are bottom-first. The OpenGL backend compiles its own GLSL 330 programs and expects the application to make a GL context current and to pass loaded `GL` procedures; window creation and presentation are the caller's job (`Window_Creation.create_window`, `update_window_events`, `swap_buffers`).
 
-`Window_Creation` has one file per OS (`linux.jai`, `osx.jai`, `windows.jai`, `android.jai`) behind `module.jai`, with `DEFAULT_MSAA` as a module parameter. `Window_Type` is the native handle type. `Sound_Player` has back ends in `Sound_Player/os/` (`alsa`, `core_audio`, `win32`, `aaudio`) and the parameters `MAX_SOUND_CATEGORIES` and `VERBOSE`.
+`Window_Creation` has one file per OS (`linux.jai`, `osx.jai`, `windows.jai`, `android.jai`) behind `module.jai`, with `DEFAULT_MSAA` as a module parameter. `Window_Type` is the native handle type. `Sound_Player` mixes WAV, IMA ADPCM and Ogg Vorbis sounds into the default output device (ALSA, Core Audio, DirectSound, AAudio); see [sound-player](sound-player.md).
 
 ```jai
 #import "Basic";
@@ -31,7 +31,7 @@ main :: () {
 
 ## Configuration
 
-`Simp(render_api := .OPENGL)`, `Window_Creation(DEFAULT_MSAA = 4)`, `Sound_Player(MAX_SOUND_CATEGORIES = 64, VERBOSE = false)`.
+`Simp(render_api := .OPENGL)`, `Window_Creation(DEFAULT_MSAA = 4)`, `Sound_Player(MAX_SOUND_CATEGORIES = 64, VERBOSE = false, OFFLINE = false, OFFLINE_CHANNELS = 2)`.
 
 ## Dependencies
 
