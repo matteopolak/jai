@@ -61,10 +61,11 @@ prepare_window :: (window: Window_Type, wanted_msaa: int) -> chosen_msaa: s32 {
     CheckInit();
     info := track_window(window);
     assert(!info.backend_initted_for_this_window, "prepare_window was called after the window had already been drawn to");
-    info.wanted_msaa = cast(s32) wanted_msaa;
+    info.wanted_msaa = cast(s32) max(wanted_msaa, 0);
     backend_init(info);
     info.backend_initted_for_this_window = true;
-    return info.msaa;
+    granted := info.msaa;
+    return granted;
 }
 backend_init :: (info: *Window_Info) {
     assert(info != null); if !info return;
