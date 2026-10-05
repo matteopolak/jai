@@ -1,64 +1,40 @@
-// Metaprogram plugin: when the build succeeds and produces an executable, run it.
-// LAUNCHER_COMMAND is prepended to the command line (e.g. a wrapper or emulator).
+// Autorun: a metaprogram plugin that starts the freshly built program once compilation
+// has finished cleanly. LAUNCHER_COMMAND is put in front of the executable path, for a
+// wrapper such as a debugger or an emulator; OUTPUT_EXECUTABLE_EXTENSION is appended to
+// the executable name (".exe" when cross-building for Windows, for instance).
 #module_parameters (OUTPUT_EXECUTABLE_EXTENSION := "", LAUNCHER_COMMAND: [] string = .[]) ();
 
 get_plugin :: () -> *Plugin {
-    p := New(My);
-    p.message  = message;
-    p.shutdown = shutdown;
-    return p;
+    runner := New(Runner);
+    runner.shutdown = shutdown;
+    runner.message  = message;
+    return runner;
 }
 
 message :: (_p: *Plugin, message: *Compiler.Message) {
-    p := cast(*My) _p;
-    if message.kind == .COMPLETE {
-        complete := cast(*Compiler.Message_Complete) message;
-        if complete.error_code != .NONE  p.should_run = false;
-    }
+    if message.kind != .COMPLETE return;
+    outcome := cast(*Compiler.Message_Complete) message;
+    (cast(*Runner) _p).build_failed = outcome.error_code != .NONE;
 }
 
+// Runs at the very end, after the executable has been written.
 shutdown :: (_p: *Plugin) {
-    p := cast(*My) _p;
+    runner := cast(*Runner) _p;
+    defer free(runner);
 
-    if !p.should_run {
-        log("[Autorun] There were errors, so we are not running.\n");
-        free(p);
+    executable, why_not := executable_to_run(runner);
+    if !executable {
+        log("[Autorun] %\n", why_not);
         return;
     }
-
-    options := Compiler.get_build_options(p.workspace);
-    if options.output_type != .EXECUTABLE {
-        log("[Autorun] Not running anything, because the Build_Options.output_type of Workspace % is %.\n", p.workspace, options.output_type);
-        free(p);
-        return;
-    }
-
-    // Paths given on the command line have no trailing separator; compiler-chosen ones do.
-    separator := "/";
-    path := options.output_path;
-    if path.count {
-        last := path[path.count - 1];
-        if last == #char "/" || last == #char "\\" separator = "";
-    }
-
-    executable_name := tprint("%1%2%3%4", path, separator, options.output_executable_name, OUTPUT_EXECUTABLE_EXTENSION);
-    log("[Autorun] Running: %\n", executable_name);
 
     command: [..] string;
-    array_add(*command, ..LAUNCHER_COMMAND);
-    array_add(*command, executable_name);
-    result := Process.run_command(..command);
+    defer array_free(command);
+    for LAUNCHER_COMMAND  array_add(*command, it);
+    array_add(*command, executable);
 
-    if result.exit_code != 0 {
-        if result.type == {
-            case .FAILED_TO_LAUNCH; Compiler.compiler_report("[Autorun] Program failed to launch.");
-            case .EXITED;           Compiler.compiler_report(tprint("[Autorun] Program exited with code %.", result.exit_code));
-            case .SIGNALED;         Compiler.compiler_report(tprint("[Autorun] Program quit due to signal %.", result.signal));
-            case;                   Compiler.compiler_report(tprint("[Autorun] Unexpected result from running the program: %", result));
-        }
-    }
-
-    free(p);
+    log("[Autorun] Starting %\n", executable);
+    complain_if_unsuccessful(Process.run_command(..command));
 }
 
 #scope_module
@@ -69,7 +45,43 @@ Process  :: #import "Process";
 
 Plugin :: Compiler.Metaprogram_Plugin;
 
-My :: struct {
-    #as using base: Plugin;
-    should_run := true;
+Runner :: struct {
+    #as using plugin: Plugin;
+    build_failed: bool;
+}
+
+// The path of the program to start, or "" and the reason nothing should run.
+executable_to_run :: (runner: *Runner) -> path: string, reason: string {
+    if runner.build_failed  return "", "The build had errors; not starting the program.";
+
+    options := Compiler.get_build_options(runner.workspace);
+    if options.output_type != .EXECUTABLE {
+        return "", tprint("Nothing to start: workspace % builds %, not an executable.", runner.workspace, options.output_type);
+    }
+
+    name := tprint("%1%2", options.output_executable_name, OUTPUT_EXECUTABLE_EXTENSION);
+    directory := options.output_path;
+    if !directory  return tprint("./%", name), "";
+
+    // A directory from the command line has no trailing separator; one the compiler
+    // picked does.
+    last := directory[directory.count - 1];
+    if last == #char "/" || last == #char "\\"  return tprint("%1%2", directory, name), "";
+    return tprint("%1/%2", directory, name), "";
+}
+
+complain_if_unsuccessful :: (result: Process.Process_Result) {
+    text: string;
+    if result.type == {
+        case .EXITED;
+            if result.exit_code == 0  return;
+            text = tprint("[Autorun] The program finished with exit code %.", result.exit_code);
+        case .SIGNALED;
+            text = tprint("[Autorun] The program was killed by signal %.", result.signal);
+        case .FAILED_TO_LAUNCH;
+            text = "[Autorun] The program could not be started.";
+        case;
+            text = tprint("[Autorun] Unexpected process state: %", result);
+    }
+    Compiler.compiler_report(text);
 }
