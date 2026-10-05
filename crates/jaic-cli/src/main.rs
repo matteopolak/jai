@@ -408,14 +408,17 @@ impl OutputBackend for LlvmBackend {
         output: &Path,
     ) -> Result<(), String> {
         let target = self.target.as_deref();
-        // Windows wants `.exe`/`.dll`; a name without an extension gets the platform's.
-        let dynamic = settings.output_type == OutputType::DynamicLibrary;
+        // Windows wants `.exe`/`.dll`/`.lib`; a name without an extension gets the platform's.
+        use jaic_llvm::OutputKind;
+        let kind = match settings.output_type {
+            OutputType::Executable => Some(OutputKind::Executable),
+            OutputType::DynamicLibrary => Some(OutputKind::DynamicLibrary),
+            OutputType::StaticLibrary => Some(OutputKind::StaticLibrary),
+            OutputType::ObjectFile | OutputType::NoOutput => None,
+        };
         let mut output = output.to_path_buf();
-        if matches!(
-            settings.output_type,
-            OutputType::Executable | OutputType::DynamicLibrary
-        ) && output.extension().is_none()
-            && let Some(ext) = jaic_llvm::output_extension(target, dynamic)
+        if output.extension().is_none()
+            && let Some(ext) = kind.and_then(|k| jaic_llvm::output_extension(target, k))
         {
             output.set_extension(ext);
         }
@@ -468,13 +471,7 @@ impl OutputBackend for LlvmBackend {
                 &settings.additional_linker_arguments,
                 target,
             ),
-            OutputType::StaticLibrary => std::process::Command::new("ar")
-                .arg("rcs")
-                .arg(output)
-                .args(&objects)
-                .status()
-                .map_err(|e| format!("could not run 'ar': {e}"))
-                .and_then(|s| s.success().then_some(()).ok_or(format!("ar failed ({s})"))),
+            OutputType::StaticLibrary => jaic_llvm::archive(&objects, output, target),
         };
         // macOS linkers leave DWARF in the objects; collect it into `output.dSYM` before they go.
         if debug_info
