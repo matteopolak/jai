@@ -3,6 +3,7 @@
 //! [`emit_object`] lowers an `ir::Program` to LLVM IR and writes a native
 //! object file ([`emit_objects`] splits large unoptimized builds across threads); [`link`] turns object files into an executable with the
 //! system C compiler driver.
+mod debuginfo;
 mod lower;
 
 use lower::Shard;
@@ -54,6 +55,8 @@ pub struct Options {
     pub target: Option<String>,
     /// Also write the textual LLVM IR (before optimization) to this path.
     pub emit_ir: Option<PathBuf>,
+    /// Emit native debug information (DWARF; see `docs/native/debug-info.md`).
+    pub debug_info: bool,
 }
 
 /// The host triple. On macOS LLVM's default names the Darwin kernel version, which it maps to
@@ -119,7 +122,14 @@ fn emit_module(
     let module = context.create_module("jai");
     module.set_triple(&triple);
     module.set_data_layout(&machine.get_target_data().get_data_layout());
-    lower::lower_program(&context, &module, program, arch, shard)?;
+    let debug = options.debug_info.then(|| {
+        let triple = triple.as_str().to_string_lossy();
+        (
+            debuginfo::DebugFormat::for_triple(&triple),
+            options.opt_level != OptLevel::O0,
+        )
+    });
+    lower::lower_program(&context, &module, program, arch, shard, debug)?;
     if let Some(ir_path) = &options.emit_ir {
         module.print_to_file(ir_path).map_err(|e| e.to_string())?;
     }
@@ -278,6 +288,31 @@ pub fn link(
     } else {
         Err(format!(
             "linking failed ({}):\n{}",
+            out.status,
+            String::from_utf8_lossy(&out.stderr)
+        ))
+    }
+}
+
+/// Collect the DWARF of a linked macOS executable or library into `output.dSYM`.
+///
+/// Apple's linker does not copy debug information into its output: the binary only
+/// records which object files hold it, and the CLI deletes those objects. `dsymutil`
+/// gathers it into a bundle next to the binary, where lldb finds it by UUID.
+pub fn write_dsym(output: &Path) -> Result<(), String> {
+    let mut bundle = output.to_path_buf().into_os_string();
+    bundle.push(".dSYM");
+    let out = Command::new("dsymutil")
+        .arg(output)
+        .arg("-o")
+        .arg(&bundle)
+        .output()
+        .map_err(|e| format!("could not run 'dsymutil' for debug information: {e}"))?;
+    if out.status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "dsymutil failed ({}):\n{}",
             out.status,
             String::from_utf8_lossy(&out.stderr)
         ))
