@@ -79,7 +79,11 @@ def build_one(args, source, output):
         capture_output=True,
         text=True,
     )
-    return None if result.returncode == 0 else result.stderr.strip()
+    if result.returncode != 0:
+        return result.stderr.strip()
+    if not output.with_name(output.name + ".exe").exists():
+        return f"no executable written (stdout {result.stdout!r}, stderr {result.stderr!r})"
+    return None
 
 
 def build(args):
