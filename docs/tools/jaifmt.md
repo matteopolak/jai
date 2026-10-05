@@ -36,7 +36,8 @@ Three files, loaded by `main.jai` (CLI, directory walk, config lookup):
 | Pair | Result |
 | --- | --- |
 | before `,` `;` `)` `]`, after `(` `[` `.[` | none |
-| after `,` (not a flag comma like `cast,no_check`, `#type,isa`, `#import,file`) and after `;` on the same line | one space |
+| after a directive and after its flags (`#library,system`, `#type, distinct`, `#location(x)`) | kept: the parser checks adjacency there |
+| after `,` (not a cast flag comma like `cast,no_check`) and after `;` on the same line | one space |
 | before `{`, before `//` | one space |
 | after `{` / `.{`, before `}` | kept (`{a}` and `{ a }` both stay) |
 | `x: int` | the colon attaches to declared names; a typed constant's second `:` keeps its spacing |
@@ -54,13 +55,14 @@ Binary versus prefix is decided from the previous code token: an operand (identi
 
 **Long lines** are not wrapped. `--verbose` counts lines over `max_width`.
 
-**Safety check** (`check_equivalent`): after formatting, the output is lexed again and compared with the input: same tokens (kind and text) in the same order, the same comments (up to whitespace), and a line break before the same tokens, because the parser is line-sensitive in a few places (`}` then a line starting with `*`/`-` begins a new statement; a directive on the next line ends a declaration). The only allowed line-break difference is before a joined `{` or `else`. On a mismatch the file is left unchanged and jaifmt exits with 2 and an "internal error" naming the token.
+**Safety check** (`check_equivalent`): after formatting, the output is lexed again and compared with the input: same tokens (kind and text) in the same order, the same comments (up to whitespace), and a line break before the same tokens, because the parser is line-sensitive in a few places (`}` then a line starting with `*`/`-` begins a new statement; a directive on the next line ends a declaration). The only allowed line-break difference is before a joined `{` or `else`. It also requires the same adjacency after directives and their flags (`directive_zone`): `#library,system` is a flag but `#library, system` is an argument, and `#location(x)` takes an operand that `#location (x)` does not. On a mismatch the file is left unchanged and jaifmt exits with 2 and an "internal error" naming the token.
 
 ## How to change it
 
 - New spacing rule: add it to `spacing_rule` in `format.jai`, above the more general rules it should override, and add a line to `tools/jaifmt/tests/spacing.in.jai`. Prefer returning `.KEEP` when the right answer depends on context the formatter does not track.
 - New indentation behavior: `line_indent` (where a line starts) and `track` (what a token does to the frame stack). `starts_statement` decides statement versus continuation lines.
-- Lexer changes must mirror `crates/jaic/src/lexer.rs`; if the two disagree about where a token ends, the safety check can accept output that `jaic` lexes differently.
+- Lexer changes must mirror `crates/jaic/src/lexer.rs`; if the two disagree about where a token ends, the safety check can accept output that `jaic` lexes differently. Likewise, if the parser starts to depend on whitespace somewhere new (look for `newline_before` and `span.start == ...end` in `crates/jaic/src/parser/`), teach `check_equivalent` about it and make the formatter keep that spacing.
+- The strongest test is semantic: format a scratch copy of `stdlib/`, `tests/` and `corpus/upstream` (point a worktree's `corpus/upstream` symlink at the copy) and run the sweep. This is how the directive-flag adjacency rule was found.
 - Golden tests: `tools/jaifmt/tests/<name>.in.jai` must format to `<name>.out.jai` (with `<name>.toml` as config if present). Run `jaic run tests/stdlib/jaifmt-golden.jai` (part of the sweep's `stdlib` set); after an intended change, regenerate with `jaic run tests/stdlib/jaifmt-golden.jai -- --bless` and review the diff. The same test checks idempotence, the refusal of malformed input, the safety check, config parsing and globs, and that the formatter's own sources are formatted.
 - `crates/jaic-cli/tests/native.rs` (`jaifmt_builds_and_formats`) builds the tool natively and checks the CLI: `--stdin`, `--check`, in-place rewrites, ignore globs and exit codes.
 - A file whose layout matters (generated tables, test fixtures with recorded positions): add it to `ignore`, or wrap the region in `// jaifmt: off` / `// jaifmt: on`.
