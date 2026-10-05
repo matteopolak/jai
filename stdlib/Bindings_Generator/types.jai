@@ -434,6 +434,7 @@ Struct :: struct {
         OBJC_INTERFACE;
         OBJC_CATEGORY;
         IS_INCOMPLETE;
+        IS_TYPE_PARAM;   // Stand-in for a template or Objective-C generic parameter.
         NEEDS_RAW;      // A derived class reuses its tail padding: print the `__RAW` variant too.
     }
 }
@@ -499,6 +500,7 @@ Generator_State :: struct #type_info_none {
     type_def_objc_id: *CType;
     objc_selectors: [..] string;   // Unique selectors of the generated message sends.
     objc_selector_set: Table(string, bool);
+    objc_blocks: Table(string, *CType);   // Block struct types by name, one per signature.
 
     declarations_by_cursor: Table(Cursor, *Declaration);
     enum_macros: [..] *Enum;

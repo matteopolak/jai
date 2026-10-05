@@ -276,6 +276,21 @@ fn bindings_generator_objc() {
     native_bindings_generator_test("bindings-generator-objc");
 }
 
+#[test]
+fn bindings_generator_objc_generics() {
+    native_bindings_generator_test("bindings-generator-objc-generics");
+}
+
+#[test]
+fn bindings_generator_objc_ivars() {
+    native_bindings_generator_test("bindings-generator-objc-ivars");
+}
+
+#[test]
+fn bindings_generator_objc_blocks() {
+    native_bindings_generator_test("bindings-generator-objc-blocks");
+}
+
 /// Arithmetic overflow checks in a native build: `Build_Options.arithmetic_overflow_check` on a
 /// workspace that writes an executable, and `#no_aoc` switching them off again.
 #[test]

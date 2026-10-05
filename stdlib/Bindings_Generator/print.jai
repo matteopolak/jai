@@ -125,6 +125,14 @@ print_type_to_builder :: (builder: *String_Builder, ty: *CType, current_scope: *
                     print_type_to_builder(builder, it, current_scope, flags);
                 }
                 append(builder, ")");
+            } else if (s.flags & Struct.Flags.OBJC_INTERFACE) && s.template_type_params.count > 0 {
+                // A generic class used without arguments (`NSArray *`) takes `id` for each.
+                append(builder, "(");
+                for s.template_type_params {
+                    if it_index > 0 append(builder, ", ");
+                    append(builder, "id");
+                }
+                append(builder, ")");
             }
             if ty.comment {
                 append(builder, " ");
@@ -479,6 +487,14 @@ print_objc_method :: (builder: *String_Builder, func: *Function, current_scope: 
     returns_instancetype := (type.flags & .RETURNS_INSTANCETYPE) != 0;
     owner := cast(*Struct) func.parent;
     owner_name := join(parent_path(owner), owner.output_name);
+    if owner.template_type_params.count > 0 {
+        names: String_Builder;
+        for owner.template_type_params {
+            if it_index > 0 append(*names, ", ");
+            append(*names, it.output_name);
+        }
+        owner_name = tprint("%(%)", owner_name, builder_to_string(*names));
+    }
 
     print_to_builder(builder, "% :: inline (", func.output_name);
     for type.arguments {

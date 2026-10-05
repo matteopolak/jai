@@ -368,7 +368,12 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
             return result;
 
         case T_BLOCKPOINTER;
-            return g.type_def_ptr_void;
+            return create_block_type(ty, ctx);
+
+        case T_OBJCTYPEPARAM;
+            // A generic parameter of an Objective-C class (`T` in `@interface Box<T>`).
+            param_decl := clang("t_decl", ty);
+            return make_type_param_placeholder(ifx param_decl then cursor_name(param_decl) else type_name_of(ty));
 
         case T_ATTRIBUTED;
             return create_type(clang("t_modified", ty), ctx);
@@ -418,6 +423,7 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_TYPEDEF;
             decl := clang("t_decl", ty);
             name := cursor_name(decl);
+            if cursor_kind(decl) == .TEMPLATE_TYPE_PARAMETER  return make_type_param_placeholder(name);   // `T` of `Box<T>`.
             if !is_user_declaration(decl, name) || should_unwrap_typedef(name) {
                 return create_type(clang("typedef_underlying", decl), ctx);
             }
@@ -472,6 +478,87 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
     return result;
 }
 
+// A block pointer (`void (^)(int)`) points to a block literal: the Objective-C block header
+// with the `invoke` function first receiving the block itself. One struct per signature,
+// named `Block_<result>_<args>` (`*` becomes `P`), is added to the global scope.
+create_block_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
+    g := context.generator;
+    pointee := clang("t_pointee", ty);
+    pk := type_kind(pointee);
+    if pk != T_FUNCTIONPROTO && pk != T_FUNCTIONNOPROTO return g.type_def_ptr_void;
+    ft := create_function_type(pointee, 0, null);
+    if !ft.return_type return g.type_def_ptr_void;
+    ft.return_type = erase_objc_type_params(ft.return_type);
+    for ft.arguments  it.type = erase_objc_type_params(it.type);
+
+    builder: String_Builder;
+    append(*builder, "Block_");
+    append(*builder, sanitize_for_identifier(type_to_string(ft.return_type)));
+    for ft.arguments {
+        append(*builder, "_");
+        append(*builder, sanitize_for_identifier(type_to_string(it.type)));
+    }
+    name := builder_to_string(*builder);
+
+    found, existing := table_find(*g.objc_blocks, name);
+    if found return create_pointer_to(existing);
+
+    s := New(Struct);
+    s.kind = .STRUCT;
+    s.name = name;
+    s.output_name = name;
+    if ctx s.location = cursor_location(ctx);
+    s.flags |= .NO_STRUCT_CHECKS;
+    s.type = New(CType);
+    s.type.type_of_struct = s;
+    s.type.size = 32;
+    table_add(*g.objc_blocks, name, s.type);
+
+    add_plain_member(s, "isa", g.type_def_ptr_void);
+    add_plain_member(s, "flags", g.type_def_s32);
+    add_plain_member(s, "reserved", g.type_def_s32);
+
+    block_arg := New(Declaration);
+    block_arg.kind = .DECLARATION;
+    block_arg.name = "block";
+    block_arg.output_name = "block";
+    block_arg.type = create_pointer_to(s.type);
+    arguments: [..] *Declaration;
+    array_add(*arguments, block_arg);
+    for ft.arguments  array_add(*arguments, it);
+    ft.arguments = arguments;
+    invoke_type := New(CType);
+    invoke_type.type_of_function = ft;
+    invoke_type.size = 8;
+    add_plain_member(s, "invoke", invoke_type);
+    add_plain_member(s, "descriptor", g.type_def_ptr_void);
+
+    array_add(*g.global_scope.members, s);
+    table_add(*g.added_to_scope, s, true);
+    return create_pointer_to(s.type);
+}
+
+add_plain_member :: (s: *Struct, name: string, type: *CType) {
+    member := New(Declaration);
+    member.kind = .DECLARATION;
+    member.name = name;
+    member.output_name = name;
+    member.parent = s;
+    member.location = s.location;
+    member.type = type;
+    array_add(*s.declarations, member);
+}
+
+sanitize_for_identifier :: (text: string) -> string {
+    builder: String_Builder;
+    for 0..text.count-1 {
+        c := text[it];
+        if c == #char "*" append(*builder, "P");
+        else if (c >= #char "a" && c <= #char "z") || (c >= #char "A" && c <= #char "Z") || (c >= #char "0" && c <= #char "9") || c == #char "_" append(*builder, c);
+    }
+    return builder_to_string(*builder);
+}
+
 // A record type; instantiations of class templates refer to the template itself
 // and carry their arguments in `template_instantiation_params`.
 create_record_type :: (ty: Clang_Type, decl: Cursor, ctx: Cursor, size: s64) -> *CType {
@@ -516,7 +603,7 @@ create_unexposed_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
     if decl {
         dk := cursor_kind(decl);
         if dk == .TEMPLATE_TYPE_PARAMETER || dk == .NON_TYPE_TEMPLATE_PARAMETER || dk == .TEMPLATE_TEMPLATE_PARAMETER {
-            return make_placeholder_struct(cursor_name(decl), "");
+            return make_type_param_placeholder(cursor_name(decl));
         }
         return create_record_type(ty, decl, ctx, clang("t_sizeof", ty));
     }
@@ -1413,8 +1500,9 @@ finish_bitfield :: (bitfield: *Bitfield, prev_end: s64) {
 // ----------------------------------------------------------------------------
 // Objective-C.
 
-// `id<P>`, `Class<P>` and `Base<Arg>`: protocols and generic arguments are dropped except a
-// single protocol on `id`, which names the type.
+// `id<P>`, `Class<P>` and `Base<Arg>`: protocols are dropped except a single protocol on `id`,
+// which names the type. Type arguments of a generic class (`NSArray<NSString *>`) become the
+// instantiation parameters (`NSArray(*NSString)`).
 create_objc_object_type :: (ty: Clang_Type) -> *CType {
     g := context.generator;
     base := clang("t_objc_base", ty);
@@ -1433,6 +1521,62 @@ create_objc_object_type :: (ty: Clang_Type) -> *CType {
     result := New(CType);
     result.type_of_struct = create_objc_interface(decl, true);
     result.size = 0;
+    if base_kind != T_OBJCID {
+        count := clang("t_objc_num_type_args", ty);
+        for 0..count-1 {
+            arg := create_type(clang("t_objc_type_arg", ty, it), 0);
+            if !arg arg = g.type_def_objc_id;
+            array_add(*result.template_instantiation_params, arg);
+        }
+    }
+    return result;
+}
+
+// The type of an Objective-C object inside its own (generic) declaration: `Box(T)`.
+objc_self_type :: (s: *Struct) -> *CType {
+    result := New(CType);
+    result.type_of_struct = s;
+    result.size = 0;
+    for s.template_type_params  array_add(*result.template_instantiation_params, make_type_param_placeholder(it.name));
+    return result;
+}
+
+make_type_param_placeholder :: (name: string) -> *CType {
+    result := make_placeholder_struct(name, "");
+    result.type_of_struct.flags |= .IS_TYPE_PARAM;
+    return result;
+}
+
+// Block structs live outside the generic class they were seen in, so its parameters
+// (`T`) are replaced by `id` (template parameters in C++ blocks too).
+erase_objc_type_params :: (t: *CType) -> *CType {
+    if !t return t;
+    if t.pointer_to {
+        t.pointer_to = erase_objc_type_params(t.pointer_to);
+    } else if t.type_of_struct {
+        if t.type_of_struct.flags & .IS_TYPE_PARAM return context.generator.type_def_objc_id;
+        for t.template_instantiation_params  t.template_instantiation_params[it_index] = erase_objc_type_params(it);
+    }
+    return t;
+}
+
+// The superclass of `Sub : Box<NSString *>`. libclang reports the arguments as class
+// references after the superclass reference; anything it cannot account for becomes `id`.
+objc_superclass_type :: (parent: *Struct, children: [] Cursor, index: s64) -> *CType {
+    g := context.generator;
+    result := objc_self_type(parent);
+    result.template_instantiation_params.count = 0;
+    count := parent.template_type_params.count;
+    args: [..] *CType;
+    j := index + 2;   // Past the reference to the superclass itself.
+    while j < children.count && cursor_kind(children[j]) == .OBJC_CLASS_REF {
+        arg := create_type(clang("type", children[j]), 0);
+        if arg array_add(*args, create_pointer_to(arg));
+        j += 1;
+    }
+    for 0..count-1 {
+        array_add(*result.template_instantiation_params, ifx args.count == count then args[it] else g.type_def_objc_id);
+    }
     return result;
 }
 
@@ -1459,6 +1603,20 @@ create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
         s.type.size = 0;
         table_add(*g.declarations_by_cursor, key, s);
     }
+    // Generic parameters (`@interface Box<T : id>`) become `struct(T: Type)` parameters. They are
+    // read as soon as the type is seen, so a use before (or without) the definition can name them.
+    if kind == .OBJC_INTERFACE_DECL && s.template_type_params.count == 0 {
+        for get_children(c) {
+            if cursor_kind(it) != .TEMPLATE_TYPE_PARAMETER continue;
+            param := New(Declaration);
+            param.kind = .DECLARATION;
+            param.name = cursor_name(it);
+            param.output_name = avoid_reserved_names(param.name, true);
+            param.location = cursor_location(it);
+            param.type = g.type_def_type;
+            array_add(*s.template_type_params, param);
+        }
+    }
     if resolving_type_only || s.objc_filled return s;
 
     // libclang does not treat an `@interface` as a definition (that is its `@implementation`);
@@ -1483,7 +1641,12 @@ create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
                 ref := clang("referenced", it);
                 if !ref continue;
                 parent := create_objc_interface(ref, true);
-                add_objc_parent(s, to_lower_copy(parent.name), parent.type, it);
+                parent_type := parent.type;
+                if child_kind == .OBJC_SUPER_CLASS_REF && parent.template_type_params.count > 0  parent_type = objc_superclass_type(parent, children, it_index);
+                add_objc_parent(s, to_lower_copy(parent.name), parent_type, it);
+
+            case .OBJC_IVAR_DECL;
+                add_objc_ivar(s, it);
 
             case .OBJC_INSTANCE_METHOD_DECL; #through;
             case .OBJC_CLASS_METHOD_DECL;
@@ -1491,6 +1654,31 @@ create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
         }
     }
     return s;
+}
+
+// An instance variable is a data member of the object struct (the clang layout follows the
+// superclass, which is the first member).
+add_objc_ivar :: (s: *Struct, c: Cursor) {
+    if clang("is_bitfield", c) {
+        log_stripped(cursor_name(c), "is a bit field instance variable");
+        return;
+    }
+    field := New(Declaration);
+    field.kind = .DECLARATION;
+    field.name = cursor_name(c);
+    field.parent = s;
+    field.location = cursor_location(c);
+    fill_comment(*field.comment, c, field.location);
+    field.type = create_type(clang("type", c), c);
+    if !field.type {
+        log_stripped(field.name, "has an unsupported type");
+        return;
+    }
+    name_function_arguments(field.type, c);
+    field.output_name = avoid_reserved_names(field.name);
+    offset := clang("field_offset", c);
+    if offset >= 0 field.bit_offset_in_parent = offset;
+    avoid_name_clash(*s.declarations, field);   // Adds it.
 }
 
 add_objc_parent :: (s: *Struct, name: string, type: *CType, c: Cursor) {
@@ -1560,7 +1748,7 @@ add_objc_method :: (s: *Struct, c: Cursor) {
     } else {
         receiver.name = "self";
         receiver.output_name = "self";
-        receiver.type = create_pointer_to(s.type);
+        receiver.type = create_pointer_to(objc_self_type(s));
     }
     array_add(*ft.arguments, receiver);
 
