@@ -2,7 +2,7 @@
 
 ## What it is
 
-Small build-and-debug modules that metaprograms and programs import: `Debug` (backtraces, breakpoints, assert and signal handlers), `MacOS_Bundler` (`.app` bundles), `BuildCpp` (compile C/C++ from a metaprogram) and the plugins `Autorun` and `Performance_Report`. The profiler has its own page: [iprof](iprof.md).
+Small build-and-debug modules that metaprograms and programs import: `Debug` (backtraces, breakpoints, assert and signal handlers), `MacOS_Bundler` (`.app` bundles), `BuildCpp` (compile C/C++ from a metaprogram) and the plugins `Autorun` and `Performance_Report`. The profiler has its own page: [iprof](iprof.md). `Jai_Format` (the source formatter behind `jaifmt` and the playground's Format button) is documented with the tool: [jaifmt](../tools/jaifmt.md#module-api).
 
 ## How it works
 
