@@ -1,4 +1,5 @@
-// Independently authored drawing implementation. No supplied implementation bodies.
+// Simp: a small immediate-mode 2D renderer (colored and textured triangles, text, render targets)
+// with an OpenGL backend and a CPU rasterizer for windowless use.
 #module_parameters (render_api := Render_API.OPENGL) {
     Render_API :: enum u32 { NONE; SOFTWARE; OPENGL; METAL; }
 };
@@ -54,13 +55,12 @@ window_dimension_query: (window: Window_Type) -> s32, s32 = null;
 software_window_target: (window: Window_Type) -> *Bitmap = null;
 window_present_sink: (window: Window_Type, vsync: bool) -> bool = null;
 
-// Optional call to override defaults before the first drawing: asks for a multisample count and
-// creates the graphics context for the window now.
+// Picks the multisample count for `window` and builds its graphics context right away instead of
+// on first draw. Returns the count the backend granted, which may be lower than requested.
 prepare_window :: (window: Window_Type, wanted_msaa: int) -> chosen_msaa: s32 {
     CheckInit();
-    info, added := find_or_add_window_info(window);
-    if added update_window(window);
-    assert(!info.backend_initted_for_this_window, "prepare_window must come before the window is first used");
+    info := track_window(window);
+    assert(!info.backend_initted_for_this_window, "prepare_window was called after the window had already been drawn to");
     info.wanted_msaa = cast(s32) wanted_msaa;
     backend_init(info);
     info.backend_initted_for_this_window = true;
@@ -145,13 +145,11 @@ Simp_Coordinate_System :: enum u8 {
     RIGHT_HANDED :: 1;
 }
 set_render_target :: (window: Window_Type, coords := Simp_Coordinate_System.RIGHT_HANDED) {
-    CheckInit(); immediate_flush(); backend_flush();
-    context.simp.current_shader = null;
-    context.simp.texture_render_target = null;
-    context.simp.coordinate_system = coords;
-    info, added := find_or_add_window_info(window);
-    if added update_window(window);
-    else if window_dimension_query { info.window_width, info.window_height = window_dimension_query(window); }
+    CheckInit();
+    end_target_pass(coords);
+    // A host-supplied size query is cheap, so honour it on every switch; the native one only runs
+    // when the window is first seen or when update_window is called.
+    info := track_window(window, remeasure = window_dimension_query != null);
     backend_set_render_target(info);
     context.simp.current_window_info = info.*;
 }
@@ -162,32 +160,23 @@ set_render_target :: (texture: *Texture, coords := Simp_Coordinate_System.RIGHT_
     }
     assert((texture.flags & .Render_Target) != 0, "Simp requires a render-target texture");
     if !(texture.flags & .Render_Target) return;
-    CheckInit(); immediate_flush(); backend_flush();
-    context.simp.current_shader = null;
-    context.simp.coordinate_system = coords;
+    CheckInit();
+    end_target_pass(coords);
     context.simp.texture_render_target = texture;
     backend_set_render_target(texture);
 }
-// Re-reads a window's size (call it when the window was resized); if it is the current target the
-// viewport and projection follow.
+// Call after the window changed size. When it is the window being drawn, the viewport and the
+// projection of the bound shader are refreshed too.
 update_window :: (window: Window_Type) {
     CheckInit();
-    info := find_or_add_window_info(window);
-    if !info return;
-    window_width, window_height := get_render_dimensions(window);
-    info.window_width = window_width;
-    info.window_height = window_height;
-    current := *context.simp.current_window_info;
-    if current.window == window {
-        if window_width != current.window_width || window_height != current.window_height {
-            backend_resize_render_target(info.*);
-            // A shader that is already set carries the old projection.
-            if !context.simp.texture_render_target {
-                if context.simp.current_shader immediate_set_2d_projection(window_width, window_height);
-            }
-        }
-        context.simp.current_window_info = info.*;
-    }
+    info := track_window(window, remeasure = true);
+    drawing := *context.simp.current_window_info;
+    if drawing.window != window return;
+    size_changed := drawing.window_width != info.window_width || drawing.window_height != info.window_height;
+    drawing.* = info.*;
+    if !size_changed return;
+    backend_resize_render_target(info.*);
+    if context.simp.current_shader && !context.simp.texture_render_target set_projection();
 }
 set_color_map :: (color_map: [] Vector4) { COLOR_MAP = color_map; }
 set_anti_aliasing :: (value: Font_Anti_Aliasing) { font_anti_aliasing = value; }
@@ -233,6 +222,21 @@ find_window_info :: (window: Window_Type) -> *Window_Info {
 find_or_add_window_info :: (window: Window_Type) -> *Window_Info, bool {
     info := find_window_info(window); if info return info, false;
     return array_add(*window_infos, .{window = window}), true;
+}
+// The bookkeeping record for `window`, created and sized on first sight.
+track_window :: (window: Window_Type, remeasure := false) -> *Window_Info {
+    info, is_new := find_or_add_window_info(window);
+    if is_new || remeasure info.window_width, info.window_height = get_render_dimensions(window);
+    return info;
+}
+// Finishes everything queued for the old target and forgets the bound shader, whose projection
+// belonged to that target.
+end_target_pass :: (coords: Simp_Coordinate_System) {
+    immediate_flush();
+    backend_flush();
+    context.simp.current_shader = null;
+    context.simp.texture_render_target = null;
+    context.simp.coordinate_system = coords;
 }
 // Row of a CPU render target for a draw coordinate `y`: the rows are stored top first, so the
 // right-handed system (y up) counts from the bottom and the left-handed one from the top.

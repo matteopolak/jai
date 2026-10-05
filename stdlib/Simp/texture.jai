@@ -12,28 +12,23 @@ Texture_Platform_Specific :: struct {
     nearest := false;   // Sample without filtering (set before the first upload).
 }
 Texture :: struct {
-    width, height, depth: s32 = 1;  // 'depth' is in case this is a 3D texture.
+    width, height, depth: s32 = 1;  // Volume textures use depth; flat images leave it at 1.
     mipmap_count: u16 = 1;
     array_length: u16 = 1;
     format: Texture_Format;
     flags: Texture_Flags;
     using specific: Texture_Platform_Specific;
 }
-texture_load_from_file :: (map: *Texture, filename: string, srgb := false, build_mipmaps := false) -> bool {
-    bitmap: Bitmap;
-    if !bitmap_load(*bitmap, filename) return false;
-    defer deinit(*bitmap);
-    if srgb bitmap.flags |= .IS_SRGB;
-    if build_mipmaps bitmap_build_mipmaps(*bitmap);
-    return texture_load_from_bitmap(map, *bitmap);
+// Both loaders decode into a temporary Bitmap; the pixels end up owned by the texture (or the GPU).
+texture_load_from_file :: (texture: *Texture, filename: string, srgb := false, build_mipmaps := false) -> bool {
+    decoded: Bitmap;
+    if !bitmap_load(*decoded, filename) return false;
+    return adopt_decoded_image(texture, *decoded, srgb, build_mipmaps);
 }
 texture_load_from_memory :: (texture: *Texture, memory: [] u8, srgb := false, build_mipmaps := false) -> bool {
-    bitmap: Bitmap;
-    if !bitmap_load_from_memory(*bitmap, memory) return false;
-    defer deinit(*bitmap);
-    if srgb bitmap.flags |= .IS_SRGB;
-    if build_mipmaps bitmap_build_mipmaps(*bitmap);
-    return texture_load_from_bitmap(texture, *bitmap);
+    decoded: Bitmap;
+    if !bitmap_load_from_memory(*decoded, memory) return false;
+    return adopt_decoded_image(texture, *decoded, srgb, build_mipmaps);
 }
 // Uploads the bitmap (all its mipmap levels). With OpenGL the texture stays bound to the 2D
 // target afterwards, so a program can set sampling parameters right after loading. Loading
@@ -91,6 +86,13 @@ texture_bitmap :: (texture: *Texture) -> *Bitmap {
     return texture.cpu;
 }
 #scope_module
+adopt_decoded_image :: (texture: *Texture, decoded: *Bitmap, srgb: bool, build_mipmaps: bool) -> bool {
+    if srgb decoded.flags |= .IS_SRGB;
+    if build_mipmaps bitmap_build_mipmaps(decoded);
+    ok := texture_load_from_bitmap(texture, decoded);
+    deinit(decoded);   // texture_load_from_bitmap copied or uploaded what it needs.
+    return ok;
+}
 texture_free_cpu :: (texture: *Texture) {
     if !texture.cpu return;
     deinit(texture.cpu); free(texture.cpu); texture.cpu = null;

@@ -32,7 +32,8 @@ Immediate_Vertex :: struct {
     rect_edge_softness: float = 1.0;
 }
 #add_context simp: *Immediate_State;
-// Every entry point calls CheckInit, so nobody needs an init function.
+// Allocates this thread's drawing state on first use. Public entry points run it, so programs
+// never call an init procedure themselves.
 CheckInit :: () #expand { if !context.simp per_thread_init(); }
 per_thread_init :: () { context.simp = New(Immediate_State); shaders_set_defaults(); }
 // Start of an immediate-mode batch; vertices are triangles, three at a time.
@@ -87,11 +88,11 @@ put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector2, color: Vector
 immediate_quad :: (x0: float, y0: float, x1: float, y1: float, color: Vector4) {
     immediate_quad(.{x0,y0}, .{x1,y0}, .{x1,y1}, .{x0,y1}, color);
 }
-// Four 2D points of a convex quad, a color, and optional uv coordinates for a texture.
+// Convex quad listed corner by corner in one color; the uvs default to covering the whole texture.
 immediate_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, color := Vector4.{1,1,1,1}, uv0 := Vector2.{0,0}, uv1 := Vector2.{1,0}, uv2 := Vector2.{1,1}, uv3 := Vector2.{0,1}) {
     immediate_quad(p0,p1,p2,p3,color,color,color,color,uv0,uv1,uv2,uv3);
 }
-// A 2D quad with a color at each corner.
+// As above, but each corner carries its own color, blended across the two triangles.
 immediate_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, c0: Vector4, c1: Vector4, c2: Vector4, c3: Vector4, uv0 := Vector2.{0,0}, uv1 := Vector2.{1,0}, uv2 := Vector2.{1,1}, uv3 := Vector2.{0,1}) {
     first := reserve_vertices(6);
     points := Vector2.[p0,p1,p2,p0,p2,p3]; colors := Vector4.[c0,c1,c2,c0,c2,c3]; uvs := Vector2.[uv0,uv1,uv2,uv0,uv2,uv3];

@@ -391,7 +391,7 @@ gl_upload_texture :: (texture: *Texture, bitmap: *Bitmap) -> bool {
     gl_api.glActiveTexture(GL.GL_TEXTURE0);
     gl_api.glBindTexture(GL.GL_TEXTURE_2D, texture.gl_handle);
     if created {
-        // Clamp to edge keeps the borders of alpha textures clean.
+        // With wrapping, bilinear filtering would pull texels from the opposite edge into the border.
         gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, cast(s32) GL.GL_CLAMP_TO_EDGE);
         gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, cast(s32) GL.GL_CLAMP_TO_EDGE);
         magnify := ifx texture.nearest then GL.GL_NEAREST else GL.GL_LINEAR;
@@ -435,7 +435,7 @@ gl_create_render_target :: (texture: *Texture) -> bool {
     gl_api.glGenTextures(1, *texture.gl_handle);
     gl_api.glBindTexture(GL.GL_TEXTURE_2D, texture.gl_handle);
     gl_api.glTexImage2D(GL.GL_TEXTURE_2D, 0, cast(s32) internal, cast(u32) texture.width, cast(u32) texture.height, 0, external, type, null);
-    gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_LEVEL, 0);  // A render target has no mipmaps.
+    gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_LEVEL, 0);  // Only level 0 is ever drawn into.
     gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, cast(s32) GL.GL_CLAMP_TO_EDGE);
     gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, cast(s32) GL.GL_CLAMP_TO_EDGE);
     gl_api.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, cast(s32) GL.GL_LINEAR);
