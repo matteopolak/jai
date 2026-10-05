@@ -142,6 +142,15 @@ report_memory_leaks :: (options: Leak_Report_Options = .{}) {
     defer deinit(*report);
     log_leak_report(report, options);
 }
+_md_trace_hash :: (trace: *Packed_Stack_Trace) -> u64 {
+    h: u64 = 0xcbf2_9ce4_8422_2325;
+    if !trace return h;
+    for i: 0..trace.nodes.count-1 {
+        h = (h ^ cast(u64)trace.nodes[i].info) * 0x0100_0000_01b3;
+        h = (h ^ cast(u64)trace.nodes[i].line_number) * 0x0100_0000_01b3;
+    }
+    return h;
+}
 make_leak_report :: (options: Leak_Report_Options = .{}, for_visualizer := false) -> Leak_Report {
     report: Leak_Report;
     if !_md_begin(.{}) return report;
@@ -214,15 +223,24 @@ make_leak_report :: (options: Leak_Report_Options = .{}, for_visualizer := false
     }
     pointers := cast(**Leak_Summary)MD_Pool.get(*report.pool, count * size_of(*Leak_Summary));
     summary_count: s64;
+    // Summaries by trace hash (open addressing, slots hold summary index + 1).
+    slot_count := 16;
+    while slot_count < count * 2 slot_count *= 2;
+    slots := cast(*s64)MD_Pool.get(*report.pool, slot_count * size_of(s64));
+    for i: 0..slot_count-1 slots[i] = 0;
     for i: 0..count-1 {
         if rows[i].marked || rows[i].parent >= 0 continue;
         allocation := *rows[i].record.allocation;
         trace := _md_copy_trace(*report.pool, allocation.alloc_site_trace);
         summary: *Leak_Summary;
-        for j: 0..summary_count-1 {
-            if md_trace_matches(pointers[j].alloc_site_trace, trace) { summary = pointers[j]; break; }
+        slot := cast(s64)(_md_trace_hash(trace) & cast(u64)(slot_count - 1));
+        while slots[slot] {
+            candidate := pointers[slots[slot] - 1];
+            if md_trace_matches(candidate.alloc_site_trace, trace) { summary = candidate; break; }
+            slot = (slot + 1) & (slot_count - 1);
         }
         if !summary {
+            slots[slot] = summary_count + 1;
             summary = cast(*Leak_Summary)MD_Pool.get(*report.pool, size_of(Leak_Summary));
             summary.* = .{};
             summary.alloc_site_trace = trace;

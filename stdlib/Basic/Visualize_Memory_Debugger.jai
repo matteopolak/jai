@@ -39,6 +39,14 @@ vis_update_if_it_has_been_long_enough :: () {
 }
 vis_update :: () {
     if context.inside_memory_debugger return;
+    // Without a connected visualizer there is nothing to send: skip the report (it walks every
+    // live allocation, and this runs on allocations).
+    if !vis_enabled {
+        if !_md_begin(.{}) return;
+        vis_init();
+        _md_end();
+        if !vis_enabled return;
+    }
     // Acquire a report first: its pool owns all trace data used on the wire.
     options: Leak_Report_Options;
     options.scan_global_memory_to_remove_leaks = false;

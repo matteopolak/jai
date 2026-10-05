@@ -35,6 +35,10 @@ main :: () {
 
 ## Configuration
 
+The memory debugger's visualizer (`Visualize_Memory_Debugger.jai`) does nothing until a visualizer connects, so
+programs built with `MEMORY_DEBUGGER` do not pay for a leak report per allocation. `make_leak_report` merges
+identical stack traces through a hash table of trace hashes (`_md_trace_hash`), not a pairwise scan.
+
 `Basic` module parameters: `MEMORY_DEBUGGER` (false), `ENABLE_ASSERT` (true), `REPLACEMENT_INTERFACE`, `VISUALIZE_MEMORY_DEBUGGER` (true), `TEMP_ALLOCATOR_POISON_FREED_MEMORY` (false). `Hash_Table`: `COUNT_COLLISIONS` (false). `Tagged_Union`: `DEBUG`.
 
 ## Dependencies
