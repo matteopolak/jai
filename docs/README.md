@@ -106,6 +106,7 @@ The WebAssembly playground, editor and release bundle.
 
 Scripts, CI and project policies.
 
+- [Benchmarks and profiling](tools/benchmarks.md)
 - [Build storage and target directories](tools/build-storage.md)
 - [Code formatting](tools/code-formatting.md)
 - [Continuous integration](tools/continuous-integration.md)
