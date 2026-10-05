@@ -248,7 +248,9 @@ fn candidates() -> Vec<String> {
         llvm.sort();
         llvm.reverse();
         for dir in llvm {
+            // `libclang.so` comes with the -dev package; the runtime package has only `.so.1`.
             list.push(format!("{}/lib/libclang.so", dir.display()));
+            list.push(format!("{}/lib/libclang.so.1", dir.display()));
         }
     }
     list.push("libclang.dylib".into());
