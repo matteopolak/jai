@@ -267,6 +267,11 @@ fn bindings_generator_cpp_raw() {
 }
 
 #[test]
+fn bindings_generator_checks() {
+    native_bindings_generator_test("bindings-generator-checks");
+}
+
+#[test]
 fn bindings_generator_objc() {
     native_bindings_generator_test("bindings-generator-objc");
 }
