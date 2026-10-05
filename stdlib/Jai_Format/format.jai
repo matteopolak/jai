@@ -6,7 +6,9 @@
 // source, and runs of several spaces between tokens are kept as authored alignment.
 // String literals, here-strings, `#asm` bodies and `// jaifmt: off` regions are copied verbatim.
 // After formatting, the result is lexed again and must produce the same tokens (see
-// `check_equivalent`); otherwise the caller refuses to use it.
+// `check_equivalent`); otherwise no output is returned.
+
+#scope_module
 
 Format_Result :: struct {
     output: string;
@@ -15,7 +17,7 @@ Format_Result :: struct {
     long_lines: int;   // lines over config.max_width in the output
 }
 
-format_source :: (src: string, config: Config) -> Format_Result {
+format_text :: (src: string, config: Format_Config) -> Format_Result {
     result: Format_Result;
     lexed := lex(src);
     defer array_free(lexed.tokens);
@@ -183,7 +185,6 @@ token_text :: inline (src: string, tok: Tok) -> string {
     return slice(src, tok.start, tok.end - tok.start);
 }
 
-#scope_file
 
 Frame :: struct {
     open: string;          // "{", "(", "[", ".{", ".["; "" for the file itself
@@ -205,7 +206,7 @@ Context_Kind :: enum u8 { OPERATOR; OPERAND; UNKNOWN; }
 Formatter :: struct {
     src: string;
     tokens: [] Tok;
-    config: Config;
+    config: Format_Config;
     case_indent: int;
     case_body_indent: int;
     newline: string;

@@ -5,6 +5,8 @@
 // separators and `.5` float literals. Unlike the compiler it keeps comments as tokens and
 // records the whitespace before every token, which is all the formatter needs.
 
+#scope_module
+
 Tok_Kind :: enum u8 {
     IDENT;
     NUMBER;

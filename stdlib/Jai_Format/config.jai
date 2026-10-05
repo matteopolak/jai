@@ -1,41 +1,19 @@
-// jaifmt.toml: a small `key = value` subset of TOML.
-//
-//     indent_width = 4
-//     max_width = 100
-//     brace_style = "same_line"      # or "preserve"
-//     ignore = ["tests/corpus/**", "generated/*.jai"]
+// jaifmt.toml parsing and ignore globs. No file access: the caller reads the file.
 
-Brace_Style :: enum u8 {
-    SAME_LINE;  // `if x\n{` becomes `if x {`, `}\nelse` becomes `} else`
-    PRESERVE;
-}
+#scope_module
 
-Config :: struct {
-    indent_width := 4;
-    case_indent := -1;        // `case` lines inside `if x == {`; -1: indent_width
-    case_body_indent := -1;   // statements under a `case`; -1: indent_width
-    max_blank_lines := 2;
-    max_width := 100;         // reported with --verbose; long lines are never rewrapped
-    brace_style := Brace_Style.SAME_LINE;
-    ignore: [..] string;      // globs relative to `root`
-    root: string;             // directory holding the config file ("" for defaults)
-    path: string;             // the config file itself ("" for defaults)
-}
-
-resolved_case_indent :: (config: Config) -> int {
+resolved_case_indent :: (config: Format_Config) -> int {
     if config.case_indent < 0 return config.indent_width;
     return config.case_indent;
 }
 
-resolved_case_body_indent :: (config: Config) -> int {
+resolved_case_body_indent :: (config: Format_Config) -> int {
     if config.case_body_indent < 0 return config.indent_width;
     return config.case_body_indent;
 }
 
-CONFIG_FILE_NAME :: "jaifmt.toml";
-
-// Parses `text`; on failure returns false and a message naming the line.
-parse_config :: (text: string, config: *Config) -> bool, string {
+// Parses `text` into `config`; on failure returns false and a message naming the line.
+parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
     line_number := 0;
     rest := text;
     while rest.count {
@@ -104,54 +82,10 @@ parse_config :: (text: string, config: *Config) -> bool, string {
     return true, "";
 }
 
-// Finds the nearest jaifmt.toml in `directory` or its parents and loads it; returns defaults
-// when there is none. Results are cached per directory.
-config_for_directory :: (directory: string) -> *Config, ok: bool, error: string {
-    for config_cache  if it.directory == directory return it.config, it.ok, it.error;
-
-    entry: Config_Cache_Entry;
-    entry.directory = copy_string(directory);
-    candidate := tprint("%/%", directory, CONFIG_FILE_NAME);
-    if file_exists(candidate) {
-        entry.config, entry.ok, entry.error = load_config(candidate);
-    } else {
-        parent := parent_directory(directory);
-        if parent.count && parent != directory {
-            entry.config, entry.ok, entry.error = config_for_directory(parent);
-        } else {
-            entry.config = New(Config);
-            entry.ok = true;
-        }
-    }
-    array_add(*config_cache, entry);
-    return entry.config, entry.ok, entry.error;
-}
-
-load_config :: (path: string) -> *Config, ok: bool, error: string {
-    config := New(Config);
-    config.path = copy_string(path);
-    config.root = copy_string(parent_directory(path));
-    text, read_ok := read_entire_file(path, log_errors = false);
-    if !read_ok return config, false, tprint("%: cannot read the config file", path);
-    ok, message := parse_config(text, config);
-    if !ok return config, false, tprint("%: %", path, message);
-    return config, true, "";
-}
-
-// `a/b/c` -> `a/b`; `/a` -> `/`; `a` -> "".
-parent_directory :: (path: string) -> string {
-    end := path.count;
-    while end > 1 && path[end - 1] == #char "/"  end -= 1;
-    slash := find_index_from_right(slice(path, 0, end), #char "/");
-    if slash < 0 return "";
-    if slash == 0 return "/";
-    return slice(path, 0, slash);
-}
-
 // Is `path` (absolute) ignored by `config`? Globs are relative to the config's directory:
 // `*` matches within one path component, `**` across components, `?` one character.
 // A glob that matches a directory also ignores everything under it.
-is_ignored :: (config: *Config, path: string) -> bool {
+is_ignored :: (config: Format_Config, path: string) -> bool {
     if !config.ignore.count || !config.root.count return false;
     root := config.root;
     if !begins_with(path, root) return false;
@@ -199,15 +133,6 @@ glob_match :: (pattern: string, text: string) -> bool {
 }
 
 #scope_file
-
-Config_Cache_Entry :: struct {
-    directory: string;
-    config: *Config;
-    ok: bool;
-    error: string;
-}
-
-config_cache: [..] Config_Cache_Entry;
 
 strip_comment :: (line: string) -> string {
     in_string := false;
