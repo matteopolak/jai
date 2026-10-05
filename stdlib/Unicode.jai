@@ -8,7 +8,8 @@ character_utf32_to_utf8 :: (ch: u32) -> string {
     if status != .CONVERSION_OK { Basic.free(out); return ""; }
     return out;
 }
-utf8_next_character :: (text: *string) -> u32, Unicode_Result {
+utf8_next_character :: (s: *string) -> code: u32, success: Unicode_Result {
+    text := s;
     code, consumed, status := character_utf8_to_utf32(text.data, text.count);
     if status == .CONVERSION_OK { text.data += consumed; text.count -= consumed; }
     return code, status;

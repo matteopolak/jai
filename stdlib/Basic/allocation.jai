@@ -54,8 +54,8 @@ get_capabilities_info :: (b: Allocator) -> (caps: Allocator_Caps, name: string) 
     return cast,no_check(Allocator_Caps) raw, name;
 }
 
-get_capabilities :: (allocator: Allocator) -> (caps: Allocator_Caps, name: string) {
-    return get_capabilities_info(allocator);
+get_capabilities :: (b: Allocator) -> (caps: Allocator_Caps, name: string) {
+    return get_capabilities_info(b);
 }
 
 alloc_string :: (count: int, allocator := context.allocator) -> string {

@@ -20,7 +20,7 @@ quaternion_cases :: () -> bool {
     set_from_axis_and_angle(*q,axis=make_vector3(0,0,1),angle=cast(float) (PI64*0.5));
     rotated:=rotate(make_vector3(1,0,0),q);
     if abs(rotated.x)>0.00001 || abs(rotated.y-1)>0.00001 || abs(rotated.z)>0.00001 return false;
-    blended:=slerp(a=Quaternion_Identity,b=q,t=0.5);
+    blended:=slerp(start=Quaternion_Identity,end=q,t=0.5);
     x,y,z,theta:=get_axis_and_angle(blended);
     if abs(theta-PI64*0.25)>0.00001 || abs(z-1)>0.00001 return false;
     return true;

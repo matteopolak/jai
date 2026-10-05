@@ -819,10 +819,10 @@ print_to_builder :: (builder: *String_Builder, format_string: string, args: .. A
     return __format_to_builder(builder, format_string, args);
 }
 print :: print_to_builder;
-print :: (format: string, args: .. Any, to_standard_error := false) -> s64 {
+print :: (format_string: string, args: .. Any, to_standard_error := false) -> bytes_printed: s64 {
     builder: String_Builder;
     init_string_builder(*builder);
-    success := __format_to_builder(*builder, format, args);
+    success := __format_to_builder(*builder, format_string, args);
     count := write_builder(*builder, to_standard_error = to_standard_error);
     free_buffers(*builder);
     if !success return -1;
@@ -891,10 +891,10 @@ type_to_string :: (info: *Type_Info) -> string {
     return result;
 }
 
-log :: (format: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) -> s64 {
+log :: (format_string: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) -> s64 {
     builder: String_Builder;
     init_string_builder(*builder);
-    success := __format_to_builder(*builder, format, args);
+    success := __format_to_builder(*builder, format_string, args);
     text := builder_to_string(*builder);
     info := Log_Info.{source_identifier = context.log_source_identifier, location = loc, common_flags = flags, user_flags = user_flags, section = section};
     if context.logger context.logger(text, context.logger_data, info);
@@ -904,8 +904,8 @@ log :: (format: string, args: .. Any, loc := #caller_location, flags := Log_Flag
     if !success return -1;
     return count;
 }
-log_error :: (format: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
-    count := log(format, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
+log_error :: (format_string: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
+    count := log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
 }
 log :: (section: *Log_Section, format_string: string, args: .. Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0) -> s64 {
     return log(format_string, ..args, loc = loc, flags = flags, user_flags = user_flags, section = section);

@@ -35,7 +35,8 @@ Wav_File :: struct {
     extra: Wav_Extra;
     success: bool;
 }
-get_wav_header :: (buffer: string) -> Wav_Format, string, bool, Wav_Extra {
+get_wav_header :: (file_data: string) -> Wav_Format, string, bool, Wav_Extra {
+    buffer := file_data;
     original, samples, success, original_extra := get_waveformatex_header(buffer);
     format: Wav_Format;
     format.wFormatTag = original.wFormatTag;

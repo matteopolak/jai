@@ -106,11 +106,11 @@ string_to_int :: (t: string, base := 10, $T := int) -> result: T, success: bool,
     return cast,no_check(T) value, true, advance(text, position);
 }
 
-string_to_float :: (_arg: string) -> result: float, success: bool, remainder: string {
-    return string_to_float_type_T(_arg, T = float);
+string_to_float :: (arg: string) -> result: float, success: bool, remainder: string {
+    return string_to_float_type_T(arg, T = float);
 }
-string_to_float64 :: (_arg: string) -> result: float64, success: bool, remainder: string {
-    return string_to_float_type_T(_arg, T = float64);
+string_to_float64 :: (_s: string) -> result: float64, success: bool, remainder: string {
+    return string_to_float_type_T(_s, T = float64);
 }
 
 // Decimal significand plus an optional exponent. This intentionally does not

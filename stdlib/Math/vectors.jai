@@ -46,10 +46,10 @@ operator / :: (k: float, a: Vector2) -> Vector2 { return .{k / a.x, k / a.y}; }
 operator == :: (a: Vector2, b: Vector2) -> bool { return a.x == b.x && a.y == b.y; }
 min :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y)}; }
 max :: (v1: Vector2, v2: Vector2) -> Vector2 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y)}; }
-abs :: (a: Vector2) -> Vector2 { return .{abs(a.x), abs(a.y)}; }
+abs :: (v: Vector2) -> Vector2 { return .{abs(v.x), abs(v.y)}; }
 saturate :: (a: Vector2) -> Vector2 { return .{saturate(a.x), saturate(a.y)}; }
-length_squared :: (v: Vector2) -> float { return dot(v, v); }
-length :: (v: Vector2) -> float { return sqrt(length_squared(v)); }
+length_squared :: (a: Vector2) -> float { return dot(a, a); }
+length :: (a: Vector2) -> float { return sqrt(length_squared(a)); }
 distance_squared :: (a: Vector2, b: Vector2) -> float { return length_squared(a - b); }
 distance :: (a: Vector2, b: Vector2) -> float { return length(a - b); }
 lerp :: (a: Vector2, b: Vector2, t: float) -> Vector2 { return a + (b - a) * t; }
@@ -69,10 +69,10 @@ operator / :: (k: float, a: Vector3) -> Vector3 { return .{k / a.x, k / a.y, k /
 operator == :: (a: Vector3, b: Vector3) -> bool { return a.x == b.x && a.y == b.y && a.z == b.z; }
 min :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y), Basic.min(v1.z, v2.z)}; }
 max :: (v1: Vector3, v2: Vector3) -> Vector3 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y), Basic.max(v1.z, v2.z)}; }
-abs :: (a: Vector3) -> Vector3 { return .{abs(a.x), abs(a.y), abs(a.z)}; }
+abs :: (v: Vector3) -> Vector3 { return .{abs(v.x), abs(v.y), abs(v.z)}; }
 saturate :: (a: Vector3) -> Vector3 { return .{saturate(a.x), saturate(a.y), saturate(a.z)}; }
-length_squared :: (v: Vector3) -> float { return dot(v, v); }
-length :: (v: Vector3) -> float { return sqrt(length_squared(v)); }
+length_squared :: (a: Vector3) -> float { return dot(a, a); }
+length :: (a: Vector3) -> float { return sqrt(length_squared(a)); }
 distance_squared :: (a: Vector3, b: Vector3) -> float { return length_squared(a - b); }
 distance :: (a: Vector3, b: Vector3) -> float { return length(a - b); }
 lerp :: (a: Vector3, b: Vector3, t: float) -> Vector3 { return a + (b - a) * t; }
@@ -92,10 +92,10 @@ operator / :: (k: float, a: Vector4) -> Vector4 { return .{k / a.x, k / a.y, k /
 operator == :: (a: Vector4, b: Vector4) -> bool { return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; }
 min :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{Basic.min(v1.x, v2.x), Basic.min(v1.y, v2.y), Basic.min(v1.z, v2.z), Basic.min(v1.w, v2.w)}; }
 max :: (v1: Vector4, v2: Vector4) -> Vector4 { return .{Basic.max(v1.x, v2.x), Basic.max(v1.y, v2.y), Basic.max(v1.z, v2.z), Basic.max(v1.w, v2.w)}; }
-abs :: (a: Vector4) -> Vector4 { return .{abs(a.x), abs(a.y), abs(a.z), abs(a.w)}; }
+abs :: (v: Vector4) -> Vector4 { return .{abs(v.x), abs(v.y), abs(v.z), abs(v.w)}; }
 saturate :: (a: Vector4) -> Vector4 { return .{saturate(a.x), saturate(a.y), saturate(a.z), saturate(a.w)}; }
-length_squared :: (v: Vector4) -> float { return dot(v, v); }
-length :: (v: Vector4) -> float { return sqrt(length_squared(v)); }
+length_squared :: (a: Vector4) -> float { return dot(a, a); }
+length :: (a: Vector4) -> float { return sqrt(length_squared(a)); }
 distance_squared :: (a: Vector4, b: Vector4) -> float { return length_squared(a - b); }
 distance :: (a: Vector4, b: Vector4) -> float { return length(a - b); }
 lerp :: (a: Vector4, b: Vector4, t: float) -> Vector4 { return a + (b - a) * t; }
@@ -134,8 +134,8 @@ cross_product :: (a: Vector3, b: Vector3) -> Vector3 {
     return .{a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
 }
 dot_product :: (a: Quaternion, b: Quaternion) -> float { return a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w; }
-length_squared :: (q: Quaternion) -> float { return dot(q, q); }
-length :: (q: Quaternion) -> float { return sqrt(length_squared(q)); }
+length_squared :: (a: Quaternion) -> float { return dot(a, a); }
+length :: (a: Quaternion) -> float { return sqrt(length_squared(a)); }
 operator + :: (a: Quaternion, b: Quaternion) -> Quaternion { return .{a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w}; }
 operator - :: (a: Quaternion, b: Quaternion) -> Quaternion { return .{a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w}; }
 operator - :: (using a: Quaternion) -> Quaternion { return .{-x, -y, -z, -w}; }
@@ -153,7 +153,8 @@ lerp :: (a: Quaternion, b: Quaternion, t: float) -> Quaternion {
     return a + (target - a) * t;
 }
 nlerp :: (p0: Quaternion, p1: Quaternion, fraction: float) -> Quaternion { return normalize(lerp(p0, p1, fraction)); }
-slerp :: (a: Quaternion, b: Quaternion, t: float) -> Quaternion {
+slerp :: (start: Quaternion, end: Quaternion, t: float) -> Quaternion {
+    a := start; b := end;
     target := b;
     cosine := dot(a, b);
     if cosine < 0 { target = -target; cosine = -cosine; }

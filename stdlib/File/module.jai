@@ -138,8 +138,8 @@ file_length :: (file: File) -> (length: s64, success: bool) {
 
 // Reads up to `bytes_to_read`; reaching the end of the file early still succeeds, with
 // the shorter `total_read`.
-file_read :: (file: File, vdata: *void, bytes_to_read: s64) -> (success: bool, total_read: s64) {
+file_read :: (f: File, vdata: *void, bytes_to_read: s64) -> (success: bool, total_read: s64) {
     if bytes_to_read <= 0 || !vdata  return false, 0;
-    return file_read_checked(file, vdata, bytes_to_read);
+    return file_read_checked(f, vdata, bytes_to_read);
 }
 

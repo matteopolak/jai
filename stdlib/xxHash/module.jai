@@ -77,8 +77,8 @@ XXH32_reset :: (state: *XXH32_state_t, seed: u32) #no_aoc {
     state.v4 = seed - XXH_PRIME32_1;
 }
 
-XXH32_update :: (state: *XXH32_state_t, input_ptr: *u8, len: u32) #no_aoc {
-    bytes := input_ptr;
+XXH32_update :: (state: *XXH32_state_t, input: *void, len: u32) #no_aoc {
+    bytes := cast(*u8) input;
     pending := cast(*u8) state.mem32.data;
     index: u32 = 0;
     while index < len {
@@ -126,8 +126,8 @@ XXH64_reset :: (state: *XXH64_state_t, seed: u64) #no_aoc {
     state.v4 = seed - XXH_PRIME64_1;
 }
 
-XXH64_update :: (state: *XXH64_state_t, input_ptr: *u8, len: u32) #no_aoc {
-    bytes := input_ptr;
+XXH64_update :: (state: *XXH64_state_t, input: *void, len: u32) #no_aoc {
+    bytes := cast(*u8) input;
     pending := cast(*u8) state.mem64.data;
     index: u32 = 0;
     while index < len {

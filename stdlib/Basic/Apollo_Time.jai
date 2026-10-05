@@ -81,9 +81,8 @@ to_float64_seconds_checked :: (input: Apollo_Time) -> (result: float64, success:
     if negative value = -value;
     return value, true;
 }
-to_float64_seconds :: (time: Apollo_Time) -> float64 {
-    result, success := to_float64_seconds_checked(time);
-    return result;
+to_float64_seconds :: (input: Apollo_Time) -> (result: float64, success: bool) {
+    return to_float64_seconds_checked(input);
 }
 to_apollo :: (seconds: float64) -> Apollo_Time {
     if seconds != seconds return APOLLO_TIME_INVALID;

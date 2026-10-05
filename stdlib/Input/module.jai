@@ -88,7 +88,7 @@ queue_window_resize :: (window: Window_Type, width: s32, height: s32) {
     array_add(*pending_resizes, .{window, width, height});
 }
 // Original-API spelling of queue_window_resize: coalesces per window until the next update.
-add_resize_record :: (window: Window_Type, width: s32, height: s32) { queue_window_resize(window, width, height); }
+add_resize_record :: (hwnd: Window_Type, width: s32, height: s32) { queue_window_resize(hwnd, width, height); }
 // Set by hosts that learn a window is minimized; kept for source compatibility with the original Input module.
 window_minimized := false;
 WHEEL_DELTA :: 120;  // Wheel units per notch, as in the original Input module.

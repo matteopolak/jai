@@ -17,7 +17,8 @@ Mail_Message :: struct {
     attachments: [] string;
 }
 
-mail_send :: (server: Mail_Server, message: Mail_Message) -> bool {
+mail_send :: (smtp: Mail_Server, msg: Mail_Message) -> bool {
+    server := smtp; message := msg;
     if !valid_header(server.host) || !server.host || !valid_header(message.subject) || message.to.count + message.cc.count + message.bcc.count == 0 return false;
     for c: server.host if c == #char "/" || c == #char ":" || c == #char "@" return false;
     port, port_ok, remainder := string_to_int(server.port);

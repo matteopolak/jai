@@ -51,9 +51,9 @@ Thread_Group :: struct {
 Work_List :: Thread_Group.Work_List;
 Work_Entry :: Thread_Group.Work_Entry;
 
-init :: (group: *Thread_Group, thread_count: int, proc: Thread_Group_Proc,
+init :: (group: *Thread_Group, num_threads: int, group_proc: Thread_Group_Proc,
     enable_work_stealing: bool) -> bool {
-    return init(group, cast(s32) thread_count, cast(Native_Thread_Group_Proc) proc,
+    return init(group, cast(s32) num_threads, cast(Native_Thread_Group_Proc) group_proc,
         enable_work_stealing, 16384);
 }
 init :: (using group: *Thread_Group, num_threads: s32, group_proc: Native_Thread_Group_Proc,

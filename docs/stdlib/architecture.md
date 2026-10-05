@@ -44,3 +44,7 @@ None at the library level. Compiler flags that affect module lookup: `-I dir` ad
 ## Dependencies
 
 The `jaic` compiler and interpreter (`crates/jaic`), the `prelude/` types, and system libraries for the native-binding modules (libc, libm, and optionally libcurl, SDL2, libclang; see [native-bindings](native-bindings.md)).
+
+## Parameter names follow the reference modules
+
+Real Jai programs call procedures with named arguments, so exported parameter names, order and return values match the reference modules (`slerp(start, end, t)`, `print(format_string)`, `array_add(array, item)`, `array_insert_at(array, item, index)`, `string_to_float(arg)`, `floor(f)`/`tan(theta)` for `float`, `x` for `float64`, `pow(x, power)` for `float`, `pow(x, y)` for `float64`, `to_float64_seconds(input) -> result, success`, `mail_send(smtp, msg)`, `XXH32_update(state, input: *void, len)`). Extra parameters we add (such as `allocator :=`) go last. Where the body used the old name, the new parameter is aliased in the first line. `tests/stdlib/named-argument-api.jai` guards a sample. Known remaining differences: `File.handle` is `s64`, `Thread.proc` is the native proc type.

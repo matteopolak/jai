@@ -107,7 +107,7 @@ get_font_at_size :: (memory: [] u8, pixel_height: int) -> *Dynamic_Font {
     for dynamic_fonts if it.character_height == pixel_height && it.loaded == loaded return it;
     return create_dynamic_font(loaded, "", pixel_height);
 }
-load_font_part_2 :: (result: *Dynamic_Font, pixel_height: int) {
+load_font_part_2 :: (result: *Dynamic_Font, loaded_font: Loaded_Font, pixel_height: int) {
     assert(result != null && result.face != null && pixel_height > 0);
     if !result || !result.face || pixel_height <= 0 return;
     error := FT.FT_Set_Pixel_Sizes(result.face, 0, cast(u32) pixel_height);
@@ -132,7 +132,7 @@ create_dynamic_font :: (loaded: *Loaded_Font, name: string, pixel_height: int) -
     font.name = copy_string(name); font.loaded = loaded;
     record := New(Font_Record); record.font = font;
     array_add(*font_records, record); array_add(*dynamic_fonts, font);
-    load_font_part_2(font, pixel_height);
+    load_font_part_2(font, loaded.*, pixel_height);
     return font;
 }
 set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
@@ -140,8 +140,9 @@ set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
     index:=FT.FT_Get_Char_Index(font.face,utf32); if !index return false;
     font.glyph_index_for_unknown_character=index; return true;
 }
-convert_to_temporary_glyphs :: (font: *Dynamic_Font,s: string) -> width_in_pixels: s64 { return prepare_text(font,s); }
-prepare_text :: (font: *Dynamic_Font,text: string,effects: Font_Effects = 0) -> width: s64 {
+convert_to_temporary_glyphs :: (font: *Dynamic_Font, s: string, effect_flags: Font_Effects = 0) -> width_in_pixels: s64 { return prepare_text(font,s,effect_flags); }
+prepare_text :: (font: *Dynamic_Font, text: string, effect_flags: Font_Effects = 0) -> width: s64 {
+    effects := effect_flags;
     if !font return 0;
     assert((effects & ~Font_Effects.NO_KERNING) == 0, "Legacy SMALLCAPS/LINING_FIGURES/LEFT_JUSTIFIED substitutions are not implemented");
     record:=font_record(font); if !record return 0;

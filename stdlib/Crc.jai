@@ -1,8 +1,8 @@
 // The maintained OpenJai crc64 contract uses CRC-64/ECMA-182.
 CRC64_ECMA_POLY :: 0x42f0_e1eb_a9ea_3693;
 
-crc64 :: (value: string) -> u64 #no_aoc {
-    return crc64_update(value, 0);
+crc64 :: (s: string) -> u64 #no_aoc {
+    return crc64_update(s, 0);
 }
 
 // Explicit compatibility entry for the older supplied module's CRC-64/WE.
