@@ -386,6 +386,7 @@ print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, 
         case .STRUCT;
             print_struct(builder, cast(*Struct) decl);
             context.generator.counts.structs += 1;
+            if (cast(*Struct) decl).flags & .OBJC_BLOCK  print_block_literal_helper(builder, cast(*Struct) decl);
             if !current_scope || (current_scope.kind == .NAMESPACE && (cast(*Namespace) current_scope).should_flatten) {
                 print_struct_checks(builder, cast(*Struct) decl);
             } else if current_scope.kind == .NAMESPACE {
@@ -487,6 +488,24 @@ print_c_type_details :: (builder: *String_Builder, decl: *Declaration, type: *CT
     if is_const && is_reference append(builder, " ");
     if is_reference append(builder, "reference");
     append(builder, "*/ ");
+}
+
+// `Block_X_literal(invoke, user_data)`: a block Objective-C can call, made from a Jai
+// `#c_call` procedure. It is a global block (never copied or freed) built by the Objective_C
+// module; `objc_block_user_data(block)` returns `user_data` inside `invoke`.
+print_block_literal_helper :: (builder: *String_Builder, s: *Struct) {
+    invoke: *Declaration;
+    for s.declarations  if it.name == "invoke" invoke = it;
+    if !invoke return;
+    append(builder, "\n");
+    append_indentation(builder);
+    print_to_builder(builder, "%_literal :: (invoke: ", s.output_name);
+    print_type_to_builder(builder, invoke.type, null, .IN_FUNCTION_ARGS);
+    print_to_builder(builder, ", user_data: *void = null) -> *% {\n", s.output_name);
+    append_indentation(builder);
+    print_to_builder(builder, "    return cast(*%) objc_make_block(cast(*void) invoke, user_data);\n", s.output_name);
+    append_indentation(builder);
+    append(builder, "}\n");
 }
 
 append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string) {

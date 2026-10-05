@@ -168,6 +168,7 @@ CType :: struct {
     Flags :: enum_flags {
         REFERENCE;
         CONST;
+        WIDE_LONG_DOUBLE;   // A 16-byte `long double`, printed as `[16] u8`.
     }
 
     comment: string;
@@ -472,6 +473,7 @@ Struct :: struct {
         IS_TYPE_PARAM;   // Stand-in for a template or Objective-C generic parameter.
         NEEDS_RAW;      // A derived class reuses its tail padding: print the `__RAW` variant too.
         IS_SYSTEM;      // Declared in a system header: referred to by name, never printed.
+        OBJC_BLOCK;     // The header of an Objective-C block type (`Block_<result>_<args>`).
     }
 }
 

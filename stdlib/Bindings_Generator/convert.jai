@@ -368,7 +368,19 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_WCHAR;      return get_int_type(size, true);
         case T_FLOAT;      return g.type_def_float32;
         case T_DOUBLE;     return g.type_def_float64;
-        case T_LONGDOUBLE; return g.type_def_float64;
+        case T_LONGDOUBLE;
+            // arm64 Apple and Windows: a double. x86-64 and Linux arm64: 16 bytes Jai has no
+            // type for; kept as bytes so structs stay laid out right, while functions that pass
+            // one are stripped (see uses_wide_long_double).
+            if size == 8 return g.type_def_float64;
+            if size == 4 return g.type_def_float32;
+            result = New(CType);
+            result.array_element_type = g.type_def_u8;
+            result.array_element_count = size;
+            result.size = size;
+            result.alignment = clang("t_alignof", ty);
+            result.flags |= .WIDE_LONG_DOUBLE;
+            return result;
         case T_NULLPTR;    return g.type_def_ptr_void;
 
         case T_POINTER;
@@ -561,7 +573,7 @@ create_block_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
     s.name = name;
     s.output_name = name;
     if ctx s.location = cursor_location(ctx);
-    s.flags |= .NO_STRUCT_CHECKS;
+    s.flags |= .NO_STRUCT_CHECKS | .OBJC_BLOCK;
     s.type = New(CType);
     s.type.type_of_struct = s;
     s.type.size = 32;
@@ -764,6 +776,15 @@ copy_ctype_const :: (t: *CType) -> *CType {
 
 is_char_pointer_type :: (type: *CType) -> bool {
     return type && type.pointer_to && type.pointer_to.number_flags & ._8BIT && !(type.pointer_to.number_flags & .FLOAT);
+}
+
+// x87 `long double` (and Linux arm64's binary128) arguments or results: Jai cannot pass them,
+// and on x86-64 a method returning one would also need objc_msgSend_fpret.
+uses_wide_long_double :: (ft: *Function_Type) -> bool {
+    if !ft return false;
+    if ft.return_type && (ft.return_type.flags & .WIDE_LONG_DOUBLE) return true;
+    for ft.arguments  if it.type && (it.type.flags & .WIDE_LONG_DOUBLE) return true;
+    return false;
 }
 
 function_has_a_valist_arg :: (func: *Function) -> bool {
@@ -1051,10 +1072,10 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
         }
     }
 
-    // printf-like functions: the last named argument is a format string.
+    // printf-like functions: variadic, and the last named argument is a char pointer.
     if (ft.flags & .VARIADIC) && options.generate_printf_wrappers && ft.arguments.count > 0 && !func.is_virtual {
         last := ft.arguments[ft.arguments.count - 1];
-        if is_char_pointer_type(last.type) && (last.name == "fmt" || last.name == "format" || last.name == "fmt_") {
+        if is_char_pointer_type(last.type) {
             func.decl_flags |= .NEEDS_PRINTF_WRAPPER;
         }
     }
@@ -1375,6 +1396,10 @@ add_method :: (s: *Struct, c: Cursor) {
     if !func return;
     table_add(*g.declarations_by_cursor, key, func);
     ft := func.type.type_of_function;
+    if uses_wide_long_double(ft) {
+        log_stripped(func.name, "passes a long double wider than 64 bits, which Jai has no type for");
+        return;
+    }
 
     if ft.flags & .CONSTRUCTOR {
         s.flags |= .HAS_CONSTRUCTOR;
@@ -1910,6 +1935,10 @@ add_objc_method :: (s: *Struct, c: Cursor) {
     if !table_contains(*g.objc_selector_set, selector) {
         table_add(*g.objc_selector_set, selector, true);
         array_add(*g.unique_objc_selectors, selector);
+    }
+    if uses_wide_long_double(ft) {
+        log_stripped(selector, "passes a long double wider than 64 bits (on x86-64 it would also need objc_msgSend_fpret)");
+        return;
     }
     avoid_name_clash(*s.declarations, func);   // Adds it.
 }
@@ -2460,6 +2489,10 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
             ft := func.type.type_of_function;
             if function_has_a_valist_arg(func) && (options.strip_flags & .FUNCTIONS_WITH_VALIST) {
                 log_stripped(name, "takes a va_list");
+                return;
+            }
+            if uses_wide_long_double(ft) {
+                log_stripped(name, "passes a long double wider than 64 bits, which Jai has no type for");
                 return;
             }
             // Functions with internal linkage have no symbol to bind to.

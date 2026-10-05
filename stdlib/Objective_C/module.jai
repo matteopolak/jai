@@ -473,6 +473,37 @@ Objective_C_Block_Basic :: struct {
 }
 _NSConcreteStackBlock :: () #foreign libSystem;
 _NSConcreteGlobalBlock :: () #foreign libSystem;
+
+// Blocks made from Jai procedures (see the `Block_X_literal` helpers that Bindings_Generator
+// writes for every block type). They are global blocks: the runtime never copies or frees
+// them, so they stay valid for the rest of the program.
+Objective_C_Block_Literal :: struct {
+    using base: Objective_C_Block_Basic;
+    user_data: *void;
+}
+OBJC_BLOCK_IS_GLOBAL :: 1 << 28;
+objc_block_literal_descriptor := Objective_C_Block_Basic_Descriptor.{size = size_of(Objective_C_Block_Literal)};
+
+objc_make_block :: (invoke: *void, user_data: *void = null) -> *Objective_C_Block_Literal {
+    block := Basic.New(Objective_C_Block_Literal);
+    block.isa = cast(*void) _NSConcreteGlobalBlock;
+    block.flags = OBJC_BLOCK_IS_GLOBAL;
+    // Under the interpreter a Jai procedure gets a C-callable address only when it is passed to
+    // a foreign function; memmove(p, p, 0) hands that address back (and is a no-op natively).
+    native_invoke := objc_block_identity(invoke, invoke, 0);
+    block.invoke = cast(type_of(block.invoke)) native_invoke;
+    block.descriptor = *objc_block_literal_descriptor;
+    block.user_data = user_data;
+    return block;
+}
+
+#scope_module
+objc_block_identity :: (dst: *void, src: *void, count: u64) -> *void #foreign libSystem "memmove";
+#scope_export
+
+objc_block_user_data :: (block: *void) -> *void #no_context {
+    return (cast(*Objective_C_Block_Literal) block).user_data;
+}
 #if CPU == .X64 {
     #load "bindings/x64/runtime.jai";
     #load "bindings/x64/message.jai";
