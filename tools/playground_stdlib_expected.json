@@ -46,6 +46,7 @@
   "compiler-api-shapes.jai",
   "compiler-enum-external-type.jai",
   "compiler-get-code.jai",
+  "compiler-header-own-types.jai",
   "compiler-reflection-pure.jai",
   "compiler-resolved-nodes.jai",
   "compiler-typechecked-messages.jai",

@@ -90,8 +90,10 @@ pub struct ExportState {
     own_types: HashMap<TypeId, i64>,
     /// Modified procedures to lower again (`relower_modified`).
     relower: Vec<ProcId>,
-    /// Headers made for `resolved_procedure_expression`, by procedure.
-    resolved_headers: HashMap<ProcId, i64>,
+    /// The header record of each procedure (shared by `resolved_procedure_expression` and
+    /// reported headers), by procedure and whether it is for this compiler's own
+    /// compile-time code (`Exporter::own`: those types carry real descriptors).
+    resolved_headers: HashMap<(ProcId, bool), i64>,
     /// Declarations made for `resolved_declaration` of names outside the exported tree.
     resolved_decls: HashMap<EntityId, i64>,
 }
@@ -908,14 +910,15 @@ impl Exporter<'_> {
     /// The header `resolved_procedure_expression` points to: name, typed arguments and
     /// returns, flags. Made once per procedure; no body.
     fn resolved_header(&mut self, p: ProcId) -> i64 {
+        let own = self.own;
         let Some(c) = self.c.as_deref_mut() else {
             return 0;
         };
-        if let Some(&h) = c.export.resolved_headers.get(&p) {
+        if let Some(&h) = c.export.resolved_headers.get(&(p, own)) {
             return h;
         }
         let id = self.r.reserve("Code_Procedure_Header");
-        c.export.resolved_headers.insert(p, id);
+        c.export.resolved_headers.insert((p, own), id);
         let info = c.proc(p);
         let (name, lit, span, is_poly) = (info.name, info.lit.clone(), info.span, info.is_poly);
         let sig = if is_poly {
@@ -2088,12 +2091,13 @@ impl Exporter<'_> {
         // One header record per procedure: calls that resolved to it before it was reported
         // (`resolved_header`) and later ones see the reported header, body included.
         let known = match (&resolved, self.c.as_deref()) {
-            (Some((p, _)), Some(c)) => c.export.resolved_headers.get(p).copied(),
+            (Some((p, _)), Some(c)) => c.export.resolved_headers.get(&(*p, self.own)).copied(),
             _ => None,
         };
         let header_id = known.unwrap_or_else(|| self.r.reserve("Code_Procedure_Header"));
+        let own = self.own;
         if let (Some((p, _)), Some(c)) = (&resolved, self.c.as_deref_mut()) {
-            c.export.resolved_headers.insert(*p, header_id);
+            c.export.resolved_headers.insert((*p, own), header_id);
         }
         let mut body_id = 0;
         // A procedure's body is reported once it is lowered; until then only its header.
