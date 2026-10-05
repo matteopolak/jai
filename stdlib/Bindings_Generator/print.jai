@@ -1097,6 +1097,8 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
             }
             print_declaration_to_builder(builder, vbase, s, .NO_INDENT, 0, explicit_alignment);
             append(builder, " // C++ virtual base");
+            // libclang before 20 cannot report the offset: no placement and no struct check.
+            if vbase.bit_offset_in_parent < 0  append(builder, " (offset unknown to this libclang)");
             printed = true;
             if vbase.type.size > 0 has_fields = true;
         }
