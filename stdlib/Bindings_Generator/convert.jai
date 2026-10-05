@@ -1402,6 +1402,7 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                     // the run's storage covers the gap.
                     if field.bitfield_width == 0 continue;
                     if is_union  bitfield = null;
+                    if bitfield && is_msvc_layout() && !fits_msvc_unit(bitfield, field) bitfield = null;
                     if !bitfield {
                         run_prev_end = prev_end;
                         bitfield = New(Bitfield);
@@ -1451,6 +1452,43 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
     }
 }
 
+// MSVC allocates bit fields in units of their declared type: a field joins the open unit only
+// when its type has the same size and it still lies inside that unit; anything else (another
+// size, a field that would cross the unit's end, the unit a `: 0` field skips to) starts a new
+// unit. Itanium/AAPCS64 instead pack adjacent fields regardless of type.
+is_msvc_layout :: () -> bool {
+    return context.generator_options.os == .WINDOWS;
+}
+
+fits_msvc_unit :: (bitfield: *Bitfield, field: *Declaration) -> bool {
+    first := bitfield.members[0];
+    if !first.type || !field.type || first.type.size != field.type.size return false;
+    unit_bits := first.type.size * 8;
+    if unit_bits <= 0 return false;
+    return field.bit_offset_in_parent / unit_bits == first.bit_offset_in_parent / unit_bits;
+}
+
+// The storage of an MSVC run is its whole unit: an integer of the declared type's size at the
+// unit's (naturally aligned) start, which is also what C aligns the struct for.
+finish_msvc_bitfield :: (bitfield: *Bitfield) {
+    first := bitfield.members[0];
+    unit := first.type.size;
+    bitfield.alignment_type = null;
+    bitfield.start_byte = first.bit_offset_in_parent / 8 / unit * unit;
+    bitfield.byte_count = unit;
+    if unit == 1 || unit == 2 || unit == 4 || unit == 8 {
+        bitfield.type = first.type;
+        if first.type.type_of_enum || first.type.type_of_typedef || first.type.pointer_to bitfield.type = get_int_type(unit, false);
+    } else {
+        t := New(CType);
+        t.array_element_type = context.generator.type_def_u8;
+        t.array_element_count = unit;
+        t.size = unit;
+        bitfield.type = t;
+        bitfield.alignment_type = first.type;
+    }
+}
+
 // Size the storage of a run of bit fields (adjacent bit fields share one `__bitfield` member).
 // The storage covers exactly the bytes clang laid the run out in; it is an integer when the
 // run starts at a multiple of its size (so Jai places it where C does), a byte array otherwise.
@@ -1459,6 +1497,10 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
 finish_bitfield :: (bitfield: *Bitfield, prev_end: s64) {
     first := bitfield.members[0];
     last := bitfield.members[bitfield.members.count - 1];
+    if is_msvc_layout() && first.type && first.type.size > 0 {
+        finish_msvc_bitfield(bitfield);
+        return;
+    }
     start_byte := first.bit_offset_in_parent / 8;
     end_byte := (last.bit_offset_in_parent + last.bitfield_width + 7) / 8;
     bytes := end_byte - start_byte;

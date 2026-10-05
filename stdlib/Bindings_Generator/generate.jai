@@ -95,6 +95,15 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         clang("add_arg", 0, 0, "-I");
         clang("add_arg", 0, 0, it);
     }
+    // MSVC lays out bit fields differently from Itanium/AAPCS64. Without a `-target` of its own
+    // the parse uses the host's layout, so ask for the MS bit field rules when generating for Windows.
+    if options.os == .WINDOWS {
+        has_layout_choice := false;
+        for options.extra_clang_arguments {
+            if it == "-target" || it == "--target" || begins_with(it, "--target=") || it == "-mms-bitfields" || begins_with(it, "-fms-") has_layout_choice = true;
+        }
+        if !has_layout_choice  clang("add_arg", 0, 0, "-mms-bitfields");
+    }
     for options.extra_clang_arguments  clang("add_arg", 0, 0, it);
     if options.try_to_preserve_comments  clang("add_arg", 0, 0, "-fparse-all-comments");
 

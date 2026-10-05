@@ -527,7 +527,7 @@ print_objc_method :: (builder: *String_Builder, func: *Function, current_scope: 
     }
     print_to_builder(builder, ") -> % #c_call;\n", return_text);
     append_indentation(builder);
-    append(builder, "_func = xx objc_msgSend;\n");
+    print_to_builder(builder, "_func = xx %;\n", ifx objc_returns_in_memory(type.return_type) then "objc_msgSend_stret" else "objc_msgSend");
     append_indentation(builder);
     if returns_value append(builder, "return ");
     print_to_builder(builder, "_func(%, __selectors.%", type.arguments[0].output_name, objc_selector_field(func.foreign_name));
@@ -539,6 +539,16 @@ print_objc_method :: (builder: *String_Builder, func: *Function, current_scope: 
     context.generator.tab_depth -= 1;
     append_indentation(builder);
     append(builder, "}");
+}
+
+// x86-64 returns aggregates over 16 bytes through a hidden result pointer, and the Objective-C
+// runtime then wants the message sent with `objc_msgSend_stret`. arm64 sends everything through
+// `objc_msgSend`. (The decision follows `Generate_Bindings_Options.cpu`, not the host.)
+objc_returns_in_memory :: (type: *CType) -> bool {
+    if context.generator_options.cpu != .X64 return false;
+    t := strip_type(type, typedefs = true);
+    if !t || !t.type_of_struct return false;
+    return t.size > 16 || (t.type_of_struct.type && t.type_of_struct.type.size > 16);
 }
 
 // `setX:y:` -> `setX_y_`
@@ -878,6 +888,11 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         has_fields = true;
     }
 
+    // In the RAW variant a struct has no implicit padding: spell out the gaps clang laid out.
+    raw_next := 0;
+    raw_padding_count := 0;
+    if part == .RAW_DATA && has_vtable && !info.vtable_parent  raw_next = context.generator.pointer_size;
+
     found_parent_with_vtable := false;
     for parent: s.parents {
         if part == .WRAPPER continue;
@@ -910,6 +925,17 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
             append_indentation(builder);
             print_to_builder(builder, "#place %;\n", s.parents[0].output_name);
         }
+        if part == .RAW_DATA && !(s.flags & .IS_UNION) {
+            // No implicit padding between the bases either.
+            alignment := max(get_type_alignment(parent.type), 1);
+            offset := (raw_next + alignment - 1) / alignment * alignment;
+            if offset > raw_next {
+                append_indentation(builder);
+                print_to_builder(builder, "__padding%: [%] u8;\n", raw_padding_count, offset - raw_next);
+                raw_padding_count += 1;
+            }
+            raw_next = offset + get_base_data_size(parent);
+        }
         print_declaration_to_builder(builder, parent, s, 0);
         printed = true;
         if parent.type.size > 0 has_fields = true;
@@ -917,18 +943,14 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
 
     // Itanium lets a derived class's fields reuse the tail padding of a non-POD base,
     // which a Jai struct member cannot express.
-    if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && !(s.parents[s.parents.count - 1].decl_flags & .PRINT_AS_RAW) {
-        first_own := -1;
-        for s.declarations {
-            if is_struct_field(it) && it.bit_offset_in_parent >= 0 { first_own = it.bit_offset_in_parent / 8; break; }
-        }
-        parent_end := 0;
-        for s.parents  parent_end += max(it.type.size, 0);
-        if first_own >= 0 && first_own < parent_end {
+    if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && s.type {
+        offsets, end := get_printed_base_layout(s);
+        first_own := get_first_own_offset(s);
+        if first_own >= 0 && first_own < end {
             s.flags |= .NO_STRUCT_CHECKS;
             append(builder, "\n");
             append_indentation(builder);
-            append(builder, "// jai: the C++ layout of this class differs (its fields reuse tail padding of the base class); do not use these fields.");
+            append(builder, "// jai: the C++ layout of this class differs (its fields reuse tail padding of a base class); do not use these fields.");
         }
     }
 
@@ -939,14 +961,6 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         print_to_builder(builder, "%: *%_VTable;", info.vtable_name, s.output_name);
         printed = true;
         has_fields = true;
-    }
-
-    // In the RAW variant a struct has no implicit padding: spell out the gaps clang laid out.
-    raw_next := 0;
-    raw_padding_count := 0;
-    if part == .RAW_DATA {
-        for s.parents  raw_next += get_base_data_size(it);
-        if has_vtable && !info.vtable_parent raw_next += context.generator.pointer_size;
     }
 
     for s.declarations {
@@ -1118,20 +1132,51 @@ get_field_layout :: (decl: *Declaration) -> offset: s64, size: s64, alignment: s
     return offset, decl.type.size, get_type_alignment(decl.type);
 }
 
+// The struct a base-class declaration names (null for template instantiations and unknown types).
+get_base_struct :: (parent: *Declaration) -> *Struct {
+    base_type := strip_type(parent.type, typedefs = true);
+    if !base_type || !base_type.type_of_struct || base_type.template_instantiation_params.count > 0 return null;
+    return base_type.type_of_struct;
+}
+
 // The bytes of a base class that fields of the derived class may not reuse.
 get_base_data_size :: (parent: *Declaration) -> s64 {
     if parent.decl_flags & .PRINT_AS_RAW {
-        return get_data_size(strip_type(parent.type, typedefs = true).type_of_struct);
+        return get_data_size(get_base_struct(parent));
     }
     return max(parent.type.size, 0);
 }
 
+// Where the Itanium ABI puts each non-virtual base of `s` and where the bases' data ends.
+// A base is followed by whatever fits after its data size (`reuse[i]`: the data size of a
+// non-POD base, else its full size), aligned for the next base.
+get_base_layout :: (s: *Struct, reuse: [] bool) -> offsets: [] s64, end: s64 {
+    offsets: [..] s64;
+    end := 0;
+    info := find_or_create_extra_info(s.type, s);
+    if info && info.vtable.count > 0 && !info.vtable_parent  end = context.generator.pointer_size;
+    for parent: s.parents {
+        alignment := max(get_type_alignment(parent.type), 1);
+        end = (end + alignment - 1) / alignment * alignment;
+        array_add(*offsets, end);
+        size := max(parent.type.size, 0);
+        base := get_base_struct(parent);
+        if reuse[it_index] && base size = get_data_size(base);
+        end += size;
+    }
+    return offsets, end;
+}
+
+// `get_base_layout` for the bases as they are printed.
+get_printed_base_layout :: (s: *Struct) -> offsets: [] s64, end: s64 {
+    reuse: [..] bool;
+    for s.parents  array_add(*reuse, (it.decl_flags & .PRINT_AS_RAW) != 0);
+    return get_base_layout(s, reuse);
+}
+
 // Size of the data of a class without its tail padding (what a derived class starts after).
 get_data_size :: (s: *Struct) -> s64 {
-    end := 0;
-    for s.parents  end += get_base_data_size(it);
-    info := find_or_create_extra_info(s.type, s);
-    if info && info.vtable.count > 0 && !info.vtable_parent  end = max(end, context.generator.pointer_size);
+    offsets, end := get_printed_base_layout(s);
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         is_data, unused := is_struct_field(it);
@@ -1145,28 +1190,98 @@ get_data_size :: (s: *Struct) -> s64 {
     return end;
 }
 
-// Classes whose fields live in the tail padding of their (single) base class: the base
-// is printed with a padding-free `__RAW` variant for the derived class to embed.
+// Offset of the first data member of a class itself (-1 if it has none).
+get_first_own_offset :: (s: *Struct) -> s64 {
+    first_own := -1;
+    for s.declarations {
+        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        is_data, unused := is_struct_field(it);
+        if !is_data continue;
+        offset, size, alignment := get_field_layout(it);
+        if offset >= 0 && (first_own < 0 || offset < first_own) first_own = offset;
+    }
+    return first_own;
+}
+
+// Does laying the bases out with `reuse` agree with where clang put the class's own members?
+base_layout_matches :: (s: *Struct, end: s64) -> bool {
+    first_own := get_first_own_offset(s);
+    if first_own >= 0 return first_own >= end;
+    if s.type.size < 0 return true;
+    alignment := max(get_struct_alignment(s, true), 1);
+    return (end + alignment - 1) / alignment * alignment == s.type.size;
+}
+
+// Does the class have what makes the Itanium ABI let derived classes use its tail padding
+// (a user-declared constructor or destructor, virtual functions, or such a base)?
+is_probably_non_pod :: (s: *Struct) -> bool {
+    if s.flags & (Struct.Flags.HAS_CONSTRUCTOR | .HAS_COPY_CONSTRUCTOR | .HAS_MOVE_CONSTRUCTOR | .HAS_DESTRUCTOR) return true;
+    info := find_or_create_extra_info(s.type, s);
+    if info && (info.vtable.count > 0 || info.vtable_parent) return true;
+    for s.parents {
+        base := get_base_struct(it);
+        if base && is_probably_non_pod(base) return true;
+    }
+    return false;
+}
+
+// Classes whose fields live in the tail padding of their base classes: each such base is
+// printed with a padding-free `__RAW` variant for the derived class to embed. The bases of
+// a class are laid out in order, each after the data of the previous one, so with several
+// bases any of them may be the one whose padding gets reused. Which ones is found by trying
+// the possibilities against the offsets clang reports; if none agrees, the class is left
+// alone (print_struct_body comments it and skips the struct checks).
 mark_tail_padding_bases :: (g: *Generator_State) {
-    for s: g.structs_to_check {
-        if (s.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (s.flags & .IS_UNION) continue;
-        if s.parents.count != 1 continue;
-        parent := s.parents[0];
-        base_type := strip_type(parent.type, typedefs = true);
-        if !base_type || !base_type.type_of_struct || base_type.template_instantiation_params.count > 0 continue;
-        base := base_type.type_of_struct;
-        if (base.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (base.flags & (Struct.Flags.IS_UNION | .IS_INCOMPLETE)) || !base.name continue;
+    done: Table(*Struct, bool);
+    for s: g.structs_to_check  mark_tail_padding_struct(s, *done);
+}
 
-        first_own := -1;
-        for s.declarations {
-            if it.decl_flags & .OMIT_FROM_OUTPUT continue;
-            is_data, unused := is_struct_field(it);
-            if !is_data continue;
-            offset, size, alignment := get_field_layout(it);
-            if offset >= 0 && (first_own < 0 || offset < first_own) first_own = offset;
+mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
+    if table_contains(done, s) return;
+    table_add(done, s, true);
+    if (s.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (s.flags & .IS_UNION) || !s.type return;
+    if s.parents.count == 0 || s.parents.count > 6 return;
+
+    // The data size of a base depends on how its own bases were marked.
+    for s.parents {
+        base := get_base_struct(it);
+        if base mark_tail_padding_struct(base, done);
+    }
+
+    candidates: [..] bool;   // May the padding after this base be reused?
+    for s.parents {
+        base := get_base_struct(it);
+        ok := base != null && !(base.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) && !(base.flags & (Struct.Flags.IS_UNION | .IS_INCOMPLETE)) && base.name != "";
+        array_add(*candidates, ok && get_data_size(base) < it.type.size);
+    }
+
+    // The Itanium ABI reuses the tail padding of every non-POD base. Whether a base is POD is not
+    // always visible (a class with no own members fits both layouts), so the candidates that look
+    // non-POD are tried first, then the remaining combinations.
+    preferred := 0;
+    for s.parents {
+        if candidates[it_index] && is_probably_non_pod(get_base_struct(it)) preferred |= 1 << it_index;
+    }
+
+    reuse: [..] bool;
+    for 0..s.parents.count-1  array_add(*reuse, false);
+    found := false;
+    for attempt: 0..(1 << s.parents.count) {
+        mask := ifx attempt == 0 then preferred else attempt - 1;
+        valid := true;
+        for 0..s.parents.count-1 {
+            reuse[it] = (mask & (1 << it)) != 0;
+            if reuse[it] && !candidates[it] valid = false;
         }
-        if first_own < 0 || first_own >= parent.type.size continue;
+        if !valid continue;
+        offsets, end := get_base_layout(s, reuse);
+        if base_layout_matches(s, end) { found = true; break; }
+    }
+    if !found return;
 
+    for parent: s.parents {
+        if !reuse[it_index] continue;
+        base := get_base_struct(parent);
         base.flags |= .NEEDS_RAW;
         if !(parent.decl_flags & .PRINT_AS_RAW) {
             parent.decl_flags |= .PRINT_AS_RAW;
