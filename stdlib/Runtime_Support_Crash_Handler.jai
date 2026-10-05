@@ -1,17 +1,17 @@
 // Bootstrap crash handling uses compiler-generated context stack frames.
 init :: () {
     #if OS == .WINDOWS {
-        SetUnhandledExceptionFilter(handle_exception);
+        SetUnhandledExceptionFilter(on_unhandled_seh);
     } else {
         for signal: fatal_signals host_signal(signal, install_handler);
     }
 }
 #if OS == .WINDOWS {
-    // An unhandled structured exception (access violation, int3...): print the return addresses
-    // and exit with the exception code, as Windows itself would.
-    handle_exception :: (pointers: *EXCEPTION_POINTERS) -> s32 #c_call {
+    // Last stop for a structured exception nobody caught (bad pointer, `int3`, ...). The process
+    // ends with the exception's own code, the status Windows reports for such crashes anyway.
+    on_unhandled_seh :: (crash: *Seh_Info) -> s32 #c_call {
         write_string_unsynchronized("fatal runtime exception 0x", true);
-        code := pointers.ExceptionRecord.ExceptionCode;
+        code := crash.record.code;
         write_address_unsynchronized(code);
         write_string_unsynchronized("\n", true);
         write_frames();
@@ -56,10 +56,11 @@ werrs :: inline (s: ..string) #no_context {
     fatal_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
 } else #if OS == .WINDOWS {
     kernel32 :: #system_library "kernel32";
-    EXCEPTION_RECORD :: struct { ExceptionCode: u32; }
-    EXCEPTION_POINTERS :: struct { ExceptionRecord: *EXCEPTION_RECORD; ContextRecord: *void; }
-    Exception_Filter :: #type (pointers: *EXCEPTION_POINTERS) -> s32 #c_call;
-    SetUnhandledExceptionFilter :: (filter: Exception_Filter) -> Exception_Filter #foreign kernel32;
+    // Only the leading fields that are read here; Windows owns both records.
+    Seh_Record :: struct { code: u32; }
+    Seh_Info :: struct { record: *Seh_Record; registers: *void; }
+    Seh_Callback :: #type (crash: *Seh_Info) -> s32 #c_call;
+    SetUnhandledExceptionFilter :: (callback: Seh_Callback) -> Seh_Callback #foreign kernel32;
     ExitProcess :: (code: u32) #foreign kernel32;
     RtlCaptureStackBackTrace :: (skip: u32, count: u32, frames: **void, hash: *u32) -> u16 #foreign kernel32;
     host_backtrace :: (frames: **void, count: s32) -> s32 #no_context {
