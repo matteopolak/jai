@@ -115,6 +115,7 @@ Scripts, CI and project policies.
 - [LLVM setup](tools/llvm-setup.md)
 - [Third-party native libraries](tools/native-libs.md)
 - [open-jai expectation harness](tools/openjai-expectations.md)
+- [Releases](tools/releases.md)
 - [Upstream corpus](tools/upstream-corpus.md)
 
 ## Language and library specifications
