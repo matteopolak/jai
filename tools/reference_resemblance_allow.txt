@@ -1,0 +1,51 @@
+# Allowlist for tools/check_reference_resemblance.py.
+#
+# Format: <glob> <checks> <reason>
+#   glob    matched against "stdlib/<path>" with fnmatch ("*" also crosses "/")
+#   checks  comma-separated: runs, procs, comments, all, or proc:<name> (one procedure)
+#   reason  required; say why the resemblance is unavoidable
+#
+# Keep entries narrow. Binding modules get "runs" (and "comments" where the comments
+# come from the C headers) but stay subject to "procs", so hand-written helpers inside
+# them are still checked.
+
+# FFI bindings: declaration order, names and values are the C ABI.
+stdlib/POSIX/*              runs,comments  libc/POSIX bindings; declaration order and values are the ABI
+stdlib/POSIX_old/*          runs,comments  libc/POSIX bindings; declaration order and values are the ABI
+stdlib/Windows.jai          runs,comments  Win32 bindings; declarations follow the Windows SDK headers
+stdlib/Windows/*            runs,comments  Win32 bindings; declarations follow the Windows SDK headers
+stdlib/Linux/*              runs,comments  Linux syscall/kernel bindings; struct and constant layout is the ABI
+stdlib/macos/*              runs,comments  macOS framework bindings generated from the SDK headers
+stdlib/Android/*            runs,comments  NDK bindings (EGL, GLES, JNI, AAudio) generated from the NDK headers
+stdlib/Objective_C/*        runs,comments  Cocoa/AppKit bindings; selectors and constants come from the SDK
+stdlib/Vulkan/*             runs,comments  generated from the Vulkan registry
+stdlib/GL/*                 runs,comments  generated from the OpenGL registry; loader tables follow it
+stdlib/X11/*                runs,comments  Xlib bindings generated from the X11 headers
+stdlib/d3d11/*              runs,comments  Direct3D 11 COM bindings; vtable order is the ABI
+stdlib/d3d12/*              runs,comments  Direct3D 12 COM bindings; vtable order is the ABI
+stdlib/d3d_compiler/*       runs,comments  d3dcompiler bindings generated from the SDK header
+stdlib/dxc_compiler/*       runs,comments  dxcompiler COM bindings; vtable order is the ABI
+stdlib/dxgi/*               runs,comments  DXGI COM bindings; vtable order is the ABI
+stdlib/Metal/*              runs,comments  Metal bindings generated from the SDK headers
+stdlib/SDL/*                runs,comments  SDL2 bindings generated from the SDL headers
+stdlib/ImGui/*              runs,comments  Dear ImGui bindings; the by-value overload shims mirror the C++ API one to one
+stdlib/Curl/*               runs,comments  libcurl bindings generated from curl.h
+stdlib/freetype/*           runs,comments  FreeType bindings generated from the FreeType headers
+stdlib/freetype-2.12.1/*    runs,comments  FreeType bindings generated from the FreeType headers
+stdlib/freetype255/*        runs,comments  FreeType bindings generated from the FreeType headers
+stdlib/stb_image/*          runs,comments  stb_image bindings generated from the C header
+stdlib/stb_image_resize/*   runs,comments  stb_image_resize bindings generated from the C header
+stdlib/stb_image_write/*    runs,comments  stb_image_write bindings generated from the C header
+stdlib/stb_vorbis/*         runs,comments  stb_vorbis bindings generated from the C header
+stdlib/lz4/*                runs,comments  lz4 bindings generated from the C header
+stdlib/meshoptimizer/*      runs,comments  meshoptimizer bindings generated from the C header
+stdlib/MojoShader/*         runs,comments  MojoShader bindings generated from the C header
+stdlib/nvtt/*               runs,comments  NVIDIA Texture Tools C++ bindings; method shims mirror the class one to one
+stdlib/nvidia_aftermath/*   runs,comments  Nsight Aftermath bindings generated from the SDK header
+stdlib/rpmalloc/*           runs,comments  rpmalloc bindings; config switches mirror the C library's
+stdlib/Thekla_Atlas/*       runs,comments  thekla_atlas bindings generated from the C++ header
+stdlib/Thekla_Baker/*       runs,comments  thekla baker bindings generated from the C++ header
+stdlib/telemetry3/*         runs,comments  Telemetry SDK bindings generated from the C header
+stdlib/xxHash/*             runs,comments  xxHash bindings generated from the C header
+stdlib/meow_hash/*          runs           the hash's seed table is part of its specification
+stdlib/pl_mpeg/audio.jai     runs           MPEG-1 audio decoding tables are fixed by the standard
