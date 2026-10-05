@@ -65,3 +65,4 @@ CSV columns: `zone,self_ms,hier_ms,calls,indent,file,line`.
 - `tests/stdlib/iprof-call-graph.jai`: manual mode; call counts, recursion folding, call-graph navigation, history frames, text and CSV output.
 - `tests/stdlib/iprof-runtime-manual.jai`: manual mode with the drawing callbacks.
 - `tests/stdlib/iprof-plugin.jai`: plugin hooks and option parsing.
+- From the command line, `jaic build file.jai -plug Iprof [-min_size n] [-modules]` instruments a program (see [metaprogram plugins](../metaprogramming/metaprogram-plugins.md)).

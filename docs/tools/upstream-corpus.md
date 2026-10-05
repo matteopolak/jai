@@ -2,13 +2,13 @@
 
 ## What it is
 
-Pinned source snapshots of recently maintained open-source Jai projects (focus-editor/focus, Ivo-Balbaert/The_Way_to_Jai, SogoCZE/Jails, rluba/jaison, withlang-dev/open-jai, ostef/Vk-Engine, roeyb1/sgpu, plus the dependencies SogoCZE/jai_parser, ostef/Linalg and ostef/Jolt-Jai, and metaprogramming libraries (`LIBRARIES`): match-jai, yield-jai, JaiModules-AST_Utils, Jai-Shader-Transpiler, jai-utils, unotest). They are the real-world programs `jaic` is measured against. They live in the gitignored `corpus/upstream/`; the committed `corpus/upstreams.json` records exact commits and file hashes.
+Pinned source snapshots of recently maintained open-source Jai projects (focus-editor/focus, Ivo-Balbaert/The_Way_to_Jai, SogoCZE/Jails, rluba/jaison, withlang-dev/open-jai, ostef/Vk-Engine, roeyb1/sgpu, plus the dependencies SogoCZE/jai_parser, ostef/Linalg and ostef/Jolt-Jai, and libraries (`LIBRARIES`): the metaprogramming libraries match-jai, yield-jai, JaiModules-AST_Utils, Jai-Shader-Transpiler, jai-utils, unotest, and rluba's library family jai-tracy, jai-redis, uniform, cluster, jai-csv, jai-postgres, stubborn, hyperserve, wait_group, jai-date; plus Tracy's client sources (wolfpld/tracy, a dependency of jai-tracy). They are the real-world programs `jaic` is measured against. They live in the gitignored `corpus/upstream/`; the committed `corpus/upstreams.json` records exact commits and file hashes.
 
 ## How it works
 
-`tools/fetch_upstreams.py` downloads the pinned `.jai` files, READMEs, licenses, C-family sources (`NATIVE_SOURCE_SUFFIXES`, needed by native-library builds) and compile-time data files (`RESOURCE_PREFIXES`, e.g. focus's `config/` and `fonts/`) into `corpus/upstream/<owner>--<repo>/`. Existing pins in the manifest are kept; `--since YYYY-MM-DD` (default 2025-10-01) is the recency cutoff for newly added repositories, and `DEPENDENCIES` (submodules) and `LIBRARIES` (metaprogramming libraries that target the Compiler node API and rarely change) are exempt. `MODULE_LINKS` symlinks dependencies into the consumers' `modules/` directories, and libraries imported by name into `corpus/upstream/_modules/` (cases pass `-I ../../_modules`). Nothing from a project is built or executed by the fetcher.
+`tools/fetch_upstreams.py` downloads the pinned `.jai` files, READMEs, licenses, C-family sources (`NATIVE_SOURCE_SUFFIXES`, needed by native-library builds) and compile-time data files (`RESOURCE_PREFIXES`, e.g. focus's `config/` and `fonts/`) into `corpus/upstream/<owner>--<repo>/`. Existing pins in the manifest are kept; `--since YYYY-MM-DD` (default 2025-10-01) is the recency cutoff for newly added repositories, and `DEPENDENCIES` (submodules) and `LIBRARIES` (metaprogramming libraries that target the Compiler node API and rarely change) are exempt. `MODULE_LINKS` symlinks dependencies into the consumers' `modules/` directories, and libraries imported by name into `corpus/upstream/_modules/` (cases pass `-I ../../_modules`): `AST_Utils`, and rluba's `uniform`, `wait_group`, `cluster`, `date` (jai-date), `stubborn`, `tracy` (jai-tracy) and `hyperserve`, which import each other by those names. `SOURCE_PREFIXES` limits a repository to some directories (Tracy: only `public/`, the client library; its profiler GUI and bundled libraries are not needed). Nothing from a project is built or executed by the fetcher.
 
-Dependencies are pinned like projects: jai_parser for Jails; Linalg, Jolt-Jai and Jolt-Jai's JoltC submodule for Vk-Engine (JoltC has no Jai files; the fetcher takes its `CMakeLists.txt` and `Examples/`). `corpus/upstream` and the Git cache live in the main checkout (found through the Git common dir), so worktrees share them.
+Dependencies are pinned like projects: jai_parser for Jails; Linalg, Jolt-Jai and Jolt-Jai's JoltC submodule for Vk-Engine (JoltC has no Jai files; the fetcher takes its `CMakeLists.txt` and `Examples/`); wolfpld/tracy at jai-tracy's `tracy` submodule commit (v0.11.1), linked as `rluba--jai-tracy/tracy`. `corpus/upstream` and the Git cache live in the main checkout (found through the Git common dir), so worktrees share them.
 
 `tools/verify_upstreams.py` re-hashes the fetched tree against the manifest and rejects modified or missing files. Unlisted files are reported, not rejected: building the projects (sweep `build` cases, `build_native_libs.py`, `build_vk_engine_libs.py`) leaves libraries, executables and generated files next to the sources.
 
@@ -56,6 +56,33 @@ The exact revisions are pinned in `corpus/upstreams.json`. Notes per project:
   imported directly), MetaThreadSafe (its examples fail on purpose; the diagnostics match, except that the
   untaken `#if` branch of a baked instance is still checked), jai-control-flow (upstream uses `%%` as an escaped
   percent, which newer Jai reads as two arguments; a corrected copy passes all its tests).
+
+- **rluba's libraries** (15 sweep cases, ids below). All compile; what runs depends on the services they talk to.
+  - uniform (regex): `jaic run first.jai - test` runs its stubborn test suite at compile time (all pass) — case
+    `uniform-tests`, which also covers **stubborn** (plus `stubborn-module`).
+  - jai-date: `module.jai`'s `#run` self-tests pass (`jai-date-module`, `-I ../_modules` for uniform). Its
+    `example.jai` passes `allocator =` as an ordinary named argument, which current Jai rejects (it needs `,,`):
+    an upstream bug, not a case.
+  - jai-csv: `jai-csv-module` checks; a scratch program parsing quoted fields and range-checked integers ran
+    correctly (it has no tests of its own).
+  - wait_group: `examples/example.jai` runs (`wait-group-example`).
+  - cluster: `cluster.jai` builds natively (`cluster-build`); `cluster -n 2 -- crashing` starts, watches and
+    reaps instances (needs `Process` to give children a socket stdin). `examples/crashing.jai` checks.
+    `examples/http_server.jai` calls `cluster_accept(socket)`, but the module now wants an address type first:
+    upstream bug.
+  - hyperserve: both examples build (`hyperserve-example-build`, `hyperserve-datastar-build`); the built
+    servers answered GET routes with path/query parameters and the datastar SSE stream when tried by hand.
+  - jai-redis: `test.jai` builds (`jai-redis-test-build`); it needs a Redis server to run. Against a scripted
+    RESP3 server it ran to completion (pipelining, pushes, pub/sub).
+  - jai-postgres: `first.jai` (compiles the module, `jai-postgres-module`) and `examples/Jaipgvector.jai` check.
+    Running needs libpq and a database (neither installed). `examples/example.jai` refers to `Uuid` but
+    declares `UUID`: upstream bug.
+  - jai-tracy: `tests/test.jai -plug tracy` checks and builds (`jai-tracy-plugin-*`; the build case's setup
+    compiles `macos/libtracy.a` from `tracy/public/TracyClient.cpp`). With `-min_size 1` the plugin wraps
+    `main` and `do_something` in Tracy zones and the program runs. Its `generate.jai` also runs under jaic
+    (builds both macOS archs with `BuildCpp`, regenerates `bindings.jai`); not a case because it rewrites the
+    pinned `bindings.jai`, and the regenerated enums differ from upstream's (no `TracyPlotFormat` prefix
+    stripping, `u32` instead of `s32`).
 
 Vk-Engine needs a `--release` build (about 45 s per module):
 `cd corpus/upstream/ostef--Vk-Engine && jaic check Build.jai -I Modules -I Source -os linux - Core|Renderer|Game|Editor`.

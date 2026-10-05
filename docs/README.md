@@ -44,6 +44,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compile-time execution (`#run`)](metaprogramming/compile-time-execution.md)
 - [Compiler module (Jai side)](metaprogramming/compiler-module.md)
 - [Compiler records (messages, syntax trees, type descriptors)](metaprogramming/compiler-records.md)
+- [Metaprogram plugins (`-plug`)](metaprogramming/metaprogram-plugins.md)
 - [Preload and Runtime_Support bootstrap](metaprogramming/prelude-and-runtime-support.md)
 - [Reflection and Type_Info](metaprogramming/reflection-and-type-info.md)
 - [Workspaces and metaprograms](metaprogramming/workspaces.md)

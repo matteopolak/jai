@@ -10,7 +10,7 @@ File streams and whole-file reads (`File`), directory walking and path helpers (
 
 `File_Utilities` provides `visit_files` (recursive, with an optional symlink policy and a callback that can stop descent), `file_list`, `copy_file`, `copy_directory`, `delete_directory` and `path_*` helpers. `file_list` returns only an array, so a failed traversal can yield a partial list; use `visit_files` when failure matters.
 
-`Process.run_command(args..., working_directory, capture_and_return_output, print_captured_output, timeout_ms, arg_quoting)` returns `(Process_Result, output, error, timeout_reached)`. The process starts directly without a shell, so `|` and `>` are literal arguments. `run_command_line(command, capture)` is a `jaic` extension that splits one string into arguments and returns `(exit_code, standard_output, standard_error, timed_out)`. `Process_Result` has `type`, `exit_code` and `signal`. POSIX launch uses a close-on-exec pipe to tell an exec failure from an exit code of 127.
+`Process.run_command(args..., working_directory, capture_and_return_output, print_captured_output, timeout_ms, arg_quoting)` returns `(Process_Result, output, error, timeout_reached)`. The process starts directly without a shell, so `|` and `>` are literal arguments. `run_command_line(command, capture)` is a `jaic` extension that splits one string into arguments and returns `(exit_code, standard_output, standard_error, timed_out)`. `Process_Result` has `type`, `exit_code` and `signal`. POSIX launch uses a close-on-exec pipe to tell an exec failure from an exit code of 127. With capture on POSIX, the child's stdin is one end of a `socketpair` (not a pipe): programs rely on that to exchange messages and descriptors with their parent (rluba/cluster's `fstat(0)` + `send`/`recv`). `read_pipe` returns `(true, 0)` at end of input or when a non-blocking pipe is empty and never closes the handle; `read_from_process` marks `eof` itself, so callers that watch the handles in their own event loop keep them registered until they `deinit`.
 
 ```jai
 #import "Basic";
@@ -29,7 +29,7 @@ main :: () {
 - Platform splits: `File/{unix,windows}.jai`, `File_Utilities/os/{unix,windows}.jai`, `Process/{posix,windows}.jai`, `Shared_Memory_Channel/{posix,windows}.jai`. Keep portable logic in each `module.jai`.
 - `Basic` holds `get_working_directory`/`set_working_directory`; do not redefine them in `File` or `System`.
 - `stdlib/tests/os-file-process/file-roundtrip.jai` writes, reads and deletes `file-roundtrip.tmp` next to itself (sweep set `modules`).
-- `Process` captures output through pipes; the Windows variant uses SDK processes and a job object. A new capture feature needs both.
+- `Process` captures output through pipes (stdin: a socket, see above; test `tests/stdlib/process-stdin-socket.jai`); the Windows variant uses SDK processes and a job object. A new capture feature needs both.
 
 ## Configuration
 
