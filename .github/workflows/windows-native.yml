@@ -79,13 +79,15 @@ jobs:
       - name: Install the official LLVM release
         run: |
           curl -fsSL -o llvm.tar.xz "https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-pc-windows-msvc.tar.xz"
-          mkdir -p "$RUNNER_TEMP/llvm"
-          tar -xJf llvm.tar.xz -C "$RUNNER_TEMP/llvm" --strip-components=1
+          # GNU tar reads `D:\...` as a remote host: extract to the POSIX spelling of the path.
+          llvm="$(cygpath -u "$RUNNER_TEMP")/llvm"
+          mkdir -p "$llvm"
+          tar -xJf llvm.tar.xz -C "$llvm" --strip-components=1
           rm llvm.tar.xz
-          echo "LLVM_SYS_221_PREFIX=$RUNNER_TEMP/llvm" >> "$GITHUB_ENV"
-          echo "$RUNNER_TEMP/llvm/bin" >> "$GITHUB_PATH"
-          "$RUNNER_TEMP/llvm/bin/llvm-config" --version
-          echo "system libraries: $("$RUNNER_TEMP/llvm/bin/llvm-config" --link-static --system-libs)"
+          echo "LLVM_SYS_221_PREFIX=$(cygpath -m "$llvm")" >> "$GITHUB_ENV"
+          echo "$(cygpath -w "$llvm/bin")" >> "$GITHUB_PATH"
+          "$llvm/bin/llvm-config" --version
+          echo "system libraries: $("$llvm/bin/llvm-config" --link-static --system-libs)"
       - name: Build jaic with the LLVM backend
         run: cargo build --locked -p jaic-cli --no-default-features --features static-llvm
       - name: Build and run the Windows test programs natively

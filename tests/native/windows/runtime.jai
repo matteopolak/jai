@@ -58,6 +58,7 @@ main :: () {
     check(abs(sqrt(2.0) - 1.41421356) < 0.00001, "sqrt");
     args := get_command_line_arguments();
     for args check(it.count > 0, "command line argument");  // `jaic run` passes none.
+    #if OS == .WINDOWS check(args.count == 1 && ends_with(args[0], ".exe"), "argv[0] from the wide command line");
 
     // String.
     parts := split("alpha,beta,gamma", ",");
