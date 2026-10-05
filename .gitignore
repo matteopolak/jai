@@ -8,7 +8,3 @@
 /node_modules/
 /editor-build.json
 /editor-dependency-age.json
-
-# Claude Code: share the launch configuration, not local state.
-.claude/*
-!.claude/launch.json
