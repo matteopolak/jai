@@ -4,7 +4,7 @@
     python3 tools/bench.py [--jaic PATH] [--repeat 3] [--only NAME] [--out bench.json] [--compare old.json]
 
 Each workload reports the median wall time over --repeat runs and the interpreter's instruction
-count (one extra run with JAIC_PROFILE=1). Instruction counts are deterministic, so they are the
+count (one extra run with JAIC_PROFILE=1). Instruction counts are nearly deterministic, so they are the
 better signal for small changes; wall time catches native compiler costs the profile cannot see.
 Corpus workloads are skipped when corpus/upstream is missing (python3 tools/fetch_upstreams.py).
 """
