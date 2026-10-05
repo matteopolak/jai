@@ -60,13 +60,21 @@ jobs:
           echo "LLVM_SYS_221_PREFIX=$RUNNER_TEMP/llvm" >> "$GITHUB_ENV"
           "$RUNNER_TEMP/llvm/bin/llvm-config" --version
           echo "system libraries: $("$RUNNER_TEMP/llvm/bin/llvm-config" --link-static --system-libs)"
+      # The official macOS LLVM names Homebrew's static zstd (/opt/homebrew/lib/libzstd.a) in its
+      # system libraries; linking the archive leaves no runtime dependency on Homebrew.
+      - name: Install static zstd (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install zstd
+          ls -l /opt/homebrew/lib/libzstd.a
       - name: Install static zlib and zstd (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y zlib1g-dev libzstd-dev libxml2-dev
       - name: Build
         run: |
           if [ -n "${{ matrix.llvm }}" ]; then
-            cargo build --release --locked -p jaic-cli --no-default-features --features static-llvm
+            cargo build --release --locked -p jaic-cli --no-default-features --features static-llvm \
+              || { echo "::group::verbose link"; cargo rustc --release --locked -p jaic-cli --bin jaic --no-default-features --features static-llvm -- -C link-args=-v 2>&1 | tail -60; echo "::endgroup::"; exit 1; }
           else
             cargo build --release --locked -p jaic-cli --no-default-features
           fi
@@ -78,7 +86,9 @@ jobs:
           dir="jaic-${{ matrix.name }}"
           mkdir -p "$dir"
           cp "target/release/jaic$exe" "target/release/jai-lsp$exe" "$dir/"
+          # stdlib/Preload.jai loads ../prelude/Preload.jai.
           cp -R stdlib "$dir/stdlib"
+          cp -R prelude "$dir/prelude"
           cp README.md CHANGELOG.md "$dir/"
           if [ "$RUNNER_OS" = "Windows" ]; then
             7z a -tzip "$dir.zip" "$dir" > /dev/null

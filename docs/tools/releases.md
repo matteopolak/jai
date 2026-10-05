@@ -10,7 +10,7 @@ Each platform job:
 
 1. Downloads the official LLVM 22 release for the platform (`LLVM-<version>-macOS-ARM64.tar.xz`, `LLVM-<version>-Linux-X64.tar.xz`) and points `LLVM_SYS_221_PREFIX` at it. Those tarballs carry LLVM's static libraries. Homebrew's and apt's LLVM link Z3 and zstd as shared libraries, so a binary built against them would only run where those are installed.
 2. Builds `jaic-cli --no-default-features --features static-llvm`, which links LLVM statically. Windows builds without LLVM (`--no-default-features`): there is no Win64 calling convention yet, so a Windows `jaic` checks and interprets only.
-3. Packages `jaic`, `jai-lsp`, `stdlib/`, `README.md` and `CHANGELOG.md` as `jaic-<platform>.tar.gz` (`.zip` on Windows).
+3. Packages `jaic`, `jai-lsp`, `stdlib/`, `prelude/` (which `stdlib/Preload.jai` loads), `README.md` and `CHANGELOG.md` as `jaic-<platform>.tar.gz` (`.zip` on Windows).
 4. Smoke-tests the packaged `jaic` from a directory outside the checkout: `run` (and `build`, where LLVM is linked) of `examples/compile-time-record.jai` must exit with 42. It also checks that the macOS binary links nothing from Homebrew and the Linux one no shared LLVM.
 
 The `publish` job then collects the archives, writes `SHA256SUMS`, extracts the `## [x.y.z]` section of `CHANGELOG.md` and runs `gh release create`.
@@ -34,7 +34,7 @@ To test the build without publishing, run the workflow by hand (Actions → rele
 
 Gotchas:
 
-- Linking static LLVM also needs LLVM's system libraries (`llvm-config --link-static --system-libs`, printed in the job log). On Linux the job installs zlib, zstd and libxml2.
+- Linking static LLVM also needs LLVM's system libraries (`llvm-config --link-static --system-libs`, printed in the job log). On Linux the job installs zlib, zstd and libxml2; on macOS the official LLVM names Homebrew's `/opt/homebrew/lib/libzstd.a`, so the job installs Homebrew's zstd (the archive is linked in, so the binary does not need Homebrew).
 - Adding a platform means adding a matrix row with its LLVM tarball name. Check the LLVM release page for the exact asset name; it changes between major versions.
 
 ## Configuration
