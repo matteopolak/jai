@@ -6,7 +6,7 @@
 
 ## How it works
 
-`bench.py` runs each workload `--repeat` times and keeps the median wall time. It then runs it once more with `JAIC_PROFILE=1` and reads the total interpreted instruction count. Instruction counts are deterministic, so they show small changes that wall time hides in noise.
+`bench.py` runs each workload `--repeat` times and keeps the median wall time. It then runs it once more with `JAIC_PROFILE=1` and reads the total interpreted instruction count. Instruction counts barely vary between runs (only pointer-keyed tables shift with ASLR), so they show small changes that wall time hides in noise.
 
 | Workload | What it exercises |
 |---|---|
