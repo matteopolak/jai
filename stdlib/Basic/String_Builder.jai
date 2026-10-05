@@ -100,12 +100,24 @@ append :: (using builder: *String_Builder, s: *u8, length: s64) {
         if available == 0 { if !expand(builder) return; continue; }
         n := min(remaining, available);
         destination := get_buffer_data(segment)+segment.count;
-        for i: 0..n-1 destination[i] = source[i];
+        if n < 16 for i: 0..n-1 destination[i] = source[i];
+        else memcpy(destination, source, n);
         segment.count += n; source += n; remaining -= n;
     }
 }
 append :: inline (builder: *String_Builder, s: string) { append(builder, s.data, s.count); }
-append :: inline (builder: *String_Builder, byte: u8) { local := byte; append(builder, *local, 1); }
+append :: inline (builder: *String_Builder, byte: u8) {
+    if builder.initialized {
+        segment := get_current_buffer(builder);
+        if segment.count < segment.allocated {
+            get_buffer_data(segment)[segment.count] = byte;
+            segment.count += 1;
+            return;
+        }
+    }
+    local := byte;
+    append(builder, *local, 1);
+}
 append_by_pointer :: inline (builder: *String_Builder, pointer: *$T) {
     append(builder, cast(*u8) pointer, size_of(T));
 }
@@ -127,7 +139,7 @@ builder_to_string :: (builder: *String_Builder, extra_bytes_to_prepend := 0, do_
         segment := get_base_buffer(builder);
         while segment {
             bytes := get_buffer_data(segment);
-            for i: 0..segment.count-1 result.data[offset+i] = bytes[i];
+            if segment.count > 0 memcpy(result.data + offset, bytes, segment.count);
             offset += segment.count; segment = segment.next;
         }
     }

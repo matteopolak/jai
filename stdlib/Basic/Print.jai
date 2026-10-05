@@ -225,6 +225,26 @@ __float_wide_multiply :: (a: *__Float_Wide, factor: u32) -> bool {
     }
     return true;
 }
+__float_wide_shift :: (a: *__Float_Wide, bits: s64) -> bool {
+    if a.used == 0 return true;
+    words := bits / 32;
+    rest := bits % 32;
+    if a.used + words + 1 > 36 return false;
+    i := a.used - 1;
+    while i >= 0 { a.words[i + words] = a.words[i]; i -= 1; }
+    for i: 0..words-1 a.words[i] = 0;
+    a.used += words;
+    if rest != 0 {
+        carry: u32 = 0;
+        for i: words..a.used-1 {
+            word := a.words[i];
+            a.words[i] = (word << rest) | carry;
+            carry = word >> (32 - rest);
+        }
+        if carry != 0 { a.words[a.used] = carry; a.used += 1; }
+    }
+    return true;
+}
 __float_wide_add :: (a: *__Float_Wide, b: *__Float_Wide) -> bool {
     count := a.used;
     if b.used > count count = b.used;
@@ -258,6 +278,32 @@ __float_wide_subtract :: (a: *__Float_Wide, b: *__Float_Wide) {
     }
     while a.used > 0 && a.words[a.used-1] == 0 a.used -= 1;
 }
+// The same operations on a plain u64. Most printed values (small integers, short decimals) never
+// leave 64 bits, so __float_decimal_digits tries this first and redoes the work with wide limbs
+// only when an operation would overflow.
+__float_wide_set :: (a: *u64, value: u64) { a.* = value; }
+__float_wide_compare :: (a: *u64, b: *u64) -> s64 {
+    if a.* < b.* return -1;
+    if a.* > b.* return 1;
+    return 0;
+}
+__float_wide_multiply :: (a: *u64, factor: u32) -> bool {
+    if a.* > cast(u64) 0xffff_ffff_ffff_ffff / factor return false;
+    a.* *= factor;
+    return true;
+}
+__float_wide_add :: (a: *u64, b: *u64) -> bool {
+    if a.* > cast(u64) 0xffff_ffff_ffff_ffff - b.* return false;
+    a.* += b.*;
+    return true;
+}
+__float_wide_subtract :: (a: *u64, b: *u64) { a.* -= b.*; }
+__float_wide_shift :: (a: *u64, bits: s64) -> bool {
+    if a.* == 0 return true;
+    if bits >= 64 || a.* >> cast(u64) (64 - bits) != 0 return false;
+    a.* <<= cast(u64) bits;
+    return true;
+}
 __float_round_digits :: (result: *__Float_Digits) {
     i := result.count - 1;
     while i >= 0 && result.digits[i] == 9 { result.digits[i] = 0; i -= 1; }
@@ -269,6 +315,12 @@ __float_round_digits :: (result: *__Float_Digits) {
 // rounding interval. fixed_after_point supplies DECIMAL precision; otherwise
 // requested is the required significant digit count.
 __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -1) -> __Float_Digits {
+    result := __float_decimal_digits_in(u64, bits, requested, fixed_after_point);
+    if !result.valid result = __float_decimal_digits_in(__Float_Wide, bits, requested, fixed_after_point);
+    return result;
+}
+// Invalid results include overflow of T; the caller then retries with __Float_Wide.
+__float_decimal_digits_in :: ($T: Type, bits: u64, requested: s64, fixed_after_point: s64) -> __Float_Digits {
     result: __Float_Digits;
     fraction := bits & 0x000f_ffff_ffff_ffff;
     binary_exponent := cast(s64) ((bits >> 52) & 0x7ff);
@@ -280,7 +332,7 @@ __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -
     mantissa := fraction;
     power: s64 = -1076;
     if binary_exponent > 0 { mantissa |= 0x0010_0000_0000_0000; power = binary_exponent - 1077; }
-    r, s, below, above: __Float_Wide;
+    r, s, below, above: T;
     __float_wide_set(*r, mantissa * 4);
     __float_wide_set(*s, 1);
     __float_wide_set(*below, 2);
@@ -288,11 +340,9 @@ __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -
     // Powers of two above the smallest normal have half-sized lower spacing.
     if fraction == 0 && binary_exponent > 1 __float_wide_set(*below, 1);
     if power >= 0 {
-        for i: 0..power-1 {
-            if !__float_wide_multiply(*r, 2) || !__float_wide_multiply(*below, 2) || !__float_wide_multiply(*above, 2) return result;
-        }
+        if !__float_wide_shift(*r, power) || !__float_wide_shift(*below, power) || !__float_wide_shift(*above, power) return result;
     } else {
-        for i: 0..(-power)-1 if !__float_wide_multiply(*s, 2) return result;
+        if !__float_wide_shift(*s, -power) return result;
     }
     if __float_wide_compare(*r, *s) >= 0 {
         while true {

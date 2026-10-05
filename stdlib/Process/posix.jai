@@ -29,8 +29,10 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
             close_pair(*child_error);
         }
         if ok && working_directory ok = P.chdir(directory) == 0;
+        // At compile time `OS` is the target, which need not be the host running the compiler
+        // (`jaic check -os linux` on macOS), and the parent is the compiler itself.
         #if OS == .LINUX {
-            if ok && kill_process_if_parent_exits ok = process_prctl(1, 9, 0, 0, 0) == 0;
+            if ok && kill_process_if_parent_exits && !#compile_time ok = process_prctl(1, 9, 0, 0, 0) == 0;
         }
         if ok P.execvp(argv[0], argv);
         failure := P.errno();

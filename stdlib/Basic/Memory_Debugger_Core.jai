@@ -43,6 +43,10 @@ MD_Trace_Block :: struct {
 MD_State :: struct {
     storage_allocator: Allocator;
     records: *MD_Record;
+    // The newest record per address (open addressing, power-of-two count), for `md_find`.
+    slots: **MD_Record;
+    slot_count: s64;
+    slots_used: s64;
     traces: *MD_Trace_Block;
     next_index: u64 = 1;
     first_report_index: u64 = 1;
@@ -51,12 +55,39 @@ MD_State :: struct {
 MD_TRACE_BYTES :: (size_of(MD_Trace_Block) + 7) & ~7;
 
 md_find :: (state: *MD_State, pointer: *void) -> *MD_Record {
-    record := state.records;
-    while record {
-        if record.allocation.pointer == pointer return record;
-        record = record.next;
+    if !state.slot_count return null;
+    mask := state.slot_count - 1;
+    slot := md_slot_hash(pointer) & mask;
+    while state.slots[slot] {
+        if state.slots[slot].allocation.pointer == pointer return state.slots[slot];
+        slot = (slot + 1) & mask;
     }
     return null;
+}
+md_slot_hash :: (pointer: *void) -> s64 #no_aoc {
+    return cast,no_check(s64) ((cast(u64) pointer * 11400714819323198485) >> 32);
+}
+// Make `record` the one `md_find` returns for its address (addresses are reused after frees).
+md_index :: (state: *MD_State, record: *MD_Record) -> bool {
+    if (state.slots_used + 1) * 4 >= state.slot_count * 3 {
+        old, old_count := state.slots, state.slot_count;
+        count := ifx old_count then old_count * 2 else 1024;
+        bytes := count * size_of(*MD_Record);
+        slots := cast(**MD_Record) state.storage_allocator.proc(.ALLOCATE, bytes, 0, null, state.storage_allocator.data);
+        if !slots return false;
+        memset(slots, 0, bytes);
+        state.slots, state.slot_count, state.slots_used = slots, count, 0;
+        for 0..old_count - 1  if old[it]  md_index(state, old[it]);
+        if old state.storage_allocator.proc(.FREE, 0, old_count * size_of(*MD_Record), old, state.storage_allocator.data);
+    }
+    mask := state.slot_count - 1;
+    slot := md_slot_hash(record.allocation.pointer) & mask;
+    while state.slots[slot] && state.slots[slot].allocation.pointer != record.allocation.pointer {
+        slot = (slot + 1) & mask;
+    }
+    if !state.slots[slot]  state.slots_used += 1;
+    state.slots[slot] = record;
+    return true;
 }
 md_same_allocator :: (a: Allocator, b: Allocator) -> bool { return a.proc == b.proc && a.data == b.data; }
 md_raw_new :: (state: *MD_State, $T: Type) -> *T {
@@ -125,6 +156,10 @@ md_alloc :: (state: *MD_State, allocator: Allocator, memory: *void, size: s64, t
         return .OUT_OF_MEMORY;
     }
     record.allocation.pointer = memory;
+    if !md_index(state, record) {
+        state.storage_allocator.proc(.FREE, 0, size_of(MD_Record), record, state.storage_allocator.data);
+        return .OUT_OF_MEMORY;
+    }
     record.allocation.size = size;
     record.allocation.index = state.next_index;
     state.next_index += 1;
@@ -209,6 +244,7 @@ md_deinit :: (state: *MD_State) {
         state.storage_allocator.proc(.FREE, 0, bytes, trace, state.storage_allocator.data);
         trace = next;
     }
+    if state.slots  state.storage_allocator.proc(.FREE, 0, state.slot_count * size_of(*MD_Record), state.slots, state.storage_allocator.data);
     allocator := state.storage_allocator;
     state.* = .{};
     state.storage_allocator = allocator;

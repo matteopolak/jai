@@ -54,11 +54,6 @@ get_hash :: (x: $T, h := HASH_INIT) -> u32
     return info.type == .INTEGER || info.type == .BOOL || info.type == .ENUM || info.type == .POINTER || info.type == .FLOAT;
 }
 {
-    // Pointer equality is portable; address bytes are not portable VM data.
-    // A seed-only bucket hash remains correct with the table's equality check.
-    info := cast(*Type_Info) type_info(T);
-    while info.type == .VARIANT info = (cast(*Type_Info_Variant) info).variant_of;
-    if info.type == .POINTER return h;
     #if T == float32 || T == float64 {
         return sdbm_hash(*x, size_of(T), h);
     } else {

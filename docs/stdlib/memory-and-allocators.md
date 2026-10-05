@@ -16,7 +16,7 @@ Allocation wrappers and temporary storage (`Basic/allocation.jai`), the system-h
 
 `Deep_Copy` first records old-to-new allocation pairs, then walks the reflected members, so aliasing and cycles are preserved. Strings and dynamic arrays get new backing, `NoDeepCopy` members stay shallow, and `Any`, procedure pointers and `*void` stay shallow. There is no rollback on allocation failure. `Remap_Context` maps a foreign `#Context` onto the local one by member name and size.
 
-Hashes: `Hash` has `sdbm_hash`, `djb2_hash`, `fnv1a_hash` and the `get_hash` overloads. Pointer keys hash to the seed (all collide, equality still correct). `Crc` has `crc64` (CRC-64/ECMA-182) and `crc64_we`. `xxHash` is scalar XXH32/XXH64 with streaming state.
+Hashes: `Hash` has `sdbm_hash`, `djb2_hash`, `fnv1a_hash` and the `get_hash` overloads. Pointer keys go through `knuth_hash` (an earlier version hashed every pointer to the seed, which turned pointer-keyed tables into one chain). `Crc` has `crc64` (CRC-64/ECMA-182) and `crc64_we`. `xxHash` is scalar XXH32/XXH64 with streaming state.
 
 ```jai
 #import "Basic";

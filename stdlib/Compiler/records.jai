@@ -17,6 +17,37 @@ REC_LIST   :: 4;
 // Built structs by record id (0 = null).
 record_structs: [..] *void;
 
+// Record ids by struct address, for `record_of`: open addressing over `record_structs`, 0 = empty.
+record_slots: [] s64;
+record_slots_used: s64;
+
+remember_record :: (id: s64, pointer: *void) {
+    record_structs[id] = pointer;
+    if (record_slots_used + 1) * 4 >= record_slots.count * 3 {
+        old := record_slots;
+        record_slots = NewArray(max(64, old.count * 2), s64);
+        record_slots_used = 0;
+        for old  if it  insert_record_slot(it);
+        array_free(old);
+    }
+    insert_record_slot(id);
+}
+
+insert_record_slot :: (id: s64) {
+    mask := record_slots.count - 1;
+    slot := record_slot_hash(record_structs[id]) & mask;
+    while record_slots[slot] {
+        if record_structs[record_slots[slot]] == record_structs[id]  return;  // The first id wins.
+        slot = (slot + 1) & mask;
+    }
+    record_slots[slot] = id;
+    record_slots_used += 1;
+}
+
+record_slot_hash :: (pointer: *void) -> s64 #no_aoc {
+    return cast,no_check(s64) ((cast(u64) pointer * 11400714819323198485) >> 32);
+}
+
 // Structs a record's tag may name where a member points to a base type (*Code_Node,
 // *Type_Info, *Message). Other records are built as the member's own type.
 RECORD_TYPES :: Type.[
@@ -76,7 +107,7 @@ record_struct :: (id: s64, expected: *Type_Info) -> *void {
     if __jaic_rec_field(id, "__builtin") == REC_STRING {
         builtin := builtin_type_info(__jaic_rec_string(id, "__builtin"));
         if builtin {
-            record_structs[id] = builtin;
+            remember_record(id, builtin);
             return builtin;
         }
     }
@@ -89,7 +120,7 @@ record_struct :: (id: s64, expected: *Type_Info) -> *void {
 
     memory := alloc(info.runtime_size);
     memset(memory, 0, info.runtime_size);
-    record_structs[id] = memory;  // Before filling: records may refer to themselves.
+    remember_record(id, memory);  // Before filling: records may refer to themselves.
     fill_struct(memory, info, id);
     if info == type_info(Type_Info_Struct)  patch_constant_pointers(cast(*Type_Info_Struct) memory, id);
     return memory;
@@ -109,8 +140,13 @@ patch_constant_pointers :: (info: *Type_Info_Struct, id: s64) {
 
 // The record a built struct came from (0 if none).
 record_of :: (pointer: *void) -> s64 {
-    if !pointer  return 0;
-    for record_structs  if it == pointer  return it_index;
+    if !pointer || !record_slots.count  return 0;
+    mask := record_slots.count - 1;
+    slot := record_slot_hash(pointer) & mask;
+    while record_slots[slot] {
+        if record_structs[record_slots[slot]] == pointer  return record_slots[slot];
+        slot = (slot + 1) & mask;
+    }
     return 0;
 }
 

@@ -10,7 +10,7 @@ Status on macOS arm64 (2026-10-04):
 
 | Step | State |
 | --- | --- |
-| `jaic check Build.jai -I Modules -I Source -os linux - Core\|Renderer\|Game\|Editor` | all four modules compile (about 20-30 s each, release build); the ImGui and Vulkan generators run against the real headers |
+| `jaic check Build.jai -I Modules -I Source -os linux - Core\|Renderer\|Game\|Editor` | all four modules compile (about 3 s for Core, release build); the ImGui and Vulkan generators run against the real headers |
 | `jaic build Build.jai -I Modules -I Source - Core` (native macOS) | fails in about 3 s: `unknown identifier 'VkBuffer'` |
 | Native C++ libraries | `tools/build_vk_engine_libs.py` builds `libImGui.dylib`, `libVkMemAlloc.a` and `libJoltC.dylib` |
 

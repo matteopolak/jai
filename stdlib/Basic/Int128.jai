@@ -106,30 +106,36 @@ logical_shift_right :: (a: S128, $$x: u8) -> S128 {
     return to_s128(shifted);
 }
 
-// Shift-and-add avoids architecture-specific multiply instructions.
-operator * :: (_a: U128, _b: U128) -> U128 {
-    result: U128;
-    multiplicand := _a;
-    multiplier := _b;
-    while multiplier.low != 0 || multiplier.high != 0 {
-        if (multiplier.low & 1) != 0 result = result + multiplicand;
-        multiplicand = multiplicand << 1;
-        multiplier = multiplier >> 1;
-    }
-    return result;
+// Schoolbook multiplication on 32-bit halves: portable, and no 128-bit intermediate needed.
+__u128_multiply_limbs :: (a: u64, b: u64) -> high: u64, low: u64 #no_aoc {
+    MASK :: 0xffff_ffff;
+    p00 := (a & MASK) * (b & MASK);
+    p01 := (a & MASK) * (b >> 32);
+    p10 := (a >> 32) * (b & MASK);
+    p11 := (a >> 32) * (b >> 32);
+    middle := (p00 >> 32) + (p01 & MASK) + (p10 & MASK);
+    return p11 + (p01 >> 32) + (p10 >> 32) + (middle >> 32), (middle << 32) | (p00 & MASK);
+}
+operator * :: (_a: U128, _b: U128) -> U128 #no_aoc {
+    high, low := __u128_multiply_limbs(_a.low, _b.low);
+    return U128.{low, high + _a.low * _b.high + _a.high * _b.low};
 }
 operator * :: (_a: S128, _b: S128) -> S128 { return to_s128(to_u128(_a) * to_u128(_b)); }
 operator * :: (a: S128, factor: s64) -> S128 #symmetric { return a * to_s128(factor); }
 operator * :: (a: U128, b: s64) -> U128 { return a * to_u128(b); }
 operator * :: (a: U128, b: u64) -> U128 { return a * U128.{b, 0}; }
 multiply_64bits_with_overflow :: (a: u64, b: u64) -> (high: u64, low: u64) {
-    product := U128.{a, 0} * U128.{b, 0};
-    return product.high, product.low;
+    high, low := __u128_multiply_limbs(a, b);
+    return high, low;
 }
 
 // Restoring long division keeps a carry for the temporary 129th remainder bit.
 unsigned_divide_with_remainder :: (u: U128, v: U128) -> quotient: U128, remainder: U128, overflow_or_divide_by_zero: bool {
     if !v return U128_ERROR, U128_ERROR, true;
+    if !v.high {
+        q, r := __u128_divide_by_u64(u, v.low);
+        return q, r, false;
+    }
     quotient: U128;
     remainder: U128;
     bit: s64 = 127;
@@ -148,6 +154,25 @@ unsigned_divide_with_remainder :: (u: U128, v: U128) -> quotient: U128, remainde
         bit -= 1;
     }
     return quotient, remainder, false;
+}
+// A 64-bit divisor (the common case: printing, scaling): one native division for the high limb,
+// then 64 shift-subtract steps in plain u64 arithmetic instead of 128 steps of U128 operators.
+__u128_divide_by_u64 :: (u: U128, d: u64) -> quotient: U128, remainder: U128 #no_aoc {
+    if !u.high return U128.{low = u.low / d}, U128.{low = u.low % d};
+    quotient: U128;
+    quotient.high = u.high / d;
+    r := u.high % d;
+    bit: s64 = 63;
+    while bit >= 0 {
+        carry := r >> 63;
+        r = (r << 1) | ((u.low >> cast(u8) bit) & 1);
+        if carry || r >= d {
+            r -= d;
+            quotient.low |= cast(u64) 1 << cast(u8) bit;
+        }
+        bit -= 1;
+    }
+    return quotient, U128.{low = r};
 }
 signed_divide_with_remainder :: inline (dividend: S128, divisor: S128) -> quotient: S128, remainder: S128, overflow_or_divide_by_zero: bool {
     minimum :: S128.{0, cast,no_check(s64) 0x8000_0000_0000_0000};

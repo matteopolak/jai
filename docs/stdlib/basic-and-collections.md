@@ -6,7 +6,7 @@
 
 ## How it works
 
-`stdlib/Basic/module.jai` loads its parts: `allocation.jai` (`alloc`, `free`, temporary storage), `Array.jai` (`array_add`, `array_copy`, removal, `array_find`), `Simple_String.jai`, `String_Builder.jai`, `Print.jai` (`print`, `tprint`, formatters), `Int128.jai` (`S128`/`U128`, wrapping arithmetic), `Apollo_Time.jai`, `platform-time.jai`, and `Memory_Debugger*.jai` (loaded only when `MEMORY_DEBUGGER` is set). `protocol.jai` re-exports the prelude types (`Allocator`, `Any`, `Temporary_Storage`, reflection descriptors) under the `Basic.` namespace.
+`stdlib/Basic/module.jai` loads its parts: `allocation.jai` (`alloc`, `free`, temporary storage), `Array.jai` (`array_add`, `array_copy`, removal, `array_find`), `Simple_String.jai`, `String_Builder.jai`, `Print.jai` (`print`, `tprint`, formatters; exact float digits run on a `u64` and fall back to 36-limb arithmetic on overflow), `Int128.jai` (`S128`/`U128`, wrapping arithmetic; 32-bit limb multiply and a 64-bit-divisor fast path), `Apollo_Time.jai`, `platform-time.jai`, and `Memory_Debugger*.jai` (loaded only when `MEMORY_DEBUGGER` is set). `protocol.jai` re-exports the prelude types (`Allocator`, `Any`, `Temporary_Storage`, reflection descriptors) under the `Basic.` namespace.
 
 Resizable arrays capture the allocator in their descriptor and grow by allocating a new block, copying and releasing the old one. Ordered removal shifts elements; unordered removal moves the last element into the hole.
 
