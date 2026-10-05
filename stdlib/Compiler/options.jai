@@ -192,48 +192,42 @@ Optimization_Type :: enum u8 {
     OPTIMIZED_VERY_SMALL :: 5;
 };
 
-// Configure the checking, inlining and LLVM knobs for a build flavor. Callers may
-// adjust individual fields afterwards.
-set_optimization :: (using build_options: *Build_Options, type: Optimization_Type, preserve_debug_info := true) {
-    debug := (type == .DEBUG) || (type == .VERY_DEBUG);
+// Apply a whole build flavor at once: runtime checks, frame-pointer policy and the
+// LLVM pass levels. Callers can still tweak individual fields afterwards.
+set_optimization :: (options: *Build_Options, type: Optimization_Type, preserve_debug_info := true) {
+    for_shipping := type != .DEBUG && type != .VERY_DEBUG;
+    wide_vectors := type == .VERY_OPTIMIZED;
 
-    if debug {
-        array_bounds_check = .ON;
-        cast_bounds_check  = .FATAL;
-        null_pointer_check = .ON;
+    ir_level, codegen_level := optimization_levels_for(type);
+
+    backend := *options.llvm_options;
+    backend.bitcode_optimization_setting      = ir_level;
+    backend.machine_code_optimization_setting = codegen_level;
+    backend.preserve_debug_info       = preserve_debug_info;
+    backend.disable_inlining          = !for_shipping;
+    backend.enable_split_modules      = !for_shipping;
+    backend.enable_tail_calls         = for_shipping;
+    backend.enable_loop_unrolling     = for_shipping;
+    backend.enable_loop_vectorization = wide_vectors;
+    backend.enable_slp_vectorization  = wide_vectors;
+
+    // Debug flavors leave arithmetic_overflow_check at whatever the caller chose.
+    if for_shipping {
+        options.arithmetic_overflow_check = .OFF;
+        options.array_bounds_check        = .OFF;
+        options.null_pointer_check        = .OFF;
+        options.cast_bounds_check         = .OFF;
     } else {
-        array_bounds_check        = .OFF;
-        cast_bounds_check         = .OFF;
-        null_pointer_check        = .OFF;
-        arithmetic_overflow_check = .OFF;
+        options.array_bounds_check = .ON;
+        options.null_pointer_check = .ON;
+        options.cast_bounds_check  = .FATAL;
     }
 
-    enable_frame_pointers = (OS == .MACOS) || debug || preserve_debug_info;
+    // Unwinders and profilers on macOS expect frame pointers regardless of flavor.
+    options.enable_frame_pointers = preserve_debug_info || !for_shipping || OS == .MACOS;
+    options.x64_options.enable_unix_runtime_frame_information = !for_shipping;
 
-    x64_options.enable_unix_runtime_frame_information = debug;
-
-    llvm := *build_options.llvm_options;
-    llvm.preserve_debug_info = preserve_debug_info;
-
-    llvm.disable_inlining = debug;
-
-    llvm.enable_tail_calls         = !debug;
-    llvm.enable_loop_unrolling     = !debug;
-    llvm.enable_slp_vectorization  = (type == .VERY_OPTIMIZED);
-    llvm.enable_loop_vectorization = (type == .VERY_OPTIMIZED);
-
-    llvm.enable_split_modules = debug;
-
-    if type == {
-        case .DEBUG;                llvm.bitcode_optimization_setting = .O0; llvm.machine_code_optimization_setting = .NONE;
-        case .VERY_DEBUG;           llvm.bitcode_optimization_setting = .O0; llvm.machine_code_optimization_setting = .NONE;
-        case .OPTIMIZED;            llvm.bitcode_optimization_setting = .O2; llvm.machine_code_optimization_setting = .DEFAULT;
-        case .VERY_OPTIMIZED;       llvm.bitcode_optimization_setting = .O3; llvm.machine_code_optimization_setting = .AGGRESSIVE;
-        case .OPTIMIZED_SMALL;      llvm.bitcode_optimization_setting = .OS; llvm.machine_code_optimization_setting = .DEFAULT;
-        case .OPTIMIZED_VERY_SMALL; llvm.bitcode_optimization_setting = .OZ; llvm.machine_code_optimization_setting = .AGGRESSIVE;
-    }
-
-    if !preserve_debug_info  emit_debug_info = .NONE;
+    if !preserve_debug_info  options.emit_debug_info = .NONE;
 }
 
 // Copy only the fields a child workspace should inherit (no names, paths or imports).
@@ -291,6 +285,15 @@ set_build_options_dc :: (options: Build_Options_During_Compile, w: Workspace = -
 }
 
 #scope_module
+
+// LLVM IR and codegen levels per flavor; both debug flavors run unoptimized.
+optimization_levels_for :: (type: Optimization_Type) -> Llvm_Bitcode_Optimization_Setting, Llvm_Machine_Code_Optimization_Setting {
+    if type == .OPTIMIZED             return .O2, .DEFAULT;
+    if type == .VERY_OPTIMIZED        return .O3, .AGGRESSIVE;
+    if type == .OPTIMIZED_SMALL       return .OS, .DEFAULT;
+    if type == .OPTIMIZED_VERY_SMALL  return .OZ, .AGGRESSIVE;
+    return .O0, .NONE;
+}
 
 option_store: [..] Build_Options;
 option_store_ready: [..] bool;

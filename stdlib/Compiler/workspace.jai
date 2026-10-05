@@ -243,28 +243,19 @@ compiler_set_workspace_status :: (status: Workspace_Status, w: Workspace = -1) {
 // Diagnostics and locations
 // ---------------------------------------------------------------------------
 
-// Fatal for Report.ERROR; the other severities are reported without stopping the compile.
+// Only Report.ERROR stops the build; warnings, info and continuable errors just print.
 compiler_report :: (message: string, loc := #caller_location, mode := Report.ERROR) {
-    fatal := mode == .ERROR;
-    __jaic_report(message, loc.fully_pathed_filename, loc.line_number, loc.character_number, fatal);
+    __jaic_report(message, loc.fully_pathed_filename, loc.line_number, loc.character_number, mode == .ERROR);
 }
 
 compiler_report :: (filename: string, line_number: s64, character_number: s64, error_text: string, mode := Report.ERROR) {
-    loc: Source_Code_Location;
-    loc.fully_pathed_filename = filename;
-    loc.line_number           = line_number;
-    loc.character_number      = character_number;
-
-    compiler_report(error_text, loc, mode);
+    __jaic_report(error_text, filename, line_number, character_number, mode == .ERROR);
 }
 
+// A null node yields an empty location rather than crashing a reporting path.
 make_location :: (c: *Code_Node) -> Source_Code_Location {
-    loc: Source_Code_Location;
-    if !c  return loc;
-    loc.fully_pathed_filename = get_filename(c);
-    loc.line_number           = c.l0;
-    loc.character_number      = c.c0;
-    return loc;
+    if c == null  return .{};
+    return .{fully_pathed_filename = get_filename(c), line_number = c.l0, character_number = c.c0};
 }
 
 get_filename :: (node: *Code_Node) -> string {
@@ -272,83 +263,75 @@ get_filename :: (node: *Code_Node) -> string {
     return node.enclosing_load.fully_pathed_filename;
 }
 
-// Splits "a/b/c/d.foo.txt" into ("d.foo", "a/b/c/").
+// Breaks a path into its directory (trailing separator kept) and the file name
+// minus its last extension: "dir/sub/name.tar.gz" -> ("name.tar", "dir/sub/").
 get_basename_and_path :: (input_name: string) -> (basename: string, path: string) {
-    if input_name.count == 0  return "", "";
+    // Everything up to and including the last slash or backslash is the directory.
+    name_start := input_name.count;
+    while name_start > 0 {
+        ch := input_name[name_start - 1];
+        if ch == #char "/" || ch == #char "\\"  break;
+        name_start -= 1;
+    }
 
-    dot_index   := -1;
-    slash_index := -1;
-    i := input_name.count - 1;
-    while i >= 0 {
-        c := input_name[i];
-        if c == #char "." && dot_index == -1  dot_index = i;
-        if c == #char "/" || c == #char "\\" {
-            slash_index = i;
+    directory := input_name;
+    directory.count = name_start;
+
+    file := input_name;
+    file.data  += name_start;
+    file.count -= name_start;
+
+    // Trim at the final dot of the file part, if there is one.
+    stem := file.count;
+    while stem > 0 {
+        stem -= 1;
+        if file[stem] == #char "." {
+            file.count = stem;
             break;
         }
-        i -= 1;
     }
 
-    basename := input_name;
-    output_path := "";
-    if slash_index >= 0 {
-        basename.data  += slash_index + 1;
-        basename.count -= slash_index + 1;
-        output_path = input_name;
-        output_path.count = slash_index + 1;
-    }
-
-    if dot_index >= 0 && dot_index > slash_index {
-        basename.count = dot_index - slash_index - 1;
-    }
-
-    return basename, output_path;
+    return file, directory;
 }
 
+// True when `info` reaches a struct named `base_name` by following `using` (#as)
+// first members, through struct values or pointers. A type is not its own subclass.
 is_subclass_of :: (info: *Type_Info, base_name: string, first_call := true) -> bool {
-    if info.type != .STRUCT  return false;
+    hops := ifx first_call then 0 else 1;
+    current := info;
+    while current && current.type == .STRUCT {
+        as_struct := cast(*Type_Info_Struct) current;
+        if hops > 0 && as_struct.name == base_name  return true;
+        if as_struct.members.count == 0  return false;
 
-    info_struct := cast(*Type_Info_Struct) info;
+        head := *as_struct.members[0];
+        if !(head.flags & .AS)  return false;
 
-    while true {
-        if info_struct.name == base_name  return !first_call;
-
-        if info_struct.members.count == 0  break;
-
-        member := info_struct.members[0];
-        if !(member.flags & .AS)  break;
-
-        member_type := member.type;
-        if member_type.type == .STRUCT {
-            info_struct = cast(*Type_Info_Struct) member_type;
-            first_call = false;
-            continue;
-        } else if member_type.type == .POINTER {
-            pointer := cast(*Type_Info_Pointer) member_type;
-            return is_subclass_of(pointer.pointer_to, base_name, false);
-        } else break;
+        // An embedded base may be held by value or behind one pointer.
+        current = head.type;
+        if current.type == .POINTER  current = (cast(*Type_Info_Pointer) current).pointer_to;
+        hops += 1;
     }
-
     return false;
 }
 
+// Fresh literal nodes for metaprograms that splice generated code into the AST.
 make_integer_literal :: (v: s64) -> *Code_Literal {
-    literal := New(Code_Literal);
-
-    literal.kind        = .LITERAL;
-    literal.value_type  = .NUMBER;
-    literal.value_flags = .IS_A_NUMBER;
-    literal._s64        = v;
-
-    return literal;
+    node := New(Code_Literal);
+    node.kind        = .LITERAL;
+    node.value_flags = .IS_A_NUMBER;
+    node.value_type  = .NUMBER;
+    node._s64        = v;
+    return node;
 }
 
+// The text is copied so the node does not alias the caller's buffer.
 make_string_literal :: (s: string) -> *Code_Literal {
-    literal := New(Code_Literal);
-    literal.kind       = .LITERAL;
-    literal.value_type = .STRING;
-    literal._string    = copy_text(s);
-    return literal;
+    node := New(Code_Literal);
+    node.kind       = .LITERAL;
+    node.value_type = .STRING;
+    node._string    = copy_text(s);
+    return node;
 }
 
 // ---------------------------------------------------------------------------

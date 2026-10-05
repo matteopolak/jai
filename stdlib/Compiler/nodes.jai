@@ -1136,38 +1136,20 @@ Operator_Type :: enum s32 {
     ARRAY_SUBSCRIPT     :: 500;
 }
 
-// Spelling of the multi-character operators. Single-character operators are
-// their own ASCII value and map to "" here.
+// Source text for the operators that have their own Operator_Type value. Anything
+// else (single-character operators are stored as their ASCII code) gives "".
 operator_to_string :: (op: Operator_Type) -> string {
-    if op == {
-        case .PLUS_ASSIGN;          return "+=";
-        case .MINUS_ASSIGN;         return "-=";
-        case .TIMES_ASSIGN;         return "*=";
-        case .DIV_ASSIGN;           return "/=";
-        case .MOD_ASSIGN;           return "%=";
-        case .IS_EQUAL;             return "==";
-        case .IS_NOT_EQUAL;         return "!=";
-        case .LOGICAL_AND;          return "&&";
-        case .LOGICAL_OR;           return "||";
-        case .LESS_OR_EQUAL;        return "<=";
-        case .GREATER_OR_EQUAL;     return ">=";
-        case .SHIFT_LEFT;           return "<<";
-        case .SHIFT_RIGHT;          return ">>";
-        case .ROTATE_LEFT;          return "<<<";
-        case .ROTATE_RIGHT;         return ">>>";
-        case .SHIFT_LEFT_ASSIGN;    return "<<=";
-        case .SHIFT_RIGHT_ASSIGN;   return ">>=";
-        case .ROTATE_LEFT_ASSIGN;   return "<<<=";
-        case .ROTATE_RIGHT_ASSIGN;  return ">>>=";
-        case .BITWISE_AND_ASSIGN;   return "&=";
-        case .BITWISE_OR_ASSIGN;    return "|=";
-        case .BITWISE_XOR_ASSIGN;   return "^=";
-        case .LOGICAL_AND_ASSIGN;   return "&&=";
-        case .LOGICAL_OR_ASSIGN;    return "||=";
-        case .POINTER_DEREFERENCE;  return "(.*)";
-        case .POSTFIX_DEREFERENCE;  return ".*";
-        case .ARRAY_SUBSCRIPT;      return "[]";
-    }
+    // 131..140 and 145..158 are dense runs, so they index straight into a table.
+    PAIRS_AND_SHIFTS :: string.["==", "!=", "&&", "||", "<=", ">=", "<<", ">>", "<<<", ">>>"];
+    UPDATING :: string.["+=", "-=", "*=", "/=", "%=", "<<=", ">>=", "<<<=", ">>>=", "&=", "|=", "^=", "&&=", "||="];
+
+    code := cast(s64) op;
+    if code >= 131 && code < 131 + PAIRS_AND_SHIFTS.count  return PAIRS_AND_SHIFTS[code - 131];
+    if code >= 145 && code < 145 + UPDATING.count          return UPDATING[code - 145];
+
+    if op == .ARRAY_SUBSCRIPT      return "[]";
+    if op == .POSTFIX_DEREFERENCE  return ".*";
+    if op == .POINTER_DEREFERENCE  return "(.*)";
     return "";
 }
 
