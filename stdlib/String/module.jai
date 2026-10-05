@@ -283,14 +283,16 @@ replace :: (s: string, old: string, new: string) -> string, ocurrences: int {
 }
 
 // Converts \r\n into \n; a lone \r is kept.
+// Rewrites CRLF pairs as LF in place, shrinking the string; a CR on its own is kept.
 normalize_line_endings :: (s: *string) {
-    dest := 0; src := 0;
-    while src < s.count {
-        if s.data[src] == #char "\r" && src < s.count - 1 && s.data[src+1] == #char "\n" src += 1;
-        s.data[dest] = s.data[src];
-        dest += 1; src += 1;
+    kept := 0;
+    for i: 0..s.count-1 {
+        byte := s.data[i];
+        if byte == #char "\r" && i + 1 < s.count && s.data[i+1] == #char "\n"  continue;
+        s.data[kept] = byte;
+        kept += 1;
     }
-    s.count = dest;
+    s.count = kept;
 }
 normalize_line_endings :: (s: string) -> string #must {
     copy := copy_string(s);
@@ -332,29 +334,24 @@ path_strip_filename :: (path: string) -> string {
     return slice(path, 0, i+1);
 }
 path_strip_extension :: (path: string) -> string {
-    extension, found := path_extension(path);
-    if !found return path;
-    result := path;
-    result.count -= extension.count + 1;
-    return result;
+    ext, has_ext := path_extension(path);
+    if has_ext  return slice(path, 0, path.count - ext.count - 1);  // the dot goes too
+    return path;
 }
 path_overwrite_separators :: (path: string, separator: u8 = PATH_SEPARATOR) {
     for i: 0..path.count-1 if path.data[i] == #char "\\" || path.data[i] == #char "/" path.data[i] = separator;
 }
 basename :: (s: string) -> string { return path_strip_extension(path_filename(s)); }
 path_basename :: basename;
-// Returns the same string, or a temporary one.
+// No allocation when `path` already ends in the extension; otherwise a tprint result.
 path_ensure_extension :: (path: string, extension: string) -> string {
     if path_extension(path) == extension return path;
     return tprint("%.%", path, extension);
 }
 is_absolute_path :: (path: string) -> bool {
-    #if OS == .WINDOWS {
-        if path.count < 3 return false;
-        return path[1] == #char ":" && (path[2] == #char "/" || path[2] == #char "\\");
-    } else {
-        return path.count > 0 && path[0] == #char "/";
-    }
+    if OS != .WINDOWS  return begins_with(path, "/");
+    // Windows: only drive-rooted forms such as "C:\\dir" or "C:/dir" count.
+    return path.count >= 3 && path[1] == #char ":" && is_any(path[2], "/\\");
 }
 
 // Supports `*`, `?`, `[abc]` and `[a-z]`.
@@ -430,25 +427,28 @@ parse_bool :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAUL
     return false, false;
 }
 parse_enum :: (line: *string, $T: Type, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: T, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    value: T;
-    if ok value, ok = Reflection.enum_name_to_value(T, token);
-    return value, ok;
+    word, have_word := parse_token(line, delimiters, spaces);
+    if have_word {
+        member, known := Reflection.enum_name_to_value(T, word);
+        if known  return member, true;
+    }
+    nothing: T;
+    return nothing, false;
 }
 parse_float :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: float, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    value: float;
-    if ok value, ok = string_to_float(token);
-    return value, ok;
+    word, have_word := parse_token(line, delimiters, spaces);
+    if !have_word  return 0, false;
+    number, parsed := string_to_float(word);
+    return number, parsed;
 }
 parse_int :: (line: *string, $T: Type = int, spaces := " \t", delimiters := DEFAULT_DELIMITERS) -> value: T, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    i: int;
-    if ok i, ok = string_to_int(token);
-    return cast(T) i, ok;
+    word, have_word := parse_token(line, delimiters, spaces);
+    if !have_word  return 0, false;
+    number, parsed := string_to_int(word);
+    return cast(T) number, parsed;
 }
 
-// C runtime string-to-double, as in the reference String module.
+// libc's atof, exported for callers that want C's lenient string-to-double.
 #scope_file
 string_crt :: #system_library "libc";
 #scope_export
@@ -510,36 +510,36 @@ scan :: (format: string, text: string) -> bool, [] Any {
     return false, result;
 }
 
-// Matches by the type of each pointer argument: scan2("(1 2)", "(% %)", *a, *b).
+// Pattern-driven parse into typed pointers: scan2("(1 2)", "(% %)", *a, *b). Every lone
+// `%` reads text into the next argument, parsed according to its pointee type; `%%`
+// stands for one literal percent sign. All of `text` must be consumed.
 scan2 :: (text: string, format: string, args: ..Any) -> bool {
-    format_cursor := format;
-    text_cursor := text;
-    n := 0;
-    while true {
-        if format_cursor[0] == #char "%" {
-            if format_cursor.count > 1 && format_cursor[1] == #char "%" {
-                if text_cursor[0] != #char "%" return false;
-                format_cursor = slice(format_cursor, 2, format_cursor.count - 2);
-                text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
-            } else {
-                if n >= args.count return false;
-                if args[n].type.type != .POINTER return false;
-                any: Any;
-                any.type = (cast(*Type_Info_Pointer) args[n].type).pointer_to;
-                any.value_pointer = (cast(**void) args[n].value_pointer).*;
-                if !Reflection.set_value_from_string(any, *text_cursor) return false;
-                format_cursor = slice(format_cursor, 1, format_cursor.count - 1);
-                n += 1;
-            }
-        } else {
-            if text_cursor[0] != format_cursor[0] return false;
-            format_cursor = slice(format_cursor, 1, format_cursor.count - 1);
-            text_cursor = slice(text_cursor, 1, text_cursor.count - 1);
+    pending := text;
+    used_args := 0;
+    f := 0;
+    while f < format.count {
+        expected := format[f];
+        f += 1;
+
+        is_slot := expected == #char "%" && !(f < format.count && format[f] == #char "%");
+        if is_slot {
+            if used_args == args.count  return false;
+            target := args[used_args];
+            used_args += 1;
+            if target.type.type != .POINTER  return false;
+
+            pointee: Any;
+            pointee.type          = (cast(*Type_Info_Pointer) target.type).pointer_to;
+            pointee.value_pointer = (cast(**void) target.value_pointer).*;
+            if !Reflection.set_value_from_string(pointee, *pending)  return false;
+            continue;
         }
-        if format_cursor.count == 0 && text_cursor.count == 0 return true;
-        if format_cursor.count == 0 || text_cursor.count == 0 return false;
+
+        if expected == #char "%"  f += 1;   // skip the second half of "%%"
+        if pending.count == 0 || pending[0] != expected  return false;
+        pending = advance(pending, 1);
     }
-    return true;
+    return pending.count == 0;
 }
 
 #scope_file
