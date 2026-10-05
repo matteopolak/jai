@@ -341,13 +341,18 @@ impl OutputBackend for LlvmBackend {
             target: None,
             emit_ir: self.emit_ir.clone(),
         };
-        jaic_llvm::emit_object(program, &options, &object)?;
+        if matches!(
+            settings.output_type,
+            OutputType::ObjectFile | OutputType::NoOutput
+        ) {
+            return jaic_llvm::emit_object(program, &options, &object);
+        }
+        let objects = jaic_llvm::emit_objects(program, &options, &object)?;
         let libraries = jaic_llvm::used_libraries(program);
-        let objects = std::slice::from_ref(&object);
         let linked = match settings.output_type {
-            OutputType::ObjectFile | OutputType::NoOutput => return Ok(()),
+            OutputType::ObjectFile | OutputType::NoOutput => unreachable!(),
             OutputType::Executable | OutputType::DynamicLibrary => jaic_llvm::link(
-                objects,
+                &objects,
                 &libraries,
                 output,
                 settings.output_type == OutputType::DynamicLibrary,
@@ -356,12 +361,14 @@ impl OutputBackend for LlvmBackend {
             OutputType::StaticLibrary => std::process::Command::new("ar")
                 .arg("rcs")
                 .arg(output)
-                .arg(&object)
+                .args(&objects)
                 .status()
                 .map_err(|e| format!("could not run 'ar': {e}"))
                 .and_then(|s| s.success().then_some(()).ok_or(format!("ar failed ({s})"))),
         };
-        let _ = std::fs::remove_file(&object);
+        for object in &objects {
+            let _ = std::fs::remove_file(object);
+        }
         linked
     }
 }
