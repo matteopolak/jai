@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// OpenGL core-profile types, constants and procedure table.
 GLenum :: u32 ;
 GLboolean :: bool ;
 GLbitfield :: u32 ;

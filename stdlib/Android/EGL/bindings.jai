@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// EGL declarations.
 EGL_VERSION_1_0 :: 1;
 EGL_ALPHA_SIZE :: 0x3021;
 EGL_BAD_ACCESS :: 0x3002;

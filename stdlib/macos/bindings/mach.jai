@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Mach kernel interfaces (tasks, ports, timebase).
 mach_task_self :: () -> mach_port_t #foreign libc;
 kern_return_t :: KERN;
 NDR_PROTOCOL_2_0 :: 0;

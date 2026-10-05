@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android NDK declarations (assets, input, looper, native window).
 AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT :: 8;
 AAssetManager :: struct {}
 AAssetDir :: struct {}

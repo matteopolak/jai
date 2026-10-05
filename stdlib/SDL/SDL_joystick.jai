@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_joystick.h.
 SDL_Joystick :: void ;
 SDL_JoystickGUID :: struct {
     data : [ 16 ] u8 ;

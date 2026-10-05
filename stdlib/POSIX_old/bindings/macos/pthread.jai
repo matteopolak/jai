@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS declarations: <pthread.h>.
 __PTHREAD_SIZE__ :: 8176;
 __PTHREAD_ATTR_SIZE__ :: 56;
 __PTHREAD_MUTEXATTR_SIZE__ :: 8;

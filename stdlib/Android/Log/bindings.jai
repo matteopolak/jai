@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android log (liblog) declarations.
 Log_Priority :: enum u32 {
     UNKNOWN :: 0;
     DEFAULT :: 1;

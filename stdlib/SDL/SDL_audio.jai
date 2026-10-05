@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_audio.h.
 SDL_AudioFormat :: u16 ;
 SDL_AUDIO_MASK_BITSIZE :: ( 0xFF ) ;
 SDL_AUDIO_MASK_DATATYPE :: ( 1 << 8 ) ;

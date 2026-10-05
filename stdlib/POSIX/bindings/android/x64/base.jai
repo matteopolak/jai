@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android x64 declarations: C base types, errno values and common constants.
 RTLD_LOCAL :: 0;
 RTLD_LAZY :: 0x00001;
 RTLD_NOW :: 0x00002;

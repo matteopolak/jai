@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Direct3D 12 debug-layer interfaces.
 D3D12_INFO_QUEUE_DEFAULT_MESSAGE_COUNT_LIMIT :: 1024 ;
 ID3D12Debug_UUID :: "344488b7-6846-474b-b989-f027448245e0" ;
 ID3D12Debug :: struct {

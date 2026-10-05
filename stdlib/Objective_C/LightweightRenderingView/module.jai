@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// An NSView subclass for drawing with a GPU API inside an AppKit window.
 #import "Objective_C";
 #import "Objective_C/AppKit";
 LightweightRenderingView :: struct {

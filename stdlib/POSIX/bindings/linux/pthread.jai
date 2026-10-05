@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux declarations: <pthread.h>.
 SCHED_OTHER :: 0;
 SCHED_FIFO :: 1;
 SCHED_RR :: 2;

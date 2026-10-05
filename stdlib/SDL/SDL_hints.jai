@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_hints.h.
 SDL_HINT_FRAMEBUFFER_ACCELERATION :: "SDL_FRAMEBUFFER_ACCELERATION" ;
 SDL_HINT_RENDER_DRIVER :: "SDL_RENDER_DRIVER" ;
 SDL_HINT_RENDER_OPENGL_SHADERS :: "SDL_RENDER_OPENGL_SHADERS" ;

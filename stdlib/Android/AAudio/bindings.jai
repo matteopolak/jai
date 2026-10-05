@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// AAudio declarations.
 AAUDIO_UNSPECIFIED :: 0;
 AAUDIO_SYSTEM_USAGE_OFFSET :: 1000;
 AAUDIO_DIRECTION :: enum u32 {

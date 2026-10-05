@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// dxcompiler COM interfaces and constants.
 DXC_CP_UTF8 :: 65001 ;
 DXC_CP_UTF16 :: 1200 ;
 DXC_CP_UTF32 :: 12000 ;

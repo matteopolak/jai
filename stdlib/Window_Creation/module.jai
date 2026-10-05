@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Window_Creation: opening native windows on each platform.
 #module_parameters ( DEFAULT_MSAA : s32 = 4 ) ;
 #if OS == . WINDOWS {
     #load "windows.jai" ;

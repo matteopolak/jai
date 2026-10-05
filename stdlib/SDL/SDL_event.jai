@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_event.h.
 SDL_RELEASED :: 0 ;
 SDL_PRESSED :: 1 ;
 using SDL_EventType :: enum u32 {

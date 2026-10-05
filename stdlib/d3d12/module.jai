@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Direct3D 12 bindings.
 #module_parameters ( ) ( INCLUDE_DEBUG_BINDINGS := false ) ;
 WKPDID_D3DDebugObjectName :: "429b8c22-9188-4b0c-8742-acb0bf85c200" ;
 D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING :: ( Src0 : s32 , Src1 : s32 , Src2 : s32 , Src3 : s32 ) -> D3D12_SHADER_COMPONENT_MAPPING {

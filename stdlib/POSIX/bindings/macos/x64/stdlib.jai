@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS x64 declarations: <stdlib.h>.
 getenv :: (unknown0: *u8) -> *u8 #foreign libc;
 system :: (unknown0: *u8) -> s32 #foreign libc;
 mktemp :: (unknown0: *u8) -> *u8 #foreign libc;

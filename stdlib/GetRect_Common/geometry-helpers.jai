@@ -1,4 +1,4 @@
-// Small math helpers, module-private like the reference GetRect.
+// Small math helpers, private to the module.
 // GetRect_LeftHanded has always exported these, so its module.jai carries an exported copy.
 #scope_module
 move_toward :: (a: float, b: float, amount_increasing: float, amount_decreasing := -1.0) -> float {

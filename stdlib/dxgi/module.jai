@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// DXGI bindings (adapters, swap chains, formats).
 #scope_file
 #import "Basic" ;
 #import "Windows" ;

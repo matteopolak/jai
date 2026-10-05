@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Vulkan core and extension declarations for Linux.
 VK_VERSION_1_0 :: 1 ;
 VK_HEADER_VERSION :: 85 ;
 VK_LOD_CLAMP_NONE :: 1000.0 ;

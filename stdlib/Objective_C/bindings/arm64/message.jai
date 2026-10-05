@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// objc_msgSend and friends for arm64.
 marg_prearg_size :: 0;
 objc_super :: struct {
     receiver: id;

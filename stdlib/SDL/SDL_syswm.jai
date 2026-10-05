@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_syswm.h.
 using SDL_SYSWM_TYPE :: enum s32 {
     SDL_SYSWM_UNKNOWN ;
     SDL_SYSWM_WINDOWS ;

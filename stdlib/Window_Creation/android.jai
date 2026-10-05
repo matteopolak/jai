@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Android: the single native window owned by the activity.
 #scope_file
 Android :: #import "Android" ;
 #scope_export

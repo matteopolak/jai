@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Foundation classes, selectors and constants.
 init_objective_c_foundation :: () {
     _sel.URLByAppendingPathComponent_ = cast(Selector) sel_registerName(cast(*u8) "URLByAppendingPathComponent:\0");
     _sel.URLByDeletingLastPathComponent = cast(Selector) sel_registerName(cast(*u8) "URLByDeletingLastPathComponent\0");

@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux declarations: <stdlib.h>.
 getenv :: (__name: *u8) -> *u8 #foreign libc;
 setenv :: (__name: *u8, __value: *u8, __replace: s32) -> s32 #foreign libc;
 unsetenv :: (__name: *u8) -> s32 #foreign libc;

@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Java Native Interface declarations.
 JNI_FALSE :: 0;
 JNI_TRUE :: 1;
 JNI_VERSION_1_1 :: 0x00010001;

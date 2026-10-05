@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// libcurl declarations for Linux and macOS.
 LIBCURL_COPYRIGHT :: "Daniel Stenberg, <daniel@haxx.se>." ;
 LIBCURL_VERSION :: "8.5.0" ;
 LIBCURL_VERSION_MAJOR :: 8 ;

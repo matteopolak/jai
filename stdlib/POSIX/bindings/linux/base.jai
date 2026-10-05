@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux declarations: C base types, errno values and common constants.
 RTLD_LAZY :: 0x00001;
 RTLD_NOW :: 0x00002;
 RTLD_BINDING_MASK :: 0x3;

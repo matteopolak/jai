@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// GameController framework classes and selectors.
 init_objective_c_gamecontroller :: () {
     _sel.allowsRotation = cast(Selector) sel_registerName(cast(*u8) "allowsRotation\0");
     _sel.attitude = cast(Selector) sel_registerName(cast(*u8) "attitude\0");

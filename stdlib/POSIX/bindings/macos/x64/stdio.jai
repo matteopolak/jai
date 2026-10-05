@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS x64 declarations: <stdio.h>.
 __SLBF :: 0x0001;
 __SNBF :: 0x0002;
 __SRD :: 0x0004;

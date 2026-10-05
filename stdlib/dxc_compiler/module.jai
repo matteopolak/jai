@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Shader compilation through the DirectX Shader Compiler (dxcompiler).
 Shader_Type :: enum {
     Vertex ;
     Fragment ;

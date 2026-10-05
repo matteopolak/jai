@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Portable POSIX types and helpers for POSIX_old.
 GNU_ENV :: true;
 OS_Error_Code :: #type,isa s32;
 size_t :: u64;

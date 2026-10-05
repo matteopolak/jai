@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Direct3D 11 debug-layer interfaces.
 D3D11_SDK_LAYERS_VERSION :: 1 ;
 D3D11_DEBUG_FEATURE_FLUSH_PER_RENDER_OP :: 0x1 ;
 D3D11_DEBUG_FEATURE_FINISH_PER_RENDER_OP :: 0x2 ;

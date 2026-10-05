@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Native activity glue types.
 Android_Poll_Source :: struct {
     id: s32;
     app: *Android_App;

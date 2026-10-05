@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Vulkan Win32 surface extension.
 VK_KHR_win32_surface :: 1 ;
 VK_KHR_WIN32_SURFACE_SPEC_VERSION :: 5 ;
 VK_KHR_WIN32_SURFACE_EXTENSION_NAME :: "VK_KHR_win32_surface" ;

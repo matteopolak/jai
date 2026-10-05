@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Xlib, GLX and XInput declarations.
 x_global_display : * Display ;
 x_global_input_method : XIM ;
 x_global_input_context : XIC ;

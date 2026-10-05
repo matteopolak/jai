@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// libc functions shared by every Unix target of POSIX_old.
 sysconf :: (name: _SC_definitions) -> s64 #foreign libc;
 strsignal :: (sig: s32) -> *u8 #foreign libc;
 #if OS == .LINUX {

@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// OpenGL types, constants and the procedure table, with all extensions.
 GL_Procedures :: struct #type_info_procedures_are_void_pointers #type_info_no_size_complaint {
     GLenum :: u32 ;
     GLboolean :: bool ;

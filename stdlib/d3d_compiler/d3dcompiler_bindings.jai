@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// d3dcompiler_47 declarations.
 D3DCOMPILER_DLL_A :: "d3dcompiler_47.dll" ;
 D3D_COMPILER_VERSION :: 47 ;
 D3DCOMPILER_DLL :: D3DCOMPILER_DLL_A ;

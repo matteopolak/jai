@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Metaprogram plugin that embeds an application icon into Windows executables.
 get_plugin :: ( ) -> * Metaprogram_Plugin {
     state := New(My_Plugin);
     state.plugin.log_help = log_help;

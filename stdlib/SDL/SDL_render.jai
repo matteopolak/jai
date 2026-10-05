@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_render.h.
 SDL_RendererFlags :: enum_flags u32 {
     SOFTWARE :: 1 ;
     ACCELERATED :: 2 ;

@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// OpenGL procedure loading and per-platform context setup.
 #if OS == .WINDOWS {
     #import "Windows" ;
 }

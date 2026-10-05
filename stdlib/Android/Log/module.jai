@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Logging to the Android system log.
 #module_parameters(LOG_TAG := "Jai")();
 #load "bindings.jai";
 #import "Basic";

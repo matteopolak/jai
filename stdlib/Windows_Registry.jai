@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Reading and writing Windows registry values.
 KEY_QUERY_VALUE :: 0x1;
 KEY_SET_VALUE :: 0x2;
 KEY_CREATE_SUB_KEY :: 0x4;

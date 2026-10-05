@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// EGL bindings.
 EGL_DONT_CARE :: -1;
 EGL_UNKNOWN :: -1;
 EGL_NO_CONTEXT: EGLContext : null;

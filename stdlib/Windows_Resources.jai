@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Windows resource embedding: application manifests and version information.
 Manifest_Options :: struct {
     dpi_aware := true;
     require_administrator := false;

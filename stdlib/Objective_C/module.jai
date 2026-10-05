@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Objective_C: the runtime, Foundation and helpers for calling into Apple frameworks.
 init_objective_c :: () {
     _sel.addItem_ = cast(Selector) sel_registerName(cast(*u8) "addItem:\0");
     _sel.alloc = cast(Selector) sel_registerName(cast(*u8) "alloc\0");

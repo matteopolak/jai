@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// AppKit classes, selectors and constants.
 init_app_kit :: () {
     _sel.IBeamCursor = cast(Selector) sel_registerName(cast(*u8) "IBeamCursor\0");
     _sel.URL = cast(Selector) sel_registerName(cast(*u8) "URL\0");

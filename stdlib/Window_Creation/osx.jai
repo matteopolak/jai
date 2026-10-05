@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// macOS windows through AppKit.
 #import "Objective_C" ;
 #import "Objective_C/AppKit" ;
 #import "Objective_C/LightweightRenderingView" ;

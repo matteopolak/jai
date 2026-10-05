@@ -1,4 +1,4 @@
-// Independent scalar and COM wrappers; no reference implementation bodies.
+// HRESULT tests and IUnknown call helpers.
 SUCCEEDED :: (hr: HRESULT) -> bool { return hr >= 0; }
 FAILED :: (hr: HRESULT) -> bool { return hr < 0; }
 HasOverlappedIoCompleted :: (overlapped: OVERLAPPED) -> bool {

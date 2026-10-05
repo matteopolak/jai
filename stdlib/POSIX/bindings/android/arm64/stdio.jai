@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android arm64 declarations: <stdio.h>.
 _GNU_SOURCE :: 1;
 _IOFBF :: 0;
 _IOLBF :: 1;

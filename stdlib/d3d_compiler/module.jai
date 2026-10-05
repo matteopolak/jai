@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Shader compilation through d3dcompiler_47.
 #load "d3dcompiler_bindings.jai" ;
 #scope_file
 d3dcompiler :: #system_library "d3dcompiler_47" ;

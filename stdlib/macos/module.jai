@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS system frameworks: FSEvents, CoreFoundation, Mach and kernel declarations.
 FSEventStreamRef :: *struct {};
 ConstFSEventStreamRef :: FSEventStreamRef;
 FSEventStreamEventFlags :: u32;

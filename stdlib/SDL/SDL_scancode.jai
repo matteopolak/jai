@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_scancode.h.
 using SDL_Scancode :: enum s32 {
     SDL_SCANCODE_UNKNOWN :: 0 ;
     SDL_SCANCODE_A :: 4 ;

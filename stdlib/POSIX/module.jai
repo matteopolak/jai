@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// POSIX: libc declarations shared by the Unix targets, plus per-platform bindings below.
 // The browser target (OS == .WASM) uses the Linux x86-64 layouts; the interpreter's sandbox host
 // implements the libc subset in crates/jaic/src/interp/sandbox.rs.
 #assert(OS == .LINUX || OS == .ANDROID || OS == .MACOS || OS == .WASM);

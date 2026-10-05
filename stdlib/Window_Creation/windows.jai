@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Windows windows through Win32.
 create_window :: ( width : int , height : int , window_name : string , window_x := - 1 , window_y := - 1 , parent : Window_Type = null , background_color_rgb := DEFAULT_WINDOW_CREATION_COLOR , wanted_msaa := DEFAULT_MSAA ) -> HWND {
     if width <= 0 || height <= 0 || width > 0x7fffffff || height > 0x7fffffff return null;
     init_window_class(background_color_rgb);

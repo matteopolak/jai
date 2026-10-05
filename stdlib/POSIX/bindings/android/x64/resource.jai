@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android x64 declarations: <sys/resource.h>.
 RUSAGE :: enum s32 {
     SELF :: 0;
     CHILDREN :: - 1;

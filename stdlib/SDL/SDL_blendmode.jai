@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_blendmode.h.
 using SDL_BlendMode :: enum u32 {
     SDL_BLENDMODE_NONE :: 0 ;
     SDL_BLENDMODE_BLEND :: 1 ;

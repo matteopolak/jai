@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// epoll declarations.
 Epoll_Ctl :: enum s32 {
     ADD :: 1;
     DEL :: 2;

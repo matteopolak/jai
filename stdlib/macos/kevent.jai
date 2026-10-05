@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// kqueue / kevent64 declarations.
 kqueue :: () -> s32 #foreign libc;
 kevent64 :: (kq: s32, changelist: *Kevent64, nchanges: s32, eventlist: *Kevent64, nevents: s32, flags: Kevent_Call_Flags, timeout: *timespec) -> s32 #foreign libc;
 Kevent_Call_Flags :: enum_flags u32 {

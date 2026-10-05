@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// POSIX_old: the earlier POSIX module layout, kept for programs that still import it.
 #assert(OS == .LINUX || OS == .ANDROID || OS == .MACOS);
 #if OS != .ANDROID {
     #load "POSIX.jai";

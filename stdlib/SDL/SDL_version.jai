@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_version.h.
 SDL_version :: struct {
     major : u8 ;
     minor : u8 ;

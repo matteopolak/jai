@@ -1,8 +1,8 @@
 // Metaprogram plugins (`jai first.jai -plug Name`), newer-Jai API shape.
 //
-// jaic parses plugin arguments, but cannot instantiate plugins yet: the
-// reference implementation splices `#import "Name"` into this module while a
-// metaprogram's `#run` is executing, which needs suspendable typechecking.
+// jaic parses plugin arguments, but cannot instantiate plugins yet: loading one
+// means importing module "Name" while a metaprogram's `#run` is executing,
+// which needs suspendable typechecking.
 // Metaprograms that ask for no plugins (the common case) work unchanged.
 
 Plugin_To_Create :: struct {

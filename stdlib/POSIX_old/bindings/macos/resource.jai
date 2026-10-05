@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS declarations: <sys/resource.h>.
 PRIO_PROCESS :: 0;
 PRIO_PGRP :: 1;
 PRIO_USER :: 2;

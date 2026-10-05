@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_rect.h.
 SDL_Point :: struct {
     x : s32 ;
     y : s32 ;

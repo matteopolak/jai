@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS arm64 declarations: <sys/resource.h>.
 PRIO :: enum s32 {
     PROCESS :: 0;
     PGRP :: 1;

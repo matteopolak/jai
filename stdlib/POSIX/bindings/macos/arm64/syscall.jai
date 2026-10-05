@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS arm64 declarations: system call numbers.
 SYS_syscall :: 0;
 SYS_exit :: 1;
 SYS_fork :: 2;

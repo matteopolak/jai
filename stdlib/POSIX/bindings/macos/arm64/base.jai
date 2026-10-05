@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS arm64 declarations: C base types, errno values and common constants.
 RTLD_LAZY :: 0x1;
 RTLD_NOW :: 0x2;
 RTLD_LOCAL :: 0x4;

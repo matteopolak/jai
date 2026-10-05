@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Window_Type: the native window handle type of each platform.
 #if OS == . WINDOWS {
     #scope_module
     ;

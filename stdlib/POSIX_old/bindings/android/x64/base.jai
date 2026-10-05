@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android x64 declarations: C base types, errno values and common constants.
 EPERM :: 1;
 ENOENT :: 2;
 ESRCH :: 3;

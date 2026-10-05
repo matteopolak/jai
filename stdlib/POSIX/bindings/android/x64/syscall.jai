@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android x64 declarations: system call numbers.
 SYS__sysctl :: 156;
 SYS_accept :: 43;
 SYS_accept4 :: 288;

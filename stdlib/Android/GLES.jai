@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// OpenGL ES declarations.
 GL_VERSION_ES_CM_1_0 :: 1;
 GL_VERSION_ES_CL_1_0 :: 1;
 GL_VERSION_ES_CM_1_1 :: 1;

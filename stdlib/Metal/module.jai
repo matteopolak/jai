@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Metal: bindings to Apple's GPU API through the Objective-C runtime.
 #load "Metal.jai" ;
 #scope_module
 #import "macos" ;

@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_keyboard.h.
 SDL_SCANCODE_TO_KEYCODE :: ( scancode : SDL_Scancode ) -> s32 {
     value := cast(s32) scancode;
     value |= 0x40000000;

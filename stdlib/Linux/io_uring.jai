@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// io_uring and statx declarations.
 statx_timestamp_t :: struct {
     tv_sec: s64;
     tv_nsec: u32;

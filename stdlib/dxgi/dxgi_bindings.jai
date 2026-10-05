@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// DXGI types, constants and COM interfaces.
 DXGI_STANDARD_MULTISAMPLE_QUALITY_PATTERN :: 0xffffffff ;
 DXGI_CENTER_MULTISAMPLE_QUALITY_PATTERN :: 0xfffffffe ;
 DXGI_FORMAT_DEFINED :: 1 ;

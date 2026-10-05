@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android NDK bindings.
 #module_parameters ()(DEFINE_ANDROID_MAIN_AND_CALL_THIS: () -> () = null);
 #load "bindings.jai";
 #import "Android/Jni";

@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android arm64 declarations: system call numbers.
 SYS_accept :: 202;
 SYS_accept4 :: 242;
 SYS_acct :: 89;

@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux-specific system interfaces on top of POSIX.
 #scope_file
 POSIX :: #import "POSIX";
 timeval :: POSIX.timeval;

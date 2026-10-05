@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Objective-C runtime declarations for arm64.
 OBJC_BOOL_IS_BOOL :: 1;
 ARITH_SHIFT :: 32;
 OBJC_GETCLASSHOOK_DEFINED :: 1;

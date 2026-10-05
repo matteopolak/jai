@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_gamecontroller.h.
 SDL_GameController :: struct {
 }
 using SDL_GameControllerBindType :: enum u32 {

@@ -1,5 +1,4 @@
 // SDL2 compatibility ABI. Use SDL3 for the maintained API subset.
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
 using SDL_INIT_FLAGS :: enum_flags u32 {
     SDL_INIT_TIMER :: 0x00000001 ;
     SDL_INIT_AUDIO :: 0x00000010 ;

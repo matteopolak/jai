@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Reading files from the APK through the asset manager.
 visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool, user_data: $T, proc: (info: *File_Visit_Info, user_data: T), visit_files := true, visit_directories := false, visit_symlinks := false, follow_directory_symlinks := false) -> bool {
     if asset_manager == null || proc == null || !_sdk_asset_path(dir_name) return false;
     if !visit_files && !visit_directories return true;

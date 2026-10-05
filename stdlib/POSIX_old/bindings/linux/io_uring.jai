@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux declarations: io_uring (<linux/io_uring.h>).
 using __kernel_rwf_t :: enum_flags s32 {
     RWF_HIPRI :: 0x00000001;
     RWF_DSYNC :: 0x00000002;

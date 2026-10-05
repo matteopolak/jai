@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Metal API classes, selectors and enums.
 init_metal :: () {
     __selectors.GPUEndTime = cast(*void) sel_registerName(cast(*u8) "GPUEndTime\0");
     __selectors.GPUStartTime = cast(*void) sel_registerName(cast(*u8) "GPUStartTime\0");

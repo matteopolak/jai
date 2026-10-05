@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Linux windows through X11.
 #import "X11" ;
 window_minimized := false ;
 Saved_Window_Info :: struct {

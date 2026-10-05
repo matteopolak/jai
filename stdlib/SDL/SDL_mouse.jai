@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_mouse.h.
 SDL_Cursor :: void ;
 using SDL_SystemCursor :: enum s32 {
     ARROW ;

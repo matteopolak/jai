@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Darwin kernel types and constants from the BSD headers.
 USER_ADDR_NULL :: cast(user_addr_t) 0;
 __mbstate_t :: union {
     __mbstate8: [128] u8;

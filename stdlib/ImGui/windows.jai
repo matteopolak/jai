@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Dear ImGui declarations for the Windows build of the library.
 IMGUI_VERSION :: "1.89.6" ;
 IMGUI_VERSION_NUM :: 18960 ;
 IMGUI_PAYLOAD_TYPE_COLOR_3F :: "_COL3F" ;

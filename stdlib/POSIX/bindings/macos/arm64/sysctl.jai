@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// macOS arm64 declarations: <sys/sysctl.h>.
 ucred :: struct {}
 P_TRACED :: 0x00000800;
 CTL_MAXNAME :: 12;

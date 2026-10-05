@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Dear ImGui bindings (1.89.6).
 ImVec2 :: Vector2 ;
 ImVec4 :: Vector4 ;
 ImColor :: Vector4 ;

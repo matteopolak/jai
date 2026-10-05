@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Objective-C runtime declarations for x64.
 OBJC_BOOL_IS_BOOL :: 0;
 OBJC_BOOL_IS_CHAR :: 1;
 ARITH_SHIFT :: 32;

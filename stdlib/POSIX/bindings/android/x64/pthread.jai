@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Android x64 declarations: <pthread.h>.
 CSIGNAL :: 0x000000ff;
 CLONE_VM :: 0x00000100;
 CLONE_FS :: 0x00000200;

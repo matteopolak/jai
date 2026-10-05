@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Direct3D 11 bindings.
 #module_parameters ( ) ( INCLUDE_DEBUG_BINDINGS := false ) ;
 WKPDID_D3DDebugObjectName :: "429b8c22-9188-4b0c-8742-acb0bf85c200" ;
 #import "dxgi" ;

@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// A simple X11 open-file dialog.
 #import "X11" ;
 #import "POSIX" ;
 x_fib_show :: ( dpy : * Display , parent : Window , x : s32 , y : s32 ) -> s32 #foreign libsofd ;

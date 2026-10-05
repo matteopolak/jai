@@ -1,5 +1,4 @@
 #load "version.jai";
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
 #module_parameters ( USE_VULKAN_1_1 := true ) ;
 VK_NULL_HANDLE :: null ;
 VK_TRUE : VkBool32 : 1 ;

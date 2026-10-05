@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// Direct3D 11 types, constants and COM interfaces.
 D3D_FL9_1_REQ_TEXTURE1D_U_DIMENSION :: 2048 ;
 D3D_FL9_3_REQ_TEXTURE1D_U_DIMENSION :: 4096 ;
 D3D_FL9_1_REQ_TEXTURE2D_U_OR_V_DIMENSION :: 2048 ;

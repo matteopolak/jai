@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// CoreFoundation declarations (strings, URLs, run loops, property lists).
 kCFStringEncodingInvalidId :: 0xffffffff;
 __kCFStringInlineBufferLength :: 64;
 CFTypeID :: u64;

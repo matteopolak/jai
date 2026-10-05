@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// SDL2 declarations from SDL_surface.h.
 SDL_Surface :: struct {
     flags : u32 ;
     format : * SDL_PixelFormat ;

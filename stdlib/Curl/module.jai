@@ -1,4 +1,4 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
+// libcurl bindings.
 #module_parameters ( ) ( LINUX_USE_SYSTEM_LIBRARY := false ) ;
 #if OS == . WINDOWS {
     #load "windows.jai" ;

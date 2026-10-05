@@ -1,4 +1,4 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// Linux declarations: <sys/resource.h>.
 RLIM_INFINITY :: cast,trunc(__rlim_t) -1;
 RLIM_SAVED_MAX :: RLIM_INFINITY;
 RLIM_SAVED_CUR :: RLIM_INFINITY;
