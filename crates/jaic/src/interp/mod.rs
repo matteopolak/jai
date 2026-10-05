@@ -159,6 +159,8 @@ pub struct Interp {
     isched: Option<Box<threads_inline::InlineSched>>,
     /// More than one thread exists: `run` offers the baton to the others now and then.
     multi: bool,
+    /// Basic blocks left to run before execution traps (editors bound compile-time code).
+    pub block_budget: Option<u64>,
 }
 
 impl Default for Interp {
@@ -193,6 +195,7 @@ impl Interp {
             sched: None,
             isched: None,
             multi: false,
+            block_budget: None,
         }
     }
 
@@ -722,6 +725,12 @@ impl Interp {
             .copy_from_slice(&args[..args.len().min(func.sig.params.len())]);
         let mut block = 0usize;
         loop {
+            if let Some(left) = self.block_budget.as_mut() {
+                if *left == 0 {
+                    return self.trap("compile-time execution budget exhausted");
+                }
+                *left -= 1;
+            }
             if self.multi {
                 if self.host.cooperative_threads() {
                     self.inline_preempt(program)?;

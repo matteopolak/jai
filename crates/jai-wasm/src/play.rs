@@ -90,7 +90,7 @@ fn json_string(out: &mut String, text: &str) {
     out.push('"');
 }
 
-fn virtual_fs(files: &BTreeMap<String, Vec<u8>>) -> VirtualFs {
+pub(crate) fn virtual_fs(files: &BTreeMap<String, Vec<u8>>) -> VirtualFs {
     let mut fs = VirtualFs::default();
     for (name, bytes) in BUNDLED {
         fs.insert(format!("/{name}"), bytes.to_vec());
