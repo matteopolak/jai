@@ -25,7 +25,13 @@ record_unindexed: [..] s64;
 
 remember_record :: (id: s64, pointer: *void) {
     record_structs[id] = pointer;
-    array_add(*record_unindexed, id);
+    // array_add without the call: this runs once per built record.
+    if record_unindexed.count < record_unindexed.allocated {
+        record_unindexed.data[record_unindexed.count] = id;
+        record_unindexed.count += 1;
+    } else {
+        array_add(*record_unindexed, id);
+    }
 }
 
 index_pending_records :: () {
@@ -109,7 +115,17 @@ Record_Plan :: struct { info: *Type_Info_Struct; entries: [] Record_Plan_Entry; 
 record_plans: [] Record_Plan;  // Open addressing by info.
 record_plans_used: s64;
 
+last_plan_info: *Type_Info_Struct;
+last_plan: [] Record_Plan_Entry;
+
 record_plan :: (info: *Type_Info_Struct) -> [] Record_Plan_Entry {
+    if info == last_plan_info  return last_plan;
+    last_plan_info = info;
+    last_plan = find_record_plan(info);
+    return last_plan;
+}
+
+find_record_plan :: (info: *Type_Info_Struct) -> [] Record_Plan_Entry {
     if record_plans.count {
         mask := record_plans.count - 1;
         slot := record_slot_hash(info) & mask;
@@ -183,6 +199,31 @@ builtin_type_info :: (name: string) -> *Type_Info {
     return null;
 }
 
+// Zeroed memory for a built struct. Structs live for the rest of the compilation and are
+// never freed (like the compiler's own nodes), so they come from big chunks instead of an
+// allocation each. Array data stays separately allocated: metaprograms grow those arrays.
+RECORD_CHUNK :: 256 * 1024;
+record_chunk: *u8;
+record_chunk_left: s64;
+
+record_memory :: (size: s64) -> *void {
+    size = (max(size, 1) + 15) & ~15;
+    if size > RECORD_CHUNK / 4 {
+        memory := alloc(size);
+        memset(memory, 0, size);
+        return memory;
+    }
+    if size > record_chunk_left {
+        record_chunk = alloc(RECORD_CHUNK);
+        memset(record_chunk, 0, RECORD_CHUNK);
+        record_chunk_left = RECORD_CHUNK;
+    }
+    memory := record_chunk;
+    record_chunk += size;
+    record_chunk_left -= size;
+    return memory;
+}
+
 // The struct for record `id`, built on first use. `expected` is the pointed-to type of
 // the member being filled; the record's tag may name a subtype of it.
 record_struct :: (id: s64, expected: *Type_Info) -> *void {
@@ -215,8 +256,7 @@ record_struct :: (id: s64, expected: *Type_Info) -> *void {
         info = cast(*Type_Info_Struct) expected;
     }
 
-    memory := alloc(info.runtime_size);
-    memset(memory, 0, info.runtime_size);
+    memory := record_memory(info.runtime_size);
     remember_record(id, memory);  // Before filling: records may refer to themselves.
     fill_struct(memory, info, id);
     if info == type_info(Type_Info_Struct)  patch_constant_pointers(cast(*Type_Info_Struct) memory, id);

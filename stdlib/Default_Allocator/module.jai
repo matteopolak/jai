@@ -5,9 +5,46 @@ allocator :: Allocator.{allocator_proc, null};
 allocator_default_heap: *Heap;
 
 allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
-    if mode == .ALLOCATE || mode == .RESIZE {
-        if requested_size < 0 return null;
-        #if ENABLE_VALIDATE_ARGS if requested_size > 0x7fff_ffff_ffff_ffdf return null;
+    // The common modes first: compile-time code runs this through the interpreter, where
+    // every test and call counts.
+    if mode == .ALLOCATE || mode == .FREE || mode == .RESIZE {
+        if mode != .FREE {
+            if requested_size < 0 return null;
+            #if ENABLE_VALIDATE_ARGS if requested_size > 0x7fff_ffff_ffff_ffdf return null;
+        }
+        lock_ledger();
+        defer unlock_ledger();
+        heap := cast(*Heap) allocator_data;
+        if !heap {
+            if !allocator_default_heap allocator_default_heap = create_heap_locked();
+            heap = allocator_default_heap;
+            if !heap return null;
+        }
+        if mode == .ALLOCATE || !old_memory {
+            if mode == .FREE return null;
+            pointer := c_malloc(cast(u64) requested_size);
+            if !pointer return null;
+            if !add_allocation(heap, pointer) {
+                c_free(pointer);
+                return null;
+            }
+            return pointer;
+        }
+        slot := find_allocation(heap, old_memory);
+        #if ENABLE_ASSERTS assert_owned(slot >= 0);
+        if slot < 0 return null;
+        if mode == .RESIZE && requested_size > 0 {
+            replacement := c_realloc(old_memory, cast(u64) requested_size);
+            if !replacement return null;
+            if replacement != old_memory {
+                remove_allocation(heap, slot);
+                if !add_allocation(heap, replacement) return null;  // Out of memory for the ledger.
+            }
+            return replacement;
+        }
+        c_free(old_memory);
+        remove_allocation(heap, slot);
+        return null;
     }
     if mode == .CAPS {
         if old_memory {
@@ -42,33 +79,6 @@ allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old
         if find_allocation(heap, old_memory) >= 0 return cast(*void) 1;
         return null;
     }
-    if mode == .ALLOCATE || (mode == .RESIZE && !old_memory) {
-        pointer := c_malloc(cast(u64) requested_size);
-        if !pointer return null;
-        if !add_allocation(heap, pointer) {
-            c_free(pointer);
-            return null;
-        }
-        return pointer;
-    }
-    if mode == .FREE || mode == .RESIZE {
-        if !old_memory return null;
-        slot := find_allocation(heap, old_memory);
-        #if ENABLE_ASSERTS assert_owned(slot >= 0);
-        if slot < 0 return null;
-        if mode == .RESIZE && requested_size > 0 {
-            replacement := c_realloc(old_memory, cast(u64) requested_size);
-            if !replacement return null;
-            if replacement != old_memory {
-                remove_allocation(heap, slot);
-                if !add_allocation(heap, replacement) return null;  // Out of memory for the ledger.
-            }
-            return replacement;
-        }
-        c_free(old_memory);
-        remove_allocation(heap, slot);
-        return null;
-    }
     return null;
 }
 
@@ -95,6 +105,7 @@ unsafe_reset :: inline () {
 c_malloc :: (size: u64) -> *void #foreign crt "malloc";
 c_free :: (memory: *void) #foreign crt "free";
 c_realloc :: (memory: *void, size: u64) -> *void #foreign crt "realloc";
+c_calloc :: (count: u64, size: u64) -> *void #foreign crt "calloc";
 
 #scope_module
 // The ledger: each heap's pointers in an open-addressing set (linear probing, null = empty), so
@@ -152,14 +163,14 @@ find_allocation :: (heap: *Heap, pointer: *void) -> s64 {
     }
     return -1;
 }
+// At most half full, so probe runs stay short.
 add_allocation :: (heap: *Heap, pointer: *void) -> bool {
-    if (heap.count + 1) * 4 >= heap.capacity * 3 {
+    if (heap.count + 1) * 2 > heap.capacity {
         old_slots := heap.slots;
         old_capacity := heap.capacity;
         capacity := ifx old_capacity then old_capacity * 2 else 64;
-        slots := cast(**void) c_malloc(cast(u64) (capacity * size_of(*void)));
+        slots := cast(**void) c_calloc(cast(u64) capacity, size_of(*void));
         if !slots return false;
-        for i: 0..capacity-1 slots[i] = null;
         heap.slots = slots;
         heap.capacity = capacity;
         heap.count = 0;
@@ -169,11 +180,12 @@ add_allocation :: (heap: *Heap, pointer: *void) -> bool {
     place_allocation(heap, pointer);
     return true;
 }
-place_allocation :: (heap: *Heap, pointer: *void) {
+place_allocation :: (heap: *Heap, pointer: *void) #no_aoc {
     mask := heap.capacity - 1;
-    slot := slot_home(heap, pointer);
-    while heap.slots[slot] slot = (slot + 1) & mask;
-    heap.slots[slot] = pointer;
+    slot := cast,no_check(s64) (((cast(u64) pointer >> 4) * 11400714819323198485) >> 32) & mask;
+    slots := heap.slots;
+    while slots[slot] slot = (slot + 1) & mask;
+    slots[slot] = pointer;
     heap.count += 1;
 }
 // Backward-shift deletion: later entries of the probe run move up, so lookups need no tombstones.
