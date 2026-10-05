@@ -118,7 +118,9 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
     COMPLETE).
   - One header record per procedure: `ExportState::resolved_headers` maps a procedure to the header record
     that both `resolved_procedure_expression` and the reported header use, so a checker following calls
-    reaches bodies. Resolved headers carry the procedure's notes, including notes after the body
+    reaches bodies. The key includes `Exporter::own`: a compiler's own compile-time code (`#modify`) needs type
+    records with real descriptors, which message exports for a metaprogram do not have
+    (`tests/stdlib/compiler-header-own-types.jai`, or_return's shape). Resolved headers carry the procedure's notes, including notes after the body
     (`Compiler::proc_decl_notes`, copied to polymorph instances).
   - Headers list `using` parameters in `parameter_usings` (a `Code_Using` of an ident resolved to the
     argument). In `x := value` the value takes the declaration's lowered type when it has none.
