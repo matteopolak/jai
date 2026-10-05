@@ -59,11 +59,14 @@ Vk-Engine (use a `--release` build; ~45 s per module):
   struct, 51.2 GetRect `dropdown`), missing command-line arguments (30.14, 8.2, 12.8), a missing
   `cpp_library.cpp`, and 31.2, which calls GL at compile time without a context (crashes in libGL). 19.5 frees an
   advanced pointer and 27/foldera writes through null (both upstream bugs).
-- **Browser**: wasm build and both checks pass; 142 of 155 `tests/stdlib` programs run in the playground (threads
-  run cooperatively, files live in an in-memory FS, POSIX modules compile for `OS == .WASM`). The 10 exclusions
-  (libclang, compiler processes, FreeType/stb_image, Window_Creation, a libc ABI test, the negative control) are
+- **Browser**: wasm build and both checks pass; 164 of 180 `tests/stdlib` programs run in the playground (threads
+  run cooperatively, files live in an in-memory FS, POSIX modules compile for `OS == .WASM`). The exclusions are
   listed with reasons in `tools/playground_stdlib_expected.json`, which `check_playground_worker.mjs` enforces
-  exactly. `jaic run -os wasm` reproduces the browser sandbox natively.
+  exactly. `jaic run -os wasm` reproduces the browser sandbox natively. Run results carry ordered
+  stdout/stderr runs and accept an execution budget (`docs/browser/playground.md`); the language server
+  type-checks for hover and completion (`docs/compiler/language-server.md`). The portfolio
+  (`~/projects/portfolio`, `src/lib/jai/engine.ts`) consumes the bridge; ship a new compiler with its
+  "Publish Jai browser compiler" workflow (`jai_ref` = a pushed commit).
 
 ## Open work
 
