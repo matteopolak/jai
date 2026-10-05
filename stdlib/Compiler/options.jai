@@ -306,6 +306,17 @@ ensure_option_slot :: (id: s64) {
     if option_store_ready[id] return;
     option_store_ready[id] = true;
 
+    // Like jai: the oldest macOS release the target CPU runs (metaprograms build target triples from it).
+    stored := *option_store[id];
+    if stored.os_target == .MACOS && stored.minimum_os_version.major == 0 {
+        if stored.cpu_target == .ARM64 {
+            stored.minimum_os_version.major = 11;
+        } else {
+            stored.minimum_os_version.major = 10;
+            stored.minimum_os_version.minor = 13;
+        }
+    }
+
     if id == 2 {
         option_store[id].compile_time_command_line = collect_command_line();
     }
