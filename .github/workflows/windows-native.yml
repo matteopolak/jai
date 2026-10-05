@@ -99,9 +99,8 @@ jobs:
       - name: Build and run the Windows test programs natively
         run: |
           mkdir -p native-exes
+          target/debug/jaic.exe build tests/corpus/positive/integer-control.jai -o native-exes/smoke || echo "jaic exit $?"
           python tools/windows_cross.py build --jaic target/debug/jaic.exe --out native-exes --host --keep-going
-          ls -la native-exes | head -20
-          ./native-exes/integer-control.exe || echo "exit $?"
           python tools/windows_cross.py run --dir native-exes
       - name: Native backend tests
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
