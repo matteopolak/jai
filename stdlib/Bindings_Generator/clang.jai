@@ -53,6 +53,7 @@ Cursor_Kind :: enum s32 {
     TYPEDEF_DECL          :: 20;
     CXX_METHOD            :: 21;
     NAMESPACE             :: 22;
+    LINKAGE_SPEC          :: 23;
     CONSTRUCTOR           :: 24;
     DESTRUCTOR            :: 25;
     CONVERSION_FUNCTION   :: 26;

@@ -73,6 +73,7 @@ print_type_to_builder :: (builder: *String_Builder, ty: *CType, current_scope: *
         return;
     }
     if ty.hardcoded_jai_string {
+        if ty == context.generator.type_def_u128 || ty == context.generator.type_def_s128  context.generator.int128_was_referenced = true;
         append(builder, ty.hardcoded_jai_string);
         return;
     }
@@ -245,6 +246,7 @@ can_print_expression :: (e: *Expression) -> bool {
 // Token text of a C++ expression, translated when it is simple enough.
 raw_expression_text :: (raw: string) -> string {
     if raw == "true" || raw == "false" return raw;
+    if begins_with(raw, ".") return raw;   // An enum value the generator wrote itself (`.NONE`).
     if raw == "nullptr" || raw == "NULL" || raw == "0" return ifx raw == "0" then "0" else "null";
     body := raw;
     negative := false;
@@ -359,7 +361,7 @@ unwrap_single_bitfield :: (decl: *Declaration) -> *Declaration {
     return member;
 }
 
-print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, current_scope: *Declaration, flags: Print_Decl_Flags = 0, align_declarations := 0) {
+print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, current_scope: *Declaration, flags: Print_Decl_Flags = 0, align_declarations := 0, explicit_alignment := 0) {
     decl := unwrap_single_bitfield(_decl);
     if !(flags & .NO_INDENT) append_indentation(builder);
 
@@ -452,6 +454,7 @@ print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, 
                 if decl.foreign_name && decl.storage_class == .Extern {
                     append_elsewhere(builder, decl, decl.foreign_name);
                 }
+                if explicit_alignment > 0  print_to_builder(builder, " #align %", explicit_alignment);
                 if !(flags & .NO_SEMICOLON) append(builder, ";");
                 if decl.bitfield_width > 0 {
                     print_to_builder(builder, " /* % bits */", decl.bitfield_width);
@@ -563,13 +566,13 @@ objc_selector_field :: (selector: string) -> string {
 
 // The selectors of all message sends, registered with the runtime on first use.
 print_objc_selector_table :: (builder: *String_Builder, g: *Generator_State) {
-    if !g.objc_selectors.count return;
+    if !g.unique_objc_selectors.count return;
     append(builder, "\n\n#scope_file\n\n#import \"Objective_C\"; // For objc_msgSend and sel_registerName\n\n");
     append(builder, "_Generated_Selectors :: struct {\n    initialized: bool;\n");
-    for g.objc_selectors  print_to_builder(builder, "    %: Selector;\n", objc_selector_field(it));
+    for g.unique_objc_selectors  print_to_builder(builder, "    %: Selector;\n", objc_selector_field(it));
     append(builder, "}\n__selectors: _Generated_Selectors;\n\n");
     append(builder, "__selectors_init :: () {\n    if __selectors.initialized return;\n    __selectors.initialized = true;\n");
-    for g.objc_selectors  print_to_builder(builder, "    __selectors.% = sel_registerName(\"%\");\n", objc_selector_field(it), it);
+    for g.unique_objc_selectors  print_to_builder(builder, "    __selectors.% = sel_registerName(\"%\");\n", objc_selector_field(it), it);
     append(builder, "}\n");
 }
 
@@ -584,7 +587,10 @@ print_function :: (builder: *String_Builder, func: *Function, current_scope: *De
     type := func.type.type_of_function;
 
     foreign_declaration_name := name;
-    if needs_printf_wrapper foreign_declaration_name = sprint("%_CFormat", name);
+    if needs_printf_wrapper {
+        foreign_declaration_name = sprint("%_CFormat", name);
+        context.generator.generated_printf_wrapper = true;
+    }
 
     // A vtable entry is a procedure-typed member; everything else is a foreign declaration
     // (followed by a wrapper when requested).
@@ -715,11 +721,8 @@ print_enum_body :: (builder: *String_Builder, e: *Enum) {
     for e.enumerates {
         if !it.output_name continue;
         maybe_add_spacing(builder, *last_location, it.location, 0, mimic);
-        if it.comment.text && is_prefix_comment(it.comment) {
-            append_indentation(builder);
-            print_comment_prefix(builder, it.comment, false);
-        }
         append_indentation(builder);
+        if it.comment.text && is_prefix_comment(it.comment)  print_comment_prefix(builder, it.comment, false);
         append(builder, it.output_name);
         for it.output_name.count..max_name_len-1  append(builder, #char " ");
         append(builder, " :: ");
@@ -963,12 +966,31 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         has_fields = true;
     }
 
+    // Where the next field lands with Jai's natural alignment, to spot fields that C packs
+    // tighter (`#pragma pack`) or aligns further (`alignas`): those get an explicit `#align`.
+    check_alignment := part == .FULL && !(s.flags & .IS_UNION) && !(s.decl_flags & .TEMPLATE) && !as_type && s.parents.count == 0 && !has_vtable;
+    next_field_offset := 0;
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         if is_operator(it) continue;
         is_data, unused := is_struct_field(it);
         if part == .WRAPPER && is_data continue;
         if part == .RAW_DATA && !is_data continue;
+        explicit_alignment := 0;
+        if check_alignment && is_data {
+            if it.kind == .DECLARATION && it.bitfield_width <= 0 {
+                offset, size, alignment := get_field_layout(it);
+                if offset >= 0 && size >= 0 && alignment > 0 && next_field_offset >= 0 {
+                    padded := (next_field_offset + alignment - 1) / alignment * alignment;
+                    if padded != offset  explicit_alignment = alignment_reaching(next_field_offset, offset, alignment);
+                }
+                next_field_offset = ifx offset >= 0 && size >= 0 then offset + size else -1;
+            } else {
+                // Anonymous members and bit fields: libclang's offsets are not reliable here.
+                offset, size := get_field_layout(it);
+                next_field_offset = ifx offset >= 0 && size >= 0 then offset + size else -1;
+            }
+        }
         if part == .RAW_DATA && !(s.flags & .IS_UNION) {
             offset, size, alignment := get_field_layout(it);
             if offset < 0 && alignment > 0 offset = (raw_next + alignment - 1) / alignment * alignment;
@@ -983,7 +1005,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         append(builder, "\n");
         maybe_add_spacing(builder, *last_location, it.location, it.decl_flags, mimic);
         flags: Print_Decl_Flags;
-        print_declaration_to_builder(builder, it, s, flags, max_len);
+        print_declaration_to_builder(builder, it, s, flags, max_len, explicit_alignment);
         printed = true;
         if is_struct_field(it) has_fields = true;
     }
@@ -1043,6 +1065,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
 // Alignment in bytes of a type as C lays it out; 0 when it cannot be told (templates).
 get_type_alignment :: (type: *CType) -> s64 {
     if !type return 0;
+    if type.alignment > 0 return type.alignment;
     if type.template_instantiation_params.count > 0 return 0;
     if type.pointer_to || type.type_of_function return context.generator.pointer_size;
     if type.type_of_typedef return get_type_alignment(type.type_of_typedef.type);
@@ -1117,6 +1140,27 @@ print_bitfield_alignment_helper :: (builder: *String_Builder, s: *Struct) {
 }
 
 // Offset (bytes, -1 if unknown), size and alignment (0 if unknown) of a data member as clang laid it out.
+// The power-of-two alignment that moves a field from `next` (the end of the previous field)
+// to `offset`, or 0 when there is none (then the layout cannot be expressed this way).
+// A packed field gets the largest alignment below its natural one that works, so the
+// struct keeps as much of its alignment as the C one (`#pragma pack(4)` -> `#align 4`).
+alignment_reaching :: (next: s64, offset: s64, natural: s64) -> s64 {
+    if offset < (next + natural - 1) / natural * natural {
+        a := natural;
+        while a >= 1 {
+            if (next + a - 1) / a * a == offset  return a;
+            a /= 2;
+        }
+        return 0;
+    }
+    a := natural;
+    while a <= 4096 {
+        if (next + a - 1) / a * a == offset  return a;
+        a *= 2;
+    }
+    return 0;
+}
+
 get_field_layout :: (decl: *Declaration) -> offset: s64, size: s64, alignment: s64 {
     if decl.kind == .BITFIELD {
         bf := cast(*Bitfield) decl;

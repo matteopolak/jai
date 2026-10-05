@@ -4,7 +4,7 @@
 GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH :: "<clang builtin headers>";
 
 Generate_Bindings_Options :: struct #type_info_none {
-    os                    := OS;
+    os                    := TARGET_OS;
     cpu                   := CPU;
     libnames:             [..] string;
     libpaths:             [..] string;
@@ -129,6 +129,9 @@ Library_Info :: struct {
     full_path: string;
     is_shared_library: bool;
     is_system_library: bool;
+    handle: *void;               // dlopen handle of a system library found by the loader.
+    symbol_names: [] string;     // Exported symbols, as read from the library file.
+
     symbols: Table(string, bool);
     symbols_known: bool;
 }
@@ -160,6 +163,7 @@ CType :: struct {
 
     number_flags: Number_Flags;
     size: s64 = -1;
+    alignment: s64 = -1;   // Known when the generator cannot derive it (types referred to by name).
     flags: Flags;
     Flags :: enum_flags {
         REFERENCE;
@@ -242,7 +246,7 @@ Literal :: struct {
     string_value: string;
     macro_value: Macro_Value;
     enum_type: *Enum;
-    enum_value: *Declaration;
+    enum_value: *Enum.Enumerate;
     identifier: *Declaration;
     raw_value: string;
 }
@@ -279,6 +283,13 @@ Location :: struct {
     file: s64;   // index into the generator's file names; 0 = unknown
     line: u32;
     column: u32;
+}
+
+// An anonymous enum keeps its source position: it is inserted at `index` of `scope`.
+Pending_Anon_Enum :: struct {
+    _enum: *Enum;
+    scope: *[..] *Declaration;
+    index: int;
 }
 
 Comment :: struct {
@@ -378,16 +389,21 @@ Enum :: struct {
     #as using declaration: Declaration;
     kind = .ENUM;
 
+    // A value, not a declaration: visitors reorder, copy and remove them freely.
     Enumerate :: struct {
-        #as using declaration: Declaration;
+        name: string;
+        output_name: string;
 
         unsigned_value: u64;
         signed_value: s64;
         string_value: string;
         macro_value: Macro_Value;
+
+        location: Location;
+        comment: Comment;
     }
 
-    enumerates: [..] *Enumerate;
+    enumerates: [..] Enumerate;
     flags: Enum_Flags;
 
     Enum_Flags :: enum_flags {
@@ -405,6 +421,22 @@ Bitfield :: struct {
     alignment_type: *CType;
     start_byte: s64;
     byte_count: s64;
+}
+
+// Tracks the bit field run being filled while a struct's members are converted.
+Bitfield_Status :: struct {
+    parent:     *Struct;
+    bitfield:   *Bitfield;
+    first_decl: *Declaration;
+}
+
+// A run holding a single member prints as that member: return it (typed as the storage).
+maybe_unwrap_bitfield_declaration :: (decl: *Declaration) -> *Declaration {
+    if decl.kind != .BITFIELD return decl;
+    bf := cast(*Bitfield) decl;
+    if bf.members.count != 1 return decl;
+    bf.members[0].type = bf.type;
+    return bf.members[0];
 }
 
 Struct :: struct {
@@ -436,6 +468,7 @@ Struct :: struct {
         IS_INCOMPLETE;
         IS_TYPE_PARAM;   // Stand-in for a template or Objective-C generic parameter.
         NEEDS_RAW;      // A derived class reuses its tail padding: print the `__RAW` variant too.
+        IS_SYSTEM;      // Declared in a system header: referred to by name, never printed.
     }
 }
 
@@ -454,6 +487,19 @@ Namespace :: struct {
     should_flatten := false;
 
     declarations: [..] *Declaration;
+}
+
+// The `uuid` of a COM interface (`struct __declspec(uuid("...")) IFoo`), kept as struct metadata.
+ComUuid :: struct {
+    location: Location;
+    uuid: string;
+}
+
+// The reference generator frees libclang tokens through these; tokens never reach Jai code
+// here, so the type only exists for source compatibility.
+Token_Info :: struct {
+    token_pointer: *void;
+    num_tokens: u32;
 }
 
 Block :: struct {
@@ -498,7 +544,8 @@ Generator_State :: struct #type_info_none {
     type_def_objc_selector: *CType;
     type_def_objc_block_pointer: *CType;
     type_def_objc_id: *CType;
-    objc_selectors: [..] string;   // Unique selectors of the generated message sends.
+    type_def_msvc_destructor_flags: *CType;
+    unique_objc_selectors: [..] string;   // Selectors of the generated message sends, in first-use order.
     objc_selector_set: Table(string, bool);
     objc_blocks: Table(string, *CType);   // Block struct types by name, one per signature.
 
@@ -516,9 +563,14 @@ Generator_State :: struct #type_info_none {
     filenames: [..] string;
     file_ids: Table(string, s64);
 
+    extern_declarations: [..] *Declaration;   // Extern variables, deduplicated by symbol.
+    com_uuids: [..] ComUuid;                  // `__declspec(uuid(...))` of COM interfaces (Windows headers).
+    int128_was_referenced: bool;              // The output uses S128/U128 (from Basic).
+    generated_printf_wrapper: bool;           // The output uses push_allocator & co (from Basic).
+
     structs_to_check: [..] *Struct;
     deferred_struct_checks: [..] *Struct;   // Structs in namespaces: checked at the end of the file.
-    pending_anon_enums: [..] *Enum;
+    pending_anon_enums: [..] Pending_Anon_Enum;
 
     extra_infos: Table(*Struct, *Struct_Extra_Info);
     template_depth := 0;
@@ -641,12 +693,12 @@ visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent:
                 }
             }
         case .STRUCT;
+            // Like the reference: metadata, base classes and virtual functions come first.
             s := cast(*Struct) decl;
-            i := 0;
-            while i < s.declarations.count {
-                visit_declarations(visitor, s.declarations[i], decl, depth + 1);
-                i += 1;
-            }
+            visit_declaration_list(visitor, *s.metadata, decl, depth + 1);
+            visit_declaration_list(visitor, *s.parents, decl, depth + 1);
+            visit_declaration_list(visitor, cast(*[..] *Declaration) *s.virtual_functions, decl, depth + 1);
+            visit_declaration_list(visitor, *s.declarations, decl, depth + 1);
         case .NAMESPACE;
             n := cast(*Namespace) decl;
             i := 0;
@@ -661,5 +713,14 @@ visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent:
                 visit_declarations(visitor, b.members[i], decl, depth + 1);
                 i += 1;
             }
+    }
+}
+
+// The count is re-read every step: a visitor may append to the list it is in.
+visit_declaration_list :: (visitor: Declaration_Visitor, list: *[..] *Declaration, parent: *Declaration, depth: int) {
+    i := 0;
+    while i < list.count {
+        visit_declarations(visitor, list.*[i], parent, depth);
+        i += 1;
     }
 }

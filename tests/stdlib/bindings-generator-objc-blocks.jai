@@ -107,10 +107,10 @@ main :: () {
     #if HAVE_OBJC {
         // The generated shape: one struct per signature, shared by all its uses.
         assert(has(BINDINGS, "Block_s32_s32 :: struct {"));
-        assert(has(BINDINGS, "invoke:     #type (block: *Block_s32_s32, arg0: s32) -> s32 #c_call;"));
+        assert(has(BINDINGS, "invoke:     #type (block: *Block_s32_s32, unknown0: s32) -> s32 #c_call;"));
         assert(has(BINDINGS, "Mapper :: *Block_s32_s32;"));
         assert(has(BINDINGS, "Handler :: *Block_void_s32_float64;"));
-        assert(has(BINDINGS, "invoke:     #type (block: *Block_void_s32_float64, arg0: s32, arg1: float64) -> void #c_call;"));
+        assert(has(BINDINGS, "invoke:     #type (block: *Block_void_s32_float64, unknown0: s32, unknown1: float64) -> void #c_call;"));
         assert(has(BINDINGS, "applyInline :: inline (self: *Worker, mapper: *Block_s32_s32, value: s32) -> s32 {"));
         assert(has(BINDINGS, "recorder :: inline (self: *Worker) -> *Block_void_s32_float64 {"));
         assert(has(BINDINGS, "setCompletion :: inline (self: *Worker, completion: *Block_void) {"));

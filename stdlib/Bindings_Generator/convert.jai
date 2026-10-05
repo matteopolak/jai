@@ -179,14 +179,14 @@ init_generator :: (g: *Generator_State) {
     g.type_def_u32 = make_number_type(.None | ._32BIT, 4);
     g.type_def_u64 = make_number_type(.None | ._64BIT, 8);
     g.type_def_u128 = New(CType);
-    g.type_def_u128.hardcoded_jai_string = "u128";
+    g.type_def_u128.hardcoded_jai_string = "U128";   // Basic's 128-bit integers
     g.type_def_u128.size = 16;
     g.type_def_s8  = make_number_type(.SIGNED | ._8BIT, 1);
     g.type_def_s16 = make_number_type(.SIGNED | ._16BIT, 2);
     g.type_def_s32 = make_number_type(.SIGNED | ._32BIT, 4);
     g.type_def_s64 = make_number_type(.SIGNED | ._64BIT, 8);
     g.type_def_s128 = New(CType);
-    g.type_def_s128.hardcoded_jai_string = "s128";
+    g.type_def_s128.hardcoded_jai_string = "S128";
     g.type_def_s128.size = 16;
     g.type_def_float32 = make_number_type(.FLOAT | .SIGNED | ._32BIT, 4);
     g.type_def_float64 = make_number_type(.FLOAT | .SIGNED | ._64BIT, 8);
@@ -207,6 +207,11 @@ init_generator :: (g: *Generator_State) {
     g.type_def_objc_selector = create_empty_struct_type("Selector");
     g.type_def_objc_block_pointer = create_empty_struct_type("Block");
     g.type_def_objc_id = create_empty_struct_type("id");
+
+    // Windows module type of the hidden argument of MSVC virtual destructors.
+    g.type_def_msvc_destructor_flags = New(CType);
+    g.type_def_msvc_destructor_flags.hardcoded_jai_string = "Msvc_Destructor_Flags";
+    g.type_def_msvc_destructor_flags.size = 4;
 }
 
 // A named type the Objective_C module defines (`id`, `Class`...); only its name is printed.
@@ -288,13 +293,20 @@ fill_comment :: (comment: *Comment, c: Cursor, location: Location) {
     text := clang_string("comment", c);
     if !text return;
     comment.text = text;
-    comment.location = location;
+    // The location is only kept for a comment that starts on an earlier line than the
+    // declaration: that makes it a prefix comment. A same-line comment follows the declaration.
+    comment_line := clang("comment_line", c);
+    if comment_line > 0 && comment_line < location.line {
+        comment.location = location;
+        comment.location.line = xx comment_line;
+    }
 }
 
 is_prefix_comment :: (comment: Comment) -> bool {
     t := comment.text;
+    if !t return false;
     if begins_with(t, "///<") || begins_with(t, "//<") || begins_with(t, "/**<") || begins_with(t, "/*<") return false;
-    return true;
+    return comment.location.line > 0 || find_index_from_left(t, #char "\n") != -1;
 }
 
 // ----------------------------------------------------------------------------
@@ -348,12 +360,30 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_POINTER;
             pointee := clang("t_pointee", ty);
             pk := type_kind(pointee);
+            if pk == T_ELABORATED {
+                named := clang("t_named", pointee);
+                if type_kind(named) == T_TYPEDEF {
+                    pointee = named;
+                    pk = T_TYPEDEF;
+                }
+            }
             if pk == T_ELABORATED || pk == T_TYPEDEF {
                 // A pointer to a typedef of a function type is still a function pointer.
                 canonical := clang("t_canonical", pointee);
                 if type_kind(canonical) == T_FUNCTIONPROTO || type_kind(canonical) == T_FUNCTIONNOPROTO {
+                    if pk == T_TYPEDEF {
+                        // `stbi_write_func *f`: a Jai procedure type is already a pointer, so the
+                        // typedef name stands for the pointer.
+                        named := create_type(pointee, ctx);
+                        if named && named.type_of_typedef {
+                            result = New(CType);
+                            result.* = named.*;
+                            result.size = size;
+                            return result;
+                        }
+                    }
                     pk = type_kind(canonical);
-                    if type_kind(pointee) == T_ELABORATED  pointee = canonical;
+                    pointee = canonical;
                 }
             }
             if pk == T_FUNCTIONPROTO || pk == T_FUNCTIONNOPROTO {
@@ -424,8 +454,17 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
             decl := clang("t_decl", ty);
             name := cursor_name(decl);
             if cursor_kind(decl) == .TEMPLATE_TYPE_PARAMETER  return make_type_param_placeholder(name);   // `T` of `Box<T>`.
-            if !is_user_declaration(decl, name) || should_unwrap_typedef(name) {
+            if should_unwrap_typedef(name) {
                 return create_type(clang("typedef_underlying", decl), ctx);
+            }
+            if !is_user_declaration(decl, name) {
+                // Like the reference: a typedef from a system header is referred to by name and
+                // not generated (`time_t`, `FILE`, `socklen_t` come from POSIX, Windows, ...).
+                result = New(CType);
+                result.hardcoded_jai_string = name;
+                result.size = size;
+                result.alignment = clang("t_alignof", ty);
+                return result;
             }
             td := create_typedef(decl);
             if !td || td.should_unwrap {
@@ -725,6 +764,7 @@ is_va_list :: (type: *CType) -> bool {
     if type.type_of_typedef && contains(type.type_of_typedef.name, "va_list") return true;
     if type.type_of_struct && contains(type.type_of_struct.name, "va_list") return true;
     if type.hardcoded_jai_string == "__va_list_tag" return true;
+    if contains(type.hardcoded_jai_string, "va_list") return true;
     return false;
 }
 
@@ -764,6 +804,8 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
 
     ft.return_type = create_type(clang("t_result", ty), cur);
     if clang("t_variadic", ty) ft.flags |= .VARIADIC;
+    // MSVC virtual destructors take a hidden flags argument (bit 0: free the memory, bit 1: delete[]).
+    windows_virtual_destructor := kind == .DESTRUCTOR && context.generator_options.os == .WINDOWS && clang("is_virtual", cur);
 
     count := clang("t_num_args", ty);
     if count < 0 count = 0;
@@ -771,6 +813,7 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
     if cur cursor_args = clang("num_args", cur);
 
     i := 0;
+    unknown_count := 0;
     while i < count {
         arg := New(Declaration);
         arg.kind = .DECLARATION;
@@ -790,14 +833,32 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
             arg.decl_flags |= .POINTER_TO_VALUE;
         }
         if clang("t_const", arg_type) arg.decl_flags |= .IS_CONST;
-        if !arg.name arg.name = tprint("arg%", i);
-        arg.output_name = avoid_reserved_names(arg.name);
+        // Unnamed parameters keep an empty name and print as unknown0, unknown1, ... (visitors
+        // match on these output names, as with the reference generator).
+        if arg.name {
+            arg.output_name = avoid_reserved_names(arg.name);
+        } else {
+            arg.output_name = tprint("unknown%", unknown_count);
+            unknown_count += 1;
+        }
         // Arrays decay to pointers in argument position.
         if arg.type.array_element_type {
             arg.type = create_pointer_to(arg.type.array_element_type);
         }
         array_add(*ft.arguments, arg);
         i += 1;
+    }
+    if windows_virtual_destructor {
+        flags_arg := New(Declaration);
+        flags_arg.kind = .DECLARATION;
+        flags_arg.name = "flags";
+        flags_arg.output_name = "flags";
+        flags_arg.type = context.generator.type_def_msvc_destructor_flags;
+        lit := New(Literal);
+        lit.literal_kind = .RAW_CPP_TOKENS;
+        lit.raw_value = ".NONE";
+        flags_arg.expression = lit;
+        array_add(*ft.arguments, flags_arg);
     }
     return ft;
 }
@@ -1025,7 +1086,7 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
                 lit.literal_kind = .ENUM;
                 lit.enum_type = enum_decl;
                 name := cursor_name(ref);
-                for enum_decl.enumerates {
+                for * enum_decl.enumerates {
                     if it.name == name {
                         lit.enum_value = it;
                         break;
@@ -1248,10 +1309,16 @@ create_struct :: (c: Cursor) -> *Struct {
         return s;
     }
 
+    // A named struct from a system header is referred to by name only, like a system typedef.
+    if s.name && !is_user_declaration(key, s.name) {
+        s.flags |= .IS_SYSTEM;
+        s.decl_flags |= .OMIT_FROM_OUTPUT;
+    }
+
     if is_template g.template_depth += 1;
     fill_struct_members(s, key);
     if is_template g.template_depth -= 1;
-    if s.name {
+    if s.name && !(s.flags & .IS_SYSTEM) {
         array_add(*g.structs_to_check, s);
     }
     return s;
@@ -1799,13 +1866,18 @@ add_objc_method :: (s: *Struct, c: Cursor) {
     if type_name_of(result) == "instancetype" ft.flags |= .RETURNS_INSTANCETYPE;
 
     count := clang("num_args", c);
+    unknown_count := 0;
     for 0..count-1 {
         arg_cursor := clang("arg", c, it);
         arg := New(Declaration);
         arg.kind = .DECLARATION;
         arg.name = cursor_name(arg_cursor);
-        if !arg.name arg.name = tprint("arg%", it);
-        arg.output_name = avoid_reserved_names(arg.name);
+        if arg.name {
+            arg.output_name = avoid_reserved_names(arg.name);
+        } else {
+            arg.output_name = tprint("unknown%", unknown_count);
+            unknown_count += 1;
+        }
         arg.location = cursor_location(arg_cursor);
         arg.type = create_type(clang("type", arg_cursor), arg_cursor);
         array_add(*ft.arguments, arg);
@@ -1817,7 +1889,7 @@ add_objc_method :: (s: *Struct, c: Cursor) {
 
     if !table_contains(*g.objc_selector_set, selector) {
         table_add(*g.objc_selector_set, selector, true);
-        array_add(*g.objc_selectors, selector);
+        array_add(*g.unique_objc_selectors, selector);
     }
     avoid_name_clash(*s.declarations, func);   // Adds it.
 }
@@ -1844,26 +1916,27 @@ create_enum :: (c: Cursor) -> *Enum {
     int_type := clang("enum_int_type", key);
     e.type = create_type(int_type, key);
     if context.generator_options.alias_original_enum_names  e.flags |= .ALIAS_ORIGINAL_NAMES;
+    if options_mimic_enums()  e.flags |= .MIMIC_SPACING;
 
     children := get_children(key);
     for children {
         if cursor_kind(it) != .ENUM_CONSTANT_DECL continue;
-        en := New(Enum.Enumerate);
-        en.kind = .DECLARATION;
+        en: Enum.Enumerate;
         en.name = cursor_name(it);
         en.signed_value = clang("enum_value", it);
         en.unsigned_value = cast(u64) clang("enum_uvalue", it);
         en.location = cursor_location(it);
         fill_comment(*en.comment, it, en.location);
         en.output_name = stripped_name(get_enum_value_name(e, en));
+        // Not a known constant: the value only exists as `Enum.value` in the output, so a macro
+        // that names it (`#define OLD_NAME NEW_NAME`) is dropped, like in the reference.
         array_add(*e.enumerates, en);
-        table_add(*g.known_constants, en.name, true);
     }
     if e.name  compute_enum_names(e, false);
     return e;
 }
 
-get_enum_value_name :: (e: *Enum, en: *Enum.Enumerate) -> string {
+get_enum_value_name :: (e: *Enum, en: Enum.Enumerate) -> string {
     options := *context.generator_options;
     name := en.name;
 
@@ -1923,13 +1996,13 @@ compute_enum_names :: (e: *Enum, already_stripped := false) {
             common_prefix.count = 0;
         }
 
-        for e.enumerates {
+        for * e.enumerates {
             it.output_name = advance(it.output_name, common_prefix.count);
             it.output_name = avoid_reserved_names(trim_left(it.output_name, "_"));
         }
     }
 
-    for e.enumerates {
+    for * e.enumerates {
         if !it.output_name || is_digit(it.output_name[0]) {
             it.output_name = sprint("_%", it.output_name);
         }
@@ -2013,6 +2086,22 @@ Macro_Parser :: struct {
 CAST_TYPE_WORDS :: string.["int", "unsigned", "long", "short", "char", "signed", "float", "double", "void", "const",
     "uint8_t", "uint16_t", "uint32_t", "uint64_t", "int8_t", "int16_t", "int32_t", "int64_t", "size_t", "ssize_t", "intptr_t", "uintptr_t"];
 
+// The Jai type of a fixed-size integer typedef from libc headers, or "".
+builtin_integer_typedef :: (name: string) -> string {
+    n := name;
+    while begins_with(n, "_") n = advance(n, 1);
+    if begins_with(n, "u_int") n = advance(n, 2);   // u_int32_t -> int32_t (unsigned below)
+    unsigned := begins_with(name, "u_") || begins_with(n, "u");
+    if begins_with(n, "u") n = advance(n, 1);
+    if n == "int8_t"  return ifx unsigned then "u8"  else "s8";
+    if n == "int16_t" return ifx unsigned then "u16" else "s16";
+    if n == "int32_t" return ifx unsigned then "u32" else "s32";
+    if n == "int64_t" return ifx unsigned then "u64" else "s64";
+    if name == "size_t" || name == "__size_t" || name == "uintptr_t" return "u64";
+    if name == "ssize_t" || name == "__ssize_t" || name == "intptr_t" return "s64";
+    return "";
+}
+
 macro_type_name :: (words: [] string) -> string {
     unsigned := false;
     longs := 0;
@@ -2066,16 +2155,21 @@ macro_primary :: (p: *Macro_Parser) -> string {
             if k < p.tokens.count && p.tokens[k].spelling == ")" && !table_contains(*context.generator.known_constants, name) {
                 is_type, type_name := table_find(*context.generator.known_types, name);
                 if !is_type {
+                    // Fixed-size integer typedefs (`u_int32_t`, `__uint8_t`, ...) are unwrapped.
+                    type_name = builtin_integer_typedef(name);
+                    is_type = type_name.count > 0;
+                }
+                if !is_type {
                     p.ok = false;
                     p.unresolved = true;
                     return "";
                 }
                 p.index = k + 1;
-                operand_text := peek_token(p);
                 operand := macro_unary(p);
                 stars_text := "";
                 for 1..stars stars_text = join(stars_text, "*");
-                trunc := ifx operand_text == "-" || operand_text == "~" then ",trunc" else "";
+                // A negative or complemented value does not fit an unsigned type without `,trunc`.
+                trunc := ifx begins_with(operand, "-") || begins_with(operand, "(-") || begins_with(operand, "~") || begins_with(operand, "(~") then ",trunc" else "";
                 return tprint("cast%(%%) %", trunc, stars_text, type_name, operand);
             }
         }
@@ -2118,7 +2212,20 @@ macro_primary :: (p: *Macro_Parser) -> string {
         // Literal
         if begins_with(s, "\"") return s;
         if begins_with(s, "'") {
-            if s.count == 3 return tprint("#char %", slice(s, 0, s.count));
+            // C 'x' becomes Jai #char "x"; only escapes Jai shares with C are passed through.
+            if s.count == 3 {
+                c := s[1];
+                if c == #char "\"" return "#char \"\\\"\"";
+                if c == #char "\\" { p.ok = false; return ""; }
+                return tprint("#char \"%\"", slice(s, 1, 1));
+            }
+            if s.count == 4 && s[1] == #char "\\" {
+                e := s[2];
+                if e == #char "n" || e == #char "t" || e == #char "r" || e == #char "0" || e == #char "\\" || e == #char "\"" {
+                    return tprint("#char \"%\"", slice(s, 1, 2));
+                }
+                if e == #char "'" return "#char \"'\"";
+            }
             p.ok = false;
             return "";
         }
@@ -2297,10 +2404,23 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
         children := get_children(c);
         for children  handle_toplevel_cursor(it, *ns.declarations, ns);
         if ns.should_flatten {
+            for * g.pending_anon_enums {
+                if it.scope == *ns.declarations {
+                    it.scope = scope;
+                    it.index += scope.count;
+                }
+            }
             for ns.declarations { it.parent = ns.parent; array_add(scope, it); }
         } else if ns.declarations.count {
             add_to_scope(scope, ns);
         }
+        return;
+    }
+
+    // `extern "C" { ... }` (and `__BEGIN_DECLS` in C++ mode): its declarations belong to the
+    // enclosing scope. Older libclangs report the block as an unexposed declaration.
+    if kind == .LINKAGE_SPEC || kind == .UNEXPOSED_DECL {
+        for get_children(c)  handle_toplevel_cursor(it, scope, parent);
         return;
     }
 
@@ -2360,7 +2480,12 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
         case .ENUM_DECL;
             e := create_enum(c);
             e.parent = parent;
-            if e.name then add_to_scope(scope, e); else array_add(*g.pending_anon_enums, e);
+            if e.name {
+                add_to_scope(scope, e);
+            } else {
+                // Named later by a typedef, or placed here once the whole file is converted.
+                array_add(*g.pending_anon_enums, .{e, scope, scope.count});
+            }
 
         case .TYPEDEF_DECL; #through;
         case .TYPE_ALIAS_DECL;
@@ -2372,10 +2497,12 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
         case .VAR_DECL;
             // Constants initialised by a literal become constants.
             ty := clang("type", c);
-            if clang("t_const", ty) {
-                decl := create_constant_declaration(c);
-                if decl add_to_scope(scope, decl);
+            constant: *Declaration;
+            if clang("t_const", ty)  constant = create_constant_declaration(c);
+            if constant {
+                add_to_scope(scope, constant);
             } else if clang("storage_class", c) == xx Storage_Class.Extern {
+                // Includes `extern const T name;`: a constant whose value lives in the library.
                 decl := New(Declaration);
                 decl.kind = .DECLARATION;
                 decl.name = name;

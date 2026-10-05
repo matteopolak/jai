@@ -138,6 +138,8 @@ struct Api {
     argument: unsafe extern "C" fn(CxCursor, c_uint) -> CxCursor,
     cursor_variadic: unsafe extern "C" fn(CxCursor) -> c_uint,
     raw_comment: unsafe extern "C" fn(CxCursor) -> CxString,
+    comment_range: unsafe extern "C" fn(CxCursor) -> CxRange,
+    range_start: unsafe extern "C" fn(CxRange) -> CxLocation,
     macro_function_like: unsafe extern "C" fn(CxCursor) -> c_uint,
     macro_builtin: unsafe extern "C" fn(CxCursor) -> c_uint,
     mangling: unsafe extern "C" fn(CxCursor) -> CxString,
@@ -330,6 +332,8 @@ fn open_api(explicit: &str) -> Result<(Api, String), String> {
             argument: sym!("clang_Cursor_getArgument"),
             cursor_variadic: sym!("clang_Cursor_isVariadic"),
             raw_comment: sym!("clang_Cursor_getRawCommentText"),
+            comment_range: sym!("clang_Cursor_getCommentRange"),
+            range_start: sym!("clang_getRangeStart"),
             macro_function_like: sym!("clang_Cursor_isMacroFunctionLike"),
             macro_builtin: sym!("clang_Cursor_isMacroBuiltin"),
             mangling: sym!("clang_Cursor_getMangling"),
@@ -700,6 +704,13 @@ pub fn call(op: &str, a: i64, b: i64, text: &[u8]) -> Result<i64, String> {
             "comment" => unsafe {
                 s.last_text = s.string((api.raw_comment)(s.cursor(a)));
                 0
+            },
+            // Line where the cursor's attached comment starts (0 without one).
+            "comment_line" => unsafe {
+                let loc = (api.range_start)((api.comment_range)(s.cursor(a)));
+                let (mut file, mut line, mut col, mut off) = (std::ptr::null_mut(), 0, 0, 0);
+                (api.spelling_location)(loc, &mut file, &mut line, &mut col, &mut off);
+                line as i64
             },
             "macro_function_like" => unsafe { (api.macro_function_like)(s.cursor(a)) as i64 },
             "macro_builtin" => unsafe { (api.macro_builtin)(s.cursor(a)) as i64 },
