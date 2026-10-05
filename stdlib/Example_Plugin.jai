@@ -1,42 +1,45 @@
-// Independently authored example of the canonical metaprogram callback protocol.
+// Example_Plugin: a metaprogram plugin that fills in every callback and prints a line
+// from each one, to show when the compiler calls them. Copy it as a starting point.
 #import "Basic";
 #import "Compiler";
 
 get_plugin :: () -> *Metaprogram_Plugin {
     plugin := New(Metaprogram_Plugin);
-    plugin.before_intercept = before_intercept;
-    plugin.add_source = add_source;
-    plugin.message = message;
-    plugin.finish = finish;
-    plugin.shutdown = shutdown;
     plugin.handle_one_option = handle_one_option;
-    plugin.log_help = log_help;
+    plugin.log_help          = log_help;
+    plugin.before_intercept  = before_intercept;
+    plugin.add_source        = add_source;
+    plugin.message           = message;
+    plugin.finish            = finish;
+    plugin.shutdown          = shutdown;
     return plugin;
 }
 
+// Called before the compiler starts intercepting the workspace; `flags` may be adjusted here.
 before_intercept :: (p: *Metaprogram_Plugin, flags: *Intercept_Flags) {
-    print("Example_Plugin: compilation starting.\n");
+    print("Example_Plugin: before_intercept, nothing compiled yet.\n");
 }
 
+// Build options can no longer change; a plugin could add its own source files now.
 add_source :: (p: *Metaprogram_Plugin) {
-    print("Example_Plugin: build options are finalized.\n");
+    print("Example_Plugin: add_source.\n");
 }
 
 message :: (p: *Metaprogram_Plugin, message: *Message) {
     num_messages += 1;
-    if message.kind == .PHASE {
-        phase := cast(*Message_Phase) message;
-        print("Example_Plugin: phase %.\n", phase.phase);
-        if phase.phase == .PRE_WRITE_EXECUTABLE {
-            print("Example_Plugin: executable %.\n", phase.executable_name);
-        }
-    } else if message.kind == .TYPECHECKED {
-        checked := cast(*Message_Typechecked) message;
-        print("Example_Plugin: % declarations, % headers, % bodies, % structs, % other nodes.\n",
-              checked.declarations.count, checked.procedure_headers.count,
-              checked.procedure_bodies.count, checked.structs.count, checked.others.count);
-    } else if message.kind == .COMPLETE {
-        print("Example_Plugin: compilation complete.\n");
+    if message.kind == {
+        case .TYPECHECKED;
+            batch := cast(*Message_Typechecked) message;
+            print("Example_Plugin: typechecked a batch of % (% declarations, % procedure bodies).\n",
+                  batch.all.count, batch.declarations.count, batch.procedure_bodies.count);
+
+        case .PHASE;
+            update := cast(*Message_Phase) message;
+            if update.phase == .PRE_WRITE_EXECUTABLE  print("Example_Plugin: about to write %.\n", update.executable_name);
+            else print("Example_Plugin: now in phase %.\n", update.phase);
+
+        case .COMPLETE;
+            print("Example_Plugin: the build is done.\n");
     }
 }
 
