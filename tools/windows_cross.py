@@ -80,7 +80,7 @@ def build_one(args, source, output):
         text=True,
     )
     if result.returncode != 0:
-        return result.stderr.strip()
+        return f"exit {result.returncode}: {result.stderr.strip()}"
     if not output.with_name(output.name + ".exe").exists():
         return f"no executable written (stdout {result.stdout!r}, stderr {result.stderr!r})"
     return None
