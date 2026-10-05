@@ -1,240 +1,162 @@
-// Independently normalized ABI contract. No reference procedure bodies or binaries.
-#scope_file
-#import "POSIX" ;
-alsa :: #system_library "asound" ;
-LITTLE_ENDIAN :: 0 ;
-BIG_ENDIAN :: 1 ;
-CPU_BYTE_ORDER :: LITTLE_ENDIAN ;
-snd_pcm_t :: struct {
+// Linux output through ALSA's "default" PCM, written with plain interleaved writes. Only as many
+// frames as the device has room for are written, so the worker never blocks inside ALSA.
+
+#scope_module
+
+output_open :: (config: Sound_Player_Config) -> channels: s32, rate: s32, ok: bool {
+    if pcm return 0, 0, false;
+    status := pcm_open(*pcm, "default", PCM_PLAYBACK, 0);
+    if status < 0 {
+        complain("open the default device", status);
+        pcm = null;
+        return 0, 0, false;
+    }
+    latency_us := cast(u32) (max(config.seconds_to_fill_ahead, 0.02) * 1_000_000);
+    status = pcm_set_params(pcm, FORMAT_S16_LE, ACCESS_RW_INTERLEAVED, ALSA_CHANNELS, ALSA_RATE, 1, latency_us);
+    if status < 0 {
+        complain("configure the device", status);
+        output_close();
+        return 0, 0, false;
+    }
+    return ALSA_CHANNELS, ALSA_RATE, true;
 }
-snd_pcm_info_t :: struct {
+
+output_start :: () {
+    if pcm pcm_prepare(pcm);   // Playback begins with the first write.
 }
-snd_pcm_hw_params_t :: struct {
+
+output_close :: () {
+    if pcm {
+        pcm_drop(pcm);
+        pcm_close(pcm);
+        pcm = null;
+    }
 }
-snd_pcm_sw_params_t :: struct {
+
+output_frames_queued :: () -> queued: s64, at_least: s64 {
+    if !pcm return S64_MAX, 0;
+    delay: s64;
+    if pcm_delay(pcm, *delay) < 0 delay = 0;
+    return max(delay, 0), 0;
 }
-snd_pcm_stream_t :: u32 ;
-snd_pcm_access_t :: u32 ;
-snd_pcm_format_t :: u32 ;
-SND_PCM_ACCESS_RW_INTERLEAVED :: 3 ;
-SND_PCM_FORMAT_S16_LE :: 2 ;
-SND_PCM_FORMAT_S16_BE :: 3 ;
-#if CPU_BYTE_ORDER == LITTLE_ENDIAN {
-    SND_PCM_FORMAT_S16_MY_ENDIAN :: SND_PCM_FORMAT_S16_LE ;
+
+output_write :: (frames: s64) {
+    if !pcm return;
+    room := pcm_avail_update(pcm);
+    if room < 0 {
+        // Usually an underrun; recover and look again.
+        if pcm_recover(pcm, cast(s32) room, 1) < 0 return;
+        room = pcm_avail_update(pcm);
+        if room < 0 return;
+    }
+    remaining := min(frames, room);
+    while remaining > 0 {
+        count := min(remaining, STAGING_FRAMES);
+        chunk: [] s16;
+        chunk.data  = staging.data;
+        chunk.count = count * ALSA_CHANNELS;
+        mix_into(chunk);
+        if !write_all(chunk.data, count) return;
+        remaining -= count;
+    }
 }
-else {
-    SND_PCM_FORMAT_S16_MY_ENDIAN :: SND_PCM_FORMAT_S16_BE ;
-}
-snd_pcm_uframes_t :: u64 ;
-snd_pcm_sframes_t :: s64 ;
-snd_pcm_open :: ( pcm : * * snd_pcm_t , name : * u8 , stream : snd_pcm_stream_t , mode : s32 ) -> s32 #foreign alsa ;
-snd_pcm_close :: ( pcm : * snd_pcm_t ) -> s32 #foreign alsa ;
-snd_pcm_delay :: ( pcm : * snd_pcm_t , delayp : * snd_pcm_sframes_t ) -> s32 #foreign alsa ;
-snd_pcm_prepare :: ( pcm : * snd_pcm_t ) -> s32 #foreign alsa ;
-snd_pcm_writei :: ( pcm : * snd_pcm_t , buf : * void , size : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_avail :: ( pcm : * snd_pcm_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_avail_update :: ( pcm : * snd_pcm_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_start :: ( pcm : * snd_pcm_t ) -> s32 #foreign alsa ;
-snd_pcm_recover :: ( pcm : * snd_pcm_t , err : s32 , silent : s32 ) -> s32 #foreign alsa ;
-snd_pcm_drop :: ( pcm : * snd_pcm_t ) -> s32 #foreign alsa ;
-snd_pcm_state_t :: enum u32 {
-    SND_PCM_STATE_OPEN :: 0 ;
-    SND_PCM_STATE_SETUP ;
-    SND_PCM_STATE_PREPARED ;
-    SND_PCM_STATE_RUNNING ;
-    SND_PCM_STATE_XRUN ;
-    SND_PCM_STATE_DRAINING ;
-    SND_PCM_STATE_PAUSED ;
-    SND_PCM_STATE_SUSPENDED ;
-    SND_PCM_STATE_DISCONNECTED ;
-}
-snd_pcm_state :: ( pcm : * snd_pcm_t ) -> snd_pcm_state_t #foreign alsa ;
-snd_pcm_set_params :: ( pcm : * snd_pcm_t , format : snd_pcm_format_t , access : snd_pcm_access_t , channels : u32 , rate : u32 , soft_resample : s32 , latency : u32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_any :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_channels_max :: ( params : * snd_pcm_hw_params_t , val : * u32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_set_format :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t , val : snd_pcm_format_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_set_access :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t , access : snd_pcm_access_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_set_period_size :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t , val : snd_pcm_uframes_t , dir : s32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_set_rate_near :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t , val : * u32 , dir : * s32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_set_channels :: ( pcm : * snd_pcm_t , params : * snd_pcm_hw_params_t , val : u32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_rate :: ( params : * snd_pcm_hw_params_t , val : * u32 , dir : * s32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_channels :: ( params : * snd_pcm_hw_params_t , val : * u32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_buffer_size :: ( params : * snd_pcm_hw_params_t , val : * snd_pcm_uframes_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_periods :: ( params : * snd_pcm_hw_params_t , val : * u32 , dir : * s32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_get_period_size :: ( params : * snd_pcm_hw_params_t , frames : * snd_pcm_uframes_t , dir : * s32 ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_malloc :: ( ptr : * * snd_pcm_hw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_hw_params_free :: ( obj : * snd_pcm_hw_params_t ) -> void #foreign alsa ;
-snd_pcm_sw_params :: ( pcm : * snd_pcm_t , params : * snd_pcm_sw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_sw_params_malloc :: ( ptr : * * snd_pcm_sw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_sw_params_free :: ( obj : * snd_pcm_sw_params_t ) -> void #foreign alsa ;
-snd_pcm_sw_params_current :: ( pcm : * snd_pcm_t , params : * snd_pcm_sw_params_t ) -> s32 #foreign alsa ;
-snd_pcm_sw_params_get_start_threshold :: ( params : * snd_pcm_sw_params_t , val : * snd_pcm_uframes_t ) -> s32 #foreign alsa ;
-snd_pcm_sw_params_set_start_threshold :: ( pcm : * snd_pcm_t , params : * snd_pcm_sw_params_t , val : snd_pcm_uframes_t ) -> s32 #foreign alsa ;
-snd_pcm_sw_params_set_avail_min :: ( pcm : * snd_pcm_t , params : * snd_pcm_sw_params_t , val : snd_pcm_uframes_t ) -> s32 #foreign alsa ;
-sound_error_name :: ( errnum : s32 ) -> string {
-    text := Native_AlsaStrError(errnum);
-    if !text return "Unknown ALSA error";
-    count: s64 = 0;
-    while text[count] != 0 count += 1;
-    return to_string(text, count);
-}
-check_for_alsa_error :: ( name : string , errnum : s32 ) {
-    if errnum < 0 print("ALSA % failed: %\n", name, sound_error_name(errnum));
-}
-snd_pcm_channel_area_t :: struct {
-    addr : * void ;
-    first : u32 ;
-    step : u32 ;
-}
-snd_pcm_mmap_begin :: ( pcm : * snd_pcm_t , areas : * * snd_pcm_channel_area_t , offset : * snd_pcm_uframes_t , frames : * snd_pcm_uframes_t ) -> s32 #foreign alsa ;
-snd_pcm_mmap_commit :: ( pcm : * snd_pcm_t , offset : snd_pcm_uframes_t , frames : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_mmap_writei :: ( pcm : * snd_pcm_t , buffer : * void , size : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_mmap_readi :: ( pcm : * snd_pcm_t , buffer : * void , size : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_mmap_writen :: ( pcm : * snd_pcm_t , buffer : * * void , size : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_pcm_mmap_readn :: ( pcm : * snd_pcm_t , buffer : * * void , size : snd_pcm_uframes_t ) -> snd_pcm_sframes_t #foreign alsa ;
-snd_device_name_hint :: ( card : s32 , iface : * u8 , hints : * * * void ) -> s32 #foreign alsa ;
-snd_device_name_free_hint :: ( hints : * * void ) -> s32 #foreign alsa ;
-snd_device_name_get_hint :: ( hint : * void , id : * u8 ) -> * u8 #foreign alsa ;
-#scope_export
-MY_SAMPLING_RATE :: 48000 ;
-backend_get_devices :: ( ) -> [ ] Output_Device {
-    if enumerated_output_devices.count > 0 return enumerated_output_devices;
+
+output_devices :: () -> [] Output_Device {
+    if listed_devices.count return listed_devices;
     hints: **void;
-    if snd_device_name_hint(-1, "pcm", *hints) < 0 return enumerated_output_devices;
-    defer snd_device_name_free_hint(hints);
-    index: s64 = 0;
-    while hints[index] {
-        hint := hints[index];
-        name := snd_device_name_get_hint(hint, "NAME");
-        direction := snd_device_name_get_hint(hint, "IOID");
-        input_only := false;
-        if direction {
-            length: s64 = 0; while direction[length] != 0 length += 1;
-            input_only = to_string(direction, length) == "Input";
-            Native_C_Free(direction);
-        }
-        if name && !input_only {
-            length: s64 = 0; while name[length] != 0 length += 1;
+    if device_name_hint(-1, "pcm", *hints) < 0 return listed_devices;
+    cursor := hints;
+    while cursor.* {
+        name := take_hint(cursor.*, "NAME");
+        direction := take_hint(cursor.*, "IOID");
+        description := take_hint(cursor.*, "DESC");
+        // IOID is absent for devices that do both directions.
+        if name.count > 0 && direction != "Input" {
             device: Output_Device;
-            device.name = copy_string(to_string(name, length));
-            device.device_index = enumerated_output_devices.count;
-            description := snd_device_name_get_hint(hint, "DESC");
-            if description {
-                length = 0; while description[length] != 0 length += 1;
+            device.name = name;
+            device.device_index = listed_devices.count;
+            if description.count > 0 {
                 device.hints = NewArray(1, string);
-                device.hints[0] = copy_string(to_string(description, length));
-                Native_C_Free(description);
+                device.hints[0] = description;
             }
-            array_add(*enumerated_output_devices, device);
+            array_add(*listed_devices, device);
+        } else {
+            release_hint(name);
+            release_hint(description);
         }
-        if name Native_C_Free(name);
-        index += 1;
+        release_hint(direction);
+        cursor += 1;
     }
-    return enumerated_output_devices;
+    device_name_free_hint(hints);
+    return listed_devices;
 }
-backend_init :: ( config : Sound_Player_Config ) -> Backend_Properties {
-    properties: Backend_Properties;
-    if pcm_device return properties;
-    result := snd_pcm_open(*pcm_device, "default", 0, 0);
-    if result < 0 { check_for_alsa_error("open", result); pcm_device = null; return properties; }
-    num_channels = 2;
-    latency := cast(u32) (max(0.02, config.seconds_to_fill_ahead)*1000000.0);
-    result = snd_pcm_set_params(pcm_device, SND_PCM_FORMAT_S16_MY_ENDIAN, SND_PCM_ACCESS_RW_INTERLEAVED,
-        cast(u32) num_channels, MY_SAMPLING_RATE, 1, latency);
-    if result < 0 { check_for_alsa_error("set parameters", result); backend_shutdown(); return properties; }
-    temporary_buffer_size_in_frames = MY_SAMPLING_RATE;
-    temporary_buffer = alloc_string(temporary_buffer_size_in_frames*num_channels*BYTES_PER_SAMPLE);
-    if !temporary_buffer.data { backend_shutdown(); return properties; }
-    period_size_in_frames = cast(s64) (MY_SAMPLING_RATE*max(config.seconds_to_fill_ahead, 0.01));
-    base_delay_in_frames = max(1, period_size_in_frames);
-    array_add(*channel_names, "Front Left", "Front Right");
-    properties.initted = true;
-    properties.num_channels = num_channels;
-    properties.output_sampling_rate = MY_SAMPLING_RATE;
-    properties.channel_names = channel_names;
-    return properties;
-}
-backend_lock_fill_regions :: ( bytes_to_lock : s64 ) -> Fill_Region_Result , bool {
-    result: Fill_Region_Result;
-    if !pcm_device || !temporary_buffer.data || alsa_fill_locked || bytes_to_lock <= 0 return result, false;
-    available := snd_pcm_avail_update(pcm_device);
-    if available < 0 {
-        if snd_pcm_recover(pcm_device, cast(s32) available, 1) < 0 return result, false;
-        available = snd_pcm_avail_update(pcm_device);
-    }
-    frame_bytes := num_channels*BYTES_PER_SAMPLE;
-    frames := min(bytes_to_lock/frame_bytes, temporary_buffer_size_in_frames);
-    frames = min(frames, max(0, available));
-    if frames <= 0 return result, false;
-    result.buffer0 = to_string(temporary_buffer.data, frames*frame_bytes);
-    alsa_fill_locked = true;
-    return result, true;
-}
-backend_release_fill_regions :: ( result : Fill_Region_Result ) {
-    assert(alsa_fill_locked);
-    defer alsa_fill_locked = false;
-    frames := result.buffer0.count/(num_channels*BYTES_PER_SAMPLE);
-    cursor: s64 = 0;
-    recovery_attempts: s32 = 0;
-    while cursor < frames {
-        written := snd_pcm_writei(pcm_device, result.buffer0.data+cursor*num_channels*BYTES_PER_SAMPLE,
-            cast(u64) (frames-cursor));
-        if written < 0 {
-            recovery_attempts += 1;
-            if recovery_attempts > 2 || snd_pcm_recover(pcm_device, cast(s32) written, 1) < 0 {
-                check_for_alsa_error("write", cast(s32) written); break;
+
+#scope_file
+
+ALSA_RATE      :: 48000;
+ALSA_CHANNELS  :: 2;
+STAGING_FRAMES :: 2048;
+
+pcm: *Pcm;
+staging: [STAGING_FRAMES * ALSA_CHANNELS] s16;
+listed_devices: [..] Output_Device;
+
+write_all :: (samples: *s16, frames: s64) -> bool {
+    written := 0;
+    retries := 0;
+    while written < frames {
+        result := pcm_writei(pcm, samples + written * ALSA_CHANNELS, cast(u64) (frames - written));
+        if result < 0 {
+            retries += 1;
+            if retries > 3 || pcm_recover(pcm, cast(s32) result, 1) < 0 {
+                complain("write samples", cast(s32) result);
+                return false;
             }
             continue;
         }
-        if written == 0 break;
-        recovery_attempts = 0;
-        cursor += written;
+        if result == 0 return false;
+        written += result;
     }
-    buffer_consumed += cast(u64) cursor;
+    return true;
 }
-backend_count_buffered_bytes :: ( ) -> ( buffered_bytes : s64 , minimum_prebuffered_bytes : s64 ) {
-    if !pcm_device return 0, 0;
-    delay: snd_pcm_sframes_t;
-    result := snd_pcm_delay(pcm_device, *delay);
-    if result < 0 delay = 0;
-    frame_bytes := num_channels*BYTES_PER_SAMPLE;
-    return max(0, delay)*frame_bytes, base_delay_in_frames*frame_bytes;
-}
-backend_shutdown :: ( ) {
-    if pcm_device { snd_pcm_drop(pcm_device); snd_pcm_close(pcm_device); pcm_device = null; }
-    free(temporary_buffer); temporary_buffer = "";
-    array_free(channel_names); channel_names = .{};
-    num_channels = 0; alsa_fill_locked = false;
-    buffer_consumed = 0;
-}
-backend_needs_async_update_from_main_thread :: ( ) -> bool {
-    // ALSA PCM I/O has no application event-loop affinity.
-    return false;
-}
-backend_play :: ( ) {
-    if !pcm_device return;
-    state := snd_pcm_state(pcm_device);
-    if state == .SND_PCM_STATE_SETUP || state == .SND_PCM_STATE_XRUN || state == .SND_PCM_STATE_SUSPENDED
-        check_for_alsa_error("prepare", snd_pcm_prepare(pcm_device));
-    // snd_pcm_writei starts the prepared stream at its configured threshold.
-}
-#scope_file
-;
-num_channels : s32 ;
-channel_names : [ .. ] string ;
-pcm_device : * snd_pcm_t ;
-temporary_buffer_size_in_frames : s64 ;
-buffer_consumed : snd_pcm_uframes_t ;
-period_size_in_frames : s64 ;
-periods : u32 = 3 ;
-base_delay_in_frames : s64 ;
-temporary_buffer : string ;
-enumerated_output_devices : [ .. ] Output_Device ;
 
+// The hint value as a string we own, or "" if absent.
+take_hint :: (hint: *void, field: *u8) -> string {
+    raw := device_name_get_hint(hint, field);
+    if !raw return "";
+    text := copy_string(to_string(raw));
+    libc_free(raw);
+    return text;
+}
 
-#scope_file
-Native_AlsaStrError :: (error: s32) -> *u8 #foreign alsa "snd_strerror";
-Native_C_Library :: #system_library "c";
-Native_C_Free :: (pointer: *void) #foreign Native_C_Library "free";
-alsa_fill_locked := false;
+release_hint :: (text: string) {
+    if text.count > 0 free(text);
+}
+
+complain :: (what: string, status: s32) {
+    log_error("Sound_Player: ALSA could not %: %\n", what, to_string(alsa_error_text(status)));
+}
+
+// Opaque handle and the handful of libasound entry points used above.
+Pcm :: struct {}
+PCM_PLAYBACK          :: 0;
+FORMAT_S16_LE         :: 2;
+ACCESS_RW_INTERLEAVED :: 3;
+
+libasound :: #system_library "asound";
+libc      :: #system_library "c";
+
+pcm_open          :: (handle: **Pcm, name: *u8, direction: s32, mode: s32) -> s32 #foreign libasound "snd_pcm_open";
+pcm_close         :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_close";
+pcm_drop          :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_drop";
+pcm_prepare       :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_prepare";
+pcm_set_params    :: (handle: *Pcm, format: u32, access: u32, channels: u32, rate: u32, allow_resample: s32, latency_us: u32) -> s32 #foreign libasound "snd_pcm_set_params";
+pcm_writei        :: (handle: *Pcm, buffer: *void, frames: u64) -> s64 #foreign libasound "snd_pcm_writei";
+pcm_avail_update  :: (handle: *Pcm) -> s64 #foreign libasound "snd_pcm_avail_update";
+pcm_delay         :: (handle: *Pcm, frames: *s64) -> s32 #foreign libasound "snd_pcm_delay";
+pcm_recover       :: (handle: *Pcm, error: s32, silent: s32) -> s32 #foreign libasound "snd_pcm_recover";
+alsa_error_text   :: (error: s32) -> *u8 #foreign libasound "snd_strerror";
+device_name_hint      :: (card: s32, interface: *u8, hints: ***void) -> s32 #foreign libasound "snd_device_name_hint";
+device_name_get_hint  :: (hint: *void, field: *u8) -> *u8 #foreign libasound "snd_device_name_get_hint";
+device_name_free_hint :: (hints: **void) -> s32 #foreign libasound "snd_device_name_free_hint";
+libc_free :: (pointer: *void) #foreign libc "free";
