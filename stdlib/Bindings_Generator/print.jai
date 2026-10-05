@@ -482,8 +482,8 @@ declaration_text :: (decl: *Declaration, current_scope: *Declaration, flags: Pri
     return builder_to_string(*text);
 }
 
-// `/*const*/`, `/*reference*/` or `/*const reference*/`: what C++ overloads differ by when they
-// look the same in Jai.
+// `/*const*/`, `/*reference*/` or `/*const reference*/` before an argument type, for C++
+// overloads whose Jai signatures would otherwise be indistinguishable.
 print_c_type_details :: (builder: *String_Builder, decl: *Declaration, type: *CType) {
     if !type return;
     is_const := (decl.decl_flags & .IS_CONST) != 0 || (type.flags & .CONST) != 0;
