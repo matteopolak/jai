@@ -87,11 +87,51 @@ impl Compiler {
         let func = f.b.finish();
         let id = self.program.reserve_func(func.name.clone());
         self.program.funcs[id.0 as usize] = Some(func);
-        let deferred = self.drain_bodies_lenient();
+        // Inside another body's lowering, queued bodies may be unrelated code whose own
+        // compile-time runs need what is being lowered right now: lower on demand instead.
+        let nested = self.lowering_depth > 0;
+        let mut deferred = if nested {
+            self.lower_reachable_from(id)
+        } else {
+            self.drain_bodies_lenient()
+        };
         let ctx = self.compile_time_context(span)?;
         self.enable_stack_traces(span);
         self.interp.compile_time = true;
-        let result = self.interp.call(&self.program, id, &[ctx]);
+        let outer = self.interp.run_effects.replace(self.interp.effects);
+        // Typed exports belong to this run (a nested one keeps the outer run's aside).
+        let outer_exports = (
+            std::mem::take(&mut self.interp.code_exports),
+            std::mem::take(&mut self.interp.code_export_cursor),
+        );
+        let mut result = self.interp.call(&self.program, id, &[ctx]);
+        // Run again from the start while nothing observable happened, when the run
+        // - asked for a code with resolved names and types (`compiler_get_nodes`), or
+        // - called a procedure whose body is still queued (on-demand lowering).
+        for _ in 0..10_000 {
+            if result.is_ok() || self.interp.run_effects != Some(self.interp.effects) {
+                break;
+            }
+            if let Some(code) = self.interp.export_request.take() {
+                self.export_code_typed(code);
+            } else if let Some(missing) = self.interp.missing_func.take()
+                && let Some(p) = self.queued_proc_of(missing)
+            {
+                if let Some(e) = self.lower_with_callees(p) {
+                    deferred.get_or_insert(e);
+                    break;
+                }
+            } else {
+                break;
+            }
+            self.interp.run_effects = Some(self.interp.effects);
+            self.interp.code_export_cursor.clear();
+            result = self.interp.call(&self.program, id, &[ctx]);
+        }
+        (self.interp.code_exports, self.interp.code_export_cursor) = outer_exports;
+        self.interp.export_request = None;
+        self.interp.missing_func = None;
+        self.interp.run_effects = outer;
         self.flush_interp_output();
         if !self.interp.pending_type_flags.is_empty() {
             self.apply_type_info_flags(span)?;
@@ -225,7 +265,11 @@ impl Compiler {
             }
         }
         // A body that fails here is reported by the final drain.
-        self.drain_bodies_lenient();
+        if self.lowering_depth > 0 {
+            self.lower_reachable_from_global(g);
+        } else {
+            self.drain_bodies_lenient();
+        }
         let addr = self
             .interp
             .global_addr(&self.program, g)
