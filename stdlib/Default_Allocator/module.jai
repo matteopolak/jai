@@ -22,27 +22,28 @@ allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old
         }
         if mode == .ALLOCATE || !old_memory {
             if mode == .FREE return null;
-            pointer := c_malloc(cast(u64) requested_size);
-            if !pointer return null;
-            if !add_allocation(heap, pointer) {
-                c_free(pointer);
+            entry := obtain_block(requested_size);
+            if !entry return null;
+            if !add_allocation(heap, entry) {
+                release_block(entry);
                 return null;
             }
-            return pointer;
+            return entry_address(entry);
         }
         slot := find_allocation(heap, old_memory);
         #if ENABLE_ASSERTS assert_owned(slot >= 0);
         if slot < 0 return null;
+        entry := heap.slots[slot];
         if mode == .RESIZE && requested_size > 0 {
-            replacement := c_realloc(old_memory, cast(u64) requested_size);
+            replacement := regrow_block(entry, requested_size);
             if !replacement return null;
-            if replacement != old_memory {
+            if replacement != entry {
                 remove_allocation(heap, slot);
                 if !add_allocation(heap, replacement) return null;  // Out of memory for the ledger.
             }
-            return replacement;
+            return entry_address(replacement);
         }
-        c_free(old_memory);
+        release_block(entry);
         remove_allocation(heap, slot);
         return null;
     }
@@ -106,11 +107,65 @@ c_malloc :: (size: u64) -> *void #foreign crt "malloc";
 c_free :: (memory: *void) #foreign crt "free";
 c_realloc :: (memory: *void, size: u64) -> *void #foreign crt "realloc";
 c_calloc :: (count: u64, size: u64) -> *void #foreign crt "calloc";
+c_memmove :: (destination: *void, source: *void, count: u64) -> *void #foreign crt "memmove";
 
 #scope_module
-// The ledger: each heap's pointers in an open-addressing set (linear probing, null = empty), so
-// FREE and RESIZE find their entry without walking every allocation. The pointers themselves are
-// malloc's, unchanged, so they keep malloc's alignment.
+// Alignment. Blocks of CACHE_LINE bytes or more start on a CACHE_LINE boundary; smaller ones
+// keep malloc's 16. A type declared `#align 64` has a size that is a multiple of 64, so plain
+// `New`/`alloc` honor it although the allocator protocol carries no alignment.
+//
+// Only malloc, realloc and free are used: compile-time code of a cross build calls the host's C
+// library, so posix_memalign or _aligned_malloc would each be missing on some host/target pair.
+// A wide block is a malloc block WIDE_SLACK bytes larger than asked, used from its first
+// cache-line boundary. Its ledger entry is that boundary, plus WIDE_BLOCK and the number of
+// skipped 16-byte steps in bits 0-1. Plain entries have bits 0-3 clear (malloc is 16-aligned),
+// and the ledger hashes from bit 4 up, so tags never change where an entry lives.
+CACHE_LINE :: 64;
+WIDE_SLACK :: CACHE_LINE - 16;
+WIDE_BLOCK :: 8;
+ENTRY_TAGS :: 15;
+
+entry_address :: inline (entry: *void) -> *void {
+    return cast(*void) (cast(u64) entry & ~cast(u64) ENTRY_TAGS);
+}
+// The block malloc returned, which realloc and free want back.
+entry_origin :: (entry: *void) -> *void {
+    bits := cast(u64) entry;
+    if !(bits & WIDE_BLOCK) return entry;
+    return cast(*void) ((bits & ~cast(u64) ENTRY_TAGS) - (bits & 3) * 16);
+}
+// Use the malloc block at `origin` from its first cache-line boundary. The first `keep` bytes of
+// the contents sit `was_at` bytes in (realloc moved them along with the block) and follow.
+wide_entry :: (origin: *void, was_at: u64, keep: s64) -> *void {
+    boundary := (cast(u64) origin + CACHE_LINE - 1) & ~cast(u64) (CACHE_LINE - 1);
+    skipped := boundary - cast(u64) origin;
+    if keep > 0 && skipped != was_at c_memmove(cast(*void) boundary, origin + cast(s64) was_at, cast(u64) keep);
+    return cast(*void) (boundary | WIDE_BLOCK | (skipped / 16));
+}
+obtain_block :: (size: s64) -> entry: *void {
+    if size < CACHE_LINE return c_malloc(cast(u64) size);
+    origin := c_malloc(cast(u64) (size + WIDE_SLACK));
+    if !origin return null;
+    return wide_entry(origin, 0, 0);
+}
+release_block :: (entry: *void) {
+    c_free(entry_origin(entry));
+}
+// A wide block stays wide when it shrinks; a plain one turns wide when it reaches a cache line.
+// Either way realloc keeps at least `size` bytes past the old start of the contents, because
+// the slack covers the largest skip.
+regrow_block :: (entry: *void, size: s64) -> entry: *void {
+    bits := cast(u64) entry;
+    wide := (bits & WIDE_BLOCK) != 0;
+    if !wide && size < CACHE_LINE return c_realloc(entry, cast(u64) size);
+    was_at: u64 = ifx wide then (bits & 3) * 16 else 0;
+    origin := c_realloc(entry_origin(entry), cast(u64) (size + WIDE_SLACK));
+    if !origin return null;
+    return wide_entry(origin, was_at, size);
+}
+
+// The ledger: each heap's entries in an open-addressing set (linear probing, null = empty), so
+// FREE and RESIZE find their entry without walking every allocation.
 Heap :: struct { slots: **void; capacity: s64; count: s64; next: *Heap; }
 heaps: *Heap;
 ledger_lock: s32;
@@ -145,20 +200,21 @@ destroy_heap_locked :: (heap: *Heap) {
     if previous previous.next = heap.next;
     else heaps = heap.next;
     if allocator_default_heap == heap allocator_default_heap = null;
-    for i: 0..heap.capacity-1 if heap.slots[i] c_free(heap.slots[i]);
+    for i: 0..heap.capacity-1 if heap.slots[i] release_block(heap.slots[i]);
     if heap.slots c_free(heap.slots);
     c_free(heap);
 }
 slot_home :: (heap: *Heap, pointer: *void) -> s64 #no_aoc {
     return cast,no_check(s64) (((cast(u64) pointer >> 4) * 11400714819323198485) >> 32) & (heap.capacity - 1);
 }
-// The slot holding `pointer`, or -1.
+// The slot holding the entry for the block at `pointer`, or -1. Tags sit below bit 4, so an
+// entry hashes like its address.
 find_allocation :: (heap: *Heap, pointer: *void) -> s64 {
     if !heap.capacity return -1;
     mask := heap.capacity - 1;
     slot := slot_home(heap, pointer);
     while heap.slots[slot] {
-        if heap.slots[slot] == pointer return slot;
+        if entry_address(heap.slots[slot]) == pointer return slot;
         slot = (slot + 1) & mask;
     }
     return -1;

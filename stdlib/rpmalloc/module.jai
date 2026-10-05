@@ -52,8 +52,11 @@ rpmalloc_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size:
         return null;
     }
     if mode == .IS_THIS_YOURS return cast(*void) cast(u64) rp_owns(heap, old_memory);
-    if mode == .ALLOCATE return rp_allocate(heap, requested_size, 0);
-    if mode == .RESIZE return rp_reallocate(heap, old_memory, requested_size, 0, old_size, .{});
+    // Like Default_Allocator: blocks of a cache line or more start on one, so `New` of a
+    // `#align 64` type is aligned (rpmalloc's size classes only promise 16).
+    line_alignment := ifx requested_size >= 64 then 64 else 0;
+    if mode == .ALLOCATE return rp_allocate(heap, requested_size, line_alignment);
+    if mode == .RESIZE return rp_reallocate(heap, old_memory, requested_size, line_alignment, old_size, .{});
     if mode == .FREE {
         rp_free(heap, old_memory);
         return null;
