@@ -196,6 +196,9 @@ AMBIGUOUS_OPERATORS :: string.["-", "+", "*", "&", "<<", "<", ">"];
 // Prefix operators whose operand is written attached: `-x`, `*T`, `<<p`, `!ok`.
 PREFIX_OPERATORS :: string.["-", "+", "*", "<<", "!"];
 
+// Directives that take `,flag` modifiers (`#type,isa`, `#import,file`, `#run,stallable`).
+FLAGGED_DIRECTIVES :: string.["type", "import", "run", "insert", "code", "load", "asm", "bake_arguments", "procedure_of_call"];
+
 KEYWORDS_BEFORE_PAREN :: string.["if", "ifx", "while", "for", "return", "then", "else", "case", "defer"];
 
 text_of :: inline (f: *Formatter, i: int) -> string {
@@ -643,7 +646,7 @@ context_before :: (f: *Formatter, i: int) -> Context_Kind {
     return f.operand_end[p];
 }
 
-// A comma that attaches a flag: `cast,no_check`, `#type,isa`, `xx,force`, `for,v`.
+// A comma that attaches a flag: `cast,no_check`, `#type,isa`, `xx,force`, `using,except(x)`.
 is_flag_comma :: (f: *Formatter, comma: int) -> bool {
     next := comma + 1;
     if f.tokens[next].kind != .IDENT || f.tokens[next].newlines > 0 return false;
@@ -652,8 +655,8 @@ is_flag_comma :: (f: *Formatter, comma: int) -> bool {
     while p >= 2 && f.tokens[p].kind == .IDENT && is_punct(f, p - 1, ",")
         && f.tokens[p].ws_start == f.tokens[p].start && f.tokens[p - 1].ws_start == f.tokens[p - 1].start  p -= 2;
     if p < 0 return false;
-    if f.tokens[p].kind == .DIRECTIVE return true;
-    return one_of(text_of(f, p), string.["cast", "xx", "using", "for", "inline", "push_context", "ifx", "if", "while", "case", "return"]);
+    if f.tokens[p].kind == .DIRECTIVE return one_of(directive_name(f, p), FLAGGED_DIRECTIVES);
+    return f.tokens[p].kind == .IDENT && one_of(text_of(f, p), string.["cast", "xx", "using"]);
 }
 
 // `x: int`: the declared names sit against the colon.
