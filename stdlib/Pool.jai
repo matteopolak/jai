@@ -17,7 +17,7 @@ HEADER_SIZE :: size_of(Memblock);    // bytes at the front of every block used f
 Pool :: struct {
     memblock_size:  s64 = POOL_BUCKET_SIZE_DEFAULT;   // full size of each block, header included
     oversized_size: s64 = POOL_OVERSIZED_SIZE_DEFAULT; // requests at least this big get their own allocation
-    alignment := 8;                                    // must be a power of two (not checked)
+    alignment := 8;                                    // power of two; padding_for relies on it
 
     current_memblock: *Memblock;
     current_pos:      *u8;
@@ -41,8 +41,8 @@ Pool :: struct {
     }
 }
 
-// Choose where the pool's blocks come from. Must happen before first use; if it is never
-// called, the first `get` calls it with the context's allocator.
+// Pick the allocator that supplies blocks. Only valid on a fresh pool; a pool that was
+// never configured adopts context.allocator on its first `get`.
 set_allocators :: (pool: *Pool, block_allocator: Allocator = .{}) {
     if pool.block_allocator.proc {
         log_error("Attempt to set allocators on Pool % after the Pool has already been used.\n", pool);
@@ -101,37 +101,33 @@ get :: (pool: *Pool, nbytes: s64) -> *void {
     return result;
 }
 
-// Make every block reusable; oversized allocations are freed.
+// Forget everything handed out so far. Blocks are kept for reuse (or returned, with
+// free_memblocks_on_reset); oversized allocations always go back to the block allocator.
 reset :: (pool: *Pool) {
-    if pool.overwrite_memory {
-        block := pool.used_memblocks;
-        while block {
-            stamp(pool, block);
-            block = block.next;
+    // Recycled blocks keep their order, newest first, so the next `get` lands in the
+    // block that was current before the reset.
+    if pool.free_memblocks_on_reset {
+        free_chain(pool, pool.used_memblocks);
+        free_chain(pool, pool.unused_memblocks);
+        pool.unused_memblocks = null;
+    } else if pool.used_memblocks {
+        last := pool.used_memblocks;
+        while true {
+            if pool.overwrite_memory  stamp(pool, last);
+            if !last.next  break;
+            last = last.next;
         }
+        last.next = pool.unused_memblocks;
+        pool.unused_memblocks = pool.used_memblocks;
     }
-
-    if pool.first_used_memblock {
-        assert(pool.used_memblocks != null);
-        if pool.free_memblocks_on_reset {
-            free_chain(pool, pool.unused_memblocks);
-            free_chain(pool, pool.used_memblocks);
-            pool.unused_memblocks = null;
-        } else {
-            // Splice the whole used chain in front of the unused chain.
-            pool.first_used_memblock.next = pool.unused_memblocks;
-            pool.unused_memblocks = pool.used_memblocks;
-        }
-        pool.used_memblocks      = null;
-        pool.first_used_memblock = null;
-    }
-
     free_chain(pool, pool.out_of_band_allocations);
-    pool.out_of_band_allocations = null;
 
-    pool.current_memblock = null;
-    pool.current_pos      = null;
-    pool.bytes_left       = 0;
+    pool.used_memblocks          = null;
+    pool.first_used_memblock     = null;
+    pool.out_of_band_allocations = null;
+    pool.current_memblock        = null;
+    pool.current_pos             = null;
+    pool.bytes_left              = 0;
 }
 
 // Reset, then give every block back to the block allocator.
@@ -141,77 +137,49 @@ release :: (pool: *Pool) {
     pool.unused_memblocks = null;
 }
 
+// Allocator entry point: `data` is the *Pool. FREE is a no-op; RESIZE always copies
+// into a fresh allocation because a bump pointer cannot grow in place reliably.
 pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
-    if #complete mode == {
-      case .FREE;
-        return null;
+    pool := cast(*Pool) allocator_data;
 
-      case .ALLOCATE; #through;
+    if mode == {
+      case .ALLOCATE;
+        assert(pool != null, "Pool allocator used without a Pool as its data.");
+        return get(pool, requested_size);
+
       case .RESIZE;
-        pool := cast(*Pool) allocator_data;
-        assert(pool != null);
-        result := get(pool, requested_size);
-        if mode == .RESIZE && result {
-            count := min(old_size, requested_size);
-            if count > 0  memcpy(result, old_memory, count);
-        }
-        return result;
-
-      case .STARTUP; #through;
-      case .SHUTDOWN;
-        return null;
-
-      case .THREAD_START; #through;
-      case .THREAD_STOP;
-        assert(false, "Multithreaded access is not supported by pool_allocator_proc.\n");
-        return null;
-
-      case .CREATE_HEAP; #through;
-      case .DESTROY_HEAP;
-        assert(false, "Create/Destroy heap are not supported by pool_allocator_proc.\n");
-        return null;
+        assert(pool != null, "Pool allocator used without a Pool as its data.");
+        moved := get(pool, requested_size);
+        keep := ifx old_size < requested_size then old_size else requested_size;
+        if moved && keep > 0  memcpy(moved, old_memory, keep);
+        return moved;
 
       case .IS_THIS_YOURS;
-        pool := cast(*Pool) allocator_data;
-        block := pool.used_memblocks;
-        while block {
-            start := cast(*u8) *block.data;
-            if cast(*u8) old_memory >= start && cast(*u8) old_memory <= start + pool.memblock_size  return cast(*void) 1;
-            block = block.next;
-        }
-        // Oversized allocations are only guaranteed to lie within alignment slack of the header.
-        block = pool.out_of_band_allocations;
-        while block {
-            start := cast(*u8) *block.data;
-            if cast(*u8) old_memory >= start && cast(*u8) old_memory <= start + pool.alignment  return cast(*void) 1;
-            block = block.next;
-        }
+        if owns_address(pool, cast(*u8) old_memory)  return cast(*void) 1;
         return null;
 
       case .CAPS;
-        if old_memory  { <<cast(*string) old_memory = CAPS_VERSION_STRING; }
+        name_out := cast(*string) old_memory;
+        if name_out  name_out.* = CAPS_VERSION_STRING;
         return cast(*void) (Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
+
+      case .THREAD_START; #through;
+      case .THREAD_STOP;  #through;
+      case .CREATE_HEAP;  #through;
+      case .DESTROY_HEAP;
+        assert(false, "Pool: allocator mode % is unsupported; a Pool is single-threaded and is not a heap factory.\n", mode);
     }
+
+    // FREE, STARTUP and SHUTDOWN need no work.
+    return null;
 }
 
-// Returns (bytes consumed inside blocks, number of oversized allocations).
+// Bytes handed out from blocks (block capacity minus what is still free in the current
+// block), and how many oversized allocations are outstanding.
 calculate_used_memory :: (pool: Pool) -> inband_size: s64, outband_count: s64 {
-    inband: s64;
-    block := pool.used_memblocks;
-    while block {
-        inband += pool.memblock_size;
-        block = block.next;
-    }
-    assert(inband >= pool.bytes_left);
-    inband -= pool.bytes_left;
-
-    outband: s64;
-    block = pool.out_of_band_allocations;
-    while block {
-        outband += 1;
-        block = block.next;
-    }
-    return inband, outband;
+    capacity := chain_length(pool.used_memblocks) * pool.memblock_size;
+    assert(capacity >= pool.bytes_left);
+    return capacity - pool.bytes_left, chain_length(pool.out_of_band_allocations);
 }
 
 #scope_file
@@ -219,6 +187,33 @@ calculate_used_memory :: (pool: Pool) -> inband_size: s64, outband_count: s64 {
 Memblock :: struct {
     next: *Memblock;
     data: void;   // address of this field marks where payload begins
+}
+
+chain_length :: (chain: *Memblock) -> s64 {
+    n := 0;
+    link := chain;
+    while link {
+        n += 1;
+        link = link.next;
+    }
+    return n;
+}
+
+// A pointer belongs to the pool if it lies inside a live block, or within the alignment
+// slack at the start of an oversized allocation (that is all `get` ever returns there).
+owns_address :: (pool: *Pool, address: *u8) -> bool {
+    return chain_covers(pool.used_memblocks, address, pool.memblock_size)
+        || chain_covers(pool.out_of_band_allocations, address, pool.alignment);
+}
+
+chain_covers :: (chain: *Memblock, address: *u8, span: s64) -> bool {
+    link := chain;
+    while link {
+        first := cast(*u8) *link.data;
+        if address >= first && address <= first + span  return true;
+        link = link.next;
+    }
+    return false;
 }
 
 free_chain :: (pool: *Pool, chain: *Memblock) {
