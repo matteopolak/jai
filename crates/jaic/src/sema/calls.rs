@@ -874,6 +874,12 @@ impl Compiler {
             };
             if param.baked && param.variadic {
                 let name = param.name.map(|n| n.name).unwrap();
+                // `..names` passes on a constant view (another baked variadic) as it is.
+                if let Slot::Spread(a) = &slots[i] {
+                    let (value, ty) = self.baked_spread(def_scope, param, &args[*a])?;
+                    bindings.push((name, value, ty));
+                    continue;
+                }
                 let (value, ty) = self.baked_pack(def_scope, param, &arg_ops)?;
                 bindings.push((name, value, ty));
                 continue;
@@ -941,7 +947,25 @@ impl Compiler {
                     )
                     && let Some(expr) = &arg.expr
                 {
-                    let id = self.add_code(Rc::new(ast::CodeBody::Expr(expr.clone())), arg.scope);
+                    // A name of a `Code` constant (another `$c: Code`) passes that code on.
+                    let named = match &expr.kind {
+                        ast::ExprKind::Ident(_) | ast::ExprKind::Member(..) => {
+                            match self.check_expr_no_emit(arg.scope, expr) {
+                                Ok(Operand::Const {
+                                    value: Value::Code(code),
+                                    ..
+                                }) => Some(code),
+                                _ => None,
+                            }
+                        }
+                        _ => None,
+                    };
+                    let id = match named {
+                        Some(code) => code,
+                        None => {
+                            self.add_code(Rc::new(ast::CodeBody::Expr(expr.clone())), arg.scope)
+                        }
+                    };
                     bindings.push((name, Value::Code(id), TypeId::CODE));
                     continue;
                 }
@@ -1185,6 +1209,28 @@ impl Compiler {
             Some(block) => self.run_modify(proc, header, block, bindings, span),
             None => Ok(bindings),
         }
+    }
+
+    /// A baked variadic parameter given `..view`: the view must be a compile-time constant
+    /// of the parameter's array type.
+    fn baked_spread(
+        &mut self,
+        def_scope: ScopeId,
+        param: &ast::Param,
+        arg: &CallArg,
+    ) -> Result<(Value, TypeId)> {
+        let elem = match &param.ty {
+            Some(t) if !procs::has_poly(t) => self.eval_type(def_scope, t)?,
+            _ => TypeId::TYPE,
+        };
+        let ty = self.types.array(elem, ArrayKind::View);
+        let op = match (&arg.op, &arg.expr) {
+            (Some(op), _) => op.clone(),
+            (None, Some(e)) => self.eval_const(arg.scope, e, Some(ty))?,
+            (None, None) => return err(arg.span, "missing value"),
+        };
+        let value = self.const_value_of_operand(arg.scope, op, ty, arg.span)?;
+        Ok((value, ty))
     }
 
     /// The value of a baked variadic parameter (`$types: ..Type`): a constant `[] T`

@@ -39,6 +39,7 @@ use crate::intern::Sym;
 use crate::ir;
 use crate::source::{Diagnostic, FileId, SourceMap, Span};
 use crate::types::{TypeId, Types};
+pub use code_export::ModifiedStmt;
 pub use driver::ProgramSource;
 pub use modules::{FileSystem, NativeFs, VirtualFs};
 pub use scope::{EntityId, ScopeId};
@@ -198,6 +199,8 @@ pub struct Compiler {
     /// Queued bodies whose last lenient attempt failed at `parked_epoch`: skipped as a group by
     /// `drain_bodies_lenient` until the epoch moves, instead of being looked at on every call.
     parked_bodies: Vec<ProcId>,
+    /// Bodies being lowered right now (nested through compile-time runs).
+    pub(super) lowering_depth: u32,
     parked_epoch: u64,
     pub interp: crate::interp::Interp,
     /// Type_Info globals per type.
@@ -332,6 +335,7 @@ impl Compiler {
             hoisted_imports: HashSet::default(),
             body_queue: Vec::new(),
             parked_bodies: Vec::new(),
+            lowering_depth: 0,
             parked_epoch: 0,
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::default(),

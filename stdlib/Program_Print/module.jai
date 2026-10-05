@@ -200,9 +200,25 @@ pp_arguments :: (builder: *String_Builder, args: [] Code_Argument, depth: s64) -
     return ok;
 }
 
+// Names of a compound declaration; `x=` marks one that is assigned rather than declared
+// when the list mixes both.
+pp_compound_names :: (builder: *String_Builder, names: *Code_Comma_Separated_Arguments, depth: s64) -> bool {
+    if !names  return false;
+    declares := false;
+    for names.arguments  if it.modifier != .ASSIGN  declares = true;
+    for names.arguments {
+        if it_index  append(builder, ", ");
+        if !it.node  return false;
+        if it.node.kind == .DECLARATION  append(builder, (cast(*Code_Declaration) it.node).name);
+        else if !pp_expression(builder, it.node, depth, 0)  return false;
+        if it.modifier == .ASSIGN && declares  append(builder, "=");
+    }
+    return true;
+}
+
 pp_declaration :: (builder: *String_Builder, decl: *Code_Declaration, depth: s64, print_type := true, parameter := false) -> bool {
     ok := true;
-    append(builder, decl.name);
+    append(builder, decl.name);  // Empty for the properties of a compound declaration.
     constant := (decl.flags & .IS_CONSTANT) != 0;
     has_type := print_type && decl.type_inst != null;
     if has_type {
@@ -265,6 +281,8 @@ pp_ends_with_brace :: (node: *Code_Node) -> bool {
             decl := cast(*Code_Declaration) node;
             if decl.expression == null return false;
             return pp_ends_with_brace(decl.expression);
+        case .COMPOUND_DECLARATION;
+            return pp_ends_with_brace((cast(*Code_Compound_Declaration) node).declaration_properties);
         case .DEFER;
             return false;
     }
@@ -488,6 +506,17 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             ok = pp_type(builder, cast(*Code_Type_Instantiation) node, depth);
         case .DECLARATION;
             ok = pp_declaration(builder, cast(*Code_Declaration) node, depth);
+        case .COMPOUND_DECLARATION;
+            // `a, b := f()`: the names, then the nameless declaration with the type and values.
+            compound := cast(*Code_Compound_Declaration) node;
+            ok = pp_compound_names(builder, compound.comma_separated_assignment, depth);
+            if compound.declaration_properties && !pp_declaration(builder, compound.declaration_properties, depth)  ok = false;
+        case .COMMA_SEPARATED_ARGUMENTS;
+            list := cast(*Code_Comma_Separated_Arguments) node;
+            for list.arguments {
+                if it_index  append(builder, ", ");
+                if !pp_expression(builder, it.node, depth, 0)  ok = false;
+            }
         case .BLOCK;
             ok = pp_block(builder, cast(*Code_Block) node, depth);
         case .IF;

@@ -67,7 +67,8 @@ RECORD_TYPES :: Type.[
     Code_Procedure_Header, Code_Procedure_Body, Code_Block, Code_Struct, Code_Enum,
     Code_Directive_Run, Code_Directive_Code, Code_Directive_Insert, Code_Directive_Location,
     Code_Directive_Import, Code_Note, Code_Declaration, Code_While, Code_For, Code_Loop_Control,
-    Code_Return, Code_Defer, Code_Using, Code_Push_Context,
+    Code_Return, Code_Defer, Code_Using, Code_Push_Context, Code_Compound_Declaration,
+    Code_Comma_Separated_Arguments,
 
     Type_Info, Type_Info_Integer, Type_Info_Float, Type_Info_String, Type_Info_Pointer,
     Type_Info_Procedure, Type_Info_Struct, Type_Info_Array, Type_Info_Enum, Type_Info_Variant,
@@ -193,6 +194,13 @@ record_struct :: (id: s64, expected: *Type_Info) -> *void {
     }
     if record_structs[id]  return record_structs[id];
 
+    // A type descriptor of the program reading the records (`compiler_get_nodes` from its
+    // own compile-time code): the real one.
+    if __jaic_rec_field(id, "__address") == REC_INT {
+        address := cast(*void) __jaic_rec_int(id, "__address");
+        remember_record(id, address);
+        return address;
+    }
     if __jaic_rec_field(id, "__builtin") == REC_STRING {
         builtin := builtin_type_info(__jaic_rec_string(id, "__builtin"));
         if builtin {
@@ -320,6 +328,95 @@ fill_value :: (target: *u8, type: *Type_Info, id: s64, name: string, index: s64)
     }
 }
 
+// Whether a built node was edited in place since it was built (by a metaprogram before
+// compiler_modify_procedure). Compares member by member with the record, as fill_struct
+// wrote them, and follows pointers into other Code nodes, but not into what a node
+// resolves to (`resolved_*`, `type`): those are other trees, not part of this one.
+record_differs :: (memory: *void, id: s64) -> bool {
+    differs_seen.count = 0;
+    return struct_differs(memory, record_type_of(id), id);
+}
+
+#scope_file
+
+differs_seen: [..] *void;
+
+struct_differs :: (memory: *u8, info: *Type_Info_Struct, id: s64) -> bool {
+    if !info  return false;
+    for differs_seen  if it == memory  return false;  // Headers and bodies point at each other.
+    array_add(*differs_seen, memory);
+    plan := record_plan(info);
+    for plan {
+        if it.name == "type" || begins_with_resolved(it.name)  continue;
+        if __jaic_rec_field(id, it.name) == REC_NONE && union_member_present(plan, it, id)  continue;
+        if value_differs(memory + it.offset, it.type, id, it.name, -1)  return true;
+    }
+    return false;
+}
+
+// A member of a union (`Code_Literal`'s values) whose memory holds another member the record has.
+union_member_present :: (plan: [] Record_Plan_Entry, entry: Record_Plan_Entry, id: s64) -> bool {
+    for plan {
+        if it.offset < entry.offset + entry.size && entry.offset < it.offset + it.size && it.name != entry.name
+            && __jaic_rec_field(id, it.name) != REC_NONE  return true;
+    }
+    return false;
+}
+
+begins_with_resolved :: (name: string) -> bool {
+    prefix :: "resolved_";
+    if name.count < prefix.count  return false;
+    return memcmp(name.data, prefix.data, prefix.count) == 0;
+}
+
+is_code_struct :: (info: *Type_Info_Struct) -> bool {
+    return info.name.count > 5 && memcmp(info.name.data, "Code_".data, 5) == 0;
+}
+
+value_differs :: (target: *u8, type: *Type_Info, id: s64, name: string, index: s64) -> bool {
+    if type.type == {
+        case .INTEGER; #through;
+        case .ENUM;    #through;
+        case .BOOL;    #through;
+        case .FLOAT;
+            value := ifx index < 0 then __jaic_rec_int(id, name) else __jaic_rec_item_int(id, name, index);
+            return memcmp(target, *value, type.runtime_size) != 0;
+
+        case .STRING;
+            value := ifx index < 0 then __jaic_rec_string(id, name) else __jaic_rec_item_string(id, name, index);
+            have := (cast(*string) target).*;
+            return have.count != value.count || (have.count > 0 && memcmp(have.data, value.data, have.count) != 0);
+
+        case .POINTER;
+            ref := ifx index < 0 then __jaic_rec_ref(id, name) else __jaic_rec_item_ref(id, name, index);
+            pointer := (cast(**void) target).*;
+            if !ref  return pointer != null;
+            if record_of(pointer) != ref  return true;
+            info := record_type_of(ref);
+            if info && is_code_struct(info)  return struct_differs(pointer, info, ref);
+            return false;
+
+        case .STRUCT;
+            ref := ifx index < 0 then __jaic_rec_ref(id, name) else __jaic_rec_item_ref(id, name, index);
+            if !ref  return false;
+            return struct_differs(target, cast(*Type_Info_Struct) type, ref);
+
+        case .ARRAY;
+            array := cast(*Type_Info_Array) type;
+            if index >= 0 || array.array_type == .FIXED  return false;
+            count := __jaic_rec_count(id, name);
+            view := cast(*Resizable_Array) target;
+            if view.count != count  return true;
+            element := array.element_type;
+            for k: 0..count-1 {
+                if value_differs(view.data + k * element.runtime_size, element, id, name, k)  return true;
+            }
+    }
+    return false;
+}
+
+#scope_module
+
 __jaic_rec_tag         :: (record: s64) -> string #compiler;
 __jaic_rec_field       :: (record: s64, name: string) -> s64 #compiler;
 __jaic_rec_int         :: (record: s64, name: string) -> s64 #compiler;
@@ -334,5 +431,5 @@ __jaic_rec_fill_list   :: (record: s64, name: string, data: *u8, count: s64, kin
 __jaic_rec_fill        :: (record: s64, memory: *u8, plan: *Record_Plan_Entry, plan_count: s64, built: **void, built_count: s64) -> u64 #compiler;
 __jaic_code_nodes      :: (code: Code) -> s64 #compiler;
 __jaic_parse_code      :: (text: string, scope_from: Code) -> Code #compiler;
-__jaic_modify_procedure :: (ws: s64, body: s64, statements: *s64, count: s64) #compiler;
+__jaic_modify_procedure :: (ws: s64, body: s64, statements: *s64, sources: *string, count: s64) #compiler;
 __jaic_workspace_add_string_to_module :: (ws: s64, source: string, message: s64) #compiler;

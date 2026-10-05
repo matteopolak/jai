@@ -83,7 +83,9 @@ get_subexpressions :: (node: *Code_Node, pointers: *[..] *Code_Node) {
         add(decl.type_inst);
         add(decl.expression);
       case .COMPOUND_DECLARATION;
-        add((cast(*Code_Compound_Declaration) node).comma_separated_assignment);
+        compound := cast(*Code_Compound_Declaration) node;
+        add(compound.comma_separated_assignment);
+        add(compound.declaration_properties);
       case .CAST;
         c := cast(*Code_Cast) node;
         add(c.target_type);

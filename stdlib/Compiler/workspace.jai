@@ -427,21 +427,29 @@ compiler_set_type_info_flags :: (type: Type, flags: Type_Info_Flags) {
 
 __jaic_set_type_info_flags :: (type: Type, flags: s64) #compiler;
 
-// Replaces the procedure's statements with `body.block.statements`, which may mix the
-// body's own statements with nodes from compiler_get_nodes. Only the top-level
-// statement list is read; procedures already compiled (used by #run) keep their code.
+// Replaces the procedure's statements with `body.block.statements`. A statement the
+// compiler built and nobody changed keeps its code; one that is new or was edited in place
+// (anywhere below it) is printed with Program_Print and parsed again in the body.
+// Procedures already compiled (used by #run) keep their code.
 compiler_modify_procedure :: (w: Workspace, body: *Code_Procedure_Body) {
+    PP :: #import "Program_Print";
     statements: [..] s64;
+    sources: [..] string;
     defer array_free(statements);
+    defer array_free(sources);
     for body.block.statements {
         record := record_of(it);
+        if record && record_differs(it, record)  record = 0;
+        source: string;
         if !record {
-            compiler_report("compiler_modify_procedure: a statement was not made by the compiler (build new nodes with compiler_get_nodes).", make_location(body));
-            return;
+            builder: String_Builder;
+            PP.print_expression(*builder, it);
+            source = builder_to_string(*builder);
         }
         array_add(*statements, record);
+        array_add(*sources, source);
     }
-    __jaic_modify_procedure(resolve_workspace(w), record_of(body), statements.data, statements.count);
+    __jaic_modify_procedure(resolve_workspace(w), record_of(body), statements.data, sources.data, statements.count);
     body.body_flags |= .ALREADY_MODIFIED;
 }
 
