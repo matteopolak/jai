@@ -88,62 +88,62 @@ add_recipient :: (list: **Curl.curl_slist, address: string) -> bool {
     list.* = next;
     return true;
 }
-append_addresses :: (builder: *Strings.String_Builder, header: string, addresses: [] string) -> bool {
+append_addresses :: (builder: *String_Builder, header: string, addresses: [] string) -> bool {
     if addresses.count == 0 return true;
-    Strings.append(builder, header);
+    append(builder, header);
     for address, index: addresses {
         email, valid := get_c_email(address);
         if !valid return false;
-        if index > 0 Strings.append(builder, ", ");
-        Strings.append(builder, to_string(email));
+        if index > 0 append(builder, ", ");
+        append(builder, to_string(email));
     }
-    Strings.append(builder, "\r\n");
+    append(builder, "\r\n");
     return true;
 }
-append_base64_lines :: (builder: *Strings.String_Builder, bytes: string) {
+append_base64_lines :: (builder: *String_Builder, bytes: string) {
     encoded := Base64.base64_encode(bytes);
     defer free(encoded);
     index: int;
     while index < encoded.count {
         count := min(76, encoded.count - index);
-        Strings.append(builder, Strings.slice(encoded, index, count));
-        Strings.append(builder, "\r\n");
+        append(builder, Strings.slice(encoded, index, count));
+        append(builder, "\r\n");
         index += count;
     }
 }
 build_message :: (message: Mail_Message) -> string, bool {
-    builder: Strings.String_Builder;
-    Strings.init_string_builder(*builder);
-    defer Strings.free_buffers(*builder);
+    builder: String_Builder;
+    init_string_builder(*builder);
+    defer free_buffers(*builder);
     from, valid := get_c_email(message.from);
     if !valid return "", false;
-    Strings.append(*builder, "From: "); Strings.append(*builder, to_string(from)); Strings.append(*builder, "\r\n");
+    append(*builder, "From: "); append(*builder, to_string(from)); append(*builder, "\r\n");
     if !append_addresses(*builder, "To: ", message.to) || !append_addresses(*builder, "Cc: ", message.cc) return "", false;
     if message.reply_to {
         reply, valid := get_c_email(message.reply_to);
         if !valid return "", false;
-        Strings.append(*builder, "Reply-To: "); Strings.append(*builder, to_string(reply)); Strings.append(*builder, "\r\n");
+        append(*builder, "Reply-To: "); append(*builder, to_string(reply)); append(*builder, "\r\n");
     }
     subject := Base64.base64_encode(message.subject);
     defer free(subject);
-    Strings.append(*builder, "Subject: =?UTF-8?B?"); Strings.append(*builder, subject); Strings.append(*builder, "?=\r\nMIME-Version: 1.0\r\n");
+    append(*builder, "Subject: =?UTF-8?B?"); append(*builder, subject); append(*builder, "?=\r\nMIME-Version: 1.0\r\n");
     boundary :: "jai-mail-boundary-2026";
     multipart := message.attachments.count > 0;
-    if multipart Strings.append(*builder, "Content-Type: multipart/mixed; boundary=\"jai-mail-boundary-2026\"\r\n\r\n--jai-mail-boundary-2026\r\n");
-    if message.html Strings.append(*builder, "Content-Type: text/html; charset=UTF-8\r\n");
-    else Strings.append(*builder, "Content-Type: text/plain; charset=UTF-8\r\n");
-    Strings.append(*builder, "Content-Transfer-Encoding: base64\r\n\r\n");
+    if multipart append(*builder, "Content-Type: multipart/mixed; boundary=\"jai-mail-boundary-2026\"\r\n\r\n--jai-mail-boundary-2026\r\n");
+    if message.html append(*builder, "Content-Type: text/html; charset=UTF-8\r\n");
+    else append(*builder, "Content-Type: text/plain; charset=UTF-8\r\n");
+    append(*builder, "Content-Transfer-Encoding: base64\r\n\r\n");
     append_base64_lines(*builder, message.body);
     for path, index: message.attachments {
         if !valid_header(path) return "", false;
         data, success := Files.read_entire_file(path);
         if !success return "", false;
-        Strings.append(*builder, "\r\n--jai-mail-boundary-2026\r\nContent-Type: application/octet-stream\r\nContent-Disposition: attachment; filename=\"attachment-");
-        Strings.append(*builder, tprint("%", index + 1));
-        Strings.append(*builder, "\"\r\nContent-Transfer-Encoding: base64\r\n\r\n");
+        append(*builder, "\r\n--jai-mail-boundary-2026\r\nContent-Type: application/octet-stream\r\nContent-Disposition: attachment; filename=\"attachment-");
+        append(*builder, tprint("%", index + 1));
+        append(*builder, "\"\r\nContent-Transfer-Encoding: base64\r\n\r\n");
         append_base64_lines(*builder, data);
         free(data);
     }
-    if multipart Strings.append(*builder, "\r\n--jai-mail-boundary-2026--\r\n");
-    return Strings.builder_to_string(*builder), true;
+    if multipart append(*builder, "\r\n--jai-mail-boundary-2026--\r\n");
+    return builder_to_string(*builder), true;
 }

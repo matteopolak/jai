@@ -113,8 +113,8 @@ number_input :: (_r:Rect,text:string,value:*$T,min_value:T,max_value:T,theme:*Nu
     candidate:T; success:bool;
     if parse_proc candidate,success=parse_proc(input);
     else {
-        #if type_info(T).type==.FLOAT { parsed,ok:=String.string_to_float(input); candidate=cast(T)parsed; success=ok; }
-        else { parsed,ok:=String.string_to_int(input); candidate=cast(T)parsed; success=ok; }
+        #if type_info(T).type==.FLOAT { parsed,ok:=string_to_float(input); candidate=cast(T)parsed; success=ok; }
+        else { parsed,ok:=string_to_int(input); candidate=cast(T)parsed; success=ok; }
     }
     if !success return false;
     if theme.clamp_low candidate=max(candidate,min_value); if theme.clamp_high candidate=min(candidate,max_value);

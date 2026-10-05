@@ -133,7 +133,7 @@ left_text_fill :: (r:Rect,color:Vector4) { draw_procs.set_shader_for_color(true)
 left_paste_clipboard :: (state:*Text_Input_State) {
     pasted:=Left_Text_Clipboard.os_clipboard_get_text();
     #if OS!=.WINDOWS { defer if pasted.count>0 free(pasted.data); }
-    builder:String.String_Builder; defer String.free_buffers(*builder);
-    for byte:pasted String.append(*builder,ifx byte==10||byte==13||byte==9 then cast(u8)32 else byte);
-    insert_text(state,String.builder_to_string(*builder));
+    builder:String_Builder; defer free_buffers(*builder);
+    for byte:pasted append(*builder,ifx byte==10||byte==13||byte==9 then cast(u8)32 else byte);
+    insert_text(state,builder_to_string(*builder));
 }

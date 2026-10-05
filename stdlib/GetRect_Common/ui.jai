@@ -657,8 +657,8 @@ slider_format_text_float_default :: (prefix:string,suffix:string,value:float64,t
 slider_format_text_int_default :: (prefix:string,suffix:string,value:s64,theme:*Slider_Theme,state:*Slider_State,mode:Slider_Format_Text_Mode)->string {
     if mode==.EDITING return tprint("%",value); return tprint("%%%",prefix,value,suffix);
 }
-slider_parse_text_float_default :: ( text : string , theme : * Slider_Theme , state : * Slider_State ) -> ( success : bool , value : float64 ) { parsed,valid:=String.string_to_float(text); return valid,parsed; }
-slider_parse_text_int_default :: ( text : string , theme : * Slider_Theme , state : * Slider_State ) -> ( success : bool , value : s64 ) { parsed,valid:=String.string_to_int(text); return valid,parsed; }
+slider_parse_text_float_default :: ( text : string , theme : * Slider_Theme , state : * Slider_State ) -> ( success : bool , value : float64 ) { parsed,valid:=string_to_float(text); return valid,parsed; }
+slider_parse_text_int_default :: ( text : string , theme : * Slider_Theme , state : * Slider_State ) -> ( success : bool , value : s64 ) { parsed,valid:=string_to_int(text); return valid,parsed; }
 
 #scope_module
 initialized:bool; drawing_popups:bool;

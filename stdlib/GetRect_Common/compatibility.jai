@@ -79,12 +79,12 @@ break_into_lines :: (s:string,between_lines_string:="")->[]string {
     array_add(*pieces,string.{s.count-begin,s.data+begin}); return pieces;
 }
 sanitize :: (s:string)->string {
-    builder:String.String_Builder; defer String.free_buffers(*builder);
+    builder:String_Builder; defer free_buffers(*builder);
     for part:break_into_lines(s," ") for byte:part {
-        if byte==9 String.append(*builder,cast(u8)32);
-        else if byte>=32&&byte!=127 String.append(*builder,byte);
+        if byte==9 append(*builder,cast(u8)32);
+        else if byte>=32&&byte!=127 append(*builder,byte);
     }
-    return String.builder_to_string(*builder);
+    return builder_to_string(*builder);
 }
 get_insert_point_for_cursor :: (state:*Text_Input_State,font:*Font,text:string,current_frame_text_x:float,cursor_x:int,effect:Font_Effects,glyphs_prepped:=false)->int {
     if !font return 0;

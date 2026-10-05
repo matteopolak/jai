@@ -6,9 +6,9 @@ Byte-string utilities (`String`), UTF-8 scalar conversion (`Unicode`), Base64, a
 
 ## How it works
 
-`String/byte-core.jai` holds the allocation-free operations on byte views: `equal`/`compare` (plus `_nocase`), `begins_with`, `ends_with`, `contains`, `find_index_from_left/right`, `split_from_left/right`, `trim*`, `wildcard_match`, `path_*` helpers, `to_lower`/`to_upper`, `is_alpha`/`is_digit`/`is_space`, `string_to_int`/`string_to_float`. Results of search, trim, slice and split borrow the input bytes. Case conversion is ASCII only, and `wildcard_match` understands `*` and `?` only.
+`String/module.jai` mirrors the API of the real Jai `String` module and nothing more: `compare`/`equal` (plus `_nocase`), `begins_with`/`ends_with`, `contains*` (return `found, remainder`, with the remainder starting after the match), `find_index_*`, `split_from_*`, `split`, `trim*`, `wildcard_match` (`*`, `?`, `[abc]`, `[a-z]`), `path_*` helpers, `parse_token`/`parse_int`/`parse_float`/`parse_bool`/`parse_enum`, `scan`/`scan2`, `atof`, and the allocating `join`, `replace`, `to_lower_copy`/`to_upper_copy`, `normalize_line_endings`. Results of search, trim, slice and split borrow the input bytes. Case conversion is ASCII only.
 
-`String/module.jai` adds the allocating operations (`join`, `replace`, `split`, `copy_string`, `to_lower_copy`, `normalize_line_endings`), the `parse_int`/`parse_float`/`parse_enum` family that consumes from a `*string`, `scan`/`scan2`, `atof`, and its own contiguous `String_Builder` (`init_string_builder`, `append`, `print_to_builder`, `builder_to_string(builder, allocator := Basic.temp)`, `free_buffers`). `Basic` has a separate `String_Builder` with a different layout; qualify the type (`Basic.String_Builder`) when both modules are imported.
+Allocation follows the reference: `join`, `replace`, `to_*_copy`, `normalize_line_endings(string)` and the array from `split` come from `context.allocator`, so `free(result)` works; only `scan` (and `path_ensure_extension` when it appends) use temporary storage. `String` does not export `String_Builder`, `sprint`/`tprint`, `copy_string`, `to_lower`/`to_upper`, `is_digit`/`is_alpha`/`is_space`, `string_to_int`/`string_to_float` or `to_string`; those belong to `Basic`, which `String` imports privately (`using Basic`) for its own use. `replace` is built on Basic's `String_Builder`, so `builder_to_string` there defaults to `context.allocator`.
 
 `Unicode/utf8-core.jai` validates scalar values: overlong forms, surrogates and truncated input make `utf8_next_character` fail without advancing. `character_utf8_to_utf32` and `character_utf32_to_utf8` convert single characters, and `utf8_iter` is the iteration macro (`it` is the code point, `it_index` the character index, `-1` when reversed).
 
@@ -28,14 +28,14 @@ main :: () {
 
 ## How to change it
 
-- Keep allocation-free logic in `byte-core.jai` (it is also loaded directly by `stdlib/tests/string-byte-core.jai`); allocating helpers go in `String/module.jai`.
+- Every public name in `String/module.jai` must exist in the reference module with the same signature, defaults and return order; do not re-add helpers that live in `Basic`. `stdlib/String/tests/api-shape.jai` and `stdlib/tests/string-byte-core.jai` pin the shape.
 - Extend UTF-8 handling together with `stdlib/tests/utf8-scalar.jai` and `tests/stdlib/unicode-utf8-tables.jai`. Do not weaken scalar validity; add a separate API for other encodings.
 - New Base64 alphabets go through `base64_encode_with_alphabet`/`base64_decode_with_alphabet`, or pass a decoder table to `base64_decode`.
 - Related regression programs: `tests/stdlib/string-scan.jai`, `basic-string-parsing.jai`, `basic-formatters.jai`, `one-char-string-as-byte.jai`, `no-break-space.jai`.
 
 ## Configuration
 
-`Text_File_Handler` exposes `comment_character`, `do_version_number`, `strip_comments_from_ends_of_lines` and `auto_skip_blank_lines`. `Print_Color` calls take `color`, `style` and `to_standard_error`; whether sequences render depends on the terminal. `Basic.temp` is the default allocator for `builder_to_string`.
+`Text_File_Handler` exposes `comment_character`, `do_version_number`, `strip_comments_from_ends_of_lines` and `auto_skip_blank_lines`. `Print_Color` calls take `color`, `style` and `to_standard_error`; whether sequences render depends on the terminal.
 
 ## Dependencies
 

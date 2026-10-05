@@ -61,19 +61,19 @@ path_contains :: (path: Path, words: [] string) -> (contains: bool, position: s3
 }
 
 path_to_string :: (path: Path, max_words := -1) -> string {
-    builder: Strings.String_Builder;
-    Strings.init_string_builder(*builder);
-    defer Strings.free_buffers(*builder);
-    Strings.append(*builder, path.header_string);
-    for i: 0..path.number_of_leading_slashes-1 Strings.append(*builder, "/");
+    builder: String_Builder;
+    init_string_builder(*builder);
+    defer free_buffers(*builder);
+    append(*builder, path.header_string);
+    for i: 0..path.number_of_leading_slashes-1 append(*builder, "/");
     count := path.words.count;
     if max_words >= 0 count = min(count, max_words);
     for i: 0..count-1 {
-        if i > 0 Strings.append(*builder, "/");
-        Strings.append(*builder, path.words[i]);
+        if i > 0 append(*builder, "/");
+        append(*builder, path.words[i]);
     }
-    if path.trailing_slash && count > 0 Strings.append(*builder, "/");
-    return Strings.builder_to_string(*builder);
+    if path.trailing_slash && count > 0 append(*builder, "/");
+    return builder_to_string(*builder);
 }
 
 how_much_of_path_exists_on_the_local_filesystem :: (path: Path) -> (fully_exists: bool, how_much_exists: s32) {

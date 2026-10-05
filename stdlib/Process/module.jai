@@ -45,8 +45,8 @@ break_command_into_strings :: (input: string) -> [..] string {
     while index < input.count {
         while index < input.count && command_space(input[index]) index += 1;
         if index == input.count break;
-        word: String.String_Builder;
-        String.init_string_builder(*word);
+        word: String_Builder;
+        init_string_builder(*word);
         quote: u8;
         while index < input.count {
             byte := input[index];
@@ -59,11 +59,11 @@ break_command_into_strings :: (input: string) -> [..] string {
                 next := input[index + 1];
                 if next == #char "\"" || next == #char "\\" || command_space(next) index += 1;
             }
-            String.append(*word, String.slice(input, index, 1));
+            append(*word, String.slice(input, index, 1));
             index += 1;
         }
-        array_add(*result, String.builder_to_string(*word));
-        String.free_buffers(*word);
+        array_add(*result, builder_to_string(*word));
+        free_buffers(*word);
     }
     return result;
 }
@@ -82,12 +82,12 @@ run_command :: (args: .. string, working_directory := "", capture_and_return_out
     process: Process;
     if !create_process(*process, ..args, working_directory, capture_and_return_output, arg_quoting) return .{type = .FAILED_TO_LAUNCH};
     defer deinit(*process);
-    out: String.String_Builder;
-    err: String.String_Builder;
-    String.init_string_builder(*out);
-    String.init_string_builder(*err);
-    defer String.free_buffers(*out);
-    defer String.free_buffers(*err);
+    out: String_Builder;
+    err: String_Builder;
+    init_string_builder(*out);
+    init_string_builder(*err);
+    defer free_buffers(*out);
+    defer free_buffers(*err);
     start := process_monotonic_ms();
     timed_out := false;
     if capture_and_return_output {
@@ -100,12 +100,12 @@ run_command :: (args: .. string, working_directory := "", capture_and_return_out
             if !success { kill_process(*process); break; }
             if output_bytes > 0 {
                 bytes: string = .{output_bytes, output_buffer.data};
-                String.append(*out, bytes);
+                append(*out, bytes);
                 if print_captured_output write_string(bytes);
             }
             if error_bytes > 0 {
                 bytes: string = .{error_bytes, error_buffer.data};
-                String.append(*err, bytes);
+                append(*err, bytes);
                 if print_captured_output write_string(bytes, true);
             }
         }
@@ -118,7 +118,7 @@ run_command :: (args: .. string, working_directory := "", capture_and_return_out
         success, status = get_process_result(*process);
     }
     if !success status = .{type = .FAILED_TO_LAUNCH, exit_code = -1};
-    return status, String.builder_to_string(*out), String.builder_to_string(*err), timed_out;
+    return status, builder_to_string(*out), builder_to_string(*err), timed_out;
 }
 
 run_command_arguments :: (args: .. string, working_directory := "", capture_and_return_output := false, print_captured_output := false, timeout_ms := -1, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED) -> (process_result: Process_Result, output_string := "", error_string := "", timeout_reached := false) {
@@ -126,32 +126,32 @@ run_command_arguments :: (args: .. string, working_directory := "", capture_and_
 }
 
 get_quoted_command_string :: (args: [] string) -> string {
-    result: String.String_Builder;
-    String.init_string_builder(*result);
-    defer String.free_buffers(*result);
+    result: String_Builder;
+    init_string_builder(*result);
+    defer free_buffers(*result);
     for argument, index: args {
-        if index > 0 String.append(*result, " ");
+        if index > 0 append(*result, " ");
         append_quoted(*result, argument);
     }
-    return String.builder_to_string(*result);
+    return builder_to_string(*result);
 }
 
-append_quoted :: (builder: *String.String_Builder, s: string) {
+append_quoted :: (builder: *String_Builder, s: string) {
     quote_needed := s.count == 0;
     for byte: s if command_space(byte) || byte == #char "\"" quote_needed = true;
-    if !quote_needed { String.append(builder, s); return; }
-    String.append(builder, "\"");
+    if !quote_needed { append(builder, s); return; }
+    append(builder, "\"");
     slashes: int;
     for byte, i: s {
         if byte == #char "\\" { slashes += 1; continue; }
         repetitions := slashes;
         if byte == #char "\"" repetitions = slashes * 2 + 1;
-        for j: 0..repetitions-1 String.append(builder, "\\");
+        for j: 0..repetitions-1 append(builder, "\\");
         slashes = 0;
-        String.append(builder, String.slice(s, i, 1));
+        append(builder, String.slice(s, i, 1));
     }
-    for j: 0..slashes * 2-1 String.append(builder, "\\");
-    String.append(builder, "\"");
+    for j: 0..slashes * 2-1 append(builder, "\\");
+    append(builder, "\"");
 }
 
 thread_is_done :: () -> bool { return Atomics.atomic_read(*active_command_count) == 0; }

@@ -225,13 +225,13 @@ time_view_callback_body :: (r:Rect,data:*void) {
 }
 #scope_export
 copy_output_to_clipboard :: (state:*Color_Animation_Editor_State,output_type:Output_Type) {
-    builder:String.String_Builder;
-    if output_type==.SOURCE_KEYFRAMES for frame:get_keyframes(state) String.append(*builder,tprint(".{.{%,%,%,%},%},\n",frame.color_rgb.x,frame.color_rgb.y,frame.color_rgb.z,frame.color_rgb.w,frame.t));
+    builder:String_Builder;
+    if output_type==.SOURCE_KEYFRAMES for frame:get_keyframes(state) append(*builder,tprint(".{.{%,%,%,%},%},\n",frame.color_rgb.x,frame.color_rgb.y,frame.color_rgb.z,frame.color_rgb.w,frame.t));
     else {
         samples:=NewArray(max(state.num_clipboard_samples,1),Vector4,,Basic.temp); generate_color_samples(get_sorted_keyframes(state),get_interpolation(state),samples);
-        for color:samples String.append(*builder,tprint(".{%,%,%,%},\n",color.x,color.y,color.z,color.w));
+        for color:samples append(*builder,tprint(".{%,%,%,%},\n",color.x,color.y,color.z,color.w));
     }
-    text:=String.builder_to_string(*builder); Left_Clipboard.os_clipboard_set_text(text); String.free_buffers(*builder);
+    text:=builder_to_string(*builder); Left_Clipboard.os_clipboard_set_text(text); free_buffers(*builder);
 }
 #scope_module
 Left_Clipboard :: #import "Clipboard";

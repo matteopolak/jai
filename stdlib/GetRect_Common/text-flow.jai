@@ -99,18 +99,18 @@ update_selection_endpoint_for_mouse_position :: (rt_width:int,rt_height:int) {
 text_display_handle_event :: (state:*Text_Display_State,event:Event) {
     if event.type!=.KEYBOARD||!event.key_pressed||!(event.ctrl_pressed||event.cmd_meta_pressed)||cast(s32)event.key_code!=67 return;
     view:=left_text_view(state); selected:=make_forward_selection(view.selection); if !selected.active return;
-    builder:String.String_Builder; defer String.free_buffers(*builder);
+    builder:String_Builder; defer free_buffers(*builder);
     for line,index:state.text.flowed_lines if index>=selected.start_line&&index<=selected.end_line {
         column:int;
         for piece:line.pieces {
             start:=ifx index==selected.start_line then selected.start_character else 0;
             end:=ifx index==selected.end_line then selected.end_character else 0x7fff_ffff;
             a:=clamp(start-column,0,piece.text.count); b:=clamp(end-column,0,piece.text.count);
-            if b>a String.append(*builder,string.{b-a,piece.text.data+a}); column+=piece.text.count;
+            if b>a append(*builder,string.{b-a,piece.text.data+a}); column+=piece.text.count;
         }
-        if index<selected.end_line String.append(*builder,cast(u8)10);
+        if index<selected.end_line append(*builder,cast(u8)10);
     }
-    Left_Text_Clipboard.os_clipboard_set_text(String.builder_to_string(*builder));
+    Left_Text_Clipboard.os_clipboard_set_text(builder_to_string(*builder));
 }
 deinit :: (text:*Flowable_Text) {
     for *line:text.flowed_lines array_free(line.pieces); array_reset(*text.flowed_lines); text.num_flowed_lines=0;

@@ -45,7 +45,7 @@ start_from_memory :: (using handler: *Text_File_Handler, _short_name: string, _f
         if !found || line.count < 3 || line[0] != 91 || line[line.count-1] != 93 {
             failed = true; return;
         }
-        value, ok := String.string_to_int(String.slice(line, 1, line.count-2));
+        value, ok := Basic.string_to_int(String.slice(line, 1, line.count-2));
         if !ok { failed = true; return; }
         version = value;
     }
