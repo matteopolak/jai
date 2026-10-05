@@ -2077,6 +2077,39 @@ impl Compiler {
                     untyped: true,
                 })
             }
+            BuiltinProc::CodeOf => {
+                // The code of a procedure (its header and body), else of the expression.
+                let proc = match self.check_expr_no_emit(scope, &arg.value) {
+                    Ok(Operand::Procs(p)) if p.len() == 1 => Some(p[0]),
+                    Ok(Operand::Const {
+                        value: Value::Proc(p),
+                        ..
+                    }) => Some(p),
+                    _ => None,
+                };
+                let id = match proc {
+                    Some(p) => {
+                        let (lit, span, pscope) = (
+                            self.proc(p).lit.clone(),
+                            self.proc(p).span,
+                            self.proc(p).scope,
+                        );
+                        let expr = ast::Expr {
+                            kind: ast::ExprKind::Proc(lit),
+                            span,
+                        };
+                        let id = self.add_code(Rc::new(ast::CodeBody::Expr(expr)), pscope);
+                        self.code_procs.insert(id.0 as usize, p);
+                        id
+                    }
+                    None => self.add_code(Rc::new(ast::CodeBody::Expr(arg.value.clone())), scope),
+                };
+                Ok(Operand::Const {
+                    ty: TypeId::CODE,
+                    value: Value::Code(id),
+                    untyped: false,
+                })
+            }
             BuiltinProc::TypeOf => {
                 if let Some(t) = self.type_field_type(scope, &arg.value)? {
                     return Ok(Operand::Type(t));
@@ -2566,14 +2599,41 @@ impl Compiler {
                 },
                 false,
             );
-            if let Slot::Arg(a) = slot
-                && let Some(Operand::Const {
-                    value,
-                    ty,
-                    untyped,
-                }) = &args[*a].op
-                && (*ty == param.ty
-                    || (*untyped
+            // The argument's value when it is a constant: a literal or constant given, a
+            // procedure, or a literal default (`var_name := "var"`).
+            let constant = match slot {
+                Slot::Arg(a) => match &args[*a].op {
+                    Some(Operand::Const {
+                        value,
+                        ty,
+                        untyped,
+                    }) => Some((value.clone(), *ty, *untyped)),
+                    Some(Operand::Procs(p)) if p.len() == 1 => {
+                        Some((Value::Proc(p[0]), param.ty, false))
+                    }
+                    _ => None,
+                },
+                Slot::Default => match &header.params[i].default {
+                    Some(d)
+                        if matches!(d.kind, E::Str(_) | E::Int(_) | E::Float(_) | E::Bool(_)) =>
+                    {
+                        let pscope = self.proc(proc).scope;
+                        match self.eval_const(pscope, d, Some(param.ty)) {
+                            Ok(Operand::Const {
+                                value,
+                                ty,
+                                untyped,
+                            }) => Some((value, ty, untyped)),
+                            _ => None,
+                        }
+                    }
+                    _ => None,
+                },
+                _ => None,
+            };
+            if let Some((value, ty, untyped)) = constant
+                && (ty == param.ty
+                    || (untyped
                         && matches!(value, Value::Int(_))
                         && self.types.is_integer(param.ty)))
             {
@@ -2581,10 +2641,14 @@ impl Compiler {
                 // A constant argument the body never writes stays a constant.
                 if matches!(
                     value,
-                    Value::String(_) | Value::Int(_) | Value::Bool(_) | Value::Float(_)
+                    Value::String(_)
+                        | Value::Int(_)
+                        | Value::Bool(_)
+                        | Value::Float(_)
+                        | Value::Proc(_)
                 ) && !self.text_may_write(&body, name)
                 {
-                    self.const_macro_params.insert(e, (value.clone(), param.ty));
+                    self.const_macro_params.insert(e, (value, param.ty));
                 }
             }
             if param.using {

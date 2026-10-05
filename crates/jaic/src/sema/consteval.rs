@@ -36,16 +36,29 @@ impl Compiler {
     }
 
     /// Finish thunk `f` that computes `op`, run it, and read the result back as a constant.
-    pub fn run_thunk(&mut self, mut f: FnCtx, op: Operand, span: Span) -> Result<Operand> {
+    pub fn run_thunk(&mut self, f: FnCtx, op: Operand, span: Span) -> Result<Operand> {
+        let first = self.run_thunk_all(f, op, span)?.into_iter().next();
+        Ok(first.unwrap_or(Operand::Void))
+    }
+
+    /// `run_thunk` keeping every value of a multi-value result (`a, b :: #run f();`).
+    pub fn run_thunk_all(&mut self, mut f: FnCtx, op: Operand, span: Span) -> Result<Vec<Operand>> {
         let op = self.settle_untyped(op, None);
-        let (ty, result_global) = match &op {
-            Operand::Void => (TypeId::VOID, None),
-            Operand::Multi(values) => (values[0].0, None),
-            other => (other.ty(), None::<ir::GlobalId>),
+        let values = match op {
+            Operand::Void => Vec::new(),
+            Operand::Multi(values) => values,
+            other => {
+                let ty = other.ty();
+                if ty == TypeId::VOID {
+                    Vec::new()
+                } else {
+                    let (_, v) = self.rvalue(&mut f, other, span)?;
+                    vec![(ty, v)]
+                }
+            }
         };
-        let _ = result_global;
-        let mut out = None;
-        if ty != TypeId::VOID && !matches!(op, Operand::Void) {
+        let mut out = Vec::new();
+        for (ty, v) in values {
             let size = self.size_of(ty, span)?;
             let align = self.align_of(ty, span)?;
             let g = self.program.add_global(ir::Global {
@@ -57,29 +70,28 @@ impl Compiler {
                 read_only: false,
                 export: None,
             });
-            let (_, v) = self.rvalue(&mut f, op, span)?;
             let addr = f.b.global_addr(g);
             self.store_value(&mut f, ty, addr, v, span)?;
-            out = Some(g);
+            out.push((ty, g));
         }
         f.b.ret(Vec::new());
         self.call_thunk(f, span)?;
-        let Some(g) = out else {
-            return Ok(Operand::Void);
-        };
-        let addr = self
-            .interp
-            .global_addr(&self.program, g)
-            .map_err(|t| Box::new(Diagnostic::error(span, t.message)))?;
-        let value = self.read_value(addr, ty, span)?;
-        Ok(match value {
-            Value::Type(t) => Operand::Type(t),
-            value => Operand::Const {
-                ty,
-                value,
-                untyped: false,
-            },
-        })
+        let mut results = Vec::new();
+        for (ty, g) in out {
+            let addr = self
+                .interp
+                .global_addr(&self.program, g)
+                .map_err(|t| Box::new(Diagnostic::error(span, t.message)))?;
+            results.push(match self.read_value(addr, ty, span)? {
+                Value::Type(t) => Operand::Type(t),
+                value => Operand::Const {
+                    ty,
+                    value,
+                    untyped: false,
+                },
+            });
+        }
+        Ok(results)
     }
 
     /// Finish the compile-time function `f` and run it; returns its scalar results.
@@ -123,6 +135,20 @@ impl Compiler {
                 }
             } else {
                 break;
+            }
+            // The earlier attempt may have edited the nodes it got (built once per record):
+            // the next one gets them exported anew.
+            let counts: Vec<(usize, usize)> = self
+                .interp
+                .code_exports
+                .iter()
+                .map(|(&code, exports)| (code, exports.len()))
+                .collect();
+            self.interp.code_exports.clear();
+            for (code, n) in counts {
+                for _ in 0..n {
+                    self.export_code_typed(code);
+                }
             }
             self.interp.run_effects = Some(self.interp.effects);
             self.interp.code_export_cursor.clear();
@@ -476,7 +502,7 @@ impl Compiler {
             ..
         } = &op
         {
-            let code_scope = self.code_scopes[code.0 as usize];
+            let code_scope = self.code_scope_at(*code, scope);
             return Ok((self.insert_expr_of(op, value)?, code_scope));
         }
         Ok((self.insert_expr_of(op, value)?, scope))
