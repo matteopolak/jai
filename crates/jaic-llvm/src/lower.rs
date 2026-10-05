@@ -5,6 +5,7 @@
 //! every `Slot` an entry-block alloca, and every aggregate stays in memory.
 //! `Conv::C` signatures are translated to the real C ABI by [`Backend::lower_sig`].
 #![allow(clippy::too_many_arguments)]
+use crate::debuginfo::{DebugFormat, DebugInfo, FnDebug};
 use inkwell::AddressSpace;
 use inkwell::AtomicOrdering;
 use inkwell::FloatPredicate;
@@ -66,7 +67,10 @@ pub fn lower_program<'ctx>(
     program: &Program,
     arch: Arch,
     shard: Option<Shard>,
+    debug: Option<(DebugFormat, bool)>,
 ) -> Result<(), String> {
+    let debug = debug
+        .map(|(format, optimized)| DebugInfo::new(context, module, program, format, optimized));
     let mut backend = Backend {
         ctx: context,
         module,
@@ -77,6 +81,7 @@ pub fn lower_program<'ctx>(
         funcs: Vec::new(),
         globals: Vec::new(),
         foreigns: Vec::new(),
+        debug,
     };
     backend.run().map_err(|e| e.0)
 }
@@ -125,6 +130,8 @@ struct Backend<'ctx, 'p> {
     globals: Vec<GlobalValue<'ctx>>,
     /// Address of each foreign function or variable.
     foreigns: Vec<PointerValue<'ctx>>,
+    /// Debug info builder when the program is built with debug info (`debuginfo.rs`).
+    debug: Option<DebugInfo<'ctx, 'p>>,
 }
 
 /// Per-function lowering state.
@@ -137,6 +144,8 @@ struct FnState<'ctx> {
     allocas: Builder<'ctx>,
     /// A C aggregate returned in registers: its pieces and the memory the IR writes it to.
     reg_ret: Option<(Vec<Piece>, PointerValue<'ctx>)>,
+    /// Debug locations and variables of this function, with debug info on.
+    dbg: Option<FnDebug<'ctx>>,
 }
 
 impl<'ctx, 'p> Backend<'ctx, 'p> {
@@ -146,6 +155,7 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
         self.declare_globals()?;
         if self.shard.is_none_or(|s| s.index == 0) {
             self.init_globals()?;
+            self.describe_globals();
         }
         for (i, func) in self.program.funcs.iter().enumerate() {
             if let Some(func) = func
@@ -156,7 +166,22 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                     .map_err(|e| Error(format!("in '{}': {}", func.name, e.0)))?;
             }
         }
+        if let Some(debug) = &self.debug {
+            debug.finalize();
+        }
         Ok(())
+    }
+
+    /// Debug info for program globals (in the module that defines them).
+    fn describe_globals(&self) {
+        let Some(debug) = &self.debug else {
+            return;
+        };
+        for g in &self.program.debug_globals {
+            let gv = self.globals[g.global.0 as usize];
+            let local = self.program.globals[g.global.0 as usize].export.is_none();
+            debug.global(gv, &gv.get_name().to_string_lossy(), local, g);
+        }
     }
 
     // ----- types ---------------------------------------------------------
@@ -508,22 +533,40 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             blocks,
             allocas,
             reg_ret: None,
+            dbg: None,
         };
+        if let Some(debug) = &self.debug {
+            let local = func.linkage == IrLinkage::Internal;
+            st.dbg = Some(debug.begin_function(func, function, local, &self.builder, &st.allocas));
+        }
         self.bind_params(&mut st, func, alloca_block)?;
         for slot in &func.slots {
             let p = self.entry_alloca(&st, slot.size, slot.align)?;
             st.slots.push(p);
         }
+        if let (Some(debug), Some(dbg)) = (&self.debug, &mut st.dbg) {
+            dbg.declare_vars(debug, func, &st.slots, &st.vals, &st.allocas, alloca_block);
+        }
         for &b in &order {
             let block = &func.blocks[b];
             self.builder
                 .position_at_end(st.blocks[b].expect("reachable block"));
+            if let (Some(debug), Some(dbg)) = (&self.debug, &mut st.dbg) {
+                dbg.enter_block(debug, func, &self.builder, b);
+            }
             for inst in &block.insts {
                 self.inst(&mut st, func, inst)?;
             }
             self.term(&st, func, &block.term)?;
+            if let Some(dbg) = &mut st.dbg {
+                dbg.leave_block(&block.term);
+            }
         }
         let entry = st.blocks[0].expect("entry block is reachable");
+        if let Some(dbg) = &st.dbg {
+            dbg.finish_entry(&st.allocas);
+            self.builder.unset_current_debug_location();
+        }
         st.allocas.build_unconditional_branch(entry)?;
         Ok(())
     }
@@ -595,6 +638,10 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
 
     fn set(&self, st: &mut FnState<'ctx>, v: Val, value: BasicValueEnum<'ctx>) {
         st.vals[v.0 as usize] = Some(value);
+        // A variable whose address is computed here: copy it where its debug info looks.
+        if let Some(slot) = st.dbg.as_ref().and_then(|d| d.watched(v)) {
+            let _ = self.builder.build_store(slot, value);
+        }
     }
 
     fn get_int(&self, st: &FnState<'ctx>, v: Val) -> R<IntValue<'ctx>> {
@@ -949,10 +996,16 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                     self.set(st, *r, v);
                 }
             }
-            // Debug line markers carry no native semantics (no debug info yet).
             Inst::Loc {
+                line,
+                col,
+                scope,
                 ..
-            } => {}
+            } => {
+                if let (Some(debug), Some(dbg)) = (&self.debug, &mut st.dbg) {
+                    dbg.loc(debug, func, &self.builder, *line, *col, *scope);
+                }
+            }
         }
         Ok(())
     }
