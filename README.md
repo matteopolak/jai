@@ -4,7 +4,7 @@
 
 An independent Jai compiler written in Rust. The goal is to compile existing Jai programs and libraries, with a clean implementation that is easy to test, understand, and improve.
 
-It type-checks, interprets and natively builds real Jai projects, including the Focus editor, the Jails language server and every example in *The Way to Jai*. It also runs in the browser through WebAssembly.
+It type-checks, interprets and natively builds real Jai projects, including the Focus editor, the Jails language server and the examples from *The Way to Jai*. It also runs in the browser through WebAssembly.
 
 ## Compatibility
 
