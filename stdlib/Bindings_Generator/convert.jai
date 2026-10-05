@@ -66,34 +66,34 @@ avoid_reserved_names :: (name: string, avoid_type_names := false) -> string {
 }
 
 is_valid_identifier_start :: (char: u8) -> bool {
-    return char == #char "_" || ((char & 0xDF) >= #char "A" && (char & 0xDF) <= #char "Z");
+    if char == #char "_" return true;
+    return (char >= #char "a" && char <= #char "z") || (char >= #char "A" && char <= #char "Z");
 }
 
+is_identifier_byte :: (char: u8) -> bool {
+    return is_valid_identifier_start(char) || (char >= #char "0" && char <= #char "9");
+}
+
+// `name` without the first of `strip_prefixes` it starts with. Underscores left at the front
+// go as well, except one that keeps the name from starting with a digit (`_2D`).
 stripped_name :: (name: string) -> string {
-    options := *context.generator_options;
-    if options.strip_prefixes.count == 0 || name.count == 0 return name;
-
-    stripped := name;
-    for options.strip_prefixes {
-        if begins_with(name, it) {
-            stripped = advance(stripped, it.count);
-            while stripped.count > 1 && stripped[0] == #char "_" && is_valid_identifier_start(stripped[1]) {
-                stripped = advance(stripped, 1);
-            }
-            break;
-        }
+    for prefix: context.generator_options.strip_prefixes {
+        if !begins_with(name, prefix) continue;
+        rest := advance(name, prefix.count);
+        while rest.count > 1 && rest[0] == #char "_" && is_valid_identifier_start(rest[1])  rest = advance(rest, 1);
+        return rest;
     }
-    return stripped;
+    return name;
 }
 
+// A copy of `name` with every byte an identifier cannot hold turned into `_`.
 make_valid_identifier :: (name: string) -> string {
-    result := copy_string(name);
-    for 0..result.count-1 {
-        c := result[it];
-        ok := (c >= #char "a" && c <= #char "z") || (c >= #char "A" && c <= #char "Z") || (c >= #char "0" && c <= #char "9") || c == #char "_";
-        if !ok result[it] = #char "_";
+    builder: String_Builder;
+    for i: 0..name.count-1 {
+        byte := name[i];
+        append(*builder, ifx is_identifier_byte(byte) then byte else cast(u8) #char "_");
     }
-    return result;
+    return builder_to_string(*builder);
 }
 
 anonymous_spelling :: (name: string) -> bool {
@@ -230,14 +230,19 @@ init_generator :: (g: *Generator_State) {
 
 // A named type the Objective_C module defines (`id`, `Class`...); only its name is printed.
 create_empty_struct_type :: (name: string) -> *CType {
-    s := New(Struct);
-    s.kind = .STRUCT;
-    s.name = name;
-    s.output_name = name;
-    s.type = New(CType);
-    s.type.type_of_struct = s;
-    s.type.size = 8;
-    return s.type;
+    t, holder := struct_type_named(name, name, 8);
+    holder.type = t;
+    return t;
+}
+
+// A struct type that only exists to be printed by name; the struct has no members.
+struct_type_named :: (name: string, output_name: string, size: s64) -> *CType, *Struct {
+    t := New(CType);
+    t.size = size;
+    t.type_of_struct = New(Struct);
+    t.type_of_struct.name = name;
+    t.type_of_struct.output_name = output_name;
+    return t, t.type_of_struct;
 }
 
 get_int_type :: (size: s64, signed: bool) -> *CType {
@@ -253,32 +258,38 @@ get_int_type :: (size: s64, signed: bool) -> *CType {
 }
 
 create_pointer_to :: (pointee: *CType) -> *CType {
-    t := New(CType);
-    t.pointer_to = pointee;
-    t.size = context.generator.pointer_size;
-    return t;
+    pointer := New(CType);
+    pointer.size = context.generator.pointer_size;
+    pointer.pointer_to = pointee;
+    return pointer;
 }
 
+// Looks through typedefs and/or enums down to the type they stand for.
 strip_type :: (type: *CType, typedefs := false, enums := false) -> *CType {
-    while type {
-        if typedefs && type.type_of_typedef && type.type_of_typedef.type {
-            type = type.type_of_typedef.type;
-        } else if enums && type.type_of_enum && type.type_of_enum.type {
-            type = type.type_of_enum.type;
-        } else {
-            break;
-        }
+    t := type;
+    while t {
+        under: *CType;
+        if typedefs && t.type_of_typedef     under = t.type_of_typedef.type;
+        else if enums && t.type_of_enum      under = t.type_of_enum.type;
+        if !under break;
+        t = under;
     }
-    return type;
+    return t;
 }
 
 // ----------------------------------------------------------------------------
 // Typedef unwrapping.
 
+// Fixed-width and size typedefs print as the Jai integer they name.
 should_unwrap_typedef :: (name: string) -> bool {
-    for TYPEDEFS_TO_UNWRAP  if it == name return true;
-    for TYPEDEF_PREFIXES_TO_UNWRAP  if begins_with(name, it) return true;
-    for context.generator_options.typedef_prefixes_to_unwrap  if begins_with(name, it) return true;
+    if array_find(TYPEDEFS_TO_UNWRAP, name) return true;
+    return starts_with_any(name, TYPEDEF_PREFIXES_TO_UNWRAP) || starts_with_any(name, context.generator_options.typedef_prefixes_to_unwrap);
+}
+
+starts_with_any :: (text: string, prefixes: [] string) -> bool {
+    for prefixes {
+        if begins_with(text, it) return true;
+    }
     return false;
 }
 
@@ -484,8 +495,8 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
                 return create_type(clang("typedef_underlying", decl), ctx);
             }
             if !is_user_declaration(decl, name) {
-                // Like the reference: a typedef from a system header is referred to by name and
-                // not generated (`time_t`, `FILE`, `socklen_t` come from POSIX, Windows, ...).
+                // A typedef from a system header is used by name and not generated: `time_t`,
+                // `FILE` or `socklen_t` are expected to come from POSIX, Windows and the like.
                 result = New(CType);
                 result.hardcoded_jai_string = name;
                 result.size = size;
@@ -619,7 +630,7 @@ sanitize_for_identifier :: (text: string) -> string {
     for 0..text.count-1 {
         c := text[it];
         if c == #char "*" append(*builder, "P");
-        else if (c >= #char "a" && c <= #char "z") || (c >= #char "A" && c <= #char "Z") || (c >= #char "0" && c <= #char "9") || c == #char "_" append(*builder, c);
+        else if is_identifier_byte(c) append(*builder, c);
     }
     return builder_to_string(*builder);
 }
@@ -639,13 +650,7 @@ create_record_type :: (ty: Clang_Type, decl: Cursor, ctx: Cursor, size: s64) -> 
 
 // A template parameter used as a type (`T value;`) is a stand-in struct named like the parameter.
 make_placeholder_struct :: (name: string, comment: string) -> *CType {
-    st := New(Struct);
-    st.kind = .STRUCT;
-    st.name = name;
-    st.output_name = avoid_reserved_names(stripped_name(name), true);
-    t := New(CType);
-    t.type_of_struct = st;
-    t.size = 0;
+    t := struct_type_named(name, avoid_reserved_names(stripped_name(name), true), 0);
     t.comment = comment;
     return t;
 }
@@ -775,7 +780,9 @@ copy_ctype_const :: (t: *CType) -> *CType {
 }
 
 is_char_pointer_type :: (type: *CType) -> bool {
-    return type && type.pointer_to && type.pointer_to.number_flags & ._8BIT && !(type.pointer_to.number_flags & .FLOAT);
+    if !type || !type.pointer_to return false;
+    pointee := type.pointer_to.number_flags;
+    return (pointee & ._8BIT) != 0 && (pointee & .FLOAT) == 0;
 }
 
 // x87 `long double` (and Linux arm64's binary128) arguments or results: Jai cannot pass them,
@@ -787,20 +794,22 @@ uses_wide_long_double :: (ft: *Function_Type) -> bool {
     return false;
 }
 
+// A `va_list` parameter cannot be passed from Jai (`vprintf` and friends).
 function_has_a_valist_arg :: (func: *Function) -> bool {
-    for func.type.type_of_function.arguments {
-        if is_va_list(it.type) return true;
+    arguments := func.type.type_of_function.arguments;
+    for arguments {
+        if !is_va_list(it.type) continue;
+        return true;
     }
     return false;
 }
 
+// Recognized by name: platforms spell it as a typedef, a builtin struct or `__va_list_tag`.
 is_va_list :: (type: *CType) -> bool {
     if !type return false;
-    if type.type_of_typedef && contains(type.type_of_typedef.name, "va_list") return true;
-    if type.type_of_struct && contains(type.type_of_struct.name, "va_list") return true;
-    if type.hardcoded_jai_string == "__va_list_tag" return true;
     if contains(type.hardcoded_jai_string, "va_list") return true;
-    return false;
+    if type.type_of_typedef return contains(type.type_of_typedef.name, "va_list");
+    return type.type_of_struct != null && contains(type.type_of_struct.name, "va_list");
 }
 
 // ----------------------------------------------------------------------------
@@ -868,8 +877,8 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
             arg.decl_flags |= .POINTER_TO_VALUE;
         }
         if clang("t_const", arg_type) arg.decl_flags |= .IS_CONST;
-        // Unnamed parameters keep an empty name and print as unknown0, unknown1, ... (visitors
-        // match on these output names, as with the reference generator).
+        // Unnamed parameters keep an empty name and print as unknown0, unknown1, ... (existing
+        // visitors match on these output names).
         if arg.name {
             arg.output_name = avoid_reserved_names(arg.name);
         } else {
@@ -944,49 +953,36 @@ replace_all :: (text: string, from: string, to: string) -> string {
     return result;
 }
 
-// `operator+` stays an operator name; unsupported operators get an identifier
-// (`operator!=` -> `operator_not_equals`).
+// Symbol -> word for operators Jai cannot overload, longest symbols first so that `<=` is not
+// read as `<` followed by `=`.
+OPERATOR_SPELLINGS :: string.[
+    "<=>", "_spaceship",    "->*", "_arrow_star",  "->", "_arrow",
+    "++",  "_plus_plus",    "--",  "_minus_minus", "==", "_equals",
+    "!=",  "_not_equals",   ">=",  "_greater_equals", "<=", "_less_equals",
+    "<<",  "_lshift",       ">>",  "_rshift",      "&&", "_and_and",
+    "||",  "_or_or",        "+",   "_plus",        "-",  "_minus",
+    "*",   "_times",        "/",   "_divide",      "%",  "_modulo",
+    "^",   "_xor",          "&",   "_and",         "|",  "_or",
+    "~",   "_tilde",        "<",   "_less",        ">",  "_greater",
+    "[]",  "_brackets",     "!",   "_not",         "=",  "_assign",
+    ",",   "_comma",        "()",  "_parens",
+];
+
+// A binary operator Jai can overload keeps its symbol (`operator+`); any other operator gets
+// an identifier (`operator!=` -> `operator_not_equals`, `operator new` -> `operator_new`).
 operator_names :: (name: string, argument_count: s64) -> output_name: string, overloadable: bool {
-    symbol := replace_all(name, " ", "");
-    symbol = advance(symbol, "operator".count);
-    for JAI_OPERATORS {
-        if it == symbol && argument_count == 2 return tprint("operator%", symbol), true;
+    symbol := advance(replace_all(name, " ", ""), "operator".count);
+    if argument_count == 2 && array_find(JAI_OPERATORS, symbol)  return tprint("operator%", symbol), true;
+
+    spelled := symbol;
+    pair := 0;
+    while pair < OPERATOR_SPELLINGS.count {
+        spelled = replace_all(spelled, OPERATOR_SPELLINGS[pair], OPERATOR_SPELLINGS[pair + 1]);
+        pair += 2;
     }
-    n := symbol;
-    n = replace_all(n, "<=>", "_spaceship");
-    n = replace_all(n, "->*", "_arrow_star");
-    n = replace_all(n, "->", "_arrow");
-    n = replace_all(n, "++", "_plus_plus");
-    n = replace_all(n, "--", "_minus_minus");
-    n = replace_all(n, "==", "_equals");
-    n = replace_all(n, "!=", "_not_equals");
-    n = replace_all(n, ">=", "_greater_equals");
-    n = replace_all(n, "<=", "_less_equals");
-    n = replace_all(n, "<<", "_lshift");
-    n = replace_all(n, ">>", "_rshift");
-    n = replace_all(n, "&&", "_and_and");
-    n = replace_all(n, "||", "_or_or");
-    n = replace_all(n, "+", "_plus");
-    n = replace_all(n, "-", "_minus");
-    n = replace_all(n, "*", "_times");
-    n = replace_all(n, "/", "_divide");
-    n = replace_all(n, "%", "_modulo");
-    n = replace_all(n, "^", "_xor");
-    n = replace_all(n, "&", "_and");
-    n = replace_all(n, "|", "_or");
-    n = replace_all(n, "~", "_tilde");
-    n = replace_all(n, "<", "_less");
-    n = replace_all(n, ">", "_greater");
-    n = replace_all(n, "[]", "_brackets");
-    n = replace_all(n, "!", "_not");
-    n = replace_all(n, "=", "_assign");
-    n = replace_all(n, ",", "_comma");
-    n = replace_all(n, "()", "_parens");
-    if !n || is_digit(n[0]) || !is_valid_identifier_start(n[0]) && n[0] != #char "_" {
-        n = tprint("_%", n);
-    }
-    if !begins_with(n, "_") n = tprint("_%", n);
-    return tprint("operator%", n), false;
+    // Every spelled symbol starts with `_`; conversion operators (`operator int`) do not.
+    if !begins_with(spelled, "_")  spelled = tprint("_%", spelled);
+    return tprint("operator%", spelled), false;
 }
 
 create_function :: (c: Cursor, parent: *Declaration) -> *Function {
@@ -1085,17 +1081,18 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
 // ----------------------------------------------------------------------------
 // Expressions (default arguments, initializers).
 
-create_null_literal :: () -> *Literal {
-    lit := New(Literal);
-    lit.literal_kind = .NULL;
-    return lit;
+new_literal :: (kind: Literal_Kind) -> *Literal {
+    result := New(Literal);
+    result.literal_kind = kind;
+    return result;
 }
 
+create_null_literal :: () -> *Literal { return new_literal(.NULL); }
+
 create_int_literal :: (value: s64) -> *Literal {
-    lit := New(Literal);
-    lit.literal_kind = .INTEGER;
-    lit.int_value = value;
-    return lit;
+    result := new_literal(.INTEGER);
+    result.int_value = value;
+    return result;
 }
 
 create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression {
@@ -1978,94 +1975,79 @@ create_enum :: (c: Cursor) -> *Enum {
         fill_comment(*en.comment, it, en.location);
         en.output_name = stripped_name(get_enum_value_name(e, en));
         // Not a known constant: the value only exists as `Enum.value` in the output, so a macro
-        // that names it (`#define OLD_NAME NEW_NAME`) is dropped, like in the reference.
+        // that names it (`#define OLD_NAME NEW_NAME`) has nothing to refer to and is dropped.
         array_add(*e.enumerates, en);
     }
     if e.name  compute_enum_names(e, false);
     return e;
 }
 
+// The Jai name of a value before prefix detection: empty for a value dropped by
+// `strip_enum_values_with_suffix`, else the C name without the prefixes configured for this
+// enum and (with `strip_enum_prefixes`) without the enum's own name.
 get_enum_value_name :: (e: *Enum, en: Enum.Enumerate) -> string {
     options := *context.generator_options;
-    name := en.name;
+    suffix := options.strip_enum_values_with_suffix;
+    if suffix && ends_with(en.name, suffix) return "";
 
-    if options.strip_enum_values_with_suffix.count > 0 {
-        if ends_with(name, options.strip_enum_values_with_suffix) return "";
+    result := en.name;
+    for rule: options.strip_enum_value_prefixes {
+        if rule[0] != e.name || !begins_with(result, rule[1]) continue;
+        result = advance(result, rule[1].count);
     }
-
-    for options.strip_enum_value_prefixes {
-        if it[0] == e.name && begins_with(name, it[1]) {
-            name = advance(name, it[1].count);
-        }
+    if options.strip_enum_prefixes && e.name && begins_with(result, e.name) {
+        result = advance(result, e.name.count);
+        if result && result[0] == #char "_"  result = advance(result, 1);
     }
-
-    if options.strip_enum_prefixes && e.name && begins_with(name, e.name) {
-        name = advance(name, e.name.count);
-        if begins_with(name, "_")  name = advance(name, 1);
-    }
-
-    return name;
+    return result;
 }
 
+// Final value names (and the name of an anonymous enum). With `auto_detect_enum_prefixes`,
+// a prefix all values share up to an underscore is dropped (`KEY_UP`, `KEY_DOWN` -> `UP`,
+// `DOWN`); an anonymous enum is then named after it (`KEY`).
 compute_enum_names :: (e: *Enum, already_stripped := false) {
-    options := *context.generator_options;
-    prefix_initialized := false;
-    common_prefix := "";
-    if options.auto_detect_enum_prefixes && e.enumerates.count > 1 && !already_stripped {
-        for e.enumerates {
-            if options.strip_enum_prefixes && e.name && begins_with(it.name, e.name) {
-                prefix_initialized = true;
-                common_prefix = "";
-                break;
-            }
-
-            if !prefix_initialized {
-                common_prefix = it.output_name;
-                common_prefix.count -= 1;
-                prefix_initialized = true;
-            } else {
-                if it.output_name.count <= common_prefix.count {
-                    common_prefix.count = it.output_name.count - 1;
-                }
-                i := 0;
-                while i < common_prefix.count {
-                    if common_prefix[i] != it.output_name[i] {
-                        common_prefix.count = i;
-                        break;
-                    }
-                    i += 1;
-                }
-            }
-        }
-
-        underscore_index := find_index_from_right(common_prefix, #char "_");
-        if underscore_index != -1 {
-            common_prefix.count = underscore_index + 1;
-        } else {
-            common_prefix.count = 0;
-        }
-
+    detected := "";
+    if context.generator_options.auto_detect_enum_prefixes && !already_stripped && e.enumerates.count > 1 {
+        detected = detect_value_prefix(e);
         for * e.enumerates {
-            it.output_name = advance(it.output_name, common_prefix.count);
-            it.output_name = avoid_reserved_names(trim_left(it.output_name, "_"));
+            it.output_name = avoid_reserved_names(trim_left(advance(it.output_name, detected.count), "_"));
         }
     }
 
+    // A value has to start like an identifier: `1080P` becomes `_1080P`.
     for * e.enumerates {
-        if !it.output_name || is_digit(it.output_name[0]) {
-            it.output_name = sprint("_%", it.output_name);
+        if it.output_name && !is_digit(it.output_name[0]) continue;
+        it.output_name = sprint("_%", it.output_name);
+    }
+
+    if e.name return;
+    if detected  e.output_name = trim_right(detected, "_");
+    if !e.output_name  e.output_name = "anon_enum";
+    avoid_name_clash(*context.generator.anon_declarations, e);
+}
+
+// The longest start up to and including an `_` that every value name has, leaving each name
+// at least one character. Nothing when a value began with the enum's name: then
+// `strip_enum_prefixes` has already removed the prefix that matters.
+detect_value_prefix :: (e: *Enum) -> string {
+    if context.generator_options.strip_enum_prefixes && e.name {
+        for e.enumerates {
+            if begins_with(it.name, e.name) return "";
         }
     }
 
-    if !e.name {
-        if common_prefix {
-            e.output_name = trim_right(common_prefix, "_");
-        } else if !e.output_name {
-            e.output_name = "anon_enum";
-        }
-        if !e.output_name e.output_name = "anon_enum";
-        avoid_name_clash(*context.generator.anon_declarations, e);
+    shared := e.enumerates[0].output_name;
+    shared.count = max(shared.count - 1, 0);
+    for e.enumerates {
+        if it_index == 0 continue;
+        limit := min(shared.count, it.output_name.count - 1);
+        same := 0;
+        while same < limit && shared[same] == it.output_name[same]  same += 1;
+        shared.count = same;
     }
+    // Only whole words: cut back to the last underscore.
+    shared.count = find_index_from_right(shared, #char "_") + 1;
+    return shared;
 }
 
 // ----------------------------------------------------------------------------

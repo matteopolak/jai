@@ -299,15 +299,11 @@ Comment :: struct {
 }
 
 prepend_comment :: (comment: *Comment, text: string) {
-    if comment.text {
-        comment.text = sprint("% %", text, comment.text);
-    } else {
-        comment.text = text;
-    }
+    comment.text = ifx comment.text then sprint("% %", text, comment.text) else text;
 }
 
 is_same_location :: (a: Location, b: Location) -> bool {
-    return a.file == b.file && a.line == b.line && a.column == b.column;
+    return a.line == b.line && a.column == b.column && a.file == b.file;
 }
 
 Storage_Class :: enum s32 {
@@ -431,13 +427,17 @@ Bitfield_Status :: struct {
     first_decl: *Declaration;
 }
 
-// A run holding a single member prints as that member: return it (typed as the storage).
+// A run with a single member is printed as that member, typed as the run's storage.
 maybe_unwrap_bitfield_declaration :: (decl: *Declaration) -> *Declaration {
-    if decl.kind != .BITFIELD return decl;
-    bf := cast(*Bitfield) decl;
-    if bf.members.count != 1 return decl;
-    bf.members[0].type = bf.type;
-    return bf.members[0];
+    if decl.kind == .BITFIELD {
+        run := cast(*Bitfield) decl;
+        if run.members.count == 1 {
+            only := run.members[0];
+            only.type = run.type;
+            return only;
+        }
+    }
+    return decl;
 }
 
 Struct :: struct {
@@ -500,8 +500,8 @@ ComUuid :: struct {
     uuid: string;
 }
 
-// The reference generator frees libclang tokens through these; tokens never reach Jai code
-// here, so the type only exists for source compatibility.
+// Kept so generator scripts that mention it still compile; libclang tokens are released
+// inside the bridge and never reach Jai code.
 Token_Info :: struct {
     token_pointer: *void;
     num_tokens: u32;
@@ -572,7 +572,7 @@ Generator_State :: struct #type_info_none {
     extern_declarations: [..] *Declaration;   // Extern variables, deduplicated by symbol.
     com_uuids: [..] ComUuid;                  // `__declspec(uuid(...))` of COM interfaces (Windows headers).
     int128_was_referenced: bool;              // The output uses S128/U128 (from Basic).
-    generated_printf_wrapper: bool;           // The output uses push_allocator & co (from Basic).
+    generated_printf_wrapper: bool;           // The output uses tprint and temp_c_string (from Basic).
 
     structs_to_check: [..] *Struct;
     deferred_struct_checks: [..] *Struct;   // Structs in namespaces: checked at the end of the file.
@@ -627,59 +627,57 @@ MACROS_TO_IGNORE :: string.[
     "WIN32_LEAN_AND_MEAN",
 ];
 
+// Structural equality, used to tell C++ overloads apart: typedefs are looked through and a
+// reference compares like the type it refers to.
 is_same_type :: (a: CType, b: CType) -> bool {
-    if a.type_of_typedef                return is_same_type(a.type_of_typedef.type.*, b);
-    if b.type_of_typedef                return is_same_type(a, b.type_of_typedef.type.*);
-
-    if a.pointer_to && b.pointer_to     return is_same_type(a.pointer_to.*, b.pointer_to.*);
-
-    if a.flags & .REFERENCE             return is_same_type(a.pointer_to.*, b);
-    if b.flags & .REFERENCE             return is_same_type(a, b.pointer_to.*);
-
-    if a.size != b.size                 return false;
-
-    if a.hardcoded_jai_string && a.hardcoded_jai_string == b.hardcoded_jai_string   return true;
-
-    if a.type_of_enum                   return a.type_of_enum == b.type_of_enum;
-    if a.type_of_struct                 return a.type_of_struct == b.type_of_struct;
-
-    if a.array_element_type {
-        if a.array_element_type != b.array_element_type             return false;
-        if a.array_element_count != b.array_element_count           return false;
-        return true;
-    }
-
-    if a.type_of_function {
-        if !b.type_of_function return false;
-        af := a.type_of_function;
-        bf := b.type_of_function;
-        if !is_same_type(af.return_type.*, bf.return_type.*)   return false;
-        if af.arguments.count != bf.arguments.count            return false;
-        i := 0;
-        while i < af.arguments.count {
-            if !is_same_type(af.arguments[i].type.*, bf.arguments[i].type.*) return false;
-            i += 1;
+    x := a;
+    y := b;
+    while true {
+        if x.type_of_typedef { x = x.type_of_typedef.type.*; continue; }
+        if y.type_of_typedef { y = y.type_of_typedef.type.*; continue; }
+        if x.pointer_to && y.pointer_to {
+            x = x.pointer_to.*;
+            y = y.pointer_to.*;
+            continue;
         }
-        return true;
+        if x.flags & .REFERENCE { x = x.pointer_to.*; continue; }
+        if y.flags & .REFERENCE { y = y.pointer_to.*; continue; }
+        break;
     }
 
-    return a.number_flags == b.number_flags;
+    if x.size != y.size return false;
+    if x.hardcoded_jai_string && x.hardcoded_jai_string == y.hardcoded_jai_string return true;
+    if x.type_of_enum   return x.type_of_enum == y.type_of_enum;
+    if x.type_of_struct return x.type_of_struct == y.type_of_struct;
+    if x.array_element_type {
+        return x.array_element_type == y.array_element_type && x.array_element_count == y.array_element_count;
+    }
+    if x.type_of_function return same_signature(x.type_of_function, y.type_of_function);
+    return x.number_flags == y.number_flags;
 }
 
-is_struct_field :: (decl: *Declaration) -> is_field: bool, is_anon: bool {
-    if decl.kind == {
-        case .DECLARATION;
-            is_const := (decl.decl_flags & .IS_CONST) != 0;
-            return !(is_const && decl.expression != null), false;
-        case .STRUCT;
-            s := cast(*Struct) decl;
-            is_anon := (s.flags & .IS_ANON) != 0;
-            return is_anon, true;
-        case .BITFIELD;
-            return true, false;
-        case;
-            return false, false;
+same_signature :: (f: *Function_Type, g: *Function_Type) -> bool {
+    if !g || f.arguments.count != g.arguments.count return false;
+    if (f.return_type == null) != (g.return_type == null) return false;
+    if f.return_type && !is_same_type(f.return_type.*, g.return_type.*) return false;
+    for f.arguments {
+        if !is_same_type(it.type.*, g.arguments[it_index].type.*) return false;
     }
+    return true;
+}
+
+// `is_field`: the declaration takes up room in its struct. `is_anon` is set for every nested
+// struct, which only counts as a field when it is an anonymous member.
+is_struct_field :: (decl: *Declaration) -> is_field: bool, is_anon: bool {
+    if decl.kind == .BITFIELD return true, false;
+    if decl.kind == .STRUCT {
+        anonymous := ((cast(*Struct) decl).flags & .IS_ANON) != 0;
+        return anonymous, true;
+    }
+    if decl.kind != .DECLARATION return false, false;
+    // `static const int N = 4;` is a constant, not storage.
+    is_constant := (decl.decl_flags & .IS_CONST) != 0 && decl.expression != null;
+    return !is_constant, false;
 }
 
 visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent: *Declaration = null, depth := 0) {
@@ -699,7 +697,7 @@ visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent:
                 }
             }
         case .STRUCT;
-            // Like the reference: metadata, base classes and virtual functions come first.
+            // Metadata, base classes and virtual functions are visited before the members.
             s := cast(*Struct) decl;
             visit_declaration_list(visitor, *s.metadata, decl, depth + 1);
             visit_declaration_list(visitor, *s.parents, decl, depth + 1);
