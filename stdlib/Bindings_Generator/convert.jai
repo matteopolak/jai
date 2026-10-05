@@ -133,19 +133,7 @@ functions_are_equivalent :: (a: *Function, b: *Function, ignore_first_argument :
 avoid_name_clash :: (existing: *[..] *Declaration, decl: *Declaration, allow_overloads := true) {
     if !existing return;
     if decl.kind == .FUNCTION && allow_overloads {
-        // Overloads are fine unless they would look identical in Jai.
-        original := decl.output_name;
-        count := 0;
-        while true {
-            clash := false;
-            for existing.* {
-                if it.kind == .FUNCTION && it != decl && functions_are_equivalent(cast(*Function) it, cast(*Function) decl) { clash = true; break; }
-                if it.kind != .FUNCTION && it.output_name == decl.output_name { clash = true; break; }
-            }
-            if !clash break;
-            count += 1;
-            decl.output_name = tprint("%_%", original, count);
-        }
+        rename_equivalent_overload(existing, decl);
         array_add(existing, decl);
         return;
     }
@@ -153,6 +141,32 @@ avoid_name_clash :: (existing: *[..] *Declaration, decl: *Declaration, allow_ove
         decl.output_name = join(decl.output_name, "_");
     }
     array_add(existing, decl);
+}
+
+// Overloads are fine unless they would look identical in Jai (`f(int&)` and `f(const int&)`
+// are both `f :: (v: *s32)`): the later one becomes `f_1`, and both get comments saying
+// which C++ types they take.
+rename_equivalent_overload :: (existing: *[..] *Declaration, decl: *Declaration) {
+        original := decl.output_name;
+        count := 0;
+        while true {
+            clash := false;
+            for existing.* {
+                if it.kind == .FUNCTION && it != decl && functions_are_equivalent(cast(*Function) it, cast(*Function) decl) {
+                    // Both get `/*const reference*/` comments to tell the overloads apart.
+                    other := cast(*Function) it;
+                    if other.type && other.type.type_of_function  other.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
+                    self_func := cast(*Function) decl;
+                    if self_func.type && self_func.type.type_of_function  self_func.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
+                    clash = true;
+                    break;
+                }
+                if it.kind != .FUNCTION && it.output_name == decl.output_name { clash = true; break; }
+            }
+            if !clash break;
+            count += 1;
+            decl.output_name = tprint("%_%", original, count);
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -1439,7 +1453,13 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                 parent_decl.parent = s;
                 parent_decl.location = cursor_location(it);
                 parent_decl.decl_flags |= .QUALIFIER_USING | .QUALIFIER_AS;
-                array_add(*s.parents, parent_decl);
+                parent_decl.bit_offset_in_parent = clang("base_offset", key, it);
+                if clang("is_virtual_base", it) {
+                    parent_decl.decl_flags &= ~.QUALIFIER_AS;
+                    array_add(*s.virtual_bases, parent_decl);
+                } else {
+                    array_add(*s.parents, parent_decl);
+                }
 
             case .CXX_METHOD; #through;
             case .CONSTRUCTOR; #through;
@@ -2452,6 +2472,12 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
             found := table_contains(*g.declarations_by_cursor, key);
             if found return;
             table_add(*g.declarations_by_cursor, key, func);
+            // C++ overloads: only names seen before can clash.
+            if table_contains(*g.function_names_seen, func.output_name) {
+                rename_equivalent_overload(scope, func);
+            } else {
+                table_add(*g.function_names_seen, func.output_name, true);
+            }
             add_to_scope(scope, func);
 
         case .STRUCT_DECL; #through;
@@ -2501,7 +2527,7 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
             if clang("t_const", ty)  constant = create_constant_declaration(c);
             if constant {
                 add_to_scope(scope, constant);
-            } else if clang("storage_class", c) == xx Storage_Class.Extern {
+            } else if clang("storage_class", c) == xx Storage_Class.Extern && !options.omit_global_declarations {
                 // Includes `extern const T name;`: a constant whose value lives in the library.
                 decl := New(Declaration);
                 decl.kind = .DECLARATION;

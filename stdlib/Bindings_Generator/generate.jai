@@ -760,6 +760,15 @@ print_struct_checks :: (builder: *String_Builder, s: *Struct) {
             if parent.decl_flags & .PRINT_AS_RAW continue;
             print_to_builder(builder, "    assert(size_of(type_of(%1.%2)) == %3, \"%1.%2 has unexpected size %4 instead of %3\", size_of(type_of(%1.%2)));\n", name, parent.output_name, parent.type.size, "%");
         }
+        vbase_instance_printed := false;
+        for vbase: s.virtual_bases {
+            if vbase.bit_offset_in_parent < 0 || !vbase.output_name continue;
+            if !vbase_instance_printed {
+                print_to_builder(builder, "    vbase_instance: %;\n", name);
+                vbase_instance_printed = true;
+            }
+            print_to_builder(builder, "    assert(((cast(*void)(*vbase_instance.%2)) - cast(*void)(*vbase_instance)) == %3, \"%1.%2 (virtual base) has unexpected offset %4 instead of %3\", ((cast(*void)(*vbase_instance.%2)) - cast(*void)(*vbase_instance)));\n", name, vbase.output_name, vbase.bit_offset_in_parent / 8, "%");
+        }
         if !(s.flags & .NEEDS_RAW) {
             instance_printed := false;
             for s.declarations {

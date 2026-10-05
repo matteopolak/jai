@@ -445,6 +445,9 @@ Struct :: struct {
 
     metadata:             [..] *Declaration;
     parents:              [..] *Declaration;
+    // C++ `virtual` bases: in a complete object they follow the class's own members, at the
+    // offset in `bit_offset_in_parent` (bits; -1 when the libclang cannot tell).
+    virtual_bases:        [..] *Declaration;
     virtual_functions:    [..] *Function;
     declarations:         [..] *Declaration;
     template_type_params: [..] *Declaration;
@@ -555,6 +558,7 @@ Generator_State :: struct #type_info_none {
     unwrapped_typedefs: Table(string, *Typedef);
     added_to_scope: Table(*Declaration, bool);
     known_constants: Table(string, bool);
+    function_names_seen: Table(string, bool);
     known_types: Table(string, string); // C name -> output name of emitted structs, enums and typedefs
 
     libraries: [..] *Library_Info;

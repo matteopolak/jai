@@ -158,6 +158,7 @@ print_function_type_to_builder :: (builder: *String_Builder, type: *Function_Typ
         if it_index > 0 append(builder, ", ");
         arg_flags := Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS | .KEEP_POINTER_TO_VALUE;
         if !func arg_flags |= .NO_ARGUMENT_DEFAULTS;
+        if type.flags & .ADD_C_TYPE_DETAILS  arg_flags |= .C_TYPE_DETAILS;
         print_declaration_to_builder(builder, it, current_scope, arg_flags);
     }
     if type.flags & .VARIADIC {
@@ -431,6 +432,9 @@ print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, 
                 append(builder, name);
                 append(builder, ": ");
                 for name.count..align_declarations-1  append(builder, #char " ");
+                if (flags & .C_TYPE_DETAILS) && context.generator_options.add_overloaded_const_and_ref_comments {
+                    print_c_type_details(builder, decl, decl.type);
+                }
                 if decl.decl_flags & .PRINT_AS_RAW {
                     raw_struct := strip_type(type_to_print, typedefs = true).type_of_struct;
                     append(builder, parent_path(raw_struct));
@@ -468,6 +472,21 @@ print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, 
         append(builder, " ");
         append(builder, normalize_line_endings(comment.text));
     }
+}
+
+// `/*const*/`, `/*reference*/` or `/*const reference*/`: what C++ overloads differ by when they
+// look the same in Jai.
+print_c_type_details :: (builder: *String_Builder, decl: *Declaration, type: *CType) {
+    if !type return;
+    is_const := (decl.decl_flags & .IS_CONST) != 0 || (type.flags & .CONST) != 0;
+    if type.pointer_to && (type.flags & .REFERENCE) && (type.pointer_to.flags & .CONST)  is_const = true;
+    is_reference := (type.flags & .REFERENCE) != 0;
+    if !is_const && !is_reference return;
+    append(builder, "/*");
+    if is_const append(builder, "const");
+    if is_const && is_reference append(builder, " ");
+    if is_reference append(builder, "reference");
+    append(builder, "*/ ");
 }
 
 append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string) {
@@ -896,6 +915,17 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     raw_padding_count := 0;
     if part == .RAW_DATA && has_vtable && !info.vtable_parent  raw_next = context.generator.pointer_size;
 
+    // A class with virtual bases is dynamic even without virtual functions: unless a
+    // non-virtual base at offset 0 brings one, it starts with its own vtable pointer.
+    if part != .WRAPPER && !as_type && !has_vtable && s.virtual_bases.count > 0 && !first_parent_is_dynamic(s) {
+        append(builder, "\n");
+        append_indentation(builder);
+        append(builder, "__vptr: *void; // C++ virtual bases make the class dynamic");
+        if part == .RAW_DATA  raw_next = context.generator.pointer_size;
+        printed = true;
+        has_fields = true;
+    }
+
     found_parent_with_vtable := false;
     for parent: s.parents {
         if part == .WRAPPER continue;
@@ -944,9 +974,19 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         if parent.type.size > 0 has_fields = true;
     }
 
-    // Itanium lets a derived class's fields reuse the tail padding of a non-POD base,
-    // which a Jai struct member cannot express.
-    if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && s.type {
+    // A non-virtual base that has virtual bases of its own embeds them here, but C++ shares
+    // them at the end of the most derived object: the Jai layout cannot match.
+    inherits_virtual_bases := false;
+    for s.parents {
+        base := get_base_struct(it);
+        if base && struct_has_virtual_bases(base)  inherits_virtual_bases = true;
+    }
+    if part == .FULL && inherits_virtual_bases {
+        s.flags |= .NO_STRUCT_CHECKS;
+        append(builder, "\n");
+        append_indentation(builder);
+        append(builder, "// jai: a base class has C++ virtual bases, which this class shares; its layout differs from C++, do not use these fields.");
+    } else if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && s.type {
         offsets, end := get_printed_base_layout(s);
         first_own := get_first_own_offset(s);
         if first_own >= 0 && first_own < end {
@@ -1011,6 +1051,37 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     }
 
     if part != .WRAPPER print_bitfield_alignment_helper(builder, s);
+
+    // Virtual bases come after everything else, where clang puts them in a complete object.
+    if part != .WRAPPER && !as_type && s.virtual_bases.count > 0 {
+        end := nonvirtual_data_end(s, has_vtable || !first_parent_is_dynamic(s));
+        for vbase: s.virtual_bases {
+            append(builder, "\n");
+            append_indentation(builder);
+            if part == .RAW_DATA {
+                offset := vbase.bit_offset_in_parent / 8;
+                if vbase.bit_offset_in_parent >= 0 && offset > raw_next {
+                    print_to_builder(builder, "__padding%: [%] u8;\n", raw_padding_count, offset - raw_next);
+                    append_indentation(builder);
+                    raw_padding_count += 1;
+                }
+                if vbase.bit_offset_in_parent >= 0  raw_next = offset + max(vbase.type.size, 0);
+            }
+            explicit_alignment := 0;
+            natural := get_type_alignment(vbase.type);
+            if end >= 0 && vbase.bit_offset_in_parent >= 0 && natural > 0 && part != .RAW_DATA {
+                offset := vbase.bit_offset_in_parent / 8;
+                if (end + natural - 1) / natural * natural != offset  explicit_alignment = alignment_reaching(end, offset, natural);
+                end = offset + max(vbase.type.size, 0);
+            } else {
+                end = -1;
+            }
+            print_declaration_to_builder(builder, vbase, s, .NO_INDENT, 0, explicit_alignment);
+            append(builder, " // C++ virtual base");
+            printed = true;
+            if vbase.type.size > 0 has_fields = true;
+        }
+    }
 
     // A derived class's own vtable pointer overlays the one of its first base.
     if has_vtable && info.vtable_parent && part != .WRAPPER {
@@ -1140,6 +1211,52 @@ print_bitfield_alignment_helper :: (builder: *String_Builder, s: *Struct) {
 }
 
 // Offset (bytes, -1 if unknown), size and alignment (0 if unknown) of a data member as clang laid it out.
+struct_has_virtual_bases :: (s: *Struct) -> bool {
+    if s.virtual_bases.count > 0 return true;
+    for s.parents {
+        base := get_base_struct(it);
+        if base && struct_has_virtual_bases(base) return true;
+    }
+    return false;
+}
+
+// Whether `s` has a vtable pointer: virtual functions, virtual bases or a dynamic base.
+struct_is_dynamic :: (s: *Struct) -> bool {
+    if s.virtual_bases.count > 0 || s.virtual_functions.count > 0 return true;
+    for s.parents {
+        base := get_base_struct(it);
+        if base && struct_is_dynamic(base) return true;
+    }
+    return false;
+}
+
+// Itanium puts the first dynamic non-virtual base at offset 0, where its vptr serves the class.
+first_parent_is_dynamic :: (s: *Struct) -> bool {
+    for s.parents {
+        base := get_base_struct(it);
+        if base && struct_is_dynamic(base) return true;
+    }
+    return false;
+}
+
+// Where the non-virtual part of `s` ends, from libclang's offsets (-1 when unknown).
+nonvirtual_data_end :: (s: *Struct, own_vptr: bool) -> s64 {
+    end := ifx own_vptr then context.generator.pointer_size else 0;
+    for s.parents {
+        if it.bit_offset_in_parent < 0 || it.type.size < 0 return -1;
+        end = max(end, it.bit_offset_in_parent / 8 + it.type.size);
+    }
+    for s.declarations {
+        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+        is_data, unused := is_struct_field(it);
+        if !is_data || it.storage_class == .Static continue;
+        offset, size := get_field_layout(it);
+        if offset < 0 || size < 0 return -1;
+        end = max(end, offset + size);
+    }
+    return end;
+}
+
 // The power-of-two alignment that moves a field from `next` (the end of the previous field)
 // to `offset`, or 0 when there is none (then the layout cannot be expressed this way).
 // A packed field gets the largest alignment below its natural one that works, so the
@@ -1285,6 +1402,8 @@ mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
     table_add(done, s, true);
     if (s.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) || (s.flags & .IS_UNION) || !s.type return;
     if s.parents.count == 0 || s.parents.count > 6 return;
+    // Shared virtual bases make the layout inexpressible anyway (see print_struct_body).
+    if struct_has_virtual_bases(s) return;
 
     // The data size of a base depends on how its own bases were marked.
     for s.parents {
