@@ -112,7 +112,7 @@ check_equivalent :: (before: string, after: string) -> bool, string {
             line, column := line_and_column(before, ta.start);
             return false, tprint("line break before `%` at %:% changed", text_a, line, column);
         }
-        if prev_a >= 0 && zone[prev_a] {
+        if prev_a >= 0 && adjacency_matters(zone, a.tokens, before, prev_a, ia) {
             tight_a := prev_a == ia - 1 && ta.ws_start == ta.start;
             tight_b := prev_b == ib - 1 && tb.ws_start == tb.start;
             if tight_a != tight_b {
@@ -152,6 +152,17 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
     }
     if tokens.count && tokens[0].kind == .DIRECTIVE  zone[0] = true;
     return zone;
+}
+
+// Within a directive's flags, whether `previous` and `current` touch is meaningful: before a
+// `,` or `(`, and after a flag `,`. (`#c_call ;` may still become `#c_call;`.)
+adjacency_matters :: (zone: [] bool, tokens: [] Tok, src: string, previous: int, current: int) -> bool {
+    if !zone[previous] return false;
+    if tokens[current].kind == .PUNCT {
+        text := token_text(src, tokens[current]);
+        if text == "," || text == "(" return true;
+    }
+    return tokens[previous].kind == .PUNCT && token_text(src, tokens[previous]) == ",";
 }
 
 line_and_column :: (src: string, offset: s64) -> line: int, column: int {
@@ -734,7 +745,7 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
     nt := f.tokens[i];
     if nt.kind == .LINE_COMMENT return .SPACE;
     if nt.kind == .BLOCK_COMMENT || pt.kind == .BLOCK_COMMENT return .KEEP;
-    if f.operator_decl || f.zone[p] return .KEEP;
+    if f.operator_decl || adjacency_matters(f.zone, f.tokens, f.src, p, i) return .KEEP;
 
     ptext := ifx pt.kind == .PUNCT then text_of(f, p) else "";
     ntext := ifx nt.kind == .PUNCT then text_of(f, i) else "";
