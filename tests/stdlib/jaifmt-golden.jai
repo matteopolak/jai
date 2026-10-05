@@ -117,6 +117,10 @@ check_equivalence_guard :: () {
         "x := a // note\n;\n",   "x := a;\n",
         "x := a;\n-b;\n",        "x := a; -b;\n",
         "s := \"a b\";\n",       "s := \"a  b\";\n",
+        // Directive flags are only flags when written against the directive.
+        "k :: #library,system \"k\";\n",  "k :: #library, system \"k\";\n",
+        "k :: #library ,system \"k\";\n", "k :: #library,system \"k\";\n",
+        "l := #location(x);\n",          "l := #location (x);\n",
     ];
     i := 0;
     while i < pairs.count {

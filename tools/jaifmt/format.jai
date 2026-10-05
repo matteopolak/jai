@@ -69,11 +69,16 @@ check_equivalent :: (before: string, after: string) -> bool, string {
         return false, tprint("output does not lex at %:%: %", line, column, b.error);
     }
 
+    zone := directive_zone(a.tokens, before);
+    defer array_free(zone);
+
     ia := 0;
     ib := 0;
     end_a: s64 = 0;
     end_b: s64 = 0;
     first := true;
+    prev_a := -1;
+    prev_b := -1;
     while true {
         // Comments, in order, must survive (whitespace inside them may change).
         while a.tokens[ia].kind == .LINE_COMMENT || a.tokens[ia].kind == .BLOCK_COMMENT {
@@ -107,12 +112,46 @@ check_equivalent :: (before: string, after: string) -> bool, string {
             line, column := line_and_column(before, ta.start);
             return false, tprint("line break before `%` at %:% changed", text_a, line, column);
         }
+        if prev_a >= 0 && zone[prev_a] {
+            tight_a := prev_a == ia - 1 && ta.ws_start == ta.start;
+            tight_b := prev_b == ib - 1 && tb.ws_start == tb.start;
+            if tight_a != tight_b {
+                line, column := line_and_column(before, ta.start);
+                return false, tprint("spacing before `%` at %:% (after a directive) changed", text_a, line, column);
+            }
+        }
+        prev_a = ia;
+        prev_b = ib;
         end_a = ta.end;
         end_b = tb.end;
         ia += 1;
         ib += 1;
     }
     return true, "";
+}
+
+// Tokens after which the parser looks at exact adjacency: a directive and the flags written
+// against it (`#library,system`, `#type, distinct`, `#insert,scope(x)`, `#location(x)`). The
+// formatter copies the whitespace after these tokens unchanged.
+directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
+    zone: [..] bool;
+    array_resize(*zone, tokens.count);
+    for i: 1..tokens.count - 1 {
+        t := tokens[i];
+        if t.kind == .DIRECTIVE {
+            zone[i] = true;
+        } else if zone[i - 1] {
+            text := token_text(src, t);
+            previous := tokens[i - 1];
+            if t.kind == .PUNCT && (text == "," || text == "(") && t.ws_start == t.start {
+                zone[i] = true;
+            } else if t.kind == .IDENT && previous.kind == .PUNCT && token_text(src, previous) == "," {
+                zone[i] = true;
+            }
+        }
+    }
+    if tokens.count && tokens[0].kind == .DIRECTIVE  zone[0] = true;
+    return zone;
 }
 
 line_and_column :: (src: string, offset: s64) -> line: int, column: int {
@@ -163,6 +202,7 @@ Formatter :: struct {
 
     frames: [..] Frame;
     verbatim: [..] bool;
+    zone: [..] bool;                 // see directive_zone
     last_on_line: [..] bool;
     operand_end: [..] Context_Kind;   // what an operator after token i would follow
     prev_sig := -1;                  // previous non-comment token
@@ -195,9 +235,6 @@ AMBIGUOUS_OPERATORS :: string.["-", "+", "*", "&", "<<", "<", ">"];
 
 // Prefix operators whose operand is written attached: `-x`, `*T`, `<<p`, `!ok`.
 PREFIX_OPERATORS :: string.["-", "+", "*", "<<", "!"];
-
-// Directives that take `,flag` modifiers (`#type,isa`, `#import,file`, `#run,stallable`).
-FLAGGED_DIRECTIVES :: string.["type", "import", "run", "insert", "code", "load", "asm", "bake_arguments", "procedure_of_call"];
 
 KEYWORDS_BEFORE_PAREN :: string.["if", "ifx", "while", "for", "return", "then", "else", "case", "defer"];
 
@@ -346,6 +383,7 @@ run :: (f: *Formatter) -> bool, string {
     mark_verbatim(f);
     mark_line_ends(f);
     array_resize(*f.operand_end, f.tokens.count);
+    f.zone = directive_zone(f.tokens, f.src);
 
     root: Frame;
     root.block = true;
@@ -354,6 +392,7 @@ run :: (f: *Formatter) -> bool, string {
     defer array_free(f.verbatim);
     defer array_free(f.last_on_line);
     defer array_free(f.operand_end);
+    defer array_free(f.zone);
 
     // A byte order mark stays in front.
     if f.src.count >= 3 && f.src[0] == 0xEF && f.src[1] == 0xBB && f.src[2] == 0xBF  append(*f.out, slice(f.src, 0, 3));
@@ -646,7 +685,8 @@ context_before :: (f: *Formatter, i: int) -> Context_Kind {
     return f.operand_end[p];
 }
 
-// A comma that attaches a flag: `cast,no_check`, `#type,isa`, `xx,force`, `using,except(x)`.
+// A comma that attaches a cast flag: `cast,no_check`, `xx,force`, `using,except(x)`. (Directive
+// flags never get here: spacing after a directive is copied, see `directive_zone`.)
 is_flag_comma :: (f: *Formatter, comma: int) -> bool {
     next := comma + 1;
     if f.tokens[next].kind != .IDENT || f.tokens[next].newlines > 0 return false;
@@ -655,7 +695,6 @@ is_flag_comma :: (f: *Formatter, comma: int) -> bool {
     while p >= 2 && f.tokens[p].kind == .IDENT && is_punct(f, p - 1, ",")
         && f.tokens[p].ws_start == f.tokens[p].start && f.tokens[p - 1].ws_start == f.tokens[p - 1].start  p -= 2;
     if p < 0 return false;
-    if f.tokens[p].kind == .DIRECTIVE return one_of(directive_name(f, p), FLAGGED_DIRECTIVES);
     return f.tokens[p].kind == .IDENT && one_of(text_of(f, p), string.["cast", "xx", "using"]);
 }
 
@@ -695,7 +734,7 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
     nt := f.tokens[i];
     if nt.kind == .LINE_COMMENT return .SPACE;
     if nt.kind == .BLOCK_COMMENT || pt.kind == .BLOCK_COMMENT return .KEEP;
-    if f.operator_decl return .KEEP;
+    if f.operator_decl || f.zone[p] return .KEEP;
 
     ptext := ifx pt.kind == .PUNCT then text_of(f, p) else "";
     ntext := ifx nt.kind == .PUNCT then text_of(f, i) else "";
