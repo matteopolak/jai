@@ -34,7 +34,7 @@ To test the build without publishing, run the workflow by hand (Actions → rele
 
 Gotchas:
 
-- Linking static LLVM also needs LLVM's system libraries (`llvm-config --link-static --system-libs`, printed in the job log). On Linux the job installs zlib, zstd and libxml2.
+- Linking static LLVM also needs LLVM's system libraries (`llvm-config --link-static --system-libs`, printed in the job log). On Linux the job installs zlib, zstd and libxml2; on macOS the official LLVM names Homebrew's `/opt/homebrew/lib/libzstd.a`, so the job installs Homebrew's zstd (the archive is linked in, so the binary does not need Homebrew).
 - Adding a platform means adding a matrix row with its LLVM tarball name. Check the LLVM release page for the exact asset name; it changes between major versions.
 
 ## Configuration
