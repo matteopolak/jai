@@ -740,7 +740,7 @@ impl Interp {
         func: &ir::Func,
         frame: &Frame,
         stack_base: u64,
-        vals: &mut Vec<u64>,
+        vals: &mut [u64],
     ) -> Res<Vec<u64>> {
         let mut block = 0usize;
         loop {
@@ -1140,7 +1140,7 @@ impl Interp {
             I::IsCompileTime => vec![self.compile_time as u64],
             I::SAddOverflow | I::SSubOverflow | I::SMulOverflow => {
                 let bits = (a[2] as u32 * 8).min(64);
-                let wide = |v: u64| (((v as i128) << (128 - bits)) >> (128 - bits)) as i128;
+                let wide = |v: u64| ((v as i128) << (128 - bits)) >> (128 - bits);
                 let (x, y) = (wide(a[0]), wide(a[1]));
                 let r = match op {
                     I::SAddOverflow => x + y,
