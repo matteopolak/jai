@@ -42,7 +42,7 @@ interpreter profile: 460112784 instructions
  22.8%      104963618     10556416    1266718  append
 ```
 
-Polymorphic instances keep their numbered names (`NewArray#446`). When profiling is off the cost is one `Option` check per call.
+Polymorphic instances keep their numbered names (`NewArray#446`). A last line breaks the instructions down by kind (`Load 26.1% IConst 16.8% Store 12.1% Loc 10.3% ...`), which shows whether the IR itself is wasteful. When profiling is off the cost is one `Option` check per call and per block.
 
 ### Native profile
 
@@ -69,7 +69,14 @@ What the first round of profiling found (all stdlib fixes; interpreted instructi
 - **U128.** Division and multiplication used bit loops. They now have a 64-bit divisor fast path and 32-bit limbs. jaison went from 2.3s to 0.5s, together with the memory debugger index (`md_find` was a linear scan).
 - **Float printing.** Exact digit generation now runs on a `u64` first and retries with wide limbs only on overflow, and it scales by powers of two with shifts. `String_Builder` copies with `memcpy` and appends single bytes directly. `interp-strings` went from 2.09s to 1.19s.
 
-What is left is mostly by design. Focus spends its time marshalling compiler records through reflection (`fill_struct`, `fill_value`). The native profile is dominated by the interpreter's instruction dispatch.
+A second round on the front end (Focus check: 1.16B to about 0.41B interpreted instructions):
+
+- **Compiler records** were about half of a Focus build: filling hundreds of thousands of `Code_Node`/`Type_Info` structs member by member through reflection, two primitive calls per member. Ints, strings and built pointers are now written natively from a cached per-type plan (see [compiler records](../metaprogramming/compiler-records.md)).
+- **`Default_Allocator`** scanned a linked list of every live allocation on each free. It is a hash set now.
+- **Lenient body lowering** looked at every previously failed body before each compile-time call; unchanged failures are parked.
+- **Interpreter calls** no longer allocate a `Vec` for results or SipHash the stack-trace info.
+
+What is left is the interpreter's dispatch (`Interp::exec` is about half of native time, spread over ordinary instructions) and sema spread thin over many functions. The kind breakdown shows `Loc` (source positions, 10%) and `IConst`/`SlotAddr` (17% and 9%) as candidates for a denser IR, which would be a redesign rather than a fix.
 
 ## Configuration
 

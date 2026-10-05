@@ -18,19 +18,28 @@ REC_LIST   :: 4;
 record_structs: [..] *void;
 
 // Record ids by struct address, for `record_of`: open addressing over `record_structs`, 0 = empty.
+// Built lazily: most metaprograms never ask, and indexing every record cost more than building it.
 record_slots: [] s64;
 record_slots_used: s64;
+record_unindexed: [..] s64;
 
 remember_record :: (id: s64, pointer: *void) {
     record_structs[id] = pointer;
-    if (record_slots_used + 1) * 4 >= record_slots.count * 3 {
-        old := record_slots;
-        record_slots = NewArray(max(64, old.count * 2), s64);
-        record_slots_used = 0;
-        for old  if it  insert_record_slot(it);
-        array_free(old);
+    array_add(*record_unindexed, id);
+}
+
+index_pending_records :: () {
+    for record_unindexed {
+        if (record_slots_used + 1) * 4 >= record_slots.count * 3 {
+            old := record_slots;
+            record_slots = NewArray(max(64, old.count * 2), s64);
+            record_slots_used = 0;
+            for old  if it  insert_record_slot(it);
+            array_free(old);
+        }
+        insert_record_slot(it);
     }
-    insert_record_slot(id);
+    record_unindexed.count = 0;
 }
 
 insert_record_slot :: (id: s64) {
@@ -72,6 +81,82 @@ record_type :: (tag: string) -> *Type_Info_Struct {
     return null;
 }
 
+// record_type of a record's tag, cached by `__jaic_rec_tag_id` (UNKNOWN_TAG = not looked up yet).
+record_tag_types: [..] *Type_Info_Struct;
+UNKNOWN_TAG :: cast(*Type_Info_Struct) 1;
+
+record_type_of :: (id: s64) -> *Type_Info_Struct {
+    tag := __jaic_rec_tag_id(id);
+    if tag < 0  return null;
+    if tag >= record_tag_types.count {
+        old := record_tag_types.count;
+        array_resize(*record_tag_types, tag + 1, initialize = false);
+        for old..tag  record_tag_types[it] = UNKNOWN_TAG;
+    }
+    if record_tag_types[tag] == UNKNOWN_TAG  record_tag_types[tag] = record_type(__jaic_rec_tag(id));
+    return record_tag_types[tag];
+}
+
+// The members fill_struct writes, flattened through `using` and anonymous members, per struct type.
+Record_Plan_Entry :: struct { offset: s64; kind: s64; size: s64; name: string; type: *Type_Info; }
+PLAN_OTHER   :: 0;
+PLAN_INT     :: 1;
+PLAN_STRING  :: 2;
+PLAN_POINTER :: 3;
+
+Record_Plan :: struct { info: *Type_Info_Struct; entries: [] Record_Plan_Entry; }
+record_plans: [] Record_Plan;  // Open addressing by info.
+record_plans_used: s64;
+
+record_plan :: (info: *Type_Info_Struct) -> [] Record_Plan_Entry {
+    if record_plans.count {
+        mask := record_plans.count - 1;
+        slot := record_slot_hash(info) & mask;
+        while record_plans[slot].info {
+            if record_plans[slot].info == info  return record_plans[slot].entries;
+            slot = (slot + 1) & mask;
+        }
+    }
+    flat: [..] Record_Plan_Entry;
+    add_plan_entries(*flat, info, 0);
+    // Members Jai fills itself first, so fill_struct's walk over the bits ends early.
+    entries: [..] Record_Plan_Entry;
+    for flat  if it.kind == PLAN_OTHER  array_add(*entries, it);
+    for flat  if it.kind == PLAN_POINTER  array_add(*entries, it);
+    for flat  if it.kind == PLAN_INT || it.kind == PLAN_STRING  array_add(*entries, it);
+    array_free(flat);
+    if (record_plans_used + 1) * 2 >= record_plans.count {
+        old := record_plans;
+        record_plans = NewArray(max(64, old.count * 2), Record_Plan);
+        record_plans_used = 0;
+        for old  if it.info  insert_record_plan(it);
+        array_free(old);
+    }
+    insert_record_plan(.{info, entries});
+    return entries;
+}
+
+insert_record_plan :: (plan: Record_Plan) {
+    mask := record_plans.count - 1;
+    slot := record_slot_hash(plan.info) & mask;
+    while record_plans[slot].info  slot = (slot + 1) & mask;
+    record_plans[slot] = plan;
+    record_plans_used += 1;
+}
+
+add_plan_entries :: (entries: *[..] Record_Plan_Entry, info: *Type_Info_Struct, base: s64) {
+    for member: info.members {
+        if member.flags & .CONSTANT  continue;
+        offset := base + member.offset_in_bytes;
+        // `#as using base`, `using location`, anonymous unions: same record.
+        if member.type.type == .STRUCT && (member.flags & .USING || member.name == "") {
+            add_plan_entries(entries, cast(*Type_Info_Struct) member.type, offset);
+            continue;
+        }
+        array_add(entries, .{offset, plan_kind(member.type), member.type.runtime_size, member.name, member.type});
+    }
+}
+
 // The metaprogram's own descriptor for a primitive type of the target program.
 builtin_type_info :: (name: string) -> *Type_Info {
     if name == {
@@ -101,7 +186,11 @@ builtin_type_info :: (name: string) -> *Type_Info {
 // the member being filled; the record's tag may name a subtype of it.
 record_struct :: (id: s64, expected: *Type_Info) -> *void {
     if id <= 0  return null;
-    while record_structs.count <= id  array_add(*record_structs, null);
+    if record_structs.count <= id {
+        old := record_structs.count;
+        array_resize(*record_structs, max(id + 1, old * 2), initialize = false);
+        for old..record_structs.count-1  record_structs[it] = null;
+    }
     if record_structs[id]  return record_structs[id];
 
     if __jaic_rec_field(id, "__builtin") == REC_STRING {
@@ -112,7 +201,7 @@ record_struct :: (id: s64, expected: *Type_Info) -> *void {
         }
     }
 
-    info := record_type(__jaic_rec_tag(id));
+    info := record_type_of(id);
     if !info {
         if !expected || expected.type != .STRUCT  return null;
         info = cast(*Type_Info_Struct) expected;
@@ -140,7 +229,9 @@ patch_constant_pointers :: (info: *Type_Info_Struct, id: s64) {
 
 // The record a built struct came from (0 if none).
 record_of :: (pointer: *void) -> s64 {
-    if !pointer || !record_slots.count  return 0;
+    if !pointer  return 0;
+    index_pending_records();
+    if !record_slots.count  return 0;
     mask := record_slots.count - 1;
     slot := record_slot_hash(pointer) & mask;
     while record_slots[slot] {
@@ -150,19 +241,33 @@ record_of :: (pointer: *void) -> s64 {
     return 0;
 }
 
+// Integers, strings and pointers to built records are written natively (`__jaic_rec_fill`);
+// the members it leaves (arrays, in-place structs, records not built yet) are filled here.
 fill_struct :: (memory: *u8, info: *Type_Info_Struct, id: s64) {
-    for member: info.members {
-        if member.flags & .CONSTANT  continue;
-        target := memory + member.offset_in_bytes;
-
-        // `#as using base`, `using location`, anonymous unions: same record.
-        if member.type.type == .STRUCT && (member.flags & .USING || member.name == "") {
-            fill_struct(target, cast(*Type_Info_Struct) member.type, id);
-            continue;
-        }
-        if __jaic_rec_field(id, member.name) == REC_NONE  continue;
-        fill_value(target, member.type, id, member.name, -1);
+    plan := record_plan(info);
+    left := __jaic_rec_fill(id, memory, plan.data, plan.count, record_structs.data, record_structs.count);
+    k := 0;
+    while left {
+        if left & 1  fill_value(memory + plan[k].offset, plan[k].type, id, plan[k].name, -1);
+        left >>= 1;
+        k += 1;
     }
+    for k: 64..plan.count-1 {
+        entry := *plan[k];
+        if __jaic_rec_field(id, entry.name) != REC_NONE  fill_value(memory + entry.offset, entry.type, id, entry.name, -1);
+    }
+}
+
+plan_kind :: (type: *Type_Info) -> s64 {
+    if type.type == {
+        case .INTEGER; #through;
+        case .ENUM;    #through;
+        case .BOOL;    #through;
+        case .FLOAT;   return PLAN_INT;
+        case .STRING;  return PLAN_STRING;
+        case .POINTER; return PLAN_POINTER;
+    }
+    return PLAN_OTHER;
 }
 
 // Write field `name` of record `id` (element `index` of it when index >= 0).
@@ -198,7 +303,15 @@ fill_value :: (target: *u8, type: *Type_Info, id: s64, name: string, index: s64)
             if count > 0 {
                 data = alloc(count * element.runtime_size);
                 memset(data, 0, count * element.runtime_size);
-                for k: 0..count-1  fill_value(data + k * element.runtime_size, element, id, name, k);
+                kind := plan_kind(element);
+                left := count;
+                if kind != PLAN_OTHER  left = __jaic_rec_fill_list(id, name, data, count, kind, element.runtime_size, record_structs.data, record_structs.count);
+                if left  for k: 0..count-1 {
+                    target := data + k * element.runtime_size;
+                    if kind == PLAN_INT || kind == PLAN_STRING  continue;
+                    if kind == PLAN_POINTER && (cast(**void) target).*  continue;
+                    fill_value(target, element, id, name, k);
+                }
             }
             view := cast(*Resizable_Array) target;
             view.count = count;
@@ -216,6 +329,9 @@ __jaic_rec_count       :: (record: s64, name: string) -> s64 #compiler;
 __jaic_rec_item_int    :: (record: s64, name: string, index: s64) -> s64 #compiler;
 __jaic_rec_item_string :: (record: s64, name: string, index: s64) -> string #compiler;
 __jaic_rec_item_ref    :: (record: s64, name: string, index: s64) -> s64 #compiler;
+__jaic_rec_tag_id      :: (record: s64) -> s64 #compiler;
+__jaic_rec_fill_list   :: (record: s64, name: string, data: *u8, count: s64, kind: s64, size: s64, built: **void, built_count: s64) -> s64 #compiler;
+__jaic_rec_fill        :: (record: s64, memory: *u8, plan: *Record_Plan_Entry, plan_count: s64, built: **void, built_count: s64) -> u64 #compiler;
 __jaic_code_nodes      :: (code: Code) -> s64 #compiler;
 __jaic_parse_code      :: (text: string, scope_from: Code) -> Code #compiler;
 __jaic_modify_procedure :: (ws: s64, body: s64, statements: *s64, count: s64) #compiler;
