@@ -62,11 +62,17 @@ jobs:
           echo "system libraries: $("$RUNNER_TEMP/llvm/bin/llvm-config" --link-static --system-libs)"
       # The official macOS LLVM names Homebrew's static zstd (/opt/homebrew/lib/libzstd.a) in its
       # system libraries; linking the archive leaves no runtime dependency on Homebrew.
-      - name: Install static zstd (macOS)
+      # Its static libraries are LTO bitcode that Xcode's ld cannot read, so link with the
+      # release's own clang and lld (which run that LTO) against the Xcode SDK.
+      - name: Install static zstd and link with LLVM's lld (macOS)
         if: runner.os == 'macOS'
         run: |
           brew install zstd
           ls -l /opt/homebrew/lib/libzstd.a
+          ls "$RUNNER_TEMP/llvm/bin/ld64.lld"
+          echo "SDKROOT=$(xcrun --show-sdk-path)" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=$RUNNER_TEMP/llvm/bin/clang" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS=-C link-arg=-fuse-ld=lld" >> "$GITHUB_ENV"
       - name: Install static zlib and zstd (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y zlib1g-dev libzstd-dev libxml2-dev
