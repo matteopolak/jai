@@ -79,13 +79,18 @@ array_add_if_unique :: (array: *[..] $T, item: T) -> bool, s64 {
     array_add(array, item);
     return true, index;
 }
+// Order-preserving insert; index == count appends.
 array_insert_at :: (array: *[..] $T, item: T, index: int) {
-    assert(index >= 0 && index <= array.count);
-    array_reserve(array, array.count+1);
-    array.count += 1;
-    i := array.count - 1;
-    while i > index { array.*[i] = array.*[i-1]; i -= 1; }
-    array.*[index] = item;
+    assert(index >= 0 && index <= array.count, "array_insert_at: index % is outside 0..%", index, array.count);
+    array_add(array, item);
+    // Bubble the new element from the end down to its slot.
+    slot := array.count - 1;
+    while slot > index {
+        held := array.*[slot - 1];
+        array.*[slot - 1] = array.*[slot];
+        array.*[slot] = held;
+        slot -= 1;
+    }
 }
 array_unordered_remove_by_value :: (array: *[] $T, item: T, $stop_after_first := false) -> s64 {
     removed: s64;

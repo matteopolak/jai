@@ -47,8 +47,8 @@ FormatArray :: struct {
 }
 
 Print_Style :: struct {
-    // default_format_* ignore the Formatter part of each type; they only configure
-    // base, width, etc. for values printed without an explicit formatter.
+    // Fallback settings for values passed to print without a Format* wrapper. Only the
+    // knobs (base, width, separators...) are consulted; the embedded `value` is unused.
     default_format_int: FormatInt;
     default_format_float: FormatFloat;
     default_format_struct: FormatStruct;
@@ -967,12 +967,13 @@ log_warning :: (format: string, args: .. Any, loc := #caller_location, flags := 
     count := log(format, ..args, loc = loc, flags = flags | .WARNING, user_flags = user_flags, section = section);
 }
 
-// Appends context.print_style.indentation_depth * format.indentation_width spaces.
+// Indent the current line of a multi-line struct print to the active nesting depth.
 append_indentation :: (builder: *String_Builder, format: *FormatStruct) {
-    spaces16 :: "                ";
-    num_spaces := context.print_style.indentation_depth * format.indentation_width;
-    if num_spaces <= 0 return;
-    for 1..num_spaces / 16 append(builder, spaces16);
-    remainder := num_spaces % 16;
-    if remainder append(builder, spaces16.data, remainder);
+    BLANKS :: "                                ";
+    owed := context.print_style.indentation_depth * format.indentation_width;
+    while owed > 0 {
+        piece := ifx owed < BLANKS.count then owed else BLANKS.count;
+        append(builder, BLANKS.data, piece);
+        owed -= piece;
+    }
 }

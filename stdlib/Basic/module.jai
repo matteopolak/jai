@@ -67,13 +67,14 @@ debug_break :: Runtime_Support.debug_break;
     memory_visualizer_per_frame_update :: () #expand { #assert(!MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER); }
 }
 
+// Formats the message and hands it to context.assertion_failed. A second failure raised
+// while that handler runs is swallowed so a broken handler cannot recurse forever.
 assert_helper :: (message := "", args: .. Any, loc := #caller_location) -> bool {
-    if context.handling_assertion_failure return false;
+    if context.handling_assertion_failure  return false;
+
     context.handling_assertion_failure = true;
-    report := tprint(message, ..args);
-    result := context.assertion_failed(loc, report);
-    context.handling_assertion_failure = false;
-    return result;
+    defer context.handling_assertion_failure = false;
+    return context.assertion_failed(loc, tprint(message, ..args));
 }
 // With assertions off the parameters are #discard: arguments are typechecked but never evaluated.
 #if ENABLE_ASSERT {

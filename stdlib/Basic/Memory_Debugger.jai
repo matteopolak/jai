@@ -137,10 +137,11 @@ this_allocation_does_not_propagate_leak_ownership :: (memory: *void) {
     assert(record != null && record.allocation.is_live, "ownership annotation requires a live tracked allocation");
     if record && record.allocation.is_live record.allocation.propagates_leak_ownership = false;
 }
+// One-shot convenience: build the report, print it, then release its scratch storage.
 report_memory_leaks :: (options: Leak_Report_Options = .{}) {
-    report := make_leak_report(options);
-    defer deinit(*report);
-    log_leak_report(report, options);
+    leaks := make_leak_report(options);
+    log_leak_report(leaks, options);
+    deinit(*leaks);
 }
 _md_trace_hash :: (trace: *Packed_Stack_Trace) -> u64 {
     h: u64 = 0xcbf2_9ce4_8422_2325;
@@ -262,45 +263,47 @@ make_leak_report :: (options: Leak_Report_Options = .{}, for_visualizer := false
     _md_sort_summaries(report.sorted_summaries);
     return report;
 }
+// Prints each leak site as a "----- N bytes in M allocations -----" banner (tests match
+// that line and the two closing totals), optional notes on aggregation, then its trace.
 log_leak_report :: (report: Leak_Report, options: Leak_Report_Options = .{}) {
-    bytes_total: s64;
-    leaks_total: s64;
-    for summary: report.sorted_summaries {
-        from_root := -1;
-        from_leaf := -1;
-        grouped := "";
-        if summary.group_info {
-            info := summary.group_info;
-            grouped = tprint(", grouped from % stack traces for \"%\" in \"%\"", _md_commas(info.sub_summaries.count), info.procedure.procedure_name, info.procedure.module_name);
-            from_root = info.root_nodes_in_common;
-            from_leaf = info.leaf_nodes_in_common;
-        }
-        if summary.child_count {
-            bytes := summary.bytes + summary.child_bytes;
-            count := summary.count + summary.child_count;
-            log("\n----- % byte% in % allocation%% [including aggregated children pointed at by the original memory, which % % byte% in % allocation%] -----\n",
-                _md_commas(bytes), _md_plural(bytes), _md_commas(count), _md_plural(count), grouped,
-                ifx summary.count > 1 then "were" else "was", _md_commas(summary.bytes), _md_plural(summary.bytes), _md_commas(summary.count), _md_plural(summary.count));
-        } else {
-            log("\n----- % byte% in % allocation%% -----\n", _md_commas(summary.bytes), _md_plural(summary.bytes), _md_commas(summary.count), _md_plural(summary.count), grouped);
-        }
-        bytes_total += summary.bytes + summary.child_bytes;
-        leaks_total += summary.count + summary.child_count;
+    shown_bytes, shown_allocations: s64;
+    trimming := options.known_allocation_leaves.count > 0 || options.roots_to_skip.count > 0 || options.group_by_these_calls.count > 0;
 
-        trace := summary.alloc_site_trace;
-        if !trace {
-            log("(stack trace unavailable)\n");
+    for site: report.sorted_summaries {
+        site_bytes       := site.bytes + site.child_bytes;
+        site_allocations := site.count + site.child_count;
+        shown_bytes       += site_bytes;
+        shown_allocations += site_allocations;
+
+        log("\n----- % in % -----\n", _md_quantity(site_bytes, "byte"), _md_quantity(site_allocations, "allocation"));
+        if site.child_count {
+            log("    (% in % at the allocation site itself; the rest is memory it still points to)\n",
+                _md_quantity(site.bytes, "byte"), _md_quantity(site.count, "allocation"));
+        }
+
+        shared_from_root, shared_from_leaf := -1, -1;
+        merged := site.group_info;
+        if merged {
+            log("    (% merged at call to % from module %)\n",
+                _md_quantity(merged.sub_summaries.count, "stack trace"), merged.procedure.procedure_name, merged.procedure.module_name);
+            shared_from_root = merged.root_nodes_in_common;
+            shared_from_leaf = merged.leaf_nodes_in_common;
+        }
+
+        trace := site.alloc_site_trace;
+        if trace == null {
+            log("    <no stack trace was recorded>\n");
             continue;
         }
-        first := 0;
-        last := trace.nodes.count - 1;
-        if options.known_allocation_leaves || options.roots_to_skip || options.group_by_these_calls {
-            first, last = _md_trim_trace(options, trace);
-        }
-        _md_log_trace(trace, first, last, from_root, from_leaf, summary.group_info);
+
+        lo, hi := 0, trace.nodes.count - 1;
+        if trimming  lo, hi = _md_trim_trace(options, trace);
+        _md_log_trace(trace, lo, hi, shared_from_root, shared_from_leaf, merged);
     }
-    log("\nTotal: % byte% in % allocation%.\n", _md_commas(bytes_total), _md_plural(bytes_total), _md_commas(leaks_total), _md_plural(leaks_total));
-    log("\nMarked as non-leaks: % byte% in % allocation%.\n", _md_commas(report.marked_as_non_leak_bytes), _md_plural(report.marked_as_non_leak_bytes), _md_commas(report.marked_as_non_leak_allocations), _md_plural(report.marked_as_non_leak_allocations));
+
+    log("\nTotal: % in %.\n", _md_quantity(shown_bytes, "byte"), _md_quantity(shown_allocations, "allocation"));
+    log("\nMarked as non-leaks: % in %.\n",
+        _md_quantity(report.marked_as_non_leak_bytes, "byte"), _md_quantity(report.marked_as_non_leak_allocations, "allocation"));
 }
 deinit :: (report: *Leak_Report) {
     previous := context.inside_memory_debugger;
@@ -544,14 +547,12 @@ _md_sort_summaries :: (summaries: []*Leak_Summary) {
         summaries[position] = saved;
     }
 }
-_md_commas :: (n: Any) -> FormatInt {
-    result: FormatInt;
-    result.digits_per_comma = 3;
-    result.comma_string = ",";
-    result.value = n;
-    return result;
+// "1 byte", "12,345 bytes": thousands separators plus a naive English plural.
+_md_quantity :: (n: s64, noun: string) -> string {
+    digits := formatInt(n, digits_per_comma = 3, comma_string = ",");
+    if n == 1  return tprint("% %", digits, noun);
+    return tprint("% %s", digits, noun);
 }
-_md_plural :: (n: s64) -> string { return ifx n == 1 then "" else "s"; }
 // Returns the displayed [first, last] node range: roots in roots_to_skip are trimmed
 // from the end, and the leaf side starts after the rootmost known allocation leaf.
 _md_trim_trace :: (options: Leak_Report_Options, trace: *Packed_Stack_Trace) -> (first: s64, last: s64) {
