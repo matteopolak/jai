@@ -515,6 +515,7 @@ Generator_State :: struct #type_info_none {
     file_ids: Table(string, s64);
 
     structs_to_check: [..] *Struct;
+    deferred_struct_checks: [..] *Struct;   // Structs in namespaces: checked at the end of the file.
     pending_anon_enums: [..] *Enum;
 
     extra_infos: Table(*Struct, *Struct_Extra_Info);

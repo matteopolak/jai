@@ -154,17 +154,6 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     append(*builder, options.header);
     append(*builder, "\n\n");
 
-    if options.generate_library_declarations {
-        for g.libraries {
-            if it.is_system_library {
-                print_to_builder(*builder, "% :: #library,system \"%\";\n", it.name, it.full_path);
-            } else {
-                print_to_builder(*builder, "% :: #library \"%0%\";\n", it.name, options.generated_library_path_prefix, it.full_path);
-            }
-        }
-        if g.libraries.count append(*builder, "\n");
-    }
-
     last_location: Location;
     for g.global_scope.members {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
@@ -175,7 +164,23 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
 
     print_objc_selector_table(*builder, g);
 
-    if options.generate_compile_time_struct_checks  print_struct_checks(*builder, g);
+    // File-scope imports and library declarations come last.
+    wants_checks := options.generate_compile_time_struct_checks;
+    for g.deferred_struct_checks  print_struct_checks(*builder, it);
+    wants_libs := options.generate_library_declarations && g.libraries.count > 0;
+    if wants_checks || wants_libs {
+        append(*builder, "\n#scope_file\n\n");
+        if wants_checks append(*builder, "#import \"Basic\"; // For assert\n");
+        if wants_libs {
+            for g.libraries {
+                if it.is_system_library {
+                    print_to_builder(*builder, "% :: #library,system \"%\";\n", it.name, it.full_path);
+                } else {
+                    print_to_builder(*builder, "% :: #library \"%0%\";\n", it.name, options.generated_library_path_prefix, it.full_path);
+                }
+            }
+        }
+    }
 
     append(*builder, options.footer);
 
@@ -365,6 +370,7 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
     }
     for candidates {
         if file_exists(it) {
+            lib.full_path = strip_library_extension(it);
             lib.symbols_known = true;
             if ends_with(it, ".a") || ends_with(it, ".lib") lib.is_shared_library = false;
             read_symbols(lib, it, options.os == .MACOS);
@@ -375,6 +381,14 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
         log("Bindings_Generator: library '%' was not found; functions it may define are assigned to it by default.\n", name);
     }
     return lib;
+}
+
+// "./dir/libfoo.dylib" -> "./dir/libfoo": the form `#library` takes.
+strip_library_extension :: (path: string) -> string {
+    for ext: string.[".dylib", ".so", ".dll", ".lib", ".a"] {
+        if ends_with(path, ext) return slice(path, 0, path.count - ext.count);
+    }
+    return path;
 }
 
 // Symbol names come from `nm`; this keeps the module free of object-file parsers.
@@ -405,30 +419,48 @@ read_symbols :: (lib: *Library_Info, path: string, strip_underscore: bool) {
 // ----------------------------------------------------------------------------
 // Size and offset checks for the structs that were generated.
 
-print_struct_checks :: (builder: *String_Builder, g: *Generator_State) {
-    checks: [..] *Struct;
-    for g.structs_to_check {
-        if it.decl_flags & .OMIT_FROM_OUTPUT continue;
-        if (it.decl_flags & .TEMPLATE) || (it.flags & .NO_STRUCT_CHECKS) continue;
-        if !it.name || (it.flags & .IS_INCOMPLETE) || !it.type || it.type.size <= 0 continue;
-        if !table_contains(*g.added_to_scope, it) continue;
-        array_add(*checks, it);
-    }
-    if !checks.count return;
+// Whether a struct gets compile-time checks (decided after it was printed: printing may
+// mark a struct as not checkable).
+struct_is_checkable :: (s: *Struct) -> bool {
+    if !context.generator_options.generate_compile_time_struct_checks return false;
+    if s.decl_flags & .OMIT_FROM_OUTPUT return false;
+    if (s.decl_flags & .TEMPLATE) || (s.flags & (Struct.Flags.NO_STRUCT_CHECKS | .IS_INCOMPLETE | .IS_ANON)) return false;
+    if !s.name || !s.type || s.type.size <= 0 return false;
+    return true;
+}
 
-    append(builder, "\n\n#scope_file\n\n#import \"Basic\"; // For assert\n\n#run {\n");
-    for s: checks {
+// `#run { assert(...); }` after a struct: the size of each base class, the offset and size
+// of each data member, and the size of the struct itself. Structs nested in `s` follow.
+print_struct_checks :: (builder: *String_Builder, s: *Struct) {
+    if struct_is_checkable(s) {
         name := join(parent_path(s), s.output_name);
-        append(builder, "    assert(size_of(");
-        append(builder, name);
-        print_to_builder(builder, ") == %, \"", s.type.size);
-        append(builder, name);
-        append(builder, " has size ");
-        append(builder, "\\");
-        append(builder, "% instead of ");
-        print_to_builder(builder, "%\", size_of(", s.type.size);
-        append(builder, name);
-        append(builder, "));\n");
+        append(builder, "\n#run {\n");
+        for parent: s.parents {
+            if parent.type.size <= 0 || !parent.output_name continue;
+            if parent.decl_flags & .PRINT_AS_RAW continue;
+            print_to_builder(builder, "    assert(size_of(type_of(%1.%2)) == %3, \"%1.%2 has unexpected size %4 instead of %3\", size_of(type_of(%1.%2)));\n", name, parent.output_name, parent.type.size, "%");
+        }
+        if !(s.flags & .NEEDS_RAW) {
+            instance_printed := false;
+            for s.declarations {
+                if it.decl_flags & .OMIT_FROM_OUTPUT continue;
+                is_field, is_anon := is_struct_field(it);
+                if !is_field || is_anon || is_operator(it) continue;
+                if it.kind != .DECLARATION || it.storage_class == .Static continue;
+                if it.bitfield_width >= 0 || it.bit_offset_in_parent < 0 || it.bit_offset_in_parent % 8 != 0 continue;
+                if !it.type || it.type.size < 0 continue;
+                if !instance_printed {
+                    print_to_builder(builder, "    instance: %;\n", name);
+                    instance_printed = true;
+                }
+                print_to_builder(builder, "    assert(((cast(*void)(*instance.%2)) - cast(*void)(*instance)) == %3, \"%1.%2 has unexpected offset %4 instead of %3\", ((cast(*void)(*instance.%2)) - cast(*void)(*instance)));\n", name, it.output_name, it.bit_offset_in_parent / 8, "%");
+                print_to_builder(builder, "    assert(size_of(type_of(%1.%2)) == %3, \"%1.%2 has unexpected size %4 instead of %3\", size_of(type_of(%1.%2)));\n", name, it.output_name, it.type.size, "%");
+            }
+        }
+        print_to_builder(builder, "    assert(size_of(%1) == %2, \"%1 has size %3 instead of %2\", size_of(%1));\n}\n", name, s.type.size, "%");
     }
-    append(builder, "}\n");
+    for s.declarations {
+        if it.kind != .STRUCT || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
+        print_struct_checks(builder, cast(*Struct) it);
+    }
 }

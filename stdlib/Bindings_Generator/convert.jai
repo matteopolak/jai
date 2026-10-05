@@ -836,8 +836,12 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
         func.name = "Destructor";
         if options.strip_flags & .DESTRUCTORS func.decl_flags |= .OMIT_FROM_OUTPUT;
     }
+    // Inline functions defined in a header have no symbol in the library.
+    if (options.strip_flags & .INLINED_FUNCTIONS) && (ft.flags & .INLINE) {
+        func.decl_flags |= .OMIT_FROM_OUTPUT;
+    }
     func.output_name = avoid_reserved_names(stripped_name(func.name));
-    if begins_with(name, "operator") && !(ft.flags & (.CONSTRUCTOR | .DESTRUCTOR)) {
+    if begins_with(name, "operator") &&!(ft.flags & (.CONSTRUCTOR | .DESTRUCTOR)) {
         func.output_name, func.is_operator = operator_names(name, ft.arguments.count);
     }
 

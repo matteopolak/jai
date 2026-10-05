@@ -375,6 +375,11 @@ print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, 
         case .STRUCT;
             print_struct(builder, cast(*Struct) decl);
             context.generator.counts.structs += 1;
+            if !current_scope || (current_scope.kind == .NAMESPACE && (cast(*Namespace) current_scope).should_flatten) {
+                print_struct_checks(builder, cast(*Struct) decl);
+            } else if current_scope.kind == .NAMESPACE {
+                array_add(*context.generator.deferred_struct_checks, cast(*Struct) decl);
+            }
         case .BITFIELD;
             bf := cast(*Bitfield) decl;
             append(builder, bf.output_name);
