@@ -248,6 +248,8 @@ pub struct Compiler {
     /// Codes `compiler_get_code` made without a scope to copy: their names resolve where
     /// they are inserted.
     pub unscoped_codes: HashMap<usize, Vec<ScopeId>>,
+    /// Notes after a procedure declaration's body (`f :: () { ... } @thread`).
+    pub proc_decl_notes: HashMap<ProcId, Vec<ast::Note>>,
     /// `using,only(...) field.path;` aliases declared in struct bodies.
     pub member_aliases: HashMap<crate::types::StructId, Vec<structs::MemberAlias>>,
     pub default_images: HashMap<TypeId, Option<Rc<value::Aggregate>>>,
@@ -368,6 +370,7 @@ impl Compiler {
             anonymous_types: HashMap::default(),
             code_scopes: Vec::new(),
             unscoped_codes: HashMap::default(),
+            proc_decl_notes: HashMap::default(),
             member_aliases: HashMap::default(),
             default_images: HashMap::default(),
             default_globals: HashMap::default(),

@@ -1178,6 +1178,9 @@ impl Compiler {
             export: None,
         });
         self.procs[id.0 as usize].instances.insert(key, inst);
+        if let Some(notes) = self.proc_decl_notes.get(&id).cloned() {
+            self.proc_decl_notes.insert(inst, notes);
+        }
         Ok(inst)
     }
 }
