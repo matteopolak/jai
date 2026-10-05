@@ -1750,6 +1750,7 @@ LockFile :: (file: HANDLE, dwFileOffsetLow: DWORD, dwFileOffsetHigh: DWORD, nNum
 LockFileEx :: (file: HANDLE, dwFlags: DWORD, dwReserved: DWORD, nNumberOfBytesToLockLow: DWORD, nNumberOfBytesToLockHigh: DWORD, lpOverlapped: *OVERLAPPED) -> BOOL #foreign kernel32;
 MoveFileA :: (filename: *u8, new_filename: *u8) -> BOOL #foreign kernel32;
 MoveFileW :: (filename: *u16, new_filename: *u16) -> BOOL #foreign kernel32;
+MoveFileExW :: (filename: *u16, new_filename: *u16, flags: DWORD) -> BOOL #foreign kernel32;
 ReadFile :: (file: HANDLE, buffer: *void, to_read: DWORD, did_read: *DWORD, overlapped: *void = null) -> BOOL #foreign kernel32;
 ReplaceFileW :: (lpReplacedFileName: LPCWSTR, lpReplacementFileName: LPCWSTR, lpBackupFileName: LPCWSTR, dwReplaceFlags: DWORD, lpExclude: *void, lpReserved: *void) -> BOOL #foreign kernel32;
 using FILE_INFO_BY_HANDLE_CLASS :: enum {
