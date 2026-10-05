@@ -91,6 +91,7 @@ The independently written `stdlib/`.
 - [Program_Print](stdlib/program-print.md)
 - [Strings, Unicode and text files](stdlib/strings-and-text.md)
 - [Threads, atomics, sockets and input](stdlib/threads-sockets-input.md)
+- [Toolchains: macOS SDK and Android NDK helpers](stdlib/toolchains.md)
 - [Tooling modules: Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report](stdlib/tooling-modules.md)
 - [Drawing, windows and audio](stdlib/ui-and-drawing.md)
 - [Simp (2D renderer)](stdlib/simp.md)
