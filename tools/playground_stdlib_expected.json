@@ -103,6 +103,7 @@
   "module-using-import-reexport.jai",
   "multi-return-first-argument.jai",
   "must-return-values.jai",
+  "named-argument-api.jai",
   "no-break-space.jai",
   "null-poly-argument.jai",
   "one-char-string-as-byte.jai",
@@ -167,6 +168,7 @@
  "excluded": {
   "bindings-generator-bitfields.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai) and a C compiler; the browser has no dynamic linker",
   "bindings-generator-c.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
+  "bindings-generator-checks.jai": "starts a C++ compiler process at compile time (Process: pipe, fork, exec) and loads libclang; the browser has no processes",
   "bindings-generator-cpp-classes.jai": "starts a C++ compiler process at compile time (Process: pipe, fork, exec); the browser has no processes",
   "bindings-generator-cpp-raw.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai) and a C compiler; the browser has no dynamic linker",
   "bindings-generator-cpp.jai": "native library: dlopen of libclang (Bindings_Generator/clang.jai); the browser has no dynamic linker",
