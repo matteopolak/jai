@@ -371,30 +371,24 @@ get_type_table :: (w: Workspace = -1) -> [] *Type_Info {
 // everywhere and report an error only when actually called.
 // ---------------------------------------------------------------------------
 
-// The nodes of `code`, untyped and without source locations.
+// The nodes of `code`. From compile-time code that has done nothing observable yet, names,
+// calls and types are resolved (see docs/metaprogramming/compiler-records.md).
 compiler_get_nodes :: (code: Code) -> (root: *Code_Node, expressions: [] *Code_Node) {
     Code_Nodes :: struct {
         root:        *Code_Node;
         expressions: [] *Code_Node;
     }
     nodes := cast(*Code_Nodes) record_struct(__jaic_code_nodes(code), type_info(Code_Nodes));
-    array_add(*__code_roots, .{nodes.root, code});
     return nodes.root, nodes.expressions;
 }
 
-// Roots handed out by compiler_get_nodes, so compiler_get_code finds the scope of their code.
-__Code_Root :: struct { root: *Code_Node; code: Code; }
-__code_roots: [..] __Code_Root;
-
 // The tree under `node` as a new Code value: printed with Program_Print and parsed again.
-// Names resolve in the scope of the code `node` came from (or `code_to_copy_scope_from`).
+// Without `code_to_copy_scope_from`, names resolve where the code is inserted.
 compiler_get_code :: (node: *Code_Node, code_to_copy_scope_from: Code = #code,null) -> Code {
     PP :: #import "Program_Print";
     builder: String_Builder;
     PP.print_expression(*builder, node);
-    scope := code_to_copy_scope_from;
-    for __code_roots if it.root == node { scope = it.code; break; }
-    return __jaic_parse_code(builder_to_string(*builder), scope);
+    return __jaic_parse_code(builder_to_string(*builder), code_to_copy_scope_from);
 }
 
 code_to_string :: (code: Code) -> string {

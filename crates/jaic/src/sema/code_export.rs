@@ -46,6 +46,7 @@ mod node {
     pub const CAST: i64 = 26;
     pub const DIRECTIVE_IMPORT: i64 = 27;
     pub const DIRECTIVE_RUN: i64 = 31;
+    pub const DIRECTIVE_EXISTS: i64 = 55;
     pub const DIRECTIVE_CODE: i64 = 32;
     pub const DIRECTIVE_LOCATION: i64 = 44;
     pub const NOTE: i64 = 40;
@@ -237,6 +238,7 @@ impl Compiler {
                 scope,
                 sub: Vec::new(),
                 locals: Vec::new(),
+                compound_members: Vec::new(),
                 own: false,
                 out: &mut out,
             };
@@ -266,6 +268,7 @@ impl Compiler {
                     scope: home,
                     sub: Vec::new(),
                     locals: Vec::new(),
+                    compound_members: Vec::new(),
                     own: false,
                     out: &mut out,
                 };
@@ -311,6 +314,15 @@ impl Compiler {
     /// out meanwhile, as resolving declarations may run compile-time code.
     pub fn export_code_typed(&mut self, code: usize) {
         self.adopt_made_codes();
+        // `code_of(f)`: f's locals have types once its body is lowered.
+        if let Some(&p) = self.code_procs.get(&code)
+            && !self.proc(p).is_poly
+            && !self.proc(p).is_macro
+            && self.proc_func(p, self.proc(p).span).is_ok()
+            && self.proc(p).body_state == procs::BodyState::Queued
+        {
+            let _ = self.lower_with_callees(p);
+        }
         let Some(shared) = self.interp.workspaces.clone() else {
             return;
         };
@@ -664,6 +676,9 @@ pub(super) struct Exporter<'a> {
     /// The records are for this compiler's own compile-time code (`compiler_get_nodes`):
     /// types refer to its real descriptors.
     own: bool,
+    /// The name declarations of the compound declaration just exported, for the block's
+    /// `members`.
+    compound_members: Vec<i64>,
     out: &'a mut Typechecked,
 }
 
@@ -1060,6 +1075,25 @@ impl Exporter<'_> {
                     .ptr("right", b);
                 rec
             }
+            // Jai folds a negated number literal into one literal (`#code case -1` is a
+            // Code_Literal whose `_s64` metaprograms overwrite).
+            E::Unary(ast::UnOp::Neg, a) if matches!(a.kind, E::Int(_) | E::Float(_)) => {
+                match &a.kind {
+                    E::Int(v) => {
+                        let mut rec = self.literal(span, 1);
+                        rec.int("_s64", (*v as i64).wrapping_neg())
+                            .int("value_flags", 0x1);
+                        rec
+                    }
+                    E::Float(v) => {
+                        let mut rec = self.literal(span, 1);
+                        rec.int("_float64", (-v).to_bits() as i64)
+                            .int("value_flags", 0x1 | 0x4);
+                        rec
+                    }
+                    _ => unreachable!(),
+                }
+            }
             E::Unary(op, a) => {
                 let a = self.expr(a);
                 let op = match op {
@@ -1169,7 +1203,28 @@ impl Exporter<'_> {
                 fields,
             } => {
                 let ty = ty.as_ref().map_or(0, |t| self.type_inst(t));
-                let (_, values) = self.args(fields);
+                // `name = value` fields are `=` binary operators, as in Jai.
+                let mut values = Vec::new();
+                for field in fields {
+                    let value = self.expr(&field.value);
+                    let target = match (&field.name, &field.target) {
+                        (Some(n), _) => self.ident(n.name, n.span),
+                        (None, Some(t)) => self.expr(t),
+                        (None, None) => {
+                            values.push(value);
+                            continue;
+                        }
+                    };
+                    let mut rec = self.node(
+                        "Code_Binary_Operator",
+                        node::BINARY_OPERATOR,
+                        field.value.span,
+                    );
+                    rec.int("operator_type", i64::from(b'='))
+                        .ptr("left", target)
+                        .ptr("right", value);
+                    values.push(self.add(rec));
+                }
                 let mut info = Record::new("Code_Struct_Literal_Info");
                 info.ptr("type_expression", ty).refs("arguments", values);
                 let info = self.r.add(info);
@@ -1225,6 +1280,14 @@ impl Exporter<'_> {
             E::Code(body) => {
                 let expr = match &**body {
                     ast::CodeBody::Expr(e) => self.expr(e),
+                    // `#code if x == {...}`: a brace-less statement is its own node (its
+                    // block has the statement's span).
+                    ast::CodeBody::Block(b) if b.stmts.len() == 1 && b.span == b.stmts[0].span => {
+                        match self.stmt(&b.stmts[0]) {
+                            Some(id) => id,
+                            None => self.block(&b.stmts, 1, b.span),
+                        }
+                    }
                     ast::CodeBody::Block(b) => self.block(&b.stmts, 1, b.span),
                 };
                 let mut rec = self.node("Code_Directive_Code", node::DIRECTIVE_CODE, span);
@@ -1250,10 +1313,55 @@ impl Exporter<'_> {
                 rec.int("is_caller_location", 1);
                 rec
             }
-            E::Backtick(e) => return self.expr(e),
+            E::Backtick(e) => {
+                let id = self.expr(e);
+                if matches!(e.kind, E::Ident(_))
+                    && let Some(rec) = self.r.get_mut(id)
+                {
+                    rec.set("flags", Field::Item(Item::Int(0x40))); // HAS_SCOPE_MODIFIER
+                }
+                return id;
+            }
+            E::Exists(query) => {
+                let query = self.expr(query);
+                let mut rec = self.node("Code_Directive_Exists", node::DIRECTIVE_EXISTS, span);
+                rec.ptr("query_expression", query);
+                rec
+            }
             _ => self.node("Code_Node", node::PLACEHOLDER, span),
         };
+        let mut rec = rec;
+        // Typechecked expressions carry their type (Epic_Fail compares operand types).
+        if rec.field("type").is_none()
+            && matches!(
+                e.kind,
+                E::Binary(..)
+                    | E::Unary(..)
+                    | E::Int(_)
+                    | E::Float(_)
+                    | E::Str(_)
+                    | E::Char(_)
+                    | E::Bool(_)
+                    | E::Index(..)
+                    | E::Member(..)
+                    | E::Cast { .. }
+            )
+            && let Some(ty) = self.expr_type(e)
+        {
+            let ty = self.ty(ty);
+            if ty != 0 {
+                rec.ptr("type", ty);
+            }
+        }
         self.add(rec)
+    }
+
+    /// The type `e` checks to in the exported code's scope, when it checks there.
+    fn expr_type(&mut self, e: &ast::Expr) -> Option<TypeId> {
+        let scope = self.scope;
+        let c = self.c.as_deref_mut()?;
+        let ty = c.check_expr_no_emit(scope, e).ok()?.ty();
+        (ty != TypeId::COMPILE_TIME).then_some(ty)
     }
 
     /// `Code_Argument` records and the argument values.
@@ -1293,8 +1401,13 @@ impl Exporter<'_> {
             let Some(id) = self.stmt(s) else {
                 continue;
             };
-            if matches!(s.kind, ast::StmtKind::Decl(_)) {
-                members.push(id);
+            if let ast::StmtKind::Decl(d) = &s.kind {
+                // A block's members are declarations: each name of `a, b := f()`.
+                if d.names.len() > 1 {
+                    members.append(&mut self.compound_members);
+                } else {
+                    members.push(id);
+                }
             }
             statements.push(id);
         }
@@ -1416,9 +1529,10 @@ impl Exporter<'_> {
                 backtick,
             } => {
                 let (unsorted, sorted) = self.args(values);
+                // Jai leaves a return's `arguments_sorted` empty (yield-jai checks).
+                let _ = sorted;
                 let mut rec = self.node("Code_Return", node::RETURN, span);
                 rec.refs("arguments_unsorted", unsorted)
-                    .refs("arguments_sorted", sorted)
                     .int("return_flags", *backtick as i64);
                 self.add(rec)
             }
@@ -1461,7 +1575,25 @@ impl Exporter<'_> {
             S::Run(e) => {
                 let mut rec = self.node("Code_Directive_Run", node::DIRECTIVE_RUN, span);
                 let e = self.expr(e);
-                rec.ptr("procedure", 0).ptr("__expression", e);
+                rec.ptr("expression", e);
+                self.add(rec)
+            }
+            S::Case(case) => self.case(case),
+            S::Assert {
+                cond,
+                message,
+            } => {
+                let mut rec = self.node("Code_Directive_Run", node::DIRECTIVE_RUN, span);
+                let text = self
+                    .c
+                    .as_deref()
+                    .map_or(String::new(), |c| c.sources.snippet(cond.span).to_string());
+                let cond = self.expr(cond);
+                let message = self.opt_expr(message.as_ref());
+                rec.int("flags", 0x1) // ASSERTION
+                    .str("assertion_string", text.as_bytes())
+                    .ptr("expression", cond)
+                    .ptr("message", message);
                 self.add(rec)
             }
             S::Import(import) => {
@@ -1483,18 +1615,19 @@ impl Exporter<'_> {
         Some(id)
     }
 
+    fn case(&mut self, case: &ast::Case) -> i64 {
+        let cond = case.values.first().map_or(0, |v| self.expr(v));
+        let then_block = self.block(&case.body, 1, case.span);
+        let mut rec = self.node("Code_Case", node::CASE, case.span);
+        rec.ptr("condition", cond)
+            .ptr("then_block", then_block)
+            .int("marked_as_fallthrough", case.through as i64);
+        self.add(rec)
+    }
+
     fn switch(&mut self, value: &ast::Expr, cases: &[ast::Case], flags: i64, span: Span) -> i64 {
         let value = self.expr(value);
-        let mut case_ids = Vec::new();
-        for case in cases {
-            let cond = case.values.first().map_or(0, |v| self.expr(v));
-            let then_block = self.block(&case.body, 1, case.span);
-            let mut rec = self.node("Code_Case", node::CASE, case.span);
-            rec.ptr("condition", cond)
-                .ptr("then_block", then_block)
-                .int("marked_as_fallthrough", case.through as i64);
-            case_ids.push(self.add(rec));
-        }
+        let case_ids = cases.iter().map(|case| self.case(case)).collect::<Vec<_>>();
         let mut block = self.node("Code_Block", node::BLOCK, span);
         block.int("block_type", 1).refs("statements", case_ids);
         let block = self.add(block);
@@ -1514,7 +1647,7 @@ impl Exporter<'_> {
         let ty = self
             .c
             .as_deref()
-            .and_then(|c| c.local_decl_types.get(&d.id).copied());
+            .and_then(|c| c.local_decl_types.get(&(d.id, 0)).copied());
         let rec = self.decl(d, name, ty, None, true);
         for n in &d.names {
             self.locals.push((n.name, rec));
@@ -1553,8 +1686,14 @@ impl Exporter<'_> {
             let target = if assign {
                 self.ident(n.name, n.span)
             } else {
+                let ty = self
+                    .c
+                    .as_deref()
+                    .and_then(|c| c.local_decl_types.get(&(d.id, i)).copied())
+                    .map_or(0, |t| self.ty(t));
                 let mut rec = self.node("Code_Declaration", node::DECLARATION, n.span);
                 rec.str("name", n.name.as_str().as_bytes())
+                    .ptr("type", ty)
                     .int("flags", i64::from(d.kind == ast::DeclKind::Const));
                 let id = self.add(rec);
                 declared.push((n.name, id));
@@ -1571,6 +1710,7 @@ impl Exporter<'_> {
             );
             arguments.push(self.r.add(a));
         }
+        self.compound_members = declared.iter().map(|&(_, id)| id).collect();
         self.locals.extend(declared);
         let mut names = self.node(
             "Code_Comma_Separated_Arguments",
@@ -1620,6 +1760,14 @@ impl Exporter<'_> {
         }
         if matches!(&d.value, Some(v) if matches!(v.kind, ast::ExprKind::Uninit)) {
             flags |= 0x80;
+        }
+        let backticked = d.backtick
+            || d.names
+                .iter()
+                .zip(&d.backtick_names)
+                .any(|(n, &b)| b && n.name == name);
+        if backticked {
+            flags |= 0x200000; // HAS_SCOPE_MODIFIER
         }
         let ty = ty.map_or(0, |t| self.ty(t));
         let mut rec = self.node("Code_Declaration", node::DECLARATION, d.span);
@@ -1800,6 +1948,7 @@ impl Exporter<'_> {
                 using_filter: None,
                 as_: false,
                 backtick: false,
+                backtick_names: Vec::new(),
                 align: None,
                 flags: Vec::new(),
                 foreign: None,
@@ -1825,6 +1974,7 @@ impl Exporter<'_> {
                 using_filter: None,
                 as_: false,
                 backtick: false,
+                backtick_names: Vec::new(),
                 align: None,
                 flags: Vec::new(),
                 foreign: None,
@@ -1966,6 +2116,7 @@ fn export_code_in(
         scope,
         sub: Vec::new(),
         locals: Vec::new(),
+        compound_members: Vec::new(),
         own,
         out: &mut out,
     };

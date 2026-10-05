@@ -74,11 +74,25 @@ The bridge that lets metaprograms see a workspace's code: `Message_File`, `Messa
   runs again, under the same no-effects rule.
 - **compiler_get_code**: prints the node tree with `Program_Print` and passes the text to `__jaic_parse_code`,
   which parses it (`build::parse_code_text`) into a new entry of `Interp::codes` and records in
-  `Interp::made_codes` which code's scope it takes (the code the root came from, else
-  `code_to_copy_scope_from`). The compiler adopts such codes when it reads a `Code` value back from compile-time
-  code or adds a code of its own (`Compiler::adopt_made_codes`), re-parsing the text as a registered source so
-  diagnostics can point into it. Node edits the printer cannot express (see
-  [program-print](../stdlib/program-print.md)) are lost.
+  `Interp::made_codes` which code's scope it takes (`code_to_copy_scope_from`). The compiler adopts such codes
+  when it reads a `Code` value back from compile-time code or adds a code of its own
+  (`Compiler::adopt_made_codes`), re-parsing the text as a registered source so diagnostics can point into it.
+  Node edits the printer cannot express (see [program-print](../stdlib/program-print.md)) are lost.
+  - Without `code_to_copy_scope_from` the code is *unscoped* (`Compiler::unscoped_codes`): it resolves names at
+    the insertion site (or the `#insert,scope(target)` scope), as in Jai — yield-jai builds
+    `(self: *COROUTINE) -> ...` where only the inserting macro knows `COROUTINE`. Names the site lacks fall back
+    on the scopes of the codes handed to `compiler_get_nodes` (newest first, `Interp::nodes_codes`), because Jai
+    nodes keep what they resolved to where they were written (Epic_Fail's `#code` blocks call
+    `print_to_builder`, which the inserting user never imported). `Compiler::code_scope_at` makes a block scope
+    under the site with `Scope::fallbacks`; `lookup_full` consults fallbacks only when nothing else binds a name.
+- **Expression types**: from compile-time code, value expressions (operators, literals, members, subscripts,
+  casts) get `type` by checking them in the code's scope without emitting (`Exporter::expr_type`); untyped
+  literals report their default type (`s64`, `float64`). Identifiers and calls get theirs from the resolved
+  declaration or header.
+- **Literal and flag details**: `-1` and `-1.5` export as one negative `Code_Literal` (Jai folds them; yield-jai
+  overwrites `_s64` of `#code case -1`). Backticked identifiers set `Code_Ident.flags.HAS_SCOPE_MODIFIER` and
+  backticked declarations `Code_Declaration.flags.HAS_SCOPE_MODIFIER`; `#assert`/`#run` statements export as
+  `Code_Directive_Run` (with jaic's extra `expression`/`message`), `#exists(x)` as `Code_Directive_Exists`.
 - **compiler_modify_procedure**: for each statement of `body.block.statements`, Jai sends its record id, or 0
   and its text when the statement is new or was edited in place anywhere below it (`record_differs` in
   `records.jai` compares every member with the record, as `fill_struct` wrote it, following `Code_*` pointers

@@ -218,6 +218,7 @@ pp_compound_names :: (builder: *String_Builder, names: *Code_Comma_Separated_Arg
 
 pp_declaration :: (builder: *String_Builder, decl: *Code_Declaration, depth: s64, print_type := true, parameter := false) -> bool {
     ok := true;
+    if decl.flags & .HAS_SCOPE_MODIFIER  append(builder, "`");
     append(builder, decl.name);  // Empty for the properties of a compound declaration.
     constant := (decl.flags & .IS_CONSTANT) != 0;
     has_type := print_type && decl.type_inst != null;
@@ -461,7 +462,9 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
         case .LITERAL;
             ok = pp_literal(builder, cast(*Code_Literal) node, depth);
         case .IDENT;
-            append(builder, (cast(*Code_Ident) node).name);
+            ident := cast(*Code_Ident) node;
+            if ident.flags & .HAS_SCOPE_MODIFIER  append(builder, "`");
+            append(builder, ident.name);
         case .CONTEXT;
             append(builder, "context");
         case .PLACEHOLDER;
@@ -577,7 +580,26 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             append(builder, "#insert ");
             ok = pp_expression(builder, (cast(*Code_Directive_Insert) node).expression, depth, 0);
         case .DIRECTIVE_RUN;
-            append(builder, "#run");
+            run := cast(*Code_Directive_Run) node;
+            if run.flags & .ASSERTION {
+                append(builder, "#assert(");
+                if run.expression && !pp_expression(builder, run.expression, depth, 0)  ok = false;
+                if run.message {
+                    append(builder, ", ");
+                    if !pp_expression(builder, run.message, depth, 0)  ok = false;
+                }
+                append(builder, ")");
+            } else {
+                append(builder, "#run");
+                if run.expression {
+                    append(builder, " ");
+                    if !pp_expression(builder, run.expression, depth, 0)  ok = false;
+                }
+            }
+        case .DIRECTIVE_EXISTS;
+            append(builder, "#exists(");
+            if !pp_expression(builder, (cast(*Code_Directive_Exists) node).query_expression, depth, 0)  ok = false;
+            append(builder, ")");
         case .DIRECTIVE_LOCATION;
             loc := cast(*Code_Directive_Location) node;
             if loc.is_caller_location {

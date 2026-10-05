@@ -953,6 +953,11 @@ Code_Directive_Run :: struct {
     }
 
     assertion_string: string;
+
+    // jaic: the operand of `#run x;` / the condition and message of `#assert(x, "m")` in
+    // a body, so the directive prints back (`procedure` stays null).
+    expression: *Code_Node;
+    message:    *Code_Node;
 }
 
 Code_Directive_Import :: struct {

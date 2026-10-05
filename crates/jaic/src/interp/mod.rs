@@ -170,6 +170,9 @@ pub struct Interp {
     /// Codes made by compile-time code (`compiler_get_code`): their index and the
     /// index of the code whose scope they take. The compiler adopts them lazily.
     pub made_codes: Vec<(usize, usize)>,
+    /// Codes handed to `compiler_get_nodes`, newest last: the scopes a made code without
+    /// its own scope falls back on for names its insertion site does not have.
+    pub nodes_codes: Vec<usize>,
     /// Observable effects so far: output, foreign calls, workspace changes. A compile-time
     /// run is repeated (to serve `export_request`) only while this has not changed.
     pub effects: u64,
@@ -233,6 +236,7 @@ impl Interp {
             workspaces: None,
             codes: Vec::new(),
             made_codes: Vec::new(),
+            nodes_codes: Vec::new(),
             effects: 0,
             run_effects: None,
             export_request: None,

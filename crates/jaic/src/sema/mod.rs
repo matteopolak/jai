@@ -201,6 +201,11 @@ pub struct Compiler {
     parked_bodies: Vec<ProcId>,
     /// Bodies being lowered right now (nested through compile-time runs).
     pub(super) lowering_depth: u32,
+    /// Values of `a, b :: expr;` declarations, by declaration and scope.
+    multi_consts: HashMap<(ast::AstId, ScopeId), Vec<lower::Operand>>,
+    /// Codes made by `code_of(procedure)`: their procedure, lowered before a typed export
+    /// so its locals have types.
+    pub(super) code_procs: HashMap<usize, ProcId>,
     parked_epoch: u64,
     pub interp: crate::interp::Interp,
     /// Type_Info globals per type.
@@ -235,10 +240,14 @@ pub struct Compiler {
     /// Modules whose re-exports a `module_exports` call is searching.
     pub reexport_visiting: Vec<ModuleId>,
     /// Types of local variable declarations, by declaration (first name), once lowered.
-    pub local_decl_types: HashMap<ast::AstId, TypeId>,
+    /// Types of local declarations, by declaration and name index (`a, b := f()`).
+    pub local_decl_types: HashMap<(ast::AstId, usize), TypeId>,
     pub anonymous_types: HashMap<(ast::AstId, ScopeId), TypeId>,
     /// Scope each `Code` value was written in (parallel to `codes`).
     pub code_scopes: Vec<ScopeId>,
+    /// Codes `compiler_get_code` made without a scope to copy: their names resolve where
+    /// they are inserted.
+    pub unscoped_codes: HashMap<usize, Vec<ScopeId>>,
     /// `using,only(...) field.path;` aliases declared in struct bodies.
     pub member_aliases: HashMap<crate::types::StructId, Vec<structs::MemberAlias>>,
     pub default_images: HashMap<TypeId, Option<Rc<value::Aggregate>>>,
@@ -336,6 +345,8 @@ impl Compiler {
             body_queue: Vec::new(),
             parked_bodies: Vec::new(),
             lowering_depth: 0,
+            multi_consts: HashMap::default(),
+            code_procs: HashMap::default(),
             parked_epoch: 0,
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::default(),
@@ -356,6 +367,7 @@ impl Compiler {
             local_decl_types: HashMap::default(),
             anonymous_types: HashMap::default(),
             code_scopes: Vec::new(),
+            unscoped_codes: HashMap::default(),
             member_aliases: HashMap::default(),
             default_images: HashMap::default(),
             default_globals: HashMap::default(),
@@ -413,6 +425,17 @@ impl Compiler {
                 .iter()
                 .find(|(made, _)| *made == id)
                 .map(|&(_, from)| from);
+            let unscoped = from.is_none_or(|f| {
+                matches!(&*self.codes[f], ast::CodeBody::Expr(e) if matches!(e.kind, ast::ExprKind::Null))
+            });
+            if unscoped {
+                // Names the insertion site lacks come from where the nodes were written.
+                let fallbacks = (self.interp.nodes_codes.iter().rev())
+                    .filter_map(|&c| self.code_scopes.get(c).copied())
+                    .take(32)
+                    .collect();
+                self.unscoped_codes.insert(id, fallbacks);
+            }
             let scope = from
                 .and_then(|f| self.code_scopes.get(f).copied())
                 .unwrap_or(self.root_scope);
@@ -425,6 +448,23 @@ impl Compiler {
             self.interp.codes[id].0 = body.clone();
             self.codes.push(body);
             self.code_scopes.push(scope);
+        }
+    }
+
+    /// The scope an inserted `code` resolves its names in, inserted at `site`: its own, or
+    /// for code `compiler_get_code` made without one, the site (falling back on the
+    /// scopes its nodes came from).
+    pub fn code_scope_at(&mut self, code: value::CodeId, site: ScopeId) -> ScopeId {
+        match self.unscoped_codes.get(&(code.0 as usize)) {
+            Some(fallbacks) if fallbacks.is_empty() => site,
+            Some(fallbacks) => {
+                let fallbacks = fallbacks.clone();
+                let module = self.scope(site).module;
+                let scope = self.new_scope(scope::ScopeKind::Block, Some(site), module, None);
+                self.scopes[scope.0 as usize].fallbacks = fallbacks;
+                scope
+            }
+            None => self.code_scopes[code.0 as usize],
         }
     }
 

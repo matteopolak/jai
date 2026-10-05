@@ -15,7 +15,10 @@ The printer dispatches on `Code_Node.kind` (`pp_expression`) and walks the node 
 - blocks are multi-line, four-space indented; `;` follows every statement except those ending in `}`.
 - `compiler_get_nodes(#code a := 1;)` returns the bare declaration as the root (brace-less single statement); `#code { ... }` returns a `Code_Block` and prints with braces.
 
-Unsupported or lossy: enum bodies (`enum {}`), array/proc type expressions without a resolved type (`<type>`), `#run` bodies, number base (hex/binary print in decimal), comments and original layout, `Code_Compound_Declaration`, assembly.
+- Backticked identifiers and declarations (`HAS_SCOPE_MODIFIER`) print with their backtick: `` `x + y ``, `` `z := 1; ``.
+- `Code_Directive_Run` prints `#assert(cond, "msg")` when its flags say assert, else `#run expr`; `Code_Directive_Exists` prints `#exists(q)`. Compound declarations print as `a, b := f();`.
+
+Unsupported or lossy: enum bodies (`enum {}`), array/proc type expressions without a resolved type (`<type>`), `#run` bodies (only the expression form), number base (hex/binary print in decimal), comments and original layout, assembly.
 
 ## How to change it
 

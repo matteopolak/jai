@@ -893,6 +893,8 @@ pub fn call(
             let Some((body, text)) = interp.codes.get(code).cloned() else {
                 return Err(trap("compiler_get_nodes: not a Code value".into()));
             };
+            interp.nodes_codes.retain(|&c| c != code);
+            interp.nodes_codes.push(code);
             let mut reg = shared.borrow_mut();
             let taken = interp.code_export_cursor.entry(code).or_default();
             if let Some((root, nodes)) = interp.code_exports.get(&code).and_then(|e| e.get(*taken))
