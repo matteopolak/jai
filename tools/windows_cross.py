@@ -74,7 +74,7 @@ def c_structs_library(args, work):
 def build_one(args, source, output):
     target = [] if args.host else ["-os", "windows"]
     result = subprocess.run(
-        [args.jaic, "build", str(source), *target, "-o", str(output)],
+        [str(pathlib.Path(args.jaic).resolve()), "build", str(source), *target, "-o", str(output)],
         cwd=source.parent,
         capture_output=True,
         text=True,
