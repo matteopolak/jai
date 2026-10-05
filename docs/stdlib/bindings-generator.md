@@ -31,7 +31,7 @@ A complete worked example, including `visitor` use and output assertions, is `te
 The pipeline:
 
 1. `generate_bindings` (`generate.jai`) builds a `Generator_State` (stored in `context.generator`, options in `context.generator_options`), resolves the requested libraries, and asks libclang to parse a synthetic `generate_temp.h` that `#include`s each entry of `source_files`.
-2. `convert.jai` walks the translation unit and builds the declaration model of `types.jai` (`Declaration`, `Function`, `Struct`, `Enum`, `Typedef`, `Namespace`, `Bitfield`, `CType`, `Literal`...). Declarations from system headers are skipped unless `path_fragments_to_treat_as_non_system_paths` or `system_types_to_include` whitelist them; system typedefs (`uint32_t`, `size_t`...) are unwrapped to primitives. Macros are kept only when their body is a constant expression over literals and already-known constants.
+2. `convert.jai` walks the translation unit and builds the declaration model of `types.jai` (`Declaration`, `Function`, `Struct`, `Enum`, `Typedef`, `Namespace`, `Bitfield`, `CType`, `Literal`...). Declarations from system headers are skipped unless `path_fragments_to_treat_as_non_system_paths` or `system_types_to_include` whitelist them; types declared in system headers are referred to by name (see "System types" below), except the builtin integer typedefs (`uint32_t`, `size_t`...), which become primitives. Macros are kept only when their body is a constant expression over literals and already-known constants.
 3. `post_process` converts macros to enums (`generate_enums_from_macros_with_prefixes`), assigns functions to libraries, then the user `visitor` runs over every declaration (it may set `decl_flags`, rename `output_name`, swap types, add default values), followed by `omit_unnecessary_typedefs_and_macros`.
 4. `print.jai` prints the model. Enum values are prefix-stripped (`auto_detect_enum_prefixes`), original names stay as aliases, unions print as `union`, bit fields as a `__bitfield` storage member plus `S_get_x`/`S_set_x` accessors (see "Bit fields"), C++ reference parameters become pointers with a value-taking `#no_context` wrapper when they have defaults, and printf-like variadics get a `_CFormat` foreign declaration plus a Jai `string` wrapper.
 
@@ -53,12 +53,12 @@ Everything below is learned from the behaviour of the reference generator, not c
 - **Operators**: binary operators Jai can overload print as `operator+ :: ...` after the struct; others get names like `operator_not_equals`.
 - **Default arguments**: temporaries (`T(a, b)`, `T()`, `{}`) print as `T.{...}`, null casts and `NULL`/`nullptr` as `null`, bool literals as `true`/`false`.
 - **Macros**: surrounding parentheses are stripped (`(4)` -> `4`); macros naming a type or `int`/`void` (`#define X ImWchar`) and casts to a named type (`((ImGuiID)0)` -> `cast(ID) 0`, `cast,trunc(ID) -1` before `-`/`~`) are resolved after all declarations exist (`NEEDS_CHECKING` in `post_process`).
-- **Known gaps**: inline functions are bound only when the library exports their symbol (a header-only inline method has none), so bind against the built library. Tail padding is handled for classes with any number of non-template bases (see "Tail padding and `__RAW` structs"); a class whose layout cannot be reproduced (template or virtual bases, empty-base optimization) still gets a comment and `NO_STRUCT_CHECKS`.
+- **Known gaps**: inline functions are bound only when the library exports their symbol (a header-only inline method has none), so bind against the built library. Tail padding is handled for classes with any number of non-template bases (see "Tail padding and `__RAW` structs"); virtual bases are handled (see "Virtual bases"); a class whose layout cannot be reproduced (template bases, empty-base optimization) still gets a comment and `NO_STRUCT_CHECKS`.
 
 Compiler support the generated code relies on:
 
 - `#cpp_method` implies the C calling convention and no context, for procedure literals and procedure types (so vtable entries are called correctly). `#cpp_return_type_is_non_pod` sets `ProcType.non_pod_return`; the IR sets `CAbi.ret_indirect`, and `interp/native.rs::call` then returns the aggregate through the hidden result pointer even when it would fit in registers. By-value struct arguments and results otherwise use the shared classifier (`crates/jaic/src/abi.rs`).
-- libclang bridge ops added for this: `is_virtual`, `is_pure_virtual`, `is_const_method`, `is_copy_ctor`, `is_move_ctor`, `is_inlined`, `access`, `manglings`, `specialized_template`, `t_template_arg`.
+- libclang bridge ops added for this: `is_virtual`, `is_pure_virtual`, `is_const_method`, `is_copy_ctor`, `is_move_ctor`, `is_inlined`, `access`, `manglings`, `specialized_template`, `t_template_arg`, `is_virtual_base`, `base_offset` (bits; `-1` when the libclang is too old for `clang_getOffsetOfBase`), `comment_line`.
 
 Verification against real headers (scratch copies of the Vk-Engine generators run with `jaic check generate.jai -os linux`): Vulkan-Headers 1.3.250 + VMA produced 651 functions / 902 structs / 250 enums; Dear ImGui 1.90.4-docking produced 1143 functions / 121 structs / 78 enums, and the output type-checks and drives a real frame (`CreateContext`, `Style.Constructor`, `NewFrame`, `Begin`, `Render`) against a dylib built from the same sources.
 
@@ -107,14 +107,95 @@ Parse with `extra_clang_arguments` containing `-x objective-c`. Generated code u
 - Types: `id`/`Class`/`SEL` print as `id`/`Class`/`Selector`; `Foo *` is `*Foo`; `id<P>` is `*P`; protocol qualifiers on `Class` are dropped; nullability attributes are looked through.
 - Methods print as `name :: inline (self: *Foo, args) -> R`, with `class: Class` first for class methods, named by the selector up to the first colon. The body casts `objc_msgSend` to the method's typed `#c_call` signature and sends `__selectors.<sel>`. The selector table, a lazy `__selectors_init` and `#import "Objective_C"` are printed in a `#scope_file` block (`print_objc_selector_table`). `instancetype` instance methods are polymorphic (`self: *$instancetype/Foo` returning `*instancetype`); class methods return `*Foo`.
 - Struct returns: with `cpu = .X64`, a method returning a struct or union larger than 16 bytes (the SysV MEMORY class; `objc_returns_in_memory`) is sent through `objc_msgSend_stret`; arm64 never uses it (the stdlib `Objective_C` module aliases the `_stret` names there). The choice follows `Generate_Bindings_Options.cpu`, not the host. Structs of 16 bytes or less, even floating point ones, go through `objc_msgSend`.
-- Not handled: variadic methods (skipped with a log line), x86-64 `objc_msgSend_fpret` (`long double` returns), and structs under 16 bytes that SysV still passes in memory (unaligned or x87 members).
+- Not handled: variadic methods (skipped with a log line) and structs under 16 bytes that SysV still passes in memory (unaligned or x87 members). Methods passing or returning a 16-byte `long double` (the x86-64 `objc_msgSend_fpret` case) are stripped with a log line, because Jai has no type for the value; see "`long double`".
 - **Generics** (`create_objc_interface`, `create_objc_object_type`, `objc_superclass_type` in `convert.jai`): `@interface Box<T : id>` becomes `Box :: struct(T: Type)` (the C++ template machinery: `template_type_params`, `template_instantiation_params`). Methods take `self: *Box(T)`; `T` in a signature or ivar prints as `T`; `NSArray<NSString *> *` is `*NSArray(*NSString)`; a generic class used without arguments (`NSArray *`) takes `id` for each parameter (done at print time in `print_type_to_builder`, so it works even when the definition is in a skipped system header: the parameters are read as soon as the type is first seen). A superclass specialisation (`Sub : Box<Item *>`) prints `#as using box: Box(*Item);`; libclang reports its arguments only as class references after the superclass reference, so nested generics, `id<P>` arguments and `id` collapse to `id`. Call a method of a specialisation as `Box(*Item).item(b)`; `class(Box(*Item))` finds the runtime class. Bounds (`T : NSObject *`) are not enforced, and a category on a generic class reuses the class's parameter names.
 - **Instance variables** (`add_objc_ivar`): the `@interface { ... }` ivars become data members after the superclass member, in declaration order, so `p._x = 3` works on a `*Point`. Jai lays them out with natural alignment, which equals clang's layout for ordinary types. Limits: ivars only declared in an `@implementation` or class extension are invisible; a subclass's first ivar is assumed to start at the Jai size of its superclass (a superclass ending in a small ivar that the runtime lets the subclass pack behind is not modeled); bit field ivars are skipped; `@private`/`@protected` are not distinguished. Struct size checks skip Objective-C structs (their size is runtime-owned).
-- **Blocks** (`create_block_type`): `void (^)(int)` prints as a pointer to a struct named after the signature, `Block_<result>_<args>` (`*` becomes `P`, e.g. `Block_void_s32_PNSString`, `Block_s32_s32`). The struct is the block header (`isa`, `flags`, `reserved`, `invoke`, `descriptor`) with `invoke: #type (block: *Block_X, args...) -> R #c_call`, so a block received from Objective-C is called as `b.invoke(b, 3)`. One struct per signature is added to the global scope on first use and shared by typedefs (`Handler :: *Block_void_s32;`), parameters, results and properties. Generic parameters inside a block signature are erased to `id` (the struct lives outside the class). The generator does not build block literals: to pass a Jai procedure as a block you must fill a header yourself (global block flags, `_NSConcreteGlobalBlock`); passing blocks that Objective-C produced or `null` works directly.
+- **Blocks** (`create_block_type`): `void (^)(int)` prints as a pointer to a struct named after the signature, `Block_<result>_<args>` (`*` becomes `P`, e.g. `Block_void_s32_PNSString`, `Block_s32_s32`). The struct is the block header (`isa`, `flags`, `reserved`, `invoke`, `descriptor`) with `invoke: #type (block: *Block_X, args...) -> R #c_call`, so a block received from Objective-C is called as `b.invoke(b, 3)`. One struct per signature is added to the global scope on first use and shared by typedefs (`Handler :: *Block_void_s32;`), parameters, results and properties. Generic parameters inside a block signature are erased to `id` (the struct lives outside the class). Every block struct is followed by a constructor, `Block_X_literal :: (invoke: <invoke type>, user_data: *void = null) -> *Block_X`, which wraps a Jai `#c_call` procedure in a global block (`objc_make_block` in the `Objective_C` module: `_NSConcreteGlobalBlock` isa, the `BLOCK_IS_GLOBAL` flag, a static descriptor and one extra `user_data` slot). Inside `invoke`, `objc_block_user_data(block)` returns that pointer, which replaces captured variables. Global blocks are never copied or freed by the runtime, so the result can be stored by Objective-C (`setOnDone:`) and stays valid; it is allocated with `New` and lives for the program. In the interpreter the procedure is turned into a native thunk by passing it through a foreign call inside `objc_make_block`.
 - Libraries: OBJC methods are not assigned to a library by symbol; the classes must be loaded by linking or loading the library in the program (`dlopen` or a call to a function in it).
 - Bridge ops added: `cursor_result_type`, `t_objc_base`, `t_objc_num_protocols`, `t_objc_protocol`, `t_objc_num_type_args`, `t_objc_type_arg`, `t_modified`.
 
-Tests: `tests/stdlib/bindings-generator-objc-stret.jai` (text of the x64 and arm64 bindings; the x64 ones are also type checked), `bindings-generator-objc.jai` (builds a dylib with clang, then drives classes, a protocol, a category, properties, class methods, `instancetype`, `double` and `BOOL`), `bindings-generator-objc-generics.jai` (generic classes, specialised uses, unspecialised `id` defaults, a specialised subclass, generic `instancetype`), `bindings-generator-objc-ivars.jai` (reading and writing ivars across Jai and Objective-C, subclass ivars) and `bindings-generator-objc-blocks.jai` (block typedefs, parameters, results and properties; calling returned blocks through `invoke`).
+Tests: `tests/stdlib/bindings-generator-objc-stret.jai` (text of the x64 and arm64 bindings; the x64 ones are also type checked), `bindings-generator-objc.jai` (builds a dylib with clang, then drives classes, a protocol, a category, properties, class methods, `instancetype`, `double` and `BOOL`), `bindings-generator-objc-generics.jai` (generic classes, specialised uses, unspecialised `id` defaults, a specialised subclass, generic `instancetype`), `bindings-generator-objc-ivars.jai` (reading and writing ivars across Jai and Objective-C, subclass ivars) and `bindings-generator-objc-blocks.jai` (block typedefs, parameters, results and properties; calling returned blocks through `invoke`; passing Jai procedures as blocks with `Block_X_literal`, with and without `user_data`, including one Objective-C stores and calls later).
+
+### System types
+
+A type declared in a system header (`FILE`, `struct stat`, `pthread_mutex_t`, `__darwin_size_t`...) is not printed; the bindings use its name and expect the program to import the module that defines it (usually `POSIX`, `Socket` or `Windows`). The typedef keeps the clang alignment (`CType.alignment`) so packed checks stay right. Two exceptions: the fixed-size integer typedefs in `TYPEDEFS_TO_UNWRAP` (`types.jai`: `uint8_t` ... `uint64_t`, `size_t`, `intptr_t`, `ptrdiff_t`, `off_t`, the BSD `u_int32_t` family, CoreFoundation's `UInt32`...) become primitives (casts in macros use `builtin_integer_typedef`), and anything listed in `system_types_to_include` or under a `path_fragments_to_treat_as_non_system_paths` path is printed normally. System structs get `Struct.Flags.IS_SYSTEM` and are never checked.
+
+### Virtual bases
+
+C++ classes with `virtual` bases (`struct Left : virtual Base`) are laid out by the Itanium ABI as: own vtable pointer, non-virtual bases, own members, then each virtual base at an offset clang computes. `convert.jai` asks the bridge for `is_virtual_base` and `base_offset` (bits) on every base specifier and moves virtual ones to `Struct.virtual_bases`. `print.jai` then prints:
+
+```
+Left :: struct {
+    __vptr: *void; // C++ virtual bases make the class dynamic
+    l: s32;
+    using base: Base #align 8; // C++ virtual base
+}
+```
+
+The `__vptr` is added only when no other vtable pointer is present (no virtual methods and no dynamic first base). `#align N` is added when natural alignment would not land the base at clang's offset (`alignment_reaching`). Struct checks assert the virtual base's offset through an instance (`vbase_instance`). A class that inherits from a class with virtual bases (a diamond) is printed with its non-virtual parts, a `// jai: a base class has C++ virtual bases` comment and `NO_STRUCT_CHECKS`, because the shared virtual base sits at a different offset in every most-derived class. Classes with virtual bases are never given `__RAW` variants.
+
+### Overloads that look the same in Jai
+
+`void take(int &)` and `void take(const int &)` both become `(v: *s32)`, which Jai would treat as a redefinition. `rename_equivalent_overload` (`convert.jai`) gives later ones a `_1`, `_2`... suffix (`foreign_name` keeps the real symbol) and flags both with `ADD_C_TYPE_DETAILS`, so with `add_overloaded_const_and_ref_comments` (default on) the parameters print as `/*reference*/ *s32` and `/*const reference*/ *s32`. Global functions are tracked in `function_names_seen`; methods use the struct's declarations.
+
+### `long double`
+
+`T_LONGDOUBLE` maps by size: 8 bytes (arm64 Apple, Windows) is `float64`, 4 is `float32`. A 16-byte one (x87 on x86-64, binary128 on Linux arm64) has no Jai type, so struct members keep their layout as `[16] u8` (`CType.Flags.WIDE_LONG_DOUBLE`, with clang's alignment), and functions, methods and Objective-C methods that pass or return one are stripped with a log line (`uses_wide_long_double`). This also covers `objc_msgSend_fpret`: the only methods that need it on x86-64 are the ones returning `long double`, and those are stripped.
+
+### Packed members and `#align`
+
+When clang puts a member at an offset its natural alignment would not give (`#pragma pack`, `__attribute__((packed))`, or a virtual base), `print_struct_body` adds `#align N` to the member, choosing the largest power of two that reaches the offset (`check_alignment`, `next_field_offset`, `alignment_reaching` in `print.jai`). This needs the compiler rule that a member's `#align` replaces its natural alignment rather than only raising it (`crates/jaic/src/sema/structs.rs`).
+
+### Other output rules shared with the reference
+
+- Unnamed parameters print as `unknown0`, `unknown1`... (the `Declaration.name` stays empty; only `output_name` is set).
+- A comment starting on an earlier line than the declaration, or spanning several lines, is printed before it; a one-line comment on the same line goes after it (`is_prefix_comment`). The bridge op `comment_line` gives the comment's first line.
+- Character macros (`#define SEP '%'`) become `#char "%"`.
+- Macros whose value names an enum constant are dropped (C enum constants are not top-level names in Jai). Inside `generate_enums_from_macros_with_prefixes` enums, references to other enums' values are rewritten (`V`, `Enum.V` or `xx Enum.V`; `rewrite_enum_macro_references`).
+- `(T)(-1)` style casts print as `cast,trunc(T) -1`; `extern const` variables print as `#elsewhere`; `extern "C" { ... }` blocks are walked (`LINKAGE_SPEC`).
+- A pointer to a function typedef refers to the typedef by name instead of expanding it.
+- Printf wrappers (`generate_printf_wrappers`) are made for every variadic function whose last named argument is a `char *`.
+- macOS `.tbd` stubs that only list `arm64e` count for `arm64`.
+
+### Parity with the reference module
+
+Status of the reference module's public surface in this implementation. "Partial" entries are described in the notes.
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| `Generate_Bindings_Options`: all 46 reference fields | Supported | Plus `libclang_path`, `generate_bitfield_accessors`, `libraries`/`library_search_paths` |
+| `generate_bindings(opts, path)` / `(opts) -> String_Builder, bool` | Supported | |
+| `visitor`, `get_func_args_for_printing`, `will_print_bindings`, `convert_macro_value_to_enum_callback` | Supported | |
+| Helper procedures (`change_type_to_enum`, `get_type_name`, `find_underlying_type`, `get_default_system_include_paths`...) | Supported | `api.jai` |
+| `strip_flags` (constructors, destructors, va_list, unknown libraries, inlined) | Supported | |
+| `strip_prefixes`, enum prefix detection and stripping, `alias_original_enum_names`, `c_enum_emulation` | Supported | |
+| `generate_enums_from_macros_with_prefixes`, `macro_prefixes_to_unwrap`, `typedef_prefixes_to_unwrap` | Supported | |
+| `mimic_spacing_flags`, `try_to_preserve_comments` | Partial | Blank lines and comment placement follow the same rules; a few blank lines differ (e.g. around forward-declared unions) |
+| Library lookup, `#foreign` names, `generate_library_declarations`, `system_library_*`, `.tbd` stubs | Supported | Symbols read with `nm` |
+| Extern variables (`#elsewhere`) and `omit_global_declarations` | Supported | |
+| Structs, unions, anonymous members, nested types | Supported | |
+| Bit fields (Itanium and MSVC) | Supported | Accessors are an extension (`generate_bitfield_accessors`) |
+| Packed structs (`#align` on members) | Supported | |
+| Compile-time struct checks | Supported | |
+| Macros (integer, float, string, char, casts, references to constants) | Supported | Spacing of operators differs (`1 << 0` vs `1<<0`) |
+| C++ methods, constructors, destructors, operators, default arguments | Supported | |
+| C++ virtual functions, vtables, `generate_vtable_helpers`, `generate_c_style_api_for_vtable` | Supported | |
+| C++ templates and instantiations | Supported | Explicit specializations skipped |
+| C++ tail padding (`__RAW`) | Supported | |
+| C++ virtual bases | Supported | Diamonds (a base that has virtual bases) are printed without checks |
+| Overloads equal in Jai, `add_overloaded_const_and_ref_comments` | Supported | |
+| `flatten_namespaces` | Supported | |
+| Objective-C classes, protocols, categories, properties, `instancetype`, generics, ivars | Supported | Limits under "Objective-C" |
+| `objc_msgSend_stret` | Supported | |
+| `objc_msgSend_fpret` | Partial | Methods returning a 16-byte `long double` are stripped (Jai has no such type); every other return uses `objc_msgSend` |
+| Objective-C blocks: receiving and calling | Supported | |
+| Objective-C blocks: literals from Jai procedures | Supported | `Block_X_literal`, global blocks only (no captured-variable copying) |
+| `long double` | Partial | 8-byte is `float64`; 16-byte members are `[16] u8`, functions using it stripped |
+| Windows/MSVC headers (`os = .WINDOWS`) | Partial | MSVC bit fields and type sizes through `-target`; COM interface `uuid` attributes are not printed |
+| Include guards and `TOKENS_TO_REPLACE`-style preprocessing tweaks | Missing | Not needed by any generator in the corpus |
+| 128-bit integers | Partial | `__int128` prints as Basic's `S128`/`U128` |
+
+Validation: the generators shipped with the reference modules (Curl, lz4, stb_image/write/resize, stb_vorbis, executable_formats/macho, macos/corefoundation, nvtt, POSIX, Socket for every OS) run under `jaic` against this module, and their output passes `jaic check`; the Curl examples type check against the regenerated bindings. Differences from the reference outputs are formatting (macro spacing, blank lines, the header path) and newer SDK contents. `tests/stdlib/bindings-generator-parity.jai` pins the reference behaviours above (system types, unknownN, comments, char macros, enum macro rewriting, casts, packed `#align`, `long double`) for C and C++.
 
 Native builds: a program importing `Bindings_Generator` builds with `jaic build`; `lower_intrinsic_wrapper` (`sema/procs.rs`) now emits a trap for `#compiler` hook procedures that have no intrinsic op, instead of returning undefined values (it caused "use of undefined value" on build).
 
@@ -127,7 +208,7 @@ Native builds: a program importing `Bindings_Generator` builds with `jaic build`
 - New C construct: handle its cursor kind in `handle_toplevel_cursor` / `fill_struct_members` / `create_type` (`convert.jai`) and print it in `print.jai`.
 - Output format lives entirely in `print.jai`; `maybe_add_spacing` reproduces the blank lines of the source.
 - Gotchas: every `create_type` call returns a fresh `CType` (visitors mutate them) except the primitive singletons (`type_def_*`); a struct is registered in `declarations_by_cursor` before its members are converted so recursive types terminate; the `#add_context` fields mean generator code must run inside `generate_bindings`.
-- Limitations: Objective-C generics, ivars and blocks have the limits listed under "Objective-C"; extern variables are printed `#elsewhere <lib>`; `long double` and 128-bit integers are approximated; C++ gaps are listed under "C++ support".
+- Limitations: Objective-C generics, ivars and blocks have the limits listed under "Objective-C"; extern variables are printed `#elsewhere <lib>`; 16-byte `long double` is kept as bytes (see "`long double`"); C++ gaps are listed under "C++ support"; the remaining differences from the reference module are listed under "Parity with the reference module".
 
 ## Configuration
 
@@ -137,4 +218,4 @@ libclang search order: `Generate_Bindings_Options.libclang_path`, the `JAI_LIBCL
 
 ## Dependencies
 
-libclang (any recent LLVM; tested with the Xcode Command Line Tools copy), `nm` for library symbol tables, `xcrun` on macOS, and the stdlib modules `Basic`, `String`, `File`, `Hash_Table`, `Process`, plus `Objective_C` for generated Objective-C code. Tests: `tests/stdlib/bindings-generator-c.jai`, `bindings-generator-cpp.jai`, `bindings-generator-cpp-classes.jai` (builds a C++ library with `clang++` and calls it), `bindings-generator-bitfields.jai`, `bindings-generator-bitfields-msvc.jai` (clang's `x86_64-pc-windows-msvc` layout and a native `-mms-bitfields` library), `bindings-generator-cpp-raw.jai`, `bindings-generator-cpp-raw-multi.jai`, `bindings-generator-objc-stret.jai`, `bindings-generator-checks.jai` (fixture `tests/native/bindgen-checks/`), `bindings-generator-objc.jai`, `-objc-generics.jai`, `-objc-ivars.jai`, `-objc-blocks.jai` (macOS only), `bindings-generator-cpp-raw`, `-checks` and the four Objective-C tests also run natively from `crates/jaic-cli/tests/native.rs`, `using-member-default-override.jai` (struct-body `member = value;` overrides, needed by the declaration model).
+libclang (any recent LLVM; tested with the Xcode Command Line Tools copy), `nm` for library symbol tables, `xcrun` on macOS, and the stdlib modules `Basic`, `String`, `File`, `Hash_Table`, `Process`, plus `Objective_C` for generated Objective-C code. Tests: `tests/stdlib/bindings-generator-c.jai`, `bindings-generator-cpp.jai`, `bindings-generator-cpp-classes.jai` (builds a C++ library with `clang++` and calls it), `bindings-generator-bitfields.jai`, `bindings-generator-bitfields-msvc.jai` (clang's `x86_64-pc-windows-msvc` layout and a native `-mms-bitfields` library), `bindings-generator-cpp-raw.jai`, `bindings-generator-cpp-raw-multi.jai`, `bindings-generator-cpp-virtual-bases.jai` (builds a C++ library with virtual bases and reads its objects), `bindings-generator-parity.jai`, `bindings-generator-objc-stret.jai`, `bindings-generator-checks.jai` (fixture `tests/native/bindgen-checks/`), `bindings-generator-objc.jai`, `-objc-generics.jai`, `-objc-ivars.jai`, `-objc-blocks.jai` (macOS only), `bindings-generator-cpp-raw`, `-checks`, `-parity`, `-cpp-virtual-bases` and the four Objective-C tests also run natively from `crates/jaic-cli/tests/native.rs`, `using-member-default-override.jai` (struct-body `member = value;` overrides, needed by the declaration model).
