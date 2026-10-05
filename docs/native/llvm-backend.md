@@ -12,6 +12,15 @@
 2. `lower::lower_program` declares every lowered function, foreign symbol and global, fills in global initializers, then defines function bodies.
 3. Verifies the module, optionally runs the `default<On>` pipeline, writes the object.
 
+`emit_objects(program, options, path)` is what `jaic build` uses for executables and libraries. A large unoptimized program is split into codegen units, one LLVM context and module per thread:
+
+- The unit count is `JAIC_CODEGEN_UNITS` when set, otherwise one unit per 20,000 IR instructions (`INSTS_PER_UNIT`), capped at the core count. `-O1` and up, and `--emit-ir`, always use one unit, so LLVM can still inline across the whole program.
+- Functions are assigned largest first to the least loaded unit. Unit 0 also defines the globals.
+- Each module defines only its own functions and declares the rest (`lower::Shard`). Internal functions and globals become hidden external symbols there (still named `name.index`), so the objects link together but nothing is exported from a shared library.
+- The objects are `path`, `path.1.o`, `path.2.o`... The CLI links them all (or archives them for a static library) and deletes them. `-o x.o` object output stays a single module.
+
+Focus (`first.jai`, `-O0`) builds in 2.7s instead of 3.7s on a 10-core machine. LLVM's code generation was about a third of the build.
+
 Lowering rules (`lower.rs`):
 
 - Each IR `Val` is an LLVM SSA value. Blocks are emitted in reverse post-order from the entry, so a value's definition always precedes its uses; unreachable IR blocks are skipped. No phis are needed because the IR keeps mutable state in slots.
@@ -42,10 +51,13 @@ Definitions with such signatures (`#c_call` callbacks C calls with structs) do t
 - New IR instruction/intrinsic: extend `Backend::inst` or `Backend::intrinsic` in `lower.rs`; keep semantics identical to `interp/mod.rs`.
 - New target architecture: add an `Arch` variant and classification in `abi.rs`, plus the inline-asm intrinsics in `lower.rs`.
 - Debug info: handle `Inst::Loc` (currently a no-op).
+- Anything new at module level (a global, a constructor list) must be emitted once, in unit 0, and declared in the other units. `Backend::internal_linkage` gives the linkage of internal symbols; use it for new ones so they can be referenced across units.
+- Check split codegen with `JAIC_CODEGEN_UNITS=4 cargo test -p jaic-cli --test native`. Small test programs otherwise use one unit.
 - Gotchas: Small signed integers are not sign/zero-extended according to the C ABI because the IR does not carry signedness. Windows is not supported.
 
 ## Configuration
 
+- `JAIC_CODEGEN_UNITS=N` forces the number of codegen units (`1` turns splitting off).
 - `jaic_llvm::Options { opt_level, target, emit_ir }`; CLI flags `-O0..-O3`, `--emit-ir file.ll`, `-o output`, `-I dir`.
 - `JAIC_STDLIB` overrides the standard library directory (as for `jaic run`).
 - `LLVM_SYS_221_PREFIX` must point at an LLVM 22 install when building (for example `/opt/homebrew/opt/llvm`).

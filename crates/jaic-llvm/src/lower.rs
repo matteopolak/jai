@@ -8,6 +8,7 @@
 use inkwell::AddressSpace;
 use inkwell::AtomicOrdering;
 use inkwell::FloatPredicate;
+use inkwell::GlobalVisibility;
 use inkwell::IntPredicate;
 use inkwell::attributes::{Attribute, AttributeLoc};
 use inkwell::basic_block::BasicBlock;
@@ -48,11 +49,23 @@ impl From<&str> for Error {
 }
 type R<T> = Result<T, Error>;
 
+/// Which part of the program a module holds when codegen is split across modules.
+#[derive(Clone, Copy)]
+pub struct Shard<'p> {
+    /// The module index of each function; only the shard's own functions get bodies.
+    pub owner: &'p [u32],
+    pub index: u32,
+}
+
+/// Lower `program` into `module`. With a shard, the module defines only that shard's
+/// functions (and, in shard 0, the globals); everything else is declared, and internal
+/// symbols become hidden externals so the modules link together.
 pub fn lower_program<'ctx>(
     context: &'ctx Context,
     module: &Module<'ctx>,
     program: &Program,
     arch: Arch,
+    shard: Option<Shard>,
 ) -> Result<(), String> {
     let mut backend = Backend {
         ctx: context,
@@ -60,6 +73,7 @@ pub fn lower_program<'ctx>(
         builder: context.create_builder(),
         program,
         arch,
+        shard,
         funcs: Vec::new(),
         globals: Vec::new(),
         foreigns: Vec::new(),
@@ -106,6 +120,7 @@ struct Backend<'ctx, 'p> {
     builder: Builder<'ctx>,
     program: &'p Program,
     arch: Arch,
+    shard: Option<Shard<'p>>,
     funcs: Vec<Option<FunctionValue<'ctx>>>,
     globals: Vec<GlobalValue<'ctx>>,
     /// Address of each foreign function or variable.
@@ -129,9 +144,13 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
         self.declare_functions()?;
         self.declare_foreigns()?;
         self.declare_globals()?;
-        self.init_globals()?;
+        if self.shard.is_none_or(|s| s.index == 0) {
+            self.init_globals()?;
+        }
         for (i, func) in self.program.funcs.iter().enumerate() {
-            if let Some(func) = func {
+            if let Some(func) = func
+                && self.owns_func(i)
+            {
                 let f = self.funcs[i].expect("declared");
                 self.define_function(func, f)
                     .map_err(|e| Error(format!("in '{}': {}", func.name, e.0)))?;
@@ -296,6 +315,20 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
 
     // ----- module-level declarations ---------------------------------------
 
+    fn owns_func(&self, i: usize) -> bool {
+        self.shard.is_none_or(|s| s.owner[i] == s.index)
+    }
+
+    /// Linkage of an internal symbol: hidden and external when other modules refer to it.
+    fn internal_linkage(&self, gv: GlobalValue<'ctx>) {
+        if self.shard.is_some() {
+            gv.set_linkage(Linkage::External);
+            gv.set_visibility(GlobalVisibility::Hidden);
+        } else {
+            gv.set_linkage(Linkage::Internal);
+        }
+    }
+
     fn declare_functions(&mut self) -> R<()> {
         for (i, func) in self.program.funcs.iter().enumerate() {
             let Some(func) = func else {
@@ -303,13 +336,16 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                 continue;
             };
             let lowered = self.lower_sig(&func.sig);
-            let (name, linkage) = match &func.linkage {
-                IrLinkage::Export(name) => (name.clone(), Linkage::External),
-                IrLinkage::Internal => (format!("{}.{i}", func.name), Linkage::Internal),
+            let name = match &func.linkage {
+                IrLinkage::Export(name) => name.clone(),
+                IrLinkage::Internal => format!("{}.{i}", func.name),
             };
             let f = self
                 .module
-                .add_function(&name, lowered.fn_ty, Some(linkage));
+                .add_function(&name, lowered.fn_ty, Some(Linkage::External));
+            if func.linkage == IrLinkage::Internal {
+                self.internal_linkage(f.as_global_value());
+            }
             self.apply_attrs(&lowered, |loc, attr| f.add_attribute(loc, attr));
             self.funcs.push(Some(f));
         }
@@ -386,11 +422,10 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
                 .clone()
                 .unwrap_or_else(|| format!("{}.{i}", g.name));
             let gv = self.module.add_global(ty, None, &name);
-            gv.set_linkage(if g.export.is_some() {
-                Linkage::External
-            } else {
-                Linkage::Internal
-            });
+            gv.set_linkage(Linkage::External);
+            if g.export.is_none() {
+                self.internal_linkage(gv);
+            }
             gv.set_alignment(g.align.max(1) as u32);
             gv.set_constant(g.read_only);
             self.globals.push(gv);
