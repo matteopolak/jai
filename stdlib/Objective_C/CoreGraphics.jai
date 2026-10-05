@@ -1,27 +1,21 @@
-// Normalized API contracts; reference procedure bodies were discarded.
+// CoreGraphics publishes window levels only through CGWindowLevelForKey, so the kCG*WindowLevel
+// globals below start at zero; call this once (on macOS) before reading them.
 init_core_graphics_runtime_constants :: () {
-    kCGBaseWindowLevel = CGWindowLevelForKey(kCGBaseWindowLevelKey);
-    kCGMinimumWindowLevel = CGWindowLevelForKey(kCGMinimumWindowLevelKey);
-    kCGDesktopWindowLevel = CGWindowLevelForKey(kCGDesktopWindowLevelKey);
-    kCGDesktopIconWindowLevel = CGWindowLevelForKey(kCGDesktopIconWindowLevelKey);
-    kCGBackstopMenuWindowLevel = CGWindowLevelForKey(kCGBackstopMenuWindowLevelKey);
-    kCGNormalWindowLevel = CGWindowLevelForKey(kCGNormalWindowLevelKey);
-    kCGFloatingWindowLevel = CGWindowLevelForKey(kCGFloatingWindowLevelKey);
-    kCGTornOffMenuWindowLevel = CGWindowLevelForKey(kCGTornOffMenuWindowLevelKey);
-    kCGDockWindowLevel = CGWindowLevelForKey(kCGDockWindowLevelKey);
-    kCGMainMenuWindowLevel = CGWindowLevelForKey(kCGMainMenuWindowLevelKey);
-    kCGStatusWindowLevel = CGWindowLevelForKey(kCGStatusWindowLevelKey);
-    kCGModalPanelWindowLevel = CGWindowLevelForKey(kCGModalPanelWindowLevelKey);
-    kCGPopUpMenuWindowLevel = CGWindowLevelForKey(kCGPopUpMenuWindowLevelKey);
-    kCGDraggingWindowLevel = CGWindowLevelForKey(kCGDraggingWindowLevelKey);
-    kCGScreenSaverWindowLevel = CGWindowLevelForKey(kCGScreenSaverWindowLevelKey);
-    kCGCursorWindowLevel = CGWindowLevelForKey(kCGCursorWindowLevelKey);
-    kCGOverlayWindowLevel = CGWindowLevelForKey(kCGOverlayWindowLevelKey);
-    kCGHelpWindowLevel = CGWindowLevelForKey(kCGHelpWindowLevelKey);
-    kCGUtilityWindowLevel = CGWindowLevelForKey(kCGUtilityWindowLevelKey);
-    kCGAssistiveTechHighWindowLevel = CGWindowLevelForKey(kCGAssistiveTechHighWindowLevelKey);
-    kCGMaximumWindowLevel = CGWindowLevelForKey(kCGMaximumWindowLevelKey);
+    // One global per CGWindowLevelKey, listed in key order, so slot i is filled from key i. The
+    // declared length makes a missing or extra entry a compile error.
+    by_key: [KEY_COUNT] *CGWindowLevel = .[
+        *kCGBaseWindowLevel,      *kCGMinimumWindowLevel,     *kCGDesktopWindowLevel,  *kCGBackstopMenuLevel,
+        *kCGNormalWindowLevel,    *kCGFloatingWindowLevel,    *kCGTornOffMenuWindowLevel, *kCGDockWindowLevel,
+        *kCGMainMenuWindowLevel,  *kCGStatusWindowLevel,      *kCGModalPanelWindowLevel,  *kCGPopUpMenuWindowLevel,
+        *kCGDraggingWindowLevel,  *kCGScreenSaverWindowLevel, *kCGMaximumWindowLevel,     *kCGOverlayWindowLevel,
+        *kCGHelpWindowLevel,      *kCGUtilityWindowLevel,     *kCGDesktopIconWindowLevel, *kCGCursorWindowLevel,
+        *kCGAssistiveTechHighWindowLevel,
+    ];
+    for by_key it.* = CGWindowLevelForKey(cast(CGWindowLevelKey) it_index);
 }
+#scope_file
+KEY_COUNT :: cast(s64) CGWindowLevelKey.kCGNumberOfWindowLevelKeys;
+#scope_export
 using CGWindowLevelKey :: enum s32 {
     kCGBaseWindowLevelKey :: 0;
     kCGMinimumWindowLevelKey;
