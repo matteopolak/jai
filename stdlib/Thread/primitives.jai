@@ -317,17 +317,10 @@ wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Cr
         return null;
     }
 } else {
-    native_windows_library :: #system_library "kernel32";
-    native_performance_counter :: (count: *s64) -> s32 #foreign native_windows_library "QueryPerformanceCounter";
-    native_performance_frequency :: (frequency: *s64) -> s32 #foreign native_windows_library "QueryPerformanceFrequency";
-    // Milliseconds from the high-resolution clock: GetTickCount64 moves in 15.6 ms steps, which
-    // let a timed wait end that much early.
+    // Milliseconds from Basic's monotonic clock, which reads the high-resolution counter:
+    // GetTickCount64 moves in 15.6 ms steps, which let a timed wait end that much early.
     native_tick_count :: () -> u64 {
-        count, frequency: s64;
-        native_performance_counter(*count);
-        native_performance_frequency(*frequency);
-        if frequency <= 0 return 0;
-        return cast(u64) (count / frequency * 1000 + count % frequency * 1000 / frequency);
+        return cast(u64) to_milliseconds(current_time_monotonic());
     }
     native_windows_thread_entry :: (opaque: *void) -> u32 #c_call {
         thread := cast(*Thread) opaque;
