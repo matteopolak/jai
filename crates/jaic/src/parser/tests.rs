@@ -348,6 +348,43 @@ fn struct_literal_versus_block() {
     );
 }
 
+// rules: struct.17
+#[test]
+fn struct_literal_without_dot() {
+    let is_literal = |e: &Expr| {
+        matches!(
+            e.kind,
+            ExprKind::StructLit {
+                ty: None,
+                ..
+            }
+        )
+    };
+    assert!(is_literal(&value("v: Desc = {.GENERAL, 1};")));
+    assert!(is_literal(&value("v: E = {1, {2, 3}};")));
+    let ExprKind::Call {
+        args, ..
+    } = value("v := f({.A, 1}, {x = 2});").kind
+    else {
+        panic!()
+    };
+    assert!(args.iter().all(|a| is_literal(&a.value)));
+    // Statements, declarations and lambda bodies keep their braces as blocks.
+    for src in [
+        "v := f({ if x return 1; });",
+        "v := f({ y := 2; });",
+        "v := g(x => { return x; });",
+    ] {
+        let ExprKind::Call {
+            args, ..
+        } = value(src).kind
+        else {
+            panic!("{src}")
+        };
+        assert!(!is_literal(&args[0].value), "{src}");
+    }
+}
+
 #[test]
 fn struct_body_forms() {
     let value = value(
@@ -379,6 +416,7 @@ fn struct_body_forms() {
     assert!(matches!(&lit.body[8].kind, StmtKind::Decl(d) if d.align.is_some()));
 }
 
+// rules: enum.17
 #[test]
 fn enum_forms() {
     let ExprKind::Enum(lit) =
@@ -393,6 +431,11 @@ fn enum_forms() {
     };
     assert!(lit.base.is_none());
     assert!(matches!(lit.items[1], EnumItem::If { .. }));
+    // `A : : 5` spells out the constant form's empty type.
+    let ExprKind::Enum(lit) = value("E :: enum { A :: 4; B : :5; C; }").kind else {
+        panic!()
+    };
+    assert!(matches!(&lit.items[1], EnumItem::Member(m) if m.value.is_some()));
 }
 
 #[test]
