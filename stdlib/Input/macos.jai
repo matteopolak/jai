@@ -85,7 +85,11 @@ mac_poll_geometry :: (application: *Mac.NSApplication) {
             found = true;
             break;
         }
-        if !found {
+        // Only the program's own windows: AppKit makes and drops borderless helper windows
+        // (text input, tooltips) as the user types and clicks, and losing one of those must
+        // not read as the program's window closing. Decided once, so a window that goes
+        // borderless for fullscreen stays tracked.
+        if !found && (Mac.NSWindow.styleMask(window) & .NSWindowStyleMaskTitled) {
             array_add(*mac_input_windows, .{ window, x, y, width, height, true });
             queue_window_resize(cast(Window_Type) cast(u64) window, width, height);
         }
