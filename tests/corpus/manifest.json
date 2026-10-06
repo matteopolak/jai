@@ -1312,7 +1312,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "has no member 'missing'"
+        "check": "has no member `missing`"
       }
     },
     {
@@ -1438,7 +1438,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "type mismatch: expected *u8, found string"
+        "check": "type mismatch: expected `*u8`, found `string`"
       }
     },
     {
@@ -1581,7 +1581,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "type Type_Info_Enum has no member 'notes'"
+        "check": "type `Type_Info_Enum` has no member `notes`"
       }
     },
     {
@@ -1594,7 +1594,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "type mismatch: expected u8, found u16"
+        "check": "type mismatch: expected `u8`, found `u16`"
       }
     },
     {
@@ -1724,7 +1724,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "expected *u8, found string"
+        "check": "expected `*u8`, found `string`"
       }
     },
     {
@@ -1737,7 +1737,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "argument of type Plain does not match parameter type Inner"
+        "check": "argument of type `Plain` does not match parameter type `Inner`"
       }
     },
     {
@@ -1945,7 +1945,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "The workspace was marked as failed by its metaprogram."
+        "check": "error: the metaprogram marked the workspace as failed"
       }
     },
     {
@@ -2010,7 +2010,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "argument of type string does not match parameter type"
+        "check": "argument of type `string` does not match parameter type"
       }
     },
     {
@@ -2036,7 +2036,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "module 'Rules_Module_That_Does_Not_Exist' not found"
+        "check": "module `Rules_Module_That_Does_Not_Exist` not found"
       }
     },
     {
@@ -2178,7 +2178,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "type mismatch: expected s64, found string"
+        "check": "type mismatch: expected `s64`, found `string`"
       },
       "rules": [
         "dce.1"

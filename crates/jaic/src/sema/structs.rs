@@ -1311,10 +1311,7 @@ impl Compiler {
         if let Some(ids) = self.struct_constant(target, name)? {
             return self.entities_operand(f, scope, &ids, span);
         }
-        err(
-            span,
-            format!("type {} has no member '{name}'", self.types.name(target)),
-        )
+        Err(Box::new(self.no_member(target, name, span)))
     }
 
     fn type_member(
@@ -1350,10 +1347,7 @@ impl Compiler {
                         untyped: false,
                     });
                 }
-                err(
-                    span,
-                    format!("enum {} has no member '{name}'", self.types.name(t)),
-                )
+                Err(Box::new(self.no_member(t, name, span)))
             }
             TypeKind::Struct(_) => {
                 if let Some(ids) = self.struct_constant(t, name)? {
@@ -1380,10 +1374,7 @@ impl Compiler {
                 let base = self.types.distincts[d.0 as usize].base;
                 self.type_member(f, scope, base, name, span)
             }
-            _ => err(
-                span,
-                format!("type {} has no member '{name}'", self.types.name(t)),
-            ),
+            _ => Err(Box::new(self.no_member(t, name, span))),
         }
     }
 
@@ -1813,10 +1804,7 @@ impl Compiler {
                 Some(n) => match self.find_member(ty, n.name, n.span)? {
                     Some(m) => m,
                     None => {
-                        return err(
-                            n.span,
-                            format!("type {} has no member '{}'", self.types.name(ty), n.name),
-                        );
+                        return Err(Box::new(self.no_member(ty, n.name, n.span)));
                     }
                 },
                 None => {

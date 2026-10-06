@@ -1933,14 +1933,43 @@ impl Compiler {
                 {
                     return Ok(TypeId::VOID_PTR);
                 }
-                err(
+                let mut d = Diagnostic::error(
                     span,
                     format!(
-                        "type mismatch: {} and {}",
+                        "type mismatch: `{}` and `{}` cannot be combined",
                         self.types.name(lt),
                         self.types.name(rt)
                     ),
-                )
+                );
+                // `c + "0"`: a one-character string where a character code was meant.
+                let one_char = |o: &Operand| match o {
+                    Operand::Const {
+                        value: Value::String(s),
+                        ..
+                    } if s.len() == 1 => Some(s[0] as char),
+                    _ => None,
+                };
+                let (int_side, text) = match (one_char(lhs), one_char(rhs)) {
+                    (_, Some(c)) => (lt, Some(c)),
+                    (Some(c), _) => (rt, Some(c)),
+                    _ => (lt, None),
+                };
+                if let Some(c) = text
+                    && self.types.is_integer(int_side)
+                {
+                    d = d.with_help(format!(
+                        "`\"{c}\"` is a string; for the character's code write `#char \"{c}\"`"
+                    ));
+                } else if self.types.is_integer(lt) && self.types.is_float(rt)
+                    || self.types.is_float(lt) && self.types.is_integer(rt)
+                {
+                    d = d.with_help("convert one side with `cast(float)` or `cast(int)` first");
+                } else if self.types.is_integer(lt) && self.types.is_integer(rt) {
+                    d = d.with_help(
+                        "integers of different sizes or signedness need a `cast` to one type",
+                    );
+                }
+                Err(Box::new(d))
             }
         }
     }

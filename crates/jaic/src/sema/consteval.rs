@@ -389,17 +389,7 @@ impl Compiler {
             self.asserts_done += 1;
             if !holds? {
                 let msg = self.assert_message(scope, message.as_ref(), &args)?;
-                return err(
-                    cond.span,
-                    format!(
-                        "#assert failed{}{msg}",
-                        if msg.is_empty() {
-                            ""
-                        } else {
-                            ": "
-                        }
-                    ),
-                );
+                return Err(Box::new(self.static_assert_failed(&cond, cond.span, msg)));
             }
         }
         Ok(())
