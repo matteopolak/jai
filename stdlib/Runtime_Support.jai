@@ -82,7 +82,7 @@ runtime_support_is_assertion_frame :: (name: string) -> bool #no_context {
 
 runtime_support_same_text :: (a: string, b: string) -> bool #no_context {
     if a.count != b.count return false;
-    for i: 0..a.count-1  if a[i] != b[i] return false;
+    for i: 0..a.count - 1 if a[i] != b[i] return false;
     return true;
 }
 
