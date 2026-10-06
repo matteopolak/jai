@@ -9,8 +9,8 @@ classify :: (n: int) -> string {
             return "small";
         case;
             if #complete kind == {
-                case .A;  return "a";
-                case .B;  return "b";
+                case .A; return "a";
+                case .B; return "b";
             }
     }
     return "other";

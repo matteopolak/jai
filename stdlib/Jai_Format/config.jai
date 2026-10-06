@@ -73,7 +73,7 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                     if !ok return false, tprint("line %: ignore entries must be quoted strings", line_number);
                     array_add(*config.ignore, glob);
                     items = trim(after);
-                    if items.count && items[0] == #char ","  items = slice(items, 1, items.count - 1);
+                    if items.count && items[0] == #char "," items = slice(items, 1, items.count - 1);
                 }
             case;
                 return false, tprint("line %: unknown key `%`", line_number, key);
@@ -90,7 +90,7 @@ is_ignored :: (config: Format_Config, path: string) -> bool {
     root := config.root;
     if !begins_with(path, root) return false;
     relative := slice(path, root.count, path.count - root.count);
-    while relative.count && relative[0] == #char "/"  relative = slice(relative, 1, relative.count - 1);
+    while relative.count && relative[0] == #char "/" relative = slice(relative, 1, relative.count - 1);
     for glob: config.ignore {
         if glob_match(glob, relative) return true;
         // Directory prefixes: `tests/corpus` ignores `tests/corpus/a.jai`.

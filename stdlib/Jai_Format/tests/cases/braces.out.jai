@@ -4,10 +4,12 @@ main :: () {
     } else {
         b();
     }
-    if y { c(); }
-    else { d(); }
-    for 0..3 {
+    if y {
+        c();
+    } else {
+        d();
     }
+    for 0..3 {}
     // A block statement after a statement stays on its own line.
     e();
     {
