@@ -57,7 +57,24 @@ The exact revisions are pinned in `corpus/upstreams.json`. Notes per project:
   untaken `#if` branch of a baked instance is still checked), jai-control-flow (upstream uses `%%` as an escaped
   percent, which newer Jai reads as two arguments; a corrected copy passes all its tests).
 
-- **rluba's libraries** (15 sweep cases, ids below). All compile; what runs depends on the services they talk to.
+- **rluba's libraries**: all compile; what runs depends on the services they talk to. Pinned commits are the
+  full SHAs in `corpus/upstreams.json`; "Sweep cases" are ids in `tools/upstream-cases.json`.
+
+  | Library | What it is | Pinned | Status | Sweep cases |
+  | --- | --- | --- | --- | --- |
+  | [jaison](https://github.com/rluba/jaison) | JSON parse/print, typed and generic | `2009cdb5895d` | run, also native | `jaison-tests`, `jaison-example`, `jaison-native-build` |
+  | [uniform](https://github.com/rluba/uniform) | RE2-style regular expressions | `d624b6d6c77c` | run (test suite) | `uniform-tests` |
+  | [stubborn](https://github.com/rluba/stubborn) | Compile-time test runner and matchers | `bad3d44895c9` | run (drives uniform's tests) | `stubborn-module`, `uniform-tests` |
+  | [jai-date](https://github.com/rluba/jai-date) | Date parsing, formatting, arithmetic | `6037e7519934` | run (`#run` self-tests) | `jai-date-module` |
+  | [jai-csv](https://github.com/rluba/jai-csv) | CSV parsing into typed arrays, escaping | `df76cdc354c8` | check (no tests upstream) | `jai-csv-module` |
+  | [wait_group](https://github.com/rluba/wait_group) | kqueue/epoll event loop | `411f0f350cd8` | run | `wait-group-example` |
+  | [cluster](https://github.com/rluba/cluster) | Process clustering with a shared listen socket | `455607c129ee` | native build | `cluster-build`, `cluster-crashing-example` |
+  | [hyperserve](https://github.com/rluba/hyperserve) | HTTP server framework | `5286acf11791` | native build | `hyperserve-example-build`, `hyperserve-datastar-build` |
+  | [jai-redis](https://github.com/rluba/jai-redis) | Redis (RESP3) client | `253391ac1df1` | native build; running needs a Redis server | `jai-redis-test-build` |
+  | [jai-postgres](https://github.com/rluba/jai-postgres) | libpq bindings and typed queries | `1fec19889899` | check; running needs libpq and a database | `jai-postgres-module`, `jai-postgres-pgvector` |
+  | [jai-tracy](https://github.com/rluba/jai-tracy) | Tracy profiler bindings and instrumenting plugin | `53f1e8aa4efe` (Tracy `30997d5ca6bb`) | native build with `-plug tracy` | `jai-tracy-plugin-check`, `jai-tracy-plugin-build` |
+
+  Notes per library:
   - uniform (regex): `jaic run first.jai - test` runs its stubborn test suite at compile time (all pass) — case
     `uniform-tests`, which also covers **stubborn** (plus `stubborn-module`).
   - jai-date: `module.jai`'s `#run` self-tests pass (`jai-date-module`, `-I ../_modules` for uniform). Its
