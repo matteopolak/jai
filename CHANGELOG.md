@@ -47,6 +47,8 @@
 
 ### Fixed
 
+- `jaic run` and `jaic check` warn when a workspace a metaprogram creates asks for an executable or library, which only `jaic build` writes, and name the `jaic build` command to use. A build script run with `jaic run` used to end without output and without writing anything.
+- `Process.create_process` (and so `run_command`) logs why a program could not be started (`could not start "./build/game": No such file or directory`) instead of failing silently.
 - macOS `Input`: a click no longer quits the program, and closing a window does. The adapter watched every window in `NSApp.windows` and queued `QUIT` when one went away, but AppKit adds and drops windows of its own; closed windows were never released, so they never went away. It now follows only the windows `Window_Creation` made (`Window_Type.macos_program_windows`) and queues `QUIT` when one is no longer visible without being minimized.
 - macOS: `NSEvent.keyRepeatDelay`, `keyRepeatInterval` and `pressedMouseButtons` are class methods, as in AppKit; they were sent to an event and stopped the program. `swapBuffers` moved from `LightweightRenderingView` to `LightweightOpenGLView`, the only view that has an OpenGL context.
 - `jaic check -os wasm` and `jaic run -os wasm` set `CPU` to `.CUSTOM`, as `jaic build -os wasm` and the browser do; they kept the host's CPU, so the same program saw `.X64` on one machine and `.ARM64` on another.

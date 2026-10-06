@@ -39,6 +39,7 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
     flags: Windows.Creation_Flags;
     if kill_process_if_parent_exits flags = cast(Windows.Creation_Flags) 4;
     if !Windows.CreateProcessW(null, native_command, null, null, xx capture_and_return_output, flags, null, directory, *startup, *process.info) {
+        log_error("could not start \"%\": %", args[0], System.get_error_string(System.get_error_value()));
         close_pipe_ends(process);
         return false;
     }
