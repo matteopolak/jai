@@ -116,16 +116,15 @@ def build_env(target, environ, target_dir, flags):
     return env
 
 
-def instrument_flags(target, raw):
-    """rustc flags for the instrumented build, writing raw profiles under `raw`."""
-    flags = [f"-Cprofile-generate={raw}"]
-    if target.startswith("aarch64") and "windows" in target:
-        # On arm64 Windows the profile runtime crashes (access violation in
-        # lprofMergeValueProfData) when a process merges its value-profile records into an
-        # existing .profraw, i.e. on every run after the first. Edge counts alone still drive
-        # the layout and inlining decisions; only indirect-call promotion is lost.
-        flags.append("-Cllvm-args=-disable-vp=true")
-    return flags
+def pgo_works(target):
+    """Whether rustc's profile runtime produces usable profiles for `target`.
+
+    Not on arm64 Windows (nightly-2026-08-29): processes that merge into an existing .profraw
+    crash in lprofMergeValueProfData, and with value profiling off the files they write are
+    still rejected by llvm-profdata ("symbol name is empty"). That target gets a plain release
+    build. See docs/tools/pgo-and-bolt.md.
+    """
+    return not (target.startswith("aarch64") and "windows" in target)
 
 
 def cargo_build(args, target_dir, flags):
@@ -283,6 +282,14 @@ def main():
     env = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
     problems = []
 
+    if not pgo_works(args.target):
+        log(f"profile-guided optimization is not available for {args.target}; building without it")
+        bins = cargo_build(args, work / "optimized", [])
+        out.mkdir(parents=True, exist_ok=True)
+        for tool, path in bins.items():
+            shutil.copy2(path, out / f"{tool}{EXE}")
+        log(f"binaries in {out}")
+        return
     if args.profile:
         profile = Path(args.profile).resolve()
     else:
@@ -291,7 +298,7 @@ def main():
         shutil.rmtree(raw, ignore_errors=True)
         raw.mkdir(parents=True)
         log("building instrumented binaries")
-        bins = cargo_build(args, work / "instrumented", instrument_flags(args.target, raw))
+        bins = cargo_build(args, work / "instrumented", [f"-Cprofile-generate={raw}"])
         # `%4m`: up to four files per binary, merged as processes exit, instead of one
         # file per process (hundreds of jaic runs at several MB each).
         train_env = dict(env, LLVM_PROFILE_FILE=str(raw / "%4m.profraw"))
