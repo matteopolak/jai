@@ -29,7 +29,7 @@ _vk_registry_lock :: () {
     }
 }
 _vk_registry_unlock :: () {
-    released, previous := compare_and_swap(*_vk_registry_guard, cast(u32) 1, cast(u32) 0);
+    released := compare_and_swap(*_vk_registry_guard, cast(u32) 1, cast(u32) 0);
     assert(released, "Vulkan registry lock ownership mismatch");
 }
 _vk_registry_new :: () -> *_Vk_Handle_Record {

@@ -177,7 +177,7 @@ find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", lin
         while start < end && tools_version[start] <= 32 start += 1;
         while end > start && tools_version[end - 1] <= 32 end -= 1;
         trimmed := string.{ end - start, tools_version.data + start };
-        tool_components, tools_parsed := _sdk_vs_version(trimmed);
+        _, tools_parsed := _sdk_vs_version(trimmed);
         if !tools_parsed continue;
         tools_prefix := _sdk_vs_join(installation, "VC\\Tools\\MSVC");
         defer free(tools_prefix);
