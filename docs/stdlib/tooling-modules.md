@@ -15,7 +15,7 @@ Small build-and-debug modules that metaprograms and programs import: `Debug` (ba
 
 - New Debug platform: extend the `#if OS == ...` branches in `backtrace`, `is_debugger_present` and `enable_signal_handler`.
 - Gotcha: `getenv` is libc's and takes a C string (`temp_c_string`).
-- These modules are independent rewrites; run `tools/check_reference_resemblance.py` after changing them ([reference resemblance check](../tools/reference-resemblance.md)).
+- These modules are clean-room implementations; maintainers run the [reference resemblance check](../tools/reference-resemblance.md) over changes to them.
 - Tests: `tests/stdlib/buildcpp-api.jai` (executable, static and dynamic library, object files, `enum_cpp_files`), `macos-bundler.jai`, `autorun-plugin.jai`, `performance-report-plugin.jai` (synthetic report records), `example-plugin.jai`, `iprof-plugin.jai`.
 
 ## Configuration

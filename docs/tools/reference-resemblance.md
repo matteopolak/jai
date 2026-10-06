@@ -2,14 +2,16 @@
 
 ## What it is
 
-`tools/check_reference_resemblance.py` flags code in `stdlib/` that looks copied or closely paraphrased from the reference Jai distribution (`reference/modules/`). `stdlib/` must be written independently; this is the guard. Run it before committing any stdlib change:
+`tools/check_reference_resemblance.py` is a maintainer safeguard for the clean-room `stdlib/`. It flags stdlib code that looks copied or closely paraphrased from an official Jai distribution's modules.
+
+Contributors must not read the source of an official Jai distribution at all, and don't need a copy: the stdlib is written from public documentation, third-party Jai code and this repository's tests ([stdlib architecture](../stdlib/architecture.md)). Maintainers with a local copy under `reference/` run the check over stdlib changes:
 
 ```sh
 python3 tools/check_reference_resemblance.py                 # whole stdlib
 python3 tools/check_reference_resemblance.py stdlib/BuildCpp.jai stdlib/Basic
 ```
 
-`reference/` is gitignored, so the check only runs where a copy exists locally; elsewhere it prints a skip message and exits 0. It is deliberately not part of CI. Its unit test (`tools/test_check_reference_resemblance.py`, synthetic fixtures only) does run in CI with the other `tools/test_*.py`.
+`reference/` is gitignored. Without it the script prints a skip message and exits 0, which is why it is not part of CI. Its unit test (`tools/test_check_reference_resemblance.py`, synthetic fixtures only) runs in CI with the other `tools/test_*.py`.
 
 ## How it works
 
@@ -45,4 +47,4 @@ stdlib/Foo.jai:12: comment 0.83-similar to reference/modules/Foo.jai:9: //counts
 
 ## Dependencies
 
-Python 3.9+ standard library (`difflib`, `fnmatch`), `git` for locating the main checkout. A whole-stdlib run takes about ten seconds.
+Python 3.9+ standard library (`difflib`, `fnmatch`), `git` for locating the main checkout.
