@@ -35,9 +35,11 @@ The interpreter uses real memory, so a mutated program that builds a pointer fro
 
 Random bytes rarely get past the parser. `harness/src/generate.rs` reads the fuzzer's bytes through `arbitrary::Unstructured` and uses them to choose productions of a small typed grammar: enums (`enum`, `enum u8`, `enum_flags`, explicit values), structs (`using` bases, defaults, `#place`), a polymorphic struct `Box(T)`, procedures with typed parameters and returns, polymorphic procedures (`$T`), `#expand` macros (with `Code` arguments and backticks), constants (`#run` initializers), globals, `#if`/`else` declarations and `#run` blocks. `main` calls every procedure, because sema is demand-driven and checks only what is reachable. The generator tracks the locals in scope and builds expressions of a requested type, so about 70% of programs compile cleanly. One program in eight is a "chaos" program that sometimes uses a value of the wrong type, which keeps the error paths covered.
 
+One top-level declaration in eleven is an "edge" production (`edge_decl`): a shape that crashed the compiler before, filled with numbers from the input (`0`, `-1`, powers of two up to `1 << 62`, `i64::MAX`, small negatives). These shapes are polymorphic struct and `$N` procedure recursion, `using` pointer cycles with `#align`, self-inserting strings, a cyclic `#run` pointer ring, nested huge arrays, `#no_padding` structs, shift/divide constant arithmetic, out-of-range enum values, `cast(Type) n`, distinct type cycles and inserted strings. `main` names each one with `type_of`, so sema reaches it.
+
 ### Corpora and dictionary
 
-`fuzz/seed_corpus.py` builds `fuzz/corpus/<target>/` from the repository's own Jai files: `tests/stdlib`, `tests/corpus/{positive,negative}` and `examples` for the compiling targets, plus `stdlib/` and `prelude/` for the lexer and parser. Size caps keep execution fast, and `lsp_json` gets each file wrapped in a JSON-RPC session. Corpora are not committed (`fuzz/.gitignore`). CI caches them between runs instead. `fuzz/jai.dict` lists keywords, directives, operators and literal shapes for libFuzzer's mutator.
+`fuzz/seed_corpus.py` builds `fuzz/corpus/<target>/` from the repository's own Jai files: `tests/stdlib`, `tests/corpus/{positive,negative}`, `examples` and `fuzz/seeds` for the compiling targets, plus `stdlib/` and `prelude/` for the lexer and parser. Size caps keep execution fast, and `lsp_json` gets each file wrapped in a JSON-RPC session. Saved regressions for the target are added too. `fuzz/seeds/` holds about 120 small hand-written programs that probe the compiler's limits: overflowing constants, recursive and oversized types, metaprogram misuse, odd `#insert`/`#run` use. Several of the bugs below were first found by writing such probes. Corpora are not committed (`fuzz/.gitignore`). CI caches them between runs instead. `fuzz/jai.dict` lists keywords, directives, operators and literal shapes for libFuzzer's mutator.
 
 ## Running locally
 
@@ -86,6 +88,19 @@ cargo test --manifest-path fuzz/harness/Cargo.toml   # replay fuzz/regressions/
 
 To act on a nightly failure, download the artifact, replay it with the `replay` example, fix it, and add the input under `fuzz/regressions/`.
 
+## Bug classes found
+
+Each was fixed with a regression test, and the limit it introduced is listed under Configuration.
+
+- **Lexer:** a here-string flag (`#string,\`) at the end of the file sliced past the end of the input.
+- **Parser stack overflow:** deeply nested parentheses, blocks or array types recursed until the stack overflowed. Now `MAX_NESTING` gives a diagnostic.
+- **Parser hang:** `#assert(` tried the `(cond, message)` form, rewound and parsed again, so each nested `#assert(` doubled the work. The form is now chosen up front, by looking for a top-level comma.
+- **LSP:** the native server ran on the 8 MiB main thread. Completion after a multibyte character split a UTF-8 boundary.
+- **Oversized types:** array and struct sizes overflowed `u64` in layout, and the interpreter then aborted on the allocation. Types over `MAX_SIZE` are now an error. Allocations the host cannot make return null (`malloc`) or trap (globals).
+- **Constant folding:** `i64::MIN / -1`, `% -1`, negation and negative shift amounts overflowed or panicked.
+- **Unbounded compile-time recursion:** polymorphic recursion (each instance creating a new one), a string that `#insert`s itself, and `using` pointer cycles in member lookup. These are now capped by `MAX_INSTANCES`, `MAX_INSERT_DEPTH` and a visited set.
+- **Compile-time values:** a `#run` result holding a pointer cycle was copied into the program recursively until the stack overflowed. An integer cast to `Code` indexed past the code table. `#align` accepted values that broke layout arithmetic.
+
 ## How to change it
 
 - New target: add a `pub fn <name>(data: &[u8])` to `harness/src/lib.rs`, a two-line file in `fuzz_targets/`, a `[[bin]]` in `fuzz/Cargo.toml`, a case in `run.sh` and `seed_corpus.py`, a `#[test]` in `harness/tests/regressions.rs`, the replay example's match, and the CI matrix.
@@ -99,6 +114,10 @@ To act on a nightly failure, download the artifact, replay it with the `replay` 
 | Interpreter budget per input | `BLOCK_BUDGET` in `harness/src/lib.rs` | 2,000,000 blocks |
 | Compiler thread stack | `COMPILER_STACK` in `harness/src/lib.rs` | 256 MiB |
 | Parser nesting limit | `jaic::parser::MAX_NESTING` | 1000 |
+| Largest type | `jaic::types::MAX_SIZE` | 2^48 bytes |
+| Polymorphic instances per procedure/struct | `MAX_INSTANCES` in `sema/mod.rs` | 2000 |
+| Nested `#insert` of strings | `MAX_INSERT_DEPTH` in `sema/consteval.rs` | 256 |
+| `#align` range | `eval_align` in `sema/structs.rs` | 0..=2^30 |
 | `-max_len`, `-timeout`, `-rss_limit_mb` | `fuzz/run.sh` | see above |
 | Print diagnostics / generated source | `JAI_FUZZ_VERBOSE` env var | off |
 | Seconds per target in CI | `workflow_dispatch` input `seconds` | 600 |
