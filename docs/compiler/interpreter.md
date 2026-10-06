@@ -29,7 +29,8 @@ playground. Memory is real host memory; foreign procedures are called natively (
   `FOREIGN_TAG` and trap with "foreign procedure '...' is not available here" when called.
 - `Host::foreign` may implement a foreign symbol itself (libc shims in `SandboxHost`, used in the browser).
   `SandboxHost` (`interp/sandbox.rs`) is the browser's operating system: virtual clock, an in-memory file system
-  over a read-only base (`FileSystem::list_dir`; `FILE*`, descriptors, `DIR*`, `stat`, `getcwd`, `/tmp`),
+  over a read-only base (`FileSystem::list_dir`; `FILE*`, descriptors, `DIR*`, `stat`, `getcwd`, `/tmp`; `chmod`
+  succeeds on existing paths because the overlay keeps no permission bits),
   `localtime_r` (UTC), `strtod`/`strtol` family, `sysconf` (one CPU), and the heap. `jaic run -os wasm file.jai`
   runs a program on it natively, which is the fast way to debug browser-only behavior without a wasm build.
   Threads: see [interpreter-threads.md](interpreter-threads.md).
