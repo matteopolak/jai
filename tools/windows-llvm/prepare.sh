@@ -79,11 +79,11 @@ fi
 
 # 4. The llvm-config front that llvm-sys picks first (see llvm-config-shim.c).
 "$clang" --target="$triple" -fms-runtime-lib=static -O2 "$here/llvm-config-shim.c" \
-  -o "$llvm/bin/llvm-config-231.exe"
+  -o "$llvm/bin/llvm-config-23.exe"
 
 # 5. Every system library must now be a bare name the linker can find: one of Windows' import
 #    libraries, or a file in the release's lib/.
-libs="$("$llvm/bin/llvm-config-231.exe" --link-static --system-libs | tr -d '\r')"
+libs="$("$llvm/bin/llvm-config-23.exe" --link-static --system-libs | tr -d '\r')"
 echo "system libraries (via shim): $libs"
 status=0
 for name in $libs; do

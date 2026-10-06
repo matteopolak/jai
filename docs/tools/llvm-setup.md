@@ -26,7 +26,7 @@ llvm-sys 231 only strips `.lib` from each entry on MSVC and emits `cargo:rustc-l
 
 - `xml2s.lib`: an empty library. Only LLVMWindowsManifest (lld, llvm-mt) uses libxml2 and jaic links nothing from it.
 - `zs.lib` and `zstd_static.lib`: zlib and zstd (versions and SHA-256s pinned in the script) compiled with the release's clang against the static CRT, into the archive's `lib/`, which is already on llvm-sys's search path. LLVM's MC and Object libraries reference the compression API, so an empty stub would not link.
-- `bin/llvm-config-231.exe`: `llvm-config-shim.c`, compiled there. llvm-sys tries `llvm-config-<crate major>.exe` before `llvm-config.exe`, so it runs the shim, which runs the real `llvm-config.exe` and, for `--system-libs` only, rewrites path-qualified `*.lib` entries to their file names. The script then checks that every system library is a Windows import library or exists in `lib/`, and fails otherwise.
+- `bin/llvm-config-23.exe`: `llvm-config-shim.c`, compiled there. llvm-sys tries `llvm-config-<LLVM major>.exe` (23, derived from its own version 231) before `llvm-config.exe`, so it runs the shim, which runs the real `llvm-config.exe` and, for `--system-libs` only, rewrites path-qualified `*.lib` entries to their file names. The script then checks that every system library is a Windows import library or exists in `lib/`, and fails otherwise.
 
 Locally, the same steps apply from Git Bash after unpacking the archive; then set `LLVM_SYS_231_PREFIX` to it (with forward slashes) and build with `+crt-static` ([Windows](../native/windows.md#configuration)).
 
@@ -39,7 +39,7 @@ For a new LLVM major version:
 - `Cargo.toml` (workspace `inkwell` feature) and `crates/jaic-llvm/Cargo.toml` (`dynamic`/`static` features), then `cargo update -p inkwell` and `python3 tools/check_dependency_age.py`.
 - The `LLVM_SYS_*_PREFIX` name and the versioned tool names (`llvm-config-NN`, `clang-NN`, `llvm-symbolizer-NN`, `wasm-ld-NN`, the `lld@NN` keg and `/usr/lib/llvm-NN`) in `crates/jaic-llvm/src/lib.rs`, `crates/jaic-llvm/src/wasm.rs`, `crates/jaic-cli/tests/debug_info.rs` and `tools/jaic-sweep.py`.
 - CI: `ci.yml`, `compile-bench.yml`, `nix.yml`, `release.yml` and `windows-native.yml` (`LLVM_VERSION`, prefix variable, Homebrew formula), and the archive and version check in `install_ci_llvm_linux.sh`. Review the archive key fingerprint whenever the script is updated.
-- Windows: the shim's file name in `tools/windows-llvm/prepare.sh` (`llvm-config-231.exe`, from llvm-sys's major version) and its known import-library list; re-check the archive's `--system-libs` output (printed by the workflows) and drop the shim once llvm-sys or the archive stop emitting absolute paths.
+- Windows: the shim's file name in `tools/windows-llvm/prepare.sh` (`llvm-config-23.exe`, the LLVM major version) and its known import-library list; re-check the archive's `--system-libs` output (printed by the workflows) and drop the shim once llvm-sys or the archive stop emitting absolute paths.
 - Nix: `llvmPackages_NN` in `flake.nix` and `nix/jaic.nix` ([Nix](nix.md)).
 - Check the workarounds in [LLVM backend](../native/llvm-backend.md) against the new release, and compare compile times ([compile-time benchmark](compile-time-benchmark.md)).
 
