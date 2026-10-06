@@ -4,6 +4,7 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+mod abi_layout;
 mod common;
 
 const JAIC: &str = env!("CARGO_BIN_EXE_jaic");
@@ -202,6 +203,82 @@ fn stack_traces() {
     assert!(stderr.contains("Stack trace:"), "{stderr}");
     assert!(stderr.contains("trace.jai:6: main"), "{stderr}");
     assert!(!output.status.success());
+}
+
+fn abi_manifest(target: &str) -> abi_layout::Manifest {
+    let text = std::fs::read_to_string(repo_root().join("tests/abi/manifest.txt")).unwrap();
+    abi_layout::parse(&text, target).unwrap_or_else(|e| panic!("{e}"))
+}
+
+/// The stdlib's hand-written C declarations (`tests/abi/manifest.txt`) against the host's own
+/// headers: sizes, alignments, field offsets, integer signedness and constants. Every CI host
+/// runs this, so a layout copied from another CPU or OS fails on the host it is wrong for.
+#[test]
+fn stdlib_c_abi_matches_host_headers() {
+    let os = match std::env::consts::OS {
+        "linux" => "linux",
+        "macos" => "macos",
+        "windows" => "windows",
+        other => {
+            eprintln!("skipping: no ABI manifest section for {other}");
+            return;
+        }
+    };
+    let cpu = match std::env::consts::ARCH {
+        "x86_64" => "x64",
+        "aarch64" => "arm64",
+        other => other,
+    };
+    let target = format!("{os}-{cpu}");
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-abi-layout");
+    std::fs::create_dir_all(&dir).unwrap();
+    let compiler = abi_layout::host_c_compiler();
+    if Command::new(&compiler).arg("--version").output().is_err() {
+        // CI hosts always have one; a missing compiler there must not pass silently.
+        assert!(
+            std::env::var_os("CI").is_none(),
+            "no C compiler `{compiler}`"
+        );
+        eprintln!("skipping: no C compiler `{compiler}`");
+        return;
+    }
+    let mismatches = abi_layout::check_host(JAIC, &abi_manifest(&target), &target, &dir)
+        .unwrap_or_else(|e| panic!("{e}"));
+    assert!(
+        mismatches.is_empty(),
+        "{} stdlib declarations differ from the C headers:\n{}",
+        mismatches.len(),
+        mismatches.join("\n")
+    );
+}
+
+/// The same check for targets this host cannot run, from `JAIC_ABI_CROSS` (`;`-separated
+/// `os-cpu[:clang args]`, e.g. `macos-x64;windows-x64`); clang must have that target's headers.
+/// Does nothing when the variable is unset. See docs/stdlib/native-bindings.md.
+#[test]
+fn stdlib_c_abi_matches_cross_target_headers() {
+    let Ok(specs) = std::env::var("JAIC_ABI_CROSS") else {
+        return;
+    };
+    let clang = std::env::var("JAIC_ABI_CLANG").unwrap_or_else(|_| "clang".into());
+    let mut failures = Vec::new();
+    for spec in specs.split(';').filter(|s| !s.trim().is_empty()) {
+        let target = abi_layout::cross_target(spec.trim()).unwrap_or_else(|e| panic!("{e}"));
+        let dir = Path::new(env!("CARGO_TARGET_TMPDIR"))
+            .join("native-abi-cross")
+            .join(&target.name);
+        std::fs::create_dir_all(&dir).unwrap();
+        match abi_layout::check_cross(JAIC, &clang, &abi_manifest(&target.name), &target, &dir) {
+            Ok(mismatches) => failures.extend(mismatches),
+            Err(e) => failures.push(format!("[{}] {e}", target.name)),
+        }
+    }
+    assert!(
+        failures.is_empty(),
+        "{} problems:\n{}",
+        failures.len(),
+        failures.join("\n")
+    );
 }
 
 /// C structs by value across the C ABI: foreign calls from the interpreter and from native code, and
