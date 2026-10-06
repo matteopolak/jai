@@ -251,11 +251,13 @@ environment:
   JAIC_DIAGNOSTICS=plain|ascii|unicode  diagnostic layout (default: by terminal)
   NO_COLOR, FORCE_COLOR, CLICOLOR_FORCE  turn colour off or on
 
-exit status: 0 success, 1 the program failed to compile or a runtime error stopped it
-(`run` otherwise exits with the program's own status), 2 a command-line mistake,
-{limit} the memory limit, 101 an internal compiler error",
+exit status: 0 success, 1 the program failed to compile, an input file cannot be read
+or a runtime error stopped it (`run` otherwise exits with the program's own status),
+2 a command-line mistake, {limit} the memory limit, {crash} native code crashed under
+the interpreter, 101 an internal compiler error",
         version = env!("CARGO_PKG_VERSION"),
         limit = jaic::memory_limit::EXIT_CODE,
+        crash = jaic::interp::CRASH_STATUS,
     )
 }
 
@@ -676,12 +678,16 @@ fn print_error(message: &str) {
 
 /// Print a command-line mistake and return the usage exit status.
 fn report_cli_error(error: CliError) -> ExitCode {
+    print_cli_error(error);
+    ExitCode::from(2)
+}
+
+fn print_cli_error(error: CliError) {
     let mut report = jaic::render::Report::new(jaic::render::Severity::Error, error.message);
     for help in error.help {
         report = report.help(help);
     }
     eprint!("{}", report.render());
-    ExitCode::from(2)
 }
 
 fn main() -> ExitCode {
@@ -799,7 +805,9 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
     }
     jaic::interp::set_library_dirs(native_lib_dirs(&stdlib));
     if let Err(error) = check_input(&cli.file) {
-        report_cli_error(error);
+        // An input that cannot be read is a failure of the command (1), not a mistake in
+        // its arguments (2); see docs/compiler/diagnostics.md.
+        print_cli_error(error);
         return ExitCode::from(1);
     }
     let path = std::fs::canonicalize(&cli.file).unwrap_or_else(|_| PathBuf::from(&cli.file));
