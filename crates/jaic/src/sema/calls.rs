@@ -489,12 +489,21 @@ impl Compiler {
         if header.params.iter().any(|p| p.auto_bake) {
             let mut mask = vec![AutoBake::Runtime; header.params.len()];
             for (i, p) in header.params.iter().enumerate() {
-                let Slot::Arg(a) = &slots[i] else {
-                    continue;
-                };
                 if !p.auto_bake {
                     continue;
                 }
+                // An omitted argument takes the default, baked when that is a constant.
+                if matches!(slots[i], Slot::Default) {
+                    if let Some(default) = &p.default
+                        && self.default_is_constant(proc, default)
+                    {
+                        mask[i] = AutoBake::Baked;
+                    }
+                    continue;
+                }
+                let Slot::Arg(a) = &slots[i] else {
+                    continue;
+                };
                 let arg = &args[*a];
                 mask[i] = match &arg.op {
                     Some(op) if op.is_const() || matches!(op, Operand::Procs(_)) => AutoBake::Baked,
@@ -618,6 +627,19 @@ impl Compiler {
             }
         }
         Ok(count)
+    }
+
+    /// Whether a `$$` parameter's default folds to a constant without running code
+    /// (`$$must := false`), checked in the procedure's own scope.
+    fn default_is_constant(&mut self, proc: ProcId, default: &ast::Expr) -> bool {
+        let scope = {
+            let p = self.proc(proc);
+            p.bindings.unwrap_or(p.scope)
+        };
+        let file = self.scope_file(scope);
+        let mut f = self.thunk_ctx("#const", file);
+        let scope = self.thunk_scope(scope);
+        matches!(self.check_expr(&mut f, scope, default, None), Ok(op) if op.is_const())
     }
 
     /// The copy of `proc` with the `$$` parameters flagged in `mask` turned into `$` ones.
