@@ -805,15 +805,7 @@ ipc_perm :: struct {
     gid: u32;
     cuid: u32;
     cgid: u32;
-    // AArch64 has the generic 32-bit mode; x86-64 a 16-bit one followed by padding.
-    #if CPU == .ARM64 && OS != .WASM {
-        mode: u32;
-    } else #if CPU == .X64 || OS == .WASM {
-        mode: u16;
-        __pad1: u16;
-    } else {
-        #assert false "POSIX: no Linux ipc_perm layout for this CPU";
-    }
+    mode: u32;
     __seq: u16;
     __pad2: u16;
     __glibc_reserved1: u64;

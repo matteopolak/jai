@@ -75,7 +75,7 @@ zig (bundled glibc headers) or a Nix/Docker glibc sysroot would supply Linux hea
   const O_DIRECTORY SOMAXCONN PTHREAD_CREATE.JOINABLE=PTHREAD_CREATE_JOINABLE
   ```
 
-  C struct tags need `= struct <tag>`, renamed fields use `jai=c`, and a flexible array member is written `name[]` (declare it `[0] T` in Jai). Use `type` for structs declared `#type_info_none` (Windows `CONTEXT`), since their fields are not visible. Then run the host test, and the cross test for the targets you can:
+  C struct tags need `= struct <tag>`, renamed fields use `jai=c`, and a flexible array member is written `name[]` (declare it `[0] T` in Jai). Use `type` for structs declared `#type_info_none` (Windows `CONTEXT`), since their fields are not visible. Write `packed struct` for a C `__attribute__((packed))` struct (x86-64 `epoll_event`): Jai cannot give a struct a lower alignment than its members, so only its size and field offsets are compared. Then run the host test, and the cross test for the targets you can:
 
   ```sh
   cargo test -p jaic-cli --test native stdlib_c_abi
