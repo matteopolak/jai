@@ -22,3 +22,5 @@ main :: () {
 operator == :: (a: V, b: V) -> bool { return a.x==b.x; }
 operator []= :: (a: *V, i: int, x: float) {}
 operator * :: (a: V, s: float) -> V #symmetric { return .{a.x*s}; }
+dotless :: (w: int) -> Extent { return {w,w*2,{.COMPUTE,7}}; }
+use_dotless :: () { describe({.GENERAL, 1}); e: Extent = {1280,720}; e = {}; x := {count = 3}; }

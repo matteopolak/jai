@@ -250,6 +250,7 @@ Formatter :: struct {
     breaks: [..] s32; // line breaks to write before each token (plan_lines)
     columns: [..] s32; // each token's column in the source (tabs count 4)
     last_on_line: [..] bool; // in the output
+    literal_brace: [..] bool; // a `{` that opens a struct literal written without the dot
     operand_end: [..] Context_Kind; // what an operator after token i would follow
     prev_sig := -1; // previous non-comment token
     line_new: int; // indentation of the output line being written
@@ -513,6 +514,13 @@ plan_lines :: (f: *Formatter) {
     }
     if open.count return;
 
+    array_resize(*f.literal_brace, n);
+    for o: 0..n - 1 {
+        if is_punct(f, o, "{") && !f.verbatim[o] && partner[o] > o {
+            f.literal_brace[o] = opens_dotless_literal(f, o, partner[o], enclosing);
+        }
+    }
+
     if f.config.brace_style == .SAME_LINE {
         for i: 1..n - 1 {
             if f.breaks[i] == 0 || f.verbatim[i] || f.verbatim[i - 1] || is_comment(f, i - 1) continue;
@@ -523,6 +531,7 @@ plan_lines :: (f: *Formatter) {
 
     for o: 0..n - 1 {
         if !is_punct(f, o, "{") || f.verbatim[o] || f.verbatim[o + 1] continue; // `#asm { ... }` stays
+        if f.literal_brace[o] continue; // a value, laid out like `.{`
         c := partner[o];
         if c == o + 1 {
             f.breaks[c] = 0;
@@ -549,6 +558,19 @@ plan_lines :: (f: *Formatter) {
         if ends_case[s] && case_keeps_statement(f, j) continue;
         f.breaks[j] = 1;
     }
+}
+
+// `f({1, 2})`, `x = {w, h}`, `return {a, b};`: a brace where a value goes, holding no
+// statements, is a struct literal without its dot rather than a block.
+opens_dotless_literal :: (f: *Formatter, o: int, close: int, enclosing: [] int) -> bool {
+    p := previous_code(f, o);
+    value_position := is_ident(f, p, "return");
+    for text: string.["(", ",", "=", ":=", "["] if is_punct(f, p, text) value_position = true;
+    if !value_position return false;
+    for j: o + 1..close - 1 {
+        if enclosing[j] == o && is_punct(f, j, ";") return false;
+    }
+    return true;
 }
 
 // The `{` at `previous + 1`, alone on its line, belongs to the code before it (a procedure,
@@ -636,6 +658,7 @@ run :: (f: *Formatter) -> bool, string {
     defer array_free(f.columns);
     defer array_free(f.breaks);
     defer array_free(f.last_on_line);
+    defer array_free(f.literal_brace);
     defer array_free(f.operand_end);
     defer array_free(f.zone);
 
@@ -832,7 +855,7 @@ track :: (f: *Formatter, i: int) -> bool, string {
 
     if is_opener(text) {
         frame: Frame;
-        frame.open = text;
+        frame.open = ifx text == "{" && i < f.literal_brace.count && f.literal_brace[i] then ".{" else text;
         frame.line_new = f.line_new;
         frame.line_orig = f.line_orig;
         frame.open_new = f.column - text.count;
