@@ -7,6 +7,7 @@
 # Bindings_Generator drives libclang through a compiler primitive that only `jaic run` provides.
 bindings-generator-c * native,wasm-native Bindings_Generator runs libclang at run time, which only the interpreter can
 bindings-generator-cpp * native,wasm-native Bindings_Generator runs libclang at run time, which only the interpreter can
+bindings-generator-declaration-api * native,wasm-native Bindings_Generator runs libclang at run time, which only the interpreter can
 
 # Native libraries with no wasm build (tests/stdlib-targets.txt lists the same modules).
 GetRect_LeftHanded/tests/geometry-tests * wasm-interp,wasm-native stb_image has no wasm build
