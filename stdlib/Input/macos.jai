@@ -109,7 +109,7 @@ macos_poll_input :: () {
     defer Foundation.NSAutoreleasePool.drain(pool);
     while true {
         native := Mac.NSApplication.nextEventMatchingMask(application, .NSEventMaskAny,
-            Foundation.NSDate.distantPast(), Mac.NSDefaultRunLoopMode, Mac.YES);
+            Foundation.NSDate.distantPast(), Mac.NSDefaultRunLoopMode, ObjC.YES);
         if !native break;
         window := mac_event_window(native);
         kind := Mac.NSEvent.type(native);
@@ -131,7 +131,7 @@ macos_poll_input :: () {
                         if bytes {
                             count: s64 = 0;
                             while bytes[count] != 0 count += 1;
-                            queue_utf8_text(routed, .{ bytes, count }, event.repeat);
+                            queue_utf8_text(routed, .{ count, bytes }, event.repeat);
                         }
                     }
                 }
@@ -193,8 +193,8 @@ macos_pointer_query :: (window: Window_Type, client_area: bool) -> float, float,
     return cast(float) point.x, cast(float) point.y, true;
 }
 
-mac_point_to_screen :: (window: *Mac.NSWindow, point: Mac.NSPoint) -> Mac.NSPoint {
-    call: (receiver: *void, selector: ObjC.SEL, point: Mac.NSPoint) -> Mac.NSPoint #c_call;
+mac_point_to_screen :: (window: *Mac.NSWindow, point: Foundation.NSPoint) -> Foundation.NSPoint {
+    call: (receiver: *void, selector: ObjC.SEL, point: Foundation.NSPoint) -> Foundation.NSPoint #c_call;
     call = cast(type_of(call)) ObjC.objc_msgSend;
     return call(window, ObjC.sel_registerName("convertPointToScreen\0"), point);
 }

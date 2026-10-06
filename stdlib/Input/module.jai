@@ -239,7 +239,15 @@ input_per_frame_event_and_flag_update :: () {
     for *record: window_input_states for *state : record.buttons state.* &= .DOWN;
 }
 
+input_system_initialized := false;
+
 update_window_events :: () {
+    // Programs written for the official Input module never call init_input_system; without the
+    // native adapter installed, no window events are pumped (on macOS the window never appears).
+    if !input_system_initialized {
+        input_system_initialized = true;
+        init_input_system();
+    }
     input_per_frame_event_and_flag_update();
     if input_event_source != null input_event_source();
     window_resizes_this_frame.count = 0;
@@ -257,6 +265,7 @@ set_custom_cursor_handling :: (is_custom: bool) {
     custom_cursor_handling = is_custom;
 }
 init_input_system :: () {
+    input_system_initialized = true;
     input_application_has_focus = true;
     for *state: input_button_states state.* = .NONE;
     for *state: unscoped_button_states state.* = .NONE;

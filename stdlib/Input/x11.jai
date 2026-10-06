@@ -107,10 +107,10 @@ x11_poll_input :: () {
                         text := alloc(count);
                         if text {
                             count = X.Xutf8LookupString(entry.input_context, *native.xkey, cast(*u8) text, count, *symbol, *status);
-                            if count > 0 queue_utf8_text(routed_window, .{ cast(*u8) text, count }, repeated);
+                            if count > 0 queue_utf8_text(routed_window, .{ count, cast(*u8) text }, repeated);
                             free(text);
                         }
-                    } else if count > 0 queue_utf8_text(routed_window, .{ buffer.data, count }, repeated);
+                    } else if count > 0 queue_utf8_text(routed_window, .{ count, buffer.data }, repeated);
                 } else {
                     count = X.XLookupString(*native.xkey, buffer.data, cast(s32) buffer.count, *symbol, null);
                     for i: 0..count - 1 {
