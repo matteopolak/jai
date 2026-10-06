@@ -954,12 +954,13 @@ impl Interp {
                 let line = self.read_u64(loc + 16) as u32;
                 let col = self.read_u64(loc + 24) as u32;
                 let message = string(self, message);
-                let mut trap = self.trap::<()>(if message.is_empty() {
-                    "assertion failed".to_string()
-                } else {
-                    format!("assertion failed: {message}")
-                })
-                .unwrap_err();
+                let mut trap = self
+                    .trap::<()>(if message.is_empty() {
+                        "assertion failed".to_string()
+                    } else {
+                        format!("assertion failed: {message}")
+                    })
+                    .unwrap_err();
                 trap.assertion = Some((path, line, col));
                 return Err(trap);
             }
@@ -1107,7 +1108,8 @@ impl Interp {
             } => {
                 let (d, s) = (vals[dst.0 as usize], vals[src.0 as usize]);
                 if d < 4096 || s < 4096 {
-                    return self.trap("null pointer dereference: memory copy through a null pointer");
+                    return self
+                        .trap("null pointer dereference: memory copy through a null pointer");
                 }
                 unsafe { std::ptr::copy(s as *const u8, d as *mut u8, *size as usize) };
             }
@@ -1117,7 +1119,8 @@ impl Interp {
             } => {
                 let d = vals[dst.0 as usize];
                 if d < 4096 {
-                    return self.trap("null pointer dereference: memory fill through a null pointer");
+                    return self
+                        .trap("null pointer dereference: memory fill through a null pointer");
                 }
                 unsafe { std::ptr::write_bytes(d as *mut u8, 0, *size as usize) };
             }
@@ -1273,9 +1276,8 @@ impl Interp {
             I::Memcpy => {
                 if a[2] > 0 {
                     if a[0] < 4096 || a[1] < 4096 {
-                        return self.trap(
-                            "null pointer dereference: memcpy through a null pointer",
-                        );
+                        return self
+                            .trap("null pointer dereference: memcpy through a null pointer");
                     }
                     unsafe { std::ptr::copy(a[1] as *const u8, a[0] as *mut u8, a[2] as usize) };
                 }
@@ -1284,9 +1286,8 @@ impl Interp {
             I::Memset => {
                 if a[2] > 0 {
                     if a[0] < 4096 {
-                        return self.trap(
-                            "null pointer dereference: memset through a null pointer",
-                        );
+                        return self
+                            .trap("null pointer dereference: memset through a null pointer");
                     }
                     unsafe { std::ptr::write_bytes(a[0] as *mut u8, a[1] as u8, a[2] as usize) };
                 }

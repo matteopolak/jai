@@ -25,7 +25,12 @@ impl Compiler {
     ///
     /// The primary location is the innermost frame in the program's own code: when a check
     /// fails inside the standard library, the user's call into it is what needs fixing.
-    pub(crate) fn trap_diagnostic(&self, trap: &Trap, prefix: &str, site: Option<Span>) -> Diagnostic {
+    pub(crate) fn trap_diagnostic(
+        &self,
+        trap: &Trap,
+        prefix: &str,
+        site: Option<Span>,
+    ) -> Diagnostic {
         let assertion = trap.assertion.is_some();
         let frames: Vec<&TrapFrame> = trap
             .frames
@@ -90,7 +95,11 @@ impl Compiler {
                 Span::NONE,
                 format!(
                     "{} inside {}{}{within}",
-                    if assertion { "an assertion failed" } else { "this call failed" },
+                    if assertion {
+                        "an assertion failed"
+                    } else {
+                        "this call failed"
+                    },
                     display_name(&called.name),
                     self.loc_suffix(innermost.loc),
                 ),
@@ -140,7 +149,11 @@ impl Compiler {
             if repeats > 0 {
                 text += &format!(
                     "\n    ... the same call {repeats} more time{}",
-                    if repeats == 1 { "" } else { "s" }
+                    if repeats == 1 {
+                        ""
+                    } else {
+                        "s"
+                    }
                 );
             }
             shown += 1;
@@ -159,7 +172,10 @@ impl Compiler {
         }
         let text = self.sources.get(FileId(file)).line_text(line);
         let call = text.get(col.saturating_sub(1) as usize..)?.trim_start();
-        let args = call.strip_prefix("assert")?.trim_start().strip_prefix('(')?;
+        let args = call
+            .strip_prefix("assert")?
+            .trim_start()
+            .strip_prefix('(')?;
         // Up to the first comma or closing parenthesis outside brackets and strings.
         let mut depth = 0i32;
         let mut quoted = false;
@@ -201,7 +217,12 @@ impl Compiler {
         let start = source.offset_of(line, col) as usize;
         let text = source.line_text(line);
         let rest = text.get(col.saturating_sub(1) as usize..).unwrap_or("");
-        let len = rest.trim_end().trim_end_matches(';').trim_end().len().max(1);
+        let len = rest
+            .trim_end()
+            .trim_end_matches(';')
+            .trim_end()
+            .len()
+            .max(1);
         Span::new(FileId(file), start, start + len)
     }
 
@@ -261,7 +282,9 @@ fn display_name(name: &str) -> String {
 /// A `help:` line for failures whose fix is clear.
 fn help_for(message: &str) -> Option<&'static str> {
     if message.starts_with("array bounds check failed") {
-        Some("valid indices are 0 up to the array's count minus one; check the index or the array's length first")
+        Some(
+            "valid indices are 0 up to the array's count minus one; check the index or the array's length first",
+        )
     } else if message.starts_with("null pointer dereference") {
         Some("check the pointer against null before using it, or make sure it is set")
     } else if message.starts_with("stack overflow") {
