@@ -48,17 +48,9 @@ initialize_queue :: ($User_Data: Type) -> *Queue(User_Data), result := Error.{} 
     queue.completions.allocator = queue.allocator;
     queue.open_files.allocator = queue.allocator;
     Threads.init(*queue.mutex);
-    if !Threads.init(*queue.submitted) {
-        Threads.destroy(*queue.mutex);
-        free(queue);
-        return null, error(.Catastrophic);
-    }
-    if !Threads.init(*queue.completed) {
-        Threads.destroy(*queue.submitted);
-        Threads.destroy(*queue.mutex);
-        free(queue);
-        return null, error(.Catastrophic);
-    }
+    // Condition variables cannot fail to initialize: `init` asserts instead of returning a status.
+    Threads.init(*queue.submitted);
+    Threads.init(*queue.completed);
     worker :: (thread: *Threads.Thread) -> s64 {
         owner := cast(*Queue(User_Data)) thread.data;
         while true {
