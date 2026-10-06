@@ -10,7 +10,7 @@ inotify_event :: struct {
     mask: u32;
     cookie: u32;
     len: u32;
-    name: [1] u8;
+    name: [0] u8; // C flexible array: `len` bytes follow the 16-byte header.
 }
 IN_CLOEXEC :: 0x80000;
 IN_NONBLOCK :: 0x00800;

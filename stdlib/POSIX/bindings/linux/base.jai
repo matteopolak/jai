@@ -217,8 +217,6 @@ SA_STACK :: SA_ONSTACK;
 SIG_BLOCK :: 0;
 SIG_UNBLOCK :: 1;
 SIG_SETMASK :: 2;
-__NGREG :: 23;
-NGREG :: __NGREG;
 IPC_CREAT :: 0x200 ;
 IPC_EXCL :: 0x400 ;
 IPC_NOWAIT :: 0x800 ;
@@ -227,7 +225,6 @@ IPC_SET :: 1;
 IPC_STAT :: 2;
 IPC_INFO :: 3;
 IPC_PRIVATE :: cast(s32) 0;
-MAP_32BIT :: 0x40;
 MAP_GROWSDOWN :: 0x00100;
 MAP_DENYWRITE :: 0x00800;
 MAP_EXECUTABLE :: 0x01000;
@@ -615,150 +612,184 @@ sigtimedwait :: (__set: *sigset_t, __info: *siginfo_t, __timeout: *timespec) -> 
 sigqueue :: (__pid: s32, __sig: s32, __val: sigval) -> s32 #foreign libc;
 _sys_siglist: [65] *u8 #elsewhere libc;
 sys_siglist: [65] *u8 #elsewhere libc;
-_fpxreg :: struct {
-    significand: [4] u16;
-    exponent: u16;
-    __glibc_reserved1: [3] u16;
-}
-_xmmreg :: struct {
-    element: [4] u32;
-}
-_fpstate :: struct {
-    cwd: u16;
-    swd: u16;
-    ftw: u16;
-    fop: u16;
-    rip: u64;
-    rdp: u64;
-    mxcsr: u32;
-    mxcr_mask: u32;
-    _st: [8] _fpxreg;
-    _xmm: [16] _xmmreg;
-    __glibc_reserved1: [24] u32;
-}
-sigcontext :: struct {
-    r8: u64;
-    r9: u64;
-    r10: u64;
-    r11: u64;
-    r12: u64;
-    r13: u64;
-    r14: u64;
-    r15: u64;
-    rdi: u64;
-    rsi: u64;
-    rbp: u64;
-    rbx: u64;
-    rdx: u64;
-    rax: u64;
-    rcx: u64;
-    rsp: u64;
-    rip: u64;
-    eflags: u64;
-    cs: u16;
-    gs: u16;
-    fs: u16;
-    __pad0: u16;
-    err: u64;
-    trapno: u64;
-    oldmask: u64;
-    cr2: u64;
-    union {
-        fpstate: *_fpstate;
-        __fpstate_word: u64;
-    }
-    __reserved1: [8] u64;
-}
-sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
 stack_t :: struct {
     ss_sp: *void;
     ss_flags: s32;
     ss_size: u64;
 }
-greg_t :: s64;
-gregset_t :: [23] greg_t;
-REG :: enum u32 {
-    R8 :: 0;
-    R9 :: 1;
-    R10 :: 2;
-    R11 :: 3;
-    R12 :: 4;
-    R13 :: 5;
-    R14 :: 6;
-    R15 :: 7;
-    RDI :: 8;
-    RSI :: 9;
-    RBP :: 10;
-    RBX :: 11;
-    RDX :: 12;
-    RAX :: 13;
-    RCX :: 14;
-    RSP :: 15;
-    RIP :: 16;
-    EFL :: 17;
-    CSGSFS :: 18;
-    ERR :: 19;
-    TRAPNO :: 20;
-    OLDMASK :: 21;
-    CR2 :: 22;
-    REG_R8 :: R8;
-    REG_R9 :: R9;
-    REG_R10 :: R10;
-    REG_R11 :: R11;
-    REG_R12 :: R12;
-    REG_R13 :: R13;
-    REG_R14 :: R14;
-    REG_R15 :: R15;
-    REG_RDI :: RDI;
-    REG_RSI :: RSI;
-    REG_RBP :: RBP;
-    REG_RBX :: RBX;
-    REG_RDX :: RDX;
-    REG_RAX :: RAX;
-    REG_RCX :: RCX;
-    REG_RSP :: RSP;
-    REG_RIP :: RIP;
-    REG_EFL :: EFL;
-    REG_CSGSFS :: CSGSFS;
-    REG_ERR :: ERR;
-    REG_TRAPNO :: TRAPNO;
-    REG_OLDMASK :: OLDMASK;
-    REG_CR2 :: CR2;
-}
-_libc_fpxreg :: struct {
-    significand: [4] u16;
-    exponent: u16;
-    __glibc_reserved1: [3] u16;
-}
-_libc_xmmreg :: struct {
-    element: [4] u32;
-}
-_libc_fpstate :: struct {
-    cwd: u16;
-    swd: u16;
-    ftw: u16;
-    fop: u16;
-    rip: u64;
-    rdp: u64;
-    mxcsr: u32;
-    mxcr_mask: u32;
-    _st: [8] _libc_fpxreg;
-    _xmm: [16] _libc_xmmreg;
-    __glibc_reserved1: [24] u32;
-}
-fpregset_t :: *_libc_fpstate;
-mcontext_t :: struct {
-    gregs: gregset_t;
-    fpregs: fpregset_t;
-    __reserved1: [8] u64;
-}
-ucontext_t :: struct {
-    uc_flags: u64;
-    uc_link: *ucontext_t;
-    uc_stack: stack_t;
-    uc_mcontext: mcontext_t;
-    uc_sigmask: sigset_t;
-    __fpregs_mem: _libc_fpstate;
+sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
+// Signal contexts are register dumps, so each CPU has its own; MAP_32BIT exists only on x86-64.
+#if CPU == .X64 || OS == .WASM {
+    __NGREG :: 23;
+    NGREG :: __NGREG;
+    MAP_32BIT :: 0x40;
+    _fpxreg :: struct {
+        significand: [4] u16;
+        exponent: u16;
+        __glibc_reserved1: [3] u16;
+    }
+    _xmmreg :: struct {
+        element: [4] u32;
+    }
+    _fpstate :: struct {
+        cwd: u16;
+        swd: u16;
+        ftw: u16;
+        fop: u16;
+        rip: u64;
+        rdp: u64;
+        mxcsr: u32;
+        mxcr_mask: u32;
+        _st: [8] _fpxreg;
+        _xmm: [16] _xmmreg;
+        __glibc_reserved1: [24] u32;
+    }
+    sigcontext :: struct {
+        r8: u64;
+        r9: u64;
+        r10: u64;
+        r11: u64;
+        r12: u64;
+        r13: u64;
+        r14: u64;
+        r15: u64;
+        rdi: u64;
+        rsi: u64;
+        rbp: u64;
+        rbx: u64;
+        rdx: u64;
+        rax: u64;
+        rcx: u64;
+        rsp: u64;
+        rip: u64;
+        eflags: u64;
+        cs: u16;
+        gs: u16;
+        fs: u16;
+        __pad0: u16;
+        err: u64;
+        trapno: u64;
+        oldmask: u64;
+        cr2: u64;
+        union {
+            fpstate: *_fpstate;
+            __fpstate_word: u64;
+        }
+        __reserved1: [8] u64;
+    }
+    greg_t :: s64;
+    gregset_t :: [23] greg_t;
+    REG :: enum u32 {
+        R8 :: 0;
+        R9 :: 1;
+        R10 :: 2;
+        R11 :: 3;
+        R12 :: 4;
+        R13 :: 5;
+        R14 :: 6;
+        R15 :: 7;
+        RDI :: 8;
+        RSI :: 9;
+        RBP :: 10;
+        RBX :: 11;
+        RDX :: 12;
+        RAX :: 13;
+        RCX :: 14;
+        RSP :: 15;
+        RIP :: 16;
+        EFL :: 17;
+        CSGSFS :: 18;
+        ERR :: 19;
+        TRAPNO :: 20;
+        OLDMASK :: 21;
+        CR2 :: 22;
+        REG_R8 :: R8;
+        REG_R9 :: R9;
+        REG_R10 :: R10;
+        REG_R11 :: R11;
+        REG_R12 :: R12;
+        REG_R13 :: R13;
+        REG_R14 :: R14;
+        REG_R15 :: R15;
+        REG_RDI :: RDI;
+        REG_RSI :: RSI;
+        REG_RBP :: RBP;
+        REG_RBX :: RBX;
+        REG_RDX :: RDX;
+        REG_RAX :: RAX;
+        REG_RCX :: RCX;
+        REG_RSP :: RSP;
+        REG_RIP :: RIP;
+        REG_EFL :: EFL;
+        REG_CSGSFS :: CSGSFS;
+        REG_ERR :: ERR;
+        REG_TRAPNO :: TRAPNO;
+        REG_OLDMASK :: OLDMASK;
+        REG_CR2 :: CR2;
+    }
+    _libc_fpxreg :: struct {
+        significand: [4] u16;
+        exponent: u16;
+        __glibc_reserved1: [3] u16;
+    }
+    _libc_xmmreg :: struct {
+        element: [4] u32;
+    }
+    _libc_fpstate :: struct {
+        cwd: u16;
+        swd: u16;
+        ftw: u16;
+        fop: u16;
+        rip: u64;
+        rdp: u64;
+        mxcsr: u32;
+        mxcr_mask: u32;
+        _st: [8] _libc_fpxreg;
+        _xmm: [16] _libc_xmmreg;
+        __glibc_reserved1: [24] u32;
+    }
+    fpregset_t :: *_libc_fpstate;
+    mcontext_t :: struct {
+        gregs: gregset_t;
+        fpregs: fpregset_t;
+        __reserved1: [8] u64;
+    }
+    ucontext_t :: struct {
+        uc_flags: u64;
+        uc_link: *ucontext_t;
+        uc_stack: stack_t;
+        uc_mcontext: mcontext_t;
+        uc_sigmask: sigset_t;
+        __fpregs_mem: _libc_fpstate;
+        __ssp: [4] u64;
+    }
+} else #if CPU == .ARM64 {
+    // <asm/sigcontext.h>; glibc's mcontext_t has the same shape.
+    sigcontext :: struct {
+        fault_address: u64;
+        regs: [31] u64;
+        sp: u64;
+        pc: u64;
+        pstate: u64;
+        __reserved: [4096] u8 #align 16;
+    }
+    mcontext_t :: struct {
+        fault_address: u64;
+        regs: [31] u64;
+        sp: u64;
+        pc: u64;
+        pstate: u64;
+        __reserved: [4096] u8 #align 16;
+    }
+    ucontext_t :: struct {
+        uc_flags: u64;
+        uc_link: *ucontext_t;
+        uc_stack: stack_t;
+        uc_sigmask: sigset_t;
+        uc_mcontext: mcontext_t;
+    }
+} else {
+    #assert false "POSIX: no Linux signal context layout for this CPU";
 }
 siginterrupt :: (__sig: s32, __interrupt: s32) -> s32 #foreign libc;
 sigaltstack :: (__ss: *stack_t, __oss: *stack_t) -> s32 #foreign libc;
@@ -774,8 +805,15 @@ ipc_perm :: struct {
     gid: u32;
     cuid: u32;
     cgid: u32;
-    mode: u16;
-    __pad1: u16;
+    // AArch64 has the generic 32-bit mode; x86-64 a 16-bit one followed by padding.
+    #if CPU == .ARM64 && OS != .WASM {
+        mode: u32;
+    } else #if CPU == .X64 || OS == .WASM {
+        mode: u16;
+        __pad1: u16;
+    } else {
+        #assert false "POSIX: no Linux ipc_perm layout for this CPU";
+    }
     __seq: u16;
     __pad2: u16;
     __glibc_reserved1: u64;

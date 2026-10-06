@@ -121,7 +121,7 @@ SOL_NFC :: 280;
 SOL_KCM :: 281;
 SOL_TLS :: 282;
 
-SOMAXCONN :: 128;
+SOMAXCONN :: 4096; // As in current glibc headers and the kernel default since Linux 5.4; older glibc said 128.
 
 SOL_SOCKET :: 1;
 
