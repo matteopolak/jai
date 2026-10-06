@@ -7,7 +7,19 @@
 # Bindings_Generator drives libclang through a compiler primitive that only `jaic run` provides.
 bindings-generator-c * native Bindings_Generator runs libclang at run time, which only the interpreter can
 bindings-generator-cpp * native Bindings_Generator runs libclang at run time, which only the interpreter can
-bindings-generator-declaration-api * native,wasm-native Bindings_Generator runs libclang at run time, which only the interpreter can
+bindings-generator-declaration-api * native Bindings_Generator runs libclang at run time, which only the interpreter can
+
+# Programs for what the browser and WASI lack: `playground` is the browser engine
+# (tools/check_playground_stdlib.mjs), which runs tests/stdlib/*.jai.
+getrect-simp-gl-frame * wasm-interp,wasm-native,playground wasm has no window system or OpenGL
+simp-gl-render-readback * wasm-interp,wasm-native,playground wasm has no window system or OpenGL
+simp-software-drawing * wasm-interp,wasm-native,playground stb_image and FreeType have no wasm build
+sound-player-offline-api * wasm-interp,wasm-native,playground stb_vorbis has no wasm build
+sound-player-device * wasm-interp,wasm-native,playground wasm has no audio output
+socket-loopback * wasm-interp,wasm-native,playground wasm has no sockets
+unmapping-allocator * wasm-interp,wasm-native,playground the module needs POSIX virtual memory calls, which wasm lacks
+window-fullscreen-toggle * wasm-interp,wasm-native,playground wasm has no window system
+window-input-native-events * wasm-interp,wasm-native,playground wasm has no window system
 
 # Native libraries with no wasm build (tests/stdlib-targets.txt lists the same modules).
 GetRect_LeftHanded/tests/geometry-tests * wasm-interp,wasm-native stb_image has no wasm build
