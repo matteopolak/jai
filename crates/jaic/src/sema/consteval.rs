@@ -430,10 +430,7 @@ impl Compiler {
     ) -> Result<Rc<Aggregate>> {
         let value = self.const_value_of_type(scope, expr, ty)?;
         let size = self.size_of(ty, expr.span)?;
-        let mut agg = Aggregate {
-            bytes: vec![0; size as usize],
-            relocs: Vec::new(),
-        };
+        let mut agg = Aggregate::zeroed(size, expr.span)?;
         self.write_value(&mut agg, 0, &value, ty, expr.span)?;
         Ok(Rc::new(agg))
     }
