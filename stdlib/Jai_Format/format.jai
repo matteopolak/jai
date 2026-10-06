@@ -1035,6 +1035,9 @@ would_merge :: (f: *Formatter, p: int, i: int) -> bool {
     if is_ident_char(a[a.count - 1]) && (is_ident_char(b[0]) || b[0] == #char "\\") return true;
     if pt.kind == .NOTE return !(nt.kind == .PUNCT && one_of(b, string.[";", ",", ")", "]", "}"]));
     if pt.kind == .NUMBER && b[0] == #char "." && !begins_with(b, "..") return true;
+    // `1.2.3` is `1.2`, `.`, `3`; once the rule above spaces `1.2 .`, a tight `.3` would lex as a
+    // float, so the digits after a lone `.` get a space too.
+    if pt.kind == .PUNCT && a == "." && nt.kind == .NUMBER && is_digit(b[0]) return true;
     if a[a.count - 1] == #char "/" && (b[0] == #char "/" || b[0] == #char "*") return true;
     if pt.kind == .PUNCT && nt.kind == .PUNCT {
         for PUNCTUATION {
