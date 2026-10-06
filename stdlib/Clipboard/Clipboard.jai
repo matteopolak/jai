@@ -214,7 +214,7 @@
 make_dib :: (width: s32, height: s32, pixels: *u8, channels: s32, flip: bool) -> string, bool {
     if width <= 0 || height <= 0 || !pixels || channels != 3 && channels != 4 return "", false;
     pitch := (cast(s64) width * 3 + 3) & ~3;
-    if pitch > (0xffff_ffff - 40) / height return "", false;
+    if pitch > (0xffff_ffff - 40) / cast(s64) height return "", false;
     count := pitch * height + 40;
     bytes := cast(*u8) alloc(count);
     if !bytes return "", false;
