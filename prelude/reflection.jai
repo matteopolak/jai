@@ -30,8 +30,12 @@ Type_Info_Integer :: struct {
     using #as info: Type_Info;
     signed: bool;
 }
-Type_Info_Float :: struct { using #as info: Type_Info; }
-Type_Info_String :: struct { using #as info: Type_Info; }
+Type_Info_Float :: struct {
+    using #as info: Type_Info;
+}
+Type_Info_String :: struct {
+    using #as info: Type_Info;
+}
 Type_Info_Pointer :: struct {
     using #as info: Type_Info;
     pointer_to: *Type_Info;
@@ -67,7 +71,9 @@ Type_Info_Procedure :: struct {
     procedure_flags: Flags;
 }
 
-Enum_Status_Flags :: enum_flags u16 { INCOMPLETE :: 0x1; }
+Enum_Status_Flags :: enum_flags u16 {
+    INCOMPLETE :: 0x1;
+}
 Enum_Type_Flags :: enum_flags u16 {
     FLAGS :: 0x1;
     COMPLETE :: 0x2;

@@ -27,7 +27,9 @@ Log_Flags :: enum_flags u32 {
     VERY_VERBOSE_ONLY :: 0x20;
     TOPIC_ONLY :: 0x40;
 }
-Log_Section :: struct { name: string; }
+Log_Section :: struct {
+    name: string;
+}
 Log_Info :: struct {
     source_identifier: u64;
     location: Source_Code_Location;
