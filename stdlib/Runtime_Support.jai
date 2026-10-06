@@ -305,18 +305,22 @@ unlock_output :: () #no_context {
     success := compare_and_swap(*output_lock, 1, 0);
     if !success debug_break();
 }
+// Locations print as "path:line,column".
 write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context {
-    write_string(loc.fully_pathed_filename, to_standard_error);
-    write_string(":", to_standard_error);
-    write_number(loc.line_number, to_standard_error = to_standard_error);
-    write_string(",", to_standard_error);
-    write_number(loc.character_number, to_standard_error = to_standard_error);
+    stderr := to_standard_error;
+    write_string(loc.fully_pathed_filename, stderr);
+    write_number_after(":", loc.line_number, stderr);
+    write_number_after(",", loc.character_number, stderr);
 }
+// Prefix for runtime failure messages: "path:line: ", always on stderr.
 write_failure_location :: (filename: *u8, line: s64) #no_context {
     write_string(to_string(filename), true);
-    write_string(":", true);
-    write_number(line, to_standard_error = true);
+    write_number_after(":", line, true);
     write_string(": ", true);
+}
+write_number_after :: (separator: string, value: s64, stderr: bool) #no_context {
+    write_string(separator, stderr);
+    write_number(value, to_standard_error = stderr);
 }
 my_panic :: () #no_context {
     write_string("runtime panic\n", true);
