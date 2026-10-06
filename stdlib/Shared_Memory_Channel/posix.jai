@@ -3,7 +3,7 @@ HEADER_OS_MAGIC :: "ShmP";
 reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel) {
     result: Read_Channel;
     c_name := temp_c_string(name);
-    descriptor := P.shm_open(c_name, P.O_CREAT | P.O_EXCL | P.O_RDWR, cast(s32) 384);
+    descriptor := P.shm_open(c_name, P.O_CREAT | P.O_EXCL | P.O_RDWR, 384);
     if descriptor < 0 return false, result;
     size := bytes + OFFSET_TO_MESSAGE_DATA;
     if P.ftruncate(descriptor, size) != 0 {
@@ -40,7 +40,7 @@ reader_release_channel :: (channel: *Read_Channel) -> bool {
 }
 writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel) {
     result: Write_Channel;
-    descriptor := P.shm_open(temp_c_string(name), P.O_RDWR);
+    descriptor := P.shm_open(temp_c_string(name), P.O_RDWR, 0);
     if descriptor < 0 return false, result;
     stats: P.stat_t;
     if P.fstat(descriptor, *stats) != 0 || stats.st_size < OFFSET_TO_MESSAGE_DATA + 32 {

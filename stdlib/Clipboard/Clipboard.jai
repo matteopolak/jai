@@ -141,22 +141,22 @@
 } else #if OS == .LINUX {
     Processes :: #import "Process";
     os_clipboard_get_text :: () -> string {
-        arguments: [3] string = .{ "wl-paste", "--no-newline", "" };
+        arguments: [3] string = .[ "wl-paste", "--no-newline", "" ];
         status, out, err, timeout := Processes.run_command(..slice_array(arguments, 0, 2), capture_and_return_output = true);
         if status.type == .EXITED && status.exit_code == 0 return copy_string(out);
-        x_arguments: [4] string = .{ "xclip", "-selection", "clipboard", "-o" };
+        x_arguments: [4] string = .[ "xclip", "-selection", "clipboard", "-o" ];
         status, out, err, timeout = Processes.run_command(..x_arguments, capture_and_return_output = true);
         if status.type == .EXITED && status.exit_code == 0 return copy_string(out);
         return "";
     }
     os_clipboard_set_text :: (text: string) {
-        arguments: [1] string = .{ "wl-copy" };
+        arguments: [1] string = .[ "wl-copy" ];
         if clipboard_send(arguments, text) return;
-        fallback: [3] string = .{ "xclip", "-selection", "clipboard" };
+        fallback: [3] string = .[ "xclip", "-selection", "clipboard" ];
         clipboard_send(fallback, text);
     }
     os_clipboard_empty :: () {
-        arguments: [2] string = .{ "wl-copy", "--clear" };
+        arguments: [2] string = .[ "wl-copy", "--clear" ];
         status, out, err, timeout := Processes.run_command(..arguments);
         if status.type != .EXITED || status.exit_code != 0 os_clipboard_set_text("");
     }
@@ -164,9 +164,9 @@
         bmp, valid := make_bmp(width, height, pixels, channels, flip);
         if !valid return;
         defer free(bmp);
-        arguments: [3] string = .{ "wl-copy", "--type", "image/bmp" };
+        arguments: [3] string = .[ "wl-copy", "--type", "image/bmp" ];
         if clipboard_send(arguments, bmp) return;
-        fallback: [5] string = .{ "xclip", "-selection", "clipboard", "-t", "image/bmp" };
+        fallback: [5] string = .[ "xclip", "-selection", "clipboard", "-t", "image/bmp" ];
         clipboard_send(fallback, bmp);
     }
     #scope_file
