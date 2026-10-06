@@ -144,29 +144,46 @@ get_recursive_nodes_depth_first :: (node: *Code_Node, pointers: *[..] *Code_Node
     get_subexpressions(node, *children);
     for children get_recursive_nodes_depth_first(it, pointers);
 }
-Dumb_Value :: struct {
-    node: *Code_Node;
-    preorder := false;
-}
-get_values :: (node: *Code_Node, values: *[..] Dumb_Value) {
-    if !node return;
-    Basic.array_add(values, Dumb_Value.{ node, true });
-    children: [..] *Code_Node;
-    defer Basic.array_free(children);
-    get_subexpressions(node, *children);
-    for children get_values(it, values);
-    Basic.array_add(values, Dumb_Value.{ node, false });
-}
+// Runs `code` twice per node of the tree under `node`: once on the way down (`preorder` true)
+// and once on the way back up, after all of the node's children. The whole schedule is built
+// before `code` first runs, so the inserted code may rewrite the tree it is walking.
 visit_pre_and_postorder :: (node: *Code_Node, code: Code) #expand {
-    order: [..] Dumb_Value;
-    defer Basic.array_free(*order);
-    get_values(node, *order);
-    for value: order {
-        `it := value.node;
-        `preorder := value.preorder;
+    schedule: [..] Visit_Step;
+    defer Basic.array_free(schedule);
+    schedule_visits(node, *schedule);
+    cursor := 0;
+    while cursor < schedule.count {
+        defer cursor += 1;
+        `it := schedule[cursor].node;
+        `preorder := schedule[cursor].entering;
         #insert code;
     }
 }
 #scope_module
+Visit_Step :: struct {
+    node: *Code_Node;
+    entering: bool;
+}
+// Iterative, so deep trees cannot overflow the stack. Popping an entering step re-pushes its
+// node as a leaving step underneath its children, which yields the leave after the subtree.
+schedule_visits :: (root: *Code_Node, schedule: *[..] Visit_Step) {
+    if !root return;
+    stack: [..] Visit_Step;
+    defer Basic.array_free(stack);
+    children: [..] *Code_Node;
+    defer Basic.array_free(children);
+    Basic.array_add(*stack, .{ root, true });
+    while stack.count > 0 {
+        step := stack[stack.count - 1];
+        stack.count -= 1;
+        Basic.array_add(schedule, step);
+        if !step.entering continue;
+        Basic.array_add(*stack, .{ step.node, false });
+        children.count = 0;
+        get_subexpressions(step.node, *children);
+        // Reversed, so the first child is on top and comes out first.
+        for < child: children Basic.array_add(*stack, .{ child, true });
+    }
+}
 #import "Compiler";
 Basic :: #import "Basic";
