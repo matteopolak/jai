@@ -176,7 +176,7 @@ class Runner:
     """Runs a case through the chosen backends; shared by main() and tools/jaic-reduce.py."""
 
     def __init__(self, jaic, backends, work, wasm_bundle=None, timeout=120, memory_gib=3):
-        self.jaic, self.backends, self.work = Path(jaic), backends, Path(work)
+        self.jaic, self.backends, self.work = Path(jaic).resolve(), backends, Path(work)
         self.timeout, self.limit_bytes = timeout, int(memory_gib * 2**30)
         self.wasm = WasmPool(Path(wasm_bundle).resolve(), timeout) if "wasm" in backends else None
 

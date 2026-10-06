@@ -157,7 +157,7 @@
     }
     os_clipboard_empty :: () {
         arguments: [2] string = .["wl-copy", "--clear"];
-        status, out, err, timeout := Processes.run_command(..arguments);
+        status := Processes.run_command(..arguments);
         if status.type != .EXITED || status.exit_code != 0 os_clipboard_set_text("");
     }
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
