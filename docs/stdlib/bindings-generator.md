@@ -26,7 +26,7 @@ jaic run generate.jai            # writes mylib.jai
 jaic check generate.jai -os linux   # generators for another OS's headers
 ```
 
-`tests/stdlib/bindings-generator-c.jai` is a complete example, including a `visitor` and output assertions; it writes into `/tmp`.
+`tests/stdlib/bindings-generator-c.jai` is a complete example, including a `visitor` and output assertions; it generates in `#run` and writes its header into a scratch directory under the system temporary directory (`tests/stdlib/modules/Scratch_Directory`).
 
 ### Pipeline
 
