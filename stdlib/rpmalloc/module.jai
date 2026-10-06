@@ -94,4 +94,5 @@ else
 
 #scope_module
 Basic :: #import "Basic";
+Math :: #import "Math";
 #load "native.jai";

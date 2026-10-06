@@ -1,4 +1,5 @@
 // Objective_C: the runtime, Foundation and helpers for calling into Apple frameworks.
+#assert(OS == .MACOS || OS == .IOS, "Objective_C is only supported on Apple platforms");
 init_objective_c :: () {
     _sel.addItem_ = cast(Selector) sel_registerName(cast(*u8) "addItem:\0");
     _sel.alloc = cast(Selector) sel_registerName(cast(*u8) "alloc\0");

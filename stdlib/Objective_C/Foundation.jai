@@ -257,8 +257,8 @@ NSProcessInfo :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSProcessInfo\0"), sel_registerName(cast(*u8) "processInfo\0"));
     }
-    environment :: (self: *NSProcessInfo) -> *NSDictionary {
-        invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *NSDictionary #c_call;
+    environment :: (self: *NSProcessInfo) -> *NSDictionary(*NSString, *NSString) {
+        invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *NSDictionary(*NSString, *NSString) #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "environment\0"));
     }

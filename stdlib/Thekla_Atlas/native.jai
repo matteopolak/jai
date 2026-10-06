@@ -117,8 +117,8 @@ atlas_retry_isolated_faces :: (input: *Atlas_Input_Mesh, options: *Native_Atlas_
             vertex := face * 3 + corner;
             original := input.face_array[face].vertex_index[corner];
             vertices[vertex] = input.vertex_array[original];
-            vertices[vertex].first_colocal = vertex;
-            faces[face].vertex_index[corner] = vertex;
+            vertices[vertex].first_colocal = cast(s32) vertex;
+            faces[face].vertex_index[corner] = cast(s32) vertex;
         }
     }
     isolated: Atlas_Input_Mesh = .{ count, input.face_count, vertices, faces };

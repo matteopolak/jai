@@ -16,7 +16,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
     Windows :: #import "Windows";
     pointers: [NUM_POINTERS] Windows.HCURSOR;
     init_pointers :: () {
-        names := *void.[Windows.IDC_ARROW, Windows.IDC_HAND, Windows.IDC_NO, Windows.IDC_SIZEWE, Windows.IDC_SIZENS, Windows.IDC_SIZEALL, Windows.IDC_SIZENWSE, Windows.IDC_SIZENESW];
+        names: [NUM_POINTERS] *void = .[Windows.IDC_ARROW, Windows.IDC_HAND, Windows.IDC_NO, Windows.IDC_SIZEWE, Windows.IDC_SIZENS, Windows.IDC_SIZEALL, Windows.IDC_SIZENWSE, Windows.IDC_SIZENESW];
         for name, index: names {
             pointers[index] = Windows.LoadCursorW(null, cast(*s16) name);
             assert(pointers[index] != null, "System cursor could not be loaded");

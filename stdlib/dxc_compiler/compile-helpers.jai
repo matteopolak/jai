@@ -92,7 +92,7 @@ DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..] u8 {
     size := IDxcBlob_GetBufferSize(binary);
     DXCMemory.assert(size <= 0x7fff_ffff_ffff_ffff);
     DXCMemory.array_resize(*output, cast(s64) size);
-    if size > 0 DXCMemory.memcpy(output.data, IDxcBlob_GetBufferPointer(binary), cast(s64) size);
+    if size > 0 memcpy(output.data, IDxcBlob_GetBufferPointer(binary), cast(s64) size);
     return output;
 }
 DXC_Reflect :: (dxil: [] u8) -> *ID3D12ShaderReflection, bool {

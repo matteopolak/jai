@@ -15,8 +15,8 @@ vkGetPhysicalDeviceQueueFamilyProperties2KHR :: (physicalDevice: VkPhysicalDevic
     data.data = cast(*VkQueueFamilyProperties2) Vk_Extension_Memory.alloc(cast(s64) capacity * size_of(VkQueueFamilyProperties2));
     assert(data.data != null, "Out of host memory for Vulkan query");
     data.count = cast(s64) capacity;
-    Vk_Extension_Memory.memset(data.data, 0, data.count * size_of(VkQueueFamilyProperties2));
-    for i: 0..data.count - 1 data[i].sType = VkStructureType.QUEUE_FAMILY_PROPERTIES_2;
+    memset(data.data, 0, data.count * size_of(VkQueueFamilyProperties2));
+    for *data it.sType = VkStructureType.QUEUE_FAMILY_PROPERTIES_2;
     native(physicalDevice, *count, data.data);
     assert(count <= capacity, "Vulkan query returned more entries than the supplied capacity");
     data.count = cast(s64) count;
@@ -35,8 +35,8 @@ vkGetPhysicalDeviceSparseImageFormatProperties2KHR :: (physicalDevice: VkPhysica
     data.data = cast(*VkSparseImageFormatProperties2) Vk_Extension_Memory.alloc(cast(s64) capacity * size_of(VkSparseImageFormatProperties2));
     assert(data.data != null, "Out of host memory for Vulkan query");
     data.count = cast(s64) capacity;
-    Vk_Extension_Memory.memset(data.data, 0, data.count * size_of(VkSparseImageFormatProperties2));
-    for i: 0..data.count - 1 data[i].sType = VkStructureType.SPARSE_IMAGE_FORMAT_PROPERTIES_2;
+    memset(data.data, 0, data.count * size_of(VkSparseImageFormatProperties2));
+    for *data it.sType = VkStructureType.SPARSE_IMAGE_FORMAT_PROPERTIES_2;
     native(physicalDevice, pFormatInfo, *count, data.data);
     assert(count <= capacity, "Vulkan query returned more entries than the supplied capacity");
     data.count = cast(s64) count;
@@ -54,8 +54,8 @@ vkEnumeratePhysicalDeviceGroupsKHR :: (instance: VkInstance) -> [] VkPhysicalDev
     data.data = cast(*VkPhysicalDeviceGroupProperties) Vk_Extension_Memory.alloc(cast(s64) capacity * size_of(VkPhysicalDeviceGroupProperties));
     if data.data == null return data, VkResult.ERROR_OUT_OF_HOST_MEMORY;
     data.count = cast(s64) capacity;
-    Vk_Extension_Memory.memset(data.data, 0, data.count * size_of(VkPhysicalDeviceGroupProperties));
-    for i: 0..data.count - 1 data[i].sType = VkStructureType.PHYSICAL_DEVICE_GROUP_PROPERTIES;
+    memset(data.data, 0, data.count * size_of(VkPhysicalDeviceGroupProperties));
+    for *data it.sType = VkStructureType.PHYSICAL_DEVICE_GROUP_PROPERTIES;
     status = native(instance, *count, data.data);
     if cast(s32) status < 0 {
         Vk_Extension_Memory.free(data.data);
@@ -85,8 +85,8 @@ vkGetImageSparseMemoryRequirements2KHR :: (device: VkDevice, pInfo: *VkImageSpar
     data.data = cast(*VkSparseImageMemoryRequirements2) Vk_Extension_Memory.alloc(cast(s64) capacity * size_of(VkSparseImageMemoryRequirements2));
     assert(data.data != null, "Out of host memory for Vulkan query");
     data.count = cast(s64) capacity;
-    Vk_Extension_Memory.memset(data.data, 0, data.count * size_of(VkSparseImageMemoryRequirements2));
-    for i: 0..data.count - 1 data[i].sType = VkStructureType.SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
+    memset(data.data, 0, data.count * size_of(VkSparseImageMemoryRequirements2));
+    for *data it.sType = VkStructureType.SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
     native(device, pInfo, *count, data.data);
     assert(count <= capacity, "Vulkan query returned more entries than the supplied capacity");
     data.count = cast(s64) count;
@@ -128,8 +128,8 @@ vkGetQueueCheckpointDataNV :: (queue: VkQueue) -> [] VkCheckpointDataNV {
     data.data = cast(*VkCheckpointDataNV) Vk_Extension_Memory.alloc(cast(s64) capacity * size_of(VkCheckpointDataNV));
     assert(data.data != null, "Out of host memory for Vulkan query");
     data.count = cast(s64) capacity;
-    Vk_Extension_Memory.memset(data.data, 0, data.count * size_of(VkCheckpointDataNV));
-    for i: 0..data.count - 1 data[i].sType = VkStructureType.CHECKPOINT_DATA_NV;
+    memset(data.data, 0, data.count * size_of(VkCheckpointDataNV));
+    for *data it.sType = VkStructureType.CHECKPOINT_DATA_NV;
     native(queue, *count, data.data);
     assert(count <= capacity, "Vulkan query returned more entries than the supplied capacity");
     data.count = cast(s64) count;

@@ -4,6 +4,7 @@
 
 ### Added
 
+- CI type-checks every stdlib module with `-no_dce` for linux, macos, windows and wasm (`crates/jaic-cli/tests/stdlib_targets.rs`, expectations in `tests/stdlib-targets.txt`), so a type error in code for another platform or in a procedure nothing calls fails the build. See `docs/tools/stdlib-target-check.md`.
 - `JAIC_MEMORY_LIMIT=<bytes|nK|nM|nG>`: an exact cap on what `jaic` allocates (compiler, interpreter and the program's C `malloc` calls). Crossing it prints `error: memory limit of N MiB exceeded` and exits with status 120. The corpus sweep uses it for `--memory-limit` instead of sampling resident memory.
 - `jailint`, a linter for Jai whose rules run on the type-checked program. The rules are `index_only_loop`, `manual_index_counter`, `unused_variable`, `unused_parameter`, `unused_import`, `redundant_cast`, `bool_comparison`, `format_arg_count`, `shadowed_it`, `defer_in_loop`, `float_equality` (off by default) and `lossy_xx` (off by default).
   - Diagnostics are printed in rustc's layout. `--fix` applies the safe fixes, `-A`/`-W`/`-D` set levels, and the exit status is non-zero when a `deny` rule fires.
@@ -45,6 +46,13 @@
 
 ### Fixed
 
+- `Input`: `update_window_events` installs the platform event adapter, which nothing installed before: programs got no window events, and on macOS the window never appeared.
+- Type errors in stdlib code that was never checked, found by the new stdlib target check: the macOS input adapter, `Window_Creation.toggle_fullscreen` on macOS (`NSWindow.screen` was missing), the x11 adapter's text input, `Foundation`/`Metal` return types that named `NSDictionary` without parameters, `File` known folders on Windows, `Socket` addresses on Windows, `GL` info logs, `Simp` font cleanup, `GetRect` color strips, text hit-testing and Windows cursors, `ImGui.CreateContext`, `Text_File_Handler.file_to_table`, the Vulkan, d3d, dxc and nvtt wrappers, `pl_mpeg`, `rpmalloc`, `Thekla_Atlas`, `Shared_Memory_Channel` on Windows and `POSIX_old`.
+- `File.read_entire_file(path, zero_terminated := false, log_errors := true)` takes `zero_terminated` like the official module; a second positional argument meant `log_errors` before.
+- `Objective_C`, `macos` and `Metal` stop with an `#assert` off Apple platforms instead of an unknown identifier.
+- A struct constant that names a member of its struct (`size_of(type_of(info))`) no longer fails with a circular dependency when the struct is declared inside another struct and nothing uses it.
+- An enum member's value may name the enum itself (`B :: A + cast(E) 50`).
+- Compile-time pointer constants with the top bit set (`cast(HKEY) cast(s32) 0x80000000`) keep their value instead of failing with `a compile-time value holds a pointer to memory of unknown size`.
 - A release `jaic` (and `jailint`, `jailsp`) started through a symlink, e.g. unpacked into `/opt` and linked from a bin folder, now finds the `stdlib` folder next to the real file. On macOS it looked next to the link and then fell back to the CI runner's path (`could not read file /Users/runner/work/jai/jai/stdlib/Preload.jai`). A missing standard library is now reported as such, with how to fix it.
 - An omitted argument binds a polymorphic type its default determines: `error :: (code: int, platform_code: $T = 0)` called as `error(3)` makes `T` `s64` instead of failing with "could not infer polymorphic type".
 - `Basic.create_heap` no longer passes an `Allocator_Caps` value to `assert`'s `bool` parameter (found with `-no_dce`).

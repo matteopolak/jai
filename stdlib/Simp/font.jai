@@ -385,7 +385,7 @@ draw_code :: (font: *Dynamic_Font, x: s64, y: s64, char_x_advance: float, line_h
 deinit :: (font: *Dynamic_Font) {
     record := font_record(font);
     if !record return;
-    for glyph: font.glyph_lookup.values free(glyph);
+    for glyph: font.glyph_lookup free(glyph);
     deinit(*font.glyph_lookup);
     array_reset(*font.current_quads);
     // temporary_glyphs uses temp storage, which is released by its allocator.

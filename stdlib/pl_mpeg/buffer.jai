@@ -50,8 +50,8 @@ buffer_create_with_filename :: (filename: string) -> *Buffer {
 buffer_create_with_file :: (fh: File, close_when_done: bool) -> *Buffer {
     length, measured := file_length_checked(fh);
     if !measured || length < 0 return null;
-    entry := new(Buffer_State);
-    entry.public = new(Buffer);
+    entry := New(Buffer_State);
+    entry.public = New(Buffer);
     entry.creator = context;
     entry.callback_context = context;
     entry.own_native = true;

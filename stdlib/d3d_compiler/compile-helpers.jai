@@ -58,7 +58,7 @@ _d3d_macro_array :: (definitions: [] string) -> *D3D_SHADER_MACRO {
     ShaderMemory.assert(definitions.count >= 0 && definitions.count < 0x3fff_ffff);
     values := cast(*D3D_SHADER_MACRO) ShaderMemory.temporary_alloc((definitions.count + 1) * size_of(D3D_SHADER_MACRO));
     if values == null return null;
-    ShaderMemory.memset(values, 0, (definitions.count + 1) * size_of(D3D_SHADER_MACRO));
+    memset(values, 0, (definitions.count + 1) * size_of(D3D_SHADER_MACRO));
     for index: 0..definitions.count - 1 {
         text := definitions[index];
         split: s64 = 0;

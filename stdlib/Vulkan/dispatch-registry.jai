@@ -1,6 +1,5 @@
 // Independently authored provenance registry. It never inspects opaque handle memory.
 #scope_module
-Vk_Registry_Memory :: #import "Basic";
 _Vk_Handle_Family :: enum {
     INSTANCE;
     PHYSICAL_DEVICE;
@@ -34,7 +33,7 @@ _vk_registry_unlock :: () {
 }
 _vk_registry_new :: () -> *_Vk_Handle_Record {
     node := cast(*_Vk_Handle_Record) _vk_registry_malloc(cast(_Vk_Size) size_of(_Vk_Handle_Record));
-    if node != null Vk_Registry_Memory.memset(node, 0, size_of(_Vk_Handle_Record));
+    if node != null memset(node, 0, size_of(_Vk_Handle_Record));
     return node;
 }
 _vk_registry_stamp :: (node: *_Vk_Handle_Record) -> bool {
@@ -271,7 +270,7 @@ vk_unregister_queue :: (queue: VkQueue) {
     _vk_registry_remove(.QUEUE, queue = queue);
 }
 
-vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocationCallbacks, pInstance: *VkInstance) -> VkResult #c_call {
+vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocationCallbacks, pInstance: *VkInstance) -> VkResult {
     status := _vk_sdk_vkCreateInstance(pCreateInfo, pAllocator, pInstance);
     if status == .SUCCESS {
         vk_unregister_instance(pInstance.*); // A newly created native handle starts a new lifetime.
@@ -283,11 +282,11 @@ vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocati
     }
     return status;
 }
-vkDestroyInstance :: (instance: VkInstance, pAllocator: *VkAllocationCallbacks) #c_call {
+vkDestroyInstance :: (instance: VkInstance, pAllocator: *VkAllocationCallbacks) {
     vk_unregister_instance(instance);
     _vk_sdk_vkDestroyInstance(instance, pAllocator);
 }
-vkEnumeratePhysicalDevices :: (instance: VkInstance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *VkPhysicalDevice) -> VkResult #c_call {
+vkEnumeratePhysicalDevices :: (instance: VkInstance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *VkPhysicalDevice) -> VkResult {
     if !_vk_registered_instance(instance) return .ERROR_INITIALIZATION_FAILED;
     status := _vk_sdk_vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
     if pPhysicalDevices != null && (status == .SUCCESS || status == .INCOMPLETE) {
@@ -297,7 +296,7 @@ vkEnumeratePhysicalDevices :: (instance: VkInstance, pPhysicalDeviceCount: *u32,
     }
     return status;
 }
-vkCreateDevice :: (physicalDevice: VkPhysicalDevice, pCreateInfo: *VkDeviceCreateInfo, pAllocator: *VkAllocationCallbacks, pDevice: *VkDevice) -> VkResult #c_call {
+vkCreateDevice :: (physicalDevice: VkPhysicalDevice, pCreateInfo: *VkDeviceCreateInfo, pAllocator: *VkAllocationCallbacks, pDevice: *VkDevice) -> VkResult {
     if _vk_physical_instance(physicalDevice) == null return .ERROR_INITIALIZATION_FAILED;
     status := _vk_sdk_vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
     if status == .SUCCESS {
@@ -310,16 +309,16 @@ vkCreateDevice :: (physicalDevice: VkPhysicalDevice, pCreateInfo: *VkDeviceCreat
     }
     return status;
 }
-vkDestroyDevice :: (device: VkDevice, pAllocator: *VkAllocationCallbacks) #c_call {
+vkDestroyDevice :: (device: VkDevice, pAllocator: *VkAllocationCallbacks) {
     vk_unregister_device(device);
     _vk_sdk_vkDestroyDevice(device, pAllocator);
 }
-vkGetDeviceQueue :: (device: VkDevice, queueFamilyIndex: u32, queueIndex: u32, pQueue: *VkQueue) #c_call {
+vkGetDeviceQueue :: (device: VkDevice, queueFamilyIndex: u32, queueIndex: u32, pQueue: *VkQueue) {
     assert(_vk_registered_device(device), "Register an externally created Vulkan device before retrieving queues");
     _vk_sdk_vkGetDeviceQueue(device, queueFamilyIndex, queueIndex, pQueue);
     assert(vk_register_queue(device, pQueue.*), "Vulkan queue registration failed");
 }
-vkGetDeviceQueue2 :: (device: VkDevice, pQueueInfo: *VkDeviceQueueInfo2, pQueue: *VkQueue) #c_call {
+vkGetDeviceQueue2 :: (device: VkDevice, pQueueInfo: *VkDeviceQueueInfo2, pQueue: *VkQueue) {
     assert(_vk_registered_device(device), "Register an externally created Vulkan device before retrieving queues");
     _vk_sdk_vkGetDeviceQueue2(device, pQueueInfo, pQueue);
     assert(vk_register_queue(device, pQueue.*), "Vulkan queue registration failed");
@@ -335,7 +334,7 @@ _vk_register_groups :: (instance: VkInstance, count: u32, groups: *VkPhysicalDev
     return true;
 }
 #scope_export
-vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance, pPhysicalDeviceGroupCount: *u32, pPhysicalDeviceGroupProperties: *VkPhysicalDeviceGroupProperties) -> VkResult #c_call {
+vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance, pPhysicalDeviceGroupCount: *u32, pPhysicalDeviceGroupProperties: *VkPhysicalDeviceGroupProperties) -> VkResult {
     if !_vk_registered_instance(instance) return .ERROR_INITIALIZATION_FAILED;
     status := _vk_sdk_vkEnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
     if pPhysicalDeviceGroupProperties != null && (status == .SUCCESS || status == .INCOMPLETE) {

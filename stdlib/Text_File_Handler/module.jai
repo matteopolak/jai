@@ -123,7 +123,7 @@ file_to_table :: (filename: string, do_trim := true, skip_blank_lines := true, d
         empty: void;
         Hash_Table.table_set(*table, line, empty);
     }
-    Basic.array_free(*lines);
+    Basic.array_free(lines);
     return success, table;
 }
 

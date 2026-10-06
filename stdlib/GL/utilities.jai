@@ -42,7 +42,7 @@ DumpShaderInfoLog :: (shader: GLuint, name: string) {
     bytes := cast(*u8) Basic.temporary_alloc(size);
     Basic.assert(bytes != null);
     written: GLsizei = 0;
-    glGetShaderInfoLog(shader, size, *written, bytes);
+    glGetShaderInfoLog(shader, cast(GLsizei) size, *written, bytes);
     if written > 0 Basic.log("Shader %: %\n", name, Basic.to_string(bytes, written));
 }
 DumpProgramInfoLog :: (program: GLuint, name: string) {
@@ -52,7 +52,7 @@ DumpProgramInfoLog :: (program: GLuint, name: string) {
     bytes := cast(*u8) Basic.temporary_alloc(size);
     Basic.assert(bytes != null);
     written: GLsizei = 0;
-    glGetProgramInfoLog(program, size, *written, bytes);
+    glGetProgramInfoLog(program, cast(GLsizei) size, *written, bytes);
     if written > 0 Basic.log("Program %: %\n", name, Basic.to_string(bytes, written));
 }
 gl_enable_debug_output :: (break_on_error: bool = false) {

@@ -126,7 +126,7 @@ text_display :: (r: Rect, text: *Flowable_Text, offset_y: float, line_stride: fl
 find_line_and_character :: (text: *Flowable_Text, rt_width: int, rt_height: int, cursor_x: int, cursor_y: int) -> (found: bool, line: int, character: int) {
     view := left_text_view_for_text(text);
     if !view || text.flowed_lines.count == 0 return false, 0, 0;
-    index := ifx GETRECT_Y_UP then right_flow_line_index(view.content, view.offset, view.stride, cursor_y, text.flowed_lines.count) else clamp(cast(int) floor((cursor_y - view.content.y - view.offset) / view.stride), 0, text.flowed_lines.count - 1);
+    index := ifx GETRECT_Y_UP then right_flow_line_index(view.content, view.offset, view.stride, cast(float) cursor_y, text.flowed_lines.count) else clamp(cast(int) floor((cursor_y - view.content.y - view.offset) / view.stride), 0, text.flowed_lines.count - 1);
     x := view.content.x;
     column: int;
     for piece: text.flowed_lines[index].pieces {

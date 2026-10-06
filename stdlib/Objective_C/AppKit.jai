@@ -626,6 +626,11 @@ NSWindow :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "styleMask\0"));
     }
+    screen :: (self: *NSWindow) -> *NSScreen {
+        invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *NSScreen #c_call;
+        invoke = cast(type_of(invoke)) objc_msgSend;
+        return invoke(cast(*void) self, sel_registerName(cast(*u8) "screen\0"));
+    }
     setFrameOrigin :: (self: *NSWindow, pt: NSPoint) {
         invoke: (sdk_receiver: *void, sdk_selector: SEL, pt: NSPoint) -> void #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;

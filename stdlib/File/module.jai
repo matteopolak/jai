@@ -50,8 +50,8 @@ write_entire_file :: (name: string, builder: *String_Builder, do_reset := true) 
     return written && closed;
 }
 
-read_entire_file :: (path: string, log_errors := true) -> (contents: string, success: bool) {
-    return read_entire_file_terminated(path, false, log_errors);
+read_entire_file :: (path: string, zero_terminated := false, log_errors := true) -> (contents: string, success: bool) {
+    return read_entire_file_terminated(path, zero_terminated, log_errors);
 }
 
 read_entire_file_terminated :: (name: string, zero_terminated := false, log_errors := true) -> string, bool {

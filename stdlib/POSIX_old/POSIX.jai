@@ -1319,7 +1319,6 @@ SIG_IGN :: cast(*void) 1;
         st_qspare: [2] s64;
     }
 }
-#scope_file
 S_IFMT :: 0xF000;
 S_IFDIR :: 0x4000;
 S_IFCHR :: 0x2000;

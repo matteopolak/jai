@@ -7674,7 +7674,7 @@ vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance) -> [] VkPhysicalDevice
     data.data = cast(*VkPhysicalDeviceGroupProperties) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkPhysicalDeviceGroupProperties));
     if data.data == null return data, VkResult.ERROR_OUT_OF_HOST_MEMORY;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkPhysicalDeviceGroupProperties));
+    memset(data.data, 0, data.count * size_of(VkPhysicalDeviceGroupProperties));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES;
     status = vkEnumeratePhysicalDeviceGroups(instance, *count, data.data);
     if cast(s32) status < 0 {
@@ -7694,7 +7694,7 @@ vkGetImageSparseMemoryRequirements2 :: (device: VkDevice, pInfo: *VkImageSparseM
     data.data = cast(*VkSparseImageMemoryRequirements2) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkSparseImageMemoryRequirements2));
     if data.data == null return data;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkSparseImageMemoryRequirements2));
+    memset(data.data, 0, data.count * size_of(VkSparseImageMemoryRequirements2));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
     vkGetImageSparseMemoryRequirements2(device, pInfo, *count, data.data);
     data.count = cast(s64) count;
@@ -7708,7 +7708,7 @@ vkGetPhysicalDeviceQueueFamilyProperties2 :: (physicalDevice: VkPhysicalDevice) 
     data.data = cast(*VkQueueFamilyProperties2) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkQueueFamilyProperties2));
     if data.data == null return data;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkQueueFamilyProperties2));
+    memset(data.data, 0, data.count * size_of(VkQueueFamilyProperties2));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_QUEUE_FAMILY_PROPERTIES_2;
     vkGetPhysicalDeviceQueueFamilyProperties2(physicalDevice, *count, data.data);
     data.count = cast(s64) count;
@@ -7722,7 +7722,7 @@ vkGetPhysicalDeviceSparseImageFormatProperties2 :: (physicalDevice: VkPhysicalDe
     data.data = cast(*VkSparseImageFormatProperties2) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkSparseImageFormatProperties2));
     if data.data == null return data;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkSparseImageFormatProperties2));
+    memset(data.data, 0, data.count * size_of(VkSparseImageFormatProperties2));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2;
     vkGetPhysicalDeviceSparseImageFormatProperties2(physicalDevice, pFormatInfo, *count, data.data);
     data.count = cast(s64) count;
@@ -7880,7 +7880,7 @@ vkGetPhysicalDeviceDisplayProperties2KHR :: (physicalDevice: VkPhysicalDevice) -
     data.data = cast(*VkDisplayProperties2KHR) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkDisplayProperties2KHR));
     if data.data == null return data, VkResult.ERROR_OUT_OF_HOST_MEMORY;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkDisplayProperties2KHR));
+    memset(data.data, 0, data.count * size_of(VkDisplayProperties2KHR));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_DISPLAY_PROPERTIES_2_KHR;
     status = vkGetPhysicalDeviceDisplayProperties2KHR(physicalDevice, *count, data.data);
     if cast(s32) status < 0 {
@@ -7900,7 +7900,7 @@ vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: (physicalDevice: VkPhysicalDevi
     data.data = cast(*VkDisplayPlaneProperties2KHR) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkDisplayPlaneProperties2KHR));
     if data.data == null return data, VkResult.ERROR_OUT_OF_HOST_MEMORY;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkDisplayPlaneProperties2KHR));
+    memset(data.data, 0, data.count * size_of(VkDisplayPlaneProperties2KHR));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_DISPLAY_PLANE_PROPERTIES_2_KHR;
     status = vkGetPhysicalDeviceDisplayPlaneProperties2KHR(physicalDevice, *count, data.data);
     if cast(s32) status < 0 {
@@ -7920,7 +7920,7 @@ vkGetDisplayModeProperties2KHR :: (physicalDevice: VkPhysicalDevice, display: Vk
     data.data = cast(*VkDisplayModeProperties2KHR) Vulkan_Enumeration_Memory.alloc(cast(s64) count * size_of(VkDisplayModeProperties2KHR));
     if data.data == null return data, VkResult.ERROR_OUT_OF_HOST_MEMORY;
     data.count = cast(s64) count;
-    Vulkan_Enumeration_Memory.memset(data.data, 0, data.count * size_of(VkDisplayModeProperties2KHR));
+    memset(data.data, 0, data.count * size_of(VkDisplayModeProperties2KHR));
     for index: 0..data.count - 1 data[index].sType = VkStructureType.VK_STRUCTURE_TYPE_DISPLAY_MODE_PROPERTIES_2_KHR;
     status = vkGetDisplayModeProperties2KHR(physicalDevice, display, *count, data.data);
     if cast(s32) status < 0 {

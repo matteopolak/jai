@@ -207,8 +207,8 @@ wrap_buffer :: (native: *Native_Buffer, owner: *void = null) -> *Buffer {
         }
         entry = entry.next;
     }
-    entry = new(Buffer_State);
-    entry.public = new(Buffer);
+    entry = New(Buffer_State);
+    entry.public = New(Buffer);
     entry.native = native;
     entry.creator = context;
     entry.callback_context = context;
@@ -229,9 +229,7 @@ pull_buffer :: (entry: *Buffer_State) {
     target.capacity = cast(s64) source.capacity;
     target.length = cast(s64) source.length;
     target.total_size = cast(s64) source.total_size;
-    target.discard_read_bytes = source.discard_read_bytes;
     target.discard_read_bytes = source.discard_read_bytes != 0;
-    target.has_ended = source.has_ended;
     target.has_ended = source.has_ended != 0;
     if !entry.backing target.free_when_done = source.free_when_done != 0;
     if !entry.backing target.free_when_done = source.free_when_done != 0;
@@ -245,9 +243,7 @@ push_buffer :: (entry: *Buffer_State) {
     target.capacity = cast(u64) source.capacity;
     target.length = cast(u64) source.length;
     target.total_size = cast(u64) source.total_size;
-    target.discard_read_bytes = source.discard_read_bytes;
     target.discard_read_bytes = cast(s32) source.discard_read_bytes;
-    target.has_ended = source.has_ended;
     target.has_ended = cast(s32) source.has_ended;
     if !entry.backing target.free_when_done = cast(s32) source.free_when_done;
     if !entry.backing target.free_when_done = cast(s32) source.free_when_done;
@@ -295,8 +291,8 @@ wrap_demux :: (native: *Native_Demux, owner: *void = null) -> *Demux {
         }
         entry = entry.next;
     }
-    entry = new(Demux_State);
-    entry.public = new(Demux);
+    entry = New(Demux_State);
+    entry.public = New(Demux);
     entry.native = native;
     entry.creator = context;
     entry.callback_context = context;
@@ -379,8 +375,8 @@ wrap_video :: (native: *Native_Video, owner: *void = null) -> *Video {
         }
         entry = entry.next;
     }
-    entry = new(Video_State);
-    entry.public = new(Video);
+    entry = New(Video_State);
+    entry.public = New(Video);
     entry.native = native;
     entry.creator = context;
     entry.callback_context = context;
@@ -409,10 +405,8 @@ pull_video :: (entry: *Video_State) {
     target.picture_type = cast,no_check(Picture_Type) source.picture_type;
     target.motion_forward = source.motion_forward;
     target.motion_backward = source.motion_backward;
-    target.has_sequence_header = source.has_sequence_header;
     target.has_sequence_header = source.has_sequence_header != 0;
     target.quantizer_scale = source.quantizer_scale;
-    target.slice_begin = source.slice_begin;
     target.slice_begin = source.slice_begin != 0;
     target.macroblock_address = source.macroblock_address;
     target.mb_row = source.mb_row;
@@ -428,9 +422,7 @@ pull_video :: (entry: *Video_State) {
     target.block_data = source.block_data;
     target.intra_quant_matrix = source.intra_quant_matrix;
     target.non_intra_quant_matrix = source.non_intra_quant_matrix;
-    target.has_reference_frame = source.has_reference_frame;
     target.has_reference_frame = source.has_reference_frame != 0;
-    target.assume_no_b_frames = source.assume_no_b_frames;
     target.assume_no_b_frames = source.assume_no_b_frames != 0;
 }
 push_video :: (entry: *Video_State) {
@@ -452,10 +444,8 @@ push_video :: (entry: *Video_State) {
     target.picture_type = cast(s32) source.picture_type;
     target.motion_forward = source.motion_forward;
     target.motion_backward = source.motion_backward;
-    target.has_sequence_header = source.has_sequence_header;
     target.has_sequence_header = cast(s32) source.has_sequence_header;
     target.quantizer_scale = source.quantizer_scale;
-    target.slice_begin = source.slice_begin;
     target.slice_begin = cast(s32) source.slice_begin;
     target.macroblock_address = source.macroblock_address;
     target.mb_row = source.mb_row;
@@ -472,9 +462,7 @@ push_video :: (entry: *Video_State) {
     target.block_data = source.block_data;
     target.intra_quant_matrix = source.intra_quant_matrix;
     target.non_intra_quant_matrix = source.non_intra_quant_matrix;
-    target.has_reference_frame = source.has_reference_frame;
     target.has_reference_frame = cast(s32) source.has_reference_frame;
-    target.assume_no_b_frames = source.assume_no_b_frames;
     target.assume_no_b_frames = cast(s32) source.assume_no_b_frames;
 }
 forget_video :: (object: *Video) {
@@ -513,8 +501,8 @@ wrap_audio :: (native: *Native_Audio, owner: *void = null) -> *Audio {
         }
         entry = entry.next;
     }
-    entry = new(Audio_State);
-    entry.public = new(Audio);
+    entry = New(Audio_State);
+    entry.public = New(Audio);
     entry.native = native;
     entry.creator = context;
     entry.callback_context = context;
@@ -537,7 +525,6 @@ pull_audio :: (entry: *Audio_State) {
     target.bound = source.bound;
     target.v_pos = source.v_pos;
     target.next_frame_data_size = source.next_frame_data_size;
-    target.has_header = source.has_header;
     target.has_header = source.has_header != 0;
     target.buffer = wrap_buffer(source.buffer, entry.owner);
     target.allocation = source.allocation;
@@ -562,7 +549,6 @@ push_audio :: (entry: *Audio_State) {
     target.bound = source.bound;
     target.v_pos = source.v_pos;
     target.next_frame_data_size = source.next_frame_data_size;
-    target.has_header = source.has_header;
     target.has_header = cast(s32) source.has_header;
     if source.buffer push_buffer(buffer_state(source.buffer));
     target.buffer = native_buffer(source.buffer);
@@ -611,8 +597,8 @@ wrap_plm :: (native: *Native_Plm, owner: *void = null) -> *Plm {
         }
         entry = entry.next;
     }
-    entry = new(Plm_State);
-    entry.public = new(Plm);
+    entry = New(Plm_State);
+    entry.public = New(Plm);
     entry.native = native;
     entry.creator = context;
     entry.callback_context = context;
@@ -630,12 +616,10 @@ pull_plm :: (entry: *Plm_State) {
     target.has_ended = source.has_ended != 0;
     target.loop = source.loop != 0;
     target.has_decoders = source.has_decoders != 0;
-    target.video_enabled = source.video_enabled;
     target.video_enabled = source.video_enabled != 0;
     target.video_packet_type = cast,no_check(Start_Code) source.video_packet_type;
     target.video_buffer = wrap_buffer(source.video_buffer, entry.owner);
     target.video_decoder = wrap_video(source.video_decoder, entry.owner);
-    target.audio_enabled = source.audio_enabled;
     target.audio_enabled = source.audio_enabled != 0;
     target.audio_stream_index = source.audio_stream_index;
     target.audio_packet_type = cast,no_check(Start_Code) source.audio_packet_type;
@@ -656,14 +640,12 @@ push_plm :: (entry: *Plm_State) {
     target.has_ended = cast(s32) source.has_ended;
     target.loop = cast(s32) source.loop;
     target.has_decoders = cast(s32) source.has_decoders;
-    target.video_enabled = source.video_enabled;
     target.video_enabled = cast(s32) source.video_enabled;
     target.video_packet_type = native_start_code(source.video_packet_type);
     if source.video_buffer push_buffer(buffer_state(source.video_buffer));
     target.video_buffer = native_buffer(source.video_buffer);
     if source.video_decoder push_video(video_state(source.video_decoder));
     target.video_decoder = native_video(source.video_decoder);
-    target.audio_enabled = source.audio_enabled;
     target.audio_enabled = cast(s32) source.audio_enabled;
     target.audio_stream_index = source.audio_stream_index;
     target.audio_packet_type = native_start_code(source.audio_packet_type);

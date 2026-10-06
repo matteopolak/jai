@@ -114,7 +114,13 @@ jobs:
         # Protected-tool rejection remains active without original native files.
         run: |
           ulimit -c 0
-          cargo test --workspace --no-fail-fast --locked -- --skip lex_entire_reference_without_executing_it
+          cargo test --workspace --no-fail-fast --locked -- --skip lex_entire_reference_without_executing_it --skip every_stdlib_module_checks_for_every_target
+      - name: Stdlib type-checks for every target
+        id: stdlib-targets
+        continue-on-error: true
+        # Every stdlib module with -no_dce for linux, macos, windows and wasm, against
+        # tests/stdlib-targets.txt (docs/tools/stdlib-target-check.md).
+        run: cargo test -p jaic-cli --locked --test stdlib_targets
       - name: Policy tests
         id: policy
         continue-on-error: true
@@ -160,7 +166,7 @@ jobs:
           node --no-warnings tools/check_jaifmt_wasm.mjs target/jaifmt.wasm target/jaifmt
           python3 tools/jaic-diff.py --jaic target/debug/jaic --backends interp,wasm-native corpus gen:1:40
       - name: Enforce all recorded checks
-        if: ${{ always() && !cancelled() && (steps.format.outcome == 'failure' || steps.jai-format.outcome == 'failure' || steps.jai-lint.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.correctness.outcome == 'failure' || steps.policy.outcome == 'failure' || steps.backends.outcome == 'failure' || steps.wasm-target.outcome == 'failure' || steps.rule-coverage.outcome == 'failure') }}
+        if: ${{ always() && !cancelled() && (steps.format.outcome == 'failure' || steps.jai-format.outcome == 'failure' || steps.jai-lint.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.correctness.outcome == 'failure' || steps.policy.outcome == 'failure' || steps.backends.outcome == 'failure' || steps.wasm-target.outcome == 'failure' || steps.rule-coverage.outcome == 'failure' || steps.stdlib-targets.outcome == 'failure') }}
         run: |
           echo "One or more checks failed; see their original step diagnostics."
           exit 1

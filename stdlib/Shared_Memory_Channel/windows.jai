@@ -54,8 +54,8 @@ writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: 
         return false, result;
     }
     header := cast(*Header) memory;
-    valid, actual := get_size_of_full_mapping_from_stub_header(memory);
-    if !valid || actual != size || A.atomic_read(*header.reader_status) == .DISCONNECTED {
+    full_valid, actual := get_size_of_full_mapping_from_stub_header(memory);
+    if !full_valid || actual != size || A.atomic_read(*header.reader_status) == .DISCONNECTED {
         Windows.UnmapViewOfFile(memory);
         Windows.CloseHandle(mapping);
         return false, result;

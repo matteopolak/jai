@@ -94,9 +94,9 @@ rp_allocate :: (heap: *void, size: s64, alignment: s64) -> *void {
     return result;
 }
 rp_callocate :: (heap: *void, count: u64, size: u64, alignment: u64) -> *void {
-    if count != 0 && size > cast(u64) S64_MAX / count return null;
+    if count != 0 && size > cast(u64) Math.S64_MAX / count return null;
     result := rp_allocate(heap, cast(s64) (count * size), cast(s64) alignment);
-    if result Basic.memset(result, 0, cast(s64) (count * size));
+    if result memset(result, 0, cast(s64) (count * size));
     return result;
 }
 rp_reallocate :: (heap: *void, memory: *void, size: s64, alignment: s64, oldsize: s64, flags: Realloc_Flags) -> *void {

@@ -363,7 +363,7 @@ InputTextCallback :: #type (data: *InputTextCallbackData) -> s32 #c_call;
 SizeCallback :: #type (data: *SizeCallbackData) -> void #c_call;
 MemAllocFunc :: #type (sz: u64, user_data: *void) -> *void #c_call;
 MemFreeFunc :: #type (ptr: *void, user_data: *void) -> void #c_call;
-CreateContext :: (shared_font_atlas: *ImFontAtlas = null) -> *ImGuiContext #c_call {
+CreateContext :: (shared_font_atlas: *ImFontAtlas = null) -> *ImGuiContext {
     assert(DebugCheckVersionAndDataLayout(ImGui_String_Memory.temp_c_string(IMGUI_VERSION),
         cast(u64) size_of(IO), cast(u64) size_of(Style), cast(u64) size_of(ImVec2),
         cast(u64) size_of(ImVec4), cast(u64) size_of(ImDrawVert), cast(u64) size_of(ImDrawIdx)),
@@ -2603,12 +2603,6 @@ ModFlags :: enum_flags s32 {
 #import "Basic";
 imgui :: #system_library "imgui";
 
-
-#scope_file
-ImGui_String_Memory :: #import "Basic";
-
-#scope_file
-ImGui_String_Memory :: #import "Basic";
 
 #scope_file
 ImGui_String_Memory :: #import "Basic";

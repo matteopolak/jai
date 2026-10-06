@@ -80,7 +80,7 @@ load_from_memory :: (set: *Keymap_Set, memory: string, short_name := "unnamed", 
     return load_from_handler(set, set.default_keymap, *handler);
 }
 load_from_file :: (set: *Keymap_Set, short_name: string, filename: string, optional := false) -> bool {
-    contents, success := File.read_entire_file(filename, !optional);
+    contents, success := File.read_entire_file(filename, log_errors = !optional);
     if !success return optional;
     defer free(contents);
     return load_from_memory(set, contents, short_name, filename);
@@ -95,7 +95,7 @@ reload_keymap :: (using keymap: *Keymap, short_name: string, filename: string, o
     return load_from_file(keymap, short_name, filename, optional);
 }
 load_from_file :: (using keymap: *Keymap, short_name: string, full_path: string, optional := false) -> bool {
-    contents, success := File.read_entire_file(full_path, !optional);
+    contents, success := File.read_entire_file(full_path, log_errors = !optional);
     if !success return optional;
     defer free(contents);
     return load_from_memory(keymap, contents, short_name, full_path, optional);

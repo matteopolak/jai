@@ -213,7 +213,7 @@ set_interpolation :: (using state: *Color_Animation_Editor_State, interp: Interp
     state.interpolation_geometry_s32 = cast(s32) interp.geometry;
     state.interpolation_wrapping = interp.wrapping;
 }
-generate_color_samples :: (sorted: [] *$T/Color_Keyframe, interp: Interpolation, output_samples: [] Vector4) {
+generate_color_samples :: (sorted: [] *$T/interface Color_Keyframe, interp: Interpolation, output_samples: [] Vector4) {
     for *sample, index: output_samples {
         t := ifx output_samples.count > 1 then cast(float) index / (output_samples.count - 1) else 0.0;
         if sorted.count == 0 {

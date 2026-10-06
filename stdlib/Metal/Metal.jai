@@ -1850,8 +1850,8 @@ MTLFunction :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(self, sel_registerName(cast(*u8) "name\0"));
     }
-    functionConstantsDictionary :: (self: *MTLFunction) -> *NSDictionary {
-        invoke: (receiver: *MTLFunction, selector: SEL) -> *NSDictionary #c_call;
+    functionConstantsDictionary :: (self: *MTLFunction) -> *NSDictionary(*NSString, *MTLFunctionConstant) {
+        invoke: (receiver: *MTLFunction, selector: SEL) -> *NSDictionary(*NSString, *MTLFunctionConstant) #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(self, sel_registerName(cast(*u8) "functionConstantsDictionary\0"));
     }
@@ -1865,8 +1865,8 @@ using MTLLanguageVersion :: enum NSUInteger {
 }
 MTLCompileOptions :: struct {
     nsobject: NSObject;
-    preprocessorMacros :: (self: *MTLCompileOptions) -> *NSDictionary {
-        invoke: (receiver: *MTLCompileOptions, selector: SEL) -> *NSDictionary #c_call;
+    preprocessorMacros :: (self: *MTLCompileOptions) -> *NSDictionary(*NSString, *NSObject) {
+        invoke: (receiver: *MTLCompileOptions, selector: SEL) -> *NSDictionary(*NSString, *NSObject) #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(self, sel_registerName(cast(*u8) "preprocessorMacros\0"));
     }

@@ -634,7 +634,7 @@ angularError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?an
 angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
-diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface {
+diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface #no_context #no_context {
     result: Surface;
     native_object_return_10(*result, reference, img, scale);
     return result;
@@ -648,7 +648,7 @@ rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> flo
     return rmsToneMappedError(*reference, *img, exposure);
 }
 
-histogram :: (img: *Surface, width: s32, height: s32) -> Surface {
+histogram :: (img: *Surface, width: s32, height: s32) -> Surface #no_context {
     result: Surface;
     native_object_return_11(*result, img, width, height);
     return result;
@@ -656,7 +656,7 @@ histogram :: (img: *Surface, width: s32, height: s32) -> Surface {
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
-histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface {
+histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     result: Surface;
     native_object_return_12(*result, img, minRange, maxRange, width, height);
     return result;

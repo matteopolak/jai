@@ -1,4 +1,5 @@
 // macOS system frameworks: FSEvents, CoreFoundation, Mach and kernel declarations.
+#assert(OS == .MACOS || OS == .IOS, "macos is only supported on Apple platforms");
 FSEventStreamRef :: *struct {};
 ConstFSEventStreamRef :: FSEventStreamRef;
 FSEventStreamEventFlags :: u32;
