@@ -87,6 +87,10 @@ input_window_procedure :: (hwnd: Win.HWND, kind: u32, wparam: Win.WPARAM, lparam
     }
     // Closing is the program's decision: report QUIT and keep the window.
     if kind == Win.WM_CLOSE return 0;
+    // In the client area the default resets the cursor to the class arrow on every move;
+    // a program that handles the cursor keeps its own.
+    HTCLIENT :: 1;
+    if kind == WM_SETCURSOR && custom_cursor_handling && (lparam & 0xffff) == HTCLIENT return 1;
     return Win.DefWindowProcW(hwnd, kind, wparam, lparam);
 }
 
@@ -132,6 +136,7 @@ windows_pointer_query :: (window: Window_Type, client_area: bool) -> float, floa
     return cast(float) point.x, cast(float) point.y, true;
 }
 
+WM_SETCURSOR :: 0x0020;
 input_user32 :: #system_library "user32";
 Input_MapVirtualKeyW :: (code: u32, map_type: u32) -> u32 #foreign input_user32 "MapVirtualKeyW";
 

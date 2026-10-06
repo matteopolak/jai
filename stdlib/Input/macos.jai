@@ -171,6 +171,10 @@ macos_poll_input :: () {
         }
         mac_modifier_mask = flags;
         Mac.NSApplication.sendEvent(application, native);
+        // AppKit keeps whatever cursor was set last; put the arrow back unless the program
+        // handles the cursor itself.
+        is_move := kind == .NSEventTypeMouseMoved || kind == .NSEventTypeMouseEntered;
+        if window && is_move && !custom_cursor_handling Mac.NSCursor.set(Mac.NSCursor.arrowCursor());
     }
     focused := Mac.NSApplication.keyWindow(application);
     if !mac_application_active(application) focused = null;

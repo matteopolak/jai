@@ -150,6 +150,9 @@ x11_poll_input :: () {
                 queue_input_event(routed_window, event);
             }
         } else if native.type == X.MotionNotify {
+            // A window's cursor stays whatever was defined last; put the arrow back unless the
+            // program handles the cursor itself.
+            if !custom_cursor_handling x11_show_arrow(display, window);
             if entry.pointer_valid queue_mouse_delta(native.xmotion.x - entry.x, native.xmotion.y - entry.y);
             entry.x = native.xmotion.x;
             entry.y = native.xmotion.y;
@@ -210,4 +213,11 @@ x11_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, b
     if X.XQueryPointer(X.x_global_display, target, *root, *child, *screen_x, *screen_y, *local_x, *local_y, *state) == 0 return 0, 0, false;
     if client_area return cast(float) local_x, cast(float) local_y, true;
     return cast(float) screen_x, cast(float) screen_y, true;
+}
+
+x11_arrow_cursor: X.Cursor;
+x11_show_arrow :: (display: *X.Display, window: X.Window) {
+    // left_ptr from the X cursor font: the root window's own cursor need not be an arrow.
+    if !x11_arrow_cursor x11_arrow_cursor = X.XCreateFontCursor(display, 68);
+    if x11_arrow_cursor X.XDefineCursor(display, window, x11_arrow_cursor);
 }
