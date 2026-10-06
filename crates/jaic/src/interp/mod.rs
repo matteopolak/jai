@@ -630,7 +630,7 @@ impl Interp {
             Some(a) => a,
             None if foreign.is_data => {
                 return self.trap(format!(
-                    "foreign variable '{}' is not available",
+                    "foreign variable `{}` is not available",
                     foreign.symbol
                 ));
             }
@@ -679,7 +679,7 @@ impl Interp {
         let addr = self.foreign_addr(program, id)?;
         if addr & TAG_MASK == FOREIGN_TAG {
             return self.trap(format!(
-                "foreign procedure '{symbol}' is not available here"
+                "foreign procedure `{symbol}` is not available here"
             ));
         }
         #[cfg(target_os = "macos")]
@@ -784,7 +784,7 @@ impl Interp {
                 .cloned()
                 .unwrap_or_default();
             return self.trap(format!(
-                "procedure '{name}' has no body available at this point"
+                "procedure `{name}` has no body available at this point"
             ));
         };
         if self.depth >= MAX_DEPTH {

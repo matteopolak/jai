@@ -232,7 +232,7 @@ impl Compiler {
         let Some(current) = f.context else {
             return err(
                 span,
-                "',,' context arguments need a context (not in #c_call code)",
+                "`,,` context arguments need a context (not in #c_call code)",
             );
         };
         let ctx_ty = self.context_type(span)?;
@@ -240,7 +240,7 @@ impl Compiler {
         for o in overrides {
             let name = o.name.map_or_else(|| Sym::intern("allocator"), |n| n.name);
             let Some((path, fty)) = self.find_member(ctx_ty, name, o.value.span)? else {
-                return err(o.value.span, format!("Context has no member '{name}'"));
+                return err(o.value.span, format!("Context has no member `{name}`"));
             };
             let op = self.check_expr(f, scope, &o.value, Some(fty))?;
             let op = self.convert(f, op, fty, o.value.span)?;
@@ -1053,7 +1053,7 @@ impl Compiler {
                 (None, None) => return err(arg.span, "missing value"),
             };
             let Operand::Type(t) = op else {
-                return err(arg.span, format!("'${name}' must be given a type"));
+                return err(arg.span, format!("`${name}` must be given a type"));
             };
             bindings.push((name, Value::Type(t), TypeId::TYPE));
         }
@@ -1093,7 +1093,7 @@ impl Compiler {
                     }
                     return err(
                         span,
-                        format!("missing argument for baked parameter '{name}'"),
+                        format!("missing argument for baked parameter `{name}`"),
                     );
                 };
                 // `$c: Code` takes the argument expression itself, unevaluated.
@@ -1168,7 +1168,7 @@ impl Compiler {
                     _ => {
                         return err(
                             arg.span,
-                            format!("argument for '${name}' must be a compile-time constant"),
+                            format!("argument for `${name}` must be a compile-time constant"),
                         );
                     }
                 };
@@ -1409,7 +1409,7 @@ impl Compiler {
                         if !bindings.iter().any(|(n, _, _)| *n == name) {
                             return err(
                                 span,
-                                format!("could not infer polymorphic type '${name}'"),
+                                format!("could not infer polymorphic type `${name}`"),
                             );
                         }
                     }
@@ -1617,7 +1617,7 @@ impl Compiler {
                     return err(
                         span,
                         format!(
-                            "conflicting types for '${name}': {} and {}",
+                            "conflicting types for `${name}`: {} and {}",
                             existing.render(&c.types),
                             value.render(&c.types)
                         ),
@@ -1651,7 +1651,7 @@ impl Compiler {
                         Some(t) => bind(self, bindings, *name, Value::Type(t), TypeId::TYPE),
                         None => err(
                             span,
-                            format!("{} is not an instance of '{name}'", self.types.name(ty)),
+                            format!("{} is not an instance of `{name}`", self.types.name(ty)),
                         ),
                     }
                 }
@@ -1676,7 +1676,7 @@ impl Compiler {
                         _ => {
                             return err(
                                 span,
-                                format!("{} is not an instance of '{r}'", self.types.name(ty)),
+                                format!("{} is not an instance of `{r}`", self.types.name(ty)),
                             );
                         }
                     }
@@ -1693,7 +1693,7 @@ impl Compiler {
                     return err(
                         span,
                         format!(
-                            "{} does not satisfy the restriction '{}'",
+                            "{} does not satisfy the restriction `{}`",
                             self.types.name(ty),
                             self.types.name(want)
                         ),
@@ -1875,7 +1875,7 @@ impl Compiler {
         if must.iter().skip(used).any(|&m| m) {
             return err(
                 call_span,
-                format!("the result of '{name}' is marked #must and cannot be discarded"),
+                format!("the result of `{name}` is marked #must and cannot be discarded"),
             );
         }
         Ok(())
@@ -1908,7 +1908,7 @@ impl Compiler {
                 return err(
                     span,
                     format!(
-                        "cannot call '{}' without a context (use push_context in #c_call code)",
+                        "cannot call `{}` without a context (use push_context in #c_call code)",
                         self.proc(proc).name
                     ),
                 );
@@ -2145,7 +2145,7 @@ impl Compiler {
                     .ok_or_else(|| {
                         Box::new(Diagnostic::error(
                             arg.span,
-                            format!("no parameter named '{name}'"),
+                            format!("no parameter named `{name}`"),
                         ))
                     })?,
                 None => {
@@ -2302,7 +2302,7 @@ impl Compiler {
             "abs" | "fabs" => ir::Intrinsic::Fabs,
             "rdtsc" | "get_cpu_cycle_count" => ir::Intrinsic::CycleCounter,
             "pause" | "mm_pause" => ir::Intrinsic::Pause,
-            other => return err(span, format!("unknown intrinsic '{other}'")),
+            other => return err(span, format!("unknown intrinsic `{other}`")),
         };
         let returns: Vec<Ty> = sig
             .returns

@@ -194,7 +194,7 @@ impl Compiler {
         }
         match &stmt.kind {
             S::Decl(decl) => self.check_local_decl(f, scope, decl),
-            S::Case(_) => err(span, "'case' outside of a switch"),
+            S::Case(_) => err(span, "`case` outside of a switch"),
             S::Expr(e) => {
                 self.last_call_must = None;
                 self.check_expr(f, scope, e, None)?;
@@ -1240,7 +1240,7 @@ impl Compiler {
             other => {
                 return err(
                     value.span,
-                    format!("cannot use 'using' on {}", self.describe(&other)),
+                    format!("cannot use `using` on {}", self.describe(&other)),
                 );
             }
         };
@@ -1583,7 +1583,7 @@ impl Compiler {
                 "continue"
             };
             return match label {
-                Some(l) => err(span, format!("{what}: no enclosing loop named '{l}'")),
+                Some(l) => err(span, format!("{what}: no enclosing loop named `{l}`")),
                 None => err(span, format!("{what} outside of a loop")),
             };
         };
@@ -2074,7 +2074,7 @@ impl Compiler {
             return err(
                 span,
                 format!(
-                    "no '{macro_name}' is visible for iterating over {}",
+                    "no `{macro_name}` is visible for iterating over {}",
                     self.types.name(collection.ty())
                 ),
             );
@@ -2499,7 +2499,7 @@ impl Compiler {
                     .ok_or_else(|| {
                         Box::new(Diagnostic::error(
                             n.span,
-                            format!("no return value named '{}'", n.name),
+                            format!("no return value named `{}`", n.name),
                         ))
                     })?,
                 None => {

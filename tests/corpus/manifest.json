@@ -570,7 +570,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "parse": "expected ';' after statement"
+        "parse": "expected `;` after statement"
       }
     },
     {
@@ -839,7 +839,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "'value' is a #discard parameter"
+        "check": "`value` is a #discard parameter"
       },
       "rules": [
         "must.2"
@@ -855,7 +855,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "'value' is a #discard parameter"
+        "check": "`value` is a #discard parameter"
       },
       "rules": [
         "must.2"
@@ -871,7 +871,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "the result of 'only' is marked #must"
+        "check": "the result of `only` is marked #must"
       },
       "rules": [
         "must.1",
@@ -888,7 +888,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "the result of 'two' is marked #must"
+        "check": "the result of `two` is marked #must"
       },
       "rules": [
         "must.7",
@@ -905,7 +905,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "the result of 'm' is marked #must"
+        "check": "the result of `m` is marked #must"
       },
       "rules": [
         "must.1"
@@ -1451,7 +1451,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "'context' is not available here"
+        "check": "`context` is not available here"
       }
     },
     {
@@ -1516,7 +1516,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "cannot access local 'local' of an enclosing procedure"
+        "check": "cannot access local `local` of an enclosing procedure"
       }
     },
     {
@@ -1750,7 +1750,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "has no exported member 'module_only_value'"
+        "check": "has no exported member `module_only_value`"
       }
     },
     {
@@ -1802,7 +1802,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "unsupported #asm instruction 'push'"
+        "check": "unsupported #asm instruction `push`"
       }
     },
     {
@@ -1815,7 +1815,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "unsupported #asm instruction 'fld'"
+        "check": "unsupported #asm instruction `fld`"
       }
     },
     {
@@ -1984,7 +1984,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "unknown intrinsic 'frob'"
+        "check": "unknown intrinsic `frob`"
       }
     },
     {
@@ -1997,7 +1997,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "cannot access local 'n' of an enclosing procedure"
+        "check": "cannot access local `n` of an enclosing procedure"
       }
     },
     {
@@ -2049,7 +2049,7 @@
       "target": "host",
       "dependencies": [],
       "negative": {
-        "check": "has no exported member 'secret'"
+        "check": "has no exported member `secret`"
       }
     },
     {

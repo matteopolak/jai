@@ -387,7 +387,7 @@ impl Workspaces {
             "output_path" => s.output_path = value.into(),
             "output_type" => {
                 s.output_type = OutputType::parse(value)
-                    .ok_or_else(|| format!("unknown output_type '{value}'"))?
+                    .ok_or_else(|| format!("unknown output_type `{value}`"))?
             }
             "do_output" => s.do_output = flag(),
             "import_path_clear" => s.import_paths = Some(Vec::new()),

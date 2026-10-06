@@ -511,7 +511,7 @@ impl Compiler {
                     return err(
                         span,
                         format!(
-                            "module parameter '{name}' is set here after the module already used another value"
+                            "module parameter `{name}` is set here after the module already used another value"
                         ),
                     );
                 }
