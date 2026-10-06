@@ -366,7 +366,9 @@ anchor_paths :: (paths: [] string, anchor_file: string) -> [] string {
         if is_rooted(it) || directory.count == 0 {
             array_add(*result, it);
         } else {
-            array_add(*result, join_paths(directory, it));
+            // Keep the anchor's own separator: `C:\game\mods`, not `C:\game/mods`.
+            separator := anchor_file[directory.count];
+            array_add(*result, tprint("%1%2%3", directory, string.{ 1, *separator }, it));
         }
     }
     return result;
