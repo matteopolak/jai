@@ -705,7 +705,7 @@ impl Compiler {
             Found::Entities(ids) if !ids.is_empty() => Ok(()),
             _ => err(
                 decl.name.span,
-                format!("unknown identifier '{}'", decl.name.name),
+                format!("unknown identifier `{}`", decl.name.name),
             ),
         }
     }

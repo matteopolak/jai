@@ -4,6 +4,60 @@
 use super::scope::{ScopeId, UsingEntry};
 use super::{Compiler, Sym};
 use crate::source::{Diagnostic, Span};
+use std::path::{Path, PathBuf};
+
+/// Modules searched first for an unknown name, most used first.
+const COMMON_MODULES: &[&str] = &[
+    "Basic",
+    "String",
+    "Math",
+    "File",
+    "File_Utilities",
+    "Hash_Table",
+    "Sort",
+    "Random",
+    "Process",
+    "Thread",
+    "System",
+    "Compiler",
+    "Bucket_Array",
+    "Hash",
+    "Unicode",
+    "Reflection",
+    "Program_Print",
+    "Window_Creation",
+    "Input",
+    "Simp",
+    "GetRect",
+    "Sound_Player",
+    "Calendar",
+];
+
+/// Modules the compiler loads itself; they are never imported by name.
+const COMPILER_INTERNAL_MODULES: &[&str] = &["Preload", "Runtime_Support"];
+
+/// Whether `text` declares `name` at the start of a line, outside a `#scope_file` section.
+fn exports_name(text: &str, name: &str) -> bool {
+    let mut file_scope = false;
+    for line in text.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("#scope_file") {
+            file_scope = true;
+        } else if trimmed.starts_with("#scope_export") || trimmed.starts_with("#scope_module") {
+            file_scope = trimmed.starts_with("#scope_module");
+        } else if !file_scope && line.len() - trimmed.len() <= 4 && declares_name(trimmed, name) {
+            return true;
+        }
+    }
+    false
+}
+
+/// Whether `code` starts with a declaration of `name` (`name ::`, `name :=` or `name: T`).
+fn declares_name(code: &str, name: &str) -> bool {
+    code.trim_start()
+        .strip_prefix(name)
+        .is_some_and(|rest| rest.trim_start().starts_with(':'))
+}
 
 impl Compiler {
     /// Remember where the last unknown identifier was looked up, for `render`.
@@ -21,12 +75,121 @@ impl Compiler {
         let wanted = self.sources.snippet(span);
         let names = self.names_visible_from(scope);
         let d = d.clone().with_label("not found in this scope");
-        Some(
-            match crate::suggest::closest(wanted, names.iter().copied()) {
-                Some(found) => d.with_fix(format!("a similar name exists: `{found}`"), span, found),
-                None => d,
-            },
-        )
+        if let Some(found) = crate::suggest::closest(wanted, names.iter().copied()) {
+            return Some(d.with_fix(format!("a similar name exists: `{found}`"), span, found));
+        }
+        if let Some(builder) = self.metaprogram_defining(wanted, span) {
+            return Some(d.with_help(format!(
+                "`{wanted}` is added by `{builder}` (with `add_build_string`) when it builds this file: build through it, as in `jaic build {builder}`"
+            )));
+        }
+        if let Some(module) = self.module_declaring(wanted) {
+            return Some(d.with_help(format!(
+                "`{wanted}` is declared in the `{module}` module: add `#import \"{module}\";` to this file"
+            )));
+        }
+        Some(d)
+    }
+
+    /// The metaprogram next to the file of `span` (in its directory or the one above) that
+    /// adds a declaration of `name` with `add_build_string`, as a path shown to the user.
+    fn metaprogram_defining(&self, name: &str, span: Span) -> Option<String> {
+        if span.file.0 as usize >= self.sources.len() {
+            return None;
+        }
+        let file = PathBuf::from(&self.sources.get(span.file).path);
+        let dir = file.parent()?;
+        let declares = |text: &str| {
+            text.contains("add_build_string")
+                && text.lines().any(|l| {
+                    l.contains("add_build_string")
+                        && l.split('"')
+                            .nth(1)
+                            .is_some_and(|code| declares_name(code, name))
+                })
+        };
+        for candidate_dir in [Some(dir), dir.parent()].into_iter().flatten() {
+            let mut entries = self.fs.list_dir(candidate_dir);
+            entries.sort();
+            for (entry, is_dir) in entries {
+                let path = candidate_dir.join(&entry);
+                if is_dir || !entry.ends_with(".jai") || path == file {
+                    continue;
+                }
+                let Some(bytes) = self.fs.read(&path) else {
+                    continue;
+                };
+                if declares(&String::from_utf8_lossy(&bytes)) {
+                    return Some(crate::display_path(&path));
+                }
+            }
+        }
+        None
+    }
+
+    /// The standard-library module that declares `name` at its top level (outside
+    /// `#scope_file`), common modules first.
+    fn module_declaring(&self, name: &str) -> Option<String> {
+        if name.len() < 2 || name.starts_with("__") {
+            return None;
+        }
+        let stdlib = self.options.preload.as_deref()?.parent()?;
+        let mut modules: Vec<(String, bool)> = self
+            .fs
+            .list_dir(stdlib)
+            .into_iter()
+            .filter_map(|(entry, is_dir)| {
+                if is_dir {
+                    self.fs
+                        .is_file(&stdlib.join(&entry).join("module.jai"))
+                        .then_some((entry, true))
+                } else {
+                    entry.strip_suffix(".jai").map(|m| (m.to_string(), false))
+                }
+            })
+            .filter(|(m, _)| !COMPILER_INTERNAL_MODULES.contains(&m.as_str()))
+            .collect();
+        let rank = |m: &str| {
+            COMMON_MODULES
+                .iter()
+                .position(|c| *c == m)
+                .unwrap_or(usize::MAX)
+        };
+        modules.sort_by(|a, b| (rank(&a.0), &a.0).cmp(&(rank(&b.0), &b.0)));
+        for (module, is_dir) in modules {
+            let mut files = Vec::new();
+            if is_dir {
+                self.module_files(&stdlib.join(&module), &mut files, 0);
+            } else {
+                files.push(stdlib.join(format!("{module}.jai")));
+            }
+            for path in files {
+                let Some(bytes) = self.fs.read(&path) else {
+                    continue;
+                };
+                if exports_name(&String::from_utf8_lossy(&bytes), name) {
+                    return Some(module);
+                }
+            }
+        }
+        None
+    }
+
+    /// The `.jai` files of a module directory, leaving out tests and examples.
+    fn module_files(&self, dir: &Path, files: &mut Vec<PathBuf>, depth: usize) {
+        if depth > 3 {
+            return;
+        }
+        for (entry, is_dir) in self.fs.list_dir(dir) {
+            let path = dir.join(&entry);
+            if is_dir {
+                if !matches!(entry.as_str(), "tests" | "examples" | "modules") {
+                    self.module_files(&path, files, depth + 1);
+                }
+            } else if entry.ends_with(".jai") {
+                files.push(path);
+            }
+        }
     }
 
     /// The names a lookup from `scope` can reach without loading anything new: each enclosing

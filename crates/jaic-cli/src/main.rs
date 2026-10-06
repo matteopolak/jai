@@ -663,15 +663,9 @@ fn check_input(file: &str) -> Result<(), CliError> {
     }
 }
 
-/// The directory jaic was started in (it then works from the main file's directory).
-static STARTED_IN: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
-
 /// `path` as the user would write it: relative to where jaic was started when inside it.
 fn shown(path: &Path) -> String {
-    match STARTED_IN.get().and_then(|dir| path.strip_prefix(dir).ok()) {
-        Some(relative) if !relative.as_os_str().is_empty() => relative.display().to_string(),
-        _ => path.display().to_string(),
-    }
+    jaic::display_path(path)
 }
 
 /// Print an error given as text, its `help: `/`note: ` lines rendered as such.
@@ -818,7 +812,7 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
     cli.emit_ir = cli.emit_ir.as_ref().map(absolute);
     let main_dir = path.parent().map(PathBuf::from).unwrap_or_default();
     let started_in = std::env::current_dir().unwrap_or_default();
-    let _ = STARTED_IN.set(started_in.clone());
+    jaic::set_display_base(started_in.clone());
     if !main_dir.as_os_str().is_empty() && std::env::set_current_dir(&main_dir).is_err() {
         eprintln!("error: cannot change directory to {}", main_dir.display());
         return ExitCode::from(1);

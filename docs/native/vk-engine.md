@@ -13,7 +13,7 @@ What works:
 
 What doesn't:
 
-- A native macOS `jaic build` fails with `unknown identifier 'VkBuffer'`. The upstream modules have no macOS branch, and the corpus is read-only input, so this is out of scope:
+- A native macOS `jaic build` fails with ``unknown identifier `VkBuffer` ``. The upstream modules have no macOS branch, and the corpus is read-only input, so this is out of scope:
   - `Modules/Vulkan/module.jai` loads bindings and libraries only for `.WINDOWS` and `.LINUX`, so no `Vk*` name exists on macOS and `Source/Core/Graphics/Vulkan` fails.
   - `Modules/ImGui/module.jai` has `#assert false "Unsupported OS"`; `Modules/JoltPhysics/module.jai` declares `JoltC` only for Windows and Linux.
   - The three `generate.jai` files `#assert false` for macOS in their library-building code, so bindings can't be regenerated natively either.
