@@ -190,7 +190,7 @@ fn name(v: LLVMValueRef) -> String {
         if p.is_null() {
             return String::new();
         }
-        String::from_utf8_lossy(std::slice::from_raw_parts(p as *const u8, len)).into_owned()
+        String::from_utf8_lossy(std::slice::from_raw_parts(p.cast::<u8>(), len)).into_owned()
     }
 }
 
