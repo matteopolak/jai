@@ -360,10 +360,10 @@ decomp_filename :: path_decomp;
 path_decomp :: (name: string) -> path: string, basename: string, extension: string, basename_with_extension: string {
     path := path_strip_filename(name);
     full := advance(name, path.count);
-    extension := path_extension(full);
+    extension, has_extension := path_extension(full);
     base := full;
-    base.count -= extension.count;
-    if extension.count > 0 || (base.count > 0 && base.data[base.count - 1] == #char ".") base.count -= 1;
+    // Only a real extension (possibly empty, as in "file.") takes its dot along; ".." keeps both.
+    if has_extension base.count -= extension.count + 1;
     return path, base, extension, full;
 }
 
@@ -531,8 +531,9 @@ parse_float :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAU
 parse_int :: (line: *string, $T: Type = int, spaces := " \t", delimiters := DEFAULT_DELIMITERS) -> value: T, success: bool {
     word, have_word := parse_token(line, delimiters, spaces);
     if !have_word return 0, false;
-    number, parsed := string_to_int(word);
-    return cast(T) number, parsed;
+    // Parse straight into T so a value outside its range fails instead of wrapping.
+    number, parsed := string_to_int(word, T = T);
+    return number, parsed;
 }
 
 // libc's atof, exported for callers that want C's lenient string-to-double.
@@ -561,7 +562,18 @@ next_token_is :: (line: *string, expected: string, delimiters: string, spaces: s
 }
 
 #scope_export
-atof :: (s: *u8) -> float64 #foreign string_crt;
+#if OS == .WASM {
+    // WASI builds link no C library, so wasm parses here: a decimal prefix of the text, else 0.
+    atof :: (s: *u8) -> float64 {
+        if !s return 0;
+        text := string.{ c_style_strlen(s), s };
+        value, parsed := string_to_float64(text);
+        if !parsed return 0;
+        return value;
+    }
+} else {
+    atof :: (s: *u8) -> float64 #foreign string_crt;
+}
 
 // Supports %f (float), %d/%i (int), %b (true/false), %s (double-quoted string, no escapes) and %% (literal %).
 // The returned array and the copied values live in temporary storage.
