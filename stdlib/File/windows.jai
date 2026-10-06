@@ -11,7 +11,9 @@ file_open :: (name: string, for_writing := false, keep_existing_content := false
     access: u32 = 0x80000000;
     creation: u32 = 3;
     if for_writing {
-        access = 0x40000000;
+        // Writing handles read as well, as the POSIX side's "ab+" does (Zip_File_Directory
+        // reads through one).
+        access |= 0x40000000;
         creation = 2;
     }
     if for_writing && keep_existing_content creation = 4;
