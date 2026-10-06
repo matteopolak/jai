@@ -6,11 +6,15 @@
 
 U :: 0x8000_0080_0000_0001; // 2^63 + 2^39 + 1
 S :: 0x4000_0040_0000_0001; // 2^62 + 2^38 + 1
-U_BITS :: 0x5f00_0001;      // 2^63 + 2^40, the f32 above
-S_BITS :: 0x5e80_0001;      // 2^62 + 2^39
+U_BITS :: 0x5f00_0001; // 2^63 + 2^40, the f32 above
+S_BITS :: 0x5e80_0001; // 2^62 + 2^39
 
-to_f32_u :: (x: u64) -> float32 { return cast(float32) x; }
-to_f32_s :: (x: s64) -> float32 { return cast(float32) x; }
+to_f32_u :: (x: u64) -> float32 {
+    return cast(float32) x;
+}
+to_f32_s :: (x: s64) -> float32 {
+    return cast(float32) x;
+}
 
 AT_COMPILE_TIME :: #run cast,force(u32) to_f32_u(U);
 
