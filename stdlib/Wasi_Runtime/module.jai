@@ -166,6 +166,267 @@ Seconds_And_Nanoseconds :: struct {
     nanoseconds: s64;
 }
 
+// Sleeping is a poll on one relative CLOCK_MONOTONIC timeout. The whole interval is slept, so
+// `remaining` is never written.
+#program_export "nanosleep"
+wasi_nanosleep :: (requested: *Seconds_And_Nanoseconds, remaining: *Seconds_And_Nanoseconds) -> s32 #c_call {
+    if !requested || requested.seconds < 0 || requested.nanoseconds < 0 || requested.nanoseconds >= 1_000_000_000 {
+        error_number = EINVAL;
+        return -1;
+    }
+    total := cast(u64) requested.seconds * 1_000_000_000 + cast(u64) requested.nanoseconds;
+    if total == 0 return 0;
+    subscription: Clock_Subscription;
+    subscription.kind = 0; // clock
+    subscription.clock_id = 1; // monotonic
+    subscription.timeout = total;
+    event: Poll_Event;
+    happened: u32;
+    if wasi_poll_oneoff(offset32(*subscription), offset32(*event), 1, offset32(*happened)) != 0 {
+        error_number = EINVAL;
+        return -1;
+    }
+    return 0;
+}
+
+// WASI has no time zones: local time is UTC, as in the interpreter's sandbox host.
+#program_export "localtime_r"
+wasi_localtime_r :: (time: *s64, result: *Broken_Down_Time) -> *Broken_Down_Time #c_call {
+    return wasi_gmtime_r(time, result);
+}
+
+#program_export "gmtime_r"
+wasi_gmtime_r :: (time: *s64, result: *Broken_Down_Time) -> *Broken_Down_Time #c_call {
+    if !time || !result return null;
+    seconds := time.*;
+    days := seconds / 86400;
+    second_of_day := seconds % 86400;
+    if second_of_day < 0 {
+        second_of_day += 86400;
+        days -= 1;
+    }
+    // Shift to a calendar whose years start on March 1, so the leap day ends each year.
+    shifted := days + 719468;
+    cycles := shifted / 146097;
+    if shifted < 0 && shifted % 146097 != 0 cycles -= 1;
+    day_of_cycle := shifted - cycles * 146097;
+    year_of_cycle := (day_of_cycle - day_of_cycle / 1460 + day_of_cycle / 36524 - day_of_cycle / 146096) / 365;
+    day_of_year := day_of_cycle - (365 * year_of_cycle + year_of_cycle / 4 - year_of_cycle / 100);
+    month_from_march := (5 * day_of_year + 2) / 153;
+    day := day_of_year - (153 * month_from_march + 2) / 5 + 1;
+    month := ifx month_from_march < 10 then month_from_march + 3 else month_from_march - 9;
+    year := year_of_cycle + cycles * 400;
+    if month <= 2 year += 1;
+    leap := (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+    days_before_month :: s64.[0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    day_in_year := days_before_month[month - 1] + day - 1;
+    if leap && month > 2 day_in_year += 1;
+    weekday := (days + 4) % 7; // 1970-01-01 was a Thursday.
+    if weekday < 0 weekday += 7;
+    result.* = .{};
+    result.second = cast(s32) (second_of_day % 60);
+    result.minute = cast(s32) (second_of_day / 60 % 60);
+    result.hour = cast(s32) (second_of_day / 3600);
+    result.day_of_month = cast(s32) day;
+    result.month = cast(s32) (month - 1);
+    result.years_since_1900 = cast,no_check(s32) (year - 1900);
+    result.day_of_week = cast(s32) weekday;
+    result.day_of_year = cast(s32) day_in_year;
+    return result;
+}
+
+// WASI programs see no file system beyond stdio, so the root is the only directory there is.
+#program_export "getcwd"
+wasi_getcwd :: (buffer: *u8, size: u64) -> *u8 #c_call {
+    if !buffer || size < 2 {
+        error_number = ERANGE;
+        return null;
+    }
+    buffer[0] = #char "/";
+    buffer[1] = 0;
+    return buffer;
+}
+
+#program_export "chdir"
+wasi_chdir :: (path: *u8) -> s32 #c_call {
+    if path && path[0] == #char "/" && path[1] == 0 return 0;
+    error_number = ENOENT;
+    return -1;
+}
+
+#program_export "gettimeofday"
+wasi_gettimeofday :: (result: *Seconds_And_Microseconds, zone: *void) -> s32 #c_call {
+    now: Seconds_And_Nanoseconds;
+    if wasi_clock_gettime(0, *now) != 0 return -1;
+    if result {
+        result.seconds = now.seconds;
+        result.microseconds = now.nanoseconds / 1000;
+    }
+    return 0;
+}
+
+Seconds_And_Microseconds :: struct {
+    seconds: s64;
+    microseconds: s64;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Threads: WASI preview 1 has none. The program is the only thread, so locks always succeed and
+// nothing can ever signal a condition variable: a timed wait sleeps out its deadline, an untimed
+// one reports the deadlock. Creating a thread fails, so `thread_start` returns false.
+
+#program_export "pthread_create"
+wasi_pthread_create :: (thread: *u64, attributes: *void, start: *void, argument: *void) -> s32 #c_call {
+    return EAGAIN;
+}
+
+#program_export "pthread_join"
+wasi_pthread_join :: (thread: u64, result: **void) -> s32 #c_call {
+    return ESRCH;
+}
+
+#program_export "pthread_tryjoin_np"
+wasi_pthread_tryjoin_np :: (thread: u64, result: **void) -> s32 #c_call {
+    return ESRCH;
+}
+
+#program_export "pthread_mutexattr_init"
+wasi_pthread_mutexattr_init :: (attributes: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutexattr_settype"
+wasi_pthread_mutexattr_settype :: (attributes: *void, kind: s32) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutexattr_destroy"
+wasi_pthread_mutexattr_destroy :: (attributes: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutex_init"
+wasi_pthread_mutex_init :: (mutex: *void, attributes: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutex_destroy"
+wasi_pthread_mutex_destroy :: (mutex: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutex_lock"
+wasi_pthread_mutex_lock :: (mutex: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutex_trylock"
+wasi_pthread_mutex_trylock :: (mutex: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_mutex_unlock"
+wasi_pthread_mutex_unlock :: (mutex: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_cond_init"
+wasi_pthread_cond_init :: (condition: *void, attributes: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_cond_destroy"
+wasi_pthread_cond_destroy :: (condition: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_cond_signal"
+wasi_pthread_cond_signal :: (condition: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_cond_broadcast"
+wasi_pthread_cond_broadcast :: (condition: *void) -> s32 #c_call {
+    return 0;
+}
+
+#program_export "pthread_cond_wait"
+wasi_pthread_cond_wait :: (condition: *void, mutex: *void) -> s32 #c_call {
+    return EDEADLK;
+}
+
+// `deadline` is CLOCK_REALTIME, as pthread_cond_timedwait takes it by default.
+#program_export "pthread_cond_timedwait"
+wasi_pthread_cond_timedwait :: (condition: *void, mutex: *void, deadline: *Seconds_And_Nanoseconds) -> s32 #c_call {
+    if !deadline return EINVAL;
+    now: Seconds_And_Nanoseconds;
+    if wasi_clock_gettime(0, *now) != 0 return EINVAL;
+    remaining: Seconds_And_Nanoseconds;
+    remaining.seconds = deadline.seconds - now.seconds;
+    remaining.nanoseconds = deadline.nanoseconds - now.nanoseconds;
+    if remaining.nanoseconds < 0 {
+        remaining.nanoseconds += 1_000_000_000;
+        remaining.seconds -= 1;
+    }
+    if remaining.seconds >= 0 wasi_nanosleep(*remaining, null);
+    return ETIMEDOUT;
+}
+
+#program_export "__errno_location"
+wasi_errno_location :: () -> *s32 #c_call {
+    return *error_number;
+}
+
+error_number: s32;
+ENOENT :: 2;
+ESRCH :: 3;
+EAGAIN :: 11;
+EINVAL :: 22;
+ERANGE :: 34;
+EDEADLK :: 35;
+ETIMEDOUT :: 110;
+
+wasi_poll_oneoff :: (subscriptions: u32, events: u32, count: u32, happened: u32) -> s32 #foreign wasi "poll_oneoff";
+
+// WASI's `subscription` with its `subscription_clock` variant (48 bytes) and its `event` (32 bytes).
+Clock_Subscription :: struct {
+    user_data: u64;
+    kind: u8;
+    kind_padding: [7] u8;
+    clock_id: u32;
+    clock_padding: u32;
+    timeout: u64;
+    precision: u64;
+    flags: u16;
+    flags_padding: [6] u8;
+}
+Poll_Event :: struct {
+    user_data: u64;
+    error: u16;
+    kind: u8;
+    kind_padding: [5] u8;
+    bytes: u64;
+    flags: u16;
+    flags_padding: [6] u8;
+}
+#assert size_of(Clock_Subscription) == 48 && size_of(Poll_Event) == 32;
+
+// Linux's `struct tm`, which the stdlib's `OS == .WASM` code reads.
+Broken_Down_Time :: struct {
+    second: s32;
+    minute: s32;
+    hour: s32;
+    day_of_month: s32;
+    month: s32;
+    years_since_1900: s32;
+    day_of_week: s32;
+    day_of_year: s32;
+    daylight_saving: s32;
+    gmt_offset: s64;
+    zone: *u8;
+}
+#assert size_of(Broken_Down_Time) == 56;
+
 environment: **u8;
 environment_ready: bool;
 
