@@ -10,7 +10,7 @@ The library side of metaprogramming: `Compiler` (workspaces, build options, comp
 
 `Reflection.jai` works on the `Type_Info` layout: `get_array_count_and_data`, `get_struct_field_info`, `enum_value_to_name`/`enum_name_to_value`, `get_enum_value`/`set_enum_value`, `set_value_from_string`, `get_values`. `is_subclass_of` follows `#as` first members by value or through one pointer; a type is not its own subclass.
 
-`Code_Visit` offers `visit_pre_and_postorder` and breadth- or depth-first node collection. `get_subexpressions` switches on `kind` and adds each node's direct syntactic children (operands, arguments, statements, declaration names and values). It never follows resolved links (`resolved_declaration`, parent blocks), so walks terminate; a kind it doesn't list has no children.
+`Code_Visit` offers `visit_pre_and_postorder` and breadth- or depth-first node collection. `visit_pre_and_postorder` builds its whole enter/leave schedule first (iteratively, with an explicit stack) and then runs the inserted code with `it` and `preorder` declared in the caller's scope, so call it at most once per block. `get_subexpressions` switches on `kind` and adds each node's direct syntactic children (operands, arguments, statements, declaration names and values). It never follows resolved links (`resolved_declaration`, parent blocks), so walks terminate; a kind it doesn't list has no children.
 
 `Jai_Lexer` lexes Jai (`set_input_from_string`/`set_input_from_file`, `peek_next_token`, `eat_token`). Tokens live in a small lookahead ring: `get_unused_token` claims the slot after the pending lookahead and stamps the current line and column. `:=` lexes as two tokens.
 
