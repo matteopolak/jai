@@ -1150,6 +1150,19 @@
       "negative": {
         "check": "unknown identifier 'Missing_Poly_Info'"
       }
+    },
+    {
+      "id": "getrect-rh-negative-control",
+      "source": "negative/getrect-rh-negative-control.jai",
+      "sha256": "9689f6086caa0bcf39655978176b8727670f54cb4804441aac866c0763ed3a45",
+      "suite": "negative",
+      "feature": "getrect-rh-negative-control",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "#assert failed"
+      }
     }
   ]
 }
