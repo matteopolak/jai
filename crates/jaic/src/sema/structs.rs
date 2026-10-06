@@ -6,7 +6,9 @@ use super::value::{Aggregate, PolyStructId};
 use super::*;
 use crate::ast::ExprKind as E;
 use crate::ir::Ty;
-use crate::types::{ArrayKind, EnumInfo, Field, LayoutState, StructId, StructInfo, TypeKind};
+use crate::types::{
+    ArrayKind, EnumInfo, Field, LayoutState, MAX_SIZE, StructId, StructInfo, TypeKind,
+};
 
 /// Where a struct's fields come from.
 #[derive(Clone)]
@@ -624,6 +626,20 @@ impl Compiler {
                         _ => self.align_of(d.ty, d.span)?,
                     };
                     align = align.max(a);
+                    // Every field is at most MAX_SIZE, so the sums below cannot overflow before
+                    // this check sees them.
+                    let too_large = |at: Option<u64>| {
+                        at.and_then(|at| at.checked_add(size))
+                            .is_none_or(|e| e > MAX_SIZE)
+                    };
+                    if too_large(cursor.checked_next_multiple_of(a))
+                        || overlay.is_some_and(|at| too_large(Some(at)))
+                    {
+                        return err(
+                            d.span,
+                            format!("struct is too large (the limit is {MAX_SIZE} bytes)"),
+                        );
+                    }
                     let offset = if let Some(offset) = overlay.take() {
                         // Shares storage: the cursor stays where it was.
                         end = end.max(offset + size);
