@@ -34,6 +34,7 @@ mod scope;
 mod stmt;
 mod structs;
 mod typeinfo;
+mod wide;
 
 use crate::ast;
 use crate::fxhash::{HashMap, HashSet};
@@ -92,6 +93,28 @@ pub struct Options {
     /// Record variables, scopes and types for native debug information
     /// (`Build_Options.emit_debug_info != .NONE`; only `jaic build` turns it on).
     pub debug_info: bool,
+    /// The target C compiler's `long double` when it is wider than `float64` (`None`: it is
+    /// `float64`). Decides what `#jaic_type long_double` names; see `long_double_for`.
+    pub long_double: Option<crate::wide_float::WideFloat>,
+}
+
+/// The C `long double` of a target, when wider than `float64`: x87 extended on x86-64 System V
+/// and MinGW (`windows_gnu`), binary128 on Linux AArch64 and wasm32, plain `double` on Apple
+/// arm64 and with the Microsoft toolchain.
+pub fn long_double_for(
+    os: TargetOs,
+    cpu: TargetCpu,
+    windows_gnu: bool,
+) -> Option<crate::wide_float::WideFloat> {
+    use crate::wide_float::WideFloat;
+    match (os, cpu) {
+        (TargetOs::Windows, TargetCpu::X64) if windows_gnu => Some(WideFloat::X87),
+        (TargetOs::Windows, _) => None,
+        (TargetOs::MacOS, TargetCpu::Arm64) => None,
+        (_, TargetCpu::X64) => Some(WideFloat::X87),
+        (TargetOs::Linux, TargetCpu::Arm64) | (_, TargetCpu::Wasm) => Some(WideFloat::Binary128),
+        (_, TargetCpu::Arm64) => None,
+    }
 }
 
 impl Options {
@@ -123,6 +146,7 @@ impl Options {
             arithmetic_overflow_check: 0,
             stack_trace: true,
             debug_info: false,
+            long_double: long_double_for(os, cpu, cfg!(target_env = "gnu")),
         }
     }
 }

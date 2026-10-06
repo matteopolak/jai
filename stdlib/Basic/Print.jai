@@ -528,6 +528,52 @@ __append_float_roundtrip :: (builder: *String_Builder, value: float64) {
     if fractional < 0 fractional = 0;
     __append_float_digits(builder, *digits, scientific, fractional, .{});
 }
+// A 16-byte float is jaic's Long_Double (module Jaic_Extensions): x87 extended precision on
+// x86-64, IEEE binary128 elsewhere. It prints through float64, so precision beyond float64's
+// is not shown.
+__long_double_to_float64 :: (p: *void) -> float64 {
+    low  := (cast(*u64) p).*;
+    high := (cast(*u64) p + 1).*;
+    // Both formats come down to a 64-bit significand with an explicit leading bit and a
+    // 15-bit biased exponent; for binary128 the dropped low bits stick to the last bit, so
+    // the single rounding below (u64 to float64) is still correct.
+    #if CPU == .X64 {
+        negative := (high >> 15) & 1 == 1;
+        exponent := cast(s64) (high & 0x7fff);
+        significand := low;
+        is_nan := exponent == 0x7fff && (significand << 1) != 0;
+    } else {
+        negative := high >> 63 == 1;
+        exponent := cast(s64) ((high >> 48) & 0x7fff);
+        stored := (high & 0xffff_ffff_ffff) | low;
+        significand := ((high & 0xffff_ffff_ffff) << 15) | (low >> 49);
+        if low & ((cast(u64) 1 << 49) - 1) significand |= 1;
+        if exponent != 0 significand |= cast(u64) 1 << 63;
+        is_nan := exponent == 0x7fff && stored != 0;
+    }
+    result: float64;
+    if is_nan {
+        nan_bits: u64 = 0x7ff8_0000_0000_0000;
+        result = (cast(*float64) *nan_bits).*;
+    } else if exponent == 0x7fff {
+        inf_bits: u64 = 0x7ff0_0000_0000_0000;
+        result = (cast(*float64) *inf_bits).*;
+    } else {
+        result = cast(float64) significand;
+        // value = significand * 2^(exponent - 16383 - 63); denormals use exponent 1.
+        scale := ifx exponent == 0 then -16445 else exponent - 16446;
+        while scale != 0 && result != 0 {
+            step := scale;
+            if step > 1000 step = 1000;
+            if step < -1000 step = -1000;
+            factor_bits := cast(u64) (step + 1023) << 52;
+            result *= (cast(*float64) *factor_bits).*;
+            scale -= step;
+        }
+    }
+    if negative result = -result;
+    return result;
+}
 print_float :: (builder: *String_Builder, format: FormatFloat) {
     item := format.value;
     if !item.type || !item.value_pointer { append(builder, "<null formatter>"); builder.failed = true; return; }
@@ -535,6 +581,7 @@ print_float :: (builder: *String_Builder, format: FormatFloat) {
     value: float64 = 0;
     if item.type.runtime_size == 4 value = cast(float64) (cast(*float32) item.value_pointer).*;
     else if item.type.runtime_size == 8 value = (cast(*float64) item.value_pointer).*;
+    else if item.type.runtime_size == 16 value = __long_double_to_float64(item.value_pointer);
     else { append(builder, "<unsupported float width>"); builder.failed = true; return; }
     scratch: String_Builder;
     init_string_builder(*scratch);
@@ -581,6 +628,7 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
         if (cast(*Type_Info_Integer) info).signed append(builder, "s"); else append(builder, "u");
         print_u64_base_n(builder, cast(u64) (info.runtime_size*8), .{}); return;
     }
+    if info.type == .FLOAT && info.runtime_size == 16 { append(builder, "Long_Double"); return; }
     if info.type == .FLOAT { append(builder, "float"); print_u64_base_n(builder, cast(u64) (info.runtime_size*8), .{}); return; }
     if info.type == .PROCEDURE {
         procedure := cast(*Type_Info_Procedure) info;
