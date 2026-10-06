@@ -27,10 +27,17 @@ O_NDELAY :: O_NONBLOCK;
 O_SYNC :: 0x101000 ;
 O_FSYNC :: O_SYNC;
 O_ASYNC :: 0x2000 ;
-__O_DIRECTORY :: 0x10000 ;
-__O_NOFOLLOW :: 0x20000 ;
+// AArch64 places these three bits differently from x86-64 (its <bits/fcntl.h>).
+#if CPU == .ARM64 {
+    __O_DIRECTORY :: 0x4000 ;
+    __O_NOFOLLOW :: 0x8000 ;
+    __O_DIRECT :: 0x10000 ;
+} else {
+    __O_DIRECTORY :: 0x10000 ;
+    __O_NOFOLLOW :: 0x20000 ;
+    __O_DIRECT :: 0x4000 ;
+}
 __O_CLOEXEC :: 0x80000 ;
-__O_DIRECT :: 0x4000 ;
 __O_NOATIME :: 0x40000 ;
 __O_PATH :: 0x200000 ;
 __O_DSYNC :: 0x1000 ;
@@ -488,39 +495,80 @@ name_to_handle_at :: (__dfd: s32, __name: *u8, __handle: *file_handle, __mnt_id:
 open_by_handle_at :: (__mountdirfd: s32, __handle: *file_handle, __flags: s32) -> s32 #foreign libc;
 mode_t :: u32;
 pid_t :: s32;
-stat_t :: struct {
-    st_dev: u64;
-    st_ino: u64;
-    st_nlink: u64;
-    st_mode: u32;
-    st_uid: u32;
-    st_gid: u32;
-    __pad0: s32;
-    st_rdev: u64;
-    st_size: s64;
-    st_blksize: s64;
-    st_blocks: s64;
-    st_atime: timespec;
-    st_mtime: timespec;
-    st_ctime: timespec;
-    __glibc_reserved: [3] s64;
-}
-stat64_t :: struct {
-    st_dev: u64;
-    st_ino: u64;
-    st_nlink: u64;
-    st_mode: u32;
-    st_uid: u32;
-    st_gid: u32;
-    __pad0: s32;
-    st_rdev: u64;
-    st_size: s64;
-    st_blksize: s64;
-    st_blocks: s64;
-    st_atime: timespec;
-    st_mtime: timespec;
-    st_ctime: timespec;
-    __glibc_reserved: [3] s64;
+// The kernel's struct stat differs per architecture: AArch64 uses the generic 128-byte layout
+// (32-bit st_nlink after st_mode), x86-64 its own 144-byte one. The browser target uses x86-64.
+#if CPU == .ARM64 {
+    stat_t :: struct {
+        st_dev: u64;
+        st_ino: u64;
+        st_mode: u32;
+        st_nlink: u32;
+        st_uid: u32;
+        st_gid: u32;
+        st_rdev: u64;
+        __pad1: u64;
+        st_size: s64;
+        st_blksize: s32;
+        __pad2: s32;
+        st_blocks: s64;
+        st_atime: timespec;
+        st_mtime: timespec;
+        st_ctime: timespec;
+        __glibc_reserved: [2] s32;
+    }
+    stat64_t :: struct {
+        st_dev: u64;
+        st_ino: u64;
+        st_mode: u32;
+        st_nlink: u32;
+        st_uid: u32;
+        st_gid: u32;
+        st_rdev: u64;
+        __pad1: u64;
+        st_size: s64;
+        st_blksize: s32;
+        __pad2: s32;
+        st_blocks: s64;
+        st_atime: timespec;
+        st_mtime: timespec;
+        st_ctime: timespec;
+        __glibc_reserved: [2] s32;
+    }
+} else {
+    stat_t :: struct {
+        st_dev: u64;
+        st_ino: u64;
+        st_nlink: u64;
+        st_mode: u32;
+        st_uid: u32;
+        st_gid: u32;
+        __pad0: s32;
+        st_rdev: u64;
+        st_size: s64;
+        st_blksize: s64;
+        st_blocks: s64;
+        st_atime: timespec;
+        st_mtime: timespec;
+        st_ctime: timespec;
+        __glibc_reserved: [3] s64;
+    }
+    stat64_t :: struct {
+        st_dev: u64;
+        st_ino: u64;
+        st_nlink: u64;
+        st_mode: u32;
+        st_uid: u32;
+        st_gid: u32;
+        __pad0: s32;
+        st_rdev: u64;
+        st_size: s64;
+        st_blksize: s64;
+        st_blocks: s64;
+        st_atime: timespec;
+        st_mtime: timespec;
+        st_ctime: timespec;
+        __glibc_reserved: [3] s64;
+    }
 }
 fcntl :: (__fd: s32, __cmd: s32, __args: ..Any) -> s32 #foreign libc;
 open :: (__file: *u8, __oflag: s32, __args: ..Any) -> s32 #foreign libc;

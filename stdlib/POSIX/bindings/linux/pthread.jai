@@ -112,23 +112,35 @@ __pthread_cond_s :: struct {
     __g_signals: [2] u32;
 }
 pthread_t :: u64;
+// glibc sizes several pthread types differently on AArch64 (its <bits/pthreadtypes-arch.h>).
+#if CPU == .ARM64 {
+    PTHREAD_ATTR_BYTES :: 64;
+    PTHREAD_MUTEX_BYTES :: 48;
+    PTHREAD_SMALL_ATTR_BYTES :: 8;
+    JMP_BUF_WORDS :: 22;
+} else {
+    PTHREAD_ATTR_BYTES :: 56;
+    PTHREAD_MUTEX_BYTES :: 40;
+    PTHREAD_SMALL_ATTR_BYTES :: 4;
+    JMP_BUF_WORDS :: 8;
+}
 pthread_mutexattr_t :: union {
-    __size: [4] u8;
+    __size: [PTHREAD_SMALL_ATTR_BYTES] u8;
     __align: s32;
 }
 pthread_condattr_t :: union {
-    __size: [4] u8;
+    __size: [PTHREAD_SMALL_ATTR_BYTES] u8;
     __align: s32;
 }
 pthread_key_t :: u32;
 pthread_once_t :: s32;
 pthread_attr_t :: union {
-    __size: [56] u8;
+    __size: [PTHREAD_ATTR_BYTES] u8;
     __align: s64;
 }
 pthread_mutex_t :: union {
     __data: __pthread_mutex_s;
-    __size: [40] u8;
+    __size: [PTHREAD_MUTEX_BYTES] u8;
     __align: s64;
 }
 pthread_cond_t :: union {
@@ -151,10 +163,10 @@ pthread_barrier_t :: union {
     __align: s64;
 }
 pthread_barrierattr_t :: union {
-    __size: [4] u8;
+    __size: [PTHREAD_SMALL_ATTR_BYTES] u8;
     __align: s32;
 }
-__jmp_buf :: [8] s64;
+__jmp_buf :: [JMP_BUF_WORDS] s64;
 PTHREAD_CREATE :: enum u32 {
     JOINABLE :: 0;
     DETACHED :: 1;
