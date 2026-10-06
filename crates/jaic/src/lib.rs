@@ -59,6 +59,9 @@ pub fn display_path(path: &std::path::Path) -> String {
     let Some(base) = DISPLAY_BASE.get() else {
         return path.display().to_string();
     };
+    if path == base {
+        return ".".to_string();
+    }
     for (up, dir) in base.ancestors().take(3).enumerate() {
         if let Ok(relative) = path.strip_prefix(dir)
             && !relative.as_os_str().is_empty()
