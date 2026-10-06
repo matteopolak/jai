@@ -324,6 +324,7 @@ impl JsonSession {
                     "documentSymbolProvider": true,
                     "workspaceSymbolProvider": true,
                     "foldingRangeProvider": true,
+                    "documentLinkProvider": { "resolveProvider": false },
                     "inlayHintProvider": true,
                     "signatureHelpProvider": {
                         "triggerCharacters": ["(", ","],
@@ -456,6 +457,17 @@ impl JsonSession {
                             .workspace_symbols(&p.query)
                             .iter()
                             .map(symbol_information_wire)
+                            .collect(),
+                    )
+                }
+                "textDocument/documentLink" => {
+                    let p: DocumentParams = decode(params)?;
+                    Value::Array(
+                        self.session
+                            .document_links(&uri(&p.text_document.uri)?)
+                            .map_err(domain)?
+                            .into_iter()
+                            .map(|(range, target)| json!({ "range": range, "target": target }))
                             .collect(),
                     )
                 }

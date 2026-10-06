@@ -3,6 +3,7 @@
 //! hints, code actions, format strings, references, signature help, folding, code lenses and
 //! workspace symbols.
 use crate::analysis::{Span, TokenKind};
+use crate::links::{Link, LinkSource};
 use crate::semantic;
 use crate::session::{Session, contains, repair};
 use crate::{
@@ -11,9 +12,10 @@ use crate::{
     SymbolInformation, TextEdit,
 };
 use jaic::intern::Sym;
+use jaic::sema::FileSystem;
 use jaic::sema::ide_meta::{IdeCallInfo, IdeClass, IdeExpansion, IdeExpansionKind};
 use jaic::source::FileId;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
 /// URI scheme of expansion documents.
@@ -724,6 +726,72 @@ impl Session {
     }
 
     // ---------------------------------------------------------------------------------------
+    // `#load` / `#import` links
+    // ---------------------------------------------------------------------------------------
+
+    /// The file a `#load` or `#import` of `uri` brings in, resolved as the compiler does:
+    /// `#load` relative to the loading file; a module in `modules/` next to the file, then on
+    /// the import path (`Name.jai` before `Name/module.jai`); `,file` and `,dir` relative to
+    /// the file. Open documents count as files.
+    fn link_target(&self, uri: &DocumentUri, link: &Link) -> Option<DocumentUri> {
+        let files = OpenFiles {
+            session: self,
+        };
+        let path = match &link.source {
+            LinkSource::Load(path) => PathBuf::from(uri.load(path).ok()?.path()),
+            LinkSource::Import(source) => {
+                let root = PathBuf::from(self.root(uri).path());
+                let import_paths = self
+                    .environment
+                    .as_ref()
+                    .map(|e| (e.options)(&root).import_paths)
+                    .unwrap_or_default();
+                let dir = Path::new(uri.path()).parent()?;
+                jaic::sema::import_entry(&files, &import_paths, source, dir)?
+            }
+        };
+        if !files.is_file(&path) {
+            return None;
+        }
+        let path = self
+            .environment
+            .as_ref()
+            .map_or(path.clone(), |e| e.fs.canonical(&path));
+        DocumentUri::parse(&format!("file://{}", path.to_string_lossy())).ok()
+    }
+
+    /// Each `#load` / `#import` string of the document with the file it brings in.
+    pub fn document_links(&self, uri: &DocumentUri) -> Result<Vec<(Range, String)>, Error> {
+        self.document(uri)?;
+        let links = self.analyses[uri].links.clone();
+        Ok(links
+            .iter()
+            .filter_map(|link| {
+                let target = self.link_target(uri, link)?;
+                Some((
+                    self.range_of(uri, link.string)?,
+                    target.as_str().to_string(),
+                ))
+            })
+            .collect())
+    }
+
+    /// Definition of a `#load` / `#import` directive or its string: the start of the file.
+    pub(crate) fn link_definition(&self, uri: &DocumentUri, byte: usize) -> Option<Location> {
+        let link = self
+            .analyses
+            .get(uri)?
+            .links
+            .iter()
+            .find(|l| l.directive.start <= byte && byte <= l.directive.end)?;
+        let target = self.link_target(uri, link)?;
+        Some(Location {
+            uri: target.as_str().into(),
+            range: Range::default(),
+        })
+    }
+
+    // ---------------------------------------------------------------------------------------
     // Syntax-only features
     // ---------------------------------------------------------------------------------------
 
@@ -891,6 +959,42 @@ impl Session {
             .into_iter()
             .map(|(s, c)| (Span::new(s.start as usize, s.end as usize), c))
             .collect()
+    }
+}
+
+/// The open documents over the environment's file system, for resolving links.
+struct OpenFiles<'a> {
+    session: &'a Session,
+}
+
+impl OpenFiles<'_> {
+    fn open(&self, path: &Path) -> bool {
+        self.session
+            .documents
+            .keys()
+            .any(|d| Path::new(d.path()) == path)
+    }
+}
+
+impl jaic::sema::FileSystem for OpenFiles<'_> {
+    fn read(&self, path: &Path) -> Option<Vec<u8>> {
+        self.session.environment.as_ref()?.fs.read(path)
+    }
+
+    fn is_file(&self, path: &Path) -> bool {
+        self.open(path)
+            || self
+                .session
+                .environment
+                .as_ref()
+                .is_some_and(|e| e.fs.is_file(path))
+    }
+
+    fn is_dir(&self, path: &Path) -> bool {
+        self.session
+            .environment
+            .as_ref()
+            .is_some_and(|e| e.fs.is_dir(path))
     }
 }
 
