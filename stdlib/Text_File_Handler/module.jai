@@ -41,28 +41,16 @@ start_file :: (handler: *Text_File_Handler, short_name: string, full_path: strin
     start_from_memory(handler, short_name, full_path, data, loc);
     handler.file_data_to_free = data;
 }
-start_from_memory :: (using handler: *Text_File_Handler, _short_name: string, _full_path: string, _file_data: string, loc := #caller_location) {
-    if file_data_to_free.data Basic.free(file_data_to_free);
-    file_data_to_free = "";
-    short_name = _short_name;
-    full_path = _full_path;
-    file_data = _file_data;
-    version = -1;
-    line_number = 0;
-    // Failure is sticky across starts so a caller can inspect the whole batch.
-    if do_version_number {
-        line, found := consume_next_line(handler);
-        if !found || line.count < 3 || line[0] != 91 || line[line.count - 1] != 93 {
-            failed = true;
-            return;
-        }
-        value, ok := Basic.string_to_int(String.slice(line, 1, line.count - 2));
-        if !ok {
-            failed = true;
-            return;
-        }
-        version = value;
-    }
+start_from_memory :: (handler: *Text_File_Handler, _short_name: string, _full_path: string, _file_data: string, loc := #caller_location) {
+    // A buffer owned from an earlier start_file is no longer referenced once we switch.
+    if handler.file_data_to_free.data Basic.free(handler.file_data_to_free);
+    handler.file_data_to_free = "";
+    handler.file_data = _file_data;
+    handler.short_name, handler.full_path = _short_name, _full_path;
+    handler.line_number = 0;
+    handler.version = -1;
+    // `failed` is never cleared here: it is sticky across starts, so one check covers a batch.
+    if handler.do_version_number && !read_version_line(handler) handler.failed = true;
 }
 consume_next_line :: (sp: *string) -> string, bool {
     if sp.count == 0 return "", false;
@@ -80,18 +68,13 @@ consume_next_line :: (sp: *string) -> string, bool {
     return line, true;
 }
 consume_next_line :: (handler: *Text_File_Handler) -> line: string, found: bool {
-    while true {
-        line, found := consume_next_line(*handler.file_data);
-        if !found return "", false;
+    while handler.file_data.count > 0 {
+        raw := consume_next_line(*handler.file_data);
         handler.line_number += 1;
-        line = String.trim(line);
-        if handler.strip_comments_from_ends_of_lines {
-            index := String.find_index_from_left(line, handler.comment_character);
-            if index >= 0 line = String.trim_right(String.slice(line, 0, index));
-        } else if line.count > 0 && line[0] == handler.comment_character continue;
-        if handler.auto_skip_blank_lines && line.count == 0 continue;
-        return line, true;
+        cleaned, keep := clean_line(handler, raw);
+        if keep return cleaned, true;
     }
+    return "", false;
 }
 break_by_spaces :: (line: string) -> left: string, right: string {
     line = String.trim_left(line);
@@ -142,4 +125,29 @@ file_to_table :: (filename: string, do_trim := true, skip_blank_lines := true, d
     }
     Basic.array_free(*lines);
     return success, table;
+}
+
+#scope_file
+// The version header is the first meaningful line and reads "[N]".
+read_version_line :: (handler: *Text_File_Handler) -> bool {
+    line, found := consume_next_line(handler);
+    if !found || line.count < 3 return false;
+    if line[0] != #char "[" || line[line.count - 1] != #char "]" return false;
+    number, parsed := Basic.string_to_int(String.slice(line, 1, line.count - 2));
+    if parsed handler.version = number;
+    return parsed;
+}
+// Trims a raw line and applies the comment and blank-line settings; `keep` is false when the
+// line should be skipped entirely.
+clean_line :: (handler: *Text_File_Handler, raw: string) -> text: string, keep: bool {
+    text := String.trim(raw);
+    marker := handler.comment_character;
+    if handler.strip_comments_from_ends_of_lines {
+        cut := String.find_index_from_left(text, marker);
+        if cut >= 0 text = String.trim_right(String.slice(text, 0, cut));
+    } else if text.count > 0 && text[0] == marker {
+        return "", false;
+    }
+    if text.count == 0 && handler.auto_skip_blank_lines return "", false;
+    return text, true;
 }
