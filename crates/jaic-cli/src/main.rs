@@ -409,7 +409,11 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
             options.long_double = jaic::sema::long_double_for(os, cpu, gnu);
         }
         Ok(None) if cli.os.is_some() || cli.cpu.is_some() => {
-            // `-os`/`-cpu` for checking only: that OS and CPU, with its usual C compiler.
+            // `-os`/`-cpu` for checking only: that OS and CPU, with its usual C compiler. A wasm
+            // target has its own CPU (`CUSTOM`), as `jaic build -os wasm` and the browser give it.
+            if options.os == TargetOs::Wasm && cli.cpu.is_none() {
+                options.cpu = TargetCpu::Wasm;
+            }
             options.long_double = jaic::sema::long_double_for(options.os, options.cpu, false);
         }
         Ok(None) => {}
