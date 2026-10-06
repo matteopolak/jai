@@ -2,11 +2,11 @@
 
 ## What it is
 
-`stdlib/Bindings_Generator` turns C, C++ and Objective-C headers into Jai declarations: constants from `#define`s, enums, structs (with bit fields), unions, typedefs, function-pointer types, `#foreign` procedures, C++ classes, and Objective-C classes/protocols as message-send wrappers. The public API follows the reference module: fill in a `Generate_Bindings_Options`, optionally set a `visitor`, call `generate_bindings(opts, "out.jai")`. Metaprograms such as `Vk-Engine/Modules/{Vulkan,ImGui}/generate.jai` run unchanged.
+`stdlib/Bindings_Generator` turns C, C++ and Objective-C headers into Jai declarations: constants from `#define`s, enums, structs (with bit fields), unions, typedefs, function-pointer types, `#foreign` procedures, C++ classes, and Objective-C classes/protocols as message-send wrappers. The public API matches the official module: fill in a `Generate_Bindings_Options`, optionally set a `visitor`, call `generate_bindings(opts, "out.jai")`. Existing generators such as Vk-Engine's `Modules/{Vulkan,ImGui}/generate.jai` run unchanged.
 
 ## How it works
 
-Running it: write a small program (usually the project's `generate.jai`) that fills in the options and calls `generate_bindings`, then run it with `jaic run`. It needs libclang on the machine (see Configuration).
+Write a small program (usually the project's `generate.jai`) that fills in the options and calls `generate_bindings`, and run it with `jaic run`. It needs libclang (see Configuration).
 
 ```jai
 #import "Basic";
@@ -26,24 +26,22 @@ jaic run generate.jai            # writes mylib.jai
 jaic check generate.jai -os linux   # generators for another OS's headers
 ```
 
-A complete worked example, including `visitor` use and output assertions, is `tests/stdlib/bindings-generator-c.jai` (`jaic run tests/stdlib/bindings-generator-c.jai`; it writes into `/tmp`).
+`tests/stdlib/bindings-generator-c.jai` is a complete example, including a `visitor` and output assertions; it writes into `/tmp`.
 
-The pipeline:
+### Pipeline
 
 1. `generate_bindings` (`generate.jai`) builds a `Generator_State` (stored in `context.generator`, options in `context.generator_options`), resolves the requested libraries, and asks libclang to parse a synthetic `generate_temp.h` that `#include`s each entry of `source_files`.
 2. `convert.jai` walks the translation unit and builds the declaration model of `types.jai` (`Declaration`, `Function`, `Struct`, `Enum`, `Typedef`, `Namespace`, `Bitfield`, `CType`, `Literal`...). Declarations from system headers are skipped unless `path_fragments_to_treat_as_non_system_paths` or `system_types_to_include` whitelist them; types declared in system headers are referred to by name (see "System types" below), except the builtin integer typedefs (`uint32_t`, `size_t`...), which become primitives. Macros are kept only when their body is a constant expression over literals and already-known constants.
 3. `post_process` converts macros to enums (`generate_enums_from_macros_with_prefixes`), assigns functions to libraries, then the user `visitor` runs over every declaration (it may set `decl_flags`, rename `output_name`, swap types, add default values), followed by `omit_unnecessary_typedefs_and_macros`.
 4. `print.jai` prints the model. Enum values are prefix-stripped (`auto_detect_enum_prefixes`), original names stay as aliases, unions print as `union`, bit fields as a `__bitfield` storage member plus `S_get_x`/`S_set_x` accessors (see "Bit fields"), C++ reference parameters become pointers with a value-taking `#no_context` wrapper when they have defaults, and printf-like variadics get a `_CFormat` foreign declaration plus a Jai `string` wrapper.
 
-Library assignment: each `libraries` / `libnames` entry is located (search paths, then `lib` prefix and `.dylib/.so/.dll/.lib/.a` suffixes) and its exported symbols read with `nm -g` (output captured directly with `run_command(..., capture_and_return_output = true)`). A function binds to the first library exporting its symbol. If a library file cannot be found it is treated as "unknown": unresolved functions are assigned to the first unknown library and a note is logged; otherwise, with `SYMBOLS_WITH_UNKNOWN_FOREIGN_LIBS` set, a function found in no library is stripped.
+Library assignment: each `libraries` / `libnames` entry is located (search paths, then `lib` prefix and `.dylib/.so/.dll/.lib/.a` suffixes) and its exported symbols read with `nm -g`. A function binds to the first library exporting its symbol. A library file that can't be found is "unknown": unresolved functions go to the first unknown library with a logged note. With `SYMBOLS_WITH_UNKNOWN_FOREIGN_LIBS` in `strip_flags`, a function found in no library is stripped instead.
 
 ### Why libclang goes through a Rust bridge
 
-The interpreter's `#foreign` calls pass scalars only. libclang passes and returns `CXCursor`/`CXType` structs by value and drives traversal with a native callback (`clang_visitChildren`). So `crates/jaic/src/clang.rs` loads libclang itself and exposes it as the `__jaic_clang(op, a, b, text)` / `__jaic_clang_text()` primitives. Cursors and types are stored in arenas and handed to Jai as integer handles; equal cursors get equal handles (usable as hash keys). `stdlib/Bindings_Generator/clang.jai` wraps this (`clang("kind", cursor)`...). All AST logic is Jai; Rust only forwards calls and collects children.
+libclang passes `CXCursor`/`CXType` structs by value and drives traversal with a native callback (`clang_visitChildren`), which interpreted `#foreign` calls can't do well. So `crates/jaic/src/clang.rs` loads libclang itself and exposes it through the `__jaic_clang(op, a, b, text)` and `__jaic_clang_text()` primitives. Cursors and types live in arenas and reach Jai as integer handles; equal cursors get equal handles, so handles work as hash keys. `stdlib/Bindings_Generator/clang.jai` wraps this (`clang("kind", cursor)`). All AST logic is Jai; Rust only forwards calls and collects children.
 
 ### C++ support
-
-Everything below is learned from the behaviour of the reference generator, not copied from it.
 
 - **Methods**: members are printed inside the struct as `name :: (this: *T, ...) -> R #cpp_method #foreign lib "mangled";`. `const T&` parameters become `*T` plus a `#no_context` value wrapper (defaults live on the wrapper). Static methods have no `this`; static `const` data members with a value become struct constants.
 - **Constructors / destructors**: `Constructor`, `CopyConstructor`, `MoveConstructor`, `Destructor` (D1), `Destructor_Base` (D2). Manglings come from `clang("manglings", cursor)` so the C1/C2 and D0/D1/D2 variants are real symbols. `#cpp_return_type_is_non_pod` is printed for functions returning a type with a constructor, copy/move constructor or destructor.
@@ -52,15 +50,15 @@ Everything below is learned from the behaviour of the reference generator, not c
 - **Templates**: class templates print as `struct(T: Type)` (non-type parameters keep their C type), instantiations as `Box(s32)`. libclang reports dependent types as "Unexposed", so they are recovered from placeholder structs, `TypeRef`/`TemplateRef` children and (for non-type arguments) the type spelling (`create_unexposed_type`, `fill_template_arguments` in `convert.jai`). Explicit specializations are skipped.
 - **Operators**: binary operators Jai can overload print as `operator+ :: ...` after the struct; others get names like `operator_not_equals`.
 - **Default arguments**: temporaries (`T(a, b)`, `T()`, `{}`) print as `T.{...}`, null casts and `NULL`/`nullptr` as `null`, bool literals as `true`/`false`.
-- **Macros**: macro bodies are parsed with C's precedence and printed with the parentheses Jai's different table needs to keep that grouping (`1<<24|1<<16` -> `1 << 24 | (1 << 16)`, `A % 3 * 2` -> `(A % 3) * 2`, `(unsigned)A | 1` -> `(cast(u32) A) | 1`; `jai_binding` in `convert.jai`). The reference generator copies the tokens, so its output (for example the `TCPOPT_*_HDR` constants in its Socket bindings) means something else in Jai. Surrounding parentheses are stripped (`(4)` -> `4`); macros naming a type or `int`/`void` (`#define X ImWchar`) and casts to a named type (`((ImGuiID)0)` -> `cast(ID) 0`, `cast,trunc(ID) -1` before `-`/`~`) are resolved after all declarations exist (`NEEDS_CHECKING` in `post_process`).
-- **Known gaps**: inline functions are bound only when the library exports their symbol (a header-only inline method has none), so bind against the built library. Tail padding is handled for classes with any number of non-template bases (see "Tail padding and `__RAW` structs"); virtual bases are handled (see "Virtual bases"); a class whose layout cannot be reproduced (template bases, empty-base optimization) still gets a comment and `NO_STRUCT_CHECKS`.
+- **Macros**: macro bodies are parsed with C's precedence and printed with the parentheses Jai's different table needs to keep that grouping (`1<<24|1<<16` -> `1 << 24 | (1 << 16)`, `A % 3 * 2` -> `(A % 3) * 2`, `(unsigned)A | 1` -> `(cast(u32) A) | 1`; `jai_binding` in `convert.jai`). Copying the tokens verbatim would silently change their meaning in Jai. Surrounding parentheses are stripped (`(4)` -> `4`); macros naming a type or `int`/`void` (`#define X ImWchar`) and casts to a named type (`((ImGuiID)0)` -> `cast(ID) 0`, `cast,trunc(ID) -1` before `-`/`~`) are resolved after all declarations exist (`NEEDS_CHECKING` in `post_process`).
+- **Gaps**: inline functions are bound only when the library exports their symbol (a header-only inline method has none), so bind against the built library. Tail padding is handled for classes with any number of non-template bases (see "Tail padding and `__RAW` structs"); virtual bases are handled (see "Virtual bases"); a class whose layout cannot be reproduced (template bases, empty-base optimization) still gets a comment and `NO_STRUCT_CHECKS`.
 
 Compiler support the generated code relies on:
 
 - `#cpp_method` implies the C calling convention and no context, for procedure literals and procedure types (so vtable entries are called correctly). `#cpp_return_type_is_non_pod` sets `ProcType.non_pod_return`; the IR sets `CAbi.ret_indirect`, and `interp/native.rs::call` then returns the aggregate through the hidden result pointer even when it would fit in registers. By-value struct arguments and results otherwise use the shared classifier (`crates/jaic/src/abi.rs`).
-- libclang bridge ops added for this: `is_virtual`, `is_pure_virtual`, `is_const_method`, `is_copy_ctor`, `is_move_ctor`, `is_inlined`, `access`, `manglings`, `specialized_template`, `t_template_arg`, `is_virtual_base`, `base_offset` (bits; `-1` when the libclang is too old for `clang_getOffsetOfBase`), `comment_line`.
+- Bridge ops used for C++: `is_virtual`, `is_pure_virtual`, `is_const_method`, `is_copy_ctor`, `is_move_ctor`, `is_inlined`, `access`, `manglings`, `specialized_template`, `t_template_arg`, `is_virtual_base`, `base_offset` (bits; `-1` when the libclang is too old for `clang_getOffsetOfBase`), `comment_line`.
 
-Verification against real headers (scratch copies of the Vk-Engine generators run with `jaic check generate.jai -os linux`): Vulkan-Headers 1.3.250 + VMA produced 651 functions / 902 structs / 250 enums; Dear ImGui 1.90.4-docking produced 1143 functions / 121 structs / 78 enums, and the output type-checks and drives a real frame (`CreateContext`, `Style.Constructor`, `NewFrame`, `Begin`, `Render`) against a dylib built from the same sources.
+Real-world check: scratch copies of the Vk-Engine generators (`jaic check generate.jai -os linux`) bind Vulkan-Headers with VMA and Dear ImGui (docking branch). The ImGui output type-checks and drives a real frame (`CreateContext`, `Style.Constructor`, `NewFrame`, `Begin`, `Render`) against a dylib built from the same sources.
 
 ### Struct checks, inline stripping and the `#library` declaration
 
@@ -112,7 +110,7 @@ Parse with `extra_clang_arguments` containing `-x objective-c`. Generated code u
 - **Instance variables** (`add_objc_ivar`): the `@interface { ... }` ivars become data members after the superclass member, in declaration order, so `p._x = 3` works on a `*Point`. Jai lays them out with natural alignment, which equals clang's layout for ordinary types. Limits: ivars only declared in an `@implementation` or class extension are invisible; a subclass's first ivar is assumed to start at the Jai size of its superclass (a superclass ending in a small ivar that the runtime lets the subclass pack behind is not modeled); bit field ivars are skipped; `@private`/`@protected` are not distinguished. Struct size checks skip Objective-C structs (their size is runtime-owned).
 - **Blocks** (`create_block_type`): `void (^)(int)` prints as a pointer to a struct named after the signature, `Block_<result>_<args>` (`*` becomes `P`, e.g. `Block_void_s32_PNSString`, `Block_s32_s32`). The struct is the block header (`isa`, `flags`, `reserved`, `invoke`, `descriptor`) with `invoke: #type (block: *Block_X, args...) -> R #c_call`, so a block received from Objective-C is called as `b.invoke(b, 3)`. One struct per signature is added to the global scope on first use and shared by typedefs (`Handler :: *Block_void_s32;`), parameters, results and properties. Generic parameters inside a block signature are erased to `id` (the struct lives outside the class). Every block struct is followed by a constructor, `Block_X_literal :: (invoke: <invoke type>, user_data: *void = null) -> *Block_X`, which wraps a Jai `#c_call` procedure in a global block (`objc_make_block` in the `Objective_C` module: `_NSConcreteGlobalBlock` isa, the `BLOCK_IS_GLOBAL` flag, a static descriptor and one extra `user_data` slot). Inside `invoke`, `objc_block_user_data(block)` returns that pointer, which replaces captured variables. Global blocks are never copied or freed by the runtime, so the result can be stored by Objective-C (`setOnDone:`) and stays valid; it is allocated with `New` and lives for the program. In the interpreter the procedure is turned into a native thunk by passing it through a foreign call inside `objc_make_block`.
 - Libraries: OBJC methods are not assigned to a library by symbol; the classes must be loaded by linking or loading the library in the program (`dlopen` or a call to a function in it).
-- Bridge ops added: `cursor_result_type`, `t_objc_base`, `t_objc_num_protocols`, `t_objc_protocol`, `t_objc_num_type_args`, `t_objc_type_arg`, `t_modified`.
+- Bridge ops used for Objective-C: `cursor_result_type`, `t_objc_base`, `t_objc_num_protocols`, `t_objc_protocol`, `t_objc_num_type_args`, `t_objc_type_arg`, `t_modified`.
 
 Tests: `tests/stdlib/bindings-generator-objc-stret.jai` (text of the x64 and arm64 bindings; the x64 ones are also type checked), `bindings-generator-objc.jai` (builds a dylib with clang, then drives classes, a protocol, a category, properties, class methods, `instancetype`, `double` and `BOOL`), `bindings-generator-objc-generics.jai` (generic classes, specialised uses, unspecialised `id` defaults, a specialised subclass, generic `instancetype`), `bindings-generator-objc-ivars.jai` (reading and writing ivars across Jai and Objective-C, subclass ivars) and `bindings-generator-objc-blocks.jai` (block typedefs, parameters, results and properties; calling returned blocks through `invoke`; passing Jai procedures as blocks with `Block_X_literal`, with and without `user_data`, including one Objective-C stores and calls later).
 
@@ -151,7 +149,7 @@ Objective-C methods using a 16-byte `long double` are stripped either way: on x8
 
 When clang puts a member at an offset its natural alignment would not give (`#pragma pack`, `__attribute__((packed))`, or a virtual base), `print_struct_body` adds `#align N` to the member, choosing the largest power of two that reaches the offset (`check_alignment`, `next_field_offset`, `alignment_reaching` in `print.jai`). This needs the compiler rule that a member's `#align` replaces its natural alignment rather than only raising it (`crates/jaic/src/sema/structs.rs`).
 
-### Other output rules shared with the reference
+### Other output rules
 
 - A function whose printed name is not its C symbol (`name_CFormat`, a name shortened by `strip_prefixes`, or a Jai keyword escaped with `_`) names the symbol in its `#foreign` directive; C++ functions always do, with the mangled name (`append_elsewhere` in `print.jai`).
 - Unnamed parameters print as `unknown0`, `unknown1`... (the `Declaration.name` stays empty; only `output_name` is set).
@@ -164,13 +162,13 @@ When clang puts a member at an offset its natural alignment would not give (`#pr
 - Every generated file starts with a `// Generated by Bindings_Generator. ...` comment; with `add_generator_command` (default on) it also shows the command line (`generator_command` in `generate.jai`). A class with virtual functions has its `virtual_*` bindings under a short comment explaining when to use them, and an empty C++ class gets `__empty_struct_padding: u8;` because C++ gives it size 1.
 - macOS `.tbd` stubs that only list `arm64e` count for `arm64`.
 
-### Parity with the reference module
+### Coverage of the public API
 
-Status of the reference module's public surface in this implementation. "Partial" entries are described in the notes.
+"Partial" entries are explained in the notes.
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| `Generate_Bindings_Options`: all 46 reference fields | Supported | Plus `libclang_path`, `generate_bitfield_accessors`, `libraries`/`library_search_paths` |
+| `Generate_Bindings_Options`: every public field | Supported | Plus `libclang_path`, `generate_bitfield_accessors`, `libraries`/`library_search_paths` |
 | `generate_bindings(opts, path)` / `(opts) -> String_Builder, bool` | Supported | |
 | `visitor`, `get_func_args_for_printing`, `will_print_bindings`, `convert_macro_value_to_enum_callback` | Supported | |
 | Helper procedures (`change_type_to_enum`, `get_type_name`, `find_underlying_type`, `get_default_system_include_paths`...) | Supported | `api.jai` |
@@ -197,17 +195,16 @@ Status of the reference module's public surface in this implementation. "Partial
 | `objc_msgSend_fpret` | Partial | Methods returning a 16-byte `long double` are stripped; every other return uses `objc_msgSend` |
 | Objective-C blocks: receiving and calling | Supported | |
 | Objective-C blocks: literals from Jai procedures | Supported | `Block_X_literal`, global blocks only (no captured-variable copying) |
-| `long double` | Extension | 8-byte is `float64`; 16-byte is jaic's `Long_Double` (or, with `use_jaic_long_double = false`, `[16] u8` members and stripped functions as in the reference) |
+| `long double` | Extension | 8-byte is `float64`; 16-byte is jaic's `Long_Double` (or, with `use_jaic_long_double = false`, `[16] u8` members and stripped functions, the portable form) |
 | Windows/MSVC headers (`os = .WINDOWS`) | Partial | MSVC bit fields and type sizes through `-target`; COM interface `uuid` attributes are not printed |
 | Include guards and `TOKENS_TO_REPLACE`-style preprocessing tweaks | Missing | Not needed by any generator in the corpus |
 | 128-bit integers | Partial | `__int128` prints as Basic's `S128`/`U128` |
 
-Validation: the generators shipped with the reference modules (Curl, lz4, stb_image/write/resize, stb_vorbis, executable_formats/macho, macos/corefoundation, nvtt, POSIX, Socket for every OS) run under `jaic` against this module, and their output passes `jaic check`; the Curl examples type check against the regenerated bindings. Differences from the reference outputs are formatting (macro spacing, blank lines, the header path) and newer SDK contents. `tests/stdlib/bindings-generator-parity.jai` pins the reference behaviours above (system types, unknownN, comments, char macros, enum macro rewriting, casts, packed `#align`, `long double`) for C and C++.
+`tests/stdlib/bindings-generator-parity.jai` pins the output rules above (system types, `unknownN`, comments, char macros, enum macro rewriting, casts, packed `#align`, `long double`) for C and C++.
 
-Native builds: a program importing `Bindings_Generator` builds with `jaic build`; `lower_intrinsic_wrapper` (`sema/procs.rs`) now emits a trap for `#compiler` hook procedures that have no intrinsic op, instead of returning undefined values (it caused "use of undefined value" on build).
+`GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH` may be listed in `system_include_paths`. It stands for clang's builtin headers, which libclang adds itself, so the generator skips it.
 
-- `GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH` (newer jai API) may be listed in `system_include_paths`; it stands for clang's
-  builtin headers, which libclang adds itself, so the generator skips it.
+A program importing `Bindings_Generator` also builds natively: `lower_intrinsic_wrapper` (`sema/procs.rs`) emits a trap for `#compiler` hook procedures that have no intrinsic op.
 
 ## How to change it
 
@@ -215,14 +212,23 @@ Native builds: a program importing `Bindings_Generator` builds with `jaic build`
 - New C construct: handle its cursor kind in `handle_toplevel_cursor` / `fill_struct_members` / `create_type` (`convert.jai`) and print it in `print.jai`.
 - Output format lives entirely in `print.jai`; `maybe_add_spacing` reproduces the blank lines of the source.
 - Gotchas: every `create_type` call returns a fresh `CType` (visitors mutate them) except the primitive singletons (`type_def_*`); a struct is registered in `declarations_by_cursor` before its members are converted so recursive types terminate; the `#add_context` fields mean generator code must run inside `generate_bindings`.
-- Limitations: Objective-C generics, ivars and blocks have the limits listed under "Objective-C"; extern variables are printed `#elsewhere <lib>`; 16-byte `long double` needs jaic's `Long_Double` extension, or is kept as bytes without it (see "`long double`"); C++ gaps are listed under "C++ support"; the remaining differences from the reference module are listed under "Parity with the reference module".
+- Limits are listed per area above: "C++ support", "Objective-C", "`long double`", and the coverage table.
 
 ## Configuration
 
-`Generate_Bindings_Options` mirrors the reference fields (`include_paths`, `source_files`, `extra_clang_arguments`, `flatten_namespaces`, `strip_prefixes`, `strip_flags`, `visitor`, `get_func_args_for_printing`, `header`/`footer`, `generate_library_declarations`, ...). Both library spellings work: `libnames`/`libpaths` and the older `libraries` (`.{filename=..., identifier=...}`) with `library_search_paths`. Extra fields: `libclang_path`, `generate_bitfield_accessors` (default true). `os` selects the MSVC bit field rules (`.WINDOWS`) and `cpu` selects the `objc_msgSend_stret` use (`.X64`); both default to the compile target.
+`Generate_Bindings_Options` has the official fields (`include_paths`, `source_files`, `extra_clang_arguments`, `flatten_namespaces`, `strip_prefixes`, `strip_flags`, `visitor`, `get_func_args_for_printing`, `header`/`footer`, `generate_library_declarations`, ...). Both library spellings work: `libnames`/`libpaths` and the older `libraries` (`.{filename=..., identifier=...}`) with `library_search_paths`. Extra fields: `libclang_path`, `generate_bitfield_accessors` (default true). `os` selects the MSVC bit field rules (`.WINDOWS`) and `cpu` selects the `objc_msgSend_stret` use (`.X64`); both default to the compile target.
 
-libclang search order (`candidates`/`open_api` in `crates/jaic/src/clang.rs`): `Generate_Bindings_Options.libclang_path` and the `JAI_LIBCLANG` environment variable are used as given. Otherwise the candidates are `/Library/Developer/CommandLineTools/usr/lib`, the Xcode toolchain, `/opt/homebrew/opt/llvm/lib`, `/usr/local/opt/llvm/lib`, keg-only Homebrew versions (`/opt/homebrew/opt/llvm@N/lib`, `/usr/local/opt/llvm@N/lib`, newest first), `/usr/lib*`, `/usr/lib/llvm-N` (newest first), then the system loader; the first candidate that exports `clang_getOffsetOfBase` (libclang 20+) wins, and only when none does is the first loadable one used. This keeps the output the same across machines whose first toolchain differs (GitHub's macos-15 images have Xcode 16's libclang first, a linked `llvm@18`, and the `llvm@22` CI installs keg-only). Rejected candidates stay loaded in the process (never `dlclose`d). A specific libclang can be forced with `JAI_LIBCLANG=/opt/homebrew/opt/llvm/lib/libclang.dylib`. On macOS the SDK is passed as `-isysroot $(xcrun --show-sdk-path)` unless the options already contain `-isysroot`; the SDK is also used when the program targets another OS on a Mac (falling back to the Command Line Tools SDK path when `run_command` is unavailable), so cross-target generators still find the C headers. Libraries shipped under `reference/` are never used.
+libclang search order (`candidates`/`open_api` in `crates/jaic/src/clang.rs`): `Generate_Bindings_Options.libclang_path` and the `JAI_LIBCLANG` environment variable are used as given. Otherwise the candidates are `/Library/Developer/CommandLineTools/usr/lib`, the Xcode toolchain, `/opt/homebrew/opt/llvm/lib`, `/usr/local/opt/llvm/lib`, keg-only Homebrew versions (`/opt/homebrew/opt/llvm@N/lib`, `/usr/local/opt/llvm@N/lib`, newest first), `/usr/lib*`, `/usr/lib/llvm-N` (newest first), then the system loader; the first candidate that exports `clang_getOffsetOfBase` (libclang 20+) wins, and only when none does is the first loadable one used. This keeps the output the same across machines whose first toolchain differs (GitHub's macos-15 images have Xcode 16's libclang first, a linked `llvm@18`, and the `llvm@22` CI installs keg-only). Rejected candidates stay loaded in the process (never `dlclose`d). On macOS the SDK is passed as `-isysroot $(xcrun --show-sdk-path)` unless the options already contain `-isysroot`; the SDK is also used when the program targets another OS on a Mac (falling back to the Command Line Tools SDK path when `run_command` is unavailable), so cross-target generators still find the C headers. A libclang bundled with an official Jai distribution is never used.
 
 ## Dependencies
 
-libclang (any recent LLVM; 20+ for virtual base offsets; tested with the Xcode 26 Command Line Tools copy and Homebrew `llvm@22`), `nm` for library symbol tables, `xcrun` on macOS, and the stdlib modules `Basic`, `String`, `File`, `Hash_Table`, `Process`, plus `Objective_C` for generated Objective-C code. Tests: `tests/stdlib/bindings-generator-c.jai`, `bindings-generator-cpp.jai`, `bindings-generator-cpp-classes.jai` (builds a C++ library with `clang++` and calls it), `bindings-generator-bitfields.jai`, `bindings-generator-bitfields-msvc.jai` (clang's `x86_64-pc-windows-msvc` layout and a native `-mms-bitfields` library), `bindings-generator-cpp-raw.jai`, `bindings-generator-cpp-raw-multi.jai`, `bindings-generator-cpp-virtual-bases.jai` (builds a C++ library with virtual bases and reads its objects), `bindings-generator-parity.jai`, `bindings-generator-objc-stret.jai`, `bindings-generator-checks.jai` (fixture `tests/native/bindgen-checks/`), `bindings-generator-objc.jai`, `-objc-generics.jai`, `-objc-ivars.jai`, `-objc-blocks.jai` (macOS only), `bindings-generator-cpp-raw`, `-checks`, `-parity`, `-cpp-virtual-bases` and the four Objective-C tests also run natively from `crates/jaic-cli/tests/native.rs`, `using-member-default-override.jai` (struct-body `member = value;` overrides, needed by the declaration model).
+libclang (any recent LLVM; 20+ for virtual base offsets), `nm` for library symbols, `xcrun` on macOS, and the stdlib modules `Basic`, `String`, `File`, `Hash_Table`, `Process`, plus `Objective_C` for generated Objective-C code.
+
+Tests in `tests/stdlib/`:
+
+- C: `bindings-generator-c.jai`, `-bitfields.jai`, `-bitfields-msvc.jai` (clang's `x86_64-pc-windows-msvc` layout and a native `-mms-bitfields` library), `-parity.jai`, `-checks.jai` (fixture `tests/native/bindgen-checks/`), `-long-double.jai`.
+- C++: `bindings-generator-cpp.jai`, `-cpp-classes.jai` (builds a library with `clang++` and calls it), `-cpp-raw.jai`, `-cpp-raw-multi.jai`, `-cpp-virtual-bases.jai`.
+- Objective-C (macOS only): `bindings-generator-objc.jai`, `-objc-generics.jai`, `-objc-ivars.jai`, `-objc-blocks.jai`, `-objc-stret.jai`.
+- `using-member-default-override.jai` covers struct-body `member = value;` overrides the declaration model needs.
+
+`-cpp-raw`, `-checks`, `-parity`, `-cpp-virtual-bases` and the four Objective-C tests also run natively from `crates/jaic-cli/tests/native.rs`.

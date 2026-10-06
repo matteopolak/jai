@@ -28,11 +28,13 @@ Strings and the `free_arguments` array are allocated; free them when done. Membe
 
 ## How to change it
 
-Value parsing is in `cli_read_value`, help layout in `show_help`. Adding a member type means handling its `Type_Info` there. Keep `Argument_Flags` (`FREE_ARGUMENTS_ALLOWED`, `DOUBLE_DASH_REQUIRED`, `SHOW_HELP_ON_ERROR`, `SORT_HELP`, `ALIGN_HELP`) stable. The regression program is `stdlib/tests/command-line.jai`; run it with `jaic run stdlib/tests/command-line.jai` (it asserts and prints nothing on success except the help text it exercises).
+Value parsing is in `cli_read_value`, help layout in `show_help`; a new member type needs its `Type_Info` handled in both. Keep `Argument_Flags` (`FREE_ARGUMENTS_ALLOWED`, `DOUBLE_DASH_REQUIRED`, `SHOW_HELP_ON_ERROR`, `SORT_HELP`, `ALIGN_HELP`) stable; they are public API.
+
+Test: `stdlib/tests/command-line.jai`. It prints only the help text it exercises.
 
 ## Configuration
 
-`flags` (default `Default_Argument_Flags` = free arguments, sorted and aligned help) and `help_triggers` (default `.["help", "HELP", "?"]`).
+The `flags` parameter (default `Default_Argument_Flags` = free arguments, sorted and aligned help) and `help_triggers` (default `.["help", "HELP", "?"]`).
 
 ## Dependencies
 

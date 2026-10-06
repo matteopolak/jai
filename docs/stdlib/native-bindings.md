@@ -7,7 +7,7 @@ Declaration-only modules that let Jai code call operating-system APIs and C libr
 ## How it works
 
 - Platform layers branch on `OS`: `POSIX/module.jai` pulls in `POSIX/bindings/{linux,macos,android}`, `errno.jai`, `file-mode-wait.jai` and `linux-stat.jai`; `macos/` has `core_foundation.jai`, `kernel.jai`, `mach.jai` and `kevent.jai`; `Objective_C/` holds Foundation, AppKit, CoreGraphics and GameController declarations (with `arm64`/`x64` ABI variants) and `bindings/{arm64,x64}/{message,runtime}.jai` for the Objective-C runtime and `objc_msgSend`; `Windows/` has `support.jai` and `resources.jai`; `Linux/` has `epoll.jai` and `io_uring*.jai`.
-- Libraries are named with `#system_library "name"` (resolved by the OS loader) or `#library` (a path). `stb_image`, `stb_image_write`, `stb_image_resize` and `stb_vorbis` are not shipped by any OS, so they are built from pinned sources by `python3 tools/build_native_libs.py` into `artifacts/native-libs/<os>-<arch>/`, where `jaic` looks before the system search (details in `../tools/native-libs.md`). Other libraries (`SDL2`, `libcurl`, `freetype`, Vulkan) must be installed on the host.
+- Libraries are named with `#system_library "name"` (resolved by the OS loader) or `#library` (a path). Libraries no OS ships, like `stb_image` and `stb_vorbis`, are built from pinned sources by `tools/build_native_libs.py` into `artifacts/native-libs/<os>-<arch>/`, where `jaic` looks before the system search ([third-party native libraries](../tools/native-libs.md)). Other libraries (`SDL2`, `libcurl`, `freetype`, Vulkan) must be installed on the host.
 - Some modules pick their foreign library per OS (`SDL/module.jai` selects SDL2 by `OS`; `Curl/{unix,windows}.jai`; `freetype-2.12.1/{unix,windows}.jai`). `Vulkan` has generated per-OS files plus a dispatch layer (`dispatch-native.jai`, `dispatch-registry.jai`) that loads entry points at run time. `GL` bundles a glad-style loader (`glad_core.jai`, `load-all.jai`) and per-OS context creation (`mac-context.jai`, `linux-context.jai`, `windows-context.jai`).
 - Supported native targets: macOS x64/arm64, Linux x64/arm64, Windows x64/arm64. The browser target (`OS == .WASM`) uses the Linux x86-64 layouts that the sandbox implements (`crates/jaic/src/interp/sandbox.rs`), whatever `CPU` says (`jaic run -os wasm` keeps the host CPU).
 - **No silent defaults.** Every CPU-dependent layout or constant names each CPU it supports, and anything else is a compile error:
@@ -22,7 +22,7 @@ Declaration-only modules that let Jai code call operating-system APIs and C libr
   }
   ```
 
-  A bare `else` would hand a new CPU the x86-64 layout, and a wrong layout fails silently (`is_directory` once read `st_uid` as the mode; `pthread_mutex_init` cleared 8 bytes past a mutex). Where a layout is the same on every CPU there is no branch; a comment says so only when that is surprising.
+  A bare `else` would hand a new CPU the x86-64 layout, and a wrong layout fails silently: `is_directory` reads `st_uid` as the mode, or `pthread_mutex_init` clears 8 bytes past the mutex. Where a layout is the same on every CPU there is no branch; a comment says so only when that is surprising.
 - Linux glibc differences between x86-64 and AArch64 that branch this way: `stat_t`/`stat64_t`, `nlink_t`/`blksize_t`, the pthread size table and `__pthread_mutex_s.__spins`, `__jmp_buf`, `O_DIRECTORY`/`O_NOFOLLOW`/`O_DIRECT`, `epoll_event` (packed only on x86-64), `ipc_perm.mode`, the signal context (`sigcontext`, `mcontext_t`, `ucontext_t`), `NGREG` and `MAP_32BIT` (x86-64 only), and the `SYS_*` numbers in `syscall.jai` (AArch64 uses the generic table, so none are declared there). Other per-CPU files: `POSIX/module.jai` (macOS and Android CPU directories), `Socket/generated_macos.jai` (`select` symbol), `Objective_C/module.jai` (runtime and `objc_msgSend` variants) and `Windows.jai` (`CONTEXT`, x64 and arm64).
 - Cross-checking another OS needs no SDK: `jaic check file.jai -os windows` selects the `#if OS == .WINDOWS` branches. Calling them requires running on that OS.
 - Many binding files are produced with [bindings-generator](bindings-generator.md) from the C headers; the generated files are checked in.
@@ -44,7 +44,7 @@ The two outputs are compared item by item. A mismatch names the target, the item
 
 Two native tests in `crates/jaic-cli/tests/native.rs` use it:
 
-- `stdlib_c_abi_matches_host_headers` checks the host target. It runs on every CI host in `cargo test --workspace` (`ci.yml`: Linux x64/arm64, macOS arm64/x64) and in `windows-native.yml` (`--test native`, Windows x64 with clang and the MSVC/Windows SDK headers). Windows arm64 is covered once that runner exists. Without a C compiler it skips locally and fails under `CI`.
+- `stdlib_c_abi_matches_host_headers` checks the host target. It runs on every CI host: `cargo test --workspace` in `ci.yml` (Linux and macOS, both CPUs) and `--test native` in `windows-native.yml` (Windows x64 and arm64, with clang and the MSVC/Windows SDK headers). Without a C compiler it skips locally and fails under `CI`.
 - `stdlib_c_abi_matches_cross_target_headers` checks targets the host cannot run. It does nothing unless `JAIC_ABI_CROSS` is set. For each target it compiles the C program with `clang -target <triple> -S -emit-llvm` and reads the values out of a constant array in the IR (nothing runs), and evaluates the Jai side at compile time with `jaic check -target <triple>` and a `#run`.
 
 The browser target is not checked: there are no C headers for it, and it reuses the Linux x86-64 layouts that the `linux-x64` check covers.
@@ -55,9 +55,9 @@ Cross checking needs headers for the target. From a macOS arm64 host:
 |---|---|---|
 | `macos-x64` | the macOS SDK (`xcrun --show-sdk-path` is added automatically) | yes |
 | `windows-x64`, `windows-arm64` | MinGW-w64 (`brew install mingw-w64`) via `-isystem` | yes (MinGW, not the Windows SDK) |
-| `linux-x64`, `linux-arm64` | a glibc sysroot via `--sysroot` | only with a sysroot; none is installed here |
+| `linux-x64`, `linux-arm64` | a glibc sysroot via `--sysroot` | only with a sysroot |
 
-zig (bundled glibc headers) or a Nix/Docker glibc sysroot would supply Linux headers; they are not required because the Linux CI runners check both Linux CPUs natively. The per-host test is the guarantee; the cross test is a faster local signal.
+zig's bundled glibc headers or a Nix/Docker sysroot would do; they aren't required because the Linux CI runners check both Linux CPUs natively. The per-host test is the guarantee; the cross test is a faster local signal.
 
 ## How to change it
 

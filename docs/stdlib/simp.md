@@ -2,7 +2,7 @@
 
 ## What it is
 
-`stdlib/Simp` is the immediate-mode 2D renderer with the public API of the real Simp module: `set_render_target`, `clear_render_target`, `immediate_*`, `set_shader_for_*`, textures, fonts, `swap_buffers`, pixel readback. A program that creates a window with `Window_Creation` and calls `set_render_target(window)` renders with no further setup; Simp creates the GL context and loads GL itself.
+`stdlib/Simp` is the immediate-mode 2D renderer with the public API of the official Simp module: `set_render_target`, `clear_render_target`, `immediate_*`, `set_shader_for_*`, textures, fonts, `swap_buffers`, pixel readback. A program that creates a window with `Window_Creation` and calls `set_render_target(window)` renders with no further setup; Simp creates the GL context and loads GL itself.
 
 ## How it works
 
@@ -13,14 +13,14 @@
 - **Coordinates.** `.RIGHT_HANDED` (y up, default) or `.LEFT_HANDED` (y down) is stored with the target. Render-to-texture flips the projection so a texture's memory is top row first in both modes.
 - **Textures.** `Texture` holds its own state (`gl_handle`, `framebuffer`, CPU `Bitmap`). Loading only fills the bitmap; the GL upload happens lazily on first use, so textures can be loaded before a window exists. Images load through stb_image.
 - **Fonts.** `get_font_at_size(path, name, pixel_height)` (also from memory), `create_dynamic_font`, `prepare_text`/`draw_text`/`draw_generated_quads`. Glyphs come from FreeType and are packed into RGB8 atlas pages.
-- **Readback.** `pixel_read_begin/_end` (PBO plus fence on GL), `get_screenshot`-style use via `bitmap_save`. `flip=false` gives an upright image.
+- **Readback.** `pixel_read_begin/_end` (PBO plus fence on GL); save the result with `bitmap_save`. `flip=false` gives an upright image.
 
 ## How to change it
 
 - New backend: add a `render_api` value, a `backend/<name>.jai` loaded behind `#if render_api == ...` in `module.jai`, and implement the same `backend_*` procedures.
 - New shader: add the global and `set_shader_for_*` in `shader.jai` and the GLSL in `backend/gl.jai`; `shaders_set_defaults` resets parameters.
 - Gotcha: on macOS `Window_Creation.init_mac_app` references `NSApplicationMain` on purpose so AppKit is linked and loaded; do not remove it.
-- Gotcha: on macOS `jaic run` executes foreign calls on the process main thread (AppKit requires it) once the program first calls an `objc_`/`sel_`/`NS`/`CGL` symbol; earlier calls stay on the interpreter's thread, since each handoff costs microseconds. See `crates/jaic/src/interp/native.rs` (`main_thread`).
+- Gotcha: on macOS `jaic run` moves foreign calls to the process main thread (AppKit requires it) once the program first calls an `objc_`/`sel_`/`NS`/`CGL` symbol; see [interpreter](../compiler/interpreter.md#macos-main-thread).
 - Tests: `stdlib/Simp/tests/*.jai` (compile-time), `tests/stdlib/simp-compat-api.jai`, `tests/stdlib/simp-left-handed-software.jai`, and `tests/stdlib/simp-window-program.jai`, which `crates/jaic-cli/tests/native.rs` type-checks for linux, windows and macos. A real window needs a display; verify visually by reading the frame back with `pixel_read_begin(null, .RGBA8)` and `bitmap_save`.
 
 ## Configuration
@@ -33,4 +33,4 @@
 
 ## Known gaps
 
-Font effects (`SMALLCAPS`, `LINING_FIGURES`, `LEFT_JUSTIFIED`), the Metal backend and Android EGL are not implemented. GetRect's default icon assets (`stdlib/GetRect/data`) are absent; the default font falls back to a system font. The GLX and WGL paths are type-checked but not run here.
+Font effects (`SMALLCAPS`, `LINING_FIGURES`, `LEFT_JUSTIFIED`), the Metal backend and Android EGL are not implemented. GetRect's default icon assets (`stdlib/GetRect/data`) are absent; the default font falls back to a system font. The GLX and WGL paths are type-checked but not exercised by tests.

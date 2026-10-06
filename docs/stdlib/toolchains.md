@@ -2,7 +2,7 @@
 
 ## What it is
 
-`stdlib/Toolchains` holds small helpers that metaprograms (build scripts and `Bindings_Generator` generators) use to find platform SDKs: `Toolchains/macOS.jai` for the macOS SDK and `Toolchains/Android` for the Android NDK. The reference modules' `generate.jai` scripts import them to pick include paths and target triples.
+`stdlib/Toolchains` holds helpers that metaprograms (build scripts and `Bindings_Generator` generators) use to find platform SDKs: `Toolchains/macOS.jai` for the macOS SDK and `Toolchains/Android` for the Android NDK. Bindings `generate.jai` scripts import them to pick include paths and target triples.
 
 ## How it works
 
@@ -11,12 +11,12 @@
   - `get_android_target_triple(cpu)` returns e.g. `"aarch64-linux-android"` and `"aarch64-linux-android34"`. Only `.X64` and `.ARM64` are valid.
   - `get_ndk_paths()` returns the NDK `root`, the prebuilt LLVM `toolchain` for the host and its `sysroot`. It asserts when no NDK is configured.
   - `get_ndk_libc_paths(cpu)` returns the shared C include directory and the per-triple one, ready for `Generate_Bindings_Options.system_include_paths`.
-- `Compiler`'s build options default `minimum_os_version` for macOS targets to 11.0 on arm64 and 10.13 on x86-64 when it was left at zero. Metaprograms that build `-target` triples from it (for example the macOS generators) otherwise produce `macosx0.0`.
+- `Compiler`'s build options default `minimum_os_version` for macOS targets to 11.0 on arm64 and 10.13 on x86-64 when it is left at zero; otherwise metaprograms that build `-target` triples from it (like the macOS generators) produce `macosx0.0`.
 
 ## How to change it
 
 - New platforms get their own file or module under `stdlib/Toolchains/`, with no top-level side effects, because generators import them unconditionally.
-- Keep the procedures lazy. Nothing should run (no `xcrun`, no NDK lookup) until a caller asks for it, since the modules are imported on every OS.
+- Keep the procedures lazy: no `xcrun` or NDK lookup until a caller asks, since the modules are imported on every OS.
 
 ## Configuration
 

@@ -2,7 +2,7 @@
 
 ## What it is
 
-`Simp` is the immediate-mode 2D renderer: queued triangles and quads, shaders, textures, bitmaps, fonts and a CPU backend. `Window_Creation` and `Window_Type` create and identify native windows. `Sound_Player` plays audio; the `SDL` and `GL` bindings sit beside them. The widget library on top is [getrect](getrect.md). Simp is documented in detail in [simp](simp.md).
+An overview of the graphics modules. `Simp` is the immediate-mode 2D renderer (details in [simp](simp.md)). `Window_Creation` and `Window_Type` create and identify native windows. `Sound_Player` plays audio ([sound-player](sound-player.md)). The `SDL` and `GL` bindings sit beside them, and the widget library on top is [getrect](getrect.md).
 
 ## How it works
 
@@ -10,7 +10,7 @@
 
 Changing the shader, texture, render target or scissor flushes queued vertices first. CPU render targets store top-first rows while draw coordinates are bottom-first. The OpenGL backend compiles its own GLSL 330 programs and expects the application to make a GL context current and to pass loaded `GL` procedures; window creation and presentation are the caller's job (`Window_Creation.create_window`, `update_window_events`, `swap_buffers`).
 
-`Window_Creation` has one file per OS (`linux.jai`, `osx.jai`, `windows.jai`, `android.jai`) behind `module.jai`, with `DEFAULT_MSAA` as a module parameter. `Window_Type` is the native handle type. `Sound_Player` mixes WAV, IMA ADPCM and Ogg Vorbis sounds into the default output device (ALSA, Core Audio, DirectSound, AAudio); see [sound-player](sound-player.md).
+`Window_Creation` has one file per OS (`linux.jai`, `osx.jai`, `windows.jai`, `android.jai`) behind `module.jai`, with `DEFAULT_MSAA` as a module parameter. `Window_Type` is the native handle type.
 
 ```jai
 #import "Basic";
@@ -25,8 +25,8 @@ main :: () {
 ## How to change it
 
 - A new Simp backend means a `render_api` enum value, a `backend/<name>.jai` loaded behind `#if render_api == ...` in `module.jai`, and the matching `#if` calls in `immediate.jai`.
-- Tests: `stdlib/Simp/tests/{software-render,texture-format,readback}-tests.jai` (compile-time checks; run with `jaic run`) and `tests/stdlib/simp-compat-api.jai`. GL and window paths need a display and are not covered.
-- Fonts: glyph lookup keys include codepoint, anti-aliasing and hinting; `deinit(font)` releases the face and glyphs but leaves the descriptor to the caller, and `deinit_fonts()` frees the remaining ones. There is no text shaping and no grapheme-aware editing.
+- Tests: `stdlib/Simp/tests/{software-render,texture-format,readback}-tests.jai` (compile-time checks) and `tests/stdlib/simp-compat-api.jai`. GL and window paths need a display and have no tests.
+- Fonts: glyphs are keyed by codepoint, anti-aliasing and hinting. `deinit(font)` releases the face and glyphs but leaves the descriptor to the caller; `deinit_fonts()` frees the rest. There is no text shaping and no grapheme-aware editing.
 - LCD glyph rendering averages the subpixel coverage into normal alpha.
 
 ## Configuration

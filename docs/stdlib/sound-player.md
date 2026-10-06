@@ -4,7 +4,7 @@
 
 `stdlib/Sound_Player` plays sounds: it loads 16-bit PCM WAV, IMA ADPCM WAV and Ogg Vorbis data, mixes any number of playing streams with per-category levels and listener-relative panning, and feeds the result to the platform's default output (ALSA on Linux, Core Audio on macOS, DirectSound on Windows, AAudio on Android). With `OFFLINE = true` there is no device; the program pulls the mix itself.
 
-The public API is the usual one: `sound_player_init`/`sound_player_shutdown`, `load_audio_file`/`load_audio_data`, `make_stream`, `start_playing`, `set_repeating`, `stop_*`, `find`, `pre_entity_update`/`post_entity_update`, `update`, `update_listener`, `set_master_volume`, `get_devices`, plus the `Sound_Stream`, `Sound_Data` and `Sound_Player_Config` structs.
+The public API matches the official module: `sound_player_init`/`sound_player_shutdown`, `load_audio_file`/`load_audio_data`, `make_stream`, `start_playing`, `set_repeating`, `stop_*`, `find`, `pre_entity_update`/`post_entity_update`, `update`, `update_listener`, `set_master_volume`, `get_devices`, plus the `Sound_Stream`, `Sound_Data` and `Sound_Player_Config` structs.
 
 ## How it works
 
