@@ -247,7 +247,11 @@ impl Compiler {
             _ => {
                 return err(
                     span,
-                    format!("operator {op:?} is not defined for {}", self.types.name(ty)),
+                    format!(
+                        "operator {} is not defined for {}",
+                        super::calls::binop_text(op),
+                        self.types.name(ty)
+                    ),
                 );
             }
         };
