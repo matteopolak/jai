@@ -448,6 +448,22 @@ fn missing_module_lists_where_it_looked_and_a_close_name() {
         &stderr(&output),
         &["help: a module of your own goes in a `modules` folder"],
     );
+    // A module in a folder jaic does not search: say which `-import_dir` finds it.
+    std::fs::create_dir_all(dir.join("libs/Gadgets")).unwrap();
+    std::fs::write(dir.join("libs/Gadgets/module.jai"), "gadget :: 1;\n").unwrap();
+    let output = jaic_on(
+        &dir,
+        "g.jai",
+        "#import \"Gadgets\";\nmain :: () {}\n",
+        "check",
+        &[],
+    );
+    assert_in_order(
+        &stderr(&output),
+        &[
+            "help: a module `Gadgets` exists in `libs`, which is not searched: pass `-import_dir libs`",
+        ],
+    );
 }
 
 #[test]
