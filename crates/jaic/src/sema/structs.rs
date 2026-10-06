@@ -667,6 +667,7 @@ impl Compiler {
                             format!("struct is too large (the limit is {MAX_SIZE} bytes)"),
                         );
                     }
+                    let overlaid = overlay.is_some();
                     let offset = if let Some(offset) = overlay.take() {
                         // Shares storage: the cursor stays where it was.
                         end = end.max(offset + size);
@@ -688,6 +689,7 @@ impl Compiler {
                         offset,
                         using: d.using,
                         as_: d.as_,
+                        overlay: overlaid,
                         notes: d.notes,
                         span: d.span,
                     });
