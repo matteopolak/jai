@@ -52,12 +52,12 @@ Input :: #import "Input";
                 Input.set_input_focus(window, false);
                 _sdk_android_pointer_valid = false;
                 Input.input_pointer_source = null;
-            }
-            else if cmd == 1 || cmd == 3 || cmd == 5 || cmd == 8 {
+            } else if cmd == 1 || cmd == 3 || cmd == 5 || cmd == 8 {
                 if app.window != null Input.queue_window_resize(window, ANativeWindow_getWidth(app.window), ANativeWindow_getHeight(app.window));
             } else if cmd == 15 {
                 Input.set_input_focus(window, false);
-                quit: Input.Event; quit.type = .QUIT;
+                quit: Input.Event;
+                quit.type = .QUIT;
                 Input.queue_input_event(window, quit);
             }
         }
@@ -89,8 +89,10 @@ Input :: #import "Input";
                     // Android marks dead-key accents with the high bit. Composed IME
                     // text belongs to an application InputConnection, not this event.
                     if codepoint >= 32 && codepoint <= 0x10ffff && !(codepoint >= 0xd800 && codepoint <= 0xdfff) {
-                        text: Input.Event; text.type = .TEXT_INPUT;
-                        text.utf32 = codepoint; text.text_input_count = 1;
+                        text: Input.Event;
+                        text.type = .TEXT_INPUT;
+                        text.utf32 = codepoint;
+                        text.text_input_count = 1;
                         Input.queue_input_event(window, text);
                     }
                 }
@@ -101,7 +103,8 @@ Input :: #import "Input";
             for index: 0..2 {
                 mask := (cast(u32) 1) << index;
                 if (buttons & mask) == (_sdk_android_mouse_buttons & mask) continue;
-                button: Input.Event; button.type = .KEYBOARD;
+                button: Input.Event;
+                button.type = .KEYBOARD;
                 if index == 0 button.key_code = .MOUSE_BUTTON_LEFT;
                 else if index == 1 button.key_code = .MOUSE_BUTTON_RIGHT;
                 else button.key_code = .MOUSE_BUTTON_MIDDLE;
@@ -115,8 +118,10 @@ Input :: #import "Input";
             if pointers == 0 return 0;
             if kind == 8 {
                 scroll := AMotionEvent_getAxisValue(event, 9, 0);
-                wheel: Input.Event; wheel.type = .MOUSE_WHEEL;
-                wheel.typical_wheel_delta = 120; wheel.wheel_delta = cast(s32) (scroll * 120);
+                wheel: Input.Event;
+                wheel.type = .MOUSE_WHEEL;
+                wheel.typical_wheel_delta = 120;
+                wheel.wheel_delta = cast(s32) (scroll * 120);
                 Input.queue_input_event(window, wheel);
                 return 1;
             }
@@ -125,19 +130,29 @@ Input :: #import "Input";
             index: u64 = 0;
             while index < pointers {
                 if kind == 0 || kind == 1 || kind == 5 || kind == 6 {
-                    if (kind == 5 || kind == 6) && index != selected { index += 1; continue; }
-                    if (kind == 0 || kind == 1) && index != 0 { index += 1; continue; }
+                    if (kind == 5 || kind == 6) && index != selected {
+                        index += 1;
+                        continue;
+                    }
+                    if (kind == 0 || kind == 1) && index != 0 {
+                        index += 1;
+                        continue;
+                    }
                 } else if kind != 2 && kind != 3 && kind != 7 return 0;
-                touch: Input.Event; touch.type = .TOUCH;
+                touch: Input.Event;
+                touch.type = .TOUCH;
                 touch.touch_index = AMotionEvent_getPointerId(event, index);
                 if kind == 0 || kind == 5 touch.touch_type = .PRESSED;
                 else if kind == 1 || kind == 6 || kind == 3 touch.touch_type = .RELEASED;
                 else touch.touch_type = .MOVED;
                 Input.queue_input_event(window, touch);
                 if index == 0 {
-                    x := AMotionEvent_getX(event, index); y := AMotionEvent_getY(event, index);
+                    x := AMotionEvent_getX(event, index);
+                    y := AMotionEvent_getY(event, index);
                     if _sdk_android_pointer_valid Input.queue_mouse_delta(cast(int) (x - _sdk_android_x), cast(int) (y - _sdk_android_y));
-                    _sdk_android_x = x; _sdk_android_y = y; _sdk_android_pointer_valid = true;
+                    _sdk_android_x = x;
+                    _sdk_android_y = y;
+                    _sdk_android_pointer_valid = true;
                     Input.input_pointer_source = _sdk_android_pointer;
                 }
                 index += 1;
@@ -150,13 +165,14 @@ Input :: #import "Input";
 
 #scope_file
 Android_Basic :: #import "Basic";
-Android_Runtime :: #import "Runtime_Support" (DEFINE_SYSTEM_ENTRY_POINT=false, DEFINE_INITIALIZATION=false, ENABLE_BACKTRACE_ON_CRASH=false);
+Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);
 #if DEFINE_ANDROID_MAIN_AND_CALL_THIS {
     _sdk_android_context: #Context;
     _sdk_android_storage: Android_Runtime.Temporary_Storage;
     _sdk_android_mouse_buttons: u32;
     _sdk_android_app: *Android_App;
-    _sdk_android_x: float; _sdk_android_y: float;
+    _sdk_android_x: float;
+    _sdk_android_y: float;
     _sdk_android_pointer_valid := false;
     _sdk_android_poll :: (app: *Android_App, timeout: s32) -> bool {
         data: *void;
@@ -257,7 +273,8 @@ Android_Runtime :: #import "Runtime_Support" (DEFINE_SYSTEM_ENTRY_POINT=false, D
         defer env.*.DeleteLocalRef(env, java_key);
         unicode_method := env.*.GetMethodID(env, key_class, cast(*u8) "getUnicodeChar\0", cast(*u8) "(I)I\0");
         if _sdk_android_jni_failed(env) || unicode_method == null return 0;
-        unicode_args: [1] jvalue; unicode_args[0].i = meta;
+        unicode_args: [1] jvalue;
+        unicode_args[0].i = meta;
         scalar := env.*.CallIntMethodA(env, java_key, unicode_method, *unicode_args[0]);
         if _sdk_android_jni_failed(env) return 0;
         return cast(u32) scalar;

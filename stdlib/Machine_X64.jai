@@ -1,5 +1,9 @@
 // CPU metadata layouts retain the x86 feature-leaf ABI.
-x86_Vendor :: enum u8 { UNKNOWN :: 0; INTEL :: 1; AMD :: 2; }
+x86_Vendor :: enum u8 {
+    UNKNOWN :: 0;
+    INTEL :: 1;
+    AMD :: 2;
+}
 x86_Feature_Leaf :: enum u16 {
     _01H_EDX :: 0;
     _01H_ECX :: 1;
@@ -221,18 +225,23 @@ Cpu_X86 :: struct {
     feature_leaves: [x86_Feature_Leaf.NUMBER] u32;
 }
 check_feature :: (leaves: [x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) -> bool {
-    index:=cast(u16) flag;
-    return (leaves[index/32] & ((cast(u32) 1) << cast(u32) (index%32))) != 0;
+    index := cast(u16) flag;
+    return (leaves[index / 32] & ((cast(u32) 1) << cast(u32) (index % 32))) != 0;
 }
 enable_feature :: (leaves: *[x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) {
-    index:=cast(u16) flag;
-    leaves.*[index/32] |= (cast(u32) 1) << cast(u32) (index%32);
+    index := cast(u16) flag;
+    leaves.*[index / 32] |= (cast(u32) 1) << cast(u32) (index % 32);
 }
 disable_feature :: (leaves: *[x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) {
-    index:=cast(u16) flag;
-    leaves.*[index/32] &= ~((cast(u32) 1) << cast(u32) (index%32));
+    index := cast(u16) flag;
+    leaves.*[index / 32] &= ~((cast(u32) 1) << cast(u32) (index % 32));
 }
-Prefetch_Hint :: enum { T0 :: 0; T1 :: 1; T2 :: 2; NTA :: 3; }
+Prefetch_Hint :: enum {
+    T0 :: 0;
+    T1 :: 1;
+    T2 :: 2;
+    NTA :: 3;
+}
 get_cpu_info :: () -> Cpu_X86 {
     cpu: Cpu_X86;
     // cpuid with an out-of-range leaf returns junk, so the maximum basic/extended leaves are checked first.
@@ -255,7 +264,7 @@ get_cpu_info :: () -> Cpu_X86 {
         mov.d max_extended_info, a;
     }
     if vendor_chunk_0 == 0x756E6547 && vendor_chunk_1 == 0x49656E69 && vendor_chunk_2 == 0x6C65746E cpu.vendor = .INTEL; // GenuineIntel
-    if vendor_chunk_0 == 0x68747541 && vendor_chunk_1 == 0x69746E65 && vendor_chunk_2 == 0x444D4163 cpu.vendor = .AMD;   // AuthenticAMD
+    if vendor_chunk_0 == 0x68747541 && vendor_chunk_1 == 0x69746E65 && vendor_chunk_2 == 0x444D4163 cpu.vendor = .AMD; // AuthenticAMD
 
     leaf_a, leaf_b, leaf_c, leaf_d: u32;
     if max_basic_info >= 0x01 {
@@ -302,14 +311,16 @@ cpuid_query :: (leaf: u32, subleaf: u32, out_a: *u32, out_b: *u32, out_c: *u32, 
         mov.d rc, c;
         mov.d rd, d;
     }
-    out_a.* = ra; out_b.* = rb; out_c.* = rc; out_d.* = rd;
+    out_a.* = ra;
+    out_b.* = rb;
+    out_c.* = rc;
+    out_d.* = rd;
 }
 
 // Lower-level instruction hooks. jaic lowers #asm to portable IR: prefetch has no observable effect so it is a
 // no-op, rdseed falls back to rdrand (jaic has no rdseed), the rest map directly.
 prefetch :: (pointer: *void, $hint: Prefetch_Hint) #expand {
-    #if hint == .NTA || hint == .T0 || hint == .T1 || hint == .T2 {
-    } else {
+    #if hint == .NTA || hint == .T0 || hint == .T1 || hint == .T2 {} else {
         #assert false "'hint' argument to prefetch is out of range.";
     }
 }
@@ -347,13 +358,25 @@ rdrand :: () -> (success: bool, value: u64) {
     return delivered, sample;
 }
 
-mfence :: () { #asm { mfence; } }
-lfence :: () { #asm { lfence; } }
-sfence :: () { #asm { sfence; } }
-pause :: () { #asm { pause; } }
+mfence :: () {
+    #asm { mfence; }
+}
+lfence :: () {
+    #asm { lfence; }
+}
+sfence :: () {
+    #asm { sfence; }
+}
+pause :: () {
+    #asm { pause; }
+}
 
-X86_Features :: struct { leaves: [x86_Feature_Leaf.NUMBER] u32; }
-Machine_Options_X86 :: struct { features: X86_Features; }
+X86_Features :: struct {
+    leaves: [x86_Feature_Leaf.NUMBER] u32;
+}
+Machine_Options_X86 :: struct {
+    features: X86_Features;
+}
 get_machine_options_x86 :: (build_options: *$T) -> *Machine_Options_X86 {
     return cast(*Machine_Options_X86) *build_options.machine_options;
 }

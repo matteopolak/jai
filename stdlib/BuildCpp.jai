@@ -3,7 +3,7 @@
 // reported with compiler_report at the caller's location. This is meant for small
 // vendored libraries; anything bigger deserves a proper build system.
 
-#module_parameters () (PS5_SUPPORT := false);
+#module_parameters ()(PS5_SUPPORT := false);
 
 Build_Type :: enum {
     STATIC_LIBRARY;
@@ -12,9 +12,9 @@ Build_Type :: enum {
     OBJ_FILE;
 }
 
-build_cpp_static_lib  :: #bake_arguments build_cpp(type = .STATIC_LIBRARY);
+build_cpp_static_lib :: #bake_arguments build_cpp(type = .STATIC_LIBRARY);
 build_cpp_dynamic_lib :: #bake_arguments build_cpp(type = .DYNAMIC_LIBRARY);
-build_cpp_executable  :: #bake_arguments build_cpp(type = .EXECUTABLE);
+build_cpp_executable :: #bake_arguments build_cpp(type = .EXECUTABLE);
 
 // Windows targets use MSVC (cl.exe, lib.exe), located automatically. Other targets use a
 // clang-style driver: compiler_executable_path, else $CC or $CXX, else clang or clang++
@@ -27,18 +27,18 @@ build_cpp :: (output_basename: string, files: ..string, type: Build_Type, debug 
     push_allocator(temp);
 
     job: Job;
-    job.sources   = files;
-    job.type      = type;
-    job.debug     = debug;
-    job.extra     = extra;
+    job.sources = files;
+    job.type = type;
+    job.debug = debug;
+    job.extra = extra;
     job.libraries = library_files;
-    job.target    = target;
+    job.target = target;
     job.directory = working_directory;
-    job.loc       = loc;
-    job.output    = tprint("%1%2", output_basename, output_suffix(type, target));
-    #if OS == .WINDOWS  path_overwrite_separators(job.output, #char "\\");
+    job.loc = loc;
+    job.output = tprint("%1%2", output_basename, output_suffix(type, target));
+    #if OS == .WINDOWS path_overwrite_separators(job.output, #char "\\");
 
-    if target == .WINDOWS  return build_with_msvc(*job, output_basename);
+    if target == .WINDOWS return build_with_msvc(*job, output_basename);
     return build_with_clang(*job, compiler_executable_path, ar_executable_path);
 }
 
@@ -48,7 +48,7 @@ enum_cpp_files :: (path: string, recursive := false) -> [..] string {
     candidates := file_list(path, recursive);
     for candidates {
         extension := path_extension(it);
-        if extension == "c" || extension == "cpp"  array_add(*sources, it);
+        if extension == "c" || extension == "cpp" array_add(*sources, it);
         else free(it);
     }
     array_free(candidates);
@@ -63,26 +63,26 @@ free_cpp_files :: (files: [] string) {
 #scope_file
 
 Job :: struct {
-    sources:   [] string;
-    type:      Build_Type;
-    debug:     bool;
-    extra:     [] string;
+    sources: [] string;
+    type: Build_Type;
+    debug: bool;
+    extra: [] string;
     libraries: [] string;
-    target:    Operating_System_Tag;
+    target: Operating_System_Tag;
     directory: string;
-    loc:       Source_Code_Location;
+    loc: Source_Code_Location;
 
-    output:    string;        // final artifact, extension included
-    objects:   [..] string;   // intermediate objects, deleted afterwards unless they are the product
+    output: string; // final artifact, extension included
+    objects: [..] string; // intermediate objects, deleted afterwards unless they are the product
 }
 
 output_suffix :: (type: Build_Type, target: Operating_System_Tag) -> string {
     windows := target == .WINDOWS;
-    if type == .EXECUTABLE      return ifx windows then ".exe" else "";
-    if type == .OBJ_FILE        return ifx windows then ".obj" else ".o";
-    if type == .STATIC_LIBRARY  return ifx windows then ".lib" else ".a";
-    if windows                  return ".dll";
-    if target == .MACOS         return ".dylib";
+    if type == .EXECUTABLE return ifx windows then ".exe" else "";
+    if type == .OBJ_FILE return ifx windows then ".obj" else ".o";
+    if type == .STATIC_LIBRARY return ifx windows then ".lib" else ".a";
+    if windows return ".dll";
+    if target == .MACOS return ".dylib";
     return ".so";
 }
 
@@ -90,18 +90,18 @@ output_suffix :: (type: Build_Type, target: Operating_System_Tag) -> string {
 execute :: (job: *Job, tool: string, command: [] string) -> bool {
     log("%", get_quoted_command_string(command));
     result := run_command(..command, capture_and_return_output = true, print_captured_output = true, working_directory = job.directory);
-    if result.type == .EXITED && result.exit_code == 0  return true;
-    if result.type == .FAILED_TO_LAUNCH  compiler_report(tprint("BuildCpp: could not start the % (%).\n", tool, command[0]), job.loc);
+    if result.type == .EXITED && result.exit_code == 0 return true;
+    if result.type == .FAILED_TO_LAUNCH compiler_report(tprint("BuildCpp: could not start the % (%).\n", tool, command[0]), job.loc);
     else compiler_report(tprint("BuildCpp: the % exited with code %.\n", tool, result.exit_code), job.loc);
     return false;
 }
 
 // Objects are named relative to the directory the tools ran in, not to ours.
 remove_intermediates :: (job: *Job) {
-    if job.type == .OBJ_FILE  return;
+    if job.type == .OBJ_FILE return;
     for job.objects {
-        if job.directory  file_delete(tprint("%/%", job.directory, it));
-        else              file_delete(it);
+        if job.directory file_delete(tprint("%/%", job.directory, it));
+        else file_delete(it);
     }
 }
 
@@ -115,7 +115,7 @@ add_sources :: (job: *Job, command: *[..] string, object_extension: string) {
 }
 
 uses_cpp :: (sources: [] string) -> bool {
-    for sources  if path_extension(it) == "cpp"  return true;
+    for sources if path_extension(it) == "cpp" return true;
     return false;
 }
 
@@ -138,8 +138,8 @@ build_with_msvc :: (job: *Job, output_basename: string) -> bool {
         for string.[tprint("%\\..\\..\\include", vc_lib), tprint("%\\ucrt", sdk_include), tprint("%\\um", sdk_include), tprint("%\\shared", sdk_include)] {
             array_add(*command, tprint("/I%", it));
         }
-        if job.debug  array_add(*command, "/Od", "/Zi", "/DEBUG", "/DDEBUG", tprint("/Fd%.pdb", output_basename));
-        else          array_add(*command, "/O2", "/Oi");
+        if job.debug array_add(*command, "/Od", "/Zi", "/DEBUG", "/DDEBUG", tprint("/Fd%.pdb", output_basename));
+        else array_add(*command, "/O2", "/Oi");
         array_add(*command, ..job.extra);
         add_sources(job, *command, ".obj");
         defer remove_intermediates(job);
@@ -148,15 +148,15 @@ build_with_msvc :: (job: *Job, output_basename: string) -> bool {
             array_add(*command, "/c");
         } else {
             array_add(*command, "/link", tprint("/OUT:%", job.output), "/MACHINE:AMD64");
-            if job.type == .DYNAMIC_LIBRARY  array_add(*command, "/DLL");
-            for string.[vc_lib, tprint("%\\ucrt\\x64", sdk), tprint("%\\um\\x64", sdk)]  array_add(*command, tprint("/libpath:%", it));
+            if job.type == .DYNAMIC_LIBRARY array_add(*command, "/DLL");
+            for string.[vc_lib, tprint("%\\ucrt\\x64", sdk), tprint("%\\um\\x64", sdk)] array_add(*command, tprint("/libpath:%", it));
         }
         array_add(*command, ..job.libraries);
         // The linker leaves an export file next to a DLL; nobody asked for it.
-        defer if job.type == .DYNAMIC_LIBRARY  file_delete(tprint("%.exp", output_basename));
+        defer if job.type == .DYNAMIC_LIBRARY file_delete(tprint("%.exp", output_basename));
 
-        if !execute(job, "compiler", command)  return false;
-        if job.type != .STATIC_LIBRARY  return true;
+        if !execute(job, "compiler", command) return false;
+        if job.type != .STATIC_LIBRARY return true;
 
         archive: [..] string;
         array_add(*archive, tprint("%\\lib.exe", vc_bin), "/nologo", tprint("/OUT:%", job.output));
@@ -170,15 +170,15 @@ build_with_clang :: (job: *Job, compiler_override: string, archiver_override: st
     compiler, archiver := compiler_override, archiver_override;
     if !compiler || (!archiver && job.type == .STATIC_LIBRARY) {
         default_compiler, default_archiver, found := pick_unix_tools(job, cpp);
-        if !found  return false;
-        if !compiler  compiler = default_compiler;
-        if !archiver  archiver = default_archiver;
+        if !found return false;
+        if !compiler compiler = default_compiler;
+        if !archiver archiver = default_archiver;
     }
 
     command: [..] string;
     array_add(*command, compiler);
-    if job.debug  array_add(*command, "-Og", "-g");
-    else          array_add(*command, "-O3");
+    if job.debug array_add(*command, "-Og", "-g");
+    else array_add(*command, "-O3");
     if job.type == {
         case .STATIC_LIBRARY; #through;
         case .OBJ_FILE;
@@ -186,18 +186,18 @@ build_with_clang :: (job: *Job, compiler_override: string, archiver_override: st
         case .DYNAMIC_LIBRARY;
             array_add(*command, "-o", job.output, "-shared", "-fpic");
             // Let executables find the library through their rpath.
-            if job.target == .MACOS  array_add(*command, "-install_name", tprint("@rpath/%", path_filename(job.output)));
+            if job.target == .MACOS array_add(*command, "-install_name", tprint("@rpath/%", path_filename(job.output)));
         case .EXECUTABLE;
             array_add(*command, "-o", job.output);
-            if job.target == .MACOS  array_add(*command, "-rpath", "@loader_path");
+            if job.target == .MACOS array_add(*command, "-rpath", "@loader_path");
     }
     array_add(*command, ..job.extra);
     add_sources(job, *command, ".o");
     array_add(*command, ..job.libraries);
     defer remove_intermediates(job);
 
-    if !execute(job, "compiler", command)  return false;
-    if job.type != .STATIC_LIBRARY  return true;
+    if !execute(job, "compiler", command) return false;
+    if job.type != .STATIC_LIBRARY return true;
 
     // `ar r` updates an existing archive in place, so stale members would survive.
     file_delete(job.output);
@@ -213,14 +213,14 @@ pick_unix_tools :: (job: *Job, cpp: bool) -> compiler: string, archiver: string,
 
     if job.target == .ANDROID {
         ndk := from_environment("NDK_HOME");
-        if !ndk  ndk = from_environment("ANDROID_NDK_HOME");
+        if !ndk ndk = from_environment("ANDROID_NDK_HOME");
         if !ndk {
             compiler_report("BuildCpp: set NDK_HOME or ANDROID_NDK_HOME to an Android NDK to build for Android.\n", job.loc);
             return "", "", false;
         }
-        #if OS == .WINDOWS     host := "windows-x86_64";
-        else #if OS == .MACOS  host := "darwin-x86_64";
-        else                   host := "linux-x86_64";
+        #if OS == .WINDOWS host := "windows-x86_64";
+        else #if OS == .MACOS host := "darwin-x86_64";
+        else host := "linux-x86_64";
         bin := tprint("%/toolchains/llvm/prebuilt/%/bin", ndk, host);
         return tprint("%/%", bin, driver), tprint("%/llvm-ar", bin), true;
     }
@@ -242,7 +242,7 @@ pick_unix_tools :: (job: *Job, cpp: bool) -> compiler: string, archiver: string,
     }
 
     compiler := from_environment(ifx cpp then "CXX" else "CC");
-    if !compiler  compiler = driver;
+    if !compiler compiler = driver;
     return compiler, "ar", true;
 }
 

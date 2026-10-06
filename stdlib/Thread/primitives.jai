@@ -49,7 +49,11 @@ Semaphore :: struct {
     count: s64;
     initialized: bool;
 }
-Wait_For_Result :: enum { SUCCESS; TIMEOUT; ERROR; }
+Wait_For_Result :: enum {
+    SUCCESS;
+    TIMEOUT;
+    ERROR;
+}
 
 thread_init :: (thread: *Thread, proc: Thread_Proc) -> bool {
     return thread_init(thread, cast(Native_Thread_Proc) proc);
@@ -72,13 +76,17 @@ thread_init :: (thread: *Thread, proc: Native_Thread_Proc,
             thread.allocator_used_for_temporary_storage, true);
         return false;
     }
-    thread.started = false; thread.done = true; thread.is_done = true;
+    thread.started = false;
+    thread.done = true;
+    thread.is_done = true;
     thread.initialized = true;
     return true;
 }
 thread_start :: (thread: *Thread) -> bool {
     if thread == null || !thread.initialized || thread.started return false;
-    thread.started = true; thread.done = false; thread.is_done = false;
+    thread.started = true;
+    thread.done = false;
+    thread.is_done = false;
     #if POSIX_THREADS {
         result := pthread_create(*thread.thread_handle, null, native_thread_entry, thread);
         if result == 0 return true;
@@ -86,7 +94,9 @@ thread_start :: (thread: *Thread) -> bool {
         thread.thread_handle = CreateThread(null, 0, cast(*void) native_windows_thread_entry, thread, .{}, null);
         if thread.thread_handle != null return true;
     }
-    thread.started = false; thread.done = true; thread.is_done = true;
+    thread.started = false;
+    thread.done = true;
+    thread.is_done = true;
     return false;
 }
 thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
@@ -94,7 +104,9 @@ thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
     if atomic_read(*thread.done) return true;
     // The browser runs threads one after another on the interpreter stack; a thread that was abandoned
     // while waiting for work (see crates/jaic/src/interp/threads_inline.rs) never sets `done`.
-    #if OS == .WASM { if thread.started && pthread_tryjoin_np(thread.thread_handle, null) == 0 return true; }
+    #if OS == .WASM {
+        if thread.started && pthread_tryjoin_np(thread.thread_handle, null) == 0 return true;
+    }
     if milliseconds == 0 return false;
     result := wait_for(*thread.is_alive_semaphore, milliseconds);
     if result != .SUCCESS return false;
@@ -113,25 +125,44 @@ thread_deinit :: (thread: *Thread) {
     destroy(*thread.is_alive_semaphore);
     if thread.owns_temporary_storage deinit_temporary_storage(*thread.starting_temporary_storage,
         thread.allocator_used_for_temporary_storage, true);
-    thread.initialized = false; thread.started = false; thread.done = true; thread.is_done = true;
+    thread.initialized = false;
+    thread.started = false;
+    thread.done = true;
+    thread.is_done = true;
 }
-thread_destroy :: (thread: *Thread) { thread_deinit(thread); }
+thread_destroy :: (thread: *Thread) {
+    thread_deinit(thread);
+}
 
 init :: (mutex: *Mutex, name: string = "", order: Mutex_Order = -1) {
     ok := initialize_mutex(*mutex.csection);
     assert(ok, "could not initialize mutex");
 }
-destroy :: (mutex: *Mutex) { destroy_mutex(*mutex.csection); }
-lock :: (mutex: *Mutex) { csection_lock(*mutex.csection); }
-unlock :: (mutex: *Mutex) { csection_unlock(*mutex.csection); }
+destroy :: (mutex: *Mutex) {
+    destroy_mutex(*mutex.csection);
+}
+lock :: (mutex: *Mutex) {
+    csection_lock(*mutex.csection);
+}
+unlock :: (mutex: *Mutex) {
+    csection_unlock(*mutex.csection);
+}
 init :: (cv: *Condition_Variable, desired_name := "") {
     ok := initialize_condition(*cv.condition_variable);
     assert(ok, "could not initialize condition variable");
 }
-destroy :: (cv: *Condition_Variable) { destroy_condition(*cv.condition_variable); }
-wait :: (c: *Condition_Variable, m: *Mutex) { cvariable_wait(*c.condition_variable, *m.csection); }
-wake :: (c: *Condition_Variable) { cvariable_wake(*c.condition_variable); }
-wake_all :: (c: *Condition_Variable) { cvariable_wake_all(*c.condition_variable); }
+destroy :: (cv: *Condition_Variable) {
+    destroy_condition(*cv.condition_variable);
+}
+wait :: (c: *Condition_Variable, m: *Mutex) {
+    cvariable_wait(*c.condition_variable, *m.csection);
+}
+wake :: (c: *Condition_Variable) {
+    cvariable_wake(*c.condition_variable);
+}
+wake_all :: (c: *Condition_Variable) {
+    cvariable_wake_all(*c.condition_variable);
+}
 csection_lock :: (csection: *Per_OS_Critical_Section_Type) #expand {
     #if POSIX_THREADS assert(pthread_mutex_lock(csection) == 0);
     else EnterCriticalSection(csection);
@@ -156,19 +187,26 @@ cvariable_wake_all :: (condition_variable: *Per_OS_Condition_Variable_Type) {
 init :: (s: *Semaphore, initial_value: s32 = 0) -> bool {
     if s == null || s.initialized || initial_value < 0 return false;
     if !initialize_mutex(*s.mutex) return false;
-    if !initialize_condition(*s.condition) { destroy_mutex(*s.mutex); return false; }
-    s.count = initial_value; s.initialized = true;
+    if !initialize_condition(*s.condition) {
+        destroy_mutex(*s.mutex);
+        return false;
+    }
+    s.count = initial_value;
+    s.initialized = true;
     return true;
 }
 destroy :: (s: *Semaphore) {
     if s == null || !s.initialized return;
-    destroy_condition(*s.condition); destroy_mutex(*s.mutex);
+    destroy_condition(*s.condition);
+    destroy_mutex(*s.mutex);
     s.initialized = false;
 }
 signal :: (s: *Semaphore) {
     assert(s.initialized);
-    csection_lock(*s.mutex); s.count += 1;
-    cvariable_wake(*s.condition); csection_unlock(*s.mutex);
+    csection_lock(*s.mutex);
+    s.count += 1;
+    cvariable_wake(*s.condition);
+    csection_unlock(*s.mutex);
 }
 wait_for :: (s: *Semaphore, milliseconds: s32 = -1) -> Wait_For_Result {
     if s == null || !s.initialized return .ERROR;
@@ -200,7 +238,8 @@ wait_for :: (s: *Semaphore, milliseconds: s32 = -1) -> Wait_For_Result {
             }
         }
     }
-    s.count -= 1; return .SUCCESS;
+    s.count -= 1;
+    return .SUCCESS;
 }
 
 #scope_module
@@ -213,8 +252,10 @@ initialize_mutex :: (mutex: *Per_OS_Critical_Section_Type) -> bool {
         else kind :: cast(s32) PTHREAD_MUTEX.RECURSIVE;
         if pthread_mutexattr_settype(*attributes, kind) != 0 return false;
         return pthread_mutex_init(mutex, *attributes) == 0;
+    } else {
+        InitializeCriticalSection(mutex);
+        return true;
     }
-    else { InitializeCriticalSection(mutex); return true; }
 }
 destroy_mutex :: (mutex: *Per_OS_Critical_Section_Type) {
     #if POSIX_THREADS assert(pthread_mutex_destroy(mutex) == 0);
@@ -222,7 +263,10 @@ destroy_mutex :: (mutex: *Per_OS_Critical_Section_Type) {
 }
 initialize_condition :: (condition: *Per_OS_Condition_Variable_Type) -> bool {
     #if POSIX_THREADS return pthread_cond_init(condition, null) == 0;
-    else { InitializeConditionVariable(condition); return true; }
+    else {
+        InitializeConditionVariable(condition);
+        return true;
+    }
 }
 destroy_condition :: (condition: *Per_OS_Condition_Variable_Type) {
     #if POSIX_THREADS assert(pthread_cond_destroy(condition) == 0);
@@ -254,7 +298,10 @@ wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Cr
         result: timespec;
         result.tv_sec = now.tv_sec + milliseconds / 1000;
         result.tv_nsec = cast(s64) now.tv_usec * 1000 + (milliseconds % 1000) * 1000000;
-        if result.tv_nsec >= 1000000000 { result.tv_nsec -= 1000000000; result.tv_sec += 1; }
+        if result.tv_nsec >= 1000000000 {
+            result.tv_nsec -= 1000000000;
+            result.tv_sec += 1;
+        }
         return result;
     }
     native_thread_entry :: (opaque: *void) -> *void #c_call {

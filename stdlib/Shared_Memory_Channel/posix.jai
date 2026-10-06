@@ -6,9 +6,17 @@ reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: boo
     descriptor := P.shm_open(c_name, P.O_CREAT | P.O_EXCL | P.O_RDWR, cast(s32) 384);
     if descriptor < 0 return false, result;
     size := bytes + OFFSET_TO_MESSAGE_DATA;
-    if P.ftruncate(descriptor, size) != 0 { P.close(descriptor); P.shm_unlink(c_name); return false, result; }
+    if P.ftruncate(descriptor, size) != 0 {
+        P.close(descriptor);
+        P.shm_unlink(c_name);
+        return false, result;
+    }
     memory := P.mmap(null, xx size, 1 | 2, 1, descriptor, 0);
-    if memory == cast(*void) -1 { P.close(descriptor); P.shm_unlink(c_name); return false, result; }
+    if memory == cast(*void) -1 {
+        P.close(descriptor);
+        P.shm_unlink(c_name);
+        return false, result;
+    }
     result.header = cast(*Header) memory;
     result.os_specific.shm = descriptor;
     result.owned_name = copy_string(name);
@@ -35,17 +43,32 @@ writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: 
     descriptor := P.shm_open(temp_c_string(name), P.O_RDWR);
     if descriptor < 0 return false, result;
     stats: P.stat_t;
-    if P.fstat(descriptor, *stats) != 0 || stats.st_size < OFFSET_TO_MESSAGE_DATA + 32 { P.close(descriptor); return false, result; }
+    if P.fstat(descriptor, *stats) != 0 || stats.st_size < OFFSET_TO_MESSAGE_DATA + 32 {
+        P.close(descriptor);
+        return false, result;
+    }
     memory := P.mmap(null, xx stats.st_size, 1 | 2, 1, descriptor, 0);
-    if memory == cast(*void) -1 { P.close(descriptor); return false, result; }
+    if memory == cast(*void) -1 {
+        P.close(descriptor);
+        return false, result;
+    }
     valid, size := get_size_of_full_mapping_from_stub_header(memory);
     header := cast(*Header) memory;
-    if !valid || size != stats.st_size || A.atomic_read(*header.reader_status) == .DISCONNECTED { P.munmap(memory, xx stats.st_size); P.close(descriptor); return false, result; }
+    if !valid || size != stats.st_size || A.atomic_read(*header.reader_status) == .DISCONNECTED {
+        P.munmap(memory, xx stats.st_size);
+        P.close(descriptor);
+        return false, result;
+    }
     joined, previous := compare_and_swap(*header.writer_status, .DISCONNECTED, .PAUSED);
-    if !joined { P.munmap(memory, xx stats.st_size); P.close(descriptor); return false, result; }
+    if !joined {
+        P.munmap(memory, xx stats.st_size);
+        P.close(descriptor);
+        return false, result;
+    }
     if A.atomic_read(*header.reader_status) == .DISCONNECTED {
         A.atomic_write(*header.writer_status, .DISCONNECTED);
-        P.munmap(memory, xx stats.st_size); P.close(descriptor);
+        P.munmap(memory, xx stats.st_size);
+        P.close(descriptor);
         return false, result;
     }
     result.header = header;
@@ -63,4 +86,8 @@ writer_disconnect :: (channel: *Write_Channel) -> bool {
 }
 
 #scope_module
-os_magic :: () -> u32 { value: u32; memcpy(*value, HEADER_OS_MAGIC.data, 4); return value; }
+os_magic :: () -> u32 {
+    value: u32;
+    memcpy(*value, HEADER_OS_MAGIC.data, 4);
+    return value;
+}

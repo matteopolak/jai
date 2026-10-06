@@ -1,20 +1,20 @@
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 Picture_Type :: enum {
-    INTRA      :: 1;
+    INTRA :: 1;
     PREDICTIVE :: 2;
-    B          :: 3;
+    B :: 3;
 }
 
 Start_Code :: enum u8 {
-    SEQUENCE    :: 0xB3;
+    SEQUENCE :: 0xB3;
     SLICE_FIRST :: 0x01;
-    SLICE_LAST  :: 0xAF;
-    PICTURE     :: 0x00;
-    EXTENSION   :: 0xB5;
-    USER_DATA   :: 0xB2;
+    SLICE_LAST :: 0xAF;
+    PICTURE :: 0x00;
+    EXTENSION :: 0xB5;
+    USER_DATA :: 0xB2;
 
-    PACK   :: 0xBA;
-    END    :: 0xB9;
+    PACK :: 0xBA;
+    END :: 0xB9;
     SYSTEM :: 0xBB;
 
     PRIVATE :: 0xBD;
@@ -33,64 +33,64 @@ IS_SLICE :: (c: Start_Code) -> bool {
 }
 
 Video_Motion :: struct {
-	full_px: s32;
-	is_set: s32;
-	r_size: s32;
-	h: s32;
-	v: s32;
+    full_px: s32;
+    is_set: s32;
+    r_size: s32;
+    h: s32;
+    v: s32;
 }
 
 Video :: struct {
-	framerate: float64;
-	time: float64;
-	frames_decoded: s32;
-	width: s32;
-	height: s32;
-	mb_width: s32;
-	mb_height: s32;
-	mb_size: s32;
+    framerate: float64;
+    time: float64;
+    frames_decoded: s32;
+    width: s32;
+    height: s32;
+    mb_width: s32;
+    mb_height: s32;
+    mb_size: s32;
 
-	luma_width: s32;
-	luma_height: s32;
+    luma_width: s32;
+    luma_height: s32;
 
-	chroma_width: s32;
-	chroma_height: s32;
+    chroma_width: s32;
+    chroma_height: s32;
 
-	start_code:   Start_Code;
-	picture_type: Picture_Type;
+    start_code: Start_Code;
+    picture_type: Picture_Type;
 
-	motion_forward:  Video_Motion;
-	motion_backward: Video_Motion;
+    motion_forward: Video_Motion;
+    motion_backward: Video_Motion;
 
-	has_sequence_header := false;
+    has_sequence_header := false;
 
-	quantizer_scale: s32;
-	slice_begin := false;
-	macroblock_address: s32;
+    quantizer_scale: s32;
+    slice_begin := false;
+    macroblock_address: s32;
 
-	mb_row: s32;
-	mb_col: s32;
+    mb_row: s32;
+    mb_col: s32;
 
-	macroblock_type:  s32;
-	macroblock_intra: s32;
+    macroblock_type: s32;
+    macroblock_intra: s32;
 
-	dc_predictor: [3] s32;
+    dc_predictor: [3] s32;
 
-	buffer: *Buffer;
-	destroy_buffer_when_done: bool;
+    buffer: *Buffer;
+    destroy_buffer_when_done: bool;
 
-	frame_current:  Frame;
-	frame_forward:  Frame;
-	frame_backward: Frame;
+    frame_current: Frame;
+    frame_forward: Frame;
+    frame_backward: Frame;
 
-	frames_data: *u8;
+    frames_data: *u8;
 
-	block_data: [64] s32;
-	intra_quant_matrix:     [64] u8;
-	non_intra_quant_matrix: [64] u8;
+    block_data: [64] s32;
+    intra_quant_matrix: [64] u8;
+    non_intra_quant_matrix: [64] u8;
 
-	has_reference_frame := false;
-	assume_no_b_frames  := false;
+    has_reference_frame := false;
+    assume_no_b_frames := false;
 }
 
 clamp :: (n: s32) -> u8 {

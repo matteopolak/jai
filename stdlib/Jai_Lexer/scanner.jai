@@ -9,7 +9,6 @@ get_last_token :: (lexer: *Lexer) -> Token {
 }
 
 
-
 cached_make_atom :: (lexer: *Lexer, name: string, token_to_fill: *Token) {
     token_to_fill.ident_value.name = cast(Table_String) pooled_text(lexer, name);
     hash: u32;
@@ -32,16 +31,16 @@ peek_next_character :: (lexer: *Lexer) -> s16 {
     if lexer.input_cursor >= lexer.input.count return -1;
     return lexer.input[lexer.input_cursor];
 }
-report_parse_error :: (lexer: *Lexer, format: string, arguments: .. Any) {
+report_parse_error :: (lexer: *Lexer, format: string, arguments: ..Any) {
     lexer.reported_error = true;
     log(format, ..arguments);
 } @PrintLike
-report_parse_error :: (lexer: *Lexer, token: *Token, format: string, arguments: .. Any) {
+report_parse_error :: (lexer: *Lexer, token: *Token, format: string, arguments: ..Any) {
     lexer.reported_error = true;
     log("lexer at %:%: ", token.l0, token.c0);
     log(format, ..arguments);
 } @PrintLike
-report_detail :: (lexer: *Lexer, format: string, arguments: .. Any) {
+report_detail :: (lexer: *Lexer, format: string, arguments: ..Any) {
     log(format, ..arguments);
 } @PrintLike
 get_hex_digit :: (lexer: *Lexer, type: Hex_Digit_Type) -> (value: u8, success: bool) {
@@ -79,7 +78,7 @@ unwind_one_character :: (lexer: *Lexer) {
 get_unused_token :: (lexer: *Lexer) -> *Token {
     assert(lexer.num_incoming_tokens < MAX_CONCURRENT_TOKENS, "Jai_Lexer: token lookahead ring overflowed");
     ring_index := lexer.token_array_cursor + lexer.num_incoming_tokens;
-    if ring_index >= MAX_CONCURRENT_TOKENS  ring_index -= MAX_CONCURRENT_TOKENS;
+    if ring_index >= MAX_CONCURRENT_TOKENS ring_index -= MAX_CONCURRENT_TOKENS;
 
     fresh: Token;
     fresh.l0 = lexer.current_line_number;
@@ -106,12 +105,12 @@ parse_ident :: (lexer: *Lexer, result: *Token) -> string {
         result.type = .ERROR;
         count = MAX_IDENTIFIER_LENGTH;
     }
-    return string.{count, lexer.scratch_buffer.data};
+    return string.{ count, lexer.scratch_buffer.data };
 }
 parse_note :: (lexer: *Lexer) -> string {
     begin := lexer.input_cursor;
     while continues_identifier(peek_next_character(lexer)) eat_character(lexer);
-    return .{lexer.input_cursor - begin, lexer.input.data + begin};
+    return .{ lexer.input_cursor - begin, lexer.input.data + begin };
 }
 make_note :: (lexer: *Lexer) -> *Token {
     result := start_token(lexer, .NOTE);
@@ -133,7 +132,7 @@ make_ident_or_keyword :: (lexer: *Lexer) -> *Token {
     cached_make_atom(lexer, parse_ident(lexer, result), result);
     // Reserved words share the identifier spelling; retag them in place.
     reserved := check_for_keyword(result);
-    if reserved != cast(Token_Type) 0  result.type = reserved;
+    if reserved != cast(Token_Type) 0 result.type = reserved;
     set_end_of_token(lexer, result);
     return result;
 }
@@ -145,14 +144,26 @@ make_number :: (lexer: *Lexer) -> *Token {
     base: u64 = 10;
     if look_byte(lexer, 0) == #char "0" {
         marker := look_byte(lexer, 1);
-        if marker == #char "x" || marker == #char "X" { base = 16; result.value_flags |= .HEX; eat_character(lexer); eat_character(lexer); }
-        else if marker == #char "b" || marker == #char "B" { base = 2; result.value_flags |= .BINARY; eat_character(lexer); eat_character(lexer); }
+        if marker == #char "x" || marker == #char "X" {
+            base = 16;
+            result.value_flags |= .HEX;
+            eat_character(lexer);
+            eat_character(lexer);
+        } else if marker == #char "b" || marker == #char "B" {
+            base = 2;
+            result.value_flags |= .BINARY;
+            eat_character(lexer);
+            eat_character(lexer);
+        }
     }
     count: s64;
     integer: u64;
     while true {
         next := peek_next_character(lexer);
-        if next == #char "_" { eat_character(lexer); continue; }
+        if next == #char "_" {
+            eat_character(lexer);
+            continue;
+        }
         digit := digit_value(next);
         if digit < 0 || cast(u64) digit >= base break;
         if integer > (0xffff_ffff_ffff_ffff - cast(u64) digit) / base result.value_flags |= .OVERFLOWED;
@@ -174,7 +185,7 @@ make_number :: (lexer: *Lexer) -> *Token {
             while starts_number(peek_next_character(lexer)) || peek_next_character(lexer) == #char "_" eat_character(lexer);
             if exponent_start == lexer.input_cursor report_parse_error(lexer, "Expected exponent digits\n");
         }
-        text := string.{lexer.input_cursor - beginning, lexer.input.data + beginning};
+        text := string.{ lexer.input_cursor - beginning, lexer.input.data + beginning };
         number, success, rest := string_to_float64(text);
         result.float64_value = number;
         result.value_flags |= .FLOAT;
@@ -196,7 +207,7 @@ make_hexfloat :: (lexer: *Lexer, result: *Token) -> *Token {
     report_parse_error(lexer, "Hexadecimal floating point literals require a dedicated numeric adapter\n");
     while true {
         upcoming := peek_next_character(lexer);
-        if upcoming != #char "." && !continues_identifier(upcoming)  break;
+        if upcoming != #char "." && !continues_identifier(upcoming) break;
         eat_character(lexer);
     }
     set_end_of_token(lexer, result);
@@ -218,7 +229,10 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
         if character == #char "\"" break;
         if character == #char "\\" {
             character = peek_next_character(lexer);
-            if character < 0 { result.type = .ERROR; break; }
+            if character < 0 {
+                result.type = .ERROR;
+                break;
+            }
             eat_character(lexer);
             if character == #char "n" character = #char "\n";
             else if character == #char "r" character = #char "\r";
@@ -228,9 +242,12 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
                 codepoint: u32;
                 wanted := ifx character == #char "u" then 4 else 8;
                 valid := true;
-                for index: 0..wanted-1 {
+                for index: 0..wanted - 1 {
                     digit, success := get_hex_digit(lexer, .UNICODE_32);
-                    if !success { valid = false; break; }
+                    if !success {
+                        valid = false;
+                        break;
+                    }
                     codepoint = (codepoint << 4) | digit;
                 }
                 if !valid || codepoint > 0x10ffff || (codepoint >= 0xd800 && codepoint <= 0xdfff) {
@@ -253,17 +270,20 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
                     array_add(*decoded, cast(u8) (0x80 | (codepoint & 0x3f)));
                 }
                 continue;
-            }
-            else if character == #char "x" {
+            } else if character == #char "x" {
                 high, high_ok := get_hex_digit(lexer, .ASCII_8_BIT);
                 low, low_ok := get_hex_digit(lexer, .ASCII_8_BIT);
-                if !high_ok || !low_ok { report_parse_error(lexer, "Invalid byte escape\n"); result.type = .ERROR; break; }
+                if !high_ok || !low_ok {
+                    report_parse_error(lexer, "Invalid byte escape\n");
+                    result.type = .ERROR;
+                    break;
+                }
                 character = ((cast(s16) high) << 4) | low;
             }
         }
         array_add(*decoded, cast(u8) character);
     }
-    result.string_value = pooled_text(lexer, string.{decoded.count, decoded.data});
+    result.string_value = pooled_text(lexer, string.{ decoded.count, decoded.data });
     set_end_of_token(lexer, result);
     return result;
 }
@@ -273,7 +293,7 @@ parse_here_string :: (lexer: *Lexer) -> *Token {
     while peek_next_character(lexer) == #char " " || peek_next_character(lexer) == #char "\t" eat_character(lexer);
     delimiter_start := lexer.input_cursor;
     while continues_identifier(peek_next_character(lexer)) eat_character(lexer);
-    delimiter := string.{lexer.input_cursor - delimiter_start, lexer.input.data + delimiter_start};
+    delimiter := string.{ lexer.input_cursor - delimiter_start, lexer.input.data + delimiter_start };
     if delimiter.count == 0 {
         result.type = .ERROR;
         report_parse_error(lexer, "Expected here-string delimiter\n");
@@ -306,7 +326,7 @@ parse_here_string :: (lexer: *Lexer) -> *Token {
         result.type = .ERROR;
         report_parse_error(lexer, "Missing here-string terminator\n");
     }
-    result.string_value = pooled_text(lexer, string.{body_end - body_start, lexer.input.data + body_start});
+    result.string_value = pooled_text(lexer, string.{ body_end - body_start, lexer.input.data + body_start });
     set_end_of_token(lexer, result);
     return result;
 }
@@ -336,7 +356,11 @@ eat_token :: (lexer: *Lexer) {
 check_for_equals :: (lexer: *Lexer, c: Token_Type, augmented: Token_Type, eat := true, subtractor: s32 = 0) -> *Token {
     if eat eat_character(lexer);
     kind := c;
-    if peek_next_character(lexer) == #char "=" { eat_character(lexer); kind = augmented; subtractor += 1; }
+    if peek_next_character(lexer) == #char "=" {
+        eat_character(lexer);
+        kind = augmented;
+        subtractor += 1;
+    }
     result := make_one_character_token(lexer, kind);
     result.c0 -= subtractor;
     return result;
@@ -344,10 +368,19 @@ check_for_equals :: (lexer: *Lexer, c: Token_Type, augmented: Token_Type, eat :=
 eat_input_due_to_block_comment :: (lexer: *Lexer) {
     depth: s32 = 1;
     while depth > 0 {
-        if peek_next_character(lexer) < 0 { report_parse_error(lexer, "Unterminated block comment\n"); return; }
-        if look_byte(lexer, 0) == #char "/" && look_byte(lexer, 1) == #char "*" { depth += 1; eat_character(lexer); eat_character(lexer); }
-        else if look_byte(lexer, 0) == #char "*" && look_byte(lexer, 1) == #char "/" { depth -= 1; eat_character(lexer); eat_character(lexer); }
-        else eat_character(lexer);
+        if peek_next_character(lexer) < 0 {
+            report_parse_error(lexer, "Unterminated block comment\n");
+            return;
+        }
+        if look_byte(lexer, 0) == #char "/" && look_byte(lexer, 1) == #char "*" {
+            depth += 1;
+            eat_character(lexer);
+            eat_character(lexer);
+        } else if look_byte(lexer, 0) == #char "*" && look_byte(lexer, 1) == #char "/" {
+            depth -= 1;
+            eat_character(lexer);
+            eat_character(lexer);
+        } else eat_character(lexer);
     }
 }
 eat_until_newline :: (lexer: *Lexer) {
@@ -356,9 +389,20 @@ eat_until_newline :: (lexer: *Lexer) {
 compose_new_token :: (lexer: *Lexer) -> *Token {
     while true {
         next := peek_next_character(lexer);
-        if next == #char " " || next == #char "\t" || next == #char "\r" || next == #char "\n" { eat_character(lexer); continue; }
-        if next == #char "/" && look_byte(lexer, 1) == #char "/" { eat_until_newline(lexer); continue; }
-        if next == #char "/" && look_byte(lexer, 1) == #char "*" { eat_character(lexer); eat_character(lexer); eat_input_due_to_block_comment(lexer); continue; }
+        if next == #char " " || next == #char "\t" || next == #char "\r" || next == #char "\n" {
+            eat_character(lexer);
+            continue;
+        }
+        if next == #char "/" && look_byte(lexer, 1) == #char "/" {
+            eat_until_newline(lexer);
+            continue;
+        }
+        if next == #char "/" && look_byte(lexer, 1) == #char "*" {
+            eat_character(lexer);
+            eat_character(lexer);
+            eat_input_due_to_block_comment(lexer);
+            continue;
+        }
         if next < 0 {
             result := start_token(lexer, .END_OF_INPUT);
             set_end_of_token(lexer, result);
@@ -422,7 +466,7 @@ set_input_from_string :: (lexer: *Lexer, input: string) {
     lexer.current_character_index = 1;
 }
 set_input_from_file :: (lexer: *Lexer, file_path: string) -> bool {
-    source, success := File.read_entire_file(file_path, zero_terminated=true);
+    source, success := File.read_entire_file(file_path, zero_terminated = true);
     if !success return false;
     set_input_from_string(lexer, source);
     lexer.should_free_input = true;
@@ -445,7 +489,7 @@ pooled_text :: (lexer: *Lexer, text: string) -> string {
     storage := cast(*u8) Pool_Module.get(*lexer.atom_pool, text.count + 1);
     memcpy(storage, text.data, text.count);
     storage[text.count] = 0;
-    return .{text.count, storage};
+    return .{ text.count, storage };
 }
 look_byte :: (lexer: *Lexer, ahead: s64) -> s16 {
     offset := lexer.input_cursor + ahead;
@@ -457,23 +501,29 @@ ahead_matches :: (lexer: *Lexer, text: string) -> bool {
     return true;
 }
 
-keywords: [] struct { text: string; kind: Token_Type; } = .[
-    .{"for", .KEYWORD_FOR}, .{"if", .KEYWORD_IF}, .{"ifx", .KEYWORD_IFX}, .{"then", .KEYWORD_THEN}, .{"else", .KEYWORD_ELSE},
-    .{"case", .KEYWORD_CASE}, .{"return", .KEYWORD_RETURN}, .{"struct", .KEYWORD_STRUCT}, .{"while", .KEYWORD_WHILE},
-    .{"break", .KEYWORD_BREAK}, .{"continue", .KEYWORD_CONTINUE}, .{"remove", .KEYWORD_REMOVE}, .{"using", .KEYWORD_USING},
-    .{"defer", .KEYWORD_DEFER}, .{"size_of", .KEYWORD_SIZE_OF}, .{"type_of", .KEYWORD_TYPE_OF}, .{"code_of", .KEYWORD_CODE_OF},
-    .{"initializer_of", .KEYWORD_INITIALIZER_OF}, .{"type_info", .KEYWORD_TYPE_INFO}, .{"null", .KEYWORD_NULL},
-    .{"enum", .KEYWORD_ENUM}, .{"true", .KEYWORD_TRUE}, .{"false", .KEYWORD_FALSE}, .{"inline", .KEYWORD_INLINE},
-    .{"no_inline", .KEYWORD_NO_INLINE}, .{"cast", .KEYWORD_CAST}, .{"xx", .KEYWORD_AUTO_CAST}, .{"context", .KEYWORD_CONTEXT},
-    .{"push_context", .KEYWORD_PUSH_CONTEXT}, .{"operator", .KEYWORD_OPERATOR}, .{"is_constant", .KEYWORD_IS_CONSTANT},
-    .{"enum_flags", .KEYWORD_ENUM_FLAGS}, .{"union", .KEYWORD_UNION}, .{"interface", .KEYWORD_INTERFACE}
+keywords: [] struct {
+    text: string;
+    kind: Token_Type;
+} = .[
+.{ "for", .KEYWORD_FOR }, .{ "if", .KEYWORD_IF }, .{ "ifx", .KEYWORD_IFX }, .{ "then", .KEYWORD_THEN }, .{ "else", .KEYWORD_ELSE },
+.{ "case", .KEYWORD_CASE }, .{ "return", .KEYWORD_RETURN }, .{ "struct", .KEYWORD_STRUCT }, .{ "while", .KEYWORD_WHILE },
+.{ "break", .KEYWORD_BREAK }, .{ "continue", .KEYWORD_CONTINUE }, .{ "remove", .KEYWORD_REMOVE }, .{ "using", .KEYWORD_USING },
+.{ "defer", .KEYWORD_DEFER }, .{ "size_of", .KEYWORD_SIZE_OF }, .{ "type_of", .KEYWORD_TYPE_OF }, .{ "code_of", .KEYWORD_CODE_OF },
+.{ "initializer_of", .KEYWORD_INITIALIZER_OF }, .{ "type_info", .KEYWORD_TYPE_INFO }, .{ "null", .KEYWORD_NULL },
+.{ "enum", .KEYWORD_ENUM }, .{ "true", .KEYWORD_TRUE }, .{ "false", .KEYWORD_FALSE }, .{ "inline", .KEYWORD_INLINE },
+.{ "no_inline", .KEYWORD_NO_INLINE }, .{ "cast", .KEYWORD_CAST }, .{ "xx", .KEYWORD_AUTO_CAST }, .{ "context", .KEYWORD_CONTEXT },
+.{ "push_context", .KEYWORD_PUSH_CONTEXT }, .{ "operator", .KEYWORD_OPERATOR }, .{ "is_constant", .KEYWORD_IS_CONSTANT },
+.{ "enum_flags", .KEYWORD_ENUM_FLAGS }, .{ "union", .KEYWORD_UNION }, .{ "interface", .KEYWORD_INTERFACE }
 ];
-compound_tokens: [] struct { text: string; kind: Token_Type; } = .[
-    .{"<<<=" , .ROTATE_LEFT_EQUALS}, .{">>>=", .ROTATE_RIGHT_EQUALS}, .{"&&=", .LOGICAL_AND_EQUALS}, .{"||=", .LOGICAL_OR_EQUALS},
-    .{"<<=", .SHIFT_LEFT_EQUALS}, .{">>=", .SHIFT_RIGHT_EQUALS}, .{"===", .TRIPLE_EQUALS}, .{"---", .TRIPLE_MINUS},
-    .{"+=", .PLUSEQUALS}, .{"-=", .MINUSEQUALS}, .{"*=", .TIMESEQUALS}, .{"/=", .DIVEQUALS}, .{"%=", .MODEQUALS},
-    .{"==", .ISEQUAL}, .{"!=", .ISNOTEQUAL}, .{"&&", .LOGICAL_AND}, .{"||", .LOGICAL_OR}, .{"<=", .LESSEQUALS}, .{">=", .GREATEREQUALS},
-    .{"->", .RIGHT_ARROW}, .{"..", .DOUBLE_DOT}, .{"$$", .DOUBLE_DOLLAR}, .{"<<", .POINTER_DEREFERENCE_OR_SHIFT_LEFT}, .{">>", .SHIFT_RIGHT},
-    .{"&=", .BITWISE_AND_EQUALS}, .{"|=", .BITWISE_OR_EQUALS}, .{"^=", .BITWISE_XOR_EQUALS}, .{".*", .POSTFIX_DEREFERENCE},
-    .{"--", .DOUBLE_MINUS}, .{",,", .DOUBLE_COMMA}, .{".{", .BEGIN_STRUCT_LITERAL}, .{".[", .BEGIN_ARRAY_LITERAL}
+compound_tokens: [] struct {
+    text: string;
+    kind: Token_Type;
+} = .[
+.{ "<<<=", .ROTATE_LEFT_EQUALS }, .{ ">>>=", .ROTATE_RIGHT_EQUALS }, .{ "&&=", .LOGICAL_AND_EQUALS }, .{ "||=", .LOGICAL_OR_EQUALS },
+.{ "<<=", .SHIFT_LEFT_EQUALS }, .{ ">>=", .SHIFT_RIGHT_EQUALS }, .{ "===", .TRIPLE_EQUALS }, .{ "---", .TRIPLE_MINUS },
+.{ "+=", .PLUSEQUALS }, .{ "-=", .MINUSEQUALS }, .{ "*=", .TIMESEQUALS }, .{ "/=", .DIVEQUALS }, .{ "%=", .MODEQUALS },
+.{ "==", .ISEQUAL }, .{ "!=", .ISNOTEQUAL }, .{ "&&", .LOGICAL_AND }, .{ "||", .LOGICAL_OR }, .{ "<=", .LESSEQUALS }, .{ ">=", .GREATEREQUALS },
+.{ "->", .RIGHT_ARROW }, .{ "..", .DOUBLE_DOT }, .{ "$$", .DOUBLE_DOLLAR }, .{ "<<", .POINTER_DEREFERENCE_OR_SHIFT_LEFT }, .{ ">>", .SHIFT_RIGHT },
+.{ "&=", .BITWISE_AND_EQUALS }, .{ "|=", .BITWISE_OR_EQUALS }, .{ "^=", .BITWISE_XOR_EQUALS }, .{ ".*", .POSTFIX_DEREFERENCE },
+.{ "--", .DOUBLE_MINUS }, .{ ",,", .DOUBLE_COMMA }, .{ ".{", .BEGIN_STRUCT_LITERAL }, .{ ".[", .BEGIN_ARRAY_LITERAL }
 ];

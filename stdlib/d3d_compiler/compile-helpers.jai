@@ -1,5 +1,5 @@
 // Independently authored D3DCompiler counted-string/definition/blob adapters.
-D3DCompile :: (shader: string, source_name: string, pDefines: []string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> bytecode: string, errors: string, HRESULT {
+D3DCompile :: (shader: string, source_name: string, pDefines: [] string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> bytecode: string, errors: string, HRESULT {
     macros := _d3d_macro_array(pDefines);
     if pDefines.count > 0 && macros == null return "", ShaderMemory.copy_string("Unable to allocate shader macro array"), cast(HRESULT) 0x8007000e;
     code: *ID3DBlob;
@@ -21,7 +21,7 @@ D3DCompile :: (shader: string, source_name: string, pDefines: []string, pInclude
     }
     return output, messages, status;
 }
-D3DCompileFromFile :: (file_name: string, pDefines: []string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> pCode: *ID3DBlob, pErrorMsgs: *ID3DBlob, HRESULT {
+D3DCompileFromFile :: (file_name: string, pDefines: [] string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> pCode: *ID3DBlob, pErrorMsgs: *ID3DBlob, HRESULT {
     wide, valid, _ := ShaderUtf8.utf8_to_wide(file_name);
     if !valid || wide == null return null, null, cast(HRESULT) 0x80070057;
     defer ShaderMemory.free(wide);
@@ -53,7 +53,7 @@ _d3d_blob_string :: (blob: *ID3DBlob, trim_zero: bool) -> string {
     if trim_zero && text.count > 0 && text[text.count - 1] == 0 text.count -= 1;
     return ShaderMemory.copy_string(text);
 }
-_d3d_macro_array :: (definitions: []string) -> *D3D_SHADER_MACRO {
+_d3d_macro_array :: (definitions: [] string) -> *D3D_SHADER_MACRO {
     if definitions.count == 0 return null;
     ShaderMemory.assert(definitions.count >= 0 && definitions.count < 0x3fff_ffff);
     values := cast(*D3D_SHADER_MACRO) ShaderMemory.temporary_alloc((definitions.count + 1) * size_of(D3D_SHADER_MACRO));

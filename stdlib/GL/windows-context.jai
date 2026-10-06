@@ -7,7 +7,9 @@
         previous_context := NativeWGL.wglGetCurrentContext();
         previous_dc := NativeWGL.wglGetCurrentDC();
         complete := false;
-        defer { if !complete NativeWGL.wglMakeCurrent(previous_dc, previous_context); }
+        defer {
+            if !complete NativeWGL.wglMakeCurrent(previous_dc, previous_context);
+        }
 
         // The target's pixel format can only be set once. Use another window to
         // obtain driver extension addresses before committing the target format.
@@ -62,7 +64,9 @@
 
         target_dc := NativeWGL.GetDC(hwnd);
         if !target_dc return null, null, 0;
-        defer { if !complete NativeWGL.ReleaseDC(hwnd, target_dc); }
+        defer {
+            if !complete NativeWGL.ReleaseDC(hwnd, target_dc);
+        }
         pixel_format := NativeWGL.GetPixelFormat(target_dc);
         if pixel_format == 0 {
             if choose_format {
@@ -80,7 +84,10 @@
                     if samples == 0 {
                         // Omit unknown multisample tokens on older drivers.
                         attributes[16] = 0;
-                        if multisampling { attributes[16] = WGL_SAMPLE_BUFFERS_ARB; attributes[17] = 0; }
+                        if multisampling {
+                            attributes[16] = WGL_SAMPLE_BUFFERS_ARB;
+                            attributes[17] = 0;
+                        }
                     }
                     count: u32 = 0;
                     if choose_format(target_dc, attributes.data, null, 1, *pixel_format, *count) == 0 pixel_format = 0;
@@ -107,11 +114,17 @@
             attributes: [9] s32;
             at: s32 = 0;
             if major_version != 0 {
-                attributes[at] = WGL_CONTEXT_MAJOR_VERSION_ARB; attributes[at + 1] = major_version; at += 2;
-                attributes[at] = WGL_CONTEXT_MINOR_VERSION_ARB; attributes[at + 1] = minor_version; at += 2;
+                attributes[at] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+                attributes[at + 1] = major_version;
+                at += 2;
+                attributes[at] = WGL_CONTEXT_MINOR_VERSION_ARB;
+                attributes[at + 1] = minor_version;
+                at += 2;
             }
             if debug {
-                attributes[at] = WGL_CONTEXT_FLAGS_ARB; attributes[at + 1] = WGL_CONTEXT_DEBUG_BIT_ARB; at += 2;
+                attributes[at] = WGL_CONTEXT_FLAGS_ARB;
+                attributes[at + 1] = WGL_CONTEXT_DEBUG_BIT_ARB;
+                at += 2;
             }
             if needs_profile {
                 attributes[at] = WGL_CONTEXT_PROFILE_MASK_ARB;

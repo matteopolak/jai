@@ -19,18 +19,18 @@ output_open :: (config: Sound_Player_Config) -> channels: s32, rate: s32, ok: bo
     }
 
     format: Waveformatex;
-    format.wFormatTag      = WAVE_FORMAT_PCM;
-    format.nChannels       = DS_CHANNELS;
-    format.nSamplesPerSec  = DS_RATE;
-    format.wBitsPerSample  = 16;
-    format.nBlockAlign     = DS_FRAME_BYTES;
+    format.wFormatTag = WAVE_FORMAT_PCM;
+    format.nChannels = DS_CHANNELS;
+    format.nSamplesPerSec = DS_RATE;
+    format.wBitsPerSample = 16;
+    format.nBlockAlign = DS_FRAME_BYTES;
     format.nAvgBytesPerSec = DS_RATE * DS_FRAME_BYTES;
 
     description: Buffer_Description;
-    description.size         = size_of(Buffer_Description);
-    description.flags        = DSBCAPS_GETCURRENTPOSITION2;
+    description.size = size_of(Buffer_Description);
+    description.flags = DSBCAPS_GETCURRENTPOSITION2;
     description.buffer_bytes = RING_BYTES;
-    description.format       = *format;
+    description.format = *format;
     if config.audible_when_window_is_not_in_focus description.flags |= DSBCAPS_GLOBALFOCUS;
     if device.vtable.CreateSoundBuffer(device, *description, *ring, null) < 0 {
         log_error("Sound_Player: DirectSound refused the output buffer.\n");
@@ -113,14 +113,14 @@ output_devices :: () -> [] Output_Device {
 #import "Windows";
 #import "Wav_File";
 
-DS_RATE        :: 44100;
-DS_CHANNELS    :: 2;
+DS_RATE :: 44100;
+DS_CHANNELS :: 2;
 DS_FRAME_BYTES :: DS_CHANNELS * size_of(s16);
-RING_BYTES     :: 24000 * DS_FRAME_BYTES;   // A bit over half a second.
+RING_BYTES :: 24000 * DS_FRAME_BYTES; // A bit over half a second.
 
 device: *Direct_Sound;
 ring: *Sound_Buffer;
-written_up_to: s64;   // Byte offset in the ring where the next write goes.
+written_up_to: s64; // Byte offset in the ring where the next write goes.
 listed_devices: [..] Output_Device;
 
 ring_distance :: (ahead: s64, behind: s64) -> s64 {
@@ -158,51 +158,55 @@ on_device_found :: (guid: *GUID, description: *u8, module_name: *u8, user: *void
         }
         array_add(*gathered.devices, device);
     }
-    return 1;   // Keep enumerating.
+    return 1; // Keep enumerating.
 }
 
 // DirectSound declarations. Only the methods we call are typed; `skipN` arrays stand in for the
 // methods between them so the vtable offsets stay right.
-DSSCL_NORMAL                :: 1;
-DSBCAPS_GLOBALFOCUS         :: 0x8000;
+DSSCL_NORMAL :: 1;
+DSBCAPS_GLOBALFOCUS :: 0x8000;
 DSBCAPS_GETCURRENTPOSITION2 :: 0x10000;
-DSBPLAY_LOOPING             :: 1;
-DSBSTATUS_BUFFERLOST        :: 2;
+DSBPLAY_LOOPING :: 1;
+DSBSTATUS_BUFFERLOST :: 2;
 
 Buffer_Description :: struct {
-    size:         u32;
-    flags:        u32;
+    size: u32;
+    flags: u32;
     buffer_bytes: u32;
-    reserved:     u32;
-    format:       *Waveformatex;
+    reserved: u32;
+    format: *Waveformatex;
     algorithm_3d: GUID;
 }
 
-Direct_Sound :: struct { vtable: *Direct_Sound_Calls; }
+Direct_Sound :: struct {
+    vtable: *Direct_Sound_Calls;
+}
 Direct_Sound_Calls :: struct {
     using unknown: IUnknown_VTable;
-    CreateSoundBuffer:   (self: *Direct_Sound, description: *Buffer_Description, buffer: **Sound_Buffer, outer: *void) -> HRESULT #c_call;
-    skip1:               [2] *void;
+    CreateSoundBuffer: (self: *Direct_Sound, description: *Buffer_Description, buffer: **Sound_Buffer, outer: *void) -> HRESULT #c_call;
+    skip1: [2] *void;
     SetCooperativeLevel: (self: *Direct_Sound, window: HWND, level: u32) -> HRESULT #c_call;
-    skip2:               [5] *void;
+    skip2: [5] *void;
 }
 
-Sound_Buffer :: struct { vtable: *Sound_Buffer_Calls; }
+Sound_Buffer :: struct {
+    vtable: *Sound_Buffer_Calls;
+}
 Sound_Buffer_Calls :: struct {
     using unknown: IUnknown_VTable;
-    skip1:              [1] *void;
+    skip1: [1] *void;
     GetCurrentPosition: (self: *Sound_Buffer, play: *u32, write: *u32) -> HRESULT #c_call;
-    skip2:              [4] *void;
-    GetStatus:          (self: *Sound_Buffer, status: *u32) -> HRESULT #c_call;
-    skip3:              [1] *void;
-    Lock:               (self: *Sound_Buffer, offset: u32, bytes: u32, first: **void, first_bytes: *u32, second: **void, second_bytes: *u32, flags: u32) -> HRESULT #c_call;
-    Play:               (self: *Sound_Buffer, reserved: u32, priority: u32, flags: u32) -> HRESULT #c_call;
-    skip4:              [5] *void;
-    Stop:               (self: *Sound_Buffer) -> HRESULT #c_call;
-    Unlock:             (self: *Sound_Buffer, first: *void, first_bytes: u32, second: *void, second_bytes: u32) -> HRESULT #c_call;
-    Restore:            (self: *Sound_Buffer) -> HRESULT #c_call;
+    skip2: [4] *void;
+    GetStatus: (self: *Sound_Buffer, status: *u32) -> HRESULT #c_call;
+    skip3: [1] *void;
+    Lock: (self: *Sound_Buffer, offset: u32, bytes: u32, first: **void, first_bytes: *u32, second: **void, second_bytes: *u32, flags: u32) -> HRESULT #c_call;
+    Play: (self: *Sound_Buffer, reserved: u32, priority: u32, flags: u32) -> HRESULT #c_call;
+    skip4: [5] *void;
+    Stop: (self: *Sound_Buffer) -> HRESULT #c_call;
+    Unlock: (self: *Sound_Buffer, first: *void, first_bytes: u32, second: *void, second_bytes: u32) -> HRESULT #c_call;
+    Restore: (self: *Sound_Buffer) -> HRESULT #c_call;
 }
 
 dsound :: #system_library "dsound";
-DirectSoundCreate8    :: (device_guid: *GUID, result: **Direct_Sound, outer: *void) -> HRESULT #foreign dsound;
+DirectSoundCreate8 :: (device_guid: *GUID, result: **Direct_Sound, outer: *void) -> HRESULT #foreign dsound;
 DirectSoundEnumerateA :: (callback: (guid: *GUID, description: *u8, module_name: *u8, user: *void) -> s32 #c_call, user: *void) -> HRESULT #foreign dsound;

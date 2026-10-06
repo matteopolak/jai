@@ -2,25 +2,25 @@
 STBI_VERSION :: 1;
 
 STBI :: enum u32 {
-    default    :: 0;
+    default :: 0;
 
-    grey       :: 1;
+    grey :: 1;
     grey_alpha :: 2;
-    rgb        :: 3;
-    rgb_alpha  :: 4;
+    rgb :: 3;
+    rgb_alpha :: 4;
 
-    STBI_default    :: default;
+    STBI_default :: default;
 
-    STBI_grey       :: grey;
+    STBI_grey :: grey;
     STBI_grey_alpha :: grey_alpha;
-    STBI_rgb        :: rgb;
-    STBI_rgb_alpha  :: rgb_alpha;
+    STBI_rgb :: rgb;
+    STBI_rgb_alpha :: rgb_alpha;
 }
 
 stbi_io_callbacks :: struct {
     read: #type (user: *void, data: *u8, size: s32) -> s32 #c_call;
     skip: #type (user: *void, n: s32) -> void #c_call;
-    eof:  #type (user: *void) -> s32 #c_call;
+    eof: #type (user: *void) -> s32 #c_call;
 }
 
 stbi_load_from_memory :: (buffer: *u8, len: s32, x: *s32, y: *s32, channels_in_file: *s32, desired_channels: s32) -> *u8 #foreign stb_image;

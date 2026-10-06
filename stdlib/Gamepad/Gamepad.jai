@@ -27,11 +27,30 @@ Gamepad :: struct {
 }
 gamepad: Gamepad;
 Gamepad_Code :: enum {
-    DPAD_UP; DPAD_DOWN; DPAD_LEFT; DPAD_RIGHT; START; BACK;
-    LEFT_SHOULDER; RIGHT_SHOULDER; LEFT_TRIGGER; RIGHT_TRIGGER;
-    A; B; X; Y; LEFT_STICK_UP; LEFT_STICK_DOWN; LEFT_STICK_LEFT;
-    LEFT_STICK_RIGHT; RIGHT_STICK_UP; RIGHT_STICK_DOWN; RIGHT_STICK_LEFT;
-    RIGHT_STICK_RIGHT; LEFT_STICK_CLICK; RIGHT_STICK_CLICK;
+    DPAD_UP;
+    DPAD_DOWN;
+    DPAD_LEFT;
+    DPAD_RIGHT;
+    START;
+    BACK;
+    LEFT_SHOULDER;
+    RIGHT_SHOULDER;
+    LEFT_TRIGGER;
+    RIGHT_TRIGGER;
+    A;
+    B;
+    X;
+    Y;
+    LEFT_STICK_UP;
+    LEFT_STICK_DOWN;
+    LEFT_STICK_LEFT;
+    LEFT_STICK_RIGHT;
+    RIGHT_STICK_UP;
+    RIGHT_STICK_DOWN;
+    RIGHT_STICK_LEFT;
+    RIGHT_STICK_RIGHT;
+    LEFT_STICK_CLICK;
+    RIGHT_STICK_CLICK;
 }
 
 // A provider supplies normalized physical state; derived events are owned here.
@@ -48,8 +67,10 @@ init_gamepad :: () {
     gamepad.buttons.data = *Input.input_button_states[cast(s64) Input.Key_Code.GAMEPAD_0_BEGIN];
     gamepad.buttons.count = Input.GAMEPAD_BUTTON_COUNT;
     gamepad.connected = false;
-    gamepad.left_stick = .{}; gamepad.right_stick = .{};
-    gamepad.left_trigger = 0; gamepad.right_trigger = 0;
+    gamepad.left_stick = .{};
+    gamepad.right_stick = .{};
+    gamepad.left_trigger = 0;
+    gamepad.right_trigger = 0;
     for *button: gamepad.buttons button.* = .NONE;
     #if OS == .WINDOWS {
         if gamepad_sample_source == null gamepad_sample_source = sample_xinput;
@@ -71,7 +92,7 @@ update_gamepad :: () {
     gamepad.right_stick = filter_stick(sample.right_stick, gamepad.right_stick_deadzone, gamepad.right_stick_rotation_angle);
     gamepad.left_trigger = filter_trigger(sample.left_trigger, gamepad.left_trigger_deadzone);
     gamepad.right_trigger = filter_trigger(sample.right_trigger, gamepad.right_trigger_deadzone);
-    for i: 0..Input.GAMEPAD_BUTTON_COUNT-1 {
+    for i: 0..Input.GAMEPAD_BUTTON_COUNT - 1 {
         pressed := (sample.buttons & ((cast(u32) 1) << i)) != 0;
         code := cast(Gamepad_Code) i;
         if code == .LEFT_TRIGGER pressed = gamepad.left_trigger > gamepad.left_trigger_threshold;
@@ -95,8 +116,9 @@ filter_stick :: (stick: Vector2, deadzone: float, angle: float) -> Vector2 {
     zone := clamp(deadzone, 0.0, 0.9999);
     if length <= zone return .{};
     scale := clamp((length - zone) / (1 - zone), 0.0, 1.0) / length;
-    x := stick.x * scale; y := stick.y * scale;
-    return .{x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle)};
+    x := stick.x * scale;
+    y := stick.y * scale;
+    return .{ x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle) };
 }
 filter_trigger :: (value: float, deadzone: float) -> float {
     zone := clamp(deadzone, 0.0, 0.9999);
@@ -124,12 +146,12 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
         sample.* = .{};
         state: XINPUT_STATE;
         if XInputGetState(0, *state) != 0 return false;
-        sample.left_stick = .{cast(float) state.Gamepad.sThumbLX / 32768, cast(float) state.Gamepad.sThumbLY / 32768};
-        sample.right_stick = .{cast(float) state.Gamepad.sThumbRX / 32768, cast(float) state.Gamepad.sThumbRY / 32768};
+        sample.left_stick = .{ cast(float) state.Gamepad.sThumbLX / 32768, cast(float) state.Gamepad.sThumbLY / 32768 };
+        sample.right_stick = .{ cast(float) state.Gamepad.sThumbRX / 32768, cast(float) state.Gamepad.sThumbRY / 32768 };
         sample.left_trigger = cast(float) state.Gamepad.bLeftTrigger / 255;
         sample.right_trigger = cast(float) state.Gamepad.bRightTrigger / 255;
-        masks: [14] u16 = .[1,2,4,8,16,32,256,512,4096,8192,16384,32768,64,128];
-        codes: [14] Gamepad_Code = .[.DPAD_UP,.DPAD_DOWN,.DPAD_LEFT,.DPAD_RIGHT,.START,.BACK,.LEFT_SHOULDER,.RIGHT_SHOULDER,.A,.B,.X,.Y,.LEFT_STICK_CLICK,.RIGHT_STICK_CLICK];
+        masks: [14] u16 = .[1, 2, 4, 8, 16, 32, 256, 512, 4096, 8192, 16384, 32768, 64, 128];
+        codes: [14] Gamepad_Code = .[.DPAD_UP, .DPAD_DOWN, .DPAD_LEFT, .DPAD_RIGHT, .START, .BACK, .LEFT_SHOULDER, .RIGHT_SHOULDER, .A, .B, .X, .Y, .LEFT_STICK_CLICK, .RIGHT_STICK_CLICK];
         for mask, i: masks {
             if (state.Gamepad.wButtons & mask) != 0 sample.buttons |= (cast(u32) 1) << cast(s64) codes[i];
         }
@@ -137,7 +159,11 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
     }
 }
 
-#if OS == .LINUX { #load "linux.jai"; }
-else #if OS == .MACOS { #load "macos.jai"; #load "iohid-provider.jai"; }
+#if OS == .LINUX {
+    #load "linux.jai";
+} else #if OS == .MACOS {
+    #load "macos.jai";
+    #load "iohid-provider.jai";
+}
 
 #load "sdl.jai";

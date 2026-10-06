@@ -4,7 +4,7 @@ ConstFSEventStreamRef :: FSEventStreamRef;
 FSEventStreamEventFlags :: u32;
 FSEventStreamCreateFlags :: u32;
 FSEventStreamEventId :: u64;
-kFSEventStreamEventIdSinceNow :u64: 0xFFFFFFFFFFFFFFFF;
+kFSEventStreamEventIdSinceNow: u64 : 0xFFFFFFFFFFFFFFFF;
 kFSEventStreamCreateFlagUseCFTypes :: 0x00000001;
 kFSEventStreamCreateFlagFileEvents :: 0x00000010;
 kFSEventStreamEventFlagMustScanSubDirs :: 0x00000001;
@@ -18,7 +18,13 @@ kFSEventStreamEventFlagChangeOwner :: 0x00004000;
 kFSEventStreamEventFlagItemIsFile :: 0x00010000;
 kFSEventStreamEventFlagItemIsDir :: 0x00020000;
 kFSEventStreamEventFlagItemIsSymlink :: 0x00040000;
-FSEventStreamContext :: struct { version: CFIndex; info: *void; retain: CFAllocatorRetainCallBack; release: CFAllocatorReleaseCallBack; copyDescription: CFAllocatorCopyDescriptionCallBack; }
+FSEventStreamContext :: struct {
+    version: CFIndex;
+    info: *void;
+    retain: CFAllocatorRetainCallBack;
+    release: CFAllocatorReleaseCallBack;
+    copyDescription: CFAllocatorCopyDescriptionCallBack;
+}
 FSEventStreamCallback :: #type (streamRef: ConstFSEventStreamRef, clientCallBackInfo: *void, numEvents: u64, eventPaths: *void, eventFlags: *FSEventStreamEventFlags, eventIds: *FSEventStreamEventId) #c_call;
 FSEventStreamCreate :: (allocator: CFAllocatorRef, callback: FSEventStreamCallback, _context: *FSEventStreamContext, pathsToWatch: CFArrayRef, sinceWhen: FSEventStreamEventId, latency: CFTimeInterval, flags: FSEventStreamCreateFlags) -> FSEventStreamRef #foreign CoreServices;
 FSEventStreamScheduleWithRunLoop :: (streamRef: FSEventStreamRef, runLoop: CFRunLoopRef, runLoopMode: CFStringRef) #foreign CoreServices;
@@ -40,8 +46,8 @@ RegionCode :: s16;
 ConstStringPtr :: *u8;
 StringPtr :: *u8;
 ConstStr255Param :: *u8;
-dispatch_queue_t :: *struct{};
-Block :: *struct{};
+dispatch_queue_t :: *struct {};
+Block :: *struct {};
 #scope_file
 CoreServices :: #system_library "CoreServices";
 

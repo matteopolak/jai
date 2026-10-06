@@ -1,7 +1,7 @@
 // A Jai ownership ledger partitions system C allocations into independent heaps.
 #module_parameters(ENABLE_ASSERTS := true, ENABLE_VALIDATE_ARGS := true)();
 
-allocator :: Allocator.{allocator_proc, null};
+allocator :: Allocator.{ allocator_proc, null };
 allocator_default_heap: *Heap;
 
 allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
@@ -39,7 +39,7 @@ allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old
             if !replacement return null;
             if replacement != entry {
                 remove_allocation(heap, slot);
-                if !add_allocation(heap, replacement) return null;  // Out of memory for the ledger.
+                if !add_allocation(heap, replacement) return null; // Out of memory for the ledger.
             }
             return entry_address(replacement);
         }
@@ -166,7 +166,12 @@ regrow_block :: (entry: *void, size: s64) -> entry: *void {
 
 // The ledger: each heap's entries in an open-addressing set (linear probing, null = empty), so
 // FREE and RESIZE find their entry without walking every allocation.
-Heap :: struct { slots: **void; capacity: s64; count: s64; next: *Heap; }
+Heap :: struct {
+    slots: **void;
+    capacity: s64;
+    count: s64;
+    next: *Heap;
+}
 heaps: *Heap;
 ledger_lock: s32;
 
@@ -200,7 +205,7 @@ destroy_heap_locked :: (heap: *Heap) {
     if previous previous.next = heap.next;
     else heaps = heap.next;
     if allocator_default_heap == heap allocator_default_heap = null;
-    for i: 0..heap.capacity-1 if heap.slots[i] release_block(heap.slots[i]);
+    for i: 0..heap.capacity - 1 if heap.slots[i] release_block(heap.slots[i]);
     if heap.slots c_free(heap.slots);
     c_free(heap);
 }
@@ -230,7 +235,7 @@ add_allocation :: (heap: *Heap, pointer: *void) -> bool {
         heap.slots = slots;
         heap.capacity = capacity;
         heap.count = 0;
-        for i: 0..old_capacity-1 if old_slots[i] place_allocation(heap, old_slots[i]);
+        for i: 0..old_capacity - 1 if old_slots[i] place_allocation(heap, old_slots[i]);
         if old_slots c_free(old_slots);
     }
     place_allocation(heap, pointer);

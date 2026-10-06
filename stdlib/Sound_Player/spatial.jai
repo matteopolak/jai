@@ -10,9 +10,9 @@ perceptual_to_linear :: (x: float) -> float {
 
 // The listener is the camera: in camera space x points ahead, y to the left and z up.
 update_listener :: (camera_position: Vector3, camera_orientation: Quaternion) {
-    listener.origin   = camera_position;
-    listener.ahead    = rotate(Vector3.{1, 0, 0}, camera_orientation);
-    listener.leftward = rotate(Vector3.{0, 1, 0}, camera_orientation);
+    listener.origin = camera_position;
+    listener.ahead = rotate(Vector3.{ 1, 0, 0 }, camera_orientation);
+    listener.leftward = rotate(Vector3.{ 0, 1, 0 }, camera_orientation);
 }
 
 // Perceived loudness of `stream` if it were at `position`, before panning.
@@ -28,9 +28,9 @@ get_desired_volume_perceptual :: (stream: *Sound_Stream, position: Vector3) -> f
 #scope_module
 
 Listener_Frame :: struct {
-    origin:   Vector3;
-    ahead:    Vector3 = .{1, 0, 0};
-    leftward: Vector3 = .{0, 1, 0};
+    origin: Vector3;
+    ahead: Vector3 = .{ 1, 0, 0 };
+    leftward: Vector3 = .{ 0, 1, 0 };
 }
 listener: Listener_Frame;
 
@@ -48,18 +48,21 @@ SOURCE_AZIMUTH :: float.[0, 30, -30, 30, -30, 110, -110, 0, 0, 150, -150];
 SOURCE_SPEAKER :: s32.[-1, 0, 1, 0, 1, 4, 5, 2, 3, 6, 7];
 
 // Directional speakers of the current output, sorted by azimuth, for pairwise panning.
-Ring_Speaker :: struct { channel: s32; azimuth: float; }
+Ring_Speaker :: struct {
+    channel: s32;
+    azimuth: float;
+}
 speaker_ring: [OUTPUT_CHANNELS_MAX] Ring_Speaker;
 speaker_ring_size: s32;
 
 build_speaker_ring :: (channels: s32) {
     speaker_ring_size = 0;
-    for channel: 0..channels-1 {
+    for channel: 0..channels - 1 {
         if channel == cast(s32) Audio_Channel.SUBWOOFER continue;
-        entry := Ring_Speaker.{cast(s32) channel, SPEAKER_AZIMUTH[channel]};
+        entry := Ring_Speaker.{ cast(s32) channel, SPEAKER_AZIMUTH[channel] };
         slot := speaker_ring_size;
-        while slot > 0 && speaker_ring[slot-1].azimuth > entry.azimuth {
-            speaker_ring[slot] = speaker_ring[slot-1];
+        while slot > 0 && speaker_ring[slot - 1].azimuth > entry.azimuth {
+            speaker_ring[slot] = speaker_ring[slot - 1];
             slot -= 1;
         }
         speaker_ring[slot] = entry;
@@ -86,7 +89,7 @@ aim_gains :: (stream: *Sound_Stream) {
     bearing, nearness: float;
     if placed bearing, nearness = bearing_of(stream.position);
 
-    for source: 0..stream.num_channels-1 {
+    for source: 0..stream.num_channels - 1 {
         row := voice.aim.data + source * OUTPUT_CHANNELS_MAX;
         direction := cast(s64) stream.sound_data.source_directions[source];
         if placed {
@@ -109,7 +112,7 @@ aim_gains :: (stream: *Sound_Stream) {
 
     // Glide over a few milliseconds; a fresh stream starts at its target.
     glide_frames := max(1.0, player.out_rate * GAIN_GLIDE_SECONDS);
-    for i: 0..voice.aim.count-1 {
+    for i: 0..voice.aim.count - 1 {
         if !voice.gains_settled voice.gain[i] = voice.aim[i];
         voice.slope[i] = (voice.aim[i] - voice.gain[i]) / glide_frames;
     }
@@ -123,7 +126,7 @@ bearing_of :: (position: Vector3) -> azimuth: float, nearness: float {
     forward := dot(offset, listener.ahead);
     sideways := dot(offset, listener.leftward);
     azimuth := 0.0;
-    if forward*forward + sideways*sideways > 0.000001 azimuth = atan2(sideways, forward) * (180.0 / PI);
+    if forward * forward + sideways * sideways > 0.000001 azimuth = atan2(sideways, forward) * (180.0 / PI);
     nearness := clamp(1 - length(offset) / CENTERING_DISTANCE, 0.0, 1.0);
     return azimuth, nearness;
 }
@@ -144,7 +147,7 @@ pan_into :: (row: *float, azimuth: float, nearness: float, level: float) {
 
     // Surround: find the neighbouring pair of speakers around the direction and share the signal
     // between them with a constant-power crossfade.
-    angle := azimuth - 360.0 * floor((azimuth + 180.0) / 360.0);   // Into [-180, 180).
+    angle := azimuth - 360.0 * floor((azimuth + 180.0) / 360.0); // Into [-180, 180).
     upper := 0;
     while upper < speaker_ring_size && speaker_ring[upper].azimuth <= angle upper += 1;
     below := speaker_ring[(upper + speaker_ring_size - 1) % speaker_ring_size];

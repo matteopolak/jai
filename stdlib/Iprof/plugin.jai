@@ -13,29 +13,29 @@ Iprof_Plugin :: struct {
     should_instrument: (body: *Code_Procedure_Body) -> bool;
 
     // Set by command-line options (see log_help).
-    csv_filename:    string;
-    min_size:        int = DEFAULT_MIN_SIZE;
+    csv_filename: string;
+    min_size: int = DEFAULT_MIN_SIZE;
     include_modules: bool;
 
     // Read-only for users.
-    zones_planned:    s64;   // Instrumented procedures so far.
-    entry_point_done: bool;  // The entry point has been instrumented.
+    zones_planned: s64; // Instrumented procedures so far.
+    entry_point_done: bool; // The entry point has been instrumented.
 
     // Internal.
     modules_with_import: [..] *Message_Import;
-    zone_template:  *Code_Procedure_Call;
+    zone_template: *Code_Procedure_Call;
     entry_template: *Code_Procedure_Call;
 }
 
 get_plugin :: () -> *Metaprogram_Plugin {
     p := New(Iprof_Plugin);
-    p.before_intercept  = plugin_before_intercept;
-    p.add_source        = plugin_add_source;
-    p.message           = plugin_message;
-    p.finish            = plugin_finish;
-    p.shutdown          = plugin_shutdown;
+    p.before_intercept = plugin_before_intercept;
+    p.add_source = plugin_add_source;
+    p.message = plugin_message;
+    p.finish = plugin_finish;
+    p.shutdown = plugin_shutdown;
     p.handle_one_option = handle_one_option;
-    p.log_help          = log_help;
+    p.log_help = log_help;
     return p;
 }
 
@@ -73,7 +73,7 @@ handle_one_option :: (p: *Metaprogram_Plugin, options: [] string, cursor: int) -
         return cursor + 2;
     }
 
-    return cursor;  // Not ours.
+    return cursor; // Not ours.
 }
 
 log_help :: (p: *Metaprogram_Plugin) {
@@ -95,23 +95,22 @@ DEFAULT_MIN_SIZE :: 30;
 
 RUNTIME_IMPORT :: "__iprof_runtime :: #import \"Iprof\"(IMPORT_MODE = .CLIENT);\n";
 
-plugin_before_intercept :: (p: *Metaprogram_Plugin, flags: *Intercept_Flags) {
-}
+plugin_before_intercept :: (p: *Metaprogram_Plugin, flags: *Intercept_Flags) {}
 
 plugin_add_source :: (p: *Metaprogram_Plugin) {
     add_build_string(RUNTIME_IMPORT, p.workspace);
 }
 
 plugin_message :: (p: *Metaprogram_Plugin, message: *Message) {
-    if message.kind != .TYPECHECKED  return;
+    if message.kind != .TYPECHECKED return;
     me := cast(*Iprof_Plugin) p;
     checked := cast(*Message_Typechecked) message;
-    for checked.procedure_bodies  maybe_instrument(me, it.expression, it.subexpressions.count);
+    for checked.procedure_bodies maybe_instrument(me, it.expression, it.subexpressions.count);
 }
 
 plugin_finish :: (p: *Metaprogram_Plugin) {
     me := cast(*Iprof_Plugin) p;
-    if !me.entry_point_done  log_error("[Iprof] No entry point was instrumented, so nothing will be profiled.\n");
+    if !me.entry_point_done log_error("[Iprof] No entry point was instrumented, so nothing will be profiled.\n");
 }
 
 plugin_shutdown :: (p: *Metaprogram_Plugin) {
@@ -126,47 +125,47 @@ SKIPPED_PROCEDURE_FLAGS :: Code_Procedure_Header.procedure_flags.COMPILE_TIME_ON
 
 maybe_instrument :: (me: *Iprof_Plugin, body: *Code_Procedure_Body, size: s64) {
     header := body.header;
-    if !header || body.body_flags & .ALREADY_MODIFIED  return;
-    if header.procedure_flags & SKIPPED_PROCEDURE_FLAGS  return;
-    if !header.name  return;  // Nameless procedures would make unreadable rows.
-    for header.notes  if it.text == "NoProfile"  return;
+    if !header || body.body_flags & .ALREADY_MODIFIED return;
+    if header.procedure_flags & SKIPPED_PROCEDURE_FLAGS return;
+    if !header.name return; // Nameless procedures would make unreadable rows.
+    for header.notes if it.text == "NoProfile" return;
 
     file := body.enclosing_load;
-    if !file || !file.enclosing_import  return;
+    if !file || !file.enclosing_import return;
     owner := file.enclosing_import;
     in_main := owner.module_type == .MAIN_PROGRAM;
     if !in_main {
-        if !me.include_modules  return;
-        if owner.module_type == .PRELOAD || owner.module_type == .RUNTIME_SUPPORT  return;
-        if owner.module_name == "Iprof"  return;
+        if !me.include_modules return;
+        if owner.module_type == .PRELOAD || owner.module_type == .RUNTIME_SUPPORT return;
+        if owner.module_name == "Iprof" return;
     }
 
     is_entry := in_main && header.name == "main" && !me.entry_point_done;
-    if !is_entry && size < me.min_size  return;
-    if me.should_instrument && !me.should_instrument(body)  return;
+    if !is_entry && size < me.min_size return;
+    if me.should_instrument && !me.should_instrument(body) return;
 
-    if !me.zone_template  load_templates(me);
+    if !me.zone_template load_templates(me);
     if !in_main && !array_find(me.modules_with_import, owner) {
         add_build_string(RUNTIME_IMPORT, me.workspace, owner);
         array_add(*me.modules_with_import, owner);
     }
 
     me.zones_planned += 1;
-    index := me.zones_planned;  // 0 is the root zone.
+    index := me.zones_planned; // 0 is the root zone.
 
     statements: [..] *Code_Node;
-    if is_entry  array_add(*statements, with_literals(me.entry_template, .[me.csv_filename]));
+    if is_entry array_add(*statements, with_literals(me.entry_template, .[me.csv_filename]));
     line := cast(s64) body.l0;
     array_add(*statements, with_literals(me.zone_template, .[index, header.name, file.fully_pathed_filename, line]));
-    for body.block.statements  array_add(*statements, it);
+    for body.block.statements array_add(*statements, it);
     body.block.statements = statements;
     compiler_modify_procedure(me.workspace, body);
 
-    if is_entry  me.entry_point_done = true;
+    if is_entry me.entry_point_done = true;
 }
 
 load_templates :: (me: *Iprof_Plugin) {
-    me.zone_template  = cast(*Code_Procedure_Call) compiler_get_nodes(#code __iprof_runtime.Automatic_Zone(0, "", "", 0));
+    me.zone_template = cast(*Code_Procedure_Call) compiler_get_nodes(#code __iprof_runtime.Automatic_Zone(0, "", "", 0));
     me.entry_template = cast(*Code_Procedure_Call) compiler_get_nodes(#code __iprof_runtime.Prepend_To_Main(""));
 }
 
@@ -178,18 +177,18 @@ with_literals :: (template: *Code_Procedure_Call, values: [] Any) -> *Code_Node 
     count := template.arguments_unsorted.count;
     assert(count == values.count);
     unsorted := NewArray(count, Code_Argument);
-    sorted   := NewArray(count, *Code_Node);
-    for i: 0..count-1 {
+    sorted := NewArray(count, *Code_Node);
+    for i: 0..count - 1 {
         literal := New(Code_Literal);
         literal.* = (cast(*Code_Literal) template.arguments_unsorted[i].expression).*;
         value := values[i];
-        if value.type.type == .STRING  literal._string = (cast(*string) value.value_pointer).*;
-        else                           literal._s64    = (cast(*s64) value.value_pointer).*;
+        if value.type.type == .STRING literal._string = (cast(*string) value.value_pointer).*;
+        else literal._s64 = (cast(*s64) value.value_pointer).*;
         unsorted[i].expression = literal;
         sorted[i] = literal;
     }
     call.arguments_unsorted = unsorted;
-    call.arguments_sorted   = sorted;
+    call.arguments_sorted = sorted;
     return call;
 }
 

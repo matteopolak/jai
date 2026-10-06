@@ -12,7 +12,7 @@ alloc_string :: (count: int) -> string {
     if count <= 0 return "";
     bytes := cast(*u8) alloc(count);
     if !bytes return "";
-    return .{count, bytes};
+    return .{ count, bytes };
 }
 // Arena memory is reclaimed with the witness process.
 free :: (memory: *void) {}

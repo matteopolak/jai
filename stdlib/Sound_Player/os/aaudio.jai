@@ -53,7 +53,7 @@ output_write :: (frames: s64) {
     while remaining > 0 {
         count := min(remaining, STAGING_FRAMES);
         chunk: [] s16;
-        chunk.data  = staging.data;
+        chunk.data = staging.data;
         chunk.count = count * AA_CHANNELS;
         mix_into(chunk);
         // A zero timeout writes what fits now; anything that did not fit is dropped, which only
@@ -84,7 +84,10 @@ output_devices :: () -> [] Output_Device {
     }
     defer if attached vm.*.DetachCurrentThread(vm);
 
-    if env.*.PushLocalFrame(env, 32) != Jni.JNI_OK { jni_failed(env); return listed_devices; }
+    if env.*.PushLocalFrame(env, 32) != Jni.JNI_OK {
+        jni_failed(env);
+        return listed_devices;
+    }
     defer env.*.PopLocalFrame(env, null);
     collect_devices(env, activity.clazz);
     return listed_devices;
@@ -93,10 +96,10 @@ output_devices :: () -> [] Output_Device {
 #scope_file
 #import "Android/AAudio";
 Android :: #import "Android";
-Jni     :: #import "Android/Jni";
+Jni :: #import "Android/Jni";
 
 PREFERRED_RATE :: 48000;
-AA_CHANNELS    :: 2;
+AA_CHANNELS :: 2;
 STAGING_FRAMES :: 2048;
 
 stream: *AAudioStream;
@@ -126,11 +129,11 @@ collect_devices :: (env: *Jni.JNIEnv, activity: Jni.jobject) {
     count := env.*.GetArrayLength(env, array);
     if jni_failed(env) return;
 
-    for index: 0..count-1 {
+    for index: 0..count - 1 {
         info := env.*.GetObjectArrayElement(env, array, index);
         if jni_failed(env) || !info continue;
         defer env.*.DeleteLocalRef(env, info);
-        get_id   := jni_method(env, info, "getId", "()I");
+        get_id := jni_method(env, info, "getId", "()I");
         get_name := jni_method(env, info, "getProductName", "()Ljava/lang/CharSequence;");
         if !get_id || !get_name continue;
         id := env.*.CallIntMethodA(env, info, get_id, null);
@@ -179,6 +182,9 @@ jni_text :: (env: *Jni.JNIEnv, sequence: Jni.jobject, encoding: Jni.jstring) -> 
     if jni_failed(env) || length <= 0 return "";
     result := alloc_string(length);
     env.*.GetByteArrayRegion(env, bytes, 0, length, cast(*Jni.jbyte) result.data);
-    if jni_failed(env) { free(result); return ""; }
+    if jni_failed(env) {
+        free(result);
+        return "";
+    }
     return result;
 }

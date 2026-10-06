@@ -1,7 +1,12 @@
 // Independently authored provenance registry. It never inspects opaque handle memory.
 #scope_module
 Vk_Registry_Memory :: #import "Basic";
-_Vk_Handle_Family :: enum { INSTANCE; PHYSICAL_DEVICE; DEVICE; QUEUE; }
+_Vk_Handle_Family :: enum {
+    INSTANCE;
+    PHYSICAL_DEVICE;
+    DEVICE;
+    QUEUE;
+}
 _Vk_Handle_Record :: struct {
     family: _Vk_Handle_Family;
     generation: u64;
@@ -253,10 +258,18 @@ _vk_registry_remove :: (family: _Vk_Handle_Family, instance: VkInstance = null,
     }
 }
 #scope_export
-vk_unregister_instance :: (instance: VkInstance) { _vk_registry_remove(.INSTANCE, instance=instance); }
-vk_unregister_physical_device :: (physical: VkPhysicalDevice) { _vk_registry_remove(.PHYSICAL_DEVICE, physical=physical); }
-vk_unregister_device :: (device: VkDevice) { _vk_registry_remove(.DEVICE, device=device); }
-vk_unregister_queue :: (queue: VkQueue) { _vk_registry_remove(.QUEUE, queue=queue); }
+vk_unregister_instance :: (instance: VkInstance) {
+    _vk_registry_remove(.INSTANCE, instance = instance);
+}
+vk_unregister_physical_device :: (physical: VkPhysicalDevice) {
+    _vk_registry_remove(.PHYSICAL_DEVICE, physical = physical);
+}
+vk_unregister_device :: (device: VkDevice) {
+    _vk_registry_remove(.DEVICE, device = device);
+}
+vk_unregister_queue :: (queue: VkQueue) {
+    _vk_registry_remove(.QUEUE, queue = queue);
+}
 
 vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocationCallbacks, pInstance: *VkInstance) -> VkResult #c_call {
     status := _vk_sdk_vkCreateInstance(pCreateInfo, pAllocator, pInstance);

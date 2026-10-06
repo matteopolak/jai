@@ -29,17 +29,17 @@ write_frames :: () #no_context {
     if __runtime_support_disable_stack_trace return;
     frames: [64] *void;
     found := host_backtrace(frames.data, frames.count);
-    for index: 0..found-1 {
+    for index: 0..found - 1 {
         write_address_unsynchronized(cast(u64) frames[index]);
         write_string_unsynchronized("\n", true);
     }
 }
 #scope_file
 werr :: inline (s: string) #no_context {
-    write_string(s, to_standard_error=true);
+    write_string(s, to_standard_error = true);
 }
 werrs :: inline (s: ..string) #no_context {
-    write_strings(..s, to_standard_error=true);
+    write_strings(..s, to_standard_error = true);
 }
 #scope_module
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
@@ -57,8 +57,13 @@ werrs :: inline (s: ..string) #no_context {
 } else #if OS == .WINDOWS {
     kernel32 :: #system_library "kernel32";
     // Only the leading fields that are read here; Windows owns both records.
-    Seh_Record :: struct { code: u32; }
-    Seh_Info :: struct { record: *Seh_Record; registers: *void; }
+    Seh_Record :: struct {
+        code: u32;
+    }
+    Seh_Info :: struct {
+        record: *Seh_Record;
+        registers: *void;
+    }
     Seh_Callback :: #type (crash: *Seh_Info) -> s32 #c_call;
     SetUnhandledExceptionFilter :: (callback: Seh_Callback) -> Seh_Callback #foreign kernel32;
     ExitProcess :: (code: u32) #foreign kernel32;
@@ -81,5 +86,5 @@ write_address_unsynchronized :: (address: u64) #no_context {
         value >>= 4;
         if value == 0 break;
     }
-    write_string_unsynchronized(string.{16 - position, bytes.data + position}, true);
+    write_string_unsynchronized(string.{ 16 - position, bytes.data + position }, true);
 }

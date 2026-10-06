@@ -1,33 +1,39 @@
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 #module_parameters (
-    HEAP_ARRAY_SIZE         := 47,
-    DEFAULT_SPAN_MAP_COUNT  := 64,
+    HEAP_ARRAY_SIZE := 47,
+    DEFAULT_SPAN_MAP_COUNT := 64,
     GLOBAL_CACHE_MULTIPLIER := 8,
 
     ENABLE_THREAD_CACHE := true,
     ENABLE_GLOBAL_CACHE := true,
 
-    ENABLE_STATISTICS    := true,
-    ENABLE_ASSERTS       := true,
+    ENABLE_STATISTICS := true,
+    ENABLE_ASSERTS := true,
     ENABLE_VALIDATE_ARGS := true,
 
-    LINUX_FREE_ADVICE : enum { DONTNEED; FREE; } = .DONTNEED,
+    LINUX_FREE_ADVICE: enum {
+        DONTNEED;
+        FREE;
+    } = .DONTNEED,
 
-    CONFIGURABLE                 := false,
+    CONFIGURABLE := false,
 
     ENABLE_ADAPTIVE_THREAD_CACHE := false,
-    LINUX_HUGE_PAGES             := false,
+    LINUX_HUGE_PAGES := false,
 
-    USE_RAW                      := false,
+    USE_RAW := false,
 
-    DISABLE_UNMAP                := false,
-    ENABLE_UNLIMITED_CACHE       := false
+    DISABLE_UNMAP := false,
+    ENABLE_UNLIMITED_CACHE := false
 )();
 
 rpmalloc_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
     heap := allocator_data;
     if mode == .CAPS {
-        if old_memory { name := cast(*string) old_memory; name.* = CAPS_VERSION_STRING; }
+        if old_memory {
+            name := cast(*string) old_memory;
+            name.* = CAPS_VERSION_STRING;
+        }
         return cast(*void) cast(u64) (Allocator_Caps.FREE | .CREATE_HEAP | .ACTUALLY_RESIZE |
                                       .IS_THIS_YOURS | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR);
     }
@@ -82,7 +88,6 @@ else
 #if OS == .LINUX && LINUX_HUGE_PAGES {
     File :: #import "File";
 }
-
 
 
 #assert size_of(*void) == 8 "This pinned native ABI contract supports 64-bit targets only.";

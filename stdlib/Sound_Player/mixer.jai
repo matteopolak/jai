@@ -10,7 +10,7 @@ GAIN_GLIDE_SECONDS :: 0.01;
 RATE_GLIDE_PER_FRAME :: 0.00045;
 // Sleep between device top-ups when the worker has nothing to decode.
 WORKER_NAP_MS :: 2;
-MIN_CURSOR_STEP : float64 : 0.000001;
+MIN_CURSOR_STEP: float64 : 0.000001;
 
 MIX_CHUNK_FRAMES :: 512;
 mix_bus: [MIX_CHUNK_FRAMES * OUTPUT_CHANNELS_MAX] float;
@@ -36,7 +36,7 @@ mix_into :: (out: [] s16) {
         unlock(*player.lock);
 
         dest := out.data + done * channels;
-        for 0..values-1 dest[it] = cast(s16) clamp(mix_bus[it] * 32767.0, -32768.0, 32767.0);
+        for 0..values - 1 dest[it] = cast(s16) clamp(mix_bus[it] * 32767.0, -32768.0, 32767.0);
         done += count;
     }
 }
@@ -73,7 +73,7 @@ stop_worker :: () {
     if !player.worker_running return;
     atomic_write(*player.worker_quit, true);
     signal(*player.worker_wake);
-    thread_deinit(*player.worker);   // Joins.
+    thread_deinit(*player.worker); // Joins.
     destroy(*player.worker_wake);
     player.worker_running = false;
 }
@@ -96,14 +96,14 @@ worker_main :: (thread: *Thread) -> s64 {
 render_voice :: (stream: *Sound_Stream, bus: *float, frames: s64) -> bool {
     if stream.user_flags & .PAUSED_DUE_TO_MENU return true;
 
-    outputs  := cast(s64) player.out_channels;
+    outputs := cast(s64) player.out_channels;
     channels := cast(s64) stream.num_channels;
-    length   := stream_length(stream);
-    looping  := (stream.user_flags & .REPEATING) != 0;
+    length := stream_length(stream);
+    looping := (stream.user_flags & .REPEATING) != 0;
     loop_start, loop_end := loop_region(stream);
     voice := *stream.voice;
 
-    for frame: 0..frames-1 {
+    for frame: 0..frames - 1 {
         if looping && loop_end > loop_start && stream.play_cursor >= cast(float64) loop_end wrap_into_loop(stream, loop_start, loop_end);
         if stream.play_cursor < 0 {
             // Leading silence of a repeat; when it runs out, playback resumes at the loop start.
@@ -115,7 +115,7 @@ render_voice :: (stream: *Sound_Stream, bus: *float, frames: s64) -> bool {
 
         whole := cast(s64) stream.play_cursor;
         here := frame_at(stream, whole);
-        if !here return true;   // Not decoded yet: stay put and silent until it is.
+        if !here return true; // Not decoded yet: stay put and silent until it is.
 
         after := whole + 1;
         if looping && after >= loop_end after = loop_start;
@@ -124,11 +124,11 @@ render_voice :: (stream: *Sound_Stream, bus: *float, frames: s64) -> bool {
 
         blend := cast(float) (stream.play_cursor - cast(float64) whole);
         mix := bus + frame * outputs;
-        for source: 0..channels-1 {
+        for source: 0..channels - 1 {
             a := cast(float) here[source];
             value := (a + (cast(float) there[source] - a) * blend) * (1.0 / 32768.0);
             gains := voice.gain.data + source * OUTPUT_CHANNELS_MAX;
-            for output: 0..outputs-1 mix[output] += value * gains[output];
+            for output: 0..outputs - 1 mix[output] += value * gains[output];
         }
 
         glide_gains(voice, channels, outputs);
@@ -156,9 +156,9 @@ step_cursor :: (stream: *Sound_Stream) {
 }
 
 glide_gains :: (voice: *Voice, channels: s64, outputs: s64) {
-    for source: 0..channels-1 {
+    for source: 0..channels - 1 {
         base := source * OUTPUT_CHANNELS_MAX;
-        for output: 0..outputs-1 {
+        for output: 0..outputs - 1 {
             slot := base + output;
             slope := voice.slope[slot];
             if slope == 0 continue;

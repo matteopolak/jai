@@ -5,189 +5,189 @@ GFSDK_Aftermath_Version :: enum u32 {
 }
 
 GFSDK_Aftermath_Result :: enum u32 {
-    Success                                   :: 1;
+    Success :: 1;
 
-    NotAvailable                              :: 2;
+    NotAvailable :: 2;
 
-    Fail                                      :: 3134193664;
+    Fail :: 3134193664;
 
-    FAIL_VersionMismatch                      :: 3134193665;
+    FAIL_VersionMismatch :: 3134193665;
 
-    FAIL_NotInitialized                       :: 3134193666;
+    FAIL_NotInitialized :: 3134193666;
 
-    FAIL_InvalidAdapter                       :: 3134193667;
+    FAIL_InvalidAdapter :: 3134193667;
 
-    FAIL_InvalidParameter                     :: 3134193668;
+    FAIL_InvalidParameter :: 3134193668;
 
-    FAIL_Unknown                              :: 3134193669;
+    FAIL_Unknown :: 3134193669;
 
-    FAIL_ApiError                             :: 3134193670;
+    FAIL_ApiError :: 3134193670;
 
-    FAIL_NvApiIncompatible                    :: 3134193671;
+    FAIL_NvApiIncompatible :: 3134193671;
 
     FAIL_GettingContextDataWithNewCommandList :: 3134193672;
 
-    FAIL_AlreadyInitialized                   :: 3134193673;
+    FAIL_AlreadyInitialized :: 3134193673;
 
-    FAIL_D3DDebugLayerNotCompatible           :: 3134193674;
+    FAIL_D3DDebugLayerNotCompatible :: 3134193674;
 
-    FAIL_DriverInitFailed                     :: 3134193675;
+    FAIL_DriverInitFailed :: 3134193675;
 
-    FAIL_DriverVersionNotSupported            :: 3134193676;
+    FAIL_DriverVersionNotSupported :: 3134193676;
 
-    FAIL_OutOfMemory                          :: 3134193677;
+    FAIL_OutOfMemory :: 3134193677;
 
-    FAIL_GetDataOnBundle                      :: 3134193678;
+    FAIL_GetDataOnBundle :: 3134193678;
 
-    FAIL_GetDataOnDeferredContext             :: 3134193679;
+    FAIL_GetDataOnDeferredContext :: 3134193679;
 
-    FAIL_FeatureNotEnabled                    :: 3134193680;
+    FAIL_FeatureNotEnabled :: 3134193680;
 
-    FAIL_NoResourcesRegistered                :: 3134193681;
+    FAIL_NoResourcesRegistered :: 3134193681;
 
-    FAIL_ThisResourceNeverRegistered          :: 3134193682;
+    FAIL_ThisResourceNeverRegistered :: 3134193682;
 
-    FAIL_NotSupportedInUWP                    :: 3134193683;
+    FAIL_NotSupportedInUWP :: 3134193683;
 
-    FAIL_D3dDllNotSupported                   :: 3134193684;
+    FAIL_D3dDllNotSupported :: 3134193684;
 
-    FAIL_D3dDllInterceptionNotSupported       :: 3134193685;
+    FAIL_D3dDllInterceptionNotSupported :: 3134193685;
 
-    FAIL_Disabled                             :: 3134193686;
+    FAIL_Disabled :: 3134193686;
 
-    FAIL_NotSupportedOnContext                :: 3134193687;
+    FAIL_NotSupportedOnContext :: 3134193687;
 
-    GFSDK_Aftermath_Result_Success                                   :: Success;
+    GFSDK_Aftermath_Result_Success :: Success;
 
-    GFSDK_Aftermath_Result_NotAvailable                              :: NotAvailable;
+    GFSDK_Aftermath_Result_NotAvailable :: NotAvailable;
 
-    GFSDK_Aftermath_Result_Fail                                      :: Fail;
+    GFSDK_Aftermath_Result_Fail :: Fail;
 
-    GFSDK_Aftermath_Result_FAIL_VersionMismatch                      :: FAIL_VersionMismatch;
+    GFSDK_Aftermath_Result_FAIL_VersionMismatch :: FAIL_VersionMismatch;
 
-    GFSDK_Aftermath_Result_FAIL_NotInitialized                       :: FAIL_NotInitialized;
+    GFSDK_Aftermath_Result_FAIL_NotInitialized :: FAIL_NotInitialized;
 
-    GFSDK_Aftermath_Result_FAIL_InvalidAdapter                       :: FAIL_InvalidAdapter;
+    GFSDK_Aftermath_Result_FAIL_InvalidAdapter :: FAIL_InvalidAdapter;
 
-    GFSDK_Aftermath_Result_FAIL_InvalidParameter                     :: FAIL_InvalidParameter;
+    GFSDK_Aftermath_Result_FAIL_InvalidParameter :: FAIL_InvalidParameter;
 
-    GFSDK_Aftermath_Result_FAIL_Unknown                              :: FAIL_Unknown;
+    GFSDK_Aftermath_Result_FAIL_Unknown :: FAIL_Unknown;
 
-    GFSDK_Aftermath_Result_FAIL_ApiError                             :: FAIL_ApiError;
+    GFSDK_Aftermath_Result_FAIL_ApiError :: FAIL_ApiError;
 
-    GFSDK_Aftermath_Result_FAIL_NvApiIncompatible                    :: FAIL_NvApiIncompatible;
+    GFSDK_Aftermath_Result_FAIL_NvApiIncompatible :: FAIL_NvApiIncompatible;
 
     GFSDK_Aftermath_Result_FAIL_GettingContextDataWithNewCommandList :: FAIL_GettingContextDataWithNewCommandList;
 
-    GFSDK_Aftermath_Result_FAIL_AlreadyInitialized                   :: FAIL_AlreadyInitialized;
+    GFSDK_Aftermath_Result_FAIL_AlreadyInitialized :: FAIL_AlreadyInitialized;
 
-    GFSDK_Aftermath_Result_FAIL_D3DDebugLayerNotCompatible           :: FAIL_D3DDebugLayerNotCompatible;
+    GFSDK_Aftermath_Result_FAIL_D3DDebugLayerNotCompatible :: FAIL_D3DDebugLayerNotCompatible;
 
-    GFSDK_Aftermath_Result_FAIL_DriverInitFailed                     :: FAIL_DriverInitFailed;
+    GFSDK_Aftermath_Result_FAIL_DriverInitFailed :: FAIL_DriverInitFailed;
 
-    GFSDK_Aftermath_Result_FAIL_DriverVersionNotSupported            :: FAIL_DriverVersionNotSupported;
+    GFSDK_Aftermath_Result_FAIL_DriverVersionNotSupported :: FAIL_DriverVersionNotSupported;
 
-    GFSDK_Aftermath_Result_FAIL_OutOfMemory                          :: FAIL_OutOfMemory;
+    GFSDK_Aftermath_Result_FAIL_OutOfMemory :: FAIL_OutOfMemory;
 
-    GFSDK_Aftermath_Result_FAIL_GetDataOnBundle                      :: FAIL_GetDataOnBundle;
+    GFSDK_Aftermath_Result_FAIL_GetDataOnBundle :: FAIL_GetDataOnBundle;
 
-    GFSDK_Aftermath_Result_FAIL_GetDataOnDeferredContext             :: FAIL_GetDataOnDeferredContext;
+    GFSDK_Aftermath_Result_FAIL_GetDataOnDeferredContext :: FAIL_GetDataOnDeferredContext;
 
-    GFSDK_Aftermath_Result_FAIL_FeatureNotEnabled                    :: FAIL_FeatureNotEnabled;
+    GFSDK_Aftermath_Result_FAIL_FeatureNotEnabled :: FAIL_FeatureNotEnabled;
 
-    GFSDK_Aftermath_Result_FAIL_NoResourcesRegistered                :: FAIL_NoResourcesRegistered;
+    GFSDK_Aftermath_Result_FAIL_NoResourcesRegistered :: FAIL_NoResourcesRegistered;
 
-    GFSDK_Aftermath_Result_FAIL_ThisResourceNeverRegistered          :: FAIL_ThisResourceNeverRegistered;
+    GFSDK_Aftermath_Result_FAIL_ThisResourceNeverRegistered :: FAIL_ThisResourceNeverRegistered;
 
-    GFSDK_Aftermath_Result_FAIL_NotSupportedInUWP                    :: FAIL_NotSupportedInUWP;
+    GFSDK_Aftermath_Result_FAIL_NotSupportedInUWP :: FAIL_NotSupportedInUWP;
 
-    GFSDK_Aftermath_Result_FAIL_D3dDllNotSupported                   :: FAIL_D3dDllNotSupported;
+    GFSDK_Aftermath_Result_FAIL_D3dDllNotSupported :: FAIL_D3dDllNotSupported;
 
-    GFSDK_Aftermath_Result_FAIL_D3dDllInterceptionNotSupported       :: FAIL_D3dDllInterceptionNotSupported;
+    GFSDK_Aftermath_Result_FAIL_D3dDllInterceptionNotSupported :: FAIL_D3dDllInterceptionNotSupported;
 
-    GFSDK_Aftermath_Result_FAIL_Disabled                             :: FAIL_Disabled;
+    GFSDK_Aftermath_Result_FAIL_Disabled :: FAIL_Disabled;
 
-    GFSDK_Aftermath_Result_FAIL_NotSupportedOnContext                :: FAIL_NotSupportedOnContext;
+    GFSDK_Aftermath_Result_FAIL_NotSupportedOnContext :: FAIL_NotSupportedOnContext;
 }
 
 GFSDK_Aftermath_Context_Status :: enum u32 {
     NotStarted :: 0;
 
-    Executing  :: 1;
+    Executing :: 1;
 
-    Finished   :: 2;
+    Finished :: 2;
 
-    Invalid    :: 3;
+    Invalid :: 3;
 
     GFSDK_Aftermath_Context_Status_NotStarted :: NotStarted;
 
-    GFSDK_Aftermath_Context_Status_Executing  :: Executing;
+    GFSDK_Aftermath_Context_Status_Executing :: Executing;
 
-    GFSDK_Aftermath_Context_Status_Finished   :: Finished;
+    GFSDK_Aftermath_Context_Status_Finished :: Finished;
 
-    GFSDK_Aftermath_Context_Status_Invalid    :: Invalid;
+    GFSDK_Aftermath_Context_Status_Invalid :: Invalid;
 }
 
 GFSDK_Aftermath_Device_Status :: enum u32 {
-    Active                  :: 0;
+    Active :: 0;
 
-    Timeout                 :: 1;
+    Timeout :: 1;
 
-    OutOfMemory             :: 2;
+    OutOfMemory :: 2;
 
-    PageFault               :: 3;
+    PageFault :: 3;
 
-    Stopped                 :: 4;
+    Stopped :: 4;
 
-    Reset                   :: 5;
+    Reset :: 5;
 
-    Unknown                 :: 6;
+    Unknown :: 6;
 
-    DmaFault                :: 7;
+    DmaFault :: 7;
 
     DeviceRemovedNoGpuFault :: 8;
 
-    GFSDK_Aftermath_Device_Status_Active                  :: Active;
+    GFSDK_Aftermath_Device_Status_Active :: Active;
 
-    GFSDK_Aftermath_Device_Status_Timeout                 :: Timeout;
+    GFSDK_Aftermath_Device_Status_Timeout :: Timeout;
 
-    GFSDK_Aftermath_Device_Status_OutOfMemory             :: OutOfMemory;
+    GFSDK_Aftermath_Device_Status_OutOfMemory :: OutOfMemory;
 
-    GFSDK_Aftermath_Device_Status_PageFault               :: PageFault;
+    GFSDK_Aftermath_Device_Status_PageFault :: PageFault;
 
-    GFSDK_Aftermath_Device_Status_Stopped                 :: Stopped;
+    GFSDK_Aftermath_Device_Status_Stopped :: Stopped;
 
-    GFSDK_Aftermath_Device_Status_Reset                   :: Reset;
+    GFSDK_Aftermath_Device_Status_Reset :: Reset;
 
-    GFSDK_Aftermath_Device_Status_Unknown                 :: Unknown;
+    GFSDK_Aftermath_Device_Status_Unknown :: Unknown;
 
-    GFSDK_Aftermath_Device_Status_DmaFault                :: DmaFault;
+    GFSDK_Aftermath_Device_Status_DmaFault :: DmaFault;
 
     GFSDK_Aftermath_Device_Status_DeviceRemovedNoGpuFault :: DeviceRemovedNoGpuFault;
 }
 
 GFSDK_Aftermath_FeatureFlags :: enum u32 {
-    Minimum                    :: 0;
+    Minimum :: 0;
 
-    EnableMarkers              :: 1;
+    EnableMarkers :: 1;
 
-    EnableResourceTracking     :: 2;
+    EnableResourceTracking :: 2;
 
-    CallStackCapturing         :: 1073741824;
+    CallStackCapturing :: 1073741824;
 
-    GenerateShaderDebugInfo    :: 8;
+    GenerateShaderDebugInfo :: 8;
 
     EnableShaderErrorReporting :: 16;
 
-    GFSDK_Aftermath_FeatureFlags_Minimum                    :: Minimum;
+    GFSDK_Aftermath_FeatureFlags_Minimum :: Minimum;
 
-    GFSDK_Aftermath_FeatureFlags_EnableMarkers              :: EnableMarkers;
+    GFSDK_Aftermath_FeatureFlags_EnableMarkers :: EnableMarkers;
 
-    GFSDK_Aftermath_FeatureFlags_EnableResourceTracking     :: EnableResourceTracking;
+    GFSDK_Aftermath_FeatureFlags_EnableResourceTracking :: EnableResourceTracking;
 
-    GFSDK_Aftermath_FeatureFlags_CallStackCapturing         :: CallStackCapturing;
+    GFSDK_Aftermath_FeatureFlags_CallStackCapturing :: CallStackCapturing;
 
-    GFSDK_Aftermath_FeatureFlags_GenerateShaderDebugInfo    :: GenerateShaderDebugInfo;
+    GFSDK_Aftermath_FeatureFlags_GenerateShaderDebugInfo :: GenerateShaderDebugInfo;
 
     GFSDK_Aftermath_FeatureFlags_EnableShaderErrorReporting :: EnableShaderErrorReporting;
 }
@@ -206,57 +206,57 @@ GFSDK_Aftermath_ResourceHandle :: *GFSDK_Aftermath_ResourceHandle__;
 
 GFSDK_Aftermath_ContextData :: struct {
     union {
-        markerData:           *void;
+        markerData: *void;
         ptr_align_markerData: u64;
     }
     markerSize: u32;
-    status:     GFSDK_Aftermath_Context_Status;
+    status: GFSDK_Aftermath_Context_Status;
 }
 
 GFSDK_Aftermath_ResourceDescriptor :: struct {
     union {
-        pAppResource:           *ID3D12Resource;
+        pAppResource: *ID3D12Resource;
         ptr_align_pAppResource: u64;
     }
 
-    size:      u64;
+    size: u64;
 
-    width:     u32;
-    height:    u32;
-    depth:     u32;
+    width: u32;
+    height: u32;
+    depth: u32;
 
     mipLevels: u32;
 
-    format:    u32;
+    format: u32;
 
     union {
-        bIsBufferHeap:            bool;
+        bIsBufferHeap: bool;
         bool_align_bIsBufferHeap: u32;
     }
     union {
-        bIsStaticTextureHeap:            bool;
+        bIsStaticTextureHeap: bool;
         bool_align_bIsStaticTextureHeap: u32;
     }
     union {
-        bIsRtvDsvTextureHeap:            bool;
+        bIsRtvDsvTextureHeap: bool;
         bool_align_bIsRtvDsvTextureHeap: u32;
     }
     union {
-        bPlacedResource:            bool;
+        bPlacedResource: bool;
         bool_align_bPlacedResource: u32;
     }
 
     union {
-        bWasDestroyed:            bool;
+        bWasDestroyed: bool;
         bool_align_bWasDestroyed: u32;
     }
 }
 
 GFSDK_Aftermath_PageFaultInformation :: struct {
     faultingGpuVA: u64;
-    resourceDesc:  GFSDK_Aftermath_ResourceDescriptor;
+    resourceDesc: GFSDK_Aftermath_ResourceDescriptor;
     union {
-        bHasPageFaultOccured:            bool;
+        bHasPageFaultOccured: bool;
         bool_align_bHasPageFaultOccured: u32;
     }
 }
@@ -294,67 +294,67 @@ PFN_GFSDK_Aftermath_GetDeviceStatus :: #type (pOutStatus: *GFSDK_Aftermath_Devic
 PFN_GFSDK_Aftermath_GetPageFaultInformation :: #type (pOutPageFaultInformation: *GFSDK_Aftermath_PageFaultInformation) -> GFSDK_Aftermath_Result #c_call;
 
 GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags :: enum u32 {
-    None   :: 0;
+    None :: 0;
 
-    DX     :: 1;
+    DX :: 1;
 
     Vulkan :: 2;
 
-    GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_None   :: None;
+    GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_None :: None;
 
-    GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_DX     :: DX;
+    GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_DX :: DX;
 
     GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan :: Vulkan;
 }
 
 GFSDK_Aftermath_GpuCrashDumpFeatureFlags :: enum u32 {
-    Default                 :: 0;
+    Default :: 0;
 
     DeferDebugInfoCallbacks :: 1;
 
-    GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default                 :: Default;
+    GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default :: Default;
 
     GFSDK_Aftermath_GpuCrashDumpFeatureFlags_DeferDebugInfoCallbacks :: DeferDebugInfoCallbacks;
 }
 
 GFSDK_Aftermath_GpuCrashDumpDescriptionKey :: enum u32 {
-    ApplicationName    :: 1;
+    ApplicationName :: 1;
 
     ApplicationVersion :: 2;
 
-    UserDefined        :: 65536;
+    UserDefined :: 65536;
 
-    GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationName    :: ApplicationName;
+    GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationName :: ApplicationName;
 
     GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationVersion :: ApplicationVersion;
 
-    GFSDK_Aftermath_GpuCrashDumpDescriptionKey_UserDefined        :: UserDefined;
+    GFSDK_Aftermath_GpuCrashDumpDescriptionKey_UserDefined :: UserDefined;
 }
 
 GFSDK_Aftermath_CrashDump_Status :: enum u32 {
-    NotStarted           :: 0;
+    NotStarted :: 0;
 
-    CollectingData       :: 1;
+    CollectingData :: 1;
 
     CollectingDataFailed :: 2;
 
-    InvokingCallback     :: 3;
+    InvokingCallback :: 3;
 
-    Finished             :: 4;
+    Finished :: 4;
 
-    Unknown              :: 5;
+    Unknown :: 5;
 
-    GFSDK_Aftermath_CrashDump_Status_NotStarted           :: NotStarted;
+    GFSDK_Aftermath_CrashDump_Status_NotStarted :: NotStarted;
 
-    GFSDK_Aftermath_CrashDump_Status_CollectingData       :: CollectingData;
+    GFSDK_Aftermath_CrashDump_Status_CollectingData :: CollectingData;
 
     GFSDK_Aftermath_CrashDump_Status_CollectingDataFailed :: CollectingDataFailed;
 
-    GFSDK_Aftermath_CrashDump_Status_InvokingCallback     :: InvokingCallback;
+    GFSDK_Aftermath_CrashDump_Status_InvokingCallback :: InvokingCallback;
 
-    GFSDK_Aftermath_CrashDump_Status_Finished             :: Finished;
+    GFSDK_Aftermath_CrashDump_Status_Finished :: Finished;
 
-    GFSDK_Aftermath_CrashDump_Status_Unknown              :: Unknown;
+    GFSDK_Aftermath_CrashDump_Status_Unknown :: Unknown;
 }
 
 PFN_GFSDK_Aftermath_AddGpuCrashDumpDescription :: #type (key: u32, value: *u8) -> void #c_call;
@@ -394,47 +394,47 @@ GFSDK_Aftermath_ShaderDebugName :: struct {
 }
 
 GFSDK_Aftermath_GraphicsApi :: enum u32 {
-    Unknown  :: 0;
+    Unknown :: 0;
     D3D_10_0 :: 1;
     D3D_10_1 :: 2;
     D3D_11_0 :: 3;
     D3D_11_1 :: 4;
     D3D_11_2 :: 5;
     D3D_12_0 :: 6;
-    Vulkan   :: 7;
+    Vulkan :: 7;
 
-    GFSDK_Aftermath_GraphicsApi_Unknown  :: Unknown;
+    GFSDK_Aftermath_GraphicsApi_Unknown :: Unknown;
     GFSDK_Aftermath_GraphicsApi_D3D_10_0 :: D3D_10_0;
     GFSDK_Aftermath_GraphicsApi_D3D_10_1 :: D3D_10_1;
     GFSDK_Aftermath_GraphicsApi_D3D_11_0 :: D3D_11_0;
     GFSDK_Aftermath_GraphicsApi_D3D_11_1 :: D3D_11_1;
     GFSDK_Aftermath_GraphicsApi_D3D_11_2 :: D3D_11_2;
     GFSDK_Aftermath_GraphicsApi_D3D_12_0 :: D3D_12_0;
-    GFSDK_Aftermath_GraphicsApi_Vulkan   :: Vulkan;
+    GFSDK_Aftermath_GraphicsApi_Vulkan :: Vulkan;
 }
 
 GFSDK_Aftermath_GpuCrashDump_BaseInfo :: struct {
-    applicationName:   [128] u8;
-    creationDate:      [128] u8;
+    applicationName: [128] u8;
+    creationDate: [128] u8;
     creationTickCount: u32;
-    pid:               u32;
-    graphicsApi:       GFSDK_Aftermath_GraphicsApi;
+    pid: u32;
+    graphicsApi: GFSDK_Aftermath_GraphicsApi;
 }
 
 GFSDK_Aftermath_GpuCrashDump_DeviceInfo :: struct {
     status: GFSDK_Aftermath_Device_Status;
     union {
-        adapterReset:            bool;
+        adapterReset: bool;
         bool_align_adapterReset: u32;
     }
     union {
-        engineReset:            bool;
+        engineReset: bool;
         bool_align_engineReset: u32;
     }
 }
 
 GFSDK_Aftermath_GpuCrashDump_SystemInfo :: struct {
-    osVersion:     [128] u8;
+    osVersion: [128] u8;
     DisplayDriverVersion :: struct {
         major: u32;
         minor: u32;
@@ -444,296 +444,296 @@ GFSDK_Aftermath_GpuCrashDump_SystemInfo :: struct {
 }
 
 GFSDK_Aftermath_GpuCrashDump_GpuInfo :: struct {
-    adapterName:    [128] u8;
+    adapterName: [128] u8;
     generationName: [128] u8;
-    adapterLUID:    u64;
+    adapterLUID: u64;
 }
 
 GFSDK_Aftermath_FaultType :: enum u32 {
-    Unknown                 :: 0;
+    Unknown :: 0;
     AddressTranslationError :: 1;
-    IllegalAccessError      :: 2;
+    IllegalAccessError :: 2;
 
-    GFSDK_Aftermath_FaultType_Unknown                 :: Unknown;
+    GFSDK_Aftermath_FaultType_Unknown :: Unknown;
     GFSDK_Aftermath_FaultType_AddressTranslationError :: AddressTranslationError;
-    GFSDK_Aftermath_FaultType_IllegalAccessError      :: IllegalAccessError;
+    GFSDK_Aftermath_FaultType_IllegalAccessError :: IllegalAccessError;
 }
 
 GFSDK_Aftermath_AccessType :: enum u32 {
     Unknown :: 0;
-    Read    :: 1;
-    Write   :: 2;
-    Atomic  :: 3;
+    Read :: 1;
+    Write :: 2;
+    Atomic :: 3;
 
     GFSDK_Aftermath_AccessType_Unknown :: Unknown;
-    GFSDK_Aftermath_AccessType_Read    :: Read;
-    GFSDK_Aftermath_AccessType_Write   :: Write;
-    GFSDK_Aftermath_AccessType_Atomic  :: Atomic;
+    GFSDK_Aftermath_AccessType_Read :: Read;
+    GFSDK_Aftermath_AccessType_Write :: Write;
+    GFSDK_Aftermath_AccessType_Atomic :: Atomic;
 }
 
 GFSDK_Aftermath_Engine :: enum u32 {
-    Unknown         :: 0;
-    Graphics        :: 1;
+    Unknown :: 0;
+    Graphics :: 1;
     GraphicsCompute :: 2;
-    Display         :: 3;
-    CopyEngine      :: 4;
-    VideoDecoder    :: 5;
-    VideoEncoder    :: 6;
-    Other           :: 7;
+    Display :: 3;
+    CopyEngine :: 4;
+    VideoDecoder :: 5;
+    VideoEncoder :: 6;
+    Other :: 7;
 
-    GFSDK_Aftermath_Engine_Unknown         :: Unknown;
-    GFSDK_Aftermath_Engine_Graphics        :: Graphics;
+    GFSDK_Aftermath_Engine_Unknown :: Unknown;
+    GFSDK_Aftermath_Engine_Graphics :: Graphics;
     GFSDK_Aftermath_Engine_GraphicsCompute :: GraphicsCompute;
-    GFSDK_Aftermath_Engine_Display         :: Display;
-    GFSDK_Aftermath_Engine_CopyEngine      :: CopyEngine;
-    GFSDK_Aftermath_Engine_VideoDecoder    :: VideoDecoder;
-    GFSDK_Aftermath_Engine_VideoEncoder    :: VideoEncoder;
-    GFSDK_Aftermath_Engine_Other           :: Other;
+    GFSDK_Aftermath_Engine_Display :: Display;
+    GFSDK_Aftermath_Engine_CopyEngine :: CopyEngine;
+    GFSDK_Aftermath_Engine_VideoDecoder :: VideoDecoder;
+    GFSDK_Aftermath_Engine_VideoEncoder :: VideoEncoder;
+    GFSDK_Aftermath_Engine_Other :: Other;
 }
 
 GFSDK_Aftermath_Client :: enum u32 {
-    Unknown                   :: 0;
-    HostInterface             :: 1;
-    FrontEnd                  :: 2;
-    PrimitiveDistributor      :: 3;
+    Unknown :: 0;
+    HostInterface :: 1;
+    FrontEnd :: 2;
+    PrimitiveDistributor :: 3;
     GraphicsProcessingCluster :: 4;
-    PolymorphEngine           :: 5;
-    RasterEngine              :: 6;
-    Rasterizer2D              :: 7;
-    RenderOutputUnit          :: 8;
-    TextureProcessingCluster  :: 9;
-    CopyEngine                :: 10;
-    VideoDecoder              :: 11;
-    VideoEncoder              :: 12;
-    Other                     :: 13;
+    PolymorphEngine :: 5;
+    RasterEngine :: 6;
+    Rasterizer2D :: 7;
+    RenderOutputUnit :: 8;
+    TextureProcessingCluster :: 9;
+    CopyEngine :: 10;
+    VideoDecoder :: 11;
+    VideoEncoder :: 12;
+    Other :: 13;
 
-    GFSDK_Aftermath_Client_Unknown                   :: Unknown;
-    GFSDK_Aftermath_Client_HostInterface             :: HostInterface;
-    GFSDK_Aftermath_Client_FrontEnd                  :: FrontEnd;
-    GFSDK_Aftermath_Client_PrimitiveDistributor      :: PrimitiveDistributor;
+    GFSDK_Aftermath_Client_Unknown :: Unknown;
+    GFSDK_Aftermath_Client_HostInterface :: HostInterface;
+    GFSDK_Aftermath_Client_FrontEnd :: FrontEnd;
+    GFSDK_Aftermath_Client_PrimitiveDistributor :: PrimitiveDistributor;
     GFSDK_Aftermath_Client_GraphicsProcessingCluster :: GraphicsProcessingCluster;
-    GFSDK_Aftermath_Client_PolymorphEngine           :: PolymorphEngine;
-    GFSDK_Aftermath_Client_RasterEngine              :: RasterEngine;
-    GFSDK_Aftermath_Client_Rasterizer2D              :: Rasterizer2D;
-    GFSDK_Aftermath_Client_RenderOutputUnit          :: RenderOutputUnit;
-    GFSDK_Aftermath_Client_TextureProcessingCluster  :: TextureProcessingCluster;
-    GFSDK_Aftermath_Client_CopyEngine                :: CopyEngine;
-    GFSDK_Aftermath_Client_VideoDecoder              :: VideoDecoder;
-    GFSDK_Aftermath_Client_VideoEncoder              :: VideoEncoder;
-    GFSDK_Aftermath_Client_Other                     :: Other;
+    GFSDK_Aftermath_Client_PolymorphEngine :: PolymorphEngine;
+    GFSDK_Aftermath_Client_RasterEngine :: RasterEngine;
+    GFSDK_Aftermath_Client_Rasterizer2D :: Rasterizer2D;
+    GFSDK_Aftermath_Client_RenderOutputUnit :: RenderOutputUnit;
+    GFSDK_Aftermath_Client_TextureProcessingCluster :: TextureProcessingCluster;
+    GFSDK_Aftermath_Client_CopyEngine :: CopyEngine;
+    GFSDK_Aftermath_Client_VideoDecoder :: VideoDecoder;
+    GFSDK_Aftermath_Client_VideoEncoder :: VideoEncoder;
+    GFSDK_Aftermath_Client_Other :: Other;
 }
 
 GFSDK_Aftermath_GpuCrashDump_PageFaultInfo :: struct {
-    faultingGpuVA:     u64;
-    faultType:         GFSDK_Aftermath_FaultType;
-    accessType:        GFSDK_Aftermath_AccessType;
-    engine:            GFSDK_Aftermath_Engine;
-    client:            GFSDK_Aftermath_Client;
+    faultingGpuVA: u64;
+    faultType: GFSDK_Aftermath_FaultType;
+    accessType: GFSDK_Aftermath_AccessType;
+    engine: GFSDK_Aftermath_Engine;
+    client: GFSDK_Aftermath_Client;
     resourceInfoCount: u32;
 }
 
 GFSDK_Aftermath_GpuCrashDump_ResourceInfo :: struct {
-    gpuVa:                  u64;
-    size:                   u64;
+    gpuVa: u64;
+    size: u64;
 
-    width:                  u32;
-    height:                 u32;
-    depth:                  u32;
-    mipLevels:              u32;
+    width: u32;
+    height: u32;
+    depth: u32;
+    mipLevels: u32;
 
-    format:                 u32;
+    format: u32;
 
-    apiResource:            u64;
+    apiResource: u64;
 
-    debugName:              [128] u8;
+    debugName: [128] u8;
 
     union {
-        bIsBufferHeap:            bool;
+        bIsBufferHeap: bool;
         bool_align_bIsBufferHeap: u32;
     }
     union {
-        bIsStaticTextureHeap:            bool;
+        bIsStaticTextureHeap: bool;
         bool_align_bIsStaticTextureHeap: u32;
     }
     union {
-        bIsRenderTargetOrDepthStencilViewHeap:            bool;
+        bIsRenderTargetOrDepthStencilViewHeap: bool;
         bool_align_bIsRenderTargetOrDepthStencilViewHeap: u32;
     }
     union {
-        bPlacedResource:            bool;
+        bPlacedResource: bool;
         bool_align_bPlacedResource: u32;
     }
 
     union {
-        bWasDestroyed:            bool;
+        bWasDestroyed: bool;
         bool_align_bWasDestroyed: u32;
     }
     createDestroyTickCount: u32;
 }
 
 GFSDK_Aftermath_ShaderType :: enum u32 {
-    Unknown                  :: 0;
-    Vertex                   :: 1;
-    Tessellation_Control     :: 2;
-    Hull                     :: 2;
-    Tessellation_Evaluation  :: 3;
-    Domain                   :: 3;
-    Geometry                 :: 4;
-    Fragment                 :: 5;
-    Pixel                    :: 5;
-    Compute                  :: 6;
+    Unknown :: 0;
+    Vertex :: 1;
+    Tessellation_Control :: 2;
+    Hull :: 2;
+    Tessellation_Evaluation :: 3;
+    Domain :: 3;
+    Geometry :: 4;
+    Fragment :: 5;
+    Pixel :: 5;
+    Compute :: 6;
     RayTracing_RayGeneration :: 7;
-    RayTracing_Miss          :: 8;
-    RayTracing_Intersection  :: 9;
-    RayTracing_AnyHit        :: 10;
-    RayTracing_ClosestHit    :: 11;
-    RayTracing_Callable      :: 12;
-    RayTracing_Internal      :: 13;
-    Mesh                     :: 14;
-    Task                     :: 15;
+    RayTracing_Miss :: 8;
+    RayTracing_Intersection :: 9;
+    RayTracing_AnyHit :: 10;
+    RayTracing_ClosestHit :: 11;
+    RayTracing_Callable :: 12;
+    RayTracing_Internal :: 13;
+    Mesh :: 14;
+    Task :: 15;
 
-    GFSDK_Aftermath_ShaderType_Unknown                  :: Unknown;
-    GFSDK_Aftermath_ShaderType_Vertex                   :: Vertex;
-    GFSDK_Aftermath_ShaderType_Tessellation_Control     :: Tessellation_Control;
-    GFSDK_Aftermath_ShaderType_Hull                     :: Hull;
-    GFSDK_Aftermath_ShaderType_Tessellation_Evaluation  :: Tessellation_Evaluation;
-    GFSDK_Aftermath_ShaderType_Domain                   :: Domain;
-    GFSDK_Aftermath_ShaderType_Geometry                 :: Geometry;
-    GFSDK_Aftermath_ShaderType_Fragment                 :: Fragment;
-    GFSDK_Aftermath_ShaderType_Pixel                    :: Pixel;
-    GFSDK_Aftermath_ShaderType_Compute                  :: Compute;
+    GFSDK_Aftermath_ShaderType_Unknown :: Unknown;
+    GFSDK_Aftermath_ShaderType_Vertex :: Vertex;
+    GFSDK_Aftermath_ShaderType_Tessellation_Control :: Tessellation_Control;
+    GFSDK_Aftermath_ShaderType_Hull :: Hull;
+    GFSDK_Aftermath_ShaderType_Tessellation_Evaluation :: Tessellation_Evaluation;
+    GFSDK_Aftermath_ShaderType_Domain :: Domain;
+    GFSDK_Aftermath_ShaderType_Geometry :: Geometry;
+    GFSDK_Aftermath_ShaderType_Fragment :: Fragment;
+    GFSDK_Aftermath_ShaderType_Pixel :: Pixel;
+    GFSDK_Aftermath_ShaderType_Compute :: Compute;
     GFSDK_Aftermath_ShaderType_RayTracing_RayGeneration :: RayTracing_RayGeneration;
-    GFSDK_Aftermath_ShaderType_RayTracing_Miss          :: RayTracing_Miss;
-    GFSDK_Aftermath_ShaderType_RayTracing_Intersection  :: RayTracing_Intersection;
-    GFSDK_Aftermath_ShaderType_RayTracing_AnyHit        :: RayTracing_AnyHit;
-    GFSDK_Aftermath_ShaderType_RayTracing_ClosestHit    :: RayTracing_ClosestHit;
-    GFSDK_Aftermath_ShaderType_RayTracing_Callable      :: RayTracing_Callable;
-    GFSDK_Aftermath_ShaderType_RayTracing_Internal      :: RayTracing_Internal;
-    GFSDK_Aftermath_ShaderType_Mesh                     :: Mesh;
-    GFSDK_Aftermath_ShaderType_Task                     :: Task;
+    GFSDK_Aftermath_ShaderType_RayTracing_Miss :: RayTracing_Miss;
+    GFSDK_Aftermath_ShaderType_RayTracing_Intersection :: RayTracing_Intersection;
+    GFSDK_Aftermath_ShaderType_RayTracing_AnyHit :: RayTracing_AnyHit;
+    GFSDK_Aftermath_ShaderType_RayTracing_ClosestHit :: RayTracing_ClosestHit;
+    GFSDK_Aftermath_ShaderType_RayTracing_Callable :: RayTracing_Callable;
+    GFSDK_Aftermath_ShaderType_RayTracing_Internal :: RayTracing_Internal;
+    GFSDK_Aftermath_ShaderType_Mesh :: Mesh;
+    GFSDK_Aftermath_ShaderType_Task :: Task;
 }
 
 GFSDK_Aftermath_GpuCrashDump_ShaderInfo :: struct {
 
-    shaderHash:     u64;
+    shaderHash: u64;
     shaderInstance: u64;
     union {
-        isInternal:            bool;
+        isInternal: bool;
         bool_align_isInternal: u32;
     }
-    shaderType:     GFSDK_Aftermath_ShaderType;
+    shaderType: GFSDK_Aftermath_ShaderType;
 }
 
 GFSDK_Aftermath_Context_Type :: enum u32 {
-    Invalid      :: 0;
-    Immediate    :: 1;
-    CommandList  :: 2;
-    Bundle       :: 3;
+    Invalid :: 0;
+    Immediate :: 1;
+    CommandList :: 2;
+    Bundle :: 3;
     CommandQueue :: 4;
 
-    GFSDK_Aftermath_Context_Type_Invalid      :: Invalid;
-    GFSDK_Aftermath_Context_Type_Immediate    :: Immediate;
-    GFSDK_Aftermath_Context_Type_CommandList  :: CommandList;
-    GFSDK_Aftermath_Context_Type_Bundle       :: Bundle;
+    GFSDK_Aftermath_Context_Type_Invalid :: Invalid;
+    GFSDK_Aftermath_Context_Type_Immediate :: Immediate;
+    GFSDK_Aftermath_Context_Type_CommandList :: CommandList;
+    GFSDK_Aftermath_Context_Type_Bundle :: Bundle;
     GFSDK_Aftermath_Context_Type_CommandQueue :: CommandQueue;
 }
 
 GFSDK_Aftermath_EventMarkerDataOwnership :: enum u32 {
-    User    :: 0;
+    User :: 0;
 
     Decoder :: 1;
 
-    GFSDK_Aftermath_EventMarkerDataOwnership_User    :: User;
+    GFSDK_Aftermath_EventMarkerDataOwnership_User :: User;
 
     GFSDK_Aftermath_EventMarkerDataOwnership_Decoder :: Decoder;
 }
 
 GFSDK_Aftermath_GpuCrashDump_EventMarkerInfo :: struct {
-    contextId:           u64;
-    contextStatus:       GFSDK_Aftermath_Context_Status;
-    contextType:         GFSDK_Aftermath_Context_Type;
+    contextId: u64;
+    contextStatus: GFSDK_Aftermath_Context_Status;
+    contextType: GFSDK_Aftermath_Context_Type;
     union {
-        markerData:           *void;
+        markerData: *void;
         ptr_align_markerData: u64;
     }
     markerDataOwnership: GFSDK_Aftermath_EventMarkerDataOwnership;
-    markerDataSize:      u32;
+    markerDataSize: u32;
 }
 
 GFSDK_Aftermath_GpuCrashDumpDecoderFlags :: enum u32 {
-    BASE_INFO           :: 1;
+    BASE_INFO :: 1;
 
-    DEVICE_INFO         :: 2;
+    DEVICE_INFO :: 2;
 
-    OS_INFO             :: 4;
+    OS_INFO :: 4;
 
     DISPLAY_DRIVER_INFO :: 8;
 
-    GPU_INFO            :: 16;
+    GPU_INFO :: 16;
 
-    PAGE_FAULT_INFO     :: 32;
+    PAGE_FAULT_INFO :: 32;
 
-    SHADER_INFO         :: 64;
+    SHADER_INFO :: 64;
 
-    WARP_STATE_INFO     :: 128;
+    WARP_STATE_INFO :: 128;
 
     SHADER_MAPPING_INFO :: 256;
 
-    EVENT_MARKER_INFO   :: 512;
+    EVENT_MARKER_INFO :: 512;
 
-    CALL_STACK_INFO     :: 1024;
+    CALL_STACK_INFO :: 1024;
 
-    DESCRIPTION_INFO    :: 2048;
+    DESCRIPTION_INFO :: 2048;
 
-    FAULTED_WARP_INFO   :: 4096;
+    FAULTED_WARP_INFO :: 4096;
 
-    FINGERPRINT_INFO    :: 8192;
+    FINGERPRINT_INFO :: 8192;
 
-    ALL_INFO            :: 16383;
+    ALL_INFO :: 16383;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_BASE_INFO           :: BASE_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_BASE_INFO :: BASE_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_DEVICE_INFO         :: DEVICE_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_DEVICE_INFO :: DEVICE_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_OS_INFO             :: OS_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_OS_INFO :: OS_INFO;
 
     GFSDK_Aftermath_GpuCrashDumpDecoderFlags_DISPLAY_DRIVER_INFO :: DISPLAY_DRIVER_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_GPU_INFO            :: GPU_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_GPU_INFO :: GPU_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_PAGE_FAULT_INFO     :: PAGE_FAULT_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_PAGE_FAULT_INFO :: PAGE_FAULT_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_SHADER_INFO         :: SHADER_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_SHADER_INFO :: SHADER_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_WARP_STATE_INFO     :: WARP_STATE_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_WARP_STATE_INFO :: WARP_STATE_INFO;
 
     GFSDK_Aftermath_GpuCrashDumpDecoderFlags_SHADER_MAPPING_INFO :: SHADER_MAPPING_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_EVENT_MARKER_INFO   :: EVENT_MARKER_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_EVENT_MARKER_INFO :: EVENT_MARKER_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_CALL_STACK_INFO     :: CALL_STACK_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_CALL_STACK_INFO :: CALL_STACK_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_DESCRIPTION_INFO    :: DESCRIPTION_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_DESCRIPTION_INFO :: DESCRIPTION_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_FAULTED_WARP_INFO   :: FAULTED_WARP_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_FAULTED_WARP_INFO :: FAULTED_WARP_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_FINGERPRINT_INFO    :: FINGERPRINT_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_FINGERPRINT_INFO :: FINGERPRINT_INFO;
 
-    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_ALL_INFO            :: ALL_INFO;
+    GFSDK_Aftermath_GpuCrashDumpDecoderFlags_ALL_INFO :: ALL_INFO;
 }
 
 GFSDK_Aftermath_GpuCrashDumpFormatterFlags :: enum u32 {
-    NONE             :: 0;
+    NONE :: 0;
 
     CONDENSED_OUTPUT :: 1;
 
-    UTF8_OUTPUT      :: 2;
+    UTF8_OUTPUT :: 2;
 
-    GFSDK_Aftermath_GpuCrashDumpFormatterFlags_NONE             :: NONE;
+    GFSDK_Aftermath_GpuCrashDumpFormatterFlags_NONE :: NONE;
 
     GFSDK_Aftermath_GpuCrashDumpFormatterFlags_CONDENSED_OUTPUT :: CONDENSED_OUTPUT;
 
-    GFSDK_Aftermath_GpuCrashDumpFormatterFlags_UTF8_OUTPUT      :: UTF8_OUTPUT;
+    GFSDK_Aftermath_GpuCrashDumpFormatterFlags_UTF8_OUTPUT :: UTF8_OUTPUT;
 }
 
 GFSDK_Aftermath_GpuCrashDump_Decoder__ :: struct {

@@ -51,7 +51,7 @@ set_icon_by_data :: (exe_filename: string, icon_data: string, resource_id: s32 =
     directory_size := 6 + 16 * count;
     if directory_size > icon_data.count return false;
     // Validate every range before starting a transaction against the executable.
-    for index: 0..count-1 {
+    for index: 0..count - 1 {
         entry := icon_data.data + 6 + index * 16;
         size := cast(s64) read_le32(entry + 8);
         offset := cast(s64) read_le32(entry + 12);
@@ -62,7 +62,7 @@ set_icon_by_data :: (exe_filename: string, icon_data: string, resource_id: s32 =
     if group == null return false;
     defer Basic.free(group);
     memcpy(group, icon_data.data, 6);
-    for index: 0..count-1 {
+    for index: 0..count - 1 {
         source := icon_data.data + 6 + 16 * index;
         target := group + 6 + 14 * index;
         memcpy(target, source, 12);
@@ -75,7 +75,7 @@ set_icon_by_data :: (exe_filename: string, icon_data: string, resource_id: s32 =
     if update == null return false;
     finished := false;
     defer if !finished sdk_end_update(update, .TRUE);
-    for index: 0..count-1 {
+    for index: 0..count - 1 {
         entry := icon_data.data + 6 + 16 * index;
         size := read_le32(entry + 8);
         offset := read_le32(entry + 12);
@@ -126,7 +126,7 @@ add_manifest_to_executable :: (exe_filename: string, options: Manifest_Options, 
 // Call from a #run: links the executable for the Windows GUI subsystem, so no console opens.
 disable_runtime_console :: () {
     Compiler :: #import "Compiler";
-    Compiler.set_build_options_dc(.{append_linker_arguments = .["/SUBSYSTEM:windows", "/ENTRY:mainCRTStartup"]});
+    Compiler.set_build_options_dc(.{ append_linker_arguments = .["/SUBSYSTEM:windows", "/ENTRY:mainCRTStartup"] });
 }
 
 #scope_file
@@ -137,6 +137,13 @@ sdk_begin_update :: (filename: *u16, delete_existing: BOOL) -> HANDLE #foreign k
 sdk_update :: (update: HANDLE, resource_type: *u16, resource_name: *u16, language: u16, bytes: *void, count: DWORD) -> BOOL #foreign kernel32 "UpdateResourceW";
 sdk_end_update :: (update: HANDLE, discard: BOOL) -> BOOL #foreign kernel32 "EndUpdateResourceW";
 kernel32 :: #system_library "kernel32";
-read_le16 :: (bytes: *u8) -> u16 { return (cast(u16) bytes[0]) | ((cast(u16) bytes[1]) << 8); }
-read_le32 :: (bytes: *u8) -> u32 { return (cast(u32) bytes[0]) | ((cast(u32) bytes[1]) << 8) | ((cast(u32) bytes[2]) << 16) | ((cast(u32) bytes[3]) << 24); }
-write_le16 :: (bytes: *u8, value: u16) { bytes[0] = cast,trunc(u8) value; bytes[1] = cast,trunc(u8) (value >> 8); }
+read_le16 :: (bytes: *u8) -> u16 {
+    return (cast(u16) bytes[0]) | ((cast(u16) bytes[1]) << 8);
+}
+read_le32 :: (bytes: *u8) -> u32 {
+    return (cast(u32) bytes[0]) | ((cast(u32) bytes[1]) << 8) | ((cast(u32) bytes[2]) << 16) | ((cast(u32) bytes[3]) << 24);
+}
+write_le16 :: (bytes: *u8, value: u16) {
+    bytes[0] = cast,trunc(u8) value;
+    bytes[1] = cast,trunc(u8) (value >> 8);
+}

@@ -279,16 +279,16 @@ SV_NOCLDSTOP :: SA_NOCLDSTOP;
 SV_SIGINFO :: SA_SIGINFO;
 BADSIG :: SIG_ERR;
 __ipc_perm_new :: ipc_perm;
-IPC_CREAT :: 0x200 ;
-IPC_EXCL :: 0x400 ;
-IPC_NOWAIT :: 0x800 ;
+IPC_CREAT :: 0x200;
+IPC_EXCL :: 0x400;
+IPC_NOWAIT :: 0x800;
 IPC_PRIVATE :: cast(key_t) 0;
 IPC_RMID :: 0;
 IPC_SET :: 1;
 IPC_STAT :: 2;
-IPC_R :: 0x100 ;
-IPC_W :: 0x80 ;
-IPC_M :: 0x1000 ;
+IPC_R :: 0x100;
+IPC_W :: 0x80;
+IPC_M :: 0x1000;
 PROT_NONE :: 0x00;
 PROT_READ :: 0x01;
 PROT_WRITE :: 0x02;
@@ -353,10 +353,10 @@ POLLWRITE :: 0x1000;
 POLLERR :: 0x0008;
 POLLHUP :: 0x0010;
 POLLNVAL :: 0x0020;
-POLLSTANDARD :: POLLIN|POLLPRI|POLLOUT|POLLRDNORM|POLLRDBAND| POLLWRBAND|POLLERR|POLLHUP|POLLNVAL;
-SHM_RDONLY :: 0x1000 ;
-SHM_RND :: 0x2000 ;
-SHMLBA :: 16*1024;
+POLLSTANDARD :: POLLIN | POLLPRI | POLLOUT | POLLRDNORM | POLLRDBAND | POLLWRBAND | POLLERR | POLLHUP | POLLNVAL;
+SHM_RDONLY :: 0x1000;
+SHM_RND :: 0x2000;
+SHMLBA :: 16 * 1024;
 SHM_R :: IPC_R;
 SHM_W :: IPC_W;
 shmid_ds :: __shmid_ds_new;
@@ -375,8 +375,8 @@ TIME_UTC :: 1;
 _SYS_NAMELEN :: 256;
 WNOHANG :: 0x00000001;
 WUNTRACED :: 0x00000002;
-WCOREFLAG :: 0x80 ;
-_WSTOPPED :: 0x7f ;
+WCOREFLAG :: 0x80;
+_WSTOPPED :: 0x7f;
 WEXITED :: 0x00000004;
 WSTOPPED :: 0x00000008;
 WCONTINUED :: 0x00000010;
@@ -384,22 +384,22 @@ WNOWAIT :: 0x00000020;
 WAIT_ANY :: -1;
 WAIT_MYPGRP :: 0;
 F_OK :: 0;
-X_OK :: 1<<0;
-W_OK :: 1<<1;
-R_OK :: 1<<2;
-_READ_OK :: 1<<9;
-_WRITE_OK :: 1<<10;
-_EXECUTE_OK :: 1<<11;
-_DELETE_OK :: 1<<12;
-_APPEND_OK :: 1<<13;
-_RMFILE_OK :: 1<<14;
-_RATTR_OK :: 1<<15;
-_WATTR_OK :: 1<<16;
-_REXT_OK :: 1<<17;
-_WEXT_OK :: 1<<18;
-_RPERM_OK :: 1<<19;
-_WPERM_OK :: 1<<20;
-_CHOWN_OK :: 1<<21;
+X_OK :: 1 << 0;
+W_OK :: 1 << 1;
+R_OK :: 1 << 2;
+_READ_OK :: 1 << 9;
+_WRITE_OK :: 1 << 10;
+_EXECUTE_OK :: 1 << 11;
+_DELETE_OK :: 1 << 12;
+_APPEND_OK :: 1 << 13;
+_RMFILE_OK :: 1 << 14;
+_RATTR_OK :: 1 << 15;
+_WATTR_OK :: 1 << 16;
+_REXT_OK :: 1 << 17;
+_WEXT_OK :: 1 << 18;
+_RPERM_OK :: 1 << 19;
+_WPERM_OK :: 1 << 20;
+_CHOWN_OK :: 1 << 21;
 _ACCESS_EXTENDED_MASK :: _READ_OK | _WRITE_OK | _EXECUTE_OK | _DELETE_OK | _APPEND_OK | _RMFILE_OK | _REXT_OK | _WEXT_OK | _RATTR_OK | _WATTR_OK | _RPERM_OK | _WPERM_OK | _CHOWN_OK;
 ACCESSX_MAX_DESCRIPTORS :: 100;
 ACCESSX_MAX_TABLESIZE :: 16 * 1024;
@@ -1043,19 +1043,19 @@ __darwin_arm_vfp_state :: struct {
     __fpscr: u32;
 }
 __darwin_arm_neon_state64 :: struct {
-    __v: [32] [16] u8 #align 16; // __uint128_t registers
+    __v: [32][16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
 __darwin_arm_neon_state :: struct {
-    __v: [16] [16] u8 #align 16; // __uint128_t registers
+    __v: [16][16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
 __darwin_arm_amx_state_v1 :: struct {
-    __x: [8] [64] u8;
-    __y: [8] [64] u8;
-    __z: [64] [64] u8;
+    __x: [8][64] u8;
+    __y: [8][64] u8;
+    __z: [64][64] u8;
     __amx_state_t_el1: u64;
 }
 __arm_pagein_state :: struct {

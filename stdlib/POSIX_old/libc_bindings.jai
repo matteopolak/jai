@@ -2,10 +2,10 @@
 sysconf :: (name: _SC_definitions) -> s64 #foreign libc;
 strsignal :: (sig: s32) -> *u8 #foreign libc;
 #if OS == .LINUX {
-    syscall :: (number: s64, args: .. Any) -> s64 #foreign libc;
+    syscall :: (number: s64, args: ..Any) -> s64 #foreign libc;
 } else #if OS == .MACOS {
-    syscall :: (number: s32, args: .. Any) -> s32 #foreign libc;
-    __syscall :: (number: quad_t, args: .. Any) -> s32 #foreign libc;
+    syscall :: (number: s32, args: ..Any) -> s32 #foreign libc;
+    __syscall :: (number: quad_t, args: ..Any) -> s32 #foreign libc;
 }
 getpwent :: () -> *passwd #foreign libc;
 setpwent :: () #foreign libc;
@@ -33,7 +33,7 @@ getenv :: (name: *u8) -> *u8 #foreign libc;
 setenv :: (name: *u8, value: *u8, overwrite: s32) -> s32 #foreign libc;
 perror :: (s: *u8) #foreign libc;
 chmod :: (path: *u8, mode: mode_t) -> s32 #foreign libc;
-ioctl :: (fd: s32, request: u64, args: .. Any) -> s32 #foreign libc;
+ioctl :: (fd: s32, request: u64, args: ..Any) -> s32 #foreign libc;
 getuid :: () -> uid_t #foreign libc;
 geteuid :: () -> uid_t #foreign libc;
 getpwnam :: (name: *u8) -> *passwd #foreign libc;
@@ -56,12 +56,12 @@ shm_unlink :: (name: *u8) -> s32 #foreign librt;
 getlogin_r :: (buf: *u8, bufsize: size_t) -> s32 #foreign libc;
 getlogin :: (buf: *u8) -> *u8 #foreign libc;
 fnmatch :: (pattern: *u8, name: *u8, flags: s32) -> s32 #foreign libc;
-time :: (calptr : *time_t) -> time_t #foreign libc;
-gmtime :: (calptr : *time_t) -> *tm #foreign libc;
-localtime :: (calptr : *time_t) -> *tm #foreign libc;
-gmtime_r :: (calptr : *time_t, result: *tm) -> *tm #foreign libc;
-localtime_r :: (calptr : *time_t, result: *tm) -> *tm #foreign libc;
-gettimeofday :: (tv:*timeval, tzp:*void) -> s32 #foreign libc;
+time :: (calptr: *time_t) -> time_t #foreign libc;
+gmtime :: (calptr: *time_t) -> *tm #foreign libc;
+localtime :: (calptr: *time_t) -> *tm #foreign libc;
+gmtime_r :: (calptr: *time_t, result: *tm) -> *tm #foreign libc;
+localtime_r :: (calptr: *time_t, result: *tm) -> *tm #foreign libc;
+gettimeofday :: (tv: *timeval, tzp: *void) -> s32 #foreign libc;
 fopen :: (pathname: *u8, mode: *u8) -> *FILE #foreign libc;
 fclose :: (stream: *FILE) -> s32 #foreign libc;
 ftell :: (stream: *FILE) -> s64 #foreign libc;
@@ -74,14 +74,14 @@ ftello :: (stream: *FILE) -> s64 #foreign libc;
 fread :: (ptr: *void, size: size_t, count: size_t, stream: *FILE) -> size_t #foreign libc;
 fwrite :: (ptr: *void, size: size_t, count: size_t, stream: *FILE) -> size_t #foreign libc;
 fseek :: (stream: *FILE, offset: s64, whence: s32) -> s32 #foreign libc;
-popen :: (command : *u8, type : *u8) -> *FILE #foreign libc;
-pclose :: (stream : *FILE) -> s32 #foreign libc;
+popen :: (command: *u8, type: *u8) -> *FILE #foreign libc;
+pclose :: (stream: *FILE) -> s32 #foreign libc;
 mkdir :: (filename: *u8, mode: mode_t) -> s32 #foreign libc;
 rename :: (oldpath: *u8, newpath: *u8) -> s32 #foreign libc;
 _remove :: (path: *u8) -> s32 #foreign libc "remove";
 unlink :: (pathname: *u8) -> s32 #foreign libc;
 link :: (oldpath: *u8, newpath: *u8) -> s32 #foreign libc;
-uname :: (name : *utsname) -> s32 #foreign libc;
+uname :: (name: *utsname) -> s32 #foreign libc;
 gethostname :: (name: *s8, namelen: size_t) -> s32 #foreign libc;
 closedir :: (dirp: *DIR) -> s32 #foreign libc;
 #if OS == .MACOS {
@@ -164,13 +164,12 @@ open :: (pathname: *u8, flags: s32) -> s32 #foreign libc;
 open :: (pathname: *u8, flags: s32, mode: mode_t) -> s32 #foreign libc;
 openat :: (directory: s32, pathname: *u8, flags: s32) -> s32 #foreign libc;
 openat :: (directory: s32, pathname: *u8, flags: s32, mode: mode_t) -> s32 #foreign libc;
-fcntl :: (fd: s32, cmd: s32, optional: .. Any) -> s32 #foreign libc;
+fcntl :: (fd: s32, cmd: s32, optional: ..Any) -> s32 #foreign libc;
 read :: (fd: s32, buf: *void, count: size_t) -> ssize_t #foreign libc;
 pread :: (fd: s32, buf: *void, count: size_t, offset: off_t) -> ssize_t #foreign libc;
 close :: (fd: s32) -> s32 #foreign libc;
 ftruncate :: (fd: s32, length: off_t) -> s32 #foreign libc;
-#if OS == .LINUX {
-} else #if OS == .MACOS {
+#if OS == .LINUX {} else #if OS == .MACOS {
     stat :: (path: *u8, buf: *stat_t) -> s32 #foreign libc "stat$INODE64";
     fstat :: (fd: s32, buf: *stat_t) -> s32 #foreign libc "fstat$INODE64";
     lstat :: (path: *u8, buf: *stat_t) -> s32 #foreign libc "lstat$INODE64";

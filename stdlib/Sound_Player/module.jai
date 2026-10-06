@@ -39,40 +39,40 @@
 #scope_export
 
 Audio_Channel :: enum u16 {
-    FRONT_LEFT   :: 0;
-    FRONT_RIGHT  :: 1;
-    CENTER       :: 2;
-    SUBWOOFER    :: 3;
-    REAR_LEFT    :: 4;
-    REAR_RIGHT   :: 5;
-    EXTEND_LEFT  :: 6;
+    FRONT_LEFT :: 0;
+    FRONT_RIGHT :: 1;
+    CENTER :: 2;
+    SUBWOOFER :: 3;
+    REAR_LEFT :: 4;
+    REAR_RIGHT :: 5;
+    EXTEND_LEFT :: 6;
     EXTEND_RIGHT :: 7;
 }
-ACHANNEL_MAX           :: 8;
-OUTPUT_CHANNELS_MAX    :: ACHANNEL_MAX;
+ACHANNEL_MAX :: 8;
+OUTPUT_CHANNELS_MAX :: ACHANNEL_MAX;
 MAX_CHANNELS_PER_SOUND :: 8;
 
 Sound_Category :: enum u32 {
     GENERAL_SFX :: 0;
-    AMBIENCES   :: 1;
-    FOOTSTEPS   :: 2;
-    UI          :: 3;
-    MUSIC       :: 4;
+    AMBIENCES :: 1;
+    FOOTSTEPS :: 2;
+    UI :: 3;
+    MUSIC :: 4;
 }
 
 // Where a channel of a multichannel recording was meant to be heard.
 Source_Direction :: enum u16 {
-    MONO                     :: 0;
-    LEFT                     :: 1;
-    RIGHT                    :: 2;
-    FRONT_LEFT               :: 3;
-    FRONT_RIGHT              :: 4;
-    REAR_LEFT                :: 5;
-    REAR_RIGHT               :: 6;
-    CENTER_FORWARD           :: 7;
+    MONO :: 0;
+    LEFT :: 1;
+    RIGHT :: 2;
+    FRONT_LEFT :: 3;
+    FRONT_RIGHT :: 4;
+    REAR_LEFT :: 5;
+    REAR_RIGHT :: 6;
+    CENTER_FORWARD :: 7;
     SUBWOOFER_CENTER_FORWARD :: 8;
-    EXTEND_LEFT              :: 9;
-    EXTEND_RIGHT             :: 10;
+    EXTEND_LEFT :: 9;
+    EXTEND_RIGHT :: 10;
 }
 NUM_SOURCE_DIRECTIONS :: 11;
 
@@ -86,34 +86,34 @@ CACHED_OGG_DECODE_THREADED :: true;
 // One playing instance of a Sound_Data. Games own the identification and control fields and may
 // change them between updates; the mixer reads them under its lock.
 Sound_Stream :: struct {
-    user_data_u64:     u64;
+    user_data_u64: u64;
     user_data_pointer: *void;
-    manager_id:        s64;
-    entity_id:         s64;
-    sound_name:        string;
+    manager_id: s64;
+    entity_id: s64;
+    sound_name: string;
 
     user_flags: enum u32 {
-        REPEATING              :: 0x1;
-        SPATIALIZED            :: 0x2;
-        MUSIC                  :: 0x10;
-        IS_FOOTSTEP            :: 0x40;
-        DO_NOT_KILL            :: 0x80;
-        PAUSED_DUE_TO_MENU     :: 0x100;
+        REPEATING :: 0x1;
+        SPATIALIZED :: 0x2;
+        MUSIC :: 0x10;
+        IS_FOOTSTEP :: 0x40;
+        DO_NOT_KILL :: 0x80;
+        PAUSED_DUE_TO_MENU :: 0x100;
         WAS_PAUSED_DUE_TO_MENU :: 0x200;
-        AMBIENT                :: 0x400;
+        AMBIENT :: 0x400;
     }
 
     num_channels: s32 = 2;
-    sound_data:   *Sound_Data;
-    category:     Sound_Category;
+    sound_data: *Sound_Data;
+    category: Sound_Category;
 
     // Loop region in frames; the end defaults to the length of the sound.
     repeat_start_position: s64;
-    repeat_end_position:   s64 = -1;
+    repeat_end_position: s64 = -1;
 
     universe_volume_scale := 1.0;
-    user_volume_scale     := 1.0;
-    rate_scale            := 1.0;
+    user_volume_scale := 1.0;
+    rate_scale := 1.0;
 
     // Position in source frames. Negative while a repeat's leading silence plays.
     play_cursor: float64 = 0;
@@ -123,8 +123,8 @@ Sound_Stream :: struct {
     // Set by every update when the stream is too far away or too quiet to hear.
     inaudible := false;
 
-    position:     Vector3;
-    orientation:  Quaternion;
+    position: Vector3;
+    orientation: Quaternion;
     inner_radius := 0.5;
     outer_radius := 10.0;
 
@@ -133,21 +133,21 @@ Sound_Stream :: struct {
     current_rate: float = 1;
     desired_rate: float = 1;
 
-    voice: Voice;   // Mixer bookkeeping.
+    voice: Voice; // Mixer bookkeeping.
 }
 
 Sound_Player_Config :: struct {
-    update_from_a_thread := true;                  // Mix and decode on a background worker.
-    audible_when_window_is_not_in_focus := false;  // Honoured where the API has the notion (DirectSound).
-    keep_sounds_alive_by_default := true;          // If false, streams not marked each frame are stopped.
-    seconds_to_fill_ahead := 2.4 / 60.0;           // How much mixed audio the device is kept ahead by.
-    set_async_thread_priority: () -> ();           // Called once on the worker thread.
-    release_asset: (stream: *Sound_Stream, data: *Sound_Data);  // Called as each stream is freed.
+    update_from_a_thread := true; // Mix and decode on a background worker.
+    audible_when_window_is_not_in_focus := false; // Honoured where the API has the notion (DirectSound).
+    keep_sounds_alive_by_default := true; // If false, streams not marked each frame are stopped.
+    seconds_to_fill_ahead := 2.4 / 60.0; // How much mixed audio the device is kept ahead by.
+    set_async_thread_priority: () -> (); // Called once on the worker thread.
+    release_asset: (stream: *Sound_Stream, data: *Sound_Data); // Called as each stream is freed.
 }
 
 Output_Device :: struct {
-    name:         string;
-    hints:        [] string;
+    name: string;
+    hints: [] string;
     device_index: s64;
 }
 
@@ -158,9 +158,9 @@ sound_player_init :: (given_config: Sound_Player_Config) -> bool {
     channels, rate, opened := output_open(given_config);
     if !opened return false;
 
-    player.config       = given_config;
+    player.config = given_config;
     player.out_channels = min(channels, OUTPUT_CHANNELS_MAX);
-    player.out_rate     = rate;
+    player.out_rate = rate;
     init(*player.lock, "Sound_Player");
     for *category_volume it.* = 1;
     update_listener(.{}, Quaternion_Identity);
@@ -180,7 +180,7 @@ sound_player_init :: (given_config: Sound_Player_Config) -> bool {
 // Stops the device and frees every stream (calling release_asset for each).
 sound_player_shutdown :: () {
     if !player.running return;
-    stop_worker();   // From here on nothing else touches the streams.
+    stop_worker(); // From here on nothing else touches the streams.
 
     lock(*player.lock);
     cancel_queued_decodes();
@@ -225,11 +225,11 @@ make_stream :: (data: *Sound_Data, category := Sound_Category.GENERAL_SFX) -> *S
     }
 
     stream := New(Sound_Stream);
-    stream.sound_data   = data;
-    stream.sound_name   = data.name;
-    stream.category     = category;
-    stream.marked       = true;
-    stream.voice.cache  = cache;
+    stream.sound_data = data;
+    stream.sound_name = data.name;
+    stream.category = category;
+    stream.marked = true;
+    stream.voice.cache = cache;
     stream.num_channels = cast(s32) ifx cache then cache.channels else data.nchannels;
     stream.repeat_end_position = stream_length(stream);
     if player.running stream.desired_rate = rate_for(stream);
@@ -254,21 +254,27 @@ set_repeating :: (stream: *Sound_Stream, repeating: bool) {
         stream.user_flags |= .REPEATING;
         stream.repeat_end_position = stream_length(stream);
     } else {
-        stream.user_flags &= ~.REPEATING;
+        stream.user_flags &= ~ .REPEATING;
     }
     if guard unlock(*player.lock);
 }
 
 stop_stream_abruptly :: (id: s64) {
-    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool { return s.entity_id == key; }, id);
+    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool {
+        return s.entity_id == key;
+    }, id);
 }
 
 stop_stream_abruptly :: (data: *Sound_Data) {
-    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool { return s.sound_data == data; }, 0, data);
+    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool {
+        return s.sound_data == data;
+    }, 0, data);
 }
 
 stop_all_sounds_abruptly :: (manager_id: s64) {
-    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool { return s.manager_id == key; }, manager_id);
+    stop_where((s: *Sound_Stream, key: s64, data: *Sound_Data) -> bool {
+        return s.manager_id == key;
+    }, manager_id);
 }
 
 // The playing stream with these ids, or null.
@@ -325,19 +331,19 @@ count_retired_decoders :: () -> s64 {
 #scope_module
 
 Player_State :: struct {
-    running:      bool;
-    config:       Sound_Player_Config;
+    running: bool;
+    config: Sound_Player_Config;
     out_channels: s32;
-    out_rate:     s32;
+    out_rate: s32;
 
     // Guards `voices`, every stream's fields while mixing, the block caches and the decode queue.
-    lock:   Mutex;
+    lock: Mutex;
     voices: [..] *Sound_Stream;
 
-    worker:         Thread;
+    worker: Thread;
     worker_running: bool;
-    worker_quit:    bool;
-    worker_wake:    Semaphore;
+    worker_quit: bool;
+    worker_wake: Semaphore;
 }
 player: Player_State;
 
@@ -346,15 +352,15 @@ category_volume: [MAX_SOUND_CATEGORIES] float;
 
 // Mixer-side state of a stream.
 Voice :: struct {
-    cache: *Block_Cache;   // Null for sounds stored as plain samples.
+    cache: *Block_Cache; // Null for sounds stored as plain samples.
 
     // Gains from source channel to output channel, flattened as [source * OUTPUT_CHANNELS_MAX + output].
     // `gain` is what the mixer applies, `aim` what the last update asked for, and `slope` the
     // per-frame step that walks one to the other without clicks.
-    gain:  [MAX_CHANNELS_PER_SOUND * OUTPUT_CHANNELS_MAX] float;
-    aim:   [MAX_CHANNELS_PER_SOUND * OUTPUT_CHANNELS_MAX] float;
+    gain: [MAX_CHANNELS_PER_SOUND * OUTPUT_CHANNELS_MAX] float;
+    aim: [MAX_CHANNELS_PER_SOUND * OUTPUT_CHANNELS_MAX] float;
     slope: [MAX_CHANNELS_PER_SOUND * OUTPUT_CHANNELS_MAX] float;
-    gains_settled: bool;   // False until the first update, which jumps straight to `aim`.
+    gains_settled: bool; // False until the first update, which jumps straight to `aim`.
 }
 
 stream_length :: (stream: *Sound_Stream) -> s64 {

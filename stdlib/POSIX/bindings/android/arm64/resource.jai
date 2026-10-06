@@ -1,12 +1,12 @@
 // Android arm64 declarations: <sys/resource.h>.
 RUSAGE :: enum s32 {
     SELF :: 0;
-    CHILDREN :: - 1;
-    BOTH :: - 2;
+    CHILDREN :: -1;
+    BOTH :: -2;
     THREAD :: 1;
 }
 RLIM64_INFINITY :: ~0;
-PRIO_MIN :: - 20;
+PRIO_MIN :: -20;
 PRIO_MAX :: 20;
 PRIO :: enum s32 {
     PROCESS :: 0;

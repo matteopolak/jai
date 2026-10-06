@@ -453,9 +453,9 @@ TCPOLEN_SACK_PERMITTED :: 2;
 TCPOPT_SACK :: 5;
 TCPOPT_TIMESTAMP :: 8;
 TCPOLEN_TIMESTAMP :: 10;
-TCPOLEN_TSTAMP_APPA :: TCPOLEN_TIMESTAMP+2;
+TCPOLEN_TSTAMP_APPA :: TCPOLEN_TIMESTAMP + 2;
 
-TCPOPT_TSTAMP_HDR :: (TCPOPT_NOP<<24)|(TCPOPT_NOP<<16)|(TCPOPT_TIMESTAMP<<8)|TCPOLEN_TIMESTAMP;
+TCPOPT_TSTAMP_HDR :: (TCPOPT_NOP << 24) | (TCPOPT_NOP << 16) | (TCPOPT_TIMESTAMP << 8) | TCPOLEN_TIMESTAMP;
 
 TCP_MSS :: 512;
 
@@ -478,7 +478,7 @@ TCP_MD5SIG_FLAG_PREFIX :: 1;
 
 TCP_COOKIE_MIN :: 8;
 TCP_COOKIE_MAX :: 16;
-TCP_COOKIE_PAIR_SIZE :: 2*TCP_COOKIE_MAX;
+TCP_COOKIE_PAIR_SIZE :: 2 * TCP_COOKIE_MAX;
 
 TCP_COOKIE_IN_ALWAYS :: 1 << 0;
 TCP_COOKIE_OUT_NEVER :: 1 << 1;
@@ -513,29 +513,29 @@ GAI_WAIT :: 0;
 GAI_NOWAIT :: 1;
 
 AI :: enum_flags u32 {
- PASSIVE :: 0x0001;
- CANONNAME :: 0x0002;
- NUMERICHOST :: 0x0004;
- V4MAPPED :: 0x0008;
- ALL :: 0x0010;
- ADDRCONFIG :: 0x0020;
- IDN :: 0x0040;
- CANONIDN :: 0x0080;
- IDN_ALLOW_UNASSIGNED :: 0x0100;
- IDN_USE_STD3_ASCII_RULES :: 0x0200;
- NUMERICSERV :: 0x0400;
+    PASSIVE :: 0x0001;
+    CANONNAME :: 0x0002;
+    NUMERICHOST :: 0x0004;
+    V4MAPPED :: 0x0008;
+    ALL :: 0x0010;
+    ADDRCONFIG :: 0x0020;
+    IDN :: 0x0040;
+    CANONIDN :: 0x0080;
+    IDN_ALLOW_UNASSIGNED :: 0x0100;
+    IDN_USE_STD3_ASCII_RULES :: 0x0200;
+    NUMERICSERV :: 0x0400;
 
- AI_PASSIVE :: PASSIVE;
- AI_CANONNAME :: CANONNAME;
- AI_NUMERICHOST :: NUMERICHOST;
- AI_V4MAPPED :: V4MAPPED;
- AI_ALL :: ALL;
- AI_ADDRCONFIG :: ADDRCONFIG;
- AI_IDN :: IDN;
- AI_CANONIDN :: CANONIDN;
- AI_IDN_ALLOW_UNASSIGNED :: IDN_ALLOW_UNASSIGNED;
- AI_IDN_USE_STD3_ASCII_RULES :: IDN_USE_STD3_ASCII_RULES;
- AI_NUMERICSERV :: NUMERICSERV;
+    AI_PASSIVE :: PASSIVE;
+    AI_CANONNAME :: CANONNAME;
+    AI_NUMERICHOST :: NUMERICHOST;
+    AI_V4MAPPED :: V4MAPPED;
+    AI_ALL :: ALL;
+    AI_ADDRCONFIG :: ADDRCONFIG;
+    AI_IDN :: IDN;
+    AI_CANONIDN :: CANONIDN;
+    AI_IDN_ALLOW_UNASSIGNED :: IDN_ALLOW_UNASSIGNED;
+    AI_IDN_USE_STD3_ASCII_RULES :: IDN_USE_STD3_ASCII_RULES;
+    AI_NUMERICSERV :: NUMERICSERV;
 }
 
 EAI_BADFLAGS :: -1;
@@ -580,7 +580,7 @@ IFNAMSIZ :: IF_NAMESIZE;
 __fd_mask :: s64;
 
 fd_set :: struct {
- fds_bits: [16] __fd_mask;
+    fds_bits: [16] __fd_mask;
 }
 
 fd_mask :: __fd_mask;
@@ -592,204 +592,204 @@ pselect :: (__nfds: s32, __readfds: *fd_set, __writefds: *fd_set, __exceptfds: *
 socklen_t :: u32;
 
 SOCK :: enum u32 {
- STREAM :: 1;
- DGRAM :: 2;
- RAW :: 3;
- RDM :: 4;
- SEQPACKET :: 5;
- DCCP :: 6;
- PACKET :: 10;
- CLOEXEC :: 524288;
- NONBLOCK :: 2048;
+    STREAM :: 1;
+    DGRAM :: 2;
+    RAW :: 3;
+    RDM :: 4;
+    SEQPACKET :: 5;
+    DCCP :: 6;
+    PACKET :: 10;
+    CLOEXEC :: 524288;
+    NONBLOCK :: 2048;
 
- SOCK_STREAM :: STREAM;
- SOCK_DGRAM :: DGRAM;
- SOCK_RAW :: RAW;
- SOCK_RDM :: RDM;
- SOCK_SEQPACKET :: SEQPACKET;
- SOCK_DCCP :: DCCP;
- SOCK_PACKET :: PACKET;
- SOCK_CLOEXEC :: CLOEXEC;
- SOCK_NONBLOCK :: NONBLOCK;
+    SOCK_STREAM :: STREAM;
+    SOCK_DGRAM :: DGRAM;
+    SOCK_RAW :: RAW;
+    SOCK_RDM :: RDM;
+    SOCK_SEQPACKET :: SEQPACKET;
+    SOCK_DCCP :: DCCP;
+    SOCK_PACKET :: PACKET;
+    SOCK_CLOEXEC :: CLOEXEC;
+    SOCK_NONBLOCK :: NONBLOCK;
 }
 
 sa_family_t :: u16;
 
 sockaddr :: struct {
- sa_family: sa_family_t;
- sa_data: [14] u8;
+    sa_family: sa_family_t;
+    sa_data: [14] u8;
 }
 
 sockaddr_storage :: struct {
- ss_family: sa_family_t;
- __ss_padding: [118] u8;
- __ss_align: u64;
+    ss_family: sa_family_t;
+    __ss_padding: [118] u8;
+    __ss_align: u64;
 }
 
 MSG :: enum_flags s32 {
- OOB :: 0x1;
+    OOB :: 0x1;
 
- PEEK :: 0x2;
+    PEEK :: 0x2;
 
- DONTROUTE :: 0x4;
+    DONTROUTE :: 0x4;
 
- TRYHARD :: 0x4;
+    TRYHARD :: 0x4;
 
- CTRUNC :: 0x8;
+    CTRUNC :: 0x8;
 
- PROXY :: 0x10;
+    PROXY :: 0x10;
 
- TRUNC :: 0x20;
+    TRUNC :: 0x20;
 
- DONTWAIT :: 0x40;
+    DONTWAIT :: 0x40;
 
- EOR :: 0x80;
+    EOR :: 0x80;
 
- WAITALL :: 0x100;
+    WAITALL :: 0x100;
 
- FIN :: 0x200;
+    FIN :: 0x200;
 
- SYN :: 0x400;
+    SYN :: 0x400;
 
- CONFIRM :: 0x800;
+    CONFIRM :: 0x800;
 
- RST :: 0x1000;
+    RST :: 0x1000;
 
- ERRQUEUE :: 0x2000;
+    ERRQUEUE :: 0x2000;
 
- NOSIGNAL :: 0x4000;
+    NOSIGNAL :: 0x4000;
 
- MORE :: 0x8000;
+    MORE :: 0x8000;
 
- WAITFORONE :: 0x10000;
+    WAITFORONE :: 0x10000;
 
- BATCH :: 0x40000;
+    BATCH :: 0x40000;
 
- ZEROCOPY :: 0x4000000;
+    ZEROCOPY :: 0x4000000;
 
- FASTOPEN :: 0x20000000;
+    FASTOPEN :: 0x20000000;
 
- CMSG_CLOEXEC :: 0x40000000;
+    CMSG_CLOEXEC :: 0x40000000;
 
- MSG_OOB :: OOB;
+    MSG_OOB :: OOB;
 
- MSG_PEEK :: PEEK;
+    MSG_PEEK :: PEEK;
 
- MSG_DONTROUTE :: DONTROUTE;
+    MSG_DONTROUTE :: DONTROUTE;
 
- MSG_TRYHARD :: TRYHARD;
+    MSG_TRYHARD :: TRYHARD;
 
- MSG_CTRUNC :: CTRUNC;
+    MSG_CTRUNC :: CTRUNC;
 
- MSG_PROXY :: PROXY;
+    MSG_PROXY :: PROXY;
 
- MSG_TRUNC :: TRUNC;
+    MSG_TRUNC :: TRUNC;
 
- MSG_DONTWAIT :: DONTWAIT;
+    MSG_DONTWAIT :: DONTWAIT;
 
- MSG_EOR :: EOR;
+    MSG_EOR :: EOR;
 
- MSG_WAITALL :: WAITALL;
+    MSG_WAITALL :: WAITALL;
 
- MSG_FIN :: FIN;
+    MSG_FIN :: FIN;
 
- MSG_SYN :: SYN;
+    MSG_SYN :: SYN;
 
- MSG_CONFIRM :: CONFIRM;
+    MSG_CONFIRM :: CONFIRM;
 
- MSG_RST :: RST;
+    MSG_RST :: RST;
 
- MSG_ERRQUEUE :: ERRQUEUE;
+    MSG_ERRQUEUE :: ERRQUEUE;
 
- MSG_NOSIGNAL :: NOSIGNAL;
+    MSG_NOSIGNAL :: NOSIGNAL;
 
- MSG_MORE :: MORE;
+    MSG_MORE :: MORE;
 
- MSG_WAITFORONE :: WAITFORONE;
+    MSG_WAITFORONE :: WAITFORONE;
 
- MSG_BATCH :: BATCH;
+    MSG_BATCH :: BATCH;
 
- MSG_ZEROCOPY :: ZEROCOPY;
+    MSG_ZEROCOPY :: ZEROCOPY;
 
- MSG_FASTOPEN :: FASTOPEN;
+    MSG_FASTOPEN :: FASTOPEN;
 
- MSG_CMSG_CLOEXEC :: CMSG_CLOEXEC;
+    MSG_CMSG_CLOEXEC :: CMSG_CLOEXEC;
 }
 
 msghdr :: struct {
- msg_name: *void;
- msg_namelen: socklen_t;
+    msg_name: *void;
+    msg_namelen: socklen_t;
 
- msg_iov: *iovec;
- msg_iovlen: u64;
+    msg_iov: *iovec;
+    msg_iovlen: u64;
 
- msg_control: *void;
- msg_controllen: u64;
+    msg_control: *void;
+    msg_controllen: u64;
 
- msg_flags: s32;
+    msg_flags: s32;
 }
 
 cmsghdr :: struct {
- cmsg_len: u64;
+    cmsg_len: u64;
 
- cmsg_level: s32;
- cmsg_type: s32;
+    cmsg_level: s32;
+    cmsg_type: s32;
 
 }
 
 __cmsg_nxthdr :: (__mhdr: *msghdr, __cmsg: *cmsghdr) -> *cmsghdr #foreign libc;
 
 SCM :: enum u32 {
- RIGHTS :: 1;
+    RIGHTS :: 1;
 
- CREDENTIALS :: 2;
+    CREDENTIALS :: 2;
 
- SCM_TIMESTAMP :: SO_TIMESTAMP;
+    SCM_TIMESTAMP :: SO_TIMESTAMP;
 
- SCM_TIMESTAMPNS :: SO_TIMESTAMPNS;
+    SCM_TIMESTAMPNS :: SO_TIMESTAMPNS;
 
- SCM_TIMESTAMPING :: SO_TIMESTAMPING;
+    SCM_TIMESTAMPING :: SO_TIMESTAMPING;
 
- SCM_WIFI_STATUS :: SO_WIFI_STATUS;
+    SCM_WIFI_STATUS :: SO_WIFI_STATUS;
 
- SCM_TIMESTAMPING_OPT_STATS :: 54;
+    SCM_TIMESTAMPING_OPT_STATS :: 54;
 
- SCM_TIMESTAMPING_PKTINFO :: 58;
+    SCM_TIMESTAMPING_PKTINFO :: 58;
 
- SCM_RIGHTS :: RIGHTS;
+    SCM_RIGHTS :: RIGHTS;
 
- SCM_CREDENTIALS :: CREDENTIALS;
+    SCM_CREDENTIALS :: CREDENTIALS;
 }
 
 ucred :: struct {
- pid: pid_t;
- uid: uid_t;
- gid: gid_t;
+    pid: pid_t;
+    uid: uid_t;
+    gid: gid_t;
 }
 
 linger :: struct {
- l_onoff: s32;
- l_linger: s32;
+    l_onoff: s32;
+    l_linger: s32;
 }
 
 SHUT :: enum u32 {
- RD :: 0;
+    RD :: 0;
 
- WR :: 1;
+    WR :: 1;
 
- RDWR :: 2;
+    RDWR :: 2;
 
- SHUT_RD :: RD;
+    SHUT_RD :: RD;
 
- SHUT_WR :: WR;
+    SHUT_WR :: WR;
 
- SHUT_RDWR :: RDWR;
+    SHUT_RDWR :: RDWR;
 }
 
 mmsghdr :: struct {
- msg_hdr: msghdr;
+    msg_hdr: msghdr;
 
- msg_len: u32;
+    msg_len: u32;
 }
 
 socket :: (__domain: s32, __type: SOCK, __protocol: IPPROTO) -> s32 #foreign libc;
@@ -838,270 +838,270 @@ isfdtype :: (__fd: s32, __fdtype: s32) -> s32 #foreign libc;
 
 in_addr_t :: u32;
 in_addr :: struct {
- s_addr: in_addr_t;
+    s_addr: in_addr_t;
 }
 
 ip_opts :: struct {
- ip_dst: in_addr;
- ip_opts: [40] u8;
+    ip_dst: in_addr;
+    ip_opts: [40] u8;
 }
 
 ip_mreqn :: struct {
- imr_multiaddr: in_addr;
- imr_address: in_addr;
- imr_ifindex: s32;
+    imr_multiaddr: in_addr;
+    imr_address: in_addr;
+    imr_ifindex: s32;
 }
 
 in_pktinfo :: struct {
- ipi_ifindex: s32;
- ipi_spec_dst: in_addr;
- ipi_addr: in_addr;
+    ipi_ifindex: s32;
+    ipi_spec_dst: in_addr;
+    ipi_addr: in_addr;
 }
 
 IPPROTO :: enum u32 {
- IP :: 0;
- ICMP :: 1;
- IGMP :: 2;
- IPIP :: 4;
- TCP :: 6;
- EGP :: 8;
- PUP :: 12;
- UDP :: 17;
- IDP :: 22;
- TP :: 29;
- DCCP :: 33;
- IPV6 :: 41;
- RSVP :: 46;
- GRE :: 47;
- ESP :: 50;
- AH :: 51;
- MTP :: 92;
- BEETPH :: 94;
- ENCAP :: 98;
- PIM :: 103;
- COMP :: 108;
- SCTP :: 132;
- UDPLITE :: 136;
- MPLS :: 137;
- RAW :: 255;
- MAX :: 256;
+    IP :: 0;
+    ICMP :: 1;
+    IGMP :: 2;
+    IPIP :: 4;
+    TCP :: 6;
+    EGP :: 8;
+    PUP :: 12;
+    UDP :: 17;
+    IDP :: 22;
+    TP :: 29;
+    DCCP :: 33;
+    IPV6 :: 41;
+    RSVP :: 46;
+    GRE :: 47;
+    ESP :: 50;
+    AH :: 51;
+    MTP :: 92;
+    BEETPH :: 94;
+    ENCAP :: 98;
+    PIM :: 103;
+    COMP :: 108;
+    SCTP :: 132;
+    UDPLITE :: 136;
+    MPLS :: 137;
+    RAW :: 255;
+    MAX :: 256;
 
- IPPROTO_IP :: IP;
- IPPROTO_ICMP :: ICMP;
- IPPROTO_IGMP :: IGMP;
- IPPROTO_IPIP :: IPIP;
- IPPROTO_TCP :: TCP;
- IPPROTO_EGP :: EGP;
- IPPROTO_PUP :: PUP;
- IPPROTO_UDP :: UDP;
- IPPROTO_IDP :: IDP;
- IPPROTO_TP :: TP;
- IPPROTO_DCCP :: DCCP;
- IPPROTO_IPV6 :: IPV6;
- IPPROTO_RSVP :: RSVP;
- IPPROTO_GRE :: GRE;
- IPPROTO_ESP :: ESP;
- IPPROTO_AH :: AH;
- IPPROTO_MTP :: MTP;
- IPPROTO_BEETPH :: BEETPH;
- IPPROTO_ENCAP :: ENCAP;
- IPPROTO_PIM :: PIM;
- IPPROTO_COMP :: COMP;
- IPPROTO_SCTP :: SCTP;
- IPPROTO_UDPLITE :: UDPLITE;
- IPPROTO_MPLS :: MPLS;
- IPPROTO_RAW :: RAW;
- IPPROTO_MAX :: MAX;
+    IPPROTO_IP :: IP;
+    IPPROTO_ICMP :: ICMP;
+    IPPROTO_IGMP :: IGMP;
+    IPPROTO_IPIP :: IPIP;
+    IPPROTO_TCP :: TCP;
+    IPPROTO_EGP :: EGP;
+    IPPROTO_PUP :: PUP;
+    IPPROTO_UDP :: UDP;
+    IPPROTO_IDP :: IDP;
+    IPPROTO_TP :: TP;
+    IPPROTO_DCCP :: DCCP;
+    IPPROTO_IPV6 :: IPV6;
+    IPPROTO_RSVP :: RSVP;
+    IPPROTO_GRE :: GRE;
+    IPPROTO_ESP :: ESP;
+    IPPROTO_AH :: AH;
+    IPPROTO_MTP :: MTP;
+    IPPROTO_BEETPH :: BEETPH;
+    IPPROTO_ENCAP :: ENCAP;
+    IPPROTO_PIM :: PIM;
+    IPPROTO_COMP :: COMP;
+    IPPROTO_SCTP :: SCTP;
+    IPPROTO_UDPLITE :: UDPLITE;
+    IPPROTO_MPLS :: MPLS;
+    IPPROTO_RAW :: RAW;
+    IPPROTO_MAX :: MAX;
 }
 
 IPPROTO_1 :: enum u32 {
- HOPOPTS :: 0;
+    HOPOPTS :: 0;
 
- ROUTING :: 43;
+    ROUTING :: 43;
 
- FRAGMENT :: 44;
+    FRAGMENT :: 44;
 
- ICMPV6 :: 58;
+    ICMPV6 :: 58;
 
- NONE :: 59;
+    NONE :: 59;
 
- DSTOPTS :: 60;
+    DSTOPTS :: 60;
 
- MH :: 135;
+    MH :: 135;
 
- IPPROTO_HOPOPTS :: HOPOPTS;
+    IPPROTO_HOPOPTS :: HOPOPTS;
 
- IPPROTO_ROUTING :: ROUTING;
+    IPPROTO_ROUTING :: ROUTING;
 
- IPPROTO_FRAGMENT :: FRAGMENT;
+    IPPROTO_FRAGMENT :: FRAGMENT;
 
- IPPROTO_ICMPV6 :: ICMPV6;
+    IPPROTO_ICMPV6 :: ICMPV6;
 
- IPPROTO_NONE :: NONE;
+    IPPROTO_NONE :: NONE;
 
- IPPROTO_DSTOPTS :: DSTOPTS;
+    IPPROTO_DSTOPTS :: DSTOPTS;
 
- IPPROTO_MH :: MH;
+    IPPROTO_MH :: MH;
 }
 
 in_port_t :: u16;
 
 IPPORT :: enum u32 {
- ECHO :: 7;
- DISCARD :: 9;
- SYSTAT :: 11;
- DAYTIME :: 13;
- NETSTAT :: 15;
- FTP :: 21;
- TELNET :: 23;
- SMTP :: 25;
- TIMESERVER :: 37;
- NAMESERVER :: 42;
- WHOIS :: 43;
- MTP :: 57;
+    ECHO :: 7;
+    DISCARD :: 9;
+    SYSTAT :: 11;
+    DAYTIME :: 13;
+    NETSTAT :: 15;
+    FTP :: 21;
+    TELNET :: 23;
+    SMTP :: 25;
+    TIMESERVER :: 37;
+    NAMESERVER :: 42;
+    WHOIS :: 43;
+    MTP :: 57;
 
- TFTP :: 69;
- RJE :: 77;
- FINGER :: 79;
- TTYLINK :: 87;
- SUPDUP :: 95;
+    TFTP :: 69;
+    RJE :: 77;
+    FINGER :: 79;
+    TTYLINK :: 87;
+    SUPDUP :: 95;
 
- EXECSERVER :: 512;
- LOGINSERVER :: 513;
- CMDSERVER :: 514;
- EFSSERVER :: 520;
+    EXECSERVER :: 512;
+    LOGINSERVER :: 513;
+    CMDSERVER :: 514;
+    EFSSERVER :: 520;
 
- BIFFUDP :: 512;
- WHOSERVER :: 513;
- ROUTESERVER :: 520;
+    BIFFUDP :: 512;
+    WHOSERVER :: 513;
+    ROUTESERVER :: 520;
 
- RESERVED :: 1024;
+    RESERVED :: 1024;
 
- USERRESERVED :: 5000;
+    USERRESERVED :: 5000;
 
- IPPORT_ECHO :: ECHO;
- IPPORT_DISCARD :: DISCARD;
- IPPORT_SYSTAT :: SYSTAT;
- IPPORT_DAYTIME :: DAYTIME;
- IPPORT_NETSTAT :: NETSTAT;
- IPPORT_FTP :: FTP;
- IPPORT_TELNET :: TELNET;
- IPPORT_SMTP :: SMTP;
- IPPORT_TIMESERVER :: TIMESERVER;
- IPPORT_NAMESERVER :: NAMESERVER;
- IPPORT_WHOIS :: WHOIS;
- IPPORT_MTP :: MTP;
+    IPPORT_ECHO :: ECHO;
+    IPPORT_DISCARD :: DISCARD;
+    IPPORT_SYSTAT :: SYSTAT;
+    IPPORT_DAYTIME :: DAYTIME;
+    IPPORT_NETSTAT :: NETSTAT;
+    IPPORT_FTP :: FTP;
+    IPPORT_TELNET :: TELNET;
+    IPPORT_SMTP :: SMTP;
+    IPPORT_TIMESERVER :: TIMESERVER;
+    IPPORT_NAMESERVER :: NAMESERVER;
+    IPPORT_WHOIS :: WHOIS;
+    IPPORT_MTP :: MTP;
 
- IPPORT_TFTP :: TFTP;
- IPPORT_RJE :: RJE;
- IPPORT_FINGER :: FINGER;
- IPPORT_TTYLINK :: TTYLINK;
- IPPORT_SUPDUP :: SUPDUP;
+    IPPORT_TFTP :: TFTP;
+    IPPORT_RJE :: RJE;
+    IPPORT_FINGER :: FINGER;
+    IPPORT_TTYLINK :: TTYLINK;
+    IPPORT_SUPDUP :: SUPDUP;
 
- IPPORT_EXECSERVER :: EXECSERVER;
- IPPORT_LOGINSERVER :: LOGINSERVER;
- IPPORT_CMDSERVER :: CMDSERVER;
- IPPORT_EFSSERVER :: EFSSERVER;
+    IPPORT_EXECSERVER :: EXECSERVER;
+    IPPORT_LOGINSERVER :: LOGINSERVER;
+    IPPORT_CMDSERVER :: CMDSERVER;
+    IPPORT_EFSSERVER :: EFSSERVER;
 
- IPPORT_BIFFUDP :: BIFFUDP;
- IPPORT_WHOSERVER :: WHOSERVER;
- IPPORT_ROUTESERVER :: ROUTESERVER;
+    IPPORT_BIFFUDP :: BIFFUDP;
+    IPPORT_WHOSERVER :: WHOSERVER;
+    IPPORT_ROUTESERVER :: ROUTESERVER;
 
- IPPORT_RESERVED :: RESERVED;
+    IPPORT_RESERVED :: RESERVED;
 
- IPPORT_USERRESERVED :: USERRESERVED;
+    IPPORT_USERRESERVED :: USERRESERVED;
 }
 
 in6_addr :: struct {
- __in6_u: union {
- __u6_addr8: [16] u8;
- __u6_addr16: [8] u16;
- __u6_addr32: [4] u32;
- };
+    __in6_u: union {
+        __u6_addr8: [16] u8;
+        __u6_addr16: [8] u16;
+        __u6_addr32: [4] u32;
+    };
 }
 
 in6addr_any: in6_addr;
 in6addr_loopback: in6_addr;
 
 sockaddr_in :: struct {
- sin_family: sa_family_t;
- sin_port: in_port_t;
- sin_addr: in_addr;
+    sin_family: sa_family_t;
+    sin_port: in_port_t;
+    sin_addr: in_addr;
 
- sin_zero: [8] u8;
+    sin_zero: [8] u8;
 }
 
 sockaddr_in6 :: struct {
- sin6_family: sa_family_t;
- sin6_port: in_port_t;
- sin6_flowinfo: u32;
- sin6_addr: in6_addr;
- sin6_scope_id: u32;
+    sin6_family: sa_family_t;
+    sin6_port: in_port_t;
+    sin6_flowinfo: u32;
+    sin6_addr: in6_addr;
+    sin6_scope_id: u32;
 }
 
 ip_mreq :: struct {
 
- imr_multiaddr: in_addr;
+    imr_multiaddr: in_addr;
 
- imr_interface: in_addr;
+    imr_interface: in_addr;
 }
 
 ip_mreq_source :: struct {
 
- imr_multiaddr: in_addr;
+    imr_multiaddr: in_addr;
 
- imr_interface: in_addr;
+    imr_interface: in_addr;
 
- imr_sourceaddr: in_addr;
+    imr_sourceaddr: in_addr;
 }
 
 ipv6_mreq :: struct {
 
- ipv6mr_multiaddr: in6_addr;
+    ipv6mr_multiaddr: in6_addr;
 
- ipv6mr_interface: u32;
+    ipv6mr_interface: u32;
 }
 
 group_req :: struct {
 
- gr_interface: u32;
+    gr_interface: u32;
 
- gr_group: sockaddr_storage;
+    gr_group: sockaddr_storage;
 }
 
 group_source_req :: struct {
 
- gsr_interface: u32;
+    gsr_interface: u32;
 
- gsr_group: sockaddr_storage;
+    gsr_group: sockaddr_storage;
 
- gsr_source: sockaddr_storage;
+    gsr_source: sockaddr_storage;
 }
 
 ip_msfilter :: struct {
 
- imsf_multiaddr: in_addr;
+    imsf_multiaddr: in_addr;
 
- imsf_interface: in_addr;
+    imsf_interface: in_addr;
 
- imsf_fmode: u32;
+    imsf_fmode: u32;
 
- imsf_numsrc: u32;
+    imsf_numsrc: u32;
 
- imsf_slist: [1] in_addr;
+    imsf_slist: [1] in_addr;
 }
 
 group_filter :: struct {
 
- gf_interface: u32;
+    gf_interface: u32;
 
- gf_group: sockaddr_storage;
+    gf_group: sockaddr_storage;
 
- gf_fmode: u32;
+    gf_fmode: u32;
 
- gf_numsrc: u32;
+    gf_numsrc: u32;
 
- gf_slist: [1] sockaddr_storage;
+    gf_slist: [1] sockaddr_storage;
 }
 
 ntohl :: (__netlong: u32) -> u32 #foreign libc;
@@ -1114,13 +1114,13 @@ htons :: (__hostshort: u16) -> u16 #foreign libc;
 bindresvport :: (__sockfd: s32, __sock_in: *sockaddr_in) -> s32 #foreign libc;
 
 in6_pktinfo :: struct {
- ipi6_addr: in6_addr;
- ipi6_ifindex: u32;
+    ipi6_addr: in6_addr;
+    ipi6_ifindex: u32;
 }
 
 ip6_mtuinfo :: struct {
- ip6m_addr: sockaddr_in6;
- ip6m_mtu: u32;
+    ip6m_addr: sockaddr_in6;
+    ip6m_mtu: u32;
 }
 
 inet6_option_space :: (__nbytes: s32) -> s32 #foreign libc;
@@ -1167,165 +1167,165 @@ setsourcefilter :: (__s: s32, __interface_addr: u32, __group: *sockaddr, __group
 tcp_seq :: u32;
 
 tcphdr :: struct {
- union {
- struct {
- th_sport: u16;
- th_dport: u16;
- th_seq: tcp_seq;
- th_ack: tcp_seq;
+    union {
+        struct {
+            th_sport: u16;
+            th_dport: u16;
+            th_seq: tcp_seq;
+            th_ack: tcp_seq;
 
- __bitfield: u8;
+            __bitfield: u8;
 
- th_flags: u8;
+            th_flags: u8;
 
- th_win: u16;
- th_sum: u16;
- th_urp: u16;
- }
+            th_win: u16;
+            th_sum: u16;
+            th_urp: u16;
+        }
 
- struct {
- source: u16;
- dest: u16;
- seq: u32;
- ack_seq: u32;
+        struct {
+            source: u16;
+            dest: u16;
+            seq: u32;
+            ack_seq: u32;
 
- __bitfield_1: u16;
+            __bitfield_1: u16;
 
- window: u16;
- check: u16;
- urg_ptr: u16;
- }
- }
+            window: u16;
+            check: u16;
+            urg_ptr: u16;
+        }
+    }
 }
 
 TCP :: enum u32 {
- ESTABLISHED :: 1;
- SYN_SENT :: 2;
- SYN_RECV :: 3;
- FIN_WAIT1 :: 4;
- FIN_WAIT2 :: 5;
- TIME_WAIT :: 6;
- CLOSE :: 7;
- CLOSE_WAIT :: 8;
- LAST_ACK :: 9;
- LISTEN :: 10;
- CLOSING :: 11;
+    ESTABLISHED :: 1;
+    SYN_SENT :: 2;
+    SYN_RECV :: 3;
+    FIN_WAIT1 :: 4;
+    FIN_WAIT2 :: 5;
+    TIME_WAIT :: 6;
+    CLOSE :: 7;
+    CLOSE_WAIT :: 8;
+    LAST_ACK :: 9;
+    LISTEN :: 10;
+    CLOSING :: 11;
 
- TCP_ESTABLISHED :: ESTABLISHED;
- TCP_SYN_SENT :: SYN_SENT;
- TCP_SYN_RECV :: SYN_RECV;
- TCP_FIN_WAIT1 :: FIN_WAIT1;
- TCP_FIN_WAIT2 :: FIN_WAIT2;
- TCP_TIME_WAIT :: TIME_WAIT;
- TCP_CLOSE :: CLOSE;
- TCP_CLOSE_WAIT :: CLOSE_WAIT;
- TCP_LAST_ACK :: LAST_ACK;
- TCP_LISTEN :: LISTEN;
- TCP_CLOSING :: CLOSING;
+    TCP_ESTABLISHED :: ESTABLISHED;
+    TCP_SYN_SENT :: SYN_SENT;
+    TCP_SYN_RECV :: SYN_RECV;
+    TCP_FIN_WAIT1 :: FIN_WAIT1;
+    TCP_FIN_WAIT2 :: FIN_WAIT2;
+    TCP_TIME_WAIT :: TIME_WAIT;
+    TCP_CLOSE :: CLOSE;
+    TCP_CLOSE_WAIT :: CLOSE_WAIT;
+    TCP_LAST_ACK :: LAST_ACK;
+    TCP_LISTEN :: LISTEN;
+    TCP_CLOSING :: CLOSING;
 }
 
 tcp_ca_state :: enum u32 {
- Open :: 0;
- Disorder :: 1;
- CWR :: 2;
- Recovery :: 3;
- Loss :: 4;
+    Open :: 0;
+    Disorder :: 1;
+    CWR :: 2;
+    Recovery :: 3;
+    Loss :: 4;
 
- TCP_CA_Open :: Open;
- TCP_CA_Disorder :: Disorder;
- TCP_CA_CWR :: CWR;
- TCP_CA_Recovery :: Recovery;
- TCP_CA_Loss :: Loss;
+    TCP_CA_Open :: Open;
+    TCP_CA_Disorder :: Disorder;
+    TCP_CA_CWR :: CWR;
+    TCP_CA_Recovery :: Recovery;
+    TCP_CA_Loss :: Loss;
 }
 
 tcp_info :: struct {
- tcpi_state: u8;
- tcpi_ca_state: u8;
- tcpi_retransmits: u8;
- tcpi_probes: u8;
- tcpi_backoff: u8;
- tcpi_options: u8;
- __bitfield: u8;
+    tcpi_state: u8;
+    tcpi_ca_state: u8;
+    tcpi_retransmits: u8;
+    tcpi_probes: u8;
+    tcpi_backoff: u8;
+    tcpi_options: u8;
+    __bitfield: u8;
 
- tcpi_rto: u32;
- tcpi_ato: u32;
- tcpi_snd_mss: u32;
- tcpi_rcv_mss: u32;
+    tcpi_rto: u32;
+    tcpi_ato: u32;
+    tcpi_snd_mss: u32;
+    tcpi_rcv_mss: u32;
 
- tcpi_unacked: u32;
- tcpi_sacked: u32;
- tcpi_lost: u32;
- tcpi_retrans: u32;
- tcpi_fackets: u32;
+    tcpi_unacked: u32;
+    tcpi_sacked: u32;
+    tcpi_lost: u32;
+    tcpi_retrans: u32;
+    tcpi_fackets: u32;
 
- tcpi_last_data_sent: u32;
- tcpi_last_ack_sent: u32;
- tcpi_last_data_recv: u32;
- tcpi_last_ack_recv: u32;
+    tcpi_last_data_sent: u32;
+    tcpi_last_ack_sent: u32;
+    tcpi_last_data_recv: u32;
+    tcpi_last_ack_recv: u32;
 
- tcpi_pmtu: u32;
- tcpi_rcv_ssthresh: u32;
- tcpi_rtt: u32;
- tcpi_rttvar: u32;
- tcpi_snd_ssthresh: u32;
- tcpi_snd_cwnd: u32;
- tcpi_advmss: u32;
- tcpi_reordering: u32;
+    tcpi_pmtu: u32;
+    tcpi_rcv_ssthresh: u32;
+    tcpi_rtt: u32;
+    tcpi_rttvar: u32;
+    tcpi_snd_ssthresh: u32;
+    tcpi_snd_cwnd: u32;
+    tcpi_advmss: u32;
+    tcpi_reordering: u32;
 
- tcpi_rcv_rtt: u32;
- tcpi_rcv_space: u32;
+    tcpi_rcv_rtt: u32;
+    tcpi_rcv_space: u32;
 
- tcpi_total_retrans: u32;
+    tcpi_total_retrans: u32;
 }
 
 tcp_md5sig :: struct {
- tcpm_addr: sockaddr_storage;
- tcpm_flags: u8;
- tcpm_prefixlen: u8;
- tcpm_keylen: u16;
- __tcpm_pad: u32;
- tcpm_key: [80] u8;
+    tcpm_addr: sockaddr_storage;
+    tcpm_flags: u8;
+    tcpm_prefixlen: u8;
+    tcpm_keylen: u16;
+    __tcpm_pad: u32;
+    tcpm_key: [80] u8;
 }
 
 tcp_repair_opt :: struct {
- opt_code: u32;
- opt_val: u32;
+    opt_code: u32;
+    opt_val: u32;
 }
 
 TCP_1 :: enum u32 {
- NO_QUEUE :: 0;
- RECV_QUEUE :: 1;
- SEND_QUEUE :: 2;
- QUEUES_NR :: 3;
+    NO_QUEUE :: 0;
+    RECV_QUEUE :: 1;
+    SEND_QUEUE :: 2;
+    QUEUES_NR :: 3;
 
- TCP_NO_QUEUE :: NO_QUEUE;
- TCP_RECV_QUEUE :: RECV_QUEUE;
- TCP_SEND_QUEUE :: SEND_QUEUE;
- TCP_QUEUES_NR :: QUEUES_NR;
+    TCP_NO_QUEUE :: NO_QUEUE;
+    TCP_RECV_QUEUE :: RECV_QUEUE;
+    TCP_SEND_QUEUE :: SEND_QUEUE;
+    TCP_QUEUES_NR :: QUEUES_NR;
 }
 
 tcp_cookie_transactions :: struct {
- tcpct_flags: u16;
- __tcpct_pad1: u8;
- tcpct_cookie_desired: u8;
- tcpct_s_data_desired: u16;
- tcpct_used: u16;
- tcpct_value: [536] u8;
+    tcpct_flags: u16;
+    __tcpct_pad1: u8;
+    tcpct_cookie_desired: u8;
+    tcpct_s_data_desired: u16;
+    tcpct_used: u16;
+    tcpct_value: [536] u8;
 }
 
 tcp_repair_window :: struct {
- snd_wl1: u32;
- snd_wnd: u32;
- max_window: u32;
- rcv_wnd: u32;
- rcv_wup: u32;
+    snd_wl1: u32;
+    snd_wnd: u32;
+    max_window: u32;
+    rcv_wnd: u32;
+    rcv_wup: u32;
 }
 
 netent :: struct {
- n_name: *u8;
- n_aliases: **u8;
- n_addrtype: s32;
- n_net: u32;
+    n_name: *u8;
+    n_aliases: **u8;
+    n_addrtype: s32;
+    n_net: u32;
 }
 
 __h_errno_location :: () -> *s32 #foreign libc;
@@ -1335,11 +1335,11 @@ herror :: (__str: *u8) -> void #foreign libc;
 hstrerror :: (__err_num: s32) -> *u8 #foreign libc;
 
 hostent :: struct {
- h_name: *u8;
- h_aliases: **u8;
- h_addrtype: s32;
- h_length: s32;
- h_addr_list: **u8;
+    h_name: *u8;
+    h_aliases: **u8;
+    h_addrtype: s32;
+    h_length: s32;
+    h_addr_list: **u8;
 }
 
 sethostent :: (__stay_open: s32) -> void #foreign libc;
@@ -1379,10 +1379,10 @@ getnetbyaddr_r :: (__net: u32, __type: s32, __result_buf: *netent, __buf: *u8, _
 getnetbyname_r :: (__name: *u8, __result_buf: *netent, __buf: *u8, __buflen: u64, __result: **netent, __h_errnop: *s32) -> s32 #foreign libc;
 
 servent :: struct {
- s_name: *u8;
- s_aliases: **u8;
- s_port: s32;
- s_proto: *u8;
+    s_name: *u8;
+    s_aliases: **u8;
+    s_port: s32;
+    s_proto: *u8;
 }
 
 setservent :: (__stay_open: s32) -> void #foreign libc;
@@ -1402,9 +1402,9 @@ getservbyname_r :: (__name: *u8, __proto: *u8, __result_buf: *servent, __buf: *u
 getservbyport_r :: (__port: s32, __proto: *u8, __result_buf: *servent, __buf: *u8, __buflen: u64, __result: **servent) -> s32 #foreign libc;
 
 protoent :: struct {
- p_name: *u8;
- p_aliases: **u8;
- p_proto: s32;
+    p_name: *u8;
+    p_aliases: **u8;
+    p_proto: s32;
 }
 
 setprotoent :: (__stay_open: s32) -> void #foreign libc;
@@ -1454,24 +1454,24 @@ rresvport :: (__alport: *s32) -> s32 #foreign libc;
 rresvport_af :: (__alport: *s32, __af: sa_family_t) -> s32 #foreign libc;
 
 addrinfo :: struct {
- ai_flags: AI;
- ai_family: s32;
- ai_socktype: SOCK;
- ai_protocol: IPPROTO;
- ai_addrlen: socklen_t;
- ai_addr: *sockaddr;
- ai_canonname: *u8;
- ai_next: *addrinfo;
+    ai_flags: AI;
+    ai_family: s32;
+    ai_socktype: SOCK;
+    ai_protocol: IPPROTO;
+    ai_addrlen: socklen_t;
+    ai_addr: *sockaddr;
+    ai_canonname: *u8;
+    ai_next: *addrinfo;
 }
 
 gaicb :: struct {
- ar_name: *u8;
- ar_service: *u8;
- ar_request: *addrinfo;
- ar_result: *addrinfo;
+    ar_name: *u8;
+    ar_service: *u8;
+    ar_request: *addrinfo;
+    ar_result: *addrinfo;
 
- __return: s32;
- __glibc_reserved: [5] s32;
+    __return: s32;
+    __glibc_reserved: [5] s32;
 }
 
 getaddrinfo :: (__name: *u8, __service: *u8, __req: *addrinfo, __pai: **addrinfo) -> s32 #foreign libc;
@@ -1505,124 +1505,124 @@ inet_nsap_addr :: (__cp: *u8, __buf: *u8, __len: s32) -> u32 #foreign libc;
 inet_nsap_ntoa :: (__len: s32, __cp: *u8, __buf: *u8) -> *u8 #foreign libc;
 
 if_nameindex :: struct {
- if_index: u32;
- if_name: *u8;
+    if_index: u32;
+    if_name: *u8;
 }
 
 IFF :: enum u32 {
- UP :: 1;
+    UP :: 1;
 
- BROADCAST :: 2;
+    BROADCAST :: 2;
 
- DEBUG :: 4;
+    DEBUG :: 4;
 
- LOOPBACK :: 8;
+    LOOPBACK :: 8;
 
- POINTOPOINT :: 16;
+    POINTOPOINT :: 16;
 
- NOTRAILERS :: 32;
+    NOTRAILERS :: 32;
 
- RUNNING :: 64;
+    RUNNING :: 64;
 
- NOARP :: 128;
+    NOARP :: 128;
 
- PROMISC :: 256;
+    PROMISC :: 256;
 
- ALLMULTI :: 512;
+    ALLMULTI :: 512;
 
- MASTER :: 1024;
+    MASTER :: 1024;
 
- SLAVE :: 2048;
+    SLAVE :: 2048;
 
- MULTICAST :: 4096;
+    MULTICAST :: 4096;
 
- PORTSEL :: 8192;
+    PORTSEL :: 8192;
 
- AUTOMEDIA :: 16384;
+    AUTOMEDIA :: 16384;
 
- DYNAMIC :: 32768;
+    DYNAMIC :: 32768;
 
- IFF_UP :: UP;
+    IFF_UP :: UP;
 
- IFF_BROADCAST :: BROADCAST;
+    IFF_BROADCAST :: BROADCAST;
 
- IFF_DEBUG :: DEBUG;
+    IFF_DEBUG :: DEBUG;
 
- IFF_LOOPBACK :: LOOPBACK;
+    IFF_LOOPBACK :: LOOPBACK;
 
- IFF_POINTOPOINT :: POINTOPOINT;
+    IFF_POINTOPOINT :: POINTOPOINT;
 
- IFF_NOTRAILERS :: NOTRAILERS;
+    IFF_NOTRAILERS :: NOTRAILERS;
 
- IFF_RUNNING :: RUNNING;
+    IFF_RUNNING :: RUNNING;
 
- IFF_NOARP :: NOARP;
+    IFF_NOARP :: NOARP;
 
- IFF_PROMISC :: PROMISC;
+    IFF_PROMISC :: PROMISC;
 
- IFF_ALLMULTI :: ALLMULTI;
+    IFF_ALLMULTI :: ALLMULTI;
 
- IFF_MASTER :: MASTER;
+    IFF_MASTER :: MASTER;
 
- IFF_SLAVE :: SLAVE;
+    IFF_SLAVE :: SLAVE;
 
- IFF_MULTICAST :: MULTICAST;
+    IFF_MULTICAST :: MULTICAST;
 
- IFF_PORTSEL :: PORTSEL;
+    IFF_PORTSEL :: PORTSEL;
 
- IFF_AUTOMEDIA :: AUTOMEDIA;
+    IFF_AUTOMEDIA :: AUTOMEDIA;
 
- IFF_DYNAMIC :: DYNAMIC;
+    IFF_DYNAMIC :: DYNAMIC;
 }
 
 ifaddr :: struct {
- ifa_addr: sockaddr;
- ifa_ifu: union {
- ifu_broadaddr: sockaddr;
- ifu_dstaddr: sockaddr;
- };
+    ifa_addr: sockaddr;
+    ifa_ifu: union {
+        ifu_broadaddr: sockaddr;
+        ifu_dstaddr: sockaddr;
+    };
 
- iface :: struct {}
- ifa_ifp: *iface;
- ifa_next: *ifaddr;
+    iface :: struct {}
+    ifa_ifp: *iface;
+    ifa_next: *ifaddr;
 }
 
 ifmap :: struct {
- mem_start: u64;
- mem_end: u64;
- base_addr: u16;
- irq: u8;
- dma: u8;
- port: u8;
+    mem_start: u64;
+    mem_end: u64;
+    base_addr: u16;
+    irq: u8;
+    dma: u8;
+    port: u8;
 }
 
 ifreq :: struct {
- ifr_ifrn: union {
- ifrn_name: [16] u8;
- };
+    ifr_ifrn: union {
+        ifrn_name: [16] u8;
+    };
 
- ifr_ifru: union {
- ifru_addr: sockaddr;
- ifru_dstaddr: sockaddr;
- ifru_broadaddr: sockaddr;
- ifru_netmask: sockaddr;
- ifru_hwaddr: sockaddr;
- ifru_flags: s16;
- ifru_ivalue: s32;
- ifru_mtu: s32;
- ifru_map: ifmap;
- ifru_slave: [16] u8;
- ifru_newname: [16] u8;
- ifru_data: *u8;
- };
+    ifr_ifru: union {
+        ifru_addr: sockaddr;
+        ifru_dstaddr: sockaddr;
+        ifru_broadaddr: sockaddr;
+        ifru_netmask: sockaddr;
+        ifru_hwaddr: sockaddr;
+        ifru_flags: s16;
+        ifru_ivalue: s32;
+        ifru_mtu: s32;
+        ifru_map: ifmap;
+        ifru_slave: [16] u8;
+        ifru_newname: [16] u8;
+        ifru_data: *u8;
+    };
 }
 
 ifconf :: struct {
- ifc_len: s32;
- ifc_ifcu: union {
- ifcu_buf: *u8;
- ifcu_req: *ifreq;
- };
+    ifc_len: s32;
+    ifc_ifcu: union {
+        ifcu_buf: *u8;
+        ifcu_req: *ifreq;
+    };
 }
 
 if_nametoindex :: (__ifname: *u8) -> u32 #foreign libc;
@@ -1633,19 +1633,19 @@ if_nameindex_ :: () -> *if_nameindex #foreign libc "if_nameindex";
 if_freenameindex :: (__ptr: *if_nameindex) -> void #foreign libc;
 
 ifaddrs :: struct {
- ifa_next: *ifaddrs;
+    ifa_next: *ifaddrs;
 
- ifa_name: *u8;
- ifa_flags: u32;
+    ifa_name: *u8;
+    ifa_flags: u32;
 
- ifa_addr: *sockaddr;
- ifa_netmask: *sockaddr;
- ifa_ifu: union {
- ifu_broadaddr: *sockaddr;
- ifu_dstaddr: *sockaddr;
- };
+    ifa_addr: *sockaddr;
+    ifa_netmask: *sockaddr;
+    ifa_ifu: union {
+        ifu_broadaddr: *sockaddr;
+        ifu_dstaddr: *sockaddr;
+    };
 
- ifa_data: *void;
+    ifa_data: *void;
 }
 
 getifaddrs :: (__ifap: **ifaddrs) -> s32 #foreign libc;

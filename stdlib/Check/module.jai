@@ -112,10 +112,19 @@ count_percents :: (s: string, site: *Code_Literal) -> int {
     while cursor < s.count {
         byte := s[cursor];
         cursor += 1;
-        if byte == #char "\\" && cursor < s.count { cursor += 1; continue; }
+        if byte == #char "\\" && cursor < s.count {
+            cursor += 1;
+            continue;
+        }
         if byte != #char "%" continue;
-        if cursor < s.count && s[cursor] == #char "%" { cursor += 1; continue; }
-        if cursor + 1 < s.count && s[cursor] == #char "0" && s[cursor + 1] == #char "0" { cursor += 2; continue; }
+        if cursor < s.count && s[cursor] == #char "%" {
+            cursor += 1;
+            continue;
+        }
+        if cursor + 1 < s.count && s[cursor] == #char "0" && s[cursor + 1] == #char "0" {
+            cursor += 2;
+            continue;
+        }
         numeric: s64;
         digits: s64;
         while cursor < s.count && s[cursor] >= #char "0" && s[cursor] <= #char "9" {

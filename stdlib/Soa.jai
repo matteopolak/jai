@@ -3,7 +3,7 @@
 #import "Basic";
 #scope_export
 
-Soa :: struct (T: Type, N: s64) {
+Soa :: struct(T: Type, N: s64) {
     #assert N >= 0;
     #insert #run soa_columns(T, N);
 }
@@ -11,18 +11,18 @@ Soa :: struct (T: Type, N: s64) {
 operator [] :: (soa: $S/Soa, i: int) -> S.T {
     assert(i >= 0 && i < S.N);
     result: S.T;
-    row := cast(*Type_Info_Struct)type_info(S.T);
-    columns := cast(*Type_Info_Struct)type_info(S);
+    row := cast(*Type_Info_Struct) type_info(S.T);
+    columns := cast(*Type_Info_Struct) type_info(S);
     for column: columns.members {
         if !soa_storage_member(*column) continue;
         member := get_field(row, column.name);
         assert(member != null);
-        shape := cast(*Type_Info_Array)column.type;
+        shape := cast(*Type_Info_Array) column.type;
         assert(shape.type == .ARRAY && shape.array_type == .FIXED && shape.array_count == S.N);
         assert(shape.element_type == member.type);
         width := member.type.runtime_size;
-        destination := cast(*u8)*result + member.offset_in_bytes;
-        source := cast(*u8)*soa + column.offset_in_bytes + i * width;
+        destination := cast(*u8) *result + member.offset_in_bytes;
+        source := cast(*u8) *soa + column.offset_in_bytes + i * width;
         memcpy(destination, source, width);
     }
     return result;
@@ -30,18 +30,18 @@ operator [] :: (soa: $S/Soa, i: int) -> S.T {
 
 operator []= :: (array: *$S/Soa, index: int, value: S.T) {
     assert(index >= 0 && index < S.N);
-    row := cast(*Type_Info_Struct)type_info(S.T);
-    columns := cast(*Type_Info_Struct)type_info(S);
+    row := cast(*Type_Info_Struct) type_info(S.T);
+    columns := cast(*Type_Info_Struct) type_info(S);
     for column: columns.members {
         if !soa_storage_member(*column) continue;
         member := get_field(row, column.name);
         assert(member != null);
-        shape := cast(*Type_Info_Array)column.type;
+        shape := cast(*Type_Info_Array) column.type;
         assert(shape.type == .ARRAY && shape.array_type == .FIXED && shape.array_count == S.N);
         assert(shape.element_type == member.type);
         width := member.type.runtime_size;
-        source := cast(*u8)*value + member.offset_in_bytes;
-        destination := cast(*u8)array + column.offset_in_bytes + index * width;
+        source := cast(*u8) *value + member.offset_in_bytes;
+        destination := cast(*u8) array + column.offset_in_bytes + index * width;
         memcpy(destination, source, width);
     }
 }
@@ -49,7 +49,10 @@ operator []= :: (array: *$S/Soa, index: int, value: S.T) {
 for_expansion :: (array: *$S/Soa, body: Code, flags: For_Flags) #expand {
     cursor: int = 0;
     stride: int = 1;
-    #if flags & .REVERSE { cursor = S.N - 1; stride = -1; }
+    #if flags & .REVERSE {
+        cursor = S.N - 1;
+        stride = -1;
+    }
     while cursor >= 0 && cursor < S.N {
         `it_index := cursor;
         cursor += stride;
@@ -74,8 +77,8 @@ soa_columns :: (T: Type, N: s64) -> string {
     assert(N >= 0);
     info := type_info(T);
     assert(info.type == .STRUCT, "Soa requires a record type");
-    record := cast(*Type_Info_Struct)info;
-    selected: [..]*Type_Info_Struct_Member;
+    record := cast(*Type_Info_Struct) info;
+    selected: [..] *Type_Info_Struct_Member;
     selected.allocator = temp;
     builder: String_Builder;
     builder.allocator = temp;

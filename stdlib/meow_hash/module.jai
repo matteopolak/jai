@@ -4,11 +4,11 @@
 // ARM64 and wasm, where callers (focus) select a portable fallback with
 // `#if CPU == .X64`, so only the shared declarations live here.
 
-MEOW_HASH_VERSION      :: 5;
+MEOW_HASH_VERSION :: 5;
 MEOW_HASH_VERSION_NAME :: "0.5/calico";
 
-MEOW_PAGESIZE       :: 4096;
-MEOW_PREFETCH       :: 4096;
+MEOW_PAGESIZE :: 4096;
+MEOW_PREFETCH :: 4096;
 MEOW_PREFETCH_LIMIT :: 0x3ff;
 
 // The first 256 hexadecimal digits of pi (0x3.243F6A88...).

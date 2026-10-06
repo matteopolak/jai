@@ -2,27 +2,27 @@
 #scope_module
 
 Demux :: struct {
-	buffer: *Buffer;
-	destroy_buffer_when_done := false;
-	system_clock_ref: float64;
+    buffer: *Buffer;
+    destroy_buffer_when_done := false;
+    system_clock_ref: float64;
 
-	last_file_size: s64;
+    last_file_size: s64;
 
-	last_decoded_pts: float64;
-	start_time:       float64;
-	duration:         float64;
+    last_decoded_pts: float64;
+    start_time: float64;
+    duration: float64;
 
-	start_code: Start_Code;
+    start_code: Start_Code;
 
-	has_pack_header: bool;
-	has_system_header: bool;
-	has_headers: bool;
+    has_pack_header: bool;
+    has_system_header: bool;
+    has_headers: bool;
 
-	num_audio_streams: s32;
-	num_video_streams: s32;
+    num_audio_streams: s32;
+    num_video_streams: s32;
 
     current_packet: Packet;
-	next_packet:    Packet;
+    next_packet: Packet;
 }
 
 demux_create :: (buffer: *Buffer, destroy_when_done: bool) -> *Demux {

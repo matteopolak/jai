@@ -19,6 +19,10 @@ output_open :: (config: Sound_Player_Config) -> channels: s32, rate: s32, ok: bo
 output_start :: () {}
 output_close :: () {}
 // Report the queue as permanently full so top_up_output never mixes on its own.
-output_frames_queued :: () -> queued: s64, at_least: s64 { return S64_MAX, 0; }
+output_frames_queued :: () -> queued: s64, at_least: s64 {
+    return S64_MAX, 0;
+}
 output_write :: (frames: s64) {}
-output_devices :: () -> [] Output_Device { return .[]; }
+output_devices :: () -> [] Output_Device {
+    return .[];
+}

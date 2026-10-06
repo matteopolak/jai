@@ -16,7 +16,9 @@ Deep_Copy_Config :: struct {
     follow_struct_pointers := true;
 }
 
-Pointer_Map :: struct { table: Table(*void, *void); }
+Pointer_Map :: struct {
+    table: Table(*void, *void);
+}
 
 Deep_Copy :: (value: *$T, config: Deep_Copy_Config, preallocated_root: *void = null, pointer_map: *Pointer_Map = null, loc := #caller_location) -> *T {
     if !value return null;

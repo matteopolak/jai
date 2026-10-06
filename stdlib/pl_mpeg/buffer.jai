@@ -1,42 +1,42 @@
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 Buffer_Mode :: enum {
-	FILE;
-	FIXED_MEM;
-	RING;
-	APPEND;
+    FILE;
+    FIXED_MEM;
+    RING;
+    APPEND;
 }
 
 Buffer :: struct {
-	bit_index:  s64;
-	capacity:   s64;
-	length:     s64;
-	total_size: s64;
+    bit_index: s64;
+    capacity: s64;
+    length: s64;
+    total_size: s64;
 
-	discard_read_bytes := false;
+    discard_read_bytes := false;
 
-	has_ended       := false;
-	free_when_done  := false;
-	close_when_done := false;
-    file_initted    := false;
+    has_ended := false;
+    free_when_done := false;
+    close_when_done := false;
+    file_initted := false;
 
     fh: File;
 
-	load_callback: Buffer_Load_Callback;
-	load_callback_user_data: *void;
+    load_callback: Buffer_Load_Callback;
+    load_callback_user_data: *void;
 
-	bytes: *u8;
+    bytes: *u8;
 
     mode: Buffer_Mode;
 }
 
 Vlc :: struct {
-	index: s16;
-	value: s16;
+    index: s16;
+    value: s16;
 }
 
 Vlc_Uint :: struct {
-	index: s16;
-	value: u16;
+    index: s16;
+    value: u16;
 }
 
 buffer_create_with_filename :: (filename: string) -> *Buffer {
@@ -65,7 +65,10 @@ buffer_create_with_file :: (fh: File, close_when_done: bool) -> *Buffer {
     buffer_states = entry;
     entry.native = raw_plm_buffer_create_with_callbacks(file_load_callback, file_seek_callback,
                                                         file_tell_callback, cast(u64) length, entry);
-    if !entry.native { forget_buffer(entry.public); return null; }
+    if !entry.native {
+        forget_buffer(entry.public);
+        return null;
+    }
     pull_buffer(entry);
     return entry.public;
 }

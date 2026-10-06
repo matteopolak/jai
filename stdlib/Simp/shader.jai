@@ -15,8 +15,13 @@ Shader_Platform :: struct {
     diffuse_texture_loc: GLint = -1;
     alpha_blend := false;
 }
-Shader :: struct { using platform: Shader_Platform; }
-Extra_Draw_Info :: struct { is_background := false; is_translucent_on_the_right := false; }
+Shader :: struct {
+    using platform: Shader_Platform;
+}
+Extra_Draw_Info :: struct {
+    is_background := false;
+    is_translucent_on_the_right := false;
+}
 shader_text: Shader;
 shader_color: Shader;
 shader_color_with_blend: Shader;
@@ -50,12 +55,15 @@ set_shader_for_rects :: ($extra_draw_info := Extra_Draw_Info.{}) {
 // A color field over `rect` (x, y, width, height). `mode` picks the channels (0..5 for the plane
 // varying two channels with the third fixed at `value`; 16+ for a single ramp, +32 for horizontal).
 set_shader_for_gradient :: (rect: Vector4, mode: u8, value: float) {
-    CheckInit(); immediate_flush();
+    CheckInit();
+    immediate_flush();
     context.simp.specific.gradient_rect = rect;
     context.simp.specific.gradient_mode = mode;
     context.simp.specific.gradient_value = value;
     bind_builtin_shader(*shader_gradient);
-    #if render_api == .OPENGL { gl_set_gradient(rect, mode, value); }
+    #if render_api == .OPENGL {
+        gl_set_gradient(rect, mode, value);
+    }
 }
 // Pushes the pixel-space projection for whatever is being drawn into (a texture target or the
 // current window) to the bound shader. Needed again after the target changes size.
@@ -72,7 +80,9 @@ set_parameter :: (shader: *Shader, name: string, m: Matrix4) {
         else gl_api.glUniformMatrix4fv(location, 1, true, *m._11);
     }
 }
-set_parameter :: (shader: *Shader, name: *u8, m: Matrix4) { set_parameter(shader, to_string(name), m); }
+set_parameter :: (shader: *Shader, name: *u8, m: Matrix4) {
+    set_parameter(shader, to_string(name), m);
+}
 set_parameter :: (shader: *Shader, name: string, v: Vector4) {
     #if render_api == .OPENGL {
         location := get_uniform_location(shader.gl_handle, name);
@@ -107,7 +117,7 @@ bind_builtin_shader :: (program: *Shader) {
     CheckInit();
     if context.simp.current_shader == program return;
     immediate_set_shader(program);
-    set_projection();   // A newly bound program has not seen this target's projection.
+    set_projection(); // A newly bound program has not seen this target's projection.
 }
 render_target_extent :: () -> s32, s32 {
     texture := context.simp.texture_render_target;

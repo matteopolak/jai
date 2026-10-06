@@ -34,7 +34,10 @@ same_file :: (source: string, destination: string) -> bool {
     if !Windows.GetFileInformationByHandleEx(a, cast(Windows.FILE_INFO_BY_HANDLE_CLASS) 18, *a_id, size_of(File_Identity)) || !Windows.GetFileInformationByHandleEx(b, cast(Windows.FILE_INFO_BY_HANDLE_CLASS) 18, *b_id, size_of(File_Identity)) return false;
     return a_id.volume == b_id.volume && memcmp(a_id.identifier.data, b_id.identifier.data, 16) == 0;
 }
-File_Identity :: struct { volume: u64; identifier: [16] u8; }
+File_Identity :: struct {
+    volume: u64;
+    identifier: [16] u8;
+}
 File_Attribute_Data :: struct {
     dwFileAttributes: u32;
     ftCreationTime: Windows.FILETIME;

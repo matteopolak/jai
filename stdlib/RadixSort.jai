@@ -5,26 +5,28 @@
 #scope_export
 
 RadixSort :: struct {
-    ranks: []u32;
-    ranks2: []u32;
+    ranks: [] u32;
+    ranks2: [] u32;
     valid_ranks: bool;
     allocator: Allocator;
 }
-reset :: (using radix: *RadixSort) { valid_ranks = false; }
+reset :: (using radix: *RadixSort) {
+    valid_ranks = false;
+}
 resize :: (using radix: *RadixSort, new_size: u32) {
     if ranks.count == new_size return;
     if !allocator.proc allocator = context.allocator;
     replacement := NewArray(new_size, u32,, allocator);
     scratch := NewArray(new_size, u32,, allocator);
-    if ranks.data free(ranks.data, allocator=allocator);
-    if ranks2.data free(ranks2.data, allocator=allocator);
+    if ranks.data free(ranks.data, allocator = allocator);
+    if ranks2.data free(ranks2.data, allocator = allocator);
     ranks = replacement;
     ranks2 = scratch;
     valid_ranks = false;
 }
 free_resources :: (using radix: *RadixSort) {
-    if ranks.data free(ranks.data, allocator=allocator);
-    if ranks2.data free(ranks2.data, allocator=allocator);
+    if ranks.data free(ranks.data, allocator = allocator);
+    if ranks2.data free(ranks2.data, allocator = allocator);
     ranks = .{};
     ranks2 = .{};
     valid_ranks = false;
@@ -37,18 +39,30 @@ rank :: (using radix: *RadixSort, i: int) -> u32 {
     assert(i >= 0 && i < ranks.count);
     return ranks[i];
 }
-sort :: (using radix: *RadixSort, input: *u32, count: u32) { _merge_ranks(radix, input, count); }
-sort :: (using radix: *RadixSort, input: *u64, count: u32) { _merge_ranks(radix, input, count); }
-sort :: (using radix: *RadixSort, input: *float, count: u32) { _merge_ranks(radix, input, count); }
-sort :: (using radix: *RadixSort, input: []u32) { sort(radix, input.data, cast(u32)input.count); }
-sort :: (using radix: *RadixSort, input: []u64) { sort(radix, input.data, cast(u32)input.count); }
-sort :: (using radix: *RadixSort, input: []float) { sort(radix, input.data, cast(u32)input.count); }
-reorder :: (input: *[..]$T, radix: RadixSort) {
+sort :: (using radix: *RadixSort, input: *u32, count: u32) {
+    _merge_ranks(radix, input, count);
+}
+sort :: (using radix: *RadixSort, input: *u64, count: u32) {
+    _merge_ranks(radix, input, count);
+}
+sort :: (using radix: *RadixSort, input: *float, count: u32) {
+    _merge_ranks(radix, input, count);
+}
+sort :: (using radix: *RadixSort, input: [] u32) {
+    sort(radix, input.data, cast(u32) input.count);
+}
+sort :: (using radix: *RadixSort, input: [] u64) {
+    sort(radix, input.data, cast(u32) input.count);
+}
+sort :: (using radix: *RadixSort, input: [] float) {
+    sort(radix, input.data, cast(u32) input.count);
+}
+reorder :: (input: *[..] $T, radix: RadixSort) {
     assert(input.count == radix.ranks.count && radix.valid_ranks);
-    result: [..]T;
+    result: [..] T;
     result.allocator = input.allocator;
     array_resize(*result, input.count, false);
-    for i: 0..input.count-1 result[i] = input.*[radix.ranks[i]];
+    for i: 0..input.count - 1 result[i] = input.*[radix.ranks[i]];
     array_reset(input);
     input.* = result;
 }
@@ -74,14 +88,14 @@ _merge_ranks :: (radix: *RadixSort, input: *$T, count: u32) {
     if input == null || count == 0 return;
     resize(radix, count);
     if !radix.valid_ranks {
-        for i: 0..cast(int)count-1 radix.ranks[i] = cast(u32)i;
+        for i: 0..cast(int) count - 1 radix.ranks[i] = cast(u32) i;
     }
     width: s64 = 1;
     while width < count {
         base: s64 = 0;
         while base < count {
-            middle := min(base + width, cast(s64)count);
-            end := min(middle + width, cast(s64)count);
+            middle := min(base + width, cast(s64) count);
+            end := min(middle + width, cast(s64) count);
             left := base;
             right := middle;
             output := base;

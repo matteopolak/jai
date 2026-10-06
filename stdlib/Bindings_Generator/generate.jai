@@ -2,7 +2,7 @@
 
 #scope_module
 
-#if OS != .WINDOWS  POSIX :: #import "POSIX";
+#if OS != .WINDOWS POSIX :: #import "POSIX";
 Compiler :: #import "Compiler";
 
 GENERATED_FILE_HEADER :: #string DONE
@@ -29,17 +29,17 @@ generator_command :: (loc: Source_Code_Location) -> string {
     if cwd && begins_with(script, cwd) && script.count > cwd.count && script[cwd.count] == #char "/" {
         script = advance(script, cwd.count + 1);
     }
-    if script  array_add(*args, script);
+    if script array_add(*args, script);
     extra: [] string;
     if #compile_time {
         extra = Compiler.get_toplevel_command_line();
     } else {
         all := get_command_line_arguments();
-        if all.count > 1  extra = array_view(all, 1, all.count - 1);
+        if all.count > 1 extra = array_view(all, 1, all.count - 1);
     }
     if extra.count {
         array_add(*args, "-");
-        for extra  array_add(*args, it);
+        for extra array_add(*args, it);
     }
     return join(..args, separator = " ");
 }
@@ -56,7 +56,7 @@ generate_bindings :: (options: Generate_Bindings_Options, filename: string, log_
         log("Bindings_Generator: wrote %", filename);
         return true;
     }
-    if generated  log_error("Bindings_Generator: could not write the bindings to \"%\"\n", filename);
+    if generated log_error("Bindings_Generator: could not write the bindings to \"%\"\n", filename);
     return false;
 }
 
@@ -66,7 +66,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     builder: String_Builder;
     init_string_builder(*builder);
 
-    for * options.path_fragments_to_treat_as_non_system_paths  it.* = to_lower_copy(it.*);
+    for *options.path_fragments_to_treat_as_non_system_paths it.* = to_lower_copy(it.*);
 
     context.generator = New(Generator_State);
     context.generator_options = options;
@@ -75,7 +75,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
 
     success := true;
     if options.libpaths.count == 0 array_add(*options.libpaths, ".");
-    for options.library_search_paths  array_add(*options.libpaths, it);
+    for options.library_search_paths array_add(*options.libpaths, it);
     context.generator_options = options;
 
     // Libraries ---------------------------------------------------------
@@ -120,7 +120,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         }
     }
     for options.system_include_paths {
-        if it == GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH continue;  // libclang finds its own headers
+        if it == GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH continue; // libclang finds its own headers
         clang("add_arg", 0, 0, "-isystem");
         clang("add_arg", 0, 0, it);
     }
@@ -135,13 +135,13 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         for options.extra_clang_arguments {
             if it == "-target" || it == "--target" || begins_with(it, "--target=") || it == "-mms-bitfields" || begins_with(it, "-fms-") has_layout_choice = true;
         }
-        if !has_layout_choice  clang("add_arg", 0, 0, "-mms-bitfields");
+        if !has_layout_choice clang("add_arg", 0, 0, "-mms-bitfields");
     }
-    for options.extra_clang_arguments  clang("add_arg", 0, 0, it);
-    if options.try_to_preserve_comments  clang("add_arg", 0, 0, "-fparse-all-comments");
+    for options.extra_clang_arguments clang("add_arg", 0, 0, it);
+    if options.try_to_preserve_comments clang("add_arg", 0, 0, "-fparse-all-comments");
 
     temp_builder: String_Builder;
-    for options.source_files  print_to_builder(*temp_builder, "#include \"%\"\n", it);
+    for options.source_files print_to_builder(*temp_builder, "#include \"%\"\n", it);
     clang("file", 0, 0, "generate_temp.h");
     clang("contents", 0, 0, builder_to_string(*temp_builder));
 
@@ -154,7 +154,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     diag_count := clang("diag_count");
     if diag_count {
         log("Clang says:\n");
-        for 0..diag_count-1 {
+        for 0..diag_count - 1 {
             severity := clang("diag", it);
             // 3 = error, 4 = fatal
             if severity >= 3 success = false;
@@ -168,7 +168,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
 
     // Convert -------------------------------------------------------------
     top_children := get_children(root);
-    for top_children  handle_toplevel_cursor(it, *g.global_scope.members, null);
+    for top_children handle_toplevel_cursor(it, *g.global_scope.members, null);
     // Back to front, so the recorded indices of earlier entries stay valid.
     for < g.pending_anon_enums {
         e := it._enum;
@@ -179,24 +179,24 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     }
     // Named types reached only through other declarations still need to be emitted.
     for g.structs_to_check {
-        if it.name && !it.parent  add_to_scope(*g.global_scope.members, it);
+        if it.name && !it.parent add_to_scope(*g.global_scope.members, it);
     }
 
     post_process(g, *options);
 
     if options.visitor {
-        for g.global_scope.members  visit_declarations(options.visitor, it);
+        for g.global_scope.members visit_declarations(options.visitor, it);
     }
 
-    for g.global_scope.members  visit_declarations(omit_unnecessary_typedefs_and_macros, it);
+    for g.global_scope.members visit_declarations(omit_unnecessary_typedefs_and_macros, it);
 
     mark_tail_padding_bases(g);
 
-    if options.will_print_bindings  options.will_print_bindings();
+    if options.will_print_bindings options.will_print_bindings();
 
     // Print ---------------------------------------------------------------
-    if options.add_generator_command  print_to_builder(*builder, GENERATED_FILE_HEADER_WITH_COMMAND, generator_command(loc));
-    else                              append(*builder, GENERATED_FILE_HEADER);
+    if options.add_generator_command print_to_builder(*builder, GENERATED_FILE_HEADER_WITH_COMMAND, generator_command(loc));
+    else append(*builder, GENERATED_FILE_HEADER);
     print_to_builder(*builder, "%\n\n", options.header);
 
     previous: Location;
@@ -207,12 +207,12 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         append(*builder, "\n");
     }
     print_objc_selector_table(*builder, g);
-    for g.deferred_struct_checks  print_struct_checks(*builder, it);
+    for g.deferred_struct_checks print_struct_checks(*builder, it);
     print_file_scope_part(*builder, g, *options);
     append(*builder, options.footer);
 
     clang("dispose");
-    if log_results  log_generator_results(g);
+    if log_results log_generator_results(g);
     return builder, true;
 }
 
@@ -223,14 +223,14 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
 print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options: *Generate_Bindings_Options) {
     uses: [..] string;
     uses.allocator = temp;
-    if options.generate_compile_time_struct_checks  array_add(*uses, "assert");
-    if g.int128_was_referenced                      array_add(*uses, "S128/U128");
-    if g.generated_printf_wrapper                   array_add(*uses, "tprint");
+    if options.generate_compile_time_struct_checks array_add(*uses, "assert");
+    if g.int128_was_referenced array_add(*uses, "S128/U128");
+    if g.generated_printf_wrapper array_add(*uses, "tprint");
     declare_libraries := options.generate_library_declarations && g.libraries.count > 0;
     if !uses.count && !declare_libraries && !g.long_double_was_referenced return;
 
     append(builder, "\n#scope_file\n\n");
-    if uses.count  print_to_builder(builder, "#import \"Basic\"; // The generated code uses %.\n\n", join(..uses, separator = ", "));
+    if uses.count print_to_builder(builder, "#import \"Basic\"; // The generated code uses %.\n\n", join(..uses, separator = ", "));
     if g.long_double_was_referenced {
         append(builder, "#import \"Jaic_Extensions\"; // Long_Double: C's long double (not standard Jai, jaic only).\n\n");
     }
@@ -239,8 +239,8 @@ print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options
         // A system library is found by the linker; the others are paths, below the given prefix.
         path := ifx lib.is_system_library then lib.full_path else join(options.generated_library_path_prefix, lib.full_path);
         modifiers := "";
-        if lib.is_system_library   modifiers = ",system";
-        if !lib.is_shared_library  modifiers = join(modifiers, ",no_dll");
+        if lib.is_system_library modifiers = ",system";
+        if !lib.is_shared_library modifiers = join(modifiers, ",no_dll");
         print_to_builder(builder, "% :: #library% \"%\";\n", lib.name, modifiers, path);
     }
 }
@@ -248,10 +248,10 @@ print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options
 log_generator_results :: (g: *Generator_State) {
     counts := g.counts;
     log("    % functions", counts.functions);
-    log("    % structs",   counts.structs);
-    log("    % enums",     counts.enums);
-    if counts.ignored_system_declarations  log("    % system declarations were ignored.", counts.ignored_system_declarations);
-    if counts.stripped  log("    % declarations were stripped!%", counts.stripped, ifx context.generator_options.log_stripped_declarations then "" else " Enable log_stripped_declarations to see why.");
+    log("    % structs", counts.structs);
+    log("    % enums", counts.enums);
+    if counts.ignored_system_declarations log("    % system declarations were ignored.", counts.ignored_system_declarations);
+    if counts.stripped log("    % declarations were stripped!%", counts.stripped, ifx context.generator_options.log_stripped_declarations then "" else " Enable log_stripped_declarations to see why.");
     if !counts.functions && !counts.structs && !counts.enums && counts.ignored_system_declarations {
         log_error("Nothing was generated: declarations from system headers are skipped unless \"Generate_Bindings_Options.system_types_to_include\" or \".path_fragments_to_treat_as_non_system_paths\" lists them.");
     }
@@ -262,14 +262,14 @@ log_generator_results :: (g: *Generator_State) {
 apply_target_defaults :: (options: *Generate_Bindings_Options) {
     has_target := false;
     for options.extra_clang_arguments {
-        if it == "-target" || it == "--target" || begins_with(it, "--target=") || begins_with(it, "-target=")  has_target = true;
+        if it == "-target" || it == "--target" || begins_with(it, "--target=") || begins_with(it, "-target=") has_target = true;
     }
     if options.os == .MACOS && OS == .MACOS {
         if !options.system_library_paths.count {
             sdk, ok := get_macos_sdk_path();
-            if ok  array_add(*options.system_library_paths, sprint("%/usr/lib", sdk));
+            if ok array_add(*options.system_library_paths, sprint("%/usr/lib", sdk));
         }
-        if !has_target  array_add(*options.extra_clang_arguments, "-target", get_macos_target_triple(options.cpu));
+        if !has_target array_add(*options.extra_clang_arguments, "-target", get_macos_target_triple(options.cpu));
     }
     if options.os == .ANDROID {
         triple, triple_with_sdk := get_android_target_triple(options.cpu);
@@ -277,9 +277,9 @@ apply_target_defaults :: (options: *Generate_Bindings_Options) {
             ndk := get_ndk_paths();
             array_add(*options.system_library_paths, sprint("%/usr/lib/%/%", ndk.sysroot, triple, ANDROID_SDK_LEVEL), sprint("%/usr/lib/%", ndk.sysroot, triple));
         }
-        if !has_target  array_add(*options.extra_clang_arguments, "-target", triple_with_sdk);
-        if !options.shared_library_suffix  options.shared_library_suffix = ".so";
-        if !options.static_library_suffix  options.static_library_suffix = ".a";
+        if !has_target array_add(*options.extra_clang_arguments, "-target", triple_with_sdk);
+        if !options.shared_library_suffix options.shared_library_suffix = ".so";
+        if !options.static_library_suffix options.static_library_suffix = ".a";
     }
 }
 
@@ -290,9 +290,9 @@ apply_target_defaults :: (options: *Generate_Bindings_Options) {
 omit_unnecessary_typedefs_and_macros :: (decl: *Declaration, parent: *Declaration) -> Declaration_Visit_Result {
     if decl.kind == .TYPEDEF {
         td := cast(*Typedef) decl;
-        if td.type && td.type.type_of_struct && td.type.type_of_struct.output_name == td.output_name  td.decl_flags |= .OMIT_FROM_OUTPUT;
-        if td.type && td.type.type_of_enum && td.type.type_of_enum.output_name == td.output_name  td.decl_flags |= .OMIT_FROM_OUTPUT;
-        if td.type && td.type.type_of_typedef && td.type.type_of_typedef.output_name == td.output_name  td.decl_flags |= .OMIT_FROM_OUTPUT;
+        if td.type && td.type.type_of_struct && td.type.type_of_struct.output_name == td.output_name td.decl_flags |= .OMIT_FROM_OUTPUT;
+        if td.type && td.type.type_of_enum && td.type.type_of_enum.output_name == td.output_name td.decl_flags |= .OMIT_FROM_OUTPUT;
+        if td.type && td.type.type_of_typedef && td.type.type_of_typedef.output_name == td.output_name td.decl_flags |= .OMIT_FROM_OUTPUT;
     }
     return .RECURSE;
 }
@@ -330,7 +330,7 @@ post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
             if decl.macro_value_result != .KEEP continue;
 
             unwrap := false;
-            for options.macro_prefixes_to_unwrap  if begins_with(decl.name, it) unwrap = true;
+            for options.macro_prefixes_to_unwrap if begins_with(decl.name, it) unwrap = true;
             if unwrap decl.decl_flags |= .OMIT_FROM_OUTPUT;
 
             lit := cast(*Literal) decl.expression;
@@ -347,7 +347,7 @@ post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
                 e, is_new := find_or_create_enum_for_macro(g, enum_name, decl);
                 if is_new array_add(*kept, e);
                 duplicate := false;
-                for e.enumerates  if it.name == decl.name duplicate = true;
+                for e.enumerates if it.name == decl.name duplicate = true;
                 if !duplicate {
                     en: Enum.Enumerate;
                     en.name = decl.name;
@@ -367,19 +367,19 @@ post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
         array_add(*kept, decl);
     }
     g.global_scope.members = kept;
-    for g.enum_macros  compute_enum_names(it, false);
+    for g.enum_macros compute_enum_names(it, false);
 
     // Values and macros that name a macro which became an enum value now name that value.
     if g.macros_converted_to_enum_values.count {
         for e: g.enum_macros {
-            for * e.enumerates {
-                if it.string_value  it.string_value = rewrite_enum_macro_references(g, it.string_value, e);
+            for *e.enumerates {
+                if it.string_value it.string_value = rewrite_enum_macro_references(g, it.string_value, e);
             }
         }
         for decl: g.global_scope.members {
             if decl.kind != .MACRO_DEFINITION || !decl.expression || decl.expression.kind != .LITERAL continue;
             lit := cast(*Literal) decl.expression;
-            if lit.raw_value  lit.raw_value = rewrite_enum_macro_references(g, lit.raw_value, null);
+            if lit.raw_value lit.raw_value = rewrite_enum_macro_references(g, lit.raw_value, null);
         }
     }
 
@@ -462,8 +462,8 @@ find_or_create_enum_for_macro :: (g: *Generator_State, name: string, decl: *Decl
     made.location = decl.location;
     made.comment = decl.comment;
     options := *context.generator_options;
-    if options.alias_original_enum_names  made.flags |= .ALIAS_ORIGINAL_NAMES;
-    if options_mimic_enums()              made.flags |= .MIMIC_SPACING;
+    if options.alias_original_enum_names made.flags |= .ALIAS_ORIGINAL_NAMES;
+    if options_mimic_enums() made.flags |= .MIMIC_SPACING;
     array_add(*g.enum_macros, made);
     return made, true;
 }
@@ -513,7 +513,7 @@ find_library_for_symbol :: (g: *Generator_State, symbol: string) -> *Library_Inf
     unknown: *Library_Info;
     for g.libraries {
         if library_has_symbol(it, symbol) return it;
-        if !it.symbols_known && !it.handle && !unknown  unknown = it;
+        if !it.symbols_known && !it.handle && !unknown unknown = it;
     }
     return unknown;
 }
@@ -555,43 +555,46 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
         so := find_index_from_left(file, ".so");
         if so > 0 dot = so;
     }
-    if dot > 0  stem = slice(file, 0, dot);
+    if dot > 0 stem = slice(file, 0, dot);
     has_extension := dot > 0;
 
     lib.name = identifier;
-    if !lib.name  lib.name = make_valid_identifier(to_lower_copy(stem));
+    if !lib.name lib.name = make_valid_identifier(to_lower_copy(stem));
     lib.full_path = join(dir, stem);
 
     shared_suffix := options.shared_library_suffix;
     if !shared_suffix {
-        if options.os == .MACOS        shared_suffix = ".dylib";
+        if options.os == .MACOS shared_suffix = ".dylib";
         else if options.os == .WINDOWS shared_suffix = ".dll";
-        else                           shared_suffix = ".so";
+        else shared_suffix = ".so";
     }
     static_suffix := options.static_library_suffix;
-    if !static_suffix  static_suffix = ifx options.os == .WINDOWS then ".lib" else ".a";
+    if !static_suffix static_suffix = ifx options.os == .WINDOWS then ".lib" else ".a";
 
-    Candidate :: struct { path: string; shared: bool; }
+    Candidate :: struct {
+        path: string;
+        shared: bool;
+    }
     candidates: [..] Candidate;
     for search: paths {
         prefix := ifx search == "" then "" else join(search, "/");
         if has_extension {
-            array_add(*candidates, .{join(prefix, name), !ends_with(name, static_suffix)});
+            array_add(*candidates, .{ join(prefix, name), !ends_with(name, static_suffix) });
         } else {
-            array_add(*candidates, .{join(prefix, name, shared_suffix), true});
-            if options.os == .MACOS  array_add(*candidates, .{join(prefix, name, ".tbd"), true});
-            array_add(*candidates, .{join(prefix, name, static_suffix), false});
+            array_add(*candidates, .{ join(prefix, name, shared_suffix), true });
+            if options.os == .MACOS array_add(*candidates, .{ join(prefix, name, ".tbd"), true });
+            array_add(*candidates, .{ join(prefix, name, static_suffix), false });
             // `libnames = "foo"` also finds `libfoo.*`.
             if !begins_with(file, "lib") {
-                array_add(*candidates, .{join(prefix, dir, "lib", file, shared_suffix), true});
-                array_add(*candidates, .{join(prefix, dir, "lib", file, static_suffix), false});
+                array_add(*candidates, .{ join(prefix, dir, "lib", file, shared_suffix), true });
+                array_add(*candidates, .{ join(prefix, dir, "lib", file, static_suffix), false });
             }
         }
     }
     for candidates {
         if !file_exists(it.path) continue;
         lib.full_path = strip_library_extension(it.path);
-        if is_system  lib.full_path = stem;
+        if is_system lib.full_path = stem;
         lib.is_shared_library = it.shared;
         if ends_with(it.path, ".tbd") {
             lib.symbols_known = read_tbd_symbols(lib, it.path, options);
@@ -633,7 +636,7 @@ strip_library_extension :: (path: string) -> string {
     slash := find_index_from_right(path, #char "/");
     file := slice(path, slash + 1, path.count - slash - 1);
     dot := find_index_from_left(file, ".so.");
-    if dot < 0  dot = find_index_from_right(file, #char ".");
+    if dot < 0 dot = find_index_from_right(file, #char ".");
     if dot <= 0 return path;
     return slice(path, 0, slash + 1 + dot);
 }
@@ -677,7 +680,7 @@ read_tbd_symbols :: (lib: *Library_Info, path: string, options: Generate_Binding
     if !ok return false;
     arch := ifx options.cpu == .ARM64 then "arm64" else "x86_64";
     names: [..] string;
-    for lib.symbol_names  array_add(*names, it);
+    for lib.symbol_names array_add(*names, it);
 
     // Lists are `key: [ a, b,` continued up to `]`; a section's `targets:` precede its lists.
     section_matches := false;
@@ -697,7 +700,7 @@ read_tbd_symbols :: (lib: *Library_Info, path: string, options: Generate_Binding
             if !begins_with(value, "[") continue;
             body = advance(value, 1);
             in_list = true;
-            if list_key == "targets" || list_key == "archs"  section_matches = false;
+            if list_key == "targets" || list_key == "archs" section_matches = false;
         }
         closing := find_index_from_left(body, #char "]");
         if closing >= 0 {
@@ -711,7 +714,7 @@ read_tbd_symbols :: (lib: *Library_Info, path: string, options: Generate_Binding
                 // The linker accepts arm64e-only stubs for arm64 (most of libSystem lists only arm64e).
                 dash := find_index_from_left(entry, #char "-");
                 entry_arch := ifx dash >= 0 then slice(entry, 0, dash) else entry;
-                if entry_arch == arch || (arch == "arm64" && begins_with(entry_arch, "arm64e"))  section_matches = true;
+                if entry_arch == arch || (arch == "arm64" && begins_with(entry_arch, "arm64e")) section_matches = true;
             } else if section_matches && (list_key == "symbols" || list_key == "weak-symbols" || list_key == "thread-local-symbols") {
                 if begins_with(entry, "_") entry = advance(entry, 1);
                 add_library_symbol(lib, *names, entry);
@@ -722,7 +725,7 @@ read_tbd_symbols :: (lib: *Library_Info, path: string, options: Generate_Binding
                     lib.symbol_names = names;
                     read_tbd_symbols(lib, tprint("%1%2.tbd", sdk, path_strip_extension(entry)), options, depth + 1);
                     names.count = 0;
-                    for lib.symbol_names  array_add(*names, it);
+                    for lib.symbol_names array_add(*names, it);
                 }
             }
         }

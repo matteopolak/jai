@@ -2,7 +2,7 @@
 Windows :: #import "Windows";
 Utf8 :: #import "Windows_Utf8";
 
-create_process :: (process: *Process, args: .. string, working_directory := "", capture_and_return_output := false, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED, kill_process_if_parent_exits := true) -> success: bool {
+create_process :: (process: *Process, args: ..string, working_directory := "", capture_and_return_output := false, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED, kill_process_if_parent_exits := true) -> success: bool {
     if process.launched || args.count == 0 || !args[0] return false;
     command: string;
     if arg_quoting == .NEVER_QUOTE command = String.join(..args, separator = " ");
@@ -21,8 +21,15 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
         attributes.nLength = size_of(Windows.SECURITY_ATTRIBUTES);
         attributes.bInheritHandle = 1;
         if !Windows.CreatePipe(*child_input, *process.input.handle, *attributes, 0) return false;
-        if !Windows.CreatePipe(*process.output.handle, *child_output, *attributes, 0) { deinit(*process.input); return false; }
-        if !Windows.CreatePipe(*process.error.handle, *child_error, *attributes, 0) { deinit(*process.input); deinit(*process.output); return false; }
+        if !Windows.CreatePipe(*process.output.handle, *child_output, *attributes, 0) {
+            deinit(*process.input);
+            return false;
+        }
+        if !Windows.CreatePipe(*process.error.handle, *child_error, *attributes, 0) {
+            deinit(*process.input);
+            deinit(*process.output);
+            return false;
+        }
         Windows.SetHandleInformation(process.input.handle, 1, 0);
         Windows.SetHandleInformation(process.output.handle, 1, 0);
         Windows.SetHandleInformation(process.error.handle, 1, 0);
@@ -36,7 +43,9 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
     flags: Windows.Creation_Flags;
     if kill_process_if_parent_exits flags = cast(Windows.Creation_Flags) 4;
     if !Windows.CreateProcessW(null, native_command, null, null, xx capture_and_return_output, flags, null, directory, *startup, *process.info) {
-        deinit(*process.input); deinit(*process.output); deinit(*process.error);
+        deinit(*process.input);
+        deinit(*process.output);
+        deinit(*process.error);
         return false;
     }
     if kill_process_if_parent_exits {
@@ -49,13 +58,15 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
             Windows.CloseHandle(process.info.hProcess);
             if process.job_handle Windows.CloseHandle(process.job_handle);
             process.job_handle = cast(Windows.HANDLE) -1;
-            deinit(*process.input); deinit(*process.output); deinit(*process.error);
+            deinit(*process.input);
+            deinit(*process.output);
+            deinit(*process.error);
             return false;
         }
         Windows.ResumeThread(process.info.hThread);
     }
     process.launched = true;
-    process.saved_result = .{type = .STILL_RUNNING};
+    process.saved_result = .{ type = .STILL_RUNNING };
     process.output.eof = !capture_and_return_output;
     process.error.eof = !capture_and_return_output;
     Atomics.atomic_increment(*active_command_count);
@@ -68,9 +79,14 @@ deinit :: (pipe: *Process.Pipe) {
     pipe.eof = true;
 }
 deinit :: (process: *Process) {
-    deinit(*process.input); deinit(*process.output); deinit(*process.error);
+    deinit(*process.input);
+    deinit(*process.output);
+    deinit(*process.error);
     if process.launched {
-        if process.saved_result.type == .STILL_RUNNING { kill_process(process); get_process_result(process); }
+        if process.saved_result.type == .STILL_RUNNING {
+            kill_process(process);
+            get_process_result(process);
+        }
         Windows.CloseHandle(process.info.hThread);
         Windows.CloseHandle(process.info.hProcess);
         if process.job_handle && process.job_handle != cast(Windows.HANDLE) -1 Windows.CloseHandle(process.job_handle);
@@ -87,7 +103,10 @@ read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: 
     if pipe.eof || buffer.count == 0 return true, 0;
     available: u32;
     if !Windows.PeekNamedPipe(pipe.handle, null, 0, null, *available, null) {
-        if cast(u32) Windows.GetLastError() == 109 { deinit(pipe); return true, 0; }
+        if cast(u32) Windows.GetLastError() == 109 {
+            deinit(pipe);
+            return true, 0;
+        }
         return false, 0;
     }
     if available == 0 return true, 0;
@@ -111,7 +130,7 @@ kill_process :: (process: *Process) -> bool {
     return process.launched && (process.saved_result.type != .STILL_RUNNING || Windows.TerminateProcess(process.info.hProcess, 137) != 0);
 }
 get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Process_Result {
-    if !process.launched return true, .{type = .UNSTARTED};
+    if !process.launched return true, .{ type = .UNSTARTED };
     if process.saved_result.type != .STILL_RUNNING return true, process.saved_result;
     native_timeout: u32 = 0xffff_ffff;
     if timeout_ms >= 0 native_timeout = cast(u32) timeout_ms;
@@ -120,7 +139,7 @@ get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Pr
     if result != 0 return false, process.saved_result;
     code: u32;
     if !Windows.GetExitCodeProcess(process.info.hProcess, *code) return false, process.saved_result;
-    process.saved_result = .{type = .EXITED, exit_code = cast,no_check(s32) code};
+    process.saved_result = .{ type = .EXITED, exit_code = cast,no_check(s32) code };
     return true, process.saved_result;
 }
 

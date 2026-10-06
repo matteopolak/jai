@@ -6,7 +6,7 @@
 
 #scope_file
 
-__jaic_clang      :: (op: string, a: s64, b: s64, text: string) -> s64 #compiler;
+__jaic_clang :: (op: string, a: s64, b: s64, text: string) -> s64 #compiler;
 __jaic_clang_text :: () -> string #compiler;
 
 #scope_module
@@ -29,62 +29,62 @@ clang_string :: (op: string, a: s64 = 0, b: s64 = 0, text := "") -> string {
 
 // Cursor kinds (CXCursorKind) used by the generator.
 Cursor_Kind :: enum s32 {
-    UNEXPOSED_DECL        :: 1;
-    STRUCT_DECL           :: 2;
-    UNION_DECL            :: 3;
-    CLASS_DECL            :: 4;
-    ENUM_DECL             :: 5;
-    FIELD_DECL            :: 6;
-    ENUM_CONSTANT_DECL    :: 7;
-    FUNCTION_DECL         :: 8;
-    VAR_DECL              :: 9;
-    PARM_DECL             :: 10;
-    OBJC_INTERFACE_DECL   :: 11;
-    OBJC_CATEGORY_DECL    :: 12;
-    OBJC_PROTOCOL_DECL    :: 13;
-    OBJC_PROPERTY_DECL    :: 14;
-    OBJC_IVAR_DECL        :: 15;
+    UNEXPOSED_DECL :: 1;
+    STRUCT_DECL :: 2;
+    UNION_DECL :: 3;
+    CLASS_DECL :: 4;
+    ENUM_DECL :: 5;
+    FIELD_DECL :: 6;
+    ENUM_CONSTANT_DECL :: 7;
+    FUNCTION_DECL :: 8;
+    VAR_DECL :: 9;
+    PARM_DECL :: 10;
+    OBJC_INTERFACE_DECL :: 11;
+    OBJC_CATEGORY_DECL :: 12;
+    OBJC_PROTOCOL_DECL :: 13;
+    OBJC_PROPERTY_DECL :: 14;
+    OBJC_IVAR_DECL :: 15;
     OBJC_INSTANCE_METHOD_DECL :: 16;
     OBJC_CLASS_METHOD_DECL :: 17;
-    OBJC_SUPER_CLASS_REF  :: 40;
-    OBJC_PROTOCOL_REF     :: 41;
-    OBJC_CLASS_REF        :: 42;
-    OBJC_ROOT_CLASS       :: 431;
-    TYPEDEF_DECL          :: 20;
-    CXX_METHOD            :: 21;
-    NAMESPACE             :: 22;
-    LINKAGE_SPEC          :: 23;
-    CONSTRUCTOR           :: 24;
-    DESTRUCTOR            :: 25;
-    CONVERSION_FUNCTION   :: 26;
+    OBJC_SUPER_CLASS_REF :: 40;
+    OBJC_PROTOCOL_REF :: 41;
+    OBJC_CLASS_REF :: 42;
+    OBJC_ROOT_CLASS :: 431;
+    TYPEDEF_DECL :: 20;
+    CXX_METHOD :: 21;
+    NAMESPACE :: 22;
+    LINKAGE_SPEC :: 23;
+    CONSTRUCTOR :: 24;
+    DESTRUCTOR :: 25;
+    CONVERSION_FUNCTION :: 26;
     TEMPLATE_TYPE_PARAMETER :: 27;
     NON_TYPE_TEMPLATE_PARAMETER :: 28;
     TEMPLATE_TEMPLATE_PARAMETER :: 29;
-    FUNCTION_TEMPLATE     :: 30;
-    CLASS_TEMPLATE        :: 31;
+    FUNCTION_TEMPLATE :: 30;
+    CLASS_TEMPLATE :: 31;
     CLASS_TEMPLATE_PARTIAL_SPECIALIZATION :: 32;
-    CXX_ACCESS_SPEC_DECL  :: 39;
-    CXX_BASE_SPECIFIER    :: 44;
-    TYPE_ALIAS_DECL       :: 36;
-    TYPE_REF              :: 43;
-    TEMPLATE_REF          :: 45;
-    NAMESPACE_REF         :: 46;
-    DECL_REF_EXPR         :: 101;
-    INTEGER_LITERAL       :: 106;
-    FLOATING_LITERAL      :: 107;
-    STRING_LITERAL        :: 109;
-    CHARACTER_LITERAL     :: 110;
-    PAREN_EXPR            :: 111;
-    UNARY_OPERATOR        :: 112;
-    BINARY_OPERATOR       :: 114;
-    CSTYLE_CAST_EXPR      :: 117;
-    UNEXPOSED_EXPR        :: 100;
-    CALL_EXPR             :: 103;
-    CXX_BOOL_LITERAL      :: 130;
-    CXX_NULLPTR_LITERAL   :: 131;
-    CXX_FUNCTIONAL_CAST   :: 128;
-    GNU_NULL_EXPR         :: 123;
-    MACRO_DEFINITION      :: 501;
+    CXX_ACCESS_SPEC_DECL :: 39;
+    CXX_BASE_SPECIFIER :: 44;
+    TYPE_ALIAS_DECL :: 36;
+    TYPE_REF :: 43;
+    TEMPLATE_REF :: 45;
+    NAMESPACE_REF :: 46;
+    DECL_REF_EXPR :: 101;
+    INTEGER_LITERAL :: 106;
+    FLOATING_LITERAL :: 107;
+    STRING_LITERAL :: 109;
+    CHARACTER_LITERAL :: 110;
+    PAREN_EXPR :: 111;
+    UNARY_OPERATOR :: 112;
+    BINARY_OPERATOR :: 114;
+    CSTYLE_CAST_EXPR :: 117;
+    UNEXPOSED_EXPR :: 100;
+    CALL_EXPR :: 103;
+    CXX_BOOL_LITERAL :: 130;
+    CXX_NULLPTR_LITERAL :: 131;
+    CXX_FUNCTIONAL_CAST :: 128;
+    GNU_NULL_EXPR :: 123;
+    MACRO_DEFINITION :: 501;
 }
 
 // Type kinds (CXTypeKind).

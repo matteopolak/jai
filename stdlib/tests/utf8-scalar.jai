@@ -16,11 +16,11 @@ utf8_scalar_vectors :: () -> bool {
     exhausted_code, exhausted_length, exhausted_status := character_utf8_to_utf32(emoji.data, 3);
     if exhausted_status != .SOURCE_EXHAUSTED || exhausted_length != 0 return false;
     buffer: [4] u8;
-    output: string = .{count = 4, data = buffer.data};
+    output: string = .{ count = 4, data = buffer.data };
     encode_status := character_utf32_to_utf8(0x1F600, *output);
     if encode_status != .CONVERSION_OK || output.count != 4 return false;
     for i: 0..3 if output[i] != emoji[i] return false;
-    short: string = .{count = 1, data = buffer.data};
+    short: string = .{ count = 1, data = buffer.data };
     if character_utf32_to_utf8(0x20AC, *short) != .SOURCE_EXHAUSTED return false;
     if character_utf32_to_utf8(0xD800, *output) != .SOURCE_ILLEGAL return false;
     return true;

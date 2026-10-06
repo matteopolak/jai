@@ -51,4 +51,4 @@ cached_macos_sdk_path: string;
 
 #import "Process";
 #import "String";
-#if OS != .WINDOWS  #import "POSIX";
+#if OS != .WINDOWS #import "POSIX";

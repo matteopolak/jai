@@ -57,6 +57,4 @@ APP_CMD :: enum u32 {
     DESTROY :: 15;
 }
 #scope_file
-#if CPU == .X64 {
-} else #if CPU == .ARM64 {
-}
+#if CPU == .X64 {} else #if CPU == .ARM64 {}

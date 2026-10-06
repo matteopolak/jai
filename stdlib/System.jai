@@ -1,6 +1,11 @@
 #import "Basic";
 String :: #import "String";
-Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICAL; PERFORMANCE_LOGICAL; }
+Processor_Query_Type :: enum u8 {
+    ALL_PHYSICAL;
+    ALL_LOGICAL;
+    PERFORMANCE_PHYSICAL;
+    PERFORMANCE_LOGICAL;
+}
 
 #if OS == .WINDOWS {
     #load "File/windows-encoding.jai";
@@ -63,7 +68,7 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
                 buffer := cast(*u8) alloc(capacity, temp);
                 length := P.readlink(temp_c_string("/proc/self/exe"), buffer, xx capacity);
                 if length < 0 return "";
-                if length < capacity return .{length, buffer};
+                if length < capacity return .{ length, buffer };
                 capacity *= 2;
             }
             return "";
@@ -81,7 +86,10 @@ Processor_Query_Type :: enum u8 { ALL_PHYSICAL; ALL_LOGICAL; PERFORMANCE_PHYSICA
                 if username result = P.getpwnam_r(temp_c_string(username), *pwd, buffer, cast(u64) buffer_size, *result_pwd);
                 else result = P.getpwuid_r(P.getuid(), *pwd, buffer, cast(u64) buffer_size, *result_pwd);
                 if result != 0 {
-                    if P.errno() == P.ERANGE && buffer_size < 16384 { buffer_size *= 2; continue; }
+                    if P.errno() == P.ERANGE && buffer_size < 16384 {
+                        buffer_size *= 2;
+                        continue;
+                    }
                     return false, .{};
                 }
                 if !result_pwd return false, pwd;
@@ -163,9 +171,12 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
                     groups := record.Processor.GroupCount;
                     if 32 + cast(u32) groups * size_of(Windows.GROUP_AFFINITY) > record.Size return 0;
                     masks := cast(*Windows.GROUP_AFFINITY) (buffer + offset + 32);
-                    for i: 0..groups-1 {
+                    for i: 0..groups - 1 {
                         bits := masks[i].Mask;
-                        while bits != 0 { result += 1; bits &= bits - 1; }
+                        while bits != 0 {
+                            result += 1;
+                            bits &= bits - 1;
+                        }
                     }
                 }
             }
@@ -177,7 +188,10 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
     system_processor_count :: (query: Processor_Query_Type) -> s64 {
         name := "hw.logicalcpu";
         fallback := name;
-        if query == .ALL_PHYSICAL || query == .PERFORMANCE_PHYSICAL { name = "hw.physicalcpu"; fallback = name; }
+        if query == .ALL_PHYSICAL || query == .PERFORMANCE_PHYSICAL {
+            name = "hw.physicalcpu";
+            fallback = name;
+        }
         if query == .PERFORMANCE_PHYSICAL name = "hw.perflevel0.physicalcpu";
         if query == .PERFORMANCE_LOGICAL name = "hw.perflevel0.logicalcpu";
         value: s32;
@@ -203,7 +217,7 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
             name := to_string(entry.d_name.data);
             if name.count < 4 || String.slice(name, 0, 3) != "cpu" continue;
             valid := true;
-            for i: 3..name.count-1 if name[i] < #char "0" || name[i] > #char "9" valid = false;
+            for i: 3..name.count - 1 if name[i] < #char "0" || name[i] > #char "9" valid = false;
             if !valid continue;
             base := String.join("/sys/devices/system/cpu/", name);
             online := topology_text(String.join(base, "/online"));
@@ -211,7 +225,10 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
             siblings := topology_text(String.join(base, "/topology/thread_siblings_list"));
             if !siblings continue;
             duplicate := false;
-            for core: cores if core == siblings { duplicate = true; break; }
+            for core: cores if core == siblings {
+                duplicate = true;
+                break;
+            }
             if !duplicate array_add(*cores, siblings);
         }
         return cores.count;
@@ -223,6 +240,6 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
         bytes: [1024] u8;
         count := P.read(descriptor, bytes.data, bytes.count);
         if count <= 0 || count == bytes.count return "";
-        return copy_temporary_string(String.trim(string.{count, bytes.data}));
+        return copy_temporary_string(String.trim(string.{ count, bytes.data }));
     }
 }

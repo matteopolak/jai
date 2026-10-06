@@ -12,13 +12,13 @@ Overwriting_Allocator :: struct {
 get_overwriting_allocator :: (base_allocator: Allocator = .{}, overwrite_byte: u8 = 0xcd) -> Allocator {
     base := base_allocator;
     if !base.proc base = context.allocator;
-    state := New(Overwriting_Allocator, allocator=base);
+    state := New(Overwriting_Allocator, allocator = base);
     if !state return .{};
     state.base_allocator = base;
     state.overwrite_byte = overwrite_byte;
     state.table.allocator = base;
     init(*state.mutex);
-    return .{overwriting_allocator_proc, state};
+    return .{ overwriting_allocator_proc, state };
 }
 
 deinit_overwriting_allocator :: (a: Allocator) {

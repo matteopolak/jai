@@ -1,6 +1,6 @@
 P :: #import "POSIX";
 
-create_process :: (process: *Process, args: .. string, working_directory := "", capture_and_return_output := false, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED, kill_process_if_parent_exits := true) -> success: bool {
+create_process :: (process: *Process, args: ..string, working_directory := "", capture_and_return_output := false, arg_quoting := Process_Argument_Quoting.QUOTE_IF_NEEDED, kill_process_if_parent_exits := true) -> success: bool {
     if process.launched || args.count == 0 || !args[0] return false;
     argv := cast(**u8) alloc((args.count + 1) * size_of(*u8), temp);
     for arg, index: args argv[index] = temp_c_string(arg);
@@ -16,11 +16,23 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
         // The child's stdin is a stream socket, not a pipe: callers rely on that to pass
         // messages and descriptors both ways (`send`/`recv`, `fstat` reporting S_IFSOCK).
         if !safe_pipe(*child_input, socket = true) return false;
-        if !safe_pipe(*child_output) { close_pair(*child_input); return false; }
-        if !safe_pipe(*child_error) { close_pair(*child_input); close_pair(*child_output); return false; }
+        if !safe_pipe(*child_output) {
+            close_pair(*child_input);
+            return false;
+        }
+        if !safe_pipe(*child_error) {
+            close_pair(*child_input);
+            close_pair(*child_output);
+            return false;
+        }
     }
     pid := P.fork();
-    if pid < 0 { close_pair(*child_input); close_pair(*child_output); close_pair(*child_error); return false; }
+    if pid < 0 {
+        close_pair(*child_input);
+        close_pair(*child_output);
+        close_pair(*child_error);
+        return false;
+    }
     if pid == 0 {
         P.close(launch_error[0]);
         ok := true;
@@ -44,22 +56,27 @@ create_process :: (process: *Process, args: .. string, working_directory := "", 
     P.close(launch_error[1]);
     launch_error[1] = -1;
     if capture_and_return_output {
-        P.close(child_input[0]); child_input[0] = -1;
-        P.close(child_output[1]); child_output[1] = -1;
-        P.close(child_error[1]); child_error[1] = -1;
+        P.close(child_input[0]);
+        child_input[0] = -1;
+        P.close(child_output[1]);
+        child_output[1] = -1;
+        P.close(child_error[1]);
+        child_error[1] = -1;
     }
     failure: s32;
     count := P.read(launch_error[0], *failure, size_of(s32));
     while count < 0 && P.errno() == P.EINTR count = P.read(launch_error[0], *failure, size_of(s32));
     if count != 0 {
-        close_pair(*child_input); close_pair(*child_output); close_pair(*child_error);
+        close_pair(*child_input);
+        close_pair(*child_output);
+        close_pair(*child_error);
         status: s32;
         P.waitpid(pid, *status, 0);
         return false;
     }
     process.pid = pid;
     process.launched = true;
-    process.saved_result = .{type = .STILL_RUNNING};
+    process.saved_result = .{ type = .STILL_RUNNING };
     process.input.handle = child_input[1];
     process.output.handle = child_output[0];
     process.error.handle = child_error[0];
@@ -147,7 +164,7 @@ kill_process :: (process: *Process) -> bool {
     return process.launched && (process.saved_result.type != .STILL_RUNNING || P.kill(process.pid, 9) == 0);
 }
 get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Process_Result {
-    if !process.launched return true, .{type = .UNSTARTED};
+    if !process.launched return true, .{ type = .UNSTARTED };
     if process.saved_result.type != .STILL_RUNNING return true, process.saved_result;
     start := process_monotonic_ms();
     while true {
@@ -161,8 +178,8 @@ get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Pr
         }
         if result > 0 {
             low_signal := raw_status & 0x7f;
-            if low_signal == 0 process.saved_result = .{type = .EXITED, exit_code = (raw_status >> 8) & 0xff};
-            else process.saved_result = .{type = .SIGNALED, exit_code = -1, signal = low_signal};
+            if low_signal == 0 process.saved_result = .{ type = .EXITED, exit_code = (raw_status >> 8) & 0xff };
+            else process.saved_result = .{ type = .SIGNALED, exit_code = -1, signal = low_signal };
             return true, process.saved_result;
         }
         if remaining_time(start, timeout_ms) == 0 return true, process.saved_result;
@@ -175,7 +192,10 @@ close_and_reset :: (fd: *s32, loc := #caller_location) {
 }
 
 #scope_module
-close_pair :: (pair: *[2] s32) { close_and_reset(*(<<pair)[0]); close_and_reset(*(<<pair)[1]); }
+close_pair :: (pair: *[2] s32) {
+    close_and_reset(*(<<pair)[0]);
+    close_and_reset(*(<<pair)[1]);
+}
 safe_pipe :: (pair: *[2] s32, socket := false) -> bool {
     if socket {
         if process_socketpair(1, 1, 0, pair) != 0 return false; // AF_UNIX, SOCK_STREAM
@@ -187,18 +207,26 @@ safe_pipe :: (pair: *[2] s32, socket := false) -> bool {
         fd := *(<<fds)[i];
         if <<fd < 3 {
             replacement := P.fcntl(<<fd, P.F_DUPFD, cast(s32) 3);
-            if replacement < 0 { close_pair(pair); return false; }
+            if replacement < 0 {
+                close_pair(pair);
+                return false;
+            }
             P.close(<<fd);
             <<fd = replacement;
         }
-        if P.fcntl(<<fd, P.F_SETFD, cast(s32) P.FD_CLOEXEC) < 0 { close_pair(pair); return false; }
+        if P.fcntl(<<fd, P.F_SETFD, cast(s32) P.FD_CLOEXEC) < 0 {
+            close_pair(pair);
+            return false;
+        }
     }
     return true;
 }
 process_monotonic_ms :: () -> s64 {
     time: P.timespec;
     clock_id: s32 = 1;
-    #if OS == .MACOS { clock_id = 6; }
+    #if OS == .MACOS {
+        clock_id = 6;
+    }
     if P.clock_gettime(xx clock_id, *time) != 0 return 0;
     return time.tv_sec * 1000 + time.tv_nsec / 1000000;
 }

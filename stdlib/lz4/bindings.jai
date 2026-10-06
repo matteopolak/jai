@@ -3,7 +3,7 @@ LZ4_VERSION_MAJOR :: 1;
 LZ4_VERSION_MINOR :: 9;
 LZ4_VERSION_RELEASE :: 4;
 
-LZ4_VERSION_NUMBER :: LZ4_VERSION_MAJOR *100*100 + LZ4_VERSION_MINOR *100 + LZ4_VERSION_RELEASE;
+LZ4_VERSION_NUMBER :: LZ4_VERSION_MAJOR * 100 * 100 + LZ4_VERSION_MINOR * 100 + LZ4_VERSION_RELEASE;
 
 LZ4_MEMORY_USAGE_MIN :: 10;
 LZ4_MEMORY_USAGE_DEFAULT :: 14;
@@ -13,7 +13,7 @@ LZ4_MEMORY_USAGE :: LZ4_MEMORY_USAGE_DEFAULT;
 
 LZ4_MAX_INPUT_SIZE :: 0x7E000000;
 
-LZ4_HASHLOG :: LZ4_MEMORY_USAGE-2;
+LZ4_HASHLOG :: LZ4_MEMORY_USAGE - 2;
 LZ4_HASHTABLESIZE :: 1 << LZ4_MEMORY_USAGE;
 LZ4_HASH_SIZE_U32 :: 1 << LZ4_HASHLOG;
 
@@ -27,7 +27,7 @@ LZ4HC_CLEVEL_OPT_MIN :: 10;
 LZ4HC_CLEVEL_MAX :: 12;
 
 LZ4HC_DICTIONARY_LOGSIZE :: 16;
-LZ4HC_MAXD :: 1<<LZ4HC_DICTIONARY_LOGSIZE;
+LZ4HC_MAXD :: 1 << LZ4HC_DICTIONARY_LOGSIZE;
 LZ4HC_MAXD_MASK :: LZ4HC_MAXD - 1;
 
 LZ4HC_HASH_LOG :: 15;
@@ -88,16 +88,16 @@ LZ4_u16 :: u16;
 LZ4_u32 :: u32;
 
 LZ4_stream_t_internal :: struct {
-    hashTable:     [4096] LZ4_u32;
-    dictionary:    *LZ4_byte;
-    dictCtx:       *LZ4_stream_t_internal;
+    hashTable: [4096] LZ4_u32;
+    dictionary: *LZ4_byte;
+    dictCtx: *LZ4_stream_t_internal;
     currentOffset: LZ4_u32;
-    tableType:     LZ4_u32;
-    dictSize:      LZ4_u32;
+    tableType: LZ4_u32;
+    dictSize: LZ4_u32;
 }
 
 LZ4_stream_u :: union {
-    minStateSize:      [16416] u8;
+    minStateSize: [16416] u8;
     internal_donotuse: LZ4_stream_t_internal;
 }
 
@@ -105,13 +105,13 @@ LZ4_initStream :: (buffer: *void, size: u64) -> *LZ4_stream_t #foreign liblz4;
 
 LZ4_streamDecode_t_internal :: struct {
     externalDict: *LZ4_byte;
-    prefixEnd:    *LZ4_byte;
-    extDictSize:  u64;
-    prefixSize:   u64;
+    prefixEnd: *LZ4_byte;
+    extDictSize: u64;
+    prefixSize: u64;
 }
 
 LZ4_streamDecode_u :: union {
-    minStateSize:      [32] u8;
+    minStateSize: [32] u8;
     internal_donotuse: LZ4_streamDecode_t_internal;
 }
 
@@ -163,24 +163,24 @@ LZ4_compress_HC_continue_destSize :: (LZ4_streamHCPtr: *LZ4_streamHC_t, src: *u8
 LZ4_saveDictHC :: (streamHCPtr: *LZ4_streamHC_t, safeBuffer: *u8, maxDictSize: s32) -> s32 #foreign liblz4;
 
 LZ4HC_CCtx_internal :: struct {
-    hashTable:        [32768] LZ4_u32;
-    chainTable:       [65536] LZ4_u16;
-    end:              *LZ4_byte;
-    prefixStart:      *LZ4_byte;
-    dictStart:        *LZ4_byte;
-    dictLimit:        LZ4_u32;
-    lowLimit:         LZ4_u32;
-    nextToUpdate:     LZ4_u32;
+    hashTable: [32768] LZ4_u32;
+    chainTable: [65536] LZ4_u16;
+    end: *LZ4_byte;
+    prefixStart: *LZ4_byte;
+    dictStart: *LZ4_byte;
+    dictLimit: LZ4_u32;
+    lowLimit: LZ4_u32;
+    nextToUpdate: LZ4_u32;
     compressionLevel: s16;
 
-    favorDecSpeed:    LZ4_i8;
+    favorDecSpeed: LZ4_i8;
 
-    dirty:            LZ4_i8;
-    dictCtx:          *LZ4HC_CCtx_internal;
+    dirty: LZ4_i8;
+    dictCtx: *LZ4HC_CCtx_internal;
 }
 
 LZ4_streamHC_u :: union {
-    minStateSize:      [262200] u8;
+    minStateSize: [262200] u8;
     internal_donotuse: LZ4HC_CCtx_internal;
 }
 
@@ -210,6 +210,6 @@ LZ4_resetStreamHC :: (streamHCPtr: *LZ4_streamHC_t, compressionLevel: s32) -> vo
 
 #scope_file
 
-#if OS == .WINDOWS  liblz4 :: #system_library "lz4";
-#if OS == .MACOS    liblz4 :: #system_library "lz4";
-#if OS == .LINUX    liblz4 :: #system_library "lz4";
+#if OS == .WINDOWS liblz4 :: #system_library "lz4";
+#if OS == .MACOS liblz4 :: #system_library "lz4";
+#if OS == .LINUX liblz4 :: #system_library "lz4";

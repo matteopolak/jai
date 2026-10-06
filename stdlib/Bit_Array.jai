@@ -10,7 +10,7 @@ Bit_Array :: struct {
 // Allocates zeroed storage for `count` bits (from `array.allocator`, else the context's).
 init_bit_array :: (array: *Bit_Array, count: int) {
     assert(count >= 0);
-    if !array.allocator.proc  array.allocator = context.allocator;
+    if !array.allocator.proc array.allocator = context.allocator;
     array.slots = Basic.NewArray((count + 63) >> 6, s64,, array.allocator);
     array.count = count;
 }
@@ -22,7 +22,7 @@ make_bit_array :: (count: int) -> Bit_Array #must {
 }
 
 deinit :: (array: *Bit_Array) {
-    if array.slots.data  Basic.free(array.slots.data,, array.allocator);
+    if array.slots.data Basic.free(array.slots.data,, array.allocator);
     array.slots = .[];
     array.count = 0;
 }
@@ -57,34 +57,36 @@ operator []= :: (a: *Bit_Array, i: int, value: bool) {
 }
 
 clear_all_bits :: (array: *Bit_Array) {
-    for * array.slots  it.* = 0;
+    for *array.slots it.* = 0;
 }
 
 set_all_bits :: (array: *Bit_Array) {
-    for * array.slots  it.* = -1;
+    for *array.slots it.* = -1;
     mask_tail(array);
 }
 
 toggle_all_bits :: (array: *Bit_Array) {
-    for * array.slots  it.* = ~it.*;
+    for *array.slots it.* = ~it.*;
     mask_tail(array);
 }
 
 for_expansion :: (array: *Bit_Array, body: Code, flags: For_Flags) #expand {
     #assert !(flags & .POINTER) "Bit_Array does not support iteration by pointer";
     cursor := 0;
-    #if flags & .REVERSE  cursor = array.count - 1;
+    #if flags & .REVERSE cursor = array.count - 1;
     while cursor >= 0 && cursor < array.count {
         `it_index := cursor;
         `it := (array.*)[cursor];
-        #insert (remove={ clear_bit(array, cursor); }) body;
-        #if flags & .REVERSE  cursor -= 1;
-        else                  cursor += 1;
+        #insert (remove = {
+            clear_bit(array, cursor);
+        }) body;
+        #if flags & .REVERSE cursor -= 1;
+        else cursor += 1;
     }
 }
 
 // for_expansion variants that skip bits of the other value: `for :only_set flags { ... }`.
-only_set   :: #bake_arguments only_set_or_unset(target_value = true);
+only_set :: #bake_arguments only_set_or_unset(target_value = true);
 only_unset :: #bake_arguments only_set_or_unset(target_value = false);
 
 set_bits :: inline (w: s64, m: s64, b: bool) -> s64 {
@@ -104,20 +106,22 @@ bit_mask :: inline (i: int) -> s64 {
 // Bits past `count` in the last slot stay clear.
 mask_tail :: (array: *Bit_Array) {
     tail := array.count & 63;
-    if tail && array.slots.count  array.slots[array.slots.count - 1] &= (1 << tail) - 1;
+    if tail && array.slots.count array.slots[array.slots.count - 1] &= (1 << tail) - 1;
 }
 
 only_set_or_unset :: (array: *Bit_Array, body: Code, flags: For_Flags, target_value: bool) #expand {
     #assert !(flags & .POINTER) "Bit_Array does not support iteration by pointer";
     cursor := 0;
-    #if flags & .REVERSE  cursor = array.count - 1;
+    #if flags & .REVERSE cursor = array.count - 1;
     while cursor >= 0 && cursor < array.count {
         if (array.*)[cursor] == target_value {
             `it := target_value;
             `it_index := cursor;
-            #insert (remove={ set_bit_to(array, cursor, !target_value); }) body;
+            #insert (remove = {
+                set_bit_to(array, cursor, !target_value);
+            }) body;
         }
-        #if flags & .REVERSE  cursor -= 1;
-        else                  cursor += 1;
+        #if flags & .REVERSE cursor -= 1;
+        else cursor += 1;
     }
 }

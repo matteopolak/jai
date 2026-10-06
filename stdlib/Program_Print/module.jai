@@ -101,7 +101,7 @@ pp_node_precedence :: (node: *Code_Node) -> s32 {
         if op == #char "." || op == xx Operator_Type.ARRAY_SUBSCRIPT return 100;
         p := pp_precedence(op);
         if p return p;
-        return 0;   // assignments
+        return 0; // assignments
     }
     if node.kind == .IF {
         if (cast(*Code_If) node).if_flags & .IS_IFX return 0;
@@ -113,7 +113,7 @@ pp_node_precedence :: (node: *Code_Node) -> s32 {
 }
 
 pp_indent :: (builder: *String_Builder, depth: s64) {
-    for 0..depth-1 append(builder, "    ");
+    for 0..depth - 1 append(builder, "    ");
 }
 
 pp_unsupported :: (builder: *String_Builder) -> bool {
@@ -132,9 +132,9 @@ pp_literal :: (builder: *String_Builder, lit: *Code_Literal, depth: s64) -> bool
             if lit.value_flags & .FLOAT {
                 print_to_builder(builder, "%", lit._float64);
             } else if lit.value_flags & .HEX {
-                print_to_builder(builder, "0x%", FormatInt.{value = lit._u64, base = 16});
+                print_to_builder(builder, "0x%", FormatInt.{ value = lit._u64, base = 16 });
             } else if lit.value_flags & .BINARY {
-                print_to_builder(builder, "0b%", FormatInt.{value = lit._u64, base = 2});
+                print_to_builder(builder, "0b%", FormatInt.{ value = lit._u64, base = 2 });
             } else {
                 print_to_builder(builder, "%", lit._s64);
             }
@@ -143,7 +143,8 @@ pp_literal :: (builder: *String_Builder, lit: *Code_Literal, depth: s64) -> bool
             print_string_literal(builder, lit._string);
             append(builder, "\"");
         case .BOOLEAN;
-            if lit._s64 append(builder, "true"); else append(builder, "false");
+            if lit._s64 append(builder, "true");
+            else append(builder, "false");
         case .POINTER;
             append(builder, "null");
         case .STRUCT;
@@ -208,30 +209,32 @@ pp_arguments :: (builder: *String_Builder, args: [] Code_Argument, depth: s64) -
 // Names of a compound declaration; `x=` marks one that is assigned rather than declared
 // when the list mixes both.
 pp_compound_names :: (builder: *String_Builder, names: *Code_Comma_Separated_Arguments, depth: s64) -> bool {
-    if !names  return false;
+    if !names return false;
     declares := false;
-    for names.arguments  if it.modifier != .ASSIGN  declares = true;
+    for names.arguments if it.modifier != .ASSIGN declares = true;
     for names.arguments {
-        if it_index  append(builder, ", ");
-        if !it.node  return false;
-        if it.node.kind == .DECLARATION  append(builder, (cast(*Code_Declaration) it.node).name);
-        else if !pp_expression(builder, it.node, depth, 0)  return false;
-        if it.modifier == .ASSIGN && declares  append(builder, "=");
+        if it_index append(builder, ", ");
+        if !it.node return false;
+        if it.node.kind == .DECLARATION append(builder, (cast(*Code_Declaration) it.node).name);
+        else if !pp_expression(builder, it.node, depth, 0) return false;
+        if it.modifier == .ASSIGN && declares append(builder, "=");
     }
     return true;
 }
 
 pp_declaration :: (builder: *String_Builder, decl: *Code_Declaration, depth: s64, print_type := true, parameter := false) -> bool {
     ok := true;
-    if decl.flags & .HAS_SCOPE_MODIFIER  append(builder, "`");
-    append(builder, decl.name);  // Empty for the properties of a compound declaration.
+    if decl.flags & .HAS_SCOPE_MODIFIER append(builder, "`");
+    append(builder, decl.name); // Empty for the properties of a compound declaration.
     constant := (decl.flags & .IS_CONSTANT) != 0;
     has_type := print_type && decl.type_inst != null;
     if has_type {
-        if parameter append(builder, ": "); else append(builder, " : ");
+        if parameter append(builder, ": ");
+        else append(builder, " : ");
         ok = pp_type(builder, decl.type_inst, depth);
         if decl.expression {
-            if constant append(builder, " : "); else append(builder, " = ");
+            if constant append(builder, " : ");
+            else append(builder, " = ");
         }
     } else {
         if constant append(builder, " :: ");
@@ -344,7 +347,8 @@ pp_if :: (builder: *String_Builder, node: *Code_If, depth: s64) -> bool {
         return ok;
     }
     if node.if_flags & .IS_SWITCH_STATEMENT {
-        if node.if_flags & .IS_STATIC append(builder, "#if "); else append(builder, "if ");
+        if node.if_flags & .IS_STATIC append(builder, "#if ");
+        else append(builder, "if ");
         if !pp_expression(builder, node.condition, depth, 0) ok = false;
         append(builder, " == {\n");
         if node.then_block {
@@ -356,7 +360,8 @@ pp_if :: (builder: *String_Builder, node: *Code_If, depth: s64) -> bool {
         append(builder, "}");
         return ok;
     }
-    if node.if_flags & .IS_STATIC append(builder, "#if "); else append(builder, "if ");
+    if node.if_flags & .IS_STATIC append(builder, "#if ");
+    else append(builder, "if ");
     if !pp_expression(builder, node.condition, depth, 0) ok = false;
     append(builder, " ");
     if !pp_body(builder, node.then_block, depth) ok = false;
@@ -436,7 +441,8 @@ pp_procedure :: (builder: *String_Builder, header: *Code_Procedure_Header, depth
 
 pp_struct :: (builder: *String_Builder, node: *Code_Struct, depth: s64) -> bool {
     ok := true;
-    if node.textual_flags & 0x2 append(builder, "union"); else append(builder, "struct");
+    if node.textual_flags & 0x2 append(builder, "union");
+    else append(builder, "struct");
     append(builder, " ");
     if node.block == null || node.block.statements.count == 0 {
         append(builder, "{}");
@@ -470,7 +476,7 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             ok = pp_literal(builder, cast(*Code_Literal) node, depth);
         case .IDENT;
             ident := cast(*Code_Ident) node;
-            if ident.flags & .HAS_SCOPE_MODIFIER  append(builder, "`");
+            if ident.flags & .HAS_SCOPE_MODIFIER append(builder, "`");
             append(builder, ident.name);
         case .CONTEXT;
             append(builder, "context");
@@ -520,12 +526,12 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             // `a, b := f()`: the names, then the nameless declaration with the type and values.
             compound := cast(*Code_Compound_Declaration) node;
             ok = pp_compound_names(builder, compound.comma_separated_assignment, depth);
-            if compound.declaration_properties && !pp_declaration(builder, compound.declaration_properties, depth)  ok = false;
+            if compound.declaration_properties && !pp_declaration(builder, compound.declaration_properties, depth) ok = false;
         case .COMMA_SEPARATED_ARGUMENTS;
             list := cast(*Code_Comma_Separated_Arguments) node;
             for list.arguments {
-                if it_index  append(builder, ", ");
-                if !pp_expression(builder, it.node, depth, 0)  ok = false;
+                if it_index append(builder, ", ");
+                if !pp_expression(builder, it.node, depth, 0) ok = false;
             }
         case .BLOCK;
             ok = pp_block(builder, cast(*Code_Block) node, depth);
@@ -550,14 +556,16 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             }
         case .RETURN;
             ret := cast(*Code_Return) node;
-            if ret.return_flags & .IS_BACKTICKED append(builder, "`return"); else append(builder, "return");
+            if ret.return_flags & .IS_BACKTICKED append(builder, "`return");
+            else append(builder, "return");
             if ret.arguments_unsorted.count {
                 append(builder, " ");
                 ok = pp_arguments(builder, ret.arguments_unsorted, depth);
             }
         case .DEFER;
             d := cast(*Code_Defer) node;
-            if d.is_backticked append(builder, "`defer "); else append(builder, "defer ");
+            if d.is_backticked append(builder, "`defer ");
+            else append(builder, "defer ");
             if d.block && d.block.statements.count == 1 {
                 ok = pp_expression(builder, d.block.statements[0], depth, 0);
             } else {
@@ -578,7 +586,8 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             ok = pp_struct(builder, cast(*Code_Struct) node, depth);
         case .ENUM;
             e := cast(*Code_Enum) node;
-            if e.is_flags append(builder, "enum_flags {}"); else append(builder, "enum {}");
+            if e.is_flags append(builder, "enum_flags {}");
+            else append(builder, "enum {}");
             ok = false;
         case .DIRECTIVE_CODE;
             append(builder, "#code ");
@@ -590,22 +599,22 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             run := cast(*Code_Directive_Run) node;
             if run.flags & .ASSERTION {
                 append(builder, "#assert(");
-                if run.expression && !pp_expression(builder, run.expression, depth, 0)  ok = false;
+                if run.expression && !pp_expression(builder, run.expression, depth, 0) ok = false;
                 if run.message {
                     append(builder, ", ");
-                    if !pp_expression(builder, run.message, depth, 0)  ok = false;
+                    if !pp_expression(builder, run.message, depth, 0) ok = false;
                 }
                 append(builder, ")");
             } else {
                 append(builder, "#run");
                 if run.expression {
                     append(builder, " ");
-                    if !pp_expression(builder, run.expression, depth, 0)  ok = false;
+                    if !pp_expression(builder, run.expression, depth, 0) ok = false;
                 }
             }
         case .DIRECTIVE_EXISTS;
             append(builder, "#exists(");
-            if !pp_expression(builder, (cast(*Code_Directive_Exists) node).query_expression, depth, 0)  ok = false;
+            if !pp_expression(builder, (cast(*Code_Directive_Exists) node).query_expression, depth, 0) ok = false;
             append(builder, ")");
         case .DIRECTIVE_LOCATION;
             loc := cast(*Code_Directive_Location) node;

@@ -12,17 +12,21 @@ INVALID :: 66;
 base64_encode :: (input: string, table: string = BASE64_ENCODER_TABLE, pad := true) -> string #must {
     return base64_encode_with_alphabet(input, table, pad);
 }
-base64url_encode :: (input: string) -> string { return base64_encode_with_alphabet(input, BASE64URL_ALPHABET, false); }
+base64url_encode :: (input: string) -> string {
+    return base64_encode_with_alphabet(input, BASE64URL_ALPHABET, false);
+}
 base64_encode_with_alphabet :: (input: string, alphabet: string, padding: bool) -> string {
     if alphabet.count != 64 return "";
-    for i: 0..63 for j: 0..i-1 if alphabet[i] == alphabet[j] return "";
+    for i: 0..63 for j : 0..i - 1 if alphabet[i] == alphabet[j] return "";
     builder: Basic.String_Builder;
     i := 0;
     while i < input.count {
-        a := input[i]; b: u8 = 0; c: u8 = 0;
-        left := input.count-i;
-        if left > 1 b = input[i+1];
-        if left > 2 c = input[i+2];
+        a := input[i];
+        b: u8 = 0;
+        c: u8 = 0;
+        left := input.count - i;
+        if left > 1 b = input[i + 1];
+        if left > 2 c = input[i + 2];
         Basic.append(*builder, alphabet[a >> 2]);
         Basic.append(*builder, alphabet[((a & 3) << 4) | (b >> 4)]);
         if left > 1 Basic.append(*builder, alphabet[((b & 15) << 2) | (c >> 6)]);
@@ -31,11 +35,14 @@ base64_encode_with_alphabet :: (input: string, alphabet: string, padding: bool) 
         else if padding Basic.append(*builder, cast(u8) 61);
         i += 3;
     }
-    if builder.failed { Basic.reset(*builder); return ""; }
+    if builder.failed {
+        Basic.reset(*builder);
+        return "";
+    }
     return Basic.builder_to_string(*builder);
 }
 base64_index_of :: (c: u8, alphabet: string) -> int, bool {
-    for i: 0..alphabet.count-1 if alphabet[i] == c return i, true;
+    for i: 0..alphabet.count - 1 if alphabet[i] == c return i, true;
     return -1, false;
 }
 base64_decode_with_alphabet :: (text: string, alphabet: string) -> string, bool {
@@ -46,39 +53,67 @@ base64_decode_with_alphabet :: (text: string, alphabet: string) -> string, bool 
         if table[alphabet[i]] != INVALID return "", false;
         table[alphabet[i]] = cast(u8) i;
     }
-    table[9] = WHITESPACE; table[10] = WHITESPACE; table[13] = WHITESPACE; table[32] = WHITESPACE; table[61] = EQUALS;
+    table[9] = WHITESPACE;
+    table[10] = WHITESPACE;
+    table[13] = WHITESPACE;
+    table[32] = WHITESPACE;
+    table[61] = EQUALS;
     return base64_decode(text, table);
 }
 base64_decode :: (input: string, table: [256] u8 = BASE64_DECODER_TABLE) -> string #must, success: bool {
     builder: Basic.String_Builder;
-    bits: u32 = 0; bit_count := 0; symbols := 0; padding := 0; ended := false;
+    bits: u32 = 0;
+    bit_count := 0;
+    symbols := 0;
+    padding := 0;
+    ended := false;
     for c: input {
         value := table[c];
         if value == WHITESPACE continue;
-        if value == EQUALS { ended = true; padding += 1; if padding > 2 { Basic.reset(*builder); return "", false; } continue; }
-        if value >= 64 || ended { Basic.reset(*builder); return "", false; }
-        bits = (bits << 6) | value; bit_count += 6; symbols += 1;
+        if value == EQUALS {
+            ended = true;
+            padding += 1;
+            if padding > 2 {
+                Basic.reset(*builder);
+                return "", false;
+            }
+            continue;
+        }
+        if value >= 64 || ended {
+            Basic.reset(*builder);
+            return "", false;
+        }
+        bits = (bits << 6) | value;
+        bit_count += 6;
+        symbols += 1;
         if bit_count >= 8 {
             bit_count -= 8;
             Basic.append(*builder, cast(u8) ((bits >> bit_count) & 255));
-            bits &= (1 << bit_count)-1;
+            bits &= (1 << bit_count) - 1;
         }
     }
     remainder := symbols % 4;
-    if remainder == 1 || bits != 0 || (padding > 0 && (symbols+padding)%4 != 0)
+    if remainder == 1 || bits != 0 || (padding > 0 && (symbols + padding) % 4 != 0)
         || (padding == 1 && remainder != 3) || (padding == 2 && remainder != 2) {
-        Basic.reset(*builder); return "", false;
+        Basic.reset(*builder);
+        return "", false;
     }
-    if builder.failed { Basic.reset(*builder); return "", false; }
+    if builder.failed {
+        Basic.reset(*builder);
+        return "", false;
+    }
     return Basic.builder_to_string(*builder), true;
 }
-base64url_decode :: (input: string) -> string, success: bool { return base64_decode(input, BASE64URL_DECODER_TABLE); }
+base64url_decode :: (input: string) -> string, success: bool {
+    return base64_decode(input, BASE64URL_DECODER_TABLE);
+}
 test_base64_module :: () {
     encoded := base64_encode("foobar");
     Basic.assert(encoded == "Zm9vYmFy");
     decoded, ok := base64_decode(encoded);
     Basic.assert(ok && decoded == "foobar");
-    Basic.free(encoded); Basic.free(decoded);
+    Basic.free(encoded);
+    Basic.free(decoded);
 }
 BASE64_DECODER_TABLE :: u8.[
     66, 66, 66, 66, 66, 66, 66, 66, 66, 64, 64, 66, 66, 64, 66, 66,

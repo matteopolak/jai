@@ -1,23 +1,23 @@
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 BUFFER_DEFAULT_SIZE :: 128 * 1024;
 
-INVALID_TS : float64 : -1.0;
+INVALID_TS: float64 : -1.0;
 
 Packet :: struct {
-	type:   Start_Code;
-	pts:    float64;
-    data:   [] u8;
+    type: Start_Code;
+    pts: float64;
+    data: [] u8;
 }
 
 Plane :: struct {
-    width:  s32;
+    width: s32;
     height: s32;
-    data:   *u8;
+    data: *u8;
 }
 
 Frame :: struct {
-	time: float64;
-	width:  s32;
+    time: float64;
+    width: s32;
     height: s32;
 
     y, cr, cb: Plane;
@@ -28,10 +28,10 @@ Video_Decode_Callback :: #type (self: *Plm, frame: *Frame, user: *void);
 SAMPLES_PER_FRAME :: 1152;
 
 Samples :: struct {
-	time: float64;
-	count: u32;
+    time: float64;
+    count: u32;
 
-	interleaved: [SAMPLES_PER_FRAME * 2] float;
+    interleaved: [SAMPLES_PER_FRAME * 2] float;
 
 }
 
@@ -41,30 +41,30 @@ Buffer_Load_Callback :: #type (buffer: *Buffer, user: *void);
 
 Plm :: struct {
     demux: *Demux;
-	time: float64;
+    time: float64;
 
-    has_ended:         bool;
-    loop:              bool;
-    has_decoders:      bool;
-    video_enabled   := true;
+    has_ended: bool;
+    loop: bool;
+    has_decoders: bool;
+    video_enabled := true;
     video_packet_type: Start_Code;
 
-	video_buffer:  *Buffer;
-	video_decoder: *Video;
+    video_buffer: *Buffer;
+    video_decoder: *Video;
 
-	audio_enabled   := true;
-	audio_stream_index: s32;
-	audio_packet_type: Start_Code;
+    audio_enabled := true;
+    audio_stream_index: s32;
+    audio_packet_type: Start_Code;
 
-	audio_lead_time: float64;
-	audio_buffer: *Buffer;
-	audio_decoder: *Audio;
+    audio_lead_time: float64;
+    audio_buffer: *Buffer;
+    audio_decoder: *Audio;
 
-	video_decode_callback: Video_Decode_Callback;
-	video_decode_callback_user_data: *void;
+    video_decode_callback: Video_Decode_Callback;
+    video_decode_callback_user_data: *void;
 
-	audio_decode_callback: Audio_Decode_Callback;
-	audio_decode_callback_user_data: *void;
+    audio_decode_callback: Audio_Decode_Callback;
+    audio_decode_callback_user_data: *void;
 }
 
 create_with_filename :: (filename: string) -> *Plm {

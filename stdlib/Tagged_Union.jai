@@ -1,6 +1,6 @@
 // Value storage with an explicit compiler-owned Type identity tag.
 #module_parameters(DEBUG := false);
-Tagged_Union :: struct (value_types: .. Type) {
+Tagged_Union :: struct(value_types: ..Type) {
     tag: Type;
     bytes: [NUM_VALUE_BYTES] u8;
     NUM_VALUE_BYTES: s64 : #run get_biggest_size(value_types);

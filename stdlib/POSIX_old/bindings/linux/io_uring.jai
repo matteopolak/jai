@@ -78,9 +78,9 @@ io_cqring_offsets :: struct {
 using IORING_CQ_Flags :: enum_flags u32 {
     IORING_CQ_EVENTFD_DISABLED :: 1 << 0;
 }
-IORING_OFF_SQ_RING: s64: 0;
-IORING_OFF_CQ_RING: s64: 0x08000000;
-IORING_OFF_SQES: s64: 0x10000000;
+IORING_OFF_SQ_RING: s64 : 0;
+IORING_OFF_CQ_RING: s64 : 0x08000000;
+IORING_OFF_SQES: s64 : 0x10000000;
 io_uring_sqe :: struct {
     opcode: IORING_OP;
     flags: IOSQE_Flags;
@@ -193,7 +193,7 @@ using IOSQE_Flags :: enum_flags u8 {
 using IORING_ACCEPT_Flags :: enum_flags u16 {
     IORING_ACCEPT_MULTISHOT :: 1 << 0;
 }
-IORING_FILE_INDEX_ALLOC: u32: ~cast(u32)0;
+IORING_FILE_INDEX_ALLOC: u32 : ~cast(u32) 0;
 using IORING_RECVSEND_Flags :: enum_flags u64 {
     IORING_RECVSEND_POLL_FIRST :: 1 << 0;
 }
@@ -300,7 +300,7 @@ io_uring_rsrc_update2 :: struct {
     nr: u32;
     resv2: u32;
 };
-IORING_REGISTER_FILES_SKIP: s32: -2;
+IORING_REGISTER_FILES_SKIP: s32 : -2;
 io_uring_probe :: struct {
     last_op: IORING_OP;
     ops_len: u8;

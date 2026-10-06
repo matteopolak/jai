@@ -36,7 +36,9 @@
         return ft, true;
     }
     // @Incomplete: LOCAL time zone handling is not wired to the Windows API; LOCAL behaves like UTC here.
-    os_local_offset_seconds :: (utc_seconds: s64) -> s64 { return 0; }
+    os_local_offset_seconds :: (utc_seconds: s64) -> s64 {
+        return 0;
+    }
     sleep_milliseconds :: (milliseconds: s32) {
         remaining := max(0, milliseconds);
         while remaining > 0 {
@@ -61,12 +63,17 @@
         if bytes <= 0 return "";
         out := cast(*u8) alloc(cast(s64) bytes, temp);
         clock_wide_to_utf8(65001, 0, buffer, cast(s32) written, out, bytes, null, null);
-        return string.{cast(s64) bytes, out};
+        return string.{ cast(s64) bytes, out };
     }
-    exit :: (status: s32) { clock_exit(cast,no_check(u32) status); }
+    exit :: (status: s32) {
+        clock_exit(cast,no_check(u32) status);
+    }
     #scope_module
     clock_kernel :: #system_library "kernel32";
-    Clock_Filetime :: struct { dwLowDateTime: u32; dwHighDateTime: u32; }
+    Clock_Filetime :: struct {
+        dwLowDateTime: u32;
+        dwHighDateTime: u32;
+    }
     clock_query_counter :: (ticks: *s64) -> s32 #foreign clock_kernel "QueryPerformanceCounter";
     clock_query_frequency :: (frequency: *s64) -> s32 #foreign clock_kernel "QueryPerformanceFrequency";
     clock_system_filetime :: (stamp: *Clock_Filetime) #foreign clock_kernel "GetSystemTimeAsFileTime";
@@ -91,7 +98,9 @@
 } else {
     current_time_monotonic :: () -> Apollo_Time {
         clock: s32 = 1;
-        #if OS == .MACOS || OS == .IOS { clock = 6; }
+        #if OS == .MACOS || OS == .IOS {
+            clock = 6;
+        }
         stamp: Clock_Timespec;
         if clock_get_time(clock, *stamp) != 0 return APOLLO_TIME_INVALID;
         return seconds_to_apollo(stamp.tv_sec) + nanoseconds_to_apollo(stamp.tv_nsec);
@@ -122,7 +131,9 @@
             return ts, true;
         }
     } else {
-        os_local_offset_seconds :: (utc_seconds: s64) -> s64 { return 0; }
+        os_local_offset_seconds :: (utc_seconds: s64) -> s64 {
+            return 0;
+        }
     }
     sleep_milliseconds :: (milliseconds: s32) {
         if milliseconds <= 0 return;
@@ -150,10 +161,15 @@
         }
         return "";
     }
-    exit :: (status: s32) { native_time_exit(status); }
+    exit :: (status: s32) {
+        native_time_exit(status);
+    }
     #scope_module
     native_time_libc :: #system_library "c";
-    Clock_Timespec :: struct { tv_sec: s64; tv_nsec: s64; }
+    Clock_Timespec :: struct {
+        tv_sec: s64;
+        tv_nsec: s64;
+    }
     clock_get_time :: (clock: s32, stamp: *Clock_Timespec) -> s32 #foreign native_time_libc "clock_gettime";
     clock_nanosleep :: (requested: *Clock_Timespec, remaining: *Clock_Timespec) -> s32 #foreign native_time_libc "nanosleep";
     #if OS == .MACOS || OS == .IOS {
@@ -171,7 +187,9 @@
     #scope_export
 }
 
-get_time :: () -> float64 { return to_float64_seconds(current_time_monotonic()); }
+get_time :: () -> float64 {
+    return to_float64_seconds(current_time_monotonic());
+}
 
 seconds_since_init :: () -> float64 {
     now := current_time_monotonic();
@@ -200,7 +218,7 @@ seconds_since_init :: () -> float64 {
     FourCharCode :: u32;
     OSStatus :: s32;
     OSType :: FourCharCode;
-    noErr :OSStatus: 0;
+    noErr: OSStatus : 0;
     _NSGetExecutablePath :: (buf: *u8, bufsize: *u32) -> s32 #foreign native_time_libc;
     NSSymbol :: *void;
     NSIsSymbolNameDefined :: (symbolName: *u8) -> bool #foreign native_time_libc #deprecated "use dlysym()";

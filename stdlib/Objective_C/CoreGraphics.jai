@@ -4,11 +4,11 @@ init_core_graphics_runtime_constants :: () {
     // One global per CGWindowLevelKey, listed in key order, so slot i is filled from key i. The
     // declared length makes a missing or extra entry a compile error.
     by_key: [KEY_COUNT] *CGWindowLevel = .[
-        *kCGBaseWindowLevel,      *kCGMinimumWindowLevel,     *kCGDesktopWindowLevel,  *kCGBackstopMenuLevel,
-        *kCGNormalWindowLevel,    *kCGFloatingWindowLevel,    *kCGTornOffMenuWindowLevel, *kCGDockWindowLevel,
-        *kCGMainMenuWindowLevel,  *kCGStatusWindowLevel,      *kCGModalPanelWindowLevel,  *kCGPopUpMenuWindowLevel,
-        *kCGDraggingWindowLevel,  *kCGScreenSaverWindowLevel, *kCGMaximumWindowLevel,     *kCGOverlayWindowLevel,
-        *kCGHelpWindowLevel,      *kCGUtilityWindowLevel,     *kCGDesktopIconWindowLevel, *kCGCursorWindowLevel,
+        *kCGBaseWindowLevel, *kCGMinimumWindowLevel, *kCGDesktopWindowLevel, *kCGBackstopMenuLevel,
+        *kCGNormalWindowLevel, *kCGFloatingWindowLevel, *kCGTornOffMenuWindowLevel, *kCGDockWindowLevel,
+        *kCGMainMenuWindowLevel, *kCGStatusWindowLevel, *kCGModalPanelWindowLevel, *kCGPopUpMenuWindowLevel,
+        *kCGDraggingWindowLevel, *kCGScreenSaverWindowLevel, *kCGMaximumWindowLevel, *kCGOverlayWindowLevel,
+        *kCGHelpWindowLevel, *kCGUtilityWindowLevel, *kCGDesktopIconWindowLevel, *kCGCursorWindowLevel,
         *kCGAssistiveTechHighWindowLevel,
     ];
     for by_key it.* = CGWindowLevelForKey(cast(CGWindowLevelKey) it_index);

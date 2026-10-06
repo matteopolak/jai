@@ -2,69 +2,69 @@
 NVTT_VERSION :: 20100;
 
 Format :: enum s32 {
-    RGB           :: 0;
-    RGBA          :: 0;
+    RGB :: 0;
+    RGBA :: 0;
 
-    DXT1          :: 1;
-    DXT1a         :: 2;
-    DXT3          :: 3;
-    DXT5          :: 4;
-    DXT5n         :: 5;
+    DXT1 :: 1;
+    DXT1a :: 2;
+    DXT3 :: 3;
+    DXT5 :: 4;
+    DXT5n :: 5;
 
-    BC1           :: 1;
-    BC1a          :: 2;
-    BC2           :: 3;
-    BC3           :: 4;
-    BC3n          :: 5;
-    BC4           :: 6;
-    BC5           :: 7;
+    BC1 :: 1;
+    BC1a :: 2;
+    BC2 :: 3;
+    BC3 :: 4;
+    BC3n :: 5;
+    BC4 :: 6;
+    BC5 :: 7;
 
-    DXT1n         :: 8;
-    CTX1          :: 9;
+    DXT1n :: 8;
+    CTX1 :: 9;
 
-    BC6           :: 10;
-    BC7           :: 11;
+    BC6 :: 10;
+    BC7 :: 11;
 
-    BC3_RGBM      :: 12;
+    BC3_RGBM :: 12;
 
-    ETC1          :: 13;
-    ETC2_R        :: 14;
-    ETC2_RG       :: 15;
-    ETC2_RGB      :: 16;
-    ETC2_RGBA     :: 17;
-    ETC2_RGB_A1   :: 18;
+    ETC1 :: 13;
+    ETC2_R :: 14;
+    ETC2_RG :: 15;
+    ETC2_RGB :: 16;
+    ETC2_RGBA :: 17;
+    ETC2_RGB_A1 :: 18;
 
-    ETC2_RGBM     :: 19;
+    ETC2_RGBM :: 19;
 
-    PVR_2BPP_RGB  :: 20;
-    PVR_4BPP_RGB  :: 21;
+    PVR_2BPP_RGB :: 20;
+    PVR_4BPP_RGB :: 21;
     PVR_2BPP_RGBA :: 22;
     PVR_4BPP_RGBA :: 23;
 
-    Count         :: 24;
+    Count :: 24;
 }
 
 PixelType :: enum s32 {
-    UnsignedNorm  :: 0;
-    SignedNorm    :: 1;
-    UnsignedInt   :: 2;
-    SignedInt     :: 3;
-    Float         :: 4;
+    UnsignedNorm :: 0;
+    SignedNorm :: 1;
+    UnsignedInt :: 2;
+    SignedInt :: 3;
+    Float :: 4;
     UnsignedFloat :: 5;
-    SharedExp     :: 6;
+    SharedExp :: 6;
 }
 
 Quality :: enum s32 {
-    Fastest    :: 0;
-    Normal     :: 1;
+    Fastest :: 0;
+    Normal :: 1;
     Production :: 2;
-    Highest    :: 3;
+    Highest :: 3;
 }
 
 Decoder :: enum s32 {
     D3D10 :: 0;
-    D3D9  :: 1;
-    NV5x  :: 2;
+    D3D9 :: 1;
+    NV5x :: 2;
 }
 
 CompressionOptions :: struct {
@@ -100,15 +100,15 @@ CompressionOptions :: struct {
 }
 
 WrapMode :: enum s32 {
-    Clamp  :: 0;
+    Clamp :: 0;
     Repeat :: 1;
     Mirror :: 2;
 }
 
 TextureType :: enum s32 {
-    _2D   :: 0;
-    Cube  :: 1;
-    _3D   :: 2;
+    _2D :: 0;
+    Cube :: 1;
+    _3D :: 2;
     Array :: 3;
 }
 
@@ -116,40 +116,40 @@ InputFormat :: enum s32 {
     BGRA_8UB :: 0;
     RGBA_16F :: 1;
     RGBA_32F :: 2;
-    R_32F    :: 3;
+    R_32F :: 3;
 }
 
 MipmapFilter :: enum s32 {
-    Box      :: 0;
+    Box :: 0;
     Triangle :: 1;
-    Kaiser   :: 2;
+    Kaiser :: 2;
 }
 
 ResizeFilter :: enum s32 {
-    Box      :: 0;
+    Box :: 0;
     Triangle :: 1;
-    Kaiser   :: 2;
+    Kaiser :: 2;
     Mitchell :: 3;
 }
 
 RoundMode :: enum s32 {
-    None                     :: 0;
-    ToNextPowerOfTwo         :: 1;
-    ToNearestPowerOfTwo      :: 2;
-    ToPreviousPowerOfTwo     :: 3;
-    ToNextMultipleOfFour     :: 4;
-    ToNearestMultipleOfFour  :: 5;
+    None :: 0;
+    ToNextPowerOfTwo :: 1;
+    ToNearestPowerOfTwo :: 2;
+    ToPreviousPowerOfTwo :: 3;
+    ToNextMultipleOfFour :: 4;
+    ToNearestMultipleOfFour :: 5;
     ToPreviousMultipleOfFour :: 6;
 }
 
 AlphaMode :: enum s32 {
-    None          :: 0;
-    Transparency  :: 1;
+    None :: 0;
+    Transparency :: 1;
     Premultiplied :: 2;
 }
 
 ShapeRestriction :: enum s32 {
-    None   :: 0;
+    None :: 0;
     Square :: 1;
 }
 
@@ -223,14 +223,14 @@ vtable :: (obj: *OutputHandler) -> *OutputHandler_VTable {
 }
 
 Error :: enum s32 {
-    Unknown                 :: 0;
-    InvalidInput            :: 1;
-    UnsupportedFeature      :: 2;
-    CudaError               :: 3;
-    FileOpen                :: 4;
-    FileWrite               :: 5;
+    Unknown :: 0;
+    InvalidInput :: 1;
+    UnsupportedFeature :: 2;
+    CudaError :: 3;
+    FileOpen :: 4;
+    FileWrite :: 5;
     UnsupportedOutputFormat :: 6;
-    Count                   :: 7;
+    Count :: 7;
 }
 
 ErrorHandler :: struct {
@@ -255,9 +255,9 @@ vtable :: (obj: *ErrorHandler) -> *ErrorHandler_VTable {
 }
 
 Container :: enum s32 {
-    DDS   :: 0;
+    DDS :: 0;
     DDS10 :: 1;
-    KTX   :: 2;
+    KTX :: 2;
 }
 
 OutputOptions :: struct {
@@ -304,7 +304,7 @@ vtable :: (obj: *TaskDispatcher) -> *TaskDispatcher_VTable {
     return obj.vtable;
 }
 
-Compressor :: struct  {
+Compressor :: struct {
     Private :: struct {}
     m: *Private;
 
@@ -317,67 +317,67 @@ Compressor :: struct  {
 
     process :: (this: *Compressor, inputOptions: *InputOptions, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?process@Compressor@nvtt@@QEBA_NAEBUInputOptions@2@AEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     process :: (this: *Compressor, inputOptions: InputOptions, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return process(this, *inputOptions, *compressionOptions, *outputOptions);
-}
+        return process(this, *inputOptions, *compressionOptions, *outputOptions);
+    }
     estimateSize :: (this: *Compressor, inputOptions: *InputOptions, compressionOptions: *CompressionOptions) -> s32 #cpp_method #foreign nvtt "?estimateSize@Compressor@nvtt@@QEBAHAEBUInputOptions@2@AEBUCompressionOptions@2@@Z";
     estimateSize :: (this: *Compressor, inputOptions: InputOptions, compressionOptions: CompressionOptions) -> s32 #no_context {
-    return estimateSize(this, *inputOptions, *compressionOptions);
-}
+        return estimateSize(this, *inputOptions, *compressionOptions);
+    }
 
     outputHeader :: (this: *Compressor, img: *Surface, mipmapCount: s32, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?outputHeader@Compressor@nvtt@@QEBA_NAEBUSurface@2@HAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     outputHeader :: (this: *Compressor, img: Surface, mipmapCount: s32, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return outputHeader(this, *img, mipmapCount, *compressionOptions, *outputOptions);
-}
+        return outputHeader(this, *img, mipmapCount, *compressionOptions, *outputOptions);
+    }
     compress :: (this: *Compressor, img: *Surface, face: s32, mipmap: s32, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?compress@Compressor@nvtt@@QEBA_NAEBUSurface@2@HHAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     compress :: (this: *Compressor, img: Surface, face: s32, mipmap: s32, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return compress(this, *img, face, mipmap, *compressionOptions, *outputOptions);
-}
+        return compress(this, *img, face, mipmap, *compressionOptions, *outputOptions);
+    }
     estimateSize :: (this: *Compressor, img: *Surface, mipmapCount: s32, compressionOptions: *CompressionOptions) -> s32 #cpp_method #foreign nvtt "?estimateSize@Compressor@nvtt@@QEBAHAEBUSurface@2@HAEBUCompressionOptions@2@@Z";
     estimateSize :: (this: *Compressor, img: Surface, mipmapCount: s32, compressionOptions: CompressionOptions) -> s32 #no_context {
-    return estimateSize(this, *img, mipmapCount, *compressionOptions);
-}
+        return estimateSize(this, *img, mipmapCount, *compressionOptions);
+    }
 
     outputHeader :: (this: *Compressor, cube: *CubeSurface, mipmapCount: s32, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?outputHeader@Compressor@nvtt@@QEBA_NAEBUCubeSurface@2@HAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     outputHeader :: (this: *Compressor, cube: CubeSurface, mipmapCount: s32, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return outputHeader(this, *cube, mipmapCount, *compressionOptions, *outputOptions);
-}
+        return outputHeader(this, *cube, mipmapCount, *compressionOptions, *outputOptions);
+    }
     compress :: (this: *Compressor, cube: *CubeSurface, mipmap: s32, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?compress@Compressor@nvtt@@QEBA_NAEBUCubeSurface@2@HAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     compress :: (this: *Compressor, cube: CubeSurface, mipmap: s32, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return compress(this, *cube, mipmap, *compressionOptions, *outputOptions);
-}
+        return compress(this, *cube, mipmap, *compressionOptions, *outputOptions);
+    }
     estimateSize :: (this: *Compressor, cube: *CubeSurface, mipmapCount: s32, compressionOptions: *CompressionOptions) -> s32 #cpp_method #foreign nvtt "?estimateSize@Compressor@nvtt@@QEBAHAEBUCubeSurface@2@HAEBUCompressionOptions@2@@Z";
     estimateSize :: (this: *Compressor, cube: CubeSurface, mipmapCount: s32, compressionOptions: CompressionOptions) -> s32 #no_context {
-    return estimateSize(this, *cube, mipmapCount, *compressionOptions);
-}
+        return estimateSize(this, *cube, mipmapCount, *compressionOptions);
+    }
 
     outputHeader :: (this: *Compressor, type: TextureType, w: s32, h: s32, d: s32, arraySize: s32, mipmapCount: s32, isNormalMap: bool, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?outputHeader@Compressor@nvtt@@QEBA_NW4TextureType@2@HHHHH_NAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     outputHeader :: (this: *Compressor, type: TextureType, w: s32, h: s32, d: s32, arraySize: s32, mipmapCount: s32, isNormalMap: bool, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return outputHeader(this, type, w, h, d, arraySize, mipmapCount, isNormalMap, *compressionOptions, *outputOptions);
-}
+        return outputHeader(this, type, w, h, d, arraySize, mipmapCount, isNormalMap, *compressionOptions, *outputOptions);
+    }
     compress :: (this: *Compressor, w: s32, h: s32, d: s32, face: s32, mipmap: s32, rgba: *float, compressionOptions: *CompressionOptions, outputOptions: *OutputOptions) -> bool #cpp_method #foreign nvtt "?compress@Compressor@nvtt@@QEBA_NHHHHHPEBMAEBUCompressionOptions@2@AEBUOutputOptions@2@@Z";
     compress :: (this: *Compressor, w: s32, h: s32, d: s32, face: s32, mipmap: s32, rgba: *float, compressionOptions: CompressionOptions, outputOptions: OutputOptions) -> bool #no_context {
-    return compress(this, w, h, d, face, mipmap, rgba, *compressionOptions, *outputOptions);
-}
+        return compress(this, w, h, d, face, mipmap, rgba, *compressionOptions, *outputOptions);
+    }
     estimateSize :: (this: *Compressor, w: s32, h: s32, d: s32, mipmapCount: s32, compressionOptions: *CompressionOptions) -> s32 #cpp_method #foreign nvtt "?estimateSize@Compressor@nvtt@@QEBAHHHHHAEBUCompressionOptions@2@@Z";
     estimateSize :: (this: *Compressor, w: s32, h: s32, d: s32, mipmapCount: s32, compressionOptions: CompressionOptions) -> s32 #no_context {
-    return estimateSize(this, w, h, d, mipmapCount, *compressionOptions);
-}
+        return estimateSize(this, w, h, d, mipmapCount, *compressionOptions);
+    }
 }
 
 Context :: Compressor;
 
 NormalTransform :: enum s32 {
-    Orthographic  :: 0;
+    Orthographic :: 0;
     Stereographic :: 1;
-    Paraboloid    :: 2;
-    Quartic       :: 3;
+    Paraboloid :: 2;
+    Quartic :: 3;
 }
 
 ToneMapper :: enum s32 {
-    Linear    :: 0;
+    Linear :: 0;
     Reindhart :: 1;
-    Halo      :: 2;
-    Lightmap  :: 3;
+    Halo :: 2;
+    Lightmap :: 3;
 }
 
 WarpFunction :: #type (x: *float, y: *float, d: *float) -> void #c_call;
@@ -386,8 +386,8 @@ Surface :: struct #type_info_none {
     Constructor :: (this: *Surface) -> void #cpp_method #foreign nvtt "??0Surface@nvtt@@QEAA@XZ";
     CopyConstructor :: (this: *Surface, img: *Surface) -> void #cpp_method #foreign nvtt "??0Surface@nvtt@@QEAA@AEBU01@@Z";
     CopyConstructor :: (this: *Surface, img: Surface) #no_context {
-    CopyConstructor(this, *img);
-}
+        CopyConstructor(this, *img);
+    }
     Destructor :: (this: *Surface) -> void #cpp_method #foreign nvtt "??1Surface@nvtt@@QEAA@XZ";
 
     setWrapMode :: (this: *Surface, mode: WrapMode) -> void #cpp_method #foreign nvtt "?setWrapMode@Surface@nvtt@@QEAAXW4WrapMode@2@@Z";
@@ -512,22 +512,22 @@ Surface :: struct #type_info_none {
 
     copyChannel :: (this: *Surface, srcImage: *Surface, srcChannel: s32) -> bool #cpp_method #foreign nvtt "?copyChannel@Surface@nvtt@@QEAA_NAEBU12@H@Z";
     copyChannel :: (this: *Surface, srcImage: Surface, srcChannel: s32) -> bool #no_context {
-    return copyChannel(this, *srcImage, srcChannel);
-}
+        return copyChannel(this, *srcImage, srcChannel);
+    }
     copyChannel :: (this: *Surface, srcImage: *Surface, srcChannel: s32, dstChannel: s32) -> bool #cpp_method #foreign nvtt "?copyChannel@Surface@nvtt@@QEAA_NAEBU12@HH@Z";
     copyChannel :: (this: *Surface, srcImage: Surface, srcChannel: s32, dstChannel: s32) -> bool #no_context {
-    return copyChannel(this, *srcImage, srcChannel, dstChannel);
-}
+        return copyChannel(this, *srcImage, srcChannel, dstChannel);
+    }
 
     addChannel :: (this: *Surface, img: *Surface, srcChannel: s32, dstChannel: s32, scale: float) -> bool #cpp_method #foreign nvtt "?addChannel@Surface@nvtt@@QEAA_NAEBU12@HHM@Z";
     addChannel :: (this: *Surface, img: Surface, srcChannel: s32, dstChannel: s32, scale: float) -> bool #no_context {
-    return addChannel(this, *img, srcChannel, dstChannel, scale);
-}
+        return addChannel(this, *img, srcChannel, dstChannel, scale);
+    }
 
     copy :: (this: *Surface, src: *Surface, xsrc: s32, ysrc: s32, zsrc: s32, xsize: s32, ysize: s32, zsize: s32, xdst: s32, ydst: s32, zdst: s32) -> bool #cpp_method #foreign nvtt "?copy@Surface@nvtt@@QEAA_NAEBU12@HHHHHHHHH@Z";
     copy :: (this: *Surface, src: Surface, xsrc: s32, ysrc: s32, zsrc: s32, xsize: s32, ysize: s32, zsize: s32, xdst: s32, ydst: s32, zdst: s32) -> bool #no_context {
-    return copy(this, *src, xsrc, ysrc, zsrc, xsize, ysize, zsize, xdst, ydst, zdst);
-}
+        return copy(this, *src, xsrc, ysrc, zsrc, xsize, ysize, zsize, xdst, ydst, zdst);
+    }
 
     Private :: struct {}
     m: *Private;
@@ -539,26 +539,26 @@ operator_assign :: (this: *Surface, img: Surface) #no_context {
 }
 
 CubeLayout :: enum s32 {
-    VerticalCross     :: 0;
-    HorizontalCross   :: 1;
-    Column            :: 2;
-    Row               :: 3;
+    VerticalCross :: 0;
+    HorizontalCross :: 1;
+    Column :: 2;
+    Row :: 3;
     LatitudeLongitude :: 4;
 }
 
 EdgeFixup :: enum s32 {
-    None    :: 0;
+    None :: 0;
     Stretch :: 1;
-    Warp    :: 2;
+    Warp :: 2;
     Average :: 3;
 }
 
-CubeSurface :: struct  {
+CubeSurface :: struct {
     Constructor :: (this: *CubeSurface) -> void #cpp_method #foreign nvtt "??0CubeSurface@nvtt@@QEAA@XZ";
     CopyConstructor :: (this: *CubeSurface, img: *CubeSurface) -> void #cpp_method #foreign nvtt "??0CubeSurface@nvtt@@QEAA@AEBU01@@Z";
     CopyConstructor :: (this: *CubeSurface, img: CubeSurface) #no_context {
-    CopyConstructor(this, *img);
-}
+        CopyConstructor(this, *img);
+    }
     Destructor :: (this: *CubeSurface) -> void #cpp_method #foreign nvtt "??1CubeSurface@nvtt@@QEAA@XZ";
 
     isNull :: (this: *CubeSurface) -> bool #cpp_method #foreign nvtt "?isNull@CubeSurface@nvtt@@QEBA_NXZ";
@@ -569,12 +569,12 @@ CubeSurface :: struct  {
     save :: (this: *CubeSurface, fileName: *u8) -> bool #cpp_method #foreign nvtt "?save@CubeSurface@nvtt@@QEBA_NPEBD@Z";
 
     face :: (this: *CubeSurface, face: s32) -> *Surface #cpp_method #foreign nvtt "?face@CubeSurface@nvtt@@QEAAAEAUSurface@2@H@Z";
-    face_1 :: (this:  *CubeSurface, face: s32) -> *Surface #cpp_method #foreign nvtt "?face@CubeSurface@nvtt@@QEBAAEBUSurface@2@H@Z";
+    face_1 :: (this: *CubeSurface, face: s32) -> *Surface #cpp_method #foreign nvtt "?face@CubeSurface@nvtt@@QEBAAEBUSurface@2@H@Z";
 
     fold :: (this: *CubeSurface, img: *Surface, layout: CubeLayout) -> void #cpp_method #foreign nvtt "?fold@CubeSurface@nvtt@@QEAAXAEBUSurface@2@W4CubeLayout@2@@Z";
     fold :: (this: *CubeSurface, img: Surface, layout: CubeLayout) #no_context {
-    fold(this, *img, layout);
-}
+        fold(this, *img, layout);
+    }
     unfold :: (this: *CubeSurface, layout: CubeLayout) -> Surface {
         result: Surface;
         native_object_return_6(this, *result, layout);
@@ -635,10 +635,10 @@ angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
 diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface {
-        result: Surface;
-        native_object_return_10(*result, reference, img, scale);
-        return result;
-    }
+    result: Surface;
+    native_object_return_10(*result, reference, img, scale);
+    return result;
+}
 diff :: (reference: Surface, img: Surface, scale: float) -> Surface #no_context {
     return diff(*reference, *img, scale);
 }
@@ -649,18 +649,18 @@ rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> flo
 }
 
 histogram :: (img: *Surface, width: s32, height: s32) -> Surface {
-        result: Surface;
-        native_object_return_11(*result, img, width, height);
-        return result;
-    }
+    result: Surface;
+    native_object_return_11(*result, img, width, height);
+    return result;
+}
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
 histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface {
-        result: Surface;
-        native_object_return_12(*result, img, minRange, maxRange, width, height);
-        return result;
-    }
+    result: Surface;
+    native_object_return_12(*result, img, minRange, maxRange, width, height);
+    return result;
+}
 histogram :: (img: Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, minRange, maxRange, width, height);
 }

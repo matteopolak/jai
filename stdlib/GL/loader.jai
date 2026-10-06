@@ -6,12 +6,12 @@ gl_parse_version :: (version: string) -> major: s32, minor: s32 {
     major: s32 = 0;
     minor: s32 = 0;
     while at < version.count && version[at] >= 48 && version[at] <= 57 {
-        major = major * 10 + cast(s32)(version[at] - 48);
+        major = major * 10 + cast(s32) (version[at] - 48);
         at += 1;
     }
     if at < version.count && (version[at] == 46 || version[at] == 95) at += 1;
     while at < version.count && version[at] >= 48 && version[at] <= 57 {
-        minor = minor * 10 + cast(s32)(version[at] - 48);
+        minor = minor * 10 + cast(s32) (version[at] - 48);
         at += 1;
     }
     return major, minor;

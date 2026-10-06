@@ -1,5 +1,5 @@
 // Metaprogram plugin that embeds an application icon into Windows executables.
-get_plugin :: ( ) -> * Metaprogram_Plugin {
+get_plugin :: () -> *Metaprogram_Plugin {
     state := New(My_Plugin);
     state.plugin.log_help = log_help;
     state.plugin.handle_one_option = handle_one_option;
@@ -7,7 +7,7 @@ get_plugin :: ( ) -> * Metaprogram_Plugin {
     state.plugin.message = message;
     return *state.plugin;
 }
-message :: ( p : * Metaprogram_Plugin , message : * Message ) {
+message :: (p: *Metaprogram_Plugin, message: *Message) {
     if !p || !message return;
     if message.kind != .PHASE return;
     phase := cast(*Message_Phase) message;
@@ -25,11 +25,11 @@ message :: ( p : * Metaprogram_Plugin , message : * Message ) {
         log_error("Executable icon updates are unavailable on %.\n", OS);
     }
 }
-shutdown :: ( p : * Metaprogram_Plugin ) {
+shutdown :: (p: *Metaprogram_Plugin) {
     state := cast(*My_Plugin) p;
     free(state);
 }
-handle_one_option :: ( p : * Metaprogram_Plugin , options : [ ] string , cursor : int ) -> new_cursor : int {
+handle_one_option :: (p: *Metaprogram_Plugin, options: [] string, cursor: int) -> new_cursor: int {
     if cursor < 0 || cursor >= options.count return cursor;
     if options[cursor] != "-icon" return cursor;
     next := cursor + 1;
@@ -41,14 +41,14 @@ handle_one_option :: ( p : * Metaprogram_Plugin , options : [ ] string , cursor 
     state.icon_filename = options[next];
     return next + 1;
 }
-log_help :: ( p : * Metaprogram_Plugin ) {
+log_help :: (p: *Metaprogram_Plugin) {
     log(HELP_STRING);
 }
 HELP_STRING :: "-icon filename  Set the executable icon from an ICO file.\n";
 #scope_module
 My_Plugin :: struct {
-    #as using plugin : Metaprogram_Plugin ;
-    icon_filename : string ;
+    #as using plugin: Metaprogram_Plugin;
+    icon_filename: string;
 }
-#import "Compiler" ;
-#import "Basic" ;
+#import "Compiler";
+#import "Basic";

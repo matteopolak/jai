@@ -22,7 +22,7 @@ output_open :: (config: Sound_Player_Config) -> channels: s32, rate: s32, ok: bo
 }
 
 output_start :: () {
-    if pcm pcm_prepare(pcm);   // Playback begins with the first write.
+    if pcm pcm_prepare(pcm); // Playback begins with the first write.
 }
 
 output_close :: () {
@@ -53,7 +53,7 @@ output_write :: (frames: s64) {
     while remaining > 0 {
         count := min(remaining, STAGING_FRAMES);
         chunk: [] s16;
-        chunk.data  = staging.data;
+        chunk.data = staging.data;
         chunk.count = count * ALSA_CHANNELS;
         mix_into(chunk);
         if !write_all(chunk.data, count) return;
@@ -93,8 +93,8 @@ output_devices :: () -> [] Output_Device {
 
 #scope_file
 
-ALSA_RATE      :: 48000;
-ALSA_CHANNELS  :: 2;
+ALSA_RATE :: 48000;
+ALSA_CHANNELS :: 2;
 STAGING_FRAMES :: 2048;
 
 pcm: *Pcm;
@@ -139,24 +139,24 @@ complain :: (what: string, status: s32) {
 
 // Opaque handle and the handful of libasound entry points used above.
 Pcm :: struct {}
-PCM_PLAYBACK          :: 0;
-FORMAT_S16_LE         :: 2;
+PCM_PLAYBACK :: 0;
+FORMAT_S16_LE :: 2;
 ACCESS_RW_INTERLEAVED :: 3;
 
 libasound :: #system_library "asound";
-libc      :: #system_library "c";
+libc :: #system_library "c";
 
-pcm_open          :: (handle: **Pcm, name: *u8, direction: s32, mode: s32) -> s32 #foreign libasound "snd_pcm_open";
-pcm_close         :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_close";
-pcm_drop          :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_drop";
-pcm_prepare       :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_prepare";
-pcm_set_params    :: (handle: *Pcm, format: u32, access: u32, channels: u32, rate: u32, allow_resample: s32, latency_us: u32) -> s32 #foreign libasound "snd_pcm_set_params";
-pcm_writei        :: (handle: *Pcm, buffer: *void, frames: u64) -> s64 #foreign libasound "snd_pcm_writei";
-pcm_avail_update  :: (handle: *Pcm) -> s64 #foreign libasound "snd_pcm_avail_update";
-pcm_delay         :: (handle: *Pcm, frames: *s64) -> s32 #foreign libasound "snd_pcm_delay";
-pcm_recover       :: (handle: *Pcm, error: s32, silent: s32) -> s32 #foreign libasound "snd_pcm_recover";
-alsa_error_text   :: (error: s32) -> *u8 #foreign libasound "snd_strerror";
-device_name_hint      :: (card: s32, interface: *u8, hints: ***void) -> s32 #foreign libasound "snd_device_name_hint";
-device_name_get_hint  :: (hint: *void, field: *u8) -> *u8 #foreign libasound "snd_device_name_get_hint";
+pcm_open :: (handle: **Pcm, name: *u8, direction: s32, mode: s32) -> s32 #foreign libasound "snd_pcm_open";
+pcm_close :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_close";
+pcm_drop :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_drop";
+pcm_prepare :: (handle: *Pcm) -> s32 #foreign libasound "snd_pcm_prepare";
+pcm_set_params :: (handle: *Pcm, format: u32, access: u32, channels: u32, rate: u32, allow_resample: s32, latency_us: u32) -> s32 #foreign libasound "snd_pcm_set_params";
+pcm_writei :: (handle: *Pcm, buffer: *void, frames: u64) -> s64 #foreign libasound "snd_pcm_writei";
+pcm_avail_update :: (handle: *Pcm) -> s64 #foreign libasound "snd_pcm_avail_update";
+pcm_delay :: (handle: *Pcm, frames: *s64) -> s32 #foreign libasound "snd_pcm_delay";
+pcm_recover :: (handle: *Pcm, error: s32, silent: s32) -> s32 #foreign libasound "snd_pcm_recover";
+alsa_error_text :: (error: s32) -> *u8 #foreign libasound "snd_strerror";
+device_name_hint :: (card: s32, interface: *u8, hints: ***void) -> s32 #foreign libasound "snd_device_name_hint";
+device_name_get_hint :: (hint: *void, field: *u8) -> *u8 #foreign libasound "snd_device_name_get_hint";
 device_name_free_hint :: (hints: **void) -> s32 #foreign libasound "snd_device_name_free_hint";
 libc_free :: (pointer: *void) #foreign libc "free";

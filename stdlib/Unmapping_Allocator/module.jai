@@ -14,7 +14,7 @@ get_unmapping_allocator :: () -> Allocator {
     if !state return .{};
     state.table.allocator = context.allocator;
     init(*state.mutex);
-    return .{unmapping_allocator_proc, state};
+    return .{ unmapping_allocator_proc, state };
 }
 
 deinit_unmapping_allocator :: (a: Allocator) {

@@ -197,28 +197,28 @@ rp_set_main_thread :: () {
 }
 rp_map_callback :: (size: u64, offset: *u64) -> *void #c_call {
     push_context rp_callback_context {
-    return rp_public_config.memory_map(cast(type_of(rp_public_config.page_size)) size, cast(*type_of(rp_public_config.page_size)) offset);
+        return rp_public_config.memory_map(cast(type_of(rp_public_config.page_size)) size, cast(*type_of(rp_public_config.page_size)) offset);
     }
 }
 rp_unmap_callback :: (address: *void, size: u64, offset: u64, release: u64) #c_call {
     push_context rp_callback_context {
-    rp_public_config.memory_unmap(address, cast(type_of(rp_public_config.page_size)) size,
-                                   cast(type_of(rp_public_config.page_size)) offset,
-                                   cast(type_of(rp_public_config.page_size)) release);
+        rp_public_config.memory_unmap(address, cast(type_of(rp_public_config.page_size)) size,
+                                       cast(type_of(rp_public_config.page_size)) offset,
+                                       cast(type_of(rp_public_config.page_size)) release);
     }
 }
 rp_error_callback :: (message: *u8) #c_call {
     push_context rp_callback_context {
-    length: s64;
-    while message[length] != 0 length += 1;
-    text: string = .{length, message};
-    #if USE_RAW rp_public_config.error_callback(text);
-    else rp_public_config.error_callback(text, .{});
+        length: s64;
+        while message[length] != 0 length += 1;
+        text: string = .{ length, message };
+        #if USE_RAW rp_public_config.error_callback(text);
+        else rp_public_config.error_callback(text, .{});
     }
 }
 rp_map_fail_callback :: (size: u64) -> s32 #c_call {
     push_context rp_callback_context {
-    return rp_public_config.map_fail_callback(cast(type_of(rp_public_config.page_size)) size);
+        return rp_public_config.map_fail_callback(cast(type_of(rp_public_config.page_size)) size);
     }
 }
 

@@ -24,7 +24,7 @@ init :: (pool: *Flat_Pool, reserve := DEFAULT_VIRTUAL_MEMORY_RESERVE) {
     allocator := backing_allocator(pool);
     raw := alloc(PRIVATE_HEADER_SIZE + slack + reserve, allocator);
     assert(raw != null);
-    after_header := cast(*u8)raw + PRIVATE_HEADER_SIZE;
+    after_header := cast(*u8) raw + PRIVATE_HEADER_SIZE;
     memory := after_header + alignment_padding(after_header, alignment);
     header := storage_header(memory);
     header.raw = raw;
@@ -74,11 +74,14 @@ fini :: (pool: *Flat_Pool) {
 
 flat_pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
     if mode == .CAPS {
-        if old_memory { name := cast(*string)old_memory; name.* = CAPS_VERSION_STRING; }
-        return cast(*void)cast(u64)(Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
+        if old_memory {
+            name := cast(*string) old_memory;
+            name.* = CAPS_VERSION_STRING;
+        }
+        return cast(*void) cast(u64) (Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
     }
     if mode == .FREE || mode == .STARTUP || mode == .SHUTDOWN return null;
-    pool := cast(*Flat_Pool)allocator_data;
+    pool := cast(*Flat_Pool) allocator_data;
     assert(pool != null);
     if mode == .ALLOCATE return get(pool, requested_size);
     if mode == .RESIZE {
@@ -91,9 +94,9 @@ flat_pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
     }
     if mode == .IS_THIS_YOURS {
         if !old_memory || !pool.memory_base return null;
-        address := cast(*u8)old_memory;
+        address := cast(*u8) old_memory;
         ours := address >= pool.memory_base && address < pool.first_uncommitted_page;
-        return cast(*void)cast(u64)ours;
+        return cast(*void) cast(u64) ours;
     }
     assert(false, "Flat_Pool does not support this allocator mode");
     return null;
@@ -113,7 +116,7 @@ RESERVE_GRANULARITY :: 4096;
 MAX_RESERVE_SIZE :: 0x7fff_ffff_ffff_ffff - PRIVATE_HEADER_SIZE;
 
 storage_header :: (memory: *u8) -> *Flat_Storage {
-    return cast(*Flat_Storage)(memory - PRIVATE_HEADER_SIZE);
+    return cast(*Flat_Storage) (memory - PRIVATE_HEADER_SIZE);
 }
 
 checked_alignment :: (pool: *Flat_Pool) -> s64 {
@@ -122,8 +125,8 @@ checked_alignment :: (pool: *Flat_Pool) -> s64 {
 }
 
 alignment_padding :: (address: *u8, alignment: s64) -> s64 #no_aoc {
-    mask := cast(u64)(alignment - 1);
-    return cast(s64)((cast(u64)0 - cast(u64)address) & mask);
+    mask := cast(u64) (alignment - 1);
+    return cast(s64) ((cast(u64) 0 - cast(u64) address) & mask);
 }
 
 backing_allocator :: (pool: *Flat_Pool) -> Allocator {

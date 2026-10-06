@@ -116,11 +116,11 @@ MOJOSHADER_swizzle :: struct {
 }
 
 using MOJOSHADER_symbolRegisterSet :: enum u32 {
-MOJOSHADER_SYMREGSET_BOOL :: 0;
-MOJOSHADER_SYMREGSET_INT4 :: 1;
-MOJOSHADER_SYMREGSET_FLOAT4 :: 2;
-MOJOSHADER_SYMREGSET_SAMPLER :: 3;
-MOJOSHADER_SYMREGSET_TOTAL :: 4;
+    MOJOSHADER_SYMREGSET_BOOL :: 0;
+    MOJOSHADER_SYMREGSET_INT4 :: 1;
+    MOJOSHADER_SYMREGSET_FLOAT4 :: 2;
+    MOJOSHADER_SYMREGSET_SAMPLER :: 3;
+    MOJOSHADER_SYMREGSET_TOTAL :: 4;
 }
 
 using MOJOSHADER_symbolClass :: enum u32 {
@@ -534,21 +534,21 @@ using MOJOSHADER_astVariableAttributes :: enum u32 {
 }
 
 using MOJOSHADER_astIfAttributes :: enum u32 {
-        MOJOSHADER_AST_IFATTR_NONE :: 0;
-        MOJOSHADER_AST_IFATTR_BRANCH :: 1;
-        MOJOSHADER_AST_IFATTR_FLATTEN :: 2;
-        MOJOSHADER_AST_IFATTR_IFALL :: 3;
-        MOJOSHADER_AST_IFATTR_IFANY :: 4;
-        MOJOSHADER_AST_IFATTR_PREDICATE :: 5;
-        MOJOSHADER_AST_IFATTR_PREDICATEBLOCK :: 6;
+    MOJOSHADER_AST_IFATTR_NONE :: 0;
+    MOJOSHADER_AST_IFATTR_BRANCH :: 1;
+    MOJOSHADER_AST_IFATTR_FLATTEN :: 2;
+    MOJOSHADER_AST_IFATTR_IFALL :: 3;
+    MOJOSHADER_AST_IFATTR_IFANY :: 4;
+    MOJOSHADER_AST_IFATTR_PREDICATE :: 5;
+    MOJOSHADER_AST_IFATTR_PREDICATEBLOCK :: 6;
 }
 
 using MOJOSHADER_astSwitchAttributes :: enum u32 {
-        MOJOSHADER_AST_SWITCHATTR_NONE :: 0;
-        MOJOSHADER_AST_SWITCHATTR_FLATTEN :: 1;
-        MOJOSHADER_AST_SWITCHATTR_BRANCH :: 2;
-        MOJOSHADER_AST_SWITCHATTR_FORCECASE :: 3;
-        MOJOSHADER_AST_SWITCHATTR_CALL :: 4;
+    MOJOSHADER_AST_SWITCHATTR_NONE :: 0;
+    MOJOSHADER_AST_SWITCHATTR_FLATTEN :: 1;
+    MOJOSHADER_AST_SWITCHATTR_BRANCH :: 2;
+    MOJOSHADER_AST_SWITCHATTR_FORCECASE :: 3;
+    MOJOSHADER_AST_SWITCHATTR_CALL :: 4;
 }
 
 MOJOSHADER_astGeneric :: struct {
@@ -1176,14 +1176,11 @@ MOJOSHADER_freeCompileData :: (data: *MOJOSHADER_compileData) -> void #foreign l
 
 MOJOSHADER_glGetProcAddress :: #type (a0: *u8, a1: *void) -> *void #c_call;
 
-MOJOSHADER_glContext :: struct {
-}
+MOJOSHADER_glContext :: struct {}
 
-MOJOSHADER_glShader :: struct {
-}
+MOJOSHADER_glShader :: struct {}
 
-MOJOSHADER_glProgram :: struct {
-}
+MOJOSHADER_glProgram :: struct {}
 
 MOJOSHADER_glAvailableProfiles :: (lookup: MOJOSHADER_glGetProcAddress, lookup_d: *void, profs: **u8, size: s32, m: MOJOSHADER_malloc, f: MOJOSHADER_free, malloc_d: *void) -> s32 #foreign libmojoshader;
 

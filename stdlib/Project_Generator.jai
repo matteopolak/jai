@@ -31,7 +31,10 @@ find_fragment :: (text: string, fragment: string) -> int {
     while candidate <= text.count - fragment.count {
         matches := true;
         for byte, index: fragment {
-            if text[candidate + index] != byte { matches = false; break; }
+            if text[candidate + index] != byte {
+                matches = false;
+                break;
+            }
         }
         if matches return candidate;
         candidate += 1;

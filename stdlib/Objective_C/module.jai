@@ -20,7 +20,7 @@ init_objective_c_selector_struct :: (selectors: *$T) {
         if member.offset_in_bytes < 0 || member.offset_in_bytes > info.runtime_size - size_of(Selector) continue;
         bytes := Basic.to_c_string(member.name);
         if bytes == null continue;
-        for index: 0..member.name.count-1 if bytes[index] == #char "_" bytes[index] = #char ":";
+        for index: 0..member.name.count - 1 if bytes[index] == #char "_" bytes[index] = #char ":";
         slot := cast(*Selector) (cast(*u8) selectors + member.offset_in_bytes);
         slot.* = cast(Selector) sel_registerName(bytes);
         Basic.free(bytes);
@@ -47,7 +47,7 @@ to_string :: (str: *NSString) -> string {
     if length > 0x7fff_ffff_ffff_ffff return "";
     bytes := cast(*u8) NSData.bytes(encoded);
     if length > 0 && bytes == null return "";
-    return Basic.copy_string(string.{cast(s64) length, bytes});
+    return Basic.copy_string(string.{ cast(s64) length, bytes });
 }
 objc_alloc :: (class: Class) -> id #no_context {
     invoke: (sdk_receiver: *void, sdk_selector: SEL) -> id #c_call;
@@ -181,7 +181,7 @@ create_objc_class_member_stub :: (class_name: string, framework_name: string) ->
         methods := class_copyMethodList(owner, *count);
         defer _sdk_objc_libc_free(methods);
         if methods == null continue;
-        for index: 0..cast(s64) count-1 {
+        for index: 0..cast(s64) count - 1 {
             method := methods[index];
             selector_name := _sdk_objc_c_string(sel_getName(method_getName(method)));
             encoding := _sdk_objc_c_string(method_getTypeEncoding(method));
@@ -207,7 +207,10 @@ create_objc_class_member_stub :: (class_name: string, framework_name: string) ->
                 argument_type: [4096] u8;
                 method_getArgumentType(method, argument_index, *argument_type[0], 4096);
                 type_name, argument_supported := _sdk_objc_jai_type(_sdk_objc_c_string(*argument_type[0]));
-                if !argument_supported || type_name == "void" { supported_arguments = false; break; }
+                if !argument_supported || type_name == "void" {
+                    supported_arguments = false;
+                    break;
+                }
                 Basic.print_to_builder(*args, ", arg%: %", argument_index - 2, type_name);
                 argument_index += 1;
             }
@@ -262,7 +265,7 @@ objc_create_class :: ($type: Type, $parent: Type) -> Class {
             if member.type.type != .PROCEDURE continue;
             offset := member.offset_into_constant_storage;
             Basic.assert(offset >= 0 && offset <= record.constant_storage.count - size_of(IMP), "Procedure constant storage is unavailable");
-            function := Any.{type = member.type, value_pointer = record.constant_storage.data + offset};
+            function := Any.{ type = member.type, value_pointer = record.constant_storage.data + offset };
             selector_builder: String_Builder;
             defer Basic.free_buffers(*selector_builder);
             leading_underscore := true;
@@ -274,9 +277,9 @@ objc_create_class :: ($type: Type, $parent: Type) -> Class {
             selector_name := Basic.builder_to_string(*selector_builder);
             defer Basic.free(selector_name);
             for note: member.notes {
-                if note.count > 14 && string.{14, note.data} == "objc_selector:" {
+                if note.count > 14 && string.{ 14, note.data } == "objc_selector:" {
                     Basic.free(selector_name);
-                    selector_name = Basic.copy_string(string.{note.count - 14, note.data + 14});
+                    selector_name = Basic.copy_string(string.{ note.count - 14, note.data + 14 });
                 }
             }
             class_method := false;
@@ -334,7 +337,10 @@ objc_add_instance_method :: (my_class: Class, proc: Any, selector_name: string) 
     ty := cast(*Type_Info_Procedure) proc.type;
     type_check_objc_method_type(ty);
     colons: s64 = 0;
-    for byte: selector_name { Basic.assert(byte != 0, "Selector contains an embedded zero"); if byte == 58 colons += 1; }
+    for byte: selector_name {
+        Basic.assert(byte != 0, "Selector contains an embedded zero");
+        if byte == 58 colons += 1;
+    }
     Basic.assert(selector_name.count > 0 && colons == ty.argument_types.count - 2, "Selector arity differs from the C-call method");
     encoding := objc_func_encode(ty);
     defer Basic.free(encoding);
@@ -359,15 +365,23 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
     Basic.assert(builder != null && info != null && pointer_depth >= 0 && pointer_depth < 64, "Invalid or recursively unbounded native type");
     if info.type == .INTEGER {
         integer := cast(*Type_Info_Integer) info;
-        if info.runtime_size == 1 { if integer.signed Basic.append(builder, "c"); else Basic.append(builder, "C"); }
-        else if info.runtime_size == 2 { if integer.signed Basic.append(builder, "s"); else Basic.append(builder, "S"); }
-        else if info.runtime_size == 4 { if integer.signed Basic.append(builder, "i"); else Basic.append(builder, "I"); }
-        else if info.runtime_size == 8 { if integer.signed Basic.append(builder, "q"); else Basic.append(builder, "Q"); }
-        else Basic.assert(false, "Unsupported native integer width");
+        if info.runtime_size == 1 {
+            if integer.signed Basic.append(builder, "c");
+            else Basic.append(builder, "C");
+        } else if info.runtime_size == 2 {
+            if integer.signed Basic.append(builder, "s");
+            else Basic.append(builder, "S");
+        } else if info.runtime_size == 4 {
+            if integer.signed Basic.append(builder, "i");
+            else Basic.append(builder, "I");
+        } else if info.runtime_size == 8 {
+            if integer.signed Basic.append(builder, "q");
+            else Basic.append(builder, "Q");
+        } else Basic.assert(false, "Unsupported native integer width");
     } else if info.type == .FLOAT {
         if info.runtime_size == 4 Basic.append(builder, "f");
         else if info.runtime_size == 8 Basic.append(builder, "d");
-        else if info.runtime_size == 16 Basic.append(builder, "D");  // jaic's Long_Double
+        else if info.runtime_size == 16 Basic.append(builder, "D"); // jaic's Long_Double
         else Basic.assert(false, "Unsupported native floating width");
     } else if info.type == .BOOL Basic.append(builder, "B");
     else if info.type == .VOID Basic.append(builder, "v");
@@ -396,9 +410,11 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
     } else if info.type == .STRUCT {
         record := cast(*Type_Info_Struct) info;
         is_union := ((cast(u32) record.textual_flags) & 2) != 0;
-        if is_union Basic.append(builder, "("); else Basic.append(builder, "{");
+        if is_union Basic.append(builder, "(");
+        else Basic.append(builder, "{");
         // Generic Jai names contain punctuation; anonymous native tags are valid.
-        if _sdk_objc_identifier(record.name) Basic.append(builder, record.name); else Basic.append(builder, "?");
+        if _sdk_objc_identifier(record.name) Basic.append(builder, record.name);
+        else Basic.append(builder, "?");
         if pointer_depth <= 1 {
             Basic.append(builder, "=");
             for member: record.members {
@@ -406,7 +422,8 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
                 objc_type_encode(builder, member.type, pointer_depth);
             }
         }
-        if is_union Basic.append(builder, ")"); else Basic.append(builder, "}");
+        if is_union Basic.append(builder, ")");
+        else Basic.append(builder, "}");
     } else Basic.assert(false, "Type has no Objective-C native encoding");
 }
 objc_type_encode :: (info: *Type_Info) -> string {
@@ -469,7 +486,7 @@ Objective_C_Block_Basic :: struct {
     isa: *void;
     flags: s32;
     reserved: s32;
-    invoke: (*void, args: .. Any) -> () #c_call;
+    invoke: (*void, args: ..Any) -> () #c_call;
     descriptor: *Objective_C_Block_Basic_Descriptor;
 }
 _NSConcreteStackBlock :: () #foreign libSystem;
@@ -483,7 +500,7 @@ Objective_C_Block_Literal :: struct {
     user_data: *void;
 }
 OBJC_BLOCK_IS_GLOBAL :: 1 << 28;
-objc_block_literal_descriptor := Objective_C_Block_Basic_Descriptor.{size = size_of(Objective_C_Block_Literal)};
+objc_block_literal_descriptor := Objective_C_Block_Basic_Descriptor.{ size = size_of(Objective_C_Block_Literal) };
 
 objc_make_block :: (invoke: *void, user_data: *void = null) -> *Objective_C_Block_Literal {
     block := Basic.New(Objective_C_Block_Literal);
@@ -561,7 +578,7 @@ _sdk_objc_c_string :: (pointer: *u8) -> string #no_context {
     if pointer == null return "";
     count: s64 = 0;
     while pointer[count] != 0 count += 1;
-    return string.{count, pointer};
+    return string.{ count, pointer };
 }
 _sdk_objc_identifier :: (name: string) -> bool #no_context {
     if name.count == 0 return false;

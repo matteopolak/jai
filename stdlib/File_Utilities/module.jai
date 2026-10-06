@@ -13,8 +13,11 @@ File_Visit_Info :: struct {
     descend_into_directory: bool;
 }
 
-#if OS == .WINDOWS { #load "os/windows.jai"; }
-else { #load "os/unix.jai"; }
+#if OS == .WINDOWS {
+    #load "os/windows.jai";
+} else {
+    #load "os/unix.jai";
+}
 
 copy_file :: (source: string, dest: string) -> bool {
     if source == dest || same_file(source, dest) return false;
@@ -47,7 +50,10 @@ visit_files :: (dir_name: string, recursive: bool, user_data: $T, proc: (info: *
         canonical, resolved := get_absolute_path(directory);
         if !resolved return false;
         already_seen := false;
-        for seen: visited if seen == canonical { already_seen = true; break; }
+        for seen: visited if seen == canonical {
+            already_seen = true;
+            break;
+        }
         if already_seen continue;
         array_add(*visited, canonical);
         entries, scanned := directory_entries(directory);
@@ -65,8 +71,11 @@ visit_files :: (dir_name: string, recursive: bool, user_data: $T, proc: (info: *
 
 copy_directory :: (source: string, dest: string) {
     if !make_directory_if_it_does_not_exist(dest, true) return;
-    Copy_State :: struct { source: string; destination: string; }
-    state: Copy_State = .{source, dest};
+    Copy_State :: struct {
+        source: string;
+        destination: string;
+    }
+    state: Copy_State = .{ source, dest };
     visitor :: (info: *File_Visit_Info, state: Copy_State) {
         suffix := Strings.slice(info.full_name, state.source.count, info.full_name.count - state.source.count);
         output := Strings.join(state.destination, suffix);

@@ -5,7 +5,10 @@
         glc, _ := nsgl_create_context(major_version, minor_version, compatibility, debug, wanted_msaa = DEFAULT_MSAA);
         if glc == null return null;
         view := NativeGLAppKit.NSWindow.contentView(win);
-        if view == null { NativeGLObjC.release(glc); return null; }
+        if view == null {
+            NativeGLObjC.release(glc);
+            return null;
+        }
         NativeGLAppKit.NSOpenGLContext.setView(glc, view);
         view_class := NativeGLObjC.object_getClass(cast(NativeGLObjC.id) view);
         setter := NativeGLObjC.sel_registerName(cast(*u8) "setOpenGLContext:\0");
@@ -25,8 +28,7 @@
             if major_version < 3 {
                 if major_version == 2 && minor_version > 1 return null, 0;
                 profile = NativeGLAppKit.NSOpenGLProfileVersionLegacy;
-            }
-            else if major_version == 3 {
+            } else if major_version == 3 {
                 if minor_version > 3 return null, 0;
                 if minor_version <= 2 profile = NativeGLAppKit.NSOpenGLProfileVersion3_2Core;
             } else if major_version == 4 && minor_version <= 1 {

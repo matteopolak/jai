@@ -87,16 +87,16 @@ Native_Video :: struct {
     mb_col: s32;
     macroblock_type: s32;
     macroblock_intra: s32;
-    dc_predictor: [3]s32;
+    dc_predictor: [3] s32;
     buffer: *Native_Buffer;
     destroy_buffer_when_done: s32;
     frame_current: Frame;
     frame_forward: Frame;
     frame_backward: Frame;
     frames_data: *u8;
-    block_data: [64]s32;
-    intra_quant_matrix: [64]u8;
-    non_intra_quant_matrix: [64]u8;
+    block_data: [64] s32;
+    intra_quant_matrix: [64] u8;
+    non_intra_quant_matrix: [64] u8;
     has_reference_frame: s32;
     assume_no_b_frames: s32;
 }
@@ -114,14 +114,14 @@ Native_Audio :: struct {
     has_header: s32;
     buffer: *Native_Buffer;
     destroy_buffer_when_done: s32;
-    allocation: [2][32]*Quantizer_Spec;
-    scale_factor_info: [2][32]u8;
-    scale_factor: [2][32][3]s32;
-    sample: [2][32][3]s32;
+    allocation: [2][32] *Quantizer_Spec;
+    scale_factor_info: [2][32] u8;
+    scale_factor: [2][32][3] s32;
+    sample: [2][32][3] s32;
     samples: Samples;
-    D: [1024]float;
-    V: [2][1024]float;
-    U: [32]float;
+    D: [1024] float;
+    V: [2][1024] float;
+    U: [32] float;
 }
 Native_Packet :: struct {
     type: s32;
@@ -691,11 +691,11 @@ from_native_packet :: (packet: *Native_Packet) -> Packet {
     result: Packet;
     result.type = cast,no_check(Start_Code) packet.type;
     result.pts = packet.pts;
-    result.data = .{cast(s64) packet.length, packet.data};
+    result.data = .{ cast(s64) packet.length, packet.data };
     return result;
 }
 to_native_packet :: (packet: *Packet) -> Native_Packet {
-    return .{cast(s32) packet.type, packet.pts, cast(u64) packet.data.count, packet.data.data};
+    return .{ cast(s32) packet.type, packet.pts, cast(u64) packet.data.count, packet.data.data };
 }
 packet_result :: (object: *Demux, packet: *Native_Packet) -> *Packet {
     if !packet return null;
@@ -799,7 +799,7 @@ raw_plm_audio_find_frame_sync :: (self: *Native_Audio) -> s32 #foreign plm_upstr
 raw_plm_audio_get_samplerate :: (self: *Native_Audio) -> s32 #foreign plm_upstream "plm_audio_get_samplerate";
 raw_plm_audio_has_ended :: (self: *Native_Audio) -> s32 #foreign plm_upstream "plm_audio_has_ended";
 raw_plm_audio_has_header :: (self: *Native_Audio) -> s32 #foreign plm_upstream "plm_audio_has_header";
-raw_plm_audio_idct36 :: (s: *[3]s32, ss: s32, d: *float, dp: s32) #foreign plm_upstream "plm_audio_idct36";
+raw_plm_audio_idct36 :: (s: *[3] s32, ss: s32, d: *float, dp: s32) #foreign plm_upstream "plm_audio_idct36";
 raw_plm_audio_read_allocation :: (self: *Native_Audio, sb: s32, tab3: s32) -> *Quantizer_Spec #foreign plm_upstream "plm_audio_read_allocation";
 raw_plm_audio_read_samples :: (self: *Native_Audio, ch: s32, sb: s32, part: s32) #foreign plm_upstream "plm_audio_read_samples";
 raw_plm_audio_rewind :: (self: *Native_Audio) #foreign plm_upstream "plm_audio_rewind";

@@ -3,10 +3,18 @@
 // ----------------------------------------------------------------------------
 // Small helpers over the clang bridge.
 
-cursor_kind :: (c: Cursor) -> Cursor_Kind { return cast(Cursor_Kind) clang("kind", c); }
-cursor_name :: (c: Cursor) -> string { return clang_string("spelling", c); }
-type_name_of :: (t: Clang_Type) -> string { return clang_string("t_spelling", t); }
-type_kind :: (t: Clang_Type) -> s64 { return clang("t_kind", t); }
+cursor_kind :: (c: Cursor) -> Cursor_Kind {
+    return cast(Cursor_Kind) clang("kind", c);
+}
+cursor_name :: (c: Cursor) -> string {
+    return clang_string("spelling", c);
+}
+type_name_of :: (t: Clang_Type) -> string {
+    return clang_string("t_spelling", t);
+}
+type_kind :: (t: Clang_Type) -> s64 {
+    return clang("t_kind", t);
+}
 
 get_children :: (c: Cursor) -> [..] Cursor {
     result: [..] Cursor;
@@ -48,7 +56,9 @@ cursor_location :: (c: Cursor) -> Location, string {
     return loc, file;
 }
 
-is_expression_kind :: (kind: s64) -> bool { return kind >= 100 && kind < 200; }
+is_expression_kind :: (kind: s64) -> bool {
+    return kind >= 100 && kind < 200;
+}
 
 // ----------------------------------------------------------------------------
 // Names.
@@ -80,7 +90,7 @@ stripped_name :: (name: string) -> string {
     for prefix: context.generator_options.strip_prefixes {
         if !begins_with(name, prefix) continue;
         rest := advance(name, prefix.count);
-        while rest.count > 1 && rest[0] == #char "_" && is_valid_identifier_start(rest[1])  rest = advance(rest, 1);
+        while rest.count > 1 && rest[0] == #char "_" && is_valid_identifier_start(rest[1]) rest = advance(rest, 1);
         return rest;
     }
     return name;
@@ -89,7 +99,7 @@ stripped_name :: (name: string) -> string {
 // A copy of `name` with every byte an identifier cannot hold turned into `_`.
 make_valid_identifier :: (name: string) -> string {
     builder: String_Builder;
-    for i: 0..name.count-1 {
+    for i: 0..name.count - 1 {
         byte := name[i];
         append(*builder, ifx is_identifier_byte(byte) then byte else cast(u8) #char "_");
     }
@@ -147,26 +157,29 @@ avoid_name_clash :: (existing: *[..] *Declaration, decl: *Declaration, allow_ove
 // are both `f :: (v: *s32)`): the later one becomes `f_1`, and both get comments saying
 // which C++ types they take.
 rename_equivalent_overload :: (existing: *[..] *Declaration, decl: *Declaration) {
-        original := decl.output_name;
-        count := 0;
-        while true {
-            clash := false;
-            for existing.* {
-                if it.kind == .FUNCTION && it != decl && functions_are_equivalent(cast(*Function) it, cast(*Function) decl) {
-                    // Both get `/*const reference*/` comments to tell the overloads apart.
-                    other := cast(*Function) it;
-                    if other.type && other.type.type_of_function  other.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
-                    self_func := cast(*Function) decl;
-                    if self_func.type && self_func.type.type_of_function  self_func.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
-                    clash = true;
-                    break;
-                }
-                if it.kind != .FUNCTION && it.output_name == decl.output_name { clash = true; break; }
+    original := decl.output_name;
+    count := 0;
+    while true {
+        clash := false;
+        for existing.* {
+            if it.kind == .FUNCTION && it != decl && functions_are_equivalent(cast(*Function) it, cast(*Function) decl) {
+                // Both get `/*const reference*/` comments to tell the overloads apart.
+                other := cast(*Function) it;
+                if other.type && other.type.type_of_function other.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
+                self_func := cast(*Function) decl;
+                if self_func.type && self_func.type.type_of_function self_func.type.type_of_function.flags |= .ADD_C_TYPE_DETAILS;
+                clash = true;
+                break;
             }
-            if !clash break;
-            count += 1;
-            decl.output_name = tprint("%_%", original, count);
+            if it.kind != .FUNCTION && it.output_name == decl.output_name {
+                clash = true;
+                break;
+            }
         }
+        if !clash break;
+        count += 1;
+        decl.output_name = tprint("%_%", original, count);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -188,14 +201,14 @@ init_generator :: (g: *Generator_State) {
     g.type_def_bool.hardcoded_jai_string = "bool";
     g.type_def_bool.size = 1;
 
-    g.type_def_u8  = make_number_type(.None | ._8BIT, 1);
+    g.type_def_u8 = make_number_type(.None | ._8BIT, 1);
     g.type_def_u16 = make_number_type(.None | ._16BIT, 2);
     g.type_def_u32 = make_number_type(.None | ._32BIT, 4);
     g.type_def_u64 = make_number_type(.None | ._64BIT, 8);
     g.type_def_u128 = New(CType);
-    g.type_def_u128.hardcoded_jai_string = "U128";   // Basic's 128-bit integers
+    g.type_def_u128.hardcoded_jai_string = "U128"; // Basic's 128-bit integers
     g.type_def_u128.size = 16;
-    g.type_def_s8  = make_number_type(.SIGNED | ._8BIT, 1);
+    g.type_def_s8 = make_number_type(.SIGNED | ._8BIT, 1);
     g.type_def_s16 = make_number_type(.SIGNED | ._16BIT, 2);
     g.type_def_s32 = make_number_type(.SIGNED | ._32BIT, 4);
     g.type_def_s64 = make_number_type(.SIGNED | ._64BIT, 8);
@@ -269,8 +282,8 @@ strip_type :: (type: *CType, typedefs := false, enums := false) -> *CType {
     t := type;
     while t {
         under: *CType;
-        if typedefs && t.type_of_typedef     under = t.type_of_typedef.type;
-        else if enums && t.type_of_enum      under = t.type_of_enum.type;
+        if typedefs && t.type_of_typedef under = t.type_of_typedef.type;
+        else if enums && t.type_of_enum under = t.type_of_enum.type;
         if !under break;
         t = under;
     }
@@ -347,7 +360,7 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
     }
     if kind == T_UNEXPOSED || kind == T_AUTO {
         canonical := clang("t_canonical", ty);
-        if canonical != ty && type_kind(canonical) != T_UNEXPOSED  return create_type(canonical, ctx);
+        if canonical != ty && type_kind(canonical) != T_UNEXPOSED return create_type(canonical, ctx);
         if kind == T_UNEXPOSED {
             unexposed := create_unexposed_type(ty, ctx);
             if unexposed return unexposed;
@@ -358,27 +371,27 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
     result: *CType;
 
     if kind == {
-        case T_VOID;       return g.type_def_void;
-        case T_BOOL;       return g.type_def_bool;
-        case T_CHAR_U;     return g.type_def_u8;
-        case T_UCHAR;      return g.type_def_u8;
-        case T_CHAR_S;     return g.type_def_u8;
-        case T_SCHAR;      return g.type_def_s8;
-        case T_USHORT;     return g.type_def_u16;
-        case T_UINT;       return g.type_def_u32;
-        case T_ULONG;      return get_int_type(size, false);
-        case T_ULONGLONG;  return g.type_def_u64;
-        case T_UINT128;    return g.type_def_u128;
-        case T_SHORT;      return g.type_def_s16;
-        case T_INT;        return g.type_def_s32;
-        case T_LONG;       return get_int_type(size, true);
-        case T_LONGLONG;   return g.type_def_s64;
-        case T_INT128;     return g.type_def_s128;
-        case T_CHAR16;     return g.type_def_u16;
-        case T_CHAR32;     return g.type_def_u32;
-        case T_WCHAR;      return get_int_type(size, true);
-        case T_FLOAT;      return g.type_def_float32;
-        case T_DOUBLE;     return g.type_def_float64;
+        case T_VOID; return g.type_def_void;
+        case T_BOOL; return g.type_def_bool;
+        case T_CHAR_U; return g.type_def_u8;
+        case T_UCHAR; return g.type_def_u8;
+        case T_CHAR_S; return g.type_def_u8;
+        case T_SCHAR; return g.type_def_s8;
+        case T_USHORT; return g.type_def_u16;
+        case T_UINT; return g.type_def_u32;
+        case T_ULONG; return get_int_type(size, false);
+        case T_ULONGLONG; return g.type_def_u64;
+        case T_UINT128; return g.type_def_u128;
+        case T_SHORT; return g.type_def_s16;
+        case T_INT; return g.type_def_s32;
+        case T_LONG; return get_int_type(size, true);
+        case T_LONGLONG; return g.type_def_s64;
+        case T_INT128; return g.type_def_s128;
+        case T_CHAR16; return g.type_def_u16;
+        case T_CHAR32; return g.type_def_u32;
+        case T_WCHAR; return get_int_type(size, true);
+        case T_FLOAT; return g.type_def_float32;
+        case T_DOUBLE; return g.type_def_float64;
         case T_LONGDOUBLE;
             // arm64 Apple and Windows: a double. x86-64 and Linux arm64: 16 bytes, which only
             // jaic's Long_Double extension can pass. Without it they stay bytes so structs keep
@@ -396,7 +409,7 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
             result.alignment = clang("t_alignof", ty);
             result.flags |= .WIDE_LONG_DOUBLE;
             return result;
-        case T_NULLPTR;    return g.type_def_ptr_void;
+        case T_NULLPTR; return g.type_def_ptr_void;
 
         case T_POINTER;
             pointee := clang("t_pointee", ty);
@@ -449,9 +462,9 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_ATTRIBUTED;
             return create_type(clang("t_modified", ty), ctx);
 
-        case T_OBJCID;     return g.type_def_objc_id;
-        case T_OBJCCLASS;  return g.type_def_objc_class;
-        case T_OBJCSEL;    return g.type_def_objc_selector;
+        case T_OBJCID; return g.type_def_objc_id;
+        case T_OBJCCLASS; return g.type_def_objc_class;
+        case T_OBJCSEL; return g.type_def_objc_selector;
 
         case T_OBJCINTERFACE;
             result = New(CType);
@@ -494,7 +507,7 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_TYPEDEF;
             decl := clang("t_decl", ty);
             name := cursor_name(decl);
-            if cursor_kind(decl) == .TEMPLATE_TYPE_PARAMETER  return make_type_param_placeholder(name);   // `T` of `Box<T>`.
+            if cursor_kind(decl) == .TEMPLATE_TYPE_PARAMETER return make_type_param_placeholder(name); // `T` of `Box<T>`.
             if should_unwrap_typedef(name) {
                 return create_type(clang("typedef_underlying", decl), ctx);
             }
@@ -569,7 +582,7 @@ create_block_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
     ft := create_function_type(pointee, 0, null);
     if !ft.return_type return g.type_def_ptr_void;
     ft.return_type = erase_objc_type_params(ft.return_type);
-    for ft.arguments  it.type = erase_objc_type_params(it.type);
+    for ft.arguments it.type = erase_objc_type_params(it.type);
 
     builder: String_Builder;
     append(*builder, "Block_");
@@ -605,7 +618,7 @@ create_block_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
     block_arg.type = create_pointer_to(s.type);
     arguments: [..] *Declaration;
     array_add(*arguments, block_arg);
-    for ft.arguments  array_add(*arguments, it);
+    for ft.arguments array_add(*arguments, it);
     ft.arguments = arguments;
     invoke_type := New(CType);
     invoke_type.type_of_function = ft;
@@ -631,7 +644,7 @@ add_plain_member :: (s: *Struct, name: string, type: *CType) {
 
 sanitize_for_identifier :: (text: string) -> string {
     builder: String_Builder;
-    for 0..text.count-1 {
+    for 0..text.count - 1 {
         c := text[it];
         if c == #char "*" append(*builder, "P");
         else if is_identifier_byte(c) append(*builder, c);
@@ -648,7 +661,7 @@ create_record_type :: (ty: Clang_Type, decl: Cursor, ctx: Cursor, size: s64) -> 
     result := New(CType);
     result.type_of_struct = s;
     result.size = size;
-    if base  fill_template_arguments(ty, result, ctx);
+    if base fill_template_arguments(ty, result, ctx);
     return result;
 }
 
@@ -661,7 +674,7 @@ make_placeholder_struct :: (name: string, comment: string) -> *CType {
 
 looks_like_valid_identifier :: (name: string) -> bool {
     if !name return false;
-    for 0..name.count-1 {
+    for 0..name.count - 1 {
         c := name[it];
         if c == #char ":" || c == #char "<" || c == #char " " return false;
     }
@@ -712,7 +725,7 @@ collect_references :: (c: Cursor, refs: *[..] Cursor, depth: s64) {
     children := get_children(c);
     for children {
         array_add(refs, it);
-        if depth < 4  collect_references(it, refs, depth + 1);
+        if depth < 4 collect_references(it, refs, depth + 1);
     }
 }
 
@@ -755,8 +768,11 @@ fill_template_arguments :: (ty: Clang_Type, result: *CType, ctx: Cursor) -> bool
 // The text of the `index`th top-level argument in `Name<a, b<c>, d>`.
 template_argument_text :: (spelling: string, index: s64) -> string {
     start := -1;
-    for 0..spelling.count-1 {
-        if spelling[it] == #char "<" { start = it + 1; break; }
+    for 0..spelling.count - 1 {
+        if spelling[it] == #char "<" {
+            start = it + 1;
+            break;
+        }
     }
     if start < 0 return "";
     depth := 0;
@@ -794,7 +810,7 @@ is_char_pointer_type :: (type: *CType) -> bool {
 uses_wide_long_double :: (ft: *Function_Type) -> bool {
     if !ft return false;
     if ft.return_type && (ft.return_type.flags & .WIDE_LONG_DOUBLE) return true;
-    for ft.arguments  if it.type && (it.type.flags & .WIDE_LONG_DOUBLE) return true;
+    for ft.arguments if it.type && (it.type.flags & .WIDE_LONG_DOUBLE) return true;
     return false;
 }
 
@@ -866,7 +882,7 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
         arg := New(Declaration);
         arg.kind = .DECLARATION;
         arg_cursor: Cursor;
-        if i < cursor_args  arg_cursor = clang("arg", cur, i);
+        if i < cursor_args arg_cursor = clang("arg", cur, i);
         arg_type := clang("t_arg", ty, i);
         if arg_cursor {
             arg.name = cursor_name(arg_cursor);
@@ -914,7 +930,7 @@ create_function_type :: (ty: Clang_Type, cur: Cursor, func: *Function) -> *Funct
 // Parameter names of a function pointer type come from the PARM_DECL children
 // of the typedef or field that declares it.
 name_function_arguments :: (ty: *CType, c: Cursor) {
-    while ty && ty.pointer_to  ty = ty.pointer_to;
+    while ty && ty.pointer_to ty = ty.pointer_to;
     if !ty || !ty.type_of_function return;
     ft := ty.type_of_function;
     children := get_children(c);
@@ -960,23 +976,23 @@ replace_all :: (text: string, from: string, to: string) -> string {
 // Symbol -> word for operators Jai cannot overload, longest symbols first so that `<=` is not
 // read as `<` followed by `=`.
 OPERATOR_SPELLINGS :: string.[
-    "<=>", "_spaceship",    "->*", "_arrow_star",  "->", "_arrow",
-    "++",  "_plus_plus",    "--",  "_minus_minus", "==", "_equals",
-    "!=",  "_not_equals",   ">=",  "_greater_equals", "<=", "_less_equals",
-    "<<",  "_lshift",       ">>",  "_rshift",      "&&", "_and_and",
-    "||",  "_or_or",        "+",   "_plus",        "-",  "_minus",
-    "*",   "_times",        "/",   "_divide",      "%",  "_modulo",
-    "^",   "_xor",          "&",   "_and",         "|",  "_or",
-    "~",   "_tilde",        "<",   "_less",        ">",  "_greater",
-    "[]",  "_brackets",     "!",   "_not",         "=",  "_assign",
-    ",",   "_comma",        "()",  "_parens",
+    "<=>", "_spaceship", "->*", "_arrow_star", "->", "_arrow",
+    "++", "_plus_plus", "--", "_minus_minus", "==", "_equals",
+    "!=", "_not_equals", ">=", "_greater_equals", "<=", "_less_equals",
+    "<<", "_lshift", ">>", "_rshift", "&&", "_and_and",
+    "||", "_or_or", "+", "_plus", "-", "_minus",
+    "*", "_times", "/", "_divide", "%", "_modulo",
+    "^", "_xor", "&", "_and", "|", "_or",
+    "~", "_tilde", "<", "_less", ">", "_greater",
+    "[]", "_brackets", "!", "_not", "=", "_assign",
+    ",", "_comma", "()", "_parens",
 ];
 
 // A binary operator Jai can overload keeps its symbol (`operator+`); any other operator gets
 // an identifier (`operator!=` -> `operator_not_equals`, `operator new` -> `operator_new`).
 operator_names :: (name: string, argument_count: s64) -> output_name: string, overloadable: bool {
     symbol := advance(replace_all(name, " ", ""), "operator".count);
-    if argument_count == 2 && array_find(JAI_OPERATORS, symbol)  return tprint("operator%", symbol), true;
+    if argument_count == 2 && array_find(JAI_OPERATORS, symbol) return tprint("operator%", symbol), true;
 
     spelled := symbol;
     pair := 0;
@@ -985,7 +1001,7 @@ operator_names :: (name: string, argument_count: s64) -> output_name: string, ov
         pair += 2;
     }
     // Every spelled symbol starts with `_`; conversion operators (`operator int`) do not.
-    if !begins_with(spelled, "_")  spelled = tprint("_%", spelled);
+    if !begins_with(spelled, "_") spelled = tprint("_%", spelled);
     return tprint("operator%", spelled), false;
 }
 
@@ -1024,7 +1040,7 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
         func.decl_flags |= .OMIT_FROM_OUTPUT;
     }
     func.output_name = avoid_reserved_names(stripped_name(func.name));
-    if begins_with(name, "operator") &&!(ft.flags & (.CONSTRUCTOR | .DESTRUCTOR)) {
+    if begins_with(name, "operator") && !(ft.flags & (.CONSTRUCTOR | .DESTRUCTOR)) {
         func.output_name, func.is_operator = operator_names(name, ft.arguments.count);
     }
 
@@ -1047,7 +1063,7 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
             }
             i += 1;
         }
-        if !func.foreign_name && manglings > 0  func.foreign_name = normalize_mangled_name(clang_string("mangling_item", 0));
+        if !func.foreign_name && manglings > 0 func.foreign_name = normalize_mangled_name(clang_string("mangling_item", 0));
         if !func.foreign_name return null;
     } else {
         mangled := normalize_mangled_name(clang_string("mangling", c));
@@ -1060,7 +1076,7 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
     // `const T&` arguments get a wrapper taking the value; virtual functions
     // are called through the vtable and cannot be wrapped.
     for ft.arguments {
-        if (it.decl_flags & .POINTER_TO_VALUE) && !func.is_virtual  func.decl_flags |= .NEEDS_ARGUMENT_WRAPPER;
+        if (it.decl_flags & .POINTER_TO_VALUE) && !func.is_virtual func.decl_flags |= .NEEDS_ARGUMENT_WRAPPER;
     }
 
     // Operators are called with values: the wrapper takes the object by value.
@@ -1091,7 +1107,9 @@ new_literal :: (kind: Literal_Kind) -> *Literal {
     return result;
 }
 
-create_null_literal :: () -> *Literal { return new_literal(.NULL); }
+create_null_literal :: () -> *Literal {
+    return new_literal(.NULL);
+}
 
 create_int_literal :: (value: s64) -> *Literal {
     result := new_literal(.INTEGER);
@@ -1122,7 +1140,7 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
                 lit.literal_kind = .ENUM;
                 lit.enum_type = enum_decl;
                 name := cursor_name(ref);
-                for * enum_decl.enumerates {
+                for *enum_decl.enumerates {
                     if it.name == name {
                         lit.enum_value = it;
                         break;
@@ -1155,7 +1173,7 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
         lit := New(Literal);
         lit.literal_kind = .FLOAT;
         bits := clang("eval_double");
-        lit.float_value = << cast(*float64) *bits;
+        lit.float_value = <<cast(*float64) *bits;
         return lit;
     } else if result == 4 {
         lit := New(Literal);
@@ -1183,7 +1201,10 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
             }
             if is_expression_kind(xx k) {
                 e := create_expression_from_cursor(it, null);
-                if !e { ok = false; break; }
+                if !e {
+                    ok = false;
+                    break;
+                }
                 array_add(*values, e);
             }
         }
@@ -1223,7 +1244,7 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
     lit := New(Literal);
     lit.literal_kind = .RAW_CPP_TOKENS;
     builder: String_Builder;
-    for tokens  append(*builder, it.spelling);
+    for tokens append(*builder, it.spelling);
     lit.raw_value = builder_to_string(*builder);
     return lit;
 }
@@ -1277,7 +1298,7 @@ create_typedef :: (c: Cursor) -> *Typedef {
         s := td.type.type_of_struct;
         s.name = name;
         s.output_name = td.output_name;
-        s.flags &= ~.IS_ANON;
+        s.flags &= ~ .IS_ANON;
         td.decl_flags |= .OMIT_FROM_OUTPUT;
         array_add(*context.generator.global_scope.members, s);
         table_add(*g.added_to_scope, s, true);
@@ -1323,7 +1344,7 @@ create_struct :: (c: Cursor) -> *Struct {
     }
     s.location = cursor_location(key);
     fill_comment(*s.comment, key, s.location);
-    if kind == .UNION_DECL  s.flags |= .IS_UNION;
+    if kind == .UNION_DECL s.flags |= .IS_UNION;
     if !s.name {
         s.flags |= .IS_ANON;
     } else {
@@ -1381,7 +1402,7 @@ create_constant_declaration :: (c: Cursor) -> *Declaration {
         lit := New(Literal);
         lit.literal_kind = .FLOAT;
         bits := clang("eval_double");
-        lit.float_value = << cast(*float64) *bits;
+        lit.float_value = <<cast(*float64) *bits;
         decl.expression = lit;
     }
     table_set(*g.known_constants, name, true);
@@ -1481,7 +1502,7 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                 parent_decl.decl_flags |= .QUALIFIER_USING | .QUALIFIER_AS;
                 parent_decl.bit_offset_in_parent = clang("base_offset", key, it);
                 if clang("is_virtual_base", it) {
-                    parent_decl.decl_flags &= ~.QUALIFIER_AS;
+                    parent_decl.decl_flags &= ~ .QUALIFIER_AS;
                     array_add(*s.virtual_bases, parent_decl);
                 } else {
                     array_add(*s.parents, parent_decl);
@@ -1491,7 +1512,7 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
             case .CONSTRUCTOR; #through;
             case .DESTRUCTOR;
                 // Template members have no symbols of their own to bind to.
-                if g.template_depth == 0  add_method(s, it);
+                if g.template_depth == 0 add_method(s, it);
 
             case .FIELD_DECL;
                 field := New(Declaration);
@@ -1514,7 +1535,7 @@ fill_struct_members :: (s: *Struct, key: Cursor) {
                     // `int : 0;` only moves the next bit field to a new storage unit;
                     // the run's storage covers the gap.
                     if field.bitfield_width == 0 continue;
-                    if is_union  bitfield = null;
+                    if is_union bitfield = null;
                     if bitfield && is_msvc_layout() && !fits_msvc_unit(bitfield, field) bitfield = null;
                     if !bitfield {
                         run_prev_end = prev_end;
@@ -1678,7 +1699,7 @@ create_objc_object_type :: (ty: Clang_Type) -> *CType {
     result.size = 0;
     if base_kind != T_OBJCID {
         count := clang("t_objc_num_type_args", ty);
-        for 0..count-1 {
+        for 0..count - 1 {
             arg := create_type(clang("t_objc_type_arg", ty, it), 0);
             if !arg arg = g.type_def_objc_id;
             array_add(*result.template_instantiation_params, arg);
@@ -1692,7 +1713,7 @@ objc_self_type :: (s: *Struct) -> *CType {
     result := New(CType);
     result.type_of_struct = s;
     result.size = 0;
-    for s.template_type_params  array_add(*result.template_instantiation_params, make_type_param_placeholder(it.name));
+    for s.template_type_params array_add(*result.template_instantiation_params, make_type_param_placeholder(it.name));
     return result;
 }
 
@@ -1710,7 +1731,7 @@ erase_objc_type_params :: (t: *CType) -> *CType {
         t.pointer_to = erase_objc_type_params(t.pointer_to);
     } else if t.type_of_struct {
         if t.type_of_struct.flags & .IS_TYPE_PARAM return context.generator.type_def_objc_id;
-        for t.template_instantiation_params  t.template_instantiation_params[it_index] = erase_objc_type_params(it);
+        for t.template_instantiation_params t.template_instantiation_params[it_index] = erase_objc_type_params(it);
     }
     return t;
 }
@@ -1723,13 +1744,13 @@ objc_superclass_type :: (parent: *Struct, children: [] Cursor, index: s64) -> *C
     result.template_instantiation_params.count = 0;
     count := parent.template_type_params.count;
     args: [..] *CType;
-    j := index + 2;   // Past the reference to the superclass itself.
+    j := index + 2; // Past the reference to the superclass itself.
     while j < children.count && cursor_kind(children[j]) == .OBJC_CLASS_REF {
         arg := create_type(clang("type", children[j]), 0);
         if arg array_add(*args, create_pointer_to(arg));
         j += 1;
     }
-    for 0..count-1 {
+    for 0..count - 1 {
         array_add(*result.template_instantiation_params, ifx args.count == count then args[it] else g.type_def_objc_id);
     }
     return result;
@@ -1777,7 +1798,7 @@ create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
     // libclang does not treat an `@interface` as a definition (that is its `@implementation`);
     // only a declaration whose definition was seen elsewhere is skipped.
     definition := clang("definition", c);
-    if !clang("is_definition", c) && definition  return s;
+    if !clang("is_definition", c) && definition return s;
     s.objc_filled = true;
     s.flags &= ~Struct.Flags.IS_INCOMPLETE;
     s.location = cursor_location(c);
@@ -1797,7 +1818,7 @@ create_objc_interface :: (c: Cursor, resolving_type_only := false) -> *Struct {
                 if !ref continue;
                 parent := create_objc_interface(ref, true);
                 parent_type := parent.type;
-                if child_kind == .OBJC_SUPER_CLASS_REF && parent.template_type_params.count > 0  parent_type = objc_superclass_type(parent, children, it_index);
+                if child_kind == .OBJC_SUPER_CLASS_REF && parent.template_type_params.count > 0 parent_type = objc_superclass_type(parent, children, it_index);
                 add_objc_parent(s, to_lower_copy(parent.name), parent_type, it);
 
             case .OBJC_IVAR_DECL;
@@ -1833,7 +1854,7 @@ add_objc_ivar :: (s: *Struct, c: Cursor) {
     field.output_name = avoid_reserved_names(field.name);
     offset := clang("field_offset", c);
     if offset >= 0 field.bit_offset_in_parent = offset;
-    avoid_name_clash(*s.declarations, field);   // Adds it.
+    avoid_name_clash(*s.declarations, field); // Adds it.
 }
 
 add_objc_parent :: (s: *Struct, name: string, type: *CType, c: Cursor) {
@@ -1861,7 +1882,7 @@ create_objc_category :: (c: Cursor) {
     if !target return;
     for children {
         child_kind := cursor_kind(it);
-        if child_kind == .OBJC_INSTANCE_METHOD_DECL || child_kind == .OBJC_CLASS_METHOD_DECL  add_objc_method(target, it);
+        if child_kind == .OBJC_INSTANCE_METHOD_DECL || child_kind == .OBJC_CLASS_METHOD_DECL add_objc_method(target, it);
     }
 }
 
@@ -1913,7 +1934,7 @@ add_objc_method :: (s: *Struct, c: Cursor) {
 
     count := clang("num_args", c);
     unknown_count := 0;
-    for 0..count-1 {
+    for 0..count - 1 {
         arg_cursor := clang("arg", c, it);
         arg := New(Declaration);
         arg.kind = .DECLARATION;
@@ -1941,7 +1962,7 @@ add_objc_method :: (s: *Struct, c: Cursor) {
         log_stripped(selector, "passes a long double wider than 64 bits (on x86-64 it would also need objc_msgSend_fpret)");
         return;
     }
-    avoid_name_clash(*s.declarations, func);   // Adds it.
+    avoid_name_clash(*s.declarations, func); // Adds it.
 }
 
 // ----------------------------------------------------------------------------
@@ -1957,16 +1978,16 @@ create_enum :: (c: Cursor) -> *Enum {
     spelling := cursor_name(key);
     e := New(Enum);
     e.kind = .ENUM;
-    if !anonymous_spelling(spelling) && !clang("is_anonymous", key)  e.name = spelling;
+    if !anonymous_spelling(spelling) && !clang("is_anonymous", key) e.name = spelling;
     e.location = cursor_location(key);
     fill_comment(*e.comment, key, e.location);
-    if e.name  e.output_name = avoid_reserved_names(stripped_name(e.name), true);
+    if e.name e.output_name = avoid_reserved_names(stripped_name(e.name), true);
     table_add(*g.declarations_by_cursor, key, e);
 
     int_type := clang("enum_int_type", key);
     e.type = create_type(int_type, key);
-    if context.generator_options.alias_original_enum_names  e.flags |= .ALIAS_ORIGINAL_NAMES;
-    if options_mimic_enums()  e.flags |= .MIMIC_SPACING;
+    if context.generator_options.alias_original_enum_names e.flags |= .ALIAS_ORIGINAL_NAMES;
+    if options_mimic_enums() e.flags |= .MIMIC_SPACING;
 
     children := get_children(key);
     for children {
@@ -1982,7 +2003,7 @@ create_enum :: (c: Cursor) -> *Enum {
         // that names it (`#define OLD_NAME NEW_NAME`) has nothing to refer to and is dropped.
         array_add(*e.enumerates, en);
     }
-    if e.name  compute_enum_names(e, false);
+    if e.name compute_enum_names(e, false);
     return e;
 }
 
@@ -2001,7 +2022,7 @@ get_enum_value_name :: (e: *Enum, en: Enum.Enumerate) -> string {
     }
     if options.strip_enum_prefixes && e.name && begins_with(result, e.name) {
         result = advance(result, e.name.count);
-        if result && result[0] == #char "_"  result = advance(result, 1);
+        if result && result[0] == #char "_" result = advance(result, 1);
     }
     return result;
 }
@@ -2013,20 +2034,20 @@ compute_enum_names :: (e: *Enum, already_stripped := false) {
     detected := "";
     if context.generator_options.auto_detect_enum_prefixes && !already_stripped && e.enumerates.count > 1 {
         detected = detect_value_prefix(e);
-        for * e.enumerates {
+        for *e.enumerates {
             it.output_name = avoid_reserved_names(trim_left(advance(it.output_name, detected.count), "_"));
         }
     }
 
     // A value has to start like an identifier: `1080P` becomes `_1080P`.
-    for * e.enumerates {
+    for *e.enumerates {
         if it.output_name && !is_digit(it.output_name[0]) continue;
         it.output_name = sprint("_%", it.output_name);
     }
 
     if e.name return;
-    if detected  e.output_name = trim_right(detected, "_");
-    if !e.output_name  e.output_name = "anon_enum";
+    if detected e.output_name = trim_right(detected, "_");
+    if !e.output_name e.output_name = "anon_enum";
     avoid_name_clash(*context.generator.anon_declarations, e);
 }
 
@@ -2046,7 +2067,7 @@ detect_value_prefix :: (e: *Enum) -> string {
         if it_index == 0 continue;
         limit := min(shared.count, it.output_name.count - 1);
         same := 0;
-        while same < limit && shared[same] == it.output_name[same]  same += 1;
+        while same < limit && shared[same] == it.output_name[same] same += 1;
         shared.count = same;
     }
     // Only whole words: cut back to the last underscore.
@@ -2104,7 +2125,7 @@ convert_number_literal :: (text: string) -> string, bool {
     // Octal literals: a leading 0 followed by digits.
     if body.count > 1 && body[0] == #char "0" {
         value: s64;
-        for 0..body.count-1  value = value * 8 + (body[it] - #char "0");
+        for 0..body.count - 1 value = value * 8 + (body[it] - #char "0");
         return tprint("%", value), true;
     }
     return body, true;
@@ -2125,10 +2146,10 @@ CAST_TYPE_WORDS :: string.["int", "unsigned", "long", "short", "char", "signed",
 builtin_integer_typedef :: (name: string) -> string {
     n := name;
     while begins_with(n, "_") n = advance(n, 1);
-    if begins_with(n, "u_int") n = advance(n, 2);   // u_int32_t -> int32_t (unsigned below)
+    if begins_with(n, "u_int") n = advance(n, 2); // u_int32_t -> int32_t (unsigned below)
     unsigned := begins_with(name, "u_") || begins_with(n, "u");
     if begins_with(n, "u") n = advance(n, 1);
-    if n == "int8_t"  return ifx unsigned then "u8"  else "s8";
+    if n == "int8_t" return ifx unsigned then "u8" else "s8";
     if n == "int16_t" return ifx unsigned then "u16" else "s16";
     if n == "int32_t" return ifx unsigned then "u32" else "s32";
     if n == "int64_t" return ifx unsigned then "u64" else "s64";
@@ -2146,8 +2167,9 @@ macro_type_name :: (words: [] string) -> string {
         else if it == "long" longs += 1;
         else if it == "short" base = "short";
         else if it == "char" base = "char";
-        else if it == "int" { if !base base = "int"; }
-        else if it == "float" base = "float";
+        else if it == "int" {
+            if !base base = "int";
+        } else if it == "float" base = "float";
         else if it == "double" base = "double";
         else if it == "uint8_t" return "u8";
         else if it == "uint16_t" return "u16";
@@ -2176,7 +2198,10 @@ peek_token :: (p: *Macro_Parser) -> string {
 }
 
 macro_primary :: (p: *Macro_Parser) -> string {
-    if p.index >= p.tokens.count { p.ok = false; return ""; }
+    if p.index >= p.tokens.count {
+        p.ok = false;
+        return "";
+    }
     t := p.tokens[p.index];
     s := t.spelling;
 
@@ -2186,7 +2211,10 @@ macro_primary :: (p: *Macro_Parser) -> string {
             name := p.tokens[p.index + 1].spelling;
             k := p.index + 2;
             stars := 0;
-            while k < p.tokens.count && p.tokens[k].spelling == "*" { stars += 1; k += 1; }
+            while k < p.tokens.count && p.tokens[k].spelling == "*" {
+                stars += 1;
+                k += 1;
+            }
             if k < p.tokens.count && p.tokens[k].spelling == ")" && !table_contains(*context.generator.known_constants, name) {
                 is_type, type_name := table_find(*context.generator.known_types, name);
                 if !is_type {
@@ -2220,7 +2248,10 @@ macro_primary :: (p: *Macro_Parser) -> string {
             } else {
                 known := false;
                 for CAST_TYPE_WORDS if it == w known = true;
-                if !known { is_cast = false; break; }
+                if !known {
+                    is_cast = false;
+                    break;
+                }
                 array_add(*words, w);
             }
             j += 1;
@@ -2237,7 +2268,10 @@ macro_primary :: (p: *Macro_Parser) -> string {
         }
         p.index += 1;
         inner := macro_expression(p);
-        if peek_token(p) != ")" { p.ok = false; return ""; }
+        if peek_token(p) != ")" {
+            p.ok = false;
+            return "";
+        }
         p.index += 1;
         return tprint("(%)", inner);
     }
@@ -2251,7 +2285,10 @@ macro_primary :: (p: *Macro_Parser) -> string {
             if s.count == 3 {
                 c := s[1];
                 if c == #char "\"" return "#char \"\\\"\"";
-                if c == #char "\\" { p.ok = false; return ""; }
+                if c == #char "\\" {
+                    p.ok = false;
+                    return "";
+                }
                 return tprint("#char \"%\"", slice(s, 1, 1));
             }
             if s.count == 4 && s[1] == #char "\\" {
@@ -2265,7 +2302,10 @@ macro_primary :: (p: *Macro_Parser) -> string {
             return "";
         }
         converted, ok := convert_number_literal(s);
-        if !ok { p.ok = false; return ""; }
+        if !ok {
+            p.ok = false;
+            return "";
+        }
         return converted;
     }
     if t.kind == 2 {
@@ -2396,7 +2436,7 @@ convert_macro_body :: (tokens_in: [] Macro_Token) -> string, bool, bool {
 create_macro_definition :: (c: Cursor) -> *Declaration {
     name := cursor_name(c);
     if !name return null;
-    for MACROS_TO_IGNORE  if it == name return null;
+    for MACROS_TO_IGNORE if it == name return null;
     if clang("macro_function_like", c) return null;
     if clang("macro_builtin", c) return null;
 
@@ -2405,7 +2445,7 @@ create_macro_definition :: (c: Cursor) -> *Declaration {
     if tokens.count < 2 return null;
     body := array_view(tokens, 1, tokens.count - 1);
     // Drop trailing comments.
-    while body.count > 0 && body[body.count - 1].kind == 4  body.count -= 1;
+    while body.count > 0 && body[body.count - 1].kind == 4 body.count -= 1;
 
     decl := New(Declaration);
     decl.kind = .MACRO_DEFINITION;
@@ -2469,15 +2509,18 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
     if kind == .NAMESPACE {
         ns := create_namespace(c, parent);
         children := get_children(c);
-        for children  handle_toplevel_cursor(it, *ns.declarations, ns);
+        for children handle_toplevel_cursor(it, *ns.declarations, ns);
         if ns.should_flatten {
-            for * g.pending_anon_enums {
+            for *g.pending_anon_enums {
                 if it.scope == *ns.declarations {
                     it.scope = scope;
                     it.index += scope.count;
                 }
             }
-            for ns.declarations { it.parent = ns.parent; array_add(scope, it); }
+            for ns.declarations {
+                it.parent = ns.parent;
+                array_add(scope, it);
+            }
         } else if ns.declarations.count {
             add_to_scope(scope, ns);
         }
@@ -2487,7 +2530,7 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
     // `extern "C" { ... }` (and `__BEGIN_DECLS` in C++ mode): its declarations belong to the
     // enclosing scope. Older libclangs report the block as an unexposed declaration.
     if kind == .LINKAGE_SPEC || kind == .UNEXPOSED_DECL {
-        for get_children(c)  handle_toplevel_cursor(it, scope, parent);
+        for get_children(c) handle_toplevel_cursor(it, scope, parent);
         return;
     }
 
@@ -2561,7 +2604,7 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
                 add_to_scope(scope, e);
             } else {
                 // Named later by a typedef, or placed here once the whole file is converted.
-                array_add(*g.pending_anon_enums, .{e, scope, scope.count});
+                array_add(*g.pending_anon_enums, .{ e, scope, scope.count });
             }
 
         case .TYPEDEF_DECL; #through;
@@ -2575,7 +2618,7 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
             // Constants initialised by a literal become constants.
             ty := clang("type", c);
             constant: *Declaration;
-            if clang("t_const", ty)  constant = create_constant_declaration(c);
+            if clang("t_const", ty) constant = create_constant_declaration(c);
             if constant {
                 add_to_scope(scope, constant);
             } else if clang("storage_class", c) == xx Storage_Class.Extern && !options.omit_global_declarations {

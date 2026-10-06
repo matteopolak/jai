@@ -43,28 +43,28 @@ inotify_init :: (flags: s32 = 0) -> s32 #foreign libc "inotify_init1";
 inotify_add_watch :: (fd: s32, pathname: *u8, mask: u32) -> s32 #foreign libc;
 inotify_rm_watch :: (fd: s32, wd: s32) -> s32 #foreign libc;
 sys_info :: struct {
-    uptime : s64;
-    loads : [3] u64;
-    totalram : u64;
-    freeram : u64;
+    uptime: s64;
+    loads: [3] u64;
+    totalram: u64;
+    freeram: u64;
     sharedram: u64;
     bufferram: u64;
     totalswap: u64;
-    freeswap : u64;
-    procs : u16;
-    pad : u16;
+    freeswap: u64;
+    procs: u16;
+    pad: u16;
     totalhigh: u64;
-    freehigh : u64;
-    mem_unit : u32;
-    _f : [20-2*size_of(u64)-size_of(u32)] s8;
+    freehigh: u64;
+    mem_unit: u32;
+    _f: [20 - 2 * size_of(u64) - size_of(u32)] s8;
 }
 sysinfo :: (info: *sys_info) -> s32 #foreign libc;
 input_absinfo :: struct {
-    value : s32;
-    minimum : s32;
-    maximum : s32;
-    fuzz : s32;
-    flat : s32;
+    value: s32;
+    minimum: s32;
+    maximum: s32;
+    fuzz: s32;
+    flat: s32;
     resolution: s32;
 }
 input_event :: struct {
@@ -86,7 +86,7 @@ EV_FF :: 0x15;
 EV_PWR :: 0x16;
 EV_FF_STATUS :: 0x17;
 EV_MAX :: 0x1f;
-EV_CNT :: EV_MAX+1;
+EV_CNT :: EV_MAX + 1;
 ABS_HAT0X :: 0x10;
 ABS_HAT0Y :: 0x11;
 ABS_HAT1X :: 0x12;

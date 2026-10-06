@@ -8,35 +8,35 @@
 #module_parameters ()(USE_UNMAPPING_ALLOCATOR := false);
 #assert !USE_UNMAPPING_ALLOCATOR "Pool: USE_UNMAPPING_ALLOCATOR is not supported by this implementation.";
 
-POOL_BUCKET_SIZE_DEFAULT    :: 65536;
+POOL_BUCKET_SIZE_DEFAULT :: 65536;
 POOL_OVERSIZED_SIZE_DEFAULT :: 6554;
 
-STAMP :: 0xcc;                       // fill byte used when overwrite_memory is on
-HEADER_SIZE :: size_of(Memblock);    // bytes at the front of every block used for the list link
+STAMP :: 0xcc; // fill byte used when overwrite_memory is on
+HEADER_SIZE :: size_of(Memblock); // bytes at the front of every block used for the list link
 
 Pool :: struct {
-    memblock_size:  s64 = POOL_BUCKET_SIZE_DEFAULT;   // full size of each block, header included
+    memblock_size: s64 = POOL_BUCKET_SIZE_DEFAULT; // full size of each block, header included
     oversized_size: s64 = POOL_OVERSIZED_SIZE_DEFAULT; // requests at least this big get their own allocation
-    alignment := 8;                                    // power of two; padding_for relies on it
+    alignment := 8; // power of two; padding_for relies on it
 
     current_memblock: *Memblock;
-    current_pos:      *u8;
-    bytes_left:       s64;
+    current_pos: *u8;
+    bytes_left: s64;
 
     block_allocator: Allocator;
 
     // Bookkeeping lists, linked through Memblock.next.
-    unused_memblocks:        *Memblock;
-    used_memblocks:          *Memblock;
-    first_used_memblock:     *Memblock;   // tail of used_memblocks, so reset can splice in O(1)
+    unused_memblocks: *Memblock;
+    used_memblocks: *Memblock;
+    first_used_memblock: *Memblock; // tail of used_memblocks, so reset can splice in O(1)
     out_of_band_allocations: *Memblock;
 
-    overwrite_memory        := false;   // fill released/recycled memory with STAMP (debugging aid)
-    free_memblocks_on_reset := false;   // give blocks back on reset instead of keeping them
+    overwrite_memory := false; // fill released/recycled memory with STAMP (debugging aid)
+    free_memblocks_on_reset := false; // give blocks back on reset instead of keeping them
 
     logging_options: enum_flags u32 {
-        LOG_OVERSIZED_ALLOCATIONS             :: 0x1;
-        LOG_OVERSIZED_ALLOCATIONS_AS_ERRORS   :: 0x2;
+        LOG_OVERSIZED_ALLOCATIONS :: 0x1;
+        LOG_OVERSIZED_ALLOCATIONS_AS_ERRORS :: 0x2;
         LOG_OVERSIZED_ALLOCATIONS_STACK_TRACE :: 0x4;
     }
 }
@@ -66,21 +66,21 @@ set_allocators :: (pool: *Pool, block_allocator: Allocator = .{}) {
 
 get :: (pool: *Pool, nbytes: s64) -> *void {
     assert(nbytes >= 0);
-    if !pool.block_allocator.proc  set_allocators(pool);
+    if !pool.block_allocator.proc set_allocators(pool);
 
     // Large (or block-exceeding) requests are not pooled.
     if nbytes >= pool.oversized_size || nbytes + pool.alignment - 1 > pool.memblock_size - HEADER_SIZE {
         raw := cast(*Memblock) alloc(nbytes + HEADER_SIZE + pool.alignment - 1, pool.block_allocator);
-        if !raw  return null;
+        if !raw return null;
 
         raw.next = pool.out_of_band_allocations;
         pool.out_of_band_allocations = raw;
 
         if pool.logging_options & .LOG_OVERSIZED_ALLOCATIONS {
             flags := Log_Flags.NONE;
-            if pool.logging_options & .LOG_OVERSIZED_ALLOCATIONS_AS_ERRORS  flags = .ERROR;
-            log("Oversized allocation of % bytes in pool %.\n", nbytes, pool, flags=flags);
-            if pool.logging_options & .LOG_OVERSIZED_ALLOCATIONS_STACK_TRACE  log_stack_trace(context.stack_trace);
+            if pool.logging_options & .LOG_OVERSIZED_ALLOCATIONS_AS_ERRORS flags = .ERROR;
+            log("Oversized allocation of % bytes in pool %.\n", nbytes, pool, flags = flags);
+            if pool.logging_options & .LOG_OVERSIZED_ALLOCATIONS_STACK_TRACE log_stack_trace(context.stack_trace);
         }
 
         start := cast(*u8) *raw.data;
@@ -89,15 +89,15 @@ get :: (pool: *Pool, nbytes: s64) -> *void {
 
     pad := padding_for(pool.current_pos, pool.alignment);
     if pool.bytes_left < nbytes + pad {
-        if !take_block(pool)  return null;
-        pad = padding_for(pool.current_pos, pool.alignment);   // new block, new address
+        if !take_block(pool) return null;
+        pad = padding_for(pool.current_pos, pool.alignment); // new block, new address
     }
 
     result := pool.current_pos + pad;
     pool.current_pos += nbytes + pad;
-    pool.bytes_left  -= nbytes + pad;
+    pool.bytes_left -= nbytes + pad;
 
-    if pool.overwrite_memory  assert(result[0] == STAMP);
+    if pool.overwrite_memory assert(result[0] == STAMP);
     return result;
 }
 
@@ -113,8 +113,8 @@ reset :: (pool: *Pool) {
     } else if pool.used_memblocks {
         last := pool.used_memblocks;
         while true {
-            if pool.overwrite_memory  stamp(pool, last);
-            if !last.next  break;
+            if pool.overwrite_memory stamp(pool, last);
+            if !last.next break;
             last = last.next;
         }
         last.next = pool.unused_memblocks;
@@ -122,12 +122,12 @@ reset :: (pool: *Pool) {
     }
     free_chain(pool, pool.out_of_band_allocations);
 
-    pool.used_memblocks          = null;
-    pool.first_used_memblock     = null;
+    pool.used_memblocks = null;
+    pool.first_used_memblock = null;
     pool.out_of_band_allocations = null;
-    pool.current_memblock        = null;
-    pool.current_pos             = null;
-    pool.bytes_left              = 0;
+    pool.current_memblock = null;
+    pool.current_pos = null;
+    pool.bytes_left = 0;
 }
 
 // Reset, then give every block back to the block allocator.
@@ -143,25 +143,25 @@ pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64
     pool := cast(*Pool) allocator_data;
 
     if mode == {
-      case .ALLOCATE;
-        assert(pool != null, "Pool allocator used without a Pool as its data.");
-        return get(pool, requested_size);
+        case .ALLOCATE;
+            assert(pool != null, "Pool allocator used without a Pool as its data.");
+            return get(pool, requested_size);
 
-      case .RESIZE;
-        assert(pool != null, "Pool allocator used without a Pool as its data.");
-        moved := get(pool, requested_size);
-        keep := ifx old_size < requested_size then old_size else requested_size;
-        if moved && keep > 0  memcpy(moved, old_memory, keep);
-        return moved;
+        case .RESIZE;
+            assert(pool != null, "Pool allocator used without a Pool as its data.");
+            moved := get(pool, requested_size);
+            keep := ifx old_size < requested_size then old_size else requested_size;
+            if moved && keep > 0 memcpy(moved, old_memory, keep);
+            return moved;
 
-      case .IS_THIS_YOURS;
-        if owns_address(pool, cast(*u8) old_memory)  return cast(*void) 1;
-        return null;
+        case .IS_THIS_YOURS;
+            if owns_address(pool, cast(*u8) old_memory) return cast(*void) 1;
+            return null;
 
-      case .CAPS;
-        name_out := cast(*string) old_memory;
-        if name_out  name_out.* = CAPS_VERSION_STRING;
-        return cast(*void) (Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
+        case .CAPS;
+            name_out := cast(*string) old_memory;
+            if name_out name_out.* = CAPS_VERSION_STRING;
+            return cast(*void) (Allocator_Caps.HINT_I_AM_A_FAST_BUMP_ALLOCATOR | .IS_THIS_YOURS);
 
     }
 
@@ -184,7 +184,7 @@ calculate_used_memory :: (pool: Pool) -> inband_size: s64, outband_count: s64 {
 
 Memblock :: struct {
     next: *Memblock;
-    data: void;   // address of this field marks where payload begins
+    data: void; // address of this field marks where payload begins
 }
 
 chain_length :: (chain: *Memblock) -> s64 {
@@ -208,7 +208,7 @@ chain_covers :: (chain: *Memblock, address: *u8, span: s64) -> bool {
     link := chain;
     while link {
         first := cast(*u8) *link.data;
-        if address >= first && address <= first + span  return true;
+        if address >= first && address <= first + span return true;
         link = link.next;
     }
     return false;
@@ -231,17 +231,17 @@ take_block :: (pool: *Pool) -> bool {
         pool.unused_memblocks = block.next;
     } else {
         block = cast(*Memblock) alloc(pool.memblock_size, pool.block_allocator);
-        if !block  return false;
-        if pool.overwrite_memory  stamp(pool, block);
+        if !block return false;
+        if pool.overwrite_memory stamp(pool, block);
     }
 
     block.next = pool.used_memblocks;
     pool.used_memblocks = block;
-    if !pool.first_used_memblock  pool.first_used_memblock = block;
+    if !pool.first_used_memblock pool.first_used_memblock = block;
 
     pool.current_memblock = block;
-    pool.current_pos      = cast(*u8) *block.data;
-    pool.bytes_left       = pool.memblock_size - HEADER_SIZE;
+    pool.current_pos = cast(*u8) *block.data;
+    pool.bytes_left = pool.memblock_size - HEADER_SIZE;
     return true;
 }
 

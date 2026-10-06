@@ -44,11 +44,11 @@ set_value_from_string :: (any: Any, text: *string) -> bool {
         }
         end: s64;
         while end < cursor.count && identifier_byte(cursor[end]) end += 1;
-        name := string.{end, cursor.data};
+        name := string.{ end, cursor.data };
         for entry, index: enumeration.names {
             if entry == name {
                 set_enum_value(any.value_pointer, enumeration, enumeration.values[index]);
-                text.* = string.{cursor.count - end, cursor.data + end};
+                text.* = string.{ cursor.count - end, cursor.data + end };
                 return true;
             }
         }
@@ -57,13 +57,16 @@ set_value_from_string :: (any: Any, text: *string) -> bool {
     if any.type.type == .BOOL {
         value: bool;
         consumed: s64;
-        if has_prefix(cursor, "true") { value = true; consumed = 4; }
-        else if has_prefix(cursor, "false") { consumed = 5; }
-        else return false;
+        if has_prefix(cursor, "true") {
+            value = true;
+            consumed = 4;
+        } else if has_prefix(cursor, "false") {
+            consumed = 5;
+        } else return false;
         if consumed < cursor.count && identifier_byte(cursor[consumed]) return false;
         if any.type.runtime_size != 1 return false;
         (cast(*bool) any.value_pointer).* = value;
-        text.* = string.{cursor.count - consumed, cursor.data + consumed};
+        text.* = string.{ cursor.count - consumed, cursor.data + consumed };
         return true;
     }
     if any.type.type == .STRING {
@@ -71,8 +74,8 @@ set_value_from_string :: (any: Any, text: *string) -> bool {
         end: s64 = 1;
         while end < cursor.count && cursor[end] != #char "\"" end += 1;
         if end == cursor.count return false;
-        (cast(*string) any.value_pointer).* = .{end - 1, cursor.data + 1};
-        text.* = string.{cursor.count - end - 1, cursor.data + end + 1};
+        (cast(*string) any.value_pointer).* = .{ end - 1, cursor.data + 1 };
+        text.* = string.{ cursor.count - end - 1, cursor.data + end + 1 };
         return true;
     }
     if any.type.type == .FLOAT {
@@ -104,11 +107,15 @@ range_check_and_store :: (value: $T, info: *Type_Info_Integer, pointer: *void) -
         low, high = signed_integer_range_from_size(info.runtime_size);
     }
     if value < low || value > high return false, low, high;
-    if info.runtime_size == 1 { (cast(*u8) pointer).* = cast,no_check(u8) value; }
-    else if info.runtime_size == 2 { (cast(*u16) pointer).* = cast,no_check(u16) value; }
-    else if info.runtime_size == 4 { (cast(*u32) pointer).* = cast,no_check(u32) value; }
-    else if info.runtime_size == 8 { (cast(*u64) pointer).* = cast,no_check(u64) value; }
-    else return false, low, high;
+    if info.runtime_size == 1 {
+        (cast(*u8) pointer).* = cast,no_check(u8) value;
+    } else if info.runtime_size == 2 {
+        (cast(*u16) pointer).* = cast,no_check(u16) value;
+    } else if info.runtime_size == 4 {
+        (cast(*u32) pointer).* = cast,no_check(u32) value;
+    } else if info.runtime_size == 8 {
+        (cast(*u64) pointer).* = cast,no_check(u64) value;
+    } else return false, low, high;
     return true, low, high;
 }
 
@@ -164,11 +171,15 @@ get_enum_value :: (data: *void, info: *Type_Info_Enum) -> s64 {
 }
 
 set_enum_value :: (data: *void, info: *Type_Info_Enum, value: s64) {
-    if info.runtime_size == 1 { (cast(*u8) data).* = cast,no_check(u8) value; }
-    else if info.runtime_size == 2 { (cast(*u16) data).* = cast,no_check(u16) value; }
-    else if info.runtime_size == 4 { (cast(*u32) data).* = cast,no_check(u32) value; }
-    else if info.runtime_size == 8 { (cast(*u64) data).* = cast,no_check(u64) value; }
-    else assert(false);
+    if info.runtime_size == 1 {
+        (cast(*u8) data).* = cast,no_check(u8) value;
+    } else if info.runtime_size == 2 {
+        (cast(*u16) data).* = cast,no_check(u16) value;
+    } else if info.runtime_size == 4 {
+        (cast(*u32) data).* = cast,no_check(u32) value;
+    } else if info.runtime_size == 8 {
+        (cast(*u64) data).* = cast,no_check(u64) value;
+    } else assert(false);
 }
 
 #scope_module
@@ -193,14 +204,22 @@ read_integer :: (text: string) -> (ok: bool, magnitude: u64, negative: bool, rem
     base: u64 = 10;
     if cursor + 1 < text.count && text[cursor] == #char "0" {
         prefix := text[cursor + 1];
-        if prefix == #char "x" || prefix == #char "X" { base = 16; cursor += 2; }
-        else if prefix == #char "b" || prefix == #char "B" { base = 2; cursor += 2; }
+        if prefix == #char "x" || prefix == #char "X" {
+            base = 16;
+            cursor += 2;
+        } else if prefix == #char "b" || prefix == #char "B" {
+            base = 2;
+            cursor += 2;
+        }
     }
     digits: s64;
     magnitude: u64;
     while cursor < text.count {
         byte := text[cursor];
-        if byte == #char "_" { cursor += 1; continue; }
+        if byte == #char "_" {
+            cursor += 1;
+            continue;
+        }
         value: u64 = 16;
         if byte >= #char "0" && byte <= #char "9" value = byte - #char "0";
         else if byte >= #char "a" && byte <= #char "f" value = byte - #char "a" + 10;
@@ -212,5 +231,5 @@ read_integer :: (text: string) -> (ok: bool, magnitude: u64, negative: bool, rem
         cursor += 1;
     }
     if digits == 0 return false, 0, false, text;
-    return true, magnitude, negative, string.{text.count - cursor, text.data + cursor};
+    return true, magnitude, negative, string.{ text.count - cursor, text.data + cursor };
 }

@@ -1,6 +1,10 @@
 // HRESULT tests and IUnknown call helpers.
-SUCCEEDED :: (hr: HRESULT) -> bool { return hr >= 0; }
-FAILED :: (hr: HRESULT) -> bool { return hr < 0; }
+SUCCEEDED :: (hr: HRESULT) -> bool {
+    return hr >= 0;
+}
+FAILED :: (hr: HRESULT) -> bool {
+    return hr < 0;
+}
 HasOverlappedIoCompleted :: (overlapped: OVERLAPPED) -> bool {
     return overlapped.Internal != STATUS_PENDING;
 }
@@ -19,7 +23,9 @@ IUnknown_Release :: (this: *IUnknown) -> u32 {
     methods := this.vtable;
     return methods.Release(this);
 }
-vtable :: (obj: *IUnknown) -> *IUnknown_VTable { return obj.vtable; }
+vtable :: (obj: *IUnknown) -> *IUnknown_VTable {
+    return obj.vtable;
+}
 safe_release :: (obj: *$T/interface IUnknown) {
     if obj == null return;
     IUnknown_Release(cast(*IUnknown) obj);

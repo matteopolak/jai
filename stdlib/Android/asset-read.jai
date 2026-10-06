@@ -30,7 +30,7 @@ read_entire_file :: (asset_manager: *AAssetManager, name: string, zero_terminate
         offset += received;
     }
     if zero_terminated bytes[length] = 0;
-    return string.{length, bytes}, true;
+    return string.{ length, bytes }, true;
 }
 
 #scope_file

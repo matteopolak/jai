@@ -5,7 +5,12 @@
 Buckets :: #import "Bucket_Array";
 #scope_export;
 
-Border_Direction :: enum u8 { EAST :: 0; NORTH :: 1; WEST :: 2; SOUTH :: 3; }
+Border_Direction :: enum u8 {
+    EAST :: 0;
+    NORTH :: 1;
+    WEST :: 2;
+    SOUTH :: 3;
+}
 
 Display_Node :: struct {
     corner: Vector2;
@@ -108,7 +113,11 @@ size_children :: (treemap: *Treemap, root: *Treemap_Node, display: *Treemap_Disp
     parent: *Display_Node;
     if root.parent parent = *display.nodes[get_index(treemap, root.parent)];
     if border_proc border_proc(record.corner, record.size, root, parent, *record.border);
-    for *record.border { if <<it < 0 { <<it = 0; } }
+    for *record.border {
+        if <<it < 0 {
+            <<it = 0;
+        }
+    }
     corner := record.corner;
     corner.x += record.border[2];
     corner.y += record.border[1];
@@ -128,9 +137,9 @@ size_children :: (treemap: *Treemap, root: *Treemap_Node, display: *Treemap_Disp
             }
             break;
         }
-        area_per_weight := cast(float64)remaining.x * cast(float64)remaining.y / weight_left;
-        short_side := cast(float64)remaining.x;
-        if remaining.y < remaining.x short_side = cast(float64)remaining.y;
+        area_per_weight := cast(float64) remaining.x * cast(float64) remaining.y / weight_left;
+        short_side := cast(float64) remaining.x;
+        if remaining.y < remaining.x short_side = cast(float64) remaining.y;
         last := first + 1;
         group_weight := root.children[first].size;
         largest := group_weight;
@@ -149,11 +158,16 @@ size_children :: (treemap: *Treemap, root: *Treemap_Node, display: *Treemap_Disp
         fraction := group_weight / weight_left;
         if fraction > 1 fraction = 1;
         strip := remaining;
-        if horizontal strip.y = cast(float)(cast(float64)remaining.y * fraction);
-        else strip.x = cast(float)(cast(float64)remaining.x * fraction);
+        if horizontal strip.y = cast(float) (cast(float64) remaining.y * fraction);
+        else strip.x = cast(float) (cast(float64) remaining.x * fraction);
         flush_nodes(root.children, first, last, display, corner, group_weight, horizontal, strip);
-        if horizontal { corner.y += strip.y; remaining.y -= strip.y; }
-        else { corner.x += strip.x; remaining.x -= strip.x; }
+        if horizontal {
+            corner.y += strip.y;
+            remaining.y -= strip.y;
+        } else {
+            corner.x += strip.x;
+            remaining.x -= strip.x;
+        }
         weight_left -= group_weight;
         first = last;
     }
@@ -173,11 +187,11 @@ flush_nodes :: (children: [] *Treemap_Node, unsized_cursor: int, child_index: in
         record.corner = cursor;
         record.size = size;
         if horizontal {
-            record.size.x = cast(float)(cast(float64)size.x * fraction);
+            record.size.x = cast(float) (cast(float64) size.x * fraction);
             if i == child_index - 1 record.size.x = root_corner.x + size.x - cursor.x;
             cursor.x += record.size.x;
         } else {
-            record.size.y = cast(float)(cast(float64)size.y * fraction);
+            record.size.y = cast(float) (cast(float64) size.y * fraction);
             if i == child_index - 1 record.size.y = root_corner.y + size.y - cursor.y;
             cursor.y += record.size.y;
         }
@@ -188,7 +202,7 @@ flush_nodes :: (children: [] *Treemap_Node, unsized_cursor: int, child_index: in
 
 get_index :: (treemap: *Treemap, node: *Treemap_Node) -> s64 {
     assert(node != null);
-    return cast(s64)node.locator.bucket_index * treemap.nodes.items_per_bucket + node.locator.slot_index;
+    return cast(s64) node.locator.bucket_index * treemap.nodes.items_per_bucket + node.locator.slot_index;
 }
 
 // These helpers also retire private cache state for the supplied owner address.
@@ -202,7 +216,10 @@ free_treemap_display :: (display: *Treemap_Display) {
         if display_states[index].display == display array_unordered_remove_by_index(*display_states, index);
         else index += 1;
     }
-    if display_states.count == 0 { array_free(display_states); display_states = .{}; }
+    if display_states.count == 0 {
+        array_free(display_states);
+        display_states = .{};
+    }
 }
 
 free_treemap :: (treemap: *Treemap) {
@@ -226,13 +243,22 @@ free_treemap :: (treemap: *Treemap) {
         if display_states[index].tree == treemap array_unordered_remove_by_index(*display_states, index);
         else index += 1;
     }
-    if tree_states.count == 0 { array_free(tree_states); tree_states = .{}; }
-    if display_states.count == 0 { array_free(display_states); display_states = .{}; }
+    if tree_states.count == 0 {
+        array_free(tree_states);
+        tree_states = .{};
+    }
+    if display_states.count == 0 {
+        array_free(display_states);
+        display_states = .{};
+    }
 }
 
 #scope_file;
 
-Tree_State :: struct { tree: *Treemap; generation: s64; }
+Tree_State :: struct {
+    tree: *Treemap;
+    generation: s64;
+}
 Display_State :: struct {
     display: *Treemap_Display;
     tree: *Treemap;
@@ -268,7 +294,10 @@ recompute_sizes :: (node: *Treemap_Node) {
         return;
     }
     node.size = 0;
-    for node.children { recompute_sizes(it); node.size += it.size; }
+    for node.children {
+        recompute_sizes(it);
+        node.size += it.size;
+    }
     for index: 1..node.children.count - 1 {
         child := node.children[index];
         cursor := index;

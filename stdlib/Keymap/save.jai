@@ -12,7 +12,9 @@ print_to_builder :: (builder: *String_Builder, set: *Keymap_Set) {
         for occupied, i: bucket.occupied {
             if !occupied continue;
             keymap := *bucket.data[i];
-            append(builder, "["); append(builder, keymap.section_name); append(builder, "]\n");
+            append(builder, "[");
+            append(builder, keymap.section_name);
+            append(builder, "]\n");
             print_keymap_mappings_to_builder(builder, keymap);
             append(builder, "\n");
         }
@@ -39,7 +41,10 @@ print_keymap_mappings_to_builder :: (builder: *String_Builder, keymap: *Keymap) 
         append(builder, map_key_to_string(cast(Key_Code) mapping.utf32));
         append(builder, " ");
         if mapping.proc_index >= 0 append(builder, keymap.procs[mapping.proc_index].name);
-        else { append(builder, ":"); append(builder, mapping.command_string); }
+        else {
+            append(builder, ":");
+            append(builder, mapping.command_string);
+        }
         append(builder, "\n");
     }
 }

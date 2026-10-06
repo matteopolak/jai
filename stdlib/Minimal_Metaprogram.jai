@@ -18,7 +18,10 @@ build :: () {
         else if option.count > 0 && option[0] == #char "-" compiler_report("Unknown minimal metaprogram option.");
         else Basic.array_add(*sources, option);
     }
-    if sources.count == 0 { compiler_report("No input source was supplied."); return; }
+    if sources.count == 0 {
+        compiler_report("No input source was supplied.");
+        return;
+    }
     options.output_executable_name = filename_stem(sources[0]);
     set_build_options(options, workspace);
     for source: sources add_build_file(source, workspace);
@@ -31,8 +34,10 @@ filename_stem :: (path: string) -> string {
     begin: s64;
     end := path.count;
     for byte, index: path {
-        if byte == #char "/" || byte == #char "\\" { begin = index + 1; end = path.count; }
-        else if byte == #char "." end = index;
+        if byte == #char "/" || byte == #char "\\" {
+            begin = index + 1;
+            end = path.count;
+        } else if byte == #char "." end = index;
     }
-    return .{end - begin, path.data + begin};
+    return .{ end - begin, path.data + begin };
 }

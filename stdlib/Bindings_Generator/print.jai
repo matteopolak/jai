@@ -61,7 +61,7 @@ parent_path :: (decl: *Declaration) -> string {
             p = p.parent;
             continue;
         }
-        if p.output_name  path = join(p.output_name, ".", path);
+        if p.output_name path = join(p.output_name, ".", path);
         p = p.parent;
     }
     return path;
@@ -93,8 +93,8 @@ print_type_to_builder :: (builder: *String_Builder, ty: *CType, current_scope: *
         append(builder, "void");
     } else if t.hardcoded_jai_string {
         g := context.generator;
-        if t == g.type_def_u128 || t == g.type_def_s128  g.int128_was_referenced = true;
-        if t.flags & .WIDE_LONG_DOUBLE                   g.long_double_was_referenced = true;
+        if t == g.type_def_u128 || t == g.type_def_s128 g.int128_was_referenced = true;
+        if t.flags & .WIDE_LONG_DOUBLE g.long_double_was_referenced = true;
         append(builder, t.hardcoded_jai_string);
     } else if t.type_of_function {
         append(builder, "#type ");
@@ -125,7 +125,7 @@ print_struct_type_name :: (builder: *String_Builder, t: *CType, current_scope: *
     if t.template_instantiation_params.count {
         append(builder, "(");
         for t.template_instantiation_params {
-            if it_index  append(builder, ", ");
+            if it_index append(builder, ", ");
             print_type_to_builder(builder, it, current_scope, flags);
         }
         append(builder, ")");
@@ -133,22 +133,22 @@ print_struct_type_name :: (builder: *String_Builder, t: *CType, current_scope: *
         // An Objective-C generic named without arguments (`NSArray *`) is `NSArray(id)`.
         ids: [..] string;
         ids.allocator = temp;
-        for s.template_type_params  array_add(*ids, "id");
+        for s.template_type_params array_add(*ids, "id");
         print_to_builder(builder, "(%)", join(..ids, separator = ", "));
     }
-    if t.comment  print_to_builder(builder, " %", t.comment);
+    if t.comment print_to_builder(builder, " %", t.comment);
 }
 
 print_function_type_to_builder :: (builder: *String_Builder, type: *Function_Type, current_scope: *Declaration, func: *Function, add_directives := false) {
     args: [] *Declaration = type.arguments;
-    if func  args = context.generator_options.get_func_args_for_printing(func, type, .FOREIGN_FUNC_DECLARATION);
+    if func args = context.generator_options.get_func_args_for_printing(func, type, .FOREIGN_FUNC_DECLARATION);
     append(builder, "(");
     needs_printf := func && (func.decl_flags & .NEEDS_PRINTF_WRAPPER) != 0;
     for args {
         if it_index > 0 append(builder, ", ");
         arg_flags := Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS | .KEEP_POINTER_TO_VALUE;
         if !func arg_flags |= .NO_ARGUMENT_DEFAULTS;
-        if type.flags & .ADD_C_TYPE_DETAILS  arg_flags |= .C_TYPE_DETAILS;
+        if type.flags & .ADD_C_TYPE_DETAILS arg_flags |= .C_TYPE_DETAILS;
         print_declaration_to_builder(builder, it, current_scope, arg_flags);
     }
     if type.flags & .VARIADIC {
@@ -164,9 +164,9 @@ print_function_type_to_builder :: (builder: *String_Builder, type: *Function_Typ
 // `#cpp_method` passes the object as the first argument. Procedure types that are not
 // foreign declarations (pointers, members) need `#c_call` spelled out.
 append_calling_convention_directives :: (builder: *String_Builder, type: *Function_Type, assume_foreign: bool) {
-    if type.flags & .CPP_METHOD  append(builder, " #cpp_method");
-    else if !assume_foreign      append(builder, " #c_call");
-    if returned_through_hidden_pointer(type.return_type)  append(builder, " #cpp_return_type_is_non_pod");
+    if type.flags & .CPP_METHOD append(builder, " #cpp_method");
+    else if !assume_foreign append(builder, " #c_call");
+    if returned_through_hidden_pointer(type.return_type) append(builder, " #cpp_return_type_is_non_pod");
 }
 
 // A C++ class that is returned through a hidden result pointer rather than in registers:
@@ -185,7 +185,7 @@ returned_through_hidden_pointer :: (result: *CType) -> bool {
 escape_string_literal :: (s: string) -> string {
     builder: String_Builder;
     append(*builder, "\"");
-    for 0..s.count-1 {
+    for 0..s.count - 1 {
         c := s[it];
         if c == #char "\"" append(*builder, "\\\"");
         else if c == #char "\\" append(*builder, "\\\\");
@@ -202,7 +202,7 @@ escape_string_literal :: (s: string) -> string {
 float_to_text :: (value: float64) -> string {
     text := tprint("%", value);
     has_marker := false;
-    for 0..text.count-1 {
+    for 0..text.count - 1 {
         c := text[it];
         if c == #char "." || c == #char "e" || c == #char "E" || c == #char "n" || c == #char "i" has_marker = true;
     }
@@ -236,11 +236,14 @@ can_print_expression :: (e: *Expression) -> bool {
 // Token text of a C++ expression, translated when it is simple enough.
 raw_expression_text :: (raw: string) -> string {
     if raw == "true" || raw == "false" return raw;
-    if begins_with(raw, ".") return raw;   // An enum value the generator wrote itself (`.NONE`).
+    if begins_with(raw, ".") return raw; // An enum value the generator wrote itself (`.NONE`).
     if raw == "nullptr" || raw == "NULL" || raw == "0" return ifx raw == "0" then "0" else "null";
     body := raw;
     negative := false;
-    if begins_with(body, "-") { negative = true; body = advance(body, 1); }
+    if begins_with(body, "-") {
+        negative = true;
+        body = advance(body, 1);
+    }
     converted, ok := convert_number_literal(body);
     if ok return ifx negative then join("-", converted) else converted;
     if table_contains(*context.generator.known_constants, raw) return raw;
@@ -360,28 +363,28 @@ unwrap_single_bitfield :: (decl: *Declaration) -> *Declaration {
 print_declaration_to_builder :: (builder: *String_Builder, _decl: *Declaration, current_scope: *Declaration, flags: Print_Decl_Flags = 0, align_declarations := 0, explicit_alignment := 0) {
     decl := unwrap_single_bitfield(_decl);
     no_indent := (flags & .NO_INDENT) != 0;
-    if !no_indent  append_indentation(builder);
+    if !no_indent append_indentation(builder);
 
     // A comment from the lines above goes first; one from the same line goes last.
     comment_text := ifx context.generator_options.try_to_preserve_comments then decl.comment.text else "";
     comment_above := comment_text.count > 0 && is_prefix_comment(decl.comment);
-    if comment_above  print_comment_prefix(builder, decl.comment, no_indent);
+    if comment_above print_comment_prefix(builder, decl.comment, no_indent);
 
-    if decl.decl_flags & .QUALIFIER_AS     append(builder, "#as ");
-    if decl.decl_flags & .QUALIFIER_USING  append(builder, "using ");
+    if decl.decl_flags & .QUALIFIER_AS append(builder, "#as ");
+    if decl.decl_flags & .QUALIFIER_USING append(builder, "using ");
 
     kind := decl.kind;
-    if kind == .DECLARATION            print_data_declaration(builder, decl, current_scope, flags, align_declarations, explicit_alignment);
-    else if kind == .FUNCTION          print_function(builder, cast(*Function) decl, current_scope);
-    else if kind == .STRUCT            print_struct_and_followers(builder, cast(*Struct) decl, current_scope);
-    else if kind == .BITFIELD          print_bitfield_run(builder, cast(*Bitfield) decl, current_scope, flags, align_declarations);
-    else if kind == .ENUM              print_enum(builder, cast(*Enum) decl);
-    else if kind == .TYPEDEF           print_typedef(builder, cast(*Typedef) decl);
-    else if kind == .NAMESPACE         print_namespace(builder, cast(*Namespace) decl);
-    else if kind == .MACRO_DEFINITION  print_constant(builder, decl.output_name, decl.expression, null, null);
+    if kind == .DECLARATION print_data_declaration(builder, decl, current_scope, flags, align_declarations, explicit_alignment);
+    else if kind == .FUNCTION print_function(builder, cast(*Function) decl, current_scope);
+    else if kind == .STRUCT print_struct_and_followers(builder, cast(*Struct) decl, current_scope);
+    else if kind == .BITFIELD print_bitfield_run(builder, cast(*Bitfield) decl, current_scope, flags, align_declarations);
+    else if kind == .ENUM print_enum(builder, cast(*Enum) decl);
+    else if kind == .TYPEDEF print_typedef(builder, cast(*Typedef) decl);
+    else if kind == .NAMESPACE print_namespace(builder, cast(*Namespace) decl);
+    else if kind == .MACRO_DEFINITION print_constant(builder, decl.output_name, decl.expression, null, null);
     else log("Bindings_Generator: cannot print a declaration of kind %\n", kind);
 
-    if comment_text.count > 0 && !comment_above  print_to_builder(builder, " %", normalize_line_endings(comment_text));
+    if comment_text.count > 0 && !comment_above print_to_builder(builder, " %", normalize_line_endings(comment_text));
 }
 
 // `NAME :: value;`
@@ -394,7 +397,7 @@ print_constant :: (builder: *String_Builder, name: string, value: *Expression, t
 // `name: ` followed by the spaces that line the types of a struct up.
 print_padded_name :: (builder: *String_Builder, name: string, width: int) {
     print_to_builder(builder, "%: ", name);
-    for 1..width - name.count  append(builder, #char " ");
+    for 1..width - name.count append(builder, #char " ");
 }
 
 // A struct and what has to come right after it: the block helper of an Objective-C block
@@ -402,12 +405,12 @@ print_padded_name :: (builder: *String_Builder, name: string, width: int) {
 print_struct_and_followers :: (builder: *String_Builder, s: *Struct, current_scope: *Declaration) {
     print_struct(builder, s);
     context.generator.counts.structs += 1;
-    if s.flags & .OBJC_BLOCK  print_block_literal_helper(builder, s);
+    if s.flags & .OBJC_BLOCK print_block_literal_helper(builder, s);
 
-    if current_scope && current_scope.kind != .NAMESPACE return;   // In a struct: its checks cover this one.
+    if current_scope && current_scope.kind != .NAMESPACE return; // In a struct: its checks cover this one.
     flattened := !current_scope || (cast(*Namespace) current_scope).should_flatten;
-    if flattened  print_struct_checks(builder, s);
-    else          array_add(*context.generator.deferred_struct_checks, s);
+    if flattened print_struct_checks(builder, s);
+    else array_add(*context.generator.deferred_struct_checks, s);
 }
 
 // The storage member of a bit field run, then the members it holds, commented out below it.
@@ -439,7 +442,7 @@ print_data_declaration :: (builder: *String_Builder, decl: *Declaration, current
     by_value := (decl.decl_flags & .POINTER_TO_VALUE) != 0;
     keep_pointer := (flags & .KEEP_POINTER_TO_VALUE) != 0;
     shown := decl.type;
-    if by_value && !keep_pointer && shown.pointer_to  shown = shown.pointer_to;
+    if by_value && !keep_pointer && shown.pointer_to shown = shown.pointer_to;
 
     print_padded_name(builder, decl.output_name, name_width);
     if (flags & .C_TYPE_DETAILS) && context.generator_options.add_overloaded_const_and_ref_comments {
@@ -455,11 +458,11 @@ print_data_declaration :: (builder: *String_Builder, decl: *Declaration, current
     }
 
     defaults_allowed := !(flags & .NO_ARGUMENT_DEFAULTS) && !(by_value && keep_pointer);
-    if defaults_allowed && can_print_expression(decl.expression)  print_default_value(builder, decl, current_scope);
-    if decl.storage_class == .Extern && decl.foreign_name  append_elsewhere(builder, decl, decl.foreign_name);
-    if explicit_alignment > 0  print_to_builder(builder, " #align %", explicit_alignment);
-    if !(flags & .NO_SEMICOLON)  append(builder, ";");
-    if decl.bitfield_width > 0  print_to_builder(builder, " /* % bits */", decl.bitfield_width);
+    if defaults_allowed && can_print_expression(decl.expression) print_default_value(builder, decl, current_scope);
+    if decl.storage_class == .Extern && decl.foreign_name append_elsewhere(builder, decl, decl.foreign_name);
+    if explicit_alignment > 0 print_to_builder(builder, " #align %", explicit_alignment);
+    if !(flags & .NO_SEMICOLON) append(builder, ";");
+    if decl.bitfield_width > 0 print_to_builder(builder, " /* % bits */", decl.bitfield_width);
 }
 
 // ` = value`. When an enum replaced an integer type (change_type_to_enum), a value that is
@@ -488,7 +491,7 @@ declaration_text :: (decl: *Declaration, current_scope: *Declaration, flags: Pri
 print_c_type_details :: (builder: *String_Builder, decl: *Declaration, type: *CType) {
     if !type return;
     is_const := (decl.decl_flags & .IS_CONST) != 0 || (type.flags & .CONST) != 0;
-    if type.pointer_to && (type.flags & .REFERENCE) && (type.pointer_to.flags & .CONST)  is_const = true;
+    if type.pointer_to && (type.flags & .REFERENCE) && (type.pointer_to.flags & .CONST) is_const = true;
     is_reference := (type.flags & .REFERENCE) != 0;
     if !is_const && !is_reference return;
     append(builder, "/*");
@@ -503,7 +506,7 @@ print_c_type_details :: (builder: *String_Builder, decl: *Declaration, type: *CT
 // module; `objc_block_user_data(block)` returns `user_data` inside `invoke`.
 print_block_literal_helper :: (builder: *String_Builder, s: *Struct) {
     invoke: *Declaration;
-    for s.declarations  if it.name == "invoke" invoke = it;
+    for s.declarations if it.name == "invoke" invoke = it;
     if !invoke return;
     append(builder, "\n");
     append_indentation(builder);
@@ -521,12 +524,12 @@ print_block_literal_helper :: (builder: *String_Builder, s: *Struct) {
 // (`declared_name`, by default the output name).
 append_elsewhere :: (builder: *String_Builder, decl: *Declaration, foreign_name: string, declared_name := "") {
     directive := "#elsewhere";
-    if decl.kind == .FUNCTION  directive = "#foreign";
+    if decl.kind == .FUNCTION directive = "#foreign";
     print_to_builder(builder, " %", directive);
-    if decl.library  print_to_builder(builder, " %", library_identifier(decl.library));
+    if decl.library print_to_builder(builder, " %", library_identifier(decl.library));
     printed_as := ifx declared_name then declared_name else decl.output_name;
     renamed := foreign_name.count > 0 && foreign_name != printed_as;
-    if renamed  print_to_builder(builder, " \"%\"", foreign_name);
+    if renamed print_to_builder(builder, " \"%\"", foreign_name);
 }
 
 // An Objective-C method is a message send through `objc_msgSend`, cast to the method's
@@ -605,7 +608,7 @@ objc_returns_in_memory :: (type: *CType) -> bool {
 // `setX:y:` -> `setX_y_`
 objc_selector_field :: (selector: string) -> string {
     builder: String_Builder;
-    for 0..selector.count-1 {
+    for 0..selector.count - 1 {
         c := selector[it];
         append(*builder, ifx c == #char ":" then cast(u8) #char "_" else c);
     }
@@ -617,10 +620,10 @@ print_objc_selector_table :: (builder: *String_Builder, g: *Generator_State) {
     if !g.unique_objc_selectors.count return;
     append(builder, "\n\n#scope_file\n\n#import \"Objective_C\"; // For objc_msgSend and sel_registerName\n\n");
     append(builder, "_Generated_Selectors :: struct {\n    initialized: bool;\n");
-    for g.unique_objc_selectors  print_to_builder(builder, "    %: Selector;\n", objc_selector_field(it));
+    for g.unique_objc_selectors print_to_builder(builder, "    %: Selector;\n", objc_selector_field(it));
     append(builder, "}\n__selectors: _Generated_Selectors;\n\n");
     append(builder, "__selectors_init :: () {\n    if __selectors.initialized return;\n    __selectors.initialized = true;\n");
-    for g.unique_objc_selectors  print_to_builder(builder, "    __selectors.% = sel_registerName(\"%\");\n", objc_selector_field(it), it);
+    for g.unique_objc_selectors print_to_builder(builder, "    __selectors.% = sel_registerName(\"%\");\n", objc_selector_field(it), it);
     append(builder, "}\n");
 }
 
@@ -663,8 +666,8 @@ print_function :: (builder: *String_Builder, func: *Function, current_scope: *De
         print_function_wrapper(builder, func, bound_name, true, current_scope);
     } else if func.decl_flags & .NEEDS_ARGUMENT_WRAPPER {
         // A wrapper cannot pass C varargs on.
-        if type.flags & .VARIADIC  log("Bindings_Generator: % is variadic, so it gets no wrapper taking its `const &` arguments by value.\n", func.name);
-        else                       print_function_wrapper(builder, func, bound_name, false, current_scope);
+        if type.flags & .VARIADIC log("Bindings_Generator: % is variadic, so it gets no wrapper taking its `const &` arguments by value.\n", func.name);
+        else print_function_wrapper(builder, func, bound_name, false, current_scope);
     }
 }
 
@@ -688,8 +691,8 @@ print_function_wrapper :: (builder: *String_Builder, func: *Function, bound_name
         params.count -= 1;
         call_args.count -= 1;
     }
-    for params  array_add(*declared, declaration_text(it, current_scope, Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS));
-    for call_args  array_add(*passed, ifx it.decl_flags & .POINTER_TO_VALUE then tprint("*%", it.output_name) else it.output_name);
+    for params array_add(*declared, declaration_text(it, current_scope, Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS));
+    for call_args array_add(*passed, ifx it.decl_flags & .POINTER_TO_VALUE then tprint("*%", it.output_name) else it.output_name);
     if format {
         array_add(*declared, tprint("%: string, __args: ..Any", format.output_name));
         array_add(*passed, join("\"%s\", temp_c_string(tprint(", format.output_name, ", ..__args))"));
@@ -708,7 +711,7 @@ print_function_wrapper :: (builder: *String_Builder, func: *Function, bound_name
 
     context.generator.tab_depth += 1;
     append_indentation(builder);
-    if returns_value  append(builder, "return ");
+    if returns_value append(builder, "return ");
     print_to_builder(builder, "%(%);\n", bound_name, join(..passed, separator = ", "));
     context.generator.tab_depth -= 1;
     append_indentation(builder);
@@ -720,8 +723,8 @@ print_function_wrapper :: (builder: *String_Builder, func: *Function, bound_name
 
 // Hex is only used for values that are not negative; a negative one stays decimal.
 append_integer :: (builder: *String_Builder, value: $T, as_hex: bool) {
-    if as_hex && value >= 0  print_to_builder(builder, "0x%", formatInt(value, base = 16));
-    else                     print_to_builder(builder, "%", value);
+    if as_hex && value >= 0 print_to_builder(builder, "0x%", formatInt(value, base = 16));
+    else print_to_builder(builder, "%", value);
 }
 
 print_enum :: (builder: *String_Builder, e: *Enum) {
@@ -740,12 +743,12 @@ print_enum_body :: (builder: *String_Builder, e: *Enum) {
         append(builder, " ");
         print_type_to_builder(builder, e.type, e.parent);
     }
-    if e.decl_flags & .TYPE_INFO_NONE  append(builder, " #type_info_none");
+    if e.decl_flags & .TYPE_INFO_NONE append(builder, " #type_info_none");
     append(builder, " {\n");
 
     context.generator.tab_depth += 1;
     printed_values := print_enum_values(builder, e);
-    if e.flags & .ALIAS_ORIGINAL_NAMES  print_enum_aliases(builder, e, printed_values);
+    if e.flags & .ALIAS_ORIGINAL_NAMES print_enum_aliases(builder, e, printed_values);
     context.generator.tab_depth -= 1;
 
     append_indentation(builder);
@@ -756,7 +759,7 @@ print_enum_body :: (builder: *String_Builder, e: *Enum) {
 // Returns whether there was any.
 print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
     width := 0;
-    for e.enumerates  width = max(width, it.output_name.count);
+    for e.enumerates width = max(width, it.output_name.count);
     storage := strip_type(e.type, typedefs = true);
     signed := storage != null && (storage.number_flags & .SIGNED) != 0;
     hex := (e.flags & .VALUES_IN_HEX) != 0;
@@ -770,16 +773,16 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
         append_indentation(builder);
         has_comment := it.comment.text.count > 0;
         comment_above := has_comment && is_prefix_comment(it.comment);
-        if comment_above  print_comment_prefix(builder, it.comment, false);
+        if comment_above print_comment_prefix(builder, it.comment, false);
 
         append_padded(builder, it.output_name, width);
         append(builder, " :: ");
         // A value from a macro keeps its expression text.
-        if it.string_value  append(builder, it.string_value);
-        else if signed      append_integer(builder, it.signed_value, hex);
-        else                append_integer(builder, it.unsigned_value, hex);
+        if it.string_value append(builder, it.string_value);
+        else if signed append_integer(builder, it.signed_value, hex);
+        else append_integer(builder, it.unsigned_value, hex);
         append(builder, ";");
-        if has_comment && !comment_above  print_to_builder(builder, " %", it.comment.text);
+        if has_comment && !comment_above print_to_builder(builder, " %", it.comment.text);
         append(builder, "\n");
         count += 1;
     }
@@ -790,7 +793,7 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
 print_enum_aliases :: (builder: *String_Builder, e: *Enum, after_values: bool) {
     width := 0;
     for e.enumerates {
-        if it.name != it.output_name  width = max(width, it.name.count);
+        if it.name != it.output_name width = max(width, it.name.count);
     }
     need_gap := after_values;
     for e.enumerates {
@@ -808,7 +811,7 @@ print_enum_aliases :: (builder: *String_Builder, e: *Enum, after_values: bool) {
 // `text` followed by spaces up to `width` characters.
 append_padded :: (builder: *String_Builder, text: string, width: int) {
     append(builder, text);
-    for 1..width - text.count  append(builder, #char " ");
+    for 1..width - text.count append(builder, #char " ");
 }
 
 print_typedef :: (builder: *String_Builder, def: *Typedef) {
@@ -883,13 +886,13 @@ is_operator :: (decl: *Declaration) -> bool {
 
 Struct_Part :: enum {
     FULL;
-    WRAPPER;    // `X :: struct { using x__raw: X__RAW; <everything but the data> }`
-    RAW_DATA;   // The data members only.
+    WRAPPER; // `X :: struct { using x__raw: X__RAW; <everything but the data> }`
+    RAW_DATA; // The data members only.
 }
 
 // `union { ... }` / `struct { ... }` with the members, shared by named and inline structs.
 print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part := Struct_Part.FULL) {
-    if s.flags & .IS_UNION  append(builder, "union");
+    if s.flags & .IS_UNION append(builder, "union");
     else append(builder, "struct");
 
     if s.template_type_params.count > 0 {
@@ -901,8 +904,8 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         append(builder, ")");
     }
 
-    if s.decl_flags & .TYPE_INFO_NONE  append(builder, " #type_info_none");
-    else if s.decl_flags & .TYPE_INFO_PROCEDURES_ARE_VOID_POINTERS  append(builder, " #type_info_procedures_are_void_pointers");
+    if s.decl_flags & .TYPE_INFO_NONE append(builder, " #type_info_none");
+    else if s.decl_flags & .TYPE_INFO_PROCEDURES_ARE_VOID_POINTERS append(builder, " #type_info_procedures_are_void_pointers");
     append(builder, " {");
 
     context.generator.tab_depth += 1;
@@ -913,7 +916,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     has_fields := false;
 
     local_names: [..] *Declaration;
-    for s.template_type_params  array_add(*local_names, it);
+    for s.template_type_params array_add(*local_names, it);
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         avoid_name_clash(*local_names, it);
@@ -939,7 +942,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     // In the RAW variant a struct has no implicit padding: spell out the gaps clang laid out.
     raw_next := 0;
     raw_padding_count := 0;
-    if part == .RAW_DATA && has_vtable && !info.vtable_parent  raw_next = context.generator.pointer_size;
+    if part == .RAW_DATA && has_vtable && !info.vtable_parent raw_next = context.generator.pointer_size;
 
     // A class with virtual bases is dynamic even without virtual functions: unless a
     // non-virtual base at offset 0 brings one, it starts with its own vtable pointer.
@@ -947,7 +950,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         append(builder, "\n");
         append_indentation(builder);
         append(builder, "__vptr: *void; // C++ virtual bases make the class dynamic");
-        if part == .RAW_DATA  raw_next = context.generator.pointer_size;
+        if part == .RAW_DATA raw_next = context.generator.pointer_size;
         printed = true;
         has_fields = true;
     }
@@ -959,10 +962,10 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         // Only one base with a vtable pointer can be `using`-ed: the pointers' names collide.
         dynamic_base := parent_info != null && (parent_info.vtable.count > 0 || parent_info.vtable_parent != null);
         disable_using := dynamic_base && seen_dynamic_base;
-        if dynamic_base  seen_dynamic_base = true;
-        if !disable_using && parent_struct  disable_using = base_shadows_names(parent_struct, local_names);
+        if dynamic_base seen_dynamic_base = true;
+        if !disable_using && parent_struct disable_using = base_shadows_names(parent_struct, local_names);
         if disable_using {
-            parent.decl_flags &= ~.QUALIFIER_USING;
+            parent.decl_flags &= ~ .QUALIFIER_USING;
             prepend_comment(*parent.comment, "// jai: not `using`, its names would collide with others in this struct");
         }
         append(builder, "\n");
@@ -993,7 +996,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     inherits_virtual_bases := false;
     for s.parents {
         base := get_base_struct(it);
-        if base && struct_has_virtual_bases(base)  inherits_virtual_bases = true;
+        if base && struct_has_virtual_bases(base) inherits_virtual_bases = true;
     }
     if part == .FULL && inherits_virtual_bases {
         s.flags |= .NO_STRUCT_CHECKS;
@@ -1036,7 +1039,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
                 offset, size, alignment := get_field_layout(it);
                 if offset >= 0 && size >= 0 && alignment > 0 && next_field_offset >= 0 {
                     padded := (next_field_offset + alignment - 1) / alignment * alignment;
-                    if padded != offset  explicit_alignment = alignment_reaching(next_field_offset, offset, alignment);
+                    if padded != offset explicit_alignment = alignment_reaching(next_field_offset, offset, alignment);
                 }
                 next_field_offset = ifx offset >= 0 && size >= 0 then offset + size else -1;
             } else {
@@ -1054,7 +1057,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
                 print_to_builder(builder, "__padding%: [%] u8;", raw_padding_count, offset - raw_next);
                 raw_padding_count += 1;
             }
-            if offset >= 0 && size >= 0  raw_next = offset + size;
+            if offset >= 0 && size >= 0 raw_next = offset + size;
         }
         append(builder, "\n");
         maybe_add_spacing(builder, *last_location, it.location, it.decl_flags, mimic);
@@ -1079,13 +1082,13 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
                     append_indentation(builder);
                     raw_padding_count += 1;
                 }
-                if vbase.bit_offset_in_parent >= 0  raw_next = offset + max(vbase.type.size, 0);
+                if vbase.bit_offset_in_parent >= 0 raw_next = offset + max(vbase.type.size, 0);
             }
             explicit_alignment := 0;
             natural := get_type_alignment(vbase.type);
             if end >= 0 && vbase.bit_offset_in_parent >= 0 && natural > 0 && part != .RAW_DATA {
                 offset := vbase.bit_offset_in_parent / 8;
-                if (end + natural - 1) / natural * natural != offset  explicit_alignment = alignment_reaching(end, offset, natural);
+                if (end + natural - 1) / natural * natural != offset explicit_alignment = alignment_reaching(end, offset, natural);
                 end = offset + max(vbase.type.size, 0);
             } else {
                 end = -1;
@@ -1093,7 +1096,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
             print_declaration_to_builder(builder, vbase, s, .NO_INDENT, 0, explicit_alignment);
             append(builder, " // C++ virtual base");
             // libclang before 20 cannot report the offset: no placement and no struct check.
-            if vbase.bit_offset_in_parent < 0  append(builder, " (offset unknown to this libclang)");
+            if vbase.bit_offset_in_parent < 0 append(builder, " (offset unknown to this libclang)");
             printed = true;
             if vbase.type.size > 0 has_fields = true;
         }
@@ -1232,7 +1235,10 @@ print_bitfield_alignment_helper :: (builder: *String_Builder, s: *Struct) {
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         is_field, is_anon := is_struct_field(it);
-        if is_field && !is_anon { anchor = unwrap_single_bitfield(it); break; }
+        if is_field && !is_anon {
+            anchor = unwrap_single_bitfield(it);
+            break;
+        }
     }
     if !anchor return;
 
@@ -1299,14 +1305,14 @@ alignment_reaching :: (next: s64, offset: s64, natural: s64) -> s64 {
     if offset < (next + natural - 1) / natural * natural {
         a := natural;
         while a >= 1 {
-            if (next + a - 1) / a * a == offset  return a;
+            if (next + a - 1) / a * a == offset return a;
             a /= 2;
         }
         return 0;
     }
     a := natural;
     while a <= 4096 {
-        if (next + a - 1) / a * a == offset  return a;
+        if (next + a - 1) / a * a == offset return a;
         a *= 2;
     }
     return 0;
@@ -1349,7 +1355,7 @@ get_base_layout :: (s: *Struct, reuse: [] bool) -> offsets: [] s64, end: s64 {
     offsets: [..] s64;
     end := 0;
     info := find_or_create_extra_info(s.type, s);
-    if info && info.vtable.count > 0 && !info.vtable_parent  end = context.generator.pointer_size;
+    if info && info.vtable.count > 0 && !info.vtable_parent end = context.generator.pointer_size;
     for parent: s.parents {
         alignment := max(get_type_alignment(parent.type), 1);
         end = (end + alignment - 1) / alignment * alignment;
@@ -1365,7 +1371,7 @@ get_base_layout :: (s: *Struct, reuse: [] bool) -> offsets: [] s64, end: s64 {
 // `get_base_layout` for the bases as they are printed.
 get_printed_base_layout :: (s: *Struct) -> offsets: [] s64, end: s64 {
     reuse: [..] bool;
-    for s.parents  array_add(*reuse, (it.decl_flags & .PRINT_AS_RAW) != 0);
+    for s.parents array_add(*reuse, (it.decl_flags & .PRINT_AS_RAW) != 0);
     return get_base_layout(s, reuse);
 }
 
@@ -1428,7 +1434,7 @@ is_probably_non_pod :: (s: *Struct) -> bool {
 // alone (print_struct_body comments it and skips the struct checks).
 mark_tail_padding_bases :: (g: *Generator_State) {
     done: Table(*Struct, bool);
-    for s: g.structs_to_check  mark_tail_padding_struct(s, *done);
+    for s: g.structs_to_check mark_tail_padding_struct(s, *done);
 }
 
 mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
@@ -1445,7 +1451,7 @@ mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
         if base mark_tail_padding_struct(base, done);
     }
 
-    candidates: [..] bool;   // May the padding after this base be reused?
+    candidates: [..] bool; // May the padding after this base be reused?
     for s.parents {
         base := get_base_struct(it);
         ok := base != null && !(base.decl_flags & (Declaration_Flags.OMIT_FROM_OUTPUT | .TEMPLATE)) && !(base.flags & (Struct.Flags.IS_UNION | .IS_INCOMPLETE)) && base.name != "";
@@ -1461,18 +1467,21 @@ mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
     }
 
     reuse: [..] bool;
-    for 0..s.parents.count-1  array_add(*reuse, false);
+    for 0..s.parents.count - 1 array_add(*reuse, false);
     found := false;
     for attempt: 0..(1 << s.parents.count) {
         mask := ifx attempt == 0 then preferred else attempt - 1;
         valid := true;
-        for 0..s.parents.count-1 {
+        for 0..s.parents.count - 1 {
             reuse[it] = (mask & (1 << it)) != 0;
             if reuse[it] && !candidates[it] valid = false;
         }
         if !valid continue;
         offsets, end := get_base_layout(s, reuse);
-        if base_layout_matches(s, end) { found = true; break; }
+        if base_layout_matches(s, end) {
+            found = true;
+            break;
+        }
     }
     if !found return;
 
@@ -1568,11 +1577,11 @@ find_or_create_extra_info :: (type: *CType, base_struct: *Struct) -> *Struct_Ext
     known, cached := table_find(*g.extra_infos, s);
     if known return cached, s;
     info := New(Struct_Extra_Info);
-    table_add(*g.extra_infos, s, info);   // Before visiting the bases, so a cycle ends here.
+    table_add(*g.extra_infos, s, info); // Before visiting the bases, so a cycle ends here.
 
     link_vtable_base(s, info, base_struct);
     for s.virtual_functions {
-        if !is_inherited_vtable_entry(info, it)  add_vtable_entry(info, it);
+        if !is_inherited_vtable_entry(info, it) add_vtable_entry(info, it);
     }
     // The base's table pointer is `vtable`; a derived class's own pointer needs its own name.
     info.vtable_name = ifx info.vtable_parent then to_lower_copy(tprint("%_vtable", s.output_name)) else "vtable";
@@ -1634,7 +1643,7 @@ print_struct_vtable :: (builder: *String_Builder, s: *Struct, info: *Struct_Extr
 
     options := *context.generator_options;
     if options.generate_c_style_api_for_vtable {
-        for info.vtable  print_vtable_call(builder, s, info, it, *previous);
+        for info.vtable print_vtable_call(builder, s, info, it, *previous);
         append(builder, "\n");
     }
     if options.generate_vtable_helpers {
@@ -1654,7 +1663,7 @@ print_vtable_table :: (builder: *String_Builder, s: *Struct, info: *Struct_Extra
     inherited.allocator = temp;
     ancestor := info.vtable_parent_info;
     while ancestor {
-        for ancestor.vtable  array_add(*inherited, it);
+        for ancestor.vtable array_add(*inherited, it);
         ancestor = ancestor.vtable_parent_info;
     }
 
@@ -1671,8 +1680,8 @@ print_vtable_table :: (builder: *String_Builder, s: *Struct, info: *Struct_Extra
         maybe_add_spacing(builder, previous, entry.location, entry.decl_flags, .VTABLE);
         append_indentation(builder);
         avoid_name_clash(*inherited, entry, allow_overloads = false);
-        if entry.decl_flags & .OMIT_FROM_OUTPUT  print_to_builder(builder, "%: *void;", entry.output_name);
-        else                                     print_function(builder, entry, s.parent, in_vtable = true);
+        if entry.decl_flags & .OMIT_FROM_OUTPUT print_to_builder(builder, "%: *void;", entry.output_name);
+        else print_function(builder, entry, s.parent, in_vtable = true);
     }
     context.generator.tab_depth -= 1;
     append(builder, "\n");
@@ -1699,7 +1708,7 @@ print_vtable_call :: (builder: *String_Builder, s: *Struct, info: *Struct_Extra_
     for params {
         // Arguments are passed on exactly as the entry takes them: a `const T&` stays a pointer.
         param_flags := Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS;
-        if it.decl_flags & .POINTER_TO_VALUE  param_flags |= .NO_ARGUMENT_DEFAULTS | .KEEP_POINTER_TO_VALUE;
+        if it.decl_flags & .POINTER_TO_VALUE param_flags |= .NO_ARGUMENT_DEFAULTS | .KEEP_POINTER_TO_VALUE;
         array_add(*declared, declaration_text(it, s.parent, param_flags));
         array_add(*passed, it.output_name);
     }

@@ -49,7 +49,10 @@ _gl_context_extension :: (names: *u8, wanted: string) -> bool {
         if at - begin == wanted.count {
             equal := true;
             for index: 0..wanted.count - 1 {
-                if names[begin + index] != wanted[index] { equal = false; break; }
+                if names[begin + index] != wanted[index] {
+                    equal = false;
+                    break;
+                }
             }
             if equal return true;
         }

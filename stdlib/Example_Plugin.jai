@@ -6,12 +6,12 @@
 get_plugin :: () -> *Metaprogram_Plugin {
     plugin := New(Metaprogram_Plugin);
     plugin.handle_one_option = handle_one_option;
-    plugin.log_help          = log_help;
-    plugin.before_intercept  = before_intercept;
-    plugin.add_source        = add_source;
-    plugin.message           = message;
-    plugin.finish            = finish;
-    plugin.shutdown          = shutdown;
+    plugin.log_help = log_help;
+    plugin.before_intercept = before_intercept;
+    plugin.add_source = add_source;
+    plugin.message = message;
+    plugin.finish = finish;
+    plugin.shutdown = shutdown;
     return plugin;
 }
 
@@ -35,7 +35,7 @@ message :: (p: *Metaprogram_Plugin, message: *Message) {
 
         case .PHASE;
             update := cast(*Message_Phase) message;
-            if update.phase == .PRE_WRITE_EXECUTABLE  print("Example_Plugin: about to write %.\n", update.executable_name);
+            if update.phase == .PRE_WRITE_EXECUTABLE print("Example_Plugin: about to write %.\n", update.executable_name);
             else print("Example_Plugin: now in phase %.\n", update.phase);
 
         case .COMPLETE;

@@ -26,12 +26,12 @@ create_ico_file_from_bitmap_filename :: (bitmap_filename: string) -> string {
     if !pixels return "";
     defer free(pixels);
     have_alpha := false;
-    for row: 0..cast(s64) height-1 {
+    for row: 0..cast(s64) height - 1 {
         source_row := row;
         if signed_height < 0 source_row = height - row - 1;
         source := bitmap.data + offset + source_row * row_bytes;
         target := pixels + row * width * 4;
-        for column: 0..cast(s64) width-1 {
+        for column: 0..cast(s64) width - 1 {
             for channel: 0..2 target[column * 4 + channel] = source[column * source_comp + channel];
             alpha: u8 = 255;
             if source_comp == 4 alpha = source[column * 4 + 3];
@@ -41,7 +41,7 @@ create_ico_file_from_bitmap_filename :: (bitmap_filename: string) -> string {
     }
     // BI_RGB 32-bit BMP commonly uses its fourth byte as unused XRGB padding.
     if source_comp == 4 && !have_alpha {
-        for pixel: 0..area-1 pixels[pixel * 4 + 3] = 255;
+        for pixel: 0..area - 1 pixels[pixel * 4 + 3] = 255;
     }
     return create_ico_file(width, height, 4, pixels);
 }
@@ -95,13 +95,13 @@ create_ico_file :: (x: s32, y: s32, comp: s32, image_data: *u8) -> string {
         ico_put32(dib + 20, cast(u32) (xor_stride * size));
         image := dib + 40;
         mask := image + xor_stride * size;
-        for row: 0..size-1 {
+        for row: 0..size - 1 {
             source_y := cast(s64) row * y / size;
-            for column: 0..size-1 {
+            for column: 0..size - 1 {
                 source_x := cast(s64) column * x / size;
                 source := image_data + (source_y * x + source_x) * comp;
                 target := image + row * xor_stride + column * comp;
-                for channel: 0..comp-1 target[channel] = source[channel];
+                for channel: 0..comp - 1 target[channel] = source[channel];
                 if comp == 4 && source[3] == 0 mask[row * mask_stride + column / 8] |= cast(u8) (128 >> (column % 8));
             }
         }
@@ -113,7 +113,9 @@ create_ico_file :: (x: s32, y: s32, comp: s32, image_data: *u8) -> string {
 #scope_file
 #import "Basic";
 #import "File";
-ico_u16 :: (p: *u8) -> u16 { return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8); }
+ico_u16 :: (p: *u8) -> u16 {
+    return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
+}
 ico_u32 :: (p: *u8) -> u32 {
     return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }

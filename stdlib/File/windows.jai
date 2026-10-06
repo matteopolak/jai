@@ -3,16 +3,21 @@ Windows :: #import "Windows";
 Windows_Utf8 :: #import "Windows_Utf8";
 HANDLE :: Windows.HANDLE;
 INVALID_HANDLE_VALUE :: cast(HANDLE) -1;
-File :: struct { handle: s64; }
+File :: struct {
+    handle: s64;
+}
 
 file_open :: (name: string, for_writing := false, keep_existing_content := false, log_errors := false) -> File, bool {
     access: u32 = 0x80000000;
     creation: u32 = 3;
-    if for_writing { access = 0x40000000; creation = 2; }
+    if for_writing {
+        access = 0x40000000;
+        creation = 2;
+    }
     if for_writing && keep_existing_content creation = 4;
     wide := os_utf8_to_wide(name);
     handle := Windows.CreateFileW(wide, access, 3, null, creation, 0x80, null);
-    result: File = .{cast(s64) handle};
+    result: File = .{ cast(s64) handle };
     success := is_valid(result);
     if success && for_writing && keep_existing_content {
         success = file_seek(result, 0, .END);
@@ -27,7 +32,9 @@ file_close :: (file: *File) -> bool {
     file.handle = 0;
     return success;
 }
-is_valid :: (file: File) -> bool { return file.handle != 0 && file.handle != -1; }
+is_valid :: (file: File) -> bool {
+    return file.handle != 0 && file.handle != -1;
+}
 
 file_read_checked :: (f: File, vdata: *void, bytes_to_read: s64) -> (success: bool, total_read: s64) {
     if !is_valid(f) || bytes_to_read < 0 || (!vdata && bytes_to_read > 0) return false, 0;
@@ -67,7 +74,9 @@ file_current_position :: (f: File) -> s64, bool {
     success, value := file_tell(f);
     return value, success;
 }
-file_set_position :: (f: File, pos: s64) -> bool { return file_seek(f, pos, .START); }
+file_set_position :: (f: File, pos: s64) -> bool {
+    return file_seek(f, pos, .START);
+}
 file_length_checked :: (file: File) -> s64, bool {
     result: Windows.LARGE_INTEGER;
     success := is_valid(file) && Windows.GetFileSizeEx(native_handle(file), *result) != 0;
@@ -76,8 +85,12 @@ file_length_checked :: (file: File) -> s64, bool {
 file_move :: (name_old: string, name_new: string) -> bool {
     return Windows.MoveFileExW(os_utf8_to_wide(name_old), os_utf8_to_wide(name_new), 1) != 0;
 }
-file_delete :: (filename: string) -> bool { return Windows.DeleteFileW(os_utf8_to_wide(filename)) != 0; }
-file_exists :: (path: string) -> bool { return Windows.GetFileAttributesW(os_utf8_to_wide(path)) != 0xffff_ffff; }
+file_delete :: (filename: string) -> bool {
+    return Windows.DeleteFileW(os_utf8_to_wide(filename)) != 0;
+}
+file_exists :: (path: string) -> bool {
+    return Windows.GetFileAttributesW(os_utf8_to_wide(path)) != 0xffff_ffff;
+}
 file_link :: (link: string, filepath: string) -> bool {
     return Windows.CreateHardLinkW(os_utf8_to_wide(link), os_utf8_to_wide(filepath), null) != 0;
 }
@@ -125,7 +138,7 @@ get_absolute_path_windows :: (relative_path: string) -> string, success: bool {
 }
 
 File_Map_Info :: struct {
-    file: File = .{-1};
+    file: File = .{ -1 };
     mapping: HANDLE;
     data: string;
 }
@@ -134,15 +147,28 @@ map_file :: (name: string, log_errors := true) -> File_Map_Info, bool {
     stream, opened := file_open(name, log_errors = log_errors);
     if !opened return result, false;
     size, measured := file_length_checked(stream);
-    if !measured || size < 0 { file_close(*stream); return result, false; }
-    if size == 0 { result.file = stream; return result, true; }
+    if !measured || size < 0 {
+        file_close(*stream);
+        return result, false;
+    }
+    if size == 0 {
+        result.file = stream;
+        return result, true;
+    }
     mapping := Windows.CreateFileMappingW(native_handle(stream), null, 2, 0, 0, null);
-    if !mapping { file_close(*stream); return result, false; }
+    if !mapping {
+        file_close(*stream);
+        return result, false;
+    }
     bytes := cast(*u8) Windows.MapViewOfFile(mapping, 4, 0, 0, 0);
-    if !bytes { Windows.CloseHandle(mapping); file_close(*stream); return result, false; }
+    if !bytes {
+        Windows.CloseHandle(mapping);
+        file_close(*stream);
+        return result, false;
+    }
     result.file = stream;
     result.mapping = mapping;
-    result.data = .{size, bytes};
+    result.data = .{ size, bytes };
     return result, true;
 }
 munmap_file :: (file_map: *File_Map_Info) -> bool {
@@ -154,16 +180,23 @@ munmap_file :: (file_map: *File_Map_Info) -> bool {
     return success;
 }
 get_path_os_program_data :: () -> string {
-    identifier: File_GUID = .{0x62ab5d82, 0xfdc1, 0x4dc3, .{0xa9, 0xdd, 0x07, 0x0d, 0x1d, 0x49, 0x5d, 0x97}};
+    identifier: File_GUID = .{ 0x62ab5d82, 0xfdc1, 0x4dc3, .{ 0xa9, 0xdd, 0x07, 0x0d, 0x1d, 0x49, 0x5d, 0x97 } };
     return native_known_directory(identifier);
 }
 get_path_os_saved_games :: () -> string {
-    identifier: File_GUID = .{0x4c5c32ff, 0xbb9d, 0x43b0, .{0xb5, 0xb4, 0x2d, 0x72, 0xe5, 0x4e, 0xaa, 0xa4}};
+    identifier: File_GUID = .{ 0x4c5c32ff, 0xbb9d, 0x43b0, .{ 0xb5, 0xb4, 0x2d, 0x72, 0xe5, 0x4e, 0xaa, 0xa4 } };
     return native_known_directory(identifier);
 }
 #scope_file
-native_handle :: (file: File) -> HANDLE { return cast(HANDLE) file.handle; }
-File_GUID :: struct { data1: u32; data2: u16; data3: u16; data4: [8] u8; }
+native_handle :: (file: File) -> HANDLE {
+    return cast(HANDLE) file.handle;
+}
+File_GUID :: struct {
+    data1: u32;
+    data2: u16;
+    data3: u16;
+    data4: [8] u8;
+}
 file_shell :: #system_library "shell32";
 file_ole :: #system_library "ole32";
 native_known_folder :: (identifier: *File_GUID, flags: u32, token: HANDLE, path: **u16) -> s32 #foreign file_shell "SHGetKnownFolderPath";

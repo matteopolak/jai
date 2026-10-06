@@ -116,22 +116,22 @@ NSPoint :: struct {
 }
 CGFloat :: float64;
 CGSize :: struct {
-    width : CGFloat;
+    width: CGFloat;
     height: CGFloat;
 }
 NSMakePoint :: (x: CGFloat, y: CGFloat) -> NSPoint {
-    return NSPoint.{x, y};
+    return NSPoint.{ x, y };
 }
 NSSize :: CGSize;
 NSMakeSize :: (w: CGFloat, h: CGFloat) -> NSSize {
-    return NSSize.{w, h};
+    return NSSize.{ w, h };
 }
 NSRect :: struct {
     origin: NSPoint;
     size: NSSize;
 }
 NSMakeRect :: (x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> NSRect {
-    return NSRect.{NSMakePoint(x, y), NSMakeSize(w, h)};
+    return NSRect.{ NSMakePoint(x, y), NSMakeSize(w, h) };
 }
 NSStringEncoding :: NSUInteger;
 NSUTF8StringEncoding :: 4;
@@ -448,10 +448,10 @@ NSData :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "length\0"));
     }
 }
-NSDictionary :: struct (key: Type, value: Type) {
+NSDictionary :: struct(key: Type, value: Type) {
     using #as super: NSObject;
 }
-NSArray :: struct (Object_Type: Type) {
+NSArray :: struct(Object_Type: Type) {
     using #as super: NSObject;
     arrayWithObject :: (obj: Object_Type) -> *NSArray(Object_Type) {
         #assert type_info(Object_Type).type == .POINTER;

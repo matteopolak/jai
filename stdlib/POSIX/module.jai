@@ -15,8 +15,7 @@ off_t :: s64;
     #load "bindings/linux/syscall.jai";
     #load "bindings/linux/pthread.jai";
     #load "bindings/linux/resource.jai";
-}
-else #if OS == .MACOS {
+} else #if OS == .MACOS {
     SYSCALL_MACH_BASE :: 0x1000000;
     SYSCALL_UNIX_BASE :: 0x2000000;
     #if CPU == .ARM64 {
@@ -38,8 +37,7 @@ else #if OS == .MACOS {
     } else {
         #assert false "POSIX: no macOS bindings for this CPU";
     }
-}
-else #if OS == .ANDROID {
+} else #if OS == .ANDROID {
     #if CPU == .ARM64 {
         #load "bindings/android/arm64/base.jai";
         #load "bindings/android/arm64/stdio.jai";

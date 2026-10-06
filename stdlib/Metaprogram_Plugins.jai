@@ -8,7 +8,7 @@
 
 Plugin_To_Create :: struct {
     name: string;
-    options: [..] string;  // Arguments given to the plugin, e.g. `-plug Check -- -no_unused`.
+    options: [..] string; // Arguments given to the plugin, e.g. `-plug Check -- -no_unused`.
 }
 
 // Split `-plug Name` arguments (and their trailing options) from the rest.
@@ -36,7 +36,7 @@ parse_plugin_arguments :: (args: [] string) -> (success: bool, plugins_to_create
 }
 
 init_plugins :: (plugins: [] Plugin_To_Create, results: *[..] *Metaprogram_Plugin, w: Workspace) -> bool {
-    if !plugins.count  return true;
+    if !plugins.count return true;
     for plugins {
         Compiler.compiler_report(tprint("Metaprogram plugin '%' cannot be loaded from inside a metaprogram; pass it to jaic as '-plug %' instead.\n", it.name, it.name), mode = .ERROR_CONTINUABLE);
     }
@@ -47,27 +47,30 @@ init_plugins :: (plugins: [] Plugin_To_Create, results: *[..] *Metaprogram_Plugi
 // command-line arguments jaic did not recognize: plugins with an `init` hook get all of
 // them; older plugins take theirs one at a time through `handle_one_option`.
 build_with_plugins :: (file: string, plugins: [] *Metaprogram_Plugin, options: [] string, output_name := "", output_path := "") -> bool {
-    Compiler.set_build_options_dc(.{do_output = false});
+    Compiler.set_build_options_dc(.{ do_output = false });
     w := Compiler.compiler_create_workspace("Target Program");
     build_options := Compiler.get_build_options(w);
-    if output_name  build_options.output_executable_name = output_name;
-    if output_path  build_options.output_path = output_path;
+    if output_name build_options.output_executable_name = output_name;
+    if output_path build_options.output_path = output_path;
     Compiler.set_build_options(build_options, w);
-    for plugins  it.workspace = w;
+    for plugins it.workspace = w;
 
-    if !deliver_plugin_options(plugins, options)  { Compiler.compiler_set_workspace_status(.FAILED, w); return false; }
+    if !deliver_plugin_options(plugins, options) {
+        Compiler.compiler_set_workspace_status(.FAILED, w);
+        return false;
+    }
 
     flags: Compiler.Intercept_Flags;
-    for plugins  if it.before_intercept  it.before_intercept(it, *flags);
+    for plugins if it.before_intercept it.before_intercept(it, *flags);
     Compiler.compiler_begin_intercept(w, flags);
-    for plugins  if it.add_source  it.add_source(it);
+    for plugins if it.add_source it.add_source(it);
     Compiler.add_build_file(file, w);
 
     failed := false;
     while true {
         message := Compiler.compiler_wait_for_message();
-        if !message  break;
-        for plugins  if it.message  it.message(it, message);
+        if !message break;
+        for plugins if it.message it.message(it, message);
         if message.kind == .COMPLETE {
             done := cast(*Compiler.Message_Complete) message;
             failed = done.error_code != .NONE;
@@ -75,9 +78,9 @@ build_with_plugins :: (file: string, plugins: [] *Metaprogram_Plugin, options: [
         }
     }
     Compiler.compiler_end_intercept(w);
-    for plugins  if it.finish  it.finish(it);
-    for plugins  if it.shutdown  it.shutdown(it);
-    if failed  Compiler.compiler_set_workspace_status(.FAILED, w);
+    for plugins if it.finish it.finish(it);
+    for plugins if it.shutdown it.shutdown(it);
+    if failed Compiler.compiler_set_workspace_status(.FAILED, w);
     return !failed;
 }
 
@@ -87,19 +90,23 @@ deliver_plugin_options :: (plugins: [] *Metaprogram_Plugin, options: [] string) 
     defer array_free(stepwise);
     for plugins {
         if it.init {
-            if !it.init(it, options)  return false;
+            if !it.init(it, options) return false;
         } else if it.handle_one_option {
             array_add(*stepwise, it);
         }
     }
     // Only plugins without `init` need each option claimed by someone.
-    if !stepwise.count  return true;
+    if !stepwise.count return true;
     cursor := 0;
     while cursor < options.count {
         claimed := false;
         for stepwise {
             next := it.handle_one_option(it, options, cursor);
-            if next > cursor { cursor = next; claimed = true; break; }
+            if next > cursor {
+                cursor = next;
+                claimed = true;
+                break;
+            }
         }
         if !claimed {
             Compiler.compiler_report(tprint("No plugin accepts the option '%'.\n", options[cursor]), mode = .ERROR_CONTINUABLE);

@@ -12,10 +12,15 @@ Native_Atlas_Options :: struct {
             max_chart_area: float;
             max_boundary_length: float;
         };
-        extract: struct { __empty_struct_padding: u8; };
+        extract: struct {
+            __empty_struct_padding: u8;
+        };
     };
     mapper: Atlas_Mapper;
-    mapper_options: struct { preserve_uvs: bool; preserve_boundary: bool; };
+    mapper_options: struct {
+        preserve_uvs: bool;
+        preserve_boundary: bool;
+    };
     packer: Atlas_Packer;
     packer_options: union {
         witness: struct {
@@ -70,7 +75,7 @@ generate_with_current_atlas :: (input: *Atlas_Input_Mesh, options: *Atlas_Option
                       (input.vertex_count == 0 || input.vertex_array != null) &&
                       (input.face_count == 0 || input.face_array != null);
     if valid {
-        for face: 0..input.face_count-1 {
+        for face: 0..input.face_count - 1 {
             for corner: 0..2 {
                 index := input.face_array[face].vertex_index[corner];
                 if index < 0 || index >= input.vertex_count valid = false;
@@ -106,7 +111,7 @@ atlas_retry_isolated_faces :: (input: *Atlas_Input_Mesh, options: *Native_Atlas_
     }
     defer Basic.free(vertices);
     defer Basic.free(faces);
-    for face: 0..input.face_count-1 {
+    for face: 0..input.face_count - 1 {
         faces[face].material_index = input.face_array[face].material_index;
         for corner: 0..2 {
             vertex := face * 3 + corner;
@@ -116,11 +121,11 @@ atlas_retry_isolated_faces :: (input: *Atlas_Input_Mesh, options: *Native_Atlas_
             faces[face].vertex_index[corner] = vertex;
         }
     }
-    isolated: Atlas_Input_Mesh = .{count, input.face_count, vertices, faces};
+    isolated: Atlas_Input_Mesh = .{ count, input.face_count, vertices, faces };
     error: s32;
     result := native_atlas_generate(*isolated, options, *error);
     if result {
-        for index: 0..result.vertex_count-1 {
+        for index: 0..result.vertex_count - 1 {
             clone := result.vertex_array[index].xref;
             Basic.assert(clone >= 0 && clone < count);
             result.vertex_array[index].xref = input.face_array[clone / 3].vertex_index[clone % 3];

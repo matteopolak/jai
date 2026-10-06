@@ -1,7 +1,11 @@
 // Debug API: backtraces, breakpoints, assert and signal handlers. Runtime operations call host APIs.
 #module_parameters(USE_GRAPHICS := true);
 CRASH_HANDLER_USE_SEPARATE_THREAD :: false;
-Assert_Response :: enum { Ignore; Debug; Abort; }
+Assert_Response :: enum {
+    Ignore;
+    Debug;
+    Abort;
+}
 Exit_Code :: enum s32 {
     Success :: 0;
     Failure :: 1;
@@ -9,7 +13,11 @@ Exit_Code :: enum s32 {
     Assert :: 3;
     Exception :: 4;
 }
-Minidump_State :: enum { None; Mini; Full; }
+Minidump_State :: enum {
+    None;
+    Mini;
+    Full;
+}
 Crash_Handler :: #type (trace: [] string);
 crash_handler: Crash_Handler;
 ignored_asserts: Table(Source_Code_Location, bool, hash_scl, compare_scl);
@@ -37,14 +45,14 @@ init :: () {
     if context.assertion_failed == base.assertion_failed {
         // Replace the default assert handler.
         #if USE_GRAPHICS context.assertion_failed = interactive_assert;
-        else             context.assertion_failed = break_assert;
+        else context.assertion_failed = break_assert;
     }
     if context.logger == base.logger context.logger = logger;
 }
-backtrace :: (trace: []*void, skip:=0) -> int {
+backtrace :: (trace: [] *void, skip := 0) -> int {
     return backtrace(trace, trace.count, skip + 1);
 }
-backtrace :: (trace: []*void, maxcount: int, skip:=0) -> int {
+backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {
     #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
         frames: [256] *void;
         count := host_backtrace(frames.data, frames.count);
@@ -55,13 +63,13 @@ backtrace :: (trace: []*void, maxcount: int, skip:=0) -> int {
         if maxcount < available available = maxcount;
         if trace.count < available available = trace.count;
         if available < 0 available = 0;
-        for index: 0..available-1 trace[index] = frames[first + index];
+        for index: 0..available - 1 trace[index] = frames[first + index];
         return available;
     } else {
         #assert false "Native stack capture is not implemented for this target";
     }
 }
-backtrace_symbols :: (trace: []*void, n: int) -> [] string {
+backtrace_symbols :: (trace: [] *void, n: int) -> [] string {
     if n < 0 n = 0;
     if n > trace.count n = trace.count;
     result: [] string;
@@ -72,14 +80,14 @@ backtrace_symbols :: (trace: []*void, n: int) -> [] string {
         free(result.data);
         return .{};
     }
-    for index: 0..n-1 result[index] = copy_string(to_string(symbols[index]));
+    for index: 0..n - 1 result[index] = copy_string(to_string(symbols[index]));
     host_free(symbols);
     return result;
 }
-translate_symbols :: (trace: []*void, n: int) -> [] string {
+translate_symbols :: (trace: [] *void, n: int) -> [] string {
     return backtrace_symbols(trace, n);
 }
-backtrace :: (skip:=0) -> [] string {
+backtrace :: (skip := 0) -> [] string {
     addresses: [64] *void;
     found := backtrace(addresses, addresses.count, skip + 1);
     return translate_symbols(addresses, found);
@@ -93,9 +101,9 @@ free_backtrace :: (trace_symbols: [] string) {
 // only remembered once a break actually happened, so running without a debugger first
 // does not use up the break.
 break_once :: inline (loc := #caller_location) -> bool {
-    if table_contains(*ignored_asserts, loc)  return false;
+    if table_contains(*ignored_asserts, loc) return false;
     stopped := breakpoint();
-    if stopped  table_set(*ignored_asserts, loc, true);
+    if stopped table_set(*ignored_asserts, loc, true);
     return stopped;
 }
 breakpoint :: () -> bool #expand #no_debug {
@@ -119,9 +127,9 @@ is_debugger_present :: inline () -> bool {
         bytes: [4096] u8;
         count := host_read(descriptor, bytes.data, bytes.count);
         if count <= 0 return false;
-        text := string.{count, bytes.data};
+        text := string.{ count, bytes.data };
         label := "TracerPid:";
-        for start: 0..text.count-label.count {
+        for start: 0..text.count - label.count {
             matching := true;
             for byte, index: label if text[start + index] != byte matching = false;
             if !matching continue;
@@ -153,7 +161,7 @@ set_minidump_state :: (state: Minidump_State) {
 set_report_mode :: (interactive: bool) {
     signal_handler_interactive = interactive;
 }
-enable_signal_handler :: (interactive:=false) {
+enable_signal_handler :: (interactive := false) {
     signal_handler_interactive = interactive;
     if signal_handler_enabled return;
     #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
@@ -183,7 +191,10 @@ trace_assert :: (loc: Source_Code_Location, message: string) -> bool {
     print_assert(loc, message);
     trace := backtrace();
     defer free_backtrace(trace);
-    for text: trace { output(text); output("\n"); }
+    for text: trace {
+        output(text);
+        output("\n");
+    }
     return false;
 }
 break_assert :: (loc: Source_Code_Location, message: string) -> bool {
@@ -240,7 +251,7 @@ handle_signal :: (sig: s32, info: *siginfo_t, secret: *void) #c_call {
     write_string_unsynchronized("Fatal process signal\n", true);
     addresses: [64] *void;
     count := host_backtrace(addresses.data, addresses.count);
-    for index: 0..count-1 {
+    for index: 0..count - 1 {
         write_address_unsynchronized(cast(u64) addresses[index]);
         write_string_unsynchronized("\n", true);
     }
@@ -258,5 +269,5 @@ write_address_unsynchronized :: (address: u64) #no_context {
         value >>= 4;
         if value == 0 break;
     }
-    write_string_unsynchronized(string.{16 - position, bytes.data + position}, true);
+    write_string_unsynchronized(string.{ 16 - position, bytes.data + position }, true);
 }

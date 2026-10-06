@@ -3,7 +3,14 @@ Sync :: #import "File";
 Threads :: #import "Thread";
 
 Error :: struct {
-    code: enum { Success :: 0; DidNotWait; FullQueue; FileAccessFailed; Incomplete; Catastrophic; };
+    code: enum {
+        Success :: 0;
+        DidNotWait;
+        FullQueue;
+        FileAccessFailed;
+        Incomplete;
+        Catastrophic;
+    };
     platform_code: s64;
 }
 
@@ -23,8 +30,13 @@ Queue :: struct(User_Data: Type) {
     capacity: int = 64;
 }
 File :: struct(User_Data: Type) {
-    #if OS == .WINDOWS { handle: *void; unfinished_operations: *u64; }
-    else { descriptor: s32 = -1; unfinished_operations: *s64; }
+    #if OS == .WINDOWS {
+        handle: *void;
+        unfinished_operations: *u64;
+    } else {
+        descriptor: s32 = -1;
+        unfinished_operations: *s64;
+    }
     state: *File_State;
 }
 
@@ -36,17 +48,32 @@ initialize_queue :: ($User_Data: Type) -> *Queue(User_Data), result := Error.{} 
     queue.completions.allocator = queue.allocator;
     queue.open_files.allocator = queue.allocator;
     Threads.init(*queue.mutex);
-    if !Threads.init(*queue.submitted) { Threads.destroy(*queue.mutex); free(queue); return null, error(.Catastrophic); }
-    if !Threads.init(*queue.completed) { Threads.destroy(*queue.submitted); Threads.destroy(*queue.mutex); free(queue); return null, error(.Catastrophic); }
+    if !Threads.init(*queue.submitted) {
+        Threads.destroy(*queue.mutex);
+        free(queue);
+        return null, error(.Catastrophic);
+    }
+    if !Threads.init(*queue.completed) {
+        Threads.destroy(*queue.submitted);
+        Threads.destroy(*queue.mutex);
+        free(queue);
+        return null, error(.Catastrophic);
+    }
     worker :: (thread: *Threads.Thread) -> s64 {
         owner := cast(*Queue(User_Data)) thread.data;
         while true {
             Threads.lock(*owner.mutex);
             while owner.request_cursor == owner.requests.count && !owner.stopping Threads.wait(*owner.submitted, *owner.mutex);
-            if owner.request_cursor == owner.requests.count && owner.stopping { Threads.unlock(*owner.mutex); return 0; }
+            if owner.request_cursor == owner.requests.count && owner.stopping {
+                Threads.unlock(*owner.mutex);
+                return 0;
+            }
             request := owner.requests[owner.request_cursor];
             owner.request_cursor += 1;
-            if owner.request_cursor == owner.requests.count { owner.request_cursor = 0; owner.requests.count = 0; }
+            if owner.request_cursor == owner.requests.count {
+                owner.request_cursor = 0;
+                owner.requests.count = 0;
+            }
             Threads.unlock(*owner.mutex);
             completion := perform(request, owner.allocator);
             if request.path free(request.path, owner.allocator);
@@ -59,7 +86,9 @@ initialize_queue :: ($User_Data: Type) -> *Queue(User_Data), result := Error.{} 
     }
     if !Threads.thread_init(*queue.worker, worker) || !start_worker(queue) {
         Threads.thread_deinit(*queue.worker);
-        Threads.destroy(*queue.completed); Threads.destroy(*queue.submitted); Threads.destroy(*queue.mutex);
+        Threads.destroy(*queue.completed);
+        Threads.destroy(*queue.submitted);
+        Threads.destroy(*queue.mutex);
         free(queue);
         return null, error(.Catastrophic);
     }
@@ -73,15 +102,19 @@ destroy_queue :: (queue: *Queue) {
     Threads.wake_all(*queue.submitted);
     Threads.unlock(*queue.mutex);
     Threads.thread_deinit(*queue.worker);
-    for i: queue.completion_cursor..queue.completions.count-1 {
+    for i: queue.completion_cursor..queue.completions.count - 1 {
         if queue.completions[i].owns_data free(queue.completions[i].data.data, queue.allocator);
     }
     for state: queue.open_files {
         if !state.closed Sync.file_close(*state.stream);
         free(state, queue.allocator);
     }
-    array_free(queue.requests); array_free(queue.completions); array_free(queue.open_files);
-    Threads.destroy(*queue.completed); Threads.destroy(*queue.submitted); Threads.destroy(*queue.mutex);
+    array_free(queue.requests);
+    array_free(queue.completions);
+    array_free(queue.open_files);
+    Threads.destroy(*queue.completed);
+    Threads.destroy(*queue.submitted);
+    Threads.destroy(*queue.mutex);
     free(queue, queue.allocator);
 }
 
@@ -91,11 +124,19 @@ open_file :: (queue: *Queue($T), file_path: string, keep_existing_content := tru
     stream, opened := open_random_access(file_path, keep_existing_content);
     if !opened return file_result, platform_error(.FileAccessFailed);
     state := New(File_State, allocator = queue.allocator);
-    if !state { Sync.file_close(*stream); return file_result, error(.Catastrophic); }
+    if !state {
+        Sync.file_close(*stream);
+        return file_result, error(.Catastrophic);
+    }
     state.stream = stream;
     state.owner = queue;
     Threads.lock(*queue.mutex);
-    if queue.stopping { Threads.unlock(*queue.mutex); Sync.file_close(*stream); free(state, queue.allocator); return file_result, error(.Catastrophic); }
+    if queue.stopping {
+        Threads.unlock(*queue.mutex);
+        Sync.file_close(*stream);
+        free(state, queue.allocator);
+        return file_result, error(.Catastrophic);
+    }
     array_add(*queue.open_files, state);
     Threads.unlock(*queue.mutex);
     file_result.state = state;
@@ -156,26 +197,59 @@ write_file :: (queue: *Queue($T), file: File, position: s64, data: [] u8, user_d
     return submit(queue, request);
 }
 wait_for_completion :: (queue: *Queue($T), check_only := false) -> T, data: [] u8, result := Error.{} {
-    if !queue { empty: T; return empty, .[], error(.Catastrophic); }
+    if !queue {
+        empty: T;
+        return empty, .[], error(.Catastrophic);
+    }
     Threads.lock(*queue.mutex);
     defer Threads.unlock(*queue.mutex);
     while queue.completion_cursor == queue.completions.count {
-        if check_only || queue.stopping { empty: T; return empty, .[], error(.DidNotWait); }
+        if check_only || queue.stopping {
+            empty: T;
+            return empty, .[], error(.DidNotWait);
+        }
         Threads.wait(*queue.completed, *queue.mutex);
     }
     value := queue.completions[queue.completion_cursor];
     queue.completion_cursor += 1;
     queue.outstanding -= 1;
-    if queue.completion_cursor == queue.completions.count { queue.completion_cursor = 0; queue.completions.count = 0; }
+    if queue.completion_cursor == queue.completions.count {
+        queue.completion_cursor = 0;
+        queue.completions.count = 0;
+    }
     return value.user_data, value.data, value.result;
 }
 
 #scope_module
-File_State :: struct { stream: Sync.File; pending: s64; closed: bool; owner: *void; }
-Request_Kind :: enum { READ; WRITE; READ_ALL; WRITE_ALL; }
-Request :: struct(T: Type) { kind: Request_Kind; file: *File_State; path: string; position: s64; data: [] u8; user_data: T; }
-Completion :: struct(T: Type) { user_data: T; data: [] u8; result: Error; owns_data: bool; }
-error :: (code: type_of(Error.code), platform_code: $T = 0) -> Error { return .{code, cast(s64) platform_code}; }
+File_State :: struct {
+    stream: Sync.File;
+    pending: s64;
+    closed: bool;
+    owner: *void;
+}
+Request_Kind :: enum {
+    READ;
+    WRITE;
+    READ_ALL;
+    WRITE_ALL;
+}
+Request :: struct(T: Type) {
+    kind: Request_Kind;
+    file: *File_State;
+    path: string;
+    position: s64;
+    data: [] u8;
+    user_data: T;
+}
+Completion :: struct(T: Type) {
+    user_data: T;
+    data: [] u8;
+    result: Error;
+    owns_data: bool;
+}
+error :: (code: type_of(Error.code), platform_code: $T = 0) -> Error {
+    return .{ code, cast(s64) platform_code };
+}
 platform_error :: (code: type_of(Error.code)) -> Error {
     System :: #import "System";
     return error(code, System.get_error_value());
@@ -183,9 +257,12 @@ platform_error :: (code: type_of(Error.code)) -> Error {
 owned_name :: (name: string, allocator: Allocator) -> string {
     memory := cast(*u8) alloc(name.count, allocator);
     if name.count > 0 && memory memcpy(memory, name.data, name.count);
-    return .{name.count, memory};
+    return .{ name.count, memory };
 }
-start_worker :: (queue: *Queue) -> bool { queue.worker.data = queue; return Threads.thread_start(*queue.worker); }
+start_worker :: (queue: *Queue) -> bool {
+    queue.worker.data = queue;
+    return Threads.thread_start(*queue.worker);
+}
 submit :: (queue: *Queue($T), request: Request(T)) -> Error {
     if !queue return error(.Catastrophic);
     Threads.lock(*queue.mutex);
@@ -216,16 +293,30 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
     if close_when_done {
         opened: bool;
         stream, opened = Sync.file_open(request.path, for_writing = request.kind == .WRITE_ALL);
-        if !opened { result.result = platform_error(.FileAccessFailed); return result; }
-    } else { stream = request.file.stream; }
+        if !opened {
+            result.result = platform_error(.FileAccessFailed);
+            return result;
+        }
+    } else {
+        stream = request.file.stream;
+    }
     defer if close_when_done Sync.file_close(*stream);
-    if !Sync.file_set_position(stream, request.position) { result.result = platform_error(.Incomplete); return result; }
+    if !Sync.file_set_position(stream, request.position) {
+        result.result = platform_error(.Incomplete);
+        return result;
+    }
     if request.kind == .READ_ALL {
         size := Sync.file_length(stream);
-        if size < 0 { result.result = platform_error(.Incomplete); return result; }
+        if size < 0 {
+            result.result = platform_error(.Incomplete);
+            return result;
+        }
         bytes := cast(*u8) alloc(size, allocator);
-        if size > 0 && !bytes { result.result = error(.Catastrophic); return result; }
-        result.data = .{size, bytes};
+        if size > 0 && !bytes {
+            result.result = error(.Catastrophic);
+            return result;
+        }
+        result.data = .{ size, bytes };
         result.owns_data = true;
     }
     if request.kind == .READ || request.kind == .READ_ALL {
@@ -247,7 +338,7 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
         disposition: u32 = 2;
         if keep disposition = 4;
         handle := Async_Windows.CreateFileW(os_utf8_to_wide(name), 0x80000000 | 0x40000000, 3, null, disposition, 0x80, null);
-        return .{cast(s64) handle}, handle != cast(Async_Windows.HANDLE) -1;
+        return .{ cast(s64) handle }, handle != cast(Async_Windows.HANDLE) -1;
     }
 } else {
     Async_Posix :: #import "POSIX";
@@ -256,6 +347,6 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
         if keep mode = "r+b";
         stream := Async_Posix.fopen(temp_c_string(name), temp_c_string(mode));
         if !stream && keep && Async_Posix.errno() == Async_Posix.ENOENT stream = Async_Posix.fopen(temp_c_string(name), temp_c_string("w+b"));
-        return .{cast(s64) stream}, stream != null;
+        return .{ cast(s64) stream }, stream != null;
     }
 }

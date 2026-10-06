@@ -12,7 +12,7 @@
 #module_parameters(IMPORT_MODE := Import_Mode.METAPROGRAM, MANUAL_MODE := false, USE_GRAPHICS := true, DO_HISTORY := true) {
     Import_Mode :: enum u8 {
         METAPROGRAM :: 0;
-        CLIENT      :: 1;
+        CLIENT :: 1;
     }
 };
 
@@ -20,7 +20,7 @@
     #load "timing.jai";
     #load "frames.jai";
     #load "report.jai";
-    #if USE_GRAPHICS  #load "overlay.jai";
+    #if USE_GRAPHICS #load "overlay.jai";
 } else {
     #load "plugin.jai";
 }

@@ -11,7 +11,7 @@ md5 :: (input: string) -> string #must {
     }
     remaining := input.count - position;
     for i: 0..63 block[i] = 0;
-    for i: 0..remaining-1 block[i] = input.data[position + i];
+    for i: 0..remaining - 1 block[i] = input.data[position + i];
     block[remaining] = 128;
     if remaining >= 56 {
         md5_compress(state.data, block);

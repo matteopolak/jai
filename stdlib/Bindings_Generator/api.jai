@@ -1,14 +1,14 @@
 // Helpers for generator scripts and visitors: retyping declarations as enums, small type
 // queries, and the C library header directories of each target.
 
-LIBCLANG_VERSION :: 19;   // The libclang API level the declarations follow (any newer libclang works).
+LIBCLANG_VERSION :: 19; // The libclang API level the declarations follow (any newer libclang works).
 
 // C headers often declare a value as a plain integer although it holds the values of an enum.
 // These retype a variable, field or argument (or a function's result) as that enum. Lookups by
 // name search outwards from the declaration, as find_parent_enum describes.
 change_type_to_enum :: (decl: *Declaration, enum_name: string) -> bool {
     target := enum_for_retyping(decl, enum_name, "type", decl.output_name);
-    if target  change_type_to_enum(decl, target);
+    if target change_type_to_enum(decl, target);
     return target != null;
 }
 
@@ -22,7 +22,7 @@ change_type_to_enum :: (decl: *Declaration, e: *Enum) {
 
 change_return_type_to_enum :: (decl: *Declaration, enum_name: string) -> bool {
     target := enum_for_retyping(decl, enum_name, "return type", decl.output_name);
-    if target  change_return_type_to_enum(decl, target);
+    if target change_return_type_to_enum(decl, target);
     return target != null;
 }
 
@@ -33,13 +33,13 @@ change_return_type_to_enum :: (decl: *Declaration, e: *Enum) {
 // For function types that are not declarations (function pointers): the lookup is global.
 change_return_type_to_enum :: (name: string, function_type: *Function_Type, enum_name: string) -> bool {
     target := enum_for_retyping(null, enum_name, "return type", name);
-    if target  change_return_type_to_enum(name, function_type, target);
+    if target change_return_type_to_enum(name, function_type, target);
     return target != null;
 }
 
 change_return_type_to_enum :: (name: string, function_type: *Function_Type, e: *Enum) {
     // A size mismatch is reported by change_return_type.
-    if !e.type  note_enum_retyping("return type", name, -1, e);
+    if !e.type note_enum_retyping("return type", name, -1, e);
     change_return_type(name, function_type, make_enum_type(e));
 }
 
@@ -62,9 +62,9 @@ find_parent_enum :: (decl: *Declaration, enum_name: string) -> *Enum {
     while true {
         // A null scope stands for the global one, which ends the walk.
         members: [] *Declaration;
-        if !scope                          members = context.generator.global_scope.members;
-        else if scope.kind == .STRUCT      members = (cast(*Struct) scope).declarations;
-        else if scope.kind == .NAMESPACE   members = (cast(*Namespace) scope).declarations;
+        if !scope members = context.generator.global_scope.members;
+        else if scope.kind == .STRUCT members = (cast(*Struct) scope).declarations;
+        else if scope.kind == .NAMESPACE members = (cast(*Namespace) scope).declarations;
         for members {
             if it.kind == .ENUM && answers_to(it, enum_name) return cast(*Enum) it;
         }
@@ -82,7 +82,7 @@ find_parent_enum :: (decl: *Declaration, enum_name: string) -> *Enum {
 get_type_name :: (type: *CType, output_name := true, strip_pointers := false) -> string {
     t := type;
     if strip_pointers {
-        while t && t.pointer_to  t = t.pointer_to;
+        while t && t.pointer_to t = t.pointer_to;
     }
     named := naming_declaration(t);
     if !named return "";
@@ -116,8 +116,8 @@ is_zero_int_expression :: (expression: *Expression) -> bool {
 try_find_struct_in_type :: (type: *CType) -> *Struct {
     t := type;
     while t && !t.type_of_struct {
-        if t.array_element_type  t = t.array_element_type;
-        else                     t = t.pointer_to;
+        if t.array_element_type t = t.array_element_type;
+        else t = t.pointer_to;
     }
     return ifx t then t.type_of_struct else null;
 }
@@ -160,7 +160,7 @@ append_parent_path :: (builder: *String_Builder, decl: *Declaration, current_sco
     }
     for < outside {
         if it.kind == .NAMESPACE && (cast(*Namespace) it).should_flatten continue;
-        if it.output_name  print_to_builder(builder, "%.", it.output_name);
+        if it.output_name print_to_builder(builder, "%.", it.output_name);
     }
 }
 
@@ -172,7 +172,7 @@ get_default_system_include_paths :: (os := OS, cpu := CPU) -> [] string {
     common, per_cpu, found := get_libc_paths(os, cpu);
     if found {
         array_add(*result, common);
-        if per_cpu != common  array_add(*result, per_cpu);
+        if per_cpu != common array_add(*result, per_cpu);
     }
     return result;
 }
@@ -193,7 +193,7 @@ get_libc_paths :: (os := OS, cpu := CPU) -> libc_path: string, libc_platform_pat
             return include, include, true;
         }
     }
-    return "", "", false;   // Windows: the C library headers come with the toolchain.
+    return "", "", false; // Windows: the C library headers come with the toolchain.
 }
 
 #scope_module
@@ -212,7 +212,7 @@ function_type_of :: (decl: *Declaration) -> *Function_Type {
 
 enum_for_retyping :: (from: *Declaration, enum_name: string, what: string, subject: string) -> *Enum {
     found := find_parent_enum(from, enum_name);
-    if !found  log_error("Bindings_Generator: cannot change the % of \"%\": no enum \"%\" is visible from it.", what, subject, enum_name);
+    if !found log_error("Bindings_Generator: cannot change the % of \"%\": no enum \"%\" is visible from it.", what, subject, enum_name);
     return found;
 }
 
@@ -231,8 +231,8 @@ answers_to :: (d: *Declaration, wanted: string) -> bool {
 
 naming_declaration :: (t: *CType) -> *Declaration {
     if !t return null;
-    if t.type_of_struct  return t.type_of_struct;
-    if t.type_of_enum    return t.type_of_enum;
+    if t.type_of_struct return t.type_of_struct;
+    if t.type_of_enum return t.type_of_enum;
     return t.type_of_typedef;
 }
 

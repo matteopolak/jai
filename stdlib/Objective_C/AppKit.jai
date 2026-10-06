@@ -824,14 +824,14 @@ NSOpenPanel :: struct {
 }
 NSFileHandlingPanelCancelButton :: NSModalResponseCancel;
 NSFileHandlingPanelOKButton :: NSModalResponseOK;
-NSAlertFirstButtonReturn :NSModalResponse: 1000;
-NSAlertSecondButtonReturn :NSModalResponse: 1001;
-NSAlertThirdButtonReturn :NSModalResponse: 1002;
-NSModalResponseStop :NSModalResponse: -1000;
-NSModalResponseAbort :NSModalResponse: -1001;
-NSModalResponseContinue :NSModalResponse: -1002;
-NSModalResponseOK :NSModalResponse: 1;
-NSModalResponseCancel :NSModalResponse: 0;
+NSAlertFirstButtonReturn: NSModalResponse : 1000;
+NSAlertSecondButtonReturn: NSModalResponse : 1001;
+NSAlertThirdButtonReturn: NSModalResponse : 1002;
+NSModalResponseStop: NSModalResponse : -1000;
+NSModalResponseAbort: NSModalResponse : -1001;
+NSModalResponseContinue: NSModalResponse : -1002;
+NSModalResponseOK: NSModalResponse : 1;
+NSModalResponseCancel: NSModalResponse : 0;
 NSModalResponse :: s64;
 NSWindowLevel :: s64;
 NSMenu :: struct {
@@ -1042,7 +1042,7 @@ NSOpenGLContext :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         invoke(cast(*void) self, sel_registerName(cast(*u8) "makeCurrentContext\0"));
     }
-    setValues :: (self: id, values: *s32 , forParameter: NSOpenGLContextParameter) {
+    setValues :: (self: id, values: *s32, forParameter: NSOpenGLContextParameter) {
         invoke: (sdk_receiver: *void, sdk_selector: SEL, values: *s32, forParameter: NSOpenGLContextParameter) -> void #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setValues:forParameter:\0"), values, forParameter);
@@ -1066,48 +1066,48 @@ using NSOpenGLContextParameter :: enum s64 {
     NSOpenGLContextParameterSurfaceSurfaceVolatile :: 306;
 }
 NSOpenGLPixelFormatAttribute :: u32;
-NSOpenGLPFAAllRenderers :NSOpenGLPixelFormatAttribute: 1;
-NSOpenGLPFATripleBuffer :NSOpenGLPixelFormatAttribute: 3;
-NSOpenGLPFADoubleBuffer :NSOpenGLPixelFormatAttribute: 5;
-NSOpenGLPFAAuxBuffers :NSOpenGLPixelFormatAttribute: 7;
-NSOpenGLPFAColorSize :NSOpenGLPixelFormatAttribute: 8;
-NSOpenGLPFAAlphaSize :NSOpenGLPixelFormatAttribute: 11;
-NSOpenGLPFADepthSize :NSOpenGLPixelFormatAttribute: 12;
-NSOpenGLPFAStencilSize :NSOpenGLPixelFormatAttribute: 13;
-NSOpenGLPFAAccumSize :NSOpenGLPixelFormatAttribute: 14;
-NSOpenGLPFAMinimumPolicy :NSOpenGLPixelFormatAttribute: 51;
-NSOpenGLPFAMaximumPolicy :NSOpenGLPixelFormatAttribute: 52;
-NSOpenGLPFASampleBuffers :NSOpenGLPixelFormatAttribute: 55;
-NSOpenGLPFASamples :NSOpenGLPixelFormatAttribute: 56;
-NSOpenGLPFAAuxDepthStencil :NSOpenGLPixelFormatAttribute: 57;
-NSOpenGLPFAColorFloat :NSOpenGLPixelFormatAttribute: 58;
-NSOpenGLPFAMultisample :NSOpenGLPixelFormatAttribute: 59;
-NSOpenGLPFASupersample :NSOpenGLPixelFormatAttribute: 60;
-NSOpenGLPFASampleAlpha :NSOpenGLPixelFormatAttribute: 61;
-NSOpenGLPFARendererID :NSOpenGLPixelFormatAttribute: 70;
-NSOpenGLPFANoRecovery :NSOpenGLPixelFormatAttribute: 72;
-NSOpenGLPFAAccelerated :NSOpenGLPixelFormatAttribute: 73;
-NSOpenGLPFAClosestPolicy :NSOpenGLPixelFormatAttribute: 74;
-NSOpenGLPFABackingStore :NSOpenGLPixelFormatAttribute: 76;
-NSOpenGLPFAScreenMask :NSOpenGLPixelFormatAttribute: 84;
-NSOpenGLPFAAllowOfflineRenderers :NSOpenGLPixelFormatAttribute: 96;
-NSOpenGLPFAAcceleratedCompute :NSOpenGLPixelFormatAttribute: 97;
-NSOpenGLPFAOpenGLProfile :NSOpenGLPixelFormatAttribute: 99;
-NSOpenGLPFAVirtualScreenCount :NSOpenGLPixelFormatAttribute: 128;
-NSOpenGLPFAStereo :NSOpenGLPixelFormatAttribute: 6;
-NSOpenGLPFAOffScreen :NSOpenGLPixelFormatAttribute: 53;
-NSOpenGLPFAFullScreen :NSOpenGLPixelFormatAttribute: 54;
-NSOpenGLPFASingleRenderer :NSOpenGLPixelFormatAttribute: 71;
-NSOpenGLPFARobust :NSOpenGLPixelFormatAttribute: 75;
-NSOpenGLPFAMPSafe :NSOpenGLPixelFormatAttribute: 78;
-NSOpenGLPFAWindow :NSOpenGLPixelFormatAttribute: 80;
-NSOpenGLPFAMultiScreen :NSOpenGLPixelFormatAttribute: 81;
-NSOpenGLPFACompliant :NSOpenGLPixelFormatAttribute: 83;
-NSOpenGLPFAPixelBuffer :NSOpenGLPixelFormatAttribute: 90;
-NSOpenGLPFARemotePixelBuffer :NSOpenGLPixelFormatAttribute: 91;
-NSOpenGLProfileVersionLegacy :NSOpenGLPixelFormatAttribute: 0x1000;
-NSOpenGLProfileVersion3_2Core :NSOpenGLPixelFormatAttribute: 0x3200;
-NSOpenGLProfileVersion4_1Core :NSOpenGLPixelFormatAttribute: 0x4100;
+NSOpenGLPFAAllRenderers: NSOpenGLPixelFormatAttribute : 1;
+NSOpenGLPFATripleBuffer: NSOpenGLPixelFormatAttribute : 3;
+NSOpenGLPFADoubleBuffer: NSOpenGLPixelFormatAttribute : 5;
+NSOpenGLPFAAuxBuffers: NSOpenGLPixelFormatAttribute : 7;
+NSOpenGLPFAColorSize: NSOpenGLPixelFormatAttribute : 8;
+NSOpenGLPFAAlphaSize: NSOpenGLPixelFormatAttribute : 11;
+NSOpenGLPFADepthSize: NSOpenGLPixelFormatAttribute : 12;
+NSOpenGLPFAStencilSize: NSOpenGLPixelFormatAttribute : 13;
+NSOpenGLPFAAccumSize: NSOpenGLPixelFormatAttribute : 14;
+NSOpenGLPFAMinimumPolicy: NSOpenGLPixelFormatAttribute : 51;
+NSOpenGLPFAMaximumPolicy: NSOpenGLPixelFormatAttribute : 52;
+NSOpenGLPFASampleBuffers: NSOpenGLPixelFormatAttribute : 55;
+NSOpenGLPFASamples: NSOpenGLPixelFormatAttribute : 56;
+NSOpenGLPFAAuxDepthStencil: NSOpenGLPixelFormatAttribute : 57;
+NSOpenGLPFAColorFloat: NSOpenGLPixelFormatAttribute : 58;
+NSOpenGLPFAMultisample: NSOpenGLPixelFormatAttribute : 59;
+NSOpenGLPFASupersample: NSOpenGLPixelFormatAttribute : 60;
+NSOpenGLPFASampleAlpha: NSOpenGLPixelFormatAttribute : 61;
+NSOpenGLPFARendererID: NSOpenGLPixelFormatAttribute : 70;
+NSOpenGLPFANoRecovery: NSOpenGLPixelFormatAttribute : 72;
+NSOpenGLPFAAccelerated: NSOpenGLPixelFormatAttribute : 73;
+NSOpenGLPFAClosestPolicy: NSOpenGLPixelFormatAttribute : 74;
+NSOpenGLPFABackingStore: NSOpenGLPixelFormatAttribute : 76;
+NSOpenGLPFAScreenMask: NSOpenGLPixelFormatAttribute : 84;
+NSOpenGLPFAAllowOfflineRenderers: NSOpenGLPixelFormatAttribute : 96;
+NSOpenGLPFAAcceleratedCompute: NSOpenGLPixelFormatAttribute : 97;
+NSOpenGLPFAOpenGLProfile: NSOpenGLPixelFormatAttribute : 99;
+NSOpenGLPFAVirtualScreenCount: NSOpenGLPixelFormatAttribute : 128;
+NSOpenGLPFAStereo: NSOpenGLPixelFormatAttribute : 6;
+NSOpenGLPFAOffScreen: NSOpenGLPixelFormatAttribute : 53;
+NSOpenGLPFAFullScreen: NSOpenGLPixelFormatAttribute : 54;
+NSOpenGLPFASingleRenderer: NSOpenGLPixelFormatAttribute : 71;
+NSOpenGLPFARobust: NSOpenGLPixelFormatAttribute : 75;
+NSOpenGLPFAMPSafe: NSOpenGLPixelFormatAttribute : 78;
+NSOpenGLPFAWindow: NSOpenGLPixelFormatAttribute : 80;
+NSOpenGLPFAMultiScreen: NSOpenGLPixelFormatAttribute : 81;
+NSOpenGLPFACompliant: NSOpenGLPixelFormatAttribute : 83;
+NSOpenGLPFAPixelBuffer: NSOpenGLPixelFormatAttribute : 90;
+NSOpenGLPFARemotePixelBuffer: NSOpenGLPixelFormatAttribute : 91;
+NSOpenGLProfileVersionLegacy: NSOpenGLPixelFormatAttribute : 0x1000;
+NSOpenGLProfileVersion3_2Core: NSOpenGLPixelFormatAttribute : 0x3200;
+NSOpenGLProfileVersion4_1Core: NSOpenGLPixelFormatAttribute : 0x4100;
 NSOpenGLPixelFormat :: struct {
     using #as super: NSObject;
     initWithAttributes :: (self: id, attrs: *NSOpenGLPixelFormatAttribute) -> *NSOpenGLPixelFormat {
@@ -1115,7 +1115,7 @@ NSOpenGLPixelFormat :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "initWithAttributes:\0"), attrs);
     }
-    getValues :: (self: id, values: *s32 , forAttribute: NSOpenGLPixelFormatAttribute, forVirtualScreen: s32 ) {
+    getValues :: (self: id, values: *s32, forAttribute: NSOpenGLPixelFormatAttribute, forVirtualScreen: s32) {
         invoke: (sdk_receiver: *void, sdk_selector: SEL, values: *s32, forAttribute: NSOpenGLPixelFormatAttribute, forVirtualScreen: s32) -> void #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
         invoke(cast(*void) self, sel_registerName(cast(*u8) "getValues:forAttribute:forVirtualScreen:\0"), values, forAttribute, forVirtualScreen);

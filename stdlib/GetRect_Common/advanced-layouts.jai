@@ -2,11 +2,11 @@
 #scope_export
 Scrollable_Region_State :: struct #type_info_none {
     #as using widget: Active_Widget;
-    nib_state:  Button_State;
+    nib_state: Button_State;
     outer_rect: Rect;
     inner_rect: Rect;
-    bar_rect:   Rect;
-    dragging    := false;
+    bar_rect: Rect;
+    dragging := false;
     teleporting := false;
     theme: Scrollable_Region_Theme;
 }
@@ -21,9 +21,6 @@ Number_Input_State :: struct #type_info_none {
 Subwindow_Info :: struct {
 
 
-
-
-
     rect: Rect;
     title_text: string;
     fixed_aspect_ratio := -1.0;
@@ -31,8 +28,11 @@ Subwindow_Info :: struct {
 
     user_data: *void;
     // Y-up modules pass the subwindow state so the callback can call draw_proc_adjust_y1.
-    #if GETRECT_Y_UP { draw: (state: *Subwindow_State, content_rect: Rect, user_data: *void); }
-    else { draw: (content_rect: Rect, user_data: *void); }
+    #if GETRECT_Y_UP {
+        draw: (state: *Subwindow_State, content_rect: Rect, user_data: *void);
+    } else {
+        draw: (content_rect: Rect, user_data: *void);
+    }
 
     open := true;
 
@@ -45,22 +45,25 @@ Subwindow_State :: struct #type_info_none {
     base: Button_State;
 
     title_bar_rect: Rect;
-    content_rect:   Rect;
+    content_rect: Rect;
 
     info: *Subwindow_Info;
 
-    wants_draw    := false;
+    wants_draw := false;
     wants_a_raise := false;
 
-    hash:           u64;
+    hash: u64;
 
-    render_target_width:  s32;
+    render_target_width: s32;
     render_target_height: s32;
 
-    dragging: enum u8 { TITLE :: 0x1; RESIZE :: 0x2; };
+    dragging: enum u8 {
+        TITLE :: 0x1;
+        RESIZE :: 0x2;
+    };
 
-    dragging_start:  Vector2;
-    dragging_last:   Vector2;
+    dragging_start: Vector2;
+    dragging_last: Vector2;
 
     dragging_offset: Vector2;
 
@@ -71,38 +74,38 @@ Subwindow_State :: struct #type_info_none {
 
     #if GETRECT_Y_UP {
         draw_proc_adjusted_y := false;
-        draw_proc_new_y1     := 0.0;
+        draw_proc_new_y1 := 0.0;
     }
 }
 
 Slidable_Region_State :: struct #type_info_none {
     #as using widget: Active_Widget;
-    divider_state:  Button_State;
-    left_or_top_rect:     Rect;
+    divider_state: Button_State;
+    left_or_top_rect: Rect;
     right_or_bottom_rect: Rect;
-    divider_rect:         Rect;
-    theme:                *Slidable_Region_Theme;
-    divider_t:              float;
-    divider_over_factor:    float;
+    divider_rect: Rect;
+    theme: *Slidable_Region_Theme;
+    divider_t: float;
+    divider_over_factor: float;
     divider_pressed_factor: float;
-    dragging    := false;
+    dragging := false;
 }
 
 Flowable_Text :: struct {
     unflowed_lines: [..] Unflowed_Line;
-    flowed_lines:   [..] Flowed_Line;
-    num_flowed_lines : s32 = 0;
+    flowed_lines: [..] Flowed_Line;
+    num_flowed_lines: s32 = 0;
     flowed_rect: Rect;
 }
 
 Text_Display_Theme :: struct {
     using text_theme: Label_Theme;
     top_margin_type: Size_Computation;
-    top_margin:      float;
+    top_margin: float;
     left_margin_type: Size_Computation;
-    left_margin:     float;
+    left_margin: float;
     right_margin_type: Size_Computation;
-    right_margin:     float;
+    right_margin: float;
     auto_reflow_text := false;
 }
 
@@ -115,10 +118,10 @@ Text_Display_State :: struct #type_info_none {
 
 Color_Picker_State :: struct #type_info_none {
     #as using widget: Active_Widget;
-    ring_point     := Vector2.{1, 0};
-    disc_point     := Vector2.{1, 0};
-    dragging_in_ring:    bool;
-    dragging_in_disc:    bool;
+    ring_point := Vector2.{ 1, 0 };
+    disc_point := Vector2.{ 1, 0 };
+    dragging_in_ring: bool;
+    dragging_in_disc: bool;
     dragging_in_h: bool;
     dragging_in_h_zoom: bool;
     dragging_in_s: bool;
@@ -152,9 +155,9 @@ Color_Picker_State :: struct #type_info_none {
 }
 Color_Animation_Editor_State :: struct #type_info_none {
     #as using widget: Active_Widget;
-    ring_point     := Vector2.{1, 0};
-    disc_point     := Vector2.{1, 0};
-    dragging_in_strip:       bool;
+    ring_point := Vector2.{ 1, 0 };
+    disc_point := Vector2.{ 1, 0 };
+    dragging_in_strip: bool;
     dragging_keyframe_index: int;
     color_picker_keyframe_index: int;
     color_picker_subwindow_info: Subwindow_Info;
@@ -169,8 +172,8 @@ Color_Animation_Editor_State :: struct #type_info_none {
     color_samples: [..] Vector4;
     num_clipboard_samples: s32;
     interpolation_color_space_s32: s32;
-    interpolation_geometry_s32:    s32;
-    interpolation_wrapping :=      false;
+    interpolation_geometry_s32: s32;
+    interpolation_wrapping := false;
     output_type_s32: s32 = xx Output_Type.RESAMPLED_ARRAY;
     time_view_period: float;
     time_view_playing := true;
@@ -180,15 +183,15 @@ Color_Animation_Editor_State :: struct #type_info_none {
 
 Augmented_Keyframe :: struct {
     using base: Color_Keyframe;
-    active:   bool;
+    active: bool;
     active_t: float;
-    dragging_t:      float;
+    dragging_t: float;
     color_picking_t: float;
     pos_x: float;
 }
 
 Output_Type :: enum {
-    RESAMPLED_ARRAY  :: 0;
+    RESAMPLED_ARRAY :: 0;
     SOURCE_KEYFRAMES :: 1;
 }
 

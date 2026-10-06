@@ -73,7 +73,7 @@ runtime_support_default_logger :: (message: string, data: *void, info: Log_Info)
     if message.count == 0 return;
     error_output := (info.common_flags & Log_Flags.ERROR) != 0;
     if message[message.count - 1] == #char "\n" write_string(message, error_output);
-    else write_strings(message, "\n", to_standard_error=error_output);
+    else write_strings(message, "\n", to_standard_error = error_output);
 }
 
 c_style_strlen :: (str: *u8) -> s64 #no_context {
@@ -102,7 +102,7 @@ __array_bounds_check_fail :: (index: s64, limit: s64, line_number: s64, filename
 // integers does not fit its type. `type_code` bit 15: fatal, bit 14: signed, bits 7-8: operator
 // (1 add, 2 sub, 3 mul), low bits: operand size in bytes.
 __arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s64, filename: *u8) #no_context #no_aoc {
-    fatal  := (type_code & 0x8000) != 0;
+    fatal := (type_code & 0x8000) != 0;
     signed := (type_code & 0x4000) != 0;
     operator_index := (type_code >> 7) & 0x3;
     bits := cast(u64) (type_code & 0xf) * 8;
@@ -228,7 +228,7 @@ Context_Base :: struct {
     stack_trace: *Stack_Trace_Node;
     assertion_failed := runtime_support_assertion_failed;
     handling_assertion_failure := false;
-    default_allocator :: Allocator.{runtime_support_default_allocator_proc, null};
+    default_allocator :: Allocator.{ runtime_support_default_allocator_proc, null };
 }
 // The arena bookkeeping lives in `implementation_data`, owned by Basic's temporary allocator.
 Temporary_Storage :: struct {
@@ -249,7 +249,7 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
     #program_export
     __jai_runtime_init :: (argc: s32, argv: **u8) -> *#Context #c_call {
         initializer_of(#Context)(*first_thread_context);
-        __command_line_arguments = .{argc, argv};
+        __command_line_arguments = .{ argc, argv };
         #if OS == .WINDOWS windows_utf8_arguments();
         first_thread_temporary_storage.data = first_thread_temporary_storage_data.data;
         first_thread_temporary_storage.size = TEMPORARY_STORAGE_SIZE;
@@ -257,8 +257,7 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
         return *first_thread_context;
     }
     #program_export
-    __jai_runtime_fini :: (_context: *void) #c_call {
-    }
+    __jai_runtime_fini :: (_context: *void) #c_call {}
 }
 
 // Optional startup hooks are ordinary source callbacks, run in registration order.
@@ -363,7 +362,7 @@ __panic_due_to_runtime_call_of_compile_time_procedure :: (line_number: s64, file
         }
         arguments[count] = null;
         LocalFree(wide);
-        __command_line_arguments = .{count, arguments};
+        __command_line_arguments = .{ count, arguments };
     }
 } else #if OS_IS_UNIX {
     libc :: #system_library "c";

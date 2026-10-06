@@ -1,6 +1,8 @@
 #import "POSIX";
 
-file_exists :: (file_path: string) -> bool { return access(temp_c_string(file_path), 0) == 0; }
+file_exists :: (file_path: string) -> bool {
+    return access(temp_c_string(file_path), 0) == 0;
+}
 file_modtime_and_size :: (file_path: string) -> (modtime: Apollo_Time, size: s64, success: bool) {
     value: stat_t;
     if stat(temp_c_string(file_path), *value) != 0 return .{}, 0, false;
@@ -32,7 +34,10 @@ directory_entries :: (path: string) -> [] File_Visit_Info, bool {
     while true {
         set_errno(cast(OS_Error_Code) 0);
         native_entry := readdir(stream);
-        if !native_entry { if errno() != 0 return result, false; break; }
+        if !native_entry {
+            if errno() != 0 return result, false;
+            break;
+        }
         short_name := to_string(native_entry.d_name.data);
         if short_name == "." || short_name == ".." continue;
         info: File_Visit_Info;

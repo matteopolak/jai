@@ -50,14 +50,14 @@ meshopt_decodeVertexBuffer :: (destination: *void, vertex_count: u64, vertex_siz
 #if MESHOPTIMIZER_EXPERIMENTAL {
 
     meshopt_simplify :: (destination: *u32, indices: *u32, index_count: u64, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64, target_index_count: u64, target_error: float) -> u64 {
-    return native_simplify(destination, indices, index_count, vertex_positions, vertex_count,
-                           vertex_positions_stride, target_index_count, target_error, 0, null);
-}
+        return native_simplify(destination, indices, index_count, vertex_positions, vertex_count,
+                               vertex_positions_stride, target_index_count, target_error, 0, null);
+    }
 
     meshopt_simplifySloppy :: (destination: *u32, indices: *u32, index_count: u64, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64, target_index_count: u64) -> u64 {
-    return native_simplify_sloppy(destination, indices, index_count, vertex_positions, vertex_count,
-                                  vertex_positions_stride, null, target_index_count, 1.0, null);
-}
+        return native_simplify_sloppy(destination, indices, index_count, vertex_positions, vertex_count,
+                                      vertex_positions_stride, null, target_index_count, 1.0, null);
+    }
 }
 
 meshopt_stripify :: (destination: *u32, indices: *u32, index_count: u64, vertex_count: u64, restart_index: u32) -> u64 #foreign meshopt_lib;
@@ -92,7 +92,7 @@ meshopt_analyzeVertexFetch :: (indices: *u32, index_count: u64, vertex_count: u6
 
 meshopt_Meshlet :: struct {
     vertices: [64] u32;
-    indices: [126] [3] u8;
+    indices: [126][3] u8;
     triangle_count: u8;
     vertex_count: u8;
 }
@@ -100,35 +100,35 @@ meshopt_Meshlet :: struct {
 #if MESHOPTIMIZER_EXPERIMENTAL {
 
     meshopt_buildMeshlets :: (destination: *meshopt_Meshlet, indices: *u32, index_count: u64, vertex_count: u64, max_vertices: u64, max_triangles: u64) -> u64 {
-    assert(max_vertices >= 3 && max_vertices <= 64);
-    assert(max_triangles >= 1 && max_triangles <= 126);
-    assert(index_count % 3 == 0);
-    if index_count == 0 return 0;
-    bound := meshopt_buildMeshletsBound(index_count, max_vertices, max_triangles);
-    native_meshlets := cast(*Native_Meshlet) alloc(cast(s64) (bound * size_of(Native_Meshlet)));
-    vertices := cast(*u32) alloc(cast(s64) (index_count * size_of(u32)));
-    triangles := cast(*u8) alloc(cast(s64) (bound * (max_triangles * 3 + 3)));
-    assert(native_meshlets && vertices && triangles);
-    defer free(native_meshlets);
-    defer free(vertices);
-    defer free(triangles);
-    result := native_build_meshlets_scan(native_meshlets, vertices, triangles, indices,
-                                         index_count, vertex_count, max_vertices, max_triangles);
-    for meshlet_index: 0..cast(s64) result-1 {
-        source := *native_meshlets[meshlet_index];
-        target := *destination[meshlet_index];
-        target.* = .{};
-        target.vertex_count = cast(u8) source.vertex_count;
-        target.triangle_count = cast(u8) source.triangle_count;
-        for vertex: 0..cast(s64) source.vertex_count-1
-            target.vertices[vertex] = vertices[source.vertex_offset + vertex];
-        for triangle: 0..cast(s64) source.triangle_count-1 {
-            for corner: 0..2
-                target.indices[triangle][corner] = triangles[source.triangle_offset + triangle * 3 + corner];
+        assert(max_vertices >= 3 && max_vertices <= 64);
+        assert(max_triangles >= 1 && max_triangles <= 126);
+        assert(index_count % 3 == 0);
+        if index_count == 0 return 0;
+        bound := meshopt_buildMeshletsBound(index_count, max_vertices, max_triangles);
+        native_meshlets := cast(*Native_Meshlet) alloc(cast(s64) (bound * size_of(Native_Meshlet)));
+        vertices := cast(*u32) alloc(cast(s64) (index_count * size_of(u32)));
+        triangles := cast(*u8) alloc(cast(s64) (bound * (max_triangles * 3 + 3)));
+        assert(native_meshlets && vertices && triangles);
+        defer free(native_meshlets);
+        defer free(vertices);
+        defer free(triangles);
+        result := native_build_meshlets_scan(native_meshlets, vertices, triangles, indices,
+                                             index_count, vertex_count, max_vertices, max_triangles);
+        for meshlet_index: 0..cast(s64) result - 1 {
+            source := *native_meshlets[meshlet_index];
+            target := *destination[meshlet_index];
+            target.* = .{};
+            target.vertex_count = cast(u8) source.vertex_count;
+            target.triangle_count = cast(u8) source.triangle_count;
+            for vertex: 0..cast(s64) source.vertex_count - 1
+                target.vertices[vertex] = vertices[source.vertex_offset + vertex];
+            for triangle: 0..cast(s64) source.triangle_count - 1 {
+                for corner: 0..2
+                    target.indices[triangle][corner] = triangles[source.triangle_offset + triangle * 3 + corner];
+            }
         }
+        return result;
     }
-    return result;
-}
     meshopt_buildMeshletsBound :: (index_count: u64, max_vertices: u64, max_triangles: u64) -> u64 #foreign meshopt_lib;
 
     meshopt_Bounds :: struct {
@@ -143,19 +143,19 @@ meshopt_Meshlet :: struct {
 
     meshopt_computeClusterBounds :: (indices: *u32, index_count: u64, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64) -> meshopt_Bounds #foreign meshopt_lib;
     meshopt_computeMeshletBounds :: (meshlet: *meshopt_Meshlet, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64) -> meshopt_Bounds {
-    return native_compute_meshlet_bounds(*meshlet.vertices[0], *meshlet.indices[0][0],
-                                          meshlet.triangle_count, vertex_positions,
-                                          vertex_count, vertex_positions_stride);
-}
+        return native_compute_meshlet_bounds(*meshlet.vertices[0], *meshlet.indices[0][0],
+                                              meshlet.triangle_count, vertex_positions,
+                                              vertex_count, vertex_positions_stride);
+    }
 
     meshopt_setAllocator :: (allocate: #type (a0: u64) -> *void #c_call, deallocate: #type (a0: *void) -> void #c_call) -> void #foreign meshopt_lib;
 }
 
 #scope_file
 
-#if OS == .WINDOWS  meshopt_lib :: #system_library "meshoptimizer";
-#if OS == .MACOS    meshopt_lib :: #system_library "meshoptimizer";
-#if OS == .LINUX    meshopt_lib :: #system_library "meshoptimizer";
+#if OS == .WINDOWS meshopt_lib :: #system_library "meshoptimizer";
+#if OS == .MACOS meshopt_lib :: #system_library "meshoptimizer";
+#if OS == .LINUX meshopt_lib :: #system_library "meshoptimizer";
 
 // The public contract remains 0.11; these private calls use the reviewed 1.3 C ABI.
 #scope_file

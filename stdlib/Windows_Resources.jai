@@ -63,7 +63,7 @@ IEnumSetupInstances :: struct {
     uuid :: "6380BCFF-41D3-4B2E-8B2E-BF8A6810C848";
 }
 ISetupInstance_VTable :: struct {
-    using unknown : IUnknown_VTable;
+    using unknown: IUnknown_VTable;
     GetInstanceId: (this: *ISetupInstance, pbstrInstanceId: *BSTR) -> HRESULT #c_call;
     GetInstallDate: (this: *ISetupInstance, pInstallDate: *FILETIME) -> HRESULT #c_call;
     GetInstallationName: (this: *ISetupInstance, pbstrInstallationName: *BSTR) -> HRESULT #c_call;
@@ -119,9 +119,9 @@ using CLSCTX :: enum_flags u32 {
     CLSCTX_RESERVED6 :: 0x1000000;
     CLSCTX_ACTIVATE_ARM32_SERVER :: 0x2000000;
     CLSCTX_PS_DLL :: 0x80000000;
-    CLSCTX_INPROC :: CLSCTX_INPROC_SERVER|CLSCTX_INPROC_HANDLER;
-    CLSCTX_ALL :: CLSCTX_INPROC_SERVER|CLSCTX_INPROC_HANDLER|CLSCTX_LOCAL_SERVER|CLSCTX_REMOTE_SERVER;
-    CLSCTX_SERVER :: CLSCTX_INPROC_SERVER|CLSCTX_LOCAL_SERVER|CLSCTX_REMOTE_SERVER;
+    CLSCTX_INPROC :: CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER;
+    CLSCTX_ALL :: CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
+    CLSCTX_SERVER :: CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
 }
 CoInitialize :: (pvReserved: *void) -> HRESULT #foreign Ole32;
 CoUninitialize :: () -> void #foreign Ole32;
@@ -152,7 +152,8 @@ find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", lin
         if result < 0 || fetched == 0 break;
         if instance == null break;
         defer IUnknown_Release(cast(*IUnknown) instance);
-        path_bstr: BSTR; version_bstr: BSTR;
+        path_bstr: BSTR;
+        version_bstr: BSTR;
         if instance.vtable.GetInstallationPath(instance, *path_bstr) < 0 || path_bstr == null continue;
         defer SysFreeString(path_bstr);
         if instance.vtable.GetInstallationVersion(instance, *version_bstr) < 0 || version_bstr == null continue;
@@ -171,10 +172,11 @@ find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", lin
         tools_version, read_ok := read_entire_file(version_file);
         if !read_ok || tools_version.count == 0 continue;
         defer free(tools_version);
-        start: s64 = 0; end := tools_version.count;
+        start: s64 = 0;
+        end := tools_version.count;
         while start < end && tools_version[start] <= 32 start += 1;
         while end > start && tools_version[end - 1] <= 32 end -= 1;
-        trimmed := string.{end - start, tools_version.data + start};
+        trimmed := string.{ end - start, tools_version.data + start };
         tool_components, tools_parsed := _sdk_vs_version(trimmed);
         if !tools_parsed continue;
         tools_prefix := _sdk_vs_join(installation, "VC\\Tools\\MSVC");
@@ -200,7 +202,11 @@ find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", lin
         runtime_lib := _sdk_vs_join(candidate_library, "vcruntime.lib");
         defer free(runtime_lib);
         valid := _sdk_vs_file(runtime_lib) && _sdk_vs_file(candidate_linker);
-        if !valid { free(candidate_library); free(candidate_linker); continue; }
+        if !valid {
+            free(candidate_library);
+            free(candidate_linker);
+            continue;
+        }
         if library_path.count > 0 free(library_path);
         if linker_path.count > 0 free(linker_path);
         library_path = candidate_library;
@@ -250,7 +256,8 @@ _sdk_vs_version :: (text: string) -> [4] u32, bool {
     for character: text {
         if character == 46 {
             if !digits || component == 3 return values, false;
-            component += 1; digits = false;
+            component += 1;
+            digits = false;
         } else {
             if character < 48 || character > 57 return values, false;
             digit := cast(u32) character - 48;

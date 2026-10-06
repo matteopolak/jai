@@ -3,7 +3,9 @@ XXH_VERSION_MAJOR :: 0;
 XXH_VERSION_MINOR :: 7;
 XXH_VERSION_RELEASE :: 0;
 XXH_VERSION_NUMBER :: 700;
-XXH_versionNumber :: () -> u32 { return XXH_VERSION_NUMBER; }
+XXH_versionNumber :: () -> u32 {
+    return XXH_VERSION_NUMBER;
+}
 
 XXH_PRIME32_1: u32 : 0x9e3779b1;
 XXH_PRIME32_2: u32 : 0x85ebca77;
@@ -37,8 +39,12 @@ XXH64_state_t :: struct {
     memsize: u32;
 }
 
-xxh32_rotl :: (x: u32, r: u32) -> u32 { return (x << r) | (x >> (32 - r)); }
-xxh64_rotl :: (x: u64, r: u64) -> u64 { return (x << r) | (x >> (64 - r)); }
+xxh32_rotl :: (x: u32, r: u32) -> u32 {
+    return (x << r) | (x >> (32 - r));
+}
+xxh64_rotl :: (x: u64, r: u64) -> u64 {
+    return (x << r) | (x >> (64 - r));
+}
 
 xxh32_round :: (acc: u32, input: u32) -> u32 #no_aoc {
     return xxh32_rotl(acc + input * XXH_PRIME32_2, 13) * XXH_PRIME32_1;

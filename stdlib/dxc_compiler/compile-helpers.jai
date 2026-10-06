@@ -1,21 +1,30 @@
 // Independent DXC utility/compiler/result lifecycle using reviewed dxcapi.h.
 #assert OS == .WINDOWS "The retained DXC ABI uses Windows UTF-16 arguments";
-DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..]u8 {
-    output: [..]u8;
+DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..] u8 {
+    output: [..] u8;
     utils: *IDxcUtils;
     compiler: *IDxcCompiler3;
     result: *IDxcResult;
     includes: *IDxcIncludeHandler;
     status := DxcCreateInstance(CLSID_DxcUtils, IDxcUtils_UID, cast(**void) *utils);
     defer _dxc_release(utils);
-    if status < 0 || utils == null { DXCMemory.log_error("Unable to create DXC utilities: %", status); return output; }
+    if status < 0 || utils == null {
+        DXCMemory.log_error("Unable to create DXC utilities: %", status);
+        return output;
+    }
     status = DxcCreateInstance(CLSID_DxcCompiler, IDxcCompiler3_UID, cast(**void) *compiler);
     defer _dxc_release(compiler);
-    if status < 0 || compiler == null { DXCMemory.log_error("Unable to create DXC compiler: %", status); return output; }
+    if status < 0 || compiler == null {
+        DXCMemory.log_error("Unable to create DXC compiler: %", status);
+        return output;
+    }
     status = IDxcUtils_CreateDefaultIncludeHandler(utils, *includes);
     defer _dxc_release(includes);
-    if status < 0 || includes == null { DXCMemory.log_error("Unable to create DXC include handler: %", status); return output; }
-    arguments: [..]*s16;
+    if status < 0 || includes == null {
+        DXCMemory.log_error("Unable to create DXC include handler: %", status);
+        return output;
+    }
+    arguments: [..] *s16;
     defer {
         for argument: arguments DXCMemory.free(argument);
         DXCMemory.array_free(arguments);
@@ -52,7 +61,10 @@ DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..]u8 {
     source.Encoding = DXC_CP_UTF8;
     status = IDxcCompiler3_Compile(compiler, *source, arguments.data, cast(u32) arguments.count, includes, *IDxcResult_UID, cast(**void) *result);
     defer _dxc_release(result);
-    if status < 0 || result == null { DXCMemory.log_error("DXC Compile invocation failed: %", status); return output; }
+    if status < 0 || result == null {
+        DXCMemory.log_error("DXC Compile invocation failed: %", status);
+        return output;
+    }
     errors: *IDxcBlobEncoding;
     IDxcOperationResult_GetErrorBuffer(cast(*IDxcOperationResult) result, *errors);
     if errors != null {
@@ -73,14 +85,17 @@ DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..]u8 {
     binary: *IDxcBlob;
     status = IDxcOperationResult_GetResult(cast(*IDxcOperationResult) result, *binary);
     defer _dxc_release(binary);
-    if status < 0 || binary == null { DXCMemory.log_error("Unable to retrieve DXC output: %", status); return output; }
+    if status < 0 || binary == null {
+        DXCMemory.log_error("Unable to retrieve DXC output: %", status);
+        return output;
+    }
     size := IDxcBlob_GetBufferSize(binary);
     DXCMemory.assert(size <= 0x7fff_ffff_ffff_ffff);
     DXCMemory.array_resize(*output, cast(s64) size);
     if size > 0 DXCMemory.memcpy(output.data, IDxcBlob_GetBufferPointer(binary), cast(s64) size);
     return output;
 }
-DXC_Reflect :: (dxil: []u8) -> *ID3D12ShaderReflection, bool {
+DXC_Reflect :: (dxil: [] u8) -> *ID3D12ShaderReflection, bool {
     utils: *IDxcUtils;
     status := DxcCreateInstance(CLSID_DxcUtils, IDxcUtils_UID, cast(**void) *utils);
     defer _dxc_release(utils);
@@ -108,7 +123,7 @@ _dxc_release :: (object: *void) {
     unknown := cast(*DXCWindows.IUnknown) object;
     unknown.vtable.Release(unknown);
 }
-_dxc_argument :: (arguments: *[..]*s16, argument: string) {
+_dxc_argument :: (arguments: *[..] *s16, argument: string) {
     if argument.count == 0 {
         empty := cast(*s16) DXCMemory.alloc(2);
         DXCMemory.assert(empty != null);

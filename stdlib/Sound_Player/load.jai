@@ -4,9 +4,9 @@
 
 Sound_Data :: struct {
     using resource: struct {
-        name:      string;
+        name: string;
         full_path: string;
-        loaded    := false;
+        loaded := false;
         skip_load := false;
     };
 
@@ -19,19 +19,19 @@ Sound_Data :: struct {
     type := Kind.UNINITIALIZED;
 
     nsamples_times_nchannels: s64;
-    nchannels:     u16 = 1;
+    nchannels: u16 = 1;
     sampling_rate: u32 = 44100;
 
-    buffer:  string;   // The file contents; owned by this Sound_Data when a loader made it.
-    samples: *s16;     // PCM or ADPCM payload inside `buffer`.
+    buffer: string; // The file contents; owned by this Sound_Data when a loader made it.
+    samples: *s16; // PCM or ADPCM payload inside `buffer`.
 
     volume_scale: float = 1;
-    silence_before_repeat: float = 0;   // Seconds of silence inserted each time a repeat wraps.
-    filename_to_stream_from: string;    // Ogg only: decode from this file instead of `buffer`.
+    silence_before_repeat: float = 0; // Seconds of silence inserted each time a repeat wraps.
+    filename_to_stream_from: string; // Ogg only: decode from this file instead of `buffer`.
     source_directions: [MAX_CHANNELS_PER_SOUND] Source_Direction;
 
     // IMA ADPCM packet layout, copied from the WAV header.
-    nBlockAlign:      s32 = 0;
+    nBlockAlign: s32 = 0;
     wSamplesPerBlock: s32 = 0;
 }
 
@@ -75,7 +75,11 @@ load_audio_data :: (name_for_error_reporting: string, data: string) -> Sound_Dat
 #import "File";
 #import "Wav_File";
 
-Container :: enum u8 { UNKNOWN; RIFF; OGG; }
+Container :: enum u8 {
+    UNKNOWN;
+    RIFF;
+    OGG;
+}
 
 sniff_container :: (bytes: string) -> Container {
     if bytes.count < 4 return .UNKNOWN;
@@ -160,7 +164,7 @@ assign_default_directions :: (result: *Sound_Data) {
     count := cast(s64) result.nchannels;
     if count < 1 || count > 8 return;
     vorbis := result.type == .OGG_COMPRESSED;
-    for 0..count-1 {
+    for 0..count - 1 {
         slot := (count - 1) * 8 + it;
         result.source_directions[it] = ifx vorbis then VORBIS_LAYOUTS[slot] else WAV_LAYOUTS[slot];
     }

@@ -1,5 +1,8 @@
 #scope_export
-Thread_Continue_Status :: enum { CONTINUE; STOP; }
+Thread_Continue_Status :: enum {
+    CONTINUE;
+    STOP;
+}
 Thread_Group_Proc :: #type *void;
 Native_Thread_Group_Proc :: #type (group: *Thread_Group, thread: *Thread, work: *void) -> Thread_Continue_Status;
 Thread_Group :: struct {
@@ -62,43 +65,60 @@ init :: (using group: *Thread_Group, num_threads: s32, group_proc: Native_Thread
     allocator = context.allocator;
     proc = group_proc;
     group.enable_work_stealing = enable_work_stealing;
-    threads.allocator = allocator; completed_work.allocator = allocator;
+    threads.allocator = allocator;
+    completed_work.allocator = allocator;
     array_resize(*threads, num_threads);
     worker_info, worker_info_data_to_free = NewArray(num_threads, Thread_Group.Worker_Info, true);
-    if worker_info.data == null { array_reset(*threads); return false; }
+    if worker_info.data == null {
+        array_reset(*threads);
+        return false;
+    }
     initialized: s32 = 0;
     while initialized < num_threads {
         worker := *worker_info[initialized];
-        worker.group = group; worker.worker_index = initialized;
+        worker.group = group;
+        worker.worker_index = initialized;
         if !init_work_list(*worker.available) break;
-        if !init_work_list(*worker.completed) { deinit_work_list(*worker.available, allocator); break; }
+        if !init_work_list(*worker.completed) {
+            deinit_work_list(*worker.available, allocator);
+            break;
+        }
         thread := *threads[initialized];
-        thread.data = worker; thread.worker_info = worker;
+        thread.data = worker;
+        thread.worker_info = worker;
         if !thread_init(thread, thread_group_run, temporary_storage_size) {
-            deinit_work_list(*worker.completed, allocator); deinit_work_list(*worker.available, allocator); break;
+            deinit_work_list(*worker.completed, allocator);
+            deinit_work_list(*worker.available, allocator);
+            break;
         }
         worker.thread = thread.*;
         worker.work_steal_indices = NewArray(num_threads - 1, s32);
         cursor: s32 = 0;
-        for other: 0..num_threads-1 {
+        for other: 0..num_threads - 1 {
             if other == initialized continue;
-            worker.work_steal_indices[cursor] = cast(s32) other; cursor += 1;
+            worker.work_steal_indices[cursor] = cast(s32) other;
+            cursor += 1;
         }
         initialized += 1;
     }
     if initialized != num_threads {
-        for i: 0..initialized-1 {
+        for i: 0..initialized - 1 {
             thread_deinit(*threads[i]);
             free(worker_info[i].work_steal_indices.data, allocator);
             deinit_work_list(*worker_info[i].completed, allocator);
             deinit_work_list(*worker_info[i].available, allocator);
         }
         free(worker_info_data_to_free, allocator);
-        worker_info = .{}; worker_info_data_to_free = null;
-        array_reset(*threads); return false;
+        worker_info = .{};
+        worker_info_data_to_free = null;
+        array_reset(*threads);
+        return false;
     }
-    next_worker_index = 0; initted = true; started = false;
-    should_exit = false; shutdown_requested = false;
+    next_worker_index = 0;
+    initted = true;
+    started = false;
+    should_exit = false;
+    shutdown_requested = false;
     return true;
 }
 start :: (group: *Thread_Group) -> bool {
@@ -118,7 +138,8 @@ add_work :: (group: *Thread_Group, work: *void, logging_name := "") -> bool {
     entry := cast(*Work_Entry) alloc(size_of(Work_Entry), group.allocator);
     if entry == null return false;
     entry.* = .{};
-    entry.work = work; entry.logging_name = logging_name;
+    entry.work = work;
+    entry.logging_name = logging_name;
     entry.issue_time = get_time(group);
     index := group.next_worker_index;
     group.next_worker_index = (index + 1) % cast(s32) group.worker_info.count;
@@ -132,7 +153,10 @@ add_work :: (group: *Thread_Group, work: *void, logging_name := "") -> bool {
     return true;
 }
 get_completed_work :: (group: *Thread_Group) -> [..] *void {
-    if group == null { empty: [..] *void; return empty; }
+    if group == null {
+        empty: [..] *void;
+        return empty;
+    }
     group.completed_work.count = 0;
     for *worker: group.worker_info {
         while true {
@@ -146,7 +170,8 @@ get_completed_work :: (group: *Thread_Group) -> [..] *void {
 }
 shutdown :: (using group: *Thread_Group, timeout_milliseconds: s32 = -1) -> bool {
     if group == null || !initted return true;
-    shutdown_requested = true; atomic_write(*should_exit, true);
+    shutdown_requested = true;
+    atomic_write(*should_exit, true);
     for *worker: worker_info signal(*worker.available.semaphore);
     deadline := get_time(group) + cast(float64) timeout_milliseconds / 1000;
     for *thread: threads {
@@ -167,32 +192,47 @@ shutdown :: (using group: *Thread_Group, timeout_milliseconds: s32 = -1) -> bool
         deinit_work_list(*worker.completed, allocator);
     }
     free(worker_info_data_to_free, allocator);
-    worker_info_data_to_free = null; worker_info = .{};
+    worker_info_data_to_free = null;
+    worker_info = .{};
     array_reset(*threads);
     array_reset(*completed_work);
-    started = false; initted = false;
+    started = false;
+    initted = false;
     return processed_all;
 }
 
 #scope_file
 init_work_list :: (list: *Work_List) -> bool {
     init(*list.mutex);
-    if !init(*list.semaphore) { destroy(*list.mutex); return false; }
-    list.first = null; list.last = null; list.count = 0;
+    if !init(*list.semaphore) {
+        destroy(*list.mutex);
+        return false;
+    }
+    list.first = null;
+    list.last = null;
+    list.count = 0;
     return true;
 }
 deinit_work_list :: (list: *Work_List, allocator: Allocator) {
     entry := list.first;
-    while entry != null { next := entry.next; free(entry, allocator); entry = next; }
-    destroy(*list.semaphore); destroy(*list.mutex);
-    list.first = null; list.last = null; list.count = 0;
+    while entry != null {
+        next := entry.next;
+        free(entry, allocator);
+        entry = next;
+    }
+    destroy(*list.semaphore);
+    destroy(*list.mutex);
+    list.first = null;
+    list.last = null;
+    list.count = 0;
 }
 append_work :: (list: *Work_List, entry: *Work_Entry) {
     entry.next = null;
     lock(*list.mutex);
     if list.last == null list.first = entry;
     else list.last.next = entry;
-    list.last = entry; list.count += 1;
+    list.last = entry;
+    list.count += 1;
     unlock(*list.mutex);
     signal(*list.semaphore);
 }
@@ -203,7 +243,8 @@ pop_work :: (list: *Work_List) -> *Work_Entry {
     if entry == null return null;
     list.first = entry.next;
     if list.first == null list.last = null;
-    list.count -= 1; entry.next = null;
+    list.count -= 1;
+    entry.next = null;
     return entry;
 }
 thread_group_run :: (thread: *Thread) -> s64 {

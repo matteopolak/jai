@@ -10,9 +10,13 @@ parse_path :: (_s: string, reduce := true) -> Path {
     result.words.allocator = temp;
     cursor: int;
     // A colon before the first separator identifies a drive or scheme prefix.
-    for i: 0.._s.count-1 {
+    for i: 0.._s.count - 1 {
         if path_separator(_s[i]) break;
-        if _s[i] == #char ":" { result.header_string = Strings.slice(_s, 0, i + 1); cursor = i + 1; break; }
+        if _s[i] == #char ":" {
+            result.header_string = Strings.slice(_s, 0, i + 1);
+            cursor = i + 1;
+            break;
+        }
     }
     while cursor < _s.count && path_separator(_s[cursor]) {
         result.number_of_leading_slashes += 1;
@@ -52,8 +56,11 @@ path_contains :: (path: Path, words: [] string) -> (contains: bool, position: s3
     if words.count > path.words.count return false, -1;
     for start: 0..path.words.count - words.count {
         equal := true;
-        for offset: 0..words.count-1 {
-            if path.words[start + offset] != words[offset] { equal = false; break; }
+        for offset: 0..words.count - 1 {
+            if path.words[start + offset] != words[offset] {
+                equal = false;
+                break;
+            }
         }
         if equal return true, cast(s32) start;
     }
@@ -65,10 +72,10 @@ path_to_string :: (path: Path, max_words := -1) -> string {
     init_string_builder(*builder);
     defer free_buffers(*builder);
     append(*builder, path.header_string);
-    for i: 0..path.number_of_leading_slashes-1 append(*builder, "/");
+    for i: 0..path.number_of_leading_slashes - 1 append(*builder, "/");
     count := path.words.count;
     if max_words >= 0 count = min(count, max_words);
-    for i: 0..count-1 {
+    for i: 0..count - 1 {
         if i > 0 append(*builder, "/");
         append(*builder, path.words[i]);
     }

@@ -337,8 +337,7 @@
     SYS_waitid :: 247;
     SYS_write :: 1;
     SYS_writev :: 20;
-} else #if CPU == .ARM64 {
-} else {
+} else #if CPU == .ARM64 {} else {
     #assert false "POSIX: no Linux system call table for this CPU";
 }
 syscall :: (__sysno: s64, __args: ..Any) -> s64 #foreign libc;

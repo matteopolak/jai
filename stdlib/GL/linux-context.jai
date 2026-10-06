@@ -106,11 +106,17 @@
             attributes: [9] s32;
             at: s32 = 0;
             if major_version != 0 {
-                attributes[at] = NativeGLX.GLX_CONTEXT_MAJOR_VERSION_ARB; attributes[at + 1] = major_version; at += 2;
-                attributes[at] = NativeGLX.GLX_CONTEXT_MINOR_VERSION_ARB; attributes[at + 1] = minor_version; at += 2;
+                attributes[at] = NativeGLX.GLX_CONTEXT_MAJOR_VERSION_ARB;
+                attributes[at + 1] = major_version;
+                at += 2;
+                attributes[at] = NativeGLX.GLX_CONTEXT_MINOR_VERSION_ARB;
+                attributes[at + 1] = minor_version;
+                at += 2;
             }
             if debug {
-                attributes[at] = NativeGLX.GLX_CONTEXT_FLAGS_ARB; attributes[at + 1] = NativeGLX.GLX_CONTEXT_DEBUG_BIT_ARB; at += 2;
+                attributes[at] = NativeGLX.GLX_CONTEXT_FLAGS_ARB;
+                attributes[at + 1] = NativeGLX.GLX_CONTEXT_DEBUG_BIT_ARB;
+                at += 2;
             }
             if needs_profile {
                 attributes[at] = NativeGLX.GLX_CONTEXT_PROFILE_MASK_ARB;

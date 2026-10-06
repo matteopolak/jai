@@ -11,187 +11,187 @@ gl_load :: (procs: *GL_Procedures, GetProcAddress: GetProcAddressFunction = null
         procs.glXSwapIntervalSGI = cast(type_of(procs.glXSwapIntervalSGI)) GetProcAddress(cast(*u8) "glXSwapIntervalSGI\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glCullFace = cast(type_of(procs.glCullFace)) GetProcAddress(cast(*u8) "glCullFace\0");
+        procs.glCullFace = cast(type_of(procs.glCullFace)) GetProcAddress(cast(*u8) "glCullFace\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glFrontFace = cast(type_of(procs.glFrontFace)) GetProcAddress(cast(*u8) "glFrontFace\0");
+        procs.glFrontFace = cast(type_of(procs.glFrontFace)) GetProcAddress(cast(*u8) "glFrontFace\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glHint = cast(type_of(procs.glHint)) GetProcAddress(cast(*u8) "glHint\0");
+        procs.glHint = cast(type_of(procs.glHint)) GetProcAddress(cast(*u8) "glHint\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glLineWidth = cast(type_of(procs.glLineWidth)) GetProcAddress(cast(*u8) "glLineWidth\0");
+        procs.glLineWidth = cast(type_of(procs.glLineWidth)) GetProcAddress(cast(*u8) "glLineWidth\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glPointSize = cast(type_of(procs.glPointSize)) GetProcAddress(cast(*u8) "glPointSize\0");
+        procs.glPointSize = cast(type_of(procs.glPointSize)) GetProcAddress(cast(*u8) "glPointSize\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glPolygonMode = cast(type_of(procs.glPolygonMode)) GetProcAddress(cast(*u8) "glPolygonMode\0");
+        procs.glPolygonMode = cast(type_of(procs.glPolygonMode)) GetProcAddress(cast(*u8) "glPolygonMode\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glScissor = cast(type_of(procs.glScissor)) GetProcAddress(cast(*u8) "glScissor\0");
+        procs.glScissor = cast(type_of(procs.glScissor)) GetProcAddress(cast(*u8) "glScissor\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexParameterf = cast(type_of(procs.glTexParameterf)) GetProcAddress(cast(*u8) "glTexParameterf\0");
+        procs.glTexParameterf = cast(type_of(procs.glTexParameterf)) GetProcAddress(cast(*u8) "glTexParameterf\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexParameterfv = cast(type_of(procs.glTexParameterfv)) GetProcAddress(cast(*u8) "glTexParameterfv\0");
+        procs.glTexParameterfv = cast(type_of(procs.glTexParameterfv)) GetProcAddress(cast(*u8) "glTexParameterfv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexParameteri = cast(type_of(procs.glTexParameteri)) GetProcAddress(cast(*u8) "glTexParameteri\0");
+        procs.glTexParameteri = cast(type_of(procs.glTexParameteri)) GetProcAddress(cast(*u8) "glTexParameteri\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexParameteriv = cast(type_of(procs.glTexParameteriv)) GetProcAddress(cast(*u8) "glTexParameteriv\0");
+        procs.glTexParameteriv = cast(type_of(procs.glTexParameteriv)) GetProcAddress(cast(*u8) "glTexParameteriv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexImage1D = cast(type_of(procs.glTexImage1D)) GetProcAddress(cast(*u8) "glTexImage1D\0");
+        procs.glTexImage1D = cast(type_of(procs.glTexImage1D)) GetProcAddress(cast(*u8) "glTexImage1D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexImage2D = cast(type_of(procs.glTexImage2D)) GetProcAddress(cast(*u8) "glTexImage2D\0");
+        procs.glTexImage2D = cast(type_of(procs.glTexImage2D)) GetProcAddress(cast(*u8) "glTexImage2D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDrawBuffer = cast(type_of(procs.glDrawBuffer)) GetProcAddress(cast(*u8) "glDrawBuffer\0");
+        procs.glDrawBuffer = cast(type_of(procs.glDrawBuffer)) GetProcAddress(cast(*u8) "glDrawBuffer\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glClear = cast(type_of(procs.glClear)) GetProcAddress(cast(*u8) "glClear\0");
+        procs.glClear = cast(type_of(procs.glClear)) GetProcAddress(cast(*u8) "glClear\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glClearColor = cast(type_of(procs.glClearColor)) GetProcAddress(cast(*u8) "glClearColor\0");
+        procs.glClearColor = cast(type_of(procs.glClearColor)) GetProcAddress(cast(*u8) "glClearColor\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glClearStencil = cast(type_of(procs.glClearStencil)) GetProcAddress(cast(*u8) "glClearStencil\0");
+        procs.glClearStencil = cast(type_of(procs.glClearStencil)) GetProcAddress(cast(*u8) "glClearStencil\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glClearDepth = cast(type_of(procs.glClearDepth)) GetProcAddress(cast(*u8) "glClearDepth\0");
+        procs.glClearDepth = cast(type_of(procs.glClearDepth)) GetProcAddress(cast(*u8) "glClearDepth\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glStencilMask = cast(type_of(procs.glStencilMask)) GetProcAddress(cast(*u8) "glStencilMask\0");
+        procs.glStencilMask = cast(type_of(procs.glStencilMask)) GetProcAddress(cast(*u8) "glStencilMask\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glColorMask = cast(type_of(procs.glColorMask)) GetProcAddress(cast(*u8) "glColorMask\0");
+        procs.glColorMask = cast(type_of(procs.glColorMask)) GetProcAddress(cast(*u8) "glColorMask\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDepthMask = cast(type_of(procs.glDepthMask)) GetProcAddress(cast(*u8) "glDepthMask\0");
+        procs.glDepthMask = cast(type_of(procs.glDepthMask)) GetProcAddress(cast(*u8) "glDepthMask\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDisable = cast(type_of(procs.glDisable)) GetProcAddress(cast(*u8) "glDisable\0");
+        procs.glDisable = cast(type_of(procs.glDisable)) GetProcAddress(cast(*u8) "glDisable\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glEnable = cast(type_of(procs.glEnable)) GetProcAddress(cast(*u8) "glEnable\0");
+        procs.glEnable = cast(type_of(procs.glEnable)) GetProcAddress(cast(*u8) "glEnable\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glFinish = cast(type_of(procs.glFinish)) GetProcAddress(cast(*u8) "glFinish\0");
+        procs.glFinish = cast(type_of(procs.glFinish)) GetProcAddress(cast(*u8) "glFinish\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glFlush = cast(type_of(procs.glFlush)) GetProcAddress(cast(*u8) "glFlush\0");
+        procs.glFlush = cast(type_of(procs.glFlush)) GetProcAddress(cast(*u8) "glFlush\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glBlendFunc = cast(type_of(procs.glBlendFunc)) GetProcAddress(cast(*u8) "glBlendFunc\0");
+        procs.glBlendFunc = cast(type_of(procs.glBlendFunc)) GetProcAddress(cast(*u8) "glBlendFunc\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glLogicOp = cast(type_of(procs.glLogicOp)) GetProcAddress(cast(*u8) "glLogicOp\0");
+        procs.glLogicOp = cast(type_of(procs.glLogicOp)) GetProcAddress(cast(*u8) "glLogicOp\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glStencilFunc = cast(type_of(procs.glStencilFunc)) GetProcAddress(cast(*u8) "glStencilFunc\0");
+        procs.glStencilFunc = cast(type_of(procs.glStencilFunc)) GetProcAddress(cast(*u8) "glStencilFunc\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glStencilOp = cast(type_of(procs.glStencilOp)) GetProcAddress(cast(*u8) "glStencilOp\0");
+        procs.glStencilOp = cast(type_of(procs.glStencilOp)) GetProcAddress(cast(*u8) "glStencilOp\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDepthFunc = cast(type_of(procs.glDepthFunc)) GetProcAddress(cast(*u8) "glDepthFunc\0");
+        procs.glDepthFunc = cast(type_of(procs.glDepthFunc)) GetProcAddress(cast(*u8) "glDepthFunc\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glPixelStoref = cast(type_of(procs.glPixelStoref)) GetProcAddress(cast(*u8) "glPixelStoref\0");
+        procs.glPixelStoref = cast(type_of(procs.glPixelStoref)) GetProcAddress(cast(*u8) "glPixelStoref\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glPixelStorei = cast(type_of(procs.glPixelStorei)) GetProcAddress(cast(*u8) "glPixelStorei\0");
+        procs.glPixelStorei = cast(type_of(procs.glPixelStorei)) GetProcAddress(cast(*u8) "glPixelStorei\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glReadBuffer = cast(type_of(procs.glReadBuffer)) GetProcAddress(cast(*u8) "glReadBuffer\0");
+        procs.glReadBuffer = cast(type_of(procs.glReadBuffer)) GetProcAddress(cast(*u8) "glReadBuffer\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glReadPixels = cast(type_of(procs.glReadPixels)) GetProcAddress(cast(*u8) "glReadPixels\0");
+        procs.glReadPixels = cast(type_of(procs.glReadPixels)) GetProcAddress(cast(*u8) "glReadPixels\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetBooleanv = cast(type_of(procs.glGetBooleanv)) GetProcAddress(cast(*u8) "glGetBooleanv\0");
+        procs.glGetBooleanv = cast(type_of(procs.glGetBooleanv)) GetProcAddress(cast(*u8) "glGetBooleanv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetDoublev = cast(type_of(procs.glGetDoublev)) GetProcAddress(cast(*u8) "glGetDoublev\0");
+        procs.glGetDoublev = cast(type_of(procs.glGetDoublev)) GetProcAddress(cast(*u8) "glGetDoublev\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetError = cast(type_of(procs.glGetError)) GetProcAddress(cast(*u8) "glGetError\0");
+        procs.glGetError = cast(type_of(procs.glGetError)) GetProcAddress(cast(*u8) "glGetError\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetFloatv = cast(type_of(procs.glGetFloatv)) GetProcAddress(cast(*u8) "glGetFloatv\0");
+        procs.glGetFloatv = cast(type_of(procs.glGetFloatv)) GetProcAddress(cast(*u8) "glGetFloatv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetIntegerv = cast(type_of(procs.glGetIntegerv)) GetProcAddress(cast(*u8) "glGetIntegerv\0");
+        procs.glGetIntegerv = cast(type_of(procs.glGetIntegerv)) GetProcAddress(cast(*u8) "glGetIntegerv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetString = cast(type_of(procs.glGetString)) GetProcAddress(cast(*u8) "glGetString\0");
+        procs.glGetString = cast(type_of(procs.glGetString)) GetProcAddress(cast(*u8) "glGetString\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetTexImage = cast(type_of(procs.glGetTexImage)) GetProcAddress(cast(*u8) "glGetTexImage\0");
+        procs.glGetTexImage = cast(type_of(procs.glGetTexImage)) GetProcAddress(cast(*u8) "glGetTexImage\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetTexParameterfv = cast(type_of(procs.glGetTexParameterfv)) GetProcAddress(cast(*u8) "glGetTexParameterfv\0");
+        procs.glGetTexParameterfv = cast(type_of(procs.glGetTexParameterfv)) GetProcAddress(cast(*u8) "glGetTexParameterfv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetTexParameteriv = cast(type_of(procs.glGetTexParameteriv)) GetProcAddress(cast(*u8) "glGetTexParameteriv\0");
+        procs.glGetTexParameteriv = cast(type_of(procs.glGetTexParameteriv)) GetProcAddress(cast(*u8) "glGetTexParameteriv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetTexLevelParameterfv = cast(type_of(procs.glGetTexLevelParameterfv)) GetProcAddress(cast(*u8) "glGetTexLevelParameterfv\0");
+        procs.glGetTexLevelParameterfv = cast(type_of(procs.glGetTexLevelParameterfv)) GetProcAddress(cast(*u8) "glGetTexLevelParameterfv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGetTexLevelParameteriv = cast(type_of(procs.glGetTexLevelParameteriv)) GetProcAddress(cast(*u8) "glGetTexLevelParameteriv\0");
+        procs.glGetTexLevelParameteriv = cast(type_of(procs.glGetTexLevelParameteriv)) GetProcAddress(cast(*u8) "glGetTexLevelParameteriv\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glIsEnabled = cast(type_of(procs.glIsEnabled)) GetProcAddress(cast(*u8) "glIsEnabled\0");
+        procs.glIsEnabled = cast(type_of(procs.glIsEnabled)) GetProcAddress(cast(*u8) "glIsEnabled\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDepthRange = cast(type_of(procs.glDepthRange)) GetProcAddress(cast(*u8) "glDepthRange\0");
+        procs.glDepthRange = cast(type_of(procs.glDepthRange)) GetProcAddress(cast(*u8) "glDepthRange\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glViewport = cast(type_of(procs.glViewport)) GetProcAddress(cast(*u8) "glViewport\0");
+        procs.glViewport = cast(type_of(procs.glViewport)) GetProcAddress(cast(*u8) "glViewport\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDrawArrays = cast(type_of(procs.glDrawArrays)) GetProcAddress(cast(*u8) "glDrawArrays\0");
+        procs.glDrawArrays = cast(type_of(procs.glDrawArrays)) GetProcAddress(cast(*u8) "glDrawArrays\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDrawElements = cast(type_of(procs.glDrawElements)) GetProcAddress(cast(*u8) "glDrawElements\0");
+        procs.glDrawElements = cast(type_of(procs.glDrawElements)) GetProcAddress(cast(*u8) "glDrawElements\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glPolygonOffset = cast(type_of(procs.glPolygonOffset)) GetProcAddress(cast(*u8) "glPolygonOffset\0");
+        procs.glPolygonOffset = cast(type_of(procs.glPolygonOffset)) GetProcAddress(cast(*u8) "glPolygonOffset\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glCopyTexImage1D = cast(type_of(procs.glCopyTexImage1D)) GetProcAddress(cast(*u8) "glCopyTexImage1D\0");
+        procs.glCopyTexImage1D = cast(type_of(procs.glCopyTexImage1D)) GetProcAddress(cast(*u8) "glCopyTexImage1D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glCopyTexImage2D = cast(type_of(procs.glCopyTexImage2D)) GetProcAddress(cast(*u8) "glCopyTexImage2D\0");
+        procs.glCopyTexImage2D = cast(type_of(procs.glCopyTexImage2D)) GetProcAddress(cast(*u8) "glCopyTexImage2D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glCopyTexSubImage1D = cast(type_of(procs.glCopyTexSubImage1D)) GetProcAddress(cast(*u8) "glCopyTexSubImage1D\0");
+        procs.glCopyTexSubImage1D = cast(type_of(procs.glCopyTexSubImage1D)) GetProcAddress(cast(*u8) "glCopyTexSubImage1D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glCopyTexSubImage2D = cast(type_of(procs.glCopyTexSubImage2D)) GetProcAddress(cast(*u8) "glCopyTexSubImage2D\0");
+        procs.glCopyTexSubImage2D = cast(type_of(procs.glCopyTexSubImage2D)) GetProcAddress(cast(*u8) "glCopyTexSubImage2D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexSubImage1D = cast(type_of(procs.glTexSubImage1D)) GetProcAddress(cast(*u8) "glTexSubImage1D\0");
+        procs.glTexSubImage1D = cast(type_of(procs.glTexSubImage1D)) GetProcAddress(cast(*u8) "glTexSubImage1D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glTexSubImage2D = cast(type_of(procs.glTexSubImage2D)) GetProcAddress(cast(*u8) "glTexSubImage2D\0");
+        procs.glTexSubImage2D = cast(type_of(procs.glTexSubImage2D)) GetProcAddress(cast(*u8) "glTexSubImage2D\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glBindTexture = cast(type_of(procs.glBindTexture)) GetProcAddress(cast(*u8) "glBindTexture\0");
+        procs.glBindTexture = cast(type_of(procs.glBindTexture)) GetProcAddress(cast(*u8) "glBindTexture\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glDeleteTextures = cast(type_of(procs.glDeleteTextures)) GetProcAddress(cast(*u8) "glDeleteTextures\0");
+        procs.glDeleteTextures = cast(type_of(procs.glDeleteTextures)) GetProcAddress(cast(*u8) "glDeleteTextures\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glGenTextures = cast(type_of(procs.glGenTextures)) GetProcAddress(cast(*u8) "glGenTextures\0");
+        procs.glGenTextures = cast(type_of(procs.glGenTextures)) GetProcAddress(cast(*u8) "glGenTextures\0");
     }
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
-    procs.glIsTexture = cast(type_of(procs.glIsTexture)) GetProcAddress(cast(*u8) "glIsTexture\0");
+        procs.glIsTexture = cast(type_of(procs.glIsTexture)) GetProcAddress(cast(*u8) "glIsTexture\0");
     }
     procs.glDrawRangeElements = cast(type_of(procs.glDrawRangeElements)) GetProcAddress(cast(*u8) "glDrawRangeElements\0");
     procs.glTexImage3D = cast(type_of(procs.glTexImage3D)) GetProcAddress(cast(*u8) "glTexImage3D\0");

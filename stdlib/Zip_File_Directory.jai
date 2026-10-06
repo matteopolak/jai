@@ -106,7 +106,7 @@ zip_read_directory :: (zip_filename: string, opened: File) -> bool, Zip_Director
     }
 
     offset: s64 = 0;
-    for i: 0..cast(s64) count-1 {
+    for i: 0..cast(s64) count - 1 {
         if offset > directory_size - 46 return false, dir;
         p = dir.memory_block.data + offset;
         if zip_u32(p) != 0x02014b50 || zip_u16(p + 34) != 0 return false, dir;
@@ -152,7 +152,9 @@ zip_read_directory :: (zip_filename: string, opened: File) -> bool, Zip_Director
 
 #import "Basic";
 #import "File";
-zip_u16 :: (p: *u8) -> u16 { return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8); }
+zip_u16 :: (p: *u8) -> u16 {
+    return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
+}
 zip_u32 :: (p: *u8) -> u32 {
     return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }

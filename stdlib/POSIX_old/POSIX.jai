@@ -59,7 +59,7 @@ WUNTRACED :: 2;
 IPC_CREAT :: 0x0200;
 IPC_EXCL :: 0x0400;
 IPC_NOWAIT :: 0x0800;
-IPC_PRIVATE: key_t: 0;
+IPC_PRIVATE: key_t : 0;
 IPC_RMID :: 0;
 IPC_SET :: 1;
 IPC_STAT :: 2;
@@ -226,8 +226,7 @@ S_ISVTX :: 0x200;
     SIOCDELDLCI :: 0x8981;
     SIOCDEVPRIVATE :: 0x89F0;
     SIOCPROTOPRIVATE :: 0x89E0;
-} else #if OS == .MACOS {
-}
+} else #if OS == .MACOS {}
 timespec :: struct {
     tv_sec: time_t;
     tv_nsec: s64;
@@ -253,14 +252,19 @@ tm :: struct {
     tm_gmtoff: s64;
     tm_zone: *u8;
 }
-#if OS == .LINUX { using clockid_t :: enum s32 { CLOCK_REALTIME :: 0;
+#if OS == .LINUX {
+    using clockid_t :: enum s32 {
+        CLOCK_REALTIME :: 0;
         CLOCK_MONOTONIC :: 1;
         CLOCK_PROCESS_CPUTIME_ID :: 2;
         CLOCK_THREAD_CPUTIME_ID :: 3;
         CLOCK_MONOTONIC_RAW :: 4;
         CLOCK_REALTIME_COARSE :: 5;
         CLOCK_MONOTONIC_COARSE :: 6;
-    } } else #if OS == .MACOS { using clockid_t :: enum s32 { CLOCK_REALTIME :: 0;
+    }
+} else #if OS == .MACOS {
+    using clockid_t :: enum s32 {
+        CLOCK_REALTIME :: 0;
         CLOCK_MONOTONIC :: 6;
         CLOCK_MONOTONIC_RAW :: 4;
         CLOCK_MONOTONIC_RAW_APPROX :: 5;
@@ -268,7 +272,8 @@ tm :: struct {
         CLOCK_UPTIME_RAW_APPROX :: 9;
         CLOCK_PROCESS_CPUTIME_ID :: 12;
         CLOCK_THREAD_CPUTIME_ID :: 16;
-    } }
+    }
+}
 #if OS == .LINUX {
     itimerspec :: struct {
         it_interval: timespec;
@@ -2138,21 +2143,21 @@ S_IFSOCK :: 0xC000;
         __spare2: u64;
         __spare3: [12] u64;
     };
-    STATX_TYPE: u32: 0x00000001;
-    STATX_MODE: u32: 0x00000002;
-    STATX_NLINK: u32: 0x00000004;
-    STATX_UID: u32: 0x00000008;
-    STATX_GID: u32: 0x00000010;
-    STATX_ATIME: u32: 0x00000020;
-    STATX_MTIME: u32: 0x00000040;
-    STATX_CTIME: u32: 0x00000080;
-    STATX_INO: u32: 0x00000100;
-    STATX_SIZE: u32: 0x00000200;
-    STATX_BLOCKS: u32: 0x00000400;
-    STATX_BASIC_STATS: u32: 0x000007ff;
-    STATX_BTIME: u32: 0x00000800;
-    STATX_MNT_ID: u32: 0x00001000;
-    STATX__RESERVED: u32: 0x80000000;
+    STATX_TYPE: u32 : 0x00000001;
+    STATX_MODE: u32 : 0x00000002;
+    STATX_NLINK: u32 : 0x00000004;
+    STATX_UID: u32 : 0x00000008;
+    STATX_GID: u32 : 0x00000010;
+    STATX_ATIME: u32 : 0x00000020;
+    STATX_MTIME: u32 : 0x00000040;
+    STATX_CTIME: u32 : 0x00000080;
+    STATX_INO: u32 : 0x00000100;
+    STATX_SIZE: u32 : 0x00000200;
+    STATX_BLOCKS: u32 : 0x00000400;
+    STATX_BASIC_STATS: u32 : 0x000007ff;
+    STATX_BTIME: u32 : 0x00000800;
+    STATX_MNT_ID: u32 : 0x00001000;
+    STATX__RESERVED: u32 : 0x80000000;
     STATX_ATTR_COMPRESSED :: 0x00000004;
     STATX_ATTR_IMMUTABLE :: 0x00000010;
     STATX_ATTR_APPEND :: 0x00000020;
@@ -2193,14 +2198,14 @@ S_IFSOCK :: 0xC000;
         __gs: u64;
     }
     darwin_mmst_reg :: struct {
-        __mmst_reg: [10]u8;
-        __mmst_rsrv: [6]u8;
+        __mmst_reg: [10] u8;
+        __mmst_rsrv: [6] u8;
     }
     xmm_reg :: struct {
-        __xmm_reg: [16]u8;
+        __xmm_reg: [16] u8;
     }
     x64_float_state64_t :: struct {
-        __fpu_reserved: [2]s32;
+        __fpu_reserved: [2] s32;
         __fpu_fcw: u16;
         __fpu_fsw: u16;
         __fpu_ftw: u8;
@@ -2238,7 +2243,7 @@ S_IFSOCK :: 0xC000;
         __fpu_xmm13: xmm_reg;
         __fpu_xmm14: xmm_reg;
         __fpu_xmm15: xmm_reg;
-        __fpu_rsrv4: [6*16]u8;
+        __fpu_rsrv4: [6 * 16] u8;
         __fpu_reserved1: s32;
     }
     mach_port_t :: u32;

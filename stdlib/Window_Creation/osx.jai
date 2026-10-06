@@ -1,10 +1,10 @@
 // macOS windows through AppKit.
-#import "Objective_C" ;
-#import "Objective_C/AppKit" ;
-#import "Objective_C/LightweightRenderingView" ;
+#import "Objective_C";
+#import "Objective_C/AppKit";
+#import "Objective_C/LightweightRenderingView";
 #scope_export
-application_initialized := false ;
-init_mac_app :: ( ) {
+application_initialized := false;
+init_mac_app :: () {
     if application_initialized return;
     // Referencing a symbol of the framework makes the linker/loader bring AppKit in before any class lookup.
     app_kit_anchor := NSApplicationMain;
@@ -18,7 +18,7 @@ init_mac_app :: ( ) {
     if macos_create_app_delegate_exists() {
         info := cast(*Type_Info_Struct) type_info(#Context);
         _, offset := get_field_with_offset(info, "_macos_create_app_delegate");
-        slot := cast(**void) (cast(*u8) *context+offset);
+        slot := cast(**void) (cast(*u8) *context + offset);
         factory: () -> *NSApplicationDelegate;
         factory = cast(type_of(factory)) slot.*;
         if factory NSApplication.setDelegate(application, factory());
@@ -27,7 +27,7 @@ init_mac_app :: ( ) {
     NSApplication.activateIgnoringOtherApps(application, YES);
     application_initialized = true;
 }
-create_window :: ( width : int , height : int , window_name : string , window_x := - 1 , window_y := - 1 , parent : Window_Type = null , background_color_rgb := DEFAULT_WINDOW_CREATION_COLOR , wanted_msaa := DEFAULT_MSAA ) -> * NSWindow {
+create_window :: (width: int, height: int, window_name: string, window_x := -1, window_y := -1, parent: Window_Type = null, background_color_rgb := DEFAULT_WINDOW_CREATION_COLOR, wanted_msaa := DEFAULT_MSAA) -> *NSWindow {
     if width <= 0 || height <= 0 return null;
     init_mac_app();
     if !application_initialized return null;
@@ -36,10 +36,10 @@ create_window :: ( width : int , height : int , window_name : string , window_x 
     scale := NSScreen.backingScaleFactor(screen);
     if scale <= 0 scale = 1;
     rect: NSRect;
-    rect.size.width = cast(CGFloat) width/scale;
-    rect.size.height = cast(CGFloat) height/scale;
-    if window_x != -1 rect.origin.x = cast(CGFloat) window_x/scale;
-    if window_y != -1 rect.origin.y = cast(CGFloat) window_y/scale;
+    rect.size.width = cast(CGFloat) width / scale;
+    rect.size.height = cast(CGFloat) height / scale;
+    if window_x != -1 rect.origin.x = cast(CGFloat) window_x / scale;
+    if window_y != -1 rect.origin.y = cast(CGFloat) window_y / scale;
     style := NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable;
     window := NSWindow.initWithContentRect(objc_alloc(NSWindow), rect, style, NSBackingStoreBuffered, NO);
     if !window return null;
@@ -48,19 +48,22 @@ create_window :: ( width : int , height : int , window_name : string , window_x 
     color_factory: (receiver: *void, selector: SEL, red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> *NSColor #c_call;
     color_factory = cast(type_of(color_factory)) objc_msgSend;
     color := color_factory(cast(*void) class(NSColor), sel_registerName("colorWithCalibratedRed:green:blue:alpha:"),
-        cast(CGFloat) clamp(background_color_rgb[0],0.0,1.0), cast(CGFloat) clamp(background_color_rgb[1],0.0,1.0),
-        cast(CGFloat) clamp(background_color_rgb[2],0.0,1.0), 1.0);
+        cast(CGFloat) clamp(background_color_rgb[0], 0.0, 1.0), cast(CGFloat) clamp(background_color_rgb[1], 0.0, 1.0),
+        cast(CGFloat) clamp(background_color_rgb[2], 0.0, 1.0), 1.0);
     NSWindow.setBackgroundColor(window, color);
     attributes: [14] NSOpenGLPixelFormatAttribute = .[NSOpenGLPFADoubleBuffer, NSOpenGLPFAColorSize, 24,
         NSOpenGLPFAAlphaSize, 8, NSOpenGLPFADepthSize, 24, NSOpenGLPFAStencilSize, 8,
-        NSOpenGLPFASampleBuffers, 1, NSOpenGLPFASamples, cast(u32) max(wanted_msaa,1), 0];
+        NSOpenGLPFASampleBuffers, 1, NSOpenGLPFASamples, cast(u32) max(wanted_msaa, 1), 0];
     if wanted_msaa <= 1 attributes[9] = 0;
     format := NSOpenGLPixelFormat.initWithAttributes(objc_alloc(NSOpenGLPixelFormat), attributes.data);
     if !format && wanted_msaa > 1 {
         attributes[9] = 0;
         format = NSOpenGLPixelFormat.initWithAttributes(objc_alloc(NSOpenGLPixelFormat), attributes.data);
     }
-    if !format { release(window); return null; }
+    if !format {
+        release(window);
+        return null;
+    }
     defer release(format);
     view_init: (receiver: *void, selector: SEL, frame: NSRect, pixel_format: *NSOpenGLPixelFormat) -> *LightweightOpenGLView #c_call;
     view_init = cast(type_of(view_init)) objc_msgSend;
@@ -68,7 +71,10 @@ create_window :: ( width : int , height : int , window_name : string , window_x 
     view_rect.origin = .{};
     view := view_init(cast(*void) objc_alloc(LightweightOpenGLView),
         sel_registerName("initWithFrame:pixelFormat:"), view_rect, format);
-    if !view { release(window); return null; }
+    if !view {
+        release(window);
+        return null;
+    }
     NSView.setWantsBestResolutionOpenGLSurface(view, YES);
     NSWindow.setContentView(window, view);
     NSWindow.makeFirstResponder(window, view);
@@ -77,7 +83,7 @@ create_window :: ( width : int , height : int , window_name : string , window_x 
         info := cast(*Type_Info_Struct) type_info(#Context);
         _, offset := get_field_with_offset(info, "_macos_create_window_delegate");
         factory: () -> id;
-        factory = cast(type_of(factory)) (cast(**void) (cast(*u8) *context+offset)).*;
+        factory = cast(type_of(factory)) (cast(**void) (cast(*u8) *context + offset)).*;
         if factory NSWindow.setDelegate(window, factory());
     }
     if parent {
@@ -89,12 +95,12 @@ create_window :: ( width : int , height : int , window_name : string , window_x 
     NSWindow.makeKeyAndOrderFront(window, null);
     return window;
 }
-swap_view_buffers :: ( win : * NSWindow ) {
+swap_view_buffers :: (win: *NSWindow) {
     if !win return;
     render_view := NSWindow.contentView(win);
     if render_view LightweightRenderingView.swapBuffers(render_view);
 }
-get_dimensions :: ( window : * NSWindow , right_handed : bool ) -> ( x : s32 , y : s32 , width : s32 , height : s32 , success := true ) {
+get_dimensions :: (window: *NSWindow, right_handed: bool) -> (x: s32, y: s32, width: s32, height: s32, success := true) {
     if !window return 0, 0, 0, 0, false;
     view := NSWindow.contentView(window);
     if !view return 0, 0, 0, 0, false;
@@ -104,10 +110,10 @@ get_dimensions :: ( window : * NSWindow , right_handed : bool ) -> ( x : s32 , y
     return cast(s32) area.origin.x, cast(s32) bottom, cast(s32) area.size.width, cast(s32) area.size.height, true;
 }
 Saved_Window_Info :: struct {
-    mask : NSWindowStyleMask ;
-    window_frame : NSRect ;
+    mask: NSWindowStyleMask;
+    window_frame: NSRect;
 }
-toggle_fullscreen :: ( win : * NSWindow , desire_fullscreen : bool , saved : * Saved_Window_Info ) -> success : bool , width : s32 , height : s32 {
+toggle_fullscreen :: (win: *NSWindow, desire_fullscreen: bool, saved: *Saved_Window_Info) -> success: bool, width: s32, height: s32 {
     if !win || !saved return false, 0, 0;
     if desire_fullscreen {
         screen := NSWindow.screen(win);
@@ -124,7 +130,7 @@ toggle_fullscreen :: ( win : * NSWindow , desire_fullscreen : bool , saved : * S
     _, _, measured_width, measured_height, measured_ok := get_dimensions(win, false);
     return measured_ok, measured_width, measured_height;
 }
-get_mouse_pointer_position :: ( window : * NSWindow , right_handed : bool ) -> x : int , y : int , success : bool {
+get_mouse_pointer_position :: (window: *NSWindow, right_handed: bool) -> x: int, y: int, success: bool {
     if !window return 0, 0, false;
     view := NSWindow.contentView(window);
     if !view return 0, 0, false;
@@ -135,18 +141,18 @@ get_mouse_pointer_position :: ( window : * NSWindow , right_handed : bool ) -> x
     }
     return cast(int) point.x, cast(int) point.y, true;
 }
-get_mouse_pointer_position :: ( right_handed := false ) -> x : int , y : int , success : bool {
+get_mouse_pointer_position :: (right_handed := false) -> x: int, y: int, success: bool {
     if !NSApp return 0, 0, false;
     focused := NSApplication.keyWindow(NSApp);
     return get_mouse_pointer_position(focused, right_handed);
 }
 #scope_file
-macos_create_app_delegate_exists :: ( ) -> bool {
+macos_create_app_delegate_exists :: () -> bool {
     info := cast(*Type_Info_Struct) type_info(#Context);
     member, offset := get_field_with_offset(info, "_macos_create_app_delegate");
     return member != null && offset >= 0;
 }
-macos_create_window_delegate_exists :: ( ) -> bool {
+macos_create_window_delegate_exists :: () -> bool {
     info := cast(*Type_Info_Struct) type_info(#Context);
     member, offset := get_field_with_offset(info, "_macos_create_window_delegate");
     return member != null && offset >= 0;

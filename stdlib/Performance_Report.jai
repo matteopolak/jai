@@ -5,7 +5,7 @@
 get_plugin :: () -> *Metaprogram_Plugin {
     state := New(Report_Plugin);
     state.before_intercept = request_statistics;
-    state.message          = on_compiler_message;
+    state.message = on_compiler_message;
     return state;
 }
 
@@ -145,8 +145,8 @@ write_polymorphs :: (out: *String_Builder, stats: *Message_Performance_Report) {
             print_to_builder(out, ") from %:%\n", it.location.fully_pathed_filename, it.location.line_number);
         }
         instantiations += record.distinct_polymorphs.count;
-        by_constants   += record.num_deduplications_by_constants;
-        by_bytecode    += record.num_deduplications_by_bytecode;
+        by_constants += record.num_deduplications_by_constants;
+        by_bytecode += record.num_deduplications_by_bytecode;
     }
 
     append(out, "\n");
@@ -170,6 +170,6 @@ write_constants :: (out: *String_Builder, header: *Code_Procedure_Header) {
         declaration := cast(*Code_Declaration) entry;
         print_to_builder(out, "%1%2=", separator, declaration.name);
         separator = ", ";
-        if !Program_Print.print_expression(out, declaration.expression)  append(out, "?");
+        if !Program_Print.print_expression(out, declaration.expression) append(out, "?");
     }
 }

@@ -5,7 +5,7 @@ Is_Set :: struct(T: Type) {
     #insert -> string {
         descriptor := type_info(T);
         assert(descriptor.type == .STRUCT, "Command_Line requires a struct type");
-        fields := cast(*Type_Info_Struct)descriptor;
+        fields := cast(*Type_Info_Struct) descriptor;
         generated: String_Builder;
         for field: fields.members {
             if cli_skip_member(*field) continue;
@@ -28,7 +28,7 @@ Argument_Flags :: enum_flags u64 {
 
 Default_Argument_Flags :: Argument_Flags.FREE_ARGUMENTS_ALLOWED | .SORT_HELP | .ALIGN_HELP;
 
-parse_arguments :: ($T: Type, flags := Default_Argument_Flags, help_triggers: []string = .["help", "HELP", "?"]) -> (success: bool, result: T, is_set: Is_Set(T), free_arguments: [..]string) {
+parse_arguments :: ($T: Type, flags := Default_Argument_Flags, help_triggers: [] string = .["help", "HELP", "?"]) -> (success: bool, result: T, is_set: Is_Set(T), free_arguments: [..] string) {
     argv := get_command_line_arguments();
     defer {
         for text: argv free(text.data);
@@ -38,14 +38,14 @@ parse_arguments :: ($T: Type, flags := Default_Argument_Flags, help_triggers: []
 }
 
 // Additive entry for callers with an explicit argv. Element zero is the program name.
-parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Flags, help_triggers: []string = .["help", "HELP", "?"]) -> (success: bool, result: T, is_set: Is_Set(T), free_arguments: [..]string) {
+parse_arguments_from :: (argv: [] string, $T: Type, flags := Default_Argument_Flags, help_triggers: [] string = .["help", "HELP", "?"]) -> (success: bool, result: T, is_set: Is_Set(T), free_arguments: [..] string) {
     result: T;
     specified: Is_Set(T);
-    positional: [..]string;
+    positional: [..] string;
     descriptor := type_info(T);
     assert(descriptor.type == .STRUCT, "Command_Line requires a struct type");
-    fields := cast(*Type_Info_Struct)descriptor;
-    marker_fields := cast(*Type_Info_Struct)type_info(Is_Set(T));
+    fields := cast(*Type_Info_Struct) descriptor;
+    marker_fields := cast(*Type_Info_Struct) type_info(Is_Set(T));
     cursor: s64 = 1;
     positional_only := false;
     accepted := true;
@@ -61,7 +61,7 @@ parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Fla
         if flags & .DOUBLE_DASH_REQUIRED prefix_size = 2;
         option := !positional_only && word.count >= prefix_size;
         if option {
-            for i: 0..prefix_size-1 if word[i] != #char "-" option = false;
+            for i: 0..prefix_size - 1 if word[i] != #char "-" option = false;
         }
         if !option {
             if !(flags & .FREE_ARGUMENTS_ALLOWED) {
@@ -73,10 +73,13 @@ parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Fla
             cursor += 1;
             continue;
         }
-        name := string.{word.count-prefix_size, word.data+prefix_size};
+        name := string.{ word.count - prefix_size, word.data + prefix_size };
         member: *Type_Info_Struct_Member;
         for *field: fields.members {
-            if !cli_skip_member(field) && field.name == name { member = field; break; }
+            if !cli_skip_member(field) && field.name == name {
+                member = field;
+                break;
+            }
         }
         if member == null {
             for trigger: help_triggers if name == trigger requested_help = true;
@@ -88,7 +91,7 @@ parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Fla
         marker: *bool;
         for field: marker_fields.members {
             if field.name == name {
-                marker = cast(*bool)((cast(*u8)*specified)+field.offset_in_bytes);
+                marker = cast(*bool) ((cast(*u8) *specified) + field.offset_in_bytes);
                 break;
             }
         }
@@ -99,7 +102,7 @@ parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Fla
             break;
         }
         cursor += 1;
-        destination := (cast(*u8)*result)+member.offset_in_bytes;
+        destination := (cast(*u8) *result) + member.offset_in_bytes;
         if !cli_read_value(destination, member.type, argv, *cursor) {
             log_error("Invalid or missing value for command-line option: %", name);
             accepted = false;
@@ -117,11 +120,11 @@ parse_arguments_from :: (argv: []string, $T: Type, flags := Default_Argument_Fla
     return accepted, result, specified, positional;
 }
 
-show_help :: ($T: Type, flags: Argument_Flags, help_triggers: []string) {
+show_help :: ($T: Type, flags: Argument_Flags, help_triggers: [] string) {
     descriptor := type_info(T);
     assert(descriptor.type == .STRUCT, "Command_Line requires a struct type");
-    fields := cast(*Type_Info_Struct)descriptor;
-    entries: [..]*Type_Info_Struct_Member;
+    fields := cast(*Type_Info_Struct) descriptor;
+    entries: [..] *Type_Info_Struct_Member;
     defer array_free(entries);
     longest: s64;
     for *field: fields.members {
@@ -134,8 +137,8 @@ show_help :: ($T: Type, flags: Argument_Flags, help_triggers: []string) {
         while i < entries.count {
             selected := entries[i];
             j := i;
-            while j > 0 && cli_name_before(selected.name, entries[j-1].name) {
-                entries[j] = entries[j-1];
+            while j > 0 && cli_name_before(selected.name, entries[j - 1].name) {
+                entries[j] = entries[j - 1];
                 j -= 1;
             }
             entries[j] = selected;
@@ -154,13 +157,16 @@ show_help :: ($T: Type, flags: Argument_Flags, help_triggers: []string) {
         print("    %%", prefix, field.name);
         description: string;
         for note: field.notes {
-            if note.count && note[0] == #char "?" description = .{note.count-1, note.data+1};
+            if note.count && note[0] == #char "?" description = .{ note.count - 1, note.data + 1 };
         }
         if description.count {
             print(": ");
             if flags & .ALIGN_HELP {
-                remaining := longest-field.name.count;
-                while remaining > 0 { print(" "); remaining -= 1; }
+                remaining := longest - field.name.count;
+                while remaining > 0 {
+                    print(" ");
+                    remaining -= 1;
+                }
             }
             print("%", description);
         }
@@ -187,35 +193,35 @@ cli_skip_member :: (member: *Type_Info_Struct_Member) -> bool {
 cli_name_before :: (left: string, right: string) -> bool {
     count := left.count;
     if right.count < count count = right.count;
-    for i: 0..count-1 {
+    for i: 0..count - 1 {
         if left[i] < right[i] return true;
         if left[i] > right[i] return false;
     }
     return left.count < right.count;
 }
 
-cli_read_value :: (slot: *u8, descriptor: *Type_Info, argv: []string, cursor: *s64) -> bool {
+cli_read_value :: (slot: *u8, descriptor: *Type_Info, argv: [] string, cursor: *s64) -> bool {
     if descriptor.type == .BOOL {
-        (cast(*bool)slot).* = true;
+        (cast(*bool) slot).* = true;
         return true;
     }
     if descriptor.type == .ARRAY {
-        array := cast(*Type_Info_Array)descriptor;
+        array := cast(*Type_Info_Array) descriptor;
         if array.array_type != .FIXED || array.array_count < 0 return false;
-        for i: 0..array.array_count-1 {
-            if !cli_read_value(slot+i*array.element_type.runtime_size, array.element_type, argv, cursor) return false;
+        for i: 0..array.array_count - 1 {
+            if !cli_read_value(slot + i * array.element_type.runtime_size, array.element_type, argv, cursor) return false;
         }
         return true;
     }
     if cursor.* >= argv.count return false;
     text := argv[cursor.*];
     if descriptor.type == .STRING {
-        (cast(*string)slot).* = copy_string(text);
+        (cast(*string) slot).* = copy_string(text);
         cursor.* += 1;
         return true;
     }
     if descriptor.type == .ENUM {
-        enumeration := cast(*Type_Info_Enum)descriptor;
+        enumeration := cast(*Type_Info_Enum) descriptor;
         if enumeration.enum_type_flags & .FLAGS return false;
         for entry: enumeration.names {
             if entry == text {
@@ -235,8 +241,8 @@ cli_read_value :: (slot: *u8, descriptor: *Type_Info, argv: []string, cursor: *s
     value.value_pointer = *storage;
     remaining := text;
     if !Reflection.set_value_from_string(value, *remaining) || remaining.count return false;
-    bytes := cast(*u8)*storage;
-    for i: 0..descriptor.runtime_size-1 slot[i] = bytes[i];
+    bytes := cast(*u8) *storage;
+    for i: 0..descriptor.runtime_size - 1 slot[i] = bytes[i];
     cursor.* += 1;
     return true;
 }

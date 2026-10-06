@@ -3,7 +3,7 @@
 #import "Basic";
 #scope_export;
 
-Bucket_Array :: struct (type: Type, items_per_bucket: int, always_iterate_by_pointer := false) {
+Bucket_Array :: struct(type: Type, items_per_bucket: int, always_iterate_by_pointer := false) {
     count: s64;
     allocator: Allocator;
     My_Bucket :: Bucket(type, items_per_bucket);
@@ -12,7 +12,7 @@ Bucket_Array :: struct (type: Type, items_per_bucket: int, always_iterate_by_poi
     #assert items_per_bucket > 0;
 }
 
-Bucket :: struct (type: Type, items_per_bucket: int) {
+Bucket :: struct(type: Type, items_per_bucket: int) {
     occupied: [items_per_bucket] bool;
     data: [items_per_bucket] type = ---;
     lowest_maybe_not_occupied: s32;
@@ -43,7 +43,7 @@ bucket_array_add :: (array: *Bucket_Array, item: array.type) -> (Bucket_Locator,
 }
 
 bucket_array_find :: (array: *Bucket_Array, locator: Bucket_Locator) -> array.type {
-    assert(cast(s64)locator.bucket_index < array.all_buckets.count);
+    assert(cast(s64) locator.bucket_index < array.all_buckets.count);
     assert(locator.slot_index >= 0 && locator.slot_index < array.items_per_bucket);
     bucket := array.all_buckets[locator.bucket_index];
     assert(bucket.occupied[locator.slot_index]);
@@ -51,7 +51,7 @@ bucket_array_find :: (array: *Bucket_Array, locator: Bucket_Locator) -> array.ty
 }
 
 bucket_array_remove :: (array: *Bucket_Array, locator: Bucket_Locator) {
-    assert(cast(s64)locator.bucket_index < array.all_buckets.count);
+    assert(cast(s64) locator.bucket_index < array.all_buckets.count);
     assert(locator.slot_index >= 0 && locator.slot_index < array.items_per_bucket);
     bucket := array.all_buckets[locator.bucket_index];
     assert(bucket.occupied[locator.slot_index]);
@@ -80,7 +80,7 @@ find_and_occupy_empty_slot :: (array: *Bucket_Array, $initialize := true) -> *ar
         initial: array.type;
         <<pointer = initial;
     }
-    locator: Bucket_Locator = .{bucket.bucket_index, slot};
+    locator: Bucket_Locator = .{ bucket.bucket_index, slot };
     return pointer, locator;
 }
 
@@ -114,10 +114,14 @@ for_expansion :: (array: *$T/Bucket_Array, body: Code, flags: For_Flags) #expand
         // `remove it` frees the slot; iteration continues with the next occupied one.
         #if POINTER {
             `it := *bucket.data[slot];
-            #insert (remove={ bucket_array_remove(array, .{cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot}); }) body;
+            #insert (remove = {
+                bucket_array_remove(array, .{ cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot });
+            }) body;
         } else {
             `it := bucket.data[slot];
-            #insert (remove={ bucket_array_remove(array, .{cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot}); }) body;
+            #insert (remove = {
+                bucket_array_remove(array, .{ cast(u32) ((physical - stride) / array.items_per_bucket), cast(s32) slot });
+            }) body;
         }
     }
 }
@@ -131,7 +135,7 @@ add_bucket :: (array: *Bucket_Array) -> *array.My_Bucket {
     assert(array.all_buckets.count < 0xffff_ffff);
     bucket := New(array.My_Bucket, true, array.allocator);
     assert(bucket != null);
-    bucket.bucket_index = cast(u32)array.all_buckets.count;
+    bucket.bucket_index = cast(u32) array.all_buckets.count;
     array_add(*array.all_buckets, bucket);
     array_add(*array.unfull_buckets, bucket);
     return bucket;

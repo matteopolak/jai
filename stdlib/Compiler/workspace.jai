@@ -5,27 +5,27 @@
 #scope_export
 
 Report :: enum u8 {
-    ERROR             :: 0;
+    ERROR :: 0;
     ERROR_CONTINUABLE :: 1;
-    WARNING           :: 2;
-    INFO              :: 3;
+    WARNING :: 2;
+    INFO :: 3;
 }
 
 Workspace_Status :: enum u8 {
-    OK     :: 0;
+    OK :: 0;
     FAILED :: 1;
 }
 
 Intercept_Flags :: enum_flags u32 {
     SKIP_EXPRESSIONS_WITHOUT_NOTES :: 0x1;
-    SKIP_DECLARATIONS              :: 0x2;
-    SKIP_PROCEDURE_HEADERS         :: 0x4;
-    SKIP_PROCEDURE_BODIES          :: 0x8;
-    SKIP_STRUCTS                   :: 0x10;
-    SKIP_OTHERS                    :: 0x20;
-    SKIP_ALL                       :: SKIP_EXPRESSIONS_WITHOUT_NOTES | SKIP_DECLARATIONS | SKIP_PROCEDURE_HEADERS | SKIP_PROCEDURE_BODIES | SKIP_STRUCTS | SKIP_OTHERS;
+    SKIP_DECLARATIONS :: 0x2;
+    SKIP_PROCEDURE_HEADERS :: 0x4;
+    SKIP_PROCEDURE_BODIES :: 0x8;
+    SKIP_STRUCTS :: 0x10;
+    SKIP_OTHERS :: 0x20;
+    SKIP_ALL :: SKIP_EXPRESSIONS_WITHOUT_NOTES | SKIP_DECLARATIONS | SKIP_PROCEDURE_HEADERS | SKIP_PROCEDURE_BODIES | SKIP_STRUCTS | SKIP_OTHERS;
     DO_PERFORMANCE_REPORT_POLYMORPHS :: 0x1000;
-    DO_PERFORMANCE_REPORT_RUNS       :: 0x2000;
+    DO_PERFORMANCE_REPORT_RUNS :: 0x2000;
 }
 
 Version_Info :: struct {
@@ -37,32 +37,32 @@ Version_Info :: struct {
 Metaprogram_Plugin :: struct {
     workspace: Workspace;
 
-    before_intercept:  (p: *Metaprogram_Plugin, flags: *Intercept_Flags);
-    add_source:        (p: *Metaprogram_Plugin);
-    message:           (p: *Metaprogram_Plugin, message: *Message);
-    finish:            (p: *Metaprogram_Plugin);
-    shutdown:          (p: *Metaprogram_Plugin);
+    before_intercept: (p: *Metaprogram_Plugin, flags: *Intercept_Flags);
+    add_source: (p: *Metaprogram_Plugin);
+    message: (p: *Metaprogram_Plugin, message: *Message);
+    finish: (p: *Metaprogram_Plugin);
+    shutdown: (p: *Metaprogram_Plugin);
 
     handle_one_option: (p: *Metaprogram_Plugin, options: [] string, cursor: int) -> (new_cursor: int);
-    log_help:          (p: *Metaprogram_Plugin);
+    log_help: (p: *Metaprogram_Plugin);
 
     // Newer plugins take all of their `-plug Name -- ...` options at once instead of
     // through handle_one_option, and can refuse them.
-    init:              (p: *Metaprogram_Plugin, options: [] string) -> bool;
+    init: (p: *Metaprogram_Plugin, options: [] string) -> bool;
 }
 
 Get_Root_Type_Status :: enum u8 {
-    UNINITIALIZED      :: 0;
-    SUCCESS            :: 1;
+    UNINITIALIZED :: 0;
+    SUCCESS :: 1;
     INPUT_IS_CODE_NULL :: 2;
-    CORRUPTED          :: 3;
-    NOT_TYPED          :: 4;
+    CORRUPTED :: 3;
+    NOT_TYPED :: 4;
 }
 
 Type_Info_Flags :: enum u32 {
-    NO_TYPE_INFO                 :: 0x1;
+    NO_TYPE_INFO :: 0x1;
     PROCEDURES_ARE_VOID_POINTERS :: 0x2;
-    NO_SIZE_COMPLAINT            :: 0x4;
+    NO_SIZE_COMPLAINT :: 0x4;
 }
 
 Runtime_Info :: struct {
@@ -72,27 +72,27 @@ Runtime_Info :: struct {
 }
 
 Data_Segment_Index :: enum u16 {
-    WRITABLE          :: 0x0;
+    WRITABLE :: 0x0;
     WRITABLE_NO_RESET :: 0x1;
-    READ_ONLY         :: 0x2;
-    BSS               :: 0x3;
-    USER_SEGMENT      :: 0x10;
+    READ_ONLY :: 0x2;
+    BSS :: 0x3;
+    USER_SEGMENT :: 0x10;
 }
 
 Data_Segment :: struct {}
 
 Data_Segment_Characteristics :: enum_flags u32 {
-    READ    :: 0x1;
-    WRITE   :: 0x2;
+    READ :: 0x1;
+    WRITE :: 0x2;
     EXECUTE :: 0x4;
-    ZEROED  :: 0x8;
+    ZEROED :: 0x8;
 }
 
 Global_Data_Segment_Info :: struct {
     segment_tag: enum u16 {
-        BSS      :: 0;
-        DATA     :: 1;
-        RDATA    :: 2;
+        BSS :: 0;
+        DATA :: 1;
+        RDATA :: 2;
         NO_RESET :: 3;
 
         USER :: 5;
@@ -103,12 +103,12 @@ Global_Data_Segment_Info :: struct {
 
 Global_Data_Info :: struct {
     version_stamp: u64;
-    segment_info:  [] Global_Data_Segment_Info;
+    segment_info: [] Global_Data_Segment_Info;
 }
 
 Compiler_Pin :: struct {
     name: string;
-    pin:  string;
+    pin: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -118,7 +118,7 @@ Compiler_Pin :: struct {
 compiler_create_workspace :: (name := "") -> Workspace {
     id := __jaic_workspace_create(name);
     ensure_option_slot(id);
-    while workspace_names.count <= id  array_add(*workspace_names, "");
+    while workspace_names.count <= id array_add(*workspace_names, "");
     workspace_names[id] = copy_text(name);
     return id;
 }
@@ -134,7 +134,7 @@ get_current_workspace :: () -> Workspace {
 
 get_name :: (w: Workspace = -1) -> string {
     id := resolve_workspace(w);
-    if id < 0 || id >= workspace_names.count  return "";
+    if id < 0 || id >= workspace_names.count return "";
     return workspace_names[id];
 }
 
@@ -194,10 +194,10 @@ compiler_begin_intercept :: (w: Workspace, flags: Intercept_Flags = 0) {
 
 compiler_end_intercept :: (w: Workspace) {
     index := find_intercept(resolve_workspace(w));
-    if index < 0  return;
+    if index < 0 return;
     array_ordered_remove_by_index(*intercepted, index);
     array_ordered_remove_by_index(*intercept_finished, index);
-    if intercept_cursor > index  intercept_cursor -= 1;
+    if intercept_cursor > index intercept_cursor -= 1;
 }
 
 // Returns the next message from any intercepted workspace that still has events,
@@ -210,7 +210,7 @@ compiler_wait_for_message :: () -> *Message {
     while tried < intercepted.count {
         index := (intercept_cursor + tried) % intercepted.count;
         tried += 1;
-        if intercept_finished[index]  continue;
+        if intercept_finished[index] continue;
 
         id := intercepted[index];
         kind := __jaic_workspace_next_event(id);
@@ -237,9 +237,9 @@ compiler_set_workspace_status :: (status: Workspace_Status, w: Workspace = -1) {
     // jaic has no status primitive. A workspace that already failed compiling keeps its
     // failure; marking a healthy one as FAILED aborts with a diagnostic so the exit code
     // is nonzero. Marking a workspace OK again cannot be honoured.
-    if status != .FAILED  return;
+    if status != .FAILED return;
     id := resolve_workspace(w);
-    if id == last_complete_workspace && last_complete_error != 0  return;
+    if id == last_complete_workspace && last_complete_error != 0 return;
     __jaic_report("The workspace was marked as failed by its metaprogram.", "", 0, 0, true);
 }
 
@@ -258,12 +258,12 @@ compiler_report :: (filename: string, line_number: s64, character_number: s64, e
 
 // A null node yields an empty location rather than crashing a reporting path.
 make_location :: (c: *Code_Node) -> Source_Code_Location {
-    if c == null  return .{};
-    return .{fully_pathed_filename = get_filename(c), line_number = c.l0, character_number = c.c0};
+    if c == null return .{};
+    return .{ fully_pathed_filename = get_filename(c), line_number = c.l0, character_number = c.c0 };
 }
 
 get_filename :: (node: *Code_Node) -> string {
-    if !node || !node.enclosing_load  return "";
+    if !node || !node.enclosing_load return "";
     return node.enclosing_load.fully_pathed_filename;
 }
 
@@ -274,7 +274,7 @@ get_basename_and_path :: (input_name: string) -> (basename: string, path: string
     name_start := input_name.count;
     while name_start > 0 {
         ch := input_name[name_start - 1];
-        if ch == #char "/" || ch == #char "\\"  break;
+        if ch == #char "/" || ch == #char "\\" break;
         name_start -= 1;
     }
 
@@ -282,7 +282,7 @@ get_basename_and_path :: (input_name: string) -> (basename: string, path: string
     directory.count = name_start;
 
     file := input_name;
-    file.data  += name_start;
+    file.data += name_start;
     file.count -= name_start;
 
     // Trim at the final dot of the file part, if there is one.
@@ -305,15 +305,15 @@ is_subclass_of :: (info: *Type_Info, base_name: string, first_call := true) -> b
     current := info;
     while current && current.type == .STRUCT {
         as_struct := cast(*Type_Info_Struct) current;
-        if hops > 0 && as_struct.name == base_name  return true;
-        if as_struct.members.count == 0  return false;
+        if hops > 0 && as_struct.name == base_name return true;
+        if as_struct.members.count == 0 return false;
 
         head := *as_struct.members[0];
-        if !(head.flags & .AS)  return false;
+        if !(head.flags & .AS) return false;
 
         // An embedded base may be held by value or behind one pointer.
         current = head.type;
-        if current.type == .POINTER  current = (cast(*Type_Info_Pointer) current).pointer_to;
+        if current.type == .POINTER current = (cast(*Type_Info_Pointer) current).pointer_to;
         hops += 1;
     }
     return false;
@@ -322,19 +322,19 @@ is_subclass_of :: (info: *Type_Info, base_name: string, first_call := true) -> b
 // Fresh literal nodes for metaprograms that splice generated code into the AST.
 make_integer_literal :: (v: s64) -> *Code_Literal {
     node := New(Code_Literal);
-    node.kind        = .LITERAL;
+    node.kind = .LITERAL;
     node.value_flags = .IS_A_NUMBER;
-    node.value_type  = .NUMBER;
-    node._s64        = v;
+    node.value_type = .NUMBER;
+    node._s64 = v;
     return node;
 }
 
 // The text is copied so the node does not alias the caller's buffer.
 make_string_literal :: (s: string) -> *Code_Literal {
     node := New(Code_Literal);
-    node.kind       = .LITERAL;
+    node.kind = .LITERAL;
     node.value_type = .STRING;
-    node._string    = copy_text(s);
+    node._string = copy_text(s);
     return node;
 }
 
@@ -362,7 +362,7 @@ get_type_table :: (w: Workspace = -1) -> [] *Type_Info {
 // calls and types are resolved (see docs/metaprogramming/compiler-records.md).
 compiler_get_nodes :: (code: Code) -> (root: *Code_Node, expressions: [] *Code_Node) {
     Code_Nodes :: struct {
-        root:        *Code_Node;
+        root: *Code_Node;
         expressions: [] *Code_Node;
     }
     nodes := cast(*Code_Nodes) record_struct(__jaic_code_nodes(code), type_info(Code_Nodes));
@@ -420,7 +420,7 @@ compiler_modify_procedure :: (w: Workspace, body: *Code_Procedure_Body) {
     defer array_free(sources);
     for body.block.statements {
         record := record_of(it);
-        if record && record_differs(it, record)  record = 0;
+        if record && record_differs(it, record) record = 0;
         source: string;
         if !record {
             builder: String_Builder;
@@ -448,7 +448,7 @@ compiler_report_errors_for_unresolved_identifiers :: (filename: string, w: Works
     unsupported("compiler_report_errors_for_unresolved_identifiers");
 }
 
-compiler_report_errors_for_untyped_declarations_with_these_notes :: (w: Workspace, labels: .. string) {
+compiler_report_errors_for_untyped_declarations_with_these_notes :: (w: Workspace, labels: ..string) {
     unsupported("compiler_report_errors_for_untyped_declarations_with_these_notes");
 }
 
@@ -478,7 +478,7 @@ provide_import :: (w: Workspace, message: *Message_Failed_Import, type: Provided
 // Segments other than the defaults are not modelled.
 add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Data_Segment = null, w: Workspace = -1) -> [] u8 {
     result: [] u8;
-    result.data  = alloc(data.count);
+    result.data = alloc(data.count);
     result.count = data.count;
     memcpy(result.data, data.data, data.count);
     return result;
@@ -496,58 +496,58 @@ developer_debug :: (x: *void) {}
 // Primitives bound by jaic (see docs/metaprogramming/compiler-module.md). Not part of the public API.
 // ---------------------------------------------------------------------------
 
-__jaic_workspace_create          :: (name: string) -> s64 #compiler;
-__jaic_current_workspace         :: () -> s64 #compiler;
-__jaic_workspace_add_file        :: (ws: s64, path: string) #compiler;
-__jaic_workspace_add_string      :: (ws: s64, source: string) #compiler;
-__jaic_workspace_set_option      :: (ws: s64, key: string, value: string) #compiler;
+__jaic_workspace_create :: (name: string) -> s64 #compiler;
+__jaic_current_workspace :: () -> s64 #compiler;
+__jaic_workspace_add_file :: (ws: s64, path: string) #compiler;
+__jaic_workspace_add_string :: (ws: s64, source: string) #compiler;
+__jaic_workspace_set_option :: (ws: s64, key: string, value: string) #compiler;
 __jaic_workspace_begin_intercept :: (ws: s64) #compiler;
-__jaic_workspace_next_event      :: (ws: s64) -> s64 #compiler;
-__jaic_event_int                 :: (index: s64) -> s64 #compiler;
-__jaic_event_string              :: (index: s64) -> string #compiler;
-__jaic_command_line_count        :: () -> s64 #compiler;
-__jaic_command_line_arg          :: (index: s64) -> string #compiler;
-__jaic_report                    :: (message: string, file: string, line: s64, column: s64, is_error: bool) #compiler;
-__jaic_compiler_version          :: () -> string #compiler;
-__jaic_custom_link_complete      :: (ws: s64, exit_code: s64) #compiler;
+__jaic_workspace_next_event :: (ws: s64) -> s64 #compiler;
+__jaic_event_int :: (index: s64) -> s64 #compiler;
+__jaic_event_string :: (index: s64) -> string #compiler;
+__jaic_command_line_count :: () -> s64 #compiler;
+__jaic_command_line_arg :: (index: s64) -> string #compiler;
+__jaic_report :: (message: string, file: string, line: s64, column: s64, is_error: bool) #compiler;
+__jaic_compiler_version :: () -> string #compiler;
+__jaic_custom_link_complete :: (ws: s64, exit_code: s64) #compiler;
 
 #scope_module
 
 #import "Basic";
 
 // Event kinds returned by __jaic_workspace_next_event.
-EVENT_FILE     :: 1;
-EVENT_PHASE    :: 2;
+EVENT_FILE :: 1;
+EVENT_PHASE :: 2;
 EVENT_COMPLETE :: 3;
-EVENT_IMPORT   :: 4;
+EVENT_IMPORT :: 4;
 EVENT_TYPECHECKED :: 5;
 
-PHASE_PRE_WRITE_EXECUTABLE         :: 3;
-PHASE_POST_WRITE_EXECUTABLE        :: 4;
+PHASE_PRE_WRITE_EXECUTABLE :: 3;
+PHASE_POST_WRITE_EXECUTABLE :: 4;
 PHASE_READY_FOR_CUSTOM_LINK_COMMAND :: 5;
 
 workspace_names: [..] string;
 
-intercepted:        [..] Workspace;
+intercepted: [..] Workspace;
 intercept_finished: [..] bool;
-intercept_cursor:   s64;
+intercept_cursor: s64;
 
 last_complete_workspace: Workspace = 2;
-last_complete_error:     s64;
+last_complete_error: s64;
 
 // Message storage. One record per kind is reused; callers may only rely on a message
 // until the next compiler_wait_for_message().
-message_phase:    Message_Phase;
+message_phase: Message_Phase;
 message_complete: Message_Complete;
 phase_object_files: [..] string;
 
 resolve_workspace :: (w: Workspace) -> s64 {
-    if w < 0  return __jaic_current_workspace();
+    if w < 0 return __jaic_current_workspace();
     return w;
 }
 
 find_intercept :: (id: s64) -> s64 {
-    for intercepted  if it == id  return it_index;
+    for intercepted if it == id return it_index;
     return -1;
 }
 
@@ -557,8 +557,8 @@ unsupported :: (name: string) {
 }
 
 fill_complete :: (id: Workspace, error_code: s64) -> *Message {
-    message_complete.kind       = .COMPLETE;
-    message_complete.workspace  = id;
+    message_complete.kind = .COMPLETE;
+    message_complete.workspace = id;
     message_complete.error_code = xx error_code;
     return *message_complete;
 }
@@ -577,7 +577,7 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
             // metaprogram may still hold from that earlier message.
             for typechecked.procedure_bodies {
                 body := it.expression;
-                if body && body.header  body.header.body_or_null = body;
+                if body && body.header body.header.body_or_null = body;
             }
             return typechecked;
 
@@ -595,7 +595,7 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
 
             if phase == PHASE_PRE_WRITE_EXECUTABLE || phase == PHASE_READY_FOR_CUSTOM_LINK_COMMAND {
                 count := __jaic_event_int(1);
-                for 0..count-1  array_add(*phase_object_files, __jaic_event_string(it));
+                for 0..count - 1 array_add(*phase_object_files, __jaic_event_string(it));
                 message_phase.compiler_generated_object_files = phase_object_files;
                 message_phase.executable_name = __jaic_event_string(count);
             } else if phase == PHASE_POST_WRITE_EXECUTABLE {
@@ -614,7 +614,7 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
 // "beta 0.2.029, jaic" -> 0, 2, 29: the first digit run, split on dots.
 parse_version_numbers :: (text: string, info: *Version_Info) {
     i := 0;
-    while i < text.count && !is_digit_char(text[i])  i += 1;
+    while i < text.count && !is_digit_char(text[i]) i += 1;
 
     parts: [3] s32;
     part := 0;
@@ -648,19 +648,19 @@ decimal :: (n: s64) -> string {
 enum_member_name :: (value: $T) -> string {
     info := cast(*Type_Info_Enum) type_info(T);
     v := cast(s64) value;
-    for info.values  if it == v  return info.names[it_index];
+    for info.values if it == v return info.names[it_index];
     return "";
 }
 
 string_slices_equal :: (a: [] string, b: [] string) -> bool {
-    if a.count != b.count  return false;
-    for a  if it != b[it_index]  return false;
+    if a.count != b.count return false;
+    for a if it != b[it_index] return false;
     return true;
 }
 
 is_rooted :: (path: string) -> bool {
-    if path.count == 0  return false;
-    if path[0] == #char "/" || path[0] == #char "\\"  return true;
+    if path.count == 0 return false;
+    if path[0] == #char "/" || path[0] == #char "\\" return true;
     return path.count >= 3 && path[1] == #char ":" && (path[2] == #char "/" || path[2] == #char "\\");
 }
 

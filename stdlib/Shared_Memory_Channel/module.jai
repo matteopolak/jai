@@ -4,31 +4,76 @@ A :: #import "Atomics";
 Header :: struct {
     magic: u32;
     version: u32;
-    reader_status: enum s32 { DISCONNECTED :: 0; PAUSED :: 1; ACTIVELY_READING :: 2; };
-    writer_status: enum s32 { DISCONNECTED :: 0; PAUSED :: 1; ACTIVELY_WRITING :: 2; };
+    reader_status: enum s32 {
+        DISCONNECTED :: 0;
+        PAUSED :: 1;
+        ACTIVELY_READING :: 2;
+    };
+    writer_status: enum s32 {
+        DISCONNECTED :: 0;
+        PAUSED :: 1;
+        ACTIVELY_WRITING :: 2;
+    };
     offset_to_os_specific_header: u32;
     offset_to_message_queue_header: u32;
     offset_to_message_data: u32;
     full_memory_region_size_in_bytes: s64;
     data_size_in_bytes: s64;
 }
-Header_Os_Specific :: struct { magic: u32; }
+Header_Os_Specific :: struct {
+    magic: u32;
+}
 #if OS == .WINDOWS {
     Windows :: #import "Windows";
-    Read_Channel_Os_Specific :: struct { mapping: Windows.HANDLE; }
-    Write_Channel_Os_Specific :: struct { mapping: Windows.HANDLE; }
+    Read_Channel_Os_Specific :: struct {
+        mapping: Windows.HANDLE;
+    }
+    Write_Channel_Os_Specific :: struct {
+        mapping: Windows.HANDLE;
+    }
     #load "windows.jai";
 } else {
     P :: #import "POSIX";
-    Read_Channel_Os_Specific :: struct { shm: s32 = -1; }
-    Write_Channel_Os_Specific :: struct { shm: s32 = -1; }
+    Read_Channel_Os_Specific :: struct {
+        shm: s32 = -1;
+    }
+    Write_Channel_Os_Specific :: struct {
+        shm: s32 = -1;
+    }
     #load "posix.jai";
 }
-Read_Channel :: struct { header: *Header; os_specific: Read_Channel_Os_Specific; owned_name: string; active_offset: s64 = -1; active_bytes: s64; }
-Write_Channel :: struct { header: *Header; os_specific: Write_Channel_Os_Specific; reserved_offset: s64 = -1; prior_write_cursor: s64; reserved_bytes: s64; }
-Message_Queue_Header :: struct { read_cursor: s64; pad: [56] u8 = ---; write_cursor: s64; }
-Reserved_Message :: struct { channel: *Write_Channel; offset: s64; total_bytes: s64; user_write_pointer: *u8; }
-Read_Message :: struct { channel: *Read_Channel; offset: s64; total_bytes: s64; user_read_pointer: *u8; user_read_bytes: s64; }
+Read_Channel :: struct {
+    header: *Header;
+    os_specific: Read_Channel_Os_Specific;
+    owned_name: string;
+    active_offset: s64 = -1;
+    active_bytes: s64;
+}
+Write_Channel :: struct {
+    header: *Header;
+    os_specific: Write_Channel_Os_Specific;
+    reserved_offset: s64 = -1;
+    prior_write_cursor: s64;
+    reserved_bytes: s64;
+}
+Message_Queue_Header :: struct {
+    read_cursor: s64;
+    pad: [56] u8 = ---;
+    write_cursor: s64;
+}
+Reserved_Message :: struct {
+    channel: *Write_Channel;
+    offset: s64;
+    total_bytes: s64;
+    user_write_pointer: *u8;
+}
+Read_Message :: struct {
+    channel: *Read_Channel;
+    offset: s64;
+    total_bytes: s64;
+    user_read_pointer: *u8;
+    user_read_bytes: s64;
+}
 OFFSET_TO_HEADER_OS_SPECIFIC :: 64;
 OFFSET_TO_MESSAGE_QUEUE_HEADER :: 128;
 OFFSET_TO_MESSAGE_DATA :: 256;
@@ -95,12 +140,14 @@ writer_reserve_message :: (channel: *Write_Channel, data_bytes: s64) -> (success
     if needed > end - write {
         if needed >= read - begin return false, .{};
         offset = begin;
-    } else if write < read && needed >= read - write { return false, .{}; }
+    } else if write < read && needed >= read - write {
+        return false, .{};
+    }
     channel.reserved_offset = offset;
     channel.reserved_bytes = needed;
     channel.prior_write_cursor = write;
     A.atomic_write(*header.writer_status, .ACTIVELY_WRITING);
-    return true, .{channel, offset, needed, cast(*u8) header + offset + PER_MESSAGE_OVERHEAD_SIZE};
+    return true, .{ channel, offset, needed, cast(*u8) header + offset + PER_MESSAGE_OVERHEAD_SIZE };
 }
 
 writer_commit_message :: (channel: *Write_Channel, message: Reserved_Message) -> success: bool {
@@ -144,7 +191,7 @@ reader_poll_for_message :: (channel: *Read_Channel) -> (found: bool, fatal_error
     A.atomic_write(*header.reader_status, .ACTIVELY_READING);
     channel.active_offset = offset;
     channel.active_bytes = total;
-    return true, false, .{channel, offset, total, cast(*u8) header + offset + PER_MESSAGE_OVERHEAD_SIZE, length};
+    return true, false, .{ channel, offset, total, cast(*u8) header + offset + PER_MESSAGE_OVERHEAD_SIZE, length };
 }
 
 reader_done_with_message :: (message: *Read_Message) -> bool {
@@ -164,8 +211,16 @@ reader_done_with_message :: (message: *Read_Message) -> bool {
 }
 
 #scope_module
-channel_magic :: () -> u32 { value: u32; memcpy(*value, CHANNEL_MAGIC.data, 4); return value; }
-message_magic :: () -> u64 { value: u64; memcpy(*value, MESSAGE_MAGIC.data, 8); return value; }
+channel_magic :: () -> u32 {
+    value: u32;
+    memcpy(*value, CHANNEL_MAGIC.data, 4);
+    return value;
+}
+message_magic :: () -> u64 {
+    value: u64;
+    memcpy(*value, MESSAGE_MAGIC.data, 8);
+    return value;
+}
 write_stamp :: (header: *Header, offset: s64, length: s64) {
     pointer := cast(*u8) header + offset;
     magic := message_magic();

@@ -1,8 +1,14 @@
 // Independently authored signed femtosecond arithmetic and calendar rendering.
 // OS clock acquisition and timezone conversion are supplied by OS modules.
-Apollo_Time :: struct { low: u64; high: s64; }
-APOLLO_TIME_INVALID :: Apollo_Time.{0, cast,no_check(s64) 0x8000_0000_0000_0000};
-Time_Zone :: enum u32 { UTC :: 0; LOCAL :: 1; }
+Apollo_Time :: struct {
+    low: u64;
+    high: s64;
+}
+APOLLO_TIME_INVALID :: Apollo_Time.{ 0, cast,no_check(s64) 0x8000_0000_0000_0000 };
+Time_Zone :: enum u32 {
+    UTC :: 0;
+    LOCAL :: 1;
+}
 Calendar_Time :: struct {
     year: s32;
     month_starting_at_0: s8;
@@ -15,27 +21,45 @@ Calendar_Time :: struct {
     time_zone: Time_Zone;
 }
 FEMTOSECONDS :: 1_000_000_000_000_000;
-APOLLO_TIME_FOR_JAN_1_1970 :: Apollo_Time.{low = 0xdbd87f0edb7c8000, high = 0x300};
+APOLLO_TIME_FOR_JAN_1_1970 :: Apollo_Time.{ low = 0xdbd87f0edb7c8000, high = 0x300 };
 
 ConvertToApollo :: (m: s64, FACTOR: s64) #expand {
     return cast,force(Apollo_Time) (to_s128(m) * FACTOR);
 }
-seconds_to_apollo :: (m: s64) -> Apollo_Time { return cast,force(Apollo_Time) (to_s128(m) * FEMTOSECONDS); }
-milliseconds_to_apollo :: (m: s64) -> Apollo_Time { return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000_000); }
-microseconds_to_apollo :: (m: s64) -> Apollo_Time { return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000); }
-nanoseconds_to_apollo :: (m: s64) -> Apollo_Time { return cast,force(Apollo_Time) (to_s128(m) * 1_000_000); }
+seconds_to_apollo :: (m: s64) -> Apollo_Time {
+    return cast,force(Apollo_Time) (to_s128(m) * FEMTOSECONDS);
+}
+milliseconds_to_apollo :: (m: s64) -> Apollo_Time {
+    return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000_000);
+}
+microseconds_to_apollo :: (m: s64) -> Apollo_Time {
+    return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000);
+}
+nanoseconds_to_apollo :: (m: s64) -> Apollo_Time {
+    return cast,force(Apollo_Time) (to_s128(m) * 1_000_000);
+}
 
-operator == :: (a: Apollo_Time, b: Apollo_Time) -> bool { return a.low == b.low && a.high == b.high; }
+operator == :: (a: Apollo_Time, b: Apollo_Time) -> bool {
+    return a.low == b.low && a.high == b.high;
+}
 operator + :: (a: Apollo_Time, b: Apollo_Time) -> Apollo_Time {
     return cast,force(Apollo_Time) (cast,force(S128) a + cast,force(S128) b);
 }
 operator - :: (a: Apollo_Time, b: Apollo_Time) -> Apollo_Time {
     return cast,force(Apollo_Time) (cast,force(S128) a - cast,force(S128) b);
 }
-operator < :: (a: Apollo_Time, b: Apollo_Time) -> bool { return cast,force(S128) a < cast,force(S128) b; }
-operator <= :: (a: Apollo_Time, b: Apollo_Time) -> bool { return !(b < a); }
-operator > :: (a: Apollo_Time, b: Apollo_Time) -> bool { return b < a; }
-operator >= :: (a: Apollo_Time, b: Apollo_Time) -> bool { return !(a < b); }
+operator < :: (a: Apollo_Time, b: Apollo_Time) -> bool {
+    return cast,force(S128) a < cast,force(S128) b;
+}
+operator <= :: (a: Apollo_Time, b: Apollo_Time) -> bool {
+    return !(b < a);
+}
+operator > :: (a: Apollo_Time, b: Apollo_Time) -> bool {
+    return b < a;
+}
+operator >= :: (a: Apollo_Time, b: Apollo_Time) -> bool {
+    return !(a < b);
+}
 
 // Integer conversion truncates toward zero unless rounding is requested.
 // Rounding uses the nearest integer, with exact halves away from zero.
@@ -46,7 +70,7 @@ ConvertFromApollo :: inline (t: Apollo_Time, divisor: u64, $DO_ROUNDING: bool) -
     #if DO_ROUNDING {
         magnitude := to_u128(remainder);
         if remainder.high < 0 magnitude = U128.{} - magnitude;
-        if magnitude >= U128.{divisor / 2 + divisor % 2, 0} {
+        if magnitude >= U128.{ divisor / 2 + divisor % 2, 0 } {
             if t.high < 0 quotient = quotient - to_s128(1);
             else quotient = quotient + to_s128(1);
         }
@@ -94,25 +118,25 @@ to_apollo :: (seconds: float64) -> Apollo_Time {
     if femtoseconds >= 170141183460469231731687303715884105728.0 return APOLLO_TIME_INVALID;
     high := cast(u64) (femtoseconds / 18446744073709551616.0);
     low := cast(u64) (femtoseconds - cast(float64) high * 18446744073709551616.0);
-    bits := U128.{low, high};
+    bits := U128.{ low, high };
     if negative bits = U128.{} - bits;
     return cast,force(Apollo_Time) to_s128(bits);
 }
 calendar_to_string :: (ct: Calendar_Time) -> string {
-    return tprint("%-%-% %:%:%.%", FormatInt.{value = ct.year, minimum_digits = 4},
-        FormatInt.{value = ct.month_starting_at_0 + 1, minimum_digits = 2},
-        FormatInt.{value = ct.day_of_month_starting_at_0 + 1, minimum_digits = 2},
-        FormatInt.{value = ct.hour, minimum_digits = 2}, FormatInt.{value = ct.minute, minimum_digits = 2},
-        FormatInt.{value = ct.second, minimum_digits = 2}, FormatInt.{value = ct.millisecond, minimum_digits = 3});
+    return tprint("%-%-% %:%:%.%", FormatInt.{ value = ct.year, minimum_digits = 4 },
+        FormatInt.{ value = ct.month_starting_at_0 + 1, minimum_digits = 2 },
+        FormatInt.{ value = ct.day_of_month_starting_at_0 + 1, minimum_digits = 2 },
+        FormatInt.{ value = ct.hour, minimum_digits = 2 }, FormatInt.{ value = ct.minute, minimum_digits = 2 },
+        FormatInt.{ value = ct.second, minimum_digits = 2 }, FormatInt.{ value = ct.millisecond, minimum_digits = 3 });
 }
 calendar_to_iso_string :: (ct: Calendar_Time) -> string {
     zone := "";
     if ct.time_zone == .UTC zone = "Z";
-    return tprint("%1-%2-%3T%4:%5:%6.%7%8", FormatInt.{value = ct.year, minimum_digits = 4},
-        FormatInt.{value = ct.month_starting_at_0 + 1, minimum_digits = 2},
-        FormatInt.{value = ct.day_of_month_starting_at_0 + 1, minimum_digits = 2},
-        FormatInt.{value = ct.hour, minimum_digits = 2}, FormatInt.{value = ct.minute, minimum_digits = 2},
-        FormatInt.{value = ct.second, minimum_digits = 2}, FormatInt.{value = ct.millisecond, minimum_digits = 3}, zone);
+    return tprint("%1-%2-%3T%4:%5:%6.%7%8", FormatInt.{ value = ct.year, minimum_digits = 4 },
+        FormatInt.{ value = ct.month_starting_at_0 + 1, minimum_digits = 2 },
+        FormatInt.{ value = ct.day_of_month_starting_at_0 + 1, minimum_digits = 2 },
+        FormatInt.{ value = ct.hour, minimum_digits = 2 }, FormatInt.{ value = ct.minute, minimum_digits = 2 },
+        FormatInt.{ value = ct.second, minimum_digits = 2 }, FormatInt.{ value = ct.millisecond, minimum_digits = 3 }, zone);
 }
 
 // Calendar conversion. UTC uses the proleptic Gregorian civil-date algorithm below, so it is exact and

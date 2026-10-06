@@ -6,7 +6,7 @@ Atlas_Charter :: enum u32 {
 }
 
 Atlas_Mapper :: enum u32 {
-    LSCM    :: 0;
+    LSCM :: 0;
     Default :: 0;
 }
 
@@ -16,20 +16,20 @@ Atlas_Packer :: enum u32 {
 }
 
 Atlas_Options :: struct {
-    mesh_options:    struct {
+    mesh_options: struct {
         fix_nonmanifold_meshes: bool;
     };
 
-    charter:         Atlas_Charter;
+    charter: Atlas_Charter;
     charter_options: union {
         witness: struct {
-            proxy_fit_metric_weight:    float;
-            roundness_metric_weight:    float;
+            proxy_fit_metric_weight: float;
+            roundness_metric_weight: float;
             straightness_metric_weight: float;
-            normal_seam_metric_weight:  float;
+            normal_seam_metric_weight: float;
             texture_seam_metric_weight: float;
-            max_chart_area:             float;
-            max_boundary_length:        float;
+            max_chart_area: float;
+            max_boundary_length: float;
         };
 
         extract: struct {
@@ -37,76 +37,76 @@ Atlas_Options :: struct {
         };
     };
 
-    mapper:          Atlas_Mapper;
-    mapper_options:  struct {
-        preserve_uvs:      bool;
+    mapper: Atlas_Mapper;
+    mapper_options: struct {
+        preserve_uvs: bool;
         preserve_boundary: bool;
     };
 
-    packer:          Atlas_Packer;
-    packer_options:  union {
+    packer: Atlas_Packer;
+    packer_options: union {
         witness: struct {
             packing_quality: s32;
             texels_per_unit: float;
-            block_align:     bool;
-            conservative:    bool;
+            block_align: bool;
+            conservative: bool;
         };
     };
 }
 
 Atlas_Input_Vertex :: struct {
-    position:      Vector3;
-    normal:        Vector3;
-    uv:            Vector2;
+    position: Vector3;
+    normal: Vector3;
+    uv: Vector2;
     first_colocal: s32;
 }
 
 Atlas_Input_Face :: struct {
-    vertex_index:   [3] s32;
+    vertex_index: [3] s32;
     material_index: s32;
 }
 
 Atlas_Input_Mesh :: struct {
     vertex_count: s32;
-    face_count:   s32;
+    face_count: s32;
     vertex_array: *Atlas_Input_Vertex;
-    face_array:   *Atlas_Input_Face;
+    face_array: *Atlas_Input_Face;
 }
 
 Atlas_Output_Vertex :: struct {
-    uv:   Vector2;
+    uv: Vector2;
     xref: s32;
 }
 
 Atlas_Output_Mesh :: struct {
-    atlas_width:  s32;
+    atlas_width: s32;
     atlas_height: s32;
     vertex_count: s32;
-    index_count:  s32;
+    index_count: s32;
     vertex_array: *Atlas_Output_Vertex;
-    index_array:  *s32;
+    index_array: *s32;
 }
 
 Atlas_Error :: enum u32 {
-    Success                   :: 0;
-    Invalid_Args              :: 1;
-    Invalid_Options           :: 2;
-    Invalid_Mesh              :: 3;
+    Success :: 0;
+    Invalid_Args :: 1;
+    Invalid_Options :: 2;
+    Invalid_Mesh :: 3;
     Invalid_Mesh_Non_Manifold :: 4;
-    Chart_Failure             :: 5;
-    Parameterization_Failure  :: 6;
-    Not_Implemented           :: 7;
+    Chart_Failure :: 5;
+    Parameterization_Failure :: 6;
+    Not_Implemented :: 7;
 }
 
 Atlas_Error_Subtype :: enum u32 {
     Duplicate_Edge_Or_Face :: 0;
-    None                   :: 1;
+    None :: 1;
 }
 
 Atlas_Error_Data :: struct {
     error_subtype: Atlas_Error_Subtype;
-    index_count:   s32;
-    index_array:   *s32;
+    index_count: s32;
+    index_array: *s32;
 }
 
 Atlas_Message_Callback :: #type (msg: *u8, _context: *void) -> void #c_call;
@@ -161,10 +161,6 @@ atlas_free :: (output: *Atlas_Error_Data) -> void {
 
 #import "Basic";
 
-#if OS == .LINUX {
-
-} else #if OS == .MACOS {
-
-} else {
+#if OS == .LINUX {} else #if OS == .MACOS {} else {
     #assert false;
 }
