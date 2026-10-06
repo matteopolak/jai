@@ -9,19 +9,19 @@
 // input, and on any difference `format_source` fails instead of returning text.
 
 Brace_Style :: enum u8 {
-    SAME_LINE;  // `if x\n{` becomes `if x {`, and `}\nelse` becomes `} else`
+    SAME_LINE; // `if x\n{` becomes `if x {`, and `}\nelse` becomes `} else`
     PRESERVE;
 }
 
 Format_Config :: struct {
     indent_width := 4;
-    case_indent := -1;        // `case` lines inside `if x == {`; -1: indent_width
-    case_body_indent := -1;   // statements under a `case`; -1: indent_width
+    case_indent := -1; // `case` lines inside `if x == {`; -1: indent_width
+    case_body_indent := -1; // statements under a `case`; -1: indent_width
     max_blank_lines := 2;
-    max_width := 100;         // only reported (format_count_long_lines); lines are never rewrapped
+    max_width := 100; // only reported (format_count_long_lines); lines are never rewrapped
     brace_style := Brace_Style.SAME_LINE;
-    ignore: [..] string;      // globs relative to `root`, for format_is_ignored
-    root: string;             // directory of the config file; set by whoever read it
+    ignore: [..] string; // globs relative to `root`, for format_is_ignored
+    root: string; // directory of the config file; set by whoever read it
 }
 
 // The config file name the command-line tool looks for, upward from each file.

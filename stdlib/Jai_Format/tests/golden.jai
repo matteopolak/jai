@@ -18,7 +18,7 @@ SOURCES :: string.["../module.jai", "../lexer.jai", "../config.jai", "../format.
 
 failures := 0;
 
-fail :: (format: string, args: .. Any) {
+fail :: (format: string, args: ..Any) {
     print("FAIL: ");
     print(format, ..args);
     print("\n");
@@ -41,14 +41,23 @@ main :: () {
         toml, has_config := read_entire_file(tprint("%.toml", base), log_errors = false);
         if has_config {
             parsed, ok, message := parse_config(toml);
-            if !ok { fail("%.toml: %", base, message); continue; }
+            if !ok {
+                fail("%.toml: %", base, message);
+                continue;
+            }
             config = parsed;
         }
         input, read_ok := read_entire_file(tprint("%.in.jai", base));
-        if !read_ok { fail("cannot read %.in.jai", base); continue; }
+        if !read_ok {
+            fail("cannot read %.in.jai", base);
+            continue;
+        }
 
         output, ok, error := format_source(input, config);
-        if !ok { fail("%.in.jai: %", base, error); continue; }
+        if !ok {
+            fail("%.in.jai: %", base, error);
+            continue;
+        }
 
         again, again_ok := format_source(output, config);
         if !again_ok || again != output fail("%: formatting is not idempotent", base);
@@ -59,7 +68,10 @@ main :: () {
             continue;
         }
         expected, expected_ok := read_entire_file(expected_path, log_errors = false);
-        if !expected_ok { fail("missing %; run with -- --bless", expected_path); continue; }
+        if !expected_ok {
+            fail("missing %; run with -- --bless", expected_path);
+            continue;
+        }
         if expected != output report_difference(base, expected, output);
     }
 
@@ -92,12 +104,12 @@ report_difference :: (name: string, expected: string, actual: string) {
 // Input that cannot be formatted safely is refused, not mangled.
 check_refusals :: () {
     bad :: string.[
-        "f :: () { x := 1;\n",          // unclosed block
-        "f :: () { x := (1; }\n",       // mismatched bracket
+        "f :: () { x := 1;\n", // unclosed block
+        "f :: () { x := (1; }\n", // mismatched bracket
         "s := \"unterminated;\n",
         "t := #string END\nno terminator\n",
         "/* unterminated comment\n",
-        "x := 1 \x01 2;\n",              // a byte the lexer does not know
+        "x := 1 \x01 2;\n", // a byte the lexer does not know
     ];
     for bad {
         output, ok := format_source(it);
@@ -110,15 +122,18 @@ check_equivalence_guard :: () {
     same, why := format_tokens_equivalent("a := b+c; // x\n", "a := b + c;  // x\n");
     if !same fail("equivalent sources rejected: %", why);
     pairs :: string.[
-        "x := a & &b;\n",        "x := a &&b;\n",
-        "a := 1;\n",             "a := 2;\n",
-        "x := a // note\n;\n",   "x := a;\n",
-        "x := a;\n-b;\n",        "x := a; -b;\n",
-        "s := \"a b\";\n",       "s := \"a  b\";\n",
+        "x := a & &b;\n", "x := a &&b;\n",
+        "a := 1;\n", "a := 2;\n",
+        "x := a // note\n;\n", "x := a;\n",
+        // After `}`, a line starting with `-` is a new statement; on the same line it subtracts.
+        "f :: () {}\n-b;\n", "f :: () {} -b;\n",
+        "x := a;\n@Note b;\n", "x := a; @Note b;\n",
+        "#if A x := 1\n#align 8;\n", "#if A x := 1 #align 8;\n",
+        "s := \"a b\";\n", "s := \"a  b\";\n",
         // Directive flags are only flags when written against the directive.
-        "k :: #library,system \"k\";\n",  "k :: #library, system \"k\";\n",
+        "k :: #library,system \"k\";\n", "k :: #library, system \"k\";\n",
         "k :: #library ,system \"k\";\n", "k :: #library,system \"k\";\n",
-        "l := #location(x);\n",          "l := #location (x);\n",
+        "l := #location(x);\n", "l := #location (x);\n",
     ];
     i := 0;
     while i < pairs.count {
@@ -151,9 +166,15 @@ check_config_parsing :: () {
 check_self_formatted :: () {
     for path: SOURCES {
         source, ok := read_entire_file(path);
-        if !ok { fail("cannot read %", path); continue; }
+        if !ok {
+            fail("cannot read %", path);
+            continue;
+        }
         output, formatted, error := format_source(source);
-        if !formatted { fail("%: %", path, error); continue; }
+        if !formatted {
+            fail("%: %", path, error);
+            continue;
+        }
         if output != source report_difference(path, source, output);
     }
 }

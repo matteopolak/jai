@@ -10,10 +10,10 @@
 Tok_Kind :: enum u8 {
     IDENT;
     NUMBER;
-    STRING;        // "..." (may span lines)
-    HERE_STRING;   // #string TAG ... TAG, from the `#` to the end of the closing tag
-    DIRECTIVE;     // #name
-    NOTE;          // @name, @name(args), @"text"
+    STRING; // "..." (may span lines)
+    HERE_STRING; // #string TAG ... TAG, from the `#` to the end of the closing tag
+    DIRECTIVE; // #name
+    NOTE; // @name, @name(args), @"text"
     PUNCT;
     LINE_COMMENT;
     BLOCK_COMMENT; // /* ... */, nested
@@ -22,16 +22,16 @@ Tok_Kind :: enum u8 {
 
 Tok :: struct {
     kind: Tok_Kind;
-    start: s64;        // byte range in the source
+    start: s64; // byte range in the source
     end: s64;
-    newlines: s32;     // line breaks in the trivia before this token
-    column: s32;       // original column when the token starts a line (tabs count 4)
-    ws_start: s64;     // where the trivia before this token starts (end of the previous token)
+    newlines: s32; // line breaks in the trivia before this token
+    column: s32; // original column when the token starts a line (tabs count 4)
+    ws_start: s64; // where the trivia before this token starts (end of the previous token)
 }
 
 Lex_Result :: struct {
     tokens: [..] Tok;
-    error: string;     // empty on success
+    error: string; // empty on success
     error_offset: s64;
 }
 
@@ -67,7 +67,7 @@ lex :: (src: string) -> Lex_Result {
 
     at: s64 = 0;
     // A UTF-8 byte order mark is not a token; the formatter copies it through.
-    if src.count >= 3 && src[0] == 0xEF && src[1] == 0xBB && src[2] == 0xBF  at = 3;
+    if src.count >= 3 && src[0] == 0xEF && src[1] == 0xBB && src[2] == 0xBF at = 3;
 
     fail :: (message: string, offset: s64) #expand {
         `result.error = message;
@@ -120,10 +120,10 @@ lex :: (src: string) -> Lex_Result {
 
         c := src[at];
         if c == #char "/" && peek(1) == #char "/" {
-            while at < src.count && src[at] != #char "\n"  at += 1;
+            while at < src.count && src[at] != #char "\n" at += 1;
             // A carriage return belongs to the line break, not the comment.
             end := at;
-            while end > tok.start && (src[end - 1] == #char "\r" || src[end - 1] == #char " " || src[end - 1] == #char "\t")  end -= 1;
+            while end > tok.start && (src[end - 1] == #char "\r" || src[end - 1] == #char " " || src[end - 1] == #char "\t") end -= 1;
             tok.kind = .LINE_COMMENT;
             tok.end = end;
             at = end;
@@ -131,7 +131,7 @@ lex :: (src: string) -> Lex_Result {
             at += 2;
             depth := 1;
             while depth > 0 {
-                if at >= src.count  fail("unterminated block comment", tok.start);
+                if at >= src.count fail("unterminated block comment", tok.start);
                 if src[at] == #char "/" && peek(1) == #char "*" {
                     depth += 1;
                     at += 2;
@@ -149,7 +149,7 @@ lex :: (src: string) -> Lex_Result {
             // `group\_fraction`: a backslash (optionally followed by blanks) joins identifier parts.
             while at < src.count && src[at] == #char "\\" {
                 skip := 1;
-                while at + skip < src.count && (src[at + skip] == #char " " || src[at + skip] == #char "\t")  skip += 1;
+                while at + skip < src.count && (src[at + skip] == #char " " || src[at + skip] == #char "\t") skip += 1;
                 if at + skip >= src.count || !is_ident_char(src[at + skip]) break;
                 at += skip;
                 lex_ident(src, *at);
@@ -163,24 +163,30 @@ lex :: (src: string) -> Lex_Result {
         } else if c == #char "\"" {
             at += 1;
             while true {
-                if at >= src.count  fail("unterminated string", tok.start);
+                if at >= src.count fail("unterminated string", tok.start);
                 d := src[at];
-                if d == #char "\"" { at += 1; break; }
-                if d == #char "\\" { at += 2; continue; }
+                if d == #char "\"" {
+                    at += 1;
+                    break;
+                }
+                if d == #char "\\" {
+                    at += 2;
+                    continue;
+                }
                 at += 1;
             }
-            if at > src.count  fail("unterminated string", tok.start);
+            if at > src.count fail("unterminated string", tok.start);
             tok.kind = .STRING;
             tok.end = at;
         } else if c == #char "#" && directive_follows(src, at) {
             at += 1;
-            while at < src.count && (src[at] == #char " " || src[at] == #char "\t")  at += 1;
+            while at < src.count && (src[at] == #char " " || src[at] == #char "\t") at += 1;
             name_start := at;
             lex_ident(src, *at);
             name := slice(src, name_start, at - name_start);
             if name == "string" {
                 ok := lex_here_string(src, *at);
-                if !ok  fail("unterminated here-string", tok.start);
+                if !ok fail("unterminated here-string", tok.start);
                 tok.kind = .HERE_STRING;
             } else {
                 tok.kind = .DIRECTIVE;
@@ -191,10 +197,16 @@ lex :: (src: string) -> Lex_Result {
             if at < src.count && src[at] == #char "\"" {
                 at += 1;
                 while true {
-                    if at >= src.count  fail("unterminated note", tok.start);
+                    if at >= src.count fail("unterminated note", tok.start);
                     d := src[at];
-                    if d == #char "\"" { at += 1; break; }
-                    if d == #char "\\" { at += 2; continue; }
+                    if d == #char "\"" {
+                        at += 1;
+                        break;
+                    }
+                    if d == #char "\\" {
+                        at += 2;
+                        continue;
+                    }
                     at += 1;
                 }
             } else {
@@ -223,7 +235,7 @@ lex :: (src: string) -> Lex_Result {
                     break;
                 }
             }
-            if !matched  fail("unexpected character", at);
+            if !matched fail("unexpected character", at);
             tok.kind = .PUNCT;
             tok.end = at;
         }
@@ -235,12 +247,12 @@ lex :: (src: string) -> Lex_Result {
 #scope_file
 
 lex_ident :: (src: string, at: *s64) {
-    while at.* < src.count && is_ident_char(src[at.*])  at.* += 1;
+    while at.* < src.count && is_ident_char(src[at.*]) at.* += 1;
 }
 
 directive_follows :: (src: string, at: s64) -> bool {
     skip := at + 1;
-    while skip < src.count && (src[skip] == #char " " || src[skip] == #char "\t")  skip += 1;
+    while skip < src.count && (src[skip] == #char " " || src[skip] == #char "\t") skip += 1;
     return skip < src.count && is_ident_start(src[skip]);
 }
 
@@ -262,7 +274,7 @@ lex_number :: (src: string, at: *s64) {
         p := peek(1);
         if p == #char "x" || p == #char "X" || p == #char "b" || p == #char "B" || p == #char "h" || p == #char "H" {
             i += 2;
-            while i < src.count && (is_hex_digit(src[i]) || src[i] == #char "_")  i += 1;
+            while i < src.count && (is_hex_digit(src[i]) || src[i] == #char "_") i += 1;
             at.* = i;
             return;
         }
@@ -293,27 +305,27 @@ lex_number :: (src: string, at: *s64) {
 lex_here_string :: (src: string, at: *s64) -> bool {
     i := at.*;
     while true {
-        while i < src.count && (src[i] == #char " " || src[i] == #char "\t")  i += 1;
+        while i < src.count && (src[i] == #char " " || src[i] == #char "\t") i += 1;
         if i >= src.count || src[i] != #char "," break;
         i += 1;
-        while i < src.count && (src[i] == #char " " || src[i] == #char "\t")  i += 1;
+        while i < src.count && (src[i] == #char " " || src[i] == #char "\t") i += 1;
         if i < src.count && src[i] == #char "\\" {
             i += 2;
         } else {
-            while i < src.count && is_ident_char(src[i])  i += 1;
+            while i < src.count && is_ident_char(src[i]) i += 1;
         }
     }
     tag_start := i;
-    while i < src.count && is_ident_char(src[i])  i += 1;
+    while i < src.count && is_ident_char(src[i]) i += 1;
     tag := slice(src, tag_start, i - tag_start);
     if !tag.count return false;
-    while i < src.count && src[i] != #char "\n"  i += 1;
+    while i < src.count && src[i] != #char "\n" i += 1;
     i += 1;
     while i < src.count {
         line_end := i;
-        while line_end < src.count && src[line_end] != #char "\n"  line_end += 1;
+        while line_end < src.count && src[line_end] != #char "\n" line_end += 1;
         indent := i;
-        while indent < line_end && (src[indent] == #char " " || src[indent] == #char "\t")  indent += 1;
+        while indent < line_end && (src[indent] == #char " " || src[indent] == #char "\t") indent += 1;
         rest := slice(src, indent, line_end - indent);
         if begins_with(rest, tag) && (rest.count == tag.count || !is_ident_char(rest[tag.count])) {
             at.* = indent + tag.count;
