@@ -1,7 +1,7 @@
 //! Metaprogramming, format-string and navigation features against the repository's stdlib.
 use jai_language_server::{
     DiagnosticCode, DiagnosticSeverity, DocumentUri, Environment, InlayHintKind, JsonSession,
-    Limits, Position, Range, SemanticTokenKind, Session,
+    Limits, MarkupKind, Position, Range, SemanticTokenKind, Session,
 };
 use std::path::PathBuf;
 
@@ -55,6 +55,15 @@ fn hover(s: &Session, position: Position) -> String {
         .expect("hover")
         .contents
         .value
+}
+
+fn markdown(s: &Session, position: Position) -> String {
+    let hover = s
+        .hover_as(&uri(), position, MarkupKind::Markdown)
+        .unwrap()
+        .expect("hover");
+    assert_eq!(hover.contents.kind, MarkupKind::Markdown);
+    hover.contents.value
 }
 
 const PROGRAM: &str = r#"#import "Basic";
@@ -119,6 +128,69 @@ fn format_string_hover_lists_each_directive() {
     );
     let marked = hover(&s, at(PROGRAM, "%2 of", 0, 0));
     assert!(marked.contains("▸ %2 → s: s64"), "{marked}");
+}
+
+#[test]
+fn markdown_hovers_fence_code_and_break_sections() {
+    let mut s = session();
+    s.open(uri(), 1, PROGRAM.into()).unwrap();
+    let macro_hover = markdown(&s, at(PROGRAM, "square(total", 0, 2));
+    assert!(
+        macro_hover.starts_with("```jai\nsquare :: (x: int) -> int #expand"),
+        "{macro_hover}"
+    );
+    assert!(
+        macro_hover.ends_with(
+            "\n```\n\n---\n\n*expands to*\n\n```jai\n\
+             total += (total + 2);\nreturn (total + 2) * (total + 2);\n```"
+        ),
+        "{macro_hover}"
+    );
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "#insert", 0, 2)),
+        "```jai\n#insert\n```\n\n---\n\n*expands to*\n\n```jai\ninserted := 40 + 2;\n```"
+    );
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "#run compute", 0, 2)),
+        "```jai\n#run = 30: s64\n```\n\n---\n\n*prints*\n\n```text\ncomputing\n```"
+    );
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "#if SIZE", 0, 1)),
+        "`#if`: the condition is true, the first branch is compiled"
+    );
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "return x * x", 0, 1)),
+        "keyword `return`"
+    );
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "scale(5", 0, 1)),
+        "```jai\nscale :: (value: int, factor: int) -> int\n```"
+    );
+    // An overload set: one declaration per line of a single block.
+    let overloads = markdown(&s, at(PROGRAM, "print(\"% and", 0, 1));
+    assert!(overloads.starts_with("```jai\nprint :: ("), "{overloads}");
+    assert!(overloads.ends_with("\n```"), "{overloads}");
+    assert_eq!(overloads.matches("\nprint :: (").count(), 2, "{overloads}");
+}
+
+#[test]
+fn markdown_format_hover_is_a_list_with_the_hovered_row_bold() {
+    let mut s = session();
+    s.open(uri(), 1, PROGRAM.into()).unwrap();
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "%2 of", 0, 0)),
+        "```jai\n\"% and %2 of %1\\n\"\n```\n\n\
+         - `%` → `total: s64`\n\
+         - **`%2`** → `s: s64`\n\
+         - `%1` → `total: s64`"
+    );
+    // Prose is escaped; an argument that is not passed is not code.
+    assert_eq!(
+        markdown(&s, at(PROGRAM, "% %\\n", 0, 0)),
+        "```jai\n\"% %\\n\"\n```\n\n\
+         - **`%`** → `inserted: s64`\n\
+         - `%` → missing argument 2"
+    );
 }
 
 #[test]
