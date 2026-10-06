@@ -547,8 +547,8 @@ __long_double_to_float64 :: (p: *void) -> float64 {
         exponent := cast(s64) ((high >> 48) & 0x7fff);
         stored := (high & 0xffff_ffff_ffff) | low;
         significand := ((high & 0xffff_ffff_ffff) << 15) | (low >> 49);
-        if low & ((cast(u64) 1 << 49) - 1) significand |= 1;
-        if exponent != 0 significand |= cast(u64) 1 << 63;
+        if low & (((cast(u64) 1) << 49) - 1) significand |= 1;
+        if exponent != 0 significand |= (cast(u64) 1) << 63;
         is_nan := exponent == 0x7fff && stored != 0;
     }
     result: float64;
@@ -566,7 +566,7 @@ __long_double_to_float64 :: (p: *void) -> float64 {
             step := scale;
             if step > 1000 step = 1000;
             if step < -1000 step = -1000;
-            factor_bits := cast(u64) (step + 1023) << 52;
+            factor_bits := (cast(u64) (step + 1023)) << 52;
             result *= (cast(*float64) *factor_bits).*;
             scale -= step;
         }
