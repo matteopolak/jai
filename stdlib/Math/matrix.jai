@@ -144,27 +144,16 @@ transform_vector :: (m: $T/interface AnyMatrix3, v: Vector3) -> Vector3 {
 make_matrix3 :: (m: $T/interface AnyMatrix3) -> Matrix3 #must {
     return .{ _11 = m._11, _12 = m._12, _13 = m._13, _21 = m._21, _22 = m._22, _23 = m._23, _31 = m._31, _32 = m._32, _33 = m._33 };
 }
+// Widens any of the matrix types to 4x4. Whatever T does not store comes from the identity:
+// the translation column for a 3x3, the bottom row for a 3x3 or a 4x3.
 make_matrix4 :: (m: $T/interface AnyMatrix3) -> Matrix4 #must {
+    #if T == Matrix4 return m;
     result := Matrix4_Identity;
-    result._11 = m._11;
-    result._12 = m._12;
-    result._13 = m._13;
-    result._21 = m._21;
-    result._22 = m._22;
-    result._23 = m._23;
-    result._31 = m._31;
-    result._32 = m._32;
-    result._33 = m._33;
-    #if T == Matrix4 || T == Matrix4x3 {
-        result._14 = m._14;
-        result._24 = m._24;
-        result._34 = m._34;
-    }
-    #if T == Matrix4 {
-        result._41 = m._41;
-        result._42 = m._42;
-        result._43 = m._43;
-        result._44 = m._44;
+    result._11, result._12, result._13 = m._11, m._12, m._13;
+    result._21, result._22, result._23 = m._21, m._22, m._23;
+    result._31, result._32, result._33 = m._31, m._32, m._33;
+    #if T == Matrix4x3 {
+        result._14, result._24, result._34 = m._14, m._24, m._34;
     }
     return result;
 }
@@ -308,16 +297,12 @@ scale :: (m: $T/interface AnyMatrix3, v: Vector3) -> T #must {
     scale(*result, v);
     return result;
 }
+// Scales the basis vectors: column 1 of the 3x3 block by v.x, column 2 by v.y, column 3 by v.z.
+// Translation and the bottom row are untouched.
 scale :: (m: *$T/interface AnyMatrix3, v: Vector3) {
-    m._11 *= v.x;
-    m._21 *= v.x;
-    m._31 *= v.x;
-    m._12 *= v.y;
-    m._22 *= v.y;
-    m._32 *= v.y;
-    m._13 *= v.z;
-    m._23 *= v.z;
-    m._33 *= v.z;
+    m._11, m._12, m._13 = m._11 * v.x, m._12 * v.y, m._13 * v.z;
+    m._21, m._22, m._23 = m._21 * v.x, m._22 * v.y, m._23 * v.z;
+    m._31, m._32, m._33 = m._31 * v.x, m._32 * v.y, m._33 * v.z;
 }
 make_translation_matrix4 :: (v: Vector3) -> Matrix4 #must {
     result := Matrix4_Identity;
