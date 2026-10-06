@@ -5,12 +5,27 @@ File :: struct {
 }
 
 file_open :: (name: string, for_writing := false, keep_existing_content := false, log_errors := true) -> File, bool {
+    // Writing handles read too, and keeping the content positions at the end without append
+    // mode, so later seeks move writes as they do on Windows.
     mode := "rb";
     if for_writing {
-        mode = "wb";
-        if keep_existing_content mode = "ab+";
+        mode = "wb+";
+        // "rb+" does not create, and "wb+" would truncate an existing file.
+        if keep_existing_content && access(temp_c_string(name), 0) == 0 mode = "rb+";
     }
     stream := fopen(temp_c_string(name), temp_c_string(mode));
+    if stream && for_writing && keep_existing_content && fseek(stream, 0, 2) != 0 {
+        fclose(stream);
+        stream = null;
+    }
+    // Reading mode opens a directory too; its "length" is file-system specific (0 on tmpfs).
+    if stream && !for_writing {
+        state: stat_t;
+        if stat(temp_c_string(name), *state) == 0 && S_ISDIR(state.st_mode) {
+            fclose(stream);
+            stream = null;
+        }
+    }
     if !stream && log_errors log_error("Unable to open '%'", name);
     return .{ cast(s64) stream }, stream != null;
 }
