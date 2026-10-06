@@ -1,0 +1,92 @@
+# Stdlib modules that do not type-check for a target on purpose, checked by
+# crates/jaic-cli/tests/stdlib_targets.rs (`jaic check -no_dce -os <os>` on a program that only
+# imports the module). Each line is `Module os: file: first error`, with the stdlib path and the
+# line and column left out. Every other module and target must check cleanly. When a change makes
+# a listed module pass or fail differently, update its line; see docs/tools/stdlib-target-check.md.
+
+# Metaprograms, not modules: importing one builds the program given on the command line.
+skip Default_Metaprogram
+skip Minimal_Metaprogram
+
+# Bindings to native libraries that have no wasm build.
+Curl wasm: Curl/format.jai: unknown identifier 'curl_mprintf_CFormat'
+Gamepad wasm: SDL/module.jai: unknown library 'SDL2'
+ImGui wasm: ImGui/unix.jai: unknown library 'imgui'
+Keymap wasm: SDL/module.jai: unknown library 'SDL2'
+Mail wasm: Mail.jai: module 'Curl' has no exported member 'curl_easy_init'
+SDL wasm: SDL/SDL_surface.jai: unknown library 'SDL2'
+meshoptimizer wasm: meshoptimizer/meshoptimizer.jai: unknown library 'meshopt_lib'
+
+# Modules for other platforms, and procedures that stop the build on a target they do not support.
+Android linux: Android/Native_App/module.jai: #assert failed: This module is only supported on Android
+Android macos: Android/Native_App/module.jai: #assert failed: This module is only supported on Android
+Android wasm: Android/Native_App/module.jai: #assert failed: This module is only supported on Android
+Android windows: Android/Native_App/module.jai: #assert failed: This module is only supported on Android
+Debug linux: Debug/module.jai: #assert failed: Pointer mapping validation requires a host memory-map adapter
+Debug macos: Debug/module.jai: #assert failed: Pointer mapping validation requires a host memory-map adapter
+Debug wasm: Debug/module.jai: #assert failed: Debugger detection requires a host adapter
+Debug windows: Debug/module.jai: #assert failed: Native stack capture is not implemented for this target
+GetRect wasm: Window_Creation/module.jai: #assert failed
+GetRect_LeftHanded wasm: stb_image/module.jai: #assert failed
+Linux windows: POSIX/module.jai: #assert failed
+MacOS_Bundler windows: POSIX/module.jai: #assert failed
+Metal linux: Metal/module.jai: #assert failed: Metal is only supported on Apple platforms
+Metal wasm: Metal/module.jai: #assert failed: Metal is only supported on Apple platforms
+Metal windows: Metal/module.jai: #assert failed: Metal is only supported on Apple platforms
+Objective_C linux: Objective_C/module.jai: #assert failed: Objective_C is only supported on Apple platforms
+Objective_C wasm: Objective_C/module.jai: #assert failed: Objective_C is only supported on Apple platforms
+Objective_C windows: Objective_C/module.jai: #assert failed: Objective_C is only supported on Apple platforms
+POSIX windows: POSIX/module.jai: #assert failed
+POSIX_old wasm: POSIX_old/module.jai: #assert failed
+POSIX_old windows: POSIX_old/module.jai: #assert failed
+Runtime_Support_Crash_Handler wasm: Runtime_Support_Crash_Handler.jai: #assert failed: Runtime crash handling requires a native host adapter for this target
+Simp wasm: stb_image/module.jai: #assert failed
+Sound_Player wasm: stb_vorbis/module.jai: #assert failed
+Thekla_Atlas wasm: Thekla_Atlas/unix.jai: #assert failed
+Thekla_Baker wasm: Thekla_Baker/module.jai: #assert failed
+Unmapping_Allocator wasm: Unmapping_Allocator/module.jai: #assert failed: unmapping allocator needs a POSIX virtual-memory backend
+Unmapping_Allocator windows: Unmapping_Allocator/module.jai: #assert failed: unmapping allocator needs a POSIX virtual-memory backend
+Vulkan macos: Vulkan/module.jai: #assert failed: Unsupported OS
+Vulkan wasm: Vulkan/module.jai: #assert failed: Unsupported OS
+Wasi_Runtime linux: Wasi_Runtime/module.jai: #assert failed: Wasi_Runtime is only for wasm targets
+Wasi_Runtime macos: Wasi_Runtime/module.jai: #assert failed: Wasi_Runtime is only for wasm targets
+Wasi_Runtime windows: Wasi_Runtime/module.jai: #assert failed: Wasi_Runtime is only for wasm targets
+Window_Creation wasm: Window_Creation/module.jai: #assert failed
+Windows linux: Windows.jai: #assert failed
+Windows macos: Windows.jai: #assert failed
+Windows wasm: Windows.jai: #assert failed
+Windows_Registry linux: Windows.jai: #assert failed
+Windows_Registry macos: Windows.jai: #assert failed
+Windows_Registry wasm: Windows.jai: #assert failed
+Windows_Resources linux: Windows.jai: #assert failed
+Windows_Resources macos: Windows.jai: #assert failed
+Windows_Resources wasm: Windows.jai: #assert failed
+X11 windows: POSIX/module.jai: #assert failed
+d3d11 linux: Windows.jai: #assert failed
+d3d11 macos: Windows.jai: #assert failed
+d3d11 wasm: Windows.jai: #assert failed
+d3d12 linux: Windows.jai: #assert failed
+d3d12 macos: Windows.jai: #assert failed
+d3d12 wasm: Windows.jai: #assert failed
+d3d_compiler linux: Windows.jai: #assert failed
+d3d_compiler macos: Windows.jai: #assert failed
+d3d_compiler wasm: Windows.jai: #assert failed
+dxc_compiler linux: dxc_compiler/compile-helpers.jai: #assert failed: The retained DXC ABI uses Windows UTF-16 arguments
+dxc_compiler macos: dxc_compiler/compile-helpers.jai: #assert failed: The retained DXC ABI uses Windows UTF-16 arguments
+dxc_compiler wasm: dxc_compiler/compile-helpers.jai: #assert failed: The retained DXC ABI uses Windows UTF-16 arguments
+dxgi linux: Windows.jai: #assert failed
+dxgi macos: Windows.jai: #assert failed
+dxgi wasm: Windows.jai: #assert failed
+freetype wasm: freetype-2.12.1/unix.jai: #assert failed
+freetype-2.12.1 wasm: freetype-2.12.1/unix.jai: #assert failed
+macos linux: macos/module.jai: #assert failed: macos is only supported on Apple platforms
+macos wasm: macos/module.jai: #assert failed: macos is only supported on Apple platforms
+macos windows: macos/module.jai: #assert failed: macos is only supported on Apple platforms
+nvidia_aftermath linux: Windows.jai: #assert failed
+nvidia_aftermath macos: Windows.jai: #assert failed
+nvidia_aftermath wasm: Windows.jai: #assert failed
+nvtt wasm: nvtt/module.jai: #assert failed
+stb_image wasm: stb_image/module.jai: #assert failed
+stb_image_resize wasm: stb_image_resize/bindings.jai: #assert failed
+stb_image_write wasm: stb_image_write/bindings.jai: #assert failed
+stb_vorbis wasm: stb_vorbis/module.jai: #assert failed
