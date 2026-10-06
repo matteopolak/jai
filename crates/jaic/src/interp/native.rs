@@ -568,6 +568,11 @@ fn call_with(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
     // Windows on arm64: a variadic procedure takes every argument, fixed ones included, in
     // x0-x7 and then on the stack (floats as their bits); an aggregate may straddle the two.
     let general_only = arch == Arch::Win64Arm && sig.c_varargs;
+    // MSVC on arm64 passes a non-POD C++ result's address in x0 (Clang's `inreg sret`), not x8.
+    let result_in_x0 = arch == Arch::Win64Arm && forced_sret && ret_layout.is_some();
+    if result_in_x0 && let Some(&out) = args.get(sig.params.len().wrapping_sub(1)) {
+        regs.int(out)?;
+    }
     for (i, &a) in args.iter().enumerate() {
         if ret_layout.is_some() && i + 1 == sig.params.len() {
             out_ptr = a;
@@ -649,6 +654,11 @@ fn call_with(addr: u64, args: &[u64], sig: &Sig) -> Result<Vec<u64>, String> {
     let Some(layout) = ret_layout else {
         return Ok(scalar_call(addr, &regs, sig.returns.first().copied()));
     };
+    if result_in_x0 {
+        // SAFETY: as below; the callee writes the result through the pointer in x0.
+        unsafe { call_as::<u64>(addr, &regs) };
+        return Ok(Vec::new());
+    }
     // SAFETY (all calls below): the callee's declared C signature matches these registers.
     match ret_pieces {
         None => {
