@@ -2,7 +2,7 @@
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
-- [License](license.md): AGPL-3.0-or-later and what it means for compiled programs
+- [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language
 
