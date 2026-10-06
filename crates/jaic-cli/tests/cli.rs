@@ -81,7 +81,7 @@ fn long_double_extension_on_wide_targets() {
         (
             "no_import",
             "main :: () { x: Long_Double; }\n",
-            "unknown identifier 'Long_Double'",
+            "unknown identifier `Long_Double`",
         ),
         (
             "unknown_name",

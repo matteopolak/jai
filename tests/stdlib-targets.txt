@@ -9,7 +9,7 @@ skip Default_Metaprogram
 skip Minimal_Metaprogram
 
 # Bindings to native libraries that have no wasm build.
-Curl wasm: Curl/format.jai: unknown identifier 'curl_mprintf_CFormat'
+Curl wasm: Curl/format.jai: unknown identifier `curl_mprintf_CFormat`
 Gamepad wasm: SDL/module.jai: unknown library `SDL2`
 ImGui wasm: ImGui/unix.jai: unknown library `imgui`
 Keymap wasm: SDL/module.jai: unknown library `SDL2`
