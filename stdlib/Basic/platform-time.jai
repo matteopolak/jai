@@ -128,7 +128,7 @@
         if milliseconds <= 0 return;
         requested: Clock_Timespec;
         requested.tv_sec = milliseconds / 1000;
-        requested.tv_nsec = milliseconds % 1000 * 1000000;
+        requested.tv_nsec = (milliseconds % 1000) * 1000000;
         while true {
             remaining: Clock_Timespec;
             if clock_nanosleep(*requested, *remaining) == 0 return;

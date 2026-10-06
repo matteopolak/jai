@@ -240,17 +240,17 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
                 }
                 if codepoint <= 0x7f array_add(*decoded, cast(u8) codepoint);
                 else if codepoint <= 0x7ff {
-                    array_add(*decoded, cast(u8) (0xc0 | codepoint >> 6));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint & 0x3f));
+                    array_add(*decoded, cast(u8) (0xc0 | (codepoint >> 6)));
+                    array_add(*decoded, cast(u8) (0x80 | (codepoint & 0x3f)));
                 } else if codepoint <= 0xffff {
-                    array_add(*decoded, cast(u8) (0xe0 | codepoint >> 12));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint >> 6 & 0x3f));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint & 0x3f));
+                    array_add(*decoded, cast(u8) (0xe0 | (codepoint >> 12)));
+                    array_add(*decoded, cast(u8) (0x80 | ((codepoint >> 6) & 0x3f)));
+                    array_add(*decoded, cast(u8) (0x80 | (codepoint & 0x3f)));
                 } else {
-                    array_add(*decoded, cast(u8) (0xf0 | codepoint >> 18));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint >> 12 & 0x3f));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint >> 6 & 0x3f));
-                    array_add(*decoded, cast(u8) (0x80 | codepoint & 0x3f));
+                    array_add(*decoded, cast(u8) (0xf0 | (codepoint >> 18)));
+                    array_add(*decoded, cast(u8) (0x80 | ((codepoint >> 12) & 0x3f)));
+                    array_add(*decoded, cast(u8) (0x80 | ((codepoint >> 6) & 0x3f)));
+                    array_add(*decoded, cast(u8) (0x80 | (codepoint & 0x3f)));
                 }
                 continue;
             }

@@ -16,7 +16,7 @@ f :: (a:int,b : *int,c:=3)->int{
     call(a,b ,c) ;
     if(x==1) return 0;
     while(x>0) x-=1;
-    k := x<<2 | x>>1;
+    k := (x<<2) | (x>>1);
     m := ifx x>0 then -1 else 1;
     for < i: 0..x-1 {}
     for *it: arr {}

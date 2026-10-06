@@ -129,5 +129,5 @@ process_monotonic_ms :: () -> s64 {
     counter: s64;
     frequency: s64;
     if !Windows.QueryPerformanceCounter(*counter) || !Windows.QueryPerformanceFrequency(*frequency) || frequency <= 0 return 0;
-    return counter / frequency * 1000 + counter % frequency * 1000 / frequency;
+    return counter / frequency * 1000 + (counter % frequency) * 1000 / frequency;
 }

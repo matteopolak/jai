@@ -2307,21 +2307,53 @@ binary_precedence :: (op: string) -> s64 {
     return 0;
 }
 
-macro_binary :: (p: *Macro_Parser, min_precedence: s64) -> string {
+// How tightly Jai binds a binary operator. Its table differs from C's (the bitwise and
+// shift operators share one level above `*`, and `%` sits below `*` and `/`), so the
+// text of a C expression is parenthesized wherever Jai would group it differently.
+jai_binding :: (op: string) -> s64 {
+    if op == "+" || op == "-" return 1;
+    if op == "%" return 2;
+    if op == "*" || op == "/" return 3;
+    return 4;
+}
+
+// A prefix cast in Jai takes a following bitwise operator into its value.
+starts_with_cast :: (text: string) -> bool {
+    rest := text;
+    while rest.count && (rest[0] == #char "-" || rest[0] == #char "~" || rest[0] == #char "!") advance(*rest);
+    return begins_with(rest, "cast");
+}
+
+macro_binary :: (p: *Macro_Parser, min_precedence: s64) -> string, binding: s64 {
     lhs := macro_unary(p);
+    lhs_binding := 0; // 0 while lhs is not a binary expression
     while p.ok {
         op := peek_token(p);
         prec := binary_precedence(op);
         if prec == 0 || prec < min_precedence break;
         p.index += 1;
-        rhs := macro_binary(p, prec + 1);
+        rhs, rhs_binding := macro_binary(p, prec + 1);
+        binding := jai_binding(op);
+        bitwise := binding == 4;
+        if lhs_binding {
+            if lhs_binding < binding lhs = tprint("(%)", lhs);
+        } else if bitwise && starts_with_cast(lhs) {
+            lhs = tprint("(%)", lhs);
+        }
+        if rhs_binding {
+            if rhs_binding <= binding rhs = tprint("(%)", rhs);
+        } else if bitwise && starts_with_cast(rhs) {
+            rhs = tprint("(%)", rhs);
+        }
         lhs = tprint("% % %", lhs, op, rhs);
+        lhs_binding = binding;
     }
-    return lhs;
+    return lhs, lhs_binding;
 }
 
 macro_expression :: (p: *Macro_Parser) -> string {
-    return macro_binary(p, 1);
+    text := macro_binary(p, 1);
+    return text;
 }
 
 // The Jai text of a macro body, or ok = false when it is not a constant expression.

@@ -239,7 +239,7 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
     }
     ntohl :: (netlong: u32) -> u32 {
         bytes: [4] u8; memcpy(*bytes, *netlong, 4);
-        return (cast(u32) bytes[0]) << 24 | (cast(u32) bytes[1]) << 16 | (cast(u32) bytes[2]) << 8 | bytes[3];
+        return ((cast(u32) bytes[0]) << 24) | ((cast(u32) bytes[1]) << 16) | ((cast(u32) bytes[2]) << 8) | bytes[3];
     }
 }
 

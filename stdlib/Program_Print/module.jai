@@ -50,31 +50,36 @@ print_declaration :: (builder: *String_Builder, decl: *Code_Declaration, print_u
 // ---------------------------------------------------------------------------
 
 // Binding strength of a binary operator; 0 means "not a plain binary operator".
+// Jai groups the bitwise and shift operators on one level above `*`, and puts `%`
+// between `*`/`/` and `+`/`-`. A prefix cast sits at PP_CAST_LEVEL, just below the
+// bitwise level, because its value takes a following bitwise chain.
 pp_precedence :: (op: s32) -> s32 {
     if op == {
-        case #char "*"; #through;
-        case #char "/"; #through;
-        case #char "%"; return 9;
-        case #char "+"; #through;
-        case #char "-"; return 8;
+        case #char "&"; #through;
+        case #char "^"; #through;
+        case #char "|"; #through;
         case xx Operator_Type.SHIFT_LEFT; #through;
         case xx Operator_Type.SHIFT_RIGHT; #through;
         case xx Operator_Type.ROTATE_LEFT; #through;
-        case xx Operator_Type.ROTATE_RIGHT; return 7;
-        case #char "&"; return 6;
-        case #char "^"; return 5;
-        case #char "|"; return 4;
+        case xx Operator_Type.ROTATE_RIGHT; return PP_CAST_LEVEL + 1;
+        case #char "*"; #through;
+        case #char "/"; return 7;
+        case #char "%"; return 6;
+        case #char "+"; #through;
+        case #char "-"; return 5;
         case #char "<"; #through;
         case #char ">"; #through;
-        case xx Operator_Type.IS_EQUAL; #through;
-        case xx Operator_Type.IS_NOT_EQUAL; #through;
         case xx Operator_Type.LESS_OR_EQUAL; #through;
-        case xx Operator_Type.GREATER_OR_EQUAL; return 3;
+        case xx Operator_Type.GREATER_OR_EQUAL; return 4;
+        case xx Operator_Type.IS_EQUAL; #through;
+        case xx Operator_Type.IS_NOT_EQUAL; return 3;
         case xx Operator_Type.LOGICAL_AND; return 2;
         case xx Operator_Type.LOGICAL_OR; return 1;
     }
     return 0;
 }
+
+PP_CAST_LEVEL :: 8;
 
 pp_operator_text :: (op: s32) -> string {
     text := operator_to_string(cast(Operator_Type) op);
@@ -102,7 +107,7 @@ pp_node_precedence :: (node: *Code_Node) -> s32 {
         if (cast(*Code_If) node).if_flags & .IS_IFX return 0;
     }
     if node.kind == .CAST {
-        return 10;
+        return PP_CAST_LEVEL;
     }
     return 100;
 }
@@ -455,6 +460,8 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
     my_prec := pp_node_precedence(node);
     parens := parent_prec > 0 && node.kind == .BINARY_OPERATOR && my_prec < parent_prec + side && my_prec != 0;
     if parent_prec > 0 && my_prec == 0 parens = true;
+    // A prefix cast would swallow a bitwise operator after it, or a postfix one.
+    if node.kind == .CAST && parent_prec > PP_CAST_LEVEL parens = true;
     if node.node_flags & .IS_PARENTHESIZED parens = true;
     if parens append(builder, "(");
 

@@ -162,7 +162,7 @@ calendar_from_unix_milliseconds :: (unix_ms: s64, time_zone: Time_Zone) -> Calen
     ct.day_of_month_starting_at_0 = cast,no_check(s8) (day - 1);
     ct.day_of_week_starting_at_0 = cast,no_check(s8) ((days % 7 + 11) % 7); // 1970-01-01 was a Thursday.
     ct.hour = cast,no_check(s8) (second_of_day / 3600);
-    ct.minute = cast,no_check(s8) (second_of_day % 3600 / 60);
+    ct.minute = cast,no_check(s8) ((second_of_day % 3600) / 60);
     ct.second = cast,no_check(s8) (second_of_day % 60);
     ct.millisecond = cast,no_check(s16) millis;
     ct.time_zone = time_zone;

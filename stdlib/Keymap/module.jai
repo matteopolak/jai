@@ -230,12 +230,12 @@ map_key_to_string :: (k: Key_Code) -> string {
     bytes: [4] u8; count: s64;
     if value < 0x80 { bytes[0] = cast(u8) value; count = 1; }
     else if value < 0x800 {
-        bytes[0] = cast(u8) (0xc0 | value >> 6); bytes[1] = cast(u8) (0x80 | (value & 0x3f)); count = 2;
+        bytes[0] = cast(u8) (0xc0 | (value >> 6)); bytes[1] = cast(u8) (0x80 | (value & 0x3f)); count = 2;
     } else if value < 0x10000 && !(value >= 0xd800 && value <= 0xdfff) {
-        bytes[0] = cast(u8) (0xe0 | value >> 12); bytes[1] = cast(u8) (0x80 | ((value >> 6) & 0x3f));
+        bytes[0] = cast(u8) (0xe0 | (value >> 12)); bytes[1] = cast(u8) (0x80 | ((value >> 6) & 0x3f));
         bytes[2] = cast(u8) (0x80 | (value & 0x3f)); count = 3;
     } else if value <= 0x10ffff {
-        bytes[0] = cast(u8) (0xf0 | value >> 18); bytes[1] = cast(u8) (0x80 | ((value >> 12) & 0x3f));
+        bytes[0] = cast(u8) (0xf0 | (value >> 18)); bytes[1] = cast(u8) (0x80 | ((value >> 12) & 0x3f));
         bytes[2] = cast(u8) (0x80 | ((value >> 6) & 0x3f)); bytes[3] = cast(u8) (0x80 | (value & 0x3f)); count = 4;
     } else return "Unknown";
     result: string = .{count, cast(*u8) alloc(count, temp)};

@@ -10,7 +10,7 @@ Public API: `print_expression(builder, node, skip_parens := false) -> bool`, `pr
 
 The printer dispatches on `Code_Node.kind` (`pp_expression`) and walks the node structs that jaic's exporter fills in (`crates/jaic/src/sema/code_export.rs`):
 
-- binary operators print with spaces (`x + y`), `.` and `[]` without; parentheses are re-derived from a precedence table because the exporter does not keep `IS_PARENTHESIZED`.
+- binary operators print with spaces (`x + y`), `.` and `[]` without; parentheses are re-derived from a precedence table (`pp_precedence`) because the exporter does not keep `IS_PARENTHESIZED`. The table is Jai's, not C's (bitwise and shift operators on one level above `*`, `%` between `*` and `+`; see [operators](../language/operators.md)), so `(a + b) & c` keeps its parentheses and `a * (b & c)` prints as `a * b & c`. A cast that is the operand of a bitwise operator or of a postfix one prints in parentheses (`(cast(u32) b) << 4`), because a prefix cast takes a following bitwise chain into its value. If the parser's table changes, change `pp_precedence` and `PP_CAST_LEVEL` with it.
 - declarations print as `a := v`, `a : T = v`, `a :: v`, `a : T : v`; compound ones as `a, b := f()` (`a=, b := f()` when one target is assigned), from the names list and the nameless `declaration_properties`.
 - blocks are multi-line, four-space indented; `;` follows every statement except those ending in `}`.
 - `compiler_get_nodes(#code a := 1;)` returns the bare declaration as the root (brace-less single statement); `#code { ... }` returns a `Code_Block` and prints with braces.
