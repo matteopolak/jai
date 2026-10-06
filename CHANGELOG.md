@@ -64,6 +64,7 @@
 
 ### Added
 
+- Stdlib runtime tests on every platform: `tools/stdlib_runtime.py` runs every stdlib test in the interpreter, natively, in the browser sandbox and as a WASI build (Windows: interpreter and native, plus every test in the MinGW cross builds), with a checked-in skip list whose entries must keep failing; `tools/stdlib_coverage.py` reports which public procedures of each module the tests run, from the new `JAIC_COVERAGE` interpreter record, and CI fails when a module's coverage drops below `tests/stdlib-coverage.txt`. `tools/wasi_run.mjs` names every import a WASI module lacks. See docs/tools/stdlib-runtime-tests.md.
 - CI type-checks every stdlib module with `-no_dce` for linux, macos, windows and wasm (`crates/jaic-cli/tests/stdlib_targets.rs`, expectations in `tests/stdlib-targets.txt`), so a type error in code for another platform or in a procedure nothing calls fails the build. See `docs/tools/stdlib-target-check.md`.
 - CI checks every Objective-C selector the stdlib sends: it must take as many arguments as it is sent with (one per `:`), and on macOS the class or protocol must have the method in the runtime (`crates/jaic-cli/tests/objc_selectors.rs`, known gaps in `tests/objc-selectors.txt`). See `docs/tools/objc-selector-check.md`.
 - `JAIC_MEMORY_LIMIT=<bytes|nK|nM|nG>`: an exact cap on what `jaic` allocates (compiler, interpreter and the program's C `malloc` calls). Crossing it prints `error: memory limit of N MiB exceeded` and exits with status 120. The corpus sweep uses it for `--memory-limit` instead of sampling resident memory.
