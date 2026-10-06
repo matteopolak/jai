@@ -34,7 +34,7 @@ Chosen by `long_double_for(os, cpu, windows_gnu)` in `sema/mod.rs` and stored in
 |---|---|---|
 | x86-64 Linux, macOS (Intel), MinGW | x87 80-bit extended, 16 bytes, 16-aligned | wide, `x86_fp80` in LLVM |
 | arm64 Linux, wasm32 | IEEE binary128, 16 bytes, 16-aligned | wide, `fp128` in LLVM |
-| Apple arm64, Windows MSVC | same as `double` | `float64` itself |
+| Apple arm64, Windows x64 MSVC, Windows arm64 (MSVC and MinGW) | same as `double` | `float64` itself |
 
 `LONG_DOUBLE_IS_WIDE` is `Long_Double != float64`. On the last row `Long_Double` is literally `float64`, so everything below about the wide type does not apply.
 
