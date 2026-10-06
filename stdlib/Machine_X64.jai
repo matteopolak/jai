@@ -244,27 +244,20 @@ Prefetch_Hint :: enum {
 }
 get_cpu_info :: () -> Cpu_X86 {
     cpu: Cpu_X86;
-    // cpuid with an out-of-range leaf returns junk, so the maximum basic/extended leaves are checked first.
-    max_basic_info: u32 = 0;
-    max_extended_info: u32 = 0;
-    vendor_chunk_0: u32 = 0;
-    vendor_chunk_1: u32 = 0;
-    vendor_chunk_2: u32 = 0;
-    #asm {
-        xor.d a: gpr === a, a;
-        xor.d c: gpr === c, c;
-        cpuid a, b:, c, d:;
-        mov.d max_basic_info, a;
-        mov.d vendor_chunk_0, b;
-        mov.d vendor_chunk_1, d;
-        mov.d vendor_chunk_2, c;
-        mov.d a, 0x80000000;
-        xor.d c, c;
-        cpuid a, b, c, d;
-        mov.d max_extended_info, a;
+    // The 12-byte vendor name is spelled little-endian across EBX, EDX and ECX, in that order.
+    vendor_name_is :: (b: u32, d: u32, c: u32, name: string) -> bool {
+        spelled := cast(*u32) name.data;
+        return name.count == 12 && spelled[0] == b && spelled[1] == d && spelled[2] == c;
     }
-    if vendor_chunk_0 == 0x756E6547 && vendor_chunk_1 == 0x49656E69 && vendor_chunk_2 == 0x6C65746E cpu.vendor = .INTEL; // GenuineIntel
-    if vendor_chunk_0 == 0x68747541 && vendor_chunk_1 == 0x69746E65 && vendor_chunk_2 == 0x444D4163 cpu.vendor = .AMD; // AuthenticAMD
+    // Leaf 0 reports the highest basic leaf plus the vendor name, and leaf 0x80000000 the
+    // highest extended leaf. Leaves above those limits return garbage, so every query below
+    // is guarded by them.
+    max_basic_info, name_b, name_c, name_d: u32;
+    cpuid_query(0, 0, *max_basic_info, *name_b, *name_c, *name_d);
+    if vendor_name_is(name_b, name_d, name_c, "GenuineIntel") cpu.vendor = .INTEL;
+    else if vendor_name_is(name_b, name_d, name_c, "AuthenticAMD") cpu.vendor = .AMD;
+    max_extended_info, ignored_b, ignored_c, ignored_d: u32;
+    cpuid_query(0x80000000, 0, *max_extended_info, *ignored_b, *ignored_c, *ignored_d);
 
     leaf_a, leaf_b, leaf_c, leaf_d: u32;
     if max_basic_info >= 0x01 {
@@ -335,6 +328,11 @@ rdtsc :: () -> u64 {
     return low;
 }
 
+// Hint for spin-wait loops: lets the core back off (and a sibling hyperthread run).
+pause :: () {
+    #asm { pause; }
+}
+
 rdtscp :: () -> (timestamp: u64, msr: u32) {
     low: u64 = 0;
     msr: u32 = 0;
@@ -358,17 +356,15 @@ rdrand :: () -> (success: bool, value: u64) {
     return delivered, sample;
 }
 
-mfence :: () {
-    #asm { mfence; }
+// Fences, from the narrowest to the widest: earlier stores, earlier loads, everything.
+sfence :: () {
+    #asm { sfence; }
 }
 lfence :: () {
     #asm { lfence; }
 }
-sfence :: () {
-    #asm { sfence; }
-}
-pause :: () {
-    #asm { pause; }
+mfence :: () {
+    #asm { mfence; }
 }
 
 X86_Features :: struct {
