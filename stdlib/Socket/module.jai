@@ -76,15 +76,14 @@ set_keepalive :: (s: Socket, keepalive: bool, idle_seconds_before_keepalive: s32
 }
 
 to_string :: (addr: sockaddr_in) -> string {
-    builder: String_Builder;
-    #if OS == .WINDOWS {
-        append_address(*builder, addr.sin_addr.S_un.S_addr);
-    } else {
-        append_address(*builder, addr.sin_addr.s_addr);
-    }
-    append(*builder, ":");
-    append_decimal(*builder, ntohs(addr.sin_port));
-    return builder_to_string(*builder);
+    text: String_Builder;
+    append_address(*text, ipv4_bits(addr));
+    print_to_builder(*text, ":%", ntohs(addr.sin_port));
+    return builder_to_string(*text);
+}
+ipv4_bits :: (addr: sockaddr_in) -> u32 {
+    #if OS == .WINDOWS return addr.sin_addr.S_un.S_addr;
+    else return addr.sin_addr.s_addr;
 }
 to_string :: (addr: sockaddr_in6) -> string {
     bytes: [16] u8;
