@@ -137,6 +137,10 @@ fn stdlib_tests_run_natively() {
         "process-stdin-socket",
         "posix-stat-and-mutex",
     ] {
+        // These two import POSIX, which does not build for Windows.
+        if cfg!(windows) && matches!(name, "proc-sentinel-constant" | "process-stdin-socket") {
+            continue;
+        }
         let source = repo_root().join(format!("tests/stdlib/{name}.jai"));
         let output = build_and_run(&source, &dir, name).unwrap();
         assert_eq!(
