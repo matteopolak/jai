@@ -1021,7 +1021,7 @@ pub fn call(
             };
             if is_error {
                 let mut t = trap(message.trim_end().to_string());
-                t.reported = Some((file, line as u32, column as u32));
+                t.reported = Some(Box::new((file, line as u32, column as u32)));
                 return Err(t);
             }
             let rendered = format!("{location}{severity}: {}", message.trim_end());
