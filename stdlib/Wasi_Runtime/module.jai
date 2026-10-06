@@ -166,8 +166,9 @@ Seconds_And_Nanoseconds :: struct {
     nanoseconds: s64;
 }
 
-// Sleeping is a poll on one relative CLOCK_MONOTONIC timeout. The whole interval is slept, so
-// `remaining` is never written.
+// Sleeping polls on relative CLOCK_MONOTONIC timeouts until the clock reaches the deadline: a
+// host may wake a poll slightly early (Node's can). The whole interval is slept, so `remaining`
+// is never written.
 #program_export "nanosleep"
 wasi_nanosleep :: (requested: *Seconds_And_Nanoseconds, remaining: *Seconds_And_Nanoseconds) -> s32 #c_call {
     if !requested || requested.seconds < 0 || requested.nanoseconds < 0 || requested.nanoseconds >= 1_000_000_000 {
@@ -176,15 +177,22 @@ wasi_nanosleep :: (requested: *Seconds_And_Nanoseconds, remaining: *Seconds_And_
     }
     total := cast(u64) requested.seconds * 1_000_000_000 + cast(u64) requested.nanoseconds;
     if total == 0 return 0;
-    subscription: Clock_Subscription;
-    subscription.kind = 0; // clock
-    subscription.clock_id = 1; // monotonic
-    subscription.timeout = total;
-    event: Poll_Event;
-    happened: u32;
-    if wasi_poll_oneoff(offset32(*subscription), offset32(*event), 1, offset32(*happened)) != 0 {
-        error_number = EINVAL;
-        return -1;
+    now: u64;
+    if wasi_clock_time_get(1, 1, offset32(*now)) != 0 now = 0;
+    deadline := now + total;
+    while true {
+        subscription: Clock_Subscription;
+        subscription.kind = 0; // clock
+        subscription.clock_id = 1; // monotonic
+        subscription.timeout = total;
+        event: Poll_Event;
+        happened: u32;
+        if wasi_poll_oneoff(offset32(*subscription), offset32(*event), 1, offset32(*happened)) != 0 {
+            error_number = EINVAL;
+            return -1;
+        }
+        if now == 0 || wasi_clock_time_get(1, 1, offset32(*now)) != 0 || now >= deadline break;
+        total = deadline - now;
     }
     return 0;
 }
