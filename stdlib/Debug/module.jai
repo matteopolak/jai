@@ -187,14 +187,15 @@ print_assert :: (loc: Source_Code_Location, message: string) -> bool {
     output("\n");
     return false;
 }
+// Like print_assert, followed by one line per frame of the current call stack.
 trace_assert :: (loc: Source_Code_Location, message: string) -> bool {
+    frames := backtrace();
     print_assert(loc, message);
-    trace := backtrace();
-    defer free_backtrace(trace);
-    for text: trace {
-        output(text);
+    for frames {
+        output(it);
         output("\n");
     }
+    free_backtrace(frames);
     return false;
 }
 break_assert :: (loc: Source_Code_Location, message: string) -> bool {
