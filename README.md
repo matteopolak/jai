@@ -114,3 +114,7 @@ python3 tools/jaic-sweep.py corpus negative stdlib modules upstream howto --time
 ```
 
 The workspace is `crates/jaic` (lexer, parser, semantic analysis, IR, interpreter), `crates/jaic-cli` (the `jaic` binary), `crates/jaic-llvm` (native backend), `crates/jai-language-server` and `crates/jai-wasm` (browser build). Start with the [developer guide](docs/README.md) and [compiler architecture](docs/compiler/architecture.md). Rustfmt keeps the Rust code formatted and [jaifmt](docs/tools/jaifmt.md) the Jai code (`jaic build tools/jaifmt/main.jai -O2 -o jaifmt`, then `./jaifmt --check stdlib tests`), and Cargo enforces a minimum dependency release age of 14 days.
+
+## License
+
+jaic, its standard library and tools are licensed under the [GNU Affero General Public License v3.0 or later](LICENSE). You may use, study and change them, including commercially, but anything you distribute or offer over a network that is based on this code must be released under the same license, with its source and the original copyright notices. See [docs/license.md](docs/license.md) for what this means for programs you compile.
