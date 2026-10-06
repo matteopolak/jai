@@ -116,6 +116,18 @@ def build_env(target, environ, target_dir, flags):
     return env
 
 
+def instrument_flags(target, raw):
+    """rustc flags for the instrumented build, writing raw profiles under `raw`."""
+    flags = [f"-Cprofile-generate={raw}"]
+    if target.startswith("aarch64") and "windows" in target:
+        # On arm64 Windows the profile runtime crashes (access violation in
+        # lprofMergeValueProfData) when a process merges its value-profile records into an
+        # existing .profraw, i.e. on every run after the first. Edge counts alone still drive
+        # the layout and inlining decisions; only indirect-call promotion is lost.
+        flags.append("-Cllvm-args=-disable-vp=true")
+    return flags
+
+
 def cargo_build(args, target_dir, flags):
     env = build_env(args.target, os.environ, target_dir, flags)
     common = ["cargo", "build", "--release", "--locked", "--target", args.target, "-j", str(args.jobs)]
@@ -279,7 +291,7 @@ def main():
         shutil.rmtree(raw, ignore_errors=True)
         raw.mkdir(parents=True)
         log("building instrumented binaries")
-        bins = cargo_build(args, work / "instrumented", [f"-Cprofile-generate={raw}"])
+        bins = cargo_build(args, work / "instrumented", instrument_flags(args.target, raw))
         # `%4m`: up to four files per binary, merged as processes exit, instead of one
         # file per process (hundreds of jaic runs at several MB each).
         train_env = dict(env, LLVM_PROFILE_FILE=str(raw / "%4m.profraw"))
