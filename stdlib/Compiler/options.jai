@@ -410,6 +410,7 @@ forward_options :: (id: s64, previous: Build_Options, options: Build_Options) {
     __jaic_workspace_set_option(id, "array_bounds_check", enum_member_name(options.array_bounds_check));
     __jaic_workspace_set_option(id, "null_pointer_check", enum_member_name(options.null_pointer_check));
     __jaic_workspace_set_option(id, "arithmetic_overflow_check", enum_member_name(options.arithmetic_overflow_check));
+    __jaic_workspace_set_option(id, "cast_bounds_check", enum_member_name(options.cast_bounds_check));
 
     // Sent only once changed, so options that never mention it keep the command line's `-no_dce`.
     if options.dead_code_elimination != previous.dead_code_elimination {

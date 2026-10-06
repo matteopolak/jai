@@ -157,6 +157,39 @@ __null_pointer_check_fail :: (index: s64, line_number: s64, filename: *u8) #no_c
     write_string("\n", true);
     debug_break();
 }
+// jaic's native code calls this when a runtime check fails, then traps unless the check is
+// nonfatal. The wording matches the interpreter's (`ir::check_message` in jaic). `reason`:
+// 1 missing return, 2 #asm divide fault, 3 index out of range (a: index, b: count), 4 cast
+// overflow (a: the value; b: target bytes, bit 8 target signed, bit 9 value signed), 5 no case
+// of a #complete switch matched (a: the value), 6 integer division by zero.
+runtime_support_check_failed :: (reason: s64, a: s64, b: s64, fatal: bool, line: s64, filename: *u8) #no_context #no_abc #no_aoc {
+    write_failure_location(filename, line);
+    write_string(ifx fatal then "error: " else "warning: ", true);
+    if reason == {
+        case 1;
+            write_string("reached the end of a procedure that must return a value", true);
+        case 2;
+            write_string("#asm division fault: the divisor is zero or the quotient does not fit", true);
+        case 3;
+            write_number_after("array bounds check failed: index ", a, true);
+            write_number_after(" is outside an array of ", b, true);
+            write_string(ifx b == 1 then " element" else " elements", true);
+        case 4;
+            write_string("cast of ", true);
+            if b & 0x200 write_number(a, to_standard_error = true);
+            else write_nonnegative_number(cast,no_check(u64) a, to_standard_error = true);
+            write_string(ifx b & 0x100 then " to `s" else " to `u", true);
+            write_nonnegative_number(cast,no_check(u64) (b & 0xff) * 8, to_standard_error = true);
+            write_string("` overflows", true);
+        case 5;
+            write_number_after("no case of the `#complete` switch matches its value, ", a, true);
+        case 6;
+            write_string("integer division by zero", true);
+        case;
+            write_string("runtime check failed", true);
+    }
+    write_string("\n", true);
+}
 __arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s64, filename: *u8) #no_context #no_aoc {
     write_failure_location(filename, line_number);
     write_string("arithmetic overflow: ", true);
