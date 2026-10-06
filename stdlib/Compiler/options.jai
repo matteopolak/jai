@@ -388,6 +388,12 @@ forward_options :: (id: s64, previous: Build_Options, options: Build_Options) {
     level := options.llvm_options.bitcode_optimization_setting;
     if level != .UNSET __jaic_workspace_set_option(id, "optimization", enum_member_name(level));
 
+    // Cross targets (wasm) take their triple, CPU and feature string from here; empty means the target's default.
+    llvm := options.llvm_options;
+    __jaic_workspace_set_option(id, "llvm_target_system_triple", llvm.target_system_triple);
+    __jaic_workspace_set_option(id, "llvm_target_system_cpu", llvm.target_system_cpu);
+    __jaic_workspace_set_option(id, "llvm_target_system_features", llvm.target_system_features);
+
     if options.entry_point_name.count > 0 __jaic_workspace_set_option(id, "entry_point_name", options.entry_point_name);
     __jaic_workspace_set_option(id, "temporary_storage_size", decimal(options.temporary_storage_size));
 
