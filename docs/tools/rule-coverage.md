@@ -55,7 +55,7 @@ rules are reported, not yet enforced. CI runs it as the `Rule coverage` step of 
 | `num` | numbers | `plugin` | metaprogram-plugins |
 | `opov` | operator-overloading | `prelude` | prelude-and-runtime-support |
 | `ops` | operators | `reflect` | reflection-and-type-info |
-|  |  | `ws` | workspaces |
+| `dce` | dead-code-elimination | `ws` | workspaces |
 
 ## How to change it
 
