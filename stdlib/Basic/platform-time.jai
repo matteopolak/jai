@@ -208,7 +208,7 @@ seconds_since_init :: () -> float64 {
         out: s32;
         for 0..str.count - 1 {
             shift := cast(u32) ((str.count - it - 1) * 8);
-            out = out | cast,no_check(s32) ((cast(u32) str[it]) << shift);
+            out |= cast,no_check(s32) ((cast(u32) str[it]) << shift);
         }
         return out;
     }

@@ -117,7 +117,7 @@ gl_debug_log :: (source: GLenum, type: GLenum, id: GLuint, severity: GLenum, len
     push_context {
         context.logger = debug_log_params.logger;
         context.logger_data = __gl_debug_logger_data;
-        if message != null && length >= 0 {
+        if message != null && cast,no_check(s32) length >= 0 {
             Basic.log("GL %/%/% [%]: %\n", get_string_for_source(source), get_string_for_type(type), get_string_for_severity(severity), id, Basic.to_string(message, length));
         }
         if type == GL_DEBUG_TYPE_ERROR && debug_log_params.break_on_error Basic.debug_break();

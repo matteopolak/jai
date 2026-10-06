@@ -128,8 +128,7 @@ ldexp :: (x: float64, pw2: s32) -> float64 {
         exponent += 512;
         if result == 0 return result;
     }
-    if exponent >= 0 result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
-    else result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
+    result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
     return result;
 }
 sqrt :: (x: float64) -> float64 {
