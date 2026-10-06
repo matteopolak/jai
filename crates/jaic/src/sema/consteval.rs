@@ -684,9 +684,12 @@ impl Compiler {
             }
             TypeKind::Code => {
                 self.adopt_made_codes();
-                Ok(Value::Code(
-                    value::CodeId(self.interp.read_u64(addr) as u32),
-                ))
+                // Any integer can be cast to `Code`; only ids of real code are usable.
+                let id = self.interp.read_u64(addr);
+                if id >= self.codes.len() as u64 {
+                    return err(span, format!("{id} is not a valid Code value"));
+                }
+                Ok(Value::Code(value::CodeId(id as u32)))
             }
             TypeKind::String => {
                 let count = self.interp.read_u64(addr) as usize;
@@ -735,7 +738,10 @@ impl Compiler {
             bytes: self.interp.read(addr, size as usize),
             relocs: Vec::new(),
         };
-        self.freeze(&mut agg, 0, addr, ty, span)?;
+        self.frozen.clear();
+        let result = self.freeze(&mut agg, 0, addr, ty, span);
+        self.frozen.clear();
+        result?;
         Ok(Value::Bytes(Rc::new(agg)))
     }
 
@@ -898,6 +904,30 @@ impl Compiler {
                 "a compile-time value holds a pointer to memory of unknown size",
             );
         }
+        if let Some(&g) = self.frozen.get(&(p, bytes)) {
+            agg.relocs.push(ir::Reloc {
+                offset,
+                target: ir::RelocTarget::Global(g),
+                addend: 0,
+            });
+            return Ok(());
+        }
+        let align = if elem == TypeId::VOID {
+            8
+        } else {
+            self.align_of(elem, span)?
+        };
+        // Registered before its contents are frozen, so a pointer back to it ends the walk.
+        let g = self.program.add_global(ir::Global {
+            name: "frozen".into(),
+            size: bytes + 1,
+            align,
+            init: Vec::new(),
+            relocs: Vec::new(),
+            read_only: false,
+            export: None,
+        });
+        self.frozen.insert((p, bytes), g);
         let mut inner = Aggregate {
             bytes: self.interp.read(p, bytes as usize),
             relocs: Vec::new(),
@@ -908,22 +938,11 @@ impl Compiler {
                 self.freeze(&mut inner, i * esize, p + i * esize, elem, span)?;
             }
         }
-        let align = if elem == TypeId::VOID {
-            8
-        } else {
-            self.align_of(elem, span)?
-        };
         let mut init = inner.bytes;
         init.push(0); // NUL after frozen strings
-        let g = self.program.add_global(ir::Global {
-            name: "frozen".into(),
-            size: init.len() as u64,
-            align,
-            init,
-            relocs: inner.relocs,
-            read_only: false,
-            export: None,
-        });
+        let global = &mut self.program.globals[g.0 as usize];
+        global.init = init;
+        global.relocs = inner.relocs;
         agg.relocs.push(ir::Reloc {
             offset,
             target: ir::RelocTarget::Global(g),

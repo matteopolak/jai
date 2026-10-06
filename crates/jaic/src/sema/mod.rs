@@ -366,6 +366,9 @@ pub struct Compiler {
     /// How deeply each `#insert`ed string file is nested in other inserted strings (absent: a
     /// real file). Bounds code that inserts itself (`X :: "#insert X;"`).
     insert_depth: HashMap<FileId, u32>,
+    /// Interpreter blocks already copied into globals while freezing one compile-time value,
+    /// by `(address, bytes)`: pointer cycles (`n.next = n`) refer back instead of recursing.
+    frozen: HashMap<(u64, u64), ir::GlobalId>,
     /// Editor facts recorded while checking (`ide.rs`); `None` outside the language server.
     pub ide: Option<Box<ide::IdeFacts>>,
     /// Set by `finish_program`: pending items no longer wait for placeholders.
@@ -476,6 +479,7 @@ impl Compiler {
             placeholder_misses: 0,
             in_progress_misses: 0,
             insert_depth: HashMap::default(),
+            frozen: HashMap::default(),
             ide: None,
             placeholders_final: false,
             lookup_without_expansion: false,
