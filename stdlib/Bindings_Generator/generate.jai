@@ -141,7 +141,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
     if options.try_to_preserve_comments clang("add_arg", 0, 0, "-fparse-all-comments");
 
     temp_builder: String_Builder;
-    for options.source_files print_to_builder(*temp_builder, "#include \"%\"\n", it);
+    for options.source_files print_to_builder(*temp_builder, "#include \"%\"\n", include_path_for_clang(it));
     clang("file", 0, 0, "generate_temp.h");
     clang("contents", 0, 0, builder_to_string(*temp_builder));
 
@@ -792,4 +792,18 @@ print_struct_checks :: (builder: *String_Builder, s: *Struct) {
         if it.kind != .STRUCT || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
         print_struct_checks(builder, cast(*Struct) it);
     }
+}
+
+// On Windows a path such as "/tmp/a.h" means that folder on the current drive to the File module,
+// but clang looks for it next to the including file. Give clang the drive as well.
+include_path_for_clang :: (path: string) -> string {
+    #if OS == .WINDOWS {
+        rooted := path.count > 0 && (path[0] == #char "/" || path[0] == #char "\\");
+        unc := path.count > 1 && (path[1] == #char "/" || path[1] == #char "\\");
+        if rooted && !unc {
+            absolute, ok := get_absolute_path(path);
+            if ok return absolute;
+        }
+    }
+    return path;
 }
