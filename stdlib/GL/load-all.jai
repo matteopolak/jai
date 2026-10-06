@@ -919,94 +919,94 @@ gl_load :: (procs: *GL_Procedures, GetProcAddress: GetProcAddressFunction = null
     #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
         procs.glTranslatef = cast(type_of(procs.glTranslatef)) GetProcAddress(cast(*u8) "glTranslatef\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glDrawArrays = cast(type_of(procs.glDrawArrays)) GetProcAddress(cast(*u8) "glDrawArrays\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glDrawElements = cast(type_of(procs.glDrawElements)) GetProcAddress(cast(*u8) "glDrawElements\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glGetPointerv = cast(type_of(procs.glGetPointerv)) GetProcAddress(cast(*u8) "glGetPointerv\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glPolygonOffset = cast(type_of(procs.glPolygonOffset)) GetProcAddress(cast(*u8) "glPolygonOffset\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glCopyTexImage1D = cast(type_of(procs.glCopyTexImage1D)) GetProcAddress(cast(*u8) "glCopyTexImage1D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glCopyTexImage2D = cast(type_of(procs.glCopyTexImage2D)) GetProcAddress(cast(*u8) "glCopyTexImage2D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glCopyTexSubImage1D = cast(type_of(procs.glCopyTexSubImage1D)) GetProcAddress(cast(*u8) "glCopyTexSubImage1D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glCopyTexSubImage2D = cast(type_of(procs.glCopyTexSubImage2D)) GetProcAddress(cast(*u8) "glCopyTexSubImage2D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glTexSubImage1D = cast(type_of(procs.glTexSubImage1D)) GetProcAddress(cast(*u8) "glTexSubImage1D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glTexSubImage2D = cast(type_of(procs.glTexSubImage2D)) GetProcAddress(cast(*u8) "glTexSubImage2D\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glBindTexture = cast(type_of(procs.glBindTexture)) GetProcAddress(cast(*u8) "glBindTexture\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glDeleteTextures = cast(type_of(procs.glDeleteTextures)) GetProcAddress(cast(*u8) "glDeleteTextures\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glGenTextures = cast(type_of(procs.glGenTextures)) GetProcAddress(cast(*u8) "glGenTextures\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glIsTexture = cast(type_of(procs.glIsTexture)) GetProcAddress(cast(*u8) "glIsTexture\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glArrayElement = cast(type_of(procs.glArrayElement)) GetProcAddress(cast(*u8) "glArrayElement\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glColorPointer = cast(type_of(procs.glColorPointer)) GetProcAddress(cast(*u8) "glColorPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glDisableClientState = cast(type_of(procs.glDisableClientState)) GetProcAddress(cast(*u8) "glDisableClientState\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glEdgeFlagPointer = cast(type_of(procs.glEdgeFlagPointer)) GetProcAddress(cast(*u8) "glEdgeFlagPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glEnableClientState = cast(type_of(procs.glEnableClientState)) GetProcAddress(cast(*u8) "glEnableClientState\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glIndexPointer = cast(type_of(procs.glIndexPointer)) GetProcAddress(cast(*u8) "glIndexPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glInterleavedArrays = cast(type_of(procs.glInterleavedArrays)) GetProcAddress(cast(*u8) "glInterleavedArrays\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glNormalPointer = cast(type_of(procs.glNormalPointer)) GetProcAddress(cast(*u8) "glNormalPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glTexCoordPointer = cast(type_of(procs.glTexCoordPointer)) GetProcAddress(cast(*u8) "glTexCoordPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glVertexPointer = cast(type_of(procs.glVertexPointer)) GetProcAddress(cast(*u8) "glVertexPointer\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glAreTexturesResident = cast(type_of(procs.glAreTexturesResident)) GetProcAddress(cast(*u8) "glAreTexturesResident\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glPrioritizeTextures = cast(type_of(procs.glPrioritizeTextures)) GetProcAddress(cast(*u8) "glPrioritizeTextures\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glIndexub = cast(type_of(procs.glIndexub)) GetProcAddress(cast(*u8) "glIndexub\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glIndexubv = cast(type_of(procs.glIndexubv)) GetProcAddress(cast(*u8) "glIndexubv\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glPopClientAttrib = cast(type_of(procs.glPopClientAttrib)) GetProcAddress(cast(*u8) "glPopClientAttrib\0");
     }
-    #if !(OS == .WINDOWS || OS == .MACOS || OS == .LINUX) {
+    #if !(OS == .WINDOWS || OS == .MACOS) {
         procs.glPushClientAttrib = cast(type_of(procs.glPushClientAttrib)) GetProcAddress(cast(*u8) "glPushClientAttrib\0");
     }
     procs.glDrawRangeElements = cast(type_of(procs.glDrawRangeElements)) GetProcAddress(cast(*u8) "glDrawRangeElements\0");
