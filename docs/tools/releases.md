@@ -8,7 +8,7 @@
 
 Each platform job:
 
-1. Downloads the official LLVM 22 release for the platform (`LLVM-<version>-macOS-ARM64.tar.xz`, `LLVM-<version>-Linux-X64.tar.xz`, `clang+llvm-<version>-x86_64-pc-windows-msvc.tar.xz`, `clang+llvm-<version>-aarch64-pc-windows-msvc.tar.xz`) and points `LLVM_SYS_221_PREFIX` at it. Those tarballs carry LLVM's static libraries. Homebrew's and apt's LLVM link Z3 and zstd as shared libraries, so a binary built against them would only run where those are installed.
+1. Downloads the official LLVM 23 release for the platform (`LLVM-<version>-macOS-ARM64.tar.xz`, `LLVM-<version>-Linux-X64.tar.xz`, `clang+llvm-<version>-x86_64-pc-windows-msvc.tar.xz`, `clang+llvm-<version>-aarch64-pc-windows-msvc.tar.xz`) and points `LLVM_SYS_231_PREFIX` at it. Those tarballs carry LLVM's static libraries. Homebrew's and apt's LLVM link Z3 and zstd as shared libraries, so a binary built against them would only run where those are installed.
 2. Builds `jaic-cli --no-default-features --features static-llvm`, which links LLVM statically, on every platform, together with `jailsp` and `jailint`, through `tools/build_pgo.py --llvm static`: an instrumented build, a training run over the repository's tests, examples and benchmarks, and a profile-guided rebuild. On Linux the result is also optimised with BOLT, using the `llvm-bolt` in the LLVM tarball. See [PGO and BOLT](pgo-and-bolt.md). The binaries land in `target/pgo/dist`. A matrix row with an empty `llvm` would build without the backend (`--llvm none`).
 3. Packages `jaic`, `jailsp`, `jailint`, `stdlib/`, `prelude/` (which `stdlib/Preload.jai` loads), `README.md` and `CHANGELOG.md` as `jaic-<platform>.tar.gz` (`.zip` on Windows).
 4. Smoke-tests the packaged `jaic` from a directory outside the checkout: `run` (and `build`, where LLVM is linked) of `examples/compile-time-record.jai` must exit with 42, and the packaged `jailint -D warnings` must find nothing in it (which also checks it finds the packaged stdlib). It also checks that the macOS binary links nothing from Homebrew and the Linux one no shared LLVM.
@@ -42,7 +42,7 @@ Gotchas:
 
 ## Configuration
 
-- `LLVM_VERSION` in the workflow: the LLVM 22 patch release to download.
+- `LLVM_VERSION` in the workflow: the LLVM 23 patch release to download.
 - `jaic-cli` features: `dynamic-llvm` (default), `static-llvm`, `llvm` (backend without a link preference).
 - `jaic-llvm` features: `dynamic` (default), `static`.
 
