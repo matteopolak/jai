@@ -66,12 +66,26 @@ runtime_support_report_assertion :: (loc: Source_Code_Location, message: string)
             write_string("    ", true);
             if node.info.name.count write_string(node.info.name, true);
             else write_string("(anonymous procedure)", true);
-            write_strings(" at ", node.info.location.fully_pathed_filename, to_standard_error = true);
+            write_strings(" at ", runtime_support_shown_path(node.info.location.fully_pathed_filename), to_standard_error = true);
             write_number_after(":", node.line_number, true);
             write_string("\n", true);
         }
         node = node.next;
     }
+}
+
+// The directory the build started in, with a trailing separator (empty when unknown); jaic
+// provides it. Paths under it are shown relative to it, the way jaic shows them.
+__jaic_build_directory: string #elsewhere;
+
+runtime_support_shown_path :: (path: string) -> string #no_context #no_abc {
+    base := __jaic_build_directory;
+    if base.count == 0 || path.count <= base.count return path;
+    for i: 0..base.count - 1 if path[i] != base[i] return path;
+    shown := path;
+    shown.data += base.count;
+    shown.count -= base.count;
+    return shown;
 }
 
 runtime_support_is_assertion_frame :: (name: string) -> bool #no_context {
@@ -358,13 +372,13 @@ unlock_output :: () #no_context {
 // Locations print as "path:line,column".
 write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context {
     stderr := to_standard_error;
-    write_string(loc.fully_pathed_filename, stderr);
+    write_string(runtime_support_shown_path(loc.fully_pathed_filename), stderr);
     write_number_after(":", loc.line_number, stderr);
     write_number_after(":", loc.character_number, stderr);
 }
 // Prefix for runtime failure messages: "path:line: ", always on stderr.
 write_failure_location :: (filename: *u8, line: s64) #no_context {
-    write_string(to_string(filename), true);
+    write_string(runtime_support_shown_path(to_string(filename)), true);
     write_number_after(":", line, true);
     write_string(": ", true);
 }
