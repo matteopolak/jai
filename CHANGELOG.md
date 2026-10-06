@@ -12,6 +12,7 @@
   - Release archives and the Nix package include `jailint`, and CI lints the repository's Jai code with it. See `docs/tools/jailint.md`.
 - `jailsp` publishes jailint's findings as diagnostics (the rule as the code, `jailint` as the source) and offers their fixes as quick-fix code actions. It reuses the compile that hover and inlay hints already use.
 - `jaic::build::WorkspaceObserver` lets embedders see each workspace's compiler.
+- Release binaries (`jaic`, `jailsp`, `jailint`) are built with profile-guided optimisation on every platform, and the Linux ones are further optimised with BOLT. `tools/build_pgo.py` builds them the same way locally. See `docs/tools/pgo-and-bolt.md`.
 
 ### Changed
 
