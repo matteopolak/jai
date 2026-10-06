@@ -1322,6 +1322,38 @@
       "negative": {
         "check": "is too large"
       }
+    },
+    {
+      "id": "enum-type-flags",
+      "source": "positive/enum-type-flags.jai",
+      "sha256": "588ecabdfbd912dac8085bd6c758a4d009725b8f603f86b135d4d4ff62a83300",
+      "suite": "core",
+      "feature": "Type_Info_Enum.enum_type_flags (#specified)",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "0\n4\n1\n5\nspecified\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "print-null-type",
+      "source": "positive/print-null-type.jai",
+      "sha256": "7aab2d78e50f1c1c3215cc2987f2363813fddc87ef16626d2bb9db458ab5307a",
+      "suite": "core",
+      "feature": "print of a null Type",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "(null)\n{(null), 0}\n",
+        "stderr": ""
+      }
     }
   ]
 }

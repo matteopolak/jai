@@ -717,7 +717,7 @@ __append_quoted :: (builder: *String_Builder, text: string) {
 }
 __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     if !info {
-        append(builder, "<null type>");
+        append(builder, "(null)");
         return;
     }
     if depth >= 16 {
