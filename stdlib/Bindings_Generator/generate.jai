@@ -227,10 +227,13 @@ print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options
     if g.int128_was_referenced                      array_add(*uses, "S128/U128");
     if g.generated_printf_wrapper                   array_add(*uses, "tprint");
     declare_libraries := options.generate_library_declarations && g.libraries.count > 0;
-    if !uses.count && !declare_libraries return;
+    if !uses.count && !declare_libraries && !g.long_double_was_referenced return;
 
     append(builder, "\n#scope_file\n\n");
     if uses.count  print_to_builder(builder, "#import \"Basic\"; // The generated code uses %.\n\n", join(..uses, separator = ", "));
+    if g.long_double_was_referenced {
+        append(builder, "#import \"Jaic_Extensions\"; // Long_Double: C's long double (not standard Jai, jaic only).\n\n");
+    }
     if !declare_libraries return;
     for lib: g.libraries {
         // A system library is found by the linker; the others are paths, below the given prefix.
