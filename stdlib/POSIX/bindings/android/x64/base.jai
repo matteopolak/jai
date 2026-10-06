@@ -191,7 +191,7 @@ clockid_t :: enum u32 {
     CLOCK_TAI :: TAI;
 }
 MAX_CLOCKS :: 16;
-CLOCKS_MASK :: xx clockid_t.REALTIME | xx clockid_t.MONOTONIC;
+CLOCKS_MASK :: (xx clockid_t.REALTIME) | xx clockid_t.MONOTONIC;
 CLOCKS_MONO :: xx clockid_t.MONOTONIC;
 TIMER_ABSTIME :: 0x01;
 _KERNEL_NSIG :: 32;

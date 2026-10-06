@@ -820,15 +820,15 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         info := cast(*Type_Info_Enum) item.type;
         value := get_u64_from_void_pointer(item.value_pointer, info.runtime_size);
         mask: u64 = 0xffff_ffff_ffff_ffff;
-        if info.runtime_size < 8 mask = (cast(u64) 1 << cast(u8) (8*info.runtime_size)) - 1;
+        if info.runtime_size < 8 mask = ((cast(u64) 1) << cast(u8) (8*info.runtime_size)) - 1;
         for i: 0..info.names.count-1 {
-            if (cast,no_check(u64) info.values[i] & mask) == value { append(builder, info.names[i]); return; }
+            if ((cast,no_check(u64) info.values[i]) & mask) == value { append(builder, info.names[i]); return; }
         }
         if (info.enum_type_flags & .FLAGS) != 0 {
             remainder := value;
             first := true;
             for i: 0..info.names.count-1 {
-                flag := cast,no_check(u64) info.values[i] & mask;
+                flag := (cast,no_check(u64) info.values[i]) & mask;
                 if flag == 0 || (remainder & flag) != flag continue;
                 if !first append(builder, " | ");
                 append(builder, info.names[i]);

@@ -126,7 +126,7 @@ WIDE_BLOCK :: 8;
 ENTRY_TAGS :: 15;
 
 entry_address :: inline (entry: *void) -> *void {
-    return cast(*void) (cast(u64) entry & ~cast(u64) ENTRY_TAGS);
+    return cast(*void) ((cast(u64) entry) & ~cast(u64) ENTRY_TAGS);
 }
 // The block malloc returned, which realloc and free want back.
 entry_origin :: (entry: *void) -> *void {
@@ -205,7 +205,7 @@ destroy_heap_locked :: (heap: *Heap) {
     c_free(heap);
 }
 slot_home :: (heap: *Heap, pointer: *void) -> s64 #no_aoc {
-    return cast,no_check(s64) (((cast(u64) pointer >> 4) * 11400714819323198485) >> 32) & (heap.capacity - 1);
+    return (cast,no_check(s64) ((((cast(u64) pointer) >> 4) * 11400714819323198485) >> 32)) & (heap.capacity - 1);
 }
 // The slot holding the entry for the block at `pointer`, or -1. Tags sit below bit 4, so an
 // entry hashes like its address.
@@ -238,7 +238,7 @@ add_allocation :: (heap: *Heap, pointer: *void) -> bool {
 }
 place_allocation :: (heap: *Heap, pointer: *void) #no_aoc {
     mask := heap.capacity - 1;
-    slot := cast,no_check(s64) (((cast(u64) pointer >> 4) * 11400714819323198485) >> 32) & mask;
+    slot := (cast,no_check(s64) ((((cast(u64) pointer) >> 4) * 11400714819323198485) >> 32)) & mask;
     slots := heap.slots;
     while slots[slot] slot = (slot + 1) & mask;
     slots[slot] = pointer;

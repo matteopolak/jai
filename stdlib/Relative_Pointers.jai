@@ -54,13 +54,13 @@ write_relative_pointer :: ($type: Type, pointer_address: *void, base_address: *v
     storage := cast(*type)pointer_address;
     if target_address == null { <<storage = 0; return; }
     displacement := cast(s64)target_address - cast(s64)base_address;
-    SIGN :: cast(u64)1 << (size_of(type) * 8 - 1);
+    SIGN :: (cast(u64)1) << (size_of(type) * 8 - 1);
     #if size_of(type) < 8 {
         assert(displacement > -cast(s64)SIGN && displacement < cast(s64)SIGN);
     } else {
         assert(displacement != cast(s64)SIGN);
     }
-    <<storage = cast(type)(cast(u64)displacement ^ SIGN);
+    <<storage = cast(type)((cast(u64)displacement) ^ SIGN);
     assert(<<storage != 0);
 }
 

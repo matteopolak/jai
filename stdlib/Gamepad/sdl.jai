@@ -39,7 +39,7 @@ sample_sdl_gamepad :: (sample:*Gamepad_Sample) -> bool {
     sample.right_trigger=clamp(sdl_axis(.SDL_CONTROLLER_AXIS_TRIGGERRIGHT),0.0,1.0);
     codes:[14]Gamepad_Code=.[.A,.B,.X,.Y,.BACK,.START,.LEFT_STICK_CLICK,.RIGHT_STICK_CLICK,.LEFT_SHOULDER,.RIGHT_SHOULDER,.DPAD_UP,.DPAD_DOWN,.DPAD_LEFT,.DPAD_RIGHT];
     buttons:[14]SDL_Gamepad.SDL_GameControllerButton=.[.SDL_CONTROLLER_BUTTON_A,.SDL_CONTROLLER_BUTTON_B,.SDL_CONTROLLER_BUTTON_X,.SDL_CONTROLLER_BUTTON_Y,.SDL_CONTROLLER_BUTTON_BACK,.SDL_CONTROLLER_BUTTON_START,.SDL_CONTROLLER_BUTTON_LEFTSTICK,.SDL_CONTROLLER_BUTTON_RIGHTSTICK,.SDL_CONTROLLER_BUTTON_LEFTSHOULDER,.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,.SDL_CONTROLLER_BUTTON_DPAD_UP,.SDL_CONTROLLER_BUTTON_DPAD_DOWN,.SDL_CONTROLLER_BUTTON_DPAD_LEFT,.SDL_CONTROLLER_BUTTON_DPAD_RIGHT];
-    for button,index:buttons if SDL_Gamepad.SDL_GameControllerGetButton(sdl_controller,button)!=0 sample.buttons |= cast(u32)1<<cast(s64)codes[index];
+    for button,index:buttons if SDL_Gamepad.SDL_GameControllerGetButton(sdl_controller,button)!=0 sample.buttons |= (cast(u32)1)<<cast(s64)codes[index];
     return true;
 }
 #scope_file

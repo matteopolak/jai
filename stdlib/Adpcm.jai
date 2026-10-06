@@ -88,7 +88,7 @@ IMA_ADPCM_decode :: (info: Adpcm_Info, input_block: [] u8, dest_buffer: [] u8) -
         start := b * align;
         for c: 0..channels-1 {
             p := input_block.data + start + c * 4;
-            value := cast(u16) p[0] | (cast(u16) p[1] << 8);
+            value := (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
             states[c].sample = cast,no_check(s16) value;
             states[c].index = cast(s8) p[2];
             dest_buffer[written] = p[0];

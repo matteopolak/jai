@@ -112,10 +112,10 @@ get_waveformatex_header :: (file_data: string) -> (format: Waveformatex, samples
 
 #scope_file
 wav_u16 :: (p: *u8) -> u16 {
-    return cast(u16) p[0] | (cast(u16) p[1] << 8);
+    return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
 }
 wav_u32 :: (p: *u8) -> u32 {
-    return cast(u32) p[0] | (cast(u32) p[1] << 8) | (cast(u32) p[2] << 16) | (cast(u32) p[3] << 24);
+    return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }
 wav_id :: (data: string, offset: s64, id: string) -> bool {
     if offset < 0 || offset > data.count - 4 return false;

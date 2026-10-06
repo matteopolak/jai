@@ -18,8 +18,8 @@ random_get :: (state: *Random_State) -> u64 #no_aoc {
     }
     state.low=0; state.high=0;
     for i: 0..3 {
-        state.low |= cast(u64) output[i] << cast(u64) (i*16);
-        state.high |= cast(u64) output[i+4] << cast(u64) (i*16);
+        state.low |= (cast(u64) output[i]) << cast(u64) (i*16);
+        state.high |= (cast(u64) output[i+4]) << cast(u64) (i*16);
     }
     return state.high;
 }

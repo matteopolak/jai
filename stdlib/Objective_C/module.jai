@@ -16,7 +16,7 @@ init_objective_c_selector_struct :: (selectors: *$T) {
     if info.type != .STRUCT || selectors == null return;
     record := cast(*Type_Info_Struct) info;
     for member: record.members {
-        if (cast(u32) member.flags & 3) != 0 || member.type != type_info(Selector) continue;
+        if ((cast(u32) member.flags) & 3) != 0 || member.type != type_info(Selector) continue;
         if member.offset_in_bytes < 0 || member.offset_in_bytes > info.runtime_size - size_of(Selector) continue;
         bytes := Basic.to_c_string(member.name);
         if bytes == null continue;
@@ -294,7 +294,7 @@ objc_create_class :: ($type: Type, $parent: Type) -> Class {
         Basic.assert(_sdk_objc_identifier(member.name), "Invalid native ivar name");
         alignment := _sdk_objc_alignment(member.type);
         alignment_log2: u8 = 0;
-        while (cast(s64) 1 << alignment_log2) < alignment alignment_log2 += 1;
+        while ((cast(s64) 1) << alignment_log2) < alignment alignment_log2 += 1;
         encoded := objc_type_encode(member.type);
         defer Basic.free(encoded);
         name_bytes := Basic.to_c_string(member.name);
@@ -375,7 +375,7 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
     else if info.type == .VARIANT objc_type_encode(builder, (cast(*Type_Info_Variant) info).variant_of, pointer_depth);
     else if info.type == .PROCEDURE {
         procedure := cast(*Type_Info_Procedure) info;
-        Basic.assert((cast(u32) procedure.procedure_flags & 32) != 0, "Native function pointers require #c_call");
+        Basic.assert(((cast(u32) procedure.procedure_flags) & 32) != 0, "Native function pointers require #c_call");
         Basic.append(builder, "^?");
     } else if info.type == .POINTER {
         pointed := (cast(*Type_Info_Pointer) info).pointer_to;
@@ -395,14 +395,14 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
         Basic.append(builder, "]");
     } else if info.type == .STRUCT {
         record := cast(*Type_Info_Struct) info;
-        is_union := (cast(u32) record.textual_flags & 2) != 0;
+        is_union := ((cast(u32) record.textual_flags) & 2) != 0;
         if is_union Basic.append(builder, "("); else Basic.append(builder, "{");
         // Generic Jai names contain punctuation; anonymous native tags are valid.
         if _sdk_objc_identifier(record.name) Basic.append(builder, record.name); else Basic.append(builder, "?");
         if pointer_depth <= 1 {
             Basic.append(builder, "=");
             for member: record.members {
-                if (cast(u32) member.flags & 3) != 0 continue;
+                if ((cast(u32) member.flags) & 3) != 0 continue;
                 objc_type_encode(builder, member.type, pointer_depth);
             }
         }
@@ -433,9 +433,9 @@ objc_func_encode :: (ty: *Type_Info_Procedure) -> string {
 has_isa_member :: (ty: *Type_Info_Struct) -> bool {
     if ty == null return false;
     for member: ty.members {
-        if (cast(u32) member.flags & 3) != 0 || member.offset_in_bytes != 0 continue;
+        if ((cast(u32) member.flags) & 3) != 0 || member.offset_in_bytes != 0 continue;
         if member.name == "isa" && member.type == type_info(Class) return true;
-        if (cast(u32) member.flags & 16) != 0 && member.type.type == .STRUCT {
+        if ((cast(u32) member.flags) & 16) != 0 && member.type.type == .STRUCT {
             if has_isa_member(cast(*Type_Info_Struct) member.type) return true;
         }
     }
@@ -443,8 +443,8 @@ has_isa_member :: (ty: *Type_Info_Struct) -> bool {
 }
 type_check_objc_method_type :: (ty: *Type_Info_Procedure) {
     Basic.assert(ty != null && ty.type == .PROCEDURE, "Expected a procedure descriptor");
-    Basic.assert((cast(u32) ty.procedure_flags & 32) != 0, "Objective-C methods require #c_call");
-    Basic.assert((cast(u32) ty.procedure_flags & 6) == 0, "Objective-C methods cannot be compile-time-only or polymorphic");
+    Basic.assert(((cast(u32) ty.procedure_flags) & 32) != 0, "Objective-C methods require #c_call");
+    Basic.assert(((cast(u32) ty.procedure_flags) & 6) == 0, "Objective-C methods cannot be compile-time-only or polymorphic");
     Basic.assert(ty.argument_types.count >= 2 && ty.return_types.count <= 1, "Methods require receiver/selector arguments and at most one native return");
     Basic.assert(ty.argument_types[0].type == .POINTER && ty.argument_types[1].type == .POINTER, "Receiver and selector must be pointers");
     builder: String_Builder;
@@ -585,10 +585,10 @@ _sdk_objc_alignment :: (info: *Type_Info) -> s64 {
     if info.type == .ARRAY return _sdk_objc_alignment((cast(*Type_Info_Array) info).element_type);
     Basic.assert(info.type == .STRUCT, "Unreviewed native layout alignment");
     record := cast(*Type_Info_Struct) info;
-    if (cast(u32) record.textual_flags & 4) != 0 return 1;
+    if ((cast(u32) record.textual_flags) & 4) != 0 return 1;
     maximum: s64 = 1;
     for member: record.members {
-        if (cast(u32) member.flags & 3) != 0 continue;
+        if ((cast(u32) member.flags) & 3) != 0 continue;
         alignment := _sdk_objc_alignment(member.type);
         if alignment > maximum maximum = alignment;
     }

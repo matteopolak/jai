@@ -72,7 +72,7 @@ update_gamepad :: () {
     gamepad.left_trigger = filter_trigger(sample.left_trigger, gamepad.left_trigger_deadzone);
     gamepad.right_trigger = filter_trigger(sample.right_trigger, gamepad.right_trigger_deadzone);
     for i: 0..Input.GAMEPAD_BUTTON_COUNT-1 {
-        pressed := (sample.buttons & (cast(u32) 1 << i)) != 0;
+        pressed := (sample.buttons & ((cast(u32) 1) << i)) != 0;
         code := cast(Gamepad_Code) i;
         if code == .LEFT_TRIGGER pressed = gamepad.left_trigger > gamepad.left_trigger_threshold;
         if code == .RIGHT_TRIGGER pressed = gamepad.right_trigger > gamepad.right_trigger_threshold;
@@ -131,7 +131,7 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
         masks: [14] u16 = .[1,2,4,8,16,32,256,512,4096,8192,16384,32768,64,128];
         codes: [14] Gamepad_Code = .[.DPAD_UP,.DPAD_DOWN,.DPAD_LEFT,.DPAD_RIGHT,.START,.BACK,.LEFT_SHOULDER,.RIGHT_SHOULDER,.A,.B,.X,.Y,.LEFT_STICK_CLICK,.RIGHT_STICK_CLICK];
         for mask, i: masks {
-            if (state.Gamepad.wButtons & mask) != 0 sample.buttons |= cast(u32) 1 << cast(s64) codes[i];
+            if (state.Gamepad.wButtons & mask) != 0 sample.buttons |= (cast(u32) 1) << cast(s64) codes[i];
         }
         return true;
     }

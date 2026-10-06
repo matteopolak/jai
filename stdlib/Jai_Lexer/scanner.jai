@@ -258,7 +258,7 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
                 high, high_ok := get_hex_digit(lexer, .ASCII_8_BIT);
                 low, low_ok := get_hex_digit(lexer, .ASCII_8_BIT);
                 if !high_ok || !low_ok { report_parse_error(lexer, "Invalid byte escape\n"); result.type = .ERROR; break; }
-                character = (cast(s16) high << 4) | low;
+                character = ((cast(s16) high) << 4) | low;
             }
         }
         array_add(*decoded, cast(u8) character);

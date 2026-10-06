@@ -84,7 +84,7 @@ string_to_int :: (t: string, base := 10, $T := int) -> result: T, success: bool,
     if negative && !info.signed return 0, false, t;
     limit: u64 = 0xffff_ffff_ffff_ffff;
     bits := info.runtime_size * 8;
-    if bits < 64 limit = (cast(u64) 1 << cast(u8) bits) - 1;
+    if bits < 64 limit = ((cast(u64) 1) << cast(u8) bits) - 1;
     if info.signed {
         limit >>= 1;
         if negative limit += 1;

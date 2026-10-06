@@ -58,6 +58,6 @@ is_pe :: (file_content: string) -> bool, coff_start: int {
 #scope_module
 
 read_le_u32 :: (data: string, offset: int) -> u32 {
-    return cast(u32) data[offset] | cast(u32) data[offset + 1] << 8 |
-           cast(u32) data[offset + 2] << 16 | cast(u32) data[offset + 3] << 24;
+    return (cast(u32) data[offset]) | (cast(u32) data[offset + 1]) << 8 |
+           (cast(u32) data[offset + 2]) << 16 | (cast(u32) data[offset + 3]) << 24;
 }

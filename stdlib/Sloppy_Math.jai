@@ -17,7 +17,7 @@ max_of_type :: ($T: Type) -> T {
     else {
         #assert type_info(T).type == .INTEGER "max_of_type only knows bool, integer and float types.";
         // All value bits set: every bit for unsigned types, all but the sign bit otherwise.
-        top_bit := cast(u64) 1 << (value_bits(T) - 1);
+        top_bit := (cast(u64) 1) << (value_bits(T) - 1);
         return cast,no_check(T) (top_bit | (top_bit - 1));
     }
 }
@@ -29,7 +29,7 @@ min_of_type :: ($T: Type) -> T {
         #assert type_info(T).type == .INTEGER "min_of_type only knows bool, integer and float types.";
         if value_bits(T) == size_of(T) * 8  return 0;
         // Two's complement minimum: only the sign bit set.
-        return cast,no_check(T) (cast(u64) 1 << value_bits(T));
+        return cast,no_check(T) ((cast(u64) 1) << value_bits(T));
     }
 }
 

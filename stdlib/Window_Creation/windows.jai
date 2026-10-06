@@ -83,7 +83,7 @@ init_window_class :: ( background_color_rgb : [ 3 ] float ) {
     descriptor.hIcon = LoadIconW(descriptor.hInstance, MAKEINTRESOURCEW(2));
     if !descriptor.hIcon descriptor.hIcon = LoadIconW(null, MAKEINTRESOURCEW(32512));
     color: u32 = 0;
-    for channel: 0..2 color |= cast(u32) (clamp(background_color_rgb[channel], 0.0, 1.0) * 255.0 + 0.5) << (channel*8);
+    for channel: 0..2 color |= (cast(u32) (clamp(background_color_rgb[channel], 0.0, 1.0) * 255.0 + 0.5)) << (channel*8);
     descriptor.hbrBackground = CreateSolidBrush(color);
     atom := RegisterClassExW(*descriptor);
     if atom == 0 {

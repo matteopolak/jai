@@ -22,7 +22,7 @@ RUSAGE_INFO :: enum {
     V4 :: 4;
     CURRENT :: V4;
 }
-RLIM_INFINITY :: (cast(u64) 1 << 63) - 1;
+RLIM_INFINITY :: ((cast(u64) 1) << 63) - 1;
 RLIM_SAVED_MAX :: RLIM_INFINITY;
 RLIM_SAVED_CUR :: RLIM_INFINITY;
 RLIMIT_RESOURCE :: enum s32 {

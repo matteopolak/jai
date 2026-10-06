@@ -98,7 +98,7 @@ operator >> :: (a: S128, $$x: u8) -> S128 {
     shift := x & 63;
     reverse_shift := (64 - shift) & 63;
     if x >= 64 return S128.{cast,no_check(u64) (a.high >> shift), sign};
-    return S128.{(a.low >> shift) | (cast,no_check(u64) a.high << reverse_shift), a.high >> shift};
+    return S128.{(a.low >> shift) | ((cast,no_check(u64) a.high) << reverse_shift), a.high >> shift};
 }
 logical_shift_right :: (a: S128, $$x: u8) -> S128 {
     bits: U128 = to_u128(a);
@@ -148,8 +148,8 @@ unsigned_divide_with_remainder :: (u: U128, v: U128) -> quotient: U128, remainde
         remainder.low |= incoming;
         if carry || remainder >= v {
             remainder = remainder - v;
-            if bit >= 64 quotient.high |= cast(u64) 1 << cast(u8) (bit - 64);
-            else quotient.low |= cast(u64) 1 << cast(u8) bit;
+            if bit >= 64 quotient.high |= (cast(u64) 1) << cast(u8) (bit - 64);
+            else quotient.low |= (cast(u64) 1) << cast(u8) bit;
         }
         bit -= 1;
     }
@@ -168,7 +168,7 @@ __u128_divide_by_u64 :: (u: U128, d: u64) -> quotient: U128, remainder: U128 #no
         r = (r << 1) | ((u.low >> cast(u8) bit) & 1);
         if carry || r >= d {
             r -= d;
-            quotient.low |= cast(u64) 1 << cast(u8) bit;
+            quotient.low |= (cast(u64) 1) << cast(u8) bit;
         }
         bit -= 1;
     }

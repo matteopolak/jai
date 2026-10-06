@@ -51,7 +51,7 @@ md5_compress :: (state: *u32, block: [64] u8) {
     words: [16] u32;
     for i: 0..15 {
         p := i * 4;
-        words[i] = cast(u32) block[p] | (cast(u32) block[p + 1] << 8) | (cast(u32) block[p + 2] << 16) | (cast(u32) block[p + 3] << 24);
+        words[i] = (cast(u32) block[p]) | ((cast(u32) block[p + 1]) << 8) | ((cast(u32) block[p + 2]) << 16) | ((cast(u32) block[p + 3]) << 24);
     }
     a := state[0];
     b := state[1];

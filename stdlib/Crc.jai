@@ -13,7 +13,7 @@ crc64_we :: (s: string) -> u64 {
 #scope_file
 crc64_update :: (s: string, accumulator: u64) -> u64 #no_aoc {
     for byte: s {
-        accumulator ^= cast(u64) byte << 56;
+        accumulator ^= (cast(u64) byte) << 56;
         bit: s32 = 0;
         while bit < 8 {
             high_bit := accumulator & 0x8000_0000_0000_0000;

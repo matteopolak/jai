@@ -61,7 +61,7 @@ sample_iohid_gamepad :: (sample:*Gamepad_Sample) -> bool {
             page:=HID.IOHIDElementGetUsagePage(element);
             usage:=HID.IOHIDElementGetUsage(element);
             if page==9 {
-                for wanted,button_index:iohid_layout.button_usages if wanted!=0 && wanted==usage && raw!=0 local.buttons |= cast(u32)1<<button_index;
+                for wanted,button_index:iohid_layout.button_usages if wanted!=0 && wanted==usage && raw!=0 local.buttons |= (cast(u32)1)<<button_index;
             } else if page==1 {
                 if usage==0x39 {
                     minimum:=HID.IOHIDElementGetLogicalMin(element);
@@ -69,10 +69,10 @@ sample_iohid_gamepad :: (sample:*Gamepad_Sample) -> bool {
                     // Eight-way HID hat values; outside the logical range is neutral.
                     if maximum-minimum==7 && raw>=minimum && raw<=maximum {
                         direction:=raw-minimum;
-                        if direction==0 || direction==1 || direction==7 local.buttons |= cast(u32)1<<cast(s64)Gamepad_Code.DPAD_UP;
-                        if direction==1 || direction==2 || direction==3 local.buttons |= cast(u32)1<<cast(s64)Gamepad_Code.DPAD_RIGHT;
-                        if direction==3 || direction==4 || direction==5 local.buttons |= cast(u32)1<<cast(s64)Gamepad_Code.DPAD_DOWN;
-                        if direction==5 || direction==6 || direction==7 local.buttons |= cast(u32)1<<cast(s64)Gamepad_Code.DPAD_LEFT;
+                        if direction==0 || direction==1 || direction==7 local.buttons |= (cast(u32)1)<<cast(s64)Gamepad_Code.DPAD_UP;
+                        if direction==1 || direction==2 || direction==3 local.buttons |= (cast(u32)1)<<cast(s64)Gamepad_Code.DPAD_RIGHT;
+                        if direction==3 || direction==4 || direction==5 local.buttons |= (cast(u32)1)<<cast(s64)Gamepad_Code.DPAD_DOWN;
+                        if direction==5 || direction==6 || direction==7 local.buttons |= (cast(u32)1)<<cast(s64)Gamepad_Code.DPAD_LEFT;
                     }
                     continue;
                 }

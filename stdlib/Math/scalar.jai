@@ -29,7 +29,7 @@ floor :: (x: float64) -> float64 { value := x;
     if exponent >= 52 || value == 0 return value;
     negative := (bits >> 63) != 0;
     if exponent < 0 { if negative return -1; return 0; }
-    mask := (cast(u64) 1 << cast(u64) (52 - exponent)) - 1;
+    mask := ((cast(u64) 1) << cast(u64) (52 - exponent)) - 1;
     if (bits & mask) == 0 return value;
     truncated := float64_from_bits(bits & ~mask);
     if negative return truncated - 1;
@@ -87,8 +87,8 @@ ldexp :: (x: float64, pw2: s32) -> float64 {
         exponent += 512;
         if result == 0 return result;
     }
-    if exponent >= 0 result *= float64_from_bits(cast(u64) (1023 + exponent) << 52);
-    else result *= float64_from_bits(cast(u64) (1023 + exponent) << 52);
+    if exponent >= 0 result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
+    else result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
     return result;
 }
 sqrt :: (x: float64) -> float64 { value := x;
@@ -246,7 +246,7 @@ atan2 :: (y: float32, x: float32) -> float32 { return cast(float32) atan2(cast(f
 pow :: (x: float32, power: float32) -> float32 { return cast(float32) pow(cast(float64) x, cast(float64) power); }
 fmod_cycling :: (x: float32, divisor: float32) -> float32 { return cast(float32) fmod_cycling(cast(float64) x, cast(float64) divisor); }
 half_to_float :: (h: u16) -> float {
-    sign := cast(u32) (h >> 15) << 31;
+    sign := (cast(u32) (h >> 15)) << 31;
     exponent := cast(u32) ((h >> 10) & 31);
     fraction := cast(u32) (h & 1023);
     if exponent == 31 return float32_from_bits(sign | 0x7f80_0000 | (fraction << 13));
@@ -254,7 +254,7 @@ half_to_float :: (h: u16) -> float {
         if fraction == 0 return float32_from_bits(sign);
         power: s32 = -14;
         while (fraction & 1024) == 0 { fraction <<= 1; power -= 1; }
-        return float32_from_bits(sign | (cast(u32) (power + 127) << 23) | ((fraction & 1023) << 13));
+        return float32_from_bits(sign | ((cast(u32) (power + 127)) << 23) | ((fraction & 1023) << 13));
     }
     return float32_from_bits(sign | ((exponent + 112) << 23) | (fraction << 13));
 }

@@ -57,7 +57,7 @@ get_hash :: (x: $T, h := HASH_INIT) -> u32
     #if T == float32 || T == float64 {
         return sdbm_hash(*x, size_of(T), h);
     } else {
-        return cast,trunc(u32) (knuth_hash(cast,no_check(u64) x ^ h) >> 32);
+        return cast,trunc(u32) (knuth_hash((cast,no_check(u64) x) ^ h) >> 32);
     }
 }
 

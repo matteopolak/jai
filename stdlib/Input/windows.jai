@@ -100,10 +100,10 @@ windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lp
         if message.message == Win.WM_KEYDOWN || message.message == Win.WM_KEYUP || message.message == Win.WM_SYSKEYDOWN || message.message == Win.WM_SYSKEYUP {
             event.type = .KEYBOARD; event.key_code = windows_key_code(cast(u32) message.wParam);
             event.key_pressed = xx (message.message == Win.WM_KEYDOWN || message.message == Win.WM_SYSKEYDOWN);
-            event.repeat = event.key_pressed && (cast(u64) message.lParam & (cast(u64) 1 << 30)) != 0;
+            event.repeat = event.key_pressed && ((cast(u64) message.lParam) & ((cast(u64) 1) << 30)) != 0;
             windows_modifiers(*event); queue_input_event(window, event);
         } else if message.message == Win.WM_CHAR {
-            windows_emit_utf16(window, cast(u16) message.wParam, (cast(u64) message.lParam & (cast(u64) 1 << 30)) != 0);
+            windows_emit_utf16(window, cast(u16) message.wParam, ((cast(u64) message.lParam) & ((cast(u64) 1) << 30)) != 0);
         } else if message.message == Win.WM_UNICHAR && message.wParam != 0xffff {
             scalar := cast(u32) message.wParam;
             if scalar <= 0x10ffff && !(scalar >= 0xd800 && scalar <= 0xdfff) {
@@ -121,8 +121,8 @@ windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lp
             event.type = .MOUSE_WHEEL; event.wheel_delta = cast(s16) ((message.wParam >> 16) & 0xffff);
             event.typical_wheel_delta = 120; windows_modifiers(*event); queue_input_event(window, event);
         } else if message.message == Win.WM_MOUSEMOVE {
-            x := cast(s16) (cast(u64) message.lParam & 0xffff);
-            y := cast(s16) ((cast(u64) message.lParam >> 16) & 0xffff);
+            x := cast(s16) ((cast(u64) message.lParam) & 0xffff);
+            y := cast(s16) (((cast(u64) message.lParam) >> 16) & 0xffff);
             found := false;
             for *position: windows_mouse_positions {
                 if position.window != message.hwnd continue;
@@ -131,9 +131,9 @@ windows_process_input_message :: (hwnd:Win.HWND, kind:u32, wparam:Win.WPARAM, lp
             }
             if !found array_add(*windows_mouse_positions, .{message.hwnd, x, y, true});
         } else if message.message == Win.WM_SIZE {
-            queue_window_resize(window, cast(u16) (cast(u64) message.lParam & 0xffff), cast(u16) ((cast(u64) message.lParam >> 16)&0xffff));
+            queue_window_resize(window, cast(u16) ((cast(u64) message.lParam) & 0xffff), cast(u16) (((cast(u64) message.lParam) >> 16)&0xffff));
         } else if message.message == Win.WM_MOVE {
-            queue_window_move(window, cast(s16) (cast(u64) message.lParam & 0xffff), cast(s16) ((cast(u64) message.lParam >> 16)&0xffff));
+            queue_window_move(window, cast(s16) ((cast(u64) message.lParam) & 0xffff), cast(s16) (((cast(u64) message.lParam) >> 16)&0xffff));
         }
 
 }

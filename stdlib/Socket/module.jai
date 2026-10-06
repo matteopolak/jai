@@ -99,7 +99,7 @@ append_address :: (builder: *String_Builder, address: u32) {
 }
 append_address :: (builder: *String_Builder, address: [16] u8) {
     words: [8] u16;
-    for i: 0..7 words[i] = cast(u16) address[i*2] << 8 | cast(u16) address[i*2+1];
+    for i: 0..7 words[i] = (cast(u16) address[i*2]) << 8 | cast(u16) address[i*2+1];
     longest_start: s64 = -1; longest_count: s64 = 1;
     i: s64 = 0;
     while i < 8 {
@@ -177,7 +177,7 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 #if OS == .WINDOWS {
     FIONBIO :: cast(s32) 0x8004667e;
     IOW :: (x: u8, y: u8, $T: Type) -> s32 {
-        return cast(s32) (0x80000000 | ((size_of(T) & 0x7f) << 16) | (cast(u32) x << 8) | y);
+        return cast(s32) (0x80000000 | ((size_of(T) & 0x7f) << 16) | ((cast(u32) x) << 8) | y);
     }
     FD_ISSET :: __WSAFDIsSet;
     FD_SET :: (fd: Socket, set: *fd_set) {
@@ -199,17 +199,17 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
     }
     FD_ISSET :: (fd: s32, set: *fd_set) -> s32 {
         if !check_fd_set(fd, set) return 0;
-        mask := cast(FD_BITS_ELEMENT_TYPE) (cast(u64) 1 << (fd % BITS_PER_FD_SET_MASK));
+        mask := cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
         if (set.fds_bits[fd / BITS_PER_FD_SET_MASK] & mask) != 0 return 1;
         return 0;
     }
     FD_SET :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
-        set.fds_bits[fd / BITS_PER_FD_SET_MASK] |= cast(FD_BITS_ELEMENT_TYPE) (cast(u64) 1 << (fd % BITS_PER_FD_SET_MASK));
+        set.fds_bits[fd / BITS_PER_FD_SET_MASK] |= cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
     FD_CLR :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
-        set.fds_bits[fd / BITS_PER_FD_SET_MASK] &= ~cast(FD_BITS_ELEMENT_TYPE) (cast(u64) 1 << (fd % BITS_PER_FD_SET_MASK));
+        set.fds_bits[fd / BITS_PER_FD_SET_MASK] &= ~cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
     CMSG_FIRSTHDR :: (mhdr: *msghdr) -> *cmsghdr {
         if mhdr == null || mhdr.msg_control == null || mhdr.msg_controllen < size_of(cmsghdr) return null;
@@ -235,11 +235,11 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
     }
     ntohs :: (netshort: u16) -> u16 {
         bytes: [2] u8; memcpy(*bytes, *netshort, 2);
-        return cast(u16) bytes[0] << 8 | bytes[1];
+        return (cast(u16) bytes[0]) << 8 | bytes[1];
     }
     ntohl :: (netlong: u32) -> u32 {
         bytes: [4] u8; memcpy(*bytes, *netlong, 4);
-        return cast(u32) bytes[0] << 24 | cast(u32) bytes[1] << 16 | cast(u32) bytes[2] << 8 | bytes[3];
+        return (cast(u32) bytes[0]) << 24 | (cast(u32) bytes[1]) << 16 | (cast(u32) bytes[2]) << 8 | bytes[3];
     }
 }
 

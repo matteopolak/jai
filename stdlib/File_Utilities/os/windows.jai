@@ -8,7 +8,7 @@ file_exists :: (file_path: string) -> bool {
 file_modtime_and_size :: (file_path: string) -> (modtime: Apollo_Time, size: s64, success: bool) {
     info: File_Attribute_Data;
     if !native_file_attributes(os_utf8_to_wide(file_path), 0, *info) return .{}, 0, false;
-    size := (cast(s64) info.nFileSizeHigh << 32) | info.nFileSizeLow;
+    size := ((cast(s64) info.nFileSizeHigh) << 32) | info.nFileSizeLow;
     return filetime_to_apollo(info.ftLastWriteTime), size, true;
 }
 atomic_file_replace_or_just_rename_if_destination_file_does_not_exist :: (old_filename: string, new_filename: string) -> bool {

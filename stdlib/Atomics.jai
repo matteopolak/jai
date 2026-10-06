@@ -66,7 +66,7 @@ atomic_xor :: (dest: *$T, value: $I) {
 
 atomic_bit_test_and_set :: (dest: *$T, $$i: s64) -> bool {
     assert(i >= 0 && i < size_of(T) * 8);
-    mask := cast(T) 1 << i;
+    mask := (cast(T) 1) << i;
     old := atomic_read(dest);
     while true {
         success, observed := compare_and_swap(dest, old, old | mask);

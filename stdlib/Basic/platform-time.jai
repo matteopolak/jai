@@ -14,7 +14,7 @@
         return filetime_to_apollo(stamp);
     }
     filetime_to_apollo :: (stamp: $T) -> Apollo_Time {
-        ticks := (cast(u64) stamp.dwHighDateTime << 32) | stamp.dwLowDateTime;
+        ticks := ((cast(u64) stamp.dwHighDateTime) << 32) | stamp.dwLowDateTime;
         epoch_ticks :: 116444736000000000;
         if ticks < epoch_ticks return APOLLO_TIME_INVALID;
         since_epoch := ticks - epoch_ticks;
@@ -31,8 +31,8 @@
         if ticks < 0 && ticks % 100 != 0 total -= 1;
         total += 116444736000000000;
         if total < 0 return ft, false;
-        ft.dwLowDateTime = cast,no_check(u32) (cast(u64) total & 0xffff_ffff);
-        ft.dwHighDateTime = cast,no_check(u32) (cast(u64) total >> 32);
+        ft.dwLowDateTime = cast,no_check(u32) ((cast(u64) total) & 0xffff_ffff);
+        ft.dwHighDateTime = cast,no_check(u32) ((cast(u64) total) >> 32);
         return ft, true;
     }
     // @Incomplete: LOCAL time zone handling is not wired to the Windows API; LOCAL behaves like UTC here.
@@ -190,7 +190,7 @@ seconds_since_init :: () -> float64 {
         out: s32;
         for 0..str.count - 1 {
             shift := cast(u32) ((str.count - it - 1) * 8);
-            out = out | cast,no_check(s32) (cast(u32) str[it] << shift);
+            out = out | cast,no_check(s32) ((cast(u32) str[it]) << shift);
         }
         return out;
     }

@@ -46,8 +46,8 @@ numeric_half_range :: (start: int, end: int) -> bool {
     // Every finite half is exactly representable in float32.
     for raw: start..end {
         half:=cast(Float16) raw;
-        exponent:=(cast(u16) half >> 10) & 31;
-        fraction:=cast(u16) half & 1023;
+        exponent:=((cast(u16) half) >> 10) & 31;
+        fraction:=(cast(u16) half) & 1023;
         back:=float32_to_float16(float16_to_float32(half));
         if exponent!=31 && back!=half return false;
         if exponent==31 && fraction==0 && back!=half return false;

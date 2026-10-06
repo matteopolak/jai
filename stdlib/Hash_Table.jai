@@ -78,7 +78,7 @@ table_contains :: (table:*Table,key:table.Key_Type)->bool { return _find_index(t
 table_find_multiple :: (table:*Table,key:table.Key_Type)->[]table.Value_Type {
     output:[..]table.Value_Type; output.allocator=Basic.temp;
     if table.allocated==0 return output;
-    hash:=_valid_hash(table.hash_function(key)); index:=cast(int)hash & (table.allocated-1);
+    hash:=_valid_hash(table.hash_function(key)); index:=(cast(int)hash) & (table.allocated-1);
     step:=_probe_stride(hash); visited:=0;
     while visited<table.allocated {
         entry:=table.entries[index];
@@ -117,7 +117,7 @@ for_expansion :: (table:*$T/Table,body:Code,flags:For_Flags) #expand {
 }
 Walk_Table :: (code:Code) #expand {
     `hash:=_valid_hash(`table.hash_function(`key));
-    `index:=cast(int)hash & (`table.allocated-1);
+    `index:=(cast(int)hash) & (`table.allocated-1);
     stride:=_probe_stride(hash); remaining:=`table.allocated;
     while remaining>0 {
         `table_while_loop:=`table.entries[index].hash;
@@ -134,7 +134,7 @@ Hash :: #import "Hash";
 _valid_hash :: (hash:u32)->u32 { if hash<FIRST_VALID_HASH return hash+FIRST_VALID_HASH; return hash; }
 _probe_stride :: (hash:u32)->int { return cast(int)((hash>>16)|1); }
 _place_entry :: (table:*Table,entry:table.Entry)->*table.Value_Type {
-    index:=cast(int)entry.hash & (table.allocated-1); stride:=_probe_stride(entry.hash); visited:=0;
+    index:=(cast(int)entry.hash) & (table.allocated-1); stride:=_probe_stride(entry.hash); visited:=0;
     while visited<table.allocated {
         tag:=table.entries[index].hash;
         reusable:=tag==NEVER_OCCUPIED_HASH;
@@ -152,7 +152,7 @@ _place_entry :: (table:*Table,entry:table.Entry)->*table.Value_Type {
 }
 _find_index :: (table:*Table,key:table.Key_Type)->int {
     if table.allocated==0 return -1;
-    hash:=_valid_hash(table.hash_function(key)); index:=cast(int)hash & (table.allocated-1);
+    hash:=_valid_hash(table.hash_function(key)); index:=(cast(int)hash) & (table.allocated-1);
     step:=_probe_stride(hash); visited:=0;
     while visited<table.allocated {
         entry:=table.entries[index];

@@ -113,9 +113,9 @@ create_ico_file :: (x: s32, y: s32, comp: s32, image_data: *u8) -> string {
 #scope_file
 #import "Basic";
 #import "File";
-ico_u16 :: (p: *u8) -> u16 { return cast(u16) p[0] | (cast(u16) p[1] << 8); }
+ico_u16 :: (p: *u8) -> u16 { return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8); }
 ico_u32 :: (p: *u8) -> u32 {
-    return cast(u32) p[0] | (cast(u32) p[1] << 8) | (cast(u32) p[2] << 16) | (cast(u32) p[3] << 24);
+    return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }
 ico_put16 :: (p: *u8, value: u16) {
     p[0] = cast,trunc(u8) value;

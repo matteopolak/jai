@@ -99,7 +99,7 @@ Input :: #import "Input";
             if event_type != 2 return 0;
             buttons := cast(u32) AMotionEvent_getButtonState(event);
             for index: 0..2 {
-                mask := cast(u32) 1 << index;
+                mask := (cast(u32) 1) << index;
                 if (buttons & mask) == (_sdk_android_mouse_buttons & mask) continue;
                 button: Input.Event; button.type = .KEYBOARD;
                 if index == 0 button.key_code = .MOUSE_BUTTON_LEFT;

@@ -45,7 +45,7 @@ sample_gamecontroller :: (sample:*Gamepad_Sample) -> bool {
 }
 #scope_file
 gc_button :: (sample:*Gamepad_Sample, button:*GC.GCControllerButtonInput, code:Gamepad_Code) {
-    if button && GC.GCControllerButtonInput.isPressed(button)!=0 sample.buttons |= cast(u32) 1 << cast(s64) code;
+    if button && GC.GCControllerButtonInput.isPressed(button)!=0 sample.buttons |= (cast(u32) 1) << cast(s64) code;
 }
 gc_optional_button :: (profile:*GC.GCExtendedGamepad, name:*u8) -> *GC.GCControllerButtonInput {
     selector:=ObjC.sel_registerName(name);

@@ -22,7 +22,7 @@ to_string :: (cfstring: CFStringRef) -> string {
     return result;
 }
 VM_MAKE_TAG :: (val: s32) -> s32 {
-    return cast,trunc(s32) (cast(u32) val << 24);
+    return cast,trunc(s32) ((cast(u32) val) << 24);
 }
 
 #scope_file

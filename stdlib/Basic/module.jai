@@ -158,7 +158,7 @@ get_integer_range :: ($T: Type) -> (low:T,high:T) {
     integer,signed,bits:=is_integer_type(T);
     assert(integer);
     if signed {
-        high=cast(T)((cast(u64)1 << (bits-1))-1);
+        high=cast(T)(((cast(u64)1) << (bits-1))-1);
         low=-high-1;
     } else { low=0; high=cast,trunc(T)~cast(u64)0; }
     return low,high;

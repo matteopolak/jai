@@ -54,7 +54,7 @@ read_u32_le :: (ptr: *u8) -> u32 {
     value: u32 = 0;
     index: u32 = 0;
     while index < 4 {
-        value |= cast(u32) ptr[index] << (index * 8);
+        value |= (cast(u32) ptr[index]) << (index * 8);
         index += 1;
     }
     return value;
@@ -63,7 +63,7 @@ read_u64_le :: (ptr: *u8) -> u64 {
     value: u64 = 0;
     index: u32 = 0;
     while index < 8 {
-        value |= cast(u64) ptr[index] << (index * 8);
+        value |= (cast(u64) ptr[index]) << (index * 8);
         index += 1;
     }
     return value;

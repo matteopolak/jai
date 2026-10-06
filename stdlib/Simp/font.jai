@@ -395,9 +395,9 @@ fonts_initted:=false;
 ft_library:FT.FT_Library;
 page_size_x:s32=2048; page_size_y:s32=1024;
 font_record :: (font:*Dynamic_Font)->*Font_Record { for record:font_records if record.font==font return record; return null; }
-glyph_hash :: (utf32:u32,anti_aliasing:Font_Anti_Aliasing,hinting:bool)->u64 { return cast(u64)utf32 | (cast(u64)anti_aliasing<<32) | (cast(u64)hinting<<40); }
+glyph_hash :: (utf32:u32,anti_aliasing:Font_Anti_Aliasing,hinting:bool)->u64 { return (cast(u64)utf32) | ((cast(u64)anti_aliasing)<<32) | ((cast(u64)hinting)<<40); }
 find_or_create_glyph :: (font:*Dynamic_Font,utf32:u32)->*Glyph_Data {
-    key:=glyph_hash(utf32,font_anti_aliasing,font_hinting)^(cast(u64)font.glyph_index_for_unknown_character<<41);
+    key:=glyph_hash(utf32,font_anti_aliasing,font_hinting)^((cast(u64)font.glyph_index_for_unknown_character)<<41);
     pointer:=table_find_pointer(*font.glyph_lookup,key); if pointer return pointer.*;
     index:=FT.FT_Get_Char_Index(font.face,utf32);
     if index==0 index=font.glyph_index_for_unknown_character;
