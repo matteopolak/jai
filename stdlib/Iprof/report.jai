@@ -184,13 +184,15 @@ graph_focus: *Zone;
 focus_row: s64; // Row of graph_focus in the last call-graph report.
 jump_to_focus_row := false;
 
-// End of an auto-instrumented run: the whole run is one frame.
+// End of an auto-instrumented run. The run is treated as a single frame, which is closed
+// here so its totals are in the summary that gets logged (and optionally saved as CSV).
 write_exit_report :: (csv_filename: string) {
-    update(true);
-    report := create_report();
-    log_text_report(report);
-    if !csv_filename return;
-    if save_csv_report(report, csv_filename) log("Iprof: wrote the report to '%'.\n", csv_filename);
+    update(record_data = true);
+    summary := create_report();
+    log_text_report(summary);
+    if csv_filename.count == 0 return;
+    saved := save_csv_report(summary, csv_filename);
+    if saved log("Iprof: wrote the report to '%'.\n", csv_filename);
     else log_error("Iprof: could not write '%'.\n", csv_filename);
 }
 
