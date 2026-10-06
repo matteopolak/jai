@@ -220,9 +220,12 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
     }
 } else {
     system_processor_count :: (query: Processor_Query_Type) -> s64 {
-        if query == .ALL_LOGICAL || query == .PERFORMANCE_LOGICAL return max(P.sysconf(._SC_NPROCESSORS_ONLN), 0);
+        logical := max(P.sysconf(._SC_NPROCESSORS_ONLN), 0);
+        if query == .ALL_LOGICAL || query == .PERFORMANCE_LOGICAL return logical;
+        // Without a readable CPU topology (no /sys in a container or sandbox), count each
+        // logical processor as a core rather than report none.
         directory := P.opendir(temp_c_string("/sys/devices/system/cpu"));
-        if !directory return 0;
+        if !directory return logical;
         defer P.closedir(directory);
         cores: [..] string;
         cores.allocator = temp;
@@ -246,6 +249,7 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
             }
             if !duplicate array_add(*cores, siblings);
         }
+        if cores.count == 0 return logical;
         return cores.count;
     }
 
