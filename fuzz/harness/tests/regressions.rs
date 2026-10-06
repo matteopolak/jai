@@ -2,6 +2,8 @@
 //! function its libFuzzer target calls, so fixed crashes stay fixed without a sanitizer build.
 use std::path::Path;
 
+const REPLAY_STACK: usize = 128 << 20;
+
 fn replay(target: &str, run: fn(&[u8])) {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../regressions")
@@ -20,7 +22,14 @@ fn replay(target: &str, run: fn(&[u8])) {
         }
         let data = std::fs::read(&path).expect("read regression input");
         eprintln!("replaying {}", path.display());
-        run(&data);
+        // libFuzzer runs `lexer`/`parser` on its 8 MiB main thread in a release build. Debug
+        // frames are several times larger, and a test thread has 2 MiB, so give it room.
+        std::thread::Builder::new()
+            .stack_size(REPLAY_STACK)
+            .spawn(move || run(&data))
+            .expect("spawn replay thread")
+            .join()
+            .unwrap_or_else(|panic| std::panic::resume_unwind(panic));
     }
 }
 
