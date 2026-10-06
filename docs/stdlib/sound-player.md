@@ -38,7 +38,7 @@ start_playing(stream);
 - Mixer-side per-stream state belongs in `Voice` (`module.jai`), not in `Sound_Stream`'s public fields.
 - New codec: add a `Block_Codec` value, an `open_*_cache` constructor and a decode routine in `block_cache.jai`, and a branch in `make_stream`.
 - Gotcha: code in the Core Audio render callback has no context; only `compare_and_swap`/`atomic_read` and plain loops are allowed there.
-- Gotcha: `jaic run` cannot service callbacks from Core Audio's thread, so a program that plays to a real device on macOS must be built natively (`jaic build`); `OFFLINE` works in both.
+- `jaic run` plays to the real device too: Core Audio's render thread calling `pull_samples` runs as an adopted thread of the interpreter's scheduler (see [threads under `jaic run`](../compiler/interpreter-threads.md#callbacks-on-threads-c-started)); it gets the interpreter at once while the program is in a C call or asleep, and otherwise within a preemption slice, so a program that busy-waits in Jai code can underrun the device there. `OFFLINE` works in both.
 - Tests: `stdlib/Sound_Player/tests/offline-mix.jai` (levels, panning, looping, lifetime, ADPCM inline and on the worker). Compile-check the device paths with `jaic check <program> -os linux|windows|macos`.
 
 ## Configuration
