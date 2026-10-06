@@ -19,47 +19,27 @@ is_any :: (c: u8, chars: string) -> bool {
     return false;
 }
 
+// Clamped to the end of `s`: a request running past the end returns what is there (maybe "").
 slice :: inline (s: string, index: s64, count: s64) -> string {
-    assert(index >= 0, "index = %", index);
-    assert(count >= 0, "count = %", count);
-    if index >= s.count return "";
-    n := count;
-    if index + n > s.count n = s.count - index;
-    return .{ count = n, data = s.data + index };
+    assert(index >= 0 && count >= 0, "slice: index % and count % must not be negative", index, count);
+    available := s.count - index;
+    if available <= 0 return "";
+    return .{ count = min(count, available), data = s.data + index };
 }
 
+// Three-way byte order (-1, 0, 1). When one string is a prefix of the other, the shorter sorts first.
 compare :: (a: string, b: string) -> int {
-    n := min(a.count, b.count);
-    for i: 0..n - 1 {
-        if a.data[i] > b.data[i] return 1;
-        if a.data[i] < b.data[i] return -1;
-    }
-    if a.count > b.count return 1;
-    if a.count < b.count return -1;
-    return 0;
+    return three_way(a, b, fold_case = false);
 }
-
 compare_nocase :: (a: string, b: string) -> int {
-    n := min(a.count, b.count);
-    for i: 0..n - 1 {
-        x := to_lower(a.data[i]);
-        y := to_lower(b.data[i]);
-        if x > y return 1;
-        if x < y return -1;
-    }
-    if a.count > b.count return 1;
-    if a.count < b.count return -1;
-    return 0;
+    return three_way(a, b, fold_case = true);
 }
 
 equal :: (a: string, b: string) -> bool {
     return a == b;
 }
-
 equal_nocase :: (a: string, b: string) -> bool {
-    if a.count != b.count return false;
-    for i: 0..a.count - 1 if to_lower(a.data[i]) != to_lower(b.data[i]) return false;
-    return true;
+    return a.count == b.count && three_way(a, b, fold_case = true) == 0;
 }
 
 begins_with :: (s: string, prefix: string) -> bool {
@@ -381,14 +361,17 @@ path_strip_extension :: (path: string) -> string {
 path_overwrite_separators :: (path: string, separator: u8 = PATH_SEPARATOR) {
     for i: 0..path.count - 1 if path.data[i] == #char "\\" || path.data[i] == #char "/" path.data[i] = separator;
 }
+// The file name without its directory or extension: "dir/name.txt" gives "name".
 basename :: (s: string) -> string {
-    return path_strip_extension(path_filename(s));
+    name := path_filename(s);
+    return path_strip_extension(name);
 }
 path_basename :: basename;
-// No allocation when `path` already ends in the extension; otherwise a tprint result.
+// Returns `path` itself when its extension already is `extension`; otherwise a tprint result.
 path_ensure_extension :: (path: string, extension: string) -> string {
-    if path_extension(path) == extension return path;
-    return tprint("%.%", path, extension);
+    current := path_extension(path);
+    if current != extension return tprint("%.%", path, extension);
+    return path;
 }
 is_absolute_path :: (path: string) -> bool {
     if OS != .WINDOWS return begins_with(path, "/");
@@ -465,19 +448,19 @@ parse_token :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAU
     line.* = slice(line.*, n, line.count - n);
     return token, true;
 }
+// The token is consumed (and returned) whether or not it was the expected one.
 match_token :: (line: *string, match: string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: string, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    return token, ok && token == match;
+    return next_token_is(line, match, delimiters, spaces, fold_case = false);
 }
 match_token_nocase :: (line: *string, match: string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: string, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    return token, ok && equal_nocase(token, match);
+    return next_token_is(line, match, delimiters, spaces, fold_case = true);
 }
+// Accepts "true" or "false" in any letter case.
 parse_bool :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: bool, success: bool {
-    token, ok := parse_token(line, delimiters, spaces);
-    if !ok return false, false;
-    if equal_nocase(token, "true") return true, true;
-    if equal_nocase(token, "false") return false, true;
+    word, have_word := parse_token(line, delimiters, spaces);
+    if have_word {
+        for spelling, truth: string.["false", "true"] if equal_nocase(word, spelling) return truth == 1, true;
+    }
     return false, false;
 }
 parse_enum :: (line: *string, $T: Type, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: T, success: bool {
@@ -505,6 +488,25 @@ parse_int :: (line: *string, $T: Type = int, spaces := " \t", delimiters := DEFA
 // libc's atof, exported for callers that want C's lenient string-to-double.
 #scope_file
 string_crt :: #system_library "libc";
+three_way :: (a: string, b: string, fold_case: bool) -> int {
+    shared := min(a.count, b.count);
+    for i: 0..shared - 1 {
+        x, y := a.data[i], b.data[i];
+        if fold_case {
+            x = to_lower(x);
+            y = to_lower(y);
+        }
+        if x != y return ifx x < y then -1 else 1;
+    }
+    if a.count == b.count return 0;
+    return ifx a.count < b.count then -1 else 1;
+}
+next_token_is :: (line: *string, expected: string, delimiters: string, spaces: string, fold_case: bool) -> string, bool {
+    word, have_word := parse_token(line, delimiters, spaces);
+    if !have_word return word, false;
+    same := ifx fold_case then equal_nocase(word, expected) else word == expected;
+    return word, same;
+}
 #scope_export
 atof :: (s: *u8) -> float64 #foreign string_crt;
 
