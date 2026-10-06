@@ -98,7 +98,7 @@ To try a local build in the hosted UI, run the portfolio's sync with `JAI_WEB_LO
   the pass set with `tools/playground_stdlib_expected.json` (`pass` list plus `excluded`: name to written reason). Any
   regression, any newly passing excluded test, or any test in neither list fails the check; the release gate
   `check_browser_release.mjs` runs it. After intentionally changing the set: `--update` rewrites `pass` (new failures get a `TODO explain` reason you
-  must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 195 of 217 pass. The 22 exclusions
+  must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 196 of 218 pass. The 22 exclusions
   need processes (`Process`, the bindings generators' compiler runs), `dlopen` (libclang), native C libraries (FreeType,
   stb_image, libc callbacks and variadics), windows (`Window_Creation`) or `chmod`; `getrect-rh-negative-control` fails
   everywhere by design. Each reason is written next to its name in the JSON file.
