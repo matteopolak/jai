@@ -249,6 +249,26 @@ impl Compiler {
         {
             d = d.with_label(format!("`{text}` is false"));
         }
+        // A condition on the target: say which one this compile is for.
+        if let Some(text) = shown
+            && (text.contains("OS ") || text.contains("CPU "))
+        {
+            let os = match self.options.os {
+                super::TargetOs::Windows => ".WINDOWS",
+                super::TargetOs::Linux => ".LINUX",
+                super::TargetOs::MacOS => ".MACOS",
+                super::TargetOs::Wasm => ".WASM",
+            };
+            let cpu = match self.options.cpu {
+                super::TargetCpu::X64 => ".X64",
+                super::TargetCpu::Arm64 => ".ARM64",
+                super::TargetCpu::Wasm => ".WASM",
+            };
+            d = d.with_note(
+                Span::NONE,
+                format!("this compile targets `OS == {os}` and `CPU == {cpu}`; the code is written for other targets"),
+            );
+        }
         if shown == Some("false") {
             d = d.with_note(
                 Span::NONE,

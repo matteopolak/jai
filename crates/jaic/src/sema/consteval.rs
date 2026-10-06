@@ -298,14 +298,14 @@ impl Compiler {
     pub fn module_type(&mut self, module: ModuleId, name: &str, span: Span) -> Result<TypeId> {
         let ids = self.module_declarations(module, Sym::intern(name))?;
         let Some(&id) = ids.first() else {
-            return err(span, format!("'{name}' not found"));
+            return err(span, format!("`{name}` not found"));
         };
         match self.resolve_entity(id)? {
             scope::Resolved::Const {
                 value: Value::Type(t),
                 ..
             } => Ok(t),
-            _ => err(span, format!("'{name}' is not a type")),
+            _ => err(span, format!("`{name}` is not a type")),
         }
     }
 

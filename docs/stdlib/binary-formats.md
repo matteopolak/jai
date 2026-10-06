@@ -16,7 +16,7 @@ Readers and writers for small file formats: RIFF/WAVE (`Wav_File`), IMA/DVI ADPC
 
 Each format keeps its own little-endian helpers (`wav_u16`, `zip_u32`, ...).
 
-Tests are in `stdlib/tests/`: `binary-wav.jai`, `binary-adpcm.jai`, `binary-md5.jai`. `binary-mock-file/binary-zip.jai` and `binary-ico.jai` replace `File` and `Basic` with mocks from that directory's `modules/`, which `jaic` searches before the stdlib. The sweep's `modules` set runs them; run directly without the right `-I`, they fail with "module 'File' has no exported member 'archive'".
+Tests are in `stdlib/tests/`: `binary-wav.jai`, `binary-adpcm.jai`, `binary-md5.jai`. `binary-mock-file/binary-zip.jai` and `binary-ico.jai` replace `File` and `Basic` with mocks from that directory's `modules/`, which `jaic` searches before the stdlib. The sweep's `modules` set runs them; run directly without the right `-I`, they fail with "module `File` has no exported member `archive`".
 
 ## Dependencies
 
