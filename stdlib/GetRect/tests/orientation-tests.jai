@@ -1,6 +1,8 @@
 // Loads actual production math without constructing a renderer or native window.
 Math :: #import "Math";
 #import "Math";
+// GetRect's own setting: the shared files test it in procedures this program also checks.
+GETRECT_Y_UP :: true;
 #load "../../GetRect_Common/geometry.jai";
 #load "../../GetRect_Common/orientation.jai";
 right_orientation_cases :: () -> bool {
