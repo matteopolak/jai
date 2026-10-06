@@ -10,9 +10,11 @@ Bit_Array :: struct {
 // Allocates zeroed storage for `count` bits (from `array.allocator`, else the context's).
 init_bit_array :: (array: *Bit_Array, count: int) {
     assert(count >= 0);
-    if !array.allocator.proc array.allocator = context.allocator;
-    array.slots = Basic.NewArray((count + 63) >> 6, s64,, array.allocator);
     array.count = count;
+    if array.allocator.proc == null array.allocator = context.allocator;
+    words_needed := count / 64;
+    if count % 64 words_needed += 1;
+    array.slots = Basic.NewArray(words_needed, s64,, array.allocator);
 }
 
 make_bit_array :: (count: int) -> Bit_Array #must {
