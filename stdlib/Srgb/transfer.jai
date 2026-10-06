@@ -1,11 +1,19 @@
 // Scalar sRGB transfer equations used by all aggregate wrappers.
+// The curve (IEC 61966-2-1) is a straight segment near black and an offset power law with
+// exponent 2.4 above it; the knee sits at 0.04045 encoded, which is 0.0031308 linear.
 srgb_to_linear :: (x: float) -> float #must {
-    if x <= 0.04045 return x / 12.92;
-    return pow((x + 0.055) / 1.055, 2.4);
+    if x > 0.04045 {
+        shifted := (x + 0.055) / 1.055;
+        return pow(shifted, 2.4);
+    }
+    return x / 12.92;
 }
 linear_to_srgb :: (x: float) -> float #must {
-    if x <= 0.0031308 return x * 12.92;
-    return 1.055 * pow(x, 1.0 / 2.4) - 0.055;
+    if x > 0.0031308 {
+        curved := pow(x, 1.0 / 2.4);
+        return curved * 1.055 - 0.055;
+    }
+    return 12.92 * x;
 }
 // Fast entry points use the transfer equation until a separately verified
 // approximation is introduced; callers retain the same value semantics.
