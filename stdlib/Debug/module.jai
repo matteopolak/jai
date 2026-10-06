@@ -231,7 +231,14 @@ logger :: (message: string, data: *void, info: Log_Info) {
 }
 is_valid_pointer :: (ptr: *void) -> bool {
     #if OS == .WINDOWS {
-        return ptr && Windows.IsBadReadPtr(ptr, 1) == 0;
+        // Ask for the page's state rather than touching it: IsBadReadPtr reads the byte and
+        // catches the fault, which a debugger or crash handler sees first.
+        if !ptr return false;
+        info: Windows.MEMORY_BASIC_INFORMATION;
+        if Windows.VirtualQuery(ptr, *info, size_of(Windows.MEMORY_BASIC_INFORMATION)) == 0 return false;
+        if info.State != Windows.MEM_COMMIT || (info.Protect & Windows.PAGE_GUARD) return false;
+        READABLE :: 0x02 | 0x04 | 0x08 | 0x20 | 0x40 | 0x80;
+        return (info.Protect & READABLE) != 0;
     } else #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
         // The kernel reads the byte for us: writing it into a pipe fails with EFAULT, rather
         // than crashing, when the address cannot be read.
