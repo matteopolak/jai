@@ -165,7 +165,8 @@ fn modules_in(fs: &dyn FileSystem, dir: &Path) -> Vec<String> {
         .into_iter()
         .filter_map(|(name, is_dir)| {
             if is_dir {
-                fs.is_file(&dir.join(&name).join("module.jai")).then_some(name)
+                fs.is_file(&dir.join(&name).join("module.jai"))
+                    .then_some(name)
             } else {
                 name.strip_suffix(".jai").map(str::to_string)
             }
@@ -182,15 +183,14 @@ impl Compiler {
         let mut dirs = vec![from_dir.join("modules")];
         dirs.extend(self.options.import_paths.iter().cloned());
         dirs.dedup();
-        let mut available: Vec<String> = dirs
-            .iter()
-            .flat_map(|d| modules_in(&*self.fs, d))
-            .collect();
+        let mut available: Vec<String> =
+            dirs.iter().flat_map(|d| modules_in(&*self.fs, d)).collect();
         available.sort();
         available.dedup();
         let mut d = Diagnostic::error(span, format!("module `{name}` not found"))
             .with_label("no module of this name");
-        let near_found = crate::suggest::closest(name, available.iter().map(String::as_str)).is_some();
+        let near_found =
+            crate::suggest::closest(name, available.iter().map(String::as_str)).is_some();
         if let Some(near) = crate::suggest::closest(name, available.iter().map(String::as_str)) {
             let near = near.to_string();
             let quoted = self.sources.snippet(span).find(&format!("\"{name}\""));
@@ -198,7 +198,11 @@ impl Compiler {
                 Some(at) => {
                     let start = span.start as usize + at + 1;
                     let at = Span::new(span.file, start, start + name.len());
-                    d.with_fix(format!("a module with a similar name exists: `{near}`"), at, near)
+                    d.with_fix(
+                        format!("a module with a similar name exists: `{near}`"),
+                        at,
+                        near,
+                    )
                 }
                 None => d.with_help(format!("a module with a similar name exists: `{near}`")),
             };
@@ -237,11 +241,16 @@ impl Compiler {
         };
         if self.fs.is_dir(path) {
             return Diagnostic::error(span, format!("`{shown}` is a directory, not a file"))
-                .with_help("`#load` takes a .jai file; `#import,dir` imports a directory's module.jai");
+                .with_help(
+                    "`#load` takes a .jai file; `#import,dir` imports a directory's module.jai",
+                );
         }
         let mut d = Diagnostic::error(span, format!("file `{shown}` does not exist"));
         let dir = path.parent().unwrap_or(Path::new("."));
-        let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+        let name = path
+            .file_name()
+            .map(|n| n.to_string_lossy().into_owned())
+            .unwrap_or_default();
         let files: Vec<String> = self
             .fs
             .list_dir(dir)

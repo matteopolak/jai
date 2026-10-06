@@ -118,7 +118,9 @@ fn null_pointer_and_missing_return_and_recursion() {
     );
     assert_in_order(
         &stderr(&null),
-        &["null.jai:4:5: error: runtime error: null pointer dereference: read through a null pointer"],
+        &[
+            "null.jai:4:5: error: runtime error: null pointer dereference: read through a null pointer",
+        ],
     );
     let missing = jaic_on(
         &dir,
@@ -197,7 +199,13 @@ fn failed_assert_reports_the_users_line_not_debug_break() {
         "{text}"
     );
     assert_in_order(&text, &["    assert(x == 4, \"x was %\", x);"]);
-    for noise in ["debug_break", "Stack trace", "assert_helper", "Runtime_Support", ",5:"] {
+    for noise in [
+        "debug_break",
+        "Stack trace",
+        "assert_helper",
+        "Runtime_Support",
+        ",5:",
+    ] {
         assert!(!text.contains(noise), "{noise}: {text}");
     }
     // Without a message, the condition from the source; the callers below it.
@@ -265,7 +273,11 @@ fn unknown_identifier_suggests_a_visible_name() {
     );
     assert_in_order(
         &stderr(&output),
-        &["u.jai:4:18: error: unknown identifier", "countr", "help: a similar name exists: `counter`"],
+        &[
+            "u.jai:4:18: error: unknown identifier",
+            "countr",
+            "help: a similar name exists: `counter`",
+        ],
     );
     let output = jaic_on(
         &dir,
@@ -282,7 +294,13 @@ fn unknown_identifier_suggests_a_visible_name() {
 #[test]
 fn missing_module_lists_where_it_looked_and_a_close_name() {
     let dir = scratch("missing-module");
-    let output = jaic_on(&dir, "m.jai", "#import \"Basik\";\nmain :: () {}\n", "check", &[]);
+    let output = jaic_on(
+        &dir,
+        "m.jai",
+        "#import \"Basik\";\nmain :: () {}\n",
+        "check",
+        &[],
+    );
     assert_eq!(output.status.code(), Some(1));
     let text = stderr(&output);
     assert_in_order(
@@ -297,15 +315,30 @@ fn missing_module_lists_where_it_looked_and_a_close_name() {
     );
     assert!(!text.contains("/../"), "{text}");
     // Nothing close: where modules go.
-    let output = jaic_on(&dir, "n.jai", "#import \"Zzyzx_Engine\";\nmain :: () {}\n", "check", &[]);
-    assert_in_order(&stderr(&output), &["help: a module of your own goes in a `modules` folder"]);
+    let output = jaic_on(
+        &dir,
+        "n.jai",
+        "#import \"Zzyzx_Engine\";\nmain :: () {}\n",
+        "check",
+        &[],
+    );
+    assert_in_order(
+        &stderr(&output),
+        &["help: a module of your own goes in a `modules` folder"],
+    );
 }
 
 #[test]
 fn missing_load_file_says_where_it_looked() {
     let dir = scratch("missing-load");
     std::fs::write(dir.join("helper.jai"), "helper :: () {}\n").unwrap();
-    let output = jaic_on(&dir, "l.jai", "#load \"helpers.jai\";\nmain :: () {}\n", "check", &[]);
+    let output = jaic_on(
+        &dir,
+        "l.jai",
+        "#load \"helpers.jai\";\nmain :: () {}\n",
+        "check",
+        &[],
+    );
     assert_eq!(output.status.code(), Some(1));
     assert_in_order(
         &stderr(&output),
@@ -328,11 +361,17 @@ fn input_file_problems() {
     let cases: &[(&[&str], &[&str])] = &[
         (
             &["run", "gmae.jai"],
-            &["error: file `gmae.jai` does not exist", "help: did you mean `game.jai`?"],
+            &[
+                "error: file `gmae.jai` does not exist",
+                "help: did you mean `game.jai`?",
+            ],
         ),
         (
             &["run", "game"],
-            &["error: file `game` does not exist", "help: did you mean `game.jai`?"],
+            &[
+                "error: file `game` does not exist",
+                "help: did you mean `game.jai`?",
+            ],
         ),
         (
             &["run", "nothing_like_it.jai"],
@@ -364,16 +403,34 @@ fn command_line_mistakes_explain_themselves() {
     let dir = scratch("cli");
     std::fs::write(dir.join("ok.jai"), "main :: () {}\n").unwrap();
     let cases: &[(&[&str], &[&str])] = &[
-        (&[], &["error: no command given", "help: run a program with `jaic run file.jai`"]),
-        (&["rnu", "ok.jai"], &["error: unknown command `rnu`", "help: did you mean `jaic run`?"]),
+        (
+            &[],
+            &[
+                "error: no command given",
+                "help: run a program with `jaic run file.jai`",
+            ],
+        ),
+        (
+            &["rnu", "ok.jai"],
+            &[
+                "error: unknown command `rnu`",
+                "help: did you mean `jaic run`?",
+            ],
+        ),
         (
             &["ok.jai"],
-            &["error: `ok.jai` is not a command", "help: to run it, use `jaic run ok.jai`"],
+            &[
+                "error: `ok.jai` is not a command",
+                "help: to run it, use `jaic run ok.jai`",
+            ],
         ),
         (&["run"], &["error: `jaic run` needs a .jai file"]),
         (
             &["run", "-os", "linux", "ok.jai"],
-            &["error: expected a .jai file after `jaic run`, found `-os`", "help: put the file first"],
+            &[
+                "error: expected a .jai file after `jaic run`, found `-os`",
+                "help: put the file first",
+            ],
         ),
         (
             &["run", "ok.jai", "-os"],
@@ -381,18 +438,33 @@ fn command_line_mistakes_explain_themselves() {
         ),
         (
             &["run", "ok.jai", "-os", "linus"],
-            &["error: unknown OS `linus` for `-os`", "help: did you mean `-os linux`?"],
+            &[
+                "error: unknown OS `linus` for `-os`",
+                "help: did you mean `-os linux`?",
+            ],
         ),
-        (&["run", "ok.jai", "-cpu", "z80"], &["error: unknown CPU `z80` for `-cpu`"]),
+        (
+            &["run", "ok.jai", "-cpu", "z80"],
+            &["error: unknown CPU `z80` for `-cpu`"],
+        ),
         (&["run", "ok.jai", "-I"], &["error: `-I` needs a directory"]),
         (
             &["run", "ok.jai", "--timing"],
-            &["error: unknown option `--timing`", "help: did you mean `--timings`?"],
+            &[
+                "error: unknown option `--timing`",
+                "help: did you mean `--timings`?",
+            ],
         ),
-        (&["run", "ok.jai", "-o", "x"], &["error: `-o` only applies to `jaic build`"]),
+        (
+            &["run", "ok.jai", "-o", "x"],
+            &["error: `-o` only applies to `jaic build`"],
+        ),
         (
             &["build", "ok.jai", "-O7"],
-            &["error: unknown optimization level `-O7`", "help: use -O0, -O1, -O2 or -O3"],
+            &[
+                "error: unknown optimization level `-O7`",
+                "help: use -O0, -O1, -O2 or -O3",
+            ],
         ),
         (
             &["run", "ok.jai", "extra"],
