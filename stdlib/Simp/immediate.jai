@@ -105,7 +105,7 @@ put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector3, color: Vector
 put_vertex :: inline (using vertex: *Immediate_Vertex, p: Vector2, color: Vector4, center: Vector2, size: Vector2, radius: float, softness: float) {
     vertex.* = .{ position = p, color_scale = color, rect_center = center, rect_size = size, rect_corner_radius = radius, rect_edge_softness = softness };
 }
-// An axis-aligned quad from two corners.
+// Rectangle given by opposite corners (x0, y0) and (x1, y1), drawn in one color.
 immediate_quad :: (x0: float, y0: float, x1: float, y1: float, color: Vector4) {
     immediate_quad(.{ x0, y0 }, .{ x1, y0 }, .{ x1, y1 }, .{ x0, y1 }, color);
 }
@@ -190,14 +190,11 @@ reserve_vertices :: (count: s32) -> *Immediate_Vertex {
     context.simp.num_vertices += count;
     return result;
 }
-// Rendering to a texture stores the image top row first, so the projection flips vertically.
+// Rendering to a texture stores the image top row first, so the projection flips vertically:
+// negating the second row negates every clip-space y.
 backend_tweak_projection_matrix :: (m: *Matrix4) {
-    if context.simp.texture_render_target {
-        m._21 *= -1;
-        m._22 *= -1;
-        m._23 *= -1;
-        m._24 *= -1;
-    }
+    if !context.simp.texture_render_target return;
+    for column: 0..3 m.coef[1][column] = -m.coef[1][column];
 }
 backend_use_shader :: (s: *Shader) {
     #if render_api == .OPENGL {

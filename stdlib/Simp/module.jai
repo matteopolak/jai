@@ -247,15 +247,15 @@ clear_scissor :: () {
         gl_apply_scissor();
     }
 }
-draw_text :: (font: *Dynamic_Font, x: s64, y: s64, text: string, color := Vector4.{ 1, 1, 1, 1 }, effects: Font_Effects = 0) -> width: s64 {
-    width := prepare_text(font, text, effects);
-    generate_quads_for_prepared_text(font, x, y, effects);
-    draw_generated_quads(font, color);
-    return width;
-}
+// Draws whatever the last prepare_text on this font laid out, with its baseline origin at x, y.
 draw_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, color := Vector4.{ 1, 1, 1, 1 }, effects: Font_Effects = 0) {
     generate_quads_for_prepared_text(font, x, y, effects);
     draw_generated_quads(font, color);
+}
+draw_text :: (font: *Dynamic_Font, x: s64, y: s64, text: string, color := Vector4.{ 1, 1, 1, 1 }, effects: Font_Effects = 0) -> width: s64 {
+    width := prepare_text(font, text, effects);
+    draw_prepared_text(font, x, y, color, effects);
+    return width;
 }
 // Color-map variants: `color` indexes the table installed with set_color_map.
 draw_text :: (font: *Dynamic_Font, x: s64, y: s64, text: string, color: u8) -> width: s64 {

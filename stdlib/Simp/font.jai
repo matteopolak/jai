@@ -144,18 +144,20 @@ get_font_at_size :: (path: string, name: string, pixel_height: int) -> *Dynamic_
 get_font_at_size :: (memory: [] u8, pixel_height: int) -> *Dynamic_Font {
     ensure_fonts_are_initted();
     if !fonts_initted return null;
-    loaded: *Loaded_Font;
-    for loaded_memory_fonts if it.data.count == memory.count && it.data.data == memory.data {
-        loaded = it;
-        break;
-    }
-    if !loaded {
-        loaded = make_loaded_font("", memory);
-        if !loaded return null;
-        array_add(*loaded_memory_fonts, loaded);
-    }
+    loaded := font_for_memory(memory);
+    if !loaded return null;
     for dynamic_fonts if it.character_height == pixel_height && it.loaded == loaded return it;
     return create_dynamic_font(loaded, "", pixel_height);
+}
+// Memory fonts are keyed by the exact buffer (pointer and length); the first request for a
+// buffer parses it, later ones share that parse.
+font_for_memory :: (memory: [] u8) -> *Loaded_Font {
+    for loaded_memory_fonts {
+        if it.data.data == memory.data && it.data.count == memory.count return it;
+    }
+    fresh := make_loaded_font("", memory);
+    if fresh array_add(*loaded_memory_fonts, fresh);
+    return fresh;
 }
 load_font_part_2 :: (result: *Dynamic_Font, loaded_font: Loaded_Font, pixel_height: int) {
     assert(result != null && result.face != null && pixel_height > 0);
@@ -519,10 +521,11 @@ get_character_width_in_pixels :: (font: *Dynamic_Font, utf8: *u8, effect_flags: 
 }
 
 accumulate_glyphs_from_font :: (source: *Dynamic_Font, dest: *Dynamic_Font) {
-    for source.temporary_glyphs {
-        array_add(*dest.temporary_glyphs, it);
-        array_add(*dest.temporary_glyphs_byte_offsets, -1);
-    }
+    // Glyphs taken from another font have no byte offset in this font's text, hence -1.
+    first_new := dest.temporary_glyphs_byte_offsets.count;
+    array_resize(*dest.temporary_glyphs_byte_offsets, first_new + source.temporary_glyphs.count, initialize = false);
+    for source.temporary_glyphs dest.temporary_glyphs_byte_offsets[first_new + it_index] = -1;
+    array_add(*dest.temporary_glyphs, ..source.temporary_glyphs);
 }
 
 // Loads `<path>/<basename>` at the given pixel height, as a new font (get_font_at_size caches).

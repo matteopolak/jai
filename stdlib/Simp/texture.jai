@@ -71,10 +71,7 @@ texture_create_render_target :: (width: s32, height: s32, format: Texture_Format
     if width <= 0 || height <= 0 || !is_supported(format) return null;
     CheckInit();
     texture := New(Texture);
-    texture.width = width;
-    texture.height = height;
-    texture.format = format;
-    texture.flags = flags | .Render_Target;
+    texture.* = .{ format = format, flags = flags | .Render_Target, width = width, height = height };
     #if render_api == .OPENGL {
         if !gl_create_render_target(texture) {
             free(texture);
