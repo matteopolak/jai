@@ -601,31 +601,23 @@ impl Renderer {
     }
 
     fn gutter_width(&self, labels: &[(&Label, bool)]) -> usize {
-        let last = labels
+        // The plain layout counts no context lines, as jailint has always laid it out.
+        let context = if self.plain {
+            0
+        } else {
+            CONTEXT_LINES
+        };
+        labels
             .iter()
             .map(|(l, _)| {
                 let (line, _) = line_col(l.text, l.start);
                 let (end, _) = line_col(l.text, l.end.max(l.start));
-                end.max(line + MAX_FIX_LINES) + CONTEXT_LINES
+                end.max(line + MAX_FIX_LINES) + context
             })
             .max()
-            .unwrap_or(1);
-        if self.plain {
-            // As jailint has always laid it out.
-            labels
-                .iter()
-                .map(|(l, _)| {
-                    let (line, _) = line_col(l.text, l.start);
-                    let (end, _) = line_col(l.text, l.end.max(l.start));
-                    end.max(line + 8)
-                })
-                .max()
-                .unwrap_or(1)
-                .to_string()
-                .len()
-        } else {
-            last.to_string().len()
-        }
+            .unwrap_or(1)
+            .to_string()
+            .len()
     }
 
     /// The numbered lines of one file with its labels.
@@ -943,11 +935,11 @@ pub fn changed_lines(text: &str, edits: &[(usize, usize, String)]) -> Vec<(Strin
     out
 }
 
-#[cfg(test)]
-mod tests;
-
 /// A file name as the user sees it: relative to where the command started
 /// (`crate::set_display_base`), when that is near.
 fn shown(path: &str) -> String {
     crate::display_path(std::path::Path::new(path))
 }
+
+#[cfg(test)]
+mod tests;
