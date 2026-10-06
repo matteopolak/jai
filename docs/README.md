@@ -80,7 +80,7 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
-The independently written `stdlib/`, a clean-room implementation: contributors must not read the source of an official Jai distribution. Maintainers additionally run a [reference resemblance check](tools/reference-resemblance.md) and fix what it flags by rewriting, not by allowlisting.
+The clean-room `stdlib/`. Contributors must not read the source of an official Jai distribution at all. Maintainers also run a [reference resemblance check](tools/reference-resemblance.md) and fix what it flags by rewriting, not by allowlisting.
 
 - [Standard library layout](stdlib/architecture.md)
 - [Basic and collection modules](stdlib/basic-and-collections.md)
