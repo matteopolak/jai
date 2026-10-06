@@ -33,7 +33,7 @@ export PATH="$LLVM_SYS_231_PREFIX/bin:$PATH"
 cargo build -p jaic-cli --locked
 ```
 
-Any LLVM 23.1 install with `llvm-config` and the shared `libLLVM` works, for example a second Homebrew keg or a distribution package. The official release tarballs ship only static, LTO-bitcode libraries on macOS, which only the release workflow's lld-based link can use ([releases](releases.md)).
+Homebrew's plain `llvm` is LLVM 23 as well, so `/opt/homebrew/opt/llvm` works as the prefix. Any LLVM 23.1 install with `llvm-config` and the shared `libLLVM` works, for example a distribution package. The official release tarballs ship only static, LTO-bitcode libraries on macOS, which only the release workflow's lld-based link can use ([releases](releases.md)).
 
 ## Dependencies
 
