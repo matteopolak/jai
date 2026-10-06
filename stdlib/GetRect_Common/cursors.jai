@@ -71,16 +71,48 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
         assert(index >= 0 && index < NUM_POINTERS, "Invalid cursor image");
         if index >= 0 && index < NUM_POINTERS && pointers[index] NSCursor.set(pointers[index]);
     }
-} else {
+} else #if OS == .LINUX {
+    Cursor_X11 :: #import "X11";
+    pointers: [NUM_POINTERS] Cursor_X11.Cursor;
     init_pointers :: () {
-        assert(pointer_image_sink != null, "This target needs a cursor provider");
-        left_pointers_initialized = pointer_image_sink != null;
+        display := Cursor_X11.x_global_display;
+        if !display return;
+        // Shapes of the X cursor font, in Pointer_Image order: left_ptr, hand2, X_cursor,
+        // sb_h_double_arrow, sb_v_double_arrow, fleur, bottom_right_corner, bottom_left_corner.
+        shapes: [NUM_POINTERS] u32 = .[68, 60, 0, 108, 116, 52, 14, 12];
+        for shape, index: shapes pointers[index] = Cursor_X11.XCreateFontCursor(display, shape);
+        left_pointers_initialized = true;
     }
 
     getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
         if events_occluded(widget) return;
         left_pointer_requested = true;
+        if pointer_image_sink {
+            pointer_image_sink(image, widget);
+            return;
+        }
+        // No display yet (no window was opened): there is no cursor to change.
         if !left_pointers_initialized init_pointers();
+        if !left_pointers_initialized return;
+        index := cast(int) image;
+        assert(index >= 0 && index < NUM_POINTERS, "Invalid cursor image");
+        if index < 0 || index >= NUM_POINTERS || !pointers[index] return;
+        // The cursor belongs to the window with the keyboard focus (0 and 1 are None and
+        // PointerRoot, not windows).
+        display := Cursor_X11.x_global_display;
+        focus: Cursor_X11.Window;
+        revert: s32;
+        Cursor_X11.XGetInputFocus(display, *focus, *revert);
+        if focus > 1 Cursor_X11.XDefineCursor(display, focus, pointers[index]);
+    }
+} else {
+    // Other targets have no stock cursors here; a program can still install pointer_image_sink.
+    init_pointers :: () {
+        left_pointers_initialized = true;
+    }
+    getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
+        if events_occluded(widget) return;
+        left_pointer_requested = true;
         if pointer_image_sink pointer_image_sink(image, widget);
     }
 }
