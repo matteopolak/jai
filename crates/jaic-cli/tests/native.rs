@@ -386,6 +386,78 @@ fn c_structs_by_value() {
     }
 }
 
+/// `#cpp_return_type_is_non_pod`: a C++ class with a copy constructor or destructor comes back
+/// through the hidden result pointer even when it would fit in registers. Compiled code used to
+/// expect it in registers, so the callee wrote through whatever the result register held (found
+/// by the sanitizer sweep). Skipped without a C++ compiler; not run on Windows.
+#[test]
+fn cpp_non_pod_results_use_the_hidden_pointer() {
+    if cfg!(windows) {
+        return;
+    }
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-cpp-non-pod");
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(
+        dir.join("counter.cpp"),
+        "struct Counter {\n\
+             int value;\n\
+             Counter(int v) : value(v) {}\n\
+             Counter(const Counter &o) : value(o.value) {}\n\
+             ~Counter() {}\n\
+         };\n\
+         extern \"C\" Counter make_counter(int v) { return Counter(v * 2 + 1); }\n",
+    )
+    .unwrap();
+    std::fs::write(
+        dir.join("non_pod.jai"),
+        "#import \"Basic\";\n\
+         counter :: #library \"libcounter\";\n\
+         Counter :: struct { value: s32; }\n\
+         make_counter :: (v: s32) -> Counter #foreign counter #cpp_return_type_is_non_pod;\n\
+         main :: () { c := make_counter(20); print(\"%\\n\", c.value); }\n",
+    )
+    .unwrap();
+    let lib = if cfg!(target_os = "macos") {
+        "libcounter.dylib"
+    } else {
+        "libcounter.so"
+    };
+    let mut compile = Command::new("c++");
+    compile.args([
+        "-shared",
+        "-fPIC",
+        "-Wno-return-type-c-linkage",
+        "-o",
+        lib,
+        "counter.cpp",
+    ]);
+    if cfg!(target_os = "macos") {
+        compile.arg("-Wl,-install_name,@rpath/libcounter.dylib");
+    }
+    let Ok(output) = compile.current_dir(&dir).output() else {
+        eprintln!("skipping: no C++ compiler");
+        return;
+    };
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let interp = Command::new(JAIC)
+        .args(["run", "non_pod.jai"])
+        .current_dir(&dir)
+        .output()
+        .unwrap();
+    assert_eq!(String::from_utf8_lossy(&interp.stdout), "41\n");
+    let native = build_and_run(&dir.join("non_pod.jai"), &dir, "non_pod").unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&native.stdout),
+        "41\n",
+        "{}",
+        String::from_utf8_lossy(&native.stderr)
+    );
+}
+
 /// C `long double` (the `Long_Double` extension) across the C ABI: arguments, results and struct
 /// members through `#foreign` in the interpreter and natively. On Apple arm64 hosts that can run
 /// x86-64 code (Rosetta), the fixture is also built for x86_64-apple-darwin, where long double is
