@@ -281,7 +281,7 @@ impl CliError {
 
 /// What the command line asks for.
 enum Request {
-    Compile(Cli),
+    Compile(Box<Cli>),
     Help,
     Version,
 }
@@ -570,7 +570,7 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
             "options jaic does not know are handed to `-plug` plugins, but none were given; `jaic --help` lists the options",
         ));
     }
-    Ok(Request::Compile(cli))
+    Ok(Request::Compile(Box::new(cli)))
 }
 
 /// Why `file` cannot be compiled, if it cannot: missing, a directory, unreadable.
@@ -698,7 +698,7 @@ fn main() -> ExitCode {
         return ExitCode::from(2);
     }
     let cli = match parse(&args) {
-        Ok(Request::Compile(cli)) => cli,
+        Ok(Request::Compile(cli)) => *cli,
         Ok(Request::Help) => {
             println!("{}", usage_text());
             return ExitCode::SUCCESS;

@@ -134,11 +134,11 @@ pub struct Trap {
     pub frames: Vec<TrapFrame>,
     pub omitted_frames: usize,
     /// A failed `assert`: the location it was given (path, line, column).
-    pub assertion: Option<(String, u32, u32)>,
+    pub assertion: Option<Box<(String, u32, u32)>>,
     /// An error a metaprogram reported itself (`compiler_report`, a failed workspace): the
     /// message is the program's own, shown without the compile-time-execution prefix, at the
     /// location it named (path, line, column; an empty path names none).
-    pub reported: Option<(String, u32, u32)>,
+    pub reported: Option<Box<(String, u32, u32)>>,
 }
 
 /// The message for a load or store at an address in the never-mapped first page.
@@ -965,7 +965,7 @@ impl Interp {
                         format!("assertion failed: {message}")
                     })
                     .unwrap_err();
-                trap.assertion = Some((path, line, col));
+                trap.assertion = Some(Box::new((path, line, col)));
                 return Err(trap);
             }
             Hook::Meta(op, has_context) => {

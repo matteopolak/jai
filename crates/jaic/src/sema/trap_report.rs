@@ -74,7 +74,7 @@ impl Compiler {
             .unwrap_or(Span::NONE);
         // A metaprogram's own report: its message, at the place it named when it named one;
         // the line that reported it becomes a note.
-        if let Some((path, line, col)) = &trap.reported {
+        if let Some((path, line, col)) = trap.reported.as_deref() {
             let named = (!path.is_empty())
                 .then(|| self.file_by_path(path))
                 .flatten()
