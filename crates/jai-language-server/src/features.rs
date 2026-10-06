@@ -56,6 +56,9 @@ fn clip(text: &str, chars: usize) -> String {
     }
 }
 
+/// Rename edits grouped by document URI.
+pub type RenameEdits = Vec<(String, Vec<TextEdit>)>;
+
 impl Session {
     /// Run `query` on the type-checked program, the document's text repaired to parse.
     pub(crate) fn checked<T>(
@@ -610,6 +613,77 @@ impl Session {
             .into_iter()
             .filter_map(|(path, text, start, end)| self.location_in(&path, &text, start, end))
             .collect())
+    }
+
+    /// The name at `position`, when it can be renamed: the check recorded what it names, and
+    /// that is not a struct member (member references are not tracked).
+    pub fn prepare_rename(
+        &self,
+        uri: &DocumentUri,
+        position: Position,
+    ) -> Result<Option<Range>, Error> {
+        let doc = self.document(uri)?;
+        let Some((_, token)) = self.word(uri, position)? else {
+            return Ok(None);
+        };
+        if token.kind != TokenKind::Ident {
+            return Ok(None);
+        }
+        let range = doc.index.range(&doc.text, token.span)?;
+        let found = self.references(uri, position, true)?;
+        Ok(found
+            .iter()
+            .any(|l| l.uri == uri.as_str() && l.range == range)
+            .then_some(range))
+    }
+
+    /// Edits renaming what the name at `position` names, in every file the check recorded,
+    /// grouped by document; `None` when it cannot be renamed.
+    pub fn rename(
+        &self,
+        uri: &DocumentUri,
+        position: Position,
+        new_name: &str,
+    ) -> Result<Option<RenameEdits>, Error> {
+        let valid = new_name
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_alphabetic() || c == '_')
+            && new_name.chars().all(|c| c.is_alphanumeric() || c == '_');
+        if !valid || crate::analysis::KEYWORDS.contains(&new_name) {
+            return Err(Error::InvalidEdit("the new name is not an identifier"));
+        }
+        let Some(range) = self.prepare_rename(uri, position)? else {
+            return Ok(None);
+        };
+        let doc = self.document(uri)?;
+        let old = {
+            let start = doc.index.byte(&doc.text, range.start)?;
+            let end = doc.index.byte(&doc.text, range.end)?;
+            doc.text[start..end].to_string()
+        };
+        let mut edits: Vec<(String, Vec<TextEdit>)> = Vec::new();
+        for location in self.references(uri, position, true)? {
+            // In an open document, edit only spans that spell the old name.
+            if let Ok(target) = DocumentUri::parse(&location.uri)
+                && let Some(open) = self.documents.get(&target)
+            {
+                let start = open.index.byte(&open.text, location.range.start)?;
+                let end = open.index.byte(&open.text, location.range.end)?;
+                if open.text.get(start..end) != Some(old.as_str()) {
+                    continue;
+                }
+            }
+            let edit = TextEdit {
+                range: location.range,
+                new_text: new_name.into(),
+            };
+            match edits.iter_mut().find(|(u, _)| *u == location.uri) {
+                Some((_, list)) => list.push(edit),
+                None => edits.push((location.uri, vec![edit])),
+            }
+        }
+        Ok(Some(edits))
     }
 
     /// References within the document itself.
