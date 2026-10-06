@@ -2,9 +2,7 @@
 // On x86-64 System V it is x87 extended (passed in memory, returned in st0); on arm64 Linux
 // binary128 (q registers); on Apple arm64 and MSVC plain double.
 
-struct LdBox { long double v; };
-struct LdTagged { char tag; long double v; };
-struct LdPair { long double a, b; };
+#include "longdouble.h"
 
 long double ld_third(void) { return 1.0L / 3; }
 long double ld_add(long double a, long double b) { return a + b; }
