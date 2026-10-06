@@ -467,6 +467,22 @@ fn protocol_exposes_the_new_requests() {
     assert_eq!(symbols["result"][0]["name"], "identity");
 }
 
+#[test]
+fn keywords_are_described_without_the_language_name() {
+    let mut s = session();
+    s.open(uri(), 1, PROGRAM.into()).unwrap();
+    assert_eq!(
+        hover(&s, at(PROGRAM, "return x * x", 0, 1)),
+        "keyword return"
+    );
+    let items = s
+        .completion(&uri(), at(PROGRAM, "total := 1", 0, 0))
+        .unwrap()
+        .items;
+    let keyword = items.iter().find(|i| i.label == "return").unwrap();
+    assert_eq!(keyword.detail, "keyword");
+}
+
 const CODE_MACRO: &str = r#"#import "Basic";
 twice :: (body: Code) #expand {
     #insert body;
