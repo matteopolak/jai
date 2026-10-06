@@ -129,6 +129,8 @@ Build_Options :: struct {
             FATAL;
         } = .OFF;
 
+        // Which unreferenced code jaic still type-checks: NONE everything, ALL only what the
+        // program reaches, MODULES_ONLY all of the program's own files (output is pruned either way).
         dead_code_elimination: enum u8 {
             NONE;
             ALL;
@@ -408,4 +410,9 @@ forward_options :: (id: s64, previous: Build_Options, options: Build_Options) {
     __jaic_workspace_set_option(id, "array_bounds_check", enum_member_name(options.array_bounds_check));
     __jaic_workspace_set_option(id, "null_pointer_check", enum_member_name(options.null_pointer_check));
     __jaic_workspace_set_option(id, "arithmetic_overflow_check", enum_member_name(options.arithmetic_overflow_check));
+
+    // Sent only once changed, so options that never mention it keep the command line's `-no_dce`.
+    if options.dead_code_elimination != previous.dead_code_elimination {
+        __jaic_workspace_set_option(id, "dead_code_elimination", enum_member_name(options.dead_code_elimination));
+    }
 }
