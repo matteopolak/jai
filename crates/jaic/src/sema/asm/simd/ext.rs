@@ -388,6 +388,12 @@ impl Compiler {
         if inst.evex.mask.is_some() {
             return err(span, format!("'{name}' cannot be masked"));
         }
+        if sha == ShaOp::Sha256Rnds2 && !matches!(ops.len(), 3 | 4) {
+            return err(
+                span,
+                format!("'{name}' takes dst, src, wk (the implicit xmm0 as an operand)"),
+            );
+        }
         let (s, k) = match sha {
             ShaOp::Sha1Rnds4 => self.simd_args(f, ops, 2, true, span)?,
             ShaOp::Sha256Rnds2 => self.simd_args(f, ops, 3, false, span)?,
