@@ -35,6 +35,11 @@ deinit :: (dir: *Zip_Directory) {
 
 load_zip_directory :: (zip_filename: string, close_file := true) -> (success: bool, dir: Zip_Directory) {
     empty: Zip_Directory;
+    // The archive opens for writing as well (callers that keep it open may extend it), which
+    // would create a missing file: leave a missing archive missing.
+    probe, exists := file_open(zip_filename, log_errors = false);
+    if !exists return false, empty;
+    file_close(*probe);
     opened, ok := file_open(zip_filename, true, true);
     if !ok return false, empty;
     success, dir := zip_read_directory(zip_filename, opened);
