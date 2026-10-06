@@ -367,6 +367,7 @@ objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth :
     } else if info.type == .FLOAT {
         if info.runtime_size == 4 Basic.append(builder, "f");
         else if info.runtime_size == 8 Basic.append(builder, "d");
+        else if info.runtime_size == 16 Basic.append(builder, "D");  // jaic's Long_Double
         else Basic.assert(false, "Unsupported native floating width");
     } else if info.type == .BOOL Basic.append(builder, "B");
     else if info.type == .VOID Basic.append(builder, "v");
