@@ -3,7 +3,8 @@
 
 docs/language/*.md and docs/metaprogramming/*.md mark each normative claim with a stable rule ID,
 written `{#ops.3}` right after the claim. Tests name the rules they pin in a comment line
-`// rules: ops.3 ops.4` (commas allowed) anywhere in the file. This script lists:
+`// rules: ops.3 ops.4` (commas allowed) anywhere in the file; corpus cases list them in the
+`rules` field of their tests/corpus/manifest.json entry. This script lists:
 
 - rules no test cites (reported, not an error yet),
 - tests citing a rule no doc defines (an error: a typo or a removed rule),
@@ -57,6 +58,12 @@ def test_citations(root=ROOT):
                 for rule in re.split(r"[\s,]+", m.group(1).strip()):
                     if rule:
                         cited.setdefault(rule, []).append(str(path.relative_to(root)))
+    # Corpus cases are fingerprinted by hash, so they cite rules in a manifest field instead.
+    manifest = root / "tests/corpus/manifest.json"
+    if manifest.exists():
+        for case in json.loads(manifest.read_text())["cases"]:
+            for rule in case.get("rules", []):
+                cited.setdefault(rule, []).append(f"tests/corpus/manifest.json#{case['id']}")
     return cited
 
 

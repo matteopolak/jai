@@ -135,4 +135,5 @@ Scripts, CI and project policies.
 - [open-jai expectation harness](tools/openjai-expectations.md)
 - [Reference resemblance check](tools/reference-resemblance.md)
 - [Releases](tools/releases.md)
+- [Rule coverage](tools/rule-coverage.md): rule IDs in the language docs and the tests that cite them
 - [Upstream corpus](tools/upstream-corpus.md)
