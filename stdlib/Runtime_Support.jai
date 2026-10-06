@@ -316,6 +316,8 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
     #program_export
     __jai_runtime_init :: (argc: s32, argv: **u8) -> *#Context #c_call {
         initializer_of(#Context)(*first_thread_context);
+        // Code that receives a context from elsewhere (Remap_Context) compares this with its own.
+        first_thread_context.context_info = type_info(#Context);
         __command_line_arguments = .{ argc, argv };
         #if OS == .WINDOWS windows_utf8_arguments();
         first_thread_temporary_storage.data = first_thread_temporary_storage_data.data;
