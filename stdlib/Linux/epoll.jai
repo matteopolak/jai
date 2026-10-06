@@ -32,16 +32,18 @@ epoll_data :: union {
     _u64: u64;
 }
 // x86-64 packs epoll_event (data at offset 4); AArch64 keeps natural alignment (offset 8).
-#if CPU == .ARM64 {
+#if CPU == .ARM64 && OS != .WASM {
     epoll_event :: struct {
         events: u32;
         data: epoll_data;
     }
-} else {
+} else #if CPU == .X64 || OS == .WASM {
     epoll_event :: struct {
         events: u32;
         data: epoll_data #align 4;
     }
+} else {
+    #assert false "Linux: no epoll_event layout for this CPU";
 }
 epoll_create :: (size: s32) -> s32 #foreign libc;
 epoll_create1 :: (flags: s32) -> s32 #foreign libc;

@@ -86,8 +86,13 @@ __pthread_mutex_s :: struct {
     __owner: s32;
     __nusers: u32;
     __kind: s32;
-    __spins: s16;
-    __elision: s16;
+    #if CPU == .ARM64 && OS != .WASM {
+        __spins: s32;
+    } else {
+        // x86-64 and the browser target; the size table below rejects other CPUs.
+        __spins: s16;
+        __elision: s16;
+    }
     __list: __pthread_internal_list;
 }
 __pthread_cond_s :: struct {
@@ -113,16 +118,18 @@ __pthread_cond_s :: struct {
 }
 pthread_t :: u64;
 // glibc sizes several pthread types differently on AArch64 (its <bits/pthreadtypes-arch.h>).
-#if CPU == .ARM64 {
+#if CPU == .ARM64 && OS != .WASM {
     PTHREAD_ATTR_BYTES :: 64;
     PTHREAD_MUTEX_BYTES :: 48;
     PTHREAD_SMALL_ATTR_BYTES :: 8;
     JMP_BUF_WORDS :: 22;
-} else {
+} else #if CPU == .X64 || OS == .WASM {
     PTHREAD_ATTR_BYTES :: 56;
     PTHREAD_MUTEX_BYTES :: 40;
     PTHREAD_SMALL_ATTR_BYTES :: 4;
     JMP_BUF_WORDS :: 8;
+} else {
+    #assert false "POSIX: no Linux pthread and jmp_buf sizes for this CPU";
 }
 pthread_mutexattr_t :: union {
     __size: [PTHREAD_SMALL_ATTR_BYTES] u8;

@@ -504,10 +504,13 @@ objc_block_identity :: (dst: *void, src: *void, count: u64) -> *void #foreign li
 objc_block_user_data :: (block: *void) -> *void #no_context {
     return (cast(*Objective_C_Block_Literal) block).user_data;
 }
+// The per-CPU runtime bindings. The framework modules built on this one choose between
+// objc_msgSend_stret and objc_msgSend with `#if CPU == .X64`; this branch is what keeps a third
+// CPU from reaching their arm64 side.
 #if CPU == .X64 {
     #load "bindings/x64/runtime.jai";
     #load "bindings/x64/message.jai";
-} else {
+} else #if CPU == .ARM64 {
     #load "bindings/arm64/runtime.jai";
     #load "bindings/arm64/message.jai";
     objc_msgSend_stret :: objc_msgSend;
@@ -515,6 +518,8 @@ objc_block_user_data :: (block: *void) -> *void #no_context {
     method_invoke_stret :: method_invoke;
     _objc_msgForward_stret :: _objc_msgForward;
     class_getMethodImplementation_stret :: class_getMethodImplementation;
+} else {
+    #assert false "Objective_C: no runtime bindings for this CPU";
 }
 objc_msgSend_typed :: (target: *void, selector: Selector) -> *void #no_context {
     invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *void #c_call;

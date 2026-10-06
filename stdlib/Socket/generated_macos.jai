@@ -1706,6 +1706,8 @@ libc :: #system_library "c";
 
 #if CPU == .X64 {
  select :: (nfds: s32, readfds: *fd_set, writefds: *fd_set, exceptfds: *fd_set, timeout: *timeval) -> s32 #foreign libc "select$1050";
-} else {
+} else #if CPU == .ARM64 {
  select :: (nfds: s32, readfds: *fd_set, writefds: *fd_set, exceptfds: *fd_set, timeout: *timeval) -> s32 #foreign libc;
+} else {
+ #assert false "Socket: no macOS select symbol for this CPU";
 }
