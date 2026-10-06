@@ -15,8 +15,10 @@ from pathlib import Path
 FUZZ = Path(__file__).resolve().parent
 ROOT = FUZZ.parent
 
-# Programs: self-contained tests and examples (each has its own `main`).
-PROGRAMS = ["tests/stdlib", "tests/corpus/positive", "tests/corpus/negative", "examples"]
+# Programs: self-contained tests and examples (each has its own `main`), and fuzz/seeds: small
+# hand-written edge cases (overflowing constants, recursive types, metaprogram misuse, ...) that
+# found bugs or sit next to ones that did.
+PROGRAMS = ["tests/stdlib", "tests/corpus/positive", "tests/corpus/negative", "examples", "fuzz/seeds"]
 # Source text only: modules are parsed, never compiled as a main file.
 SOURCES = PROGRAMS + ["stdlib", "prelude"]
 
@@ -70,7 +72,9 @@ def main():
         out = FUZZ / "corpus" / target
         out.mkdir(parents=True, exist_ok=True)
         count = 0
-        for path in jai_files(trees, limit):
+        # Saved crash inputs are good starting points for finding their neighbours.
+        regressions = sorted(p for p in (FUZZ / "regressions" / target).glob("*") if p.is_file())
+        for path in [*jai_files(trees, limit), *regressions]:
             data = path.read_bytes()
             if target == "lsp_json":
                 data = lsp_session(data.decode("utf-8", "replace"))

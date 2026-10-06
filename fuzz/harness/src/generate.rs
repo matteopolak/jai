@@ -72,6 +72,8 @@ struct Gen<'a> {
     constants: Vec<String>,
     /// Macro numbers and whether each takes a `Code` argument.
     macros: Vec<(usize, bool)>,
+    /// What main mentions for each `edge_decl` (a name or an instance).
+    edge_names: Vec<String>,
     /// Locals in scope, innermost last; each block remembers how many to drop.
     locals: Vec<(String, Ty)>,
     next_local: usize,
@@ -95,6 +97,7 @@ pub fn program(data: &[u8]) -> String {
         procs: Vec::new(),
         constants: Vec::new(),
         macros: Vec::new(),
+        edge_names: Vec::new(),
         locals: Vec::new(),
         next_local: 0,
         loop_depth: 0,
@@ -179,6 +182,9 @@ impl Gen<'_> {
         self.line("main :: () {");
         self.indent += 1;
         self.block_body(6)?;
+        for name in self.edge_names.clone() {
+            self.line(&format!("_ := type_of({name});"));
+        }
         // Sema is demand-driven: only what main reaches is checked, so call every procedure.
         for i in 0..self.procs.len() {
             self.fuel = 20;
@@ -256,8 +262,9 @@ impl Gen<'_> {
     }
 
     fn top_decl(&mut self) -> Result<()> {
-        match self.u.int_in_range(0..=9)? {
+        match self.u.int_in_range(0..=10)? {
             0..=3 => self.proc_decl(),
+            10 => self.edge_decl(),
             4 => {
                 let i = self.constants.len();
                 self.fuel = 12;
@@ -363,6 +370,82 @@ impl Gen<'_> {
                 Ok(())
             }
         }
+    }
+
+    /// A declaration from the shapes that broke the compiler before (each with numbers from the
+    /// input): polymorphic recursion, `using` pointer cycles, self-inserting strings, cyclic
+    /// compile-time pointers, oversized types, odd alignment, extreme constant arithmetic.
+    fn edge_decl(&mut self) -> Result<()> {
+        let n = self.edge_number()?;
+        let m = self.edge_number()?;
+        let k = self.edge_names.len();
+        let (name, text) = match self.u.int_in_range(0..=11)? {
+            0 => (
+                format!("X{k}(int)"),
+                format!("X{k} :: struct (T: Type) {{ p: *X{k}(*T); v: [{n}] u8; }}"),
+            ),
+            1 => (
+                format!("R{k}(0)"),
+                format!(
+                    "R{k} :: ($N: int) -> int {{ #if N > {m} return N; else return R{k}({n} + N); }}"
+                ),
+            ),
+            2 => (
+                format!("U{k}"),
+                format!(
+                    "U{k} :: struct {{ using a: *V{k}; x: [{n}] int; }}\nV{k} :: struct {{ using b: *U{k}; y: int #align {m}; }}"
+                ),
+            ),
+            3 => (format!("I{k}"), format!("I{k} :: \"#insert I{k};\";")),
+            4 => (
+                format!("RING{k}"),
+                format!(
+                    "C{k} :: struct {{ next: *C{k}; v: int; }}\nmake{k} :: () -> *C{k} {{ c := cast(*C{k}) alloc(size_of(C{k})); c.next = c; c.v = {n}; return c; }}\nRING{k} :: #run make{k}();"
+                ),
+            ),
+            5 => (format!("A{k}"), format!("A{k} :: [{n}] [{m}] u8;")),
+            6 => (
+                format!("S{k}x"),
+                format!("S{k}x :: struct {{ a: u8 #align {n}; b: [{m}] u16; }} #no_padding"),
+            ),
+            7 => (
+                format!("K{k}x"),
+                format!("K{k}x :: ({n} << {m}) / ({m} % ({n} | 1)) - (-{n} >> {m});"),
+            ),
+            8 => (
+                format!("E{k}x"),
+                format!("E{k}x :: enum u8 {{ A :: {n}; B :: {m}; C; }}"),
+            ),
+            9 => (format!("T{k}x"), format!("T{k}x :: #run cast(Type) {n};")),
+            10 => (
+                format!("D{k}x"),
+                format!("D{k}x :: #type,distinct [{n}] D{k}y;\nD{k}y :: #type,distinct *D{k}x;"),
+            ),
+            _ => (
+                format!("Q{k}x"),
+                format!(
+                    "Q{k}x :: \"{}\";\n#insert Q{k}x;",
+                    "x".repeat((n.unsigned_abs() % 64) as usize)
+                ),
+            ),
+        };
+        self.line(&text);
+        // Main mentions it, or demand-driven sema never looks at it.
+        self.edge_names.push(name);
+        Ok(())
+    }
+
+    fn edge_number(&mut self) -> Result<i64> {
+        Ok(match self.u.int_in_range(0..=7)? {
+            0 => 0,
+            1 => -1,
+            2 => self.u.int_in_range(1..=8)?,
+            3 => 1 << self.u.int_in_range(0..=62)?,
+            4 => i64::MAX,
+            5 => i64::MIN + 1,
+            6 => -self.u.int_in_range(1..=128)?,
+            _ => self.u.int_in_range(0..=70)?,
+        })
     }
 
     fn proc_decl(&mut self) -> Result<()> {
