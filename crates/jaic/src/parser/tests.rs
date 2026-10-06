@@ -1313,3 +1313,18 @@ fn deep_nesting_is_an_error_not_a_stack_overflow() {
         .join()
         .unwrap();
 }
+
+#[test]
+fn nested_assert_is_parsed_once() {
+    // Found by the `parser` fuzz target: `#assert(` tried the `(cond, message)` form, rewound and
+    // parsed again, so every nested `#assert(` doubled the work (15 KB took minutes).
+    let n = 40;
+    let nested = format!("{}x{}", "#assert(".repeat(n), ")".repeat(n));
+    parse(&format!("#assert {nested};"));
+    parse(&format!("#assert({nested}, \"message\");"));
+    assert!(!error(&format!("#assert {};", "#assert(".repeat(n))).is_empty());
+    // Both forms still parse.
+    parse("#assert(size_of(int) == 8, \"words\");");
+    parse("#assert(f(a, b));");
+    parse("#assert (a) == b, \"m\";");
+}
