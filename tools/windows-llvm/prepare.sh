@@ -43,7 +43,8 @@ if [ ! -f "$llvm/lib/zstd_static.lib" ]; then
   curl -fsSL -o "$work/zstd.tar.gz" \
     "https://github.com/facebook/zstd/releases/download/v$ZSTD_VERSION/zstd-$ZSTD_VERSION.tar.gz"
   echo "$ZSTD_SHA256  $work/zstd.tar.gz" | sha256sum -c -
-  tar -xzf "$work/zstd.tar.gz" -C "$work"
+  # Only lib/: the test tree has symlinks Git Bash's tar cannot create.
+  tar -xzf "$work/zstd.tar.gz" -C "$work" "zstd-$ZSTD_VERSION/lib"
   src="$work/zstd-$ZSTD_VERSION/lib"
   mkdir -p "$work/zstd-obj"
   objs=()
