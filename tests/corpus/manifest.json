@@ -1163,6 +1163,45 @@
       "negative": {
         "check": "#assert failed"
       }
+    },
+    {
+      "id": "huge-array-type",
+      "source": "negative/huge-array-type.jai",
+      "sha256": "a2ce5ccadd016d2958cebc0f88755bc5aff8c78b8bb1389cfd462e4544528453",
+      "suite": "negative",
+      "feature": "array type sizes",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "is too large"
+      }
+    },
+    {
+      "id": "huge-struct",
+      "source": "negative/huge-struct.jai",
+      "sha256": "5618d897344c2b05f8414c7acc19e6065521d5d382fa85e4fb6f90a1da5e63bf",
+      "suite": "negative",
+      "feature": "struct sizes",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "struct is too large"
+      }
+    },
+    {
+      "id": "deep-nesting",
+      "source": "negative/deep-nesting.jai",
+      "sha256": "ded920f053f6eda1bec1b29215cd43344228d3bdb0974e549119fdb7f109b0ac",
+      "suite": "negative",
+      "feature": "parser nesting limit",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "nested too deeply"
+      }
     }
   ]
 }
