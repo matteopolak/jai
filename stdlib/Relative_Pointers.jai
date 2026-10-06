@@ -63,7 +63,7 @@ write_relative_pointer :: ($type: Type, pointer_address: *void, base_address: *v
     } else {
         assert(displacement != cast(s64) SIGN);
     }
-    <<storage = cast(type) ((cast(u64) displacement) ^ SIGN);
+    <<storage = cast,trunc(type) ((cast(u64) displacement) ^ SIGN);
     assert(<<storage != 0);
 }
 

@@ -246,19 +246,19 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 
     FD_ISSET :: (fd: s32, set: *fd_set) -> s32 {
         if !check_fd_set(fd, set) return 0;
-        mask := cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
+        mask := cast,trunc(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
         if (set.fds_bits[fd / BITS_PER_FD_SET_MASK] & mask) != 0 return 1;
         return 0;
     }
 
     FD_SET :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
-        set.fds_bits[fd / BITS_PER_FD_SET_MASK] |= cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
+        set.fds_bits[fd / BITS_PER_FD_SET_MASK] |= cast,trunc(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
 
     FD_CLR :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
-        set.fds_bits[fd / BITS_PER_FD_SET_MASK] &= ~cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
+        set.fds_bits[fd / BITS_PER_FD_SET_MASK] &= ~cast,trunc(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
 
     CMSG_FIRSTHDR :: (mhdr: *msghdr) -> *cmsghdr {
@@ -286,14 +286,14 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 
 #if OS == .MACOS || OS == .IOS {
     htons :: (hostshort: u16) -> u16 {
-        bytes: [2] u8 = .[cast(u8) (hostshort >> 8), cast(u8) hostshort];
+        bytes: [2] u8 = .[cast,trunc(u8) (hostshort >> 8), cast,trunc(u8) hostshort];
         result: u16;
         memcpy(*result, *bytes, 2);
         return result;
     }
 
     htonl :: (hostlong: u32) -> u32 {
-        bytes: [4] u8 = .[cast(u8) (hostlong >> 24), cast(u8) (hostlong >> 16), cast(u8) (hostlong >> 8), cast(u8) hostlong];
+        bytes: [4] u8 = .[cast,trunc(u8) (hostlong >> 24), cast,trunc(u8) (hostlong >> 16), cast,trunc(u8) (hostlong >> 8), cast,trunc(u8) hostlong];
         result: u32;
         memcpy(*result, *bytes, 4);
         return result;

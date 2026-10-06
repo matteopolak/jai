@@ -21,7 +21,7 @@ atomic_write :: (pointer: *$T, new_value: T) #expand {
 atomic_add :: (dest: *$T, to_add: $I) -> T {
     old := atomic_read(dest);
     while true {
-        replacement := old + cast(T) to_add;
+        replacement := old + cast,trunc(T) to_add;
         success, observed := compare_and_swap(dest, old, replacement);
         if success return old;
         old = observed;
@@ -58,7 +58,7 @@ atomic_or :: (dest: *$T, value: T) {
 atomic_xor :: (dest: *$T, value: $I) {
     old := atomic_read(dest);
     while true {
-        success, observed := compare_and_swap(dest, old, old ^ cast(T) value);
+        success, observed := compare_and_swap(dest, old, old ^ cast,trunc(T) value);
         if success return;
         old = observed;
     }
