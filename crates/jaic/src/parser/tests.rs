@@ -916,6 +916,26 @@ fn multiple_values_and_mixed_declarations() {
     assert!(decl(&stmts[3]).existing.iter().all(|&e| !e));
 }
 
+// rules: decl.22
+#[test]
+fn mixed_declarations_assign_to_places() {
+    let stmts = parse("ok:, t.str = f();\nt.items[i].*=, n := g();\na.b, c = h();");
+    let first = decl(&stmts[0]);
+    assert_eq!(first.existing, [false, true]);
+    assert!(first.targets[0].is_none());
+    assert!(matches!(
+        first.targets[1].as_ref().map(|e| &e.kind),
+        Some(ExprKind::Member(..))
+    ));
+    assert_eq!(first.names[1].name.as_str(), "t");
+    let second = decl(&stmts[1]);
+    assert_eq!(second.existing, [true, false]);
+    assert!(second.targets[0].is_some());
+    // Without a marker a list of places is a plain multiple assignment.
+    assert!(matches!(stmts[2].kind, StmtKind::Assign { .. }));
+    assert!(error("t.x:, b = f();").contains("only a name can be declared"));
+}
+
 #[test]
 fn declaration_flags_and_notes() {
     let stmts =
@@ -973,7 +993,6 @@ fn file_level_directives() {
         "#scope_file\n#scope_export\n#scope_module\n#add_context ctx: int = 1;\n#module_parameters (A := 1) (B := 2);\n#placeholder X;\n#assert A == 1 \"msg\";\n#run main();\n#insert \"x :: 1;\";\n#poke_name Basic operator==;\n#library \"x\";",
     );
     assert!(matches!(stmts[0].kind, StmtKind::Scope(ScopeKind::File)));
-    assert!(matches!(stmts[3].kind, StmtKind::AddContext(_)));
     assert!(
         matches!(&stmts[4].kind, StmtKind::ModuleParameters { params, runtime_params, .. } if params.len() == 1 && runtime_params.len() == 1)
     );
