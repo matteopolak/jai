@@ -16,7 +16,7 @@ permissions:
   contents: read
 env:
   CARGO_INCREMENTAL: '0'
-  LLVM_VERSION: 22.1.8
+  LLVM_VERSION: 23.1.2
 jobs:
   build:
     name: ${{ matrix.name }}
@@ -26,17 +26,17 @@ jobs:
         include:
           - name: macos-arm64
             runner: macos-15
-            llvm: LLVM-22.1.8-macOS-ARM64.tar.xz
+            llvm: LLVM-23.1.2-macOS-ARM64.tar.xz
           - name: linux-x64
             runner: ubuntu-24.04
-            llvm: LLVM-22.1.8-Linux-X64.tar.xz
+            llvm: LLVM-23.1.2-Linux-X64.tar.xz
           - name: windows-x64
             runner: windows-2025
-            llvm: clang+llvm-22.1.8-x86_64-pc-windows-msvc.tar.xz
+            llvm: clang+llvm-23.1.2-x86_64-pc-windows-msvc.tar.xz
             rust_target: x86_64-pc-windows-msvc
           - name: windows-arm64
             runner: windows-11-arm
-            llvm: clang+llvm-22.1.8-aarch64-pc-windows-msvc.tar.xz
+            llvm: clang+llvm-23.1.2-aarch64-pc-windows-msvc.tar.xz
             rust_target: aarch64-pc-windows-msvc
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
@@ -55,6 +55,9 @@ jobs:
         with:
           python-version: '3.14'
       - name: Validate dependency ages before building
+        # Read-only GitHub API access for the commit dates of pinned git dependencies.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 tools/check_dependency_age.py
       - name: Install the official LLVM release (static libraries)
         if: matrix.llvm != ''
@@ -70,7 +73,7 @@ jobs:
           mkdir -p "$llvm"
           tar -xJf llvm.tar.xz -C "$llvm" --strip-components=1
           rm llvm.tar.xz
-          echo "LLVM_SYS_221_PREFIX=$prefix" >> "$GITHUB_ENV"
+          echo "LLVM_SYS_231_PREFIX=$prefix" >> "$GITHUB_ENV"
           "$llvm/bin/llvm-config" --version
           echo "system libraries: $("$llvm/bin/llvm-config" --link-static --system-libs)"
       # The official macOS LLVM names Homebrew's static zstd (/opt/homebrew/lib/libzstd.a) in its
