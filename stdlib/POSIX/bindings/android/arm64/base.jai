@@ -744,7 +744,7 @@ user_regs_struct :: struct {
     pstate: u64;
 }
 user_fpsimd_struct :: struct {
-    vregs: [32] U128;
+    vregs: [32] [16] u8 #align 16; // __uint128_t registers
     fpsr: u32;
     fpcr: u32;
 }

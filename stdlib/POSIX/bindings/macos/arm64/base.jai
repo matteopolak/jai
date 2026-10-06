@@ -1043,12 +1043,12 @@ __darwin_arm_vfp_state :: struct {
     __fpscr: u32;
 }
 __darwin_arm_neon_state64 :: struct {
-    __v: [32] U128;
+    __v: [32] [16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
 __darwin_arm_neon_state :: struct {
-    __v: [16] U128;
+    __v: [16] [16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
