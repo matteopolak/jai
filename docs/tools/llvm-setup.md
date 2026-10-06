@@ -20,12 +20,12 @@ The official `clang+llvm-23.1.2-{x86_64,aarch64}-pc-windows-msvc` archives are n
 psapi.lib shell32.lib ole32.lib uuid.lib advapi32.lib ws2_32.lib ntdll.lib zs.lib S:/llvm/utils/release/llvm_package_23.1.2/build_amd64_stage0/zstdbuild/install/lib/zstd_static.lib xml2s.lib
 ```
 
-llvm-sys 231 only strips `.lib` from each entry on MSVC and emits `cargo:rustc-link-lib=S:/llvm/.../zstd_static`; rustc reads `S:` as a library rename and fails with "renaming of the library `S` was specified". llvm-sys has no variable to override or filter system libraries, and the archive ships neither that zstd nor `xml2s.lib`.
+llvm-sys 231 only strips `.lib` from each entry on MSVC and emits `cargo:rustc-link-lib=S:/llvm/.../zstd_static`; rustc reads `S:` as a library rename and fails with "renaming of the library `S` was specified". llvm-sys has no variable to override or filter system libraries, and the archive ships none of `zs.lib` (zlib), `zstd_static.lib` and `xml2s.lib`.
 
-`tools/windows-llvm/prepare.sh <llvm dir>`, run by `windows-native.yml` and `release.yml` right after unpacking the archive, fixes all three:
+`tools/windows-llvm/prepare.sh <llvm dir>`, run by `windows-native.yml` and `release.yml` right after unpacking the archive, fixes this:
 
 - `xml2s.lib`: an empty library. Only LLVMWindowsManifest (lld, llvm-mt) uses libxml2 and jaic links nothing from it.
-- `zstd_static.lib`: zstd (version and SHA-256 pinned in the script) compiled with the release's clang against the static CRT, into the archive's `lib/`, which is already on llvm-sys's search path. LLVM's MC and Object libraries reference the compression API, so an empty stub would not link.
+- `zs.lib` and `zstd_static.lib`: zlib and zstd (versions and SHA-256s pinned in the script) compiled with the release's clang against the static CRT, into the archive's `lib/`, which is already on llvm-sys's search path. LLVM's MC and Object libraries reference the compression API, so an empty stub would not link.
 - `bin/llvm-config-231.exe`: `llvm-config-shim.c`, compiled there. llvm-sys tries `llvm-config-<crate major>.exe` before `llvm-config.exe`, so it runs the shim, which runs the real `llvm-config.exe` and, for `--system-libs` only, rewrites path-qualified `*.lib` entries to their file names. The script then checks that every system library is a Windows import library or exists in `lib/`, and fails otherwise.
 
 Locally, the same steps apply from Git Bash after unpacking the archive; then set `LLVM_SYS_231_PREFIX` to it (with forward slashes) and build with `+crt-static` ([Windows](../native/windows.md#configuration)).
@@ -58,4 +58,4 @@ Homebrew's plain `llvm` is LLVM 23 as well, so `/opt/homebrew/opt/llvm` works as
 
 ## Dependencies
 
-Inkwell (git, `b7cbeed24af8`), llvm-sys 231, LLVM and Clang 23.1, and LLD 23 for wasm. Windows CI also downloads zstd's source from its GitHub release. The code generator is described in [LLVM backend](../native/llvm-backend.md).
+Inkwell (git, `b7cbeed24af8`), llvm-sys 231, LLVM and Clang 23.1, and LLD 23 for wasm. Windows CI also downloads zlib's and zstd's sources from their GitHub releases. The code generator is described in [LLVM backend](../native/llvm-backend.md).
