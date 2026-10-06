@@ -107,13 +107,13 @@ jobs:
       # `steps.jai-format.outcome == 'failure'` to the enforcement step below.
       - name: Jai format check
         id: jai-format
-        continue-on-error: true
+        continue-on-error: true  # recorded, then enforced by the last step like the other checks
         run: |
           cargo build --locked -p jaic-cli
           target/debug/jaic build tools/jaifmt/main.jai -O2 -o target/jaifmt
           target/jaifmt --check stdlib tests benchmarks tools examples
       - name: Enforce all recorded checks
-        if: ${{ always() && !cancelled() && (steps.format.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.correctness.outcome == 'failure' || steps.policy.outcome == 'failure') }}
+        if: ${{ always() && !cancelled() && (steps.format.outcome == 'failure' || steps.jai-format.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.correctness.outcome == 'failure' || steps.policy.outcome == 'failure') }}
         run: |
           echo "One or more checks failed; see their original step diagnostics."
           exit 1
