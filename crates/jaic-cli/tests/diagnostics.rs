@@ -191,16 +191,66 @@ fn failed_assert_reports_the_users_line_not_debug_break() {
     );
     assert_eq!(output.status.code(), Some(1));
     let text = stderr(&output);
+    assert_eq!(
+        text.lines().next().map(|l| l.rsplit('/').next().unwrap()),
+        Some("a.jai:4:5: error: runtime error: assertion failed: x was 3"),
+        "{text}"
+    );
+    assert_in_order(&text, &["    assert(x == 4, \"x was %\", x);"]);
+    for noise in ["debug_break", "Stack trace", "assert_helper", "Runtime_Support", ",5:"] {
+        assert!(!text.contains(noise), "{noise}: {text}");
+    }
+    // Without a message, the condition from the source; the callers below it.
+    let output = jaic_on(
+        &dir,
+        "b.jai",
+        "#import \"Basic\";\nload :: (ok: bool) {\n\tassert(ok);\n}\ninit :: () { load(false); }\nmain :: () { init(); }\n",
+        "run",
+        &[],
+    );
+    assert_in_order(
+        &stderr(&output),
+        &[
+            "b.jai:3:2: error: runtime error: assertion failed: `ok` is false",
+            "\tassert(ok);",
+            "note: call stack (innermost first):",
+            "`load` at ",
+            "`init` at ",
+            "`main` at ",
+        ],
+    );
+    // An assert inside the stdlib: the user's call is the primary location.
+    let output = jaic_on(
+        &dir,
+        "c.jai",
+        "#import \"Basic\";\nmain :: () {\n    a: [..] int;\n    array_add(*a, 1);\n    array_unordered_remove_by_index(*a, 5);\n}\n",
+        "run",
+        &[],
+    );
+    let text = stderr(&output);
     assert_in_order(
         &text,
         &[
-            "a.jai:4,5: Assertion failed: x was 3",
-            "Stack trace:",
-            "a.jai:4:5: error: runtime error: assertion failed (message and stack trace above)",
-            "    assert(x == 4, \"x was %\", x);",
+            "c.jai:5:5: error: runtime error: assertion failed: ",
+            "note: an assertion failed inside `array_unordered_remove_by_index` at ",
         ],
     );
-    assert!(!text.contains("debug_break"), "{text}");
+    assert!(!text.contains("#1"), "{text}");
+    // In compile-time code too.
+    let output = jaic_on(
+        &dir,
+        "d.jai",
+        "#import \"Basic\";\n#run {\n    assert(1 == 2, \"compile-time check\");\n};\nmain :: () {}\n",
+        "check",
+        &[],
+    );
+    assert_in_order(
+        &stderr(&output),
+        &[
+            "d.jai:3:5: error: error during compile-time execution: assertion failed: compile-time check",
+            "d.jai:2:1: note: while running compile-time code started here",
+        ],
+    );
 }
 
 #[test]

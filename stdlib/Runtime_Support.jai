@@ -43,30 +43,47 @@ write_number :: (n: s64, base := 10, to_standard_error := false) #no_context #no
 }
 
 runtime_support_assertion_failed :: (loc: Source_Code_Location, message: string) -> bool {
-    write_loc(loc, true);
-    write_string(": Assertion failed", true);
-    if message.count write_strings(": ", message, "\n", to_standard_error = true);
-    else write_string("!\n", true);
+    runtime_support_report_assertion(loc, message);
+    __runtime_support_disable_stack_trace = true;
+    debug_break();
+    return false;
+}
 
-    // The same walk as Basic's print_stack_trace, using only routines from this file.
+// `path:line:col: error: assertion failed: message`, then the procedures that were running,
+// innermost first, leaving out the assertion machinery itself. jaic's interpreter replaces
+// this with its own report (the failing line with its source, and the call stack).
+runtime_support_report_assertion :: (loc: Source_Code_Location, message: string) #compiler {
+    write_loc(loc, true);
+    write_string(": error: assertion failed", true);
+    if message.count write_strings(": ", message, "\n", to_standard_error = true);
+    else write_string("\n", true);
+
     node := context.stack_trace;
-    if node write_string("\nStack trace:\n", true);
-    else write_string("Exiting.\n", true);
+    while node && node.info && runtime_support_is_assertion_frame(node.info.name) node = node.next;
+    if node write_string("call stack (innermost first):\n", true);
     while node {
         if node.info {
-            write_string(node.info.location.fully_pathed_filename, true);
-            write_string(":", true);
-            write_number(node.line_number, to_standard_error = true);
-            write_string(": ", true);
+            write_string("    ", true);
             if node.info.name.count write_string(node.info.name, true);
             else write_string("(anonymous procedure)", true);
+            write_strings(" at ", node.info.location.fully_pathed_filename, to_standard_error = true);
+            write_number_after(":", node.line_number, true);
             write_string("\n", true);
         }
         node = node.next;
     }
-    __runtime_support_disable_stack_trace = true;
-    debug_break();
-    return false;
+}
+
+runtime_support_is_assertion_frame :: (name: string) -> bool #no_context {
+    return runtime_support_same_text(name, "runtime_support_report_assertion")
+        || runtime_support_same_text(name, "runtime_support_assertion_failed")
+        || runtime_support_same_text(name, "assert_helper");
+}
+
+runtime_support_same_text :: (a: string, b: string) -> bool #no_context {
+    if a.count != b.count return false;
+    for i: 0..a.count-1  if a[i] != b[i] return false;
+    return true;
 }
 
 runtime_support_default_logger :: (message: string, data: *void, info: Log_Info) {
@@ -310,7 +327,7 @@ write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context
     stderr := to_standard_error;
     write_string(loc.fully_pathed_filename, stderr);
     write_number_after(":", loc.line_number, stderr);
-    write_number_after(",", loc.character_number, stderr);
+    write_number_after(":", loc.character_number, stderr);
 }
 // Prefix for runtime failure messages: "path:line: ", always on stderr.
 write_failure_location :: (filename: *u8, line: s64) #no_context {

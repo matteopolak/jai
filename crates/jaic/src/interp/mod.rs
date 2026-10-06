@@ -46,6 +46,10 @@ pub enum Hook {
     /// `write_strings(strings: ..string, to_standard_error: bool)`
     WriteStrings,
     DebugBreak,
+    /// `runtime_support_report_assertion(loc: Source_Code_Location, message: string)`: a failed
+    /// `assert`, reported by the compiler as a runtime error (`Trap::assertion`) rather than
+    /// printed by the runtime. The flag says whether it takes a context pointer.
+    AssertionFailed(bool),
     /// A `Compiler` module primitive (`__jaic_*`); the flag says whether the
     /// procedure takes a context pointer.
     Meta(crate::build::MetaOp, bool),
@@ -129,6 +133,8 @@ pub struct Trap {
     /// the error propagates; capped at `MAX_TRAP_FRAMES`, the rest counted in `omitted_frames`.
     pub frames: Vec<TrapFrame>,
     pub omitted_frames: usize,
+    /// A failed `assert`: the location it was given (path, line, column).
+    pub assertion: Option<(String, u32, u32)>,
 }
 
 /// The message for a load or store at an address in the never-mapped first page.
@@ -936,6 +942,27 @@ impl Interp {
                 }
             }
             Hook::DebugBreak => return self.trap("debug_break() was called"),
+            Hook::AssertionFailed(has_context) => {
+                let args = &args[usize::from(has_context)..];
+                let string = |s: &Self, at: u64| {
+                    let count = s.read_u64(at) as usize;
+                    let data = s.read_u64(at + 8);
+                    String::from_utf8_lossy(&s.read(data, count)).into_owned()
+                };
+                let (loc, message) = (args[0], args[1]);
+                let path = string(self, loc);
+                let line = self.read_u64(loc + 16) as u32;
+                let col = self.read_u64(loc + 24) as u32;
+                let message = string(self, message);
+                let mut trap = self.trap::<()>(if message.is_empty() {
+                    "assertion failed".to_string()
+                } else {
+                    format!("assertion failed: {message}")
+                })
+                .unwrap_err();
+                trap.assertion = Some((path, line, col));
+                return Err(trap);
+            }
             Hook::Meta(op, has_context) => {
                 let Some(workspaces) = self.workspaces.clone() else {
                     return self.trap("this build has no compiler workspaces (Compiler module)");
