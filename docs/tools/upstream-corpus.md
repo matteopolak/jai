@@ -19,6 +19,13 @@ Dependencies are pinned like projects: jai_parser for Jails; Linalg, Jolt-Jai an
 | [Focus](https://github.com/focus-editor/focus) | ✅ | Builds and runs natively on macOS |
 | [Jails](https://github.com/SogoCZE/Jails) | ✅ | Builds a native language server |
 | [jaison](https://github.com/rluba/jaison) | ✅ | Tests and examples run, also natively |
+| [uniform](https://github.com/rluba/uniform), [stubborn](https://github.com/rluba/stubborn) | ✅ | uniform's stubborn test suite runs at compile time |
+| [jai-date](https://github.com/rluba/jai-date), [wait_group](https://github.com/rluba/wait_group) | ✅ | jai-date's self-tests and wait_group's example run; jai-date's example has an upstream bug |
+| [jai-csv](https://github.com/rluba/jai-csv) | ✅ | Checks (no tests upstream); parses correctly when tried |
+| [cluster](https://github.com/rluba/cluster), [hyperserve](https://github.com/rluba/hyperserve) | ✅ | Build natively; cluster supervises instances, hyperserve's examples serve requests |
+| [jai-redis](https://github.com/rluba/jai-redis) | ✅ | Its test builds; running it needs a Redis server |
+| [jai-postgres](https://github.com/rluba/jai-postgres) | ⚠️ | Checks; running needs libpq and a database |
+| [jai-tracy](https://github.com/rluba/jai-tracy) | ✅ | `-plug tracy` instruments and builds a profiled program |
 | [sgpu](https://github.com/roeyb1/sgpu) | ✅ | All examples build on macOS; mesh shaders need a driver MoltenVK lacks |
 | [The Way to Jai](https://github.com/Ivo-Balbaert/The_Way_to_Jai) | ✅ | 316 of 343 programs run; the rest check (windowed, interactive, Windows-only or deliberately failing) |
 | [Vk-Engine](https://github.com/ostef/Vk-Engine) | ⚠️ | Checks for Linux; its Vulkan, ImGui and Jolt modules have no macOS support |
@@ -52,8 +59,8 @@ The exact revisions are pinned in `corpus/upstreams.json`. Notes per project:
   `first`, `if`, `if_case`, `while` (`expand` and `for` need per-call `macro_expansion_block` export, not done);
   AST_Utils `build.jai` (rewrites a call through `compiler_modify_procedure`) and `astTests.jai`;
   Jai-Shader-Transpiler `build.jai` (GLSL from `@glsl` procedures); jai-utils `closure.jai`; unotest.
-  Checked by hand but not cases: epic-fail (needs `-plug`, which jaic does not support; its `assert` works when
-  imported directly), MetaThreadSafe (its examples fail on purpose; the diagnostics match, except that the
+  Checked by hand but not cases: epic-fail (a `-plug` plugin, see [metaprogram plugins](../metaprogramming/metaprogram-plugins.md); its
+  `assert` works when imported directly), MetaThreadSafe (its examples fail on purpose; the diagnostics match, except that the
   untaken `#if` branch of a baked instance is still checked), jai-control-flow (upstream uses `%%` as an escaped
   percent, which newer Jai reads as two arguments; a corrected copy passes all its tests).
 
