@@ -83,11 +83,8 @@ init_window_class :: (background_color_rgb: [3] float) {
     descriptor.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
     descriptor.hInstance = GetModuleHandleW(null);
     descriptor.lpszClassName = class_name;
-    // `jaic run` gives C a callable address for a procedure only when it is passed as an
-    // argument, not when it sits in a struct, so the procedure goes through a round trip of
-    // EncodePointer and DecodePointer first (natively that returns the same address).
     procedure := windows_windowproc_exists();
-    if procedure descriptor.lpfnWndProc = DecodePointer(EncodePointer(procedure));
+    if procedure descriptor.lpfnWndProc = procedure;
     if !descriptor.lpfnWndProc descriptor.lpfnWndProc = cast(*void) DefWindowProcW;
     descriptor.hCursor = LoadCursorW(null, cast(*s16) IDC_ARROW);
     descriptor.hIcon = LoadIconW(descriptor.hInstance, MAKEINTRESOURCEW(2));
