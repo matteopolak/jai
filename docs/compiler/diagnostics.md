@@ -103,6 +103,22 @@ The checks' messages come from one place, `ir::check_message`, keyed by the `ir:
 
 A metaprogram's own error (`compiler_report`, `compiler_set_workspace_status(.FAILED)`) sets `Trap::reported`: it is shown as the metaprogram wrote it, at the place it named, without the compile-time-execution prefix.
 
+#### Crashes in native code (`interp/crash.rs`)
+
+`jaic run` and `#run` call foreign procedures in jaic's own process, so a bad pointer passed to C faults inside jaic. While a foreign call is in progress, `crash::ForeignCall` publishes the symbol, the interpreter and the program in a few atomics, and a fault handler (POSIX `sigaction` for SIGSEGV, SIGBUS, SIGILL and SIGFPE with `SA_ONSTACK`, so a native stack overflow still has a stack to report on; a vectored exception handler on Windows) prints:
+
+```
+crash.jai:4:5: error: native code crashed (SIGSEGV, invalid memory access at address 0x10) while calling foreign procedure `strlen`
+note: call stack (innermost first):
+    `measure` at crash.jai:4
+    `main` at crash.jai:10
+help: check the arguments passed to `strlen` (pointers and sizes) and its `#foreign` declaration against the C signature; jaic cannot continue after a crash in native code
+```
+
+and exits with status 121. The call stack comes from `Interp::calls` (each running procedure with the location it was called from, pushed and popped in `Interp::exec` and swapped with the rest of a thread's state by the scheduler in `threads.rs`). The report is formatted into a fixed buffer and written with `write(2)`/`WriteFile`, since the crash may have happened inside `malloc`; it has no source excerpt for the same reason.
+
+A fault outside a foreign call is not the handler's: it puts the previous action back (Rust's stack overflow report, or the default) and returns, so the fault repeats under it. The interpreter's own recursion limit (`MAX_DEPTH`) and value-stack check do not use signals and are unaffected. Not covered: a crash in a thread a C library started itself is reported against the foreign call in progress, if any.
+
 ### Command-line errors
 
 `jaic`'s argument parser returns a `CliError` (message + helps): unknown commands and options get the closest match, misplaced files and options say where they go, `-os`/`-cpu` list their values. Input files are checked before compiling (missing file with a close name, a directory with its entry file, permissions). `jailint`, `jaifmt` and `jailsp` follow the same rules; `jailsp` run by hand says it is a language server and how to check a file instead.
@@ -115,7 +131,7 @@ A Rust panic is reported as `error: internal compiler error: ...` with a note an
 
 | Tool | 0 | 1 | 2 | other |
 |---|---|---|---|---|
-| `jaic` | success (`run`: the program's own status) | compile error, runtime error, build or link failure, unreadable input | command-line mistake | 120 memory limit (`JAIC_MEMORY_LIMIT`), 101 internal compiler error |
+| `jaic` | success (`run`: the program's own status) | compile error, runtime error, build or link failure, unreadable input | command-line mistake | 120 memory limit (`JAIC_MEMORY_LIMIT`), 121 native code crashed under the interpreter, 101 internal compiler error |
 | `jailint` | no `deny` findings | a `deny` finding | command-line or `jailint.toml` mistake, unreadable path | |
 | `jaifmt` | success | `--check`: files would change | errors (command line, config, unreadable or unformattable files) | |
 | `jailsp` | `exit` after `shutdown` | input ended or the protocol broke | command-line mistake | |
