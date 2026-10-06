@@ -87,20 +87,25 @@ reader_create_channel :: (name: string, bytes: s64) -> (success: bool, channel: 
     if bytes < 2 * PER_MESSAGE_OVERHEAD_SIZE || bytes > 0x7fff_ffff_ffff_ffff - OFFSET_TO_MESSAGE_DATA return false, .{};
     success, result := reader_create_channel_os_specific(name, bytes);
     if !success return false, .{};
+    // Region layout: this header, the OS-specific block, the queue cursors, then `bytes` of
+    // message ring. Everything starts zeroed; the channel magic is stored last, atomically,
+    // because a writer treats a nonzero magic as "the reader finished setting up".
+    region_size := OFFSET_TO_MESSAGE_DATA + bytes;
     header := result.header;
-    memset(header, 0, bytes + OFFSET_TO_MESSAGE_DATA);
-    header.version = PROTOCOL_VERSION;
-    header.offset_to_os_specific_header = OFFSET_TO_HEADER_OS_SPECIFIC;
-    header.offset_to_message_queue_header = OFFSET_TO_MESSAGE_QUEUE_HEADER;
-    header.offset_to_message_data = OFFSET_TO_MESSAGE_DATA;
-    header.full_memory_region_size_in_bytes = bytes + OFFSET_TO_MESSAGE_DATA;
-    header.data_size_in_bytes = bytes;
-    queue := get_message_queue_header(header);
-    queue.read_cursor = OFFSET_TO_MESSAGE_DATA;
-    queue.write_cursor = OFFSET_TO_MESSAGE_DATA;
-    os_header := cast(*Header_Os_Specific) (cast(*u8) header + OFFSET_TO_HEADER_OS_SPECIFIC);
-    os_header.magic = os_magic();
-    header.reader_status = .PAUSED;
+    memset(header, 0, region_size);
+    header.* = .{
+        version = PROTOCOL_VERSION,
+        reader_status = .PAUSED,
+        offset_to_os_specific_header = OFFSET_TO_HEADER_OS_SPECIFIC,
+        offset_to_message_queue_header = OFFSET_TO_MESSAGE_QUEUE_HEADER,
+        offset_to_message_data = OFFSET_TO_MESSAGE_DATA,
+        data_size_in_bytes = bytes,
+        full_memory_region_size_in_bytes = region_size,
+    };
+    (cast(*Header_Os_Specific) (cast(*u8) header + OFFSET_TO_HEADER_OS_SPECIFIC)).magic = os_magic();
+    cursors := get_message_queue_header(header);
+    cursors.write_cursor = OFFSET_TO_MESSAGE_DATA;
+    cursors.read_cursor = OFFSET_TO_MESSAGE_DATA;
     A.atomic_write(*header.magic, channel_magic());
     return true, result;
 }
