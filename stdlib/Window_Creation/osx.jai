@@ -93,6 +93,7 @@ create_window :: (width: int, height: int, window_name: string, window_x := -1, 
     }
     if window_x == -1 || window_y == -1 NSWindow.center(window);
     NSWindow.makeKeyAndOrderFront(window, null);
+    array_add(*WT.macos_program_windows, window);
     return window;
 }
 swap_view_buffers :: (win: *NSWindow) {

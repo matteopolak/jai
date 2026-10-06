@@ -8,7 +8,6 @@ Mac_Input_Window :: struct {
     y: s32;
     width: s32;
     height: s32;
-    seen := false;
 }
 mac_input_windows: [..] Mac_Input_Window;
 mac_input_focus: *Mac.NSWindow;
@@ -17,11 +16,6 @@ mac_event_window :: (event: *Mac.NSEvent) -> *Mac.NSWindow {
     call: (receiver: *void, selector: ObjC.SEL) -> *Mac.NSWindow #c_call;
     call = cast(type_of(call)) ObjC.objc_msgSend;
     return call(event, ObjC.sel_registerName("window\0"));
-}
-mac_application_windows :: (application: *Mac.NSApplication) -> *Foundation.NSArray(*Mac.NSWindow) {
-    call: (receiver: *void, selector: ObjC.SEL) -> *Foundation.NSArray(*Mac.NSWindow) #c_call;
-    call = cast(type_of(call)) ObjC.objc_msgSend;
-    return call(application, ObjC.sel_registerName("windows\0"));
 }
 mac_key_code :: (event: *Mac.NSEvent) -> Key_Code {
     code := Mac.NSEvent.keyCode(event);
@@ -55,14 +49,26 @@ mac_modifiers :: (event: *Event, mask: u64) {
     event.alt_pressed = (mask & (1 << 19)) != 0;
     event.cmd_meta_pressed = (mask & (1 << 20)) != 0;
 }
-mac_poll_geometry :: (application: *Mac.NSApplication) {
-    for *entry: mac_input_windows entry.seen = false;
-    windows := mac_application_windows(application);
-    if !windows return;
-    count := Foundation.NSArray(*Mac.NSWindow).count(windows);
-    for index: 0..cast(s64) count - 1 {
-        window := Foundation.NSArray(*Mac.NSWindow).objectAtIndex(windows, cast(Foundation.NSUInteger) index);
-        if !window continue;
+mac_poll_geometry :: () {
+    // Only the windows the program made (Window_Creation registers them): AppKit makes and drops
+    // windows of its own as the user types and clicks, and those are not the program's to report.
+    index: s64 = 0;
+    while index < macos_program_windows.count {
+        window := macos_program_windows[index];
+        // A window the user closed is ordered out but not released (setReleasedWhenClosed NO), so
+        // it stays in NSApp.windows: closing shows as no longer visible without being minimized.
+        if !mac_window_flag(window, "isVisible\0") && !mac_window_flag(window, "isMiniaturized\0") {
+            event: Event;
+            event.type = .QUIT;
+            queue_input_event(cast(Window_Type) cast(u64) window, event);
+            array_ordered_remove_by_index(*macos_program_windows, index);
+            for mac_input_windows if it.window == window {
+                array_ordered_remove_by_index(*mac_input_windows, it_index);
+                break;
+            }
+            continue;
+        }
+        index += 1;
         view := Mac.NSWindow.contentView(window);
         if !view continue;
         frame := Mac.NSWindow.frame(window);
@@ -71,40 +77,29 @@ mac_poll_geometry :: (application: *Mac.NSApplication) {
         y := cast(s32) frame.origin.y;
         width := cast(s32) area.size.width;
         height := cast(s32) area.size.height;
+        routed := cast(Window_Type) cast(u64) window;
         found := false;
         for *entry: mac_input_windows {
             if entry.window != window continue;
-            routed := cast(Window_Type) cast(u64) window;
             if width != entry.width || height != entry.height queue_window_resize(routed, width, height);
             if x != entry.x || y != entry.y queue_window_move(routed, x, y);
             entry.x = x;
             entry.y = y;
             entry.width = width;
             entry.height = height;
-            entry.seen = true;
             found = true;
             break;
         }
-        // Only the program's own windows: AppKit makes and drops borderless helper windows
-        // (text input, tooltips) as the user types and clicks, and losing one of those must
-        // not read as the program's window closing. Decided once, so a window that goes
-        // borderless for fullscreen stays tracked.
-        if !found && (Mac.NSWindow.styleMask(window) & .NSWindowStyleMaskTitled) {
-            array_add(*mac_input_windows, .{ window, x, y, width, height, true });
-            queue_window_resize(cast(Window_Type) cast(u64) window, width, height);
+        if !found {
+            array_add(*mac_input_windows, .{ window, x, y, width, height });
+            queue_window_resize(routed, width, height);
         }
     }
-    index: s64 = 0;
-    while index < mac_input_windows.count {
-        if mac_input_windows[index].seen {
-            index += 1;
-            continue;
-        }
-        event: Event;
-        event.type = .QUIT;
-        queue_input_event(cast(Window_Type) cast(u64) mac_input_windows[index].window, event);
-        array_ordered_remove_by_index(*mac_input_windows, index);
-    }
+}
+mac_window_flag :: (window: *Mac.NSWindow, selector: *u8) -> bool {
+    call: (receiver: *void, selector: ObjC.SEL) -> ObjC.BOOL #c_call;
+    call = cast(type_of(call)) ObjC.objc_msgSend;
+    return call(window, ObjC.sel_registerName(selector)) != 0;
 }
 macos_poll_input :: () {
     application := Mac.NSApplication.sharedApplication();
@@ -176,7 +171,7 @@ macos_poll_input :: () {
         if focused set_input_focus(cast(Window_Type) cast(u64) focused, true);
         mac_input_focus = focused;
     }
-    mac_poll_geometry(application);
+    mac_poll_geometry();
 }
 macos_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool {
     native := cast(*Mac.NSWindow) cast(u64) window;
