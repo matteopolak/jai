@@ -11,15 +11,17 @@ get_macos_target_triple :: (cpu: CPU_Tag, major: int, minor: int) -> string {
     return sprint("%0%", get_macos_target_triple(cpu), version);
 }
 
+// Darwin kernel majors: macOS 10.x shipped Darwin x+4 (10.13 had 17), and from macOS 11 on
+// the Darwin major is the macOS major plus 9 (11 has 20). iOS N ships with Darwin N+6.
 get_darwin_version_from_macos_version :: (major: int, minor: int) -> int {
-    // macOS 10.13 used Darwin 17; macOS 11 moved to Darwin 20.
-    if major == 10 return minor + 4;
-    assert(major > 10);
-    return major + 9;
+    assert(major >= 10, "no Darwin version is known for macOS %.%", major, minor);
+    if major > 10 return major + 9;
+    return minor + 4;
 }
 
 get_darwin_version_from_ios_version :: (major: int, minor: int) -> int {
-    return major + 6;
+    DARWIN_AHEAD_OF_IOS :: 6;
+    return major + DARWIN_AHEAD_OF_IOS;
 }
 
 // The macOS SDK to compile and generate bindings against: $MACOS_SDK_PATH, or
