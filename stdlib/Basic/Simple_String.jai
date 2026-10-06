@@ -126,6 +126,11 @@ string_to_float :: (arg: string) -> result: float, success: bool, remainder: str
 string_to_float64 :: (_s: string) -> result: float64, success: bool, remainder: string {
     return string_to_float_type_T(_s, T = float64);
 }
+// The same parse with the success flag first: `ok, value, rest := string_to_float64_new(s);`.
+string_to_float64_new :: (text: string) -> success: bool, result: float64, remainder: string {
+    value, ok, rest := string_to_float_type_T(text, T = float64);
+    return ok, value, rest;
+}
 
 // Decimal significand plus an optional exponent. This intentionally does not
 // recognize hexadecimal floats, NaN/Inf spellings, or locale separators.

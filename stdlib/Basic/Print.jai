@@ -192,7 +192,7 @@ print_integer :: (builder: *String_Builder, format: FormatInt) {
         return;
     }
     info := item.type;
-    if info.type == .VARIANT info = (cast(*Type_Info_Variant) info).variant_of;
+    while info.type == .VARIANT info = (cast(*Type_Info_Variant) info).variant_of;
     if info.type == .ENUM info = cast(*Type_Info) (cast(*Type_Info_Enum) info).internal_type;
     if info.type != .INTEGER || info.runtime_size > 8 {
         append(builder, "<non-integer>");
@@ -671,15 +671,18 @@ print_float :: (builder: *String_Builder, format: FormatFloat) {
         builder.failed = true;
         return;
     }
-    if item.type.type != .FLOAT {
+    // A variant of a float (`#type,distinct float64`, or an `isa` of one) prints as the float.
+    info := item.type;
+    while info.type == .VARIANT info = (cast(*Type_Info_Variant) info).variant_of;
+    if info.type != .FLOAT {
         append(builder, "<non-float>");
         builder.failed = true;
         return;
     }
     value: float64 = 0;
-    if item.type.runtime_size == 4 value = cast(float64) (cast(*float32) item.value_pointer).*;
-    else if item.type.runtime_size == 8 value = (cast(*float64) item.value_pointer).*;
-    else if item.type.runtime_size == 16 value = __long_double_to_float64(item.value_pointer);
+    if info.runtime_size == 4 value = cast(float64) (cast(*float32) item.value_pointer).*;
+    else if info.runtime_size == 8 value = (cast(*float64) item.value_pointer).*;
+    else if info.runtime_size == 16 value = __long_double_to_float64(item.value_pointer);
     else {
         append(builder, "<unsupported float width>");
         builder.failed = true;
