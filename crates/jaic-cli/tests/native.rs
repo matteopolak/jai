@@ -386,6 +386,96 @@ fn c_structs_by_value() {
     }
 }
 
+/// `-sanitize address` reports a use after free with the Jai source line, `-sanitize undefined`
+/// an out-of-bounds stack access, and a correct program runs cleanly under both. Not supported
+/// on Windows.
+#[test]
+fn sanitized_builds_report_memory_errors() {
+    if cfg!(windows) {
+        return;
+    }
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-sanitizers");
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(
+        dir.join("errors.jai"),
+        "#import \"Basic\";\n\
+         main :: () {\n\
+             args := get_command_line_arguments();\n\
+             a := NewArray(4, int);\n\
+             a[1] = 5;\n\
+             print(\"%\\n\", a[1]);\n\
+             if args.count == 2 && args[1] == \"heap\" {\n\
+                 array_free(a);\n\
+                 print(\"%\\n\", a[2]);\n\
+             }\n\
+             local: [4] int;\n\
+             p := local.data;\n\
+             if args.count == 2 && args[1] == \"stack\" p[args.count + 2] = 1;\n\
+             print(\"%\\n\", local[0]);\n\
+         }\n",
+    )
+    .unwrap();
+    let build = |name: &str, sanitize: &str| {
+        let exe = exe_path(&dir, name);
+        let output = Command::new(JAIC)
+            .args(["build", "errors.jai", "-sanitize", sanitize, "-o"])
+            .arg(&exe)
+            .current_dir(&dir)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        exe
+    };
+    let run = |exe: &Path, arg: &str| {
+        Command::new(exe)
+            .arg(arg)
+            .env("ASAN_OPTIONS", "detect_leaks=0")
+            .output()
+            .unwrap()
+    };
+    let both = build("both", "address,undefined");
+    let clean = run(&both, "none");
+    assert_eq!(String::from_utf8_lossy(&clean.stdout), "5\n0\n");
+    assert!(clean.status.success());
+
+    let asan = build("asan", "address");
+    let heap = run(&asan, "heap");
+    let report = String::from_utf8_lossy(&heap.stderr);
+    assert!(!heap.status.success());
+    assert!(
+        report.contains("AddressSanitizer: heap-use-after-free") && report.contains("errors.jai:9"),
+        "{report}"
+    );
+
+    let ubsan = build("ubsan", "undefined");
+    let stack = run(&ubsan, "stack");
+    let report = String::from_utf8_lossy(&stack.stderr);
+    assert!(!stack.status.success());
+    assert!(
+        report.contains("errors.jai:13") && report.contains("runtime error: access out of bounds"),
+        "{report}"
+    );
+
+    let cross = Command::new(JAIC)
+        .args([
+            "build",
+            "errors.jai",
+            "-sanitize",
+            "address",
+            "-os",
+            "windows",
+        ])
+        .current_dir(&dir)
+        .output()
+        .unwrap();
+    assert!(!cross.status.success());
+    assert!(String::from_utf8_lossy(&cross.stderr).contains("cross builds"));
+}
+
 /// `#cpp_return_type_is_non_pod`: a C++ class with a copy constructor or destructor comes back
 /// through the hidden result pointer even when it would fit in registers. Compiled code used to
 /// expect it in registers, so the callee wrote through whatever the result register held (found
