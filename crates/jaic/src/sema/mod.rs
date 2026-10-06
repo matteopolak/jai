@@ -33,6 +33,7 @@ mod runtime_info;
 pub mod scope;
 mod stmt;
 mod structs;
+mod suggestions;
 mod trap_report;
 mod typeinfo;
 mod wide;
@@ -251,6 +252,8 @@ fn too_many_instances(name: Sym) -> String {
 
 pub struct Compiler {
     pub options: Options,
+    /// Where the last unknown identifier was looked up, for `render`'s suggestion.
+    last_unknown_name: Option<(Span, ScopeId)>,
     pub fs: Rc<dyn FileSystem>,
     pub sources: SourceMap,
     pub types: Types,
@@ -437,6 +440,7 @@ impl Compiler {
     pub fn new(options: Options, fs: Rc<dyn FileSystem>) -> Self {
         let mut c = Compiler {
             options,
+            last_unknown_name: None,
             fs,
             sources: SourceMap::default(),
             types: Types::new(),
@@ -607,7 +611,11 @@ impl Compiler {
         }
     }
 
+    /// `d` as text for the user, with a "did you mean" help line where one applies.
     pub fn render(&self, d: &Diagnostic) -> String {
-        d.render(&self.sources)
+        match self.with_name_suggestion(d) {
+            Some(d) => d.render(&self.sources),
+            None => d.render(&self.sources),
+        }
     }
 }
