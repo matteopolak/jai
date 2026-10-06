@@ -99,7 +99,8 @@ create_window :: (width: int, height: int, window_name: string, window_x := -1, 
 swap_view_buffers :: (win: *NSWindow) {
     if !win return;
     render_view := NSWindow.contentView(win);
-    if render_view LightweightRenderingView.swapBuffers(render_view);
+    // The content view create_window made is an OpenGL view.
+    if render_view LightweightOpenGLView.swapBuffers(cast(*LightweightOpenGLView) render_view);
 }
 get_dimensions :: (window: *NSWindow, right_handed: bool) -> (x: s32, y: s32, width: s32, height: s32, success := true) {
     if !window return 0, 0, 0, 0, false;

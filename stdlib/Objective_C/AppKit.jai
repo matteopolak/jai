@@ -297,20 +297,23 @@ NSEvent :: struct {
         invoke = cast(type_of(invoke)) objc_msgSend;
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "isARepeat\0"));
     }
-    keyRepeatDelay :: (self: *NSEvent) -> NSTimeInterval {
+    // A class property: `+[NSEvent keyRepeatDelay]`.
+    keyRepeatDelay :: () -> NSTimeInterval {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> NSTimeInterval #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
-        return invoke(cast(*void) self, sel_registerName(cast(*u8) "keyRepeatDelay\0"));
+        return invoke(cast(*void) objc_getClass(cast(*u8) "NSEvent\0"), sel_registerName(cast(*u8) "keyRepeatDelay\0"));
     }
-    keyRepeatInterval :: (self: *NSEvent) -> NSTimeInterval {
+    // A class property: `+[NSEvent keyRepeatInterval]`.
+    keyRepeatInterval :: () -> NSTimeInterval {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> NSTimeInterval #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
-        return invoke(cast(*void) self, sel_registerName(cast(*u8) "keyRepeatInterval\0"));
+        return invoke(cast(*void) objc_getClass(cast(*u8) "NSEvent\0"), sel_registerName(cast(*u8) "keyRepeatInterval\0"));
     }
-    pressedMouseButtons :: (self: *NSEvent) -> NSUInteger {
+    // A class property: `+[NSEvent pressedMouseButtons]`.
+    pressedMouseButtons :: () -> NSUInteger {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> NSUInteger #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
-        return invoke(cast(*void) self, sel_registerName(cast(*u8) "pressedMouseButtons\0"));
+        return invoke(cast(*void) objc_getClass(cast(*u8) "NSEvent\0"), sel_registerName(cast(*u8) "pressedMouseButtons\0"));
     }
     buttonNumber :: (self: *NSEvent) -> NSInteger {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> NSInteger #c_call;

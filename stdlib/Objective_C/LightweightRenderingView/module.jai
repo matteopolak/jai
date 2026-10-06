@@ -3,7 +3,11 @@
 #import "Objective_C/AppKit";
 LightweightRenderingView :: struct {
     #as using nsview: NSView;
-    swapBuffers :: (self: *void) {
+}
+LightweightOpenGLView :: struct {
+    #as using lightweightrenderingview: LightweightRenderingView;
+    // Shows what was drawn: flushes the view's OpenGL context.
+    swapBuffers :: (self: *LightweightOpenGLView) {
         get_context: (sdk_receiver: *void, sdk_selector: SEL) -> *NSOpenGLContext #c_call;
         get_context = cast(type_of(get_context)) objc_msgSend;
         glc := get_context(self, sel_registerName(cast(*u8) "openGLContext\0"));
@@ -11,9 +15,6 @@ LightweightRenderingView :: struct {
         flush = cast(type_of(flush)) objc_msgSend;
         flush(cast(*void) glc, sel_registerName(cast(*u8) "flushBuffer\0"));
     }
-}
-LightweightOpenGLView :: struct {
-    #as using lightweightrenderingview: LightweightRenderingView;
     glContext :: (self: *LightweightOpenGLView) -> *NSOpenGLContext {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *NSOpenGLContext #c_call;
         invoke = cast(type_of(invoke)) objc_msgSend;
