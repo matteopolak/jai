@@ -33,6 +33,7 @@ mod runtime_info;
 pub mod scope;
 mod stmt;
 mod structs;
+mod trap_report;
 mod typeinfo;
 mod wide;
 

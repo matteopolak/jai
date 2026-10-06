@@ -13,6 +13,13 @@ pub struct Span {
 }
 
 impl Span {
+    /// No location: a diagnostic or note with this span prints without a file and snippet.
+    pub const NONE: Span = Span {
+        file: FileId(u32::MAX),
+        start: 0,
+        end: 0,
+    };
+
     pub fn new(file: FileId, start: usize, end: usize) -> Self {
         Self {
             file,
@@ -117,7 +124,10 @@ pub struct Diagnostic {
     pub severity: Severity,
     pub span: Span,
     pub message: String,
+    /// Related locations; a note whose span has no file (`Span::NONE`) prints as text only.
     pub notes: Vec<(Span, String)>,
+    /// `help:` lines printed last: how to fix the problem, when that is clear.
+    pub help: Vec<String>,
 }
 
 impl Diagnostic {
@@ -127,6 +137,7 @@ impl Diagnostic {
             span,
             message: message.into(),
             notes: Vec::new(),
+            help: Vec::new(),
         }
     }
 
@@ -136,11 +147,17 @@ impl Diagnostic {
             span,
             message: message.into(),
             notes: Vec::new(),
+            help: Vec::new(),
         }
     }
 
     pub fn with_note(mut self, span: Span, message: impl Into<String>) -> Self {
         self.notes.push((span, message.into()));
+        self
+    }
+
+    pub fn with_help(mut self, message: impl Into<String>) -> Self {
+        self.help.push(message.into());
         self
     }
 
@@ -155,35 +172,44 @@ impl Diagnostic {
         for (span, note) in &self.notes {
             render_one(&mut out, sources, *span, "note", note);
         }
+        for help in &self.help {
+            render_one(&mut out, sources, Span::NONE, "help", help);
+        }
         out
     }
 }
 
+/// Whether `span` names a place in a file. `Span::NONE` does not, and neither does the default
+/// span (file 0, empty, at offset 0), which diagnostics without a location have long used.
+fn has_location(sources: &SourceMap, span: Span) -> bool {
+    (span.file.0 as usize) < sources.len() && span != Span::default()
+}
+
 fn render_one(out: &mut String, sources: &SourceMap, span: Span, kind: &str, message: &str) {
     use std::fmt::Write;
-    if (span.file.0 as usize) < sources.len() {
-        let file = sources.get(span.file);
-        let (line, col) = file.line_col(span.start);
-        let _ = writeln!(out, "{}:{}:{}: {}: {}", file.path, line, col, kind, message);
-        let text = file.line_text(line);
-        let _ = writeln!(out, "    {text}");
-        let width = (span.end.saturating_sub(span.start))
-            .clamp(1, (text.len() as u32 + 1).saturating_sub(col).max(1));
-        let pad: String = text
-            .chars()
-            .take(col as usize - 1)
-            .map(|c| {
-                if c == '\t' {
-                    '\t'
-                } else {
-                    ' '
-                }
-            })
-            .collect();
-        let _ = writeln!(out, "    {}{}", pad, "^".repeat(width as usize));
-    } else {
+    if !has_location(sources, span) {
         let _ = writeln!(out, "{kind}: {message}");
+        return;
     }
+    let file = sources.get(span.file);
+    let (line, col) = file.line_col(span.start);
+    let _ = writeln!(out, "{}:{}:{}: {}: {}", file.path, line, col, kind, message);
+    let text = file.line_text(line);
+    let _ = writeln!(out, "    {text}");
+    let width = (span.end.saturating_sub(span.start))
+        .clamp(1, (text.len() as u32 + 1).saturating_sub(col).max(1));
+    let pad: String = text
+        .chars()
+        .take(col as usize - 1)
+        .map(|c| {
+            if c == '\t' {
+                '\t'
+            } else {
+                ' '
+            }
+        })
+        .collect();
+    let _ = writeln!(out, "    {}{}", pad, "^".repeat(width as usize));
 }
 
 impl fmt::Display for Diagnostic {
