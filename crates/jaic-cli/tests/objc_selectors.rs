@@ -245,7 +245,10 @@ fn table_field(text: &str, sel_start: usize) -> Option<&str> {
     while let Some(after) = rest.strip_prefix("cast(") {
         rest = after.split_once(')')?.1.trim();
     }
-    if !rest.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '.') {
+    if !rest
+        .chars()
+        .all(|c| c.is_alphanumeric() || c == '_' || c == '.')
+    {
         return None;
     }
     target.rsplit('.').next().filter(|f| !f.is_empty())
@@ -342,6 +345,7 @@ fn check_program(receivers: &BTreeSet<(Receiver, String)>) -> String {
     }
     format!(
         r#"#import "Basic";
+#import "String";
 libc :: #system_library "libc";
 libobjc :: #system_library "libobjc";
 dlopen :: (path: *u8, mode: s32) -> *void #foreign libc;
@@ -354,6 +358,13 @@ Method_Description :: struct {{ name: *void; types: *u8; }}
 protocol_getMethodDescription :: (p: *void, sel: *void, required: bool, instance: bool) -> Method_Description #foreign libobjc;
 protocol_copyProtocolList :: (p: *void, count: *u32) -> **void #foreign libobjc;
 free :: (p: *void) #foreign libc;
+class_getSuperclass :: (cls: *void) -> *void #foreign libobjc;
+class_copyPropertyList :: (cls: *void, count: *u32) -> **void #foreign libobjc;
+property_getName :: (property: *void) -> *u8 #foreign libobjc;
+property_getAttributes :: (property: *void) -> *u8 #foreign libobjc;
+object_getClass :: (object: *void) -> *void #foreign libobjc;
+class_respondsToSelector :: (cls: *void, sel: *void) -> bool #foreign libobjc;
+objc_msgSend :: () #foreign libobjc;
 
 Entry :: struct {{ class: string; selector: string; instance: bool; }}
 ENTRIES :: Entry.[
@@ -371,6 +382,41 @@ protocol_has :: (p: *void, sel: *void, instance: bool) -> bool {{
     return false;
 }}
 
+// A declared property of `cls` or a superclass whose getter or setter is `selector`. Classes that
+// implement their properties in a hidden subclass (Metal's descriptors) declare them here only.
+// Class properties are declared on the metaclass.
+property_declares :: (cls: *void, selector: string) -> bool {{
+    c := cls;
+    while c {{
+        count: u32;
+        properties := class_copyPropertyList(c, *count);
+        defer free(properties);
+        for 0..cast(s64) count - 1 {{
+            name := to_string(property_getName(properties[it]));
+            getter := name;
+            setter := tprint("set%1%2:", to_upper(name[0]), slice(name, 1, name.count - 1));
+            for attribute: split(to_string(property_getAttributes(properties[it])), ",") {{
+                if attribute.count == 0 continue;
+                if attribute[0] == #char "G" getter = slice(attribute, 1, attribute.count - 1);
+                if attribute[0] == #char "S" setter = slice(attribute, 1, attribute.count - 1);
+                if attribute == "R" setter = "";
+            }}
+            if selector == getter || selector == setter return true;
+        }}
+        c = class_getSuperclass(c);
+    }}
+    return false;
+}}
+
+// Class clusters (`NSString`) answer for the subclass `alloc` returns. The object is not
+// initialized and not released, so no code of the class runs but `alloc`.
+allocated_responds :: (cls: *void, sel: *void) -> bool {{
+    send: (receiver: *void, selector: *void) -> *void #c_call;
+    send = cast(type_of(send)) objc_msgSend;
+    object := send(cls, sel_registerName("alloc"));
+    return object && class_respondsToSelector(object_getClass(object), sel);
+}}
+
 main :: () {{
     for FRAMEWORKS {{
         path := tprint("/System/Library/Frameworks/%1.framework/%1\0", it);
@@ -383,6 +429,8 @@ main :: () {{
         if cls {{
             method := ifx it.instance then class_getInstanceMethod(cls, sel) else class_getClassMethod(cls, sel);
             if method continue;
+            if property_declares(ifx it.instance then cls else object_getClass(cls), it.selector) continue;
+            if it.instance && allocated_responds(cls, sel) continue;
         }} else {{
             protocol := objc_getProtocol(class_name.data);
             if !protocol {{

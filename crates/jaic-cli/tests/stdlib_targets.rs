@@ -1,6 +1,6 @@
 //! Every stdlib module type-checks for every target OS, including the code nothing calls.
 //!
-//! `jaic check -no_dce -os <os>` on a program that only imports the module checks every
+//! `jaic check -no_dce -os <os> -cpu <cpu>` on a program that only imports the module checks every
 //! procedure body and declaration in it, so code for other platforms and procedures no test
 //! calls cannot hide type errors. Modules that refuse a target on purpose (`#assert(OS == ...)`)
 //! are listed in `tests/stdlib-targets.txt` with the first error they stop at; the test fails when
@@ -11,7 +11,17 @@ use std::process::Command;
 use std::sync::Mutex;
 
 const JAIC: &str = env!("CARGO_BIN_EXE_jaic");
-const TARGETS: [&str; 4] = ["linux", "macos", "windows", "wasm"];
+
+/// `os-cpu` names; the CPU is always given, so the result does not depend on the host's.
+const TARGETS: [&str; 7] = [
+    "linux-x64",
+    "linux-arm64",
+    "macos-x64",
+    "macos-arm64",
+    "windows-x64",
+    "windows-arm64",
+    "wasm",
+];
 
 fn root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
@@ -104,13 +114,16 @@ fn every_stdlib_module_checks_for_every_target() {
                     let source = dir.join(format!("{module}.{os}.jai"));
                     std::fs::write(&source, format!("#import \"{module}\";\nmain :: () {{}}\n"))
                         .unwrap();
-                    let output = Command::new(JAIC)
+                    let (target_os, cpu) = os.split_once('-').unwrap_or((os, ""));
+                    let mut command = Command::new(JAIC);
+                    command
                         .arg("check")
                         .arg(&source)
-                        .args(["-no_dce", "-os", os])
-                        .env("JAIC_STDLIB", &stdlib)
-                        .output()
-                        .unwrap();
+                        .args(["-no_dce", "-os", target_os]);
+                    if !cpu.is_empty() {
+                        command.args(["-cpu", cpu]);
+                    }
+                    let output = command.env("JAIC_STDLIB", &stdlib).output().unwrap();
                     if !output.status.success() {
                         let stderr = String::from_utf8_lossy(&output.stderr);
                         actual.lock().unwrap().insert(
