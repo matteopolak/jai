@@ -162,6 +162,8 @@ break_change_allowed :: (src: string, tokens: [] Tok, previous: int, current: in
 directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
     zone: [..] bool;
     array_resize(*zone, tokens.count);
+    // Set before the loop: the flags of a directive that starts the file are read from zone[0].
+    if tokens.count && tokens[0].kind == .DIRECTIVE zone[0] = true;
     for i: 1..tokens.count - 1 {
         t := tokens[i];
         if t.kind == .DIRECTIVE {
@@ -176,7 +178,6 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
             }
         }
     }
-    if tokens.count && tokens[0].kind == .DIRECTIVE zone[0] = true;
     return zone;
 }
 
