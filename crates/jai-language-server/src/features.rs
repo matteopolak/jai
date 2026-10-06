@@ -123,49 +123,55 @@ impl Session {
             .min_by_key(|e| e.span.end - e.span.start)
     }
 
-    /// What an expansion produced, for a hover.
+    /// What an expansion produced, for a hover. Produced code comes last, under a
+    /// [`divider`] line.
     fn describe(&self, uri: &DocumentUri, e: &IdeExpansion) -> String {
         let text = self.document(uri).map(|d| d.text.as_str()).unwrap_or("");
-        let several = e.texts.len() > 1;
-        let variants = |label: &str| -> String {
-            if !several {
-                return e.texts[0].clone();
+        let produced = |label: &str| -> String {
+            if e.texts.len() == 1 {
+                return format!("{}\n{}", divider(label), e.texts[0]);
             }
+            let count = e.texts.len();
             e.texts
                 .iter()
                 .enumerate()
-                .map(|(i, t)| format!("{label} {}:\n{t}", i + 1))
+                .map(|(i, t)| {
+                    format!(
+                        "{}\n{t}",
+                        divider(&format!("{label} ({} of {count})", i + 1))
+                    )
+                })
                 .collect::<Vec<_>>()
-                .join("\n\n")
+                .join("\n")
         };
         match e.kind {
             IdeExpansionKind::Insert => {
                 if e.texts.iter().all(|t| t.trim().is_empty()) {
                     "#insert inserts nothing".into()
                 } else {
-                    format!("#insert expands to:\n\n{}", variants("Instance"))
+                    format!("#insert\n{}", produced("expands to"))
                 }
             }
-            IdeExpansionKind::Macro => {
-                format!("{} expands to:\n\n{}", e.detail, variants("Expansion"))
-            }
+            IdeExpansionKind::Macro => format!("{}\n{}", e.detail, produced("expands to")),
             IdeExpansionKind::Run => {
                 let mut out = if e.texts.iter().all(String::is_empty) {
                     "#run returns nothing".to_string()
-                } else if several {
+                } else if e.texts.len() > 1 {
                     format!("#run values ({}):\n{}", e.detail, e.texts.join("\n"))
                 } else {
                     format!("#run = {}: {}", e.texts[0], e.detail)
                 };
                 if !e.output.is_empty() {
-                    out.push_str("\n\nPrinted at compile time:\n");
+                    out.push('\n');
+                    out.push_str(&divider("prints"));
+                    out.push('\n');
                     out.push_str(e.output.trim_end());
                 }
                 out
             }
             IdeExpansionKind::If => {
                 let directive = directive_at(text, e.span.start as usize).unwrap_or("if");
-                if several {
+                if e.texts.len() > 1 {
                     format!(
                         "#{directive}: the condition is true for some instances and false for others"
                     )
@@ -237,7 +243,11 @@ impl Session {
             .into_iter()
             .find(|e| e.kind == IdeExpansionKind::Macro && e.span.start as usize == start)
         {
-            Some(e) => format!("{hover}\n\n{}", self.describe(uri, &e)),
+            Some(e) => {
+                let described = self.describe(uri, &e);
+                let produced = described.split_once('\n').map_or("", |(_, rest)| rest);
+                format!("{hover}\n{produced}")
+            }
             None => hover,
         }
     }
@@ -1221,6 +1231,15 @@ fn ambiguous_params(params: &[String]) -> Vec<bool> {
         .map(|ty| ty.is_some_and(|ty| types.iter().filter(|other| **other == Some(ty)).count() > 1))
         .collect()
 }
+
+/// A section line in a hover: `─── label ───`. Clients may draw it as a rule with the label
+/// set into it; plain-text clients show it as is. What follows it is the hover's last section.
+pub(crate) fn divider(label: &str) -> String {
+    format!("{DIVIDER_RULE} {label} {DIVIDER_RULE}")
+}
+
+/// The rule on each side of a [`divider`] label.
+pub(crate) const DIVIDER_RULE: &str = "───";
 
 #[cfg(test)]
 mod tests {

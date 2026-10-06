@@ -93,14 +93,14 @@ fn hovers_show_what_metaprograms_produced() {
     );
     assert!(
         macro_hover.contains(
-            "square expands to:\n\ntotal += (total + 2);\nreturn (total + 2) * (total + 2);"
+            "\n─── expands to ───\ntotal += (total + 2);\nreturn (total + 2) * (total + 2);"
         ),
         "{macro_hover}"
     );
     let insert = hover(&s, at(PROGRAM, "#insert", 0, 2));
-    assert_eq!(insert, "#insert expands to:\n\ninserted := 40 + 2;");
+    assert_eq!(insert, "#insert\n─── expands to ───\ninserted := 40 + 2;");
     let run = hover(&s, at(PROGRAM, "#run compute", 0, 2));
-    assert_eq!(run, "#run = 30: s64\n\nPrinted at compile time:\ncomputing");
+    assert_eq!(run, "#run = 30: s64\n─── prints ───\ncomputing");
     let condition = hover(&s, at(PROGRAM, "#if SIZE", 0, 1));
     assert_eq!(
         condition,
@@ -545,7 +545,7 @@ fn code_arguments_instances_and_untaken_branches() {
     s.open(uri(), 1, CODE_MACRO.into()).unwrap();
     let twice = hover(&s, at(CODE_MACRO, "twice(#code", 0, 1));
     assert!(
-        twice.ends_with("twice expands to:\n\nprint(\"hi\\n\");\nprint(\"hi\\n\");"),
+        twice.ends_with("\n─── expands to ───\nprint(\"hi\\n\");\nprint(\"hi\\n\");"),
         "{twice}"
     );
     assert_eq!(

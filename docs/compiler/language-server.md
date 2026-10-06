@@ -78,23 +78,20 @@ For completion, the word being typed and any `a.b.` chain before it are cut out 
   4. any **expansion** containing the cursor where there is no name (the string of `#insert "..."`);
   5. the syntax layer's declaration text, or `keyword return` on a keyword (completion details say `keyword` too; hover text does not repeat the language name).
 
-Hover text is plain text (`"kind": "plaintext"`).
+Hover text is plain text (`"kind": "plaintext"`). Produced code and compile-time output go last, under a divider line `─── label ───` (`divider` in `features.rs`; labels are `expands to`, `expands to (2 of 3)` for polymorphic instances, and `prints`). Plain-text clients show the line as is; the playground matches `^─── (.+) ───$` and draws a rule with the label set into it. Keep the rule characters (`DIVIDER_RULE`) unchanged, or update the client's pattern too.
 
 Examples:
 
 ```text
 square :: (x: int) -> int #expand
-
-square expands to:
-
+─── expands to ───
 total += (total + 2);
 return (total + 2) * (total + 2);
 ```
 
 ```text
 #run = 30: s64
-
-Printed at compile time:
+─── prints ───
 computing
 ```
 
