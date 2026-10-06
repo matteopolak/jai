@@ -205,11 +205,13 @@ get_keyframes :: (state: *Color_Animation_Editor_State) -> [] Color_Keyframe {
 
 get_sorted_keyframes :: (state: *Color_Animation_Editor_State, index_to_ignore := -1) -> [] *Augmented_Keyframe {
     result := NewArray(state.color_keyframes.count, *Augmented_Keyframe,, Basic.temp);
-    result.count = 0;
+    // Fill before shrinking: indexing past a zeroed count would fail the bounds check.
+    kept := 0;
     for *frame, index: state.color_keyframes if index != index_to_ignore {
-        result[result.count] = frame;
-        result.count += 1;
+        result[kept] = frame;
+        kept += 1;
     }
+    result.count = kept;
     for i: 1..result.count - 1 {
         item := result[i];
         j := i;
