@@ -64,7 +64,15 @@ fn rendered(lints: &[Lint], text: &str, file: &Path) -> String {
             .iter()
             .find(|r| r.name == l.rule)
             .map_or(Level::Warn, |r| r.default);
-        out.push_str(&render(l, text, &shown, default, &Style { color: false }));
+        out.push_str(&render(
+            l,
+            text,
+            &shown,
+            default,
+            &Style {
+                color: false,
+            },
+        ));
         out.push('\n');
     }
     out
@@ -86,7 +94,8 @@ fn every_rule_has_cases() {
     let dir = repo().join("tests/lint");
     for r in RULES {
         assert!(
-            dir.join(r.name).join("bad.jai").is_file() && dir.join(r.name).join("good.jai").is_file(),
+            dir.join(r.name).join("bad.jai").is_file()
+                && dir.join(r.name).join("good.jai").is_file(),
             "tests/lint/{}/ needs bad.jai and good.jai",
             r.name
         );
@@ -104,7 +113,11 @@ fn rules_match_their_cases() {
         let case = dir.join(r.name);
         let bad = case.join("bad.jai");
         let (lints, text) = lint(&bad, &[(r.name, level)]);
-        assert!(!lints.is_empty(), "{} finds nothing in its bad case", r.name);
+        assert!(
+            !lints.is_empty(),
+            "{} finds nothing in its bad case",
+            r.name
+        );
         expect(&case.join("bad.expected"), &rendered(&lints, &text, &bad));
         let refs: Vec<&Lint> = lints.iter().collect();
         let (fixed, applied) = jailint::fix::apply(&text, &refs);
