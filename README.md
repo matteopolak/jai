@@ -14,6 +14,7 @@ The compiler, language server and formatter also run in the browser through WebA
 **[Try it in the browser →](https://matteopolak.com/playground/jai)**
 
 - [What works](#what-works)
+- [Performance](#performance)
 - [What is missing](#what-is-missing)
 - [Install](#install)
 - [Usage](#usage)
@@ -34,7 +35,7 @@ The compiler, language server and formatter also run in the browser through WebA
 | --- | :---: | :---: |
 | macOS | ✅ | ✅ |
 | Linux | ✅ | ✅ |
-| Windows | ✅ (MSVC, or cross-built with MinGW-w64 via `-os windows`) | ✅ (MSVC, or cross-built with llvm-mingw via `-os windows -cpu arm64`) |
+| Windows | ✅ | ✅ |
 
 **WebAssembly modules** (wasm64): `jaic build -os wasm` writes a WASI command that runs under node 24, wasmtime or a Memory64 browser, and a metaprogram can target it with `os_target = .WASM` ([wasm target](docs/native/wasm-target.md)).
 
@@ -49,6 +50,19 @@ On macOS and Linux, `jaic build -sanitize address,undefined` adds AddressSanitiz
 - A [browser build](docs/browser/playground.md) of the compiler and language server, used by the [online playground](https://matteopolak.com/playground/jai), which opens with a [multi-file tour of the language](examples/tour/tour.md) (`examples/tour`).
 
 **Real projects** such as the Focus editor, the Jails language server, jaison, sgpu and the programs from *The Way to Jai* compile and run; see [the full list](docs/tools/upstream-corpus.md#project-status).
+
+## Performance
+
+Compile times for real projects, from a release `jaic` on an Apple M5 (LLVM 23, median of warm runs):
+
+| Project | Lines of Jai | Type-check | Debug build | Release build |
+| --- | ---: | ---: | ---: | ---: |
+| [Focus](https://github.com/focus-editor/focus) (text editor) | 49k + 79k in modules | 1.7 s | 2.3 s | 15 s |
+| [chess-jai](https://github.com/danieltan1517/chess-jai) | 10k | 0.66 s | 2.0 s | 4.9 s |
+| [Jails](https://github.com/SogoCZE/Jails) (language server) | 5.6k | 0.22 s | 0.43 s | 2.2 s |
+| [jaison](https://github.com/rluba/jaison) (tests) | 2.2k | 0.04 s | 0.17 s | 0.81 s |
+
+Release builds spend most of their time in LLVM's optimiser. The formatter compiled to WebAssembly formats a 330-line file in about 1 ms. Method and full results: [compile-time benchmark](docs/tools/compile-time-benchmark.md), [latest numbers](benchmarks/results/compile-time-apple-m5.md).
 
 ## What is missing
 
