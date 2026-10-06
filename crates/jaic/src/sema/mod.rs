@@ -117,6 +117,33 @@ pub fn long_double_for(
     }
 }
 
+#[cfg(test)]
+mod long_double_tests {
+    use super::{TargetCpu, TargetOs, long_double_for};
+    use crate::wide_float::WideFloat;
+
+    /// `sizeof(long double)` per `clang -target <triple>`: 16 (x87) for x86_64-linux-gnu,
+    /// x86_64-apple-darwin and x86_64-w64-windows-gnu; 16 (binary128) for aarch64-linux-gnu and
+    /// wasm32; 8 for arm64-apple-darwin and every Windows MSVC or arm64 triple
+    /// (aarch64-pc-windows-msvc and aarch64-pc-windows-gnu included).
+    #[test]
+    fn formats_follow_the_c_compiler() {
+        use TargetCpu::*;
+        use TargetOs::*;
+        assert_eq!(long_double_for(Linux, X64, true), Some(WideFloat::X87));
+        assert_eq!(long_double_for(MacOS, X64, false), Some(WideFloat::X87));
+        assert_eq!(long_double_for(Windows, X64, true), Some(WideFloat::X87));
+        assert_eq!(long_double_for(Windows, X64, false), None);
+        assert_eq!(
+            long_double_for(Linux, Arm64, true),
+            Some(WideFloat::Binary128)
+        );
+        assert_eq!(long_double_for(MacOS, Arm64, false), None);
+        assert_eq!(long_double_for(Windows, Arm64, false), None);
+        assert_eq!(long_double_for(Windows, Arm64, true), None);
+    }
+}
+
 impl Options {
     pub fn host() -> Self {
         let os = if cfg!(target_os = "windows") {
