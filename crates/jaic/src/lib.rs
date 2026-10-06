@@ -15,6 +15,7 @@ pub mod lexer;
 pub mod memory_limit;
 pub mod parser;
 pub mod records;
+pub mod render;
 pub mod sema;
 pub mod source;
 pub mod suggest;
