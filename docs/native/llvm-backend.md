@@ -76,7 +76,7 @@ Definitions with C signatures (`#c_call` callbacks that C calls with structs) do
 - `JAIC_SPLIT_UNITS=N` forces the post-optimizer unit count of an optimized build (for tests); `1` turns that split off.
 - `INSTS_PER_UNIT` and `MAX_UNITS` in `split.rs`.
 - `jaic_llvm::Options { opt_level, target, emit_ir, debug_info, sanitize }`, set from the CLI flags `-O0..-O3`, `--emit-ir file.ll`, `--no-debug-info`, `-sanitize` ([sanitizers](sanitizers.md)), `-os`, `-target triple`.
-- Building the crate needs `LLVM_SYS_231_PREFIX` pointing at LLVM 23 (for example `$(brew --prefix llvm@23)`); see [LLVM setup](../tools/llvm-setup.md).
+- Building the crate needs `LLVM_SYS_231_PREFIX` pointing at LLVM 23 (for example `/opt/homebrew/opt/llvm`); see [LLVM setup](../tools/llvm-setup.md).
 
 ## Dependencies
 
