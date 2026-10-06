@@ -1853,8 +1853,10 @@ STACKFRAME64 :: struct {
     Reserved: [3]u64;
     KdHelp: KDHELP64;
 }
+// The SDK aligns 128-bit register images (and so XSAVE_FORMAT and CONTEXT) to 16 bytes;
+// GetThreadContext rejects a CONTEXT that is not.
 M128A :: struct {
-    Low: u64;
+    Low: u64 #align 16;
     High: s64;
 }
 XSAVE_FORMAT :: struct {
@@ -1881,6 +1883,7 @@ XSAVE_FORMAT :: struct {
         Reserved4: [224]u8;
     }
 }
+// Thread contexts are per CPU; there is no default for another one.
 #if CPU == .X64 {
     CONTEXT_i386 :: 0x00010000;
     CONTEXT_AMD64 :: 0x00100000;
@@ -1988,6 +1991,8 @@ XSAVE_FORMAT :: struct {
         Wvr: [2] u64;
     }
     #assert(size_of(CONTEXT) == 912);
+} else {
+    #assert false "Windows CONTEXT is declared for X64 and ARM64 only";
 }
 IMAGEHLP_SYMBOL64 :: struct {
     SizeOfStruct : u32;
@@ -2275,6 +2280,13 @@ FILETIME :: struct {
     union { struct { dwLowDateTime: u32; dwHighDateTime: u32; } QuadPart: u64 #align 4 = ---; }
 }
 TIME_ZONE_INFORMATION :: struct {
+    Bias: s32;
+    StandardName: [32] u16;
+    StandardDate: SYSTEMTIME;
+    StandardBias: s32;
+    DaylightName: [32] u16;
+    DaylightDate: SYSTEMTIME;
+    DaylightBias: s32;
 }
 FileTimeToLocalFileTime :: (lpFileTime: *FILETIME, lpLocalFileTime: *FILETIME) -> BOOL #foreign kernel32;
 LocalFileTimeToFileTime :: (lpLocalFileTime: *FILETIME, lpFileTime: *FILETIME) -> BOOL #foreign kernel32;
