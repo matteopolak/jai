@@ -125,6 +125,7 @@ Type_Info_Struct_Member :: struct {
         USING :: 0x4;
         PROCEDURE_WITH_VOID_POINTER_TYPE_INFO :: 0x8;
         AS :: 0x10;
+        OVERLAY :: 0x20; // Declared after `#overlay(f)`, sharing that member's storage.
     }
     name: string;
     type: *Type_Info;
