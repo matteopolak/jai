@@ -1,8 +1,8 @@
 //! "Did you mean" help for unknown names. Working out the closest visible name costs a walk
 //! over every scope in reach, so it happens when an error is rendered for the user, not each
 //! time a lookup fails (failed lookups are routine while checking overloads and `#if`s).
-use super::Compiler;
 use super::scope::{ScopeId, UsingEntry};
+use super::{Compiler, Sym};
 use crate::source::{Diagnostic, Span};
 
 impl Compiler {
@@ -60,5 +60,102 @@ impl Compiler {
         names.sort_unstable();
         names.dedup();
         names
+    }
+
+    /// A failed `#assert`: its message, or the condition when it has none.
+    pub(super) fn static_assert_failed(
+        &self,
+        cond: &crate::ast::Expr,
+        span: Span,
+        message: String,
+    ) -> Diagnostic {
+        let text = self.sources.snippet_or_empty(cond.span).trim();
+        let shown = (!text.is_empty() && !text.contains('\n') && text.len() <= 80).then_some(text);
+        let mut d = match (message.is_empty(), shown) {
+            (false, _) => Diagnostic::error(span, format!("#assert failed: {message}")),
+            (true, Some("false")) => {
+                Diagnostic::error(span, "#assert failed: this `#assert(false)` was compiled")
+            }
+            (true, Some(text)) => {
+                Diagnostic::error(span, format!("#assert failed: `{text}` is false"))
+            }
+            (true, None) => Diagnostic::error(span, "#assert failed: its condition is false"),
+        };
+        if !message.is_empty()
+            && let Some(text) = shown
+        {
+            d = d.with_label(format!("`{text}` is false"));
+        }
+        if shown == Some("false") {
+            d = d.with_note(
+                Span::NONE,
+                "`#assert(false)` marks code that does not support this configuration (OS, CPU or build options); the code around it says which",
+            );
+        }
+        d
+    }
+
+    /// `type `T` has no member `x``, with the closest member name or the members there are.
+    pub(super) fn no_member(&self, ty: crate::types::TypeId, name: Sym, span: Span) -> Diagnostic {
+        use crate::types::TypeKind;
+        let shown = self.types.name(ty);
+        let (what, members): (&str, Vec<String>) = match self.types.kind(ty) {
+            TypeKind::Struct(id) => (
+                "type",
+                self.types
+                    .struct_info(*id)
+                    .fields
+                    .iter()
+                    .filter_map(|f| f.name.map(|n| n.to_string()))
+                    .collect(),
+            ),
+            TypeKind::Enum(id) => (
+                "enum",
+                self.types
+                    .enum_info(*id)
+                    .members
+                    .iter()
+                    .map(|(n, _)| n.to_string())
+                    .collect(),
+            ),
+            TypeKind::Pointer(inner) => {
+                if matches!(self.types.kind(*inner), TypeKind::Pointer(_)) {
+                    return Diagnostic::error(
+                        span,
+                        format!("type `{shown}` has no member `{name}`"),
+                    )
+                    .with_help(
+                        "this is a pointer to a pointer: dereference it once with `.*` first",
+                    );
+                }
+                ("type", Vec::new())
+            }
+            _ => ("type", Vec::new()),
+        };
+        let mut d = Diagnostic::error(span, format!("{what} `{shown}` has no member `{name}`"));
+        if let Some(near) =
+            crate::suggest::closest(name.as_str(), members.iter().map(String::as_str))
+        {
+            let near = near.to_string();
+            d = d.with_fix(
+                format!("a member with a similar name exists: `{near}`"),
+                span,
+                near,
+            );
+        } else if !members.is_empty() && members.len() <= 12 {
+            let list: Vec<String> = members.iter().map(|m| format!("`{m}`")).collect();
+            d = d.with_note(Span::NONE, format!("its members are {}", list.join(", ")));
+        } else if members.is_empty()
+            && matches!(
+                self.types.kind(ty),
+                TypeKind::Int { .. } | TypeKind::Float { .. } | TypeKind::Bool
+            )
+        {
+            d = d.with_note(
+                Span::NONE,
+                format!("`{shown}` is a plain value without members"),
+            );
+        }
+        d
     }
 }
