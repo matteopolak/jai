@@ -1,6 +1,6 @@
 name: release
 # Builds jaic, jailsp, jailint and jaifmt for macOS (Apple silicon), Linux (x86-64) and Windows (x86-64 and arm64),
-# optimized with PGO everywhere and BOLT on Linux (tools/build_pgo.py, docs/tools/pgo-and-bolt.md).
+# optimized with PGO (except Windows arm64) and BOLT on Linux (tools/build_pgo.py, docs/tools/pgo-and-bolt.md).
 # A `v*` tag push publishes a GitHub release with the archives and the tag's CHANGELOG.md section;
 # a manual run without a tag only builds and smoke-tests the archives (kept as workflow artifacts).
 on:
