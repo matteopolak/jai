@@ -82,18 +82,9 @@ pub(crate) fn emit(
             PathBuf::from(name)
         })
         .collect();
-    // Every unit, unit 0 included, is read back from the bitcode into its own context. Cutting
-    // the original module down in place for unit 0 instead sometimes crashed LLVM's DWARF
-    // writer (`DwarfDebug::finalizeModuleInfo`) on debug information left from the optimizer.
-    // The original's bodies go now, so its memory is free for the units.
-    for f in functions(m) {
-        if is_definition(f) {
-            strip_body(f);
-        }
-    }
     let reading = std::sync::Mutex::new(());
     std::thread::scope(|scope| {
-        let handles: Vec<_> = (0..units)
+        let handles: Vec<_> = (1..units)
             .map(|u| {
                 let (bitcode, owner, reading, path) = (&bitcode, &owner, &reading, &paths[u]);
                 scope.spawn(move || {
@@ -113,12 +104,16 @@ pub(crate) fn emit(
                 })
             })
             .collect();
+        // Unit 0 is the original module, cut down in place.
+        keep_unit(module, &owner, 0);
+        let first = write(module, machine, path);
         handles
             .into_iter()
             .map(|h| {
                 h.join()
                     .unwrap_or_else(|_| Err("codegen thread panicked".into()))
             })
+            .chain([first])
             .collect::<Result<Vec<()>, String>>()
     })?;
     Ok(paths)
@@ -256,24 +251,29 @@ fn strip_body(f: LLVMValueRef) {
             blocks.push(b);
             b = llvm::LLVMGetNextBasicBlock(b);
         }
-        // First cut every use between instructions, then delete them, then the blocks
-        // (which branches no longer refer to).
-        let mut insts = Vec::new();
+        // Cut every use of an instruction, and point every branch at its own block, so that
+        // nothing outside a block refers into it; then delete whole blocks. Erasing the
+        // instructions one by one instead moves their debug records onto the next
+        // instruction, and from the last one into the context's table of trailing records,
+        // keyed by the block's address. Deleting the block leaves that entry behind, and a
+        // block that codegen later allocates at the same address picked up another
+        // function's variables, which crashed the DWARF writer
+        // (`DwarfDebug::finalizeModuleInfo`) at random.
         for &b in &blocks {
             let mut i = llvm::LLVMGetFirstInstruction(b);
             while !i.is_null() {
-                insts.push(i);
+                let ty = llvm::LLVMTypeOf(i);
+                if llvm::LLVMGetTypeKind(ty) != inkwell::llvm_sys::LLVMTypeKind::LLVMVoidTypeKind {
+                    llvm::LLVMReplaceAllUsesWith(i, llvm::LLVMGetPoison(ty));
+                }
                 i = llvm::LLVMGetNextInstruction(i);
             }
-        }
-        for &i in &insts {
-            let ty = llvm::LLVMTypeOf(i);
-            if llvm::LLVMGetTypeKind(ty) != inkwell::llvm_sys::LLVMTypeKind::LLVMVoidTypeKind {
-                llvm::LLVMReplaceAllUsesWith(i, llvm::LLVMGetPoison(ty));
+            let term = llvm::LLVMGetBasicBlockTerminator(b);
+            if !term.is_null() {
+                for k in 0..llvm::LLVMGetNumSuccessors(term) {
+                    llvm::LLVMSetSuccessor(term, k, b);
+                }
             }
-        }
-        for &i in insts.iter().rev() {
-            llvm::LLVMInstructionEraseFromParent(i);
         }
         for b in blocks {
             llvm::LLVMDeleteBasicBlock(b);

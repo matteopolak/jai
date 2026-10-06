@@ -29,12 +29,12 @@ An optimized build keeps one module through the optimizer, so inlining still see
 
 1. `units_for`: one unit per 10,000 LLVM instructions (`INSTS_PER_UNIT`), capped at the core count and at 4 (`MAX_UNITS`). Below 2 units nothing changes.
 2. Internal and private definitions become hidden external symbols (unnamed ones are named `jaic.local.N`), and function definitions are assigned to units largest first.
-3. The module is written to bitcode once, and the original's function bodies are dropped to free their memory. Each unit's thread parses the bitcode into its own `Context` and turns other units' function bodies into declarations. Outside unit 0 it also makes the data declarations; unit 0 defines the data and keeps the appending globals such as `llvm.used`.
+3. The module is written to bitcode once. Each extra unit's thread parses it into its own `Context`, turns other units' function bodies into declarations, and makes the data declarations. Unit 0 is the original module cut down in place; it defines the data and keeps the appending globals such as `llvm.used`.
 4. Each thread writes its object with its own `TargetMachine`. The objects get the same names as the codegen units above.
 
-Unit 0 is parsed like the others rather than reusing the original module: cutting the original down in place sometimes crashed LLVM's DWARF writer (`DwarfDebug::finalizeModuleInfo`, about one build in six under a forced split), while modules read back from bitcode never did.
+`strip_body` deletes whole blocks after cutting every use into them; it must not erase instructions one at a time. In LLVM 22 an erased instruction's debug records move to the next instruction, and from a block's last instruction into a context-wide table of trailing records keyed by the block's address. Deleting the block leaves the entry behind. A block that codegen later allocates at the same address then picks up another function's variables, and `DwarfDebug::finalizeModuleInfo` crashes on a variable it never gave a DIE. That happened in about one build in four, depending on heap layout, and never in `llc` on the same bitcode.
 
-Parsing and cutting down are serialized under a mutex. Every unit briefly holds a whole copy of the module, so running them all at once raised peak memory by about one module per unit. With the mutex and the cap, an `-O2` build of Jails or jaison takes about a fifth less wall time for about 15% more peak RSS. More than 4 units gave no further speedup, because the optimizer, which stays serial, then dominates.
+Parsing and cutting down are serialized under a mutex. Every unit briefly holds a whole copy of the module, so running them all at once raised peak memory by about one module per unit. With the mutex and the cap, an `-O2` build of Jails or jaison takes about a fifth less wall time for about 12% more peak RSS. More than 4 units gave no further speedup, because the optimizer, which stays serial, then dominates.
 
 It applies when `emit_objects` would use one unit at `-O1` and up, without `--emit-ir`, a sanitizer or `JAIC_CODEGEN_UNITS`. `-o x.o` (`emit_object`) never splits.
 
