@@ -1069,7 +1069,8 @@ create_function :: (c: Cursor, parent: *Declaration) -> *Function {
         if !func.foreign_name return null;
     } else {
         mangled := normalize_mangled_name(clang_string("mangling", c));
-        if begins_with(mangled, "_Z") func.foreign_name = mangled;
+        // Itanium names start with _Z, Microsoft ones with ?; a C function has no mangling.
+        if begins_with(mangled, "_Z") || begins_with(mangled, "?") func.foreign_name = mangled;
     }
     if clang("storage_class", c) == xx Storage_Class.Static {
         func.storage_class = .Static;
