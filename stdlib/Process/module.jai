@@ -113,6 +113,9 @@ run_command :: (args: ..string, working_directory := "", capture_and_return_outp
     process: Process;
     if !create_process(*process, ..args, working_directory, capture_and_return_output, arg_quoting) return .{ type = .FAILED_TO_LAUNCH };
     defer deinit(*process);
+    // Nothing is ever written to a captured child here: close its input so a child that reads
+    // stdin sees the end instead of waiting for us forever.
+    deinit(*process.input);
     out: String_Builder;
     err: String_Builder;
     init_string_builder(*out);

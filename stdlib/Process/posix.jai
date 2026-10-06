@@ -72,7 +72,8 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
         close_pair(*child_error);
         status: s32;
         P.waitpid(pid, *status, 0);
-        log_error("could not start \"%\": %", args[0], System.get_error_string(xx failure));
+        if working_directory log_error("could not start \"%\" in \"%\": %", args[0], working_directory, System.get_error_string(xx failure));
+        else log_error("could not start \"%\": %", args[0], System.get_error_string(xx failure));
         return false;
     }
     process.pid = pid;
