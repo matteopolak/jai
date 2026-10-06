@@ -980,6 +980,12 @@ impl Compiler {
                     return Ok(convert::POINTER);
                 }
             }
+            // `split(s, ".")` into a `u8` parameter: a one-character string is that byte
+            // (`convert` makes the value). A `string` overload is still the closer match.
+            Operand::Const {
+                value: Value::String(s),
+                ..
+            } if s.len() == 1 && param == TypeId::U8 => return Ok(convert::WIDEN),
             Operand::Const {
                 value: Value::Int(v),
                 untyped: true,
