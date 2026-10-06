@@ -1,6 +1,6 @@
 // Jai_Format: a source formatter for Jai (indentation, spacing, brace placement, blank lines).
 // Pure text in, text out: no file access, so it runs the same natively, under `jaic run` and in
-// the browser playground. `tools/jaifmt` is the command-line front end. See docs/tools/jaifmt.md.
+// the browser playground. `jaifmt/` is the command-line front end. See docs/tools/jaifmt.md.
 //
 //     config, ok, error := parse_config(read_entire_file("jaifmt.toml"));
 //     formatted, ok, error := format_source(text, config);

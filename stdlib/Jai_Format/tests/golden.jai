@@ -14,7 +14,7 @@
 #import "Jai_Format";
 
 CASES :: "cases";
-SOURCES :: string.["../module.jai", "../lexer.jai", "../config.jai", "../format.jai", "golden.jai", "../../../tools/jaifmt/main.jai"];
+SOURCES :: string.["../module.jai", "../lexer.jai", "../config.jai", "../format.jai", "golden.jai", "../../../jaifmt/main.jai"];
 
 failures := 0;
 

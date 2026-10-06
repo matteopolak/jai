@@ -127,8 +127,8 @@ cargo test --workspace --locked --no-fail-fast
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 python3 tools/jaic-sweep.py corpus negative stdlib modules upstream howto --timeout 900   # everything should pass
-target/jaifmt --check prelude stdlib tests benchmarks tools examples   # build: jaic build tools/jaifmt/main.jai -O2 -o target/jaifmt
-cargo run -p jailint -- -D warnings -j 2 prelude stdlib examples tools tests benchmarks
+target/jaifmt --check prelude stdlib tests benchmarks tools jaifmt examples   # build: jaic build jaifmt/main.jai -O2 -o target/jaifmt
+cargo run -p jailint -- -D warnings -j 2 prelude stdlib examples tools jaifmt tests benchmarks
 ```
 
 The workspace is `crates/jaic` (lexer, parser, semantic analysis, IR, interpreter), `crates/jaic-cli` (the `jaic` binary), `crates/jaic-llvm` (native backend), `crates/jai-language-server`, `crates/jailint` (the linter) and `crates/jai-wasm` (browser build). Start with the [developer docs](docs/README.md) and the [compiler architecture](docs/compiler/architecture.md).
