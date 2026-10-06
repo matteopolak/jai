@@ -175,7 +175,7 @@ mod tests {
     #[test]
     fn notes_cover_the_procedure() {
         let text =
-            "f :: (a: int) @jailint_allow(unused_parameter) {\n    x := 1;\n}\ng :: () { }\n";
+            "f :: (a: int) {\n    x := 1;\n} @jailint_allow(unused_parameter)\ng :: () { }\n";
         let s = suppressions(text);
         assert!(s.allows("unused_parameter", text.find("a:").unwrap()));
         assert!(s.allows("unused_parameter", text.find("x :=").unwrap()));
