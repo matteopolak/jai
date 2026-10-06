@@ -232,12 +232,11 @@ input_per_frame_event_and_flag_update :: () {
         array_free(event.files);
     }
     events_this_frame.count = 0;
+    // Motion is per frame; of the button flags only "held" carries over.
+    mouse_delta_x, mouse_delta_y, mouse_delta_z = 0, 0, 0;
     for *state: input_button_states state.* &= .DOWN;
     for *state: unscoped_button_states state.* &= .DOWN;
     for *record: window_input_states for *state : record.buttons state.* &= .DOWN;
-    mouse_delta_x = 0;
-    mouse_delta_y = 0;
-    mouse_delta_z = 0;
 }
 
 update_window_events :: () {
