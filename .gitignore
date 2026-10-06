@@ -5,3 +5,5 @@
 **/__pycache__/
 *.jai-output
 /rustc-ice-*.txt
+/result
+/result-*
