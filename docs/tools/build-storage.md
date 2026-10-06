@@ -11,7 +11,7 @@ Where Cargo artifacts go, and how the Python/Node build tools find them. Build o
 Typical developer setup, with one target directory per checkout or agent so concurrent builds never share (and never leave stale) binaries:
 
 ```sh
-export RUSTC_WRAPPER= CARGO_TARGET_DIR=/Volumes/CodexBuilds/targets/jai-dev
+export RUSTC_WRAPPER= CARGO_TARGET_DIR=/path/to/targets/jai-dev
 rustup run nightly-2026-08-29 cargo build -q -p jaic-cli
 ```
 
@@ -19,7 +19,7 @@ The `dev` and `test` profiles set `debug = 0` and `incremental = false` in the r
 
 ## How to change it
 
-Change path resolution only in `tools/cargo_build_paths.py` and keep `tools/test_cargo_build_paths.py` passing. The machine-specific volume above is an invocation setting, not a repository default.
+Change path resolution only in `tools/cargo_build_paths.py` and keep `tools/test_cargo_build_paths.py` passing. Don't put a machine-specific target directory in repository config.
 
 ## Configuration
 
