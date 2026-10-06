@@ -31,7 +31,7 @@
         length: u64;
         while length < maximum && pointer[length] != 0 length += 1;
         if length == maximum return "";
-        return os_wide_to_utf8(pointer, xx length);
+        return os_wide_to_utf8(pointer, xx length, temporary = false);
     }
 
     os_clipboard_set_text :: (hwnd: W.HWND, text: string) {
