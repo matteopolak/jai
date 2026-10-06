@@ -250,6 +250,9 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
             if !duplicate array_add(*cores, siblings);
         }
         if cores.count == 0 return logical;
+        // The topology can list more cores than are usable (a sandbox that reports one
+        // processor reads the host's /sys); a core has at least one logical processor.
+        if logical > 0 && cores.count > logical return logical;
         return cores.count;
     }
 
