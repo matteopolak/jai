@@ -44,6 +44,7 @@ sched_param :: struct {
 clone :: (__fn: #type (__arg: *void) -> s32 #c_call, __child_stack: *void, __flags: s32, __arg: *void, __args: ..Any) -> s32 #foreign libpthread;
 unshare :: (__flags: s32) -> s32 #foreign libpthread;
 sched_getcpu :: () -> s32 #foreign libpthread;
+pthread_sigmask :: (__how: s32, __newmask: *sigset_t, __oldmask: *sigset_t) -> s32 #foreign libpthread;
 setns :: (__fd: s32, __nstype: s32) -> s32 #foreign libpthread;
 __cpu_mask :: u64;
 cpu_set_t :: struct {
