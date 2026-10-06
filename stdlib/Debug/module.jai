@@ -72,6 +72,11 @@ backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {
         if available < 0 available = 0;
         for index: 0..available - 1 trace[index] = frames[first + index];
         return available;
+    } else #if OS == .WINDOWS {
+        wanted := min(maxcount, trace.count);
+        if wanted <= 0 return 0;
+        first := cast(u32) max(skip, 0);
+        return Windows.RtlCaptureStackBackTrace(first, cast(u32) min(wanted, 0xffff), trace.data, null);
     } else {
         #assert false "Native stack capture is not implemented for this target";
     }
@@ -83,14 +88,20 @@ backtrace_symbols :: (trace: [] *void, n: int) -> [] string {
     result: [] string;
     result.count = n;
     result.data = cast(*string) alloc(n * size_of(string));
-    symbols := host_backtrace_symbols(trace.data, cast(s32) n);
-    if !symbols {
-        free(result.data);
-        return .{};
+    #if OS == .WINDOWS {
+        // Without debug information at hand, name each frame by its module and offset.
+        for index: 0..n - 1 result[index] = describe_address(trace[index]);
+        return result;
+    } else {
+        symbols := host_backtrace_symbols(trace.data, cast(s32) n);
+        if !symbols {
+            free(result.data);
+            return .{};
+        }
+        for index: 0..n - 1 result[index] = copy_string(to_string(symbols[index]));
+        host_free(symbols);
+        return result;
     }
-    for index: 0..n - 1 result[index] = copy_string(to_string(symbols[index]));
-    host_free(symbols);
-    return result;
 }
 
 translate_symbols :: (trace: [] *void, n: int) -> [] string {
@@ -187,6 +198,9 @@ enable_signal_handler :: (interactive := false) {
     #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
         for number, index: watched_signals prior_handlers[index] = host_signal(number, install_handler);
         signal_handler_enabled = true;
+    } else #if OS == .WINDOWS {
+        prior_exception_filter = Windows.SetUnhandledExceptionFilter(handle_exception);
+        signal_handler_enabled = true;
     } else {
         #assert false "Crash signal installation requires a host adapter";
     }
@@ -194,7 +208,11 @@ enable_signal_handler :: (interactive := false) {
 
 disable_signal_handler :: () {
     if !signal_handler_enabled return;
-    for number, index: watched_signals host_signal(number, prior_handlers[index]);
+    #if OS == .WINDOWS {
+        Windows.SetUnhandledExceptionFilter(prior_exception_filter);
+    } else {
+        for number, index: watched_signals host_signal(number, prior_handlers[index]);
+    }
     signal_handler_enabled = false;
 }
 
@@ -242,6 +260,17 @@ logger :: (message: string, data: *void, info: Log_Info) {
 is_valid_pointer :: (ptr: *void) -> bool {
     #if OS == .WINDOWS {
         return ptr && Windows.IsBadReadPtr(ptr, 1) == 0;
+    } else #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
+        // The kernel reads the byte for us: writing it into a pipe fails with EFAULT, rather
+        // than crashing, when the address cannot be read.
+        if !ptr return false;
+        ends: [2] s32;
+        if host_pipe(ends.data) != 0 return false;
+        defer {
+            host_close(ends[0]);
+            host_close(ends[1]);
+        }
+        return host_write(ends[1], ptr, 1) == 1;
     } else {
         #assert false "Pointer mapping validation requires a host memory-map adapter";
     }
@@ -269,12 +298,49 @@ host_free :: (pointer: *void) #foreign libc "free";
 host_open :: (path: *u8, flags: s32) -> s32 #foreign libc "open";
 host_read :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "read";
 host_close :: (descriptor: s32) -> s32 #foreign libc "close";
+host_pipe :: (ends: *s32) -> s32 #foreign libc "pipe";
+host_write :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "write";
 watched_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
 prior_handlers: [5] Signal_Handler;
 signal_handler_enabled := false;
 signal_handler_interactive := true;
 written_minidump_filename := "";
 minidump_state := Minidump_State.Mini;
+
+#if OS == .WINDOWS {
+    prior_exception_filter: Windows.LPTOP_LEVEL_EXCEPTION_FILTER;
+
+    handle_exception :: (info: *Windows.EXCEPTION_POINTERS) -> s32 #c_call {
+        write_string_unsynchronized("Fatal exception 0x", true);
+        code := info.ExceptionRecord.ExceptionCode;
+        write_address_unsynchronized(code);
+        write_string_unsynchronized("\n", true);
+        addresses: [64] *void;
+        count := Windows.RtlCaptureStackBackTrace(0, addresses.count, addresses.data, null);
+        for index: 0..cast(s64) count - 1 {
+            write_address_unsynchronized(cast(u64) addresses[index]);
+            write_string_unsynchronized("\n", true);
+        }
+        Windows.ExitProcess(code);
+        return Windows.EXCEPTION_EXECUTE_HANDLER;
+    }
+
+    // "module.exe+0x1a2b", or the bare address outside every module.
+    describe_address :: (address: *void) -> string {
+        module: Windows.HANDLE;
+        flags :: Windows.GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | Windows.GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
+        if !Windows.GetModuleHandleExW(flags, cast(*u16) address, *module) return sprint("0x%", formatInt(cast(u64) address, base = 16));
+        wide: [260] u16;
+        length := Windows.GetModuleFileNameW(module, wide.data, wide.count);
+        name: String_Builder;
+        start := 0;
+        for index: 0..length - 1 if wide[index] == #char "\\" || wide[index] == #char "/" start = index + 1;
+        // Module file names are ASCII in practice; anything else shows as '?'.
+        for index: start..length - 1 append(*name, ifx wide[index] < 0x80 then cast(u8) wide[index] else #char "?");
+        print_to_builder(*name, "+0x%", formatInt(cast(u64) address - cast(u64) module, base = 16));
+        return builder_to_string(*name);
+    }
+}
 
 install_handler :: (signal: s32) #c_call {
     handle_signal(signal, null, null);

@@ -1360,6 +1360,11 @@ GetModuleFileNameA :: (module: HANDLE, result: *u8, size: s32) -> s32 #foreign k
 GetModuleFileNameW :: (module: HANDLE, result: *u16, size: s32) -> s32 #foreign kernel32;
 GetModuleHandleA :: (module_name: *u8) -> HANDLE #foreign kernel32;
 GetModuleHandleW :: (module_name: *u16) -> HANDLE #foreign kernel32;
+GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT :: 0x2;
+GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS :: 0x4;
+GetModuleHandleExW :: (flags: u32, module_name: *u16, module: *HANDLE) -> BOOL #foreign kernel32;
+RtlCaptureStackBackTrace :: (frames_to_skip: u32, frames_to_capture: u32, trace: **void, hash: *u32) -> u16 #foreign kernel32;
+IsBadReadPtr :: (address: *void, bytes: u64) -> BOOL #foreign kernel32;
 GetProcAddress :: (module: HMODULE, proc_name: *u8) -> *void #foreign kernel32;
 LoadLibraryA :: (filename: *u8) -> HMODULE #foreign kernel32;
 LoadLibraryW :: (filename: *u16) -> HMODULE #foreign kernel32;
