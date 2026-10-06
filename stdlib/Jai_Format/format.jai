@@ -716,9 +716,10 @@ append_block_comment :: (f: *Formatter, i: int, delta: int) {
         }
     }
     for line, index: lines {
+        // Every line of the comment ends with the file's newline: drop a `\r` of its own.
+        line = trim_right(line);
         if index > 0 {
             put(f, f.newline);
-            line = trim_right(line);
             if line.count {
                 if delta > 0 {
                     for 1..delta put(f, " ");
