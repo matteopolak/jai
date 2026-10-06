@@ -4,7 +4,6 @@ Thread_Index :: s64;
 Thread_Proc :: #type *void;
 Native_Thread_Proc :: #type (*Thread) -> s64;
 POSIX_THREADS :: OS == .LINUX || OS == .MACOS || OS == .ANDROID || OS == .WASM;
-
 #if POSIX_THREADS {
     #load "native_posix.jai";
 } else #if OS == .WINDOWS {
@@ -12,14 +11,12 @@ POSIX_THREADS :: OS == .LINUX || OS == .MACOS || OS == .ANDROID || OS == .WASM;
 } else {
     #assert(false, "Thread requires an authored POSIX or Windows SDK provider");
 }
-
 Thread_Os_Specific :: struct {
     thread_handle: Native_Thread_Handle;
     is_alive_semaphore: Semaphore;
     suspended_semaphore: Semaphore;
     is_done := true;
 }
-
 Thread :: struct {
     index: Thread_Index;
     started: bool;
@@ -35,17 +32,14 @@ Thread :: struct {
     owns_temporary_storage: bool;
     initialized: bool;
 }
-
 // With DEBUG off (as in `jai`), a mutex or condition variable is exactly the OS object, so printing
 // one shows the same fields `jai` shows.
 Mutex :: struct {
     csection: Per_OS_Critical_Section_Type;
 }
-
 Condition_Variable :: struct {
     condition_variable: Per_OS_Condition_Variable_Type;
 }
-
 Semaphore :: struct {
     owner: u32;
     event: u32 = 0;
@@ -55,7 +49,6 @@ Semaphore :: struct {
     count: s64;
     initialized: bool;
 }
-
 Wait_For_Result :: enum {
     SUCCESS;
     TIMEOUT;
@@ -65,7 +58,6 @@ Wait_For_Result :: enum {
 thread_init :: (thread: *Thread, proc: Thread_Proc) -> bool {
     return thread_init(thread, cast(Native_Thread_Proc) proc);
 }
-
 thread_init :: (thread: *Thread, proc: Native_Thread_Proc,
     temporary_storage_size: s32 = 16384, starting_storage: *Temporary_Storage = null) -> bool {
     if thread == null || proc == null || temporary_storage_size < 0 return false;
@@ -90,7 +82,6 @@ thread_init :: (thread: *Thread, proc: Native_Thread_Proc,
     thread.initialized = true;
     return true;
 }
-
 thread_start :: (thread: *Thread) -> bool {
     if thread == null || !thread.initialized || thread.started return false;
     thread.started = true;
@@ -108,7 +99,6 @@ thread_start :: (thread: *Thread) -> bool {
     thread.is_done = true;
     return false;
 }
-
 thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
     if thread == null || !thread.initialized return true;
     if atomic_read(*thread.done) return true;
@@ -124,7 +114,6 @@ thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
     defer signal(*thread.is_alive_semaphore);
     return atomic_read(*thread.done);
 }
-
 thread_deinit :: (thread: *Thread) {
     if thread == null || !thread.initialized return;
     if thread.started {
@@ -142,7 +131,6 @@ thread_deinit :: (thread: *Thread) {
     thread.done = true;
     thread.is_done = true;
 }
-
 thread_destroy :: (thread: *Thread) {
     thread_deinit(thread);
 }
@@ -151,66 +139,52 @@ init :: (mutex: *Mutex, name: string = "", order: Mutex_Order = -1) {
     ok := initialize_mutex(*mutex.csection);
     assert(ok, "could not initialize mutex");
 }
-
 destroy :: (mutex: *Mutex) {
     destroy_mutex(*mutex.csection);
 }
-
 lock :: (mutex: *Mutex) {
     csection_lock(*mutex.csection);
 }
-
 unlock :: (mutex: *Mutex) {
     csection_unlock(*mutex.csection);
 }
-
 init :: (cv: *Condition_Variable, desired_name := "") {
     ok := initialize_condition(*cv.condition_variable);
     assert(ok, "could not initialize condition variable");
 }
-
 destroy :: (cv: *Condition_Variable) {
     destroy_condition(*cv.condition_variable);
 }
-
 wait :: (c: *Condition_Variable, m: *Mutex) {
     cvariable_wait(*c.condition_variable, *m.csection);
 }
-
 wake :: (c: *Condition_Variable) {
     cvariable_wake(*c.condition_variable);
 }
-
 wake_all :: (c: *Condition_Variable) {
     cvariable_wake_all(*c.condition_variable);
 }
-
 csection_lock :: (csection: *Per_OS_Critical_Section_Type) #expand {
     #if POSIX_THREADS assert(pthread_mutex_lock(csection) == 0);
     else EnterCriticalSection(csection);
 }
-
 csection_unlock :: (csection: *Per_OS_Critical_Section_Type) #expand {
     #if POSIX_THREADS assert(pthread_mutex_unlock(csection) == 0);
     else LeaveCriticalSection(csection);
 }
-
 cvariable_wait :: (condition_variable: *Per_OS_Condition_Variable_Type,
     csection: *Per_OS_Critical_Section_Type, wait_time_ms: s32 = -1) {
     result := wait_condition(condition_variable, csection, wait_time_ms);
     assert(result != .ERROR);
 }
-
 cvariable_wake :: (condition_variable: *Per_OS_Condition_Variable_Type) {
     #if POSIX_THREADS assert(pthread_cond_signal(condition_variable) == 0);
     else WakeConditionVariable(condition_variable);
 }
-
 cvariable_wake_all :: (condition_variable: *Per_OS_Condition_Variable_Type) {
     #if POSIX_THREADS assert(pthread_cond_broadcast(condition_variable) == 0);
     else WakeAllConditionVariable(condition_variable);
 }
-
 init :: (s: *Semaphore, initial_value: s32 = 0) -> bool {
     if s == null || s.initialized || initial_value < 0 return false;
     if !initialize_mutex(*s.mutex) return false;
@@ -222,14 +196,12 @@ init :: (s: *Semaphore, initial_value: s32 = 0) -> bool {
     s.initialized = true;
     return true;
 }
-
 destroy :: (s: *Semaphore) {
     if s == null || !s.initialized return;
     destroy_condition(*s.condition);
     destroy_mutex(*s.mutex);
     s.initialized = false;
 }
-
 signal :: (s: *Semaphore) {
     assert(s.initialized);
     csection_lock(*s.mutex);
@@ -237,7 +209,6 @@ signal :: (s: *Semaphore) {
     cvariable_wake(*s.condition);
     csection_unlock(*s.mutex);
 }
-
 wait_for :: (s: *Semaphore, milliseconds: s32 = -1) -> Wait_For_Result {
     if s == null || !s.initialized return .ERROR;
     csection_lock(*s.mutex);
@@ -262,10 +233,8 @@ wait_for :: (s: *Semaphore, milliseconds: s32 = -1) -> Wait_For_Result {
                 if elapsed >= cast(u64) milliseconds return .TIMEOUT;
                 remaining = cast(u32) (cast(u64) milliseconds - elapsed);
             }
-            if SleepConditionVariableCS(*s.condition, *s.mutex, remaining) == 0 {
-                if GetLastError() == 1460 return .TIMEOUT;
-                return .ERROR;
-            }
+            // The wait can time out a little early; the loop checks the clock again.
+            if SleepConditionVariableCS(*s.condition, *s.mutex, remaining) == 0 && GetLastError() != 1460 return .ERROR;
         }
     }
     s.count -= 1;
@@ -287,12 +256,10 @@ initialize_mutex :: (mutex: *Per_OS_Critical_Section_Type) -> bool {
         return true;
     }
 }
-
 destroy_mutex :: (mutex: *Per_OS_Critical_Section_Type) {
     #if POSIX_THREADS assert(pthread_mutex_destroy(mutex) == 0);
     else DeleteCriticalSection(mutex);
 }
-
 initialize_condition :: (condition: *Per_OS_Condition_Variable_Type) -> bool {
     #if POSIX_THREADS return pthread_cond_init(condition, null) == 0;
     else {
@@ -300,12 +267,10 @@ initialize_condition :: (condition: *Per_OS_Condition_Variable_Type) -> bool {
         return true;
     }
 }
-
 destroy_condition :: (condition: *Per_OS_Condition_Variable_Type) {
     #if POSIX_THREADS assert(pthread_cond_destroy(condition) == 0);
     else memset(condition, 0, size_of(Per_OS_Condition_Variable_Type));
 }
-
 wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Critical_Section_Type,
     milliseconds: s32) -> Wait_For_Result {
     #if POSIX_THREADS {
@@ -325,7 +290,6 @@ wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Cr
         return .ERROR;
     }
 }
-
 #if POSIX_THREADS {
     deadline_after :: (milliseconds: s32) -> timespec {
         now: timeval;
@@ -339,7 +303,6 @@ wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Cr
         }
         return result;
     }
-
     native_thread_entry :: (opaque: *void) -> *void #c_call {
         thread := cast(*Thread) opaque;
         push_context thread.starting_context {
@@ -355,8 +318,17 @@ wait_condition :: (condition: *Per_OS_Condition_Variable_Type, mutex: *Per_OS_Cr
     }
 } else {
     native_windows_library :: #system_library "kernel32";
-    native_tick_count :: () -> u64 #foreign native_windows_library "GetTickCount64";
-
+    native_performance_counter :: (count: *s64) -> s32 #foreign native_windows_library "QueryPerformanceCounter";
+    native_performance_frequency :: (frequency: *s64) -> s32 #foreign native_windows_library "QueryPerformanceFrequency";
+    // Milliseconds from the high-resolution clock: GetTickCount64 moves in 15.6 ms steps, which
+    // let a timed wait end that much early.
+    native_tick_count :: () -> u64 {
+        count, frequency: s64;
+        native_performance_counter(*count);
+        native_performance_frequency(*frequency);
+        if frequency <= 0 return 0;
+        return cast(u64) (count / frequency * 1000 + count % frequency * 1000 / frequency);
+    }
     native_windows_thread_entry :: (opaque: *void) -> u32 #c_call {
         thread := cast(*Thread) opaque;
         push_context thread.starting_context {
