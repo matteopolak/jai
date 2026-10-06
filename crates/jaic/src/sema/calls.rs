@@ -449,6 +449,10 @@ impl Compiler {
         let Some(error) = error else {
             return Diagnostic::error(span, format!("in call to `{name}`"));
         };
+        // A name that does not exist is the argument's own problem, not the call's.
+        if error.message.starts_with("unknown identifier") {
+            return error;
+        }
         let inside = error.span.file == span.file
             && error.span.start >= span.start
             && error.span.end <= span.end

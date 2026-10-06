@@ -74,19 +74,20 @@ impl Compiler {
         }
         let wanted = self.sources.snippet(span);
         let names = self.names_visible_from(scope);
-        let d = d.clone().with_label("not found in this scope");
-        if let Some(found) = crate::suggest::closest(wanted, names.iter().copied()) {
-            return Some(d.with_fix(format!("a similar name exists: `{found}`"), span, found));
-        }
+        let mut d = d.clone().with_label("not found in this scope");
+        // An exact declaration elsewhere is a better lead than a similar name in scope.
         if let Some(builder) = self.metaprogram_defining(wanted, span) {
             return Some(d.with_help(format!(
                 "`{wanted}` is added by `{builder}` (with `add_build_string`) when it builds this file: build through it, as in `jaic build {builder}`"
             )));
         }
+        if let Some(found) = crate::suggest::closest(wanted, names.iter().copied()) {
+            d = d.with_fix(format!("a similar name exists: `{found}`"), span, found);
+        }
         if let Some(module) = self.module_declaring(wanted) {
-            return Some(d.with_help(format!(
+            d = d.with_help(format!(
                 "`{wanted}` is declared in the `{module}` module: add `#import \"{module}\";` to this file"
-            )));
+            ));
         }
         Some(d)
     }
