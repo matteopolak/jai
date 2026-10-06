@@ -97,11 +97,10 @@ To try a local build in the hosted UI, run the portfolio's sync with `JAI_WEB_LO
   the pass set with `tools/playground_stdlib_expected.json` (`pass` list plus `excluded`: name to written reason). Any
   regression, any newly passing excluded test, or any test in neither list fails the check; the release gate
   `check_browser_release.mjs` runs it. After intentionally changing the set: `--update` rewrites `pass` (new failures get a `TODO explain` reason you
-  must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 180 of 200 pass. Excluded:
-  `bindings-generator-c`/`-cpp` (dlopen of libclang), `bindings-generator-cpp-classes` and `buildcpp-api` (start a compiler
-  process), `c-variadic-foreign-calls` (native C ABI test against libc, pipe, fcntl), `simp-compat-api` and
-  `getrect-right-handed-api`/`getrect-right-handed-surface` (FreeType and stb_image C libraries),
-  `getrect-text-display-compiles` (Window_Creation) and `getrect-rh-negative-control` (fails everywhere by design).
+  must replace). `PLAYGROUND_VERBOSE=1 ... name.jai` prints that test's output. Currently 188 of 209 pass. The 21 exclusions
+  need processes (`Process`, the bindings generators' compiler runs), `dlopen` (libclang), native C libraries (FreeType,
+  stb_image, libc callbacks and variadics), windows (`Window_Creation`) or `chmod`; `getrect-rh-negative-control` fails
+  everywhere by design. Each reason is written next to its name in the JSON file.
 - Debug browser-only behavior natively: `jaic run test.jai -os wasm` uses the same `SandboxHost`.
 
 ## Configuration
