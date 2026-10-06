@@ -807,18 +807,22 @@ __append_struct_type :: (builder: *String_Builder, info: *Type_Info_Struct) {
     else if info.textual_flags & .UNION append(builder, "(anonymous union)");
     else append(builder, "(anonymous struct)");
     if !info.polymorph_source_struct return;
-    append(builder, "(");
+    separator := "(";
     for *param: info.specified_parameters {
-        if it_index append(builder, ", ");
+        append(builder, separator);
+        separator = ", ";
         append(builder, param.name);
-        append(builder, "=");
-        if param.offset_into_constant_storage >= 0 {
-            value: Any = ---;
-            value.type = param.type;
-            value.value_pointer = info.constant_storage.data + param.offset_into_constant_storage;
-            print_item_to_builder(builder, value);
-        }
+        append(builder, #char "=");
+        // A negative offset means the argument has no stored value to show.
+        storage_offset := param.offset_into_constant_storage;
+        if storage_offset < 0 continue;
+        argument: Any = ---;
+        argument.type = param.type;
+        argument.value_pointer = info.constant_storage.data + storage_offset;
+        print_item_to_builder(builder, argument);
     }
+    // A polymorph with no specified parameters still prints "()".
+    if separator == "(" append(builder, "(");
     append(builder, ")");
 }
 print_type_to_builder :: (builder: *String_Builder, info: *Type_Info) {

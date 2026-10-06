@@ -167,15 +167,17 @@ enum_values_as_enum :: ($T: Type) -> [] T {
     for v, i: values result[i] = cast(T) v;
     return result;
 }
+// Enums with no values report 0, 0.
 enum_range_given_info :: (info: *Type_Info_Enum) -> (low: s64, high: s64) {
-    if info.values.count == 0 return 0, 0;
-    low = info.values[0];
-    high = low;
-    for v: info.values {
-        low = min(low, v);
-        high = max(high, v);
+    values := info.values;
+    if values.count == 0 return 0, 0;
+    smallest, largest := values[0], values[0];
+    for index: 1..values.count - 1 {
+        candidate := values[index];
+        if candidate < smallest smallest = candidate;
+        else if candidate > largest largest = candidate;
     }
-    return low, high;
+    return smallest, largest;
 }
 enum_range :: ($t: Type) -> (low: s64, high: s64) {
     return enum_range_given_info(cast(*Type_Info_Enum) type_info(t));

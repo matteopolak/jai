@@ -200,12 +200,9 @@ _vis_trace :: (trace: *Packed_Stack_Trace, strings: *MD_Strings.Table(string, s3
     bytes := size_of(MD_Wire.Single_Stack_Trace_Info) + trace.nodes.count * size_of(Stack_Trace_Node);
     success, message := MD_Channel.writer_reserve_message(*vis_channel, bytes);
     if !success return false;
-    info := cast(*MD_Wire.Single_Stack_Trace_Info) message.user_write_pointer;
-    info.* = .{};
-    info.tag = .ADD_STACK_TRACE;
-    info.hash = trace.hash;
-    info.address = trace;
-    info.num_nodes = cast(s32) trace.nodes.count;
+    // The fixed header goes first; the raw node array follows it in the same message.
+    header := cast(*MD_Wire.Single_Stack_Trace_Info) message.user_write_pointer;
+    header.* = .{ tag = .ADD_STACK_TRACE, num_nodes = cast(s32) trace.nodes.count, address = trace, hash = trace.hash };
     memcpy(message.user_write_pointer + size_of(MD_Wire.Single_Stack_Trace_Info), trace.nodes.data, trace.nodes.count * size_of(Stack_Trace_Node));
     if !MD_Channel.writer_commit_message(*vis_channel, message) {
         vis_fini();

@@ -121,9 +121,11 @@ array_unordered_remove_by_index :: (array_pointer: *[..] $T, index: s64) {
     array_pointer.count = last;
 }
 array_ordered_remove_by_value :: (array_pointer: *[] $T, item: T) -> bool {
-    found, index := array_find(array_pointer.*, item);
-    if found array_ordered_remove_by_index(array_pointer, index);
-    return found;
+    for array_pointer.* if it == item {
+        array_ordered_remove_by_index(array_pointer, it_index);
+        return true;
+    }
+    return false;
 }
 array_ordered_remove_by_index :: (array_pointer: *[] $T, index: s64) {
     assert(index >= 0 && index < array_pointer.count);
