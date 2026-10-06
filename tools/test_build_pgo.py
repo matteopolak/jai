@@ -30,6 +30,13 @@ class BuildEnvTests(unittest.TestCase):
         self.assertEqual(env["CFLAGS_aarch64_apple_darwin"], "-O2 -fno-profile-generate -fno-profile-use")
 
 
+    def test_value_profiling_is_off_only_on_arm64_windows(self):
+        self.assertEqual(build_pgo.instrument_flags("aarch64-pc-windows-msvc", "r"),
+                         ["-Cprofile-generate=r", "-Cllvm-args=-disable-vp=true"])
+        for target in ("x86_64-pc-windows-msvc", "aarch64-apple-darwin", "x86_64-unknown-linux-gnu"):
+            self.assertEqual(build_pgo.instrument_flags(target, "r"), ["-Cprofile-generate=r"])
+
+
 class LspSessionTests(unittest.TestCase):
     def test_session_is_framed_and_ends_with_exit(self):
         done = mock.Mock(returncode=0, stdout=b"")
