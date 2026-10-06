@@ -97,6 +97,7 @@ Each was fixed with a regression test, and the limit it introduced is listed und
 - **Parser hang:** `#assert(` tried the `(cond, message)` form, rewound and parsed again, so each nested `#assert(` doubled the work. The form is now chosen up front, by looking for a top-level comma.
 - **LSP:** the native server ran on the 8 MiB main thread. Completion after a multibyte character split a UTF-8 boundary.
 - **Oversized types:** array and struct sizes overflowed `u64` in layout, and the interpreter then aborted on the allocation. Types over `MAX_SIZE` are now an error. Allocations the host cannot make return null (`malloc`) or trap (globals).
+- **Compile-time images:** every struct's default value was built in memory at the struct's full size, so a legal struct of 2^48 bytes with all-zero defaults aborted the compiler. The LSP target found this. Default images are now built only when a field has a nonzero default. Constants, initializers and default images over `MAX_IMAGE` are a diagnostic.
 - **Constant folding:** `i64::MIN / -1`, `% -1`, negation and negative shift amounts overflowed or panicked.
 - **Unbounded compile-time recursion:** polymorphic recursion (each instance creating a new one), a string that `#insert`s itself, and `using` pointer cycles in member lookup. These are now capped by `MAX_INSTANCES`, `MAX_INSERT_DEPTH` and a visited set.
 - **Compile-time values:** a `#run` result holding a pointer cycle was copied into the program recursively until the stack overflowed. An integer cast to `Code` indexed past the code table. `#align` accepted values that broke layout arithmetic.
@@ -117,6 +118,7 @@ Each was fixed with a regression test, and the limit it introduced is listed und
 | Largest type | `jaic::types::MAX_SIZE` | 2^48 bytes |
 | Polymorphic instances per procedure/struct | `MAX_INSTANCES` in `sema/mod.rs` | 2000 |
 | Nested `#insert` of strings | `MAX_INSERT_DEPTH` in `sema/consteval.rs` | 256 |
+| Largest compile-time value (constant, initializer, default image) | `jaic::sema::value::MAX_IMAGE` | 4 GiB |
 | `#align` range | `eval_align` in `sema/structs.rs` | 0..=2^30 |
 | `-max_len`, `-timeout`, `-rss_limit_mb` | `fuzz/run.sh` | see above |
 | Print diagnostics / generated source | `JAI_FUZZ_VERBOSE` env var | off |

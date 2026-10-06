@@ -1524,23 +1524,20 @@ impl Compiler {
                 let size = self.types.struct_info(s).size;
                 let fields = self.types.struct_info(s).fields.clone();
                 let inits = self.struct_asts[&s].inits.clone();
-                let mut agg = Aggregate {
-                    bytes: vec![0; size as usize],
-                    relocs: Vec::new(),
-                };
-                let mut nonzero = false;
+                // Built on the first nonzero default: a struct whose defaults are all zero
+                // (however large) never gets an image.
+                let mut image: Option<Aggregate> = None;
                 for (field, (init, scope)) in fields.iter().zip(inits) {
                     match init {
                         Some(e) if matches!(e.kind, E::Uninit) => {}
                         Some(e) => {
                             let value = self.const_value_of_type(scope, &e, field.ty)?;
-                            self.write_value(&mut agg, field.offset, &value, field.ty, e.span)?;
-                            nonzero = true;
+                            let agg = image_of(&mut image, size, span)?;
+                            self.write_value(agg, field.offset, &value, field.ty, e.span)?;
                         }
                         None => {
                             if let Some(inner) = self.default_initializer(field.ty, span)? {
-                                write_agg(&mut agg, field.offset, &inner);
-                                nonzero = true;
+                                write_agg(image_of(&mut image, size, span)?, field.offset, &inner);
                             }
                         }
                     }
@@ -1565,11 +1562,11 @@ impl Compiler {
                     };
                     if let Some((offset, fty)) = self.override_target(s, l, span)? {
                         let value = self.const_value_of_type(scope, r, fty)?;
-                        self.write_value(&mut agg, offset, &value, fty, r.span)?;
-                        nonzero = true;
+                        let agg = image_of(&mut image, size, span)?;
+                        self.write_value(agg, offset, &value, fty, r.span)?;
                     }
                 }
-                nonzero.then(|| Rc::new(agg))
+                image.map(Rc::new)
             }
             TypeKind::Array {
                 elem,
@@ -1577,10 +1574,7 @@ impl Compiler {
             } => match self.default_initializer(elem, span)? {
                 Some(inner) => {
                     let size = self.size_of(elem, span)?;
-                    let mut agg = Aggregate {
-                        bytes: vec![0; (size * n) as usize],
-                        relocs: Vec::new(),
-                    };
+                    let mut agg = Aggregate::zeroed(size.saturating_mul(n), span)?;
                     for i in 0..n {
                         write_agg(&mut agg, i * size, &inner);
                     }
@@ -1820,10 +1814,7 @@ impl Compiler {
         if all_const && targeted.is_empty() {
             let mut agg = match self.default_initializer(ty, span)? {
                 Some(img) => (*img).clone(),
-                None => Aggregate {
-                    bytes: vec![0; size as usize],
-                    relocs: Vec::new(),
-                },
+                None => Aggregate::zeroed(size, span)?,
             };
             for (path, mty, op, vspan) in &values {
                 let offset: u64 = path
@@ -1964,10 +1955,7 @@ impl Compiler {
             .iter()
             .all(|(op, _)| op.is_const() || matches!(op, Operand::Procs(p) if p.len() == 1))
         {
-            let mut agg = Aggregate {
-                bytes: vec![0; (esize * n) as usize],
-                relocs: Vec::new(),
-            };
+            let mut agg = Aggregate::zeroed(esize.saturating_mul(n), span)?;
             for (i, (op, vspan)) in ops.iter().enumerate() {
                 let value = match op {
                     Operand::Procs(p) => Value::Proc(p[0]),
@@ -2071,6 +2059,14 @@ impl Compiler {
         }
         Ok(())
     }
+}
+
+/// The image being built in `slot`, allocated (zeroed, `size` bytes) on first use.
+fn image_of(slot: &mut Option<Aggregate>, size: u64, span: Span) -> Result<&mut Aggregate> {
+    if slot.is_none() {
+        *slot = Some(Aggregate::zeroed(size, span)?);
+    }
+    Ok(slot.as_mut().unwrap())
 }
 
 /// Copy a nested aggregate image into `agg` at `offset`.

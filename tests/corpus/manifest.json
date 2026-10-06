@@ -1293,6 +1293,19 @@
       "negative": {
         "check": "is not a valid Code value"
       }
+    },
+    {
+      "id": "huge-default-value",
+      "source": "negative/huge-default-value.jai",
+      "sha256": "4c208feb99b794ac8f7eb9dae3a604c31796eadf10f08c92b721e1187bd88bab",
+      "suite": "negative",
+      "feature": "struct default values",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "is too large"
+      }
     }
   ]
 }
