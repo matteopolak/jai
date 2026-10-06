@@ -108,9 +108,10 @@ thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
         if thread.started && pthread_tryjoin_np(thread.thread_handle, null) == 0 return true;
     }
     if milliseconds == 0 return false;
-    result := wait_for(*thread.is_alive_semaphore, milliseconds);
-    if result != .SUCCESS return false;
-    signal(*thread.is_alive_semaphore);
+    // The liveness semaphore is signaled once the thread finishes. Hand the count straight back
+    // after taking it so later waiters (and thread_deinit) still find it signaled.
+    if wait_for(*thread.is_alive_semaphore, milliseconds) != .SUCCESS return false;
+    defer signal(*thread.is_alive_semaphore);
     return atomic_read(*thread.done);
 }
 thread_deinit :: (thread: *Thread) {

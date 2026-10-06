@@ -137,13 +137,10 @@ add_work :: (group: *Thread_Group, work: *void, logging_name := "") -> bool {
     if group == null || !group.initted || group.shutdown_requested return false;
     entry := cast(*Work_Entry) alloc(size_of(Work_Entry), group.allocator);
     if entry == null return false;
-    entry.* = .{};
-    entry.work = work;
-    entry.logging_name = logging_name;
-    entry.issue_time = get_time(group);
+    // Work is dealt to the workers round-robin.
     index := group.next_worker_index;
     group.next_worker_index = (index + 1) % cast(s32) group.worker_info.count;
-    entry.work_list_index = index;
+    entry.* = .{ work = work, logging_name = logging_name, work_list_index = index, issue_time = get_time(group) };
     append_work(*group.worker_info[index].available, entry);
     if group.enable_work_stealing {
         for *worker: group.worker_info {
@@ -203,15 +200,11 @@ shutdown :: (using group: *Thread_Group, timeout_milliseconds: s32 = -1) -> bool
 
 #scope_file
 init_work_list :: (list: *Work_List) -> bool {
+    list.first, list.last, list.count = null, null, 0;
     init(*list.mutex);
-    if !init(*list.semaphore) {
-        destroy(*list.mutex);
-        return false;
-    }
-    list.first = null;
-    list.last = null;
-    list.count = 0;
-    return true;
+    if init(*list.semaphore) return true;
+    destroy(*list.mutex);
+    return false;
 }
 deinit_work_list :: (list: *Work_List, allocator: Allocator) {
     entry := list.first;
@@ -222,9 +215,7 @@ deinit_work_list :: (list: *Work_List, allocator: Allocator) {
     }
     destroy(*list.semaphore);
     destroy(*list.mutex);
-    list.first = null;
-    list.last = null;
-    list.count = 0;
+    list.* = .{};
 }
 append_work :: (list: *Work_List, entry: *Work_Entry) {
     entry.next = null;
