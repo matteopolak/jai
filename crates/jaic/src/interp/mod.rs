@@ -808,24 +808,23 @@ impl Interp {
         symbol: Option<&str>,
         release: bool,
     ) -> Res<Vec<u64>> {
-        // `#c_call` procedures handed to C become native thunks that call back in here.
-        // Most already are (`proc_value`); this catches values made before their body was.
+        // A `#c_call` procedure handed to C is a native thunk already (`proc_value`), unless C
+        // cannot call it: that stayed tagged, and asking for its thunk again says why.
         let mut argv = args.to_vec();
         for v in &mut argv {
             if *v & TAG_MASK != FUNC_TAG {
                 continue;
             }
             let id = FuncId((*v & !TAG_MASK) as u32);
-            let Some(func) = program.funcs.get(id.0 as usize).and_then(Option::as_ref) else {
+            let Some(sig) = program.func_sig(id).filter(|s| s.conv == ir::Conv::C) else {
                 continue;
             };
-            if func.sig.conv == ir::Conv::C {
-                *v = self.thunk(program, id, &func.sig).map_err(|m| Trap {
-                    message: m,
-                    loc: self.loc,
-                    ..Trap::default()
-                })?;
-            }
+            let sig = sig.clone();
+            *v = self.thunk(program, id, &sig).map_err(|m| Trap {
+                message: m,
+                loc: self.loc,
+                ..Trap::default()
+            })?;
         }
         let mine = self.take_exec_state();
         let loc = mine.loc;
@@ -888,16 +887,16 @@ impl Interp {
             return v;
         }
         let tagged = FUNC_TAG | id.0 as u64;
-        let Some(func) = program.funcs.get(i).and_then(Option::as_ref) else {
-            // Not lowered yet: decide when it is.
-            return tagged;
-        };
-        let value = if func.sig.conv == ir::Conv::C && self.host.native_linking() {
-            // A procedure C cannot call (variadic, `long double`, out of thunks) stays tagged;
-            // passing it to C directly reports why.
-            self.thunk(program, id, &func.sig).unwrap_or(tagged)
-        } else {
-            tagged
+        // The signature is known from the moment the procedure is reserved, so the value is
+        // the same whether it is taken before or after the body is lowered.
+        let value = match program.func_sig(id) {
+            Some(sig) if sig.conv == ir::Conv::C && self.host.native_linking() => {
+                // A procedure C cannot call (variadic, `long double`, out of thunks) stays
+                // tagged; passing it to C directly reports why.
+                let sig = sig.clone();
+                self.thunk(program, id, &sig).unwrap_or(tagged)
+            }
+            _ => tagged,
         };
         if self.proc_values.len() <= i {
             self.proc_values.resize(i + 1, 0);
