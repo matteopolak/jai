@@ -23,6 +23,23 @@ Before the first target machine exists, `configure_llvm` sets process-wide LLVM 
 - Each module defines its own functions and declares the rest (`lower::Shard`). Internal functions and globals become hidden external symbols (still named `name.index`), so the objects link together but a shared library exports nothing extra.
 - Objects are `path`, `path.1.o`, `path.2.o`, .... The CLI links or archives them all, then deletes them. `-o x.o` stays a single module.
 
+#### Splitting after the optimizer (`split.rs`)
+
+An optimized build keeps one module through the optimizer, so inlining still sees the whole program. Machine code generation (instruction selection, register allocation) is about half of an `-O2` build and works one function at a time, so `split::emit` runs it in parallel once the passes are done:
+
+1. `units_for`: one unit per 10,000 LLVM instructions (`INSTS_PER_UNIT`), capped at the core count and at 4 (`MAX_UNITS`). Below 2 units nothing changes.
+2. Internal and private definitions become hidden external symbols (unnamed ones are named `jaic.local.N`), and function definitions are assigned to units largest first.
+3. The module is written to bitcode once, and the original's function bodies are dropped to free their memory. Each unit's thread parses the bitcode into its own `Context` and turns other units' function bodies into declarations. Outside unit 0 it also makes the data declarations; unit 0 defines the data and keeps the appending globals such as `llvm.used`.
+4. Each thread writes its object with its own `TargetMachine`. The objects get the same names as the codegen units above.
+
+Unit 0 is parsed like the others rather than reusing the original module: cutting the original down in place sometimes crashed LLVM's DWARF writer (`DwarfDebug::finalizeModuleInfo`, about one build in six under a forced split), while modules read back from bitcode never did.
+
+Parsing and cutting down are serialized under a mutex. Every unit briefly holds a whole copy of the module, so running them all at once raised peak memory by about one module per unit. With the mutex and the cap, an `-O2` build of Jails or jaison takes about a fifth less wall time for about 15% more peak RSS. More than 4 units gave no further speedup, because the optimizer, which stays serial, then dominates.
+
+It applies when `emit_objects` would use one unit at `-O1` and up, without `--emit-ir`, a sanitizer or `JAIC_CODEGEN_UNITS`. `-o x.o` (`emit_object`) never splits.
+
+`Target::initialize_all` runs once per process behind a `Once`; calling it again from several threads at once crashed LLVM's target registry.
+
 ### Lowering rules (`lower.rs`)
 
 - Every defined function has `"frame-pointer"="non-leaf"`, as clang has on Apple and AArch64 targets. Each function that calls another keeps a frame record, so frame-pointer stack walks see jaic frames. Those walks are macOS libc `backtrace`, which Debug's `backtrace` uses, and sampling profilers. Before this, `Debug.backtrace()` found no frames in a native build (`backtrace_sees_compiled_callers`).
@@ -50,11 +67,14 @@ Definitions with C signatures (`#c_call` callbacks that C calls with structs) do
 - Debug info is in `debuginfo.rs`; `lower.rs` only calls its hooks (`begin_function`, `declare_vars`, `enter_block`/`leave_block`, `loc`, `finish_entry`, `Backend::set`, `describe_globals`).
 - Anything module-level (a global, a constructor list) must be emitted once, in unit 0, and declared in the others. Use `Backend::internal_linkage` for new internal symbols so other units can reference them.
 - Small test programs use one unit; check splitting with `JAIC_CODEGEN_UNITS=4 cargo test -p jaic-cli --test native`.
+- Small optimized programs stay under `INSTS_PER_UNIT`; force the post-optimizer split with `JAIC_SPLIT_UNITS=4 cargo test -p jaic-cli --test native`. A declaration made from a definition must lose its body, personality and `!dbg` attachment (`strip_body`), or the verifier rejects the module.
 - Windows (`Arch::Win64`): `#program_export` definitions are `dllexport` and `CompilerWrite` calls `_write`. See [Windows](windows.md).
 
 ## Configuration
 
-- `JAIC_CODEGEN_UNITS=N` forces the unit count; `1` turns splitting off.
+- `JAIC_CODEGEN_UNITS=N` forces the unit count; `1` turns splitting off. (before and after the optimizer).
+- `JAIC_SPLIT_UNITS=N` forces the post-optimizer unit count of an optimized build (for tests); `1` turns that split off.
+- `INSTS_PER_UNIT` and `MAX_UNITS` in `split.rs`.
 - `jaic_llvm::Options { opt_level, target, emit_ir, debug_info, sanitize }`, set from the CLI flags `-O0..-O3`, `--emit-ir file.ll`, `--no-debug-info`, `-sanitize` ([sanitizers](sanitizers.md)), `-os`, `-target triple`.
 - Building the crate needs `LLVM_SYS_221_PREFIX` pointing at LLVM 22 (for example `/opt/homebrew/opt/llvm`); see [LLVM setup](../tools/llvm-setup.md).
 
