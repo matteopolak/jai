@@ -109,6 +109,7 @@ check_refusals :: () {
         "s := \"unterminated;\n",
         "t := #string END\nno terminator\n",
         "/* unterminated comment\n",
+        "f :: () {} @Note(open\n\n", // a note's open `(` runs to the end of the file
         "x := 1 \x01 2;\n", // a byte the lexer does not know
     ];
     for bad {

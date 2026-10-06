@@ -223,6 +223,9 @@ lex :: (src: string) -> Lex_Result {
                     }
                     at += 1;
                 }
+                // An open `(` swallows the rest of the file, trailing whitespace included, which
+                // the formatter must trim: refuse it like an unbalanced bracket.
+                if depth > 0 fail("unterminated note", tok.start);
             }
             tok.kind = .NOTE;
             tok.end = at;
