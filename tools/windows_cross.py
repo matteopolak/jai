@@ -26,6 +26,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 # Self-checking programs (each prints "ok") exercised on Windows besides the corpus.
 WINDOWS_PROGRAMS = [
     "tests/native/windows/runtime.jai",
+    "tests/native/windows/variadic.jai",
     "tests/stdlib/struct-literal-overrides-default-string.jai",
     "tests/stdlib/array-literal-view-lifetime.jai",
     "tests/stdlib/c-variadic-foreign-calls.jai",

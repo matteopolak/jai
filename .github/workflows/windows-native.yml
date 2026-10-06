@@ -215,7 +215,7 @@ jobs:
       - name: Interpreter foreign calls (variadic and runtime programs)
         if: success() || failure()
         run: |
-          for program in tests/stdlib/c-variadic-foreign-calls.jai tests/native/windows/runtime.jai; do
+          for program in tests/native/windows/variadic.jai tests/native/windows/runtime.jai; do
             out="$(target/aarch64-pc-windows-msvc/debug/jaic.exe run "$program" | tr -d '\r')"
             echo "$program: $out"
             test "$out" = ok
