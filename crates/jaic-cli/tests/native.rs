@@ -612,15 +612,20 @@ fn c_thread_callbacks_block_on_jai_threads() {
         String::from_utf8_lossy(&output.stdout).replace('\r', ""),
         expected
     );
-    for args in [
-        &["run", "deadlock.jai"][..],
-        &["run", "deadlock.jai", "--", "callback"],
+    // Only a thunk C may hold delays the report by the scheduler's grace second (1 s): the
+    // thunk `Thread` starts its threads through is run by the scheduler, not C.
+    let grace = std::time::Duration::from_secs(1);
+    for (args, delayed) in [
+        (&["run", "deadlock.jai"][..], false),
+        (&["run", "deadlock.jai", "--", "callback"], true),
     ] {
+        let started = std::time::Instant::now();
         let output = Command::new(JAIC)
             .args(args)
             .current_dir(&dir)
             .output()
             .unwrap();
+        let took = started.elapsed();
         let stderr = String::from_utf8_lossy(&output.stderr);
         assert!(!output.status.success(), "{args:?} did not fail");
         assert!(
@@ -628,6 +633,7 @@ fn c_thread_callbacks_block_on_jai_threads() {
             "{args:?}: {stderr}"
         );
         assert!(output.stdout.is_empty(), "{args:?}");
+        assert_eq!(took >= grace, delayed, "{args:?} took {took:?}");
     }
 }
 
