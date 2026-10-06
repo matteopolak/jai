@@ -135,6 +135,10 @@ pub struct Trap {
     pub omitted_frames: usize,
     /// A failed `assert`: the location it was given (path, line, column).
     pub assertion: Option<(String, u32, u32)>,
+    /// An error a metaprogram reported itself (`compiler_report`, a failed workspace): the
+    /// message is the program's own, shown without the compile-time-execution prefix, at the
+    /// location it named (path, line, column; an empty path names none).
+    pub reported: Option<(String, u32, u32)>,
 }
 
 /// The message for a load or store at an address in the never-mapped first page.

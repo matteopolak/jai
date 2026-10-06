@@ -1019,10 +1019,12 @@ pub fn call(
             } else {
                 "warning"
             };
-            let rendered = format!("{location}{severity}: {}", message.trim_end());
             if is_error {
-                return Err(trap(rendered));
+                let mut t = trap(message.trim_end().to_string());
+                t.reported = Some((file, line as u32, column as u32));
+                return Err(t);
             }
+            let rendered = format!("{location}{severity}: {}", message.trim_end());
             (shared.borrow_mut().env.report)(&rendered);
             Ok(Vec::new())
         }

@@ -240,7 +240,7 @@ compiler_set_workspace_status :: (status: Workspace_Status, w: Workspace = -1) {
     if status != .FAILED return;
     id := resolve_workspace(w);
     if id == last_complete_workspace && last_complete_error != 0 return;
-    __jaic_report("The workspace was marked as failed by its metaprogram.", "", 0, 0, true);
+    __jaic_report("the metaprogram marked the workspace as failed", "", 0, 0, true);
 }
 
 // ---------------------------------------------------------------------------
