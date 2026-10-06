@@ -7,22 +7,22 @@ get_rect :: (x: float, y: float, w: float, h: float) -> Rect {
     return .{ x, y, w, h };
 }
 expand :: (rect: Rect, amount: float) -> Rect {
-    return .{ rect.x - amount, rect.y - amount, rect.w + 2 * amount, rect.h + 2 * amount };
+    return outset(rect, amount, amount);
 }
 expand_x :: (rect: Rect, amount: float) -> Rect {
-    return .{ rect.x - amount, rect.y, rect.w + 2 * amount, rect.h };
+    return outset(rect, amount, 0);
 }
 expand_y :: (rect: Rect, amount: float) -> Rect {
-    return .{ rect.x, rect.y - amount, rect.w, rect.h + 2 * amount };
+    return outset(rect, 0, amount);
 }
 shrink :: (rect: Rect, amount: float) -> Rect {
-    return expand(rect, -amount);
+    return outset(rect, -amount, -amount);
 }
 shrink_x :: (rect: Rect, amount: float) -> Rect {
-    return expand_x(rect, -amount);
+    return outset(rect, -amount, 0);
 }
 shrink_y :: (rect: Rect, amount: float) -> Rect {
-    return expand_y(rect, -amount);
+    return outset(rect, 0, -amount);
 }
 cut_left :: (rect: Rect, amount: float, margin := 0.0) -> (left: Rect, remainder: Rect) {
     return .{ rect.x, rect.y, amount, rect.h }, .{ rect.x + amount + margin, rect.y, rect.w - amount - margin, rect.h };
@@ -77,6 +77,16 @@ get_hash :: (loc: Source_Code_Location, identifier: s64) -> u64 {
     return rh_location_hash(loc, identifier);
 }
 #scope_module
+// All six grow/shrink variants are one operation: move each edge outward by `dx`
+// horizontally and `dy` vertically (negative values move the edges inward).
+outset :: (rect: Rect, dx: float, dy: float) -> Rect {
+    result := rect;
+    result.x -= dx;
+    result.y -= dy;
+    result.w += dx + dx;
+    result.h += dy + dy;
+    return result;
+}
 rh_location_hash :: (loc: Source_Code_Location, identifier: s64) -> u64 #no_aoc {
     hash: u64 = 14695981039346656037;
     for byte: loc.fully_pathed_filename hash = (hash ^ byte) * 1099511628211;

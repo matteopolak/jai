@@ -41,3 +41,21 @@ right_orientation_cases :: () -> bool {
     return true;
 }
 #assert #run right_orientation_cases();
+// Growing and shrinking move opposite edges by the same amount, on one axis or both.
+grow_shrink_cases :: () -> bool {
+    r := get_rect(10, 20, 100, 80);
+    e := expand(r, 4);
+    if e.x != 6 || e.y != 16 || e.w != 108 || e.h != 88 return false;
+    ex := expand_x(r, 4);
+    if ex.x != 6 || ex.y != 20 || ex.w != 108 || ex.h != 80 return false;
+    ey := expand_y(r, 4);
+    if ey.x != 10 || ey.y != 16 || ey.w != 100 || ey.h != 88 return false;
+    s := shrink(r, 5);
+    if s.x != 15 || s.y != 25 || s.w != 90 || s.h != 70 return false;
+    sx := shrink_x(r, 5);
+    if sx.x != 15 || sx.y != 20 || sx.w != 90 || sx.h != 80 return false;
+    sy := shrink_y(r, 5);
+    if sy.x != 10 || sy.y != 25 || sy.w != 100 || sy.h != 70 return false;
+    return true;
+}
+#assert #run grow_shrink_cases();

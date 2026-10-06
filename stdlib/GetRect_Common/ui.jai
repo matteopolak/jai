@@ -105,25 +105,21 @@ ui_init :: (default_font := "", procs: *Draw_Procs = null) {
 set_default_theme :: (theme: Overall_Theme) {
     default_overall_theme = theme;
 }
+// A size set here stays fixed; sizes never set follow the render target (see switch_window).
 set_global_rounding_radius_in_pixels :: (value: float) {
-    global_rounding_radius_in_pixels = value;
-    global_rounding_radius_in_pixels_is_set = true;
+    pin_size(*global_rounding_radius_in_pixels, .ROUNDING_RADIUS, value);
 }
 set_global_frame_thickness_in_pixels :: (value: float) {
-    global_frame_thickness_in_pixels = value;
-    global_frame_thickness_in_pixels_is_set = true;
+    pin_size(*global_frame_thickness_in_pixels, .FRAME_THICKNESS, value);
 }
 set_global_divider_thickness_in_pixels :: (value: float) {
-    global_divider_thickness_in_pixels = value;
-    global_divider_thickness_in_pixels_is_set = true;
+    pin_size(*global_divider_thickness_in_pixels, .DIVIDER_THICKNESS, value);
 }
 set_global_initial_divider_position_in_pixels :: (value: float) {
-    global_initial_divider_position_in_pixels = value;
-    global_initial_divider_position_in_pixels_is_set = true;
+    pin_size(*global_initial_divider_position_in_pixels, .DIVIDER_POSITION, value);
 }
 set_global_slider_nub_thickness_in_pixels :: (value: float) {
-    global_slider_nub_thickness_in_pixels = value;
-    global_slider_nub_thickness_in_pixels_is_set = true;
+    pin_size(*global_slider_nub_thickness_in_pixels, .SLIDER_NUB, value);
 }
 get_float_parameter :: (r: Rect, type: Size_Computation, local: float, global: float, override: float = FLOAT32_INFINITY) -> float {
     if override != FLOAT32_INFINITY return override;
@@ -162,37 +158,15 @@ ui_per_frame_update :: (window: Window_Type, _render_target_width: s32, _render_
     popups_per_frame_update();
     occlusion_per_frame_update();
     events_per_frame_update();
-    mouse_button_left_state = ui_get_button_state(.MOUSE_BUTTON_LEFT);
-    mouse_button_right_state = ui_get_button_state(.MOUSE_BUTTON_RIGHT);
-    shift_key_state = ui_get_button_state(.SHIFT);
+    mouse_button_left_state, mouse_button_right_state, shift_key_state = sample_tracked_keys();
     return switch_window(window, _render_target_width, _render_target_height);
 }
 switch_window :: (window: Window_Type, _render_target_width: s32, _render_target_height: s32) -> (background_occluded: bool, is_active: bool) {
-    context.getrect_current_window = window;
-    render_target_width = max(_render_target_width, 1);
     render_target_height = max(_render_target_height, 1);
-    if !global_rounding_radius_in_pixels_is_set global_rounding_radius_in_pixels = cast(float) render_target_height / 180;
-    if !global_frame_thickness_in_pixels_is_set global_frame_thickness_in_pixels = cast(float) render_target_height / 540;
-    if !global_divider_thickness_in_pixels_is_set global_divider_thickness_in_pixels = cast(float) render_target_height / 100;
-    if !global_initial_divider_position_in_pixels_is_set global_initial_divider_position_in_pixels = render_target_width * 0.25;
-    if !global_slider_nub_thickness_in_pixels_is_set global_slider_nub_thickness_in_pixels = render_target_height * 0.03;
-    if draw_procs.get_mouse_pointer_position {
-        x, y, success := draw_procs.get_mouse_pointer_position(window, GETRECT_Y_UP);
-        if success {
-            mouse_x = cast(s32) x;
-            mouse_y = cast(s32) y;
-            mouse_x_float = cast(float) x;
-            mouse_y_float = cast(float) y;
-            mouse_delta_x_float = 0;
-            mouse_delta_y_float = 0;
-            for previous: last_frame_per_window_states if previous.window == window {
-                mouse_delta_x_float = mouse_x_float - previous.mouse_x_float;
-                mouse_delta_y_float = mouse_y_float - previous.mouse_y_float;
-                break;
-            }
-            array_add(*this_frame_per_window_states, .{ window, mouse_x_float, mouse_y_float });
-        }
-    }
+    render_target_width = max(_render_target_width, 1);
+    context.getrect_current_window = window;
+    size_unpinned_metrics(cast(float) render_target_width, cast(float) render_target_height);
+    if draw_procs.get_mouse_pointer_position track_platform_mouse(window);
     if left_scoped_input {
         buttons := left_buttons(window);
         mouse_button_left_state = buttons.left;
@@ -531,12 +505,12 @@ dropdown :: (r: Rect, choices: [] string, current_value_pointer: *s32, theme: *D
     if !theme theme = *default_overall_theme.dropdown_theme;
     state := find_or_create_state(Dropdown_State, get_hash(loc, identifier));
     defer stop_using_state(state);
-    state.base_rect = r;
-    state.choices = choices;
-    state.theme = theme.*;
+    // Refresh everything the popup needs, since it draws later (from the popup list) and only
+    // has the state to go on.
+    state.loc, state.z = loc, z;
     state.current_value_pointer = current_value_pointer;
-    state.z = z;
-    state.loc = loc;
+    state.theme = theme.*;
+    state.base_rect, state.choices = r, choices;
     status := get_status_flags(r, state);
     state.status = status;
     if status & .PRESSED {
@@ -1038,15 +1012,54 @@ slider_parse_text_int_default :: (text: string, theme: *Slider_Theme, state: *Sl
 initialized: bool;
 drawing_popups: bool;
 global_rounding_radius_in_pixels: float = 9;
-global_rounding_radius_in_pixels_is_set: bool;
 global_frame_thickness_in_pixels: float = 4;
-global_frame_thickness_in_pixels_is_set: bool;
 global_divider_thickness_in_pixels: float = 4;
-global_divider_thickness_in_pixels_is_set: bool;
 global_initial_divider_position_in_pixels: float = 32;
-global_initial_divider_position_in_pixels_is_set: bool;
 global_slider_nub_thickness_in_pixels: float = 32;
-global_slider_nub_thickness_in_pixels_is_set: bool;
+// Which of the sizes above the program fixed with a set_global_* call.
+Pinned_Size :: enum_flags u8 {
+    ROUNDING_RADIUS;
+    FRAME_THICKNESS;
+    DIVIDER_THICKNESS;
+    DIVIDER_POSITION;
+    SLIDER_NUB;
+}
+pinned_sizes: Pinned_Size;
+pin_size :: (target: *float, which: Pinned_Size, value: float) {
+    target.* = value;
+    pinned_sizes |= which;
+}
+// Unpinned sizes scale with the render target: mostly fractions of its height, except the
+// divider's starting position, which is a quarter of its width.
+size_unpinned_metrics :: (width: float, height: float) {
+    follow :: (target: *float, which: Pinned_Size, value: float) #expand {
+        if !(pinned_sizes & which) target.* = value;
+    }
+    follow(*global_slider_nub_thickness_in_pixels, .SLIDER_NUB, height * 0.03);
+    follow(*global_initial_divider_position_in_pixels, .DIVIDER_POSITION, width * 0.25);
+    follow(*global_divider_thickness_in_pixels, .DIVIDER_THICKNESS, height / 100);
+    follow(*global_frame_thickness_in_pixels, .FRAME_THICKNESS, height / 540);
+    follow(*global_rounding_radius_in_pixels, .ROUNDING_RADIUS, height / 180);
+}
+sample_tracked_keys :: () -> (left: Key_Current_State, right: Key_Current_State, shift: Key_Current_State) {
+    return ui_get_button_state(.MOUSE_BUTTON_LEFT), ui_get_button_state(.MOUSE_BUTTON_RIGHT), ui_get_button_state(.SHIFT);
+}
+// Reads the pointer through the host callback and derives this frame's motion from the
+// position recorded for the same window last frame (zero for a window not seen before).
+track_platform_mouse :: (window: Window_Type) {
+    px, py, ok := draw_procs.get_mouse_pointer_position(window, GETRECT_Y_UP);
+    if !ok return;
+    mouse_x, mouse_y = cast(s32) px, cast(s32) py;
+    mouse_x_float, mouse_y_float = cast(float) px, cast(float) py;
+    mouse_delta_x_float, mouse_delta_y_float = 0, 0;
+    for last_frame_per_window_states {
+        if it.window != window continue;
+        mouse_delta_x_float = mouse_x_float - it.mouse_x_float;
+        mouse_delta_y_float = mouse_y_float - it.mouse_y_float;
+        break;
+    }
+    array_add(*this_frame_per_window_states, .{ window, mouse_x_float, mouse_y_float });
+}
 left_round_fill :: (r: Rect, shape: Rectangle_Shape, radius: float, color: Vector4) {
     if r.w <= 0 || r.h <= 0 || color.w <= 0 return;
     radius = min(radius, min(r.w, r.h) * 0.5);
@@ -1074,22 +1087,28 @@ left_round_fill :: (r: Rect, shape: Rectangle_Shape, radius: float, color: Vecto
     array_reset(*points);
 }
 #scope_export
+// Lays the choices out as a column of buttons stacked away from the closed dropdown, one
+// row per choice. Picking one stores its index and closes the list.
 draw_dropdown_popup :: (_state: *void) {
-    data := _state;
-    state := cast(*Dropdown_State) data;
-    if !state.open return;
-    start_using_state(state);
-    defer stop_using_state(state);
-    for choice, index: state.choices {
-        r := state.base_rect;
-        r.y += r.h * (index + 1) * ifx GETRECT_Y_UP then -1.0 else 1.0;
-        theme := *state.theme.theme_for_each_choice;
-        if index == state.current_value_pointer.* theme = *state.theme.theme_for_current_choice;
-        clicked, button_state, released := button(r, choice, theme, cast(s64) index + 100, state.loc);
-        if clicked {
-            state.current_value_pointer.* = cast(s32) index;
-            state.open = false;
-            active_widget_remove(state);
+    dropdown := cast(*Dropdown_State) _state;
+    if dropdown.open {
+        start_using_state(dropdown);
+        draw_dropdown_choices(dropdown);
+        stop_using_state(dropdown);
+    }
+}
+draw_dropdown_choices :: (dropdown: *Dropdown_State) {
+    step := dropdown.base_rect.h;
+    if GETRECT_Y_UP step = -step;
+    row := dropdown.base_rect;
+    for dropdown.choices {
+        row.y = dropdown.base_rect.y + step * (it_index + 1);
+        highlighted := it_index == dropdown.current_value_pointer.*;
+        look := ifx highlighted then *dropdown.theme.theme_for_current_choice else *dropdown.theme.theme_for_each_choice;
+        if button(row, it, look, it_index + 100, dropdown.loc) {
+            dropdown.current_value_pointer.* = cast(s32) it_index;
+            dropdown.open = false;
+            active_widget_remove(dropdown);
         }
     }
 }
