@@ -5,6 +5,7 @@
 ### Added
 
 - CI type-checks every stdlib module with `-no_dce` for linux, macos, windows and wasm (`crates/jaic-cli/tests/stdlib_targets.rs`, expectations in `tests/stdlib-targets.txt`), so a type error in code for another platform or in a procedure nothing calls fails the build. See `docs/tools/stdlib-target-check.md`.
+- CI checks every Objective-C selector the stdlib sends: it must take as many arguments as it is sent with (one per `:`), and on macOS the class or protocol must have the method in the runtime (`crates/jaic-cli/tests/objc_selectors.rs`, known gaps in `tests/objc-selectors.txt`). See `docs/tools/objc-selector-check.md`.
 - `JAIC_MEMORY_LIMIT=<bytes|nK|nM|nG>`: an exact cap on what `jaic` allocates (compiler, interpreter and the program's C `malloc` calls). Crossing it prints `error: memory limit of N MiB exceeded` and exits with status 120. The corpus sweep uses it for `--memory-limit` instead of sampling resident memory.
 - `jailint`, a linter for Jai whose rules run on the type-checked program. The rules are `index_only_loop`, `manual_index_counter`, `unused_variable`, `unused_parameter`, `unused_import`, `redundant_cast`, `bool_comparison`, `format_arg_count`, `shadowed_it`, `defer_in_loop`, `float_equality` (off by default) and `lossy_xx` (off by default).
   - Diagnostics are printed in rustc's layout. `--fix` applies the safe fixes, `-A`/`-W`/`-D` set levels, and the exit status is non-zero when a `deny` rule fires.
@@ -46,6 +47,8 @@
 
 ### Fixed
 
+- macOS `Input`: a click no longer quits the program, and closing a window does. The adapter watched every window in `NSApp.windows` and queued `QUIT` when one went away, but AppKit adds and drops windows of its own; closed windows were never released, so they never went away. It now follows only the windows `Window_Creation` made (`Window_Type.macos_program_windows`) and queues `QUIT` when one is no longer visible without being minimized.
+- macOS `Input.get_input_pointer_position` sent `convertPointToScreen` without its `:` and stopped the program.
 - `Input`: `update_window_events` installs the platform event adapter, which nothing installed before: programs got no window events, and on macOS the window never appeared.
 - Type errors in stdlib code that was never checked, found by the new stdlib target check: the macOS input adapter, `Window_Creation.toggle_fullscreen` on macOS (`NSWindow.screen` was missing), the x11 adapter's text input, `Foundation`/`Metal` return types that named `NSDictionary` without parameters, `File` known folders on Windows, `Socket` addresses on Windows, `GL` info logs, `Simp` font cleanup, `GetRect` color strips, text hit-testing and Windows cursors, `ImGui.CreateContext`, `Text_File_Handler.file_to_table`, the Vulkan, d3d, dxc and nvtt wrappers, `pl_mpeg`, `rpmalloc`, `Thekla_Atlas`, `Shared_Memory_Channel` on Windows and `POSIX_old`.
 - `File.read_entire_file(path, zero_terminated := false, log_errors := true)` takes `zero_terminated` like the official module; a second positional argument meant `log_errors` before.

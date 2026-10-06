@@ -114,13 +114,14 @@ jobs:
         # Protected-tool rejection remains active without original native files.
         run: |
           ulimit -c 0
-          cargo test --workspace --no-fail-fast --locked -- --skip lex_entire_reference_without_executing_it --skip every_stdlib_module_checks_for_every_target
-      - name: Stdlib type-checks for every target
+          cargo test --workspace --no-fail-fast --locked -- --skip lex_entire_reference_without_executing_it --skip every_stdlib_module_checks_for_every_target --skip selectors_take_the_arguments_they_are_sent_with --skip selectors_exist_in_the_objective_c_runtime
+      - name: Stdlib type-checks and Objective-C selectors
         id: stdlib-targets
         continue-on-error: true
         # Every stdlib module with -no_dce for linux, macos, windows and wasm, against
-        # tests/stdlib-targets.txt (docs/tools/stdlib-target-check.md).
-        run: cargo test -p jaic-cli --locked --test stdlib_targets
+        # tests/stdlib-targets.txt (docs/tools/stdlib-target-check.md); every Objective-C selector
+        # against its arguments and, on macOS, the runtime (docs/tools/objc-selector-check.md).
+        run: cargo test -p jaic-cli --locked --test stdlib_targets --test objc_selectors
       - name: Policy tests
         id: policy
         continue-on-error: true

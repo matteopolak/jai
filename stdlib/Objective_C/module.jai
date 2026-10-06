@@ -7,7 +7,7 @@ init_objective_c :: () {
     _sel.class = cast(Selector) sel_registerName(cast(*u8) "class\0");
     _sel.init = cast(Selector) sel_registerName(cast(*u8) "init\0");
     _sel.isEqual_ = cast(Selector) sel_registerName(cast(*u8) "isEqual:\0");
-    _sel.objc_copy = cast(Selector) sel_registerName(cast(*u8) "copy\0");
+    _sel.copy = cast(Selector) sel_registerName(cast(*u8) "copy\0");
     _sel.release = cast(Selector) sel_registerName(cast(*u8) "release\0");
     _sel.retain = cast(Selector) sel_registerName(cast(*u8) "retain\0");
     _sel.superclass = cast(Selector) sel_registerName(cast(*u8) "superclass\0");
@@ -556,7 +556,7 @@ libSystem :: #system_library "libSystem";
 #scope_file
 _Selector_Table :: struct {
     alloc: Selector;
-    objc_copy: Selector;
+    copy: Selector;
     autorelease: Selector;
     release: Selector;
     retain: Selector;

@@ -9,7 +9,7 @@ init_app_kit :: () {
     _sel.addItemWithTitle_action_keyEquivalent_ = cast(Selector) sel_registerName(cast(*u8) "addItemWithTitle:action:keyEquivalent:\0");
     _sel.addItem_ = cast(Selector) sel_registerName(cast(*u8) "addItem:\0");
     _sel.addRepresentation_ = cast(Selector) sel_registerName(cast(*u8) "addRepresentation:\0");
-    _sel.addSubView_ = cast(Selector) sel_registerName(cast(*u8) "addSubview:\0");
+    _sel.addSubview_ = cast(Selector) sel_registerName(cast(*u8) "addSubview:\0");
     _sel.alertStyle = cast(Selector) sel_registerName(cast(*u8) "alertStyle\0");
     _sel.allowedFileTypes = cast(Selector) sel_registerName(cast(*u8) "allowedFileTypes\0");
     _sel.allowsOtherFileTypes = cast(Selector) sel_registerName(cast(*u8) "allowsOtherFileTypes\0");
@@ -1379,7 +1379,7 @@ _Selector_Table :: struct {
     initWithContentRect_styleMask_backing_defer_: Selector;
     initWithContentRect_styleMask_backing_defer_screen_: Selector;
     makeFirstResponder_: Selector;
-    addSubView_: Selector;
+    addSubview_: Selector;
     setWantsLayer_: Selector;
     flushBuffer: Selector;
     setView_: Selector;

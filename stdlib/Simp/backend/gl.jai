@@ -115,7 +115,7 @@ gl_backend_init :: (info: *Window_Info) {
         if ObjC.class_respondsToSelector(view_class, setter) != 0 {
             set_context: (receiver: *void, selector: ObjC.SEL, value: *AppKit.NSOpenGLContext) #c_call;
             set_context = cast(type_of(set_context)) ObjC.objc_msgSend;
-            set_context(cast(*void) view, setter, the_gl_context);
+            set_context(cast(*void) view, ObjC.sel_registerName(cast(*u8) "setOpenGLContext:\0"), the_gl_context);
         }
         AppKit.NSOpenGLContext.setView(the_gl_context, view);
         AppKit.NSOpenGLContext.update(the_gl_context);
