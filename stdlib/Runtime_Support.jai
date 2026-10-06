@@ -204,14 +204,6 @@ runtime_support_check_failed :: (reason: s64, a: s64, b: s64, fatal: bool, line:
     }
     write_string("\n", true);
 }
-__arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s64, filename: *u8) #no_context #no_aoc {
-    write_failure_location(filename, line_number);
-    write_string("arithmetic overflow: ", true);
-    write_number(left, to_standard_error = true);
-    write_string(", ", true);
-    write_number(right, to_standard_error = true);
-    write_string("\n", true);
-}
 
 write_string_unsynchronized :: (s: string, to_standard_error := false) #no_context {
     #if OS == .WASM {
