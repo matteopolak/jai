@@ -1551,16 +1551,45 @@ impl Compiler {
             let op = self.const_value_of_operand(arg.scope, op, elem, arg.span)?;
             self.write_value(&mut array, i as u64 * esize, &op, elem, arg.span)?;
         }
+        let view = self.const_pack(elem, array, args.len() as u64, span)?;
+        Ok((view, self.types.array(elem, ArrayKind::View)))
+    }
+
+    /// A constant `[] elem` view over `count` elements laid out in `array`. Equal contents
+    /// share one read-only global, so equal argument lists key the same instance.
+    pub(super) fn const_pack(
+        &mut self,
+        elem: TypeId,
+        array: value::Aggregate,
+        count: u64,
+        span: Span,
+    ) -> Result<Value> {
         let align = self.align_of(elem, span)?;
-        let data = self.program.add_global(ir::Global {
-            name: "baked.pack".into(),
-            size: array.bytes.len().max(1) as u64,
+        let key: PackKey = (
             align,
-            init: array.bytes,
-            relocs: array.relocs,
-            read_only: true,
-            export: None,
-        });
+            array.bytes.clone(),
+            array
+                .relocs
+                .iter()
+                .map(|r| (r.offset, r.target, r.addend))
+                .collect(),
+        );
+        let data = match self.packs.get(&key) {
+            Some(&g) => g,
+            None => {
+                let g = self.program.add_global(ir::Global {
+                    name: "baked.pack".into(),
+                    size: array.bytes.len().max(1) as u64,
+                    align,
+                    init: array.bytes,
+                    relocs: array.relocs,
+                    read_only: true,
+                    export: None,
+                });
+                self.packs.insert(key, g);
+                g
+            }
+        };
         let mut view = value::Aggregate {
             bytes: vec![0; 16],
             relocs: vec![ir::Reloc {
@@ -1569,11 +1598,8 @@ impl Compiler {
                 addend: 0,
             }],
         };
-        view.bytes[..8].copy_from_slice(&(args.len() as u64).to_le_bytes());
-        Ok((
-            Value::Bytes(Rc::new(view)),
-            self.types.array(elem, ArrayKind::View),
-        ))
+        view.bytes[..8].copy_from_slice(&count.to_le_bytes());
+        Ok(Value::Bytes(Rc::new(view)))
     }
 
     /// Match a polymorphic type pattern against a concrete type, adding bindings.

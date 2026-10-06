@@ -363,7 +363,10 @@ impl Compiler {
             let baked = self.poly_structs[ps.0 as usize].baked.len();
             let params = bindings.split_off(baked);
             let modified = self.run_struct_modify(def_scope, name, block, params, span)?;
-            key = modified.iter().map(|(_, v, _)| v.clone()).collect();
+            key = modified
+                .iter()
+                .map(|(_, v, t)| super::instance_key_value(&self.types, v, *t))
+                .collect();
             bindings.extend(modified);
         }
         if let Some(&t) = self.poly_structs[ps.0 as usize].instances.get(&key) {
