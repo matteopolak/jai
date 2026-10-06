@@ -44,24 +44,20 @@ Pool :: struct {
 // Pick the allocator that supplies blocks. Only valid on a fresh pool; a pool that was
 // never configured adopts context.allocator on its first `get`.
 set_allocators :: (pool: *Pool, block_allocator: Allocator = .{}) {
-    if pool.block_allocator.proc {
-        log_error("Attempt to set allocators on Pool % after the Pool has already been used.\n", pool);
+    if pool.block_allocator.proc != null {
+        log_error("Pool %: set_allocators was called after the pool started handing out memory; the call is ignored.\n", pool);
         return;
     }
-
-    if block_allocator.proc {
-        pool.block_allocator = block_allocator;
-        return;
-    }
-
-    // Falling back to the context allocator: if that is this very pool we would recurse forever.
-    if context.allocator.proc == pool_allocator_proc && context.allocator.data == pool {
-        log_error("Pool % cannot take its blocks from context.allocator because that is the pool itself. Call set_allocators on the pool before making it the context allocator.\n", pool);
+    supplier := block_allocator;
+    if supplier.proc == null supplier = context.allocator;
+    // A pool cannot feed itself: asking it for a block would ask it for a block again.
+    feeds_itself := supplier.proc == pool_allocator_proc && supplier.data == pool;
+    if feeds_itself {
+        log_error("Pool % would have to allocate its blocks from itself. Give it a block allocator with set_allocators before installing it as context.allocator.\n", pool);
         assert(false);
-        pool.block_allocator = context.default_allocator;
-    } else {
-        pool.block_allocator = context.allocator;
+        supplier = context.default_allocator;
     }
+    pool.block_allocator = supplier;
 }
 
 get :: (pool: *Pool, nbytes: s64) -> *void {
