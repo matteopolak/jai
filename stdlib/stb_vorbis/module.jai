@@ -6,8 +6,8 @@
     FILE :: void;
 } else #if OS_IS_UNIX {
     #import "POSIX";
-
-    codec_math :: #system_library "m";
+    // The codec calls libm (sin, pow, exp...); nothing in Jai does, so link it explicitly.
+    codec_math :: #system_library,link_always "m";
 } else {
     #assert false;
 }
