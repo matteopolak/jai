@@ -199,8 +199,14 @@ make_number :: (lexer: *Lexer) -> *Token {
             while starts_number(peek_next_character(lexer)) || peek_next_character(lexer) == #char "_" eat_character(lexer);
             if exponent_start == lexer.input_cursor report_parse_error(lexer, "Expected exponent digits\n");
         }
-        text := string.{ lexer.input_cursor - beginning, lexer.input.data + beginning };
-        number, success := string_to_float64(text);
+        // Digit separators are for readers only; drop them before converting.
+        spelled := string.{ lexer.input_cursor - beginning, lexer.input.data + beginning };
+        digits: [..] u8;
+        defer array_free(digits);
+        for byte: spelled if byte != #char "_" array_add(*digits, byte);
+        text := string.{ digits.count, digits.data };
+        number, success, rest := string_to_float64(text);
+        if rest.count success = false;
         result.float64_value = number;
         result.value_flags |= .FLOAT;
         if !success report_parse_error(lexer, "Invalid floating point literal\n");
@@ -255,6 +261,7 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
             else if character == #char "r" character = #char "\r";
             else if character == #char "t" character = #char "\t";
             else if character == #char "0" character = 0;
+            else if character == #char "e" character = 0x1b;
             else if character == #char "u" || character == #char "U" {
                 codepoint: u32;
                 wanted := ifx character == #char "u" then 4 else 8;
@@ -556,6 +563,7 @@ compound_tokens: [] struct {
 } = .[
 .{ "<<<=", .ROTATE_LEFT_EQUALS }, .{ ">>>=", .ROTATE_RIGHT_EQUALS }, .{ "&&=", .LOGICAL_AND_EQUALS }, .{ "||=", .LOGICAL_OR_EQUALS },
 .{ "<<=", .SHIFT_LEFT_EQUALS }, .{ ">>=", .SHIFT_RIGHT_EQUALS }, .{ "===", .TRIPLE_EQUALS }, .{ "---", .TRIPLE_MINUS },
+.{ "<<<", .ROTATE_LEFT }, .{ ">>>", .ROTATE_RIGHT }, .{ "=>", .QUICK_LAMBDA },
 .{ "+=", .PLUSEQUALS }, .{ "-=", .MINUSEQUALS }, .{ "*=", .TIMESEQUALS }, .{ "/=", .DIVEQUALS }, .{ "%=", .MODEQUALS },
 .{ "==", .ISEQUAL }, .{ "!=", .ISNOTEQUAL }, .{ "&&", .LOGICAL_AND }, .{ "||", .LOGICAL_OR }, .{ "<=", .LESSEQUALS }, .{ ">=", .GREATEREQUALS },
 .{ "->", .RIGHT_ARROW }, .{ "..", .DOUBLE_DOT }, .{ "$$", .DOUBLE_DOLLAR }, .{ "<<", .POINTER_DEREFERENCE_OR_SHIFT_LEFT }, .{ ">>", .SHIFT_RIGHT },
