@@ -1,7 +1,7 @@
 #scope_module
 Mac :: #import "Objective_C/AppKit";
 ObjC :: #import "Objective_C";
-Foundation :: #import "Objective_C/Foundation";
+Foundation :: #import "Objective_C"; // Foundation.jai is part of Objective_C, not a module of its own.
 Mac_Input_Window :: struct { window: *Mac.NSWindow; x:s32; y:s32; width:s32; height:s32; seen:=false; }
 mac_input_windows: [..] Mac_Input_Window;
 mac_input_focus: *Mac.NSWindow;

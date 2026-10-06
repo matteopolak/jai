@@ -1,6 +1,6 @@
 #scope_file
 GC :: #import "Objective_C/GameController";
-Foundation :: #import "Objective_C/Foundation";
+Foundation :: #import "Objective_C"; // Foundation.jai is part of Objective_C, not a module of its own.
 ObjC :: #import "Objective_C";
 #scope_export
 sample_gamecontroller :: (sample:*Gamepad_Sample) -> bool {
