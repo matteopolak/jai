@@ -87,9 +87,7 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
 }
 
 deinit :: (process: *Process) {
-    deinit(*process.input);
-    deinit(*process.output);
-    deinit(*process.error);
+    close_pipe_ends(process);
     if process.launched && process.saved_result.type == .STILL_RUNNING {
         kill_process(process);
         get_process_result(process);

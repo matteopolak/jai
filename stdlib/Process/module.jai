@@ -204,6 +204,12 @@ shutdown :: () {
 
 #scope_module
 active_command_count: s64;
+// Closes the parent's ends of the child's stdin, stdout and stderr pipes (any not yet closed).
+close_pipe_ends :: (process: *Process) {
+    deinit(*process.error);
+    deinit(*process.output);
+    deinit(*process.input);
+}
 command_space :: (byte: u8) -> bool {
     return byte == 32 || byte == 9 || byte == 10 || byte == 13;
 }

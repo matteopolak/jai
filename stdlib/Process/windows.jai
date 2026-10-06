@@ -21,13 +21,9 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
         attributes.nLength = size_of(Windows.SECURITY_ATTRIBUTES);
         attributes.bInheritHandle = 1;
         if !Windows.CreatePipe(*child_input, *process.input.handle, *attributes, 0) return false;
-        if !Windows.CreatePipe(*process.output.handle, *child_output, *attributes, 0) {
-            deinit(*process.input);
-            return false;
-        }
-        if !Windows.CreatePipe(*process.error.handle, *child_error, *attributes, 0) {
-            deinit(*process.input);
-            deinit(*process.output);
+        // Unopened ends still hold the invalid-handle default, which deinit skips.
+        if !Windows.CreatePipe(*process.output.handle, *child_output, *attributes, 0) || !Windows.CreatePipe(*process.error.handle, *child_error, *attributes, 0) {
+            close_pipe_ends(process);
             return false;
         }
         Windows.SetHandleInformation(process.input.handle, 1, 0);
@@ -43,9 +39,7 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
     flags: Windows.Creation_Flags;
     if kill_process_if_parent_exits flags = cast(Windows.Creation_Flags) 4;
     if !Windows.CreateProcessW(null, native_command, null, null, xx capture_and_return_output, flags, null, directory, *startup, *process.info) {
-        deinit(*process.input);
-        deinit(*process.output);
-        deinit(*process.error);
+        close_pipe_ends(process);
         return false;
     }
     if kill_process_if_parent_exits {
@@ -58,9 +52,7 @@ create_process :: (process: *Process, args: ..string, working_directory := "", c
             Windows.CloseHandle(process.info.hProcess);
             if process.job_handle Windows.CloseHandle(process.job_handle);
             process.job_handle = cast(Windows.HANDLE) -1;
-            deinit(*process.input);
-            deinit(*process.output);
-            deinit(*process.error);
+            close_pipe_ends(process);
             return false;
         }
         Windows.ResumeThread(process.info.hThread);
@@ -79,9 +71,7 @@ deinit :: (pipe: *Process.Pipe) {
     pipe.eof = true;
 }
 deinit :: (process: *Process) {
-    deinit(*process.input);
-    deinit(*process.output);
-    deinit(*process.error);
+    close_pipe_ends(process);
     if process.launched {
         if process.saved_result.type == .STILL_RUNNING {
             kill_process(process);
