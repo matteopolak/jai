@@ -32,7 +32,7 @@ realloc :: (memory: *void, size: s64, old_size: s64, allocator := context.alloca
 
 create_heap :: (a: Allocator) -> Allocator {
     caps, name := get_capabilities_info(a);
-    assert(caps & .CREATE_HEAP, "allocator does not support separate heaps");
+    assert((caps & .CREATE_HEAP) != 0, "allocator does not support separate heaps");
     heap: Allocator = .{ a.proc, a.proc(.CREATE_HEAP, 0, 0, null, a.data) };
     #if MEMORY_DEBUGGER {
         Memory_Debugger.check_create_heap(heap);
