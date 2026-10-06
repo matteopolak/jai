@@ -38,7 +38,7 @@
 
 - Add a stop: write `examples/tour/<topic>/<file>.jai` with a `tour_<topic> :: ()` procedure, `#load` it in `main.jai` and add `.{ "Title", tour_<topic> }` to `stops`. Mention it in `tour.md`.
 - All files share one global scope, so give helpers distinct names (`scale` already exists in `Math`, for example, which made `#bake_arguments scale(...)` ambiguous).
-- Keep it browser-safe: no processes, sockets, windows or native `#foreign` libraries (see the exclusion reasons in `tools/playground_stdlib_expected.json`). Keep runtime small: auto-run recompiles and reruns on every edit.
+- Keep it browser-safe: no processes, sockets, windows or native `#foreign` libraries (see how `tests/stdlib` programs skip those parts under `OS == .WASM`, [playground](playground.md)). Keep runtime small: auto-run recompiles and reruns on every edit.
 - Keep lines short (the editor is narrow on phones) and run jaifmt: `jaic run tools/jaifmt/main.jai -- --check "$PWD/examples/tour"`. The portfolio's `JAI_WASM_DIR=<bundle> pnpm test:jai` also checks the tour is formatted under the playground's default `jaifmt.toml`.
 - When output changes, update `stdout_contains` in `tests/examples.json`.
 - Gotchas found while writing it: `offset_of` is not supported (use `type_info(T).members`), and `builder_to_string`, `NewArray` and the String helpers take no allocator argument (wrap them in `push_allocator(temp)`).
