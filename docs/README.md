@@ -1,6 +1,6 @@
 # Developer documentation
 
-Start with [compiler architecture](compiler/architecture.md). The [README](../README.md) has the compatibility table; per-project notes are in [upstream corpus](tools/upstream-corpus.md#project-status).
+Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [License](license.md): AGPL-3.0-or-later and what it means for compiled programs
 
