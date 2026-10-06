@@ -157,6 +157,13 @@ x11_poll_input :: () {
         } else if native.type == X.ConfigureNotify {
             queue_window_resize(routed_window, native.xconfigure.width, native.xconfigure.height);
             queue_window_move(routed_window, native.xconfigure.x, native.xconfigure.y);
+        } else if native.type == X.MapNotify {
+            // Without a window manager nothing reconfigures a new window, so no ConfigureNotify
+            // tells the program its size; report it when the window appears, as on other systems.
+            attributes: X.XWindowAttributes;
+            if X.XGetWindowAttributes(display, window, *attributes) != 0 {
+                queue_window_resize(routed_window, attributes.width, attributes.height);
+            }
         } else if native.type == X.FocusIn {
             x11_focus = window;
             set_input_focus(routed_window, true);
