@@ -278,3 +278,218 @@ fn unknown_identifier_suggests_a_visible_name() {
     let output = jaic_on(&dir, "n.jai", "main :: () { x := qqqqqq; }\n", "check", &[]);
     assert!(!stderr(&output).contains("help:"), "{}", stderr(&output));
 }
+
+#[test]
+fn missing_module_lists_where_it_looked_and_a_close_name() {
+    let dir = scratch("missing-module");
+    let output = jaic_on(&dir, "m.jai", "#import \"Basik\";\nmain :: () {}\n", "check", &[]);
+    assert_eq!(output.status.code(), Some(1));
+    let text = stderr(&output);
+    assert_in_order(
+        &text,
+        &[
+            "m.jai:1:1: error: module `Basik` not found",
+            "note: looked for `Basik.jai` and `Basik/module.jai` in:",
+            "/modules",
+            "/stdlib",
+            "help: a module with a similar name exists: `Basic`",
+        ],
+    );
+    assert!(!text.contains("/../"), "{text}");
+    // Nothing close: where modules go.
+    let output = jaic_on(&dir, "n.jai", "#import \"Zzyzx_Engine\";\nmain :: () {}\n", "check", &[]);
+    assert_in_order(&stderr(&output), &["help: a module of your own goes in a `modules` folder"]);
+}
+
+#[test]
+fn missing_load_file_says_where_it_looked() {
+    let dir = scratch("missing-load");
+    std::fs::write(dir.join("helper.jai"), "helper :: () {}\n").unwrap();
+    let output = jaic_on(&dir, "l.jai", "#load \"helpers.jai\";\nmain :: () {}\n", "check", &[]);
+    assert_eq!(output.status.code(), Some(1));
+    assert_in_order(
+        &stderr(&output),
+        &[
+            "l.jai:1:7: error: file `helpers.jai` does not exist",
+            "note: looked for ",
+            "helpers.jai",
+            "help: a file with a similar name exists: `helper.jai`",
+            "help: `#load` paths are relative to the file that loads them",
+        ],
+    );
+}
+
+#[test]
+fn input_file_problems() {
+    let dir = scratch("input");
+    std::fs::write(dir.join("game.jai"), "main :: () {}\n").unwrap();
+    std::fs::create_dir_all(dir.join("proj")).unwrap();
+    std::fs::write(dir.join("proj/first.jai"), "main :: () {}\n").unwrap();
+    let cases: &[(&[&str], &[&str])] = &[
+        (
+            &["run", "gmae.jai"],
+            &["error: file `gmae.jai` does not exist", "help: did you mean `game.jai`?"],
+        ),
+        (
+            &["run", "game"],
+            &["error: file `game` does not exist", "help: did you mean `game.jai`?"],
+        ),
+        (
+            &["run", "nothing_like_it.jai"],
+            &[
+                "error: file `nothing_like_it.jai` does not exist",
+                "help: relative paths start from the current directory",
+            ],
+        ),
+        (
+            &["check", "proj"],
+            &[
+                "error: `proj` is a directory, not a .jai file",
+                "help: did you mean `proj/first.jai`?",
+            ],
+        ),
+    ];
+    for (args, expected) in cases {
+        let output = jaic(&dir, args, &[]);
+        assert_eq!(output.status.code(), Some(1), "{args:?}");
+        let text = stderr(&output);
+        assert_in_order(&text, expected);
+        // No snippet of some unrelated file (the stdlib's Preload used to be shown).
+        assert!(!text.contains("Preload"), "{text}");
+    }
+}
+
+#[test]
+fn command_line_mistakes_explain_themselves() {
+    let dir = scratch("cli");
+    std::fs::write(dir.join("ok.jai"), "main :: () {}\n").unwrap();
+    let cases: &[(&[&str], &[&str])] = &[
+        (&[], &["error: no command given", "help: run a program with `jaic run file.jai`"]),
+        (&["rnu", "ok.jai"], &["error: unknown command `rnu`", "help: did you mean `jaic run`?"]),
+        (
+            &["ok.jai"],
+            &["error: `ok.jai` is not a command", "help: to run it, use `jaic run ok.jai`"],
+        ),
+        (&["run"], &["error: `jaic run` needs a .jai file"]),
+        (
+            &["run", "-os", "linux", "ok.jai"],
+            &["error: expected a .jai file after `jaic run`, found `-os`", "help: put the file first"],
+        ),
+        (
+            &["run", "ok.jai", "-os"],
+            &["error: `-os` needs an OS name: linux, windows, macos or wasm"],
+        ),
+        (
+            &["run", "ok.jai", "-os", "linus"],
+            &["error: unknown OS `linus` for `-os`", "help: did you mean `-os linux`?"],
+        ),
+        (&["run", "ok.jai", "-cpu", "z80"], &["error: unknown CPU `z80` for `-cpu`"]),
+        (&["run", "ok.jai", "-I"], &["error: `-I` needs a directory"]),
+        (
+            &["run", "ok.jai", "--timing"],
+            &["error: unknown option `--timing`", "help: did you mean `--timings`?"],
+        ),
+        (&["run", "ok.jai", "-o", "x"], &["error: `-o` only applies to `jaic build`"]),
+        (
+            &["build", "ok.jai", "-O7"],
+            &["error: unknown optimization level `-O7`", "help: use -O0, -O1, -O2 or -O3"],
+        ),
+        (
+            &["run", "ok.jai", "extra"],
+            &[
+                "error: unexpected argument `extra`",
+                "help: arguments for the program go after `--`: `jaic run ok.jai -- extra`",
+            ],
+        ),
+        (
+            &["run", "ok.jai", "-plug", "X"],
+            &["error: `-plug` works with `jaic check` and `jaic build`, not `jaic run`"],
+        ),
+        (
+            &["run", "ok.jai", "--color", "sometimes"],
+            &["error: unknown `--color` value `sometimes`"],
+        ),
+    ];
+    for (args, expected) in cases {
+        let output = jaic(&dir, args, &[]);
+        let text = stderr(&output);
+        assert_eq!(output.status.code(), Some(2), "{args:?}: {text}");
+        assert_in_order(&text, expected);
+        assert!(!text.contains("usage:"), "{args:?}: {text}");
+    }
+    for args in [&["--help"][..], &["-h"], &["help"], &["run", "--help"]] {
+        let output = jaic(&dir, args, &[]);
+        assert_eq!(output.status.code(), Some(0), "{args:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        assert_in_order(&text, &["usage: jaic run <file.jai>", "exit status:"]);
+    }
+    let output = jaic(&dir, &["--version"], &[]);
+    assert_eq!(output.status.code(), Some(0));
+    assert!(String::from_utf8_lossy(&output.stdout).starts_with("jaic "));
+    // `--color=always` reaches command-line errors too.
+    let output = Command::new(JAIC)
+        .args(["rnu", "--color=always"])
+        .env("JAIC_DIAGNOSTICS", "plain")
+        .output()
+        .unwrap();
+    assert!(
+        stderr(&output).starts_with("\x1b[1;31merror\x1b[0m"),
+        "{}",
+        stderr(&output)
+    );
+}
+
+#[test]
+fn rich_layouts_on_request() {
+    let dir = scratch("rich");
+    let source =
+        "#import \"Basic\";\nmain :: () {\n    counter := 1;\n    print(\"%\\n\", countr);\n}\n";
+    std::fs::write(dir.join("u.jai"), source).unwrap();
+    let rich = |layout: &str, color: &str| {
+        let output = Command::new(JAIC)
+            .args(["check", "u.jai", "--color", color])
+            .current_dir(&dir)
+            .env("JAIC_DIAGNOSTICS", layout)
+            .output()
+            .unwrap();
+        stderr(&output)
+    };
+    let unicode = rich("unicode", "never");
+    assert_in_order(
+        &unicode,
+        &[
+            "error: unknown identifier",
+            "╭─[",
+            "u.jai:4:18]",
+            " 3 │     counter := 1;",
+            " 4 │     print(\"%\\n\", countr);",
+            "   ·                  ━━━━━━ not found in this scope",
+            " 5 │ }",
+            "╰─",
+            "help: a similar name exists: `counter`",
+            " 4 ~     print(\"%\\n\", counter);",
+        ],
+    );
+    let ascii = rich("ascii", "never");
+    assert_in_order(
+        &ascii,
+        &[
+            "  --> ",
+            " 4 |     print(",
+            "   |                  ^^^^^^ not found in this scope",
+        ],
+    );
+    assert!(ascii.is_ascii(), "{ascii}");
+    let colored = rich("unicode", "always");
+    assert!(colored.contains("\x1b[1;31merror\x1b[0m"), "{colored}");
+    // NO_COLOR is honoured when the choice is left to jaic.
+    let output = Command::new(JAIC)
+        .args(["check", "u.jai"])
+        .current_dir(&dir)
+        .env("JAIC_DIAGNOSTICS", "unicode")
+        .env("FORCE_COLOR", "1")
+        .env("NO_COLOR", "1")
+        .output()
+        .unwrap();
+    assert!(!stderr(&output).contains('\x1b'));
+}

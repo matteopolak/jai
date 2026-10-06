@@ -106,6 +106,16 @@ impl SourceMap {
         self.files.is_empty()
     }
 
+    /// The text of `span`, or "" for a span without a place.
+    pub fn snippet_or_empty(&self, span: Span) -> &str {
+        if (span.file.0 as usize) < self.files.len() && span != Span::default() {
+            let text = &self.get(span.file).text;
+            text.get(span.start as usize..span.end as usize).unwrap_or("")
+        } else {
+            ""
+        }
+    }
+
     pub fn snippet(&self, span: Span) -> &str {
         let file = self.get(span.file);
         &file.text[span.start as usize..span.end as usize]
