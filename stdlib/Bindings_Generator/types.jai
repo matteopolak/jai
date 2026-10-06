@@ -131,7 +131,8 @@ _default_get_func_args_for_printing :: (func: *Function, type: *Function_Type, m
 }
 
 Library_Info :: struct {
-    name: string;
+    name: string; // The file name without directory or extension: "libvulkan".
+    identifier: string; // What the bindings call it: `libvulkan :: #library "...";`, `#foreign libvulkan`.
     full_path: string;
     is_shared_library: bool;
     is_system_library: bool;
@@ -253,7 +254,7 @@ Literal :: struct {
     string_value: string;
     macro_value: Macro_Value;
     enum_type: *Enum;
-    enum_value: *Enum.Enumerate;
+    enum_value: *Declaration;
     identifier: *Declaration;
     raw_value: string;
 }
@@ -392,21 +393,11 @@ Enum :: struct {
     #as using declaration: Declaration;
     kind = .ENUM;
 
-    // A value, not a declaration: visitors reorder, copy and remove them freely.
-    Enumerate :: struct {
-        name: string;
-        output_name: string;
-
-        unsigned_value: u64;
-        signed_value: s64;
-        string_value: string;
-        macro_value: Macro_Value;
-
-        location: Location;
-        comment: Comment;
-    }
-
-    enumerates: [..] Enumerate;
+    // Each value is a constant `Declaration` whose parent is the enum and whose expression is
+    // a `Literal`: `.INTEGER` (`int_value` holds the bits, read as unsigned when the enum's
+    // type is) or `.MACRO` (`raw_value` is the Jai text). Visitors see them after the enum;
+    // `OMIT_FROM_OUTPUT` leaves one out.
+    enumerates: [..] *Declaration;
     flags: Enum_Flags;
 
     Enum_Flags :: enum_flags {
@@ -722,6 +713,8 @@ visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent:
             visit_declaration_list(visitor, *s.parents, decl, depth + 1);
             visit_declaration_list(visitor, cast(*[..] *Declaration) *s.virtual_functions, decl, depth + 1);
             visit_declaration_list(visitor, *s.declarations, decl, depth + 1);
+        case .ENUM;
+            visit_declaration_list(visitor, *(cast(*Enum) decl).enumerates, decl, depth + 1);
         case .NAMESPACE;
             n := cast(*Namespace) decl;
             i := 0;

@@ -45,7 +45,7 @@ generator_command :: (loc: Source_Code_Location) -> string {
 }
 
 library_identifier :: (lib: *Library_Info) -> string {
-    return lib.name;
+    return lib.identifier;
 }
 
 #scope_export
@@ -241,7 +241,7 @@ print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options
         modifiers := "";
         if lib.is_system_library modifiers = ",system";
         if !lib.is_shared_library modifiers = join(modifiers, ",no_dll");
-        print_to_builder(builder, "% :: #library% \"%\";\n", lib.name, modifiers, path);
+        print_to_builder(builder, "% :: #library% \"%\";\n", lib.identifier, modifiers, path);
     }
 }
 
@@ -349,12 +349,12 @@ post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
                 duplicate := false;
                 for e.enumerates if it.name == decl.name duplicate = true;
                 if !duplicate {
-                    en: Enum.Enumerate;
-                    en.name = decl.name;
-                    en.location = decl.location;
+                    value := New(Literal);
+                    value.literal_kind = .MACRO;
+                    value.raw_value = lit.raw_value;
+                    value.macro_value = lit.macro_value;
+                    en := new_enumerator(e, decl.name, decl.location, value);
                     en.comment = decl.comment;
-                    en.string_value = lit.raw_value;
-                    en.macro_value = lit.macro_value;
                     en.output_name = stripped_name(get_enum_value_name(e, en));
                     array_add(*e.enumerates, en);
                     table_set(*g.macros_converted_to_enum_values, decl.name, e);
@@ -372,8 +372,9 @@ post_process :: (g: *Generator_State, options: *Generate_Bindings_Options) {
     // Values and macros that name a macro which became an enum value now name that value.
     if g.macros_converted_to_enum_values.count {
         for e: g.enum_macros {
-            for *e.enumerates {
-                if it.string_value it.string_value = rewrite_enum_macro_references(g, it.string_value, e);
+            for e.enumerates {
+                value := cast(*Literal) it.expression;
+                if value && value.raw_value value.raw_value = rewrite_enum_macro_references(g, value.raw_value, e);
             }
         }
         for decl: g.global_scope.members {
@@ -558,8 +559,9 @@ load_library_info :: (paths: [] string, name: string, identifier: string, is_sys
     if dot > 0 stem = slice(file, 0, dot);
     has_extension := dot > 0;
 
-    lib.name = identifier;
-    if !lib.name lib.name = make_valid_identifier(to_lower_copy(stem));
+    lib.name = stem;
+    lib.identifier = identifier;
+    if !lib.identifier lib.identifier = make_valid_identifier(to_lower_copy(stem));
     lib.full_path = join(dir, stem);
 
     shared_suffix := options.shared_library_suffix;

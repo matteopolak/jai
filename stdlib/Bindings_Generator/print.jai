@@ -758,16 +758,17 @@ print_enum_body :: (builder: *String_Builder, e: *Enum) {
 // Returns whether there was any.
 print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
     width := 0;
-    for e.enumerates width = max(width, it.output_name.count);
-    storage := strip_type(e.type, typedefs = true);
-    signed := storage != null && (storage.number_flags & .SIGNED) != 0;
+    for e.enumerates {
+        if !(it.decl_flags & .OMIT_FROM_OUTPUT) width = max(width, it.output_name.count);
+    }
+    signed := is_signed_storage(e.type);
     hex := (e.flags & .VALUES_IN_HEX) != 0;
     keep_blank_lines := (e.flags & .MIMIC_SPACING) != 0;
 
     previous: Location;
     count := 0;
     for e.enumerates {
-        if !it.output_name continue;
+        if !it.output_name || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
         maybe_add_spacing(builder, *previous, it.location, 0, keep_blank_lines);
         append_indentation(builder);
         has_comment := it.comment.text.count > 0;
@@ -777,9 +778,11 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
         append_padded(builder, it.output_name, width);
         append(builder, " :: ");
         // A value from a macro keeps its expression text.
-        if it.string_value append(builder, it.string_value);
-        else if signed append_integer(builder, it.signed_value, hex);
-        else append_integer(builder, it.unsigned_value, hex);
+        value := cast(*Literal) it.expression;
+        if !value || value.kind != .LITERAL append(builder, "0");
+        else if value.literal_kind == .MACRO append(builder, value.raw_value);
+        else if signed append_integer(builder, value.int_value, hex);
+        else append_integer(builder, cast,no_check(u64) value.int_value, hex);
         append(builder, ";");
         if has_comment && !comment_above print_to_builder(builder, " %", it.comment.text);
         append(builder, "\n");
@@ -792,11 +795,11 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
 print_enum_aliases :: (builder: *String_Builder, e: *Enum, after_values: bool) {
     width := 0;
     for e.enumerates {
-        if it.name != it.output_name width = max(width, it.name.count);
+        if it.name != it.output_name && !(it.decl_flags & .OMIT_FROM_OUTPUT) width = max(width, it.name.count);
     }
     need_gap := after_values;
     for e.enumerates {
-        if !it.output_name || it.name == it.output_name continue;
+        if !it.output_name || it.name == it.output_name || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
         if need_gap {
             append(builder, "\n");
             need_gap = false;

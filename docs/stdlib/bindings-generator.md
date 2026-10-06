@@ -2,7 +2,7 @@
 
 ## What it is
 
-`stdlib/Bindings_Generator` turns C, C++ and Objective-C headers into Jai declarations: constants from `#define`s, enums, structs (with bit fields), unions, typedefs, function-pointer types, `#foreign` procedures, C++ classes, and Objective-C classes/protocols as message-send wrappers. The public API matches the official module: fill in a `Generate_Bindings_Options`, optionally set a `visitor`, call `generate_bindings(opts, "out.jai")`. Existing generators such as Vk-Engine's `Modules/{Vulkan,ImGui}/generate.jai` run unchanged.
+`stdlib/Bindings_Generator` turns C, C++ and Objective-C headers into Jai declarations: constants from `#define`s, enums, structs (with bit fields), unions, typedefs, function-pointer types, `#foreign` procedures, C++ classes, and Objective-C classes/protocols as message-send wrappers. The public API matches the official module: fill in a `Generate_Bindings_Options`, optionally set a `visitor`, call `generate_bindings(opts, "out.jai")`. Existing generators such as Vk-Engine's `Modules/{Vulkan,ImGui}/generate.jai` and sgpu's `Vulkan_With_VMA/generate.jai` run unchanged.
 
 ## How it works
 
@@ -171,6 +171,7 @@ When clang puts a member at an offset its natural alignment would not give (`#pr
 | `Generate_Bindings_Options`: every public field | Supported | Plus `libclang_path`, `generate_bitfield_accessors`, `libraries`/`library_search_paths` |
 | `generate_bindings(opts, path)` / `(opts) -> String_Builder, bool` | Supported | |
 | `visitor`, `get_func_args_for_printing`, `will_print_bindings`, `convert_macro_value_to_enum_callback` | Supported | |
+| Enum values as `*Declaration` (`Enum.enumerates`, `Literal.enum_value`), `Library_Info.identifier` | Supported | The API Vk-Engine's and sgpu's Vulkan generators use; see "Enum values and libraries" |
 | Helper procedures (`change_type_to_enum`, `get_type_name`, `find_underlying_type`, `get_default_system_include_paths`...) | Supported | `api.jai` |
 | `strip_flags` (constructors, destructors, va_list, unknown libraries, inlined) | Supported | |
 | `strip_prefixes`, enum prefix detection and stripping, `alias_original_enum_names`, `c_enum_emulation` | Supported | |
@@ -199,6 +200,31 @@ When clang puts a member at an offset its natural alignment would not give (`#pr
 | Windows/MSVC headers (`os = .WINDOWS`) | Partial | MSVC bit fields and type sizes through `-target`; COM interface `uuid` attributes are not printed |
 | Include guards and `TOKENS_TO_REPLACE`-style preprocessing tweaks | Missing | Not needed by any generator in the corpus |
 | 128-bit integers | Partial | `__int128` prints as Basic's `S128`/`U128` |
+
+### Enum values and libraries
+
+`Enum.enumerates` is a `[..] *Declaration`. Each value is a constant declaration (`decl_flags` has `IS_CONST`) whose `parent` is the enum and whose `expression` is a `Literal`:
+
+- `.INTEGER`: `int_value` holds the value's bits (read as unsigned when the enum's type is unsigned; `new_enumerator` and `is_signed_storage` in `convert.jai`);
+- `.MACRO`: a value made from a `#define` (`generate_enums_from_macros_with_prefixes`); `raw_value` is its Jai text.
+
+The visitor sees the values after their enum (`visit_declarations`, `case .ENUM`), so it can rename one (`output_name`) or drop one (`OMIT_FROM_OUTPUT`; `print_enum_values` and `print_enum_aliases` skip it). A `Literal` of kind `.ENUM` names a value through `enum_value: *Declaration`, as Vulkan generators do for `sType` defaults:
+
+```jai
+for struct_type_decl.enumerates if it.output_name == "BUFFER_MEMORY_BARRIER" {
+    literal := New(Literal);
+    literal.literal_kind = .ENUM;
+    literal.enum_type = struct_type_decl;
+    literal.enum_value = it;
+    decl.expression = literal;
+}
+```
+
+Generators written for the older value-type API (`*Enum.Enumerate`, `for * enumerates`, such as `UnNabbo--no_api`'s) do not type-check.
+
+`Library_Info.identifier` is the name the bindings give a library (`libvulkan :: #library ...`, `#foreign libvulkan`); `name` is its file name without directory or extension. `will_print_bindings` may rename one: `context.generator.libraries[0].identifier = "libvulkan";` (sgpu).
+
+Tests: `tests/stdlib/bindings-generator-declaration-api.jai`.
 
 `tests/stdlib/bindings-generator-parity.jai` pins the output rules above (system types, `unknownN`, comments, char macros, enum macro rewriting, casts, packed `#align`, `long double`) for C and C++.
 

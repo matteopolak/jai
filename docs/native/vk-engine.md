@@ -17,7 +17,7 @@ What doesn't:
   - `Modules/Vulkan/module.jai` loads bindings and libraries only for `.WINDOWS` and `.LINUX`, so no `Vk*` name exists on macOS and `Source/Core/Graphics/Vulkan` fails.
   - `Modules/ImGui/module.jai` has `#assert false "Unsupported OS"`; `Modules/JoltPhysics/module.jai` declares `JoltC` only for Windows and Linux.
   - The three `generate.jai` files `#assert false` for macOS in their library-building code, so bindings can't be regenerated natively either.
-- Without placeholders, `Build.jai` runs the generators first, and the Vulkan one fails: `Modules/Vulkan/generate.jai` assigns an element of `Enum.enumerates` to a `*Declaration`. That is an older Bindings_Generator API; the current one stores `Enum.Enumerate` values, so the official compiler rejects the file too ("expected *Declaration, found Enumerate"). Not a jaic bug.
+- Without placeholders, `Build.jai` runs the generators first. ImGui's and Vulkan's work (`Modules/Vulkan/generate.jai` uses the `*Declaration` enum-value API of [Bindings_Generator](../stdlib/bindings-generator.md#enum-values-and-libraries)); Jolt's needs `cmake`.
 
 `Build.jai` looks for `Modules/<M>/Libs/<MacOS|Linux|Windows>/...` and runs the module's `generate.jai` when a library is missing. `build_vk_engine_libs.py` fills the macOS slots, for a future macOS port. `tools/fetch_upstreams.py` provides the sources: Vk-Engine's vendored ImGui and Vulkan/VMA headers, Linalg, Jolt-Jai, and its `JoltC` submodule (`ostef/JoltC`, pinned in `DEPENDENCIES` to the submodule commit and linked into `ostef--Jolt-Jai/Source/JoltC`). The build tool clones Jolt Physics v5.6.0 into `artifacts/thirdparty/JoltPhysics` and hands it to JoltC's CMake via `FETCHCONTENT_SOURCE_DIR_JOLTPHYSICS`.
 

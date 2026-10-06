@@ -1139,7 +1139,7 @@ create_expression_from_cursor :: (c: Cursor, target_type: *CType) -> *Expression
                 lit.literal_kind = .ENUM;
                 lit.enum_type = enum_decl;
                 name := cursor_name(ref);
-                for *enum_decl.enumerates {
+                for enum_decl.enumerates {
                     if it.name == name {
                         lit.enum_value = it;
                         break;
@@ -1991,11 +1991,11 @@ create_enum :: (c: Cursor) -> *Enum {
     children := get_children(key);
     for children {
         if cursor_kind(it) != .ENUM_CONSTANT_DECL continue;
-        en: Enum.Enumerate;
-        en.name = cursor_name(it);
-        en.signed_value = clang("enum_value", it);
-        en.unsigned_value = cast(u64) clang("enum_uvalue", it);
-        en.location = cursor_location(it);
+        value := New(Literal);
+        value.literal_kind = .INTEGER;
+        if is_signed_storage(e.type) value.int_value = clang("enum_value", it);
+        else value.int_value = cast,no_check(s64) clang("enum_uvalue", it);
+        en := new_enumerator(e, cursor_name(it), cursor_location(it), value);
         fill_comment(*en.comment, it, en.location);
         en.output_name = stripped_name(get_enum_value_name(e, en));
         // Not a known constant: the value only exists as `Enum.value` in the output, so a macro
@@ -2006,10 +2006,26 @@ create_enum :: (c: Cursor) -> *Enum {
     return e;
 }
 
+// A value of `e`, ready to be added to `e.enumerates`; `value` is its `Literal`.
+new_enumerator :: (e: *Enum, name: string, location: Location, value: *Literal) -> *Declaration {
+    en := New(Declaration);
+    en.name = name;
+    en.location = location;
+    en.parent = e;
+    en.expression = value;
+    en.decl_flags |= .IS_CONST;
+    return en;
+}
+
+is_signed_storage :: (t: *CType) -> bool {
+    storage := strip_type(t, typedefs = true);
+    return storage != null && (storage.number_flags & .SIGNED) != 0;
+}
+
 // The Jai name of a value before prefix detection: empty for a value dropped by
 // `strip_enum_values_with_suffix`, else the C name without the prefixes configured for this
 // enum and (with `strip_enum_prefixes`) without the enum's own name.
-get_enum_value_name :: (e: *Enum, en: Enum.Enumerate) -> string {
+get_enum_value_name :: (e: *Enum, en: *Declaration) -> string {
     options := *context.generator_options;
     suffix := options.strip_enum_values_with_suffix;
     if suffix && ends_with(en.name, suffix) return "";
@@ -2033,13 +2049,13 @@ compute_enum_names :: (e: *Enum, already_stripped := false) {
     detected := "";
     if context.generator_options.auto_detect_enum_prefixes && !already_stripped && e.enumerates.count > 1 {
         detected = detect_value_prefix(e);
-        for *e.enumerates {
+        for e.enumerates {
             it.output_name = avoid_reserved_names(trim_left(advance(it.output_name, detected.count), "_"));
         }
     }
 
     // A value has to start like an identifier: `1080P` becomes `_1080P`.
-    for *e.enumerates {
+    for e.enumerates {
         if it.output_name && !is_digit(it.output_name[0]) continue;
         it.output_name = sprint("_%", it.output_name);
     }
