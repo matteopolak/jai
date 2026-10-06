@@ -100,11 +100,10 @@ The independently written `stdlib/`. Before committing any change under `stdlib/
 
 ## Browser
 
-The WebAssembly playground, editor and release bundle.
+The WebAssembly compiler bundle and its releases. The hosted playground UI lives in the portfolio site (https://matteopolak.com/playground/jai).
 
+- [Browser compiler (WebAssembly bundle)](browser/playground.md)
 - [Browser compiler releases](browser/compiler-releases.md)
-- [Browser editor](browser/editor.md)
-- [Browser playground (jaic backend)](browser/playground.md)
 
 ## Tools and workflow
 

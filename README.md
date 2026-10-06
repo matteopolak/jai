@@ -33,7 +33,7 @@ It type-checks, interprets and natively builds real Jai projects, including the 
 | Checking for Windows (`-os windows`) | ✅ | |
 | Native executables for Windows (x86-64) | ✅ | LLVM backend, MSVC toolchain on Windows; cross builds from macOS/Linux with `-os windows` (MinGW-w64). See [docs/native/windows.md](docs/native/windows.md) |
 | Native debug information | ✅ | DWARF on macOS (`.dSYM`) and Linux: lines, backtraces, typed locals and globals; Windows CodeView not yet |
-| Browser playground (WebAssembly) | ✅ | 180 of 200 stdlib tests run; the rest need native processes or libraries |
+| Browser playground (WebAssembly) | ✅ | 180 of 200 stdlib tests run; the rest need native processes or libraries. [Try it in the browser](https://matteopolak.com/playground/jai) |
 | Language server (`jai-lsp`) | ✅ | Diagnostics, type-checked hover and completion, go to definition |
 | Formatter (`jaifmt`) | ✅ | Written in Jai (`Jai_Format` module, also runs in the browser): indentation, spacing and braces, checked against the token stream; no line wrapping |
 | `Bindings_Generator` | ✅ | C, C++ (incl. virtual bases) and Objective-C (incl. block literals); the reference module's generators run unchanged. 16-byte `long double` functions are stripped |
@@ -90,7 +90,7 @@ cargo run -p jaic-cli -- check examples/sum.jai
 cargo run -p jaic-cli -- run examples/sum.jai
 ```
 
-To build and serve the standalone browser playground, follow the [browser playground docs](docs/browser/playground.md). Its compiler and language service run locally in WebAssembly.
+Try it in the browser: https://matteopolak.com/playground/jai. The compiler and language service run locally in WebAssembly; to build the module and its JavaScript glue yourself, see the [browser compiler docs](docs/browser/playground.md).
 
 The same lexer and parser power the `jai-lsp` language server (`cargo run -p jai-language-server --bin jai-lsp`); see [language-server.md](docs/compiler/language-server.md).
 
