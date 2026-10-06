@@ -1280,6 +1280,19 @@
       "negative": {
         "check": "nested more than"
       }
+    },
+    {
+      "id": "invalid-code-value",
+      "source": "negative/invalid-code-value.jai",
+      "sha256": "c90f40ff2ff4bd63782c93b07a2eb5a6d16996902d07a11e005d49bf875711b6",
+      "suite": "negative",
+      "feature": "Code values",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "is not a valid Code value"
+      }
     }
   ]
 }
