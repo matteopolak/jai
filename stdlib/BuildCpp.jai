@@ -91,8 +91,8 @@ execute :: (job: *Job, tool: string, command: [] string) -> bool {
     log("%", get_quoted_command_string(command));
     result := run_command(..command, capture_and_return_output = true, print_captured_output = true, working_directory = job.directory);
     if result.type == .EXITED && result.exit_code == 0 return true;
-    if result.type == .FAILED_TO_LAUNCH compiler_report(tprint("BuildCpp: could not start the % (%).\n", tool, command[0]), job.loc);
-    else compiler_report(tprint("BuildCpp: the % exited with code %.\n", tool, result.exit_code), job.loc);
+    if result.type == .FAILED_TO_LAUNCH report(job, tprint("BuildCpp: could not start the % (%).\n", tool, command[0]));
+    else report(job, tprint("BuildCpp: the % exited with code %.\n", tool, result.exit_code));
     return false;
 }
 
@@ -121,20 +121,33 @@ uses_cpp :: (sources: [] string) -> bool {
 
 build_with_msvc :: (job: *Job, output_basename: string) -> bool {
     #if OS != .WINDOWS {
-        compiler_report("BuildCpp: Windows targets need MSVC, which is only available when building on Windows.\n", job.loc);
+        report(job, "BuildCpp: Windows targets need MSVC, which is only available when building on Windows.\n");
         return false;
     } else {
-        vc_lib, vc_bin := find_visual_studio_in_a_ridiculous_garbage_way();
-        sdk := find_windows_kit_root();
-        if !sdk {
-            compiler_report("BuildCpp: no Windows SDK found.\n", job.loc);
+        #if CPU == .ARM64 {
+            arch :: "arm64";
+            machine :: "/MACHINE:ARM64";
+        } else {
+            arch :: "x64";
+            machine :: "/MACHINE:X64";
+        }
+        // The library folder of the newest MSVC toolset and its linker; cl.exe and lib.exe sit
+        // next to the linker, the headers two levels above the libraries.
+        vc_lib, linker := find_visual_studio_in_a_ridiculous_garbage_way();
+        if !vc_lib || !linker {
+            report(job, "BuildCpp: no Visual Studio C++ toolset found.\n");
             return false;
         }
-        sdk_include := replace(sdk, "Lib", "Include");
+        vc_bin := path_strip_filename(linker);
+        sdk_lib, sdk_include := find_sdk_folders(arch);
+        if !sdk_lib {
+            report(job, "BuildCpp: no Windows SDK found.\n");
+            return false;
+        }
         packs := job.type == .STATIC_LIBRARY || job.type == .OBJ_FILE;
 
         command: [..] string;
-        array_add(*command, tprint("%\\cl.exe", vc_bin), "/nologo", "/W3", "/DWIN32", "-diagnostics:column", "-diagnostics:caret");
+        array_add(*command, tprint("%cl.exe", vc_bin), "/nologo", "/W3", "/DWIN32", "-diagnostics:column", "-diagnostics:caret");
         for string.[tprint("%\\..\\..\\include", vc_lib), tprint("%\\ucrt", sdk_include), tprint("%\\um", sdk_include), tprint("%\\shared", sdk_include)] {
             array_add(*command, tprint("/I%", it));
         }
@@ -147,9 +160,9 @@ build_with_msvc :: (job: *Job, output_basename: string) -> bool {
         if packs {
             array_add(*command, "/c");
         } else {
-            array_add(*command, "/link", tprint("/OUT:%", job.output), "/MACHINE:AMD64");
+            array_add(*command, "/link", tprint("/OUT:%", job.output), machine);
             if job.type == .DYNAMIC_LIBRARY array_add(*command, "/DLL");
-            for string.[vc_lib, tprint("%\\ucrt\\x64", sdk), tprint("%\\um\\x64", sdk)] array_add(*command, tprint("/libpath:%", it));
+            for string.[vc_lib, tprint("%\\ucrt\\%", sdk_lib, arch), tprint("%\\um\\%", sdk_lib, arch)] array_add(*command, tprint("/libpath:%", it));
         }
         array_add(*command, ..job.libraries);
         // The linker leaves an export file next to a DLL; nobody asked for it.
@@ -159,10 +172,49 @@ build_with_msvc :: (job: *Job, output_basename: string) -> bool {
         if job.type != .STATIC_LIBRARY return true;
 
         archive: [..] string;
-        array_add(*archive, tprint("%\\lib.exe", vc_bin), "/nologo", tprint("/OUT:%", job.output));
+        array_add(*archive, tprint("%lib.exe", vc_bin), "/nologo", tprint("/OUT:%", job.output));
         array_add(*archive, ..job.objects);
         return execute(job, "librarian", archive);
     }
+}
+
+#if OS == .WINDOWS {
+    // `Lib\<version>` and `Include\<version>` of the newest Windows 10+ SDK that has libraries
+    // for `arch`. The registry names only the kit's root.
+    find_sdk_folders :: (arch: string) -> lib: string, include: string {
+        root := find_windows_kit_root();
+        if !root return "", "";
+        root = trim_right(root, "\\/");
+        Search :: struct {
+            arch: string;
+            best: string;
+        }
+        search := Search.{ arch = arch };
+        consider :: (info: *File_Visit_Info, search: *Search) {
+            if !begins_with(info.short_name, "10.") return;
+            if !file_exists(tprint("%\\um\\%\\kernel32.lib", info.full_name, search.arch)) return;
+            if !search.best || version_less(search.best, info.short_name) search.best = copy_temporary_string(info.short_name);
+        }
+        visit_files(tprint("%\\Lib", root), false, *search, consider, visit_files = false, visit_directories = true);
+        if !search.best return "", "";
+        return tprint("%\\Lib\\%", root, search.best), tprint("%\\Include\\%", root, search.best);
+    }
+
+    // Dotted versions compared part by part as numbers: 10.0.9 is older than 10.0.10.
+    version_less :: (a: string, b: string) -> bool {
+        left, right := split(a, "."), split(b, ".");
+        for 0..min(left.count, right.count) - 1 {
+            x, y := string_to_int(left[it]), string_to_int(right[it]);
+            if x != y return x < y;
+        }
+        return left.count < right.count;
+    }
+}
+
+// An error for whoever is listening: the compiler while a metaprogram builds, the log otherwise.
+report :: (job: *Job, message: string) {
+    if #compile_time compiler_report(message, job.loc);
+    else log_error("%", message);
 }
 
 build_with_clang :: (job: *Job, compiler_override: string, archiver_override: string) -> bool {
@@ -215,7 +267,7 @@ pick_unix_tools :: (job: *Job, cpp: bool) -> compiler: string, archiver: string,
         ndk := from_environment("NDK_HOME");
         if !ndk ndk = from_environment("ANDROID_NDK_HOME");
         if !ndk {
-            compiler_report("BuildCpp: set NDK_HOME or ANDROID_NDK_HOME to an Android NDK to build for Android.\n", job.loc);
+            report(job, "BuildCpp: set NDK_HOME or ANDROID_NDK_HOME to an Android NDK to build for Android.\n");
             return "", "", false;
         }
         #if OS == .WINDOWS host := "windows-x86_64";
@@ -228,7 +280,7 @@ pick_unix_tools :: (job: *Job, cpp: bool) -> compiler: string, archiver: string,
     if job.target == .NN_SWITCH {
         sdk := from_environment("NINTENDO_SDK_ROOT");
         if !sdk {
-            compiler_report("BuildCpp: set NINTENDO_SDK_ROOT to build for Switch.\n", job.loc);
+            report(job, "BuildCpp: set NINTENDO_SDK_ROOT to build for Switch.\n");
             return "", "", false;
         }
         bin := tprint("%\\Compilers\\NX\\nx\\aarch64\\bin", sdk);
@@ -237,7 +289,7 @@ pick_unix_tools :: (job: *Job, cpp: bool) -> compiler: string, archiver: string,
 
     if job.target == .PS5 {
         // The PS5 SDK lookup is not part of this module; callers pass the tool paths.
-        compiler_report("BuildCpp: pass compiler_executable_path and ar_executable_path for PS5 builds.\n", job.loc);
+        report(job, "BuildCpp: pass compiler_executable_path and ar_executable_path for PS5 builds.\n");
         return "", "", false;
     }
 
