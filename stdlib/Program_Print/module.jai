@@ -440,7 +440,6 @@ pp_procedure :: (builder: *String_Builder, header: *Code_Procedure_Header, depth
 }
 
 pp_struct :: (builder: *String_Builder, node: *Code_Struct, depth: s64) -> bool {
-    ok := true;
     if node.textual_flags & 0x2 append(builder, "union");
     else append(builder, "struct");
     append(builder, " ");

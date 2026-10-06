@@ -1,6 +1,5 @@
 #import "Basic";
 String :: #import "String";
-System :: #import "System";
 Atomics :: #import "Atomics";
 
 Process_Argument_Quoting :: enum {

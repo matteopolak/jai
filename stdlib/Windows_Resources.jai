@@ -242,7 +242,7 @@ _sdk_vs_join :: (left: string, right: string) -> string {
     return builder_to_string(*builder);
 }
 _sdk_vs_file :: (path: string) -> bool {
-    wide, success, bytes := utf8_to_wide(path);
+    wide, success := utf8_to_wide(path);
     if !success || wide == null return false;
     defer free(wide);
     attributes := GetFileAttributesW(wide);

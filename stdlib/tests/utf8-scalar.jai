@@ -8,12 +8,12 @@ utf8_scalar_vectors :: () -> bool {
     emoji_code, emoji_length, emoji_status := character_utf8_to_utf32(emoji.data, emoji.count);
     if emoji_code != 0x1F600 || emoji_length != 4 || emoji_status != .CONVERSION_OK return false;
     invalid := u8.[0xC0, 0xAF];
-    invalid_code, invalid_length, invalid_status := character_utf8_to_utf32(invalid.data, invalid.count);
+    _, _, invalid_status := character_utf8_to_utf32(invalid.data, invalid.count);
     if invalid_status != .SOURCE_ILLEGAL return false;
     surrogate := u8.[0xED, 0xA0, 0x80];
-    surrogate_code, surrogate_length, surrogate_status := character_utf8_to_utf32(surrogate.data, surrogate.count);
+    _, _, surrogate_status := character_utf8_to_utf32(surrogate.data, surrogate.count);
     if surrogate_status != .SOURCE_ILLEGAL return false;
-    exhausted_code, exhausted_length, exhausted_status := character_utf8_to_utf32(emoji.data, 3);
+    _, exhausted_length, exhausted_status := character_utf8_to_utf32(emoji.data, 3);
     if exhausted_status != .SOURCE_EXHAUSTED || exhausted_length != 0 return false;
     buffer: [4] u8;
     output: string = .{ count = 4, data = buffer.data };

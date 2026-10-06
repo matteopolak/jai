@@ -297,12 +297,12 @@ Default_Allocator :: #import "Default_Allocator";
 output_lock: s32;
 lock_output :: () #no_context {
     while true {
-        success, previous := compare_and_swap(*output_lock, 0, 1);
+        success := compare_and_swap(*output_lock, 0, 1);
         if success return;
     }
 }
 unlock_output :: () #no_context {
-    success, previous := compare_and_swap(*output_lock, 1, 0);
+    success := compare_and_swap(*output_lock, 1, 0);
     if !success debug_break();
 }
 write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context {

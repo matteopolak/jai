@@ -86,7 +86,7 @@ __u128_subtract_limb :: (a: u64, b: u64, borrow: u64 = 0) -> value: u64, borrow_
 }
 operator + :: (a: U128, b: U128) -> U128 {
     low, carry := __u128_add_limb(a.low, b.low);
-    high, discarded := __u128_add_limb(a.high, b.high, carry);
+    high := __u128_add_limb(a.high, b.high, carry);
     return U128.{ low, high };
 }
 operator + :: (a: U128, b: u64) -> U128 {
@@ -97,7 +97,7 @@ operator + :: inline (a: S128, b: S128) -> S128 {
 }
 operator - :: inline (a: U128, b: U128) -> U128 {
     low, borrow := __u128_subtract_limb(a.low, b.low);
-    high, discarded := __u128_subtract_limb(a.high, b.high, borrow);
+    high := __u128_subtract_limb(a.high, b.high, borrow);
     return U128.{ low, high };
 }
 operator - :: inline (a: S128, b: S128) -> S128 {
@@ -235,11 +235,11 @@ signed_divide_with_remainder :: inline (dividend: S128, divisor: S128) -> quotie
     return to_s128(q), to_s128(r), false;
 }
 operator / :: (dividend: U128, divisor: U128) -> U128 {
-    quotient, remainder, error := unsigned_divide_with_remainder(dividend, divisor);
+    quotient := unsigned_divide_with_remainder(dividend, divisor);
     return quotient;
 }
 operator / :: (dividend: S128, divisor: S128) -> S128 {
-    quotient, remainder, error := signed_divide_with_remainder(dividend, divisor);
+    quotient := signed_divide_with_remainder(dividend, divisor);
     return quotient;
 }
 operator / :: inline (a: S128, factor: s64) -> S128 {

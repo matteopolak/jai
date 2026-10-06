@@ -50,7 +50,6 @@ get_ndk_libc_paths :: (cpu: CPU_Tag) -> libc_path: string, libc_platform_path: s
 
 #import "Basic";
 #import "File";
-#import "String";
 
 environment_variable :: (name: string) -> string {
     #if OS == .WINDOWS {

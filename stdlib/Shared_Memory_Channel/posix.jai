@@ -59,7 +59,7 @@ writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: 
         P.close(descriptor);
         return false, result;
     }
-    joined, previous := compare_and_swap(*header.writer_status, .DISCONNECTED, .PAUSED);
+    joined := compare_and_swap(*header.writer_status, .DISCONNECTED, .PAUSED);
     if !joined {
         P.munmap(memory, xx stats.st_size);
         P.close(descriptor);

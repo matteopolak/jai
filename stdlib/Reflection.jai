@@ -24,11 +24,11 @@ set_value_from_string :: (any: Any, text: *string) -> bool {
         if descriptor.signed {
             if (!negative && magnitude > 0x7fff_ffff_ffff_ffff) || (negative && magnitude > 0x8000_0000_0000_0000) return false;
             bits := ifx negative then 0 - magnitude else magnitude;
-            accepted, low, high := range_check_and_store(cast,no_check(s64) bits, descriptor, any.value_pointer);
+            accepted := range_check_and_store(cast,no_check(s64) bits, descriptor, any.value_pointer);
             if !accepted return false;
         } else {
             if negative && magnitude != 0 return false;
-            accepted, low, high := range_check_and_store(magnitude, descriptor, any.value_pointer);
+            accepted := range_check_and_store(magnitude, descriptor, any.value_pointer);
             if !accepted return false;
         }
         text.* = remaining;

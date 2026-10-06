@@ -166,7 +166,7 @@ get_render_dimensions :: (window: Window_Type) -> (width: s32, height: s32) {
     return 0, 0;
 }
 set_window_dimensions :: (window: Window_Type, width: s32, height: s32) {
-    info, added := find_or_add_window_info(window);
+    info := find_or_add_window_info(window);
     info.window_width = max(width, 0);
     info.window_height = max(height, 0);
     if context.simp && context.simp.current_window_info.window == window {

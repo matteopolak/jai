@@ -112,7 +112,7 @@ check_refusals :: () {
         "x := 1 \x01 2;\n", // a byte the lexer does not know
     ];
     for bad {
-        output, ok := format_source(it);
+        _, ok := format_source(it);
         if ok fail("malformed input was formatted: %", it);
     }
 }
@@ -150,7 +150,7 @@ check_config_parsing :: () {
         fail("config parsed wrong: %", config);
     }
     for string.["indent_width = x\n", "unknown = 1\n", "brace_style = \"weird\"\n", "ignore = \"a\"\n"] {
-        bad, accepted := parse_config(it);
+        _, accepted := parse_config(it);
         if accepted fail("bad config accepted: %", it);
     }
 

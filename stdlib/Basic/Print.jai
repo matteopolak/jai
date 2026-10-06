@@ -771,9 +771,9 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     if info.type == .PROCEDURE {
         procedure := cast(*Type_Info_Procedure) info;
         append(builder, "procedure (");
-        for i: 0..procedure.argument_types.count - 1 {
-            if i > 0 append(builder, ", ");
-            __append_type(builder, procedure.argument_types[i], depth + 1);
+        for procedure.argument_types {
+            if it_index > 0 append(builder, ", ");
+            __append_type(builder, it, depth + 1);
         }
         append(builder, ")");
         if procedure.return_types.count == 1 {
@@ -781,9 +781,9 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
             __append_type(builder, procedure.return_types[0], depth + 1);
         } else if procedure.return_types.count > 1 {
             append(builder, " -> (");
-            for i: 0..procedure.return_types.count - 1 {
-                if i > 0 append(builder, ", ");
-                __append_type(builder, procedure.return_types[i], depth + 1);
+            for procedure.return_types {
+                if it_index > 0 append(builder, ", ");
+                __append_type(builder, it, depth + 1);
             }
             append(builder, ")");
         }
@@ -1058,8 +1058,7 @@ parse_number :: (s: string, cursor: s64) -> (end_cursor: s64, sum: s64) {
 }
 isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
     if !info return null;
-    for i: 0..info.members.count - 1 {
-        member := *info.members[i];
+    for *member: info.members {
         if (member.flags & .CONSTANT) != 0 || member.offset_in_bytes < 0 continue;
         if member.type == type_info(Formatter) && (member.flags & .AS) != 0 return member;
     }
@@ -1133,7 +1132,7 @@ print :: (format_string: string, args: ..Any, to_standard_error := false) -> byt
 sprint :: (format_string: string, args: ..Any) -> string #must {
     builder: String_Builder;
     init_string_builder(*builder);
-    success := __format_to_builder(*builder, format_string, args);
+    __format_to_builder(*builder, format_string, args);
     result := builder_to_string(*builder);
     free_buffers(*builder);
     return result;
@@ -1141,7 +1140,7 @@ sprint :: (format_string: string, args: ..Any) -> string #must {
 tprint :: (format_string: string, args: ..Any) -> string #must {
     builder: String_Builder;
     init_string_builder(*builder);
-    success := __format_to_builder(*builder, format_string, args);
+    __format_to_builder(*builder, format_string, args);
     owned := builder_to_string(*builder);
     result := copy_temporary_string(owned);
     free(owned);
@@ -1157,7 +1156,7 @@ print_character :: (_c: u8) {
 }
 print_bytes :: (a: *void, length: int, format_string := "% ") {
     bytes := cast(*u8) a;
-    for i: 0..length - 1 count := print(format_string, bytes[i]);
+    for i: 0..length - 1 print(format_string, bytes[i]);
 }
 
 // Explicit independent extension: least digits that round back to binary64.
@@ -1214,16 +1213,16 @@ log :: (format_string: string, args: ..Any, loc := #caller_location, flags := Lo
     return count;
 }
 log_error :: (format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
-    count := log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
+    log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
 }
 log :: (section: *Log_Section, format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0) -> s64 {
     return log(format_string, ..args, loc = loc, flags = flags, user_flags = user_flags, section = section);
 }
 log_error :: (section: *Log_Section, format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0) {
-    count := log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
+    log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
 }
 log_warning :: (format: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
-    count := log(format, ..args, loc = loc, flags = flags | .WARNING, user_flags = user_flags, section = section);
+    log(format, ..args, loc = loc, flags = flags | .WARNING, user_flags = user_flags, section = section);
 }
 
 // Indent the current line of a multi-line struct print to the active nesting depth.

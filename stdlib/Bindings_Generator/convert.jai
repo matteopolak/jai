@@ -308,7 +308,7 @@ starts_with_any :: (text: string, prefixes: [] string) -> bool {
 
 // Whether a declaration that lives in `file` is generated at all.
 is_user_declaration :: (c: Cursor, name: string) -> bool {
-    line := clang("location", c);
+    clang("location", c);
     file := clang_text();
     if !file return false;
     if !clang("system_header", c) return true;
@@ -685,7 +685,6 @@ looks_like_valid_identifier :: (name: string) -> bool {
 // (or, failing that, the first references under the cursor that uses the type)
 // still names the template involved.
 create_unexposed_type :: (ty: Clang_Type, ctx: Cursor) -> *CType {
-    g := context.generator;
     decl := clang("t_decl", ty);
     if decl {
         dk := cursor_kind(decl);
@@ -969,7 +968,7 @@ normalize_mangled_name :: (name: string) -> string {
 JAI_OPERATORS :: string.["+", "-", "*", "/", "%", "==", "<", ">", "<=", ">=", "&", "|", "^", "<<", ">>", "[]"];
 
 replace_all :: (text: string, from: string, to: string) -> string {
-    result, count := replace(text, from, to);
+    result := replace(text, from, to);
     return result;
 }
 
@@ -2088,7 +2087,6 @@ convert_number_literal :: (text: string) -> string, bool {
     if !text return "", false;
     is_hex := begins_with(text, "0x") || begins_with(text, "0X");
     is_float := false;
-    end := text.count;
     if is_hex {
         i := 2;
         while i < text.count && ((text[i] >= #char "0" && text[i] <= #char "9") || (text[i] >= #char "a" && text[i] <= #char "f") || (text[i] >= #char "A" && text[i] <= #char "F")) i += 1;
@@ -2099,7 +2097,6 @@ convert_number_literal :: (text: string) -> string, bool {
 
     i := 0;
     while i < text.count && (text[i] >= #char "0" && text[i] <= #char "9") i += 1;
-    digits_end := i;
     if i < text.count && text[i] == #char "." {
         is_float = true;
         i += 1;

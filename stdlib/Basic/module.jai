@@ -95,7 +95,7 @@ assert_helper :: (message := "", args: ..Any, loc := #caller_location) -> bool {
     assert :: (#discard arg: bool, #discard message := "", #discard args: ..Any, #discard loc := #caller_location) #expand {}
 }
 get_command_line_arguments :: () -> [] string {
-    result, base := NewArray(__command_line_arguments.count, string, true);
+    result := NewArray(__command_line_arguments.count, string, true);
     for arg, index: __command_line_arguments {
         n: s64;
         while arg[n] != 0 n += 1;
@@ -236,7 +236,7 @@ pack_stack_trace :: (node: *Stack_Trace_Node) -> [] Stack_Trace_Node {
         count += 1;
         cursor = cursor.next;
     }
-    result, base := NewArray(count, Stack_Trace_Node, true);
+    result := NewArray(count, Stack_Trace_Node, true);
     cursor = node;
     for i: 0..count - 1 {
         result[i] = cursor.*;

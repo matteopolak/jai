@@ -143,7 +143,6 @@ print_function_type_to_builder :: (builder: *String_Builder, type: *Function_Typ
     args: [] *Declaration = type.arguments;
     if func args = context.generator_options.get_func_args_for_printing(func, type, .FOREIGN_FUNC_DECLARATION);
     append(builder, "(");
-    needs_printf := func && (func.decl_flags & .NEEDS_PRINTF_WRAPPER) != 0;
     for args {
         if it_index > 0 append(builder, ", ");
         arg_flags := Print_Decl_Flags.NO_SEMICOLON | .NO_INDENT | .IN_FUNCTION_ARGS | .KEEP_POINTER_TO_VALUE;
@@ -334,7 +333,7 @@ get_name_alignment :: (declarations: [] *Declaration) -> int {
 print_comment_prefix :: (builder: *String_Builder, comment: Comment, no_indent: bool) {
     remainder := comment.text;
     while remainder {
-        found, line, rest := split_from_left(remainder, #char "\n");
+        _, line, rest := split_from_left(remainder, #char "\n");
         remainder = rest;
         line = trim(line, " \t\r");
         append(builder, line);
@@ -1004,7 +1003,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         append_indentation(builder);
         append(builder, "// jai: a base class has C++ virtual bases, which this class shares; its layout differs from C++, do not use these fields.");
     } else if part == .FULL && s.parents.count > 0 && !(s.flags & .IS_UNION) && s.type {
-        offsets, end := get_printed_base_layout(s);
+        _, end := get_printed_base_layout(s);
         first_own := get_first_own_offset(s);
         if first_own >= 0 && first_own < end {
             s.flags |= .NO_STRUCT_CHECKS;
@@ -1030,7 +1029,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
         if is_operator(it) continue;
-        is_data, unused := is_struct_field(it);
+        is_data := is_struct_field(it);
         if part == .WRAPPER && is_data continue;
         if part == .RAW_DATA && !is_data continue;
         explicit_alignment := 0;
@@ -1203,7 +1202,7 @@ get_struct_alignment :: (s: *Struct, include_bitfield_alignment: bool) -> s64 {
             if !bf.type.array_element_type a = bf.type.size;
             if include_bitfield_alignment && bf.alignment_type a = max(a, bf.alignment_type.size);
         } else {
-            is_field, is_anon := is_struct_field(it);
+            is_field := is_struct_field(it);
             if !is_field continue;
             if it.kind == .STRUCT {
                 a = get_struct_alignment(cast(*Struct) it, include_bitfield_alignment);
@@ -1288,7 +1287,7 @@ nonvirtual_data_end :: (s: *Struct, own_vptr: bool) -> s64 {
     }
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
-        is_data, unused := is_struct_field(it);
+        is_data := is_struct_field(it);
         if !is_data || it.storage_class == .Static continue;
         offset, size := get_field_layout(it);
         if offset < 0 || size < 0 return -1;
@@ -1377,10 +1376,10 @@ get_printed_base_layout :: (s: *Struct) -> offsets: [] s64, end: s64 {
 
 // Size of the data of a class without its tail padding (what a derived class starts after).
 get_data_size :: (s: *Struct) -> s64 {
-    offsets, end := get_printed_base_layout(s);
+    _, end := get_printed_base_layout(s);
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
-        is_data, unused := is_struct_field(it);
+        is_data := is_struct_field(it);
         if !is_data continue;
         offset, size, alignment := get_field_layout(it);
         if offset < 0 {
@@ -1396,9 +1395,9 @@ get_first_own_offset :: (s: *Struct) -> s64 {
     first_own := -1;
     for s.declarations {
         if it.decl_flags & .OMIT_FROM_OUTPUT continue;
-        is_data, unused := is_struct_field(it);
+        is_data := is_struct_field(it);
         if !is_data continue;
-        offset, size, alignment := get_field_layout(it);
+        offset := get_field_layout(it);
         if offset >= 0 && (first_own < 0 || offset < first_own) first_own = offset;
     }
     return first_own;
@@ -1477,7 +1476,7 @@ mark_tail_padding_struct :: (s: *Struct, done: *Table(*Struct, bool)) {
             if reuse[it] && !candidates[it] valid = false;
         }
         if !valid continue;
-        offsets, end := get_base_layout(s, reuse);
+        _, end := get_base_layout(s, reuse);
         if base_layout_matches(s, end) {
             found = true;
             break;

@@ -1,9 +1,9 @@
 // Printers recognize declared numeric layouts before reading their storage.
 print_numeric_row :: (builder: *Basic.String_Builder, values: [] float) {
     Basic.append(builder, "(");
-    for i: 0..values.count - 1 {
-        if i != 0 Basic.append(builder, ", ");
-        Basic.print_to_builder(builder, "%", values[i]);
+    for values {
+        if it_index != 0 Basic.append(builder, ", ");
+        Basic.print_to_builder(builder, "%", it);
     }
     Basic.append(builder, ")");
 }

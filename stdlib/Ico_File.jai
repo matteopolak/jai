@@ -58,7 +58,7 @@ get_bytes_for_image :: (comp: s32, size: s32) -> (image_bytes: s32, mask_bytes: 
     return cast(s32) image, cast(s32) mask, cast(s32) total;
 }
 get_total_bytes_for_size :: (comp: s32, size: s32) -> s32 {
-    image_bytes, mask_bytes, total_bytes := get_bytes_for_image(comp, size);
+    _, _, total_bytes := get_bytes_for_image(comp, size);
     return total_bytes;
 }
 

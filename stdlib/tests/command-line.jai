@@ -58,17 +58,17 @@ main :: () {
     array_free(terminated_free);
 
     missing := string.["test", "-coordinates", "1"];
-    missing_ok, missing_result, missing_set, missing_free := parse_arguments_from(missing, Arguments, help_triggers = .[]);
+    missing_ok, _, missing_set, missing_free := parse_arguments_from(missing, Arguments, help_triggers = .[]);
     assert(!missing_ok && !missing_set.coordinates);
     array_free(missing_free);
 
     invalid_enum := string.["test", "-mode", "UNKNOWN"];
-    enum_ok, enum_result, enum_set, enum_free := parse_arguments_from(invalid_enum, Arguments, help_triggers = .[]);
+    enum_ok, _, enum_set, enum_free := parse_arguments_from(invalid_enum, Arguments, help_triggers = .[]);
     assert(!enum_ok && !enum_set.mode);
     array_free(enum_free);
 
     help := string.["test", "-help"];
-    help_ok, help_result, help_set, help_free := parse_arguments_from(help, Arguments);
+    help_ok, _, help_set, help_free := parse_arguments_from(help, Arguments);
     assert(!help_ok && !help_set.count);
     array_free(help_free);
 }

@@ -16,7 +16,7 @@ bitmap_alloc :: (using bitmap: *Bitmap, w: s32, h: s32, _format: Texture_Format)
     assert(bytes >= 0 && stride <= 0x7fff_ffff && (bytes > 0 || w == 0 || h == 0), "Unsupported or overflowing bitmap dimensions");
     if bytes == 0 && w > 0 && h > 0 return;
     deinit(bitmap);
-    data, base := NewArray(bytes, u8, true);
+    data := NewArray(bytes, u8, true);
     if bytes > 0 && !data.data {
         bitmap.* = .{};
         assert(false, "Could not allocate bitmap storage");
@@ -51,7 +51,7 @@ bitmap_save :: (bitmap: *Bitmap, filepath: string, save_alpha := false) -> bool 
     channels: s32 = 3;
     if bitmap.format == .RGBA8 channels = 4;
     name := temp_c_string(filepath);
-    extension, found_extension := Strings.path_extension(filepath);
+    extension := Strings.path_extension(filepath);
     if extension == "png" return Image_Write.stbi_write_png(name, bitmap.width, bitmap.height, channels, bitmap.data.data, bitmap.stride) != 0;
     if bitmap.stride != bitmap.width * channels return false;
     if extension == "bmp" return Image_Write.stbi_write_bmp(name, bitmap.width, bitmap.height, channels, bitmap.data.data) != 0;
@@ -73,7 +73,7 @@ bitmap_build_mipmaps :: (bitmap: *Bitmap) {
         bytes += cast(int) w * h * channels;
         levels += 1;
     }
-    output, base := NewArray(bytes, u8, true);
+    output := NewArray(bytes, u8, true);
     for y: 0..bitmap.height - 1 memcpy(output.data + y * bitmap.width * channels, bitmap.data.data + y * bitmap.stride, bitmap.width * channels);
     source := output.data;
     source_w := bitmap.width;

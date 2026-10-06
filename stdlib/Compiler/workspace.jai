@@ -380,7 +380,7 @@ compiler_get_code :: (node: *Code_Node, code_to_copy_scope_from: Code = #code,nu
 
 code_to_string :: (code: Code) -> string {
     PP :: #import "Program_Print";
-    root, expressions := compiler_get_nodes(code);
+    root := compiler_get_nodes(code);
     builder: String_Builder;
     PP.print_expression(*builder, root);
     return builder_to_string(*builder);

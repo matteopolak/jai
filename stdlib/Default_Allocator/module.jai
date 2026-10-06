@@ -177,12 +177,12 @@ ledger_lock: s32;
 
 lock_ledger :: () {
     while true {
-        success, observed := compare_and_swap(*ledger_lock, cast(s32) 0, cast(s32) 1);
+        success := compare_and_swap(*ledger_lock, cast(s32) 0, cast(s32) 1);
         if success return;
     }
 }
 unlock_ledger :: () {
-    success, observed := compare_and_swap(*ledger_lock, cast(s32) 1, cast(s32) 0);
+    compare_and_swap(*ledger_lock, cast(s32) 1, cast(s32) 0);
 }
 create_heap_locked :: () -> *Heap {
     heap := cast(*Heap) c_malloc(cast(u64) size_of(Heap));

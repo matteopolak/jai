@@ -11,7 +11,6 @@
     #load "glad_core.jai";
 }
 #import "Basic";
-#import "Compiler";
 #import "String";
 #import "Window_Type";
 #if OS == .NN_SWITCH {

@@ -15,7 +15,7 @@ string_byte_vectors :: () -> bool {
     if !is_absolute_path("/dir/file") || is_absolute_path("dir/file") return false;
     number, valid := string_to_int("-9223372036854775808");
     if !valid || number != -0x7fff_ffff_ffff_ffff - 1 return false;
-    overflow, overflow_valid := string_to_int("9223372036854775808");
+    _, overflow_valid := string_to_int("9223372036854775808");
     if overflow_valid return false;
     decimal, decimal_valid := string_to_float("-12.5e1");
     if !decimal_valid || decimal != -125 return false;

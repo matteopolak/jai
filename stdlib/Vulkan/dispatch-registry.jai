@@ -24,7 +24,7 @@ _vk_registry_guard: u32;
 _vk_registry_next_generation: u64 = 1;
 _vk_registry_lock :: () {
     while true {
-        acquired, previous := compare_and_swap(*_vk_registry_guard, cast(u32) 0, cast(u32) 1);
+        acquired := compare_and_swap(*_vk_registry_guard, cast(u32) 0, cast(u32) 1);
         if acquired return;
     }
 }

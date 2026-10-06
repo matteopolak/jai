@@ -105,7 +105,7 @@ generate_bindings :: (options_in: Generate_Bindings_Options, log_results := fals
         has_sysroot := false;
         for options.extra_clang_arguments if it == "-isysroot" has_sysroot = true;
         if !has_sysroot {
-            result, output := run_command("xcrun", "--show-sdk-path", capture_and_return_output = true);
+            _, output := run_command("xcrun", "--show-sdk-path", capture_and_return_output = true);
             sdk := trim(output);
             if !sdk {
                 // `run_command` is unavailable when the program targets another OS: use the
@@ -648,7 +648,7 @@ read_symbols :: (lib: *Library_Info, path: string, strip_underscore: bool) -> bo
     names: [..] string;
     remainder := output;
     while remainder {
-        found, line, rest := split_from_left(remainder, #char "\n");
+        _, line, rest := split_from_left(remainder, #char "\n");
         remainder = rest;
         line = trim(line);
         if !line continue;
@@ -688,7 +688,7 @@ read_tbd_symbols :: (lib: *Library_Info, path: string, options: Generate_Binding
     list_key := "";
     remainder := text;
     while remainder {
-        found, line, rest := split_from_left(remainder, #char "\n");
+        _, line, rest := split_from_left(remainder, #char "\n");
         remainder = rest;
         body := line;
         if !in_list {

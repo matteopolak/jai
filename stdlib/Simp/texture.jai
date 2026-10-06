@@ -44,7 +44,7 @@ texture_load_from_memory :: (texture: *Texture, memory: [] u8, srgb := false, bu
 texture_load_from_bitmap :: (using texture: *Texture, bitmap: *Bitmap) -> bool {
     if !texture || !bitmap || bitmap.width <= 0 || bitmap.height <= 0 || bitmap.mipmap_count <= 0 return false;
     if !is_supported(bitmap.format) return false;
-    bytes, row := get_image_size(bitmap.format, bitmap.width, bitmap.height);
+    _, row := get_image_size(bitmap.format, bitmap.width, bitmap.height);
     if bitmap.stride < row || bitmap.data.count < bitmap.stride * bitmap.height return false;
     #if render_api == .OPENGL {
         if gl_api {
@@ -105,7 +105,7 @@ deinit :: (texture: *Texture) {
 }
 is_supported :: (format: Texture_Format) -> bool {
     #if render_api == .OPENGL {
-        internal, external, type := gl_texture_format(format);
+        internal := gl_texture_format(format);
         return internal != 0;
     }
     return format == .R8 || format == .RG8 || format == .RGB8 || format == .RGBA8 || format == .BGRA8;

@@ -35,7 +35,7 @@ remember_record :: (id: s64, pointer: *void) {
 }
 
 index_pending_records :: () {
-    for record_unindexed {
+    for pending: record_unindexed {
         if (record_slots_used + 1) * 4 >= record_slots.count * 3 {
             old := record_slots;
             record_slots = NewArray(max(64, old.count * 2), s64);
@@ -43,7 +43,7 @@ index_pending_records :: () {
             for old if it insert_record_slot(it);
             array_free(old);
         }
-        insert_record_slot(it);
+        insert_record_slot(pending);
     }
     record_unindexed.count = 0;
 }

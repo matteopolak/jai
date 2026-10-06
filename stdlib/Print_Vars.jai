@@ -44,7 +44,7 @@ pad_spaces :: (builder: *Basic.String_Builder, n: s64) {
     for 1..n Basic.append(builder, " ");
 }
 get_code_name :: (code: Code) -> string #compile_time {
-    root, expressions := Compiler.compiler_get_nodes(code);
+    root := Compiler.compiler_get_nodes(code);
     if root.kind == .IDENT return Basic.copy_string((cast(*Compiler.Code_Ident) root).name);
     builder: Basic.String_Builder;
     PP.print_expression(*builder, root);

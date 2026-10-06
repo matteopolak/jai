@@ -1,5 +1,4 @@
 // Public libevdev C contracts. Resolves installed system libevdev, never vendor assets.
-#import "POSIX";
 #import "Linux";
 libevdev :: struct {}
 libevdev_uinput :: struct {}

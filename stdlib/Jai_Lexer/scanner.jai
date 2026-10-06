@@ -186,7 +186,7 @@ make_number :: (lexer: *Lexer) -> *Token {
             if exponent_start == lexer.input_cursor report_parse_error(lexer, "Expected exponent digits\n");
         }
         text := string.{ lexer.input_cursor - beginning, lexer.input.data + beginning };
-        number, success, rest := string_to_float64(text);
+        number, success := string_to_float64(text);
         result.float64_value = number;
         result.value_flags |= .FLOAT;
         if !success report_parse_error(lexer, "Invalid floating point literal\n");
