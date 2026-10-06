@@ -26,14 +26,11 @@ Zip_Directory :: struct {
 // The open file belongs to the caller; this releases only directory storage.
 deinit :: (dir: *Zip_Directory) {
     if !dir return;
-    free(dir.name);
-    free(dir.entries.data);
+    still_open := dir.file;
     free(dir.memory_block);
-    dir.name = "";
-    dir.entries.data = null;
-    dir.entries.count = 0;
-    dir.entries.allocated = 0;
-    dir.memory_block = "";
+    free(dir.entries.data);
+    free(dir.name);
+    dir.* = .{ file = still_open };
 }
 
 load_zip_directory :: (zip_filename: string, close_file := true) -> (success: bool, dir: Zip_Directory) {
