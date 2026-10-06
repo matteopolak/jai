@@ -16,7 +16,7 @@ A program can import Runtime_Support itself with other arguments and gets its ow
 Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT=false, DEFINE_INITIALIZATION=false, ENABLE_BACKTRACE_ON_CRASH=false);
 ```
 
-Without the entry point there is no exported `main`: `no exported 'main' (is Runtime_Support loaded?)`.
+Without the entry point there is no exported `main`: ``main` is declared, but no entry point calls it (is Runtime_Support loaded?)`.
 
 `context_type` (`sema/structs.rs`) synthesises the `Context` struct. Preload's `FIRST_ADD_CONTEXT :: #code #add_context #as using base: Context_Base;` comes first, resolved in Runtime_Support's scope (which defines `Context_Base`), followed by every `#add_context` in load order {#prelude.4}.
 
