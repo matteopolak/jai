@@ -26,6 +26,7 @@ It has two layers:
 | Document links on `#load` / `#import` strings | `textDocument/documentLink` | environment |
 | Go to type definition | `textDocument/typeDefinition` | semantic |
 | Find references, document highlights | `textDocument/references`, `textDocument/documentHighlight` | semantic |
+| Rename (locals, globals, procedures with their overload declarations, types, modules, constants) | `textDocument/prepareRename`, `textDocument/rename` | semantic |
 | Signature help, with the overload the call resolved to active | `textDocument/signatureHelp` | semantic |
 | Inlay hints: inferred types of `x :=`, parameter names of literal arguments, `#run` values | `textDocument/inlayHint` | semantic |
 | Code actions: show an expansion, inline an `#insert`, replace a `#run` with its value | `textDocument/codeAction` | semantic |
@@ -37,7 +38,7 @@ It has two layers:
 | Folding ranges: blocks and runs of `#import`/`#load` | `textDocument/foldingRange` | syntax |
 | Stdlib and module sources for read-only viewing | `jai/source` (non-standard) | environment |
 
-Not supported: rename, formatting (see [jaifmt](../tools/jaifmt.md)), pull diagnostics, type-checker diagnostics (only syntax and format-string diagnostics are published), references to struct members.
+Not supported: renaming struct members, formatting (see [jaifmt](../tools/jaifmt.md)), pull diagnostics, type-checker diagnostics (only syntax and format-string diagnostics are published), references to struct members.
 
 ## How it works
 
@@ -108,6 +109,7 @@ computing
 
 - **Definition** (`ide_definition`) uses the reference at the cursor: an entity's declaration, every procedure of an overload set (aliases under their own name), or a struct. Spans are narrowed to the declared name; a procedure's span starts at its literal, so the name is found earlier on its line (`name :: (`). Targets can be modules or stdlib files the client never opened.
 - **References** (`ide_references`) map every recorded reference to a target (a local or global entity, a procedure, a type or a module) and return those sharing the cursor's. A procedure's declaration resolves to the same `ProcId` its calls name, and a struct declaration to the same `TypeId` its uses name. Only files under the root's directory are recorded, so references inside the stdlib are not listed. Struct members are not tracked (a member reference does not record its owner type). Document highlights are the references within the document.
+- **Rename** edits every reference that spells the old name (in open documents the text is checked; recorded files that are not open are edited by range). `prepareRename` refuses names the check did not record or that are members, and the new name must be an identifier that is not a keyword. A backticked caller name inside a macro body (`` `total ``) is a reference to the caller's local and is renamed with it.
 - **Module names.** A name that evaluates to a module (`B` in `B :: #import "Basic"; B.print`) goes to the start of the module's entry file (`modules[m].files[0]`). `Module.name` records what the member resolved to (procedures, a type, a nested module) rather than a plain member, so definition and references follow names reached through a module, through `using`, and through re-exports (`module_lookup`, `exported_using_imports`). Modules are never merged: each `#import` is its own module and its names are reached through it.
 - **Type definition** (`ide_type_definition`) takes the reference's type, strips pointers and arrays, and returns the struct or enum declaration.
 

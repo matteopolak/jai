@@ -120,6 +120,14 @@ struct ReferenceParams {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RenameParams {
+    text_document: DocumentIdentifier,
+    position: Position,
+    new_name: String,
+}
+
+#[derive(Deserialize)]
 struct WorkspaceSymbolParams {
     query: String,
 }
@@ -320,6 +328,7 @@ impl JsonSession {
                     "definitionProvider": true,
                     "typeDefinitionProvider": true,
                     "referencesProvider": true,
+                    "renameProvider": { "prepareProvider": true },
                     "documentHighlightProvider": true,
                     "documentSymbolProvider": true,
                     "workspaceSymbolProvider": true,
@@ -438,6 +447,34 @@ impl JsonSession {
                             .references(&uri(&p.text_document.uri)?, p.position, declaration)
                             .map_err(domain)?,
                     )
+                }
+                "textDocument/prepareRename" => {
+                    let p: PositionParams = decode(params)?;
+                    self.session
+                        .prepare_rename(&uri(&p.text_document.uri)?, p.position)
+                        .map_err(domain)?
+                        .map_or(Value::Null, |range| json!(range))
+                }
+                "textDocument/rename" => {
+                    let p: RenameParams = decode(params)?;
+                    match self
+                        .session
+                        .rename(&uri(&p.text_document.uri)?, p.position, &p.new_name)
+                        .map_err(domain)?
+                    {
+                        None => Value::Null,
+                        Some(documents) => {
+                            let mut changes = serde_json::Map::new();
+                            for (target, edits) in documents {
+                                let edits: Vec<Value> = edits
+                                    .iter()
+                                    .map(|e| json!({ "range": e.range, "newText": e.new_text }))
+                                    .collect();
+                                changes.insert(target, Value::Array(edits));
+                            }
+                            json!({ "changes": changes })
+                        }
+                    }
                 }
                 "textDocument/documentHighlight" => {
                     let p: PositionParams = decode(params)?;
