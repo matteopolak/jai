@@ -108,7 +108,7 @@ The reducer keeps a candidate if it still compiles and the backends still split 
 
 ### Full run
 
-Run this before a release, or after changing the interpreter, sema's constant folding, lowering or the LLVM backend. It takes about an hour on an M-series laptop. Run it with one heavy job at a time, since it builds two native executables per program:
+Run this before a release, or after changing the interpreter, sema's constant folding, lowering or the LLVM backend. On an M-series laptop the corpus, stdlib and modules run takes about 3 minutes and the 3,000-program run about 27. Run it with one heavy job at a time, since it builds two native executables per program:
 
 ```sh
 cargo build --release -p jaic-cli
@@ -133,7 +133,7 @@ Each bug was fixed with a regression test.
 | `tests/stdlib/debug-assert-handlers.jai` | native | functions had no frame records, so macOS `backtrace` (Debug's `backtrace`) found no frames ([LLVM backend](../native/llvm-backend.md)) |
 | generated seed 10014 (`tests/corpus/positive/unrolled-sub-reduction.jai`) | native-O2 | LLVM 22's runtime unroller recombined parallel accumulators of an `a -= b` recurrence wrongly. jaic turns that transformation off ([LLVM backend](../native/llvm-backend.md)) |
 
-The generated programs found 2 of these bugs. Four came from the stdlib sets, and one from a targeted probe of int-to-float conversions (jaigen now generates those edge values too). Campaigns so far: seeds 1–200, 1000–1299, 10000–12999 and 20000–22999. That is 6,500 programs on all four backends, plus 400 for compile validity. Only seed 10014 disagreed, and it agrees after the fix. One program, seed 22650, failed to compile everywhere; see Open questions.
+The generated programs found 2 of these bugs. Four came from the stdlib sets, and one from a targeted probe of int-to-float conversions (jaigen now generates those edge values too). Campaigns so far: seeds 1–200, 1000–1299, 10000–12999, 20000–22999, 30000–30299 and 40000–41499. That is 8,300 programs on all four backends, plus 400 for compile validity. Only seed 10014 disagreed, and it agrees after the fix. One program, seed 22650, failed to compile everywhere; see Open questions.
 
 ### Open questions
 
