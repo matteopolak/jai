@@ -27,6 +27,7 @@
 
 ### Changed
 
+- The language server binary is now `jailsp` (was `jai-lsp`); update editor configurations that launch it.
 - A prefix `cast(T)` / `xx` now takes a following chain of bitwise and shift operators (`& | ^ << >> <<< >>>`) as part of its value, matching Jai: `cast(float) (hex >> 16) & 0xFF` masks before converting, and `cast(u32) byte << 16` shifts the `u8` before widening. Arithmetic, comparisons and logical operators still apply to the cast's result. Code that relied on the old grouping needs `(cast(T) x) << n`; the stdlib and tests were updated.
 - `jaifmt` output is canonical, like rustfmt: exactly zero or one space between tokens (binary operators always spaced, no alignment runs, one space before trailing comments, `.{ a, b }` literals), one statement per line, non-empty `{ }` bodies expanded onto their own lines, and a `{` or `else` on its own line always joined to its header (including `if s == "a"`, `if x ==` switches and blank lines in between). Output is idempotent; `tests/native/debug-info` is excluded because the debugger test pins line numbers.
 
