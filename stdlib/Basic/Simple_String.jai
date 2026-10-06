@@ -147,6 +147,8 @@ string_to_float64_new :: (text: string) -> success: bool, result: float64, remai
 
 // Decimal significand plus an optional exponent. This intentionally does not
 // recognize hexadecimal floats, NaN/Inf spellings, or locale separators.
+// The digits are gathered as an integer and a power of ten first and converted once at the
+// end (decimal_to_float64), so "0.3" gives the double nearest 0.3 rather than 3 * 0.1.
 string_to_float_type_T :: (_arg: string) -> result: $T, success: bool, remainder: string {
     text := eat_spaces(_arg);
     position: s64 = 0;
@@ -157,26 +159,24 @@ string_to_float_type_T :: (_arg: string) -> result: $T, success: bool, remainder
             position += 1;
         } else if text[0] == #char "+" position += 1;
     }
-    value: T = 0;
-    digits: s64 = 0;
+    digits: Decimal_Digits;
+    seen: s64 = 0;
     while position < text.count {
         if !is_digit(text[position]) break;
-        value = value * 10 + cast(T) (text[position] - #char "0");
-        digits += 1;
+        take_decimal_digit(*digits, text[position] - #char "0", after_point = false);
+        seen += 1;
         position += 1;
     }
     if position < text.count && text[position] == #char "." {
         position += 1;
-        scale: T = 0.1;
         while position < text.count {
             if !is_digit(text[position]) break;
-            value += cast(T) (text[position] - #char "0") * scale;
-            scale *= 0.1;
-            digits += 1;
+            take_decimal_digit(*digits, text[position] - #char "0", after_point = true);
+            seen += 1;
             position += 1;
         }
     }
-    if digits == 0 return 0, false, _arg;
+    if seen == 0 return 0, false, _arg;
     if position < text.count && (text[position] == #char "e" || text[position] == #char "E") {
         exponent_start := position;
         position += 1;
@@ -198,14 +198,133 @@ string_to_float_type_T :: (_arg: string) -> result: $T, success: bool, remainder
         if exponent_digits == position position = exponent_start;
         else {
             if exponent > 4000 return 0, false, _arg;
-            multiplier: T = 10;
-            if exponent_negative multiplier = 0.1;
-            while exponent > 0 {
-                value *= multiplier;
-                exponent -= 1;
-            }
+            if exponent_negative digits.power_of_ten -= exponent;
+            else digits.power_of_ten += exponent;
         }
     }
+    value := decimal_to_float64(digits.significand, digits.power_of_ten);
     if negative value = -value;
-    return value, true, advance(text, position);
+    return cast(T) value, true, advance(text, position);
 }
+
+#scope_file
+// A decimal number as significand * 10^power_of_ten, keeping at most 19 significant digits
+// (all that fit in a u64). Later digits only move the exponent; the error they leave is far
+// below a float64's precision.
+Decimal_Digits :: struct {
+    significand: u64;
+    kept: s64;
+    power_of_ten: s64;
+}
+take_decimal_digit :: (digits: *Decimal_Digits, digit: u8, after_point: bool) {
+    if digits.significand == 0 && digit == 0 {
+        if after_point digits.power_of_ten -= 1; // a leading zero only shifts the point
+        return;
+    }
+    if digits.kept < 19 {
+        digits.significand = digits.significand * 10 + digit;
+        digits.kept += 1;
+        if after_point digits.power_of_ten -= 1;
+    } else if !after_point {
+        digits.power_of_ten += 1; // a dropped integer digit still scales the value
+    }
+}
+// Every power of ten up to 10^22 is exact in a float64.
+EXACT_POWERS_OF_TEN :: float64.[
+    1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11,
+    1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22,
+];
+// significand * 10^power_of_ten, rounded to the nearest float64.
+decimal_to_float64 :: (significand: u64, power_of_ten: s64) -> float64 #no_aoc {
+    if significand == 0 return 0;
+    // Both operands exact, so one IEEE multiply or divide rounds correctly.
+    if significand <= (cast(u64) 1) << 53 && power_of_ten >= -22 && power_of_ten <= 22 {
+        exact := cast(float64) significand;
+        if power_of_ten >= 0 return exact * EXACT_POWERS_OF_TEN[power_of_ten];
+        return exact / EXACT_POWERS_OF_TEN[-power_of_ten];
+    }
+    infinity_bits: u64 = 0x7ff0_0000_0000_0000;
+    if power_of_ten >= 310 return (cast(*float64) *infinity_bits).*;
+    if power_of_ten < -343 return 0; // below half the smallest subnormal even with 19 digits
+
+    // Otherwise scale a 64-bit binary mantissa by ten, one step at a time:
+    // value = mantissa * 2^binary_exponent, with mantissa's top bit set.
+    mantissa := significand;
+    binary_exponent: s64 = 0;
+    while (mantissa & 0x8000_0000_0000_0000) == 0 {
+        mantissa <<= 1;
+        binary_exponent -= 1;
+    }
+    low_mask: u64 = 0xffff_ffff;
+    for 1..power_of_ten {
+        // The 68-bit product mantissa * 10, as `top` (its bits above 64) and `bottom`.
+        low_product := (mantissa & low_mask) * 10;
+        high_product := (mantissa >> 32) * 10 + (low_product >> 32);
+        bottom := (high_product << 32) | (low_product & low_mask);
+        top := high_product >> 32;
+        shift: u64 = 1;
+        while (top >> shift) != 0 shift += 1;
+        mantissa = (top << (64 - shift)) | (bottom >> shift);
+        if (bottom >> (shift - 1)) & 1 {
+            mantissa += 1;
+            if mantissa == 0 {
+                mantissa = 0x8000_0000_0000_0000;
+                binary_exponent += 1;
+            }
+        }
+        binary_exponent += cast(s64) shift;
+    }
+    for 1..-power_of_ten {
+        // (mantissa * 2^64) / 10 by long division in 32-bit pieces, keeping the top 64 bits.
+        pieces: [4] u64;
+        pieces[0] = mantissa >> 32;
+        pieces[1] = mantissa & low_mask;
+        carry: u64 = 0;
+        for i: 0..3 {
+            current := (carry << 32) | pieces[i];
+            pieces[i] = current / 10;
+            carry = current % 10;
+        }
+        upper := (pieces[0] << 32) | pieces[1];
+        lower := (pieces[2] << 32) | pieces[3];
+        lead: u64 = 0;
+        while ((upper << lead) & 0x8000_0000_0000_0000) == 0 lead += 1;
+        mantissa = (upper << lead) | (lower >> (64 - lead));
+        if (lower >> (63 - lead)) & 1 {
+            mantissa += 1;
+            if mantissa == 0 {
+                mantissa = 0x8000_0000_0000_0000;
+                binary_exponent += 1;
+            }
+        }
+        binary_exponent -= cast(s64) lead;
+    }
+
+    // Round the 64-bit mantissa to the 53 bits (fewer when subnormal) a float64 keeps.
+    exponent := binary_exponent + 63;
+    if exponent > 1023 return (cast(*float64) *infinity_bits).*;
+    dropped: u64 = 11;
+    if exponent < -1022 dropped += cast(u64) (-1022 - exponent);
+    if dropped > 64 return 0;
+    kept: u64 = 0;
+    rest := mantissa;
+    if dropped < 64 {
+        kept = mantissa >> dropped;
+        rest = mantissa & (((cast(u64) 1) << dropped) - 1);
+    }
+    half := (cast(u64) 1) << (dropped - 1);
+    if rest > half || (rest == half && (kept & 1) != 0) kept += 1;
+    bits: u64;
+    if exponent < -1022 {
+        bits = kept; // a carry into bit 52 lands on the smallest normal exponent by itself
+    } else {
+        if kept == (cast(u64) 1) << 53 {
+            kept >>= 1;
+            exponent += 1;
+            if exponent > 1023 return (cast(*float64) *infinity_bits).*;
+        }
+        bits = ((cast(u64) (exponent + 1023)) << 52) | (kept & 0x000f_ffff_ffff_ffff);
+    }
+    return (cast(*float64) *bits).*;
+}
+#scope_export
