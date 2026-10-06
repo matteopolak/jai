@@ -177,7 +177,13 @@ array_resize :: (array: *[] $T, new_count: s64, $initialize := true) {
 array_resize :: (array: *[..] $T, new_count: s64, $initialize := true) {
     assert(new_count >= 0);
     array_reserve(array, new_count);
-    #if initialize for i: array.count..new_count - 1 Initialize(array.data + i);
+    #if initialize {
+        #if initializer_of(T) == null {
+            if new_count > array.count memset(array.data + array.count, 0, (new_count - array.count) * size_of(T));
+        } else {
+            for i: array.count..new_count - 1 Initialize(array.data + i);
+        }
+    }
     array.count = new_count;
 }
 maybe_grow :: (array: *Resizable_Array, element_size: s64) {

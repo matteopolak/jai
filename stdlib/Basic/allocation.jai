@@ -110,10 +110,15 @@ NewArray :: (count: s64, $T: Type, $initialized := true, alignment: s32 = -1) ->
     result.count = count;
     result.data = cast(*T) data;
     #if initialized {
-        index: s64 = 0;
-        while index < count {
-            Initialize(*result[index]);
-            index += 1;
+        // Types without an initializer start out as zero bytes: clear them in one go.
+        #if initializer_of(T) == null {
+            memset(result.data, 0, count * size_of(T));
+        } else {
+            index: s64 = 0;
+            while index < count {
+                Initialize(*result[index]);
+                index += 1;
+            }
         }
     }
     return result, base;
