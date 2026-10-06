@@ -207,6 +207,8 @@ def main():
     ap.add_argument("--opt", default="", choices=["", "O0", "O1", "O2", "O3"],
                     help="optimization level of native builds (default: what the program asks for)")
     a = ap.parse_args()
+    # Cases run in their own directory, so a relative path would not resolve there.
+    a.jaic = str(Path(a.jaic).resolve())
     if a.sanitize or a.opt:
         a.native = True
     build_flags = (["-sanitize", a.sanitize] if a.sanitize else []) + ([f"-{a.opt}"] if a.opt else [])
