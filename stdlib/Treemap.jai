@@ -53,29 +53,26 @@ add_node :: (treemap: *Treemap, name: string, parent: *Treemap_Node) -> *Treemap
         assert(index >= 0 && index < treemap.nodes.count);
         assert(*treemap.nodes.all_buckets[index / 1024].data[index % 1024] == parent);
     } else assert(parent == null);
-    fresh: Treemap_Node;
-    fresh.name = name;
-    fresh.parent = parent;
-    locator, node := Buckets.bucket_array_add(*treemap.nodes, fresh);
-    node.locator = locator;
-    if parent array_add(*parent.children, node);
-    else treemap.root = node;
+    // Any structural change invalidates the cached sizes (and every display's layout).
     treemap.dirty = true;
+    locator, node := Buckets.bucket_array_add(*treemap.nodes, .{ name = name, parent = parent });
+    node.locator = locator;
+    if !parent treemap.root = node;
+    else array_add(*parent.children, node);
     return node;
 }
 
+// Bumping the tree's generation is what tells displays their cached layout is stale.
 recompute_if_dirty :: (treemap: *Treemap) {
-    if !treemap.dirty return;
-    if treemap.root recompute_sizes(treemap.root);
-    state := tree_state_index(treemap);
-    tree_states[state].generation += 1;
-    treemap.dirty = false;
+    if treemap.dirty {
+        if treemap.root recompute_sizes(treemap.root);
+        tree_states[tree_state_index(treemap)].generation += 1;
+        treemap.dirty = false;
+    }
 }
 
 init_treemap_display :: (treemap: *Treemap) -> Treemap_Display {
-    display: Treemap_Display;
-    display.treemap = treemap;
-    return display;
+    return .{ treemap = treemap };
 }
 
 recompute_if_dirty :: (display: *Treemap_Display, outer_size: Vector2, border_proc: Border_Proc = null, force := false) {
