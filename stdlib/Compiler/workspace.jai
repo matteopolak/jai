@@ -438,11 +438,14 @@ compiler_make_procedure_live :: (w: Workspace, header: *Code_Procedure_Header) {
     unsupported("compiler_make_procedure_live");
 }
 
+// Where the struct is declared; empty for a struct the program never declared (built-ins).
 compiler_get_struct_location :: (w: Workspace, info: *Type_Info_Struct) -> Source_Code_Location {
-    unsupported("compiler_get_struct_location");
     loc: Source_Code_Location;
+    __jaic_struct_location(info, *loc.fully_pathed_filename, *loc.line_number, *loc.character_number);
     return loc;
 }
+
+__jaic_struct_location :: (info: *Type_Info_Struct, path: *string, line: *s64, column: *s64) #compiler;
 
 compiler_report_errors_for_unresolved_identifiers :: (filename: string, w: Workspace = -1) {
     unsupported("compiler_report_errors_for_unresolved_identifiers");
