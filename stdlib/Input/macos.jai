@@ -200,7 +200,7 @@ macos_pointer_query :: (window: Window_Type, client_area: bool) -> float, float,
 mac_point_to_screen :: (window: *Mac.NSWindow, point: Foundation.NSPoint) -> Foundation.NSPoint {
     call: (receiver: *void, selector: ObjC.SEL, point: Foundation.NSPoint) -> Foundation.NSPoint #c_call;
     call = cast(type_of(call)) ObjC.objc_msgSend;
-    return call(window, ObjC.sel_registerName("convertPointToScreen\0"), point);
+    return call(window, ObjC.sel_registerName("convertPointToScreen:\0"), point);
 }
 
 mac_application_active :: (application: *Mac.NSApplication) -> bool {
