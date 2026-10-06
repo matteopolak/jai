@@ -32,6 +32,7 @@
 
 ### Fixed
 
+- A top-level `#insert` that builds declarations from a metaprogram-filled `#placeholder` runs once the placeholder is defined (it could be dropped after a failed retry), and a placeholder reached through an import gives way to its definition. Vk-Engine's Editor module checks again.
 - `pointer & int`, `pointer | int` and `pointer ^ int` are defined and keep the pointer type (`cast(u64) p & MASK`).
 - `cast(bool)` of a number, enum or pointer tests for non-zero; it kept the low byte, so `!cast(bool) 2` was true.
 - Arithmetic on an untyped struct literal passed as an argument takes the parameter's type (`f(.{300, -1} * scale)`).
