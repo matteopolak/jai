@@ -369,6 +369,9 @@ impl Compiler {
         if let Some(&t) = self.poly_structs[ps.0 as usize].instances.get(&key) {
             return Ok(t);
         }
+        if self.poly_structs[ps.0 as usize].instances.len() >= super::MAX_INSTANCES {
+            return err(span, super::too_many_instances(name));
+        }
         let t = self.new_struct_type(name, lit, def_scope, bindings, Some((ps, key.clone())));
         self.poly_structs[ps.0 as usize].instances.insert(key, t);
         Ok(t)
@@ -514,10 +517,7 @@ impl Compiler {
             "__jaic_enum :: enum {{\n{}\n}};",
             String::from_utf8_lossy(&s)
         );
-        let file = self.sources.add(
-            format!("<#insert at {}>", self.sources.get(value.span.file).path),
-            text.clone().into(),
-        );
+        let file = self.insert_source(value.span, text.clone().into())?;
         let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
         match ast.stmts.first().map(|s| &s.kind) {
             Some(ast::StmtKind::Decl(d)) => match d.value.as_ref().map(|v| &v.kind) {
@@ -669,14 +669,20 @@ impl Compiler {
             }
         }
         if let Some(a) = &src.lit.flags.align {
-            let a = self.eval_int(src.scope, a)? as u64;
+            let a = self.eval_align(src.scope, a)?;
             align = align.max(a);
         }
         let size = if no_padding {
             end
         } else {
-            end.next_multiple_of(align)
+            end.next_multiple_of(align.max(1))
         };
+        if size > MAX_SIZE {
+            return err(
+                src.lit.span,
+                format!("struct is too large (the limit is {MAX_SIZE} bytes)"),
+            );
+        }
         let info = self.types.struct_info_mut(s);
         info.fields = fields;
         if !aliases.is_empty() {
@@ -687,6 +693,20 @@ impl Compiler {
         info.layout = LayoutState::Done;
         self.struct_asts.get_mut(&s).unwrap().inits = inits;
         Ok(())
+    }
+
+    /// An `#align N` value. Generated bindings use odd values (`#align 9`), so only the range is
+    /// checked; the bound keeps layout arithmetic from overflowing.
+    fn eval_align(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<u64> {
+        const MAX_ALIGN: i128 = 1 << 30;
+        let n = self.eval_int(scope, expr)?;
+        if !(0..=MAX_ALIGN).contains(&n) {
+            return err(
+                expr.span,
+                format!("alignment {n} is out of range (0 to {MAX_ALIGN})"),
+            );
+        }
+        Ok(n as u64)
     }
 
     fn collect_fields(
@@ -818,7 +838,7 @@ impl Compiler {
             (None, None) => return err(decl.span, "field needs a type"),
         };
         let align = match &decl.align {
-            Some(a) => Some(self.eval_int(scope, a)? as u64),
+            Some(a) => Some(self.eval_align(scope, a)?),
             None => None,
         };
         let notes: Vec<Rc<str>> = decl.notes.iter().map(|n| n.text.clone()).collect();
@@ -959,6 +979,18 @@ impl Compiler {
         name: Sym,
         span: Span,
     ) -> Result<Option<(Vec<PathStep>, TypeId)>> {
+        self.find_member_in(ty, name, span, &mut Vec::new())
+    }
+
+    /// `find_member`, skipping structs already searched: `using` pointers can form a cycle
+    /// (`S :: struct { using next: *S; }`), which would otherwise recurse forever.
+    fn find_member_in(
+        &mut self,
+        ty: TypeId,
+        name: Sym,
+        span: Span,
+        searched: &mut Vec<StructId>,
+    ) -> Result<Option<(Vec<PathStep>, TypeId)>> {
         let ty = self.types.repr_struct(ty);
         let Some(s) = self.types.as_struct(ty) else {
             let members = self.builtin_members(ty, span)?;
@@ -967,6 +999,10 @@ impl Compiler {
                 .find(|(n, _, _)| *n == name)
                 .map(|(_, t, o)| (vec![PathStep::Offset(o)], t)));
         };
+        if searched.contains(&s) {
+            return Ok(None);
+        }
+        searched.push(s);
         self.layout_struct(s, span)?;
         // Without cloning the field list: this runs for every member access.
         let fields = &self.types.struct_info(s).fields;
@@ -983,7 +1019,7 @@ impl Compiler {
                 Some(p) if self.types.as_struct(p).is_some() => (p, true),
                 _ => (field_ty, false),
             };
-            if let Some((mut path, t)) = self.find_member(inner, name, span)? {
+            if let Some((mut path, t)) = self.find_member_in(inner, name, span, searched)? {
                 let mut full = vec![PathStep::Offset(offset)];
                 if deref {
                     full.push(PathStep::Deref);
@@ -1023,10 +1059,24 @@ impl Compiler {
 
     /// Constant members of a struct type (declared in its body), including through `using`.
     pub fn struct_constant(&mut self, ty: TypeId, name: Sym) -> Result<Option<Vec<EntityId>>> {
+        self.struct_constant_in(ty, name, &mut Vec::new())
+    }
+
+    /// `struct_constant`, skipping structs already searched (cycles of `using` pointers).
+    fn struct_constant_in(
+        &mut self,
+        ty: TypeId,
+        name: Sym,
+        searched: &mut Vec<StructId>,
+    ) -> Result<Option<Vec<EntityId>>> {
         let ty = self.types.repr_struct(ty);
         let Some(s) = self.types.as_struct(ty) else {
             return Ok(None);
         };
+        if searched.contains(&s) {
+            return Ok(None);
+        }
+        searched.push(s);
         if let Some(src) = self.struct_asts.get(&s) {
             let scope = src.scope;
             self.expand_pending(scope)?;
@@ -1048,9 +1098,7 @@ impl Compiler {
             .collect();
         for field_ty in usings {
             let inner = self.types.pointee(field_ty).unwrap_or(field_ty);
-            if inner != ty
-                && let Some(ids) = self.struct_constant(inner, name)?
-            {
+            if let Some(ids) = self.struct_constant_in(inner, name, searched)? {
                 return Ok(Some(ids));
             }
         }
