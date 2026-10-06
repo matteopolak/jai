@@ -769,6 +769,11 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
     count := 0;
     for e.enumerates {
         if !it.output_name || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
+        // A visitor may replace a value's literal with another expression, or clear it.
+        if !can_print_expression(it.expression) {
+            log("Bindings_Generator: %.% has no value that can be printed, so it is left out.\n", e.name, it.name);
+            continue;
+        }
         maybe_add_spacing(builder, *previous, it.location, 0, keep_blank_lines);
         append_indentation(builder);
         has_comment := it.comment.text.count > 0;
@@ -779,7 +784,7 @@ print_enum_values :: (builder: *String_Builder, e: *Enum) -> bool {
         append(builder, " :: ");
         // A value from a macro keeps its expression text.
         value := cast(*Literal) it.expression;
-        if !value || value.kind != .LITERAL append(builder, "0");
+        if value.kind != .LITERAL print_expression_to_builder(builder, it.expression);
         else if value.literal_kind == .MACRO append(builder, value.raw_value);
         else if signed append_integer(builder, value.int_value, hex);
         else append_integer(builder, cast,no_check(u64) value.int_value, hex);
