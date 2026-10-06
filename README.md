@@ -52,6 +52,13 @@ Anything unsupported fails with a compile error rather than being silently accep
 
 Prebuilt archives for macOS (Apple silicon), Linux (x86-64) and Windows (x86-64) are on the [releases page](https://github.com/matteopolak/jai/releases); see the [changelog](CHANGELOG.md).
 
+With Nix (see [Nix](docs/tools/nix.md)):
+
+```sh
+nix run github:matteopolak/jai -- run hello.jai
+nix profile install github:matteopolak/jai
+```
+
 To build from source you need [Rustup](https://rustup.rs/) (it picks up the pinned toolchain) and, for native builds, LLVM 22 with Clang ([setup guide](docs/tools/llvm-setup.md)):
 
 ```sh
