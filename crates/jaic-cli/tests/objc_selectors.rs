@@ -394,7 +394,9 @@ property_declares :: (cls: *void, selector: string) -> bool {{
         for 0..cast(s64) count - 1 {{
             name := to_string(property_getName(properties[it]));
             getter := name;
-            setter := tprint("set%1%2:", to_upper(name[0]), slice(name, 1, name.count - 1));
+            capitalized := copy_temporary_string(name);
+            capitalized[0] = to_upper(capitalized[0]);
+            setter := tprint("set%:", capitalized);
             for attribute: split(to_string(property_getAttributes(properties[it])), ",") {{
                 if attribute.count == 0 continue;
                 if attribute[0] == #char "G" getter = slice(attribute, 1, attribute.count - 1);
