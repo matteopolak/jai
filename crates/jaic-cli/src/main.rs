@@ -446,6 +446,8 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
         fs: fs.clone(),
         options: options.clone(),
         backend,
+        unwritten_output_hint: (cli.command != Command::Build)
+            .then(|| format!("jaic build {}", cli.file)),
         command_line: cli.command_line.clone(),
         make_host: Box::new(move |os| {
             if os == TargetOs::Wasm {
