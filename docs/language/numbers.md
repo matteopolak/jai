@@ -6,7 +6,7 @@ The scalar number types: `s8`..`s64`, `u8`..`u64`, `float32`/`float`, `float64`,
 
 ## How it works
 
-Literals are untyped constants until a declaration, argument or operator gives them a type. An untyped integer defaults to `s64`; an untyped float is `float32` unless it needs more precision than `float32` holds.
+Literals are untyped constants until a declaration, argument or operator gives them a type. An untyped integer defaults to `s64`. An untyped float is `float32` unless it has more than 7 significant figures and `float32` can't hold it exactly (`float_literal_type` in `sema/expr.rs`); either converts to an expected float type.
 
 ```jai
 a := 5;                    // s64
