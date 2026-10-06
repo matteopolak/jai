@@ -40,7 +40,7 @@ An independent compiler for the [Jai](https://en.wikipedia.org/wiki/Jai_(program
 
 ## What is missing
 
-- On Windows x64, C code cannot yet call back into procedures that run in the compile-time interpreter (it can on Windows arm64), and MSVC builds produce no PDB debug file.
+- On Windows x64, C code cannot yet call back into procedures that run in the compile-time interpreter (it can on Windows arm64). On Windows, programs that start threads cannot run in the interpreter, and MSVC builds produce no PDB debug file.
 - `Bindings_Generator` drops functions that use the 16-byte `long double`.
 - `#asm` rejects the F16C, SHA and GFNI extensions.
 
