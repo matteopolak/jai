@@ -12,6 +12,9 @@
 //!
 //! Colour is independent of the layout. The process-wide choice (`set_style`) is made once
 //! by each command-line tool; libraries and the language server leave it at `Style::PLAIN`.
+//! A caller that renders for someone else (the browser playground, one run per request)
+//! uses `with_style`, which applies to its own thread only.
+use std::cell::Cell;
 use std::sync::atomic::{AtomicU8, Ordering};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -47,7 +50,29 @@ pub fn set_style(style: Style) {
     STYLE.store(layout | (u8::from(style.color) << 2), Ordering::Relaxed);
 }
 
+thread_local! {
+    /// The style `with_style` set for this thread, over the process-wide one.
+    static SCOPED: Cell<Option<Style>> = const { Cell::new(None) };
+}
+
+/// Run `f` with `style` as this thread's style, whatever the process-wide one is; other threads
+/// are unaffected, so concurrent callers each get their own.
+pub fn with_style<T>(style: Style, f: impl FnOnce() -> T) -> T {
+    struct Restore(Option<Style>);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            SCOPED.with(|scoped| scoped.set(self.0));
+        }
+    }
+    let _restore = Restore(SCOPED.with(|scoped| scoped.replace(Some(style))));
+    f()
+}
+
+/// The style `render` uses: this thread's `with_style`, or else the process-wide one.
 pub fn style() -> Style {
+    if let Some(style) = SCOPED.with(Cell::get) {
+        return style;
+    }
     let bits = STYLE.load(Ordering::Relaxed);
     Style {
         layout: match bits & 3 {
@@ -254,7 +279,7 @@ impl<'a> Report<'a> {
         self
     }
 
-    /// The report in the current process-wide style.
+    /// The report in the current style (`style`).
     pub fn render(&self) -> String {
         self.render_with(style())
     }
