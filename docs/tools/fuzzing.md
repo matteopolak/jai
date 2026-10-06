@@ -27,7 +27,7 @@ The harnesses call library entry points directly. Nothing on these paths uses `c
 
 Compile-time execution and `main` run through the browser playground's sandbox, the same one `jaic run -os wasm` uses: target OS/CPU `wasm`, the stdlib from an in-memory file system, and `SandboxHost`, a small in-memory libc with no dynamic linker, real files, network or clock. `BLOCK_BUDGET` (2M interpreter basic blocks per input) stops infinite loops in `#run` and `main` with an "execution budget exhausted" diagnostic. Any hang that is left is in the compiler itself.
 
-Compiling harnesses (`check`, `interp`, `generated`, `lsp`, `lsp_json`) run on a 256 MiB thread, the stack the wasm build links with. The native CLI and `jai-lsp` use 1 GiB. `lexer` and `parser` run on libFuzzer's main thread (8 MiB).
+Compiling harnesses (`check`, `interp`, `generated`, `lsp`, `lsp_json`) run on a 256 MiB thread, the stack the wasm build links with. The native CLI and `jailsp` use 1 GiB. `lexer` and `parser` run on libFuzzer's main thread (8 MiB).
 
 The interpreter uses real memory, so a mutated program that builds a pointer from an integer and writes through it can crash the fuzzer process. That is the program's bug, not the compiler's. Before treating a `SEGV` in `interp`/`check` as a compiler bug, check whether the input forms a pointer itself (`cast(*T)`, `xx`, `---`, pointer arithmetic). The generator never emits these forms.
 
