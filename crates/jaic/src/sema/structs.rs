@@ -2034,7 +2034,9 @@ impl Compiler {
                 }
             }
             Value::Bool(b) => agg.bytes[o] = *b as u8,
-            Value::Null | Value::Void => {}
+            // `null` over a default (a union member sharing a string's storage) clears it.
+            Value::Null => agg.bytes[o..o + size as usize].fill(0),
+            Value::Void => {}
             Value::String(s) => {
                 if r != TypeId::STRING {
                     return err(
