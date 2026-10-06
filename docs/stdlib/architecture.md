@@ -30,7 +30,7 @@ Module parameters (`#module_parameters`) select behavior at import time, for exa
 
 ## How to change it
 
-- Edit the module under `stdlib/` and add or extend a regression program in `tests/stdlib/*.jai`. Each must exit 0 under `jaic run`; assertions are runtime `assert`s or compile-time `#assert #run`. The one intentional failure is `getrect-rh-negative-control.jai`.
+- Edit the module under `stdlib/` and add or extend a regression program in `tests/stdlib/*.jai`. Each must exit 0 under `jaic run`; assertions are runtime `assert`s or compile-time `#assert #run`. Programs that must fail belong in `tests/corpus/negative/` with an entry in `tests/corpus/manifest.json`.
 - Some modules carry tests next to the source (`stdlib/Math/tests`, `Random/tests`, `PCG/tests`, `Float16/tests`, `Srgb/tests`, `Sloppy_Math/tests`, `GetRect/tests`) and `stdlib/tests/` holds string, UTF-8, command-line and binary-format programs.
 - Run the whole set with `python3 tools/jaic-sweep.py stdlib` (documented in `../tools/jaic-sweep.md`).
 - A declaration only gets compiler support if `jaic` recognizes it. New intrinsics need a Rust side in `crates/jaic` (see [compiler architecture](../compiler/architecture.md)); declaring an unknown intrinsic in Jai implements nothing.

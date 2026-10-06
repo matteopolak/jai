@@ -19,7 +19,7 @@ Each set yields `(id, path, mode, expectation, extra args)`; the tool runs `jaic
 | `howto` | `reference/how_to/*.jai` (read-only inputs; only `jaic` runs) | check, exit code 0; all 56 pass |
 | a path | that file | run |
 
-Expected result of `corpus negative stdlib modules upstream examples howto`: everything passes except `getrect-rh-negative-control`, a negative control that must fail.
+Expected result of `corpus negative stdlib modules upstream examples howto`: everything passes. Programs that must fail to compile (including `getrect-rh-negative-control`, which proves the GetRect geometry assertions fire) live in the `negative` set, where a case passes when the compiler reports its expected error.
 
 ## How to change it
 

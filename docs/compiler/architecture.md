@@ -28,7 +28,7 @@ The workspace has five crates:
 
 ## How to change it
 
-Add syntax in `lexer.rs`/`parser/` and `ast.rs` first, with parser tests in `parser/tests.rs`. Then teach `sema/` to check and lower it, and add a program under `tests/stdlib/` or `tests/corpus/` that exits 0 (or a negative case). Run `python3 tools/jaic-sweep.py corpus negative stdlib modules upstream --timeout 900`; only `getrect-rh-negative-control` is expected to fail. Unsupported constructs should produce a diagnostic, never a silent success.
+Add syntax in `lexer.rs`/`parser/` and `ast.rs` first, with parser tests in `parser/tests.rs`. Then teach `sema/` to check and lower it, and add a program under `tests/stdlib/` or `tests/corpus/` that exits 0 (or a negative case). Run `python3 tools/jaic-sweep.py corpus negative stdlib modules upstream --timeout 900`; everything should pass. Unsupported constructs should produce a diagnostic, never a silent success.
 
 ## Configuration
 
