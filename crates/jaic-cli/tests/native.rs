@@ -324,6 +324,7 @@ fn c_long_double() {
     std::fs::create_dir_all(&dir).unwrap();
     for name in [
         "longdouble.c",
+        "longdouble.h",
         "types.jai",
         "foreign_calls.jai",
         "callbacks.jai",
@@ -424,6 +425,20 @@ fn c_long_double() {
     let hard = x86("precision");
     assert!(soft.len() > 10_000, "{soft}");
     assert!(soft == hard, "soft-float x87 differs from the hardware");
+
+    // Bindings_Generator output for the x87 target, called from an x86-64 build.
+    let bindings = repo_root().join("tests/stdlib/bindings-generator-long-double.jai");
+    let source = std::fs::read_to_string(&bindings).unwrap().replace(
+        "#filepath",
+        &format!("\"{}\"", repo_root().join("tests/stdlib").display()),
+    );
+    std::fs::write(dir.join("bindings.jai"), source).unwrap();
+    assert_eq!(x86("bindings"), "ok\n");
+}
+
+#[test]
+fn bindings_generator_long_double() {
+    native_bindings_generator_test("bindings-generator-long-double");
 }
 
 /// C variadic foreign calls in a native build (Apple arm64 passes variadic arguments on the stack).

@@ -80,6 +80,12 @@ Generate_Bindings_Options :: struct #type_info_none {
     // Extension: path of the libclang shared library (otherwise the
     // JAI_LIBCLANG environment variable and the usual install locations).
     libclang_path: string;
+
+    // Extension: a 16-byte C `long double` (x86-64 outside Windows MSVC, Linux arm64, wasm32)
+    // becomes jaic's non-standard `Long_Double` from the Jaic_Extensions module, so functions
+    // that pass one are bound. When false it is kept as `[16] u8` in structs and those
+    // functions are stripped, which other Jai compilers can read.
+    use_jaic_long_double            := true;
 }
 
 Library_Reference :: struct {
@@ -168,7 +174,7 @@ CType :: struct {
     Flags :: enum_flags {
         REFERENCE;
         CONST;
-        WIDE_LONG_DOUBLE;   // A 16-byte `long double`, printed as `[16] u8`.
+        WIDE_LONG_DOUBLE;   // A 16-byte `long double`: `Long_Double`, or `[16] u8` without the extension.
     }
 
     comment: string;
@@ -572,6 +578,7 @@ Generator_State :: struct #type_info_none {
     extern_declarations: [..] *Declaration;   // Extern variables, deduplicated by symbol.
     com_uuids: [..] ComUuid;                  // `__declspec(uuid(...))` of COM interfaces (Windows headers).
     int128_was_referenced: bool;              // The output uses S128/U128 (from Basic).
+    long_double_was_referenced: bool;         // The output uses Long_Double (from Jaic_Extensions).
     generated_printf_wrapper: bool;           // The output uses tprint and temp_c_string (from Basic).
 
     structs_to_check: [..] *Struct;

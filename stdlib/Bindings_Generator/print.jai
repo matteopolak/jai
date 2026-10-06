@@ -94,6 +94,7 @@ print_type_to_builder :: (builder: *String_Builder, ty: *CType, current_scope: *
     } else if t.hardcoded_jai_string {
         g := context.generator;
         if t == g.type_def_u128 || t == g.type_def_s128  g.int128_was_referenced = true;
+        if t.flags & .WIDE_LONG_DOUBLE                   g.long_double_was_referenced = true;
         append(builder, t.hardcoded_jai_string);
     } else if t.type_of_function {
         append(builder, "#type ");

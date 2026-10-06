@@ -380,14 +380,18 @@ create_type :: (ty: Clang_Type, ctx: Cursor = 0) -> *CType {
         case T_FLOAT;      return g.type_def_float32;
         case T_DOUBLE;     return g.type_def_float64;
         case T_LONGDOUBLE;
-            // arm64 Apple and Windows: a double. x86-64 and Linux arm64: 16 bytes Jai has no
-            // type for; kept as bytes so structs stay laid out right, while functions that pass
-            // one are stripped (see uses_wide_long_double).
+            // arm64 Apple and Windows: a double. x86-64 and Linux arm64: 16 bytes, which only
+            // jaic's Long_Double extension can pass. Without it they stay bytes so structs keep
+            // their layout, and functions that pass one are stripped (see uses_wide_long_double).
             if size == 8 return g.type_def_float64;
             if size == 4 return g.type_def_float32;
             result = New(CType);
-            result.array_element_type = g.type_def_u8;
-            result.array_element_count = size;
+            if context.generator_options.use_jaic_long_double {
+                result.hardcoded_jai_string = "Long_Double";
+            } else {
+                result.array_element_type = g.type_def_u8;
+                result.array_element_count = size;
+            }
             result.size = size;
             result.alignment = clang("t_alignof", ty);
             result.flags |= .WIDE_LONG_DOUBLE;
@@ -785,8 +789,8 @@ is_char_pointer_type :: (type: *CType) -> bool {
     return (pointee & ._8BIT) != 0 && (pointee & .FLOAT) == 0;
 }
 
-// x87 `long double` (and Linux arm64's binary128) arguments or results: Jai cannot pass them,
-// and on x86-64 a method returning one would also need objc_msgSend_fpret.
+// x87 `long double` (and Linux arm64's binary128) arguments or results: only jaic's Long_Double
+// can pass them, and on x86-64 a method returning one would also need objc_msgSend_fpret.
 uses_wide_long_double :: (ft: *Function_Type) -> bool {
     if !ft return false;
     if ft.return_type && (ft.return_type.flags & .WIDE_LONG_DOUBLE) return true;
@@ -1393,7 +1397,7 @@ add_method :: (s: *Struct, c: Cursor) {
     if !func return;
     table_add(*g.declarations_by_cursor, key, func);
     ft := func.type.type_of_function;
-    if uses_wide_long_double(ft) {
+    if !context.generator_options.use_jaic_long_double && uses_wide_long_double(ft) {
         log_stripped(func.name, "passes a long double wider than 64 bits, which Jai has no type for");
         return;
     }
@@ -2473,7 +2477,7 @@ handle_toplevel_cursor :: (c: Cursor, scope: *[..] *Declaration, parent: *Declar
                 log_stripped(name, "takes a va_list");
                 return;
             }
-            if uses_wide_long_double(ft) {
+            if !options.use_jaic_long_double && uses_wide_long_double(ft) {
                 log_stripped(name, "passes a long double wider than 64 bits, which Jai has no type for");
                 return;
             }
