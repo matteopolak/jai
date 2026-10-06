@@ -25,6 +25,8 @@ The checker reads `.jai` files under `tests/` (the corpus, `tests/stdlib`, examp
 `stdlib/**/tests/`, and `.rs` files under `crates/**/tests/` and the parser/sema `tests.rs` modules.
 Rules about rejected programs are pinned by negative corpus cases
 (`tests/corpus/negative/rule-<prefix>-<N>.jai` plus a manifest entry with the expected diagnostic).
+Corpus files are hash-locked by `tests/corpus/manifest.json`, so a corpus case cites rules in its
+manifest entry instead (`"rules": ["ctexec.9"]`); the checker reads both.
 Most other rules are pinned by one self-checking program per doc, `tests/stdlib/rules-<doc>.jai`,
 which asserts each claim and is run by the sweep's `stdlib` set.
 
