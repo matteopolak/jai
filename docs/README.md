@@ -79,7 +79,7 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
-The independently written `stdlib/`. Before committing any change under `stdlib/`, run `python3 tools/check_reference_resemblance.py` (it needs a local `reference/`; see [reference resemblance check](tools/reference-resemblance.md)) and fix what it flags by rewriting, not by allowlisting.
+The independently written `stdlib/`, a clean-room implementation: contributors must not read the source of an official Jai distribution. Maintainers additionally run a [reference resemblance check](tools/reference-resemblance.md) and fix what it flags by rewriting, not by allowlisting.
 
 - [Standard library layout](stdlib/architecture.md)
 - [Basic and collection modules](stdlib/basic-and-collections.md)
