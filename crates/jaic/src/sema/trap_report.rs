@@ -233,14 +233,13 @@ impl Compiler {
     fn loc_suffix(&self, loc: Option<(u32, u32, u32)>) -> String {
         match loc {
             Some((file, line, _)) if (file as usize) < self.sources.len() => {
-                format!(" at {}:{line}", self.sources.get(FileId(file)).path)
+                let path = Path::new(&self.sources.get(FileId(file)).path);
+                format!(" at {}:{line}", crate::display_path(path))
             }
             _ => String::new(),
         }
     }
 
-    /// The statement at `loc`: from its column to the end of that line (without a trailing
-    /// `;` or comment-free whitespace), so the carets cover what ran.
     /// The loaded file at `path`, compared as given and as an absolute path.
     fn file_by_path(&self, path: &str) -> Option<FileId> {
         let wanted = std::path::absolute(path).ok();
@@ -250,6 +249,8 @@ impl Compiler {
         })
     }
 
+    /// The statement at `loc`: from its column to the end of that line (without a trailing
+    /// `;` or whitespace), so the carets cover what ran.
     fn statement_span(&self, (file, line, col): (u32, u32, u32)) -> Span {
         if file as usize >= self.sources.len() {
             return Span::NONE;
