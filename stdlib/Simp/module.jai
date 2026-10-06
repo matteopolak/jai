@@ -186,7 +186,10 @@ set_window_dimensions :: (window: Window_Type, width: s32, height: s32) {
     if context.simp && context.simp.current_window_info.window == window {
         immediate_flush();
         context.simp.current_window_info = info.*;
-        set_projection();
+        // As in update_window: the viewport follows, and a bound shader gets the new projection
+        // (none may be bound yet, and a texture target keeps its own).
+        backend_resize_render_target(info.*);
+        if context.simp.current_shader && !context.simp.texture_render_target set_projection();
     }
 }
 
