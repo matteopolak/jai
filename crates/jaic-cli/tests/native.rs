@@ -223,8 +223,8 @@ fn c_structs_by_value() {
     } else {
         "libstructs.so"
     };
-    // Windows: a static `libstructs.lib` from Clang (the interpreter cannot load native
-    // libraries there, so only the native build is checked).
+    // Windows: a static `libstructs.lib` from Clang for the native build; the interpreter is
+    // checked against a DLL on arm64 below (on x64 it cannot call back into interpreted code).
     let mut steps = vec![Command::new(if cfg!(windows) {
         "clang"
     } else {
@@ -278,6 +278,34 @@ fn c_structs_by_value() {
     };
     assert_eq!(run_native("foreign_calls"), calls);
     assert_eq!(run_native("callbacks"), callbacks);
+    // Windows on arm64: the interpreter loads the fixture as `libstructs.dll` (built after the
+    // native runs, since its import library replaces the static `libstructs.lib`). An MSVC DLL
+    // exports only what it is told to, so every function defined in `structs.c` is named.
+    if cfg!(all(windows, target_arch = "aarch64")) {
+        let source = std::fs::read_to_string(dir.join("structs.c")).unwrap();
+        let mut link = Command::new("clang");
+        link.args(["-shared", "structs.c", "-o", "libstructs.dll"]);
+        for line in source.lines() {
+            let starts_definition = line.chars().next().is_some_and(|c| c.is_ascii_alphabetic());
+            if !starts_definition || line.starts_with("typedef") {
+                continue;
+            }
+            let Some(head) = line.split('(').next() else {
+                continue;
+            };
+            if let Some(name) = head.split_whitespace().last() {
+                link.arg(format!("-Wl,/EXPORT:{}", name.trim_start_matches('*')));
+            }
+        }
+        let output = link.current_dir(&dir).output().unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(run_interp("foreign_calls"), calls);
+        assert_eq!(run_interp("callbacks"), callbacks);
+    }
 }
 
 /// C variadic foreign calls in a native build (Apple arm64 passes variadic arguments on the stack).

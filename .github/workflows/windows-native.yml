@@ -212,6 +212,14 @@ jobs:
           target/aarch64-pc-windows-msvc/debug/jaic.exe build tests/corpus/positive/integer-control.jai -o native-exes/smoke || echo "jaic exit $?"
           python -u tools/windows_cross.py build --stdlib --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe --out native-exes --host --keep-going
           python -u tools/windows_cross.py run --dir native-exes
+      - name: Interpreter foreign calls (variadic and runtime programs)
+        if: success() || failure()
+        run: |
+          for program in tests/stdlib/c-variadic-foreign-calls.jai tests/native/windows/runtime.jai; do
+            out="$(target/aarch64-pc-windows-msvc/debug/jaic.exe run "$program" | tr -d '\r')"
+            echo "$program: $out"
+            test "$out" = ok
+          done
       - name: Native backend tests
         if: success() || failure()
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
