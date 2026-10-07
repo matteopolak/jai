@@ -1054,10 +1054,6 @@ fn bindings_generator_objc_stret() {
 
 #[test]
 fn bindings_generator_parity() {
-    // The test program writes its headers under /tmp and imports POSIX (for `FILE`).
-    if cfg!(windows) {
-        return;
-    }
     native_bindings_generator_test("bindings-generator-parity");
 }
 
