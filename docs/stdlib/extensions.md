@@ -8,13 +8,14 @@ A program imports them by path, so the import itself says the code is jaic-only:
 
 ```jai
 #import "Extensions/Long_Double";
-#import "Extensions/Jai_Format";
+#import "Extensions/WebGPU";
 ```
 
 | Module | Import | What it is for | Docs |
 | --- | --- | --- | --- |
 | `Long_Double` | `#import "Extensions/Long_Double";` | C's `long double` in the target's format (`Long_Double`, `LONG_DOUBLE_IS_WIDE`), for calling C functions that take or return one. `Bindings_Generator` output imports it when it uses the type. | [Long_Double](../language/long-double.md) |
 | `Jai_Format` | `#import "Extensions/Jai_Format";` | The Jai source formatter behind `jaifmt` and the playground's Format button: text in, text out. | [jaifmt](../tools/jaifmt.md) |
+| `WebGPU` | `#import "Extensions/WebGPU";` | The standard WebGPU C API (`webgpu.h`), generated from `webgpu.yml`: wgpu-native natively, the page's WebGPU in the playground. | [WebGPU](webgpu.md) |
 | `Wasi_Runtime` | `#import "Extensions/Wasi_Runtime";` | The C library entry points and `_start` a wasm64 program needs to run as a WASI command. jaic adds it to `-os wasm` builds itself; a program rarely imports it. | [wasm target](../native/wasm-target.md) |
 
 ## How it works

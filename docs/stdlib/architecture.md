@@ -23,7 +23,7 @@ It is a clean-room implementation. Contributors must not read the source of an o
 | Build tooling | `Debug`, `MacOS_Bundler`, `BuildCpp`, `Autorun`, `Performance_Report`, `Iprof` | [tooling modules](tooling-modules.md), [Iprof](iprof.md) |
 | UI and audio | `Simp`, `Window_Creation`, `GetRect`, `GetRect_LeftHanded`, `Sound_Player` | [UI and drawing](ui-and-drawing.md), [GetRect](getrect.md), [Simp](simp.md), [Sound_Player](sound-player.md) |
 | Native bindings | `POSIX`, `macos`, `Windows`, `Linux`, `Android`, `Objective_C`, `SDL`, `GL`, `Vulkan`, `ImGui`, `stb_*`, `freetype`, ... | [native bindings](native-bindings.md), [Bindings_Generator](bindings-generator.md) |
-| jaic extensions (not official Jai) | `Extensions/Long_Double`, `Extensions/Jai_Format`, `Extensions/Wasi_Runtime`, imported by that path | [stdlib extensions](extensions.md) |
+| jaic extensions (not official Jai) | `Extensions/Long_Double`, `Extensions/Jai_Format`, `Extensions/WebGPU`, `Extensions/Wasi_Runtime`, imported by that path | [stdlib extensions](extensions.md), [WebGPU](webgpu.md) |
 
 Every module has exactly one implementation. Its public API (exported names, parameter names and order, return order, struct fields and defaults, enum values) matches the official module, because real programs call with named arguments, read fields and print enum values. Extra parameters we add (such as `allocator :=`) go last. `tests/stdlib/named-argument-api.jai` guards a sample. Known differences: `File.handle` is `s64`, and `Thread.proc` is the native procedure type.
 

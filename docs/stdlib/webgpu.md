@@ -2,7 +2,7 @@
 
 ## What it is
 
-`#import "WebGPU"` gives Jai programs the standard WebGPU C API (`webgpu.h`): every type, enum, struct, callback and `wgpu*` procedure, plus a few helpers for windows, adapters, mapping and error scopes. Natively the procedures call [wgpu-native](https://github.com/gfx-rs/wgpu-native); in the browser playground they are forwarded to the page's WebGPU. Both sides are generated from webgpu-headers' machine-readable spec (`webgpu.yml`), so one program runs in both places.
+`#import "Extensions/WebGPU"` (a [jaic extension](extensions.md), not an official Jai module) gives Jai programs the standard WebGPU C API (`webgpu.h`): every type, enum, struct, callback and `wgpu*` procedure, plus a few helpers for windows, adapters, mapping and error scopes. Natively the procedures call [wgpu-native](https://github.com/gfx-rs/wgpu-native); in the browser playground they are forwarded to the page's WebGPU. Both sides are generated from webgpu-headers' machine-readable spec (`webgpu.yml`), so one program runs in both places.
 
 Examples: `examples/webgpu/triangle.jai` (window, render pipeline), `examples/webgpu/raymarch.jai` (full-screen fragment shader, uniforms, input), `examples/webgpu/compute.jai` (compute shader, storage buffers, mapping). The playground tour ends with a GPU stop (`examples/tour/gpu/raymarch_gpu.jai`).
 
@@ -29,8 +29,8 @@ A program should check `webgpu_available()` first: it is true natively and, in t
 ## How it works
 
 ```
-webgpu.yml (pinned) --tools/webgpu_gen.py--> stdlib/WebGPU/generated.jai        types + #foreign procs
-                                          --> stdlib/WebGPU/generated_wasm.jai   callback dispatch (browser)
+webgpu.yml (pinned) --tools/webgpu_gen.py--> stdlib/Extensions/WebGPU/generated.jai        types + #foreign procs
+                                          --> stdlib/Extensions/WebGPU/generated_wasm.jai   callback dispatch (browser)
                                           --> crates/jai-wasm/js/webgpu_bindings.generated.mjs
                                                  struct layouts, enum strings, call descriptors
 ```

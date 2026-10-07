@@ -24,7 +24,7 @@ pub mod types;
 pub mod wide_float;
 
 /// The folder of the standard library that holds the modules only jaic has (`Long_Double`,
-/// `Jai_Format`, `Wasi_Runtime`, ...). It is not searched on its own: a program imports them by
+/// `Jai_Format`, `WebGPU`, `Wasi_Runtime`, ...). It is not searched on its own: a program imports them by
 /// path, as `#import "Extensions/Long_Double";`, so the import itself says it is jaic-only.
 pub const STDLIB_EXTENSIONS_DIR: &str = "Extensions";
 
