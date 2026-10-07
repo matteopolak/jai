@@ -1,7 +1,8 @@
 #import "POSIX";
 
+// The C stream, so a program can wrap one it already has: `File.{stdin}`.
 File :: struct {
-    handle: s64;
+    handle: *FILE;
 }
 
 file_open :: (name: string, for_writing := false, keep_existing_content := false, log_errors := true) -> File, bool {
@@ -27,18 +28,18 @@ file_open :: (name: string, for_writing := false, keep_existing_content := false
         }
     }
     if !stream && log_errors log_error("Unable to open '%'", name);
-    return .{ cast(s64) stream }, stream != null;
+    return .{ stream }, stream != null;
 }
 
 file_close :: (file: *File) -> bool {
     if !is_valid(file.*) return true;
     result := fclose(native_handle(file.*)) == 0;
-    file.handle = 0;
+    file.handle = null;
     return result;
 }
 
 is_valid :: (file: File) -> bool {
-    return file.handle != 0;
+    return file.handle != null;
 }
 
 file_read_checked :: (f: File, vdata: *void, bytes_to_read: s64) -> (success: bool, total_read: s64) {
@@ -162,7 +163,7 @@ get_absolute_path_unix :: (relative_path: string) -> string, success: bool {
 
 #scope_file
 native_handle :: (file: File) -> *FILE {
-    return cast(*FILE) file.handle;
+    return file.handle;
 }
 
 native_libc :: #system_library "c";

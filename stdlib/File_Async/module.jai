@@ -356,6 +356,6 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
         if keep mode = "r+b";
         stream := Async_Posix.fopen(temp_c_string(name), temp_c_string(mode));
         if !stream && keep && Async_Posix.errno() == Async_Posix.ENOENT stream = Async_Posix.fopen(temp_c_string(name), temp_c_string("w+b"));
-        return .{ cast(s64) stream }, stream != null;
+        return .{ stream }, stream != null;
     }
 }
