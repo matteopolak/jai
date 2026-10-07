@@ -8,5 +8,5 @@
 /result
 /result-*
 
-# npm (editors/vscode and any stray installs)
+# npm and pnpm (editors/vscode and any stray installs)
 node_modules/
