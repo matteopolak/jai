@@ -182,7 +182,8 @@ __null_pointer_check_fail :: (index: s64, line_number: s64, filename: *u8) #no_c
 // nonfatal. The wording matches the interpreter's (`ir::check_message` in jaic). `reason`:
 // 1 missing return, 2 #asm divide fault, 3 index out of range (a: index, b: count), 4 cast
 // overflow (a: the value; b: target bytes, bit 8 target signed, bit 9 value signed), 5 no case
-// of a #complete switch matched (a: the value), 6 integer division by zero.
+// of a #complete switch matched (a: the value), 6 integer division by zero, 7 the address of a
+// null pointer's target was used without a read (`p.*` boxed into an Any).
 runtime_support_check_failed :: (reason: s64, a: s64, b: s64, fatal: bool, line: s64, filename: *u8) #no_context #no_abc #no_aoc {
     write_failure_location(filename, line);
     write_string(ifx fatal then "error: " else "warning: ", true);
@@ -206,6 +207,8 @@ runtime_support_check_failed :: (reason: s64, a: s64, b: s64, fatal: bool, line:
             write_number_after("no case of the `#complete` switch matches its value, ", a, true);
         case 6;
             write_string("integer division by zero", true);
+        case 7;
+            write_string("null pointer dereference: read through a null pointer", true);
         case;
             write_string("runtime check failed", true);
     }
