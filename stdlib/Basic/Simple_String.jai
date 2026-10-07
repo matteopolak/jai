@@ -216,6 +216,7 @@ Decimal_Digits :: struct {
     kept: s64;
     power_of_ten: s64;
 }
+
 take_decimal_digit :: (digits: *Decimal_Digits, digit: u8, after_point: bool) {
     if digits.significand == 0 && digit == 0 {
         if after_point digits.power_of_ten -= 1; // a leading zero only shifts the point
@@ -229,11 +230,13 @@ take_decimal_digit :: (digits: *Decimal_Digits, digit: u8, after_point: bool) {
         digits.power_of_ten += 1; // a dropped integer digit still scales the value
     }
 }
+
 // Every power of ten up to 10^22 is exact in a float64.
 EXACT_POWERS_OF_TEN :: float64.[
     1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11,
     1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22,
 ];
+
 // significand * 10^power_of_ten, rounded to the nearest float64.
 decimal_to_float64 :: (significand: u64, power_of_ten: s64) -> float64 #no_aoc {
     if significand == 0 return 0;

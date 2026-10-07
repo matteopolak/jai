@@ -73,7 +73,9 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
     }
 } else #if OS == .LINUX {
     Cursor_X11 :: #import "X11";
+
     pointers: [NUM_POINTERS] Cursor_X11.Cursor;
+
     init_pointers :: () {
         display := Cursor_X11.x_global_display;
         if !display return;
@@ -110,6 +112,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
     init_pointers :: () {
         left_pointers_initialized = true;
     }
+
     getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
         if events_occluded(widget) return;
         left_pointer_requested = true;

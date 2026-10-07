@@ -6,6 +6,7 @@
     FILE :: void;
 } else #if OS_IS_UNIX {
     #import "POSIX";
+
     // The decoder calls libm (pow, ldexp...); nothing in Jai does, so link it explicitly.
     codec_math :: #system_library,link_always "m";
 } else {

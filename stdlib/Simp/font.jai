@@ -1,14 +1,17 @@
 #scope_module
 File :: #import "File";
 FT :: #import "freetype-2.12.1";
+
 #scope_export
 FT_Face :: FT.FT_Face;
+
 Font_Effects :: enum_flags u32 {
     SMALLCAPS :: 1;
     LINING_FIGURES :: 2;
     NO_KERNING :: 4;
     LEFT_JUSTIFIED :: 8;
 }
+
 Glyph_Data :: struct {
     utf32: u32;
     glyph_index_within_font: u32;
@@ -19,11 +22,13 @@ Glyph_Data :: struct {
     advance: s16;
     page: *Font_Page;
 }
+
 Font_Quad :: struct {
     p0, p1, p2, p3: Vector2;
     u0, v0, u1, v1: float;
     glyph: *Glyph_Data;
 }
+
 Dynamic_Font :: struct {
     name: string;
     face: FT_Face;
@@ -55,23 +60,28 @@ Dynamic_Font :: struct {
     current_quads: [..] Font_Quad;
     loaded: *Loaded_Font; // The file or memory this font was made from.
 }
+
 Loaded_Font :: struct {
     name: string;
     face: FT_Face;
     data: [] u8;
 }
+
 Font_Range_Record :: struct {
     start, end: s32;
     start_coverage_index: s32;
 }
+
 Font_Coverage_Table :: struct {
     format: s64;
     glyphs: [] u16; // format 1
     range_records: [] Font_Range_Record; // format 2
 }
+
 Font_Sequence_Table_Entry :: struct {
     glyphs: [] u16;
 }
+
 Font_Lookup_Subtable :: struct {
     format: s64;
     coverage_table: *Font_Coverage_Table;
@@ -79,11 +89,13 @@ Font_Lookup_Subtable :: struct {
     glyphs: [] u16;
     sequence_table: [] Font_Sequence_Table_Entry;
 }
+
 Font_Lookup_Table :: struct {
     lookup_type: s32;
     lookup_flags: u32;
     subtables: [] Font_Lookup_Subtable;
 }
+
 Font_Feature :: struct {
     feature_tag: u32;
     feature_tables_pointer: *u8;
@@ -91,6 +103,7 @@ Font_Feature :: struct {
     lookup_lists: [] u16;
     lookup_tables: [] Font_Lookup_Table;
 }
+
 Font_Page :: struct {
     texture: Texture;
     bitmap_data: *Bitmap;
@@ -98,21 +111,25 @@ Font_Page :: struct {
     lines: [..] *Font_Line;
     dirty := false;
 }
+
 Font_Line :: struct {
     page: *Font_Page;
     bitmap_cursor_x: s16;
     bitmap_cursor_y: s16;
     height: int;
 }
+
 Code_Line :: struct {
     line: string;
     start_offset: s32;
     tab_spaces: s32;
     tokens: [] u8;
 }
+
 Offset_Range :: struct {
     start, end: s32;
 }
+
 init_fonts :: (_page_size_x: s32 = -1, _page_size_y: s32 = -1) {
     assert(!fonts_initted, "Simp font library is already initialized");
     if fonts_initted return;
@@ -125,12 +142,15 @@ init_fonts :: (_page_size_x: s32 = -1, _page_size_y: s32 = -1) {
     assert(error == 0, "FreeType initialization failed: %", error);
     fonts_initted = error == 0;
 }
+
 ensure_fonts_are_initted :: () {
     if !fonts_initted init_fonts();
 }
+
 is_latin :: (utf32: u32) -> bool {
     return utf32 <= 0x24f || (utf32 >= 0x2000 && utf32 <= 0x218f);
 }
+
 // Fonts are cached by name and pixel height; `path` and `name` are joined to find the file.
 get_font_at_size :: (path: string, name: string, pixel_height: int) -> *Dynamic_Font {
     ensure_fonts_are_initted();
@@ -140,6 +160,7 @@ get_font_at_size :: (path: string, name: string, pixel_height: int) -> *Dynamic_
     if !result log_error("Unable to load font '%' from '%'. Returning null.\n", name, path);
     return result;
 }
+
 // The memory must stay alive as long as the font is used.
 get_font_at_size :: (memory: [] u8, pixel_height: int) -> *Dynamic_Font {
     ensure_fonts_are_initted();
@@ -149,6 +170,7 @@ get_font_at_size :: (memory: [] u8, pixel_height: int) -> *Dynamic_Font {
     for dynamic_fonts if it.character_height == pixel_height && it.loaded == loaded return it;
     return create_dynamic_font(loaded, "", pixel_height);
 }
+
 // Memory fonts are keyed by the exact buffer (pointer and length); the first request for a
 // buffer parses it, later ones share that parse.
 font_for_memory :: (memory: [] u8) -> *Loaded_Font {
@@ -160,6 +182,7 @@ font_for_memory :: (memory: [] u8) -> *Loaded_Font {
     if fresh array_add(*loaded_memory_fonts, fresh);
     return fresh;
 }
+
 load_font_part_2 :: (result: *Dynamic_Font, loaded_font: Loaded_Font, pixel_height: int) {
     assert(result != null && result.face != null && pixel_height > 0);
     if !result || !result.face || pixel_height <= 0 return;
@@ -180,6 +203,7 @@ load_font_part_2 :: (result: *Dynamic_Font, loaded_font: Loaded_Font, pixel_heig
     space := find_or_create_glyph(result, 32);
     if space result.x_advance = space.advance;
 }
+
 create_dynamic_font :: (loaded: *Loaded_Font, name: string, pixel_height: int) -> *Dynamic_Font {
     push_allocator(SIMP_HEAP);
     if !loaded || pixel_height <= 0 || pixel_height > 32767 return null;
@@ -203,6 +227,7 @@ create_dynamic_font :: (loaded: *Loaded_Font, name: string, pixel_height: int) -
     load_font_part_2(font, loaded.*, pixel_height);
     return font;
 }
+
 set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
     if !font || !font.face return false;
     index := FT.FT_Get_Char_Index(font.face, utf32);
@@ -210,9 +235,11 @@ set_unknown_character :: (font: *Dynamic_Font, utf32: u32) -> bool {
     font.glyph_index_for_unknown_character = index;
     return true;
 }
+
 convert_to_temporary_glyphs :: (font: *Dynamic_Font, s: string, effect_flags: Font_Effects = 0) -> width_in_pixels: s64 {
     return prepare_text(font, s, effect_flags);
 }
+
 prepare_text :: (font: *Dynamic_Font, text: string, effect_flags: Font_Effects = 0) -> width: s64 {
     push_allocator(SIMP_HEAP);
     effects := effect_flags;
@@ -254,14 +281,17 @@ prepare_text :: (font: *Dynamic_Font, text: string, effect_flags: Font_Effects =
     record.text_bytes = cast(s32) text.count;
     return width;
 }
+
 get_text_width :: (font: *Dynamic_Font, s: string) -> width: s64 {
     return prepare_text(font, s);
 }
+
 get_prepared_text_width :: (font: *Dynamic_Font) -> s64 {
     record := font_record(font);
     if !record return 0;
     return record.width;
 }
+
 get_cursor_pos_for_width :: (font: *Dynamic_Font, s: string, requested_width: s64) -> pos: s32 {
     prepare_text(font, s);
     record := font_record(font);
@@ -269,6 +299,7 @@ get_cursor_pos_for_width :: (font: *Dynamic_Font, s: string, requested_width: s6
     for glyph, i: font.temporary_glyphs if requested_width < record.starts[i] + glyph.advance / 2 return record.byte_offsets[i];
     return cast(s32) s.count;
 }
+
 generate_quads_for_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, effects: Font_Effects = 0) {
     push_allocator(SIMP_HEAP);
     if !font return;
@@ -313,10 +344,12 @@ generate_quads_for_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, effect
         array_add(*font.current_quads, quad);
     }
 }
+
 draw_generated_quads :: (font: *Dynamic_Font, color: u8) {
     if color >= COLOR_MAP.count return;
     draw_generated_quads(font, COLOR_MAP[color]);
 }
+
 draw_generated_quads :: (font: *Dynamic_Font, color := Vector4.{ 1, 1, 1, 1 }) {
     if !font return;
     CheckInit();
@@ -332,6 +365,7 @@ draw_generated_quads :: (font: *Dynamic_Font, color := Vector4.{ 1, 1, 1, 1 }) {
     }
     immediate_flush();
 }
+
 draw_text_with_highlights :: (font: *Dynamic_Font, x: s64, y: s64, text: string, highlights: [] bool, color: u8, highlight_color: u8) -> width: s64 {
     if color >= COLOR_MAP.count || highlight_color >= COLOR_MAP.count return 0;
     width := prepare_text(font, text);
@@ -348,6 +382,7 @@ draw_text_with_highlights :: (font: *Dynamic_Font, x: s64, y: s64, text: string,
     immediate_flush();
     return width;
 }
+
 draw_code :: (font: *Dynamic_Font, x: s64, y: s64, char_x_advance: float, line_height: float, visible_lines: [] Code_Line, selections: [] Offset_Range = .[], tab_size: s64 = 4, start_col := 0, $is_colored := true) {
     if !font return;
     tab_size = max(tab_size, 1);
@@ -378,6 +413,7 @@ draw_code :: (font: *Dynamic_Font, x: s64, y: s64, char_x_advance: float, line_h
         }
     }
 }
+
 // Explicit lifecycle addition; font data and glyph pointers live until this call.
 deinit :: (font: *Dynamic_Font) {
     push_allocator(SIMP_HEAP);
@@ -400,6 +436,7 @@ deinit :: (font: *Dynamic_Font) {
     record.font = null;
     font.* = .{};
 }
+
 deinit_fonts :: () {
     push_allocator(SIMP_HEAP);
     immediate_flush();
@@ -444,6 +481,7 @@ deinit_fonts :: () {
 glyph_id_to_hash_key :: (x: u32) -> int {
     return -cast(int) x;
 }
+
 isdigit :: (utf32: u32) -> bool {
     return utf32 >= #char "0" && utf32 <= #char "9";
 }
@@ -559,6 +597,7 @@ Font_Record :: struct {
     width: s64;
     text_bytes: s32;
 }
+
 font_records: [..] *Font_Record = .{ allocator = SIMP_HEAP };
 dynamic_fonts: [..] *Dynamic_Font = .{ allocator = SIMP_HEAP };
 loaded_memory_fonts: [..] *Loaded_Font = .{ allocator = SIMP_HEAP };
@@ -567,13 +606,16 @@ fonts_initted := false;
 ft_library: FT.FT_Library;
 page_size_x: s32 = 2048;
 page_size_y: s32 = 1024;
+
 font_record :: (font: *Dynamic_Font) -> *Font_Record {
     for record: font_records if record.font == font return record;
     return null;
 }
+
 glyph_hash :: (utf32: u32, anti_aliasing: Font_Anti_Aliasing, hinting: bool) -> u64 {
     return (cast(u64) utf32) | ((cast(u64) anti_aliasing) << 32) | ((cast(u64) hinting) << 40);
 }
+
 find_or_create_glyph :: (font: *Dynamic_Font, utf32: u32) -> *Glyph_Data {
     push_allocator(SIMP_HEAP);
     key := glyph_hash(utf32, font_anti_aliasing, font_hinting) ^ ((cast(u64) font.glyph_index_for_unknown_character) << 41);
@@ -633,6 +675,7 @@ find_or_create_glyph :: (font: *Dynamic_Font, utf32: u32) -> *Glyph_Data {
     table_add(*font.glyph_lookup, key, glyph);
     return glyph;
 }
+
 get_font_line :: (width: int, height: int) -> *Font_Line {
     if width + 2 > page_size_x || height + 2 > page_size_y return null;
     for page: font_pages {
@@ -645,6 +688,7 @@ get_font_line :: (width: int, height: int) -> *Font_Line {
     array_add(*font_pages, page);
     return new_font_line(page, height);
 }
+
 // The page's texture outlives the frame, so its copy of the atlas comes from Simp's heap.
 upload_font_page :: (page: *Font_Page) -> bool {
     push_allocator(SIMP_HEAP);
@@ -653,6 +697,7 @@ upload_font_page :: (page: *Font_Page) -> bool {
     page.dirty = false;
     return true;
 }
+
 new_font_line :: (page: *Font_Page, height: int) -> *Font_Line {
     line := New(Font_Line);
     line.page = page;
@@ -663,6 +708,7 @@ new_font_line :: (page: *Font_Page, height: int) -> *Font_Line {
     array_add(*page.lines, line);
     return line;
 }
+
 decode_utf8 :: (text: string, pos: *int) -> u32 {
     first := text[pos.*];
     pos.* += 1;

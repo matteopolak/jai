@@ -2,12 +2,15 @@
 float64_bits :: (x: float64) -> u64 {
     return (cast(*u64) *x).*;
 }
+
 float64_from_bits :: (bits: u64) -> float64 {
     return (cast(*float64) *bits).*;
 }
+
 float32_bits :: (x: float32) -> u32 {
     return (cast(*u32) *x).*;
 }
+
 float32_from_bits :: (bits: u32) -> float32 {
     return (cast(*float32) *bits).*;
 }
@@ -16,39 +19,50 @@ abs :: (x: int) -> int {
     if x < 0 return -x;
     return x;
 }
+
 abs :: (x: s32) -> s32 {
     if x < 0 return -x;
     return x;
 }
+
 abs :: (x: float64) -> float64 {
     return float64_from_bits(float64_bits(x) & 0x7fff_ffff_ffff_ffff);
 }
+
 abs :: (x: float32) -> float32 {
     return float32_from_bits(float32_bits(x) & 0x7fff_ffff);
 }
+
 is_nan_is_inf :: (x: float64) -> (isnan: bool, isinf: bool) {
     magnitude := float64_bits(x) & 0x7fff_ffff_ffff_ffff;
     return magnitude > 0x7ff0_0000_0000_0000, magnitude == 0x7ff0_0000_0000_0000;
 }
+
 is_nan_is_inf :: (x: float32) -> (isnan: bool, isinf: bool) {
     magnitude := float32_bits(x) & 0x7fff_ffff;
     return magnitude > 0x7f80_0000, magnitude == 0x7f80_0000;
 }
+
 isnan :: (x: float64) -> bool {
     return x != x;
 }
+
 isnan :: (x: float32) -> bool {
     return x != x;
 }
+
 isinf :: (x: float64) -> bool {
     return abs(x) == FLOAT64_INFINITY;
 }
+
 isinf :: (x: float32) -> bool {
     return abs(x) == FLOAT32_INFINITY;
 }
+
 is_finite :: (x: float64) -> bool {
     return abs(x) < FLOAT64_INFINITY;
 }
+
 is_finite :: (x: float32) -> bool {
     return abs(x) < FLOAT32_INFINITY;
 }
@@ -69,10 +83,12 @@ floor :: (x: float64) -> float64 {
     if negative return truncated - 1;
     return truncated;
 }
+
 ceil :: (x: float64) -> float64 {
     value := x;
     return -floor(-value);
 }
+
 round :: (value: float64) -> float64 {
     if !is_finite(value) || value == 0 return value;
     if value < 0 return -round(-value);
@@ -82,9 +98,11 @@ round :: (value: float64) -> float64 {
     if value - whole >= 0.5 whole += 1;
     return whole;
 }
+
 frac :: (x: $T) -> T {
     return x - floor(x);
 }
+
 fmod_cycling :: (x: float64, y: float64) -> float64 {
     if y == 0 return FLOAT64_INFINITY;
     if !is_finite(x) || isnan(y) return FLOAT64_NAN;
@@ -105,6 +123,7 @@ fmod_cycling :: (x: float64, y: float64) -> float64 {
     }
     return magnitude;
 }
+
 frexp :: (x: float64) -> (result: float64, pow2: s32) {
     if x == 0 || !is_finite(x) return x, 0;
     bits := float64_bits(x);
@@ -118,6 +137,7 @@ frexp :: (x: float64) -> (result: float64, pow2: s32) {
     mantissa := float64_from_bits((bits & 0x800f_ffff_ffff_ffff) | 0x3fe0_0000_0000_0000);
     return mantissa, exponent - 1022 + correction;
 }
+
 ldexp :: (x: float64, pw2: s32) -> float64 {
     if x == 0 || !is_finite(x) return x;
     result := x;
@@ -135,6 +155,7 @@ ldexp :: (x: float64, pw2: s32) -> float64 {
     result *= float64_from_bits((cast(u64) (1023 + exponent)) << 52);
     return result;
 }
+
 // Correctly rounded, as IEEE requires: the square root of the integer significand is taken
 // bit by bit, so no floating-point rounding happens before the final one.
 sqrt :: (x: float64) -> float64 #no_aoc {
@@ -173,6 +194,7 @@ sqrt :: (x: float64) -> float64 #no_aoc {
     if remainder > root root += 1;
     return ldexp(cast(float64) root, cast(s32) ((exponent - 52) / 2));
 }
+
 log :: (x: float64) -> float64 {
     value := x;
     if isnan(value) || value < 0 return FLOAT64_NAN;
@@ -191,6 +213,7 @@ log :: (x: float64) -> float64 {
     }
     return 2 * total + cast(float64) exponent * 0.69314718055994530942;
 }
+
 exp :: (x: float64) -> float64 {
     value := x;
     if isnan(value) return value;
@@ -206,6 +229,7 @@ exp :: (x: float64) -> float64 {
     }
     return ldexp(total, exponent);
 }
+
 pow :: (x: float64, y: float64) -> float64 {
     base := x;
     exponent := y;
@@ -252,12 +276,14 @@ exact_product :: (a: float64, b: float64) -> product: float64, error: float64 {
     b_high, b_low := split_in_halves(b);
     return product, ((a_high * b_high - product) + a_high * b_low + a_low * b_high) + a_low * b_low;
 }
+
 // a == high + low with each half holding at most 26 significant bits.
 split_in_halves :: (a: float64) -> high: float64, low: float64 {
     scaled := cast(float64) 134217729 * a; // 2^27 + 1
     high := scaled - (scaled - a);
     return high, a - high;
 }
+
 // (x_high + x_low) * (y_high + y_low) as an unevaluated sum high + low.
 pair_multiply :: (x_high: float64, x_low: float64, y_high: float64, y_low: float64) -> high: float64, low: float64 {
     product, error := exact_product(x_high, y_high);
@@ -265,10 +291,12 @@ pair_multiply :: (x_high: float64, x_low: float64, y_high: float64, y_low: float
     high := product + error;
     return high, error - (high - product);
 }
+
 in_safe_range :: (x: float64) -> bool {
     magnitude := abs(x);
     return magnitude > 1e-290 && magnitude < 1e290; // so the 2^27 split cannot overflow
 }
+
 // base^power for base > 0 by square-and-multiply on double-double values. Reports false when an
 // intermediate leaves the range the exact products need (the result then over- or underflows,
 // or nearly does), leaving that case to exp/log.
@@ -296,6 +324,7 @@ whole_power :: (base: float64, power: s64) -> float64, bool {
     residual := ((1 - product) - error) - quotient * result_low;
     return quotient + quotient * residual, true;
 }
+
 #scope_export
 sin :: (x: float64) -> float64 {
     value := x;
@@ -315,6 +344,7 @@ sin :: (x: float64) -> float64 {
     }
     return total;
 }
+
 cos :: (x: float64) -> float64 {
     value := x;
     if !is_finite(value) return FLOAT64_NAN;
@@ -335,14 +365,17 @@ cos :: (x: float64) -> float64 {
     }
     return sign * total;
 }
+
 tan :: (x: float64) -> float64 {
     value := x;
     return sin(value) / cos(value);
 }
+
 cot :: (x: float64) -> float64 {
     value := x;
     return cos(value) / sin(value);
 }
+
 atan :: (x: float64) -> float64 {
     value := x;
     if isnan(value) || value == 0 return value;
@@ -362,6 +395,7 @@ atan :: (x: float64) -> float64 {
     if value < 0 result = -result;
     return result;
 }
+
 atan2 :: (y: float64, x: float64) -> float64 {
     if isnan(x) || isnan(y) return FLOAT64_NAN;
     sign_y := (float64_bits(y) >> 63) != 0;
@@ -390,68 +424,88 @@ atan2 :: (y: float64, x: float64) -> float64 {
     }
     return angle;
 }
+
 asin :: (x: float64) -> float64 {
     value := x;
     if abs(value) > 1 return FLOAT64_NAN;
     return atan2(value, sqrt((1 - value) * (1 + value)));
 }
+
 acos :: (x: float64) -> float64 {
     value := x;
     if abs(value) > 1 return FLOAT64_NAN;
     return atan2(sqrt((1 - value) * (1 + value)), value);
 }
+
 sin_or_cos :: (x: float64, $IS_SIN: bool) -> float64 {
     if IS_SIN return sin(x);
     return cos(x);
 }
+
 floor :: (f: float32) -> float32 {
     return cast(float32) floor(cast(float64) f);
 }
+
 ceil :: (f: float32) -> float32 {
     return cast(float32) ceil(cast(float64) f);
 }
+
 round :: (value: float32) -> float32 {
     return cast(float32) round(cast(float64) value);
 }
+
 sqrt :: (x: float32) -> float32 {
     return cast(float32) sqrt(cast(float64) x);
 }
+
 log :: (x: float32) -> float32 {
     return cast(float32) log(cast(float64) x);
 }
+
 exp :: (x: float32) -> float32 {
     return cast(float32) exp(cast(float64) x);
 }
+
 sin :: (x: float32) -> float32 {
     return cast(float32) sin(cast(float64) x);
 }
+
 cos :: (x: float32) -> float32 {
     return cast(float32) cos(cast(float64) x);
 }
+
 tan :: (theta: float32) -> float32 {
     return cast(float32) tan(cast(float64) theta);
 }
+
 cot :: (x: float32) -> float32 {
     return cast(float32) cot(cast(float64) x);
 }
+
 atan :: (y: float32) -> float32 {
     return cast(float32) atan(cast(float64) y);
 }
+
 asin :: (theta: float32) -> float32 {
     return cast(float32) asin(cast(float64) theta);
 }
+
 acos :: (theta: float32) -> float32 {
     return cast(float32) acos(cast(float64) theta);
 }
+
 atan2 :: (y: float32, x: float32) -> float32 {
     return cast(float32) atan2(cast(float64) y, cast(float64) x);
 }
+
 pow :: (x: float32, power: float32) -> float32 {
     return cast(float32) pow(cast(float64) x, cast(float64) power);
 }
+
 fmod_cycling :: (x: float32, divisor: float32) -> float32 {
     return cast(float32) fmod_cycling(cast(float64) x, cast(float64) divisor);
 }
+
 half_to_float :: (h: u16) -> float {
     sign := (cast(u32) (h >> 15)) << 31;
     exponent := cast(u32) ((h >> 10) & 31);

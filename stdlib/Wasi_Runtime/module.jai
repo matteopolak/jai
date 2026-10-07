@@ -408,6 +408,7 @@ Clock_Subscription :: struct {
     flags: u16;
     flags_padding: [6] u8;
 }
+
 Poll_Event :: struct {
     user_data: u64;
     error: u16;
@@ -417,6 +418,7 @@ Poll_Event :: struct {
     flags: u16;
     flags_padding: [6] u8;
 }
+
 #assert size_of(Clock_Subscription) == 48 && size_of(Poll_Event) == 32;
 
 // Linux's `struct tm`, which the stdlib's `OS == .WASM` code reads.
@@ -433,6 +435,7 @@ Broken_Down_Time :: struct {
     gmt_offset: s64;
     zone: *u8;
 }
+
 #assert size_of(Broken_Down_Time) == 56;
 
 environment: **u8;

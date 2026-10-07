@@ -1,5 +1,6 @@
 #scope_export
 #load "advanced-layouts.jai";
+
 begin_scrollable_region :: (r: Rect, theme: *Scrollable_Region_Theme = null, identifier: s64 = 0, loc := #caller_location) -> (state: *Scrollable_Region_State, inside: Rect) {
     if !theme theme = *default_overall_theme.scrollable_region_theme;
     state = find_or_create_state(Scrollable_Region_State, get_hash(loc, identifier));
@@ -40,6 +41,7 @@ begin_scrollable_region :: (r: Rect, theme: *Scrollable_Region_Theme = null, ide
     push_scissor(inside);
     return state, inside;
 }
+
 #if GETRECT_Y_UP {
     end_scrollable_region :: (state: *Scrollable_Region_State, max_x: float, min_y: float, scroll_value: *float) {
         end_scrollable_region_shared(state, max_x, min_y, scroll_value);
@@ -49,6 +51,7 @@ begin_scrollable_region :: (r: Rect, theme: *Scrollable_Region_Theme = null, ide
         end_scrollable_region_shared(state, max_x, max_y, scroll_value);
     }
 }
+
 #scope_module
 // y_limit is the content's lowest edge (y-up) or highest extent (y-down).
 end_scrollable_region_shared :: (state: *Scrollable_Region_State, max_x: float, y_limit: float, scroll_value: *float) {
@@ -106,11 +109,13 @@ end_scrollable_region_shared :: (state: *Scrollable_Region_State, max_x: float, 
     if state.dragging status |= .DOWN;
     core_draw_button(shrink(nib, breadth * theme.nib_margin), "", *state.nib_state, status, *theme.scrollbar_nib_theme, null);
 }
+
 // Pointer position along the scrollbar track as a 0..1 fraction (the y-up track runs bottom to top).
 scroll_fraction :: (bar: Rect, vertical: bool, nib_size: float, position: float, origin: float, travel: float) -> float {
     if GETRECT_Y_UP return right_scroll_fraction(bar, vertical, nib_size, position);
     return clamp((position - origin - nib_size / 2) / max(travel, 1.0), 0.0, 1.0);
 }
+
 #scope_export
 slidable_region :: (r: Rect, theme: *Slidable_Region_Theme = null, identifier: s64 = 0, loc := #caller_location) -> (state: *Slidable_Region_State, left_or_top_rect: Rect, right_or_bottom_rect: Rect, divider_rect: Rect) {
     if !theme theme = *default_overall_theme.slidable_region_theme;
@@ -145,6 +150,7 @@ slidable_region :: (r: Rect, theme: *Slidable_Region_Theme = null, identifier: s
     push_scissor(first);
     return state, first, second, divider;
 }
+
 compute_rects :: (r: Rect, state: *Slidable_Region_State, divider_thickness_in_pixels: float) -> (top: Rect, divider: Rect, bottom: Rect) {
     if GETRECT_Y_UP return right_divider_rects(r, state.theme.orientation == .HORIZONTAL, state.divider_t, divider_thickness_in_pixels);
     top := r;
@@ -166,18 +172,22 @@ compute_rects :: (r: Rect, state: *Slidable_Region_State, divider_thickness_in_p
     }
     return top, divider, bottom;
 }
+
 switch_to_second_rect :: (state: *Slidable_Region_State) {
     pop_scissor();
     push_scissor(state.right_or_bottom_rect);
 }
+
 switch_to_first_rect :: (state: *Slidable_Region_State) {
     pop_scissor();
     push_scissor(state.left_or_top_rect);
 }
+
 finish :: (state: *Slidable_Region_State) {
     pop_scissor();
     stop_using_state(state);
 }
+
 number_input :: (_r: Rect, text: string, value: *$T, min_value: T, max_value: T, theme: *Number_Input_Theme, identifier: s64 = 0, loc := #caller_location,parse_proc: (string) -> (T, bool) = null) -> bool {
     if !value || max_value < min_value return false;
     if !theme theme = *left_default_number_theme;
@@ -209,6 +219,7 @@ number_input :: (_r: Rect, text: string, value: *$T, min_value: T, max_value: T,
     value.* = candidate;
     return changed;
 }
+
 add_subwindow :: (info: *Subwindow_Info, theme: *Subwindow_Theme = null, identifier: s64 = 0, loc := #caller_location,z: s32 = 0) -> (state: *Subwindow_State) {
     assert(info != null);
     if !info return null;
@@ -238,6 +249,7 @@ add_subwindow :: (info: *Subwindow_Info, theme: *Subwindow_Theme = null, identif
     stop_using_state(state);
     return state;
 }
+
 draw_subwindow :: (state: *Subwindow_State) {
     if !state.info || !state.info.open return;
     start_using_state(state);
@@ -333,9 +345,11 @@ draw_subwindow :: (state: *Subwindow_State) {
         }
     }
 }
+
 get_title_bar_height :: (theme: *Subwindow_Theme, override_render_target_height: s32 = 0) -> float {
     return theme.title_bar_size * (ifx override_render_target_height > 0 then override_render_target_height else render_target_height);
 }
+
 subwindow_rect_from_content_rect :: (content_rect: Rect, theme: *Subwindow_Theme, override_render_target_height: s32 = 0) -> Rect {
     height := ifx override_render_target_height > 0 then override_render_target_height else render_target_height;
     result := content_rect;
@@ -348,15 +362,18 @@ subwindow_rect_from_content_rect :: (content_rect: Rect, theme: *Subwindow_Theme
     result.h += 2 * my + title;
     return result;
 }
+
 raise :: (state: *Subwindow_State) {
     left_raise_serial += 1;
     left_subwindow_order(state).rank = left_raise_serial;
 }
+
 start_resizing :: (state: *Subwindow_State, f: Rect) {
     state.dragging_last = .{ mouse_x_float, mouse_y_float };
     state.dragging_start = state.dragging_last;
     state.resizing_aspect = ifx f.h > 0 then f.w / f.h else 1.0;
 }
+
 update_dragging :: (state: *Subwindow_State, full: *Rect) {
     if active_widget != state return;
     delta := xy(mouse_x_float, mouse_y_float) - state.dragging_last;
@@ -395,14 +412,17 @@ update_dragging :: (state: *Subwindow_State, full: *Rect) {
     }
     if mouse_button_left_state & .END active_widget_remove(state);
 }
+
 rescale :: (r: Rect, old_w: s32, old_h: s32) -> Rect {
     if old_w <= 0 || old_h <= 0 return r;
     return .{ r.x * render_target_width / old_w, r.y * render_target_height / old_h, r.w * render_target_width / old_w, r.h * render_target_height / old_h };
 }
+
 rescale :: (v: Vector2, old_w: s32, old_h: s32) -> Vector2 {
     if old_w <= 0 || old_h <= 0 return v;
     return .{ v.x * render_target_width / old_w, v.y * render_target_height / old_h };
 }
+
 draw_resize_corner :: (theme: *Subwindow_Theme, state: *Subwindow_State, r: Rect) {
     draw_procs.set_shader_for_color(true);
     for line: 1..3 {
@@ -413,11 +433,14 @@ draw_resize_corner :: (theme: *Subwindow_Theme, state: *Subwindow_State, r: Rect
         draw_procs.immediate_quad(p0, p1, p2, p3, theme.resize_corner_color);
     }
 }
+
 #scope_module
 left_default_number_theme: Number_Input_Theme;
+
 left_subwindow_popup :: (data: *void) {
     draw_subwindow(cast(*Subwindow_State) data);
 }
+
 shrink_xy :: (r: Rect, x: float, y: float) -> Rect {
     return .{ r.x + x, r.y + y, max(r.w - 2 * x, 0.0), max(r.h - 2 * y, 0.0) };
 }
@@ -428,8 +451,10 @@ Left_Subwindow_Order :: struct {
     rank: u64;
     frame: u64;
 }
+
 left_subwindow_orders: [..] *Left_Subwindow_Order = .{ allocator = GETRECT_HEAP };
 left_raise_serial: u64;
+
 left_subwindow_order :: (state: *Subwindow_State) -> *Left_Subwindow_Order {
     for order: left_subwindow_orders if order.state == state return order;
     order := New(Left_Subwindow_Order, allocator = GETRECT_HEAP);
@@ -439,6 +464,7 @@ left_subwindow_order :: (state: *Subwindow_State) -> *Left_Subwindow_Order {
     array_add(*left_subwindow_orders, order);
     return order;
 }
+
 left_subwindow_hit :: (window: Window_Type, x: float, y: float) -> *Active_Widget {
     best: *Left_Subwindow_Order;
     for order: left_subwindow_orders if order.frame == current_getrect_frame && order.state.window == window && order.state.info && order.state.info.open {
@@ -449,6 +475,7 @@ left_subwindow_hit :: (window: Window_Type, x: float, y: float) -> *Active_Widge
     if best return *best.state.widget;
     return null;
 }
+
 left_resize_hit :: (r: Rect, theme: *Subwindow_Theme, x: float, y: float) -> Resize_Controls {
     result: Resize_Controls;
     height := cast(float) render_target_height;
@@ -471,6 +498,7 @@ left_resize_hit :: (r: Rect, theme: *Subwindow_Theme, x: float, y: float) -> Res
     if result != 0 result |= theme.resize_controls & (.PROPORTIONAL | .SNAP);
     return result;
 }
+
 #scope_export
 get_pointer_from_resize_control :: (flags: Resize_Controls) -> Pointer_Image {
     if flags & .EW && flags & .NS {
