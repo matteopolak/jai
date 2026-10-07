@@ -176,6 +176,9 @@ pub enum TrapKind {
     BareAssertion,
     /// A foreign procedure neither the host nor a loaded library provides.
     Unavailable,
+    /// Not a failure: unwinds a thread of the single-threaded scheduler that nothing can wake,
+    /// so one lower on the stack can go on (`threads_inline.rs`). Never reported.
+    Abandoned,
 }
 
 /// What a load or store at an address in the never-mapped first page did (`Interp::null_trap`).
