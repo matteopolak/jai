@@ -928,12 +928,16 @@ fn c_long_double() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
+    // The copied Bindings_Generator test imports the stdlib tests' own modules.
+    let test_modules = repo_root().join("tests/stdlib/modules");
     let x86 = |name: &str| {
         jaic(&[
             "build",
             &format!("{name}.jai"),
             "-target",
             "x86_64-apple-darwin",
+            "-import_dir",
+            test_modules.to_str().unwrap(),
             "-o",
             name,
         ]);
