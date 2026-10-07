@@ -13,14 +13,14 @@ Examples: `examples/webgpu/triangle.jai` (window, render pipeline), `examples/we
 | macOS arm64, x64 | Metal | `Window_Creation` window (`CAMetalLayer`) | CI (`stdlib-runtime`, both CPUs): headless test, and the window test presenting to a `Window_Creation` window on the runner VM's paravirtual Metal device, interpreted and built (each a skip if a runner has no Metal device) |
 | Linux x64, arm64 | Vulkan | Xlib window (`WGPUSurfaceSourceXlibWindow`) | CI (`stdlib-runtime`): headless test, and the window test presenting to an X11 window on Xvfb, on Mesa's lavapipe, interpreted and built |
 | Windows x64, arm64 | D3D12 | HWND (`WGPUSurfaceSourceWindowsHWND`) | CI (`windows-native.yml`): headless test, and the window test presenting to an HWND in the runner's desktop session, on WARP, interpreted and built |
-| Browser playground | the browser's WebGPU | the page's Render pane (`OffscreenCanvas` in the worker) | `tools/test_webgpu_host.mjs` against a mock WebGPU (CI); Chromium by hand |
+| Browser playground | the browser's WebGPU | the playground's Render tab (`OffscreenCanvas` in the worker) | `tools/test_webgpu_host.mjs` against a mock WebGPU (CI); Chromium by hand |
 
 In the browser a program needs WebGPU in workers and JSPI (`WebAssembly.Suspending`). As of this writing:
 
 | Browser | WebGPU in workers | JSPI | Playground |
 |---|---|---|---|
 | Chrome, Edge (137+) | yes | yes | draws |
-| Firefox | Windows (141+), others behind a pref | not by default | `webgpu_available()` is false; the Render pane says so |
+| Firefox | Windows (141+), others behind a pref | not by default | `webgpu_available()` is false; the Render tab says so |
 | Safari | 26+ | not by default | same as Firefox |
 
 A program should check `webgpu_available()` first: it is true natively and, in the browser, only when the page passed a WebGPU host and the browser has `navigator.gpu`. The tour's GPU stop prints a skip line instead of failing.
