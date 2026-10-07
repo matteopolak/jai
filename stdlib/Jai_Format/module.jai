@@ -20,6 +20,7 @@ Format_Config :: struct {
     max_blank_lines := 2;
     max_width := 100; // only reported (format_count_long_lines); lines are never rewrapped
     brace_style := Brace_Style.SAME_LINE;
+    blank_lines_between_items := true; // a blank line around multi-line file-level items and import groups
     ignore: [..] string; // globs relative to `root`, for format_is_ignored
     root: string; // directory of the config file; set by whoever read it
 }

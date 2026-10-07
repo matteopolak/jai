@@ -61,6 +61,14 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                 } else {
                     return false, tprint("line %: brace_style must be \"same_line\" or \"preserve\"", line_number);
                 }
+            case "blank_lines_between_items";
+                if value == "true" {
+                    config.blank_lines_between_items = true;
+                } else if value == "false" {
+                    config.blank_lines_between_items = false;
+                } else {
+                    return false, tprint("line %: blank_lines_between_items must be true or false", line_number);
+                }
             case "ignore";
                 if !value.count || value[0] != #char "[" || value[value.count - 1] != #char "]" {
                     return false, tprint("line %: ignore must be an array of quoted globs on one line", line_number);

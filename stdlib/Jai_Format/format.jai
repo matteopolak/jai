@@ -558,6 +558,139 @@ plan_lines :: (f: *Formatter) {
         if ends_case[s] && case_keeps_statement(f, j) continue;
         f.breaks[j] = 1;
     }
+
+    if f.config.blank_lines_between_items separate_items(f, partner, enclosing, 0, n, -1);
+}
+
+// A file-level declaration or directive (`blank_lines_between_items`): its first and last code
+// tokens.
+Item :: struct {
+    start := -1;
+    end: int;
+    is_import: bool; // holds a `#import` or `#load` of its own (`#import "A";`, `A :: #import "A";`)
+    multi_line: bool;
+}
+
+// `blank_lines_between_items`: walks the items whose innermost bracket is `level` (-1: the file;
+// otherwise the `{` of a file-level `#if` block, whose items count as file-level too) in tokens
+// `from` to `to - 1`, and puts a blank line between two neighbours when either spans lines, or
+// when one is an import and the other is not. A `#scope_*` line is not an item: like a comment,
+// it belongs to the item below it. Only existing line breaks are deepened, so the token check
+// is unaffected.
+separate_items :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int, to: int, level: int) {
+    previous: Item;
+    item: Item;
+    k := from;
+    while k < to && f.tokens[k].kind != .EOF {
+        tok := f.tokens[k];
+        if is_comment(f, k) || (item.start < 0 && tok.kind == .DIRECTIVE && begins_with(directive_name(f, k), "scope_")) {
+            k += 1;
+            continue;
+        }
+        if item.start < 0 item.start = k;
+        done := false;
+        if tok.kind == .PUNCT {
+            text := text_of(f, k);
+            if is_opener(text) && partner[k] > k {
+                o := k;
+                if text == "{" && is_item_container(f, partner, item.start, o) {
+                    separate_items(f, partner, enclosing, o + 1, partner[o], o);
+                }
+                k = partner[o];
+                if text == "{" && !f.literal_brace[o] done = block_ends_item(f, k);
+            } else if text == ";" {
+                done = true;
+            }
+        }
+        item.end = k;
+        if done {
+            finish_item(f, *item, enclosing, level);
+            if previous.start >= 0 separate_pair(f, previous, item);
+            previous = item;
+            item = .{};
+        }
+        k += 1;
+    }
+    if item.start >= 0 {
+        finish_item(f, *item, enclosing, level);
+        if previous.start >= 0 separate_pair(f, previous, item);
+    }
+}
+
+finish_item :: (f: *Formatter, item: *Item, enclosing: [] int, level: int) {
+    for k: item.start..item.end {
+        t := f.tokens[k];
+        if k > item.start && f.breaks[k] > 0 item.multi_line = true;
+        if (t.kind == .HERE_STRING || t.kind == .STRING || t.kind == .BLOCK_COMMENT) && contains_newline(f.src, t.start, t.end) {
+            item.multi_line = true;
+        }
+        if t.kind == .DIRECTIVE && enclosing[k] == level {
+            name := directive_name(f, k);
+            if name == "import" || name == "load" item.is_import = true;
+        }
+    }
+}
+
+// Ensures a blank line between items `a` and `b` where the rules ask for one. It goes before
+// the first line after `a`, so comments and `#scope_*` lines directly above `b` stay with it.
+separate_pair :: (f: *Formatter, a: Item, b: Item) {
+    if a.is_import && b.is_import return;
+    if !a.multi_line && !b.multi_line && a.is_import == b.is_import return;
+    t := a.end + 1;
+    while t <= b.start && f.breaks[t] == 0 t += 1;
+    if t > b.start || f.verbatim[t] return; // on one line, or inside `// jaifmt: off`
+    for j: t..b.start if f.breaks[j] > 1 return;
+    f.breaks[t] = 2;
+}
+
+// Does the block closed at `close` end its item? Not when `else`, a note or punctuation
+// (`;`, `,`) continues it, or when more code follows on the same line.
+block_ends_item :: (f: *Formatter, close: int) -> bool {
+    next := close + 1;
+    broken := false;
+    while is_comment(f, next) {
+        if f.breaks[next] > 0 broken = true;
+        next += 1;
+    }
+    t := f.tokens[next];
+    if t.kind == .EOF return true;
+    if !broken && f.breaks[next] == 0 return false;
+    if t.kind == .NOTE || is_ident(f, next, "else") || is_ident(f, next, "then") return false;
+    return !is_punct(f, next, ";") && !is_punct(f, next, ",");
+}
+
+// Is the `{` at `o`, in the item starting at `start`, the body of a file-level `#if` (or its
+// `else`), whose contents are file-level items? Not a `#if x == {` switch, and not the body of
+// a declaration written under a braceless `#if` (`#if A f :: () {`).
+is_item_container :: (f: *Formatter, partner: [] int, start: int, o: int) -> bool {
+    if f.tokens[start].kind != .DIRECTIVE || directive_name(f, start) != "if" || f.literal_brace[o] return false;
+    p := previous_code(f, o);
+    if is_punct(f, p, "==") return false;
+    while p >= start {
+        t := f.tokens[p];
+        if is_comment(f, p) {
+            p -= 1;
+            continue;
+        }
+        if t.kind == .PUNCT {
+            text := text_of(f, p);
+            if (text == ")" || text == "]") && partner[p] >= 0 && partner[p] < p {
+                p = partner[p] - 1;
+                continue;
+            }
+            if one_of(text, string.["::", ":=", ":", "=", "->", ";", "{", "}"]) return false;
+        } else if t.kind == .IDENT {
+            text := text_of(f, p);
+            if text == "else" return true;
+            if one_of(text, string.["struct", "union", "enum", "enum_flags"]) return false;
+        } else if t.kind == .DIRECTIVE {
+            name := directive_name(f, p);
+            if name == "if" return true;
+            if !is_punct(f, p + 1, "(") && !one_of(name, OPERAND_DIRECTIVES) return false;
+        }
+        p -= 1;
+    }
+    return false;
 }
 
 // `f({1, 2})`, `x = {w, h}`, `return {a, b};`: a brace where a value goes, holding no

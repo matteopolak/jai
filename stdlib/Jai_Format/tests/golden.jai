@@ -150,7 +150,10 @@ check_config_parsing :: () {
     if config.indent_width != 2 || config.max_width != 120 || config.brace_style != .PRESERVE || config.ignore.count != 2 {
         fail("config parsed wrong: %", config);
     }
-    for string.["indent_width = x\n", "unknown = 1\n", "brace_style = \"weird\"\n", "ignore = \"a\"\n"] {
+    if !config.blank_lines_between_items fail("blank_lines_between_items should default to true");
+    off, off_ok := parse_config("blank_lines_between_items = false\n");
+    if !off_ok || off.blank_lines_between_items fail("blank_lines_between_items = false not parsed");
+    for string.["indent_width = x\n", "unknown = 1\n", "brace_style = \"weird\"\n", "ignore = \"a\"\n", "blank_lines_between_items = 1\n"] {
         _, accepted := parse_config(it);
         if accepted fail("bad config accepted: %", it);
     }

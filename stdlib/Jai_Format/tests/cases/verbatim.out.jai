@@ -2,6 +2,7 @@ TEXT :: #string END
    keep   this   
 	and this	
 END;
+
 CR :: #string,cr DONE
 line
 DONE
