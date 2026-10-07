@@ -9,6 +9,8 @@ An independent toolchain for the [Jai](https://en.wikipedia.org/wiki/Jai_(progra
 - `jaifmt`, a formatter;
 - `jailint`, a linter.
 
+It is written from public documentation and third-party Jai code, without access to the official compiler or its modules.
+
 The compiler, language server and formatter also run in the browser through WebAssembly, and the language server shows jailint's findings there too.
 
 **[Try it in the browser →](https://matteopolak.com/playground/jai)**
@@ -148,8 +150,6 @@ Anything unsupported fails with a compile error rather than being silently accep
 ## Contributing
 
 Pull requests are not accepted; they are closed without review. Bug reports and feature requests are welcome as [issues](https://github.com/matteopolak/jai/issues/new/choose). See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-This project is a clean-room implementation, written without reading the source of an official Jai distribution: its modules, `how_to` programs, compiler or any other part of it. It is built from public documentation, third-party Jai code and the behaviour of programs in this repository's tests. To work on it, start with the [developer docs](docs/README.md).
 
 ## License
 
