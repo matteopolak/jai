@@ -46,7 +46,7 @@ const NATIVE_SLICE: Duration = Duration::from_millis(1);
 
 /// Once C may hold thunks (`Sched::callbacks`), a thread C started may call one and wake the
 /// blocked threads: every thread must stay blocked this long before that counts as a deadlock.
-const DEADLOCK_GRACE: Duration = Duration::from_secs(1);
+pub const DEADLOCK_GRACE: Duration = Duration::from_secs(1);
 
 const EPERM: u64 = 1;
 const EBUSY: u64 = 16;

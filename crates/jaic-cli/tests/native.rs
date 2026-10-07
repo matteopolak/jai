@@ -612,13 +612,11 @@ fn c_thread_callbacks_block_on_jai_threads() {
         String::from_utf8_lossy(&output.stdout).replace('\r', ""),
         expected
     );
-    // Only a thunk C may hold delays the report by the scheduler's grace second (1 s): the
-    // thunk `Thread` starts its threads through is run by the scheduler, not C.
-    let grace = std::time::Duration::from_secs(1);
-    for (args, delayed) in [
-        (&["run", "deadlock.jai"][..], false),
-        (&["run", "deadlock.jai", "--", "callback"], true),
-    ] {
+    // Only a thunk C may hold delays the report by the scheduler's grace period: the thunk
+    // `Thread` starts its threads through is run by the scheduler, not C. Both runs compile the
+    // same program, so how long that takes cancels out of the difference between them.
+    let grace = jaic::interp::DEADLOCK_GRACE;
+    let report = |args: &[&str]| {
         let started = std::time::Instant::now();
         let output = Command::new(JAIC)
             .args(args)
@@ -633,8 +631,15 @@ fn c_thread_callbacks_block_on_jai_threads() {
             "{args:?}: {stderr}"
         );
         assert!(output.stdout.is_empty(), "{args:?}");
-        assert_eq!(took >= grace, delayed, "{args:?} took {took:?}");
-    }
+        took
+    };
+    let jai_only = report(&["run", "deadlock.jai"]);
+    let callback = report(&["run", "deadlock.jai", "--", "callback"]);
+    assert!(callback >= grace, "the callback case took {callback:?}");
+    assert!(
+        jai_only + grace / 2 <= callback,
+        "the Jai-only case took {jai_only:?}, the callback case {callback:?}"
+    );
 }
 
 /// The interpreter's crash report on Windows (its vectored exception handler; see
