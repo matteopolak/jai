@@ -19,6 +19,7 @@ It has two layers:
 | Diagnostics: the type checker's first error, also in code nothing calls (`jai-check` as `code`, see [dead-code elimination](../language/dead-code-elimination.md)) | `textDocument/publishDiagnostics` | semantic |
 | Diagnostics: jailint lints (rule as `code`, `jailint` as `source`) | `textDocument/publishDiagnostics` | semantic |
 | Hover: types of locals, members, procedures (every overload), structs, enums, constants | `textDocument/hover` | semantic |
+| Hover: memory layout of types (size, alignment, padding), fields (offset, size, alignment) and aggregate-typed variables | `textDocument/hover` | semantic |
 | Hover on a macro call: the macro's body with the arguments substituted | `textDocument/hover` | semantic |
 | Hover on `#insert`: the inserted code | `textDocument/hover` | semantic |
 | Hover on `#run`: its value and type, and what it printed | `textDocument/hover` | semantic |
@@ -81,6 +82,24 @@ For completion, the word being typed and any `a.b.` chain before it are cut out 
   3. the smallest recorded **reference** at the offset: a local or member as `name: Type`, each overload of a procedure as `name :: <header>`, a type with its fields or members, a constant with its value. When the name is the callee of an `#expand` macro call, the expansion is appended (`with_macro_expansion`);
   4. any **expansion** containing the cursor where there is no name (the string of `#insert "..."`);
   5. the syntax layer's declaration text, or `keyword return` on a keyword (completion details say `keyword` too; hover text does not repeat the language name).
+
+#### Memory layout in hovers
+
+A semantic hover ends with a layout line when there is one layout to show (`IdeHover::layout`, written by `session.rs` `layout_line`):
+
+```text
+Pair :: struct { a: u8; b: s32; }
+size 8, align 4 (3 bytes of padding)
+
+b: s32
+offset 4, size 4, align 4 (3 bytes of padding before)
+```
+
+- **Types** (structs, unions, enums, aliases, a `Poly(args)` instance): `size`, `align` and, for a struct, the bytes no field covers. A polymorphic struct's definition has none; hovering the name in `Node(int)` shows that instance (`IdeFacts::instances`, keyed by the callee's span).
+- **Fields**, at their declaration or at `a.b`: the offset in the struct named (through `using` and `#as using` members held by value, and in the struct holding an anonymous `struct { ... }` / `union { ... }`), size, the alignment the layout used (a member's `#align` replaces the type's), and the gap since the previous fields of the same struct. `#place` / `#overlay` members show their shared offset.
+- **Variables and constants** of structs, arrays, strings and `Any` show their type's size and alignment; scalars do not.
+
+The numbers are the compiler's own (`StructInfo::fields[i].offset`/`align`, `Types::size_of`/`align_of`), the ones `size_of` and `type_info` report for the workspace's target; the language server computes nothing. Field declarations are not names the checker resolves, so `layout_struct` records each field's span (`IdeFacts::fields`, via `ide_note_layout`), and `a.b` records the type of `a` (`IdeFacts::receivers`). A field laid out in several structs (a polymorphic struct's instances) and a name checked with different types in a polymorphic body get no layout rather than one instance's.
 
 Hover contents are built once as blocks (`hover.rs` `HoverText`: code, program output, prose, format rows and section starts) and written in the format the client asked for. `JsonSession` reads `capabilities.textDocument.hover.contentFormat` at `initialize`: if it lists `markdown`, hovers are `"kind": "markdown"`, otherwise `"kind": "plaintext"`. `Session::hover` is plain text; `Session::hover_as(uri, position, MarkupKind)` picks.
 
