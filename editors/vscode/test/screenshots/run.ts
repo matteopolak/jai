@@ -64,6 +64,7 @@ async function main(): Promise<void> {
     extensionTestsEnv: {
       JAI_SHOTS_OUT: path.join(root, "images"),
       JAI_SHOTS_WINDOW_ID: path.join(root, "test", "screenshots", "window-id.swift"),
+      JAI_SHOTS_CROP_TOP: path.join(root, "test", "screenshots", "crop-top.swift"),
     },
   });
 }

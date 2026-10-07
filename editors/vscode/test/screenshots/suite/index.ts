@@ -26,6 +26,9 @@ function ancestors(): string[] {
   return pids;
 }
 
+// Height of the macOS title bar at the 1200px capture width.
+const TITLE_BAR = 28;
+
 let windowId: string | undefined;
 async function capture(name: string): Promise<void> {
   await vscode.commands.executeCommand("notifications.clearAll");
@@ -35,6 +38,8 @@ async function capture(name: string): Promise<void> {
   execFileSync("screencapture", ["-o", "-x", `-l${windowId}`, file]);
   // Retina captures are twice the window size; the Marketplace page is about 900px wide.
   execFileSync("sips", ["--resampleWidth", "1200", file, "--out", file], { stdio: "ignore" });
+  // Drop the title bar: the development host names itself and the temp folder there.
+  execFileSync("swift", [process.env.JAI_SHOTS_CROP_TOP!, file, String(TITLE_BAR)]);
   console.log(`captured ${file} (${Math.round(statSync(file).size / 1024)} KiB)`);
 }
 
