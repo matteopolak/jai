@@ -138,7 +138,10 @@ fn host_call(symbol: &str, args: &[u64], results: &mut [u64]) -> Option<Result<b
         )
     };
     let (status, waited) = match status {
-        3 => (unsafe { imports::wait(results.as_mut_ptr(), results.len()) }, true),
+        3 => (
+            unsafe { imports::wait(results.as_mut_ptr(), results.len()) },
+            true,
+        ),
         s => (s, false),
     };
     match status {
@@ -169,7 +172,8 @@ fn send_output(bytes: &[u8], to_stderr: bool) {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn send_output(_bytes: &[u8], _to_stderr: bool) {}
+fn send_output(_bytes: &[u8], _to_stderr: bool) {
+}
 
 #[cfg(target_arch = "wasm32")]
 #[allow(unsafe_code)]
