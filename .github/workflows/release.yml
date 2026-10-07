@@ -132,7 +132,8 @@ jobs:
         run: |
           exe=""
           if [ "$RUNNER_OS" = "Windows" ]; then exe=".exe"; fi
-          dir="jaic-${{ matrix.name }}"
+          # jai-<platform> since 0.4.1 (0.4.0 and earlier shipped jaic-<platform>).
+          dir="jai-${{ matrix.name }}"
           mkdir -p "$dir"
           out="target/pgo/dist"
           cp "$out/jaic$exe" "$out/jailsp$exe" "$out/jailint$exe" "$dir/"

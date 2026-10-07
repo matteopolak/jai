@@ -4,6 +4,8 @@
 
 ### Changed
 
+- Release archives are now named `jai-<platform>` (`jai-macos-arm64.tar.gz`, `jai-linux-x64.tar.gz`, `jai-windows-x64.zip`, `jai-windows-arm64.zip`, each unpacking to `jai-<platform>/`), since they hold all four tools. Releases up to 0.4.0 keep their `jaic-` names: `install.sh`, `install.ps1`, the Homebrew formula, the winget manifests and the VS Code extension pick the name by version, so installing an older release and upgrading an existing install keep working. The install scripts also read `JAI_VERSION`, `JAI_INSTALL_DIR` and `JAI_BIN_DIR`; the `JAIC_` names still work.
+
 - The VS Code extension is listed as **Jai Toolchain** (its ID stays `matteopolak.jai`), so it can go on the VS Code Marketplace, where the name *Jai* is taken. 0.4.0 reached only Open VSX and the GitHub release.
 
 ### Fixed
