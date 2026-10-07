@@ -99,7 +99,7 @@ STAGING_FRAMES :: 2048;
 
 pcm: *Pcm;
 staging: [STAGING_FRAMES * ALSA_CHANNELS] s16;
-listed_devices: [..] Output_Device;
+listed_devices: [..] Output_Device = .{ allocator = SOUND_HEAP };
 
 write_all :: (samples: *s16, frames: s64) -> bool {
     written := 0;

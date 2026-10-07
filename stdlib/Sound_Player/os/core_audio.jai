@@ -110,7 +110,7 @@ unit: *Opaque;
 ring: [RING_FRAMES * CA_CHANNELS] s16;
 produced: s64; // Total frames written into the ring.
 consumed: s64; // Total frames the callback has taken.
-listed_devices: [..] Output_Device;
+listed_devices: [..] Output_Device = .{ allocator = SOUND_HEAP };
 
 // Runs on Core Audio's thread: no allocation, no locks, no context.
 pull_samples :: (user: *void, flags: *u32, timestamp: *void, bus: u32, frames: u32, data: *Buffer_List) -> s32 #c_call {

@@ -196,6 +196,7 @@ sound_player_shutdown :: () {
 }
 
 get_devices :: () -> [] Output_Device {
+    push_allocator(SOUND_HEAP);
     return output_devices();
 }
 
@@ -210,6 +211,7 @@ set_master_volume :: (value: float) {
 // A new stream for `data`, not yet playing. Returns null for data that was not loaded or that has
 // an unsupported layout. Hand it to start_playing; the player frees it when it ends or is stopped.
 make_stream :: (data: *Sound_Data, category := Sound_Category.GENERAL_SFX) -> *Sound_Stream {
+    push_allocator(SOUND_HEAP);
     if !data || !data.loaded return null;
 
     cache: *Block_Cache;
@@ -240,6 +242,7 @@ make_stream :: (data: *Sound_Data, category := Sound_Category.GENERAL_SFX) -> *S
 }
 
 start_playing :: (stream: *Sound_Stream) {
+    push_allocator(SOUND_HEAP);
     if !stream || !player.running return;
     lock(*player.lock);
     defer unlock(*player.lock);
@@ -421,7 +424,12 @@ release_voice :: (stream: *Sound_Stream) {
 
 give_back :: (stream: *Sound_Stream) {
     if player.config.release_asset player.config.release_asset(stream, stream.sound_data);
-    free(stream);
+    free(stream, SOUND_HEAP);
 }
 
 streams_waiting_on_decodes: s64;
+
+// Streams, their block caches and the device list are freed by the mixer and decode threads or on a
+// later frame, so they come from the heap, never the caller's context.allocator (which a game may
+// point at temporary storage it resets every frame).
+SOUND_HEAP :: Context_Base.default_allocator;

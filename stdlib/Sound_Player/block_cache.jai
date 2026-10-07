@@ -47,7 +47,7 @@ ADPCM_PACKETS_PER_BLOCK :: 4;
 // Decoded audio kept ahead of the cursor. Shorter would stutter when the game runs below ~3 fps.
 SECONDS_KEPT_DECODED :: 0.4;
 
-decode_queue: [..] *Decoded_Block;
+decode_queue: [..] *Decoded_Block = .{ allocator = SOUND_HEAP };
 
 open_vorbis_cache :: (data: *Sound_Data) -> *Block_Cache {
     handle := open_vorbis_handle(data);
@@ -85,7 +85,7 @@ close_block_cache :: (cache: *Block_Cache) {
     for cache.blocks drop_block(it);
     array_free(cache.blocks);
     if cache.vorbis stb_vorbis_close(cache.vorbis);
-    free(cache);
+    free(cache, SOUND_HEAP);
 }
 
 // Marks the blocks the stream will need soon, requests the missing ones and frees decoded blocks
@@ -183,6 +183,7 @@ want_frames :: (cache: *Block_Cache, from: s64, to: s64) {
 }
 
 request_block :: (cache: *Block_Cache, first: s64) -> *Decoded_Block {
+    push_allocator(SOUND_HEAP);
     block := New(Decoded_Block);
     block.owner = cache;
     block.first = first;
@@ -213,8 +214,8 @@ land_block :: (block: *Decoded_Block) {
 }
 
 drop_block :: (block: *Decoded_Block) {
-    free(block.pcm);
-    free(block);
+    free(block.pcm, SOUND_HEAP);
+    free(block, SOUND_HEAP);
 }
 
 fill_block :: (block: *Decoded_Block) {

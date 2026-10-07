@@ -34,6 +34,7 @@ start_playing(stream);
 
 ## How to change it
 
+- Streams, block caches, decoded blocks and the device list are freed by the mixer or decode thread or on a later frame, so they come from `SOUND_HEAP` (the default heap), never the caller's `context.allocator`, which a game may point at temporary storage it resets every frame. `sound-player-offline-api.jai` starts and stops streams across such resets.
 - New platform: add `os/<name>.jai` with the six `output_*` procedures and load it in `module.jai`. Never block in `output_write`; write only what the device can take.
 - Mixer-side per-stream state belongs in `Voice` (`module.jai`), not in `Sound_Stream`'s public fields.
 - New codec: add a `Block_Codec` value, an `open_*_cache` constructor and a decode routine in `block_cache.jai`, and a branch in `make_stream`.

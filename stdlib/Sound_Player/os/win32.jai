@@ -121,7 +121,7 @@ RING_BYTES :: 24000 * DS_FRAME_BYTES; // A bit over half a second.
 device: *Direct_Sound;
 ring: *Sound_Buffer;
 written_up_to: s64; // Byte offset in the ring where the next write goes.
-listed_devices: [..] Output_Device;
+listed_devices: [..] Output_Device = .{ allocator = SOUND_HEAP };
 
 ring_distance :: (ahead: s64, behind: s64) -> s64 {
     d := ahead - behind;

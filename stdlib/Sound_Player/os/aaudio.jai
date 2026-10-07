@@ -105,7 +105,7 @@ STAGING_FRAMES :: 2048;
 stream: *AAudioStream;
 device_buffer_frames: s32;
 staging: [STAGING_FRAMES * AA_CHANNELS] s16;
-listed_devices: [..] Output_Device;
+listed_devices: [..] Output_Device = .{ allocator = SOUND_HEAP };
 
 // activity.getSystemService("audio").getDevices(GET_DEVICES_OUTPUTS), keeping id and product name.
 collect_devices :: (env: *Jni.JNIEnv, activity: Jni.jobject) {
