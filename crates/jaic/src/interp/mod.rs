@@ -198,6 +198,34 @@ pub struct TrapFrame {
 const MAX_TRAP_FRAMES: usize = 64;
 
 impl Trap {
+    /// The trap as text, for a report made where the compiler's sources are out of reach (a
+    /// procedure called from C): the message, where it happened, and the procedures it unwound
+    /// through. `file_paths` names files by id (`Program::file_paths`); without them a
+    /// location is its line and column.
+    pub fn describe(&self, file_paths: &[String]) -> String {
+        let at = |(file, line, col): (u32, u32, u32)| match file_paths.get(file as usize) {
+            Some(path) => format!(
+                "{}:{line}:{col}",
+                crate::display_path(std::path::Path::new(path))
+            ),
+            None => format!("line {line}, column {col}"),
+        };
+        let mut out = self.message.clone();
+        if let Some(loc) = self.loc {
+            out += &format!(" (at {})", at(loc));
+        }
+        for frame in &self.frames {
+            out += &format!("\n    in `{}`", frame.name);
+            if let Some(loc) = frame.loc {
+                out += &format!(" at {}", at(loc));
+            }
+        }
+        if self.omitted_frames > 0 {
+            out += &format!("\n    ... {} more", self.omitted_frames);
+        }
+        out
+    }
+
     fn push_frame(&mut self, name: &str, loc: Option<(u32, u32, u32)>) {
         if self.frames.len() < MAX_TRAP_FRAMES {
             self.frames.push(TrapFrame {
@@ -991,12 +1019,7 @@ impl Interp {
     /// Run `func` for C, on whichever thread now holds the baton: on a value stack of its own,
     /// since a thread inside a native call keeps its frames.
     #[cfg(not(target_arch = "wasm32"))]
-    fn run_callback(
-        &mut self,
-        program: &Program,
-        func: FuncId,
-        args: &[u64],
-    ) -> Result<Vec<u64>, String> {
+    fn run_callback(&mut self, program: &Program, func: FuncId, args: &[u64]) -> Res<Vec<u64>> {
         let stack = self
             .callback_stacks
             .pop()
@@ -1010,10 +1033,7 @@ impl Interp {
         let mine = self.take_exec_state();
         self.put_exec_state(outer);
         self.callback_stacks.push(mine.stack);
-        result.map(Rets::into_vec).map_err(|t| match t.loc {
-            Some((_, line, col)) => format!("{} (line {line}, column {col})", t.message),
-            None => t.message,
-        })
+        result.map(Rets::into_vec)
     }
 
     // -----------------------------------------------------------------------
