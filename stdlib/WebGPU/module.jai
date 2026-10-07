@@ -233,7 +233,7 @@ webgpu_window_size :: (window: Window_Type) -> width: s32, height: s32 {
         return webgpu_macos_drawable_size(window);
     } else {
         WC :: #import "Window_Creation";
-        x, y, w, h, ok := WC.get_dimensions(window, false);
+        _, _, w, h := WC.get_dimensions(window, false);
         return cast(s32) w, cast(s32) h;
     }
 }
