@@ -33,7 +33,7 @@ It has two layers:
 | Rename (locals, globals, procedures with their overload declarations, types, modules, constants) | `textDocument/prepareRename`, `textDocument/rename` | semantic |
 | Signature help, with the overload the call resolved to active | `textDocument/signatureHelp` | semantic |
 | Inlay hints: inferred types of `x :=`, parameter names of literal arguments (only for parameters that share their type with another, so `print`'s format string gets none), `#run` values | `textDocument/inlayHint` | semantic |
-| Code actions: show an expansion, inline an `#insert`, replace a `#run` with its value, apply a lint's fix (`quickfix`) | `textDocument/codeAction` | semantic |
+| Code actions: show an expansion, inline an `#insert`, replace a `#run` with its value, add the `#import` an unknown name needs, apply a lint's fix (`quickfix`) | `textDocument/codeAction` | semantic |
 | Commands `jai.showExpansion`, `jai.showPolymorphs` | `workspace/executeCommand` | semantic |
 | Expansion documents (`jai-expansion:` URIs) | `jai/expansion`, `jai/source` (non-standard) | semantic |
 | Code lens: how many polymorphs each polymorphic procedure has, and their bindings | `textDocument/codeLens` | semantic |
@@ -215,6 +215,16 @@ For an `#insert`, `#run` or macro call under the cursor (`code_actions` picks th
 - **Quick fixes.** `code_actions` adds a `quickfix` for each lint with a fix that touches the requested range, or that the request's `context.diagnostics` names (matched by `source: "jailint"`, rule `code` and range). Each carries its lint as `diagnostics`, the rule as `data.rule`, and `isPreferred: true` when the fix is machine-applicable. Titles are the fix's description in sentence case (`Remove the unused variable`); identify the rule by `data.rule` or the diagnostic's `code`, not the title. Lint fixes come after the expansion actions.
 - **Fix all.** A `source.fixAll.jailint` action applies every machine-applicable fix in the document that does not overlap an earlier one (`jailint::fix::choose`, the same choice as `jailint --fix`) as one edit, titled `Fix N lint problems`. `context.only` filters every action by kind (`source.fixAll` or `source` select it, `quickfix` leaves it out). `codeActionKinds` advertises `quickfix`, `refactor.inline` and `source.fixAll.jailint`.
 
+### Missing imports
+
+`imports.rs` turns the type checker's error into "Add `#import`" quick fixes when it is an unknown identifier that a standard-library module declares (`print` without `#import "Basic";`):
+
+- **Where the modules come from.** The compiler works them out with the error's "did you mean" help (`Compiler::with_name_suggestion` in `sema/suggestions.rs`) and puts them on the diagnostic as data, `Diagnostic::fixes.imports` (`jaic::source::ImportSuggestion`: a module, and the name to bind it to for the namespaced form). Nothing parses the message. The order is the help's: a module named like the unknown name first (`Math.sqrt` gets `Math :: #import "Math";`), then the modules that declare it at their top level outside `#scope_file`/`#scope_module`, common ones (`Basic`, `String`, `Math`, ...) first, at most four. `semantic::Analysis::missing_imports` computes them the first time a code action asks (it reads the standard library) and caches them with the compile.
+- **Actions.** One `quickfix` per module, titled ``Add `#import "Basic";` ``, carrying the `jai-check` diagnostic. It is offered when the error touches the requested range, or when `context.diagnostics` names it (`source: "jai"`, `code: "jai-check"`, same range). `isPreferred` is set only when the compiler found one module; with several (`log` is in `Basic` and `Math`) none is.
+- **The edit.** It goes into the document the error is in, even when that file is `#load`ed by another one. After the last top-level `#import` (on the next line), else above the first line of code, below leading comments, followed by a blank line. A module the file already imports the same way (same module, same bound name) is not offered.
+- **Not in fix-all.** `source.fixAll.jailint` stays jailint's machine-applicable fixes. Choosing a module is a decision about the program, and only the first compile error is known at a time, so this is a quick fix only.
+- **Changing it.** The ranking (`COMMON_MODULES`, `MAX_IMPORTS`) and the help wording live in `sema/suggestions.rs`; where the line goes is `imports::insertion`.
+
 ### `#load` and `#import` links
 
 `links.rs` finds `#load "..."` and `#import[,file|,dir] "..."` in the token stream (so links work while the text does not parse; `#import,string` has no file). `Session::link_target` resolves each with the compiler's own functions, `jaic::sema::import_entry` and `find_module_in` (which `Compiler::find_module` and `resolve_import` also call):
@@ -312,7 +322,7 @@ The worker carries `{type: "lsp", id, message}`. The wasm bridge (`crates/jai-wa
 Tests:
 
 - `crates/jai-language-server/tests/semantic.rs`: hover, completion while typing, member completion, and hover with a broken line elsewhere.
-- `crates/jai-language-server/tests/features.rs`: expansion hovers (macro, `Code` argument, `#insert`, `#run` with output, `#if` true/false/per instance), format-string hover and diagnostics, lint diagnostics and quick fixes, the Markdown form of each hover kind, inlay hints, code actions and expansion documents, semantic tokens, references, type definition, signature help (recorded and while typing), workspace symbols, folding, code lenses, keyword wording, and the JSON protocol for each request.
+- `crates/jai-language-server/tests/features.rs`: expansion hovers (macro, `Code` argument, `#insert`, `#run` with output, `#if` true/false/per instance), format-string hover and diagnostics, lint diagnostics and quick fixes, "Add `#import`" quick fixes (one module, several, namespaced, a `#load`ed file, asked for by diagnostic), the Markdown form of each hover kind, inlay hints, code actions and expansion documents, semantic tokens, references, type definition, signature help (recorded and while typing), workspace symbols, folding, code lenses, keyword wording, and the JSON protocol for each request.
 - `crates/jai-language-server/tests/links.rs`: definition and document links for `#import` (stdlib, `modules/`, `Name.jai` before `Name/module.jai`, missing module), `#import,file`, `#import,dir` and `#load`; module names; names through a module, `using` re-exports and plain imports.
 - `crates/jai-language-server/tests/protocol.rs`: hover format negotiation (`markdown` listed or not).
 - Unit tests: `hover.rs` (escaping, fences, sections), `links.rs` (directive scanning), `format.rs` (directive semantics), `features.rs` (call scanning, inlining, declarations), `jaic/src/sema/ide_meta.rs` (substitution, dedent).
