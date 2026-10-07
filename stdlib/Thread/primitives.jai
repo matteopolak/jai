@@ -112,11 +112,6 @@ thread_start :: (thread: *Thread) -> bool {
 thread_is_done :: (thread: *Thread, milliseconds: s32 = 0) -> bool {
     if thread == null || !thread.initialized return true;
     if atomic_read(*thread.done) return true;
-    // The browser runs threads one after another on the interpreter stack; a thread that was abandoned
-    // while waiting for work (see crates/jaic/src/interp/threads_inline.rs) never sets `done`.
-    #if OS == .WASM {
-        if thread.started && pthread_tryjoin_np(thread.thread_handle, null) == 0 return true;
-    }
     if milliseconds == 0 return false;
     // The liveness semaphore is signaled once the thread finishes. Hand the count straight back
     // after taking it so later waiters (and thread_deinit) still find it signaled.
