@@ -15,7 +15,7 @@ Each platform job:
 
 The `vscode` job then packages the [VS Code extension](vscode-extension.md) as `jai-vscode-<version>.vsix`, with its version set from the tag (which must equal `Cargo.toml`'s) and the SHA-256 of the archives just built pinned inside, so it downloads exactly those.
 
-The `publish` job then collects the archives and the `.vsix`, writes `SHA256SUMS`, extracts the `## [x.y.z]` section of `CHANGELOG.md` and runs `gh release create`. After it, the `marketplace` and `open-vsx` jobs publish the `.vsix` to the VS Code Marketplace and Open VSX when the `VSCE_PAT` and `OVSX_PAT` secrets are set (otherwise they say they skipped; see [publishing](vscode-extension.md#publishing)). They are separate jobs, so a store failing leaves the GitHub release and the other store alone. The `homebrew` and `winget` jobs, also after `publish`, render the Homebrew formula and the winget manifests from the tag and the release's `SHA256SUMS`, validate them, and push the formula to `matteopolak/homebrew-tap` and open a winget-pkgs pull request when `HOMEBREW_TAP_TOKEN` and `WINGET_TOKEN` are set; see [package managers](package-managers.md).
+The `publish` job then collects the archives and the `.vsix`, writes `SHA256SUMS`, extracts the `## [x.y.z]` section of `CHANGELOG.md` (everything up to the next `## [` line, without the heading) as the notes, and runs `gh release create` with the title *Jai Toolchain x.y.z*. After it, the `marketplace` and `open-vsx` jobs publish the `.vsix` to the VS Code Marketplace and Open VSX when the `VSCE_PAT` and `OVSX_PAT` secrets are set (otherwise they say they skipped; see [publishing](vscode-extension.md#publishing)). They are separate jobs, so a store failing leaves the GitHub release and the other store alone. The `homebrew` and `winget` jobs, also after `publish`, render the Homebrew formula and the winget manifests from the tag and the release's `SHA256SUMS`, validate them, and push the formula to `matteopolak/homebrew-tap` and open a winget-pkgs pull request when `HOMEBREW_TAP_TOKEN` and `WINGET_TOKEN` are set; see [package managers](package-managers.md).
 
 A packaged `jaic` (and `jailint`, `jailsp`) finds its standard library through `jaic::stdlib_dir`: `JAIC_STDLIB`, else `stdlib/` next to the executable (when it has `Preload.jai`), checked both beside the path it was started from and beside the real file behind any symlinks, else the repository's `stdlib/` (development builds; the path is baked in at build time, so on another machine it is the CI runner's). Symlinks matter on macOS, where the executable's path is the link's: unpacking into `/opt/jaic` and linking `~/bin/jaic` to it must still find `/opt/jaic/stdlib`. When none of these has `Preload.jai`, `jaic` and `jailint` stop with an error naming the directory and both fixes (`jaic::missing_stdlib`); `jailsp` logs it. The smoke test also runs the package through a symlink with the checkout's `stdlib/` moved away.
 
@@ -23,16 +23,16 @@ A packaged `jaic` (and `jailint`, `jailsp`) finds its standard library through `
 
 To cut a release:
 
-1. Add a `## [x.y.z] - YYYY-MM-DD` section at the top of `CHANGELOG.md`. Write it by hand, for users: what changed, not a commit list.
+1. Add a `## [x.y.z] - YYYY-MM-DD` section at the top of `CHANGELOG.md`. Write it by hand, for users: what changed, not a commit list. The section is the release page, so keep the shape of the earlier ones: a one- to three-sentence summary, short grouped sections with one-line bullets, tables where they help, and the minor items in a `<details><summary>Other changes (N)</summary>` block (leave a blank line after `<summary>` and before `</details>` so the markdown inside renders). Use `###` headings or lower inside it; a `## [` line would end the extracted notes. Screenshots go in an HTML table at `width="400"`, linked by `https://raw.githubusercontent.com/matteopolak/jai/main/...` URLs (release pages cannot use relative paths).
 2. Bump `version` in the root `Cargo.toml`.
 3. Commit, then tag and push:
 
 ```sh
-git tag -s v0.4.0 -m 'jaic 0.4.0'
+git tag -s v0.4.0 -m 'Jai Toolchain 0.4.0'
 git push origin v0.4.0
 ```
 
-To test the build without publishing, run the workflow by hand (Actions → release → Run workflow) with an empty tag. The archives are kept as workflow artifacts. To publish an existing tag after a fix to the workflow, run it with that tag.
+To test the build without publishing, run the workflow by hand (Actions → release → Run workflow) with an empty tag. The archives are kept as workflow artifacts. To publish an existing tag after a fix to the workflow, run it with that tag. To rewrite a published release's notes after editing its `CHANGELOG.md` section, extract the section with the same `awk` as the `publish` job and run `gh release edit vX.Y.Z --title 'Jai Toolchain X.Y.Z' --notes-file notes.md`; the assets and tag stay as they are.
 
 Gotchas:
 

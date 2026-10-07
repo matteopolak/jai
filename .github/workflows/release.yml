@@ -295,7 +295,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "jaic $TAG" --notes-file notes.md --latest
+          gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "Jai Toolchain ${TAG#v}" --notes-file notes.md --latest
 
   # The extension stores, each in its own job after the GitHub release: a store that is down or
   # rejects the upload fails only its job, never the release or the other store. Each publishes
