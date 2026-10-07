@@ -31,6 +31,7 @@ pub use native::{library_dirs, set_library_dirs};
 pub use sandbox::{SandboxHost, SharedHost};
 use std::collections::BTreeMap;
 use std::rc::Rc;
+#[cfg(not(target_arch = "wasm32"))]
 pub use threads::DEADLOCK_GRACE;
 
 /// Tag bits marking an interpreted procedure address.
