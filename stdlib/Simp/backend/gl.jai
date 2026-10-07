@@ -594,7 +594,7 @@ gl_build_program :: (body: string) -> u32 {
 }
 
 // Every program is one source compiled twice, once per stage, with VERTEX_SHADER or FRAGMENT_SHADER defined.
-SHADER_COLOR :: #string END
+SHADER_COLOR :: #string GLSL
 OUT_IN vec4 iterated_color;
 #ifdef VERTEX_SHADER
 in vec2 vert_position;
@@ -609,11 +609,11 @@ void main() {
 out vec4 color;
 void main() { color = iterated_color; }
 #endif
-END
+GLSL
 
 // Glyph pages are RGB: a gray ramp for ordinary anti-aliasing, per-subpixel coverage for LCD.
 // Either way the average of the three is the coverage.
-SHADER_TEXT :: #string END
+SHADER_TEXT :: #string GLSL
 OUT_IN vec2 TextureCoords;
 OUT_IN vec4 iterated_color;
 #ifdef VERTEX_SHADER
@@ -635,10 +635,10 @@ void main() {
     color = vec4(iterated_color.rgb, iterated_color.a * dot(mask, vec3(1.0 / 3.0)));
 }
 #endif
-END
+GLSL
 
 // Bitmaps are stored top row first, so the right-handed (y up) variant flips v.
-SHADER_SPRITE_RIGHT_HANDED :: #string END
+SHADER_SPRITE_RIGHT_HANDED :: #string GLSL
 OUT_IN vec2 TexCoords;
 OUT_IN vec4 iterated_color;
 #ifdef VERTEX_SHADER
@@ -661,9 +661,9 @@ void main() {
     color = sample_color;
 }
 #endif
-END
+GLSL
 
-SHADER_SPRITE_LEFT_HANDED :: #string END
+SHADER_SPRITE_LEFT_HANDED :: #string GLSL
 OUT_IN vec2 TexCoords;
 OUT_IN vec4 iterated_color;
 #ifdef VERTEX_SHADER
@@ -686,11 +686,11 @@ void main() {
     color = sample_color;
 }
 #endif
-END
+GLSL
 
 // The rectangle is described by its center and half size; the corner is rounded by `radius` and
 // the edge fades over `softness` pixels.
-SHADER_ROUNDED_RECT :: #string END
+SHADER_ROUNDED_RECT :: #string GLSL
 OUT_IN vec4 iterated_color;
 OUT_IN vec2 point;
 OUT_IN vec2 rect_center;
@@ -724,9 +724,9 @@ void main() {
     color = vec4(iterated_color.rgb, iterated_color.a * (1.0 - soft * soft * (3.0 - 2.0 * soft)));
 }
 #endif
-END
+GLSL
 
-SHADER_GRADIENT :: #string END
+SHADER_GRADIENT :: #string GLSL
 OUT_IN vec4 iterated_color;
 OUT_IN vec2 point;
 #ifdef VERTEX_SHADER
@@ -774,4 +774,4 @@ void main() {
     color = vec4(rgb, iterated_color.a);
 }
 #endif
-END
+GLSL
