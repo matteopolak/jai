@@ -68,6 +68,9 @@ unmapping-allocator windows-* * the module needs POSIX virtual memory calls
 # Windows cross builds from Linux (tools/windows_cross.py): `OS` is the target in compile-time code
 # too, so a `#run` that reads files or the clock takes the Windows path, which the Linux host
 # cannot run. The native Windows builds run the same code on Windows and pass.
+bindings-generator-c windows-*-mingw native compile-time code calls Windows (its scratch directory asks GetCurrentProcessId), which the Linux build host cannot run
+bindings-generator-cpp windows-*-mingw native compile-time code calls Windows (its scratch directory asks GetCurrentProcessId), which the Linux build host cannot run
+bindings-generator-declaration-api windows-*-mingw native compile-time code calls Windows (its scratch directory asks GetCurrentProcessId), which the Linux build host cannot run
 bindings-generator-bitfields windows-*-mingw native compile-time code takes the Windows file paths, which the Linux build host cannot run
 bindings-generator-bitfields-msvc windows-*-mingw native compile-time code takes the Windows file paths, which the Linux build host cannot run
 bindings-generator-checks windows-*-mingw native compile-time code takes the Windows file paths, which the Linux build host cannot run
