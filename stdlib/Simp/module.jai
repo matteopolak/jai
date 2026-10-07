@@ -8,17 +8,14 @@
         METAL;
     }
 };
-
 #import "Basic";
 #import "Math";
 Strings :: #import "String";
 #import "Hash_Table";
 #import "Window_Type";
-
 #scope_module
 GLuint :: u32;
 GLint :: s32;
-
 // Native window-system bindings are named, so they never leak into the importing program.
 #if OS == .WINDOWS {
     Win :: #import "Windows";
@@ -28,7 +25,6 @@ GLint :: s32;
     ObjC :: #import "Objective_C";
     AppKit :: #import "Objective_C/AppKit";
 }
-
 #scope_export
 #load "texture_format.jai";
 #load "bitmap.jai";
@@ -37,7 +33,6 @@ GLint :: s32;
 #load "shader.jai";
 #load "immediate.jai";
 #load "font.jai";
-
 #if render_api == .OPENGL {
     #load "backend/gl.jai";
 }
@@ -55,7 +50,6 @@ Window_Info_Platform_Specific :: struct {
         }
     }
 }
-
 Window_Info :: struct {
     window: Window_Type;
     window_width, window_height: s32;
@@ -64,15 +58,12 @@ Window_Info :: struct {
     backend_initted_for_this_window := false;
     specific: Window_Info_Platform_Specific;
 }
-
-window_infos: [..] Window_Info;
+window_infos: [..] Window_Info = .{ allocator = SIMP_HEAP };
 COLOR_MAP: [] Vector4;
-
 Font_Anti_Aliasing :: enum u8 {
     normal;
     lcd;
 }
-
 font_anti_aliasing: Font_Anti_Aliasing = .normal;
 font_hinting := true;
 show_tab_characters_in_selection := true;
@@ -95,7 +86,6 @@ prepare_window :: (window: Window_Type, wanted_msaa: int) -> chosen_msaa: s32 {
     granted := info.msaa;
     return granted;
 }
-
 backend_init :: (info: *Window_Info) {
     assert(info != null);
     if !info return;
@@ -107,7 +97,6 @@ backend_init :: (info: *Window_Info) {
         info.backend_initted_for_this_window = context.simp.specific.software_target != null;
     }
 }
-
 clear_render_target :: (r: float, g: float, b: float, a: float) {
     CheckInit();
     immediate_flush();
@@ -138,7 +127,6 @@ clear_render_target :: (r: float, g: float, b: float, a: float) {
         assert(false, "Selected Simp render API has no clearing backend");
     }
 }
-
 swap_buffers :: (window: Window_Type, vsync := true) {
     CheckInit();
     if context.simp.current_shader immediate_flush();
@@ -152,7 +140,6 @@ swap_buffers :: (window: Window_Type, vsync := true) {
         assert(false, "Install Simp.window_present_sink before presenting a window");
     }
 }
-
 get_render_dimensions :: (window: Window_Type) -> (width: s32, height: s32) {
     if window_dimension_query return window_dimension_query(window);
     #if render_api == .OPENGL || render_api == .METAL {
@@ -178,7 +165,6 @@ get_render_dimensions :: (window: Window_Type) -> (width: s32, height: s32) {
     if info return info.window_width, info.window_height;
     return 0, 0;
 }
-
 set_window_dimensions :: (window: Window_Type, width: s32, height: s32) {
     info := find_or_add_window_info(window);
     info.window_width = max(width, 0);
@@ -192,13 +178,11 @@ set_window_dimensions :: (window: Window_Type, width: s32, height: s32) {
         if context.simp.current_shader && !context.simp.texture_render_target set_projection();
     }
 }
-
 // LEFT_HANDED (y down, origin at the top-left) will eventually become the default.
 Simp_Coordinate_System :: enum u8 {
     LEFT_HANDED :: 0;
     RIGHT_HANDED :: 1;
 }
-
 set_render_target :: (window: Window_Type, coords := Simp_Coordinate_System.RIGHT_HANDED) {
     CheckInit();
     end_target_pass(coords);
@@ -208,7 +192,6 @@ set_render_target :: (window: Window_Type, coords := Simp_Coordinate_System.RIGH
     backend_set_render_target(info);
     context.simp.current_window_info = info.*;
 }
-
 set_render_target :: (texture: *Texture, coords := Simp_Coordinate_System.RIGHT_HANDED) {
     if !texture {
         log_error("Attempt to set_render_target on a null texture!\n");
@@ -221,7 +204,6 @@ set_render_target :: (texture: *Texture, coords := Simp_Coordinate_System.RIGHT_
     context.simp.texture_render_target = texture;
     backend_set_render_target(texture);
 }
-
 // Call after the window changed size. When it is the window being drawn, the viewport and the
 // projection of the bound shader are refreshed too.
 update_window :: (window: Window_Type) {
@@ -235,23 +217,18 @@ update_window :: (window: Window_Type) {
     backend_resize_render_target(info.*);
     if context.simp.current_shader && !context.simp.texture_render_target set_projection();
 }
-
 set_color_map :: (color_map: [] Vector4) {
     COLOR_MAP = color_map;
 }
-
 set_anti_aliasing :: (value: Font_Anti_Aliasing) {
     font_anti_aliasing = value;
 }
-
 set_hinting :: (value: bool) {
     font_hinting = value;
 }
-
 set_show_tab_characters_in_selection :: (value: bool) {
     show_tab_characters_in_selection = value;
 }
-
 // Coordinates follow the current coordinate system; an inverted rectangle selects nothing.
 set_scissor :: (x0: s32, y0: s32, x1: s32, y1: s32) {
     CheckInit();
@@ -262,11 +239,9 @@ set_scissor :: (x0: s32, y0: s32, x1: s32, y1: s32) {
         gl_apply_scissor();
     }
 }
-
 set_scissor :: (p0: Vector2, p1: Vector2) {
     set_scissor(xx p0.x, xx p0.y, xx p1.x, xx p1.y);
 }
-
 clear_scissor :: () {
     CheckInit();
     immediate_flush();
@@ -275,26 +250,22 @@ clear_scissor :: () {
         gl_apply_scissor();
     }
 }
-
 // Draws whatever the last prepare_text on this font laid out, with its baseline origin at x, y.
 draw_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, color := Vector4.{ 1, 1, 1, 1 }, effects: Font_Effects = 0) {
     generate_quads_for_prepared_text(font, x, y, effects);
     draw_generated_quads(font, color);
 }
-
 draw_text :: (font: *Dynamic_Font, x: s64, y: s64, text: string, color := Vector4.{ 1, 1, 1, 1 }, effects: Font_Effects = 0) -> width: s64 {
     width := prepare_text(font, text, effects);
     draw_prepared_text(font, x, y, color, effects);
     return width;
 }
-
 // Color-map variants: `color` indexes the table installed with set_color_map.
 draw_text :: (font: *Dynamic_Font, x: s64, y: s64, text: string, color: u8) -> width: s64 {
     width := prepare_text(font, text);
     draw_prepared_text(font, x, y, color);
     return width;
 }
-
 draw_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, color: u8) {
     assert(color < COLOR_MAP.count, "Simp color index is outside the installed map");
     if color >= COLOR_MAP.count return;
@@ -303,24 +274,25 @@ draw_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, color: u8) {
 }
 
 #scope_module
+// What Simp keeps between frames (window records, drawing state, fonts, glyph pages, pending
+// screenshots) comes from the heap, never the caller's context.allocator: a program running with
+// `context.allocator = temp` resets that every frame.
+SIMP_HEAP :: Context_Base.default_allocator;
 find_window_info :: (window: Window_Type) -> *Window_Info {
     for *info: window_infos if info.window == window return info;
     return null;
 }
-
 find_or_add_window_info :: (window: Window_Type) -> *Window_Info, bool {
     info := find_window_info(window);
     if info return info, false;
     return array_add(*window_infos, .{ window = window }), true;
 }
-
 // The bookkeeping record for `window`, created and sized on first sight.
 track_window :: (window: Window_Type, remeasure := false) -> *Window_Info {
     info, is_new := find_or_add_window_info(window);
     if is_new || remeasure info.window_width, info.window_height = get_render_dimensions(window);
     return info;
 }
-
 // Finishes everything queued for the old target and forgets the bound shader, whose projection
 // belonged to that target.
 end_target_pass :: (coords: Simp_Coordinate_System) {
@@ -330,14 +302,12 @@ end_target_pass :: (coords: Simp_Coordinate_System) {
     context.simp.texture_render_target = null;
     context.simp.coordinate_system = coords;
 }
-
 // Row of a CPU render target for a draw coordinate `y`: the rows are stored top first, so the
 // right-handed system (y up) counts from the bottom and the left-handed one from the top.
 software_row :: (y: int, height: int) -> int {
     if context.simp && context.simp.coordinate_system == .LEFT_HANDED return y;
     return height - 1 - y;
 }
-
 backend_set_render_target :: (info: *Window_Info) {
     #if render_api == .OPENGL {
         gl_set_render_target(info);
@@ -348,7 +318,6 @@ backend_set_render_target :: (info: *Window_Info) {
         assert(false, "Selected Simp render API has no drawing backend");
     }
 }
-
 backend_set_render_target :: (texture: *Texture) {
     #if render_api == .OPENGL {
         gl_set_render_target(texture);
@@ -358,13 +327,11 @@ backend_set_render_target :: (texture: *Texture) {
         assert(false, "Selected Simp render API has no drawing backend");
     }
 }
-
 backend_flush :: () {
     #if render_api == .OPENGL {
         gl_flush();
     }
 }
-
 backend_resize_render_target :: (info: Window_Info) {
     #if render_api == .OPENGL {
         gl_resize_render_target(info);

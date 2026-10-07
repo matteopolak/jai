@@ -6,14 +6,12 @@ Pixel_Read :: struct {
     flip := false;
     using platform_specific: Pixel_Read_Platform;
 }
-
 Pixel_Read_Platform :: struct {
     intermediate_texture: *Texture;
     pbo: GLuint;
     src\_fbo_handle: GLuint;
     dest_fbo_handle: GLuint;
 }
-
 pixel_read_begin :: (source: *Texture, dest_format: Texture_Format, width: s32 = -1, height: s32 = -1, srgb := false, flip := false) -> *Pixel_Read {
     if dest_format != .R8 && dest_format != .RG8 && dest_format != .RGB8 && dest_format != .RGBA8 && dest_format != .BGRA8 return null;
     if source && (source.flags & (.Cube | .Array | .Volume | .Buffer | .Multisampled)) return null;
@@ -38,17 +36,17 @@ pixel_read_begin :: (source: *Texture, dest_format: Texture_Format, width: s32 =
     if height < 0 height = source_height;
     bytes, stride := get_image_size(dest_format, width, height);
     if width <= 0 || height <= 0 || bytes <= 0 || stride > 0x7fff_ffff return null;
-    reader := New(Pixel_Read);
+    reader := New(Pixel_Read, allocator = SIMP_HEAP);
     reader.dest_format = dest_format;
     reader.dest_width = width;
     reader.dest_height = height;
     reader.dest_srgb = srgb;
     reader.flip = flip;
-    record := New(Pixel_Read_Record);
+    record := New(Pixel_Read_Record, allocator = SIMP_HEAP);
     record.reader = reader;
     if source record.source_srgb = (source.flags & .sRGB) != 0;
     else if context.simp.texture_render_target record.source_srgb = (context.simp.texture_render_target.flags & .sRGB) != 0;
-    bitmap_alloc(*record.raw, source_width, source_height, .RGBA8);
+    bitmap_alloc(*record.raw, source_width, source_height, .RGBA8,, SIMP_HEAP);
     if record.raw.data.count <= 0 || !record.raw.data.data {
         readback_destroy(record);
         return null;
@@ -80,7 +78,6 @@ pixel_read_begin :: (source: *Texture, dest_format: Texture_Format, width: s32 =
     array_add(*pixel_reads, record);
     return reader;
 }
-
 pixel_read_is_done :: (reader: *Pixel_Read) -> bool {
     record := readback_find(reader);
     if !record || record.failed return false;
@@ -95,7 +92,6 @@ pixel_read_is_done :: (reader: *Pixel_Read) -> bool {
     }
     return false;
 }
-
 pixel_read_end :: (reader: *Pixel_Read, bitmap: *Bitmap) {
     record := readback_find(reader);
     assert(record != null && bitmap != null, "Invalid screenshot reader or destination");
@@ -134,19 +130,16 @@ pixel_read_end :: (reader: *Pixel_Read, bitmap: *Bitmap) {
         readback_store_color(bitmap, x, y, color);
     }
 }
-
 pixel_read_end :: (reader: *Pixel_Read) -> Bitmap {
     result: Bitmap;
     pixel_read_end(reader, *result);
     return result;
 }
-
 // Explicit cancellation releases pending native/CPU storage while its context is current.
 pixel_read_cancel :: (reader: *Pixel_Read) {
     record := readback_find(reader);
     if record readback_destroy(record);
 }
-
 #scope_module
 Pixel_Read_Record :: struct {
     reader: *Pixel_Read;
@@ -159,15 +152,13 @@ Pixel_Read_Record :: struct {
         fence: GL.GLsync;
     }
 }
-
-pixel_reads: [..] *Pixel_Read_Record;
-
+pixel_reads: [..] *Pixel_Read_Record = .{ allocator = SIMP_HEAP };
 readback_find :: (reader: *Pixel_Read) -> *Pixel_Read_Record {
     for record: pixel_reads if record.reader == reader return record;
     return null;
 }
-
 readback_destroy :: (record: *Pixel_Read_Record) {
+    push_allocator(SIMP_HEAP);
     #if render_api == .OPENGL {
         if gl_api {
             if record.fence gl_api.glDeleteSync(record.fence);
@@ -184,21 +175,17 @@ readback_destroy :: (record: *Pixel_Read_Record) {
     free(record.reader);
     free(record);
 }
-
 readback_byte :: (value: float) -> u8 {
     return cast(u8) clamp(floor(cast(float64) value * 255 + 0.5), 0.0, 255.0);
 }
-
 readback_decode_srgb :: (value: float) -> float {
     if value <= 0.04045 return value / 12.92;
     return cast(float) pow((value + 0.055) / 1.055, 2.4);
 }
-
 readback_encode_srgb :: (value: float) -> float {
     if value <= 0.0031308 return value * 12.92;
     return cast(float) (1.055 * pow(value, 1 / 2.4) - 0.055);
 }
-
 readback_bitmap_color :: (bitmap: *Bitmap, x: int, y: int) -> Vector4 {
     count := get_image_bytes_per_texel(bitmap.format);
     p := bitmap.data.data + y * bitmap.stride + x * count;
@@ -209,7 +196,6 @@ readback_bitmap_color :: (bitmap: *Bitmap, x: int, y: int) -> Vector4 {
     assert(bitmap.format == .RGBA8, "CPU screenshots require an 8-bit source format");
     return .{ p[0] / 255.0, p[1] / 255.0, p[2] / 255.0, p[3] / 255.0 };
 }
-
 readback_store_color :: (bitmap: *Bitmap, x: int, y: int, color: Vector4) {
     count := get_image_bytes_per_texel(bitmap.format);
     p := bitmap.data.data + y * bitmap.stride + x * count;
@@ -218,7 +204,6 @@ readback_store_color :: (bitmap: *Bitmap, x: int, y: int, color: Vector4) {
     if count > 2 p[2] = readback_byte(ifx bitmap.format == .BGRA8 then color.x else color.z);
     if count > 3 p[3] = readback_byte(color.w);
 }
-
 #if render_api == .OPENGL {
     // Starts an asynchronous copy of the source's pixels into a pixel-pack buffer (RGBA8, whatever the source
     // format). Window rows come back bottom first; textures are stored top first.
@@ -273,7 +258,6 @@ readback_store_color :: (bitmap: *Bitmap, x: int, y: int, color: Vector4) {
         gl_api.glFlush();
         return true;
     }
-
     gl_readback_finish :: (record: *Pixel_Read_Record) {
         while true {
             result := gl_api.glClientWaitSync(record.fence, GL.GL_SYNC_FLUSH_COMMANDS_BIT, 1_000_000_000);

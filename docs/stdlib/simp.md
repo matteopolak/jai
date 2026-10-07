@@ -17,6 +17,7 @@
 
 ## How to change it
 
+- What Simp keeps between frames (window records, the per-thread drawing state, fonts, glyphs, atlas pages and their textures, pending screenshots) comes from `SIMP_HEAP` (the default heap, `module.jai`), never the caller's `context.allocator`, which a game may point at temporary storage it resets every frame. Font procedures push it on entry; textures and bitmaps the program asks for still use the caller's allocator. `simp-software-drawing.jai` (`temporary_storage_frames`) checks cached fonts across resets.
 - New backend: add a `render_api` value, a `backend/<name>.jai` loaded behind `#if render_api == ...` in `module.jai`, and implement the same `backend_*` procedures.
 - New shader: add the global and `set_shader_for_*` in `shader.jai` and the GLSL in `backend/gl.jai`; `shaders_set_defaults` resets parameters.
 - Gotcha: on macOS `Window_Creation.init_mac_app` references `NSApplicationMain` on purpose so AppKit is linked and loaded; do not remove it.

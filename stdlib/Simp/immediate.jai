@@ -43,7 +43,7 @@ CheckInit :: () #expand {
 }
 
 per_thread_init :: () {
-    context.simp = New(Immediate_State);
+    context.simp = New(Immediate_State, allocator = SIMP_HEAP);
     shaders_set_defaults();
 }
 
