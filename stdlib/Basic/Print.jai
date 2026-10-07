@@ -648,7 +648,7 @@ __append_float_roundtrip :: (builder: *String_Builder, value: float64) {
     __append_float_digits(builder, *digits, scientific, fractional, .{});
 }
 
-// A 16-byte float is jaic's Long_Double (module Jaic_Extensions): x87 extended precision on
+// A 16-byte float is jaic's Long_Double (module Extensions/Long_Double): x87 extended precision on
 // x86-64, IEEE binary128 elsewhere. It prints through float64, so precision beyond float64's
 // is not shown.
 __long_double_to_float64 :: (p: *void) -> float64 {

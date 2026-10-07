@@ -46,7 +46,7 @@ rules are reported, not yet enforced. CI runs it as the `Rule coverage` step of 
 | `enum` | enums | `struct` | structs |
 | `extdata` | external-data | `typeval` | type-values-and-info |
 | `intrin` | intrinsics | `union` | unions |
-| `ext` | jaic-extensions | `using` | using |
+| `ext` | long-double | `using` | using |
 | `lambda` | lambdas | `code` | code-values-and-insertion |
 | `macro` | macros-and-custom-iteration | `ctdata` | compile-time-data-and-state |
 | `modparam` | module-parameters | `ctexec` | compile-time-execution |

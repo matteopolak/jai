@@ -1,4 +1,4 @@
-// IEEE binary128 arithmetic: the soft-float helpers LLVM calls for `fp128` (Jaic_Extensions'
+// IEEE binary128 arithmetic: the soft-float helpers LLVM calls for `fp128` (Extensions/Long_Double's
 // Long_Double) on wasm, which has no 128-bit float instructions. WASI builds link no
 // compiler-rt, so they are here, under compiler-rt's names and wasm calling convention: a
 // binary128 argument is two i64s (low half first) and a binary128 result is written through a

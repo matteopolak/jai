@@ -2,8 +2,8 @@
 // <name>.toml as its config when present), formatting is idempotent and keeps the token stream,
 // malformed input is refused, and the formatter's own sources are already formatted.
 //
-//     jaic run stdlib/Jai_Format/tests/golden.jai              check
-//     jaic run stdlib/Jai_Format/tests/golden.jai -- --bless   rewrite the .out.jai files
+//     jaic run stdlib/Extensions/Jai_Format/tests/golden.jai              check
+//     jaic run stdlib/Extensions/Jai_Format/tests/golden.jai -- --bless   rewrite the .out.jai files
 
 #import "Basic";
 #import "String";
@@ -11,10 +11,10 @@
 #import "File_Utilities";
 #import "Sort";
 
-#import "Jai_Format";
+#import "Extensions/Jai_Format";
 
 CASES :: "cases";
-SOURCES :: string.["../module.jai", "../lexer.jai", "../config.jai", "../format.jai", "golden.jai", "../../../jaifmt/main.jai"];
+SOURCES :: string.["../module.jai", "../lexer.jai", "../config.jai", "../format.jai", "golden.jai", "../../../../jaifmt/main.jai"];
 
 failures := 0;
 

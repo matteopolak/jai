@@ -1,6 +1,6 @@
-// Jaic_Extensions: features only jaic has. None of this is official Jai; other Jai compilers
-// have no such module, and what it offers may change between jaic releases.
-// See docs/language/jaic-extensions.md.
+// Long_Double: C's `long double` as a Jai type. A jaic extension, not official Jai: other Jai
+// compilers have no such module, and it may change between jaic releases.
+// See docs/stdlib/extensions.md.
 
 // The C compiler's `long double` on the target. Where C makes it the same as `double`
 // (Apple arm64, Windows with MSVC) this is float64 itself. Elsewhere it is a 16-byte float in

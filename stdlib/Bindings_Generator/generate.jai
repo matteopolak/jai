@@ -232,7 +232,7 @@ print_file_scope_part :: (builder: *String_Builder, g: *Generator_State, options
     append(builder, "\n#scope_file\n\n");
     if uses.count print_to_builder(builder, "#import \"Basic\"; // The generated code uses %.\n\n", join(..uses, separator = ", "));
     if g.long_double_was_referenced {
-        append(builder, "#import \"Jaic_Extensions\"; // Long_Double: C's long double (not standard Jai, jaic only).\n\n");
+        append(builder, "#import \"Extensions/Long_Double\"; // Long_Double: C's long double (not standard Jai, jaic only).\n\n");
     }
     if !declare_libraries return;
     for lib: g.libraries {

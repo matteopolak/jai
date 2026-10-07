@@ -1,2 +1,2 @@
 # Formatter golden cases compare exact bytes, line endings included: no conversion on checkout.
-stdlib/Jai_Format/tests/cases/** -text
+stdlib/Extensions/Jai_Format/tests/cases/** -text

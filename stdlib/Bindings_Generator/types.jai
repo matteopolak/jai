@@ -82,7 +82,7 @@ Generate_Bindings_Options :: struct #type_info_none {
     libclang_path: string;
 
     // Extension: a 16-byte C `long double` (x86-64 outside Windows MSVC, Linux arm64, wasm32)
-    // becomes jaic's non-standard `Long_Double` from the Jaic_Extensions module, so functions
+    // becomes jaic's non-standard `Long_Double` from the Extensions/Long_Double module, so functions
     // that pass one are bound. When false it is kept as `[16] u8` in structs and those
     // functions are stripped, which other Jai compilers can read.
     use_jaic_long_double := true;
@@ -569,7 +569,7 @@ Generator_State :: struct #type_info_none {
     extern_declarations: [..] *Declaration; // Extern variables, deduplicated by symbol.
     com_uuids: [..] ComUuid; // `__declspec(uuid(...))` of COM interfaces (Windows headers).
     int128_was_referenced: bool; // The output uses S128/U128 (from Basic).
-    long_double_was_referenced: bool; // The output uses Long_Double (from Jaic_Extensions).
+    long_double_was_referenced: bool; // The output uses Long_Double (from Extensions/Long_Double).
     generated_printf_wrapper: bool; // The output uses tprint and temp_c_string (from Basic).
 
     structs_to_check: [..] *Struct;
