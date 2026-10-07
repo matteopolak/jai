@@ -50,8 +50,10 @@ runtime_support_assertion_failed :: (loc: Source_Code_Location, message: string)
 }
 
 // `path:line:col: error: assertion failed: message`, then the procedures that were running,
-// innermost first, leaving out the assertion machinery itself. jaic's interpreter replaces
-// this with its own report (the failing line with its source, and the call stack).
+// innermost first, from the one running the line `loc` names: the frames above it are the
+// assertion machinery itself (`assert_helper`, the context's handler, this procedure). jaic's
+// interpreter replaces this with its own report (the failing line with its source, and the
+// call stack), which leaves out the same frames the same way.
 runtime_support_report_assertion :: (loc: Source_Code_Location, message: string) #compiler {
     write_loc(loc, true);
     write_string(": error: assertion failed", true);
@@ -59,7 +61,8 @@ runtime_support_report_assertion :: (loc: Source_Code_Location, message: string)
     else write_string("\n", true);
 
     node := context.stack_trace;
-    while node && node.info && runtime_support_is_assertion_frame(node.info.name) node = node.next;
+    while node && !runtime_support_runs_line(node, loc) node = node.next;
+    if !node node = context.stack_trace;
     if node write_string("call stack (innermost first):\n", true);
     while node {
         if node.info {
@@ -88,10 +91,9 @@ runtime_support_shown_path :: (path: string) -> string #no_context #no_abc {
     return shown;
 }
 
-runtime_support_is_assertion_frame :: (name: string) -> bool #no_context {
-    return runtime_support_same_text(name, "runtime_support_report_assertion")
-        || runtime_support_same_text(name, "runtime_support_assertion_failed")
-        || runtime_support_same_text(name, "assert_helper");
+runtime_support_runs_line :: (node: *Stack_Trace_Node, loc: Source_Code_Location) -> bool #no_context {
+    return node.info != null && cast(s64) node.line_number == loc.line_number
+        && runtime_support_same_text(node.info.location.fully_pathed_filename, loc.fully_pathed_filename);
 }
 
 runtime_support_same_text :: (a: string, b: string) -> bool #no_context {
