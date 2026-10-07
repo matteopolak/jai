@@ -26,7 +26,7 @@ jaic run generate.jai            # writes mylib.jai
 jaic check generate.jai -os linux   # generators for another OS's headers
 ```
 
-`tests/stdlib/bindings-generator-c.jai` is a complete example, including a `visitor` and output assertions; it generates in `#run` and writes its header into a scratch directory under the system temporary directory (`tests/stdlib/modules/Scratch_Directory`).
+`tests/stdlib/bindings-generator-c.jai` is a complete example, including a `visitor` and output assertions; it generates in `#run` and writes its header into a scratch directory under the system temporary directory (`tests/stdlib/modules/Scratch_Directory`). Every `tests/stdlib/bindings-generator-*.jai` test writes its headers and C libraries there, never to a fixed path: `<TMPDIR or TEMP>/jaic-<name>-<pid>`, with forward slashes so it can go into `#library` unescaped. Tests that only generate delete it afterwards; tests that link a library they built keep it, because the program loads the library from that path when it runs.
 
 ### Pipeline
 
