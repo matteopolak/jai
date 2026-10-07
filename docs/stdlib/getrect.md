@@ -27,6 +27,7 @@ Assets: `get_rect_get_global_data()` returns nine strings (radio full/empty, che
 
 ## How to change it
 
+- Widget states, their text (last inert text, history, completions), slider runtimes and every module list outlive a frame, so they come from `GETRECT_HEAP` (the default heap, `ui.jai`), never the caller's `context.allocator`, which a game may point at temporary storage it resets every frame. Widget state structs are `#type_info_none`, so their `[..]` fields get the allocator as a field default rather than through `remember_allocators`. Allocate and free a state's strings with `GETRECT_HEAP` as a pair. `getrect-widgets-driven.jai` (`temporary_storage_frames`) runs widgets on reset temporary storage.
 - Same behavior in both orientations: edit the file in `GetRect_Common` once.
 - Orientation-specific behavior: put both variants next to each other behind `GETRECT_Y_UP`, and keep the other module's variant unchanged.
 - A public symbol that must exist in one module only needs `#if GETRECT_Y_UP` (or `#if !GETRECT_Y_UP`) around the declaration, not just around its uses; do not reference y-up-only symbols without it, because the y-down build type-checks them.

@@ -43,8 +43,8 @@ move_cursor_right_by_word :: (using state: *Text_Input_State, want_selection := 
 navigate_history_backward :: (using state: *Text_Input_State) {
     if state.command_history.count == 0 return;
     if state.command_history_index >= state.command_history.count {
-        saved := copy_string(state.text);
-        free(state.last_saved_input.data);
+        saved := copy_string(state.text,, GETRECT_HEAP);
+        free(state.last_saved_input.data, GETRECT_HEAP);
         state.last_saved_input = saved;
     }
     state.command_history_index = max(state.command_history_index - 1, 0);
@@ -68,8 +68,8 @@ copy_selection_to_clipboard :: (using state: *Text_Input_State, cut := false) {
 }
 
 reset_auto_complete :: (using state: *Text_Input_State) {
-    for text: state.match_array free(text.data);
-    array_free(state.match_array);
+    for text: state.match_array free(text.data, GETRECT_HEAP);
+    free(state.match_array.data, GETRECT_HEAP);
     state.match_array = .[];
     state.match_selection = 0;
     state.longest_match = -1;
@@ -81,8 +81,8 @@ update_auto_complete :: (using state: *Text_Input_State) {
     if !state.auto_complete.proc return;
     prefix := string.{ state.insert_point, state.text.data };
     matches, longest := state.auto_complete.proc(prefix, state.auto_complete.data);
-    state.match_array = NewArray(matches.count, string);
-    for text, index: matches state.match_array[index] = copy_string(text);
+    state.match_array = NewArray(matches.count, string,, GETRECT_HEAP);
+    for text, index: matches state.match_array[index] = copy_string(text,, GETRECT_HEAP);
     state.match_length = prefix.count;
     state.longest_match = longest;
     state.completion_change_time = current_time;

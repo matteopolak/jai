@@ -742,10 +742,10 @@ Text_Input_State :: struct #type_info_none {
     pending_result_actions: Text_Result_Action;
     last_saved_input: string;
     pre_modification_text: string;
-    command_history: [..] string;
+    command_history: [..] string = .{ allocator = GETRECT_HEAP };
     command_history_index := 0;
     selection: Selection;
-    buffered_events: [..] Event;
+    buffered_events: [..] Event = .{ allocator = GETRECT_HEAP };
     text: string;
     MAX_BUFFER_SIZE :: 8000;
     input_buffer: [MAX_BUFFER_SIZE] u8;

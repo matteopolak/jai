@@ -1,7 +1,7 @@
 // Frame-buffered coverage. Records borrow stable UI-owned widget pointers.
 #scope_export
-occlusions_current_frame: [..] Occlusion_Record;
-occlusions_next_frame: [..] Occlusion_Record;
+occlusions_current_frame: [..] Occlusion_Record = .{ allocator = GETRECT_HEAP };
+occlusions_next_frame: [..] Occlusion_Record = .{ allocator = GETRECT_HEAP };
 occluder_being_drawn: *Active_Widget;
 
 occlusion_per_frame_update :: () {
@@ -79,5 +79,5 @@ Occlusion_Record :: struct {
 }
 
 #scope_module
-left_occluder_stack: [..] *Active_Widget;
+left_occluder_stack: [..] *Active_Widget = .{ allocator = GETRECT_HEAP };
 occluder_under_the_cursor: *Active_Widget;

@@ -151,7 +151,7 @@ Color_Picker_State :: struct #type_info_none {
     current_hsv_color: Vector3;
     current_rgb_color: Vector3;
     original_rgb_color: Vector3;
-    stashed_colors: [..] Vector3;
+    stashed_colors: [..] Vector3 = .{ allocator = GETRECT_HEAP };
 }
 
 Color_Animation_Editor_State :: struct #type_info_none {
@@ -170,7 +170,7 @@ Color_Animation_Editor_State :: struct #type_info_none {
     time_view\  _subwindow_rect_initialized := false;
     theme: *Color_Animation_Editor_Theme;
     last_color_picker_state: *Color_Picker_State;
-    color_samples: [..] Vector4;
+    color_samples: [..] Vector4 = .{ allocator = GETRECT_HEAP };
     num_clipboard_samples: s32;
     interpolation_color_space_s32: s32;
     interpolation_geometry_s32: s32;
@@ -179,7 +179,7 @@ Color_Animation_Editor_State :: struct #type_info_none {
     time_view_period: float;
     time_view_playing := true;
     time_view_current_time: float64;
-    color_keyframes: [..] Augmented_Keyframe;
+    color_keyframes: [..] Augmented_Keyframe = .{ allocator = GETRECT_HEAP };
 }
 
 Augmented_Keyframe :: struct {

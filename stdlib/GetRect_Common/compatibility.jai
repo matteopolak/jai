@@ -106,7 +106,7 @@ insert_clipboard_at_cursor :: (using state: *Text_Input_State) {
 press_enter :: (using state: *Text_Input_State, shift_pressed := false) {
     if !shift_pressed && state.tab_pressed && accept_auto_complete(state) return;
     state.pending_result_actions |= .ENTERED;
-    if state.text.count > 0 && (state.command_history.count == 0 || state.command_history[state.command_history.count - 1] != state.text) array_add(*state.command_history, copy_string(state.text));
+    if state.text.count > 0 && (state.command_history.count == 0 || state.command_history[state.command_history.count - 1] != state.text) array_add(*state.command_history, copy_string(state.text,, GETRECT_HEAP));
     state.command_history_index = state.command_history.count;
 }
 
