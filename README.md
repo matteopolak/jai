@@ -46,6 +46,12 @@ curl -fsSL https://raw.githubusercontent.com/matteopolak/jai/main/install.sh | s
 winget install matteopolak.jai
 ```
 
+or with the PowerShell install script:
+
+```powershell
+irm https://raw.githubusercontent.com/matteopolak/jai/main/install.ps1 | iex
+```
+
 **Nix:**
 
 ```sh
