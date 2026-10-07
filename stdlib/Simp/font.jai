@@ -403,14 +403,15 @@ deinit :: (font: *Dynamic_Font) {
 deinit_fonts :: () {
     push_allocator(SIMP_HEAP);
     immediate_flush();
+    // deinit(font) looks its record up among all of them, so none is freed until every font is.
     for record: font_records {
         if record.font {
             font := record.font;
             deinit(font);
             free(font);
         }
-        free(record);
     }
+    for record: font_records free(record);
     array_reset(*font_records);
     array_reset(*dynamic_fonts);
     for loaded: loaded_file_fonts {
