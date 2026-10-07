@@ -118,14 +118,14 @@ NUM_BUTTON_STATES :: 307;
 mouse_delta_x: int;
 mouse_delta_y: int;
 mouse_delta_z: int;
-events_this_frame: [..] Event;
+events_this_frame: [..] Event = .{ allocator = INPUT_HEAP };
 // Borrowed frame views: payload ownership remains in events_this_frame.
 Routed_Input_Event :: struct {
     window: Window_Type;
     event: Event;
 }
-routed_events_this_frame: [..] Routed_Input_Event;
-unrouted_events_this_frame: [..] Event;
+routed_events_this_frame: [..] Routed_Input_Event = .{ allocator = INPUT_HEAP };
+unrouted_events_this_frame: [..] Event = .{ allocator = INPUT_HEAP };
 input_button_states: [NUM_BUTTON_STATES] Key_Current_State;
 input_application_has_focus := false;
 Window_Resize_Record :: struct {
@@ -133,14 +133,15 @@ Window_Resize_Record :: struct {
     width: s32;
     height: s32;
 }
-window_resizes_this_frame: [..] Window_Resize_Record;
+window_resizes_this_frame: [..] Window_Resize_Record = .{ allocator = INPUT_HEAP };
 Window_Move_Record :: struct {
     window: Window_Type;
     x: s32;
     y: s32;
 }
 
-// Adapters run on the owner thread; drag-and-drop buffers transfer ownership.
+// Adapters run on the owner thread. A queued event's `files` (the array and each name, all from
+// the array's allocator) pass to Input, which frees them at the next update.
 queue_input_event :: (event: Event) {
     array_add(*pending_events, .{ event = event });
 }
@@ -227,8 +228,9 @@ get_window_moves :: () -> [] Window_Move_Record {
 input_per_frame_event_and_flag_update :: () {
     routed_events_this_frame.count = 0;
     unrouted_events_this_frame.count = 0;
+    // A dropped file's names share the allocator of the array that lists them.
     for event: events_this_frame {
-        for file: event.files free(file);
+        for file: event.files free(file, event.files.allocator);
         array_free(event.files);
     }
     events_this_frame.count = 0;
@@ -302,18 +304,22 @@ get_input_pointer_position :: (window: Window_Type, client_area := false) -> flo
 }
 
 #scope_module
+// Input's queues live across frames, so they never take the caller's context.allocator: a program
+// that runs with `context.allocator = temp` and resets temporary storage every frame would leave
+// them pointing at reclaimed memory.
+INPUT_HEAP :: Context_Base.default_allocator;
 Pending_Input_Event :: struct {
     event: Event;
     window: Window_Type;
     associated := false;
 }
-pending_events: [..] Pending_Input_Event;
+pending_events: [..] Pending_Input_Event = .{ allocator = INPUT_HEAP };
 Window_Input_State :: struct {
     window: Window_Type;
     focused := false;
     buttons: [NUM_BUTTON_STATES] Key_Current_State;
 }
-window_input_states: [..] Window_Input_State;
+window_input_states: [..] Window_Input_State = .{ allocator = INPUT_HEAP };
 unscoped_button_states: [NUM_BUTTON_STATES] Key_Current_State;
 unscoped_input_focus := false;
 find_input_window :: (window: Window_Type) -> s64 {
@@ -477,9 +483,9 @@ install_native_input_adapter :: () {
         #load "macos.jai";
     }
 }
-pending_moves: [..] Window_Move_Record;
-moves_to_free: [..] Window_Move_Record;
-pending_resizes: [..] Window_Resize_Record;
+pending_moves: [..] Window_Move_Record = .{ allocator = INPUT_HEAP };
+moves_to_free: [..] Window_Move_Record = .{ allocator = INPUT_HEAP };
+pending_resizes: [..] Window_Resize_Record = .{ allocator = INPUT_HEAP };
 pending_mouse_x: int;
 pending_mouse_y: int;
 pending_mouse_z: int;

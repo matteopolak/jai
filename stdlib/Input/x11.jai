@@ -1,6 +1,5 @@
 #scope_module
 X :: #import "X11";
-
 X11_Input_Window :: struct {
     window: X.Window;
     input_context: X.XIC;
@@ -8,13 +7,11 @@ X11_Input_Window :: struct {
     y: s32;
     pointer_valid := false;
 }
-
-x11_input_windows: [..] X11_Input_Window;
+x11_input_windows: [..] X11_Input_Window = .{ allocator = INPUT_HEAP };
 x11_focus: X.Window;
 // An application can preserve clipboard, expose and extension events here.
 #scope_export
 x11_unhandled_event_source: (event: *X.XEvent) = null;
-
 #scope_module
 x11_key_code :: (symbol: X.KeySym) -> Key_Code {
     if symbol >= 0x61 && symbol <= 0x7a return cast(Key_Code) (symbol - 32);
@@ -43,14 +40,12 @@ x11_key_code :: (symbol: X.KeySym) -> Key_Code {
     if symbol == 0xff61 return .PRINT_SCREEN;
     return .UNKNOWN;
 }
-
 x11_modifiers :: (event: *Event, mask: u32) {
     event.shift_pressed = (mask & X.ShiftMask) != 0;
     event.ctrl_pressed = (mask & X.ControlMask) != 0;
     event.alt_pressed = (mask & X.Mod1Mask) != 0;
     event.cmd_meta_pressed = (mask & X.Mod4Mask) != 0;
 }
-
 x11_register_window :: (window: X.Window) -> *X11_Input_Window {
     for *entry: x11_input_windows if entry.window == window return entry;
     entry: X11_Input_Window;
@@ -61,7 +56,6 @@ x11_register_window :: (window: X.Window) -> *X11_Input_Window {
     }
     return array_add(*x11_input_windows, entry);
 }
-
 x11_poll_input :: () {
     display := X.x_global_display;
     if !display return;
@@ -192,7 +186,6 @@ x11_poll_input :: () {
         } else if x11_unhandled_event_source != null x11_unhandled_event_source(*native);
     }
 }
-
 x11_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool {
     if !X.x_global_display return 0, 0, false;
     target := cast(X.Window) window;

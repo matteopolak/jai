@@ -31,7 +31,7 @@
     INVALID_WINDOW: Window_Type : null;
     // The windows Window_Creation made. Input follows only these: AppKit makes and drops windows
     // of its own (text input, tooltips, menus) that are not the program's.
-    macos_program_windows: [..] Window_Type;
+    macos_program_windows: [..] Window_Type = .{ allocator = Context_Base.default_allocator };
 } else #if OS == .PS5 {
     #scope_export
     ;

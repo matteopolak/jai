@@ -46,9 +46,10 @@ On Windows, `Input` registers the window procedure `Window_Creation` gives its w
 
 ## How to change it
 
+- `Input`'s queues and per-window records live across frames, so they take `INPUT_HEAP` (the default heap), never the caller's `context.allocator`: games commonly run with `context.allocator = temp` and reset temporary storage every frame, which would leave the queues pointing at reclaimed memory. Give any new long-lived `[..]` global `= .{ allocator = INPUT_HEAP }`. Events from `update_window_events` stay valid until the next call; a queued drop event's `files` (the array and each name, all from the array's allocator) are freed then. `tests/stdlib/input-temporary-allocator.jai` runs such a loop.
 - Keep OS calls in the platform files and the state machines in the shared ones. A provider reports what the OS reports; it doesn't synthesize events.
 - `Window_Type` (`Window_Type.jai`) is the native window handle type of the target OS (`HWND`, `X11.Window`, `*NSWindow`); `Input.Event` has no window field, so per-window routing goes through `Routed_Input_Event` and the `queue_*`/`publish_*` overloads.
-- Tests: `tests/stdlib/threads-cooperative.jai`, `input-multi-window-focus.jai`, `input-compat-names.jai`. Native providers (X11, AppKit, Win32, evdev, IOHID) need real windows and devices and have no tests.
+- Tests: `tests/stdlib/threads-cooperative.jai`, `input-multi-window-focus.jai`, `input-compat-names.jai`, `input-published-events.jai`, `input-temporary-allocator.jai`; `window-input-native-events.jai` drives the X11, AppKit and Win32 providers through real windows. Gamepad devices (evdev, IOHID, XInput) have no tests.
 - Mutex and thread-group changes affect `File_Async`, `Overwriting_Allocator` and the memory debugger, which all use them.
 
 ## Configuration

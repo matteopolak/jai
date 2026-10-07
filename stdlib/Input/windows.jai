@@ -8,7 +8,7 @@ Windows_Mouse_Position :: struct {
     y: s32;
     valid := false;
 }
-windows_mouse_positions: [..] Windows_Mouse_Position;
+windows_mouse_positions: [..] Windows_Mouse_Position = .{ allocator = INPUT_HEAP };
 windows_high_surrogate: u16;
 windows_surrogate_window: Window_Type;
 windows_key_code :: (virtual_key: u32) -> Key_Code {
