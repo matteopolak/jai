@@ -963,6 +963,12 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         append(builder, "void");
         return;
     }
+    if item.type && !item.value_pointer && item.type.runtime_size > 0 {
+        // Boxing `p.*` into an Any reads nothing, so a null `p` gives a typed Any with no
+        // value. Printing it reads it: stop here, as `v := p.*;` would, rather than show null.
+        write_string("error: null pointer dereference: read through a null pointer\n", to_standard_error = true);
+        Runtime_Support.debug_break();
+    }
     if !item.type || !item.value_pointer {
         append(builder, "null");
         return;
