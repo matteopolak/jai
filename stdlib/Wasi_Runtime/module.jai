@@ -5,17 +5,26 @@
 //
 // It supplies, in Jai, the C library entry points the stdlib reaches for under `OS == .WASM`
 // (the same ones the interpreter's sandbox host implements): a heap, `memmove`/`memcmp`,
-// `read`/`write`, `clock_gettime`, `exit`, plus Runtime_Support's `wasm_write_string` and
-// `wasm_debug_break`, and `_start`, which collects the WASI arguments and calls `main`. Every
-// definition is a `#program_export` under its C name; jaic's LLVM backend binds the program's
-// `#foreign` references to them, so the module imports nothing but `wasi_snapshot_preview1`.
+// `read`/`write`, `clock_gettime`, `exit`, files and directories (files.jai), process calls that
+// fail the way a sandbox without processes would, a libm (math.jai, elementary.jai), the
+// compiler-rt binary128 helpers Long_Double needs (quad.jai), plus Runtime_Support's
+// `wasm_write_string` and `wasm_debug_break`, and `_start`, which collects the WASI arguments and
+// calls `main`. Every definition is a `#program_export` under its C name; jaic's LLVM backend
+// binds the program's `#foreign` references to them without exporting them from the module, so
+// the linker drops the ones a program never calls and the module imports nothing but the
+// `wasi_snapshot_preview1` calls it uses.
 //
 // Under the interpreter (compile-time code, `jaic run -os wasm`) none of this runs: the
 // sandbox host answers those `#foreign` calls itself.
 
 #assert OS == .WASM "Wasi_Runtime is only for wasm targets";
 
-#scope_file
+#scope_module
+
+#load "files.jai";
+#load "math.jai";
+#load "elementary.jai";
+#load "quad.jai";
 
 c_runtime :: #system_library "libc";
 wasi :: #system_library "wasi_snapshot_preview1";
@@ -243,25 +252,6 @@ wasi_gmtime_r :: (time: *s64, result: *Broken_Down_Time) -> *Broken_Down_Time #c
     return result;
 }
 
-// WASI programs see no file system beyond stdio, so the root is the only directory there is.
-#program_export "getcwd"
-wasi_getcwd :: (buffer: *u8, size: u64) -> *u8 #c_call {
-    if !buffer || size < 2 {
-        error_number = ERANGE;
-        return null;
-    }
-    buffer[0] = #char "/";
-    buffer[1] = 0;
-    return buffer;
-}
-
-#program_export "chdir"
-wasi_chdir :: (path: *u8) -> s32 #c_call {
-    if path && path[0] == #char "/" && path[1] == 0 return 0;
-    error_number = ENOENT;
-    return -1;
-}
-
 #program_export "gettimeofday"
 wasi_gettimeofday :: (result: *Seconds_And_Microseconds, zone: *void) -> s32 #c_call {
     now: Seconds_And_Nanoseconds;
@@ -380,6 +370,83 @@ wasi_pthread_cond_timedwait :: (condition: *void, mutex: *void, deadline: *Secon
     return ETIMEDOUT;
 }
 
+// ---------------------------------------------------------------------------------------------
+// Processes: WASI preview 1 cannot start, signal or wait for one and has no pipes, so these
+// fail (ENOSYS; no children to wait for or signal). A program that links Process still runs
+// and sees the failure where it starts one.
+
+#program_export "fork"
+wasi_fork :: () -> s32 #c_call {
+    error_number = ENOSYS;
+    return -1;
+}
+
+#program_export "execvp"
+wasi_execvp :: (file: *u8, arguments: **u8) -> s32 #c_call {
+    error_number = ENOSYS;
+    return -1;
+}
+
+#program_export "waitpid"
+wasi_waitpid :: (process: s32, status: *s32, options: s32) -> s32 #c_call {
+    error_number = ECHILD;
+    return -1;
+}
+
+#program_export "kill"
+wasi_kill :: (process: s32, signal: s32) -> s32 #c_call {
+    error_number = ESRCH;
+    return -1;
+}
+
+#program_export "pipe"
+wasi_pipe :: (ends: *[2] s32) -> s32 #c_call {
+    error_number = ENOSYS;
+    return -1;
+}
+
+#program_export "socketpair"
+wasi_socketpair :: (domain: s32, kind: s32, protocol: s32, ends: *[2] s32) -> s32 #c_call {
+    error_number = ENOSYS;
+    return -1;
+}
+
+#program_export "dup2"
+wasi_dup2 :: (from: s32, to: s32) -> s32 #c_call {
+    error_number = ENOSYS;
+    return -1;
+}
+
+// Waiting on no descriptors is a sleep; WASI's poll_oneoff could watch descriptors, but nothing
+// here produces one worth polling (no pipes or sockets).
+#program_export "poll"
+wasi_poll :: (descriptors: *void, count: u64, timeout_milliseconds: s32) -> s32 #c_call {
+    if count != 0 {
+        error_number = ENOSYS;
+        return -1;
+    }
+    if timeout_milliseconds > 0 {
+        interval := Seconds_And_Nanoseconds.{ timeout_milliseconds / 1000, (timeout_milliseconds % 1000) * 1_000_000 };
+        wasi_nanosleep(*interval, null);
+    }
+    return 0;
+}
+
+#program_export "usleep"
+wasi_usleep :: (microseconds: u32) -> s32 #c_call {
+    interval := Seconds_And_Nanoseconds.{ microseconds / 1_000_000, (microseconds % 1_000_000) * 1000 };
+    return wasi_nanosleep(*interval, null);
+}
+
+// Close-on-exec is moot without exec: F_GETFD reads 0 and F_SETFD succeeds. The rest are not
+// supported. `fcntl` is variadic in C, so its third argument arrives as a pointer.
+#program_export "fcntl"
+wasi_fcntl :: (fd: s32, command: s32, extra: *void) -> s32 #c_call {
+    if command == 1 || command == 2 return 0;
+    error_number = ENOSYS;
+    return -1;
+}
+
 #program_export "__errno_location"
 wasi_errno_location :: () -> *s32 #c_call {
     return *error_number;
@@ -388,6 +455,7 @@ wasi_errno_location :: () -> *s32 #c_call {
 error_number: s32;
 ENOENT :: 2;
 ESRCH :: 3;
+ECHILD :: 10;
 EAGAIN :: 11;
 EINVAL :: 22;
 ERANGE :: 34;
