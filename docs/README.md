@@ -107,7 +107,7 @@ The clean-room `stdlib/`. Contributors must not read the source of an official J
 - [Drawing, windows and audio](stdlib/ui-and-drawing.md)
 - [Simp (2D renderer)](stdlib/simp.md)
 - [Sound_Player (audio mixing and output)](stdlib/sound-player.md)
-- [WebGPU (generated bindings, native and in the playground; prototype)](stdlib/webgpu.md)
+- [WebGPU (generated bindings, native and in the playground; support matrix, callback modes, tests)](stdlib/webgpu.md)
 
 ## Browser
 
