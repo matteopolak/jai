@@ -10,11 +10,10 @@ Examples: `examples/webgpu/triangle.jai` (window, render pipeline), `examples/we
 
 | Where | Backend | Window surface | Tested |
 |---|---|---|---|
-| macOS arm64 | Metal | `Window_Creation` window (`CAMetalLayer`) | Locally, interpreted and built, with a window. CI runs the headless test (a skip when the runner VM has no Metal device) |
-| Linux x64 | Vulkan | Xlib window (`WGPUSurfaceSourceXlibWindow`) | CI: headless test on Mesa's lavapipe, interpreted and built. The X11 surface has not been tried with a real window |
-| Windows x64, arm64 | D3D12 | HWND (`WGPUSurfaceSourceWindowsHWND`) | CI (`windows-native.yml`): headless test on WARP, interpreted and built. The HWND surface has not been tried with a real window |
+| macOS arm64, x64 | Metal | `Window_Creation` window (`CAMetalLayer`) | CI (`stdlib-runtime`, both CPUs): headless test, and the window test presenting to a `Window_Creation` window on the runner VM's paravirtual Metal device, interpreted and built (each a skip if a runner has no Metal device) |
+| Linux x64, arm64 | Vulkan | Xlib window (`WGPUSurfaceSourceXlibWindow`) | CI (`stdlib-runtime`): headless test, and the window test presenting to an X11 window on Xvfb, on Mesa's lavapipe, interpreted and built |
+| Windows x64, arm64 | D3D12 | HWND (`WGPUSurfaceSourceWindowsHWND`) | CI (`windows-native.yml`): headless test, and the window test presenting to an HWND in the runner's desktop session, on WARP, interpreted and built |
 | Browser playground | the browser's WebGPU | the page's Render pane (`OffscreenCanvas` in the worker) | `tools/test_webgpu_host.mjs` against a mock WebGPU (CI); Chromium by hand |
-| macOS x64, Linux arm64 | Metal, Vulkan | as above | CI headless test (`stdlib-runtime`); no release archive for these platforms |
 
 In the browser a program needs WebGPU in workers and JSPI (`WebAssembly.Suspending`). As of this writing:
 
@@ -43,6 +42,7 @@ webgpu.yml (pinned) --tools/webgpu_gen.py--> stdlib/Extensions/WebGPU/generated.
 - `webgpu_map_buffer(instance, buffer, mode, offset, size)`: map and wait; true on success. `WGPU_WHOLE_MAP_SIZE` is replaced by the remaining size, because wgpu-native rejects it.
 - `webgpu_pop_error_scope(instance, device) -> WGPUErrorType, message`: pop and wait; the message is a temporary copy.
 - `webgpu_present(surface)`: `wgpuSurfacePresent`; in the browser, then wait for the next animation frame.
+- `WEBGPU_SURFACE_OCCLUDED`: wgpu-native's extra `wgpuSurfaceGetCurrentTexture` status (`0x0003_0001`, from its `wgpu.h`, so not in the generated enum). Its Metal backend returns it while the window is not visible, the first frame after `create_window` included, instead of blocking for up to a second; skip that frame (handle events, sleep a little) rather than reconfigure. The triangle example and the window test do.
 - `webgpu_window_size`, `to_string_view`, `to_string`.
 
 Callback messages (`WGPUStringView`) are only valid during the callback, so the helpers copy them (`Message_Copy`).
@@ -87,6 +87,7 @@ In the browser all threads share one host thread ([inline threads](../compiler/i
 | What | Where | Runs |
 |---|---|---|
 | `tests/webgpu/headless.jai`: render a triangle into a texture, copy to a mappable buffer, check pixels; compute shader (squares of 256 numbers); texture upload and readback; an invalid shader in an error scope must be a validation error | `tools/test_webgpu_native.py` (interpreted and built; exit 77 = no adapter, retried with the fallback adapter) | CI `stdlib-runtime` on Linux (lavapipe, adapter required) and macOS (Metal, skip without an adapter); `windows-native.yml` on x64 and arm64 (WARP, adapter required) |
+| `tests/webgpu/window.jai`: open a `Window_Creation` window, create its surface (with the adapter asked for one compatible with it), configure it (FIFO), and present `frames N` frames (default 60; CI 120); every frame's surface status must be a success (an `Outdated`/`Timeout` reconfigures, at most 10 times; macOS's `WEBGPU_SURFACE_OCCLUDED` waits), every present `.Success`, the texture the configured size, and no error in a validation or out-of-memory scope or the device's uncaptured-error callback. Where the surface allows `CopySrc` in `BGRA8Unorm`/`RGBA8Unorm`, the last frame is copied out before it is presented and its middle must be the triangle, its corners the clear color. Exit 2: no window (no display) | `tools/test_webgpu_native.py --test window --frames N` (interpreted and built; needs a display, `xvfb-run` on Linux) | CI `stdlib-runtime` on Linux under Xvfb (lavapipe, adapter required) and macOS (skip without an adapter); `windows-native.yml` on x64 and arm64 (WARP, adapter required) |
 | Host bridge against a mock WebGPU: struct marshalling, handles and reference counts, strings, chained structs, futures and callback modes, promise suspension, out-of-range pointers; end-to-end `tests/webgpu/bridge.jai` in the real engine (threads keep running during waits) | `tools/test_webgpu_host.mjs` (`node --experimental-wasm-jspi tools/test_webgpu_host.mjs`, run directly so the JSPI flag reaches the tests; set `JAI_WASM_DIR` for the end-to-end tests) | CI `scripting-wasm` |
 | Generator rules (enum strings, struct layouts) | `tools/test_webgpu_gen.py` | CI with the other `tools/test_*.py` |
 | Packaging: the browser bundle has both JS files and loads them; release archives build the triangle and run the headless test from the archive | `tools/check_browser_release.mjs`, `release.yml` smoke test | release workflows |
@@ -96,6 +97,7 @@ Run locally:
 
 ```sh
 python3 tools/test_webgpu_native.py --jaic target/debug/jaic [--require-adapter]
+python3 tools/test_webgpu_native.py --jaic target/debug/jaic --test window --frames 120   # opens a window
 JAI_WASM_DIR=<built bundle> node --experimental-wasm-jspi tools/test_webgpu_host.mjs
 ```
 
@@ -108,6 +110,7 @@ JAI_WASM_DIR=<built bundle> node --experimental-wasm-jspi tools/test_webgpu_host
   - webgpu.h is still pre-1.0 and changes between revisions (string views, future-based callbacks and `WGPUBool` all changed in 2024-25); wgpu-native lags webgpu-headers, so the pin must be the revision wgpu-native was built from.
   - wgpu-native deviates from the header in small ways (`WGPU_WHOLE_MAP_SIZE`, empty adapter descriptions on Metal); the helpers paper over the known ones.
   - Browser support depends on JSPI, which only Chromium ships; the JS API also evolves (`GPUAdapter.info`, `requestAdapterInfo` removal).
+  - wgpu-native panics (aborting the process, since the panic cannot unwind out of the C call) on `wgpuDevicePushErrorScope(device, .Internal)`; use `.Validation` and `.OutOfMemory` scopes and catch internal errors with the uncaptured-error callback.
   - `WGPUBool` is 4 bytes, not Jai's `bool`. Native callbacks are `#c_call`; use `push_context` to print from one.
   - In the browser, a loop that never calls `ProcessEvents`, `WaitAny` or `webgpu_present` never yields to the page, so nothing settles and nothing is drawn; the run's block budget eventually stops it.
 
