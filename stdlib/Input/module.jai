@@ -517,6 +517,9 @@ install_native_input_adapter :: () {
         } else #if OS == .MACOS {
             if input_event_source == null input_event_source = macos_poll_input;
             if input_pointer_source == null && input_pointer_query_source == null input_pointer_query_source = macos_pointer_query;
+        } else #if OS == .WASM {
+            if input_event_source == null input_event_source = wasm_poll_input;
+            if input_pointer_source == null && input_pointer_query_source == null input_pointer_query_source = wasm_pointer_query;
         }
     }
 }
@@ -528,6 +531,8 @@ install_native_input_adapter :: () {
         #load "x11.jai";
     } else #if OS == .MACOS {
         #load "macos.jai";
+    } else #if OS == .WASM {
+        #load "wasm.jai";
     }
 }
 
