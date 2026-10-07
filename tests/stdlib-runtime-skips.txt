@@ -76,6 +76,8 @@ getrect-widgets-driven windows-*-mingw native links FreeType and stb_image, whic
 sound-player-device windows-*-mingw native links stb_vorbis, which is not built for MinGW
 sound-player-offline-api windows-*-mingw native links stb_vorbis, which is not built for MinGW
 Sound_Player/tests/offline-mix windows-*-mingw native links stb_vorbis, which is not built for MinGW
+simp-gl-render-readback windows-*-mingw native links FreeType and stb_image, which are not built for MinGW
+getrect-simp-gl-frame windows-*-mingw native links FreeType and stb_image, which are not built for MinGW
 
 # Windows on arm64: CI installs Mesa's software OpenGL (mesa-dist-win) for x64 only, as it has no
 # arm64 build, so the runners have just the GDI generic OpenGL 1.1 renderer.
