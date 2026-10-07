@@ -4,6 +4,7 @@
 
 ### Added
 
+- Release archives for Intel Macs (`jai-macos-x64.tar.gz`) and arm64 Linux (`jai-linux-arm64.tar.gz`), with wgpu-native, built like the others with static LLVM and PGO (Intel macOS from conda-forge's LLVM, since LLVM publishes no Intel macOS build). `install.sh`, the Homebrew formula and the VS Code extension's toolchain download use them; for 0.4.1 and earlier, which have none, they say the release has no build for the platform.
 - CI opens real windows for WebGPU: a new test presents frames to a `Window_Creation` window's surface and checks each frame's status, the error scopes and a readback of the last frame, interpreted and built, on Linux under Xvfb (X11 surface, Mesa's lavapipe), macOS (Metal) and Windows x64 and arm64 (HWND surface, WARP). See [WebGPU tests](docs/stdlib/webgpu.md#tests).
 - `WEBGPU_SURFACE_OCCLUDED` in `Extensions/WebGPU`: wgpu-native's status for a hidden window on macOS (the first frame after `create_window` included), which the triangle example now waits out instead of reconfiguring the surface every frame.
 
