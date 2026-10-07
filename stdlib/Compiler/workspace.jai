@@ -123,9 +123,10 @@ compiler_create_workspace :: (name := "") -> Workspace {
     return id;
 }
 
+// A workspace not compiled yet never is; one already compiled keeps what it wrote.
 compiler_destroy_workspace :: (w: Workspace) {
-    // jaic keeps finished workspaces alive for diagnostics; only drop our own bookkeeping.
     compiler_end_intercept(w);
+    __jaic_workspace_set_option(resolve_workspace(w), "destroy", "");
 }
 
 get_current_workspace :: () -> Workspace {
@@ -142,9 +143,13 @@ add_build_file :: (filename: string, w: Workspace, loc := #caller_location) {
     __jaic_workspace_add_file(resolve_workspace(w), filename);
 }
 
-// `code` only names a scope in the reference compiler. jaic adds the text to the
-// workspace's top level regardless.
+// jaic adds the text to the workspace's top level; it cannot add it where a `code` value
+// was written, so passing one is an error rather than a string added elsewhere.
 add_build_string :: (data: string, w: Workspace, code := #code,null, loc := #caller_location) {
+    if !__jaic_code_is_null(code) {
+        text := "add_build_string: jaic cannot add a string in the scope of a Code value; leave `code` out to add it at the workspace's top level";
+        __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.ERROR);
+    }
     __jaic_workspace_add_string(resolve_workspace(w), data);
 }
 
@@ -179,16 +184,26 @@ get_toplevel_command_line :: () -> [] string {
 // Message interception
 // ---------------------------------------------------------------------------
 
-compiler_begin_intercept :: (w: Workspace, flags: Intercept_Flags = 0) {
+// The SKIP_ flags leave those kinds out of TYPECHECKED messages (and a message left with
+// nothing is not sent). SKIP_EXPRESSIONS_WITHOUT_NOTES is a hint jaic does not need: every
+// typechecked expression is delivered.
+compiler_begin_intercept :: (w: Workspace, flags: Intercept_Flags = 0, loc := #caller_location) {
     id := resolve_workspace(w);
     __jaic_workspace_begin_intercept(id);
+
+    if flags & (.DO_PERFORMANCE_REPORT_POLYMORPHS | .DO_PERFORMANCE_REPORT_RUNS) {
+        text := "jaic ignores the Intercept_Flags DO_PERFORMANCE_REPORT_*: it has no performance reports (use -time for timings)";
+        __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.WARNING);
+    }
 
     index := find_intercept(id);
     if index < 0 {
         array_add(*intercepted, id);
         array_add(*intercept_finished, false);
+        array_add(*intercept_flags, flags);
     } else {
         intercept_finished[index] = false;
+        intercept_flags[index] = flags;
     }
 }
 
@@ -197,6 +212,7 @@ compiler_end_intercept :: (w: Workspace) {
     if index < 0 return;
     array_ordered_remove_by_index(*intercepted, index);
     array_ordered_remove_by_index(*intercept_finished, index);
+    array_ordered_remove_by_index(*intercept_flags, index);
     if intercept_cursor > index intercept_cursor -= 1;
 }
 
@@ -217,6 +233,10 @@ compiler_wait_for_message :: () -> *Message {
         intercept_cursor = (index + 1) % intercepted.count;
 
         message := build_message(id, kind);
+        if message.kind == .TYPECHECKED && !keep_typechecked(cast(*Message_Typechecked) message, intercept_flags[index]) {
+            tried = 0;
+            continue;
+        }
         if message.kind == .COMPLETE {
             intercept_finished[index] = true;
             last_complete_workspace = id;
@@ -234,13 +254,17 @@ compiler_custom_link_command_is_complete :: (w: Workspace, exit_code := 0) {
 }
 
 compiler_set_workspace_status :: (status: Workspace_Status, w: Workspace = -1) {
-    // jaic has no status primitive. A workspace that already failed compiling keeps its
-    // failure; marking a healthy one as FAILED aborts with a diagnostic so the exit code
-    // is nonzero. Marking a workspace OK again cannot be honoured.
-    if status != .FAILED return;
+    // A workspace that already failed compiling keeps its failure; marking a healthy one as
+    // FAILED aborts with a diagnostic so the exit code is nonzero. A failed workspace cannot
+    // be made OK again, and saying so is an error rather than a no-op.
     id := resolve_workspace(w);
-    if id == last_complete_workspace && last_complete_error != 0 return;
-    __jaic_report("the metaprogram marked the workspace as failed", "", 0, 0, true);
+    failed := id == last_complete_workspace && last_complete_error != 0;
+    if status == .OK {
+        if failed __jaic_report("compiler_set_workspace_status: jaic cannot mark a failed workspace as OK", "", 0, 0, xx Report.ERROR);
+        return;
+    }
+    if failed return;
+    __jaic_report("the metaprogram marked the workspace as failed", "", 0, 0, xx Report.ERROR);
 }
 
 // ---------------------------------------------------------------------------
@@ -248,12 +272,13 @@ compiler_set_workspace_status :: (status: Workspace_Status, w: Workspace = -1) {
 // ---------------------------------------------------------------------------
 
 // Only Report.ERROR stops the build; warnings, info and continuable errors just print.
+// ERROR stops the metaprogram; ERROR_CONTINUABLE lets it go on, but the build fails.
 compiler_report :: (message: string, loc := #caller_location, mode := Report.ERROR) {
-    __jaic_report(message, loc.fully_pathed_filename, loc.line_number, loc.character_number, mode == .ERROR);
+    __jaic_report(message, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx mode);
 }
 
 compiler_report :: (filename: string, line_number: s64, character_number: s64, error_text: string, mode := Report.ERROR) {
-    __jaic_report(error_text, filename, line_number, character_number, mode == .ERROR);
+    __jaic_report(error_text, filename, line_number, character_number, xx mode);
 }
 
 // A null node yields an empty location rather than crashing a reporting path.
@@ -342,15 +367,20 @@ make_string_literal :: (s: string) -> *Code_Literal {
 // Reflection of the running program
 // ---------------------------------------------------------------------------
 
-get_runtime_info :: (w: Workspace = -1) -> Runtime_Info {
+// Only the running program's own information: another workspace's is not reachable.
+get_runtime_info :: (w: Workspace = -1, loc := #caller_location) -> Runtime_Info {
+    if w >= 0 && w != __jaic_current_workspace() {
+        text := tprint("get_runtime_info: jaic has the type table of the running program only, not of workspace %", w);
+        __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.ERROR);
+    }
     return __runtime_info;
 }
 
 // Provided by the compiler (filled once the program is fully compiled).
 __runtime_info: Runtime_Info #elsewhere;
 
-get_type_table :: (w: Workspace = -1) -> [] *Type_Info {
-    return get_runtime_info(w).type_table;
+get_type_table :: (w: Workspace = -1, loc := #caller_location) -> [] *Type_Info {
+    return get_runtime_info(w, loc).type_table;
 }
 
 // ---------------------------------------------------------------------------
@@ -477,9 +507,14 @@ provide_import :: (w: Workspace, message: *Message_Failed_Import, type: Provided
 }
 
 // The copy lives in compile-time memory; a constant holding the returned view (`data ::
-// #run add_global_data(...)`) is emitted into the program's data with its bytes.
-// Segments other than the defaults are not modelled.
-add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Data_Segment = null, w: Workspace = -1) -> [] u8 {
+// #run add_global_data(...)`) is emitted into the program's data with its bytes. jaic
+// places it with the program's other constant data whatever the segment; a user segment
+// (from add_data_segment, which jaic does not have) is an error.
+add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Data_Segment = null, w: Workspace = -1, loc := #caller_location) -> [] u8 {
+    if segment == .USER_SEGMENT || user_segment {
+        text := "add_global_data: jaic has no user data segments";
+        __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.ERROR);
+    }
     result: [] u8;
     result.data = alloc(data.count);
     result.count = data.count;
@@ -510,7 +545,8 @@ __jaic_event_int :: (index: s64) -> s64 #compiler;
 __jaic_event_string :: (index: s64) -> string #compiler;
 __jaic_command_line_count :: () -> s64 #compiler;
 __jaic_command_line_arg :: (index: s64) -> string #compiler;
-__jaic_report :: (message: string, file: string, line: s64, column: s64, is_error: bool) #compiler;
+__jaic_report :: (message: string, file: string, line: s64, column: s64, mode: s64) #compiler;
+__jaic_code_is_null :: (code: Code) -> bool #compiler;
 __jaic_compiler_version :: () -> string #compiler;
 __jaic_custom_link_complete :: (ws: s64, exit_code: s64) #compiler;
 
@@ -533,6 +569,7 @@ workspace_names: [..] string;
 
 intercepted: [..] Workspace;
 intercept_finished: [..] bool;
+intercept_flags: [..] Intercept_Flags;
 intercept_cursor: s64;
 
 last_complete_workspace: Workspace = 2;
@@ -556,7 +593,7 @@ find_intercept :: (id: s64) -> s64 {
 
 unsupported :: (name: string) {
     text := tprint("%1 is not supported by jaic yet (it needs syntax-tree access).", name);
-    __jaic_report(text, "", 0, 0, true);
+    __jaic_report(text, "", 0, 0, xx Report.ERROR);
 }
 
 fill_complete :: (id: Workspace, error_code: s64) -> *Message {
@@ -596,12 +633,29 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
             phase_object_files.count = 0;
             message_phase.compiler_generated_object_files = phase_object_files;
 
+            message_phase.support_object_files = .[];
+            message_phase.system_libraries = .[];
+            message_phase.user_libraries = .[];
             if phase == PHASE_PRE_WRITE_EXECUTABLE || phase == PHASE_READY_FOR_CUSTOM_LINK_COMMAND {
-                count := __jaic_event_int(1);
-                for 0..count - 1 array_add(*phase_object_files, __jaic_event_string(it));
+                // Strings: the objects, support objects, system and user libraries, then the
+                // executable (counts in ints 1 to 4; PRE_WRITE has objects only).
+                counts: [4] s64;
+                for 0..3 counts[it] = __jaic_event_int(it + 1);
+                lists: [4][..] string;
+                next := 0;
+                for count: counts {
+                    for 0..count - 1 array_add(*lists[it_index], __jaic_event_string(next + it));
+                    next += count;
+                }
+                for lists[0] array_add(*phase_object_files, it);
                 message_phase.compiler_generated_object_files = phase_object_files;
-                message_phase.executable_name = __jaic_event_string(count);
+                message_phase.support_object_files = lists[1];
+                message_phase.system_libraries = lists[2];
+                message_phase.user_libraries = lists[3];
+                message_phase.executable_name = __jaic_event_string(next);
             } else if phase == PHASE_POST_WRITE_EXECUTABLE {
+                message_phase.executable_write_failed = __jaic_event_int(1) != 0;
+                message_phase.linker_exit_code = xx __jaic_event_int(2);
                 message_phase.executable_name = __jaic_event_string(0);
             }
             return *message_phase;
@@ -612,6 +666,34 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
 
     // 0 (or an unknown kind): the workspace has no more events; treat it as finished OK.
     return fill_complete(id, 0);
+}
+
+// Applies the SKIP_ flags of compiler_begin_intercept; false when nothing is left to send.
+keep_typechecked :: (m: *Message_Typechecked, flags: Intercept_Flags) -> bool {
+    if !(flags & (.SKIP_DECLARATIONS | .SKIP_PROCEDURE_HEADERS | .SKIP_PROCEDURE_BODIES | .SKIP_STRUCTS | .SKIP_OTHERS)) return true;
+    if flags & .SKIP_DECLARATIONS m.declarations.count = 0;
+    if flags & .SKIP_PROCEDURE_HEADERS m.procedure_headers.count = 0;
+    if flags & .SKIP_PROCEDURE_BODIES m.procedure_bodies.count = 0;
+    if flags & .SKIP_STRUCTS m.structs.count = 0;
+    if flags & .SKIP_OTHERS m.others.count = 0;
+    kept := 0;
+    for m.all {
+        node := it.expression;
+        skip: Intercept_Flags = .SKIP_OTHERS;
+        if node {
+            if node.kind == {
+                case .DECLARATION; skip = .SKIP_DECLARATIONS;
+                case .PROCEDURE_HEADER; skip = .SKIP_PROCEDURE_HEADERS;
+                case .PROCEDURE_BODY; skip = .SKIP_PROCEDURE_BODIES;
+                case .STRUCT; skip = .SKIP_STRUCTS;
+            }
+        }
+        if flags & skip continue;
+        m.all[kept] = it;
+        kept += 1;
+    }
+    m.all.count = kept;
+    return kept > 0;
 }
 
 // "beta 0.2.029, jaic" -> 0, 2, 29: the first digit run, split on dots.
