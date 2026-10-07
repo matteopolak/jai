@@ -115,6 +115,7 @@ c_style_strlen :: (str: *u8) -> s64 #no_context {
     while str[count] != 0 count += 1;
     return count;
 }
+
 to_string :: (c_string: *u8) -> string #no_context {
     text: string;
     text.count = c_style_strlen(c_string);
@@ -131,6 +132,7 @@ __array_bounds_check_fail :: (index: s64, limit: s64, line_number: s64, filename
     write_string("\n", true);
     debug_break();
 }
+
 // Called by code compiled with Build_Options.arithmetic_overflow_check on, when `+`, `-` or `*` on
 // integers does not fit its type. `type_code` bit 15: fatal, bit 14: signed, bits 7-8: operator
 // (1 add, 2 sub, 3 mul), low bits: operand size in bytes.
@@ -157,6 +159,7 @@ __arithmetic_overflow :: (left: s64, right: s64, type_code: u16, line_number: s6
 
     if fatal my_panic();
 }
+
 __cast_bounds_check_fail :: (pre_value: s64, pre_flags: u32, post_value: s64, post_flags: u32, fatal: u8, line_number: s64, filename: *u8) #no_context {
     write_failure_location(filename, line_number);
     write_string("numeric cast changed value ", true);
@@ -166,6 +169,7 @@ __cast_bounds_check_fail :: (pre_value: s64, pre_flags: u32, post_value: s64, po
     write_string("\n", true);
     if fatal != 0 debug_break();
 }
+
 __null_pointer_check_fail :: (index: s64, line_number: s64, filename: *u8) #no_context {
     write_failure_location(filename, line_number);
     write_string("null pointer access at offset ", true);
@@ -173,6 +177,7 @@ __null_pointer_check_fail :: (index: s64, line_number: s64, filename: *u8) #no_c
     write_string("\n", true);
     debug_break();
 }
+
 // jaic's native code calls this when a runtime check fails, then traps unless the check is
 // nonfatal. The wording matches the interpreter's (`ir::check_message` in jaic). `reason`:
 // 1 missing return, 2 #asm divide fault, 3 index out of range (a: index, b: count), 4 cast
@@ -238,6 +243,7 @@ write_string :: (s: string, to_standard_error := false) #no_context #compiler {
     defer unlock_output();
     write_string_unsynchronized(s, to_standard_error);
 }
+
 write_strings :: (strings: ..string, to_standard_error := false) #no_context #compiler {
     lock_output();
     defer unlock_output();
@@ -245,6 +251,7 @@ write_strings :: (strings: ..string, to_standard_error := false) #no_context #co
 }
 
 compile_time_debug_break :: () #compiler #no_context;
+
 debug_break :: () #no_context {
     if #compile_time {
         compile_time_debug_break();
@@ -288,6 +295,7 @@ Context_Base :: struct {
     handling_assertion_failure := false;
     default_allocator :: Allocator.{ runtime_support_default_allocator_proc, null };
 }
+
 // The arena bookkeeping lives in `implementation_data`, owned by Basic's temporary allocator.
 Temporary_Storage :: struct {
     data: *u8;
@@ -304,6 +312,7 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
     first_thread_context: #Context;
     first_thread_temporary_storage: Temporary_Storage;
     first_thread_temporary_storage_data: [TEMPORARY_STORAGE_SIZE] u8 #align 64;
+
     #program_export
     __jai_runtime_init :: (argc: s32, argv: **u8) -> *#Context #c_call {
         initializer_of(#Context)(*first_thread_context);
@@ -314,6 +323,7 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
         first_thread_context.temporary_storage = *first_thread_temporary_storage;
         return *first_thread_context;
     }
+
     #program_export
     __jai_runtime_fini :: (_context: *void) #c_call {}
 }
@@ -321,9 +331,11 @@ runtime_support_default_allocator_proc :: Default_Allocator.allocator_proc;
 // Optional startup hooks are ordinary source callbacks, run in registration order.
 runtime_startup_first_hooks: [] ();
 runtime_startup_second_hooks: [] ();
+
 __instrumentation_first :: () {
     for callback: runtime_startup_first_hooks callback();
 }
+
 __instrumentation_second :: () {
     for callback: runtime_startup_second_hooks callback();
 }
@@ -352,17 +364,21 @@ __instrumentation_second :: () {
 
 #scope_module
 Default_Allocator :: #import "Default_Allocator";
+
 output_lock: s32;
+
 lock_output :: () #no_context {
     while true {
         success := compare_and_swap(*output_lock, 0, 1);
         if success return;
     }
 }
+
 unlock_output :: () #no_context {
     success := compare_and_swap(*output_lock, 1, 0);
     if !success debug_break();
 }
+
 // Locations print as "path:line,column".
 write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context {
     stderr := to_standard_error;
@@ -370,20 +386,24 @@ write_loc :: (loc: Source_Code_Location, to_standard_error := false) #no_context
     write_number_after(":", loc.line_number, stderr);
     write_number_after(":", loc.character_number, stderr);
 }
+
 // Prefix for runtime failure messages: "path:line: ", always on stderr.
 write_failure_location :: (filename: *u8, line: s64) #no_context {
     write_string(runtime_support_shown_path(to_string(filename)), true);
     write_number_after(":", line, true);
     write_string(": ", true);
 }
+
 write_number_after :: (separator: string, value: s64, stderr: bool) #no_context {
     write_string(separator, stderr);
     write_number(value, to_standard_error = stderr);
 }
+
 my_panic :: () #no_context {
     write_string("runtime panic\n", true);
     debug_break();
 }
+
 __panic_due_to_runtime_call_of_compile_time_procedure :: (line_number: s64, filename: *u8) #no_context {
     write_failure_location(filename, line_number);
     write_string("compile-time procedure called at runtime\n", true);

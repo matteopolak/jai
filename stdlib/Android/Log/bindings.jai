@@ -10,9 +10,11 @@ Log_Priority :: enum u32 {
     FATAL :: 7;
     SILENT :: 8;
 }
+
 __android_log_write :: (prio: Log_Priority, tag: *u8, text: *u8) -> s32 #foreign liblog;
 __android_log_print :: (prio: Log_Priority, tag: *u8, fmt: *u8, __args: ..Any) -> s32 #foreign liblog;
 __android_log_assert :: (cond: *u8, tag: *u8, fmt: *u8, __args: ..Any) -> void #foreign liblog;
+
 Log_Id :: enum u32 {
     MIN :: 0;
     MAIN :: 0;
@@ -26,8 +28,10 @@ Log_Id :: enum u32 {
     MAX :: 8;
     DEFAULT :: 2147483647;
 }
+
 __android_log_buf_write :: (bufID: Log_Id, prio: Log_Priority, tag: *u8, text: *u8) -> s32 #foreign liblog;
 __android_log_buf_print :: (bufID: Log_Id, prio: Log_Priority, tag: *u8, fmt: *u8, __args: ..Any) -> s32 #foreign liblog;
+
 Log_Message :: struct {
     struct_size: u64;
     buffer_id: s32;
@@ -37,6 +41,7 @@ Log_Message :: struct {
     line: u32;
     message: *u8;
 }
+
 __android_logger_function :: #type (log_message: *Log_Message) -> void #c_call;
 __android_aborter_function :: #type (abort_message: *u8) -> void #c_call;
 __android_log_write_log_message :: (log_message: *Log_Message) -> void #foreign liblog;

@@ -1,5 +1,6 @@
 // Window_Creation: opening native windows on each platform.
 #module_parameters (DEFAULT_MSAA: s32 = 4);
+
 #if OS == .WINDOWS {
     #load "windows.jai";
 } else #if OS == .LINUX {
@@ -13,9 +14,13 @@
 } else {
     #assert (false);
 }
+
 #scope_module
 #import "Basic";
+
 DEFAULT_WINDOW_CREATION_COLOR :: float.[0.15, 0.15, 0.2];
+
 #scope_export
 WT :: #import "Window_Type";
+
 Window_Type :: WT.Window_Type;

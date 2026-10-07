@@ -163,6 +163,7 @@
 
     #scope_file
     NativeWGL :: #import "Windows";
+
     _gl_wgl_pixel_descriptor :: () -> NativeWGL.PIXELFORMATDESCRIPTOR {
         value: NativeWGL.PIXELFORMATDESCRIPTOR;
         value.nSize = cast(s16) size_of(NativeWGL.PIXELFORMATDESCRIPTOR);
@@ -176,6 +177,7 @@
         value.iLayerType = NativeWGL.PFD_MAIN_PLANE;
         return value;
     }
+
     _gl_wgl_context_proc :: (name: *u8) -> *void {
         address := NativeWGL.wglGetProcAddress(name);
         bits := cast(u64) address;

@@ -1,5 +1,6 @@
 #import "Ico_File";
 Files :: #import "File";
+
 witness :: () -> bool {
     image, mask, total := get_bytes_for_image(4, 16);
     if image != 2088 || mask != 64 || total != 2216 return false;
@@ -12,4 +13,5 @@ witness :: () -> bool {
     if create_ico_file_from_bitmap_filename("mock.bmp") != "" return false;
     return true;
 }
+
 #assert(witness());

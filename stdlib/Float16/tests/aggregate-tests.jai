@@ -1,5 +1,6 @@
 #import "Float16";
 #import "Math";
+
 aggregate_cases :: () -> bool {
     v := vector3_float16(make_vector3(1, -2, 0.5));
     back := vector3_float32(v);
@@ -13,4 +14,5 @@ aggregate_cases :: () -> bool {
     if restored != m return false;
     return true;
 }
+
 #assert #run aggregate_cases();

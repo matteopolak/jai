@@ -71,6 +71,7 @@ deinit :: (pipe: *Process.Pipe) {
     pipe.handle = cast(Windows.HANDLE) -1;
     pipe.eof = true;
 }
+
 deinit :: (process: *Process) {
     close_pipe_ends(process);
     if process.launched {
@@ -85,11 +86,13 @@ deinit :: (process: *Process) {
     }
     process.* = .{};
 }
+
 write_to_process :: (process: *Process, data: [] u8) -> success: bool, bytes_written: int {
     amount: u32;
     success := Windows.WriteFile(process.input.handle, data.data, cast(u32) min(data.count, 0x7fff_ffff), *amount, null) != 0;
     return success, cast(int) amount;
 }
+
 read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: int {
     if pipe.eof || buffer.count == 0 return true, 0;
     available: u32;
@@ -106,6 +109,7 @@ read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: 
     success := Windows.ReadFile(pipe.handle, buffer.data, request, *amount, null) != 0;
     return success, cast(int) amount;
 }
+
 read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] u8, timeout_ms := -1) -> success: bool, output_bytes: int, error_bytes: int {
     start := process_monotonic_ms();
     while true {
@@ -117,9 +121,11 @@ read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] 
         Windows.Sleep(1);
     }
 }
+
 kill_process :: (process: *Process) -> bool {
     return process.launched && (process.saved_result.type != .STILL_RUNNING || Windows.TerminateProcess(process.info.hProcess, 137) != 0);
 }
+
 get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Process_Result {
     if !process.launched return true, .{ type = .UNSTARTED };
     if process.saved_result.type != .STILL_RUNNING return true, process.saved_result;

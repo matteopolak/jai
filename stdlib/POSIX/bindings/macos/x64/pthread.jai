@@ -33,52 +33,64 @@ _JBLEN :: (9 * 2) + 3 + 16;
 _PTHREAD_MUTEX_POLICY_NONE :: 0;
 _PTHREAD_MUTEX_POLICY_FAIRSHARE :: 1;
 _PTHREAD_MUTEX_POLICY_FIRSTFIT :: 2;
+
 __darwin_pthread_handler_rec :: struct {
     __routine: #type (unknown0: *void) -> void #c_call;
     __arg: *void;
     __next: *__darwin_pthread_handler_rec;
 }
+
 _opaque_pthread_attr_t :: struct {
     __sig: s64;
     __opaque: [56] u8;
 }
+
 _opaque_pthread_cond_t :: struct {
     __sig: s64;
     __opaque: [40] u8;
 }
+
 _opaque_pthread_condattr_t :: struct {
     __sig: s64;
     __opaque: [8] u8;
 }
+
 _opaque_pthread_mutex_t :: struct {
     __sig: s64;
     __opaque: [56] u8;
 }
+
 _opaque_pthread_mutexattr_t :: struct {
     __sig: s64;
     __opaque: [8] u8;
 }
+
 _opaque_pthread_once_t :: struct {
     __sig: s64;
     __opaque: [8] u8;
 }
+
 _opaque_pthread_rwlock_t :: struct {
     __sig: s64;
     __opaque: [192] u8;
 }
+
 _opaque_pthread_rwlockattr_t :: struct {
     __sig: s64;
     __opaque: [16] u8;
 }
+
 _opaque_pthread_t :: struct {
     __sig: s64;
     __cleanup_stack: *__darwin_pthread_handler_rec;
     __opaque: [8176] u8;
 }
+
 sched_param :: struct {
     sched_priority: s32;
     __opaque: [4] u8;
 }
+
 sched_yield :: () -> s32 #foreign libc;
 sched_get_priority_min :: (unknown0: s32) -> s32 #foreign libc;
 sched_get_priority_max :: (unknown0: s32) -> s32 #foreign libc;
@@ -92,6 +104,7 @@ pthread_once_t :: _opaque_pthread_once_t;
 pthread_rwlock_t :: _opaque_pthread_rwlock_t;
 pthread_rwlockattr_t :: _opaque_pthread_rwlockattr_t;
 pthread_t :: *_opaque_pthread_t;
+
 QOS_CLASS :: enum u32 {
     USER_INTERACTIVE :: 33;
     USER_INITIATED :: 25;
@@ -106,6 +119,7 @@ QOS_CLASS :: enum u32 {
     QOS_CLASS_BACKGROUND :: BACKGROUND;
     QOS_CLASS_UNSPECIFIED :: UNSPECIFIED;
 }
+
 qos_class_t :: u32;
 qos_class_self :: () -> qos_class_t #foreign libc;
 qos_class_main :: () -> qos_class_t #foreign libc;

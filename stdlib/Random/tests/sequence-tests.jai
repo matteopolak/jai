@@ -1,7 +1,9 @@
 #load "../generator.jai";
 #load "../../PCG/transition.jai";
+
 PCG_DEFAULT_MULTIPLIER_64 :: 6364136223846793005;
 PCG_DEFAULT_INCREMENT_64 :: 1442695040888963407;
+
 random_sequence_cases :: () -> bool {
     state: Random_State;
     random_seed(*state, 42);
@@ -27,4 +29,5 @@ random_sequence_cases :: () -> bool {
     if random_get(*pcg_state) != 3457789919 return false;
     return true;
 }
+
 #assert #run random_sequence_cases();

@@ -1,7 +1,9 @@
 // Linux windows through X11.
 #import "X11";
+
 window_minimized := false;
 Saved_Window_Info :: struct {}
+
 toggle_fullscreen :: (win: Window, desire_fullscreen: bool, saved: *Saved_Window_Info) -> success: bool, width: s32, height: s32 {
     display := x_global_display;
     if !display || !win || !x_global_net_wm_state || !x_global_net_wm_state_fullscreen return false, 0, 0;
@@ -19,6 +21,7 @@ toggle_fullscreen :: (win: Window, desire_fullscreen: bool, saved: *Saved_Window
     _, _, measured_width, measured_height, measured := get_dimensions(win, false);
     return accepted != 0 && measured, measured_width, measured_height;
 }
+
 create_window :: (width: int, height: int, window_name: string, window_x := 0, window_y := 0, parent: Window_Type = None, background_color_rgb := DEFAULT_WINDOW_CREATION_COLOR, wanted_msaa: s32 = DEFAULT_MSAA) -> Window {
     if width <= 0 || height <= 0 || width > 0x7fffffff || height > 0x7fffffff return None;
     init_global_display();
@@ -66,6 +69,7 @@ create_window :: (width: int, height: int, window_name: string, window_x := 0, w
     XFlush(display);
     return handle;
 }
+
 get_dimensions :: (win: Window, right_handed: bool) -> (x: s32, y: s32, width: s32, height: s32, success := true) {
     if !x_global_display || !win return 0, 0, 0, 0, false;
     attributes: XWindowAttributes;
@@ -74,6 +78,7 @@ get_dimensions :: (win: Window, right_handed: bool) -> (x: s32, y: s32, width: s
     if right_handed origin_y += attributes.height;
     return attributes.x, origin_y, attributes.width, attributes.height, true;
 }
+
 get_mouse_pointer_position :: (dpy: *Display, win: Window, right_handed: bool) -> x: int, y: int, success: bool {
     if !dpy || !win return 0, 0, false;
     root, child: Window;
@@ -87,9 +92,11 @@ get_mouse_pointer_position :: (dpy: *Display, win: Window, right_handed: bool) -
     }
     return local_x, local_y, true;
 }
+
 get_mouse_pointer_position :: (win: Window, right_handed: bool) -> x: int, y: int, success: bool {
     return get_mouse_pointer_position(x_global_display, win, right_handed);
 }
+
 get_mouse_pointer_position :: (right_handed := false) -> x: int, y: int, success: bool {
     if !x_global_display return 0, 0, false;
     focused: Window;

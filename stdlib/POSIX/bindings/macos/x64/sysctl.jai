@@ -218,6 +218,7 @@ CTL_DEBUG_MAXID :: 20;
 session :: struct {}
 pgrp :: struct {}
 proc :: struct {}
+
 extern_proc :: struct {
     p_un: union {
         p_st1: struct {
@@ -271,16 +272,19 @@ extern_proc :: struct {
     rusage :: struct {}
     p_ru: *rusage;
 }
+
 vmspace :: struct {
     dummy: s32;
     dummy2: *u8;
     dummy3: [5] s32;
     dummy4: [3] *u8;
 }
+
 ctlname :: struct {
     ctl_name: *u8;
     ctl_type: s32;
 }
+
 _pcred :: struct {
     pc_lock: [72] u8;
     pc_ucred: *ucred;
@@ -290,12 +294,14 @@ _pcred :: struct {
     p_svgid: gid_t;
     p_refcnt: s32;
 }
+
 _ucred :: struct {
     cr_ref: s32;
     cr_uid: uid_t;
     cr_ngroups: s16;
     cr_groups: [16] gid_t;
 }
+
 kinfo_proc :: struct {
     kp_proc: extern_proc;
     eproc :: struct {
@@ -321,6 +327,7 @@ kinfo_proc :: struct {
     }
     kp_eproc: eproc;
 }
+
 xsw_usage :: struct {
     xsu_total: u64;
     xsu_avail: u64;
@@ -328,10 +335,12 @@ xsw_usage :: struct {
     xsu_pagesize: u32;
     xsu_encrypted: u32;
 }
+
 loadavg :: struct {
     ldavg: [3] fixpt_t;
     fscale: s64;
 }
+
 sysctl :: (unknown0: *s32, unknown1: u32, unknown2: *void, unknown3: *u64, unknown4: *void, unknown5: u64) -> s32 #foreign libc;
 sysctlbyname :: (unknown0: *u8, unknown1: *void, unknown2: *u64, unknown3: *void, unknown4: u64) -> s32 #foreign libc;
 sysctlnametomib :: (unknown0: *u8, unknown1: *s32, unknown2: *u64) -> s32 #foreign libc;

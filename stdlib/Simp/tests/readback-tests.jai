@@ -1,5 +1,6 @@
 S :: #import "Simp"(render_api = .SOFTWARE);
 B :: #import "Basic";
+
 readback_cases :: () -> bool {
     texture := S.texture_create_render_target(2, 2, .RGBA8);
     if !texture return false;
@@ -31,7 +32,9 @@ readback_cases :: () -> bool {
     S.pixel_read_cancel(reader);
     return true;
 }
+
 #assert #run readback_cases();
+
 main :: () {
     readback_cases();
 }

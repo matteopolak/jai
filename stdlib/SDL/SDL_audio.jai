@@ -4,27 +4,35 @@ SDL_AUDIO_MASK_BITSIZE :: (0xFF);
 SDL_AUDIO_MASK_DATATYPE :: (1 << 8);
 SDL_AUDIO_MASK_ENDIAN :: (1 << 12);
 SDL_AUDIO_MASK_SIGNED :: (1 << 15);
+
 SDL_AUDIO_BITSIZE :: (x: SDL_AudioFormat) -> u16 {
     return cast(u16) (x & 0x00ff);
 }
+
 SDL_AUDIO_ISFLOAT :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x0100) != 0;
 }
+
 SDL_AUDIO_ISBIGENDIAN :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x1000) != 0;
 }
+
 SDL_AUDIO_ISSIGNED :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x8000) != 0;
 }
+
 SDL_AUDIO_ISINT :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x0100) == 0;
 }
+
 SDL_AUDIO_ISLITTLEENDIAN :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x1000) == 0;
 }
+
 SDL_AUDIO_ISUNSIGNED :: (x: SDL_AudioFormat) -> bool {
     return (x & 0x8000) == 0;
 }
+
 AUDIO_U8 :: 0x0008;
 AUDIO_S8 :: 0x8008;
 AUDIO_U16LSB :: 0x0010;
@@ -49,6 +57,7 @@ SDL_AUDIO_ALLOW_CHANNELS_CHANGE :: 0x00000004;
 SDL_AUDIO_ALLOW_SAMPLES_CHANGE :: 0x00000008;
 SDL_AUDIO_ALLOW_ANY_CHANGE :: (SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | SDL_AUDIO_ALLOW_FORMAT_CHANGE | SDL_AUDIO_ALLOW_CHANNELS_CHANGE | SDL_AUDIO_ALLOW_SAMPLES_CHANGE);
 SDL_AudioCallback :: #type (a0: *void, a1: *u8, a2: s32) #c_call;
+
 SDL_AudioSpec :: struct {
     freq: s32;
     format: SDL_AudioFormat;
@@ -60,7 +69,9 @@ SDL_AudioSpec :: struct {
     callback: SDL_AudioCallback;
     userdata: *void;
 }
+
 SDL_AudioFilter :: #type (a0: *SDL_AudioCVT, a1: SDL_AudioFormat) #c_call;
+
 SDL_AudioCVT :: struct {
     needed: s32;
     src_format: SDL_AudioFormat;
@@ -74,6 +85,7 @@ SDL_AudioCVT :: struct {
     filters: [10] SDL_AudioFilter;
     filter_index: s32;
 }
+
 SDL_GetNumAudioDrivers :: () -> s32 #foreign SDL2;
 SDL_GetAudioDriver :: (index: s32) -> *u8 #foreign SDL2;
 SDL_AudioInit :: (driver_name: *u8) -> s32 #foreign SDL2;
@@ -84,11 +96,13 @@ SDL_AudioDeviceID :: u32;
 SDL_GetNumAudioDevices :: (iscapture: s32) -> s32 #foreign SDL2;
 SDL_GetAudioDeviceName :: (index: s32, iscapture: s32) -> *u8 #foreign SDL2;
 SDL_OpenAudioDevice :: (device: *u8, iscapture: s32, desired: *SDL_AudioSpec, obtained: *SDL_AudioSpec, allowed_changes: s32) -> SDL_AudioDeviceID #foreign SDL2;
+
 using SDL_AudioStatus :: enum u32 {
     SDL_AUDIO_STOPPED :: 0;
     SDL_AUDIO_PLAYING :: 1;
     SDL_AUDIO_PAUSED :: 2;
 }
+
 SDL_GetAudioStatus :: () -> SDL_AudioStatus #foreign SDL2;
 SDL_GetAudioDeviceStatus :: (dev: SDL_AudioDeviceID) -> SDL_AudioStatus #foreign SDL2;
 SDL_PauseAudio :: (pause_on: s32) #foreign SDL2;
@@ -96,8 +110,10 @@ SDL_PauseAudioDevice :: (dev: SDL_AudioDeviceID, pause_on: s32) #foreign SDL2;
 SDL_FreeWAV :: (audio_buf: *u8) #foreign SDL2;
 SDL_BuildAudioCVT :: (cvt: *SDL_AudioCVT, src_format: SDL_AudioFormat, src_channels: u8, src_rate: s32, dst_format: SDL_AudioFormat, dst_channels: u8, dst_rate: s32) -> s32 #foreign SDL2;
 SDL_ConvertAudio :: (cvt: *SDL_AudioCVT) -> s32 #foreign SDL2;
+
 SDL_AudioStream :: struct {}
 ;
+
 SDL_NewAudioStream :: (src_format: SDL_AudioFormat, src_channels: u8, src_rate: s32, dst_format: SDL_AudioFormat, dst_channels: u8, dst_rate: s32) -> *SDL_AudioStream #foreign SDL2;
 SDL_AudioStreamPut :: (stream: *SDL_AudioStream, buf: *void, len: s32) -> s32 #foreign SDL2;
 SDL_AudioStreamGet :: (stream: *SDL_AudioStream, buf: *void, len: s32) -> s32 #foreign SDL2;

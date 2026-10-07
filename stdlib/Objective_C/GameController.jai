@@ -60,6 +60,7 @@ init_objective_c_gamecontroller :: () {
     _sel.xAxis = cast(Selector) sel_registerName(cast(*u8) "xAxis\0");
     _sel.yAxis = cast(Selector) sel_registerName(cast(*u8) "yAxis\0");
 }
+
 GCControllerElement :: struct {
     using nsobject: NSObject;
     collection :: (self: *GCControllerElement) -> *GCControllerElement {
@@ -73,6 +74,7 @@ GCControllerElement :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "isAnalog\0"));
     }
 }
+
 GCControllerAxisInput :: struct {
     using gccontrollerelement: GCControllerElement;
     valueChangedHandler :: (self: *GCControllerAxisInput) -> GCControllerAxisValueChangedHandler {
@@ -91,7 +93,9 @@ GCControllerAxisInput :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "value\0"));
     }
 }
+
 GCControllerAxisValueChangedHandler :: *void;
+
 GCControllerButtonInput :: struct {
     using gccontrollerelement: GCControllerElement;
     valueChangedHandler :: (self: *GCControllerButtonInput) -> GCControllerButtonValueChangedHandler {
@@ -125,7 +129,9 @@ GCControllerButtonInput :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "isPressed\0"));
     }
 }
+
 GCControllerButtonValueChangedHandler :: *void;
+
 GCControllerDirectionPad :: struct {
     using gccontrollerelement: GCControllerElement;
     valueChangedHandler :: (self: *GCControllerDirectionPad) -> GCControllerDirectionPadValueChangedHandler {
@@ -169,28 +175,34 @@ GCControllerDirectionPad :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "right\0"));
     }
 }
+
 GCControllerDirectionPadValueChangedHandler :: *void;
+
 GCAcceleration :: struct {
     x: float64;
     y: float64;
     z: float64;
 }
+
 GCRotationRate :: struct {
     x: float64;
     y: float64;
     z: float64;
 }
+
 GCEulerAngles :: struct {
     pitch: float64;
     yaw: float64;
     roll: float64;
 }
+
 GCQuaternion :: struct {
     x: float64;
     y: float64;
     z: float64;
     w: float64;
 }
+
 GCMotion :: struct {
     using nsobject: NSObject;
     controller :: (self: *GCMotion) -> *GCController {
@@ -266,7 +278,9 @@ GCMotion :: struct {
         }
     }
 }
+
 GCMotionValueChangedHandler :: *void;
+
 GCGamepad :: struct {
     using nsobject: NSObject;
     saveSnapshot :: (self: *GCGamepad) -> *GCGamepadSnapshot {
@@ -325,7 +339,9 @@ GCGamepad :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "rightShoulder\0"));
     }
 }
+
 GCGamepadValueChangedHandler :: *void;
+
 GCGamepadSnapshot :: struct {
     using gcgamepad: GCGamepad;
     initWithSnapshotData :: (self: *GCGamepadSnapshot, data: *NSData) -> *GCGamepadSnapshot {
@@ -349,6 +365,7 @@ GCGamepadSnapshot :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setSnapshotData:\0"), snapshotData);
     }
 }
+
 GCGamepadSnapShotDataV100 :: struct {
     version: u16;
     size: u16;
@@ -361,8 +378,10 @@ GCGamepadSnapShotDataV100 :: struct {
     leftShoulder: float32;
     rightShoulder: float32;
 }
+
 GCGamepadSnapShotDataV100FromNSData :: (snapshotData: *GCGamepadSnapShotDataV100, data: *NSData) -> BOOL #foreign GameController_Framework;
 NSDataFromGCGamepadSnapShotDataV100 :: (snapshotData: *GCGamepadSnapShotDataV100) -> *NSData #foreign GameController_Framework;
+
 GCExtendedGamepad :: struct {
     using nsobject: NSObject;
     saveSnapshot :: (self: *GCExtendedGamepad) -> *GCExtendedGamepadSnapshot {
@@ -451,7 +470,9 @@ GCExtendedGamepad :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "rightThumbstickButton\0"));
     }
 }
+
 GCExtendedGamepadValueChangedHandler :: *void;
+
 GCExtendedGamepadSnapshot :: struct {
     using gcextendedgamepad: GCExtendedGamepad;
     initWithSnapshotData :: (self: *GCExtendedGamepadSnapshot, data: *NSData) -> *GCExtendedGamepadSnapshot {
@@ -475,6 +496,7 @@ GCExtendedGamepadSnapshot :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setSnapshotData:\0"), snapshotData);
     }
 }
+
 GCExtendedGamepadSnapShotDataV100 :: struct {
     version: u16;
     size: u16;
@@ -493,8 +515,10 @@ GCExtendedGamepadSnapShotDataV100 :: struct {
     leftTrigger: float32;
     rightTrigger: float32;
 }
+
 GCExtendedGamepadSnapShotDataV100FromNSData :: (snapshotData: *GCExtendedGamepadSnapShotDataV100, data: *NSData) -> BOOL #foreign GameController_Framework;
 NSDataFromGCExtendedGamepadSnapShotDataV100 :: (snapshotData: *GCExtendedGamepadSnapShotDataV100) -> *NSData #foreign GameController_Framework;
+
 GCMicroGamepad :: struct {
     using nsobject: NSObject;
     saveSnapshot :: (self: *GCMicroGamepad) -> *GCMicroGamepadSnapshot {
@@ -553,7 +577,9 @@ GCMicroGamepad :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setAllowsRotation:\0"), allowsRotation);
     }
 }
+
 GCMicroGamepadValueChangedHandler :: *void;
+
 GCMicroGamepadSnapshot :: struct {
     using gcmicrogamepad: GCMicroGamepad;
     initWithSnapshotData :: (self: *GCMicroGamepadSnapshot, data: *NSData) -> *GCMicroGamepadSnapshot {
@@ -577,6 +603,7 @@ GCMicroGamepadSnapshot :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setSnapshotData:\0"), snapshotData);
     }
 }
+
 anon_struct_5 :: struct {
     version: u16;
     size: u16;
@@ -585,9 +612,11 @@ anon_struct_5 :: struct {
     buttonA: float32;
     buttonX: float32;
 }
+
 GCMicroGamepadSnapShotDataV100 :: anon_struct_5;
 GCMicroGamepadSnapShotDataV100FromNSData :: (snapshotData: *GCMicroGamepadSnapShotDataV100, data: *NSData) -> BOOL #foreign GameController_Framework;
 NSDataFromGCMicroGamepadSnapShotDataV100 :: (snapshotData: *GCMicroGamepadSnapShotDataV100) -> *NSData #foreign GameController_Framework;
+
 GCEventViewController :: struct {
     using #as viewController: NSViewController;
     controllerUserInteractionEnabled :: (self: *GCEventViewController) -> BOOL {
@@ -601,6 +630,7 @@ GCEventViewController :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setControllerUserInteractionEnabled:\0"), controllerUserInteractionEnabled);
     }
 }
+
 using GCControllerPlayerIndex :: enum s64 {
     GCControllerPlayerIndexUnset :: -1;
     GCControllerPlayerIndex1 :: 0;
@@ -608,11 +638,13 @@ using GCControllerPlayerIndex :: enum s64 {
     GCControllerPlayerIndex3 :: 2;
     GCControllerPlayerIndex4 :: 3;
 }
+
 GCController_controllers :: () -> *NSArray(*GCController) {
     invoke: (sdk_receiver: *void, sdk_selector: SEL) -> *NSArray(*GCController) #c_call;
     invoke = cast(type_of(invoke)) objc_msgSend;
     return invoke(cast(*void) objc_getClass(cast(*u8) "GCController\0"), sel_registerName(cast(*u8) "controllers\0"));
 }
+
 GCController :: struct {
     using #as super: NSObject;
     startWirelessControllerDiscoveryWithCompletionHandler :: (completionHandler: *void) -> () {
@@ -686,8 +718,10 @@ GCController :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "motion\0"));
     }
 }
+
 GCControllerDidConnectNotification: *NSString #elsewhere;
 GCControllerDidDisconnectNotification: *NSString #elsewhere;
+
 #scope_file
 _sel: struct {
     collection: Selector;
@@ -750,6 +784,8 @@ _sel: struct {
     extendedGamepad: Selector;
     motion: Selector;
 }
+
 GameController_Framework :: #system_library "GameController";
+
 #import "Objective_C";
 #import "Objective_C/AppKit";

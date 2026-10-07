@@ -1,5 +1,6 @@
 #scope_file
 Basic :: #import "Basic";
+
 #scope_export
 Console_Color :: enum_flags u16 {
     BLACK :: 30;
@@ -35,24 +36,29 @@ Console_Color :: enum_flags u16 {
     BG_HI_YELLOW :: 103;
     BG_HI_WHITE :: 107;
 }
+
 Console_Style :: enum {
     NORMAL :: 0;
     BOLD :: 1;
     UNDERLINE :: 4;
 }
+
 set_console_color :: (color: Console_Color, style: Console_Style = .NORMAL, to_standard_error := false) {
     escape := Basic.sprint("\x1b[%;%m", cast(int) style, cast(int) color);
     Basic.write_string(escape, to_standard_error);
     Basic.free(escape);
 }
+
 reset_console_color :: (to_standard_error := false) {
     Basic.write_string("\x1b[0m", to_standard_error);
 }
+
 with_console_color :: (color: Console_Color, code: Code, style: Console_Style = .NORMAL, to_standard_error := false) #expand {
     set_console_color(color, style, to_standard_error);
     defer reset_console_color(to_standard_error);
     #insert code;
 }
+
 print_color :: (format_string: string, args: ..Any, color: Console_Color, style: Console_Style = .NORMAL, to_standard_error := false) {
     text := Basic.sprint(format_string, ..args);
     set_console_color(color, style, to_standard_error);

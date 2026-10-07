@@ -38,6 +38,7 @@ reader_release_channel :: (channel: *Read_Channel) -> bool {
     channel.* = .{};
     return success;
 }
+
 writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel) {
     result: Write_Channel;
     descriptor := P.shm_open(temp_c_string(name), P.O_RDWR, 0);
@@ -75,6 +76,7 @@ writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: 
     result.os_specific.shm = descriptor;
     return true, result;
 }
+
 writer_disconnect :: (channel: *Write_Channel) -> bool {
     if !channel || !channel.header || channel.reserved_offset >= 0 return false;
     A.atomic_write(*channel.header.writer_status, .DISCONNECTED);

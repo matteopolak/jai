@@ -190,9 +190,11 @@ has_prefix :: (text: string, prefix: string) -> bool {
     for byte, index: prefix if text[index] != byte return false;
     return true;
 }
+
 identifier_byte :: (byte: u8) -> bool {
     return (byte >= #char "a" && byte <= #char "z") || (byte >= #char "A" && byte <= #char "Z") || (byte >= #char "0" && byte <= #char "9") || byte == #char "_";
 }
+
 read_integer :: (text: string) -> (ok: bool, magnitude: u64, negative: bool, remaining: string) #no_aoc {
     cursor: s64;
     negative := false;

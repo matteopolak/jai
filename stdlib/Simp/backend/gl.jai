@@ -4,6 +4,7 @@
 // instead call initialize_opengl_renderer and, for several windows, install opengl_make_window_current.
 #scope_module
 GL :: #import "GL";
+
 gl_api: *GL.GL_Procedures;
 gl_vertex_array: u32;
 gl_vertex_buffer: u32;
@@ -21,17 +22,20 @@ MINIMUM_GL_MINOR_VERSION :: 3;
 } else #if OS == .MACOS {
     the_gl_context: *AppKit.NSOpenGLContext;
 }
+
 gl_swap_interval: s32 = -1;
 
 #scope_export
 // A host that creates its own contexts installs this to make one window's context current.
 opengl_make_window_current: (window: Window_Type) -> bool = null;
+
 // A host that already has a current context loads the GL procedures itself and hands them over.
 initialize_opengl_renderer :: (procs: *GL.GL_Procedures) -> bool {
     if !procs || !procs.glCreateShader || !procs.glShaderSource || !procs.glGenVertexArrays || !procs.glBufferData return false;
     gl_api = procs;
     return gl_init_resources();
 }
+
 shutdown_opengl_renderer :: () {
     if !gl_api return;
     for shader: gl_built_in_shaders() {
@@ -73,6 +77,7 @@ gl_init_resources :: () -> bool {
     shaders_set_defaults();
     return true;
 }
+
 gl_built_in_shaders :: () -> [7] *Shader {
     return .[*shader_color, *shader_color_with_blend, *shader_text, *shader_sprite_right_handed, *shader_sprite_left_handed, *shader_rounded_rect, *shader_gradient];
 }
@@ -104,6 +109,7 @@ gl_backend_init :: (info: *Window_Info) {
             gl_api = null;
         }
     }
+
     gl_mac_attach_view :: (window: Window_Type) {
         view := AppKit.NSWindow.contentView(window);
         assert(view != null, "A Simp window needs a content view with OpenGL support (as made by Window_Creation)");
@@ -121,6 +127,7 @@ gl_backend_init :: (info: *Window_Info) {
         AppKit.NSOpenGLContext.update(the_gl_context);
         AppKit.NSOpenGLContext.makeCurrentContext(the_gl_context);
     }
+
     gl_attach_window :: (info: *Window_Info) {
         gl_mac_attach_view(info.window);
     }
@@ -140,6 +147,7 @@ gl_backend_init :: (info: *Window_Info) {
             gl_api = null;
         }
     }
+
     gl_attach_window :: (info: *Window_Info) {
         info.specific.glx_window = X11.glXCreateWindow(X11.x_global_display, the_gl_fbc, info.window, null);
         X11.glXMakeCurrent(X11.x_global_display, info.specific.glx_window, the_gl_context);
@@ -158,6 +166,7 @@ gl_backend_init :: (info: *Window_Info) {
             gl_api = null;
         }
     }
+
     gl_attach_window :: (info: *Window_Info) {
         // Every window of the context must use the pixel format the context was made with.
         device := Win.GetDC(info.window);
@@ -172,6 +181,7 @@ gl_backend_init :: (info: *Window_Info) {
     gl_create_native_context :: (info: *Window_Info) {
         assert(false, "Simp has no OpenGL context creation for this platform; use initialize_opengl_renderer");
     }
+
     gl_attach_window :: (info: *Window_Info) {}
 }
 
@@ -198,6 +208,7 @@ gl_make_window_current :: (info: *Window_Info) {
         AppKit.NSOpenGLContext.makeCurrentContext(the_gl_context);
     }
 }
+
 gl_set_render_target :: (info: *Window_Info) {
     if info.backend_initted_for_this_window {
         gl_make_window_current(info);
@@ -211,6 +222,7 @@ gl_set_render_target :: (info: *Window_Info) {
     gl_api.glDrawBuffer(GL.GL_BACK);
     gl_apply_scissor();
 }
+
 gl_set_render_target :: (texture: *Texture) {
     assert(gl_api != null && texture.framebuffer != 0, "Texture has no native framebuffer");
     if !gl_api || !texture.framebuffer return;
@@ -218,9 +230,11 @@ gl_set_render_target :: (texture: *Texture) {
     gl_api.glViewport(0, 0, cast(u32) texture.width, cast(u32) texture.height);
     gl_apply_scissor();
 }
+
 gl_flush :: () {
     if gl_api gl_api.glFlush();
 }
+
 gl_resize_render_target :: (info: Window_Info) {
     if !gl_api return;
     if context.simp.current_window_info.window == info.window && !context.simp.texture_render_target {
@@ -230,6 +244,7 @@ gl_resize_render_target :: (info: Window_Info) {
         }
     }
 }
+
 gl_swap_buffers :: (window: Window_Type, vsync: bool) {
     info := find_window_info(window);
     if !info || !info.backend_initted_for_this_window {
@@ -281,6 +296,7 @@ gl_clear_target :: (r: float, g: float, b: float, a: float) {
     gl_api.glClearColor(r, g, b, a);
     gl_api.glClear(GL.GL_COLOR_BUFFER_BIT);
 }
+
 gl_use_shader :: (shader: *Shader) {
     assert(gl_api != null && shader != null && shader.gl_handle != 0, "Shader has no native program");
     if !gl_api || !shader || !shader.gl_handle return;
@@ -290,6 +306,7 @@ gl_use_shader :: (shader: *Shader) {
         gl_api.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
     } else gl_api.glDisable(GL.GL_BLEND);
 }
+
 gl_find_shader_locations :: (s: *Shader) {
     if !gl_api || !s.gl_handle return;
     p := s.gl_handle;
@@ -306,9 +323,11 @@ gl_find_shader_locations :: (s: *Shader) {
     s.diffuse_texture_loc = get_uniform_location(p, "diffuse_texture");
     if s.diffuse_texture_loc < 0 s.diffuse_texture_loc = get_uniform_location(p, "text_sampler");
 }
+
 gl_attribute :: (program: GLuint, name: string) -> GLint {
     return gl_api.glGetAttribLocation(program, temp_c_string(name));
 }
+
 backend_set_texture :: (shader: *Shader, texture: *Texture) {
     if !gl_api || !texture return;
     gl_upload_pending(texture);
@@ -317,6 +336,7 @@ backend_set_texture :: (shader: *Shader, texture: *Texture) {
     if shader.diffuse_texture_loc >= 0 gl_api.glUniform1i(shader.diffuse_texture_loc, 0);
     else log_error("Unable to find a texture sampler ('diffuse_texture' or 'text_sampler') in the current shader.\n");
 }
+
 gl_apply_scissor :: () {
     if !gl_api || !context.simp return;
     if !context.simp.specific.scissor_enabled {
@@ -335,6 +355,7 @@ gl_apply_scissor :: () {
     gl_api.glEnable(GL.GL_SCISSOR_TEST);
     gl_api.glScissor(cast(s32) rect.x, cast(s32) y, cast(u32) max(rect.z - rect.x, 0.0), cast(u32) max(rect.w - rect.y, 0.0));
 }
+
 gl_vertex_format :: (shader: *Shader) {
     gl_api.glBindVertexArray(gl_vertex_array);
     gl_api.glBindBuffer(GL.GL_ARRAY_BUFFER, gl_vertex_buffer);
@@ -352,6 +373,7 @@ gl_vertex_format :: (shader: *Shader) {
         offset += floats[i] * size_of(float);
     }
 }
+
 gl_submit :: (state: *Immediate_State) {
     assert(gl_api != null && state.current_shader.gl_handle != 0, "Simp OpenGL renderer is not initialized");
     if !gl_api || !state.current_shader.gl_handle return;
@@ -363,6 +385,7 @@ gl_submit :: (state: *Immediate_State) {
     gl_vertex_format(state.current_shader);
     gl_api.glDrawArrays(GL.GL_TRIANGLES, 0, cast(u32) state.num_vertices);
 }
+
 gl_set_gradient :: (rect: Vector4, mode: u8, value: float) {
     if !gl_api return;
     gl_api.glUniform4f(get_uniform_location(shader_gradient.gl_handle, "gradient_rect"), rect.x, rect.y, rect.z, rect.w);
@@ -406,6 +429,7 @@ gl_texture_format :: (format: Texture_Format, srgb := false) -> u32, u32, u32 {
     internal := gl_compressed_format(format, srgb);
     return internal, 0, 0;
 }
+
 gl_compressed_format :: (format: Texture_Format, srgb: bool) -> u32 {
     if format == .BC1 return ifx srgb then GL.GL_COMPRESSED_SRGB_S3TC_DXT1_EXT else GL.GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
     if format == .BC3 return ifx srgb then GL.GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT else GL.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
@@ -415,6 +439,7 @@ gl_compressed_format :: (format: Texture_Format, srgb: bool) -> u32 {
     if format == .BC7 return ifx srgb then GL.GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM else GL.GL_COMPRESSED_RGBA_BPTC_UNORM;
     return 0;
 }
+
 // Uploads every mipmap level and leaves the texture bound to GL_TEXTURE_2D of unit 0. Sampling
 // parameters are only chosen when the GL texture is created, so later changes by the program survive.
 gl_upload_texture :: (texture: *Texture, bitmap: *Bitmap) -> bool {
@@ -469,11 +494,13 @@ gl_upload_texture :: (texture: *Texture, bitmap: *Bitmap) -> bool {
     gl_api.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH, 0);
     return gl_api.glGetError() == GL.GL_NO_ERROR;
 }
+
 // An image loaded before there was a context goes to the GPU the first time it is needed.
 gl_upload_pending :: (texture: *Texture) {
     if texture.gl_handle != 0 || !texture.cpu || (texture.flags & .Render_Target) return;
     if gl_upload_texture(texture, texture.cpu) texture_free_cpu(texture);
 }
+
 gl_create_render_target :: (texture: *Texture) -> bool {
     if !gl_api return false;
     internal, external, type := gl_texture_format(texture.format, (texture.flags & .sRGB) != 0);
@@ -500,6 +527,7 @@ gl_create_render_target :: (texture: *Texture) -> bool {
     if !success gl_delete_texture(texture);
     return success;
 }
+
 gl_delete_texture :: (texture: *Texture) {
     if !gl_api return;
     if texture.framebuffer {
@@ -517,6 +545,7 @@ gl_delete_texture :: (texture: *Texture) {
 //
 
 LOG_BUFFER_SIZE :: 1024;
+
 gl_compile :: (kind: u32, prefix: string, body: string) -> u32 {
     shader := gl_api.glCreateShader(kind);
     if !shader return 0;
@@ -539,6 +568,7 @@ gl_compile :: (kind: u32, prefix: string, body: string) -> u32 {
     }
     return shader;
 }
+
 gl_build_program :: (body: string) -> u32 {
     vertex := gl_compile(GL.GL_VERTEX_SHADER, "#version 330 core\n#define VERTEX_SHADER\n#define OUT_IN out\n", body);
     if !vertex return 0;

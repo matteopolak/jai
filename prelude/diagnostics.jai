@@ -4,6 +4,7 @@ Source_Code_Location :: struct {
     line_number: s64;
     character_number: s64;
 }
+
 Source_Code_Range :: struct {
     fully_pathed_filename: string;
     line_number_start: s64;
@@ -17,6 +18,7 @@ Log_Level :: enum u8 {
     VERBOSE :: 1;
     VERY_VERBOSE :: 2;
 }
+
 Log_Flags :: enum_flags u32 {
     NONE :: 0;
     ERROR :: 0x1;
@@ -27,9 +29,11 @@ Log_Flags :: enum_flags u32 {
     VERY_VERBOSE_ONLY :: 0x20;
     TOPIC_ONLY :: 0x40;
 }
+
 Log_Section :: struct {
     name: string;
 }
+
 Log_Info :: struct {
     source_identifier: u64;
     location: Source_Code_Location;
@@ -37,6 +41,7 @@ Log_Info :: struct {
     user_flags: u32;
     section: *Log_Section;
 }
+
 Logger :: #type (message: string, data: *void, info: Log_Info);
 
 Stack_Trace_Procedure_Info :: struct {
@@ -44,6 +49,7 @@ Stack_Trace_Procedure_Info :: struct {
     location: Source_Code_Location;
     procedure_address: *void;
 }
+
 Stack_Trace_Node :: struct {
     next: *Stack_Trace_Node;
     info: *Stack_Trace_Procedure_Info;

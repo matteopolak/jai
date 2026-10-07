@@ -1,9 +1,12 @@
 // SDL2 declarations from SDL_joystick.h.
 SDL_Joystick :: void;
+
 SDL_JoystickGUID :: struct {
     data: [16] u8;
 }
+
 SDL_JoystickID :: s32;
+
 SDL_JoystickType :: enum s32 {
     SDL_JOYSTICK_TYPE_UNKNOWN;
     SDL_JOYSTICK_TYPE_GAMECONTROLLER;
@@ -16,6 +19,7 @@ SDL_JoystickType :: enum s32 {
     SDL_JOYSTICK_TYPE_ARCADE_PAD;
     SDL_JOYSTICK_TYPE_THROTTLE;
 }
+
 SDL_JoystickPowerLevel :: enum s32 {
     SDL_JOYSTICK_POWER_UNKNOWN :: -1;
     SDL_JOYSTICK_POWER_EMPTY;
@@ -25,6 +29,7 @@ SDL_JoystickPowerLevel :: enum s32 {
     SDL_JOYSTICK_POWER_WIRED;
     SDL_JOYSTICK_POWER_MAX;
 }
+
 SDL_NumJoysticks :: () -> s32 #foreign SDL2;
 SDL_JoystickNameForIndex :: (device_index: s32) -> *s8 #foreign SDL2;
 SDL_JoystickGetDeviceGUID :: (device_index: s32) -> SDL_JoystickGUID #foreign SDL2;

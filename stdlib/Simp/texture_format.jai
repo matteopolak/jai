@@ -38,6 +38,7 @@ Texture_Format :: enum u16 {
     D32F;
     D32FS8;
 }
+
 get_image_bytes_per_texel :: (tf: Texture_Format) -> int {
     if tf == .R8 return 1;
     if tf == .RG8 || tf == .B5G6R5 || tf == .R16 || tf == .R16F || tf == .R16I || tf == .D16 return 2;
@@ -47,11 +48,13 @@ get_image_bytes_per_texel :: (tf: Texture_Format) -> int {
     if tf == .RGBA32F || tf == .RGBA32I return 16;
     return 0;
 }
+
 get_image_bytes_per_block :: (tf: Texture_Format) -> int {
     if tf == .BC1 || tf == .BC4 || tf == .ETC_RGB || tf == .ETC_R || tf == .ETC_RGB_A1 return 8;
     if tf == .BC3 || tf == .BC5 || tf == .BC6 || tf == .BC7 || tf == .ETC_RGBA || tf == .ETC_RG return 16;
     return 0;
 }
+
 get_image_size :: (tf: Texture_Format, w: int, h: int) -> int, stride: int {
     if w < 0 || h < 0 return 0, 0;
     texel := get_image_bytes_per_texel(tf);

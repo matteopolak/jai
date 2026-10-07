@@ -12,6 +12,7 @@ time_t :: s64;
 key_t :: s32;
 pid_t :: s32;
 suseconds_t :: s32;
+
 #if OS == .LINUX {
     dev_t :: u64;
     mode_t :: u32;
@@ -28,25 +29,30 @@ suseconds_t :: s32;
     caddr_t :: *s8;
     fixpt_t :: u32;
 }
+
 POLLIN :: 0x0001;
 POLLPRI :: 0x0002;
 POLLOUT :: 0x0004;
 POLLERR :: 0x0008;
 POLLHUP :: 0x0010;
 POLLNVAL :: 0x0020;
+
 pollfd :: struct {
     fd: s32;
     events: s16;
     revents: s16;
 }
+
 #if OS == .LINUX {
     POLLRDHUP :: 0x2000;
     nfds_t :: u64;
 } else #if OS == .MACOS {
     nfds_t :: u32;
 }
+
 WNOHANG :: 1;
 WUNTRACED :: 2;
+
 #if OS == .LINUX {
     __WCOREFLAG :: 0x80;
     __W_CONTINUED :: 0xffff;
@@ -56,6 +62,7 @@ WUNTRACED :: 2;
     WSTOPPED :: 0x7F;
     #scope_export
 }
+
 IPC_CREAT :: 0x0200;
 IPC_EXCL :: 0x0400;
 IPC_NOWAIT :: 0x0800;
@@ -63,13 +70,16 @@ IPC_PRIVATE: key_t : 0;
 IPC_RMID :: 0;
 IPC_SET :: 1;
 IPC_STAT :: 2;
+
 #if OS == .LINUX {
     IPC_INFO :: 3;
 }
+
 O_RDONLY :: 0x0;
 O_WRONLY :: 0x1;
 O_RDWR :: 0x2;
 O_ACCMODE :: 0x3;
+
 #if OS == .LINUX {
     O_CREAT :: 0x040;
     O_EXCL :: 0x080;
@@ -110,6 +120,7 @@ O_ACCMODE :: 0x3;
     O_CLOEXEC :: 0x01000000;
     O_NOFOLLOW_ANY :: 0x20000000;
 }
+
 #if OS == .LINUX {
     AT_FDCWD :: -100;
     AT_SYMLINK_NOFOLLOW :: 0x100;
@@ -133,11 +144,13 @@ O_ACCMODE :: 0x3;
     AT_FDONLY :: 0x0400;
     AT_SYMLINK_NOFOLLOW_ANY :: 0x0800;
 }
+
 F_DUPFD :: 0;
 F_GETFD :: 1;
 F_SETFD :: 2;
 F_GETFL :: 3;
 F_SETFL :: 4;
+
 #if OS == .LINUX {
     F_GETLK :: 5;
     F_SETLK :: 6;
@@ -160,6 +173,7 @@ F_SETFL :: 4;
     F_UNLCK :: 2;
     F_WRLCK :: 3;
 }
+
 S_IRUSR :: 0x100;
 S_IWUSR :: 0x080;
 S_IXUSR :: 0x040;
@@ -172,6 +186,7 @@ S_IXOTH :: 0x1;
 S_ISUID :: 0x800;
 S_ISGID :: 0x400;
 S_ISVTX :: 0x200;
+
 #if OS == .LINUX {
     SIOCADDRT :: 0x890B;
     SIOCDELRT :: 0x890C;
@@ -227,18 +242,22 @@ S_ISVTX :: 0x200;
     SIOCDEVPRIVATE :: 0x89F0;
     SIOCPROTOPRIVATE :: 0x89E0;
 } else #if OS == .MACOS {}
+
 timespec :: struct {
     tv_sec: time_t;
     tv_nsec: s64;
 }
+
 timeval :: struct {
     tv_sec: time_t;
     tv_usec: suseconds_t;
 }
+
 itimerval :: struct {
     it_interval: timeval;
     it_value: timeval;
 }
+
 tm :: struct {
     tm_sec: s32;
     tm_min: s32;
@@ -252,6 +271,7 @@ tm :: struct {
     tm_gmtoff: s64;
     tm_zone: *u8;
 }
+
 #if OS == .LINUX {
     using clockid_t :: enum s32 {
         CLOCK_REALTIME :: 0;
@@ -274,12 +294,14 @@ tm :: struct {
         CLOCK_THREAD_CPUTIME_ID :: 16;
     }
 }
+
 #if OS == .LINUX {
     itimerspec :: struct {
         it_interval: timespec;
         it_value: timespec;
     }
 }
+
 #if OS == .LINUX {
     FNM_PATHNAME :: 1 << 0;
     FNM_NOESCAPE :: 1 << 1;
@@ -301,8 +323,10 @@ tm :: struct {
     FNM_IGNORECASE :: FNM_CASEFOLD;
     FNM_FILE_NAME :: FNM_PATHNAME;
 }
+
 #if OS == .LINUX {
     _UTSNAME_LENGTH :: 65;
+
     utsname :: struct {
         sysname: [_UTSNAME_LENGTH] u8;
         nodename: [_UTSNAME_LENGTH] u8;
@@ -313,6 +337,7 @@ tm :: struct {
     }
 } else #if OS == .MACOS {
     _SYS_NAMELEN :: 256;
+
     utsname :: struct {
         sysname: [_SYS_NAMELEN] u8;
         nodename: [_SYS_NAMELEN] u8;
@@ -321,11 +346,13 @@ tm :: struct {
         machine: [_SYS_NAMELEN] u8;
     }
 }
+
 FILE :: struct {}
 DIR :: struct {}
 SEEK_SET :: 0;
 SEEK_CUR :: 1;
 SEEK_END :: 2;
+
 #if OS == .LINUX {
     dirent :: struct {
         d_ino: ino_t;
@@ -344,6 +371,7 @@ SEEK_END :: 2;
         d_name: [255] u8;
     }
 }
+
 DT_UNKNOWN :: 0;
 DT_FIFO :: 1;
 DT_CHR :: 2;
@@ -363,17 +391,20 @@ MAP_PRIVATE :: 0x0002;
 MAP_FIXED :: 0x0010;
 MAP_FILE :: 0x0000;
 MAP_ANON :: MAP_ANONYMOUS;
+
 #if OS == .LINUX {
     MAP_ANONYMOUS :: 0x0020;
     MAP_POPULATE :: 0x8000;
 } else #if OS == .MACOS {
     MAP_ANONYMOUS :: 0x1000;
 }
+
 MADV_NORMAL :: 0;
 MADV_RANDOM :: 1;
 MADV_SEQUENTIAL :: 2;
 MADV_WILLNEED :: 3;
 MADV_DONTNEED :: 4;
+
 #if OS == .LINUX {
     MADV_SPACEAVAIL :: 5;
     MADV_REMOVE :: 9;
@@ -385,9 +416,11 @@ MADV_DONTNEED :: 4;
     MADV_NOHUGEPAGE :: 15;
     MADV_DODUMP :: 17;
 }
+
 STDIN_FILENO :: 0;
 STDOUT_FILENO :: 1;
 STDERR_FILENO :: 2;
+
 #if OS == .LINUX {
     using _SC_definitions :: enum s32 {
         _SC_ARG_MAX;
@@ -664,6 +697,7 @@ STDERR_FILENO :: 2;
         _SC_GETPW_R_SIZE_MAX :: 71;
     }
 }
+
 #if OS == .LINUX {
     EPERM :: 1;
     ENOENT :: 2;
@@ -909,6 +943,7 @@ STDERR_FILENO :: 2;
     EQFULL :: 106;
     ELAST :: 106;
 }
+
 SIGHUP :: 1;
 SIGINT :: 2;
 SIGQUIT :: 3;
@@ -928,6 +963,7 @@ SIGXFSZ :: 25;
 SIGVTALRM :: 26;
 SIGPROF :: 27;
 SIGWINCH :: 28;
+
 #if OS == .LINUX {
     SIGBUS :: 7;
     SIGCHLD :: 17;
@@ -955,8 +991,10 @@ SIGWINCH :: 28;
     SIGUSR1 :: 30;
     SIGUSR2 :: 31;
 }
+
 RTLD_LAZY :: 0x1;
 RTLD_NOW :: 0x2;
+
 #if OS == .LINUX {
     RTLD_LOCAL :: 0;
     RTLD_GLOBAL :: 0x0100;
@@ -971,6 +1009,7 @@ RTLD_NOW :: 0x2;
     RTLD_NODELETE :: 0x080;
     RTLD_FIRST :: 0x100;
 }
+
 #if OS == .LINUX {
     passwd :: struct {
         pw_name: *u8;
@@ -995,6 +1034,7 @@ RTLD_NOW :: 0x2;
         pw_expire: time_t;
     }
 }
+
 #if OS == .LINUX {
     sem_t :: struct {
         dummy: [32] u8;
@@ -1003,11 +1043,14 @@ RTLD_NOW :: 0x2;
 } else #if OS == .MACOS {
     sem_t :: s32;
 }
+
 #if OS == .LINUX {
     _SIGSET_NWORDS :: (1024 / (8 * size_of(u64)));
+
     sigset_t :: struct {
         __val: [_SIGSET_NWORDS] u64;
     }
+
     stack_t :: struct {
         ss_sp: *void;
         ss_flags: s32;
@@ -1015,16 +1058,19 @@ RTLD_NOW :: 0x2;
     }
 } else #if OS == .MACOS {
     sigset_t :: u32;
+
     stack_t :: struct {
         ss_sp: *void;
         ss_size: u64;
         ss_flags: s32;
     }
 }
+
 sigval_t :: union {
     sival_int: s32;
     sival_ptr: *void;
 }
+
 #if OS == .LINUX {
     sigevent_t :: struct {
         sigev_value: sigval_t;
@@ -1039,11 +1085,13 @@ sigval_t :: union {
             }
         }
     }
+
     sigevent :: sigevent_t;
     #scope_file
     __SI_MAX_SIZE :: 128;
     __SI_PAD_SIZE :: ((__SI_MAX_SIZE / size_of(s32)) - 4);
     __SI_BAND_TYPE :: s64;
+
     #scope_export
     siginfo_t :: struct {
         si_signo: s32;
@@ -1103,6 +1151,7 @@ sigval_t :: union {
         sigev_notify_function: (sigval_t) #c_call;
         sigev_notify_attributes: *pthread_attr_t;
     }
+
     siginfo_t :: struct {
         si_signo: s32;
         si_errno: s32;
@@ -1116,6 +1165,7 @@ sigval_t :: union {
         __pad: [7] u64;
     }
 }
+
 sigaction_t :: struct {
     union {
         sa_handler: (sig: s32) #c_call;
@@ -1125,6 +1175,7 @@ sigaction_t :: struct {
     sa_flags: s32;
     #if OS == .LINUX then sa_restorer: () #c_call;
 }
+
 #if OS == .LINUX {
     SA_NOCLDSTOP :: 1;
     SA_NOCLDWAIT :: 2;
@@ -1152,8 +1203,10 @@ sigaction_t :: struct {
     SIG_UNBLOCK :: 2;
     SIG_SETMASK :: 3;
 }
+
 SIG_DFL :: cast(*void) 0;
 SIG_IGN :: cast(*void) 1;
+
 #if OS == .LINUX {
     aiocb_t :: struct {
         aio_fildes: s32;
@@ -1170,6 +1223,7 @@ SIG_IGN :: cast(*void) 1;
         aio_offset: off_t;
         __glibc_reserved: [32] u8;
     }
+
     AIO_CANCELED :: 0;
     AIO_NOTCANCELED :: 1;
     AIO_ALLDONE :: 2;
@@ -1189,6 +1243,7 @@ SIG_IGN :: cast(*void) 1;
         aio_sigevent: sigevent_t;
         aio_lio_opcode: s32;
     }
+
     AIO_ALLDONE :: 0x1;
     AIO_CANCELED :: 0x2;
     AIO_NOTCANCELED :: 0x4;
@@ -1199,10 +1254,12 @@ SIG_IGN :: cast(*void) 1;
     LIO_WAIT :: 0x2;
     AIO_LISTIO_MAX :: 16;
 }
+
 #if OS == .LINUX {
     greg_t :: s64;
     __NGREG :: 23;
     gregset_t :: #type [__NGREG] greg_t;
+
     gregset_registers :: enum {
         REG_R8 :: 0;
         REG_R9;
@@ -1228,14 +1285,17 @@ SIG_IGN :: cast(*void) 1;
         REG_OLDMASK;
         REG_CR2;
     }
+
     _libc_fpxreg :: struct {
         significand: [4] u16;
         exponent: u16;
         __glibc_reserved1: [3] u16;
     }
+
     _libc_xmmreg :: struct {
         element: [4] u32;
     }
+
     _libc_fpstate :: struct {
         cwd: u16;
         swd: u16;
@@ -1249,12 +1309,15 @@ SIG_IGN :: cast(*void) 1;
         _xmm: [16] _libc_xmmreg;
         __glibc_reserved1: [24] u32;
     }
+
     fpregset_t :: *_libc_fpstate;
+
     mcontext_t :: struct {
         gregs: gregset_t;
         fpregs: fpregset_t;
         __reserved1: [8] u64;
     }
+
     ucontext_t :: struct {
         uc_flags: u64;
         uc_link: *ucontext_t;
@@ -1265,11 +1328,13 @@ SIG_IGN :: cast(*void) 1;
     }
 } else #if OS == .MACOS {
     greg_t :: u64;
+
     mcontext_t :: struct {
         __es: x64_exception_state64_t;
         __ss: x64_thread_state64_t;
         __fs: x64_float_state64_t;
     }
+
     ucontext_t :: struct {
         uc_onstack: s32;
         uc_sigmask: sigset_t;
@@ -1279,6 +1344,7 @@ SIG_IGN :: cast(*void) 1;
         uc_mcontext: *mcontext_t;
     }
 }
+
 #if OS == .LINUX {
     stat_t :: struct {
         st_dev: dev_t;
@@ -1319,6 +1385,7 @@ SIG_IGN :: cast(*void) 1;
         st_qspare: [2] s64;
     }
 }
+
 S_IFMT :: 0xF000;
 S_IFDIR :: 0x4000;
 S_IFCHR :: 0x2000;
@@ -1327,6 +1394,7 @@ S_IFREG :: 0x8000;
 S_IFIFO :: 0x1000;
 S_IFLNK :: 0xA000;
 S_IFSOCK :: 0xC000;
+
 #scope_export
 #if OS == .MACOS {
     SYS_invalid :: 63;
@@ -2108,15 +2176,18 @@ S_IFSOCK :: 0xC000;
     SYS_clone3 :: 435;
     SYS_epoll_pwait2 :: 441;
 }
+
 #if OS == .LINUX {
     TFD_NONBLOCK :: O_NONBLOCK;
     SFD_NONBLOCK :: O_NONBLOCK;
     EFD_NONBLOCK :: 0x0800;
+
     statx_timestamp_t :: struct {
         tv_sec: s64;
         tv_nsec: u32;
         __reserved: s32;
     }
+
     statx_t :: struct {
         stx_mask: u32;
         stx_blksize: u32;
@@ -2142,6 +2213,7 @@ S_IFSOCK :: 0xC000;
         __spare2: u64;
         __spare3: [12] u64;
     };
+
     STATX_TYPE: u32 : 0x00000001;
     STATX_MODE: u32 : 0x00000002;
     STATX_NLINK: u32 : 0x00000004;
@@ -2173,6 +2245,7 @@ S_IFSOCK :: 0xC000;
         __err: u32;
         __faultvaddr: u64;
     }
+
     x64_thread_state64_t :: struct {
         __rax: u64;
         __rbx: u64;
@@ -2196,13 +2269,16 @@ S_IFSOCK :: 0xC000;
         __fs: u64;
         __gs: u64;
     }
+
     darwin_mmst_reg :: struct {
         __mmst_reg: [10] u8;
         __mmst_rsrv: [6] u8;
     }
+
     xmm_reg :: struct {
         __xmm_reg: [16] u8;
     }
+
     x64_float_state64_t :: struct {
         __fpu_reserved: [2] s32;
         __fpu_fcw: u16;
@@ -2245,12 +2321,15 @@ S_IFSOCK :: 0xC000;
         __fpu_rsrv4: [6 * 16] u8;
         __fpu_reserved1: s32;
     }
+
     mach_port_t :: u32;
+
     attrlist_t :: struct {
         bitmapcount: u16 = ATTR_BIT_MAP_COUNT;
         reserved: u16;
         using sets: attribute_set_t;
     }
+
     attribute_set_t :: struct {
         commonattr: ATTR_CMN;
         volattr: u32;
@@ -2258,17 +2337,21 @@ S_IFSOCK :: 0xC000;
         fileattr: u32;
         forkattr: u32;
     }
+
     attrreference_t :: struct {
         attr_dataoffset: s32;
         attr_length: u32;
     }
+
     ATTR_BIT_MAP_COUNT :: 5;
+
     ATTR_CMN :: enum_flags u32 {
         RETURNED_ATTRS :: 0x80000000;
         NAME :: 0x00000001;
         OBJTYPE :: 0x00000008;
         USERACCESS :: 0x00200000;
     }
+
     vtype :: enum u32 #specified {
         VNON :: 0;
         VREG :: 1;
@@ -2283,6 +2366,7 @@ S_IFSOCK :: 0xC000;
         VCPLX :: 10;
     }
 }
+
 iovec :: struct {
     iov_base: *void;
     iov_len: size_t;

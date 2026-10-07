@@ -1,7 +1,9 @@
 // Shader compilation through d3dcompiler_47.
 #load "d3dcompiler_bindings.jai";
+
 #scope_file
 d3dcompiler :: #system_library "d3dcompiler_47";
+
 #scope_module
 #import "Basic";
 #import "Windows";

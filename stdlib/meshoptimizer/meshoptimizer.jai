@@ -129,6 +129,7 @@ meshopt_Meshlet :: struct {
         }
         return result;
     }
+
     meshopt_buildMeshletsBound :: (index_count: u64, max_vertices: u64, max_triangles: u64) -> u64 #foreign meshopt_lib;
 
     meshopt_Bounds :: struct {
@@ -142,6 +143,7 @@ meshopt_Meshlet :: struct {
     }
 
     meshopt_computeClusterBounds :: (indices: *u32, index_count: u64, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64) -> meshopt_Bounds #foreign meshopt_lib;
+
     meshopt_computeMeshletBounds :: (meshlet: *meshopt_Meshlet, vertex_positions: *float, vertex_count: u64, vertex_positions_stride: u64) -> meshopt_Bounds {
         return native_compute_meshlet_bounds(*meshlet.vertices[0], *meshlet.indices[0][0],
                                               meshlet.triangle_count, vertex_positions,
@@ -160,24 +162,29 @@ meshopt_Meshlet :: struct {
 // The public contract remains 0.11; these private calls use the reviewed 1.3 C ABI.
 #scope_file
 #import "Basic";
+
 Native_Meshlet :: struct {
     vertex_offset: u32;
     triangle_offset: u32;
     vertex_count: u32;
     triangle_count: u32;
 }
+
 native_simplify :: (destination: *u32, indices: *u32, index_count: u64, vertex_positions: *float,
                      vertex_count: u64, vertex_positions_stride: u64, target_index_count: u64,
                      target_error: float, options: u32, result_error: *float) -> u64
                      #foreign meshopt_lib "meshopt_simplify";
+
 native_simplify_sloppy :: (destination: *u32, indices: *u32, index_count: u64, vertex_positions: *float,
                             vertex_count: u64, vertex_positions_stride: u64, vertex_lock: *u8,
                             target_index_count: u64, target_error: float, result_error: *float) -> u64
                             #foreign meshopt_lib "meshopt_simplifySloppy";
+
 native_build_meshlets_scan :: (meshlets: *Native_Meshlet, vertices: *u32, triangles: *u8,
                                 indices: *u32, index_count: u64, vertex_count: u64,
                                 max_vertices: u64, max_triangles: u64) -> u64
                                 #foreign meshopt_lib "meshopt_buildMeshletsScan";
+
 native_compute_meshlet_bounds :: (vertices: *u32, triangles: *u8, triangle_count: u64,
                                    vertex_positions: *float, vertex_count: u64,
                                    vertex_positions_stride: u64) -> meshopt_Bounds

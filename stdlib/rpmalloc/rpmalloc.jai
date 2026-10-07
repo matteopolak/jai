@@ -1,6 +1,7 @@
 #if ENABLE_THREAD_CACHE {
     SPAN_LARGE_CACHE_COUNT :: LARGE_CLASS_COUNT - 1;
 }
+
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 SMALL_GRANULARITY :: 16;
 
@@ -164,6 +165,7 @@ Global_Cache :: struct {
         }
     }
 }
+
 #if ENABLE_STATISTICS {
     Size_Class_Use :: struct {
         alloc_current: s32;

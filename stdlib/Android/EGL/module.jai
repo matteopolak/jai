@@ -7,6 +7,7 @@ EGL_NO_SURFACE: EGLSurface : null;
 EGL_DEFAULT_DISPLAY: EGLNativeDisplayType : null;
 EGL_NO_SYNC: EGLSync : null;
 EGL_NO_IMAGE: EGLImage : null;
+
 egl_create_context :: (window: *ANativeWindow, wanted_msaa: s32 = 0) -> EGLContext, EGLDisplay, EGLSurface, chosen_msaa: s32 {
     if window == null || wanted_msaa < 0 return null, null, null, 0;
     display := eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -57,6 +58,7 @@ egl_create_context :: (window: *ANativeWindow, wanted_msaa: s32 = 0) -> EGLConte
     success = true;
     return native_context, display, surface, samples;
 }
+
 #load "bindings.jai";
 #import "Android";
 #import "Basic";

@@ -1,4 +1,5 @@
 #import "PCG";
+
 pcg_bound_cases :: () -> bool {
     state: u64;
     random_seed(*state, 42);
@@ -21,4 +22,5 @@ pcg_bound_cases :: () -> bool {
     if random_get() != first_default return false;
     return true;
 }
+
 #assert #run pcg_bound_cases();

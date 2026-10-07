@@ -2,7 +2,9 @@
 #if OS == .WINDOWS {
     #scope_module
     ;
+
     Windows :: #import "Windows";
+
     #scope_export
     ;
     Window_Type :: Windows.HWND;
@@ -10,7 +12,9 @@
 } else #if OS == .LINUX {
     #scope_module
     ;
+
     X11 :: #import "X11";
+
     #scope_export
     ;
     Window_Type :: X11.Window;
@@ -18,7 +22,9 @@
 } else #if OS == .MACOS {
     #scope_module
     ;
+
     ObjC :: #import "Objective_C/AppKit";
+
     #scope_export
     ;
     Window_Type :: *ObjC.NSWindow;
@@ -40,7 +46,9 @@
 } else #if OS == .ANDROID {
     #scope_module
     ;
+
     Android :: #import "Android";
+
     #scope_export
     ;
     Window_Type :: *Android.ANativeWindow;

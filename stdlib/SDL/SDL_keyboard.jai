@@ -4,11 +4,13 @@ SDL_SCANCODE_TO_KEYCODE :: (scancode: SDL_Scancode) -> s32 {
     value |= 0x40000000;
     return value;
 }
+
 Hack :: struct {
     K :: (scancode: SDL_Scancode) -> s32 {
         return SDL_SCANCODE_TO_KEYCODE(scancode);
     }
 }
+
 using SDL_Keycode :: enum s32 {
     SDLK_UNKNOWN :: 0;
     SDLK_RETURN :: #char "\r";
@@ -250,6 +252,7 @@ using SDL_Keycode :: enum s32 {
     SDLK_APP1 :: ((cast(s32) SDL_SCANCODE_APP1) | 0x40000000);
     SDLK_APP2 :: ((cast(s32) SDL_SCANCODE_APP2) | 0x40000000);
 }
+
 using SDL_Keymod :: enum u16 {
     KMOD_NONE :: 0x0000;
     KMOD_LSHIFT :: 0x0001;
@@ -269,12 +272,14 @@ using SDL_Keymod :: enum u16 {
     KMOD_MODE :: 0x4000;
     KMOD_RESERVED :: 0x8000;
 }
+
 SDL_Keysym :: struct {
     scancode: SDL_Scancode;
     sym: SDL_Keycode;
     mod: SDL_Keymod;
     unused: u16;
 }
+
 SDL_GetKeyboardFocus :: () -> *SDL_Window #foreign SDL2;
 SDL_GetKeyboardState :: (numkeys: *s32) -> *u8 #foreign SDL2;
 SDL_GetModState :: () -> SDL_Keymod #foreign SDL2;

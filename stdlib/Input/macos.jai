@@ -2,6 +2,7 @@
 Mac :: #import "Objective_C/AppKit";
 ObjC :: #import "Objective_C";
 Foundation :: #import "Objective_C"; // Foundation.jai is part of Objective_C, not a module of its own.
+
 Mac_Input_Window :: struct {
     window: *Mac.NSWindow;
     x: s32;
@@ -9,14 +10,17 @@ Mac_Input_Window :: struct {
     width: s32;
     height: s32;
 }
+
 mac_input_windows: [..] Mac_Input_Window;
 mac_input_focus: *Mac.NSWindow;
 mac_modifier_mask: u64;
+
 mac_event_window :: (event: *Mac.NSEvent) -> *Mac.NSWindow {
     call: (receiver: *void, selector: ObjC.SEL) -> *Mac.NSWindow #c_call;
     call = cast(type_of(call)) ObjC.objc_msgSend;
     return call(event, ObjC.sel_registerName("window\0"));
 }
+
 mac_key_code :: (event: *Mac.NSEvent) -> Key_Code {
     code := Mac.NSEvent.keyCode(event);
     // Hardware codes are only used for non-text keys; layout-aware characters below.
@@ -43,12 +47,14 @@ mac_key_code :: (event: *Mac.NSEvent) -> Key_Code {
     if bytes[0] >= 32 && bytes[0] < 127 return cast(Key_Code) bytes[0];
     return .UNKNOWN;
 }
+
 mac_modifiers :: (event: *Event, mask: u64) {
     event.shift_pressed = (mask & (1 << 17)) != 0;
     event.ctrl_pressed = (mask & (1 << 18)) != 0;
     event.alt_pressed = (mask & (1 << 19)) != 0;
     event.cmd_meta_pressed = (mask & (1 << 20)) != 0;
 }
+
 mac_poll_geometry :: () {
     // Only the windows the program made (Window_Creation registers them): AppKit makes and drops
     // windows of its own as the user types and clicks, and those are not the program's to report.
@@ -96,11 +102,13 @@ mac_poll_geometry :: () {
         }
     }
 }
+
 mac_window_flag :: (window: *Mac.NSWindow, selector: *u8) -> bool {
     call: (receiver: *void, selector: ObjC.SEL) -> ObjC.BOOL #c_call;
     call = cast(type_of(call)) ObjC.objc_msgSend;
     return call(window, ObjC.sel_registerName(selector)) != 0;
 }
+
 macos_poll_input :: () {
     application := Mac.NSApplication.sharedApplication();
     if !application return;
@@ -173,6 +181,7 @@ macos_poll_input :: () {
     }
     mac_poll_geometry();
 }
+
 macos_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool {
     native := cast(*Mac.NSWindow) cast(u64) window;
     application := Mac.NSApplication.sharedApplication();

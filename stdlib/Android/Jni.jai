@@ -42,6 +42,7 @@ _jfieldID :: struct {}
 jfieldID :: *_jfieldID;
 _jmethodID :: struct {}
 jmethodID :: *_jmethodID;
+
 jvalue :: union {
     z: jboolean;
     b: jbyte;
@@ -53,20 +54,24 @@ jvalue :: union {
     d: jdouble;
     l: jobject;
 }
+
 jobjectRefType :: enum u32 {
     InvalidRefType :: 0;
     LocalRefType :: 1;
     GlobalRefType :: 2;
     WeakGlobalRefType :: 3;
 }
+
 JNINativeMethod :: struct {
     name: *u8;
     signature: *u8;
     fnPtr: *void;
 }
+
 C_JNIEnv :: *JNINativeInterface;
 JNIEnv :: *JNINativeInterface;
 JavaVM :: *JNIInvokeInterface;
+
 JNINativeInterface :: struct #type_info_none {
     reserved0: *void;
     reserved1: *void;
@@ -302,9 +307,11 @@ JNINativeInterface :: struct #type_info_none {
     GetDirectBufferCapacity: #type (unknown0: *JNIEnv, unknown1: jobject) -> jlong #c_call;
     GetObjectRefType: #type (unknown0: *JNIEnv, unknown1: jobject) -> jobjectRefType #c_call;
 }
+
 _JNIEnv :: struct {
     functions: *JNINativeInterface;
 }
+
 JNIInvokeInterface :: struct {
     reserved0: *void;
     reserved1: *void;
@@ -315,18 +322,22 @@ JNIInvokeInterface :: struct {
     GetEnv: #type (unknown0: *JavaVM, unknown1: **void, unknown2: jint) -> jint #c_call;
     AttachCurrentThreadAsDaemon: #type (unknown0: *JavaVM, unknown1: **JNIEnv, unknown2: *void) -> jint #c_call;
 }
+
 _JavaVM :: struct {
     functions: *JNIInvokeInterface;
 }
+
 JavaVMAttachArgs :: struct {
     version: jint;
     name: *u8;
     group: jobject;
 }
+
 JavaVMOption :: struct {
     optionString: *u8;
     extraInfo: *void;
 }
+
 JavaVMInitArgs :: struct {
     version: jint;
     nOptions: jint;

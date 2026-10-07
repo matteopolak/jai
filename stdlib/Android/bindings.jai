@@ -3,12 +3,14 @@ AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT :: 8;
 AAssetManager :: struct {}
 AAssetDir :: struct {}
 AAsset :: struct {}
+
 AASSET_MODE :: enum u32 {
     UNKNOWN :: 0;
     RANDOM :: 1;
     STREAMING :: 2;
     BUFFER :: 3;
 }
+
 AAssetManager_openDir :: (mgr: *AAssetManager, dirName: *u8) -> *AAssetDir #foreign libandroid;
 AAssetManager_open :: (mgr: *AAssetManager, filename: *u8, mode: AASSET_MODE) -> *AAsset #foreign libandroid;
 AAssetDir_getNextFileName :: (assetDir: *AAssetDir) -> *u8 #foreign libandroid;
@@ -27,6 +29,7 @@ AAsset_openFileDescriptor :: (asset: *AAsset, outStart: *s64, outLength: *s64) -
 AAsset_openFileDescriptor64 :: (asset: *AAsset, outStart: *s64, outLength: *s64) -> s32 #foreign libandroid;
 AAsset_isAllocated :: (asset: *AAsset) -> s32 #foreign libandroid;
 AConfiguration :: struct {}
+
 ACONFIGURATION :: enum u32 {
     ORIENTATION_ANY :: 0;
     ORIENTATION_PORT :: 1;
@@ -115,6 +118,7 @@ ACONFIGURATION :: enum u32 {
     COLOR_MODE :: 65536;
     MNC_ZERO :: 65535;
 }
+
 AConfiguration_new :: (__args: ..Any) -> *AConfiguration #foreign libandroid;
 AConfiguration_delete :: (config: *AConfiguration) -> void #foreign libandroid;
 AConfiguration_fromAssetManager :: (out: *AConfiguration, am: *AAssetManager) -> void #foreign libandroid;
@@ -165,18 +169,23 @@ AConfiguration_match :: (base: *AConfiguration, requested: *AConfiguration) -> s
 AConfiguration_isBetterThan :: (base: *AConfiguration, test: *AConfiguration, requested: *AConfiguration) -> s32 #foreign libandroid;
 ALooper :: struct {}
 ALooper_forThread :: (__args: ..Any) -> *ALooper #foreign libandroid;
+
 anon_enum :: enum u32 {
     ALOOPER_PREPARE_ALLOW_NON_CALLBACKS :: 1;
 }
+
 ALooper_prepare :: (opts: s32) -> *ALooper #foreign libandroid;
+
 ALOOPER_POLL :: enum s32 {
     WAKE :: -1;
     CALLBACK :: -2;
     TIMEOUT :: -3;
     ERROR :: -4;
 }
+
 ALooper_acquire :: (looper: *ALooper) -> void #foreign libandroid;
 ALooper_release :: (looper: *ALooper) -> void #foreign libandroid;
+
 ALOOPER_EVENT :: enum u32 {
     INPUT :: 1;
     OUTPUT :: 2;
@@ -184,18 +193,21 @@ ALOOPER_EVENT :: enum u32 {
     HANGUP :: 8;
     INVALID :: 16;
 }
+
 ALooper_callbackFunc :: #type (fd: s32, events: s32, data: *void) -> s32 #c_call;
 ALooper_pollOnce :: (timeoutMillis: s32, outFd: *s32, outEvents: *s32, outData: **void) -> s32 #foreign libandroid;
 ALooper_pollAll :: (timeoutMillis: s32, outFd: *s32, outEvents: *s32, outData: **void) -> s32 #foreign libandroid;
 ALooper_wake :: (looper: *ALooper) -> void #foreign libandroid;
 ALooper_addFd :: (looper: *ALooper, fd: s32, ident: s32, events: s32, callback: ALooper_callbackFunc, data: *void) -> s32 #foreign libandroid;
 ALooper_removeFd :: (looper: *ALooper, fd: s32) -> s32 #foreign libandroid;
+
 AKEY_STATE :: enum s32 {
     UNKNOWN :: -1;
     UP :: 0;
     DOWN :: 1;
     VIRTUAL :: 2;
 }
+
 AMETA :: enum u32 {
     NONE :: 0;
     ALT_ON :: 2;
@@ -216,7 +228,9 @@ AMETA :: enum u32 {
     NUM_LOCK_ON :: 2097152;
     SCROLL_LOCK_ON :: 4194304;
 }
+
 AInputEvent :: struct {}
+
 AINPUT_EVENT_TYPE :: enum u32 {
     KEY :: 1;
     MOTION :: 2;
@@ -225,11 +239,13 @@ AINPUT_EVENT_TYPE :: enum u32 {
     DRAG :: 5;
     TOUCH_MODE :: 6;
 }
+
 AKEY_EVENT_ACTION :: enum u32 {
     DOWN :: 0;
     UP :: 1;
     MULTIPLE :: 2;
 }
+
 AKEY_EVENT_FLAG :: enum u32 {
     WOKE_HERE :: 1;
     SOFT_KEYBOARD :: 2;
@@ -243,6 +259,7 @@ AKEY_EVENT_FLAG :: enum u32 {
     TRACKING :: 512;
     FALLBACK :: 1024;
 }
+
 AMOTION_EVENT_ACTION :: enum u32 {
     MASK :: 255;
     POINTER_INDEX_MASK :: 65280;
@@ -260,9 +277,11 @@ AMOTION_EVENT_ACTION :: enum u32 {
     BUTTON_PRESS :: 11;
     BUTTON_RELEASE :: 12;
 }
+
 anon_enum_1 :: enum u32 {
     AMOTION_EVENT_FLAG_WINDOW_IS_OBSCURED :: 1;
 }
+
 AMOTION_EVENT_EDGE_FLAG :: enum u32 {
     NONE :: 0;
     TOP :: 1;
@@ -270,6 +289,7 @@ AMOTION_EVENT_EDGE_FLAG :: enum u32 {
     LEFT :: 4;
     RIGHT :: 8;
 }
+
 AMOTION_EVENT_AXIS :: enum u32 {
     X :: 0;
     Y :: 1;
@@ -317,6 +337,7 @@ AMOTION_EVENT_AXIS :: enum u32 {
     GENERIC_15 :: 46;
     GENERIC_16 :: 47;
 }
+
 AMOTION_EVENT_BUTTON :: enum u32 {
     PRIMARY :: 1;
     SECONDARY :: 2;
@@ -326,6 +347,7 @@ AMOTION_EVENT_BUTTON :: enum u32 {
     STYLUS_PRIMARY :: 32;
     STYLUS_SECONDARY :: 64;
 }
+
 AMOTION_EVENT_TOOL_TYPE :: enum u32 {
     UNKNOWN :: 0;
     FINGER :: 1;
@@ -334,11 +356,13 @@ AMOTION_EVENT_TOOL_TYPE :: enum u32 {
     ERASER :: 4;
     PALM :: 5;
 }
+
 AMotionClassification :: enum u32 {
     NONE :: 0;
     AMBIGUOUS_GESTURE :: 1;
     DEEP_PRESS :: 2;
 }
+
 AINPUT_SOURCE_CLASS :: enum u32 {
     MASK :: 255;
     NONE :: 0;
@@ -348,6 +372,7 @@ AINPUT_SOURCE_CLASS :: enum u32 {
     POSITION :: 8;
     JOYSTICK :: 16;
 }
+
 AINPUT_SOURCE :: enum u32 {
     UNKNOWN :: 0;
     KEYBOARD :: 257;
@@ -367,11 +392,13 @@ AINPUT_SOURCE :: enum u32 {
     ROTARY_ENCODER :: 4194304;
     ANY :: 4294967040;
 }
+
 AINPUT_KEYBOARD_TYPE :: enum u32 {
     NONE :: 0;
     NON_ALPHABETIC :: 1;
     ALPHABETIC :: 2;
 }
+
 AINPUT_MOTION_RANGE :: enum u32 {
     X :: 0;
     Y :: 1;
@@ -383,6 +410,7 @@ AINPUT_MOTION_RANGE :: enum u32 {
     TOOL_MINOR :: 7;
     ORIENTATION :: 8;
 }
+
 AInputEvent_getType :: (event: *AInputEvent) -> AINPUT_EVENT_TYPE #foreign libandroid;
 AInputEvent_getDeviceId :: (event: *AInputEvent) -> s32 #foreign libandroid;
 AInputEvent_getSource :: (event: *AInputEvent) -> s32 #foreign libandroid;
@@ -447,17 +475,20 @@ AInputQueue_getEvent :: (queue: *AInputQueue, outEvent: **AInputEvent) -> s32 #f
 AInputQueue_preDispatchEvent :: (queue: *AInputQueue, event: *AInputEvent) -> s32 #foreign libandroid;
 AInputQueue_finishEvent :: (queue: *AInputQueue, event: *AInputEvent, handled: s32) -> void #foreign libandroid;
 AInputQueue_fromJava :: (env: *JNIEnv, inputQueue: jobject) -> *AInputQueue #foreign libandroid;
+
 ARect :: struct {
     left: s32;
     top: s32;
     right: s32;
     bottom: s32;
 }
+
 ANativeWindow_LegacyFormat :: enum u32 {
     RGBA_8888 :: 1;
     RGBX_8888 :: 2;
     RGB_565 :: 4;
 }
+
 ANativeWindowTransform :: enum u32 {
     IDENTITY :: 0;
     MIRROR_HORIZONTAL :: 1;
@@ -466,7 +497,9 @@ ANativeWindowTransform :: enum u32 {
     ROTATE_180 :: 3;
     ROTATE_270 :: 7;
 }
+
 ANativeWindow :: struct {}
+
 ANativeWindow_Buffer :: struct {
     width: s32;
     height: s32;
@@ -475,6 +508,7 @@ ANativeWindow_Buffer :: struct {
     bits: *void;
     reserved: [6] u32;
 }
+
 ANativeWindow_acquire :: (window: *ANativeWindow) -> void #foreign libandroid;
 ANativeWindow_release :: (window: *ANativeWindow) -> void #foreign libandroid;
 ANativeWindow_getWidth :: (window: *ANativeWindow) -> s32 #foreign libandroid;
@@ -483,14 +517,17 @@ ANativeWindow_getFormat :: (window: *ANativeWindow) -> s32 #foreign libandroid;
 ANativeWindow_setBuffersGeometry :: (window: *ANativeWindow, width: s32, height: s32, format: s32) -> s32 #foreign libandroid;
 ANativeWindow_lock :: (window: *ANativeWindow, outBuffer: *ANativeWindow_Buffer, inOutDirtyBounds: *ARect) -> s32 #foreign libandroid;
 ANativeWindow_unlockAndPost :: (window: *ANativeWindow) -> s32 #foreign libandroid;
+
 ANativeWindow_FrameRateCompatibility :: enum u32 {
     DEFAULT :: 0;
     FIXED_SOURCE :: 1;
 }
+
 ANativeWindow_ChangeFrameRateStrategy :: enum u32 {
     ONLY_IF_SEAMLESS :: 0;
     ALWAYS :: 1;
 }
+
 ANativeActivity :: struct {
     callbacks: *ANativeActivityCallbacks;
     vm: *JavaVM;
@@ -503,6 +540,7 @@ ANativeActivity :: struct {
     assetManager: *AAssetManager;
     obbPath: *u8;
 }
+
 ANativeActivityCallbacks :: struct {
     onStart: #type (activity: *ANativeActivity) -> void #c_call;
     onResume: #type (activity: *ANativeActivity) -> void #c_call;
@@ -521,20 +559,26 @@ ANativeActivityCallbacks :: struct {
     onConfigurationChanged: #type (activity: *ANativeActivity) -> void #c_call;
     onLowMemory: #type (activity: *ANativeActivity) -> void #c_call;
 }
+
 ANativeActivity_createFunc :: #type (activity: *ANativeActivity, savedState: *void, savedStateSize: u64) -> void #c_call;
 ANativeActivity_finish :: (activity: *ANativeActivity) -> void #foreign libandroid;
 ANativeActivity_setWindowFormat :: (activity: *ANativeActivity, format: s32) -> void #foreign libandroid;
 ANativeActivity_setWindowFlags :: (activity: *ANativeActivity, addFlags: u32, removeFlags: u32) -> void #foreign libandroid;
+
 ANATIVEACTIVITY_SHOW_SOFT_INPUT :: enum u32 {
     IMPLICIT :: 1;
     FORCED :: 2;
 }
+
 ANativeActivity_showSoftInput :: (activity: *ANativeActivity, flags: u32) -> void #foreign libandroid;
+
 ANATIVEACTIVITY_HIDE_SOFT_INPUT :: enum u32 {
     IMPLICIT_ONLY :: 1;
     NOT_ALWAYS :: 2;
 }
+
 ANativeActivity_hideSoftInput :: (activity: *ANativeActivity, flags: u32) -> void #foreign libandroid;
+
 AWINDOW_FLAG :: enum u32 {
     ALLOW_LOCK_WHILE_SCREEN_ON :: 1;
     DIM_BEHIND :: 2;
@@ -560,5 +604,6 @@ AWINDOW_FLAG :: enum u32 {
     TURN_SCREEN_ON :: 2097152;
     DISMISS_KEYGUARD :: 4194304;
 }
+
 #scope_file
 libandroid :: #system_library "libandroid";

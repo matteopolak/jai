@@ -6,6 +6,7 @@ save_to_file :: (set: *Keymap_Set, filename: string) {
     defer free(contents);
     assert(File.write_entire_file(filename, contents), "keymap save failed");
 }
+
 print_to_builder :: (builder: *String_Builder, set: *Keymap_Set) {
     append(builder, "[1]\n\n");
     for bucket: set.keymaps.all_buckets {
@@ -20,6 +21,7 @@ print_to_builder :: (builder: *String_Builder, set: *Keymap_Set) {
         }
     }
 }
+
 save_to_file :: (keymap: *Keymap, filename: string) {
     builder: String_Builder;
     defer free(*builder);
@@ -28,10 +30,12 @@ save_to_file :: (keymap: *Keymap, filename: string) {
     defer free(contents);
     assert(File.write_entire_file(filename, contents), "keymap save failed");
 }
+
 print_to_builder :: (builder: *String_Builder, keymap: *Keymap) {
     append(builder, "[1]\n\n");
     print_keymap_mappings_to_builder(builder, keymap);
 }
+
 print_keymap_mappings_to_builder :: (builder: *String_Builder, keymap: *Keymap) {
     for mapping: keymap.mappings {
         if mapping.modifier_flags.shift_pressed append(builder, "S-");

@@ -6,6 +6,7 @@ _Vk_Handle_Family :: enum {
     DEVICE;
     QUEUE;
 }
+
 _Vk_Handle_Record :: struct {
     family: _Vk_Handle_Family;
     generation: u64;
@@ -18,24 +19,29 @@ _Vk_Handle_Record :: struct {
     queue: VkQueue;
     next: *_Vk_Handle_Record;
 }
+
 _vk_registry_head: *_Vk_Handle_Record;
 _vk_registry_guard: u32;
 _vk_registry_next_generation: u64 = 1;
+
 _vk_registry_lock :: () {
     while true {
         acquired := compare_and_swap(*_vk_registry_guard, cast(u32) 0, cast(u32) 1);
         if acquired return;
     }
 }
+
 _vk_registry_unlock :: () {
     released := compare_and_swap(*_vk_registry_guard, cast(u32) 1, cast(u32) 0);
     assert(released, "Vulkan registry lock ownership mismatch");
 }
+
 _vk_registry_new :: () -> *_Vk_Handle_Record {
     node := cast(*_Vk_Handle_Record) _vk_registry_malloc(cast(_Vk_Size) size_of(_Vk_Handle_Record));
     if node != null memset(node, 0, size_of(_Vk_Handle_Record));
     return node;
 }
+
 _vk_registry_stamp :: (node: *_Vk_Handle_Record) -> bool {
     if _vk_registry_next_generation == 0 return false;
     node.generation = _vk_registry_next_generation;
@@ -44,6 +50,7 @@ _vk_registry_stamp :: (node: *_Vk_Handle_Record) -> bool {
     _vk_registry_head = node;
     return true;
 }
+
 // These searches are called only while the registry lock is held.
 _vk_registry_instance :: (instance: VkInstance) -> *_Vk_Handle_Record {
     node := _vk_registry_head;
@@ -53,6 +60,7 @@ _vk_registry_instance :: (instance: VkInstance) -> *_Vk_Handle_Record {
     }
     return null;
 }
+
 _vk_registry_physical :: (physical: VkPhysicalDevice) -> *_Vk_Handle_Record {
     node := _vk_registry_head;
     while node != null {
@@ -61,6 +69,7 @@ _vk_registry_physical :: (physical: VkPhysicalDevice) -> *_Vk_Handle_Record {
     }
     return null;
 }
+
 _vk_registry_device :: (device: VkDevice) -> *_Vk_Handle_Record {
     node := _vk_registry_head;
     while node != null {
@@ -69,6 +78,7 @@ _vk_registry_device :: (device: VkDevice) -> *_Vk_Handle_Record {
     }
     return null;
 }
+
 _vk_registry_queue :: (queue: VkQueue) -> *_Vk_Handle_Record {
     node := _vk_registry_head;
     while node != null {
@@ -77,27 +87,32 @@ _vk_registry_queue :: (queue: VkQueue) -> *_Vk_Handle_Record {
     }
     return null;
 }
+
 _vk_registry_valid_instance :: (node: *_Vk_Handle_Record) -> bool {
     if node == null return false;
     root := _vk_registry_instance(node.instance);
     return root != null && root.generation == node.instance_generation;
 }
+
 _vk_registry_valid_physical :: (node: *_Vk_Handle_Record) -> bool {
     if !_vk_registry_valid_instance(node) return false;
     parent := _vk_registry_physical(node.physical);
     return parent != null && parent.generation == node.physical_generation;
 }
+
 _vk_registry_valid_device :: (node: *_Vk_Handle_Record) -> bool {
     if !_vk_registry_valid_physical(node) return false;
     parent := _vk_registry_device(node.device);
     return parent != null && parent.generation == node.device_generation;
 }
+
 _vk_registered_instance :: (instance: VkInstance) -> bool {
     _vk_registry_lock();
     found := _vk_registry_instance(instance) != null;
     _vk_registry_unlock();
     return found;
 }
+
 _vk_physical_instance :: (physical: VkPhysicalDevice) -> VkInstance {
     result: VkInstance;
     _vk_registry_lock();
@@ -106,12 +121,14 @@ _vk_physical_instance :: (physical: VkPhysicalDevice) -> VkInstance {
     _vk_registry_unlock();
     return result;
 }
+
 _vk_registered_device :: (device: VkDevice) -> bool {
     _vk_registry_lock();
     valid := _vk_registry_valid_physical(_vk_registry_device(device));
     _vk_registry_unlock();
     return valid;
 }
+
 _vk_queue_device :: (queue: VkQueue) -> VkDevice {
     result: VkDevice;
     _vk_registry_lock();
@@ -120,6 +137,7 @@ _vk_queue_device :: (queue: VkQueue) -> VkDevice {
     _vk_registry_unlock();
     return result;
 }
+
 // Allocation, deallocation, SDK calls, and user callbacks always run outside the lock.
 #scope_export
 vk_register_instance :: (instance: VkInstance) -> bool {
@@ -139,6 +157,7 @@ vk_register_instance :: (instance: VkInstance) -> bool {
     if !inserted _vk_registry_free(fresh);
     return inserted || existing != null;
 }
+
 vk_register_physical_device :: (instance: VkInstance, physical: VkPhysicalDevice) -> bool {
     if physical == null || instance == null return false;
     fresh := _vk_registry_new();
@@ -165,6 +184,7 @@ vk_register_physical_device :: (instance: VkInstance, physical: VkPhysicalDevice
     if !inserted _vk_registry_free(fresh);
     return valid;
 }
+
 vk_register_device :: (physical: VkPhysicalDevice, device: VkDevice) -> bool {
     if physical == null || device == null return false;
     fresh := _vk_registry_new();
@@ -193,6 +213,7 @@ vk_register_device :: (physical: VkPhysicalDevice, device: VkDevice) -> bool {
     if !inserted _vk_registry_free(fresh);
     return valid;
 }
+
 vk_register_queue :: (device: VkDevice, queue: VkQueue) -> bool {
     if device == null || queue == null return false;
     fresh := _vk_registry_new();
@@ -222,6 +243,7 @@ vk_register_queue :: (device: VkDevice, queue: VkQueue) -> bool {
     if !inserted _vk_registry_free(fresh);
     return valid;
 }
+
 #scope_module
 _vk_registry_remove :: (family: _Vk_Handle_Family, instance: VkInstance = null,
                         physical: VkPhysicalDevice = null, device: VkDevice = null,
@@ -256,16 +278,20 @@ _vk_registry_remove :: (family: _Vk_Handle_Family, instance: VkInstance = null,
         _vk_registry_free(node);
     }
 }
+
 #scope_export
 vk_unregister_instance :: (instance: VkInstance) {
     _vk_registry_remove(.INSTANCE, instance = instance);
 }
+
 vk_unregister_physical_device :: (physical: VkPhysicalDevice) {
     _vk_registry_remove(.PHYSICAL_DEVICE, physical = physical);
 }
+
 vk_unregister_device :: (device: VkDevice) {
     _vk_registry_remove(.DEVICE, device = device);
 }
+
 vk_unregister_queue :: (queue: VkQueue) {
     _vk_registry_remove(.QUEUE, queue = queue);
 }
@@ -282,10 +308,12 @@ vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocati
     }
     return status;
 }
+
 vkDestroyInstance :: (instance: VkInstance, pAllocator: *VkAllocationCallbacks) {
     vk_unregister_instance(instance);
     _vk_sdk_vkDestroyInstance(instance, pAllocator);
 }
+
 vkEnumeratePhysicalDevices :: (instance: VkInstance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *VkPhysicalDevice) -> VkResult {
     if !_vk_registered_instance(instance) return .ERROR_INITIALIZATION_FAILED;
     status := _vk_sdk_vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
@@ -296,6 +324,7 @@ vkEnumeratePhysicalDevices :: (instance: VkInstance, pPhysicalDeviceCount: *u32,
     }
     return status;
 }
+
 vkCreateDevice :: (physicalDevice: VkPhysicalDevice, pCreateInfo: *VkDeviceCreateInfo, pAllocator: *VkAllocationCallbacks, pDevice: *VkDevice) -> VkResult {
     if _vk_physical_instance(physicalDevice) == null return .ERROR_INITIALIZATION_FAILED;
     status := _vk_sdk_vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
@@ -309,20 +338,24 @@ vkCreateDevice :: (physicalDevice: VkPhysicalDevice, pCreateInfo: *VkDeviceCreat
     }
     return status;
 }
+
 vkDestroyDevice :: (device: VkDevice, pAllocator: *VkAllocationCallbacks) {
     vk_unregister_device(device);
     _vk_sdk_vkDestroyDevice(device, pAllocator);
 }
+
 vkGetDeviceQueue :: (device: VkDevice, queueFamilyIndex: u32, queueIndex: u32, pQueue: *VkQueue) {
     assert(_vk_registered_device(device), "Register an externally created Vulkan device before retrieving queues");
     _vk_sdk_vkGetDeviceQueue(device, queueFamilyIndex, queueIndex, pQueue);
     assert(vk_register_queue(device, pQueue.*), "Vulkan queue registration failed");
 }
+
 vkGetDeviceQueue2 :: (device: VkDevice, pQueueInfo: *VkDeviceQueueInfo2, pQueue: *VkQueue) {
     assert(_vk_registered_device(device), "Register an externally created Vulkan device before retrieving queues");
     _vk_sdk_vkGetDeviceQueue2(device, pQueueInfo, pQueue);
     assert(vk_register_queue(device, pQueue.*), "Vulkan queue registration failed");
 }
+
 #scope_module
 _vk_register_groups :: (instance: VkInstance, count: u32, groups: *VkPhysicalDeviceGroupProperties) -> bool {
     for g: 0..cast(s64) count - 1 {
@@ -333,6 +366,7 @@ _vk_register_groups :: (instance: VkInstance, count: u32, groups: *VkPhysicalDev
     }
     return true;
 }
+
 #scope_export
 vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance, pPhysicalDeviceGroupCount: *u32, pPhysicalDeviceGroupProperties: *VkPhysicalDeviceGroupProperties) -> VkResult {
     if !_vk_registered_instance(instance) return .ERROR_INITIALIZATION_FAILED;

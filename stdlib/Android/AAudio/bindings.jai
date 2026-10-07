@@ -1,11 +1,14 @@
 // AAudio declarations.
 AAUDIO_UNSPECIFIED :: 0;
 AAUDIO_SYSTEM_USAGE_OFFSET :: 1000;
+
 AAUDIO_DIRECTION :: enum u32 {
     OUTPUT :: 0;
     INPUT :: 1;
 }
+
 aaudio_direction_t :: s32;
+
 AAUDIO_FORMAT :: enum s32 {
     INVALID :: -1;
     UNSPECIFIED :: 0;
@@ -14,6 +17,7 @@ AAUDIO_FORMAT :: enum s32 {
     PCM_I24_PACKED :: 3;
     PCM_I32 :: 4;
 }
+
 AAUDIO :: enum s32 {
     OK :: 0;
     ERROR_BASE :: -900;
@@ -34,6 +38,7 @@ AAUDIO :: enum s32 {
     ERROR_NO_SERVICE :: -881;
     ERROR_INVALID_RATE :: -880;
 }
+
 AAUDIO_STREAM_STATE :: enum u32 {
     UNINITIALIZED :: 0;
     UNKNOWN :: 1;
@@ -50,15 +55,18 @@ AAUDIO_STREAM_STATE :: enum u32 {
     CLOSED :: 12;
     DISCONNECTED :: 13;
 }
+
 AAUDIO_SHARING_MODE :: enum u32 {
     EXCLUSIVE :: 0;
     SHARED :: 1;
 }
+
 AAUDIO_PERFORMANCE_MODE :: enum u32 {
     NONE :: 10;
     POWER_SAVING :: 11;
     LOW_LATENCY :: 12;
 }
+
 AAUDIO_1 :: enum u32 {
     USAGE_MEDIA :: 1;
     USAGE_VOICE_COMMUNICATION :: 2;
@@ -77,18 +85,23 @@ AAUDIO_1 :: enum u32 {
     SYSTEM_USAGE_VEHICLE_STATUS :: 1002;
     SYSTEM_USAGE_ANNOUNCEMENT :: 1003;
 }
+
 aaudio_usage_t :: s32;
+
 AAUDIO_CONTENT_TYPE :: enum u32 {
     SPEECH :: 1;
     MUSIC :: 2;
     MOVIE :: 3;
     SONIFICATION :: 4;
 }
+
 AAUDIO_SPATIALIZATION_BEHAVIOR :: enum u32 {
     AUTO :: 1;
     NEVER :: 2;
 }
+
 aaudio_spatialization_behavior_t :: s32;
+
 AAUDIO_INPUT_PRESET :: enum u32 {
     GENERIC :: 1;
     CAMCORDER :: 5;
@@ -97,18 +110,24 @@ AAUDIO_INPUT_PRESET :: enum u32 {
     UNPROCESSED :: 9;
     VOICE_PERFORMANCE :: 10;
 }
+
 aaudio_input_preset_t :: s32;
+
 AAUDIO_ALLOW_CAPTURE_BY :: enum u32 {
     ALL :: 1;
     SYSTEM :: 2;
     NONE :: 3;
 }
+
 aaudio_allowed_capture_policy_t :: s32;
+
 AAUDIO_SESSION_ID :: enum s32 {
     NONE :: -1;
     ALLOCATE :: 0;
 }
+
 aaudio_session_id_t :: s32;
+
 AAUDIO_CHANNEL :: enum s32 {
     INVALID :: -1;
     FRONT_LEFT :: 1;
@@ -163,6 +182,7 @@ AAUDIO_CHANNEL :: enum s32 {
     _9POINT1POINT6 :: 51303999;
     FRONT_BACK :: 260;
 }
+
 AAudioStreamStruct :: struct {}
 AAudioStream :: AAudioStreamStruct;
 AAudioStreamBuilderStruct :: struct {}
@@ -189,10 +209,12 @@ AAudioStreamBuilder_setInputPreset :: (builder: *AAudioStreamBuilder, inputPrese
 AAudioStreamBuilder_setAllowedCapturePolicy :: (builder: *AAudioStreamBuilder, capturePolicy: aaudio_allowed_capture_policy_t) -> void #foreign libaaudio;
 AAudioStreamBuilder_setSessionId :: (builder: *AAudioStreamBuilder, sessionId: aaudio_session_id_t) -> void #foreign libaaudio;
 AAudioStreamBuilder_setPrivacySensitive :: (builder: *AAudioStreamBuilder, privacySensitive: bool) -> void #foreign libaaudio;
+
 AAUDIO_CALLBACK_RESULT :: enum u32 {
     CONTINUE :: 0;
     STOP :: 1;
 }
+
 AAudioStream_dataCallback :: #type (stream: *AAudioStream, userData: *void, audioData: *void, numFrames: s32) -> AAUDIO_CALLBACK_RESULT #c_call;
 AAudioStreamBuilder_setDataCallback :: (builder: *AAudioStreamBuilder, callback: AAudioStream_dataCallback, userData: *void) -> void #foreign libaaudio;
 AAudioStreamBuilder_setFramesPerDataCallback :: (builder: *AAudioStreamBuilder, numFrames: s32) -> void #foreign libaaudio;

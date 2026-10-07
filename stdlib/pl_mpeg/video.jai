@@ -309,18 +309,23 @@ convert_function :: (frame: *Frame, dest: *u8, stride: s32,
 frame_to_rgb :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 3, 0, 1, 2);
 }
+
 frame_to_bgr :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 3, 2, 1, 0);
 }
+
 frame_to_rgba :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 4, 0, 1, 2);
 }
+
 frame_to_bgra :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 4, 2, 1, 0);
 }
+
 frame_to_argb :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 4, 1, 2, 3);
 }
+
 frame_to_abgr :: (frame: *Frame, dest: *u8, stride: s32) {
     convert_function(frame, dest, stride, 4, 3, 2, 1);
 }

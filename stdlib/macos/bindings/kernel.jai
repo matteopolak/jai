@@ -1,9 +1,11 @@
 // Darwin kernel types and constants from the BSD headers.
 USER_ADDR_NULL :: cast(user_addr_t) 0;
+
 __mbstate_t :: union {
     __mbstate8: [128] u8;
     _mbstateL: s64;
 }
+
 register_t :: s64;
 user_addr_t :: u64;
 user_size_t :: u64;

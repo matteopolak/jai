@@ -79,6 +79,7 @@ create_report :: () -> *Report {
 move_cursor :: (delta: s64) {
     cursor_row += delta;
 }
+
 set_cursor :: (row: s64) {
     cursor_row = row;
 }

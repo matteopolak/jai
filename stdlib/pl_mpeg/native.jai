@@ -6,6 +6,7 @@ Native_Audio_Callback :: #type (self: *Native_Plm, samples: *Samples, user: *voi
 Native_Load_Callback :: #type (self: *Native_Buffer, user: *void) #c_call;
 Native_Seek_Callback :: #type (self: *Native_Buffer, offset: u64, user: *void) #c_call;
 Native_Tell_Callback :: #type (self: *Native_Buffer, user: *void) -> u64 #c_call;
+
 Native_Plm :: struct {
     demux: *Native_Demux;
     time: float64;
@@ -27,6 +28,7 @@ Native_Plm :: struct {
     audio_decode_callback: Native_Audio_Callback;
     audio_decode_callback_user_data: *void;
 }
+
 Native_Buffer :: struct {
     bit_index: u64;
     capacity: u64;
@@ -44,6 +46,7 @@ Native_Buffer :: struct {
     bytes: *u8;
     mode: s32;
 }
+
 Native_Demux :: struct {
     buffer: *Native_Buffer;
     destroy_buffer_when_done: s32;
@@ -61,6 +64,7 @@ Native_Demux :: struct {
     current_packet: Native_Packet;
     next_packet: Native_Packet;
 }
+
 Native_Video :: struct {
     framerate: float64;
     pixel_aspect_ratio: float64;
@@ -100,6 +104,7 @@ Native_Video :: struct {
     has_reference_frame: s32;
     assume_no_b_frames: s32;
 }
+
 Native_Audio :: struct {
     time: float64;
     samples_decoded: s32;
@@ -123,12 +128,14 @@ Native_Audio :: struct {
     V: [2][1024] float;
     U: [32] float;
 }
+
 Native_Packet :: struct {
     type: s32;
     pts: float64;
     length: u64;
     data: *u8;
 }
+
 Video_State :: struct {
     next: *Video_State;
     public: *Video;
@@ -138,7 +145,9 @@ Video_State :: struct {
     owner: *void;
     own_native: bool;
 }
+
 video_states: *Video_State;
+
 Buffer_State :: struct {
     next: *Buffer_State;
     public: *Buffer;
@@ -151,7 +160,9 @@ Buffer_State :: struct {
     default_callback: Native_Load_Callback;
     default_user: *void;
 }
+
 buffer_states: *Buffer_State;
+
 Plm_State :: struct {
     next: *Plm_State;
     public: *Plm;
@@ -163,7 +174,9 @@ Plm_State :: struct {
     root_buffer: *Buffer;
     release_root: bool;
 }
+
 plm_states: *Plm_State;
+
 Demux_State :: struct {
     next: *Demux_State;
     public: *Demux;
@@ -173,7 +186,9 @@ Demux_State :: struct {
     owner: *void;
     own_native: bool;
 }
+
 demux_states: *Demux_State;
+
 Audio_State :: struct {
     next: *Audio_State;
     public: *Audio;
@@ -183,7 +198,9 @@ Audio_State :: struct {
     owner: *void;
     own_native: bool;
 }
+
 audio_states: *Audio_State;
+
 buffer_state :: (object: *Buffer) -> *Buffer_State {
     entry := buffer_states;
     while entry {
@@ -193,10 +210,12 @@ buffer_state :: (object: *Buffer) -> *Buffer_State {
     assert(false, "Object was not created by the pl_mpeg bridge");
     return null;
 }
+
 native_buffer :: (object: *Buffer) -> *Native_Buffer {
     if !object return null;
     return buffer_state(object).native;
 }
+
 wrap_buffer :: (native: *Native_Buffer, owner: *void = null) -> *Buffer {
     if !native return null;
     entry := buffer_states;
@@ -222,6 +241,7 @@ wrap_buffer :: (native: *Native_Buffer, owner: *void = null) -> *Buffer {
     pull_buffer(entry);
     return entry.public;
 }
+
 pull_buffer :: (entry: *Buffer_State) {
     source := entry.native;
     target := entry.public;
@@ -236,6 +256,7 @@ pull_buffer :: (entry: *Buffer_State) {
     target.bytes = source.bytes;
     target.mode = cast,no_check(Buffer_Mode) source.mode;
 }
+
 push_buffer :: (entry: *Buffer_State) {
     source := entry.public;
     target := entry.native;
@@ -255,6 +276,7 @@ push_buffer :: (entry: *Buffer_State) {
         raw_plm_buffer_set_load_callback(target, native_load_callback, entry);
     } else raw_plm_buffer_set_load_callback(target, null, null);
 }
+
 forget_buffer :: (object: *Buffer) {
     link := *buffer_states;
     while link.* {
@@ -268,6 +290,7 @@ forget_buffer :: (object: *Buffer) {
         link = *entry.next;
     }
 }
+
 demux_state :: (object: *Demux) -> *Demux_State {
     entry := demux_states;
     while entry {
@@ -277,10 +300,12 @@ demux_state :: (object: *Demux) -> *Demux_State {
     assert(false, "Object was not created by the pl_mpeg bridge");
     return null;
 }
+
 native_demux :: (object: *Demux) -> *Native_Demux {
     if !object return null;
     return demux_state(object).native;
 }
+
 wrap_demux :: (native: *Native_Demux, owner: *void = null) -> *Demux {
     if !native return null;
     entry := demux_states;
@@ -302,6 +327,7 @@ wrap_demux :: (native: *Native_Demux, owner: *void = null) -> *Demux {
     pull_demux(entry);
     return entry.public;
 }
+
 pull_demux :: (entry: *Demux_State) {
     source := entry.native;
     target := entry.public;
@@ -320,6 +346,7 @@ pull_demux :: (entry: *Demux_State) {
     target.current_packet = from_native_packet(*source.current_packet);
     target.next_packet = from_native_packet(*source.next_packet);
 }
+
 push_demux :: (entry: *Demux_State) {
     source := entry.public;
     target := entry.native;
@@ -339,6 +366,7 @@ push_demux :: (entry: *Demux_State) {
     target.current_packet = to_native_packet(*source.current_packet);
     target.next_packet = to_native_packet(*source.next_packet);
 }
+
 forget_demux :: (object: *Demux) {
     link := *demux_states;
     while link.* {
@@ -352,6 +380,7 @@ forget_demux :: (object: *Demux) {
         link = *entry.next;
     }
 }
+
 video_state :: (object: *Video) -> *Video_State {
     entry := video_states;
     while entry {
@@ -361,10 +390,12 @@ video_state :: (object: *Video) -> *Video_State {
     assert(false, "Object was not created by the pl_mpeg bridge");
     return null;
 }
+
 native_video :: (object: *Video) -> *Native_Video {
     if !object return null;
     return video_state(object).native;
 }
+
 wrap_video :: (native: *Native_Video, owner: *void = null) -> *Video {
     if !native return null;
     entry := video_states;
@@ -386,6 +417,7 @@ wrap_video :: (native: *Native_Video, owner: *void = null) -> *Video {
     pull_video(entry);
     return entry.public;
 }
+
 pull_video :: (entry: *Video_State) {
     source := entry.native;
     target := entry.public;
@@ -425,6 +457,7 @@ pull_video :: (entry: *Video_State) {
     target.has_reference_frame = source.has_reference_frame != 0;
     target.assume_no_b_frames = source.assume_no_b_frames != 0;
 }
+
 push_video :: (entry: *Video_State) {
     source := entry.public;
     target := entry.native;
@@ -465,6 +498,7 @@ push_video :: (entry: *Video_State) {
     target.has_reference_frame = cast(s32) source.has_reference_frame;
     target.assume_no_b_frames = cast(s32) source.assume_no_b_frames;
 }
+
 forget_video :: (object: *Video) {
     link := *video_states;
     while link.* {
@@ -478,6 +512,7 @@ forget_video :: (object: *Video) {
         link = *entry.next;
     }
 }
+
 audio_state :: (object: *Audio) -> *Audio_State {
     entry := audio_states;
     while entry {
@@ -487,10 +522,12 @@ audio_state :: (object: *Audio) -> *Audio_State {
     assert(false, "Object was not created by the pl_mpeg bridge");
     return null;
 }
+
 native_audio :: (object: *Audio) -> *Native_Audio {
     if !object return null;
     return audio_state(object).native;
 }
+
 wrap_audio :: (native: *Native_Audio, owner: *void = null) -> *Audio {
     if !native return null;
     entry := audio_states;
@@ -512,6 +549,7 @@ wrap_audio :: (native: *Native_Audio, owner: *void = null) -> *Audio {
     pull_audio(entry);
     return entry.public;
 }
+
 pull_audio :: (entry: *Audio_State) {
     source := entry.native;
     target := entry.public;
@@ -536,6 +574,7 @@ pull_audio :: (entry: *Audio_State) {
     target.V = source.V;
     target.U = source.U;
 }
+
 push_audio :: (entry: *Audio_State) {
     source := entry.public;
     target := entry.native;
@@ -561,6 +600,7 @@ push_audio :: (entry: *Audio_State) {
     target.V = source.V;
     target.U = source.U;
 }
+
 forget_audio :: (object: *Audio) {
     link := *audio_states;
     while link.* {
@@ -574,6 +614,7 @@ forget_audio :: (object: *Audio) {
         link = *entry.next;
     }
 }
+
 plm_state :: (object: *Plm) -> *Plm_State {
     entry := plm_states;
     while entry {
@@ -583,10 +624,12 @@ plm_state :: (object: *Plm) -> *Plm_State {
     assert(false, "Object was not created by the pl_mpeg bridge");
     return null;
 }
+
 native_plm :: (object: *Plm) -> *Native_Plm {
     if !object return null;
     return plm_state(object).native;
 }
+
 wrap_plm :: (native: *Native_Plm, owner: *void = null) -> *Plm {
     if !native return null;
     entry := plm_states;
@@ -608,6 +651,7 @@ wrap_plm :: (native: *Native_Plm, owner: *void = null) -> *Plm {
     pull_plm(entry);
     return entry.public;
 }
+
 pull_plm :: (entry: *Plm_State) {
     source := entry.native;
     target := entry.public;
@@ -627,6 +671,7 @@ pull_plm :: (entry: *Plm_State) {
     target.audio_buffer = wrap_buffer(source.audio_buffer, entry.owner);
     target.audio_decoder = wrap_audio(source.audio_decoder, entry.owner);
 }
+
 push_plm :: (entry: *Plm_State) {
     source := entry.public;
     target := entry.native;
@@ -655,6 +700,7 @@ push_plm :: (entry: *Plm_State) {
     if source.audio_decoder push_audio(audio_state(source.audio_decoder));
     target.audio_decoder = native_audio(source.audio_decoder);
 }
+
 forget_plm :: (object: *Plm) {
     link := *plm_states;
     while link.* {
@@ -676,14 +722,17 @@ from_native_packet :: (packet: *Native_Packet) -> Packet {
     result.data = .{ cast(s64) packet.length, packet.data };
     return result;
 }
+
 to_native_packet :: (packet: *Packet) -> Native_Packet {
     return .{ cast(s32) packet.type, packet.pts, cast(u64) packet.data.count, packet.data.data };
 }
+
 packet_result :: (object: *Demux, packet: *Native_Packet) -> *Packet {
     if !packet return null;
     object.current_packet = from_native_packet(packet);
     return *object.current_packet;
 }
+
 native_video_callback :: (native: *Native_Plm, frame: *Frame, user: *void) #c_call {
     entry := cast(*Plm_State) user;
     push_context entry.callback_context {
@@ -692,6 +741,7 @@ native_video_callback :: (native: *Native_Plm, frame: *Frame, user: *void) #c_ca
         push_plm(entry);
     }
 }
+
 native_audio_callback :: (native: *Native_Plm, samples: *Samples, user: *void) #c_call {
     entry := cast(*Plm_State) user;
     push_context entry.callback_context {
@@ -700,12 +750,14 @@ native_audio_callback :: (native: *Native_Plm, samples: *Samples, user: *void) #
         push_plm(entry);
     }
 }
+
 default_buffer_load :: (buffer: *Buffer, user: *void) {
     entry := buffer_state(buffer);
     assert(entry.default_callback != null);
     entry.default_callback(entry.native, entry.default_user);
     pull_buffer(entry);
 }
+
 native_load_callback :: (native: *Native_Buffer, user: *void) #c_call {
     entry := cast(*Buffer_State) user;
     push_context entry.callback_context {
@@ -714,6 +766,7 @@ native_load_callback :: (native: *Native_Buffer, user: *void) #c_call {
         push_buffer(entry);
     }
 }
+
 file_load_callback :: (native: *Native_Buffer, user: *void) #c_call {
     entry := cast(*Buffer_State) user;
     push_context entry.creator {
@@ -728,6 +781,7 @@ file_load_callback :: (native: *Native_Buffer, user: *void) #c_call {
         pull_buffer(entry);
     }
 }
+
 file_seek_callback :: (native: *Native_Buffer, offset: u64, user: *void) #c_call {
     entry := cast(*Buffer_State) user;
     push_context entry.creator {
@@ -735,6 +789,7 @@ file_seek_callback :: (native: *Native_Buffer, offset: u64, user: *void) #c_call
         assert(file_set_position(entry.public.fh, cast(s64) offset));
     }
 }
+
 file_tell_callback :: (native: *Native_Buffer, user: *void) -> u64 #c_call {
     entry := cast(*Buffer_State) user;
     push_context entry.creator {
@@ -743,6 +798,7 @@ file_tell_callback :: (native: *Native_Buffer, user: *void) -> u64 #c_call {
         return cast(u64) position;
     }
 }
+
 release_owned_shadows :: (owner: *void) {
     buffer_entry := buffer_states;
     while buffer_entry {

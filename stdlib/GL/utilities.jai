@@ -5,6 +5,7 @@ _glShaderSource :: (shader: GLuint, source: string) {
     count := cast(GLint) source.count;
     glShaderSource(shader, 1, *data, *count);
 }
+
 _glShaderSource :: (shader: GLuint, sources: [] string) {
     Basic.assert(sources.count <= 0x7fff_ffff);
     if sources.count == 0 {
@@ -21,20 +22,25 @@ _glShaderSource :: (shader: GLuint, sources: [] string) {
     }
     glShaderSource(shader, cast(GLsizei) sources.count, pointers, lengths);
 }
+
 _glGetUniformLocation :: (program: u32, $$name: string) -> s32 {
     return glGetUniformLocation(program, Basic.temp_c_string(name));
 }
+
 _glBindAttribLocation :: (program: u32, index: u32, $$name: string) {
     glBindAttribLocation(program, index, Basic.temp_c_string(name));
 }
+
 _glGetAttribLocation :: (program: GLuint, $$name: string) -> GLint {
     return glGetAttribLocation(program, Basic.temp_c_string(name));
 }
+
 gl_label_object :: (identifier: GLenum, name: GLuint, label: string) {
     if glObjectLabel == null return;
     Basic.assert(label.count <= 0x7fff_ffff);
     glObjectLabel(identifier, name, cast(GLsizei) label.count, label.data);
 }
+
 DumpShaderInfoLog :: (shader: GLuint, name: string) {
     size: GLint = 0;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, *size);
@@ -45,6 +51,7 @@ DumpShaderInfoLog :: (shader: GLuint, name: string) {
     glGetShaderInfoLog(shader, cast(GLsizei) size, *written, bytes);
     if written > 0 Basic.log("Shader %: %\n", name, Basic.to_string(bytes, written));
 }
+
 DumpProgramInfoLog :: (program: GLuint, name: string) {
     size: GLint = 0;
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, *size);
@@ -55,6 +62,7 @@ DumpProgramInfoLog :: (program: GLuint, name: string) {
     glGetProgramInfoLog(program, cast(GLsizei) size, *written, bytes);
     if written > 0 Basic.log("Program %: %\n", name, Basic.to_string(bytes, written));
 }
+
 gl_enable_debug_output :: (break_on_error: bool = false) {
     if glDebugMessageCallback == null return;
     debug_log_params.break_on_error = break_on_error;
@@ -65,6 +73,7 @@ gl_enable_debug_output :: (break_on_error: bool = false) {
     glDebugMessageCallback(gl_debug_log, *debug_log_params);
     is_debug_context = true;
 }
+
 #if DUMP_GL_ERRORS {
     DumpGLErrors :: (tag: string, loc := #caller_location) -> bool {
         any_error := false;
@@ -85,12 +94,16 @@ gl_enable_debug_output :: (break_on_error: bool = false) {
 
 #scope_file
 Basic :: #import "Basic";
+
 is_debug_context: bool;
+
 debug_log_params: struct {
     break_on_error: bool;
     logger: Basic.Logger;
 };
+
 __gl_debug_logger_data: *void;
+
 get_string_for_type :: (type: GLenum) -> string {
     if type == GL_DEBUG_TYPE_ERROR return "API error";
     if type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR return "Deprecated behavior";
@@ -99,6 +112,7 @@ get_string_for_type :: (type: GLenum) -> string {
     if type == GL_DEBUG_TYPE_PERFORMANCE return "Performance";
     return "Other";
 }
+
 get_string_for_source :: (source: GLenum) -> string {
     if source == GL_DEBUG_SOURCE_API return "GL API";
     if source == GL_DEBUG_SOURCE_WINDOW_SYSTEM return "Window system";
@@ -107,12 +121,14 @@ get_string_for_source :: (source: GLenum) -> string {
     if source == GL_DEBUG_SOURCE_APPLICATION return "Application";
     return "Other";
 }
+
 get_string_for_severity :: (severity: GLenum) -> string {
     if severity == GL_DEBUG_SEVERITY_HIGH return "High";
     if severity == GL_DEBUG_SEVERITY_MEDIUM return "Medium";
     if severity == GL_DEBUG_SEVERITY_LOW return "Low";
     return "Notification";
 }
+
 gl_debug_log :: (source: GLenum, type: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: *u8, userParam: *void) #c_call {
     push_context {
         context.logger = debug_log_params.logger;

@@ -21,6 +21,7 @@ D3DCompile :: (shader: string, source_name: string, pDefines: [] string, pInclud
     }
     return output, messages, status;
 }
+
 D3DCompileFromFile :: (file_name: string, pDefines: [] string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> pCode: *ID3DBlob, pErrorMsgs: *ID3DBlob, HRESULT {
     wide, valid, _ := ShaderUtf8.utf8_to_wide(file_name);
     if !valid || wide == null return null, null, cast(HRESULT) 0x80070057;
@@ -38,11 +39,13 @@ D3DCompileFromFile :: (file_name: string, pDefines: [] string, pInclude: *ID3DIn
 ShaderMemory :: #import "Basic";
 ShaderWindows :: #import "Windows";
 ShaderUtf8 :: #import "Windows_Utf8";
+
 _d3d_release :: (object: *void) {
     if object == null return;
     unknown := cast(*ShaderWindows.IUnknown) object;
     unknown.vtable.Release(unknown);
 }
+
 _d3d_blob_string :: (blob: *ID3DBlob, trim_zero: bool) -> string {
     if blob == null return "";
     count := ID3D10Blob_GetBufferSize(blob);
@@ -53,6 +56,7 @@ _d3d_blob_string :: (blob: *ID3DBlob, trim_zero: bool) -> string {
     if trim_zero && text.count > 0 && text[text.count - 1] == 0 text.count -= 1;
     return ShaderMemory.copy_string(text);
 }
+
 _d3d_macro_array :: (definitions: [] string) -> *D3D_SHADER_MACRO {
     if definitions.count == 0 return null;
     ShaderMemory.assert(definitions.count >= 0 && definitions.count < 0x3fff_ffff);

@@ -18,6 +18,7 @@
         NativeGLAppKit.NSOpenGLContext.update(glc);
         return glc;
     }
+
     nsgl_create_context :: (major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> *NSOpenGLContext, chosen_msaa: s32 {
         if major_version < 0 || minor_version < 0 || wanted_msaa < 0 return null, 0;
         profile := NativeGLAppKit.NSOpenGLProfileVersion4_1Core;
@@ -78,6 +79,7 @@
             if samples <= 1 samples = 0;
         }
     }
+
     #scope_file
     NativeGLAppKit :: #import "Objective_C/AppKit";
     NativeGLObjC :: #import "Objective_C";

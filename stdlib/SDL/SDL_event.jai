@@ -1,6 +1,7 @@
 // SDL2 declarations from SDL_event.h.
 SDL_RELEASED :: 0;
 SDL_PRESSED :: 1;
+
 using SDL_EventType :: enum u32 {
     SDL_FIRSTEVENT :: 0;
     SDL_QUIT :: 0x100;
@@ -52,10 +53,12 @@ using SDL_EventType :: enum u32 {
     SDL_USEREVENT :: 0x8000;
     SDL_LASTEVENT :: 0xFFFF;
 }
+
 SDL_CommonEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_WindowEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -67,6 +70,7 @@ SDL_WindowEvent :: struct {
     data1: s32;
     data2: s32;
 }
+
 SDL_KeyboardEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -77,7 +81,9 @@ SDL_KeyboardEvent :: struct {
     padding3: u8;
     keysym: SDL_Keysym;
 }
+
 SDL_TEXTEDITINGEVENT_TEXT_SIZE :: 32;
+
 SDL_TextEditingEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -86,13 +92,16 @@ SDL_TextEditingEvent :: struct {
     start: s32;
     length: s32;
 }
+
 SDL_TEXTINPUTEVENT_TEXT_SIZE :: 32;
+
 SDL_TextInputEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
     windowID: u32;
     text: [SDL_TEXTINPUTEVENT_TEXT_SIZE] s8;
 }
+
 SDL_MouseMotionEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -104,6 +113,7 @@ SDL_MouseMotionEvent :: struct {
     xrel: s32;
     yrel: s32;
 }
+
 SDL_MouseButtonEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -116,6 +126,7 @@ SDL_MouseButtonEvent :: struct {
     x: s32;
     y: s32;
 }
+
 SDL_MouseWheelEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -125,6 +136,7 @@ SDL_MouseWheelEvent :: struct {
     y: s32;
     direction: u32;
 }
+
 SDL_JoyAxisEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -136,6 +148,7 @@ SDL_JoyAxisEvent :: struct {
     value: s16;
     padding4: u16;
 }
+
 SDL_JoyBallEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -147,6 +160,7 @@ SDL_JoyBallEvent :: struct {
     xrel: s16;
     yrel: s16;
 }
+
 SDL_JoyHatEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -156,6 +170,7 @@ SDL_JoyHatEvent :: struct {
     padding1: u8;
     padding2: u8;
 }
+
 SDL_JoyButtonEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -165,11 +180,13 @@ SDL_JoyButtonEvent :: struct {
     padding1: u8;
     padding2: u8;
 }
+
 SDL_JoyDeviceEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
     which: s32;
 }
+
 SDL_ControllerAxisEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -181,6 +198,7 @@ SDL_ControllerAxisEvent :: struct {
     value: s16;
     padding4: u16;
 }
+
 SDL_ControllerButtonEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
@@ -190,45 +208,55 @@ SDL_ControllerButtonEvent :: struct {
     padding1: u8;
     padding2: u8;
 }
+
 SDL_ControllerDeviceEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
     which: s32;
 }
+
 SDL_AudioDeviceEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_QuitEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_UserEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_SysWMEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_TouchFingerEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_MultiGestureEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_DollarGestureEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
 }
+
 SDL_DropEvent :: struct {
     type: SDL_EventType;
     timestamp: u32;
     file: *u8;
     windowID: u32;
 }
+
 SDL_Event :: union {
     type: SDL_EventType;
     common: SDL_CommonEvent;
@@ -257,12 +285,15 @@ SDL_Event :: union {
     drop: SDL_DropEvent;
     padding: [56] u8;
 }
+
 #assert (size_of(SDL_Event) == 56);
+
 using SDL_eventaction :: enum u32 {
     SDL_ADDEVENT;
     SDL_PEEKEVENT;
     SDL_GETEVENT;
 }
+
 SDL_PumpEvents :: () #foreign SDL2;
 SDL_PeepEvents :: (events: *SDL_Event, numevents: s32, action: SDL_eventaction, minType: u32, maxType: u32) -> s32 #foreign SDL2;
 SDL_HasEvent :: (type: u32) -> SDL_bool #foreign SDL2;

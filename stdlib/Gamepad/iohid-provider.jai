@@ -1,8 +1,10 @@
 #scope_file
 HID :: #import "Gamepad/IOHID";
+
 iohid_manager: HID.IOHIDManagerRef;
 iohid_loop: HID.CFRunLoopRef;
 iohid_layout: IOHID_Gamepad_Layout;
+
 #scope_export
 // USB HID usage assignments are device profiles, supplied explicitly by the caller.
 IOHID_Gamepad_Layout :: struct {
@@ -16,6 +18,7 @@ IOHID_Gamepad_Layout :: struct {
     invert_left_y := true;
     invert_right_y := true;
 }
+
 use_iohid_gamepad :: (layout: IOHID_Gamepad_Layout) -> bool {
     close_iohid_gamepad();
     iohid_manager = HID.IOHIDManagerCreate(null, 0);
@@ -31,6 +34,7 @@ use_iohid_gamepad :: (layout: IOHID_Gamepad_Layout) -> bool {
     gamepad_sample_source = sample_iohid_gamepad;
     return true;
 }
+
 close_iohid_gamepad :: () {
     if !iohid_manager return;
     HID.IOHIDManagerUnscheduleFromRunLoop(iohid_manager, iohid_loop, HID.kCFRunLoopDefaultMode);
@@ -39,6 +43,7 @@ close_iohid_gamepad :: () {
     iohid_manager = null;
     iohid_loop = null;
 }
+
 sample_iohid_gamepad :: (sample: *Gamepad_Sample) -> bool {
     sample.* = .{};
     if !iohid_manager return false;
@@ -109,6 +114,7 @@ sample_iohid_gamepad :: (sample: *Gamepad_Sample) -> bool {
     }
     return false;
 }
+
 #scope_file
 iohid_axis :: (element: HID.IOHIDElementRef, raw: s64) -> float {
     minimum := HID.IOHIDElementGetLogicalMin(element);

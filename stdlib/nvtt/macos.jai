@@ -195,6 +195,7 @@ OutputHandler :: struct {
     vtable: *OutputHandler_VTable;
     Destructor_Base :: (this: *OutputHandler) -> void #cpp_method #foreign __UnknownLib "_ZN4nvtt13OutputHandlerD2Ev";
 }
+
 OutputHandler_VTable :: struct #type_info_none {
     Destructor: (this: *OutputHandler) -> void #cpp_method;
     Destructor_Deleting: (this: *OutputHandler) -> void #cpp_method;
@@ -209,6 +210,7 @@ OutputHandler_VTable :: struct #type_info_none {
 OutputHandler_Destructor :: (this: *OutputHandler) {
     this.vtable.Destructor(this);
 }
+
 OutputHandler_Destructor_Deleting :: (this: *OutputHandler) {
     this.vtable.Destructor_Deleting(this);
 }
@@ -244,6 +246,7 @@ ErrorHandler :: struct {
     vtable: *ErrorHandler_VTable;
     Destructor_Base :: (this: *ErrorHandler) -> void #cpp_method #foreign __UnknownLib "_ZN4nvtt12ErrorHandlerD2Ev";
 }
+
 ErrorHandler_VTable :: struct #type_info_none {
     Destructor: (this: *ErrorHandler) -> void #cpp_method;
     Destructor_Deleting: (this: *ErrorHandler) -> void #cpp_method;
@@ -254,6 +257,7 @@ ErrorHandler_VTable :: struct #type_info_none {
 ErrorHandler_Destructor :: (this: *ErrorHandler) {
     this.vtable.Destructor(this);
 }
+
 ErrorHandler_Destructor_Deleting :: (this: *ErrorHandler) {
     this.vtable.Destructor_Deleting(this);
 }
@@ -300,6 +304,7 @@ TaskDispatcher :: struct {
     vtable: *TaskDispatcher_VTable;
     Destructor_Base :: (this: *TaskDispatcher) -> void #cpp_method #foreign __UnknownLib "_ZN4nvtt14TaskDispatcherD2Ev";
 }
+
 TaskDispatcher_VTable :: struct #type_info_none {
     Destructor: (this: *TaskDispatcher) -> void #cpp_method;
     Destructor_Deleting: (this: *TaskDispatcher) -> void #cpp_method;
@@ -310,6 +315,7 @@ TaskDispatcher_VTable :: struct #type_info_none {
 TaskDispatcher_Destructor :: (this: *TaskDispatcher) {
     this.vtable.Destructor(this);
 }
+
 TaskDispatcher_Destructor_Deleting :: (this: *TaskDispatcher) {
     this.vtable.Destructor_Deleting(this);
 }
@@ -556,6 +562,7 @@ Surface :: struct #type_info_none {
 }
 
 operator_assign :: (this: *Surface, img: *Surface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt7SurfaceaSERKS0_";
+
 operator_assign :: (this: *Surface, img: Surface) #no_context {
     operator_assign(this, *img);
 }
@@ -635,6 +642,7 @@ CubeSurface :: struct {
 }
 
 operator_assign :: (this: *CubeSurface, img: *CubeSurface) -> void #cpp_method #foreign libnvtt "_ZN4nvtt11CubeSurfaceaSERKS0_";
+
 operator_assign :: (this: *CubeSurface, img: CubeSurface) #no_context {
     operator_assign(this, *img);
 }
@@ -644,31 +652,41 @@ errorString :: (e: Error) -> *u8 #foreign libnvtt "_ZN4nvtt11errorStringENS_5Err
 version :: () -> u32 #foreign libnvtt "_ZN4nvtt7versionEv";
 
 rmsError :: (reference: *Surface, img: *Surface) -> float #foreign libnvtt "_ZN4nvtt8rmsErrorERKNS_7SurfaceES2_";
+
 rmsError :: (reference: Surface, img: Surface) -> float #no_context {
     return rmsError(*reference, *img);
 }
+
 rmsAlphaError :: (reference: *Surface, img: *Surface) -> float #foreign libnvtt "_ZN4nvtt13rmsAlphaErrorERKNS_7SurfaceES2_";
+
 rmsAlphaError :: (reference: Surface, img: Surface) -> float #no_context {
     return rmsAlphaError(*reference, *img);
 }
+
 cieLabError :: (reference: *Surface, img: *Surface) -> float #foreign libnvtt "_ZN4nvtt11cieLabErrorERKNS_7SurfaceES2_";
+
 cieLabError :: (reference: Surface, img: Surface) -> float #no_context {
     return cieLabError(*reference, *img);
 }
+
 angularError :: (reference: *Surface, img: *Surface) -> float #foreign libnvtt "_ZN4nvtt12angularErrorERKNS_7SurfaceES2_";
+
 angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
+
 diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface #no_context #no_context {
     result: Surface;
     native_object_return_10(*result, reference, img, scale);
     return result;
 }
+
 diff :: (reference: Surface, img: Surface, scale: float) -> Surface #no_context {
     return diff(*reference, *img, scale);
 }
 
 rmsToneMappedError :: (reference: *Surface, img: *Surface, exposure: float) -> float #foreign libnvtt "_ZN4nvtt18rmsToneMappedErrorERKNS_7SurfaceES2_f";
+
 rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> float #no_context {
     return rmsToneMappedError(*reference, *img, exposure);
 }
@@ -678,14 +696,17 @@ histogram :: (img: *Surface, width: s32, height: s32) -> Surface #no_context {
     native_object_return_11(*result, img, width, height);
     return result;
 }
+
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
+
 histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     result: Surface;
     native_object_return_12(*result, img, minRange, maxRange, width, height);
     return result;
 }
+
 histogram :: (img: Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, minRange, maxRange, width, height);
 }

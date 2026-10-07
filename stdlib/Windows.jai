@@ -2,14 +2,17 @@
 #assert(OS == .WINDOWS);
 DWORD :: u32;
 WORD :: u16;
+
 BOOL :: enum s32 {
     FALSE :: 0;
     TRUE :: 1;
 }
+
 BOOLEAN :: enum u8 {
     FALSE :: 0;
     TRUE :: 1;
 }
+
 SIZE_T :: u64;
 size_t :: u64;
 LPSTR :: *u8;
@@ -37,6 +40,7 @@ HLOCAL :: HANDLE;
 HFILE :: s32;
 HRESULT :: s32;
 INFINITE: u32 : 0xffff_ffff;
+
 LARGE_INTEGER :: union {
     struct {
         LowPart: u32;
@@ -44,6 +48,7 @@ LARGE_INTEGER :: union {
     }
     QuadPart: s64;
 }
+
 ULARGE_INTEGER :: union {
     struct {
         LowPart: u32;
@@ -51,33 +56,42 @@ ULARGE_INTEGER :: union {
     }
     QuadPart: u64;
 }
+
 RECT :: struct {
     left, top, right, bottom: s32;
 }
+
 SMALL_RECT :: struct {
     left, top, right, bottom: s16;
 }
+
 COORD :: struct {
     x, y: s16;
 }
+
 POINT :: struct {
     x, y: s32;
 }
+
 GUID :: struct {
     Data1: u32;
     Data2: u16;
     Data3: u16;
     Data4: [8] u8;
 }
+
 UUID :: GUID;
+
 LUID :: struct {
     LowPart: u32;
     HighPart: s32;
 }
+
 SIZE :: struct {
     cx: s32;
     cy: s32;
 }
+
 MEMORY_BASIC_INFORMATION :: struct {
     BaseAddress: *void;
     AllocationBase: *void;
@@ -88,10 +102,13 @@ MEMORY_BASIC_INFORMATION :: struct {
     Protect: DWORD;
     Type: DWORD;
 }
+
 #assert(size_of(GUID) == 16);
+
 operator == :: (a: GUID, b: GUID) -> bool {
     return memcmp(*a, *b, size_of(GUID)) == 0;
 }
+
 REFGUID :: *GUID;
 IID :: GUID;
 REFIID :: *IID;
@@ -453,6 +470,7 @@ SetWindowTextW :: (hWnd: HWND, lpString: *u16) -> BOOL #foreign user32;
 ShowWindow :: (hwnd: HWND, nCmdShow: s32) -> s32 #foreign user32;
 WindowFromPoint :: (Point: POINT) -> HWND #foreign user32;
 WNDCLASSEXA :: struct {};
+
 WNDCLASSEXW :: struct {
     cbSize: u32;
     style: u32;
@@ -467,6 +485,7 @@ WNDCLASSEXW :: struct {
     lpszClassName: *u16;
     hIconSm: HICON;
 }
+
 CS_VREDRAW :: 0x0001;
 CS_HREDRAW :: 0x0002;
 CS_OWNDC :: 0x0020;
@@ -594,6 +613,7 @@ GetStockObject :: (fnObject: s32) -> HANDLE #foreign gdi;
 ReleaseDC :: (hwnd: HWND, hdc: HDC) -> s32 #foreign user32;
 SelectObject :: (hdc: HDC, h: HGDIOBJ) -> HGDIOBJ #foreign gdi;
 WindowFromDC :: (dc: HDC) -> HWND #foreign user32;
+
 ICONINFO :: struct {
     fIcon: BOOL;
     xHotspot: u32;
@@ -601,6 +621,7 @@ ICONINFO :: struct {
     hbmMask: HBITMAP;
     hbmColor: HBITMAP;
 }
+
 ICONINFOEXW :: struct {
     cbSize: u32;
     fIcon: BOOL;
@@ -612,6 +633,7 @@ ICONINFOEXW :: struct {
     szModName: [MAX_PATH] u16;
     szResName: [MAX_PATH] u16;
 }
+
 BITMAP :: struct {
     bmType: u32;
     bmWidth: u32;
@@ -621,16 +643,19 @@ BITMAP :: struct {
     bmBitsPixel: u16;
     bmBits: *void;
 }
+
 RGBQUAD :: struct {
     rgbBlue: u8;
     rgbGreen: u8;
     rgbRed: u8;
     rgbReserved: u8;
 }
+
 BITMAPINFO :: struct {
     bmiHeader: BITMAPINFOHEADER;
     bmiColors: [1] RGBQUAD;
 }
+
 BITMAPFILEHEADER :: struct {
     bfType: u16;
     bfSize: u32;
@@ -638,6 +663,7 @@ BITMAPFILEHEADER :: struct {
     bfReserved2: u16;
     bfOffBits: u32;
 }
+
 ExtractIconA :: (hInst: HINSTANCE, lpszExeFileName: *u8, nIconIndex: u32) -> HICON #foreign shell32;
 ExtractIconW :: (hInst: HINSTANCE, lpszExeFileName: *u16, nIconIndex: u32) -> HICON #foreign shell32;
 GetIconInfo :: (hIcon: HICON, piconinfo: *ICONINFO) -> BOOL #foreign user32;
@@ -667,6 +693,7 @@ LoadCursorA :: (hInstance: HINSTANCE, lpCursorName: *u8) -> HCURSOR #foreign use
 LoadCursorW :: (hInstance: HINSTANCE, lpCursorName: *s16) -> HCURSOR #foreign user32;
 SetCursor :: (cursor: HCURSOR) -> HCURSOR #foreign user32;
 ShowCursor :: (bShow: s32) -> s32 #foreign user32;
+
 MSG :: struct {
     hwnd: HWND;
     message: u32;
@@ -676,6 +703,7 @@ MSG :: struct {
     pt: POINT;
     lPrivate: s32;
 }
+
 PM_NOREMOVE :: 0x0000;
 PM_REMOVE :: 0x0001;
 PM_NOYIELD :: 0x0002;
@@ -691,12 +719,14 @@ DefWindowProcW :: (hWnd: HWND, Msg: u32, wParam: WPARAM, lParam: LPARAM) -> s64 
 MONITOR_DEFAULTTONULL :: 0x00000000;
 MONITOR_DEFAULTTOPRIMARY :: 0x00000001;
 MONITOR_DEFAULTTONEAREST :: 0x00000002;
+
 MONITORINFO :: struct {
     cbSize: s32;
     rcMonitor: RECT;
     rcWork: RECT;
     dwFlags: s32;
 }
+
 EnumDisplayMonitors :: (hdc: HDC, lprcClip: *RECT, lpfnEnum: MONITORENUMPROC, dwData: LPARAM) -> BOOL #foreign user32;
 GetMonitorInfoA :: (hMonitor: HMONITOR, lpmi: *MONITORINFO) -> BOOL #foreign user32;
 GetMonitorInfoW :: (hMonitor: HMONITOR, lpmi: *MONITORINFO) -> BOOL #foreign user32;
@@ -711,12 +741,14 @@ GetKeyState :: (nVirtKey: s32) -> s16 #foreign user32;
 SetActiveWindow :: (hwnd: HWND) -> HWND #foreign user32;
 ReleaseCapture :: () -> BOOL #foreign user32;
 SetCapture :: (hwnd: HWND) -> HWND #foreign user32;
+
 RAWINPUTHEADER :: struct {
     dwType: u32;
     dwSize: u32;
     hDevice: HANDLE;
     wParam: WPARAM;
 }
+
 RAWINPUT :: struct {
     header: RAWINPUTHEADER;
     data: union {
@@ -725,6 +757,7 @@ RAWINPUT :: struct {
         hid: RAWHID;
     };
 }
+
 RAWMOUSE :: struct {
     usFlags: u16;
     union {
@@ -739,11 +772,13 @@ RAWMOUSE :: struct {
     lLastY: s32;
     ulExtraInformation: u32;
 }
+
 RAWHID :: struct {
     dwSizeHid: u32;
     dwCount: u32;
     bRawData: [1] u8;
 }
+
 RAWKEYBOARD :: struct {
     MakeCode: u16;
     Flags: u16;
@@ -752,12 +787,14 @@ RAWKEYBOARD :: struct {
     Message: u32;
     ExtraInformation: u32;
 }
+
 RAWINPUTDEVICE :: struct {
     usUsagePage: u16;
     usUsage: u16;
     dwFlags: s32;
     hwndTarget: HWND;
 }
+
 RID_INPUT :: 0x10000003;
 RID_HEADER :: 0x10000005;
 RIM_INPUT :: 0x00000000;
@@ -794,6 +831,7 @@ RI_KEY_E1 :: 4;
 GetRawInputData :: (hRawInput: HRAWINPUT, uiCommand: u32, pData: *void, pcbSize: *u32, cbSizeHeader: u32) -> u32 #foreign user32;
 GetRawInputDeviceInfoA :: (hDevice: HANDLE, uiCommand: u32, pData: *void, pcbSize: *u32) -> u32 #foreign user32;
 RegisterRawInputDevices :: (pRawInputDevices: *void, uiNumDevices: u32, cbSize: u32) -> s32 #foreign user32;
+
 PIXELFORMATDESCRIPTOR :: struct {
     nSize: s16;
     nVersion: s16;
@@ -822,6 +860,7 @@ PIXELFORMATDESCRIPTOR :: struct {
     dwVisibleMask: s32;
     dwDamageMask: s32;
 }
+
 PFD_DOUBLEBUFFER :: 0x00000001;
 PFD_STEREO :: 0x00000002;
 PFD_DRAW_TO_WINDOW :: 0x00000004;
@@ -895,34 +934,40 @@ wglShareLists :: (hrcSrvShare: HGLRC, hrcSrvSource: HGLRC) -> BOOL #foreign gl;
 wglSwapLayerBuffers :: (hdc: HDC, fuFlags: u32) -> BOOL #foreign gl;
 wglUseFontBitmapsA :: (hDC: HDC, first: u32, count: u32, listBase: u32) -> BOOL #foreign gl;
 wglUseFontBitmapsW :: (hDC: HDC, first: u32, count: u32, listBase: u32) -> BOOL #foreign gl;
+
 using PROCESS_DPI_AWARENESS :: enum s32 {
     PROCESS_DPI_UNAWARE :: 0;
     PROCESS_SYSTEM_DPI_AWARE :: 1;
     PROCESS_PER_MONITOR_DPI_AWARE :: 2;
 }
+
 using MONITOR_DPI_TYPE :: enum s32 {
     MDT_EFFECTIVE_DPI;
     MDT_ANGULAR_DPI;
     MDT_RAW_DPI;
     MDT_DEFAULT;
 }
+
 using DPI_AWARENESS :: enum s32 {
     DPI_AWARENESS_INVALID :: -1;
     DPI_AWARENESS_UNAWARE :: 0;
     DPI_AWARENESS_SYSTEM_AWARE :: 1;
     DPI_AWARENESS_PER_MONITOR_AWARE :: 2;
 }
+
 DPI_AWARENESS_CONTEXT :: #type *struct {};
 DPI_AWARENESS_CONTEXT_UNAWARE :: cast(DPI_AWARENESS_CONTEXT) -1;
 DPI_AWARENESS_CONTEXT_SYSTEM_AWARE :: cast(DPI_AWARENESS_CONTEXT) -2;
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE :: cast(DPI_AWARENESS_CONTEXT) -3;
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 :: cast(DPI_AWARENESS_CONTEXT) -4;
 DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED :: cast(DPI_AWARENESS_CONTEXT) -5;
+
 GetLogicalProcessorInformationEx :: (
 RelationshipType: LOGICAL_PROCESSOR_RELATIONSHIP,
 Buffer: *SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX,
 ReturnedLength: *u32
 ) -> BOOL #foreign kernel32;
+
 OSVERSIONINFOA :: struct {
     dwOSVersionInfoSize: u32;
     dwMajorVersion: u32;
@@ -931,6 +976,7 @@ OSVERSIONINFOA :: struct {
     dwPlatformId: u32;
     szCSDVersion: [128] u8;
 }
+
 OSVERSIONINFOW :: struct {
     dwOSVersionInfoSize: u32;
     dwMajorVersion: u32;
@@ -939,6 +985,7 @@ OSVERSIONINFOW :: struct {
     dwPlatformId: u32;
     szCSDVersion: [128] u16;
 }
+
 OSVERSIONINFOEXA :: struct {
     #as using osversioninfo: OSVERSIONINFOA;
     wServicePackMajor: u16;
@@ -947,6 +994,7 @@ OSVERSIONINFOEXA :: struct {
     wProductType: u8;
     wReserved: u8;
 }
+
 OSVERSIONINFOEXW :: struct {
     #as using osversioninfo: OSVERSIONINFOW;
     wServicePackMajor: u16;
@@ -955,6 +1003,7 @@ OSVERSIONINFOEXW :: struct {
     wProductType: u8;
     wReserved: u8;
 }
+
 SYSTEM_INFO :: struct {
     wProcessorArchitecture: u16;
     wReserved: u16;
@@ -968,7 +1017,9 @@ SYSTEM_INFO :: struct {
     wProcessorLevel: u16;
     wProcessorRevision: u16;
 }
+
 MAX_COMPUTERNAME_LENGTH :: 31;
+
 using LOGICAL_PROCESSOR_RELATIONSHIP :: enum s32 {
     RelationProcessorCore;
     RelationNumaNode;
@@ -980,6 +1031,7 @@ using LOGICAL_PROCESSOR_RELATIONSHIP :: enum s32 {
     RelationProcessorModule;
     RelationAll :: 0xffff;
 }
+
 SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX :: struct {
     Relationship: LOGICAL_PROCESSOR_RELATIONSHIP;
     Size: u32;
@@ -990,6 +1042,7 @@ SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX :: struct {
         Group: GROUP_RELATIONSHIP;
     }
 }
+
 PROCESSOR_RELATIONSHIP :: struct {
     Flags: u8;
     EfficiencyClass: u8;
@@ -997,12 +1050,14 @@ PROCESSOR_RELATIONSHIP :: struct {
     GroupCount: u16;
     GroupMask: GROUP_AFFINITY;
 }
+
 NUMA_NODE_RELATIONSHIP :: struct {
     NodeNumber: u32;
     Reserved: [18] u8;
     GroupCount: u16;
     GroupMask: GROUP_AFFINITY;
 }
+
 CACHE_RELATIONSHIP :: struct {
     Level: u8;
     Associativity: u8;
@@ -1013,29 +1068,34 @@ CACHE_RELATIONSHIP :: struct {
     GroupCount: u16;
     GroupMask: GROUP_AFFINITY;
 }
+
 using PROCESSOR_CACHE_TYPE :: enum {
     CacheUnified;
     CacheInstruction;
     CacheData;
     CacheTrace;
 }
+
 GROUP_RELATIONSHIP :: struct {
     MaximumGroupCount: u16;
     ActiveGroupCount: u16;
     Reserved: [20] u8;
     GroupInfo: PROCESSOR_GROUP_INFO;
 }
+
 PROCESSOR_GROUP_INFO :: struct {
     MaximumProcessorCount: u8;
     ActiveProcessorCount: u8;
     Reserved: [38] u8;
     ActiveProcessorMask: u64;
 }
+
 GROUP_AFFINITY :: struct {
     Mask: u64;
     Group: u16;
     Reserved: [3] u16;
 }
+
 SYSTEM_CPU_SET_INFORMATION :: struct {
     Size: u32;
     Type: enum u32 {
@@ -1067,6 +1127,7 @@ SYSTEM_CPU_SET_INFORMATION :: struct {
         }
     }
 }
+
 GetComputerNameA :: (lpBuffer: *u8, nSize: *u32) -> BOOL #foreign kernel32;
 GetComputerNameW :: (lpBuffer: *u16, nSize: *u32) -> BOOL #foreign kernel32;
 GetSystemDirectoryA :: (lpBuffer: *u8, uSize: u32) -> u32 #foreign kernel32;
@@ -1084,15 +1145,18 @@ VER_NT_WORKSTATION :: 0x0000001;
 VER_NT_DOMAIN_CONTROLLER :: 0x0000002;
 VER_NT_SERVER :: 0x0000003;
 RtlGetVersion :: (lpVersionInfo: *OSVERSIONINFOW) -> void #foreign ntdll;
+
 SECURITY_ATTRIBUTES :: struct {
     nLength: u32;
     lpSecurityDescriptor: *void;
     bInheritHandle: BOOL;
 }
+
 LIST_ENTRY :: struct {
     Flink: *LIST_ENTRY;
     Blink: *LIST_ENTRY;
 }
+
 RTL_CRITICAL_SECTION_DEBUG :: struct {
     Type: u16;
     CreatorBackTraceIndex: u16;
@@ -1104,6 +1168,7 @@ RTL_CRITICAL_SECTION_DEBUG :: struct {
     CreatorBackTraceIndexHigh: u16;
     SpareWORD: u16;
 }
+
 RTL_CRITICAL_SECTION :: struct {
     DebugInfo: *RTL_CRITICAL_SECTION_DEBUG;
     LockCount: u32;
@@ -1112,7 +1177,9 @@ RTL_CRITICAL_SECTION :: struct {
     LockSemaphore: HANDLE;
     SpinCount: u64;
 }
+
 CRITICAL_SECTION :: RTL_CRITICAL_SECTION;
+
 OVERLAPPED :: struct {
     union {
         Internal: u64;
@@ -1132,6 +1199,7 @@ OVERLAPPED :: struct {
     }
     hEvent: HANDLE;
 }
+
 STATUS_PENDING: u32 : 0x00000103;
 PIPE_WAIT: u32 : 0x00000000;
 PIPE_NOWAIT: u32 : 0x00000001;
@@ -1168,9 +1236,11 @@ ReleaseSemaphore :: (hSemaphore: HANDLE, lReleaseCount: s32, lpPreviousCount: *s
 SetWaitableTimer :: (hTimer: HANDLE, lpDueTime: *LARGE_INTEGER, lPeriod: s32, pfnCompletionRoutine: *void, lpArgToCompeltionRoutine: *void, fResume: BOOL) -> BOOL #foreign kernel32;
 WaitForMultipleObjects :: (nCount: DWORD, lpHandles: *HANDLE, bWaitAll: BOOL, dwMilliseconds: DWORD) -> DWORD #foreign kernel32;
 WaitForSingleObject :: (handle: HANDLE, milliseconds: DWORD) -> DWORD #foreign kernel32;
+
 CONDITION_VARIABLE :: struct {
     Ptr: *void;
 }
+
 InitializeConditionVariable :: (ConditionVariable: *CONDITION_VARIABLE) #foreign kernel32;
 WakeConditionVariable :: (ConditionVariable: *CONDITION_VARIABLE) #foreign kernel32;
 WakeAllConditionVariable :: (ConditionVariable: *CONDITION_VARIABLE) #foreign kernel32;
@@ -1194,6 +1264,7 @@ GMEM_VALID_FLAGS :: 0x7F72;
 GMEM_INVALID_HANDLE :: 0x8000;
 GHND :: (GMEM_MOVEABLE | GMEM_ZEROINIT);
 GPTR :: (GMEM_FIXED | GMEM_ZEROINIT);
+
 MEMORYSTATUSEX :: struct {
     dwLength: u32;
     dwMemoryLoad: u32;
@@ -1205,6 +1276,7 @@ MEMORYSTATUSEX :: struct {
     ullAvailVirtual: u64;
     ullAvailExtendedVirtual: u64;
 }
+
 PAGE_NOACCESS :: 0x01;
 PAGE_READONLY :: 0x02;
 PAGE_READWRITE :: 0x04;
@@ -1240,34 +1312,41 @@ MEM_4MB_PAGES :: 0x80000000;
 MEM_64K_PAGES :: MEM_LARGE_PAGES | MEM_PHYSICAL;
 PSECURE_MEMORY_CACHE_CALLBACK :: #type (Addr: *void, Range: SIZE_T) -> BOOLEAN #c_call;
 AddSecureMemoryCacheCallback :: (pfnCallBack: PSECURE_MEMORY_CACHE_CALLBACK) -> BOOL #foreign kernel32;
+
 CreateFileMappingA :: (hFile: HANDLE,
 lpFileMappingAttributes: *SECURITY_ATTRIBUTES,
 flProtect: DWORD,
 dwMaximumSizeHigh: DWORD,
 dwMaximumSizeLow: DWORD,
 lpName: LPCSTR) -> HANDLE #foreign kernel32;
+
 CreateFileMappingW :: (hFile: HANDLE,
 lpFileMappingAttributes: *SECURITY_ATTRIBUTES,
 flProtect: DWORD,
 dwMaximumSizeHigh: DWORD,
 dwMaximumSizeLow: DWORD,
 lpName: *u16) -> HANDLE #foreign kernel32;
+
 GlobalAlloc :: (uFlags: u32, dwBytes: SIZE_T) -> HGLOBAL #foreign kernel32;
 GlobalLock :: (hMem: HGLOBAL) -> *void #foreign kernel32;
 GlobalMemoryStatusEx :: (lpBuffer: *MEMORYSTATUSEX) -> BOOL #foreign kernel32;
 GlobalUnlock :: (hMem: HGLOBAL) -> BOOL #foreign kernel32;
 LocalFree :: (hMem: HLOCAL) -> HLOCAL #foreign kernel32;
+
 MapViewOfFile :: (hFileMappingObject: HANDLE,
 dwDesiredAccess: DWORD,
 dwFileOffsetHigh: DWORD,
 dwFileOffsetLow: DWORD,
 dwNumberOfBytesToMap: SIZE_T) -> *void #foreign kernel32;
+
 OpenFileMappingA :: (dwDesiredAccess: DWORD,
 bInheritHandle: BOOL,
 lpName: LPCSTR) -> HANDLE #foreign kernel32;
+
 OpenFileMappingW :: (dwDesiredAccess: DWORD,
 bInheritHandle: BOOL,
 lpName: *u16) -> HANDLE #foreign kernel32;
+
 UnmapViewOfFile :: (address: *void) -> BOOL #foreign kernel32;
 VirtualAlloc :: (lpAddress: *void, dwSize: u64, flAllocationType: u32, flProtect: u32) -> *void #foreign kernel32;
 VirtualFree :: (lpAddress: *void, dwSize: u64, dwFreeType: u32) -> BOOL #foreign kernel32;
@@ -1301,12 +1380,14 @@ DLL_PROCESS_ATTACH :: 1;
 DLL_THREAD_ATTACH :: 2;
 DLL_THREAD_DETACH :: 3;
 DLL_PROCESS_DETACH :: 0;
+
 FILE_NOTIFY_INFORMATION :: struct {
     NextEntryOffset: s32;
     Action: s32;
     FileNameLength: s32;
     FileName: [1] s16;
 }
+
 FILE_NOTIFY_CHANGE_FILE_NAME :: 0x00000001;
 FILE_NOTIFY_CHANGE_DIR_NAME :: 0x00000002;
 FILE_NOTIFY_CHANGE_ATTRIBUTES :: 0x00000004;
@@ -1335,12 +1416,14 @@ ReadDirectoryChangesW :: (hDirectory: HANDLE, lpBuffer: *void, nBufferLength: s3
 RemoveDirectoryA :: (lpPathName: *u8) -> BOOL #foreign kernel32;
 RemoveDirectoryW :: (lpPathName: *u16) -> BOOL #foreign kernel32;
 SetCurrentDirectoryW :: (name: *u16) -> BOOL #foreign kernel32;
+
 CONSOLE_SCREEN_BUFFER_INFO :: struct {
     dwSize, dwCursorPosition: COORD;
     wAttributes: u16;
     srWindow: SMALL_RECT;
     dwMaximumWindowSize: COORD;
 }
+
 GetStdHandle :: (handle: s32) -> HANDLE #foreign kernel32;
 GetConsoleScreenBufferInfo :: (hConsoleOutput: HANDLE, lpConsoleScreenBufferInfo: *CONSOLE_SCREEN_BUFFER_INFO) -> BOOL #foreign kernel32;
 SetConsoleTextAttribute :: (hConsoleOutput: HANDLE, wAttributes: u16) -> BOOL #foreign kernel32;
@@ -1379,6 +1462,7 @@ EmptyClipboard :: () -> BOOL #foreign user32;
 GetClipboardData :: (uFormat: u32) -> HANDLE #foreign user32;
 OpenClipboard :: (hwnd: HWND) -> BOOL #foreign user32;
 SetClipboardData :: (uFormat: u32, hMem: HANDLE) -> HANDLE #foreign user32;
+
 STARTUPINFOA :: struct {
     cb: s32;
     lpReserved: *u8;
@@ -1399,6 +1483,7 @@ STARTUPINFOA :: struct {
     hStdOutput: HANDLE;
     hStdError: HANDLE;
 }
+
 STARTUPINFOW :: struct {
     cb: s32;
     lpReserved: *u16;
@@ -1419,13 +1504,16 @@ STARTUPINFOW :: struct {
     hStdOutput: HANDLE;
     hStdError: HANDLE;
 }
+
 STARTF_USESTDHANDLES :: 0x00000100;
+
 PROCESS_INFORMATION :: struct {
     hProcess: HANDLE;
     hThread: HANDLE;
     dwProcessId: u32;
     dwThreadId: u32;
 }
+
 using Creation_Flags :: enum_flags u32 {
     DEBUG_PROCESS :: 0x00000001;
     DEBUG_ONLY_THIS_PROCESS :: 0x00000002;
@@ -1459,11 +1547,13 @@ using Creation_Flags :: enum_flags u32 {
     PROFILE_SERVER :: 0x40000000;
     CREATE_IGNORE_SYSTEM_DEFAULT :: 0x80000000;
 }
+
 WAIT_FAILED :: 0xFFFFFFFF;
 WIN_TIMEOUT_INFINITE :: 0xFFFFFFFF;
 THREAD_PRIORITY_NORMAL :: 0;
 THREAD_PRIORITY_ABOVE_NORMAL :: 1;
 THREAD_PRIORITY_HIGHEST :: 2;
+
 JOBOBJECTINFOCLASS :: enum {
     BasicAccountingInformation :: 1;
     BasicLimitInformation;
@@ -1514,6 +1604,7 @@ JOBOBJECTINFOCLASS :: enum {
     Reserved25Information :: 47;
     MaxJobObjectInfoClass;
 }
+
 using Job_Object_Limit :: enum u32 {
     JOB_OBJECT_LIMIT_WORKINGSET :: 0x00000001;
     JOB_OBJECT_LIMIT_PROCESS_TIME :: 0x00000002;
@@ -1539,6 +1630,7 @@ using Job_Object_Limit :: enum u32 {
     JOB_OBJECT_LIMIT_IO_RATE_CONTROL :: 0x00080000;
     JOB_OBJECT_LIMIT_NET_RATE_CONTROL :: 0x00100000;
 }
+
 JOBOBJECT_BASIC_LIMIT_INFORMATION :: struct {
     PerProcessUserTimeLimit: u64;
     PerJobUserTimeLimit: u64;
@@ -1550,6 +1642,7 @@ JOBOBJECT_BASIC_LIMIT_INFORMATION :: struct {
     PriorityClass: u32;
     SchedulingClass: u32;
 }
+
 IO_COUNTERS :: struct {
     ReadOperationCount: u64;
     WriteOperationCount: u64;
@@ -1558,6 +1651,7 @@ IO_COUNTERS :: struct {
     WriteTransferCount: u64;
     OtherTransferCount: u64;
 }
+
 JOBOBJECT_EXTENDED_LIMIT_INFORMATION :: struct {
     BasicLimitInformation: JOBOBJECT_BASIC_LIMIT_INFORMATION;
     IoInfo: IO_COUNTERS;
@@ -1566,18 +1660,22 @@ JOBOBJECT_EXTENDED_LIMIT_INFORMATION :: struct {
     PeakProcessMemoryUsed: SIZE_T;
     PeakJobMemoryUsed: SIZE_T;
 }
+
 AssignProcessToJobObject :: (hJob: HANDLE, hProcess: HANDLE) -> BOOL #foreign kernel32;
 CreateJobObjectA :: (lpSecurityAttributes: *SECURITY_ATTRIBUTES, name: *u8) -> HANDLE #foreign kernel32;
+
 CreateProcessA :: (lpApplicationName: *u8, lpCommandLine: *u8,
 lpSecurityAttributes: *SECURITY_ATTRIBUTES, lpThreadAttributes: *SECURITY_ATTRIBUTES,
 bInheritHandles: BOOL, dwCreationFlags: Creation_Flags, lpEnvironment: *void,
 lpCurrentDirectory: *u8,
 lpStartupInfo: *STARTUPINFOA, lpProcessInformation: *PROCESS_INFORMATION) -> BOOL #foreign kernel32;
+
 CreateProcessW :: (lpApplicationName: *u16, lpCommandLine: *u16,
 lpSecurityAttributes: *SECURITY_ATTRIBUTES, lpThreadAttributes: *SECURITY_ATTRIBUTES,
 bInheritHandles: BOOL, dwCreationFlags: Creation_Flags, lpEnvironment: *void,
 lpCurrentDirectory: *u16,
 lpStartupInfo: *STARTUPINFOW, lpProcessInformation: *PROCESS_INFORMATION) -> BOOL #foreign kernel32;
+
 GetExitCodeProcess :: (hProcess: HANDLE, lpExitCode: *u32) -> s32 #foreign kernel32;
 CreateThread :: (threadAttributes: *void, stackSize: s64, startAddress: *void, parameter: *void, creation_flags: Creation_Flags, threadIdReturn: *s32) -> HANDLE #foreign kernel32;
 ExitProcess :: (exit_code: u32) -> void #foreign kernel32;
@@ -1613,10 +1711,12 @@ TIMERR_NOCANDO :: TIMERR_BASE + 1;
 TIMERR_STRUCT :: TIMERR_BASE + 33;
 MMSYSERR_NOERROR :: 0;
 MMSYSERR_ERROR :: MMSYSERR_BASE + 1;
+
 TIMECAPS :: struct {
     wPeriodMin: u32;
     wPeriodMax: u32;
 }
+
 MMTIME :: struct {
     wType: u32;
     u: union {
@@ -1638,6 +1738,7 @@ MMTIME :: struct {
         };
     };
 }
+
 timeGetDevCaps :: (ptc: *TIMECAPS, cbtc: u32) -> u32 #foreign winmm;
 timeBeginPeriod :: (period: u32) -> u32 #foreign winmm;
 timeEndPeriod :: (period: u32) -> u32 #foreign winmm;
@@ -1694,6 +1795,7 @@ MessageBoxA :: (hWnd: HWND, lpText: *u8, lpCaption: *u8, uType: u32) -> s32 #for
 MessageBoxW :: (hWnd: HWND, lpText: *u16, lpCaption: *u16, uType: u32) -> s32 #foreign user32;
 LARGE_INTEGER_S64 :: s64;
 INVALID_FILE_ATTRIBUTES: u32 : 0xffff_ffff;
+
 WIN32_FIND_DATAW :: struct {
     dwFileAttributes: s32;
     ftCreationTime: FILETIME;
@@ -1706,6 +1808,7 @@ WIN32_FIND_DATAW :: struct {
     cFileName: [MAX_PATH] u16;
     cAlternateFileName: [14] u16;
 }
+
 FILE_GENERIC_ALL :: 0x10000000;
 FILE_GENERIC_READ :: 0x80000000;
 FILE_GENERIC_WRITE :: 0x40000000;
@@ -1715,22 +1818,26 @@ FILE_EXECUTE :: 0x20;
 FILE_READ_ATTRIBUTES :: 0x80;
 FILE_READ_DATA :: 0x1;
 FILE_TRAVERSE :: 0x20;
+
 using SetFilePointer_MoveMethod :: enum u32 {
     FILE_BEGIN :: 0;
     FILE_CURRENT :: 1;
     FILE_END :: 2;
 }
+
 using FINDEX_INFO_LEVELS :: enum {
     FindExInfoStandard;
     FindExInfoBasic;
     FindExInfoMaxInfoLevel;
 }
+
 using FINDEX_SEARCH_OPS :: enum {
     FindExSearchNameMatch;
     FindExSearchLimitToDirectories;
     FindExSearchLimitToDevices;
     FindExSearchMaxSearchOp;
 }
+
 FIND_FIRST_EX_CASE_SENSITIVE :: 0x1;
 FIND_FIRST_EX_LARGE_FETCH :: 0x2;
 FIND_FIRST_EX_ON_DISK_ENTRIES_ONLY :: 0x4;
@@ -1767,6 +1874,7 @@ MoveFileW :: (filename: *u16, new_filename: *u16) -> BOOL #foreign kernel32;
 MoveFileExW :: (filename: *u16, new_filename: *u16, flags: DWORD) -> BOOL #foreign kernel32;
 ReadFile :: (file: HANDLE, buffer: *void, to_read: DWORD, did_read: *DWORD, overlapped: *void = null) -> BOOL #foreign kernel32;
 ReplaceFileW :: (lpReplacedFileName: LPCWSTR, lpReplacementFileName: LPCWSTR, lpBackupFileName: LPCWSTR, dwReplaceFlags: DWORD, lpExclude: *void, lpReserved: *void) -> BOOL #foreign kernel32;
+
 using FILE_INFO_BY_HANDLE_CLASS :: enum {
     FileBasicInfo;
     FileStandardInfo;
@@ -1795,6 +1903,7 @@ using FILE_INFO_BY_HANDLE_CLASS :: enum {
     FileNormalizedNameInfo;
     MaximumFileInfoByHandleClass;
 }
+
 FILE_STANDARD_INFO :: struct {
     AllocationSize: LARGE_INTEGER;
     EndOfFile: LARGE_INTEGER;
@@ -1802,9 +1911,11 @@ FILE_STANDARD_INFO :: struct {
     DeletePending: BOOLEAN;
     Directory: BOOLEAN;
 }
+
 FILE_END_OF_FILE_INFO :: struct {
     EndOfFile: LARGE_INTEGER;
 }
+
 FILE_FULL_DIR_INFO :: struct {
     NextEntryOffset: u32;
     FileIndex: u32;
@@ -1819,27 +1930,32 @@ FILE_FULL_DIR_INFO :: struct {
     EaSize: u32;
     FileName: [1] u16;
 }
+
 SetFileInformationByHandle :: (File: HANDLE, FileInformationClass: FILE_INFO_BY_HANDLE_CLASS, FileInformation: *void, BufferSize: u32) -> BOOL #foreign kernel32;
 SetFilePointer :: (hFile: HANDLE, liDistanceToMove: s32, lpNewFilePointer: *s32, dwMoveMethod: SetFilePointer_MoveMethod) -> u32 #foreign kernel32;
 SetFilePointerEx :: (hFile: HANDLE, liDistanceToMove: LARGE_INTEGER_S64, lpNewFilePointer: *LARGE_INTEGER_S64, dwMoveMethod: SetFilePointer_MoveMethod) -> BOOL #foreign kernel32;
 WriteFile :: (handle: HANDLE, buffer: *void, buffer_length: DWORD, written_result: *DWORD, overlapped: *void) -> BOOL #foreign kernel32;
 DwmIsCompositionEnabled :: (pfEnabled: *BOOL) -> HRESULT #foreign Dwmapi;
+
 IMAGE_FILE_MACHINE :: enum u32 {
     I386 :: 0x014c;
     IA64 :: 0x0200;
     AMD64 :: 0x8664;
 }
+
 ADDRESS_MODE :: enum s32 {
     AddrMode1616 :: 0;
     AddrMode1632 :: 1;
     AddrModeReal :: 2;
     AddrModeFlat :: 3;
 }
+
 ADDRESS64 :: struct {
     Offset: u64;
     Segment: u16;
     Mode: ADDRESS_MODE;
 }
+
 KDHELP64 :: struct {
     Thread: u64;
     ThCallbackStack: u32;
@@ -1854,6 +1970,7 @@ KDHELP64 :: struct {
     StackLimit: u64;
     Reserved: [5] u64;
 }
+
 STACKFRAME64 :: struct {
     AddrPC: ADDRESS64;
     AddrReturn: ADDRESS64;
@@ -1867,12 +1984,14 @@ STACKFRAME64 :: struct {
     Reserved: [3] u64;
     KdHelp: KDHELP64;
 }
+
 // The SDK aligns 128-bit register images (and so XSAVE_FORMAT and CONTEXT) to 16 bytes;
 // GetThreadContext rejects a CONTEXT that is not.
 M128A :: struct {
     Low: u64 #align 16;
     High: s64;
 }
+
 XSAVE_FORMAT :: struct {
     ControlWord: u16;
     StatusWord: u16;
@@ -1896,6 +2015,7 @@ XSAVE_FORMAT :: struct {
         Reserved4: [224] u8;
     }
 }
+
 // Thread contexts are per CPU; there is no default for another one.
 #if CPU == .X64 {
     CONTEXT_i386 :: 0x00010000;
@@ -1906,6 +2026,7 @@ XSAVE_FORMAT :: struct {
     CONTEXT_FLOATING_POINT :: (CONTEXT_AMD64 | 0x00000008);
     CONTEXT_DEBUG_REGISTERS :: (CONTEXT_AMD64 | 0x00000010);
     CONTEXT_FULL :: (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_FLOATING_POINT);
+
     CONTEXT :: struct #type_info_none {
         P1Home: u64;
         P2Home: u64;
@@ -1976,6 +2097,7 @@ XSAVE_FORMAT :: struct {
         LastExceptionToRip: u64;
         LastExceptionFromRip: u64;
     }
+
     #assert(size_of(CONTEXT) == 1232);
 } else #if CPU == .ARM64 {
     // The arm64 register snapshot (winnt.h's ARM64_NT_CONTEXT): what GetThreadContext,
@@ -1986,6 +2108,7 @@ XSAVE_FORMAT :: struct {
     CONTEXT_FLOATING_POINT :: CONTEXT_ARM64 | 0x4;
     CONTEXT_DEBUG_REGISTERS :: CONTEXT_ARM64 | 0x8;
     CONTEXT_FULL :: CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_FLOATING_POINT;
+
     CONTEXT :: struct #type_info_none {
         ContextFlags: u32;
         Cpsr: u32;
@@ -2003,10 +2126,12 @@ XSAVE_FORMAT :: struct {
         Wcr: [2] u32;
         Wvr: [2] u64;
     }
+
     #assert(size_of(CONTEXT) == 912);
 } else {
     #assert false "Windows CONTEXT is declared for X64 and ARM64 only";
 }
+
 IMAGEHLP_SYMBOL64 :: struct {
     SizeOfStruct: u32;
     Address: u64;
@@ -2015,6 +2140,7 @@ IMAGEHLP_SYMBOL64 :: struct {
     MaxNameLength: u32;
     Name: [1] u8;
 }
+
 IMAGEHLP_LINE64 :: struct {
     SizeOfStruct: u32;
     Key: *void;
@@ -2022,6 +2148,7 @@ IMAGEHLP_LINE64 :: struct {
     FileName: *u8;
     Address: u64;
 }
+
 IMAGEHLP_LINEW64 :: struct {
     SizeOfStruct: u32;
     Key: *void;
@@ -2029,6 +2156,7 @@ IMAGEHLP_LINEW64 :: struct {
     FileName: *u16;
     Address: u64;
 }
+
 SYMBOL_INFO :: struct {
     SizeOfStruct: u32;
     TypeIndex: u32;
@@ -2046,6 +2174,7 @@ SYMBOL_INFO :: struct {
     MaxNameLen: u32;
     Name: [1] u8;
 }
+
 SYMOPT :: enum_flags u32 {
     CASE_INSENSITIVE :: 0x00000001;
     UNDNAME :: 0x00000002;
@@ -2080,8 +2209,10 @@ SYMOPT :: enum_flags u32 {
     DISABLE_SRVSTAR_ON_STARTUP :: 0x40000000;
     DEBUG :: 0x80000000;
 }
+
 STATUS_ACCESS_VIOLATION :: 0x80000005;
 EXCEPTION_WRITE_FAULT :: 1;
+
 MINIDUMP_TYPE :: enum_flags u32 {
     MiniDumpNormal :: 0x00000000;
     MiniDumpWithDataSegs :: 0x00000001;
@@ -2111,6 +2242,7 @@ MINIDUMP_TYPE :: enum_flags u32 {
     MiniDumpFilterWriteCombinedMemory :: 0x01000000;
     MiniDumpValidTypeFlags :: 0x01ffffff;
 }
+
 MINIDUMP_CALLBACK_TYPE :: enum u32 {
     ModuleCallback;
     ThreadCallback;
@@ -2134,6 +2266,7 @@ MINIDUMP_CALLBACK_TYPE :: enum u32 {
     VmPreReadCallback;
     VmPostReadCallback;
 }
+
 MINIDUMP_EXCEPTION_INFORMATION :: struct {
     ThreadId: DWORD #align 4;
     ExceptionPointers: *EXCEPTION_POINTERS #align 4;
@@ -2204,20 +2337,25 @@ MINIDUMP_CALLBACK_OUTPUT :: struct {
     }
 } #no_padding
 MINIDUMP_CALLBACK_ROUTINE :: #type (CallbackParam: *void, CallbackInput: *MINIDUMP_CALLBACK_INPUT, CallbackOutput: *MINIDUMP_CALLBACK_OUTPUT) -> BOOL #c_call;
+
 MINIDUMP_CALLBACK_INFORMATION :: struct {
     CallbackRoutine: MINIDUMP_CALLBACK_ROUTINE #align 4;
     CallbackParam: *void #align 4;
 } #no_padding
 ReadProcessMemoryProc64 :: #type (hProcess: HANDLE, lpBaseAddress: u64, lpBuffer: *void, nSize: u32, lpNumberOfBytesRead: *u32) -> BOOL #c_call;
+
 FunctionTableAccessProc64 :: #type (hProcess: HANDLE, AddrBase: u64) -> *void #c_call;
 GetModuleBaseProc64 :: #type (hProcess: HANDLE, dwAddr: u64) -> u64 #c_call;
 TranslateAddressProc64 :: #type (hProcess: HANDLE, hThread: HANDLE, lpaddr: *ADDRESS64) -> u64 #c_call;
+
 MiniDumpWriteDump :: (hProcess: HANDLE, ProcessId: DWORD, hFile: HANDLE, DumpType: MINIDUMP_TYPE,
 ExceptionParam: *MINIDUMP_EXCEPTION_INFORMATION, UserStreamParam: *MINIDUMP_USER_STREAM_INFORMATION,
 CallbackParam: *MINIDUMP_CALLBACK_INFORMATION) -> BOOL #foreign DbgHelp;
+
 StackWalk64 :: (MachineType: IMAGE_FILE_MACHINE, hProcess: HANDLE, hThread: HANDLE, StackFrame: *STACKFRAME64, ContextRecord: *void,
 ReadMemoryRoutine: ReadProcessMemoryProc64, FunctionTableAccessRoutine: FunctionTableAccessProc64,
 GetModuleBaseRoutine: GetModuleBaseProc64, TranslateAddres: TranslateAddressProc64) -> BOOL #foreign DbgHelp;
+
 SymCleanup :: (hProcess: HANDLE) -> BOOL #foreign DbgHelp;
 SymFromAddr :: (hProcess: HANDLE, Address: u64, Displacement: *u64, Symbol: *SYMBOL_INFO) -> BOOL #foreign DbgHelp;
 SymFunctionTableAccess64 :: (hProcess: HANDLE, AddrBase: u64) -> *void #foreign DbgHelp;
@@ -2227,6 +2365,7 @@ SymGetSymFromAddr64 :: (hProcess: HANDLE, Address: u64, Displacement: *u64, Symb
 SymInitialize :: (hProcess: HANDLE, UserSearchPath: *u8, fInvadeProcess: BOOL) -> BOOL #foreign DbgHelp;
 SymSetOptions :: (SymOptions: SYMOPT) -> SYMOPT #foreign DbgHelp;
 EXCEPTION_MAXIMUM_PARAMETERS :: 15;
+
 EXCEPTION_RECORD :: struct {
     ExceptionCode: u32;
     ExceptionFlags: u32;
@@ -2235,25 +2374,30 @@ EXCEPTION_RECORD :: struct {
     NumberParameters: u32;
     ExceptionInformation: [EXCEPTION_MAXIMUM_PARAMETERS] u64;
 }
+
 EXCEPTION_POINTERS :: struct {
     ExceptionRecord: *EXCEPTION_RECORD;
     ContextRecord: *CONTEXT;
 }
+
 LPTOP_LEVEL_EXCEPTION_FILTER :: #type (ExceptionInfo: *EXCEPTION_POINTERS) -> s32 #c_call;
 EXCEPTION_EXECUTE_HANDLER :: 1;
 EXCEPTION_CONTINUE_SEARCH :: 0;
 EXCEPTION_CONTINUE_EXECUTION :: -1;
 RtlCaptureContext :: (ContextRecord: *CONTEXT) #foreign kernel32;
 SetUnhandledExceptionFilter :: (lpTopLevelExceptionFilter: LPTOP_LEVEL_EXCEPTION_FILTER) -> LPTOP_LEVEL_EXCEPTION_FILTER #foreign kernel32;
+
 using SEM :: enum_flags u32 {
     SEM_FAILCRITICALERRORS :: 0x0001;
     SEM_NOALIGNMENTFAULTEXCEPT :: 0x0004;
     SEM_NOGPFAULTERRORBOX :: 0x0002;
     SEM_NOOPENFILEERRORBOX :: 0x8000;
 }
+
 FORMAT_MESSAGE_ALLOCATE_BUFFER :: 0x00000100;
 FORMAT_MESSAGE_IGNORE_INSERTS :: 0x00000200;
 FORMAT_MESSAGE_FROM_SYSTEM :: 0x00001000;
+
 using FLASHW :: enum_flags u32 {
     FLASHW_STOP :: 0;
     FLASHW_CAPTION :: 0x00000001;
@@ -2262,6 +2406,7 @@ using FLASHW :: enum_flags u32 {
     FLASHW_TIMER :: 0x00000004;
     FLASHW_TIMERNOFG :: 0x0000000C;
 }
+
 FLASHWINFO :: struct {
     cbSize: u32;
     hwnd: HWND;
@@ -2269,6 +2414,7 @@ FLASHWINFO :: struct {
     uCount: u32;
     dwTimeout: u32;
 }
+
 OS_Error_Code :: #type,isa u32;
 FlashWindow :: (hWnd: HWND, bInvert: BOOL) -> BOOL #foreign user32;
 FlashWindowEx :: (pfwi: *FLASHWINFO) -> BOOL #foreign user32;
@@ -2279,6 +2425,7 @@ GetLastError :: () -> OS_Error_Code #foreign kernel32;
 NTSTATUS :: DWORD;
 RtlGetLastNtStatus :: () -> NTSTATUS #foreign ntdll;
 SetErrorMode :: (uMode: SEM) -> SEM #foreign kernel32;
+
 SYSTEMTIME :: struct {
     wYear: u16;
     wMonth: u16;
@@ -2289,6 +2436,7 @@ SYSTEMTIME :: struct {
     wSecond: u16;
     wMilliseconds: u16;
 }
+
 FILETIME :: struct {
     union {
         struct {
@@ -2298,6 +2446,7 @@ FILETIME :: struct {
         QuadPart: u64 #align 4 = ---;
     }
 }
+
 TIME_ZONE_INFORMATION :: struct {
     Bias: s32;
     StandardName: [32] u16;
@@ -2307,6 +2456,7 @@ TIME_ZONE_INFORMATION :: struct {
     DaylightDate: SYSTEMTIME;
     DaylightBias: s32;
 }
+
 FileTimeToLocalFileTime :: (lpFileTime: *FILETIME, lpLocalFileTime: *FILETIME) -> BOOL #foreign kernel32;
 LocalFileTimeToFileTime :: (lpLocalFileTime: *FILETIME, lpFileTime: *FILETIME) -> BOOL #foreign kernel32;
 FileTimeToSystemTime :: (lpFileTime: *FILETIME, lpSystemTime: *SYSTEMTIME) -> BOOL #foreign kernel32;
@@ -2318,14 +2468,17 @@ GetSystemTimePreciseAsFileTime :: (lpSystemTimeAsFileTime: *FILETIME) #foreign k
 SystemTimeToFileTime :: (lpSystemTime: *SYSTEMTIME, lpFileTime: *FILETIME) -> BOOL #foreign kernel32;
 SystemTimeToTzSpecificLocalTime :: (lpTimeZone: *TIME_ZONE_INFORMATION, lpUniversalTime: *SYSTEMTIME, lpLocalTime: *SYSTEMTIME) -> BOOL #foreign kernel32;
 PathFileExistsW :: (pszPath: *u16) -> s32 #foreign Shlwapi;
+
 STICKYKEYS :: struct {
     cbSize: u32 = 8;
     dwFlags: STICKYKEY_FLAGS;
 }
+
 TOGGLEKEYS :: struct {
     cbSize: u32 = 8;
     dwFlags: TOGGLEKEY_FLAGS;
 }
+
 FILTERKEYS :: struct {
     cbSize: u32 = 24;
     dwFlags: FILTERKEY_FLAGS;
@@ -2334,6 +2487,7 @@ FILTERKEYS :: struct {
     iRepeatMSec: u32;
     iBounceMSec: u32;
 }
+
 SM_CXSCREEN :: 0;
 SM_CYSCREEN :: 1;
 SM_CXVSCROLL :: 2;
@@ -2442,6 +2596,7 @@ SPI_GETTOGGLEKEYS :: 0x0034;
 SPI_SETTOGGLEKEYS :: 0x0035;
 SPI_GETSTICKYKEYS :: 0x003A;
 SPI_SETSTICKYKEYS :: 0x003B;
+
 using STICKYKEY_FLAGS :: enum_flags u32 {
     SKF_STICKYKEYSON :: 0x00000001;
     SKF_AVAILABLE :: 0x00000002;
@@ -2453,6 +2608,7 @@ using STICKYKEY_FLAGS :: enum_flags u32 {
     SKF_TRISTATE :: 0x00000080;
     SKF_TWOKEYSOFF :: 0x00000100;
 };
+
 using TOGGLEKEY_FLAGS :: enum_flags u32 {
     TKF_TOGGLEKEYSON :: 0x00000001;
     TKF_AVAILABLE :: 0x00000002;
@@ -2461,6 +2617,7 @@ using TOGGLEKEY_FLAGS :: enum_flags u32 {
     TKF_HOTKEYSOUND :: 0x00000010;
     TKF_INDICATOR :: 0x00000020;
 };
+
 using FILTERKEY_FLAGS :: enum_flags u32 {
     FKF_FILTERKEYSON :: 0x00000001;
     FKF_AVAILABLE :: 0x00000002;
@@ -2470,9 +2627,11 @@ using FILTERKEY_FLAGS :: enum_flags u32 {
     FKF_INDICATOR :: 0x00000020;
     FKF_CLICKON :: 0x00000040;
 };
+
 GetSystemMetrics :: (nIndex: s32) -> s32 #foreign user32;
 SystemParametersInfoA :: (uiAction: u32, uiParam: u32, pvParam: *void, fWinIni: u32) -> BOOL #foreign user32;
 SystemParametersInfoW :: (uiAction: u32, uiParam: u32, pvParam: *void, fWinIni: u32) -> BOOL #foreign user32;
+
 BITMAPINFOHEADER :: struct {
     biSize: u32;
     biWidth: s32;
@@ -2486,28 +2645,34 @@ BITMAPINFOHEADER :: struct {
     biClrUsed: u32;
     biClrImportant: u32;
 }
+
 BI_RGB :: 0;
 BI_RLE8 :: 1;
 BI_RLE4 :: 2;
 BI_BITFIELDS :: 3;
 BI_JPEG :: 4;
 BI_PNG :: 5;
+
 ROP :: enum u32 {
     SRCCOPY :: 0x00CC0020;
 }
+
 BitBlt :: (hdc: HDC, x: s32, y: s32, cx: s32, cy: s32, hdcSrc: HDC, x1: s32, y1: s32, rop: ROP) -> BOOL #foreign gdi;
 CreateCompatibleBitmap :: (hdc: HDC, cx: s32, cy: s32) -> HBITMAP #foreign gdi;
 DIB_RGB_COLORS :: 0;
 GetDIBits :: (hdc: HDC, hbm: HBITMAP, start: u32, cLines: u32, lpvBits: *void, lpbmi: *BITMAPINFO, usage: u32) -> s32 #foreign gdi;
+
 BLTMODE :: enum u32 {
     BLACKONWHITE :: 0x0001;
     WHITEONBLACK :: 0x0002;
     COLORONCOLOR :: 0x0003;
     HALFTONE :: 0x0004;
 }
+
 SetStretchBltMode :: (hdc: HDC, mode: BLTMODE) -> s32 #foreign gdi;
 StretchBlt :: (hdcDest: HDC, xDest: s32, yDest: s32, wDest: s32, hDest: s32, hdcSrc: HDC, xSrc: s32, ySrc: s32, wSrc: s32, hSrc: s32, rop: ROP) -> BOOL #foreign gdi;
 OFN_NOCHANGEDIR :: 0x00000008;
+
 OPENFILENAME :: struct(T: Type) {
     lStructSize: u32;
     hwndOwner: HWND;
@@ -2533,6 +2698,7 @@ OPENFILENAME :: struct(T: Type) {
     dwReserved: u32;
     FlagsEx: u32;
 }
+
 OPENFILENAMEA :: OPENFILENAME(T = u8);
 OPENFILENAMEW :: OPENFILENAME(T = u16);
 CommDlgExtendedError :: () -> u32 #foreign comdlg32;
@@ -2540,6 +2706,7 @@ GetOpenFileNameA :: (arg: *OPENFILENAMEA) -> BOOL #foreign comdlg32;
 GetOpenFileNameW :: (arg: *OPENFILENAMEW) -> BOOL #foreign comdlg32;
 GetSaveFileNameA :: (arg: *OPENFILENAMEA) -> BOOL #foreign comdlg32;
 GetSaveFileNameW :: (arg: *OPENFILENAMEW) -> BOOL #foreign comdlg32;
+
 using FILEOP_FLAGS :: enum_flags u16 {
     FOF_MULTIDESTFILES :: 0x0001;
     FOF_CONFIRMMOUSE :: 0x0002;
@@ -2559,10 +2726,12 @@ using FILEOP_FLAGS :: enum_flags u16 {
     FOF_NORECURSEREPARSE :: 0x8000;
     FOF_NO_UI :: FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR;
 }
+
 FO_MOVE :: 1;
 FO_COPY :: 2;
 FO_DELETE :: 3;
 FO_RENAME :: 4;
+
 SHFILEOPSTRUCTA :: struct {
     hwnd: HWND;
     wFunc: u32;
@@ -2573,6 +2742,7 @@ SHFILEOPSTRUCTA :: struct {
     hNameMappings: *void;
     lpszProgressTitle: *u8;
 }
+
 SHFILEOPSTRUCTW :: struct {
     hwnd: HWND;
     wFunc: u32;
@@ -2583,6 +2753,7 @@ SHFILEOPSTRUCTW :: struct {
     hNameMappings: *void;
     lpszProgressTitle: *u16;
 }
+
 DragAcceptFiles :: (hWnd: HWND, fAccept: BOOL) #foreign shell32;
 DragFinish :: (hDrop: HDROP) #foreign shell32;
 DragQueryFileW :: (hDrop: HDROP, iFile: u32, lpszFile: *u16, cch: u32) -> u32 #foreign shell32;
@@ -2626,23 +2797,30 @@ HANDLE_FLAG_PROTECT_FROM_CLOSE :: 2;
 LANG_NEUTRAL :: 0;
 LANG_ENGLISH :: 0x09;
 SUBLANG_DEFAULT :: 0x1;
+
 WideCharToMultiByte :: (CodePage: u32, dwFlags: u32, lpWideCharStr: *u16, cchWideChar: s32, lpMultiByteStr: *u8,
 cbMultiByte: s32, lpDefaultChar: *u8, lpUsedDefaultChar: *s32) -> s32 #foreign kernel32;
+
 MultiByteToWideChar :: (CodePage: u32, dwFlags: u32, lpMultiByteStr: *u8, cbMultiByte: s32,
 lpWideCharStr: *u16, cchWideChar: s32) -> s32 #foreign kernel32;
+
 CP_ACP :: 0;
 CP_UTF8 :: 65001;
 WC_NO_BEST_FIT_CHARS :: 0x0000_0400;
 WC_COMPOSITECHECK :: 0x0000_0200;
+
 IUnknown_VTable :: struct {
     QueryInterface: (this: *IUnknown, riid: *IID, ppvObject: **void) -> HRESULT #cpp_method;
     AddRef: (this: *IUnknown) -> u32 #cpp_method;
     Release: (this: *IUnknown) -> u32 #cpp_method;
 }
+
 IUnknown_UUID :: "00000000-0000-0000-C000-000000000046";
+
 IUnknown :: struct {
     vtable: *IUnknown_VTable;
 }
+
 string_to_guid :: uid;
 FILE_MAP_ALL_ACCESS :: 0xf001f;
 FILE_MAP_READ :: 4;
@@ -2663,11 +2841,13 @@ REG_NONE :: 0;
 REG_SZ :: 1;
 REG_DWORD :: 4;
 MAX_PATH :: 260;
+
 Msvc_Destructor_Flags :: enum_flags u32 {
     NONE :: 0;
     FREE_MEMORY :: 1;
     ARRAY_DESTRUCTOR :: 2;
 }
+
 #scope_file
 ntdll :: #system_library "Ntdll";
 kernel32 :: #system_library "kernel32";

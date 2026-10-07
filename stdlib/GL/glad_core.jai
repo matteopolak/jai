@@ -1512,8 +1512,10 @@ GL_RGBA_S3TC :: 0x83A2;
 GL_RGBA4_S3TC :: 0x83A3;
 GL_RGBA_DXT5_S3TC :: 0x83A4;
 GL_RGBA4_DXT5_S3TC :: 0x83A5;
+
 #if OS == .WINDOWS {
     #import "Windows";
+
     WGL_CONTEXT_DEBUG_BIT_ARB :: 0x00000001;
     WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB :: 0x00000002;
     WGL_CONTEXT_MAJOR_VERSION_ARB :: 0x2091;
@@ -1584,12 +1586,14 @@ GL_RGBA4_DXT5_S3TC :: 0x83A5;
     WGL_TYPE_COLORINDEX_ARB :: 0x202C;
     WGL_TYPE_RGBA_FLOAT_ARB :: 0x21A0;
 }
+
 #if OS == .LINUX {
     GLX_EXT_swap_control: bool;
     GLX_EXT_swap_control_tear: bool;
     GLX_SWAP_INTERVAL_EXT :: 0x20F1;
     GLX_MAX_SWAP_INTERVAL_EXT :: 0x20F2;
 }
+
 GL_Procedures :: struct #type_info_procedures_are_void_pointers #type_info_no_size_complaint {
     gl_version_major: s32;
     gl_version_minor: s32;
@@ -2506,12 +2510,15 @@ GL_Procedures :: struct #type_info_procedures_are_void_pointers #type_info_no_si
         WGL_EXT_swap_control_tear: bool;
     }
 }
+
 gl: GL_Procedures;
+
 #if OS == .WINDOWS {
     gl_lib :: #system_library "opengl32";
 } else #if OS == .MACOS {
     gl_lib :: #system_library "OpenGL";
 } else #if OS == .LINUX {
     #import "X11";
+
     gl_lib :: #system_library "GL";
 } else #if OS == .NN_SWITCH {}

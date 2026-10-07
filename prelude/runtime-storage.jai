@@ -3,20 +3,24 @@ Procedure_With_Data :: struct {
     proc: *void;
     data: *void;
 }
+
 Newstring :: struct {
     count: s64;
     data: *u8;
 }
+
 Array_View_64 :: struct {
     count: s64;
     data: *u8;
 }
+
 Resizable_Array :: struct {
     count: s64;
     data: *void;
     allocated: s64;
     allocator: Allocator;
 }
+
 Name_Mapper :: #type ([] string);
 
 For_Flags :: enum_flags u8 {

@@ -1,6 +1,7 @@
 // Independently authored count/query/fill helpers using exact owner dispatch.
 #scope_module
 Vk_Extension_Memory :: #import "Basic";
+
 #scope_export
 vkGetPhysicalDeviceQueueFamilyProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties2 {
     data: [] VkQueueFamilyProperties2;
@@ -22,6 +23,7 @@ vkGetPhysicalDeviceQueueFamilyProperties2KHR :: (physicalDevice: VkPhysicalDevic
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPhysicalDeviceSparseImageFormatProperties2KHR :: (physicalDevice: VkPhysicalDevice, pFormatInfo: *VkPhysicalDeviceSparseImageFormatInfo2) -> [] VkSparseImageFormatProperties2 {
     data: [] VkSparseImageFormatProperties2;
     instance := _vk_physical_instance(physicalDevice);
@@ -42,6 +44,7 @@ vkGetPhysicalDeviceSparseImageFormatProperties2KHR :: (physicalDevice: VkPhysica
     data.count = cast(s64) count;
     return data;
 }
+
 vkEnumeratePhysicalDeviceGroupsKHR :: (instance: VkInstance) -> [] VkPhysicalDeviceGroupProperties, VkResult {
     data: [] VkPhysicalDeviceGroupProperties;
     if !(_vk_registered_instance(instance)) return data, VkResult.ERROR_INITIALIZATION_FAILED;
@@ -73,6 +76,7 @@ vkEnumeratePhysicalDeviceGroupsKHR :: (instance: VkInstance) -> [] VkPhysicalDev
     }
     return data, status;
 }
+
 vkGetImageSparseMemoryRequirements2KHR :: (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2) -> [] VkSparseImageMemoryRequirements2 {
     data: [] VkSparseImageMemoryRequirements2;
     assert(_vk_registered_device(device), "Register the Vulkan handle and exact parent before extension queries");
@@ -92,6 +96,7 @@ vkGetImageSparseMemoryRequirements2KHR :: (device: VkDevice, pInfo: *VkImageSpar
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPastPresentationTimingGOOGLE :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] VkPastPresentationTimingGOOGLE, VkResult {
     data: [] VkPastPresentationTimingGOOGLE;
     if !(_vk_registered_device(device)) return data, VkResult.ERROR_INITIALIZATION_FAILED;
@@ -115,6 +120,7 @@ vkGetPastPresentationTimingGOOGLE :: (device: VkDevice, swapchain: VkSwapchainKH
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetQueueCheckpointDataNV :: (queue: VkQueue) -> [] VkCheckpointDataNV {
     data: [] VkCheckpointDataNV;
     device := _vk_queue_device(queue);

@@ -464,6 +464,7 @@ D3D_SHADER_REQUIRES_INNER_COVERAGE :: 0x00000400;
 D3D_SHADER_REQUIRES_TYPED_UAV_LOAD_ADDITIONAL_FORMATS :: 0x00000800;
 D3D_SHADER_REQUIRES_ROVS :: 0x00001000;
 D3D_SHADER_REQUIRES_VIEWPORT_AND_RT_ARRAY_INDEX_FROM_ANY_SHADER_FEEDING_RASTERIZER :: 0x00002000;
+
 D3D_DRIVER_TYPE :: enum s32 {
     UNKNOWN :: 0;
     HARDWARE :: 1;
@@ -478,6 +479,7 @@ D3D_DRIVER_TYPE :: enum s32 {
     D3D_DRIVER_TYPE_SOFTWARE :: SOFTWARE;
     D3D_DRIVER_TYPE_WARP :: WARP;
 }
+
 D3D_FEATURE_LEVEL :: enum s32 {
     _1_0_CORE :: 4096;
     _9_1 :: 37120;
@@ -500,6 +502,7 @@ D3D_FEATURE_LEVEL :: enum s32 {
     D3D_FEATURE_LEVEL_12_0 :: _12_0;
     D3D_FEATURE_LEVEL_12_1 :: _12_1;
 }
+
 D3D_PRIMITIVE_TOPOLOGY :: enum s32 {
     UNDEFINED :: 0;
     POINTLIST :: 1;
@@ -638,6 +641,7 @@ D3D_PRIMITIVE_TOPOLOGY :: enum s32 {
     D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST :: _31_CONTROL_POINT_PATCHLIST;
     D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST :: _32_CONTROL_POINT_PATCHLIST;
 }
+
 D3D_PRIMITIVE :: enum s32 {
     UNDEFINED :: 0;
     POINT :: 1;
@@ -760,6 +764,7 @@ D3D_PRIMITIVE :: enum s32 {
     D3D_PRIMITIVE_31_CONTROL_POINT_PATCH :: _31_CONTROL_POINT_PATCH;
     D3D_PRIMITIVE_32_CONTROL_POINT_PATCH :: _32_CONTROL_POINT_PATCH;
 }
+
 D3D_SRV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -819,27 +824,34 @@ D3D_SRV_DIMENSION :: enum s32 {
     D3D_SRV_DIMENSION_TEXTURECUBEARRAY :: TEXTURECUBEARRAY;
     D3D_SRV_DIMENSION_BUFFEREX :: BUFFEREX;
 }
+
 PFN_DESTRUCTION_CALLBACK :: #type (pData: *void) -> void #c_call;
 ID3DDestructionNotifier_UUID :: "a06eb39a-50da-425b-8c31-4eecd6c270f3";
+
 ID3DDestructionNotifier :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3ddestructionnotifier_vtable: *ID3DDestructionNotifier_VTable;
 }
+
 ID3DDestructionNotifier_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     RegisterDestructionCallback: (this: *ID3DDestructionNotifier, callbackFn: PFN_DESTRUCTION_CALLBACK, pData: *void, pCallbackID: *u32) -> HRESULT #cpp_method;
     UnregisterDestructionCallback: (this: *ID3DDestructionNotifier, callbackID: u32) -> HRESULT #cpp_method;
 }
+
 ID3DDestructionNotifier_RegisterDestructionCallback :: (this: *ID3DDestructionNotifier, callbackFn: PFN_DESTRUCTION_CALLBACK, pData: *void, pCallbackID: *u32) -> HRESULT {
     return this.id3ddestructionnotifier_vtable.RegisterDestructionCallback(this, callbackFn, pData, pCallbackID);
 }
+
 ID3DDestructionNotifier_UnregisterDestructionCallback :: (this: *ID3DDestructionNotifier, callbackID: u32) -> HRESULT {
     return this.id3ddestructionnotifier_vtable.UnregisterDestructionCallback(this, callbackID);
 }
+
 vtable :: (obj: *ID3DDestructionNotifier) -> *ID3DDestructionNotifier_VTable {
     return obj.id3ddestructionnotifier_vtable;
 }
+
 D3D_SHADER_VARIABLE_CLASS :: enum s32 {
     SVC_SCALAR :: 0;
     SVC_VECTOR :: 1;
@@ -876,6 +888,7 @@ D3D_SHADER_VARIABLE_CLASS :: enum s32 {
     D3D11_SVC_INTERFACE_POINTER :: _11_SVC_INTERFACE_POINTER;
     D3D_SVC_FORCE_DWORD :: SVC_FORCE_DWORD;
 }
+
 D3D_SHADER_VARIABLE_FLAGS :: enum_flags u32 {
     SVF_USERPACKED :: 0x1;
     SVF_USED :: 0x2;
@@ -896,6 +909,7 @@ D3D_SHADER_VARIABLE_FLAGS :: enum_flags u32 {
     D3D11_SVF_INTERFACE_PARAMETER :: _11_SVF_INTERFACE_PARAMETER;
     D3D_SVF_FORCE_DWORD :: SVF_FORCE_DWORD;
 }
+
 D3D_SHADER_VARIABLE_TYPE :: enum s32 {
     SVT_VOID :: 0;
     SVT_BOOL :: 1;
@@ -1120,6 +1134,7 @@ D3D_SHADER_VARIABLE_TYPE :: enum s32 {
     D3D11_SVT_CONSUME_STRUCTURED_BUFFER :: _11_SVT_CONSUME_STRUCTURED_BUFFER;
     D3D_SVT_FORCE_DWORD :: SVT_FORCE_DWORD;
 }
+
 D3D_SHADER_INPUT_FLAGS :: enum_flags u32 {
     SIF_USERPACKED :: 0x1;
     SIF_COMPARISON_SAMPLER :: 0x2;
@@ -1146,6 +1161,7 @@ D3D_SHADER_INPUT_FLAGS :: enum_flags u32 {
     D3D10_SIF_TEXTURE_COMPONENTS :: _10_SIF_TEXTURE_COMPONENTS;
     D3D_SIF_FORCE_DWORD :: SIF_FORCE_DWORD;
 }
+
 D3D_SHADER_INPUT_TYPE :: enum s32 {
     SIT_CBUFFER :: 0;
     SIT_TBUFFER :: 1;
@@ -1200,6 +1216,7 @@ D3D_SHADER_INPUT_TYPE :: enum s32 {
     D3D11_SIT_UAV_CONSUME_STRUCTURED :: _11_SIT_UAV_CONSUME_STRUCTURED;
     D3D11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER :: _11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER;
 }
+
 D3D_SHADER_CBUFFER_FLAGS :: enum_flags u32 {
     CBF_USERPACKED :: 0x1;
     _10_CBF_USERPACKED :: 0x1;
@@ -1208,6 +1225,7 @@ D3D_SHADER_CBUFFER_FLAGS :: enum_flags u32 {
     D3D10_CBF_USERPACKED :: _10_CBF_USERPACKED;
     D3D_CBF_FORCE_DWORD :: CBF_FORCE_DWORD;
 }
+
 D3D_CBUFFER_TYPE :: enum s32 {
     CT_CBUFFER :: 0;
     CT_TBUFFER :: 1;
@@ -1230,6 +1248,7 @@ D3D_CBUFFER_TYPE :: enum s32 {
     D3D11_CT_INTERFACE_POINTERS :: _11_CT_INTERFACE_POINTERS;
     D3D11_CT_RESOURCE_BIND_INFO :: _11_CT_RESOURCE_BIND_INFO;
 }
+
 D3D_NAME :: enum s32 {
     UNDEFINED :: 0;
     POSITION :: 1;
@@ -1313,6 +1332,7 @@ D3D_NAME :: enum s32 {
     D3D_NAME_STENCIL_REF :: STENCIL_REF;
     D3D_NAME_INNER_COVERAGE :: INNER_COVERAGE;
 }
+
 D3D_RESOURCE_RETURN_TYPE :: enum s32 {
     RETURN_TYPE_UNORM :: 1;
     RETURN_TYPE_SNORM :: 2;
@@ -1359,6 +1379,7 @@ D3D_RESOURCE_RETURN_TYPE :: enum s32 {
     D3D11_RETURN_TYPE_DOUBLE :: _11_RETURN_TYPE_DOUBLE;
     D3D11_RETURN_TYPE_CONTINUED :: _11_RETURN_TYPE_CONTINUED;
 }
+
 D3D_REGISTER_COMPONENT_TYPE :: enum s32 {
     REGISTER_COMPONENT_UNKNOWN :: 0;
     REGISTER_COMPONENT_UINT32 :: 1;
@@ -1377,6 +1398,7 @@ D3D_REGISTER_COMPONENT_TYPE :: enum s32 {
     D3D10_REGISTER_COMPONENT_SINT32 :: _10_REGISTER_COMPONENT_SINT32;
     D3D10_REGISTER_COMPONENT_FLOAT32 :: _10_REGISTER_COMPONENT_FLOAT32;
 }
+
 D3D_TESSELLATOR_DOMAIN :: enum s32 {
     UNDEFINED :: 0;
     ISOLINE :: 1;
@@ -1391,6 +1413,7 @@ D3D_TESSELLATOR_DOMAIN :: enum s32 {
     D3D_TESSELLATOR_DOMAIN_TRI :: TRI;
     D3D_TESSELLATOR_DOMAIN_QUAD :: QUAD;
 }
+
 D3D_TESSELLATOR_PARTITIONING :: enum s32 {
     UNDEFINED :: 0;
     INTEGER :: 1;
@@ -1408,6 +1431,7 @@ D3D_TESSELLATOR_PARTITIONING :: enum s32 {
     D3D_TESSELLATOR_PARTITIONING_FRACTIONAL_ODD :: FRACTIONAL_ODD;
     D3D_TESSELLATOR_PARTITIONING_FRACTIONAL_EVEN :: FRACTIONAL_EVEN;
 }
+
 D3D_TESSELLATOR_OUTPUT_PRIMITIVE :: enum s32 {
     TESSELLATOR_OUTPUT_UNDEFINED :: 0;
     TESSELLATOR_OUTPUT_POINT :: 1;
@@ -1430,6 +1454,7 @@ D3D_TESSELLATOR_OUTPUT_PRIMITIVE :: enum s32 {
     D3D11_TESSELLATOR_OUTPUT_TRIANGLE_CW :: _11_TESSELLATOR_OUTPUT_TRIANGLE_CW;
     D3D11_TESSELLATOR_OUTPUT_TRIANGLE_CCW :: _11_TESSELLATOR_OUTPUT_TRIANGLE_CCW;
 }
+
 D3D_MIN_PRECISION :: enum s32 {
     DEFAULT :: 0;
     FLOAT_16 :: 1;
@@ -1448,6 +1473,7 @@ D3D_MIN_PRECISION :: enum s32 {
     D3D_MIN_PRECISION_ANY_16 :: ANY_16;
     D3D_MIN_PRECISION_ANY_10 :: ANY_10;
 }
+
 D3D_INTERPOLATION_MODE :: enum s32 {
     UNDEFINED :: 0;
     CONSTANT :: 1;
@@ -1466,6 +1492,7 @@ D3D_INTERPOLATION_MODE :: enum s32 {
     D3D_INTERPOLATION_LINEAR_SAMPLE :: LINEAR_SAMPLE;
     D3D_INTERPOLATION_LINEAR_NOPERSPECTIVE_SAMPLE :: LINEAR_NOPERSPECTIVE_SAMPLE;
 }
+
 D3D_PARAMETER_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     IN :: 0x1;
@@ -1476,11 +1503,13 @@ D3D_PARAMETER_FLAGS :: enum_flags u32 {
     D3D_PF_OUT :: OUT;
     D3D_PF_FORCE_DWORD :: FORCE_DWORD;
 }
+
 WKPDID_D3DDebugObjectNameW: GUID;
 WKPDID_CommentStringW: GUID;
 D3D_TEXTURE_LAYOUT_ROW_MAJOR: GUID;
 D3D_TEXTURE_LAYOUT_64KB_STANDARD_SWIZZLE: GUID;
 D3D12_GPU_VIRTUAL_ADDRESS :: u64;
+
 D3D12_COMMAND_LIST_TYPE :: enum s32 {
     DIRECT :: 0;
     BUNDLE :: 1;
@@ -1497,12 +1526,14 @@ D3D12_COMMAND_LIST_TYPE :: enum s32 {
     D3D12_COMMAND_LIST_TYPE_VIDEO_PROCESS :: VIDEO_PROCESS;
     D3D12_COMMAND_LIST_TYPE_VIDEO_ENCODE :: VIDEO_ENCODE;
 }
+
 D3D12_COMMAND_QUEUE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DISABLE_GPU_TIMEOUT :: 0x1;
     D3D12_COMMAND_QUEUE_FLAG_NONE :: NONE;
     D3D12_COMMAND_QUEUE_FLAG_DISABLE_GPU_TIMEOUT :: DISABLE_GPU_TIMEOUT;
 }
+
 D3D12_COMMAND_QUEUE_PRIORITY :: enum s32 {
     NORMAL :: 0;
     HIGH :: 100;
@@ -1511,12 +1542,14 @@ D3D12_COMMAND_QUEUE_PRIORITY :: enum s32 {
     D3D12_COMMAND_QUEUE_PRIORITY_HIGH :: HIGH;
     D3D12_COMMAND_QUEUE_PRIORITY_GLOBAL_REALTIME :: GLOBAL_REALTIME;
 }
+
 D3D12_COMMAND_QUEUE_DESC :: struct {
     Type: D3D12_COMMAND_LIST_TYPE;
     Priority: s32;
     Flags: D3D12_COMMAND_QUEUE_FLAGS;
     NodeMask: u32;
 }
+
 D3D12_PRIMITIVE_TOPOLOGY_TYPE :: enum s32 {
     UNDEFINED :: 0;
     POINT :: 1;
@@ -1529,12 +1562,14 @@ D3D12_PRIMITIVE_TOPOLOGY_TYPE :: enum s32 {
     D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE :: TRIANGLE;
     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH :: PATCH;
 }
+
 D3D12_INPUT_CLASSIFICATION :: enum s32 {
     PER_VERTEX_DATA :: 0;
     PER_INSTANCE_DATA :: 1;
     D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA :: PER_VERTEX_DATA;
     D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA :: PER_INSTANCE_DATA;
 }
+
 D3D12_INPUT_ELEMENT_DESC :: struct {
     SemanticName: *u8;
     SemanticIndex: u32;
@@ -1544,14 +1579,17 @@ D3D12_INPUT_ELEMENT_DESC :: struct {
     InputSlotClass: D3D12_INPUT_CLASSIFICATION;
     InstanceDataStepRate: u32;
 }
+
 D3D12_FILL_MODE :: enum s32 {
     WIREFRAME :: 2;
     SOLID :: 3;
     D3D12_FILL_MODE_WIREFRAME :: WIREFRAME;
     D3D12_FILL_MODE_SOLID :: SOLID;
 }
+
 D3D12_PRIMITIVE_TOPOLOGY :: D3D_PRIMITIVE_TOPOLOGY;
 D3D12_PRIMITIVE :: D3D_PRIMITIVE;
+
 D3D12_CULL_MODE :: enum s32 {
     NONE :: 1;
     FRONT :: 2;
@@ -1560,6 +1598,7 @@ D3D12_CULL_MODE :: enum s32 {
     D3D12_CULL_MODE_FRONT :: FRONT;
     D3D12_CULL_MODE_BACK :: BACK;
 }
+
 D3D12_SO_DECLARATION_ENTRY :: struct {
     Stream: u32;
     SemanticName: *u8;
@@ -1568,6 +1607,7 @@ D3D12_SO_DECLARATION_ENTRY :: struct {
     ComponentCount: u8;
     OutputSlot: u8;
 }
+
 D3D12_VIEWPORT :: struct {
     TopLeftX: float;
     TopLeftY: float;
@@ -1576,7 +1616,9 @@ D3D12_VIEWPORT :: struct {
     MinDepth: float;
     MaxDepth: float;
 }
+
 D3D12_RECT :: RECT;
+
 D3D12_BOX :: struct {
     left: u32;
     top: u32;
@@ -1585,6 +1627,7 @@ D3D12_BOX :: struct {
     bottom: u32;
     back: u32;
 }
+
 D3D12_COMPARISON_FUNC :: enum s32 {
     NEVER :: 1;
     LESS :: 2;
@@ -1603,12 +1646,14 @@ D3D12_COMPARISON_FUNC :: enum s32 {
     D3D12_COMPARISON_FUNC_GREATER_EQUAL :: GREATER_EQUAL;
     D3D12_COMPARISON_FUNC_ALWAYS :: ALWAYS;
 }
+
 D3D12_DEPTH_WRITE_MASK :: enum s32 {
     ZERO :: 0;
     ALL :: 1;
     D3D12_DEPTH_WRITE_MASK_ZERO :: ZERO;
     D3D12_DEPTH_WRITE_MASK_ALL :: ALL;
 }
+
 D3D12_STENCIL_OP :: enum s32 {
     KEEP :: 1;
     ZERO :: 2;
@@ -1627,12 +1672,14 @@ D3D12_STENCIL_OP :: enum s32 {
     D3D12_STENCIL_OP_INCR :: INCR;
     D3D12_STENCIL_OP_DECR :: DECR;
 }
+
 D3D12_DEPTH_STENCILOP_DESC :: struct {
     StencilFailOp: D3D12_STENCIL_OP;
     StencilDepthFailOp: D3D12_STENCIL_OP;
     StencilPassOp: D3D12_STENCIL_OP;
     StencilFunc: D3D12_COMPARISON_FUNC;
 }
+
 D3D12_DEPTH_STENCIL_DESC :: struct {
     DepthEnable: BOOL;
     DepthWriteMask: D3D12_DEPTH_WRITE_MASK;
@@ -1643,6 +1690,7 @@ D3D12_DEPTH_STENCIL_DESC :: struct {
     FrontFace: D3D12_DEPTH_STENCILOP_DESC;
     BackFace: D3D12_DEPTH_STENCILOP_DESC;
 }
+
 D3D12_DEPTH_STENCIL_DESC1 :: struct {
     DepthEnable: BOOL;
     DepthWriteMask: D3D12_DEPTH_WRITE_MASK;
@@ -1654,6 +1702,7 @@ D3D12_DEPTH_STENCIL_DESC1 :: struct {
     BackFace: D3D12_DEPTH_STENCILOP_DESC;
     DepthBoundsTestEnable: BOOL;
 }
+
 D3D12_BLEND :: enum s32 {
     ZERO :: 1;
     ONE :: 2;
@@ -1690,6 +1739,7 @@ D3D12_BLEND :: enum s32 {
     D3D12_BLEND_SRC1_ALPHA :: SRC1_ALPHA;
     D3D12_BLEND_INV_SRC1_ALPHA :: INV_SRC1_ALPHA;
 }
+
 D3D12_BLEND_OP :: enum s32 {
     ADD :: 1;
     SUBTRACT :: 2;
@@ -1702,6 +1752,7 @@ D3D12_BLEND_OP :: enum s32 {
     D3D12_BLEND_OP_MIN :: MIN;
     D3D12_BLEND_OP_MAX :: MAX;
 }
+
 D3D12_COLOR_WRITE_ENABLE :: enum s32 {
     RED :: 1;
     GREEN :: 2;
@@ -1714,6 +1765,7 @@ D3D12_COLOR_WRITE_ENABLE :: enum s32 {
     D3D12_COLOR_WRITE_ENABLE_ALPHA :: ALPHA;
     D3D12_COLOR_WRITE_ENABLE_ALL :: ALL;
 }
+
 D3D12_LOGIC_OP :: enum s32 {
     CLEAR :: 0;
     SET :: 1;
@@ -1748,6 +1800,7 @@ D3D12_LOGIC_OP :: enum s32 {
     D3D12_LOGIC_OP_OR_REVERSE :: OR_REVERSE;
     D3D12_LOGIC_OP_OR_INVERTED :: OR_INVERTED;
 }
+
 D3D12_RENDER_TARGET_BLEND_DESC :: struct {
     BlendEnable: BOOL;
     LogicOpEnable: BOOL;
@@ -1760,17 +1813,20 @@ D3D12_RENDER_TARGET_BLEND_DESC :: struct {
     LogicOp: D3D12_LOGIC_OP;
     RenderTargetWriteMask: u8;
 }
+
 D3D12_BLEND_DESC :: struct {
     AlphaToCoverageEnable: BOOL;
     IndependentBlendEnable: BOOL;
     RenderTarget: [8] D3D12_RENDER_TARGET_BLEND_DESC;
 }
+
 D3D12_CONSERVATIVE_RASTERIZATION_MODE :: enum s32 {
     OFF :: 0;
     ON :: 1;
     D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF :: OFF;
     D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON :: ON;
 }
+
 D3D12_RASTERIZER_DESC :: struct {
     FillMode: D3D12_FILL_MODE;
     CullMode: D3D12_CULL_MODE;
@@ -1784,12 +1840,15 @@ D3D12_RASTERIZER_DESC :: struct {
     ForcedSampleCount: u32;
     ConservativeRaster: D3D12_CONSERVATIVE_RASTERIZATION_MODE;
 }
+
 ID3D12Object_UUID :: "c4fec28f-7966-4e95-9f94-f431cb56c3b8";
+
 ID3D12Object :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12object_vtable: *ID3D12Object_VTable;
 }
+
 ID3D12Object_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetPrivateData: (this: *ID3D12Object, guid: *GUID, pDataSize: *u32, pData: *void) -> HRESULT #cpp_method;
@@ -1797,45 +1856,59 @@ ID3D12Object_VTable :: struct #type_info_none {
     SetPrivateDataInterface: (this: *ID3D12Object, guid: *GUID, pData: *IUnknown) -> HRESULT #cpp_method;
     SetName: (this: *ID3D12Object, Name: *s16) -> HRESULT #cpp_method;
 }
+
 ID3D12Object_GetPrivateData :: (this: *ID3D12Object, guid: *GUID, pDataSize: *u32, pData: *void) -> HRESULT {
     return this.id3d12object_vtable.GetPrivateData(this, guid, pDataSize, pData);
 }
+
 ID3D12Object_SetPrivateData :: (this: *ID3D12Object, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d12object_vtable.SetPrivateData(this, guid, DataSize, pData);
 }
+
 ID3D12Object_SetPrivateDataInterface :: (this: *ID3D12Object, guid: *GUID, pData: *IUnknown) -> HRESULT {
     return this.id3d12object_vtable.SetPrivateDataInterface(this, guid, pData);
 }
+
 ID3D12Object_SetName :: (this: *ID3D12Object, Name: *s16) -> HRESULT {
     return this.id3d12object_vtable.SetName(this, Name);
 }
+
 vtable :: (obj: *ID3D12Object) -> *ID3D12Object_VTable {
     return obj.id3d12object_vtable;
 }
+
 ID3D12DeviceChild_UUID :: "905db94b-a00c-4140-9df5-2b64ca9ea357";
+
 ID3D12DeviceChild :: struct {
     #as using id3d12object: ID3D12Object;
     #place id3d12object;
     id3d12devicechild_vtable: *ID3D12DeviceChild_VTable;
 }
+
 ID3D12DeviceChild_VTable :: struct #type_info_none {
     using id3d12object: ID3D12Object_VTable;
     GetDevice: (this: *ID3D12DeviceChild, riid: *IID, ppvDevice: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12DeviceChild_GetDevice :: (this: *ID3D12DeviceChild, riid: *IID, ppvDevice: **void) -> HRESULT {
     return this.id3d12devicechild_vtable.GetDevice(this, riid, ppvDevice);
 }
+
 vtable :: (obj: *ID3D12DeviceChild) -> *ID3D12DeviceChild_VTable {
     return obj.id3d12devicechild_vtable;
 }
+
 ID3D12RootSignature_UUID :: "c54a6b66-72df-4ee8-8be5-a946a1429214";
+
 ID3D12RootSignature :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
 }
+
 D3D12_SHADER_BYTECODE :: struct {
     pShaderBytecode: *void;
     BytecodeLength: SIZE_T;
 }
+
 D3D12_STREAM_OUTPUT_DESC :: struct {
     pSODeclaration: *D3D12_SO_DECLARATION_ENTRY;
     NumEntries: u32;
@@ -1843,10 +1916,12 @@ D3D12_STREAM_OUTPUT_DESC :: struct {
     NumStrides: u32;
     RasterizedStream: u32;
 }
+
 D3D12_INPUT_LAYOUT_DESC :: struct {
     pInputElementDescs: *D3D12_INPUT_ELEMENT_DESC;
     NumElements: u32;
 }
+
 D3D12_INDEX_BUFFER_STRIP_CUT_VALUE :: enum s32 {
     DISABLED :: 0;
     _0xFFFF :: 1;
@@ -1855,16 +1930,19 @@ D3D12_INDEX_BUFFER_STRIP_CUT_VALUE :: enum s32 {
     D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFF :: _0xFFFF;
     D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFFFFFF :: _0xFFFFFFFF;
 }
+
 D3D12_CACHED_PIPELINE_STATE :: struct {
     pCachedBlob: *void;
     CachedBlobSizeInBytes: SIZE_T;
 }
+
 D3D12_PIPELINE_STATE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     TOOL_DEBUG :: 0x1;
     D3D12_PIPELINE_STATE_FLAG_NONE :: NONE;
     D3D12_PIPELINE_STATE_FLAG_TOOL_DEBUG :: TOOL_DEBUG;
 }
+
 D3D12_GRAPHICS_PIPELINE_STATE_DESC :: struct {
     pRootSignature: *ID3D12RootSignature;
     VS: D3D12_SHADER_BYTECODE;
@@ -1888,6 +1966,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC :: struct {
     CachedPSO: D3D12_CACHED_PIPELINE_STATE;
     Flags: D3D12_PIPELINE_STATE_FLAGS;
 }
+
 D3D12_COMPUTE_PIPELINE_STATE_DESC :: struct {
     pRootSignature: *ID3D12RootSignature;
     CS: D3D12_SHADER_BYTECODE;
@@ -1895,14 +1974,17 @@ D3D12_COMPUTE_PIPELINE_STATE_DESC :: struct {
     CachedPSO: D3D12_CACHED_PIPELINE_STATE;
     Flags: D3D12_PIPELINE_STATE_FLAGS;
 }
+
 D3D12_RT_FORMAT_ARRAY :: struct {
     RTFormats: [8] DXGI_FORMAT;
     NumRenderTargets: u32;
 }
+
 D3D12_PIPELINE_STATE_STREAM_DESC :: struct {
     SizeInBytes: SIZE_T;
     pPipelineStateSubobjectStream: *void;
 }
+
 D3D12_PIPELINE_STATE_SUBOBJECT_TYPE :: enum s32 {
     ROOT_SIGNATURE :: 0;
     VS :: 1;
@@ -1957,6 +2039,7 @@ D3D12_PIPELINE_STATE_SUBOBJECT_TYPE :: enum s32 {
     D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MS :: MS;
     D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MAX_VALID :: MAX_VALID;
 }
+
 D3D12_FEATURE :: enum s32 {
     D3D12_OPTIONS :: 0;
     ARCHITECTURE :: 1;
@@ -2011,6 +2094,7 @@ D3D12_FEATURE :: enum s32 {
     D3D12_FEATURE_PROTECTED_RESOURCE_SESSION_TYPE_COUNT :: PROTECTED_RESOURCE_SESSION_TYPE_COUNT;
     D3D12_FEATURE_PROTECTED_RESOURCE_SESSION_TYPES :: PROTECTED_RESOURCE_SESSION_TYPES;
 }
+
 D3D12_SHADER_MIN_PRECISION_SUPPORT :: enum s32 {
     NONE :: 0;
     _10_BIT :: 1;
@@ -2019,6 +2103,7 @@ D3D12_SHADER_MIN_PRECISION_SUPPORT :: enum s32 {
     D3D12_SHADER_MIN_PRECISION_SUPPORT_10_BIT :: _10_BIT;
     D3D12_SHADER_MIN_PRECISION_SUPPORT_16_BIT :: _16_BIT;
 }
+
 D3D12_TILED_RESOURCES_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2031,6 +2116,7 @@ D3D12_TILED_RESOURCES_TIER :: enum s32 {
     D3D12_TILED_RESOURCES_TIER_3 :: _3;
     D3D12_TILED_RESOURCES_TIER_4 :: _4;
 }
+
 D3D12_RESOURCE_BINDING_TIER :: enum s32 {
     _1 :: 1;
     _2 :: 2;
@@ -2039,6 +2125,7 @@ D3D12_RESOURCE_BINDING_TIER :: enum s32 {
     D3D12_RESOURCE_BINDING_TIER_2 :: _2;
     D3D12_RESOURCE_BINDING_TIER_3 :: _3;
 }
+
 D3D12_CONSERVATIVE_RASTERIZATION_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2049,6 +2136,7 @@ D3D12_CONSERVATIVE_RASTERIZATION_TIER :: enum s32 {
     D3D12_CONSERVATIVE_RASTERIZATION_TIER_2 :: _2;
     D3D12_CONSERVATIVE_RASTERIZATION_TIER_3 :: _3;
 }
+
 D3D12_FORMAT_SUPPORT1 :: enum s32 {
     NONE :: 0;
     BUFFER :: 1;
@@ -2111,6 +2199,7 @@ D3D12_FORMAT_SUPPORT1 :: enum s32 {
     D3D12_FORMAT_SUPPORT1_VIDEO_PROCESSOR_INPUT :: VIDEO_PROCESSOR_INPUT;
     D3D12_FORMAT_SUPPORT1_VIDEO_ENCODER :: VIDEO_ENCODER;
 }
+
 D3D12_FORMAT_SUPPORT2 :: enum s32 {
     NONE :: 0;
     UAV_ATOMIC_ADD :: 1;
@@ -2139,12 +2228,14 @@ D3D12_FORMAT_SUPPORT2 :: enum s32 {
     D3D12_FORMAT_SUPPORT2_MULTIPLANE_OVERLAY :: MULTIPLANE_OVERLAY;
     D3D12_FORMAT_SUPPORT2_SAMPLER_FEEDBACK :: SAMPLER_FEEDBACK;
 }
+
 D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     TILED_RESOURCE :: 0x1;
     D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE :: NONE;
     D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_TILED_RESOURCE :: TILED_RESOURCE;
 }
+
 D3D12_CROSS_NODE_SHARING_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1_EMULATED :: 1;
@@ -2157,12 +2248,14 @@ D3D12_CROSS_NODE_SHARING_TIER :: enum s32 {
     D3D12_CROSS_NODE_SHARING_TIER_2 :: _2;
     D3D12_CROSS_NODE_SHARING_TIER_3 :: _3;
 }
+
 D3D12_RESOURCE_HEAP_TIER :: enum s32 {
     _1 :: 1;
     _2 :: 2;
     D3D12_RESOURCE_HEAP_TIER_1 :: _1;
     D3D12_RESOURCE_HEAP_TIER_2 :: _2;
 }
+
 D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2171,6 +2264,7 @@ D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER :: enum s32 {
     D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_1 :: _1;
     D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_2 :: _2;
 }
+
 D3D12_VIEW_INSTANCING_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2181,6 +2275,7 @@ D3D12_VIEW_INSTANCING_TIER :: enum s32 {
     D3D12_VIEW_INSTANCING_TIER_2 :: _2;
     D3D12_VIEW_INSTANCING_TIER_3 :: _3;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS :: struct {
     DoublePrecisionFloatShaderOps: BOOL;
     OutputMergerLogicOp: BOOL;
@@ -2198,6 +2293,7 @@ D3D12_FEATURE_DATA_D3D12_OPTIONS :: struct {
     VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation: BOOL;
     ResourceHeapTier: D3D12_RESOURCE_HEAP_TIER;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS1 :: struct {
     WaveOps: BOOL;
     WaveLaneCountMin: u32;
@@ -2206,10 +2302,12 @@ D3D12_FEATURE_DATA_D3D12_OPTIONS1 :: struct {
     ExpandedComputeResourceStates: BOOL;
     Int64ShaderOps: BOOL;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS2 :: struct {
     DepthBoundsTestSupported: BOOL;
     ProgrammableSamplePositionsTier: D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER;
 }
+
 D3D_ROOT_SIGNATURE_VERSION :: enum s32 {
     _1 :: 1;
     _1_0 :: 1;
@@ -2218,15 +2316,18 @@ D3D_ROOT_SIGNATURE_VERSION :: enum s32 {
     D3D_ROOT_SIGNATURE_VERSION_1_0 :: _1_0;
     D3D_ROOT_SIGNATURE_VERSION_1_1 :: _1_1;
 }
+
 D3D12_FEATURE_DATA_ROOT_SIGNATURE :: struct {
     HighestVersion: D3D_ROOT_SIGNATURE_VERSION;
 }
+
 D3D12_FEATURE_DATA_ARCHITECTURE :: struct {
     NodeIndex: u32;
     TileBasedRenderer: BOOL;
     UMA: BOOL;
     CacheCoherentUMA: BOOL;
 }
+
 D3D12_FEATURE_DATA_ARCHITECTURE1 :: struct {
     NodeIndex: u32;
     TileBasedRenderer: BOOL;
@@ -2234,11 +2335,13 @@ D3D12_FEATURE_DATA_ARCHITECTURE1 :: struct {
     CacheCoherentUMA: BOOL;
     IsolatedMMU: BOOL;
 }
+
 D3D12_FEATURE_DATA_FEATURE_LEVELS :: struct {
     NumFeatureLevels: u32;
     pFeatureLevelsRequested: *D3D_FEATURE_LEVEL;
     MaxSupportedFeatureLevel: D3D_FEATURE_LEVEL;
 }
+
 D3D_SHADER_MODEL :: enum s32 {
     _5_1 :: 81;
     _6_0 :: 96;
@@ -2257,28 +2360,34 @@ D3D_SHADER_MODEL :: enum s32 {
     D3D_SHADER_MODEL_6_5 :: _6_5;
     D3D_SHADER_MODEL_6_6 :: _6_6;
 }
+
 D3D12_FEATURE_DATA_SHADER_MODEL :: struct {
     HighestShaderModel: D3D_SHADER_MODEL;
 }
+
 D3D12_FEATURE_DATA_FORMAT_SUPPORT :: struct {
     Format: DXGI_FORMAT;
     Support1: D3D12_FORMAT_SUPPORT1;
     Support2: D3D12_FORMAT_SUPPORT2;
 }
+
 D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS :: struct {
     Format: DXGI_FORMAT;
     SampleCount: u32;
     Flags: D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS;
     NumQualityLevels: u32;
 }
+
 D3D12_FEATURE_DATA_FORMAT_INFO :: struct {
     Format: DXGI_FORMAT;
     PlaneCount: u8;
 }
+
 D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT :: struct {
     MaxGPUVirtualAddressBitsPerResource: u32;
     MaxGPUVirtualAddressBitsPerProcess: u32;
 }
+
 D3D12_SHADER_CACHE_SUPPORT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SINGLE_PSO :: 0x1;
@@ -2291,14 +2400,17 @@ D3D12_SHADER_CACHE_SUPPORT_FLAGS :: enum_flags u32 {
     D3D12_SHADER_CACHE_SUPPORT_AUTOMATIC_INPROC_CACHE :: AUTOMATIC_INPROC_CACHE;
     D3D12_SHADER_CACHE_SUPPORT_AUTOMATIC_DISK_CACHE :: AUTOMATIC_DISK_CACHE;
 }
+
 D3D12_FEATURE_DATA_SHADER_CACHE :: struct {
     SupportFlags: D3D12_SHADER_CACHE_SUPPORT_FLAGS;
 }
+
 D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY :: struct {
     CommandListType: D3D12_COMMAND_LIST_TYPE;
     Priority: u32;
     PriorityForTypeIsSupported: BOOL;
 }
+
 D3D12_COMMAND_LIST_SUPPORT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DIRECT :: 0x1;
@@ -2317,6 +2429,7 @@ D3D12_COMMAND_LIST_SUPPORT_FLAGS :: enum_flags u32 {
     D3D12_COMMAND_LIST_SUPPORT_FLAG_VIDEO_PROCESS :: VIDEO_PROCESS;
     D3D12_COMMAND_LIST_SUPPORT_FLAG_VIDEO_ENCODE :: VIDEO_ENCODE;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS3 :: struct {
     CopyQueueTimestampQueriesSupported: BOOL;
     CastingFullyTypedFormatSupported: BOOL;
@@ -2324,9 +2437,11 @@ D3D12_FEATURE_DATA_D3D12_OPTIONS3 :: struct {
     ViewInstancingTier: D3D12_VIEW_INSTANCING_TIER;
     BarycentricsSupported: BOOL;
 }
+
 D3D12_FEATURE_DATA_EXISTING_HEAPS :: struct {
     Supported: BOOL;
 }
+
 D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER :: enum s32 {
     _0 :: 0;
     _1 :: 1;
@@ -2335,25 +2450,30 @@ D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER :: enum s32 {
     D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_1 :: _1;
     D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_2 :: _2;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS4 :: struct {
     MSAA64KBAlignedTextureSupported: BOOL;
     SharedResourceCompatibilityTier: D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER;
     Native16BitShaderOpsSupported: BOOL;
 }
+
 D3D12_HEAP_SERIALIZATION_TIER :: enum s32 {
     _0 :: 0;
     _10 :: 10;
     D3D12_HEAP_SERIALIZATION_TIER_0 :: _0;
     D3D12_HEAP_SERIALIZATION_TIER_10 :: _10;
 }
+
 D3D12_FEATURE_DATA_SERIALIZATION :: struct {
     NodeIndex: u32;
     HeapSerializationTier: D3D12_HEAP_SERIALIZATION_TIER;
 }
+
 D3D12_FEATURE_DATA_CROSS_NODE :: struct {
     SharingTier: D3D12_CROSS_NODE_SHARING_TIER;
     AtomicShaderInstructions: BOOL;
 }
+
 D3D12_RENDER_PASS_TIER :: enum s32 {
     _0 :: 0;
     _1 :: 1;
@@ -2362,6 +2482,7 @@ D3D12_RENDER_PASS_TIER :: enum s32 {
     D3D12_RENDER_PASS_TIER_1 :: _1;
     D3D12_RENDER_PASS_TIER_2 :: _2;
 }
+
 D3D12_RAYTRACING_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1_0 :: 10;
@@ -2370,11 +2491,13 @@ D3D12_RAYTRACING_TIER :: enum s32 {
     D3D12_RAYTRACING_TIER_1_0 :: _1_0;
     D3D12_RAYTRACING_TIER_1_1 :: _1_1;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS5 :: struct {
     SRVOnlyTiledResourceTier3: BOOL;
     RenderPassesTier: D3D12_RENDER_PASS_TIER;
     RaytracingTier: D3D12_RAYTRACING_TIER;
 }
+
 D3D12_VARIABLE_SHADING_RATE_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2383,6 +2506,7 @@ D3D12_VARIABLE_SHADING_RATE_TIER :: enum s32 {
     D3D12_VARIABLE_SHADING_RATE_TIER_1 :: _1;
     D3D12_VARIABLE_SHADING_RATE_TIER_2 :: _2;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS6 :: struct {
     AdditionalShadingRatesSupported: BOOL;
     PerPrimitiveShadingRateSupportedWithViewportIndexing: BOOL;
@@ -2390,12 +2514,14 @@ D3D12_FEATURE_DATA_D3D12_OPTIONS6 :: struct {
     ShadingRateImageTileSize: u32;
     BackgroundProcessingSupported: BOOL;
 }
+
 D3D12_MESH_SHADER_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _1 :: 10;
     D3D12_MESH_SHADER_TIER_NOT_SUPPORTED :: NOT_SUPPORTED;
     D3D12_MESH_SHADER_TIER_1 :: _1;
 }
+
 D3D12_SAMPLER_FEEDBACK_TIER :: enum s32 {
     NOT_SUPPORTED :: 0;
     _0_9 :: 90;
@@ -2404,10 +2530,12 @@ D3D12_SAMPLER_FEEDBACK_TIER :: enum s32 {
     D3D12_SAMPLER_FEEDBACK_TIER_0_9 :: _0_9;
     D3D12_SAMPLER_FEEDBACK_TIER_1_0 :: _1_0;
 }
+
 D3D12_FEATURE_DATA_D3D12_OPTIONS7 :: struct {
     MeshShaderTier: D3D12_MESH_SHADER_TIER;
     SamplerFeedbackTier: D3D12_SAMPLER_FEEDBACK_TIER;
 }
+
 D3D12_FEATURE_DATA_QUERY_META_COMMAND :: struct {
     CommandId: GUID;
     NodeMask: u32;
@@ -2416,15 +2544,18 @@ D3D12_FEATURE_DATA_QUERY_META_COMMAND :: struct {
     pQueryOutputData: *void;
     QueryOutputDataSizeInBytes: SIZE_T;
 }
+
 D3D12_RESOURCE_ALLOCATION_INFO :: struct {
     SizeInBytes: u64;
     Alignment: u64;
 }
+
 D3D12_RESOURCE_ALLOCATION_INFO1 :: struct {
     Offset: u64;
     Alignment: u64;
     SizeInBytes: u64;
 }
+
 D3D12_HEAP_TYPE :: enum s32 {
     DEFAULT :: 1;
     UPLOAD :: 2;
@@ -2435,6 +2566,7 @@ D3D12_HEAP_TYPE :: enum s32 {
     D3D12_HEAP_TYPE_READBACK :: READBACK;
     D3D12_HEAP_TYPE_CUSTOM :: CUSTOM;
 }
+
 D3D12_CPU_PAGE_PROPERTY :: enum s32 {
     UNKNOWN :: 0;
     NOT_AVAILABLE :: 1;
@@ -2445,6 +2577,7 @@ D3D12_CPU_PAGE_PROPERTY :: enum s32 {
     D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE :: WRITE_COMBINE;
     D3D12_CPU_PAGE_PROPERTY_WRITE_BACK :: WRITE_BACK;
 }
+
 D3D12_MEMORY_POOL :: enum s32 {
     UNKNOWN :: 0;
     L0 :: 1;
@@ -2453,6 +2586,7 @@ D3D12_MEMORY_POOL :: enum s32 {
     D3D12_MEMORY_POOL_L0 :: L0;
     D3D12_MEMORY_POOL_L1 :: L1;
 }
+
 D3D12_HEAP_PROPERTIES :: struct {
     Type: D3D12_HEAP_TYPE;
     CPUPageProperty: D3D12_CPU_PAGE_PROPERTY;
@@ -2460,6 +2594,7 @@ D3D12_HEAP_PROPERTIES :: struct {
     CreationNodeMask: u32;
     VisibleNodeMask: u32;
 }
+
 D3D12_HEAP_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SHARED :: 0x1;
@@ -2494,12 +2629,14 @@ D3D12_HEAP_FLAGS :: enum_flags u32 {
     D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES :: ALLOW_ONLY_NON_RT_DS_TEXTURES;
     D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES :: ALLOW_ONLY_RT_DS_TEXTURES;
 }
+
 D3D12_HEAP_DESC :: struct {
     SizeInBytes: u64;
     Properties: D3D12_HEAP_PROPERTIES;
     Alignment: u64;
     Flags: D3D12_HEAP_FLAGS;
 }
+
 D3D12_RESOURCE_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -2512,6 +2649,7 @@ D3D12_RESOURCE_DIMENSION :: enum s32 {
     D3D12_RESOURCE_DIMENSION_TEXTURE2D :: TEXTURE2D;
     D3D12_RESOURCE_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D12_TEXTURE_LAYOUT :: enum s32 {
     UNKNOWN :: 0;
     ROW_MAJOR :: 1;
@@ -2522,6 +2660,7 @@ D3D12_TEXTURE_LAYOUT :: enum s32 {
     D3D12_TEXTURE_LAYOUT_64KB_UNDEFINED_SWIZZLE :: _64KB_UNDEFINED_SWIZZLE;
     D3D12_TEXTURE_LAYOUT_64KB_STANDARD_SWIZZLE :: _64KB_STANDARD_SWIZZLE;
 }
+
 D3D12_RESOURCE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ALLOW_RENDER_TARGET :: 0x1;
@@ -2540,11 +2679,13 @@ D3D12_RESOURCE_FLAGS :: enum_flags u32 {
     D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS :: ALLOW_SIMULTANEOUS_ACCESS;
     D3D12_RESOURCE_FLAG_VIDEO_DECODE_REFERENCE_ONLY :: VIDEO_DECODE_REFERENCE_ONLY;
 }
+
 D3D12_MIP_REGION :: struct {
     Width: u32;
     Height: u32;
     Depth: u32;
 }
+
 D3D12_RESOURCE_DESC :: struct {
     Dimension: D3D12_RESOURCE_DIMENSION;
     Alignment: u64;
@@ -2557,6 +2698,7 @@ D3D12_RESOURCE_DESC :: struct {
     Layout: D3D12_TEXTURE_LAYOUT;
     Flags: D3D12_RESOURCE_FLAGS;
 }
+
 D3D12_RESOURCE_DESC1 :: struct {
     Dimension: D3D12_RESOURCE_DIMENSION;
     Alignment: u64;
@@ -2570,10 +2712,12 @@ D3D12_RESOURCE_DESC1 :: struct {
     Flags: D3D12_RESOURCE_FLAGS;
     SamplerFeedbackMipRegion: D3D12_MIP_REGION;
 }
+
 D3D12_DEPTH_STENCIL_VALUE :: struct {
     Depth: float;
     Stencil: u8;
 }
+
 D3D12_CLEAR_VALUE :: struct {
     Format: DXGI_FORMAT;
     union {
@@ -2581,29 +2725,35 @@ D3D12_CLEAR_VALUE :: struct {
         DepthStencil: D3D12_DEPTH_STENCIL_VALUE;
     }
 }
+
 D3D12_RANGE :: struct {
     Begin: SIZE_T;
     End: SIZE_T;
 }
+
 D3D12_RANGE_UINT64 :: struct {
     Begin: u64;
     End: u64;
 }
+
 D3D12_SUBRESOURCE_RANGE_UINT64 :: struct {
     Subresource: u32;
     Range: D3D12_RANGE_UINT64;
 }
+
 D3D12_SUBRESOURCE_INFO :: struct {
     Offset: u64;
     RowPitch: u32;
     DepthPitch: u32;
 }
+
 D3D12_TILED_RESOURCE_COORDINATE :: struct {
     X: u32;
     Y: u32;
     Z: u32;
     Subresource: u32;
 }
+
 D3D12_TILE_REGION_SIZE :: struct {
     NumTiles: u32;
     UseBox: BOOL;
@@ -2611,6 +2761,7 @@ D3D12_TILE_REGION_SIZE :: struct {
     Height: u16;
     Depth: u16;
 }
+
 D3D12_TILE_RANGE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     NULL :: 0x1;
@@ -2621,29 +2772,34 @@ D3D12_TILE_RANGE_FLAGS :: enum_flags u32 {
     D3D12_TILE_RANGE_FLAG_SKIP :: SKIP;
     D3D12_TILE_RANGE_FLAG_REUSE_SINGLE_TILE :: REUSE_SINGLE_TILE;
 }
+
 D3D12_SUBRESOURCE_TILING :: struct {
     WidthInTiles: u32;
     HeightInTiles: u16;
     DepthInTiles: u16;
     StartTileIndexInOverallResource: u32;
 }
+
 D3D12_TILE_SHAPE :: struct {
     WidthInTexels: u32;
     HeightInTexels: u32;
     DepthInTexels: u32;
 }
+
 D3D12_PACKED_MIP_INFO :: struct {
     NumStandardMips: u8;
     NumPackedMips: u8;
     NumTilesForPackedMips: u32;
     StartTileIndexInOverallResource: u32;
 }
+
 D3D12_TILE_MAPPING_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     NO_HAZARD :: 0x1;
     D3D12_TILE_MAPPING_FLAG_NONE :: NONE;
     D3D12_TILE_MAPPING_FLAG_NO_HAZARD :: NO_HAZARD;
 }
+
 D3D12_TILE_COPY_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     NO_HAZARD :: 0x1;
@@ -2654,6 +2810,7 @@ D3D12_TILE_COPY_FLAGS :: enum_flags u32 {
     D3D12_TILE_COPY_FLAG_LINEAR_BUFFER_TO_SWIZZLED_TILED_RESOURCE :: LINEAR_BUFFER_TO_SWIZZLED_TILED_RESOURCE;
     D3D12_TILE_COPY_FLAG_SWIZZLED_TILED_RESOURCE_TO_LINEAR_BUFFER :: SWIZZLED_TILED_RESOURCE_TO_LINEAR_BUFFER;
 }
+
 D3D12_RESOURCE_STATES :: enum s32 {
     COMMON :: 0;
     VERTEX_AND_CONSTANT_BUFFER :: 1;
@@ -2708,6 +2865,7 @@ D3D12_RESOURCE_STATES :: enum s32 {
     D3D12_RESOURCE_STATE_VIDEO_ENCODE_READ :: VIDEO_ENCODE_READ;
     D3D12_RESOURCE_STATE_VIDEO_ENCODE_WRITE :: VIDEO_ENCODE_WRITE;
 }
+
 D3D12_RESOURCE_BARRIER_TYPE :: enum s32 {
     TRANSITION :: 0;
     ALIASING :: 1;
@@ -2716,19 +2874,23 @@ D3D12_RESOURCE_BARRIER_TYPE :: enum s32 {
     D3D12_RESOURCE_BARRIER_TYPE_ALIASING :: ALIASING;
     D3D12_RESOURCE_BARRIER_TYPE_UAV :: UAV;
 }
+
 D3D12_RESOURCE_TRANSITION_BARRIER :: struct {
     pResource: *ID3D12Resource;
     Subresource: u32;
     StateBefore: D3D12_RESOURCE_STATES;
     StateAfter: D3D12_RESOURCE_STATES;
 }
+
 D3D12_RESOURCE_ALIASING_BARRIER :: struct {
     pResourceBefore: *ID3D12Resource;
     pResourceAfter: *ID3D12Resource;
 }
+
 D3D12_RESOURCE_UAV_BARRIER :: struct {
     pResource: *ID3D12Resource;
 }
+
 D3D12_RESOURCE_BARRIER_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     BEGIN_ONLY :: 0x1;
@@ -2737,6 +2899,7 @@ D3D12_RESOURCE_BARRIER_FLAGS :: enum_flags u32 {
     D3D12_RESOURCE_BARRIER_FLAG_BEGIN_ONLY :: BEGIN_ONLY;
     D3D12_RESOURCE_BARRIER_FLAG_END_ONLY :: END_ONLY;
 }
+
 D3D12_RESOURCE_BARRIER :: struct {
     Type: D3D12_RESOURCE_BARRIER_TYPE;
     Flags: D3D12_RESOURCE_BARRIER_FLAGS;
@@ -2746,6 +2909,7 @@ D3D12_RESOURCE_BARRIER :: struct {
         UAV: D3D12_RESOURCE_UAV_BARRIER;
     }
 }
+
 D3D12_SUBRESOURCE_FOOTPRINT :: struct {
     Format: DXGI_FORMAT;
     Width: u32;
@@ -2753,16 +2917,19 @@ D3D12_SUBRESOURCE_FOOTPRINT :: struct {
     Depth: u32;
     RowPitch: u32;
 }
+
 D3D12_PLACED_SUBRESOURCE_FOOTPRINT :: struct {
     Offset: u64;
     Footprint: D3D12_SUBRESOURCE_FOOTPRINT;
 }
+
 D3D12_TEXTURE_COPY_TYPE :: enum s32 {
     SUBRESOURCE_INDEX :: 0;
     PLACED_FOOTPRINT :: 1;
     D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX :: SUBRESOURCE_INDEX;
     D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT :: PLACED_FOOTPRINT;
 }
+
 D3D12_TEXTURE_COPY_LOCATION :: struct {
     pResource: *ID3D12Resource;
     Type: D3D12_TEXTURE_COPY_TYPE;
@@ -2771,6 +2938,7 @@ D3D12_TEXTURE_COPY_LOCATION :: struct {
         SubresourceIndex: u32;
     }
 }
+
 D3D12_RESOLVE_MODE :: enum s32 {
     DECOMPRESS :: 0;
     MIN :: 1;
@@ -2785,25 +2953,30 @@ D3D12_RESOLVE_MODE :: enum s32 {
     D3D12_RESOLVE_MODE_ENCODE_SAMPLER_FEEDBACK :: ENCODE_SAMPLER_FEEDBACK;
     D3D12_RESOLVE_MODE_DECODE_SAMPLER_FEEDBACK :: DECODE_SAMPLER_FEEDBACK;
 }
+
 D3D12_SAMPLE_POSITION :: struct {
     X: s8;
     Y: s8;
 }
+
 D3D12_VIEW_INSTANCE_LOCATION :: struct {
     ViewportArrayIndex: u32;
     RenderTargetArrayIndex: u32;
 }
+
 D3D12_VIEW_INSTANCING_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ENABLE_VIEW_INSTANCE_MASKING :: 0x1;
     D3D12_VIEW_INSTANCING_FLAG_NONE :: NONE;
     D3D12_VIEW_INSTANCING_FLAG_ENABLE_VIEW_INSTANCE_MASKING :: ENABLE_VIEW_INSTANCE_MASKING;
 }
+
 D3D12_VIEW_INSTANCING_DESC :: struct {
     ViewInstanceCount: u32;
     pViewInstanceLocations: *D3D12_VIEW_INSTANCE_LOCATION;
     Flags: D3D12_VIEW_INSTANCING_FLAGS;
 }
+
 D3D12_SHADER_COMPONENT_MAPPING :: enum s32 {
     FROM_MEMORY_COMPONENT_0 :: 0;
     FROM_MEMORY_COMPONENT_1 :: 1;
@@ -2818,23 +2991,27 @@ D3D12_SHADER_COMPONENT_MAPPING :: enum s32 {
     D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_0 :: FORCE_VALUE_0;
     D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1 :: FORCE_VALUE_1;
 }
+
 D3D12_BUFFER_SRV_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     RAW :: 0x1;
     D3D12_BUFFER_SRV_FLAG_NONE :: NONE;
     D3D12_BUFFER_SRV_FLAG_RAW :: RAW;
 }
+
 D3D12_BUFFER_SRV :: struct {
     FirstElement: u64;
     NumElements: u32;
     StructureByteStride: u32;
     Flags: D3D12_BUFFER_SRV_FLAGS;
 }
+
 D3D12_TEX1D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEX1D_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
@@ -2842,12 +3019,14 @@ D3D12_TEX1D_ARRAY_SRV :: struct {
     ArraySize: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEX2D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     PlaneSlice: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEX2D_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
@@ -2856,16 +3035,19 @@ D3D12_TEX2D_ARRAY_SRV :: struct {
     PlaneSlice: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEX3D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEXCUBE_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEXCUBE_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
@@ -2873,16 +3055,20 @@ D3D12_TEXCUBE_ARRAY_SRV :: struct {
     NumCubes: u32;
     ResourceMinLODClamp: float;
 }
+
 D3D12_TEX2DMS_SRV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D12_TEX2DMS_ARRAY_SRV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV :: struct {
     Location: D3D12_GPU_VIRTUAL_ADDRESS;
 }
+
 D3D12_SRV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -2909,6 +3095,7 @@ D3D12_SRV_DIMENSION :: enum s32 {
     D3D12_SRV_DIMENSION_TEXTURECUBEARRAY :: TEXTURECUBEARRAY;
     D3D12_SRV_DIMENSION_RAYTRACING_ACCELERATION_STRUCTURE :: RAYTRACING_ACCELERATION_STRUCTURE;
 }
+
 D3D12_SHADER_RESOURCE_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D12_SRV_DIMENSION;
@@ -2927,10 +3114,12 @@ D3D12_SHADER_RESOURCE_VIEW_DESC :: struct {
         RaytracingAccelerationStructure: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV;
     }
 }
+
 D3D12_CONSTANT_BUFFER_VIEW_DESC :: struct {
     BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u32;
 }
+
 D3D12_FILTER :: enum s32 {
     MIN_MAG_MIP_POINT :: 0;
     MIN_MAG_POINT_MIP_LINEAR :: 1;
@@ -3005,12 +3194,14 @@ D3D12_FILTER :: enum s32 {
     D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR :: MAXIMUM_MIN_MAG_MIP_LINEAR;
     D3D12_FILTER_MAXIMUM_ANISOTROPIC :: MAXIMUM_ANISOTROPIC;
 }
+
 D3D12_FILTER_TYPE :: enum s32 {
     POINT :: 0;
     LINEAR :: 1;
     D3D12_FILTER_TYPE_POINT :: POINT;
     D3D12_FILTER_TYPE_LINEAR :: LINEAR;
 }
+
 D3D12_FILTER_REDUCTION_TYPE :: enum s32 {
     STANDARD :: 0;
     COMPARISON :: 1;
@@ -3021,6 +3212,7 @@ D3D12_FILTER_REDUCTION_TYPE :: enum s32 {
     D3D12_FILTER_REDUCTION_TYPE_MINIMUM :: MINIMUM;
     D3D12_FILTER_REDUCTION_TYPE_MAXIMUM :: MAXIMUM;
 }
+
 D3D12_TEXTURE_ADDRESS_MODE :: enum s32 {
     WRAP :: 1;
     MIRROR :: 2;
@@ -3033,6 +3225,7 @@ D3D12_TEXTURE_ADDRESS_MODE :: enum s32 {
     D3D12_TEXTURE_ADDRESS_MODE_BORDER :: BORDER;
     D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE :: MIRROR_ONCE;
 }
+
 D3D12_SAMPLER_DESC :: struct {
     Filter: D3D12_FILTER;
     AddressU: D3D12_TEXTURE_ADDRESS_MODE;
@@ -3045,12 +3238,14 @@ D3D12_SAMPLER_DESC :: struct {
     MinLOD: float;
     MaxLOD: float;
 }
+
 D3D12_BUFFER_UAV_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     RAW :: 0x1;
     D3D12_BUFFER_UAV_FLAG_NONE :: NONE;
     D3D12_BUFFER_UAV_FLAG_RAW :: RAW;
 }
+
 D3D12_BUFFER_UAV :: struct {
     FirstElement: u64;
     NumElements: u32;
@@ -3058,29 +3253,35 @@ D3D12_BUFFER_UAV :: struct {
     CounterOffsetInBytes: u64;
     Flags: D3D12_BUFFER_UAV_FLAGS;
 }
+
 D3D12_TEX1D_UAV :: struct {
     MipSlice: u32;
 }
+
 D3D12_TEX1D_ARRAY_UAV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_TEX2D_UAV :: struct {
     MipSlice: u32;
     PlaneSlice: u32;
 }
+
 D3D12_TEX2D_ARRAY_UAV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
     PlaneSlice: u32;
 }
+
 D3D12_TEX3D_UAV :: struct {
     MipSlice: u32;
     FirstWSlice: u32;
     WSize: u32;
 }
+
 D3D12_UAV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -3097,6 +3298,7 @@ D3D12_UAV_DIMENSION :: enum s32 {
     D3D12_UAV_DIMENSION_TEXTURE2DARRAY :: TEXTURE2DARRAY;
     D3D12_UAV_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D12_UNORDERED_ACCESS_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D12_UAV_DIMENSION;
@@ -3109,40 +3311,49 @@ D3D12_UNORDERED_ACCESS_VIEW_DESC :: struct {
         Texture3D: D3D12_TEX3D_UAV;
     }
 }
+
 D3D12_BUFFER_RTV :: struct {
     FirstElement: u64;
     NumElements: u32;
 }
+
 D3D12_TEX1D_RTV :: struct {
     MipSlice: u32;
 }
+
 D3D12_TEX1D_ARRAY_RTV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_TEX2D_RTV :: struct {
     MipSlice: u32;
     PlaneSlice: u32;
 }
+
 D3D12_TEX2DMS_RTV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D12_TEX2D_ARRAY_RTV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
     PlaneSlice: u32;
 }
+
 D3D12_TEX2DMS_ARRAY_RTV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_TEX3D_RTV :: struct {
     MipSlice: u32;
     FirstWSlice: u32;
     WSize: u32;
 }
+
 D3D12_RTV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -3163,6 +3374,7 @@ D3D12_RTV_DIMENSION :: enum s32 {
     D3D12_RTV_DIMENSION_TEXTURE2DMSARRAY :: TEXTURE2DMSARRAY;
     D3D12_RTV_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D12_RENDER_TARGET_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D12_RTV_DIMENSION;
@@ -3177,29 +3389,36 @@ D3D12_RENDER_TARGET_VIEW_DESC :: struct {
         Texture3D: D3D12_TEX3D_RTV;
     }
 }
+
 D3D12_TEX1D_DSV :: struct {
     MipSlice: u32;
 }
+
 D3D12_TEX1D_ARRAY_DSV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_TEX2D_DSV :: struct {
     MipSlice: u32;
 }
+
 D3D12_TEX2D_ARRAY_DSV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_TEX2DMS_DSV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D12_TEX2DMS_ARRAY_DSV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D12_DSV_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     READ_ONLY_DEPTH :: 0x1;
@@ -3208,6 +3427,7 @@ D3D12_DSV_FLAGS :: enum_flags u32 {
     D3D12_DSV_FLAG_READ_ONLY_DEPTH :: READ_ONLY_DEPTH;
     D3D12_DSV_FLAG_READ_ONLY_STENCIL :: READ_ONLY_STENCIL;
 }
+
 D3D12_DSV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     TEXTURE1D :: 1;
@@ -3224,6 +3444,7 @@ D3D12_DSV_DIMENSION :: enum s32 {
     D3D12_DSV_DIMENSION_TEXTURE2DMS :: TEXTURE2DMS;
     D3D12_DSV_DIMENSION_TEXTURE2DMSARRAY :: TEXTURE2DMSARRAY;
 }
+
 D3D12_DEPTH_STENCIL_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D12_DSV_DIMENSION;
@@ -3237,12 +3458,14 @@ D3D12_DEPTH_STENCIL_VIEW_DESC :: struct {
         Texture2DMSArray: D3D12_TEX2DMS_ARRAY_DSV;
     }
 }
+
 D3D12_CLEAR_FLAGS :: enum_flags u32 {
     DEPTH :: 0x1;
     STENCIL :: 0x2;
     D3D12_CLEAR_FLAG_DEPTH :: DEPTH;
     D3D12_CLEAR_FLAG_STENCIL :: STENCIL;
 }
+
 D3D12_FENCE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SHARED :: 0x1;
@@ -3253,6 +3476,7 @@ D3D12_FENCE_FLAGS :: enum_flags u32 {
     D3D12_FENCE_FLAG_SHARED_CROSS_ADAPTER :: SHARED_CROSS_ADAPTER;
     D3D12_FENCE_FLAG_NON_MONITORED :: NON_MONITORED;
 }
+
 D3D12_DESCRIPTOR_HEAP_TYPE :: enum s32 {
     CBV_SRV_UAV :: 0;
     SAMPLER :: 1;
@@ -3265,18 +3489,21 @@ D3D12_DESCRIPTOR_HEAP_TYPE :: enum s32 {
     D3D12_DESCRIPTOR_HEAP_TYPE_DSV :: DSV;
     D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES :: NUM_TYPES;
 }
+
 D3D12_DESCRIPTOR_HEAP_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SHADER_VISIBLE :: 0x1;
     D3D12_DESCRIPTOR_HEAP_FLAG_NONE :: NONE;
     D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE :: SHADER_VISIBLE;
 }
+
 D3D12_DESCRIPTOR_HEAP_DESC :: struct {
     Type: D3D12_DESCRIPTOR_HEAP_TYPE;
     NumDescriptors: u32;
     Flags: D3D12_DESCRIPTOR_HEAP_FLAGS;
     NodeMask: u32;
 }
+
 D3D12_DESCRIPTOR_RANGE_TYPE :: enum s32 {
     SRV :: 0;
     UAV :: 1;
@@ -3287,6 +3514,7 @@ D3D12_DESCRIPTOR_RANGE_TYPE :: enum s32 {
     D3D12_DESCRIPTOR_RANGE_TYPE_CBV :: CBV;
     D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER :: SAMPLER;
 }
+
 D3D12_DESCRIPTOR_RANGE :: struct {
     RangeType: D3D12_DESCRIPTOR_RANGE_TYPE;
     NumDescriptors: u32;
@@ -3294,19 +3522,23 @@ D3D12_DESCRIPTOR_RANGE :: struct {
     RegisterSpace: u32;
     OffsetInDescriptorsFromTableStart: u32;
 }
+
 D3D12_ROOT_DESCRIPTOR_TABLE :: struct {
     NumDescriptorRanges: u32;
     pDescriptorRanges: *D3D12_DESCRIPTOR_RANGE;
 }
+
 D3D12_ROOT_CONSTANTS :: struct {
     ShaderRegister: u32;
     RegisterSpace: u32;
     Num32BitValues: u32;
 }
+
 D3D12_ROOT_DESCRIPTOR :: struct {
     ShaderRegister: u32;
     RegisterSpace: u32;
 }
+
 D3D12_SHADER_VISIBILITY :: enum s32 {
     ALL :: 0;
     VERTEX :: 1;
@@ -3325,6 +3557,7 @@ D3D12_SHADER_VISIBILITY :: enum s32 {
     D3D12_SHADER_VISIBILITY_AMPLIFICATION :: AMPLIFICATION;
     D3D12_SHADER_VISIBILITY_MESH :: MESH;
 }
+
 D3D12_ROOT_PARAMETER_TYPE :: enum s32 {
     DESCRIPTOR_TABLE :: 0;
     _32BIT_CONSTANTS :: 1;
@@ -3337,6 +3570,7 @@ D3D12_ROOT_PARAMETER_TYPE :: enum s32 {
     D3D12_ROOT_PARAMETER_TYPE_SRV :: SRV;
     D3D12_ROOT_PARAMETER_TYPE_UAV :: UAV;
 }
+
 D3D12_ROOT_PARAMETER :: struct {
     ParameterType: D3D12_ROOT_PARAMETER_TYPE;
     union {
@@ -3346,6 +3580,7 @@ D3D12_ROOT_PARAMETER :: struct {
     }
     ShaderVisibility: D3D12_SHADER_VISIBILITY;
 }
+
 D3D12_ROOT_SIGNATURE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT :: 0x1;
@@ -3370,6 +3605,7 @@ D3D12_ROOT_SIGNATURE_FLAGS :: enum_flags u32 {
     D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS :: DENY_AMPLIFICATION_SHADER_ROOT_ACCESS;
     D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS :: DENY_MESH_SHADER_ROOT_ACCESS;
 }
+
 D3D12_STATIC_BORDER_COLOR :: enum s32 {
     TRANSPARENT_BLACK :: 0;
     OPAQUE_BLACK :: 1;
@@ -3378,6 +3614,7 @@ D3D12_STATIC_BORDER_COLOR :: enum s32 {
     D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK :: OPAQUE_BLACK;
     D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE :: OPAQUE_WHITE;
 }
+
 D3D12_STATIC_SAMPLER_DESC :: struct {
     Filter: D3D12_FILTER;
     AddressU: D3D12_TEXTURE_ADDRESS_MODE;
@@ -3393,6 +3630,7 @@ D3D12_STATIC_SAMPLER_DESC :: struct {
     RegisterSpace: u32;
     ShaderVisibility: D3D12_SHADER_VISIBILITY;
 }
+
 D3D12_ROOT_SIGNATURE_DESC :: struct {
     NumParameters: u32;
     pParameters: *D3D12_ROOT_PARAMETER;
@@ -3400,6 +3638,7 @@ D3D12_ROOT_SIGNATURE_DESC :: struct {
     pStaticSamplers: *D3D12_STATIC_SAMPLER_DESC;
     Flags: D3D12_ROOT_SIGNATURE_FLAGS;
 }
+
 D3D12_DESCRIPTOR_RANGE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DESCRIPTORS_VOLATILE :: 0x1;
@@ -3414,6 +3653,7 @@ D3D12_DESCRIPTOR_RANGE_FLAGS :: enum_flags u32 {
     D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC :: DATA_STATIC;
     D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_STATIC_KEEPING_BUFFER_BOUNDS_CHECKS :: DESCRIPTORS_STATIC_KEEPING_BUFFER_BOUNDS_CHECKS;
 }
+
 D3D12_DESCRIPTOR_RANGE1 :: struct {
     RangeType: D3D12_DESCRIPTOR_RANGE_TYPE;
     NumDescriptors: u32;
@@ -3422,10 +3662,12 @@ D3D12_DESCRIPTOR_RANGE1 :: struct {
     Flags: D3D12_DESCRIPTOR_RANGE_FLAGS;
     OffsetInDescriptorsFromTableStart: u32;
 }
+
 D3D12_ROOT_DESCRIPTOR_TABLE1 :: struct {
     NumDescriptorRanges: u32;
     pDescriptorRanges: *D3D12_DESCRIPTOR_RANGE1;
 }
+
 D3D12_ROOT_DESCRIPTOR_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DATA_VOLATILE :: 0x2;
@@ -3436,11 +3678,13 @@ D3D12_ROOT_DESCRIPTOR_FLAGS :: enum_flags u32 {
     D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE :: DATA_STATIC_WHILE_SET_AT_EXECUTE;
     D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC :: DATA_STATIC;
 }
+
 D3D12_ROOT_DESCRIPTOR1 :: struct {
     ShaderRegister: u32;
     RegisterSpace: u32;
     Flags: D3D12_ROOT_DESCRIPTOR_FLAGS;
 }
+
 D3D12_ROOT_PARAMETER1 :: struct {
     ParameterType: D3D12_ROOT_PARAMETER_TYPE;
     union {
@@ -3450,6 +3694,7 @@ D3D12_ROOT_PARAMETER1 :: struct {
     }
     ShaderVisibility: D3D12_SHADER_VISIBILITY;
 }
+
 D3D12_ROOT_SIGNATURE_DESC1 :: struct {
     NumParameters: u32;
     pParameters: *D3D12_ROOT_PARAMETER1;
@@ -3457,6 +3702,7 @@ D3D12_ROOT_SIGNATURE_DESC1 :: struct {
     pStaticSamplers: *D3D12_STATIC_SAMPLER_DESC;
     Flags: D3D12_ROOT_SIGNATURE_FLAGS;
 }
+
 D3D12_VERSIONED_ROOT_SIGNATURE_DESC :: struct {
     Version: D3D_ROOT_SIGNATURE_VERSION;
     union {
@@ -3464,68 +3710,87 @@ D3D12_VERSIONED_ROOT_SIGNATURE_DESC :: struct {
         Desc_1_1: D3D12_ROOT_SIGNATURE_DESC1;
     }
 }
+
 ID3D12RootSignatureDeserializer_UUID :: "34AB647B-3CC8-46AC-841B-C0965645C046";
+
 ID3D12RootSignatureDeserializer :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12rootsignaturedeserializer_vtable: *ID3D12RootSignatureDeserializer_VTable;
 }
+
 ID3D12RootSignatureDeserializer_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetRootSignatureDesc: (this: *ID3D12RootSignatureDeserializer) -> *D3D12_ROOT_SIGNATURE_DESC #cpp_method;
 }
+
 ID3D12RootSignatureDeserializer_GetRootSignatureDesc :: (this: *ID3D12RootSignatureDeserializer) -> *D3D12_ROOT_SIGNATURE_DESC {
     return this.id3d12rootsignaturedeserializer_vtable.GetRootSignatureDesc(this);
 }
+
 vtable :: (obj: *ID3D12RootSignatureDeserializer) -> *ID3D12RootSignatureDeserializer_VTable {
     return obj.id3d12rootsignaturedeserializer_vtable;
 }
+
 ID3D12VersionedRootSignatureDeserializer_UUID :: "7F91CE67-090C-4BB7-B78E-ED8FF2E31DA0";
+
 ID3D12VersionedRootSignatureDeserializer :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12versionedrootsignaturedeserializer_vtable: *ID3D12VersionedRootSignatureDeserializer_VTable;
 }
+
 ID3D12VersionedRootSignatureDeserializer_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetRootSignatureDescAtVersion: (this: *ID3D12VersionedRootSignatureDeserializer, convertToVersion: D3D_ROOT_SIGNATURE_VERSION, ppDesc: **D3D12_VERSIONED_ROOT_SIGNATURE_DESC) -> HRESULT #cpp_method;
     GetUnconvertedRootSignatureDesc: (this: *ID3D12VersionedRootSignatureDeserializer) -> *D3D12_VERSIONED_ROOT_SIGNATURE_DESC #cpp_method;
 }
+
 ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion :: (this: *ID3D12VersionedRootSignatureDeserializer, convertToVersion: D3D_ROOT_SIGNATURE_VERSION, ppDesc: **D3D12_VERSIONED_ROOT_SIGNATURE_DESC) -> HRESULT {
     return this.id3d12versionedrootsignaturedeserializer_vtable.GetRootSignatureDescAtVersion(this, convertToVersion, ppDesc);
 }
+
 ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc :: (this: *ID3D12VersionedRootSignatureDeserializer) -> *D3D12_VERSIONED_ROOT_SIGNATURE_DESC {
     return this.id3d12versionedrootsignaturedeserializer_vtable.GetUnconvertedRootSignatureDesc(this);
 }
+
 vtable :: (obj: *ID3D12VersionedRootSignatureDeserializer) -> *ID3D12VersionedRootSignatureDeserializer_VTable {
     return obj.id3d12versionedrootsignaturedeserializer_vtable;
 }
+
 PFN_D3D12_SERIALIZE_ROOT_SIGNATURE :: #type (pRootSignature: *D3D12_ROOT_SIGNATURE_DESC, Version: D3D_ROOT_SIGNATURE_VERSION, ppBlob: **ID3DBlob, ppErrorBlob: **ID3DBlob) -> HRESULT #c_call;
 D3D12SerializeRootSignature :: (pRootSignature: *D3D12_ROOT_SIGNATURE_DESC, Version: D3D_ROOT_SIGNATURE_VERSION, ppBlob: **ID3DBlob, ppErrorBlob: **ID3DBlob) -> HRESULT #foreign d3d12;
 PFN_D3D12_CREATE_ROOT_SIGNATURE_DESERIALIZER :: #type (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: *IID, ppRootSignatureDeserializer: **void) -> HRESULT #c_call;
 D3D12CreateRootSignatureDeserializer :: (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: *IID, ppRootSignatureDeserializer: **void) -> HRESULT #foreign d3d12;
+
 D3D12CreateRootSignatureDeserializer :: (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: IID, ppRootSignatureDeserializer: **void) -> HRESULT {
     return D3D12CreateRootSignatureDeserializer(pSrcData, SrcDataSizeInBytes, *pRootSignatureDeserializerInterface, ppRootSignatureDeserializer);
 }
+
 PFN_D3D12_SERIALIZE_VERSIONED_ROOT_SIGNATURE :: #type (pRootSignature: *D3D12_VERSIONED_ROOT_SIGNATURE_DESC, ppBlob: **ID3DBlob, ppErrorBlob: **ID3DBlob) -> HRESULT #c_call;
 D3D12SerializeVersionedRootSignature :: (pRootSignature: *D3D12_VERSIONED_ROOT_SIGNATURE_DESC, ppBlob: **ID3DBlob, ppErrorBlob: **ID3DBlob) -> HRESULT #foreign d3d12;
 PFN_D3D12_CREATE_VERSIONED_ROOT_SIGNATURE_DESERIALIZER :: #type (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: *IID, ppRootSignatureDeserializer: **void) -> HRESULT #c_call;
 D3D12CreateVersionedRootSignatureDeserializer :: (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: *IID, ppRootSignatureDeserializer: **void) -> HRESULT #foreign d3d12;
+
 D3D12CreateVersionedRootSignatureDeserializer :: (pSrcData: *void, SrcDataSizeInBytes: SIZE_T, pRootSignatureDeserializerInterface: IID, ppRootSignatureDeserializer: **void) -> HRESULT {
     return D3D12CreateVersionedRootSignatureDeserializer(pSrcData, SrcDataSizeInBytes, *pRootSignatureDeserializerInterface, ppRootSignatureDeserializer);
 }
+
 D3D12_CPU_DESCRIPTOR_HANDLE :: struct {
     ptr: SIZE_T;
 }
+
 D3D12_GPU_DESCRIPTOR_HANDLE :: struct {
     ptr: u64;
 }
+
 D3D12_DISCARD_REGION :: struct {
     NumRects: u32;
     pRects: *D3D12_RECT;
     FirstSubresource: u32;
     NumSubresources: u32;
 }
+
 D3D12_QUERY_HEAP_TYPE :: enum s32 {
     OCCLUSION :: 0;
     TIMESTAMP :: 1;
@@ -3540,11 +3805,13 @@ D3D12_QUERY_HEAP_TYPE :: enum s32 {
     D3D12_QUERY_HEAP_TYPE_VIDEO_DECODE_STATISTICS :: VIDEO_DECODE_STATISTICS;
     D3D12_QUERY_HEAP_TYPE_COPY_QUEUE_TIMESTAMP :: COPY_QUEUE_TIMESTAMP;
 }
+
 D3D12_QUERY_HEAP_DESC :: struct {
     Type: D3D12_QUERY_HEAP_TYPE;
     Count: u32;
     NodeMask: u32;
 }
+
 D3D12_QUERY_TYPE :: enum s32 {
     OCCLUSION :: 0;
     BINARY_OCCLUSION :: 1;
@@ -3565,12 +3832,14 @@ D3D12_QUERY_TYPE :: enum s32 {
     D3D12_QUERY_TYPE_SO_STATISTICS_STREAM3 :: SO_STATISTICS_STREAM3;
     D3D12_QUERY_TYPE_VIDEO_DECODE_STATISTICS :: VIDEO_DECODE_STATISTICS;
 }
+
 D3D12_PREDICATION_OP :: enum s32 {
     EQUAL_ZERO :: 0;
     NOT_EQUAL_ZERO :: 1;
     D3D12_PREDICATION_OP_EQUAL_ZERO :: EQUAL_ZERO;
     D3D12_PREDICATION_OP_NOT_EQUAL_ZERO :: NOT_EQUAL_ZERO;
 }
+
 D3D12_QUERY_DATA_PIPELINE_STATISTICS :: struct {
     IAVertices: u64;
     IAPrimitives: u64;
@@ -3584,21 +3853,25 @@ D3D12_QUERY_DATA_PIPELINE_STATISTICS :: struct {
     DSInvocations: u64;
     CSInvocations: u64;
 }
+
 D3D12_QUERY_DATA_SO_STATISTICS :: struct {
     NumPrimitivesWritten: u64;
     PrimitivesStorageNeeded: u64;
 }
+
 D3D12_STREAM_OUTPUT_BUFFER_VIEW :: struct {
     BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u64;
     BufferFilledSizeLocation: D3D12_GPU_VIRTUAL_ADDRESS;
 }
+
 D3D12_DRAW_ARGUMENTS :: struct {
     VertexCountPerInstance: u32;
     InstanceCount: u32;
     StartVertexLocation: u32;
     StartInstanceLocation: u32;
 }
+
 D3D12_DRAW_INDEXED_ARGUMENTS :: struct {
     IndexCountPerInstance: u32;
     InstanceCount: u32;
@@ -3606,21 +3879,25 @@ D3D12_DRAW_INDEXED_ARGUMENTS :: struct {
     BaseVertexLocation: s32;
     StartInstanceLocation: u32;
 }
+
 D3D12_DISPATCH_ARGUMENTS :: struct {
     ThreadGroupCountX: u32;
     ThreadGroupCountY: u32;
     ThreadGroupCountZ: u32;
 }
+
 D3D12_VERTEX_BUFFER_VIEW :: struct {
     BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u32;
     StrideInBytes: u32;
 }
+
 D3D12_INDEX_BUFFER_VIEW :: struct {
     BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u32;
     Format: DXGI_FORMAT;
 }
+
 D3D12_INDIRECT_ARGUMENT_TYPE :: enum s32 {
     DRAW :: 0;
     DRAW_INDEXED :: 1;
@@ -3645,6 +3922,7 @@ D3D12_INDIRECT_ARGUMENT_TYPE :: enum s32 {
     D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH_RAYS :: DISPATCH_RAYS;
     D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH_MESH :: DISPATCH_MESH;
 }
+
 D3D12_INDIRECT_ARGUMENT_DESC :: struct {
     Type: D3D12_INDIRECT_ARGUMENT_TYPE;
     union {
@@ -3672,38 +3950,49 @@ D3D12_INDIRECT_ARGUMENT_DESC :: struct {
         ;
     }
 }
+
 D3D12_COMMAND_SIGNATURE_DESC :: struct {
     ByteStride: u32;
     NumArgumentDescs: u32;
     pArgumentDescs: *D3D12_INDIRECT_ARGUMENT_DESC;
     NodeMask: u32;
 }
+
 ID3D12Pageable_UUID :: "63ee58fb-1268-4835-86da-f008ce62f0d6";
+
 ID3D12Pageable :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
 }
+
 ID3D12Heap_UUID :: "6b3b2502-6e51-45b3-90ee-9884265e8df3";
+
 ID3D12Heap :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12heap_vtable: *ID3D12Heap_VTable;
 }
+
 ID3D12Heap_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetDesc: (this: *ID3D12Heap) -> D3D12_HEAP_DESC #cpp_method;
 }
+
 ID3D12Heap_GetDesc :: (this: *ID3D12Heap) -> D3D12_HEAP_DESC {
     return this.id3d12heap_vtable.GetDesc(this);
 }
+
 vtable :: (obj: *ID3D12Heap) -> *ID3D12Heap_VTable {
     return obj.id3d12heap_vtable;
 }
+
 ID3D12Resource_UUID :: "696442be-a72e-4059-bc79-5b5c98040fad";
+
 ID3D12Resource :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12resource_vtable: *ID3D12Resource_VTable;
 }
+
 ID3D12Resource_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     Map: (this: *ID3D12Resource, Subresource: u32, pReadRange: *D3D12_RANGE, ppData: **void) -> HRESULT #cpp_method;
@@ -3714,156 +4003,205 @@ ID3D12Resource_VTable :: struct #type_info_none {
     ReadFromSubresource: (this: *ID3D12Resource, pDstData: *void, DstRowPitch: u32, DstDepthPitch: u32, SrcSubresource: u32, pSrcBox: *D3D12_BOX) -> HRESULT #cpp_method;
     GetHeapProperties: (this: *ID3D12Resource, pHeapProperties: *D3D12_HEAP_PROPERTIES, pHeapFlags: *D3D12_HEAP_FLAGS) -> HRESULT #cpp_method;
 }
+
 ID3D12Resource_Map :: (this: *ID3D12Resource, Subresource: u32, pReadRange: *D3D12_RANGE, ppData: **void) -> HRESULT {
     return this.id3d12resource_vtable.Map(this, Subresource, pReadRange, ppData);
 }
+
 ID3D12Resource_Unmap :: (this: *ID3D12Resource, Subresource: u32, pWrittenRange: *D3D12_RANGE) {
     this.id3d12resource_vtable.Unmap(this, Subresource, pWrittenRange);
 }
+
 ID3D12Resource_GetDesc :: (this: *ID3D12Resource) -> D3D12_RESOURCE_DESC {
     return this.id3d12resource_vtable.GetDesc(this);
 }
+
 ID3D12Resource_GetGPUVirtualAddress :: (this: *ID3D12Resource) -> D3D12_GPU_VIRTUAL_ADDRESS {
     return this.id3d12resource_vtable.GetGPUVirtualAddress(this);
 }
+
 ID3D12Resource_WriteToSubresource :: (this: *ID3D12Resource, DstSubresource: u32, pDstBox: *D3D12_BOX, pSrcData: *void, SrcRowPitch: u32, SrcDepthPitch: u32) -> HRESULT {
     return this.id3d12resource_vtable.WriteToSubresource(this, DstSubresource, pDstBox, pSrcData, SrcRowPitch, SrcDepthPitch);
 }
+
 ID3D12Resource_ReadFromSubresource :: (this: *ID3D12Resource, pDstData: *void, DstRowPitch: u32, DstDepthPitch: u32, SrcSubresource: u32, pSrcBox: *D3D12_BOX) -> HRESULT {
     return this.id3d12resource_vtable.ReadFromSubresource(this, pDstData, DstRowPitch, DstDepthPitch, SrcSubresource, pSrcBox);
 }
+
 ID3D12Resource_GetHeapProperties :: (this: *ID3D12Resource, pHeapProperties: *D3D12_HEAP_PROPERTIES, pHeapFlags: *D3D12_HEAP_FLAGS) -> HRESULT {
     return this.id3d12resource_vtable.GetHeapProperties(this, pHeapProperties, pHeapFlags);
 }
+
 vtable :: (obj: *ID3D12Resource) -> *ID3D12Resource_VTable {
     return obj.id3d12resource_vtable;
 }
+
 ID3D12CommandAllocator_UUID :: "6102dee4-af59-4b09-b999-b44d73f09b24";
+
 ID3D12CommandAllocator :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12commandallocator_vtable: *ID3D12CommandAllocator_VTable;
 }
+
 ID3D12CommandAllocator_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     Reset: (this: *ID3D12CommandAllocator) -> HRESULT #cpp_method;
 }
+
 ID3D12CommandAllocator_Reset :: (this: *ID3D12CommandAllocator) -> HRESULT {
     return this.id3d12commandallocator_vtable.Reset(this);
 }
+
 vtable :: (obj: *ID3D12CommandAllocator) -> *ID3D12CommandAllocator_VTable {
     return obj.id3d12commandallocator_vtable;
 }
+
 ID3D12Fence_UUID :: "0a753dcf-c4d8-4b91-adf6-be5a60d95a76";
+
 ID3D12Fence :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12fence_vtable: *ID3D12Fence_VTable;
 }
+
 ID3D12Fence_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetCompletedValue: (this: *ID3D12Fence) -> u64 #cpp_method;
     SetEventOnCompletion: (this: *ID3D12Fence, Value: u64, hEvent: HANDLE) -> HRESULT #cpp_method;
     Signal: (this: *ID3D12Fence, Value: u64) -> HRESULT #cpp_method;
 }
+
 ID3D12Fence_GetCompletedValue :: (this: *ID3D12Fence) -> u64 {
     return this.id3d12fence_vtable.GetCompletedValue(this);
 }
+
 ID3D12Fence_SetEventOnCompletion :: (this: *ID3D12Fence, Value: u64, hEvent: HANDLE) -> HRESULT {
     return this.id3d12fence_vtable.SetEventOnCompletion(this, Value, hEvent);
 }
+
 ID3D12Fence_Signal :: (this: *ID3D12Fence, Value: u64) -> HRESULT {
     return this.id3d12fence_vtable.Signal(this, Value);
 }
+
 vtable :: (obj: *ID3D12Fence) -> *ID3D12Fence_VTable {
     return obj.id3d12fence_vtable;
 }
+
 ID3D12Fence1_UUID :: "433685fe-e22b-4ca0-a8db-b5b4f4dd0e4a";
+
 ID3D12Fence1 :: struct {
     #as using id3d12fence: ID3D12Fence;
     #place id3d12fence;
     id3d12fence1_vtable: *ID3D12Fence1_VTable;
 }
+
 ID3D12Fence1_VTable :: struct #type_info_none {
     using id3d12fence: ID3D12Fence_VTable;
     GetCreationFlags: (this: *ID3D12Fence1) -> D3D12_FENCE_FLAGS #cpp_method;
 }
+
 ID3D12Fence1_GetCreationFlags :: (this: *ID3D12Fence1) -> D3D12_FENCE_FLAGS {
     return this.id3d12fence1_vtable.GetCreationFlags(this);
 }
+
 vtable :: (obj: *ID3D12Fence1) -> *ID3D12Fence1_VTable {
     return obj.id3d12fence1_vtable;
 }
+
 ID3D12PipelineState_UUID :: "765a30f3-f624-4c6f-a828-ace948622445";
+
 ID3D12PipelineState :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12pipelinestate_vtable: *ID3D12PipelineState_VTable;
 }
+
 ID3D12PipelineState_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetCachedBlob: (this: *ID3D12PipelineState, ppBlob: **ID3DBlob) -> HRESULT #cpp_method;
 }
+
 ID3D12PipelineState_GetCachedBlob :: (this: *ID3D12PipelineState, ppBlob: **ID3DBlob) -> HRESULT {
     return this.id3d12pipelinestate_vtable.GetCachedBlob(this, ppBlob);
 }
+
 vtable :: (obj: *ID3D12PipelineState) -> *ID3D12PipelineState_VTable {
     return obj.id3d12pipelinestate_vtable;
 }
+
 ID3D12DescriptorHeap_UUID :: "8efb471d-616c-4f49-90f7-127bb763fa51";
+
 ID3D12DescriptorHeap :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12descriptorheap_vtable: *ID3D12DescriptorHeap_VTable;
 }
+
 ID3D12DescriptorHeap_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetDesc: (this: *ID3D12DescriptorHeap) -> D3D12_DESCRIPTOR_HEAP_DESC #cpp_method;
     GetCPUDescriptorHandleForHeapStart: (this: *ID3D12DescriptorHeap) -> D3D12_CPU_DESCRIPTOR_HANDLE #cpp_method;
     GetGPUDescriptorHandleForHeapStart: (this: *ID3D12DescriptorHeap) -> D3D12_GPU_DESCRIPTOR_HANDLE #cpp_method;
 }
+
 ID3D12DescriptorHeap_GetDesc :: (this: *ID3D12DescriptorHeap) -> D3D12_DESCRIPTOR_HEAP_DESC {
     return this.id3d12descriptorheap_vtable.GetDesc(this);
 }
+
 ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart :: (this: *ID3D12DescriptorHeap) -> D3D12_CPU_DESCRIPTOR_HANDLE {
     return this.id3d12descriptorheap_vtable.GetCPUDescriptorHandleForHeapStart(this);
 }
+
 ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart :: (this: *ID3D12DescriptorHeap) -> D3D12_GPU_DESCRIPTOR_HANDLE {
     return this.id3d12descriptorheap_vtable.GetGPUDescriptorHandleForHeapStart(this);
 }
+
 vtable :: (obj: *ID3D12DescriptorHeap) -> *ID3D12DescriptorHeap_VTable {
     return obj.id3d12descriptorheap_vtable;
 }
+
 ID3D12QueryHeap_UUID :: "0d9658ae-ed45-469e-a61d-970ec583cab4";
+
 ID3D12QueryHeap :: struct {
     #as using id3d12pageable: ID3D12Pageable;
 }
+
 ID3D12CommandSignature_UUID :: "c36a797c-ec80-4f0a-8985-a7b2475082d1";
+
 ID3D12CommandSignature :: struct {
     #as using id3d12pageable: ID3D12Pageable;
 }
+
 ID3D12CommandList_UUID :: "7116d91c-e7e4-47ce-b8c6-ec8168f437e5";
+
 ID3D12CommandList :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
     #place id3d12devicechild;
     id3d12commandlist_vtable: *ID3D12CommandList_VTable;
 }
+
 ID3D12CommandList_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetType: (this: *ID3D12CommandList) -> D3D12_COMMAND_LIST_TYPE #cpp_method;
 }
+
 ID3D12CommandList_GetType :: (this: *ID3D12CommandList) -> D3D12_COMMAND_LIST_TYPE {
     return this.id3d12commandlist_vtable.GetType(this);
 }
+
 vtable :: (obj: *ID3D12CommandList) -> *ID3D12CommandList_VTable {
     return obj.id3d12commandlist_vtable;
 }
+
 ID3D12GraphicsCommandList_UUID :: "5b160d0f-ac1b-4185-8ba8-b3ae42a5a455";
+
 ID3D12GraphicsCommandList :: struct {
     #as using id3d12commandlist: ID3D12CommandList;
     #place id3d12commandlist;
     id3d12graphicscommandlist_vtable: *ID3D12GraphicsCommandList_VTable;
 }
+
 ID3D12GraphicsCommandList_VTable :: struct #type_info_none {
     using id3d12commandlist: ID3D12CommandList_VTable;
     Close: (this: *ID3D12GraphicsCommandList) -> HRESULT #cpp_method;
@@ -3918,168 +4256,223 @@ ID3D12GraphicsCommandList_VTable :: struct #type_info_none {
     EndEvent: (this: *ID3D12GraphicsCommandList) -> void #cpp_method;
     ExecuteIndirect: (this: *ID3D12GraphicsCommandList, pCommandSignature: *ID3D12CommandSignature, MaxCommandCount: u32, pArgumentBuffer: *ID3D12Resource, ArgumentBufferOffset: u64, pCountBuffer: *ID3D12Resource, CountBufferOffset: u64) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList_Close :: (this: *ID3D12GraphicsCommandList) -> HRESULT {
     return this.id3d12graphicscommandlist_vtable.Close(this);
 }
+
 ID3D12GraphicsCommandList_Reset :: (this: *ID3D12GraphicsCommandList, pAllocator: *ID3D12CommandAllocator, pInitialState: *ID3D12PipelineState) -> HRESULT {
     return this.id3d12graphicscommandlist_vtable.Reset(this, pAllocator, pInitialState);
 }
+
 ID3D12GraphicsCommandList_ClearState :: (this: *ID3D12GraphicsCommandList, pPipelineState: *ID3D12PipelineState) {
     this.id3d12graphicscommandlist_vtable.ClearState(this, pPipelineState);
 }
+
 ID3D12GraphicsCommandList_DrawInstanced :: (this: *ID3D12GraphicsCommandList, VertexCountPerInstance: u32, InstanceCount: u32, StartVertexLocation: u32, StartInstanceLocation: u32) {
     this.id3d12graphicscommandlist_vtable.DrawInstanced(this, VertexCountPerInstance, InstanceCount, StartVertexLocation, StartInstanceLocation);
 }
+
 ID3D12GraphicsCommandList_DrawIndexedInstanced :: (this: *ID3D12GraphicsCommandList, IndexCountPerInstance: u32, InstanceCount: u32, StartIndexLocation: u32, BaseVertexLocation: s32, StartInstanceLocation: u32) {
     this.id3d12graphicscommandlist_vtable.DrawIndexedInstanced(this, IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation, StartInstanceLocation);
 }
+
 ID3D12GraphicsCommandList_Dispatch :: (this: *ID3D12GraphicsCommandList, ThreadGroupCountX: u32, ThreadGroupCountY: u32, ThreadGroupCountZ: u32) {
     this.id3d12graphicscommandlist_vtable.Dispatch(this, ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
 }
+
 ID3D12GraphicsCommandList_CopyBufferRegion :: (this: *ID3D12GraphicsCommandList, pDstBuffer: *ID3D12Resource, DstOffset: u64, pSrcBuffer: *ID3D12Resource, SrcOffset: u64, NumBytes: u64) {
     this.id3d12graphicscommandlist_vtable.CopyBufferRegion(this, pDstBuffer, DstOffset, pSrcBuffer, SrcOffset, NumBytes);
 }
+
 ID3D12GraphicsCommandList_CopyTextureRegion :: (this: *ID3D12GraphicsCommandList, pDst: *D3D12_TEXTURE_COPY_LOCATION, DstX: u32, DstY: u32, DstZ: u32, pSrc: *D3D12_TEXTURE_COPY_LOCATION, pSrcBox: *D3D12_BOX) {
     this.id3d12graphicscommandlist_vtable.CopyTextureRegion(this, pDst, DstX, DstY, DstZ, pSrc, pSrcBox);
 }
+
 ID3D12GraphicsCommandList_CopyResource :: (this: *ID3D12GraphicsCommandList, pDstResource: *ID3D12Resource, pSrcResource: *ID3D12Resource) {
     this.id3d12graphicscommandlist_vtable.CopyResource(this, pDstResource, pSrcResource);
 }
+
 ID3D12GraphicsCommandList_CopyTiles :: (this: *ID3D12GraphicsCommandList, pTiledResource: *ID3D12Resource, pTileRegionStartCoordinate: *D3D12_TILED_RESOURCE_COORDINATE, pTileRegionSize: *D3D12_TILE_REGION_SIZE, pBuffer: *ID3D12Resource, BufferStartOffsetInBytes: u64, Flags: D3D12_TILE_COPY_FLAGS) {
     this.id3d12graphicscommandlist_vtable.CopyTiles(this, pTiledResource, pTileRegionStartCoordinate, pTileRegionSize, pBuffer, BufferStartOffsetInBytes, Flags);
 }
+
 ID3D12GraphicsCommandList_ResolveSubresource :: (this: *ID3D12GraphicsCommandList, pDstResource: *ID3D12Resource, DstSubresource: u32, pSrcResource: *ID3D12Resource, SrcSubresource: u32, Format: DXGI_FORMAT) {
     this.id3d12graphicscommandlist_vtable.ResolveSubresource(this, pDstResource, DstSubresource, pSrcResource, SrcSubresource, Format);
 }
+
 ID3D12GraphicsCommandList_IASetPrimitiveTopology :: (this: *ID3D12GraphicsCommandList, PrimitiveTopology: D3D12_PRIMITIVE_TOPOLOGY) {
     this.id3d12graphicscommandlist_vtable.IASetPrimitiveTopology(this, PrimitiveTopology);
 }
+
 ID3D12GraphicsCommandList_RSSetViewports :: (this: *ID3D12GraphicsCommandList, NumViewports: u32, pViewports: *D3D12_VIEWPORT) {
     this.id3d12graphicscommandlist_vtable.RSSetViewports(this, NumViewports, pViewports);
 }
+
 ID3D12GraphicsCommandList_RSSetScissorRects :: (this: *ID3D12GraphicsCommandList, NumRects: u32, pRects: *D3D12_RECT) {
     this.id3d12graphicscommandlist_vtable.RSSetScissorRects(this, NumRects, pRects);
 }
+
 ID3D12GraphicsCommandList_OMSetBlendFactor :: (this: *ID3D12GraphicsCommandList, BlendFactor: *[4] float) {
     this.id3d12graphicscommandlist_vtable.OMSetBlendFactor(this, BlendFactor);
 }
+
 ID3D12GraphicsCommandList_OMSetStencilRef :: (this: *ID3D12GraphicsCommandList, StencilRef: u32) {
     this.id3d12graphicscommandlist_vtable.OMSetStencilRef(this, StencilRef);
 }
+
 ID3D12GraphicsCommandList_SetPipelineState :: (this: *ID3D12GraphicsCommandList, pPipelineState: *ID3D12PipelineState) {
     this.id3d12graphicscommandlist_vtable.SetPipelineState(this, pPipelineState);
 }
+
 ID3D12GraphicsCommandList_ResourceBarrier :: (this: *ID3D12GraphicsCommandList, NumBarriers: u32, pBarriers: *D3D12_RESOURCE_BARRIER) {
     this.id3d12graphicscommandlist_vtable.ResourceBarrier(this, NumBarriers, pBarriers);
 }
+
 ID3D12GraphicsCommandList_ExecuteBundle :: (this: *ID3D12GraphicsCommandList, pCommandList: *ID3D12GraphicsCommandList) {
     this.id3d12graphicscommandlist_vtable.ExecuteBundle(this, pCommandList);
 }
+
 ID3D12GraphicsCommandList_SetDescriptorHeaps :: (this: *ID3D12GraphicsCommandList, NumDescriptorHeaps: u32, ppDescriptorHeaps: **ID3D12DescriptorHeap) {
     this.id3d12graphicscommandlist_vtable.SetDescriptorHeaps(this, NumDescriptorHeaps, ppDescriptorHeaps);
 }
+
 ID3D12GraphicsCommandList_SetComputeRootSignature :: (this: *ID3D12GraphicsCommandList, pRootSignature: *ID3D12RootSignature) {
     this.id3d12graphicscommandlist_vtable.SetComputeRootSignature(this, pRootSignature);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRootSignature :: (this: *ID3D12GraphicsCommandList, pRootSignature: *ID3D12RootSignature) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRootSignature(this, pRootSignature);
 }
+
 ID3D12GraphicsCommandList_SetComputeRootDescriptorTable :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BaseDescriptor: D3D12_GPU_DESCRIPTOR_HANDLE) {
     this.id3d12graphicscommandlist_vtable.SetComputeRootDescriptorTable(this, RootParameterIndex, BaseDescriptor);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRootDescriptorTable :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BaseDescriptor: D3D12_GPU_DESCRIPTOR_HANDLE) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRootDescriptorTable(this, RootParameterIndex, BaseDescriptor);
 }
+
 ID3D12GraphicsCommandList_SetComputeRoot32BitConstant :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, SrcData: u32, DestOffsetIn32BitValues: u32) {
     this.id3d12graphicscommandlist_vtable.SetComputeRoot32BitConstant(this, RootParameterIndex, SrcData, DestOffsetIn32BitValues);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRoot32BitConstant :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, SrcData: u32, DestOffsetIn32BitValues: u32) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRoot32BitConstant(this, RootParameterIndex, SrcData, DestOffsetIn32BitValues);
 }
+
 ID3D12GraphicsCommandList_SetComputeRoot32BitConstants :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, Num32BitValuesToSet: u32, pSrcData: *void, DestOffsetIn32BitValues: u32) {
     this.id3d12graphicscommandlist_vtable.SetComputeRoot32BitConstants(this, RootParameterIndex, Num32BitValuesToSet, pSrcData, DestOffsetIn32BitValues);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRoot32BitConstants :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, Num32BitValuesToSet: u32, pSrcData: *void, DestOffsetIn32BitValues: u32) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRoot32BitConstants(this, RootParameterIndex, Num32BitValuesToSet, pSrcData, DestOffsetIn32BitValues);
 }
+
 ID3D12GraphicsCommandList_SetComputeRootConstantBufferView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetComputeRootConstantBufferView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRootConstantBufferView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRootConstantBufferView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_SetComputeRootShaderResourceView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetComputeRootShaderResourceView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRootShaderResourceView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRootShaderResourceView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_SetComputeRootUnorderedAccessView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetComputeRootUnorderedAccessView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_SetGraphicsRootUnorderedAccessView :: (this: *ID3D12GraphicsCommandList, RootParameterIndex: u32, BufferLocation: D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist_vtable.SetGraphicsRootUnorderedAccessView(this, RootParameterIndex, BufferLocation);
 }
+
 ID3D12GraphicsCommandList_IASetIndexBuffer :: (this: *ID3D12GraphicsCommandList, pView: *D3D12_INDEX_BUFFER_VIEW) {
     this.id3d12graphicscommandlist_vtable.IASetIndexBuffer(this, pView);
 }
+
 ID3D12GraphicsCommandList_IASetVertexBuffers :: (this: *ID3D12GraphicsCommandList, StartSlot: u32, NumViews: u32, pViews: *D3D12_VERTEX_BUFFER_VIEW) {
     this.id3d12graphicscommandlist_vtable.IASetVertexBuffers(this, StartSlot, NumViews, pViews);
 }
+
 ID3D12GraphicsCommandList_SOSetTargets :: (this: *ID3D12GraphicsCommandList, StartSlot: u32, NumViews: u32, pViews: *D3D12_STREAM_OUTPUT_BUFFER_VIEW) {
     this.id3d12graphicscommandlist_vtable.SOSetTargets(this, StartSlot, NumViews, pViews);
 }
+
 ID3D12GraphicsCommandList_OMSetRenderTargets :: (this: *ID3D12GraphicsCommandList, NumRenderTargetDescriptors: u32, pRenderTargetDescriptors: *D3D12_CPU_DESCRIPTOR_HANDLE, RTsSingleHandleToDescriptorRange: BOOL, pDepthStencilDescriptor: *D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12graphicscommandlist_vtable.OMSetRenderTargets(this, NumRenderTargetDescriptors, pRenderTargetDescriptors, RTsSingleHandleToDescriptorRange, pDepthStencilDescriptor);
 }
+
 ID3D12GraphicsCommandList_ClearDepthStencilView :: (this: *ID3D12GraphicsCommandList, DepthStencilView: D3D12_CPU_DESCRIPTOR_HANDLE, ClearFlags: D3D12_CLEAR_FLAGS, Depth: float, Stencil: u8, NumRects: u32, pRects: *D3D12_RECT) {
     this.id3d12graphicscommandlist_vtable.ClearDepthStencilView(this, DepthStencilView, ClearFlags, Depth, Stencil, NumRects, pRects);
 }
+
 ID3D12GraphicsCommandList_ClearRenderTargetView :: (this: *ID3D12GraphicsCommandList, RenderTargetView: D3D12_CPU_DESCRIPTOR_HANDLE, ColorRGBA: *[4] float, NumRects: u32, pRects: *D3D12_RECT) {
     this.id3d12graphicscommandlist_vtable.ClearRenderTargetView(this, RenderTargetView, ColorRGBA, NumRects, pRects);
 }
+
 ID3D12GraphicsCommandList_ClearUnorderedAccessViewUint :: (this: *ID3D12GraphicsCommandList, ViewGPUHandleInCurrentHeap: D3D12_GPU_DESCRIPTOR_HANDLE, ViewCPUHandle: D3D12_CPU_DESCRIPTOR_HANDLE, pResource: *ID3D12Resource, Values: *[4] u32, NumRects: u32, pRects: *D3D12_RECT) {
     this.id3d12graphicscommandlist_vtable.ClearUnorderedAccessViewUint(this, ViewGPUHandleInCurrentHeap, ViewCPUHandle, pResource, Values, NumRects, pRects);
 }
+
 ID3D12GraphicsCommandList_ClearUnorderedAccessViewFloat :: (this: *ID3D12GraphicsCommandList, ViewGPUHandleInCurrentHeap: D3D12_GPU_DESCRIPTOR_HANDLE, ViewCPUHandle: D3D12_CPU_DESCRIPTOR_HANDLE, pResource: *ID3D12Resource, Values: *[4] float, NumRects: u32, pRects: *D3D12_RECT) {
     this.id3d12graphicscommandlist_vtable.ClearUnorderedAccessViewFloat(this, ViewGPUHandleInCurrentHeap, ViewCPUHandle, pResource, Values, NumRects, pRects);
 }
+
 ID3D12GraphicsCommandList_DiscardResource :: (this: *ID3D12GraphicsCommandList, pResource: *ID3D12Resource, pRegion: *D3D12_DISCARD_REGION) {
     this.id3d12graphicscommandlist_vtable.DiscardResource(this, pResource, pRegion);
 }
+
 ID3D12GraphicsCommandList_BeginQuery :: (this: *ID3D12GraphicsCommandList, pQueryHeap: *ID3D12QueryHeap, Type: D3D12_QUERY_TYPE, Index: u32) {
     this.id3d12graphicscommandlist_vtable.BeginQuery(this, pQueryHeap, Type, Index);
 }
+
 ID3D12GraphicsCommandList_EndQuery :: (this: *ID3D12GraphicsCommandList, pQueryHeap: *ID3D12QueryHeap, Type: D3D12_QUERY_TYPE, Index: u32) {
     this.id3d12graphicscommandlist_vtable.EndQuery(this, pQueryHeap, Type, Index);
 }
+
 ID3D12GraphicsCommandList_ResolveQueryData :: (this: *ID3D12GraphicsCommandList, pQueryHeap: *ID3D12QueryHeap, Type: D3D12_QUERY_TYPE, StartIndex: u32, NumQueries: u32, pDestinationBuffer: *ID3D12Resource, AlignedDestinationBufferOffset: u64) {
     this.id3d12graphicscommandlist_vtable.ResolveQueryData(this, pQueryHeap, Type, StartIndex, NumQueries, pDestinationBuffer, AlignedDestinationBufferOffset);
 }
+
 ID3D12GraphicsCommandList_SetPredication :: (this: *ID3D12GraphicsCommandList, pBuffer: *ID3D12Resource, AlignedBufferOffset: u64, Operation: D3D12_PREDICATION_OP) {
     this.id3d12graphicscommandlist_vtable.SetPredication(this, pBuffer, AlignedBufferOffset, Operation);
 }
+
 ID3D12GraphicsCommandList_SetMarker :: (this: *ID3D12GraphicsCommandList, Metadata: u32, pData: *void, Size: u32) {
     this.id3d12graphicscommandlist_vtable.SetMarker(this, Metadata, pData, Size);
 }
+
 ID3D12GraphicsCommandList_BeginEvent :: (this: *ID3D12GraphicsCommandList, Metadata: u32, pData: *void, Size: u32) {
     this.id3d12graphicscommandlist_vtable.BeginEvent(this, Metadata, pData, Size);
 }
+
 ID3D12GraphicsCommandList_EndEvent :: (this: *ID3D12GraphicsCommandList) {
     this.id3d12graphicscommandlist_vtable.EndEvent(this);
 }
+
 ID3D12GraphicsCommandList_ExecuteIndirect :: (this: *ID3D12GraphicsCommandList, pCommandSignature: *ID3D12CommandSignature, MaxCommandCount: u32, pArgumentBuffer: *ID3D12Resource, ArgumentBufferOffset: u64, pCountBuffer: *ID3D12Resource, CountBufferOffset: u64) {
     this.id3d12graphicscommandlist_vtable.ExecuteIndirect(this, pCommandSignature, MaxCommandCount, pArgumentBuffer, ArgumentBufferOffset, pCountBuffer, CountBufferOffset);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList) -> *ID3D12GraphicsCommandList_VTable {
     return obj.id3d12graphicscommandlist_vtable;
 }
+
 ID3D12GraphicsCommandList1_UUID :: "553103fb-1fe7-4557-bb38-946d7d0e7ca7";
+
 ID3D12GraphicsCommandList1 :: struct {
     #as using id3d12graphicscommandlist: ID3D12GraphicsCommandList;
     #place id3d12graphicscommandlist;
     id3d12graphicscommandlist1_vtable: *ID3D12GraphicsCommandList1_VTable;
 }
+
 ID3D12GraphicsCommandList1_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist: ID3D12GraphicsCommandList_VTable;
     AtomicCopyBufferUINT: (this: *ID3D12GraphicsCommandList1, pDstBuffer: *ID3D12Resource, DstOffset: u64, pSrcBuffer: *ID3D12Resource, SrcOffset: u64, Dependencies: u32, ppDependentResources: **ID3D12Resource, pDependentSubresourceRanges: *D3D12_SUBRESOURCE_RANGE_UINT64) -> void #cpp_method;
@@ -4089,31 +4482,40 @@ ID3D12GraphicsCommandList1_VTable :: struct #type_info_none {
     ResolveSubresourceRegion: (this: *ID3D12GraphicsCommandList1, pDstResource: *ID3D12Resource, DstSubresource: u32, DstX: u32, DstY: u32, pSrcResource: *ID3D12Resource, SrcSubresource: u32, pSrcRect: *D3D12_RECT, Format: DXGI_FORMAT, ResolveMode: D3D12_RESOLVE_MODE) -> void #cpp_method;
     SetViewInstanceMask: (this: *ID3D12GraphicsCommandList1, Mask: u32) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList1_AtomicCopyBufferUINT :: (this: *ID3D12GraphicsCommandList1, pDstBuffer: *ID3D12Resource, DstOffset: u64, pSrcBuffer: *ID3D12Resource, SrcOffset: u64, Dependencies: u32, ppDependentResources: **ID3D12Resource, pDependentSubresourceRanges: *D3D12_SUBRESOURCE_RANGE_UINT64) {
     this.id3d12graphicscommandlist1_vtable.AtomicCopyBufferUINT(this, pDstBuffer, DstOffset, pSrcBuffer, SrcOffset, Dependencies, ppDependentResources, pDependentSubresourceRanges);
 }
+
 ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64 :: (this: *ID3D12GraphicsCommandList1, pDstBuffer: *ID3D12Resource, DstOffset: u64, pSrcBuffer: *ID3D12Resource, SrcOffset: u64, Dependencies: u32, ppDependentResources: **ID3D12Resource, pDependentSubresourceRanges: *D3D12_SUBRESOURCE_RANGE_UINT64) {
     this.id3d12graphicscommandlist1_vtable.AtomicCopyBufferUINT64(this, pDstBuffer, DstOffset, pSrcBuffer, SrcOffset, Dependencies, ppDependentResources, pDependentSubresourceRanges);
 }
+
 ID3D12GraphicsCommandList1_OMSetDepthBounds :: (this: *ID3D12GraphicsCommandList1, Min: float, Max: float) {
     this.id3d12graphicscommandlist1_vtable.OMSetDepthBounds(this, Min, Max);
 }
+
 ID3D12GraphicsCommandList1_SetSamplePositions :: (this: *ID3D12GraphicsCommandList1, NumSamplesPerPixel: u32, NumPixels: u32, pSamplePositions: *D3D12_SAMPLE_POSITION) {
     this.id3d12graphicscommandlist1_vtable.SetSamplePositions(this, NumSamplesPerPixel, NumPixels, pSamplePositions);
 }
+
 ID3D12GraphicsCommandList1_ResolveSubresourceRegion :: (this: *ID3D12GraphicsCommandList1, pDstResource: *ID3D12Resource, DstSubresource: u32, DstX: u32, DstY: u32, pSrcResource: *ID3D12Resource, SrcSubresource: u32, pSrcRect: *D3D12_RECT, Format: DXGI_FORMAT, ResolveMode: D3D12_RESOLVE_MODE) {
     this.id3d12graphicscommandlist1_vtable.ResolveSubresourceRegion(this, pDstResource, DstSubresource, DstX, DstY, pSrcResource, SrcSubresource, pSrcRect, Format, ResolveMode);
 }
+
 ID3D12GraphicsCommandList1_SetViewInstanceMask :: (this: *ID3D12GraphicsCommandList1, Mask: u32) {
     this.id3d12graphicscommandlist1_vtable.SetViewInstanceMask(this, Mask);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList1) -> *ID3D12GraphicsCommandList1_VTable {
     return obj.id3d12graphicscommandlist1_vtable;
 }
+
 D3D12_WRITEBUFFERIMMEDIATE_PARAMETER :: struct {
     Dest: D3D12_GPU_VIRTUAL_ADDRESS;
     Value: u32;
 }
+
 D3D12_WRITEBUFFERIMMEDIATE_MODE :: enum s32 {
     DEFAULT :: 0;
     MARKER_IN :: 1;
@@ -4122,28 +4524,36 @@ D3D12_WRITEBUFFERIMMEDIATE_MODE :: enum s32 {
     D3D12_WRITEBUFFERIMMEDIATE_MODE_MARKER_IN :: MARKER_IN;
     D3D12_WRITEBUFFERIMMEDIATE_MODE_MARKER_OUT :: MARKER_OUT;
 }
+
 ID3D12GraphicsCommandList2_UUID :: "38C3E585-FF17-412C-9150-4FC6F9D72A28";
+
 ID3D12GraphicsCommandList2 :: struct {
     #as using id3d12graphicscommandlist1: ID3D12GraphicsCommandList1;
     #place id3d12graphicscommandlist1;
     id3d12graphicscommandlist2_vtable: *ID3D12GraphicsCommandList2_VTable;
 }
+
 ID3D12GraphicsCommandList2_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist1: ID3D12GraphicsCommandList1_VTable;
     WriteBufferImmediate: (this: *ID3D12GraphicsCommandList2, Count: u32, pParams: *D3D12_WRITEBUFFERIMMEDIATE_PARAMETER, pModes: *D3D12_WRITEBUFFERIMMEDIATE_MODE) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList2_WriteBufferImmediate :: (this: *ID3D12GraphicsCommandList2, Count: u32, pParams: *D3D12_WRITEBUFFERIMMEDIATE_PARAMETER, pModes: *D3D12_WRITEBUFFERIMMEDIATE_MODE) {
     this.id3d12graphicscommandlist2_vtable.WriteBufferImmediate(this, Count, pParams, pModes);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList2) -> *ID3D12GraphicsCommandList2_VTable {
     return obj.id3d12graphicscommandlist2_vtable;
 }
+
 ID3D12CommandQueue_UUID :: "0ec870a6-5d7e-4c22-8cfc-5baae07616ed";
+
 ID3D12CommandQueue :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12commandqueue_vtable: *ID3D12CommandQueue_VTable;
 }
+
 ID3D12CommandQueue_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     UpdateTileMappings: (this: *ID3D12CommandQueue, pResource: *ID3D12Resource, NumResourceRegions: u32, pResourceRegionStartCoordinates: *D3D12_TILED_RESOURCE_COORDINATE, pResourceRegionSizes: *D3D12_TILE_REGION_SIZE, pHeap: *ID3D12Heap, NumRanges: u32, pRangeFlags: *D3D12_TILE_RANGE_FLAGS, pHeapRangeStartOffsets: *u32, pRangeTileCounts: *u32, Flags: D3D12_TILE_MAPPING_FLAGS) -> void #cpp_method;
@@ -4158,48 +4568,63 @@ ID3D12CommandQueue_VTable :: struct #type_info_none {
     GetClockCalibration: (this: *ID3D12CommandQueue, pGpuTimestamp: *u64, pCpuTimestamp: *u64) -> HRESULT #cpp_method;
     GetDesc: (this: *ID3D12CommandQueue) -> D3D12_COMMAND_QUEUE_DESC #cpp_method;
 }
+
 ID3D12CommandQueue_UpdateTileMappings :: (this: *ID3D12CommandQueue, pResource: *ID3D12Resource, NumResourceRegions: u32, pResourceRegionStartCoordinates: *D3D12_TILED_RESOURCE_COORDINATE, pResourceRegionSizes: *D3D12_TILE_REGION_SIZE, pHeap: *ID3D12Heap, NumRanges: u32, pRangeFlags: *D3D12_TILE_RANGE_FLAGS, pHeapRangeStartOffsets: *u32, pRangeTileCounts: *u32, Flags: D3D12_TILE_MAPPING_FLAGS) {
     this.id3d12commandqueue_vtable.UpdateTileMappings(this, pResource, NumResourceRegions, pResourceRegionStartCoordinates, pResourceRegionSizes, pHeap, NumRanges, pRangeFlags, pHeapRangeStartOffsets, pRangeTileCounts, Flags);
 }
+
 ID3D12CommandQueue_CopyTileMappings :: (this: *ID3D12CommandQueue, pDstResource: *ID3D12Resource, pDstRegionStartCoordinate: *D3D12_TILED_RESOURCE_COORDINATE, pSrcResource: *ID3D12Resource, pSrcRegionStartCoordinate: *D3D12_TILED_RESOURCE_COORDINATE, pRegionSize: *D3D12_TILE_REGION_SIZE, Flags: D3D12_TILE_MAPPING_FLAGS) {
     this.id3d12commandqueue_vtable.CopyTileMappings(this, pDstResource, pDstRegionStartCoordinate, pSrcResource, pSrcRegionStartCoordinate, pRegionSize, Flags);
 }
+
 ID3D12CommandQueue_ExecuteCommandLists :: (this: *ID3D12CommandQueue, NumCommandLists: u32, ppCommandLists: **ID3D12CommandList) {
     this.id3d12commandqueue_vtable.ExecuteCommandLists(this, NumCommandLists, ppCommandLists);
 }
+
 ID3D12CommandQueue_SetMarker :: (this: *ID3D12CommandQueue, Metadata: u32, pData: *void, Size: u32) {
     this.id3d12commandqueue_vtable.SetMarker(this, Metadata, pData, Size);
 }
+
 ID3D12CommandQueue_BeginEvent :: (this: *ID3D12CommandQueue, Metadata: u32, pData: *void, Size: u32) {
     this.id3d12commandqueue_vtable.BeginEvent(this, Metadata, pData, Size);
 }
+
 ID3D12CommandQueue_EndEvent :: (this: *ID3D12CommandQueue) {
     this.id3d12commandqueue_vtable.EndEvent(this);
 }
+
 ID3D12CommandQueue_Signal :: (this: *ID3D12CommandQueue, pFence: *ID3D12Fence, Value: u64) -> HRESULT {
     return this.id3d12commandqueue_vtable.Signal(this, pFence, Value);
 }
+
 ID3D12CommandQueue_Wait :: (this: *ID3D12CommandQueue, pFence: *ID3D12Fence, Value: u64) -> HRESULT {
     return this.id3d12commandqueue_vtable.Wait(this, pFence, Value);
 }
+
 ID3D12CommandQueue_GetTimestampFrequency :: (this: *ID3D12CommandQueue, pFrequency: *u64) -> HRESULT {
     return this.id3d12commandqueue_vtable.GetTimestampFrequency(this, pFrequency);
 }
+
 ID3D12CommandQueue_GetClockCalibration :: (this: *ID3D12CommandQueue, pGpuTimestamp: *u64, pCpuTimestamp: *u64) -> HRESULT {
     return this.id3d12commandqueue_vtable.GetClockCalibration(this, pGpuTimestamp, pCpuTimestamp);
 }
+
 ID3D12CommandQueue_GetDesc :: (this: *ID3D12CommandQueue) -> D3D12_COMMAND_QUEUE_DESC {
     return this.id3d12commandqueue_vtable.GetDesc(this);
 }
+
 vtable :: (obj: *ID3D12CommandQueue) -> *ID3D12CommandQueue_VTable {
     return obj.id3d12commandqueue_vtable;
 }
+
 ID3D12Device_UUID :: "189819f1-1db6-4b57-be54-1821339b85f7";
+
 ID3D12Device :: struct {
     #as using id3d12object: ID3D12Object;
     #place id3d12object;
     id3d12device_vtable: *ID3D12Device_VTable;
 }
+
 ID3D12Device_VTable :: struct #type_info_none {
     using id3d12object: ID3D12Object_VTable;
     GetNodeCount: (this: *ID3D12Device) -> u32 #cpp_method;
@@ -4240,126 +4665,167 @@ ID3D12Device_VTable :: struct #type_info_none {
     GetResourceTiling: (this: *ID3D12Device, pTiledResource: *ID3D12Resource, pNumTilesForEntireResource: *u32, pPackedMipDesc: *D3D12_PACKED_MIP_INFO, pStandardTileShapeForNonPackedMips: *D3D12_TILE_SHAPE, pNumSubresourceTilings: *u32, FirstSubresourceTilingToGet: u32, pSubresourceTilingsForNonPackedMips: *D3D12_SUBRESOURCE_TILING) -> void #cpp_method;
     GetAdapterLuid: (this: *ID3D12Device) -> LUID #cpp_method;
 }
+
 ID3D12Device_GetNodeCount :: (this: *ID3D12Device) -> u32 {
     return this.id3d12device_vtable.GetNodeCount(this);
 }
+
 ID3D12Device_CreateCommandQueue :: (this: *ID3D12Device, pDesc: *D3D12_COMMAND_QUEUE_DESC, riid: *IID, ppCommandQueue: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateCommandQueue(this, pDesc, riid, ppCommandQueue);
 }
+
 ID3D12Device_CreateCommandAllocator :: (this: *ID3D12Device, type: D3D12_COMMAND_LIST_TYPE, riid: *IID, ppCommandAllocator: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateCommandAllocator(this, type, riid, ppCommandAllocator);
 }
+
 ID3D12Device_CreateGraphicsPipelineState :: (this: *ID3D12Device, pDesc: *D3D12_GRAPHICS_PIPELINE_STATE_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateGraphicsPipelineState(this, pDesc, riid, ppPipelineState);
 }
+
 ID3D12Device_CreateComputePipelineState :: (this: *ID3D12Device, pDesc: *D3D12_COMPUTE_PIPELINE_STATE_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateComputePipelineState(this, pDesc, riid, ppPipelineState);
 }
+
 ID3D12Device_CreateCommandList :: (this: *ID3D12Device, nodeMask: u32, type: D3D12_COMMAND_LIST_TYPE, pCommandAllocator: *ID3D12CommandAllocator, pInitialState: *ID3D12PipelineState, riid: *IID, ppCommandList: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateCommandList(this, nodeMask, type, pCommandAllocator, pInitialState, riid, ppCommandList);
 }
+
 ID3D12Device_CheckFeatureSupport :: (this: *ID3D12Device, Feature: D3D12_FEATURE, pFeatureSupportData: *void, FeatureSupportDataSize: u32) -> HRESULT {
     return this.id3d12device_vtable.CheckFeatureSupport(this, Feature, pFeatureSupportData, FeatureSupportDataSize);
 }
+
 ID3D12Device_CreateDescriptorHeap :: (this: *ID3D12Device, pDescriptorHeapDesc: *D3D12_DESCRIPTOR_HEAP_DESC, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateDescriptorHeap(this, pDescriptorHeapDesc, riid, ppvHeap);
 }
+
 ID3D12Device_GetDescriptorHandleIncrementSize :: (this: *ID3D12Device, DescriptorHeapType: D3D12_DESCRIPTOR_HEAP_TYPE) -> u32 {
     return this.id3d12device_vtable.GetDescriptorHandleIncrementSize(this, DescriptorHeapType);
 }
+
 ID3D12Device_CreateRootSignature :: (this: *ID3D12Device, nodeMask: u32, pBlobWithRootSignature: *void, blobLengthInBytes: SIZE_T, riid: *IID, ppvRootSignature: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateRootSignature(this, nodeMask, pBlobWithRootSignature, blobLengthInBytes, riid, ppvRootSignature);
 }
+
 ID3D12Device_CreateConstantBufferView :: (this: *ID3D12Device, pDesc: *D3D12_CONSTANT_BUFFER_VIEW_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateConstantBufferView(this, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CreateShaderResourceView :: (this: *ID3D12Device, pResource: *ID3D12Resource, pDesc: *D3D12_SHADER_RESOURCE_VIEW_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateShaderResourceView(this, pResource, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CreateUnorderedAccessView :: (this: *ID3D12Device, pResource: *ID3D12Resource, pCounterResource: *ID3D12Resource, pDesc: *D3D12_UNORDERED_ACCESS_VIEW_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateUnorderedAccessView(this, pResource, pCounterResource, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CreateRenderTargetView :: (this: *ID3D12Device, pResource: *ID3D12Resource, pDesc: *D3D12_RENDER_TARGET_VIEW_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateRenderTargetView(this, pResource, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CreateDepthStencilView :: (this: *ID3D12Device, pResource: *ID3D12Resource, pDesc: *D3D12_DEPTH_STENCIL_VIEW_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateDepthStencilView(this, pResource, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CreateSampler :: (this: *ID3D12Device, pDesc: *D3D12_SAMPLER_DESC, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device_vtable.CreateSampler(this, pDesc, DestDescriptor);
 }
+
 ID3D12Device_CopyDescriptors :: (this: *ID3D12Device, NumDestDescriptorRanges: u32, pDestDescriptorRangeStarts: *D3D12_CPU_DESCRIPTOR_HANDLE, pDestDescriptorRangeSizes: *u32, NumSrcDescriptorRanges: u32, pSrcDescriptorRangeStarts: *D3D12_CPU_DESCRIPTOR_HANDLE, pSrcDescriptorRangeSizes: *u32, DescriptorHeapsType: D3D12_DESCRIPTOR_HEAP_TYPE) {
     this.id3d12device_vtable.CopyDescriptors(this, NumDestDescriptorRanges, pDestDescriptorRangeStarts, pDestDescriptorRangeSizes, NumSrcDescriptorRanges, pSrcDescriptorRangeStarts, pSrcDescriptorRangeSizes, DescriptorHeapsType);
 }
+
 ID3D12Device_CopyDescriptorsSimple :: (this: *ID3D12Device, NumDescriptors: u32, DestDescriptorRangeStart: D3D12_CPU_DESCRIPTOR_HANDLE, SrcDescriptorRangeStart: D3D12_CPU_DESCRIPTOR_HANDLE, DescriptorHeapsType: D3D12_DESCRIPTOR_HEAP_TYPE) {
     this.id3d12device_vtable.CopyDescriptorsSimple(this, NumDescriptors, DestDescriptorRangeStart, SrcDescriptorRangeStart, DescriptorHeapsType);
 }
+
 ID3D12Device_GetResourceAllocationInfo :: (this: *ID3D12Device, visibleMask: u32, numResourceDescs: u32, pResourceDescs: *D3D12_RESOURCE_DESC) -> D3D12_RESOURCE_ALLOCATION_INFO {
     return this.id3d12device_vtable.GetResourceAllocationInfo(this, visibleMask, numResourceDescs, pResourceDescs);
 }
+
 ID3D12Device_GetCustomHeapProperties :: (this: *ID3D12Device, nodeMask: u32, heapType: D3D12_HEAP_TYPE) -> D3D12_HEAP_PROPERTIES {
     return this.id3d12device_vtable.GetCustomHeapProperties(this, nodeMask, heapType);
 }
+
 ID3D12Device_CreateCommittedResource :: (this: *ID3D12Device, pHeapProperties: *D3D12_HEAP_PROPERTIES, HeapFlags: D3D12_HEAP_FLAGS, pDesc: *D3D12_RESOURCE_DESC, InitialResourceState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, riidResource: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateCommittedResource(this, pHeapProperties, HeapFlags, pDesc, InitialResourceState, pOptimizedClearValue, riidResource, ppvResource);
 }
+
 ID3D12Device_CreateHeap :: (this: *ID3D12Device, pDesc: *D3D12_HEAP_DESC, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateHeap(this, pDesc, riid, ppvHeap);
 }
+
 ID3D12Device_CreatePlacedResource :: (this: *ID3D12Device, pHeap: *ID3D12Heap, HeapOffset: u64, pDesc: *D3D12_RESOURCE_DESC, InitialState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, riid: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device_vtable.CreatePlacedResource(this, pHeap, HeapOffset, pDesc, InitialState, pOptimizedClearValue, riid, ppvResource);
 }
+
 ID3D12Device_CreateReservedResource :: (this: *ID3D12Device, pDesc: *D3D12_RESOURCE_DESC, InitialState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, riid: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateReservedResource(this, pDesc, InitialState, pOptimizedClearValue, riid, ppvResource);
 }
+
 ID3D12Device_CreateSharedHandle :: (this: *ID3D12Device, pObject: *ID3D12DeviceChild, pAttributes: *SECURITY_ATTRIBUTES, Access: u32, Name: *s16, pHandle: *HANDLE) -> HRESULT {
     return this.id3d12device_vtable.CreateSharedHandle(this, pObject, pAttributes, Access, Name, pHandle);
 }
+
 ID3D12Device_OpenSharedHandle :: (this: *ID3D12Device, NTHandle: HANDLE, riid: *IID, ppvObj: **void) -> HRESULT {
     return this.id3d12device_vtable.OpenSharedHandle(this, NTHandle, riid, ppvObj);
 }
+
 ID3D12Device_OpenSharedHandleByName :: (this: *ID3D12Device, Name: *s16, Access: u32, pNTHandle: *HANDLE) -> HRESULT {
     return this.id3d12device_vtable.OpenSharedHandleByName(this, Name, Access, pNTHandle);
 }
+
 ID3D12Device_MakeResident :: (this: *ID3D12Device, NumObjects: u32, ppObjects: **ID3D12Pageable) -> HRESULT {
     return this.id3d12device_vtable.MakeResident(this, NumObjects, ppObjects);
 }
+
 ID3D12Device_Evict :: (this: *ID3D12Device, NumObjects: u32, ppObjects: **ID3D12Pageable) -> HRESULT {
     return this.id3d12device_vtable.Evict(this, NumObjects, ppObjects);
 }
+
 ID3D12Device_CreateFence :: (this: *ID3D12Device, InitialValue: u64, Flags: D3D12_FENCE_FLAGS, riid: *IID, ppFence: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateFence(this, InitialValue, Flags, riid, ppFence);
 }
+
 ID3D12Device_GetDeviceRemovedReason :: (this: *ID3D12Device) -> HRESULT {
     return this.id3d12device_vtable.GetDeviceRemovedReason(this);
 }
+
 ID3D12Device_GetCopyableFootprints :: (this: *ID3D12Device, pResourceDesc: *D3D12_RESOURCE_DESC, FirstSubresource: u32, NumSubresources: u32, BaseOffset: u64, pLayouts: *D3D12_PLACED_SUBRESOURCE_FOOTPRINT, pNumRows: *u32, pRowSizeInBytes: *u64, pTotalBytes: *u64) {
     this.id3d12device_vtable.GetCopyableFootprints(this, pResourceDesc, FirstSubresource, NumSubresources, BaseOffset, pLayouts, pNumRows, pRowSizeInBytes, pTotalBytes);
 }
+
 ID3D12Device_CreateQueryHeap :: (this: *ID3D12Device, pDesc: *D3D12_QUERY_HEAP_DESC, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateQueryHeap(this, pDesc, riid, ppvHeap);
 }
+
 ID3D12Device_SetStablePowerState :: (this: *ID3D12Device, Enable: BOOL) -> HRESULT {
     return this.id3d12device_vtable.SetStablePowerState(this, Enable);
 }
+
 ID3D12Device_CreateCommandSignature :: (this: *ID3D12Device, pDesc: *D3D12_COMMAND_SIGNATURE_DESC, pRootSignature: *ID3D12RootSignature, riid: *IID, ppvCommandSignature: **void) -> HRESULT {
     return this.id3d12device_vtable.CreateCommandSignature(this, pDesc, pRootSignature, riid, ppvCommandSignature);
 }
+
 ID3D12Device_GetResourceTiling :: (this: *ID3D12Device, pTiledResource: *ID3D12Resource, pNumTilesForEntireResource: *u32, pPackedMipDesc: *D3D12_PACKED_MIP_INFO, pStandardTileShapeForNonPackedMips: *D3D12_TILE_SHAPE, pNumSubresourceTilings: *u32, FirstSubresourceTilingToGet: u32, pSubresourceTilingsForNonPackedMips: *D3D12_SUBRESOURCE_TILING) {
     this.id3d12device_vtable.GetResourceTiling(this, pTiledResource, pNumTilesForEntireResource, pPackedMipDesc, pStandardTileShapeForNonPackedMips, pNumSubresourceTilings, FirstSubresourceTilingToGet, pSubresourceTilingsForNonPackedMips);
 }
+
 ID3D12Device_GetAdapterLuid :: (this: *ID3D12Device) -> LUID {
     return this.id3d12device_vtable.GetAdapterLuid(this);
 }
+
 vtable :: (obj: *ID3D12Device) -> *ID3D12Device_VTable {
     return obj.id3d12device_vtable;
 }
+
 ID3D12PipelineLibrary_UUID :: "c64226a8-9201-46af-b4cc-53fb9ff7414f";
+
 ID3D12PipelineLibrary :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
     #place id3d12devicechild;
     id3d12pipelinelibrary_vtable: *ID3D12PipelineLibrary_VTable;
 }
+
 ID3D12PipelineLibrary_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     StorePipeline: (this: *ID3D12PipelineLibrary, pName: *s16, pPipeline: *ID3D12PipelineState) -> HRESULT #cpp_method;
@@ -4368,40 +4834,52 @@ ID3D12PipelineLibrary_VTable :: struct #type_info_none {
     GetSerializedSize: (this: *ID3D12PipelineLibrary) -> SIZE_T #cpp_method;
     Serialize: (this: *ID3D12PipelineLibrary, pData: *void, DataSizeInBytes: SIZE_T) -> HRESULT #cpp_method;
 }
+
 ID3D12PipelineLibrary_StorePipeline :: (this: *ID3D12PipelineLibrary, pName: *s16, pPipeline: *ID3D12PipelineState) -> HRESULT {
     return this.id3d12pipelinelibrary_vtable.StorePipeline(this, pName, pPipeline);
 }
+
 ID3D12PipelineLibrary_LoadGraphicsPipeline :: (this: *ID3D12PipelineLibrary, pName: *s16, pDesc: *D3D12_GRAPHICS_PIPELINE_STATE_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12pipelinelibrary_vtable.LoadGraphicsPipeline(this, pName, pDesc, riid, ppPipelineState);
 }
+
 ID3D12PipelineLibrary_LoadComputePipeline :: (this: *ID3D12PipelineLibrary, pName: *s16, pDesc: *D3D12_COMPUTE_PIPELINE_STATE_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12pipelinelibrary_vtable.LoadComputePipeline(this, pName, pDesc, riid, ppPipelineState);
 }
+
 ID3D12PipelineLibrary_GetSerializedSize :: (this: *ID3D12PipelineLibrary) -> SIZE_T {
     return this.id3d12pipelinelibrary_vtable.GetSerializedSize(this);
 }
+
 ID3D12PipelineLibrary_Serialize :: (this: *ID3D12PipelineLibrary, pData: *void, DataSizeInBytes: SIZE_T) -> HRESULT {
     return this.id3d12pipelinelibrary_vtable.Serialize(this, pData, DataSizeInBytes);
 }
+
 vtable :: (obj: *ID3D12PipelineLibrary) -> *ID3D12PipelineLibrary_VTable {
     return obj.id3d12pipelinelibrary_vtable;
 }
+
 ID3D12PipelineLibrary1_UUID :: "80eabf42-2568-4e5e-bd82-c37f86961dc3";
+
 ID3D12PipelineLibrary1 :: struct {
     #as using id3d12pipelinelibrary: ID3D12PipelineLibrary;
     #place id3d12pipelinelibrary;
     id3d12pipelinelibrary1_vtable: *ID3D12PipelineLibrary1_VTable;
 }
+
 ID3D12PipelineLibrary1_VTable :: struct #type_info_none {
     using id3d12pipelinelibrary: ID3D12PipelineLibrary_VTable;
     LoadPipeline: (this: *ID3D12PipelineLibrary1, pName: *s16, pDesc: *D3D12_PIPELINE_STATE_STREAM_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12PipelineLibrary1_LoadPipeline :: (this: *ID3D12PipelineLibrary1, pName: *s16, pDesc: *D3D12_PIPELINE_STATE_STREAM_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12pipelinelibrary1_vtable.LoadPipeline(this, pName, pDesc, riid, ppPipelineState);
 }
+
 vtable :: (obj: *ID3D12PipelineLibrary1) -> *ID3D12PipelineLibrary1_VTable {
     return obj.id3d12pipelinelibrary1_vtable;
 }
+
 D3D12_MULTIPLE_FENCE_WAIT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ANY :: 0x1;
@@ -4410,6 +4888,7 @@ D3D12_MULTIPLE_FENCE_WAIT_FLAGS :: enum_flags u32 {
     D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY :: ANY;
     D3D12_MULTIPLE_FENCE_WAIT_FLAG_ALL :: ALL;
 }
+
 D3D12_RESIDENCY_PRIORITY :: enum s32 {
     MINIMUM :: 671088640;
     LOW :: 1342177280;
@@ -4422,150 +4901,192 @@ D3D12_RESIDENCY_PRIORITY :: enum s32 {
     D3D12_RESIDENCY_PRIORITY_HIGH :: HIGH;
     D3D12_RESIDENCY_PRIORITY_MAXIMUM :: MAXIMUM;
 }
+
 ID3D12Device1_UUID :: "77acce80-638e-4e65-8895-c1f23386863e";
+
 ID3D12Device1 :: struct {
     #as using id3d12device: ID3D12Device;
     #place id3d12device;
     id3d12device1_vtable: *ID3D12Device1_VTable;
 }
+
 ID3D12Device1_VTable :: struct #type_info_none {
     using id3d12device: ID3D12Device_VTable;
     CreatePipelineLibrary: (this: *ID3D12Device1, pLibraryBlob: *void, BlobLength: SIZE_T, riid: *IID, ppPipelineLibrary: **void) -> HRESULT #cpp_method;
     SetEventOnMultipleFenceCompletion: (this: *ID3D12Device1, ppFences: **ID3D12Fence, pFenceValues: *u64, NumFences: u32, Flags: D3D12_MULTIPLE_FENCE_WAIT_FLAGS, hEvent: HANDLE) -> HRESULT #cpp_method;
     SetResidencyPriority: (this: *ID3D12Device1, NumObjects: u32, ppObjects: **ID3D12Pageable, pPriorities: *D3D12_RESIDENCY_PRIORITY) -> HRESULT #cpp_method;
 }
+
 ID3D12Device1_CreatePipelineLibrary :: (this: *ID3D12Device1, pLibraryBlob: *void, BlobLength: SIZE_T, riid: *IID, ppPipelineLibrary: **void) -> HRESULT {
     return this.id3d12device1_vtable.CreatePipelineLibrary(this, pLibraryBlob, BlobLength, riid, ppPipelineLibrary);
 }
+
 ID3D12Device1_SetEventOnMultipleFenceCompletion :: (this: *ID3D12Device1, ppFences: **ID3D12Fence, pFenceValues: *u64, NumFences: u32, Flags: D3D12_MULTIPLE_FENCE_WAIT_FLAGS, hEvent: HANDLE) -> HRESULT {
     return this.id3d12device1_vtable.SetEventOnMultipleFenceCompletion(this, ppFences, pFenceValues, NumFences, Flags, hEvent);
 }
+
 ID3D12Device1_SetResidencyPriority :: (this: *ID3D12Device1, NumObjects: u32, ppObjects: **ID3D12Pageable, pPriorities: *D3D12_RESIDENCY_PRIORITY) -> HRESULT {
     return this.id3d12device1_vtable.SetResidencyPriority(this, NumObjects, ppObjects, pPriorities);
 }
+
 vtable :: (obj: *ID3D12Device1) -> *ID3D12Device1_VTable {
     return obj.id3d12device1_vtable;
 }
+
 ID3D12Device2_UUID :: "30baa41e-b15b-475c-a0bb-1af5c5b64328";
+
 ID3D12Device2 :: struct {
     #as using id3d12device1: ID3D12Device1;
     #place id3d12device1;
     id3d12device2_vtable: *ID3D12Device2_VTable;
 }
+
 ID3D12Device2_VTable :: struct #type_info_none {
     using id3d12device1: ID3D12Device1_VTable;
     CreatePipelineState: (this: *ID3D12Device2, pDesc: *D3D12_PIPELINE_STATE_STREAM_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12Device2_CreatePipelineState :: (this: *ID3D12Device2, pDesc: *D3D12_PIPELINE_STATE_STREAM_DESC, riid: *IID, ppPipelineState: **void) -> HRESULT {
     return this.id3d12device2_vtable.CreatePipelineState(this, pDesc, riid, ppPipelineState);
 }
+
 vtable :: (obj: *ID3D12Device2) -> *ID3D12Device2_VTable {
     return obj.id3d12device2_vtable;
 }
+
 D3D12_RESIDENCY_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DENY_OVERBUDGET :: 0x1;
     D3D12_RESIDENCY_FLAG_NONE :: NONE;
     D3D12_RESIDENCY_FLAG_DENY_OVERBUDGET :: DENY_OVERBUDGET;
 }
+
 ID3D12Device3_UUID :: "81dadc15-2bad-4392-93c5-101345c4aa98";
+
 ID3D12Device3 :: struct {
     #as using id3d12device2: ID3D12Device2;
     #place id3d12device2;
     id3d12device3_vtable: *ID3D12Device3_VTable;
 }
+
 ID3D12Device3_VTable :: struct #type_info_none {
     using id3d12device2: ID3D12Device2_VTable;
     OpenExistingHeapFromAddress: (this: *ID3D12Device3, pAddress: *void, riid: *IID, ppvHeap: **void) -> HRESULT #cpp_method;
     OpenExistingHeapFromFileMapping: (this: *ID3D12Device3, hFileMapping: HANDLE, riid: *IID, ppvHeap: **void) -> HRESULT #cpp_method;
     EnqueueMakeResident: (this: *ID3D12Device3, Flags: D3D12_RESIDENCY_FLAGS, NumObjects: u32, ppObjects: **ID3D12Pageable, pFenceToSignal: *ID3D12Fence, FenceValueToSignal: u64) -> HRESULT #cpp_method;
 }
+
 ID3D12Device3_OpenExistingHeapFromAddress :: (this: *ID3D12Device3, pAddress: *void, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device3_vtable.OpenExistingHeapFromAddress(this, pAddress, riid, ppvHeap);
 }
+
 ID3D12Device3_OpenExistingHeapFromFileMapping :: (this: *ID3D12Device3, hFileMapping: HANDLE, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device3_vtable.OpenExistingHeapFromFileMapping(this, hFileMapping, riid, ppvHeap);
 }
+
 ID3D12Device3_EnqueueMakeResident :: (this: *ID3D12Device3, Flags: D3D12_RESIDENCY_FLAGS, NumObjects: u32, ppObjects: **ID3D12Pageable, pFenceToSignal: *ID3D12Fence, FenceValueToSignal: u64) -> HRESULT {
     return this.id3d12device3_vtable.EnqueueMakeResident(this, Flags, NumObjects, ppObjects, pFenceToSignal, FenceValueToSignal);
 }
+
 vtable :: (obj: *ID3D12Device3) -> *ID3D12Device3_VTable {
     return obj.id3d12device3_vtable;
 }
+
 D3D12_COMMAND_LIST_FLAGS :: enum_flags u32 {
     D3D12_COMMAND_LIST_FLAG_NONE :: 0x0;
 }
+
 D3D12_COMMAND_POOL_FLAGS :: enum_flags u32 {
     D3D12_COMMAND_POOL_FLAG_NONE :: 0x0;
 }
+
 D3D12_COMMAND_RECORDER_FLAGS :: enum_flags u32 {
     D3D12_COMMAND_RECORDER_FLAG_NONE :: 0x0;
 }
+
 D3D12_PROTECTED_SESSION_STATUS :: enum s32 {
     OK :: 0;
     INVALID :: 1;
     D3D12_PROTECTED_SESSION_STATUS_OK :: OK;
     D3D12_PROTECTED_SESSION_STATUS_INVALID :: INVALID;
 }
+
 ID3D12ProtectedSession_UUID :: "A1533D18-0AC1-4084-85B9-89A96116806B";
+
 ID3D12ProtectedSession :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
     #place id3d12devicechild;
     id3d12protectedsession_vtable: *ID3D12ProtectedSession_VTable;
 }
+
 ID3D12ProtectedSession_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetStatusFence: (this: *ID3D12ProtectedSession, riid: *IID, ppFence: **void) -> HRESULT #cpp_method;
     GetSessionStatus: (this: *ID3D12ProtectedSession) -> D3D12_PROTECTED_SESSION_STATUS #cpp_method;
 }
+
 ID3D12ProtectedSession_GetStatusFence :: (this: *ID3D12ProtectedSession, riid: *IID, ppFence: **void) -> HRESULT {
     return this.id3d12protectedsession_vtable.GetStatusFence(this, riid, ppFence);
 }
+
 ID3D12ProtectedSession_GetSessionStatus :: (this: *ID3D12ProtectedSession) -> D3D12_PROTECTED_SESSION_STATUS {
     return this.id3d12protectedsession_vtable.GetSessionStatus(this);
 }
+
 vtable :: (obj: *ID3D12ProtectedSession) -> *ID3D12ProtectedSession_VTable {
     return obj.id3d12protectedsession_vtable;
 }
+
 D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SUPPORTED :: 0x1;
     D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAG_NONE :: NONE;
     D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAG_SUPPORTED :: SUPPORTED;
 }
+
 D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_SUPPORT :: struct {
     NodeIndex: u32;
     Support: D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAGS;
 }
+
 D3D12_PROTECTED_RESOURCE_SESSION_FLAGS :: enum_flags u32 {
     D3D12_PROTECTED_RESOURCE_SESSION_FLAG_NONE :: 0x0;
 }
+
 D3D12_PROTECTED_RESOURCE_SESSION_DESC :: struct {
     NodeMask: u32;
     Flags: D3D12_PROTECTED_RESOURCE_SESSION_FLAGS;
 }
+
 ID3D12ProtectedResourceSession_UUID :: "6CD696F4-F289-40CC-8091-5A6C0A099C3D";
+
 ID3D12ProtectedResourceSession :: struct {
     #as using id3d12protectedsession: ID3D12ProtectedSession;
     #place id3d12protectedsession;
     id3d12protectedresourcesession_vtable: *ID3D12ProtectedResourceSession_VTable;
 }
+
 ID3D12ProtectedResourceSession_VTable :: struct #type_info_none {
     using id3d12protectedsession: ID3D12ProtectedSession_VTable;
     GetDesc: (this: *ID3D12ProtectedResourceSession) -> D3D12_PROTECTED_RESOURCE_SESSION_DESC #cpp_method;
 }
+
 ID3D12ProtectedResourceSession_GetDesc :: (this: *ID3D12ProtectedResourceSession) -> D3D12_PROTECTED_RESOURCE_SESSION_DESC {
     return this.id3d12protectedresourcesession_vtable.GetDesc(this);
 }
+
 vtable :: (obj: *ID3D12ProtectedResourceSession) -> *ID3D12ProtectedResourceSession_VTable {
     return obj.id3d12protectedresourcesession_vtable;
 }
+
 ID3D12Device4_UUID :: "e865df17-a9ee-46f9-a463-3098315aa2e5";
+
 ID3D12Device4 :: struct {
     #as using id3d12device3: ID3D12Device3;
     #place id3d12device3;
     id3d12device4_vtable: *ID3D12Device4_VTable;
 }
+
 ID3D12Device4_VTable :: struct #type_info_none {
     using id3d12device3: ID3D12Device3_VTable;
     CreateCommandList1: (this: *ID3D12Device4, nodeMask: u32, type: D3D12_COMMAND_LIST_TYPE, flags: D3D12_COMMAND_LIST_FLAGS, riid: *IID, ppCommandList: **void) -> HRESULT #cpp_method;
@@ -4575,55 +5096,71 @@ ID3D12Device4_VTable :: struct #type_info_none {
     CreateReservedResource1: (this: *ID3D12Device4, pDesc: *D3D12_RESOURCE_DESC, InitialState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, pProtectedSession: *ID3D12ProtectedResourceSession, riid: *IID, ppvResource: **void) -> HRESULT #cpp_method;
     GetResourceAllocationInfo1: (this: *ID3D12Device4, visibleMask: u32, numResourceDescs: u32, pResourceDescs: *D3D12_RESOURCE_DESC, pResourceAllocationInfo1: *D3D12_RESOURCE_ALLOCATION_INFO1) -> D3D12_RESOURCE_ALLOCATION_INFO #cpp_method;
 }
+
 ID3D12Device4_CreateCommandList1 :: (this: *ID3D12Device4, nodeMask: u32, type: D3D12_COMMAND_LIST_TYPE, flags: D3D12_COMMAND_LIST_FLAGS, riid: *IID, ppCommandList: **void) -> HRESULT {
     return this.id3d12device4_vtable.CreateCommandList1(this, nodeMask, type, flags, riid, ppCommandList);
 }
+
 ID3D12Device4_CreateProtectedResourceSession :: (this: *ID3D12Device4, pDesc: *D3D12_PROTECTED_RESOURCE_SESSION_DESC, riid: *IID, ppSession: **void) -> HRESULT {
     return this.id3d12device4_vtable.CreateProtectedResourceSession(this, pDesc, riid, ppSession);
 }
+
 ID3D12Device4_CreateCommittedResource1 :: (this: *ID3D12Device4, pHeapProperties: *D3D12_HEAP_PROPERTIES, HeapFlags: D3D12_HEAP_FLAGS, pDesc: *D3D12_RESOURCE_DESC, InitialResourceState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, pProtectedSession: *ID3D12ProtectedResourceSession, riidResource: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device4_vtable.CreateCommittedResource1(this, pHeapProperties, HeapFlags, pDesc, InitialResourceState, pOptimizedClearValue, pProtectedSession, riidResource, ppvResource);
 }
+
 ID3D12Device4_CreateHeap1 :: (this: *ID3D12Device4, pDesc: *D3D12_HEAP_DESC, pProtectedSession: *ID3D12ProtectedResourceSession, riid: *IID, ppvHeap: **void) -> HRESULT {
     return this.id3d12device4_vtable.CreateHeap1(this, pDesc, pProtectedSession, riid, ppvHeap);
 }
+
 ID3D12Device4_CreateReservedResource1 :: (this: *ID3D12Device4, pDesc: *D3D12_RESOURCE_DESC, InitialState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, pProtectedSession: *ID3D12ProtectedResourceSession, riid: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device4_vtable.CreateReservedResource1(this, pDesc, InitialState, pOptimizedClearValue, pProtectedSession, riid, ppvResource);
 }
+
 ID3D12Device4_GetResourceAllocationInfo1 :: (this: *ID3D12Device4, visibleMask: u32, numResourceDescs: u32, pResourceDescs: *D3D12_RESOURCE_DESC, pResourceAllocationInfo1: *D3D12_RESOURCE_ALLOCATION_INFO1) -> D3D12_RESOURCE_ALLOCATION_INFO {
     return this.id3d12device4_vtable.GetResourceAllocationInfo1(this, visibleMask, numResourceDescs, pResourceDescs, pResourceAllocationInfo1);
 }
+
 vtable :: (obj: *ID3D12Device4) -> *ID3D12Device4_VTable {
     return obj.id3d12device4_vtable;
 }
+
 D3D12_LIFETIME_STATE :: enum s32 {
     IN_USE :: 0;
     NOT_IN_USE :: 1;
     D3D12_LIFETIME_STATE_IN_USE :: IN_USE;
     D3D12_LIFETIME_STATE_NOT_IN_USE :: NOT_IN_USE;
 }
+
 ID3D12LifetimeOwner_UUID :: "e667af9f-cd56-4f46-83ce-032e595d70a8";
+
 ID3D12LifetimeOwner :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12lifetimeowner_vtable: *ID3D12LifetimeOwner_VTable;
 }
+
 ID3D12LifetimeOwner_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     LifetimeStateUpdated: (this: *ID3D12LifetimeOwner, NewState: D3D12_LIFETIME_STATE) -> void #cpp_method;
 }
+
 ID3D12LifetimeOwner_LifetimeStateUpdated :: (this: *ID3D12LifetimeOwner, NewState: D3D12_LIFETIME_STATE) {
     this.id3d12lifetimeowner_vtable.LifetimeStateUpdated(this, NewState);
 }
+
 vtable :: (obj: *ID3D12LifetimeOwner) -> *ID3D12LifetimeOwner_VTable {
     return obj.id3d12lifetimeowner_vtable;
 }
+
 ID3D12SwapChainAssistant_UUID :: "f1df64b6-57fd-49cd-8807-c0eb88b45c8f";
+
 ID3D12SwapChainAssistant :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12swapchainassistant_vtable: *ID3D12SwapChainAssistant_VTable;
 }
+
 ID3D12SwapChainAssistant_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetLUID: (this: *ID3D12SwapChainAssistant) -> LUID #cpp_method;
@@ -4631,37 +5168,48 @@ ID3D12SwapChainAssistant_VTable :: struct #type_info_none {
     GetCurrentResourceAndCommandQueue: (this: *ID3D12SwapChainAssistant, riidResource: *IID, ppvResource: **void, riidQueue: *IID, ppvQueue: **void) -> HRESULT #cpp_method;
     InsertImplicitSync: (this: *ID3D12SwapChainAssistant) -> HRESULT #cpp_method;
 }
+
 ID3D12SwapChainAssistant_GetLUID :: (this: *ID3D12SwapChainAssistant) -> LUID {
     return this.id3d12swapchainassistant_vtable.GetLUID(this);
 }
+
 ID3D12SwapChainAssistant_GetSwapChainObject :: (this: *ID3D12SwapChainAssistant, riid: *IID, ppv: **void) -> HRESULT {
     return this.id3d12swapchainassistant_vtable.GetSwapChainObject(this, riid, ppv);
 }
+
 ID3D12SwapChainAssistant_GetCurrentResourceAndCommandQueue :: (this: *ID3D12SwapChainAssistant, riidResource: *IID, ppvResource: **void, riidQueue: *IID, ppvQueue: **void) -> HRESULT {
     return this.id3d12swapchainassistant_vtable.GetCurrentResourceAndCommandQueue(this, riidResource, ppvResource, riidQueue, ppvQueue);
 }
+
 ID3D12SwapChainAssistant_InsertImplicitSync :: (this: *ID3D12SwapChainAssistant) -> HRESULT {
     return this.id3d12swapchainassistant_vtable.InsertImplicitSync(this);
 }
+
 vtable :: (obj: *ID3D12SwapChainAssistant) -> *ID3D12SwapChainAssistant_VTable {
     return obj.id3d12swapchainassistant_vtable;
 }
+
 ID3D12LifetimeTracker_UUID :: "3fd03d36-4eb1-424a-a582-494ecb8ba813";
+
 ID3D12LifetimeTracker :: struct {
     #as using id3d12devicechild: ID3D12DeviceChild;
     #place id3d12devicechild;
     id3d12lifetimetracker_vtable: *ID3D12LifetimeTracker_VTable;
 }
+
 ID3D12LifetimeTracker_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     DestroyOwnedObject: (this: *ID3D12LifetimeTracker, pObject: *ID3D12DeviceChild) -> HRESULT #cpp_method;
 }
+
 ID3D12LifetimeTracker_DestroyOwnedObject :: (this: *ID3D12LifetimeTracker, pObject: *ID3D12DeviceChild) -> HRESULT {
     return this.id3d12lifetimetracker_vtable.DestroyOwnedObject(this, pObject);
 }
+
 vtable :: (obj: *ID3D12LifetimeTracker) -> *ID3D12LifetimeTracker_VTable {
     return obj.id3d12lifetimetracker_vtable;
 }
+
 D3D12_META_COMMAND_PARAMETER_TYPE :: enum s32 {
     FLOAT :: 0;
     UINT64 :: 1;
@@ -4674,12 +5222,14 @@ D3D12_META_COMMAND_PARAMETER_TYPE :: enum s32 {
     D3D12_META_COMMAND_PARAMETER_TYPE_CPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV :: CPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV;
     D3D12_META_COMMAND_PARAMETER_TYPE_GPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV :: GPU_DESCRIPTOR_HANDLE_HEAP_TYPE_CBV_SRV_UAV;
 }
+
 D3D12_META_COMMAND_PARAMETER_FLAGS :: enum_flags u32 {
     INPUT :: 0x1;
     OUTPUT :: 0x2;
     D3D12_META_COMMAND_PARAMETER_FLAG_INPUT :: INPUT;
     D3D12_META_COMMAND_PARAMETER_FLAG_OUTPUT :: OUTPUT;
 }
+
 D3D12_META_COMMAND_PARAMETER_STAGE :: enum s32 {
     CREATION :: 0;
     INITIALIZATION :: 1;
@@ -4688,6 +5238,7 @@ D3D12_META_COMMAND_PARAMETER_STAGE :: enum s32 {
     D3D12_META_COMMAND_PARAMETER_STAGE_INITIALIZATION :: INITIALIZATION;
     D3D12_META_COMMAND_PARAMETER_STAGE_EXECUTION :: EXECUTION;
 }
+
 D3D12_META_COMMAND_PARAMETER_DESC :: struct {
     Name: *s16;
     Type: D3D12_META_COMMAND_PARAMETER_TYPE;
@@ -4695,6 +5246,7 @@ D3D12_META_COMMAND_PARAMETER_DESC :: struct {
     RequiredResourceState: D3D12_RESOURCE_STATES;
     StructureOffset: u32;
 }
+
 D3D12_GRAPHICS_STATES :: enum s32 {
     NONE :: 0;
     IA_VERTEX_BUFFERS :: 1;
@@ -4733,22 +5285,28 @@ D3D12_GRAPHICS_STATES :: enum s32 {
     D3D12_GRAPHICS_STATE_SAMPLE_POSITIONS :: SAMPLE_POSITIONS;
     D3D12_GRAPHICS_STATE_VIEW_INSTANCE_MASK :: VIEW_INSTANCE_MASK;
 }
+
 D3D12_META_COMMAND_DESC :: struct {
     Id: GUID;
     Name: *s16;
     InitializationDirtyState: D3D12_GRAPHICS_STATES;
     ExecutionDirtyState: D3D12_GRAPHICS_STATES;
 }
+
 ID3D12StateObject_UUID :: "47016943-fca8-4594-93ea-af258b55346d";
+
 ID3D12StateObject :: struct {
     #as using id3d12pageable: ID3D12Pageable;
 }
+
 ID3D12StateObjectProperties_UUID :: "de5fa827-9bf9-4f26-89ff-d7f56fde3860";
+
 ID3D12StateObjectProperties :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12stateobjectproperties_vtable: *ID3D12StateObjectProperties_VTable;
 }
+
 ID3D12StateObjectProperties_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetShaderIdentifier: (this: *ID3D12StateObjectProperties, pExportName: *s16) -> *void #cpp_method;
@@ -4756,21 +5314,27 @@ ID3D12StateObjectProperties_VTable :: struct #type_info_none {
     GetPipelineStackSize: (this: *ID3D12StateObjectProperties) -> u64 #cpp_method;
     SetPipelineStackSize: (this: *ID3D12StateObjectProperties, PipelineStackSizeInBytes: u64) -> void #cpp_method;
 }
+
 ID3D12StateObjectProperties_GetShaderIdentifier :: (this: *ID3D12StateObjectProperties, pExportName: *s16) -> *void {
     return this.id3d12stateobjectproperties_vtable.GetShaderIdentifier(this, pExportName);
 }
+
 ID3D12StateObjectProperties_GetShaderStackSize :: (this: *ID3D12StateObjectProperties, pExportName: *s16) -> u64 {
     return this.id3d12stateobjectproperties_vtable.GetShaderStackSize(this, pExportName);
 }
+
 ID3D12StateObjectProperties_GetPipelineStackSize :: (this: *ID3D12StateObjectProperties) -> u64 {
     return this.id3d12stateobjectproperties_vtable.GetPipelineStackSize(this);
 }
+
 ID3D12StateObjectProperties_SetPipelineStackSize :: (this: *ID3D12StateObjectProperties, PipelineStackSizeInBytes: u64) {
     this.id3d12stateobjectproperties_vtable.SetPipelineStackSize(this, PipelineStackSizeInBytes);
 }
+
 vtable :: (obj: *ID3D12StateObjectProperties) -> *ID3D12StateObjectProperties_VTable {
     return obj.id3d12stateobjectproperties_vtable;
 }
+
 D3D12_STATE_SUBOBJECT_TYPE :: enum s32 {
     STATE_OBJECT_CONFIG :: 0;
     GLOBAL_ROOT_SIGNATURE :: 1;
@@ -4799,10 +5363,12 @@ D3D12_STATE_SUBOBJECT_TYPE :: enum s32 {
     D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG1 :: RAYTRACING_PIPELINE_CONFIG1;
     D3D12_STATE_SUBOBJECT_TYPE_MAX_VALID :: MAX_VALID;
 }
+
 D3D12_STATE_SUBOBJECT :: struct {
     Type: D3D12_STATE_SUBOBJECT_TYPE;
     pDesc: *void;
 }
+
 D3D12_STATE_OBJECT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS :: 0x1;
@@ -4813,52 +5379,64 @@ D3D12_STATE_OBJECT_FLAGS :: enum_flags u32 {
     D3D12_STATE_OBJECT_FLAG_ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS :: ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS;
     D3D12_STATE_OBJECT_FLAG_ALLOW_STATE_OBJECT_ADDITIONS :: ALLOW_STATE_OBJECT_ADDITIONS;
 }
+
 D3D12_STATE_OBJECT_CONFIG :: struct {
     Flags: D3D12_STATE_OBJECT_FLAGS;
 }
+
 D3D12_GLOBAL_ROOT_SIGNATURE :: struct {
     pGlobalRootSignature: *ID3D12RootSignature;
 }
+
 D3D12_LOCAL_ROOT_SIGNATURE :: struct {
     pLocalRootSignature: *ID3D12RootSignature;
 }
+
 D3D12_NODE_MASK :: struct {
     NodeMask: u32;
 }
+
 D3D12_EXPORT_FLAGS :: enum_flags u32 {
     D3D12_EXPORT_FLAG_NONE :: 0x0;
 }
+
 D3D12_EXPORT_DESC :: struct {
     Name: *s16;
     ExportToRename: *s16;
     Flags: D3D12_EXPORT_FLAGS;
 }
+
 D3D12_DXIL_LIBRARY_DESC :: struct {
     DXILLibrary: D3D12_SHADER_BYTECODE;
     NumExports: u32;
     pExports: *D3D12_EXPORT_DESC;
 }
+
 D3D12_EXISTING_COLLECTION_DESC :: struct {
     pExistingCollection: *ID3D12StateObject;
     NumExports: u32;
     pExports: *D3D12_EXPORT_DESC;
 }
+
 D3D12_SUBOBJECT_TO_EXPORTS_ASSOCIATION :: struct {
     pSubobjectToAssociate: *D3D12_STATE_SUBOBJECT;
     NumExports: u32;
     pExports: **s16;
 }
+
 D3D12_DXIL_SUBOBJECT_TO_EXPORTS_ASSOCIATION :: struct {
     SubobjectToAssociate: *s16;
     NumExports: u32;
     pExports: **s16;
 }
+
 D3D12_HIT_GROUP_TYPE :: enum s32 {
     TRIANGLES :: 0;
     PROCEDURAL_PRIMITIVE :: 1;
     D3D12_HIT_GROUP_TYPE_TRIANGLES :: TRIANGLES;
     D3D12_HIT_GROUP_TYPE_PROCEDURAL_PRIMITIVE :: PROCEDURAL_PRIMITIVE;
 }
+
 D3D12_HIT_GROUP_DESC :: struct {
     HitGroupExport: *s16;
     Type: D3D12_HIT_GROUP_TYPE;
@@ -4866,13 +5444,16 @@ D3D12_HIT_GROUP_DESC :: struct {
     ClosestHitShaderImport: *s16;
     IntersectionShaderImport: *s16;
 }
+
 D3D12_RAYTRACING_SHADER_CONFIG :: struct {
     MaxPayloadSizeInBytes: u32;
     MaxAttributeSizeInBytes: u32;
 }
+
 D3D12_RAYTRACING_PIPELINE_CONFIG :: struct {
     MaxTraceRecursionDepth: u32;
 }
+
 D3D12_RAYTRACING_PIPELINE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SKIP_TRIANGLES :: 0x100;
@@ -4881,21 +5462,25 @@ D3D12_RAYTRACING_PIPELINE_FLAGS :: enum_flags u32 {
     D3D12_RAYTRACING_PIPELINE_FLAG_SKIP_TRIANGLES :: SKIP_TRIANGLES;
     D3D12_RAYTRACING_PIPELINE_FLAG_SKIP_PROCEDURAL_PRIMITIVES :: SKIP_PROCEDURAL_PRIMITIVES;
 }
+
 D3D12_RAYTRACING_PIPELINE_CONFIG1 :: struct {
     MaxTraceRecursionDepth: u32;
     Flags: D3D12_RAYTRACING_PIPELINE_FLAGS;
 }
+
 D3D12_STATE_OBJECT_TYPE :: enum s32 {
     COLLECTION :: 0;
     RAYTRACING_PIPELINE :: 3;
     D3D12_STATE_OBJECT_TYPE_COLLECTION :: COLLECTION;
     D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE :: RAYTRACING_PIPELINE;
 }
+
 D3D12_STATE_OBJECT_DESC :: struct {
     Type: D3D12_STATE_OBJECT_TYPE;
     NumSubobjects: u32;
     pSubobjects: *D3D12_STATE_SUBOBJECT;
 }
+
 D3D12_RAYTRACING_GEOMETRY_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     OPAQUE :: 0x1;
@@ -4904,12 +5489,14 @@ D3D12_RAYTRACING_GEOMETRY_FLAGS :: enum_flags u32 {
     D3D12_RAYTRACING_GEOMETRY_FLAG_OPAQUE :: OPAQUE;
     D3D12_RAYTRACING_GEOMETRY_FLAG_NO_DUPLICATE_ANYHIT_INVOCATION :: NO_DUPLICATE_ANYHIT_INVOCATION;
 }
+
 D3D12_RAYTRACING_GEOMETRY_TYPE :: enum s32 {
     TRIANGLES :: 0;
     PROCEDURAL_PRIMITIVE_AABBS :: 1;
     D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES :: TRIANGLES;
     D3D12_RAYTRACING_GEOMETRY_TYPE_PROCEDURAL_PRIMITIVE_AABBS :: PROCEDURAL_PRIMITIVE_AABBS;
 }
+
 D3D12_RAYTRACING_INSTANCE_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     TRIANGLE_CULL_DISABLE :: 0x1;
@@ -4922,19 +5509,23 @@ D3D12_RAYTRACING_INSTANCE_FLAGS :: enum_flags u32 {
     D3D12_RAYTRACING_INSTANCE_FLAG_FORCE_OPAQUE :: FORCE_OPAQUE;
     D3D12_RAYTRACING_INSTANCE_FLAG_FORCE_NON_OPAQUE :: FORCE_NON_OPAQUE;
 }
+
 D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE :: struct {
     StartAddress: D3D12_GPU_VIRTUAL_ADDRESS;
     StrideInBytes: u64;
 }
+
 D3D12_GPU_VIRTUAL_ADDRESS_RANGE :: struct {
     StartAddress: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u64;
 }
+
 D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE :: struct {
     StartAddress: D3D12_GPU_VIRTUAL_ADDRESS;
     SizeInBytes: u64;
     StrideInBytes: u64;
 }
+
 D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC :: struct {
     Transform3x4: D3D12_GPU_VIRTUAL_ADDRESS;
     IndexFormat: DXGI_FORMAT;
@@ -4944,6 +5535,7 @@ D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC :: struct {
     IndexBuffer: D3D12_GPU_VIRTUAL_ADDRESS;
     VertexBuffer: D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE;
 }
+
 D3D12_RAYTRACING_AABB :: struct {
     MinX: float;
     MinY: float;
@@ -4952,10 +5544,12 @@ D3D12_RAYTRACING_AABB :: struct {
     MaxY: float;
     MaxZ: float;
 }
+
 D3D12_RAYTRACING_GEOMETRY_AABBS_DESC :: struct {
     AABBCount: u64;
     AABBs: D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ALLOW_UPDATE :: 0x1;
@@ -4972,6 +5566,7 @@ D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS :: enum_flags u32 {
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_MINIMIZE_MEMORY :: MINIMIZE_MEMORY;
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PERFORM_UPDATE :: PERFORM_UPDATE;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE :: enum s32 {
     CLONE :: 0;
     COMPACT :: 1;
@@ -4984,18 +5579,21 @@ D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE :: enum s32 {
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_SERIALIZE :: SERIALIZE;
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE_DESERIALIZE :: DESERIALIZE;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE :: enum s32 {
     TOP_LEVEL :: 0;
     BOTTOM_LEVEL :: 1;
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL :: TOP_LEVEL;
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL :: BOTTOM_LEVEL;
 }
+
 D3D12_ELEMENTS_LAYOUT :: enum s32 {
     ARRAY :: 0;
     ARRAY_OF_POINTERS :: 1;
     D3D12_ELEMENTS_LAYOUT_ARRAY :: ARRAY;
     D3D12_ELEMENTS_LAYOUT_ARRAY_OF_POINTERS :: ARRAY_OF_POINTERS;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TYPE :: enum s32 {
     COMPACTED_SIZE :: 0;
     TOOLS_VISUALIZATION :: 1;
@@ -5006,31 +5604,39 @@ D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TYPE :: enum s32 {
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION :: SERIALIZATION;
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE :: CURRENT_SIZE;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC :: struct {
     DestBuffer: D3D12_GPU_VIRTUAL_ADDRESS;
     InfoType: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TYPE;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_SIZE_DESC :: struct {
     CompactedSizeInBytes: u64;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TOOLS_VISUALIZATION_DESC :: struct {
     DecodedSizeInBytes: u64;
 }
+
 D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_TOOLS_VISUALIZATION_HEADER :: struct {
     Type: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE;
     NumDescs: u32;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION_DESC :: struct {
     SerializedSizeInBytes: u64;
     NumBottomLevelAccelerationStructurePointers: u64;
 }
+
 D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER :: struct {
     DriverOpaqueGUID: GUID;
     DriverOpaqueVersioningData: [16] u8;
 }
+
 D3D12_SERIALIZED_DATA_TYPE :: enum s32 {
     D3D12_SERIALIZED_DATA_RAYTRACING_ACCELERATION_STRUCTURE :: 0;
 }
+
 D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS :: enum s32 {
     COMPATIBLE_WITH_DEVICE :: 0;
     UNSUPPORTED_TYPE :: 1;
@@ -5043,15 +5649,18 @@ D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS :: enum s32 {
     D3D12_DRIVER_MATCHING_IDENTIFIER_INCOMPATIBLE_VERSION :: INCOMPATIBLE_VERSION;
     D3D12_DRIVER_MATCHING_IDENTIFIER_INCOMPATIBLE_TYPE :: INCOMPATIBLE_TYPE;
 }
+
 D3D12_SERIALIZED_RAYTRACING_ACCELERATION_STRUCTURE_HEADER :: struct {
     DriverMatchingIdentifier: D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER;
     SerializedSizeInBytesIncludingHeader: u64;
     DeserializedSizeInBytes: u64;
     NumBottomLevelAccelerationStructurePointersAfterHeader: u64;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE_DESC :: struct {
     CurrentSizeInBytes: u64;
 }
+
 D3D12_RAYTRACING_INSTANCE_DESC :: struct {
     Transform: [3][4] float;
     InstanceID: u32;
@@ -5062,6 +5671,7 @@ D3D12_RAYTRACING_INSTANCE_DESC :: struct {
     Flags: u32;
     AccelerationStructure: D3D12_GPU_VIRTUAL_ADDRESS;
 }
+
 D3D12_RAYTRACING_GEOMETRY_DESC :: struct {
     Type: D3D12_RAYTRACING_GEOMETRY_TYPE;
     Flags: D3D12_RAYTRACING_GEOMETRY_FLAGS;
@@ -5070,6 +5680,7 @@ D3D12_RAYTRACING_GEOMETRY_DESC :: struct {
         AABBs: D3D12_RAYTRACING_GEOMETRY_AABBS_DESC;
     }
 }
+
 D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS :: struct {
     Type: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE;
     Flags: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS;
@@ -5081,17 +5692,20 @@ D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS :: struct {
         ppGeometryDescs: **D3D12_RAYTRACING_GEOMETRY_DESC;
     }
 }
+
 D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC :: struct {
     DestAccelerationStructureData: D3D12_GPU_VIRTUAL_ADDRESS;
     Inputs: D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS;
     SourceAccelerationStructureData: D3D12_GPU_VIRTUAL_ADDRESS;
     ScratchAccelerationStructureData: D3D12_GPU_VIRTUAL_ADDRESS;
 }
+
 D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO :: struct {
     ResultDataMaxSizeInBytes: u64;
     ScratchDataSizeInBytes: u64;
     UpdateScratchDataSizeInBytes: u64;
 }
+
 D3D12_RAY_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     FORCE_OPAQUE :: 0x1;
@@ -5116,18 +5730,22 @@ D3D12_RAY_FLAGS :: enum_flags u32 {
     D3D12_RAY_FLAG_SKIP_TRIANGLES :: SKIP_TRIANGLES;
     D3D12_RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES :: SKIP_PROCEDURAL_PRIMITIVES;
 }
+
 D3D12_HIT_KIND :: enum s32 {
     TRIANGLE_FRONT_FACE :: 254;
     TRIANGLE_BACK_FACE :: 255;
     D3D12_HIT_KIND_TRIANGLE_FRONT_FACE :: TRIANGLE_FRONT_FACE;
     D3D12_HIT_KIND_TRIANGLE_BACK_FACE :: TRIANGLE_BACK_FACE;
 }
+
 ID3D12Device5_UUID :: "8b4f173b-2fea-4b80-8f58-4307191ab95d";
+
 ID3D12Device5 :: struct {
     #as using id3d12device4: ID3D12Device4;
     #place id3d12device4;
     id3d12device5_vtable: *ID3D12Device5_VTable;
 }
+
 ID3D12Device5_VTable :: struct #type_info_none {
     using id3d12device4: ID3D12Device4_VTable;
     CreateLifetimeTracker: (this: *ID3D12Device5, pOwner: *ID3D12LifetimeOwner, riid: *IID, ppvTracker: **void) -> HRESULT #cpp_method;
@@ -5139,33 +5757,43 @@ ID3D12Device5_VTable :: struct #type_info_none {
     GetRaytracingAccelerationStructurePrebuildInfo: (this: *ID3D12Device5, pDesc: *D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS, pInfo: *D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO) -> void #cpp_method;
     CheckDriverMatchingIdentifier: (this: *ID3D12Device5, SerializedDataType: D3D12_SERIALIZED_DATA_TYPE, pIdentifierToCheck: *D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER) -> D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS #cpp_method;
 }
+
 ID3D12Device5_CreateLifetimeTracker :: (this: *ID3D12Device5, pOwner: *ID3D12LifetimeOwner, riid: *IID, ppvTracker: **void) -> HRESULT {
     return this.id3d12device5_vtable.CreateLifetimeTracker(this, pOwner, riid, ppvTracker);
 }
+
 ID3D12Device5_RemoveDevice :: (this: *ID3D12Device5) {
     this.id3d12device5_vtable.RemoveDevice(this);
 }
+
 ID3D12Device5_EnumerateMetaCommands :: (this: *ID3D12Device5, pNumMetaCommands: *u32, pDescs: *D3D12_META_COMMAND_DESC) -> HRESULT {
     return this.id3d12device5_vtable.EnumerateMetaCommands(this, pNumMetaCommands, pDescs);
 }
+
 ID3D12Device5_EnumerateMetaCommandParameters :: (this: *ID3D12Device5, CommandId: *GUID, Stage: D3D12_META_COMMAND_PARAMETER_STAGE, pTotalStructureSizeInBytes: *u32, pParameterCount: *u32, pParameterDescs: *D3D12_META_COMMAND_PARAMETER_DESC) -> HRESULT {
     return this.id3d12device5_vtable.EnumerateMetaCommandParameters(this, CommandId, Stage, pTotalStructureSizeInBytes, pParameterCount, pParameterDescs);
 }
+
 ID3D12Device5_CreateMetaCommand :: (this: *ID3D12Device5, CommandId: *GUID, NodeMask: u32, pCreationParametersData: *void, CreationParametersDataSizeInBytes: SIZE_T, riid: *IID, ppMetaCommand: **void) -> HRESULT {
     return this.id3d12device5_vtable.CreateMetaCommand(this, CommandId, NodeMask, pCreationParametersData, CreationParametersDataSizeInBytes, riid, ppMetaCommand);
 }
+
 ID3D12Device5_CreateStateObject :: (this: *ID3D12Device5, pDesc: *D3D12_STATE_OBJECT_DESC, riid: *IID, ppStateObject: **void) -> HRESULT {
     return this.id3d12device5_vtable.CreateStateObject(this, pDesc, riid, ppStateObject);
 }
+
 ID3D12Device5_GetRaytracingAccelerationStructurePrebuildInfo :: (this: *ID3D12Device5, pDesc: *D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS, pInfo: *D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO) {
     this.id3d12device5_vtable.GetRaytracingAccelerationStructurePrebuildInfo(this, pDesc, pInfo);
 }
+
 ID3D12Device5_CheckDriverMatchingIdentifier :: (this: *ID3D12Device5, SerializedDataType: D3D12_SERIALIZED_DATA_TYPE, pIdentifierToCheck: *D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER) -> D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS {
     return this.id3d12device5_vtable.CheckDriverMatchingIdentifier(this, SerializedDataType, pIdentifierToCheck);
 }
+
 vtable :: (obj: *ID3D12Device5) -> *ID3D12Device5_VTable {
     return obj.id3d12device5_vtable;
 }
+
 D3D12_AUTO_BREADCRUMB_OP :: enum s32 {
     SETMARKER :: 0;
     BEGINEVENT :: 1;
@@ -5254,6 +5882,7 @@ D3D12_AUTO_BREADCRUMB_OP :: enum s32 {
     D3D12_AUTO_BREADCRUMB_OP_EXECUTEEXTENSIONCOMMAND :: EXECUTEEXTENSIONCOMMAND;
     D3D12_AUTO_BREADCRUMB_OP_DISPATCHMESH :: DISPATCHMESH;
 }
+
 D3D12_AUTO_BREADCRUMB_NODE :: struct {
     pCommandListDebugNameA: *u8;
     pCommandListDebugNameW: *s16;
@@ -5266,10 +5895,12 @@ D3D12_AUTO_BREADCRUMB_NODE :: struct {
     pCommandHistory: *D3D12_AUTO_BREADCRUMB_OP;
     pNext: *D3D12_AUTO_BREADCRUMB_NODE;
 }
+
 D3D12_DRED_BREADCRUMB_CONTEXT :: struct {
     BreadcrumbIndex: u32;
     pContextString: *s16;
 }
+
 D3D12_AUTO_BREADCRUMB_NODE1 :: struct {
     pCommandListDebugNameA: *u8;
     pCommandListDebugNameW: *s16;
@@ -5284,6 +5915,7 @@ D3D12_AUTO_BREADCRUMB_NODE1 :: struct {
     BreadcrumbContextsCount: u32;
     pBreadcrumbContexts: *D3D12_DRED_BREADCRUMB_CONTEXT;
 }
+
 D3D12_DRED_VERSION :: enum s32 {
     _1_0 :: 1;
     _1_1 :: 2;
@@ -5292,6 +5924,7 @@ D3D12_DRED_VERSION :: enum s32 {
     D3D12_DRED_VERSION_1_1 :: _1_1;
     D3D12_DRED_VERSION_1_2 :: _1_2;
 }
+
 D3D12_DRED_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     FORCE_ENABLE :: 0x1;
@@ -5300,6 +5933,7 @@ D3D12_DRED_FLAGS :: enum_flags u32 {
     D3D12_DRED_FLAG_FORCE_ENABLE :: FORCE_ENABLE;
     D3D12_DRED_FLAG_DISABLE_AUTOBREADCRUMBS :: DISABLE_AUTOBREADCRUMBS;
 }
+
 D3D12_DRED_ENABLEMENT :: enum s32 {
     SYSTEM_CONTROLLED :: 0;
     FORCED_OFF :: 1;
@@ -5308,10 +5942,12 @@ D3D12_DRED_ENABLEMENT :: enum s32 {
     D3D12_DRED_ENABLEMENT_FORCED_OFF :: FORCED_OFF;
     D3D12_DRED_ENABLEMENT_FORCED_ON :: FORCED_ON;
 }
+
 D3D12_DEVICE_REMOVED_EXTENDED_DATA :: struct {
     Flags: D3D12_DRED_FLAGS;
     pHeadAutoBreadcrumbNode: *D3D12_AUTO_BREADCRUMB_NODE;
 }
+
 D3D12_DRED_ALLOCATION_TYPE :: enum s32 {
     COMMAND_QUEUE :: 19;
     COMMAND_ALLOCATOR :: 20;
@@ -5368,12 +6004,14 @@ D3D12_DRED_ALLOCATION_TYPE :: enum s32 {
     D3D12_DRED_ALLOCATION_TYPE_VIDEO_EXTENSION_COMMAND :: VIDEO_EXTENSION_COMMAND;
     D3D12_DRED_ALLOCATION_TYPE_INVALID :: INVALID;
 }
+
 D3D12_DRED_ALLOCATION_NODE :: struct {
     ObjectNameA: *u8;
     ObjectNameW: *s16;
     AllocationType: D3D12_DRED_ALLOCATION_TYPE;
     pNext: *D3D12_DRED_ALLOCATION_NODE;
 }
+
 D3D12_DRED_ALLOCATION_NODE1 :: struct {
     ObjectNameA: *u8;
     ObjectNameW: *s16;
@@ -5381,32 +6019,39 @@ D3D12_DRED_ALLOCATION_NODE1 :: struct {
     pNext: *D3D12_DRED_ALLOCATION_NODE1;
     pObject: *IUnknown;
 }
+
 D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT :: struct {
     pHeadAutoBreadcrumbNode: *D3D12_AUTO_BREADCRUMB_NODE;
 }
+
 D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1 :: struct {
     pHeadAutoBreadcrumbNode: *D3D12_AUTO_BREADCRUMB_NODE1;
 }
+
 D3D12_DRED_PAGE_FAULT_OUTPUT :: struct {
     PageFaultVA: D3D12_GPU_VIRTUAL_ADDRESS;
     pHeadExistingAllocationNode: *D3D12_DRED_ALLOCATION_NODE;
     pHeadRecentFreedAllocationNode: *D3D12_DRED_ALLOCATION_NODE;
 }
+
 D3D12_DRED_PAGE_FAULT_OUTPUT1 :: struct {
     PageFaultVA: D3D12_GPU_VIRTUAL_ADDRESS;
     pHeadExistingAllocationNode: *D3D12_DRED_ALLOCATION_NODE1;
     pHeadRecentFreedAllocationNode: *D3D12_DRED_ALLOCATION_NODE1;
 }
+
 D3D12_DEVICE_REMOVED_EXTENDED_DATA1 :: struct {
     DeviceRemovedReason: HRESULT;
     AutoBreadcrumbsOutput: D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT;
     PageFaultOutput: D3D12_DRED_PAGE_FAULT_OUTPUT;
 }
+
 D3D12_DEVICE_REMOVED_EXTENDED_DATA2 :: struct {
     DeviceRemovedReason: HRESULT;
     AutoBreadcrumbsOutput: D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1;
     PageFaultOutput: D3D12_DRED_PAGE_FAULT_OUTPUT1;
 }
+
 D3D12_VERSIONED_DEVICE_REMOVED_EXTENDED_DATA :: struct {
     Version: D3D12_DRED_VERSION;
     union {
@@ -5415,86 +6060,111 @@ D3D12_VERSIONED_DEVICE_REMOVED_EXTENDED_DATA :: struct {
         Dred_1_2: D3D12_DEVICE_REMOVED_EXTENDED_DATA2;
     }
 }
+
 ID3D12DeviceRemovedExtendedDataSettings_UUID :: "82BC481C-6B9B-4030-AEDB-7EE3D1DF1E63";
+
 ID3D12DeviceRemovedExtendedDataSettings :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12deviceremovedextendeddatasettings_vtable: *ID3D12DeviceRemovedExtendedDataSettings_VTable;
 }
+
 ID3D12DeviceRemovedExtendedDataSettings_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetAutoBreadcrumbsEnablement: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) -> void #cpp_method;
     SetPageFaultEnablement: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) -> void #cpp_method;
     SetWatsonDumpEnablement: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) -> void #cpp_method;
 }
+
 ID3D12DeviceRemovedExtendedDataSettings_SetAutoBreadcrumbsEnablement :: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) {
     this.id3d12deviceremovedextendeddatasettings_vtable.SetAutoBreadcrumbsEnablement(this, Enablement);
 }
+
 ID3D12DeviceRemovedExtendedDataSettings_SetPageFaultEnablement :: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) {
     this.id3d12deviceremovedextendeddatasettings_vtable.SetPageFaultEnablement(this, Enablement);
 }
+
 ID3D12DeviceRemovedExtendedDataSettings_SetWatsonDumpEnablement :: (this: *ID3D12DeviceRemovedExtendedDataSettings, Enablement: D3D12_DRED_ENABLEMENT) {
     this.id3d12deviceremovedextendeddatasettings_vtable.SetWatsonDumpEnablement(this, Enablement);
 }
+
 vtable :: (obj: *ID3D12DeviceRemovedExtendedDataSettings) -> *ID3D12DeviceRemovedExtendedDataSettings_VTable {
     return obj.id3d12deviceremovedextendeddatasettings_vtable;
 }
+
 ID3D12DeviceRemovedExtendedDataSettings1_UUID :: "DBD5AE51-3317-4F0A-ADF9-1D7CEDCAAE0B";
+
 ID3D12DeviceRemovedExtendedDataSettings1 :: struct {
     #as using id3d12deviceremovedextendeddatasettings: ID3D12DeviceRemovedExtendedDataSettings;
     #place id3d12deviceremovedextendeddatasettings;
     id3d12deviceremovedextendeddatasettings1_vtable: *ID3D12DeviceRemovedExtendedDataSettings1_VTable;
 }
+
 ID3D12DeviceRemovedExtendedDataSettings1_VTable :: struct #type_info_none {
     using id3d12deviceremovedextendeddatasettings: ID3D12DeviceRemovedExtendedDataSettings_VTable;
     SetBreadcrumbContextEnablement: (this: *ID3D12DeviceRemovedExtendedDataSettings1, Enablement: D3D12_DRED_ENABLEMENT) -> void #cpp_method;
 }
+
 ID3D12DeviceRemovedExtendedDataSettings1_SetBreadcrumbContextEnablement :: (this: *ID3D12DeviceRemovedExtendedDataSettings1, Enablement: D3D12_DRED_ENABLEMENT) {
     this.id3d12deviceremovedextendeddatasettings1_vtable.SetBreadcrumbContextEnablement(this, Enablement);
 }
+
 vtable :: (obj: *ID3D12DeviceRemovedExtendedDataSettings1) -> *ID3D12DeviceRemovedExtendedDataSettings1_VTable {
     return obj.id3d12deviceremovedextendeddatasettings1_vtable;
 }
+
 ID3D12DeviceRemovedExtendedData_UUID :: "98931D33-5AE8-4791-AA3C-1A73A2934E71";
+
 ID3D12DeviceRemovedExtendedData :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12deviceremovedextendeddata_vtable: *ID3D12DeviceRemovedExtendedData_VTable;
 }
+
 ID3D12DeviceRemovedExtendedData_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetAutoBreadcrumbsOutput: (this: *ID3D12DeviceRemovedExtendedData, pOutput: *D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT) -> HRESULT #cpp_method;
     GetPageFaultAllocationOutput: (this: *ID3D12DeviceRemovedExtendedData, pOutput: *D3D12_DRED_PAGE_FAULT_OUTPUT) -> HRESULT #cpp_method;
 }
+
 ID3D12DeviceRemovedExtendedData_GetAutoBreadcrumbsOutput :: (this: *ID3D12DeviceRemovedExtendedData, pOutput: *D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT) -> HRESULT {
     return this.id3d12deviceremovedextendeddata_vtable.GetAutoBreadcrumbsOutput(this, pOutput);
 }
+
 ID3D12DeviceRemovedExtendedData_GetPageFaultAllocationOutput :: (this: *ID3D12DeviceRemovedExtendedData, pOutput: *D3D12_DRED_PAGE_FAULT_OUTPUT) -> HRESULT {
     return this.id3d12deviceremovedextendeddata_vtable.GetPageFaultAllocationOutput(this, pOutput);
 }
+
 vtable :: (obj: *ID3D12DeviceRemovedExtendedData) -> *ID3D12DeviceRemovedExtendedData_VTable {
     return obj.id3d12deviceremovedextendeddata_vtable;
 }
+
 ID3D12DeviceRemovedExtendedData1_UUID :: "9727A022-CF1D-4DDA-9EBA-EFFA653FC506";
+
 ID3D12DeviceRemovedExtendedData1 :: struct {
     #as using id3d12deviceremovedextendeddata: ID3D12DeviceRemovedExtendedData;
     #place id3d12deviceremovedextendeddata;
     id3d12deviceremovedextendeddata1_vtable: *ID3D12DeviceRemovedExtendedData1_VTable;
 }
+
 ID3D12DeviceRemovedExtendedData1_VTable :: struct #type_info_none {
     using id3d12deviceremovedextendeddata: ID3D12DeviceRemovedExtendedData_VTable;
     GetAutoBreadcrumbsOutput1: (this: *ID3D12DeviceRemovedExtendedData1, pOutput: *D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1) -> HRESULT #cpp_method;
     GetPageFaultAllocationOutput1: (this: *ID3D12DeviceRemovedExtendedData1, pOutput: *D3D12_DRED_PAGE_FAULT_OUTPUT1) -> HRESULT #cpp_method;
 }
+
 ID3D12DeviceRemovedExtendedData1_GetAutoBreadcrumbsOutput1 :: (this: *ID3D12DeviceRemovedExtendedData1, pOutput: *D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1) -> HRESULT {
     return this.id3d12deviceremovedextendeddata1_vtable.GetAutoBreadcrumbsOutput1(this, pOutput);
 }
+
 ID3D12DeviceRemovedExtendedData1_GetPageFaultAllocationOutput1 :: (this: *ID3D12DeviceRemovedExtendedData1, pOutput: *D3D12_DRED_PAGE_FAULT_OUTPUT1) -> HRESULT {
     return this.id3d12deviceremovedextendeddata1_vtable.GetPageFaultAllocationOutput1(this, pOutput);
 }
+
 vtable :: (obj: *ID3D12DeviceRemovedExtendedData1) -> *ID3D12DeviceRemovedExtendedData1_VTable {
     return obj.id3d12deviceremovedextendeddata1_vtable;
 }
+
 D3D12_BACKGROUND_PROCESSING_MODE :: enum s32 {
     ALLOWED :: 0;
     ALLOW_INTRUSIVE_MEASUREMENTS :: 1;
@@ -5505,6 +6175,7 @@ D3D12_BACKGROUND_PROCESSING_MODE :: enum s32 {
     D3D12_BACKGROUND_PROCESSING_MODE_DISABLE_BACKGROUND_WORK :: DISABLE_BACKGROUND_WORK;
     D3D12_BACKGROUND_PROCESSING_MODE_DISABLE_PROFILING_BY_SYSTEM :: DISABLE_PROFILING_BY_SYSTEM;
 }
+
 D3D12_MEASUREMENTS_ACTION :: enum s32 {
     KEEP_ALL :: 0;
     COMMIT_RESULTS :: 1;
@@ -5515,79 +6186,102 @@ D3D12_MEASUREMENTS_ACTION :: enum s32 {
     D3D12_MEASUREMENTS_ACTION_COMMIT_RESULTS_HIGH_PRIORITY :: COMMIT_RESULTS_HIGH_PRIORITY;
     D3D12_MEASUREMENTS_ACTION_DISCARD_PREVIOUS :: DISCARD_PREVIOUS;
 }
+
 ID3D12Device6_UUID :: "c70b221b-40e4-4a17-89af-025a0727a6dc";
+
 ID3D12Device6 :: struct {
     #as using id3d12device5: ID3D12Device5;
     #place id3d12device5;
     id3d12device6_vtable: *ID3D12Device6_VTable;
 }
+
 ID3D12Device6_VTable :: struct #type_info_none {
     using id3d12device5: ID3D12Device5_VTable;
     SetBackgroundProcessingMode: (this: *ID3D12Device6, Mode: D3D12_BACKGROUND_PROCESSING_MODE, MeasurementsAction: D3D12_MEASUREMENTS_ACTION, hEventToSignalUponCompletion: HANDLE, pbFurtherMeasurementsDesired: *BOOL) -> HRESULT #cpp_method;
 }
+
 ID3D12Device6_SetBackgroundProcessingMode :: (this: *ID3D12Device6, Mode: D3D12_BACKGROUND_PROCESSING_MODE, MeasurementsAction: D3D12_MEASUREMENTS_ACTION, hEventToSignalUponCompletion: HANDLE, pbFurtherMeasurementsDesired: *BOOL) -> HRESULT {
     return this.id3d12device6_vtable.SetBackgroundProcessingMode(this, Mode, MeasurementsAction, hEventToSignalUponCompletion, pbFurtherMeasurementsDesired);
 }
+
 vtable :: (obj: *ID3D12Device6) -> *ID3D12Device6_VTable {
     return obj.id3d12device6_vtable;
 }
+
 D3D12_PROTECTED_RESOURCES_SESSION_HARDWARE_PROTECTED: GUID;
+
 D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPE_COUNT :: struct {
     NodeIndex: u32;
     Count: u32;
 }
+
 D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPES :: struct {
     NodeIndex: u32;
     Count: u32;
     pTypes: *GUID;
 }
+
 D3D12_PROTECTED_RESOURCE_SESSION_DESC1 :: struct {
     NodeMask: u32;
     Flags: D3D12_PROTECTED_RESOURCE_SESSION_FLAGS;
     ProtectionType: GUID;
 }
+
 ID3D12ProtectedResourceSession1_UUID :: "D6F12DD6-76FB-406E-8961-4296EEFC0409";
+
 ID3D12ProtectedResourceSession1 :: struct {
     #as using id3d12protectedresourcesession: ID3D12ProtectedResourceSession;
     #place id3d12protectedresourcesession;
     id3d12protectedresourcesession1_vtable: *ID3D12ProtectedResourceSession1_VTable;
 }
+
 ID3D12ProtectedResourceSession1_VTable :: struct #type_info_none {
     using id3d12protectedresourcesession: ID3D12ProtectedResourceSession_VTable;
     GetDesc1: (this: *ID3D12ProtectedResourceSession1) -> D3D12_PROTECTED_RESOURCE_SESSION_DESC1 #cpp_method;
 }
+
 ID3D12ProtectedResourceSession1_GetDesc1 :: (this: *ID3D12ProtectedResourceSession1) -> D3D12_PROTECTED_RESOURCE_SESSION_DESC1 {
     return this.id3d12protectedresourcesession1_vtable.GetDesc1(this);
 }
+
 vtable :: (obj: *ID3D12ProtectedResourceSession1) -> *ID3D12ProtectedResourceSession1_VTable {
     return obj.id3d12protectedresourcesession1_vtable;
 }
+
 ID3D12Device7_UUID :: "5c014b53-68a1-4b9b-8bd1-dd6046b9358b";
+
 ID3D12Device7 :: struct {
     #as using id3d12device6: ID3D12Device6;
     #place id3d12device6;
     id3d12device7_vtable: *ID3D12Device7_VTable;
 }
+
 ID3D12Device7_VTable :: struct #type_info_none {
     using id3d12device6: ID3D12Device6_VTable;
     AddToStateObject: (this: *ID3D12Device7, pAddition: *D3D12_STATE_OBJECT_DESC, pStateObjectToGrowFrom: *ID3D12StateObject, riid: *IID, ppNewStateObject: **void) -> HRESULT #cpp_method;
     CreateProtectedResourceSession1: (this: *ID3D12Device7, pDesc: *D3D12_PROTECTED_RESOURCE_SESSION_DESC1, riid: *IID, ppSession: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12Device7_AddToStateObject :: (this: *ID3D12Device7, pAddition: *D3D12_STATE_OBJECT_DESC, pStateObjectToGrowFrom: *ID3D12StateObject, riid: *IID, ppNewStateObject: **void) -> HRESULT {
     return this.id3d12device7_vtable.AddToStateObject(this, pAddition, pStateObjectToGrowFrom, riid, ppNewStateObject);
 }
+
 ID3D12Device7_CreateProtectedResourceSession1 :: (this: *ID3D12Device7, pDesc: *D3D12_PROTECTED_RESOURCE_SESSION_DESC1, riid: *IID, ppSession: **void) -> HRESULT {
     return this.id3d12device7_vtable.CreateProtectedResourceSession1(this, pDesc, riid, ppSession);
 }
+
 vtable :: (obj: *ID3D12Device7) -> *ID3D12Device7_VTable {
     return obj.id3d12device7_vtable;
 }
+
 ID3D12Device8_UUID :: "9218E6BB-F944-4F7E-A75C-B1B2C7B701F3";
+
 ID3D12Device8 :: struct {
     #as using id3d12device7: ID3D12Device7;
     #place id3d12device7;
     id3d12device8_vtable: *ID3D12Device8_VTable;
 }
+
 ID3D12Device8_VTable :: struct #type_info_none {
     using id3d12device7: ID3D12Device7_VTable;
     GetResourceAllocationInfo2: (this: *ID3D12Device8, visibleMask: u32, numResourceDescs: u32, pResourceDescs: *D3D12_RESOURCE_DESC1, pResourceAllocationInfo1: *D3D12_RESOURCE_ALLOCATION_INFO1) -> D3D12_RESOURCE_ALLOCATION_INFO #cpp_method;
@@ -5596,88 +6290,115 @@ ID3D12Device8_VTable :: struct #type_info_none {
     CreateSamplerFeedbackUnorderedAccessView: (this: *ID3D12Device8, pTargetedResource: *ID3D12Resource, pFeedbackResource: *ID3D12Resource, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) -> void #cpp_method;
     GetCopyableFootprints1: (this: *ID3D12Device8, pResourceDesc: *D3D12_RESOURCE_DESC1, FirstSubresource: u32, NumSubresources: u32, BaseOffset: u64, pLayouts: *D3D12_PLACED_SUBRESOURCE_FOOTPRINT, pNumRows: *u32, pRowSizeInBytes: *u64, pTotalBytes: *u64) -> void #cpp_method;
 }
+
 ID3D12Device8_GetResourceAllocationInfo2 :: (this: *ID3D12Device8, visibleMask: u32, numResourceDescs: u32, pResourceDescs: *D3D12_RESOURCE_DESC1, pResourceAllocationInfo1: *D3D12_RESOURCE_ALLOCATION_INFO1) -> D3D12_RESOURCE_ALLOCATION_INFO {
     return this.id3d12device8_vtable.GetResourceAllocationInfo2(this, visibleMask, numResourceDescs, pResourceDescs, pResourceAllocationInfo1);
 }
+
 ID3D12Device8_CreateCommittedResource2 :: (this: *ID3D12Device8, pHeapProperties: *D3D12_HEAP_PROPERTIES, HeapFlags: D3D12_HEAP_FLAGS, pDesc: *D3D12_RESOURCE_DESC1, InitialResourceState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, pProtectedSession: *ID3D12ProtectedResourceSession, riidResource: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device8_vtable.CreateCommittedResource2(this, pHeapProperties, HeapFlags, pDesc, InitialResourceState, pOptimizedClearValue, pProtectedSession, riidResource, ppvResource);
 }
+
 ID3D12Device8_CreatePlacedResource1 :: (this: *ID3D12Device8, pHeap: *ID3D12Heap, HeapOffset: u64, pDesc: *D3D12_RESOURCE_DESC1, InitialState: D3D12_RESOURCE_STATES, pOptimizedClearValue: *D3D12_CLEAR_VALUE, riid: *IID, ppvResource: **void) -> HRESULT {
     return this.id3d12device8_vtable.CreatePlacedResource1(this, pHeap, HeapOffset, pDesc, InitialState, pOptimizedClearValue, riid, ppvResource);
 }
+
 ID3D12Device8_CreateSamplerFeedbackUnorderedAccessView :: (this: *ID3D12Device8, pTargetedResource: *ID3D12Resource, pFeedbackResource: *ID3D12Resource, DestDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE) {
     this.id3d12device8_vtable.CreateSamplerFeedbackUnorderedAccessView(this, pTargetedResource, pFeedbackResource, DestDescriptor);
 }
+
 ID3D12Device8_GetCopyableFootprints1 :: (this: *ID3D12Device8, pResourceDesc: *D3D12_RESOURCE_DESC1, FirstSubresource: u32, NumSubresources: u32, BaseOffset: u64, pLayouts: *D3D12_PLACED_SUBRESOURCE_FOOTPRINT, pNumRows: *u32, pRowSizeInBytes: *u64, pTotalBytes: *u64) {
     this.id3d12device8_vtable.GetCopyableFootprints1(this, pResourceDesc, FirstSubresource, NumSubresources, BaseOffset, pLayouts, pNumRows, pRowSizeInBytes, pTotalBytes);
 }
+
 vtable :: (obj: *ID3D12Device8) -> *ID3D12Device8_VTable {
     return obj.id3d12device8_vtable;
 }
+
 ID3D12Resource1_UUID :: "9D5E227A-4430-4161-88B3-3ECA6BB16E19";
+
 ID3D12Resource1 :: struct {
     #as using id3d12resource: ID3D12Resource;
     #place id3d12resource;
     id3d12resource1_vtable: *ID3D12Resource1_VTable;
 }
+
 ID3D12Resource1_VTable :: struct #type_info_none {
     using id3d12resource: ID3D12Resource_VTable;
     GetProtectedResourceSession: (this: *ID3D12Resource1, riid: *IID, ppProtectedSession: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12Resource1_GetProtectedResourceSession :: (this: *ID3D12Resource1, riid: *IID, ppProtectedSession: **void) -> HRESULT {
     return this.id3d12resource1_vtable.GetProtectedResourceSession(this, riid, ppProtectedSession);
 }
+
 vtable :: (obj: *ID3D12Resource1) -> *ID3D12Resource1_VTable {
     return obj.id3d12resource1_vtable;
 }
+
 ID3D12Resource2_UUID :: "BE36EC3B-EA85-4AEB-A45A-E9D76404A495";
+
 ID3D12Resource2 :: struct {
     #as using id3d12resource1: ID3D12Resource1;
     #place id3d12resource1;
     id3d12resource2_vtable: *ID3D12Resource2_VTable;
 }
+
 ID3D12Resource2_VTable :: struct #type_info_none {
     using id3d12resource1: ID3D12Resource1_VTable;
     GetDesc1: (this: *ID3D12Resource2) -> D3D12_RESOURCE_DESC1 #cpp_method;
 }
+
 ID3D12Resource2_GetDesc1 :: (this: *ID3D12Resource2) -> D3D12_RESOURCE_DESC1 {
     return this.id3d12resource2_vtable.GetDesc1(this);
 }
+
 vtable :: (obj: *ID3D12Resource2) -> *ID3D12Resource2_VTable {
     return obj.id3d12resource2_vtable;
 }
+
 ID3D12Heap1_UUID :: "572F7389-2168-49E3-9693-D6DF5871BF6D";
+
 ID3D12Heap1 :: struct {
     #as using id3d12heap: ID3D12Heap;
     #place id3d12heap;
     id3d12heap1_vtable: *ID3D12Heap1_VTable;
 }
+
 ID3D12Heap1_VTable :: struct #type_info_none {
     using id3d12heap: ID3D12Heap_VTable;
     GetProtectedResourceSession: (this: *ID3D12Heap1, riid: *IID, ppProtectedSession: **void) -> HRESULT #cpp_method;
 }
+
 ID3D12Heap1_GetProtectedResourceSession :: (this: *ID3D12Heap1, riid: *IID, ppProtectedSession: **void) -> HRESULT {
     return this.id3d12heap1_vtable.GetProtectedResourceSession(this, riid, ppProtectedSession);
 }
+
 vtable :: (obj: *ID3D12Heap1) -> *ID3D12Heap1_VTable {
     return obj.id3d12heap1_vtable;
 }
+
 ID3D12GraphicsCommandList3_UUID :: "6FDA83A7-B84C-4E38-9AC8-C7BD22016B3D";
+
 ID3D12GraphicsCommandList3 :: struct {
     #as using id3d12graphicscommandlist2: ID3D12GraphicsCommandList2;
     #place id3d12graphicscommandlist2;
     id3d12graphicscommandlist3_vtable: *ID3D12GraphicsCommandList3_VTable;
 }
+
 ID3D12GraphicsCommandList3_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist2: ID3D12GraphicsCommandList2_VTable;
     SetProtectedResourceSession: (this: *ID3D12GraphicsCommandList3, pProtectedResourceSession: *ID3D12ProtectedResourceSession) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList3_SetProtectedResourceSession :: (this: *ID3D12GraphicsCommandList3, pProtectedResourceSession: *ID3D12ProtectedResourceSession) {
     this.id3d12graphicscommandlist3_vtable.SetProtectedResourceSession(this, pProtectedResourceSession);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList3) -> *ID3D12GraphicsCommandList3_VTable {
     return obj.id3d12graphicscommandlist3_vtable;
 }
+
 D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE :: enum s32 {
     DISCARD :: 0;
     PRESERVE :: 1;
@@ -5688,15 +6409,18 @@ D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE :: enum s32 {
     D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR :: CLEAR;
     D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_NO_ACCESS :: NO_ACCESS;
 }
+
 D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS :: struct {
     ClearValue: D3D12_CLEAR_VALUE;
 }
+
 D3D12_RENDER_PASS_BEGINNING_ACCESS :: struct {
     Type: D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE;
     union {
         Clear: D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS;
     }
 }
+
 D3D12_RENDER_PASS_ENDING_ACCESS_TYPE :: enum s32 {
     DISCARD :: 0;
     PRESERVE :: 1;
@@ -5707,6 +6431,7 @@ D3D12_RENDER_PASS_ENDING_ACCESS_TYPE :: enum s32 {
     D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE :: RESOLVE;
     D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_NO_ACCESS :: NO_ACCESS;
 }
+
 D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS :: struct {
     SrcSubresource: u32;
     DstSubresource: u32;
@@ -5714,6 +6439,7 @@ D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS :: struct {
     DstY: u32;
     SrcRect: D3D12_RECT;
 }
+
 D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS :: struct {
     pSrcResource: *ID3D12Resource;
     pDstResource: *ID3D12Resource;
@@ -5723,17 +6449,20 @@ D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS :: struct {
     ResolveMode: D3D12_RESOLVE_MODE;
     PreserveResolveSource: BOOL;
 }
+
 D3D12_RENDER_PASS_ENDING_ACCESS :: struct {
     Type: D3D12_RENDER_PASS_ENDING_ACCESS_TYPE;
     union {
         Resolve: D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS;
     }
 }
+
 D3D12_RENDER_PASS_RENDER_TARGET_DESC :: struct {
     cpuDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE;
     BeginningAccess: D3D12_RENDER_PASS_BEGINNING_ACCESS;
     EndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS;
 }
+
 D3D12_RENDER_PASS_DEPTH_STENCIL_DESC :: struct {
     cpuDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE;
     DepthBeginningAccess: D3D12_RENDER_PASS_BEGINNING_ACCESS;
@@ -5741,6 +6470,7 @@ D3D12_RENDER_PASS_DEPTH_STENCIL_DESC :: struct {
     DepthEndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS;
     StencilEndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS;
 }
+
 D3D12_RENDER_PASS_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     ALLOW_UAV_WRITES :: 0x1;
@@ -5751,22 +6481,28 @@ D3D12_RENDER_PASS_FLAGS :: enum_flags u32 {
     D3D12_RENDER_PASS_FLAG_SUSPENDING_PASS :: SUSPENDING_PASS;
     D3D12_RENDER_PASS_FLAG_RESUMING_PASS :: RESUMING_PASS;
 }
+
 ID3D12MetaCommand_UUID :: "DBB84C27-36CE-4FC9-B801-F048C46AC570";
+
 ID3D12MetaCommand :: struct {
     #as using id3d12pageable: ID3D12Pageable;
     #place id3d12pageable;
     id3d12metacommand_vtable: *ID3D12MetaCommand_VTable;
 }
+
 ID3D12MetaCommand_VTable :: struct #type_info_none {
     using id3d12devicechild: ID3D12DeviceChild_VTable;
     GetRequiredParameterResourceSize: (this: *ID3D12MetaCommand, Stage: D3D12_META_COMMAND_PARAMETER_STAGE, ParameterIndex: u32) -> u64 #cpp_method;
 }
+
 ID3D12MetaCommand_GetRequiredParameterResourceSize :: (this: *ID3D12MetaCommand, Stage: D3D12_META_COMMAND_PARAMETER_STAGE, ParameterIndex: u32) -> u64 {
     return this.id3d12metacommand_vtable.GetRequiredParameterResourceSize(this, Stage, ParameterIndex);
 }
+
 vtable :: (obj: *ID3D12MetaCommand) -> *ID3D12MetaCommand_VTable {
     return obj.id3d12metacommand_vtable;
 }
+
 D3D12_DISPATCH_RAYS_DESC :: struct {
     RayGenerationShaderRecord: D3D12_GPU_VIRTUAL_ADDRESS_RANGE;
     MissShaderTable: D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE;
@@ -5776,12 +6512,15 @@ D3D12_DISPATCH_RAYS_DESC :: struct {
     Height: u32;
     Depth: u32;
 }
+
 ID3D12GraphicsCommandList4_UUID :: "8754318e-d3a9-4541-98cf-645b50dc4874";
+
 ID3D12GraphicsCommandList4 :: struct {
     #as using id3d12graphicscommandlist3: ID3D12GraphicsCommandList3;
     #place id3d12graphicscommandlist3;
     id3d12graphicscommandlist4_vtable: *ID3D12GraphicsCommandList4_VTable;
 }
+
 ID3D12GraphicsCommandList4_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist3: ID3D12GraphicsCommandList3_VTable;
     BeginRenderPass: (this: *ID3D12GraphicsCommandList4, NumRenderTargets: u32, pRenderTargets: *D3D12_RENDER_PASS_RENDER_TARGET_DESC, pDepthStencil: *D3D12_RENDER_PASS_DEPTH_STENCIL_DESC, Flags: D3D12_RENDER_PASS_FLAGS) -> void #cpp_method;
@@ -5794,80 +6533,104 @@ ID3D12GraphicsCommandList4_VTable :: struct #type_info_none {
     SetPipelineState1: (this: *ID3D12GraphicsCommandList4, pStateObject: *ID3D12StateObject) -> void #cpp_method;
     DispatchRays: (this: *ID3D12GraphicsCommandList4, pDesc: *D3D12_DISPATCH_RAYS_DESC) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList4_BeginRenderPass :: (this: *ID3D12GraphicsCommandList4, NumRenderTargets: u32, pRenderTargets: *D3D12_RENDER_PASS_RENDER_TARGET_DESC, pDepthStencil: *D3D12_RENDER_PASS_DEPTH_STENCIL_DESC, Flags: D3D12_RENDER_PASS_FLAGS) {
     this.id3d12graphicscommandlist4_vtable.BeginRenderPass(this, NumRenderTargets, pRenderTargets, pDepthStencil, Flags);
 }
+
 ID3D12GraphicsCommandList4_EndRenderPass :: (this: *ID3D12GraphicsCommandList4) {
     this.id3d12graphicscommandlist4_vtable.EndRenderPass(this);
 }
+
 ID3D12GraphicsCommandList4_InitializeMetaCommand :: (this: *ID3D12GraphicsCommandList4, pMetaCommand: *ID3D12MetaCommand, pInitializationParametersData: *void, InitializationParametersDataSizeInBytes: SIZE_T) {
     this.id3d12graphicscommandlist4_vtable.InitializeMetaCommand(this, pMetaCommand, pInitializationParametersData, InitializationParametersDataSizeInBytes);
 }
+
 ID3D12GraphicsCommandList4_ExecuteMetaCommand :: (this: *ID3D12GraphicsCommandList4, pMetaCommand: *ID3D12MetaCommand, pExecutionParametersData: *void, ExecutionParametersDataSizeInBytes: SIZE_T) {
     this.id3d12graphicscommandlist4_vtable.ExecuteMetaCommand(this, pMetaCommand, pExecutionParametersData, ExecutionParametersDataSizeInBytes);
 }
+
 ID3D12GraphicsCommandList4_BuildRaytracingAccelerationStructure :: (this: *ID3D12GraphicsCommandList4, pDesc: *D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC, NumPostbuildInfoDescs: u32, pPostbuildInfoDescs: *D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC) {
     this.id3d12graphicscommandlist4_vtable.BuildRaytracingAccelerationStructure(this, pDesc, NumPostbuildInfoDescs, pPostbuildInfoDescs);
 }
+
 ID3D12GraphicsCommandList4_EmitRaytracingAccelerationStructurePostbuildInfo :: (this: *ID3D12GraphicsCommandList4, pDesc: *D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC, NumSourceAccelerationStructures: u32, pSourceAccelerationStructureData: *D3D12_GPU_VIRTUAL_ADDRESS) {
     this.id3d12graphicscommandlist4_vtable.EmitRaytracingAccelerationStructurePostbuildInfo(this, pDesc, NumSourceAccelerationStructures, pSourceAccelerationStructureData);
 }
+
 ID3D12GraphicsCommandList4_CopyRaytracingAccelerationStructure :: (this: *ID3D12GraphicsCommandList4, DestAccelerationStructureData: D3D12_GPU_VIRTUAL_ADDRESS, SourceAccelerationStructureData: D3D12_GPU_VIRTUAL_ADDRESS, Mode: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE) {
     this.id3d12graphicscommandlist4_vtable.CopyRaytracingAccelerationStructure(this, DestAccelerationStructureData, SourceAccelerationStructureData, Mode);
 }
+
 ID3D12GraphicsCommandList4_SetPipelineState1 :: (this: *ID3D12GraphicsCommandList4, pStateObject: *ID3D12StateObject) {
     this.id3d12graphicscommandlist4_vtable.SetPipelineState1(this, pStateObject);
 }
+
 ID3D12GraphicsCommandList4_DispatchRays :: (this: *ID3D12GraphicsCommandList4, pDesc: *D3D12_DISPATCH_RAYS_DESC) {
     this.id3d12graphicscommandlist4_vtable.DispatchRays(this, pDesc);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList4) -> *ID3D12GraphicsCommandList4_VTable {
     return obj.id3d12graphicscommandlist4_vtable;
 }
+
 ID3D12Tools_UUID :: "7071e1f0-e84b-4b33-974f-12fa49de65c5";
+
 ID3D12Tools :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12tools_vtable: *ID3D12Tools_VTable;
 }
+
 ID3D12Tools_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     EnableShaderInstrumentation: (this: *ID3D12Tools, bEnable: BOOL) -> void #cpp_method;
     ShaderInstrumentationEnabled: (this: *ID3D12Tools) -> BOOL #cpp_method;
 }
+
 ID3D12Tools_EnableShaderInstrumentation :: (this: *ID3D12Tools, bEnable: BOOL) {
     this.id3d12tools_vtable.EnableShaderInstrumentation(this, bEnable);
 }
+
 ID3D12Tools_ShaderInstrumentationEnabled :: (this: *ID3D12Tools) -> BOOL {
     return this.id3d12tools_vtable.ShaderInstrumentationEnabled(this);
 }
+
 vtable :: (obj: *ID3D12Tools) -> *ID3D12Tools_VTable {
     return obj.id3d12tools_vtable;
 }
+
 D3D12_SUBRESOURCE_DATA :: struct {
     pData: *void;
     RowPitch: s64;
     SlicePitch: s64;
 }
+
 D3D12_MEMCPY_DEST :: struct {
     pData: *void;
     RowPitch: SIZE_T;
     SlicePitch: SIZE_T;
 }
+
 PFN_D3D12_CREATE_DEVICE :: #type (unknown0: *IUnknown, unknown1: D3D_FEATURE_LEVEL, unknown2: *IID, unknown3: **void) -> HRESULT #c_call;
 D3D12CreateDevice :: (pAdapter: *IUnknown, MinimumFeatureLevel: D3D_FEATURE_LEVEL, riid: *IID, ppDevice: **void) -> HRESULT #foreign d3d12;
+
 D3D12CreateDevice :: (pAdapter: *IUnknown, MinimumFeatureLevel: D3D_FEATURE_LEVEL, riid: IID, ppDevice: **void) -> HRESULT {
     return D3D12CreateDevice(pAdapter, MinimumFeatureLevel, *riid, ppDevice);
 }
+
 PFN_D3D12_GET_DEBUG_INTERFACE :: #type (unknown0: *IID, unknown1: **void) -> HRESULT #c_call;
 D3D12GetDebugInterface :: (riid: *IID, ppvDebug: **void) -> HRESULT #foreign d3d12;
+
 D3D12GetDebugInterface :: (riid: IID, ppvDebug: **void) -> HRESULT {
     return D3D12GetDebugInterface(*riid, ppvDebug);
 }
+
 D3D12EnableExperimentalFeatures :: (NumFeatures: u32, pIIDs: *IID, pConfigurationStructs: *void, pConfigurationStructSizes: *u32) -> HRESULT #foreign d3d12;
 D3D12ExperimentalShaderModels: UUID;
 D3D12TiledResourceTier4: UUID;
 D3D12MetaCommand: UUID;
+
 D3D12_AXIS_SHADING_RATE :: enum s32 {
     _1X :: 0;
     _2X :: 1;
@@ -5876,6 +6639,7 @@ D3D12_AXIS_SHADING_RATE :: enum s32 {
     D3D12_AXIS_SHADING_RATE_2X :: _2X;
     D3D12_AXIS_SHADING_RATE_4X :: _4X;
 }
+
 D3D12_SHADING_RATE :: enum s32 {
     _1X1 :: 0;
     _1X2 :: 1;
@@ -5892,6 +6656,7 @@ D3D12_SHADING_RATE :: enum s32 {
     D3D12_SHADING_RATE_4X2 :: _4X2;
     D3D12_SHADING_RATE_4X4 :: _4X4;
 }
+
 D3D12_SHADING_RATE_COMBINER :: enum s32 {
     PASSTHROUGH :: 0;
     OVERRIDE :: 1;
@@ -5904,47 +6669,60 @@ D3D12_SHADING_RATE_COMBINER :: enum s32 {
     D3D12_SHADING_RATE_COMBINER_MAX :: MAX;
     D3D12_SHADING_RATE_COMBINER_SUM :: SUM;
 }
+
 ID3D12GraphicsCommandList5_UUID :: "55050859-4024-474c-87f5-6472eaee44ea";
+
 ID3D12GraphicsCommandList5 :: struct {
     #as using id3d12graphicscommandlist4: ID3D12GraphicsCommandList4;
     #place id3d12graphicscommandlist4;
     id3d12graphicscommandlist5_vtable: *ID3D12GraphicsCommandList5_VTable;
 }
+
 ID3D12GraphicsCommandList5_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist4: ID3D12GraphicsCommandList4_VTable;
     RSSetShadingRate: (this: *ID3D12GraphicsCommandList5, baseShadingRate: D3D12_SHADING_RATE, combiners: *D3D12_SHADING_RATE_COMBINER) -> void #cpp_method;
     RSSetShadingRateImage: (this: *ID3D12GraphicsCommandList5, shadingRateImage: *ID3D12Resource) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList5_RSSetShadingRate :: (this: *ID3D12GraphicsCommandList5, baseShadingRate: D3D12_SHADING_RATE, combiners: *D3D12_SHADING_RATE_COMBINER) {
     this.id3d12graphicscommandlist5_vtable.RSSetShadingRate(this, baseShadingRate, combiners);
 }
+
 ID3D12GraphicsCommandList5_RSSetShadingRateImage :: (this: *ID3D12GraphicsCommandList5, shadingRateImage: *ID3D12Resource) {
     this.id3d12graphicscommandlist5_vtable.RSSetShadingRateImage(this, shadingRateImage);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList5) -> *ID3D12GraphicsCommandList5_VTable {
     return obj.id3d12graphicscommandlist5_vtable;
 }
+
 D3D12_DISPATCH_MESH_ARGUMENTS :: struct {
     ThreadGroupCountX: u32;
     ThreadGroupCountY: u32;
     ThreadGroupCountZ: u32;
 }
+
 ID3D12GraphicsCommandList6_UUID :: "c3827890-e548-4cfa-96cf-5689a9370f80";
+
 ID3D12GraphicsCommandList6 :: struct {
     #as using id3d12graphicscommandlist5: ID3D12GraphicsCommandList5;
     #place id3d12graphicscommandlist5;
     id3d12graphicscommandlist6_vtable: *ID3D12GraphicsCommandList6_VTable;
 }
+
 ID3D12GraphicsCommandList6_VTable :: struct #type_info_none {
     using id3d12graphicscommandlist5: ID3D12GraphicsCommandList5_VTable;
     DispatchMesh: (this: *ID3D12GraphicsCommandList6, ThreadGroupCountX: u32, ThreadGroupCountY: u32, ThreadGroupCountZ: u32) -> void #cpp_method;
 }
+
 ID3D12GraphicsCommandList6_DispatchMesh :: (this: *ID3D12GraphicsCommandList6, ThreadGroupCountX: u32, ThreadGroupCountY: u32, ThreadGroupCountZ: u32) {
     this.id3d12graphicscommandlist6_vtable.DispatchMesh(this, ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
 }
+
 vtable :: (obj: *ID3D12GraphicsCommandList6) -> *ID3D12GraphicsCommandList6_VTable {
     return obj.id3d12graphicscommandlist6_vtable;
 }
+
 D3D12_SHADER_VERSION_TYPE :: enum s32 {
     PIXEL_SHADER :: 0;
     VERTEX_SHADER :: 1;
@@ -5961,8 +6739,10 @@ D3D12_SHADER_VERSION_TYPE :: enum s32 {
     D3D12_SHVER_COMPUTE_SHADER :: COMPUTE_SHADER;
     D3D12_SHVER_RESERVED0 :: RESERVED0;
 }
+
 D3D12_RESOURCE_RETURN_TYPE :: D3D_RESOURCE_RETURN_TYPE;
 D3D12_CBUFFER_TYPE :: D3D_CBUFFER_TYPE;
+
 D3D12_SIGNATURE_PARAMETER_DESC :: struct {
     SemanticName: *u8;
     SemanticIndex: u32;
@@ -5974,6 +6754,7 @@ D3D12_SIGNATURE_PARAMETER_DESC :: struct {
     Stream: u32;
     MinPrecision: D3D_MIN_PRECISION;
 }
+
 D3D12_SHADER_BUFFER_DESC :: struct {
     Name: *u8;
     Type: D3D_CBUFFER_TYPE;
@@ -5981,6 +6762,7 @@ D3D12_SHADER_BUFFER_DESC :: struct {
     Size: u32;
     uFlags: u32;
 }
+
 D3D12_SHADER_VARIABLE_DESC :: struct {
     Name: *u8;
     StartOffset: u32;
@@ -5992,6 +6774,7 @@ D3D12_SHADER_VARIABLE_DESC :: struct {
     StartSampler: u32;
     SamplerSize: u32;
 }
+
 D3D12_SHADER_TYPE_DESC :: struct {
     Class: D3D_SHADER_VARIABLE_CLASS;
     Type: D3D_SHADER_VARIABLE_TYPE;
@@ -6002,9 +6785,11 @@ D3D12_SHADER_TYPE_DESC :: struct {
     Offset: u32;
     Name: *u8;
 }
+
 D3D12_TESSELLATOR_DOMAIN :: D3D_TESSELLATOR_DOMAIN;
 D3D12_TESSELLATOR_PARTITIONING :: D3D_TESSELLATOR_PARTITIONING;
 D3D12_TESSELLATOR_OUTPUT_PRIMITIVE :: D3D_TESSELLATOR_OUTPUT_PRIMITIVE;
+
 D3D12_SHADER_DESC :: struct #type_info_none {
     Version: u32;
     Creator: *u8;
@@ -6045,6 +6830,7 @@ D3D12_SHADER_DESC :: struct #type_info_none {
     cInterlockedInstructions: u32;
     cTextureStoreInstructions: u32;
 }
+
 D3D12_SHADER_INPUT_BIND_DESC :: struct {
     Name: *u8;
     Type: D3D_SHADER_INPUT_TYPE;
@@ -6057,11 +6843,13 @@ D3D12_SHADER_INPUT_BIND_DESC :: struct {
     Space: u32;
     uID: u32;
 }
+
 D3D12_LIBRARY_DESC :: struct {
     Creator: *u8;
     Flags: u32;
     FunctionCount: u32;
 }
+
 D3D12_FUNCTION_DESC :: struct #type_info_none {
     Version: u32;
     Creator: *u8;
@@ -6097,6 +6885,7 @@ D3D12_FUNCTION_DESC :: struct #type_info_none {
     Has10Level9VertexShader: BOOL;
     Has10Level9PixelShader: BOOL;
 }
+
 D3D12_PARAMETER_DESC :: struct {
     Name: *u8;
     SemanticName: *u8;
@@ -6111,10 +6900,13 @@ D3D12_PARAMETER_DESC :: struct {
     FirstOutRegister: u32;
     FirstOutComponent: u32;
 }
+
 ID3D12ShaderReflectionType_UUID :: "E913C351-783D-48CA-A1D1-4F306284AD56";
+
 ID3D12ShaderReflectionType :: struct {
     vtable: *ID3D12ShaderReflectionType_VTable;
 }
+
 ID3D12ShaderReflectionType_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D12ShaderReflectionType, pDesc: *D3D12_SHADER_TYPE_DESC) -> HRESULT #cpp_method;
     GetMemberTypeByIndex: (this: *ID3D12ShaderReflectionType, Index: u32) -> *ID3D12ShaderReflectionType #cpp_method;
@@ -6128,94 +6920,124 @@ ID3D12ShaderReflectionType_VTable :: struct #type_info_none {
     IsOfType: (this: *ID3D12ShaderReflectionType, pType: *ID3D12ShaderReflectionType) -> HRESULT #cpp_method;
     ImplementsInterface: (this: *ID3D12ShaderReflectionType, pBase: *ID3D12ShaderReflectionType) -> HRESULT #cpp_method;
 }
+
 ID3D12ShaderReflectionType_GetDesc :: (this: *ID3D12ShaderReflectionType, pDesc: *D3D12_SHADER_TYPE_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D12ShaderReflectionType_GetMemberTypeByIndex :: (this: *ID3D12ShaderReflectionType, Index: u32) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetMemberTypeByIndex(this, Index);
 }
+
 ID3D12ShaderReflectionType_GetMemberTypeByName :: (this: *ID3D12ShaderReflectionType, Name: *u8) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetMemberTypeByName(this, Name);
 }
+
 ID3D12ShaderReflectionType_GetMemberTypeName :: (this: *ID3D12ShaderReflectionType, Index: u32) -> *u8 {
     return this.vtable.GetMemberTypeName(this, Index);
 }
+
 ID3D12ShaderReflectionType_IsEqual :: (this: *ID3D12ShaderReflectionType, pType: *ID3D12ShaderReflectionType) -> HRESULT {
     return this.vtable.IsEqual(this, pType);
 }
+
 ID3D12ShaderReflectionType_GetSubType :: (this: *ID3D12ShaderReflectionType) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetSubType(this);
 }
+
 ID3D12ShaderReflectionType_GetBaseClass :: (this: *ID3D12ShaderReflectionType) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetBaseClass(this);
 }
+
 ID3D12ShaderReflectionType_GetNumInterfaces :: (this: *ID3D12ShaderReflectionType) -> u32 {
     return this.vtable.GetNumInterfaces(this);
 }
+
 ID3D12ShaderReflectionType_GetInterfaceByIndex :: (this: *ID3D12ShaderReflectionType, uIndex: u32) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetInterfaceByIndex(this, uIndex);
 }
+
 ID3D12ShaderReflectionType_IsOfType :: (this: *ID3D12ShaderReflectionType, pType: *ID3D12ShaderReflectionType) -> HRESULT {
     return this.vtable.IsOfType(this, pType);
 }
+
 ID3D12ShaderReflectionType_ImplementsInterface :: (this: *ID3D12ShaderReflectionType, pBase: *ID3D12ShaderReflectionType) -> HRESULT {
     return this.vtable.ImplementsInterface(this, pBase);
 }
+
 vtable :: (obj: *ID3D12ShaderReflectionType) -> *ID3D12ShaderReflectionType_VTable {
     return obj.vtable;
 }
+
 ID3D12ShaderReflectionVariable_UUID :: "8337A8A6-A216-444A-B2F4-314733A73AEA";
+
 ID3D12ShaderReflectionVariable :: struct {
     vtable: *ID3D12ShaderReflectionVariable_VTable;
 }
+
 ID3D12ShaderReflectionVariable_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D12ShaderReflectionVariable, pDesc: *D3D12_SHADER_VARIABLE_DESC) -> HRESULT #cpp_method;
     GetType: (this: *ID3D12ShaderReflectionVariable) -> *ID3D12ShaderReflectionType #cpp_method;
     GetBuffer: (this: *ID3D12ShaderReflectionVariable) -> *ID3D12ShaderReflectionConstantBuffer #cpp_method;
     GetInterfaceSlot: (this: *ID3D12ShaderReflectionVariable, uArrayIndex: u32) -> u32 #cpp_method;
 }
+
 ID3D12ShaderReflectionVariable_GetDesc :: (this: *ID3D12ShaderReflectionVariable, pDesc: *D3D12_SHADER_VARIABLE_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D12ShaderReflectionVariable_GetType :: (this: *ID3D12ShaderReflectionVariable) -> *ID3D12ShaderReflectionType {
     return this.vtable.GetType(this);
 }
+
 ID3D12ShaderReflectionVariable_GetBuffer :: (this: *ID3D12ShaderReflectionVariable) -> *ID3D12ShaderReflectionConstantBuffer {
     return this.vtable.GetBuffer(this);
 }
+
 ID3D12ShaderReflectionVariable_GetInterfaceSlot :: (this: *ID3D12ShaderReflectionVariable, uArrayIndex: u32) -> u32 {
     return this.vtable.GetInterfaceSlot(this, uArrayIndex);
 }
+
 vtable :: (obj: *ID3D12ShaderReflectionVariable) -> *ID3D12ShaderReflectionVariable_VTable {
     return obj.vtable;
 }
+
 ID3D12ShaderReflectionConstantBuffer_UUID :: "C59598B4-48B3-4869-B9B1-B1618B14A8B7";
+
 ID3D12ShaderReflectionConstantBuffer :: struct {
     vtable: *ID3D12ShaderReflectionConstantBuffer_VTable;
 }
+
 ID3D12ShaderReflectionConstantBuffer_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D12ShaderReflectionConstantBuffer, pDesc: *D3D12_SHADER_BUFFER_DESC) -> HRESULT #cpp_method;
     GetVariableByIndex: (this: *ID3D12ShaderReflectionConstantBuffer, Index: u32) -> *ID3D12ShaderReflectionVariable #cpp_method;
     GetVariableByName: (this: *ID3D12ShaderReflectionConstantBuffer, Name: *u8) -> *ID3D12ShaderReflectionVariable #cpp_method;
 }
+
 ID3D12ShaderReflectionConstantBuffer_GetDesc :: (this: *ID3D12ShaderReflectionConstantBuffer, pDesc: *D3D12_SHADER_BUFFER_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D12ShaderReflectionConstantBuffer_GetVariableByIndex :: (this: *ID3D12ShaderReflectionConstantBuffer, Index: u32) -> *ID3D12ShaderReflectionVariable {
     return this.vtable.GetVariableByIndex(this, Index);
 }
+
 ID3D12ShaderReflectionConstantBuffer_GetVariableByName :: (this: *ID3D12ShaderReflectionConstantBuffer, Name: *u8) -> *ID3D12ShaderReflectionVariable {
     return this.vtable.GetVariableByName(this, Name);
 }
+
 vtable :: (obj: *ID3D12ShaderReflectionConstantBuffer) -> *ID3D12ShaderReflectionConstantBuffer_VTable {
     return obj.vtable;
 }
+
 ID3D12ShaderReflection_UUID :: "5A58797D-A72C-478D-8BA2-EFC6B0EFE88E";
+
 ID3D12ShaderReflection :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12shaderreflection_vtable: *ID3D12ShaderReflection_VTable;
 }
+
 ID3D12ShaderReflection_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetDesc: (this: *ID3D12ShaderReflection, pDesc: *D3D12_SHADER_DESC) -> HRESULT #cpp_method;
@@ -6238,90 +7060,119 @@ ID3D12ShaderReflection_VTable :: struct #type_info_none {
     GetThreadGroupSize: (this: *ID3D12ShaderReflection, pSizeX: *u32, pSizeY: *u32, pSizeZ: *u32) -> u32 #cpp_method;
     GetRequiresFlags: (this: *ID3D12ShaderReflection) -> u64 #cpp_method;
 }
+
 ID3D12ShaderReflection_GetDesc :: (this: *ID3D12ShaderReflection, pDesc: *D3D12_SHADER_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetDesc(this, pDesc);
 }
+
 ID3D12ShaderReflection_GetConstantBufferByIndex :: (this: *ID3D12ShaderReflection, Index: u32) -> *ID3D12ShaderReflectionConstantBuffer {
     return this.id3d12shaderreflection_vtable.GetConstantBufferByIndex(this, Index);
 }
+
 ID3D12ShaderReflection_GetConstantBufferByName :: (this: *ID3D12ShaderReflection, Name: *u8) -> *ID3D12ShaderReflectionConstantBuffer {
     return this.id3d12shaderreflection_vtable.GetConstantBufferByName(this, Name);
 }
+
 ID3D12ShaderReflection_GetResourceBindingDesc :: (this: *ID3D12ShaderReflection, ResourceIndex: u32, pDesc: *D3D12_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetResourceBindingDesc(this, ResourceIndex, pDesc);
 }
+
 ID3D12ShaderReflection_GetInputParameterDesc :: (this: *ID3D12ShaderReflection, ParameterIndex: u32, pDesc: *D3D12_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetInputParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D12ShaderReflection_GetOutputParameterDesc :: (this: *ID3D12ShaderReflection, ParameterIndex: u32, pDesc: *D3D12_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetOutputParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D12ShaderReflection_GetPatchConstantParameterDesc :: (this: *ID3D12ShaderReflection, ParameterIndex: u32, pDesc: *D3D12_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetPatchConstantParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D12ShaderReflection_GetVariableByName :: (this: *ID3D12ShaderReflection, Name: *u8) -> *ID3D12ShaderReflectionVariable {
     return this.id3d12shaderreflection_vtable.GetVariableByName(this, Name);
 }
+
 ID3D12ShaderReflection_GetResourceBindingDescByName :: (this: *ID3D12ShaderReflection, Name: *u8, pDesc: *D3D12_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetResourceBindingDescByName(this, Name, pDesc);
 }
+
 ID3D12ShaderReflection_GetMovInstructionCount :: (this: *ID3D12ShaderReflection) -> u32 {
     return this.id3d12shaderreflection_vtable.GetMovInstructionCount(this);
 }
+
 ID3D12ShaderReflection_GetMovcInstructionCount :: (this: *ID3D12ShaderReflection) -> u32 {
     return this.id3d12shaderreflection_vtable.GetMovcInstructionCount(this);
 }
+
 ID3D12ShaderReflection_GetConversionInstructionCount :: (this: *ID3D12ShaderReflection) -> u32 {
     return this.id3d12shaderreflection_vtable.GetConversionInstructionCount(this);
 }
+
 ID3D12ShaderReflection_GetBitwiseInstructionCount :: (this: *ID3D12ShaderReflection) -> u32 {
     return this.id3d12shaderreflection_vtable.GetBitwiseInstructionCount(this);
 }
+
 ID3D12ShaderReflection_GetGSInputPrimitive :: (this: *ID3D12ShaderReflection) -> D3D_PRIMITIVE {
     return this.id3d12shaderreflection_vtable.GetGSInputPrimitive(this);
 }
+
 ID3D12ShaderReflection_IsSampleFrequencyShader :: (this: *ID3D12ShaderReflection) -> BOOL {
     return this.id3d12shaderreflection_vtable.IsSampleFrequencyShader(this);
 }
+
 ID3D12ShaderReflection_GetNumInterfaceSlots :: (this: *ID3D12ShaderReflection) -> u32 {
     return this.id3d12shaderreflection_vtable.GetNumInterfaceSlots(this);
 }
+
 ID3D12ShaderReflection_GetMinFeatureLevel :: (this: *ID3D12ShaderReflection, pLevel: *D3D_FEATURE_LEVEL) -> HRESULT {
     return this.id3d12shaderreflection_vtable.GetMinFeatureLevel(this, pLevel);
 }
+
 ID3D12ShaderReflection_GetThreadGroupSize :: (this: *ID3D12ShaderReflection, pSizeX: *u32, pSizeY: *u32, pSizeZ: *u32) -> u32 {
     return this.id3d12shaderreflection_vtable.GetThreadGroupSize(this, pSizeX, pSizeY, pSizeZ);
 }
+
 ID3D12ShaderReflection_GetRequiresFlags :: (this: *ID3D12ShaderReflection) -> u64 {
     return this.id3d12shaderreflection_vtable.GetRequiresFlags(this);
 }
+
 vtable :: (obj: *ID3D12ShaderReflection) -> *ID3D12ShaderReflection_VTable {
     return obj.id3d12shaderreflection_vtable;
 }
+
 ID3D12LibraryReflection_UUID :: "8E349D19-54DB-4A56-9DC9-119D87BDB804";
+
 ID3D12LibraryReflection :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12libraryreflection_vtable: *ID3D12LibraryReflection_VTable;
 }
+
 ID3D12LibraryReflection_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetDesc: (this: *ID3D12LibraryReflection, pDesc: *D3D12_LIBRARY_DESC) -> HRESULT #cpp_method;
     GetFunctionByIndex: (this: *ID3D12LibraryReflection, FunctionIndex: s32) -> *ID3D12FunctionReflection #cpp_method;
 }
+
 ID3D12LibraryReflection_GetDesc :: (this: *ID3D12LibraryReflection, pDesc: *D3D12_LIBRARY_DESC) -> HRESULT {
     return this.id3d12libraryreflection_vtable.GetDesc(this, pDesc);
 }
+
 ID3D12LibraryReflection_GetFunctionByIndex :: (this: *ID3D12LibraryReflection, FunctionIndex: s32) -> *ID3D12FunctionReflection {
     return this.id3d12libraryreflection_vtable.GetFunctionByIndex(this, FunctionIndex);
 }
+
 vtable :: (obj: *ID3D12LibraryReflection) -> *ID3D12LibraryReflection_VTable {
     return obj.id3d12libraryreflection_vtable;
 }
+
 ID3D12FunctionReflection_UUID :: "1108795C-2772-4BA9-B2A8-D464DC7E2799";
+
 ID3D12FunctionReflection :: struct {
     vtable: *ID3D12FunctionReflection_VTable;
 }
+
 ID3D12FunctionReflection_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D12FunctionReflection, pDesc: *D3D12_FUNCTION_DESC) -> HRESULT #cpp_method;
     GetConstantBufferByIndex: (this: *ID3D12FunctionReflection, BufferIndex: u32) -> *ID3D12ShaderReflectionConstantBuffer #cpp_method;
@@ -6331,42 +7182,56 @@ ID3D12FunctionReflection_VTable :: struct #type_info_none {
     GetResourceBindingDescByName: (this: *ID3D12FunctionReflection, Name: *u8, pDesc: *D3D12_SHADER_INPUT_BIND_DESC) -> HRESULT #cpp_method;
     GetFunctionParameter: (this: *ID3D12FunctionReflection, ParameterIndex: s32) -> *ID3D12FunctionParameterReflection #cpp_method;
 }
+
 ID3D12FunctionReflection_GetDesc :: (this: *ID3D12FunctionReflection, pDesc: *D3D12_FUNCTION_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D12FunctionReflection_GetConstantBufferByIndex :: (this: *ID3D12FunctionReflection, BufferIndex: u32) -> *ID3D12ShaderReflectionConstantBuffer {
     return this.vtable.GetConstantBufferByIndex(this, BufferIndex);
 }
+
 ID3D12FunctionReflection_GetConstantBufferByName :: (this: *ID3D12FunctionReflection, Name: *u8) -> *ID3D12ShaderReflectionConstantBuffer {
     return this.vtable.GetConstantBufferByName(this, Name);
 }
+
 ID3D12FunctionReflection_GetResourceBindingDesc :: (this: *ID3D12FunctionReflection, ResourceIndex: u32, pDesc: *D3D12_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.vtable.GetResourceBindingDesc(this, ResourceIndex, pDesc);
 }
+
 ID3D12FunctionReflection_GetVariableByName :: (this: *ID3D12FunctionReflection, Name: *u8) -> *ID3D12ShaderReflectionVariable {
     return this.vtable.GetVariableByName(this, Name);
 }
+
 ID3D12FunctionReflection_GetResourceBindingDescByName :: (this: *ID3D12FunctionReflection, Name: *u8, pDesc: *D3D12_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.vtable.GetResourceBindingDescByName(this, Name, pDesc);
 }
+
 ID3D12FunctionReflection_GetFunctionParameter :: (this: *ID3D12FunctionReflection, ParameterIndex: s32) -> *ID3D12FunctionParameterReflection {
     return this.vtable.GetFunctionParameter(this, ParameterIndex);
 }
+
 vtable :: (obj: *ID3D12FunctionReflection) -> *ID3D12FunctionReflection_VTable {
     return obj.vtable;
 }
+
 ID3D12FunctionParameterReflection_UUID :: "EC25F42D-7006-4F2B-B33E-02CC3375733F";
+
 ID3D12FunctionParameterReflection :: struct {
     vtable: *ID3D12FunctionParameterReflection_VTable;
 }
+
 ID3D12FunctionParameterReflection_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D12FunctionParameterReflection, pDesc: *D3D12_PARAMETER_DESC) -> HRESULT #cpp_method;
 }
+
 ID3D12FunctionParameterReflection_GetDesc :: (this: *ID3D12FunctionParameterReflection, pDesc: *D3D12_PARAMETER_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D12FunctionParameterReflection) -> *ID3D12FunctionParameterReflection_VTable {
     return obj.vtable;
 }
+
 #scope_file
 d3d12 :: #system_library "d3d12";

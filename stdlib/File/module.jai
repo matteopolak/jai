@@ -81,6 +81,7 @@ read_entire_file :: (f: File, zero_terminated := false) -> string, bool {
 
 USE_MAP_FILE :: (OS == .WINDOWS);
 STORE_MAPPED_FILENAMES :: false;
+
 Map_File_Info :: struct {
     data: string;
     #if STORE_MAPPED_FILENAMES {

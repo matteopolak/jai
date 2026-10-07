@@ -8,12 +8,15 @@ PRIO :: enum s32 {
     DARWIN_BG :: 0x1000;
     DARWIN_NONUI :: 0x1001;
 }
+
 PRIO_MIN :: -20;
 PRIO_MAX :: 20;
+
 RUSAGE :: enum s32 {
     SELF :: 0;
     CHILDREN :: -1;
 }
+
 RUSAGE_INFO :: enum {
     V0 :: 0;
     V1 :: 1;
@@ -22,9 +25,11 @@ RUSAGE_INFO :: enum {
     V4 :: 4;
     CURRENT :: V4;
 }
+
 RLIM_INFINITY :: ((cast(u64) 1) << 63) - 1;
 RLIM_SAVED_MAX :: RLIM_INFINITY;
 RLIM_SAVED_CUR :: RLIM_INFINITY;
+
 RLIMIT_RESOURCE :: enum s32 {
     CPU :: 0;
     FSIZE :: 1;
@@ -37,6 +42,7 @@ RLIMIT_RESOURCE :: enum s32 {
     NPROC :: 7;
     NOFILE :: 8;
 }
+
 RLIM_NLIMITS :: 9;
 _RLIMIT_POSIX_FLAG :: 0x1000;
 RLIMIT_WAKEUPS_MONITOR :: 0x1;
@@ -62,6 +68,7 @@ IOPOL_APPLICATION :: IOPOL_STANDARD;
 IOPOL_NORMAL :: IOPOL_IMPORTANT;
 id_t :: u32;
 rlim_t :: u64;
+
 rusage :: struct {
     ru_utime: timeval;
     ru_stime: timeval;
@@ -80,7 +87,9 @@ rusage :: struct {
     ru_nvcsw: s64;
     ru_nivcsw: s64;
 }
+
 rusage_info_t :: *void;
+
 rusage_info_v0 :: struct {
     ri_uuid: [16] u8;
     ri_user_time: u64;
@@ -94,6 +103,7 @@ rusage_info_v0 :: struct {
     ri_proc_start_abstime: u64;
     ri_proc_exit_abstime: u64;
 }
+
 rusage_info_v1 :: struct {
     ri_uuid: [16] u8;
     ri_user_time: u64;
@@ -113,6 +123,7 @@ rusage_info_v1 :: struct {
     ri_child_pageins: u64;
     ri_child_elapsed_abstime: u64;
 }
+
 rusage_info_v2 :: struct {
     ri_uuid: [16] u8;
     ri_user_time: u64;
@@ -134,6 +145,7 @@ rusage_info_v2 :: struct {
     ri_diskio_bytesread: u64;
     ri_diskio_byteswritten: u64;
 }
+
 rusage_info_v3 :: struct {
     ri_uuid: [16] u8;
     ri_user_time: u64;
@@ -164,6 +176,7 @@ rusage_info_v3 :: struct {
     ri_billed_system_time: u64;
     ri_serviced_system_time: u64;
 }
+
 rusage_info_v4 :: struct {
     ri_uuid: [16] u8;
     ri_user_time: u64;
@@ -201,15 +214,19 @@ rusage_info_v4 :: struct {
     ri_serviced_energy: u64;
     ri_unused: [2] u64;
 }
+
 rusage_info_current :: rusage_info_v4;
+
 rlimit :: struct {
     rlim_cur: rlim_t;
     rlim_max: rlim_t;
 }
+
 proc_rlimit_control_wakeupmon :: struct {
     wm_flags: u32;
     wm_rate: s32;
 }
+
 getpriority :: (unknown0: PRIO, unknown1: id_t) -> s32 #foreign libc;
 getiopolicy_np :: (unknown0: s32, unknown1: s32) -> s32 #foreign libc;
 getrlimit :: (unknown0: RLIMIT_RESOURCE, unknown1: *rlimit) -> s32 #foreign libc;

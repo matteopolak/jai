@@ -9,6 +9,7 @@ make_forward_selection :: (old: Selection) -> Selection {
     }
     return result;
 }
+
 seek_left_one_word :: (s: string, point: int) -> int {
     at := clamp(point, 0, s.count);
     while at > 0 {
@@ -23,18 +24,22 @@ seek_left_one_word :: (s: string, point: int) -> int {
     }
     return at;
 }
+
 seek_right_one_word :: (s: string, point: int) -> int {
     at := clamp(point, 0, s.count);
     while at < s.count && !left_word_space(s[at]) at = seek_right_one_utf8_character(s, at);
     while at < s.count && left_word_space(s[at]) at = seek_right_one_utf8_character(s, at);
     return at;
 }
+
 move_cursor_left_by_word :: (using state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, seek_left_one_word(state.text, state.insert_point), want_selection);
 }
+
 move_cursor_right_by_word :: (using state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, seek_right_one_word(state.text, state.insert_point), want_selection);
 }
+
 navigate_history_backward :: (using state: *Text_Input_State) {
     if state.command_history.count == 0 return;
     if state.command_history_index >= state.command_history.count {
@@ -45,19 +50,23 @@ navigate_history_backward :: (using state: *Text_Input_State) {
     state.command_history_index = max(state.command_history_index - 1, 0);
     refresh_input_from_history(state);
 }
+
 navigate_history_forward :: (using state: *Text_Input_State) {
     state.command_history_index = min(state.command_history_index + 1, state.command_history.count);
     refresh_input_from_history(state);
 }
+
 refresh_input_from_history :: (using state: *Text_Input_State) {
     if state.command_history_index >= 0 && state.command_history_index < state.command_history.count set_input(state, state.command_history[state.command_history_index]);
     else set_input(state, state.last_saved_input);
 }
+
 copy_selection_to_clipboard :: (using state: *Text_Input_State, cut := false) {
     if !nonempty(state.selection) return;
     Left_Text_Clipboard.os_clipboard_set_text(get_selection(state));
     if cut replace_selection(state, "");
 }
+
 reset_auto_complete :: (using state: *Text_Input_State) {
     for text: state.match_array free(text.data);
     array_free(state.match_array);
@@ -66,6 +75,7 @@ reset_auto_complete :: (using state: *Text_Input_State) {
     state.longest_match = -1;
     state.tab_pressed = false;
 }
+
 update_auto_complete :: (using state: *Text_Input_State) {
     reset_auto_complete(state);
     if !state.auto_complete.proc return;
@@ -77,12 +87,14 @@ update_auto_complete :: (using state: *Text_Input_State) {
     state.longest_match = longest;
     state.completion_change_time = current_time;
 }
+
 advance_auto_complete :: (using state: *Text_Input_State, reverse: bool) {
     if state.match_array.count == 0 update_auto_complete(state);
     else state.match_selection = (state.match_selection + state.match_array.count + (ifx reverse then -1 else 1)) % state.match_array.count;
     state.tab_pressed = true;
     state.completion_change_time = current_time;
 }
+
 accept_auto_complete :: (using state: *Text_Input_State) -> bool {
     if state.match_array.count == 0 || state.match_selection < 0 || state.match_selection >= state.match_array.count return false;
     replacement := copy_string(state.match_array[state.match_selection]);
@@ -92,11 +104,13 @@ accept_auto_complete :: (using state: *Text_Input_State) -> bool {
     reset_auto_complete(state);
     return success;
 }
+
 get_selection_endpoints :: (font: *Font, text: string, effect: Font_Effects, text_x: float, start_character: int, end_character: int) -> (x0: float, x1: float) {
     start := clamp(min(start_character, end_character), 0, text.count);
     end := clamp(max(start_character, end_character), 0, text.count);
     return text_x + draw_procs.prepare_text(font, string.{ start, text.data }, effect), text_x + draw_procs.prepare_text(font, string.{ end, text.data }, effect);
 }
+
 update_multiclick_selection :: (using state: *Text_Input_State, point: int) {
     if state.num_consecutive_clicks >= 3 select_all(state);
     else if state.num_consecutive_clicks == 2 {
@@ -108,11 +122,14 @@ update_multiclick_selection :: (using state: *Text_Input_State, point: int) {
         state.insert_point = end;
     }
 }
+
 #scope_module
 Left_Text_Clipboard :: #import "Clipboard";
+
 left_word_space :: (byte: u8) -> bool {
     return byte == 32 || byte == 9 || byte == 10 || byte == 13;
 }
+
 left_input_byte_at :: (state: *Text_Input_State, font: *Font, theme: *Text_Input_Theme, x: float) -> int {
     if !font return state.insert_point;
     whole := cast(float) draw_procs.prepare_text(font, state.text, theme.effects);
@@ -130,6 +147,7 @@ left_input_byte_at :: (state: *Text_Input_State, font: *Font, theme: *Text_Input
     }
     return state.text.count;
 }
+
 left_text_pointer :: (state: *Text_Input_State, theme: *Text_Input_Theme, font: *Font, status: Status_Flags) {
     if status & .PRESSED {
         point := left_input_byte_at(state, font, theme, mouse_x_float);
@@ -154,6 +172,7 @@ left_text_pointer :: (state: *Text_Input_State, theme: *Text_Input_Theme, font: 
     }
     if mouse_button_left_state & .END state.cursor_tracking_mouse = false;
 }
+
 left_draw_input_contents :: (r: Rect, theme: *Text_Input_Theme, state: *Text_Input_State) {
     label_theme := theme.label_theme;
     if !label_theme.font label_theme.font = get_default_font_at_size(r.h * 0.65);
@@ -196,6 +215,7 @@ left_draw_input_contents :: (r: Rect, theme: *Text_Input_Theme, state: *Text_Inp
         }
     }
 }
+
 left_text_fill :: (r: Rect, color: Vector4) {
     draw_procs.set_shader_for_color(true);
     p0, p1, p2, p3 := get_quad(r);

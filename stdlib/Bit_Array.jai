@@ -99,6 +99,7 @@ set_bits :: inline (w: s64, m: s64, b: bool) -> s64 {
 #scope_file
 
 Basic :: #import "Basic";
+
 assert :: Basic.assert;
 
 bit_mask :: inline (i: int) -> s64 {

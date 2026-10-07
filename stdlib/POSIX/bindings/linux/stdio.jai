@@ -27,6 +27,7 @@ O_NDELAY :: O_NONBLOCK;
 O_SYNC :: 0x101000;
 O_FSYNC :: O_SYNC;
 O_ASYNC :: 0x2000;
+
 // AArch64 places these three bits differently from x86-64 (its <bits/fcntl.h>). Every
 // CPU-dependent declaration in these bindings names each supported CPU; the browser target
 // (OS == .WASM, whatever CPU it reports) shares the x86-64 layouts with the interpreter's sandbox.
@@ -41,6 +42,7 @@ O_ASYNC :: 0x2000;
 } else {
     #assert false "POSIX: no Linux <fcntl.h> flags for this CPU";
 }
+
 __O_CLOEXEC :: 0x80000;
 __O_NOATIME :: 0x40000;
 __O_PATH :: 0x200000;
@@ -335,6 +337,7 @@ SIOCADDDLCI :: 0x8980;
 SIOCDELDLCI :: 0x8981;
 SIOCDEVPRIVATE :: 0x89F0;
 SIOCPROTOPRIVATE :: 0x89E0;
+
 __mbstate_t :: struct {
     __count: s32;
     __value: union {
@@ -342,24 +345,29 @@ __mbstate_t :: struct {
         __wchb: [4] u8;
     };
 }
+
 _G_fpos_t :: struct {
     __pos: s64;
     __state: __mbstate_t;
 }
+
 _G_fpos64_t :: struct {
     __pos: s64;
     __state: __mbstate_t;
 }
+
 __io_read_fn :: #type (__cookie: *void, __buf: *u8, __nbytes: u64) -> s64 #c_call;
 __io_write_fn :: #type (__cookie: *void, __buf: *u8, __n: u64) -> s64 #c_call;
 __io_seek_fn :: #type (__cookie: *void, __pos: *s64, __w: s32) -> s32 #c_call;
 __io_close_fn :: #type (__cookie: *void) -> s32 #c_call;
+
 _IO_cookie_io_functions_t :: struct {
     read: __io_read_fn;
     write: __io_write_fn;
     seek: __io_seek_fn;
     close: __io_close_fn;
 }
+
 fpos_t :: _G_fpos_t;
 fpos64_t :: _G_fpos64_t;
 stdin: *_IO_FILE #elsewhere libc;
@@ -455,6 +463,7 @@ obstack_printf :: (__obstack: *obstack, __format: *u8, __args: ..Any) -> s32 #fo
 flockfile :: (__stream: *FILE) -> void #foreign libc;
 ftrylockfile :: (__stream: *FILE) -> s32 #foreign libc;
 funlockfile :: (__stream: *FILE) -> void #foreign libc;
+
 flock :: struct {
     l_type: s16;
     l_whence: s16;
@@ -462,6 +471,7 @@ flock :: struct {
     l_len: s64;
     l_pid: s32;
 }
+
 flock64 :: struct {
     l_type: s16;
     l_whence: s16;
@@ -469,6 +479,7 @@ flock64 :: struct {
     l_len: s64;
     l_pid: s32;
 }
+
 __pid_type :: enum u32 {
     TID :: 0;
     PID :: 1;
@@ -479,15 +490,18 @@ __pid_type :: enum u32 {
     F_OWNER_PGRP :: PGRP;
     F_OWNER_GID :: GID;
 }
+
 f_owner_ex :: struct {
     type: __pid_type;
     pid: s32;
 }
+
 file_handle :: struct {
     handle_bytes: u32;
     handle_type: s32;
     f_handle: [0] u8;
 }
+
 readahead :: (__fd: s32, __offset: s64, __count: u64) -> s64 #foreign libc;
 sync_file_range :: (__fd: s32, __offset: s64, __count: s64, __flags: u32) -> s32 #foreign libc;
 vmsplice :: (__fdout: s32, __iov: *iovec, __count: u64, __flags: u32) -> s64 #foreign libc;
@@ -499,11 +513,13 @@ name_to_handle_at :: (__dfd: s32, __name: *u8, __handle: *file_handle, __mnt_id:
 open_by_handle_at :: (__mountdirfd: s32, __handle: *file_handle, __flags: s32) -> s32 #foreign libc;
 mode_t :: u32;
 pid_t :: s32;
+
 // The kernel's struct stat differs per architecture: AArch64 uses the generic 128-byte layout
 // (32-bit st_nlink after st_mode), x86-64 its own 144-byte one. The browser target uses x86-64.
 #if CPU == .ARM64 && OS != .WASM {
     nlink_t :: u32;
     blksize_t :: s32;
+
     stat_t :: struct {
         st_dev: u64;
         st_ino: u64;
@@ -522,6 +538,7 @@ pid_t :: s32;
         st_ctime: timespec;
         __glibc_reserved: [2] s32;
     }
+
     stat64_t :: struct {
         st_dev: u64;
         st_ino: u64;
@@ -543,6 +560,7 @@ pid_t :: s32;
 } else #if CPU == .X64 || OS == .WASM {
     nlink_t :: u64;
     blksize_t :: s64;
+
     stat_t :: struct {
         st_dev: u64;
         st_ino: u64;
@@ -560,6 +578,7 @@ pid_t :: s32;
         st_ctime: timespec;
         __glibc_reserved: [3] s64;
     }
+
     stat64_t :: struct {
         st_dev: u64;
         st_ino: u64;
@@ -580,6 +599,7 @@ pid_t :: s32;
 } else {
     #assert false "POSIX: no Linux struct stat layout for this CPU";
 }
+
 fcntl :: (__fd: s32, __cmd: s32, __args: ..Any) -> s32 #foreign libc;
 open :: (__file: *u8, __oflag: s32, __args: ..Any) -> s32 #foreign libc;
 open64 :: (__file: *u8, __oflag: s32, __args: ..Any) -> s32 #foreign libc;
@@ -620,6 +640,7 @@ __fxstatat64 :: (__ver: s32, __fildes: s32, __filename: *u8, __stat_buf: *stat64
 __xmknod :: (__ver: s32, __path: *u8, __mode: u32, __dev: *u64) -> s32 #foreign libc;
 __xmknodat :: (__ver: s32, __fd: s32, __path: *u8, __mode: u32, __dev: *u64) -> s32 #foreign libc;
 ioctl :: (__fd: s32, __request: u64, __args: ..Any) -> s32 #foreign libc;
+
 aiocb :: struct {
     aio_fildes: s32;
     aio_lio_opcode: s32;
@@ -636,6 +657,7 @@ aiocb :: struct {
     __pad: [0] u8;
     __glibc_reserved: [32] u8;
 }
+
 aiocb64 :: struct {
     aio_fildes: s32;
     aio_lio_opcode: s32;
@@ -651,6 +673,7 @@ aiocb64 :: struct {
     aio_offset: s64;
     __glibc_reserved: [32] u8;
 }
+
 aioinit :: struct {
     aio_threads: s32;
     aio_num: s32;
@@ -661,6 +684,7 @@ aioinit :: struct {
     aio_idle_time: s32;
     aio_reserved: s32;
 }
+
 AIO :: enum u32 {
     CANCELED :: 0;
     NOTCANCELED :: 1;
@@ -669,6 +693,7 @@ AIO :: enum u32 {
     AIO_NOTCANCELED :: NOTCANCELED;
     AIO_ALLDONE :: ALLDONE;
 }
+
 LIO :: enum u32 {
     READ :: 0;
     WRITE :: 1;
@@ -677,12 +702,14 @@ LIO :: enum u32 {
     LIO_WRITE :: WRITE;
     LIO_NOP :: NOP;
 }
+
 LIO_1 :: enum u32 {
     WAIT :: 0;
     NOWAIT :: 1;
     LIO_WAIT :: WAIT;
     LIO_NOWAIT :: NOWAIT;
 }
+
 aio_init :: (__init: *aioinit) -> void #foreign librt;
 aio_read :: (__aiocbp: *aiocb) -> s32 #foreign librt;
 aio_write :: (__aiocbp: *aiocb) -> s32 #foreign librt;
@@ -700,6 +727,7 @@ aio_return64 :: (__aiocbp: *aiocb64) -> s64 #foreign librt;
 aio_cancel64 :: (__fildes: s32, __aiocbp: *aiocb64) -> s32 #foreign librt;
 aio_suspend64 :: (__list: **aiocb64, __nent: s32, __timeout: *timespec) -> s32 #foreign librt;
 aio_fsync64 :: (__operation: s32, __aiocbp: *aiocb64) -> s32 #foreign librt;
+
 EFD :: enum u32 {
     SEMAPHORE :: 1;
     CLOEXEC :: 524288;
@@ -708,31 +736,37 @@ EFD :: enum u32 {
     EFD_CLOEXEC :: CLOEXEC;
     EFD_NONBLOCK :: NONBLOCK;
 }
+
 eventfd_t :: u64;
 eventfd :: (__count: u32, __flags: s32) -> s32 #foreign libc;
 eventfd_read :: (__fd: s32, __value: *eventfd_t) -> s32 #foreign libc;
 eventfd_write :: (__fd: s32, __value: eventfd_t) -> s32 #foreign libc;
+
 TFD :: enum u32 {
     CLOEXEC :: 524288;
     NONBLOCK :: 2048;
     TFD_CLOEXEC :: CLOEXEC;
     TFD_NONBLOCK :: NONBLOCK;
 }
+
 TFD_TIMER :: enum u32 {
     ABSTIME :: 1;
     CANCEL_ON_SET :: 2;
     TFD_TIMER_ABSTIME :: ABSTIME;
     TFD_TIMER_CANCEL_ON_SET :: CANCEL_ON_SET;
 }
+
 timerfd_create :: (__clock_id: s32, __flags: s32) -> s32 #foreign libc;
 timerfd_settime :: (__ufd: s32, __flags: s32, __utmr: *itimerspec, __otmr: *itimerspec) -> s32 #foreign libc;
 timerfd_gettime :: (__ufd: s32, __otmr: *itimerspec) -> s32 #foreign libc;
+
 SFD :: enum u32 {
     CLOEXEC :: 524288;
     NONBLOCK :: 2048;
     SFD_CLOEXEC :: CLOEXEC;
     SFD_NONBLOCK :: NONBLOCK;
 }
+
 signalfd_siginfo :: struct {
     ssi_signo: u32;
     ssi_errno: s32;
@@ -752,6 +786,7 @@ signalfd_siginfo :: struct {
     ssi_addr: u64;
     __pad: [48] u8;
 }
+
 signalfd :: (__fd: s32, __mask: *sigset_t, __flags: s32) -> s32 #foreign libc;
 #scope_file
 libc :: #system_library "libc";
@@ -760,6 +795,7 @@ USE_GNU :: true;
 #scope_export
 FILE :: _IO_FILE;
 _IO_FILE :: struct {};
+
 #if !USE_GNU {
     ftello64 :: ftello;
 }

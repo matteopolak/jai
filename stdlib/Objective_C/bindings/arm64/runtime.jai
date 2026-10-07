@@ -26,9 +26,11 @@ CLS_EXT :: 0x20000;
 OBSOLETE_OBJC_GETCLASSES :: 1;
 OBJC_NEXT_METHOD_LIST :: 1;
 Class :: *objc_class;
+
 NSObject :: struct {
     isa: Class;
 }
+
 id :: *NSObject;
 objc_selector :: struct {}
 SEL :: *objc_selector;
@@ -51,6 +53,7 @@ Ivar :: *objc_ivar;
 Category :: *objc_category;
 objc_property :: struct {}
 objc_property_t :: *objc_property;
+
 objc_class :: struct {
     #as using super: NSObject;
     super_class: Class;
@@ -63,15 +66,19 @@ objc_class :: struct {
     cache: *objc_cache;
     protocols: *objc_protocol_list;
 }
+
 Protocol :: NSObject;
+
 objc_method_description :: struct {
     name: SEL;
     types: *u8;
 }
+
 objc_property_attribute_t :: struct {
     name: *u8;
     value: *u8;
 }
+
 object_copy :: (obj: id, size: u64) -> id #foreign libobjc;
 object_dispose :: (obj: id) -> id #foreign libobjc;
 object_getClass :: (obj: id) -> Class #foreign libobjc;
@@ -173,6 +180,7 @@ imp_removeBlock :: (anImp: IMP) -> BOOL #foreign libobjc;
 objc_loadWeak :: (location: *id) -> id #foreign libobjc;
 objc_storeWeak :: (location: *id, obj: id) -> id #foreign libobjc;
 objc_AssociationPolicy :: u64;
+
 OBJC_ASSOCIATION :: enum u32 {
     ASSIGN :: 0;
     RETAIN_NONATOMIC :: 1;
@@ -185,6 +193,7 @@ OBJC_ASSOCIATION :: enum u32 {
     OBJC_ASSOCIATION_RETAIN :: RETAIN;
     OBJC_ASSOCIATION_COPY :: COPY;
 }
+
 objc_setAssociatedObject :: (object: id, key: *void, value: id, policy: objc_AssociationPolicy) -> void #foreign libobjc;
 objc_getAssociatedObject :: (object: id, key: *void) -> id #foreign libobjc;
 objc_removeAssociatedObjects :: (object: id) -> void #foreign libobjc;
@@ -199,15 +208,18 @@ objc_hook_lazyClassNamer :: #type (cls: Class) -> *u8 #c_call;
 objc_setHook_lazyClassNamer :: (newValue: objc_hook_lazyClassNamer, oldOutValue: *objc_hook_lazyClassNamer) -> void #foreign libobjc;
 _objc_swiftMetadataInitializer :: #type (cls: Class, arg: *void) -> Class #c_call;
 _objc_realizeClassFromSwift :: (cls: Class, previously: *void) -> Class #foreign libobjc;
+
 objc_method_description_list :: struct {
     count: s32;
     list: [1] objc_method_description;
 }
+
 objc_protocol_list :: struct {
     next: *objc_protocol_list;
     count: s64;
     list: [1] *Protocol;
 }
+
 objc_category :: struct {
     category_name: *u8;
     class_name: *u8;
@@ -215,29 +227,35 @@ objc_category :: struct {
     class_methods: *objc_method_list;
     protocols: *objc_protocol_list;
 }
+
 objc_ivar :: struct {
     ivar_name: *u8;
     ivar_type: *u8;
     ivar_offset: s32;
     space: s32;
 }
+
 objc_ivar_list :: struct {
     ivar_count: s32;
     space: s32;
     ivar_list: [1] objc_ivar;
 }
+
 objc_method :: struct {
     method_name: SEL;
     method_types: *u8;
     method_imp: IMP;
 }
+
 objc_method_list :: struct {
     obsolete: *objc_method_list;
     method_count: s32;
     space: s32;
     method_list: [1] objc_method;
 }
+
 Symtab :: *objc_symtab;
+
 objc_symtab :: struct {
     sel_ref_cnt: u64;
     refs: *SEL;
@@ -245,19 +263,24 @@ objc_symtab :: struct {
     cat_def_cnt: u16;
     defs: [1] *void;
 }
+
 Cache :: *objc_cache;
+
 objc_cache :: struct {
     mask: u32;
     occupied: u32;
     buckets: [1] Method;
 }
+
 Module :: *objc_module;
+
 objc_module :: struct {
     version: u64;
     size: u64;
     name: *u8;
     symtab: Symtab;
 }
+
 class_lookupMethod :: (cls: Class, sel: SEL) -> IMP #foreign libobjc;
 class_respondsToMethod :: (cls: Class, sel: SEL) -> BOOL #foreign libobjc;
 _objc_flush_caches :: (cls: Class) -> void #foreign libobjc;

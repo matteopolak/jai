@@ -104,8 +104,10 @@ compare_and_swap2 :: (dest: *void, old_value_1: $T1_64, old_value_2: $T2_64,
 
 #scope_file
 #import "Basic";
+
 #if OS == .LINUX && CPU == .X64 {
     atomic_library :: #system_library "atomic";
+
     native_compare_exchange :: (size: u64, dest: *void, expected: *void,
         replacement: *void, success_order: s32, failure_order: s32) -> bool
         #foreign atomic_library "__atomic_compare_exchange";

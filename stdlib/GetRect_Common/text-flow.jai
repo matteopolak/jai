@@ -58,9 +58,11 @@ flow_text :: (text: *Flowable_Text, r: Rect, flowed_count: s32) {
     }
     text.num_flowed_lines = cast(s32) text.flowed_lines.count;
 }
+
 maybe_reflow_text_if_rect_dimensions_changed :: (text: *Flowable_Text, r: Rect) {
     if text.flowed_rect.w != r.w || text.flowed_rect.h != r.h || text.flowed_lines.count == 0 flow_text(text, r, cast(s32) text.unflowed_lines.count);
 }
+
 text_display :: (r: Rect, text: *Flowable_Text, offset_y: float, line_stride: float, theme: *Text_Display_Theme = null, identifier: s64 = 0, loc := #caller_location) {
     if !text || line_stride <= 0 return;
     if !theme theme = *left_text_display_theme;
@@ -123,6 +125,7 @@ text_display :: (r: Rect, text: *Flowable_Text, offset_y: float, line_stride: fl
         }
     }
 }
+
 find_line_and_character :: (text: *Flowable_Text, rt_width: int, rt_height: int, cursor_x: int, cursor_y: int) -> (found: bool, line: int, character: int) {
     view := left_text_view_for_text(text);
     if !view || text.flowed_lines.count == 0 return false, 0, 0;
@@ -145,12 +148,14 @@ find_line_and_character :: (text: *Flowable_Text, rt_width: int, rt_height: int,
     }
     return true, index, column;
 }
+
 start_selection :: (text: *Flowable_Text, cursor_x: int, cursor_y: int) {
     view := left_text_view_for_text(text);
     if !view return;
     found, line, character := find_line_and_character(text, render_target_width, render_target_height, cursor_x, cursor_y);
     if found view.selection = .{ start_line = cast(s32) line, end_line = cast(s32) line, start_character = character, end_character = character, active = true };
 }
+
 update_selection_endpoint_for_mouse_position :: (rt_width: int, rt_height: int) {
     for *view: left_text_views if view.state.selecting {
         found, line, character := find_line_and_character(view.state.text, rt_width, rt_height, mouse_x, mouse_y);
@@ -160,6 +165,7 @@ update_selection_endpoint_for_mouse_position :: (rt_width: int, rt_height: int) 
         }
     }
 }
+
 text_display_handle_event :: (state: *Text_Display_State, event: Event) {
     if event.type != .KEYBOARD || !event.key_pressed || !(event.ctrl_pressed || event.cmd_meta_pressed) || cast(s32) event.key_code != 67 return;
     view := left_text_view(state);
@@ -181,6 +187,7 @@ text_display_handle_event :: (state: *Text_Display_State, event: Event) {
     }
     Left_Text_Clipboard.os_clipboard_set_text(builder_to_string(*builder));
 }
+
 deinit :: (text: *Flowable_Text) {
     for *line: text.flowed_lines array_free(line.pieces);
     array_reset(*text.flowed_lines);
@@ -191,8 +198,10 @@ deinit :: (text: *Flowable_Text) {
         view.selection = .{};
     }
 }
+
 #scope_module
 left_text_display_theme: Text_Display_Theme;
+
 Left_Text_View :: struct {
     state: *Text_Display_State;
     selection: Selection;
@@ -200,17 +209,21 @@ Left_Text_View :: struct {
     offset: float;
     stride: float;
 }
+
 left_text_views: [..] Left_Text_View;
+
 left_text_view :: (state: *Text_Display_State) -> *Left_Text_View {
     for *view: left_text_views if view.state == state return view;
     result := array_add(*left_text_views);
     result.state = state;
     return result;
 }
+
 left_text_view_for_text :: (text: *Flowable_Text) -> *Left_Text_View {
     for *view: left_text_views if view.state.text == text return view;
     return null;
 }
+
 left_flush_flow_line :: (text: *Flowable_Text, pieces: *[..] Unflowed_Line_Piece) {
     row := array_add(*text.flowed_lines);
     row.pieces = NewArray(pieces.count, Unflowed_Line_Piece);

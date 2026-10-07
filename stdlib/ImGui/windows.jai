@@ -14,6 +14,7 @@ IM_DRAWLIST_TEX_LINES_WIDTH_MAX :: 63;
 ImDrawListSharedData :: struct {}
 ImFontBuilderIO :: struct {}
 ImGuiContext :: struct {}
+
 Key :: enum s32 {
     None :: 0;
     Tab :: 512;
@@ -334,6 +335,7 @@ Key :: enum s32 {
     ImGuiKey_ModSuper :: ModSuper;
     ImGuiKey_KeyPadEnter :: KeyPadEnter;
 }
+
 MouseSource :: enum s32 {
     Mouse :: 0;
     TouchScreen :: 1;
@@ -344,6 +346,7 @@ MouseSource :: enum s32 {
     ImGuiMouseSource_Pen :: Pen;
     ImGuiMouseSource_COUNT :: COUNT;
 }
+
 KeyChord :: s32;
 ImTextureID :: *void;
 ImDrawIdx :: u16;
@@ -363,6 +366,7 @@ InputTextCallback :: #type (data: *InputTextCallbackData) -> s32 #c_call;
 SizeCallback :: #type (data: *SizeCallbackData) -> void #c_call;
 MemAllocFunc :: #type (sz: u64, user_data: *void) -> *void #c_call;
 MemFreeFunc :: #type (ptr: *void, user_data: *void) -> void #c_call;
+
 CreateContext :: (shared_font_atlas: *ImFontAtlas = null) -> *ImGuiContext {
     assert(DebugCheckVersionAndDataLayout(ImGui_String_Memory.temp_c_string(IMGUI_VERSION),
         cast(u64) size_of(IO), cast(u64) size_of(Style), cast(u64) size_of(ImVec2),
@@ -370,6 +374,7 @@ CreateContext :: (shared_font_atlas: *ImFontAtlas = null) -> *ImGuiContext {
         "Dear ImGui native version/layout does not match the retained 1.89.6 API");
     return _imgui_create_context(shared_font_atlas);
 }
+
 DestroyContext :: (ctx: *ImGuiContext = null) -> void #foreign imgui "?DestroyContext@ImGui@@YAXPEAUImGuiContext@@@Z";
 GetCurrentContext :: () -> *ImGuiContext #foreign imgui "?GetCurrentContext@ImGui@@YAPEAUImGuiContext@@XZ";
 SetCurrentContext :: (ctx: *ImGuiContext) -> void #foreign imgui "?SetCurrentContext@ImGui@@YAXPEAUImGuiContext@@@Z";
@@ -395,17 +400,21 @@ StyleColorsClassic :: (dst: *Style = null) -> void #foreign imgui "?StyleColorsC
 Begin :: (name: *u8, p_open: *bool = null, flags: WindowFlags = .None) -> bool #foreign imgui "?Begin@ImGui@@YA_NPEBDPEA_NH@Z";
 End :: () -> void #foreign imgui "?End@ImGui@@YAXXZ";
 BeginChild :: (str_id: *u8, size: *ImVec2, border := false, flags: WindowFlags = .None) -> bool #foreign imgui "?BeginChild@ImGui@@YA_NPEBDAEBUImVec2@@_NH@Z";
+
 BeginChild :: (str_id: *u8, size: ImVec2 = ImVec2.{ 0, 0
 }
 , border := false, flags: WindowFlags = .None) -> bool {
     return BeginChild(str_id, *size, border, flags);
 }
+
 BeginChild :: (id: ID, size: *ImVec2, border := false, flags: WindowFlags = .None) -> bool #foreign imgui "?BeginChild@ImGui@@YA_NIAEBUImVec2@@_NH@Z";
+
 BeginChild :: (id: ID, size: ImVec2 = ImVec2.{ 0, 0
 }
 , border := false, flags: WindowFlags = .None) -> bool {
     return BeginChild(id, *size, border, flags);
 }
+
 EndChild :: () -> void #foreign imgui "?EndChild@ImGui@@YAXXZ";
 IsWindowAppearing :: () -> bool #foreign imgui "?IsWindowAppearing@ImGui@@YA_NXZ";
 IsWindowCollapsed :: () -> bool #foreign imgui "?IsWindowCollapsed@ImGui@@YA_NXZ";
@@ -417,49 +426,67 @@ GetWindowSize :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetWi
 GetWindowWidth :: () -> float #foreign imgui "?GetWindowWidth@ImGui@@YAMXZ";
 GetWindowHeight :: () -> float #foreign imgui "?GetWindowHeight@ImGui@@YAMXZ";
 SetNextWindowPos :: (pos: *ImVec2, cond: Cond = .None, pivot: *ImVec2) -> void #foreign imgui "?SetNextWindowPos@ImGui@@YAXAEBUImVec2@@H0@Z";
+
 SetNextWindowPos :: (pos: ImVec2, cond: Cond = .None, pivot: ImVec2 = ImVec2.{ 0, 0
 }
 ) {
     SetNextWindowPos(*pos, cond, *pivot);
 }
+
 SetNextWindowSize :: (size: *ImVec2, cond: Cond = .None) -> void #foreign imgui "?SetNextWindowSize@ImGui@@YAXAEBUImVec2@@H@Z";
+
 SetNextWindowSize :: (size: ImVec2, cond: Cond = .None) {
     SetNextWindowSize(*size, cond);
 }
+
 SetNextWindowSizeConstraints :: (size_min: *ImVec2, size_max: *ImVec2, custom_callback: SizeCallback = null, custom_callback_data: *void = null) -> void #foreign imgui "?SetNextWindowSizeConstraints@ImGui@@YAXAEBUImVec2@@0P6AXPEAUImGuiSizeCallbackData@@@ZPEAX@Z";
+
 SetNextWindowSizeConstraints :: (size_min: ImVec2, size_max: ImVec2, custom_callback: SizeCallback = null, custom_callback_data: *void = null) {
     SetNextWindowSizeConstraints(*size_min, *size_max, custom_callback, custom_callback_data);
 }
+
 SetNextWindowContentSize :: (size: *ImVec2) -> void #foreign imgui "?SetNextWindowContentSize@ImGui@@YAXAEBUImVec2@@@Z";
+
 SetNextWindowContentSize :: (size: ImVec2) {
     SetNextWindowContentSize(*size);
 }
+
 SetNextWindowCollapsed :: (collapsed: bool, cond: Cond = .None) -> void #foreign imgui "?SetNextWindowCollapsed@ImGui@@YAX_NH@Z";
 SetNextWindowFocus :: () -> void #foreign imgui "?SetNextWindowFocus@ImGui@@YAXXZ";
 SetNextWindowScroll :: (scroll: *ImVec2) -> void #foreign imgui "?SetNextWindowScroll@ImGui@@YAXAEBUImVec2@@@Z";
+
 SetNextWindowScroll :: (scroll: ImVec2) {
     SetNextWindowScroll(*scroll);
 }
+
 SetNextWindowBgAlpha :: (alpha: float) -> void #foreign imgui "?SetNextWindowBgAlpha@ImGui@@YAXM@Z";
 SetWindowPos :: (pos: *ImVec2, cond: Cond = .None) -> void #foreign imgui "?SetWindowPos@ImGui@@YAXAEBUImVec2@@H@Z";
+
 SetWindowPos :: (pos: ImVec2, cond: Cond = .None) {
     SetWindowPos(*pos, cond);
 }
+
 SetWindowSize :: (size: *ImVec2, cond: Cond = .None) -> void #foreign imgui "?SetWindowSize@ImGui@@YAXAEBUImVec2@@H@Z";
+
 SetWindowSize :: (size: ImVec2, cond: Cond = .None) {
     SetWindowSize(*size, cond);
 }
+
 SetWindowCollapsed :: (collapsed: bool, cond: Cond = .None) -> void #foreign imgui "?SetWindowCollapsed@ImGui@@YAX_NH@Z";
 SetWindowFocus :: () -> void #foreign imgui "?SetWindowFocus@ImGui@@YAXXZ";
 SetWindowFontScale :: (scale: float) -> void #foreign imgui "?SetWindowFontScale@ImGui@@YAXM@Z";
 SetWindowPos :: (name: *u8, pos: *ImVec2, cond: Cond = .None) -> void #foreign imgui "?SetWindowPos@ImGui@@YAXPEBDAEBUImVec2@@H@Z";
+
 SetWindowPos :: (name: *u8, pos: ImVec2, cond: Cond = .None) {
     SetWindowPos(name, *pos, cond);
 }
+
 SetWindowSize :: (name: *u8, size: *ImVec2, cond: Cond = .None) -> void #foreign imgui "?SetWindowSize@ImGui@@YAXPEBDAEBUImVec2@@H@Z";
+
 SetWindowSize :: (name: *u8, size: ImVec2, cond: Cond = .None) {
     SetWindowSize(name, *size, cond);
 }
+
 SetWindowCollapsed :: (name: *u8, collapsed: bool, cond: Cond = .None) -> void #foreign imgui "?SetWindowCollapsed@ImGui@@YAXPEBD_NH@Z";
 SetWindowFocus :: (name: *u8) -> void #foreign imgui "?SetWindowFocus@ImGui@@YAXPEBD@Z";
 GetContentRegionAvail :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetContentRegionAvail@ImGui@@YA?AUImVec2@@XZ";
@@ -480,15 +507,19 @@ PushFont :: (font: *ImFont) -> void #foreign imgui "?PushFont@ImGui@@YAXPEAUImFo
 PopFont :: () -> void #foreign imgui "?PopFont@ImGui@@YAXXZ";
 PushStyleColor :: (idx: Col, col: ImU32) -> void #foreign imgui "?PushStyleColor@ImGui@@YAXHI@Z";
 PushStyleColor :: (idx: Col, col: *ImVec4) -> void #foreign imgui "?PushStyleColor@ImGui@@YAXHAEBUImVec4@@@Z";
+
 PushStyleColor :: (idx: Col, col: ImVec4) {
     PushStyleColor(idx, *col);
 }
+
 PopStyleColor :: (count: s32 = 1) -> void #foreign imgui "?PopStyleColor@ImGui@@YAXH@Z";
 PushStyleVar :: (idx: StyleVar, val: float) -> void #foreign imgui "?PushStyleVar@ImGui@@YAXHM@Z";
 PushStyleVar :: (idx: StyleVar, val: *ImVec2) -> void #foreign imgui "?PushStyleVar@ImGui@@YAXHAEBUImVec2@@@Z";
+
 PushStyleVar :: (idx: StyleVar, val: ImVec2) {
     PushStyleVar(idx, *val);
 }
+
 PopStyleVar :: (count: s32 = 1) -> void #foreign imgui "?PopStyleVar@ImGui@@YAXH@Z";
 PushTabStop :: (tab_stop: bool) -> void #foreign imgui "?PushTabStop@ImGui@@YAX_N@Z";
 PopTabStop :: () -> void #foreign imgui "?PopTabStop@ImGui@@YAXXZ";
@@ -505,9 +536,11 @@ GetFontSize :: () -> float #foreign imgui "?GetFontSize@ImGui@@YAMXZ";
 GetFontTexUvWhitePixel :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetFontTexUvWhitePixel@ImGui@@YA?AUImVec2@@XZ";
 GetColorU32 :: (idx: Col, alpha_mul: float = 1.0) -> ImU32 #foreign imgui "?GetColorU32@ImGui@@YAIHM@Z";
 GetColorU32 :: (col: *ImVec4) -> ImU32 #foreign imgui "?GetColorU32@ImGui@@YAIAEBUImVec4@@@Z";
+
 GetColorU32 :: (col: ImVec4) -> ImU32 {
     return GetColorU32(*col);
 }
+
 GetColorU32 :: (col: ImU32) -> ImU32 #foreign imgui "?GetColorU32@ImGui@@YAII@Z";
 GetStyleColorVec4 :: (idx: Col) -> *ImVec4 #foreign imgui "?GetStyleColorVec4@ImGui@@YAAEBUImVec4@@H@Z";
 Separator :: () -> void #foreign imgui "?Separator@ImGui@@YAXXZ";
@@ -515,9 +548,11 @@ SameLine :: (offset_from_start_x: float = 0.0, spacing: float = -1.0) -> void #f
 NewLine :: () -> void #foreign imgui "?NewLine@ImGui@@YAXXZ";
 Spacing :: () -> void #foreign imgui "?Spacing@ImGui@@YAXXZ";
 Dummy :: (size: *ImVec2) -> void #foreign imgui "?Dummy@ImGui@@YAXAEBUImVec2@@@Z";
+
 Dummy :: (size: ImVec2) {
     Dummy(*size);
 }
+
 Indent :: (indent_w: float = 0.0) -> void #foreign imgui "?Indent@ImGui@@YAXM@Z";
 Unindent :: (indent_w: float = 0.0) -> void #foreign imgui "?Unindent@ImGui@@YAXM@Z";
 BeginGroup :: () -> void #foreign imgui "?BeginGroup@ImGui@@YAXXZ";
@@ -526,17 +561,21 @@ GetCursorPos :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetCur
 GetCursorPosX :: () -> float #foreign imgui "?GetCursorPosX@ImGui@@YAMXZ";
 GetCursorPosY :: () -> float #foreign imgui "?GetCursorPosY@ImGui@@YAMXZ";
 SetCursorPos :: (local_pos: *ImVec2) -> void #foreign imgui "?SetCursorPos@ImGui@@YAXAEBUImVec2@@@Z";
+
 SetCursorPos :: (local_pos: ImVec2) {
     SetCursorPos(*local_pos);
 }
+
 SetCursorPosX :: (local_x: float) -> void #foreign imgui "?SetCursorPosX@ImGui@@YAXM@Z";
 SetCursorPosY :: (local_y: float) -> void #foreign imgui "?SetCursorPosY@ImGui@@YAXM@Z";
 GetCursorStartPos :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetCursorStartPos@ImGui@@YA?AUImVec2@@XZ";
 GetCursorScreenPos :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetCursorScreenPos@ImGui@@YA?AUImVec2@@XZ";
 SetCursorScreenPos :: (pos: *ImVec2) -> void #foreign imgui "?SetCursorScreenPos@ImGui@@YAXAEBUImVec2@@@Z";
+
 SetCursorScreenPos :: (pos: ImVec2) {
     SetCursorScreenPos(*pos);
 }
+
 AlignTextToFramePadding :: () -> void #foreign imgui "?AlignTextToFramePadding@ImGui@@YAXXZ";
 GetTextLineHeight :: () -> float #foreign imgui "?GetTextLineHeight@ImGui@@YAMXZ";
 GetTextLineHeightWithSpacing :: () -> float #foreign imgui "?GetTextLineHeightWithSpacing@ImGui@@YAMXZ";
@@ -544,59 +583,76 @@ GetFrameHeight :: () -> float #foreign imgui "?GetFrameHeight@ImGui@@YAMXZ";
 GetFrameHeightWithSpacing :: () -> float #foreign imgui "?GetFrameHeightWithSpacing@ImGui@@YAMXZ";
 PushID :: (str_id: *u8) -> void #foreign imgui "?PushID@ImGui@@YAXPEBD@Z";
 PushID :: (str_id_begin: *u8, str_id_end: *u8) -> void #foreign imgui "?PushID@ImGui@@YAXPEBD0@Z";
+
 PushID :: (str_id: string) {
     PushID(ImGui_String_Memory.temp_c_string(str_id));
 }
+
 PushID :: (ptr_id: *void) -> void #foreign imgui "?PushID@ImGui@@YAXPEBX@Z";
 PushID :: (int_id: s32) -> void #foreign imgui "?PushID@ImGui@@YAXH@Z";
 PopID :: () -> void #foreign imgui "?PopID@ImGui@@YAXXZ";
 GetID :: (str_id: *u8) -> ID #foreign imgui "?GetID@ImGui@@YAIPEBD@Z";
 GetID :: (str_id_begin: *u8, str_id_end: *u8) -> ID #foreign imgui "?GetID@ImGui@@YAIPEBD0@Z";
+
 GetID :: (str_id: string) -> ID {
     return GetID(ImGui_String_Memory.temp_c_string(str_id));
 }
+
 GetID :: (ptr_id: *void) -> ID #foreign imgui "?GetID@ImGui@@YAIPEBX@Z";
 TextUnformatted :: (text: *u8, text_end: *u8 = null) -> void #foreign imgui "?TextUnformatted@ImGui@@YAXPEBD0@Z";
+
 TextUnformatted :: (text: string) {
     begin := _imgui_text_begin(text);
     TextUnformatted(begin, begin + text.count);
 }
+
 Text_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?Text@ImGui@@YAXPEBDZZ";
+
 Text :: (fmt: string, __args: ..Any) {
     Text_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TextColored_CFormat :: (col: *ImVec4, fmt: *u8, __args: ..Any) -> void #foreign imgui "?TextColored@ImGui@@YAXAEBUImVec4@@PEBDZZ";
+
 TextColored :: (col: ImVec4, fmt: string, __args: ..Any) {
     TextColored_CFormat(*col, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TextDisabled_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?TextDisabled@ImGui@@YAXPEBDZZ";
+
 TextDisabled :: (fmt: string, __args: ..Any) {
     TextDisabled_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TextWrapped_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?TextWrapped@ImGui@@YAXPEBDZZ";
+
 TextWrapped :: (fmt: string, __args: ..Any) {
     TextWrapped_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike LabelText_CFormat :: (label: *u8, fmt: *u8, __args: ..Any) -> void #foreign imgui "?LabelText@ImGui@@YAXPEBD0ZZ";
+
 LabelText :: (label: *u8, fmt: string, __args: ..Any) {
     LabelText_CFormat(label, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike BulletText_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?BulletText@ImGui@@YAXPEBDZZ";
+
 BulletText :: (fmt: string, __args: ..Any) {
     BulletText_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike SeparatorText :: (label: *u8) -> void #foreign imgui "?SeparatorText@ImGui@@YAXPEBD@Z";
+
 Button :: (label: *u8, size: *ImVec2) -> bool #foreign imgui "?Button@ImGui@@YA_NPEBDAEBUImVec2@@@Z";
+
 Button :: (label: *u8, size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> bool {
     return Button(label, *size);
 }
+
 SmallButton :: (label: *u8) -> bool #foreign imgui "?SmallButton@ImGui@@YA_NPEBD@Z";
 InvisibleButton :: (str_id: *u8, size: *ImVec2, flags: ButtonFlags = .None) -> bool #foreign imgui "?InvisibleButton@ImGui@@YA_NPEBDAEBUImVec2@@H@Z";
+
 InvisibleButton :: (str_id: *u8, size: ImVec2, flags: ButtonFlags = .None) -> bool {
     return InvisibleButton(str_id, *size, flags);
 }
+
 ArrowButton :: (str_id: *u8, dir: Dir) -> bool #foreign imgui "?ArrowButton@ImGui@@YA_NPEBDH@Z";
 Checkbox :: (label: *u8, v: *bool) -> bool #foreign imgui "?Checkbox@ImGui@@YA_NPEBDPEA_N@Z";
 CheckboxFlags :: (label: *u8, flags: *s32, flags_value: s32) -> bool #foreign imgui "?CheckboxFlags@ImGui@@YA_NPEBDPEAHH@Z";
@@ -604,13 +660,16 @@ CheckboxFlags :: (label: *u8, flags: *u32, flags_value: u32) -> bool #foreign im
 RadioButton :: (label: *u8, active: bool) -> bool #foreign imgui "?RadioButton@ImGui@@YA_NPEBD_N@Z";
 RadioButton :: (label: *u8, v: *s32, v_button: s32) -> bool #foreign imgui "?RadioButton@ImGui@@YA_NPEBDPEAHH@Z";
 ProgressBar :: (fraction: float, size_arg: *ImVec2, overlay: *u8 = null) -> void #foreign imgui "?ProgressBar@ImGui@@YAXMAEBUImVec2@@PEBD@Z";
+
 ProgressBar :: (fraction: float, size_arg: ImVec2 = ImVec2.{ -FLOAT32_MIN, 0
 }
 , overlay: *u8 = null) {
     ProgressBar(fraction, *size_arg, overlay);
 }
+
 Bullet :: () -> void #foreign imgui "?Bullet@ImGui@@YAXXZ";
 Image :: (user_texture_id: ImTextureID, size: *ImVec2, uv0: *ImVec2, uv1: *ImVec2, tint_col: *ImVec4, border_col: *ImVec4) -> void #foreign imgui "?Image@ImGui@@YAXPEAXAEBUImVec2@@11AEBUImVec4@@2@Z";
+
 Image :: (user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2 = ImVec2.{ 0, 0
 }
 , uv1: ImVec2 = ImVec2.{ 1, 1
@@ -622,7 +681,9 @@ Image :: (user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2 = ImVec2.{ 0, 
 ) {
     Image(user_texture_id, *size, *uv0, *uv1, *tint_col, *border_col);
 }
+
 ImageButton :: (str_id: *u8, user_texture_id: ImTextureID, size: *ImVec2, uv0: *ImVec2, uv1: *ImVec2, bg_col: *ImVec4, tint_col: *ImVec4) -> bool #foreign imgui "?ImageButton@ImGui@@YA_NPEBDPEAXAEBUImVec2@@22AEBUImVec4@@3@Z";
+
 ImageButton :: (str_id: *u8, user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2 = ImVec2.{ 0, 0
 }
 , uv1: ImVec2 = ImVec2.{ 1, 1
@@ -634,6 +695,7 @@ ImageButton :: (str_id: *u8, user_texture_id: ImTextureID, size: ImVec2, uv0: Im
 ) -> bool {
     return ImageButton(str_id, user_texture_id, *size, *uv0, *uv1, *bg_col, *tint_col);
 }
+
 BeginCombo :: (label: *u8, preview_value: *u8, flags: ComboFlags = .None) -> bool #foreign imgui "?BeginCombo@ImGui@@YA_NPEBD0H@Z";
 EndCombo :: () -> void #foreign imgui "?EndCombo@ImGui@@YAXXZ";
 Combo :: (label: *u8, current_item: *s32, items: **u8, items_count: s32, popup_max_height_in_items: s32 = -1) -> bool #foreign imgui "?Combo@ImGui@@YA_NPEBDPEAHQEBQEBDHH@Z";
@@ -663,24 +725,32 @@ SliderInt4 :: (label: *u8, v: *[4] s32, v_min: s32, v_max: s32, format: *u8 = "%
 SliderScalar :: (label: *u8, data_type: DataType, p_data: *void, p_min: *void, p_max: *void, format: *u8 = null, flags: SliderFlags = .None) -> bool #foreign imgui "?SliderScalar@ImGui@@YA_NPEBDHPEAXPEBX20H@Z";
 SliderScalarN :: (label: *u8, data_type: DataType, p_data: *void, components: s32, p_min: *void, p_max: *void, format: *u8 = null, flags: SliderFlags = .None) -> bool #foreign imgui "?SliderScalarN@ImGui@@YA_NPEBDHPEAXHPEBX20H@Z";
 VSliderFloat :: (label: *u8, size: *ImVec2, v: *float, v_min: float, v_max: float, format: *u8 = "%.3f", flags: SliderFlags = .None) -> bool #foreign imgui "?VSliderFloat@ImGui@@YA_NPEBDAEBUImVec2@@PEAMMM0H@Z";
+
 VSliderFloat :: (label: *u8, size: ImVec2, v: *float, v_min: float, v_max: float, format: *u8 = "%.3f", flags: SliderFlags = .None) -> bool {
     return VSliderFloat(label, *size, v, v_min, v_max, format, flags);
 }
+
 VSliderInt :: (label: *u8, size: *ImVec2, v: *s32, v_min: s32, v_max: s32, format: *u8 = "%d", flags: SliderFlags = .None) -> bool #foreign imgui "?VSliderInt@ImGui@@YA_NPEBDAEBUImVec2@@PEAHHH0H@Z";
+
 VSliderInt :: (label: *u8, size: ImVec2, v: *s32, v_min: s32, v_max: s32, format: *u8 = "%d", flags: SliderFlags = .None) -> bool {
     return VSliderInt(label, *size, v, v_min, v_max, format, flags);
 }
+
 VSliderScalar :: (label: *u8, size: *ImVec2, data_type: DataType, p_data: *void, p_min: *void, p_max: *void, format: *u8 = null, flags: SliderFlags = .None) -> bool #foreign imgui "?VSliderScalar@ImGui@@YA_NPEBDAEBUImVec2@@HPEAXPEBX30H@Z";
+
 VSliderScalar :: (label: *u8, size: ImVec2, data_type: DataType, p_data: *void, p_min: *void, p_max: *void, format: *u8 = null, flags: SliderFlags = .None) -> bool {
     return VSliderScalar(label, *size, data_type, p_data, p_min, p_max, format, flags);
 }
+
 InputText :: (label: *u8, buf: *u8, buf_size: u64, flags: InputTextFlags = .None, callback: InputTextCallback = null, user_data: *void = null) -> bool #foreign imgui "?InputText@ImGui@@YA_NPEBDPEAD_KHP6AHPEAUImGuiInputTextCallbackData@@@ZPEAX@Z";
 InputTextMultiline :: (label: *u8, buf: *u8, buf_size: u64, size: *ImVec2, flags: InputTextFlags = .None, callback: InputTextCallback = null, user_data: *void = null) -> bool #foreign imgui "?InputTextMultiline@ImGui@@YA_NPEBDPEAD_KAEBUImVec2@@HP6AHPEAUImGuiInputTextCallbackData@@@ZPEAX@Z";
+
 InputTextMultiline :: (label: *u8, buf: *u8, buf_size: u64, size: ImVec2 = ImVec2.{ 0, 0
 }
 , flags: InputTextFlags = .None, callback: InputTextCallback = null, user_data: *void = null) -> bool {
     return InputTextMultiline(label, buf, buf_size, *size, flags, callback, user_data);
 }
+
 InputTextWithHint :: (label: *u8, hint: *u8, buf: *u8, buf_size: u64, flags: InputTextFlags = .None, callback: InputTextCallback = null, user_data: *void = null) -> bool #foreign imgui "?InputTextWithHint@ImGui@@YA_NPEBD0PEAD_KHP6AHPEAUImGuiInputTextCallbackData@@@ZPEAX@Z";
 InputFloat :: (label: *u8, v: *float, step: float = 0.0, step_fast: float = 0.0, format: *u8 = "%.3f", flags: InputTextFlags = .None) -> bool #foreign imgui "?InputFloat@ImGui@@YA_NPEBDPEAMMM0H@Z";
 InputFloat2 :: (label: *u8, v: *[2] float, format: *u8 = "%.3f", flags: InputTextFlags = .None) -> bool #foreign imgui "?InputFloat2@ImGui@@YA_NPEBDQEAM0H@Z";
@@ -698,31 +768,39 @@ ColorEdit4 :: (label: *u8, col: *[4] float, flags: ColorEditFlags = .None) -> bo
 ColorPicker3 :: (label: *u8, col: *[3] float, flags: ColorEditFlags = .None) -> bool #foreign imgui "?ColorPicker3@ImGui@@YA_NPEBDQEAMH@Z";
 ColorPicker4 :: (label: *u8, col: *[4] float, flags: ColorEditFlags = .None, ref_col: *float = null) -> bool #foreign imgui "?ColorPicker4@ImGui@@YA_NPEBDQEAMHPEBM@Z";
 ColorButton :: (desc_id: *u8, col: *ImVec4, flags: ColorEditFlags = .None, size: *ImVec2) -> bool #foreign imgui "?ColorButton@ImGui@@YA_NPEBDAEBUImVec4@@HAEBUImVec2@@@Z";
+
 ColorButton :: (desc_id: *u8, col: ImVec4, flags: ColorEditFlags = .None, size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> bool {
     return ColorButton(desc_id, *col, flags, *size);
 }
+
 SetColorEditOptions :: (flags: ColorEditFlags) -> void #foreign imgui "?SetColorEditOptions@ImGui@@YAXH@Z";
 TreeNode :: (label: *u8) -> bool #foreign imgui "?TreeNode@ImGui@@YA_NPEBD@Z";
 TreeNode_CFormat :: (str_id: *u8, fmt: *u8, __args: ..Any) -> bool #foreign imgui "?TreeNode@ImGui@@YA_NPEBD0ZZ";
+
 TreeNode :: (str_id: *u8, fmt: string, __args: ..Any) -> bool {
     return TreeNode_CFormat(str_id, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TreeNode_CFormat :: (ptr_id: *void, fmt: *u8, __args: ..Any) -> bool #foreign imgui "?TreeNode@ImGui@@YA_NPEBXPEBDZZ";
+
 TreeNode :: (ptr_id: *void, fmt: string, __args: ..Any) -> bool {
     return TreeNode_CFormat(ptr_id, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TreeNodeEx :: (label: *u8, flags: TreeNodeFlags = .None) -> bool #foreign imgui "?TreeNodeEx@ImGui@@YA_NPEBDH@Z";
+
 TreeNodeEx_CFormat :: (str_id: *u8, flags: TreeNodeFlags, fmt: *u8, __args: ..Any) -> bool #foreign imgui "?TreeNodeEx@ImGui@@YA_NPEBDH0ZZ";
+
 TreeNodeEx :: (str_id: *u8, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool {
     return TreeNodeEx_CFormat(str_id, flags, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TreeNodeEx_CFormat :: (ptr_id: *void, flags: TreeNodeFlags, fmt: *u8, __args: ..Any) -> bool #foreign imgui "?TreeNodeEx@ImGui@@YA_NPEBXHPEBDZZ";
+
 TreeNodeEx :: (ptr_id: *void, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool {
     return TreeNodeEx_CFormat(ptr_id, flags, ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike TreePush :: (str_id: *u8) -> void #foreign imgui "?TreePush@ImGui@@YAXPEBD@Z";
+
 TreePush :: (ptr_id: *void) -> void #foreign imgui "?TreePush@ImGui@@YAXPEBX@Z";
 TreePop :: () -> void #foreign imgui "?TreePop@ImGui@@YAXXZ";
 GetTreeNodeToLabelSpacing :: () -> float #foreign imgui "?GetTreeNodeToLabelSpacing@ImGui@@YAMXZ";
@@ -730,38 +808,49 @@ CollapsingHeader :: (label: *u8, flags: TreeNodeFlags = .None) -> bool #foreign 
 CollapsingHeader :: (label: *u8, p_visible: *bool, flags: TreeNodeFlags = .None) -> bool #foreign imgui "?CollapsingHeader@ImGui@@YA_NPEBDPEA_NH@Z";
 SetNextItemOpen :: (is_open: bool, cond: Cond = .None) -> void #foreign imgui "?SetNextItemOpen@ImGui@@YAX_NH@Z";
 Selectable :: (label: *u8, selected := false, flags: SelectableFlags = .None, size: *ImVec2) -> bool #foreign imgui "?Selectable@ImGui@@YA_NPEBD_NHAEBUImVec2@@@Z";
+
 Selectable :: (label: *u8, selected := false, flags: SelectableFlags = .None, size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> bool {
     return Selectable(label, selected, flags, *size);
 }
+
 Selectable :: (label: *u8, p_selected: *bool, flags: SelectableFlags = .None, size: *ImVec2) -> bool #foreign imgui "?Selectable@ImGui@@YA_NPEBDPEA_NHAEBUImVec2@@@Z";
+
 Selectable :: (label: *u8, p_selected: *bool, flags: SelectableFlags = .None, size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> bool {
     return Selectable(label, p_selected, flags, *size);
 }
+
 BeginListBox :: (label: *u8, size: *ImVec2) -> bool #foreign imgui "?BeginListBox@ImGui@@YA_NPEBDAEBUImVec2@@@Z";
+
 BeginListBox :: (label: *u8, size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> bool {
     return BeginListBox(label, *size);
 }
+
 EndListBox :: () -> void #foreign imgui "?EndListBox@ImGui@@YAXXZ";
 ListBox :: (label: *u8, current_item: *s32, items: **u8, items_count: s32, height_in_items: s32 = -1) -> bool #foreign imgui "?ListBox@ImGui@@YA_NPEBDPEAHQEBQEBDHH@Z";
 ListBox :: (label: *u8, current_item: *s32, items_getter: #type (data: *void, idx: s32, out_text: **u8) -> bool #c_call , data: *void, items_count: s32, height_in_items: s32 = -1) -> bool #foreign imgui "?ListBox@ImGui@@YA_NPEBDPEAHP6A_NPEAXHPEAPEBD@Z2HH@Z";
+
 PlotLines :: (label: *u8, values: *float, values_count: s32, values_offset: s32 = 0, overlay_text: *u8 = null, scale_min: float = FLOAT32_MAX, scale_max: float = FLOAT32_MAX, graph_size: ImVec2 = ImVec2.{ 0, 0
 }
 , stride: s32 = 4) -> void #foreign imgui "?PlotLines@ImGui@@YAXPEBDPEBMHH0MMUImVec2@@H@Z";
+
 PlotLines :: (label: *u8, values_getter: #type (data: *void, idx: s32) -> float #c_call , data: *void, values_count: s32, values_offset: s32 = 0, overlay_text: *u8 = null, scale_min: float = FLOAT32_MAX, scale_max: float = FLOAT32_MAX, graph_size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> void #foreign imgui "?PlotLines@ImGui@@YAXPEBDP6AMPEAXH@Z1HH0MMUImVec2@@@Z";
+
 PlotHistogram :: (label: *u8, values: *float, values_count: s32, values_offset: s32 = 0, overlay_text: *u8 = null, scale_min: float = FLOAT32_MAX, scale_max: float = FLOAT32_MAX, graph_size: ImVec2 = ImVec2.{ 0, 0
 }
 , stride: s32 = 4) -> void #foreign imgui "?PlotHistogram@ImGui@@YAXPEBDPEBMHH0MMUImVec2@@H@Z";
+
 PlotHistogram :: (label: *u8, values_getter: #type (data: *void, idx: s32) -> float #c_call , data: *void, values_count: s32, values_offset: s32 = 0, overlay_text: *u8 = null, scale_min: float = FLOAT32_MAX, scale_max: float = FLOAT32_MAX, graph_size: ImVec2 = ImVec2.{ 0, 0
 }
 ) -> void #foreign imgui "?PlotHistogram@ImGui@@YAXPEBDP6AMPEAXH@Z1HH0MMUImVec2@@@Z";
+
 Value :: (prefix: *u8, b: bool) -> void #foreign imgui "?Value@ImGui@@YAXPEBD_N@Z";
 Value :: (prefix: *u8, v: s32) -> void #foreign imgui "?Value@ImGui@@YAXPEBDH@Z";
 Value :: (prefix: *u8, v: u32) -> void #foreign imgui "?Value@ImGui@@YAXPEBDI@Z";
@@ -777,10 +866,12 @@ MenuItem :: (label: *u8, shortcut: *u8, p_selected: *bool, enabled := true) -> b
 BeginTooltip :: () -> bool #foreign imgui "?BeginTooltip@ImGui@@YA_NXZ";
 EndTooltip :: () -> void #foreign imgui "?EndTooltip@ImGui@@YAXXZ";
 SetTooltip_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?SetTooltip@ImGui@@YAXPEBDZZ";
+
 SetTooltip :: (fmt: string, __args: ..Any) {
     SetTooltip_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike BeginPopup :: (str_id: *u8, flags: WindowFlags = .None) -> bool #foreign imgui "?BeginPopup@ImGui@@YA_NPEBDH@Z";
+
 BeginPopupModal :: (name: *u8, p_open: *bool = null, flags: WindowFlags = .None) -> bool #foreign imgui "?BeginPopupModal@ImGui@@YA_NPEBDPEA_NH@Z";
 EndPopup :: () -> void #foreign imgui "?EndPopup@ImGui@@YAXXZ";
 OpenPopup :: (str_id: *u8, popup_flags: PopupFlags = .None) -> void #foreign imgui "?OpenPopup@ImGui@@YAXPEBDH@Z";
@@ -792,11 +883,13 @@ BeginPopupContextWindow :: (str_id: *u8 = null, popup_flags: PopupFlags = .Mouse
 BeginPopupContextVoid :: (str_id: *u8 = null, popup_flags: PopupFlags = .MouseButtonRight) -> bool #foreign imgui "?BeginPopupContextVoid@ImGui@@YA_NPEBDH@Z";
 IsPopupOpen :: (str_id: *u8, flags: PopupFlags = .None) -> bool #foreign imgui "?IsPopupOpen@ImGui@@YA_NPEBDH@Z";
 BeginTable :: (str_id: *u8, column: s32, flags: TableFlags = .None, outer_size: *ImVec2, inner_width: float = 0.0) -> bool #foreign imgui "?BeginTable@ImGui@@YA_NPEBDHHAEBUImVec2@@M@Z";
+
 BeginTable :: (str_id: *u8, column: s32, flags: TableFlags = .None, outer_size: ImVec2 = ImVec2.{ 0.0, 0.0
 }
 , inner_width: float = 0.0) -> bool {
     return BeginTable(str_id, column, flags, *outer_size, inner_width);
 }
+
 EndTable :: () -> void #foreign imgui "?EndTable@ImGui@@YAXXZ";
 TableNextRow :: (row_flags: TableRowFlags = .None, min_row_height: float = 0.0) -> void #foreign imgui "?TableNextRow@ImGui@@YAXHM@Z";
 TableNextColumn :: () -> bool #foreign imgui "?TableNextColumn@ImGui@@YA_NXZ";
@@ -833,10 +926,12 @@ LogToClipboard :: (auto_open_depth: s32 = -1) -> void #foreign imgui "?LogToClip
 LogFinish :: () -> void #foreign imgui "?LogFinish@ImGui@@YAXXZ";
 LogButtons :: () -> void #foreign imgui "?LogButtons@ImGui@@YAXXZ";
 LogText_CFormat :: (fmt: *u8, __args: ..Any) -> void #foreign imgui "?LogText@ImGui@@YAXPEBDZZ";
+
 LogText :: (fmt: string, __args: ..Any) {
     LogText_CFormat(ImGui_String_Memory.temp_c_string(fmt), ..__args);
 }
 @PrintLike BeginDragDropSource :: (flags: DragDropFlags = .None) -> bool #foreign imgui "?BeginDragDropSource@ImGui@@YA_NH@Z";
+
 SetDragDropPayload :: (type: *u8, data: *void, sz: u64, cond: Cond = .None) -> bool #foreign imgui "?SetDragDropPayload@ImGui@@YA_NPEBDPEBX_KH@Z";
 EndDragDropSource :: () -> void #foreign imgui "?EndDragDropSource@ImGui@@YAXXZ";
 BeginDragDropTarget :: () -> bool #foreign imgui "?BeginDragDropTarget@ImGui@@YA_NXZ";
@@ -846,9 +941,11 @@ GetDragDropPayload :: () -> *Payload #foreign imgui "?GetDragDropPayload@ImGui@@
 BeginDisabled :: (disabled := true) -> void #foreign imgui "?BeginDisabled@ImGui@@YAX_N@Z";
 EndDisabled :: () -> void #foreign imgui "?EndDisabled@ImGui@@YAXXZ";
 PushClipRect :: (clip_rect_min: *ImVec2, clip_rect_max: *ImVec2, intersect_with_current_clip_rect: bool) -> void #foreign imgui "?PushClipRect@ImGui@@YAXAEBUImVec2@@0_N@Z";
+
 PushClipRect :: (clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool) {
     PushClipRect(*clip_rect_min, *clip_rect_max, intersect_with_current_clip_rect);
 }
+
 PopClipRect :: () -> void #foreign imgui "?PopClipRect@ImGui@@YAXXZ";
 SetItemDefaultFocus :: () -> void #foreign imgui "?SetItemDefaultFocus@ImGui@@YAXXZ";
 SetKeyboardFocusHere :: (offset: s32 = 0) -> void #foreign imgui "?SetKeyboardFocusHere@ImGui@@YAXH@Z";
@@ -874,13 +971,17 @@ GetMainViewport :: () -> *Viewport #foreign imgui "?GetMainViewport@ImGui@@YAPEA
 GetBackgroundDrawList :: () -> *ImDrawList #foreign imgui "?GetBackgroundDrawList@ImGui@@YAPEAUImDrawList@@XZ";
 GetForegroundDrawList :: () -> *ImDrawList #foreign imgui "?GetForegroundDrawList@ImGui@@YAPEAUImDrawList@@XZ";
 IsRectVisible :: (size: *ImVec2) -> bool #foreign imgui "?IsRectVisible@ImGui@@YA_NAEBUImVec2@@@Z";
+
 IsRectVisible :: (size: ImVec2) -> bool {
     return IsRectVisible(*size);
 }
+
 IsRectVisible :: (rect_min: *ImVec2, rect_max: *ImVec2) -> bool #foreign imgui "?IsRectVisible@ImGui@@YA_NAEBUImVec2@@0@Z";
+
 IsRectVisible :: (rect_min: ImVec2, rect_max: ImVec2) -> bool {
     return IsRectVisible(*rect_min, *rect_max);
 }
+
 GetTime :: () -> float64 #foreign imgui "?GetTime@ImGui@@YANXZ";
 GetFrameCount :: () -> s32 #foreign imgui "?GetFrameCount@ImGui@@YAHXZ";
 GetDrawListSharedData :: () -> *ImDrawListSharedData #foreign imgui "?GetDrawListSharedData@ImGui@@YAPEAUImDrawListSharedData@@XZ";
@@ -888,20 +989,26 @@ GetStyleColorName :: (idx: Col) -> *u8 #foreign imgui "?GetStyleColorName@ImGui@
 SetStateStorage :: (storage: *Storage) -> void #foreign imgui "?SetStateStorage@ImGui@@YAXPEAUImGuiStorage@@@Z";
 GetStateStorage :: () -> *Storage #foreign imgui "?GetStateStorage@ImGui@@YAPEAUImGuiStorage@@XZ";
 BeginChildFrame :: (id: ID, size: *ImVec2, flags: WindowFlags = .None) -> bool #foreign imgui "?BeginChildFrame@ImGui@@YA_NIAEBUImVec2@@H@Z";
+
 BeginChildFrame :: (id: ID, size: ImVec2, flags: WindowFlags = .None) -> bool {
     return BeginChildFrame(id, *size, flags);
 }
+
 EndChildFrame :: () -> void #foreign imgui "?EndChildFrame@ImGui@@YAXXZ";
 CalcTextSize :: (text: *u8, text_end: *u8 = null, hide_text_after_double_hash := false, wrap_width: float = -1.0) -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?CalcTextSize@ImGui@@YA?AUImVec2@@PEBD0_NM@Z";
+
 CalcTextSize :: (text: string, hide_text_after_double_hash := false, wrap_width: float = -1.0) -> ImVec2 {
     begin := _imgui_text_begin(text);
     return CalcTextSize(begin, begin + text.count, hide_text_after_double_hash, wrap_width);
 }
+
 ColorConvertU32ToFloat4 :: (in: ImU32) -> ImVec4 #cpp_return_type_is_non_pod #foreign imgui "?ColorConvertU32ToFloat4@ImGui@@YA?AUImVec4@@I@Z";
 ColorConvertFloat4ToU32 :: (in: *ImVec4) -> ImU32 #foreign imgui "?ColorConvertFloat4ToU32@ImGui@@YAIAEBUImVec4@@@Z";
+
 ColorConvertFloat4ToU32 :: (in: ImVec4) -> ImU32 {
     return ColorConvertFloat4ToU32(*in);
 }
+
 ColorConvertRGBtoHSV :: (r: float, g: float, b: float, out_h: *float, out_s: *float, out_v: *float) -> void #foreign imgui "?ColorConvertRGBtoHSV@ImGui@@YAXMMMAEAM00@Z";
 ColorConvertHSVtoRGB :: (h: float, s: float, v: float, out_r: *float, out_g: *float, out_b: *float) -> void #foreign imgui "?ColorConvertHSVtoRGB@ImGui@@YAXMMMAEAM00@Z";
 IsKeyDown :: (key: Key) -> bool #foreign imgui "?IsKeyDown@ImGui@@YA_NW4ImGuiKey@@@Z";
@@ -916,9 +1023,11 @@ IsMouseReleased :: (button: MouseButton) -> bool #foreign imgui "?IsMouseRelease
 IsMouseDoubleClicked :: (button: MouseButton) -> bool #foreign imgui "?IsMouseDoubleClicked@ImGui@@YA_NH@Z";
 GetMouseClickedCount :: (button: MouseButton) -> s32 #foreign imgui "?GetMouseClickedCount@ImGui@@YAHH@Z";
 IsMouseHoveringRect :: (r_min: *ImVec2, r_max: *ImVec2, clip := true) -> bool #foreign imgui "?IsMouseHoveringRect@ImGui@@YA_NAEBUImVec2@@0_N@Z";
+
 IsMouseHoveringRect :: (r_min: ImVec2, r_max: ImVec2, clip := true) -> bool {
     return IsMouseHoveringRect(*r_min, *r_max, clip);
 }
+
 IsMousePosValid :: (mouse_pos: *ImVec2 = null) -> bool #foreign imgui "?IsMousePosValid@ImGui@@YA_NPEBUImVec2@@@Z";
 IsAnyMouseDown :: () -> bool #foreign imgui "?IsAnyMouseDown@ImGui@@YA_NXZ";
 GetMousePos :: () -> ImVec2 #cpp_return_type_is_non_pod #foreign imgui "?GetMousePos@ImGui@@YA?AUImVec2@@XZ";
@@ -943,6 +1052,7 @@ MemAlloc :: (size: u64) -> *void #foreign imgui "?MemAlloc@ImGui@@YAPEAX_K@Z";
 MemFree :: (ptr: *void) -> void #foreign imgui "?MemFree@ImGui@@YAXPEAX@Z";
 GetKeyIndex :: (key: Key) -> Key #foreign imgui "?GetKeyIndex@ImGui@@YA?AW4ImGuiKey@@W42@@Z";
 ImageButton :: (user_texture_id: ImTextureID, size: *ImVec2, uv0: *ImVec2, uv1: *ImVec2, frame_padding: s32 = -1, bg_col: *ImVec4, tint_col: *ImVec4) -> bool #foreign imgui "?ImageButton@ImGui@@YA_NPEAXAEBUImVec2@@11HAEBUImVec4@@2@Z";
+
 ImageButton :: (user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2 = ImVec2.{ 0, 0
 }
 , uv1: ImVec2 = ImVec2.{ 1, 1
@@ -954,7 +1064,9 @@ ImageButton :: (user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2 = ImVec2
 ) -> bool {
     return ImageButton(user_texture_id, *size, *uv0, *uv1, frame_padding, *bg_col, *tint_col);
 }
+
 CalcListClipping :: (items_count: s32, items_height: float, out_items_display_start: *s32, out_items_display_end: *s32) -> void #foreign imgui "?CalcListClipping@ImGui@@YAXHMPEAH0@Z";
+
 WindowFlags :: enum_flags s32 {
     None :: 0x0;
     NoTitleBar :: 0x1;
@@ -1017,6 +1129,7 @@ WindowFlags :: enum_flags s32 {
     ImGuiWindowFlags_Modal :: Modal;
     ImGuiWindowFlags_ChildMenu :: ChildMenu;
 }
+
 InputTextFlags :: enum_flags s32 {
     None :: 0x0;
     CharsDecimal :: 0x1;
@@ -1063,6 +1176,7 @@ InputTextFlags :: enum_flags s32 {
     ImGuiInputTextFlags_CallbackEdit :: CallbackEdit;
     ImGuiInputTextFlags_EscapeClearsAll :: EscapeClearsAll;
 }
+
 TreeNodeFlags :: enum_flags s32 {
     None :: 0x0;
     Selected :: 0x1;
@@ -1097,6 +1211,7 @@ TreeNodeFlags :: enum_flags s32 {
     ImGuiTreeNodeFlags_NavLeftJumpsBackHere :: NavLeftJumpsBackHere;
     ImGuiTreeNodeFlags_CollapsingHeader :: CollapsingHeader;
 }
+
 PopupFlags :: enum_flags s32 {
     None :: 0x0;
     MouseButtonLeft :: 0x0;
@@ -1121,6 +1236,7 @@ PopupFlags :: enum_flags s32 {
     ImGuiPopupFlags_AnyPopupLevel :: AnyPopupLevel;
     ImGuiPopupFlags_AnyPopup :: AnyPopup;
 }
+
 SelectableFlags :: enum_flags s32 {
     None :: 0x0;
     DontClosePopups :: 0x1;
@@ -1135,6 +1251,7 @@ SelectableFlags :: enum_flags s32 {
     ImGuiSelectableFlags_Disabled :: Disabled;
     ImGuiSelectableFlags_AllowItemOverlap :: AllowItemOverlap;
 }
+
 ComboFlags :: enum_flags s32 {
     None :: 0x0;
     PopupAlignLeft :: 0x1;
@@ -1155,6 +1272,7 @@ ComboFlags :: enum_flags s32 {
     ImGuiComboFlags_NoPreview :: NoPreview;
     ImGuiComboFlags_HeightMask_ :: HeightMask_;
 }
+
 TabBarFlags :: enum_flags s32 {
     None :: 0x0;
     Reorderable :: 0x1;
@@ -1179,6 +1297,7 @@ TabBarFlags :: enum_flags s32 {
     ImGuiTabBarFlags_FittingPolicyMask_ :: FittingPolicyMask_;
     ImGuiTabBarFlags_FittingPolicyDefault_ :: FittingPolicyDefault_;
 }
+
 TabItemFlags :: enum_flags s32 {
     None :: 0x0;
     UnsavedDocument :: 0x1;
@@ -1199,6 +1318,7 @@ TabItemFlags :: enum_flags s32 {
     ImGuiTabItemFlags_Leading :: Leading;
     ImGuiTabItemFlags_Trailing :: Trailing;
 }
+
 TableFlags :: enum_flags s32 {
     None :: 0x0;
     Resizable :: 0x1;
@@ -1273,6 +1393,7 @@ TableFlags :: enum_flags s32 {
     ImGuiTableFlags_SortTristate :: SortTristate;
     ImGuiTableFlags_SizingMask_ :: SizingMask_;
 }
+
 TableColumnFlags :: enum_flags s32 {
     None :: 0x0;
     Disabled :: 0x1;
@@ -1329,12 +1450,14 @@ TableColumnFlags :: enum_flags s32 {
     ImGuiTableColumnFlags_StatusMask_ :: StatusMask_;
     ImGuiTableColumnFlags_NoDirectResize_ :: NoDirectResize_;
 }
+
 TableRowFlags :: enum_flags s32 {
     None :: 0x0;
     Headers :: 0x1;
     ImGuiTableRowFlags_None :: None;
     ImGuiTableRowFlags_Headers :: Headers;
 }
+
 TableBgTarget :: enum s32 {
     None :: 0;
     RowBg0 :: 1;
@@ -1345,6 +1468,7 @@ TableBgTarget :: enum s32 {
     ImGuiTableBgTarget_RowBg1 :: RowBg1;
     ImGuiTableBgTarget_CellBg :: CellBg;
 }
+
 FocusedFlags :: enum_flags s32 {
     None :: 0x0;
     ChildWindows :: 0x1;
@@ -1359,6 +1483,7 @@ FocusedFlags :: enum_flags s32 {
     ImGuiFocusedFlags_NoPopupHierarchy :: NoPopupHierarchy;
     ImGuiFocusedFlags_RootAndChildWindows :: RootAndChildWindows;
 }
+
 HoveredFlags :: enum_flags s32 {
     None :: 0x0;
     ChildWindows :: 0x1;
@@ -1391,6 +1516,7 @@ HoveredFlags :: enum_flags s32 {
     ImGuiHoveredFlags_DelayShort :: DelayShort;
     ImGuiHoveredFlags_NoSharedDelay :: NoSharedDelay;
 }
+
 DragDropFlags :: enum_flags s32 {
     None :: 0x0;
     SourceNoPreviewTooltip :: 0x1;
@@ -1415,6 +1541,7 @@ DragDropFlags :: enum_flags s32 {
     ImGuiDragDropFlags_AcceptNoPreviewTooltip :: AcceptNoPreviewTooltip;
     ImGuiDragDropFlags_AcceptPeekOnly :: AcceptPeekOnly;
 }
+
 DataType :: enum s32 {
     S8 :: 0;
     U8 :: 1;
@@ -1439,6 +1566,7 @@ DataType :: enum s32 {
     ImGuiDataType_Double :: Double;
     ImGuiDataType_COUNT :: COUNT;
 }
+
 Dir :: enum s32 {
     None :: -1;
     Left :: 0;
@@ -1453,6 +1581,7 @@ Dir :: enum s32 {
     ImGuiDir_Down :: Down;
     ImGuiDir_COUNT :: COUNT;
 }
+
 SortDirection :: enum s32 {
     None :: 0;
     Ascending :: 1;
@@ -1461,6 +1590,7 @@ SortDirection :: enum s32 {
     ImGuiSortDirection_Ascending :: Ascending;
     ImGuiSortDirection_Descending :: Descending;
 }
+
 NavInput :: enum s32 {
     Activate :: 0;
     Cancel :: 1;
@@ -1497,6 +1627,7 @@ NavInput :: enum s32 {
     ImGuiNavInput_TweakFast :: TweakFast;
     ImGuiNavInput_COUNT :: COUNT;
 }
+
 ConfigFlags :: enum_flags s32 {
     None :: 0x0;
     NavEnableKeyboard :: 0x1;
@@ -1517,6 +1648,7 @@ ConfigFlags :: enum_flags s32 {
     ImGuiConfigFlags_IsSRGB :: IsSRGB;
     ImGuiConfigFlags_IsTouchScreen :: IsTouchScreen;
 }
+
 BackendFlags :: enum_flags s32 {
     None :: 0x0;
     HasGamepad :: 0x1;
@@ -1529,6 +1661,7 @@ BackendFlags :: enum_flags s32 {
     ImGuiBackendFlags_HasSetMousePos :: HasSetMousePos;
     ImGuiBackendFlags_RendererHasVtxOffset :: RendererHasVtxOffset;
 }
+
 Col :: enum s32 {
     Text :: 0;
     TextDisabled :: 1;
@@ -1639,6 +1772,7 @@ Col :: enum s32 {
     ImGuiCol_ModalWindowDimBg :: ModalWindowDimBg;
     ImGuiCol_COUNT :: COUNT;
 }
+
 StyleVar :: enum s32 {
     Alpha :: 0;
     DisabledAlpha :: 1;
@@ -1699,6 +1833,7 @@ StyleVar :: enum s32 {
     ImGuiStyleVar_SeparatorTextPadding :: SeparatorTextPadding;
     ImGuiStyleVar_COUNT :: COUNT;
 }
+
 ButtonFlags :: enum_flags s32 {
     None :: 0x0;
     MouseButtonLeft :: 0x1;
@@ -1713,6 +1848,7 @@ ButtonFlags :: enum_flags s32 {
     ImGuiButtonFlags_MouseButtonMask_ :: MouseButtonMask_;
     ImGuiButtonFlags_MouseButtonDefault_ :: MouseButtonDefault_;
 }
+
 ColorEditFlags :: enum_flags s32 {
     None :: 0x0;
     NoAlpha :: 0x2;
@@ -1773,6 +1909,7 @@ ColorEditFlags :: enum_flags s32 {
     ImGuiColorEditFlags_PickerMask_ :: PickerMask_;
     ImGuiColorEditFlags_InputMask_ :: InputMask_;
 }
+
 SliderFlags :: enum_flags s32 {
     None :: 0x0;
     AlwaysClamp :: 0x10;
@@ -1787,6 +1924,7 @@ SliderFlags :: enum_flags s32 {
     ImGuiSliderFlags_NoInput :: NoInput;
     ImGuiSliderFlags_InvalidMask_ :: InvalidMask_;
 }
+
 MouseButton :: enum s32 {
     Left :: 0;
     Right :: 1;
@@ -1797,6 +1935,7 @@ MouseButton :: enum s32 {
     ImGuiMouseButton_Middle :: Middle;
     ImGuiMouseButton_COUNT :: COUNT;
 }
+
 MouseCursor :: enum s32 {
     None :: -1;
     Arrow :: 0;
@@ -1821,6 +1960,7 @@ MouseCursor :: enum s32 {
     ImGuiMouseCursor_NotAllowed :: NotAllowed;
     ImGuiMouseCursor_COUNT :: COUNT;
 }
+
 Cond :: enum s32 {
     None :: 0;
     Always :: 1;
@@ -1833,9 +1973,11 @@ Cond :: enum s32 {
     ImGuiCond_FirstUseEver :: FirstUseEver;
     ImGuiCond_Appearing :: Appearing;
 }
+
 ImNewWrapper :: struct {
     __empty_struct_padding: u8;
 }
+
 Style :: struct {
     Alpha: float;
     DisabledAlpha: float;
@@ -1884,12 +2026,14 @@ Style :: struct {
     Constructor :: (this: *Style) -> void #cpp_method #foreign imgui "??0ImGuiStyle@@QEAA@XZ";
     ScaleAllSizes :: (this: *Style, scale_factor: float) -> void #cpp_method #foreign imgui "?ScaleAllSizes@ImGuiStyle@@QEAAXM@Z";
 }
+
 KeyData :: struct {
     Down: bool;
     DownDuration: float;
     DownDurationPrev: float;
     AnalogValue: float;
 }
+
 IO :: struct {
     ConfigFlags_: ConfigFlags;
     BackendFlags_: BackendFlags;
@@ -2000,6 +2144,7 @@ IO :: struct {
     InputQueueCharacters: ImVector(ImWchar);
     Constructor :: (this: *IO) -> void #cpp_method #foreign imgui "??0ImGuiIO@@QEAA@XZ";
 }
+
 InputTextCallbackData :: struct {
     Ctx: *ImGuiContext;
     EventFlag: InputTextFlags;
@@ -2022,12 +2167,14 @@ InputTextCallbackData :: struct {
         InsertChars(this, pos, begin, begin + text.count);
     }
 }
+
 SizeCallbackData :: struct {
     UserData: *void;
     Pos: ImVec2;
     CurrentSize: ImVec2;
     DesiredSize: ImVec2;
 }
+
 Payload :: struct {
     Data: *void;
     DataSize: s32;
@@ -2038,20 +2185,24 @@ Payload :: struct {
     Preview: bool;
     Delivery: bool;
 }
+
 TableColumnSortSpecs :: struct {
     ColumnUserID: ID;
     ColumnIndex: ImS16;
     SortOrder: ImS16;
     SortDirection_: SortDirection;
 }
+
 TableSortSpecs :: struct {
     Specs: *TableColumnSortSpecs;
     SpecsCount: s32;
     SpecsDirty: bool;
 }
+
 OnceUponAFrame :: struct {
     RefFrame: s32;
 }
+
 TextFilter :: struct {
     Constructor :: (this: *TextFilter, default_filter: *u8 = "") -> void #cpp_method #foreign imgui "??0ImGuiTextFilter@@QEAA@PEBD@Z";
     Draw :: (this: *TextFilter, label: *u8 = "Filter (inc,-exc)", width: float = 0.0) -> bool #cpp_method #foreign imgui "?Draw@ImGuiTextFilter@@QEAA_NPEBDM@Z";
@@ -2070,6 +2221,7 @@ TextFilter :: struct {
     Filters: ImVector(TextRange);
     CountGrep: s32;
 }
+
 Storage :: struct {
     StoragePair :: struct {
         key: ID;
@@ -2095,6 +2247,7 @@ Storage :: struct {
     SetAllInt :: (this: *Storage, val: s32) -> void #cpp_method #foreign imgui "?SetAllInt@ImGuiStorage@@QEAAXH@Z";
     BuildSortByKey :: (this: *Storage) -> void #cpp_method #foreign imgui "?BuildSortByKey@ImGuiStorage@@QEAAXXZ";
 }
+
 ListClipper :: struct {
     Ctx: *ImGuiContext;
     DisplayStart: s32;
@@ -2110,6 +2263,7 @@ ListClipper :: struct {
     Step :: (this: *ListClipper) -> bool #cpp_method #foreign imgui "?Step@ImGuiListClipper@@QEAA_NXZ";
     IncludeRangeByIndices :: (this: *ListClipper, item_begin: s32, item_end: s32) -> void #cpp_method #foreign imgui "?IncludeRangeByIndices@ImGuiListClipper@@QEAAXHH@Z";
 }
+
 ImDrawCmd :: struct {
     ClipRect: ImVec4;
     TextureId: ImTextureID;
@@ -2119,20 +2273,24 @@ ImDrawCmd :: struct {
     UserCallback: ImDrawCallback;
     UserCallbackData: *void;
 }
+
 ImDrawVert :: struct {
     pos: ImVec2;
     uv: ImVec2;
     col: ImU32;
 }
+
 ImDrawCmdHeader :: struct {
     ClipRect: ImVec4;
     TextureId: ImTextureID;
     VtxOffset: u32;
 }
+
 ImDrawChannel :: struct {
     _CmdBuffer: ImVector(ImDrawCmd);
     _IdxBuffer: ImVector(ImDrawIdx);
 }
+
 ImDrawListSplitter :: struct {
     _Current: s32;
     _Count: s32;
@@ -2142,6 +2300,7 @@ ImDrawListSplitter :: struct {
     Merge :: (this: *ImDrawListSplitter, draw_list: *ImDrawList) -> void #cpp_method #foreign imgui "?Merge@ImDrawListSplitter@@QEAAXPEAUImDrawList@@@Z";
     SetCurrentChannel :: (this: *ImDrawListSplitter, draw_list: *ImDrawList, channel_idx: s32) -> void #cpp_method #foreign imgui "?SetCurrentChannel@ImDrawListSplitter@@QEAAXPEAUImDrawList@@H@Z";
 }
+
 ImDrawFlags :: enum_flags s32 {
     None :: 0x0;
     Closed :: 0x1;
@@ -2172,6 +2331,7 @@ ImDrawFlags :: enum_flags s32 {
     ImDrawFlags_RoundCornersDefault_ :: RoundCornersDefault_;
     ImDrawFlags_RoundCornersMask_ :: RoundCornersMask_;
 }
+
 ImDrawListFlags :: enum_flags s32 {
     None :: 0x0;
     AntiAliasedLines :: 0x1;
@@ -2184,6 +2344,7 @@ ImDrawListFlags :: enum_flags s32 {
     ImDrawListFlags_AntiAliasedFill :: AntiAliasedFill;
     ImDrawListFlags_AllowVtxOffset :: AllowVtxOffset;
 }
+
 ImDrawList :: struct {
     CmdBuffer: ImVector(ImDrawCmd);
     IdxBuffer: ImVector(ImDrawIdx);
@@ -2354,6 +2515,7 @@ ImDrawList :: struct {
         _PathArcToN(this, *center, radius, a_min, a_max, num_segments);
     }
 }
+
 ImDrawData :: struct {
     Valid: bool;
     CmdListsCount: s32;
@@ -2369,6 +2531,7 @@ ImDrawData :: struct {
         ScaleClipRects(this, *fb_scale);
     }
 }
+
 ImFontConfig :: struct {
     FontData: *void;
     FontDataSize: s32;
@@ -2391,6 +2554,7 @@ ImFontConfig :: struct {
     DstFont: *ImFont;
     Constructor :: (this: *ImFontConfig) -> void #cpp_method #foreign imgui "??0ImFontConfig@@QEAA@XZ";
 }
+
 ImFontGlyph :: struct {
     __bitfield: u32;
     AdvanceX: float;
@@ -2403,6 +2567,7 @@ ImFontGlyph :: struct {
     U1: float;
     V1: float;
 }
+
 ImFontGlyphRangesBuilder :: struct {
     UsedChars: ImVector(ImU32);
     AddText :: (this: *ImFontGlyphRangesBuilder, text: *u8, text_end: *u8 = null) -> void #cpp_method #foreign imgui "?AddText@ImFontGlyphRangesBuilder@@QEAAXPEBD0@Z";
@@ -2413,6 +2578,7 @@ ImFontGlyphRangesBuilder :: struct {
     AddRanges :: (this: *ImFontGlyphRangesBuilder, ranges: *ImWchar) -> void #cpp_method #foreign imgui "?AddRanges@ImFontGlyphRangesBuilder@@QEAAXPEBG@Z";
     BuildRanges :: (this: *ImFontGlyphRangesBuilder, out_ranges: *ImVector(ImWchar)) -> void #cpp_method #foreign imgui "?BuildRanges@ImFontGlyphRangesBuilder@@QEAAXPEAU?$ImVector@G@@@Z";
 }
+
 ImFontAtlasCustomRect :: struct {
     Width: u16;
     Height: u16;
@@ -2423,6 +2589,7 @@ ImFontAtlasCustomRect :: struct {
     GlyphOffset: ImVec2;
     Font: *ImFont;
 }
+
 ImFontAtlasFlags :: enum_flags s32 {
     None :: 0x0;
     NoPowerOfTwoHeight :: 0x1;
@@ -2433,6 +2600,7 @@ ImFontAtlasFlags :: enum_flags s32 {
     ImFontAtlasFlags_NoMouseCursors :: NoMouseCursors;
     ImFontAtlasFlags_NoBakedLines :: NoBakedLines;
 }
+
 ImFontAtlas :: struct {
     Constructor :: (this: *ImFontAtlas) -> void #cpp_method #foreign imgui "??0ImFontAtlas@@QEAA@XZ";
     Destructor :: (this: *ImFontAtlas) -> void #cpp_method #foreign imgui "??1ImFontAtlas@@QEAA@XZ";
@@ -2490,6 +2658,7 @@ ImFontAtlas :: struct {
     PackIdMouseCursors: s32;
     PackIdLines: s32;
 }
+
 ImFont :: struct {
     IndexAdvanceX: ImVector(float);
     FallbackAdvanceX: float;
@@ -2542,6 +2711,7 @@ ImFont :: struct {
     SetGlyphVisible :: (this: *ImFont, c: ImWchar, visible: bool) -> void #cpp_method #foreign imgui "?SetGlyphVisible@ImFont@@QEAAXG_N@Z";
     IsGlyphRangeUnused :: (this: *ImFont, c_begin: u32, c_last: u32) -> bool #cpp_method #foreign imgui "?IsGlyphRangeUnused@ImFont@@QEAA_NII@Z";
 }
+
 ViewportFlags :: enum_flags s32 {
     None :: 0x0;
     IsPlatformWindow :: 0x1;
@@ -2552,6 +2722,7 @@ ViewportFlags :: enum_flags s32 {
     ImGuiViewportFlags_IsPlatformMonitor :: IsPlatformMonitor;
     ImGuiViewportFlags_OwnedByApp :: OwnedByApp;
 }
+
 Viewport :: struct {
     Flags: ViewportFlags;
     Pos: ImVec2;
@@ -2560,11 +2731,13 @@ Viewport :: struct {
     WorkSize: ImVec2;
     PlatformHandleRaw: *void;
 }
+
 PlatformImeData :: struct {
     WantVisible: bool;
     InputPos: ImVec2;
     InputLineHeight: float;
 }
+
 ImDrawCornerFlags :: enum_flags s32 {
     None :: 0x100;
     TopLeft :: 0x10;
@@ -2587,6 +2760,7 @@ ImDrawCornerFlags :: enum_flags s32 {
     ImDrawCornerFlags_Left :: Left;
     ImDrawCornerFlags_Right :: Right;
 }
+
 ModFlags :: enum_flags s32 {
     None :: 0x0;
     Ctrl :: 0x1000;
@@ -2599,8 +2773,10 @@ ModFlags :: enum_flags s32 {
     ImGuiModFlags_Alt :: Alt;
     ImGuiModFlags_Super :: Super;
 }
+
 #scope_file
 #import "Basic";
+
 imgui :: #system_library "imgui";
 
 

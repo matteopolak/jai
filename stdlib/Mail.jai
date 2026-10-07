@@ -11,6 +11,7 @@ Mail_Server :: struct {
     username: string;
     password: string;
 }
+
 Mail_Message :: struct {
     from: string;
     to: [..] string;
@@ -76,6 +77,7 @@ Upload_Context :: struct {
     data: string;
     cursor: s64;
 }
+
 payload_source :: (ptr: *u8, size: u64, nmemb: u64, userp: *void) -> u64 #c_call {
     if size == 0 || nmemb == 0 || nmemb > 0xffff_ffff_ffff_ffff / size return 0;
     source := cast(*Upload_Context) userp;
@@ -86,10 +88,12 @@ payload_source :: (ptr: *u8, size: u64, nmemb: u64, userp: *void) -> u64 #c_call
     source.cursor += cast(s64) capacity;
     return capacity;
 }
+
 valid_header :: (value: string) -> bool {
     for byte: value if byte == 0 || byte == 10 || byte == 13 return false;
     return true;
 }
+
 add_recipient :: (list: **Curl.curl_slist, address: string) -> bool {
     email, valid := get_c_email(address);
     if !valid return false;
@@ -98,6 +102,7 @@ add_recipient :: (list: **Curl.curl_slist, address: string) -> bool {
     list.* = next;
     return true;
 }
+
 append_addresses :: (builder: *String_Builder, header: string, addresses: [] string) -> bool {
     if addresses.count == 0 return true;
     append(builder, header);
@@ -110,6 +115,7 @@ append_addresses :: (builder: *String_Builder, header: string, addresses: [] str
     append(builder, "\r\n");
     return true;
 }
+
 append_base64_lines :: (builder: *String_Builder, bytes: string) {
     encoded := Base64.base64_encode(bytes);
     defer free(encoded);
@@ -121,6 +127,7 @@ append_base64_lines :: (builder: *String_Builder, bytes: string) {
         index += count;
     }
 }
+
 build_message :: (message: Mail_Message) -> string, bool {
     builder: String_Builder;
     init_string_builder(*builder);

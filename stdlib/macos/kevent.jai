@@ -1,11 +1,13 @@
 // kqueue / kevent64 declarations.
 kqueue :: () -> s32 #foreign libc;
 kevent64 :: (kq: s32, changelist: *Kevent64, nchanges: s32, eventlist: *Kevent64, nevents: s32, flags: Kevent_Call_Flags, timeout: *timespec) -> s32 #foreign libc;
+
 Kevent_Call_Flags :: enum_flags u32 {
     KEVENT_FLAG_NONE :: 0x000000;
     KEVENT_FLAG_IMMEDIATE :: 0x000001;
     KEVENT_FLAG_ERROR_EVENTS :: 0x000002;
 }
+
 Kevent64 :: struct {
     ident: u64;
     filter: Kevent_Filter;
@@ -15,6 +17,7 @@ Kevent64 :: struct {
     udata: *void;
     ext: [2] u64;
 }
+
 Kevent_Filter :: enum s16 {
     READ :: -1;
     WRITE :: -2;
@@ -29,6 +32,7 @@ Kevent_Filter :: enum s16 {
     VM :: -12;
     EXCEPT :: -15;
 }
+
 Kevent_Flags :: enum_flags u16 {
     ADD :: 0x0001;
     DELETE :: 0x0002;
@@ -49,6 +53,7 @@ Kevent_Flags :: enum_flags u16 {
     POLL :: FLAG0;
     OOBAND :: FLAG1;
 }
+
 Kevent_Fflags :: enum_flags u32 {
     LOWAT :: 0x00000001;
     EXIT :: 0x80000000;
@@ -84,5 +89,6 @@ Kevent_Fflags :: enum_flags u32 {
     FFCTRLMASK :: 0xc0000000;
     FFLAGSMASK :: 0x00ffffff;
 }
+
 #scope_file
 libc :: #system_library "libc";

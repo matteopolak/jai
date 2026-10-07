@@ -1,8 +1,10 @@
 #load "classify.jai";
+
 // Byte cursor and eight-slot lookahead ring. Token text belongs to the atom pool.
 peek_next_token :: (using lexer: *Lexer) -> *Token {
     return peek_token(lexer, 0);
 }
+
 get_last_token :: (lexer: *Lexer) -> Token {
     index := (lexer.token_array_cursor + MAX_CONCURRENT_TOKENS - 1) % MAX_CONCURRENT_TOKENS;
     return lexer.tokens[index];
@@ -15,6 +17,7 @@ cached_make_atom :: (lexer: *Lexer, name: string, token_to_fill: *Token) {
     for byte: name hash = cast,no_check(u32) (cast(u64) hash * 65599 + byte);
     token_to_fill.ident_value.hash = hash;
 }
+
 eat_character :: (using lexer: *Lexer) {
     if input_cursor >= input.count return;
     byte := input[input_cursor];
@@ -27,10 +30,12 @@ eat_character :: (using lexer: *Lexer) {
         current_character_index += 1;
     }
 }
+
 peek_next_character :: (lexer: *Lexer) -> s16 {
     if lexer.input_cursor >= lexer.input.count return -1;
     return lexer.input[lexer.input_cursor];
 }
+
 report_parse_error :: (lexer: *Lexer, format: string, arguments: ..Any) {
     lexer.reported_error = true;
     log(format, ..arguments);
@@ -50,16 +55,19 @@ get_hex_digit :: (lexer: *Lexer, type: Hex_Digit_Type) -> (value: u8, success: b
     eat_character(lexer);
     return cast(u8) digit, true;
 }
+
 get_decimal_digit :: (lexer: *Lexer) -> s32 {
     value := peek_next_character(lexer);
     if !starts_number(value) return -1;
     eat_character(lexer);
     return value - #char "0";
 }
+
 set_end_of_token :: (lexer: *Lexer, token: *Token) {
     token.l1 = lexer.current_line_number;
     token.c1 = lexer.current_character_index;
 }
+
 unwind_one_character :: (lexer: *Lexer) {
     if lexer.input_cursor == 0 return;
     lexer.input_cursor -= 1;
@@ -73,6 +81,7 @@ unwind_one_character :: (lexer: *Lexer) {
         lexer.current_character_index -= 1;
     }
 }
+
 // Hands out the ring slot just past the pending lookahead, cleared and positioned at
 // the current source location. The caller fills in type, value and end position.
 get_unused_token :: (lexer: *Lexer) -> *Token {
@@ -86,6 +95,7 @@ get_unused_token :: (lexer: *Lexer) -> *Token {
     lexer.tokens[ring_index] = fresh;
     return *lexer.tokens[ring_index];
 }
+
 parse_ident :: (lexer: *Lexer, result: *Token) -> string {
     count: s64;
     while true {
@@ -107,11 +117,13 @@ parse_ident :: (lexer: *Lexer, result: *Token) -> string {
     }
     return string.{ count, lexer.scratch_buffer.data };
 }
+
 parse_note :: (lexer: *Lexer) -> string {
     begin := lexer.input_cursor;
     while continues_identifier(peek_next_character(lexer)) eat_character(lexer);
     return .{ lexer.input_cursor - begin, lexer.input.data + begin };
 }
+
 make_note :: (lexer: *Lexer) -> *Token {
     result := start_token(lexer, .NOTE);
     eat_character(lexer);
@@ -123,10 +135,12 @@ make_note :: (lexer: *Lexer) -> *Token {
     set_end_of_token(lexer, result);
     return result;
 }
+
 check_for_keyword :: (token: *Token) -> Token_Type {
     for entry: keywords if token.ident_value.name == entry.text return entry.kind;
     return cast(Token_Type) 0;
 }
+
 make_ident_or_keyword :: (lexer: *Lexer) -> *Token {
     result := start_token(lexer, .IDENT);
     cached_make_atom(lexer, parse_ident(lexer, result), result);
@@ -198,9 +212,11 @@ make_number :: (lexer: *Lexer) -> *Token {
     set_end_of_token(lexer, result);
     return result;
 }
+
 accumulate_digit_wrapping :: (value: u64, base: u64, digit: u64) -> u64 #no_aoc {
     return value * base + digit;
 }
+
 make_hexfloat :: (lexer: *Lexer, result: *Token) -> *Token {
     // Not decoded: flag the token and swallow the rest of the literal so scanning resumes cleanly.
     result.type = .ERROR;
@@ -213,6 +229,7 @@ make_hexfloat :: (lexer: *Lexer, result: *Token) -> *Token {
     set_end_of_token(lexer, result);
     return result;
 }
+
 make_string_constant :: (lexer: *Lexer) -> *Token {
     result := start_token(lexer, .STRING);
     eat_character(lexer);
@@ -287,6 +304,7 @@ make_string_constant :: (lexer: *Lexer) -> *Token {
     set_end_of_token(lexer, result);
     return result;
 }
+
 parse_here_string :: (lexer: *Lexer) -> *Token {
     result := start_token(lexer, .STRING);
     result.value_flags = .HERE_STRING;
@@ -330,6 +348,7 @@ parse_here_string :: (lexer: *Lexer) -> *Token {
     set_end_of_token(lexer, result);
     return result;
 }
+
 // Called after the character was consumed, so the token begins one column earlier.
 make_one_character_token :: (lexer: *Lexer, c: Token_Type) -> *Token {
     single := start_token(lexer, c);
@@ -337,12 +356,14 @@ make_one_character_token :: (lexer: *Lexer, c: Token_Type) -> *Token {
     set_end_of_token(lexer, single);
     return single;
 }
+
 count_herestring_lines :: (lexer: *Lexer, token: *Token) -> s64 {
     count := cast(s64) token.l1 - token.l0;
     if count < 0 count = 0;
     lexer.nonblank_lines_processed += count;
     return count;
 }
+
 eat_token :: (lexer: *Lexer) {
     if lexer.num_incoming_tokens <= 0 peek_next_token(lexer);
     token := *lexer.tokens[lexer.token_array_cursor];
@@ -353,6 +374,7 @@ eat_token :: (lexer: *Lexer) {
     lexer.num_incoming_tokens -= 1;
     lexer.token_array_cursor = (lexer.token_array_cursor + 1) % MAX_CONCURRENT_TOKENS;
 }
+
 check_for_equals :: (lexer: *Lexer, c: Token_Type, augmented: Token_Type, eat := true, subtractor: s32 = 0) -> *Token {
     if eat eat_character(lexer);
     kind := c;
@@ -365,6 +387,7 @@ check_for_equals :: (lexer: *Lexer, c: Token_Type, augmented: Token_Type, eat :=
     result.c0 -= subtractor;
     return result;
 }
+
 eat_input_due_to_block_comment :: (lexer: *Lexer) {
     depth: s32 = 1;
     while depth > 0 {
@@ -383,9 +406,11 @@ eat_input_due_to_block_comment :: (lexer: *Lexer) {
         } else eat_character(lexer);
     }
 }
+
 eat_until_newline :: (lexer: *Lexer) {
     while peek_next_character(lexer) >= 0 && peek_next_character(lexer) != #char "\n" eat_character(lexer);
 }
+
 compose_new_token :: (lexer: *Lexer) -> *Token {
     while true {
         next := peek_next_character(lexer);
@@ -438,6 +463,7 @@ compose_new_token :: (lexer: *Lexer) -> *Token {
         return make_one_character_token(lexer, cast(Token_Type) next);
     }
 }
+
 peek_token :: (lexer: *Lexer, lookahead_index: s32) -> *Token {
     assert(lookahead_index >= 0 && lookahead_index < MAX_CONCURRENT_TOKENS);
     while lexer.num_incoming_tokens <= lookahead_index {
@@ -447,6 +473,7 @@ peek_token :: (lexer: *Lexer, lookahead_index: s32) -> *Token {
     slot := (lexer.token_array_cursor + lookahead_index) % MAX_CONCURRENT_TOKENS;
     return *lexer.tokens[slot];
 }
+
 // Points the lexer at new text (not copied, not owned) and rewinds all scanning state.
 set_input_from_string :: (lexer: *Lexer, input: string) {
     // A buffer from set_input_from_file belongs to us; release it before dropping it.
@@ -465,6 +492,7 @@ set_input_from_string :: (lexer: *Lexer, input: string) {
     lexer.current_external_file_error_report_line_number = 1;
     lexer.current_character_index = 1;
 }
+
 set_input_from_file :: (lexer: *Lexer, file_path: string) -> bool {
     source, success := File.read_entire_file(file_path, zero_terminated = true);
     if !success return false;
@@ -481,21 +509,27 @@ start_token :: (lexer: *Lexer, type: Token_Type) -> *Token {
     token.type = type;
     return token;
 }
+
 #import "Basic";
 Pool_Module :: #import "Pool";
+
 Pool :: Pool_Module.Pool;
+
 File :: #import "File";
+
 pooled_text :: (lexer: *Lexer, text: string) -> string {
     storage := cast(*u8) Pool_Module.get(*lexer.atom_pool, text.count + 1);
     memcpy(storage, text.data, text.count);
     storage[text.count] = 0;
     return .{ text.count, storage };
 }
+
 look_byte :: (lexer: *Lexer, ahead: s64) -> s16 {
     offset := lexer.input_cursor + ahead;
     if offset < 0 || offset >= lexer.input.count return -1;
     return lexer.input[offset];
 }
+
 ahead_matches :: (lexer: *Lexer, text: string) -> bool {
     for byte, index: text if look_byte(lexer, index) != byte return false;
     return true;
@@ -515,6 +549,7 @@ keywords: [] struct {
 .{ "push_context", .KEYWORD_PUSH_CONTEXT }, .{ "operator", .KEYWORD_OPERATOR }, .{ "is_constant", .KEYWORD_IS_CONSTANT },
 .{ "enum_flags", .KEYWORD_ENUM_FLAGS }, .{ "union", .KEYWORD_UNION }, .{ "interface", .KEYWORD_INTERFACE }
 ];
+
 compound_tokens: [] struct {
     text: string;
     kind: Token_Type;

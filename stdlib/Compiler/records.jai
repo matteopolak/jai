@@ -112,6 +112,7 @@ Record_Plan_Entry :: struct {
     name: string;
     type: *Type_Info;
 }
+
 PLAN_OTHER :: 0;
 PLAN_INT :: 1;
 PLAN_STRING :: 2;
@@ -121,6 +122,7 @@ Record_Plan :: struct {
     info: *Type_Info_Struct;
     entries: [] Record_Plan_Entry;
 }
+
 record_plans: [] Record_Plan; // Open addressing by info.
 record_plans_used: s64;
 

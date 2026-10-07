@@ -2,11 +2,13 @@
 Evdev :: #import "Gamepad/evdev";
 Unix :: #import "POSIX";
 Linux :: #import "Linux";
+
 evdev_device: *Evdev.libevdev;
 evdev_fd: s32 = -1;
 #scope_export
 // Discovery is read-only and does not grab the device. Caller can choose a path.
 gamepad_evdev_scan_limit: s32 = 64;
+
 open_evdev_gamepad :: (path: string) -> bool {
     name := to_c_string(path);
     if !name return false;
@@ -31,6 +33,7 @@ open_evdev_gamepad :: (path: string) -> bool {
     evdev_fd = fd;
     return true;
 }
+
 close_evdev_gamepad :: () {
     if evdev_device {
         Evdev.libevdev_free(evdev_device);
@@ -41,6 +44,7 @@ close_evdev_gamepad :: () {
         evdev_fd = -1;
     }
 }
+
 sample_evdev :: (sample: *Gamepad_Sample) -> bool {
     sample.* = .{};
     if !evdev_device {
@@ -91,6 +95,7 @@ sample_evdev :: (sample: *Gamepad_Sample) -> bool {
     sample.right_trigger = evdev_axis(5, true);
     return true;
 }
+
 #scope_file
 evdev_axis :: (code: u32, trigger: bool) -> float {
     range := Evdev.libevdev_get_abs_info(evdev_device, code);

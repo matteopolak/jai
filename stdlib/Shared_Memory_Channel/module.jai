@@ -20,28 +20,37 @@ Header :: struct {
     full_memory_region_size_in_bytes: s64;
     data_size_in_bytes: s64;
 }
+
 Header_Os_Specific :: struct {
     magic: u32;
 }
+
 #if OS == .WINDOWS {
     Windows :: #import "Windows";
+
     Read_Channel_Os_Specific :: struct {
         mapping: Windows.HANDLE;
     }
+
     Write_Channel_Os_Specific :: struct {
         mapping: Windows.HANDLE;
     }
+
     #load "windows.jai";
 } else {
     P :: #import "POSIX";
+
     Read_Channel_Os_Specific :: struct {
         shm: s32 = -1;
     }
+
     Write_Channel_Os_Specific :: struct {
         shm: s32 = -1;
     }
+
     #load "posix.jai";
 }
+
 Read_Channel :: struct {
     header: *Header;
     os_specific: Read_Channel_Os_Specific;
@@ -49,6 +58,7 @@ Read_Channel :: struct {
     active_offset: s64 = -1;
     active_bytes: s64;
 }
+
 Write_Channel :: struct {
     header: *Header;
     os_specific: Write_Channel_Os_Specific;
@@ -56,17 +66,20 @@ Write_Channel :: struct {
     prior_write_cursor: s64;
     reserved_bytes: s64;
 }
+
 Message_Queue_Header :: struct {
     read_cursor: s64;
     pad: [56] u8 = ---;
     write_cursor: s64;
 }
+
 Reserved_Message :: struct {
     channel: *Write_Channel;
     offset: s64;
     total_bytes: s64;
     user_write_pointer: *u8;
 }
+
 Read_Message :: struct {
     channel: *Read_Channel;
     offset: s64;
@@ -74,6 +87,7 @@ Read_Message :: struct {
     user_read_pointer: *u8;
     user_read_bytes: s64;
 }
+
 OFFSET_TO_HEADER_OS_SPECIFIC :: 64;
 OFFSET_TO_MESSAGE_QUEUE_HEADER :: 128;
 OFFSET_TO_MESSAGE_DATA :: 256;
@@ -113,9 +127,11 @@ reader_create_channel :: (name: string, bytes: s64) -> (success: bool, channel: 
 get_message_queue_header :: inline (header: *Header) -> *Message_Queue_Header {
     return cast(*Message_Queue_Header) (cast(*u8) header + header.offset_to_message_queue_header);
 }
+
 get_data_area :: inline (header: *Header) -> *u8 {
     return cast(*u8) header + header.offset_to_message_data;
 }
+
 get_size_of_full_mapping_from_stub_header :: (pointer: *void) -> (success: bool, actual_bytes: s64) {
     if !pointer return false, 0;
     header := cast(*Header) pointer;
@@ -221,17 +237,20 @@ channel_magic :: () -> u32 {
     memcpy(*value, CHANNEL_MAGIC.data, 4);
     return value;
 }
+
 message_magic :: () -> u64 {
     value: u64;
     memcpy(*value, MESSAGE_MAGIC.data, 8);
     return value;
 }
+
 write_stamp :: (header: *Header, offset: s64, length: s64) {
     pointer := cast(*u8) header + offset;
     magic := message_magic();
     memcpy(pointer, *magic, 8);
     memcpy(pointer + 8, *length, 8);
 }
+
 read_stamp :: (header: *Header, offset: s64) -> s64, bool {
     magic: u64;
     length: s64;

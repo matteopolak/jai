@@ -3,6 +3,7 @@ Basic :: #import "Basic";
 String :: #import "String";
 File :: #import "File";
 Hash_Table :: #import "Hash_Table";
+
 #scope_export
 Text_File_Handler :: struct {
     // Set before start_file to change how lines are read.
@@ -21,11 +22,13 @@ Text_File_Handler :: struct {
     file_data: string; // the unread remainder
     file_data_to_free: string; // the whole buffer, released by deinit
 }
+
 deinit :: (using x: *Text_File_Handler) {
     Basic.free(file_data_to_free);
     file_data_to_free = "";
     file_data = "";
 }
+
 start_file :: (handler: *Text_File_Handler, short_name: string, full_path: string, optional := false, loc := #caller_location) {
     data, ok := File.read_entire_file(full_path, log_errors = !optional);
     if !ok {
@@ -41,6 +44,7 @@ start_file :: (handler: *Text_File_Handler, short_name: string, full_path: strin
     start_from_memory(handler, short_name, full_path, data, loc);
     handler.file_data_to_free = data;
 }
+
 start_from_memory :: (handler: *Text_File_Handler, _short_name: string, _full_path: string, _file_data: string, loc := #caller_location) {
     // A buffer owned from an earlier start_file is no longer referenced once we switch.
     if handler.file_data_to_free.data Basic.free(handler.file_data_to_free);
@@ -52,6 +56,7 @@ start_from_memory :: (handler: *Text_File_Handler, _short_name: string, _full_pa
     // `failed` is never cleared here: it is sticky across starts, so one check covers a batch.
     if handler.do_version_number && !read_version_line(handler) handler.failed = true;
 }
+
 consume_next_line :: (sp: *string) -> string, bool {
     if sp.count == 0 return "", false;
     n := 0;
@@ -67,6 +72,7 @@ consume_next_line :: (sp: *string) -> string, bool {
     sp.count -= consumed;
     return line, true;
 }
+
 consume_next_line :: (handler: *Text_File_Handler) -> line: string, found: bool {
     while handler.file_data.count > 0 {
         raw := consume_next_line(*handler.file_data);
@@ -76,22 +82,26 @@ consume_next_line :: (handler: *Text_File_Handler) -> line: string, found: bool 
     }
     return "", false;
 }
+
 break_by_spaces :: (line: string) -> left: string, right: string {
     line = String.trim_left(line);
     index := String.find_index_of_any_from_left(line, String.DEFAULT_SPACES);
     if index < 0 return line, "";
     return String.slice(line, 0, index), String.trim_left(String.slice(line, index, line.count - index));
 }
+
 error :: (handler: Text_File_Handler, format: string, args: ..Any, flags := Log_Flags.NONE, loc := #caller_location) {
     message := Basic.sprint(format, ..args);
     Basic.log_error("Line % of '%': %", handler.line_number, handler.full_path, message, flags = flags, loc = loc);
     Basic.free(message);
 }
+
 warn :: (handler: Text_File_Handler, format: string, args: ..Any, flags := Log_Flags.NONE, loc := #caller_location) {
     message := Basic.sprint(format, ..args);
     Basic.log_warning("Line % of '%': %", handler.line_number, handler.full_path, message, flags = flags, loc = loc);
     Basic.free(message);
 }
+
 file_to_array :: (filename: string, do_trim := true, skip_blank_lines := true, do_version_number := false, use_data_from_memory := false, data_from_memory := "", loc := #caller_location) -> success: bool, array: [..] string {
     handler: Text_File_Handler;
     handler.do_version_number = do_version_number;
@@ -112,6 +122,7 @@ file_to_array :: (filename: string, do_trim := true, skip_blank_lines := true, d
     deinit(*handler);
     return !handler.failed, array;
 }
+
 file_to_table :: (filename: string, do_trim := true, skip_blank_lines := true, do_version_number := false, use_data_from_memory := false, data_from_memory := "", loc := #caller_location) -> success: bool, table: Hash_Table.Table(string, void) {
     success, lines := file_to_array(filename, do_trim, skip_blank_lines, do_version_number, use_data_from_memory, data_from_memory, loc);
     table: Hash_Table.Table(string, void);
@@ -137,6 +148,7 @@ read_version_line :: (handler: *Text_File_Handler) -> bool {
     if parsed handler.version = number;
     return parsed;
 }
+
 // Trims a raw line and applies the comment and blank-line settings; `keep` is false when the
 // line should be skipped entirely.
 clean_line :: (handler: *Text_File_Handler, raw: string) -> text: string, keep: bool {

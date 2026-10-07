@@ -53,6 +53,7 @@ get_hash :: (x: $T, h := HASH_INIT) -> u32
     while info.type == .VARIANT info = (cast(*Type_Info_Variant) info).variant_of;
     return info.type == .INTEGER || info.type == .BOOL || info.type == .ENUM || info.type == .POINTER || info.type == .FLOAT;
 }
+
 {
     #if T == float32 || T == float64 {
         return sdbm_hash(*x, size_of(T), h);

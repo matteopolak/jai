@@ -1,4 +1,5 @@
 #import "Adpcm";
+
 witness :: () -> bool {
     state: ADPCM_State;
     if IMA_ADPCM_nibble(*state, 7) != 11 || state.index != 8 return false;
@@ -20,4 +21,5 @@ witness :: () -> bool {
     if IMA_ADPCM_decode(info, input, output) != 0 || output[0] != 123 return false;
     return true;
 }
+
 #assert(witness());

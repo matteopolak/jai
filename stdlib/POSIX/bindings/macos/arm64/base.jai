@@ -13,6 +13,7 @@ RTLD_MAIN_ONLY :: cast,trunc(*void) -5;
 __DARWIN_MAXNAMLEN :: 255;
 __DARWIN_MAXPATHLEN :: 1024;
 MAXNAMLEN :: __DARWIN_MAXNAMLEN;
+
 DT :: enum u8 {
     UNKNOWN :: 0;
     FIFO :: 1;
@@ -24,6 +25,7 @@ DT :: enum u8 {
     SOCK :: 12;
     WHT :: 14;
 }
+
 DIRBLKSIZ :: 1024;
 DTF_HIDEW :: 0x0001;
 DTF_NODUP :: 0x0002;
@@ -403,6 +405,7 @@ _CHOWN_OK :: 1 << 21;
 _ACCESS_EXTENDED_MASK :: _READ_OK | _WRITE_OK | _EXECUTE_OK | _DELETE_OK | _APPEND_OK | _RMFILE_OK | _REXT_OK | _WEXT_OK | _RATTR_OK | _WATTR_OK | _RPERM_OK | _WPERM_OK | _CHOWN_OK;
 ACCESSX_MAX_DESCRIPTORS :: 100;
 ACCESSX_MAX_TABLESIZE :: 16 * 1024;
+
 PC :: enum u32 {
     LINK_MAX :: 1;
     MAX_CANON :: 2;
@@ -432,6 +435,7 @@ PC :: enum u32 {
     XATTR_SIZE_BITS :: 26;
     MIN_HOLE_SIZE :: 27;
 }
+
 _CS_PATH :: 1;
 STDIN_FILENO :: 0;
 STDOUT_FILENO :: 1;
@@ -458,6 +462,7 @@ _XOPEN_REALTIME_THREADS :: -1;
 _XOPEN_SHM :: 1;
 _XOPEN_STREAMS :: -1;
 _XOPEN_UNIX :: 1;
+
 using _SC_definitions :: enum s32 {
     _SC_ARG_MAX :: 1;
     _SC_CHILD_MAX :: 2;
@@ -589,6 +594,7 @@ using _SC_definitions :: enum s32 {
     _SC_PASS_MAX :: 131;
     _SC_PHYS_PAGES :: 200;
 }
+
 _CS_POSIX_V6_ILP32_OFF32_CFLAGS :: 2;
 _CS_POSIX_V6_ILP32_OFF32_LDFLAGS :: 3;
 _CS_POSIX_V6_ILP32_OFF32_LIBS :: 4;
@@ -686,6 +692,7 @@ VOL_CAP_INT_SNAPSHOT :: 0x00020000;
 VOL_CAP_INT_RENAME_SWAP :: 0x00040000;
 VOL_CAP_INT_RENAME_EXCL :: 0x00080000;
 VOL_CAP_INT_RENAME_OPENFAIL :: 0x00100000;
+
 ATTR_CMN :: enum u32 {
     NAME :: 0x00000001;
     DEVID :: 0x00000002;
@@ -784,6 +791,7 @@ ATTR_CMN :: enum u32 {
     ATTR_CMN_NAMEDATTRCOUNT :: NAMEDATTRCOUNT;
     ATTR_CMN_NAMEDATTRLIST :: NAMEDATTRLIST;
 }
+
 ATTR_VOL :: enum {
     FSTYPE :: 0x00000001;
     SIGNATURE :: 0x00000002;
@@ -836,6 +844,7 @@ ATTR_VOL :: enum {
     ATTR_VOL_VALIDMASK :: VALIDMASK;
     ATTR_VOL_SETMASK :: SETMASK;
 }
+
 ATTR_DIR :: enum {
     LINKCOUNT :: 0x00000001;
     ENTRYCOUNT :: 0x00000002;
@@ -854,8 +863,10 @@ ATTR_DIR :: enum {
     ATTR_DIR_VALIDMASK :: VALIDMASK;
     ATTR_DIR_SETMASK :: SETMASK;
 }
+
 DIR_MNTSTATUS_MNTPOINT :: 0x00000001;
 DIR_MNTSTATUS_TRIGGER :: 0x00000002;
+
 ATTR_FILE :: enum {
     LINKCOUNT :: 0x00000001;
     TOTALSIZE :: 0x00000002;
@@ -892,6 +903,7 @@ ATTR_FILE :: enum {
     ATTR_FILE_DATAEXTENTS :: DATAEXTENTS;
     ATTR_FILE_RSRCEXTENTS :: RSRCEXTENTS;
 }
+
 ATTR_FORK :: enum {
     TOTALSIZE :: 0x00000001;
     ALLOCSIZE :: 0x00000002;
@@ -904,6 +916,7 @@ ATTR_FORK :: enum {
     ATTR_FORK_VALIDMASK :: VALIDMASK;
     ATTR_FORK_SETMASK :: SETMASK;
 }
+
 ATTR_BULK_REQUIRED :: (xx ATTR_CMN.NAME) | xx ATTR_CMN.RETURNED_ATTRS;
 SRCHFS_START :: 0x00000001;
 SRCHFS_MATCHPARTIALNAMES :: 0x00000002;
@@ -927,12 +940,14 @@ FREEREMAINDER :: 0x00000008;
 ALLOCATEFROMPEOF :: 0x00000010;
 ALLOCATEFROMVOL :: 0x00000020;
 VNOVAL :: -1;
+
 dl_info :: struct {
     dli_fname: *u8;
     dli_fbase: *void;
     dli_sname: *u8;
     dli_saddr: *void;
 }
+
 Dl_info :: dl_info;
 dladdr :: (unknown0: *void, unknown1: *Dl_info) -> s32 #foreign libc;
 dlclose :: (__handle: *void) -> s32 #foreign libc;
@@ -941,6 +956,7 @@ dlopen :: (__path: *u8, __mode: s32) -> *void #foreign libc;
 dlsym :: (__handle: *void, __symbol: *u8) -> *void #foreign libc;
 dlopen_preflight :: (__path: *u8) -> bool #foreign libc;
 ino_t :: u64;
+
 dirent :: struct {
     d_ino: u64;
     d_seekoff: u64;
@@ -949,7 +965,9 @@ dirent :: struct {
     d_type: DT;
     d_name: [1024] u8;
 }
+
 _telldir :: struct {}
+
 DIR :: struct {
     __dd_fd: s32;
     __dd_loc: s64;
@@ -962,6 +980,7 @@ DIR :: struct {
     __dd_lock: _opaque_pthread_mutex_t;
     __dd_td: *_telldir;
 }
+
 closedir :: (unknown0: *DIR) -> s32 #foreign libc;
 opendir :: (unknown0: *u8) -> *DIR #foreign libc;
 readdir :: (unknown0: *DIR) -> *dirent #foreign libc;
@@ -980,14 +999,17 @@ backtrace :: (unknown0: **void, unknown1: s32) -> s32 #foreign libc;
 backtrace_from_fp :: (startfp: *void, array: **void, size: s32) -> s32 #foreign libc;
 backtrace_symbols :: (unknown0: **void, unknown1: s32) -> **u8 #foreign libc;
 backtrace_symbols_fd :: (unknown0: **void, unknown1: s32, unknown2: s32) -> void #foreign libc;
+
 image_offset :: struct {
     uuid: uuid_t;
     offset: u32;
 }
+
 backtrace_image_offsets :: (array: **void, image_offsets: *image_offset, size: s32) -> void #foreign libc;
 fnmatch :: (unknown0: *u8, unknown1: *u8, unknown2: s32) -> s32 #foreign libc;
 gid_t :: u32;
 uid_t :: u32;
+
 passwd :: struct {
     pw_name: *u8;
     pw_passwd: *u8;
@@ -1000,6 +1022,7 @@ passwd :: struct {
     pw_shell: *u8;
     pw_expire: s64;
 }
+
 getpwuid :: (unknown0: uid_t) -> *passwd #foreign libc;
 getpwnam :: (unknown0: *u8) -> *passwd #foreign libc;
 getpwuid_r :: (unknown0: uid_t, unknown1: *passwd, unknown2: *u8, unknown3: u64, unknown4: **passwd) -> s32 #foreign libc;
@@ -1012,16 +1035,19 @@ user_from_uid :: (unknown0: uid_t, unknown1: s32) -> *u8 #foreign libc;
 getpwuuid :: (unknown0: *uuid_t) -> *passwd #foreign libc;
 getpwuuid_r :: (unknown0: *uuid_t, unknown1: *passwd, unknown2: *u8, unknown3: u64, unknown4: **passwd) -> s32 #foreign libc;
 sig_atomic_t :: s32;
+
 __darwin_arm_exception_state :: struct {
     __exception: u32;
     __fsr: u32;
     __far: u32;
 }
+
 __darwin_arm_exception_state64 :: struct {
     __far: u64;
     __esr: u32;
     __exception: u32;
 }
+
 __darwin_arm_thread_state :: struct {
     __r: [13] u32;
     __sp: u32;
@@ -1029,6 +1055,7 @@ __darwin_arm_thread_state :: struct {
     __pc: u32;
     __cpsr: u32;
 }
+
 __darwin_arm_thread_state64 :: struct {
     __x: [29] u64;
     __fp: u64;
@@ -1038,35 +1065,42 @@ __darwin_arm_thread_state64 :: struct {
     __cpsr: u32;
     __pad: u32;
 }
+
 __darwin_arm_vfp_state :: struct {
     __r: [64] u32;
     __fpscr: u32;
 }
+
 __darwin_arm_neon_state64 :: struct {
     __v: [32][16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
+
 __darwin_arm_neon_state :: struct {
     __v: [16][16] u8 #align 16; // __uint128_t registers
     __fpsr: u32;
     __fpcr: u32;
 }
+
 __darwin_arm_amx_state_v1 :: struct {
     __x: [8][64] u8;
     __y: [8][64] u8;
     __z: [64][64] u8;
     __amx_state_t_el1: u64;
 }
+
 __arm_pagein_state :: struct {
     __pagein_error: s32;
 }
+
 __arm_legacy_debug_state :: struct {
     __bvr: [16] u32;
     __bcr: [16] u32;
     __wvr: [16] u32;
     __wcr: [16] u32;
 }
+
 __darwin_arm_debug_state32 :: struct {
     __bvr: [16] u32;
     __bcr: [16] u32;
@@ -1074,6 +1108,7 @@ __darwin_arm_debug_state32 :: struct {
     __wcr: [16] u32;
     __mdscr_el1: u64;
 }
+
 __darwin_arm_debug_state64 :: struct {
     __bvr: [16] u64;
     __bcr: [16] u64;
@@ -1081,19 +1116,23 @@ __darwin_arm_debug_state64 :: struct {
     __wcr: [16] u64;
     __mdscr_el1: u64;
 }
+
 __darwin_arm_cpmu_state64 :: struct {
     __ctrs: [16] u64;
 }
+
 __darwin_mcontext64 :: struct {
     __es: __darwin_arm_exception_state64;
     __ss: __darwin_arm_thread_state64;
     __ns: __darwin_arm_neon_state64;
 }
+
 stack_t :: struct {
     ss_sp: *void;
     ss_size: u64;
     ss_flags: s32;
 }
+
 ucontext_t :: struct {
     uc_onstack: s32;
     uc_sigmask: u32;
@@ -1102,12 +1141,15 @@ ucontext_t :: struct {
     uc_mcsize: u64;
     uc_mcontext: *__darwin_mcontext64;
 }
+
 pid_t :: s32;
 sigset_t :: u32;
+
 sigval :: union {
     sival_int: s32;
     sival_ptr: *void;
 }
+
 sigevent :: struct {
     sigev_notify: s32;
     sigev_signo: s32;
@@ -1115,6 +1157,7 @@ sigevent :: struct {
     sigev_notify_function: #type (unknown0: sigval) -> void #c_call;
     sigev_notify_attributes: *pthread_attr_t;
 }
+
 __siginfo :: struct {
     si_signo: s32;
     si_errno: s32;
@@ -1127,28 +1170,35 @@ __siginfo :: struct {
     si_band: s64;
     __pad: [7] u64;
 }
+
 siginfo_t :: __siginfo;
+
 __sigaction_u :: union {
     sa_handler: #type (unknown0: s32) -> void #c_call;
     sa_sigaction: #type (unknown0: s32, unknown1: *__siginfo, unknown2: *void) -> void #c_call;
 }
+
 __sigaction :: struct {
     using __sigaction_u_: __sigaction_u;
     sa_tramp: #type (unknown0: *void, unknown1: s32, unknown2: s32, unknown3: *siginfo_t, unknown4: *void) -> void #c_call;
     sa_mask: sigset_t;
     sa_flags: s32;
 }
+
 sigaction_t :: struct {
     using __sigaction_u_: __sigaction_u;
     sa_mask: sigset_t;
     sa_flags: s32;
 }
+
 sig_t :: #type (unknown0: s32) -> void #c_call;
+
 sigvec :: struct {
     sv_handler: #type (unknown0: s32) -> void #c_call;
     sv_mask: s32;
     sv_flags: s32;
 }
+
 signal :: (unknown0: s32, unknown1: s32, unknown2: #type (unknown0: s32) -> void #c_call) -> ((unknown0: s32, unknown1: s32, unknown2: ((unknown0: s32) -> void #c_call)) -> void #c_call) #foreign libc;
 raise :: (unknown0: s32) -> s32 #foreign libc;
 bsd_signal :: (unknown0: s32, unknown1: s32, unknown2: #type (unknown0: s32) -> void #c_call) -> ((unknown0: s32, unknown1: s32, unknown2: ((unknown0: s32) -> void #c_call)) -> void #c_call) #foreign libc;
@@ -1177,6 +1227,7 @@ sigsetmask :: (unknown0: s32) -> s32 #foreign libc;
 sigvec_ :: (unknown0: s32, unknown1: *sigvec, unknown2: *sigvec) -> s32 #foreign libc "sigvec";
 mode_t :: u16;
 key_t :: s32;
+
 ipc_perm :: struct {
     uid: uid_t;
     gid: gid_t;
@@ -1186,6 +1237,7 @@ ipc_perm :: struct {
     _seq: u16;
     _key: key_t;
 }
+
 ftok :: (unknown0: *u8, unknown1: s32) -> key_t #foreign libc;
 mlockall :: (unknown0: s32) -> s32 #foreign libc;
 munlockall :: () -> s32 #foreign libc;
@@ -1201,15 +1253,18 @@ posix_madvise :: (unknown0: *void, unknown1: u64, unknown2: s32) -> s32 #foreign
 madvise :: (unknown0: *void, unknown1: u64, unknown2: s32) -> s32 #foreign libc;
 mincore :: (unknown0: *void, unknown1: u64, unknown2: *u8) -> s32 #foreign libc;
 minherit :: (unknown0: *void, unknown1: u64, unknown2: s32) -> s32 #foreign libc;
+
 pollfd :: struct {
     fd: s32;
     events: s16;
     revents: s16;
 }
+
 nfds_t :: u32;
 poll :: (unknown0: *pollfd, unknown1: nfds_t, unknown2: s32) -> s32 #foreign libc;
 time_t :: s64;
 shmatt_t :: u16;
+
 __shmid_ds_new :: struct {
     shm_perm: ipc_perm;
     shm_segsz: u64;
@@ -1221,28 +1276,35 @@ __shmid_ds_new :: struct {
     shm_ctime: time_t #align 4;
     shm_internal: *void #align 4;
 }
+
 shmsys :: (unknown0: s32, __args: ..Any) -> s32 #foreign libc;
 shmat :: (unknown0: s32, unknown1: *void, unknown2: s32) -> *void #foreign libc;
 shmctl :: (unknown0: s32, unknown1: s32, unknown2: *__shmid_ds_new) -> s32 #foreign libc;
 shmdt :: (unknown0: *void) -> s32 #foreign libc;
 shmget :: (unknown0: key_t, unknown1: u64, unknown2: s32) -> s32 #foreign libc;
+
 timespec :: struct {
     tv_sec: s64;
     tv_nsec: s64;
 }
+
 timeval :: struct {
     tv_sec: s64;
     tv_usec: s32;
 }
+
 suseconds_t :: s32;
+
 itimerval :: struct {
     it_interval: timeval;
     it_value: timeval;
 }
+
 timezone :: struct {
     tz_minuteswest: s32;
     tz_dsttime: s32;
 }
+
 clockinfo :: struct {
     hz: s32;
     tick: s32;
@@ -1250,7 +1312,9 @@ clockinfo :: struct {
     stathz: s32;
     profhz: s32;
 }
+
 clock_t :: u64;
+
 tm :: struct {
     tm_sec: s32;
     tm_min: s32;
@@ -1264,6 +1328,7 @@ tm :: struct {
     tm_gmtoff: s64;
     tm_zone: *u8;
 }
+
 tzname: **u8 #elsewhere libc;
 getdate_err: s32 #elsewhere libc;
 daylight: s32 #elsewhere libc;
@@ -1289,6 +1354,7 @@ time2posix :: (unknown0: time_t) -> time_t #foreign libc;
 timelocal :: (unknown0: *tm) -> time_t #foreign libc;
 timegm :: (unknown0: *tm) -> time_t #foreign libc;
 nanosleep :: (__rqtp: *timespec, __rmtp: *timespec) -> s32 #foreign libc;
+
 clockid_t :: enum u32 {
     REALTIME :: 0;
     MONOTONIC :: 6;
@@ -1307,6 +1373,7 @@ clockid_t :: enum u32 {
     _CLOCK_PROCESS_CPUTIME_ID :: PROCESS_CPUTIME_ID;
     _CLOCK_THREAD_CPUTIME_ID :: THREAD_CPUTIME_ID;
 }
+
 clock_getres :: (__clock_id: clockid_t, __res: *timespec) -> s32 #foreign libc;
 clock_gettime :: (__clock_id: clockid_t, __tp: *timespec) -> s32 #foreign libc;
 clock_gettime_nsec_np :: (__clock_id: clockid_t) -> u64 #foreign libc;
@@ -1327,6 +1394,7 @@ blksize_t :: s32;
 nlink_t :: u16;
 segsz_t :: s32;
 useconds_t :: u32;
+
 utsname :: struct {
     sysname: [256] u8;
     nodename: [256] u8;
@@ -1334,7 +1402,9 @@ utsname :: struct {
     version: [256] u8;
     machine: [256] u8;
 }
+
 uname :: (unknown0: *utsname) -> s32 #foreign libc;
+
 idtype_t :: enum u32 {
     ALL :: 0;
     PID :: 1;
@@ -1343,6 +1413,7 @@ idtype_t :: enum u32 {
     P_PID :: PID;
     P_PGID :: PGID;
 }
+
 wait_t :: union {
     w_status: s32;
     w_T: struct {
@@ -1352,16 +1423,19 @@ wait_t :: union {
         __bitfield: u32;
     };
 }
+
 wait :: (unknown0: *s32) -> pid_t #foreign libc;
 waitpid :: (unknown0: pid_t, unknown1: *s32, unknown2: s32) -> pid_t #foreign libc;
 waitid :: (unknown0: idtype_t, unknown1: id_t, unknown2: *siginfo_t, unknown3: s32) -> s32 #foreign libc;
 wait3 :: (unknown0: *s32, unknown1: s32, unknown2: *rusage) -> pid_t #foreign libc;
 wait4 :: (unknown0: pid_t, unknown1: *s32, unknown2: s32, unknown3: *rusage) -> pid_t #foreign libc;
+
 accessx_descriptor :: struct {
     ad_name_offset: u32;
     ad_flags: s32;
     ad_pad: [2] s32;
 }
+
 getattrlistbulk :: (unknown0: s32, unknown1: *void, unknown2: *void, unknown3: u64, unknown4: u64) -> s32 #foreign libc;
 getattrlistat :: (unknown0: s32, unknown1: *u8, unknown2: *void, unknown3: *void, unknown4: u64, unknown5: u64) -> s32 #foreign libc;
 setattrlistat :: (unknown0: s32, unknown1: *u8, unknown2: *void, unknown3: *void, unknown4: u64, unknown5: u32) -> s32 #foreign libc;
@@ -1521,6 +1595,7 @@ fsobj_tag_t :: u32;
 fsfile_type_t :: u32;
 fsvolid_t :: u32;
 attrgroup_t :: u32;
+
 attrlist :: struct {
     bitmapcount: u16;
     reserved: u16;
@@ -1530,6 +1605,7 @@ attrlist :: struct {
     fileattr: attrgroup_t;
     forkattr: attrgroup_t;
 }
+
 attribute_set :: struct {
     commonattr: ATTR_CMN;
     volattr: attrgroup_t;
@@ -1537,28 +1613,38 @@ attribute_set :: struct {
     fileattr: attrgroup_t;
     forkattr: attrgroup_t;
 }
+
 attribute_set_t :: attribute_set;
+
 attrreference :: struct {
     attr_dataoffset: s32;
     attr_length: u32;
 }
+
 attrreference_t :: attrreference;
+
 diskextent :: struct {
     startblock: u32;
     blockcount: u32;
 }
+
 extentrecord :: [8] diskextent;
 vol_capabilities_set_t :: [4] u32;
+
 vol_capabilities_attr :: struct {
     capabilities: vol_capabilities_set_t;
     valid: vol_capabilities_set_t;
 }
+
 vol_capabilities_attr_t :: vol_capabilities_attr;
+
 vol_attributes_attr :: struct {
     validattr: attribute_set_t;
     nativeattr: attribute_set_t;
 }
+
 vol_attributes_attr_t :: vol_attributes_attr;
+
 fssearchblock :: struct {
     returnattrs: *attrlist;
     returnbuffer: *void;
@@ -1571,15 +1657,18 @@ fssearchblock :: struct {
     sizeofsearchparams2: u64;
     searchattrs: attrlist;
 }
+
 searchstate :: struct {
     ss_union_flags: u32;
     ss_union_layer: u32;
     ss_fsstate: [548] u8;
 }
+
 iovec :: struct {
     iov_base: *void;
     iov_len: u64;
 }
+
 vtype :: enum u32 {
     NON :: 0;
     REG :: 1;
@@ -1604,6 +1693,7 @@ vtype :: enum u32 {
     VSTR :: STR;
     VCPLX :: CPLX;
 }
+
 vtagtype :: enum u32 {
     NON :: 0;
     UFS :: 1;
@@ -1662,5 +1752,6 @@ vtagtype :: enum u32 {
     VT_LOCKERFS :: LOCKERFS;
     VT_BINDFS :: BINDFS;
 }
+
 #scope_file
 libc :: #system_library "libc";

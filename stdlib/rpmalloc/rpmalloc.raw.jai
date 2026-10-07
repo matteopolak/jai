@@ -11,11 +11,13 @@ uint32_t :: u32;
 atomic32_t :: s32;
 atomic64_t :: s64;
 atomicptr_t :: *void;
+
 #if OS == .WINDOWS {
     PLATFORM_WINDOWS :: true;
 } else {
     PLATFORM_WINDOWS :: false;
 }
+
 #if ENABLE_ADAPTIVE_THREAD_CACHE || ENABLE_STATISTICS {
     span_use_t :: struct {
 
@@ -42,6 +44,7 @@ atomicptr_t :: *void;
         }
     }
 }
+
 #if ENABLE_STATISTICS {
     size_class_use_t :: struct {
 
@@ -67,6 +70,7 @@ atomicptr_t :: *void;
         unused: int32_t;
     }
 }
+
 // Independent declaration normalization; see docs/stdlib/native-bindings.md.
 RPMALLOC_FIRST_CLASS_HEAPS :: FIRST_CLASS_HEAPS;
 
@@ -523,6 +527,7 @@ usable_size :: rpmalloc_usable_size;
 thread_statistics :: rpmalloc_thread_statistics;
 global_statistics :: rpmalloc_global_statistics;
 dump_statistics :: rpmalloc_dump_statistics;
+
 #if RPMALLOC_FIRST_CLASS_HEAPS {
     heap_acquire :: rpmalloc_heap_acquire;
     heap_release :: rpmalloc_heap_release;

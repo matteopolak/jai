@@ -13,8 +13,10 @@ init_core_graphics_runtime_constants :: () {
     ];
     for by_key it.* = CGWindowLevelForKey(cast(CGWindowLevelKey) it_index);
 }
+
 #scope_file
 KEY_COUNT :: cast(s64) CGWindowLevelKey.kCGNumberOfWindowLevelKeys;
+
 #scope_export
 using CGWindowLevelKey :: enum s32 {
     kCGBaseWindowLevelKey :: 0;
@@ -40,6 +42,7 @@ using CGWindowLevelKey :: enum s32 {
     kCGAssistiveTechHighWindowLevelKey;
     kCGNumberOfWindowLevelKeys;
 }
+
 CGWindowLevelForKey :: (key: CGWindowLevelKey) -> CGWindowLevel #foreign CoreGraphics;
 CGWindowLevel :: s32;
 kCGBaseWindowLevel: CGWindowLevel;

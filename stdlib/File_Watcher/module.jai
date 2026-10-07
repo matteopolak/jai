@@ -9,6 +9,7 @@ File_Change :: struct {
     events: File_Change_Event;
     time_of_last_change := 0.0;
 }
+
 File_Change_Event :: enum_flags {
     ADDED;
     MODIFIED;
@@ -20,6 +21,7 @@ File_Change_Event :: enum_flags {
     SCAN_CHILDREN;
     ALL_EVENTS :: ADDED | MODIFIED | MOVED | ATTRIBUTES_CHANGED | REMOVED;
 }
+
 DEFAULT_BUFFER_SIZE :: 8000;
 
 File_Watcher :: struct(User_Data: Type = void) {
@@ -194,20 +196,24 @@ Snapshot_Entry :: struct {
     modtime: Apollo_Time;
     size: s64;
 }
+
 Directory_Info :: struct {
     path: string;
     handle: *void;
 }
+
 owned_path :: (path: string, allocator: Allocator) -> string {
     bytes := cast(*u8) alloc(path.count, allocator);
     if path.count > 0 memcpy(bytes, path.data, path.count);
     return .{ path.count, bytes };
 }
+
 release_snapshot :: (entries: *[..] Snapshot_Entry, allocator: Allocator) {
     for entry: entries.* free(entry.path, allocator);
     array_free(entries.*);
     entries.* = .{};
 }
+
 scan_directory :: (path: string, recursive: bool, entries: *[..] Snapshot_Entry) -> bool {
     state: Scan_State = .{ entries, entries.allocator, false };
     visitor :: (info: *Files.File_Visit_Info, state: *Scan_State) {
@@ -222,6 +228,7 @@ scan_directory :: (path: string, recursive: bool, entries: *[..] Snapshot_Entry)
     ok := Files.visit_files(path, recursive, *state, visitor, true, true, true, false);
     return ok && !state.failed;
 }
+
 Scan_State :: struct {
     entries: *[..] Snapshot_Entry;
     allocator: Allocator;

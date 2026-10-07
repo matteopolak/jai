@@ -1,6 +1,8 @@
 // Explicit legacy namespace: stable-address storage with two-part locators.
 #scope_file;
+
 #import "Basic";
+
 #scope_export;
 
 Bucket_Array :: struct(type: Type, items_per_bucket: int, always_iterate_by_pointer := false) {

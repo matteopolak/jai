@@ -6,9 +6,11 @@ __PTHREAD_MUTEX_HAVE_PREV :: 1;
 __have_pthread_attr_t :: 1;
 PTHREAD_ONCE_INIT :: 0;
 PTHREAD_BARRIER_SERIAL_THREAD :: -1;
+
 sched_param :: struct {
     sched_priority: s32;
 }
+
 sched_setparam :: (__pid: pid_t, __param: *sched_param) -> s32 #foreign libpthread;
 sched_getparam :: (__pid: pid_t, __param: *sched_param) -> s32 #foreign libpthread;
 sched_setscheduler :: (__pid: pid_t, __policy: s32, __param: *sched_param) -> s32 #foreign libpthread;
@@ -17,6 +19,7 @@ sched_yield :: () -> s32 #foreign libpthread;
 sched_get_priority_max :: (__algorithm: s32) -> s32 #foreign libpthread;
 sched_get_priority_min :: (__algorithm: s32) -> s32 #foreign libpthread;
 sched_rr_get_interval :: (__pid: pid_t, __t: *timespec) -> s32 #foreign libpthread;
+
 __pthread_rwlock_arch_t :: struct {
     __readers: u32;
     __writers: u32;
@@ -31,11 +34,14 @@ __pthread_rwlock_arch_t :: struct {
     __pad2: u64;
     __flags: u32;
 }
+
 __pthread_internal_list :: struct {
     __prev: *__pthread_internal_list;
     __next: *__pthread_internal_list;
 }
+
 __pthread_list_t :: __pthread_internal_list;
+
 __pthread_mutex_s :: struct {
     __lock: s32;
     __count: u32;
@@ -46,6 +52,7 @@ __pthread_mutex_s :: struct {
     __elision: s16;
     __list: __pthread_list_t;
 }
+
 __pthread_cond_s :: struct {
     union {
         __wseq: u64;
@@ -67,56 +74,71 @@ __pthread_cond_s :: struct {
     __wrefs: u32;
     __g_signals: [2] u32;
 }
+
 pthread_t :: u64;
+
 pthread_mutexattr_t :: union {
     __size: [4] u8;
     __align: s32;
 }
+
 pthread_condattr_t :: union {
     __size: [4] u8;
     __align: s32;
 }
+
 pthread_key_t :: u32;
 pthread_once_t :: s32;
+
 pthread_attr_t :: union {
     __size: [56] u8;
     __align: s64;
 }
+
 pthread_mutex_t :: union {
     __data: __pthread_mutex_s;
     __size: [40] u8;
     __align: s64;
 }
+
 pthread_cond_t :: union {
     __data: __pthread_cond_s;
     __size: [48] u8;
     __align: s64;
 }
+
 pthread_rwlock_t :: union {
     __data: __pthread_rwlock_arch_t;
     __size: [56] u8;
     __align: s64;
 }
+
 pthread_rwlockattr_t :: union {
     __size: [8] u8;
     __align: s64;
 }
+
 pthread_spinlock_t :: s32;
+
 pthread_barrier_t :: union {
     __size: [32] u8;
     __align: s64;
 }
+
 pthread_barrierattr_t :: union {
     __size: [4] u8;
     __align: s32;
 }
+
 __jmp_buf :: [8] s64;
+
 PTHREAD_CREATE :: enum u32 {
     JOINABLE :: 0;
     DETACHED :: 1;
     PTHREAD_CREATE_JOINABLE :: JOINABLE;
     PTHREAD_CREATE_DETACHED :: DETACHED;
 }
+
 PTHREAD_MUTEX :: enum u32 {
     TIMED_NP :: 0;
     RECURSIVE_NP :: 1;
@@ -135,6 +157,7 @@ PTHREAD_MUTEX :: enum u32 {
     PTHREAD_MUTEX_ERRORCHECK :: ERRORCHECK;
     PTHREAD_MUTEX_DEFAULT :: DEFAULT;
 }
+
 PTHREAD_MUTEX_1 :: enum u32 {
     STALLED :: 0;
     STALLED_NP :: 0;
@@ -145,6 +168,7 @@ PTHREAD_MUTEX_1 :: enum u32 {
     PTHREAD_MUTEX_ROBUST :: ROBUST;
     PTHREAD_MUTEX_ROBUST_NP :: ROBUST_NP;
 }
+
 PTHREAD_PRIO :: enum u32 {
     NONE :: 0;
     INHERIT :: 1;
@@ -153,6 +177,7 @@ PTHREAD_PRIO :: enum u32 {
     PTHREAD_PRIO_INHERIT :: INHERIT;
     PTHREAD_PRIO_PROTECT :: PROTECT;
 }
+
 PTHREAD_RWLOCK :: enum u32 {
     PREFER_READER_NP :: 0;
     PREFER_WRITER_NP :: 1;
@@ -163,42 +188,49 @@ PTHREAD_RWLOCK :: enum u32 {
     PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP :: PREFER_WRITER_NONRECURSIVE_NP;
     PTHREAD_RWLOCK_DEFAULT_NP :: DEFAULT_NP;
 }
+
 PTHREAD :: enum u32 {
     INHERIT_SCHED :: 0;
     EXPLICIT_SCHED :: 1;
     PTHREAD_INHERIT_SCHED :: INHERIT_SCHED;
     PTHREAD_EXPLICIT_SCHED :: EXPLICIT_SCHED;
 }
+
 PTHREAD_SCOPE :: enum u32 {
     SYSTEM :: 0;
     PROCESS :: 1;
     PTHREAD_SCOPE_SYSTEM :: SYSTEM;
     PTHREAD_SCOPE_PROCESS :: PROCESS;
 }
+
 PTHREAD_PROCESS :: enum u32 {
     PRIVATE :: 0;
     SHARED :: 1;
     PTHREAD_PROCESS_PRIVATE :: PRIVATE;
     PTHREAD_PROCESS_SHARED :: SHARED;
 }
+
 _pthread_cleanup_buffer :: struct {
     __routine: #type (unknown0: *void) -> void #c_call;
     __arg: *void;
     __canceltype: s32;
     __prev: *_pthread_cleanup_buffer;
 }
+
 PTHREAD_CANCEL :: enum u32 {
     ENABLE :: 0;
     DISABLE :: 1;
     PTHREAD_CANCEL_ENABLE :: ENABLE;
     PTHREAD_CANCEL_DISABLE :: DISABLE;
 }
+
 PTHREAD_CANCEL_1 :: enum u32 {
     DEFERRED :: 0;
     ASYNCHRONOUS :: 1;
     PTHREAD_CANCEL_DEFERRED :: DEFERRED;
     PTHREAD_CANCEL_ASYNCHRONOUS :: ASYNCHRONOUS;
 }
+
 pthread_create :: (__newthread: *pthread_t, __attr: *pthread_attr_t, __start_routine: #type (unknown0: *void) -> *void #c_call, __arg: *void) -> s32 #foreign libpthread;
 pthread_exit :: (__retval: *void) -> void #foreign libpthread;
 pthread_join :: (__th: pthread_t, __thread_return: **void) -> s32 #foreign libpthread;
@@ -233,6 +265,7 @@ pthread_setcancelstate :: (__state: s32, __oldstate: *s32) -> s32 #foreign libpt
 pthread_setcanceltype :: (__type: s32, __oldtype: *s32) -> s32 #foreign libpthread;
 pthread_cancel :: (__th: pthread_t) -> s32 #foreign libpthread;
 pthread_testcancel :: () -> void #foreign libpthread;
+
 __pthread_unwind_buf_t :: struct {
     __cancel_jmp_buf: [1] struct {
         __cancel_jmp_buf: __jmp_buf;
@@ -240,12 +273,14 @@ __pthread_unwind_buf_t :: struct {
     };
     __pad: [4] *void;
 }
+
 __pthread_cleanup_frame :: struct {
     __cancel_routine: #type (unknown0: *void) -> void #c_call;
     __cancel_arg: *void;
     __do_it: s32;
     __cancel_type: s32;
 }
+
 __pthread_register_cancel :: (__buf: *__pthread_unwind_buf_t) -> void #foreign libpthread;
 __pthread_unregister_cancel :: (__buf: *__pthread_unwind_buf_t) -> void #foreign libpthread;
 __pthread_unwind_next :: (__buf: *__pthread_unwind_buf_t) -> void #foreign libpthread;
@@ -315,14 +350,17 @@ pthread_key_delete :: (__key: pthread_key_t) -> s32 #foreign libpthread;
 pthread_getspecific :: (__key: pthread_key_t) -> *void #foreign libpthread;
 pthread_setspecific :: (__key: pthread_key_t, __pointer: *void) -> s32 #foreign libpthread;
 pthread_getcpuclockid :: (__thread_id: pthread_t, __clock_id: *__clockid_t) -> s32 #foreign libpthread;
+
 __sigset_t :: struct {
     __val: [16] u64;
 }
+
 __jmp_buf_tag :: struct {
     __jmpbuf: __jmp_buf;
     __mask_was_saved: s32;
     __saved_mask: __sigset_t;
 }
+
 jmp_buf :: [1] __jmp_buf_tag;
 setjmp :: (__env: *jmp_buf) -> s32 #foreign libpthread;
 _setjmp :: (__env: *[1] __jmp_buf_tag) -> s32 #foreign libpthread;

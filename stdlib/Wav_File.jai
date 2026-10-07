@@ -25,16 +25,19 @@ Wav_Format :: struct {
     nBlockAlign: int;
     nSamplesPerSec: int;
 }
+
 Wav_Extra :: struct {
     wSamplesPerBlock: int;
     wSamplesAccordingToFactChunk: int;
 }
+
 Wav_File :: struct {
     format: Wav_Format;
     samples: string;
     extra: Wav_Extra;
     success: bool;
 }
+
 get_wav_header :: (file_data: string) -> Wav_Format, string, bool, Wav_Extra {
     buffer := file_data;
     original, samples, success, original_extra := get_waveformatex_header(buffer);
@@ -48,11 +51,13 @@ get_wav_header :: (file_data: string) -> Wav_Format, string, bool, Wav_Extra {
     extra.wSamplesAccordingToFactChunk = original_extra.wSamplesAccordingToFactChunk;
     return format, samples, success, extra;
 }
+
 load_wav_file :: (buffer: string) -> Wav_File {
     result: Wav_File;
     result.format, result.samples, result.success, result.extra = get_wav_header(buffer);
     return result;
 }
+
 get_waveformatex_header :: (file_data: string) -> (format: Waveformatex, samples: string, success: bool = false, extra: Wave_Extra_Info) {
     format: Waveformatex;
     samples: string;
@@ -114,9 +119,11 @@ get_waveformatex_header :: (file_data: string) -> (format: Waveformatex, samples
 wav_u16 :: (p: *u8) -> u16 {
     return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
 }
+
 wav_u32 :: (p: *u8) -> u32 {
     return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }
+
 wav_id :: (data: string, offset: s64, id: string) -> bool {
     if offset < 0 || offset > data.count - 4 return false;
     for i: 0..3 if data.data[offset + i] != id.data[i] return false;

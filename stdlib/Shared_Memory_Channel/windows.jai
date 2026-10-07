@@ -1,5 +1,6 @@
 #load "../File/windows-encoding.jai";
 Utf8 :: #import "Windows_Utf8";
+
 HEADER_OS_MAGIC :: "ShmW";
 
 reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel) {
@@ -20,6 +21,7 @@ reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: boo
     result.os_specific.mapping = mapping;
     return true, result;
 }
+
 reader_release_channel :: (channel: *Read_Channel) -> bool {
     if !channel || !channel.header return false;
     if A.atomic_read(*channel.header.reader_status) == .ACTIVELY_READING || A.atomic_read(*channel.header.writer_status) != .DISCONNECTED return false;
@@ -33,6 +35,7 @@ reader_release_channel :: (channel: *Read_Channel) -> bool {
     channel.* = .{};
     return success;
 }
+
 writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel) {
     result: Write_Channel;
     mapping := Windows.OpenFileMappingW(0xf001f, 0, os_utf8_to_wide(name));
@@ -76,6 +79,7 @@ writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: 
     result.os_specific.mapping = mapping;
     return true, result;
 }
+
 writer_disconnect :: (channel: *Write_Channel) -> bool {
     if !channel || !channel.header || channel.reserved_offset >= 0 return false;
     A.atomic_write(*channel.header.writer_status, .DISCONNECTED);

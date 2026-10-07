@@ -153,6 +153,7 @@ Color_Picker_State :: struct #type_info_none {
     original_rgb_color: Vector3;
     stashed_colors: [..] Vector3;
 }
+
 Color_Animation_Editor_State :: struct #type_info_none {
     #as using widget: Active_Widget;
     ring_point := Vector2.{ 1, 0 };

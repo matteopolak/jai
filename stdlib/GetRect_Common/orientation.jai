@@ -22,6 +22,7 @@ right_divider_rects :: (r: Rect, horizontal: bool, fraction: float, thickness: f
     }
     return first, divider, second;
 }
+
 right_scroll_nib :: (bar: Rect, vertical: bool, viewport: float, content: float, scroll: float, minimum: float) -> Rect {
     track := right_float_max(ifx vertical then bar.h else bar.w, 0.0);
     breadth := right_float_max(ifx vertical then bar.w else bar.h, 0.0);
@@ -38,12 +39,14 @@ right_scroll_nib :: (bar: Rect, vertical: bool, viewport: float, content: float,
     }
     return result;
 }
+
 right_scroll_fraction :: (bar: Rect, vertical: bool, nib_size: float, position: float) -> float {
     travel := right_float_max((ifx vertical then bar.h else bar.w) - nib_size, 0.0);
     if travel <= 0 return 0;
     along := ifx vertical then bar.y + bar.h - position - nib_size / 2 else position - bar.x - nib_size / 2;
     return right_float_clamp(along / travel, 0.0, 1.0);
 }
+
 right_subwindow_rects :: (full: Rect, title_height: float, mx: float, my: float) -> Rect, Rect {
     title := full;
     title.h = right_float_clamp(title_height, 0.0, right_float_max(full.h, 0.0));
@@ -51,6 +54,7 @@ right_subwindow_rects :: (full: Rect, title_height: float, mx: float, my: float)
     content := Rect.{ full.x + mx, full.y + my, right_float_max(full.w - 2 * mx, 0.0), right_float_max(full.h - title.h - 2 * my, 0.0) };
     return title, content;
 }
+
 right_resize_edges :: (r: Rect, delta: Vector2, west: bool, east: bool, north: bool, south: bool, min_width: float, min_height: float) -> Rect {
     left := r.x;
     right := r.x + r.w;
@@ -62,18 +66,22 @@ right_resize_edges :: (r: Rect, delta: Vector2, west: bool, east: bool, north: b
     if north top = right_float_max(top + delta.y, bottom + min_height);
     return .{ left, bottom, right_float_max(right - left, 0.0), right_float_max(top - bottom, 0.0) };
 }
+
 right_content_bottom :: (full: Rect, new_y: float, margin: float, title_height: float) -> Rect {
     top := full.y + full.h;
     bottom := right_float_min(new_y - margin, top - title_height);
     return .{ full.x, bottom, full.w, right_float_max(top - bottom, 0.0) };
 }
+
 right_flow_line_y :: (content: Rect, offset: float, stride: float, index: int) -> float {
     return content.y + content.h + offset - cast(float) (index + 1) * stride;
 }
+
 right_flow_line_index :: (content: Rect, offset: float, stride: float, y: float, count: int) -> int {
     if count <= 0 || stride <= 0 return 0;
     return right_int_clamp(cast(int) floor((content.y + content.h + offset - y) / stride), 0, count - 1);
 }
+
 right_sv_point :: (r: Rect, normalized: Vector2, warp: bool) -> Vector2 {
     if warp {
         radius := right_float_min(r.w, r.h) / 2;
@@ -81,6 +89,7 @@ right_sv_point :: (r: Rect, normalized: Vector2, warp: bool) -> Vector2 {
     }
     return xy(r.x + (normalized.x + 1) * r.w / 2, r.y + (1 - normalized.y) * r.h / 2);
 }
+
 right_sv_normalized :: (r: Rect, point: Vector2, warp: bool) -> Vector2 {
     if warp {
         radius := right_float_min(r.w, r.h) / 2;
@@ -95,15 +104,18 @@ right_float_min :: (a: float, b: float) -> float {
     if a < b return a;
     return b;
 }
+
 right_float_max :: (a: float, b: float) -> float {
     if a > b return a;
     return b;
 }
+
 right_float_clamp :: (value: float, low: float, high: float) -> float {
     if value < low return low;
     if value > high return high;
     return value;
 }
+
 right_int_clamp :: (value: int, low: int, high: int) -> int {
     if value < low return low;
     if value > high return high;

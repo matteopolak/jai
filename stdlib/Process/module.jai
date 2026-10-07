@@ -7,6 +7,7 @@ Process_Argument_Quoting :: enum {
     QUOTE_IF_NEEDED :: 0;
     NEVER_QUOTE :: 1;
 }
+
 Process_Result_Type :: enum s32 {
     UNSTARTED;
     STILL_RUNNING;
@@ -14,11 +15,13 @@ Process_Result_Type :: enum s32 {
     EXITED;
     SIGNALED;
 }
+
 Process_Result :: struct {
     type: Process_Result_Type;
     exit_code: s32;
     signal: s32;
 }
+
 Run_Command_Result :: struct {
     exit_code: s64;
     standard_output: string;
@@ -198,6 +201,7 @@ append_quoted :: (builder: *String_Builder, s: string) {
 thread_is_done :: () -> bool {
     return Atomics.atomic_read(*active_command_count) == 0;
 }
+
 shutdown :: () {
     // Every synchronous runner releases its own descriptors before this wait ends.
     while !thread_is_done() sleep_milliseconds(1);
@@ -205,15 +209,18 @@ shutdown :: () {
 
 #scope_module
 active_command_count: s64;
+
 // Closes the parent's ends of the child's stdin, stdout and stderr pipes (any not yet closed).
 close_pipe_ends :: (process: *Process) {
     deinit(*process.error);
     deinit(*process.output);
     deinit(*process.input);
 }
+
 command_space :: (byte: u8) -> bool {
     return byte == 32 || byte == 9 || byte == 10 || byte == 13;
 }
+
 remaining_time :: (start: s64, timeout: int) -> int {
     if timeout < 0 return -1;
     elapsed := max(0, process_monotonic_ms() - start);

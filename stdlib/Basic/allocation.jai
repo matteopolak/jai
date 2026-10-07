@@ -134,9 +134,11 @@ align_forward :: (orig_size: s64, alignment: s64) -> s64 {
 talloc :: inline (size: s64) -> *void {
     return temporary_allocator_proc(.ALLOCATE, size, 0, null, null);
 }
+
 temporary_alloc :: inline (size: s64) -> *void {
     return talloc(size);
 }
+
 temp :: Allocator.{ temporary_allocator_proc, null };
 __temporary_allocator :: temp;
 temporary_allocator :: temp;
@@ -268,6 +270,7 @@ Temporary_Page :: struct {
     allocator: Allocator;
     size: s64;
 }
+
 Temporary_Arena :: struct {
     current_page_bytes_occupied: s64;
     overflow_allocator: Allocator;
@@ -275,6 +278,7 @@ Temporary_Arena :: struct {
     original_data: *u8;
     original_size: s64;
 }
+
 #assert size_of(Temporary_Arena) <= size_of(type_of(Temporary_Storage.implementation_data));
 
 temporary_arena :: (ts: *Temporary_Storage) -> *Temporary_Arena {

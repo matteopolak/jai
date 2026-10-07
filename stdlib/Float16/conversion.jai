@@ -2,6 +2,7 @@
 Float16 :: #type,isa u16;
 float32_to_float16 :: float_to_half_fast3;
 float16_to_float32 :: half_to_float_fast4;
+
 float_to_half_fast3 :: (_f: float32) -> Float16 {
     bits := float32_bits(_f);
     sign := cast(u16) ((bits >> 16) & 0x8000);
@@ -35,6 +36,7 @@ float_to_half_fast3 :: (_f: float32) -> Float16 {
     }
     return cast(Float16) (sign | (cast(u16) (half_exponent << 10)) | cast(u16) retained);
 }
+
 half_to_float_fast4 :: (h: Float16) -> float32 {
     return half_to_float(cast(u16) h);
 }

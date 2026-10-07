@@ -1,11 +1,13 @@
 // Debug API: backtraces, breakpoints, assert and signal handlers. Runtime operations call host APIs.
 #module_parameters(USE_GRAPHICS := true);
 CRASH_HANDLER_USE_SEPARATE_THREAD :: false;
+
 Assert_Response :: enum {
     Ignore;
     Debug;
     Abort;
 }
+
 Exit_Code :: enum s32 {
     Success :: 0;
     Failure :: 1;
@@ -13,11 +15,13 @@ Exit_Code :: enum s32 {
     Assert :: 3;
     Exception :: 4;
 }
+
 Minidump_State :: enum {
     None;
     Mini;
     Full;
 }
+
 Crash_Handler :: #type (trace: [] string);
 crash_handler: Crash_Handler;
 ignored_asserts: Table(Source_Code_Location, bool, hash_scl, compare_scl);
@@ -33,6 +37,7 @@ hash_scl :: (loc: Source_Code_Location) -> u32 {
     }
     return hash;
 }
+
 compare_scl :: (a: Source_Code_Location, b: Source_Code_Location) -> bool {
     if a.line_number != b.line_number || a.character_number != b.character_number return false;
     return a.fully_pathed_filename == b.fully_pathed_filename;
@@ -49,9 +54,11 @@ init :: () {
     }
     if context.logger == base.logger context.logger = logger;
 }
+
 backtrace :: (trace: [] *void, skip := 0) -> int {
     return backtrace(trace, trace.count, skip + 1);
 }
+
 backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {
     #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
         frames: [256] *void;
@@ -69,6 +76,7 @@ backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {
         #assert false "Native stack capture is not implemented for this target";
     }
 }
+
 backtrace_symbols :: (trace: [] *void, n: int) -> [] string {
     if n < 0 n = 0;
     if n > trace.count n = trace.count;
@@ -84,14 +92,17 @@ backtrace_symbols :: (trace: [] *void, n: int) -> [] string {
     host_free(symbols);
     return result;
 }
+
 translate_symbols :: (trace: [] *void, n: int) -> [] string {
     return backtrace_symbols(trace, n);
 }
+
 backtrace :: (skip := 0) -> [] string {
     addresses: [64] *void;
     found := backtrace(addresses, addresses.count, skip + 1);
     return translate_symbols(addresses, found);
 }
+
 free_backtrace :: (trace_symbols: [] string) {
     for text: trace_symbols free(text.data);
     free(trace_symbols.data);
@@ -106,11 +117,13 @@ break_once :: inline (loc := #caller_location) -> bool {
     if stopped table_set(*ignored_asserts, loc, true);
     return stopped;
 }
+
 breakpoint :: () -> bool #expand #no_debug {
     if !is_debugger_present() return false;
     debug_break();
     return true;
 }
+
 is_debugger_present :: inline () -> bool {
     #if OS == .WINDOWS {
         return Windows.IsDebuggerPresent() != 0;
@@ -142,25 +155,32 @@ is_debugger_present :: inline () -> bool {
         #assert false "Debugger detection requires a host adapter";
     }
 }
+
 attach_to_debugger :: () -> bool {
     // Return actual attachment state. Launching an external debugger is a separate unsupported capability.
     return is_debugger_present();
 }
+
 output :: (text: string) {
     write_string(text, true);
 }
+
 abort :: (exit_code := Exit_Code.Abort) {
     host_exit(cast(s32) exit_code);
 }
+
 get_written_minidump_filename :: () -> string {
     return written_minidump_filename;
 }
+
 set_minidump_state :: (state: Minidump_State) {
     minidump_state = state;
 }
+
 set_report_mode :: (interactive: bool) {
     signal_handler_interactive = interactive;
 }
+
 enable_signal_handler :: (interactive := false) {
     signal_handler_interactive = interactive;
     if signal_handler_enabled return;
@@ -171,15 +191,18 @@ enable_signal_handler :: (interactive := false) {
         #assert false "Crash signal installation requires a host adapter";
     }
 }
+
 disable_signal_handler :: () {
     if !signal_handler_enabled return;
     for number, index: watched_signals host_signal(number, prior_handlers[index]);
     signal_handler_enabled = false;
 }
+
 no_assert :: (loc: Source_Code_Location, message: string) -> bool {
     // This callback intentionally accepts the assertion failure without reporting it.
     return false;
 }
+
 print_assert :: (loc: Source_Code_Location, message: string) -> bool {
     output(loc.fully_pathed_filename);
     output(": assertion failed: ");
@@ -187,6 +210,7 @@ print_assert :: (loc: Source_Code_Location, message: string) -> bool {
     output("\n");
     return false;
 }
+
 // Like print_assert, followed by one line per frame of the current call stack.
 trace_assert :: (loc: Source_Code_Location, message: string) -> bool {
     frames := backtrace();
@@ -198,19 +222,23 @@ trace_assert :: (loc: Source_Code_Location, message: string) -> bool {
     free_backtrace(frames);
     return false;
 }
+
 break_assert :: (loc: Source_Code_Location, message: string) -> bool {
     print_assert(loc, message);
     return breakpoint();
 }
+
 #if USE_GRAPHICS {
     interactive_assert :: (loc: Source_Code_Location, message: string) -> bool {
         trace_assert(loc, message);
         return breakpoint();
     }
 }
+
 logger :: (message: string, data: *void, info: Log_Info) {
     runtime_support_default_logger(message, data, info);
 }
+
 is_valid_pointer :: (ptr: *void) -> bool {
     #if OS == .WINDOWS {
         return ptr && Windows.IsBadReadPtr(ptr, 1) == 0;
@@ -222,12 +250,15 @@ is_valid_pointer :: (ptr: *void) -> bool {
 #scope_module
 #import "Basic";
 #import "Hash_Table";
+
 #if OS == .WINDOWS {
     Windows :: #import "Windows";
 } else {
     POSIX :: #import "POSIX";
+
     siginfo_t :: POSIX.siginfo_t;
 }
+
 Signal_Handler :: #type (signal: s32) #c_call;
 libc :: #system_library "c";
 host_signal :: (number: s32, handler: Signal_Handler) -> Signal_Handler #foreign libc "signal";
@@ -248,6 +279,7 @@ minidump_state := Minidump_State.Mini;
 install_handler :: (signal: s32) #c_call {
     handle_signal(signal, null, null);
 }
+
 handle_signal :: (sig: s32, info: *siginfo_t, secret: *void) #c_call {
     write_string_unsynchronized("Fatal process signal\n", true);
     addresses: [64] *void;

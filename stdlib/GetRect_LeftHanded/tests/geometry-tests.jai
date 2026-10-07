@@ -1,4 +1,5 @@
 #import "GetRect_LeftHanded";
+
 rect_cases :: () -> bool {
     r := get_rect(1, 2, 100, 40);
     top, remaining := cut_top(r, 10, 2);
@@ -7,4 +8,5 @@ rect_cases :: () -> bool {
     if bottom.y != 32 || remainder.y != 2 || remainder.h != 28 return false;
     return true;
 }
+
 #assert #run rect_cases();

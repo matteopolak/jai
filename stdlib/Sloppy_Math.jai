@@ -1,17 +1,23 @@
 Math :: #import "Math";
+
 DEFAULT_EPSILON :: 0.0001;
+
 is_approximately_zero :: (f: float, epsilon := DEFAULT_EPSILON) -> bool {
     return Math.abs(f) <= epsilon;
 }
+
 values_are_close :: (f0: float, f1: float, epsilon := DEFAULT_EPSILON) -> bool {
     return Math.abs(f0 - f1) <= epsilon;
 }
+
 values_are_close :: (a: Math.Vector2, b: Math.Vector2, epsilon := DEFAULT_EPSILON) -> bool {
     return values_are_close(a.x, b.x, epsilon) && values_are_close(a.y, b.y, epsilon);
 }
+
 values_are_close :: (a: Math.Vector3, b: Math.Vector3, epsilon := DEFAULT_EPSILON) -> bool {
     return values_are_close(a.x, b.x, epsilon) && values_are_close(a.y, b.y, epsilon) && values_are_close(a.z, b.z, epsilon);
 }
+
 // Extremes of a scalar type. Integers are derived from the bit width, so any integer
 // type works; for floats, min_of_type is the smallest positive normal value.
 max_of_type :: ($T: Type) -> T {
@@ -25,6 +31,7 @@ max_of_type :: ($T: Type) -> T {
         return cast,no_check(T) (top_bit | (top_bit - 1));
     }
 }
+
 min_of_type :: ($T: Type) -> T {
     #if T == float32 return Math.FLOAT32_MIN;
     else #if T == float64 return Math.FLOAT64_MIN;

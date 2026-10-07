@@ -15,7 +15,9 @@ SDL_BlitInfo :: struct {
     colorkey: u32;
     r, g, b, a: u8;
 }
+
 SDL_blit :: #type (src: *SDL_Surface, srcrect: *SDL_Rect, dst: *SDL_Surface, dstrect: *SDL_Rect) -> s32 #c_call;
+
 SDL_BlitMap :: struct {
     dst: *SDL_Surface;
     identity: s32;

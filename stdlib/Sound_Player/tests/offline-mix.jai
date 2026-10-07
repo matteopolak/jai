@@ -7,6 +7,7 @@
 RATE :: 48000;
 
 released: s64;
+
 count_release :: (stream: *Sound_Stream, data: *Sound_Data) {
     released += 1;
 }
@@ -15,6 +16,7 @@ put_u16 :: (b: *String_Builder, v: s64) {
     append(b, cast(u8) (v & 0xff));
     append(b, cast(u8) ((v >> 8) & 0xff));
 }
+
 put_u32 :: (b: *String_Builder, v: s64) {
     put_u16(b, v & 0xffff);
     put_u16(b, (v >> 16) & 0xffff);

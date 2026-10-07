@@ -1,11 +1,13 @@
 // SDL2 declarations from SDL_gamecontroller.h.
 SDL_GameController :: struct {}
+
 using SDL_GameControllerBindType :: enum u32 {
     SDL_CONTROLLER_BINDTYPE_NONE :: 0;
     SDL_CONTROLLER_BINDTYPE_BUTTON :: 1;
     SDL_CONTROLLER_BINDTYPE_AXIS :: 2;
     SDL_CONTROLLER_BINDTYPE_HAT :: 3;
 }
+
 SDL_GameControllerButtonBind :: struct {
     bindType: SDL_GameControllerBindType;
     value: union {
@@ -19,6 +21,7 @@ SDL_GameControllerButtonBind :: struct {
     }
     ;
 }
+
 SDL_GameControllerAddMapping :: (mappingString: *s8) -> s32 #foreign SDL2;
 SDL_GameControllerNumMappings :: () -> s32 #foreign SDL2;
 SDL_GameControllerMappingForIndex :: (mapping_index: s32) -> *s8 #foreign SDL2;
@@ -36,6 +39,7 @@ SDL_GameControllerGetAttached :: (gamecontroller: *SDL_GameController) -> SDL_bo
 SDL_GameControllerGetJoystick :: (gamecontroller: *SDL_GameController) -> *SDL_Joystick #foreign SDL2;
 SDL_GameControllerEventState :: (state: s32) -> s32 #foreign SDL2;
 SDL_GameControllerUpdate :: () -> void #foreign SDL2;
+
 using SDL_GameControllerAxis :: enum s32 {
     SDL_CONTROLLER_AXIS_INVALID :: -1;
     SDL_CONTROLLER_AXIS_LEFTX :: 0;
@@ -46,10 +50,12 @@ using SDL_GameControllerAxis :: enum s32 {
     SDL_CONTROLLER_AXIS_TRIGGERRIGHT :: 5;
     SDL_CONTROLLER_AXIS_MAX :: 6;
 }
+
 SDL_GameControllerGetAxisFromString :: (pchString: *s8) -> SDL_GameControllerAxis #foreign SDL2;
 SDL_GameControllerGetStringForAxis :: (axis: SDL_GameControllerAxis) -> *s8 #foreign SDL2;
 SDL_GameControllerGetBindForAxis :: (gamecontroller: *SDL_GameController, axis: SDL_GameControllerAxis) -> SDL_GameControllerButtonBind #foreign SDL2;
 SDL_GameControllerGetAxis :: (gamecontroller: *SDL_GameController, axis: SDL_GameControllerAxis) -> s16 #foreign SDL2;
+
 using SDL_GameControllerButton :: enum s32 {
     SDL_CONTROLLER_BUTTON_INVALID :: -1;
     SDL_CONTROLLER_BUTTON_A :: 0;
@@ -69,6 +75,7 @@ using SDL_GameControllerButton :: enum s32 {
     SDL_CONTROLLER_BUTTON_DPAD_RIGHT :: 14;
     SDL_CONTROLLER_BUTTON_MAX :: 15;
 }
+
 SDL_GameControllerGetButtonFromString :: (pchString: *s8) -> SDL_GameControllerButton #foreign SDL2;
 SDL_GameControllerGetStringForButton :: (button: SDL_GameControllerButton) -> *s8 #foreign SDL2;
 SDL_GameControllerGetBindForButton :: (gamecontroller: *SDL_GameController, button: SDL_GameControllerButton) -> SDL_GameControllerButtonBind #foreign SDL2;

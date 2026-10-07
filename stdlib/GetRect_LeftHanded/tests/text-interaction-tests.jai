@@ -1,4 +1,5 @@
 G :: #import "GetRect_LeftHanded";
+
 text_interaction_cases :: () -> bool {
     if G.seek_left_one_word("one two", 7) != 4 || G.seek_right_one_word("one two", 0) != 4 return false;
     state: G.Text_Input_State;
@@ -11,7 +12,9 @@ text_interaction_cases :: () -> bool {
     if state.text != "one " return false;
     return true;
 }
+
 #assert #run text_interaction_cases();
+
 main :: () {
     text_interaction_cases();
 }

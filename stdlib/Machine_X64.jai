@@ -4,6 +4,7 @@ x86_Vendor :: enum u8 {
     INTEL :: 1;
     AMD :: 2;
 }
+
 x86_Feature_Leaf :: enum u16 {
     _01H_EDX :: 0;
     _01H_ECX :: 1;
@@ -18,6 +19,7 @@ x86_Feature_Leaf :: enum u16 {
     _0DH_01H_EAX :: 10;
     NUMBER :: 11;
 }
+
 x86_Feature_Flag :: enum u16 {
     FPU :: 0;
     VME :: 1;
@@ -220,28 +222,34 @@ x86_Feature_Flag :: enum u16 {
     XSAVES_XRSTORS :: 323;
     XFD :: 324;
 }
+
 Cpu_X86 :: struct {
     vendor: x86_Vendor;
     feature_leaves: [x86_Feature_Leaf.NUMBER] u32;
 }
+
 check_feature :: (leaves: [x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) -> bool {
     index := cast(u16) flag;
     return (leaves[index / 32] & ((cast(u32) 1) << cast(u32) (index % 32))) != 0;
 }
+
 enable_feature :: (leaves: *[x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) {
     index := cast(u16) flag;
     leaves.*[index / 32] |= (cast(u32) 1) << cast(u32) (index % 32);
 }
+
 disable_feature :: (leaves: *[x86_Feature_Leaf.NUMBER] u32, flag: x86_Feature_Flag) {
     index := cast(u16) flag;
     leaves.*[index / 32] &= ~((cast(u32) 1) << cast(u32) (index % 32));
 }
+
 Prefetch_Hint :: enum {
     T0 :: 0;
     T1 :: 1;
     T2 :: 2;
     NTA :: 3;
 }
+
 get_cpu_info :: () -> Cpu_X86 {
     cpu: Cpu_X86;
     // The 12-byte vendor name is spelled little-endian across EBX, EDX and ECX, in that order.
@@ -360,9 +368,11 @@ rdrand :: () -> (success: bool, value: u64) {
 sfence :: () {
     #asm { sfence; }
 }
+
 lfence :: () {
     #asm { lfence; }
 }
+
 mfence :: () {
     #asm { mfence; }
 }
@@ -370,9 +380,11 @@ mfence :: () {
 X86_Features :: struct {
     leaves: [x86_Feature_Leaf.NUMBER] u32;
 }
+
 Machine_Options_X86 :: struct {
     features: X86_Features;
 }
+
 get_machine_options_x86 :: (build_options: *$T) -> *Machine_Options_X86 {
     return cast(*Machine_Options_X86) *build_options.machine_options;
 }

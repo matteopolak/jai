@@ -4,6 +4,7 @@ is_absolute_path :: (path: string) -> bool {
     if path[0] == #char "/" || path[0] == #char "\\" return true;
     return path.count >= 3 && path[1] == #char ":" && (path[2] == #char "/" || path[2] == #char "\\");
 }
+
 build :: () {
     input := get_build_options();
     workspace := compiler_create_workspace("Target Program");
@@ -26,10 +27,13 @@ build :: () {
     set_build_options(options, workspace);
     for source: sources add_build_file(source, workspace);
 }
+
 #run build();
+
 #scope_module
 #import "Compiler";
 Basic :: #import "Basic";
+
 filename_stem :: (path: string) -> string {
     begin: s64;
     end := path.count;

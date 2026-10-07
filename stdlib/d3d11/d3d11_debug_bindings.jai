@@ -8,6 +8,7 @@ D3D11_DEBUG_FEATURE_NEVER_DISCARD_OFFERED_RESOURCE :: 0x10;
 D3D11_DEBUG_FEATURE_AVOID_BEHAVIOR_CHANGING_DEBUG_AIDS :: 0x40;
 D3D11_DEBUG_FEATURE_DISABLE_TILED_RESOURCE_MAPPING_TRACKING_AND_VALIDATION :: 0x80;
 D3D11_INFO_QUEUE_DEFAULT_MESSAGE_COUNT_LIMIT :: 1024;
+
 D3D11_RLDO_FLAGS :: enum_flags u32 {
     SUMMARY :: 0x1;
     DETAIL :: 0x2;
@@ -16,12 +17,15 @@ D3D11_RLDO_FLAGS :: enum_flags u32 {
     D3D11_RLDO_DETAIL :: DETAIL;
     D3D11_RLDO_IGNORE_INTERNAL :: IGNORE_INTERNAL;
 }
+
 ID3D11Debug_UUID :: "79cf2233-7536-4948-9d36-1e4692dc5760";
+
 ID3D11Debug :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11debug_vtable: *ID3D11Debug_VTable;
 }
+
 ID3D11Debug_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetFeatureMask: (this: *ID3D11Debug, Mask: u32) -> HRESULT #cpp_method;
@@ -34,56 +38,73 @@ ID3D11Debug_VTable :: struct #type_info_none {
     ReportLiveDeviceObjects: (this: *ID3D11Debug, Flags: D3D11_RLDO_FLAGS) -> HRESULT #cpp_method;
     ValidateContextForDispatch: (this: *ID3D11Debug, pContext: *ID3D11DeviceContext) -> HRESULT #cpp_method;
 }
+
 ID3D11Debug_SetFeatureMask :: (this: *ID3D11Debug, Mask: u32) -> HRESULT {
     return this.id3d11debug_vtable.SetFeatureMask(this, Mask);
 }
+
 ID3D11Debug_GetFeatureMask :: (this: *ID3D11Debug) -> u32 {
     return this.id3d11debug_vtable.GetFeatureMask(this);
 }
+
 ID3D11Debug_SetPresentPerRenderOpDelay :: (this: *ID3D11Debug, Milliseconds: u32) -> HRESULT {
     return this.id3d11debug_vtable.SetPresentPerRenderOpDelay(this, Milliseconds);
 }
+
 ID3D11Debug_GetPresentPerRenderOpDelay :: (this: *ID3D11Debug) -> u32 {
     return this.id3d11debug_vtable.GetPresentPerRenderOpDelay(this);
 }
+
 ID3D11Debug_SetSwapChain :: (this: *ID3D11Debug, pSwapChain: *IDXGISwapChain) -> HRESULT {
     return this.id3d11debug_vtable.SetSwapChain(this, pSwapChain);
 }
+
 ID3D11Debug_GetSwapChain :: (this: *ID3D11Debug, ppSwapChain: **IDXGISwapChain) -> HRESULT {
     return this.id3d11debug_vtable.GetSwapChain(this, ppSwapChain);
 }
+
 ID3D11Debug_ValidateContext :: (this: *ID3D11Debug, pContext: *ID3D11DeviceContext) -> HRESULT {
     return this.id3d11debug_vtable.ValidateContext(this, pContext);
 }
+
 ID3D11Debug_ReportLiveDeviceObjects :: (this: *ID3D11Debug, Flags: D3D11_RLDO_FLAGS) -> HRESULT {
     return this.id3d11debug_vtable.ReportLiveDeviceObjects(this, Flags);
 }
+
 ID3D11Debug_ValidateContextForDispatch :: (this: *ID3D11Debug, pContext: *ID3D11DeviceContext) -> HRESULT {
     return this.id3d11debug_vtable.ValidateContextForDispatch(this, pContext);
 }
+
 vtable :: (obj: *ID3D11Debug) -> *ID3D11Debug_VTable {
     return obj.id3d11debug_vtable;
 }
+
 ID3D11SwitchToRef_UUID :: "1ef337e3-58e7-4f83-a692-db221f5ed47e";
+
 ID3D11SwitchToRef :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11switchtoref_vtable: *ID3D11SwitchToRef_VTable;
 }
+
 ID3D11SwitchToRef_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetUseRef: (this: *ID3D11SwitchToRef, UseRef: BOOL) -> BOOL #cpp_method;
     GetUseRef: (this: *ID3D11SwitchToRef) -> BOOL #cpp_method;
 }
+
 ID3D11SwitchToRef_SetUseRef :: (this: *ID3D11SwitchToRef, UseRef: BOOL) -> BOOL {
     return this.id3d11switchtoref_vtable.SetUseRef(this, UseRef);
 }
+
 ID3D11SwitchToRef_GetUseRef :: (this: *ID3D11SwitchToRef) -> BOOL {
     return this.id3d11switchtoref_vtable.GetUseRef(this);
 }
+
 vtable :: (obj: *ID3D11SwitchToRef) -> *ID3D11SwitchToRef_VTable {
     return obj.id3d11switchtoref_vtable;
 }
+
 D3D11_SHADER_TRACKING_RESOURCE_TYPE :: enum s32 {
     NONE :: 0;
     UAV_DEVICEMEMORY :: 1;
@@ -102,6 +123,7 @@ D3D11_SHADER_TRACKING_RESOURCE_TYPE :: enum s32 {
     D3D11_SHADER_TRACKING_RESOURCE_TYPE_GROUPSHARED_NON_UAV :: GROUPSHARED_NON_UAV;
     D3D11_SHADER_TRACKING_RESOURCE_TYPE_ALL :: ALL;
 }
+
 D3D11_SHADER_TRACKING_OPTION :: enum s32 {
     IGNORE :: 0;
     TRACK_UNINITIALIZED :: 1;
@@ -134,60 +156,78 @@ D3D11_SHADER_TRACKING_OPTION :: enum s32 {
     D3D11_SHADER_TRACKING_OPTION_ALL_HAZARDS_ALLOWING_SAME :: ALL_HAZARDS_ALLOWING_SAME;
     D3D11_SHADER_TRACKING_OPTION_ALL_OPTIONS :: ALL_OPTIONS;
 }
+
 D3D11_SHADER_TRACKING_OPTIONS :: D3D11_SHADER_TRACKING_OPTION;
 ID3D11TracingDevice_UUID :: "1911c771-1587-413e-a7e0-fb26c3de0268";
+
 ID3D11TracingDevice :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11tracingdevice_vtable: *ID3D11TracingDevice_VTable;
 }
+
 ID3D11TracingDevice_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetShaderTrackingOptionsByType: (this: *ID3D11TracingDevice, ResourceTypeFlags: u32, Options: u32) -> HRESULT #cpp_method;
     SetShaderTrackingOptions: (this: *ID3D11TracingDevice, pShader: *IUnknown, Options: u32) -> HRESULT #cpp_method;
 }
+
 ID3D11TracingDevice_SetShaderTrackingOptionsByType :: (this: *ID3D11TracingDevice, ResourceTypeFlags: u32, Options: u32) -> HRESULT {
     return this.id3d11tracingdevice_vtable.SetShaderTrackingOptionsByType(this, ResourceTypeFlags, Options);
 }
+
 ID3D11TracingDevice_SetShaderTrackingOptions :: (this: *ID3D11TracingDevice, pShader: *IUnknown, Options: u32) -> HRESULT {
     return this.id3d11tracingdevice_vtable.SetShaderTrackingOptions(this, pShader, Options);
 }
+
 vtable :: (obj: *ID3D11TracingDevice) -> *ID3D11TracingDevice_VTable {
     return obj.id3d11tracingdevice_vtable;
 }
+
 ID3D11RefTrackingOptions_UUID :: "193dacdf-0db2-4c05-a55c-ef06cac56fd9";
+
 ID3D11RefTrackingOptions :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11reftrackingoptions_vtable: *ID3D11RefTrackingOptions_VTable;
 }
+
 ID3D11RefTrackingOptions_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetTrackingOptions: (this: *ID3D11RefTrackingOptions, uOptions: u32) -> HRESULT #cpp_method;
 }
+
 ID3D11RefTrackingOptions_SetTrackingOptions :: (this: *ID3D11RefTrackingOptions, uOptions: u32) -> HRESULT {
     return this.id3d11reftrackingoptions_vtable.SetTrackingOptions(this, uOptions);
 }
+
 vtable :: (obj: *ID3D11RefTrackingOptions) -> *ID3D11RefTrackingOptions_VTable {
     return obj.id3d11reftrackingoptions_vtable;
 }
+
 ID3D11RefDefaultTrackingOptions_UUID :: "03916615-c644-418c-9bf4-75db5be63ca0";
+
 ID3D11RefDefaultTrackingOptions :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11refdefaulttrackingoptions_vtable: *ID3D11RefDefaultTrackingOptions_VTable;
 }
+
 ID3D11RefDefaultTrackingOptions_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetTrackingOptions: (this: *ID3D11RefDefaultTrackingOptions, ResourceTypeFlags: u32, Options: u32) -> HRESULT #cpp_method;
 }
+
 ID3D11RefDefaultTrackingOptions_SetTrackingOptions :: (this: *ID3D11RefDefaultTrackingOptions, ResourceTypeFlags: u32, Options: u32) -> HRESULT {
     return this.id3d11refdefaulttrackingoptions_vtable.SetTrackingOptions(this, ResourceTypeFlags, Options);
 }
+
 vtable :: (obj: *ID3D11RefDefaultTrackingOptions) -> *ID3D11RefDefaultTrackingOptions_VTable {
     return obj.id3d11refdefaulttrackingoptions_vtable;
 }
+
 DXGI_DEBUG_D3D11: GUID;
+
 D3D11_MESSAGE_CATEGORY :: enum s32 {
     APPLICATION_DEFINED :: 0;
     MISCELLANEOUS :: 1;
@@ -212,6 +252,7 @@ D3D11_MESSAGE_CATEGORY :: enum s32 {
     D3D11_MESSAGE_CATEGORY_EXECUTION :: EXECUTION;
     D3D11_MESSAGE_CATEGORY_SHADER :: SHADER;
 }
+
 D3D11_MESSAGE_SEVERITY :: enum s32 {
     CORRUPTION :: 0;
     ERROR :: 1;
@@ -224,6 +265,7 @@ D3D11_MESSAGE_SEVERITY :: enum s32 {
     D3D11_MESSAGE_SEVERITY_INFO :: INFO;
     D3D11_MESSAGE_SEVERITY_MESSAGE :: MESSAGE;
 }
+
 D3D11_MESSAGE_ID :: enum s32 {
     UNKNOWN :: 0;
     DEVICE_IASETVERTEXBUFFERS_HAZARD :: 1;
@@ -2898,6 +2940,7 @@ D3D11_MESSAGE_ID :: enum s32 {
     D3D11_MESSAGE_ID_TRACKED_WORKLOAD_DISJOINT_FAILURE :: TRACKED_WORKLOAD_DISJOINT_FAILURE;
     D3D11_MESSAGE_ID_D3D11_5_MESSAGES_END :: D3D11_5_MESSAGES_END;
 }
+
 D3D11_MESSAGE :: struct {
     Category: D3D11_MESSAGE_CATEGORY;
     Severity: D3D11_MESSAGE_SEVERITY;
@@ -2905,6 +2948,7 @@ D3D11_MESSAGE :: struct {
     pDescription: *u8;
     DescriptionByteLength: SIZE_T;
 }
+
 D3D11_INFO_QUEUE_FILTER_DESC :: struct {
     NumCategories: u32;
     pCategoryList: *D3D11_MESSAGE_CATEGORY;
@@ -2913,16 +2957,20 @@ D3D11_INFO_QUEUE_FILTER_DESC :: struct {
     NumIDs: u32;
     pIDList: *D3D11_MESSAGE_ID;
 }
+
 D3D11_INFO_QUEUE_FILTER :: struct {
     AllowList: D3D11_INFO_QUEUE_FILTER_DESC;
     DenyList: D3D11_INFO_QUEUE_FILTER_DESC;
 }
+
 ID3D11InfoQueue_UUID :: "6543dbb6-1b48-42f5-ab82-e97ec74326f6";
+
 ID3D11InfoQueue :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11infoqueue_vtable: *ID3D11InfoQueue_VTable;
 }
+
 ID3D11InfoQueue_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetMessageCountLimit: (this: *ID3D11InfoQueue, MessageCountLimit: u64) -> HRESULT #cpp_method;
@@ -2961,113 +3009,150 @@ ID3D11InfoQueue_VTable :: struct #type_info_none {
     SetMuteDebugOutput: (this: *ID3D11InfoQueue, bMute: BOOL) -> void #cpp_method;
     GetMuteDebugOutput: (this: *ID3D11InfoQueue) -> BOOL #cpp_method;
 }
+
 ID3D11InfoQueue_SetMessageCountLimit :: (this: *ID3D11InfoQueue, MessageCountLimit: u64) -> HRESULT {
     return this.id3d11infoqueue_vtable.SetMessageCountLimit(this, MessageCountLimit);
 }
+
 ID3D11InfoQueue_ClearStoredMessages :: (this: *ID3D11InfoQueue) {
     this.id3d11infoqueue_vtable.ClearStoredMessages(this);
 }
+
 ID3D11InfoQueue_GetMessageA :: (this: *ID3D11InfoQueue, MessageIndex: u64, pMessage: *D3D11_MESSAGE, pMessageByteLength: *SIZE_T) -> HRESULT {
     return this.id3d11infoqueue_vtable.GetMessageA(this, MessageIndex, pMessage, pMessageByteLength);
 }
+
 ID3D11InfoQueue_GetNumMessagesAllowedByStorageFilter :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetNumMessagesAllowedByStorageFilter(this);
 }
+
 ID3D11InfoQueue_GetNumMessagesDeniedByStorageFilter :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetNumMessagesDeniedByStorageFilter(this);
 }
+
 ID3D11InfoQueue_GetNumStoredMessages :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetNumStoredMessages(this);
 }
+
 ID3D11InfoQueue_GetNumStoredMessagesAllowedByRetrievalFilter :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetNumStoredMessagesAllowedByRetrievalFilter(this);
 }
+
 ID3D11InfoQueue_GetNumMessagesDiscardedByMessageCountLimit :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetNumMessagesDiscardedByMessageCountLimit(this);
 }
+
 ID3D11InfoQueue_GetMessageCountLimit :: (this: *ID3D11InfoQueue) -> u64 {
     return this.id3d11infoqueue_vtable.GetMessageCountLimit(this);
 }
+
 ID3D11InfoQueue_AddStorageFilterEntries :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d11infoqueue_vtable.AddStorageFilterEntries(this, pFilter);
 }
+
 ID3D11InfoQueue_GetStorageFilter :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT {
     return this.id3d11infoqueue_vtable.GetStorageFilter(this, pFilter, pFilterByteLength);
 }
+
 ID3D11InfoQueue_ClearStorageFilter :: (this: *ID3D11InfoQueue) {
     this.id3d11infoqueue_vtable.ClearStorageFilter(this);
 }
+
 ID3D11InfoQueue_PushEmptyStorageFilter :: (this: *ID3D11InfoQueue) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushEmptyStorageFilter(this);
 }
+
 ID3D11InfoQueue_PushCopyOfStorageFilter :: (this: *ID3D11InfoQueue) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushCopyOfStorageFilter(this);
 }
+
 ID3D11InfoQueue_PushStorageFilter :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushStorageFilter(this, pFilter);
 }
+
 ID3D11InfoQueue_PopStorageFilter :: (this: *ID3D11InfoQueue) {
     this.id3d11infoqueue_vtable.PopStorageFilter(this);
 }
+
 ID3D11InfoQueue_GetStorageFilterStackSize :: (this: *ID3D11InfoQueue) -> u32 {
     return this.id3d11infoqueue_vtable.GetStorageFilterStackSize(this);
 }
+
 ID3D11InfoQueue_AddRetrievalFilterEntries :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d11infoqueue_vtable.AddRetrievalFilterEntries(this, pFilter);
 }
+
 ID3D11InfoQueue_GetRetrievalFilter :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT {
     return this.id3d11infoqueue_vtable.GetRetrievalFilter(this, pFilter, pFilterByteLength);
 }
+
 ID3D11InfoQueue_ClearRetrievalFilter :: (this: *ID3D11InfoQueue) {
     this.id3d11infoqueue_vtable.ClearRetrievalFilter(this);
 }
+
 ID3D11InfoQueue_PushEmptyRetrievalFilter :: (this: *ID3D11InfoQueue) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushEmptyRetrievalFilter(this);
 }
+
 ID3D11InfoQueue_PushCopyOfRetrievalFilter :: (this: *ID3D11InfoQueue) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushCopyOfRetrievalFilter(this);
 }
+
 ID3D11InfoQueue_PushRetrievalFilter :: (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d11infoqueue_vtable.PushRetrievalFilter(this, pFilter);
 }
+
 ID3D11InfoQueue_PopRetrievalFilter :: (this: *ID3D11InfoQueue) {
     this.id3d11infoqueue_vtable.PopRetrievalFilter(this);
 }
+
 ID3D11InfoQueue_GetRetrievalFilterStackSize :: (this: *ID3D11InfoQueue) -> u32 {
     return this.id3d11infoqueue_vtable.GetRetrievalFilterStackSize(this);
 }
+
 ID3D11InfoQueue_AddMessage :: (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY, Severity: D3D11_MESSAGE_SEVERITY, ID: D3D11_MESSAGE_ID, pDescription: *u8) -> HRESULT {
     return this.id3d11infoqueue_vtable.AddMessage(this, Category, Severity, ID, pDescription);
 }
+
 ID3D11InfoQueue_AddApplicationMessage :: (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY, pDescription: *u8) -> HRESULT {
     return this.id3d11infoqueue_vtable.AddApplicationMessage(this, Severity, pDescription);
 }
+
 ID3D11InfoQueue_SetBreakOnCategory :: (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY, bEnable: BOOL) -> HRESULT {
     return this.id3d11infoqueue_vtable.SetBreakOnCategory(this, Category, bEnable);
 }
+
 ID3D11InfoQueue_SetBreakOnSeverity :: (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY, bEnable: BOOL) -> HRESULT {
     return this.id3d11infoqueue_vtable.SetBreakOnSeverity(this, Severity, bEnable);
 }
+
 ID3D11InfoQueue_SetBreakOnID :: (this: *ID3D11InfoQueue, ID: D3D11_MESSAGE_ID, bEnable: BOOL) -> HRESULT {
     return this.id3d11infoqueue_vtable.SetBreakOnID(this, ID, bEnable);
 }
+
 ID3D11InfoQueue_GetBreakOnCategory :: (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY) -> BOOL {
     return this.id3d11infoqueue_vtable.GetBreakOnCategory(this, Category);
 }
+
 ID3D11InfoQueue_GetBreakOnSeverity :: (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY) -> BOOL {
     return this.id3d11infoqueue_vtable.GetBreakOnSeverity(this, Severity);
 }
+
 ID3D11InfoQueue_GetBreakOnID :: (this: *ID3D11InfoQueue, ID: D3D11_MESSAGE_ID) -> BOOL {
     return this.id3d11infoqueue_vtable.GetBreakOnID(this, ID);
 }
+
 ID3D11InfoQueue_SetMuteDebugOutput :: (this: *ID3D11InfoQueue, bMute: BOOL) {
     this.id3d11infoqueue_vtable.SetMuteDebugOutput(this, bMute);
 }
+
 ID3D11InfoQueue_GetMuteDebugOutput :: (this: *ID3D11InfoQueue) -> BOOL {
     return this.id3d11infoqueue_vtable.GetMuteDebugOutput(this);
 }
+
 vtable :: (obj: *ID3D11InfoQueue) -> *ID3D11InfoQueue_VTable {
     return obj.id3d11infoqueue_vtable;
 }
+
 #scope_file
 d3d11 :: #system_library "d3d11";

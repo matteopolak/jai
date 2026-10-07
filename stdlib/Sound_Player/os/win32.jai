@@ -181,6 +181,7 @@ Buffer_Description :: struct {
 Direct_Sound :: struct {
     vtable: *Direct_Sound_Calls;
 }
+
 Direct_Sound_Calls :: struct {
     using unknown: IUnknown_VTable;
     CreateSoundBuffer: (self: *Direct_Sound, description: *Buffer_Description, buffer: **Sound_Buffer, outer: *void) -> HRESULT #c_call;
@@ -192,6 +193,7 @@ Direct_Sound_Calls :: struct {
 Sound_Buffer :: struct {
     vtable: *Sound_Buffer_Calls;
 }
+
 Sound_Buffer_Calls :: struct {
     using unknown: IUnknown_VTable;
     skip1: [1] *void;

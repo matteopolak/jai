@@ -1,11 +1,13 @@
 // Android NDK bindings.
 #module_parameters ()(DEFINE_ANDROID_MAIN_AND_CALL_THIS: () -> () = null);
+
 #load "bindings.jai";
 #import "Android/Jni";
 #import "Android/Log";
 #import "Android/Native_App";
 #import "POSIX";
 Input :: #import "Input";
+
 #if DEFINE_ANDROID_MAIN_AND_CALL_THIS {
     #program_export
     android_main :: (app: *Android_App) #c_call {
@@ -43,6 +45,7 @@ Input :: #import "Input";
             }
         }
     }
+
     my_android_handle_command :: (app: *Android_App, cmd: s32) #c_call {
         if app == null || app != _sdk_android_app return;
         push_context _sdk_android_context {
@@ -62,6 +65,7 @@ Input :: #import "Input";
             }
         }
     }
+
     my_android_handle_input :: (app: *Android_App, event: *AInputEvent) -> s32 #c_call {
         if app == null || app != _sdk_android_app || event == null return 0;
         push_context _sdk_android_context {
@@ -166,6 +170,7 @@ Input :: #import "Input";
 #scope_file
 Android_Basic :: #import "Basic";
 Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);
+
 #if DEFINE_ANDROID_MAIN_AND_CALL_THIS {
     _sdk_android_context: #Context;
     _sdk_android_storage: Android_Runtime.Temporary_Storage;
@@ -174,6 +179,7 @@ Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, 
     _sdk_android_x: float;
     _sdk_android_y: float;
     _sdk_android_pointer_valid := false;
+
     _sdk_android_poll :: (app: *Android_App, timeout: s32) -> bool {
         data: *void;
         ident := ALooper_pollOnce(timeout, null, null, *data);
@@ -185,6 +191,7 @@ Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, 
         }
         return true;
     }
+
     _sdk_android_input_pump :: () {
         app := _sdk_android_app;
         if app == null return;
@@ -199,11 +206,13 @@ Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, 
             }
         }
     }
+
     _sdk_android_pointer :: (window: s64, client_area: bool) -> float, float {
         Android_Basic.assert(_sdk_android_app != null && _sdk_android_pointer_valid, "No Android pointer event has arrived");
         Android_Basic.assert(window == 0 || window == cast(s64) (cast(u64) _sdk_android_app.window), "Pointer belongs to a different native window");
         return _sdk_android_x, _sdk_android_y;
     }
+
     _sdk_android_key :: (key: s32) -> Input.Key_Code #no_context {
         if key >= 7 && key <= 16 return cast(Input.Key_Code) (48 + key - 7);
         if key >= 29 && key <= 54 return cast(Input.Key_Code) (65 + key - 29);
@@ -240,6 +249,7 @@ Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, 
         if key == 76 return cast(Input.Key_Code) 47;
         return .UNKNOWN;
     }
+
     _sdk_android_unicode :: (app: *Android_App, event: *AInputEvent, meta: s32) -> u32 {
         vm := app.activity.vm;
         if vm == null return 0;
@@ -279,6 +289,7 @@ Android_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, 
         if _sdk_android_jni_failed(env) return 0;
         return cast(u32) scalar;
     }
+
     _sdk_android_jni_failed :: (env: *JNIEnv) -> bool #no_context {
         if env.*.ExceptionCheck(env) == 0 return false;
         env.*.ExceptionClear(env);

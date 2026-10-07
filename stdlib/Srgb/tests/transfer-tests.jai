@@ -1,6 +1,7 @@
 #load "../../Math/constants.jai";
 #load "../../Math/scalar.jai";
 #load "../transfer.jai";
+
 color_transfer_cases :: () -> bool {
     if srgb_to_linear(0.0) != 0 || linear_to_srgb(0.0) != 0 return false;
     if abs(srgb_to_linear(1.0) - 1) > 0.000001 || abs(linear_to_srgb(1.0) - 1) > 0.000001 return false;
@@ -14,4 +15,5 @@ color_transfer_cases :: () -> bool {
     }
     return true;
 }
+
 #assert #run color_transfer_cases();

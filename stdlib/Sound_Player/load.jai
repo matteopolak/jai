@@ -139,6 +139,7 @@ describe_ogg :: (result: *Sound_Data, bytes: string) -> bool {
 // WAV and Vorbis order their surround channels differently, so each has its own table, indexed
 // as [(channel count - 1) * 8 + channel]. Unlisted channels stay MONO.
 using Source_Direction;
+
 WAV_LAYOUTS :: Source_Direction.[
     MONO, MONO, MONO, MONO, MONO, MONO, MONO, MONO,
     FRONT_LEFT, FRONT_RIGHT, MONO, MONO, MONO, MONO, MONO, MONO,
@@ -149,6 +150,7 @@ WAV_LAYOUTS :: Source_Direction.[
     FRONT_LEFT, FRONT_RIGHT, CENTER_FORWARD, SUBWOOFER_CENTER_FORWARD, REAR_LEFT, REAR_RIGHT, EXTEND_LEFT, MONO,
     FRONT_LEFT, FRONT_RIGHT, CENTER_FORWARD, SUBWOOFER_CENTER_FORWARD, REAR_LEFT, REAR_RIGHT, EXTEND_LEFT, EXTEND_RIGHT,
 ];
+
 VORBIS_LAYOUTS :: Source_Direction.[
     MONO, MONO, MONO, MONO, MONO, MONO, MONO, MONO,
     FRONT_LEFT, FRONT_RIGHT, MONO, MONO, MONO, MONO, MONO, MONO,

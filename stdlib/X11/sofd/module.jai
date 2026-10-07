@@ -1,6 +1,7 @@
 // A simple X11 open-file dialog.
 #import "X11";
 #import "POSIX";
+
 x_fib_show :: (dpy: *Display, parent: Window, x: s32, y: s32) -> s32 #foreign libsofd;
 x_fib_close :: (dpy: *Display) -> void #foreign libsofd;
 x_fib_handle_events :: (dpy: *Display, event: *XEvent) -> s32 #foreign libsofd;

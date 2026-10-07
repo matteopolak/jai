@@ -115,10 +115,12 @@ _gl_platform_get_proc :: (name: *u8) -> *void #c_call {
     // Its compatibility result is zero after making the actual void call.
     __gl_swap_interval_ext: (display: *Display, drawable: GLXDrawable, interval: s32) #c_call;
     __gl_swap_interval_mesa: (interval: u32) -> s32 #c_call;
+
     _gl_swap_interval_ext_compat :: (display: *Display, drawable: GLXDrawable, interval: s32) -> s32 #c_call {
         __gl_swap_interval_ext(display, drawable, interval);
         return 0;
     }
+
     _gl_swap_interval_mesa_compat :: (interval: s32) -> s32 #c_call {
         return __gl_swap_interval_mesa(cast(u32) interval);
     }

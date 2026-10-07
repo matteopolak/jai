@@ -57,6 +57,7 @@ get_bytes_for_image :: (comp: s32, size: s32) -> (image_bytes: s32, mask_bytes: 
     if total > 0x7fff_ffff return 0, 0, 0;
     return cast(s32) image, cast(s32) mask, cast(s32) total;
 }
+
 get_total_bytes_for_size :: (comp: s32, size: s32) -> s32 {
     _, _, total_bytes := get_bytes_for_image(comp, size);
     return total_bytes;
@@ -113,16 +114,20 @@ create_ico_file :: (x: s32, y: s32, comp: s32, image_data: *u8) -> string {
 #scope_file
 #import "Basic";
 #import "File";
+
 ico_u16 :: (p: *u8) -> u16 {
     return (cast(u16) p[0]) | ((cast(u16) p[1]) << 8);
 }
+
 ico_u32 :: (p: *u8) -> u32 {
     return (cast(u32) p[0]) | ((cast(u32) p[1]) << 8) | ((cast(u32) p[2]) << 16) | ((cast(u32) p[3]) << 24);
 }
+
 ico_put16 :: (p: *u8, value: u16) {
     p[0] = cast,trunc(u8) value;
     p[1] = cast,trunc(u8) (value >> 8);
 }
+
 ico_put32 :: (p: *u8, value: u32) {
     for i: 0..3 p[i] = cast,trunc(u8) (value >> cast(u32) (i * 8));
 }

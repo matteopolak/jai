@@ -31,17 +31,21 @@ Native_Atlas_Options :: struct {
         };
     };
 }
+
 atlas_message_callback: Atlas_Message_Callback;
 atlas_message_context: *void;
 atlas_assert_callback: Atlas_Assert_Callback;
 atlas_assert_context: *void;
+
 atlas_debug_output :: (message: *u8) #c_call {
     if atlas_message_callback atlas_message_callback(message, atlas_message_context);
 }
+
 atlas_notify_invalid :: () {
     if atlas_assert_callback atlas_assert_callback(atlas_invalid_expression.data, atlas_empty_string.data, 0, atlas_function_name.data,
                                                   atlas_invalid_message.data, atlas_assert_context);
 }
+
 to_current_options :: (source: *Atlas_Options) -> Native_Atlas_Options {
     result: Native_Atlas_Options;
     result.charter = source.charter;
@@ -62,10 +66,12 @@ to_current_options :: (source: *Atlas_Options) -> Native_Atlas_Options {
     result.packer_options.witness.conservative = source.packer_options.witness.conservative;
     return result;
 }
+
 atlas_error_from_current :: (native_error: s32) -> Atlas_Error {
     if native_error == 5 return .Not_Implemented;
     return cast(Atlas_Error) native_error;
 }
+
 generate_with_current_atlas :: (input: *Atlas_Input_Mesh, options: *Atlas_Options,
                                 error: *Atlas_Error, error_data: **Atlas_Error_Data) -> *Atlas_Output_Mesh {
     if error_data error_data.* = null;
@@ -99,6 +105,7 @@ generate_with_current_atlas :: (input: *Atlas_Input_Mesh, options: *Atlas_Option
     // Current upstream provides an error enum, but no rich native error record.
     return result;
 }
+
 atlas_retry_isolated_faces :: (input: *Atlas_Input_Mesh, options: *Native_Atlas_Options) -> (*Atlas_Output_Mesh, s32) {
     if input.face_count > S32_MAX / 3 return null, 3;
     count := input.face_count * 3;
@@ -136,6 +143,7 @@ atlas_retry_isolated_faces :: (input: *Atlas_Input_Mesh, options: *Native_Atlas_
 
 #scope_module
 atlas_upstream :: #system_library "thekla_atlas";
+
 #if OS == .WINDOWS {
     native_atlas_set_debug_output :: (callback: #type (message: *u8) #c_call) #foreign atlas_upstream "?atlas_set_debug_output@Thekla@@YAXP6AXPEBD@Z@Z";
     native_atlas_default_options :: (options: *Native_Atlas_Options) #foreign atlas_upstream "?atlas_set_default_options@Thekla@@YAXPEAUAtlas_Options@1@@Z";

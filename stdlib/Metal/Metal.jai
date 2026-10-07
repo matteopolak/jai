@@ -567,9 +567,11 @@ init_metal :: () {
     __selectors.width = cast(*void) sel_registerName(cast(*u8) "width\0");
     __selectors.writeMask = cast(*void) sel_registerName(cast(*u8) "writeMask\0");
 }
+
 #scope_module
 #import "Basic";
 #import "Objective_C";
+
 CGColorSpaceRef :: *void;
 IOSurfaceRef :: *void;
 #scope_file
@@ -578,6 +580,7 @@ uint64_t :: u64;
 uint16_t :: u16;
 uint8_t :: u8;
 int32_t :: s32;
+
 #scope_export
 CAMetalDrawable :: struct {
     texture :: (self: *CAMetalDrawable) -> id {
@@ -591,6 +594,7 @@ CAMetalDrawable :: struct {
         return invoke(self, sel_registerName(cast(*u8) "layer\0"));
     }
 }
+
 CAMetalLayer :: struct {
     using calayer: CALayer;
     _priv: *_CAMetalLayerPrivate;
@@ -700,12 +704,15 @@ CAMetalLayer :: struct {
         invoke(self, sel_registerName(cast(*u8) "setAllowsNextDrawableTimeout:\0"), allowsNextDrawableTimeout);
     }
 }
+
 _CAMetalLayerPrivate :: struct {}
+
 MTLOrigin :: struct {
     x: NSUInteger;
     y: NSUInteger;
     z: NSUInteger;
 }
+
 MTLOriginMake :: (x: NSUInteger, y: NSUInteger, z: NSUInteger) -> MTLOrigin {
     result: MTLOrigin;
     result.x = x;
@@ -713,11 +720,13 @@ MTLOriginMake :: (x: NSUInteger, y: NSUInteger, z: NSUInteger) -> MTLOrigin {
     result.z = z;
     return result;
 }
+
 MTLSize :: struct {
     width: NSUInteger;
     height: NSUInteger;
     depth: NSUInteger;
 }
+
 MTLSizeMake :: (width: NSUInteger, height: NSUInteger, depth: NSUInteger) -> MTLSize {
     result: MTLSize;
     result.width = width;
@@ -725,48 +734,57 @@ MTLSizeMake :: (width: NSUInteger, height: NSUInteger, depth: NSUInteger) -> MTL
     result.depth = depth;
     return result;
 }
+
 MTLRegion :: struct {
     origin: MTLOrigin;
     size: MTLSize;
 }
+
 MTLRegionMake1D :: (x: NSUInteger, width: NSUInteger) -> MTLRegion {
     result: MTLRegion;
     result.origin = MTLOriginMake(x, 0, 0);
     result.size = MTLSizeMake(width, 1, 1);
     return result;
 }
+
 MTLRegionMake2D :: (x: NSUInteger, y: NSUInteger, width: NSUInteger, height: NSUInteger) -> MTLRegion {
     result: MTLRegion;
     result.origin = MTLOriginMake(x, y, 0);
     result.size = MTLSizeMake(width, height, 1);
     return result;
 }
+
 MTLRegionMake3D :: (x: NSUInteger, y: NSUInteger, z: NSUInteger, width: NSUInteger, height: NSUInteger, depth: NSUInteger) -> MTLRegion {
     result: MTLRegion;
     result.origin = MTLOriginMake(x, y, z);
     result.size = MTLSizeMake(width, height, depth);
     return result;
 }
+
 MTLSamplePosition :: struct {
     x: float32;
     y: float32;
 }
+
 MTLSamplePositionMake :: (x: float, y: float) -> MTLSamplePosition {
     result: MTLSamplePosition;
     result.x = x;
     result.y = y;
     return result;
 }
+
 using MTLResourceUsage :: enum NSUInteger {
     MTLResourceUsageRead :: 1;
     MTLResourceUsageWrite :: 2;
     MTLResourceUsageSample :: 4;
 }
+
 using MTLBarrierScope :: enum NSUInteger {
     MTLBarrierScopeBuffers :: 1;
     MTLBarrierScopeTextures :: 2;
     MTLBarrierScopeRenderTargets :: 4;
 }
+
 MTLCommandEncoder :: struct {
     endEncoding :: (self: *MTLCommandEncoder) -> () {
         invoke: (receiver: *MTLCommandEncoder, selector: SEL) -> () #c_call;
@@ -804,6 +822,7 @@ MTLCommandEncoder :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLabel:\0"), label);
     }
 }
+
 using MTLPixelFormat :: enum NSUInteger {
     MTLPixelFormatInvalid :: 0;
     MTLPixelFormatA8Unorm :: 1;
@@ -931,22 +950,26 @@ using MTLPixelFormat :: enum NSUInteger {
     MTLPixelFormatX32_Stencil8 :: 261;
     MTLPixelFormatX24_Stencil8 :: 262;
 }
+
 using MTLPurgeableState :: enum NSUInteger {
     MTLPurgeableStateKeepCurrent :: 1;
     MTLPurgeableStateNonVolatile :: 2;
     MTLPurgeableStateVolatile :: 3;
     MTLPurgeableStateEmpty :: 4;
 }
+
 using MTLCPUCacheMode :: enum NSUInteger {
     MTLCPUCacheModeDefaultCache :: 0;
     MTLCPUCacheModeWriteCombined :: 1;
 }
+
 using MTLStorageMode :: enum NSUInteger {
     MTLStorageModeShared :: 0;
     MTLStorageModeManaged :: 1;
     MTLStorageModePrivate :: 2;
     MTLStorageModeMemoryless :: 3;
 }
+
 using MTLResourceOptions :: enum NSUInteger {
     MTLResourceCPUCacheModeDefaultCache :: 0;
     MTLResourceCPUCacheModeWriteCombined :: 1;
@@ -958,6 +981,7 @@ using MTLResourceOptions :: enum NSUInteger {
     MTLResourceOptionCPUCacheModeDefault :: 0;
     MTLResourceOptionCPUCacheModeWriteCombined :: 1;
 }
+
 MTLResource :: struct {
     setPurgeableState :: (self: *MTLResource, state: MTLPurgeableState) -> MTLPurgeableState {
         invoke: (receiver: *MTLResource, selector: SEL, state: MTLPurgeableState) -> MTLPurgeableState #c_call;
@@ -1010,6 +1034,7 @@ MTLResource :: struct {
         return invoke(self, sel_registerName(cast(*u8) "allocatedSize\0"));
     }
 }
+
 MTLBuffer :: struct {
     using MTLResourceUsage;
     contents :: (self: *MTLBuffer) -> *void {
@@ -1043,6 +1068,7 @@ MTLBuffer :: struct {
         return invoke(self, sel_registerName(cast(*u8) "length\0"));
     }
 }
+
 using MTLTextureType :: enum NSUInteger {
     MTLTextureType1D :: 0;
     MTLTextureType1DArray :: 1;
@@ -1055,6 +1081,7 @@ using MTLTextureType :: enum NSUInteger {
     MTLTextureType2DMultisampleArray :: 8;
     MTLTextureTypeTextureBuffer :: 9;
 }
+
 MTLSharedTextureHandle :: struct {
     nsobject: NSObject;
     _priv: *MTLSharedTextureHandlePrivate;
@@ -1069,7 +1096,9 @@ MTLSharedTextureHandle :: struct {
         return invoke(self, sel_registerName(cast(*u8) "label\0"));
     }
 }
+
 MTLSharedTextureHandlePrivate :: struct {}
+
 using MTLTextureUsage :: enum NSUInteger {
     MTLTextureUsageUnknown :: 0;
     MTLTextureUsageShaderRead :: 1;
@@ -1077,6 +1106,7 @@ using MTLTextureUsage :: enum NSUInteger {
     MTLTextureUsageRenderTarget :: 4;
     MTLTextureUsagePixelFormatView :: 16;
 }
+
 MTLTextureDescriptor :: struct {
     nsobject: NSObject;
     texture2DDescriptorWithPixelFormat_width_height_mipmapped :: (pixelFormat: MTLPixelFormat, width: NSUInteger, height: NSUInteger, mipmapped: BOOL) -> *MTLTextureDescriptor {
@@ -1225,6 +1255,7 @@ MTLTextureDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setAllowGPUOptimizedContents:\0"), allowGPUOptimizedContents);
     }
 }
+
 MTLTexture :: struct {
     using MTLResource;
     getBytes_bytesPerRow_bytesPerImage_fromRegion_mipmapLevel_slice :: (self: *MTLTexture, pixelBytes: *void, bytesPerRow: NSUInteger, bytesPerImage: NSUInteger, region: MTLRegion, level: NSUInteger, slice: NSUInteger) -> () {
@@ -1368,6 +1399,7 @@ MTLTexture :: struct {
         return invoke(self, sel_registerName(cast(*u8) "allowGPUOptimizedContents\0"));
     }
 }
+
 using MTLDataType :: enum NSUInteger {
     MTLDataTypeNone :: 0;
     MTLDataTypeStruct :: 1;
@@ -1432,17 +1464,20 @@ using MTLDataType :: enum NSUInteger {
     MTLDataTypeRenderPipeline :: 78;
     MTLDataTypeIndirectCommandBuffer :: 80;
 }
+
 using MTLArgumentType :: enum NSUInteger {
     MTLArgumentTypeBuffer :: 0;
     MTLArgumentTypeThreadgroupMemory :: 1;
     MTLArgumentTypeTexture :: 2;
     MTLArgumentTypeSampler :: 3;
 }
+
 using MTLArgumentAccess :: enum NSUInteger {
     MTLArgumentAccessReadOnly :: 0;
     MTLArgumentAccessReadWrite :: 1;
     MTLArgumentAccessWriteOnly :: 2;
 }
+
 MTLType :: struct {
     nsobject: NSObject;
     dataType :: (self: *MTLType) -> MTLDataType {
@@ -1451,6 +1486,7 @@ MTLType :: struct {
         return invoke(self, sel_registerName(cast(*u8) "dataType\0"));
     }
 }
+
 MTLStructMember :: struct {
     nsobject: NSObject;
     structType :: (self: *MTLStructMember) -> *MTLStructType {
@@ -1494,6 +1530,7 @@ MTLStructMember :: struct {
         return invoke(self, sel_registerName(cast(*u8) "argumentIndex\0"));
     }
 }
+
 MTLStructType :: struct {
     mtltype: MTLType;
     memberByName :: (self: *MTLStructType, name: *NSString) -> *MTLStructMember {
@@ -1507,6 +1544,7 @@ MTLStructType :: struct {
         return invoke(self, sel_registerName(cast(*u8) "members\0"));
     }
 }
+
 MTLArrayType :: struct {
     mtltype: MTLType;
     elementStructType :: (self: *MTLArrayType) -> *MTLStructType {
@@ -1550,6 +1588,7 @@ MTLArrayType :: struct {
         return invoke(self, sel_registerName(cast(*u8) "argumentIndexStride\0"));
     }
 }
+
 MTLPointerType :: struct {
     mtltype: MTLType;
     elementStructType :: (self: *MTLPointerType) -> *MTLStructType {
@@ -1588,6 +1627,7 @@ MTLPointerType :: struct {
         return invoke(self, sel_registerName(cast(*u8) "elementIsArgumentBuffer\0"));
     }
 }
+
 MTLTextureReferenceType :: struct {
     mtltype: MTLType;
     textureDataType :: (self: *MTLTextureReferenceType) -> MTLDataType {
@@ -1611,6 +1651,7 @@ MTLTextureReferenceType :: struct {
         return invoke(self, sel_registerName(cast(*u8) "isDepthTexture\0"));
     }
 }
+
 MTLArgument :: struct {
     nsobject: NSObject;
     name :: (self: *MTLArgument) -> *NSString {
@@ -1694,12 +1735,15 @@ MTLArgument :: struct {
         return invoke(self, sel_registerName(cast(*u8) "arrayLength\0"));
     }
 }
+
 MTLAutoreleasedArgument :: *MTLArgument;
+
 using MTLPatchType :: enum NSUInteger {
     MTLPatchTypeNone :: 0;
     MTLPatchTypeTriangle :: 1;
     MTLPatchTypeQuad :: 2;
 }
+
 MTLVertexAttribute :: struct {
     nsobject: NSObject;
     name :: (self: *MTLVertexAttribute) -> *NSString {
@@ -1733,6 +1777,7 @@ MTLVertexAttribute :: struct {
         return invoke(self, sel_registerName(cast(*u8) "isPatchControlPointData\0"));
     }
 }
+
 MTLAttribute :: struct {
     nsobject: NSObject;
     name :: (self: *MTLAttribute) -> *NSString {
@@ -1766,11 +1811,13 @@ MTLAttribute :: struct {
         return invoke(self, sel_registerName(cast(*u8) "isPatchControlPointData\0"));
     }
 }
+
 using MTLFunctionType :: enum NSUInteger {
     MTLFunctionTypeVertex :: 1;
     MTLFunctionTypeFragment :: 2;
     MTLFunctionTypeKernel :: 3;
 }
+
 MTLFunctionConstant :: struct {
     nsobject: NSObject;
     name :: (self: *MTLFunctionConstant) -> *NSString {
@@ -1794,6 +1841,7 @@ MTLFunctionConstant :: struct {
         return invoke(self, sel_registerName(cast(*u8) "required\0"));
     }
 }
+
 MTLFunction :: struct {
     newArgumentEncoderWithBufferIndex :: (self: *MTLFunction, bufferIndex: NSUInteger) -> id {
         invoke: (receiver: *MTLFunction, selector: SEL, bufferIndex: NSUInteger) -> id #c_call;
@@ -1856,6 +1904,7 @@ MTLFunction :: struct {
         return invoke(self, sel_registerName(cast(*u8) "functionConstantsDictionary\0"));
     }
 }
+
 using MTLLanguageVersion :: enum NSUInteger {
     MTLLanguageVersion1_0 :: 65536;
     MTLLanguageVersion1_1 :: 65537;
@@ -1863,6 +1912,7 @@ using MTLLanguageVersion :: enum NSUInteger {
     MTLLanguageVersion2_0 :: 131072;
     MTLLanguageVersion2_1 :: 131073;
 }
+
 MTLCompileOptions :: struct {
     nsobject: NSObject;
     preprocessorMacros :: (self: *MTLCompileOptions) -> *NSDictionary(*NSString, *NSObject) {
@@ -1896,7 +1946,9 @@ MTLCompileOptions :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLanguageVersion:\0"), languageVersion);
     }
 }
+
 MTLLibraryErrorDomain: *NSString;
+
 using MTLLibraryError :: enum NSUInteger {
     MTLLibraryErrorUnsupported :: 1;
     MTLLibraryErrorInternal :: 2;
@@ -1905,6 +1957,7 @@ using MTLLibraryError :: enum NSUInteger {
     MTLLibraryErrorFunctionNotFound :: 5;
     MTLLibraryErrorFileNotFound :: 6;
 }
+
 MTLLibrary :: struct {
     newFunctionWithName :: (self: *MTLLibrary, functionName: *NSString) -> id {
         invoke: (receiver: *MTLLibrary, selector: SEL, functionName: *NSString) -> id #c_call;
@@ -1937,6 +1990,7 @@ MTLLibrary :: struct {
         return invoke(self, sel_registerName(cast(*u8) "functionNames\0"));
     }
 }
+
 MTLCreateSystemDefaultDevice :: () -> id #foreign Metal;
 MTLCopyAllDevices :: () -> *NSArray(id) #foreign Metal;
 MTLDeviceNotificationName :: *NSString;
@@ -1944,6 +1998,7 @@ MTLDeviceWasAddedNotification: MTLDeviceNotificationName;
 MTLDeviceRemovalRequestedNotification: MTLDeviceNotificationName;
 MTLDeviceWasRemovedNotification: MTLDeviceNotificationName;
 MTLRemoveDeviceObserver :: (observer: id) -> () #foreign Metal;
+
 using MTLFeatureSet :: enum NSUInteger {
     MTLFeatureSet_iOS_GPUFamily1_v1 :: 0;
     MTLFeatureSet_iOS_GPUFamily2_v1 :: 1;
@@ -1976,26 +2031,32 @@ using MTLFeatureSet :: enum NSUInteger {
     MTLFeatureSet_tvOS_GPUFamily1_v3 :: 30002;
     MTLFeatureSet_tvOS_GPUFamily1_v4 :: 30004;
 }
+
 using MTLPipelineOption :: enum NSUInteger {
     MTLPipelineOptionNone :: 0;
     MTLPipelineOptionArgumentInfo :: 1;
     MTLPipelineOptionBufferTypeInfo :: 2;
 }
+
 using MTLReadWriteTextureTier :: enum NSUInteger {
     MTLReadWriteTextureTierNone :: 0;
     MTLReadWriteTextureTier1 :: 1;
     MTLReadWriteTextureTier2 :: 2;
 }
+
 using MTLArgumentBuffersTier :: enum NSUInteger {
     MTLArgumentBuffersTier1 :: 0;
     MTLArgumentBuffersTier2 :: 1;
 }
+
 MTLSizeAndAlign :: struct {
     size: NSUInteger;
     align: NSUInteger;
 }
+
 MTLAutoreleasedRenderPipelineReflection :: *MTLRenderPipelineReflection;
 MTLAutoreleasedComputePipelineReflection :: *MTLComputePipelineReflection;
+
 MTLArgumentDescriptor :: struct {
     nsobject: NSObject;
     argumentDescriptor :: () -> *MTLArgumentDescriptor {
@@ -2064,6 +2125,7 @@ MTLArgumentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setConstantBlockAlignment:\0"), constantBlockAlignment);
     }
 }
+
 MTLDevice :: struct {
     newCommandQueue :: (self: *MTLDevice) -> *MTLCommandQueue {
         invoke: (receiver: *MTLDevice, selector: SEL) -> *MTLCommandQueue #c_call;
@@ -2329,6 +2391,7 @@ MTLDevice :: struct {
         return invoke(self, sel_registerName(cast(*u8) "maxBufferLength\0"));
     }
 }
+
 MTLFence :: struct {
     device :: (self: *MTLFence) -> id {
         invoke: (receiver: *MTLFence, selector: SEL) -> id #c_call;
@@ -2346,12 +2409,14 @@ MTLFence :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLabel:\0"), label);
     }
 }
+
 using MTLBlitOption :: enum NSUInteger {
     MTLBlitOptionNone :: 0;
     MTLBlitOptionDepthFromDepthStencil :: 1;
     MTLBlitOptionStencilFromDepthStencil :: 2;
     MTLBlitOptionRowLinearPVRTC :: 4;
 }
+
 MTLBlitCommandEncoder :: struct {
     synchronizeResource :: (self: *MTLBlitCommandEncoder, resource: id) -> () {
         invoke: (receiver: *MTLBlitCommandEncoder, selector: SEL, resource: id) -> () #c_call;
@@ -2449,6 +2514,7 @@ MTLBlitCommandEncoder :: struct {
         invoke(self, sel_registerName(cast(*u8) "optimizeIndirectCommandBuffer:withRange:\0"), indirectCommandBuffer, range);
     }
 }
+
 using MTLCommandBufferStatus :: enum NSUInteger {
     MTLCommandBufferStatusNotEnqueued :: 0;
     MTLCommandBufferStatusEnqueued :: 1;
@@ -2457,7 +2523,9 @@ using MTLCommandBufferStatus :: enum NSUInteger {
     MTLCommandBufferStatusCompleted :: 4;
     MTLCommandBufferStatusError :: 5;
 }
+
 MTLCommandBufferErrorDomain: *NSString;
+
 using MTLCommandBufferError :: enum NSUInteger {
     MTLCommandBufferErrorNone :: 0;
     MTLCommandBufferErrorInternal :: 1;
@@ -2470,10 +2538,12 @@ using MTLCommandBufferError :: enum NSUInteger {
     MTLCommandBufferErrorMemoryless :: 10;
     MTLCommandBufferErrorDeviceRemoved :: 11;
 }
+
 using MTLDispatchType :: enum NSUInteger {
     MTLDispatchTypeSerial :: 0;
     MTLDispatchTypeConcurrent :: 1;
 }
+
 MTLCommandBuffer :: struct {
     enqueue :: (self: *MTLCommandBuffer) -> () {
         invoke: (receiver: *MTLCommandBuffer, selector: SEL) -> () #c_call;
@@ -2606,13 +2676,16 @@ MTLCommandBuffer :: struct {
         return invoke(self, sel_registerName(cast(*u8) "error\0"));
     }
 }
+
 MTLDispatchThreadgroupsIndirectArguments :: struct {
     threadgroupsPerGrid: [3] uint32_t;
 }
+
 MTLStageInRegionIndirectArguments :: struct {
     stageInOrigin: [3] uint32_t;
     stageInSize: [3] uint32_t;
 }
+
 MTLComputeCommandEncoder :: struct {
     setComputePipelineState :: (self: *MTLComputeCommandEncoder, state: id) -> () {
         invoke: (receiver: *MTLComputeCommandEncoder, selector: SEL, state: id) -> () #c_call;
@@ -2745,6 +2818,7 @@ MTLComputeCommandEncoder :: struct {
         return invoke(self, sel_registerName(cast(*u8) "dispatchType\0"));
     }
 }
+
 MTLCommandQueue :: struct {
     commandBuffer :: (self: *MTLCommandQueue) -> *MTLCommandBuffer {
         invoke: (receiver: *MTLCommandQueue, selector: SEL) -> *MTLCommandBuffer #c_call;
@@ -2777,6 +2851,7 @@ MTLCommandQueue :: struct {
         return invoke(self, sel_registerName(cast(*u8) "device\0"));
     }
 }
+
 using MTLCompareFunction :: enum NSUInteger {
     MTLCompareFunctionNever :: 0;
     MTLCompareFunctionLess :: 1;
@@ -2787,6 +2862,7 @@ using MTLCompareFunction :: enum NSUInteger {
     MTLCompareFunctionGreaterEqual :: 6;
     MTLCompareFunctionAlways :: 7;
 }
+
 using MTLStencilOperation :: enum NSUInteger {
     MTLStencilOperationKeep :: 0;
     MTLStencilOperationZero :: 1;
@@ -2797,6 +2873,7 @@ using MTLStencilOperation :: enum NSUInteger {
     MTLStencilOperationIncrementWrap :: 6;
     MTLStencilOperationDecrementWrap :: 7;
 }
+
 MTLStencilDescriptor :: struct {
     nsobject: NSObject;
     stencilCompareFunction :: (self: *MTLStencilDescriptor) -> MTLCompareFunction {
@@ -2860,6 +2937,7 @@ MTLStencilDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setWriteMask:\0"), writeMask);
     }
 }
+
 MTLDepthStencilDescriptor :: struct {
     nsobject: NSObject;
     depthCompareFunction :: (self: *MTLDepthStencilDescriptor) -> MTLCompareFunction {
@@ -2913,6 +2991,7 @@ MTLDepthStencilDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLabel:\0"), label);
     }
 }
+
 MTLDepthStencilState :: struct {
     label :: (self: *MTLDepthStencilState) -> *NSString {
         invoke: (receiver: *MTLDepthStencilState, selector: SEL) -> *NSString #c_call;
@@ -2925,6 +3004,7 @@ MTLDepthStencilState :: struct {
         return invoke(self, sel_registerName(cast(*u8) "device\0"));
     }
 }
+
 MTLDrawable :: struct {
     present :: (self: *MTLDrawable) -> () {
         invoke: (receiver: *MTLDrawable, selector: SEL) -> () #c_call;
@@ -2937,11 +3017,13 @@ MTLDrawable :: struct {
         invoke(self, sel_registerName(cast(*u8) "presentAtTime:\0"), presentationTime);
     }
 }
+
 using MTLLoadAction :: enum NSUInteger {
     MTLLoadActionDontCare :: 0;
     MTLLoadActionLoad :: 1;
     MTLLoadActionClear :: 2;
 }
+
 using MTLStoreAction :: enum NSUInteger {
     MTLStoreActionDontCare :: 0;
     MTLStoreActionStore :: 1;
@@ -2950,16 +3032,19 @@ using MTLStoreAction :: enum NSUInteger {
     MTLStoreActionUnknown :: 4;
     MTLStoreActionCustomSampleDepthStore :: 5;
 }
+
 using MTLStoreActionOptions :: enum NSUInteger {
     MTLStoreActionOptionNone :: 0;
     MTLStoreActionOptionCustomSamplePositions :: 1;
 }
+
 MTLClearColor :: struct {
     red: float64;
     green: float64;
     blue: float64;
     alpha: float64;
 }
+
 MTLRenderPassAttachmentDescriptor :: struct {
     nsobject: NSObject;
     texture :: (self: *MTLRenderPassAttachmentDescriptor) -> id {
@@ -3073,6 +3158,7 @@ MTLRenderPassAttachmentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setStoreActionOptions:\0"), storeActionOptions);
     }
 }
+
 MTLRenderPassColorAttachmentDescriptor :: struct {
     using #as mtlrenderpassattachmentdescriptor: MTLRenderPassAttachmentDescriptor;
     clearColor :: (self: *MTLRenderPassColorAttachmentDescriptor) -> MTLClearColor {
@@ -3094,11 +3180,13 @@ MTLRenderPassColorAttachmentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setClearColor:\0"), clearColor);
     }
 }
+
 using MTLMultisampleDepthResolveFilter :: enum NSUInteger {
     MTLMultisampleDepthResolveFilterSample0 :: 0;
     MTLMultisampleDepthResolveFilterMin :: 1;
     MTLMultisampleDepthResolveFilterMax :: 2;
 }
+
 MTLRenderPassDepthAttachmentDescriptor :: struct {
     mtlrenderpassattachmentdescriptor: MTLRenderPassAttachmentDescriptor;
     clearDepth :: (self: *MTLRenderPassDepthAttachmentDescriptor) -> float64 {
@@ -3122,10 +3210,12 @@ MTLRenderPassDepthAttachmentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setDepthResolveFilter:\0"), depthResolveFilter);
     }
 }
+
 using MTLMultisampleStencilResolveFilter :: enum NSUInteger {
     MTLMultisampleStencilResolveFilterSample0 :: 0;
     MTLMultisampleStencilResolveFilterDepthResolvedSample :: 1;
 }
+
 MTLRenderPassStencilAttachmentDescriptor :: struct {
     mtlrenderpassattachmentdescriptor: MTLRenderPassAttachmentDescriptor;
     clearStencil :: (self: *MTLRenderPassStencilAttachmentDescriptor) -> uint32_t {
@@ -3149,6 +3239,7 @@ MTLRenderPassStencilAttachmentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setStencilResolveFilter:\0"), stencilResolveFilter);
     }
 }
+
 MTLRenderPassColorAttachmentDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLRenderPassColorAttachmentDescriptorArray, attachmentIndex: NSUInteger) -> *MTLRenderPassColorAttachmentDescriptor {
@@ -3162,6 +3253,7 @@ MTLRenderPassColorAttachmentDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), attachment, attachmentIndex);
     }
 }
+
 MTLRenderPassDescriptor :: struct {
     nsobject: NSObject;
     renderPassDescriptor :: () -> *MTLRenderPassDescriptor {
@@ -3225,6 +3317,7 @@ MTLRenderPassDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setRenderTargetArrayLength:\0"), renderTargetArrayLength);
     }
 }
+
 MTLClearColorMake :: (red: float64, green: float64, blue: float64, alpha: float64) -> MTLClearColor {
     result: MTLClearColor;
     result.red = red;
@@ -3233,6 +3326,7 @@ MTLClearColorMake :: (red: float64, green: float64, blue: float64, alpha: float6
     result.alpha = alpha;
     return result;
 }
+
 using MTLAttributeFormat :: enum NSUInteger {
     MTLAttributeFormatInvalid :: 0;
     MTLAttributeFormatUChar2 :: 1;
@@ -3287,10 +3381,12 @@ using MTLAttributeFormat :: enum NSUInteger {
     MTLAttributeFormatShortNormalized :: 52;
     MTLAttributeFormatHalf :: 53;
 }
+
 using MTLIndexType :: enum NSUInteger {
     MTLIndexTypeUInt16 :: 0;
     MTLIndexTypeUInt32 :: 1;
 }
+
 using MTLStepFunction :: enum NSUInteger {
     MTLStepFunctionConstant :: 0;
     MTLStepFunctionPerVertex :: 1;
@@ -3302,6 +3398,7 @@ using MTLStepFunction :: enum NSUInteger {
     MTLStepFunctionThreadPositionInGridXIndexed :: 7;
     MTLStepFunctionThreadPositionInGridYIndexed :: 8;
 }
+
 MTLBufferLayoutDescriptor :: struct {
     nsobject: NSObject;
     stride :: (self: *MTLBufferLayoutDescriptor) -> NSUInteger {
@@ -3335,6 +3432,7 @@ MTLBufferLayoutDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setStepRate:\0"), stepRate);
     }
 }
+
 MTLBufferLayoutDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLBufferLayoutDescriptorArray, index: NSUInteger) -> *MTLBufferLayoutDescriptor {
@@ -3348,6 +3446,7 @@ MTLBufferLayoutDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), bufferDesc, index);
     }
 }
+
 MTLAttributeDescriptor :: struct {
     nsobject: NSObject;
     format :: (self: *MTLAttributeDescriptor) -> MTLAttributeFormat {
@@ -3381,6 +3480,7 @@ MTLAttributeDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setBufferIndex:\0"), bufferIndex);
     }
 }
+
 MTLAttributeDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLAttributeDescriptorArray, index: NSUInteger) -> *MTLAttributeDescriptor {
@@ -3394,6 +3494,7 @@ MTLAttributeDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), attributeDesc, index);
     }
 }
+
 MTLStageInputOutputDescriptor :: struct {
     nsobject: NSObject;
     stageInputOutputDescriptor :: () -> *MTLStageInputOutputDescriptor {
@@ -3437,11 +3538,13 @@ MTLStageInputOutputDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setIndexBufferIndex:\0"), indexBufferIndex);
     }
 }
+
 using MTLMutability :: enum NSUInteger {
     MTLMutabilityDefault :: 0;
     MTLMutabilityMutable :: 1;
     MTLMutabilityImmutable :: 2;
 }
+
 MTLPipelineBufferDescriptor :: struct {
     nsobject: NSObject;
     mutability :: (self: *MTLPipelineBufferDescriptor) -> MTLMutability {
@@ -3455,6 +3558,7 @@ MTLPipelineBufferDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setMutability:\0"), mutability);
     }
 }
+
 MTLPipelineBufferDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLPipelineBufferDescriptorArray, bufferIndex: NSUInteger) -> *MTLPipelineBufferDescriptor {
@@ -3468,6 +3572,7 @@ MTLPipelineBufferDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), buffer, bufferIndex);
     }
 }
+
 MTLComputePipelineReflection :: struct {
     nsobject: NSObject;
     arguments :: (self: *MTLComputePipelineReflection) -> *NSArray(*MTLArgument) {
@@ -3476,6 +3581,7 @@ MTLComputePipelineReflection :: struct {
         return invoke(self, sel_registerName(cast(*u8) "arguments\0"));
     }
 }
+
 MTLComputePipelineDescriptor :: struct {
     nsobject: NSObject;
     reset :: (self: *MTLComputePipelineDescriptor) -> () {
@@ -3539,6 +3645,7 @@ MTLComputePipelineDescriptor :: struct {
         return invoke(self, sel_registerName(cast(*u8) "buffers\0"));
     }
 }
+
 MTLComputePipelineState :: struct {
     label :: (self: *MTLComputePipelineState) -> *NSString {
         invoke: (receiver: *MTLComputePipelineState, selector: SEL) -> *NSString #c_call;
@@ -3566,6 +3673,7 @@ MTLComputePipelineState :: struct {
         return invoke(self, sel_registerName(cast(*u8) "staticThreadgroupMemoryLength\0"));
     }
 }
+
 using MTLPrimitiveType :: enum NSUInteger {
     MTLPrimitiveTypePoint :: 0;
     MTLPrimitiveTypeLine :: 1;
@@ -3573,17 +3681,20 @@ using MTLPrimitiveType :: enum NSUInteger {
     MTLPrimitiveTypeTriangle :: 3;
     MTLPrimitiveTypeTriangleStrip :: 4;
 }
+
 using MTLVisibilityResultMode :: enum NSUInteger {
     MTLVisibilityResultModeDisabled :: 0;
     MTLVisibilityResultModeBoolean :: 1;
     MTLVisibilityResultModeCounting :: 2;
 }
+
 MTLScissorRect :: struct {
     x: NSUInteger;
     y: NSUInteger;
     width: NSUInteger;
     height: NSUInteger;
 }
+
 MTLViewport :: struct {
     originX: float64;
     originY: float64;
@@ -3592,29 +3703,35 @@ MTLViewport :: struct {
     znear: float64;
     zfar: float64;
 }
+
 using MTLCullMode :: enum NSUInteger {
     MTLCullModeNone :: 0;
     MTLCullModeFront :: 1;
     MTLCullModeBack :: 2;
 }
+
 using MTLWinding :: enum NSUInteger {
     MTLWindingClockwise :: 0;
     MTLWindingCounterClockwise :: 1;
 }
+
 using MTLDepthClipMode :: enum NSUInteger {
     MTLDepthClipModeClip :: 0;
     MTLDepthClipModeClamp :: 1;
 }
+
 using MTLTriangleFillMode :: enum NSUInteger {
     MTLTriangleFillModeFill :: 0;
     MTLTriangleFillModeLines :: 1;
 }
+
 MTLDrawPrimitivesIndirectArguments :: struct {
     vertexCount: uint32_t;
     instanceCount: uint32_t;
     vertexStart: uint32_t;
     baseInstance: uint32_t;
 }
+
 MTLDrawIndexedPrimitivesIndirectArguments :: struct {
     indexCount: uint32_t;
     instanceCount: uint32_t;
@@ -3622,24 +3739,29 @@ MTLDrawIndexedPrimitivesIndirectArguments :: struct {
     baseVertex: int32_t;
     baseInstance: uint32_t;
 }
+
 MTLDrawPatchIndirectArguments :: struct {
     patchCount: uint32_t;
     instanceCount: uint32_t;
     patchStart: uint32_t;
     baseInstance: uint32_t;
 }
+
 MTLQuadTessellationFactorsHalf :: struct {
     edgeTessellationFactor: [4] uint16_t;
     insideTessellationFactor: [2] uint16_t;
 }
+
 MTLTriangleTessellationFactorsHalf :: struct {
     edgeTessellationFactor: [3] uint16_t;
     insideTessellationFactor: uint16_t;
 }
+
 using MTLRenderStages :: enum NSUInteger {
     MTLRenderStageVertex :: 1;
     MTLRenderStageFragment :: 2;
 }
+
 MTLRenderCommandEncoder :: struct {
     using #as mtlcommandencder: MTLCommandEncoder;
     setRenderPipelineState :: (self: *MTLRenderCommandEncoder, pipelineState: id) -> () {
@@ -3973,6 +4095,7 @@ MTLRenderCommandEncoder :: struct {
         invoke(self, sel_registerName(cast(*u8) "memoryBarrierWithResources:count:afterStages:beforeStages:\0"), resources, count, after, before);
     }
 }
+
 MTLFunctionConstantValues :: struct {
     nsobject: NSObject;
     setConstantValue_type_atIndex :: (self: *MTLFunctionConstantValues, value: *void, type: MTLDataType, index: NSUInteger) -> () {
@@ -3996,6 +4119,7 @@ MTLFunctionConstantValues :: struct {
         invoke(self, sel_registerName(cast(*u8) "reset\0"));
     }
 }
+
 using MTLBlendFactor :: enum NSUInteger {
     MTLBlendFactorZero :: 0;
     MTLBlendFactorOne :: 1;
@@ -4017,6 +4141,7 @@ using MTLBlendFactor :: enum NSUInteger {
     MTLBlendFactorSource1Alpha :: 17;
     MTLBlendFactorOneMinusSource1Alpha :: 18;
 }
+
 using MTLBlendOperation :: enum NSUInteger {
     MTLBlendOperationAdd :: 0;
     MTLBlendOperationSubtract :: 1;
@@ -4024,6 +4149,7 @@ using MTLBlendOperation :: enum NSUInteger {
     MTLBlendOperationMin :: 3;
     MTLBlendOperationMax :: 4;
 }
+
 using MTLColorWriteMask :: enum NSUInteger {
     MTLColorWriteMaskNone :: 0;
     MTLColorWriteMaskRed :: 8;
@@ -4032,32 +4158,38 @@ using MTLColorWriteMask :: enum NSUInteger {
     MTLColorWriteMaskAlpha :: 1;
     MTLColorWriteMaskAll :: 15;
 }
+
 using MTLPrimitiveTopologyClass :: enum NSUInteger {
     MTLPrimitiveTopologyClassUnspecified :: 0;
     MTLPrimitiveTopologyClassPoint :: 1;
     MTLPrimitiveTopologyClassLine :: 2;
     MTLPrimitiveTopologyClassTriangle :: 3;
 }
+
 using MTLTessellationPartitionMode :: enum NSUInteger {
     MTLTessellationPartitionModePow2 :: 0;
     MTLTessellationPartitionModeInteger :: 1;
     MTLTessellationPartitionModeFractionalOdd :: 2;
     MTLTessellationPartitionModeFractionalEven :: 3;
 }
+
 using MTLTessellationFactorStepFunction :: enum NSUInteger {
     MTLTessellationFactorStepFunctionConstant :: 0;
     MTLTessellationFactorStepFunctionPerPatch :: 1;
     MTLTessellationFactorStepFunctionPerInstance :: 2;
     MTLTessellationFactorStepFunctionPerPatchAndPerInstance :: 3;
 }
+
 using MTLTessellationFactorFormat :: enum NSUInteger {
     MTLTessellationFactorFormatHalf :: 0;
 }
+
 using MTLTessellationControlPointIndexType :: enum NSUInteger {
     MTLTessellationControlPointIndexTypeNone :: 0;
     MTLTessellationControlPointIndexTypeUInt16 :: 1;
     MTLTessellationControlPointIndexTypeUInt32 :: 2;
 }
+
 MTLRenderPipelineColorAttachmentDescriptor :: struct {
     nsobject: NSObject;
     pixelFormat :: (self: *MTLRenderPipelineColorAttachmentDescriptor) -> MTLPixelFormat {
@@ -4151,6 +4283,7 @@ MTLRenderPipelineColorAttachmentDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setWriteMask:\0"), writeMask);
     }
 }
+
 MTLRenderPipelineReflection :: struct {
     nsobject: NSObject;
     vertexArguments :: (self: *MTLRenderPipelineReflection) -> *NSArray(*MTLArgument) {
@@ -4164,6 +4297,7 @@ MTLRenderPipelineReflection :: struct {
         return invoke(self, sel_registerName(cast(*u8) "fragmentArguments\0"));
     }
 }
+
 MTLRenderPipelineDescriptor :: struct {
     nsobject: NSObject;
     reset :: (self: *MTLRenderPipelineDescriptor) -> () {
@@ -4387,6 +4521,7 @@ MTLRenderPipelineDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setSupportIndirectCommandBuffers:\0"), supportIndirectCommandBuffers);
     }
 }
+
 MTLRenderPipelineState :: struct {
     label :: (self: *MTLRenderPipelineState) -> *NSString {
         invoke: (receiver: *MTLRenderPipelineState, selector: SEL) -> *NSString #c_call;
@@ -4404,6 +4539,7 @@ MTLRenderPipelineState :: struct {
         return invoke(self, sel_registerName(cast(*u8) "supportIndirectCommandBuffers\0"));
     }
 }
+
 MTLRenderPipelineColorAttachmentDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLRenderPipelineColorAttachmentDescriptorArray, attachmentIndex: NSUInteger) -> *MTLRenderPipelineColorAttachmentDescriptor {
@@ -4417,6 +4553,7 @@ MTLRenderPipelineColorAttachmentDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), attachment, attachmentIndex);
     }
 }
+
 using MTLVertexFormat :: enum NSUInteger {
     MTLVertexFormatInvalid :: 0;
     MTLVertexFormatUChar2 :: 1;
@@ -4471,6 +4608,7 @@ using MTLVertexFormat :: enum NSUInteger {
     MTLVertexFormatShortNormalized :: 52;
     MTLVertexFormatHalf :: 53;
 }
+
 using MTLVertexStepFunction :: enum NSUInteger {
     MTLVertexStepFunctionConstant :: 0;
     MTLVertexStepFunctionPerVertex :: 1;
@@ -4478,6 +4616,7 @@ using MTLVertexStepFunction :: enum NSUInteger {
     MTLVertexStepFunctionPerPatch :: 3;
     MTLVertexStepFunctionPerPatchControlPoint :: 4;
 }
+
 MTLVertexBufferLayoutDescriptor :: struct {
     nsobject: NSObject;
     stride :: (self: *MTLVertexBufferLayoutDescriptor) -> NSUInteger {
@@ -4511,6 +4650,7 @@ MTLVertexBufferLayoutDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setStepRate:\0"), stepRate);
     }
 }
+
 MTLVertexBufferLayoutDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLVertexBufferLayoutDescriptorArray, index: NSUInteger) -> *MTLVertexBufferLayoutDescriptor {
@@ -4524,6 +4664,7 @@ MTLVertexBufferLayoutDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), bufferDesc, index);
     }
 }
+
 MTLVertexAttributeDescriptor :: struct {
     nsobject: NSObject;
     format :: (self: *MTLVertexAttributeDescriptor) -> MTLVertexFormat {
@@ -4557,6 +4698,7 @@ MTLVertexAttributeDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setBufferIndex:\0"), bufferIndex);
     }
 }
+
 MTLVertexAttributeDescriptorArray :: struct {
     nsobject: NSObject;
     objectAtIndexedSubscript :: (self: *MTLVertexAttributeDescriptorArray, index: NSUInteger) -> *MTLVertexAttributeDescriptor {
@@ -4570,6 +4712,7 @@ MTLVertexAttributeDescriptorArray :: struct {
         invoke(self, sel_registerName(cast(*u8) "setObject:atIndexedSubscript:\0"), attributeDesc, index);
     }
 }
+
 MTLVertexDescriptor :: struct {
     nsobject: NSObject;
     vertexDescriptor :: () -> *MTLVertexDescriptor {
@@ -4593,6 +4736,7 @@ MTLVertexDescriptor :: struct {
         return invoke(self, sel_registerName(cast(*u8) "attributes\0"));
     }
 }
+
 MTLParallelRenderCommandEncoder :: struct {
     renderCommandEncoder :: (self: *MTLParallelRenderCommandEncoder) -> id {
         invoke: (receiver: *MTLParallelRenderCommandEncoder, selector: SEL) -> id #c_call;
@@ -4630,15 +4774,18 @@ MTLParallelRenderCommandEncoder :: struct {
         invoke(self, sel_registerName(cast(*u8) "setStencilStoreActionOptions:\0"), storeActionOptions);
     }
 }
+
 using MTLSamplerMinMagFilter :: enum NSUInteger {
     MTLSamplerMinMagFilterNearest :: 0;
     MTLSamplerMinMagFilterLinear :: 1;
 }
+
 using MTLSamplerMipFilter :: enum NSUInteger {
     MTLSamplerMipFilterNotMipmapped :: 0;
     MTLSamplerMipFilterNearest :: 1;
     MTLSamplerMipFilterLinear :: 2;
 }
+
 using MTLSamplerAddressMode :: enum NSUInteger {
     MTLSamplerAddressModeClampToEdge :: 0;
     MTLSamplerAddressModeMirrorClampToEdge :: 1;
@@ -4647,11 +4794,13 @@ using MTLSamplerAddressMode :: enum NSUInteger {
     MTLSamplerAddressModeClampToZero :: 4;
     MTLSamplerAddressModeClampToBorderColor :: 5;
 }
+
 using MTLSamplerBorderColor :: enum NSUInteger {
     MTLSamplerBorderColorTransparentBlack :: 0;
     MTLSamplerBorderColorOpaqueBlack :: 1;
     MTLSamplerBorderColorOpaqueWhite :: 2;
 }
+
 MTLSamplerDescriptor :: struct {
     nsobject: NSObject;
     minFilter :: (self: *MTLSamplerDescriptor) -> MTLSamplerMinMagFilter {
@@ -4805,6 +4954,7 @@ MTLSamplerDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLabel:\0"), label);
     }
 }
+
 MTLSamplerState :: struct {
     label :: (self: *MTLSamplerState) -> *NSString {
         invoke: (receiver: *MTLSamplerState, selector: SEL) -> *NSString #c_call;
@@ -4817,6 +4967,7 @@ MTLSamplerState :: struct {
         return invoke(self, sel_registerName(cast(*u8) "device\0"));
     }
 }
+
 MTLHeapDescriptor :: struct {
     nsobject: NSObject;
     size :: (self: *MTLHeapDescriptor) -> NSUInteger {
@@ -4850,6 +5001,7 @@ MTLHeapDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setCpuCacheMode:\0"), cpuCacheMode);
     }
 }
+
 MTLHeap :: struct {
     maxAvailableSizeWithAlignment :: (self: *MTLHeap, alignment: NSUInteger) -> NSUInteger {
         invoke: (receiver: *MTLHeap, selector: SEL, alignment: NSUInteger) -> NSUInteger #c_call;
@@ -4912,6 +5064,7 @@ MTLHeap :: struct {
         return invoke(self, sel_registerName(cast(*u8) "currentAllocatedSize\0"));
     }
 }
+
 MTLArgumentEncoder :: struct {
     setArgumentBuffer_offset :: (self: *MTLArgumentEncoder, argumentBuffer: id, offset: NSUInteger) -> () {
         invoke: (receiver: *MTLArgumentEncoder, selector: SEL, argumentBuffer: id, offset: NSUInteger) -> () #c_call;
@@ -5009,6 +5162,7 @@ MTLArgumentEncoder :: struct {
         return invoke(self, sel_registerName(cast(*u8) "alignment\0"));
     }
 }
+
 MTLCaptureManager :: struct {
     nsobject: NSObject;
     _isCapturing: BOOL;
@@ -5069,6 +5223,7 @@ MTLCaptureManager :: struct {
         return invoke(self, sel_registerName(cast(*u8) "isCapturing\0"));
     }
 }
+
 MTLCaptureScope :: struct {
     beginScope :: (self: *MTLCaptureScope) -> () {
         invoke: (receiver: *MTLCaptureScope, selector: SEL) -> () #c_call;
@@ -5101,6 +5256,7 @@ MTLCaptureScope :: struct {
         return invoke(self, sel_registerName(cast(*u8) "commandQueue\0"));
     }
 }
+
 MTLIndirectRenderCommand :: struct {
     setRenderPipelineState :: (self: *MTLIndirectRenderCommand, pipelineState: id) -> () {
         invoke: (receiver: *MTLIndirectRenderCommand, selector: SEL, pipelineState: id) -> () #c_call;
@@ -5143,12 +5299,14 @@ MTLIndirectRenderCommand :: struct {
         invoke(self, sel_registerName(cast(*u8) "reset\0"));
     }
 }
+
 using MTLIndirectCommandType :: enum NSUInteger {
     MTLIndirectCommandTypeDraw :: 1;
     MTLIndirectCommandTypeDrawIndexed :: 2;
     MTLIndirectCommandTypeDrawPatches :: 4;
     MTLIndirectCommandTypeDrawIndexedPatches :: 8;
 }
+
 MTLIndirectCommandBufferDescriptor :: struct {
     nsobject: NSObject;
     commandTypes :: (self: *MTLIndirectCommandBufferDescriptor) -> MTLIndirectCommandType {
@@ -5202,6 +5360,7 @@ MTLIndirectCommandBufferDescriptor :: struct {
         invoke(self, sel_registerName(cast(*u8) "setMaxFragmentBufferBindCount:\0"), maxFragmentBufferBindCount);
     }
 }
+
 MTLIndirectCommandBuffer :: struct {
     resetWithRange :: (self: *MTLIndirectCommandBuffer, range: NSRange) -> () {
         invoke: (receiver: *MTLIndirectCommandBuffer, selector: SEL, range: NSRange) -> () #c_call;
@@ -5219,6 +5378,7 @@ MTLIndirectCommandBuffer :: struct {
         return invoke(self, sel_registerName(cast(*u8) "size\0"));
     }
 }
+
 MTLEvent :: struct {
     device :: (self: *MTLEvent) -> id {
         invoke: (receiver: *MTLEvent, selector: SEL) -> id #c_call;
@@ -5236,6 +5396,7 @@ MTLEvent :: struct {
         invoke(self, sel_registerName(cast(*u8) "setLabel:\0"), label);
     }
 }
+
 MTLSharedEventListener :: struct {
     nsobject: NSObject;
     init :: (self: *MTLSharedEventListener) -> *MTLSharedEventListener {
@@ -5254,6 +5415,7 @@ MTLSharedEventListener :: struct {
         return invoke(self, sel_registerName(cast(*u8) "dispatchQueue\0"));
     }
 }
+
 MTLSharedEvent :: struct {
     newSharedEventHandle :: (self: *MTLSharedEvent) -> *MTLSharedEventHandle {
         invoke: (receiver: *MTLSharedEvent, selector: SEL) -> *MTLSharedEventHandle #c_call;
@@ -5271,6 +5433,7 @@ MTLSharedEvent :: struct {
         invoke(self, sel_registerName(cast(*u8) "setSignaledValue:\0"), signaledValue);
     }
 }
+
 MTLSharedEventHandle :: struct {
     nsobject: NSObject;
     _priv: *MTLSharedEventHandlePrivate;
@@ -5280,9 +5443,11 @@ MTLSharedEventHandle :: struct {
         return invoke(self, sel_registerName(cast(*u8) "label\0"));
     }
 }
+
 MTLSharedEventHandlePrivate :: struct {}
 #scope_file
 Metal :: #system_library,link_always "Metal";
+
 _Generated_Selectors :: struct #type_info_no_size_complaint {
     layer: *void = ---;
     nextDrawable: *void = ---;
@@ -5851,4 +6016,5 @@ _Generated_Selectors :: struct #type_info_no_size_complaint {
     signaledValue: *void = ---;
     setSignaledValue_: *void = ---;
 }
+
 __selectors: _Generated_Selectors;

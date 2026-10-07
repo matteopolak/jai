@@ -1,4 +1,5 @@
 #load "../../Machine_X64.jai";
+
 feature_leaf_cases :: () -> bool {
     leaves: [x86_Feature_Leaf.NUMBER] u32;
     if check_feature(leaves, .SSE2) return false;
@@ -11,4 +12,5 @@ feature_leaf_cases :: () -> bool {
     if check_feature(leaves, .AVX2) || !check_feature(leaves, .RDSEED) return false;
     return true;
 }
+
 #assert #run feature_leaf_cases();

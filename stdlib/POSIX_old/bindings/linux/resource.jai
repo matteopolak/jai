@@ -22,9 +22,11 @@ __mode_t :: u32;
 __nlink_t :: u64;
 __off_t :: s64;
 __off64_t :: s64;
+
 __fsid_t :: struct {
     __val: [2] s32;
 }
+
 __clock_t :: s64;
 __rlim_t :: u64;
 __rlim64_t :: u64;
@@ -52,6 +54,7 @@ __caddr_t :: *u8;
 __intptr_t :: s64;
 __socklen_t :: u32;
 __sig_atomic_t :: s32;
+
 __rlimit_resource :: enum u32 {
     RLIMIT_CPU :: 0;
     RLIMIT_FSIZE :: 1;
@@ -85,17 +88,21 @@ __rlimit_resource :: enum u32 {
     __RLIMIT_NLIMITS :: RLIMIT_NLIMITS;
     __RLIM_NLIMITS :: RLIM_NLIMITS;
 }
+
 rlim_t :: __rlim_t;
+
 rlimit :: struct {
     rlim_cur: rlim_t;
     rlim_max: rlim_t;
 }
+
 RUSAGE :: enum s32 {
     SELF :: 0;
     CHILDREN :: -1;
     RUSAGE_SELF :: SELF;
     RUSAGE_CHILDREN :: CHILDREN;
 }
+
 rusage :: struct {
     ru_utime: timeval;
     ru_stime: timeval;
@@ -156,6 +163,7 @@ rusage :: struct {
         __ru_nivcsw_word: __syscall_slong_t;
     }
 }
+
 __priority_which :: enum u32 {
     PROCESS :: 0;
     PGRP :: 1;
@@ -164,6 +172,7 @@ __priority_which :: enum u32 {
     PRIO_PGRP :: PGRP;
     PRIO_USER :: USER;
 }
+
 id_t :: __id_t;
 __rlimit_resource_t :: s32;
 __rusage_who_t :: s32;

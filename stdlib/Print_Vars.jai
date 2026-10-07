@@ -2,6 +2,7 @@
 Basic :: #import "Basic";
 Compiler :: #import "Compiler";
 PP :: #import "Program_Print";
+
 #scope_export
 Print_Vars_Config :: struct {
     control_flags: enum_flags u32 {
@@ -24,6 +25,7 @@ Print_Vars_Config :: struct {
     name_indentation := Indentation.LEFT_JUSTIFIED;
     value_indentation := Indentation.LEFT_JUSTIFIED;
 }
+
 // One output line: each enabled column is prefix + text padded to the column width + suffix.
 print_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config, name_width: s64, value_width: s64, name: string, value: string, type: Type) {
     flags := config.control_flags;
@@ -32,6 +34,7 @@ print_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config, name
     if flags & .PRINT_TYPE emit_column(builder, config.before_type, Basic.tprint("%", type), 0, .NONE, config.after_type);
     Basic.append(builder, config.line_separator);
 }
+
 emit_column :: (builder: *Basic.String_Builder, prefix: string, text: string, width: s64, side: Print_Vars_Config.Indentation, suffix: string) {
     Basic.append(builder, prefix);
     fill := width - text.count;
@@ -40,9 +43,11 @@ emit_column :: (builder: *Basic.String_Builder, prefix: string, text: string, wi
     if side == .LEFT_JUSTIFIED pad_spaces(builder, fill);
     Basic.append(builder, suffix);
 }
+
 pad_spaces :: (builder: *Basic.String_Builder, n: s64) {
     for 1..n Basic.append(builder, " ");
 }
+
 get_code_name :: (code: Code) -> string #compile_time {
     root := Compiler.compiler_get_nodes(code);
     if root.kind == .IDENT return Basic.copy_string((cast(*Compiler.Code_Ident) root).name);
@@ -50,6 +55,7 @@ get_code_name :: (code: Code) -> string #compile_time {
     PP.print_expression(*builder, root);
     return Basic.builder_to_string(*builder);
 }
+
 print_vars_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config, $args: [$N] Code) #expand {
     names: [N] string;
     values: [N] string;
@@ -76,14 +82,17 @@ print_vars_helper :: (builder: *Basic.String_Builder, config: Print_Vars_Config,
         Basic.free(values[i]);
     }
 }
+
 print_vars_to :: (builder: *Basic.String_Builder, $args: ..Code) #expand {
     print_vars_helper(builder, .{}, args);
 }
+
 print_vars :: ($args: ..Code) #expand {
     builder: Basic.String_Builder;
     print_vars_helper(*builder, .{}, args);
     Basic.write_builder(*builder);
 }
+
 log_vars :: ($args: ..Code) #expand {
     builder: Basic.String_Builder;
     print_vars_helper(*builder, .{}, args);

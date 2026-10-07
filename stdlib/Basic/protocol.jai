@@ -3,6 +3,7 @@
 #scope_file
 Protocol :: #import "Preload";
 Protocol_Runtime :: #import "Runtime_Support"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);
+
 #scope_export
 Allocator_Mode :: Protocol.Allocator_Mode;
 Allocator_Caps :: Protocol.Allocator_Caps;

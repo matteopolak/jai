@@ -1,6 +1,7 @@
 // Base64 and base64url encode/decode; base64_decode takes an optional 256-entry decoder table.
 #scope_file
 Basic :: #import "Basic";
+
 #scope_export
 BASE64_ENCODER_TABLE :: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 BASE64URL_ENCODER_TABLE :: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -9,12 +10,15 @@ BASE64URL_ALPHABET :: BASE64URL_ENCODER_TABLE;
 WHITESPACE :: 64;
 EQUALS :: 65;
 INVALID :: 66;
+
 base64_encode :: (input: string, table: string = BASE64_ENCODER_TABLE, pad := true) -> string #must {
     return base64_encode_with_alphabet(input, table, pad);
 }
+
 base64url_encode :: (input: string) -> string {
     return base64_encode_with_alphabet(input, BASE64URL_ALPHABET, false);
 }
+
 base64_encode_with_alphabet :: (input: string, alphabet: string, padding: bool) -> string {
     if alphabet.count != 64 return "";
     for i: 0..63 for j : 0..i - 1 if alphabet[i] == alphabet[j] return "";
@@ -41,10 +45,12 @@ base64_encode_with_alphabet :: (input: string, alphabet: string, padding: bool) 
     }
     return Basic.builder_to_string(*builder);
 }
+
 base64_index_of :: (c: u8, alphabet: string) -> int, bool {
     for i: 0..alphabet.count - 1 if alphabet[i] == c return i, true;
     return -1, false;
 }
+
 base64_decode_with_alphabet :: (text: string, alphabet: string) -> string, bool {
     if alphabet.count != 64 return "", false;
     table: [256] u8;
@@ -60,6 +66,7 @@ base64_decode_with_alphabet :: (text: string, alphabet: string) -> string, bool 
     table[61] = EQUALS;
     return base64_decode(text, table);
 }
+
 base64_decode :: (input: string, table: [256] u8 = BASE64_DECODER_TABLE) -> string #must, success: bool {
     builder: Basic.String_Builder;
     bits: u32 = 0;
@@ -104,9 +111,11 @@ base64_decode :: (input: string, table: [256] u8 = BASE64_DECODER_TABLE) -> stri
     }
     return Basic.builder_to_string(*builder), true;
 }
+
 base64url_decode :: (input: string) -> string, success: bool {
     return base64_decode(input, BASE64URL_DECODER_TABLE);
 }
+
 test_base64_module :: () {
     encoded := base64_encode("foobar");
     Basic.assert(encoded == "Zm9vYmFy");
@@ -115,6 +124,7 @@ test_base64_module :: () {
     Basic.free(encoded);
     Basic.free(decoded);
 }
+
 BASE64_DECODER_TABLE :: u8.[
     66, 66, 66, 66, 66, 66, 66, 66, 66, 64, 64, 66, 66, 64, 66, 66,
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
@@ -133,6 +143,7 @@ BASE64_DECODER_TABLE :: u8.[
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
 ];
+
 BASE64URL_DECODER_TABLE :: u8.[
     66, 66, 66, 66, 66, 66, 66, 66, 66, 64, 64, 66, 66, 64, 66, 66,
     66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,

@@ -281,6 +281,7 @@ ignore_text :: (x: float, y: float, str: string, color: Vector4) {}
 ignore_rectangle :: (x0: float, y0: float, x1: float, y1: float, color: Vector4) {}
 ignore_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, color: Vector4) {}
 ignore_region :: (x: float, y: float, width: float, height: float) {}
+
 guess_text_width :: (s: string) -> float {
     return cast(float) s.count * 8;
 }

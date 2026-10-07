@@ -12,6 +12,7 @@ Allocator_Mode :: enum {
     IS_THIS_YOURS :: 9;
     CAPS :: 10;
 }
+
 Allocator_Caps :: enum_flags u32 {
     MULTIPLE_THREADS :: 0x1;
     CREATE_HEAP :: 0x2;
@@ -23,10 +24,12 @@ Allocator_Caps :: enum_flags u32 {
     HINT_I_AM_PER_FRAME_TEMPORARY_STORAGE :: 0x0400_0000;
     HINT_I_AM_A_DEBUG_ALLOCATOR :: 0x0800_0000;
 }
+
 Allocator_Proc :: #type (
     mode: Allocator_Mode, size: s64, old_size: s64,
     old_memory: *void, allocator_data: *void
 ) -> *void;
+
 Allocator :: struct {
     proc: Allocator_Proc;
     data: *void;

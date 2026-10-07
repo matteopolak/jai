@@ -286,6 +286,7 @@ fpurge :: (unknown0: *FILE) -> s32 #foreign libc;
 setbuffer :: (unknown0: *FILE, unknown1: *u8, unknown2: s32) -> void #foreign libc;
 setlinebuf :: (unknown0: *FILE) -> s32 #foreign libc;
 funopen :: (unknown0: *void, unknown1: #type (unknown0: *void, unknown1: *u8, unknown2: s32) -> s32 #c_call, unknown2: #type (unknown0: *void, unknown1: *u8, unknown2: s32) -> s32 #c_call, unknown3: #type (unknown0: *void, unknown1: fpos_t, unknown2: s32) -> fpos_t #c_call, unknown4: #type (unknown0: *void) -> s32 #c_call) -> *FILE #foreign libc;
+
 flock :: struct {
     l_start: s64;
     l_len: s64;
@@ -293,14 +294,17 @@ flock :: struct {
     l_type: s16;
     l_whence: s16;
 }
+
 flocktimeout :: struct {
     fl: flock;
     timeout: timespec;
 }
+
 radvisory :: struct {
     ra_offset: s64;
     ra_count: s32;
 }
+
 fsignatures :: struct {
     fs_file_start: s64;
     fs_blob_start: *void;
@@ -309,26 +313,34 @@ fsignatures :: struct {
     fs_cdhash: [20] u8;
     fs_hash_type: s32;
 }
+
 fsignatures_t :: fsignatures;
+
 fsupplement :: struct {
     fs_file_start: s64;
     fs_blob_start: s64;
     fs_blob_size: u64;
     fs_orig_fd: s32;
 }
+
 fsupplement_t :: fsupplement;
+
 fchecklv :: struct {
     lv_file_start: s64;
     lv_error_message_size: u64;
     lv_error_message: *void;
 }
+
 fchecklv_t :: fchecklv;
+
 fgetsigsinfo :: struct {
     fg_file_start: s64;
     fg_info_request: s32;
     fg_sig_is_platform: s32;
 }
+
 fgetsigsinfo_t :: fgetsigsinfo;
+
 fstore :: struct {
     fst_flags: u32;
     fst_posmode: s32;
@@ -336,39 +348,51 @@ fstore :: struct {
     fst_length: s64;
     fst_bytesalloc: s64;
 }
+
 fstore_t :: fstore;
+
 fpunchhole :: struct {
     fp_flags: u32;
     reserved: u32;
     fp_offset: s64;
     fp_length: s64;
 }
+
 fpunchhole_t :: fpunchhole;
+
 ftrimactivefile :: struct {
     fta_offset: s64;
     fta_length: s64;
 }
+
 ftrimactivefile_t :: ftrimactivefile;
+
 fspecread :: struct {
     fsr_flags: u32;
     reserved: u32;
     fsr_offset: s64;
     fsr_length: s64;
 }
+
 fspecread_t :: fspecread;
+
 fbootstraptransfer :: struct {
     fbt_offset: s64;
     fbt_length: u64;
     fbt_buffer: *void;
 }
+
 fbootstraptransfer_t :: fbootstraptransfer;
+
 log2phys :: struct {
     l2p_flags: u32;
     l2p_contigbytes: s64 #align 4;
     l2p_devoffset: s64 #align 4;
 }
+
 _filesec :: struct {}
 filesec_t :: *_filesec;
+
 filesec_property_t :: enum u32 {
     OWNER :: 1;
     GROUP :: 2;
@@ -387,6 +411,7 @@ filesec_property_t :: enum u32 {
     FILESEC_ACL_RAW :: ACL_RAW;
     FILESEC_ACL_ALLOCSIZE :: ACL_ALLOCSIZE;
 }
+
 open :: (unknown0: *u8, unknown1: s32, __args: ..Any) -> s32 #foreign libc;
 openat :: (unknown0: s32, unknown1: *u8, unknown2: s32, __args: ..Any) -> s32 #foreign libc;
 creat :: (unknown0: *u8, unknown1: mode_t) -> s32 #foreign libc;
@@ -401,6 +426,7 @@ filesec_get_property :: (unknown0: filesec_t, unknown1: filesec_property_t, unkn
 filesec_query_property :: (unknown0: filesec_t, unknown1: filesec_property_t, unknown2: *s32) -> s32 #foreign libc;
 filesec_set_property :: (unknown0: filesec_t, unknown1: filesec_property_t, unknown2: *void) -> s32 #foreign libc;
 filesec_unset_property :: (unknown0: filesec_t, unknown1: filesec_property_t) -> s32 #foreign libc;
+
 ostat :: struct {
     st_dev: u16;
     st_ino: ino_t;
@@ -418,6 +444,7 @@ ostat :: struct {
     st_flags: u32;
     st_gen: u32;
 }
+
 stat_t :: struct {
     st_dev: dev_t;
     st_mode: mode_t;
@@ -438,6 +465,7 @@ stat_t :: struct {
     st_lspare: s32;
     st_qspare: [2] s64;
 }
+
 chmod :: (unknown0: *u8, unknown1: mode_t) -> s32 #foreign libc;
 fchmod :: (unknown0: s32, unknown1: mode_t) -> s32 #foreign libc;
 fstat :: (unknown0: s32, unknown1: *stat_t) -> s32 #foreign libc;
@@ -464,13 +492,16 @@ mkdirx_np :: (unknown0: *u8, unknown1: filesec_t) -> s32 #foreign libc;
 mkfifox_np :: (unknown0: *u8, unknown1: filesec_t) -> s32 #foreign libc;
 statx_np :: (unknown0: *u8, unknown1: *stat_t, unknown2: filesec_t) -> s32 #foreign libc;
 umaskx_np :: (unknown0: filesec_t) -> s32 #foreign libc;
+
 ttysize :: struct {
     ts_lines: u16;
     ts_cols: u16;
     ts_xxx: u16;
     ts_yyy: u16;
 }
+
 ioctl :: (unknown0: s32, unknown1: u64, __args: ..Any) -> s32 #foreign libc;
+
 aiocb :: struct {
     aio_fildes: s32;
     aio_offset: s64;
@@ -480,6 +511,7 @@ aiocb :: struct {
     aio_sigevent: sigevent;
     aio_lio_opcode: s32;
 }
+
 aio_cancel :: (fd: s32, aiocbp: *aiocb) -> s32 #foreign libc;
 aio_error :: (aiocbp: *aiocb) -> s32 #foreign libc;
 aio_fsync :: (op: s32, aiocbp: *aiocb) -> s32 #foreign libc;

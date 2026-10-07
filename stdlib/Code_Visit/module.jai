@@ -2,6 +2,7 @@
 maybe_array_add :: inline (array: *[..] $T, item: T) #no_abc {
     if item Basic.array_add(array, item);
 }
+
 // The direct syntactic children of `node`, in source order. Resolved links (declarations an
 // identifier names, parent blocks, owning statements) are not followed, so walks terminate.
 get_subexpressions :: (node: *Code_Node, pointers: *[..] *Code_Node) {
@@ -124,6 +125,7 @@ get_subexpressions :: (node: *Code_Node, pointers: *[..] *Code_Node) {
             add((cast(*Code_Directive_Modify) node).block);
     }
 }
+
 // Appends `node` and everything below it, one depth level at a time. The output array is
 // also the work list: each pass expands exactly the nodes the previous pass appended.
 get_recursive_nodes_breadth_first :: (node: *Code_Node, pointers: *[..] *Code_Node) {
@@ -136,6 +138,7 @@ get_recursive_nodes_breadth_first :: (node: *Code_Node, pointers: *[..] *Code_No
         level_start = level_end;
     }
 }
+
 get_recursive_nodes_depth_first :: (node: *Code_Node, pointers: *[..] *Code_Node) {
     if !node return;
     Basic.array_add(pointers, node);
@@ -144,6 +147,7 @@ get_recursive_nodes_depth_first :: (node: *Code_Node, pointers: *[..] *Code_Node
     get_subexpressions(node, *children);
     for children get_recursive_nodes_depth_first(it, pointers);
 }
+
 // Runs `code` twice per node of the tree under `node`: once on the way down (`preorder` true)
 // and once on the way back up, after all of the node's children. The whole schedule is built
 // before `code` first runs, so the inserted code may rewrite the tree it is walking.
@@ -159,11 +163,13 @@ visit_pre_and_postorder :: (node: *Code_Node, code: Code) #expand {
         #insert code;
     }
 }
+
 #scope_module
 Visit_Step :: struct {
     node: *Code_Node;
     entering: bool;
 }
+
 // Iterative, so deep trees cannot overflow the stack. Popping an entering step re-pushes its
 // node as a leaving step underneath its children, which yields the leave after the subtree.
 schedule_visits :: (root: *Code_Node, schedule: *[..] Visit_Step) {
@@ -185,5 +191,6 @@ schedule_visits :: (root: *Code_Node, schedule: *[..] Visit_Step) {
         for < child: children Basic.array_add(*stack, .{ child, true });
     }
 }
+
 #import "Compiler";
 Basic :: #import "Basic";

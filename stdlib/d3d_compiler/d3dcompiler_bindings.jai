@@ -2,6 +2,7 @@
 D3DCOMPILER_DLL_A :: "d3dcompiler_47.dll";
 D3D_COMPILER_VERSION :: 47;
 D3DCOMPILER_DLL :: D3DCOMPILER_DLL_A;
+
 D3DCOMPILE :: enum_flags {
     DEBUG :: 1 << 0;
     SKIP_VALIDATION :: 1 << 1;
@@ -56,12 +57,14 @@ D3DCOMPILE :: enum_flags {
     D3DCOMPILE_DEBUG_NAME_FOR_SOURCE :: DEBUG_NAME_FOR_SOURCE;
     D3DCOMPILE_DEBUG_NAME_FOR_BINARY :: DEBUG_NAME_FOR_BINARY;
 }
+
 D3DCOMPILE_EFFECT :: enum_flags {
     CHILD_EFFECT :: 1 << 0;
     ALLOW_SLOW_OPS :: 1 << 1;
     D3DCOMPILE_EFFECT_CHILD_EFFECT :: CHILD_EFFECT;
     D3DCOMPILE_EFFECT_ALLOW_SLOW_OPS :: ALLOW_SLOW_OPS;
 }
+
 D3DCOMPILE_FLAGS2 :: enum_flags {
     FORCE_ROOT_SIGNATURE_LATEST :: 0;
     FORCE_ROOT_SIGNATURE_1_0 :: 1 << 4;
@@ -70,7 +73,9 @@ D3DCOMPILE_FLAGS2 :: enum_flags {
     D3DCOMPILE_FLAGS2_FORCE_ROOT_SIGNATURE_1_0 :: FORCE_ROOT_SIGNATURE_1_0;
     D3DCOMPILE_FLAGS2_FORCE_ROOT_SIGNATURE_1_1 :: FORCE_ROOT_SIGNATURE_1_1;
 }
+
 D3D_COMPILE_STANDARD_FILE_INCLUDE :: cast(*ID3DInclude) cast(u64) 1;
+
 D3DCOMPILE_SECDATA :: enum_flags {
     MERGE_UAV_SLOTS :: 0x00000001;
     PRESERVE_TEMPLATE_SLOTS :: 0x00000002;
@@ -79,6 +84,7 @@ D3DCOMPILE_SECDATA :: enum_flags {
     D3DCOMPILE_SECDATA_PRESERVE_TEMPLATE_SLOTS :: PRESERVE_TEMPLATE_SLOTS;
     D3DCOMPILE_SECDATA_REQUIRE_TEMPLATE_MATCH :: REQUIRE_TEMPLATE_MATCH;
 }
+
 D3D_DISASM_ENABLE_COLOR_CODE :: 0x00000001;
 D3D_DISASM_ENABLE_DEFAULT_VALUE_PRINTS :: 0x00000002;
 D3D_DISASM_ENABLE_INSTRUCTION_NUMBERING :: 0x00000004;
@@ -89,30 +95,38 @@ D3D_DISASM_INSTRUCTION_ONLY :: 0x00000040;
 D3D_DISASM_PRINT_HEX_LITERALS :: 0x00000080;
 D3D_GET_INST_OFFSETS_INCLUDE_NON_EXECUTABLE :: 0x00000001;
 D3D_COMPRESS_SHADER_KEEP_ALL_PARTS :: 0x00000001;
+
 D3D_SHADER_MACRO :: struct {
     Name: *u8;
     Definition: *u8;
 }
+
 ID3D10Blob :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d10blob_vtable: *ID3D10Blob_VTable;
 }
+
 ID3D10Blob_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetBufferPointer: (this: *ID3D10Blob) -> *void #cpp_method;
     GetBufferSize: (this: *ID3D10Blob) -> SIZE_T #cpp_method;
 }
+
 ID3D10Blob_GetBufferPointer :: (this: *ID3D10Blob) -> *void {
     return this.id3d10blob_vtable.GetBufferPointer(this);
 }
+
 ID3D10Blob_GetBufferSize :: (this: *ID3D10Blob) -> SIZE_T {
     return this.id3d10blob_vtable.GetBufferSize(this);
 }
+
 vtable :: (obj: *ID3D10Blob) -> *ID3D10Blob_VTable {
     return obj.id3d10blob_vtable;
 }
+
 ID3DBlob :: ID3D10Blob;
+
 D3D_INCLUDE_TYPE :: enum s32 {
     INCLUDE_LOCAL :: 0;
     INCLUDE_SYSTEM :: 1;
@@ -125,27 +139,34 @@ D3D_INCLUDE_TYPE :: enum s32 {
     D3D10_INCLUDE_SYSTEM :: _10_INCLUDE_SYSTEM;
     D3D_INCLUDE_FORCE_DWORD :: INCLUDE_FORCE_DWORD;
 }
+
 ID3DInclude :: struct {
     vtable: *ID3DInclude_VTable;
 }
+
 ID3DInclude_VTable :: struct #type_info_none {
     Open: (this: *ID3DInclude, IncludeType: D3D_INCLUDE_TYPE, pFileName: *u8, pParentData: *void, ppData: **void, pBytes: *u32) -> HRESULT #cpp_method;
     Close: (this: *ID3DInclude, pData: *void) -> HRESULT #cpp_method;
 }
+
 ID3DInclude_Open :: (this: *ID3DInclude, IncludeType: D3D_INCLUDE_TYPE, pFileName: *u8, pParentData: *void, ppData: **void, pBytes: *u32) -> HRESULT {
     return this.vtable.Open(this, IncludeType, pFileName, pParentData, ppData, pBytes);
 }
+
 ID3DInclude_Close :: (this: *ID3DInclude, pData: *void) -> HRESULT {
     return this.vtable.Close(this, pData);
 }
+
 vtable :: (obj: *ID3DInclude) -> *ID3DInclude_VTable {
     return obj.vtable;
 }
+
 ID3D11ModuleInstance :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11moduleinstance_vtable: *ID3D11ModuleInstance_VTable;
 }
+
 ID3D11ModuleInstance_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     BindConstantBuffer: (this: *ID3D11ModuleInstance, uSrcSlot: u32, uDstSlot: u32, cbDstOffset: u32) -> HRESULT #cpp_method;
@@ -159,77 +180,99 @@ ID3D11ModuleInstance_VTable :: struct #type_info_none {
     BindResourceAsUnorderedAccessView: (this: *ID3D11ModuleInstance, uSrcSrvSlot: u32, uDstUavSlot: u32, uCount: u32) -> HRESULT #cpp_method;
     BindResourceAsUnorderedAccessViewByName: (this: *ID3D11ModuleInstance, pSrvName: *u8, uDstUavSlot: u32, uCount: u32) -> HRESULT #cpp_method;
 }
+
 ID3D11ModuleInstance_BindConstantBuffer :: (this: *ID3D11ModuleInstance, uSrcSlot: u32, uDstSlot: u32, cbDstOffset: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindConstantBuffer(this, uSrcSlot, uDstSlot, cbDstOffset);
 }
+
 ID3D11ModuleInstance_BindConstantBufferByName :: (this: *ID3D11ModuleInstance, pName: *u8, uDstSlot: u32, cbDstOffset: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindConstantBufferByName(this, pName, uDstSlot, cbDstOffset);
 }
+
 ID3D11ModuleInstance_BindResource :: (this: *ID3D11ModuleInstance, uSrcSlot: u32, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindResource(this, uSrcSlot, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindResourceByName :: (this: *ID3D11ModuleInstance, pName: *u8, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindResourceByName(this, pName, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindSampler :: (this: *ID3D11ModuleInstance, uSrcSlot: u32, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindSampler(this, uSrcSlot, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindSamplerByName :: (this: *ID3D11ModuleInstance, pName: *u8, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindSamplerByName(this, pName, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindUnorderedAccessView :: (this: *ID3D11ModuleInstance, uSrcSlot: u32, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindUnorderedAccessView(this, uSrcSlot, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindUnorderedAccessViewByName :: (this: *ID3D11ModuleInstance, pName: *u8, uDstSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindUnorderedAccessViewByName(this, pName, uDstSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindResourceAsUnorderedAccessView :: (this: *ID3D11ModuleInstance, uSrcSrvSlot: u32, uDstUavSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindResourceAsUnorderedAccessView(this, uSrcSrvSlot, uDstUavSlot, uCount);
 }
+
 ID3D11ModuleInstance_BindResourceAsUnorderedAccessViewByName :: (this: *ID3D11ModuleInstance, pSrvName: *u8, uDstUavSlot: u32, uCount: u32) -> HRESULT {
     return this.id3d11moduleinstance_vtable.BindResourceAsUnorderedAccessViewByName(this, pSrvName, uDstUavSlot, uCount);
 }
+
 vtable :: (obj: *ID3D11ModuleInstance) -> *ID3D11ModuleInstance_VTable {
     return obj.id3d11moduleinstance_vtable;
 }
+
 ID3D11Module :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11module_vtable: *ID3D11Module_VTable;
 }
+
 ID3D11Module_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     CreateInstance: (this: *ID3D11Module, pNamespace: *u8, ppModuleInstance: **ID3D11ModuleInstance) -> HRESULT #cpp_method;
 }
+
 ID3D11Module_CreateInstance :: (this: *ID3D11Module, pNamespace: *u8, ppModuleInstance: **ID3D11ModuleInstance) -> HRESULT {
     return this.id3d11module_vtable.CreateInstance(this, pNamespace, ppModuleInstance);
 }
+
 vtable :: (obj: *ID3D11Module) -> *ID3D11Module_VTable {
     return obj.id3d11module_vtable;
 }
+
 ID3D11Linker :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11linker_vtable: *ID3D11Linker_VTable;
 }
+
 ID3D11Linker_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     Link: (this: *ID3D11Linker, pEntry: *ID3D11ModuleInstance, pEntryName: *u8, pTargetName: *u8, uFlags: u32, ppShaderBlob: **ID3DBlob, ppErrorBuffer: **ID3DBlob) -> HRESULT #cpp_method;
     UseLibrary: (this: *ID3D11Linker, pLibraryMI: *ID3D11ModuleInstance) -> HRESULT #cpp_method;
     AddClipPlaneFromCBuffer: (this: *ID3D11Linker, uCBufferSlot: u32, uCBufferEntry: u32) -> HRESULT #cpp_method;
 }
+
 ID3D11Linker_Link :: (this: *ID3D11Linker, pEntry: *ID3D11ModuleInstance, pEntryName: *u8, pTargetName: *u8, uFlags: u32, ppShaderBlob: **ID3DBlob, ppErrorBuffer: **ID3DBlob) -> HRESULT {
     return this.id3d11linker_vtable.Link(this, pEntry, pEntryName, pTargetName, uFlags, ppShaderBlob, ppErrorBuffer);
 }
+
 ID3D11Linker_UseLibrary :: (this: *ID3D11Linker, pLibraryMI: *ID3D11ModuleInstance) -> HRESULT {
     return this.id3d11linker_vtable.UseLibrary(this, pLibraryMI);
 }
+
 ID3D11Linker_AddClipPlaneFromCBuffer :: (this: *ID3D11Linker, uCBufferSlot: u32, uCBufferEntry: u32) -> HRESULT {
     return this.id3d11linker_vtable.AddClipPlaneFromCBuffer(this, uCBufferSlot, uCBufferEntry);
 }
+
 vtable :: (obj: *ID3D11Linker) -> *ID3D11Linker_VTable {
     return obj.id3d11linker_vtable;
 }
+
 D3DReadFileToBlob :: (pFileName: *s16, ppContents: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DWriteBlobToFile :: (pBlob: *ID3DBlob, pFileName: *s16, bOverwrite: BOOL) -> HRESULT #foreign d3dcompiler_47;
 D3DCompile :: (pSrcData: *void, SrcDataSize: SIZE_T, pSourceName: *u8, pDefines: *D3D_SHADER_MACRO, pInclude: *ID3DInclude, pEntrypoint: *u8, pTarget: *u8, Flags1: u32, Flags2: u32, ppCode: **ID3DBlob, ppErrorMsgs: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
@@ -240,13 +283,17 @@ D3DPreprocess :: (pSrcData: *void, SrcDataSize: SIZE_T, pSourceName: *u8, pDefin
 pD3DPreprocess :: #type (pSrcData: *void, SrcDataSize: SIZE_T, pFileName: *u8, pDefines: *D3D_SHADER_MACRO, pInclude: *ID3DInclude, ppCodeText: **ID3DBlob, ppErrorMsgs: **ID3DBlob) -> HRESULT #c_call;
 D3DGetDebugInfo :: (pSrcData: *void, SrcDataSize: SIZE_T, ppDebugInfo: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DReflect :: (pSrcData: *void, SrcDataSize: SIZE_T, pInterface: *IID, ppReflector: **void) -> HRESULT #foreign d3dcompiler_47;
+
 D3DReflect :: (pSrcData: *void, SrcDataSize: SIZE_T, pInterface: IID, ppReflector: **void) -> HRESULT {
     return D3DReflect(pSrcData, SrcDataSize, *pInterface, ppReflector);
 }
+
 D3DReflectLibrary :: (pSrcData: *void, SrcDataSize: SIZE_T, riid: *IID, ppReflector: **void) -> HRESULT #foreign d3dcompiler_47;
+
 D3DReflectLibrary :: (pSrcData: *void, SrcDataSize: SIZE_T, riid: IID, ppReflector: **void) -> HRESULT {
     return D3DReflectLibrary(pSrcData, SrcDataSize, *riid, ppReflector);
 }
+
 D3DDisassemble :: (pSrcData: *void, SrcDataSize: SIZE_T, Flags: u32, szComments: *u8, ppDisassembly: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 pD3DDisassemble :: #type (pSrcData: *void, SrcDataSize: SIZE_T, Flags: u32, szComments: *u8, ppDisassembly: **ID3DBlob) -> HRESULT #c_call;
 D3DDisassembleRegion :: (pSrcData: *void, SrcDataSize: SIZE_T, Flags: u32, szComments: *u8, StartByteOffset: SIZE_T, NumInsts: SIZE_T, pFinishByteOffset: *SIZE_T, ppDisassembly: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
@@ -256,6 +303,7 @@ D3DGetTraceInstructionOffsets :: (pSrcData: *void, SrcDataSize: SIZE_T, Flags: u
 D3DGetInputSignatureBlob :: (pSrcData: *void, SrcDataSize: SIZE_T, ppSignatureBlob: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DGetOutputSignatureBlob :: (pSrcData: *void, SrcDataSize: SIZE_T, ppSignatureBlob: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DGetInputAndOutputSignatureBlob :: (pSrcData: *void, SrcDataSize: SIZE_T, ppSignatureBlob: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
+
 D3DCOMPILER_STRIP_FLAGS :: enum_flags u32 {
     REFLECTION_DATA :: 0x1;
     DEBUG_INFO :: 0x2;
@@ -270,7 +318,9 @@ D3DCOMPILER_STRIP_FLAGS :: enum_flags u32 {
     D3DCOMPILER_STRIP_ROOT_SIGNATURE :: ROOT_SIGNATURE;
     D3DCOMPILER_STRIP_FORCE_DWORD :: FORCE_DWORD;
 }
+
 D3DStripShader :: (pShaderBytecode: *void, BytecodeLength: SIZE_T, uStripFlags: u32, ppStrippedBlob: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
+
 D3D_BLOB_PART :: enum s32 {
     INPUT_SIGNATURE_BLOB :: 0;
     OUTPUT_SIGNATURE_BLOB :: 1;
@@ -307,13 +357,16 @@ D3D_BLOB_PART :: enum s32 {
     D3D_BLOB_TEST_COMPILE_PERF :: TEST_COMPILE_PERF;
     D3D_BLOB_TEST_COMPILE_REPORT :: TEST_COMPILE_REPORT;
 }
+
 D3DGetBlobPart :: (pSrcData: *void, SrcDataSize: SIZE_T, Part: D3D_BLOB_PART, Flags: u32, ppPart: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DSetBlobPart :: (pSrcData: *void, SrcDataSize: SIZE_T, Part: D3D_BLOB_PART, Flags: u32, pPart: *void, PartSize: SIZE_T, ppNewShader: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DCreateBlob :: (Size: SIZE_T, ppBlob: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
+
 D3D_SHADER_DATA :: struct {
     pBytecode: *void;
     BytecodeLength: SIZE_T;
 }
+
 D3DCompressShaders :: (uNumShaders: u32, pShaderData: *D3D_SHADER_DATA, uFlags: u32, ppCompressedData: **ID3DBlob) -> HRESULT #foreign d3dcompiler_47;
 D3DDecompressShaders :: (pSrcData: *void, SrcDataSize: SIZE_T, uNumShaders: u32, uStartIndex: u32, pIndices: *u32, uFlags: u32, ppShaders: **ID3DBlob, pTotalShaders: *u32) -> HRESULT #foreign d3dcompiler_47;
 ID3D10Effect :: struct {}

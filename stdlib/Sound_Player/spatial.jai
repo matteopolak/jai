@@ -32,6 +32,7 @@ Listener_Frame :: struct {
     ahead: Vector3 = .{ 1, 0, 0 };
     leftward: Vector3 = .{ 0, 1, 0 };
 }
+
 listener: Listener_Frame;
 
 // Inside this distance a spatialized sound drifts toward the middle of a stereo image, so passing
@@ -52,6 +53,7 @@ Ring_Speaker :: struct {
     channel: s32;
     azimuth: float;
 }
+
 speaker_ring: [OUTPUT_CHANNELS_MAX] Ring_Speaker;
 speaker_ring_size: s32;
 

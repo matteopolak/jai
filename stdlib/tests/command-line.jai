@@ -5,6 +5,7 @@ Mode :: enum {
     FAST;
     SAFE;
 }
+
 Arguments :: struct {
     ignored :: 77;
     count: s8 = 42;

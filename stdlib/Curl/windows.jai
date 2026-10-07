@@ -232,6 +232,7 @@ curl_off_t :: s64;
 CURL :: void;
 CURLSH :: void;
 curl_socket_t :: SOCKET;
+
 curl_sslbackend :: enum s32 {
     NONE :: 0;
     OPENSSL :: 1;
@@ -249,6 +250,7 @@ curl_sslbackend :: enum s32 {
     BEARSSL :: 13;
     RUSTLS :: 14;
 }
+
 curl_httppost :: struct {
     next: *curl_httppost;
     name: *u8;
@@ -265,10 +267,12 @@ curl_httppost :: struct {
     userp: *void;
     contentlen: curl_off_t;
 }
+
 curl_progress_callback :: #type (clientp: *void, dltotal: float64, dlnow: float64, ultotal: float64, ulnow: float64) -> s32 #c_call;
 curl_xferinfo_callback :: #type (clientp: *void, dltotal: curl_off_t, dlnow: curl_off_t, ultotal: curl_off_t, ulnow: curl_off_t) -> s32 #c_call;
 curl_write_callback :: #type (buffer: *u8, size: u64, nitems: u64, outstream: *void) -> u64 #c_call;
 curl_resolver_start_callback :: #type (resolver_state: *void, reserved: *void, userdata: *void) -> s32 #c_call;
+
 curlfiletype :: enum s32 {
     FILE :: 0;
     DIRECTORY :: 1;
@@ -280,6 +284,7 @@ curlfiletype :: enum s32 {
     DOOR :: 7;
     UNKNOWN :: 8;
 }
+
 curl_fileinfo :: struct {
     filename: *u8;
     filetype: curlfiletype;
@@ -302,18 +307,22 @@ curl_fileinfo :: struct {
     b_size: u64;
     b_used: u64;
 }
+
 curl_chunk_bgn_callback :: #type (transfer_info: *void, ptr: *void, remains: s32) -> s32 #c_call;
 curl_chunk_end_callback :: #type (ptr: *void) -> s32 #c_call;
 curl_fnmatch_callback :: #type (ptr: *void, pattern: *u8, _string: *u8) -> s32 #c_call;
 curl_seek_callback :: #type (instream: *void, offset: curl_off_t, origin: s32) -> s32 #c_call;
 curl_read_callback :: #type (buffer: *u8, size: u64, nitems: u64, instream: *void) -> u64 #c_call;
 curl_trailer_callback :: #type (list: **curl_slist, userdata: *void) -> s32 #c_call;
+
 curlsocktype :: enum s32 {
     IPCXN :: 0;
     ACCEPT :: 1;
     LAST :: 2;
 }
+
 curl_sockopt_callback :: #type (clientp: *void, curlfd: curl_socket_t, purpose: curlsocktype) -> s32 #c_call;
+
 curl_sockaddr :: struct {
     family: s32;
     socktype: s32;
@@ -321,25 +330,30 @@ curl_sockaddr :: struct {
     addrlen: u32;
     addr: sockaddr;
 }
+
 curl_opensocket_callback :: #type (clientp: *void, purpose: curlsocktype, address: *curl_sockaddr) -> curl_socket_t #c_call;
 curl_closesocket_callback :: #type (clientp: *void, item: curl_socket_t) -> s32 #c_call;
+
 curlioerr :: enum s32 {
     OK :: 0;
     UNKNOWNCMD :: 1;
     FAILRESTART :: 2;
     LAST :: 3;
 }
+
 curliocmd :: enum s32 {
     NOP :: 0;
     RESTARTREAD :: 1;
     LAST :: 2;
 }
+
 curl_ioctl_callback :: #type (handle: *CURL, cmd: s32, clientp: *void) -> curlioerr #c_call;
 curl_malloc_callback :: #type (size: u64) -> *void #c_call;
 curl_free_callback :: #type (ptr: *void) -> void #c_call;
 curl_realloc_callback :: #type (ptr: *void, size: u64) -> *void #c_call;
 curl_strdup_callback :: #type (str: *u8) -> *u8 #c_call;
 curl_calloc_callback :: #type (nmemb: u64, size: u64) -> *void #c_call;
+
 curl_infotype :: enum s32 {
     TEXT :: 0;
     HEADER_IN :: 1;
@@ -350,8 +364,10 @@ curl_infotype :: enum s32 {
     SSL_DATA_OUT :: 6;
     END :: 7;
 }
+
 curl_debug_callback :: #type (handle: *CURL, type: curl_infotype, data: *u8, size: u64, userptr: *void) -> s32 #c_call;
 curl_prereq_callback :: #type (clientp: *void, conn_primary_ip: *u8, conn_local_ip: *u8, conn_primary_port: s32, conn_local_port: s32) -> s32 #c_call;
+
 CURLcode :: enum s32 {
     OK :: 0;
     UNSUPPORTED_PROTOCOL :: 1;
@@ -455,6 +471,7 @@ CURLcode :: enum s32 {
     UNRECOVERABLE_POLL :: 99;
     CURL_LAST :: 100;
 }
+
 CURLproxycode :: enum s32 {
     OK :: 0;
     BAD_ADDRESS_TYPE :: 1;
@@ -492,8 +509,10 @@ CURLproxycode :: enum s32 {
     USER_REJECTED :: 33;
     LAST :: 34;
 }
+
 curl_conv_callback :: #type (buffer: *u8, length: u64) -> CURLcode #c_call;
 curl_ssl_ctx_callback :: #type (curl: *CURL, ssl_ctx: *void, userptr: *void) -> CURLcode #c_call;
+
 curl_proxytype :: enum s32 {
     HTTP :: 0;
     HTTP_1_0 :: 1;
@@ -504,6 +523,7 @@ curl_proxytype :: enum s32 {
     SOCKS4A :: 6;
     SOCKS5_HOSTNAME :: 7;
 }
+
 curl_khtype :: enum s32 {
     UNKNOWN :: 0;
     RSA1 :: 1;
@@ -512,11 +532,13 @@ curl_khtype :: enum s32 {
     ECDSA :: 4;
     ED25519 :: 5;
 }
+
 curl_khkey :: struct {
     key: *u8;
     len: u64;
     keytype: curl_khtype;
 }
+
 curl_khstat :: enum s32 {
     FINE_ADD_TO_FILE :: 0;
     FINE :: 1;
@@ -525,14 +547,17 @@ curl_khstat :: enum s32 {
     FINE_REPLACE :: 4;
     LAST :: 5;
 }
+
 curl_khmatch :: enum s32 {
     OK :: 0;
     MISMATCH :: 1;
     MISSING :: 2;
     LAST :: 3;
 }
+
 curl_sshkeycallback :: #type (easy: *CURL, knownkey: *curl_khkey, foundkey: *curl_khkey, unknown0: curl_khmatch, clientp: *void) -> s32 #c_call;
 curl_sshhostkeycallback :: #type (clientp: *void, keytype: s32, key: *u8, keylen: u64) -> s32 #c_call;
+
 curl_usessl :: enum s32 {
     NONE :: 0;
     TRY :: 1;
@@ -540,24 +565,28 @@ curl_usessl :: enum s32 {
     ALL :: 3;
     LAST :: 4;
 }
+
 curl_ftpccc :: enum s32 {
     NONE :: 0;
     PASSIVE :: 1;
     ACTIVE :: 2;
     LAST :: 3;
 }
+
 curl_ftpauth :: enum s32 {
     DEFAULT :: 0;
     SSL :: 1;
     TLS :: 2;
     LAST :: 3;
 }
+
 curl_ftpcreatedir :: enum s32 {
     DIR_NONE :: 0;
     DIR :: 1;
     DIR_RETRY :: 2;
     DIR_LAST :: 3;
 }
+
 curl_ftpmethod :: enum s32 {
     DEFAULT :: 0;
     MULTICWD :: 1;
@@ -565,23 +594,28 @@ curl_ftpmethod :: enum s32 {
     SINGLECWD :: 3;
     LAST :: 4;
 }
+
 curl_hstsentry :: struct {
     name: *u8;
     namelen: u64;
     includeSubDomains: u32;
     expire: [18] u8;
 }
+
 curl_index :: struct {
     index: u64;
     total: u64;
 }
+
 CURLSTScode :: enum s32 {
     OK :: 0;
     DONE :: 1;
     FAIL :: 2;
 }
+
 curl_hstsread_callback :: #type (easy: *CURL, e: *curl_hstsentry, userp: *void) -> CURLSTScode #c_call;
 curl_hstswrite_callback :: #type (easy: *CURL, e: *curl_hstsentry, i: *curl_index, userp: *void) -> CURLSTScode #c_call;
+
 CURLoption :: enum s32 {
     WRITEDATA :: 10001;
     URL :: 10002;
@@ -890,6 +924,7 @@ CURLoption :: enum s32 {
     HAPROXY_CLIENT_IP :: 10323;
     LASTENTRY :: 10324;
 }
+
 CURL_HTTP_VERSION :: enum s32 {
     NONE :: 0;
     _1_0 :: 1;
@@ -901,6 +936,7 @@ CURL_HTTP_VERSION :: enum s32 {
     _3ONLY :: 31;
     LAST :: 32;
 }
+
 CURL_RTSPREQ :: enum s32 {
     NONE :: 0;
     OPTIONS :: 1;
@@ -916,12 +952,14 @@ CURL_RTSPREQ :: enum s32 {
     RECEIVE :: 11;
     LAST :: 12;
 }
+
 CURL_NETRC_OPTION :: enum s32 {
     CURL_NETRC_IGNORED :: 0;
     AL :: 1;
     CURL_NETRC_REQUIRED :: 2;
     CURL_NETRC_LAST :: 3;
 }
+
 CURL_SSLVERSION :: enum s32 {
     DEFAULT :: 0;
     TLSv1 :: 1;
@@ -933,6 +971,7 @@ CURL_SSLVERSION :: enum s32 {
     TLSv1_3 :: 7;
     LAST :: 8;
 }
+
 CURL_SSLVERSION_MAX :: enum s32 {
     NONE :: 0;
     DEFAULT :: 65536;
@@ -942,11 +981,13 @@ CURL_SSLVERSION_MAX :: enum s32 {
     TLSv1_3 :: 458752;
     LAST :: 524288;
 }
+
 CURL_TLSAUTH :: enum s32 {
     NONE :: 0;
     SRP :: 1;
     LAST :: 2;
 }
+
 curl_TimeCond :: enum s32 {
     NONE :: 0;
     IFMODSINCE :: 1;
@@ -954,6 +995,7 @@ curl_TimeCond :: enum s32 {
     LASTMOD :: 3;
     LAST :: 4;
 }
+
 curl_strequal :: (s1: *u8, s2: *u8) -> s32 #foreign libcurl;
 curl_strnequal :: (s1: *u8, s2: *u8, n: u64) -> s32 #foreign libcurl;
 curl_mime :: struct {}
@@ -970,6 +1012,7 @@ curl_mime_filedata :: (part: *curl_mimepart, filename: *u8) -> CURLcode #foreign
 curl_mime_data_cb :: (part: *curl_mimepart, datasize: curl_off_t, readfunc: curl_read_callback, seekfunc: curl_seek_callback, freefunc: curl_free_callback, arg: *void) -> CURLcode #foreign libcurl;
 curl_mime_subparts :: (part: *curl_mimepart, subparts: *curl_mime) -> CURLcode #foreign libcurl;
 curl_mime_headers :: (part: *curl_mimepart, headers: *curl_slist, take_ownership: s32) -> CURLcode #foreign libcurl;
+
 CURLformoption :: enum s32 {
     NOTHING :: 0;
     COPYNAME :: 1;
@@ -994,10 +1037,12 @@ CURLformoption :: enum s32 {
     CONTENTLEN :: 20;
     LASTENTRY :: 21;
 }
+
 curl_forms :: struct {
     option: CURLformoption;
     value: *u8;
 }
+
 CURLFORMcode :: enum s32 {
     OK :: 0;
     MEMORY :: 1;
@@ -1009,6 +1054,7 @@ CURLFORMcode :: enum s32 {
     DISABLED :: 7;
     LAST :: 8;
 }
+
 curl_formadd :: (httppost: **curl_httppost, last_post: **curl_httppost, __args: ..Any) -> CURLFORMcode #foreign libcurl;
 curl_formget_callback :: #type (arg: *void, buf: *u8, len: u64) -> u64 #c_call;
 curl_formget :: (form: *curl_httppost, arg: *void, append: curl_formget_callback) -> s32 #foreign libcurl;
@@ -1023,32 +1069,39 @@ curl_free :: (p: *void) -> void #foreign libcurl;
 curl_global_init :: (flags: s32) -> CURLcode #foreign libcurl;
 curl_global_init_mem :: (flags: s32, m: curl_malloc_callback, f: curl_free_callback, r: curl_realloc_callback, s: curl_strdup_callback, c: curl_calloc_callback) -> CURLcode #foreign libcurl;
 curl_global_cleanup :: () -> void #foreign libcurl;
+
 curl_slist :: struct {
     data: *u8;
     next: *curl_slist;
 }
+
 curl_ssl_backend :: struct {
     id: curl_sslbackend;
     name: *u8;
 }
+
 CURLsslset :: enum s32 {
     OK :: 0;
     UNKNOWN_BACKEND :: 1;
     TOO_LATE :: 2;
     NO_BACKENDS :: 3;
 }
+
 curl_global_sslset :: (id: curl_sslbackend, name: *u8, avail: ***curl_ssl_backend) -> CURLsslset #foreign libcurl;
 curl_slist_append :: (list: *curl_slist, data: *u8) -> *curl_slist #foreign libcurl;
 curl_slist_free_all :: (list: *curl_slist) -> void #foreign libcurl;
 curl_getdate :: (p: *u8, unused: *time_t) -> time_t #foreign libcurl;
+
 curl_certinfo :: struct {
     num_of_certs: s32;
     certinfo: **curl_slist;
 }
+
 curl_tlssessioninfo :: struct {
     backend: curl_sslbackend;
     internals: *void;
 }
+
 CURLINFO :: enum s32 {
     NONE :: 0;
     EFFECTIVE_URL :: 1048577;
@@ -1124,6 +1177,7 @@ CURLINFO :: enum s32 {
     CONN_ID :: 6291520;
     LASTONE :: 64;
 }
+
 curl_closepolicy :: enum s32 {
     NONE :: 0;
     OLDEST :: 1;
@@ -1133,6 +1187,7 @@ curl_closepolicy :: enum s32 {
     CALLBACK :: 5;
     LAST :: 6;
 }
+
 curl_lock_data :: enum s32 {
     NONE :: 0;
     SHARE :: 1;
@@ -1144,14 +1199,17 @@ curl_lock_data :: enum s32 {
     HSTS :: 7;
     LAST :: 8;
 }
+
 curl_lock_access :: enum s32 {
     NONE :: 0;
     SHARED :: 1;
     SINGLE :: 2;
     LAST :: 3;
 }
+
 curl_lock_function :: #type (handle: *CURL, data: curl_lock_data, locktype: curl_lock_access, userptr: *void) -> void #c_call;
 curl_unlock_function :: #type (handle: *CURL, data: curl_lock_data, userptr: *void) -> void #c_call;
+
 CURLSHcode :: enum s32 {
     OK :: 0;
     BAD_OPTION :: 1;
@@ -1161,6 +1219,7 @@ CURLSHcode :: enum s32 {
     NOT_BUILT_IN :: 5;
     LAST :: 6;
 }
+
 CURLSHoption :: enum s32 {
     NONE :: 0;
     SHARE :: 1;
@@ -1170,9 +1229,11 @@ CURLSHoption :: enum s32 {
     USERDATA :: 5;
     LAST :: 6;
 }
+
 curl_share_init :: () -> *CURLSH #foreign libcurl;
 curl_share_setopt :: (share: *CURLSH, option: CURLSHoption, __args: ..Any) -> CURLSHcode #foreign libcurl;
 curl_share_cleanup :: (share: *CURLSH) -> CURLSHcode #foreign libcurl;
+
 CURLversion :: enum s32 {
     FIRST :: 0;
     SECOND :: 1;
@@ -1187,6 +1248,7 @@ CURLversion :: enum s32 {
     ELEVENTH :: 10;
     LAST :: 11;
 }
+
 curl_version_info_data :: struct {
     age: CURLversion;
     version: *u8;
@@ -1215,15 +1277,18 @@ curl_version_info_data :: struct {
     gsasl_version: *u8;
     feature_names: **u8;
 }
+
 curl_version_info :: (unknown0: CURLversion) -> *curl_version_info_data #foreign libcurl;
 curl_easy_strerror :: (unknown0: CURLcode) -> *u8 #foreign libcurl;
 curl_share_strerror :: (unknown0: CURLSHcode) -> *u8 #foreign libcurl;
 curl_easy_pause :: (handle: *CURL, bitmask: s32) -> CURLcode #foreign libcurl;
+
 curl_blob :: struct {
     data: *void;
     len: u64;
     flags: u32;
 }
+
 curl_easy_init :: () -> *CURL #foreign libcurl;
 curl_easy_setopt :: (curl: *CURL, option: CURLoption, __args: ..Any) -> CURLcode #foreign libcurl;
 curl_easy_perform :: (curl: *CURL) -> CURLcode #foreign libcurl;
@@ -1235,6 +1300,7 @@ curl_easy_recv :: (curl: *CURL, buffer: *void, buflen: u64, n: *u64) -> CURLcode
 curl_easy_send :: (curl: *CURL, buffer: *void, buflen: u64, n: *u64) -> CURLcode #foreign libcurl;
 curl_easy_upkeep :: (curl: *CURL) -> CURLcode #foreign libcurl;
 CURLM :: void;
+
 CURLMcode :: enum s32 {
     CALL_MULTI_PERFORM :: -1;
     OK :: 0;
@@ -1252,11 +1318,13 @@ CURLMcode :: enum s32 {
     UNRECOVERABLE_POLL :: 12;
     LAST :: 13;
 }
+
 CURLMSG :: enum s32 {
     NONE :: 0;
     DONE :: 1;
     LAST :: 2;
 }
+
 CURLMsg :: struct {
     msg: CURLMSG;
     easy_handle: *CURL;
@@ -1266,11 +1334,13 @@ CURLMsg :: struct {
     }
     ;
 }
+
 curl_waitfd :: struct {
     fd: curl_socket_t;
     events: s16;
     revents: s16;
 }
+
 curl_multi_init :: () -> *CURLM #foreign libcurl;
 curl_multi_add_handle :: (multi_handle: *CURLM, curl_handle: *CURL) -> CURLMcode #foreign libcurl;
 curl_multi_remove_handle :: (multi_handle: *CURLM, curl_handle: *CURL) -> CURLMcode #foreign libcurl;
@@ -1288,6 +1358,7 @@ curl_multi_socket :: (multi_handle: *CURLM, s: curl_socket_t, running_handles: *
 curl_multi_socket_action :: (multi_handle: *CURLM, s: curl_socket_t, ev_bitmask: s32, running_handles: *s32) -> CURLMcode #foreign libcurl;
 curl_multi_socket_all :: (multi_handle: *CURLM, running_handles: *s32) -> CURLMcode #foreign libcurl;
 curl_multi_timeout :: (multi_handle: *CURLM, milliseconds: *s32) -> CURLMcode #foreign libcurl;
+
 CURLMoption :: enum s32 {
     SOCKETFUNCTION :: 20001;
     SOCKETDATA :: 10002;
@@ -1307,12 +1378,14 @@ CURLMoption :: enum s32 {
     MAX_CONCURRENT_STREAMS :: 16;
     LASTENTRY :: 17;
 }
+
 curl_multi_setopt :: (multi_handle: *CURLM, option: CURLMoption, __args: ..Any) -> CURLMcode #foreign libcurl;
 curl_multi_assign :: (multi_handle: *CURLM, sockfd: curl_socket_t, sockp: *void) -> CURLMcode #foreign libcurl;
 curl_pushheaders :: struct {}
 curl_pushheader_bynum :: (h: *curl_pushheaders, num: u64) -> *u8 #foreign libcurl;
 curl_pushheader_byname :: (h: *curl_pushheaders, name: *u8) -> *u8 #foreign libcurl;
 curl_push_callback :: #type (parent: *CURL, easy: *CURL, num_headers: u64, headers: *curl_pushheaders, userp: *void) -> s32 #c_call;
+
 CURLUcode :: enum s32 {
     OK :: 0;
     BAD_HANDLE :: 1;
@@ -1347,6 +1420,7 @@ CURLUcode :: enum s32 {
     LACKS_IDN :: 30;
     LAST :: 31;
 }
+
 CURLUPart :: enum s32 {
     URL :: 0;
     SCHEME :: 1;
@@ -1360,6 +1434,7 @@ CURLUPart :: enum s32 {
     FRAGMENT :: 9;
     ZONEID :: 10;
 }
+
 Curl_URL :: struct {}
 CURLU :: Curl_URL;
 curl_url :: () -> *CURLU #foreign libcurl;
@@ -1368,6 +1443,7 @@ curl_url_dup :: (in: *CURLU) -> *CURLU #foreign libcurl;
 curl_url_get :: (handle: *CURLU, what: CURLUPart, part: **u8, flags: u32) -> CURLUcode #foreign libcurl;
 curl_url_set :: (handle: *CURLU, what: CURLUPart, part: *u8, flags: u32) -> CURLUcode #foreign libcurl;
 curl_url_strerror :: (unknown0: CURLUcode) -> *u8 #foreign libcurl;
+
 curl_easytype :: enum s32 {
     LONG :: 0;
     VALUES :: 1;
@@ -1379,15 +1455,18 @@ curl_easytype :: enum s32 {
     BLOB :: 7;
     FUNCTION :: 8;
 }
+
 curl_easyoption :: struct {
     name: *u8;
     id: CURLoption;
     type: curl_easytype;
     flags: u32;
 }
+
 curl_easy_option_by_name :: (name: *u8) -> *curl_easyoption #foreign libcurl;
 curl_easy_option_by_id :: (id: CURLoption) -> *curl_easyoption #foreign libcurl;
 curl_easy_option_next :: (prev: *curl_easyoption) -> *curl_easyoption #foreign libcurl;
+
 curl_header :: struct {
     name: *u8;
     value: *u8;
@@ -1396,6 +1475,7 @@ curl_header :: struct {
     origin: u32;
     anchor: *void;
 }
+
 CURLHcode :: enum s32 {
     OK :: 0;
     BADINDEX :: 1;
@@ -1406,8 +1486,10 @@ CURLHcode :: enum s32 {
     BAD_ARGUMENT :: 6;
     NOT_BUILT_IN :: 7;
 }
+
 curl_easy_header :: (easy: *CURL, name: *u8, index: u64, origin: u32, request: s32, hout: **curl_header) -> CURLHcode #foreign libcurl;
 curl_easy_nextheader :: (easy: *CURL, origin: u32, request: s32, prev: *curl_header) -> *curl_header #foreign libcurl;
+
 curl_ws_frame :: struct {
     age: s32;
     flags: s32;
@@ -1415,6 +1497,7 @@ curl_ws_frame :: struct {
     bytesleft: curl_off_t;
     len: u64;
 }
+
 curl_ws_recv :: (curl: *CURL, buffer: *void, buflen: u64, recv: *u64, metap: **curl_ws_frame) -> CURLcode #foreign libcurl;
 curl_ws_send :: (curl: *CURL, buffer: *void, buflen: u64, sent: *u64, fragsize: curl_off_t, flags: u32) -> CURLcode #foreign libcurl;
 curl_ws_meta :: (curl: *CURL) -> *curl_ws_frame #foreign libcurl;
@@ -1423,7 +1506,9 @@ curl_mprintf_CFormat :: (format: *u8, __args: ..Any) -> s32 #foreign libcurl "cu
 @PrintLike curl_msprintf_CFormat :: (buffer: *u8, format: *u8, __args: ..Any) -> s32 #foreign libcurl "curl_msprintf";
 @PrintLike curl_msnprintf_CFormat :: (buffer: *u8, maxlength: u64, format: *u8, __args: ..Any) -> s32 #foreign libcurl "curl_msnprintf";
 @PrintLike curl_maprintf_CFormat :: (format: *u8, __args: ..Any) -> *u8 #foreign libcurl "curl_maprintf";
+
 @PrintLike
 #scope_file
 #import "Basic";
+
 libcurl :: #system_library "curl";

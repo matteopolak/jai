@@ -51,6 +51,7 @@ visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool
     if _sdk_asset_jni_failed(env) || list == null return false;
     return _sdk_asset_walk(asset_manager, env, java_assets, list, dir_name, recursive, user_data, proc, visit_files, visit_directories, 0);
 }
+
 #import "Android";
 #import "Basic";
 #import "File_Utilities";
@@ -65,19 +66,23 @@ visit_files :: (asset_manager: *AAssetManager, dir_name: string, recursive: bool
 #import "Android/Jni";
 #import "File";
 Asset_Unicode :: #import "Unicode";
+
 _sdk_asset_android :: #system_library "libandroid";
 _sdk_asset_manager_from_java :: (env: *JNIEnv, manager: jobject) -> *AAssetManager #foreign _sdk_asset_android "AAssetManager_fromJava";
+
 _sdk_asset_jni_failed :: (env: *JNIEnv) -> bool #no_context {
     if env.*.ExceptionCheck(env) == 0 return false;
     // Translate exceptions raised by our own JNI calls to the bool result.
     env.*.ExceptionClear(env);
     return true;
 }
+
 _sdk_asset_c_string :: (pointer: *u8) -> string #no_context {
     count: s64 = 0;
     while pointer[count] != 0 count += 1;
     return string.{ count, pointer };
 }
+
 _sdk_asset_path :: (path: string) -> bool #no_context {
     if path.count < 0 || (path.count > 0 && path.data == null) return false;
     if path.count > 0 && (path[0] == 47 || path[0] == 92) return false;
@@ -92,6 +97,7 @@ _sdk_asset_path :: (path: string) -> bool #no_context {
     if path.count - start == 2 && path[start] == 46 && path[start + 1] == 46 return false;
     return true;
 }
+
 _sdk_asset_join :: (directory: string, name: string) -> string {
     builder: String_Builder;
     defer free_buffers(*builder);
@@ -100,6 +106,7 @@ _sdk_asset_join :: (directory: string, name: string) -> string {
     append(*builder, name);
     return builder_to_string(*builder);
 }
+
 _sdk_asset_java_string :: (env: *JNIEnv, text: string) -> jstring {
     if text.count < 0 || text.count > 0x3fffffff return null;
     units := cast(*u16) alloc((text.count + 1) * 2);
@@ -123,6 +130,7 @@ _sdk_asset_java_string :: (env: *JNIEnv, text: string) -> jstring {
     }
     return env.*.NewString(env, units, output);
 }
+
 _sdk_asset_from_java :: (env: *JNIEnv, value: jstring) -> string, bool {
     count := env.*.GetStringLength(env, value);
     if _sdk_asset_jni_failed(env) || count < 0 return "", false;
@@ -149,6 +157,7 @@ _sdk_asset_from_java :: (env: *JNIEnv, value: jstring) -> string, bool {
     }
     return builder_to_string(*builder), true;
 }
+
 _sdk_asset_walk :: (manager: *AAssetManager, env: *JNIEnv, assets: jobject, list: jmethodID, directory: string, recursive: bool, user_data: $T, proc: (info: *File_Visit_Info, user_data: T), files: bool, directories: bool, depth: s64) -> bool {
     if depth >= 256 return false;
     java_path := _sdk_asset_java_string(env, directory);

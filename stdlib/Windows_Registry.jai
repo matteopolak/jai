@@ -34,7 +34,9 @@ RegEnumKeyExA :: (hKey: HKEY, dwIndex: DWORD, lpName: *u8, lpcchName: *DWORD, lp
 RegGetValueA :: (hkey: HKEY, lpSubKey: *u8, lpValue: *u8, dwFlags: DWORD, pdwType: *DWORD, pvData: *void, pcbData: *DWORD) -> LSTATUS #foreign advapi;
 #scope_file
 advapi :: #system_library "advapi32";
+
 Windows :: #import "Windows";
+
 HKEY :: Windows.HKEY;
 DWORD :: Windows.DWORD;
 FILETIME :: Windows.FILETIME;

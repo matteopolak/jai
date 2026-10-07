@@ -4,6 +4,7 @@ statx_timestamp_t :: struct {
     tv_nsec: u32;
     __reserved: s32;
 }
+
 statx_t :: struct {
     stx_mask: u32;
     stx_blksize: u32;
@@ -29,6 +30,7 @@ statx_t :: struct {
     __spare2: u64;
     __spare3: [12] u64;
 };
+
 STATX_TYPE: u32 : 0x00000001;
 STATX_MODE: u32 : 0x00000002;
 STATX_NLINK: u32 : 0x00000004;
@@ -60,6 +62,7 @@ AT_STATX_DONT_SYNC :: 0x4000;
 SYS_io_uring_setup :: 425;
 SYS_io_uring_enter :: 426;
 SYS_io_uring_register :: 427;
+
 using __kernel_rwf_t :: enum_flags s32 {
     RWF_HIPRI :: 0x00000001;
     RWF_DSYNC :: 0x00000002;
@@ -68,6 +71,7 @@ using __kernel_rwf_t :: enum_flags s32 {
     RWF_APPEND :: 0x00000010;
     RWF_SUPPORTED :: RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT | RWF_APPEND;
 }
+
 io_uring_params :: struct {
     sq_entries: u32;
     cq_entries: u32;
@@ -80,6 +84,7 @@ io_uring_params :: struct {
     sq_off: io_sqring_offsets;
     cq_off: io_cqring_offsets;
 };
+
 using IORING_Setup_Flags :: enum_flags u32 {
     IORING_SETUP_IOPOLL :: 1 << 0;
     IORING_SETUP_SQPOLL :: 1 << 1;
@@ -94,6 +99,7 @@ using IORING_Setup_Flags :: enum_flags u32 {
     IORING_SETUP_SQE128 :: 1 << 10;
     IORING_SETUP_CQE32 :: 1 << 11;
 }
+
 using IORING_FEAT_Flags :: enum_flags u32 {
     IORING_FEAT_SINGLE_MMAP :: 1 << 0;
     IORING_FEAT_NODROP :: 1 << 1;
@@ -109,6 +115,7 @@ using IORING_FEAT_Flags :: enum_flags u32 {
     IORING_FEAT_CQE_SKIP :: 1 << 11;
     IORING_FEAT_LINKED_FILE :: 1 << 12;
 }
+
 io_sqring_offsets :: struct {
     head: u32;
     tail: u32;
@@ -120,11 +127,13 @@ io_sqring_offsets :: struct {
     resv1: u32;
     resv2: u64;
 };
+
 using IORING_SQ_Flags :: enum_flags u32 {
     IORING_SQ_NEED_WAKEUP :: 1 << 0;
     IORING_SQ_CQ_OVERFLOW :: 1 << 1;
     IORING_SQ_TASKRUN :: 1 << 2;
 }
+
 io_cqring_offsets :: struct {
     head: u32;
     tail: u32;
@@ -136,12 +145,15 @@ io_cqring_offsets :: struct {
     resv1: u32;
     resv2: u64;
 };
+
 using IORING_CQ_Flags :: enum_flags u32 {
     IORING_CQ_EVENTFD_DISABLED :: 1 << 0;
 }
+
 IORING_OFF_SQ_RING: s64 : 0;
 IORING_OFF_CQ_RING: s64 : 0x08000000;
 IORING_OFF_SQES: s64 : 0x10000000;
+
 io_uring_sqe :: struct {
     opcode: IORING_OP;
     flags: IOSQE_Flags;
@@ -183,6 +195,7 @@ io_uring_sqe :: struct {
     addr3: u64;
     __pad2: [1] u64;
 };
+
 using IORING_OP :: enum u8 {
     IORING_OP_NOP;
     IORING_OP_READV;
@@ -233,6 +246,7 @@ using IORING_OP :: enum u8 {
     IORING_OP_URING_CMD;
     IORING_OP_LAST;
 }
+
 using IOSQE_Flag_Bits :: enum {
     IOSQE_FIXED_FILE_BIT;
     IOSQE_IO_DRAIN_BIT;
@@ -242,6 +256,7 @@ using IOSQE_Flag_Bits :: enum {
     IOSQE_BUFFER_SELECT_BIT;
     IOSQE_CQE_SKIP_SUCCESS_BIT;
 };
+
 using IOSQE_Flags :: enum_flags u8 {
     IOSQE_FIXED_FILE :: 1 << IOSQE_FIXED_FILE_BIT;
     IOSQE_IO_DRAIN :: 1 << IOSQE_IO_DRAIN_BIT;
@@ -251,18 +266,23 @@ using IOSQE_Flags :: enum_flags u8 {
     IOSQE_BUFFER_SELECT :: 1 << IOSQE_BUFFER_SELECT_BIT;
     IOSQE_CQE_SKIP_SUCCESS :: 1 << IOSQE_CQE_SKIP_SUCCESS_BIT;
 }
+
 using IORING_ACCEPT_Flags :: enum_flags u16 {
     IORING_ACCEPT_MULTISHOT :: 1 << 0;
 }
+
 IORING_FILE_INDEX_ALLOC: u32 : ~cast(u32) 0;
+
 using IORING_RECVSEND_Flags :: enum_flags u64 {
     IORING_RECVSEND_POLL_FIRST :: 1 << 0;
 }
+
 using IORING_POLL_Flags :: enum_flags u32 {
     IORING_POLL_ADD_MULTI :: 1 << 0;
     IORING_POLL_UPDATE_EVENTS :: 1 << 1;
     IORING_POLL_UPDATE_USER_DATA :: 1 << 2;
 }
+
 using IORING_OP_Flags :: enum_flags u32 #specified {
     IORING_CLOSE_FD_AND_FILE_SLOT :: 1 << 0;
     IORING_FSYNC_DATASYNC :: 1 << 0;
@@ -279,16 +299,19 @@ using IORING_OP_Flags :: enum_flags u32 #specified {
     IORING_ASYNC_CANCEL_FD :: 1 << 1;
     IORING_ASYNC_CANCEL_ANY :: 1 << 2;
 }
+
 io_uring_cqe :: struct {
     user_data: u64;
     res: s32;
     flags: IOCQE_Flags;
 };
+
 using IOCQE_Flags :: enum_flags u32 {
     IORING_CQE_F_BUFFER :: 1 << 0;
     IORING_CQE_F_MORE :: 1 << 1;
     IORING_CQE_F_SOCK_NONEMPTY :: 1 << 2;
 }
+
 using IORING_ENTER :: enum_flags u32 {
     IORING_ENTER_GETEVENTS :: 1 << 0;
     IORING_ENTER_SQ_WAKEUP :: 1 << 1;
@@ -296,12 +319,14 @@ using IORING_ENTER :: enum_flags u32 {
     IORING_ENTER_EXT_ARG :: 1 << 3;
     IORING_ENTER_REGISTERED_RING :: 1 << 4;
 }
+
 io_uring_getevents_arg :: struct {
     sigmask: u64;
     sigmask_sz: u32;
     pad: u32;
     ts: u64;
 };
+
 using IORING_REGISTER :: enum {
     IORING_REGISTER_BUFFERS :: 0;
     IORING_UNREGISTER_BUFFERS :: 1;
@@ -329,15 +354,18 @@ using IORING_REGISTER :: enum {
     IORING_UNREGISTER_PBUF_RING :: 23;
     IORING_REGISTER_LAST;
 }
+
 using IO_WQ_Categories :: enum {
     IO_WQ_BOUND;
     IO_WQ_UNBOUND;
 };
+
 io_uring_files_update :: struct {
     offset: u32;
     resv: u32;
     fds: *s32;
 };
+
 io_uring_rsrc_register :: struct {
     nr: u32;
     flags: IORING_RSRC_Flags;
@@ -345,14 +373,17 @@ io_uring_rsrc_register :: struct {
     data: *iovec;
     tags: *u64;
 };
+
 using IORING_RSRC_Flags :: enum_flags u32 {
     IORING_RSRC_REGISTER_SPARSE :: 1 << 0;
 }
+
 io_uring_rsrc_update :: struct {
     offset: u32;
     resv: u32;
     data: *iovec;
 };
+
 io_uring_rsrc_update2 :: struct {
     offset: u32;
     resv: u32;
@@ -361,7 +392,9 @@ io_uring_rsrc_update2 :: struct {
     nr: u32;
     resv2: u32;
 };
+
 IORING_REGISTER_FILES_SKIP: s32 : -2;
+
 io_uring_probe :: struct {
     last_op: IORING_OP;
     ops_len: u8;
@@ -369,15 +402,18 @@ io_uring_probe :: struct {
     resv2: [3] u32;
     ops: [0] io_uring_probe_op;
 };
+
 io_uring_probe_op :: struct {
     op: IORING_OP;
     resv: u8;
     flags: IO_URING_OP_Flags;
     resv2: u32;
 };
+
 using IO_URING_OP_Flags :: enum_flags u16 {
     IO_URING_OP_SUPPORTED :: 1 << 0;
 }
+
 io_uring_restriction :: struct {
     opcode: u16;
     union {
@@ -388,6 +424,7 @@ io_uring_restriction :: struct {
     resv: u8;
     resv2: [3] u32;
 };
+
 using IO_URING_RESTRICTION_OP :: enum {
     IORING_RESTRICTION_REGISTER_OP :: 0;
     IORING_RESTRICTION_SQE_OP :: 1;
@@ -395,6 +432,7 @@ using IO_URING_RESTRICTION_OP :: enum {
     IORING_RESTRICTION_SQE_FLAGS_REQUIRED :: 3;
     IORING_RESTRICTION_LAST;
 };
+
 io_uring_buf_ring :: struct {
     union {
         struct {
@@ -406,12 +444,14 @@ io_uring_buf_ring :: struct {
         bufs: [0] io_uring_buf;
     };
 };
+
 io_uring_buf :: struct {
     addr: u64;
     len: u32;
     bid: u16;
     resv: u16;
 };
+
 io_uring_buf_reg :: struct {
     ring_addr: u64;
     ring_entries: u32;

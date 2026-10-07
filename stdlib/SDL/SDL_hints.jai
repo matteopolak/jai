@@ -76,11 +76,13 @@ SDL_HINT_VIDEO_DOUBLE_BUFFER :: "SDL_VIDEO_DOUBLE_BUFFER";
 SDL_HINT_OPENGL_ES_DRIVER :: "SDL_OPENGL_ES_DRIVER";
 SDL_HINT_AUDIO_RESAMPLING_MODE :: "SDL_AUDIO_RESAMPLING_MODE";
 SDL_HINT_AUDIO_CATEGORY :: "SDL_AUDIO_CATEGORY";
+
 using SDL_HintPriority :: enum u32 {
     SDL_HINT_DEFAULT :: 0;
     SDL_HINT_NORMAL :: 1;
     SDL_HINT_OVERRIDE :: 2;
 }
+
 SDL_SetHintWithPriority :: (name: *u8, value: *u8, priority: SDL_HintPriority) -> SDL_bool #foreign SDL2;
 SDL_SetHint :: (name: *u8, value: *u8) -> SDL_bool #foreign SDL2;
 SDL_GetHint :: (name: *u8) -> *u8 #foreign SDL2;

@@ -1,5 +1,6 @@
 // Independently authored open-addressing table with the current public layout and API.
 #module_parameters (COUNT_COLLISIONS := false)();
+
 Table :: struct(Key_Type: Type, Value_Type: Type,
                 given_hash_function: (Key_Type) -> u32 = null,
                 given_compare_function: (Key_Type, Key_Type) -> bool = null,
@@ -35,13 +36,16 @@ Table :: struct(Key_Type: Type, Value_Type: Type,
     SIZE_MIN :: 32;
     #assert LOAD_FACTOR_PERCENT > 0 && LOAD_FACTOR_PERCENT < 100;
 }
+
 NEVER_OCCUPIED_HASH :: 0;
 REMOVED_HASH :: 1;
 FIRST_VALID_HASH :: 2;
+
 init :: (using table: *Table, slots_to_allocate: s64 = 0) {
     if !allocator.proc allocator = context.allocator;
     resize(table, slots_to_allocate);
 }
+
 resize :: (using table: *Table, slots_to_allocate: s64 = 0) {
     if !allocator.proc allocator = context.allocator;
     capacity := next_power_of_two(Basic.max(SIZE_MIN, slots_to_allocate));
@@ -55,12 +59,15 @@ resize :: (using table: *Table, slots_to_allocate: s64 = 0) {
     for old: previous if old.hash >= FIRST_VALID_HASH _place_entry(table, old);
     if previous.data Basic.free(previous.data, allocator = allocator);
 }
+
 table_resize :: (table: *Table, slots_to_allocate: s64) {
     resize(table, slots_to_allocate);
 }
+
 table_reset_keeping_memory :: (table: *Table) {
     table_reset(table);
 }
+
 deinit :: (table: *Table) {
     if table.entries.data Basic.free(table.entries.data, allocator = table.allocator);
     table.entries = .{};
@@ -68,6 +75,7 @@ deinit :: (table: *Table) {
     table.allocated = 0;
     table.slots_filled = 0;
 }
+
 table_reset :: (using table: *Table) {
     for *entry: entries entry.hash = NEVER_OCCUPIED_HASH;
     count = 0;
@@ -77,11 +85,13 @@ table_reset :: (using table: *Table) {
         find_collisions = 0;
     }
 }
+
 table_ensure_space :: (table: *Table, items: s64) {
     Basic.assert(items >= 0);
     if table.allocated == 0 init(table);
     while (table.slots_filled + items) * 100 >= table.allocated * table.LOAD_FACTOR_PERCENT expand(table);
 }
+
 table_add :: (table: *Table, key: table.Key_Type, value: table.Value_Type) -> *table.Value_Type {
     table_ensure_space(table, 1);
     entry: table.Entry;
@@ -90,6 +100,7 @@ table_add :: (table: *Table, key: table.Key_Type, value: table.Value_Type) -> *t
     entry.value = value;
     return _place_entry(table, entry);
 }
+
 table_set :: (table: *Table, key: table.Key_Type, value: table.Value_Type) -> *table.Value_Type {
     found := table_find_pointer(table, key);
     if found {
@@ -98,11 +109,13 @@ table_set :: (table: *Table, key: table.Key_Type, value: table.Value_Type) -> *t
     }
     return table_add(table, key, value);
 }
+
 table_find_pointer :: (table: *Table, key: table.Key_Type) -> *table.Value_Type {
     index := _find_index(table, key);
     if index < 0 return null;
     return *table.entries[index].value;
 }
+
 // Success comes first: `found, value := table_find(*table, key);`
 table_find :: (table: *Table, key: table.Key_Type) -> (success: bool #must,table.Value_Type) {
     pointer := table_find_pointer(table, key);
@@ -110,9 +123,11 @@ table_find :: (table: *Table, key: table.Key_Type) -> (success: bool #must,table
     zero: table.Value_Type;
     return false, zero;
 }
+
 table_contains :: (table: *Table, key: table.Key_Type) -> bool {
     return _find_index(table, key) >= 0;
 }
+
 table_find_multiple :: (table: *Table, key: table.Key_Type) -> [] table.Value_Type {
     output: [..] table.Value_Type;
     output.allocator = Basic.temp;
@@ -133,6 +148,7 @@ table_find_multiple :: (table: *Table, key: table.Key_Type) -> [] table.Value_Ty
     }
     return output;
 }
+
 table_remove :: (table: *Table, key: table.Key_Type) -> (success: bool, value: table.Value_Type) {
     index := _find_index(table, key);
     zero: table.Value_Type;
@@ -142,12 +158,14 @@ table_remove :: (table: *Table, key: table.Key_Type) -> (success: bool, value: t
     table.count -= 1;
     return true, value;
 }
+
 find_or_add :: (table: *Table, key: table.Key_Type) -> (entry: *table.Value_Type, newly_added: bool) {
     existing := table_find_pointer(table, key);
     if existing return existing, false;
     zero: table.Value_Type;
     return table_add(table, key, zero), true;
 }
+
 for_expansion :: (table: *$T/Table, body: Code, flags: For_Flags) #expand {
     cursor := 0;
     delta := 1;
@@ -171,6 +189,7 @@ for_expansion :: (table: *$T/Table, body: Code, flags: For_Flags) #expand {
         }) body;
     }
 }
+
 Walk_Table :: (code: Code) #expand {
     `hash := _valid_hash(`table.hash_function(`key));
     `index := (cast(int) hash) & (`table.allocated - 1);
@@ -184,24 +203,30 @@ Walk_Table :: (code: Code) #expand {
         remaining -= 1;
     }
 }
+
 expand :: (table: *Table) {
     resize(table, Basic.max(table.SIZE_MIN, table.allocated * 2));
 }
+
 next_power_of_two :: (x: int) -> int {
     n := 1;
     while n < x n *= 2;
     return n;
 }
+
 #scope_file
 Basic :: #import "Basic";
 Hash :: #import "Hash";
+
 _valid_hash :: (hash: u32) -> u32 {
     if hash < FIRST_VALID_HASH return hash + FIRST_VALID_HASH;
     return hash;
 }
+
 _probe_stride :: (hash: u32) -> int {
     return cast(int) ((hash >> 16) | 1);
 }
+
 _place_entry :: (table: *Table, entry: table.Entry) -> *table.Value_Type {
     index := (cast(int) entry.hash) & (table.allocated - 1);
     stride := _probe_stride(entry.hash);
@@ -223,6 +248,7 @@ _place_entry :: (table: *Table, entry: table.Entry) -> *table.Value_Type {
     Basic.assert(false, "hash table has no available slot");
     return null;
 }
+
 _find_index :: (table: *Table, key: table.Key_Type) -> int {
     if table.allocated == 0 return -1;
     hash := _valid_hash(table.hash_function(key));

@@ -1,9 +1,11 @@
 #module_parameters(DC_DEBUG := false, DEBUG_PRINT := false);
+
 #import "Basic";
 #import "Hash_Table";
 
 helper_count: int;
 time_total: float64;
+
 #if DC_DEBUG {
     #add_context deep_copy_depth: int;
     #add_context deep_copy_depth_max: int;

@@ -10,6 +10,7 @@ __CFString :: struct {}
 CFStringRef :: *__CFString;
 CFMutableStringRef :: *__CFString;
 CFPropertyListRef :: CFTypeRef;
+
 CFComparisonResult :: enum CFIndex {
     LessThan :: -1;
     EqualTo :: 0;
@@ -18,12 +19,15 @@ CFComparisonResult :: enum CFIndex {
     kCFCompareEqualTo :: EqualTo;
     kCFCompareGreaterThan :: GreaterThan;
 }
+
 CFComparatorFunction :: #type (val1: *void, val2: *void, _context: *void) -> CFComparisonResult #c_call;
 kCFNotFound: CFIndex : -1;
+
 CFRange :: struct {
     location: CFIndex;
     length: CFIndex;
 }
+
 __CFRangeMake :: (loc: CFIndex, len: CFIndex) -> CFRange #foreign corefoundation;
 __CFNull :: struct {}
 CFNullRef :: *__CFNull;
@@ -44,6 +48,7 @@ CFAllocatorAllocateCallBack :: #type (allocSize: CFIndex, hint: CFOptionFlags, i
 CFAllocatorReallocateCallBack :: #type (ptr: *void, newsize: CFIndex, hint: CFOptionFlags, info: *void) -> *void #c_call;
 CFAllocatorDeallocateCallBack :: #type (ptr: *void, info: *void) -> void #c_call;
 CFAllocatorPreferredSizeCallBack :: #type (size: CFIndex, hint: CFOptionFlags, info: *void) -> CFIndex #c_call;
+
 CFAllocatorContext :: struct {
     version: CFIndex;
     info: *void;
@@ -55,6 +60,7 @@ CFAllocatorContext :: struct {
     deallocate: CFAllocatorDeallocateCallBack;
     preferredSize: CFAllocatorPreferredSizeCallBack;
 }
+
 CFAllocatorGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFAllocatorSetDefault :: (allocator: CFAllocatorRef) -> void #foreign corefoundation;
 CFAllocatorGetDefault :: () -> CFAllocatorRef #foreign corefoundation;
@@ -79,6 +85,7 @@ CFArrayRetainCallBack :: #type (allocator: CFAllocatorRef, value: *void) -> *voi
 CFArrayReleaseCallBack :: #type (allocator: CFAllocatorRef, value: *void) -> void #c_call;
 CFArrayCopyDescriptionCallBack :: #type (value: *void) -> CFStringRef #c_call;
 CFArrayEqualCallBack :: #type (value1: *void, value2: *void) -> Boolean #c_call;
+
 CFArrayCallBacks :: struct {
     version: CFIndex;
     retain: CFArrayRetainCallBack;
@@ -86,6 +93,7 @@ CFArrayCallBacks :: struct {
     copyDescription: CFArrayCopyDescriptionCallBack;
     equal: CFArrayEqualCallBack;
 }
+
 kCFTypeArrayCallBacks: CFArrayCallBacks #elsewhere corefoundation;
 CFArrayApplierFunction :: #type (value: *void, _context: *void) -> void #c_call;
 __CFArray :: struct {}
@@ -120,6 +128,7 @@ __CFBinaryHeap :: struct {}
 CFBit :: u32;
 __CFBitVector :: struct {}
 CFMutableBitVectorRef :: *__CFBitVector;
+
 __CFByteOrder :: enum u32 {
     Unknown :: 0;
     LittleEndian :: 1;
@@ -128,18 +137,23 @@ __CFByteOrder :: enum u32 {
     CFByteOrderLittleEndian :: LittleEndian;
     CFByteOrderBigEndian :: BigEndian;
 }
+
 CFByteOrder :: CFIndex;
+
 CFSwappedFloat32 :: struct {
     v: u32;
 }
+
 CFSwappedFloat64 :: struct {
     v: u64;
 }
+
 CFDictionaryRetainCallBack :: #type (allocator: CFAllocatorRef, value: *void) -> *void #c_call;
 CFDictionaryReleaseCallBack :: #type (allocator: CFAllocatorRef, value: *void) -> void #c_call;
 CFDictionaryCopyDescriptionCallBack :: #type (value: *void) -> CFStringRef #c_call;
 CFDictionaryEqualCallBack :: #type (value1: *void, value2: *void) -> Boolean #c_call;
 CFDictionaryHashCallBack :: #type (value: *void) -> CFHashCode #c_call;
+
 CFDictionaryKeyCallBacks :: struct {
     version: CFIndex;
     retain: CFDictionaryRetainCallBack;
@@ -148,8 +162,10 @@ CFDictionaryKeyCallBacks :: struct {
     equal: CFDictionaryEqualCallBack;
     hash: CFDictionaryHashCallBack;
 }
+
 kCFTypeDictionaryKeyCallBacks: CFDictionaryKeyCallBacks #elsewhere corefoundation;
 kCFCopyStringDictionaryKeyCallBacks: CFDictionaryKeyCallBacks #elsewhere corefoundation;
+
 CFDictionaryValueCallBacks :: struct {
     version: CFIndex;
     retain: CFDictionaryRetainCallBack;
@@ -157,6 +173,7 @@ CFDictionaryValueCallBacks :: struct {
     copyDescription: CFDictionaryCopyDescriptionCallBack;
     equal: CFDictionaryEqualCallBack;
 }
+
 kCFTypeDictionaryValueCallBacks: CFDictionaryValueCallBacks #elsewhere corefoundation;
 CFDictionaryApplierFunction :: #type (key: *void, value: *void, _context: *void) -> void #c_call;
 __CFDictionary :: struct {}
@@ -185,6 +202,7 @@ CFNotificationName :: CFStringRef;
 __CFNotificationCenter :: struct {}
 CFNotificationCenterRef :: *__CFNotificationCenter;
 CFNotificationCallback :: #type (center: CFNotificationCenterRef, observer: *void, name: CFNotificationName, object: *void, userInfo: CFDictionaryRef) -> void #c_call;
+
 CFNotificationSuspensionBehavior :: enum CFIndex {
     Drop :: 1;
     Coalesce :: 2;
@@ -195,6 +213,7 @@ CFNotificationSuspensionBehavior :: enum CFIndex {
     CFNotificationSuspensionBehaviorHold :: Hold;
     CFNotificationSuspensionBehaviorDeliverImmediately :: DeliverImmediately;
 }
+
 CFNotificationCenterGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFNotificationCenterGetLocalCenter :: () -> CFNotificationCenterRef #foreign corefoundation;
 CFNotificationCenterGetDistributedCenter :: () -> CFNotificationCenterRef #foreign corefoundation;
@@ -203,12 +222,14 @@ CFNotificationCenterAddObserver :: (center: CFNotificationCenterRef, observer: *
 CFNotificationCenterRemoveObserver :: (center: CFNotificationCenterRef, observer: *void, name: CFNotificationName, object: *void) -> void #foreign corefoundation;
 CFNotificationCenterRemoveEveryObserver :: (center: CFNotificationCenterRef, observer: *void) -> void #foreign corefoundation;
 CFNotificationCenterPostNotification :: (center: CFNotificationCenterRef, name: CFNotificationName, object: *void, userInfo: CFDictionaryRef, deliverImmediately: Boolean) -> void #foreign corefoundation;
+
 kCFNotification :: enum u32 {
     DeliverImmediately :: 1;
     PostToAllSessions :: 2;
     kCFNotificationDeliverImmediately :: DeliverImmediately;
     kCFNotificationPostToAllSessions :: PostToAllSessions;
 }
+
 CFNotificationCenterPostNotificationWithOptions :: (center: CFNotificationCenterRef, name: CFNotificationName, object: *void, userInfo: CFDictionaryRef, options: CFOptionFlags) -> void #foreign corefoundation;
 CFLocaleIdentifier :: CFStringRef;
 CFLocaleKey :: CFStringRef;
@@ -228,6 +249,7 @@ CFLocaleCreateCanonicalLocaleIdentifierFromString :: (allocator: CFAllocatorRef,
 CFLocaleCreateCanonicalLocaleIdentifierFromScriptManagerCodes :: (allocator: CFAllocatorRef, lcode: LangCode, rcode: RegionCode) -> CFLocaleIdentifier #foreign corefoundation;
 CFLocaleCreateLocaleIdentifierFromWindowsLocaleCode :: (allocator: CFAllocatorRef, lcid: u32) -> CFLocaleIdentifier #foreign corefoundation;
 CFLocaleGetWindowsLocaleCodeFromLocaleIdentifier :: (localeIdentifier: CFLocaleIdentifier) -> u32 #foreign corefoundation;
+
 CFLocaleLanguageDirection :: enum CFIndex {
     Unknown :: 0;
     LeftToRight :: 1;
@@ -240,6 +262,7 @@ CFLocaleLanguageDirection :: enum CFIndex {
     kCFLocaleLanguageDirectionTopToBottom :: TopToBottom;
     kCFLocaleLanguageDirectionBottomToTop :: BottomToTop;
 }
+
 CFLocaleGetLanguageCharacterDirection :: (isoLangCode: CFStringRef) -> CFLocaleLanguageDirection #foreign corefoundation;
 CFLocaleGetLanguageLineDirection :: (isoLangCode: CFStringRef) -> CFLocaleLanguageDirection #foreign corefoundation;
 CFLocaleCreateComponentsFromLocaleIdentifier :: (allocator: CFAllocatorRef, localeID: CFLocaleIdentifier) -> CFDictionaryRef #foreign corefoundation;
@@ -298,6 +321,7 @@ CFDateGetTimeIntervalSinceDate :: (theDate: CFDateRef, otherDate: CFDateRef) -> 
 CFDateCompare :: (theDate: CFDateRef, otherDate: CFDateRef, _context: *void) -> CFComparisonResult #foreign corefoundation;
 __CFTimeZone :: struct {}
 CFTimeZoneRef :: *__CFTimeZone;
+
 CFGregorianDate :: struct {
     year: s32;
     month: s8;
@@ -306,6 +330,7 @@ CFGregorianDate :: struct {
     minute: s8;
     second: float64;
 }
+
 CFGregorianUnits :: struct {
     years: s32;
     months: s32;
@@ -314,7 +339,9 @@ CFGregorianUnits :: struct {
     minutes: s32;
     seconds: float64;
 }
+
 CFGregorianUnitFlags :: CFOptionFlags;
+
 kCFGregorian :: enum u32 {
     UnitsYears :: 1;
     UnitsMonths :: 2;
@@ -331,6 +358,7 @@ kCFGregorian :: enum u32 {
     kCFGregorianUnitsSeconds :: UnitsSeconds;
     kCFGregorianAllUnits :: AllUnits;
 }
+
 CFGregorianDateIsValid :: (gdate: CFGregorianDate, unitFlags: CFOptionFlags) -> Boolean #foreign corefoundation;
 CFGregorianDateGetAbsoluteTime :: (gdate: CFGregorianDate, tz: CFTimeZoneRef) -> CFAbsoluteTime #foreign corefoundation;
 CFAbsoluteTimeGetGregorianDate :: (at: CFAbsoluteTime, tz: CFTimeZoneRef) -> CFGregorianDate #foreign corefoundation;
@@ -357,16 +385,19 @@ CFDataIncreaseLength :: (theData: CFMutableDataRef, extraLength: CFIndex) -> voi
 CFDataAppendBytes :: (theData: CFMutableDataRef, bytes: *u8, length: CFIndex) -> void #foreign corefoundation;
 CFDataReplaceBytes :: (theData: CFMutableDataRef, range: CFRange, newBytes: *u8, newLength: CFIndex) -> void #foreign corefoundation;
 CFDataDeleteBytes :: (theData: CFMutableDataRef, range: CFRange) -> void #foreign corefoundation;
+
 CFDataSearchFlags :: enum_flags CFOptionFlags {
     Backwards :: 0x1;
     Anchored :: 0x2;
     kCFDataSearchBackwards :: Backwards;
     kCFDataSearchAnchored :: Anchored;
 }
+
 CFDataFind :: (theData: CFDataRef, dataToFind: CFDataRef, searchRange: CFRange, compareOptions: CFDataSearchFlags) -> CFRange #foreign corefoundation;
 __CFCharacterSet :: struct {}
 CFCharacterSetRef :: *__CFCharacterSet;
 CFMutableCharacterSetRef :: *__CFCharacterSet;
+
 CFCharacterSetPredefinedSet :: enum CFIndex {
     Control :: 1;
     Whitespace :: 2;
@@ -399,6 +430,7 @@ CFCharacterSetPredefinedSet :: enum CFIndex {
     kCFCharacterSetNewline :: Newline;
     kCFCharacterSetIllegal :: Illegal;
 }
+
 CFCharacterSetGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFCharacterSetGetPredefined :: (theSetIdentifier: CFCharacterSetPredefinedSet) -> CFCharacterSetRef #foreign corefoundation;
 CFCharacterSetCreateWithCharactersInRange :: (alloc: CFAllocatorRef, theRange: CFRange) -> CFCharacterSetRef #foreign corefoundation;
@@ -421,6 +453,7 @@ CFCharacterSetUnion :: (theSet: CFMutableCharacterSetRef, theOtherSet: CFCharact
 CFCharacterSetIntersect :: (theSet: CFMutableCharacterSetRef, theOtherSet: CFCharacterSetRef) -> void #foreign corefoundation;
 CFCharacterSetInvert :: (theSet: CFMutableCharacterSetRef) -> void #foreign corefoundation;
 CFStringBuiltInEncodings :: CFStringEncoding;
+
 CFStringEncoding :: enum u32 {
     MacRoman :: 0;
     WindowsLatin1 :: 1280;
@@ -451,6 +484,7 @@ CFStringEncoding :: enum u32 {
     kCFStringEncodingUTF32BE :: UTF32BE;
     kCFStringEncodingUTF32LE :: UTF32LE;
 }
+
 CFStringGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFStringCreateWithPascalString :: (alloc: CFAllocatorRef, pStr: ConstStr255Param, encoding: CFStringEncoding) -> CFStringRef #foreign corefoundation;
 CFStringCreateWithCString :: (alloc: CFAllocatorRef, cStr: *u8, encoding: CFStringEncoding) -> CFStringRef #foreign corefoundation;
@@ -484,6 +518,7 @@ CFStringGetMaximumSizeForEncoding :: (length: CFIndex, encoding: CFStringEncodin
 CFStringGetFileSystemRepresentation :: (_string: CFStringRef, buffer: *u8, maxBufLen: CFIndex) -> Boolean #foreign corefoundation;
 CFStringGetMaximumSizeOfFileSystemRepresentation :: (_string: CFStringRef) -> CFIndex #foreign corefoundation;
 CFStringCreateWithFileSystemRepresentation :: (alloc: CFAllocatorRef, buffer: *u8) -> CFStringRef #foreign corefoundation;
+
 CFStringCompareFlags :: enum_flags CFOptionFlags {
     CaseInsensitive :: 0x1;
     Backwards :: 0x4;
@@ -504,6 +539,7 @@ CFStringCompareFlags :: enum_flags CFOptionFlags {
     kCFCompareWidthInsensitive :: WidthInsensitive;
     kCFCompareForcedOrdering :: ForcedOrdering;
 }
+
 CFStringCompareWithOptionsAndLocale :: (theString1: CFStringRef, theString2: CFStringRef, rangeToCompare: CFRange, compareOptions: CFStringCompareFlags, locale: CFLocaleRef) -> CFComparisonResult #foreign corefoundation;
 CFStringCompareWithOptions :: (theString1: CFStringRef, theString2: CFStringRef, rangeToCompare: CFRange, compareOptions: CFStringCompareFlags) -> CFComparisonResult #foreign corefoundation;
 CFStringCompare :: (theString1: CFStringRef, theString2: CFStringRef, compareOptions: CFStringCompareFlags) -> CFComparisonResult #foreign corefoundation;
@@ -540,6 +576,7 @@ CFStringTrimWhitespace :: (theString: CFMutableStringRef) -> void #foreign coref
 CFStringLowercase :: (theString: CFMutableStringRef, locale: CFLocaleRef) -> void #foreign corefoundation;
 CFStringUppercase :: (theString: CFMutableStringRef, locale: CFLocaleRef) -> void #foreign corefoundation;
 CFStringCapitalize :: (theString: CFMutableStringRef, locale: CFLocaleRef) -> void #foreign corefoundation;
+
 CFStringNormalizationForm :: enum CFIndex {
     D :: 0;
     KD :: 1;
@@ -550,6 +587,7 @@ CFStringNormalizationForm :: enum CFIndex {
     kCFStringNormalizationFormC :: C;
     kCFStringNormalizationFormKC :: KC;
 }
+
 CFStringNormalize :: (theString: CFMutableStringRef, theForm: CFStringNormalizationForm) -> void #foreign corefoundation;
 CFStringFold :: (theString: CFMutableStringRef, theFlags: CFStringCompareFlags, theLocale: CFLocaleRef) -> void #foreign corefoundation;
 CFStringTransform :: (_string: CFMutableStringRef, range: *CFRange, transform: CFStringRef, reverse: Boolean) -> Boolean #foreign corefoundation;
@@ -579,6 +617,7 @@ CFStringConvertWindowsCodepageToEncoding :: (codepage: u32) -> CFStringEncoding 
 CFStringConvertIANACharSetNameToEncoding :: (theString: CFStringRef) -> CFStringEncoding #foreign corefoundation;
 CFStringConvertEncodingToIANACharSetName :: (encoding: CFStringEncoding) -> CFStringRef #foreign corefoundation;
 CFStringGetMostCompatibleMacStringEncoding :: (encoding: CFStringEncoding) -> CFStringEncoding #foreign corefoundation;
+
 CFStringInlineBuffer :: struct {
     buffer: [64] u16;
     theString: CFStringRef;
@@ -588,6 +627,7 @@ CFStringInlineBuffer :: struct {
     bufferedRangeStart: CFIndex;
     bufferedRangeEnd: CFIndex;
 }
+
 CFShow :: (obj: CFTypeRef) -> void #foreign corefoundation;
 CFShowStr :: (str: CFStringRef) -> void #foreign corefoundation;
 __CFStringMakeConstantString :: (cStr: *u8) -> CFStringRef #foreign corefoundation;
@@ -609,6 +649,7 @@ CFTimeZoneCopyAbbreviation :: (tz: CFTimeZoneRef, at: CFAbsoluteTime) -> CFStrin
 CFTimeZoneIsDaylightSavingTime :: (tz: CFTimeZoneRef, at: CFAbsoluteTime) -> Boolean #foreign corefoundation;
 CFTimeZoneGetDaylightSavingTimeOffset :: (tz: CFTimeZoneRef, at: CFAbsoluteTime) -> CFTimeInterval #foreign corefoundation;
 CFTimeZoneGetNextDaylightSavingTimeTransition :: (tz: CFTimeZoneRef, at: CFAbsoluteTime) -> CFAbsoluteTime #foreign corefoundation;
+
 CFTimeZoneNameStyle :: enum CFIndex {
     Standard :: 0;
     ShortStandard :: 1;
@@ -623,6 +664,7 @@ CFTimeZoneNameStyle :: enum CFIndex {
     kCFTimeZoneNameStyleGeneric :: Generic;
     kCFTimeZoneNameStyleShortGeneric :: ShortGeneric;
 }
+
 CFTimeZoneCopyLocalizedName :: (tz: CFTimeZoneRef, style: CFTimeZoneNameStyle, locale: CFLocaleRef) -> CFStringRef #foreign corefoundation;
 kCFTimeZoneSystemTimeZoneDidChangeNotification: CFNotificationName #elsewhere corefoundation;
 __CFCalendar :: struct {}
@@ -639,6 +681,7 @@ CFCalendarGetFirstWeekday :: (calendar: CFCalendarRef) -> CFIndex #foreign coref
 CFCalendarSetFirstWeekday :: (calendar: CFCalendarRef, wkdy: CFIndex) -> void #foreign corefoundation;
 CFCalendarGetMinimumDaysInFirstWeek :: (calendar: CFCalendarRef) -> CFIndex #foreign corefoundation;
 CFCalendarSetMinimumDaysInFirstWeek :: (calendar: CFCalendarRef, mwd: CFIndex) -> void #foreign corefoundation;
+
 CFCalendarUnit :: enum CFOptionFlags {
     Era :: 2;
     Year :: 4;
@@ -669,6 +712,7 @@ CFCalendarUnit :: enum CFOptionFlags {
     kCFCalendarUnitWeekOfYear :: WeekOfYear;
     kCFCalendarUnitYearForWeekOfYear :: YearForWeekOfYear;
 }
+
 CFCalendarGetMinimumRangeOfUnit :: (calendar: CFCalendarRef, unit: CFCalendarUnit) -> CFRange #foreign corefoundation;
 CFCalendarGetMaximumRangeOfUnit :: (calendar: CFCalendarRef, unit: CFCalendarUnit) -> CFRange #foreign corefoundation;
 CFCalendarGetRangeOfUnit :: (calendar: CFCalendarRef, smallerUnit: CFCalendarUnit, biggerUnit: CFCalendarUnit, at: CFAbsoluteTime) -> CFRange #foreign corefoundation;
@@ -676,9 +720,11 @@ CFCalendarGetOrdinalityOfUnit :: (calendar: CFCalendarRef, smallerUnit: CFCalend
 CFCalendarGetTimeRangeOfUnit :: (calendar: CFCalendarRef, unit: CFCalendarUnit, at: CFAbsoluteTime, startp: *CFAbsoluteTime, tip: *CFTimeInterval) -> Boolean #foreign corefoundation;
 CFCalendarComposeAbsoluteTime :: (calendar: CFCalendarRef, at: *CFAbsoluteTime, componentDesc: *u8, __args: ..Any) -> Boolean #foreign corefoundation;
 CFCalendarDecomposeAbsoluteTime :: (calendar: CFCalendarRef, at: CFAbsoluteTime, componentDesc: *u8, __args: ..Any) -> Boolean #foreign corefoundation;
+
 anon_enum_6 :: enum u32 {
     kCFCalendarComponentsWrap :: 1;
 }
+
 CFCalendarAddComponents :: (calendar: CFCalendarRef, at: *CFAbsoluteTime, options: CFOptionFlags, componentDesc: *u8, __args: ..Any) -> Boolean #foreign corefoundation;
 CFCalendarGetComponentDifference :: (calendar: CFCalendarRef, startingAT: CFAbsoluteTime, resultAT: CFAbsoluteTime, options: CFOptionFlags, componentDesc: *u8, __args: ..Any) -> Boolean #foreign corefoundation;
 CFDateFormatterKey :: CFStringRef;
@@ -687,6 +733,7 @@ CFDateFormatterRef :: *__CFDateFormatter;
 CFDateFormatterCreateDateFormatFromTemplate :: (allocator: CFAllocatorRef, tmplate: CFStringRef, options: CFOptionFlags, locale: CFLocaleRef) -> CFStringRef #foreign corefoundation;
 CFDateFormatterGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFDateFormatterStyle :: CFIndex;
+
 kCFDateFormatter :: enum u32 {
     NoStyle :: 0;
     ShortStyle :: 1;
@@ -699,7 +746,9 @@ kCFDateFormatter :: enum u32 {
     kCFDateFormatterLongStyle :: LongStyle;
     kCFDateFormatterFullStyle :: FullStyle;
 }
+
 CFISO8601DateFormatOptions :: CFOptionFlags;
+
 kCFISO8601DateFormatWith :: enum u32 {
     Year :: 1;
     Month :: 2;
@@ -730,6 +779,7 @@ kCFISO8601DateFormatWith :: enum u32 {
     kCFISO8601DateFormatWithFullTime :: FullTime;
     kCFISO8601DateFormatWithInternetDateTime :: InternetDateTime;
 }
+
 CFDateFormatterCreateISO8601Formatter :: (allocator: CFAllocatorRef, formatOptions: CFISO8601DateFormatOptions) -> CFDateFormatterRef #foreign corefoundation;
 CFDateFormatterCreate :: (allocator: CFAllocatorRef, locale: CFLocaleRef, dateStyle: CFDateFormatterStyle, timeStyle: CFDateFormatterStyle) -> CFDateFormatterRef #foreign corefoundation;
 CFDateFormatterGetLocale :: (formatter: CFDateFormatterRef) -> CFLocaleRef #foreign corefoundation;
@@ -803,6 +853,7 @@ kCFBooleanFalse: CFBooleanRef #elsewhere corefoundation;
 CFBooleanGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFBooleanGetValue :: (boolean: CFBooleanRef) -> Boolean #foreign corefoundation;
 CFNumberType :: CFIndex;
+
 kCFNumber :: enum u32 {
     SInt8Type :: 1;
     SInt16Type :: 2;
@@ -839,6 +890,7 @@ kCFNumber :: enum u32 {
     kCFNumberCGFloatType :: CGFloatType;
     kCFNumberMaxType :: MaxType;
 }
+
 __CFNumber :: struct {}
 CFNumberRef :: *__CFNumber;
 kCFNumberPositiveInfinity: CFNumberRef #elsewhere corefoundation;
@@ -856,6 +908,7 @@ __CFNumberFormatter :: struct {}
 CFNumberFormatterRef :: *__CFNumberFormatter;
 CFNumberFormatterGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFNumberFormatterStyle :: CFIndex;
+
 kCFNumberFormatter :: enum u32 {
     NoStyle :: 0;
     DecimalStyle :: 1;
@@ -878,6 +931,7 @@ kCFNumberFormatter :: enum u32 {
     kCFNumberFormatterCurrencyPluralStyle :: CurrencyPluralStyle;
     kCFNumberFormatterCurrencyAccountingStyle :: CurrencyAccountingStyle;
 }
+
 CFNumberFormatterCreate :: (allocator: CFAllocatorRef, locale: CFLocaleRef, style: CFNumberFormatterStyle) -> CFNumberFormatterRef #foreign corefoundation;
 CFNumberFormatterGetLocale :: (formatter: CFNumberFormatterRef) -> CFLocaleRef #foreign corefoundation;
 CFNumberFormatterGetStyle :: (formatter: CFNumberFormatterRef) -> CFNumberFormatterStyle #foreign corefoundation;
@@ -886,9 +940,11 @@ CFNumberFormatterSetFormat :: (formatter: CFNumberFormatterRef, formatString: CF
 CFNumberFormatterCreateStringWithNumber :: (allocator: CFAllocatorRef, formatter: CFNumberFormatterRef, number: CFNumberRef) -> CFStringRef #foreign corefoundation;
 CFNumberFormatterCreateStringWithValue :: (allocator: CFAllocatorRef, formatter: CFNumberFormatterRef, numberType: CFNumberType, valuePtr: *void) -> CFStringRef #foreign corefoundation;
 CFNumberFormatterOptionFlags :: CFOptionFlags;
+
 anon_enum_7 :: enum u32 {
     kCFNumberFormatterParseIntegersOnly :: 1;
 }
+
 CFNumberFormatterCreateNumberFromString :: (allocator: CFAllocatorRef, formatter: CFNumberFormatterRef, _string: CFStringRef, rangep: *CFRange, options: CFOptionFlags) -> CFNumberRef #foreign corefoundation;
 CFNumberFormatterGetValueFromString :: (formatter: CFNumberFormatterRef, _string: CFStringRef, rangep: *CFRange, numberType: CFNumberType, valuePtr: *void) -> Boolean #foreign corefoundation;
 CFNumberFormatterSetProperty :: (formatter: CFNumberFormatterRef, key: CFNumberFormatterKey, value: CFTypeRef) -> void #foreign corefoundation;
@@ -932,6 +988,7 @@ kCFNumberFormatterUseSignificantDigits: CFNumberFormatterKey #elsewhere corefoun
 kCFNumberFormatterMinSignificantDigits: CFNumberFormatterKey #elsewhere corefoundation;
 kCFNumberFormatterMaxSignificantDigits: CFNumberFormatterKey #elsewhere corefoundation;
 CFNumberFormatterRoundingMode :: CFIndex;
+
 kCFNumberFormatterRound :: enum u32 {
     Ceiling :: 0;
     Floor :: 1;
@@ -948,7 +1005,9 @@ kCFNumberFormatterRound :: enum u32 {
     kCFNumberFormatterRoundHalfDown :: HalfDown;
     kCFNumberFormatterRoundHalfUp :: HalfUp;
 }
+
 CFNumberFormatterPadPosition :: CFIndex;
+
 kCFNumberFormatterPad :: enum u32 {
     BeforePrefix :: 0;
     AfterPrefix :: 1;
@@ -959,6 +1018,7 @@ kCFNumberFormatterPad :: enum u32 {
     kCFNumberFormatterPadBeforeSuffix :: BeforeSuffix;
     kCFNumberFormatterPadAfterSuffix :: AfterSuffix;
 }
+
 CFNumberFormatterGetDecimalInfoForCurrencyCode :: (currencyCode: CFStringRef, defaultFractionDigits: *s32, roundingIncrement: *float64) -> Boolean #foreign corefoundation;
 kCFPreferencesAnyApplication: CFStringRef #elsewhere corefoundation;
 kCFPreferencesCurrentApplication: CFStringRef #elsewhere corefoundation;
@@ -982,6 +1042,7 @@ CFPreferencesCopyApplicationList :: (userName: CFStringRef, hostName: CFStringRe
 CFPreferencesCopyKeyList :: (applicationID: CFStringRef, userName: CFStringRef, hostName: CFStringRef) -> CFArrayRef #foreign corefoundation;
 CFPreferencesAppValueIsForced :: (key: CFStringRef, applicationID: CFStringRef) -> Boolean #foreign corefoundation;
 CFURLPathStyle :: CFIndex;
+
 kCFURL :: enum u32 {
     POSIXPathStyle :: 0;
     HFSPathStyle :: 1;
@@ -990,6 +1051,7 @@ kCFURL :: enum u32 {
     kCFURLHFSPathStyle :: HFSPathStyle;
     kCFURLWindowsPathStyle :: WindowsPathStyle;
 }
+
 __CFURL :: struct {}
 CFURLRef :: *__CFURL;
 CFURLGetTypeID :: () -> CFTypeID #foreign corefoundation;
@@ -1028,6 +1090,7 @@ CFURLCreateCopyAppendingPathExtension :: (allocator: CFAllocatorRef, url: CFURLR
 CFURLCreateCopyDeletingPathExtension :: (allocator: CFAllocatorRef, url: CFURLRef) -> CFURLRef #foreign corefoundation;
 CFURLGetBytes :: (url: CFURLRef, buffer: *u8, bufferLength: CFIndex) -> CFIndex #foreign corefoundation;
 CFURLComponentType :: CFIndex;
+
 kCFURLComponent :: enum u32 {
     Scheme :: 1;
     NetLocation :: 2;
@@ -1054,6 +1117,7 @@ kCFURLComponent :: enum u32 {
     kCFURLComponentQuery :: Query;
     kCFURLComponentFragment :: Fragment;
 }
+
 CFURLGetByteRangeForComponent :: (url: CFURLRef, component: CFURLComponentType, rangeIncludingSeparators: *CFRange) -> CFRange #foreign corefoundation;
 CFURLCreateStringByReplacingPercentEscapes :: (allocator: CFAllocatorRef, originalString: CFStringRef, charactersToLeaveEscaped: CFStringRef) -> CFStringRef #foreign corefoundation;
 CFURLCreateStringByReplacingPercentEscapesUsingEncoding :: (allocator: CFAllocatorRef, origString: CFStringRef, charsToLeaveEscaped: CFStringRef, encoding: CFStringEncoding) -> CFStringRef #foreign corefoundation;
@@ -1191,6 +1255,7 @@ kCFURLUbiquitousItemDownloadingStatusNotDownloaded: CFStringRef #elsewhere coref
 kCFURLUbiquitousItemDownloadingStatusDownloaded: CFStringRef #elsewhere corefoundation;
 kCFURLUbiquitousItemDownloadingStatusCurrent: CFStringRef #elsewhere corefoundation;
 CFURLBookmarkCreationOptions :: CFOptionFlags;
+
 kCFURLBookmarkCreation :: enum u32 {
     MinimalBookmarkMask :: 512;
     SuitableForBookmarkFile :: 1024;
@@ -1203,7 +1268,9 @@ kCFURLBookmarkCreation :: enum u32 {
     kCFURLBookmarkCreationSecurityScopeAllowOnlyReadAccess :: SecurityScopeAllowOnlyReadAccess;
     kCFURLBookmarkCreationPreferFileIDResolutionMask :: PreferFileIDResolutionMask;
 }
+
 CFURLBookmarkResolutionOptions :: CFOptionFlags;
+
 kCF :: enum u32 {
     URLBookmarkResolutionWithoutUIMask :: 256;
     URLBookmarkResolutionWithoutMountingMask :: 512;
@@ -1216,6 +1283,7 @@ kCF :: enum u32 {
     kCFBookmarkResolutionWithoutUIMask :: BookmarkResolutionWithoutUIMask;
     kCFBookmarkResolutionWithoutMountingMask :: BookmarkResolutionWithoutMountingMask;
 }
+
 CFURLBookmarkFileCreationOptions :: CFOptionFlags;
 CFURLCreateBookmarkData :: (allocator: CFAllocatorRef, url: CFURLRef, options: CFURLBookmarkCreationOptions, resourcePropertiesToInclude: CFArrayRef, relativeToURL: CFURLRef, error: *CFErrorRef) -> CFDataRef #foreign corefoundation;
 CFURLCreateByResolvingBookmarkData :: (allocator: CFAllocatorRef, bookmark: CFDataRef, options: CFURLBookmarkResolutionOptions, relativeToURL: CFURLRef, resourcePropertiesToInclude: CFArrayRef, isStale: *Boolean, error: *CFErrorRef) -> CFURLRef #foreign corefoundation;
@@ -1235,6 +1303,7 @@ __CFRunLoopObserver :: struct {}
 CFRunLoopObserverRef :: *__CFRunLoopObserver;
 __CFRunLoopTimer :: struct {}
 CFRunLoopTimerRef :: *__CFRunLoopTimer;
+
 CFRunLoopRunResult :: enum s32 {
     Finished :: 1;
     Stopped :: 2;
@@ -1245,6 +1314,7 @@ CFRunLoopRunResult :: enum s32 {
     kCFRunLoopRunTimedOut :: TimedOut;
     kCFRunLoopRunHandledSource :: HandledSource;
 }
+
 CFRunLoopActivity :: enum_flags CFOptionFlags {
     Entry :: 0x1;
     BeforeTimers :: 0x2;
@@ -1261,6 +1331,7 @@ CFRunLoopActivity :: enum_flags CFOptionFlags {
     kCFRunLoopExit :: Exit;
     kCFRunLoopAllActivities :: AllActivities;
 }
+
 kCFRunLoopDefaultMode: CFRunLoopMode #elsewhere corefoundation;
 kCFRunLoopCommonModes: CFRunLoopMode #elsewhere corefoundation;
 CFRunLoopGetTypeID :: () -> CFTypeID #foreign corefoundation;
@@ -1285,6 +1356,7 @@ CFRunLoopRemoveObserver :: (rl: CFRunLoopRef, observer: CFRunLoopObserverRef, mo
 CFRunLoopContainsTimer :: (rl: CFRunLoopRef, timer: CFRunLoopTimerRef, mode: CFRunLoopMode) -> Boolean #foreign corefoundation;
 CFRunLoopAddTimer :: (rl: CFRunLoopRef, timer: CFRunLoopTimerRef, mode: CFRunLoopMode) -> void #foreign corefoundation;
 CFRunLoopRemoveTimer :: (rl: CFRunLoopRef, timer: CFRunLoopTimerRef, mode: CFRunLoopMode) -> void #foreign corefoundation;
+
 CFRunLoopSourceContext :: struct {
     version: CFIndex;
     info: *void;
@@ -1297,6 +1369,7 @@ CFRunLoopSourceContext :: struct {
     cancel: #type (info: *void, rl: CFRunLoopRef, mode: CFRunLoopMode) -> void #c_call;
     perform: #type (info: *void) -> void #c_call;
 }
+
 CFRunLoopSourceContext1 :: struct {
     version: CFIndex;
     info: *void;
@@ -1308,6 +1381,7 @@ CFRunLoopSourceContext1 :: struct {
     getPort: #type (info: *void) -> mach_port_t #c_call;
     perform: #type (msg: *void, size: CFIndex, allocator: CFAllocatorRef, info: *void) -> *void #c_call;
 }
+
 CFRunLoopSourceGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFRunLoopSourceCreate :: (allocator: CFAllocatorRef, order: CFIndex, _context: *CFRunLoopSourceContext) -> CFRunLoopSourceRef #foreign corefoundation;
 CFRunLoopSourceGetOrder :: (source: CFRunLoopSourceRef) -> CFIndex #foreign corefoundation;
@@ -1315,6 +1389,7 @@ CFRunLoopSourceInvalidate :: (source: CFRunLoopSourceRef) -> void #foreign coref
 CFRunLoopSourceIsValid :: (source: CFRunLoopSourceRef) -> Boolean #foreign corefoundation;
 CFRunLoopSourceGetContext :: (source: CFRunLoopSourceRef, _context: *CFRunLoopSourceContext) -> void #foreign corefoundation;
 CFRunLoopSourceSignal :: (source: CFRunLoopSourceRef) -> void #foreign corefoundation;
+
 CFRunLoopObserverContext :: struct {
     version: CFIndex;
     info: *void;
@@ -1322,6 +1397,7 @@ CFRunLoopObserverContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFRunLoopObserverCallBack :: #type (observer: CFRunLoopObserverRef, activity: CFRunLoopActivity, info: *void) -> void #c_call;
 CFRunLoopObserverGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFRunLoopObserverCreate :: (allocator: CFAllocatorRef, activities: CFOptionFlags, repeats: Boolean, order: CFIndex, callout: CFRunLoopObserverCallBack, _context: *CFRunLoopObserverContext) -> CFRunLoopObserverRef #foreign corefoundation;
@@ -1332,6 +1408,7 @@ CFRunLoopObserverGetOrder :: (observer: CFRunLoopObserverRef) -> CFIndex #foreig
 CFRunLoopObserverInvalidate :: (observer: CFRunLoopObserverRef) -> void #foreign corefoundation;
 CFRunLoopObserverIsValid :: (observer: CFRunLoopObserverRef) -> Boolean #foreign corefoundation;
 CFRunLoopObserverGetContext :: (observer: CFRunLoopObserverRef, _context: *CFRunLoopObserverContext) -> void #foreign corefoundation;
+
 CFRunLoopTimerContext :: struct {
     version: CFIndex;
     info: *void;
@@ -1339,6 +1416,7 @@ CFRunLoopTimerContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFRunLoopTimerCallBack :: #type (timer: CFRunLoopTimerRef, info: *void) -> void #c_call;
 CFRunLoopTimerGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFRunLoopTimerCreate :: (allocator: CFAllocatorRef, fireDate: CFAbsoluteTime, interval: CFTimeInterval, flags: CFOptionFlags, order: CFIndex, callout: CFRunLoopTimerCallBack, _context: *CFRunLoopTimerContext) -> CFRunLoopTimerRef #foreign corefoundation;
@@ -1356,6 +1434,7 @@ CFRunLoopTimerSetTolerance :: (timer: CFRunLoopTimerRef, tolerance: CFTimeInterv
 __CFSocket :: struct {}
 CFSocketRef :: *__CFSocket;
 CFSocketError :: CFIndex;
+
 kCFSocket :: enum s32 {
     Success :: 0;
     Error :: -1;
@@ -1364,13 +1443,16 @@ kCFSocket :: enum s32 {
     kCFSocketError :: Error;
     kCFSocketTimeout :: Timeout;
 }
+
 CFSocketSignature :: struct {
     protocolFamily: s32;
     socketType: s32;
     protocol: s32;
     address: CFDataRef;
 }
+
 CFSocketCallBackType :: CFOptionFlags;
+
 kCFSocket_1 :: enum u32 {
     NoCallBack :: 0;
     ReadCallBack :: 1;
@@ -1385,6 +1467,7 @@ kCFSocket_1 :: enum u32 {
     kCFSocketConnectCallBack :: ConnectCallBack;
     kCFSocketWriteCallBack :: WriteCallBack;
 }
+
 kCFSocket_2 :: enum u32 {
     AutomaticallyReenableReadCallBack :: 1;
     AutomaticallyReenableAcceptCallBack :: 2;
@@ -1399,7 +1482,9 @@ kCFSocket_2 :: enum u32 {
     kCFSocketLeaveErrors :: LeaveErrors;
     kCFSocketCloseOnInvalidate :: CloseOnInvalidate;
 }
+
 CFSocketCallBack :: #type (s: CFSocketRef, type: CFSocketCallBackType, address: CFDataRef, data: *void, info: *void) -> void #c_call;
+
 CFSocketContext :: struct {
     version: CFIndex;
     info: *void;
@@ -1407,6 +1492,7 @@ CFSocketContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFSocketNativeHandle :: s32;
 CFSocketGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFSocketCreate :: (allocator: CFAllocatorRef, protocolFamily: s32, socketType: s32, protocol: s32, callBackTypes: CFOptionFlags, callout: CFSocketCallBack, _context: *CFSocketContext) -> CFSocketRef #foreign corefoundation;
@@ -1442,6 +1528,7 @@ kCFSocketErrorKey: CFStringRef #elsewhere corefoundation;
 kCFSocketRegisterCommand: CFStringRef #elsewhere corefoundation;
 kCFSocketRetrieveCommand: CFStringRef #elsewhere corefoundation;
 CFStreamPropertyKey :: CFStringRef;
+
 CFStreamStatus :: enum CFIndex {
     NotOpen :: 0;
     Opening :: 1;
@@ -1460,7 +1547,9 @@ CFStreamStatus :: enum CFIndex {
     kCFStreamStatusClosed :: Closed;
     kCFStreamStatusError :: Error;
 }
+
 CFStreamEventType :: CFOptionFlags;
+
 kCFStreamEvent :: enum u32 {
     None :: 0;
     OpenCompleted :: 1;
@@ -1475,6 +1564,7 @@ kCFStreamEvent :: enum u32 {
     kCFStreamEventErrorOccurred :: ErrorOccurred;
     kCFStreamEventEndEncountered :: EndEncountered;
 }
+
 CFStreamClientContext :: struct {
     version: CFIndex;
     info: *void;
@@ -1482,6 +1572,7 @@ CFStreamClientContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 __CFReadStream :: struct {}
 CFReadStreamRef :: *__CFReadStream;
 __CFWriteStream :: struct {}
@@ -1532,6 +1623,7 @@ CFReadStreamSetDispatchQueue :: (stream: CFReadStreamRef, q: dispatch_queue_t) -
 CFWriteStreamSetDispatchQueue :: (stream: CFWriteStreamRef, q: dispatch_queue_t) -> void #foreign corefoundation;
 CFReadStreamCopyDispatchQueue :: (stream: CFReadStreamRef) -> dispatch_queue_t #foreign corefoundation;
 CFWriteStreamCopyDispatchQueue :: (stream: CFWriteStreamRef) -> dispatch_queue_t #foreign corefoundation;
+
 CFStreamErrorDomain :: enum CFIndex {
     Custom :: -1;
     POSIX :: 1;
@@ -1540,13 +1632,16 @@ CFStreamErrorDomain :: enum CFIndex {
     kCFStreamErrorDomainPOSIX :: POSIX;
     kCFStreamErrorDomainMacOSStatus :: MacOSStatus;
 }
+
 CFStreamError :: struct {
     domain: CFIndex;
     error: s32;
 }
+
 CFReadStreamGetError :: (stream: CFReadStreamRef) -> CFStreamError #foreign corefoundation;
 CFWriteStreamGetError :: (stream: CFWriteStreamRef) -> CFStreamError #foreign corefoundation;
 CFPropertyListMutabilityOptions :: CFOptionFlags;
+
 kCFPropertyList :: enum u32 {
     Immutable :: 0;
     MutableContainers :: 1;
@@ -1555,10 +1650,12 @@ kCFPropertyList :: enum u32 {
     kCFPropertyListMutableContainers :: MutableContainers;
     kCFPropertyListMutableContainersAndLeaves :: MutableContainersAndLeaves;
 }
+
 CFPropertyListCreateFromXMLData :: (allocator: CFAllocatorRef, xmlData: CFDataRef, mutabilityOption: CFOptionFlags, errorString: *CFStringRef) -> CFPropertyListRef #foreign corefoundation;
 CFPropertyListCreateXMLData :: (allocator: CFAllocatorRef, propertyList: CFPropertyListRef) -> CFDataRef #foreign corefoundation;
 CFPropertyListCreateDeepCopy :: (allocator: CFAllocatorRef, propertyList: CFPropertyListRef, mutabilityOption: CFOptionFlags) -> CFPropertyListRef #foreign corefoundation;
 CFPropertyListFormat :: CFIndex;
+
 kCFPropertyList_1 :: enum u32 {
     OpenStepFormat :: 1;
     XMLFormat_v1_0 :: 100;
@@ -1567,9 +1664,11 @@ kCFPropertyList_1 :: enum u32 {
     kCFPropertyListXMLFormat_v1_0 :: XMLFormat_v1_0;
     kCFPropertyListBinaryFormat_v1_0 :: BinaryFormat_v1_0;
 }
+
 CFPropertyListIsValid :: (plist: CFPropertyListRef, format: CFPropertyListFormat) -> Boolean #foreign corefoundation;
 CFPropertyListWriteToStream :: (propertyList: CFPropertyListRef, stream: CFWriteStreamRef, format: CFPropertyListFormat, errorString: *CFStringRef) -> CFIndex #foreign corefoundation;
 CFPropertyListCreateFromStream :: (allocator: CFAllocatorRef, stream: CFReadStreamRef, streamLength: CFIndex, mutabilityOption: CFOptionFlags, format: *CFPropertyListFormat, errorString: *CFStringRef) -> CFPropertyListRef #foreign corefoundation;
+
 kCFPropertyList_2 :: enum u32 {
     ReadCorruptError :: 3840;
     ReadUnknownVersionError :: 3841;
@@ -1580,6 +1679,7 @@ kCFPropertyList_2 :: enum u32 {
     kCFPropertyListReadStreamError :: ReadStreamError;
     kCFPropertyListWriteStreamError :: WriteStreamError;
 }
+
 CFPropertyListCreateWithData :: (allocator: CFAllocatorRef, data: CFDataRef, options: CFOptionFlags, format: *CFPropertyListFormat, error: *CFErrorRef) -> CFPropertyListRef #foreign corefoundation;
 CFPropertyListCreateWithStream :: (allocator: CFAllocatorRef, stream: CFReadStreamRef, streamLength: CFIndex, options: CFOptionFlags, format: *CFPropertyListFormat, error: *CFErrorRef) -> CFPropertyListRef #foreign corefoundation;
 CFPropertyListWrite :: (propertyList: CFPropertyListRef, stream: CFWriteStreamRef, format: CFPropertyListFormat, options: CFOptionFlags, error: *CFErrorRef) -> CFIndex #foreign corefoundation;
@@ -1587,6 +1687,7 @@ CFPropertyListCreateData :: (allocator: CFAllocatorRef, propertyList: CFProperty
 __CFSet :: struct {}
 CFMutableSetRef :: *__CFSet;
 CFStringEncodings :: CFIndex;
+
 kCFStringEncoding_1 :: enum u32 {
     MacJapanese :: 1;
     MacChineseTrad :: 2;
@@ -1847,12 +1948,14 @@ kCFStringEncoding_1 :: enum u32 {
     kCFStringEncodingUTF7_IMAP :: UTF7_IMAP;
     kCFStringEncodingShiftJIS_X0213_00 :: ShiftJIS_X0213_00;
 }
+
 __CFTree :: struct {}
 CFURLCreateDataAndPropertiesFromResource :: (alloc: CFAllocatorRef, url: CFURLRef, resourceData: *CFDataRef, properties: *CFDictionaryRef, desiredProperties: CFArrayRef, errorCode: *s32) -> Boolean #foreign corefoundation;
 CFURLWriteDataAndPropertiesToResource :: (url: CFURLRef, dataToWrite: CFDataRef, propertiesToWrite: CFDictionaryRef, errorCode: *s32) -> Boolean #foreign corefoundation;
 CFURLDestroyResource :: (url: CFURLRef, errorCode: *s32) -> Boolean #foreign corefoundation;
 CFURLCreatePropertyFromResource :: (alloc: CFAllocatorRef, url: CFURLRef, property: CFStringRef, errorCode: *s32) -> CFTypeRef #foreign corefoundation;
 CFURLError :: CFIndex;
+
 kCFURL_1 :: enum s32 {
     UnknownError :: -10;
     UnknownSchemeError :: -11;
@@ -1873,6 +1976,7 @@ kCFURL_1 :: enum s32 {
     kCFURLPropertyKeyUnavailableError :: PropertyKeyUnavailableError;
     kCFURLTimeoutError :: TimeoutError;
 }
+
 kCFURLFileExists: CFStringRef #elsewhere corefoundation;
 kCFURLFileDirectoryContents: CFStringRef #elsewhere corefoundation;
 kCFURLFileLength: CFStringRef #elsewhere corefoundation;
@@ -1883,6 +1987,7 @@ kCFURLHTTPStatusCode: CFStringRef #elsewhere corefoundation;
 kCFURLHTTPStatusLine: CFStringRef #elsewhere corefoundation;
 __CFUUID :: struct {}
 CFUUIDRef :: *__CFUUID;
+
 CFUUIDBytes :: struct {
     byte0: u8;
     byte1: u8;
@@ -1901,6 +2006,7 @@ CFUUIDBytes :: struct {
     byte14: u8;
     byte15: u8;
 }
+
 CFUUIDGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFUUIDCreate :: (alloc: CFAllocatorRef) -> CFUUIDRef #foreign corefoundation;
 CFUUIDCreateWithBytes :: (alloc: CFAllocatorRef, byte0: u8, byte1: u8, byte2: u8, byte3: u8, byte4: u8, byte5: u8, byte6: u8, byte7: u8, byte8: u8, byte9: u8, byte10: u8, byte11: u8, byte12: u8, byte13: u8, byte14: u8, byte15: u8) -> CFUUIDRef #foreign corefoundation;
@@ -1955,6 +2061,7 @@ CFBundleCopyInfoDictionaryForURL :: (url: CFURLRef) -> CFDictionaryRef #foreign 
 CFBundleCopyLocalizationsForURL :: (url: CFURLRef) -> CFArrayRef #foreign corefoundation;
 CFBundleCopyExecutableArchitecturesForURL :: (url: CFURLRef) -> CFArrayRef #foreign corefoundation;
 CFBundleCopyExecutableURL :: (bundle: CFBundleRef) -> CFURLRef #foreign corefoundation;
+
 kCFBundleExecutableArchitecture :: enum u32 {
     I386 :: 7;
     PPC :: 18;
@@ -1965,6 +2072,7 @@ kCFBundleExecutableArchitecture :: enum u32 {
     kCFBundleExecutableArchitectureX86_64 :: X86_64;
     kCFBundleExecutableArchitecturePPC64 :: PPC64;
 }
+
 CFBundleCopyExecutableArchitectures :: (bundle: CFBundleRef) -> CFArrayRef #foreign corefoundation;
 CFBundlePreflightExecutable :: (bundle: CFBundleRef, error: *CFErrorRef) -> Boolean #foreign corefoundation;
 CFBundleLoadExecutableAndReturnError :: (bundle: CFBundleRef, error: *CFErrorRef) -> Boolean #foreign corefoundation;
@@ -1983,6 +2091,7 @@ CFBundleOpenBundleResourceFiles :: (bundle: CFBundleRef, refNum: *CFBundleRefNum
 CFBundleCloseBundleResourceMap :: (bundle: CFBundleRef, refNum: CFBundleRefNum) -> void #foreign corefoundation;
 __CFMessagePort :: struct {}
 CFMessagePortRef :: *__CFMessagePort;
+
 kCFMessagePort :: enum s32 {
     Success :: 0;
     SendTimeout :: -1;
@@ -1997,6 +2106,7 @@ kCFMessagePort :: enum s32 {
     kCFMessagePortTransportError :: TransportError;
     kCFMessagePortBecameInvalidError :: BecameInvalidError;
 }
+
 CFMessagePortContext :: struct {
     version: CFIndex;
     info: *void;
@@ -2004,6 +2114,7 @@ CFMessagePortContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFMessagePortCallBack :: #type (local: CFMessagePortRef, msgid: s32, data: CFDataRef, info: *void) -> CFDataRef #c_call;
 CFMessagePortInvalidationCallBack :: #type (ms: CFMessagePortRef, info: *void) -> void #c_call;
 CFMessagePortGetTypeID :: () -> CFTypeID #foreign corefoundation;
@@ -2054,6 +2165,7 @@ CFPlugInInstanceGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFPlugInInstanceCreateWithInstanceDataSize :: (allocator: CFAllocatorRef, instanceDataSize: CFIndex, deallocateInstanceFunction: CFPlugInInstanceDeallocateInstanceDataFunction, factoryName: CFStringRef, getInterfaceFunction: CFPlugInInstanceGetInterfaceFunction) -> CFPlugInInstanceRef #foreign corefoundation;
 __CFMachPort :: struct {}
 CFMachPortRef :: *__CFMachPort;
+
 CFMachPortContext :: struct {
     version: CFIndex;
     info: *void;
@@ -2061,6 +2173,7 @@ CFMachPortContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFMachPortCallBack :: #type (port: CFMachPortRef, msg: *void, size: CFIndex, info: *void) -> void #c_call;
 CFMachPortInvalidationCallBack :: #type (port: CFMachPortRef, info: *void) -> void #c_call;
 CFMachPortGetTypeID :: () -> CFTypeID #foreign corefoundation;
@@ -2100,6 +2213,7 @@ __CFURLEnumerator :: struct {}
 CFURLEnumeratorRef :: *__CFURLEnumerator;
 CFURLEnumeratorGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFURLEnumeratorOptions :: CFOptionFlags;
+
 kCFURLEnumerator :: enum u32 {
     DefaultBehavior :: 0;
     DescendRecursively :: 1;
@@ -2116,9 +2230,11 @@ kCFURLEnumerator :: enum u32 {
     kCFURLEnumeratorIncludeDirectoriesPreOrder :: IncludeDirectoriesPreOrder;
     kCFURLEnumeratorIncludeDirectoriesPostOrder :: IncludeDirectoriesPostOrder;
 }
+
 CFURLEnumeratorCreateForDirectoryURL :: (alloc: CFAllocatorRef, directoryURL: CFURLRef, option: CFURLEnumeratorOptions, propertyKeys: CFArrayRef) -> CFURLEnumeratorRef #foreign corefoundation;
 CFURLEnumeratorCreateForMountedVolumes :: (alloc: CFAllocatorRef, option: CFURLEnumeratorOptions, propertyKeys: CFArrayRef) -> CFURLEnumeratorRef #foreign corefoundation;
 CFURLEnumeratorResult :: CFIndex;
+
 kCFURLEnumerator_1 :: enum u32 {
     Success :: 1;
     End :: 2;
@@ -2129,6 +2245,7 @@ kCFURLEnumerator_1 :: enum u32 {
     kCFURLEnumeratorError :: Error;
     kCFURLEnumeratorDirectoryPostOrderSuccess :: DirectoryPostOrderSuccess;
 }
+
 CFURLEnumeratorGetNextURL :: (enumerator: CFURLEnumeratorRef, url: *CFURLRef, error: *CFErrorRef) -> CFURLEnumeratorResult #foreign corefoundation;
 CFURLEnumeratorSkipDescendents :: (enumerator: CFURLEnumeratorRef) -> void #foreign corefoundation;
 CFURLEnumeratorGetDescendentLevel :: (enumerator: CFURLEnumeratorRef) -> CFIndex #foreign corefoundation;
@@ -2136,6 +2253,7 @@ CFURLEnumeratorGetSourceDidChange :: (enumerator: CFURLEnumeratorRef) -> Boolean
 CFStringTokenizerCopyBestStringLanguage :: (_string: CFStringRef, range: CFRange) -> CFStringRef #foreign corefoundation;
 __CFStringTokenizer :: struct {}
 CFStringTokenizerRef :: *__CFStringTokenizer;
+
 kCFStringTokenizer :: enum u32 {
     UnitWord :: 0;
     UnitSentence :: 1;
@@ -2152,7 +2270,9 @@ kCFStringTokenizer :: enum u32 {
     kCFStringTokenizerAttributeLatinTranscription :: AttributeLatinTranscription;
     kCFStringTokenizerAttributeLanguage :: AttributeLanguage;
 }
+
 CFStringTokenizerTokenType :: CFOptionFlags;
+
 kCFStringTokenizerToken :: enum u32 {
     None :: 0;
     Normal :: 1;
@@ -2169,6 +2289,7 @@ kCFStringTokenizerToken :: enum u32 {
     kCFStringTokenizerTokenHasNonLettersMask :: HasNonLettersMask;
     kCFStringTokenizerTokenIsCJWordMask :: IsCJWordMask;
 }
+
 CFStringTokenizerGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFStringTokenizerCreate :: (alloc: CFAllocatorRef, _string: CFStringRef, range: CFRange, options: CFOptionFlags, locale: CFLocaleRef) -> CFStringTokenizerRef #foreign corefoundation;
 CFStringTokenizerSetString :: (tokenizer: CFStringTokenizerRef, _string: CFStringRef, range: CFRange) -> void #foreign corefoundation;
@@ -2180,13 +2301,16 @@ CFStringTokenizerGetCurrentSubTokens :: (tokenizer: CFStringTokenizerRef, ranges
 CFFileDescriptorNativeDescriptor :: s32;
 __CFFileDescriptor :: struct {}
 CFFileDescriptorRef :: *__CFFileDescriptor;
+
 kCFFileDescriptor :: enum u32 {
     ReadCallBack :: 1;
     WriteCallBack :: 2;
     kCFFileDescriptorReadCallBack :: ReadCallBack;
     kCFFileDescriptorWriteCallBack :: WriteCallBack;
 }
+
 CFFileDescriptorCallBack :: #type (f: CFFileDescriptorRef, callBackTypes: CFOptionFlags, info: *void) -> void #c_call;
+
 CFFileDescriptorContext :: struct {
     version: CFIndex;
     info: *void;
@@ -2194,6 +2318,7 @@ CFFileDescriptorContext :: struct {
     release: #type (info: *void) -> void #c_call;
     copyDescription: #type (info: *void) -> CFStringRef #c_call;
 }
+
 CFFileDescriptorGetTypeID :: () -> CFTypeID #foreign corefoundation;
 CFFileDescriptorCreate :: (allocator: CFAllocatorRef, fd: CFFileDescriptorNativeDescriptor, closeOnInvalidate: Boolean, callout: CFFileDescriptorCallBack, _context: *CFFileDescriptorContext) -> CFFileDescriptorRef #foreign corefoundation;
 CFFileDescriptorGetNativeDescriptor :: (f: CFFileDescriptorRef) -> CFFileDescriptorNativeDescriptor #foreign corefoundation;
@@ -2216,6 +2341,7 @@ CFUserNotificationCancel :: (userNotification: CFUserNotificationRef) -> s32 #fo
 CFUserNotificationCreateRunLoopSource :: (allocator: CFAllocatorRef, userNotification: CFUserNotificationRef, callout: CFUserNotificationCallBack, order: CFIndex) -> CFRunLoopSourceRef #foreign corefoundation;
 CFUserNotificationDisplayNotice :: (timeout: CFTimeInterval, flags: CFOptionFlags, iconURL: CFURLRef, soundURL: CFURLRef, localizationURL: CFURLRef, alertHeader: CFStringRef, alertMessage: CFStringRef, defaultButtonTitle: CFStringRef) -> s32 #foreign corefoundation;
 CFUserNotificationDisplayAlert :: (timeout: CFTimeInterval, flags: CFOptionFlags, iconURL: CFURLRef, soundURL: CFURLRef, localizationURL: CFURLRef, alertHeader: CFStringRef, alertMessage: CFStringRef, defaultButtonTitle: CFStringRef, alternateButtonTitle: CFStringRef, otherButtonTitle: CFStringRef, responseFlags: *CFOptionFlags) -> s32 #foreign corefoundation;
+
 kCFUserNotification :: enum u32 {
     StopAlertLevel :: 0;
     NoteAlertLevel :: 1;
@@ -2226,6 +2352,7 @@ kCFUserNotification :: enum u32 {
     kCFUserNotificationCautionAlertLevel :: CautionAlertLevel;
     kCFUserNotificationPlainAlertLevel :: PlainAlertLevel;
 }
+
 kCFUserNotification_1 :: enum u32 {
     DefaultResponse :: 0;
     AlternateResponse :: 1;
@@ -2236,12 +2363,14 @@ kCFUserNotification_1 :: enum u32 {
     kCFUserNotificationOtherResponse :: OtherResponse;
     kCFUserNotificationCancelResponse :: CancelResponse;
 }
+
 kCFUserNotification_2 :: enum u32 {
     NoDefaultButtonFlag :: 32;
     UseRadioButtonsFlag :: 64;
     kCFUserNotificationNoDefaultButtonFlag :: NoDefaultButtonFlag;
     kCFUserNotificationUseRadioButtonsFlag :: UseRadioButtonsFlag;
 }
+
 kCFUserNotificationIconURLKey: CFStringRef #elsewhere corefoundation;
 kCFUserNotificationSoundURLKey: CFStringRef #elsewhere corefoundation;
 kCFUserNotificationLocalizationURLKey: CFStringRef #elsewhere corefoundation;
@@ -2256,9 +2385,11 @@ kCFUserNotificationTextFieldTitlesKey: CFStringRef #elsewhere corefoundation;
 kCFUserNotificationCheckBoxTitlesKey: CFStringRef #elsewhere corefoundation;
 kCFUserNotificationTextFieldValuesKey: CFStringRef #elsewhere corefoundation;
 kCFUserNotificationPopUpSelectionKey: CFStringRef #elsewhere corefoundation;
+
 anon_enum_8 :: enum u32 {
     kCFXMLNodeCurrentVersion :: 1;
 }
+
 #scope_file
 libc :: #system_library "libc";
 corefoundation :: #system_library "CoreFoundation";

@@ -3,7 +3,9 @@
 // cannot grow past it; reset keeps the memory, fini frees it.
 #module_parameters (DEFAULT_VIRTUAL_MEMORY_RESERVE := 256 * 1024 * 1024, OVERWRITE_ALL_POOLS_ON_RESET := false);
 #scope_file;
+
 #import "Basic";
+
 #scope_export;
 
 Flat_Pool :: struct {

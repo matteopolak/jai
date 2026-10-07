@@ -2,8 +2,10 @@
 #import "Objective_C";
 #import "Objective_C/AppKit";
 #import "Objective_C/LightweightRenderingView";
+
 #scope_export
 application_initialized := false;
+
 init_mac_app :: () {
     if application_initialized return;
     // Referencing a symbol of the framework makes the linker/loader bring AppKit in before any class lookup.
@@ -27,6 +29,7 @@ init_mac_app :: () {
     NSApplication.activateIgnoringOtherApps(application, YES);
     application_initialized = true;
 }
+
 create_window :: (width: int, height: int, window_name: string, window_x := -1, window_y := -1, parent: Window_Type = null, background_color_rgb := DEFAULT_WINDOW_CREATION_COLOR, wanted_msaa := DEFAULT_MSAA) -> *NSWindow {
     if width <= 0 || height <= 0 return null;
     init_mac_app();
@@ -96,12 +99,14 @@ create_window :: (width: int, height: int, window_name: string, window_x := -1, 
     array_add(*WT.macos_program_windows, window);
     return window;
 }
+
 swap_view_buffers :: (win: *NSWindow) {
     if !win return;
     render_view := NSWindow.contentView(win);
     // The content view create_window made is an OpenGL view.
     if render_view LightweightOpenGLView.swapBuffers(cast(*LightweightOpenGLView) render_view);
 }
+
 get_dimensions :: (window: *NSWindow, right_handed: bool) -> (x: s32, y: s32, width: s32, height: s32, success := true) {
     if !window return 0, 0, 0, 0, false;
     view := NSWindow.contentView(window);
@@ -111,10 +116,12 @@ get_dimensions :: (window: *NSWindow, right_handed: bool) -> (x: s32, y: s32, wi
     if right_handed bottom += area.size.height;
     return cast(s32) area.origin.x, cast(s32) bottom, cast(s32) area.size.width, cast(s32) area.size.height, true;
 }
+
 Saved_Window_Info :: struct {
     mask: NSWindowStyleMask;
     window_frame: NSRect;
 }
+
 toggle_fullscreen :: (win: *NSWindow, desire_fullscreen: bool, saved: *Saved_Window_Info) -> success: bool, width: s32, height: s32 {
     if !win || !saved return false, 0, 0;
     if desire_fullscreen {
@@ -132,6 +139,7 @@ toggle_fullscreen :: (win: *NSWindow, desire_fullscreen: bool, saved: *Saved_Win
     _, _, measured_width, measured_height, measured_ok := get_dimensions(win, false);
     return measured_ok, measured_width, measured_height;
 }
+
 get_mouse_pointer_position :: (window: *NSWindow, right_handed: bool) -> x: int, y: int, success: bool {
     if !window return 0, 0, false;
     view := NSWindow.contentView(window);
@@ -143,17 +151,20 @@ get_mouse_pointer_position :: (window: *NSWindow, right_handed: bool) -> x: int,
     }
     return cast(int) point.x, cast(int) point.y, true;
 }
+
 get_mouse_pointer_position :: (right_handed := false) -> x: int, y: int, success: bool {
     if !NSApp return 0, 0, false;
     focused := NSApplication.keyWindow(NSApp);
     return get_mouse_pointer_position(focused, right_handed);
 }
+
 #scope_file
 macos_create_app_delegate_exists :: () -> bool {
     info := cast(*Type_Info_Struct) type_info(#Context);
     member, offset := get_field_with_offset(info, "_macos_create_app_delegate");
     return member != null && offset >= 0;
 }
+
 macos_create_window_delegate_exists :: () -> bool {
     info := cast(*Type_Info_Struct) type_info(#Context);
     member, offset := get_field_with_offset(info, "_macos_create_window_delegate");

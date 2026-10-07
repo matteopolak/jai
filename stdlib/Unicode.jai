@@ -2,6 +2,7 @@
 Basic :: #import "Basic";
 #scope_export
 #load "Unicode/utf8-core.jai";
+
 character_utf32_to_utf8 :: (ch: u32) -> string {
     out := Basic.alloc_string(4);
     status := character_utf32_to_utf8(ch, *out);
@@ -11,6 +12,7 @@ character_utf32_to_utf8 :: (ch: u32) -> string {
     }
     return out;
 }
+
 utf8_next_character :: (s: *string) -> code: u32, success: Unicode_Result {
     text := s;
     code, consumed, status := character_utf8_to_utf32(text.data, text.count);
@@ -20,6 +22,7 @@ utf8_next_character :: (s: *string) -> code: u32, success: Unicode_Result {
     }
     return code, status;
 }
+
 unicode_next_character :: (s: *u8) -> *u8 {
     if !s return null;
     length := 1;
@@ -28,6 +31,7 @@ unicode_next_character :: (s: *u8) -> *u8 {
     else if s[0] >= 0xF0 && s[0] <= 0xF4 length = 4;
     return s + length;
 }
+
 utf8_iter :: (s: *string, body: Code, flags: For_Flags) #expand {
     `it: u32;
     `it_index: s64;
@@ -72,6 +76,7 @@ trailingBytesForUTF8 :: #run -> [256] u8 {
     }
     return table;
 };
+
 // Payload bits of a leading byte, by continuation-byte count.
 utf8_inital_byte_mask :: u8.[0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01];
 // Marker bits subtracted after accumulating 6 bits per byte, by continuation-byte count.

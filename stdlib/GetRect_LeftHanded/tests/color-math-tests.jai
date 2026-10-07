@@ -1,5 +1,6 @@
 #load "../../GetRect_Common/color-math.jai";
 M :: #import "Math";
+
 color_math_cases :: () -> bool {
     white := linear_srgb_to_oklab(M.Vector3.{ 1, 1, 1 });
     if M.abs(white.x - 1) > 0.0001 || M.abs(white.y) > 0.0001 || M.abs(white.z) > 0.0001 return false;
@@ -9,7 +10,9 @@ color_math_cases :: () -> bool {
     }
     return true;
 }
+
 #assert #run color_math_cases();
+
 main :: () {
     color_math_cases();
 }

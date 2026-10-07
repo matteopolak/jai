@@ -1,6 +1,7 @@
 #scope_export
 THEME_COUNT :: #run enum_highest_value(Default_Themes) + 1;
 default_theme_procs: [THEME_COUNT] Theme_Proc : Theme_Proc.[theme_proc_default, theme_proc_grayscale, theme_proc_bentonite, theme_proc_nimbus, theme_proc_blood_vampire, theme_proc_freddie_freeloader, theme_proc_high_contrast];
+
 set_theme_from_base_colors :: (theme: *Overall_Theme, main_surface_color: Vector4, border_color: Vector4, interact_color: Vector4, atop_surface_text: Vector4, atop_border_text: Vector4) {
     base := theme.button_theme;
     base.surface_color = main_surface_color;
@@ -51,27 +52,35 @@ set_theme_from_base_colors :: (theme: *Overall_Theme, main_surface_color: Vector
     theme.subwindow_theme.region_background.color = main_surface_color;
     theme.subwindow_theme.region_background.frame_color = border_color;
 }
+
 theme_proc_default :: () -> Overall_Theme {
     return left_palette(.{ 0.11, 0.16, 0.22, 1 }, .{ 0.28, 0.43, 0.57, 1 }, .{ 0.39, 0.75, 0.95, 1 }, .{ 0.95, 0.97, 1, 1 });
 }
+
 theme_proc_grayscale :: () -> Overall_Theme {
     return left_palette(.{ 0.12, 0.12, 0.12, 1 }, .{ 0.42, 0.42, 0.42, 1 }, .{ 0.72, 0.72, 0.72, 1 }, .{ 0.96, 0.96, 0.96, 1 });
 }
+
 theme_proc_bentonite :: () -> Overall_Theme {
     return left_palette(.{ 0.23, 0.18, 0.14, 1 }, .{ 0.48, 0.39, 0.28, 1 }, .{ 0.87, 0.70, 0.40, 1 }, .{ 1, 0.96, 0.87, 1 });
 }
+
 theme_proc_nimbus :: () -> Overall_Theme {
     return left_palette(.{ 0.82, 0.87, 0.93, 1 }, .{ 0.32, 0.42, 0.54, 1 }, .{ 0.37, 0.66, 0.88, 1 }, .{ 0.06, 0.10, 0.16, 1 });
 }
+
 theme_proc_blood_vampire :: () -> Overall_Theme {
     return left_palette(.{ 0.17, 0.05, 0.07, 1 }, .{ 0.44, 0.13, 0.21, 1 }, .{ 0.92, 0.29, 0.39, 1 }, .{ 1, 0.91, 0.91, 1 });
 }
+
 theme_proc_freddie_freeloader :: () -> Overall_Theme {
     return left_palette(.{ 0.09, 0.20, 0.17, 1 }, .{ 0.24, 0.47, 0.40, 1 }, .{ 0.64, 0.88, 0.61, 1 }, .{ 0.94, 1, 0.91, 1 });
 }
+
 theme_proc_high_contrast :: () -> Overall_Theme {
     return left_palette(.{ 0, 0, 0, 1 }, .{ 1, 1, 1, 1 }, .{ 1, 0.85, 0, 1 }, .{ 1, 1, 1, 1 });
 }
+
 #scope_module
 left_palette :: (surface: Vector4, border: Vector4, accent: Vector4, text: Vector4) -> Overall_Theme {
     result: Overall_Theme;

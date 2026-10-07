@@ -317,6 +317,7 @@ __ENUM_IDTYPE_T :: 1;
 WAIT_ANY :: -1;
 WAIT_MYPGRP :: 0;
 CLOCKS_PER_SEC :: cast(s64) 1000000;
+
 clockid_t :: enum u32 {
     REALTIME :: 0;
     MONOTONIC :: 1;
@@ -341,6 +342,7 @@ clockid_t :: enum u32 {
     CLOCK_BOOTTIME_ALARM :: BOOTTIME_ALARM;
     CLOCK_TAI :: TAI;
 }
+
 TIMER_ABSTIME :: 1;
 TIME_UTC :: 1;
 __POSIX2_THIS_VERSION :: 200809;
@@ -367,21 +369,26 @@ dlsym :: (__handle: *void, __name: *u8) -> *void #foreign libdl;
 dlmopen :: (__nsid: Lmid_t, __file: *u8, __mode: s32) -> *void #foreign libdl;
 dlvsym :: (__handle: *void, __name: *u8, __version: *u8) -> *void #foreign libdl;
 dlerror :: () -> *u8 #foreign libdl;
+
 Dl_info :: struct {
     dli_fname: *u8;
     dli_fbase: *void;
     dli_sname: *u8;
     dli_saddr: *void;
 }
+
 dladdr :: (__address: *void, __info: *Dl_info) -> s32 #foreign libdl;
 dladdr1 :: (__address: *void, __info: *Dl_info, __extra_info: **void, __flags: s32) -> s32 #foreign libdl;
+
 RTLD_DL :: enum u32 {
     SYMENT :: 1;
     LINKMAP :: 2;
     RTLD_DL_SYMENT :: SYMENT;
     RTLD_DL_LINKMAP :: LINKMAP;
 }
+
 dlinfo :: (__handle: *void, __request: s32, __arg: *void) -> s32 #foreign libdl;
+
 RTLD_DI :: enum u32 {
     LMID :: 1;
     LINKMAP :: 2;
@@ -406,19 +413,24 @@ RTLD_DI :: enum u32 {
     RTLD_DI_TLS_DATA :: TLS_DATA;
     RTLD_DI_MAX :: MAX;
 }
+
 Dl_serpath :: struct {
     dls_name: *u8;
     dls_flags: u32;
 }
+
 Dl_serinfo :: struct {
     dls_size: u64;
     dls_cnt: u32;
     dls_serpath: [1] Dl_serpath;
 }
+
 __fsid_t :: struct {
     __val: [2] s32;
 }
+
 ino64_t :: u64;
+
 dirent :: struct {
     d_ino: u64;
     d_off: s64;
@@ -426,6 +438,7 @@ dirent :: struct {
     d_type: DT;
     d_name: [256] u8;
 }
+
 dirent64 :: struct {
     d_ino: u64;
     d_off: s64;
@@ -433,6 +446,7 @@ dirent64 :: struct {
     d_type: DT;
     d_name: [256] u8;
 }
+
 DT :: enum u8 {
     UNKNOWN :: 0;
     FIFO :: 1;
@@ -444,6 +458,7 @@ DT :: enum u8 {
     SOCK :: 12;
     WHT :: 14;
 }
+
 __dirstream :: struct {}
 DIR :: __dirstream;
 opendir :: (__name: *u8) -> *DIR #foreign libc;
@@ -475,6 +490,7 @@ backtrace :: (__array: **void, __size: s32) -> s32 #foreign libc;
 backtrace_symbols :: (__array: **void, __size: s32) -> **u8 #foreign libc;
 backtrace_symbols_fd :: (__array: **void, __size: s32, __fd: s32) -> void #foreign libc;
 fnmatch :: (__pattern: *u8, __name: *u8, __flags: s32) -> s32 #foreign libc;
+
 passwd :: struct {
     pw_name: *u8;
     pw_passwd: *u8;
@@ -484,6 +500,7 @@ passwd :: struct {
     pw_dir: *u8;
     pw_shell: *u8;
 }
+
 setpwent :: () -> void #foreign libc;
 endpwent :: () -> void #foreign libc;
 getpwent :: () -> *passwd #foreign libc;
@@ -497,14 +514,17 @@ getpwnam_r :: (__name: *u8, __resultbuf: *passwd, __buffer: *u8, __buflen: u64, 
 fgetpwent_r :: (__stream: *FILE, __resultbuf: *passwd, __buffer: *u8, __buflen: u64, __result: **passwd) -> s32 #foreign libc;
 getpw :: (__uid: u32, __buffer: *u8) -> s32 #foreign libc;
 sigset_t :: __sigset_t;
+
 timespec :: struct {
     tv_sec: s64;
     tv_nsec: s64;
 }
+
 sigval :: union {
     sival_int: s32;
     sival_ptr: *void;
 }
+
 siginfo_t :: struct {
     si_signo: s32;
     si_errno: s32;
@@ -555,6 +575,7 @@ siginfo_t :: struct {
         };
     };
 }
+
 sigevent :: struct {
     sigev_value: sigval;
     sigev_signo: s32;
@@ -568,6 +589,7 @@ sigevent :: struct {
         };
     };
 }
+
 sigevent_t :: sigevent;
 __sysv_signal :: (__sig: s32, __handler: #type (unknown0: s32) -> void #c_call) -> ((unknown0: s32) -> void #c_call) #foreign libc;
 sysv_signal :: (__sig: s32, __handler: #type (unknown0: s32) -> void #c_call) -> ((unknown0: s32) -> void #c_call) #foreign libc;
@@ -593,6 +615,7 @@ sigismember :: (__set: *sigset_t, __signo: s32) -> s32 #foreign libc;
 sigisemptyset :: (__set: *sigset_t) -> s32 #foreign libc;
 sigandset :: (__set: *sigset_t, __left: *sigset_t, __right: *sigset_t) -> s32 #foreign libc;
 sigorset :: (__set: *sigset_t, __left: *sigset_t, __right: *sigset_t) -> s32 #foreign libc;
+
 sigaction_t :: struct {
     using __sigaction_handler: union {
         sa_handler: #type (unknown0: s32) -> void #c_call;
@@ -602,6 +625,7 @@ sigaction_t :: struct {
     sa_flags: s32;
     sa_restorer: #type () -> void #c_call;
 }
+
 sigprocmask :: (__how: s32, __set: *sigset_t, __oset: *sigset_t) -> s32 #foreign libc;
 sigsuspend :: (__set: *sigset_t) -> s32 #foreign libc;
 sigaction :: (__sig: s32, __act: *sigaction_t, __oact: *sigaction_t) -> s32 #foreign libc;
@@ -612,25 +636,31 @@ sigtimedwait :: (__set: *sigset_t, __info: *siginfo_t, __timeout: *timespec) -> 
 sigqueue :: (__pid: s32, __sig: s32, __val: sigval) -> s32 #foreign libc;
 _sys_siglist: [65] *u8 #elsewhere libc;
 sys_siglist: [65] *u8 #elsewhere libc;
+
 stack_t :: struct {
     ss_sp: *void;
     ss_flags: s32;
     ss_size: u64;
 }
+
 sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
+
 // Signal contexts are register dumps, so each CPU has its own; MAP_32BIT exists only on x86-64.
 #if CPU == .X64 || OS == .WASM {
     __NGREG :: 23;
     NGREG :: __NGREG;
     MAP_32BIT :: 0x40;
+
     _fpxreg :: struct {
         significand: [4] u16;
         exponent: u16;
         __glibc_reserved1: [3] u16;
     }
+
     _xmmreg :: struct {
         element: [4] u32;
     }
+
     _fpstate :: struct {
         cwd: u16;
         swd: u16;
@@ -644,6 +674,7 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         _xmm: [16] _xmmreg;
         __glibc_reserved1: [24] u32;
     }
+
     sigcontext :: struct {
         r8: u64;
         r9: u64;
@@ -677,8 +708,10 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         }
         __reserved1: [8] u64;
     }
+
     greg_t :: s64;
     gregset_t :: [23] greg_t;
+
     REG :: enum u32 {
         R8 :: 0;
         R9 :: 1;
@@ -727,14 +760,17 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         REG_OLDMASK :: OLDMASK;
         REG_CR2 :: CR2;
     }
+
     _libc_fpxreg :: struct {
         significand: [4] u16;
         exponent: u16;
         __glibc_reserved1: [3] u16;
     }
+
     _libc_xmmreg :: struct {
         element: [4] u32;
     }
+
     _libc_fpstate :: struct {
         cwd: u16;
         swd: u16;
@@ -748,12 +784,15 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         _xmm: [16] _libc_xmmreg;
         __glibc_reserved1: [24] u32;
     }
+
     fpregset_t :: *_libc_fpstate;
+
     mcontext_t :: struct {
         gregs: gregset_t;
         fpregs: fpregset_t;
         __reserved1: [8] u64;
     }
+
     ucontext_t :: struct {
         uc_flags: u64;
         uc_link: *ucontext_t;
@@ -773,6 +812,7 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         pstate: u64;
         __reserved: [4096] u8 #align 16;
     }
+
     mcontext_t :: struct {
         fault_address: u64;
         regs: [31] u64;
@@ -781,6 +821,7 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
         pstate: u64;
         __reserved: [4096] u8 #align 16;
     }
+
     ucontext_t :: struct {
         uc_flags: u64;
         uc_link: *ucontext_t;
@@ -791,6 +832,7 @@ sigreturn :: (__scp: *sigcontext) -> s32 #foreign libc;
 } else {
     #assert false "POSIX: no Linux signal context layout for this CPU";
 }
+
 siginterrupt :: (__sig: s32, __interrupt: s32) -> s32 #foreign libc;
 sigaltstack :: (__ss: *stack_t, __oss: *stack_t) -> s32 #foreign libc;
 sighold :: (__sig: s32) -> s32 #foreign libc;
@@ -799,6 +841,7 @@ sigignore :: (__sig: s32) -> s32 #foreign libc;
 sigset :: (__sig: s32, __disp: #type (unknown0: s32) -> void #c_call) -> ((unknown0: s32) -> void #c_call) #foreign libc;
 __libc_current_sigrtmin :: () -> s32 #foreign libc;
 __libc_current_sigrtmax :: () -> s32 #foreign libc;
+
 ipc_perm :: struct {
     __key: s32;
     uid: u32;
@@ -811,6 +854,7 @@ ipc_perm :: struct {
     __glibc_reserved1: u64;
     __glibc_reserved2: u64;
 }
+
 key_t :: s32;
 ftok :: (__pathname: *u8, __proj_id: s32) -> key_t #foreign libc;
 mmap :: (__addr: *void, __len: u64, __prot: s32, __flags: s32, __fd: s32, __offset: s64) -> *void #foreign libc;
@@ -830,15 +874,18 @@ remap_file_pages :: (__start: *void, __size: u64, __prot: s32, __pgoff: u64, __f
 shm_open :: (__name: *u8, __oflag: s32, __mode: mode_t) -> s32 #foreign librt;
 shm_unlink :: (__name: *u8) -> s32 #foreign librt;
 nfds_t :: u64;
+
 pollfd :: struct {
     fd: s32;
     events: s16;
     revents: s16;
 }
+
 poll :: (__fds: *pollfd, __nfds: nfds_t, __timeout: s32) -> s32 #foreign libc;
 ppoll :: (__fds: *pollfd, __nfds: nfds_t, __timeout: *timespec, __ss: *__sigset_t) -> s32 #foreign libc;
 __getpagesize :: () -> s32 #foreign libc;
 shmatt_t :: u64;
+
 shmid_ds :: struct {
     shm_perm: ipc_perm;
     shm_segsz: u64;
@@ -851,6 +898,7 @@ shmid_ds :: struct {
     __glibc_reserved4: u64;
     __glibc_reserved5: u64;
 }
+
 shminfo :: struct {
     shmmax: u64;
     shmmin: u64;
@@ -862,6 +910,7 @@ shminfo :: struct {
     __glibc_reserved3: u64;
     __glibc_reserved4: u64;
 }
+
 shm_info :: struct {
     used_ids: s32;
     shm_tot: u64;
@@ -870,23 +919,29 @@ shm_info :: struct {
     swap_attempts: u64;
     swap_successes: u64;
 }
+
 time_t :: s64;
 shmctl :: (__shmid: s32, __cmd: s32, __buf: *shmid_ds) -> s32 #foreign libc;
 shmget :: (__key: key_t, __size: u64, __shmflg: s32) -> s32 #foreign libc;
 shmat :: (__shmid: s32, __shmaddr: *void, __shmflg: s32) -> *void #foreign libc;
 shmdt :: (__shmaddr: *void) -> s32 #foreign libc;
+
 timeval :: struct {
     tv_sec: s64;
     tv_usec: s64;
 }
+
 suseconds_t :: s64;
+
 timezone :: struct {
     tz_minuteswest: s32;
     tz_dsttime: s32;
 }
+
 gettimeofday :: (__tv: *timeval, __tz: *timezone) -> s32 #foreign libc;
 settimeofday :: (__tv: *timeval, __tz: *timezone) -> s32 #foreign libc;
 adjtime :: (__delta: *timeval, __olddelta: *timeval) -> s32 #foreign libc;
+
 __itimer_which :: enum u32 {
     REAL :: 0;
     VIRTUAL :: 1;
@@ -895,10 +950,12 @@ __itimer_which :: enum u32 {
     ITIMER_VIRTUAL :: VIRTUAL;
     ITIMER_PROF :: PROF;
 }
+
 itimerval :: struct {
     it_interval: timeval;
     it_value: timeval;
 }
+
 getitimer :: (__which: __itimer_which, __value: *itimerval) -> s32 #foreign libc;
 setitimer :: (__which: __itimer_which, __new: *itimerval, __old: *itimerval) -> s32 #foreign libc;
 utimes :: (__file: *u8, __tvp: *[2] timeval) -> s32 #foreign libc;
@@ -915,6 +972,7 @@ fsfilcnt_t :: u64;
 blkcnt64_t :: s64;
 fsblkcnt64_t :: u64;
 fsfilcnt64_t :: u64;
+
 utsname :: struct {
     sysname: [65] u8;
     nodename: [65] u8;
@@ -923,7 +981,9 @@ utsname :: struct {
     machine: [65] u8;
     domainname: [65] u8;
 }
+
 uname :: (__name: *utsname) -> s32 #foreign libc;
+
 idtype_t :: enum u32 {
     ALL :: 0;
     PID :: 1;
@@ -932,11 +992,13 @@ idtype_t :: enum u32 {
     P_PID :: PID;
     P_PGID :: PGID;
 }
+
 wait :: (__stat_loc: *s32) -> s32 #foreign libc;
 waitpid :: (__pid: s32, __stat_loc: *s32, __options: s32) -> s32 #foreign libc;
 waitid :: (__idtype: idtype_t, __id: u32, __infop: *siginfo_t, __options: s32) -> s32 #foreign libc;
 wait3 :: (__stat_loc: *s32, __options: s32, __usage: *rusage) -> s32 #foreign libc;
 wait4 :: (__pid: s32, __stat_loc: *s32, __options: s32, __usage: *rusage) -> s32 #foreign libc;
+
 timex :: struct {
     modes: u32;
     offset: s64;
@@ -960,7 +1022,9 @@ timex :: struct {
     tai: s32;
     __bitfield: [44] u8;
 }
+
 clock_adjtime :: (__clock_id: s32, __utx: *timex) -> s32 #foreign libc;
+
 tm :: struct {
     tm_sec: s32;
     tm_min: s32;
@@ -974,10 +1038,12 @@ tm :: struct {
     tm_gmtoff: s64;
     tm_zone: *u8;
 }
+
 itimerspec :: struct {
     it_interval: timespec;
     it_value: timespec;
 }
+
 __locale_struct :: struct {
     __locale_data :: struct {}
     __locales: [13] *__locale_data;
@@ -986,6 +1052,7 @@ __locale_struct :: struct {
     __ctype_toupper: *s32;
     __names: [13] *u8;
 }
+
 locale_t :: *__locale_struct;
 clock :: () -> clock_t #foreign libc;
 time :: (__timer: *time_t) -> time_t #foreign libc;
@@ -1070,6 +1137,7 @@ execlp :: (__file: *u8, __arg: *u8, __args: ..Any) -> s32 #foreign libc;
 execvpe :: (__file: *u8, __argv: **u8, __envp: **u8) -> s32 #foreign libc;
 nice :: (__inc: s32) -> s32 #foreign libc;
 _exit :: (__status: s32) -> void #foreign libc;
+
 PC :: enum u32 {
     LINK_MAX :: 0;
     MAX_CANON :: 1;
@@ -1114,6 +1182,7 @@ PC :: enum u32 {
     _PC_SYMLINK_MAX :: SYMLINK_MAX;
     _PC_2_SYMLINKS :: _2_SYMLINKS;
 }
+
 using _SC_definitions :: enum s32 {
     _SC_ARG_MAX :: 0;
     _SC_CHILD_MAX :: 1;
@@ -1331,6 +1400,7 @@ using _SC_definitions :: enum s32 {
     _SC_THREAD_ROBUST_PRIO_INHERIT :: 247;
     _SC_THREAD_ROBUST_PRIO_PROTECT :: 248;
 }
+
 CS :: enum u32 {
     PATH :: 0;
     V6_WIDTH_RESTRICTED_ENVS :: 1;
@@ -1461,6 +1531,7 @@ CS :: enum u32 {
     _CS_V6_ENV :: V6_ENV;
     _CS_V7_ENV :: V7_ENV;
 }
+
 pathconf :: (__path: *u8, __name: PC) -> s64 #foreign libc;
 fpathconf :: (__fd: s32, __name: PC) -> s64 #foreign libc;
 sysconf :: (name: _SC_definitions) -> s64 #foreign libc;
@@ -1541,10 +1612,12 @@ copy_file_range :: (__infd: s32, __pinoff: *s64, __outfd: s32, __poutoff: *s64, 
 fdatasync :: (__fildes: s32) -> s32 #foreign libc;
 swab :: (__from: *void, __to: *void, __n: s64) -> void #foreign libc;
 getentropy :: (__buffer: *void, __length: u64) -> s32 #foreign libc;
+
 iovec :: struct {
     iov_base: *void;
     iov_len: u64;
 }
+
 readv :: (__fd: s32, __iovec: *iovec, __count: s32) -> s64 #foreign libc;
 writev :: (__fd: s32, __iovec: *iovec, __count: s32) -> s64 #foreign libc;
 preadv :: (__fd: s32, __iovec: *iovec, __count: s32, __offset: s64) -> s64 #foreign libc;

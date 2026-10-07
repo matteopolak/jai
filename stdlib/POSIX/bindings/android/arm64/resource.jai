@@ -5,16 +5,20 @@ RUSAGE :: enum s32 {
     BOTH :: -2;
     THREAD :: 1;
 }
+
 RLIM64_INFINITY :: ~0;
 PRIO_MIN :: -20;
 PRIO_MAX :: 20;
+
 PRIO :: enum s32 {
     PROCESS :: 0;
     PGRP :: 1;
     USER :: 2;
 }
+
 _STK_LIM :: 8 * 1024 * 1024;
 MLOCK_LIMIT :: 8 * 1024 * 1024;
+
 RLIMIT_RESOURCE :: enum s32 {
     CPU :: 0;
     FSIZE :: 1;
@@ -33,11 +37,13 @@ RLIMIT_RESOURCE :: enum s32 {
     RTPRIO :: 14;
     RTTIME :: 15;
 }
+
 RLIM_NLIMITS :: 16;
 RLIM_INFINITY :: ~0;
 RLIM_SAVED_CUR :: RLIM_INFINITY;
 RLIM_SAVED_MAX :: RLIM_INFINITY;
 id_t :: u32;
+
 rusage :: struct {
     ru_utime: timeval;
     ru_stime: timeval;
@@ -56,14 +62,17 @@ rusage :: struct {
     ru_nvcsw: s64;
     ru_nivcsw: s64;
 }
+
 rlimit :: struct {
     rlim_cur: u64;
     rlim_max: u64;
 }
+
 rlimit64 :: struct {
     rlim_cur: u64;
     rlim_max: u64;
 }
+
 rlim_t :: u64;
 rlim64_t :: u64;
 getrlimit :: (__resource: RLIMIT_RESOURCE, __limit: *rlimit) -> s32 #foreign libc;

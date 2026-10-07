@@ -4,6 +4,7 @@ Android_Poll_Source :: struct {
     app: *Android_App;
     process: #type (app: *Android_App, source: *Android_Poll_Source) -> void #c_call;
 }
+
 Android_App :: struct {
     userData: *void;
     onAppCmd: #type (app: *Android_App, cmd: s32) -> void #c_call;
@@ -33,11 +34,13 @@ Android_App :: struct {
     pendingWindow: *ANativeWindow;
     pendingContentRect: ARect;
 }
+
 LOOPER_ID :: enum u32 {
     MAIN :: 1;
     INPUT :: 2;
     USER :: 3;
 }
+
 APP_CMD :: enum u32 {
     INPUT_CHANGED :: 0;
     INIT_WINDOW :: 1;
@@ -56,5 +59,6 @@ APP_CMD :: enum u32 {
     STOP :: 14;
     DESTROY :: 15;
 }
+
 #scope_file
 #if CPU == .X64 {} else #if CPU == .ARM64 {}

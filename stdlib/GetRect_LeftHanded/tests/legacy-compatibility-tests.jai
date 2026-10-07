@@ -1,6 +1,7 @@
 // Actual source helpers; opaque window values are comparison tags, never native calls.
 L :: #import "GetRect_LeftHanded";
 B :: #import "Basic";
+
 compatibility_cases :: () -> bool {
     lines := L.break_into_lines("one\r\ntwo\n", " ");
     B.assert(lines.count == 5 && lines[0] == "one" && lines[1] == " " && lines[2] == "two" && lines[4] == "");
@@ -52,7 +53,9 @@ compatibility_cases :: () -> bool {
     L.ui_deinit();
     return true;
 }
+
 #assert #run compatibility_cases();
+
 main :: () {
     compatibility_cases();
 }

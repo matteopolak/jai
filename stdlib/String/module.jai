@@ -2,7 +2,9 @@
 // (join, replace, split, case copies). Allocation uses context.allocator unless noted.
 #scope_file
 Basic :: #import "Basic";
+
 using Basic;
+
 Reflection :: #import "Reflection";
 #scope_export
 
@@ -11,6 +13,7 @@ Reflection :: #import "Reflection";
 } else {
     PATH_SEPARATOR :: #char "/";
 }
+
 DEFAULT_SPACES :: " \t\r\n";
 DEFAULT_DELIMITERS :: ";=()";
 
@@ -31,6 +34,7 @@ slice :: inline (s: string, index: s64, count: s64) -> string {
 compare :: (a: string, b: string) -> int {
     return three_way(a, b, fold_case = false);
 }
+
 compare_nocase :: (a: string, b: string) -> int {
     return three_way(a, b, fold_case = true);
 }
@@ -38,6 +42,7 @@ compare_nocase :: (a: string, b: string) -> int {
 equal :: (a: string, b: string) -> bool {
     return a == b;
 }
+
 equal_nocase :: (a: string, b: string) -> bool {
     return a.count == b.count && three_way(a, b, fold_case = true) == 0;
 }
@@ -45,15 +50,19 @@ equal_nocase :: (a: string, b: string) -> bool {
 begins_with :: (s: string, prefix: string) -> bool {
     return s.count >= prefix.count && slice(s, 0, prefix.count) == prefix;
 }
+
 ends_with :: (s: string, suffix: string) -> bool {
     return s.count >= suffix.count && slice(s, s.count - suffix.count, suffix.count) == suffix;
 }
+
 begins_with_nocase :: (s: string, prefix: string) -> bool {
     return s.count >= prefix.count && equal_nocase(slice(s, 0, prefix.count), prefix);
 }
+
 ends_with_nocase :: (s: string, suffix: string) -> bool {
     return s.count >= suffix.count && equal_nocase(slice(s, s.count - suffix.count, suffix.count), suffix);
 }
+
 starts_with :: begins_with;
 
 find_index_from_left :: (s: string, byte: u8, start_index := 0) -> s64 {
@@ -65,6 +74,7 @@ find_index_from_left :: (s: string, byte: u8, start_index := 0) -> s64 {
     }
     return -1;
 }
+
 find_index_from_right :: (s: string, byte: u8) -> s64 {
     i := s.count - 1;
     while i >= 0 {
@@ -73,6 +83,7 @@ find_index_from_right :: (s: string, byte: u8) -> s64 {
     }
     return -1;
 }
+
 find_index_from_left :: (s: string, substring: string, start_index := 0) -> s64 {
     if substring.count == 0 return -1;
     i := start_index;
@@ -83,6 +94,7 @@ find_index_from_left :: (s: string, substring: string, start_index := 0) -> s64 
     }
     return -1;
 }
+
 find_index_from_right :: (s: string, substring: string) -> s64 {
     if substring.count == 0 return -1;
     i := s.count - substring.count;
@@ -92,6 +104,7 @@ find_index_from_right :: (s: string, substring: string) -> s64 {
     }
     return -1;
 }
+
 find_index_of_any_from_left :: (s: string, bytes: string, start_index := 0) -> s64 {
     i := start_index;
     if i < 0 i = 0;
@@ -101,6 +114,7 @@ find_index_of_any_from_left :: (s: string, bytes: string, start_index := 0) -> s
     }
     return -1;
 }
+
 find_index_of_any_from_right :: (s: string, bytes: string) -> s64 {
     i := s.count - 1;
     while i >= 0 {
@@ -109,6 +123,7 @@ find_index_of_any_from_right :: (s: string, bytes: string) -> s64 {
     }
     return -1;
 }
+
 index_of_string_nocase :: (s: string, substring: string) -> int, found: bool {
     if s.count < substring.count return -1, false;
     for i: 0..s.count - substring.count {
@@ -122,21 +137,25 @@ contains :: (s: string, substring: string) -> found: bool, remainder: string {
     if i == -1 return false, "";
     return true, advance(s, i + substring.count);
 }
+
 contains_nocase :: (s: string, substring: string) -> found: bool, remainder: string {
     i := index_of_string_nocase(s, substring);
     if i == -1 return false, "";
     return true, advance(s, i + substring.count);
 }
+
 contains :: (s: string, char: u8) -> found: bool, remainder: string {
     i := find_index_from_left(s, char);
     if i == -1 return false, "";
     return true, advance(s, i + 1);
 }
+
 contains_any_character :: (s: string, chars: string) -> found: bool, remainder: string {
     i := find_index_of_any_from_left(s, chars);
     if i == -1 return false, "";
     return true, advance(s, i + 1);
 }
+
 contains_any_string :: (s: string, substrings: ..string) -> found: bool, remainder: string {
     for needle: substrings {
         found, remainder := contains(s, needle);
@@ -154,26 +173,31 @@ split_from_left :: (s: string, byte: u8) -> found: bool, left: string, right: st
     if i == -1 return false, s, "";
     return true, slice(s, 0, i), slice(s, i + 1, s.count - i - 1);
 }
+
 split_from_right :: (s: string, byte: u8) -> found: bool, left: string, right: string {
     i := find_index_from_right(s, byte);
     if i == -1 return false, "", s;
     return true, slice(s, 0, i), slice(s, i + 1, s.count - i - 1);
 }
+
 split_from_left :: (s: string, separator: string) -> found: bool, left: string, right: string {
     i := find_index_from_left(s, separator);
     if i == -1 return false, s, "";
     return true, slice(s, 0, i), slice(s, i + separator.count, s.count - i - separator.count);
 }
+
 split_from_right :: (s: string, separator: string) -> found: bool, left: string, right: string {
     i := find_index_from_right(s, separator);
     if i == -1 return false, "", s;
     return true, slice(s, 0, i), slice(s, i + separator.count, s.count - i - separator.count);
 }
+
 split_from_left_by_any :: (s: string, bytes: string) -> found: bool, left: string, right: string {
     i := find_index_of_any_from_left(s, bytes);
     if i == -1 return false, s, "";
     return true, slice(s, 0, i), slice(s, i + 1, s.count - i - 1);
 }
+
 split_from_right_by_any :: (s: string, bytes: string) -> found: bool, left: string, right: string {
     i := find_index_of_any_from_right(s, bytes);
     if i == -1 return false, "", s;
@@ -204,11 +228,13 @@ trim_left :: (s: string, chars := DEFAULT_SPACES) -> string {
     while n < s.count && is_any(s.data[n], chars) n += 1;
     return slice(s, n, s.count - n);
 }
+
 trim_right :: (s: string, chars := DEFAULT_SPACES) -> string {
     n := s.count;
     while n > 0 && is_any(s.data[n - 1], chars) n -= 1;
     return slice(s, 0, n);
 }
+
 trim :: (s: string, chars := DEFAULT_SPACES) -> string {
     return trim_right(trim_left(s, chars), chars);
 }
@@ -218,11 +244,13 @@ stop_at_any :: (s: string, bytes: string) -> string {
     if i == -1 return s;
     return slice(s, 0, i);
 }
+
 eat_trailing_spaces :: (_s: string) -> string {
     s := _s;
     while s.count > 0 && (s.data[s.count - 1] == #char " " || s.data[s.count - 1] == 9) s.count -= 1;
     return s;
 }
+
 eat_until_space :: (_s: string) -> string {
     s := _s;
     while s.count > 0 && s.data[0] != #char " " && s.data[0] != 9 {
@@ -237,23 +265,28 @@ to_lower_in_place :: ($$s: string) {
     #if is_constant(s) #assert false "You cannot call to_lower_in_place on constant strings, as they are stored in read-only memory. They must be copied if you want to change them.";
     for i: 0..s.count - 1 s.data[i] = to_lower(s.data[i]);
 }
+
 to_upper_in_place :: ($$s: string) {
     #if is_constant(s) #assert false "You cannot call to_upper_in_place on constant strings, as they are stored in read-only memory. They must be copied if you want to change them.";
     for i: 0..s.count - 1 s.data[i] = to_upper(s.data[i]);
 }
+
 to_lower_copy :: (s: string) -> string {
     t := alloc_string(s.count);
     for i: 0..t.count - 1 t.data[i] = to_lower(s.data[i]);
     return t;
 }
+
 to_upper_copy :: (s: string) -> string {
     t := alloc_string(s.count);
     for i: 0..t.count - 1 t.data[i] = to_upper(s.data[i]);
     return t;
 }
+
 to_lower_copy_new :: (s: string) -> string #deprecated "Just call to_lower_copy() now, as it's been updated." {
     return to_lower_copy(s);
 }
+
 to_upper_copy_new :: (s: string) -> string #deprecated "Just call to_upper_copy() now, as it's been updated." {
     return to_upper_copy(s);
 }
@@ -314,6 +347,7 @@ normalize_line_endings :: (s: *string) {
     }
     s.count = kept;
 }
+
 normalize_line_endings :: (s: string) -> string #must {
     copy := copy_string(s);
     normalize_line_endings(*copy);
@@ -322,6 +356,7 @@ normalize_line_endings :: (s: string) -> string #must {
 
 // Path helpers accept both separators.
 decomp_filename :: path_decomp;
+
 path_decomp :: (name: string) -> path: string, basename: string, extension: string, basename_with_extension: string {
     path := path_strip_filename(name);
     full := advance(name, path.count);
@@ -331,11 +366,13 @@ path_decomp :: (name: string) -> path: string, basename: string, extension: stri
     if extension.count > 0 || (base.count > 0 && base.data[base.count - 1] == #char ".") base.count -= 1;
     return path, base, extension, full;
 }
+
 path_filename :: (path: string) -> string {
     i := find_index_of_any_from_right(path, "\\/");
     if i == -1 return path;
     return slice(path, i + 1, path.count - i - 1);
 }
+
 path_extension :: (path: string) -> extension: string, found_extension: bool {
     i := find_index_of_any_from_right(path, ".\\/");
     if i <= 0 || path.data[i] != #char "." return "", false;
@@ -348,31 +385,38 @@ path_extension :: (path: string) -> extension: string, found_extension: bool {
     }
     return slice(path, i + 1, path.count - i - 1), true;
 }
+
 path_strip_filename :: (path: string) -> string {
     i := find_index_of_any_from_right(path, "\\/");
     if i < 0 return "";
     return slice(path, 0, i + 1);
 }
+
 path_strip_extension :: (path: string) -> string {
     ext, has_ext := path_extension(path);
     if has_ext return slice(path, 0, path.count - ext.count - 1); // the dot goes too
     return path;
 }
+
 path_overwrite_separators :: (path: string, separator: u8 = PATH_SEPARATOR) {
     for i: 0..path.count - 1 if path.data[i] == #char "\\" || path.data[i] == #char "/" path.data[i] = separator;
 }
+
 // The file name without its directory or extension: "dir/name.txt" gives "name".
 basename :: (s: string) -> string {
     name := path_filename(s);
     return path_strip_extension(name);
 }
+
 path_basename :: basename;
+
 // Returns `path` itself when its extension already is `extension`; otherwise a tprint result.
 path_ensure_extension :: (path: string, extension: string) -> string {
     current := path_extension(path);
     if current != extension return tprint("%.%", path, extension);
     return path;
 }
+
 is_absolute_path :: (path: string) -> bool {
     if OS != .WINDOWS return begins_with(path, "/");
     // Windows: only drive-rooted forms such as "C:\\dir" or "C:/dir" count.
@@ -448,13 +492,16 @@ parse_token :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAU
     line.* = slice(line.*, n, line.count - n);
     return token, true;
 }
+
 // The token is consumed (and returned) whether or not it was the expected one.
 match_token :: (line: *string, match: string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: string, success: bool {
     return next_token_is(line, match, delimiters, spaces, fold_case = false);
 }
+
 match_token_nocase :: (line: *string, match: string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: string, success: bool {
     return next_token_is(line, match, delimiters, spaces, fold_case = true);
 }
+
 // Accepts "true" or "false" in any letter case.
 parse_bool :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: bool, success: bool {
     word, have_word := parse_token(line, delimiters, spaces);
@@ -463,6 +510,7 @@ parse_bool :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAUL
     }
     return false, false;
 }
+
 parse_enum :: (line: *string, $T: Type, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: T, success: bool {
     word, have_word := parse_token(line, delimiters, spaces);
     if have_word {
@@ -472,12 +520,14 @@ parse_enum :: (line: *string, $T: Type, delimiters := DEFAULT_DELIMITERS, spaces
     nothing: T;
     return nothing, false;
 }
+
 parse_float :: (line: *string, delimiters := DEFAULT_DELIMITERS, spaces := DEFAULT_SPACES) -> value: float, success: bool {
     word, have_word := parse_token(line, delimiters, spaces);
     if !have_word return 0, false;
     number, parsed := string_to_float(word);
     return number, parsed;
 }
+
 parse_int :: (line: *string, $T: Type = int, spaces := " \t", delimiters := DEFAULT_DELIMITERS) -> value: T, success: bool {
     word, have_word := parse_token(line, delimiters, spaces);
     if !have_word return 0, false;
@@ -488,6 +538,7 @@ parse_int :: (line: *string, $T: Type = int, spaces := " \t", delimiters := DEFA
 // libc's atof, exported for callers that want C's lenient string-to-double.
 #scope_file
 string_crt :: #system_library "libc";
+
 three_way :: (a: string, b: string, fold_case: bool) -> int {
     shared := min(a.count, b.count);
     for i: 0..shared - 1 {
@@ -501,12 +552,14 @@ three_way :: (a: string, b: string, fold_case: bool) -> int {
     if a.count == b.count return 0;
     return ifx a.count < b.count then -1 else 1;
 }
+
 next_token_is :: (line: *string, expected: string, delimiters: string, spaces: string, fold_case: bool) -> string, bool {
     word, have_word := parse_token(line, delimiters, spaces);
     if !have_word return word, false;
     same := ifx fold_case then equal_nocase(word, expected) else word == expected;
     return word, same;
 }
+
 #scope_export
 atof :: (s: *u8) -> float64 #foreign string_crt;
 

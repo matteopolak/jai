@@ -1,16 +1,20 @@
 // Win32 queue pump. Call on the thread owning the native windows.
 #scope_module
 Win :: #import "Windows";
+
 windows_focus: Win.HWND;
+
 Windows_Mouse_Position :: struct {
     window: Win.HWND;
     x: s32;
     y: s32;
     valid := false;
 }
+
 windows_mouse_positions: [..] Windows_Mouse_Position;
 windows_high_surrogate: u16;
 windows_surrogate_window: Window_Type;
+
 windows_key_code :: (virtual_key: u32) -> Key_Code {
     if virtual_key >= 0x30 && virtual_key <= 0x5a return cast(Key_Code) virtual_key;
     if virtual_key >= 0x70 && virtual_key <= 0x87 return cast(Key_Code) (cast(u32) Key_Code.F1 + virtual_key - 0x70);
@@ -37,12 +41,14 @@ windows_key_code :: (virtual_key: u32) -> Key_Code {
     if mapped > 0 && mapped < 128 return cast(Key_Code) mapped;
     return .UNKNOWN;
 }
+
 windows_modifiers :: (event: *Event) {
     event.shift_pressed = Win.GetKeyState(0x10) < 0;
     event.ctrl_pressed = Win.GetKeyState(0x11) < 0;
     event.alt_pressed = Win.GetKeyState(0x12) < 0;
     event.cmd_meta_pressed = Win.GetKeyState(0x5b) < 0 || Win.GetKeyState(0x5c) < 0;
 }
+
 windows_emit_utf16 :: (window: Window_Type, unit: u16, repeated: bool) {
     if unit >= 0xd800 && unit <= 0xdbff {
         windows_high_surrogate = unit;
@@ -63,6 +69,7 @@ windows_emit_utf16 :: (window: Window_Type, unit: u16, repeated: bool) {
     windows_modifiers(*event);
     queue_input_event(window, event);
 }
+
 windows_poll_input :: () {
     message: Win.MSG;
     while Win.PeekMessageW(*message, null, 0, 0, Win.PM_REMOVE) != 0 {
@@ -84,6 +91,7 @@ windows_poll_input :: () {
         for *position: windows_mouse_positions position.valid = false;
     }
 }
+
 windows_pointer_query :: (window: Window_Type, client_area: bool) -> float, float, bool {
     point: Win.POINT;
     if Win.GetCursorPos(*point) == 0 return 0, 0, false;
@@ -101,6 +109,7 @@ Input_MapVirtualKeyW :: (code: u32, map_type: u32) -> u32 #foreign input_user32 
 #scope_export
 // Set true when the actual native WndProc calls this helper, preventing duplicates.
 windows_windowproc_handles_input := false;
+
 windows_process_input_message :: (hwnd: Win.HWND, kind: u32, wparam: Win.WPARAM, lparam: Win.LPARAM) {
     message: Win.MSG;
     message.hwnd = hwnd;

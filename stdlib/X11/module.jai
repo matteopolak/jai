@@ -30,6 +30,7 @@ XdndLeave: Atom;
 XdndFinished: Atom;
 XdndSelection: Atom;
 XdndProxy: Atom;
+
 x_global_clipboard_buffer: struct {
     text_data: string;
     rgb_data: *u8;
@@ -38,6 +39,7 @@ x_global_clipboard_buffer: struct {
     pitch: s32;
 }
 ;
+
 x_release_clipboard_data :: () {
     free(x_global_clipboard_buffer.text_data);
     free(x_global_clipboard_buffer.rgb_data);
@@ -47,16 +49,20 @@ x_release_clipboard_data :: () {
     x_global_clipboard_buffer.height = 0;
     x_global_clipboard_buffer.pitch = 0;
 }
+
 x_global_windows: [..] Window;
 _NET_WM_STATE_REMOVE :: 0;
 _NET_WM_STATE_ADD :: 1;
 _NET_WM_STATE_TOGGLE :: 2;
+
 Xdnd_Stage :: enum {
     DROP_IDLE :: 0;
     DROP_CONVERTING :: 1;
     DROP_ENTERED :: 2;
 }
+
 XDND_VERSION :: 5;
+
 Xdnd_Context :: struct {
     stage := Xdnd_Stage.DROP_IDLE;
     dragging_version := 0;
@@ -74,6 +80,7 @@ Xdnd_Context :: struct {
     y: s32;
     time: Time;
 }
+
 Drop_Info :: struct {
     data: [..] u8;
     x: int;
@@ -83,13 +90,16 @@ Drop_Info :: struct {
     user_typelist: [..] Atom;
     user_actions: [..] Atom;
 }
+
 drop_info: Drop_Info;
 x_global_xdnd_context: Xdnd_Context;
+
 xdnd_context_reset :: (dnd: *Xdnd_Context) {
     if !dnd return;
     array_free(dnd.dragger_typelist);
     dnd.* = .{};
 }
+
 init_global_display :: () {
     if x_global_display return;
     if XInitThreads() == 0 return;
@@ -134,6 +144,7 @@ init_global_display :: () {
     }
     XFlush(display);
 }
+
 enable_drag_and_drop :: (window: Window, typelist: [] string) {
     if !x_global_display || !window return;
     version: u64 = XDND_VERSION;
@@ -152,6 +163,7 @@ enable_drag_and_drop :: (window: Window, typelist: [] string) {
     array_add(*drop_info.user_actions, XdndActionCopy);
     XFlush(x_global_display);
 }
+
 x_demand_attention :: (display: *Display, win: Window) {
     if !display || !win return;
     notification: XEvent;
@@ -165,6 +177,7 @@ x_demand_attention :: (display: *Display, win: Window) {
     XSendEvent(display, XDefaultRootWindow(display), False, SubstructureNotifyMask | SubstructureRedirectMask, *notification);
     XFlush(display);
 }
+
 x_selection_notify_predicate :: (display: *Display, event: *XEvent, arg: XPointer) -> Bool #c_call {
     if event.type != SelectionNotify return False;
     expected := cast(*Window) arg;
@@ -172,6 +185,7 @@ x_selection_notify_predicate :: (display: *Display, event: *XEvent, arg: XPointe
     if event.xselection.requestor != expected.* return False;
     return True;
 }
+
 x_window_is_ours :: (display: *Display, win: Window) -> bool {
     XLockDisplay(display);
     found := false;
@@ -186,10 +200,12 @@ x_window_is_ours :: (display: *Display, win: Window) -> bool {
     XUnlockDisplay(display);
     return found;
 }
+
 #scope_file
 EVENT_MASK :: ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask;
 ui_id :: s32;
 NOT_ACTIVE: ui_id : -1;
+
 Ui_Context :: struct {
     hot: ui_id = NOT_ACTIVE;
     active: ui_id = NOT_ACTIVE;
@@ -198,17 +214,21 @@ Ui_Context :: struct {
     mouse_went_up: bool;
     mouse_went_down: bool;
 }
+
 is_inside :: (ctx: *Ui_Context, x: s32, y: s32, width: u32, height: u32) -> bool {
     horizontal := cast(s64) ctx.mouse_x - x;
     vertical := cast(s64) ctx.mouse_y - y;
     return horizontal >= 0 && vertical >= 0 && horizontal < width && vertical < height;
 }
+
 is_active :: (using ctx: *Ui_Context, id: ui_id) -> bool {
     return ctx.active == id;
 }
+
 is_hot :: (using ctx: *Ui_Context, id: ui_id) -> bool {
     return ctx.hot == id;
 }
+
 do_button :: (using ctx: *Ui_Context, id: ui_id, x: s32, y: s32, width: u32, height: u32) -> bool {
     hovered := is_inside(ctx, x, y, width, height);
     if hovered ctx.hot = id;
@@ -218,6 +238,7 @@ do_button :: (using ctx: *Ui_Context, id: ui_id, x: s32, y: s32, width: u32, hei
     if ctx.mouse_went_up && ctx.active == id ctx.active = NOT_ACTIVE;
     return clicked;
 }
+
 x_toolkit_update_events :: (dpy: *Display, win: Window, ctx: *Ui_Context, window_width: *s32 = null, window_height: *s32 = null) -> should_exit: bool, should_redraw: bool {
     if !dpy || !win return true, false;
     ctx.mouse_went_up = false;
@@ -255,7 +276,9 @@ x_toolkit_update_events :: (dpy: *Display, win: Window, ctx: *Ui_Context, window
     }
     return false, redraw;
 }
+
 #import "Basic";
+
 #scope_export
 x_toolkit_create_simple_window :: (dpy: *Display, parent: Window, width: s32, height: s32, title: string) -> Window {
     if !dpy || width <= 0 || height <= 0 return None;
@@ -276,6 +299,7 @@ x_toolkit_create_simple_window :: (dpy: *Display, parent: Window, width: s32, he
     XFlush(dpy);
     return handle;
 }
+
 X_Message_Box_Response :: enum {
     ABORT;
     CANCEL;
@@ -287,6 +311,7 @@ X_Message_Box_Response :: enum {
     TRY_AGAIN;
     YES;
 }
+
 X_Message_Box_Style :: enum {
     ST_ABORT_RETRY_IGNORE;
     ST_CANCEL_TRY_CONTINUE;
@@ -296,6 +321,7 @@ X_Message_Box_Style :: enum {
     ST_YES_NO;
     ST_YES_NO_CANCEL;
 }
+
 x_message_box :: (parent: Window, msg: string, caption: string, style: X_Message_Box_Style) -> X_Message_Box_Response {
     init_global_display();
     if !x_global_display return .CANCEL;
@@ -373,6 +399,7 @@ x_message_box :: (parent: Window, msg: string, caption: string, style: X_Message
         sleep_milliseconds(16);
     }
 }
+
 x_draw_textpanel :: (dpy: *Display, w: Window, x: s32, y: s32, width: s32, height: s32, msg: string) {
     if !dpy || !w || width <= 0 || height <= 0 return;
     graphics := XDefaultGC(dpy, XDefaultScreen(dpy));
@@ -392,11 +419,13 @@ x_draw_textpanel :: (dpy: *Display, w: Window, x: s32, y: s32, width: s32, heigh
         baseline += 18;
     }
 }
+
 x_color_to_pixel :: (dpy: *Display, cmap: Colormap, col: XColor) -> u64 {
     selected := col;
     if XAllocColor(dpy, cmap, *selected) == 0 return 0;
     return selected.pixel;
 }
+
 x_draw_button :: (dpy: *Display, w: Window, x: s32, y: s32, width: u32, height: u32, pressed: bool, msg: string) {
     if !dpy || !w || width < 2 || height < 2 return;
     screen := XDefaultScreen(dpy);
@@ -426,16 +455,19 @@ x_draw_button :: (dpy: *Display, w: Window, x: s32, y: s32, width: u32, height: 
     }
     x_draw_string(dpy, w, label_x, label_y, msg);
 }
+
 x_draw_string :: (dpy: *Display, d: Drawable, x: s32, y: s32, msg: string) {
     screen := XDefaultScreen(dpy);
     graphics := XDefaultGC(dpy, screen);
     XDrawString(dpy, d, graphics, x, y, msg.data, cast(s32) msg.count);
 }
+
 x_textwidth :: (font: *XFontStruct, msg: string) -> s32 {
     count := cast(s32) msg.count;
     measured := XTextWidth(font, msg.data, count);
     return measured;
 }
+
 x_lock_window_size :: (dpy: *Display, w: Window, width: s32, height: s32) {
     limits: XSizeHints;
     limits.flags = PMinSize | PMaxSize | PSize;
@@ -443,6 +475,7 @@ x_lock_window_size :: (dpy: *Display, w: Window, width: s32, height: s32) {
     limits.height, limits.min_height, limits.max_height = height, height, height;
     XSetWMNormalHints(dpy, w, *limits);
 }
+
 x_rgb_to_color :: (_r: u8, _g: u8, _b: u8) -> XColor {
     color: XColor;
     color.blue = cast(u16) _b * 257;
@@ -451,6 +484,7 @@ x_rgb_to_color :: (_r: u8, _g: u8, _b: u8) -> XColor {
     color.flags = DoBlue | DoGreen | DoRed;
     return color;
 }
+
 XID :: u64;
 Mask :: u64;
 Atom :: u64;
@@ -969,24 +1003,29 @@ XK_KP_9 :: 0xffb9;
 XK_ISO_Level3_Shift :: 0xfe03;
 _Xmblen :: (str: *u8, len: s32) -> s32 #foreign libX11;
 XPointer :: *void;
+
 _XExtData :: struct {
     number: s32;
     next: *_XExtData;
     free_private: #type (a0: *_XExtData) -> s32 #c_call;
     private_data: XPointer;
 }
+
 XExtData :: _XExtData;
+
 XExtCodes :: struct {
     extension: s32;
     major_opcode: s32;
     first_event: s32;
     first_error: s32;
 }
+
 XPixmapFormatValues :: struct {
     depth: s32;
     bits_per_pixel: s32;
     scanline_pad: s32;
 }
+
 XGCValues :: struct {
     function: s32;
     plane_mask: u64;
@@ -1012,11 +1051,14 @@ XGCValues :: struct {
     dash_offset: s32;
     dashes: u8;
 }
+
 _XGC :: struct {
     ext_data: XExtData;
     gid: GContext;
 }
+
 GC :: *_XGC;
+
 Visual :: struct {
     ext_data: *XExtData;
     visualid: VisualID;
@@ -1027,12 +1069,15 @@ Visual :: struct {
     bits_per_rgb: s32;
     map_entries: s32;
 }
+
 Depth :: struct {
     depth: s32;
     nvisuals: s32;
     visuals: *Visual;
 }
+
 _XDisplay :: struct {}
+
 Screen :: struct {
     ext_data: *XExtData;
     display: *_XDisplay;
@@ -1055,12 +1100,14 @@ Screen :: struct {
     save_unders: s32;
     root_input_mask: s64;
 }
+
 ScreenFormat :: struct {
     ext_data: *XExtData;
     depth: s32;
     bits_per_pixel: s32;
     scanline_pad: s32;
 }
+
 XSetWindowAttributes :: struct {
     background_pixmap: Pixmap;
     background_pixel: u64;
@@ -1078,6 +1125,7 @@ XSetWindowAttributes :: struct {
     colormap: Colormap;
     cursor: Cursor;
 }
+
 XWindowAttributes :: struct {
     x: s32;
     y: s32;
@@ -1103,17 +1151,20 @@ XWindowAttributes :: struct {
     override_redirect: s32;
     screen: *Screen;
 }
+
 XHostAddress :: struct {
     family: s32;
     length: s32;
     address: *u8;
 }
+
 XServerInterpretedAddress :: struct {
     typelength: s32;
     valuelength: s32;
     type: *u8;
     value: *u8;
 }
+
 _XImage :: struct {
     width: s32;
     height: s32;
@@ -1141,7 +1192,9 @@ _XImage :: struct {
     }
     f: funcs;
 }
+
 XImage :: _XImage;
+
 XWindowChanges :: struct {
     x: s32;
     y: s32;
@@ -1151,6 +1204,7 @@ XWindowChanges :: struct {
     sibling: Window;
     stack_mode: s32;
 }
+
 XColor :: struct {
     pixel: u64;
     red: u16;
@@ -1159,22 +1213,26 @@ XColor :: struct {
     flags: u8;
     pad: u8;
 }
+
 XSegment :: struct {
     x1: s16;
     y1: s16;
     x2: s16;
     y2: s16;
 }
+
 XPoint :: struct {
     x: s16;
     y: s16;
 }
+
 XRectangle :: struct {
     x: s16;
     y: s16;
     width: u16;
     height: u16;
 }
+
 XArc :: struct {
     x: s16;
     y: s16;
@@ -1183,6 +1241,7 @@ XArc :: struct {
     angle1: s16;
     angle2: s16;
 }
+
 XKeyboardControl :: struct {
     key_click_percent: s32;
     bell_percent: s32;
@@ -1193,6 +1252,7 @@ XKeyboardControl :: struct {
     key: s32;
     auto_repeat_mode: s32;
 }
+
 XKeyboardState :: struct {
     key_click_percent: s32;
     bell_percent: s32;
@@ -1202,19 +1262,23 @@ XKeyboardState :: struct {
     global_auto_repeat: s32;
     auto_repeats: [32] u8;
 }
+
 XTimeCoord :: struct {
     time: Time;
     x: s16;
     y: s16;
 }
+
 XModifierKeymap :: struct {
     max_keypermod: s32;
     modifiermap: *KeyCode;
 }
+
 Display :: _XDisplay;
 _XPrivate :: struct {}
 _XrmHashBucketRec :: struct {}
 _XPrivDisplay :: *__XPrivDisplay;
+
 __XPrivDisplay :: struct {
     ext_data: *XExtData;
     private1: *_XPrivate;
@@ -1261,6 +1325,7 @@ __XPrivDisplay :: struct {
     private19: s32;
     xdefaults: *u8;
 }
+
 XKeyEvent :: struct {
     type: s32;
     serial: u64;
@@ -1278,8 +1343,10 @@ XKeyEvent :: struct {
     keycode: u32;
     same_screen: s32;
 }
+
 XKeyPressedEvent :: XKeyEvent;
 XKeyReleasedEvent :: XKeyEvent;
+
 XButtonEvent :: struct {
     type: s32;
     serial: u64;
@@ -1297,8 +1364,10 @@ XButtonEvent :: struct {
     button: u32;
     same_screen: s32;
 }
+
 XButtonPressedEvent :: XButtonEvent;
 XButtonReleasedEvent :: XButtonEvent;
+
 XMotionEvent :: struct {
     type: s32;
     serial: u64;
@@ -1316,7 +1385,9 @@ XMotionEvent :: struct {
     is_hint: u8;
     same_screen: s32;
 }
+
 XPointerMovedEvent :: XMotionEvent;
+
 XCrossingEvent :: struct {
     type: s32;
     serial: u64;
@@ -1336,8 +1407,10 @@ XCrossingEvent :: struct {
     focus: s32;
     state: u32;
 }
+
 XEnterWindowEvent :: XCrossingEvent;
 XLeaveWindowEvent :: XCrossingEvent;
+
 XFocusChangeEvent :: struct {
     type: s32;
     serial: u64;
@@ -1347,8 +1420,10 @@ XFocusChangeEvent :: struct {
     mode: s32;
     detail: s32;
 }
+
 XFocusInEvent :: XFocusChangeEvent;
 XFocusOutEvent :: XFocusChangeEvent;
+
 XKeymapEvent :: struct {
     type: s32;
     serial: u64;
@@ -1357,6 +1432,7 @@ XKeymapEvent :: struct {
     window: Window;
     key_vector: [32] u8;
 }
+
 XExposeEvent :: struct {
     type: s32;
     serial: u64;
@@ -1369,6 +1445,7 @@ XExposeEvent :: struct {
     height: s32;
     count: s32;
 }
+
 XGraphicsExposeEvent :: struct {
     type: s32;
     serial: u64;
@@ -1383,6 +1460,7 @@ XGraphicsExposeEvent :: struct {
     major_code: s32;
     minor_code: s32;
 }
+
 XNoExposeEvent :: struct {
     type: s32;
     serial: u64;
@@ -1392,6 +1470,7 @@ XNoExposeEvent :: struct {
     major_code: s32;
     minor_code: s32;
 }
+
 XVisibilityEvent :: struct {
     type: s32;
     serial: u64;
@@ -1400,6 +1479,7 @@ XVisibilityEvent :: struct {
     window: Window;
     state: s32;
 }
+
 XCreateWindowEvent :: struct {
     type: s32;
     serial: u64;
@@ -1414,6 +1494,7 @@ XCreateWindowEvent :: struct {
     border_width: s32;
     override_redirect: s32;
 }
+
 XDestroyWindowEvent :: struct {
     type: s32;
     serial: u64;
@@ -1422,6 +1503,7 @@ XDestroyWindowEvent :: struct {
     event: Window;
     window: Window;
 }
+
 XUnmapEvent :: struct {
     type: s32;
     serial: u64;
@@ -1431,6 +1513,7 @@ XUnmapEvent :: struct {
     window: Window;
     from_configure: s32;
 }
+
 XMapEvent :: struct {
     type: s32;
     serial: u64;
@@ -1440,6 +1523,7 @@ XMapEvent :: struct {
     window: Window;
     override_redirect: s32;
 }
+
 XMapRequestEvent :: struct {
     type: s32;
     serial: u64;
@@ -1448,6 +1532,7 @@ XMapRequestEvent :: struct {
     parent: Window;
     window: Window;
 }
+
 XReparentEvent :: struct {
     type: s32;
     serial: u64;
@@ -1460,6 +1545,7 @@ XReparentEvent :: struct {
     y: s32;
     override_redirect: s32;
 }
+
 XConfigureEvent :: struct {
     type: s32;
     serial: u64;
@@ -1475,6 +1561,7 @@ XConfigureEvent :: struct {
     above: Window;
     override_redirect: s32;
 }
+
 XGravityEvent :: struct {
     type: s32;
     serial: u64;
@@ -1485,6 +1572,7 @@ XGravityEvent :: struct {
     x: s32;
     y: s32;
 }
+
 XResizeRequestEvent :: struct {
     type: s32;
     serial: u64;
@@ -1494,6 +1582,7 @@ XResizeRequestEvent :: struct {
     width: s32;
     height: s32;
 }
+
 XConfigureRequestEvent :: struct {
     type: s32;
     serial: u64;
@@ -1510,6 +1599,7 @@ XConfigureRequestEvent :: struct {
     detail: s32;
     value_mask: u64;
 }
+
 XCirculateEvent :: struct {
     type: s32;
     serial: u64;
@@ -1519,6 +1609,7 @@ XCirculateEvent :: struct {
     window: Window;
     place: s32;
 }
+
 XCirculateRequestEvent :: struct {
     type: s32;
     serial: u64;
@@ -1528,6 +1619,7 @@ XCirculateRequestEvent :: struct {
     window: Window;
     place: s32;
 }
+
 XPropertyEvent :: struct {
     type: s32;
     serial: u64;
@@ -1538,6 +1630,7 @@ XPropertyEvent :: struct {
     time: Time;
     state: s32;
 }
+
 XSelectionClearEvent :: struct {
     type: s32;
     serial: u64;
@@ -1547,6 +1640,7 @@ XSelectionClearEvent :: struct {
     selection: Atom;
     time: Time;
 }
+
 XSelectionRequestEvent :: struct {
     type: s32;
     serial: u64;
@@ -1559,6 +1653,7 @@ XSelectionRequestEvent :: struct {
     property: Atom;
     time: Time;
 }
+
 XSelectionEvent :: struct {
     type: s32;
     serial: u64;
@@ -1570,6 +1665,7 @@ XSelectionEvent :: struct {
     property: Atom;
     time: Time;
 }
+
 XColormapEvent :: struct {
     type: s32;
     serial: u64;
@@ -1580,6 +1676,7 @@ XColormapEvent :: struct {
     new: s32;
     state: s32;
 }
+
 XClientMessageEvent :: struct {
     type: s32;
     serial: u64;
@@ -1595,6 +1692,7 @@ XClientMessageEvent :: struct {
     }
     ;
 }
+
 XMappingEvent :: struct {
     type: s32;
     serial: u64;
@@ -1605,6 +1703,7 @@ XMappingEvent :: struct {
     first_keycode: s32;
     count: s32;
 }
+
 XErrorEvent :: struct {
     type: s32;
     display: *Display;
@@ -1614,6 +1713,7 @@ XErrorEvent :: struct {
     request_code: u8;
     minor_code: u8;
 }
+
 XAnyEvent :: struct {
     type: s32;
     serial: u64;
@@ -1621,6 +1721,7 @@ XAnyEvent :: struct {
     display: *Display;
     window: Window;
 }
+
 XGenericEvent :: struct {
     type: s32;
     serial: u64;
@@ -1629,6 +1730,7 @@ XGenericEvent :: struct {
     extension: s32;
     evtype: s32;
 }
+
 XGenericEventCookie :: struct {
     type: s32;
     serial: u64;
@@ -1639,6 +1741,7 @@ XGenericEventCookie :: struct {
     cookie: u32;
     data: *void;
 }
+
 _XEvent :: union {
     type: s32;
     xany: XAnyEvent;
@@ -1676,7 +1779,9 @@ _XEvent :: union {
     xcookie: XGenericEventCookie;
     pad: [24] s64;
 }
+
 XEvent :: _XEvent;
+
 XCharStruct :: struct {
     lbearing: s16;
     rbearing: s16;
@@ -1685,10 +1790,12 @@ XCharStruct :: struct {
     descent: s16;
     attributes: u16;
 }
+
 XFontProp :: struct {
     name: Atom;
     card32: u64;
 }
+
 XFontStruct :: struct {
     ext_data: *XExtData;
     fid: Font;
@@ -1707,22 +1814,26 @@ XFontStruct :: struct {
     ascent: s32;
     descent: s32;
 }
+
 XTextItem :: struct {
     chars: *u8;
     nchars: s32;
     delta: s32;
     font: Font;
 }
+
 XChar2b :: struct {
     byte1: u8;
     byte2: u8;
 }
+
 XTextItem16 :: struct {
     chars: *XChar2b;
     nchars: s32;
     delta: s32;
     font: Font;
 }
+
 XEDataObject :: union {
     display: *Display;
     gc: GC;
@@ -1731,31 +1842,37 @@ XEDataObject :: union {
     pixmap_format: *ScreenFormat;
     font: *XFontStruct;
 }
+
 XFontSetExtents :: struct {
     max_ink_extent: XRectangle;
     max_logical_extent: XRectangle;
 }
+
 _XOM :: struct {}
 XOM :: *_XOM;
 _XOC :: struct {}
 XOC :: *_XOC;
 XFontSet :: *_XOC;
+
 XmbTextItem :: struct {
     chars: *u8;
     nchars: s32;
     delta: s32;
     font_set: XFontSet;
 }
+
 XwcTextItem :: struct {
     chars: *wchar_t;
     nchars: s32;
     delta: s32;
     font_set: XFontSet;
 }
+
 XOMCharSetList :: struct {
     charset_count: s32;
     charset_list: **u8;
 }
+
 using XOrientation :: enum u32 {
     XOMOrientation_LTR_TTB :: 0;
     XOMOrientation_RTL_TTB :: 1;
@@ -1763,15 +1880,18 @@ using XOrientation :: enum u32 {
     XOMOrientation_TTB_RTL :: 3;
     XOMOrientation_Context :: 4;
 }
+
 XOMOrientation :: struct {
     num_orientation: s32;
     orientation: *XOrientation;
 }
+
 XOMFontInfo :: struct {
     num_font: s32;
     font_struct_list: **XFontStruct;
     font_name_list: **u8;
 }
+
 _XIM :: struct {}
 XIM :: *_XIM;
 _XIC :: struct {}
@@ -1780,20 +1900,26 @@ XIMProc :: #type (a0: XIM, a1: XPointer, a2: XPointer) -> void #c_call;
 XICProc :: #type (a0: XIC, a1: XPointer, a2: XPointer) -> s32 #c_call;
 XIDProc :: #type (a0: *Display, a1: XPointer, a2: XPointer) -> void #c_call;
 XIMStyle :: u64;
+
 XIMStyles :: struct {
     count_styles: u16;
     supported_styles: *XIMStyle;
 }
+
 XVaNestedList :: *void;
+
 XIMCallback :: struct {
     client_data: XPointer;
     callback: XIMProc;
 }
+
 XICCallback :: struct {
     client_data: XPointer;
     callback: XICProc;
 }
+
 XIMFeedback :: u64;
+
 _XIMText :: struct {
     length: u16;
     feedback: *XIMFeedback;
@@ -1804,14 +1930,18 @@ _XIMText :: struct {
     }
     ;
 }
+
 XIMText :: _XIMText;
 XIMPreeditState :: u64;
+
 _XIMPreeditStateNotifyCallbackStruct :: struct {
     state: XIMPreeditState;
 }
+
 XIMPreeditStateNotifyCallbackStruct :: _XIMPreeditStateNotifyCallbackStruct;
 XIMResetState :: u64;
 XIMStringConversionFeedback :: u64;
+
 _XIMStringConversionText :: struct {
     length: u16;
     feedback: *XIMStringConversionFeedback;
@@ -1822,10 +1952,12 @@ _XIMStringConversionText :: struct {
     }
     ;
 }
+
 XIMStringConversionText :: _XIMStringConversionText;
 XIMStringConversionPosition :: u16;
 XIMStringConversionType :: u16;
 XIMStringConversionOperation :: u16;
+
 using XIMCaretDirection :: enum u32 {
     XIMForwardChar :: 0;
     XIMBackwardChar :: 1;
@@ -1840,6 +1972,7 @@ using XIMCaretDirection :: enum u32 {
     XIMAbsolutePosition :: 10;
     XIMDontChange :: 11;
 }
+
 _XIMStringConversionCallbackStruct :: struct {
     position: XIMStringConversionPosition;
     direction: XIMCaretDirection;
@@ -1847,29 +1980,37 @@ _XIMStringConversionCallbackStruct :: struct {
     factor: u16;
     text: *XIMStringConversionText;
 }
+
 XIMStringConversionCallbackStruct :: _XIMStringConversionCallbackStruct;
+
 _XIMPreeditDrawCallbackStruct :: struct {
     caret: s32;
     chg_first: s32;
     chg_length: s32;
     text: *XIMText;
 }
+
 XIMPreeditDrawCallbackStruct :: _XIMPreeditDrawCallbackStruct;
+
 using XIMCaretStyle :: enum u32 {
     XIMIsInvisible :: 0;
     XIMIsPrimary :: 1;
     XIMIsSecondary :: 2;
 }
+
 _XIMPreeditCaretCallbackStruct :: struct {
     position: s32;
     direction: XIMCaretDirection;
     style: XIMCaretStyle;
 }
+
 XIMPreeditCaretCallbackStruct :: _XIMPreeditCaretCallbackStruct;
+
 using XIMStatusDataType :: enum u32 {
     XIMTextType :: 0;
     XIMBitmapType :: 1;
 }
+
 _XIMStatusDrawCallbackStruct :: struct {
     type: XIMStatusDataType;
     data: union {
@@ -1878,23 +2019,30 @@ _XIMStatusDrawCallbackStruct :: struct {
     }
     ;
 }
+
 XIMStatusDrawCallbackStruct :: _XIMStatusDrawCallbackStruct;
+
 _XIMHotKeyTrigger :: struct {
     keysym: KeySym;
     modifier: s32;
     modifier_mask: s32;
 }
+
 XIMHotKeyTrigger :: _XIMHotKeyTrigger;
+
 _XIMHotKeyTriggers :: struct {
     num_hot_key: s32;
     key: *XIMHotKeyTrigger;
 }
+
 XIMHotKeyTriggers :: _XIMHotKeyTriggers;
 XIMHotKeyState :: u64;
+
 XIMValuesList :: struct {
     count_values: u16;
     supported_values: **u8;
 }
+
 _Xdebug: s32;
 XLoadQueryFont :: (unk0: *Display, unk1: *u8) -> *XFontStruct #foreign libX11;
 XQueryFont :: (unk0: *Display, unk1: XID) -> *XFontStruct #foreign libX11;
@@ -2311,6 +2459,7 @@ _Xmbtowc :: (unk0: *wchar_t, unk1: *u8, unk2: s32) -> s32 #foreign libX11;
 _Xwctomb :: (unk0: *u8, unk1: wchar_t) -> s32 #foreign libX11;
 XGetEventData :: (unk0: *Display, unk1: *XGenericEventCookie) -> s32 #foreign libX11;
 XFreeEventData :: (unk0: *Display, unk1: *XGenericEventCookie) -> void #foreign libX11;
+
 XSizeHints :: struct {
     flags: s64;
     x: s32;
@@ -2332,6 +2481,7 @@ XSizeHints :: struct {
     base_height: s32;
     win_gravity: s32;
 }
+
 XWMHints :: struct {
     flags: s64;
     input: s32;
@@ -2343,12 +2493,14 @@ XWMHints :: struct {
     icon_mask: Pixmap;
     window_group: XID;
 }
+
 XTextProperty :: struct {
     value: *u8;
     encoding: Atom;
     format: s32;
     nitems: u64;
 }
+
 using XICCEncodingStyle :: enum u32 {
     XStringStyle :: 0;
     XCompoundTextStyle :: 1;
@@ -2356,6 +2508,7 @@ using XICCEncodingStyle :: enum u32 {
     XStdICCTextStyle :: 3;
     XUTF8StringStyle :: 4;
 }
+
 XIconSize :: struct {
     min_width: s32;
     min_height: s32;
@@ -2364,18 +2517,23 @@ XIconSize :: struct {
     width_inc: s32;
     height_inc: s32;
 }
+
 anon_struct_6 :: struct {
     res_name: *u8;
     res_class: *u8;
 }
+
 XClassHint :: anon_struct_6;
+
 _XComposeStatus :: struct {
     compose_ptr: XPointer;
     chars_matched: s32;
 }
+
 XComposeStatus :: _XComposeStatus;
 _XRegion :: struct {}
 Region :: *_XRegion;
+
 XVisualInfo :: struct {
     visual: *Visual;
     visualid: VisualID;
@@ -2388,6 +2546,7 @@ XVisualInfo :: struct {
     colormap_size: s32;
     bits_per_rgb: s32;
 }
+
 XStandardColormap :: struct {
     colormap: Colormap;
     red_max: u64;
@@ -2400,6 +2559,7 @@ XStandardColormap :: struct {
     visualid: VisualID;
     killid: XID;
 }
+
 XContext :: s32;
 XAllocClassHint :: () -> *XClassHint #foreign libX11;
 XAllocIconSize :: () -> *XIconSize #foreign libX11;
@@ -2472,30 +2632,38 @@ XUnionRectWithRegion :: (unk0: *XRectangle, unk1: Region, unk2: Region) -> s32 #
 XUnionRegion :: (unk0: Region, unk1: Region, unk2: Region) -> s32 #foreign libX11;
 XWMGeometry :: (unk0: *Display, unk1: s32, unk2: *u8, unk3: *u8, unk4: u32, unk5: *XSizeHints, unk6: *s32, unk7: *s32, unk8: *s32, unk9: *s32, unk10: *s32) -> s32 #foreign libX11;
 XXorRegion :: (unk0: Region, unk1: Region, unk2: Region) -> s32 #foreign libX11;
+
 XrmValue :: struct {
     size: u32;
     addr: XPointer;
 }
+
 XrmValuePtr :: *XrmValue;
 XrmDatabase :: *_XrmHashBucketRec;
 XrmGetStringDatabase :: (data: *u8) -> XrmDatabase #foreign libX11;
 XrmGetResource :: (db: XrmDatabase, str_name: *u8, str_class: *u8, str_return_type: **u8, value: *XrmValue) -> Bool #foreign libX11;
 XrmDestroyDatabase :: (db: XrmDatabase) #foreign libX11;
+
 DefaultRootWindow :: (display: *Display) -> Window {
     return XDefaultRootWindow(display);
 }
+
 DefaultScreen :: (display: *Display) -> s32 {
     return XDefaultScreen(display);
 }
+
 ScreenOfDisplay :: (display: *Display, scr: s32) -> *Screen {
     return XScreenOfDisplay(display, scr);
 }
+
 DefaultScreenOfDisplay :: (display: *Display) -> *Screen {
     return XDefaultScreenOfDisplay(display);
 }
+
 DefaultGC :: (display: *Display, scr: s32) -> GC {
     return XDefaultGC(display, scr);
 }
+
 XkbKeycodeToKeysym :: (dpy: *Display, kc: KeyCode, group: u32, level: u32) -> KeySym #foreign libX11;
 GLX_RGBA :: 4;
 GLX_DOUBLEBUFFER :: 5;
@@ -2537,10 +2705,14 @@ glXChooseFBConfig :: (disp: *Display, screen: s32, attrib_list: *s32, nelements:
 glXGetFBConfigAttrib :: (disp: *Display, config: GLXFBConfig, attribute: s32, value: *s32) -> s32 #foreign glx;
 glXGetConfig :: (disp: *Display, vis: *XVisualInfo, attrib: s32, value: *s32) -> s32 #foreign glx;
 glXCreateWindow :: (display: *Display, config: GLXFBConfig, window: Window, attrib_list: *s32 = null) -> GLXWindow #foreign glx;
+
 #scope_file
 String :: #import "String";
+
 trim :: String.trim;
+
 POSIX :: #import "POSIX";
+
 getenv :: POSIX.getenv;
 LC_ALL: s32 : 6;
 setlocale :: (what: s32, loc: *u8) -> *u8 #foreign libc;

@@ -4,9 +4,11 @@
     stat :: (path: *u8, buf: *stat_t) -> s64 {
         return cast(s64) sdk_stat(path, buf);
     }
+
     fstat :: (fd: s32, buf: *stat_t) -> s64 {
         return cast(s64) sdk_fstat(fd, buf);
     }
+
     lstat :: (path: *u8, buf: *stat_t) -> s64 {
         return cast(s64) sdk_lstat(path, buf);
     }

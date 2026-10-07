@@ -61,6 +61,7 @@ PTHREAD_PROCESS_SHARED :: 1;
 PTHREAD_SCOPE_SYSTEM :: 0;
 PTHREAD_SCOPE_PROCESS :: 1;
 _JBLEN :: 32;
+
 pthread_attr_t :: struct {
     flags: u32;
     stack_base: *void;
@@ -70,28 +71,39 @@ pthread_attr_t :: struct {
     sched_priority: s32;
     __reserved: [16] u8;
 }
+
 pthread_barrier_t :: struct {
     __private: [4] s64;
 }
+
 pthread_barrierattr_t :: s32;
+
 pthread_cond_t :: struct {
     __private: [12] s32;
 }
+
 pthread_condattr_t :: s64;
 pthread_key_t :: s32;
+
 pthread_mutex_t :: struct {
     __private: [10] s32;
 }
+
 pthread_mutexattr_t :: s64;
 pthread_once_t :: s32;
+
 pthread_rwlock_t :: struct {
     __private: [14] s32;
 }
+
 pthread_rwlockattr_t :: s64;
+
 pthread_spinlock_t :: struct {
     __private: s64;
 }
+
 pthread_t :: s64;
+
 clone_args :: struct {
     flags: u64;
     pidfd: u64;
@@ -105,9 +117,11 @@ clone_args :: struct {
     set_tid_size: u64;
     cgroup: u64;
 }
+
 sched_param :: struct {
     sched_priority: s32;
 }
+
 sched_setscheduler :: (__pid: pid_t, __policy: s32, __param: *sched_param) -> s32 #foreign libc;
 sched_getscheduler :: (__pid: pid_t) -> s32 #foreign libc;
 sched_yield :: () -> s32 #foreign libc;
@@ -116,6 +130,7 @@ sched_get_priority_min :: (__policy: s32) -> s32 #foreign libc;
 sched_setparam :: (__pid: pid_t, __param: *sched_param) -> s32 #foreign libc;
 sched_getparam :: (__pid: pid_t, __param: *sched_param) -> s32 #foreign libc;
 sched_rr_get_interval :: (__pid: pid_t, __quantum: *timespec) -> s32 #foreign libc;
+
 PTHREAD_MUTEX :: enum u32 {
     NORMAL :: 0;
     RECURSIVE :: 1;
@@ -130,12 +145,14 @@ PTHREAD_MUTEX :: enum u32 {
     PTHREAD_MUTEX_RECURSIVE_NP :: RECURSIVE_NP;
     PTHREAD_MUTEX_DEFAULT :: DEFAULT;
 }
+
 PTHREAD_RWLOCK_PREFER :: enum u32 {
     READER_NP :: 0;
     WRITER_NONRECURSIVE_NP :: 1;
     PTHREAD_RWLOCK_PREFER_READER_NP :: READER_NP;
     PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP :: WRITER_NONRECURSIVE_NP;
 }
+
 pthread_attr_destroy :: (__attr: *pthread_attr_t) -> s32 #foreign libc;
 pthread_attr_getdetachstate :: (__attr: *pthread_attr_t, __state: *s32) -> s32 #foreign libc;
 pthread_attr_getguardsize :: (__attr: *pthread_attr_t, __size: *u64) -> s32 #foreign libc;
@@ -234,11 +251,13 @@ pthread_getschedparam :: (__pthread: pthread_t, __policy: *s32, __param: *sched_
 pthread_setschedprio :: (__pthread: pthread_t, __priority: s32) -> s32 #foreign libc;
 pthread_setspecific :: (__key: pthread_key_t, __value: *void) -> s32 #foreign libc;
 __pthread_cleanup_func_t :: #type (unknown0: *void) -> void #c_call;
+
 __pthread_cleanup_t :: struct {
     __cleanup_prev: *__pthread_cleanup_t;
     __cleanup_routine: #type () -> void #c_call;
     __cleanup_arg: *void;
 }
+
 __pthread_cleanup_push :: (c: *__pthread_cleanup_t, unknown0: #type () -> void #c_call, unknown1: *void) -> void #foreign libc;
 __pthread_cleanup_pop :: (unknown0: *__pthread_cleanup_t, unknown1: s32) -> void #foreign libc;
 sigjmp_buf :: [33] s64;

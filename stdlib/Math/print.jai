@@ -7,6 +7,7 @@ print_numeric_row :: (builder: *Basic.String_Builder, values: [] float) {
     }
     Basic.append(builder, ")");
 }
+
 print_known_matrix :: (builder: *Basic.String_Builder, m: $T/interface AnyMatrix) -> bool {
     for i: 0..m.v.count - 1 {
         if i != 0 Basic.append(builder, ", ");
@@ -14,6 +15,7 @@ print_known_matrix :: (builder: *Basic.String_Builder, m: $T/interface AnyMatrix
     }
     return true;
 }
+
 print_matrix :: (builder: *Basic.String_Builder, any: Any, user_data: *void) -> bool {
     if any.type == type_info(Matrix2) return print_known_matrix(builder, (cast(*Matrix2) any.value_pointer).*);
     if any.type == type_info(Matrix3) return print_known_matrix(builder, (cast(*Matrix3) any.value_pointer).*);
@@ -21,6 +23,7 @@ print_matrix :: (builder: *Basic.String_Builder, any: Any, user_data: *void) -> 
     if any.type == type_info(Matrix4x3) return print_known_matrix(builder, (cast(*Matrix4x3) any.value_pointer).*);
     return false;
 }
+
 // Struct printer hook: vectors render as "(x, y, ...)", matrices as a list of such rows.
 math_struct_printer :: (builder: *Basic.String_Builder, any: Any, user_data: *void) -> bool {
     lanes := 0;

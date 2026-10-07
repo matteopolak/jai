@@ -164,6 +164,7 @@ Opaque :: struct {}
 four_cc :: (text: string) -> u32 {
     return ((cast(u32) text[0]) << 24) | ((cast(u32) text[1]) << 16) | ((cast(u32) text[2]) << 8) | cast(u32) text[3];
 }
+
 FOUR_CC_AUOU :: #run four_cc("auou"); // Output unit type.
 FOUR_CC_DEF_ :: #run four_cc("def "); // Default output subtype.
 FOUR_CC_APPL :: #run four_cc("appl");

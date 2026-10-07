@@ -3,6 +3,7 @@
 Formatter :: struct {
     value: Any;
 }
+
 FormatInt :: struct {
     using #as formatter: Formatter;
     base := 10;
@@ -11,6 +12,7 @@ FormatInt :: struct {
     digits_per_comma: u16 = 0;
     comma_string := "";
 }
+
 FormatFloat :: struct {
     using #as formatter: Formatter;
     width := -1;
@@ -38,6 +40,7 @@ FormatFloat :: struct {
     }
     positive_number_prefix := Positive_Number_Prefix.NONE;
 }
+
 FormatStruct :: struct {
     using #as formatter: Formatter;
     draw_type_name := false;
@@ -50,6 +53,7 @@ FormatStruct :: struct {
     indentation_width: s32 = 4;
     use_newlines_if_long_form := false;
 }
+
 FormatArray :: struct {
     using #as formatter: Formatter;
     separator := ", ";
@@ -75,6 +79,7 @@ Print_Style :: struct {
     indentation_depth: s32;
     log_runtime_errors := true;
 }
+
 #add_context print_style: Print_Style;
 
 // Several configured instances of Basic can coexist, but the context field has the type
@@ -89,6 +94,7 @@ __default_format_int :: () -> FormatInt {
     result.comma_string = source.comma_string;
     return result;
 }
+
 __default_format_pointer :: () -> FormatInt {
     source := context.print_style.default_format_absolute_pointer;
     result: FormatInt;
@@ -99,6 +105,7 @@ __default_format_pointer :: () -> FormatInt {
     result.comma_string = source.comma_string;
     return result;
 }
+
 __default_format_float :: () -> FormatFloat {
     source := context.print_style.default_format_float;
     result: FormatFloat;
@@ -113,6 +120,7 @@ __default_format_float :: () -> FormatFloat {
     result.positive_number_prefix = cast(FormatFloat.Positive_Number_Prefix) cast(s64) source.positive_number_prefix;
     return result;
 }
+
 __default_format_struct :: () -> FormatStruct {
     source := context.print_style.default_format_struct;
     result: FormatStruct;
@@ -134,10 +142,12 @@ formatInt :: (value: Any, base := 10, minimum_digits := 1, padding: u8 = #char "
     return FormatInt.{ value = value, base = base, minimum_digits = minimum_digits,
         padding = padding, digits_per_comma = digits_per_comma, comma_string = comma_string };
 }
+
 formatFloat :: (value: Any, width := -1, trailing_width := -1,
     mode := FormatFloat.Mode.DECIMAL, zero_removal := FormatFloat.Zero_Removal.YES) -> FormatFloat {
     return FormatFloat.{ value = value, width = width, trailing_width = trailing_width, mode = mode, zero_removal = zero_removal };
 }
+
 formatStruct :: (value: Any, use_long_form_if_more_than_this_many_members := 5, use_newlines_if_long_form := false) -> FormatStruct {
     return FormatStruct.{ value = value, use_long_form_if_more_than_this_many_members = use_long_form_if_more_than_this_many_members,
         use_newlines_if_long_form = use_newlines_if_long_form };
@@ -151,6 +161,7 @@ get_s64_from_void_pointer :: (pointer: *void, size_in_bytes: int) -> s64 {
     assert(false, "Unsupported integer storage width.");
     return 0;
 }
+
 get_u64_from_void_pointer :: (pointer: *void, size_in_bytes: int) -> u64 {
     if size_in_bytes == 1 return (cast(*u8) pointer).*;
     if size_in_bytes == 2 return (cast(*u16) pointer).*;
@@ -184,6 +195,7 @@ print_u64_base_n :: (builder: *String_Builder, v: u64, format: FormatInt) {
         index -= 1;
     }
 }
+
 print_integer :: (builder: *String_Builder, format: FormatInt) {
     item := format.value;
     if !item.type || !item.value_pointer {
@@ -219,6 +231,7 @@ __Float_Wide :: struct {
     words: [36] u32;
     used: s64;
 }
+
 __Float_Digits :: struct {
     digits: [344] u8;
     count: s64;
@@ -236,6 +249,7 @@ __float_wide_set :: (a: *__Float_Wide, value: u64) {
         a.used = 2;
     }
 }
+
 __float_wide_compare :: (a: *__Float_Wide, b: *__Float_Wide) -> s64 {
     if a.used < b.used return -1;
     if a.used > b.used return 1;
@@ -247,6 +261,7 @@ __float_wide_compare :: (a: *__Float_Wide, b: *__Float_Wide) -> s64 {
     }
     return 0;
 }
+
 __float_wide_multiply :: (a: *__Float_Wide, factor: u32) -> bool {
     carry: u64 = 0;
     for i: 0..a.used - 1 {
@@ -261,6 +276,7 @@ __float_wide_multiply :: (a: *__Float_Wide, factor: u32) -> bool {
     }
     return true;
 }
+
 __float_wide_shift :: (a: *__Float_Wide, bits: s64) -> bool {
     if a.used == 0 return true;
     words := bits / 32;
@@ -287,6 +303,7 @@ __float_wide_shift :: (a: *__Float_Wide, bits: s64) -> bool {
     }
     return true;
 }
+
 __float_wide_add :: (a: *__Float_Wide, b: *__Float_Wide) -> bool {
     count := a.used;
     if b.used > count count = b.used;
@@ -308,6 +325,7 @@ __float_wide_add :: (a: *__Float_Wide, b: *__Float_Wide) -> bool {
     }
     return true;
 }
+
 __float_wide_subtract :: (a: *__Float_Wide, b: *__Float_Wide) {
     // Callers compare first. Adding 2^32 keeps every limb subtraction bounded.
     borrow: u64 = 0;
@@ -320,36 +338,43 @@ __float_wide_subtract :: (a: *__Float_Wide, b: *__Float_Wide) {
     }
     while a.used > 0 && a.words[a.used - 1] == 0 a.used -= 1;
 }
+
 // The same operations on a plain u64. Most printed values (small integers, short decimals) never
 // leave 64 bits, so __float_decimal_digits tries this first and redoes the work with wide limbs
 // only when an operation would overflow.
 __float_wide_set :: (a: *u64, value: u64) {
     a.* = value;
 }
+
 __float_wide_compare :: (a: *u64, b: *u64) -> s64 {
     if a.* < b.* return -1;
     if a.* > b.* return 1;
     return 0;
 }
+
 __float_wide_multiply :: (a: *u64, factor: u32) -> bool {
     if a.* > cast(u64) 0xffff_ffff_ffff_ffff / factor return false;
     a.* *= factor;
     return true;
 }
+
 __float_wide_add :: (a: *u64, b: *u64) -> bool {
     if a.* > cast(u64) 0xffff_ffff_ffff_ffff - b.* return false;
     a.* += b.*;
     return true;
 }
+
 __float_wide_subtract :: (a: *u64, b: *u64) {
     a.* -= b.*;
 }
+
 __float_wide_shift :: (a: *u64, bits: s64) -> bool {
     if a.* == 0 return true;
     if bits >= 64 || a.* >> cast(u64) (64 - bits) != 0 return false;
     a.* <<= cast(u64) bits;
     return true;
 }
+
 __float_round_digits :: (result: *__Float_Digits) {
     i := result.count - 1;
     while i >= 0 && result.digits[i] == 9 {
@@ -371,6 +396,7 @@ __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -
     if !result.valid result = __float_decimal_digits_in(__Float_Wide, bits, requested, fixed_after_point);
     return result;
 }
+
 // Invalid results include overflow of T; the caller then retries with __Float_Wide.
 __float_decimal_digits_in :: ($T: Type, bits: u64, requested: s64, fixed_after_point: s64) -> __Float_Digits {
     result: __Float_Digits;
@@ -487,6 +513,7 @@ __float_decimal_digits_in :: ($T: Type, bits: u64, requested: s64, fixed_after_p
     }
     return result;
 }
+
 __float_digit_at :: (digits: *__Float_Digits, index: s64) -> u8 {
     if index < 0 || index >= digits.count return 0;
     return digits.digits[index];
@@ -535,6 +562,7 @@ __append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, sci
         print_u64_base_n(builder, cast(u64) exponent, FormatInt.{ minimum_digits = 2 });
     }
 }
+
 __append_float_value :: (builder: *String_Builder, value: float64, format: FormatFloat) {
     bits := cast,force(u64) value;
     magnitude := bits & 0x7fff_ffff_ffff_ffff;
@@ -581,6 +609,7 @@ __append_float_value :: (builder: *String_Builder, value: float64, format: Forma
     }
     __append_float_digits(builder, *digits, scientific, fractional, format);
 }
+
 __append_float_roundtrip :: (builder: *String_Builder, value: float64) {
     bits := cast,force(u64) value;
     magnitude := bits & 0x7fff_ffff_ffff_ffff;
@@ -618,6 +647,7 @@ __append_float_roundtrip :: (builder: *String_Builder, value: float64) {
     if fractional < 0 fractional = 0;
     __append_float_digits(builder, *digits, scientific, fractional, .{});
 }
+
 // A 16-byte float is jaic's Long_Double (module Jaic_Extensions): x87 extended precision on
 // x86-64, IEEE binary128 elsewhere. It prints through float64, so precision beyond float64's
 // is not shown.
@@ -664,6 +694,7 @@ __long_double_to_float64 :: (p: *void) -> float64 {
     if negative result = -result;
     return result;
 }
+
 print_float :: (builder: *String_Builder, format: FormatFloat) {
     item := format.value;
     if !item.type || !item.value_pointer {
@@ -718,6 +749,7 @@ __append_quoted :: (builder: *String_Builder, text: string) {
     }
     append(builder, cast(u8) #char "\"");
 }
+
 __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     if !info {
         append(builder, "(null)");
@@ -805,6 +837,7 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
         builder.failed = true;
     }
 }
+
 __append_struct_type :: (builder: *String_Builder, info: *Type_Info_Struct) {
     if info.name append(builder, info.name);
     else if info.textual_flags & .UNION append(builder, "(anonymous union)");
@@ -828,6 +861,7 @@ __append_struct_type :: (builder: *String_Builder, info: *Type_Info_Struct) {
     if separator == "(" append(builder, "(");
     append(builder, ")");
 }
+
 print_type_to_builder :: (builder: *String_Builder, info: *Type_Info) {
     __append_type(builder, info, 0);
 }
@@ -841,6 +875,7 @@ __printable_member :: (member: *Type_Info_Struct_Member, end_of_last: *s64) -> b
     end_of_last.* = member.offset_in_bytes + member.type.runtime_size;
     return true;
 }
+
 __append_struct :: (builder: *String_Builder, info: *Type_Info_Struct, pointer: *void, format: FormatStruct, depth: s64) {
     // The contents of a union are unknowable without a tag, so only its kind is shown.
     if info.textual_flags & .UNION {
@@ -876,14 +911,17 @@ __append_struct :: (builder: *String_Builder, info: *Type_Info_Struct, pointer: 
     if newlines for i: 0..depth * format.indentation_width - 1 append(builder, cast(u8) #char " ");
     append(builder, format.end_string);
 }
+
 append_struct_info :: (builder: *String_Builder, info: *Type_Info_Struct, base_pointer: *void, format: *FormatStruct = null) {
     settings: FormatStruct;
     if format settings = format.*;
     __append_struct(builder, info, base_pointer, settings, 0);
 }
+
 print_array :: (builder: *String_Builder, any: Any, info_array: *Type_Info_Array, format: FormatArray, may_be_uninitialized := false) {
     __append_array(builder, any, info_array, format, may_be_uninitialized, 0);
 }
+
 __append_array :: (builder: *String_Builder, item: Any, info: *Type_Info_Array, format: FormatArray, may_be_uninitialized: bool, depth: s64) {
     count := info.array_count;
     data := item.value_pointer;
@@ -1045,12 +1083,15 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         builder.failed = true;
     }
 }
+
 print_item_to_builder :: (builder: *String_Builder, item: Any, inside_struct_or_array := true, may_be_uninitialized := false) {
     __append_item(builder, item, inside_struct_or_array, may_be_uninitialized, 0);
 }
+
 my_is_digit :: (c: s64) -> bool {
     return c >= #char "0" && c <= #char "9";
 }
+
 parse_number :: (s: string, cursor: s64) -> (end_cursor: s64, sum: s64) {
     assert(cursor >= 0 && cursor <= s.count);
     position := cursor;
@@ -1063,6 +1104,7 @@ parse_number :: (s: string, cursor: s64) -> (end_cursor: s64, sum: s64) {
     }
     return position, value;
 }
+
 isFormatter :: (info: *Type_Info_Struct) -> *Type_Info_Struct_Member {
     if !info return null;
     for *member: info.members {
@@ -1123,10 +1165,13 @@ __format_to_builder :: (builder: *String_Builder, format: string, args: [] Any) 
     }
     return !builder.failed;
 }
+
 print_to_builder :: (builder: *String_Builder, format_string: string, args: ..Any) -> bool {
     return __format_to_builder(builder, format_string, args);
 }
+
 print :: print_to_builder;
+
 print :: (format_string: string, args: ..Any, to_standard_error := false) -> bytes_printed: s64 {
     builder: String_Builder;
     init_string_builder(*builder);
@@ -1136,6 +1181,7 @@ print :: (format_string: string, args: ..Any, to_standard_error := false) -> byt
     if !success return -1;
     return count;
 }
+
 sprint :: (format_string: string, args: ..Any) -> string #must {
     builder: String_Builder;
     init_string_builder(*builder);
@@ -1144,6 +1190,7 @@ sprint :: (format_string: string, args: ..Any) -> string #must {
     free_buffers(*builder);
     return result;
 }
+
 tprint :: (format_string: string, args: ..Any) -> string #must {
     builder: String_Builder;
     init_string_builder(*builder);
@@ -1154,13 +1201,16 @@ tprint :: (format_string: string, args: ..Any) -> string #must {
     free_buffers(*builder);
     return result;
 }
+
 print_sequence_to_builder :: (builder: *String_Builder, args: ..Any) {
     for item: args __append_item(builder, item, false, false, 0);
 }
+
 print_character :: (_c: u8) {
     byte := _c;
     write_string(to_string(*byte, 1));
 }
+
 print_bytes :: (a: *void, length: int, format_string := "% ") {
     bytes := cast(*u8) a;
     for i: 0..length - 1 print(format_string, bytes[i]);
@@ -1191,9 +1241,11 @@ formatFloatRoundtrip :: (value: float64, width: s64 = 0) -> string {
     free_buffers(*builder);
     return result;
 }
+
 type_to_string :: (type: Type) -> string {
     return type_to_string(type_info(type));
 }
+
 type_to_string :: (info: *Type_Info) -> string {
     builder: String_Builder;
     init_string_builder(*builder);
@@ -1219,15 +1271,19 @@ log :: (format_string: string, args: ..Any, loc := #caller_location, flags := Lo
     if !success return -1;
     return count;
 }
+
 log_error :: (format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
     log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
 }
+
 log :: (section: *Log_Section, format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0) -> s64 {
     return log(format_string, ..args, loc = loc, flags = flags, user_flags = user_flags, section = section);
 }
+
 log_error :: (section: *Log_Section, format_string: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0) {
     log(format_string, ..args, loc = loc, flags = flags | .ERROR, user_flags = user_flags, section = section);
 }
+
 log_warning :: (format: string, args: ..Any, loc := #caller_location, flags := Log_Flags.NONE, user_flags: u32 = 0, section: *Log_Section = null) {
     log(format, ..args, loc = loc, flags = flags | .WARNING, user_flags = user_flags, section = section);
 }

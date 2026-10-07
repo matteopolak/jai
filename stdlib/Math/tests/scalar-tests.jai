@@ -2,9 +2,11 @@
 #load "../constants.jai";
 #load "../scalar.jai";
 #load "../../Float16/conversion.jai";
+
 near :: (actual: float64, expected: float64, tolerance: float64 = 1e-13) -> bool {
     return abs(actual - expected) <= tolerance * abs(expected) + tolerance;
 }
+
 numeric_scalar_cases :: () -> bool {
     negative_zero := float64_from_bits(0x8000000000000000);
     if float64_bits(sqrt(negative_zero)) != 0x8000000000000000 return false;
@@ -32,6 +34,7 @@ numeric_scalar_cases :: () -> bool {
     }
     return true;
 }
+
 numeric_half_cases :: () -> bool {
     if cast(u16) float32_to_float16(1.0) != 0x3c00 return false;
     if cast(u16) float32_to_float16(float32_from_bits(0x80000000)) != 0x8000 return false;
@@ -42,6 +45,7 @@ numeric_half_cases :: () -> bool {
     if cast(u16) float32_to_float16(1.00146484375) != 0x3c02 return false;
     return true;
 }
+
 numeric_half_range :: (start: int, end: int) -> bool {
     // Every finite half is exactly representable in float32.
     for raw: start..end {
@@ -55,6 +59,7 @@ numeric_half_range :: (start: int, end: int) -> bool {
     }
     return true;
 }
+
 #assert #run numeric_scalar_cases();
 #assert #run numeric_half_cases();
 

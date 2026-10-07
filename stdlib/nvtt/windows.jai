@@ -192,6 +192,7 @@ InputOptions :: struct {
 OutputHandler :: struct {
     vtable: *OutputHandler_VTable;
 }
+
 OutputHandler_VTable :: struct #type_info_none {
     Destructor: (this: *OutputHandler, flags: Msvc_Destructor_Flags) -> void #cpp_method;
 
@@ -236,6 +237,7 @@ Error :: enum s32 {
 ErrorHandler :: struct {
     vtable: *ErrorHandler_VTable;
 }
+
 ErrorHandler_VTable :: struct #type_info_none {
     Destructor: (this: *ErrorHandler, flags: Msvc_Destructor_Flags) -> void #cpp_method;
 
@@ -286,6 +288,7 @@ Task :: #type (_context: *void, id: s32) -> void #c_call;
 TaskDispatcher :: struct {
     vtable: *TaskDispatcher_VTable;
 }
+
 TaskDispatcher_VTable :: struct #type_info_none {
     Destructor: (this: *TaskDispatcher, flags: Msvc_Destructor_Flags) -> void #cpp_method;
 
@@ -534,6 +537,7 @@ Surface :: struct #type_info_none {
 }
 
 operator_assign :: (this: *Surface, img: *Surface) -> void #cpp_method #foreign nvtt "??4Surface@nvtt@@QEAAXAEBU01@@Z";
+
 operator_assign :: (this: *Surface, img: Surface) #no_context {
     operator_assign(this, *img);
 }
@@ -610,6 +614,7 @@ CubeSurface :: struct {
 }
 
 operator_assign :: (this: *CubeSurface, img: *CubeSurface) -> void #cpp_method #foreign nvtt "??4CubeSurface@nvtt@@QEAAXAEBU01@@Z";
+
 operator_assign :: (this: *CubeSurface, img: CubeSurface) #no_context {
     operator_assign(this, *img);
 }
@@ -619,31 +624,41 @@ errorString :: (e: Error) -> *u8 #foreign nvtt "?errorString@nvtt@@YAPEBDW4Error
 version :: () -> u32 #foreign nvtt "?version@nvtt@@YAIXZ";
 
 rmsError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?rmsError@nvtt@@YAMAEBUSurface@1@0@Z";
+
 rmsError :: (reference: Surface, img: Surface) -> float #no_context {
     return rmsError(*reference, *img);
 }
+
 rmsAlphaError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?rmsAlphaError@nvtt@@YAMAEBUSurface@1@0@Z";
+
 rmsAlphaError :: (reference: Surface, img: Surface) -> float #no_context {
     return rmsAlphaError(*reference, *img);
 }
+
 cieLabError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?cieLabError@nvtt@@YAMAEBUSurface@1@0@Z";
+
 cieLabError :: (reference: Surface, img: Surface) -> float #no_context {
     return cieLabError(*reference, *img);
 }
+
 angularError :: (reference: *Surface, img: *Surface) -> float #foreign nvtt "?angularError@nvtt@@YAMAEBUSurface@1@0@Z";
+
 angularError :: (reference: Surface, img: Surface) -> float #no_context {
     return angularError(*reference, *img);
 }
+
 diff :: (reference: *Surface, img: *Surface, scale: float) -> Surface #no_context #no_context {
     result: Surface;
     native_object_return_10(*result, reference, img, scale);
     return result;
 }
+
 diff :: (reference: Surface, img: Surface, scale: float) -> Surface #no_context {
     return diff(*reference, *img, scale);
 }
 
 rmsToneMappedError :: (reference: *Surface, img: *Surface, exposure: float) -> float #foreign nvtt "?rmsToneMappedError@nvtt@@YAMAEBUSurface@1@0M@Z";
+
 rmsToneMappedError :: (reference: Surface, img: Surface, exposure: float) -> float #no_context {
     return rmsToneMappedError(*reference, *img, exposure);
 }
@@ -653,14 +668,17 @@ histogram :: (img: *Surface, width: s32, height: s32) -> Surface #no_context {
     native_object_return_11(*result, img, width, height);
     return result;
 }
+
 histogram :: (img: Surface, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, width, height);
 }
+
 histogram :: (img: *Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     result: Surface;
     native_object_return_12(*result, img, minRange, maxRange, width, height);
     return result;
 }
+
 histogram :: (img: Surface, minRange: float, maxRange: float, width: s32, height: s32) -> Surface #no_context {
     return histogram(*img, minRange, maxRange, width, height);
 }

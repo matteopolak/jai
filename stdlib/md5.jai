@@ -35,6 +35,7 @@ md5 :: (input: string) -> string #must {
 #import "Basic";
 
 md5_rotations :: u32.[7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+
 // Constants are the specified floor(abs(sin(i + 1)) * 2^32) values.
 md5_constants :: u32.[
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,

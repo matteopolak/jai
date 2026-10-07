@@ -1,33 +1,41 @@
 // Public libevdev C contracts. Resolves installed system libevdev, never vendor assets.
 #import "Linux";
+
 libevdev :: struct {}
 libevdev_uinput :: struct {}
+
 using libevdev_read_flag :: enum u32 {
     LIBEVDEV_READ_FLAG_SYNC :: 1;
     LIBEVDEV_READ_FLAG_NORMAL :: 2;
     LIBEVDEV_READ_FLAG_FORCE_SYNC :: 4;
     LIBEVDEV_READ_FLAG_BLOCKING :: 8;
 }
+
 using libevdev_read_status :: enum u32 {
     LIBEVDEV_READ_STATUS_SUCCESS :: 0;
     LIBEVDEV_READ_STATUS_SYNC :: 1;
 }
+
 using libevdev_log_priority :: enum u32 {
     LIBEVDEV_LOG_ERROR :: 10;
     LIBEVDEV_LOG_INFO :: 20;
     LIBEVDEV_LOG_DEBUG :: 30;
 }
+
 using libevdev_grab_mode :: enum u32 {
     LIBEVDEV_GRAB :: 3;
     LIBEVDEV_UNGRAB :: 4;
 }
+
 using libevdev_led_value :: enum u32 {
     LIBEVDEV_LED_ON :: 3;
     LIBEVDEV_LED_OFF :: 4;
 }
+
 using libevdev_uinput_open_mode :: enum s32 {
     LIBEVDEV_UINPUT_OPEN_MANAGED :: -2;
 }
+
 libevdev_new :: () -> *libevdev #foreign evdev_library;
 libevdev_new_from_fd :: (fd: s32, dev: **libevdev) -> s32 #foreign evdev_library;
 libevdev_free :: (dev: *libevdev) -> void #foreign evdev_library;

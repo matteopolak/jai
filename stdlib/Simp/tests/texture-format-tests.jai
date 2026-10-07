@@ -1,5 +1,6 @@
 // This checks the actual production format arithmetic without importing a GPU SDK.
 #load "../texture_format.jai";
+
 texture_format_cases :: () -> bool {
     size, stride := get_image_size(.RGBA8, 13, 7);
     if size != 364 || stride != 52 return false;
@@ -17,7 +18,9 @@ texture_format_cases :: () -> bool {
     if size != 0 || stride != 0 return false;
     return true;
 }
+
 #assert #run texture_format_cases();
+
 main :: () {
     texture_format_cases();
 }

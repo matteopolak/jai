@@ -1,9 +1,11 @@
 // objc_msgSend and friends for x64.
 marg_prearg_size :: 0;
+
 objc_super :: struct {
     receiver: id;
     class: Class;
 }
+
 objc_msgSend :: (self: id, op: SEL, __args: ..Any) -> id #foreign libobjc;
 objc_msgSendSuper :: (super: *objc_super, op: SEL, __args: ..Any) -> id #foreign libobjc;
 objc_msgSend_stret :: (self: id, op: SEL, __args: ..Any) -> void #foreign libobjc;

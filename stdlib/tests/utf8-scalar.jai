@@ -25,4 +25,5 @@ utf8_scalar_vectors :: () -> bool {
     if character_utf32_to_utf8(0xD800, *output) != .SOURCE_ILLEGAL return false;
     return true;
 }
+
 #assert(utf8_scalar_vectors());

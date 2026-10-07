@@ -4,6 +4,7 @@ Unicode_Result :: enum {
     SOURCE_EXHAUSTED;
     SOURCE_ILLEGAL;
 }
+
 UNI_REPLACEMENT_CHAR :: 0xFFFD;
 UNI_MAX_BMP :: 0xFFFF;
 UNI_MAX_UTF16 :: 0x10FFFF;
@@ -42,6 +43,7 @@ character_utf8_to_utf32 :: (s: *u8, source_length: s64, $strict := false) -> u32
         return UNI_REPLACEMENT_CHAR, 1, .SOURCE_ILLEGAL;
     return code, length, .CONVERSION_OK;
 }
+
 character_utf32_to_utf8 :: (codepoint: u32, out: *string) -> Unicode_Result {
     if codepoint > UNI_MAX_UTF16 || (codepoint >= 0xD800 && codepoint <= 0xDFFF) return .SOURCE_ILLEGAL;
     n := 1;

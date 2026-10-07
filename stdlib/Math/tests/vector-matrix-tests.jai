@@ -1,4 +1,5 @@
 #import "Math";
+
 vector_cases :: () -> bool {
     if size_of(Vector2) != 8 || size_of(Vector3) != 12 || size_of(Vector4) != 16 return false;
     a := make_vector3(3, 4, 0);
@@ -14,6 +15,7 @@ vector_cases :: () -> bool {
     if clamp(cast(float) 2, cast(float) 0, cast(float) 1) != 1 return false;
     return true;
 }
+
 quaternion_cases :: () -> bool {
     q: Quaternion;
     if q.w != 1 return false;
@@ -25,6 +27,7 @@ quaternion_cases :: () -> bool {
     if abs(theta - PI64 * 0.25) > 0.00001 || abs(z - 1) > 0.00001 return false;
     return true;
 }
+
 matrix_cases :: () -> bool {
     if size_of(Matrix3) != 36 || size_of(Matrix4) != 64 return false;
     m := Matrix4_Identity;
@@ -47,6 +50,7 @@ matrix_cases :: () -> bool {
     if was_inverted return false;
     return true;
 }
+
 #assert #run vector_cases();
 #assert #run quaternion_cases();
 #assert #run matrix_cases();

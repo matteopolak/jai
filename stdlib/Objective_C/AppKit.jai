@@ -157,10 +157,12 @@ init_app_kit :: () {
     _sel.view = cast(Selector) sel_registerName(cast(*u8) "view\0");
     _sel.writeObjects_ = cast(Selector) sel_registerName(cast(*u8) "writeObjects:\0");
 }
+
 NSApp: *NSApplication #elsewhere;
 NSApplicationMain :: (argc: s32, argv: **u8) -> s32 #foreign AppKit;
 NSDefaultRunLoopMode: NSRunLoopMode #elsewhere Cocoa;
 NSDeviceRGBColorSpace: NSColorSpaceName #elsewhere AppKit;
+
 NSApplicationDelegate :: struct {
     using #as nsobject: NSObject;
 } @ObjCProtocol
@@ -260,6 +262,7 @@ NSApplication :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "requestUserAttention:\0"), requestType);
     }
 }
+
 NSEvent :: struct {
     using #as super: NSObject;
     mouseLocation :: () -> NSPoint {
@@ -346,6 +349,7 @@ NSEvent :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "deltaZ\0"));
     }
 }
+
 using NSEventModifierFlags :: enum_flags u64 {
     NSEventModifierFlagCapsLock :: 1 << 16;
     NSEventModifierFlagShift :: 1 << 17;
@@ -357,6 +361,7 @@ using NSEventModifierFlags :: enum_flags u64 {
     NSEventModifierFlagFunction :: 1 << 23;
     NSEventModifierFlagDeviceIndependentFlagsMask :: 0xffff0000;
 }
+
 using NSApplicationPresentationOptions :: enum u64 {
     NSApplicationPresentationDefault :: 0;
     NSApplicationPresentationAutoHideDock :: (1 << 0);
@@ -373,15 +378,18 @@ using NSApplicationPresentationOptions :: enum u64 {
     NSApplicationPresentationAutoHideToolbar :: (1 << 11);
     NSApplicationPresentationDisableCursorLocationAssistance :: (1 << 12);
 }
+
 using NSRequestUserAttentionType :: enum u64 {
     NSCriticalRequest :: 0;
     NSInformationalRequest :: 10;
 }
+
 using NSApplicationTerminateReply :: enum u64 {
     NSTerminateCancel :: 0;
     NSTerminateNow :: 1;
     NSTerminateLater :: 2;
 }
+
 using NSEventType :: enum u64 {
     NSEventTypeLeftMouseDown :: 1;
     NSEventTypeLeftMouseUp :: 2;
@@ -413,6 +421,7 @@ using NSEventType :: enum u64 {
     NSEventTypeBeginGesture :: 19;
     NSEventTypeEndGesture :: 20;
 }
+
 using NSEventMask :: enum u64 {
     NSEventMaskLeftMouseDown :: 1 << 1;
     NSEventMaskLeftMouseUp :: 1 << 2;
@@ -445,11 +454,13 @@ using NSEventMask :: enum u64 {
     NSEventMaskEndGesture :: 1 << 20;
     NSEventMaskAny :: 0xFFFFFFFFFFFFFFFF;
 }
+
 using NSApplicationActivationPolicy :: enum s64 {
     NSApplicationActivationPolicyRegular :: 0;
     NSApplicationActivationPolicyAccessory :: 1;
     NSApplicationActivationPolicyProhibited :: 2;
 }
+
 using NSWindowStyleMask :: enum_flags u64 {
     NSWindowStyleMaskBorderless :: 0;
     NSWindowStyleMaskTitled :: 1 << 0;
@@ -465,6 +476,7 @@ using NSWindowStyleMask :: enum_flags u64 {
     NSWindowStyleMaskNonactivatingPanel :: 1 << 7;
     NSWindowStyleMaskHUDWindow :: 1 << 13;
 }
+
 using NSWindowCollectionBehavior :: enum_flags u64 {
     NSWindowCollectionBehaviorDefault :: 0;
     NSWindowCollectionBehaviorCanJoinAllSpaces :: 1 << 0;
@@ -480,17 +492,21 @@ using NSWindowCollectionBehavior :: enum_flags u64 {
     NSWindowCollectionBehaviorFullScreenAllowsTiling :: 1 << 11;
     NSWindowCollectionBehaviorFullScreenDisallowsTiling :: 1 << 12;
 }
+
 using NSBackingStoreType :: enum u64 {
     NSBackingStoreRetained :: 0;
     NSBackingStoreNonretained :: 1;
     NSBackingStoreBuffered :: 2;
 }
+
 NSResponder :: struct {
     using #as super: NSObject;
 }
+
 NSWindowController :: struct {
     using #as responder: NSResponder;
 }
+
 NSColor :: struct {
     using #as super: NSObject;
     blueColor :: () -> *NSColor {
@@ -499,6 +515,7 @@ NSColor :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSColor\0"), sel_registerName(cast(*u8) "blueColor\0"));
     }
 }
+
 NSPasteboardReadingOptionKey :: *NSString;
 NSPasteboardTypeString: NSPasteboardType #elsewhere AppKit;
 NSPasteboardTypePDF: NSPasteboardType #elsewhere AppKit;
@@ -516,6 +533,7 @@ NSPasteboardTypeMultipleTextSelection: NSPasteboardType #elsewhere AppKit;
 NSPasteboardTypeTextFinderOptions: NSPasteboardType #elsewhere AppKit;
 NSPasteboardTypeURL: NSPasteboardType #elsewhere AppKit;
 NSPasteboardTypeFileURL: NSPasteboardType #elsewhere AppKit;
+
 NSPasteboard :: struct {
     using #as super: NSObject;
     generalPasteboard :: () -> *NSPasteboard {
@@ -554,6 +572,7 @@ NSPasteboard :: struct {
         return cast(*NSArray(T)) invoke(cast(*void) self, sel_registerName(cast(*u8) "readObjectsForClasses:options:\0"), classes, options);
     }
 }
+
 NSPasteboardItem :: struct {
     using #as super: NSObject;
     types :: (self: *NSPasteboardItem) -> *NSArray(NSPasteboardType) {
@@ -567,6 +586,7 @@ NSPasteboardItem :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "stringForType:\0"), dataType);
     }
 }
+
 NSWindow :: struct {
     using #as responder: NSResponder;
     convertRectToBacking :: NSView.convertRectToBacking;
@@ -741,9 +761,11 @@ NSWindow :: struct {
         return null;
     }
 }
+
 NSPanel :: struct {
     using super_NSWindow: NSWindow;
 }
+
 NSSavePanel :: struct {
     using super_NSPanel: NSPanel;
     savePanel :: () -> *NSSavePanel {
@@ -822,6 +844,7 @@ NSSavePanel :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "allowsOtherFileTypes\0"));
     }
 }
+
 NSOpenPanel :: struct {
     using super_NSSavePanel: NSSavePanel;
     openPanel :: () -> *NSOpenPanel {
@@ -830,6 +853,7 @@ NSOpenPanel :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSOpenPanel\0"), sel_registerName(cast(*u8) "openPanel\0"));
     }
 }
+
 NSFileHandlingPanelCancelButton :: NSModalResponseCancel;
 NSFileHandlingPanelOKButton :: NSModalResponseOK;
 NSAlertFirstButtonReturn: NSModalResponse : 1000;
@@ -842,6 +866,7 @@ NSModalResponseOK: NSModalResponse : 1;
 NSModalResponseCancel: NSModalResponse : 0;
 NSModalResponse :: s64;
 NSWindowLevel :: s64;
+
 NSMenu :: struct {
     using #as super: NSObject;
     addItem :: (self: *NSMenu, item: *NSMenuItem) {
@@ -855,6 +880,7 @@ NSMenu :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "addItemWithTitle:action:keyEquivalent:\0"), title, action, keyEquivalent);
     }
 }
+
 NSMenuItem :: struct {
     using #as super: NSObject;
     initWithTitle :: (self: *NSMenuItem, title: *NSString, action: Selector, keyEquivalent: *NSString) -> *NSMenuItem {
@@ -878,6 +904,7 @@ NSMenuItem :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "keyEquivalentModifierMask\0"));
     }
 }
+
 NSView :: struct {
     using #as super: NSObject;
     pad: [152 - size_of(NSObject)] u8;
@@ -1009,9 +1036,11 @@ NSView :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "registerForDraggedTypes:\0"), newTypes);
     }
 }
+
 NSViewController :: struct {
     using #as responder: NSResponder;
 }
+
 NSOpenGLContext :: struct {
     using #as super: NSObject;
     currentContext :: () -> *NSOpenGLContext {
@@ -1056,6 +1085,7 @@ NSOpenGLContext :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setValues:forParameter:\0"), values, forParameter);
     }
 }
+
 using NSOpenGLContextParameter :: enum s64 {
     NSOpenGLContextParameterSwapInterval :: 222;
     NSOpenGLContextParameterSurfaceOrder :: 235;
@@ -1073,6 +1103,7 @@ using NSOpenGLContextParameter :: enum s64 {
     NSOpenGLContextParameterStateValidation :: 301;
     NSOpenGLContextParameterSurfaceSurfaceVolatile :: 306;
 }
+
 NSOpenGLPixelFormatAttribute :: u32;
 NSOpenGLPFAAllRenderers: NSOpenGLPixelFormatAttribute : 1;
 NSOpenGLPFATripleBuffer: NSOpenGLPixelFormatAttribute : 3;
@@ -1116,6 +1147,7 @@ NSOpenGLPFARemotePixelBuffer: NSOpenGLPixelFormatAttribute : 91;
 NSOpenGLProfileVersionLegacy: NSOpenGLPixelFormatAttribute : 0x1000;
 NSOpenGLProfileVersion3_2Core: NSOpenGLPixelFormatAttribute : 0x3200;
 NSOpenGLProfileVersion4_1Core: NSOpenGLPixelFormatAttribute : 0x4100;
+
 NSOpenGLPixelFormat :: struct {
     using #as super: NSObject;
     initWithAttributes :: (self: id, attrs: *NSOpenGLPixelFormatAttribute) -> *NSOpenGLPixelFormat {
@@ -1129,6 +1161,7 @@ NSOpenGLPixelFormat :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "getValues:forAttribute:forVirtualScreen:\0"), values, forAttribute, forVirtualScreen);
     }
 }
+
 NSScreen :: struct {
     using #as super: NSObject;
     mainScreen :: () -> *NSScreen {
@@ -1139,6 +1172,7 @@ NSScreen :: struct {
     frame :: NSView.frame;
     backingScaleFactor :: NSView.backingScaleFactor;
 }
+
 NSCursor :: struct {
     using #as super: NSObject;
     hide :: () {
@@ -1197,6 +1231,7 @@ NSCursor :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSCursor\0"), sel_registerName(cast(*u8) "resizeUpDownCursor\0"));
     }
 }
+
 NSAlert :: struct {
     using #as super: NSObject;
     layout :: (self: *NSAlert) {
@@ -1277,11 +1312,13 @@ NSAlert :: struct {
         NSAlert.setInformativeText(self, value);
     }
 }
+
 NSAlertStyle :: enum u64 {
     NSAlertStyleWarning :: 0;
     NSAlertStyleInformational :: 1;
     NSAlertStyleCritical :: 2;
 }
+
 NSButton :: struct {
     using #as view: NSView;
     buttonWithTitle :: (title: *NSString, target: id, action: Selector) -> *NSButton {
@@ -1290,6 +1327,7 @@ NSButton :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSButton\0"), sel_registerName(cast(*u8) "buttonWithTitle:target:action:\0"), title, target, action);
     }
 }
+
 NSImageRep :: struct {
     using #as super: NSObject;
     size :: (self: *NSImageRep) -> NSSize {
@@ -1303,6 +1341,7 @@ NSImageRep :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setSize:\0"), size);
     }
 }
+
 NSBitmapImageRep :: struct {
     using #as image_rep: NSImageRep;
     initWithBitmapDataPlanes :: (self: *NSBitmapImageRep, planes: **u8, pixelsWide: NSInteger, pixelsHigh: NSInteger, bitsPerSample: NSInteger, samplesPerPixel: NSInteger, hasAlpha: BOOL, isPlanar: BOOL, colorSpaceName: NSColorSpaceName, bytesPerRow: NSInteger, bitsPerPixel: NSInteger) -> *NSBitmapImageRep {
@@ -1316,6 +1355,7 @@ NSBitmapImageRep :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "bitmapData\0"));
     }
 }
+
 NSImage :: struct {
     using #as super: NSObject;
     initWithSize :: (self: *NSImage, size: NSSize) -> *NSImage {
@@ -1329,6 +1369,7 @@ NSImage :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "addRepresentation:\0"), rep);
     }
 }
+
 using NSDragOperation :: enum_flags u64 {
     NSDragOperationNone :: 0;
     NSDragOperationCopy :: 1;
@@ -1339,6 +1380,7 @@ using NSDragOperation :: enum_flags u64 {
     NSDragOperationDelete :: 32;
     NSDragOperationEvery :: 0xFFFFFFFFFFFFFFFF;
 }
+
 NSDraggingInfo :: struct {
     draggingSourceOperationMask :: (self: id) -> NSDragOperation #no_context {
         invoke: (sdk_receiver: *void, sdk_selector: SEL) -> NSDragOperation #c_call;
@@ -1351,6 +1393,7 @@ NSDraggingInfo :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "draggingPasteboard\0"));
     }
 }
+
 #scope_module
 _Selector_Table :: struct {
     characters: Selector;
@@ -1510,8 +1553,12 @@ _Selector_Table :: struct {
     draggingSourceOperationMask: Selector;
     draggingPasteboard: Selector;
 }
+
 #import "Objective_C";
+
 Cocoa :: #system_library "Cocoa";
 AppKit :: #system_library "AppKit";
+
 #load "CoreGraphics.jai";
+
 _sel: _Selector_Table;

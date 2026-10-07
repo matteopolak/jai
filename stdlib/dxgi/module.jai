@@ -2,6 +2,7 @@
 #scope_file
 #import "Basic";
 #import "Windows";
+
 #scope_export
 DXGI_STATUS_OCCLUDED :: 0x087A0001;
 DXGI_STATUS_CLIPPED :: 0x087A0002;
@@ -48,7 +49,9 @@ DXGI_ERROR_ALREADY_EXISTS :: 0x887A0036;
 DXGI_DDI_ERR_WASSTILLDRAWING :: 0x887B0001;
 DXGI_DDI_ERR_UNSUPPORTED :: 0x887B0002;
 DXGI_DDI_ERR_NONEXCLUSIVE :: 0x887B0003;
+
 #load "dxgi_bindings.jai";
+
 #scope_file
 dxgi :: #system_library "dxgi";
 user32 :: #system_library "user32";

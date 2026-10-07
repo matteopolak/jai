@@ -1,17 +1,21 @@
 #import "Basic";
+
 #if OS == .WINDOWS {
     #import "Windows";
     #load "generated_windows.jai";
+
     Socket :: SOCKET;
     WINSOCK_VERSION: u16 : 0x0202;
     SOCKET_WOULDBLOCK :: WSAEWOULDBLOCK;
     SIO_KEEPALIVE_VALS :: 0x98000004;
 } else {
     #import "POSIX";
+
     Socket :: s32;
     INVALID_SOCKET: Socket : -1;
     SOCKET_ERROR :: -1;
     SOCKET_WOULDBLOCK :: EWOULDBLOCK;
+
     #if OS == .MACOS || OS == .IOS #load "generated_macos.jai";
     else #if OS == .ANDROID #load "generated_android.jai";
     else #load "generated_linux.jai";
@@ -23,10 +27,12 @@ socket_init :: () -> bool {
         return WSAStartup(WINSOCK_VERSION, *data) == 0;
     } else return true;
 }
+
 get_last_socket_error :: () -> OS_Error_Code {
     #if OS == .WINDOWS return WSAGetLastError();
     else return errno();
 }
+
 set_blocking :: (s: Socket, blocking: bool) -> bool {
     #if OS == .WINDOWS {
         mode: u32 = 1;
@@ -40,6 +46,7 @@ set_blocking :: (s: Socket, blocking: bool) -> bool {
         return fcntl(s, F_SETFL, flags) == 0;
     }
 }
+
 set_keepalive :: (s: Socket, keepalive: bool, idle_seconds_before_keepalive: s32 = 0,
     keepalive_interval_seconds: s32 = 0, num_keepalive_attempts: s32 = 0) -> bool {
     if idle_seconds_before_keepalive < 0 || keepalive_interval_seconds < 0 || num_keepalive_attempts < 0 return false;
@@ -81,10 +88,12 @@ to_string :: (addr: sockaddr_in) -> string {
     print_to_builder(*text, ":%", ntohs(addr.sin_port));
     return builder_to_string(*text);
 }
+
 ipv4_bits :: (addr: sockaddr_in) -> u32 {
     #if OS == .WINDOWS return addr.sin_addr.S_un.S_addr;
     else return addr.sin_addr.s_addr;
 }
+
 to_string :: (addr: sockaddr_in6) -> string {
     bytes: [16] u8;
     memcpy(*bytes, *addr.sin6_addr, 16);
@@ -95,6 +104,7 @@ to_string :: (addr: sockaddr_in6) -> string {
     append_decimal(*builder, ntohs(addr.sin6_port));
     return builder_to_string(*builder);
 }
+
 append_address :: (builder: *String_Builder, address: u32) {
     bytes: [4] u8;
     memcpy(*bytes, *address, 4);
@@ -103,6 +113,7 @@ append_address :: (builder: *String_Builder, address: u32) {
         append_decimal(builder, byte);
     }
 }
+
 append_address :: (builder: *String_Builder, address: [16] u8) {
     words: [8] u16;
     for i: 0..7 words[i] = (cast(u16) address[i * 2]) << 8 | cast(u16) address[i * 2 + 1];
@@ -133,18 +144,21 @@ append_address :: (builder: *String_Builder, address: [16] u8) {
         }
     }
 }
+
 accept :: (s: Socket) -> Socket, sockaddr_in {
     address: sockaddr_in;
     length := cast(type_of_socket_length) size_of(sockaddr_in);
     accepted := accept(s, cast(*sockaddr) *address, *length);
     return accepted, address;
 }
+
 accept_v6 :: (s: Socket) -> Socket, sockaddr_in6 {
     address: sockaddr_in6;
     length := cast(type_of_socket_length) size_of(sockaddr_in6);
     accepted := accept(s, cast(*sockaddr) *address, *length);
     return accepted, address;
 }
+
 bind :: (s: Socket, address: string, port: u16, family: type_of(sockaddr_in.sin_family) = AF_INET) -> s32 {
     terminated := to_c_string(address);
     if terminated == null return -1;
@@ -167,6 +181,7 @@ bind :: (s: Socket, address: string, port: u16, family: type_of(sockaddr_in.sin_
     }
     return -1;
 }
+
 bind :: (s: Socket, address: u32, port: u16) -> s32 {
     endpoint: sockaddr_in;
     endpoint.sin_family = AF_INET;
@@ -179,6 +194,7 @@ bind :: (s: Socket, address: u32, port: u16) -> s32 {
     #if OS == .MACOS || OS == .IOS endpoint.sin_len = cast(u8) size_of(sockaddr_in);
     return bind(s, cast(*sockaddr) *endpoint, size_of(sockaddr_in));
 }
+
 bind :: (s: Socket, address: [16] u8, port: u16) -> s32 {
     endpoint: sockaddr_in6;
     endpoint.sin6_family = AF_INET6;
@@ -187,6 +203,7 @@ bind :: (s: Socket, address: [16] u8, port: u16) -> s32 {
     #if OS == .MACOS || OS == .IOS endpoint.sin6_len = cast(u8) size_of(sockaddr_in6);
     return bind(s, cast(*sockaddr) *endpoint, size_of(sockaddr_in6));
 }
+
 close_and_reset :: (s: *Socket, loc := #caller_location) {
     if s.* == INVALID_SOCKET return;
     #if OS == .WINDOWS result := closesocket(s.*);
@@ -197,16 +214,20 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 
 #if OS == .WINDOWS {
     FIONBIO :: cast(s32) 0x8004667e;
+
     IOW :: (x: u8, y: u8, $T: Type) -> s32 {
         return cast(s32) (0x80000000 | ((size_of(T) & 0x7f) << 16) | ((cast(u32) x) << 8) | y);
     }
+
     FD_ISSET :: __WSAFDIsSet;
+
     FD_SET :: (fd: Socket, set: *fd_set) {
         if FD_ISSET(fd, set) != 0 return;
         if set.fd_count >= set.fd_array.count return;
         set.fd_array[set.fd_count] = fd;
         set.fd_count += 1;
     }
+
     FD_CLR :: (fd: Socket, set: *fd_set) {
         for i: 0..cast(s64) set.fd_count - 1 {
             if set.fd_array[i] != fd continue;
@@ -218,37 +239,46 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 } else {
     FD_BITS_ELEMENT_TYPE :: fd_mask;
     BITS_PER_FD_SET_MASK :: size_of(FD_BITS_ELEMENT_TYPE) * 8;
+
     check_fd_set :: (fd: s32, set: *fd_set) -> bool {
         return set != null && fd >= 0 && fd < size_of(fd_set) * 8;
     }
+
     FD_ISSET :: (fd: s32, set: *fd_set) -> s32 {
         if !check_fd_set(fd, set) return 0;
         mask := cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
         if (set.fds_bits[fd / BITS_PER_FD_SET_MASK] & mask) != 0 return 1;
         return 0;
     }
+
     FD_SET :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
         set.fds_bits[fd / BITS_PER_FD_SET_MASK] |= cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
+
     FD_CLR :: (fd: s32, set: *fd_set) {
         if !check_fd_set(fd, set) return;
         set.fds_bits[fd / BITS_PER_FD_SET_MASK] &= ~cast(FD_BITS_ELEMENT_TYPE) ((cast(u64) 1) << (fd % BITS_PER_FD_SET_MASK));
     }
+
     CMSG_FIRSTHDR :: (mhdr: *msghdr) -> *cmsghdr {
         if mhdr == null || mhdr.msg_control == null || mhdr.msg_controllen < size_of(cmsghdr) return null;
         return cast(*cmsghdr) mhdr.msg_control;
     }
+
     CMSG_ALIGN :: (size: int) -> int {
         alignment := size_of(type_of(cmsghdr.cmsg_len));
         return ((size + alignment - 1) / alignment) * alignment;
     }
+
     CMSG_SIZE :: (size: int) -> u32 {
         return cast(u32) (CMSG_ALIGN(size_of(cmsghdr)) + CMSG_ALIGN(size));
     }
+
     CMSG_LEN :: (size: int) -> u32 {
         return cast(u32) (CMSG_ALIGN(size_of(cmsghdr)) + size);
     }
+
     CMSG_DATA :: (cmsg: *cmsghdr) -> *u8 {
         return cast(*u8) cmsg + CMSG_ALIGN(size_of(cmsghdr));
     }
@@ -261,17 +291,20 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
         memcpy(*result, *bytes, 2);
         return result;
     }
+
     htonl :: (hostlong: u32) -> u32 {
         bytes: [4] u8 = .[cast(u8) (hostlong >> 24), cast(u8) (hostlong >> 16), cast(u8) (hostlong >> 8), cast(u8) hostlong];
         result: u32;
         memcpy(*result, *bytes, 4);
         return result;
     }
+
     ntohs :: (netshort: u16) -> u16 {
         bytes: [2] u8;
         memcpy(*bytes, *netshort, 2);
         return (cast(u16) bytes[0]) << 8 | bytes[1];
     }
+
     ntohl :: (netlong: u32) -> u32 {
         bytes: [4] u8;
         memcpy(*bytes, *netlong, 4);
@@ -376,6 +409,7 @@ close_and_reset :: (s: *Socket, loc := #caller_location) {
 #scope_file
 #if OS == .WINDOWS type_of_socket_length :: s32;
 else type_of_socket_length :: socklen_t;
+
 append_decimal :: (builder: *String_Builder, value: u32) {
     digits: [10] u8;
     count: s64 = 0;
@@ -391,6 +425,7 @@ append_decimal :: (builder: *String_Builder, value: u32) {
         append(builder, digits[count]);
     }
 }
+
 append_hex :: (builder: *String_Builder, value: u16) {
     digits :: "0123456789abcdef";
     shift: s64 = 12;

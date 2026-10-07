@@ -10,6 +10,7 @@ Bitmap :: struct {
     }
     format := Texture_Format.BGRA8;
 }
+
 bitmap_alloc :: (using bitmap: *Bitmap, w: s32, h: s32, _format: Texture_Format) {
     assert(w >= 0 && h >= 0);
     bytes, stride := get_image_size(_format, w, h);
@@ -25,10 +26,12 @@ bitmap_alloc :: (using bitmap: *Bitmap, w: s32, h: s32, _format: Texture_Format)
     bitmap.* = .{ width = w, height = h, data = data, stride = cast(s32) stride, format = _format };
     bitmap.flags = .FREE_DATA_ON_DEINIT;
 }
+
 deinit :: (bitmap: *Bitmap) {
     if bitmap.flags & .FREE_DATA_ON_DEINIT array_free(bitmap.data);
     bitmap.* = .{};
 }
+
 // Codec procedures are native bindings; their system adapter must be supplied.
 bitmap_load :: (bitmap: *Bitmap, filepath: string) -> bool {
     w, h, channels: s32;
@@ -37,6 +40,7 @@ bitmap_load :: (bitmap: *Bitmap, filepath: string) -> bool {
     defer Image.stbi_image_free(pixels);
     return bitmap_take_decoded(bitmap, pixels, w, h, channels);
 }
+
 bitmap_load_from_memory :: (bitmap: *Bitmap, memory: [] u8) -> bool {
     if memory.count <= 0 || memory.count > 0x7fff_ffff return false;
     w, h, channels: s32;
@@ -45,6 +49,7 @@ bitmap_load_from_memory :: (bitmap: *Bitmap, memory: [] u8) -> bool {
     defer Image.stbi_image_free(pixels);
     return bitmap_take_decoded(bitmap, pixels, w, h, channels);
 }
+
 bitmap_save :: (bitmap: *Bitmap, filepath: string, save_alpha := false) -> bool {
     if !bitmap || bitmap.width <= 0 || bitmap.height <= 0 return false;
     if bitmap.format != .RGB8 && bitmap.format != .RGBA8 return false;
@@ -59,6 +64,7 @@ bitmap_save :: (bitmap: *Bitmap, filepath: string, save_alpha := false) -> bool 
     if extension == "jpg" return Image_Write.stbi_write_jpg(name, bitmap.width, bitmap.height, channels, bitmap.data.data, 80) != 0;
     return false;
 }
+
 bitmap_build_mipmaps :: (bitmap: *Bitmap) {
     assert(bitmap.width > 0 && bitmap.height > 0 && bitmap.mipmap_count == 1);
     channels := get_image_bytes_per_texel(bitmap.format);
@@ -108,9 +114,11 @@ bitmap_build_mipmaps :: (bitmap: *Bitmap) {
     bitmap.mipmap_count = levels;
     bitmap.flags |= .FREE_DATA_ON_DEINIT;
 }
+
 #scope_file
 Image :: #import "stb_image";
 Image_Write :: #import "stb_image_write";
+
 bitmap_take_decoded :: (bitmap: *Bitmap, pixels: *u8, w: s32, h: s32, channels: s32) -> bool {
     if w <= 0 || h <= 0 || channels < 1 || channels > 4 return false;
     formats := Texture_Format.[.R8, .RG8, .RGB8, .RGBA8];

@@ -1,5 +1,6 @@
 // Independent DXC utility/compiler/result lifecycle using reviewed dxcapi.h.
 #assert OS == .WINDOWS "The retained DXC ABI uses Windows UTF-16 arguments";
+
 DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..] u8 {
     output: [..] u8;
     utils: *IDxcUtils;
@@ -95,6 +96,7 @@ DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..] u8 {
     if size > 0 memcpy(output.data, IDxcBlob_GetBufferPointer(binary), cast(s64) size);
     return output;
 }
+
 DXC_Reflect :: (dxil: [] u8) -> *ID3D12ShaderReflection, bool {
     utils: *IDxcUtils;
     status := DxcCreateInstance(CLSID_DxcUtils, IDxcUtils_UID, cast(**void) *utils);
@@ -118,11 +120,13 @@ DXC_Reflect :: (dxil: [] u8) -> *ID3D12ShaderReflection, bool {
 DXCMemory :: #import "Basic";
 DXCWindows :: #import "Windows";
 DXCUtf8 :: #import "Windows_Utf8";
+
 _dxc_release :: (object: *void) {
     if object == null return;
     unknown := cast(*DXCWindows.IUnknown) object;
     unknown.vtable.Release(unknown);
 }
+
 _dxc_argument :: (arguments: *[..] *s16, argument: string) {
     if argument.count == 0 {
         empty := cast(*s16) DXCMemory.alloc(2);
@@ -135,6 +139,7 @@ _dxc_argument :: (arguments: *[..] *s16, argument: string) {
     DXCMemory.assert(valid && wide != null, "DXC argument requires valid UTF-8");
     DXCMemory.array_add(arguments, cast(*s16) wide);
 }
+
 _dxc_stage_prefix :: (kind: Shader_Type) -> string {
     if kind == .Vertex return "vs";
     if kind == .Fragment return "ps";

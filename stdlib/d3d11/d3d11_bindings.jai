@@ -14,6 +14,7 @@ D3D_FL9_3_SIMULTANEOUS_RENDER_TARGET_COUNT :: 4;
 D3D_FL9_1_MAX_TEXTURE_REPEAT :: 128;
 D3D_FL9_2_MAX_TEXTURE_REPEAT :: 2048;
 D3D_FL9_3_MAX_TEXTURE_REPEAT :: 8192;
+
 D3D_COMPONENT_MASK :: enum_flags {
     X :: 1;
     Y :: 2;
@@ -24,6 +25,7 @@ D3D_COMPONENT_MASK :: enum_flags {
     D3D_COMPONENT_MASK_Z :: Z;
     D3D_COMPONENT_MASK_W :: W;
 }
+
 D3D11_16BIT_INDEX_STRIP_CUT_VALUE :: 0xffff;
 D3D11_32BIT_INDEX_STRIP_CUT_VALUE :: 0xffffffff;
 D3D11_8BIT_INDEX_STRIP_CUT_VALUE :: 0xff;
@@ -410,6 +412,7 @@ D3D11_COMPARISON_FILTERING_BIT :: 0x80;
 D3D11_ANISOTROPIC_FILTERING_BIT :: 0x40;
 D3D11_SDK_VERSION :: 7;
 D3D_RETURN_PARAMETER_INDEX :: -1;
+
 D3D_SHADER_REQUIRES :: enum_flags {
     DOUBLES :: 0x00000001;
     EARLY_DEPTH_STENCIL :: 0x00000002;
@@ -430,6 +433,7 @@ D3D_SHADER_REQUIRES :: enum_flags {
     D3D_SHADER_REQUIRES_LEVEL_9_COMPARISON_FILTERING :: LEVEL_9_COMPARISON_FILTERING;
     D3D_SHADER_REQUIRES_TILED_RESOURCES :: TILED_RESOURCES;
 }
+
 D3D_DRIVER_TYPE :: enum s32 {
     UNKNOWN :: 0;
     HARDWARE :: 1;
@@ -444,6 +448,7 @@ D3D_DRIVER_TYPE :: enum s32 {
     D3D_DRIVER_TYPE_SOFTWARE :: SOFTWARE;
     D3D_DRIVER_TYPE_WARP :: WARP;
 }
+
 D3D_FEATURE_LEVEL :: enum s32 {
     _1_0_CORE :: 4096;
     _9_1 :: 37120;
@@ -466,6 +471,7 @@ D3D_FEATURE_LEVEL :: enum s32 {
     D3D_FEATURE_LEVEL_12_0 :: _12_0;
     D3D_FEATURE_LEVEL_12_1 :: _12_1;
 }
+
 D3D_PRIMITIVE_TOPOLOGY :: enum s32 {
     UNDEFINED :: 0;
     POINTLIST :: 1;
@@ -604,6 +610,7 @@ D3D_PRIMITIVE_TOPOLOGY :: enum s32 {
     D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST :: _31_CONTROL_POINT_PATCHLIST;
     D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST :: _32_CONTROL_POINT_PATCHLIST;
 }
+
 D3D_PRIMITIVE :: enum s32 {
     UNDEFINED :: 0;
     POINT :: 1;
@@ -726,6 +733,7 @@ D3D_PRIMITIVE :: enum s32 {
     D3D_PRIMITIVE_31_CONTROL_POINT_PATCH :: _31_CONTROL_POINT_PATCH;
     D3D_PRIMITIVE_32_CONTROL_POINT_PATCH :: _32_CONTROL_POINT_PATCH;
 }
+
 D3D_SRV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -785,27 +793,34 @@ D3D_SRV_DIMENSION :: enum s32 {
     D3D_SRV_DIMENSION_TEXTURECUBEARRAY :: TEXTURECUBEARRAY;
     D3D_SRV_DIMENSION_BUFFEREX :: BUFFEREX;
 }
+
 PFN_DESTRUCTION_CALLBACK :: #type (pData: *void) -> void #c_call;
 ID3DDestructionNotifier_UUID :: "a06eb39a-50da-425b-8c31-4eecd6c270f3";
+
 ID3DDestructionNotifier :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3ddestructionnotifier_vtable: *ID3DDestructionNotifier_VTable;
 }
+
 ID3DDestructionNotifier_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     RegisterDestructionCallback: (this: *ID3DDestructionNotifier, callbackFn: PFN_DESTRUCTION_CALLBACK, pData: *void, pCallbackID: *u32) -> HRESULT #cpp_method;
     UnregisterDestructionCallback: (this: *ID3DDestructionNotifier, callbackID: u32) -> HRESULT #cpp_method;
 }
+
 ID3DDestructionNotifier_RegisterDestructionCallback :: (this: *ID3DDestructionNotifier, callbackFn: PFN_DESTRUCTION_CALLBACK, pData: *void, pCallbackID: *u32) -> HRESULT {
     return this.id3ddestructionnotifier_vtable.RegisterDestructionCallback(this, callbackFn, pData, pCallbackID);
 }
+
 ID3DDestructionNotifier_UnregisterDestructionCallback :: (this: *ID3DDestructionNotifier, callbackID: u32) -> HRESULT {
     return this.id3ddestructionnotifier_vtable.UnregisterDestructionCallback(this, callbackID);
 }
+
 vtable :: (obj: *ID3DDestructionNotifier) -> *ID3DDestructionNotifier_VTable {
     return obj.id3ddestructionnotifier_vtable;
 }
+
 D3D_SHADER_VARIABLE_CLASS :: enum s32 {
     SVC_SCALAR :: 0;
     SVC_VECTOR :: 1;
@@ -842,6 +857,7 @@ D3D_SHADER_VARIABLE_CLASS :: enum s32 {
     D3D11_SVC_INTERFACE_POINTER :: _11_SVC_INTERFACE_POINTER;
     D3D_SVC_FORCE_DWORD :: SVC_FORCE_DWORD;
 }
+
 D3D_SHADER_VARIABLE_FLAGS :: enum_flags u32 {
     SVF_USERPACKED :: 0x1;
     SVF_USED :: 0x2;
@@ -862,6 +878,7 @@ D3D_SHADER_VARIABLE_FLAGS :: enum_flags u32 {
     D3D11_SVF_INTERFACE_PARAMETER :: _11_SVF_INTERFACE_PARAMETER;
     D3D_SVF_FORCE_DWORD :: SVF_FORCE_DWORD;
 }
+
 D3D_SHADER_VARIABLE_TYPE :: enum s32 {
     SVT_VOID :: 0;
     SVT_BOOL :: 1;
@@ -1086,6 +1103,7 @@ D3D_SHADER_VARIABLE_TYPE :: enum s32 {
     D3D11_SVT_CONSUME_STRUCTURED_BUFFER :: _11_SVT_CONSUME_STRUCTURED_BUFFER;
     D3D_SVT_FORCE_DWORD :: SVT_FORCE_DWORD;
 }
+
 D3D_SHADER_INPUT_FLAGS :: enum_flags u32 {
     SIF_USERPACKED :: 0x1;
     SIF_COMPARISON_SAMPLER :: 0x2;
@@ -1112,6 +1130,7 @@ D3D_SHADER_INPUT_FLAGS :: enum_flags u32 {
     D3D10_SIF_TEXTURE_COMPONENTS :: _10_SIF_TEXTURE_COMPONENTS;
     D3D_SIF_FORCE_DWORD :: SIF_FORCE_DWORD;
 }
+
 D3D_SHADER_INPUT_TYPE :: enum s32 {
     SIT_CBUFFER :: 0;
     SIT_TBUFFER :: 1;
@@ -1166,6 +1185,7 @@ D3D_SHADER_INPUT_TYPE :: enum s32 {
     D3D11_SIT_UAV_CONSUME_STRUCTURED :: _11_SIT_UAV_CONSUME_STRUCTURED;
     D3D11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER :: _11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER;
 }
+
 D3D_SHADER_CBUFFER_FLAGS :: enum_flags u32 {
     CBF_USERPACKED :: 0x1;
     _10_CBF_USERPACKED :: 0x1;
@@ -1174,6 +1194,7 @@ D3D_SHADER_CBUFFER_FLAGS :: enum_flags u32 {
     D3D10_CBF_USERPACKED :: _10_CBF_USERPACKED;
     D3D_CBF_FORCE_DWORD :: CBF_FORCE_DWORD;
 }
+
 D3D_CBUFFER_TYPE :: enum s32 {
     CT_CBUFFER :: 0;
     CT_TBUFFER :: 1;
@@ -1196,6 +1217,7 @@ D3D_CBUFFER_TYPE :: enum s32 {
     D3D11_CT_INTERFACE_POINTERS :: _11_CT_INTERFACE_POINTERS;
     D3D11_CT_RESOURCE_BIND_INFO :: _11_CT_RESOURCE_BIND_INFO;
 }
+
 D3D_NAME :: enum s32 {
     UNDEFINED :: 0;
     POSITION :: 1;
@@ -1279,6 +1301,7 @@ D3D_NAME :: enum s32 {
     D3D_NAME_STENCIL_REF :: STENCIL_REF;
     D3D_NAME_INNER_COVERAGE :: INNER_COVERAGE;
 }
+
 D3D_RESOURCE_RETURN_TYPE :: enum s32 {
     RETURN_TYPE_UNORM :: 1;
     RETURN_TYPE_SNORM :: 2;
@@ -1325,6 +1348,7 @@ D3D_RESOURCE_RETURN_TYPE :: enum s32 {
     D3D11_RETURN_TYPE_DOUBLE :: _11_RETURN_TYPE_DOUBLE;
     D3D11_RETURN_TYPE_CONTINUED :: _11_RETURN_TYPE_CONTINUED;
 }
+
 D3D_REGISTER_COMPONENT_TYPE :: enum s32 {
     REGISTER_COMPONENT_UNKNOWN :: 0;
     REGISTER_COMPONENT_UINT32 :: 1;
@@ -1343,6 +1367,7 @@ D3D_REGISTER_COMPONENT_TYPE :: enum s32 {
     D3D10_REGISTER_COMPONENT_SINT32 :: _10_REGISTER_COMPONENT_SINT32;
     D3D10_REGISTER_COMPONENT_FLOAT32 :: _10_REGISTER_COMPONENT_FLOAT32;
 }
+
 D3D_TESSELLATOR_DOMAIN :: enum s32 {
     UNDEFINED :: 0;
     ISOLINE :: 1;
@@ -1357,6 +1382,7 @@ D3D_TESSELLATOR_DOMAIN :: enum s32 {
     D3D_TESSELLATOR_DOMAIN_TRI :: TRI;
     D3D_TESSELLATOR_DOMAIN_QUAD :: QUAD;
 }
+
 D3D_TESSELLATOR_PARTITIONING :: enum s32 {
     UNDEFINED :: 0;
     INTEGER :: 1;
@@ -1374,6 +1400,7 @@ D3D_TESSELLATOR_PARTITIONING :: enum s32 {
     D3D_TESSELLATOR_PARTITIONING_FRACTIONAL_ODD :: FRACTIONAL_ODD;
     D3D_TESSELLATOR_PARTITIONING_FRACTIONAL_EVEN :: FRACTIONAL_EVEN;
 }
+
 D3D_TESSELLATOR_OUTPUT_PRIMITIVE :: enum s32 {
     TESSELLATOR_OUTPUT_UNDEFINED :: 0;
     TESSELLATOR_OUTPUT_POINT :: 1;
@@ -1396,6 +1423,7 @@ D3D_TESSELLATOR_OUTPUT_PRIMITIVE :: enum s32 {
     D3D11_TESSELLATOR_OUTPUT_TRIANGLE_CW :: _11_TESSELLATOR_OUTPUT_TRIANGLE_CW;
     D3D11_TESSELLATOR_OUTPUT_TRIANGLE_CCW :: _11_TESSELLATOR_OUTPUT_TRIANGLE_CCW;
 }
+
 D3D_MIN_PRECISION :: enum s32 {
     DEFAULT :: 0;
     FLOAT_16 :: 1;
@@ -1414,6 +1442,7 @@ D3D_MIN_PRECISION :: enum s32 {
     D3D_MIN_PRECISION_ANY_16 :: ANY_16;
     D3D_MIN_PRECISION_ANY_10 :: ANY_10;
 }
+
 D3D_INTERPOLATION_MODE :: enum s32 {
     UNDEFINED :: 0;
     CONSTANT :: 1;
@@ -1432,6 +1461,7 @@ D3D_INTERPOLATION_MODE :: enum s32 {
     D3D_INTERPOLATION_LINEAR_SAMPLE :: LINEAR_SAMPLE;
     D3D_INTERPOLATION_LINEAR_NOPERSPECTIVE_SAMPLE :: LINEAR_NOPERSPECTIVE_SAMPLE;
 }
+
 D3D_PARAMETER_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     IN :: 0x1;
@@ -1442,19 +1472,23 @@ D3D_PARAMETER_FLAGS :: enum_flags u32 {
     D3D_PF_OUT :: OUT;
     D3D_PF_FORCE_DWORD :: FORCE_DWORD;
 }
+
 WKPDID_D3DDebugObjectNameW: GUID;
 WKPDID_CommentStringW: GUID;
 D3D_TEXTURE_LAYOUT_ROW_MAJOR: GUID;
 D3D_TEXTURE_LAYOUT_64KB_STANDARD_SWIZZLE: GUID;
+
 CD3D11_DEFAULT :: struct {
     __empty_struct_padding: u8;
 }
+
 D3D11_INPUT_CLASSIFICATION :: enum s32 {
     VERTEX_DATA :: 0;
     INSTANCE_DATA :: 1;
     D3D11_INPUT_PER_VERTEX_DATA :: VERTEX_DATA;
     D3D11_INPUT_PER_INSTANCE_DATA :: INSTANCE_DATA;
 }
+
 D3D11_INPUT_ELEMENT_DESC :: struct {
     SemanticName: *u8;
     SemanticIndex: u32;
@@ -1464,14 +1498,17 @@ D3D11_INPUT_ELEMENT_DESC :: struct {
     InputSlotClass: D3D11_INPUT_CLASSIFICATION;
     InstanceDataStepRate: u32;
 }
+
 D3D11_FILL_MODE :: enum s32 {
     WIREFRAME :: 2;
     SOLID :: 3;
     D3D11_FILL_WIREFRAME :: WIREFRAME;
     D3D11_FILL_SOLID :: SOLID;
 }
+
 D3D11_PRIMITIVE_TOPOLOGY :: D3D_PRIMITIVE_TOPOLOGY;
 D3D11_PRIMITIVE :: D3D_PRIMITIVE;
+
 D3D11_CULL_MODE :: enum s32 {
     NONE :: 1;
     FRONT :: 2;
@@ -1480,6 +1517,7 @@ D3D11_CULL_MODE :: enum s32 {
     D3D11_CULL_FRONT :: FRONT;
     D3D11_CULL_BACK :: BACK;
 }
+
 D3D11_SO_DECLARATION_ENTRY :: struct {
     Stream: u32;
     SemanticName: *u8;
@@ -1488,6 +1526,7 @@ D3D11_SO_DECLARATION_ENTRY :: struct {
     ComponentCount: u8;
     OutputSlot: u8;
 }
+
 D3D11_VIEWPORT :: struct {
     TopLeftX: float;
     TopLeftY: float;
@@ -1496,12 +1535,14 @@ D3D11_VIEWPORT :: struct {
     MinDepth: float;
     MaxDepth: float;
 }
+
 D3D11_DRAW_INSTANCED_INDIRECT_ARGS :: struct {
     VertexCountPerInstance: u32;
     InstanceCount: u32;
     StartVertexLocation: u32;
     StartInstanceLocation: u32;
 }
+
 D3D11_DRAW_INDEXED_INSTANCED_INDIRECT_ARGS :: struct {
     IndexCountPerInstance: u32;
     InstanceCount: u32;
@@ -1509,6 +1550,7 @@ D3D11_DRAW_INDEXED_INSTANCED_INDIRECT_ARGS :: struct {
     BaseVertexLocation: s32;
     StartInstanceLocation: u32;
 }
+
 D3D11_RESOURCE_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -1521,7 +1563,9 @@ D3D11_RESOURCE_DIMENSION :: enum s32 {
     D3D11_RESOURCE_DIMENSION_TEXTURE2D :: TEXTURE2D;
     D3D11_RESOURCE_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D11_SRV_DIMENSION :: D3D_SRV_DIMENSION;
+
 D3D11_DSV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     TEXTURE1D :: 1;
@@ -1538,6 +1582,7 @@ D3D11_DSV_DIMENSION :: enum s32 {
     D3D11_DSV_DIMENSION_TEXTURE2DMS :: TEXTURE2DMS;
     D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY :: TEXTURE2DMSARRAY;
 }
+
 D3D11_RTV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -1558,6 +1603,7 @@ D3D11_RTV_DIMENSION :: enum s32 {
     D3D11_RTV_DIMENSION_TEXTURE2DMSARRAY :: TEXTURE2DMSARRAY;
     D3D11_RTV_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D11_UAV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     BUFFER :: 1;
@@ -1574,6 +1620,7 @@ D3D11_UAV_DIMENSION :: enum s32 {
     D3D11_UAV_DIMENSION_TEXTURE2DARRAY :: TEXTURE2DARRAY;
     D3D11_UAV_DIMENSION_TEXTURE3D :: TEXTURE3D;
 }
+
 D3D11_USAGE :: enum s32 {
     DEFAULT :: 0;
     IMMUTABLE :: 1;
@@ -1584,6 +1631,7 @@ D3D11_USAGE :: enum s32 {
     D3D11_USAGE_DYNAMIC :: DYNAMIC;
     D3D11_USAGE_STAGING :: STAGING;
 }
+
 D3D11_BIND_FLAG :: enum_flags u32 {
     VERTEX_BUFFER :: 0x1;
     INDEX_BUFFER :: 0x2;
@@ -1606,12 +1654,14 @@ D3D11_BIND_FLAG :: enum_flags u32 {
     D3D11_BIND_DECODER :: DECODER;
     D3D11_BIND_VIDEO_ENCODER :: VIDEO_ENCODER;
 }
+
 D3D11_CPU_ACCESS_FLAG :: enum_flags u32 {
     WRITE :: 0x10000;
     READ :: 0x20000;
     D3D11_CPU_ACCESS_WRITE :: WRITE;
     D3D11_CPU_ACCESS_READ :: READ;
 }
+
 D3D11_RESOURCE_MISC_FLAG :: enum_flags u32 {
     GENERATE_MIPS :: 0x1;
     SHARED :: 0x2;
@@ -1648,6 +1698,7 @@ D3D11_RESOURCE_MISC_FLAG :: enum_flags u32 {
     D3D11_RESOURCE_MISC_TILED :: TILED;
     D3D11_RESOURCE_MISC_HW_PROTECTED :: HW_PROTECTED;
 }
+
 D3D11_MAP :: enum s32 {
     READ :: 1;
     WRITE :: 2;
@@ -1660,24 +1711,30 @@ D3D11_MAP :: enum s32 {
     D3D11_MAP_WRITE_DISCARD :: WRITE_DISCARD;
     D3D11_MAP_WRITE_NO_OVERWRITE :: WRITE_NO_OVERWRITE;
 }
+
 D3D11_MAP_FLAG :: enum_flags u32 {
     DO_NOT_WAIT :: 0x100000;
     D3D11_MAP_FLAG_DO_NOT_WAIT :: DO_NOT_WAIT;
 }
+
 D3D11_RAISE_FLAG :: enum_flags u32 {
     DRIVER_INTERNAL_ERROR :: 0x1;
     D3D11_RAISE_FLAG_DRIVER_INTERNAL_ERROR :: DRIVER_INTERNAL_ERROR;
 }
+
 D3D11_CLEAR_FLAG :: enum_flags u32 {
     DEPTH :: 0x1;
     STENCIL :: 0x2;
     D3D11_CLEAR_DEPTH :: DEPTH;
     D3D11_CLEAR_STENCIL :: STENCIL;
 }
+
 D3D11_RECT :: RECT;
+
 CD3D11_RECT :: struct {
     #as using d3d11_rect: D3D11_RECT;
 }
+
 D3D11_BOX :: struct {
     left: u32;
     top: u32;
@@ -1686,15 +1743,19 @@ D3D11_BOX :: struct {
     bottom: u32;
     back: u32;
 }
+
 CD3D11_BOX :: struct {
     #as using d3d11_box: D3D11_BOX;
 }
+
 ID3D11DeviceChild_UUID :: "1841e5c8-16b0-489b-bcc8-44cfb0d5deae";
+
 ID3D11DeviceChild :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11devicechild_vtable: *ID3D11DeviceChild_VTable;
 }
+
 ID3D11DeviceChild_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetDevice: (this: *ID3D11DeviceChild, ppDevice: **ID3D11Device) -> void #cpp_method;
@@ -1702,21 +1763,27 @@ ID3D11DeviceChild_VTable :: struct #type_info_none {
     SetPrivateData: (this: *ID3D11DeviceChild, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT #cpp_method;
     SetPrivateDataInterface: (this: *ID3D11DeviceChild, guid: *GUID, pData: *IUnknown) -> HRESULT #cpp_method;
 }
+
 ID3D11DeviceChild_GetDevice :: (this: *ID3D11DeviceChild, ppDevice: **ID3D11Device) {
     this.id3d11devicechild_vtable.GetDevice(this, ppDevice);
 }
+
 ID3D11DeviceChild_GetPrivateData :: (this: *ID3D11DeviceChild, guid: *GUID, pDataSize: *u32, pData: *void) -> HRESULT {
     return this.id3d11devicechild_vtable.GetPrivateData(this, guid, pDataSize, pData);
 }
+
 ID3D11DeviceChild_SetPrivateData :: (this: *ID3D11DeviceChild, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d11devicechild_vtable.SetPrivateData(this, guid, DataSize, pData);
 }
+
 ID3D11DeviceChild_SetPrivateDataInterface :: (this: *ID3D11DeviceChild, guid: *GUID, pData: *IUnknown) -> HRESULT {
     return this.id3d11devicechild_vtable.SetPrivateDataInterface(this, guid, pData);
 }
+
 vtable :: (obj: *ID3D11DeviceChild) -> *ID3D11DeviceChild_VTable {
     return obj.id3d11devicechild_vtable;
 }
+
 D3D11_COMPARISON_FUNC :: enum s32 {
     NEVER :: 1;
     LESS :: 2;
@@ -1735,12 +1802,14 @@ D3D11_COMPARISON_FUNC :: enum s32 {
     D3D11_COMPARISON_GREATER_EQUAL :: GREATER_EQUAL;
     D3D11_COMPARISON_ALWAYS :: ALWAYS;
 }
+
 D3D11_DEPTH_WRITE_MASK :: enum s32 {
     ZERO :: 0;
     ALL :: 1;
     D3D11_DEPTH_WRITE_MASK_ZERO :: ZERO;
     D3D11_DEPTH_WRITE_MASK_ALL :: ALL;
 }
+
 D3D11_STENCIL_OP :: enum s32 {
     KEEP :: 1;
     ZERO :: 2;
@@ -1759,12 +1828,14 @@ D3D11_STENCIL_OP :: enum s32 {
     D3D11_STENCIL_OP_INCR :: INCR;
     D3D11_STENCIL_OP_DECR :: DECR;
 }
+
 D3D11_DEPTH_STENCILOP_DESC :: struct {
     StencilFailOp: D3D11_STENCIL_OP;
     StencilDepthFailOp: D3D11_STENCIL_OP;
     StencilPassOp: D3D11_STENCIL_OP;
     StencilFunc: D3D11_COMPARISON_FUNC;
 }
+
 D3D11_DEPTH_STENCIL_DESC :: struct {
     DepthEnable: BOOL;
     DepthWriteMask: D3D11_DEPTH_WRITE_MASK;
@@ -1775,25 +1846,32 @@ D3D11_DEPTH_STENCIL_DESC :: struct {
     FrontFace: D3D11_DEPTH_STENCILOP_DESC;
     BackFace: D3D11_DEPTH_STENCILOP_DESC;
 }
+
 CD3D11_DEPTH_STENCIL_DESC :: struct {
     #as using d3d11_depth_stencil_desc: D3D11_DEPTH_STENCIL_DESC;
 }
+
 ID3D11DepthStencilState_UUID :: "03823efb-8d8f-4e1c-9aa2-f64bb2cbfdf1";
+
 ID3D11DepthStencilState :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11depthstencilstate_vtable: *ID3D11DepthStencilState_VTable;
 }
+
 ID3D11DepthStencilState_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDesc: (this: *ID3D11DepthStencilState, pDesc: *D3D11_DEPTH_STENCIL_DESC) -> void #cpp_method;
 }
+
 ID3D11DepthStencilState_GetDesc :: (this: *ID3D11DepthStencilState, pDesc: *D3D11_DEPTH_STENCIL_DESC) {
     this.id3d11depthstencilstate_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11DepthStencilState) -> *ID3D11DepthStencilState_VTable {
     return obj.id3d11depthstencilstate_vtable;
 }
+
 D3D11_BLEND :: enum s32 {
     ZERO :: 1;
     ONE :: 2;
@@ -1830,6 +1908,7 @@ D3D11_BLEND :: enum s32 {
     D3D11_BLEND_SRC1_ALPHA :: SRC1_ALPHA;
     D3D11_BLEND_INV_SRC1_ALPHA :: INV_SRC1_ALPHA;
 }
+
 D3D11_BLEND_OP :: enum s32 {
     ADD :: 1;
     SUBTRACT :: 2;
@@ -1842,6 +1921,7 @@ D3D11_BLEND_OP :: enum s32 {
     D3D11_BLEND_OP_MIN :: MIN;
     D3D11_BLEND_OP_MAX :: MAX;
 }
+
 D3D11_COLOR_WRITE_ENABLE :: enum s32 {
     RED :: 1;
     GREEN :: 2;
@@ -1854,6 +1934,7 @@ D3D11_COLOR_WRITE_ENABLE :: enum s32 {
     D3D11_COLOR_WRITE_ENABLE_ALPHA :: ALPHA;
     D3D11_COLOR_WRITE_ENABLE_ALL :: ALL;
 }
+
 D3D11_RENDER_TARGET_BLEND_DESC :: struct {
     BlendEnable: BOOL;
     SrcBlend: D3D11_BLEND;
@@ -1864,30 +1945,38 @@ D3D11_RENDER_TARGET_BLEND_DESC :: struct {
     BlendOpAlpha: D3D11_BLEND_OP;
     RenderTargetWriteMask: u8;
 }
+
 D3D11_BLEND_DESC :: struct {
     AlphaToCoverageEnable: BOOL;
     IndependentBlendEnable: BOOL;
     RenderTarget: [8] D3D11_RENDER_TARGET_BLEND_DESC;
 }
+
 CD3D11_BLEND_DESC :: struct {
     #as using d3d11_blend_desc: D3D11_BLEND_DESC;
 }
+
 ID3D11BlendState_UUID :: "75b68faa-347d-4159-8f45-a0640f01cd9a";
+
 ID3D11BlendState :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11blendstate_vtable: *ID3D11BlendState_VTable;
 }
+
 ID3D11BlendState_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDesc: (this: *ID3D11BlendState, pDesc: *D3D11_BLEND_DESC) -> void #cpp_method;
 }
+
 ID3D11BlendState_GetDesc :: (this: *ID3D11BlendState, pDesc: *D3D11_BLEND_DESC) {
     this.id3d11blendstate_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11BlendState) -> *ID3D11BlendState_VTable {
     return obj.id3d11blendstate_vtable;
 }
+
 D3D11_RASTERIZER_DESC :: struct {
     FillMode: D3D11_FILL_MODE;
     CullMode: D3D11_CULL_MODE;
@@ -1900,59 +1989,75 @@ D3D11_RASTERIZER_DESC :: struct {
     MultisampleEnable: BOOL;
     AntialiasedLineEnable: BOOL;
 }
+
 CD3D11_RASTERIZER_DESC :: struct {
     #as using d3d11_rasterizer_desc: D3D11_RASTERIZER_DESC;
 }
+
 ID3D11RasterizerState_UUID :: "9bb4ab81-ab1a-4d8f-b506-fc04200b6ee7";
+
 ID3D11RasterizerState :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11rasterizerstate_vtable: *ID3D11RasterizerState_VTable;
 }
+
 ID3D11RasterizerState_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDesc: (this: *ID3D11RasterizerState, pDesc: *D3D11_RASTERIZER_DESC) -> void #cpp_method;
 }
+
 ID3D11RasterizerState_GetDesc :: (this: *ID3D11RasterizerState, pDesc: *D3D11_RASTERIZER_DESC) {
     this.id3d11rasterizerstate_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11RasterizerState) -> *ID3D11RasterizerState_VTable {
     return obj.id3d11rasterizerstate_vtable;
 }
+
 D3D11_SUBRESOURCE_DATA :: struct {
     pSysMem: *void;
     SysMemPitch: u32;
     SysMemSlicePitch: u32;
 }
+
 D3D11_MAPPED_SUBRESOURCE :: struct {
     pData: *void;
     RowPitch: u32;
     DepthPitch: u32;
 }
+
 ID3D11Resource_UUID :: "dc8e63f3-d12b-4952-b47b-5e45026a862d";
+
 ID3D11Resource :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11resource_vtable: *ID3D11Resource_VTable;
 }
+
 ID3D11Resource_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetType: (this: *ID3D11Resource, pResourceDimension: *D3D11_RESOURCE_DIMENSION) -> void #cpp_method;
     SetEvictionPriority: (this: *ID3D11Resource, EvictionPriority: u32) -> void #cpp_method;
     GetEvictionPriority: (this: *ID3D11Resource) -> u32 #cpp_method;
 }
+
 ID3D11Resource_GetType :: (this: *ID3D11Resource, pResourceDimension: *D3D11_RESOURCE_DIMENSION) {
     this.id3d11resource_vtable.GetType(this, pResourceDimension);
 }
+
 ID3D11Resource_SetEvictionPriority :: (this: *ID3D11Resource, EvictionPriority: u32) {
     this.id3d11resource_vtable.SetEvictionPriority(this, EvictionPriority);
 }
+
 ID3D11Resource_GetEvictionPriority :: (this: *ID3D11Resource) -> u32 {
     return this.id3d11resource_vtable.GetEvictionPriority(this);
 }
+
 vtable :: (obj: *ID3D11Resource) -> *ID3D11Resource_VTable {
     return obj.id3d11resource_vtable;
 }
+
 D3D11_BUFFER_DESC :: struct {
     ByteWidth: u32;
     Usage: D3D11_USAGE;
@@ -1961,25 +2066,32 @@ D3D11_BUFFER_DESC :: struct {
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
     StructureByteStride: u32;
 }
+
 CD3D11_BUFFER_DESC :: struct {
     #as using d3d11_buffer_desc: D3D11_BUFFER_DESC;
 }
+
 ID3D11Buffer_UUID :: "48570b85-d1ee-4fcd-a250-eb350722b037";
+
 ID3D11Buffer :: struct {
     #as using id3d11resource: ID3D11Resource;
     #place id3d11resource;
     id3d11buffer_vtable: *ID3D11Buffer_VTable;
 }
+
 ID3D11Buffer_VTable :: struct #type_info_none {
     using id3d11resource: ID3D11Resource_VTable;
     GetDesc: (this: *ID3D11Buffer, pDesc: *D3D11_BUFFER_DESC) -> void #cpp_method;
 }
+
 ID3D11Buffer_GetDesc :: (this: *ID3D11Buffer, pDesc: *D3D11_BUFFER_DESC) {
     this.id3d11buffer_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Buffer) -> *ID3D11Buffer_VTable {
     return obj.id3d11buffer_vtable;
 }
+
 D3D11_TEXTURE1D_DESC :: struct {
     Width: u32;
     MipLevels: u32;
@@ -1990,25 +2102,32 @@ D3D11_TEXTURE1D_DESC :: struct {
     CPUAccessFlags: D3D11_CPU_ACCESS_FLAG;
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
 }
+
 CD3D11_TEXTURE1D_DESC :: struct {
     #as using d3d11_texture1d_desc: D3D11_TEXTURE1D_DESC;
 }
+
 ID3D11Texture1D_UUID :: "f8fb5c27-c6b3-4f75-a4c8-439af2ef564c";
+
 ID3D11Texture1D :: struct {
     #as using id3d11resource: ID3D11Resource;
     #place id3d11resource;
     id3d11texture1d_vtable: *ID3D11Texture1D_VTable;
 }
+
 ID3D11Texture1D_VTable :: struct #type_info_none {
     using id3d11resource: ID3D11Resource_VTable;
     GetDesc: (this: *ID3D11Texture1D, pDesc: *D3D11_TEXTURE1D_DESC) -> void #cpp_method;
 }
+
 ID3D11Texture1D_GetDesc :: (this: *ID3D11Texture1D, pDesc: *D3D11_TEXTURE1D_DESC) {
     this.id3d11texture1d_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Texture1D) -> *ID3D11Texture1D_VTable {
     return obj.id3d11texture1d_vtable;
 }
+
 D3D11_TEXTURE2D_DESC :: struct {
     Width: u32;
     Height: u32;
@@ -2021,25 +2140,32 @@ D3D11_TEXTURE2D_DESC :: struct {
     CPUAccessFlags: D3D11_CPU_ACCESS_FLAG;
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
 }
+
 CD3D11_TEXTURE2D_DESC :: struct {
     #as using d3d11_texture2d_desc: D3D11_TEXTURE2D_DESC;
 }
+
 ID3D11Texture2D_UUID :: "6f15aaf2-d208-4e89-9ab4-489535d34f9c";
+
 ID3D11Texture2D :: struct {
     #as using id3d11resource: ID3D11Resource;
     #place id3d11resource;
     id3d11texture2d_vtable: *ID3D11Texture2D_VTable;
 }
+
 ID3D11Texture2D_VTable :: struct #type_info_none {
     using id3d11resource: ID3D11Resource_VTable;
     GetDesc: (this: *ID3D11Texture2D, pDesc: *D3D11_TEXTURE2D_DESC) -> void #cpp_method;
 }
+
 ID3D11Texture2D_GetDesc :: (this: *ID3D11Texture2D, pDesc: *D3D11_TEXTURE2D_DESC) {
     this.id3d11texture2d_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Texture2D) -> *ID3D11Texture2D_VTable {
     return obj.id3d11texture2d_vtable;
 }
+
 D3D11_TEXTURE3D_DESC :: struct {
     Width: u32;
     Height: u32;
@@ -2051,25 +2177,32 @@ D3D11_TEXTURE3D_DESC :: struct {
     CPUAccessFlags: D3D11_CPU_ACCESS_FLAG;
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
 }
+
 CD3D11_TEXTURE3D_DESC :: struct {
     #as using d3d11_texture3d_desc: D3D11_TEXTURE3D_DESC;
 }
+
 ID3D11Texture3D_UUID :: "037e866e-f56d-4357-a8af-9dabbe6e250e";
+
 ID3D11Texture3D :: struct {
     #as using id3d11resource: ID3D11Resource;
     #place id3d11resource;
     id3d11texture3d_vtable: *ID3D11Texture3D_VTable;
 }
+
 ID3D11Texture3D_VTable :: struct #type_info_none {
     using id3d11resource: ID3D11Resource_VTable;
     GetDesc: (this: *ID3D11Texture3D, pDesc: *D3D11_TEXTURE3D_DESC) -> void #cpp_method;
 }
+
 ID3D11Texture3D_GetDesc :: (this: *ID3D11Texture3D, pDesc: *D3D11_TEXTURE3D_DESC) {
     this.id3d11texture3d_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Texture3D) -> *ID3D11Texture3D_VTable {
     return obj.id3d11texture3d_vtable;
 }
+
 D3D11_TEXTURECUBE_FACE :: enum s32 {
     POSITIVE_X :: 0;
     NEGATIVE_X :: 1;
@@ -2084,22 +2217,28 @@ D3D11_TEXTURECUBE_FACE :: enum s32 {
     D3D11_TEXTURECUBE_FACE_POSITIVE_Z :: POSITIVE_Z;
     D3D11_TEXTURECUBE_FACE_NEGATIVE_Z :: NEGATIVE_Z;
 }
+
 ID3D11View_UUID :: "839d1216-bb2e-412b-b7f4-a9dbebe08ed1";
+
 ID3D11View :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11view_vtable: *ID3D11View_VTable;
 }
+
 ID3D11View_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetResource: (this: *ID3D11View, ppResource: **ID3D11Resource) -> void #cpp_method;
 }
+
 ID3D11View_GetResource :: (this: *ID3D11View, ppResource: **ID3D11Resource) {
     this.id3d11view_vtable.GetResource(this, ppResource);
 }
+
 vtable :: (obj: *ID3D11View) -> *ID3D11View_VTable {
     return obj.id3d11view_vtable;
 }
+
 D3D11_BUFFER_SRV :: struct {
     union {
         FirstElement: u32;
@@ -2110,56 +2249,68 @@ D3D11_BUFFER_SRV :: struct {
         ElementWidth: u32;
     }
 }
+
 D3D11_BUFFEREX_SRV_FLAG :: enum_flags u32 {
     RAW :: 0x1;
     D3D11_BUFFEREX_SRV_FLAG_RAW :: RAW;
 }
+
 D3D11_BUFFEREX_SRV :: struct {
     FirstElement: u32;
     NumElements: u32;
     Flags: u32;
 }
+
 D3D11_TEX1D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
 }
+
 D3D11_TEX1D_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
 }
+
 D3D11_TEX2D_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX3D_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
 }
+
 D3D11_TEXCUBE_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
 }
+
 D3D11_TEXCUBE_ARRAY_SRV :: struct {
     MostDetailedMip: u32;
     MipLevels: u32;
     First2DArrayFace: u32;
     NumCubes: u32;
 }
+
 D3D11_TEX2DMS_SRV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D11_TEX2DMS_ARRAY_SRV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_SHADER_RESOURCE_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D11_SRV_DIMENSION;
@@ -2177,25 +2328,32 @@ D3D11_SHADER_RESOURCE_VIEW_DESC :: struct {
         BufferEx: D3D11_BUFFEREX_SRV;
     }
 }
+
 CD3D11_SHADER_RESOURCE_VIEW_DESC :: struct {
     #as using d3d11_shader_resource_view_desc: D3D11_SHADER_RESOURCE_VIEW_DESC;
 }
+
 ID3D11ShaderResourceView_UUID :: "b0e06fe0-8192-4e1a-b1ca-36d7414710b2";
+
 ID3D11ShaderResourceView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11shaderresourceview_vtable: *ID3D11ShaderResourceView_VTable;
 }
+
 ID3D11ShaderResourceView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11ShaderResourceView, pDesc: *D3D11_SHADER_RESOURCE_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11ShaderResourceView_GetDesc :: (this: *ID3D11ShaderResourceView, pDesc: *D3D11_SHADER_RESOURCE_VIEW_DESC) {
     this.id3d11shaderresourceview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11ShaderResourceView) -> *ID3D11ShaderResourceView_VTable {
     return obj.id3d11shaderresourceview_vtable;
 }
+
 D3D11_BUFFER_RTV :: struct {
     union {
         FirstElement: u32;
@@ -2206,34 +2364,42 @@ D3D11_BUFFER_RTV :: struct {
         ElementWidth: u32;
     }
 }
+
 D3D11_TEX1D_RTV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX1D_ARRAY_RTV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2D_RTV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX2DMS_RTV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D11_TEX2D_ARRAY_RTV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2DMS_ARRAY_RTV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX3D_RTV :: struct {
     MipSlice: u32;
     FirstWSlice: u32;
     WSize: u32;
 }
+
 D3D11_RENDER_TARGET_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D11_RTV_DIMENSION;
@@ -2248,57 +2414,72 @@ D3D11_RENDER_TARGET_VIEW_DESC :: struct {
         Texture3D: D3D11_TEX3D_RTV;
     }
 }
+
 CD3D11_RENDER_TARGET_VIEW_DESC :: struct {
     #as using d3d11_render_target_view_desc: D3D11_RENDER_TARGET_VIEW_DESC;
 }
+
 ID3D11RenderTargetView_UUID :: "dfdba067-0b8d-4865-875b-d7b4516cc164";
+
 ID3D11RenderTargetView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11rendertargetview_vtable: *ID3D11RenderTargetView_VTable;
 }
+
 ID3D11RenderTargetView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11RenderTargetView, pDesc: *D3D11_RENDER_TARGET_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11RenderTargetView_GetDesc :: (this: *ID3D11RenderTargetView, pDesc: *D3D11_RENDER_TARGET_VIEW_DESC) {
     this.id3d11rendertargetview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11RenderTargetView) -> *ID3D11RenderTargetView_VTable {
     return obj.id3d11rendertargetview_vtable;
 }
+
 CD3D11_VIEWPORT :: struct {
     #as using d3d11_viewport: D3D11_VIEWPORT;
 }
+
 D3D11_TEX1D_DSV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX1D_ARRAY_DSV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2D_DSV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX2D_ARRAY_DSV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2DMS_DSV :: struct {
     UnusedField_NothingToDefine: u32;
 }
+
 D3D11_TEX2DMS_ARRAY_DSV :: struct {
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_DSV_FLAG :: enum_flags u32 {
     DEPTH :: 0x1;
     STENCIL :: 0x2;
     D3D11_DSV_READ_ONLY_DEPTH :: DEPTH;
     D3D11_DSV_READ_ONLY_STENCIL :: STENCIL;
 }
+
 D3D11_DEPTH_STENCIL_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D11_DSV_DIMENSION;
@@ -2312,25 +2493,32 @@ D3D11_DEPTH_STENCIL_VIEW_DESC :: struct {
         Texture2DMSArray: D3D11_TEX2DMS_ARRAY_DSV;
     }
 }
+
 CD3D11_DEPTH_STENCIL_VIEW_DESC :: struct {
     #as using d3d11_depth_stencil_view_desc: D3D11_DEPTH_STENCIL_VIEW_DESC;
 }
+
 ID3D11DepthStencilView_UUID :: "9fdac92a-1876-48c3-afad-25b94f84a9b6";
+
 ID3D11DepthStencilView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11depthstencilview_vtable: *ID3D11DepthStencilView_VTable;
 }
+
 ID3D11DepthStencilView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11DepthStencilView, pDesc: *D3D11_DEPTH_STENCIL_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11DepthStencilView_GetDesc :: (this: *ID3D11DepthStencilView, pDesc: *D3D11_DEPTH_STENCIL_VIEW_DESC) {
     this.id3d11depthstencilview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11DepthStencilView) -> *ID3D11DepthStencilView_VTable {
     return obj.id3d11depthstencilview_vtable;
 }
+
 D3D11_BUFFER_UAV_FLAG :: enum_flags u32 {
     RAW :: 0x1;
     APPEND :: 0x2;
@@ -2339,32 +2527,39 @@ D3D11_BUFFER_UAV_FLAG :: enum_flags u32 {
     D3D11_BUFFER_UAV_FLAG_APPEND :: APPEND;
     D3D11_BUFFER_UAV_FLAG_COUNTER :: COUNTER;
 }
+
 D3D11_BUFFER_UAV :: struct {
     FirstElement: u32;
     NumElements: u32;
     Flags: u32;
 }
+
 D3D11_TEX1D_UAV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX1D_ARRAY_UAV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX2D_UAV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX2D_ARRAY_UAV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_TEX3D_UAV :: struct {
     MipSlice: u32;
     FirstWSlice: u32;
     WSize: u32;
 }
+
 D3D11_UNORDERED_ACCESS_VIEW_DESC :: struct {
     Format: DXGI_FORMAT;
     ViewDimension: D3D11_UAV_DIMENSION;
@@ -2377,53 +2572,74 @@ D3D11_UNORDERED_ACCESS_VIEW_DESC :: struct {
         Texture3D: D3D11_TEX3D_UAV;
     }
 }
+
 CD3D11_UNORDERED_ACCESS_VIEW_DESC :: struct {
     #as using d3d11_unordered_access_view_desc: D3D11_UNORDERED_ACCESS_VIEW_DESC;
 }
+
 ID3D11UnorderedAccessView_UUID :: "28acf509-7f5c-48f6-8611-f316010a6380";
+
 ID3D11UnorderedAccessView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11unorderedaccessview_vtable: *ID3D11UnorderedAccessView_VTable;
 }
+
 ID3D11UnorderedAccessView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11UnorderedAccessView, pDesc: *D3D11_UNORDERED_ACCESS_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11UnorderedAccessView_GetDesc :: (this: *ID3D11UnorderedAccessView, pDesc: *D3D11_UNORDERED_ACCESS_VIEW_DESC) {
     this.id3d11unorderedaccessview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11UnorderedAccessView) -> *ID3D11UnorderedAccessView_VTable {
     return obj.id3d11unorderedaccessview_vtable;
 }
+
 ID3D11VertexShader_UUID :: "3b301d64-d678-4289-8897-22f8928b72f3";
+
 ID3D11VertexShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11HullShader_UUID :: "8e5c6061-628a-4c8e-8264-bbe45cb3d5dd";
+
 ID3D11HullShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11DomainShader_UUID :: "f582c508-0f36-490c-9977-31eece268cfa";
+
 ID3D11DomainShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11GeometryShader_UUID :: "38325b96-effb-4022-ba02-2e795b70275c";
+
 ID3D11GeometryShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11PixelShader_UUID :: "ea82e40d-51dc-4f33-93d4-db7c9125ae8c";
+
 ID3D11PixelShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11ComputeShader_UUID :: "4f5b196e-c2bd-495e-bd01-1fded38e4969";
+
 ID3D11ComputeShader :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 ID3D11InputLayout_UUID :: "e4819ddc-4cf0-4025-bd26-5de82a3e07b7";
+
 ID3D11InputLayout :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
 }
+
 D3D11_FILTER :: enum s32 {
     MIN_MAG_MIP_POINT :: 0;
     MIN_MAG_POINT_MIP_LINEAR :: 1;
@@ -2498,12 +2714,14 @@ D3D11_FILTER :: enum s32 {
     D3D11_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR :: MAXIMUM_MIN_MAG_MIP_LINEAR;
     D3D11_FILTER_MAXIMUM_ANISOTROPIC :: MAXIMUM_ANISOTROPIC;
 }
+
 D3D11_FILTER_TYPE :: enum s32 {
     POINT :: 0;
     LINEAR :: 1;
     D3D11_FILTER_TYPE_POINT :: POINT;
     D3D11_FILTER_TYPE_LINEAR :: LINEAR;
 }
+
 D3D11_FILTER_REDUCTION_TYPE :: enum s32 {
     STANDARD :: 0;
     COMPARISON :: 1;
@@ -2514,6 +2732,7 @@ D3D11_FILTER_REDUCTION_TYPE :: enum s32 {
     D3D11_FILTER_REDUCTION_TYPE_MINIMUM :: MINIMUM;
     D3D11_FILTER_REDUCTION_TYPE_MAXIMUM :: MAXIMUM;
 }
+
 D3D11_TEXTURE_ADDRESS_MODE :: enum s32 {
     WRAP :: 1;
     MIRROR :: 2;
@@ -2526,6 +2745,7 @@ D3D11_TEXTURE_ADDRESS_MODE :: enum s32 {
     D3D11_TEXTURE_ADDRESS_BORDER :: BORDER;
     D3D11_TEXTURE_ADDRESS_MIRROR_ONCE :: MIRROR_ONCE;
 }
+
 D3D11_SAMPLER_DESC :: struct {
     Filter: D3D11_FILTER;
     AddressU: D3D11_TEXTURE_ADDRESS_MODE;
@@ -2538,25 +2758,32 @@ D3D11_SAMPLER_DESC :: struct {
     MinLOD: float;
     MaxLOD: float;
 }
+
 CD3D11_SAMPLER_DESC :: struct {
     #as using d3d11_sampler_desc: D3D11_SAMPLER_DESC;
 }
+
 ID3D11SamplerState_UUID :: "da6fea51-564c-4487-9810-f0d0f9b4e3a5";
+
 ID3D11SamplerState :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11samplerstate_vtable: *ID3D11SamplerState_VTable;
 }
+
 ID3D11SamplerState_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDesc: (this: *ID3D11SamplerState, pDesc: *D3D11_SAMPLER_DESC) -> void #cpp_method;
 }
+
 ID3D11SamplerState_GetDesc :: (this: *ID3D11SamplerState, pDesc: *D3D11_SAMPLER_DESC) {
     this.id3d11samplerstate_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11SamplerState) -> *ID3D11SamplerState_VTable {
     return obj.id3d11samplerstate_vtable;
 }
+
 D3D11_FORMAT_SUPPORT :: enum s32 {
     BUFFER :: 1;
     IA_VERTEX_BUFFER :: 2;
@@ -2621,6 +2848,7 @@ D3D11_FORMAT_SUPPORT :: enum s32 {
     D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_INPUT :: VIDEO_PROCESSOR_INPUT;
     D3D11_FORMAT_SUPPORT_VIDEO_ENCODER :: VIDEO_ENCODER;
 }
+
 D3D11_FORMAT_SUPPORT2 :: enum s32 {
     UAV_ATOMIC_ADD :: 1;
     UAV_ATOMIC_BITWISE_OPS :: 2;
@@ -2647,25 +2875,32 @@ D3D11_FORMAT_SUPPORT2 :: enum s32 {
     D3D11_FORMAT_SUPPORT2_SHAREABLE :: SHAREABLE;
     D3D11_FORMAT_SUPPORT2_MULTIPLANE_OVERLAY :: MULTIPLANE_OVERLAY;
 }
+
 ID3D11Asynchronous_UUID :: "4b35d0cd-1e15-4258-9c98-1b1333f6dd3b";
+
 ID3D11Asynchronous :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11asynchronous_vtable: *ID3D11Asynchronous_VTable;
 }
+
 ID3D11Asynchronous_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDataSize: (this: *ID3D11Asynchronous) -> u32 #cpp_method;
 }
+
 ID3D11Asynchronous_GetDataSize :: (this: *ID3D11Asynchronous) -> u32 {
     return this.id3d11asynchronous_vtable.GetDataSize(this);
 }
+
 vtable :: (obj: *ID3D11Asynchronous) -> *ID3D11Asynchronous_VTable {
     return obj.id3d11asynchronous_vtable;
 }
+
 D3D11_ASYNC_GETDATA_FLAG :: enum_flags u32 {
     D3D11_ASYNC_GETDATA_DONOTFLUSH :: 0x1;
 }
+
 D3D11_QUERY :: enum s32 {
     EVENT :: 0;
     OCCLUSION :: 1;
@@ -2700,40 +2935,52 @@ D3D11_QUERY :: enum s32 {
     D3D11_QUERY_SO_STATISTICS_STREAM3 :: SO_STATISTICS_STREAM3;
     D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM3 :: SO_OVERFLOW_PREDICATE_STREAM3;
 }
+
 D3D11_QUERY_MISC_FLAG :: enum_flags u32 {
     D3D11_QUERY_MISC_PREDICATEHINT :: 0x1;
 }
+
 D3D11_QUERY_DESC :: struct {
     Query: D3D11_QUERY;
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
 }
+
 CD3D11_QUERY_DESC :: struct {
     #as using d3d11_query_desc: D3D11_QUERY_DESC;
 }
+
 ID3D11Query_UUID :: "d6c00747-87b7-425e-b84d-44d108560afd";
+
 ID3D11Query :: struct {
     #as using id3d11asynchronous: ID3D11Asynchronous;
     #place id3d11asynchronous;
     id3d11query_vtable: *ID3D11Query_VTable;
 }
+
 ID3D11Query_VTable :: struct #type_info_none {
     using id3d11asynchronous: ID3D11Asynchronous_VTable;
     GetDesc: (this: *ID3D11Query, pDesc: *D3D11_QUERY_DESC) -> void #cpp_method;
 }
+
 ID3D11Query_GetDesc :: (this: *ID3D11Query, pDesc: *D3D11_QUERY_DESC) {
     this.id3d11query_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Query) -> *ID3D11Query_VTable {
     return obj.id3d11query_vtable;
 }
+
 ID3D11Predicate_UUID :: "9eb576dd-9f77-4d86-81aa-8bab5fe490e2";
+
 ID3D11Predicate :: struct {
     #as using id3d11query: ID3D11Query;
 }
+
 D3D11_QUERY_DATA_TIMESTAMP_DISJOINT :: struct {
     Frequency: u64;
     Disjoint: BOOL;
 }
+
 D3D11_QUERY_DATA_PIPELINE_STATISTICS :: struct {
     IAVertices: u64;
     IAPrimitives: u64;
@@ -2747,14 +2994,17 @@ D3D11_QUERY_DATA_PIPELINE_STATISTICS :: struct {
     DSInvocations: u64;
     CSInvocations: u64;
 }
+
 D3D11_QUERY_DATA_SO_STATISTICS :: struct {
     NumPrimitivesWritten: u64;
     PrimitivesStorageNeeded: u64;
 }
+
 D3D11_COUNTER :: enum s32 {
     DEVICE_DEPENDENT_0 :: 1073741824;
     D3D11_COUNTER_DEVICE_DEPENDENT_0 :: DEVICE_DEPENDENT_0;
 }
+
 D3D11_COUNTER_TYPE :: enum s32 {
     FLOAT32 :: 0;
     UINT16 :: 1;
@@ -2765,46 +3015,57 @@ D3D11_COUNTER_TYPE :: enum s32 {
     D3D11_COUNTER_TYPE_UINT32 :: UINT32;
     D3D11_COUNTER_TYPE_UINT64 :: UINT64;
 }
+
 D3D11_COUNTER_DESC :: struct {
     Counter: D3D11_COUNTER;
     MiscFlags: D3D11_RESOURCE_MISC_FLAG;
 }
+
 CD3D11_COUNTER_DESC :: struct {
     #as using d3d11_counter_desc: D3D11_COUNTER_DESC;
 }
+
 D3D11_COUNTER_INFO :: struct {
     LastDeviceDependentCounter: D3D11_COUNTER;
     NumSimultaneousCounters: u32;
     NumDetectableParallelUnits: u8;
 }
+
 ID3D11Counter_UUID :: "6e8c49fb-a371-4770-b440-29086022b741";
+
 ID3D11Counter :: struct {
     #as using id3d11asynchronous: ID3D11Asynchronous;
     #place id3d11asynchronous;
     id3d11counter_vtable: *ID3D11Counter_VTable;
 }
+
 ID3D11Counter_VTable :: struct #type_info_none {
     using id3d11asynchronous: ID3D11Asynchronous_VTable;
     GetDesc: (this: *ID3D11Counter, pDesc: *D3D11_COUNTER_DESC) -> void #cpp_method;
 }
+
 ID3D11Counter_GetDesc :: (this: *ID3D11Counter, pDesc: *D3D11_COUNTER_DESC) {
     this.id3d11counter_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11Counter) -> *ID3D11Counter_VTable {
     return obj.id3d11counter_vtable;
 }
+
 D3D11_STANDARD_MULTISAMPLE_QUALITY_LEVELS :: enum s32 {
     STANDARD_MULTISAMPLE_PATTERN :: -1;
     CENTER_MULTISAMPLE_PATTERN :: -2;
     D3D11_STANDARD_MULTISAMPLE_PATTERN :: STANDARD_MULTISAMPLE_PATTERN;
     D3D11_CENTER_MULTISAMPLE_PATTERN :: CENTER_MULTISAMPLE_PATTERN;
 }
+
 D3D11_DEVICE_CONTEXT_TYPE :: enum s32 {
     IMMEDIATE :: 0;
     DEFERRED :: 1;
     D3D11_DEVICE_CONTEXT_IMMEDIATE :: IMMEDIATE;
     D3D11_DEVICE_CONTEXT_DEFERRED :: DEFERRED;
 }
+
 D3D11_CLASS_INSTANCE_DESC :: struct {
     InstanceId: u32;
     InstanceIndex: u32;
@@ -2815,12 +3076,15 @@ D3D11_CLASS_INSTANCE_DESC :: struct {
     BaseSampler: u32;
     Created: BOOL;
 }
+
 ID3D11ClassInstance_UUID :: "a6cd7faa-b0b7-4a2f-9436-8662a65797cb";
+
 ID3D11ClassInstance :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11classinstance_vtable: *ID3D11ClassInstance_VTable;
 }
+
 ID3D11ClassInstance_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetClassLinkage: (this: *ID3D11ClassInstance, ppLinkage: **ID3D11ClassLinkage) -> void #cpp_method;
@@ -2828,57 +3092,74 @@ ID3D11ClassInstance_VTable :: struct #type_info_none {
     GetInstanceName: (this: *ID3D11ClassInstance, pInstanceName: *u8, pBufferLength: *SIZE_T) -> void #cpp_method;
     GetTypeName: (this: *ID3D11ClassInstance, pTypeName: *u8, pBufferLength: *SIZE_T) -> void #cpp_method;
 }
+
 ID3D11ClassInstance_GetClassLinkage :: (this: *ID3D11ClassInstance, ppLinkage: **ID3D11ClassLinkage) {
     this.id3d11classinstance_vtable.GetClassLinkage(this, ppLinkage);
 }
+
 ID3D11ClassInstance_GetDesc :: (this: *ID3D11ClassInstance, pDesc: *D3D11_CLASS_INSTANCE_DESC) {
     this.id3d11classinstance_vtable.GetDesc(this, pDesc);
 }
+
 ID3D11ClassInstance_GetInstanceName :: (this: *ID3D11ClassInstance, pInstanceName: *u8, pBufferLength: *SIZE_T) {
     this.id3d11classinstance_vtable.GetInstanceName(this, pInstanceName, pBufferLength);
 }
+
 ID3D11ClassInstance_GetTypeName :: (this: *ID3D11ClassInstance, pTypeName: *u8, pBufferLength: *SIZE_T) {
     this.id3d11classinstance_vtable.GetTypeName(this, pTypeName, pBufferLength);
 }
+
 vtable :: (obj: *ID3D11ClassInstance) -> *ID3D11ClassInstance_VTable {
     return obj.id3d11classinstance_vtable;
 }
+
 ID3D11ClassLinkage_UUID :: "ddf57cba-9543-46e4-a12b-f207a0fe7fed";
+
 ID3D11ClassLinkage :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11classlinkage_vtable: *ID3D11ClassLinkage_VTable;
 }
+
 ID3D11ClassLinkage_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetClassInstance: (this: *ID3D11ClassLinkage, pClassInstanceName: *u8, InstanceIndex: u32, ppInstance: **ID3D11ClassInstance) -> HRESULT #cpp_method;
     CreateClassInstance: (this: *ID3D11ClassLinkage, pClassTypeName: *u8, ConstantBufferOffset: u32, ConstantVectorOffset: u32, TextureOffset: u32, SamplerOffset: u32, ppInstance: **ID3D11ClassInstance) -> HRESULT #cpp_method;
 }
+
 ID3D11ClassLinkage_GetClassInstance :: (this: *ID3D11ClassLinkage, pClassInstanceName: *u8, InstanceIndex: u32, ppInstance: **ID3D11ClassInstance) -> HRESULT {
     return this.id3d11classlinkage_vtable.GetClassInstance(this, pClassInstanceName, InstanceIndex, ppInstance);
 }
+
 ID3D11ClassLinkage_CreateClassInstance :: (this: *ID3D11ClassLinkage, pClassTypeName: *u8, ConstantBufferOffset: u32, ConstantVectorOffset: u32, TextureOffset: u32, SamplerOffset: u32, ppInstance: **ID3D11ClassInstance) -> HRESULT {
     return this.id3d11classlinkage_vtable.CreateClassInstance(this, pClassTypeName, ConstantBufferOffset, ConstantVectorOffset, TextureOffset, SamplerOffset, ppInstance);
 }
+
 vtable :: (obj: *ID3D11ClassLinkage) -> *ID3D11ClassLinkage_VTable {
     return obj.id3d11classlinkage_vtable;
 }
+
 ID3D11CommandList_UUID :: "a24bc4d1-769e-43f7-8013-98ff566c18e2";
+
 ID3D11CommandList :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11commandlist_vtable: *ID3D11CommandList_VTable;
 }
+
 ID3D11CommandList_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetContextFlags: (this: *ID3D11CommandList) -> u32 #cpp_method;
 }
+
 ID3D11CommandList_GetContextFlags :: (this: *ID3D11CommandList) -> u32 {
     return this.id3d11commandlist_vtable.GetContextFlags(this);
 }
+
 vtable :: (obj: *ID3D11CommandList) -> *ID3D11CommandList_VTable {
     return obj.id3d11commandlist_vtable;
 }
+
 D3D11_FEATURE :: enum s32 {
     THREADING :: 0;
     DOUBLES :: 1;
@@ -2921,24 +3202,30 @@ D3D11_FEATURE :: enum s32 {
     D3D11_FEATURE_SHADER_CACHE :: SHADER_CACHE;
     D3D11_FEATURE_D3D11_OPTIONS5 :: D3D11_OPTIONS5;
 }
+
 D3D11_FEATURE_DATA_THREADING :: struct {
     DriverConcurrentCreates: BOOL;
     DriverCommandLists: BOOL;
 }
+
 D3D11_FEATURE_DATA_DOUBLES :: struct {
     DoublePrecisionFloatShaderOps: BOOL;
 }
+
 D3D11_FEATURE_DATA_FORMAT_SUPPORT :: struct {
     InFormat: DXGI_FORMAT;
     OutFormatSupport: u32;
 }
+
 D3D11_FEATURE_DATA_FORMAT_SUPPORT2 :: struct {
     InFormat: DXGI_FORMAT;
     OutFormatSupport2: u32;
 }
+
 D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS :: struct {
     ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D11_OPTIONS :: struct {
     OutputMergerLogicOp: BOOL;
     UAVOnlyRenderingForcedSampleCount: BOOL;
@@ -2955,25 +3242,31 @@ D3D11_FEATURE_DATA_D3D11_OPTIONS :: struct {
     ExtendedDoublesShaderInstructions: BOOL;
     ExtendedResourceSharing: BOOL;
 }
+
 D3D11_FEATURE_DATA_ARCHITECTURE_INFO :: struct {
     TileBasedDeferredRenderer: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D9_OPTIONS :: struct {
     FullNonPow2TextureSupport: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D9_SHADOW_SUPPORT :: struct {
     SupportsDepthAsTextureWithLessEqualComparisonFilter: BOOL;
 }
+
 D3D11_SHADER_MIN_PRECISION_SUPPORT :: enum s32 {
     _10_BIT :: 1;
     _16_BIT :: 2;
     D3D11_SHADER_MIN_PRECISION_10_BIT :: _10_BIT;
     D3D11_SHADER_MIN_PRECISION_16_BIT :: _16_BIT;
 }
+
 D3D11_FEATURE_DATA_SHADER_MIN_PRECISION_SUPPORT :: struct {
     PixelShaderMinPrecision: u32;
     AllOtherShaderStagesMinPrecision: u32;
 }
+
 D3D11_TILED_RESOURCES_TIER :: enum s32 {
     D3D11_TILED_RESOURCES_NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -2983,24 +3276,29 @@ D3D11_TILED_RESOURCES_TIER :: enum s32 {
     D3D11_TILED_RESOURCES_TIER_2 :: _2;
     D3D11_TILED_RESOURCES_TIER_3 :: _3;
 }
+
 D3D11_FEATURE_DATA_D3D11_OPTIONS1 :: struct {
     TiledResourcesTier: D3D11_TILED_RESOURCES_TIER;
     MinMaxFiltering: BOOL;
     ClearViewAlsoSupportsDepthOnlyFormats: BOOL;
     MapOnDefaultBuffers: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D9_SIMPLE_INSTANCING_SUPPORT :: struct {
     SimpleInstancingSupported: BOOL;
 }
+
 D3D11_FEATURE_DATA_MARKER_SUPPORT :: struct {
     Profile: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D9_OPTIONS1 :: struct {
     FullNonPow2TextureSupported: BOOL;
     DepthAsTextureWithLessEqualComparisonFilterSupported: BOOL;
     SimpleInstancingSupported: BOOL;
     TextureCubeFaceRenderTargetWithNonCubeDepthStencilSupported: BOOL;
 }
+
 D3D11_CONSERVATIVE_RASTERIZATION_TIER :: enum s32 {
     D3D11_CONSERVATIVE_RASTERIZATION_NOT_SUPPORTED :: 0;
     _1 :: 1;
@@ -3010,6 +3308,7 @@ D3D11_CONSERVATIVE_RASTERIZATION_TIER :: enum s32 {
     D3D11_CONSERVATIVE_RASTERIZATION_TIER_2 :: _2;
     D3D11_CONSERVATIVE_RASTERIZATION_TIER_3 :: _3;
 }
+
 D3D11_FEATURE_DATA_D3D11_OPTIONS2 :: struct {
     PSSpecifiedStencilRefSupported: BOOL;
     TypedUAVLoadAdditionalFormats: BOOL;
@@ -3020,13 +3319,16 @@ D3D11_FEATURE_DATA_D3D11_OPTIONS2 :: struct {
     StandardSwizzle: BOOL;
     UnifiedMemoryArchitecture: BOOL;
 }
+
 D3D11_FEATURE_DATA_D3D11_OPTIONS3 :: struct {
     VPAndRTArrayIndexFromAnyShaderFeedingRasterizer: BOOL;
 }
+
 D3D11_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT :: struct {
     MaxGPUVirtualAddressBitsPerResource: u32;
     MaxGPUVirtualAddressBitsPerProcess: u32;
 }
+
 D3D11_SHADER_CACHE_SUPPORT_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     AUTOMATIC_INPROC_CACHE :: 0x1;
@@ -3035,9 +3337,11 @@ D3D11_SHADER_CACHE_SUPPORT_FLAGS :: enum_flags u32 {
     D3D11_SHADER_CACHE_SUPPORT_AUTOMATIC_INPROC_CACHE :: AUTOMATIC_INPROC_CACHE;
     D3D11_SHADER_CACHE_SUPPORT_AUTOMATIC_DISK_CACHE :: AUTOMATIC_DISK_CACHE;
 }
+
 D3D11_FEATURE_DATA_SHADER_CACHE :: struct {
     SupportFlags: u32;
 }
+
 D3D11_SHARED_RESOURCE_TIER :: enum s32 {
     _0 :: 0;
     _1 :: 1;
@@ -3048,15 +3352,19 @@ D3D11_SHARED_RESOURCE_TIER :: enum s32 {
     D3D11_SHARED_RESOURCE_TIER_2 :: _2;
     D3D11_SHARED_RESOURCE_TIER_3 :: _3;
 }
+
 D3D11_FEATURE_DATA_D3D11_OPTIONS5 :: struct {
     SharedResourceTier: D3D11_SHARED_RESOURCE_TIER;
 }
+
 ID3D11DeviceContext_UUID :: "c0bfa96c-e089-44fb-8eaf-26f8796190da";
+
 ID3D11DeviceContext :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11devicecontext_vtable: *ID3D11DeviceContext_VTable;
 }
+
 ID3D11DeviceContext_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     VSSetConstantBuffers: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) -> void #cpp_method;
@@ -3168,336 +3476,447 @@ ID3D11DeviceContext_VTable :: struct #type_info_none {
     GetContextFlags: (this: *ID3D11DeviceContext) -> u32 #cpp_method;
     FinishCommandList: (this: *ID3D11DeviceContext, RestoreDeferredContextState: BOOL, ppCommandList: **ID3D11CommandList) -> HRESULT #cpp_method;
 }
+
 ID3D11DeviceContext_VSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.VSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_PSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.PSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_PSSetShader :: (this: *ID3D11DeviceContext, pPixelShader: *ID3D11PixelShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.PSSetShader(this, pPixelShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_PSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.PSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_VSSetShader :: (this: *ID3D11DeviceContext, pVertexShader: *ID3D11VertexShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.VSSetShader(this, pVertexShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_DrawIndexed :: (this: *ID3D11DeviceContext, IndexCount: u32, StartIndexLocation: u32, BaseVertexLocation: s32) {
     this.id3d11devicecontext_vtable.DrawIndexed(this, IndexCount, StartIndexLocation, BaseVertexLocation);
 }
+
 ID3D11DeviceContext_Draw :: (this: *ID3D11DeviceContext, VertexCount: u32, StartVertexLocation: u32) {
     this.id3d11devicecontext_vtable.Draw(this, VertexCount, StartVertexLocation);
 }
+
 ID3D11DeviceContext_Map :: (this: *ID3D11DeviceContext, pResource: *ID3D11Resource, Subresource: u32, MapType: D3D11_MAP, MapFlags: u32, pMappedResource: *D3D11_MAPPED_SUBRESOURCE) -> HRESULT {
     return this.id3d11devicecontext_vtable.Map(this, pResource, Subresource, MapType, MapFlags, pMappedResource);
 }
+
 ID3D11DeviceContext_Unmap :: (this: *ID3D11DeviceContext, pResource: *ID3D11Resource, Subresource: u32) {
     this.id3d11devicecontext_vtable.Unmap(this, pResource, Subresource);
 }
+
 ID3D11DeviceContext_PSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.PSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_IASetInputLayout :: (this: *ID3D11DeviceContext, pInputLayout: *ID3D11InputLayout) {
     this.id3d11devicecontext_vtable.IASetInputLayout(this, pInputLayout);
 }
+
 ID3D11DeviceContext_IASetVertexBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppVertexBuffers: **ID3D11Buffer, pStrides: *u32, pOffsets: *u32) {
     this.id3d11devicecontext_vtable.IASetVertexBuffers(this, StartSlot, NumBuffers, ppVertexBuffers, pStrides, pOffsets);
 }
+
 ID3D11DeviceContext_IASetIndexBuffer :: (this: *ID3D11DeviceContext, pIndexBuffer: *ID3D11Buffer, Format: DXGI_FORMAT, Offset: u32) {
     this.id3d11devicecontext_vtable.IASetIndexBuffer(this, pIndexBuffer, Format, Offset);
 }
+
 ID3D11DeviceContext_DrawIndexedInstanced :: (this: *ID3D11DeviceContext, IndexCountPerInstance: u32, InstanceCount: u32, StartIndexLocation: u32, BaseVertexLocation: s32, StartInstanceLocation: u32) {
     this.id3d11devicecontext_vtable.DrawIndexedInstanced(this, IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation, StartInstanceLocation);
 }
+
 ID3D11DeviceContext_DrawInstanced :: (this: *ID3D11DeviceContext, VertexCountPerInstance: u32, InstanceCount: u32, StartVertexLocation: u32, StartInstanceLocation: u32) {
     this.id3d11devicecontext_vtable.DrawInstanced(this, VertexCountPerInstance, InstanceCount, StartVertexLocation, StartInstanceLocation);
 }
+
 ID3D11DeviceContext_GSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.GSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_GSSetShader :: (this: *ID3D11DeviceContext, pShader: *ID3D11GeometryShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.GSSetShader(this, pShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_IASetPrimitiveTopology :: (this: *ID3D11DeviceContext, Topology: D3D11_PRIMITIVE_TOPOLOGY) {
     this.id3d11devicecontext_vtable.IASetPrimitiveTopology(this, Topology);
 }
+
 ID3D11DeviceContext_VSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.VSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_VSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.VSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_Begin :: (this: *ID3D11DeviceContext, pAsync: *ID3D11Asynchronous) {
     this.id3d11devicecontext_vtable.Begin(this, pAsync);
 }
+
 ID3D11DeviceContext_End :: (this: *ID3D11DeviceContext, pAsync: *ID3D11Asynchronous) {
     this.id3d11devicecontext_vtable.End(this, pAsync);
 }
+
 ID3D11DeviceContext_GetData :: (this: *ID3D11DeviceContext, pAsync: *ID3D11Asynchronous, pData: *void, DataSize: u32, GetDataFlags: u32) -> HRESULT {
     return this.id3d11devicecontext_vtable.GetData(this, pAsync, pData, DataSize, GetDataFlags);
 }
+
 ID3D11DeviceContext_SetPredication :: (this: *ID3D11DeviceContext, pPredicate: *ID3D11Predicate, PredicateValue: BOOL) {
     this.id3d11devicecontext_vtable.SetPredication(this, pPredicate, PredicateValue);
 }
+
 ID3D11DeviceContext_GSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.GSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_GSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.GSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_OMSetRenderTargets :: (this: *ID3D11DeviceContext, NumViews: u32, ppRenderTargetViews: **ID3D11RenderTargetView, pDepthStencilView: *ID3D11DepthStencilView) {
     this.id3d11devicecontext_vtable.OMSetRenderTargets(this, NumViews, ppRenderTargetViews, pDepthStencilView);
 }
+
 ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews :: (this: *ID3D11DeviceContext, NumRTVs: u32, ppRenderTargetViews: **ID3D11RenderTargetView, pDepthStencilView: *ID3D11DepthStencilView, UAVStartSlot: u32, NumUAVs: u32, ppUnorderedAccessViews: **ID3D11UnorderedAccessView, pUAVInitialCounts: *u32) {
     this.id3d11devicecontext_vtable.OMSetRenderTargetsAndUnorderedAccessViews(this, NumRTVs, ppRenderTargetViews, pDepthStencilView, UAVStartSlot, NumUAVs, ppUnorderedAccessViews, pUAVInitialCounts);
 }
+
 ID3D11DeviceContext_OMSetBlendState :: (this: *ID3D11DeviceContext, pBlendState: *ID3D11BlendState, BlendFactor: *[4] float, SampleMask: u32) {
     this.id3d11devicecontext_vtable.OMSetBlendState(this, pBlendState, BlendFactor, SampleMask);
 }
+
 ID3D11DeviceContext_OMSetDepthStencilState :: (this: *ID3D11DeviceContext, pDepthStencilState: *ID3D11DepthStencilState, StencilRef: u32) {
     this.id3d11devicecontext_vtable.OMSetDepthStencilState(this, pDepthStencilState, StencilRef);
 }
+
 ID3D11DeviceContext_SOSetTargets :: (this: *ID3D11DeviceContext, NumBuffers: u32, ppSOTargets: **ID3D11Buffer, pOffsets: *u32) {
     this.id3d11devicecontext_vtable.SOSetTargets(this, NumBuffers, ppSOTargets, pOffsets);
 }
+
 ID3D11DeviceContext_DrawAuto :: (this: *ID3D11DeviceContext) {
     this.id3d11devicecontext_vtable.DrawAuto(this);
 }
+
 ID3D11DeviceContext_DrawIndexedInstancedIndirect :: (this: *ID3D11DeviceContext, pBufferForArgs: *ID3D11Buffer, AlignedByteOffsetForArgs: u32) {
     this.id3d11devicecontext_vtable.DrawIndexedInstancedIndirect(this, pBufferForArgs, AlignedByteOffsetForArgs);
 }
+
 ID3D11DeviceContext_DrawInstancedIndirect :: (this: *ID3D11DeviceContext, pBufferForArgs: *ID3D11Buffer, AlignedByteOffsetForArgs: u32) {
     this.id3d11devicecontext_vtable.DrawInstancedIndirect(this, pBufferForArgs, AlignedByteOffsetForArgs);
 }
+
 ID3D11DeviceContext_Dispatch :: (this: *ID3D11DeviceContext, ThreadGroupCountX: u32, ThreadGroupCountY: u32, ThreadGroupCountZ: u32) {
     this.id3d11devicecontext_vtable.Dispatch(this, ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
 }
+
 ID3D11DeviceContext_DispatchIndirect :: (this: *ID3D11DeviceContext, pBufferForArgs: *ID3D11Buffer, AlignedByteOffsetForArgs: u32) {
     this.id3d11devicecontext_vtable.DispatchIndirect(this, pBufferForArgs, AlignedByteOffsetForArgs);
 }
+
 ID3D11DeviceContext_RSSetState :: (this: *ID3D11DeviceContext, pRasterizerState: *ID3D11RasterizerState) {
     this.id3d11devicecontext_vtable.RSSetState(this, pRasterizerState);
 }
+
 ID3D11DeviceContext_RSSetViewports :: (this: *ID3D11DeviceContext, NumViewports: u32, pViewports: *D3D11_VIEWPORT) {
     this.id3d11devicecontext_vtable.RSSetViewports(this, NumViewports, pViewports);
 }
+
 ID3D11DeviceContext_RSSetScissorRects :: (this: *ID3D11DeviceContext, NumRects: u32, pRects: *D3D11_RECT) {
     this.id3d11devicecontext_vtable.RSSetScissorRects(this, NumRects, pRects);
 }
+
 ID3D11DeviceContext_CopySubresourceRegion :: (this: *ID3D11DeviceContext, pDstResource: *ID3D11Resource, DstSubresource: u32, DstX: u32, DstY: u32, DstZ: u32, pSrcResource: *ID3D11Resource, SrcSubresource: u32, pSrcBox: *D3D11_BOX) {
     this.id3d11devicecontext_vtable.CopySubresourceRegion(this, pDstResource, DstSubresource, DstX, DstY, DstZ, pSrcResource, SrcSubresource, pSrcBox);
 }
+
 ID3D11DeviceContext_CopyResource :: (this: *ID3D11DeviceContext, pDstResource: *ID3D11Resource, pSrcResource: *ID3D11Resource) {
     this.id3d11devicecontext_vtable.CopyResource(this, pDstResource, pSrcResource);
 }
+
 ID3D11DeviceContext_UpdateSubresource :: (this: *ID3D11DeviceContext, pDstResource: *ID3D11Resource, DstSubresource: u32, pDstBox: *D3D11_BOX, pSrcData: *void, SrcRowPitch: u32, SrcDepthPitch: u32) {
     this.id3d11devicecontext_vtable.UpdateSubresource(this, pDstResource, DstSubresource, pDstBox, pSrcData, SrcRowPitch, SrcDepthPitch);
 }
+
 ID3D11DeviceContext_CopyStructureCount :: (this: *ID3D11DeviceContext, pDstBuffer: *ID3D11Buffer, DstAlignedByteOffset: u32, pSrcView: *ID3D11UnorderedAccessView) {
     this.id3d11devicecontext_vtable.CopyStructureCount(this, pDstBuffer, DstAlignedByteOffset, pSrcView);
 }
+
 ID3D11DeviceContext_ClearRenderTargetView :: (this: *ID3D11DeviceContext, pRenderTargetView: *ID3D11RenderTargetView, ColorRGBA: *[4] float) {
     this.id3d11devicecontext_vtable.ClearRenderTargetView(this, pRenderTargetView, ColorRGBA);
 }
+
 ID3D11DeviceContext_ClearUnorderedAccessViewUint :: (this: *ID3D11DeviceContext, pUnorderedAccessView: *ID3D11UnorderedAccessView, Values: *[4] u32) {
     this.id3d11devicecontext_vtable.ClearUnorderedAccessViewUint(this, pUnorderedAccessView, Values);
 }
+
 ID3D11DeviceContext_ClearUnorderedAccessViewFloat :: (this: *ID3D11DeviceContext, pUnorderedAccessView: *ID3D11UnorderedAccessView, Values: *[4] float) {
     this.id3d11devicecontext_vtable.ClearUnorderedAccessViewFloat(this, pUnorderedAccessView, Values);
 }
+
 ID3D11DeviceContext_ClearDepthStencilView :: (this: *ID3D11DeviceContext, pDepthStencilView: *ID3D11DepthStencilView, ClearFlags: u32, Depth: float, Stencil: u8) {
     this.id3d11devicecontext_vtable.ClearDepthStencilView(this, pDepthStencilView, ClearFlags, Depth, Stencil);
 }
+
 ID3D11DeviceContext_GenerateMips :: (this: *ID3D11DeviceContext, pShaderResourceView: *ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.GenerateMips(this, pShaderResourceView);
 }
+
 ID3D11DeviceContext_SetResourceMinLOD :: (this: *ID3D11DeviceContext, pResource: *ID3D11Resource, MinLOD: float) {
     this.id3d11devicecontext_vtable.SetResourceMinLOD(this, pResource, MinLOD);
 }
+
 ID3D11DeviceContext_GetResourceMinLOD :: (this: *ID3D11DeviceContext, pResource: *ID3D11Resource) -> float {
     return this.id3d11devicecontext_vtable.GetResourceMinLOD(this, pResource);
 }
+
 ID3D11DeviceContext_ResolveSubresource :: (this: *ID3D11DeviceContext, pDstResource: *ID3D11Resource, DstSubresource: u32, pSrcResource: *ID3D11Resource, SrcSubresource: u32, Format: DXGI_FORMAT) {
     this.id3d11devicecontext_vtable.ResolveSubresource(this, pDstResource, DstSubresource, pSrcResource, SrcSubresource, Format);
 }
+
 ID3D11DeviceContext_ExecuteCommandList :: (this: *ID3D11DeviceContext, pCommandList: *ID3D11CommandList, RestoreContextState: BOOL) {
     this.id3d11devicecontext_vtable.ExecuteCommandList(this, pCommandList, RestoreContextState);
 }
+
 ID3D11DeviceContext_HSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.HSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_HSSetShader :: (this: *ID3D11DeviceContext, pHullShader: *ID3D11HullShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.HSSetShader(this, pHullShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_HSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.HSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_HSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.HSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_DSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.DSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_DSSetShader :: (this: *ID3D11DeviceContext, pDomainShader: *ID3D11DomainShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.DSSetShader(this, pDomainShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_DSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.DSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_DSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.DSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_CSSetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.CSSetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_CSSetUnorderedAccessViews :: (this: *ID3D11DeviceContext, StartSlot: u32, NumUAVs: u32, ppUnorderedAccessViews: **ID3D11UnorderedAccessView, pUAVInitialCounts: *u32) {
     this.id3d11devicecontext_vtable.CSSetUnorderedAccessViews(this, StartSlot, NumUAVs, ppUnorderedAccessViews, pUAVInitialCounts);
 }
+
 ID3D11DeviceContext_CSSetShader :: (this: *ID3D11DeviceContext, pComputeShader: *ID3D11ComputeShader, ppClassInstances: **ID3D11ClassInstance, NumClassInstances: u32) {
     this.id3d11devicecontext_vtable.CSSetShader(this, pComputeShader, ppClassInstances, NumClassInstances);
 }
+
 ID3D11DeviceContext_CSSetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.CSSetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_CSSetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.CSSetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_VSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.VSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_PSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.PSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_PSGetShader :: (this: *ID3D11DeviceContext, ppPixelShader: **ID3D11PixelShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.PSGetShader(this, ppPixelShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_PSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.PSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_VSGetShader :: (this: *ID3D11DeviceContext, ppVertexShader: **ID3D11VertexShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.VSGetShader(this, ppVertexShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_PSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.PSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_IAGetInputLayout :: (this: *ID3D11DeviceContext, ppInputLayout: **ID3D11InputLayout) {
     this.id3d11devicecontext_vtable.IAGetInputLayout(this, ppInputLayout);
 }
+
 ID3D11DeviceContext_IAGetVertexBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppVertexBuffers: **ID3D11Buffer, pStrides: *u32, pOffsets: *u32) {
     this.id3d11devicecontext_vtable.IAGetVertexBuffers(this, StartSlot, NumBuffers, ppVertexBuffers, pStrides, pOffsets);
 }
+
 ID3D11DeviceContext_IAGetIndexBuffer :: (this: *ID3D11DeviceContext, pIndexBuffer: **ID3D11Buffer, Format: *DXGI_FORMAT, Offset: *u32) {
     this.id3d11devicecontext_vtable.IAGetIndexBuffer(this, pIndexBuffer, Format, Offset);
 }
+
 ID3D11DeviceContext_GSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.GSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_GSGetShader :: (this: *ID3D11DeviceContext, ppGeometryShader: **ID3D11GeometryShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.GSGetShader(this, ppGeometryShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_IAGetPrimitiveTopology :: (this: *ID3D11DeviceContext, pTopology: *D3D11_PRIMITIVE_TOPOLOGY) {
     this.id3d11devicecontext_vtable.IAGetPrimitiveTopology(this, pTopology);
 }
+
 ID3D11DeviceContext_VSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.VSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_VSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.VSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_GetPredication :: (this: *ID3D11DeviceContext, ppPredicate: **ID3D11Predicate, pPredicateValue: *BOOL) {
     this.id3d11devicecontext_vtable.GetPredication(this, ppPredicate, pPredicateValue);
 }
+
 ID3D11DeviceContext_GSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.GSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_GSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.GSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_OMGetRenderTargets :: (this: *ID3D11DeviceContext, NumViews: u32, ppRenderTargetViews: **ID3D11RenderTargetView, ppDepthStencilView: **ID3D11DepthStencilView) {
     this.id3d11devicecontext_vtable.OMGetRenderTargets(this, NumViews, ppRenderTargetViews, ppDepthStencilView);
 }
+
 ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews :: (this: *ID3D11DeviceContext, NumRTVs: u32, ppRenderTargetViews: **ID3D11RenderTargetView, ppDepthStencilView: **ID3D11DepthStencilView, UAVStartSlot: u32, NumUAVs: u32, ppUnorderedAccessViews: **ID3D11UnorderedAccessView) {
     this.id3d11devicecontext_vtable.OMGetRenderTargetsAndUnorderedAccessViews(this, NumRTVs, ppRenderTargetViews, ppDepthStencilView, UAVStartSlot, NumUAVs, ppUnorderedAccessViews);
 }
+
 ID3D11DeviceContext_OMGetBlendState :: (this: *ID3D11DeviceContext, ppBlendState: **ID3D11BlendState, BlendFactor: *[4] float, pSampleMask: *u32) {
     this.id3d11devicecontext_vtable.OMGetBlendState(this, ppBlendState, BlendFactor, pSampleMask);
 }
+
 ID3D11DeviceContext_OMGetDepthStencilState :: (this: *ID3D11DeviceContext, ppDepthStencilState: **ID3D11DepthStencilState, pStencilRef: *u32) {
     this.id3d11devicecontext_vtable.OMGetDepthStencilState(this, ppDepthStencilState, pStencilRef);
 }
+
 ID3D11DeviceContext_SOGetTargets :: (this: *ID3D11DeviceContext, NumBuffers: u32, ppSOTargets: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.SOGetTargets(this, NumBuffers, ppSOTargets);
 }
+
 ID3D11DeviceContext_RSGetState :: (this: *ID3D11DeviceContext, ppRasterizerState: **ID3D11RasterizerState) {
     this.id3d11devicecontext_vtable.RSGetState(this, ppRasterizerState);
 }
+
 ID3D11DeviceContext_RSGetViewports :: (this: *ID3D11DeviceContext, pNumViewports: *u32, pViewports: *D3D11_VIEWPORT) {
     this.id3d11devicecontext_vtable.RSGetViewports(this, pNumViewports, pViewports);
 }
+
 ID3D11DeviceContext_RSGetScissorRects :: (this: *ID3D11DeviceContext, pNumRects: *u32, pRects: *D3D11_RECT) {
     this.id3d11devicecontext_vtable.RSGetScissorRects(this, pNumRects, pRects);
 }
+
 ID3D11DeviceContext_HSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.HSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_HSGetShader :: (this: *ID3D11DeviceContext, ppHullShader: **ID3D11HullShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.HSGetShader(this, ppHullShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_HSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.HSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_HSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.HSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_DSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.DSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_DSGetShader :: (this: *ID3D11DeviceContext, ppDomainShader: **ID3D11DomainShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.DSGetShader(this, ppDomainShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_DSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.DSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_DSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.DSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_CSGetShaderResources :: (this: *ID3D11DeviceContext, StartSlot: u32, NumViews: u32, ppShaderResourceViews: **ID3D11ShaderResourceView) {
     this.id3d11devicecontext_vtable.CSGetShaderResources(this, StartSlot, NumViews, ppShaderResourceViews);
 }
+
 ID3D11DeviceContext_CSGetUnorderedAccessViews :: (this: *ID3D11DeviceContext, StartSlot: u32, NumUAVs: u32, ppUnorderedAccessViews: **ID3D11UnorderedAccessView) {
     this.id3d11devicecontext_vtable.CSGetUnorderedAccessViews(this, StartSlot, NumUAVs, ppUnorderedAccessViews);
 }
+
 ID3D11DeviceContext_CSGetShader :: (this: *ID3D11DeviceContext, ppComputeShader: **ID3D11ComputeShader, ppClassInstances: **ID3D11ClassInstance, pNumClassInstances: *u32) {
     this.id3d11devicecontext_vtable.CSGetShader(this, ppComputeShader, ppClassInstances, pNumClassInstances);
 }
+
 ID3D11DeviceContext_CSGetSamplers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumSamplers: u32, ppSamplers: **ID3D11SamplerState) {
     this.id3d11devicecontext_vtable.CSGetSamplers(this, StartSlot, NumSamplers, ppSamplers);
 }
+
 ID3D11DeviceContext_CSGetConstantBuffers :: (this: *ID3D11DeviceContext, StartSlot: u32, NumBuffers: u32, ppConstantBuffers: **ID3D11Buffer) {
     this.id3d11devicecontext_vtable.CSGetConstantBuffers(this, StartSlot, NumBuffers, ppConstantBuffers);
 }
+
 ID3D11DeviceContext_ClearState :: (this: *ID3D11DeviceContext) {
     this.id3d11devicecontext_vtable.ClearState(this);
 }
+
 ID3D11DeviceContext_Flush :: (this: *ID3D11DeviceContext) {
     this.id3d11devicecontext_vtable.Flush(this);
 }
+
 ID3D11DeviceContext_GetType :: (this: *ID3D11DeviceContext) -> D3D11_DEVICE_CONTEXT_TYPE {
     return this.id3d11devicecontext_vtable.GetType(this);
 }
+
 ID3D11DeviceContext_GetContextFlags :: (this: *ID3D11DeviceContext) -> u32 {
     return this.id3d11devicecontext_vtable.GetContextFlags(this);
 }
+
 ID3D11DeviceContext_FinishCommandList :: (this: *ID3D11DeviceContext, RestoreDeferredContextState: BOOL, ppCommandList: **ID3D11CommandList) -> HRESULT {
     return this.id3d11devicecontext_vtable.FinishCommandList(this, RestoreDeferredContextState, ppCommandList);
 }
+
 vtable :: (obj: *ID3D11DeviceContext) -> *ID3D11DeviceContext_VTable {
     return obj.id3d11devicecontext_vtable;
 }
+
 CD3D11_VIDEO_DEFAULT :: struct {
     __empty_struct_padding: u8;
 }
+
 APP_DEPRECATED_HRESULT :: HRESULT;
 D3D11_DECODER_PROFILE_MPEG2_MOCOMP: GUID;
 D3D11_DECODER_PROFILE_MPEG2_IDCT: GUID;
@@ -3532,12 +3951,14 @@ D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10: GUID;
 D3D11_DECODER_PROFILE_VP9_VLD_PROFILE0: GUID;
 D3D11_DECODER_PROFILE_VP9_VLD_10BIT_PROFILE2: GUID;
 D3D11_DECODER_PROFILE_VP8_VLD: GUID;
+
 D3D11_VIDEO_DECODER_DESC :: struct {
     Guid: GUID;
     SampleWidth: u32;
     SampleHeight: u32;
     OutputFormat: DXGI_FORMAT;
 }
+
 D3D11_VIDEO_DECODER_CONFIG :: struct {
     guidConfigBitstreamEncryption: GUID;
     guidConfigMBcontrolEncryption: GUID;
@@ -3557,6 +3978,7 @@ D3D11_VIDEO_DECODER_CONFIG :: struct {
     ConfigMinRenderTargetBuffCount: u16;
     ConfigDecoderSpecific: u16;
 }
+
 D3D11_VIDEO_DECODER_BUFFER_TYPE :: enum s32 {
     PICTURE_PARAMETERS :: 0;
     MACROBLOCK_CONTROL :: 1;
@@ -3577,15 +3999,18 @@ D3D11_VIDEO_DECODER_BUFFER_TYPE :: enum s32 {
     D3D11_VIDEO_DECODER_BUFFER_MOTION_VECTOR :: MOTION_VECTOR;
     D3D11_VIDEO_DECODER_BUFFER_FILM_GRAIN :: FILM_GRAIN;
 }
+
 D3D11_AES_CTR_IV :: struct {
     IV: u64;
     Count: u64;
 }
+
 D3D11_ENCRYPTED_BLOCK_INFO :: struct {
     NumEncryptedBytesAtBeginning: u32;
     NumBytesInSkipPattern: u32;
     NumBytesInEncryptPattern: u32;
 }
+
 D3D11_VIDEO_DECODER_BUFFER_DESC :: struct {
     BufferType: D3D11_VIDEO_DECODER_BUFFER_TYPE;
     BufferIndex: u32;
@@ -3602,6 +4027,7 @@ D3D11_VIDEO_DECODER_BUFFER_DESC :: struct {
     PartialEncryption: BOOL;
     EncryptedBlockInfo: D3D11_ENCRYPTED_BLOCK_INFO;
 }
+
 D3D11_VIDEO_DECODER_EXTENSION :: struct {
     Function: u32;
     pPrivateInputData: *void;
@@ -3611,32 +4037,40 @@ D3D11_VIDEO_DECODER_EXTENSION :: struct {
     ResourceCount: u32;
     ppResourceList: **ID3D11Resource;
 }
+
 ID3D11VideoDecoder_UUID :: "3C9C5B51-995D-48d1-9B8D-FA5CAEDED65C";
+
 ID3D11VideoDecoder :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11videodecoder_vtable: *ID3D11VideoDecoder_VTable;
 }
+
 ID3D11VideoDecoder_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetCreationParameters: (this: *ID3D11VideoDecoder, pVideoDesc: *D3D11_VIDEO_DECODER_DESC, pConfig: *D3D11_VIDEO_DECODER_CONFIG) -> HRESULT #cpp_method;
     GetDriverHandle: (this: *ID3D11VideoDecoder, pDriverHandle: *HANDLE) -> HRESULT #cpp_method;
 }
+
 ID3D11VideoDecoder_GetCreationParameters :: (this: *ID3D11VideoDecoder, pVideoDesc: *D3D11_VIDEO_DECODER_DESC, pConfig: *D3D11_VIDEO_DECODER_CONFIG) -> HRESULT {
     return this.id3d11videodecoder_vtable.GetCreationParameters(this, pVideoDesc, pConfig);
 }
+
 ID3D11VideoDecoder_GetDriverHandle :: (this: *ID3D11VideoDecoder, pDriverHandle: *HANDLE) -> HRESULT {
     return this.id3d11videodecoder_vtable.GetDriverHandle(this, pDriverHandle);
 }
+
 vtable :: (obj: *ID3D11VideoDecoder) -> *ID3D11VideoDecoder_VTable {
     return obj.id3d11videodecoder_vtable;
 }
+
 D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT :: enum s32 {
     INPUT :: 1;
     OUTPUT :: 2;
     D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT :: INPUT;
     D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT :: OUTPUT;
 }
+
 D3D11_VIDEO_PROCESSOR_DEVICE_CAPS :: enum s32 {
     LINEAR_SPACE :: 1;
     xvYCC :: 2;
@@ -3649,6 +4083,7 @@ D3D11_VIDEO_PROCESSOR_DEVICE_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_DEVICE_CAPS_YCbCr_MATRIX_CONVERSION :: YCbCr_MATRIX_CONVERSION;
     D3D11_VIDEO_PROCESSOR_DEVICE_CAPS_NOMINAL_RANGE :: NOMINAL_RANGE;
 }
+
 D3D11_VIDEO_PROCESSOR_FEATURE_CAPS :: enum s32 {
     ALPHA_FILL :: 1;
     CONSTRICTION :: 2;
@@ -3675,6 +4110,7 @@ D3D11_VIDEO_PROCESSOR_FEATURE_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_SHADER_USAGE :: SHADER_USAGE;
     D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10 :: METADATA_HDR10;
 }
+
 D3D11_VIDEO_PROCESSOR_FILTER_CAPS :: enum s32 {
     BRIGHTNESS :: 1;
     CONTRAST :: 2;
@@ -3693,6 +4129,7 @@ D3D11_VIDEO_PROCESSOR_FILTER_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_FILTER_CAPS_ANAMORPHIC_SCALING :: ANAMORPHIC_SCALING;
     D3D11_VIDEO_PROCESSOR_FILTER_CAPS_STEREO_ADJUSTMENT :: STEREO_ADJUSTMENT;
 }
+
 D3D11_VIDEO_PROCESSOR_FORMAT_CAPS :: enum s32 {
     RGB_INTERLACED :: 1;
     RGB_PROCAMP :: 2;
@@ -3703,6 +4140,7 @@ D3D11_VIDEO_PROCESSOR_FORMAT_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_FORMAT_CAPS_RGB_LUMA_KEY :: RGB_LUMA_KEY;
     D3D11_VIDEO_PROCESSOR_FORMAT_CAPS_PALETTE_INTERLACED :: PALETTE_INTERLACED;
 }
+
 D3D11_VIDEO_PROCESSOR_AUTO_STREAM_CAPS :: enum s32 {
     DENOISE :: 1;
     DERINGING :: 2;
@@ -3721,6 +4159,7 @@ D3D11_VIDEO_PROCESSOR_AUTO_STREAM_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_AUTO_STREAM_CAPS_SUPER_RESOLUTION :: SUPER_RESOLUTION;
     D3D11_VIDEO_PROCESSOR_AUTO_STREAM_CAPS_ANAMORPHIC_SCALING :: ANAMORPHIC_SCALING;
 }
+
 D3D11_VIDEO_PROCESSOR_STEREO_CAPS :: enum s32 {
     MONO_OFFSET :: 1;
     ROW_INTERLEAVED :: 2;
@@ -3733,6 +4172,7 @@ D3D11_VIDEO_PROCESSOR_STEREO_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_STEREO_CAPS_CHECKERBOARD :: CHECKERBOARD;
     D3D11_VIDEO_PROCESSOR_STEREO_CAPS_FLIP_MODE :: FLIP_MODE;
 }
+
 D3D11_VIDEO_PROCESSOR_CAPS :: struct {
     DeviceCaps: u32;
     FeatureCaps: u32;
@@ -3744,6 +4184,7 @@ D3D11_VIDEO_PROCESSOR_CAPS :: struct {
     MaxInputStreams: u32;
     MaxStreamStates: u32;
 }
+
 D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS :: enum s32 {
     DEINTERLACE_BLEND :: 1;
     DEINTERLACE_BOB :: 2;
@@ -3758,6 +4199,7 @@ D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_INVERSE_TELECINE :: INVERSE_TELECINE;
     D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_FRAME_RATE_CONVERSION :: FRAME_RATE_CONVERSION;
 }
+
 D3D11_VIDEO_PROCESSOR_ITELECINE_CAPS :: enum s32 {
     _32 :: 1;
     _22 :: 2;
@@ -3780,6 +4222,7 @@ D3D11_VIDEO_PROCESSOR_ITELECINE_CAPS :: enum s32 {
     D3D11_VIDEO_PROCESSOR_ITELECINE_CAPS_222222222223 :: _222222222223;
     D3D11_VIDEO_PROCESSOR_ITELECINE_CAPS_OTHER :: OTHER;
 }
+
 D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS :: struct {
     PastFrames: u32;
     FutureFrames: u32;
@@ -3787,6 +4230,7 @@ D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS :: struct {
     ITelecineCaps: u32;
     CustomRateCount: u32;
 }
+
 D3D11_CONTENT_PROTECTION_CAPS :: enum s32 {
     SOFTWARE :: 1;
     HARDWARE :: 2;
@@ -3821,23 +4265,27 @@ D3D11_CONTENT_PROTECTION_CAPS :: enum s32 {
     D3D11_CONTENT_PROTECTION_CAPS_HARDWARE_DRM_COMMUNICATION :: HARDWARE_DRM_COMMUNICATION;
     D3D11_CONTENT_PROTECTION_CAPS_HARDWARE_DRM_COMMUNICATION_MULTI_THREADED :: HARDWARE_DRM_COMMUNICATION_MULTI_THREADED;
 }
+
 D3D11_CRYPTO_TYPE_AES128_CTR: GUID;
 D3D11_DECODER_ENCRYPTION_HW_CENC: GUID;
 D3D11_DECODER_BITSTREAM_ENCRYPTION_TYPE_CENC: GUID;
 D3D11_DECODER_BITSTREAM_ENCRYPTION_TYPE_CBCS: GUID;
 D3D11_KEY_EXCHANGE_HW_PROTECTION: GUID;
+
 D3D11_VIDEO_CONTENT_PROTECTION_CAPS :: struct {
     Caps: u32;
     KeyExchangeTypeCount: u32;
     BlockAlignmentSize: u32;
     ProtectedMemorySize: u64;
 }
+
 D3D11_VIDEO_PROCESSOR_CUSTOM_RATE :: struct {
     CustomRate: DXGI_RATIONAL;
     OutputFrames: u32;
     InputInterlaced: BOOL;
     InputFramesOrFields: u32;
 }
+
 D3D11_VIDEO_PROCESSOR_FILTER :: enum s32 {
     BRIGHTNESS :: 0;
     CONTRAST :: 1;
@@ -3856,12 +4304,14 @@ D3D11_VIDEO_PROCESSOR_FILTER :: enum s32 {
     D3D11_VIDEO_PROCESSOR_FILTER_ANAMORPHIC_SCALING :: ANAMORPHIC_SCALING;
     D3D11_VIDEO_PROCESSOR_FILTER_STEREO_ADJUSTMENT :: STEREO_ADJUSTMENT;
 }
+
 D3D11_VIDEO_PROCESSOR_FILTER_RANGE :: struct {
     Minimum: s32;
     Maximum: s32;
     Default: s32;
     Multiplier: float;
 }
+
 D3D11_VIDEO_FRAME_FORMAT :: enum s32 {
     PROGRESSIVE :: 0;
     INTERLACED_TOP_FIELD_FIRST :: 1;
@@ -3870,6 +4320,7 @@ D3D11_VIDEO_FRAME_FORMAT :: enum s32 {
     D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST :: INTERLACED_TOP_FIELD_FIRST;
     D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST :: INTERLACED_BOTTOM_FIELD_FIRST;
 }
+
 D3D11_VIDEO_USAGE :: enum s32 {
     PLAYBACK_NORMAL :: 0;
     OPTIMAL_SPEED :: 1;
@@ -3878,6 +4329,7 @@ D3D11_VIDEO_USAGE :: enum s32 {
     D3D11_VIDEO_USAGE_OPTIMAL_SPEED :: OPTIMAL_SPEED;
     D3D11_VIDEO_USAGE_OPTIMAL_QUALITY :: OPTIMAL_QUALITY;
 }
+
 D3D11_VIDEO_PROCESSOR_CONTENT_DESC :: struct {
     InputFrameFormat: D3D11_VIDEO_FRAME_FORMAT;
     InputFrameRate: DXGI_RATIONAL;
@@ -3888,12 +4340,15 @@ D3D11_VIDEO_PROCESSOR_CONTENT_DESC :: struct {
     OutputHeight: u32;
     Usage: D3D11_VIDEO_USAGE;
 }
+
 ID3D11VideoProcessorEnumerator_UUID :: "31627037-53AB-4200-9061-05FAA9AB45F9";
+
 ID3D11VideoProcessorEnumerator :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11videoprocessorenumerator_vtable: *ID3D11VideoProcessorEnumerator_VTable;
 }
+
 ID3D11VideoProcessorEnumerator_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetVideoProcessorContentDesc: (this: *ID3D11VideoProcessorEnumerator, pContentDesc: *D3D11_VIDEO_PROCESSOR_CONTENT_DESC) -> HRESULT #cpp_method;
@@ -3903,45 +4358,56 @@ ID3D11VideoProcessorEnumerator_VTable :: struct #type_info_none {
     GetVideoProcessorCustomRate: (this: *ID3D11VideoProcessorEnumerator, TypeIndex: u32, CustomRateIndex: u32, pRate: *D3D11_VIDEO_PROCESSOR_CUSTOM_RATE) -> HRESULT #cpp_method;
     GetVideoProcessorFilterRange: (this: *ID3D11VideoProcessorEnumerator, Filter: D3D11_VIDEO_PROCESSOR_FILTER, pRange: *D3D11_VIDEO_PROCESSOR_FILTER_RANGE) -> HRESULT #cpp_method;
 }
+
 ID3D11VideoProcessorEnumerator_GetVideoProcessorContentDesc :: (this: *ID3D11VideoProcessorEnumerator, pContentDesc: *D3D11_VIDEO_PROCESSOR_CONTENT_DESC) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.GetVideoProcessorContentDesc(this, pContentDesc);
 }
+
 ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat :: (this: *ID3D11VideoProcessorEnumerator, Format: DXGI_FORMAT, pFlags: *u32) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.CheckVideoProcessorFormat(this, Format, pFlags);
 }
+
 ID3D11VideoProcessorEnumerator_GetVideoProcessorCaps :: (this: *ID3D11VideoProcessorEnumerator, pCaps: *D3D11_VIDEO_PROCESSOR_CAPS) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.GetVideoProcessorCaps(this, pCaps);
 }
+
 ID3D11VideoProcessorEnumerator_GetVideoProcessorRateConversionCaps :: (this: *ID3D11VideoProcessorEnumerator, TypeIndex: u32, pCaps: *D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.GetVideoProcessorRateConversionCaps(this, TypeIndex, pCaps);
 }
+
 ID3D11VideoProcessorEnumerator_GetVideoProcessorCustomRate :: (this: *ID3D11VideoProcessorEnumerator, TypeIndex: u32, CustomRateIndex: u32, pRate: *D3D11_VIDEO_PROCESSOR_CUSTOM_RATE) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.GetVideoProcessorCustomRate(this, TypeIndex, CustomRateIndex, pRate);
 }
+
 ID3D11VideoProcessorEnumerator_GetVideoProcessorFilterRange :: (this: *ID3D11VideoProcessorEnumerator, Filter: D3D11_VIDEO_PROCESSOR_FILTER, pRange: *D3D11_VIDEO_PROCESSOR_FILTER_RANGE) -> HRESULT {
     return this.id3d11videoprocessorenumerator_vtable.GetVideoProcessorFilterRange(this, Filter, pRange);
 }
+
 vtable :: (obj: *ID3D11VideoProcessorEnumerator) -> *ID3D11VideoProcessorEnumerator_VTable {
     return obj.id3d11videoprocessorenumerator_vtable;
 }
+
 D3D11_VIDEO_COLOR_RGBA :: struct {
     R: float;
     G: float;
     B: float;
     A: float;
 }
+
 D3D11_VIDEO_COLOR_YCbCrA :: struct {
     Y: float;
     Cb: float;
     Cr: float;
     A: float;
 }
+
 D3D11_VIDEO_COLOR :: struct {
     union {
         YCbCr: D3D11_VIDEO_COLOR_YCbCrA;
         RGBA: D3D11_VIDEO_COLOR_RGBA;
     }
 }
+
 D3D11_VIDEO_PROCESSOR_NOMINAL_RANGE :: enum s32 {
     UNDEFINED :: 0;
     _16_235 :: 1;
@@ -3950,9 +4416,11 @@ D3D11_VIDEO_PROCESSOR_NOMINAL_RANGE :: enum s32 {
     D3D11_VIDEO_PROCESSOR_NOMINAL_RANGE_16_235 :: _16_235;
     D3D11_VIDEO_PROCESSOR_NOMINAL_RANGE_0_255 :: _0_255;
 }
+
 D3D11_VIDEO_PROCESSOR_COLOR_SPACE :: struct {
     __bitfield: u32;
 }
+
 D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE :: enum s32 {
     OPAQUE :: 0;
     BACKGROUND :: 1;
@@ -3963,6 +4431,7 @@ D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE :: enum s32 {
     D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_DESTINATION :: DESTINATION;
     D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_SOURCE_STREAM :: SOURCE_STREAM;
 }
+
 D3D11_VIDEO_PROCESSOR_OUTPUT_RATE :: enum s32 {
     NORMAL :: 0;
     HALF :: 1;
@@ -3971,6 +4440,7 @@ D3D11_VIDEO_PROCESSOR_OUTPUT_RATE :: enum s32 {
     D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_HALF :: HALF;
     D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_CUSTOM :: CUSTOM;
 }
+
 D3D11_VIDEO_PROCESSOR_STEREO_FORMAT :: enum s32 {
     MONO :: 0;
     HORIZONTAL :: 1;
@@ -3989,6 +4459,7 @@ D3D11_VIDEO_PROCESSOR_STEREO_FORMAT :: enum s32 {
     D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_COLUMN_INTERLEAVED :: COLUMN_INTERLEAVED;
     D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_CHECKERBOARD :: CHECKERBOARD;
 }
+
 D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE :: enum s32 {
     NONE :: 0;
     FRAME0 :: 1;
@@ -3997,6 +4468,7 @@ D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE :: enum s32 {
     D3D11_VIDEO_PROCESSOR_STEREO_FLIP_FRAME0 :: FRAME0;
     D3D11_VIDEO_PROCESSOR_STEREO_FLIP_FRAME1 :: FRAME1;
 }
+
 D3D11_VIDEO_PROCESSOR_ROTATION :: enum s32 {
     IDENTITY :: 0;
     _90 :: 1;
@@ -4007,6 +4479,7 @@ D3D11_VIDEO_PROCESSOR_ROTATION :: enum s32 {
     D3D11_VIDEO_PROCESSOR_ROTATION_180 :: _180;
     D3D11_VIDEO_PROCESSOR_ROTATION_270 :: _270;
 }
+
 D3D11_VIDEO_PROCESSOR_STREAM :: struct {
     Enable: BOOL;
     OutputIndex: u32;
@@ -4020,29 +4493,37 @@ D3D11_VIDEO_PROCESSOR_STREAM :: struct {
     pInputSurfaceRight: *ID3D11VideoProcessorInputView;
     ppFutureSurfacesRight: **ID3D11VideoProcessorInputView;
 }
+
 ID3D11VideoProcessor_UUID :: "1D7B0652-185F-41c6-85CE-0C5BE3D4AE6C";
+
 ID3D11VideoProcessor :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11videoprocessor_vtable: *ID3D11VideoProcessor_VTable;
 }
+
 ID3D11VideoProcessor_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetContentDesc: (this: *ID3D11VideoProcessor, pDesc: *D3D11_VIDEO_PROCESSOR_CONTENT_DESC) -> void #cpp_method;
     GetRateConversionCaps: (this: *ID3D11VideoProcessor, pCaps: *D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS) -> void #cpp_method;
 }
+
 ID3D11VideoProcessor_GetContentDesc :: (this: *ID3D11VideoProcessor, pDesc: *D3D11_VIDEO_PROCESSOR_CONTENT_DESC) {
     this.id3d11videoprocessor_vtable.GetContentDesc(this, pDesc);
 }
+
 ID3D11VideoProcessor_GetRateConversionCaps :: (this: *ID3D11VideoProcessor, pCaps: *D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS) {
     this.id3d11videoprocessor_vtable.GetRateConversionCaps(this, pCaps);
 }
+
 vtable :: (obj: *ID3D11VideoProcessor) -> *ID3D11VideoProcessor_VTable {
     return obj.id3d11videoprocessor_vtable;
 }
+
 D3D11_OMAC :: struct {
     Omac: [16] u8;
 }
+
 D3D11_AUTHENTICATED_CHANNEL_TYPE :: enum s32 {
     D3D11 :: 1;
     DRIVER_SOFTWARE :: 2;
@@ -4051,30 +4532,38 @@ D3D11_AUTHENTICATED_CHANNEL_TYPE :: enum s32 {
     D3D11_AUTHENTICATED_CHANNEL_DRIVER_SOFTWARE :: DRIVER_SOFTWARE;
     D3D11_AUTHENTICATED_CHANNEL_DRIVER_HARDWARE :: DRIVER_HARDWARE;
 }
+
 ID3D11AuthenticatedChannel_UUID :: "3015A308-DCBD-47aa-A747-192486D14D4A";
+
 ID3D11AuthenticatedChannel :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11authenticatedchannel_vtable: *ID3D11AuthenticatedChannel_VTable;
 }
+
 ID3D11AuthenticatedChannel_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetCertificateSize: (this: *ID3D11AuthenticatedChannel, pCertificateSize: *u32) -> HRESULT #cpp_method;
     GetCertificate: (this: *ID3D11AuthenticatedChannel, CertificateSize: u32, pCertificate: *u8) -> HRESULT #cpp_method;
     GetChannelHandle: (this: *ID3D11AuthenticatedChannel, pChannelHandle: *HANDLE) -> void #cpp_method;
 }
+
 ID3D11AuthenticatedChannel_GetCertificateSize :: (this: *ID3D11AuthenticatedChannel, pCertificateSize: *u32) -> HRESULT {
     return this.id3d11authenticatedchannel_vtable.GetCertificateSize(this, pCertificateSize);
 }
+
 ID3D11AuthenticatedChannel_GetCertificate :: (this: *ID3D11AuthenticatedChannel, CertificateSize: u32, pCertificate: *u8) -> HRESULT {
     return this.id3d11authenticatedchannel_vtable.GetCertificate(this, CertificateSize, pCertificate);
 }
+
 ID3D11AuthenticatedChannel_GetChannelHandle :: (this: *ID3D11AuthenticatedChannel, pChannelHandle: *HANDLE) {
     this.id3d11authenticatedchannel_vtable.GetChannelHandle(this, pChannelHandle);
 }
+
 vtable :: (obj: *ID3D11AuthenticatedChannel) -> *ID3D11AuthenticatedChannel_VTable {
     return obj.id3d11authenticatedchannel_vtable;
 }
+
 D3D11_AUTHENTICATED_QUERY_PROTECTION: GUID;
 D3D11_AUTHENTICATED_QUERY_CHANNEL_TYPE: GUID;
 D3D11_AUTHENTICATED_QUERY_DEVICE_HANDLE: GUID;
@@ -4093,11 +4582,13 @@ D3D11_AUTHENTICATED_CONFIGURE_PROTECTION: GUID;
 D3D11_AUTHENTICATED_CONFIGURE_CRYPTO_SESSION: GUID;
 D3D11_AUTHENTICATED_CONFIGURE_SHARED_RESOURCE: GUID;
 D3D11_AUTHENTICATED_CONFIGURE_ENCRYPTION_WHEN_ACCESSIBLE: GUID;
+
 D3D11_AUTHENTICATED_QUERY_INPUT :: struct {
     QueryType: GUID;
     hChannel: HANDLE;
     SequenceNumber: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_OUTPUT :: struct {
     omac: D3D11_OMAC;
     QueryType: GUID;
@@ -4105,6 +4596,7 @@ D3D11_AUTHENTICATED_QUERY_OUTPUT :: struct {
     SequenceNumber: u32;
     ReturnCode: HRESULT;
 }
+
 D3D11_AUTHENTICATED_PROTECTION_FLAGS :: union {
     __MIDL___MIDL_itf_d3d11_0000_0034_0001 :: struct {
         __bitfield: u32;
@@ -4112,36 +4604,44 @@ D3D11_AUTHENTICATED_PROTECTION_FLAGS :: union {
     Flags: __MIDL___MIDL_itf_d3d11_0000_0034_0001;
     Value: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_PROTECTION_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     ProtectionFlags: D3D11_AUTHENTICATED_PROTECTION_FLAGS;
 }
+
 D3D11_AUTHENTICATED_QUERY_CHANNEL_TYPE_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     ChannelType: D3D11_AUTHENTICATED_CHANNEL_TYPE;
 }
+
 D3D11_AUTHENTICATED_QUERY_DEVICE_HANDLE_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     DeviceHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_CRYPTO_SESSION_INPUT :: struct {
     Input: D3D11_AUTHENTICATED_QUERY_INPUT;
     DecoderHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_CRYPTO_SESSION_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     DecoderHandle: HANDLE;
     CryptoSessionHandle: HANDLE;
     DeviceHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_RESTRICTED_SHARED_RESOURCE_PROCESS_COUNT_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     RestrictedSharedResourceProcessCount: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_RESTRICTED_SHARED_RESOURCE_PROCESS_INPUT :: struct {
     Input: D3D11_AUTHENTICATED_QUERY_INPUT;
     ProcessIndex: u32;
 }
+
 D3D11_AUTHENTICATED_PROCESS_IDENTIFIER_TYPE :: enum s32 {
     UNKNOWN :: 0;
     DWM :: 1;
@@ -4150,33 +4650,39 @@ D3D11_AUTHENTICATED_PROCESS_IDENTIFIER_TYPE :: enum s32 {
     D3D11_PROCESSIDTYPE_DWM :: DWM;
     D3D11_PROCESSIDTYPE_HANDLE :: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_RESTRICTED_SHARED_RESOURCE_PROCESS_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     ProcessIndex: u32;
     ProcessIdentifier: D3D11_AUTHENTICATED_PROCESS_IDENTIFIER_TYPE;
     ProcessHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_UNRESTRICTED_PROTECTED_SHARED_RESOURCE_COUNT_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     UnrestrictedProtectedSharedResourceCount: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_OUTPUT_ID_COUNT_INPUT :: struct {
     Input: D3D11_AUTHENTICATED_QUERY_INPUT;
     DeviceHandle: HANDLE;
     CryptoSessionHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_QUERY_OUTPUT_ID_COUNT_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     DeviceHandle: HANDLE;
     CryptoSessionHandle: HANDLE;
     OutputIDCount: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_OUTPUT_ID_INPUT :: struct {
     Input: D3D11_AUTHENTICATED_QUERY_INPUT;
     DeviceHandle: HANDLE;
     CryptoSessionHandle: HANDLE;
     OutputIDIndex: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_OUTPUT_ID_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     DeviceHandle: HANDLE;
@@ -4184,6 +4690,7 @@ D3D11_AUTHENTICATED_QUERY_OUTPUT_ID_OUTPUT :: struct {
     OutputIDIndex: u32;
     OutputID: u64;
 }
+
 D3D11_BUS_TYPE :: enum s32 {
     OTHER :: 0;
     PCI :: 1;
@@ -4202,36 +4709,44 @@ D3D11_BUS_TYPE :: enum s32 {
     D3D11_BUS_TYPE_PCIEXPRESS :: PCIEXPRESS;
     D3D11_BUS_TYPE_AGP :: AGP;
 }
+
 D3D11_AUTHENTICATED_QUERY_ACESSIBILITY_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     BusType: D3D11_BUS_TYPE;
     AccessibleInContiguousBlocks: BOOL;
     AccessibleInNonContiguousBlocks: BOOL;
 }
+
 D3D11_AUTHENTICATED_QUERY_ACCESSIBILITY_OUTPUT :: D3D11_AUTHENTICATED_QUERY_ACESSIBILITY_OUTPUT;
+
 D3D11_AUTHENTICATED_QUERY_ACCESSIBILITY_ENCRYPTION_GUID_COUNT_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     EncryptionGuidCount: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_ACCESSIBILITY_ENCRYPTION_GUID_INPUT :: struct {
     Input: D3D11_AUTHENTICATED_QUERY_INPUT;
     EncryptionGuidIndex: u32;
 }
+
 D3D11_AUTHENTICATED_QUERY_ACCESSIBILITY_ENCRYPTION_GUID_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     EncryptionGuidIndex: u32;
     EncryptionGuid: GUID;
 }
+
 D3D11_AUTHENTICATED_QUERY_CURRENT_ACCESSIBILITY_ENCRYPTION_OUTPUT :: struct {
     Output: D3D11_AUTHENTICATED_QUERY_OUTPUT;
     EncryptionGuid: GUID;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_INPUT :: struct {
     omac: D3D11_OMAC;
     ConfigureType: GUID;
     hChannel: HANDLE;
     SequenceNumber: u32;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_OUTPUT :: struct {
     omac: D3D11_OMAC;
     ConfigureType: GUID;
@@ -4239,38 +4754,46 @@ D3D11_AUTHENTICATED_CONFIGURE_OUTPUT :: struct {
     SequenceNumber: u32;
     ReturnCode: HRESULT;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_INITIALIZE_INPUT :: struct {
     Parameters: D3D11_AUTHENTICATED_CONFIGURE_INPUT;
     StartSequenceQuery: u32;
     StartSequenceConfigure: u32;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_PROTECTION_INPUT :: struct {
     Parameters: D3D11_AUTHENTICATED_CONFIGURE_INPUT;
     Protections: D3D11_AUTHENTICATED_PROTECTION_FLAGS;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_CRYPTO_SESSION_INPUT :: struct {
     Parameters: D3D11_AUTHENTICATED_CONFIGURE_INPUT;
     DecoderHandle: HANDLE;
     CryptoSessionHandle: HANDLE;
     DeviceHandle: HANDLE;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_SHARED_RESOURCE_INPUT :: struct {
     Parameters: D3D11_AUTHENTICATED_CONFIGURE_INPUT;
     ProcessType: D3D11_AUTHENTICATED_PROCESS_IDENTIFIER_TYPE;
     ProcessHandle: HANDLE;
     AllowAccess: BOOL;
 }
+
 D3D11_AUTHENTICATED_CONFIGURE_ACCESSIBLE_ENCRYPTION_INPUT :: struct {
     Parameters: D3D11_AUTHENTICATED_CONFIGURE_INPUT;
     EncryptionGuid: GUID;
 }
+
 D3D11_KEY_EXCHANGE_RSAES_OAEP: GUID;
 ID3D11CryptoSession_UUID :: "9B32F9AD-BDCC-40a6-A39D-D5C865845720";
+
 ID3D11CryptoSession :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11cryptosession_vtable: *ID3D11CryptoSession_VTable;
 }
+
 ID3D11CryptoSession_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetCryptoType: (this: *ID3D11CryptoSession, pCryptoType: *GUID) -> void #cpp_method;
@@ -4279,33 +4802,42 @@ ID3D11CryptoSession_VTable :: struct #type_info_none {
     GetCertificate: (this: *ID3D11CryptoSession, CertificateSize: u32, pCertificate: *u8) -> HRESULT #cpp_method;
     GetCryptoSessionHandle: (this: *ID3D11CryptoSession, pCryptoSessionHandle: *HANDLE) -> void #cpp_method;
 }
+
 ID3D11CryptoSession_GetCryptoType :: (this: *ID3D11CryptoSession, pCryptoType: *GUID) {
     this.id3d11cryptosession_vtable.GetCryptoType(this, pCryptoType);
 }
+
 ID3D11CryptoSession_GetDecoderProfile :: (this: *ID3D11CryptoSession, pDecoderProfile: *GUID) {
     this.id3d11cryptosession_vtable.GetDecoderProfile(this, pDecoderProfile);
 }
+
 ID3D11CryptoSession_GetCertificateSize :: (this: *ID3D11CryptoSession, pCertificateSize: *u32) -> HRESULT {
     return this.id3d11cryptosession_vtable.GetCertificateSize(this, pCertificateSize);
 }
+
 ID3D11CryptoSession_GetCertificate :: (this: *ID3D11CryptoSession, CertificateSize: u32, pCertificate: *u8) -> HRESULT {
     return this.id3d11cryptosession_vtable.GetCertificate(this, CertificateSize, pCertificate);
 }
+
 ID3D11CryptoSession_GetCryptoSessionHandle :: (this: *ID3D11CryptoSession, pCryptoSessionHandle: *HANDLE) {
     this.id3d11cryptosession_vtable.GetCryptoSessionHandle(this, pCryptoSessionHandle);
 }
+
 vtable :: (obj: *ID3D11CryptoSession) -> *ID3D11CryptoSession_VTable {
     return obj.id3d11cryptosession_vtable;
 }
+
 D3D11_VDOV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     TEXTURE2D :: 1;
     D3D11_VDOV_DIMENSION_UNKNOWN :: UNKNOWN;
     D3D11_VDOV_DIMENSION_TEXTURE2D :: TEXTURE2D;
 }
+
 D3D11_TEX2D_VDOV :: struct {
     ArraySlice: u32;
 }
+
 D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC :: struct {
     DecodeProfile: GUID;
     ViewDimension: D3D11_VDOV_DIMENSION;
@@ -4313,32 +4845,40 @@ D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC :: struct {
         Texture2D: D3D11_TEX2D_VDOV;
     }
 }
+
 ID3D11VideoDecoderOutputView_UUID :: "C2931AEA-2A85-4f20-860F-FBA1FD256E18";
+
 ID3D11VideoDecoderOutputView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11videodecoderoutputview_vtable: *ID3D11VideoDecoderOutputView_VTable;
 }
+
 ID3D11VideoDecoderOutputView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11VideoDecoderOutputView, pDesc: *D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11VideoDecoderOutputView_GetDesc :: (this: *ID3D11VideoDecoderOutputView, pDesc: *D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC) {
     this.id3d11videodecoderoutputview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11VideoDecoderOutputView) -> *ID3D11VideoDecoderOutputView_VTable {
     return obj.id3d11videodecoderoutputview_vtable;
 }
+
 D3D11_VPIV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     TEXTURE2D :: 1;
     D3D11_VPIV_DIMENSION_UNKNOWN :: UNKNOWN;
     D3D11_VPIV_DIMENSION_TEXTURE2D :: TEXTURE2D;
 }
+
 D3D11_TEX2D_VPIV :: struct {
     MipSlice: u32;
     ArraySlice: u32;
 }
+
 D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC :: struct {
     FourCC: u32;
     ViewDimension: D3D11_VPIV_DIMENSION;
@@ -4346,22 +4886,28 @@ D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC :: struct {
         Texture2D: D3D11_TEX2D_VPIV;
     }
 }
+
 ID3D11VideoProcessorInputView_UUID :: "11EC5A5F-51DC-4945-AB34-6E8C21300EA5";
+
 ID3D11VideoProcessorInputView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11videoprocessorinputview_vtable: *ID3D11VideoProcessorInputView_VTable;
 }
+
 ID3D11VideoProcessorInputView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11VideoProcessorInputView, pDesc: *D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11VideoProcessorInputView_GetDesc :: (this: *ID3D11VideoProcessorInputView, pDesc: *D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC) {
     this.id3d11videoprocessorinputview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11VideoProcessorInputView) -> *ID3D11VideoProcessorInputView_VTable {
     return obj.id3d11videoprocessorinputview_vtable;
 }
+
 D3D11_VPOV_DIMENSION :: enum s32 {
     UNKNOWN :: 0;
     TEXTURE2D :: 1;
@@ -4370,14 +4916,17 @@ D3D11_VPOV_DIMENSION :: enum s32 {
     D3D11_VPOV_DIMENSION_TEXTURE2D :: TEXTURE2D;
     D3D11_VPOV_DIMENSION_TEXTURE2DARRAY :: TEXTURE2DARRAY;
 }
+
 D3D11_TEX2D_VPOV :: struct {
     MipSlice: u32;
 }
+
 D3D11_TEX2D_ARRAY_VPOV :: struct {
     MipSlice: u32;
     FirstArraySlice: u32;
     ArraySize: u32;
 }
+
 D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC :: struct {
     ViewDimension: D3D11_VPOV_DIMENSION;
     union {
@@ -4385,28 +4934,36 @@ D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC :: struct {
         Texture2DArray: D3D11_TEX2D_ARRAY_VPOV;
     }
 }
+
 ID3D11VideoProcessorOutputView_UUID :: "A048285E-25A9-4527-BD93-D68B68C44254";
+
 ID3D11VideoProcessorOutputView :: struct {
     #as using id3d11view: ID3D11View;
     #place id3d11view;
     id3d11videoprocessoroutputview_vtable: *ID3D11VideoProcessorOutputView_VTable;
 }
+
 ID3D11VideoProcessorOutputView_VTable :: struct #type_info_none {
     using id3d11view: ID3D11View_VTable;
     GetDesc: (this: *ID3D11VideoProcessorOutputView, pDesc: *D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC) -> void #cpp_method;
 }
+
 ID3D11VideoProcessorOutputView_GetDesc :: (this: *ID3D11VideoProcessorOutputView, pDesc: *D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC) {
     this.id3d11videoprocessoroutputview_vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11VideoProcessorOutputView) -> *ID3D11VideoProcessorOutputView_VTable {
     return obj.id3d11videoprocessoroutputview_vtable;
 }
+
 ID3D11VideoContext_UUID :: "61F21C45-3C0E-4a74-9CEA-67100D9AD5E4";
+
 ID3D11VideoContext :: struct {
     #as using id3d11devicechild: ID3D11DeviceChild;
     #place id3d11devicechild;
     id3d11videocontext_vtable: *ID3D11VideoContext_VTable;
 }
+
 ID3D11VideoContext_VTable :: struct #type_info_none {
     using id3d11devicechild: ID3D11DeviceChild_VTable;
     GetDecoderBuffer: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, Type: D3D11_VIDEO_DECODER_BUFFER_TYPE, pBufferSize: *u32, ppBuffer: **void) -> HRESULT #cpp_method;
@@ -4468,189 +5025,251 @@ ID3D11VideoContext_VTable :: struct #type_info_none {
     VideoProcessorSetStreamRotation: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, Rotation: D3D11_VIDEO_PROCESSOR_ROTATION) -> void #cpp_method;
     VideoProcessorGetStreamRotation: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnable: *BOOL, pRotation: *D3D11_VIDEO_PROCESSOR_ROTATION) -> void #cpp_method;
 }
+
 ID3D11VideoContext_GetDecoderBuffer :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, Type: D3D11_VIDEO_DECODER_BUFFER_TYPE, pBufferSize: *u32, ppBuffer: **void) -> HRESULT {
     return this.id3d11videocontext_vtable.GetDecoderBuffer(this, pDecoder, Type, pBufferSize, ppBuffer);
 }
+
 ID3D11VideoContext_ReleaseDecoderBuffer :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, Type: D3D11_VIDEO_DECODER_BUFFER_TYPE) -> HRESULT {
     return this.id3d11videocontext_vtable.ReleaseDecoderBuffer(this, pDecoder, Type);
 }
+
 ID3D11VideoContext_DecoderBeginFrame :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, pView: *ID3D11VideoDecoderOutputView, ContentKeySize: u32, pContentKey: *void) -> HRESULT {
     return this.id3d11videocontext_vtable.DecoderBeginFrame(this, pDecoder, pView, ContentKeySize, pContentKey);
 }
+
 ID3D11VideoContext_DecoderEndFrame :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder) -> HRESULT {
     return this.id3d11videocontext_vtable.DecoderEndFrame(this, pDecoder);
 }
+
 ID3D11VideoContext_SubmitDecoderBuffers :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, NumBuffers: u32, pBufferDesc: *D3D11_VIDEO_DECODER_BUFFER_DESC) -> HRESULT {
     return this.id3d11videocontext_vtable.SubmitDecoderBuffers(this, pDecoder, NumBuffers, pBufferDesc);
 }
+
 ID3D11VideoContext_DecoderExtension :: (this: *ID3D11VideoContext, pDecoder: *ID3D11VideoDecoder, pExtensionData: *D3D11_VIDEO_DECODER_EXTENSION) -> APP_DEPRECATED_HRESULT {
     return this.id3d11videocontext_vtable.DecoderExtension(this, pDecoder, pExtensionData);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputTargetRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, Enable: BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputTargetRect(this, pVideoProcessor, Enable, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputBackgroundColor :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, YCbCr: BOOL, pColor: *D3D11_VIDEO_COLOR) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputBackgroundColor(this, pVideoProcessor, YCbCr, pColor);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputColorSpace :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pColorSpace: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputColorSpace(this, pVideoProcessor, pColorSpace);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputAlphaFillMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, AlphaFillMode: D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE, StreamIndex: u32) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputAlphaFillMode(this, pVideoProcessor, AlphaFillMode, StreamIndex);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputConstriction :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, Enable: BOOL, Size: SIZE) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputConstriction(this, pVideoProcessor, Enable, Size);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputStereoMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, Enable: BOOL) {
     this.id3d11videocontext_vtable.VideoProcessorSetOutputStereoMode(this, pVideoProcessor, Enable);
 }
+
 ID3D11VideoContext_VideoProcessorSetOutputExtension :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pExtensionGuid: *GUID, DataSize: u32, pData: *void) -> APP_DEPRECATED_HRESULT {
     return this.id3d11videocontext_vtable.VideoProcessorSetOutputExtension(this, pVideoProcessor, pExtensionGuid, DataSize, pData);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputTargetRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, Enabled: *BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputTargetRect(this, pVideoProcessor, Enabled, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputBackgroundColor :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pYCbCr: *BOOL, pColor: *D3D11_VIDEO_COLOR) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputBackgroundColor(this, pVideoProcessor, pYCbCr, pColor);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputColorSpace :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pColorSpace: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputColorSpace(this, pVideoProcessor, pColorSpace);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputAlphaFillMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pAlphaFillMode: *D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE, pStreamIndex: *u32) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputAlphaFillMode(this, pVideoProcessor, pAlphaFillMode, pStreamIndex);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputConstriction :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pEnabled: *BOOL, pSize: *SIZE) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputConstriction(this, pVideoProcessor, pEnabled, pSize);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputStereoMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pEnabled: *BOOL) {
     this.id3d11videocontext_vtable.VideoProcessorGetOutputStereoMode(this, pVideoProcessor, pEnabled);
 }
+
 ID3D11VideoContext_VideoProcessorGetOutputExtension :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pExtensionGuid: *GUID, DataSize: u32, pData: *void) -> APP_DEPRECATED_HRESULT {
     return this.id3d11videocontext_vtable.VideoProcessorGetOutputExtension(this, pVideoProcessor, pExtensionGuid, DataSize, pData);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamFrameFormat :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, FrameFormat: D3D11_VIDEO_FRAME_FORMAT) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamFrameFormat(this, pVideoProcessor, StreamIndex, FrameFormat);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamColorSpace :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pColorSpace: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamColorSpace(this, pVideoProcessor, StreamIndex, pColorSpace);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamOutputRate :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, OutputRate: D3D11_VIDEO_PROCESSOR_OUTPUT_RATE, RepeatFrame: BOOL, pCustomRate: *DXGI_RATIONAL) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamOutputRate(this, pVideoProcessor, StreamIndex, OutputRate, RepeatFrame, pCustomRate);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamSourceRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamSourceRect(this, pVideoProcessor, StreamIndex, Enable, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamDestRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamDestRect(this, pVideoProcessor, StreamIndex, Enable, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamAlpha :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, Alpha: float) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamAlpha(this, pVideoProcessor, StreamIndex, Enable, Alpha);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamPalette :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Count: u32, pEntries: *u32) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamPalette(this, pVideoProcessor, StreamIndex, Count, pEntries);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamPixelAspectRatio :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, pSourceAspectRatio: *DXGI_RATIONAL, pDestinationAspectRatio: *DXGI_RATIONAL) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamPixelAspectRatio(this, pVideoProcessor, StreamIndex, Enable, pSourceAspectRatio, pDestinationAspectRatio);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamLumaKey :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, Lower: float, Upper: float) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamLumaKey(this, pVideoProcessor, StreamIndex, Enable, Lower, Upper);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamStereoFormat :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, Format: D3D11_VIDEO_PROCESSOR_STEREO_FORMAT, LeftViewFrame0: BOOL, BaseViewFrame0: BOOL, FlipMode: D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE, MonoOffset: s32) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamStereoFormat(this, pVideoProcessor, StreamIndex, Enable, Format, LeftViewFrame0, BaseViewFrame0, FlipMode, MonoOffset);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamAutoProcessingMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamAutoProcessingMode(this, pVideoProcessor, StreamIndex, Enable);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamFilter :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Filter: D3D11_VIDEO_PROCESSOR_FILTER, Enable: BOOL, Level: s32) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamFilter(this, pVideoProcessor, StreamIndex, Filter, Enable, Level);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamExtension :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pExtensionGuid: *GUID, DataSize: u32, pData: *void) -> APP_DEPRECATED_HRESULT {
     return this.id3d11videocontext_vtable.VideoProcessorSetStreamExtension(this, pVideoProcessor, StreamIndex, pExtensionGuid, DataSize, pData);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamFrameFormat :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pFrameFormat: *D3D11_VIDEO_FRAME_FORMAT) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamFrameFormat(this, pVideoProcessor, StreamIndex, pFrameFormat);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamColorSpace :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pColorSpace: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamColorSpace(this, pVideoProcessor, StreamIndex, pColorSpace);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamOutputRate :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pOutputRate: *D3D11_VIDEO_PROCESSOR_OUTPUT_RATE, pRepeatFrame: *BOOL, pCustomRate: *DXGI_RATIONAL) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamOutputRate(this, pVideoProcessor, StreamIndex, pOutputRate, pRepeatFrame, pCustomRate);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamSourceRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamSourceRect(this, pVideoProcessor, StreamIndex, pEnabled, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamDestRect :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL, pRect: *RECT) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamDestRect(this, pVideoProcessor, StreamIndex, pEnabled, pRect);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamAlpha :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL, pAlpha: *float) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamAlpha(this, pVideoProcessor, StreamIndex, pEnabled, pAlpha);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamPalette :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Count: u32, pEntries: *u32) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamPalette(this, pVideoProcessor, StreamIndex, Count, pEntries);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamPixelAspectRatio :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL, pSourceAspectRatio: *DXGI_RATIONAL, pDestinationAspectRatio: *DXGI_RATIONAL) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamPixelAspectRatio(this, pVideoProcessor, StreamIndex, pEnabled, pSourceAspectRatio, pDestinationAspectRatio);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamLumaKey :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL, pLower: *float, pUpper: *float) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamLumaKey(this, pVideoProcessor, StreamIndex, pEnabled, pLower, pUpper);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamStereoFormat :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnable: *BOOL, pFormat: *D3D11_VIDEO_PROCESSOR_STEREO_FORMAT, pLeftViewFrame0: *BOOL, pBaseViewFrame0: *BOOL, pFlipMode: *D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE, MonoOffset: *s32) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamStereoFormat(this, pVideoProcessor, StreamIndex, pEnable, pFormat, pLeftViewFrame0, pBaseViewFrame0, pFlipMode, MonoOffset);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamAutoProcessingMode :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnabled: *BOOL) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamAutoProcessingMode(this, pVideoProcessor, StreamIndex, pEnabled);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamFilter :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Filter: D3D11_VIDEO_PROCESSOR_FILTER, pEnabled: *BOOL, pLevel: *s32) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamFilter(this, pVideoProcessor, StreamIndex, Filter, pEnabled, pLevel);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamExtension :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pExtensionGuid: *GUID, DataSize: u32, pData: *void) -> APP_DEPRECATED_HRESULT {
     return this.id3d11videocontext_vtable.VideoProcessorGetStreamExtension(this, pVideoProcessor, StreamIndex, pExtensionGuid, DataSize, pData);
 }
+
 ID3D11VideoContext_VideoProcessorBlt :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, pView: *ID3D11VideoProcessorOutputView, OutputFrame: u32, StreamCount: u32, pStreams: *D3D11_VIDEO_PROCESSOR_STREAM) -> HRESULT {
     return this.id3d11videocontext_vtable.VideoProcessorBlt(this, pVideoProcessor, pView, OutputFrame, StreamCount, pStreams);
 }
+
 ID3D11VideoContext_NegotiateCryptoSessionKeyExchange :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d11videocontext_vtable.NegotiateCryptoSessionKeyExchange(this, pCryptoSession, DataSize, pData);
 }
+
 ID3D11VideoContext_EncryptionBlt :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession, pSrcSurface: *ID3D11Texture2D, pDstSurface: *ID3D11Texture2D, IVSize: u32, pIV: *void) {
     this.id3d11videocontext_vtable.EncryptionBlt(this, pCryptoSession, pSrcSurface, pDstSurface, IVSize, pIV);
 }
+
 ID3D11VideoContext_DecryptionBlt :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession, pSrcSurface: *ID3D11Texture2D, pDstSurface: *ID3D11Texture2D, pEncryptedBlockInfo: *D3D11_ENCRYPTED_BLOCK_INFO, ContentKeySize: u32, pContentKey: *void, IVSize: u32, pIV: *void) {
     this.id3d11videocontext_vtable.DecryptionBlt(this, pCryptoSession, pSrcSurface, pDstSurface, pEncryptedBlockInfo, ContentKeySize, pContentKey, IVSize, pIV);
 }
+
 ID3D11VideoContext_StartSessionKeyRefresh :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession, RandomNumberSize: u32, pRandomNumber: *void) {
     this.id3d11videocontext_vtable.StartSessionKeyRefresh(this, pCryptoSession, RandomNumberSize, pRandomNumber);
 }
+
 ID3D11VideoContext_FinishSessionKeyRefresh :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession) {
     this.id3d11videocontext_vtable.FinishSessionKeyRefresh(this, pCryptoSession);
 }
+
 ID3D11VideoContext_GetEncryptionBltKey :: (this: *ID3D11VideoContext, pCryptoSession: *ID3D11CryptoSession, KeySize: u32, pReadbackKey: *void) -> HRESULT {
     return this.id3d11videocontext_vtable.GetEncryptionBltKey(this, pCryptoSession, KeySize, pReadbackKey);
 }
+
 ID3D11VideoContext_NegotiateAuthenticatedChannelKeyExchange :: (this: *ID3D11VideoContext, pChannel: *ID3D11AuthenticatedChannel, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d11videocontext_vtable.NegotiateAuthenticatedChannelKeyExchange(this, pChannel, DataSize, pData);
 }
+
 ID3D11VideoContext_QueryAuthenticatedChannel :: (this: *ID3D11VideoContext, pChannel: *ID3D11AuthenticatedChannel, InputSize: u32, pInput: *void, OutputSize: u32, pOutput: *void) -> HRESULT {
     return this.id3d11videocontext_vtable.QueryAuthenticatedChannel(this, pChannel, InputSize, pInput, OutputSize, pOutput);
 }
+
 ID3D11VideoContext_ConfigureAuthenticatedChannel :: (this: *ID3D11VideoContext, pChannel: *ID3D11AuthenticatedChannel, InputSize: u32, pInput: *void, pOutput: *D3D11_AUTHENTICATED_CONFIGURE_OUTPUT) -> HRESULT {
     return this.id3d11videocontext_vtable.ConfigureAuthenticatedChannel(this, pChannel, InputSize, pInput, pOutput);
 }
+
 ID3D11VideoContext_VideoProcessorSetStreamRotation :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, Enable: BOOL, Rotation: D3D11_VIDEO_PROCESSOR_ROTATION) {
     this.id3d11videocontext_vtable.VideoProcessorSetStreamRotation(this, pVideoProcessor, StreamIndex, Enable, Rotation);
 }
+
 ID3D11VideoContext_VideoProcessorGetStreamRotation :: (this: *ID3D11VideoContext, pVideoProcessor: *ID3D11VideoProcessor, StreamIndex: u32, pEnable: *BOOL, pRotation: *D3D11_VIDEO_PROCESSOR_ROTATION) {
     this.id3d11videocontext_vtable.VideoProcessorGetStreamRotation(this, pVideoProcessor, StreamIndex, pEnable, pRotation);
 }
+
 vtable :: (obj: *ID3D11VideoContext) -> *ID3D11VideoContext_VTable {
     return obj.id3d11videocontext_vtable;
 }
+
 ID3D11VideoDevice_UUID :: "10EC4D5B-975A-4689-B9E4-D0AAC30FE333";
+
 ID3D11VideoDevice :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11videodevice_vtable: *ID3D11VideoDevice_VTable;
 }
+
 ID3D11VideoDevice_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     CreateVideoDecoder: (this: *ID3D11VideoDevice, pVideoDesc: *D3D11_VIDEO_DECODER_DESC, pConfig: *D3D11_VIDEO_DECODER_CONFIG, ppDecoder: **ID3D11VideoDecoder) -> HRESULT #cpp_method;
@@ -4671,66 +5290,87 @@ ID3D11VideoDevice_VTable :: struct #type_info_none {
     SetPrivateData: (this: *ID3D11VideoDevice, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT #cpp_method;
     SetPrivateDataInterface: (this: *ID3D11VideoDevice, guid: *GUID, pData: *IUnknown) -> HRESULT #cpp_method;
 }
+
 ID3D11VideoDevice_CreateVideoDecoder :: (this: *ID3D11VideoDevice, pVideoDesc: *D3D11_VIDEO_DECODER_DESC, pConfig: *D3D11_VIDEO_DECODER_CONFIG, ppDecoder: **ID3D11VideoDecoder) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoDecoder(this, pVideoDesc, pConfig, ppDecoder);
 }
+
 ID3D11VideoDevice_CreateVideoProcessor :: (this: *ID3D11VideoDevice, pEnum: *ID3D11VideoProcessorEnumerator, RateConversionIndex: u32, ppVideoProcessor: **ID3D11VideoProcessor) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoProcessor(this, pEnum, RateConversionIndex, ppVideoProcessor);
 }
+
 ID3D11VideoDevice_CreateAuthenticatedChannel :: (this: *ID3D11VideoDevice, ChannelType: D3D11_AUTHENTICATED_CHANNEL_TYPE, ppAuthenticatedChannel: **ID3D11AuthenticatedChannel) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateAuthenticatedChannel(this, ChannelType, ppAuthenticatedChannel);
 }
+
 ID3D11VideoDevice_CreateCryptoSession :: (this: *ID3D11VideoDevice, pCryptoType: *GUID, pDecoderProfile: *GUID, pKeyExchangeType: *GUID, ppCryptoSession: **ID3D11CryptoSession) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateCryptoSession(this, pCryptoType, pDecoderProfile, pKeyExchangeType, ppCryptoSession);
 }
+
 ID3D11VideoDevice_CreateVideoDecoderOutputView :: (this: *ID3D11VideoDevice, pResource: *ID3D11Resource, pDesc: *D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC, ppVDOVView: **ID3D11VideoDecoderOutputView) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoDecoderOutputView(this, pResource, pDesc, ppVDOVView);
 }
+
 ID3D11VideoDevice_CreateVideoProcessorInputView :: (this: *ID3D11VideoDevice, pResource: *ID3D11Resource, pEnum: *ID3D11VideoProcessorEnumerator, pDesc: *D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC, ppVPIView: **ID3D11VideoProcessorInputView) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoProcessorInputView(this, pResource, pEnum, pDesc, ppVPIView);
 }
+
 ID3D11VideoDevice_CreateVideoProcessorOutputView :: (this: *ID3D11VideoDevice, pResource: *ID3D11Resource, pEnum: *ID3D11VideoProcessorEnumerator, pDesc: *D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC, ppVPOView: **ID3D11VideoProcessorOutputView) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoProcessorOutputView(this, pResource, pEnum, pDesc, ppVPOView);
 }
+
 ID3D11VideoDevice_CreateVideoProcessorEnumerator :: (this: *ID3D11VideoDevice, pDesc: *D3D11_VIDEO_PROCESSOR_CONTENT_DESC, ppEnum: **ID3D11VideoProcessorEnumerator) -> HRESULT {
     return this.id3d11videodevice_vtable.CreateVideoProcessorEnumerator(this, pDesc, ppEnum);
 }
+
 ID3D11VideoDevice_GetVideoDecoderProfileCount :: (this: *ID3D11VideoDevice) -> u32 {
     return this.id3d11videodevice_vtable.GetVideoDecoderProfileCount(this);
 }
+
 ID3D11VideoDevice_GetVideoDecoderProfile :: (this: *ID3D11VideoDevice, Index: u32, pDecoderProfile: *GUID) -> HRESULT {
     return this.id3d11videodevice_vtable.GetVideoDecoderProfile(this, Index, pDecoderProfile);
 }
+
 ID3D11VideoDevice_CheckVideoDecoderFormat :: (this: *ID3D11VideoDevice, pDecoderProfile: *GUID, Format: DXGI_FORMAT, pSupported: *BOOL) -> HRESULT {
     return this.id3d11videodevice_vtable.CheckVideoDecoderFormat(this, pDecoderProfile, Format, pSupported);
 }
+
 ID3D11VideoDevice_GetVideoDecoderConfigCount :: (this: *ID3D11VideoDevice, pDesc: *D3D11_VIDEO_DECODER_DESC, pCount: *u32) -> HRESULT {
     return this.id3d11videodevice_vtable.GetVideoDecoderConfigCount(this, pDesc, pCount);
 }
+
 ID3D11VideoDevice_GetVideoDecoderConfig :: (this: *ID3D11VideoDevice, pDesc: *D3D11_VIDEO_DECODER_DESC, Index: u32, pConfig: *D3D11_VIDEO_DECODER_CONFIG) -> HRESULT {
     return this.id3d11videodevice_vtable.GetVideoDecoderConfig(this, pDesc, Index, pConfig);
 }
+
 ID3D11VideoDevice_GetContentProtectionCaps :: (this: *ID3D11VideoDevice, pCryptoType: *GUID, pDecoderProfile: *GUID, pCaps: *D3D11_VIDEO_CONTENT_PROTECTION_CAPS) -> HRESULT {
     return this.id3d11videodevice_vtable.GetContentProtectionCaps(this, pCryptoType, pDecoderProfile, pCaps);
 }
+
 ID3D11VideoDevice_CheckCryptoKeyExchange :: (this: *ID3D11VideoDevice, pCryptoType: *GUID, pDecoderProfile: *GUID, Index: u32, pKeyExchangeType: *GUID) -> HRESULT {
     return this.id3d11videodevice_vtable.CheckCryptoKeyExchange(this, pCryptoType, pDecoderProfile, Index, pKeyExchangeType);
 }
+
 ID3D11VideoDevice_SetPrivateData :: (this: *ID3D11VideoDevice, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d11videodevice_vtable.SetPrivateData(this, guid, DataSize, pData);
 }
+
 ID3D11VideoDevice_SetPrivateDataInterface :: (this: *ID3D11VideoDevice, guid: *GUID, pData: *IUnknown) -> HRESULT {
     return this.id3d11videodevice_vtable.SetPrivateDataInterface(this, guid, pData);
 }
+
 vtable :: (obj: *ID3D11VideoDevice) -> *ID3D11VideoDevice_VTable {
     return obj.id3d11videodevice_vtable;
 }
+
 ID3D11Device_UUID :: "db6f6ddb-ac77-4e88-8253-819df9bbf140";
+
 ID3D11Device :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11device_vtable: *ID3D11Device_VTable;
 }
+
 ID3D11Device_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     CreateBuffer: (this: *ID3D11Device, pDesc: *D3D11_BUFFER_DESC, pInitialData: *D3D11_SUBRESOURCE_DATA, ppBuffer: **ID3D11Buffer) -> HRESULT #cpp_method;
@@ -4774,129 +5414,171 @@ ID3D11Device_VTable :: struct #type_info_none {
     SetExceptionMode: (this: *ID3D11Device, RaiseFlags: u32) -> HRESULT #cpp_method;
     GetExceptionMode: (this: *ID3D11Device) -> u32 #cpp_method;
 }
+
 ID3D11Device_CreateBuffer :: (this: *ID3D11Device, pDesc: *D3D11_BUFFER_DESC, pInitialData: *D3D11_SUBRESOURCE_DATA, ppBuffer: **ID3D11Buffer) -> HRESULT {
     return this.id3d11device_vtable.CreateBuffer(this, pDesc, pInitialData, ppBuffer);
 }
+
 ID3D11Device_CreateTexture1D :: (this: *ID3D11Device, pDesc: *D3D11_TEXTURE1D_DESC, pInitialData: *D3D11_SUBRESOURCE_DATA, ppTexture1D: **ID3D11Texture1D) -> HRESULT {
     return this.id3d11device_vtable.CreateTexture1D(this, pDesc, pInitialData, ppTexture1D);
 }
+
 ID3D11Device_CreateTexture2D :: (this: *ID3D11Device, pDesc: *D3D11_TEXTURE2D_DESC, pInitialData: *D3D11_SUBRESOURCE_DATA, ppTexture2D: **ID3D11Texture2D) -> HRESULT {
     return this.id3d11device_vtable.CreateTexture2D(this, pDesc, pInitialData, ppTexture2D);
 }
+
 ID3D11Device_CreateTexture3D :: (this: *ID3D11Device, pDesc: *D3D11_TEXTURE3D_DESC, pInitialData: *D3D11_SUBRESOURCE_DATA, ppTexture3D: **ID3D11Texture3D) -> HRESULT {
     return this.id3d11device_vtable.CreateTexture3D(this, pDesc, pInitialData, ppTexture3D);
 }
+
 ID3D11Device_CreateShaderResourceView :: (this: *ID3D11Device, pResource: *ID3D11Resource, pDesc: *D3D11_SHADER_RESOURCE_VIEW_DESC, ppSRView: **ID3D11ShaderResourceView) -> HRESULT {
     return this.id3d11device_vtable.CreateShaderResourceView(this, pResource, pDesc, ppSRView);
 }
+
 ID3D11Device_CreateUnorderedAccessView :: (this: *ID3D11Device, pResource: *ID3D11Resource, pDesc: *D3D11_UNORDERED_ACCESS_VIEW_DESC, ppUAView: **ID3D11UnorderedAccessView) -> HRESULT {
     return this.id3d11device_vtable.CreateUnorderedAccessView(this, pResource, pDesc, ppUAView);
 }
+
 ID3D11Device_CreateRenderTargetView :: (this: *ID3D11Device, pResource: *ID3D11Resource, pDesc: *D3D11_RENDER_TARGET_VIEW_DESC, ppRTView: **ID3D11RenderTargetView) -> HRESULT {
     return this.id3d11device_vtable.CreateRenderTargetView(this, pResource, pDesc, ppRTView);
 }
+
 ID3D11Device_CreateDepthStencilView :: (this: *ID3D11Device, pResource: *ID3D11Resource, pDesc: *D3D11_DEPTH_STENCIL_VIEW_DESC, ppDepthStencilView: **ID3D11DepthStencilView) -> HRESULT {
     return this.id3d11device_vtable.CreateDepthStencilView(this, pResource, pDesc, ppDepthStencilView);
 }
+
 ID3D11Device_CreateInputLayout :: (this: *ID3D11Device, pInputElementDescs: *D3D11_INPUT_ELEMENT_DESC, NumElements: u32, pShaderBytecodeWithInputSignature: *void, BytecodeLength: SIZE_T, ppInputLayout: **ID3D11InputLayout) -> HRESULT {
     return this.id3d11device_vtable.CreateInputLayout(this, pInputElementDescs, NumElements, pShaderBytecodeWithInputSignature, BytecodeLength, ppInputLayout);
 }
+
 ID3D11Device_CreateVertexShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppVertexShader: **ID3D11VertexShader) -> HRESULT {
     return this.id3d11device_vtable.CreateVertexShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppVertexShader);
 }
+
 ID3D11Device_CreateGeometryShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppGeometryShader: **ID3D11GeometryShader) -> HRESULT {
     return this.id3d11device_vtable.CreateGeometryShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppGeometryShader);
 }
+
 ID3D11Device_CreateGeometryShaderWithStreamOutput :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pSODeclaration: *D3D11_SO_DECLARATION_ENTRY, NumEntries: u32, pBufferStrides: *u32, NumStrides: u32, RasterizedStream: u32, pClassLinkage: *ID3D11ClassLinkage, ppGeometryShader: **ID3D11GeometryShader) -> HRESULT {
     return this.id3d11device_vtable.CreateGeometryShaderWithStreamOutput(this, pShaderBytecode, BytecodeLength, pSODeclaration, NumEntries, pBufferStrides, NumStrides, RasterizedStream, pClassLinkage, ppGeometryShader);
 }
+
 ID3D11Device_CreatePixelShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppPixelShader: **ID3D11PixelShader) -> HRESULT {
     return this.id3d11device_vtable.CreatePixelShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppPixelShader);
 }
+
 ID3D11Device_CreateHullShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppHullShader: **ID3D11HullShader) -> HRESULT {
     return this.id3d11device_vtable.CreateHullShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppHullShader);
 }
+
 ID3D11Device_CreateDomainShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppDomainShader: **ID3D11DomainShader) -> HRESULT {
     return this.id3d11device_vtable.CreateDomainShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppDomainShader);
 }
+
 ID3D11Device_CreateComputeShader :: (this: *ID3D11Device, pShaderBytecode: *void, BytecodeLength: SIZE_T, pClassLinkage: *ID3D11ClassLinkage, ppComputeShader: **ID3D11ComputeShader) -> HRESULT {
     return this.id3d11device_vtable.CreateComputeShader(this, pShaderBytecode, BytecodeLength, pClassLinkage, ppComputeShader);
 }
+
 ID3D11Device_CreateClassLinkage :: (this: *ID3D11Device, ppLinkage: **ID3D11ClassLinkage) -> HRESULT {
     return this.id3d11device_vtable.CreateClassLinkage(this, ppLinkage);
 }
+
 ID3D11Device_CreateBlendState :: (this: *ID3D11Device, pBlendStateDesc: *D3D11_BLEND_DESC, ppBlendState: **ID3D11BlendState) -> HRESULT {
     return this.id3d11device_vtable.CreateBlendState(this, pBlendStateDesc, ppBlendState);
 }
+
 ID3D11Device_CreateDepthStencilState :: (this: *ID3D11Device, pDepthStencilDesc: *D3D11_DEPTH_STENCIL_DESC, ppDepthStencilState: **ID3D11DepthStencilState) -> HRESULT {
     return this.id3d11device_vtable.CreateDepthStencilState(this, pDepthStencilDesc, ppDepthStencilState);
 }
+
 ID3D11Device_CreateRasterizerState :: (this: *ID3D11Device, pRasterizerDesc: *D3D11_RASTERIZER_DESC, ppRasterizerState: **ID3D11RasterizerState) -> HRESULT {
     return this.id3d11device_vtable.CreateRasterizerState(this, pRasterizerDesc, ppRasterizerState);
 }
+
 ID3D11Device_CreateSamplerState :: (this: *ID3D11Device, pSamplerDesc: *D3D11_SAMPLER_DESC, ppSamplerState: **ID3D11SamplerState) -> HRESULT {
     return this.id3d11device_vtable.CreateSamplerState(this, pSamplerDesc, ppSamplerState);
 }
+
 ID3D11Device_CreateQuery :: (this: *ID3D11Device, pQueryDesc: *D3D11_QUERY_DESC, ppQuery: **ID3D11Query) -> HRESULT {
     return this.id3d11device_vtable.CreateQuery(this, pQueryDesc, ppQuery);
 }
+
 ID3D11Device_CreatePredicate :: (this: *ID3D11Device, pPredicateDesc: *D3D11_QUERY_DESC, ppPredicate: **ID3D11Predicate) -> HRESULT {
     return this.id3d11device_vtable.CreatePredicate(this, pPredicateDesc, ppPredicate);
 }
+
 ID3D11Device_CreateCounter :: (this: *ID3D11Device, pCounterDesc: *D3D11_COUNTER_DESC, ppCounter: **ID3D11Counter) -> HRESULT {
     return this.id3d11device_vtable.CreateCounter(this, pCounterDesc, ppCounter);
 }
+
 ID3D11Device_CreateDeferredContext :: (this: *ID3D11Device, ContextFlags: u32, ppDeferredContext: **ID3D11DeviceContext) -> HRESULT {
     return this.id3d11device_vtable.CreateDeferredContext(this, ContextFlags, ppDeferredContext);
 }
+
 ID3D11Device_OpenSharedResource :: (this: *ID3D11Device, hResource: HANDLE, ReturnedInterface: *IID, ppResource: **void) -> HRESULT {
     return this.id3d11device_vtable.OpenSharedResource(this, hResource, ReturnedInterface, ppResource);
 }
+
 ID3D11Device_CheckFormatSupport :: (this: *ID3D11Device, Format: DXGI_FORMAT, pFormatSupport: *u32) -> HRESULT {
     return this.id3d11device_vtable.CheckFormatSupport(this, Format, pFormatSupport);
 }
+
 ID3D11Device_CheckMultisampleQualityLevels :: (this: *ID3D11Device, Format: DXGI_FORMAT, SampleCount: u32, pNumQualityLevels: *u32) -> HRESULT {
     return this.id3d11device_vtable.CheckMultisampleQualityLevels(this, Format, SampleCount, pNumQualityLevels);
 }
+
 ID3D11Device_CheckCounterInfo :: (this: *ID3D11Device, pCounterInfo: *D3D11_COUNTER_INFO) {
     this.id3d11device_vtable.CheckCounterInfo(this, pCounterInfo);
 }
+
 ID3D11Device_CheckCounter :: (this: *ID3D11Device, pDesc: *D3D11_COUNTER_DESC, pType: *D3D11_COUNTER_TYPE, pActiveCounters: *u32, szName: *u8, pNameLength: *u32, szUnits: *u8, pUnitsLength: *u32, szDescription: *u8, pDescriptionLength: *u32) -> HRESULT {
     return this.id3d11device_vtable.CheckCounter(this, pDesc, pType, pActiveCounters, szName, pNameLength, szUnits, pUnitsLength, szDescription, pDescriptionLength);
 }
+
 ID3D11Device_CheckFeatureSupport :: (this: *ID3D11Device, Feature: D3D11_FEATURE, pFeatureSupportData: *void, FeatureSupportDataSize: u32) -> HRESULT {
     return this.id3d11device_vtable.CheckFeatureSupport(this, Feature, pFeatureSupportData, FeatureSupportDataSize);
 }
+
 ID3D11Device_GetPrivateData :: (this: *ID3D11Device, guid: *GUID, pDataSize: *u32, pData: *void) -> HRESULT {
     return this.id3d11device_vtable.GetPrivateData(this, guid, pDataSize, pData);
 }
+
 ID3D11Device_SetPrivateData :: (this: *ID3D11Device, guid: *GUID, DataSize: u32, pData: *void) -> HRESULT {
     return this.id3d11device_vtable.SetPrivateData(this, guid, DataSize, pData);
 }
+
 ID3D11Device_SetPrivateDataInterface :: (this: *ID3D11Device, guid: *GUID, pData: *IUnknown) -> HRESULT {
     return this.id3d11device_vtable.SetPrivateDataInterface(this, guid, pData);
 }
+
 ID3D11Device_GetFeatureLevel :: (this: *ID3D11Device) -> D3D_FEATURE_LEVEL {
     return this.id3d11device_vtable.GetFeatureLevel(this);
 }
+
 ID3D11Device_GetCreationFlags :: (this: *ID3D11Device) -> u32 {
     return this.id3d11device_vtable.GetCreationFlags(this);
 }
+
 ID3D11Device_GetDeviceRemovedReason :: (this: *ID3D11Device) -> HRESULT {
     return this.id3d11device_vtable.GetDeviceRemovedReason(this);
 }
+
 ID3D11Device_GetImmediateContext :: (this: *ID3D11Device, ppImmediateContext: **ID3D11DeviceContext) {
     this.id3d11device_vtable.GetImmediateContext(this, ppImmediateContext);
 }
+
 ID3D11Device_SetExceptionMode :: (this: *ID3D11Device, RaiseFlags: u32) -> HRESULT {
     return this.id3d11device_vtable.SetExceptionMode(this, RaiseFlags);
 }
+
 ID3D11Device_GetExceptionMode :: (this: *ID3D11Device) -> u32 {
     return this.id3d11device_vtable.GetExceptionMode(this);
 }
+
 vtable :: (obj: *ID3D11Device) -> *ID3D11Device_VTable {
     return obj.id3d11device_vtable;
 }
+
 D3D11_CREATE_DEVICE_FLAG :: enum_flags u32 {
     SINGLETHREADED :: 0x1;
     DEBUG :: 0x2;
@@ -4917,10 +5599,12 @@ D3D11_CREATE_DEVICE_FLAG :: enum_flags u32 {
     D3D11_CREATE_DEVICE_DISABLE_GPU_TIMEOUT :: DISABLE_GPU_TIMEOUT;
     D3D11_CREATE_DEVICE_VIDEO_SUPPORT :: VIDEO_SUPPORT;
 }
+
 PFN_D3D11_CREATE_DEVICE :: #type (unknown0: *IDXGIAdapter, unknown1: D3D_DRIVER_TYPE, unknown2: HMODULE, unknown3: u32, unknown4: *D3D_FEATURE_LEVEL, FeatureLevels: u32, unknown5: u32, unknown6: **ID3D11Device, unknown7: *D3D_FEATURE_LEVEL, unknown8: **ID3D11DeviceContext) -> HRESULT #c_call;
 D3D11CreateDevice :: (pAdapter: *IDXGIAdapter, DriverType: D3D_DRIVER_TYPE, Software: HMODULE, Flags: D3D11_CREATE_DEVICE_FLAG, pFeatureLevels: *D3D_FEATURE_LEVEL, FeatureLevels: u32, SDKVersion: u32, ppDevice: **ID3D11Device, pFeatureLevel: *D3D_FEATURE_LEVEL, ppImmediateContext: **ID3D11DeviceContext) -> HRESULT #foreign d3d11;
 PFN_D3D11_CREATE_DEVICE_AND_SWAP_CHAIN :: #type (unknown0: *IDXGIAdapter, unknown1: D3D_DRIVER_TYPE, unknown2: HMODULE, unknown3: u32, unknown4: *D3D_FEATURE_LEVEL, FeatureLevels: u32, unknown5: u32, unknown6: *DXGI_SWAP_CHAIN_DESC, unknown7: **IDXGISwapChain, unknown8: **ID3D11Device, unknown9: *D3D_FEATURE_LEVEL, unknown10: **ID3D11DeviceContext) -> HRESULT #c_call;
 D3D11CreateDeviceAndSwapChain :: (pAdapter: *IDXGIAdapter, DriverType: D3D_DRIVER_TYPE, Software: HMODULE, Flags: u32, pFeatureLevels: *D3D_FEATURE_LEVEL, FeatureLevels: u32, SDKVersion: u32, pSwapChainDesc: *DXGI_SWAP_CHAIN_DESC, ppSwapChain: **IDXGISwapChain, ppDevice: **ID3D11Device, pFeatureLevel: *D3D_FEATURE_LEVEL, ppImmediateContext: **ID3D11DeviceContext) -> HRESULT #foreign d3d11;
+
 D3D11_SHADER_VERSION_TYPE :: enum s32 {
     PIXEL_SHADER :: 0;
     VERTEX_SHADER :: 1;
@@ -4937,8 +5621,10 @@ D3D11_SHADER_VERSION_TYPE :: enum s32 {
     D3D11_SHVER_COMPUTE_SHADER :: COMPUTE_SHADER;
     D3D11_SHVER_RESERVED0 :: RESERVED0;
 }
+
 D3D11_RESOURCE_RETURN_TYPE :: D3D_RESOURCE_RETURN_TYPE;
 D3D11_CBUFFER_TYPE :: D3D_CBUFFER_TYPE;
+
 D3D11_SIGNATURE_PARAMETER_DESC :: struct {
     SemanticName: *u8;
     SemanticIndex: u32;
@@ -4950,6 +5636,7 @@ D3D11_SIGNATURE_PARAMETER_DESC :: struct {
     Stream: u32;
     MinPrecision: D3D_MIN_PRECISION;
 }
+
 D3D11_SHADER_BUFFER_DESC :: struct {
     Name: *u8;
     Type: D3D_CBUFFER_TYPE;
@@ -4957,6 +5644,7 @@ D3D11_SHADER_BUFFER_DESC :: struct {
     Size: u32;
     uFlags: u32;
 }
+
 D3D11_SHADER_VARIABLE_DESC :: struct {
     Name: *u8;
     StartOffset: u32;
@@ -4968,6 +5656,7 @@ D3D11_SHADER_VARIABLE_DESC :: struct {
     StartSampler: u32;
     SamplerSize: u32;
 }
+
 D3D11_SHADER_TYPE_DESC :: struct {
     Class: D3D_SHADER_VARIABLE_CLASS;
     Type: D3D_SHADER_VARIABLE_TYPE;
@@ -4978,9 +5667,11 @@ D3D11_SHADER_TYPE_DESC :: struct {
     Offset: u32;
     Name: *u8;
 }
+
 D3D11_TESSELLATOR_DOMAIN :: D3D_TESSELLATOR_DOMAIN;
 D3D11_TESSELLATOR_PARTITIONING :: D3D_TESSELLATOR_PARTITIONING;
 D3D11_TESSELLATOR_OUTPUT_PRIMITIVE :: D3D_TESSELLATOR_OUTPUT_PRIMITIVE;
+
 D3D11_SHADER_DESC :: struct {
     Version: u32;
     Creator: *u8;
@@ -5021,6 +5712,7 @@ D3D11_SHADER_DESC :: struct {
     cInterlockedInstructions: u32;
     cTextureStoreInstructions: u32;
 }
+
 D3D11_SHADER_INPUT_BIND_DESC :: struct {
     Name: *u8;
     Type: D3D_SHADER_INPUT_TYPE;
@@ -5031,11 +5723,13 @@ D3D11_SHADER_INPUT_BIND_DESC :: struct {
     Dimension: D3D_SRV_DIMENSION;
     NumSamples: u32;
 }
+
 D3D11_LIBRARY_DESC :: struct {
     Creator: *u8;
     Flags: u32;
     FunctionCount: u32;
 }
+
 D3D11_FUNCTION_DESC :: struct {
     Version: u32;
     Creator: *u8;
@@ -5071,6 +5765,7 @@ D3D11_FUNCTION_DESC :: struct {
     Has10Level9VertexShader: BOOL;
     Has10Level9PixelShader: BOOL;
 }
+
 D3D11_PARAMETER_DESC :: struct {
     Name: *u8;
     SemanticName: *u8;
@@ -5085,9 +5780,11 @@ D3D11_PARAMETER_DESC :: struct {
     FirstOutRegister: u32;
     FirstOutComponent: u32;
 }
+
 ID3D11ShaderReflectionType :: struct {
     vtable: *ID3D11ShaderReflectionType_VTable;
 }
+
 ID3D11ShaderReflectionType_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D11ShaderReflectionType, pDesc: *D3D11_SHADER_TYPE_DESC) -> HRESULT #cpp_method;
     GetMemberTypeByIndex: (this: *ID3D11ShaderReflectionType, Index: u32) -> *ID3D11ShaderReflectionType #cpp_method;
@@ -5101,91 +5798,118 @@ ID3D11ShaderReflectionType_VTable :: struct #type_info_none {
     IsOfType: (this: *ID3D11ShaderReflectionType, pType: *ID3D11ShaderReflectionType) -> HRESULT #cpp_method;
     ImplementsInterface: (this: *ID3D11ShaderReflectionType, pBase: *ID3D11ShaderReflectionType) -> HRESULT #cpp_method;
 }
+
 ID3D11ShaderReflectionType_GetDesc :: (this: *ID3D11ShaderReflectionType, pDesc: *D3D11_SHADER_TYPE_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D11ShaderReflectionType_GetMemberTypeByIndex :: (this: *ID3D11ShaderReflectionType, Index: u32) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetMemberTypeByIndex(this, Index);
 }
+
 ID3D11ShaderReflectionType_GetMemberTypeByName :: (this: *ID3D11ShaderReflectionType, Name: *u8) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetMemberTypeByName(this, Name);
 }
+
 ID3D11ShaderReflectionType_GetMemberTypeName :: (this: *ID3D11ShaderReflectionType, Index: u32) -> *u8 {
     return this.vtable.GetMemberTypeName(this, Index);
 }
+
 ID3D11ShaderReflectionType_IsEqual :: (this: *ID3D11ShaderReflectionType, pType: *ID3D11ShaderReflectionType) -> HRESULT {
     return this.vtable.IsEqual(this, pType);
 }
+
 ID3D11ShaderReflectionType_GetSubType :: (this: *ID3D11ShaderReflectionType) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetSubType(this);
 }
+
 ID3D11ShaderReflectionType_GetBaseClass :: (this: *ID3D11ShaderReflectionType) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetBaseClass(this);
 }
+
 ID3D11ShaderReflectionType_GetNumInterfaces :: (this: *ID3D11ShaderReflectionType) -> u32 {
     return this.vtable.GetNumInterfaces(this);
 }
+
 ID3D11ShaderReflectionType_GetInterfaceByIndex :: (this: *ID3D11ShaderReflectionType, uIndex: u32) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetInterfaceByIndex(this, uIndex);
 }
+
 ID3D11ShaderReflectionType_IsOfType :: (this: *ID3D11ShaderReflectionType, pType: *ID3D11ShaderReflectionType) -> HRESULT {
     return this.vtable.IsOfType(this, pType);
 }
+
 ID3D11ShaderReflectionType_ImplementsInterface :: (this: *ID3D11ShaderReflectionType, pBase: *ID3D11ShaderReflectionType) -> HRESULT {
     return this.vtable.ImplementsInterface(this, pBase);
 }
+
 vtable :: (obj: *ID3D11ShaderReflectionType) -> *ID3D11ShaderReflectionType_VTable {
     return obj.vtable;
 }
+
 ID3D11ShaderReflectionVariable :: struct {
     vtable: *ID3D11ShaderReflectionVariable_VTable;
 }
+
 ID3D11ShaderReflectionVariable_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D11ShaderReflectionVariable, pDesc: *D3D11_SHADER_VARIABLE_DESC) -> HRESULT #cpp_method;
     GetType: (this: *ID3D11ShaderReflectionVariable) -> *ID3D11ShaderReflectionType #cpp_method;
     GetBuffer: (this: *ID3D11ShaderReflectionVariable) -> *ID3D11ShaderReflectionConstantBuffer #cpp_method;
     GetInterfaceSlot: (this: *ID3D11ShaderReflectionVariable, uArrayIndex: u32) -> u32 #cpp_method;
 }
+
 ID3D11ShaderReflectionVariable_GetDesc :: (this: *ID3D11ShaderReflectionVariable, pDesc: *D3D11_SHADER_VARIABLE_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D11ShaderReflectionVariable_GetType :: (this: *ID3D11ShaderReflectionVariable) -> *ID3D11ShaderReflectionType {
     return this.vtable.GetType(this);
 }
+
 ID3D11ShaderReflectionVariable_GetBuffer :: (this: *ID3D11ShaderReflectionVariable) -> *ID3D11ShaderReflectionConstantBuffer {
     return this.vtable.GetBuffer(this);
 }
+
 ID3D11ShaderReflectionVariable_GetInterfaceSlot :: (this: *ID3D11ShaderReflectionVariable, uArrayIndex: u32) -> u32 {
     return this.vtable.GetInterfaceSlot(this, uArrayIndex);
 }
+
 vtable :: (obj: *ID3D11ShaderReflectionVariable) -> *ID3D11ShaderReflectionVariable_VTable {
     return obj.vtable;
 }
+
 ID3D11ShaderReflectionConstantBuffer :: struct {
     vtable: *ID3D11ShaderReflectionConstantBuffer_VTable;
 }
+
 ID3D11ShaderReflectionConstantBuffer_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D11ShaderReflectionConstantBuffer, pDesc: *D3D11_SHADER_BUFFER_DESC) -> HRESULT #cpp_method;
     GetVariableByIndex: (this: *ID3D11ShaderReflectionConstantBuffer, Index: u32) -> *ID3D11ShaderReflectionVariable #cpp_method;
     GetVariableByName: (this: *ID3D11ShaderReflectionConstantBuffer, Name: *u8) -> *ID3D11ShaderReflectionVariable #cpp_method;
 }
+
 ID3D11ShaderReflectionConstantBuffer_GetDesc :: (this: *ID3D11ShaderReflectionConstantBuffer, pDesc: *D3D11_SHADER_BUFFER_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D11ShaderReflectionConstantBuffer_GetVariableByIndex :: (this: *ID3D11ShaderReflectionConstantBuffer, Index: u32) -> *ID3D11ShaderReflectionVariable {
     return this.vtable.GetVariableByIndex(this, Index);
 }
+
 ID3D11ShaderReflectionConstantBuffer_GetVariableByName :: (this: *ID3D11ShaderReflectionConstantBuffer, Name: *u8) -> *ID3D11ShaderReflectionVariable {
     return this.vtable.GetVariableByName(this, Name);
 }
+
 vtable :: (obj: *ID3D11ShaderReflectionConstantBuffer) -> *ID3D11ShaderReflectionConstantBuffer_VTable {
     return obj.vtable;
 }
+
 ID3D11ShaderReflection :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11shaderreflection_vtable: *ID3D11ShaderReflection_VTable;
 }
+
 ID3D11ShaderReflection_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetDesc: (this: *ID3D11ShaderReflection, pDesc: *D3D11_SHADER_DESC) -> HRESULT #cpp_method;
@@ -5208,88 +5932,115 @@ ID3D11ShaderReflection_VTable :: struct #type_info_none {
     GetThreadGroupSize: (this: *ID3D11ShaderReflection, pSizeX: *u32, pSizeY: *u32, pSizeZ: *u32) -> u32 #cpp_method;
     GetRequiresFlags: (this: *ID3D11ShaderReflection) -> u64 #cpp_method;
 }
+
 ID3D11ShaderReflection_GetDesc :: (this: *ID3D11ShaderReflection, pDesc: *D3D11_SHADER_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetDesc(this, pDesc);
 }
+
 ID3D11ShaderReflection_GetConstantBufferByIndex :: (this: *ID3D11ShaderReflection, Index: u32) -> *ID3D11ShaderReflectionConstantBuffer {
     return this.id3d11shaderreflection_vtable.GetConstantBufferByIndex(this, Index);
 }
+
 ID3D11ShaderReflection_GetConstantBufferByName :: (this: *ID3D11ShaderReflection, Name: *u8) -> *ID3D11ShaderReflectionConstantBuffer {
     return this.id3d11shaderreflection_vtable.GetConstantBufferByName(this, Name);
 }
+
 ID3D11ShaderReflection_GetResourceBindingDesc :: (this: *ID3D11ShaderReflection, ResourceIndex: u32, pDesc: *D3D11_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetResourceBindingDesc(this, ResourceIndex, pDesc);
 }
+
 ID3D11ShaderReflection_GetInputParameterDesc :: (this: *ID3D11ShaderReflection, ParameterIndex: u32, pDesc: *D3D11_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetInputParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D11ShaderReflection_GetOutputParameterDesc :: (this: *ID3D11ShaderReflection, ParameterIndex: u32, pDesc: *D3D11_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetOutputParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D11ShaderReflection_GetPatchConstantParameterDesc :: (this: *ID3D11ShaderReflection, ParameterIndex: u32, pDesc: *D3D11_SIGNATURE_PARAMETER_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetPatchConstantParameterDesc(this, ParameterIndex, pDesc);
 }
+
 ID3D11ShaderReflection_GetVariableByName :: (this: *ID3D11ShaderReflection, Name: *u8) -> *ID3D11ShaderReflectionVariable {
     return this.id3d11shaderreflection_vtable.GetVariableByName(this, Name);
 }
+
 ID3D11ShaderReflection_GetResourceBindingDescByName :: (this: *ID3D11ShaderReflection, Name: *u8, pDesc: *D3D11_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetResourceBindingDescByName(this, Name, pDesc);
 }
+
 ID3D11ShaderReflection_GetMovInstructionCount :: (this: *ID3D11ShaderReflection) -> u32 {
     return this.id3d11shaderreflection_vtable.GetMovInstructionCount(this);
 }
+
 ID3D11ShaderReflection_GetMovcInstructionCount :: (this: *ID3D11ShaderReflection) -> u32 {
     return this.id3d11shaderreflection_vtable.GetMovcInstructionCount(this);
 }
+
 ID3D11ShaderReflection_GetConversionInstructionCount :: (this: *ID3D11ShaderReflection) -> u32 {
     return this.id3d11shaderreflection_vtable.GetConversionInstructionCount(this);
 }
+
 ID3D11ShaderReflection_GetBitwiseInstructionCount :: (this: *ID3D11ShaderReflection) -> u32 {
     return this.id3d11shaderreflection_vtable.GetBitwiseInstructionCount(this);
 }
+
 ID3D11ShaderReflection_GetGSInputPrimitive :: (this: *ID3D11ShaderReflection) -> D3D_PRIMITIVE {
     return this.id3d11shaderreflection_vtable.GetGSInputPrimitive(this);
 }
+
 ID3D11ShaderReflection_IsSampleFrequencyShader :: (this: *ID3D11ShaderReflection) -> BOOL {
     return this.id3d11shaderreflection_vtable.IsSampleFrequencyShader(this);
 }
+
 ID3D11ShaderReflection_GetNumInterfaceSlots :: (this: *ID3D11ShaderReflection) -> u32 {
     return this.id3d11shaderreflection_vtable.GetNumInterfaceSlots(this);
 }
+
 ID3D11ShaderReflection_GetMinFeatureLevel :: (this: *ID3D11ShaderReflection, pLevel: *D3D_FEATURE_LEVEL) -> HRESULT {
     return this.id3d11shaderreflection_vtable.GetMinFeatureLevel(this, pLevel);
 }
+
 ID3D11ShaderReflection_GetThreadGroupSize :: (this: *ID3D11ShaderReflection, pSizeX: *u32, pSizeY: *u32, pSizeZ: *u32) -> u32 {
     return this.id3d11shaderreflection_vtable.GetThreadGroupSize(this, pSizeX, pSizeY, pSizeZ);
 }
+
 ID3D11ShaderReflection_GetRequiresFlags :: (this: *ID3D11ShaderReflection) -> u64 {
     return this.id3d11shaderreflection_vtable.GetRequiresFlags(this);
 }
+
 vtable :: (obj: *ID3D11ShaderReflection) -> *ID3D11ShaderReflection_VTable {
     return obj.id3d11shaderreflection_vtable;
 }
+
 ID3D11LibraryReflection :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11libraryreflection_vtable: *ID3D11LibraryReflection_VTable;
 }
+
 ID3D11LibraryReflection_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     GetDesc: (this: *ID3D11LibraryReflection, pDesc: *D3D11_LIBRARY_DESC) -> HRESULT #cpp_method;
     GetFunctionByIndex: (this: *ID3D11LibraryReflection, FunctionIndex: s32) -> *ID3D11FunctionReflection #cpp_method;
 }
+
 ID3D11LibraryReflection_GetDesc :: (this: *ID3D11LibraryReflection, pDesc: *D3D11_LIBRARY_DESC) -> HRESULT {
     return this.id3d11libraryreflection_vtable.GetDesc(this, pDesc);
 }
+
 ID3D11LibraryReflection_GetFunctionByIndex :: (this: *ID3D11LibraryReflection, FunctionIndex: s32) -> *ID3D11FunctionReflection {
     return this.id3d11libraryreflection_vtable.GetFunctionByIndex(this, FunctionIndex);
 }
+
 vtable :: (obj: *ID3D11LibraryReflection) -> *ID3D11LibraryReflection_VTable {
     return obj.id3d11libraryreflection_vtable;
 }
+
 ID3D11FunctionReflection :: struct {
     vtable: *ID3D11FunctionReflection_VTable;
 }
+
 ID3D11FunctionReflection_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D11FunctionReflection, pDesc: *D3D11_FUNCTION_DESC) -> HRESULT #cpp_method;
     GetConstantBufferByIndex: (this: *ID3D11FunctionReflection, BufferIndex: u32) -> *ID3D11ShaderReflectionConstantBuffer #cpp_method;
@@ -5299,50 +6050,65 @@ ID3D11FunctionReflection_VTable :: struct #type_info_none {
     GetResourceBindingDescByName: (this: *ID3D11FunctionReflection, Name: *u8, pDesc: *D3D11_SHADER_INPUT_BIND_DESC) -> HRESULT #cpp_method;
     GetFunctionParameter: (this: *ID3D11FunctionReflection, ParameterIndex: s32) -> *ID3D11FunctionParameterReflection #cpp_method;
 }
+
 ID3D11FunctionReflection_GetDesc :: (this: *ID3D11FunctionReflection, pDesc: *D3D11_FUNCTION_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 ID3D11FunctionReflection_GetConstantBufferByIndex :: (this: *ID3D11FunctionReflection, BufferIndex: u32) -> *ID3D11ShaderReflectionConstantBuffer {
     return this.vtable.GetConstantBufferByIndex(this, BufferIndex);
 }
+
 ID3D11FunctionReflection_GetConstantBufferByName :: (this: *ID3D11FunctionReflection, Name: *u8) -> *ID3D11ShaderReflectionConstantBuffer {
     return this.vtable.GetConstantBufferByName(this, Name);
 }
+
 ID3D11FunctionReflection_GetResourceBindingDesc :: (this: *ID3D11FunctionReflection, ResourceIndex: u32, pDesc: *D3D11_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.vtable.GetResourceBindingDesc(this, ResourceIndex, pDesc);
 }
+
 ID3D11FunctionReflection_GetVariableByName :: (this: *ID3D11FunctionReflection, Name: *u8) -> *ID3D11ShaderReflectionVariable {
     return this.vtable.GetVariableByName(this, Name);
 }
+
 ID3D11FunctionReflection_GetResourceBindingDescByName :: (this: *ID3D11FunctionReflection, Name: *u8, pDesc: *D3D11_SHADER_INPUT_BIND_DESC) -> HRESULT {
     return this.vtable.GetResourceBindingDescByName(this, Name, pDesc);
 }
+
 ID3D11FunctionReflection_GetFunctionParameter :: (this: *ID3D11FunctionReflection, ParameterIndex: s32) -> *ID3D11FunctionParameterReflection {
     return this.vtable.GetFunctionParameter(this, ParameterIndex);
 }
+
 vtable :: (obj: *ID3D11FunctionReflection) -> *ID3D11FunctionReflection_VTable {
     return obj.vtable;
 }
+
 ID3D11FunctionParameterReflection :: struct {
     vtable: *ID3D11FunctionParameterReflection_VTable;
 }
+
 ID3D11FunctionParameterReflection_VTable :: struct #type_info_none {
     GetDesc: (this: *ID3D11FunctionParameterReflection, pDesc: *D3D11_PARAMETER_DESC) -> HRESULT #cpp_method;
 }
+
 ID3D11FunctionParameterReflection_GetDesc :: (this: *ID3D11FunctionParameterReflection, pDesc: *D3D11_PARAMETER_DESC) -> HRESULT {
     return this.vtable.GetDesc(this, pDesc);
 }
+
 vtable :: (obj: *ID3D11FunctionParameterReflection) -> *ID3D11FunctionParameterReflection_VTable {
     return obj.vtable;
 }
+
 ID3D11LinkingNode :: struct {
     #as using iunknown: IUnknown;
 }
+
 ID3D11FunctionLinkingGraph :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d11functionlinkinggraph_vtable: *ID3D11FunctionLinkingGraph_VTable;
 }
+
 ID3D11FunctionLinkingGraph_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     CreateModuleInstance: (this: *ID3D11FunctionLinkingGraph, ppModuleInstance: **ID3D11ModuleInstance, ppErrorBuffer: **ID3DBlob) -> HRESULT #cpp_method;
@@ -5354,32 +6120,42 @@ ID3D11FunctionLinkingGraph_VTable :: struct #type_info_none {
     GetLastError: (this: *ID3D11FunctionLinkingGraph, ppErrorBuffer: **ID3DBlob) -> HRESULT #cpp_method;
     GenerateHlsl: (this: *ID3D11FunctionLinkingGraph, uFlags: u32, ppBuffer: **ID3DBlob) -> HRESULT #cpp_method;
 }
+
 ID3D11FunctionLinkingGraph_CreateModuleInstance :: (this: *ID3D11FunctionLinkingGraph, ppModuleInstance: **ID3D11ModuleInstance, ppErrorBuffer: **ID3DBlob) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.CreateModuleInstance(this, ppModuleInstance, ppErrorBuffer);
 }
+
 ID3D11FunctionLinkingGraph_SetInputSignature :: (this: *ID3D11FunctionLinkingGraph, pInputParameters: *D3D11_PARAMETER_DESC, cInputParameters: u32, ppInputNode: **ID3D11LinkingNode) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.SetInputSignature(this, pInputParameters, cInputParameters, ppInputNode);
 }
+
 ID3D11FunctionLinkingGraph_SetOutputSignature :: (this: *ID3D11FunctionLinkingGraph, pOutputParameters: *D3D11_PARAMETER_DESC, cOutputParameters: u32, ppOutputNode: **ID3D11LinkingNode) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.SetOutputSignature(this, pOutputParameters, cOutputParameters, ppOutputNode);
 }
+
 ID3D11FunctionLinkingGraph_CallFunction :: (this: *ID3D11FunctionLinkingGraph, pModuleInstanceNamespace: *u8, pModuleWithFunctionPrototype: *ID3D11Module, pFunctionName: *u8, ppCallNode: **ID3D11LinkingNode) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.CallFunction(this, pModuleInstanceNamespace, pModuleWithFunctionPrototype, pFunctionName, ppCallNode);
 }
+
 ID3D11FunctionLinkingGraph_PassValue :: (this: *ID3D11FunctionLinkingGraph, pSrcNode: *ID3D11LinkingNode, SrcParameterIndex: s32, pDstNode: *ID3D11LinkingNode, DstParameterIndex: s32) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.PassValue(this, pSrcNode, SrcParameterIndex, pDstNode, DstParameterIndex);
 }
+
 ID3D11FunctionLinkingGraph_PassValueWithSwizzle :: (this: *ID3D11FunctionLinkingGraph, pSrcNode: *ID3D11LinkingNode, SrcParameterIndex: s32, pSrcSwizzle: *u8, pDstNode: *ID3D11LinkingNode, DstParameterIndex: s32, pDstSwizzle: *u8) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.PassValueWithSwizzle(this, pSrcNode, SrcParameterIndex, pSrcSwizzle, pDstNode, DstParameterIndex, pDstSwizzle);
 }
+
 ID3D11FunctionLinkingGraph_GetLastError :: (this: *ID3D11FunctionLinkingGraph, ppErrorBuffer: **ID3DBlob) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.GetLastError(this, ppErrorBuffer);
 }
+
 ID3D11FunctionLinkingGraph_GenerateHlsl :: (this: *ID3D11FunctionLinkingGraph, uFlags: u32, ppBuffer: **ID3DBlob) -> HRESULT {
     return this.id3d11functionlinkinggraph_vtable.GenerateHlsl(this, uFlags, ppBuffer);
 }
+
 vtable :: (obj: *ID3D11FunctionLinkingGraph) -> *ID3D11FunctionLinkingGraph_VTable {
     return obj.id3d11functionlinkinggraph_vtable;
 }
+
 #scope_file
 d3d11 :: #system_library "d3d11";

@@ -1,5 +1,6 @@
 #import "Basic";
 String :: #import "String";
+
 Processor_Query_Type :: enum u8 {
     ALL_PHYSICAL;
     ALL_LOGICAL;
@@ -11,6 +12,7 @@ Processor_Query_Type :: enum u8 {
     #load "File/windows-encoding.jai";
     Windows :: #import "Windows";
     Utf8 :: #import "Windows_Utf8";
+
     OS_Error_Code :: Windows.OS_Error_Code;
     get_error_value :: Windows.GetLastError;
 
@@ -25,24 +27,28 @@ Processor_Query_Type :: enum u8 {
         }
         return "";
     }
+
     get_username :: () -> string, success: bool {
         buffer: [257] u16;
         length: u32 = xx buffer.count;
         if !Windows.GetUserNameW(buffer.data, *length) return "", false;
         return os_wide_to_utf8(buffer.data), true;
     }
+
     get_home_directory :: (username := "") -> string, success: bool {
         if username return "", false;
         value := Windows.getenv(temp_c_string("USERPROFILE"));
         if !value return "", false;
         return copy_string(to_string(value)), true;
     }
+
     get_machinename :: () -> string {
         buffer: [256] u16;
         length: u32 = xx buffer.count;
         if !Windows.GetComputerNameW(buffer.data, *length) return "";
         return os_wide_to_utf8(buffer.data, xx length);
     }
+
     get_error_string :: (error_code: OS_Error_Code) -> string {
         buffer: [2048] u16;
         count := Windows.FormatMessageW(0x1000 | 0x200, null, cast(u32) error_code, 0, cast(**u16) buffer.data, xx buffer.count, null);
@@ -51,6 +57,7 @@ Processor_Query_Type :: enum u8 {
     }
 } else {
     P :: #import "POSIX";
+
     OS_Error_Code :: P.OS_Error_Code;
     get_error_value :: P.errno;
 
@@ -74,6 +81,7 @@ Processor_Query_Type :: enum u8 {
             return "";
         }
     }
+
     #if OS == .LINUX || OS == .ANDROID || OS == .MACOS {
         // Results live in temporary storage. An empty username means the current user.
         get_passwd_for_user :: (username := "") -> (success: bool, p: P.passwd) {
@@ -98,11 +106,13 @@ Processor_Query_Type :: enum u8 {
             return false, .{};
         }
     }
+
     get_username :: () -> string, success: bool {
         entry := P.getpwuid(P.getuid());
         if !entry || !entry.pw_name return "", false;
         return copy_string(to_string(entry.pw_name)), true;
     }
+
     get_home_directory :: (username := "") -> string, success: bool {
         entry: *P.passwd;
         if username entry = P.getpwnam(temp_c_string(username));
@@ -110,20 +120,24 @@ Processor_Query_Type :: enum u8 {
         if !entry || !entry.pw_dir return "", false;
         return copy_string(to_string(entry.pw_dir)), true;
     }
+
     get_machinename :: () -> string {
         buffer: [256] u8;
         if P.gethostname(buffer.data, buffer.count - 1) != 0 return "";
         buffer[buffer.count - 1] = 0;
         return copy_string(to_string(buffer.data));
     }
+
     get_error_string :: (error_code: OS_Error_Code) -> string {
         description := system_strerror(cast(s32) error_code);
         if !description return tprint("OS error %", error_code);
         return copy_string(to_string(description));
     }
+
     #scope_module
     system_libc :: #system_library "c";
     system_strerror :: (code: s32) -> *u8 #foreign system_libc "strerror";
+
     #if OS == .MACOS || OS == .IOS {
         system_executable_path :: (buffer: *u8, count: *u32) -> s32 #foreign system_libc "_NSGetExecutablePath";
     }
@@ -138,6 +152,7 @@ get_error_value_and_string :: () -> (error_code: OS_Error_Code, description: str
 get_number_of_processors :: ($type: Processor_Query_Type = .PERFORMANCE_LOGICAL) -> count: s32 {
     return cast(s32) get_number_of_processors_for_type(type);
 }
+
 get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_LOGICAL) -> s64 {
     return system_processor_count(type);
 }
@@ -233,6 +248,7 @@ get_number_of_processors_for_type :: (type: Processor_Query_Type = .PERFORMANCE_
         }
         return cores.count;
     }
+
     topology_text :: (path: string) -> string {
         descriptor := P.open(temp_c_string(path), P.O_RDONLY);
         if descriptor < 0 return "";

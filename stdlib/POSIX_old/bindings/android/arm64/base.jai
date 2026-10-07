@@ -291,12 +291,15 @@ _PC_PRIO_IO :: 18;
 _PC_SYNC_IO :: 19;
 __errno :: () -> *s32 #foreign libc;
 ptrdiff_t :: s64;
+
 __kernel_fd_set :: struct {
     fds_bits: [16] u64;
 }
+
 __kernel_fsid_t :: struct {
     val: [2] s32;
 }
+
 gid_t :: u32;
 uid_t :: u32;
 pid_t :: s32;
@@ -318,6 +321,7 @@ loff_t :: off_t;
 off64_t :: loff_t;
 ssize_t :: s64;
 uint_t :: u32;
+
 passwd :: struct {
     pw_name: *u8;
     pw_passwd: *u8;
@@ -327,6 +331,7 @@ passwd :: struct {
     pw_dir: *u8;
     pw_shell: *u8;
 }
+
 getpwnam :: (__name: *u8) -> *passwd #foreign libc;
 getpwuid :: (__uid: uid_t) -> *passwd #foreign libc;
 getpwent :: () -> *passwd #foreign libc;
@@ -334,10 +339,12 @@ setpwent :: () -> void #foreign libc;
 endpwent :: () -> void #foreign libc;
 getpwnam_r :: (__name: *u8, __pwd: *passwd, __buf: *u8, __n: u64, __result: **passwd) -> s32 #foreign libc;
 getpwuid_r :: (__uid: uid_t, __pwd: *passwd, __buf: *u8, __n: u64, __result: **passwd) -> s32 #foreign libc;
+
 sem_t :: struct {
     count: u32;
     __reserved: [3] s32;
 }
+
 sem_clockwait :: (__sem: *sem_t, __clock: clockid_t, __ts: *timespec) -> s32 #foreign libc;
 sem_destroy :: (__sem: *sem_t) -> s32 #foreign libc;
 sem_getvalue :: (__sem: *sem_t, __value: *s32) -> s32 #foreign libc;
@@ -432,14 +439,17 @@ clearerr_unlocked :: (__fp: *FILE) -> void #foreign libc;
 feof_unlocked :: (__fp: *FILE) -> s32 #foreign libc;
 ferror_unlocked :: (__fp: *FILE) -> s32 #foreign libc;
 fileno_unlocked :: (__fp: *FILE) -> s32 #foreign libc;
+
 iovec :: struct {
     iov_base: *void;
     iov_len: u64;
 }
+
 timespec :: struct {
     tv_sec: time_t;
     tv_nsec: s64;
 }
+
 stat :: struct {
     st_dev: dev_t;
     st_ino: ino_t;
@@ -459,6 +469,7 @@ stat :: struct {
     __unused4: u32;
     __unused5: u32;
 }
+
 stat64 :: struct {
     st_dev: dev_t;
     st_ino: ino_t;
@@ -478,6 +489,7 @@ stat64 :: struct {
     __unused4: u32;
     __unused5: u32;
 }
+
 chmod :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
 fchmod :: (__fd: s32, __mode: mode_t) -> s32 #foreign libc;
 mkdir :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
@@ -498,30 +510,38 @@ mkdirat :: (__dir_fd: s32, __path: *u8, __mode: mode_t) -> s32 #foreign libc;
 mknodat :: (__dir_fd: s32, __path: *u8, __mode: mode_t, __dev: dev_t) -> s32 #foreign libc;
 utimensat :: (__dir_fd: s32, __path: *u8, __times: *timespec, __flags: s32) -> s32 #foreign libc;
 futimens :: (__fd: s32, __times: *timespec) -> s32 #foreign libc;
+
 timeval :: struct {
     tv_sec: s64;
     tv_usec: s64;
 }
+
 itimerspec :: struct {
     it_interval: timespec;
     it_value: timespec;
 }
+
 itimerval :: struct {
     it_interval: timeval;
     it_value: timeval;
 }
+
 timezone :: struct {
     tz_minuteswest: s32;
     tz_dsttime: s32;
 }
+
 sigset_t :: struct {
     sig: [1] u64;
 }
+
 sigval :: union {
     sival_int: s32;
     sival_ptr: *void;
 }
+
 sigval_t :: sigval;
+
 __sifields :: union {
     _kill: struct {
         _pid: s32;
@@ -576,6 +596,7 @@ __sifields :: union {
         _arch: u32;
     };
 }
+
 siginfo :: struct {
     union {
         struct {
@@ -587,7 +608,9 @@ siginfo :: struct {
         _si_pad: [32] s32;
     }
 }
+
 siginfo_t :: siginfo;
+
 sigevent :: struct {
     sigev_value: sigval_t;
     sigev_signo: s32;
@@ -601,11 +624,13 @@ sigevent :: struct {
         };
     };
 }
+
 sigevent_t :: sigevent;
 sig_atomic_t :: s32;
 sig_t :: #type (unknown0: s32) -> void #c_call;
 sighandler_t :: #type (unknown0: s32) -> void #c_call;
 sigset64_t :: sigset_t;
+
 sigaction :: struct {
     sa_flags: s32;
     union {
@@ -615,6 +640,7 @@ sigaction :: struct {
     sa_mask: sigset_t;
     sa_restorer: #type () -> void #c_call;
 }
+
 sigaction64 :: struct {
     sa_flags: s32;
     union {
@@ -624,6 +650,7 @@ sigaction64 :: struct {
     sa_mask: sigset_t;
     sa_restorer: #type () -> void #c_call;
 }
+
 gettimeofday :: (__tv: *timeval, __tz: *timezone) -> s32 #foreign libc;
 settimeofday :: (__tv: *timeval, __tz: *timezone) -> s32 #foreign libc;
 getitimer :: (__which: s32, __current_value: *itimerval) -> s32 #foreign libc;
@@ -632,6 +659,7 @@ utimes :: (__path: *u8, __times: *timeval) -> s32 #foreign libc;
 locale_t :: *__locale_t;
 tzname: **u8 #elsewhere libc;
 daylight: s32 #elsewhere libc;
+
 tm :: struct {
     tm_sec: s32;
     tm_min: s32;
@@ -645,6 +673,7 @@ tm :: struct {
     tm_gmtoff: s64;
     tm_zone: *u8;
 }
+
 time :: (__t: *time_t) -> time_t #foreign libc;
 nanosleep :: (__request: *timespec, __remainder: *timespec) -> s32 #foreign libc;
 asctime :: (__tm: *tm) -> *u8 #foreign libc;

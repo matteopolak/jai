@@ -2,6 +2,7 @@
 cfstring_from_string :: (str: string) -> CFStringRef {
     return CFStringCreateWithBytes(null, str.data, str.count, .UTF8, false);
 }
+
 to_string :: (cfstring: CFStringRef) -> string {
     if cfstring == null return "";
     character_count := CFStringGetLength(cfstring);
@@ -21,6 +22,7 @@ to_string :: (cfstring: CFStringRef) -> string {
     result.count = length;
     return result;
 }
+
 VM_MAKE_TAG :: (val: s32) -> s32 {
     return cast,trunc(s32) ((cast(u32) val) << 24);
 }

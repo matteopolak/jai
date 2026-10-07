@@ -128,12 +128,14 @@ ENTRY_TAGS :: 15;
 entry_address :: inline (entry: *void) -> *void {
     return cast(*void) ((cast(u64) entry) & ~cast(u64) ENTRY_TAGS);
 }
+
 // The block malloc returned, which realloc and free want back.
 entry_origin :: (entry: *void) -> *void {
     bits := cast(u64) entry;
     if !(bits & WIDE_BLOCK) return entry;
     return cast(*void) ((bits & ~cast(u64) ENTRY_TAGS) - (bits & 3) * 16);
 }
+
 // Use the malloc block at `origin` from its first cache-line boundary. The first `keep` bytes of
 // the contents sit `was_at` bytes in (realloc moved them along with the block) and follow.
 wide_entry :: (origin: *void, was_at: u64, keep: s64) -> *void {
@@ -142,15 +144,18 @@ wide_entry :: (origin: *void, was_at: u64, keep: s64) -> *void {
     if keep > 0 && skipped != was_at c_memmove(cast(*void) boundary, origin + cast(s64) was_at, cast(u64) keep);
     return cast(*void) (boundary | WIDE_BLOCK | (skipped / 16));
 }
+
 obtain_block :: (size: s64) -> entry: *void {
     if size < CACHE_LINE return c_malloc(cast(u64) size);
     origin := c_malloc(cast(u64) (size + WIDE_SLACK));
     if !origin return null;
     return wide_entry(origin, 0, 0);
 }
+
 release_block :: (entry: *void) {
     c_free(entry_origin(entry));
 }
+
 // A wide block stays wide when it shrinks; a plain one turns wide when it reaches a cache line.
 // Either way realloc keeps at least `size` bytes past the old start of the contents, because
 // the slack covers the largest skip.
@@ -172,6 +177,7 @@ Heap :: struct {
     count: s64;
     next: *Heap;
 }
+
 heaps: *Heap;
 ledger_lock: s32;
 
@@ -181,9 +187,11 @@ lock_ledger :: () {
         if success return;
     }
 }
+
 unlock_ledger :: () {
     compare_and_swap(*ledger_lock, cast(s32) 1, cast(s32) 0);
 }
+
 create_heap_locked :: () -> *Heap {
     heap := cast(*Heap) c_malloc(cast(u64) size_of(Heap));
     if !heap return null;
@@ -194,6 +202,7 @@ create_heap_locked :: () -> *Heap {
     heaps = heap;
     return heap;
 }
+
 destroy_heap_locked :: (heap: *Heap) {
     cursor := heaps;
     previous: *Heap;
@@ -209,9 +218,11 @@ destroy_heap_locked :: (heap: *Heap) {
     if heap.slots c_free(heap.slots);
     c_free(heap);
 }
+
 slot_home :: (heap: *Heap, pointer: *void) -> s64 #no_aoc {
     return (cast,no_check(s64) ((((cast(u64) pointer) >> 4) * 11400714819323198485) >> 32)) & (heap.capacity - 1);
 }
+
 // The slot holding the entry for the block at `pointer`, or -1. Tags sit below bit 4, so an
 // entry hashes like its address.
 find_allocation :: (heap: *Heap, pointer: *void) -> s64 {
@@ -224,6 +235,7 @@ find_allocation :: (heap: *Heap, pointer: *void) -> s64 {
     }
     return -1;
 }
+
 // At most half full, so probe runs stay short.
 add_allocation :: (heap: *Heap, pointer: *void) -> bool {
     if (heap.count + 1) * 2 > heap.capacity {
@@ -241,6 +253,7 @@ add_allocation :: (heap: *Heap, pointer: *void) -> bool {
     place_allocation(heap, pointer);
     return true;
 }
+
 place_allocation :: (heap: *Heap, pointer: *void) #no_aoc {
     mask := heap.capacity - 1;
     slot := (cast,no_check(s64) ((((cast(u64) pointer) >> 4) * 11400714819323198485) >> 32)) & mask;
@@ -249,6 +262,7 @@ place_allocation :: (heap: *Heap, pointer: *void) #no_aoc {
     slots[slot] = pointer;
     heap.count += 1;
 }
+
 // Backward-shift deletion: later entries of the probe run move up, so lookups need no tombstones.
 remove_allocation :: (heap: *Heap, slot: s64) {
     mask := heap.capacity - 1;
@@ -269,11 +283,13 @@ remove_allocation :: (heap: *Heap, slot: s64) {
         hole = next;
     }
 }
+
 assert_owned :: (owned: bool) {
     if owned return;
     context.handling_assertion_failure = true;
     context.assertion_failed(#location(), "pointer is not owned by this allocator heap");
     context.handling_assertion_failure = false;
 }
+
 #if OS == .WINDOWS crt :: #system_library "msvcrt";
 else crt :: #system_library "libc";

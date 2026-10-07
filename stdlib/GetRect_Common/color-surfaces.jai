@@ -50,10 +50,12 @@ left_sv_surface :: (r: Rect, state: *Color_Picker_State, warp: bool) {
     left_color_fill(.{ point.x - 3, point.y - 3, 6, 6 }, .{ 0, 0, 0, 1 });
     left_color_fill(.{ point.x - 2, point.y - 2, 4, 4 }, .{ 1, 1, 1, 1 });
 }
+
 left_sv_color :: (state: *Color_Picker_State, point: Vector2, warp: bool) -> Vector4 {
     q := left_disc_square(point, warp);
     return hsv_to_argb(.{ state.current_hsv_color.x, (q.x + 1) / 2, (1 - q.y) / 2 });
 }
+
 left_sv_drag :: (r: Rect, state: *Color_Picker_State, warp: bool) {
     center := xy(r.x + r.w / 2, r.y + r.h / 2);
     radius := min(r.w, r.h) / 2;
@@ -65,6 +67,7 @@ left_sv_drag :: (r: Rect, state: *Color_Picker_State, warp: bool) {
     hsv.z = clamp((1 - q.y) / 2, 0.0, 1.0);
     set_current_color_hsv(state, hsv, false);
 }
+
 // Saturation/value surface <-> screen mapping; y-up modules use the pure helpers in orientation.jai.
 left_sv_point :: (r: Rect, q: Vector2, warp: bool) -> Vector2 {
     if GETRECT_Y_UP return right_sv_point(r, q, warp);
@@ -74,6 +77,7 @@ left_sv_point :: (r: Rect, q: Vector2, warp: bool) -> Vector2 {
     }
     return xy(r.x + (q.x + 1) * r.w / 2, r.y + (q.y + 1) * r.h / 2);
 }
+
 left_sv_normalized :: (r: Rect, point: Vector2, warp: bool) -> Vector2 {
     if GETRECT_Y_UP return right_sv_normalized(r, point, warp);
     if warp {

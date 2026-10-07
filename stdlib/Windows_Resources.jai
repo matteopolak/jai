@@ -4,6 +4,7 @@ Manifest_Options :: struct {
     require_administrator := false;
     use_segment_heap := true;
 }
+
 ICONDIRENTRY :: struct {
     Width: u8;
     Height: u8;
@@ -14,19 +15,23 @@ ICONDIRENTRY :: struct {
     dwBytesInResource: DWORD;
     dwImageOffset: DWORD;
 }
+
 ICONDIR :: struct {
     Reserved1: WORD;
     ResourceType: WORD;
     ImageCount: WORD;
 }
+
 #scope_file
 RESOURCE_ID_MANIFEST :: 1;
 RESOURCE_ID_FIRST_ICON :: 2;
+
 MEMICONDIR :: struct {
     Reserved1: WORD;
     ResourceType: WORD;
     ImageCount: WORD;
 }
+
 MEMICONDIRENTRY :: struct {
     Width: u8;
     Height: u8;
@@ -37,6 +42,7 @@ MEMICONDIRENTRY :: struct {
     ImageSize: DWORD;
     nID: WORD;
 }
+
 kernel32 :: #system_library "kernel32";
 WORD :: u16;
 LONG :: s32;
@@ -51,6 +57,7 @@ BSTR :: *u16;
 COLESTR :: BSTR;
 SysAllocString :: (psz: *u16) -> BSTR #foreign OleAut32;
 SysFreeString :: (psz: BSTR) -> void #foreign OleAut32;
+
 IEnumSetupInstances_VTable :: struct {
     using unknown: IUnknown_VTable;
     Next: (this: *IEnumSetupInstances, celt: u32, rgelt: **ISetupInstance, pceltFetched: *u32) -> HRESULT #c_call;
@@ -58,10 +65,12 @@ IEnumSetupInstances_VTable :: struct {
     Reset: (this: *IEnumSetupInstances) -> HRESULT #c_call;
     Clone: (this: *IEnumSetupInstances, ppenum: **IEnumSetupInstances) -> HRESULT #c_call;
 }
+
 IEnumSetupInstances :: struct {
     using vtable: *IEnumSetupInstances_VTable;
     uuid :: "6380BCFF-41D3-4B2E-8B2E-BF8A6810C848";
 }
+
 ISetupInstance_VTable :: struct {
     using unknown: IUnknown_VTable;
     GetInstanceId: (this: *ISetupInstance, pbstrInstanceId: *BSTR) -> HRESULT #c_call;
@@ -73,24 +82,29 @@ ISetupInstance_VTable :: struct {
     GetDescription: (this: *ISetupInstance, lcid: LCID, pbstrDescription: *BSTR) -> HRESULT #c_call;
     ResolvePath: (this: *ISetupInstance, pwszRelativePath: *COLESTR, pbstrAbsolutePath: *BSTR) -> HRESULT #c_call;
 }
+
 ISetupInstance :: struct {
     using vtable: *ISetupInstance_VTable;
     uuid :: "B41463C3-8866-43B5-BC33-2B0676F7F42E";
 }
+
 ISetupConfiguration_VTable :: struct {
     using unknown: IUnknown_VTable;
     EnumInstances: (this: *ISetupConfiguration, ppEnumInstances: **IEnumSetupInstances) -> HRESULT #c_call;
     GetInstanceForCurrentProcess: (this: *ISetupConfiguration, ppInstance: **ISetupInstance) -> HRESULT #c_call;
     GetInstanceForPath: (this: *ISetupConfiguration, wzPath: *u16, ppInstance: **ISetupInstance) -> HRESULT #c_call;
 }
+
 ISetupConfiguration :: struct {
     using vtable: *ISetupConfiguration_VTable;
     uuid :: "42843719-DB4C-46C2-8E7C-64F1816EFD5B";
 }
+
 COINIT_APARTMENTTHREADED :: 2;
 COINIT_MULTITHREADED :: 0;
 COINIT_DISABLE_OLE1DDE :: 4;
 COINIT_SPEED_OVER_MEMORY :: 8;
+
 using CLSCTX :: enum_flags u32 {
     CLSCTX_INPROC_SERVER :: 0x1;
     CLSCTX_INPROC_HANDLER :: 0x2;
@@ -123,12 +137,14 @@ using CLSCTX :: enum_flags u32 {
     CLSCTX_ALL :: CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
     CLSCTX_SERVER :: CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER;
 }
+
 CoInitialize :: (pvReserved: *void) -> HRESULT #foreign Ole32;
 CoUninitialize :: () -> void #foreign Ole32;
 CoInitializeEx :: (pvReserved: *void, dwCoInit: DWORD) -> HRESULT #foreign Ole32;
 REFCLSID :: *IID;
 CoCreateInstance :: (rclsid: REFCLSID, pUnkOuter: *IUnknown, dwClsContext: CLSCTX, riid: REFIID, ppv: **void) -> HRESULT #foreign Ole32;
 CoCreateFreeThreadedMarshaler :: (punkOuter: *IUnknown, ppunkMarshal: **IUnknown) -> HRESULT #foreign Ole32;
+
 #scope_export
 find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", linker_path := "") {
     // S_OK and S_FALSE both require balancing CoUninitialize. A changed apartment
@@ -215,10 +231,12 @@ find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", lin
     }
     return library_path, linker_path;
 }
+
 #scope_file
 BUFFER_LENGTH :: 10000;
 Ole32 :: #system_library "ole32";
 OleAut32 :: #system_library "oleaut32";
+
 #scope_module
 #import "Basic";
 #import "File";
@@ -241,6 +259,7 @@ _sdk_vs_join :: (left: string, right: string) -> string {
     append(*builder, right);
     return builder_to_string(*builder);
 }
+
 _sdk_vs_file :: (path: string) -> bool {
     wide, success := utf8_to_wide(path);
     if !success || wide == null return false;
@@ -248,6 +267,7 @@ _sdk_vs_file :: (path: string) -> bool {
     attributes := GetFileAttributesW(wide);
     return attributes != 0xffffffff && (attributes & 16) == 0;
 }
+
 _sdk_vs_version :: (text: string) -> [4] u32, bool {
     values: [4] u32;
     if text.count == 0 return values, false;
@@ -268,6 +288,7 @@ _sdk_vs_version :: (text: string) -> [4] u32, bool {
     }
     return values, digits;
 }
+
 _sdk_vs_newer :: (left: [4] u32, right: [4] u32) -> bool {
     for index: 0..3 {
         if left[index] > right[index] return true;

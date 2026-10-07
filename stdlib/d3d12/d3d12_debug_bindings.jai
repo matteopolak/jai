@@ -1,91 +1,116 @@
 // Direct3D 12 debug-layer interfaces.
 D3D12_INFO_QUEUE_DEFAULT_MESSAGE_COUNT_LIMIT :: 1024;
 ID3D12Debug_UUID :: "344488b7-6846-474b-b989-f027448245e0";
+
 ID3D12Debug :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debug_vtable: *ID3D12Debug_VTable;
 }
+
 ID3D12Debug_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     EnableDebugLayer: (this: *ID3D12Debug) -> void #cpp_method;
 }
+
 ID3D12Debug_EnableDebugLayer :: (this: *ID3D12Debug) {
     this.id3d12debug_vtable.EnableDebugLayer(this);
 }
+
 vtable :: (obj: *ID3D12Debug) -> *ID3D12Debug_VTable {
     return obj.id3d12debug_vtable;
 }
+
 D3D12_GPU_BASED_VALIDATION_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     DISABLE_STATE_TRACKING :: 0x1;
     D3D12_GPU_BASED_VALIDATION_FLAGS_NONE :: NONE;
     D3D12_GPU_BASED_VALIDATION_FLAGS_DISABLE_STATE_TRACKING :: DISABLE_STATE_TRACKING;
 }
+
 ID3D12Debug1_UUID :: "affaa4ca-63fe-4d8e-b8ad-159000af4304";
+
 ID3D12Debug1 :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debug1_vtable: *ID3D12Debug1_VTable;
 }
+
 ID3D12Debug1_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     EnableDebugLayer: (this: *ID3D12Debug1) -> void #cpp_method;
     SetEnableGPUBasedValidation: (this: *ID3D12Debug1, Enable: BOOL) -> void #cpp_method;
     SetEnableSynchronizedCommandQueueValidation: (this: *ID3D12Debug1, Enable: BOOL) -> void #cpp_method;
 }
+
 ID3D12Debug1_EnableDebugLayer :: (this: *ID3D12Debug1) {
     this.id3d12debug1_vtable.EnableDebugLayer(this);
 }
+
 ID3D12Debug1_SetEnableGPUBasedValidation :: (this: *ID3D12Debug1, Enable: BOOL) {
     this.id3d12debug1_vtable.SetEnableGPUBasedValidation(this, Enable);
 }
+
 ID3D12Debug1_SetEnableSynchronizedCommandQueueValidation :: (this: *ID3D12Debug1, Enable: BOOL) {
     this.id3d12debug1_vtable.SetEnableSynchronizedCommandQueueValidation(this, Enable);
 }
+
 vtable :: (obj: *ID3D12Debug1) -> *ID3D12Debug1_VTable {
     return obj.id3d12debug1_vtable;
 }
+
 ID3D12Debug2_UUID :: "93a665c4-a3b2-4e5d-b692-a26ae14e3374";
+
 ID3D12Debug2 :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debug2_vtable: *ID3D12Debug2_VTable;
 }
+
 ID3D12Debug2_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetGPUBasedValidationFlags: (this: *ID3D12Debug2, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS) -> void #cpp_method;
 }
+
 ID3D12Debug2_SetGPUBasedValidationFlags :: (this: *ID3D12Debug2, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS) {
     this.id3d12debug2_vtable.SetGPUBasedValidationFlags(this, Flags);
 }
+
 vtable :: (obj: *ID3D12Debug2) -> *ID3D12Debug2_VTable {
     return obj.id3d12debug2_vtable;
 }
+
 ID3D12Debug3_UUID :: "5cf4e58f-f671-4ff1-a542-3686e3d153d1";
+
 ID3D12Debug3 :: struct {
     #as using id3d12debug: ID3D12Debug;
     #place id3d12debug;
     id3d12debug3_vtable: *ID3D12Debug3_VTable;
 }
+
 ID3D12Debug3_VTable :: struct #type_info_none {
     using id3d12debug: ID3D12Debug_VTable;
     SetEnableGPUBasedValidation: (this: *ID3D12Debug3, Enable: BOOL) -> void #cpp_method;
     SetEnableSynchronizedCommandQueueValidation: (this: *ID3D12Debug3, Enable: BOOL) -> void #cpp_method;
     SetGPUBasedValidationFlags: (this: *ID3D12Debug3, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS) -> void #cpp_method;
 }
+
 ID3D12Debug3_SetEnableGPUBasedValidation :: (this: *ID3D12Debug3, Enable: BOOL) {
     this.id3d12debug3_vtable.SetEnableGPUBasedValidation(this, Enable);
 }
+
 ID3D12Debug3_SetEnableSynchronizedCommandQueueValidation :: (this: *ID3D12Debug3, Enable: BOOL) {
     this.id3d12debug3_vtable.SetEnableSynchronizedCommandQueueValidation(this, Enable);
 }
+
 ID3D12Debug3_SetGPUBasedValidationFlags :: (this: *ID3D12Debug3, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS) {
     this.id3d12debug3_vtable.SetGPUBasedValidationFlags(this, Flags);
 }
+
 vtable :: (obj: *ID3D12Debug3) -> *ID3D12Debug3_VTable {
     return obj.id3d12debug3_vtable;
 }
+
 D3D12_RLDO_FLAGS :: enum_flags u32 {
     NONE :: 0x0;
     SUMMARY :: 0x1;
@@ -96,6 +121,7 @@ D3D12_RLDO_FLAGS :: enum_flags u32 {
     D3D12_RLDO_DETAIL :: DETAIL;
     D3D12_RLDO_IGNORE_INTERNAL :: IGNORE_INTERNAL;
 }
+
 D3D12_DEBUG_DEVICE_PARAMETER_TYPE :: enum s32 {
     FEATURE_FLAGS :: 0;
     GPU_BASED_VALIDATION_SETTINGS :: 1;
@@ -104,6 +130,7 @@ D3D12_DEBUG_DEVICE_PARAMETER_TYPE :: enum s32 {
     D3D12_DEBUG_DEVICE_PARAMETER_GPU_BASED_VALIDATION_SETTINGS :: GPU_BASED_VALIDATION_SETTINGS;
     D3D12_DEBUG_DEVICE_PARAMETER_GPU_SLOWDOWN_PERFORMANCE_FACTOR :: GPU_SLOWDOWN_PERFORMANCE_FACTOR;
 }
+
 D3D12_DEBUG_FEATURE :: enum s32 {
     NONE :: 0;
     ALLOW_BEHAVIOR_CHANGING_DEBUG_AIDS :: 1;
@@ -116,6 +143,7 @@ D3D12_DEBUG_FEATURE :: enum s32 {
     D3D12_DEBUG_FEATURE_DISABLE_VIRTUALIZED_BUNDLES_VALIDATION :: DISABLE_VIRTUALIZED_BUNDLES_VALIDATION;
     D3D12_DEBUG_FEATURE_EMULATE_WINDOWS7 :: EMULATE_WINDOWS7;
 }
+
 D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE :: enum s32 {
     NONE :: 0;
     STATE_TRACKING_ONLY :: 1;
@@ -127,6 +155,7 @@ D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE :: enum s32 {
     D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE_UNGUARDED_VALIDATION :: UNGUARDED_VALIDATION;
     D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE_GUARDED_VALIDATION :: GUARDED_VALIDATION;
 }
+
 D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAGS :: enum_flags u32 {
     D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAG_NONE :: 0x0;
     D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAG_FRONT_LOAD_CREATE_TRACKING_ONLY_SHADERS :: 0x1;
@@ -135,179 +164,231 @@ D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAGS :: enum_flags u32 {
     VALID_MASK :: 0x7;
     D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAGS_VALID_MASK :: VALID_MASK;
 }
+
 D3D12_DEBUG_DEVICE_GPU_BASED_VALIDATION_SETTINGS :: struct {
     MaxMessagesPerCommandList: u32;
     DefaultShaderPatchMode: D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE;
     PipelineStateCreateFlags: D3D12_GPU_BASED_VALIDATION_PIPELINE_STATE_CREATE_FLAGS;
 }
+
 D3D12_DEBUG_DEVICE_GPU_SLOWDOWN_PERFORMANCE_FACTOR :: struct {
     SlowdownFactor: float;
 }
+
 ID3D12DebugDevice1_UUID :: "a9b71770-d099-4a65-a698-3dee10020f88";
+
 ID3D12DebugDevice1 :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debugdevice1_vtable: *ID3D12DebugDevice1_VTable;
 }
+
 ID3D12DebugDevice1_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetDebugParameter: (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
     GetDebugParameter: (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
     ReportLiveDeviceObjects: (this: *ID3D12DebugDevice1, Flags: D3D12_RLDO_FLAGS) -> HRESULT #cpp_method;
 }
+
 ID3D12DebugDevice1_SetDebugParameter :: (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugdevice1_vtable.SetDebugParameter(this, Type, pData, DataSize);
 }
+
 ID3D12DebugDevice1_GetDebugParameter :: (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugdevice1_vtable.GetDebugParameter(this, Type, pData, DataSize);
 }
+
 ID3D12DebugDevice1_ReportLiveDeviceObjects :: (this: *ID3D12DebugDevice1, Flags: D3D12_RLDO_FLAGS) -> HRESULT {
     return this.id3d12debugdevice1_vtable.ReportLiveDeviceObjects(this, Flags);
 }
+
 vtable :: (obj: *ID3D12DebugDevice1) -> *ID3D12DebugDevice1_VTable {
     return obj.id3d12debugdevice1_vtable;
 }
+
 ID3D12DebugDevice_UUID :: "3febd6dd-4973-4787-8194-e45f9e28923e";
+
 ID3D12DebugDevice :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debugdevice_vtable: *ID3D12DebugDevice_VTable;
 }
+
 ID3D12DebugDevice_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetFeatureMask: (this: *ID3D12DebugDevice, Mask: D3D12_DEBUG_FEATURE) -> HRESULT #cpp_method;
     GetFeatureMask: (this: *ID3D12DebugDevice) -> D3D12_DEBUG_FEATURE #cpp_method;
     ReportLiveDeviceObjects: (this: *ID3D12DebugDevice, Flags: D3D12_RLDO_FLAGS) -> HRESULT #cpp_method;
 }
+
 ID3D12DebugDevice_SetFeatureMask :: (this: *ID3D12DebugDevice, Mask: D3D12_DEBUG_FEATURE) -> HRESULT {
     return this.id3d12debugdevice_vtable.SetFeatureMask(this, Mask);
 }
+
 ID3D12DebugDevice_GetFeatureMask :: (this: *ID3D12DebugDevice) -> D3D12_DEBUG_FEATURE {
     return this.id3d12debugdevice_vtable.GetFeatureMask(this);
 }
+
 ID3D12DebugDevice_ReportLiveDeviceObjects :: (this: *ID3D12DebugDevice, Flags: D3D12_RLDO_FLAGS) -> HRESULT {
     return this.id3d12debugdevice_vtable.ReportLiveDeviceObjects(this, Flags);
 }
+
 vtable :: (obj: *ID3D12DebugDevice) -> *ID3D12DebugDevice_VTable {
     return obj.id3d12debugdevice_vtable;
 }
+
 ID3D12DebugDevice2_UUID :: "60eccbc1-378d-4df1-894c-f8ac5ce4d7dd";
+
 ID3D12DebugDevice2 :: struct {
     #as using id3d12debugdevice: ID3D12DebugDevice;
     #place id3d12debugdevice;
     id3d12debugdevice2_vtable: *ID3D12DebugDevice2_VTable;
 }
+
 ID3D12DebugDevice2_VTable :: struct #type_info_none {
     using id3d12debugdevice: ID3D12DebugDevice_VTable;
     SetDebugParameter: (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
     GetDebugParameter: (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
 }
+
 ID3D12DebugDevice2_SetDebugParameter :: (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugdevice2_vtable.SetDebugParameter(this, Type, pData, DataSize);
 }
+
 ID3D12DebugDevice2_GetDebugParameter :: (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugdevice2_vtable.GetDebugParameter(this, Type, pData, DataSize);
 }
+
 vtable :: (obj: *ID3D12DebugDevice2) -> *ID3D12DebugDevice2_VTable {
     return obj.id3d12debugdevice2_vtable;
 }
+
 DXGI_DEBUG_D3D12: GUID;
 ID3D12DebugCommandQueue_UUID :: "09e0bf36-54ac-484f-8847-4baeeab6053a";
+
 ID3D12DebugCommandQueue :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debugcommandqueue_vtable: *ID3D12DebugCommandQueue_VTable;
 }
+
 ID3D12DebugCommandQueue_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     AssertResourceState: (this: *ID3D12DebugCommandQueue, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL #cpp_method;
 }
+
 ID3D12DebugCommandQueue_AssertResourceState :: (this: *ID3D12DebugCommandQueue, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL {
     return this.id3d12debugcommandqueue_vtable.AssertResourceState(this, pResource, Subresource, State);
 }
+
 vtable :: (obj: *ID3D12DebugCommandQueue) -> *ID3D12DebugCommandQueue_VTable {
     return obj.id3d12debugcommandqueue_vtable;
 }
+
 D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE :: enum s32 {
     D3D12_DEBUG_COMMAND_LIST_PARAMETER_GPU_BASED_VALIDATION_SETTINGS :: 0;
 }
+
 D3D12_DEBUG_COMMAND_LIST_GPU_BASED_VALIDATION_SETTINGS :: struct {
     ShaderPatchMode: D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE;
 }
+
 ID3D12DebugCommandList1_UUID :: "102ca951-311b-4b01-b11f-ecb83e061b37";
+
 ID3D12DebugCommandList1 :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debugcommandlist1_vtable: *ID3D12DebugCommandList1_VTable;
 }
+
 ID3D12DebugCommandList1_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     AssertResourceState: (this: *ID3D12DebugCommandList1, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL #cpp_method;
     SetDebugParameter: (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
     GetDebugParameter: (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
 }
+
 ID3D12DebugCommandList1_AssertResourceState :: (this: *ID3D12DebugCommandList1, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL {
     return this.id3d12debugcommandlist1_vtable.AssertResourceState(this, pResource, Subresource, State);
 }
+
 ID3D12DebugCommandList1_SetDebugParameter :: (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugcommandlist1_vtable.SetDebugParameter(this, Type, pData, DataSize);
 }
+
 ID3D12DebugCommandList1_GetDebugParameter :: (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugcommandlist1_vtable.GetDebugParameter(this, Type, pData, DataSize);
 }
+
 vtable :: (obj: *ID3D12DebugCommandList1) -> *ID3D12DebugCommandList1_VTable {
     return obj.id3d12debugcommandlist1_vtable;
 }
+
 ID3D12DebugCommandList_UUID :: "09e0bf36-54ac-484f-8847-4baeeab6053f";
+
 ID3D12DebugCommandList :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12debugcommandlist_vtable: *ID3D12DebugCommandList_VTable;
 }
+
 ID3D12DebugCommandList_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     AssertResourceState: (this: *ID3D12DebugCommandList, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL #cpp_method;
     SetFeatureMask: (this: *ID3D12DebugCommandList, Mask: D3D12_DEBUG_FEATURE) -> HRESULT #cpp_method;
     GetFeatureMask: (this: *ID3D12DebugCommandList) -> D3D12_DEBUG_FEATURE #cpp_method;
 }
+
 ID3D12DebugCommandList_AssertResourceState :: (this: *ID3D12DebugCommandList, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL {
     return this.id3d12debugcommandlist_vtable.AssertResourceState(this, pResource, Subresource, State);
 }
+
 ID3D12DebugCommandList_SetFeatureMask :: (this: *ID3D12DebugCommandList, Mask: D3D12_DEBUG_FEATURE) -> HRESULT {
     return this.id3d12debugcommandlist_vtable.SetFeatureMask(this, Mask);
 }
+
 ID3D12DebugCommandList_GetFeatureMask :: (this: *ID3D12DebugCommandList) -> D3D12_DEBUG_FEATURE {
     return this.id3d12debugcommandlist_vtable.GetFeatureMask(this);
 }
+
 vtable :: (obj: *ID3D12DebugCommandList) -> *ID3D12DebugCommandList_VTable {
     return obj.id3d12debugcommandlist_vtable;
 }
+
 ID3D12DebugCommandList2_UUID :: "aeb575cf-4e06-48be-ba3b-c450fc96652e";
+
 ID3D12DebugCommandList2 :: struct {
     #as using id3d12debugcommandlist: ID3D12DebugCommandList;
     #place id3d12debugcommandlist;
     id3d12debugcommandlist2_vtable: *ID3D12DebugCommandList2_VTable;
 }
+
 ID3D12DebugCommandList2_VTable :: struct #type_info_none {
     using id3d12debugcommandlist: ID3D12DebugCommandList_VTable;
     SetDebugParameter: (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
     GetDebugParameter: (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT #cpp_method;
 }
+
 ID3D12DebugCommandList2_SetDebugParameter :: (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugcommandlist2_vtable.SetDebugParameter(this, Type, pData, DataSize);
 }
+
 ID3D12DebugCommandList2_GetDebugParameter :: (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT {
     return this.id3d12debugcommandlist2_vtable.GetDebugParameter(this, Type, pData, DataSize);
 }
+
 vtable :: (obj: *ID3D12DebugCommandList2) -> *ID3D12DebugCommandList2_VTable {
     return obj.id3d12debugcommandlist2_vtable;
 }
+
 ID3D12SharingContract_UUID :: "0adf7d52-929c-4e61-addb-ffed30de66ef";
+
 ID3D12SharingContract :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12sharingcontract_vtable: *ID3D12SharingContract_VTable;
 }
+
 ID3D12SharingContract_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     Present: (this: *ID3D12SharingContract, pResource: *ID3D12Resource, Subresource: u32, window: HWND) -> void #cpp_method;
@@ -315,21 +396,27 @@ ID3D12SharingContract_VTable :: struct #type_info_none {
     BeginCapturableWork: (this: *ID3D12SharingContract, guid: *GUID) -> void #cpp_method;
     EndCapturableWork: (this: *ID3D12SharingContract, guid: *GUID) -> void #cpp_method;
 }
+
 ID3D12SharingContract_Present :: (this: *ID3D12SharingContract, pResource: *ID3D12Resource, Subresource: u32, window: HWND) {
     this.id3d12sharingcontract_vtable.Present(this, pResource, Subresource, window);
 }
+
 ID3D12SharingContract_SharedFenceSignal :: (this: *ID3D12SharingContract, pFence: *ID3D12Fence, FenceValue: u64) {
     this.id3d12sharingcontract_vtable.SharedFenceSignal(this, pFence, FenceValue);
 }
+
 ID3D12SharingContract_BeginCapturableWork :: (this: *ID3D12SharingContract, guid: *GUID) {
     this.id3d12sharingcontract_vtable.BeginCapturableWork(this, guid);
 }
+
 ID3D12SharingContract_EndCapturableWork :: (this: *ID3D12SharingContract, guid: *GUID) {
     this.id3d12sharingcontract_vtable.EndCapturableWork(this, guid);
 }
+
 vtable :: (obj: *ID3D12SharingContract) -> *ID3D12SharingContract_VTable {
     return obj.id3d12sharingcontract_vtable;
 }
+
 D3D12_MESSAGE_CATEGORY :: enum s32 {
     APPLICATION_DEFINED :: 0;
     MISCELLANEOUS :: 1;
@@ -354,6 +441,7 @@ D3D12_MESSAGE_CATEGORY :: enum s32 {
     D3D12_MESSAGE_CATEGORY_EXECUTION :: EXECUTION;
     D3D12_MESSAGE_CATEGORY_SHADER :: SHADER;
 }
+
 D3D12_MESSAGE_SEVERITY :: enum s32 {
     CORRUPTION :: 0;
     ERROR :: 1;
@@ -366,6 +454,7 @@ D3D12_MESSAGE_SEVERITY :: enum s32 {
     D3D12_MESSAGE_SEVERITY_INFO :: INFO;
     D3D12_MESSAGE_SEVERITY_MESSAGE :: MESSAGE;
 }
+
 D3D12_MESSAGE_ID :: enum s32 {
     UNKNOWN :: 0;
     STRING_FROM_APPLICATION :: 1;
@@ -2056,6 +2145,7 @@ D3D12_MESSAGE_ID :: enum s32 {
     D3D12_MESSAGE_ID_CREATEAMPLIFICATIONSHADER_OUTOFMEMORY :: CREATEAMPLIFICATIONSHADER_OUTOFMEMORY;
     D3D12_MESSAGE_ID_D3D12_MESSAGES_END :: D3D12_MESSAGES_END;
 }
+
 D3D12_MESSAGE :: struct {
     Category: D3D12_MESSAGE_CATEGORY;
     Severity: D3D12_MESSAGE_SEVERITY;
@@ -2063,6 +2153,7 @@ D3D12_MESSAGE :: struct {
     pDescription: *u8;
     DescriptionByteLength: SIZE_T;
 }
+
 D3D12_INFO_QUEUE_FILTER_DESC :: struct {
     NumCategories: u32;
     pCategoryList: *D3D12_MESSAGE_CATEGORY;
@@ -2071,16 +2162,20 @@ D3D12_INFO_QUEUE_FILTER_DESC :: struct {
     NumIDs: u32;
     pIDList: *D3D12_MESSAGE_ID;
 }
+
 D3D12_INFO_QUEUE_FILTER :: struct {
     AllowList: D3D12_INFO_QUEUE_FILTER_DESC;
     DenyList: D3D12_INFO_QUEUE_FILTER_DESC;
 }
+
 ID3D12InfoQueue_UUID :: "0742a90b-c387-483f-b946-30a7e4e61458";
+
 ID3D12InfoQueue :: struct {
     #as using iunknown: IUnknown;
     #place iunknown;
     id3d12infoqueue_vtable: *ID3D12InfoQueue_VTable;
 }
+
 ID3D12InfoQueue_VTable :: struct #type_info_none {
     using iunknown: IUnknown_VTable;
     SetMessageCountLimit: (this: *ID3D12InfoQueue, MessageCountLimit: u64) -> HRESULT #cpp_method;
@@ -2119,113 +2214,150 @@ ID3D12InfoQueue_VTable :: struct #type_info_none {
     SetMuteDebugOutput: (this: *ID3D12InfoQueue, bMute: BOOL) -> void #cpp_method;
     GetMuteDebugOutput: (this: *ID3D12InfoQueue) -> BOOL #cpp_method;
 }
+
 ID3D12InfoQueue_SetMessageCountLimit :: (this: *ID3D12InfoQueue, MessageCountLimit: u64) -> HRESULT {
     return this.id3d12infoqueue_vtable.SetMessageCountLimit(this, MessageCountLimit);
 }
+
 ID3D12InfoQueue_ClearStoredMessages :: (this: *ID3D12InfoQueue) {
     this.id3d12infoqueue_vtable.ClearStoredMessages(this);
 }
+
 ID3D12InfoQueue_GetMessageA :: (this: *ID3D12InfoQueue, MessageIndex: u64, pMessage: *D3D12_MESSAGE, pMessageByteLength: *SIZE_T) -> HRESULT {
     return this.id3d12infoqueue_vtable.GetMessageA(this, MessageIndex, pMessage, pMessageByteLength);
 }
+
 ID3D12InfoQueue_GetNumMessagesAllowedByStorageFilter :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetNumMessagesAllowedByStorageFilter(this);
 }
+
 ID3D12InfoQueue_GetNumMessagesDeniedByStorageFilter :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetNumMessagesDeniedByStorageFilter(this);
 }
+
 ID3D12InfoQueue_GetNumStoredMessages :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetNumStoredMessages(this);
 }
+
 ID3D12InfoQueue_GetNumStoredMessagesAllowedByRetrievalFilter :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetNumStoredMessagesAllowedByRetrievalFilter(this);
 }
+
 ID3D12InfoQueue_GetNumMessagesDiscardedByMessageCountLimit :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetNumMessagesDiscardedByMessageCountLimit(this);
 }
+
 ID3D12InfoQueue_GetMessageCountLimit :: (this: *ID3D12InfoQueue) -> u64 {
     return this.id3d12infoqueue_vtable.GetMessageCountLimit(this);
 }
+
 ID3D12InfoQueue_AddStorageFilterEntries :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d12infoqueue_vtable.AddStorageFilterEntries(this, pFilter);
 }
+
 ID3D12InfoQueue_GetStorageFilter :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT {
     return this.id3d12infoqueue_vtable.GetStorageFilter(this, pFilter, pFilterByteLength);
 }
+
 ID3D12InfoQueue_ClearStorageFilter :: (this: *ID3D12InfoQueue) {
     this.id3d12infoqueue_vtable.ClearStorageFilter(this);
 }
+
 ID3D12InfoQueue_PushEmptyStorageFilter :: (this: *ID3D12InfoQueue) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushEmptyStorageFilter(this);
 }
+
 ID3D12InfoQueue_PushCopyOfStorageFilter :: (this: *ID3D12InfoQueue) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushCopyOfStorageFilter(this);
 }
+
 ID3D12InfoQueue_PushStorageFilter :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushStorageFilter(this, pFilter);
 }
+
 ID3D12InfoQueue_PopStorageFilter :: (this: *ID3D12InfoQueue) {
     this.id3d12infoqueue_vtable.PopStorageFilter(this);
 }
+
 ID3D12InfoQueue_GetStorageFilterStackSize :: (this: *ID3D12InfoQueue) -> u32 {
     return this.id3d12infoqueue_vtable.GetStorageFilterStackSize(this);
 }
+
 ID3D12InfoQueue_AddRetrievalFilterEntries :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d12infoqueue_vtable.AddRetrievalFilterEntries(this, pFilter);
 }
+
 ID3D12InfoQueue_GetRetrievalFilter :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT {
     return this.id3d12infoqueue_vtable.GetRetrievalFilter(this, pFilter, pFilterByteLength);
 }
+
 ID3D12InfoQueue_ClearRetrievalFilter :: (this: *ID3D12InfoQueue) {
     this.id3d12infoqueue_vtable.ClearRetrievalFilter(this);
 }
+
 ID3D12InfoQueue_PushEmptyRetrievalFilter :: (this: *ID3D12InfoQueue) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushEmptyRetrievalFilter(this);
 }
+
 ID3D12InfoQueue_PushCopyOfRetrievalFilter :: (this: *ID3D12InfoQueue) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushCopyOfRetrievalFilter(this);
 }
+
 ID3D12InfoQueue_PushRetrievalFilter :: (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT {
     return this.id3d12infoqueue_vtable.PushRetrievalFilter(this, pFilter);
 }
+
 ID3D12InfoQueue_PopRetrievalFilter :: (this: *ID3D12InfoQueue) {
     this.id3d12infoqueue_vtable.PopRetrievalFilter(this);
 }
+
 ID3D12InfoQueue_GetRetrievalFilterStackSize :: (this: *ID3D12InfoQueue) -> u32 {
     return this.id3d12infoqueue_vtable.GetRetrievalFilterStackSize(this);
 }
+
 ID3D12InfoQueue_AddMessage :: (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY, Severity: D3D12_MESSAGE_SEVERITY, ID: D3D12_MESSAGE_ID, pDescription: *u8) -> HRESULT {
     return this.id3d12infoqueue_vtable.AddMessage(this, Category, Severity, ID, pDescription);
 }
+
 ID3D12InfoQueue_AddApplicationMessage :: (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY, pDescription: *u8) -> HRESULT {
     return this.id3d12infoqueue_vtable.AddApplicationMessage(this, Severity, pDescription);
 }
+
 ID3D12InfoQueue_SetBreakOnCategory :: (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY, bEnable: BOOL) -> HRESULT {
     return this.id3d12infoqueue_vtable.SetBreakOnCategory(this, Category, bEnable);
 }
+
 ID3D12InfoQueue_SetBreakOnSeverity :: (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY, bEnable: BOOL) -> HRESULT {
     return this.id3d12infoqueue_vtable.SetBreakOnSeverity(this, Severity, bEnable);
 }
+
 ID3D12InfoQueue_SetBreakOnID :: (this: *ID3D12InfoQueue, ID: D3D12_MESSAGE_ID, bEnable: BOOL) -> HRESULT {
     return this.id3d12infoqueue_vtable.SetBreakOnID(this, ID, bEnable);
 }
+
 ID3D12InfoQueue_GetBreakOnCategory :: (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY) -> BOOL {
     return this.id3d12infoqueue_vtable.GetBreakOnCategory(this, Category);
 }
+
 ID3D12InfoQueue_GetBreakOnSeverity :: (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY) -> BOOL {
     return this.id3d12infoqueue_vtable.GetBreakOnSeverity(this, Severity);
 }
+
 ID3D12InfoQueue_GetBreakOnID :: (this: *ID3D12InfoQueue, ID: D3D12_MESSAGE_ID) -> BOOL {
     return this.id3d12infoqueue_vtable.GetBreakOnID(this, ID);
 }
+
 ID3D12InfoQueue_SetMuteDebugOutput :: (this: *ID3D12InfoQueue, bMute: BOOL) {
     this.id3d12infoqueue_vtable.SetMuteDebugOutput(this, bMute);
 }
+
 ID3D12InfoQueue_GetMuteDebugOutput :: (this: *ID3D12InfoQueue) -> BOOL {
     return this.id3d12infoqueue_vtable.GetMuteDebugOutput(this);
 }
+
 vtable :: (obj: *ID3D12InfoQueue) -> *ID3D12InfoQueue_VTable {
     return obj.id3d12infoqueue_vtable;
 }
+
 #scope_file
 d3d12 :: #system_library "d3d12";

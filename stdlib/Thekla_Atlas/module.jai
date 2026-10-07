@@ -14,4 +14,5 @@
 #scope_module
 Basic :: #import "Basic";
 #load "native.jai";
+
 #assert size_of(Vector3) == 12 && size_of(Vector2) == 8 "Atlas native vertex ABI requires packed float3 and float2 records.";

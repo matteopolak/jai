@@ -1,10 +1,13 @@
 // Loads actual production math without constructing a renderer or native window.
 Math :: #import "Math";
 #import "Math";
+
 // GetRect's own setting: the shared files test it in procedures this program also checks.
 GETRECT_Y_UP :: true;
+
 #load "../../GetRect_Common/geometry.jai";
 #load "../../GetRect_Common/orientation.jai";
+
 right_orientation_cases :: () -> bool {
     r := get_rect(10, 20, 100, 80);
     top, divider, bottom := right_divider_rects(r, false, 0.25, 8);
@@ -42,7 +45,9 @@ right_orientation_cases :: () -> bool {
     if warped.x != 60 || warped.y != 50 || abs(back.x - 0.5) > 0.00001 || abs(back.y + 0.5) > 0.00001 return false;
     return true;
 }
+
 #assert #run right_orientation_cases();
+
 // Growing and shrinking move opposite edges by the same amount, on one axis or both.
 grow_shrink_cases :: () -> bool {
     r := get_rect(10, 20, 100, 80);
@@ -60,4 +65,5 @@ grow_shrink_cases :: () -> bool {
     if sy.x != 10 || sy.y != 25 || sy.w != 100 || sy.h != 70 return false;
     return true;
 }
+
 #assert #run grow_shrink_cases();

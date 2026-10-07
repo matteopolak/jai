@@ -409,6 +409,7 @@ VkFramebuffer_T :: struct {}
 VkFramebuffer :: *VkFramebuffer_T;
 VkCommandPool_T :: struct {}
 VkCommandPool :: *VkCommandPool_T;
+
 VkPipelineCacheHeaderVersion :: enum u32 {
     ONE :: 1;
     BEGIN_RANGE :: 1;
@@ -421,6 +422,7 @@ VkPipelineCacheHeaderVersion :: enum u32 {
     VK_PIPELINE_CACHE_HEADER_VERSION_RANGE_SIZE :: RANGE_SIZE;
     VK_PIPELINE_CACHE_HEADER_VERSION_MAX_ENUM :: MAX_ENUM;
 }
+
 VkResult :: enum s32 {
     SUCCESS :: 0;
     NOT_READY :: 1;
@@ -493,6 +495,7 @@ VkResult :: enum s32 {
     VK_RESULT_RANGE_SIZE :: RESULT_RANGE_SIZE;
     VK_RESULT_MAX_ENUM :: RESULT_MAX_ENUM;
 }
+
 VkStructureType :: enum u32 {
     APPLICATION_INFO :: 0;
     INSTANCE_CREATE_INFO :: 1;
@@ -1191,6 +1194,7 @@ VkStructureType :: enum u32 {
     VK_STRUCTURE_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_STRUCTURE_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSystemAllocationScope :: enum u32 {
     COMMAND :: 0;
     OBJECT :: 1;
@@ -1211,6 +1215,7 @@ VkSystemAllocationScope :: enum u32 {
     VK_SYSTEM_ALLOCATION_SCOPE_RANGE_SIZE :: RANGE_SIZE;
     VK_SYSTEM_ALLOCATION_SCOPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkInternalAllocationType :: enum u32 {
     EXECUTABLE :: 0;
     BEGIN_RANGE :: 0;
@@ -1223,6 +1228,7 @@ VkInternalAllocationType :: enum u32 {
     VK_INTERNAL_ALLOCATION_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_INTERNAL_ALLOCATION_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkFormat :: enum u32 {
     UNDEFINED :: 0;
     R4G4_UNORM_PACK8 :: 1;
@@ -1755,6 +1761,7 @@ VkFormat :: enum u32 {
     VK_FORMAT_RANGE_SIZE :: RANGE_SIZE;
     VK_FORMAT_MAX_ENUM :: MAX_ENUM;
 }
+
 VkImageType :: enum u32 {
     _1D :: 0;
     _2D :: 1;
@@ -1771,6 +1778,7 @@ VkImageType :: enum u32 {
     VK_IMAGE_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_IMAGE_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkImageTiling :: enum u32 {
     OPTIMAL :: 0;
     LINEAR :: 1;
@@ -1785,6 +1793,7 @@ VkImageTiling :: enum u32 {
     VK_IMAGE_TILING_RANGE_SIZE :: RANGE_SIZE;
     VK_IMAGE_TILING_MAX_ENUM :: MAX_ENUM;
 }
+
 VkPhysicalDeviceType :: enum u32 {
     OTHER :: 0;
     INTEGRATED_GPU :: 1;
@@ -1805,6 +1814,7 @@ VkPhysicalDeviceType :: enum u32 {
     VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkQueryType :: enum u32 {
     OCCLUSION :: 0;
     PIPELINE_STATISTICS :: 1;
@@ -1823,6 +1833,7 @@ VkQueryType :: enum u32 {
     VK_QUERY_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_QUERY_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSharingMode :: enum u32 {
     EXCLUSIVE :: 0;
     CONCURRENT :: 1;
@@ -1837,6 +1848,7 @@ VkSharingMode :: enum u32 {
     VK_SHARING_MODE_RANGE_SIZE :: RANGE_SIZE;
     VK_SHARING_MODE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkImageLayout :: enum u32 {
     UNDEFINED :: 0;
     GENERAL :: 1;
@@ -1879,6 +1891,7 @@ VkImageLayout :: enum u32 {
     VK_IMAGE_LAYOUT_RANGE_SIZE :: RANGE_SIZE;
     VK_IMAGE_LAYOUT_MAX_ENUM :: MAX_ENUM;
 }
+
 VkImageViewType :: enum u32 {
     _1D :: 0;
     _2D :: 1;
@@ -1903,6 +1916,7 @@ VkImageViewType :: enum u32 {
     VK_IMAGE_VIEW_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_IMAGE_VIEW_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkComponentSwizzle :: enum u32 {
     IDENTITY :: 0;
     ZERO :: 1;
@@ -1927,6 +1941,7 @@ VkComponentSwizzle :: enum u32 {
     VK_COMPONENT_SWIZZLE_RANGE_SIZE :: RANGE_SIZE;
     VK_COMPONENT_SWIZZLE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkVertexInputRate :: enum u32 {
     VERTEX :: 0;
     INSTANCE :: 1;
@@ -1941,6 +1956,7 @@ VkVertexInputRate :: enum u32 {
     VK_VERTEX_INPUT_RATE_RANGE_SIZE :: RANGE_SIZE;
     VK_VERTEX_INPUT_RATE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkPrimitiveTopology :: enum u32 {
     POINT_LIST :: 0;
     LINE_LIST :: 1;
@@ -1973,6 +1989,7 @@ VkPrimitiveTopology :: enum u32 {
     VK_PRIMITIVE_TOPOLOGY_RANGE_SIZE :: RANGE_SIZE;
     VK_PRIMITIVE_TOPOLOGY_MAX_ENUM :: MAX_ENUM;
 }
+
 VkPolygonMode :: enum u32 {
     FILL :: 0;
     LINE :: 1;
@@ -1991,6 +2008,7 @@ VkPolygonMode :: enum u32 {
     VK_POLYGON_MODE_RANGE_SIZE :: RANGE_SIZE;
     VK_POLYGON_MODE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkFrontFace :: enum u32 {
     COUNTER_CLOCKWISE :: 0;
     CLOCKWISE :: 1;
@@ -2005,6 +2023,7 @@ VkFrontFace :: enum u32 {
     VK_FRONT_FACE_RANGE_SIZE :: RANGE_SIZE;
     VK_FRONT_FACE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkCompareOp :: enum u32 {
     NEVER :: 0;
     LESS :: 1;
@@ -2031,6 +2050,7 @@ VkCompareOp :: enum u32 {
     VK_COMPARE_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_COMPARE_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkStencilOp :: enum u32 {
     KEEP :: 0;
     ZERO :: 1;
@@ -2057,6 +2077,7 @@ VkStencilOp :: enum u32 {
     VK_STENCIL_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_STENCIL_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkLogicOp :: enum u32 {
     CLEAR :: 0;
     AND :: 1;
@@ -2099,6 +2120,7 @@ VkLogicOp :: enum u32 {
     VK_LOGIC_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_LOGIC_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkBlendFactor :: enum u32 {
     ZERO :: 0;
     ONE :: 1;
@@ -2147,6 +2169,7 @@ VkBlendFactor :: enum u32 {
     VK_BLEND_FACTOR_RANGE_SIZE :: RANGE_SIZE;
     VK_BLEND_FACTOR_MAX_ENUM :: MAX_ENUM;
 }
+
 VkBlendOp :: enum u32 {
     ADD :: 0;
     SUBTRACT :: 1;
@@ -2259,6 +2282,7 @@ VkBlendOp :: enum u32 {
     VK_BLEND_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_BLEND_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkDynamicState :: enum u32 {
     VIEWPORT :: 0;
     SCISSOR :: 1;
@@ -2299,6 +2323,7 @@ VkDynamicState :: enum u32 {
     VK_DYNAMIC_STATE_RANGE_SIZE :: RANGE_SIZE;
     VK_DYNAMIC_STATE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkFilter :: enum u32 {
     NEAREST :: 0;
     LINEAR :: 1;
@@ -2315,6 +2340,7 @@ VkFilter :: enum u32 {
     VK_FILTER_RANGE_SIZE :: RANGE_SIZE;
     VK_FILTER_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSamplerMipmapMode :: enum u32 {
     NEAREST :: 0;
     LINEAR :: 1;
@@ -2329,6 +2355,7 @@ VkSamplerMipmapMode :: enum u32 {
     VK_SAMPLER_MIPMAP_MODE_RANGE_SIZE :: RANGE_SIZE;
     VK_SAMPLER_MIPMAP_MODE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSamplerAddressMode :: enum u32 {
     REPEAT :: 0;
     MIRRORED_REPEAT :: 1;
@@ -2349,6 +2376,7 @@ VkSamplerAddressMode :: enum u32 {
     VK_SAMPLER_ADDRESS_MODE_RANGE_SIZE :: RANGE_SIZE;
     VK_SAMPLER_ADDRESS_MODE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkBorderColor :: enum u32 {
     FLOAT_TRANSPARENT_BLACK :: 0;
     INT_TRANSPARENT_BLACK :: 1;
@@ -2371,6 +2399,7 @@ VkBorderColor :: enum u32 {
     VK_BORDER_COLOR_RANGE_SIZE :: RANGE_SIZE;
     VK_BORDER_COLOR_MAX_ENUM :: MAX_ENUM;
 }
+
 VkDescriptorType :: enum u32 {
     SAMPLER :: 0;
     COMBINED_IMAGE_SAMPLER :: 1;
@@ -2407,6 +2436,7 @@ VkDescriptorType :: enum u32 {
     VK_DESCRIPTOR_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_DESCRIPTOR_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkAttachmentLoadOp :: enum u32 {
     LOAD :: 0;
     CLEAR :: 1;
@@ -2423,6 +2453,7 @@ VkAttachmentLoadOp :: enum u32 {
     VK_ATTACHMENT_LOAD_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_ATTACHMENT_LOAD_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkAttachmentStoreOp :: enum u32 {
     STORE :: 0;
     DONT_CARE :: 1;
@@ -2437,6 +2468,7 @@ VkAttachmentStoreOp :: enum u32 {
     VK_ATTACHMENT_STORE_OP_RANGE_SIZE :: RANGE_SIZE;
     VK_ATTACHMENT_STORE_OP_MAX_ENUM :: MAX_ENUM;
 }
+
 VkPipelineBindPoint :: enum u32 {
     GRAPHICS :: 0;
     COMPUTE :: 1;
@@ -2453,6 +2485,7 @@ VkPipelineBindPoint :: enum u32 {
     VK_PIPELINE_BIND_POINT_RANGE_SIZE :: RANGE_SIZE;
     VK_PIPELINE_BIND_POINT_MAX_ENUM :: MAX_ENUM;
 }
+
 VkCommandBufferLevel :: enum u32 {
     PRIMARY :: 0;
     SECONDARY :: 1;
@@ -2467,6 +2500,7 @@ VkCommandBufferLevel :: enum u32 {
     VK_COMMAND_BUFFER_LEVEL_RANGE_SIZE :: RANGE_SIZE;
     VK_COMMAND_BUFFER_LEVEL_MAX_ENUM :: MAX_ENUM;
 }
+
 VkIndexType :: enum u32 {
     UINT16 :: 0;
     UINT32 :: 1;
@@ -2481,6 +2515,7 @@ VkIndexType :: enum u32 {
     VK_INDEX_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_INDEX_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSubpassContents :: enum u32 {
     INLINE :: 0;
     SECONDARY_COMMAND_BUFFERS :: 1;
@@ -2495,6 +2530,7 @@ VkSubpassContents :: enum u32 {
     VK_SUBPASS_CONTENTS_RANGE_SIZE :: RANGE_SIZE;
     VK_SUBPASS_CONTENTS_MAX_ENUM :: MAX_ENUM;
 }
+
 VkObjectType :: enum u32 {
     UNKNOWN :: 0;
     INSTANCE :: 1;
@@ -2585,6 +2621,7 @@ VkObjectType :: enum u32 {
     VK_OBJECT_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_OBJECT_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkVendorId :: enum u32 {
     VIV :: 65537;
     VSI :: 65538;
@@ -2601,7 +2638,9 @@ VkVendorId :: enum u32 {
     VK_VENDOR_ID_RANGE_SIZE :: RANGE_SIZE;
     VK_VENDOR_ID_MAX_ENUM :: MAX_ENUM;
 }
+
 VkInstanceCreateFlags :: VkFlags;
+
 VkFormatFeatureFlagBits :: enum_flags u32 {
     SAMPLED_IMAGE_BIT :: 0x1;
     STORAGE_IMAGE_BIT :: 0x2;
@@ -2672,7 +2711,9 @@ VkFormatFeatureFlagBits :: enum_flags u32 {
     VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT_KHR :: COSITED_CHROMA_SAMPLES_BIT_KHR;
     VK_FORMAT_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkFormatFeatureFlags :: VkFormatFeatureFlagBits;
+
 VkImageUsageFlagBits :: enum_flags u32 {
     TRANSFER_SRC_BIT :: 0x1;
     TRANSFER_DST_BIT :: 0x2;
@@ -2695,7 +2736,9 @@ VkImageUsageFlagBits :: enum_flags u32 {
     VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV :: SHADING_RATE_IMAGE_BIT_NV;
     VK_IMAGE_USAGE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkImageUsageFlags :: VkImageUsageFlagBits;
+
 VkImageCreateFlagBits :: enum_flags u32 {
     SPARSE_BINDING_BIT :: 0x1;
     SPARSE_RESIDENCY_BIT :: 0x2;
@@ -2740,7 +2783,9 @@ VkImageCreateFlagBits :: enum_flags u32 {
     VK_IMAGE_CREATE_ALIAS_BIT_KHR :: ALIAS_BIT_KHR;
     VK_IMAGE_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkImageCreateFlags :: VkImageCreateFlagBits;
+
 VkSampleCountFlagBits :: enum_flags u32 {
     _1_BIT :: 0x1;
     _2_BIT :: 0x2;
@@ -2759,7 +2804,9 @@ VkSampleCountFlagBits :: enum_flags u32 {
     VK_SAMPLE_COUNT_64_BIT :: _64_BIT;
     VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSampleCountFlags :: VkSampleCountFlagBits;
+
 VkQueueFlagBits :: enum_flags u32 {
     GRAPHICS_BIT :: 0x1;
     COMPUTE_BIT :: 0x2;
@@ -2774,7 +2821,9 @@ VkQueueFlagBits :: enum_flags u32 {
     VK_QUEUE_PROTECTED_BIT :: PROTECTED_BIT;
     VK_QUEUE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkQueueFlags :: VkQueueFlagBits;
+
 VkMemoryPropertyFlagBits :: enum_flags u32 {
     DEVICE_LOCAL_BIT :: 0x1;
     HOST_VISIBLE_BIT :: 0x2;
@@ -2791,7 +2840,9 @@ VkMemoryPropertyFlagBits :: enum_flags u32 {
     VK_MEMORY_PROPERTY_PROTECTED_BIT :: PROTECTED_BIT;
     VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkMemoryPropertyFlags :: VkMemoryPropertyFlagBits;
+
 VkMemoryHeapFlagBits :: enum_flags u32 {
     DEVICE_LOCAL_BIT :: 0x1;
     MULTI_INSTANCE_BIT :: 0x2;
@@ -2802,15 +2853,19 @@ VkMemoryHeapFlagBits :: enum_flags u32 {
     VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR :: MULTI_INSTANCE_BIT_KHR;
     VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkMemoryHeapFlags :: VkMemoryHeapFlagBits;
 VkDeviceCreateFlags :: VkFlags;
+
 VkDeviceQueueCreateFlagBits :: enum_flags u32 {
     PROTECTED_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT :: PROTECTED_BIT;
     VK_DEVICE_QUEUE_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkDeviceQueueCreateFlags :: VkDeviceQueueCreateFlagBits;
+
 VkPipelineStageFlagBits :: enum_flags u32 {
     TOP_OF_PIPE_BIT :: 0x1;
     DRAW_INDIRECT_BIT :: 0x2;
@@ -2861,8 +2916,10 @@ VkPipelineStageFlagBits :: enum_flags u32 {
     VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV :: MESH_SHADER_BIT_NV;
     VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkPipelineStageFlags :: VkPipelineStageFlagBits;
 VkMemoryMapFlags :: VkFlags;
+
 VkImageAspectFlagBits :: enum_flags u32 {
     COLOR_BIT :: 0x1;
     DEPTH_BIT :: 0x2;
@@ -2887,7 +2944,9 @@ VkImageAspectFlagBits :: enum_flags u32 {
     VK_IMAGE_ASPECT_PLANE_2_BIT_KHR :: PLANE_2_BIT_KHR;
     VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkImageAspectFlags :: VkImageAspectFlagBits;
+
 VkSparseImageFormatFlagBits :: enum_flags u32 {
     SINGLE_MIPTAIL_BIT :: 0x1;
     ALIGNED_MIP_SIZE_BIT :: 0x2;
@@ -2898,24 +2957,30 @@ VkSparseImageFormatFlagBits :: enum_flags u32 {
     VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT :: NONSTANDARD_BLOCK_SIZE_BIT;
     VK_SPARSE_IMAGE_FORMAT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSparseImageFormatFlags :: VkSparseImageFormatFlagBits;
+
 VkSparseMemoryBindFlagBits :: enum_flags u32 {
     METADATA_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_SPARSE_MEMORY_BIND_METADATA_BIT :: METADATA_BIT;
     VK_SPARSE_MEMORY_BIND_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSparseMemoryBindFlags :: VkSparseMemoryBindFlagBits;
+
 VkFenceCreateFlagBits :: enum_flags u32 {
     SIGNALED_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_FENCE_CREATE_SIGNALED_BIT :: SIGNALED_BIT;
     VK_FENCE_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkFenceCreateFlags :: VkFenceCreateFlagBits;
 VkSemaphoreCreateFlags :: VkFlags;
 VkEventCreateFlags :: VkFlags;
 VkQueryPoolCreateFlags :: VkFlags;
+
 VkQueryPipelineStatisticFlagBits :: enum_flags u32 {
     INPUT_ASSEMBLY_VERTICES_BIT :: 0x1;
     INPUT_ASSEMBLY_PRIMITIVES_BIT :: 0x2;
@@ -2942,7 +3007,9 @@ VkQueryPipelineStatisticFlagBits :: enum_flags u32 {
     VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT :: COMPUTE_SHADER_INVOCATIONS_BIT;
     VK_QUERY_PIPELINE_STATISTIC_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkQueryPipelineStatisticFlags :: VkQueryPipelineStatisticFlagBits;
+
 VkQueryResultFlagBits :: enum_flags u32 {
     _64_BIT :: 0x1;
     WAIT_BIT :: 0x2;
@@ -2955,7 +3022,9 @@ VkQueryResultFlagBits :: enum_flags u32 {
     VK_QUERY_RESULT_PARTIAL_BIT :: PARTIAL_BIT;
     VK_QUERY_RESULT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkQueryResultFlags :: VkQueryResultFlagBits;
+
 VkBufferCreateFlagBits :: enum_flags u32 {
     SPARSE_BINDING_BIT :: 0x1;
     SPARSE_RESIDENCY_BIT :: 0x2;
@@ -2968,7 +3037,9 @@ VkBufferCreateFlagBits :: enum_flags u32 {
     VK_BUFFER_CREATE_PROTECTED_BIT :: PROTECTED_BIT;
     VK_BUFFER_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkBufferCreateFlags :: VkBufferCreateFlagBits;
+
 VkBufferUsageFlagBits :: enum_flags u32 {
     TRANSFER_SRC_BIT :: 0x1;
     TRANSFER_DST_BIT :: 0x2;
@@ -2995,11 +3066,13 @@ VkBufferUsageFlagBits :: enum_flags u32 {
     VK_BUFFER_USAGE_RAYTRACING_BIT_NVX :: RAYTRACING_BIT_NVX;
     VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkBufferUsageFlags :: VkBufferUsageFlagBits;
 VkBufferViewCreateFlags :: VkFlags;
 VkImageViewCreateFlags :: VkFlags;
 VkShaderModuleCreateFlags :: VkFlags;
 VkPipelineCacheCreateFlags :: VkFlags;
+
 VkPipelineCreateFlagBits :: enum_flags u32 {
     DISABLE_OPTIMIZATION_BIT :: 0x1;
     ALLOW_DERIVATIVES_BIT :: 0x2;
@@ -3020,8 +3093,10 @@ VkPipelineCreateFlagBits :: enum_flags u32 {
     VK_PIPELINE_CREATE_DISPATCH_BASE_KHR :: DISPATCH_BASE_KHR;
     VK_PIPELINE_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkPipelineCreateFlags :: VkPipelineCreateFlagBits;
 VkPipelineShaderStageCreateFlags :: VkFlags;
+
 VkShaderStageFlagBits :: enum_flags u32 {
     VERTEX_BIT :: 0x1;
     TESSELLATION_CONTROL_BIT :: 0x2;
@@ -3058,11 +3133,13 @@ VkShaderStageFlagBits :: enum_flags u32 {
     VK_SHADER_STAGE_MESH_BIT_NV :: MESH_BIT_NV;
     VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkPipelineVertexInputStateCreateFlags :: VkFlags;
 VkPipelineInputAssemblyStateCreateFlags :: VkFlags;
 VkPipelineTessellationStateCreateFlags :: VkFlags;
 VkPipelineViewportStateCreateFlags :: VkFlags;
 VkPipelineRasterizationStateCreateFlags :: VkFlags;
+
 VkCullModeFlagBits :: enum_flags u32 {
     NONE :: 0x0;
     FRONT_BIT :: 0x1;
@@ -3075,10 +3152,12 @@ VkCullModeFlagBits :: enum_flags u32 {
     VK_CULL_MODE_FRONT_AND_BACK :: FRONT_AND_BACK;
     VK_CULL_MODE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkCullModeFlags :: VkCullModeFlagBits;
 VkPipelineMultisampleStateCreateFlags :: VkFlags;
 VkPipelineDepthStencilStateCreateFlags :: VkFlags;
 VkPipelineColorBlendStateCreateFlags :: VkFlags;
+
 VkColorComponentFlagBits :: enum_flags u32 {
     R_BIT :: 0x1;
     G_BIT :: 0x2;
@@ -3091,11 +3170,13 @@ VkColorComponentFlagBits :: enum_flags u32 {
     VK_COLOR_COMPONENT_A_BIT :: A_BIT;
     VK_COLOR_COMPONENT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkColorComponentFlags :: VkColorComponentFlagBits;
 VkPipelineDynamicStateCreateFlags :: VkFlags;
 VkPipelineLayoutCreateFlags :: VkFlags;
 VkShaderStageFlags :: VkShaderStageFlagBits;
 VkSamplerCreateFlags :: VkFlags;
+
 VkDescriptorSetLayoutCreateFlagBits :: enum_flags u32 {
     PUSH_DESCRIPTOR_BIT_KHR :: 0x1;
     UPDATE_AFTER_BIND_POOL_BIT_EXT :: 0x2;
@@ -3104,7 +3185,9 @@ VkDescriptorSetLayoutCreateFlagBits :: enum_flags u32 {
     VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT :: UPDATE_AFTER_BIND_POOL_BIT_EXT;
     VK_DESCRIPTOR_SET_LAYOUT_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkDescriptorSetLayoutCreateFlags :: VkDescriptorSetLayoutCreateFlagBits;
+
 VkDescriptorPoolCreateFlagBits :: enum_flags u32 {
     FREE_DESCRIPTOR_SET_BIT :: 0x1;
     UPDATE_AFTER_BIND_BIT_EXT :: 0x2;
@@ -3113,17 +3196,21 @@ VkDescriptorPoolCreateFlagBits :: enum_flags u32 {
     VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT :: UPDATE_AFTER_BIND_BIT_EXT;
     VK_DESCRIPTOR_POOL_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkDescriptorPoolCreateFlags :: VkDescriptorPoolCreateFlagBits;
 VkDescriptorPoolResetFlags :: VkFlags;
 VkFramebufferCreateFlags :: VkFlags;
 VkRenderPassCreateFlags :: VkFlags;
+
 VkAttachmentDescriptionFlagBits :: enum_flags u32 {
     MAY_ALIAS_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT :: MAY_ALIAS_BIT;
     VK_ATTACHMENT_DESCRIPTION_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkAttachmentDescriptionFlags :: VkAttachmentDescriptionFlagBits;
+
 VkSubpassDescriptionFlagBits :: enum_flags u32 {
     PER_VIEW_ATTRIBUTES_BIT_NVX :: 0x1;
     PER_VIEW_POSITION_X_ONLY_BIT_NVX :: 0x2;
@@ -3132,7 +3219,9 @@ VkSubpassDescriptionFlagBits :: enum_flags u32 {
     VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX :: PER_VIEW_POSITION_X_ONLY_BIT_NVX;
     VK_SUBPASS_DESCRIPTION_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSubpassDescriptionFlags :: VkSubpassDescriptionFlagBits;
+
 VkAccessFlagBits :: enum_flags u32 {
     INDIRECT_COMMAND_READ_BIT :: 0x1;
     INDEX_READ_BIT :: 0x2;
@@ -3185,7 +3274,9 @@ VkAccessFlagBits :: enum_flags u32 {
     VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_NVX :: ACCELERATION_STRUCTURE_WRITE_BIT_NVX;
     VK_ACCESS_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkAccessFlags :: VkAccessFlagBits;
+
 VkDependencyFlagBits :: enum_flags u32 {
     BY_REGION_BIT :: 0x1;
     DEVICE_GROUP_BIT :: 0x4;
@@ -3200,7 +3291,9 @@ VkDependencyFlagBits :: enum_flags u32 {
     VK_DEPENDENCY_DEVICE_GROUP_BIT_KHR :: DEVICE_GROUP_BIT_KHR;
     VK_DEPENDENCY_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkDependencyFlags :: VkDependencyFlagBits;
+
 VkCommandPoolCreateFlagBits :: enum_flags u32 {
     TRANSIENT_BIT :: 0x1;
     RESET_COMMAND_BUFFER_BIT :: 0x2;
@@ -3211,14 +3304,18 @@ VkCommandPoolCreateFlagBits :: enum_flags u32 {
     VK_COMMAND_POOL_CREATE_PROTECTED_BIT :: PROTECTED_BIT;
     VK_COMMAND_POOL_CREATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkCommandPoolCreateFlags :: VkCommandPoolCreateFlagBits;
+
 VkCommandPoolResetFlagBits :: enum_flags u32 {
     RELEASE_RESOURCES_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT :: RELEASE_RESOURCES_BIT;
     VK_COMMAND_POOL_RESET_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkCommandPoolResetFlags :: VkCommandPoolResetFlagBits;
+
 VkCommandBufferUsageFlagBits :: enum_flags u32 {
     ONE_TIME_SUBMIT_BIT :: 0x1;
     RENDER_PASS_CONTINUE_BIT :: 0x2;
@@ -3229,21 +3326,27 @@ VkCommandBufferUsageFlagBits :: enum_flags u32 {
     VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT :: SIMULTANEOUS_USE_BIT;
     VK_COMMAND_BUFFER_USAGE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkCommandBufferUsageFlags :: VkCommandBufferUsageFlagBits;
+
 VkQueryControlFlagBits :: enum_flags u32 {
     PRECISE_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_QUERY_CONTROL_PRECISE_BIT :: PRECISE_BIT;
     VK_QUERY_CONTROL_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkQueryControlFlags :: VkQueryControlFlagBits;
+
 VkCommandBufferResetFlagBits :: enum_flags u32 {
     RELEASE_RESOURCES_BIT :: 0x1;
     FLAG_BITS_MAX_ENUM :: 0x7fffffff;
     VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT :: RELEASE_RESOURCES_BIT;
     VK_COMMAND_BUFFER_RESET_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkCommandBufferResetFlags :: VkCommandBufferResetFlagBits;
+
 VkStencilFaceFlagBits :: enum_flags u32 {
     FACE_FRONT_BIT :: 0x1;
     FACE_BACK_BIT :: 0x2;
@@ -3254,7 +3357,9 @@ VkStencilFaceFlagBits :: enum_flags u32 {
     VK_STENCIL_FRONT_AND_BACK :: FRONT_AND_BACK;
     VK_STENCIL_FACE_FLAG_BITS_MAX_ENUM :: FACE_FLAG_BITS_MAX_ENUM;
 }
+
 VkStencilFaceFlags :: VkStencilFaceFlagBits;
+
 VkApplicationInfo :: struct {
     sType: VkStructureType = .APPLICATION_INFO;
     pNext: *void;
@@ -3264,6 +3369,7 @@ VkApplicationInfo :: struct {
     engineVersion: u32;
     apiVersion: u32;
 }
+
 VkInstanceCreateInfo :: struct {
     sType: VkStructureType = .INSTANCE_CREATE_INFO;
     pNext: *void;
@@ -3274,11 +3380,13 @@ VkInstanceCreateInfo :: struct {
     enabledExtensionCount: u32;
     ppEnabledExtensionNames: **u8;
 }
+
 PFN_vkAllocationFunction :: #type (pUserData: *void, size: u64, alignment: u64, allocationScope: VkSystemAllocationScope) -> *void #c_call;
 PFN_vkReallocationFunction :: #type (pUserData: *void, pOriginal: *void, size: u64, alignment: u64, allocationScope: VkSystemAllocationScope) -> *void #c_call;
 PFN_vkFreeFunction :: #type (pUserData: *void, pMemory: *void) -> void #c_call;
 PFN_vkInternalAllocationNotification :: #type (pUserData: *void, size: u64, allocationType: VkInternalAllocationType, allocationScope: VkSystemAllocationScope) -> void #c_call;
 PFN_vkInternalFreeNotification :: #type (pUserData: *void, size: u64, allocationType: VkInternalAllocationType, allocationScope: VkSystemAllocationScope) -> void #c_call;
+
 VkAllocationCallbacks :: struct {
     pUserData: *void;
     pfnAllocation: PFN_vkAllocationFunction;
@@ -3287,6 +3395,7 @@ VkAllocationCallbacks :: struct {
     pfnInternalAllocation: PFN_vkInternalAllocationNotification;
     pfnInternalFree: PFN_vkInternalFreeNotification;
 }
+
 VkPhysicalDeviceFeatures :: struct {
     robustBufferAccess: VkBool32;
     fullDrawIndexUint32: VkBool32;
@@ -3344,16 +3453,19 @@ VkPhysicalDeviceFeatures :: struct {
     variableMultisampleRate: VkBool32;
     inheritedQueries: VkBool32;
 }
+
 VkFormatProperties :: struct {
     linearTilingFeatures: VkFormatFeatureFlags;
     optimalTilingFeatures: VkFormatFeatureFlags;
     bufferFeatures: VkFormatFeatureFlags;
 }
+
 VkExtent3D :: struct {
     width: u32;
     height: u32;
     depth: u32;
 }
+
 VkImageFormatProperties :: struct {
     maxExtent: VkExtent3D;
     maxMipLevels: u32;
@@ -3361,6 +3473,7 @@ VkImageFormatProperties :: struct {
     sampleCounts: VkSampleCountFlags;
     maxResourceSize: VkDeviceSize;
 }
+
 VkPhysicalDeviceLimits :: struct {
     maxImageDimension1D: u32;
     maxImageDimension2D: u32;
@@ -3469,6 +3582,7 @@ VkPhysicalDeviceLimits :: struct {
     optimalBufferCopyRowPitchAlignment: VkDeviceSize;
     nonCoherentAtomSize: VkDeviceSize;
 }
+
 VkPhysicalDeviceSparseProperties :: struct {
     residencyStandard2DBlockShape: VkBool32;
     residencyStandard2DMultisampleBlockShape: VkBool32;
@@ -3476,6 +3590,7 @@ VkPhysicalDeviceSparseProperties :: struct {
     residencyAlignedMipSize: VkBool32;
     residencyNonResidentStrict: VkBool32;
 }
+
 VkPhysicalDeviceProperties :: struct {
     apiVersion: u32;
     driverVersion: u32;
@@ -3487,27 +3602,33 @@ VkPhysicalDeviceProperties :: struct {
     limits: VkPhysicalDeviceLimits;
     sparseProperties: VkPhysicalDeviceSparseProperties;
 }
+
 VkQueueFamilyProperties :: struct {
     queueFlags: VkQueueFlags;
     queueCount: u32;
     timestampValidBits: u32;
     minImageTransferGranularity: VkExtent3D;
 }
+
 VkMemoryType :: struct {
     propertyFlags: VkMemoryPropertyFlags;
     heapIndex: u32;
 }
+
 VkMemoryHeap :: struct {
     size: VkDeviceSize;
     flags: VkMemoryHeapFlags;
 }
+
 VkPhysicalDeviceMemoryProperties :: struct {
     memoryTypeCount: u32;
     memoryTypes: [32] VkMemoryType;
     memoryHeapCount: u32;
     memoryHeaps: [16] VkMemoryHeap;
 }
+
 PFN_vkVoidFunction :: #type () -> void #c_call;
+
 VkDeviceQueueCreateInfo :: struct {
     sType: VkStructureType = .DEVICE_QUEUE_CREATE_INFO;
     pNext: *void;
@@ -3516,6 +3637,7 @@ VkDeviceQueueCreateInfo :: struct {
     queueCount: u32;
     pQueuePriorities: *float;
 }
+
 VkDeviceCreateInfo :: struct {
     sType: VkStructureType = .DEVICE_CREATE_INFO;
     pNext: *void;
@@ -3528,16 +3650,19 @@ VkDeviceCreateInfo :: struct {
     ppEnabledExtensionNames: **u8;
     pEnabledFeatures: *VkPhysicalDeviceFeatures;
 }
+
 VkExtensionProperties :: struct {
     extensionName: [256] u8;
     specVersion: u32;
 }
+
 VkLayerProperties :: struct {
     layerName: [256] u8;
     specVersion: u32;
     implementationVersion: u32;
     description: [256] u8;
 }
+
 VkSubmitInfo :: struct {
     sType: VkStructureType = .SUBMIT_INFO;
     pNext: *void;
@@ -3549,12 +3674,14 @@ VkSubmitInfo :: struct {
     signalSemaphoreCount: u32;
     pSignalSemaphores: *VkSemaphore;
 }
+
 VkMemoryAllocateInfo :: struct {
     sType: VkStructureType = .MEMORY_ALLOCATE_INFO;
     pNext: *void;
     allocationSize: VkDeviceSize;
     memoryTypeIndex: u32;
 }
+
 VkMappedMemoryRange :: struct {
     sType: VkStructureType = .MAPPED_MEMORY_RANGE;
     pNext: *void;
@@ -3562,16 +3689,19 @@ VkMappedMemoryRange :: struct {
     offset: VkDeviceSize;
     size: VkDeviceSize;
 }
+
 VkMemoryRequirements :: struct {
     size: VkDeviceSize;
     alignment: VkDeviceSize;
     memoryTypeBits: u32;
 }
+
 VkSparseImageFormatProperties :: struct {
     aspectMask: VkImageAspectFlags;
     imageGranularity: VkExtent3D;
     flags: VkSparseImageFormatFlags;
 }
+
 VkSparseImageMemoryRequirements :: struct {
     formatProperties: VkSparseImageFormatProperties;
     imageMipTailFirstLod: u32;
@@ -3579,6 +3709,7 @@ VkSparseImageMemoryRequirements :: struct {
     imageMipTailOffset: VkDeviceSize;
     imageMipTailStride: VkDeviceSize;
 }
+
 VkSparseMemoryBind :: struct {
     resourceOffset: VkDeviceSize;
     size: VkDeviceSize;
@@ -3586,26 +3717,31 @@ VkSparseMemoryBind :: struct {
     memoryOffset: VkDeviceSize;
     flags: VkSparseMemoryBindFlags;
 }
+
 VkSparseBufferMemoryBindInfo :: struct {
     buffer: VkBuffer;
     bindCount: u32;
     pBinds: *VkSparseMemoryBind;
 }
+
 VkSparseImageOpaqueMemoryBindInfo :: struct {
     image: VkImage;
     bindCount: u32;
     pBinds: *VkSparseMemoryBind;
 }
+
 VkImageSubresource :: struct {
     aspectMask: VkImageAspectFlags;
     mipLevel: u32;
     arrayLayer: u32;
 }
+
 VkOffset3D :: struct {
     x: s32;
     y: s32;
     z: s32;
 }
+
 VkSparseImageMemoryBind :: struct {
     subresource: VkImageSubresource;
     offset: VkOffset3D;
@@ -3614,11 +3750,13 @@ VkSparseImageMemoryBind :: struct {
     memoryOffset: VkDeviceSize;
     flags: VkSparseMemoryBindFlags;
 }
+
 VkSparseImageMemoryBindInfo :: struct {
     image: VkImage;
     bindCount: u32;
     pBinds: *VkSparseImageMemoryBind;
 }
+
 VkBindSparseInfo :: struct {
     sType: VkStructureType = .BIND_SPARSE_INFO;
     pNext: *void;
@@ -3633,21 +3771,25 @@ VkBindSparseInfo :: struct {
     signalSemaphoreCount: u32;
     pSignalSemaphores: *VkSemaphore;
 }
+
 VkFenceCreateInfo :: struct {
     sType: VkStructureType = .FENCE_CREATE_INFO;
     pNext: *void;
     flags: VkFenceCreateFlags;
 }
+
 VkSemaphoreCreateInfo :: struct {
     sType: VkStructureType = .SEMAPHORE_CREATE_INFO;
     pNext: *void;
     flags: VkSemaphoreCreateFlags;
 }
+
 VkEventCreateInfo :: struct {
     sType: VkStructureType = .EVENT_CREATE_INFO;
     pNext: *void;
     flags: VkEventCreateFlags;
 }
+
 VkQueryPoolCreateInfo :: struct {
     sType: VkStructureType = .QUERY_POOL_CREATE_INFO;
     pNext: *void;
@@ -3656,6 +3798,7 @@ VkQueryPoolCreateInfo :: struct {
     queryCount: u32;
     pipelineStatistics: VkQueryPipelineStatisticFlags;
 }
+
 VkBufferCreateInfo :: struct {
     sType: VkStructureType = .BUFFER_CREATE_INFO;
     pNext: *void;
@@ -3666,6 +3809,7 @@ VkBufferCreateInfo :: struct {
     queueFamilyIndexCount: u32;
     pQueueFamilyIndices: *u32;
 }
+
 VkBufferViewCreateInfo :: struct {
     sType: VkStructureType = .BUFFER_VIEW_CREATE_INFO;
     pNext: *void;
@@ -3675,6 +3819,7 @@ VkBufferViewCreateInfo :: struct {
     offset: VkDeviceSize;
     range: VkDeviceSize;
 }
+
 VkImageCreateInfo :: struct {
     sType: VkStructureType = .IMAGE_CREATE_INFO;
     pNext: *void;
@@ -3692,6 +3837,7 @@ VkImageCreateInfo :: struct {
     pQueueFamilyIndices: *u32;
     initialLayout: VkImageLayout;
 }
+
 VkSubresourceLayout :: struct {
     offset: VkDeviceSize;
     size: VkDeviceSize;
@@ -3699,12 +3845,14 @@ VkSubresourceLayout :: struct {
     arrayPitch: VkDeviceSize;
     depthPitch: VkDeviceSize;
 }
+
 VkComponentMapping :: struct {
     r: VkComponentSwizzle;
     g: VkComponentSwizzle;
     b: VkComponentSwizzle;
     a: VkComponentSwizzle;
 }
+
 VkImageSubresourceRange :: struct {
     aspectMask: VkImageAspectFlags;
     baseMipLevel: u32;
@@ -3712,6 +3860,7 @@ VkImageSubresourceRange :: struct {
     baseArrayLayer: u32;
     layerCount: u32;
 }
+
 VkImageViewCreateInfo :: struct {
     sType: VkStructureType = .IMAGE_VIEW_CREATE_INFO;
     pNext: *void;
@@ -3722,6 +3871,7 @@ VkImageViewCreateInfo :: struct {
     components: VkComponentMapping;
     subresourceRange: VkImageSubresourceRange;
 }
+
 VkShaderModuleCreateInfo :: struct {
     sType: VkStructureType = .SHADER_MODULE_CREATE_INFO;
     pNext: *void;
@@ -3729,6 +3879,7 @@ VkShaderModuleCreateInfo :: struct {
     codeSize: u64;
     pCode: *u32;
 }
+
 VkPipelineCacheCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_CACHE_CREATE_INFO;
     pNext: *void;
@@ -3736,17 +3887,20 @@ VkPipelineCacheCreateInfo :: struct {
     initialDataSize: u64;
     pInitialData: *void;
 }
+
 VkSpecializationMapEntry :: struct {
     constantID: u32;
     offset: u32;
     size: u64;
 }
+
 VkSpecializationInfo :: struct {
     mapEntryCount: u32;
     pMapEntries: *VkSpecializationMapEntry;
     dataSize: u64;
     pData: *void;
 }
+
 VkPipelineShaderStageCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_SHADER_STAGE_CREATE_INFO;
     pNext: *void;
@@ -3756,17 +3910,20 @@ VkPipelineShaderStageCreateInfo :: struct {
     pName: *u8;
     pSpecializationInfo: *VkSpecializationInfo;
 }
+
 VkVertexInputBindingDescription :: struct {
     binding: u32;
     stride: u32;
     inputRate: VkVertexInputRate;
 }
+
 VkVertexInputAttributeDescription :: struct {
     location: u32;
     binding: u32;
     format: VkFormat;
     offset: u32;
 }
+
 VkPipelineVertexInputStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     pNext: *void;
@@ -3776,6 +3933,7 @@ VkPipelineVertexInputStateCreateInfo :: struct {
     vertexAttributeDescriptionCount: u32;
     pVertexAttributeDescriptions: *VkVertexInputAttributeDescription;
 }
+
 VkPipelineInputAssemblyStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     pNext: *void;
@@ -3783,12 +3941,14 @@ VkPipelineInputAssemblyStateCreateInfo :: struct {
     topology: VkPrimitiveTopology;
     primitiveRestartEnable: VkBool32;
 }
+
 VkPipelineTessellationStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_TESSELLATION_STATE_CREATE_INFO;
     pNext: *void;
     flags: VkPipelineTessellationStateCreateFlags;
     patchControlPoints: u32;
 }
+
 VkViewport :: struct {
     x: float;
     y: float;
@@ -3797,18 +3957,22 @@ VkViewport :: struct {
     minDepth: float;
     maxDepth: float;
 }
+
 VkOffset2D :: struct {
     x: s32;
     y: s32;
 }
+
 VkExtent2D :: struct {
     width: u32;
     height: u32;
 }
+
 VkRect2D :: struct {
     offset: VkOffset2D;
     extent: VkExtent2D;
 }
+
 VkPipelineViewportStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     pNext: *void;
@@ -3818,6 +3982,7 @@ VkPipelineViewportStateCreateInfo :: struct {
     scissorCount: u32;
     pScissors: *VkRect2D;
 }
+
 VkPipelineRasterizationStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     pNext: *void;
@@ -3833,6 +3998,7 @@ VkPipelineRasterizationStateCreateInfo :: struct {
     depthBiasSlopeFactor: float;
     lineWidth: float;
 }
+
 VkPipelineMultisampleStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     pNext: *void;
@@ -3844,6 +4010,7 @@ VkPipelineMultisampleStateCreateInfo :: struct {
     alphaToCoverageEnable: VkBool32;
     alphaToOneEnable: VkBool32;
 }
+
 VkStencilOpState :: struct {
     failOp: VkStencilOp;
     passOp: VkStencilOp;
@@ -3853,6 +4020,7 @@ VkStencilOpState :: struct {
     writeMask: u32;
     reference: u32;
 }
+
 VkPipelineDepthStencilStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     pNext: *void;
@@ -3867,6 +4035,7 @@ VkPipelineDepthStencilStateCreateInfo :: struct {
     minDepthBounds: float;
     maxDepthBounds: float;
 }
+
 VkPipelineColorBlendAttachmentState :: struct {
     blendEnable: VkBool32;
     srcColorBlendFactor: VkBlendFactor;
@@ -3877,6 +4046,7 @@ VkPipelineColorBlendAttachmentState :: struct {
     alphaBlendOp: VkBlendOp;
     colorWriteMask: VkColorComponentFlags;
 }
+
 VkPipelineColorBlendStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     pNext: *void;
@@ -3887,6 +4057,7 @@ VkPipelineColorBlendStateCreateInfo :: struct {
     pAttachments: *VkPipelineColorBlendAttachmentState;
     blendConstants: [4] float;
 }
+
 VkPipelineDynamicStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     pNext: *void;
@@ -3894,6 +4065,7 @@ VkPipelineDynamicStateCreateInfo :: struct {
     dynamicStateCount: u32;
     pDynamicStates: *VkDynamicState;
 }
+
 VkGraphicsPipelineCreateInfo :: struct {
     sType: VkStructureType = .GRAPHICS_PIPELINE_CREATE_INFO;
     pNext: *void;
@@ -3915,6 +4087,7 @@ VkGraphicsPipelineCreateInfo :: struct {
     basePipelineHandle: VkPipeline;
     basePipelineIndex: s32;
 }
+
 VkComputePipelineCreateInfo :: struct {
     sType: VkStructureType = .COMPUTE_PIPELINE_CREATE_INFO;
     pNext: *void;
@@ -3924,11 +4097,13 @@ VkComputePipelineCreateInfo :: struct {
     basePipelineHandle: VkPipeline;
     basePipelineIndex: s32;
 }
+
 VkPushConstantRange :: struct {
     stageFlags: VkShaderStageFlags;
     offset: u32;
     size: u32;
 }
+
 VkPipelineLayoutCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_LAYOUT_CREATE_INFO;
     pNext: *void;
@@ -3938,6 +4113,7 @@ VkPipelineLayoutCreateInfo :: struct {
     pushConstantRangeCount: u32;
     pPushConstantRanges: *VkPushConstantRange;
 }
+
 VkSamplerCreateInfo :: struct {
     sType: VkStructureType = .SAMPLER_CREATE_INFO;
     pNext: *void;
@@ -3958,6 +4134,7 @@ VkSamplerCreateInfo :: struct {
     borderColor: VkBorderColor;
     unnormalizedCoordinates: VkBool32;
 }
+
 VkDescriptorSetLayoutBinding :: struct {
     binding: u32;
     descriptorType: VkDescriptorType;
@@ -3965,6 +4142,7 @@ VkDescriptorSetLayoutBinding :: struct {
     stageFlags: VkShaderStageFlags;
     pImmutableSamplers: *VkSampler;
 }
+
 VkDescriptorSetLayoutCreateInfo :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     pNext: *void;
@@ -3972,10 +4150,12 @@ VkDescriptorSetLayoutCreateInfo :: struct {
     bindingCount: u32;
     pBindings: *VkDescriptorSetLayoutBinding;
 }
+
 VkDescriptorPoolSize :: struct {
     type: VkDescriptorType;
     descriptorCount: u32;
 }
+
 VkDescriptorPoolCreateInfo :: struct {
     sType: VkStructureType = .DESCRIPTOR_POOL_CREATE_INFO;
     pNext: *void;
@@ -3984,6 +4164,7 @@ VkDescriptorPoolCreateInfo :: struct {
     poolSizeCount: u32;
     pPoolSizes: *VkDescriptorPoolSize;
 }
+
 VkDescriptorSetAllocateInfo :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_ALLOCATE_INFO;
     pNext: *void;
@@ -3991,16 +4172,19 @@ VkDescriptorSetAllocateInfo :: struct {
     descriptorSetCount: u32;
     pSetLayouts: *VkDescriptorSetLayout;
 }
+
 VkDescriptorImageInfo :: struct {
     sampler: VkSampler;
     imageView: VkImageView;
     imageLayout: VkImageLayout;
 }
+
 VkDescriptorBufferInfo :: struct {
     buffer: VkBuffer;
     offset: VkDeviceSize;
     range: VkDeviceSize;
 }
+
 VkWriteDescriptorSet :: struct {
     sType: VkStructureType = .WRITE_DESCRIPTOR_SET;
     pNext: *void;
@@ -4013,6 +4197,7 @@ VkWriteDescriptorSet :: struct {
     pBufferInfo: *VkDescriptorBufferInfo;
     pTexelBufferView: *VkBufferView;
 }
+
 VkCopyDescriptorSet :: struct {
     sType: VkStructureType = .COPY_DESCRIPTOR_SET;
     pNext: *void;
@@ -4024,6 +4209,7 @@ VkCopyDescriptorSet :: struct {
     dstArrayElement: u32;
     descriptorCount: u32;
 }
+
 VkFramebufferCreateInfo :: struct {
     sType: VkStructureType = .FRAMEBUFFER_CREATE_INFO;
     pNext: *void;
@@ -4035,6 +4221,7 @@ VkFramebufferCreateInfo :: struct {
     height: u32;
     layers: u32;
 }
+
 VkAttachmentDescription :: struct {
     flags: VkAttachmentDescriptionFlags;
     format: VkFormat;
@@ -4046,10 +4233,12 @@ VkAttachmentDescription :: struct {
     initialLayout: VkImageLayout;
     finalLayout: VkImageLayout;
 }
+
 VkAttachmentReference :: struct {
     attachment: u32;
     layout: VkImageLayout;
 }
+
 VkSubpassDescription :: struct {
     flags: VkSubpassDescriptionFlags;
     pipelineBindPoint: VkPipelineBindPoint;
@@ -4062,6 +4251,7 @@ VkSubpassDescription :: struct {
     preserveAttachmentCount: u32;
     pPreserveAttachments: *u32;
 }
+
 VkSubpassDependency :: struct {
     srcSubpass: u32;
     dstSubpass: u32;
@@ -4071,6 +4261,7 @@ VkSubpassDependency :: struct {
     dstAccessMask: VkAccessFlags;
     dependencyFlags: VkDependencyFlags;
 }
+
 VkRenderPassCreateInfo :: struct {
     sType: VkStructureType = .RENDER_PASS_CREATE_INFO;
     pNext: *void;
@@ -4082,12 +4273,14 @@ VkRenderPassCreateInfo :: struct {
     dependencyCount: u32;
     pDependencies: *VkSubpassDependency;
 }
+
 VkCommandPoolCreateInfo :: struct {
     sType: VkStructureType = .COMMAND_POOL_CREATE_INFO;
     pNext: *void;
     flags: VkCommandPoolCreateFlags;
     queueFamilyIndex: u32;
 }
+
 VkCommandBufferAllocateInfo :: struct {
     sType: VkStructureType = .COMMAND_BUFFER_ALLOCATE_INFO;
     pNext: *void;
@@ -4095,6 +4288,7 @@ VkCommandBufferAllocateInfo :: struct {
     level: VkCommandBufferLevel;
     commandBufferCount: u32;
 }
+
 VkCommandBufferInheritanceInfo :: struct {
     sType: VkStructureType = .COMMAND_BUFFER_INHERITANCE_INFO;
     pNext: *void;
@@ -4105,23 +4299,27 @@ VkCommandBufferInheritanceInfo :: struct {
     queryFlags: VkQueryControlFlags;
     pipelineStatistics: VkQueryPipelineStatisticFlags;
 }
+
 VkCommandBufferBeginInfo :: struct {
     sType: VkStructureType = .COMMAND_BUFFER_BEGIN_INFO;
     pNext: *void;
     flags: VkCommandBufferUsageFlags;
     pInheritanceInfo: *VkCommandBufferInheritanceInfo;
 }
+
 VkBufferCopy :: struct {
     srcOffset: VkDeviceSize;
     dstOffset: VkDeviceSize;
     size: VkDeviceSize;
 }
+
 VkImageSubresourceLayers :: struct {
     aspectMask: VkImageAspectFlags;
     mipLevel: u32;
     baseArrayLayer: u32;
     layerCount: u32;
 }
+
 VkImageCopy :: struct {
     srcSubresource: VkImageSubresourceLayers;
     srcOffset: VkOffset3D;
@@ -4129,12 +4327,14 @@ VkImageCopy :: struct {
     dstOffset: VkOffset3D;
     extent: VkExtent3D;
 }
+
 VkImageBlit :: struct {
     srcSubresource: VkImageSubresourceLayers;
     srcOffsets: [2] VkOffset3D;
     dstSubresource: VkImageSubresourceLayers;
     dstOffsets: [2] VkOffset3D;
 }
+
 VkBufferImageCopy :: struct {
     bufferOffset: VkDeviceSize;
     bufferRowLength: u32;
@@ -4143,29 +4343,35 @@ VkBufferImageCopy :: struct {
     imageOffset: VkOffset3D;
     imageExtent: VkExtent3D;
 }
+
 VkClearColorValue :: union {
     _float32: [4] float;
     int32: [4] s32;
     uint32: [4] u32;
 }
+
 VkClearDepthStencilValue :: struct {
     depth: float;
     stencil: u32;
 }
+
 VkClearValue :: union {
     color: VkClearColorValue;
     depthStencil: VkClearDepthStencilValue;
 }
+
 VkClearAttachment :: struct {
     aspectMask: VkImageAspectFlags;
     colorAttachment: u32;
     clearValue: VkClearValue;
 }
+
 VkClearRect :: struct {
     rect: VkRect2D;
     baseArrayLayer: u32;
     layerCount: u32;
 }
+
 VkImageResolve :: struct {
     srcSubresource: VkImageSubresourceLayers;
     srcOffset: VkOffset3D;
@@ -4173,12 +4379,14 @@ VkImageResolve :: struct {
     dstOffset: VkOffset3D;
     extent: VkExtent3D;
 }
+
 VkMemoryBarrier :: struct {
     sType: VkStructureType = .MEMORY_BARRIER;
     pNext: *void;
     srcAccessMask: VkAccessFlags;
     dstAccessMask: VkAccessFlags;
 }
+
 VkBufferMemoryBarrier :: struct {
     sType: VkStructureType = .BUFFER_MEMORY_BARRIER;
     pNext: *void;
@@ -4190,6 +4398,7 @@ VkBufferMemoryBarrier :: struct {
     offset: VkDeviceSize;
     size: VkDeviceSize;
 }
+
 VkImageMemoryBarrier :: struct {
     sType: VkStructureType = .IMAGE_MEMORY_BARRIER;
     pNext: *void;
@@ -4202,6 +4411,7 @@ VkImageMemoryBarrier :: struct {
     image: VkImage;
     subresourceRange: VkImageSubresourceRange;
 }
+
 VkRenderPassBeginInfo :: struct {
     sType: VkStructureType = .RENDER_PASS_BEGIN_INFO;
     pNext: *void;
@@ -4211,11 +4421,13 @@ VkRenderPassBeginInfo :: struct {
     clearValueCount: u32;
     pClearValues: *VkClearValue;
 }
+
 VkDispatchIndirectCommand :: struct {
     x: u32;
     y: u32;
     z: u32;
 }
+
 VkDrawIndexedIndirectCommand :: struct {
     indexCount: u32;
     instanceCount: u32;
@@ -4223,20 +4435,24 @@ VkDrawIndexedIndirectCommand :: struct {
     vertexOffset: s32;
     firstInstance: u32;
 }
+
 VkDrawIndirectCommand :: struct {
     vertexCount: u32;
     instanceCount: u32;
     firstVertex: u32;
     firstInstance: u32;
 }
+
 VkBaseOutStructure :: struct {
     sType: VkStructureType;
     pNext: *VkBaseOutStructure;
 }
+
 VkBaseInStructure :: struct {
     sType: VkStructureType;
     pNext: *VkBaseInStructure;
 }
+
 PFN_vkCreateInstance :: #type (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocationCallbacks, pInstance: *VkInstance) -> VkResult #c_call;
 PFN_vkDestroyInstance :: #type (instance: VkInstance, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkEnumeratePhysicalDevices :: #type (instance: VkInstance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *VkPhysicalDevice) -> VkResult #c_call;
@@ -4509,6 +4725,7 @@ VkSamplerYcbcrConversion_T :: struct {}
 VkSamplerYcbcrConversion :: *VkSamplerYcbcrConversion_T;
 VkDescriptorUpdateTemplate_T :: struct {}
 VkDescriptorUpdateTemplate :: *VkDescriptorUpdateTemplate_T;
+
 VkPointClippingBehavior :: enum u32 {
     ALL_CLIP_PLANES :: 0;
     USER_CLIP_PLANES_ONLY :: 1;
@@ -4527,6 +4744,7 @@ VkPointClippingBehavior :: enum u32 {
     VK_POINT_CLIPPING_BEHAVIOR_RANGE_SIZE :: RANGE_SIZE;
     VK_POINT_CLIPPING_BEHAVIOR_MAX_ENUM :: MAX_ENUM;
 }
+
 VkTessellationDomainOrigin :: enum u32 {
     UPPER_LEFT :: 0;
     LOWER_LEFT :: 1;
@@ -4545,6 +4763,7 @@ VkTessellationDomainOrigin :: enum u32 {
     VK_TESSELLATION_DOMAIN_ORIGIN_RANGE_SIZE :: RANGE_SIZE;
     VK_TESSELLATION_DOMAIN_ORIGIN_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSamplerYcbcrModelConversion :: enum u32 {
     RGB_IDENTITY :: 0;
     YCBCR_IDENTITY :: 1;
@@ -4575,6 +4794,7 @@ VkSamplerYcbcrModelConversion :: enum u32 {
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_RANGE_SIZE :: RANGE_SIZE;
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSamplerYcbcrRange :: enum u32 {
     ITU_FULL :: 0;
     ITU_NARROW :: 1;
@@ -4593,6 +4813,7 @@ VkSamplerYcbcrRange :: enum u32 {
     VK_SAMPLER_YCBCR_RANGE_RANGE_SIZE :: RANGE_SIZE;
     VK_SAMPLER_YCBCR_RANGE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkChromaLocation :: enum u32 {
     COSITED_EVEN :: 0;
     MIDPOINT :: 1;
@@ -4611,6 +4832,7 @@ VkChromaLocation :: enum u32 {
     VK_CHROMA_LOCATION_RANGE_SIZE :: RANGE_SIZE;
     VK_CHROMA_LOCATION_MAX_ENUM :: MAX_ENUM;
 }
+
 VkDescriptorUpdateTemplateType :: enum u32 {
     DESCRIPTOR_SET :: 0;
     PUSH_DESCRIPTORS_KHR :: 1;
@@ -4627,6 +4849,7 @@ VkDescriptorUpdateTemplateType :: enum u32 {
     VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_RANGE_SIZE :: RANGE_SIZE;
     VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_MAX_ENUM :: MAX_ENUM;
 }
+
 VkSubgroupFeatureFlagBits :: enum_flags u32 {
     BASIC_BIT :: 0x1;
     VOTE_BIT :: 0x2;
@@ -4649,7 +4872,9 @@ VkSubgroupFeatureFlagBits :: enum_flags u32 {
     VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV :: PARTITIONED_BIT_NV;
     VK_SUBGROUP_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSubgroupFeatureFlags :: VkSubgroupFeatureFlagBits;
+
 VkPeerMemoryFeatureFlagBits :: enum_flags u32 {
     COPY_SRC_BIT :: 0x1;
     COPY_DST_BIT :: 0x2;
@@ -4670,7 +4895,9 @@ VkPeerMemoryFeatureFlagBits :: enum_flags u32 {
     VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT_KHR :: GENERIC_DST_BIT_KHR;
     VK_PEER_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkPeerMemoryFeatureFlags :: VkPeerMemoryFeatureFlagBits;
+
 VkMemoryAllocateFlagBits :: enum_flags u32 {
     DEVICE_MASK_BIT :: 0x1;
     DEVICE_MASK_BIT_KHR :: 0x1;
@@ -4679,9 +4906,11 @@ VkMemoryAllocateFlagBits :: enum_flags u32 {
     VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT_KHR :: DEVICE_MASK_BIT_KHR;
     VK_MEMORY_ALLOCATE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkMemoryAllocateFlags :: VkMemoryAllocateFlagBits;
 VkCommandPoolTrimFlags :: VkFlags;
 VkDescriptorUpdateTemplateCreateFlags :: VkFlags;
+
 VkExternalMemoryHandleTypeFlagBits :: enum_flags u32 {
     OPAQUE_FD_BIT :: 0x1;
     OPAQUE_WIN32_BIT :: 0x2;
@@ -4722,7 +4951,9 @@ VkExternalMemoryHandleTypeFlagBits :: enum_flags u32 {
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT_KHR :: D3D12_RESOURCE_BIT_KHR;
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalMemoryHandleTypeFlags :: VkExternalMemoryHandleTypeFlagBits;
+
 VkExternalMemoryFeatureFlagBits :: enum_flags u32 {
     DEDICATED_ONLY_BIT :: 0x1;
     EXPORTABLE_BIT :: 0x2;
@@ -4739,7 +4970,9 @@ VkExternalMemoryFeatureFlagBits :: enum_flags u32 {
     VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_KHR :: IMPORTABLE_BIT_KHR;
     VK_EXTERNAL_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalMemoryFeatureFlags :: VkExternalMemoryFeatureFlagBits;
+
 VkExternalFenceHandleTypeFlagBits :: enum_flags u32 {
     OPAQUE_FD_BIT :: 0x1;
     OPAQUE_WIN32_BIT :: 0x2;
@@ -4760,7 +4993,9 @@ VkExternalFenceHandleTypeFlagBits :: enum_flags u32 {
     VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT_KHR :: SYNC_FD_BIT_KHR;
     VK_EXTERNAL_FENCE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalFenceHandleTypeFlags :: VkExternalFenceHandleTypeFlagBits;
+
 VkExternalFenceFeatureFlagBits :: enum_flags u32 {
     EXPORTABLE_BIT :: 0x1;
     IMPORTABLE_BIT :: 0x2;
@@ -4773,7 +5008,9 @@ VkExternalFenceFeatureFlagBits :: enum_flags u32 {
     VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT_KHR :: IMPORTABLE_BIT_KHR;
     VK_EXTERNAL_FENCE_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalFenceFeatureFlags :: VkExternalFenceFeatureFlagBits;
+
 VkFenceImportFlagBits :: enum_flags u32 {
     TEMPORARY_BIT :: 0x1;
     TEMPORARY_BIT_KHR :: 0x1;
@@ -4782,7 +5019,9 @@ VkFenceImportFlagBits :: enum_flags u32 {
     VK_FENCE_IMPORT_TEMPORARY_BIT_KHR :: TEMPORARY_BIT_KHR;
     VK_FENCE_IMPORT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkFenceImportFlags :: VkFenceImportFlagBits;
+
 VkSemaphoreImportFlagBits :: enum_flags u32 {
     TEMPORARY_BIT :: 0x1;
     TEMPORARY_BIT_KHR :: 0x1;
@@ -4791,7 +5030,9 @@ VkSemaphoreImportFlagBits :: enum_flags u32 {
     VK_SEMAPHORE_IMPORT_TEMPORARY_BIT_KHR :: TEMPORARY_BIT_KHR;
     VK_SEMAPHORE_IMPORT_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkSemaphoreImportFlags :: VkSemaphoreImportFlagBits;
+
 VkExternalSemaphoreHandleTypeFlagBits :: enum_flags u32 {
     OPAQUE_FD_BIT :: 0x1;
     OPAQUE_WIN32_BIT :: 0x2;
@@ -4816,7 +5057,9 @@ VkExternalSemaphoreHandleTypeFlagBits :: enum_flags u32 {
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR :: SYNC_FD_BIT_KHR;
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalSemaphoreHandleTypeFlags :: VkExternalSemaphoreHandleTypeFlagBits;
+
 VkExternalSemaphoreFeatureFlagBits :: enum_flags u32 {
     EXPORTABLE_BIT :: 0x1;
     IMPORTABLE_BIT :: 0x2;
@@ -4829,7 +5072,9 @@ VkExternalSemaphoreFeatureFlagBits :: enum_flags u32 {
     VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR :: IMPORTABLE_BIT_KHR;
     VK_EXTERNAL_SEMAPHORE_FEATURE_FLAG_BITS_MAX_ENUM :: FLAG_BITS_MAX_ENUM;
 }
+
 VkExternalSemaphoreFeatureFlags :: VkExternalSemaphoreFeatureFlagBits;
+
 VkPhysicalDeviceSubgroupProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
     pNext: *void;
@@ -4838,6 +5083,7 @@ VkPhysicalDeviceSubgroupProperties :: struct {
     supportedOperations: VkSubgroupFeatureFlags;
     quadOperationsInAllStages: VkBool32;
 }
+
 VkBindBufferMemoryInfo :: struct {
     sType: VkStructureType = .BIND_BUFFER_MEMORY_INFO;
     pNext: *void;
@@ -4845,6 +5091,7 @@ VkBindBufferMemoryInfo :: struct {
     memory: VkDeviceMemory;
     memoryOffset: VkDeviceSize;
 }
+
 VkBindImageMemoryInfo :: struct {
     sType: VkStructureType = .BIND_IMAGE_MEMORY_INFO;
     pNext: *void;
@@ -4852,6 +5099,7 @@ VkBindImageMemoryInfo :: struct {
     memory: VkDeviceMemory;
     memoryOffset: VkDeviceSize;
 }
+
 VkPhysicalDevice16BitStorageFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
     pNext: *void;
@@ -4860,24 +5108,28 @@ VkPhysicalDevice16BitStorageFeatures :: struct {
     storagePushConstant16: VkBool32;
     storageInputOutput16: VkBool32;
 }
+
 VkMemoryDedicatedRequirements :: struct {
     sType: VkStructureType = .MEMORY_DEDICATED_REQUIREMENTS;
     pNext: *void;
     prefersDedicatedAllocation: VkBool32;
     requiresDedicatedAllocation: VkBool32;
 }
+
 VkMemoryDedicatedAllocateInfo :: struct {
     sType: VkStructureType = .MEMORY_DEDICATED_ALLOCATE_INFO;
     pNext: *void;
     image: VkImage;
     buffer: VkBuffer;
 }
+
 VkMemoryAllocateFlagsInfo :: struct {
     sType: VkStructureType = .MEMORY_ALLOCATE_FLAGS_INFO;
     pNext: *void;
     flags: VkMemoryAllocateFlags;
     deviceMask: u32;
 }
+
 VkDeviceGroupRenderPassBeginInfo :: struct {
     sType: VkStructureType = .DEVICE_GROUP_RENDER_PASS_BEGIN_INFO;
     pNext: *void;
@@ -4885,11 +5137,13 @@ VkDeviceGroupRenderPassBeginInfo :: struct {
     deviceRenderAreaCount: u32;
     pDeviceRenderAreas: *VkRect2D;
 }
+
 VkDeviceGroupCommandBufferBeginInfo :: struct {
     sType: VkStructureType = .DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO;
     pNext: *void;
     deviceMask: u32;
 }
+
 VkDeviceGroupSubmitInfo :: struct {
     sType: VkStructureType = .DEVICE_GROUP_SUBMIT_INFO;
     pNext: *void;
@@ -4900,18 +5154,21 @@ VkDeviceGroupSubmitInfo :: struct {
     signalSemaphoreCount: u32;
     pSignalSemaphoreDeviceIndices: *u32;
 }
+
 VkDeviceGroupBindSparseInfo :: struct {
     sType: VkStructureType = .DEVICE_GROUP_BIND_SPARSE_INFO;
     pNext: *void;
     resourceDeviceIndex: u32;
     memoryDeviceIndex: u32;
 }
+
 VkBindBufferMemoryDeviceGroupInfo :: struct {
     sType: VkStructureType = .BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO;
     pNext: *void;
     deviceIndexCount: u32;
     pDeviceIndices: *u32;
 }
+
 VkBindImageMemoryDeviceGroupInfo :: struct {
     sType: VkStructureType = .BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO;
     pNext: *void;
@@ -4920,6 +5177,7 @@ VkBindImageMemoryDeviceGroupInfo :: struct {
     splitInstanceBindRegionCount: u32;
     pSplitInstanceBindRegions: *VkRect2D;
 }
+
 VkPhysicalDeviceGroupProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pNext: *void;
@@ -4927,58 +5185,70 @@ VkPhysicalDeviceGroupProperties :: struct {
     physicalDevices: [32] VkPhysicalDevice;
     subsetAllocation: VkBool32;
 }
+
 VkDeviceGroupDeviceCreateInfo :: struct {
     sType: VkStructureType = .DEVICE_GROUP_DEVICE_CREATE_INFO;
     pNext: *void;
     physicalDeviceCount: u32;
     pPhysicalDevices: *VkPhysicalDevice;
 }
+
 VkBufferMemoryRequirementsInfo2 :: struct {
     sType: VkStructureType = .BUFFER_MEMORY_REQUIREMENTS_INFO_2;
     pNext: *void;
     buffer: VkBuffer;
 }
+
 VkImageMemoryRequirementsInfo2 :: struct {
     sType: VkStructureType = .IMAGE_MEMORY_REQUIREMENTS_INFO_2;
     pNext: *void;
     image: VkImage;
 }
+
 VkImageSparseMemoryRequirementsInfo2 :: struct {
     sType: VkStructureType = .IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2;
     pNext: *void;
     image: VkImage;
 }
+
 VkMemoryRequirements2 :: struct {
     sType: VkStructureType = .MEMORY_REQUIREMENTS_2;
     pNext: *void;
     memoryRequirements: VkMemoryRequirements;
 }
+
 VkMemoryRequirements2KHR :: VkMemoryRequirements2;
+
 VkSparseImageMemoryRequirements2 :: struct {
     sType: VkStructureType = .SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
     pNext: *void;
     memoryRequirements: VkSparseImageMemoryRequirements;
 }
+
 VkPhysicalDeviceFeatures2 :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_FEATURES_2;
     pNext: *void;
     features: VkPhysicalDeviceFeatures;
 }
+
 VkPhysicalDeviceProperties2 :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_PROPERTIES_2;
     pNext: *void;
     properties: VkPhysicalDeviceProperties;
 }
+
 VkFormatProperties2 :: struct {
     sType: VkStructureType = .FORMAT_PROPERTIES_2;
     pNext: *void;
     formatProperties: VkFormatProperties;
 }
+
 VkImageFormatProperties2 :: struct {
     sType: VkStructureType = .IMAGE_FORMAT_PROPERTIES_2;
     pNext: *void;
     imageFormatProperties: VkImageFormatProperties;
 }
+
 VkPhysicalDeviceImageFormatInfo2 :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2;
     pNext: *void;
@@ -4988,21 +5258,25 @@ VkPhysicalDeviceImageFormatInfo2 :: struct {
     usage: VkImageUsageFlags;
     flags: VkImageCreateFlags;
 }
+
 VkQueueFamilyProperties2 :: struct {
     sType: VkStructureType = .QUEUE_FAMILY_PROPERTIES_2;
     pNext: *void;
     queueFamilyProperties: VkQueueFamilyProperties;
 }
+
 VkPhysicalDeviceMemoryProperties2 :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
     pNext: *void;
     memoryProperties: VkPhysicalDeviceMemoryProperties;
 }
+
 VkSparseImageFormatProperties2 :: struct {
     sType: VkStructureType = .SPARSE_IMAGE_FORMAT_PROPERTIES_2;
     pNext: *void;
     properties: VkSparseImageFormatProperties;
 }
+
 VkPhysicalDeviceSparseImageFormatInfo2 :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2;
     pNext: *void;
@@ -5012,32 +5286,38 @@ VkPhysicalDeviceSparseImageFormatInfo2 :: struct {
     usage: VkImageUsageFlags;
     tiling: VkImageTiling;
 }
+
 VkPhysicalDevicePointClippingProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pNext: *void;
     pointClippingBehavior: VkPointClippingBehavior;
 }
+
 VkInputAttachmentAspectReference :: struct {
     subpass: u32;
     inputAttachmentIndex: u32;
     aspectMask: VkImageAspectFlags;
 }
+
 VkRenderPassInputAttachmentAspectCreateInfo :: struct {
     sType: VkStructureType = .RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO;
     pNext: *void;
     aspectReferenceCount: u32;
     pAspectReferences: *VkInputAttachmentAspectReference;
 }
+
 VkImageViewUsageCreateInfo :: struct {
     sType: VkStructureType = .IMAGE_VIEW_USAGE_CREATE_INFO;
     pNext: *void;
     usage: VkImageUsageFlags;
 }
+
 VkPipelineTessellationDomainOriginStateCreateInfo :: struct {
     sType: VkStructureType = .PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO;
     pNext: *void;
     domainOrigin: VkTessellationDomainOrigin;
 }
+
 VkRenderPassMultiviewCreateInfo :: struct {
     sType: VkStructureType = .RENDER_PASS_MULTIVIEW_CREATE_INFO;
     pNext: *void;
@@ -5048,6 +5328,7 @@ VkRenderPassMultiviewCreateInfo :: struct {
     correlationMaskCount: u32;
     pCorrelationMasks: *u32;
 }
+
 VkPhysicalDeviceMultiviewFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
     pNext: *void;
@@ -5055,28 +5336,33 @@ VkPhysicalDeviceMultiviewFeatures :: struct {
     multiviewGeometryShader: VkBool32;
     multiviewTessellationShader: VkBool32;
 }
+
 VkPhysicalDeviceMultiviewProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
     pNext: *void;
     maxMultiviewViewCount: u32;
     maxMultiviewInstanceIndex: u32;
 }
+
 VkPhysicalDeviceVariablePointerFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
     pNext: *void;
     variablePointersStorageBuffer: VkBool32;
     variablePointers: VkBool32;
 }
+
 VkPhysicalDeviceProtectedMemoryFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES;
     pNext: *void;
     protectedMemory: VkBool32;
 }
+
 VkPhysicalDeviceProtectedMemoryProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES;
     pNext: *void;
     protectedNoFault: VkBool32;
 }
+
 VkDeviceQueueInfo2 :: struct {
     sType: VkStructureType = .DEVICE_QUEUE_INFO_2;
     pNext: *void;
@@ -5084,11 +5370,13 @@ VkDeviceQueueInfo2 :: struct {
     queueFamilyIndex: u32;
     queueIndex: u32;
 }
+
 VkProtectedSubmitInfo :: struct {
     sType: VkStructureType = .PROTECTED_SUBMIT_INFO;
     pNext: *void;
     protectedSubmit: VkBool32;
 }
+
 VkSamplerYcbcrConversionCreateInfo :: struct {
     sType: VkStructureType = .SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
     pNext: *void;
@@ -5101,31 +5389,37 @@ VkSamplerYcbcrConversionCreateInfo :: struct {
     chromaFilter: VkFilter;
     forceExplicitReconstruction: VkBool32;
 }
+
 VkSamplerYcbcrConversionInfo :: struct {
     sType: VkStructureType = .SAMPLER_YCBCR_CONVERSION_INFO;
     pNext: *void;
     conversion: VkSamplerYcbcrConversion;
 }
+
 VkBindImagePlaneMemoryInfo :: struct {
     sType: VkStructureType = .BIND_IMAGE_PLANE_MEMORY_INFO;
     pNext: *void;
     planeAspect: VkImageAspectFlagBits;
 }
+
 VkImagePlaneMemoryRequirementsInfo :: struct {
     sType: VkStructureType = .IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO;
     pNext: *void;
     planeAspect: VkImageAspectFlagBits;
 }
+
 VkPhysicalDeviceSamplerYcbcrConversionFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
     pNext: *void;
     samplerYcbcrConversion: VkBool32;
 }
+
 VkSamplerYcbcrConversionImageFormatProperties :: struct {
     sType: VkStructureType = .SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES;
     pNext: *void;
     combinedImageSamplerDescriptorCount: u32;
 }
+
 VkDescriptorUpdateTemplateEntry :: struct {
     dstBinding: u32;
     dstArrayElement: u32;
@@ -5134,6 +5428,7 @@ VkDescriptorUpdateTemplateEntry :: struct {
     offset: u64;
     stride: u64;
 }
+
 VkDescriptorUpdateTemplateCreateInfo :: struct {
     sType: VkStructureType = .DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
     pNext: *void;
@@ -5146,21 +5441,25 @@ VkDescriptorUpdateTemplateCreateInfo :: struct {
     pipelineLayout: VkPipelineLayout;
     set: u32;
 }
+
 VkExternalMemoryProperties :: struct {
     externalMemoryFeatures: VkExternalMemoryFeatureFlags;
     exportFromImportedHandleTypes: VkExternalMemoryHandleTypeFlags;
     compatibleHandleTypes: VkExternalMemoryHandleTypeFlags;
 }
+
 VkPhysicalDeviceExternalImageFormatInfo :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
     pNext: *void;
     handleType: VkExternalMemoryHandleTypeFlagBits;
 }
+
 VkExternalImageFormatProperties :: struct {
     sType: VkStructureType = .EXTERNAL_IMAGE_FORMAT_PROPERTIES;
     pNext: *void;
     externalMemoryProperties: VkExternalMemoryProperties;
 }
+
 VkPhysicalDeviceExternalBufferInfo :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO;
     pNext: *void;
@@ -5168,11 +5467,13 @@ VkPhysicalDeviceExternalBufferInfo :: struct {
     usage: VkBufferUsageFlags;
     handleType: VkExternalMemoryHandleTypeFlagBits;
 }
+
 VkExternalBufferProperties :: struct {
     sType: VkStructureType = .EXTERNAL_BUFFER_PROPERTIES;
     pNext: *void;
     externalMemoryProperties: VkExternalMemoryProperties;
 }
+
 VkPhysicalDeviceIDProperties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_ID_PROPERTIES;
     pNext: *void;
@@ -5182,26 +5483,31 @@ VkPhysicalDeviceIDProperties :: struct {
     deviceNodeMask: u32;
     deviceLUIDValid: VkBool32;
 }
+
 VkExternalMemoryImageCreateInfo :: struct {
     sType: VkStructureType = .EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
     pNext: *void;
     handleTypes: VkExternalMemoryHandleTypeFlags;
 }
+
 VkExternalMemoryBufferCreateInfo :: struct {
     sType: VkStructureType = .EXTERNAL_MEMORY_BUFFER_CREATE_INFO;
     pNext: *void;
     handleTypes: VkExternalMemoryHandleTypeFlags;
 }
+
 VkExportMemoryAllocateInfo :: struct {
     sType: VkStructureType = .EXPORT_MEMORY_ALLOCATE_INFO;
     pNext: *void;
     handleTypes: VkExternalMemoryHandleTypeFlags;
 }
+
 VkPhysicalDeviceExternalFenceInfo :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
     pNext: *void;
     handleType: VkExternalFenceHandleTypeFlagBits;
 }
+
 VkExternalFenceProperties :: struct {
     sType: VkStructureType = .EXTERNAL_FENCE_PROPERTIES;
     pNext: *void;
@@ -5209,21 +5515,25 @@ VkExternalFenceProperties :: struct {
     compatibleHandleTypes: VkExternalFenceHandleTypeFlags;
     externalFenceFeatures: VkExternalFenceFeatureFlags;
 }
+
 VkExportFenceCreateInfo :: struct {
     sType: VkStructureType = .EXPORT_FENCE_CREATE_INFO;
     pNext: *void;
     handleTypes: VkExternalFenceHandleTypeFlags;
 }
+
 VkExportSemaphoreCreateInfo :: struct {
     sType: VkStructureType = .EXPORT_SEMAPHORE_CREATE_INFO;
     pNext: *void;
     handleTypes: VkExternalSemaphoreHandleTypeFlags;
 }
+
 VkPhysicalDeviceExternalSemaphoreInfo :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO;
     pNext: *void;
     handleType: VkExternalSemaphoreHandleTypeFlagBits;
 }
+
 VkExternalSemaphoreProperties :: struct {
     sType: VkStructureType = .EXTERNAL_SEMAPHORE_PROPERTIES;
     pNext: *void;
@@ -5231,22 +5541,26 @@ VkExternalSemaphoreProperties :: struct {
     compatibleHandleTypes: VkExternalSemaphoreHandleTypeFlags;
     externalSemaphoreFeatures: VkExternalSemaphoreFeatureFlags;
 }
+
 VkPhysicalDeviceMaintenance3Properties :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
     pNext: *void;
     maxPerSetDescriptors: u32;
     maxMemoryAllocationSize: VkDeviceSize;
 }
+
 VkDescriptorSetLayoutSupport :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_LAYOUT_SUPPORT;
     pNext: *void;
     supported: VkBool32;
 }
+
 VkPhysicalDeviceShaderDrawParameterFeatures :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES;
     pNext: *void;
     shaderDrawParameters: VkBool32;
 }
+
 PFN_vkEnumerateInstanceVersion :: #type (pApiVersion: *u32) -> VkResult #c_call;
 PFN_vkBindBufferMemory2 :: #type (device: VkDevice, bindInfoCount: u32, pBindInfos: *VkBindBufferMemoryInfo) -> VkResult #c_call;
 PFN_vkBindImageMemory2 :: #type (device: VkDevice, bindInfoCount: u32, pBindInfos: *VkBindImageMemoryInfo) -> VkResult #c_call;
@@ -5303,6 +5617,7 @@ vkGetPhysicalDeviceExternalSemaphoreProperties :: (physicalDevice: VkPhysicalDev
 vkGetDescriptorSetLayoutSupport :: (device: VkDevice, pCreateInfo: *VkDescriptorSetLayoutCreateInfo, pSupport: *VkDescriptorSetLayoutSupport) -> void #foreign libvulkan;
 VkSurfaceKHR_T :: struct {}
 VkSurfaceKHR :: *VkSurfaceKHR_T;
+
 VkColorSpaceKHR :: enum u32 {
     COLOR_SPACE_SRGB_NONLINEAR_KHR :: 0;
     COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT :: 1000104001;
@@ -5345,6 +5660,7 @@ VkColorSpaceKHR :: enum u32 {
     VK_COLOR_SPACE_RANGE_SIZE_KHR :: COLOR_SPACE_RANGE_SIZE_KHR;
     VK_COLOR_SPACE_MAX_ENUM_KHR :: COLOR_SPACE_MAX_ENUM_KHR;
 }
+
 VkPresentModeKHR :: enum u32 {
     IMMEDIATE_KHR :: 0;
     MAILBOX_KHR :: 1;
@@ -5367,6 +5683,7 @@ VkPresentModeKHR :: enum u32 {
     VK_PRESENT_MODE_RANGE_SIZE_KHR :: RANGE_SIZE_KHR;
     VK_PRESENT_MODE_MAX_ENUM_KHR :: MAX_ENUM_KHR;
 }
+
 VkSurfaceTransformFlagBitsKHR :: enum_flags u32 {
     IDENTITY_BIT_KHR :: 0x1;
     ROTATE_90_BIT_KHR :: 0x2;
@@ -5389,7 +5706,9 @@ VkSurfaceTransformFlagBitsKHR :: enum_flags u32 {
     VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR :: INHERIT_BIT_KHR;
     VK_SURFACE_TRANSFORM_FLAG_BITS_MAX_ENUM_KHR :: FLAG_BITS_MAX_ENUM_KHR;
 }
+
 VkSurfaceTransformFlagsKHR :: VkSurfaceTransformFlagBitsKHR;
+
 VkCompositeAlphaFlagBitsKHR :: enum_flags u32 {
     OPAQUE_BIT_KHR :: 0x1;
     PRE_MULTIPLIED_BIT_KHR :: 0x2;
@@ -5402,7 +5721,9 @@ VkCompositeAlphaFlagBitsKHR :: enum_flags u32 {
     VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR :: INHERIT_BIT_KHR;
     VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR :: FLAG_BITS_MAX_ENUM_KHR;
 }
+
 VkCompositeAlphaFlagsKHR :: VkCompositeAlphaFlagBitsKHR;
+
 VkSurfaceCapabilitiesKHR :: struct {
     minImageCount: u32;
     maxImageCount: u32;
@@ -5415,10 +5736,12 @@ VkSurfaceCapabilitiesKHR :: struct {
     supportedCompositeAlpha: VkCompositeAlphaFlagsKHR;
     supportedUsageFlags: VkImageUsageFlags;
 }
+
 VkSurfaceFormatKHR :: struct {
     format: VkFormat;
     colorSpace: VkColorSpaceKHR;
 }
+
 PFN_vkDestroySurfaceKHR :: #type (instance: VkInstance, surface: VkSurfaceKHR, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkGetPhysicalDeviceSurfaceSupportKHR :: #type (physicalDevice: VkPhysicalDevice, queueFamilyIndex: u32, surface: VkSurfaceKHR, pSupported: *VkBool32) -> VkResult #c_call;
 PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR :: #type (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR, pSurfaceCapabilities: *VkSurfaceCapabilitiesKHR) -> VkResult #c_call;
@@ -5431,6 +5754,7 @@ vkGetPhysicalDeviceSurfaceFormatsKHR :: (physicalDevice: VkPhysicalDevice, surfa
 vkGetPhysicalDeviceSurfacePresentModesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR, pPresentModeCount: *u32, pPresentModes: *VkPresentModeKHR) -> VkResult #foreign libvulkan;
 VkSwapchainKHR_T :: struct {}
 VkSwapchainKHR :: *VkSwapchainKHR_T;
+
 VkSwapchainCreateFlagBitsKHR :: enum_flags u32 {
     SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR :: 0x1;
     PROTECTED_BIT_KHR :: 0x2;
@@ -5439,7 +5763,9 @@ VkSwapchainCreateFlagBitsKHR :: enum_flags u32 {
     VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR :: PROTECTED_BIT_KHR;
     VK_SWAPCHAIN_CREATE_FLAG_BITS_MAX_ENUM_KHR :: FLAG_BITS_MAX_ENUM_KHR;
 }
+
 VkSwapchainCreateFlagsKHR :: VkSwapchainCreateFlagBitsKHR;
+
 VkDeviceGroupPresentModeFlagBitsKHR :: enum_flags u32 {
     LOCAL_BIT_KHR :: 0x1;
     REMOTE_BIT_KHR :: 0x2;
@@ -5452,7 +5778,9 @@ VkDeviceGroupPresentModeFlagBitsKHR :: enum_flags u32 {
     VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR :: LOCAL_MULTI_DEVICE_BIT_KHR;
     VK_DEVICE_GROUP_PRESENT_MODE_FLAG_BITS_MAX_ENUM_KHR :: FLAG_BITS_MAX_ENUM_KHR;
 }
+
 VkDeviceGroupPresentModeFlagsKHR :: VkDeviceGroupPresentModeFlagBitsKHR;
+
 VkSwapchainCreateInfoKHR :: struct {
     sType: VkStructureType = .SWAPCHAIN_CREATE_INFO_KHR;
     pNext: *void;
@@ -5473,6 +5801,7 @@ VkSwapchainCreateInfoKHR :: struct {
     clipped: VkBool32;
     oldSwapchain: VkSwapchainKHR;
 }
+
 VkPresentInfoKHR :: struct {
     sType: VkStructureType = .PRESENT_INFO_KHR;
     pNext: *void;
@@ -5483,17 +5812,20 @@ VkPresentInfoKHR :: struct {
     pImageIndices: *u32;
     pResults: *VkResult;
 }
+
 VkImageSwapchainCreateInfoKHR :: struct {
     sType: VkStructureType = .IMAGE_SWAPCHAIN_CREATE_INFO_KHR;
     pNext: *void;
     swapchain: VkSwapchainKHR;
 }
+
 VkBindImageMemorySwapchainInfoKHR :: struct {
     sType: VkStructureType = .BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR;
     pNext: *void;
     swapchain: VkSwapchainKHR;
     imageIndex: u32;
 }
+
 VkAcquireNextImageInfoKHR :: struct {
     sType: VkStructureType = .ACQUIRE_NEXT_IMAGE_INFO_KHR;
     pNext: *void;
@@ -5503,12 +5835,14 @@ VkAcquireNextImageInfoKHR :: struct {
     fence: VkFence;
     deviceMask: u32;
 }
+
 VkDeviceGroupPresentCapabilitiesKHR :: struct {
     sType: VkStructureType = .DEVICE_GROUP_PRESENT_CAPABILITIES_KHR;
     pNext: *void;
     presentMask: [32] u32;
     modes: VkDeviceGroupPresentModeFlagsKHR;
 }
+
 VkDeviceGroupPresentInfoKHR :: struct {
     sType: VkStructureType = .DEVICE_GROUP_PRESENT_INFO_KHR;
     pNext: *void;
@@ -5516,11 +5850,13 @@ VkDeviceGroupPresentInfoKHR :: struct {
     pDeviceMasks: *u32;
     mode: VkDeviceGroupPresentModeFlagBitsKHR;
 }
+
 VkDeviceGroupSwapchainCreateInfoKHR :: struct {
     sType: VkStructureType = .DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR;
     pNext: *void;
     modes: VkDeviceGroupPresentModeFlagsKHR;
 }
+
 PFN_vkCreateSwapchainKHR :: #type (device: VkDevice, pCreateInfo: *VkSwapchainCreateInfoKHR, pAllocator: *VkAllocationCallbacks, pSwapchain: *VkSwapchainKHR) -> VkResult #c_call;
 PFN_vkDestroySwapchainKHR :: #type (device: VkDevice, swapchain: VkSwapchainKHR, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkGetSwapchainImagesKHR :: #type (device: VkDevice, swapchain: VkSwapchainKHR, pSwapchainImageCount: *u32, pSwapchainImages: *VkImage) -> VkResult #c_call;
@@ -5543,6 +5879,7 @@ VkDisplayKHR_T :: struct {}
 VkDisplayKHR :: *VkDisplayKHR_T;
 VkDisplayModeKHR_T :: struct {}
 VkDisplayModeKHR :: *VkDisplayModeKHR_T;
+
 VkDisplayPlaneAlphaFlagBitsKHR :: enum_flags u32 {
     OPAQUE_BIT_KHR :: 0x1;
     GLOBAL_BIT_KHR :: 0x2;
@@ -5555,9 +5892,11 @@ VkDisplayPlaneAlphaFlagBitsKHR :: enum_flags u32 {
     VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR :: PER_PIXEL_PREMULTIPLIED_BIT_KHR;
     VK_DISPLAY_PLANE_ALPHA_FLAG_BITS_MAX_ENUM_KHR :: FLAG_BITS_MAX_ENUM_KHR;
 }
+
 VkDisplayPlaneAlphaFlagsKHR :: VkDisplayPlaneAlphaFlagBitsKHR;
 VkDisplayModeCreateFlagsKHR :: VkFlags;
 VkDisplaySurfaceCreateFlagsKHR :: VkFlags;
+
 VkDisplayPropertiesKHR :: struct {
     display: VkDisplayKHR;
     displayName: *u8;
@@ -5567,20 +5906,24 @@ VkDisplayPropertiesKHR :: struct {
     planeReorderPossible: VkBool32;
     persistentContent: VkBool32;
 }
+
 VkDisplayModeParametersKHR :: struct {
     visibleRegion: VkExtent2D;
     refreshRate: u32;
 }
+
 VkDisplayModePropertiesKHR :: struct {
     displayMode: VkDisplayModeKHR;
     parameters: VkDisplayModeParametersKHR;
 }
+
 VkDisplayModeCreateInfoKHR :: struct {
     sType: VkStructureType = .DISPLAY_MODE_CREATE_INFO_KHR;
     pNext: *void;
     flags: VkDisplayModeCreateFlagsKHR;
     parameters: VkDisplayModeParametersKHR;
 }
+
 VkDisplayPlaneCapabilitiesKHR :: struct {
     supportedAlpha: VkDisplayPlaneAlphaFlagsKHR;
     minSrcPosition: VkOffset2D;
@@ -5592,10 +5935,12 @@ VkDisplayPlaneCapabilitiesKHR :: struct {
     minDstExtent: VkExtent2D;
     maxDstExtent: VkExtent2D;
 }
+
 VkDisplayPlanePropertiesKHR :: struct {
     currentDisplay: VkDisplayKHR;
     currentStackIndex: u32;
 }
+
 VkDisplaySurfaceCreateInfoKHR :: struct {
     sType: VkStructureType = .DISPLAY_SURFACE_CREATE_INFO_KHR;
     pNext: *void;
@@ -5608,6 +5953,7 @@ VkDisplaySurfaceCreateInfoKHR :: struct {
     alphaMode: VkDisplayPlaneAlphaFlagBitsKHR;
     imageExtent: VkExtent2D;
 }
+
 PFN_vkGetPhysicalDeviceDisplayPropertiesKHR :: #type (physicalDevice: VkPhysicalDevice, pPropertyCount: *u32, pProperties: *VkDisplayPropertiesKHR) -> VkResult #c_call;
 PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR :: #type (physicalDevice: VkPhysicalDevice, pPropertyCount: *u32, pProperties: *VkDisplayPlanePropertiesKHR) -> VkResult #c_call;
 PFN_vkGetDisplayPlaneSupportedDisplaysKHR :: #type (physicalDevice: VkPhysicalDevice, planeIndex: u32, pDisplayCount: *u32, pDisplays: *VkDisplayKHR) -> VkResult #c_call;
@@ -5622,6 +5968,7 @@ vkGetDisplayModePropertiesKHR :: (physicalDevice: VkPhysicalDevice, display: VkD
 vkCreateDisplayModeKHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR, pCreateInfo: *VkDisplayModeCreateInfoKHR, pAllocator: *VkAllocationCallbacks, pMode: *VkDisplayModeKHR) -> VkResult #foreign libvulkan;
 vkGetDisplayPlaneCapabilitiesKHR :: (physicalDevice: VkPhysicalDevice, mode: VkDisplayModeKHR, planeIndex: u32, pCapabilities: *VkDisplayPlaneCapabilitiesKHR) -> VkResult #foreign libvulkan;
 vkCreateDisplayPlaneSurfaceKHR :: (instance: VkInstance, pCreateInfo: *VkDisplaySurfaceCreateInfoKHR, pAllocator: *VkAllocationCallbacks, pSurface: *VkSurfaceKHR) -> VkResult #foreign libvulkan;
+
 VkDisplayPresentInfoKHR :: struct {
     sType: VkStructureType = .DISPLAY_PRESENT_INFO_KHR;
     pNext: *void;
@@ -5629,6 +5976,7 @@ VkDisplayPresentInfoKHR :: struct {
     dstRect: VkRect2D;
     persistent: VkBool32;
 }
+
 PFN_vkCreateSharedSwapchainsKHR :: #type (device: VkDevice, swapchainCount: u32, pCreateInfos: *VkSwapchainCreateInfoKHR, pAllocator: *VkAllocationCallbacks, pSwapchains: *VkSwapchainKHR) -> VkResult #c_call;
 vkCreateSharedSwapchainsKHR :: (device: VkDevice, swapchainCount: u32, pCreateInfos: *VkSwapchainCreateInfoKHR, pAllocator: *VkAllocationCallbacks, pSwapchains: *VkSwapchainKHR) -> VkResult #foreign libvulkan;
 VkRenderPassMultiviewCreateInfoKHR :: VkRenderPassMultiviewCreateInfo;
@@ -5683,23 +6031,27 @@ PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR :: #type (physicalDevice: VkP
 VkExternalMemoryImageCreateInfoKHR :: VkExternalMemoryImageCreateInfo;
 VkExternalMemoryBufferCreateInfoKHR :: VkExternalMemoryBufferCreateInfo;
 VkExportMemoryAllocateInfoKHR :: VkExportMemoryAllocateInfo;
+
 VkImportMemoryFdInfoKHR :: struct {
     sType: VkStructureType = .IMPORT_MEMORY_FD_INFO_KHR;
     pNext: *void;
     handleType: VkExternalMemoryHandleTypeFlagBits;
     fd: s32;
 }
+
 VkMemoryFdPropertiesKHR :: struct {
     sType: VkStructureType = .MEMORY_FD_PROPERTIES_KHR;
     pNext: *void;
     memoryTypeBits: u32;
 }
+
 VkMemoryGetFdInfoKHR :: struct {
     sType: VkStructureType = .MEMORY_GET_FD_INFO_KHR;
     pNext: *void;
     memory: VkDeviceMemory;
     handleType: VkExternalMemoryHandleTypeFlagBits;
 }
+
 PFN_vkGetMemoryFdKHR :: #type (device: VkDevice, pGetFdInfo: *VkMemoryGetFdInfoKHR, pFd: *s32) -> VkResult #c_call;
 PFN_vkGetMemoryFdPropertiesKHR :: #type (device: VkDevice, handleType: VkExternalMemoryHandleTypeFlagBits, fd: s32, pMemoryFdProperties: *VkMemoryFdPropertiesKHR) -> VkResult #c_call;
 VkExternalSemaphoreHandleTypeFlagsKHR :: VkExternalSemaphoreHandleTypeFlags;
@@ -5712,6 +6064,7 @@ PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR :: #type (physicalDevice: 
 VkSemaphoreImportFlagsKHR :: VkSemaphoreImportFlags;
 VkSemaphoreImportFlagBitsKHR :: VkSemaphoreImportFlagBits;
 VkExportSemaphoreCreateInfoKHR :: VkExportSemaphoreCreateInfo;
+
 VkImportSemaphoreFdInfoKHR :: struct {
     sType: VkStructureType = .IMPORT_SEMAPHORE_FD_INFO_KHR;
     pNext: *void;
@@ -5720,37 +6073,45 @@ VkImportSemaphoreFdInfoKHR :: struct {
     handleType: VkExternalSemaphoreHandleTypeFlagBits;
     fd: s32;
 }
+
 VkSemaphoreGetFdInfoKHR :: struct {
     sType: VkStructureType = .SEMAPHORE_GET_FD_INFO_KHR;
     pNext: *void;
     semaphore: VkSemaphore;
     handleType: VkExternalSemaphoreHandleTypeFlagBits;
 }
+
 PFN_vkImportSemaphoreFdKHR :: #type (device: VkDevice, pImportSemaphoreFdInfo: *VkImportSemaphoreFdInfoKHR) -> VkResult #c_call;
 PFN_vkGetSemaphoreFdKHR :: #type (device: VkDevice, pGetFdInfo: *VkSemaphoreGetFdInfoKHR, pFd: *s32) -> VkResult #c_call;
+
 VkPhysicalDevicePushDescriptorPropertiesKHR :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
     pNext: *void;
     maxPushDescriptors: u32;
 }
+
 PFN_vkCmdPushDescriptorSetKHR :: #type (commandBuffer: VkCommandBuffer, pipelineBindPoint: VkPipelineBindPoint, layout: VkPipelineLayout, set: u32, descriptorWriteCount: u32, pDescriptorWrites: *VkWriteDescriptorSet) -> void #c_call;
 PFN_vkCmdPushDescriptorSetWithTemplateKHR :: #type (commandBuffer: VkCommandBuffer, descriptorUpdateTemplate: VkDescriptorUpdateTemplate, layout: VkPipelineLayout, set: u32, pData: *void) -> void #c_call;
 VkPhysicalDevice16BitStorageFeaturesKHR :: VkPhysicalDevice16BitStorageFeatures;
+
 VkRectLayerKHR :: struct {
     offset: VkOffset2D;
     extent: VkExtent2D;
     layer: u32;
 }
+
 VkPresentRegionKHR :: struct {
     rectangleCount: u32;
     pRectangles: *VkRectLayerKHR;
 }
+
 VkPresentRegionsKHR :: struct {
     sType: VkStructureType = .PRESENT_REGIONS_KHR;
     pNext: *void;
     swapchainCount: u32;
     pRegions: *VkPresentRegionKHR;
 }
+
 VkDescriptorUpdateTemplateKHR :: VkDescriptorUpdateTemplate;
 VkDescriptorUpdateTemplateTypeKHR :: VkDescriptorUpdateTemplateType;
 VkDescriptorUpdateTemplateCreateFlagsKHR :: VkDescriptorUpdateTemplateCreateFlags;
@@ -5759,6 +6120,7 @@ VkDescriptorUpdateTemplateCreateInfoKHR :: VkDescriptorUpdateTemplateCreateInfo;
 PFN_vkCreateDescriptorUpdateTemplateKHR :: #type (device: VkDevice, pCreateInfo: *VkDescriptorUpdateTemplateCreateInfo, pAllocator: *VkAllocationCallbacks, pDescriptorUpdateTemplate: *VkDescriptorUpdateTemplate) -> VkResult #c_call;
 PFN_vkDestroyDescriptorUpdateTemplateKHR :: #type (device: VkDevice, descriptorUpdateTemplate: VkDescriptorUpdateTemplate, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkUpdateDescriptorSetWithTemplateKHR :: #type (device: VkDevice, descriptorSet: VkDescriptorSet, descriptorUpdateTemplate: VkDescriptorUpdateTemplate, pData: *void) -> void #c_call;
+
 VkAttachmentDescription2KHR :: struct {
     sType: VkStructureType = .ATTACHMENT_DESCRIPTION_2_KHR;
     pNext: *void;
@@ -5772,6 +6134,7 @@ VkAttachmentDescription2KHR :: struct {
     initialLayout: VkImageLayout;
     finalLayout: VkImageLayout;
 }
+
 VkAttachmentReference2KHR :: struct {
     sType: VkStructureType = .ATTACHMENT_REFERENCE_2_KHR;
     pNext: *void;
@@ -5779,6 +6142,7 @@ VkAttachmentReference2KHR :: struct {
     layout: VkImageLayout;
     aspectMask: VkImageAspectFlags;
 }
+
 VkSubpassDescription2KHR :: struct {
     sType: VkStructureType = .SUBPASS_DESCRIPTION_2_KHR;
     pNext: *void;
@@ -5794,6 +6158,7 @@ VkSubpassDescription2KHR :: struct {
     preserveAttachmentCount: u32;
     pPreserveAttachments: *u32;
 }
+
 VkSubpassDependency2KHR :: struct {
     sType: VkStructureType = .SUBPASS_DEPENDENCY_2_KHR;
     pNext: *void;
@@ -5806,6 +6171,7 @@ VkSubpassDependency2KHR :: struct {
     dependencyFlags: VkDependencyFlags;
     viewOffset: s32;
 }
+
 VkRenderPassCreateInfo2KHR :: struct {
     sType: VkStructureType = .RENDER_PASS_CREATE_INFO_2_KHR;
     pNext: *void;
@@ -5819,24 +6185,29 @@ VkRenderPassCreateInfo2KHR :: struct {
     correlatedViewMaskCount: u32;
     pCorrelatedViewMasks: *u32;
 }
+
 VkSubpassBeginInfoKHR :: struct {
     sType: VkStructureType = .SUBPASS_BEGIN_INFO_KHR;
     pNext: *void;
     contents: VkSubpassContents;
 }
+
 VkSubpassEndInfoKHR :: struct {
     sType: VkStructureType = .SUBPASS_END_INFO_KHR;
     pNext: *void;
 }
+
 PFN_vkCreateRenderPass2KHR :: #type (device: VkDevice, pCreateInfo: *VkRenderPassCreateInfo2KHR, pAllocator: *VkAllocationCallbacks, pRenderPass: *VkRenderPass) -> VkResult #c_call;
 PFN_vkCmdBeginRenderPass2KHR :: #type (commandBuffer: VkCommandBuffer, pRenderPassBegin: *VkRenderPassBeginInfo, pSubpassBeginInfo: *VkSubpassBeginInfoKHR) -> void #c_call;
 PFN_vkCmdNextSubpass2KHR :: #type (commandBuffer: VkCommandBuffer, pSubpassBeginInfo: *VkSubpassBeginInfoKHR, pSubpassEndInfo: *VkSubpassEndInfoKHR) -> void #c_call;
 PFN_vkCmdEndRenderPass2KHR :: #type (commandBuffer: VkCommandBuffer, pSubpassEndInfo: *VkSubpassEndInfoKHR) -> void #c_call;
+
 VkSharedPresentSurfaceCapabilitiesKHR :: struct {
     sType: VkStructureType = .SHARED_PRESENT_SURFACE_CAPABILITIES_KHR;
     pNext: *void;
     sharedPresentSupportedUsageFlags: VkImageUsageFlags;
 }
+
 PFN_vkGetSwapchainStatusKHR :: #type (device: VkDevice, swapchain: VkSwapchainKHR) -> VkResult #c_call;
 VkExternalFenceHandleTypeFlagsKHR :: VkExternalFenceHandleTypeFlags;
 VkExternalFenceHandleTypeFlagBitsKHR :: VkExternalFenceHandleTypeFlagBits;
@@ -5848,6 +6219,7 @@ PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR :: #type (physicalDevice: VkPh
 VkFenceImportFlagsKHR :: VkFenceImportFlags;
 VkFenceImportFlagBitsKHR :: VkFenceImportFlagBits;
 VkExportFenceCreateInfoKHR :: VkExportFenceCreateInfo;
+
 VkImportFenceFdInfoKHR :: struct {
     sType: VkStructureType = .IMPORT_FENCE_FD_INFO_KHR;
     pNext: *void;
@@ -5856,12 +6228,14 @@ VkImportFenceFdInfoKHR :: struct {
     handleType: VkExternalFenceHandleTypeFlagBits;
     fd: s32;
 }
+
 VkFenceGetFdInfoKHR :: struct {
     sType: VkStructureType = .FENCE_GET_FD_INFO_KHR;
     pNext: *void;
     fence: VkFence;
     handleType: VkExternalFenceHandleTypeFlagBits;
 }
+
 PFN_vkImportFenceFdKHR :: #type (device: VkDevice, pImportFenceFdInfo: *VkImportFenceFdInfoKHR) -> VkResult #c_call;
 PFN_vkGetFenceFdKHR :: #type (device: VkDevice, pGetFdInfo: *VkFenceGetFdInfoKHR, pFd: *s32) -> VkResult #c_call;
 VkPointClippingBehaviorKHR :: VkPointClippingBehavior;
@@ -5871,50 +6245,60 @@ VkRenderPassInputAttachmentAspectCreateInfoKHR :: VkRenderPassInputAttachmentAsp
 VkInputAttachmentAspectReferenceKHR :: VkInputAttachmentAspectReference;
 VkImageViewUsageCreateInfoKHR :: VkImageViewUsageCreateInfo;
 VkPipelineTessellationDomainOriginStateCreateInfoKHR :: VkPipelineTessellationDomainOriginStateCreateInfo;
+
 VkPhysicalDeviceSurfaceInfo2KHR :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SURFACE_INFO_2_KHR;
     pNext: *void;
     surface: VkSurfaceKHR;
 }
+
 VkSurfaceCapabilities2KHR :: struct {
     sType: VkStructureType = .SURFACE_CAPABILITIES_2_KHR;
     pNext: *void;
     surfaceCapabilities: VkSurfaceCapabilitiesKHR;
 }
+
 VkSurfaceFormat2KHR :: struct {
     sType: VkStructureType = .SURFACE_FORMAT_2_KHR;
     pNext: *void;
     surfaceFormat: VkSurfaceFormatKHR;
 }
+
 PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR :: #type (physicalDevice: VkPhysicalDevice, pSurfaceInfo: *VkPhysicalDeviceSurfaceInfo2KHR, pSurfaceCapabilities: *VkSurfaceCapabilities2KHR) -> VkResult #c_call;
 PFN_vkGetPhysicalDeviceSurfaceFormats2KHR :: #type (physicalDevice: VkPhysicalDevice, pSurfaceInfo: *VkPhysicalDeviceSurfaceInfo2KHR, pSurfaceFormatCount: *u32, pSurfaceFormats: *VkSurfaceFormat2KHR) -> VkResult #c_call;
 VkPhysicalDeviceVariablePointerFeaturesKHR :: VkPhysicalDeviceVariablePointerFeatures;
+
 VkDisplayProperties2KHR :: struct {
     sType: VkStructureType = .DISPLAY_PROPERTIES_2_KHR;
     pNext: *void;
     displayProperties: VkDisplayPropertiesKHR;
 }
+
 VkDisplayPlaneProperties2KHR :: struct {
     sType: VkStructureType = .DISPLAY_PLANE_PROPERTIES_2_KHR;
     pNext: *void;
     displayPlaneProperties: VkDisplayPlanePropertiesKHR;
 }
+
 VkDisplayModeProperties2KHR :: struct {
     sType: VkStructureType = .DISPLAY_MODE_PROPERTIES_2_KHR;
     pNext: *void;
     displayModeProperties: VkDisplayModePropertiesKHR;
 }
+
 VkDisplayPlaneInfo2KHR :: struct {
     sType: VkStructureType = .DISPLAY_PLANE_INFO_2_KHR;
     pNext: *void;
     mode: VkDisplayModeKHR;
     planeIndex: u32;
 }
+
 VkDisplayPlaneCapabilities2KHR :: struct {
     sType: VkStructureType = .DISPLAY_PLANE_CAPABILITIES_2_KHR;
     pNext: *void;
     capabilities: VkDisplayPlaneCapabilitiesKHR;
 }
+
 PFN_vkGetPhysicalDeviceDisplayProperties2KHR :: #type (physicalDevice: VkPhysicalDevice, pPropertyCount: *u32, pProperties: *VkDisplayProperties2KHR) -> VkResult #c_call;
 PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: #type (physicalDevice: VkPhysicalDevice, pPropertyCount: *u32, pProperties: *VkDisplayPlaneProperties2KHR) -> VkResult #c_call;
 PFN_vkGetDisplayModeProperties2KHR :: #type (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR, pPropertyCount: *u32, pProperties: *VkDisplayModeProperties2KHR) -> VkResult #c_call;
@@ -5932,12 +6316,14 @@ VkSparseImageMemoryRequirements2KHR :: VkSparseImageMemoryRequirements2;
 PFN_vkGetImageMemoryRequirements2KHR :: #type (device: VkDevice, pInfo: *VkImageMemoryRequirementsInfo2, pMemoryRequirements: *VkMemoryRequirements2) -> void #c_call;
 PFN_vkGetBufferMemoryRequirements2KHR :: #type (device: VkDevice, pInfo: *VkBufferMemoryRequirementsInfo2, pMemoryRequirements: *VkMemoryRequirements2) -> void #c_call;
 PFN_vkGetImageSparseMemoryRequirements2KHR :: #type (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2, pSparseMemoryRequirementCount: *u32, pSparseMemoryRequirements: *VkSparseImageMemoryRequirements2) -> void #c_call;
+
 VkImageFormatListCreateInfoKHR :: struct {
     sType: VkStructureType = .IMAGE_FORMAT_LIST_CREATE_INFO_KHR;
     pNext: *void;
     viewFormatCount: u32;
     pViewFormats: *VkFormat;
 }
+
 VkSamplerYcbcrConversionKHR :: VkSamplerYcbcrConversion;
 VkSamplerYcbcrModelConversionKHR :: VkSamplerYcbcrModelConversion;
 VkSamplerYcbcrRangeKHR :: VkSamplerYcbcrRange;
@@ -5959,6 +6345,7 @@ VkDescriptorSetLayoutSupportKHR :: VkDescriptorSetLayoutSupport;
 PFN_vkGetDescriptorSetLayoutSupportKHR :: #type (device: VkDevice, pCreateInfo: *VkDescriptorSetLayoutCreateInfo, pSupport: *VkDescriptorSetLayoutSupport) -> void #c_call;
 PFN_vkCmdDrawIndirectCountKHR :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, countBuffer: VkBuffer, countBufferOffset: VkDeviceSize, maxDrawCount: u32, stride: u32) -> void #c_call;
 PFN_vkCmdDrawIndexedIndirectCountKHR :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, countBuffer: VkBuffer, countBufferOffset: VkDeviceSize, maxDrawCount: u32, stride: u32) -> void #c_call;
+
 VkPhysicalDevice8BitStorageFeaturesKHR :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR;
     pNext: *void;
@@ -5966,14 +6353,17 @@ VkPhysicalDevice8BitStorageFeaturesKHR :: struct {
     uniformAndStorageBuffer8BitAccess: VkBool32;
     storagePushConstant8: VkBool32;
 }
+
 VkPhysicalDeviceVulkanMemoryModelFeaturesKHR :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR;
     pNext: *void;
     vulkanMemoryModel: VkBool32;
     vulkanMemoryModelDeviceScope: VkBool32;
 }
+
 VkDebugReportCallbackEXT_T :: struct {}
 VkDebugReportCallbackEXT :: *VkDebugReportCallbackEXT_T;
+
 VkDebugReportObjectTypeEXT :: enum u32 {
     UNKNOWN_EXT :: 0;
     INSTANCE_EXT :: 1;
@@ -6066,6 +6456,7 @@ VkDebugReportObjectTypeEXT :: enum u32 {
     VK_DEBUG_REPORT_OBJECT_TYPE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_DEBUG_REPORT_OBJECT_TYPE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkDebugReportFlagBitsEXT :: enum_flags u32 {
     INFORMATION_BIT_EXT :: 0x1;
     WARNING_BIT_EXT :: 0x2;
@@ -6080,8 +6471,10 @@ VkDebugReportFlagBitsEXT :: enum_flags u32 {
     VK_DEBUG_REPORT_DEBUG_BIT_EXT :: DEBUG_BIT_EXT;
     VK_DEBUG_REPORT_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkDebugReportFlagsEXT :: VkDebugReportFlagBitsEXT;
 PFN_vkDebugReportCallbackEXT :: #type (flags: VkDebugReportFlagsEXT, objectType: VkDebugReportObjectTypeEXT, object: u64, location: u64, messageCode: s32, pLayerPrefix: *u8, pMessage: *u8, pUserData: *void) -> VkBool32 #c_call;
+
 VkDebugReportCallbackCreateInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
     pNext: *void;
@@ -6089,9 +6482,11 @@ VkDebugReportCallbackCreateInfoEXT :: struct {
     pfnCallback: PFN_vkDebugReportCallbackEXT;
     pUserData: *void;
 }
+
 PFN_vkCreateDebugReportCallbackEXT :: #type (instance: VkInstance, pCreateInfo: *VkDebugReportCallbackCreateInfoEXT, pAllocator: *VkAllocationCallbacks, pCallback: *VkDebugReportCallbackEXT) -> VkResult #c_call;
 PFN_vkDestroyDebugReportCallbackEXT :: #type (instance: VkInstance, callback: VkDebugReportCallbackEXT, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkDebugReportMessageEXT :: #type (instance: VkInstance, flags: VkDebugReportFlagsEXT, objectType: VkDebugReportObjectTypeEXT, object: u64, location: u64, messageCode: s32, pLayerPrefix: *u8, pMessage: *u8) -> void #c_call;
+
 VkRasterizationOrderAMD :: enum u32 {
     STRICT_AMD :: 0;
     RELAXED_AMD :: 1;
@@ -6106,11 +6501,13 @@ VkRasterizationOrderAMD :: enum u32 {
     VK_RASTERIZATION_ORDER_RANGE_SIZE_AMD :: RANGE_SIZE_AMD;
     VK_RASTERIZATION_ORDER_MAX_ENUM_AMD :: MAX_ENUM_AMD;
 }
+
 VkPipelineRasterizationStateRasterizationOrderAMD :: struct {
     sType: VkStructureType = .PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD;
     pNext: *void;
     rasterizationOrder: VkRasterizationOrderAMD;
 }
+
 VkDebugMarkerObjectNameInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
     pNext: *void;
@@ -6118,6 +6515,7 @@ VkDebugMarkerObjectNameInfoEXT :: struct {
     object: u64;
     pObjectName: *u8;
 }
+
 VkDebugMarkerObjectTagInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_MARKER_OBJECT_TAG_INFO_EXT;
     pNext: *void;
@@ -6127,40 +6525,48 @@ VkDebugMarkerObjectTagInfoEXT :: struct {
     tagSize: u64;
     pTag: *void;
 }
+
 VkDebugMarkerMarkerInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_MARKER_MARKER_INFO_EXT;
     pNext: *void;
     pMarkerName: *u8;
     color: [4] float;
 }
+
 PFN_vkDebugMarkerSetObjectTagEXT :: #type (device: VkDevice, pTagInfo: *VkDebugMarkerObjectTagInfoEXT) -> VkResult #c_call;
 PFN_vkDebugMarkerSetObjectNameEXT :: #type (device: VkDevice, pNameInfo: *VkDebugMarkerObjectNameInfoEXT) -> VkResult #c_call;
 PFN_vkCmdDebugMarkerBeginEXT :: #type (commandBuffer: VkCommandBuffer, pMarkerInfo: *VkDebugMarkerMarkerInfoEXT) -> void #c_call;
 PFN_vkCmdDebugMarkerEndEXT :: #type (commandBuffer: VkCommandBuffer) -> void #c_call;
 PFN_vkCmdDebugMarkerInsertEXT :: #type (commandBuffer: VkCommandBuffer, pMarkerInfo: *VkDebugMarkerMarkerInfoEXT) -> void #c_call;
+
 VkDedicatedAllocationImageCreateInfoNV :: struct {
     sType: VkStructureType = .DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV;
     pNext: *void;
     dedicatedAllocation: VkBool32;
 }
+
 VkDedicatedAllocationBufferCreateInfoNV :: struct {
     sType: VkStructureType = .DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV;
     pNext: *void;
     dedicatedAllocation: VkBool32;
 }
+
 VkDedicatedAllocationMemoryAllocateInfoNV :: struct {
     sType: VkStructureType = .DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV;
     pNext: *void;
     image: VkImage;
     buffer: VkBuffer;
 }
+
 PFN_vkCmdDrawIndirectCountAMD :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, countBuffer: VkBuffer, countBufferOffset: VkDeviceSize, maxDrawCount: u32, stride: u32) -> void #c_call;
 PFN_vkCmdDrawIndexedIndirectCountAMD :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, countBuffer: VkBuffer, countBufferOffset: VkDeviceSize, maxDrawCount: u32, stride: u32) -> void #c_call;
+
 VkTextureLODGatherFormatPropertiesAMD :: struct {
     sType: VkStructureType = .TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD;
     pNext: *void;
     supportsTextureGatherLODBiasAMD: VkBool32;
 }
+
 VkShaderInfoTypeAMD :: enum u32 {
     STATISTICS_AMD :: 0;
     BINARY_AMD :: 1;
@@ -6177,6 +6583,7 @@ VkShaderInfoTypeAMD :: enum u32 {
     VK_SHADER_INFO_TYPE_RANGE_SIZE_AMD :: RANGE_SIZE_AMD;
     VK_SHADER_INFO_TYPE_MAX_ENUM_AMD :: MAX_ENUM_AMD;
 }
+
 VkShaderResourceUsageAMD :: struct {
     numUsedVgprs: u32;
     numUsedSgprs: u32;
@@ -6184,6 +6591,7 @@ VkShaderResourceUsageAMD :: struct {
     ldsUsageSizeInBytes: u64;
     scratchMemUsageInBytes: u64;
 }
+
 VkShaderStatisticsInfoAMD :: struct {
     shaderStageMask: VkShaderStageFlags;
     resourceUsage: VkShaderResourceUsageAMD;
@@ -6193,12 +6601,15 @@ VkShaderStatisticsInfoAMD :: struct {
     numAvailableSgprs: u32;
     computeWorkGroupSize: [3] u32;
 }
+
 PFN_vkGetShaderInfoAMD :: #type (device: VkDevice, pipeline: VkPipeline, shaderStage: VkShaderStageFlagBits, infoType: VkShaderInfoTypeAMD, pInfoSize: *u64, pInfo: *void) -> VkResult #c_call;
+
 VkPhysicalDeviceCornerSampledImageFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV;
     pNext: *void;
     cornerSampledImage: VkBool32;
 }
+
 VkExternalMemoryHandleTypeFlagBitsNV :: enum_flags u32 {
     OPAQUE_WIN32_BIT_NV :: 0x1;
     OPAQUE_WIN32_KMT_BIT_NV :: 0x2;
@@ -6211,7 +6622,9 @@ VkExternalMemoryHandleTypeFlagBitsNV :: enum_flags u32 {
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV :: D3D11_IMAGE_KMT_BIT_NV;
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_FLAG_BITS_MAX_ENUM_NV :: FLAG_BITS_MAX_ENUM_NV;
 }
+
 VkExternalMemoryHandleTypeFlagsNV :: VkExternalMemoryHandleTypeFlagBitsNV;
+
 VkExternalMemoryFeatureFlagBitsNV :: enum_flags u32 {
     DEDICATED_ONLY_BIT_NV :: 0x1;
     EXPORTABLE_BIT_NV :: 0x2;
@@ -6222,24 +6635,30 @@ VkExternalMemoryFeatureFlagBitsNV :: enum_flags u32 {
     VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV :: IMPORTABLE_BIT_NV;
     VK_EXTERNAL_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM_NV :: FLAG_BITS_MAX_ENUM_NV;
 }
+
 VkExternalMemoryFeatureFlagsNV :: VkExternalMemoryFeatureFlagBitsNV;
+
 VkExternalImageFormatPropertiesNV :: struct {
     imageFormatProperties: VkImageFormatProperties;
     externalMemoryFeatures: VkExternalMemoryFeatureFlagsNV;
     exportFromImportedHandleTypes: VkExternalMemoryHandleTypeFlagsNV;
     compatibleHandleTypes: VkExternalMemoryHandleTypeFlagsNV;
 }
+
 PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV :: #type (physicalDevice: VkPhysicalDevice, format: VkFormat, type: VkImageType, tiling: VkImageTiling, usage: VkImageUsageFlags, flags: VkImageCreateFlags, externalHandleType: VkExternalMemoryHandleTypeFlagsNV, pExternalImageFormatProperties: *VkExternalImageFormatPropertiesNV) -> VkResult #c_call;
+
 VkExternalMemoryImageCreateInfoNV :: struct {
     sType: VkStructureType = .EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV;
     pNext: *void;
     handleTypes: VkExternalMemoryHandleTypeFlagsNV;
 }
+
 VkExportMemoryAllocateInfoNV :: struct {
     sType: VkStructureType = .EXPORT_MEMORY_ALLOCATE_INFO_NV;
     pNext: *void;
     handleTypes: VkExternalMemoryHandleTypeFlagsNV;
 }
+
 VkValidationCheckEXT :: enum u32 {
     ALL_EXT :: 0;
     SHADERS_EXT :: 1;
@@ -6254,29 +6673,35 @@ VkValidationCheckEXT :: enum u32 {
     VK_VALIDATION_CHECK_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_VALIDATION_CHECK_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkValidationFlagsEXT :: struct {
     sType: VkStructureType = .VALIDATION_FLAGS_EXT;
     pNext: *void;
     disabledValidationCheckCount: u32;
     pDisabledValidationChecks: *VkValidationCheckEXT;
 }
+
 VkImageViewASTCDecodeModeEXT :: struct {
     sType: VkStructureType = .IMAGE_VIEW_ASTC_DECODE_MODE_EXT;
     pNext: *void;
     decodeMode: VkFormat;
 }
+
 VkPhysicalDeviceASTCDecodeFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT;
     pNext: *void;
     decodeModeSharedExponent: VkBool32;
 }
+
 VkConditionalRenderingFlagBitsEXT :: enum_flags u32 {
     INVERTED_BIT_EXT :: 0x1;
     FLAG_BITS_MAX_ENUM_EXT :: 0x7fffffff;
     VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT :: INVERTED_BIT_EXT;
     VK_CONDITIONAL_RENDERING_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkConditionalRenderingFlagsEXT :: VkConditionalRenderingFlagBitsEXT;
+
 VkConditionalRenderingBeginInfoEXT :: struct {
     sType: VkStructureType = .CONDITIONAL_RENDERING_BEGIN_INFO_EXT;
     pNext: *void;
@@ -6284,23 +6709,27 @@ VkConditionalRenderingBeginInfoEXT :: struct {
     offset: VkDeviceSize;
     flags: VkConditionalRenderingFlagsEXT;
 }
+
 VkPhysicalDeviceConditionalRenderingFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT;
     pNext: *void;
     conditionalRendering: VkBool32;
     inheritedConditionalRendering: VkBool32;
 }
+
 VkCommandBufferInheritanceConditionalRenderingInfoEXT :: struct {
     sType: VkStructureType = .COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT;
     pNext: *void;
     conditionalRenderingEnable: VkBool32;
 }
+
 PFN_vkCmdBeginConditionalRenderingEXT :: #type (commandBuffer: VkCommandBuffer, pConditionalRenderingBegin: *VkConditionalRenderingBeginInfoEXT) -> void #c_call;
 PFN_vkCmdEndConditionalRenderingEXT :: #type (commandBuffer: VkCommandBuffer) -> void #c_call;
 VkObjectTableNVX_T :: struct {}
 VkObjectTableNVX :: *VkObjectTableNVX_T;
 VkIndirectCommandsLayoutNVX_T :: struct {}
 VkIndirectCommandsLayoutNVX :: *VkIndirectCommandsLayoutNVX_T;
+
 VkIndirectCommandsTokenTypeNVX :: enum u32 {
     PIPELINE_NVX :: 0;
     DESCRIPTOR_SET_NVX :: 1;
@@ -6327,6 +6756,7 @@ VkIndirectCommandsTokenTypeNVX :: enum u32 {
     VK_INDIRECT_COMMANDS_TOKEN_TYPE_RANGE_SIZE_NVX :: RANGE_SIZE_NVX;
     VK_INDIRECT_COMMANDS_TOKEN_TYPE_MAX_ENUM_NVX :: MAX_ENUM_NVX;
 }
+
 VkObjectEntryTypeNVX :: enum u32 {
     DESCRIPTOR_SET_NVX :: 0;
     PIPELINE_NVX :: 1;
@@ -6347,6 +6777,7 @@ VkObjectEntryTypeNVX :: enum u32 {
     VK_OBJECT_ENTRY_TYPE_RANGE_SIZE_NVX :: RANGE_SIZE_NVX;
     VK_OBJECT_ENTRY_TYPE_MAX_ENUM_NVX :: MAX_ENUM_NVX;
 }
+
 VkIndirectCommandsLayoutUsageFlagBitsNVX :: enum_flags u32 {
     UNORDERED_SEQUENCES_BIT_NVX :: 0x1;
     SPARSE_SEQUENCES_BIT_NVX :: 0x2;
@@ -6359,7 +6790,9 @@ VkIndirectCommandsLayoutUsageFlagBitsNVX :: enum_flags u32 {
     VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NVX :: INDEXED_SEQUENCES_BIT_NVX;
     VK_INDIRECT_COMMANDS_LAYOUT_USAGE_FLAG_BITS_MAX_ENUM_NVX :: FLAG_BITS_MAX_ENUM_NVX;
 }
+
 VkIndirectCommandsLayoutUsageFlagsNVX :: VkIndirectCommandsLayoutUsageFlagBitsNVX;
+
 VkObjectEntryUsageFlagBitsNVX :: enum_flags u32 {
     GRAPHICS_BIT_NVX :: 0x1;
     COMPUTE_BIT_NVX :: 0x2;
@@ -6368,12 +6801,15 @@ VkObjectEntryUsageFlagBitsNVX :: enum_flags u32 {
     VK_OBJECT_ENTRY_USAGE_COMPUTE_BIT_NVX :: COMPUTE_BIT_NVX;
     VK_OBJECT_ENTRY_USAGE_FLAG_BITS_MAX_ENUM_NVX :: FLAG_BITS_MAX_ENUM_NVX;
 }
+
 VkObjectEntryUsageFlagsNVX :: VkObjectEntryUsageFlagBitsNVX;
+
 VkDeviceGeneratedCommandsFeaturesNVX :: struct {
     sType: VkStructureType = .DEVICE_GENERATED_COMMANDS_FEATURES_NVX;
     pNext: *void;
     computeBindingPointSupport: VkBool32;
 }
+
 VkDeviceGeneratedCommandsLimitsNVX :: struct {
     sType: VkStructureType = .DEVICE_GENERATED_COMMANDS_LIMITS_NVX;
     pNext: *void;
@@ -6383,17 +6819,20 @@ VkDeviceGeneratedCommandsLimitsNVX :: struct {
     minSequenceIndexBufferOffsetAlignment: u32;
     minCommandsTokenBufferOffsetAlignment: u32;
 }
+
 VkIndirectCommandsTokenNVX :: struct {
     tokenType: VkIndirectCommandsTokenTypeNVX;
     buffer: VkBuffer;
     offset: VkDeviceSize;
 }
+
 VkIndirectCommandsLayoutTokenNVX :: struct {
     tokenType: VkIndirectCommandsTokenTypeNVX;
     bindingUnit: u32;
     dynamicCount: u32;
     divisor: u32;
 }
+
 VkIndirectCommandsLayoutCreateInfoNVX :: struct {
     sType: VkStructureType = .INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX;
     pNext: *void;
@@ -6402,6 +6841,7 @@ VkIndirectCommandsLayoutCreateInfoNVX :: struct {
     tokenCount: u32;
     pTokens: *VkIndirectCommandsLayoutTokenNVX;
 }
+
 VkCmdProcessCommandsInfoNVX :: struct {
     sType: VkStructureType = .CMD_PROCESS_COMMANDS_INFO_NVX;
     pNext: *void;
@@ -6416,6 +6856,7 @@ VkCmdProcessCommandsInfoNVX :: struct {
     sequencesIndexBuffer: VkBuffer;
     sequencesIndexOffset: VkDeviceSize;
 }
+
 VkCmdReserveSpaceForCommandsInfoNVX :: struct {
     sType: VkStructureType = .CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX;
     pNext: *void;
@@ -6423,6 +6864,7 @@ VkCmdReserveSpaceForCommandsInfoNVX :: struct {
     indirectCommandsLayout: VkIndirectCommandsLayoutNVX;
     maxSequencesCount: u32;
 }
+
 VkObjectTableCreateInfoNVX :: struct {
     sType: VkStructureType = .OBJECT_TABLE_CREATE_INFO_NVX;
     pNext: *void;
@@ -6436,38 +6878,45 @@ VkObjectTableCreateInfoNVX :: struct {
     maxSampledImagesPerDescriptor: u32;
     maxPipelineLayouts: u32;
 }
+
 VkObjectTableEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
 }
+
 VkObjectTablePipelineEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
     pipeline: VkPipeline;
 }
+
 VkObjectTableDescriptorSetEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
     pipelineLayout: VkPipelineLayout;
     descriptorSet: VkDescriptorSet;
 }
+
 VkObjectTableVertexBufferEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
     buffer: VkBuffer;
 }
+
 VkObjectTableIndexBufferEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
     buffer: VkBuffer;
     indexType: VkIndexType;
 }
+
 VkObjectTablePushConstantEntryNVX :: struct {
     type: VkObjectEntryTypeNVX;
     flags: VkObjectEntryUsageFlagsNVX;
     pipelineLayout: VkPipelineLayout;
     stageFlags: VkShaderStageFlags;
 }
+
 PFN_vkCmdProcessCommandsNVX :: #type (commandBuffer: VkCommandBuffer, pProcessCommandsInfo: *VkCmdProcessCommandsInfoNVX) -> void #c_call;
 PFN_vkCmdReserveSpaceForCommandsNVX :: #type (commandBuffer: VkCommandBuffer, pReserveSpaceInfo: *VkCmdReserveSpaceForCommandsInfoNVX) -> void #c_call;
 PFN_vkCreateIndirectCommandsLayoutNVX :: #type (device: VkDevice, pCreateInfo: *VkIndirectCommandsLayoutCreateInfoNVX, pAllocator: *VkAllocationCallbacks, pIndirectCommandsLayout: *VkIndirectCommandsLayoutNVX) -> VkResult #c_call;
@@ -6477,10 +6926,12 @@ PFN_vkDestroyObjectTableNVX :: #type (device: VkDevice, objectTable: VkObjectTab
 PFN_vkRegisterObjectsNVX :: #type (device: VkDevice, objectTable: VkObjectTableNVX, objectCount: u32, ppObjectTableEntries: **VkObjectTableEntryNVX, pObjectIndices: *u32) -> VkResult #c_call;
 PFN_vkUnregisterObjectsNVX :: #type (device: VkDevice, objectTable: VkObjectTableNVX, objectCount: u32, pObjectEntryTypes: *VkObjectEntryTypeNVX, pObjectIndices: *u32) -> VkResult #c_call;
 PFN_vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX :: #type (physicalDevice: VkPhysicalDevice, pFeatures: *VkDeviceGeneratedCommandsFeaturesNVX, pLimits: *VkDeviceGeneratedCommandsLimitsNVX) -> void #c_call;
+
 VkViewportWScalingNV :: struct {
     xcoeff: float;
     ycoeff: float;
 }
+
 VkPipelineViewportWScalingStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -6488,15 +6939,19 @@ VkPipelineViewportWScalingStateCreateInfoNV :: struct {
     viewportCount: u32;
     pViewportWScalings: *VkViewportWScalingNV;
 }
+
 PFN_vkCmdSetViewportWScalingNV :: #type (commandBuffer: VkCommandBuffer, firstViewport: u32, viewportCount: u32, pViewportWScalings: *VkViewportWScalingNV) -> void #c_call;
 PFN_vkReleaseDisplayEXT :: #type (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> VkResult #c_call;
+
 VkSurfaceCounterFlagBitsEXT :: enum_flags u32 {
     VBLANK_EXT :: 0x1;
     FLAG_BITS_MAX_ENUM_EXT :: 0x7fffffff;
     VK_SURFACE_COUNTER_VBLANK_EXT :: VBLANK_EXT;
     VK_SURFACE_COUNTER_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkSurfaceCounterFlagsEXT :: VkSurfaceCounterFlagBitsEXT;
+
 VkSurfaceCapabilities2EXT :: struct {
     sType: VkStructureType = .SURFACE_CAPABILITIES_2_EXT;
     pNext: *void;
@@ -6512,7 +6967,9 @@ VkSurfaceCapabilities2EXT :: struct {
     supportedUsageFlags: VkImageUsageFlags;
     supportedSurfaceCounters: VkSurfaceCounterFlagsEXT;
 }
+
 PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT :: #type (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR, pSurfaceCapabilities: *VkSurfaceCapabilities2EXT) -> VkResult #c_call;
+
 VkDisplayPowerStateEXT :: enum u32 {
     OFF_EXT :: 0;
     SUSPEND_EXT :: 1;
@@ -6529,6 +6986,7 @@ VkDisplayPowerStateEXT :: enum u32 {
     VK_DISPLAY_POWER_STATE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_DISPLAY_POWER_STATE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkDeviceEventTypeEXT :: enum u32 {
     DISPLAY_HOTPLUG_EXT :: 0;
     BEGIN_RANGE_EXT :: 0;
@@ -6541,6 +6999,7 @@ VkDeviceEventTypeEXT :: enum u32 {
     VK_DEVICE_EVENT_TYPE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_DEVICE_EVENT_TYPE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkDisplayEventTypeEXT :: enum u32 {
     FIRST_PIXEL_OUT_EXT :: 0;
     BEGIN_RANGE_EXT :: 0;
@@ -6553,33 +7012,40 @@ VkDisplayEventTypeEXT :: enum u32 {
     VK_DISPLAY_EVENT_TYPE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_DISPLAY_EVENT_TYPE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkDisplayPowerInfoEXT :: struct {
     sType: VkStructureType = .DISPLAY_POWER_INFO_EXT;
     pNext: *void;
     powerState: VkDisplayPowerStateEXT;
 }
+
 VkDeviceEventInfoEXT :: struct {
     sType: VkStructureType = .DEVICE_EVENT_INFO_EXT;
     pNext: *void;
     deviceEvent: VkDeviceEventTypeEXT;
 }
+
 VkDisplayEventInfoEXT :: struct {
     sType: VkStructureType = .DISPLAY_EVENT_INFO_EXT;
     pNext: *void;
     displayEvent: VkDisplayEventTypeEXT;
 }
+
 VkSwapchainCounterCreateInfoEXT :: struct {
     sType: VkStructureType = .SWAPCHAIN_COUNTER_CREATE_INFO_EXT;
     pNext: *void;
     surfaceCounters: VkSurfaceCounterFlagsEXT;
 }
+
 PFN_vkDisplayPowerControlEXT :: #type (device: VkDevice, display: VkDisplayKHR, pDisplayPowerInfo: *VkDisplayPowerInfoEXT) -> VkResult #c_call;
 PFN_vkRegisterDeviceEventEXT :: #type (device: VkDevice, pDeviceEventInfo: *VkDeviceEventInfoEXT, pAllocator: *VkAllocationCallbacks, pFence: *VkFence) -> VkResult #c_call;
 PFN_vkRegisterDisplayEventEXT :: #type (device: VkDevice, display: VkDisplayKHR, pDisplayEventInfo: *VkDisplayEventInfoEXT, pAllocator: *VkAllocationCallbacks, pFence: *VkFence) -> VkResult #c_call;
 PFN_vkGetSwapchainCounterEXT :: #type (device: VkDevice, swapchain: VkSwapchainKHR, counter: VkSurfaceCounterFlagBitsEXT, pCounterValue: *u64) -> VkResult #c_call;
+
 VkRefreshCycleDurationGOOGLE :: struct {
     refreshDuration: u64;
 }
+
 VkPastPresentationTimingGOOGLE :: struct {
     presentID: u32;
     desiredPresentTime: u64;
@@ -6587,23 +7053,28 @@ VkPastPresentationTimingGOOGLE :: struct {
     earliestPresentTime: u64;
     presentMargin: u64;
 }
+
 VkPresentTimeGOOGLE :: struct {
     presentID: u32;
     desiredPresentTime: u64;
 }
+
 VkPresentTimesInfoGOOGLE :: struct {
     sType: VkStructureType = .PRESENT_TIMES_INFO_GOOGLE;
     pNext: *void;
     swapchainCount: u32;
     pTimes: *VkPresentTimeGOOGLE;
 }
+
 PFN_vkGetRefreshCycleDurationGOOGLE :: #type (device: VkDevice, swapchain: VkSwapchainKHR, pDisplayTimingProperties: *VkRefreshCycleDurationGOOGLE) -> VkResult #c_call;
 PFN_vkGetPastPresentationTimingGOOGLE :: #type (device: VkDevice, swapchain: VkSwapchainKHR, pPresentationTimingCount: *u32, pPresentationTimings: *VkPastPresentationTimingGOOGLE) -> VkResult #c_call;
+
 VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX;
     pNext: *void;
     perViewPositionAllComponents: VkBool32;
 }
+
 VkViewportCoordinateSwizzleNV :: enum u32 {
     POSITIVE_X_NV :: 0;
     NEGATIVE_X_NV :: 1;
@@ -6630,13 +7101,16 @@ VkViewportCoordinateSwizzleNV :: enum u32 {
     VK_VIEWPORT_COORDINATE_SWIZZLE_RANGE_SIZE_NV :: RANGE_SIZE_NV;
     VK_VIEWPORT_COORDINATE_SWIZZLE_MAX_ENUM_NV :: MAX_ENUM_NV;
 }
+
 VkPipelineViewportSwizzleStateCreateFlagsNV :: VkFlags;
+
 VkViewportSwizzleNV :: struct {
     x: VkViewportCoordinateSwizzleNV;
     y: VkViewportCoordinateSwizzleNV;
     z: VkViewportCoordinateSwizzleNV;
     w: VkViewportCoordinateSwizzleNV;
 }
+
 VkPipelineViewportSwizzleStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -6644,6 +7118,7 @@ VkPipelineViewportSwizzleStateCreateInfoNV :: struct {
     viewportCount: u32;
     pViewportSwizzles: *VkViewportSwizzleNV;
 }
+
 VkDiscardRectangleModeEXT :: enum u32 {
     INCLUSIVE_EXT :: 0;
     EXCLUSIVE_EXT :: 1;
@@ -6658,12 +7133,15 @@ VkDiscardRectangleModeEXT :: enum u32 {
     VK_DISCARD_RECTANGLE_MODE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_DISCARD_RECTANGLE_MODE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkPipelineDiscardRectangleStateCreateFlagsEXT :: VkFlags;
+
 VkPhysicalDeviceDiscardRectanglePropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT;
     pNext: *void;
     maxDiscardRectangles: u32;
 }
+
 VkPipelineDiscardRectangleStateCreateInfoEXT :: struct {
     sType: VkStructureType = .PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT;
     pNext: *void;
@@ -6672,7 +7150,9 @@ VkPipelineDiscardRectangleStateCreateInfoEXT :: struct {
     discardRectangleCount: u32;
     pDiscardRectangles: *VkRect2D;
 }
+
 PFN_vkCmdSetDiscardRectangleEXT :: #type (commandBuffer: VkCommandBuffer, firstDiscardRectangle: u32, discardRectangleCount: u32, pDiscardRectangles: *VkRect2D) -> void #c_call;
+
 VkConservativeRasterizationModeEXT :: enum u32 {
     DISABLED_EXT :: 0;
     OVERESTIMATE_EXT :: 1;
@@ -6689,7 +7169,9 @@ VkConservativeRasterizationModeEXT :: enum u32 {
     VK_CONSERVATIVE_RASTERIZATION_MODE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_CONSERVATIVE_RASTERIZATION_MODE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkPipelineRasterizationConservativeStateCreateFlagsEXT :: VkFlags;
+
 VkPhysicalDeviceConservativeRasterizationPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT;
     pNext: *void;
@@ -6703,6 +7185,7 @@ VkPhysicalDeviceConservativeRasterizationPropertiesEXT :: struct {
     fullyCoveredFragmentShaderInputVariable: VkBool32;
     conservativeRasterizationPostDepthCoverage: VkBool32;
 }
+
 VkPipelineRasterizationConservativeStateCreateInfoEXT :: struct {
     sType: VkStructureType = .PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT;
     pNext: *void;
@@ -6710,10 +7193,12 @@ VkPipelineRasterizationConservativeStateCreateInfoEXT :: struct {
     conservativeRasterizationMode: VkConservativeRasterizationModeEXT;
     extraPrimitiveOverestimationSize: float;
 }
+
 VkXYColorEXT :: struct {
     x: float;
     y: float;
 }
+
 VkHdrMetadataEXT :: struct {
     sType: VkStructureType = .HDR_METADATA_EXT;
     pNext: *void;
@@ -6726,11 +7211,13 @@ VkHdrMetadataEXT :: struct {
     maxContentLightLevel: float;
     maxFrameAverageLightLevel: float;
 }
+
 PFN_vkSetHdrMetadataEXT :: #type (device: VkDevice, swapchainCount: u32, pSwapchains: *VkSwapchainKHR, pMetadata: *VkHdrMetadataEXT) -> void #c_call;
 VkDebugUtilsMessengerEXT_T :: struct {}
 VkDebugUtilsMessengerEXT :: *VkDebugUtilsMessengerEXT_T;
 VkDebugUtilsMessengerCallbackDataFlagsEXT :: VkFlags;
 VkDebugUtilsMessengerCreateFlagsEXT :: VkFlags;
+
 VkDebugUtilsMessageSeverityFlagBitsEXT :: enum_flags u32 {
     VERBOSE_BIT_EXT :: 0x1;
     INFO_BIT_EXT :: 0x10;
@@ -6743,7 +7230,9 @@ VkDebugUtilsMessageSeverityFlagBitsEXT :: enum_flags u32 {
     VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT :: ERROR_BIT_EXT;
     VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkDebugUtilsMessageSeverityFlagsEXT :: VkDebugUtilsMessageSeverityFlagBitsEXT;
+
 VkDebugUtilsMessageTypeFlagBitsEXT :: enum_flags u32 {
     GENERAL_BIT_EXT :: 0x1;
     VALIDATION_BIT_EXT :: 0x2;
@@ -6754,7 +7243,9 @@ VkDebugUtilsMessageTypeFlagBitsEXT :: enum_flags u32 {
     VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT :: PERFORMANCE_BIT_EXT;
     VK_DEBUG_UTILS_MESSAGE_TYPE_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkDebugUtilsMessageTypeFlagsEXT :: VkDebugUtilsMessageTypeFlagBitsEXT;
+
 VkDebugUtilsObjectNameInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
     pNext: *void;
@@ -6762,6 +7253,7 @@ VkDebugUtilsObjectNameInfoEXT :: struct {
     objectHandle: u64;
     pObjectName: *u8;
 }
+
 VkDebugUtilsObjectTagInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_UTILS_OBJECT_TAG_INFO_EXT;
     pNext: *void;
@@ -6771,12 +7263,14 @@ VkDebugUtilsObjectTagInfoEXT :: struct {
     tagSize: u64;
     pTag: *void;
 }
+
 VkDebugUtilsLabelEXT :: struct {
     sType: VkStructureType = .DEBUG_UTILS_LABEL_EXT;
     pNext: *void;
     pLabelName: *u8;
     color: [4] float;
 }
+
 VkDebugUtilsMessengerCallbackDataEXT :: struct {
     sType: VkStructureType = .DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT;
     pNext: *void;
@@ -6791,7 +7285,9 @@ VkDebugUtilsMessengerCallbackDataEXT :: struct {
     objectCount: u32;
     pObjects: *VkDebugUtilsObjectNameInfoEXT;
 }
+
 PFN_vkDebugUtilsMessengerCallbackEXT :: #type (messageSeverity: VkDebugUtilsMessageSeverityFlagBitsEXT, messageType: VkDebugUtilsMessageTypeFlagsEXT, pCallbackData: *VkDebugUtilsMessengerCallbackDataEXT, pUserData: *void) -> VkBool32 #c_call;
+
 VkDebugUtilsMessengerCreateInfoEXT :: struct {
     sType: VkStructureType = .DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     pNext: *void;
@@ -6801,6 +7297,7 @@ VkDebugUtilsMessengerCreateInfoEXT :: struct {
     pfnUserCallback: PFN_vkDebugUtilsMessengerCallbackEXT;
     pUserData: *void;
 }
+
 PFN_vkSetDebugUtilsObjectNameEXT :: #type (device: VkDevice, pNameInfo: *VkDebugUtilsObjectNameInfoEXT) -> VkResult #c_call;
 PFN_vkSetDebugUtilsObjectTagEXT :: #type (device: VkDevice, pTagInfo: *VkDebugUtilsObjectTagInfoEXT) -> VkResult #c_call;
 PFN_vkQueueBeginDebugUtilsLabelEXT :: #type (queue: VkQueue, pLabelInfo: *VkDebugUtilsLabelEXT) -> void #c_call;
@@ -6812,6 +7309,7 @@ PFN_vkCmdInsertDebugUtilsLabelEXT :: #type (commandBuffer: VkCommandBuffer, pLab
 PFN_vkCreateDebugUtilsMessengerEXT :: #type (instance: VkInstance, pCreateInfo: *VkDebugUtilsMessengerCreateInfoEXT, pAllocator: *VkAllocationCallbacks, pMessenger: *VkDebugUtilsMessengerEXT) -> VkResult #c_call;
 PFN_vkDestroyDebugUtilsMessengerEXT :: #type (instance: VkInstance, messenger: VkDebugUtilsMessengerEXT, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkSubmitDebugUtilsMessageEXT :: #type (instance: VkInstance, messageSeverity: VkDebugUtilsMessageSeverityFlagBitsEXT, messageTypes: VkDebugUtilsMessageTypeFlagsEXT, pCallbackData: *VkDebugUtilsMessengerCallbackDataEXT) -> void #c_call;
+
 VkSamplerReductionModeEXT :: enum u32 {
     WEIGHTED_AVERAGE_EXT :: 0;
     MIN_EXT :: 1;
@@ -6828,23 +7326,27 @@ VkSamplerReductionModeEXT :: enum u32 {
     VK_SAMPLER_REDUCTION_MODE_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_SAMPLER_REDUCTION_MODE_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkSamplerReductionModeCreateInfoEXT :: struct {
     sType: VkStructureType = .SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT;
     pNext: *void;
     reductionMode: VkSamplerReductionModeEXT;
 }
+
 VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT;
     pNext: *void;
     filterMinmaxSingleComponentFormats: VkBool32;
     filterMinmaxImageComponentMapping: VkBool32;
 }
+
 VkPhysicalDeviceInlineUniformBlockFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT;
     pNext: *void;
     inlineUniformBlock: VkBool32;
     descriptorBindingInlineUniformBlockUpdateAfterBind: VkBool32;
 }
+
 VkPhysicalDeviceInlineUniformBlockPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT;
     pNext: *void;
@@ -6854,21 +7356,25 @@ VkPhysicalDeviceInlineUniformBlockPropertiesEXT :: struct {
     maxDescriptorSetInlineUniformBlocks: u32;
     maxDescriptorSetUpdateAfterBindInlineUniformBlocks: u32;
 }
+
 VkWriteDescriptorSetInlineUniformBlockEXT :: struct {
     sType: VkStructureType = .WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT;
     pNext: *void;
     dataSize: u32;
     pData: *void;
 }
+
 VkDescriptorPoolInlineUniformBlockCreateInfoEXT :: struct {
     sType: VkStructureType = .DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT;
     pNext: *void;
     maxInlineUniformBlockBindings: u32;
 }
+
 VkSampleLocationEXT :: struct {
     x: float;
     y: float;
 }
+
 VkSampleLocationsInfoEXT :: struct {
     sType: VkStructureType = .SAMPLE_LOCATIONS_INFO_EXT;
     pNext: *void;
@@ -6877,14 +7383,17 @@ VkSampleLocationsInfoEXT :: struct {
     sampleLocationsCount: u32;
     pSampleLocations: *VkSampleLocationEXT;
 }
+
 VkAttachmentSampleLocationsEXT :: struct {
     attachmentIndex: u32;
     sampleLocationsInfo: VkSampleLocationsInfoEXT;
 }
+
 VkSubpassSampleLocationsEXT :: struct {
     subpassIndex: u32;
     sampleLocationsInfo: VkSampleLocationsInfoEXT;
 }
+
 VkRenderPassSampleLocationsBeginInfoEXT :: struct {
     sType: VkStructureType = .RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT;
     pNext: *void;
@@ -6893,12 +7402,14 @@ VkRenderPassSampleLocationsBeginInfoEXT :: struct {
     postSubpassSampleLocationsCount: u32;
     pPostSubpassSampleLocations: *VkSubpassSampleLocationsEXT;
 }
+
 VkPipelineSampleLocationsStateCreateInfoEXT :: struct {
     sType: VkStructureType = .PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT;
     pNext: *void;
     sampleLocationsEnable: VkBool32;
     sampleLocationsInfo: VkSampleLocationsInfoEXT;
 }
+
 VkPhysicalDeviceSampleLocationsPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT;
     pNext: *void;
@@ -6908,13 +7419,16 @@ VkPhysicalDeviceSampleLocationsPropertiesEXT :: struct {
     sampleLocationSubPixelBits: u32;
     variableSampleLocations: VkBool32;
 }
+
 VkMultisamplePropertiesEXT :: struct {
     sType: VkStructureType = .MULTISAMPLE_PROPERTIES_EXT;
     pNext: *void;
     maxSampleLocationGridSize: VkExtent2D;
 }
+
 PFN_vkCmdSetSampleLocationsEXT :: #type (commandBuffer: VkCommandBuffer, pSampleLocationsInfo: *VkSampleLocationsInfoEXT) -> void #c_call;
 PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT :: #type (physicalDevice: VkPhysicalDevice, samples: VkSampleCountFlagBits, pMultisampleProperties: *VkMultisamplePropertiesEXT) -> void #c_call;
+
 VkBlendOverlapEXT :: enum u32 {
     UNCORRELATED_EXT :: 0;
     DISJOINT_EXT :: 1;
@@ -6931,11 +7445,13 @@ VkBlendOverlapEXT :: enum u32 {
     VK_BLEND_OVERLAP_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_BLEND_OVERLAP_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT;
     pNext: *void;
     advancedBlendCoherentOperations: VkBool32;
 }
+
 VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT;
     pNext: *void;
@@ -6946,6 +7462,7 @@ VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT :: struct {
     advancedBlendCorrelatedOverlap: VkBool32;
     advancedBlendAllOperations: VkBool32;
 }
+
 VkPipelineColorBlendAdvancedStateCreateInfoEXT :: struct {
     sType: VkStructureType = .PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT;
     pNext: *void;
@@ -6953,7 +7470,9 @@ VkPipelineColorBlendAdvancedStateCreateInfoEXT :: struct {
     dstPremultiplied: VkBool32;
     blendOverlap: VkBlendOverlapEXT;
 }
+
 VkPipelineCoverageToColorStateCreateFlagsNV :: VkFlags;
+
 VkPipelineCoverageToColorStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -6961,6 +7480,7 @@ VkPipelineCoverageToColorStateCreateInfoNV :: struct {
     coverageToColorEnable: VkBool32;
     coverageToColorLocation: u32;
 }
+
 VkCoverageModulationModeNV :: enum u32 {
     NONE_NV :: 0;
     RGB_NV :: 1;
@@ -6979,7 +7499,9 @@ VkCoverageModulationModeNV :: enum u32 {
     VK_COVERAGE_MODULATION_MODE_RANGE_SIZE_NV :: RANGE_SIZE_NV;
     VK_COVERAGE_MODULATION_MODE_MAX_ENUM_NV :: MAX_ENUM_NV;
 }
+
 VkPipelineCoverageModulationStateCreateFlagsNV :: VkFlags;
+
 VkPipelineCoverageModulationStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -6989,8 +7511,10 @@ VkPipelineCoverageModulationStateCreateInfoNV :: struct {
     coverageModulationTableCount: u32;
     pCoverageModulationTable: *float;
 }
+
 VkValidationCacheEXT_T :: struct {}
 VkValidationCacheEXT :: *VkValidationCacheEXT_T;
+
 VkValidationCacheHeaderVersionEXT :: enum u32 {
     ONE_EXT :: 1;
     BEGIN_RANGE_EXT :: 1;
@@ -7003,7 +7527,9 @@ VkValidationCacheHeaderVersionEXT :: enum u32 {
     VK_VALIDATION_CACHE_HEADER_VERSION_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_VALIDATION_CACHE_HEADER_VERSION_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkValidationCacheCreateFlagsEXT :: VkFlags;
+
 VkValidationCacheCreateInfoEXT :: struct {
     sType: VkStructureType = .VALIDATION_CACHE_CREATE_INFO_EXT;
     pNext: *void;
@@ -7011,15 +7537,18 @@ VkValidationCacheCreateInfoEXT :: struct {
     initialDataSize: u64;
     pInitialData: *void;
 }
+
 VkShaderModuleValidationCacheCreateInfoEXT :: struct {
     sType: VkStructureType = .SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT;
     pNext: *void;
     validationCache: VkValidationCacheEXT;
 }
+
 PFN_vkCreateValidationCacheEXT :: #type (device: VkDevice, pCreateInfo: *VkValidationCacheCreateInfoEXT, pAllocator: *VkAllocationCallbacks, pValidationCache: *VkValidationCacheEXT) -> VkResult #c_call;
 PFN_vkDestroyValidationCacheEXT :: #type (device: VkDevice, validationCache: VkValidationCacheEXT, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkMergeValidationCachesEXT :: #type (device: VkDevice, dstCache: VkValidationCacheEXT, srcCacheCount: u32, pSrcCaches: *VkValidationCacheEXT) -> VkResult #c_call;
 PFN_vkGetValidationCacheDataEXT :: #type (device: VkDevice, validationCache: VkValidationCacheEXT, pDataSize: *u64, pData: *void) -> VkResult #c_call;
+
 VkDescriptorBindingFlagBitsEXT :: enum_flags u32 {
     UPDATE_AFTER_BIND_BIT_EXT :: 0x1;
     UPDATE_UNUSED_WHILE_PENDING_BIT_EXT :: 0x2;
@@ -7032,13 +7561,16 @@ VkDescriptorBindingFlagBitsEXT :: enum_flags u32 {
     VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT_EXT :: VARIABLE_DESCRIPTOR_COUNT_BIT_EXT;
     VK_DESCRIPTOR_BINDING_FLAG_BITS_MAX_ENUM_EXT :: FLAG_BITS_MAX_ENUM_EXT;
 }
+
 VkDescriptorBindingFlagsEXT :: VkDescriptorBindingFlagBitsEXT;
+
 VkDescriptorSetLayoutBindingFlagsCreateInfoEXT :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT;
     pNext: *void;
     bindingCount: u32;
     pBindingFlags: *VkDescriptorBindingFlagsEXT;
 }
+
 VkPhysicalDeviceDescriptorIndexingFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
     pNext: *void;
@@ -7063,6 +7595,7 @@ VkPhysicalDeviceDescriptorIndexingFeaturesEXT :: struct {
     descriptorBindingVariableDescriptorCount: VkBool32;
     runtimeDescriptorArray: VkBool32;
 }
+
 VkPhysicalDeviceDescriptorIndexingPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT;
     pNext: *void;
@@ -7090,17 +7623,20 @@ VkPhysicalDeviceDescriptorIndexingPropertiesEXT :: struct {
     maxDescriptorSetUpdateAfterBindStorageImages: u32;
     maxDescriptorSetUpdateAfterBindInputAttachments: u32;
 }
+
 VkDescriptorSetVariableDescriptorCountAllocateInfoEXT :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT;
     pNext: *void;
     descriptorSetCount: u32;
     pDescriptorCounts: *u32;
 }
+
 VkDescriptorSetVariableDescriptorCountLayoutSupportEXT :: struct {
     sType: VkStructureType = .DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT;
     pNext: *void;
     maxVariableDescriptorCount: u32;
 }
+
 VkShadingRatePaletteEntryNV :: enum u32 {
     NO_INVOCATIONS_NV :: 0;
     _16_INVOCATIONS_PER_PIXEL_NV :: 1;
@@ -7135,6 +7671,7 @@ VkShadingRatePaletteEntryNV :: enum u32 {
     VK_SHADING_RATE_PALETTE_ENTRY_RANGE_SIZE_NV :: RANGE_SIZE_NV;
     VK_SHADING_RATE_PALETTE_ENTRY_MAX_ENUM_NV :: MAX_ENUM_NV;
 }
+
 VkCoarseSampleOrderTypeNV :: enum u32 {
     DEFAULT_NV :: 0;
     CUSTOM_NV :: 1;
@@ -7153,10 +7690,12 @@ VkCoarseSampleOrderTypeNV :: enum u32 {
     VK_COARSE_SAMPLE_ORDER_TYPE_RANGE_SIZE_NV :: RANGE_SIZE_NV;
     VK_COARSE_SAMPLE_ORDER_TYPE_MAX_ENUM_NV :: MAX_ENUM_NV;
 }
+
 VkShadingRatePaletteNV :: struct {
     shadingRatePaletteEntryCount: u32;
     pShadingRatePaletteEntries: *VkShadingRatePaletteEntryNV;
 }
+
 VkPipelineViewportShadingRateImageStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -7164,12 +7703,14 @@ VkPipelineViewportShadingRateImageStateCreateInfoNV :: struct {
     viewportCount: u32;
     pShadingRatePalettes: *VkShadingRatePaletteNV;
 }
+
 VkPhysicalDeviceShadingRateImageFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV;
     pNext: *void;
     shadingRateImage: VkBool32;
     shadingRateCoarseSampleOrder: VkBool32;
 }
+
 VkPhysicalDeviceShadingRateImagePropertiesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV;
     pNext: *void;
@@ -7177,17 +7718,20 @@ VkPhysicalDeviceShadingRateImagePropertiesNV :: struct {
     shadingRatePaletteSize: u32;
     shadingRateMaxCoarseSamples: u32;
 }
+
 VkCoarseSampleLocationNV :: struct {
     pixelX: u32;
     pixelY: u32;
     sample: u32;
 }
+
 VkCoarseSampleOrderCustomNV :: struct {
     shadingRate: VkShadingRatePaletteEntryNV;
     sampleCount: u32;
     sampleLocationCount: u32;
     pSampleLocations: *VkCoarseSampleLocationNV;
 }
+
 VkPipelineViewportCoarseSampleOrderStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV;
     pNext: *void;
@@ -7195,11 +7739,13 @@ VkPipelineViewportCoarseSampleOrderStateCreateInfoNV :: struct {
     customSampleOrderCount: u32;
     pCustomSampleOrders: *VkCoarseSampleOrderCustomNV;
 }
+
 PFN_vkCmdBindShadingRateImageNV :: #type (commandBuffer: VkCommandBuffer, imageView: VkImageView, imageLayout: VkImageLayout) -> void #c_call;
 PFN_vkCmdSetViewportShadingRatePaletteNV :: #type (commandBuffer: VkCommandBuffer, firstViewport: u32, viewportCount: u32, pShadingRatePalettes: *VkShadingRatePaletteNV) -> void #c_call;
 PFN_vkCmdSetCoarseSampleOrderNV :: #type (commandBuffer: VkCommandBuffer, sampleOrderType: VkCoarseSampleOrderTypeNV, customSampleOrderCount: u32, pCustomSampleOrders: *VkCoarseSampleOrderCustomNV) -> void #c_call;
 VkAccelerationStructureNVX_T :: struct {}
 VkAccelerationStructureNVX :: *VkAccelerationStructureNVX_T;
+
 VkGeometryTypeNVX :: enum u32 {
     TRIANGLES_NVX :: 0;
     AABBS_NVX :: 1;
@@ -7214,6 +7760,7 @@ VkGeometryTypeNVX :: enum u32 {
     VK_GEOMETRY_TYPE_RANGE_SIZE_NVX :: RANGE_SIZE_NVX;
     VK_GEOMETRY_TYPE_MAX_ENUM_NVX :: MAX_ENUM_NVX;
 }
+
 VkAccelerationStructureTypeNVX :: enum u32 {
     TOP_LEVEL_NVX :: 0;
     BOTTOM_LEVEL_NVX :: 1;
@@ -7228,6 +7775,7 @@ VkAccelerationStructureTypeNVX :: enum u32 {
     VK_ACCELERATION_STRUCTURE_TYPE_RANGE_SIZE_NVX :: RANGE_SIZE_NVX;
     VK_ACCELERATION_STRUCTURE_TYPE_MAX_ENUM_NVX :: MAX_ENUM_NVX;
 }
+
 VkCopyAccelerationStructureModeNVX :: enum u32 {
     CLONE_NVX :: 0;
     COMPACT_NVX :: 1;
@@ -7242,6 +7790,7 @@ VkCopyAccelerationStructureModeNVX :: enum u32 {
     VK_COPY_ACCELERATION_STRUCTURE_MODE_RANGE_SIZE_NVX :: RANGE_SIZE_NVX;
     VK_COPY_ACCELERATION_STRUCTURE_MODE_MAX_ENUM_NVX :: MAX_ENUM_NVX;
 }
+
 VkGeometryFlagBitsNVX :: enum_flags u32 {
     OPAQUE_BIT_NVX :: 0x1;
     NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NVX :: 0x2;
@@ -7250,7 +7799,9 @@ VkGeometryFlagBitsNVX :: enum_flags u32 {
     VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NVX :: NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NVX;
     VK_GEOMETRY_FLAG_BITS_MAX_ENUM_NVX :: FLAG_BITS_MAX_ENUM_NVX;
 }
+
 VkGeometryFlagsNVX :: VkGeometryFlagBitsNVX;
+
 VkGeometryInstanceFlagBitsNVX :: enum_flags u32 {
     TRIANGLE_CULL_DISABLE_BIT_NVX :: 0x1;
     TRIANGLE_CULL_FLIP_WINDING_BIT_NVX :: 0x2;
@@ -7263,7 +7814,9 @@ VkGeometryInstanceFlagBitsNVX :: enum_flags u32 {
     VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_NVX :: FORCE_NO_OPAQUE_BIT_NVX;
     VK_GEOMETRY_INSTANCE_FLAG_BITS_MAX_ENUM_NVX :: FLAG_BITS_MAX_ENUM_NVX;
 }
+
 VkGeometryInstanceFlagsNVX :: VkGeometryInstanceFlagBitsNVX;
+
 VkBuildAccelerationStructureFlagBitsNVX :: enum_flags u32 {
     ALLOW_UPDATE_BIT_NVX :: 0x1;
     ALLOW_COMPACTION_BIT_NVX :: 0x2;
@@ -7278,7 +7831,9 @@ VkBuildAccelerationStructureFlagBitsNVX :: enum_flags u32 {
     VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_NVX :: LOW_MEMORY_BIT_NVX;
     VK_BUILD_ACCELERATION_STRUCTURE_FLAG_BITS_MAX_ENUM_NVX :: FLAG_BITS_MAX_ENUM_NVX;
 }
+
 VkBuildAccelerationStructureFlagsNVX :: VkBuildAccelerationStructureFlagBitsNVX;
+
 VkRaytracingPipelineCreateInfoNVX :: struct {
     sType: VkStructureType = .RAYTRACING_PIPELINE_CREATE_INFO_NVX;
     pNext: *void;
@@ -7291,6 +7846,7 @@ VkRaytracingPipelineCreateInfoNVX :: struct {
     basePipelineHandle: VkPipeline;
     basePipelineIndex: s32;
 }
+
 VkGeometryTrianglesNVX :: struct {
     sType: VkStructureType = .GEOMETRY_TRIANGLES_NVX;
     pNext: *void;
@@ -7306,6 +7862,7 @@ VkGeometryTrianglesNVX :: struct {
     transformData: VkBuffer;
     transformOffset: VkDeviceSize;
 }
+
 VkGeometryAABBNVX :: struct {
     sType: VkStructureType = .GEOMETRY_AABB_NVX;
     pNext: *void;
@@ -7314,10 +7871,12 @@ VkGeometryAABBNVX :: struct {
     stride: u32;
     offset: VkDeviceSize;
 }
+
 VkGeometryDataNVX :: struct {
     triangles: VkGeometryTrianglesNVX;
     aabbs: VkGeometryAABBNVX;
 }
+
 VkGeometryNVX :: struct {
     sType: VkStructureType = .GEOMETRY_NVX;
     pNext: *void;
@@ -7325,6 +7884,7 @@ VkGeometryNVX :: struct {
     geometry: VkGeometryDataNVX;
     flags: VkGeometryFlagsNVX;
 }
+
 VkAccelerationStructureCreateInfoNVX :: struct {
     sType: VkStructureType = .ACCELERATION_STRUCTURE_CREATE_INFO_NVX;
     pNext: *void;
@@ -7335,6 +7895,7 @@ VkAccelerationStructureCreateInfoNVX :: struct {
     geometryCount: u32;
     pGeometries: *VkGeometryNVX;
 }
+
 VkBindAccelerationStructureMemoryInfoNVX :: struct {
     sType: VkStructureType = .BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NVX;
     pNext: *void;
@@ -7344,17 +7905,20 @@ VkBindAccelerationStructureMemoryInfoNVX :: struct {
     deviceIndexCount: u32;
     pDeviceIndices: *u32;
 }
+
 VkDescriptorAccelerationStructureInfoNVX :: struct {
     sType: VkStructureType = .DESCRIPTOR_ACCELERATION_STRUCTURE_INFO_NVX;
     pNext: *void;
     accelerationStructureCount: u32;
     pAccelerationStructures: *VkAccelerationStructureNVX;
 }
+
 VkAccelerationStructureMemoryRequirementsInfoNVX :: struct {
     sType: VkStructureType = .ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX;
     pNext: *void;
     accelerationStructure: VkAccelerationStructureNVX;
 }
+
 VkPhysicalDeviceRaytracingPropertiesNVX :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX;
     pNext: *void;
@@ -7362,6 +7926,7 @@ VkPhysicalDeviceRaytracingPropertiesNVX :: struct {
     maxRecursionDepth: u32;
     maxGeometryCount: u32;
 }
+
 PFN_vkCreateAccelerationStructureNVX :: #type (device: VkDevice, pCreateInfo: *VkAccelerationStructureCreateInfoNVX, pAllocator: *VkAllocationCallbacks, pAccelerationStructure: *VkAccelerationStructureNVX) -> VkResult #c_call;
 PFN_vkDestroyAccelerationStructureNVX :: #type (device: VkDevice, accelerationStructure: VkAccelerationStructureNVX, pAllocator: *VkAllocationCallbacks) -> void #c_call;
 PFN_vkGetAccelerationStructureMemoryRequirementsNVX :: #type (device: VkDevice, pInfo: *VkAccelerationStructureMemoryRequirementsInfoNVX, pMemoryRequirements: *VkMemoryRequirements2KHR) -> void #c_call;
@@ -7375,16 +7940,19 @@ PFN_vkGetRaytracingShaderHandlesNVX :: #type (device: VkDevice, pipeline: VkPipe
 PFN_vkGetAccelerationStructureHandleNVX :: #type (device: VkDevice, accelerationStructure: VkAccelerationStructureNVX, dataSize: u64, pData: *void) -> VkResult #c_call;
 PFN_vkCmdWriteAccelerationStructurePropertiesNVX :: #type (cmdBuf: VkCommandBuffer, accelerationStructure: VkAccelerationStructureNVX, queryType: VkQueryType, queryPool: VkQueryPool, query: u32) -> void #c_call;
 PFN_vkCompileDeferredNVX :: #type (device: VkDevice, pipeline: VkPipeline, shader: u32) -> VkResult #c_call;
+
 VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV;
     pNext: *void;
     representativeFragmentTest: VkBool32;
 }
+
 VkPipelineRepresentativeFragmentTestStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV;
     pNext: *void;
     representativeFragmentTestEnable: VkBool32;
 }
+
 VkQueueGlobalPriorityEXT :: enum u32 {
     LOW_EXT :: 128;
     MEDIUM_EXT :: 256;
@@ -7403,29 +7971,35 @@ VkQueueGlobalPriorityEXT :: enum u32 {
     VK_QUEUE_GLOBAL_PRIORITY_RANGE_SIZE_EXT :: RANGE_SIZE_EXT;
     VK_QUEUE_GLOBAL_PRIORITY_MAX_ENUM_EXT :: MAX_ENUM_EXT;
 }
+
 VkDeviceQueueGlobalPriorityCreateInfoEXT :: struct {
     sType: VkStructureType = .DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT;
     pNext: *void;
     globalPriority: VkQueueGlobalPriorityEXT;
 }
+
 VkImportMemoryHostPointerInfoEXT :: struct {
     sType: VkStructureType = .IMPORT_MEMORY_HOST_POINTER_INFO_EXT;
     pNext: *void;
     handleType: VkExternalMemoryHandleTypeFlagBits;
     pHostPointer: *void;
 }
+
 VkMemoryHostPointerPropertiesEXT :: struct {
     sType: VkStructureType = .MEMORY_HOST_POINTER_PROPERTIES_EXT;
     pNext: *void;
     memoryTypeBits: u32;
 }
+
 VkPhysicalDeviceExternalMemoryHostPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT;
     pNext: *void;
     minImportedHostPointerAlignment: VkDeviceSize;
 }
+
 PFN_vkGetMemoryHostPointerPropertiesEXT :: #type (device: VkDevice, handleType: VkExternalMemoryHandleTypeFlagBits, pHostPointer: *void, pMemoryHostPointerProperties: *VkMemoryHostPointerPropertiesEXT) -> VkResult #c_call;
 PFN_vkCmdWriteBufferMarkerAMD :: #type (commandBuffer: VkCommandBuffer, pipelineStage: VkPipelineStageFlagBits, dstBuffer: VkBuffer, dstOffset: VkDeviceSize, marker: u32) -> void #c_call;
+
 VkPhysicalDeviceShaderCorePropertiesAMD :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;
     pNext: *void;
@@ -7444,39 +8018,46 @@ VkPhysicalDeviceShaderCorePropertiesAMD :: struct {
     maxVgprAllocation: u32;
     vgprAllocationGranularity: u32;
 }
+
 VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT;
     pNext: *void;
     maxVertexAttribDivisor: u32;
 }
+
 VkVertexInputBindingDivisorDescriptionEXT :: struct {
     binding: u32;
     divisor: u32;
 }
+
 VkPipelineVertexInputDivisorStateCreateInfoEXT :: struct {
     sType: VkStructureType = .PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT;
     pNext: *void;
     vertexBindingDivisorCount: u32;
     pVertexBindingDivisors: *VkVertexInputBindingDivisorDescriptionEXT;
 }
+
 VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT;
     pNext: *void;
     vertexAttributeInstanceRateDivisor: VkBool32;
     vertexAttributeInstanceRateZeroDivisor: VkBool32;
 }
+
 VkPhysicalDeviceComputeShaderDerivativesFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV;
     pNext: *void;
     computeDerivativeGroupQuads: VkBool32;
     computeDerivativeGroupLinear: VkBool32;
 }
+
 VkPhysicalDeviceMeshShaderFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV;
     pNext: *void;
     taskShader: VkBool32;
     meshShader: VkBool32;
 }
+
 VkPhysicalDeviceMeshShaderPropertiesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV;
     pNext: *void;
@@ -7494,51 +8075,63 @@ VkPhysicalDeviceMeshShaderPropertiesNV :: struct {
     meshOutputPerVertexGranularity: u32;
     meshOutputPerPrimitiveGranularity: u32;
 }
+
 VkDrawMeshTasksIndirectCommandNV :: struct {
     taskCount: u32;
     firstTask: u32;
 }
+
 PFN_vkCmdDrawMeshTasksNV :: #type (commandBuffer: VkCommandBuffer, taskCount: u32, firstTask: u32) -> void #c_call;
 PFN_vkCmdDrawMeshTasksIndirectNV :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, drawCount: u32, stride: u32) -> void #c_call;
 PFN_vkCmdDrawMeshTasksIndirectCountNV :: #type (commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize, countBuffer: VkBuffer, countBufferOffset: VkDeviceSize, maxDrawCount: u32, stride: u32) -> void #c_call;
+
 VkPhysicalDeviceFragmentShaderBarycentricFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV;
     pNext: *void;
     fragmentShaderBarycentric: VkBool32;
 }
+
 VkPhysicalDeviceShaderImageFootprintFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV;
     pNext: *void;
     imageFootprint: VkBool32;
 }
+
 VkPipelineViewportExclusiveScissorStateCreateInfoNV :: struct {
     sType: VkStructureType = .PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV;
     pNext: *void;
     exclusiveScissorCount: u32;
     pExclusiveScissors: *VkRect2D;
 }
+
 VkPhysicalDeviceExclusiveScissorFeaturesNV :: struct {
     sType: VkStructureType = .PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV;
     pNext: *void;
     exclusiveScissor: VkBool32;
 }
+
 PFN_vkCmdSetExclusiveScissorNV :: #type (commandBuffer: VkCommandBuffer, firstExclusiveScissor: u32, exclusiveScissorCount: u32, pExclusiveScissors: *VkRect2D) -> void #c_call;
+
 VkQueueFamilyCheckpointPropertiesNV :: struct {
     sType: VkStructureType = .QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV;
     pNext: *void;
     checkpointExecutionStageMask: VkPipelineStageFlags;
 }
+
 VkCheckpointDataNV :: struct {
     sType: VkStructureType = .CHECKPOINT_DATA_NV;
     pNext: *void;
     stage: VkPipelineStageFlagBits;
     pCheckpointMarker: *void;
 }
+
 PFN_vkCmdSetCheckpointNV :: #type (commandBuffer: VkCommandBuffer, pCheckpointMarker: *void) -> void #c_call;
 PFN_vkGetQueueCheckpointDataNV :: #type (queue: VkQueue, pCheckpointDataCount: *u32, pCheckpointData: *VkCheckpointDataNV) -> void #c_call;
 #scope_file
 libvulkan :: #system_library "vulkan";
+
 #import "Basic";
+
 #scope_export
 vkEnumeratePhysicalDevices :: (instance: VkInstance) -> [] VkPhysicalDevice, VkResult {
     data: [] VkPhysicalDevice;
@@ -7558,6 +8151,7 @@ vkEnumeratePhysicalDevices :: (instance: VkInstance) -> [] VkPhysicalDevice, VkR
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceQueueFamilyProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties {
     data: [] VkQueueFamilyProperties;
     count: u32 = 0;
@@ -7570,6 +8164,7 @@ vkGetPhysicalDeviceQueueFamilyProperties :: (physicalDevice: VkPhysicalDevice) -
     data.count = cast(s64) count;
     return data;
 }
+
 vkEnumerateInstanceExtensionProperties :: (pLayerName: *u8) -> [] VkExtensionProperties, VkResult {
     data: [] VkExtensionProperties;
     count: u32 = 0;
@@ -7588,6 +8183,7 @@ vkEnumerateInstanceExtensionProperties :: (pLayerName: *u8) -> [] VkExtensionPro
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkEnumerateDeviceExtensionProperties :: (physicalDevice: VkPhysicalDevice, pLayerName: *u8) -> [] VkExtensionProperties, VkResult {
     data: [] VkExtensionProperties;
     count: u32 = 0;
@@ -7606,6 +8202,7 @@ vkEnumerateDeviceExtensionProperties :: (physicalDevice: VkPhysicalDevice, pLaye
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkEnumerateInstanceLayerProperties :: () -> [] VkLayerProperties, VkResult {
     data: [] VkLayerProperties;
     count: u32 = 0;
@@ -7624,6 +8221,7 @@ vkEnumerateInstanceLayerProperties :: () -> [] VkLayerProperties, VkResult {
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkEnumerateDeviceLayerProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkLayerProperties, VkResult {
     data: [] VkLayerProperties;
     count: u32 = 0;
@@ -7642,6 +8240,7 @@ vkEnumerateDeviceLayerProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkL
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetImageSparseMemoryRequirements :: (device: VkDevice, image: VkImage) -> [] VkSparseImageMemoryRequirements {
     data: [] VkSparseImageMemoryRequirements;
     count: u32 = 0;
@@ -7654,6 +8253,7 @@ vkGetImageSparseMemoryRequirements :: (device: VkDevice, image: VkImage) -> [] V
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPhysicalDeviceSparseImageFormatProperties :: (physicalDevice: VkPhysicalDevice, format: VkFormat, type: VkImageType, samples: VkSampleCountFlagBits, usage: VkImageUsageFlags, tiling: VkImageTiling) -> [] VkSparseImageFormatProperties {
     data: [] VkSparseImageFormatProperties;
     count: u32 = 0;
@@ -7666,6 +8266,7 @@ vkGetPhysicalDeviceSparseImageFormatProperties :: (physicalDevice: VkPhysicalDev
     data.count = cast(s64) count;
     return data;
 }
+
 vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance) -> [] VkPhysicalDeviceGroupProperties, VkResult {
     data: [] VkPhysicalDeviceGroupProperties;
     count: u32 = 0;
@@ -7686,6 +8287,7 @@ vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance) -> [] VkPhysicalDevice
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetImageSparseMemoryRequirements2 :: (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2) -> [] VkSparseImageMemoryRequirements2 {
     data: [] VkSparseImageMemoryRequirements2;
     count: u32 = 0;
@@ -7700,6 +8302,7 @@ vkGetImageSparseMemoryRequirements2 :: (device: VkDevice, pInfo: *VkImageSparseM
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPhysicalDeviceQueueFamilyProperties2 :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties2 {
     data: [] VkQueueFamilyProperties2;
     count: u32 = 0;
@@ -7714,6 +8317,7 @@ vkGetPhysicalDeviceQueueFamilyProperties2 :: (physicalDevice: VkPhysicalDevice) 
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPhysicalDeviceSparseImageFormatProperties2 :: (physicalDevice: VkPhysicalDevice, pFormatInfo: *VkPhysicalDeviceSparseImageFormatInfo2) -> [] VkSparseImageFormatProperties2 {
     data: [] VkSparseImageFormatProperties2;
     count: u32 = 0;
@@ -7728,6 +8332,7 @@ vkGetPhysicalDeviceSparseImageFormatProperties2 :: (physicalDevice: VkPhysicalDe
     data.count = cast(s64) count;
     return data;
 }
+
 vkGetPhysicalDeviceSurfaceFormatsKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkSurfaceFormatKHR, VkResult {
     data: [] VkSurfaceFormatKHR;
     count: u32 = 0;
@@ -7746,6 +8351,7 @@ vkGetPhysicalDeviceSurfaceFormatsKHR :: (physicalDevice: VkPhysicalDevice, surfa
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceSurfacePresentModesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkPresentModeKHR, VkResult {
     data: [] VkPresentModeKHR;
     count: u32 = 0;
@@ -7764,6 +8370,7 @@ vkGetPhysicalDeviceSurfacePresentModesKHR :: (physicalDevice: VkPhysicalDevice, 
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetSwapchainImagesKHR :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] VkImage, VkResult {
     data: [] VkImage;
     count: u32 = 0;
@@ -7782,6 +8389,7 @@ vkGetSwapchainImagesKHR :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] V
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDevicePresentRectanglesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkRect2D, VkResult {
     data: [] VkRect2D;
     count: u32 = 0;
@@ -7800,6 +8408,7 @@ vkGetPhysicalDevicePresentRectanglesKHR :: (physicalDevice: VkPhysicalDevice, su
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceDisplayPropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPropertiesKHR, VkResult {
     data: [] VkDisplayPropertiesKHR;
     count: u32 = 0;
@@ -7818,6 +8427,7 @@ vkGetPhysicalDeviceDisplayPropertiesKHR :: (physicalDevice: VkPhysicalDevice) ->
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceDisplayPlanePropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlanePropertiesKHR, VkResult {
     data: [] VkDisplayPlanePropertiesKHR;
     count: u32 = 0;
@@ -7836,6 +8446,7 @@ vkGetPhysicalDeviceDisplayPlanePropertiesKHR :: (physicalDevice: VkPhysicalDevic
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetDisplayPlaneSupportedDisplaysKHR :: (physicalDevice: VkPhysicalDevice, planeIndex: u32) -> [] VkDisplayKHR, VkResult {
     data: [] VkDisplayKHR;
     count: u32 = 0;
@@ -7854,6 +8465,7 @@ vkGetDisplayPlaneSupportedDisplaysKHR :: (physicalDevice: VkPhysicalDevice, plan
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetDisplayModePropertiesKHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModePropertiesKHR, VkResult {
     data: [] VkDisplayModePropertiesKHR;
     count: u32 = 0;
@@ -7872,6 +8484,7 @@ vkGetDisplayModePropertiesKHR :: (physicalDevice: VkPhysicalDevice, display: VkD
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceDisplayProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayProperties2KHR, VkResult {
     data: [] VkDisplayProperties2KHR;
     count: u32 = 0;
@@ -7892,6 +8505,7 @@ vkGetPhysicalDeviceDisplayProperties2KHR :: (physicalDevice: VkPhysicalDevice) -
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlaneProperties2KHR, VkResult {
     data: [] VkDisplayPlaneProperties2KHR;
     count: u32 = 0;
@@ -7912,6 +8526,7 @@ vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: (physicalDevice: VkPhysicalDevi
     data.count = cast(s64) count;
     return data, status;
 }
+
 vkGetDisplayModeProperties2KHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModeProperties2KHR, VkResult {
     data: [] VkDisplayModeProperties2KHR;
     count: u32 = 0;

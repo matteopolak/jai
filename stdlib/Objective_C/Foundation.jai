@@ -62,11 +62,13 @@ init_objective_c_foundation :: () {
     _sel.stringByExpandingTildeInPath = cast(Selector) sel_registerName(cast(*u8) "stringByExpandingTildeInPath\0");
     _sel.systemUptime = cast(Selector) sel_registerName(cast(*u8) "systemUptime\0");
 }
+
 NSTimeInterval :: float64;
 NSFullUserName :: () -> *NSString #foreign Foundation_Framework;
 NSUserName :: () -> *NSString #foreign Foundation_Framework;
 NSHomeDirectory :: () -> *NSString #foreign Foundation_Framework;
 NSHomeDirectoryForUser :: (username: *NSString) -> *NSString #foreign Foundation_Framework;
+
 NSAutoreleasePool :: struct {
     using #as super: NSObject;
     drain :: (self: *NSAutoreleasePool) {
@@ -80,10 +82,12 @@ NSAutoreleasePool :: struct {
         invoke(cast(*void) objc_getClass(cast(*u8) "NSAutoreleasePool\0"), sel_registerName(cast(*u8) "showPools\0"));
     }
 }
+
 NSRange :: struct {
     location: NSUInteger;
     length: NSUInteger;
 }
+
 NSBundle :: struct {
     using #as super: NSObject;
     resourcePath :: (self: *NSBundle) -> *NSString {
@@ -97,6 +101,7 @@ NSBundle :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSBundle\0"), sel_registerName(cast(*u8) "mainBundle\0"));
     }
 }
+
 NSDate :: struct {
     using #as super: NSObject;
     distantPast :: () -> *NSDate {
@@ -110,33 +115,43 @@ NSDate :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSDate\0"), sel_registerName(cast(*u8) "distantFuture\0"));
     }
 }
+
 NSPoint :: struct {
     x: CGFloat;
     y: CGFloat;
 }
+
 CGFloat :: float64;
+
 CGSize :: struct {
     width: CGFloat;
     height: CGFloat;
 }
+
 NSMakePoint :: (x: CGFloat, y: CGFloat) -> NSPoint {
     return NSPoint.{ x, y };
 }
+
 NSSize :: CGSize;
+
 NSMakeSize :: (w: CGFloat, h: CGFloat) -> NSSize {
     return NSSize.{ w, h };
 }
+
 NSRect :: struct {
     origin: NSPoint;
     size: NSSize;
 }
+
 NSMakeRect :: (x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> NSRect {
     return NSRect.{ NSMakePoint(x, y), NSMakeSize(w, h) };
 }
+
 NSStringEncoding :: NSUInteger;
 NSUTF8StringEncoding :: 4;
 NSUTF32StringEncoding :: 0x8c000100;
 NSUTF32LittleEndianStringEncoding :: 0x9c000100;
+
 NSString :: struct {
     using #as super: NSObject;
     initWithBytes :: (self: *NSString, bytes: *void, length: NSUInteger, encoding: NSStringEncoding) -> *NSString {
@@ -174,6 +189,7 @@ NSString :: struct {
         return cast(*NSString) autorelease(value);
     }
 }
+
 NSRunLoopMode :: *NSString;
 NSPasteboardType :: *NSString;
 NSColorSpaceName :: *NSString;
@@ -184,11 +200,13 @@ NSHPUXOperatingSystem :: 4;
 NSMACHOperatingSystem :: 5;
 NSSunOSOperatingSystem :: 6;
 NSOSF1OperatingSystem :: 7;
+
 NSOperatingSystemVersion :: struct {
     majorVersion: NSInteger;
     minorVersion: NSInteger;
     patchVersion: NSInteger;
 }
+
 NSTimer :: struct {
     using #as super: NSObject;
     scheduledTimerWithTimeInterval :: (interval: NSTimeInterval, target: id, selector: Selector, userInfo: id, repeats: BOOL) -> *NSTimer {
@@ -197,6 +215,7 @@ NSTimer :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSTimer\0"), sel_registerName(cast(*u8) "scheduledTimerWithTimeInterval:target:selector:userInfo:repeats:\0"), interval, target, selector, userInfo, repeats);
     }
 }
+
 NSRunLoop :: struct {
     using #as super: NSObject;
     currentRunLoop :: () -> *NSRunLoop {
@@ -210,6 +229,7 @@ NSRunLoop :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "run\0"));
     }
 }
+
 NSProcessInfo :: struct {
     using nsobject: NSObject;
     _environment: *NSDictionary(*NSString, *NSString);
@@ -341,6 +361,7 @@ NSProcessInfo :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setAutomaticTerminationSupportEnabled:\0"), automaticTerminationSupportEnabled);
     }
 }
+
 using NSActivityOptions :: enum u64 {
     NSActivityIdleDisplaySleepDisabled :: 1099511627776;
     NSActivityIdleSystemSleepDisabled :: 1048576;
@@ -351,12 +372,14 @@ using NSActivityOptions :: enum u64 {
     NSActivityBackground :: 255;
     NSActivityLatencyCritical :: 1095216660480;
 }
+
 using NSProcessInfoThermalState :: enum s64 {
     NSProcessInfoThermalStateNominal :: 0;
     NSProcessInfoThermalStateFair :: 1;
     NSProcessInfoThermalStateSerious :: 2;
     NSProcessInfoThermalStateCritical :: 3;
 }
+
 NSThread :: struct {
     _nsobject: NSObject;
     detachNewThreadSelectorToTargetWithObject :: (sel: Selector, toTarget: id, withObject: id) {
@@ -370,6 +393,7 @@ NSThread :: struct {
         return invoke(cast(*void) objc_getClass(cast(*u8) "NSThread\0"), sel_registerName(cast(*u8) "isMultiThreaded\0"));
     }
 }
+
 NSNotification :: struct {
     using #as super: NSObject;
     object :: (self: *NSNotification) -> *NSObject {
@@ -378,6 +402,7 @@ NSNotification :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "object\0"));
     }
 }
+
 NSNotificationCenter :: struct {
     using #as super: NSObject;
     defaultCenter :: () -> *NSNotificationCenter {
@@ -391,7 +416,9 @@ NSNotificationCenter :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "addObserver:selector:name:object:\0"), observer, selector, name, object);
     }
 }
+
 NSNotificationName :: *NSString;
+
 NSURL :: struct {
     using #as super: NSObject;
     URLWithString :: (str: *NSString) -> *NSURL {
@@ -435,6 +462,7 @@ NSURL :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "lastPathComponent\0"));
     }
 }
+
 NSData :: struct {
     using #as super: NSObject;
     bytes :: (self: *NSData) -> *void {
@@ -448,9 +476,11 @@ NSData :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "length\0"));
     }
 }
+
 NSDictionary :: struct(key: Type, value: Type) {
     using #as super: NSObject;
 }
+
 NSArray :: struct(Object_Type: Type) {
     using #as super: NSObject;
     arrayWithObject :: (obj: Object_Type) -> *NSArray(Object_Type) {
@@ -482,6 +512,7 @@ NSArray :: struct(Object_Type: Type) {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "count\0"));
     }
 }
+
 NSFileManager :: struct {
     using #as super: NSObject;
     defaultManager :: () -> *NSFileManager {
@@ -495,6 +526,7 @@ NSFileManager :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "URLForDirectory:inDomain:appropriateForURL:create:error:\0"), dir, inDomain, appropriateForURL, create, error);
     }
 }
+
 using NSSearchPathDirectory :: enum u64 {
     NSApplicationDirectory :: 1;
     NSDemoApplicationDirectory;
@@ -524,6 +556,7 @@ using NSSearchPathDirectory :: enum u64 {
     NSAllLibrariesDirectory :: 101;
     NSTrashDirectory :: 102;
 }
+
 using NSSearchPathDomainMask :: enum_flags u64 {
     NSUserDomainMask :: 1;
     NSLocalDomainMask :: 2;
@@ -531,6 +564,7 @@ using NSSearchPathDomainMask :: enum_flags u64 {
     NSSystemDomainMask :: 8;
     NSAllDomainsMask :: 0x0ffff;
 }
+
 NSError :: struct {
     using #as super: NSObject;
     localizedDescription :: (self: *NSError) -> *NSString {
@@ -539,6 +573,7 @@ NSError :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "localizedDescription\0"));
     }
 }
+
 NSHost :: struct {
     using #as super: NSObject;
     currentHost :: () -> *NSHost {
@@ -552,11 +587,14 @@ NSHost :: struct {
         return invoke(cast(*void) self, sel_registerName(cast(*u8) "localizedName\0"));
     }
 }
+
 CALayer :: struct {
     using nsobject: NSObject;
 }
+
 #scope_module
 Foundation_Framework :: #system_library "Foundation";
+
 #scope_file
 _sel: struct {
     drain: Selector;

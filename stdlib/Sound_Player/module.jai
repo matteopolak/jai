@@ -48,6 +48,7 @@ Audio_Channel :: enum u16 {
     EXTEND_LEFT :: 6;
     EXTEND_RIGHT :: 7;
 }
+
 ACHANNEL_MAX :: 8;
 OUTPUT_CHANNELS_MAX :: ACHANNEL_MAX;
 MAX_CHANNELS_PER_SOUND :: 8;
@@ -74,6 +75,7 @@ Source_Direction :: enum u16 {
     EXTEND_LEFT :: 9;
     EXTEND_RIGHT :: 10;
 }
+
 NUM_SOURCE_DIRECTIONS :: 11;
 
 SOUND_INNER_RADIUS_DEFAULT :: 10.0;
@@ -345,6 +347,7 @@ Player_State :: struct {
     worker_quit: bool;
     worker_wake: Semaphore;
 }
+
 player: Player_State;
 
 master_volume: float = 1;

@@ -6,7 +6,9 @@ SDL_DisplayMode :: struct {
     refresh_rate: s32;
     driverdata: *void;
 }
+
 SDL_Window :: void;
+
 using SDL_WindowFlags :: enum_flags u32 {
     SDL_WINDOW_FULLSCREEN :: 0x00000001;
     SDL_WINDOW_OPENGL :: 0x00000002;
@@ -30,20 +32,26 @@ using SDL_WindowFlags :: enum_flags u32 {
     SDL_WINDOW_POPUP_MENU :: 0x00080000;
     SDL_WINDOW_VULKAN :: 0x10000000;
 }
+
 SDL_WINDOWPOS_UNDEFINED_MASK: s32 : 0x1FFF0000;
+
 SDL_WINDOWPOS_UNDEFINED_DISPLAY :: (x: s32) -> s32 {
     encoded := SDL_WINDOWPOS_UNDEFINED_MASK;
     encoded |= x;
     return encoded;
 }
+
 SDL_WINDOWPOS_UNDEFINED: s32 : 0x1FFF0000;
 SDL_WINDOWPOS_CENTERED_MASK: s32 : 0x2FFF0000;
+
 SDL_WINDOWPOS_CENTERED_DISPLAY :: (x: s32) -> s32 {
     encoded := SDL_WINDOWPOS_CENTERED_MASK;
     encoded |= x;
     return encoded;
 }
+
 SDL_WINDOWPOS_CENTERED: s32 : 0x2FFF0000;
+
 using SDL_WindowEventID :: enum u8 {
     SDL_WINDOWEVENT_NONE;
     SDL_WINDOWEVENT_SHOWN;
@@ -63,7 +71,9 @@ using SDL_WindowEventID :: enum u8 {
     SDL_WINDOWEVENT_TAKE_FOCUS;
     SDL_WINDOWEVENT_HIT_TEST;
 }
+
 SDL_GLContext :: *void;
+
 using SDL_GLattr :: enum u32 {
     SDL_GL_RED_SIZE;
     SDL_GL_GREEN_SIZE;
@@ -93,25 +103,30 @@ using SDL_GLattr :: enum u32 {
     SDL_GL_CONTEXT_RESET_NOTIFICATION;
     SDL_GL_CONTEXT_NO_ERROR;
 }
+
 using SDL_GLprofile :: enum_flags u32 {
     SDL_GL_CONTEXT_PROFILE_CORE :: 0x0001;
     SDL_GL_CONTEXT_PROFILE_COMPATIBILITY :: 0x0002;
     SDL_GL_CONTEXT_PROFILE_ES :: 0x0004;
 }
+
 using SDL_GLcontextFlag :: enum_flags u32 {
     SDL_GL_CONTEXT_DEBUG_FLAG :: 0x0001;
     SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG :: 0x0002;
     SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG :: 0x0004;
     SDL_GL_CONTEXT_RESET_ISOLATION_FLAG :: 0x0008;
 }
+
 using SDL_GLcontextReleaseFlag :: enum_flags u32 {
     SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE :: 0x0000;
     SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH :: 0x0001;
 }
+
 using SDL_GLContextResetNotification :: enum_flags u32 {
     SDL_GL_CONTEXT_RESET_NO_NOTIFICATION :: 0x0000;
     SDL_GL_CONTEXT_RESET_LOSE_CONTEXT :: 0x0001;
 }
+
 using SDL_HitTestResult :: enum u32 {
     SDL_HITTEST_NORMAL;
     SDL_HITTEST_DRAGGABLE;
@@ -124,6 +139,7 @@ using SDL_HitTestResult :: enum u32 {
     SDL_HITTEST_RESIZE_BOTTOMLEFT;
     SDL_HITTEST_RESIZE_LEFT;
 }
+
 SDL_HitTest :: #type (win: *SDL_Window, area: *SDL_Point, data: *void) -> SDL_HitTestResult #c_call;
 SDL_GetNumVideoDrivers :: () -> s32 #foreign SDL2;
 SDL_GetVideoDriver :: (index: s32) -> *u8 #foreign SDL2;

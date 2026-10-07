@@ -5,6 +5,7 @@ SDL_RendererFlags :: enum_flags u32 {
     PRESENTVSYNC :: 4;
     TARGETTEXTURE :: 8;
 }
+
 SDL_RendererInfo :: struct {
     name: *s8;
     flags: u32;
@@ -13,21 +14,25 @@ SDL_RendererInfo :: struct {
     max_texture_width: s32;
     max_texture_height: s32;
 }
+
 SDL_TextureAccess :: enum u32 {
     STATIC :: 0;
     STREAMING :: 1;
     TARGET :: 2;
 }
+
 SDL_TextureModulate :: enum u32 {
     NONE :: 0;
     COLOR :: 1;
     ALPHA :: 2;
 }
+
 SDL_RendererFlip :: enum u32 {
     NONE :: 0;
     HORIZONTAL :: 1;
     VERTICAL :: 2;
 }
+
 SDL_Renderer :: struct {}
 SDL_Texture :: struct {}
 SDL_GetNumRenderDrivers :: () -> s32 #foreign SDL2;
@@ -86,6 +91,7 @@ SDL_DestroyTexture :: (texture: *SDL_Texture) #foreign SDL2;
 SDL_DestroyRenderer :: (renderer: *SDL_Renderer) #foreign SDL2;
 SDL_GL_BindTexture :: (texture: *SDL_Texture, texw: *float32, texh: *float32) -> s32 #foreign SDL2;
 SDL_GL_UnbindTexture :: (texture: *SDL_Texture) -> s32 #foreign SDL2;
+
 #if OS == .MACOS {
     SDL_RenderGetMetalLayer :: (renderer: *SDL_Renderer) -> *void #foreign SDL2;
     SDL_RenderGetMetalCommandEncoder :: (renderer: *SDL_Renderer) -> *void #foreign SDL2;

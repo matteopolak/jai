@@ -1,13 +1,16 @@
 // Legacy public layouts are separated from authored UI behavior.
 using Basic;
+
 #scope_module
 Input :: #import "Input";
 WT :: #import "Window_Type";
 Simp :: #import "Simp";
 String :: #import "String";
 Tables :: #import "Hash_Table";
+
 using Input;
 using Tables;
+
 #scope_export
 #if Type_Indicator == void {
     USE_SIMP :: true;
@@ -22,11 +25,14 @@ using Tables;
     Font_Effects :: Type_Indicator.Font_Effects;
     Texture :: Type_Indicator.Texture;
 }
+
 #load "legacy-layouts.jai";
 #load "orientation.jai";
+
 #if GETRECT_Y_UP {
     #load "assets.jai";
 }
+
 #load "regions.jai";
 #load "colors.jai";
 #load "text-interaction.jai";
@@ -35,11 +41,13 @@ using Tables;
 #load "compatibility.jai";
 #load "occlusion.jai";
 #load "cursors.jai";
+
 #if GETRECT_Y_UP {
     #add_context getrect_current_window: Window_Type = WT.INVALID_WINDOW;
 } else {
     #add_context getrect_current_window: Window_Type = cast(Window_Type) 0;
 }
+
 default_overall_theme: Overall_Theme;
 draw_procs: Draw_Procs;
 scissor_stack: [..] Rect;
@@ -102,25 +110,32 @@ ui_init :: (default_font := "", procs: *Draw_Procs = null) {
     }
     initialized = true;
 }
+
 set_default_theme :: (theme: Overall_Theme) {
     default_overall_theme = theme;
 }
+
 // A size set here stays fixed; sizes never set follow the render target (see switch_window).
 set_global_rounding_radius_in_pixels :: (value: float) {
     pin_size(*global_rounding_radius_in_pixels, .ROUNDING_RADIUS, value);
 }
+
 set_global_frame_thickness_in_pixels :: (value: float) {
     pin_size(*global_frame_thickness_in_pixels, .FRAME_THICKNESS, value);
 }
+
 set_global_divider_thickness_in_pixels :: (value: float) {
     pin_size(*global_divider_thickness_in_pixels, .DIVIDER_THICKNESS, value);
 }
+
 set_global_initial_divider_position_in_pixels :: (value: float) {
     pin_size(*global_initial_divider_position_in_pixels, .DIVIDER_POSITION, value);
 }
+
 set_global_slider_nub_thickness_in_pixels :: (value: float) {
     pin_size(*global_slider_nub_thickness_in_pixels, .SLIDER_NUB, value);
 }
+
 get_float_parameter :: (r: Rect, type: Size_Computation, local: float, global: float, override: float = FLOAT32_INFINITY) -> float {
     if override != FLOAT32_INFINITY return override;
     if type == .RELATIVE_TO_HEIGHT return r.h * local;
@@ -128,19 +143,24 @@ get_float_parameter :: (r: Rect, type: Size_Computation, local: float, global: f
     if type == .ABSOLUTE_FROM_THEME_FIELD return local;
     return global;
 }
+
 tooltip :: (text := "", pointer_data: *void = null, int_data := 0) {
     current_tooltip = .{ text, pointer_data, int_data };
 }
+
 get_active_tooltip :: () -> Tooltip {
     return active_tooltip;
 }
+
 ui_get_button_state :: (key: Key_Code) -> Key_Current_State {
     return input_button_states[key];
 }
+
 windows_per_frame_update :: () {
     Swap(*last_frame_per_window_states, *this_frame_per_window_states);
     this_frame_per_window_states.count = 0;
 }
+
 ui_per_frame_update :: (window: Window_Type, _render_target_width: s32, _render_target_height: s32, _current_time: float64) -> (background_occluded: bool, is_active: bool) {
     if !initialized ui_init();
     assert(state_stack.count == 0 && scissor_stack.count == 0, "Finish all widgets and scissors before beginning a frame");
@@ -161,6 +181,7 @@ ui_per_frame_update :: (window: Window_Type, _render_target_width: s32, _render_
     mouse_button_left_state, mouse_button_right_state, shift_key_state = sample_tracked_keys();
     return switch_window(window, _render_target_width, _render_target_height);
 }
+
 switch_window :: (window: Window_Type, _render_target_width: s32, _render_target_height: s32) -> (background_occluded: bool, is_active: bool) {
     render_target_height = max(_render_target_height, 1);
     render_target_width = max(_render_target_width, 1);
@@ -177,9 +198,11 @@ switch_window :: (window: Window_Type, _render_target_width: s32, _render_target
     events_per_window_update(window);
     return active_widget_is_grabbing, active_widget != null;
 }
+
 getrect_handle_event :: (event: Event) {
     getrect_handle_event(event, context.getrect_current_window);
 }
+
 getrect_handle_event :: (event: Event, window: Window_Type) {
     array_add(*events_to_handle_this_frame, event);
     array_add(*left_event_windows, window);
@@ -190,6 +213,7 @@ getrect_handle_event :: (event: Event, window: Window_Type) {
         if event.key_code == .SHIFT left_update_key(*buttons.shift, event);
     }
 }
+
 events_per_frame_update :: () {
     events_to_handle_this_frame.count = 0;
     left_event_windows.count = 0;
@@ -204,6 +228,7 @@ events_per_frame_update :: () {
         for event: Input.unrouted_events_this_frame getrect_handle_event(event);
     } else for event: events_this_frame getrect_handle_event(event);
 }
+
 events_per_window_update :: (window: Window_Type) {
     if !active_widget || active_widget.window != window || !active_widget.serial_events_proc return;
     filtered: [..] Event;
@@ -226,6 +251,7 @@ find_or_create_state :: ($T: Type, hash: u64, start_using := true) -> (*T, creat
     if start_using start_using_state(cast(*Active_Widget) result);
     return result, true;
 }
+
 start_using_state :: (widget: *Active_Widget) {
     assert(!widget.is_on_state_stack, "A widget state is already on the draw stack");
     widget.window = context.getrect_current_window;
@@ -241,19 +267,23 @@ start_using_state :: (widget: *Active_Widget) {
     widget.is_on_state_stack = true;
     array_add(*state_stack, widget);
 }
+
 stop_using_state :: (widget: *Active_Widget) {
     assert(state_stack.count > 0 && state_stack[state_stack.count - 1] == widget, "GetRect widget stack must unwind in order");
     if state_stack.count > 0 state_stack.count -= 1;
     widget.is_on_state_stack = false;
 }
+
 active_widget_add :: (widget: *Active_Widget, is_grabbing := false) {
     if active_widget != widget active_widget_deactivate_all(widget);
     active_widget = widget;
     active_widget_is_grabbing = is_grabbing;
 }
+
 deactivate :: (widget: *Active_Widget) {
     if widget && widget.deactivate_proc widget.deactivate_proc(widget);
 }
+
 active_widget_remove :: (widget: *Active_Widget) {
     if active_widget == widget {
         deactivate(widget);
@@ -261,6 +291,7 @@ active_widget_remove :: (widget: *Active_Widget) {
         active_widget_is_grabbing = false;
     }
 }
+
 active_widget_deactivate_all :: (except: *Active_Widget = null) {
     if active_widget && active_widget != except && !active_widget.is_on_state_stack {
         deactivate(active_widget);
@@ -268,9 +299,11 @@ active_widget_deactivate_all :: (except: *Active_Widget = null) {
         active_widget_is_grabbing = false;
     }
 }
+
 active_widgets_per_frame_update :: () {
     if active_widget && active_widget.last_getrect_frame + 1 < current_getrect_frame active_widget_deactivate_all();
 }
+
 get_status_flags :: (r: Rect, widget_if_querying_outside_of_render_time: *Active_Widget = null, ignore := Status_Flags_Ignore.NOTHING) -> Status_Flags {
     status: Status_Flags;
     if events_occluded(widget_if_querying_outside_of_render_time) return status;
@@ -295,10 +328,12 @@ get_status_flags :: (r: Rect, widget_if_querying_outside_of_render_time: *Active
     if !(ignore & .TOOLTIP) current_tooltip = .{};
     return status;
 }
+
 has_focus :: (rect: Rect) -> bool {
     r := rect;
     return (get_status_flags(r, ignore = .LEFT_CLICK | .TOOLTIP) & .OVER) != 0;
 }
+
 push_scissor :: (_rect: Rect) {
     r := _rect;
     clipped := r;
@@ -306,6 +341,7 @@ push_scissor :: (_rect: Rect) {
     array_add(*scissor_stack, clipped);
     draw_procs.set_scissor(cast(s32) floor(clipped.x), cast(s32) floor(clipped.y), cast(s32) ceil(clipped.x + clipped.w), cast(s32) ceil(clipped.y + clipped.h));
 }
+
 pop_scissor :: () {
     assert(scissor_stack.count > 0, "GetRect scissor stack is empty");
     if scissor_stack.count == 0 return;
@@ -316,29 +352,35 @@ pop_scissor :: () {
         draw_procs.set_scissor(cast(s32) r.x, cast(s32) r.y, cast(s32) (r.x + r.w), cast(s32) (r.y + r.h));
     }
 }
+
 is_visible_in_scissor :: (x: float, y: float) -> bool {
     if scissor_stack.count == 0 return true;
     return is_inside(x, y, scissor_stack[scissor_stack.count - 1]);
 }
+
 is_visible_in_scissor :: (using rect: Rect) -> bool {
     r := rect;
     if scissor_stack.count == 0 return true;
     overlap := intersect(r, scissor_stack[scissor_stack.count - 1]);
     return overlap.w > 0 && overlap.h > 0;
 }
+
 get_default_font_at_size :: (fsize: float) -> *Font {
     if default_overall_theme.font return default_overall_theme.font;
     if !default_font_data || !draw_procs.get_font_at_size return null;
     return draw_procs.get_font_at_size(cast([] u8) default_font_data, max(cast(int) floor(fsize + 0.5), 1));
 }
+
 em :: (x: float, font: *Font) -> float {
     if !font return 0;
     return x * font.em_width;
 }
+
 text_size :: (font: *Font, text: string) -> (width: float, height: float) {
     if !font return 0, 0;
     return cast(float) draw_procs.prepare_text(font, text, 0), cast(float) (font.max_ascender + font.max_descender);
 }
+
 text_origin :: (theme: *Label_Theme, font: *Font, r: Rect, text_width: float) -> (x: float, y: float) {
     x := r.x + em(theme.alignment_pad_ems, font);
     if theme.alignment == .Center x = r.x + (r.w - text_width) * 0.5;
@@ -348,10 +390,12 @@ text_origin :: (theme: *Label_Theme, font: *Font, r: Rect, text_width: float) ->
     else position *= r.h;
     return floor(x + 0.5), floor(r.y + position + 0.5);
 }
+
 default_text_baseline :: (font: *Font, height: float) -> float {
     if !font return 0;
     return (height - font.max_ascender - font.max_descender) * 0.5 + ifx GETRECT_Y_UP then font.max_descender else font.max_ascender;
 }
+
 label :: (r: Rect, text: string, theme: *Label_Theme, do_scissor := true) -> desired_width: float {
     if !theme theme = *default_overall_theme.label_theme;
     font := theme.font;
@@ -364,6 +408,7 @@ label :: (r: Rect, text: string, theme: *Label_Theme, do_scissor := true) -> des
     draw_procs.draw_prepared_text(font, cast(s64) x, cast(s64) y, theme.text_color, theme.effects);
     return width;
 }
+
 label_from_prepared_text :: (r: Rect, font: *Font, theme: *Label_Theme, do_scissor := true) {
     if !font return;
     #if USE_SIMP {
@@ -376,6 +421,7 @@ label_from_prepared_text :: (r: Rect, font: *Font, theme: *Label_Theme, do_sciss
         assert(false, "Custom fonts must implement their own prepared-label measurement");
     }
 }
+
 rounded_rectangle :: (r: Rect, shape: Rectangle_Shape, color: Vector4, frame_color: Vector4, frame_thickness_override := FLOAT32_INFINITY) -> (frame_pixels: float, actual_roundedness: float) {
     radius := clamp(get_float_parameter(r, shape.roundedness_type, shape.roundedness, global_rounding_radius_in_pixels), 0.0, min(r.w, r.h) * 0.5);
     thickness := clamp(get_float_parameter(r, shape.frame_thickness_type, shape.frame_thickness, global_frame_thickness_in_pixels, frame_thickness_override), 0.0, min(r.w, r.h) * 0.5);
@@ -388,6 +434,7 @@ rounded_rectangle :: (r: Rect, shape: Rectangle_Shape, color: Vector4, frame_col
     if color.w > 0 left_round_fill(inner, shape, max(radius - thickness, 0.0), color);
     return thickness, radius;
 }
+
 update_over_state :: (state: *Button_State, theme: *Button_Theme, status: Status_Flags, dt: float) {
     over := ifx status & .OVER then 1.0 else 0.0;
     down := ifx status & .DOWN then 1.0 else 0.0;
@@ -398,6 +445,7 @@ update_over_state :: (state: *Button_State, theme: *Button_Theme, status: Status
     if down > 0 state.down_duration += dt;
     else state.down_duration = 0;
 }
+
 update_action_durations :: (state: *Button_State, theme: *Button_Theme, begin: bool, dt: float) -> (pressed_flash_factor: float) {
     if begin {
         state.action_duration = 0;
@@ -413,17 +461,20 @@ update_action_durations :: (state: *Button_State, theme: *Button_Theme, begin: b
     }
     return factor * factor;
 }
+
 update_production_value_button :: (r: Rect, changed: bool, state: *Button_State, status: Status_Flags, theme: *Button_Theme) {
     update_over_state(state, theme, status, current_dt);
     state.over_factor = state.over_effect_t;
     state.pressed_factor = update_action_durations(state, theme, changed, current_dt);
 }
+
 get_colors_and_thickness_for_button :: (theme: *Button_Theme, state: *Button_State) -> (surface_color: Vector4, frame_color: Vector4, frame_thickness: float) {
     surface_color = lerp(lerp(lerp(theme.surface_color, theme.surface_color_over, state.over_factor), theme.surface_color_down, state.down_effect_t), theme.surface_color_flash, state.pressed_factor);
     frame_color = lerp(lerp(lerp(theme.frame_color, theme.frame_color_over, state.over_factor), theme.frame_color_down, state.down_effect_t), theme.frame_color_flash, state.pressed_factor);
     frame_thickness = FLOAT32_INFINITY;
     if theme.enable_variable_frame_thickness frame_thickness = lerp(lerp(lerp(theme.rectangle_shape.frame_thickness, theme.frame_thickness_over, state.over_factor), theme.frame_thickness_down, state.down_effect_t), theme.frame_thickness_flash, state.pressed_factor);
 }
+
 core_draw_button :: (r: Rect, text: string, state: *Button_State, status: Status_Flags, theme: *Button_Theme, texture: *Texture) {
     update_production_value_button(r, (status & .PRESSED) != 0, state, status, theme);
     if theme.properties & .DO_NOT_DRAW || !is_visible_in_scissor(r) return;
@@ -436,6 +487,7 @@ core_draw_button :: (r: Rect, text: string, state: *Button_State, status: Status
         draw_procs.immediate_quad(p0, p1, p2, p3, theme.text_color);
     }
 }
+
 button :: (r: Rect, text: string, theme: *Button_Theme = null, identifier: s64 = 0, loc := #caller_location , texture: *Texture = null, disable_over := false, disable_press := false) -> (was_just_pressed: bool, state: *Button_State, was_just_released: bool) {
     if !theme theme = *default_overall_theme.button_theme;
     state = find_or_create_state(Button_State, get_hash(loc, identifier));
@@ -459,6 +511,7 @@ button :: (r: Rect, text: string, theme: *Button_Theme = null, identifier: s64 =
     if theme.draw_callback theme.draw_callback(r, text, theme, texture, state);
     return was_just_pressed, state, was_just_released;
 }
+
 base_checkbox :: (_r: Rect, text: string, selected: bool, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, checkbox_state: Checkbox_State {
     r := _r;
     if !theme theme = *default_overall_theme.checkbox_theme;
@@ -483,24 +536,30 @@ base_checkbox :: (_r: Rect, text: string, selected: bool, theme: *Checkbox_Theme
     label(label_rect, text, *label_theme);
     return changed, state.*;
 }
+
 checkbox :: (r: Rect, text: string, value: *bool, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, state: Checkbox_State {
     changed, state = base_checkbox(r, text, value.*, theme, identifier, loc);
     if changed value.* = !value.*;
 }
+
 radio_button :: (r: Rect, text: string, current_value: *$Enum, button_value: Enum, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, checkbox_state: Checkbox_State {
     changed, checkbox_state = base_checkbox(r, text, current_value.* == button_value, theme, identifier, loc);
     if changed current_value.* = button_value;
 }
+
 radio_button :: (r: Rect, current_value: *$Enum, button_value: Enum, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, checkbox_state: Checkbox_State {
     return radio_button(r, tprint("%", button_value), current_value, button_value, theme, identifier, loc);
 }
+
 checkbox_flags :: (r: Rect, text: string, current_value: *$Enum, button_value: Enum, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, checkbox_state: Checkbox_State {
     changed, checkbox_state = base_checkbox(r, text, (current_value.* & button_value) != 0, theme, identifier, loc);
     if changed current_value.* ^= button_value;
 }
+
 checkbox_flags :: (r: Rect, current_value: *$Enum, button_value: Enum, theme: *Checkbox_Theme = null, identifier: s64 = 0, loc := #caller_location) -> changed: bool, checkbox_state: Checkbox_State {
     return checkbox_flags(r, tprint("%", button_value), current_value, button_value, theme, identifier, loc);
 }
+
 dropdown :: (r: Rect, choices: [] string, current_value_pointer: *s32, theme: *Dropdown_Theme = null, identifier: s64 = 0, z: s32 = 100, loc := #caller_location) -> changed: bool, Dropdown_State {
     if !theme theme = *default_overall_theme.dropdown_theme;
     state := find_or_create_state(Dropdown_State, get_hash(loc, identifier));
@@ -534,15 +593,19 @@ dropdown :: (r: Rect, choices: [] string, current_value_pointer: *s32, theme: *D
     }
     return current_value_pointer.* != before, state.*;
 }
+
 dropdown_deactivate :: (widget: *Active_Widget) {
     (cast(*Dropdown_State) widget).open = false;
 }
+
 add_popup :: (proc: (*void) -> (), data: *void, z: s32) {
     array_add(*popups, .{ proc, data, z, cast(s32) popups.count });
 }
+
 popups_per_frame_update :: () {
     popups.count = 0;
 }
+
 draw_popups :: () {
     // Stable insertion ordering handles equal-z popups without dependence on a sort library.
     for i: 1..popups.count - 1 {
@@ -561,6 +624,7 @@ draw_popups :: () {
     pointer_end_frame();
     draw_procs.immediate_flush();
 }
+
 require_texture :: (data: string, loc := #caller_location) -> *Texture {
     if !draw_procs.texture_load_from_memory return null;
     texture := New(Texture);
@@ -570,6 +634,7 @@ require_texture :: (data: string, loc := #caller_location) -> *Texture {
     }
     return texture;
 }
+
 // Host cursor handling is an explicit hook; there is no fake native implementation.
 pointer_image_sink: (image: Pointer_Image, widget: *Active_Widget) = null;
 
@@ -582,29 +647,37 @@ get_selection_indices :: (state: *Text_Input_State) -> start: int, end: int {
     if !state.selection.active return state.insert_point, state.insert_point;
     return clamp(min(state.selection.start_character, state.selection.end_character), 0, state.text.count), clamp(max(state.selection.start_character, state.selection.end_character), 0, state.text.count);
 }
+
 get_selection :: (state: *Text_Input_State) -> string {
     start, end := get_selection_indices(state);
     return .{ end - start, state.text.data + start };
 }
+
 get_result :: (using state: *Text_Input_State) -> string {
     return state.text;
 }
+
 deselect :: (using selection: *Selection) {
     selection.active = false;
 }
+
 selection_was_modified :: (using selection: *Selection) {
     if selection.start_character == selection.end_character selection.active = false;
 }
+
 nonempty :: (selection: Selection) -> bool {
     return selection.active && selection.start_character != selection.end_character;
 }
+
 select_all :: (using state: *Text_Input_State) {
     state.selection = .{ start_line = 0, end_line = 0, start_character = 0, end_character = state.text.count, active = state.text.count > 0 };
     state.insert_point = state.text.count;
 }
+
 clamp_insert_point :: (state: *Text_Input_State) {
     state.insert_point = clamp(state.insert_point, 0, state.text.count);
 }
+
 set_input :: (using state: *Text_Input_State, _s: string) {
     size := min(_s.count, Text_Input_State.MAX_BUFFER_SIZE);
     // Do not split a UTF-8 codepoint when trimming a fixed-size buffer.
@@ -616,11 +689,13 @@ set_input :: (using state: *Text_Input_State, _s: string) {
     state.insert_point = size;
     state.selection.active = false;
 }
+
 set_last_inert_text :: (state: *Text_Input_State, text: string) {
     saved := copy_string(text);
     free(state.last_inert_text.data);
     state.last_inert_text = saved;
 }
+
 set_text :: (state: *Text_Input_State, s: string, replace_pre_modification_text := true) {
     set_input(state, s);
     if replace_pre_modification_text {
@@ -629,10 +704,12 @@ set_text :: (state: *Text_Input_State, s: string, replace_pre_modification_text 
         state.pre_modification_text = saved;
     }
 }
+
 clear_text :: (using state: *Text_Input_State) {
     set_input(state, "");
     state.pending_result_actions |= .TEXT_MODIFIED;
 }
+
 replace_selection :: (state: *Text_Input_State, s: string) {
     start, end := get_selection_indices(state);
     new_count := state.text.count - (end - start) + s.count;
@@ -656,17 +733,20 @@ replace_selection :: (state: *Text_Input_State, s: string) {
     state.selection.active = false;
     state.pending_result_actions |= .TEXT_MODIFIED;
 }
+
 insert_text :: (using state: *Text_Input_State, s: string) -> bool {
     start, end := get_selection_indices(state);
     if state.text.count - (end - start) + s.count > Text_Input_State.MAX_BUFFER_SIZE return false;
     replace_selection(state, s);
     return true;
 }
+
 append_text :: (using state: *Text_Input_State, s: string) {
     state.insert_point = state.text.count;
     state.selection.active = false;
     insert_text(state, s);
 }
+
 seek_left_one_utf8_character :: (s: string, _point: int) -> int {
     point := clamp(_point, 0, s.count);
     if point == 0 return 0;
@@ -674,11 +754,13 @@ seek_left_one_utf8_character :: (s: string, _point: int) -> int {
     while point > 0 && (s[point] & 0xc0) == 0x80 point -= 1;
     return point;
 }
+
 seek_right_one_utf8_character :: (s: string, point: int) -> int {
     next := clamp(point + 1, 0, s.count);
     while next < s.count && (s[next] & 0xc0) == 0x80 next += 1;
     return next;
 }
+
 move_cursor_to :: (state: *Text_Input_State, point: int, want_selection: bool) {
     if want_selection {
         if !state.selection.active {
@@ -690,18 +772,23 @@ move_cursor_to :: (state: *Text_Input_State, point: int, want_selection: bool) {
     } else state.selection.active = false;
     state.insert_point = point;
 }
+
 move_cursor_left :: (using state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, seek_left_one_utf8_character(state.text, state.insert_point), want_selection);
 }
+
 move_cursor_right :: (state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, seek_right_one_utf8_character(state.text, state.insert_point), want_selection);
 }
+
 move_cursor_to_beginning :: (state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, 0, want_selection);
 }
+
 move_cursor_to_end :: (state: *Text_Input_State, want_selection := false) {
     move_cursor_to(state, state.text.count, want_selection);
 }
+
 backspace_from_cursor :: (using state: *Text_Input_State, by_word := false) {
     if nonempty(state.selection) {
         replace_selection(state, "");
@@ -711,6 +798,7 @@ backspace_from_cursor :: (using state: *Text_Input_State, by_word := false) {
     state.selection = .{ start_character = ifx by_word then seek_left_one_word(state.text, state.insert_point) else seek_left_one_utf8_character(state.text, state.insert_point), end_character = state.insert_point, active = true };
     replace_selection(state, "");
 }
+
 delete_from_cursor :: (using state: *Text_Input_State, by_word := false) {
     if nonempty(state.selection) {
         replace_selection(state, "");
@@ -720,6 +808,7 @@ delete_from_cursor :: (using state: *Text_Input_State, by_word := false) {
     state.selection = .{ start_character = state.insert_point, end_character = ifx by_word then seek_right_one_word(state.text, state.insert_point) else seek_right_one_utf8_character(state.text, state.insert_point), active = true };
     replace_selection(state, "");
 }
+
 activate :: (using state: *Text_Input_State) {
     if state.disabled return;
     if !state.active {
@@ -731,6 +820,7 @@ activate :: (using state: *Text_Input_State) {
     state.widget.window = context.getrect_current_window;
     active_widget_add(state);
 }
+
 reset :: (using state: *Text_Input_State) {
     set_input(state, "");
     state.active = false;
@@ -738,20 +828,24 @@ reset :: (using state: *Text_Input_State) {
     state.pending_result_actions = 0;
     active_widget_remove(state);
 }
+
 text_input_deactivate :: (widget: *Active_Widget) {
     state := cast(*Text_Input_State) widget;
     state.active = false;
     state.selection.active = false;
 }
+
 text_input_serial_events :: (widget: *Active_Widget, events: [] Event) {
     state := cast(*Text_Input_State) widget;
     if !state.active || state.disabled return;
     for event: events handle_event(state, event);
 }
+
 text_input_check_for_activation :: (widget: *Active_Widget, event: Event) -> bool {
     state := cast(*Text_Input_State) widget;
     return !state.disabled && event.type == .KEYBOARD && event.key_pressed && event.key_code == .MOUSE_BUTTON_LEFT && is_inside(mouse_x_float, mouse_y_float, state.rect);
 }
+
 handle_event :: (state: *Text_Input_State, event: Event) {
     if !state.active || state.disabled return;
     state.last_keypress_time = current_time;
@@ -806,17 +900,20 @@ handle_event :: (state: *Text_Input_State, event: Event) {
     if event.key_code == .ENTER press_enter(state, event.shift_pressed);
     if event.key_code == .ESCAPE press_escape(state);
 }
+
 draw_text_input_background :: (r: Rect, theme: *Text_Input_Theme, state: *Text_Input_State, active := false, changed := false) {
     status := get_status_flags(r, *state.widget, ignore = .LEFT_CLICK | .TOOLTIP);
     if active status |= .DOWN;
     if changed status |= .PRESSED;
     core_draw_button(r, "", *state.base, status, *theme.button_theme, null);
 }
+
 text_input :: (_r: Rect, inert_text: string, theme: *Text_Input_Theme, identifier: s64 = 0, loc := #caller_location , input_action: Text_Input_Action = 0, auto_complete: Auto_Complete = .{}) -> (result_action: Text_Result_Action, new_string: string, state: *Text_Input_State) {
     state, created := find_or_create_state(Text_Input_State, get_hash(loc, identifier));
     defer stop_using_state(state);
     return left_text_input_body(_r, inert_text, theme, state, created, input_action, auto_complete);
 }
+
 #scope_module
 left_text_input_body :: (_r: Rect, inert_text: string, theme: *Text_Input_Theme, state: *Text_Input_State, created: bool, input_action: Text_Input_Action, auto_complete: Auto_Complete) -> Text_Result_Action, string, *Text_Input_State {
     if !theme theme = *default_overall_theme.text_input_theme;
@@ -864,6 +961,7 @@ draw :: (using state: *Text_Input_State, r: Rect, theme: *Text_Input_Theme = nul
     draw_text_input_background(r, theme, state, state.active);
     left_draw_input_contents(r, theme, state);
 }
+
 slider :: (_r: Rect, value: *$T, min_value: T, max_value: T, spinbox_step: T, theme: *Slider_Theme, prefix := "", suffix := "", identifier: s64 = 0, loc := #caller_location) -> bool {
     if !theme theme = *default_overall_theme.slider_theme;
     if max_value < min_value || !value return false;
@@ -987,22 +1085,27 @@ slider :: (_r: Rect, value: *$T, min_value: T, max_value: T, spinbox_step: T, th
 slider_draw_background_default :: (r: Rect, theme: *Slider_Theme, state: *Slider_State) {
     core_draw_button(r, "", *state.background, state.background.status, *theme.background, null);
 }
+
 slider_draw_foreground_default :: (r_background: Rect, r_foreground: Rect, theme: *Slider_Theme, state: *Slider_State) {
     core_draw_button(r_foreground, "", *state.foreground, state.foreground.status, *theme.foreground, null);
 }
+
 slider_format_text_float_default :: (prefix: string, suffix: string, value: float64, theme: *Slider_Theme, state: *Slider_State, mode: Slider_Format_Text_Mode) -> string {
     formatted := tprint("%", Basic.formatFloat(value, trailing_width = clamp(theme.decimals, 0, 18), zero_removal = .NO));
     if mode == .EDITING return formatted;
     return tprint("%%%", prefix, formatted, suffix);
 }
+
 slider_format_text_int_default :: (prefix: string, suffix: string, value: s64, theme: *Slider_Theme, state: *Slider_State, mode: Slider_Format_Text_Mode) -> string {
     if mode == .EDITING return tprint("%", value);
     return tprint("%%%", prefix, value, suffix);
 }
+
 slider_parse_text_float_default :: (text: string, theme: *Slider_Theme, state: *Slider_State) -> (success: bool, value: float64) {
     parsed, valid := string_to_float(text);
     return valid, parsed;
 }
+
 slider_parse_text_int_default :: (text: string, theme: *Slider_Theme, state: *Slider_State) -> (success: bool, value: s64) {
     parsed, valid := string_to_int(text);
     return valid, parsed;
@@ -1016,6 +1119,7 @@ global_frame_thickness_in_pixels: float = 4;
 global_divider_thickness_in_pixels: float = 4;
 global_initial_divider_position_in_pixels: float = 32;
 global_slider_nub_thickness_in_pixels: float = 32;
+
 // Which of the sizes above the program fixed with a set_global_* call.
 Pinned_Size :: enum_flags u8 {
     ROUNDING_RADIUS;
@@ -1024,11 +1128,14 @@ Pinned_Size :: enum_flags u8 {
     DIVIDER_POSITION;
     SLIDER_NUB;
 }
+
 pinned_sizes: Pinned_Size;
+
 pin_size :: (target: *float, which: Pinned_Size, value: float) {
     target.* = value;
     pinned_sizes |= which;
 }
+
 // Unpinned sizes scale with the render target: mostly fractions of its height, except the
 // divider's starting position, which is a quarter of its width.
 size_unpinned_metrics :: (width: float, height: float) {
@@ -1041,9 +1148,11 @@ size_unpinned_metrics :: (width: float, height: float) {
     follow(*global_frame_thickness_in_pixels, .FRAME_THICKNESS, height / 540);
     follow(*global_rounding_radius_in_pixels, .ROUNDING_RADIUS, height / 180);
 }
+
 sample_tracked_keys :: () -> (left: Key_Current_State, right: Key_Current_State, shift: Key_Current_State) {
     return ui_get_button_state(.MOUSE_BUTTON_LEFT), ui_get_button_state(.MOUSE_BUTTON_RIGHT), ui_get_button_state(.SHIFT);
 }
+
 // Reads the pointer through the host callback and derives this frame's motion from the
 // position recorded for the same window last frame (zero for a window not seen before).
 track_platform_mouse :: (window: Window_Type) {
@@ -1060,6 +1169,7 @@ track_platform_mouse :: (window: Window_Type) {
     }
     array_add(*this_frame_per_window_states, .{ window, mouse_x_float, mouse_y_float });
 }
+
 left_round_fill :: (r: Rect, shape: Rectangle_Shape, radius: float, color: Vector4) {
     if r.w <= 0 || r.h <= 0 || color.w <= 0 return;
     radius = min(radius, min(r.w, r.h) * 0.5);
@@ -1086,6 +1196,7 @@ left_round_fill :: (r: Rect, shape: Rectangle_Shape, radius: float, color: Vecto
     }
     array_reset(*points);
 }
+
 #scope_export
 // Lays the choices out as a column of buttons stacked away from the closed dropdown, one
 // row per choice. Picking one stores its index and closes the list.
@@ -1097,6 +1208,7 @@ draw_dropdown_popup :: (_state: *void) {
         stop_using_state(dropdown);
     }
 }
+
 draw_dropdown_choices :: (dropdown: *Dropdown_State) {
     step := dropdown.base_rect.h;
     if GETRECT_Y_UP step = -step;
@@ -1118,22 +1230,28 @@ draw_dropdown_choices :: (dropdown: *Dropdown_State) {
     left_shader_color :: (enable_blend := false) {
         Simp.set_shader_for_color(enable_blend);
     }
+
     left_prepare_text :: (font: *Font, text: string, effects: Font_Effects = 0) -> s64 {
         return Simp.prepare_text(font, text, effects);
     }
+
     left_draw_text :: (font: *Font, x: s64, y: s64, text_color: Vector4, effects: Font_Effects = 0) {
         Simp.draw_prepared_text(font, x, left_flip_y(y), text_color, effects);
     }
+
     left_get_font :: (memory: [] u8, pixel_height: int) -> *Font {
         return Simp.get_font_at_size(memory, pixel_height);
     }
+
     // Simp and the window layer are y-up; y-down modules flip at the render target height.
     left_flip_y :: (y: $T) -> T {
         if GETRECT_Y_UP return y;
         return render_target_height - y;
     }
+
     #if GETRECT_Y_UP {
         Right_Windows :: #import "Window_Creation";
+
         left_get_pointer :: (window: Window_Type, right_handed: bool) -> x: int, y: int, success: bool {
             return Right_Windows.get_mouse_pointer_position(window, right_handed);
         }
@@ -1145,10 +1263,12 @@ draw_dropdown_choices :: (dropdown: *Dropdown_State) {
             return cast(int) px, cast(int) py, true;
         }
     }
+
     left_set_scissor :: (x0: s32, y0: s32, x1: s32, y1: s32) {
         #if GETRECT_Y_UP Simp.set_scissor(x0, y0, x1, y1);
         else Simp.set_scissor(x0, render_target_height - y1, x1, render_target_height - y0);
     }
+
     left_triangle :: (p0: Vector3, p1: Vector3, p2: Vector3, c0 := Vector4.{ 1, 1, 1, 1 }, c1 := Vector4.{ 1, 1, 1, 1 }, c2 := Vector4.{ 1, 1, 1, 1 }, uv0 := Vector2.{}, uv1 := Vector2.{}, uv2 := Vector2.{}, normal := Vector3.{ z = 1 }) {
         a := p0;
         b := p1;
@@ -1158,6 +1278,7 @@ draw_dropdown_choices :: (dropdown: *Dropdown_State) {
         c.y = left_flip_y(c.y);
         Simp.immediate_triangle(a, b, c, c0, c1, c2, uv0, uv1, uv2, normal);
     }
+
     left_quad :: (p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, color := Vector4.{ 1, 1, 1, 1 }, uv0 := Vector2.{ 0, 0 }, uv1 := Vector2.{ 1, 0 }, uv2 := Vector2.{ 1, 1 }, uv3 := Vector2.{ 0, 1 }) {
         a := p0;
         b := p1;
@@ -1174,21 +1295,26 @@ draw_dropdown_choices :: (dropdown: *Dropdown_State) {
 #scope_module
 left_event_windows: [..] Window_Type;
 left_scoped_input: bool;
+
 Left_Window_Buttons :: struct {
     window: Window_Type;
     left: Key_Current_State;
     right: Key_Current_State;
     shift: Key_Current_State;
 }
+
 left_window_buttons: [..] Left_Window_Buttons;
+
 left_buttons :: (window: Window_Type) -> *Left_Window_Buttons {
     for *buttons: left_window_buttons if buttons.window == window return buttons;
     return array_add(*left_window_buttons, .{ window = window });
 }
+
 left_event_window :: (index: int) -> Window_Type {
     if index < left_event_windows.count return left_event_windows[index];
     return context.getrect_current_window;
 }
+
 left_update_key :: (state: *Key_Current_State, event: Event) {
     if event.key_pressed {
         state.* |= .DOWN;
@@ -1205,7 +1331,9 @@ Left_Slider_Runtime :: struct {
     last_click: float64 = -1;
     last_position: Vector2;
 }
+
 left_slider_runtimes: [..] *Left_Slider_Runtime;
+
 left_slider_runtime :: (state: *Slider_State) -> *Left_Slider_Runtime {
     for runtime: left_slider_runtimes if runtime.state == state return runtime;
     runtime := New(Left_Slider_Runtime);
@@ -1263,6 +1391,7 @@ ui_deinit :: () {
     initialized = false;
     left_scoped_input = false;
 }
+
 #scope_module
 left_release_text_state :: (state: *Text_Input_State) {
     reset_auto_complete(state);

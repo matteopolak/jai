@@ -16,13 +16,17 @@ output_open :: (config: Sound_Player_Config) -> channels: s32, rate: s32, ok: bo
     channels := clamp(cast(s32) OFFLINE_CHANNELS, 1, OUTPUT_CHANNELS_MAX);
     return channels, OFFLINE_SAMPLING_RATE, true;
 }
+
 output_start :: () {}
 output_close :: () {}
+
 // Report the queue as permanently full so top_up_output never mixes on its own.
 output_frames_queued :: () -> queued: s64, at_least: s64 {
     return S64_MAX, 0;
 }
+
 output_write :: (frames: s64) {}
+
 output_devices :: () -> [] Output_Device {
     return .[];
 }

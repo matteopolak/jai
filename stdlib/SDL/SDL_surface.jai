@@ -12,6 +12,7 @@ SDL_Surface :: struct {
     map: *SDL_BlitMap;
     refcount: s32;
 }
+
 SDL_RWops :: struct {
     size: (*SDL_RWops) -> s64;
     seek: (*SDL_RWops, s64, int) -> s64;
@@ -20,15 +21,18 @@ SDL_RWops :: struct {
     close: (*SDL_RWops) -> int;
     type: u32;
 }
+
 SDL_RWFromFile :: (path: *u8, mode: *u8) -> *SDL_RWops #foreign SDL2;
 SDL_LoadBMP_RW :: (src: *SDL_RWops, freesrc: int) -> *SDL_Surface #foreign SDL2;
 SDL_FreeSurface :: (surface: *SDL_Surface) #foreign SDL2;
 SDL_CreateRGBSurfaceFrom :: (pixels: *void, width: int, height: int, depth: int, pitch: int, rmask: u32, gmask: u32, bmask: u32, amask: u32) -> *SDL_Surface #foreign SDL2;
 SDL_CreateRGBSurfaceWithFormatFrom :: (pixels: *void, width: int, height: int, depth: int, pitch: int, format: u32) -> *SDL_Surface #foreign SDL2;
+
 SDL_LoadBMP :: (path: *u8) -> *SDL_Surface {
     input := SDL_RWFromFile(path, "rb");
     if !input return null;
     bitmap := SDL_LoadBMP_RW(input, 1);
     return bitmap;
 }
+
 SDL_ShowSimpleMessageBox :: (flags: u32, title: *u8, msg: *u8, parent: *SDL_Window) -> int #foreign SDL2;

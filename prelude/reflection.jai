@@ -30,12 +30,15 @@ Type_Info_Integer :: struct {
     using #as info: Type_Info;
     signed: bool;
 }
+
 Type_Info_Float :: struct {
     using #as info: Type_Info;
 }
+
 Type_Info_String :: struct {
     using #as info: Type_Info;
 }
+
 Type_Info_Pointer :: struct {
     using #as info: Type_Info;
     pointer_to: *Type_Info;
@@ -74,11 +77,13 @@ Type_Info_Procedure :: struct {
 Enum_Status_Flags :: enum_flags u16 {
     INCOMPLETE :: 0x1;
 }
+
 Enum_Type_Flags :: enum_flags u16 {
     FLAGS :: 0x1;
     COMPLETE :: 0x2;
     SPECIFIED :: 0x4;
 }
+
 Type_Info_Enum :: struct {
     using #as info: Type_Info;
     name: string;
@@ -93,6 +98,7 @@ Type_Info_Variant_Flags :: enum_flags u32 {
     DISTINCT :: 0x1;
     ISA :: 0x2;
 }
+
 Type_Info_Variant :: struct {
     using #as info: Type_Info;
     name: string;
@@ -104,11 +110,13 @@ Struct_Status_Flags :: enum_flags u32 {
     INCOMPLETE :: 0x1;
     LOCAL :: 0x4;
 }
+
 Struct_Nontextual_Flags :: enum_flags u32 {
     NOT_INSTANTIABLE :: 0x4;
     ALL_MEMBERS_UNINITIALIZED :: 0x40;
     POLYMORPHIC :: 0x100;
 }
+
 Struct_Textual_Flags :: enum u32 {
     FOREIGN :: 0x1;
     UNION :: 0x2;
@@ -118,6 +126,7 @@ Struct_Textual_Flags :: enum u32 {
     TYPE_INFO_PROCEDURES_ARE_VOID_POINTERS :: 0x20;
     UNION_IS_TAGGED :: 0x40;
 }
+
 Type_Info_Struct_Member :: struct {
     Flags :: enum_flags u32 {
         CONSTANT :: 0x1;
@@ -134,6 +143,7 @@ Type_Info_Struct_Member :: struct {
     notes: [] string;
     offset_into_constant_storage: s64 = -1;
 }
+
 Type_Info_Struct :: struct {
     using #as info: Type_Info;
     name: string;
@@ -149,6 +159,7 @@ Type_Info_Struct :: struct {
     // Tagged unions: which member each tag value selects.
     tagged_union_bindings: [] Type_Info_Tagged_Union_Binding;
 }
+
 Type_Info_Tagged_Union_Binding :: struct {
     constant_value: u64;
     member_index: s32;

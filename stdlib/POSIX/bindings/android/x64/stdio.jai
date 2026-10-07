@@ -362,15 +362,18 @@ fread_unlocked :: (__buf: *void, __size: u64, __count: u64, __fp: *FILE) -> u64 
 fwrite_unlocked :: (__buf: *void, __size: u64, __count: u64, __fp: *FILE) -> u64 #foreign libc;
 fputs_unlocked :: (__s: *u8, __fp: *FILE) -> s32 #foreign libc;
 fgets_unlocked :: (__buf: *u8, __size: s32, __fp: *FILE) -> *u8 #foreign libc;
+
 f_owner_ex :: struct {
     type: s32;
     pid: s32;
 }
+
 statx_timestamp :: struct {
     tv_sec: s64;
     tv_nsec: u32;
     __reserved: s32;
 }
+
 statx_t :: struct {
     stx_mask: u32;
     stx_blksize: u32;
@@ -397,6 +400,7 @@ statx_t :: struct {
     stx_dio_offset_align: u32;
     __spare3: [12] u64;
 }
+
 fcntl :: (__fd: s32, __cmd: s32, __args: ..Any) -> s32 #foreign libc;
 creat :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
 creat64 :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
@@ -415,6 +419,7 @@ posix_fallocate :: (__fd: s32, __offset: s64, __length: s64) -> s32 #foreign lib
 posix_fallocate64 :: (__fd: s32, __offset: s64, __length: s64) -> s32 #foreign libc;
 readahead :: (__fd: s32, __offset: s64, __length: u64) -> s64 #foreign libc;
 sync_file_range :: (__fd: s32, __offset: s64, __length: s64, __flags: u32) -> s32 #foreign libc;
+
 stat_t :: struct {
     st_dev: dev_t;
     st_ino: ino_t;
@@ -432,6 +437,7 @@ stat_t :: struct {
     st_ctime: timespec;
     __pad3: [3] s64;
 }
+
 stat64_t :: struct {
     st_dev: dev_t;
     st_ino: ino_t;
@@ -449,6 +455,7 @@ stat64_t :: struct {
     st_ctime: timespec;
     __pad3: [3] s64;
 }
+
 chmod :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
 fchmod :: (__fd: s32, __mode: mode_t) -> s32 #foreign libc;
 mkdir :: (__path: *u8, __mode: mode_t) -> s32 #foreign libc;
@@ -477,6 +484,7 @@ eventfd_write :: (__fd: s32, __value: eventfd_t) -> s32 #foreign libc;
 timerfd_create :: (__clock: clockid_t, __flags: s32) -> s32 #foreign libc;
 timerfd_settime :: (__fd: s32, __flags: s32, __new_value: *itimerspec, __old_value: *itimerspec) -> s32 #foreign libc;
 timerfd_gettime :: (__fd: s32, __current_value: *itimerspec) -> s32 #foreign libc;
+
 signalfd_siginfo :: struct {
     ssi_signo: u32;
     ssi_errno: s32;
@@ -501,6 +509,7 @@ signalfd_siginfo :: struct {
     ssi_arch: u32;
     __pad: [28] u8;
 }
+
 signalfd :: (__fd: s32, __mask: *sigset_t, __flags: s32) -> s32 #foreign libc;
 signalfd64 :: (__fd: s32, __mask: *sigset64_t, __flags: s32) -> s32 #foreign libc;
 #scope_file

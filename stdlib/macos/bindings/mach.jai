@@ -14,6 +14,7 @@ __NDR_convert__ :: 0;
 __NDR_convert__int_rep__ :: __NDR_convert__;
 __NDR_convert__char_rep__ :: 0;
 __NDR_convert__float_rep__ :: 0;
+
 KERN :: enum {
     SUCCESS :: 0;
     INVALID_ADDRESS :: 1;
@@ -128,6 +129,7 @@ KERN :: enum {
     KERN_CODE_SELECTOR :: CODE_SELECTOR;
     KERN_DATA_SELECTOR :: DATA_SELECTOR;
 }
+
 MACH_PORT_NULL :: 0;
 MACH_PORT_DEAD :: cast,trunc(mach_port_name_t) ~0;
 MACH_PORT_RIGHT_SEND :: cast(mach_port_right_t) 0;
@@ -722,6 +724,7 @@ SYNC_POLICY_ORDER_MASK :: 0x3;
 SYNC_POLICY_LIFO :: SYNC_POLICY_FIFO | SYNC_POLICY_REVERSED;
 SYNC_POLICY_MAX :: 0x7;
 task_MSG_COUNT :: 52;
+
 NDR_record_t :: struct {
     mig_vers: u8;
     if_vers: u8;
@@ -732,6 +735,7 @@ NDR_record_t :: struct {
     float_rep: u8;
     reserved2: u8;
 }
+
 NDR_record: NDR_record_t #elsewhere libc;
 vm_offset_t :: u64;
 vm_size_t :: u64;
@@ -755,6 +759,7 @@ mach_port_mscount_t :: u32;
 mach_port_msgcount_t :: u32;
 mach_port_rights_t :: u32;
 mach_port_srights_t :: u32;
+
 mach_port_status :: struct {
     mps_pset: mach_port_rights_t;
     mps_seqno: mach_port_seqno_t;
@@ -767,31 +772,41 @@ mach_port_status :: struct {
     mps_nsrequest: u32;
     mps_flags: u32;
 }
+
 mach_port_status_t :: mach_port_status;
+
 mach_port_limits :: struct {
     mpl_qlimit: mach_port_msgcount_t;
 }
+
 mach_port_limits_t :: mach_port_limits;
+
 mach_port_info_ext :: struct {
     mpie_status: mach_port_status_t;
     mpie_boost_cnt: mach_port_msgcount_t;
     reserved: [6] u32;
 }
+
 mach_port_info_ext_t :: mach_port_info_ext;
 mach_port_info_t :: *s32;
 mach_port_flavor_t :: s32;
+
 mach_port_qos :: struct {
     __bitfield: u32;
     len: u32;
 }
+
 mach_port_qos_t :: mach_port_qos;
+
 mach_port_options :: struct {
     flags: u32;
     mpl: mach_port_limits_t;
     reserved: [2] u64;
 }
+
 mach_port_options_t :: mach_port_options;
 mach_port_options_ptr_t :: *mach_port_options_t;
+
 mach_port_guard_exception_codes :: enum_flags u32 {
     DESTROY :: 0x1;
     MOD_REFS :: 0x2;
@@ -804,6 +819,7 @@ mach_port_guard_exception_codes :: enum_flags u32 {
     kGUARD_EXC_UNGUARDED :: UNGUARDED;
     kGUARD_EXC_INCORRECT_GUARD :: INCORRECT_GUARD;
 }
+
 mach_msg_timeout_t :: u32;
 mach_msg_bits_t :: u32;
 mach_msg_size_t :: u32;
@@ -812,55 +828,66 @@ mach_msg_priority_t :: u32;
 mach_msg_type_name_t :: u32;
 mach_msg_copy_options_t :: u32;
 mach_msg_descriptor_type_t :: u32;
+
 mach_msg_type_descriptor_t :: struct {
     pad1: u32;
     pad2: mach_msg_size_t;
     __bitfield: u32;
 }
+
 mach_msg_port_descriptor_t :: struct {
     name: mach_port_t;
     pad1: mach_msg_size_t;
     __bitfield: u32;
 }
+
 mach_msg_ool_descriptor32_t :: struct {
     address: u32;
     size: mach_msg_size_t;
     __bitfield: u32;
 }
+
 mach_msg_ool_descriptor64_t :: struct {
     address: u64;
     __bitfield: u32;
     size: mach_msg_size_t;
 }
+
 mach_msg_ool_descriptor_t :: struct {
     address: *void;
     __bitfield: u32;
     size: mach_msg_size_t;
 }
+
 mach_msg_ool_ports_descriptor32_t :: struct {
     address: u32;
     count: mach_msg_size_t;
     __bitfield: u32;
 }
+
 mach_msg_ool_ports_descriptor64_t :: struct {
     address: u64;
     __bitfield: u32;
     count: mach_msg_size_t;
 }
+
 mach_msg_ool_ports_descriptor_t :: struct {
     address: *void;
     __bitfield: u32;
     count: mach_msg_size_t;
 }
+
 mach_msg_descriptor_t :: union {
     port: mach_msg_port_descriptor_t;
     out_of_line: mach_msg_ool_descriptor_t;
     ool_ports: mach_msg_ool_ports_descriptor_t;
     type: mach_msg_type_descriptor_t;
 }
+
 mach_msg_body_t :: struct {
     msgh_descriptor_count: mach_msg_size_t;
 }
+
 mach_msg_header_t :: struct {
     msgh_bits: mach_msg_bits_t;
     msgh_size: mach_msg_size_t;
@@ -869,34 +896,42 @@ mach_msg_header_t :: struct {
     msgh_voucher_port: mach_port_name_t;
     msgh_id: mach_msg_id_t;
 }
+
 mach_msg_base_t :: struct {
     header: mach_msg_header_t;
     body: mach_msg_body_t;
 }
+
 mach_msg_trailer_type_t :: u32;
 mach_msg_trailer_size_t :: u32;
 mach_msg_trailer_info_t :: *u8;
+
 mach_msg_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
 }
+
 mach_msg_seqno_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
     msgh_seqno: mach_port_seqno_t;
 }
+
 security_token_t :: struct {
     val: [2] u32;
 }
+
 mach_msg_security_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
     msgh_seqno: mach_port_seqno_t;
     msgh_sender: security_token_t;
 }
+
 audit_token_t :: struct {
     val: [8] u32;
 }
+
 mach_msg_audit_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
@@ -904,6 +939,7 @@ mach_msg_audit_trailer_t :: struct {
     msgh_sender: security_token_t;
     msgh_audit: audit_token_t;
 }
+
 mach_msg_context_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
@@ -912,9 +948,11 @@ mach_msg_context_trailer_t :: struct {
     msgh_audit: audit_token_t;
     msgh_context: mach_port_context_t #align 4;
 }
+
 msg_labels_t :: struct {
     sender: mach_port_name_t;
 }
+
 mach_msg_mac_trailer_t :: struct {
     msgh_trailer_type: mach_msg_trailer_type_t;
     msgh_trailer_size: mach_msg_trailer_size_t;
@@ -925,20 +963,25 @@ mach_msg_mac_trailer_t :: struct {
     msgh_ad: s32;
     msgh_labels: msg_labels_t;
 }
+
 mach_msg_max_trailer_t :: mach_msg_mac_trailer_t;
 mach_msg_format_0_trailer_t :: mach_msg_security_trailer_t;
 mach_msg_options_t :: s32;
+
 mach_msg_empty_send_t :: struct {
     header: mach_msg_header_t;
 }
+
 mach_msg_empty_rcv_t :: struct {
     header: mach_msg_header_t;
     trailer: mach_msg_trailer_t;
 }
+
 mach_msg_empty_t :: union {
     send: mach_msg_empty_send_t;
     rcv: mach_msg_empty_rcv_t;
 }
+
 mach_msg_type_size_t :: u32;
 mach_msg_type_number_t :: u32;
 mach_msg_option_t :: s32;
@@ -946,6 +989,7 @@ mach_msg_return_t :: kern_return_t;
 mach_msg_overwrite :: (msg: *mach_msg_header_t, option: mach_msg_option_t, send_size: mach_msg_size_t, rcv_size: mach_msg_size_t, rcv_name: mach_port_name_t, timeout: mach_msg_timeout_t, notify: mach_port_name_t, rcv_msg: *mach_msg_header_t, rcv_limit: mach_msg_size_t) -> mach_msg_return_t #foreign libc;
 mach_msg :: (msg: *mach_msg_header_t, option: mach_msg_option_t, send_size: mach_msg_size_t, rcv_size: mach_msg_size_t, rcv_name: mach_port_name_t, timeout: mach_msg_timeout_t, notify: mach_port_name_t) -> mach_msg_return_t #foreign libc;
 mach_voucher_deallocate :: (voucher: mach_port_name_t) -> kern_return_t #foreign libc;
+
 vm_statistics :: struct {
     free_count: u32;
     active_count: u32;
@@ -963,8 +1007,10 @@ vm_statistics :: struct {
     purges: u32;
     speculative_count: u32;
 }
+
 vm_statistics_t :: *vm_statistics;
 vm_statistics_data_t :: vm_statistics;
+
 vm_statistics64 :: struct {
     free_count: u32;
     active_count: u32;
@@ -991,8 +1037,10 @@ vm_statistics64 :: struct {
     internal_page_count: u32;
     total_uncompressed_pages_in_compressor: u64;
 }
+
 vm_statistics64_t :: *vm_statistics64;
 vm_statistics64_data_t :: vm_statistics64;
+
 vm_extmod_statistics :: struct {
     task_for_pid_count: s64;
     task_for_pid_caller_count: s64;
@@ -1001,26 +1049,33 @@ vm_extmod_statistics :: struct {
     thread_set_state_count: s64;
     thread_set_state_caller_count: s64;
 }
+
 vm_extmod_statistics_t :: *vm_extmod_statistics;
 vm_extmod_statistics_data_t :: vm_extmod_statistics;
+
 vm_purgeable_stat :: struct {
     count: u64;
     size: u64;
 }
+
 vm_purgeable_stat_t :: vm_purgeable_stat;
+
 vm_purgeable_info :: struct {
     fifo_data: [8] vm_purgeable_stat_t;
     obsolete_data: vm_purgeable_stat_t;
     lifo_data: [8] vm_purgeable_stat_t;
 }
+
 vm_purgeable_info_t :: *vm_purgeable_info;
 cpu_type_t :: s32;
 cpu_subtype_t :: s32;
 cpu_threadtype_t :: s32;
+
 time_value :: struct {
     seconds: s32;
     microseconds: s32;
 }
+
 time_value_t :: time_value;
 pointer_t :: vm_offset_t;
 vm_address_t :: vm_offset_t;
@@ -1061,12 +1116,14 @@ mach_voucher_attr_content_size_t :: u32;
 mach_voucher_attr_command_t :: u32;
 mach_voucher_attr_recipe_command_t :: u32;
 mach_voucher_attr_recipe_command_array_t :: *mach_voucher_attr_recipe_command_t;
+
 mach_voucher_attr_recipe_data :: struct {
     key: mach_voucher_attr_key_t;
     command: mach_voucher_attr_recipe_command_t;
     previous_voucher: mach_voucher_name_t;
     content_size: mach_voucher_attr_content_size_t;
 }
+
 mach_voucher_attr_recipe_data_t :: mach_voucher_attr_recipe_data;
 mach_voucher_attr_recipe_t :: *mach_voucher_attr_recipe_data_t;
 mach_voucher_attr_recipe_size_t :: mach_msg_type_number_t;
@@ -1089,12 +1146,15 @@ policy_t :: s32;
 policy_info_t :: *s32;
 policy_base_t :: *s32;
 policy_limit_t :: *s32;
+
 policy_timeshare_base :: struct {
     base_priority: s32;
 }
+
 policy_timeshare_limit :: struct {
     max_priority: s32;
 }
+
 policy_timeshare_info :: struct {
     max_priority: s32;
     base_priority: s32;
@@ -1102,19 +1162,23 @@ policy_timeshare_info :: struct {
     depressed: u32;
     depress_priority: s32;
 }
+
 policy_timeshare_base_t :: *policy_timeshare_base;
 policy_timeshare_limit_t :: *policy_timeshare_limit;
 policy_timeshare_info_t :: *policy_timeshare_info;
 policy_timeshare_base_data_t :: policy_timeshare_base;
 policy_timeshare_limit_data_t :: policy_timeshare_limit;
 policy_timeshare_info_data_t :: policy_timeshare_info;
+
 policy_rr_base :: struct {
     base_priority: s32;
     quantum: s32;
 }
+
 policy_rr_limit :: struct {
     max_priority: s32;
 }
+
 policy_rr_info :: struct {
     max_priority: s32;
     base_priority: s32;
@@ -1122,51 +1186,61 @@ policy_rr_info :: struct {
     depressed: u32;
     depress_priority: s32;
 }
+
 policy_rr_base_t :: *policy_rr_base;
 policy_rr_limit_t :: *policy_rr_limit;
 policy_rr_info_t :: *policy_rr_info;
 policy_rr_base_data_t :: policy_rr_base;
 policy_rr_limit_data_t :: policy_rr_limit;
 policy_rr_info_data_t :: policy_rr_info;
+
 policy_fifo_base :: struct {
     base_priority: s32;
 }
+
 policy_fifo_limit :: struct {
     max_priority: s32;
 }
+
 policy_fifo_info :: struct {
     max_priority: s32;
     base_priority: s32;
     depressed: u32;
     depress_priority: s32;
 }
+
 policy_fifo_base_t :: *policy_fifo_base;
 policy_fifo_limit_t :: *policy_fifo_limit;
 policy_fifo_info_t :: *policy_fifo_info;
 policy_fifo_base_data_t :: policy_fifo_base;
 policy_fifo_limit_data_t :: policy_fifo_limit;
 policy_fifo_info_data_t :: policy_fifo_info;
+
 policy_bases :: struct {
     ts: policy_timeshare_base_data_t;
     rr: policy_rr_base_data_t;
     fifo: policy_fifo_base_data_t;
 }
+
 policy_limits :: struct {
     ts: policy_timeshare_limit_data_t;
     rr: policy_rr_limit_data_t;
     fifo: policy_fifo_limit_data_t;
 }
+
 policy_infos :: struct {
     ts: policy_timeshare_info_data_t;
     rr: policy_rr_info_data_t;
     fifo: policy_fifo_info_data_t;
 }
+
 policy_base_data_t :: policy_bases;
 policy_limit_data_t :: policy_limits;
 policy_info_data_t :: policy_infos;
 task_flavor_t :: u32;
 task_info_t :: *s32;
 task_info_data_t :: [1024] s32;
+
 task_basic_info_32 :: struct {
     suspend_count: s32;
     virtual_size: u32;
@@ -1175,8 +1249,10 @@ task_basic_info_32 :: struct {
     system_time: time_value_t;
     policy: policy_t;
 }
+
 task_basic_info_32_data_t :: task_basic_info_32;
 task_basic_info_32_t :: *task_basic_info_32;
+
 task_basic_info_64 :: struct {
     suspend_count: s32;
     virtual_size: mach_vm_size_t #align 4;
@@ -1185,8 +1261,10 @@ task_basic_info_64 :: struct {
     system_time: time_value_t;
     policy: policy_t;
 }
+
 task_basic_info_64_data_t :: task_basic_info_64;
 task_basic_info_64_t :: *task_basic_info_64;
+
 task_basic_info :: struct {
     suspend_count: s32;
     virtual_size: vm_size_t #align 4;
@@ -1195,8 +1273,10 @@ task_basic_info :: struct {
     system_time: time_value_t;
     policy: policy_t;
 }
+
 task_basic_info_data_t :: task_basic_info;
 task_basic_info_t :: *task_basic_info;
+
 task_events_info :: struct {
     faults: s32;
     pageins: s32;
@@ -1207,51 +1287,65 @@ task_events_info :: struct {
     syscalls_unix: s32;
     csw: s32;
 }
+
 task_events_info_data_t :: task_events_info;
 task_events_info_t :: *task_events_info;
+
 task_thread_times_info :: struct {
     user_time: time_value_t;
     system_time: time_value_t;
 }
+
 task_thread_times_info_data_t :: task_thread_times_info;
 task_thread_times_info_t :: *task_thread_times_info;
+
 task_absolutetime_info :: struct {
     total_user: u64;
     total_system: u64;
     threads_user: u64;
     threads_system: u64;
 }
+
 task_absolutetime_info_data_t :: task_absolutetime_info;
 task_absolutetime_info_t :: *task_absolutetime_info;
+
 task_kernelmemory_info :: struct {
     total_palloc: u64;
     total_pfree: u64;
     total_salloc: u64;
     total_sfree: u64;
 }
+
 task_kernelmemory_info_data_t :: task_kernelmemory_info;
 task_kernelmemory_info_t :: *task_kernelmemory_info;
+
 task_affinity_tag_info :: struct {
     set_count: s32;
     min: s32;
     max: s32;
     task_count: s32;
 }
+
 task_affinity_tag_info_data_t :: task_affinity_tag_info;
 task_affinity_tag_info_t :: *task_affinity_tag_info;
+
 task_dyld_info :: struct {
     all_image_info_addr: mach_vm_address_t;
     all_image_info_size: mach_vm_size_t;
     all_image_info_format: s32;
 }
+
 task_dyld_info_data_t :: task_dyld_info;
 task_dyld_info_t :: *task_dyld_info;
+
 task_extmod_info :: struct {
     task_uuid: [16] u8;
     extmod_statistics: vm_extmod_statistics_data_t;
 }
+
 task_extmod_info_data_t :: task_extmod_info;
 task_extmod_info_t :: *task_extmod_info;
+
 mach_task_basic_info :: struct {
     virtual_size: mach_vm_size_t;
     resident_size: mach_vm_size_t;
@@ -1261,8 +1355,10 @@ mach_task_basic_info :: struct {
     policy: policy_t;
     suspend_count: s32;
 }
+
 mach_task_basic_info_data_t :: mach_task_basic_info;
 mach_task_basic_info_t :: *mach_task_basic_info;
+
 task_power_info :: struct {
     total_user: u64;
     total_system: u64;
@@ -1271,8 +1367,10 @@ task_power_info :: struct {
     task_timer_wakeups_bin_1: u64;
     task_timer_wakeups_bin_2: u64;
 }
+
 task_power_info_data_t :: task_power_info;
 task_power_info_t :: *task_power_info;
+
 task_vm_info :: struct {
     virtual_size: mach_vm_size_t;
     region_count: s32;
@@ -1297,56 +1395,71 @@ task_vm_info :: struct {
     min_address: mach_vm_address_t;
     max_address: mach_vm_address_t;
 }
+
 task_vm_info_data_t :: task_vm_info;
 task_vm_info_t :: *task_vm_info;
 task_purgable_info_t :: vm_purgeable_info;
+
 task_trace_memory_info :: struct {
     user_memory_address: u64;
     buffer_size: u64;
     mailbox_array_size: u64;
 }
+
 task_trace_memory_info_data_t :: task_trace_memory_info;
 task_trace_memory_info_t :: *task_trace_memory_info;
+
 task_wait_state_info :: struct {
     total_wait_state_time: u64;
     total_wait_sfi_state_time: u64;
     _reserved: [4] u32;
 }
+
 task_wait_state_info_data_t :: task_wait_state_info;
 task_wait_state_info_t :: *task_wait_state_info;
+
 gpu_energy_data :: struct {
     task_gpu_utilisation: u64;
     task_gpu_stat_reserved0: u64;
     task_gpu_stat_reserved1: u64;
     task_gpu_stat_reserved2: u64;
 }
+
 gpu_energy_data_t :: *gpu_energy_data;
+
 task_power_info_v2 :: struct {
     cpu_energy: task_power_info_data_t;
     gpu_energy: gpu_energy_data;
     task_ptime: u64;
     task_pset_switches: u64;
 }
+
 task_power_info_v2_data_t :: task_power_info_v2;
 task_power_info_v2_t :: *task_power_info_v2;
+
 task_flags_info :: struct {
     flags: u32;
 }
+
 task_flags_info_data_t :: task_flags_info;
 task_flags_info_t :: *task_flags_info;
 task_inspect_flavor_t :: u32;
+
 task_inspect_flavor :: enum u32 {
     TASK_INSPECT_BASIC_COUNTS :: 1;
 }
+
 task_inspect_basic_counts :: struct {
     instructions: u64;
     cycles: u64;
 }
+
 task_inspect_basic_counts_data_t :: task_inspect_basic_counts;
 task_inspect_basic_counts_t :: *task_inspect_basic_counts;
 task_inspect_info_t :: *s32;
 task_policy_flavor_t :: u32;
 task_policy_t :: *s32;
+
 task_role :: enum s32 {
     RENICED :: -1;
     UNSPECIFIED :: 0;
@@ -1367,12 +1480,16 @@ task_role :: enum s32 {
     TASK_NONUI_APPLICATION :: NONUI_APPLICATION;
     TASK_DEFAULT_APPLICATION :: DEFAULT_APPLICATION;
 }
+
 task_role_t :: s32;
+
 task_category_policy :: struct {
     role: task_role_t;
 }
+
 task_category_policy_data_t :: task_category_policy;
 task_category_policy_t :: *task_category_policy;
+
 task_latency_qos :: enum u32 {
     UNSPECIFIED :: 0;
     _0 :: 16711681;
@@ -1389,7 +1506,9 @@ task_latency_qos :: enum u32 {
     LATENCY_QOS_TIER_4 :: _4;
     LATENCY_QOS_TIER_5 :: _5;
 }
+
 task_latency_qos_t :: s32;
+
 task_throughput_qos :: enum u32 {
     UNSPECIFIED :: 0;
     _0 :: 16646145;
@@ -1406,57 +1525,76 @@ task_throughput_qos :: enum u32 {
     THROUGHPUT_QOS_TIER_4 :: _4;
     THROUGHPUT_QOS_TIER_5 :: _5;
 }
+
 task_throughput_qos_t :: s32;
+
 task_qos_policy :: struct {
     task_latency_qos_tier: task_latency_qos_t;
     task_throughput_qos_tier: task_throughput_qos_t;
 }
+
 task_qos_policy_t :: *task_qos_policy;
 thread_policy_flavor_t :: u32;
 thread_policy_t :: *s32;
+
 thread_standard_policy :: struct {
     no_data: u32;
 }
+
 thread_standard_policy_data_t :: thread_standard_policy;
 thread_standard_policy_t :: *thread_standard_policy;
+
 thread_extended_policy :: struct {
     timeshare: u32;
 }
+
 thread_extended_policy_data_t :: thread_extended_policy;
 thread_extended_policy_t :: *thread_extended_policy;
+
 thread_time_constraint_policy :: struct {
     period: u32;
     computation: u32;
     constraint: u32;
     preemptible: u32;
 }
+
 thread_time_constraint_policy_data_t :: thread_time_constraint_policy;
 thread_time_constraint_policy_t :: *thread_time_constraint_policy;
+
 thread_precedence_policy :: struct {
     importance: s32;
 }
+
 thread_precedence_policy_data_t :: thread_precedence_policy;
 thread_precedence_policy_t :: *thread_precedence_policy;
+
 thread_affinity_policy :: struct {
     affinity_tag: s32;
 }
+
 thread_affinity_policy_data_t :: thread_affinity_policy;
 thread_affinity_policy_t :: *thread_affinity_policy;
+
 thread_background_policy :: struct {
     priority: s32;
 }
+
 thread_background_policy_data_t :: thread_background_policy;
 thread_background_policy_t :: *thread_background_policy;
 thread_latency_qos_t :: s32;
+
 thread_latency_qos_policy :: struct {
     thread_latency_qos_tier: thread_latency_qos_t;
 }
+
 thread_latency_qos_policy_data_t :: thread_latency_qos_policy;
 thread_latency_qos_policy_t :: *thread_latency_qos_policy;
 thread_throughput_qos_t :: s32;
+
 thread_throughput_qos_policy :: struct {
     thread_throughput_qos_tier: thread_throughput_qos_t;
 }
+
 thread_throughput_qos_policy_data_t :: thread_throughput_qos_policy;
 thread_throughput_qos_policy_t :: *thread_throughput_qos_policy;
 alarm_type_t :: s32;
@@ -1465,26 +1603,34 @@ clock_id_t :: s32;
 clock_flavor_t :: s32;
 clock_attr_t :: *s32;
 clock_res_t :: s32;
+
 mach_timespec :: struct {
     tv_sec: u32;
     tv_nsec: clock_res_t;
 }
+
 mach_timespec_t :: mach_timespec;
+
 fsid :: struct {
     val: [2] s32;
 }
+
 fsid_t :: fsid;
+
 fsobj_id :: struct {
     fid_objno: u32;
     fid_generation: u32;
 }
+
 fsobj_id_t :: fsobj_id;
+
 dyld_kernel_image_info :: struct {
     uuid: uuid_t;
     fsobjid: fsobj_id_t;
     fsid: fsid_t;
     load_addr: u64;
 }
+
 dyld_kernel_process_info :: struct {
     cache_image_info: dyld_kernel_image_info;
     timestamp: u64;
@@ -1494,6 +1640,7 @@ dyld_kernel_process_info :: struct {
     no_cache: u32;
     private_cache: u32;
 }
+
 dyld_kernel_image_info_t :: dyld_kernel_image_info;
 dyld_kernel_process_info_t :: dyld_kernel_process_info;
 dyld_kernel_image_info_array_t :: *dyld_kernel_image_info_t;
@@ -1564,6 +1711,7 @@ ledger_amount_t :: s64;
 emulation_vector_t :: *mach_vm_offset_t;
 user_subsystem_t :: *u8;
 labelstr_t :: *u8;
+
 ipc_info_space :: struct {
     iis_genno_mask: u32;
     iis_table_size: u32;
@@ -1572,7 +1720,9 @@ ipc_info_space :: struct {
     iis_tree_small: u32;
     iis_tree_hash: u32;
 }
+
 ipc_info_space_t :: ipc_info_space;
+
 ipc_info_space_basic :: struct {
     iisb_genno_mask: u32;
     iisb_table_size: u32;
@@ -1580,7 +1730,9 @@ ipc_info_space_basic :: struct {
     iisb_table_inuse: u32;
     iisb_reserved: [2] u32;
 }
+
 ipc_info_space_basic_t :: ipc_info_space_basic;
+
 ipc_info_name :: struct {
     iin_name: mach_port_name_t;
     iin_collision: s32;
@@ -1590,20 +1742,26 @@ ipc_info_name :: struct {
     iin_next: u32;
     iin_hash: u32;
 }
+
 ipc_info_name_t :: ipc_info_name;
 ipc_info_name_array_t :: *ipc_info_name_t;
+
 ipc_info_tree_name :: struct {
     iitn_name: ipc_info_name_t;
     iitn_lchild: mach_port_name_t;
     iitn_rchild: mach_port_name_t;
 }
+
 ipc_info_tree_name_t :: ipc_info_tree_name;
 ipc_info_tree_name_array_t :: *ipc_info_tree_name_t;
+
 zone_name :: struct {
     zn_name: [80] u8;
 }
+
 zone_name_t :: zone_name;
 zone_name_array_t :: *zone_name_t;
+
 zone_info :: struct {
     zi_count: s32;
     zi_cur_size: vm_size_t;
@@ -1615,13 +1773,17 @@ zone_info :: struct {
     zi_exhaustible: s32;
     zi_collectable: s32;
 }
+
 zone_info_t :: zone_info;
 zone_info_array_t :: *zone_info_t;
+
 mach_zone_name :: struct {
     mzn_name: [80] u8;
 }
+
 mach_zone_name_t :: mach_zone_name;
 mach_zone_name_array_t :: *mach_zone_name_t;
+
 mach_zone_info_data :: struct {
     mzi_count: u64;
     mzi_cur_size: u64;
@@ -1632,8 +1794,10 @@ mach_zone_info_data :: struct {
     mzi_exhaustible: u64;
     mzi_collectable: u64;
 }
+
 mach_zone_info_t :: mach_zone_info_data;
 mach_zone_info_array_t :: *mach_zone_info_t;
+
 task_zone_info_data :: struct {
     tzi_count: u64;
     tzi_cur_size: u64;
@@ -1647,8 +1811,10 @@ task_zone_info_data :: struct {
     tzi_task_alloc: u64;
     tzi_task_free: u64;
 }
+
 task_zone_info_t :: task_zone_info_data;
 task_zone_info_array_t :: *task_zone_info_t;
+
 mach_memory_info :: struct {
     flags: u64;
     site: u64;
@@ -1664,6 +1830,7 @@ mach_memory_info :: struct {
     _resv: [3] u64;
     name: [80] u8;
 }
+
 mach_memory_info_t :: mach_memory_info;
 mach_memory_info_array_t :: *mach_memory_info_t;
 sync_policy_t :: s32;
@@ -1726,6 +1893,7 @@ task_register_dyld_set_dyld_state :: (task: task_t, dyld_state: u8) -> kern_retu
 task_register_dyld_get_process_state :: (task: task_t, dyld_process_state: *dyld_kernel_process_info_t) -> kern_return_t #foreign libc;
 task_map_corpse_info_64 :: (task: task_t, corspe_task: task_t, kcd_addr_begin: *mach_vm_address_t, kcd_size: *mach_vm_size_t) -> kern_return_t #foreign libc;
 task_inspect :: (task: task_inspect_t, flavor: task_inspect_flavor_t, info_out: task_inspect_info_t, info_outCnt: *mach_msg_type_number_t) -> kern_return_t #foreign libc;
+
 __Request__task_create_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1734,12 +1902,15 @@ __Request__task_create_t :: struct {
     ledgersCnt: mach_msg_type_number_t;
     inherit_memory: u32;
 }
+
 __Request__task_terminate_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_threads_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__mach_ports_register_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1747,15 +1918,18 @@ __Request__mach_ports_register_t :: struct {
     NDR: NDR_record_t;
     init_port_setCnt: mach_msg_type_number_t;
 }
+
 __Request__mach_ports_lookup_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     flavor: task_flavor_t;
     task_info_outCnt: mach_msg_type_number_t;
 }
+
 __Request__task_set_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1763,17 +1937,21 @@ __Request__task_set_info_t :: struct {
     task_info_inCnt: mach_msg_type_number_t;
     task_info_in: [52] s32;
 }
+
 __Request__task_suspend_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_resume_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_get_special_port_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     which_port: s32;
 }
+
 __Request__task_set_special_port_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1781,9 +1959,11 @@ __Request__task_set_special_port_t :: struct {
     NDR: NDR_record_t;
     which_port: s32;
 }
+
 __Request__thread_create_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__thread_create_running_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1791,6 +1971,7 @@ __Request__thread_create_running_t :: struct {
     new_stateCnt: mach_msg_type_number_t;
     new_state: [614] u32;
 }
+
 __Request__task_set_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1800,11 +1981,13 @@ __Request__task_set_exception_ports_t :: struct {
     behavior: exception_behavior_t;
     new_flavor: thread_state_flavor_t;
 }
+
 __Request__task_get_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     exception_mask: exception_mask_t;
 }
+
 __Request__task_swap_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1814,28 +1997,33 @@ __Request__task_swap_exception_ports_t :: struct {
     behavior: exception_behavior_t;
     new_flavor: thread_state_flavor_t;
 }
+
 __Request__lock_set_create_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     n_ulocks: s32;
     policy: s32;
 }
+
 __Request__lock_set_destroy_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     lock_set: mach_msg_port_descriptor_t;
 }
+
 __Request__semaphore_create_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     policy: s32;
     value: s32;
 }
+
 __Request__semaphore_destroy_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     semaphore: mach_msg_port_descriptor_t;
 }
+
 __Request__task_policy_set_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1843,6 +2031,7 @@ __Request__task_policy_set_t :: struct {
     policy_infoCnt: mach_msg_type_number_t;
     policy_info: [16] s32;
 }
+
 __Request__task_policy_get_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1850,11 +2039,13 @@ __Request__task_policy_get_t :: struct {
     policy_infoCnt: mach_msg_type_number_t;
     get_default: u32;
 }
+
 __Request__task_sample_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     reply: mach_msg_port_descriptor_t;
 }
+
 __Request__task_policy_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1864,15 +2055,18 @@ __Request__task_policy_t :: struct {
     set_limit: u32;
     change: u32;
 }
+
 __Request__task_set_emulation_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     routine_entry_pt: vm_address_t;
     routine_number: s32;
 }
+
 __Request__task_get_emulation_vector_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_set_emulation_vector_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1881,15 +2075,18 @@ __Request__task_set_emulation_vector_t :: struct {
     vector_start: s32;
     emulation_vectorCnt: mach_msg_type_number_t;
 }
+
 __Request__task_set_ras_pc_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     basepc: vm_address_t;
     boundspc: vm_address_t;
 }
+
 __Request__task_zone_info_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_assign_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1897,14 +2094,17 @@ __Request__task_assign_t :: struct {
     NDR: NDR_record_t;
     assign_threads: u32;
 }
+
 __Request__task_assign_default_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     assign_threads: u32;
 }
+
 __Request__task_get_assignment_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_set_policy_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1917,12 +2117,14 @@ __Request__task_set_policy_t :: struct {
     limit: [1] s32;
     change: u32;
 }
+
 __Request__task_get_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     flavor: thread_state_flavor_t;
     old_stateCnt: mach_msg_type_number_t;
 }
+
 __Request__task_set_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1930,44 +2132,54 @@ __Request__task_set_state_t :: struct {
     new_stateCnt: mach_msg_type_number_t;
     new_state: [614] u32;
 }
+
 __Request__task_set_phys_footprint_limit_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     new_limit: s32;
 }
+
 __Request__task_suspend2_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_resume2_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_purgable_info_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_get_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     which: mach_voucher_selector_t;
 }
+
 __Request__task_set_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     voucher: mach_msg_port_descriptor_t;
 }
+
 __Request__task_swap_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     new_voucher: mach_msg_port_descriptor_t;
     old_voucher: mach_msg_port_descriptor_t;
 }
+
 __Request__task_generate_corpse_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_map_corpse_info_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     corspe_task: mach_msg_port_descriptor_t;
 }
+
 __Request__task_register_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1975,6 +2187,7 @@ __Request__task_register_dyld_image_infos_t :: struct {
     NDR: NDR_record_t;
     dyld_imagesCnt: mach_msg_type_number_t;
 }
+
 __Request__task_unregister_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -1982,9 +2195,11 @@ __Request__task_unregister_dyld_image_infos_t :: struct {
     NDR: NDR_record_t;
     dyld_imagesCnt: mach_msg_type_number_t;
 }
+
 __Request__task_get_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_register_dyld_shared_cache_image_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -1992,26 +2207,31 @@ __Request__task_register_dyld_shared_cache_image_info_t :: struct {
     no_cache: u32;
     private_cache: u32;
 }
+
 __Request__task_register_dyld_set_dyld_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     dyld_state: u8;
     dyld_statePad: [3] u8;
 }
+
 __Request__task_register_dyld_get_process_state_t :: struct {
     Head: mach_msg_header_t;
 }
+
 __Request__task_map_corpse_info_64_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     corspe_task: mach_msg_port_descriptor_t;
 }
+
 __Request__task_inspect_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     flavor: task_inspect_flavor_t;
     info_outCnt: mach_msg_type_number_t;
 }
+
 __RequestUnion__task_subsystem :: union {
     Request_task_create: __Request__task_create_t;
     Request_task_terminate: __Request__task_terminate_t;
@@ -2066,16 +2286,19 @@ __RequestUnion__task_subsystem :: union {
     Request_task_map_corpse_info_64: __Request__task_map_corpse_info_64_t;
     Request_task_inspect: __Request__task_inspect_t;
 }
+
 __Reply__task_create_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     child_task: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_terminate_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_threads_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2083,11 +2306,13 @@ __Reply__task_threads_t :: struct {
     NDR: NDR_record_t;
     act_listCnt: mach_msg_type_number_t;
 }
+
 __Reply__mach_ports_register_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__mach_ports_lookup_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2095,6 +2320,7 @@ __Reply__mach_ports_lookup_t :: struct {
     NDR: NDR_record_t;
     init_port_setCnt: mach_msg_type_number_t;
 }
+
 __Reply__task_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2102,46 +2328,55 @@ __Reply__task_info_t :: struct {
     task_info_outCnt: mach_msg_type_number_t;
     task_info_out: [52] s32;
 }
+
 __Reply__task_set_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_suspend_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_resume_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_special_port_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     special_port: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_set_special_port_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__thread_create_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     child_act: mach_msg_port_descriptor_t;
 }
+
 __Reply__thread_create_running_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     child_act: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_set_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2152,6 +2387,7 @@ __Reply__task_get_exception_ports_t :: struct {
     old_behaviors: [32] exception_behavior_t;
     old_flavors: [32] thread_state_flavor_t;
 }
+
 __Reply__task_swap_exception_ports_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2162,31 +2398,37 @@ __Reply__task_swap_exception_ports_t :: struct {
     old_behaviors: [32] exception_behavior_t;
     old_flavors: [32] thread_state_flavor_t;
 }
+
 __Reply__lock_set_create_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     new_lock_set: mach_msg_port_descriptor_t;
 }
+
 __Reply__lock_set_destroy_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__semaphore_create_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     semaphore: mach_msg_port_descriptor_t;
 }
+
 __Reply__semaphore_destroy_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_policy_set_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_policy_get_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2195,21 +2437,25 @@ __Reply__task_policy_get_t :: struct {
     policy_info: [16] s32;
     get_default: u32;
 }
+
 __Reply__task_sample_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_policy_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_set_emulation_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_emulation_vector_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2218,16 +2464,19 @@ __Reply__task_get_emulation_vector_t :: struct {
     vector_start: s32;
     emulation_vectorCnt: mach_msg_type_number_t;
 }
+
 __Reply__task_set_emulation_vector_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_set_ras_pc_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_zone_info_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2237,26 +2486,31 @@ __Reply__task_zone_info_t :: struct {
     namesCnt: mach_msg_type_number_t;
     infoCnt: mach_msg_type_number_t;
 }
+
 __Reply__task_assign_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_assign_default_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_assignment_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     assigned_set: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_set_policy_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2264,53 +2518,63 @@ __Reply__task_get_state_t :: struct {
     old_stateCnt: mach_msg_type_number_t;
     old_state: [614] u32;
 }
+
 __Reply__task_set_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_set_phys_footprint_limit_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
     old_limit: s32;
 }
+
 __Reply__task_suspend2_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     suspend_token: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_resume2_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_purgable_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
     stats: task_purgable_info_t #align 4;
 }
+
 __Reply__task_get_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     voucher: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_set_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_swap_mach_voucher_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     old_voucher: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_generate_corpse_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
     corpse_task_port: mach_msg_port_descriptor_t;
 }
+
 __Reply__task_map_corpse_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2318,16 +2582,19 @@ __Reply__task_map_corpse_info_t :: struct {
     kcd_addr_begin: vm_address_t #align 4;
     kcd_size: u32;
 }
+
 __Reply__task_register_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_unregister_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_get_dyld_image_infos_t :: struct {
     Head: mach_msg_header_t;
     msgh_body: mach_msg_body_t;
@@ -2335,22 +2602,26 @@ __Reply__task_get_dyld_image_infos_t :: struct {
     NDR: NDR_record_t;
     dyld_imagesCnt: mach_msg_type_number_t;
 }
+
 __Reply__task_register_dyld_shared_cache_image_info_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_register_dyld_set_dyld_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
 }
+
 __Reply__task_register_dyld_get_process_state_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
     RetCode: kern_return_t;
     dyld_process_state: dyld_kernel_process_info_t #align 4;
 }
+
 __Reply__task_map_corpse_info_64_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2358,6 +2629,7 @@ __Reply__task_map_corpse_info_64_t :: struct {
     kcd_addr_begin: mach_vm_address_t #align 4;
     kcd_size: mach_vm_size_t #align 4;
 }
+
 __Reply__task_inspect_t :: struct {
     Head: mach_msg_header_t;
     NDR: NDR_record_t;
@@ -2365,6 +2637,7 @@ __Reply__task_inspect_t :: struct {
     info_outCnt: mach_msg_type_number_t;
     info_out: [4] s32;
 }
+
 __ReplyUnion__task_subsystem :: union {
     Reply_task_create: __Reply__task_create_t;
     Reply_task_terminate: __Reply__task_terminate_t;
@@ -2419,5 +2692,6 @@ __ReplyUnion__task_subsystem :: union {
     Reply_task_map_corpse_info_64: __Reply__task_map_corpse_info_64_t;
     Reply_task_inspect: __Reply__task_inspect_t;
 }
+
 #scope_file
 libc :: #system_library "libc";

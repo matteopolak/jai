@@ -4,6 +4,7 @@ is_absolute_path :: (path: string) -> bool {
     if path[0] == #char "/" || path[0] == #char "\\" return true;
     return path.count >= 3 && path[1] == #char ":" && (path[2] == #char "/" || path[2] == #char "\\");
 }
+
 build :: () {
     parent := get_build_options();
     args := parent.compile_time_command_line;
@@ -86,6 +87,7 @@ build :: () {
     message_loop(workspace);
     compiler_end_intercept(workspace);
 }
+
 message_loop :: (w: Workspace) {
     while true {
         message := compiler_wait_for_message();
@@ -105,11 +107,15 @@ message_loop :: (w: Workspace) {
         }
     }
 }
+
 #run,stallable build();
+
 #scope_module
 #import "Compiler";
 Basic :: #import "Basic";
+
 verbose := false;
+
 HELP_STRING :: #string COMPILER_REFLECTION_HELP
 Usage: jai file.jai [-release|-debug] [-x64|-llvm] [-output name] [-output_path path] [-import_dir path] [-add source] [-no_output] [-- program arguments]
 COMPILER_REFLECTION_HELP

@@ -1,5 +1,6 @@
 #import "String";
 #import "Basic";
+
 string_byte_vectors :: () -> bool {
     if compare("abc", "abd") >= 0 || compare("abc", "abc") != 0 return false;
     if compare_nocase("aBc", "AbC") != 0 return false;
@@ -24,4 +25,5 @@ string_byte_vectors :: () -> bool {
     if !boolean_valid || !boolean || remaining != ";rest" return false;
     return true;
 }
+
 #assert(string_byte_vectors());

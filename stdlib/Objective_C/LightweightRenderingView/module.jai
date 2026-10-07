@@ -1,9 +1,11 @@
 // An NSView subclass for drawing with a GPU API inside an AppKit window.
 #import "Objective_C";
 #import "Objective_C/AppKit";
+
 LightweightRenderingView :: struct {
     #as using nsview: NSView;
 }
+
 LightweightOpenGLView :: struct {
     #as using lightweightrenderingview: LightweightRenderingView;
     // Shows what was drawn: flushes the view's OpenGL context.
@@ -26,18 +28,22 @@ LightweightOpenGLView :: struct {
         invoke(cast(*void) self, sel_registerName(cast(*u8) "setOpenGLContext:\0"), glc);
     }
 }
+
 LightweightMetalView :: struct {
     using lightweightrenderingview: LightweightRenderingView;
 }
+
 init_lightweight_rendering_view :: () {
     _sel.glContext = cast(Selector) sel_registerName(cast(*u8) "glContext\0");
     _sel.setGlContext_ = cast(Selector) sel_registerName(cast(*u8) "setGlContext:\0");
     _sel.swapBuffers = cast(Selector) sel_registerName(cast(*u8) "swapBuffers\0");
 }
+
 #scope_file
 _sel: struct {
     swapBuffers: Selector;
     setGlContext_: Selector;
     glContext: Selector;
 }
+
 QuartzCore :: #system_library "QuartzCore";

@@ -2,6 +2,7 @@
 #scope_export
 getrect_asset_root: string;
 getrect_asset_filenames := string.["ui_radiobox_full.png", "ui_radiobox_empty.png", "ui_checkbox_full.png", "ui_checkbox_empty.png", "Karla-Regular.ttf", "mode_circle.png", "mode_hsl.png", "mode_rgb.png", "mode_numbers.png"];
+
 set_asset_root :: (path: string) {
     assert(!initialized, "Configure assets before initializing GetRect");
     if initialized return;
@@ -13,22 +14,27 @@ set_asset_root :: (path: string) {
     right_owned_asset_root = saved;
     getrect_asset_root = saved;
 }
+
 release_asset_data :: () {
     assert(!initialized, "Deinitialize GetRect before releasing borrowed asset buffers");
     if initialized return;
     right_release_assets();
 }
+
 get_rect_get_global_data :: () -> string, string, string, string, string, string, string, string, string {
     a, b, c, d, e, f, g, h, i := get_global_data();
     return a, b, c, d, e, f, g, h, i;
 }
+
 #scope_module
 RH_Assets_File :: #import "File";
+
 right_owned_asset_root: string;
 right_asset_root_allocator: Allocator;
 right_asset_buffers: [9] string;
 right_asset_paths: [9] string;
 right_asset_allocators: [9] Allocator;
+
 right_asset_path :: (filename: string) -> string {
     owner := context.allocator;
     root := getrect_asset_root;
@@ -41,6 +47,7 @@ right_asset_path :: (filename: string) -> string {
     }
     return String.join(root, filename, separator = "/");
 }
+
 global_data :: (filename: string) -> (memory: string, success: bool) {
     owner := context.allocator;
     path := right_asset_path(filename);
@@ -49,6 +56,7 @@ global_data :: (filename: string) -> (memory: string, success: bool) {
     memory, success = RH_Assets_File.read_entire_file(path, log_errors = true);
     return memory, success;
 }
+
 right_cached_asset :: (index: int) -> (memory: string, success: bool) {
     assert(index >= 0 && index < right_asset_buffers.count);
     if index < 0 || index >= right_asset_buffers.count return "", false;
@@ -79,6 +87,7 @@ right_cached_asset :: (index: int) -> (memory: string, success: bool) {
     transferred = true;
     return bytes, true;
 }
+
 right_read_system_font :: () -> (memory: string, success: bool) {
     candidates := string.["/System/Library/Fonts/Supplemental/Arial.ttf", "/System/Library/Fonts/Helvetica.ttc", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/dejavu/DejaVuSans.ttf", "C:/Windows/Fonts/arial.ttf"];
     for candidate: candidates {
@@ -87,6 +96,7 @@ right_read_system_font :: () -> (memory: string, success: bool) {
     }
     return "", false;
 }
+
 get_global_data :: () -> string, string, string, string, string, string, string, string, string {
     for name, index: getrect_asset_filenames {
         memory, loaded := right_cached_asset(index);
@@ -94,6 +104,7 @@ get_global_data :: () -> string, string, string, string, string, string, string,
     }
     return right_asset_buffers[0], right_asset_buffers[1], right_asset_buffers[2], right_asset_buffers[3], right_asset_buffers[4], right_asset_buffers[5], right_asset_buffers[6], right_asset_buffers[7], right_asset_buffers[8];
 }
+
 right_release_assets :: () {
     for index: 0..right_asset_buffers.count - 1 {
         owner := right_asset_allocators[index];
@@ -104,6 +115,7 @@ right_release_assets :: () {
         right_asset_allocators[index] = .{};
     }
 }
+
 right_release_asset_root :: () {
     free(right_owned_asset_root.data, allocator = right_asset_root_allocator);
     right_owned_asset_root = "";

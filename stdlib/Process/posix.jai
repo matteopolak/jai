@@ -96,11 +96,13 @@ deinit :: (process: *Process) {
     if process.launched Atomics.atomic_decrement(*active_command_count);
     process.* = .{};
 }
+
 deinit :: (pipe: *Process.Pipe) {
     if pipe.handle >= 0 P.close(pipe.handle);
     pipe.handle = -1;
     pipe.eof = true;
 }
+
 write_to_process :: (process: *Process, data: [] u8) -> success: bool, bytes_written: int {
     if process.input.handle < 0 || data.count < 0 || data.count > 0 && !data.data return false, 0;
     blocked: P.sigset_t;
@@ -119,6 +121,7 @@ write_to_process :: (process: *Process, data: [] u8) -> success: bool, bytes_wri
     }
     return amount >= 0, cast(int) max(0, amount);
 }
+
 // One read from a pipe. End of input and a non-blocking pipe with nothing to read both give
 // (true, 0); the handle stays open and `eof` is left to the caller, which knows whether the
 // pipe was reported readable (callers watching handles themselves keep them registered).
@@ -130,6 +133,7 @@ read_pipe :: (pipe: *Process.Pipe, buffer: [] u8) -> success: bool, bytes_read: 
     if amount < 0 && (P.errno() == P.EAGAIN || P.errno() == P.EWOULDBLOCK) return true, 0;
     return amount >= 0, cast(int) max(0, amount);
 }
+
 read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] u8, timeout_ms := -1) -> success: bool, output_bytes: int, error_bytes: int {
     descriptors: [2] P.pollfd;
     descriptors[0].fd = process.output.handle;
@@ -159,9 +163,11 @@ read_from_process :: (process: *Process, output_buffer: [] u8, error_buffer: [] 
     }
     return ok, output_bytes, error_bytes;
 }
+
 kill_process :: (process: *Process) -> bool {
     return process.launched && (process.saved_result.type != .STILL_RUNNING || P.kill(process.pid, 9) == 0);
 }
+
 get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Process_Result {
     if !process.launched return true, .{ type = .UNSTARTED };
     if process.saved_result.type != .STILL_RUNNING return true, process.saved_result;
@@ -185,6 +191,7 @@ get_process_result :: (process: *Process, timeout_ms := -1) -> success: bool, Pr
         P.usleep(1000);
     }
 }
+
 close_and_reset :: (fd: *s32, loc := #caller_location) {
     if fd.* >= 0 P.close(fd.*);
     fd.* = -1;
@@ -195,6 +202,7 @@ close_pair :: (pair: *[2] s32) {
     close_and_reset(*(<<pair)[0]);
     close_and_reset(*(<<pair)[1]);
 }
+
 safe_pipe :: (pair: *[2] s32, socket := false) -> bool {
     if socket {
         if process_socketpair(1, 1, 0, pair) != 0 return false; // AF_UNIX, SOCK_STREAM
@@ -220,6 +228,7 @@ safe_pipe :: (pair: *[2] s32, socket := false) -> bool {
     }
     return true;
 }
+
 process_monotonic_ms :: () -> s64 {
     time: P.timespec;
     clock_id: s32 = 1;
@@ -229,8 +238,10 @@ process_monotonic_ms :: () -> s64 {
     if P.clock_gettime(xx clock_id, *time) != 0 return 0;
     return time.tv_sec * 1000 + time.tv_nsec / 1000000;
 }
+
 process_socket_libc :: #system_library "libc";
 process_socketpair :: (domain: s32, type: s32, protocol: s32, pair: *[2] s32) -> s32 #foreign process_socket_libc "socketpair";
+
 #if OS == .LINUX {
     process_libc :: #system_library "c";
     process_prctl :: (option: s32, value: u64, extra1: u64, extra2: u64, extra3: u64) -> s32 #foreign process_libc "prctl";

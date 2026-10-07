@@ -2,20 +2,24 @@
 #scope_export
 MAX_STASHED_COLORS :: 10;
 EPSILON :: 0.0001;
+
 backsolve_disc_point_from_rgb :: (state: *Color_Picker_State, rgb: Vector3) -> Vector2 {
     h, s, v := rgb_to_hsv(rgb.x, rgb.y, rgb.z);
     return backsolve_disc_point_from_hsv(state, h * 360, s, v);
 }
+
 backsolve_disc_point_from_hsv_warp :: (h: float, s: float, v: float) -> Vector2 {
     square := Vector2.{ 2 * clamp(s, 0.0, 1.0) - 1, 1 - 2 * clamp(v, 0.0, 1.0) };
     magnitude := length(square);
     if magnitude <= EPSILON return .{};
     return square * (max(abs(square.x), abs(square.y)) / magnitude);
 }
+
 backsolve_disc_point_from_hsv :: (state: *Color_Picker_State, h: float, s: float, v: float) -> Vector2 {
     if state.circle_picker_in_warped_mode return backsolve_disc_point_from_hsv_warp(h, s, v);
     return .{ 2 * clamp(s, 0.0, 1.0) - 1, 1 - 2 * clamp(v, 0.0, 1.0) };
 }
+
 find_index_of_t :: (sorted: [] *Augmented_Keyframe, t: float) -> (index: int) {
     low := 0;
     high := sorted.count;
@@ -26,22 +30,26 @@ find_index_of_t :: (sorted: [] *Augmented_Keyframe, t: float) -> (index: int) {
     }
     return low - 1;
 }
+
 update_keyframe_color_due_to_open_color_picker :: (state: *Color_Animation_Editor_State) {
     if !state.color_picker_subwindow_info.open || state.color_picker_keyframe_index < 0 || state.color_picker_keyframe_index >= state.color_keyframes.count return;
     rgb := state.color_picker_editing_color_applied;
     old := state.color_keyframes[state.color_picker_keyframe_index].color_rgb;
     state.color_keyframes[state.color_picker_keyframe_index].color_rgb = .{ rgb.x, rgb.y, rgb.z, old.w };
 }
+
 init_color_by_interpolation :: (state: *Color_Animation_Editor_State, keyframe_index: int) {
     if keyframe_index < 0 || keyframe_index >= state.color_keyframes.count return;
     sorted := get_sorted_keyframes(state, keyframe_index);
     state.color_keyframes[keyframe_index].color_rgb = left_color_sample_at(sorted, get_interpolation(state), state.color_keyframes[keyframe_index].t);
 }
+
 draw_color_gradient_bar :: (area: Rect, theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State, top_margin: float) {
     if !GETRECT_Y_UP area.y += max(top_margin, 0.0);
     area.h = max(area.h - max(top_margin, 0.0), 0.0);
     left_color_strip(area, state, 1.0);
 }
+
 draw_color_keyframe :: (index: int, rect: Rect, theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State) {
     if index < 0 || index >= state.color_keyframes.count return;
     frame := *state.color_keyframes[index];
@@ -53,6 +61,7 @@ draw_color_keyframe :: (index: int, rect: Rect, theme: *Color_Animation_Editor_T
     left_color_fill(marker, ifx active then theme.keyframe_color_active else theme.keyframe_color_inactive);
     left_color_fill(shrink(marker, marker.w * (1 - theme.keyframe_inset_ratio) / 2), frame.color_rgb);
 }
+
 update_keyframes :: (rect: Rect, theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State) {
     halfwidth := rect.h * theme.keyframe_width_relative_to_bar_height_nondragging * theme.keyframe_selection_size_relative_to_visual_size / 2;
     hit := -1;
@@ -94,6 +103,7 @@ update_keyframes :: (rect: Rect, theme: *Color_Animation_Editor_Theme, state: *C
     }
     update_keyframe_color_due_to_open_color_picker(state);
 }
+
 my_color_slider :: (rect: Rect, alpha: float, theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State) -> (changed: bool) {
     before := NewArray(state.color_keyframes.count, Color_Keyframe,, Basic.temp);
     for frame, index: state.color_keyframes before[index] = frame.base;
@@ -104,6 +114,7 @@ my_color_slider :: (rect: Rect, alpha: float, theme: *Color_Animation_Editor_The
     for frame, index: state.color_keyframes if frame.t != before[index].t || frame.color_rgb != before[index].color_rgb return true;
     return false;
 }
+
 #scope_module
 left_color_strip :: (rect: Rect, state: *Color_Animation_Editor_State, alpha: float) {
     if rect.w <= 0 || rect.h <= 0 return;
@@ -115,6 +126,7 @@ left_color_strip :: (rect: Rect, state: *Color_Animation_Editor_State, alpha: fl
         left_color_fill(.{ rect.x + rect.w * index / count, rect.y, rect.w / count + 1, rect.h }, color);
     }
 }
+
 left_color_sample_at :: (sorted: [] *Augmented_Keyframe, interp: Interpolation, t: float) -> Vector4 {
     shifted := NewArray(sorted.count, *Color_Keyframe,, Basic.temp);
     values := NewArray(sorted.count, Color_Keyframe,, Basic.temp);
@@ -127,6 +139,7 @@ left_color_sample_at :: (sorted: [] *Augmented_Keyframe, interp: Interpolation, 
     generate_color_samples(shifted, interp, output);
     return output[0];
 }
+
 left_disc_square :: (point: Vector2, warp: bool) -> Vector2 {
     if !warp return .{ clamp(point.x, -1.0, 1.0), clamp(point.y, -1.0, 1.0) };
     magnitude := min(length(point), 1.0);

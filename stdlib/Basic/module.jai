@@ -23,6 +23,7 @@
         }
     }
 };
+
 #load "protocol.jai";
 #load "allocation.jai";
 #load "Array.jai";
@@ -37,6 +38,7 @@
 #if MEMORY_DEBUGGER {
     #load "Memory_Debugger.jai";
     #if VISUALIZE_MEMORY_DEBUGGER #load "Visualize_Memory_Debugger.jai";
+
     #if REPLACEMENT_INTERFACE == Memory_Debugger_Interface {
         Memory_Debugger :: struct {
             check_alloc :: _check_alloc;
@@ -57,18 +59,22 @@ FREE_PAGE_STAMP :: 0xdc;
 write_string :: Runtime_Support.write_string;
 write_strings :: Runtime_Support.write_strings;
 debug_break :: Runtime_Support.debug_break;
+
 // Leak hints have intentionally no runtime effect when tracking is disabled.
 #if !MEMORY_DEBUGGER {
     this_allocation_is_not_a_leak :: (memory: *void) #expand {
         #assert(!MEMORY_DEBUGGER);
     }
+
     this_allocation_leaks_todo :: (memory: *void) #expand {
         #assert(!MEMORY_DEBUGGER);
     }
+
     this_allocation_does_not_propagate_leak_ownership :: (memory: *void) #expand {
         #assert(!MEMORY_DEBUGGER);
     }
 }
+
 #if !MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER {
     memory_visualizer_per_frame_update :: () #expand {
         #assert(!MEMORY_DEBUGGER || !VISUALIZE_MEMORY_DEBUGGER);
@@ -84,6 +90,7 @@ assert_helper :: (message := "", args: ..Any, loc := #caller_location) -> bool {
     defer context.handling_assertion_failure = false;
     return context.assertion_failed(loc, tprint(message, ..args));
 }
+
 // With assertions off the parameters are #discard: arguments are typechecked but never evaluated.
 #if ENABLE_ASSERT {
     assert :: (arg: bool, message := "", args: ..Any, loc := #caller_location) #expand {
@@ -94,6 +101,7 @@ assert_helper :: (message := "", args: ..Any, loc := #caller_location) -> bool {
 } else {
     assert :: (#discard arg: bool, #discard message := "", #discard args: ..Any, #discard loc := #caller_location) #expand {}
 }
+
 get_command_line_arguments :: () -> [] string {
     result := NewArray(__command_line_arguments.count, string, true);
     for arg, index: __command_line_arguments {
@@ -103,48 +111,60 @@ get_command_line_arguments :: () -> [] string {
     }
     return result;
 }
+
 min :: (a: $T, b: T) -> T {
     if b < a return b;
     return a;
 }
+
 max :: (a: $T, b: T) -> T {
     if b > a return b;
     return a;
 }
+
 min :: (a: $T, x: ..T) -> T {
     result := a;
     for value: x if value < result result = value;
     return result;
 }
+
 max :: (a: $T, x: ..T) -> T {
     result := a;
     for value: x if value > result result = value;
     return result;
 }
+
 Min :: min;
 Max :: max;
+
 clamp :: (x: $T, a: T, b: T) -> T {
     return max(a, min(x, b));
 }
+
 Swap :: (a: *$T, b: *T) {
     saved := a.*;
     a.* = b.*;
     b.* = saved;
 }
+
 swap :: (a: $T, b: T) -> T #must, T #must {
     return b, a;
 }
+
 swap :: (a: *$T, b: *T) {
     Swap(a, b);
 }
+
 IsScalar :: (T: Type) -> bool #compile_time {
     info := type_info(T);
     return info.type == .INTEGER || info.type == .FLOAT || info.type == .BOOL || info.type == .ENUM;
 }
+
 get_field_with_offset :: (info: *Type_Info_Struct, name: string) -> *Type_Info_Struct_Member, offset_in_bytes: s64 {
     for *member: info.members if member.name == name return member, member.offset_in_bytes;
     return null, -1;
 }
+
 get_field :: (info: *Type_Info_Struct, name: string) -> *Type_Info_Struct_Member, offset_in_bytes: s64 {
     for *member: info.members if member.name == name return member, member.offset_in_bytes;
     for *member: info.members {
@@ -155,18 +175,22 @@ get_field :: (info: *Type_Info_Struct, name: string) -> *Type_Info_Struct_Member
     }
     return null, 0;
 }
+
 enum_names :: ($t: Type) -> [] string {
     return (cast(*Type_Info_Enum) type_info(t)).names;
 }
+
 enum_values_as_s64 :: ($T: Type) -> [] s64 {
     return (cast(*Type_Info_Enum) type_info(T)).values;
 }
+
 enum_values_as_enum :: ($T: Type) -> [] T {
     values := enum_values_as_s64(T);
     result, base := NewArray(values.count, T, false);
     for v, i: values result[i] = cast(T) v;
     return result;
 }
+
 // Enums with no values report 0, 0.
 enum_range_given_info :: (info: *Type_Info_Enum) -> (low: s64, high: s64) {
     values := info.values;
@@ -179,16 +203,20 @@ enum_range_given_info :: (info: *Type_Info_Enum) -> (low: s64, high: s64) {
     }
     return smallest, largest;
 }
+
 enum_range :: ($t: Type) -> (low: s64, high: s64) {
     return enum_range_given_info(cast(*Type_Info_Enum) type_info(t));
 }
+
 enum_highest_value :: ($t: Type) -> s64 {
     low, high := enum_range(t);
     return high;
 }
+
 remember_allocators :: (data: *$T) {
     _remember_allocators_by_info(data, type_info(T));
 }
+
 resizable :: (a: [] $T, set_allocators := true) -> [..] T {
     result: [..] T;
     result.count = a.count;
@@ -197,12 +225,14 @@ resizable :: (a: [] $T, set_allocators := true) -> [..] T {
     if set_allocators result.allocator = context.allocator;
     return result;
 }
+
 is_integer_type :: ($T: Type) -> (is_integer: bool, is_signed: bool, bits: u8) {
     info := type_info(T);
     if info.type != .INTEGER return false, false, 0;
     integer := cast(*Type_Info_Integer) info;
     return true, integer.signed, cast(u8) (8 * integer.runtime_size);
 }
+
 get_integer_range :: ($T: Type) -> (low: T, high: T) {
     integer, signed, bits := is_integer_type(T);
     assert(integer);
@@ -215,6 +245,7 @@ get_integer_range :: ($T: Type) -> (low: T, high: T) {
     }
     return low, high;
 }
+
 clamp_to_another_integer_type :: (value: $SourceType, $TargetType: Type) -> TargetType {
     src, src_signed, src_bits := is_integer_type(SourceType);
     dst, dst_signed, dst_bits := is_integer_type(TargetType);
@@ -228,9 +259,11 @@ clamp_to_another_integer_type :: (value: $SourceType, $TargetType: Type) -> Targ
     }
     return cast(TargetType) value;
 }
+
 pack_stack_trace :: () -> [] Stack_Trace_Node {
     return pack_stack_trace(context.stack_trace);
 }
+
 pack_stack_trace :: (node: *Stack_Trace_Node) -> [] Stack_Trace_Node {
     count: s64;
     cursor := node;
@@ -248,6 +281,7 @@ pack_stack_trace :: (node: *Stack_Trace_Node) -> [] Stack_Trace_Node {
     }
     return result;
 }
+
 print_stack_trace :: (node: *Stack_Trace_Node, prefix: string = "", to_standard_error := true) {
     cursor := node;
     while cursor {
@@ -255,6 +289,7 @@ print_stack_trace :: (node: *Stack_Trace_Node, prefix: string = "", to_standard_
         cursor = cursor.next;
     }
 }
+
 get_stack_trace_string :: (node: *Stack_Trace_Node) -> string {
     builder: String_Builder;
     cursor := node;
@@ -264,12 +299,15 @@ get_stack_trace_string :: (node: *Stack_Trace_Node) -> string {
     }
     return builder_to_string(*builder);
 }
+
 log_stack_trace :: (node: *Stack_Trace_Node, log_flags := Log_Flags.ERROR, prefix := "") {
     log("%%", prefix, get_stack_trace_string(node), flags = log_flags);
 }
+
 #scope_module
 // Shared by Basic's loaded files (allocation.jai, Memory_Debugger.jai...).
 Runtime_Support :: #import "Runtime_Support";
+
 #scope_file
 _remember_allocators_by_info :: (memory: *void, info: *Type_Info) {
     if info.type == .STRUCT {

@@ -2,16 +2,20 @@
 #load "color-math.jai";
 #load "color-compatibility.jai";
 #load "color-surfaces.jai";
+
 get_desired_aspect_ratio :: (theme: *Color_Animation_Editor_Theme) -> float {
     return 4.0 / max(1 - 2 * theme.vertical_padding, 0.1);
 }
+
 get_desired_aspect_ratio :: (theme: *Color_Picker_Theme) -> float {
     return 1.6 + theme.stashed_color_width + theme.margin_between_color_input_and_stashed_colors;
 }
+
 set_original_and_current_color_rgb :: (state: *Color_Picker_State, rgb: Vector3) {
     state.original_rgb_color = left_clip_rgb(rgb);
     set_current_color_rgb(state, null, rgb);
 }
+
 set_current_color_hsv :: (state: *Color_Picker_State, hsv: Vector3, update_zoom_hue := true) {
     state.current_hsv_color = .{ hsv.x - floor(hsv.x / 360) * 360, clamp(hsv.y, 0.0, 1.0), clamp(hsv.z, 0.0, 1.0) };
     r, g, b := hsv_to_rgb(state.current_hsv_color.x / 360, state.current_hsv_color.y, state.current_hsv_color.z);
@@ -21,6 +25,7 @@ set_current_color_hsv :: (state: *Color_Picker_State, hsv: Vector3, update_zoom_
     angle := state.current_hsv_color.x * PI / 180;
     state.ring_point = .{ cos(angle), sin(angle) };
 }
+
 set_current_color_rgb :: (state: *Color_Picker_State, theme: *Color_Picker_Theme, rgb: Vector3, update_hsv := true, maintain_h := FLOAT32_INFINITY, update_disc_point := true) {
     state.current_rgb_color = left_clip_rgb(rgb);
     if update_hsv {
@@ -30,10 +35,12 @@ set_current_color_rgb :: (state: *Color_Picker_State, theme: *Color_Picker_Theme
     }
     if update_disc_point state.disc_point = backsolve_disc_point_from_hsv(state, state.current_hsv_color.x, state.current_hsv_color.y, state.current_hsv_color.z);
 }
+
 hsv_to_argb :: (hsv: Vector3) -> Vector4 {
     r, g, b := hsv_to_rgb(hsv.x / 360, hsv.y, hsv.z);
     return .{ r, g, b, 1 };
 }
+
 stash_color :: (using state: *Color_Picker_State, color: Vector3) {
     if state.stashed_colors.count >= MAX_STASHED_COLORS {
         for i: 1..state.stashed_colors.count - 1 state.stashed_colors[i - 1] = state.stashed_colors[i];
@@ -41,13 +48,16 @@ stash_color :: (using state: *Color_Picker_State, color: Vector3) {
     }
     array_add(*state.stashed_colors, left_clip_rgb(color));
 }
+
 toggle_rectangle_picker_mode :: (state: *Color_Picker_State) {
     state.hsv_picker_in_rectangle_mode = !state.hsv_picker_in_rectangle_mode;
 }
+
 toggle_circle_picker_mode :: (state: *Color_Picker_State) {
     state.circle_picker_in_warped_mode = !state.circle_picker_in_warped_mode;
     state.disc_point = backsolve_disc_point_from_rgb(state, state.current_rgb_color);
 }
+
 color_picker :: (r: Rect, input_and_output_color_rgb: *Vector3, theme: *Color_Picker_Theme = null, identifier: s64 = 0, loc := #caller_location) -> (applied: bool, still_dragging: bool, state: *Color_Picker_State) {
     if !theme theme = *default_overall_theme.color_picker_theme;
     assert(input_and_output_color_rgb != null);
@@ -110,6 +120,7 @@ color_picker :: (r: Rect, input_and_output_color_rgb: *Vector3, theme: *Color_Pi
     dragging := state.dragging_in_ring || state.dragging_in_disc || state.dragging_in_h || state.dragging_in_s || state.dragging_in_l || state.dragging_in_r || state.dragging_in_g || state.dragging_in_b || state.dragging_in_hsv_rectangle;
     return applied, dragging, state;
 }
+
 draw_hsv_sliders :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_State) {
     row := area;
     row.h /= 4;
@@ -151,6 +162,7 @@ draw_hsv_sliders :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picke
     }
     if mouse_button_right_state & .START && has_focus(area) toggle_rectangle_picker_mode(state);
 }
+
 draw_rgb_sliders :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_State) {
     row := area;
     row.h /= 3;
@@ -163,6 +175,7 @@ draw_rgb_sliders :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picke
     changed = slider(row, *rgb.z, 0.0, 1.0, 0.01, *default_overall_theme.slider_theme, "B ", "", 3) || changed;
     if changed set_current_color_rgb(state, theme, rgb);
 }
+
 draw_type_ins :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_State) {
     row := area;
     row.h /= 3;
@@ -175,18 +188,21 @@ draw_type_ins :: (area: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_S
     changed = number_input(row, tprint("%", rgb.z), *rgb.z, 0.0, 1.0, *theme.type_ins_input_theme, 3) || changed;
     if changed set_current_color_rgb(state, theme, rgb);
 }
+
 set_keyframes :: (state: *Color_Animation_Editor_State, frames: [] Color_Keyframe) {
     state.color_keyframes.count = 0;
     for frame: frames array_add(*state.color_keyframes, .{ base = frame });
     state.dragging_in_strip = false;
     state.color_picker_subwindow_info.open = false;
 }
+
 get_keyframes :: (state: *Color_Animation_Editor_State) -> [] Color_Keyframe {
     sorted := get_sorted_keyframes(state);
     result := NewArray(sorted.count, Color_Keyframe,, Basic.temp);
     for frame, index: sorted result[index] = frame.base;
     return result;
 }
+
 get_sorted_keyframes :: (state: *Color_Animation_Editor_State, index_to_ignore := -1) -> [] *Augmented_Keyframe {
     result := NewArray(state.color_keyframes.count, *Augmented_Keyframe,, Basic.temp);
     result.count = 0;
@@ -205,14 +221,17 @@ get_sorted_keyframes :: (state: *Color_Animation_Editor_State, index_to_ignore :
     }
     return result;
 }
+
 get_interpolation :: (state: *Color_Animation_Editor_State) -> Interpolation {
     return .{ cast(type_of(Interpolation.color_space)) state.interpolation_color_space_s32, cast(type_of(Interpolation.geometry)) state.interpolation_geometry_s32, state.interpolation_wrapping };
 }
+
 set_interpolation :: (using state: *Color_Animation_Editor_State, interp: Interpolation) {
     state.interpolation_color_space_s32 = cast(s32) interp.color_space;
     state.interpolation_geometry_s32 = cast(s32) interp.geometry;
     state.interpolation_wrapping = interp.wrapping;
 }
+
 generate_color_samples :: (sorted: [] *$T/interface Color_Keyframe, interp: Interpolation, output_samples: [] Vector4) {
     for *sample, index: output_samples {
         t := ifx output_samples.count > 1 then cast(float) index / (output_samples.count - 1) else 0.0;
@@ -296,6 +315,7 @@ generate_color_samples :: (sorted: [] *$T/interface Color_Keyframe, interp: Inte
         sample.* = .{ rgb.x, rgb.y, rgb.z, lerp(sorted[left].color_rgb.w, sorted[right].color_rgb.w, u) };
     }
 }
+
 color_animation_editor :: (r: Rect, theme: *Color_Animation_Editor_Theme = null, identifier: s64 = 0, loc := #caller_location) -> (state: *Color_Animation_Editor_State) {
     if !theme theme = *default_overall_theme.color_animation_editor_theme;
     state, created := find_or_create_state(Color_Animation_Editor_State, get_hash(loc, identifier));
@@ -347,6 +367,7 @@ color_animation_editor :: (r: Rect, theme: *Color_Animation_Editor_Theme = null,
     draw_time_view(theme, state);
     return state;
 }
+
 open_color_picker :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State, keyframe_index: int, bar_rect: Rect) {
     if keyframe_index < 0 || keyframe_index >= state.color_keyframes.count return;
     state.color_picker_keyframe_index = keyframe_index;
@@ -362,9 +383,11 @@ open_color_picker :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animat
     info.draw = draw_callback_color_picker;
     info.user_data = state;
 }
+
 draw_color_picker :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State) {
     if state.color_picker_subwindow_info.open add_subwindow(*state.color_picker_subwindow_info, *theme.color_picker_subwindow_theme, cast(s64) state);
 }
+
 // The subwindow draw callback takes the Subwindow_State first only in y-up modules.
 #if GETRECT_Y_UP {
     draw_callback_color_picker :: (state: *Subwindow_State, r: Rect, data: *void) {
@@ -375,6 +398,7 @@ draw_color_picker :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animat
         color_picker_callback_body(r, data);
     }
 }
+
 #scope_module
 color_picker_callback_body :: (r: Rect, data: *void) {
     editor := cast(*Color_Animation_Editor_State) data;
@@ -385,6 +409,7 @@ color_picker_callback_body :: (r: Rect, data: *void) {
         editor.color_keyframes[editor.color_picker_keyframe_index].color_rgb = .{ color.x, color.y, color.z, 1 };
     }
 }
+
 #scope_export
 open_time_view :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State, bar_rect: Rect) {
     info := *state.time_view_subwindow_info;
@@ -394,9 +419,11 @@ open_time_view :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation
     info.user_data = state;
     if info.rect.w <= 0 info.rect = .{ bar_rect.x, ifx GETRECT_Y_UP then bar_rect.y - max(bar_rect.h, 64.0) else bar_rect.y + bar_rect.h, bar_rect.w, max(bar_rect.h, 64.0) };
 }
+
 draw_time_view :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation_Editor_State) {
     if state.time_view_subwindow_info.open add_subwindow(*state.time_view_subwindow_info, *theme.time_view_subwindow_theme, cast(s64) state + 713);
 }
+
 #scope_export
 #if GETRECT_Y_UP {
     draw_callback_time_view :: (state: *Subwindow_State, r: Rect, data: *void) {
@@ -407,6 +434,7 @@ draw_time_view :: (theme: *Color_Animation_Editor_Theme, state: *Color_Animation
         time_view_callback_body(r, data);
     }
 }
+
 #scope_module
 time_view_callback_body :: (r: Rect, data: *void) {
     editor := cast(*Color_Animation_Editor_State) data;
@@ -426,6 +454,7 @@ time_view_callback_body :: (r: Rect, data: *void) {
     generate_color_samples(shifted, interp, samples);
     left_color_fill(r, samples[0]);
 }
+
 #scope_export
 copy_output_to_clipboard :: (state: *Color_Animation_Editor_State, output_type: Output_Type) {
     builder: String_Builder;
@@ -439,16 +468,20 @@ copy_output_to_clipboard :: (state: *Color_Animation_Editor_State, output_type: 
     Left_Clipboard.os_clipboard_set_text(text);
     free_buffers(*builder);
 }
+
 #scope_module
 Left_Clipboard :: #import "Clipboard";
+
 left_color_fill :: (r: Rect, color: Vector4) {
     draw_procs.set_shader_for_color(true);
     p0, p1, p2, p3 := get_quad(r);
     draw_procs.immediate_quad(p0, p1, p2, p3, color);
 }
+
 left_clip_rgb :: (rgb: Vector3) -> Vector3 {
     return .{ clamp(rgb.x, 0.0, 1.0), clamp(rgb.y, 0.0, 1.0), clamp(rgb.z, 0.0, 1.0) };
 }
+
 left_color_disc :: (r: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_State) {
     center := xy(r.x + r.w / 2, r.y + r.h / 2);
     radius := min(r.w, r.h) * theme.outer_circle_diameter / 2;
@@ -490,6 +523,7 @@ left_color_disc :: (r: Rect, theme: *Color_Picker_Theme, state: *Color_Picker_St
     }
     left_sv_surface(plane, state, state.circle_picker_in_warped_mode);
 }
+
 left_color_space :: (rgba: Vector4, interp: Interpolation) -> Vector3 {
     rgb := Vector3.{ rgba.x, rgba.y, rgba.z };
     if interp.color_space == .HSV {
@@ -499,6 +533,7 @@ left_color_space :: (rgba: Vector4, interp: Interpolation) -> Vector3 {
     if interp.color_space == .OKLAB return linear_srgb_to_oklab(.{ left_decode_channel(rgb.x), left_decode_channel(rgb.y), left_decode_channel(rgb.z) });
     return rgb;
 }
+
 left_color_space_inverse :: (value: Vector3, interp: Interpolation) -> Vector3 {
     if interp.color_space == .HSV {
         r, g, b := hsv_to_rgb(value.x, value.y, value.z);
@@ -510,6 +545,7 @@ left_color_space_inverse :: (value: Vector3, interp: Interpolation) -> Vector3 {
     }
     return left_clip_rgb(value);
 }
+
 #scope_module
 // Moves a row to the next one down the screen (y-up decreases y, y-down increases it).
 advance_row :: (row: *Rect) {

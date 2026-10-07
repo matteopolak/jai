@@ -1,10 +1,12 @@
 // Linux-specific system interfaces on top of POSIX.
 #scope_file
 POSIX :: #import "POSIX";
+
 timeval :: POSIX.timeval;
 libc :: #system_library "libc";
 #scope_export
 KERN_SUCCESS :: 0;
+
 inotify_event :: struct {
     wd: s32;
     mask: u32;
@@ -12,6 +14,7 @@ inotify_event :: struct {
     len: u32;
     name: [0] u8; // C flexible array: `len` bytes follow the 16-byte header.
 }
+
 IN_CLOEXEC :: 0x80000;
 IN_NONBLOCK :: 0x00800;
 IN_ACCESS :: 0x00000001;
@@ -37,11 +40,14 @@ IN_EXCL_UNLINK :: 0x04000000;
 IN_MASK_ADD :: 0x20000000;
 IN_ISDIR :: 0x40000000;
 IN_ONESHOT :: 0x80000000;
+
 IN_ALL_EVENTS :: (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE | IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM
 | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF);
+
 inotify_init :: (flags: s32 = 0) -> s32 #foreign libc "inotify_init1";
 inotify_add_watch :: (fd: s32, pathname: *u8, mask: u32) -> s32 #foreign libc;
 inotify_rm_watch :: (fd: s32, wd: s32) -> s32 #foreign libc;
+
 sys_info :: struct {
     uptime: s64;
     loads: [3] u64;
@@ -58,7 +64,9 @@ sys_info :: struct {
     mem_unit: u32;
     _f: [20 - 2 * size_of(u64) - size_of(u32)] s8;
 }
+
 sysinfo :: (info: *sys_info) -> s32 #foreign libc;
+
 input_absinfo :: struct {
     value: s32;
     minimum: s32;
@@ -67,12 +75,14 @@ input_absinfo :: struct {
     flat: s32;
     resolution: s32;
 }
+
 input_event :: struct {
     time: timeval;
     type: u16;
     code: u16;
     value: s32;
 }
+
 EV_SYN :: 0x00;
 EV_KEY :: 0x01;
 EV_REL :: 0x02;
@@ -99,6 +109,7 @@ BTN_MISC :: 0x100;
 BTN_JOYSTICK :: 0x120;
 KEY_MAX :: 0x2ff;
 ABS_MAX :: 0x3f;
+
 #load "io_uring.jai";
 #load "epoll.jai";
 #import "POSIX";

@@ -1,7 +1,9 @@
 #scope_file
 SDL_Gamepad :: #import "SDL";
+
 sdl_controller: *SDL_Gamepad.SDL_GameController;
 sdl_gamepad_initialized := false;
+
 #scope_export
 // Explicit optional SDL2 provider uses the installed SDL mapping database.
 use_sdl_gamepad :: () -> bool {
@@ -12,6 +14,7 @@ use_sdl_gamepad :: () -> bool {
     gamepad_sample_source = sample_sdl_gamepad;
     return true;
 }
+
 close_sdl_gamepad :: () {
     if sdl_controller {
         SDL_Gamepad.SDL_GameControllerClose(sdl_controller);
@@ -22,6 +25,7 @@ close_sdl_gamepad :: () {
         sdl_gamepad_initialized = false;
     }
 }
+
 sample_sdl_gamepad :: (sample: *Gamepad_Sample) -> bool {
     sample.* = .{};
     if !sdl_gamepad_initialized return false;
@@ -49,6 +53,7 @@ sample_sdl_gamepad :: (sample: *Gamepad_Sample) -> bool {
     for button, index: buttons if SDL_Gamepad.SDL_GameControllerGetButton(sdl_controller, button) != 0 sample.buttons |= (cast(u32) 1) << cast(s64) codes[index];
     return true;
 }
+
 #scope_file
 sdl_axis :: (axis: SDL_Gamepad.SDL_GameControllerAxis) -> float {
     raw := SDL_Gamepad.SDL_GameControllerGetAxis(sdl_controller, axis);

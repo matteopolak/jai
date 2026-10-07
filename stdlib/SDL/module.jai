@@ -10,18 +10,22 @@ using SDL_INIT_FLAGS :: enum_flags u32 {
     SDL_INIT_NOPARACHUTE :: 0x00100000;
     SDL_INIT_EVERYTHING :: (SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
 }
+
 SDL_Init :: (flags: SDL_INIT_FLAGS) -> s32 #foreign SDL2;
 SDL_InitSubSystem :: (flags: SDL_INIT_FLAGS) -> s32 #foreign SDL2;
 SDL_QuitSubSystem :: (flags: SDL_INIT_FLAGS) #foreign SDL2;
 SDL_WasInit :: (flags: SDL_INIT_FLAGS) -> SDL_INIT_FLAGS #foreign SDL2;
 SDL_Quit :: () #foreign SDL2;
 SDL_GetPlatform :: () -> *u8 #foreign SDL2;
+
 using SDL_bool :: enum u32 {
     SDL_FALSE :: 0;
     SDL_TRUE :: 1;
 }
+
 SDL_GetError :: () -> *u8 #foreign SDL2;
 SDL_ClearError :: () #foreign SDL2;
+
 #load "SDL_version.jai";
 #load "SDL_video.jai";
 #load "SDL_surface.jai";
@@ -41,6 +45,7 @@ SDL_ClearError :: () #foreign SDL2;
 #load "SDL_blendmode.jai";
 #load "SDL_audio.jai";
 #load "SDL_gamecontroller.jai";
+
 #scope_export
 #if OS == .WINDOWS {
     SDL2 :: #system_library "SDL2";
@@ -50,6 +55,7 @@ SDL_ClearError :: () #foreign SDL2;
 
 } else #if OS == .LINUX {
     #import "X11";
+
     SDL2 :: #system_library "SDL2";
 
 

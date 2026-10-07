@@ -3,18 +3,24 @@
 NUM_POINTERS :: #run enum_highest_value(Pointer_Image) + 1;
 left_pointers_initialized: bool;
 left_pointer_requested: bool;
+
 left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
     left_pointer_requested = true;
     if draw_procs.set_pointer_image draw_procs.set_pointer_image(image, widget);
 }
+
 #if OS == .MACOS {
     Cursor_ObjC :: #import "Objective_C/AppKit";
+
     using Cursor_ObjC;
 }
+
 #scope_export
 #if OS == .WINDOWS {
     Windows :: #import "Windows";
+
     pointers: [NUM_POINTERS] Windows.HCURSOR;
+
     init_pointers :: () {
         names: [NUM_POINTERS] *void = .[Windows.IDC_ARROW, Windows.IDC_HAND, Windows.IDC_NO, Windows.IDC_SIZEWE, Windows.IDC_SIZENS, Windows.IDC_SIZEALL, Windows.IDC_SIZENWSE, Windows.IDC_SIZENESW];
         for name, index: names {
@@ -23,6 +29,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
         }
         left_pointers_initialized = true;
     }
+
     getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
         if events_occluded(widget) return;
         left_pointer_requested = true;
@@ -37,6 +44,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
     }
 } else #if OS == .MACOS {
     pointers: [NUM_POINTERS] *NSCursor;
+
     init_pointers :: () {
         pointers[0] = NSCursor.arrowCursor();
         pointers[1] = NSCursor.pointingHandCursor();
@@ -50,6 +58,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
         for cursor: pointers assert(cursor != null, "AppKit cursor class method returned nil");
         left_pointers_initialized = true;
     }
+
     getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
         if events_occluded(widget) return;
         left_pointer_requested = true;
@@ -67,6 +76,7 @@ left_request_cursor :: (image: Pointer_Image, widget: *Active_Widget) {
         assert(pointer_image_sink != null, "This target needs a cursor provider");
         left_pointers_initialized = pointer_image_sink != null;
     }
+
     getrect_set_pointer_image :: (image: Pointer_Image, widget: *Active_Widget) {
         if events_occluded(widget) return;
         left_pointer_requested = true;

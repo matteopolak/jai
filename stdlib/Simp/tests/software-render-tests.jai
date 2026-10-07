@@ -1,6 +1,7 @@
 S :: #import "Simp"(render_api = .SOFTWARE);
 M :: #import "Math";
 B :: #import "Basic";
+
 software_render_cases :: () -> bool {
     size, stride := S.get_image_size(.BC1, 5, 7);
     if size != 32 || stride != 16 return false;
@@ -39,7 +40,9 @@ software_render_cases :: () -> bool {
     if source.mipmap_count != 3 || source.data.count != 21 || source.data[16] != 3 || source.data[20] != 8 return false;
     return true;
 }
+
 #assert #run software_render_cases();
+
 main :: () {
     software_render_cases();
 }

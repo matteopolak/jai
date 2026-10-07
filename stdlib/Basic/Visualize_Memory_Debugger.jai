@@ -24,12 +24,14 @@ vis_init :: () {
     vis_channel = channel;
     vis_enabled = true;
 }
+
 vis_fini :: () {
     if vis_enabled MD_Channel.writer_disconnect(*vis_channel);
     vis_enabled = false;
     vis_initted = false;
     last_vis_init_time = APOLLO_TIME_INVALID;
 }
+
 vis_update_if_it_has_been_long_enough :: () {
     if context.inside_memory_debugger || did_user_level_per_frame_update return;
     now := current_time_monotonic();
@@ -37,6 +39,7 @@ vis_update_if_it_has_been_long_enough :: () {
     vis_update();
     last_update_time = now;
 }
+
 vis_update :: () {
     if context.inside_memory_debugger return;
     // Without a connected visualizer there is nothing to send: skip the report (it walks every
@@ -160,6 +163,7 @@ _vis_send :: (data: *void, bytes: s64) -> bool {
     }
     return true;
 }
+
 _vis_string :: (table: *MD_Strings.Table(string, s32), value: string) -> (index: s32, success: bool) {
     found, existing := MD_Strings.table_find(table, value);
     if found return existing, true;
@@ -180,6 +184,7 @@ _vis_string :: (table: *MD_Strings.Table(string, s32), value: string) -> (index:
     MD_Strings.table_set(table, value, index);
     return index, true;
 }
+
 _vis_trace :: (trace: *Packed_Stack_Trace, strings: *MD_Strings.Table(string, s32)) -> bool {
     if !trace return true;
     for node: trace.nodes {
@@ -210,6 +215,7 @@ _vis_trace :: (trace: *Packed_Stack_Trace, strings: *MD_Strings.Table(string, s3
     }
     return true;
 }
+
 #scope_export
 memory_visualizer_per_frame_update :: () {
     did_user_level_per_frame_update = true;

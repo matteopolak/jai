@@ -3,8 +3,10 @@ Thread_Continue_Status :: enum {
     CONTINUE;
     STOP;
 }
+
 Thread_Group_Proc :: #type *void;
 Native_Thread_Group_Proc :: #type (group: *Thread_Group, thread: *Thread, work: *void) -> Thread_Continue_Status;
+
 Thread_Group :: struct {
     threads: [..] Thread;
     completed_work: [..] *void;
@@ -51,6 +53,7 @@ Thread_Group :: struct {
     should_exit := false;
     enable_work_stealing: bool;
 }
+
 Work_List :: Thread_Group.Work_List;
 Work_Entry :: Thread_Group.Work_Entry;
 
@@ -59,6 +62,7 @@ init :: (group: *Thread_Group, num_threads: int, group_proc: Thread_Group_Proc,
     return init(group, cast(s32) num_threads, cast(Native_Thread_Group_Proc) group_proc,
         enable_work_stealing, 16384);
 }
+
 init :: (using group: *Thread_Group, num_threads: s32, group_proc: Native_Thread_Group_Proc,
     enable_work_stealing := false, temporary_storage_size: s32 = 16384) -> bool {
     if group == null || initted || num_threads <= 0 || group_proc == null return false;
@@ -121,6 +125,7 @@ init :: (using group: *Thread_Group, num_threads: s32, group_proc: Native_Thread
     shutdown_requested = false;
     return true;
 }
+
 start :: (group: *Thread_Group) -> bool {
     if group == null || !group.initted || group.started || group.shutdown_requested return false;
     for *thread: group.threads {
@@ -133,6 +138,7 @@ start :: (group: *Thread_Group) -> bool {
     group.started = true;
     return true;
 }
+
 add_work :: (group: *Thread_Group, work: *void, logging_name := "") -> bool {
     if group == null || !group.initted || group.shutdown_requested return false;
     entry := cast(*Work_Entry) alloc(size_of(Work_Entry), group.allocator);
@@ -149,6 +155,7 @@ add_work :: (group: *Thread_Group, work: *void, logging_name := "") -> bool {
     }
     return true;
 }
+
 get_completed_work :: (group: *Thread_Group) -> [..] *void {
     if group == null {
         empty: [..] *void;
@@ -165,6 +172,7 @@ get_completed_work :: (group: *Thread_Group) -> [..] *void {
     }
     return group.completed_work;
 }
+
 shutdown :: (using group: *Thread_Group, timeout_milliseconds: s32 = -1) -> bool {
     if group == null || !initted return true;
     shutdown_requested = true;
@@ -206,6 +214,7 @@ init_work_list :: (list: *Work_List) -> bool {
     destroy(*list.mutex);
     return false;
 }
+
 deinit_work_list :: (list: *Work_List, allocator: Allocator) {
     entry := list.first;
     while entry != null {
@@ -217,6 +226,7 @@ deinit_work_list :: (list: *Work_List, allocator: Allocator) {
     destroy(*list.mutex);
     list.* = .{};
 }
+
 append_work :: (list: *Work_List, entry: *Work_Entry) {
     entry.next = null;
     lock(*list.mutex);
@@ -227,6 +237,7 @@ append_work :: (list: *Work_List, entry: *Work_Entry) {
     unlock(*list.mutex);
     signal(*list.semaphore);
 }
+
 pop_work :: (list: *Work_List) -> *Work_Entry {
     lock(*list.mutex);
     defer unlock(*list.mutex);
@@ -238,6 +249,7 @@ pop_work :: (list: *Work_List) -> *Work_Entry {
     entry.next = null;
     return entry;
 }
+
 thread_group_run :: (thread: *Thread) -> s64 {
     worker := thread.worker_info;
     group := worker.group;
@@ -261,6 +273,7 @@ thread_group_run :: (thread: *Thread) -> s64 {
     }
     return 0;
 }
+
 get_time :: (group: *Thread_Group) -> float64 {
     if group.time_proc != null return group.time_proc();
     #if POSIX_THREADS {

@@ -6,12 +6,15 @@
 cursor_kind :: (c: Cursor) -> Cursor_Kind {
     return cast(Cursor_Kind) clang("kind", c);
 }
+
 cursor_name :: (c: Cursor) -> string {
     return clang_string("spelling", c);
 }
+
 type_name_of :: (t: Clang_Type) -> string {
     return clang_string("t_spelling", t);
 }
+
 type_kind :: (t: Clang_Type) -> s64 {
     return clang("t_kind", t);
 }

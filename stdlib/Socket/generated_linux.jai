@@ -837,6 +837,7 @@ sockatmark :: (__fd: s32) -> s32 #foreign libc;
 isfdtype :: (__fd: s32, __fdtype: s32) -> s32 #foreign libc;
 
 in_addr_t :: u32;
+
 in_addr :: struct {
     s_addr: in_addr_t;
 }

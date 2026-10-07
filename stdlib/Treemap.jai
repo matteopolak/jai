@@ -1,8 +1,10 @@
 // Hierarchy weights and independent squarified display rectangles.
 #scope_file;
+
 #import "Basic";
 #import "Math";
 Buckets :: #import "Bucket_Array";
+
 #scope_export;
 
 Border_Direction :: enum u8 {
@@ -256,6 +258,7 @@ Tree_State :: struct {
     tree: *Treemap;
     generation: s64;
 }
+
 Display_State :: struct {
     display: *Treemap_Display;
     tree: *Treemap;
@@ -263,6 +266,7 @@ Display_State :: struct {
     data: *Display_Node;
     border_proc: Border_Proc;
 }
+
 tree_states: [..] Tree_State;
 display_states: [..] Display_State;
 

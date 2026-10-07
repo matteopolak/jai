@@ -9235,12 +9235,15 @@ GL_Procedures :: struct #type_info_procedures_are_void_pointers #type_info_no_si
     }
     #if OS == .LINUX {}
 }
+
 gl: GL_Procedures;
+
 #if OS == .WINDOWS {
     gl_lib :: #system_library "opengl32";
 } else #if OS == .MACOS {
     gl_lib :: #system_library "OpenGL";
 } else #if OS == .LINUX {
     #import "X11";
+
     gl_lib :: #system_library "GL";
 }

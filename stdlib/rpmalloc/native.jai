@@ -14,12 +14,14 @@ Native_Config :: struct {
     page_name: *u8;
     huge_page_name: *u8;
 }
+
 Allocation_Record :: struct {
     next: *Allocation_Record;
     memory: *void;
     capacity: u64;
     heap: *void;
 }
+
 rp_records: *Allocation_Record;
 rp_records_lock: s32;
 rp_initialized: bool;
@@ -37,9 +39,11 @@ rp_lock :: () {
         if locked return;
     }
 }
+
 rp_unlock :: () {
     compare_and_swap(*rp_records_lock, 1, 0);
 }
+
 rp_record :: (memory: *void, heap: *void) {
     if !memory return;
     record := cast(*Allocation_Record) native_allocate(size_of(Allocation_Record));
@@ -52,6 +56,7 @@ rp_record :: (memory: *void, heap: *void) {
     rp_records = record;
     rp_unlock();
 }
+
 rp_forget :: (memory: *void) {
     if !memory return;
     rp_lock();
@@ -67,6 +72,7 @@ rp_forget :: (memory: *void) {
     }
     rp_unlock();
 }
+
 rp_owns :: (heap: *void, memory: *void) -> bool {
     if !memory return false;
     address := cast(u64) memory;
@@ -80,6 +86,7 @@ rp_owns :: (heap: *void, memory: *void) -> bool {
     }
     return false;
 }
+
 rp_allocate :: (heap: *void, size: s64, alignment: s64) -> *void {
     if size < 0 || alignment < 0 return null;
     result: *void;
@@ -93,12 +100,14 @@ rp_allocate :: (heap: *void, size: s64, alignment: s64) -> *void {
     rp_record(result, heap);
     return result;
 }
+
 rp_callocate :: (heap: *void, count: u64, size: u64, alignment: u64) -> *void {
     if count != 0 && size > cast(u64) Math.S64_MAX / count return null;
     result := rp_allocate(heap, cast(s64) (count * size), cast(s64) alignment);
     if result memset(result, 0, cast(s64) (count * size));
     return result;
 }
+
 rp_reallocate :: (heap: *void, memory: *void, size: s64, alignment: s64, oldsize: s64, flags: Realloc_Flags) -> *void {
     if size < 0 || alignment < 0 || oldsize < 0 return null;
     result: *void;
@@ -116,11 +125,13 @@ rp_reallocate :: (heap: *void, memory: *void, size: s64, alignment: s64, oldsize
     }
     return result;
 }
+
 rp_free :: (heap: *void, memory: *void) {
     rp_forget(memory);
     if heap native_heap_free(heap, memory);
     else native_free(memory);
 }
+
 rp_free_all :: (heap: *void) {
     rp_lock();
     link := *rp_records;
@@ -134,11 +145,13 @@ rp_free_all :: (heap: *void) {
     rp_unlock();
     native_heap_free_all(heap);
 }
+
 rp_initialize_default :: () -> s32 {
     result := native_initialize();
     if result == 0 rp_initialized = true;
     return result;
 }
+
 rp_initialize_config :: (config: *rpmalloc_config_t) -> s32 {
     if !config return rp_initialize_default();
     rp_public_config = config.*;
@@ -166,6 +179,7 @@ rp_initialize_config :: (config: *rpmalloc_config_t) -> s32 {
     }
     return result;
 }
+
 rp_get_config :: () -> *rpmalloc_config_t {
     native := native_config();
     rp_public_config.page_size = cast(type_of(rp_public_config.page_size)) native.page_size;
@@ -174,6 +188,7 @@ rp_get_config :: () -> *rpmalloc_config_t {
     rp_public_config.enable_huge_pages = cast(type_of(rp_public_config.enable_huge_pages)) native.enable_huge_pages;
     return *rp_public_config;
 }
+
 rp_finalize :: () {
     rp_lock();
     while rp_records {
@@ -191,15 +206,18 @@ rp_finalize :: () {
     rp_huge_page_name = null;
     rp_allocator_owns_initialization = false;
 }
+
 rp_set_main_thread :: () {
     if !rp_main_heap rp_main_heap = native_heap_acquire();
     native_heap_thread_set_current(rp_main_heap);
 }
+
 rp_map_callback :: (size: u64, offset: *u64) -> *void #c_call {
     push_context rp_callback_context {
         return rp_public_config.memory_map(cast(type_of(rp_public_config.page_size)) size, cast(*type_of(rp_public_config.page_size)) offset);
     }
 }
+
 rp_unmap_callback :: (address: *void, size: u64, offset: u64, release: u64) #c_call {
     push_context rp_callback_context {
         rp_public_config.memory_unmap(address, cast(type_of(rp_public_config.page_size)) size,
@@ -207,6 +225,7 @@ rp_unmap_callback :: (address: *void, size: u64, offset: u64, release: u64) #c_c
                                        cast(type_of(rp_public_config.page_size)) release);
     }
 }
+
 rp_error_callback :: (message: *u8) #c_call {
     push_context rp_callback_context {
         length: s64;
@@ -216,6 +235,7 @@ rp_error_callback :: (message: *u8) #c_call {
         else rp_public_config.error_callback(text, .{});
     }
 }
+
 rp_map_fail_callback :: (size: u64) -> s32 #c_call {
     push_context rp_callback_context {
         return rp_public_config.map_fail_callback(cast(type_of(rp_public_config.page_size)) size);

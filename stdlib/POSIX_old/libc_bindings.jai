@@ -1,25 +1,30 @@
 // libc functions shared by every Unix target of POSIX_old.
 sysconf :: (name: _SC_definitions) -> s64 #foreign libc;
 strsignal :: (sig: s32) -> *u8 #foreign libc;
+
 #if OS == .LINUX {
     syscall :: (number: s64, args: ..Any) -> s64 #foreign libc;
 } else #if OS == .MACOS {
     syscall :: (number: s32, args: ..Any) -> s32 #foreign libc;
     __syscall :: (number: quad_t, args: ..Any) -> s32 #foreign libc;
 }
+
 getpwent :: () -> *passwd #foreign libc;
 setpwent :: () #foreign libc;
 endpwent :: () #foreign libc;
+
 #if OS == .LINUX {
     timerfd_create :: (clockid: s32, flags: s32) -> s32 #foreign libc;
     timerfd_settime :: (fd: s32, flags: s32, new_value: *itimerspec, old_value: *itimerspec) -> s32 #foreign libc;
 }
+
 #scope_module
 #if OS == .LINUX {
     __errno_location :: () -> *OS_Error_Code #foreign libc;
 } else #if OS == .MACOS {
     __errno_location :: () -> *OS_Error_Code #foreign libc "__error";
 }
+
 #scope_export
 #if OS == .MACOS {
     htonl :: (hostlong: u32) -> u32 #foreign libc;
@@ -27,6 +32,7 @@ endpwent :: () #foreign libc;
     ntohl :: (netlong: u32) -> u32 #foreign libc;
     ntohs :: (netshort: u16) -> u16 #foreign libc;
 }
+
 write :: (fd: s32, buf: *void, count: size_t) -> ssize_t #foreign libc;
 pwrite :: (fd: s32, buf: *void, count: size_t, offset: off_t) -> ssize_t #foreign libc;
 getenv :: (name: *u8) -> *u8 #foreign libc;
@@ -47,9 +53,11 @@ fork :: () -> pid_t #foreign libc;
 dupfd :: (oldfd: s32) -> s32 #foreign libc "dup";
 dup2 :: (oldfd: s32, newfd: s32) -> s32 #foreign libc;
 pipe :: (pipefd: *[2] s32) -> s32 #foreign libc;
+
 #if OS == .LINUX {
     pipe2 :: (pipefd: *[2] s32, flags: s32) -> s32 #foreign libc;
 }
+
 shmget :: (key: key_t, size: size_t, shmflg: s32) -> s32 #foreign libc;
 shm_open :: (name: *u8, oflag: s32, mode: mode_t) -> s32 #foreign librt;
 shm_unlink :: (name: *u8) -> s32 #foreign librt;
@@ -66,11 +74,13 @@ fopen :: (pathname: *u8, mode: *u8) -> *FILE #foreign libc;
 fclose :: (stream: *FILE) -> s32 #foreign libc;
 ftell :: (stream: *FILE) -> s64 #foreign libc;
 ftello :: (stream: *FILE) -> s64 #foreign libc;
+
 #if OS == .LINUX {
     ftello64 :: (stream: *FILE) -> s64 #foreign libc;
 } else {
     ftello64 :: ftello;
 }
+
 fread :: (ptr: *void, size: size_t, count: size_t, stream: *FILE) -> size_t #foreign libc;
 fwrite :: (ptr: *void, size: size_t, count: size_t, stream: *FILE) -> size_t #foreign libc;
 fseek :: (stream: *FILE, offset: s64, whence: s32) -> s32 #foreign libc;
@@ -84,6 +94,7 @@ link :: (oldpath: *u8, newpath: *u8) -> s32 #foreign libc;
 uname :: (name: *utsname) -> s32 #foreign libc;
 gethostname :: (name: *s8, namelen: size_t) -> s32 #foreign libc;
 closedir :: (dirp: *DIR) -> s32 #foreign libc;
+
 #if OS == .MACOS {
     opendir :: (dirname: *u8) -> *DIR #foreign libc "opendir$INODE64";
     readdir :: (dirp: *DIR) -> *dirent #foreign libc "readdir$INODE64";
@@ -99,6 +110,7 @@ closedir :: (dirp: *DIR) -> s32 #foreign libc;
     seekdir :: (dirp: *DIR, loc: s64) #foreign libc;
     telldir :: (dirp: *DIR) -> s64 #foreign libc;
 }
+
 access :: (pathname: *u8, mode: s32) -> s32 #foreign libc;
 readlink :: (path: *u8, buf: *u8, bufsize: size_t) -> ssize_t #foreign libc;
 realpath :: (filename: *u8, symlink: *u8) -> *u8 #foreign libc;
@@ -115,8 +127,10 @@ sigaction :: (signum: s32, act: *sigaction_t, oldact: *sigaction_t) -> s32 #fore
 sigemptyset :: (set: *sigset_t) -> s32 #foreign libc;
 sigaddset :: (set: *sigset_t, signum: s32) -> s32 #foreign libc;
 sigprocmask :: (how: s32, set: *sigset_t, oldset: *sigset_t) -> s32 #foreign libc;
+
 #if OS == .LINUX {
     signalfd :: (fd: s32, mask: *sigset_t, flags: s32) -> s32 #foreign libc;
+
     signalfd_siginfo :: struct {
         ssi_signo: u32;
         ssi_errno: s32;
@@ -141,15 +155,18 @@ sigprocmask :: (how: s32, set: *sigset_t, oldset: *sigset_t) -> s32 #foreign lib
         ssi_arch: u32;
         pad: [28] u8;
     };
+
     #assert(size_of(signalfd_siginfo) == 128);
     eventfd :: (initval: s32, flags: s32) -> s32 #foreign libc;
 }
+
 backtrace :: (array: **void, size: s32) -> s32 #foreign libexecinfo;
 backtrace_symbols :: (array: **void, size: s32) -> **u8 #foreign libexecinfo;
 backtrace_symbols_fd :: (array: **void, size: s32, fd: s32) #foreign libexecinfo;
 getpid :: () -> pid_t #foreign libc;
 getsid :: (pid: pid_t) -> pid_t #foreign libc;
 getppid :: () -> pid_t #foreign libc;
+
 #if OS == .LINUX {
     sem_init :: (sem: *sem_t, pshared: s32, value: u32) -> s32 #foreign pthreads;
     sem_destroy :: (sem: *sem_t) -> s32 #foreign pthreads;
@@ -157,6 +174,7 @@ getppid :: () -> pid_t #foreign libc;
     sem_wait :: (sem: *sem_t) -> s32 #foreign pthreads;
     sem_timedwait :: (sem: *sem_t, abs_timeout: *timespec) -> s32 #foreign pthreads;
 }
+
 clock_gettime :: (clk: clockid_t, tp: *timespec) -> int #foreign librt;
 clock_getres :: (clk: clockid_t, tp: *timespec) -> int #foreign librt;
 clock_settime :: (clk: clockid_t, tp: *timespec) -> int #foreign librt;
@@ -169,11 +187,13 @@ read :: (fd: s32, buf: *void, count: size_t) -> ssize_t #foreign libc;
 pread :: (fd: s32, buf: *void, count: size_t, offset: off_t) -> ssize_t #foreign libc;
 close :: (fd: s32) -> s32 #foreign libc;
 ftruncate :: (fd: s32, length: off_t) -> s32 #foreign libc;
+
 #if OS == .LINUX {} else #if OS == .MACOS {
     stat :: (path: *u8, buf: *stat_t) -> s32 #foreign libc "stat$INODE64";
     fstat :: (fd: s32, buf: *stat_t) -> s32 #foreign libc "fstat$INODE64";
     lstat :: (path: *u8, buf: *stat_t) -> s32 #foreign libc "lstat$INODE64";
 }
+
 aio_cancel :: (fd: s32, aiocbp: *aiocb_t) -> s32 #foreign librt;
 aio_error :: (aiocbp: *aiocb_t) -> s32 #foreign librt;
 aio_fsync :: (op: s32, aiocbp: *aiocb_t) -> s32 #foreign librt;
@@ -182,27 +202,33 @@ aio_return :: (aiocbp: *aiocb_t) -> ssize_t #foreign librt;
 aio_suspend :: (aiocblist: **aiocb_t, nent: s32, timeout: *timespec) -> s32 #foreign librt;
 aio_write :: (aiocbp: *aiocb_t) -> s32 #foreign librt;
 lio_listio :: (mode: s32, aiocblist: **aiocb_t, nent: s32, sigp: *sigevent_t) -> s32 #foreign librt;
+
 #if OS == .MACOS {
     getattrlistbulk :: (dirfd: s32, attrList: *attrlist_t, attrBuf: *void, attrBufSize: size_t, options: u64) -> s32 #foreign libc;
 }
+
 dynamic_linker :: #system_library "libdl";
 dlopen :: (filename: *u8, flag: s32) -> *void #foreign dynamic_linker;
 dlerror :: () -> *u8 #foreign dynamic_linker;
 dlsym :: (handle: *void, symbol: *u8) -> *void #foreign dynamic_linker;
+
 #if OS == .LINUX && GNU_ENV {
     dlvsym :: (handle: *void, symbol: *u8, version: *u8) -> *void #foreign dynamic_linker;
 }
+
 dlclose :: (handle: *void) -> s32 #foreign dynamic_linker;
 #scope_file
 libc :: #system_library "libc";
 libm :: #system_library "libm";
 #if OS == .LINUX librt :: #system_library "librt";
 else #if OS == .MACOS librt :: libc;
+
 #if OS == .LINUX && !GNU_ENV {
     libexecinfo :: #system_library "libexecinfo";
 } else {
     libexecinfo :: libc;
 }
+
 pthreads :: #system_library "libpthread";
 
 #scope_export

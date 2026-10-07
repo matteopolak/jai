@@ -1,7 +1,10 @@
 #scope_file
 Math :: #import "Math";
+
 Vector2 :: Math.Vector2;
+
 Input :: #import "Input";
+
 Key_Current_State :: Input.Key_Current_State;
 #scope_export
 
@@ -25,7 +28,9 @@ Gamepad :: struct {
     left_trigger_threshold: float;
     right_trigger_threshold: float;
 }
+
 gamepad: Gamepad;
+
 Gamepad_Code :: enum {
     DPAD_UP;
     DPAD_DOWN;
@@ -61,6 +66,7 @@ Gamepad_Sample :: struct {
     left_trigger: float;
     right_trigger: float;
 }
+
 gamepad_sample_source: (sample: *Gamepad_Sample) -> bool = null;
 
 init_gamepad :: () {
@@ -111,6 +117,7 @@ update_gamepad :: () {
 
 #scope_file
 #import "Basic";
+
 filter_stick :: (stick: Vector2, deadzone: float, angle: float) -> Vector2 {
     length := Math.sqrt(stick.x * stick.x + stick.y * stick.y);
     zone := clamp(deadzone, 0.0, 0.9999);
@@ -120,10 +127,12 @@ filter_stick :: (stick: Vector2, deadzone: float, angle: float) -> Vector2 {
     y := stick.y * scale;
     return .{ x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle) };
 }
+
 filter_trigger :: (value: float, deadzone: float) -> float {
     zone := clamp(deadzone, 0.0, 0.9999);
     return clamp((value - zone) / (1 - zone), 0.0, 1.0);
 }
+
 update_button_state :: (pressed: bool, code: Gamepad_Code) {
     index := cast(s64) code;
     button := *gamepad.buttons[index];
@@ -142,6 +151,7 @@ update_button_state :: (pressed: bool, code: Gamepad_Code) {
 
 #if OS == .WINDOWS {
     #load "Xinput.jai";
+
     sample_xinput :: (sample: *Gamepad_Sample) -> bool {
         sample.* = .{};
         state: XINPUT_STATE;

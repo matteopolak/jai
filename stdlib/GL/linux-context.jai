@@ -157,11 +157,13 @@
     #scope_file
     NativeGLX :: #import "X11";
     GLXAtomics :: #import "Atomics";
+
     _glx_error_guard: s32;
     _glx_error_display: *NativeGLX.Display;
     _glx_error_first_serial: u64;
     _glx_error_observed: bool;
     _glx_previous_handler: NativeGLX.XErrorHandler;
+
     _glx_context_error :: (display: *NativeGLX.Display, event: *NativeGLX.XErrorEvent) -> s32 #c_call {
         if display == _glx_error_display && event.serial >= _glx_error_first_serial {
             _glx_error_observed = true;

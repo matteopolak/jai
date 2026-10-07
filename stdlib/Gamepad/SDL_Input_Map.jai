@@ -1,5 +1,6 @@
 // Classic SDL2 mapping surface. No copied controller database.
 #import "Basic";
+
 SDL_Input_Target :: enum {
     UNINITIALIZED;
     LEFTX;
@@ -24,33 +25,39 @@ SDL_Input_Target :: enum {
     X;
     Y;
 }
+
 SDL_Input_Type :: enum {
     UNINITIALIZED;
     BUTTON;
     AXIS;
     HAT;
 }
+
 SDL_Input_Map :: struct {
     target: SDL_Input_Target;
     type: SDL_Input_Type;
     index: s32 = -1;
     subindex: s32 = -1;
 }
+
 SDL_Gamepad_Mapping :: struct {
     guid: string;
     name: string;
     platform: string;
     mappings: [..] SDL_Input_Map;
 }
+
 SDL_HAT_UP_BIT :: 0x01;
 SDL_HAT_RIGHT_BIT :: 0x02;
 SDL_HAT_DOWN_BIT :: 0x04;
 SDL_HAT_LEFT_BIT :: 0x08;
+
 input_name_to_input_target :: (name: string) -> SDL_Input_Target {
     names: [21] string = .["leftx", "rightx", "lefty", "righty", "lefttrigger", "righttrigger", "dpleft", "dpright", "dpup", "dpdown", "back", "guide", "start", "leftshoulder", "rightshoulder", "leftstick", "rightstick", "a", "b", "x", "y"];
     for candidate, index: names if name == candidate return cast(SDL_Input_Target) (index + 1);
     return .UNINITIALIZED;
 }
+
 parse_gamepad_mapping_string :: (input: string) -> map: SDL_Gamepad_Mapping, success: bool {
     cursor: s64 = 0;
     guid := mapping_token(input, *cursor, 44);
@@ -120,12 +127,14 @@ parse_gamepad_mapping_string :: (input: string) -> map: SDL_Gamepad_Mapping, suc
     }
     return map, true;
 }
+
 deinit :: (map: SDL_Gamepad_Mapping) {
     free(map.guid);
     free(map.name);
     free(map.platform);
     array_free(map.mappings);
 }
+
 get_guid_string :: (bustype: s16, vendor: s16, product: s16, version: s16) -> temp_string: string {
     bytes: [16] u8;
     words: [4] u16 = .[cast(u16) bustype, cast(u16) vendor, cast(u16) product, cast(u16) version];
@@ -142,6 +151,7 @@ get_guid_string :: (bustype: s16, vendor: s16, product: s16, version: s16) -> te
     }
     return .{ out, 32 };
 }
+
 #scope_file
 mapping_token :: (input: string, cursor: *s64, separator: u8) -> string {
     start := cursor.*;
@@ -150,6 +160,7 @@ mapping_token :: (input: string, cursor: *s64, separator: u8) -> string {
     if cursor.* < input.count cursor.* += 1;
     return token;
 }
+
 mapping_integer :: (input: string, cursor: *s64) -> s32, bool {
     start := cursor.*;
     number: s64 = 0;

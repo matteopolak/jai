@@ -7,6 +7,7 @@ using SDL_SYSWM_TYPE :: enum s32 {
     SDL_SYSWM_COCOA;
     SDL_SYSWM_UIKIT;
 }
+
 SDL_SysWMinfo :: struct {
     version: SDL_version;
     subsystem: SDL_SYSWM_TYPE;
@@ -31,4 +32,5 @@ SDL_SysWMinfo :: struct {
     }
     ;
 }
+
 SDL_GetWindowWMInfo :: (window: *SDL_Window, info: *SDL_SysWMinfo) -> SDL_bool #foreign SDL2;

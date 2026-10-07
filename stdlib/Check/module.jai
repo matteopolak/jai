@@ -1,24 +1,29 @@
 // Original-format and C-porting checks require original, checked AST projections.
 #module_parameters(CHECK_BINDINGS := true);
+
 do_error_checking :: (p: *Metaprogram_Plugin, message: *Message) {
     if !message || message.kind != .TYPECHECKED return;
     typed := cast(*Message_Typechecked) message;
     for item: typed.procedure_bodies check_print_calls(item);
 }
+
 finish_error_checking :: () {
     if fatal_error compiler_set_workspace_status(.FAILED);
 }
+
 C_Porting_Check_Settings :: struct {
     skip_modules := false;
     check_treatment_of_arrays_as_pointers_in_procedure_calls := true;
     check_treatment_of_arrays_as_pointers_in_assignments := true;
     check_intermediate_cast_to_int_when_adding_small_integers := true;
 }
+
 check_c_porting :: (message: *Message, settings: C_Porting_Check_Settings) {
     if !message || message.kind != .TYPECHECKED return;
     typed := cast(*Message_Typechecked) message;
     for item: typed.procedure_bodies check_c_porting(item, settings);
 }
+
 check_c_porting :: (tc: Typechecked(Code_Procedure_Body), settings: C_Porting_Check_Settings) {
     for node: tc.subexpressions {
         if !node || should_skip(node, settings) continue;
@@ -46,16 +51,20 @@ check_c_porting :: (tc: Typechecked(Code_Procedure_Body), settings: C_Porting_Ch
 #scope_module
 #import,file "../Compiler/module.jai";
 #import "Basic";
+
 fatal_error := false;
 my_plugin: Metaprogram_Plugin;
+
 get_plugin :: () -> *Metaprogram_Plugin {
     my_plugin.message = do_error_checking;
     my_plugin.finish = plugin_finish;
     return *my_plugin;
 }
+
 plugin_finish :: (p: *Metaprogram_Plugin) {
     finish_error_checking();
 }
+
 check_print_calls :: (tc: Typechecked) {
     for node: tc.subexpressions {
         if !node || node.kind != .PROCEDURE_CALL continue;
@@ -78,14 +87,17 @@ check_print_calls :: (tc: Typechecked) {
         }
     }
 }
+
 is_printlike_or_scanlike :: (header: *Code_Procedure_Header) -> bool {
     for note: header.notes if note.text == "PrintLike" || note.text == "ScanLike" return true;
     return false;
 }
+
 is_printlike :: (header: *Code_Procedure_Header) -> bool {
     for note: header.notes if note.text == "PrintLike" return true;
     return false;
 }
+
 validate_printlike :: (header: *Code_Procedure_Header) -> bool {
     format, varargs := get_argument_indices_of_format_string_and_varargs(header);
     if format < 0 || varargs < 0 {
@@ -101,10 +113,12 @@ validate_printlike :: (header: *Code_Procedure_Header) -> bool {
     }
     return true;
 }
+
 get_argument_indices_of_format_string_and_varargs :: (proc: *Code_Procedure_Header) -> (format_string_index: int, varargs_index: int) {
     for argument, index: proc.arguments if argument.type_inst && argument.type_inst.inst_flags & .VARARGS return index - 1, index;
     return -1, -1;
 }
+
 count_percents :: (s: string, site: *Code_Literal) -> int {
     cursor: s64;
     argument: s64;
@@ -138,10 +152,12 @@ count_percents :: (s: string, site: *Code_Literal) -> int {
     }
     return maximum;
 }
+
 should_skip :: (node: *Code_Node, settings: C_Porting_Check_Settings) -> bool {
     if !settings.skip_modules || !node.enclosing_load || !node.enclosing_load.enclosing_import return false;
     return node.enclosing_load.enclosing_import.module_type == .FILE;
 }
+
 is_of_fixed_array_type :: (node: *Code_Node) -> bool {
     if !node || !node.type || node.type.type != .ARRAY return false;
     return (cast(*Type_Info_Array) node.type).array_type == .FIXED;

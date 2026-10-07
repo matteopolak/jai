@@ -4,6 +4,7 @@ Epoll_Ctl :: enum s32 {
     DEL :: 2;
     MOD :: 3;
 }
+
 EPOLL_CTL_ADD :: cast(s32) Epoll_Ctl.ADD;
 EPOLL_CTL_DEL :: cast(s32) Epoll_Ctl.DEL;
 EPOLL_CTL_MOD :: cast(s32) Epoll_Ctl.MOD;
@@ -25,16 +26,19 @@ EPOLLWAKEUP: u32 : 1 << 29;
 EPOLLONESHOT: u32 : 1 << 30;
 EPOLLET: u32 : 1 << 31;
 EPOLL_CLOEXEC: s32 : 0x80000;
+
 epoll_data :: union {
     ptr: *void;
     fd: s32;
     _u32: u32;
     _u64: u64;
 }
+
 epoll_event :: struct {
     events: u32;
     data: epoll_data #align 4;
 }
+
 epoll_create :: (size: s32) -> s32 #foreign libc;
 epoll_create1 :: (flags: s32) -> s32 #foreign libc;
 epoll_ctl :: (epfd: s32, op: Epoll_Ctl, fd: s32, event: *epoll_event) -> s32 #foreign libc;

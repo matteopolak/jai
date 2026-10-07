@@ -7,11 +7,13 @@
     _Vk_Loader :: #system_library "vulkan";
     _Vk_Registry_C :: #system_library "c";
 }
+
 #if CPU == .X64 || CPU == .ARM64 {
     _Vk_Size :: u64;
 } else {
     _Vk_Size :: u32;
 }
+
 _vk_registry_malloc :: (size: _Vk_Size) -> *void #foreign _Vk_Registry_C "malloc";
 _vk_registry_free :: (memory: *void) #foreign _Vk_Registry_C "free";
 _vk_sdk_vkCreateInstance :: (pCreateInfo: *VkInstanceCreateInfo, pAllocator: *VkAllocationCallbacks, pInstance: *VkInstance) -> VkResult #foreign _Vk_Loader "vkCreateInstance";

@@ -2,34 +2,43 @@
 SUCCEEDED :: (hr: HRESULT) -> bool {
     return hr >= 0;
 }
+
 FAILED :: (hr: HRESULT) -> bool {
     return hr < 0;
 }
+
 HasOverlappedIoCompleted :: (overlapped: OVERLAPPED) -> bool {
     return overlapped.Internal != STATUS_PENDING;
 }
+
 MAKELANGID :: (usPrimaryLanguage: u16, usSubLanguage: u16) -> u16 {
     return (usSubLanguage << 10) | usPrimaryLanguage;
 }
+
 IUnknown_QueryInterface :: (this: *IUnknown, riid: *IID, ppvObject: **void) -> HRESULT {
     methods := this.vtable;
     return methods.QueryInterface(this, riid, ppvObject);
 }
+
 IUnknown_AddRef :: (this: *IUnknown) -> u32 {
     methods := this.vtable;
     return methods.AddRef(this);
 }
+
 IUnknown_Release :: (this: *IUnknown) -> u32 {
     methods := this.vtable;
     return methods.Release(this);
 }
+
 vtable :: (obj: *IUnknown) -> *IUnknown_VTable {
     return obj.vtable;
 }
+
 safe_release :: (obj: *$T/interface IUnknown) {
     if obj == null return;
     IUnknown_Release(cast(*IUnknown) obj);
 }
+
 safe_release_and_reset :: (b: **$T/interface IUnknown) {
     if b == null return;
     safe_release(b.*);
@@ -61,6 +70,7 @@ uid :: (str: string) -> GUID {
 
 #scope_file
 Basic :: #import "Basic";
+
 read_guid_hex :: (text: string, start: s64, length: s64) -> u32 {
     result: u32 = 0;
     index: s64 = 0;

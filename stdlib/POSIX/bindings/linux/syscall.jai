@@ -340,6 +340,7 @@
 } else #if CPU == .ARM64 {} else {
     #assert false "POSIX: no Linux system call table for this CPU";
 }
+
 syscall :: (__sysno: s64, __args: ..Any) -> s64 #foreign libc;
 #scope_file
 libc :: #system_library "libc";

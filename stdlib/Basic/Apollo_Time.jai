@@ -4,11 +4,14 @@ Apollo_Time :: struct {
     low: u64;
     high: s64;
 }
+
 APOLLO_TIME_INVALID :: Apollo_Time.{ 0, cast,no_check(s64) 0x8000_0000_0000_0000 };
+
 Time_Zone :: enum u32 {
     UTC :: 0;
     LOCAL :: 1;
 }
+
 Calendar_Time :: struct {
     year: s32;
     month_starting_at_0: s8;
@@ -20,21 +23,26 @@ Calendar_Time :: struct {
     millisecond: s16;
     time_zone: Time_Zone;
 }
+
 FEMTOSECONDS :: 1_000_000_000_000_000;
 APOLLO_TIME_FOR_JAN_1_1970 :: Apollo_Time.{ low = 0xdbd87f0edb7c8000, high = 0x300 };
 
 ConvertToApollo :: (m: s64, FACTOR: s64) #expand {
     return cast,force(Apollo_Time) (to_s128(m) * FACTOR);
 }
+
 seconds_to_apollo :: (m: s64) -> Apollo_Time {
     return cast,force(Apollo_Time) (to_s128(m) * FEMTOSECONDS);
 }
+
 milliseconds_to_apollo :: (m: s64) -> Apollo_Time {
     return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000_000);
 }
+
 microseconds_to_apollo :: (m: s64) -> Apollo_Time {
     return cast,force(Apollo_Time) (to_s128(m) * 1_000_000_000);
 }
+
 nanoseconds_to_apollo :: (m: s64) -> Apollo_Time {
     return cast,force(Apollo_Time) (to_s128(m) * 1_000_000);
 }
@@ -42,21 +50,27 @@ nanoseconds_to_apollo :: (m: s64) -> Apollo_Time {
 operator == :: (a: Apollo_Time, b: Apollo_Time) -> bool {
     return a.low == b.low && a.high == b.high;
 }
+
 operator + :: (a: Apollo_Time, b: Apollo_Time) -> Apollo_Time {
     return cast,force(Apollo_Time) (cast,force(S128) a + cast,force(S128) b);
 }
+
 operator - :: (a: Apollo_Time, b: Apollo_Time) -> Apollo_Time {
     return cast,force(Apollo_Time) (cast,force(S128) a - cast,force(S128) b);
 }
+
 operator < :: (a: Apollo_Time, b: Apollo_Time) -> bool {
     return cast,force(S128) a < cast,force(S128) b;
 }
+
 operator <= :: (a: Apollo_Time, b: Apollo_Time) -> bool {
     return !(b < a);
 }
+
 operator > :: (a: Apollo_Time, b: Apollo_Time) -> bool {
     return b < a;
 }
+
 operator >= :: (a: Apollo_Time, b: Apollo_Time) -> bool {
     return !(a < b);
 }
@@ -79,23 +93,29 @@ ConvertFromApollo :: inline (t: Apollo_Time, divisor: u64, $DO_ROUNDING: bool) -
     if quotient.high == -1 && quotient.low >= 0x8000_0000_0000_0000 return cast,no_check(s64) quotient.low, true;
     return 0, false;
 }
+
 to_seconds :: (t: Apollo_Time, $DO_ROUNDING := false) -> (result: s64, success: bool) {
     return ConvertFromApollo(t, FEMTOSECONDS, DO_ROUNDING);
 }
+
 to_milliseconds :: (t: Apollo_Time, $DO_ROUNDING := false) -> (result: s64, success: bool) {
     return ConvertFromApollo(t, 1_000_000_000_000, DO_ROUNDING);
 }
+
 to_microseconds :: (t: Apollo_Time, $DO_ROUNDING := false) -> (result: s64, success: bool) {
     return ConvertFromApollo(t, 1_000_000_000, DO_ROUNDING);
 }
+
 to_nanoseconds :: (t: Apollo_Time, $DO_ROUNDING := false) -> (result: s64, success: bool) {
     return ConvertFromApollo(t, 1_000_000, DO_ROUNDING);
 }
+
 compare_apollo_times :: (a: Apollo_Time, b: Apollo_Time) -> s32 {
     if a < b return -1;
     if a > b return 1;
     return 0;
 }
+
 to_float64_seconds_checked :: (input: Apollo_Time) -> (result: float64, success: bool) {
     if input == APOLLO_TIME_INVALID return 0, false;
     magnitude := to_u128(cast,force(S128) input);
@@ -105,9 +125,11 @@ to_float64_seconds_checked :: (input: Apollo_Time) -> (result: float64, success:
     if negative value = -value;
     return value, true;
 }
+
 to_float64_seconds :: (input: Apollo_Time) -> (result: float64, success: bool) {
     return to_float64_seconds_checked(input);
 }
+
 to_apollo :: (seconds: float64) -> Apollo_Time {
     if seconds != seconds return APOLLO_TIME_INVALID;
     negative := seconds < 0;
@@ -122,6 +144,7 @@ to_apollo :: (seconds: float64) -> Apollo_Time {
     if negative bits = U128.{} - bits;
     return cast,force(Apollo_Time) to_s128(bits);
 }
+
 calendar_to_string :: (ct: Calendar_Time) -> string {
     return tprint("%-%-% %:%:%.%", FormatInt.{ value = ct.year, minimum_digits = 4 },
         FormatInt.{ value = ct.month_starting_at_0 + 1, minimum_digits = 2 },
@@ -129,6 +152,7 @@ calendar_to_string :: (ct: Calendar_Time) -> string {
         FormatInt.{ value = ct.hour, minimum_digits = 2 }, FormatInt.{ value = ct.minute, minimum_digits = 2 },
         FormatInt.{ value = ct.second, minimum_digits = 2 }, FormatInt.{ value = ct.millisecond, minimum_digits = 3 });
 }
+
 calendar_to_iso_string :: (ct: Calendar_Time) -> string {
     zone := "";
     if ct.time_zone == .UTC zone = "Z";
@@ -147,6 +171,7 @@ civil_floor_div :: (a: s64, b: s64) -> s64 {
     if a % b != 0 && (a < 0) != (b < 0) q -= 1;
     return q;
 }
+
 // Days since 1970-01-01 of the given civil date (month is 1-12, day may be out of range and is linear).
 civil_days_from_date :: (year: s64, month: s64, day: s64) -> s64 {
     y := year;
@@ -158,6 +183,7 @@ civil_days_from_date :: (year: s64, month: s64, day: s64) -> s64 {
     doe := yoe * 365 + yoe / 4 - yoe / 100 + doy;
     return era * 146097 + doe - 719468 + (day - 1);
 }
+
 civil_date_from_days :: (days: s64) -> (year: s64, month: s64, day: s64) {
     z := days + 719468;
     era := civil_floor_div(z, 146097);
@@ -172,6 +198,7 @@ civil_date_from_days :: (days: s64) -> (year: s64, month: s64, day: s64) {
     if m <= 2 y += 1;
     return y, m, d;
 }
+
 calendar_from_unix_milliseconds :: (unix_ms: s64, time_zone: Time_Zone) -> Calendar_Time {
     total_seconds := civil_floor_div(unix_ms, 1000);
     millis := unix_ms - total_seconds * 1000;

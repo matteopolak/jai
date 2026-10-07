@@ -6,6 +6,7 @@ init :: () {
         for signal: fatal_signals host_signal(signal, install_handler);
     }
 }
+
 #if OS == .WINDOWS {
     // Last stop for a structured exception nobody caught (bad pointer, `int3`, ...). The process
     // ends with the exception's own code, the status Windows reports for such crashes anyway.
@@ -25,6 +26,7 @@ init :: () {
         host_exit(128 + sig);
     }
 }
+
 write_frames :: () #no_context {
     if __runtime_support_disable_stack_trace return;
     frames: [64] *void;
@@ -34,40 +36,50 @@ write_frames :: () #no_context {
         write_string_unsynchronized("\n", true);
     }
 }
+
 #scope_file
 werr :: inline (s: string) #no_context {
     write_string(s, to_standard_error = true);
 }
+
 werrs :: inline (s: ..string) #no_context {
     write_strings(..s, to_standard_error = true);
 }
+
 #scope_module
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
     POSIX :: #import "POSIX";
+
     siginfo_t :: POSIX.siginfo_t;
     libc :: #system_library "c";
     Signal_Handler :: #type (sig: s32) #c_call;
+
     install_handler :: (sig: s32) #c_call {
         handle_signal(sig, null, null);
     }
+
     host_signal :: (signal: s32, callback: Signal_Handler) -> Signal_Handler #foreign libc "signal";
     host_exit :: (status: s32) #foreign libc "_exit";
     host_backtrace :: (frames: **void, count: s32) -> s32 #foreign libc "backtrace";
     fatal_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
 } else #if OS == .WINDOWS {
     kernel32 :: #system_library "kernel32";
+
     // Only the leading fields that are read here; Windows owns both records.
     Seh_Record :: struct {
         code: u32;
     }
+
     Seh_Info :: struct {
         record: *Seh_Record;
         registers: *void;
     }
+
     Seh_Callback :: #type (crash: *Seh_Info) -> s32 #c_call;
     SetUnhandledExceptionFilter :: (callback: Seh_Callback) -> Seh_Callback #foreign kernel32;
     ExitProcess :: (code: u32) #foreign kernel32;
     RtlCaptureStackBackTrace :: (skip: u32, count: u32, frames: **void, hash: *u32) -> u16 #foreign kernel32;
+
     host_backtrace :: (frames: **void, count: s32) -> s32 #no_context {
         return RtlCaptureStackBackTrace(0, cast(u32) count, frames, null);
     }

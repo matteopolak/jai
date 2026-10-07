@@ -8,6 +8,7 @@ OS_Error_Code :: #type,isa s32;
 size_t :: u64;
 ssize_t :: s64;
 off_t :: s64;
+
 #if OS == .LINUX || OS == .WASM {
     #load "bindings/linux/base.jai";
     #load "bindings/linux/stdio.jai";
@@ -18,6 +19,7 @@ off_t :: s64;
 } else #if OS == .MACOS {
     SYSCALL_MACH_BASE :: 0x1000000;
     SYSCALL_UNIX_BASE :: 0x2000000;
+
     #if CPU == .ARM64 {
         #load "bindings/macos/arm64/base.jai";
         #load "bindings/macos/arm64/stdio.jai";
@@ -56,6 +58,7 @@ off_t :: s64;
         #assert false "POSIX: no Android bindings for this CPU";
     }
 }
+
 #if OS == .LINUX || OS == .ANDROID || OS == .WASM {
     #scope_file
     __WCOREFLAG :: 0x80;
@@ -65,6 +68,7 @@ off_t :: s64;
     #scope_file
     #scope_export
 }
+
 strsignal :: (sig: s32) -> *u8 #foreign libc;
 #scope_file
 libc :: #system_library "libc";

@@ -10,8 +10,10 @@ Keymap_Set :: struct {
     keymaps: Bucket_Array(Keymap, 16, true);
     default_keymap: *Keymap;
 }
+
 Key_Press_Proc :: #type ();
 Key_Hold_Proc :: #type (bool);
+
 Keymap :: struct {
     procs: [..] Proc_Info;
     mappings: [..] Single_Key_Mapping;
@@ -25,6 +27,7 @@ Keymap :: struct {
     section_name: string;
     enabled := true;
 }
+
 Single_Key_Mapping :: struct {
     utf32: u32;
     respect_ignore_modifier_keys := true;
@@ -33,7 +36,9 @@ Single_Key_Mapping :: struct {
     command_string: string;
     proc_index: s32 = -1;
 }
+
 Modifier_Flags :: Event.Modifier_Flags;
+
 Add_Mapping_Error_Type :: enum u8 {
     NO_INFORMATION_ABOUT_THE_ERROR :: 0;
     NONSENSICAL_MODIFIERS :: 1;
@@ -48,6 +53,7 @@ add_keymap :: (set: *Keymap_Set, section_name: string) -> *Keymap {
     keymap.section_name = copy_string(section_name);
     return keymap;
 }
+
 reset_keymaps :: (set: *Keymap_Set) {
     for bucket: set.keymaps.all_buckets {
         for occupied, i: bucket.occupied {
@@ -55,10 +61,12 @@ reset_keymaps :: (set: *Keymap_Set) {
         }
     }
 }
+
 enable :: (set: *Keymap_Set, keymap: *Keymap, value: bool) {
     if !value release_holds(keymap);
     keymap.enabled = value;
 }
+
 handle_event :: (set: *Keymap_Set, event: Event) -> bool {
     bucket_index := set.keymaps.all_buckets.count;
     while bucket_index > 0 {
@@ -74,37 +82,44 @@ handle_event :: (set: *Keymap_Set, event: Event) -> bool {
     }
     return false;
 }
+
 load_from_memory :: (set: *Keymap_Set, memory: string, short_name := "unnamed", full_path := "(no path)") -> bool {
     handler: Text_File_Handler;
     start_from_memory(*handler, short_name, full_path, memory);
     return load_from_handler(set, set.default_keymap, *handler);
 }
+
 load_from_file :: (set: *Keymap_Set, short_name: string, filename: string, optional := false) -> bool {
     contents, success := File.read_entire_file(filename, log_errors = !optional);
     if !success return optional;
     defer free(contents);
     return load_from_memory(set, contents, short_name, filename);
 }
+
 reset_keymap :: (keymap: *Keymap) {
     release_holds(keymap);
     for mapping: keymap.mappings free(mapping.command_string);
     keymap.mappings.count = 0;
 }
+
 reload_keymap :: (using keymap: *Keymap, short_name: string, filename: string, optional := false) -> bool
     #deprecated "Use load_from_file or load_from_memory instead." {
     return load_from_file(keymap, short_name, filename, optional);
 }
+
 load_from_file :: (using keymap: *Keymap, short_name: string, full_path: string, optional := false) -> bool {
     contents, success := File.read_entire_file(full_path, log_errors = !optional);
     if !success return optional;
     defer free(contents);
     return load_from_memory(keymap, contents, short_name, full_path, optional);
 }
+
 load_from_memory :: (using keymap: *Keymap, memory: string, short_name: string, full_path: string, optional := false) -> bool {
     handler: Text_File_Handler;
     start_from_memory(*handler, short_name, full_path, memory);
     return load_from_handler(null, keymap, *handler);
 }
+
 load_from_handler :: (set: *Keymap_Set, keymap: *Keymap, handler: *Text_File_Handler) -> bool {
     pending: [..] Pending_Mapping;
     defer array_free(pending);
@@ -179,6 +194,7 @@ load_from_handler :: (set: *Keymap_Set, keymap: *Keymap, handler: *Text_File_Han
     for entry: pending install_mapping(entry.keymap, entry.mapping);
     return true;
 }
+
 add_proc :: (keymap: *Keymap, name: string, proc: Key_Press_Proc) {
     for *info: keymap.procs {
         if info.name != name continue;
@@ -191,6 +207,7 @@ add_proc :: (keymap: *Keymap, name: string, proc: Key_Press_Proc) {
     info.press_\proc = proc;
     array_add(*keymap.procs, info);
 }
+
 add_proc :: (keymap: *Keymap, name: string, proc: Key_Hold_Proc) {
     for *info: keymap.procs {
         if info.name != name continue;
@@ -203,6 +220,7 @@ add_proc :: (keymap: *Keymap, name: string, proc: Key_Hold_Proc) {
     info.toggle_proc = proc;
     array_add(*keymap.procs, info);
 }
+
 add_mapping :: (keymap: *Keymap, key: Key_Code, modifier_flags: Event.Modifier_Flags,
     respect_ignore_modifier_keys: bool, command: string, is_proc: bool)
     -> (success: bool, error_type: Add_Mapping_Error_Type) {
@@ -211,6 +229,7 @@ add_mapping :: (keymap: *Keymap, key: Key_Code, modifier_flags: Event.Modifier_F
     install_mapping(keymap, mapping);
     return true, .NO_ERROR;
 }
+
 keymap_handle_event :: (keymap: Keymap, e: Event) -> bool {
     if !keymap.enabled || (e.type != .KEYBOARD && e.type != .TEXT_INPUT) return false;
     key := cast(u32) e.key_code;
@@ -249,6 +268,7 @@ keymap_handle_event :: (keymap: Keymap, e: Event) -> bool {
     }
     return false;
 }
+
 map_string_to_key :: (s: string) -> bool, Key_Code {
     for named: named_keys {
         if key_name_equal(s, named.name) return true, named.key;
@@ -262,6 +282,7 @@ map_string_to_key :: (s: string) -> bool, Key_Code {
     if value >= 97 && value <= 122 value -= 32;
     return true, cast(Key_Code) value;
 }
+
 map_key_to_string :: (k: Key_Code) -> string {
     for named: named_keys if named.key == k return named.name;
     value := cast(u32) k;
@@ -292,6 +313,7 @@ map_key_to_string :: (k: Key_Code) -> string {
     memcpy(result.data, *bytes[0], count);
     return result;
 }
+
 keymap_copy :: (source: *Keymap, dest: *Keymap) {
     if source == dest return;
     reset_keymap(dest);
@@ -306,6 +328,7 @@ keymap_copy :: (source: *Keymap, dest: *Keymap) {
         array_add(*dest.mappings, copied);
     }
 }
+
 keymap_copy_procs :: (source: *Keymap, dest: *Keymap) {
     if source == dest return;
     release_holds(dest);
@@ -323,6 +346,7 @@ Pending_Mapping :: struct {
     keymap: *Keymap;
     mapping: Single_Key_Mapping;
 }
+
 release_holds :: (keymap: *Keymap) {
     for *mapping: keymap.mappings {
         if !mapping.toggled_on continue;
@@ -332,6 +356,7 @@ release_holds :: (keymap: *Keymap) {
         if proc != null proc(false);
     }
 }
+
 make_mapping :: (keymap: *Keymap, key: Key_Code, flags: Modifier_Flags,
     respect: bool, command: string, is_proc: bool) -> Single_Key_Mapping, Add_Mapping_Error_Type {
     result: Single_Key_Mapping;
@@ -353,6 +378,7 @@ make_mapping :: (keymap: *Keymap, key: Key_Code, flags: Modifier_Flags,
     result.command_string = copy_string(command);
     return result, .NO_ERROR;
 }
+
 install_mapping :: (keymap: *Keymap, mapping: Single_Key_Mapping) {
     for *old: keymap.mappings {
         if old.utf32 != mapping.utf32 || old.modifier_flags.packed != mapping.modifier_flags.packed ||
@@ -367,6 +393,7 @@ install_mapping :: (keymap: *Keymap, mapping: Single_Key_Mapping) {
     }
     array_add(*keymap.mappings, mapping);
 }
+
 find_section :: (set: *Keymap_Set, section: string) -> *Keymap {
     if set == null return null;
     for bucket: set.keymaps.all_buckets {
@@ -376,9 +403,11 @@ find_section :: (set: *Keymap_Set, section: string) -> *Keymap {
     }
     return null;
 }
+
 text_range :: (s: string, start: s64, count: s64) -> string {
     return .{ count, s.data + start };
 }
+
 trim_keymap_text :: (s: string) -> string {
     result := s;
     for byte, i: result {
@@ -398,15 +427,18 @@ trim_keymap_text :: (s: string) -> string {
     }
     return result;
 }
+
 upper_ascii :: (byte: u8) -> u8 {
     if byte >= 97 && byte <= 122 return byte - 32;
     return byte;
 }
+
 key_name_equal :: (a: string, b: string) -> bool {
     if a.count != b.count return false;
     for byte, i: a if upper_ascii(byte) != upper_ascii(b.data[i]) return false;
     return true;
 }
+
 single_codepoint :: (s: string) -> u32, bool {
     if s.count < 1 || s.count > 4 return 0, false;
     first := s.data[0];
@@ -437,6 +469,7 @@ single_codepoint :: (s: string) -> u32, bool {
     }
     return value, value >= minimum && value <= 0x10ffff && !(value >= 0xd800 && value <= 0xdfff);
 }
+
 named_keys: [] struct {
     name: string;
     key: Key_Code;

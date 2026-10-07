@@ -110,6 +110,7 @@ Atlas_Error_Data :: struct {
 }
 
 Atlas_Message_Callback :: #type (msg: *u8, _context: *void) -> void #c_call;
+
 atlas_set_message_callback :: (callback: Atlas_Message_Callback, _context: *void) -> void {
     atlas_message_callback = callback;
     atlas_message_context = _context;
@@ -117,6 +118,7 @@ atlas_set_message_callback :: (callback: Atlas_Message_Callback, _context: *void
 }
 
 Atlas_Assert_Callback :: #type (exp: *u8, file: *u8, line: s32, func: *u8, msg: *u8, _context: *void) -> void #c_call;
+
 atlas_set_assert_callback :: (callback: Atlas_Assert_Callback, _context: *void) -> void {
     atlas_assert_callback = callback;
     atlas_assert_context = _context;
@@ -151,6 +153,7 @@ atlas_generate :: (input: *Atlas_Input_Mesh, options: *Atlas_Options, error: *At
 atlas_free :: (output: *Atlas_Output_Mesh) -> void {
     native_atlas_free(output);
 }
+
 atlas_free :: (output: *Atlas_Error_Data) -> void {
     if !output return;
     Basic.free(output.index_array);

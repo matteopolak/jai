@@ -29,6 +29,7 @@ Queue :: struct(User_Data: Type) {
     stopping: bool;
     capacity: int = 64;
 }
+
 File :: struct(User_Data: Type) {
     #if OS == .WINDOWS {
         handle: *void;
@@ -161,6 +162,7 @@ read_entire_file :: (queue: *Queue($T), file_path: string, user_data: T) -> resu
     request.user_data = user_data;
     return submit(queue, request);
 }
+
 write_entire_file :: (queue: *Queue($T), file_path: string, data: [] u8, user_data: T) -> result := Error.{} {
     if !queue return error(.Catastrophic);
     request: Request(T);
@@ -170,6 +172,7 @@ write_entire_file :: (queue: *Queue($T), file_path: string, data: [] u8, user_da
     request.user_data = user_data;
     return submit(queue, request);
 }
+
 read_file :: (queue: *Queue($T), file: File, position: s64, data: [] u8, user_data: T) -> result := Error.{} {
     request: Request(T);
     request.kind = .READ;
@@ -179,6 +182,7 @@ read_file :: (queue: *Queue($T), file: File, position: s64, data: [] u8, user_da
     request.user_data = user_data;
     return submit(queue, request);
 }
+
 write_file :: (queue: *Queue($T), file: File, position: s64, data: [] u8, user_data: T) -> result := Error.{} {
     request: Request(T);
     request.kind = .WRITE;
@@ -188,6 +192,7 @@ write_file :: (queue: *Queue($T), file: File, position: s64, data: [] u8, user_d
     request.user_data = user_data;
     return submit(queue, request);
 }
+
 wait_for_completion :: (queue: *Queue($T), check_only := false) -> T, data: [] u8, result := Error.{} {
     if !queue {
         empty: T;
@@ -219,12 +224,14 @@ File_State :: struct {
     closed: bool;
     owner: *void;
 }
+
 Request_Kind :: enum {
     READ;
     WRITE;
     READ_ALL;
     WRITE_ALL;
 }
+
 Request :: struct(T: Type) {
     kind: Request_Kind;
     file: *File_State;
@@ -233,28 +240,34 @@ Request :: struct(T: Type) {
     data: [] u8;
     user_data: T;
 }
+
 Completion :: struct(T: Type) {
     user_data: T;
     data: [] u8;
     result: Error;
     owns_data: bool;
 }
+
 error :: (code: type_of(Error.code), platform_code: $T = 0) -> Error {
     return .{ code, cast(s64) platform_code };
 }
+
 platform_error :: (code: type_of(Error.code)) -> Error {
     System :: #import "System";
     return error(code, System.get_error_value());
 }
+
 owned_name :: (name: string, allocator: Allocator) -> string {
     memory := cast(*u8) alloc(name.count, allocator);
     if name.count > 0 && memory memcpy(memory, name.data, name.count);
     return .{ name.count, memory };
 }
+
 start_worker :: (queue: *Queue) -> bool {
     queue.worker.data = queue;
     return Threads.thread_start(*queue.worker);
 }
+
 submit :: (queue: *Queue($T), request: Request(T)) -> Error {
     if !queue return error(.Catastrophic);
     Threads.lock(*queue.mutex);
@@ -276,6 +289,7 @@ submit :: (queue: *Queue($T), request: Request(T)) -> Error {
     Threads.wake(*queue.submitted);
     return .{};
 }
+
 perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
     result: Completion(T);
     result.user_data = request.user_data;
@@ -323,9 +337,11 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
     }
     return result;
 }
+
 #if OS == .WINDOWS {
     Async_Windows :: #import "Windows";
     #load "../File/windows-encoding.jai";
+
     open_random_access :: (name: string, keep: bool) -> Sync.File, bool {
         disposition: u32 = 2;
         if keep disposition = 4;
@@ -334,6 +350,7 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
     }
 } else {
     Async_Posix :: #import "POSIX";
+
     open_random_access :: (name: string, keep: bool) -> Sync.File, bool {
         mode := "w+b";
         if keep mode = "r+b";

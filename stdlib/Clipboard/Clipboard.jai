@@ -2,15 +2,19 @@
     #load "../File/windows-encoding.jai";
     W :: #import "Windows";
     Utf8 :: #import "Windows_Utf8";
+
     os_clipboard_get_text :: () -> string {
         return os_clipboard_get_text(null);
     }
+
     os_clipboard_set_text :: (text: string) {
         os_clipboard_set_text(null, text);
     }
+
     os_clipboard_empty :: () {
         os_clipboard_empty(null);
     }
+
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
         os_clipboard_set_bitmap(null, width, height, pixels, channels, flip);
     }
@@ -29,6 +33,7 @@
         if length == maximum return "";
         return os_wide_to_utf8(pointer, xx length);
     }
+
     os_clipboard_set_text :: (hwnd: W.HWND, text: string) {
         wide := os_utf8_to_wide(text);
         count: s64;
@@ -44,11 +49,13 @@
         W.GlobalUnlock(memory);
         if !publish_windows(hwnd, 13, memory) clipboard_global_free(memory);
     }
+
     os_clipboard_empty :: (hwnd: W.HWND) {
         if !W.OpenClipboard(hwnd) return;
         defer W.CloseClipboard();
         W.EmptyClipboard();
     }
+
     os_clipboard_set_bitmap :: (hwnd: W.HWND, width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
         dib, valid := make_dib(width, height, pixels, channels, flip);
         if !valid return;
@@ -64,10 +71,12 @@
         W.GlobalUnlock(memory);
         if !publish_windows(hwnd, 8, memory) clipboard_global_free(memory);
     }
+
     #scope_file
     clipboard_kernel :: #system_library "kernel32";
     clipboard_global_free :: (memory: W.HGLOBAL) -> W.HGLOBAL #foreign clipboard_kernel "GlobalFree";
     clipboard_global_size :: (memory: W.HGLOBAL) -> u64 #foreign clipboard_kernel "GlobalSize";
+
     publish_windows :: (hwnd: W.HWND, format: u32, memory: W.HGLOBAL) -> bool {
         if !W.OpenClipboard(hwnd) return false;
         defer W.CloseClipboard();
@@ -87,6 +96,7 @@
         if !bytes return "";
         return copy_string(string.{ xx count, bytes });
     }
+
     os_clipboard_set_text :: (text: string) {
         pool := clipboard_autorelease_pool();
         defer objc_clear(pool, clipboard_selector("drain"));
@@ -94,11 +104,13 @@
         objc_clear(board, clipboard_selector("clearContents"));
         objc_two_bool(board, clipboard_selector("setString:forType:"), clipboard_nsstring(text), clipboard_nsstring("public.utf8-plain-text"));
     }
+
     os_clipboard_empty :: () {
         pool := clipboard_autorelease_pool();
         defer objc_clear(pool, clipboard_selector("drain"));
         objc_clear(clipboard_board(), clipboard_selector("clearContents"));
     }
+
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
         pool := clipboard_autorelease_pool();
         defer objc_clear(pool, clipboard_selector("drain"));
@@ -110,6 +122,7 @@
         objc_clear(board, clipboard_selector("clearContents"));
         objc_two_bool(board, clipboard_selector("setData:forType:"), data, clipboard_nsstring("com.microsoft.bmp"));
     }
+
     #scope_file
     clipboard_objc :: #system_library "objc";
     clipboard_appkit :: #system_library "AppKit";
@@ -124,14 +137,17 @@
     objc_encoding_length :: (object: *void, selector: *void, encoding: u64) -> u64 #foreign clipboard_objc "objc_msgSend";
     objc_bytes :: (object: *void, selector: *void, bytes: *u8, length: u64) -> *void #foreign clipboard_objc "objc_msgSend";
     objc_utf8 :: (object: *void, selector: *void, bytes: *u8) -> *void #foreign clipboard_objc "objc_msgSend";
+
     clipboard_nsstring :: (text: string) -> *void {
         allocated := objc_zero(clipboard_class("NSString"), clipboard_selector("alloc"));
         value := objc_bytes_encoding(allocated, clipboard_selector("initWithBytes:length:encoding:"), text.data, xx text.count, 4);
         return objc_zero(value, clipboard_selector("autorelease"));
     }
+
     clipboard_board :: () -> *void {
         return objc_zero(clipboard_class("NSPasteboard"), clipboard_selector("generalPasteboard"));
     }
+
     clipboard_autorelease_pool :: () -> *void {
         clipboard_load_appkit();
         allocated := objc_zero(clipboard_class("NSAutoreleasePool"), clipboard_selector("alloc"));
@@ -140,6 +156,7 @@
     #scope_export
 } else #if OS == .LINUX {
     Processes :: #import "Process";
+
     os_clipboard_get_text :: () -> string {
         arguments: [3] string = .["wl-paste", "--no-newline", ""];
         status, out, err, timeout := Processes.run_command(..slice_array(arguments, 0, 2), capture_and_return_output = true);
@@ -149,17 +166,20 @@
         if status.type == .EXITED && status.exit_code == 0 return copy_string(out);
         return "";
     }
+
     os_clipboard_set_text :: (text: string) {
         arguments: [1] string = .["wl-copy"];
         if clipboard_send(arguments, text) return;
         fallback: [3] string = .["xclip", "-selection", "clipboard"];
         clipboard_send(fallback, text);
     }
+
     os_clipboard_empty :: () {
         arguments: [2] string = .["wl-copy", "--clear"];
         status := Processes.run_command(..arguments);
         if status.type != .EXITED || status.exit_code != 0 os_clipboard_set_text("");
     }
+
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {
         bmp, valid := make_bmp(width, height, pixels, channels, flip);
         if !valid return;
@@ -169,6 +189,7 @@
         fallback: [5] string = .["xclip", "-selection", "clipboard", "-t", "image/bmp"];
         clipboard_send(fallback, bmp);
     }
+
     #scope_file
     clipboard_send :: (arguments: [] string, data: string) -> bool {
         process: Processes.Process;
@@ -185,6 +206,7 @@
         success, result := Processes.get_process_result(*process, 5000);
         return success && result.type == .EXITED && result.exit_code == 0;
     }
+
     slice_array :: (array: [] string, index: int, count: int) -> [] string {
         return .{ count, array.data + index };
     }
@@ -194,14 +216,17 @@
     os_clipboard_get_text :: () -> string {
         return copy_string(wasm_clipboard_text);
     }
+
     os_clipboard_set_text :: (text: string) {
         free(wasm_clipboard_text);
         wasm_clipboard_text = copy_string(text);
     }
+
     os_clipboard_empty :: () {
         free(wasm_clipboard_text);
         wasm_clipboard_text = "";
     }
+
     os_clipboard_set_bitmap :: (width: s32, height: s32, pixels: *u8, channels: s32, flip := false) {}
     #scope_file
     wasm_clipboard_text: string;
@@ -238,6 +263,7 @@ make_dib :: (width: s32, height: s32, pixels: *u8, channels: s32, flip: bool) ->
     }
     return .{ count, bytes }, true;
 }
+
 make_bmp :: (width: s32, height: s32, pixels: *u8, channels: s32, flip: bool) -> string, bool {
     dib, valid := make_dib(width, height, pixels, channels, flip);
     if !valid return "", false;
@@ -252,6 +278,7 @@ make_bmp :: (width: s32, height: s32, pixels: *u8, channels: s32, flip: bool) ->
     memcpy(bytes + 14, dib.data, dib.count);
     return .{ dib.count + 14, bytes }, true;
 }
+
 write_le32 :: (bytes: *u8, value: u32) {
     for i: 0..3 bytes[i] = cast(u8) ((value >> (i * 8)) & 255);
 }

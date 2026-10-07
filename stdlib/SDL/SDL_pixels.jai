@@ -5,12 +5,14 @@ SDL_Color :: struct {
     b: u8;
     a: u8;
 }
+
 SDL_Palette :: struct {
     ncolors: s32;
     colors: *SDL_Color;
     version: u32;
     refcount: s32;
 }
+
 SDL_PixelFormat :: struct {
     format: u32;
     palette: *SDL_Palette;

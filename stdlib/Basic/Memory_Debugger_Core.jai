@@ -12,6 +12,7 @@ Allocation :: struct {
     visualization_update_cycle: u32;
     allocator: Allocator;
 }
+
 Packed_Stack_Trace :: struct {
     hash: u64;
     nodes: [] Stack_Trace_Node;
@@ -28,6 +29,7 @@ MD_Status :: enum {
     OUT_OF_MEMORY;
     FAILED_REALLOC;
 }
+
 MD_Record :: struct {
     allocation: Allocation;
     next: *MD_Record;
@@ -39,10 +41,12 @@ MD_Record :: struct {
     frame_freed_bytes: s64;
     ignored: bool;
 }
+
 MD_Trace_Block :: struct {
     packed: Packed_Stack_Trace;
     next: *MD_Trace_Block;
 }
+
 MD_State :: struct {
     storage_allocator: Allocator;
     records: *MD_Record;
@@ -55,6 +59,7 @@ MD_State :: struct {
     first_report_index: u64 = 1;
     frame_cycle: u32 = 1;
 }
+
 MD_TRACE_BYTES :: (size_of(MD_Trace_Block) + 7) & ~7;
 
 md_find :: (state: *MD_State, pointer: *void) -> *MD_Record {
@@ -67,9 +72,11 @@ md_find :: (state: *MD_State, pointer: *void) -> *MD_Record {
     }
     return null;
 }
+
 md_slot_hash :: (pointer: *void) -> s64 #no_aoc {
     return cast,no_check(s64) ((cast(u64) pointer * 11400714819323198485) >> 32);
 }
+
 // Make `record` the one `md_find` returns for its address (addresses are reused after frees).
 md_index :: (state: *MD_State, record: *MD_Record) -> bool {
     if (state.slots_used + 1) * 4 >= state.slot_count * 3 {
@@ -92,9 +99,11 @@ md_index :: (state: *MD_State, record: *MD_Record) -> bool {
     state.slots[slot] = record;
     return true;
 }
+
 md_same_allocator :: (a: Allocator, b: Allocator) -> bool {
     return a.proc == b.proc && a.data == b.data;
 }
+
 md_raw_new :: (state: *MD_State, $T: Type) -> *T {
     memory := cast(*T) state.storage_allocator.proc(.ALLOCATE, size_of(T), 0, null, state.storage_allocator.data);
     if memory {
@@ -103,6 +112,7 @@ md_raw_new :: (state: *MD_State, $T: Type) -> *T {
     }
     return memory;
 }
+
 md_pack_trace :: (state: *MD_State, trace: *Stack_Trace_Node) -> *Packed_Stack_Trace {
     count: s64;
     cursor := trace;
@@ -126,6 +136,7 @@ md_pack_trace :: (state: *MD_State, trace: *Stack_Trace_Node) -> *Packed_Stack_T
     state.traces = block;
     return *block.packed;
 }
+
 md_trace_matches :: (a: *Packed_Stack_Trace, b: *Packed_Stack_Trace) -> bool {
     if a == b return true;
     if !a || !b || a.nodes.count != b.nodes.count return false;
@@ -136,6 +147,7 @@ md_trace_matches :: (a: *Packed_Stack_Trace, b: *Packed_Stack_Trace) -> bool {
     }
     return true;
 }
+
 md_note_frame :: (state: *MD_State, record: *MD_Record, bytes: s64) {
     if record.frame_cycle != state.frame_cycle {
         record.frame_cycle = state.frame_cycle;
@@ -146,6 +158,7 @@ md_note_frame :: (state: *MD_State, record: *MD_Record, bytes: s64) {
     record.frame_bytes += bytes;
     record.allocation.visualization_update_cycle = state.frame_cycle;
 }
+
 md_note_free_frame :: (state: *MD_State, record: *MD_Record, bytes: s64) {
     if record.free_cycle != state.frame_cycle {
         record.free_cycle = state.frame_cycle;
@@ -155,6 +168,7 @@ md_note_free_frame :: (state: *MD_State, record: *MD_Record, bytes: s64) {
     record.frame_frees += 1;
     record.frame_freed_bytes += bytes;
 }
+
 md_alloc :: (state: *MD_State, allocator: Allocator, memory: *void, size: s64, trace: *Stack_Trace_Node, thread_index: u32) -> MD_Status {
     if size < 0 return .SIZE_MISMATCH;
     if !memory return .OK;
@@ -184,6 +198,7 @@ md_alloc :: (state: *MD_State, allocator: Allocator, memory: *void, size: s64, t
     state.records = record;
     return .OK;
 }
+
 md_free :: (state: *MD_State, allocator: Allocator, memory: *void, trace: *Stack_Trace_Node) -> MD_Status {
     if !memory return .OK;
     record := md_find(state, memory);
@@ -197,6 +212,7 @@ md_free :: (state: *MD_State, allocator: Allocator, memory: *void, trace: *Stack
     if !captured return .OUT_OF_MEMORY;
     return .OK;
 }
+
 md_realloc :: (state: *MD_State, allocator: Allocator, old_memory: *void, old_size: s64, new_memory: *void, new_size: s64, trace: *Stack_Trace_Node, thread_index: u32) -> MD_Status {
     if old_size < 0 || new_size < 0 return .SIZE_MISMATCH;
     if !old_memory return md_alloc(state, allocator, new_memory, new_size, trace, thread_index);
@@ -230,6 +246,7 @@ md_realloc :: (state: *MD_State, allocator: Allocator, old_memory: *void, old_si
     }
     return md_free(state, allocator, old_memory, trace);
 }
+
 md_destroy_heap :: (state: *MD_State, allocator: Allocator, trace: *Stack_Trace_Node) -> MD_Status {
     result := MD_Status.OK;
     cursor := state.records;
@@ -242,9 +259,11 @@ md_destroy_heap :: (state: *MD_State, allocator: Allocator, trace: *Stack_Trace_
     }
     return result;
 }
+
 md_is_leak :: (state: *MD_State, record: *MD_Record) -> bool {
     return record.allocation.is_live && !record.ignored && record.allocation.index >= state.first_report_index;
 }
+
 md_deinit :: (state: *MD_State) {
     record := state.records;
     while record {

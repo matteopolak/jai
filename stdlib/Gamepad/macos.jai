@@ -2,6 +2,7 @@
 GC :: #import "Objective_C/GameController";
 Foundation :: #import "Objective_C"; // Foundation.jai is part of Objective_C, not a module of its own.
 ObjC :: #import "Objective_C";
+
 #scope_export
 sample_gamecontroller :: (sample: *Gamepad_Sample) -> bool {
     sample.* = .{};
@@ -44,10 +45,12 @@ sample_gamecontroller :: (sample: *Gamepad_Sample) -> bool {
     }
     return false;
 }
+
 #scope_file
 gc_button :: (sample: *Gamepad_Sample, button: *GC.GCControllerButtonInput, code: Gamepad_Code) {
     if button && GC.GCControllerButtonInput.isPressed(button) != 0 sample.buttons |= (cast(u32) 1) << cast(s64) code;
 }
+
 gc_optional_button :: (profile: *GC.GCExtendedGamepad, name: *u8) -> *GC.GCControllerButtonInput {
     selector := ObjC.sel_registerName(name);
     responds: (receiver: *void, selector: ObjC.SEL, method: ObjC.SEL) -> ObjC.BOOL #c_call;
