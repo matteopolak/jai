@@ -646,6 +646,13 @@ pub fn link(
             seen.push(args);
         }
     }
+    // LLVM lowers float rounding (`llvm.trunc`, `floor`, `ceil`, `round`, from `#asm` and
+    // casts) to libm calls on CPUs without SSE4.1 (baseline x86-64), so libm is always linked;
+    // on macOS it is part of libSystem and `-lm` is a no-op.
+    let libm = vec![LinkArg::Lib("m".into())];
+    if flavor == LinkFlavor::Unix && !seen.contains(&libm) {
+        seen.push(libm);
+    }
     order_link_groups(&mut seen);
     let (program, mut cmd) = if sanitize.any() {
         let program = sanitizer_driver();
