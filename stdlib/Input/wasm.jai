@@ -5,10 +5,10 @@
 #scope_module
 
 Canvas_Event :: struct {
-    type: u32;       // 1 key or mouse button, 2 text, 3 pointer moved, 4 wheel, 5 resize, 6 focus, 7 quit
-    key: u32;        // Key_Code
+    type: u32; // 1 key or mouse button, 2 text, 3 pointer moved, 4 wheel, 5 resize, 6 focus, 7 quit
+    key: u32; // Key_Code
     pressed: u32;
-    modifiers: u32;  // 1 shift, 2 ctrl, 4 alt, 8 meta
+    modifiers: u32; // 1 shift, 2 ctrl, 4 alt, 8 meta
     x: s32;
     y: s32;
     utf32: u32;
@@ -30,34 +30,34 @@ wasm_poll_input :: () {
         event.alt_pressed = (native.modifiers & 4) != 0;
         event.cmd_meta_pressed = (native.modifiers & 8) != 0;
         if native.type == {
-          case 1;
-            event.type = .KEYBOARD;
-            event.key_code = cast(Key_Code) native.key;
-            event.key_pressed = native.pressed;
-            event.repeat = native.repeat != 0;
-            queue_input_event(event);
-          case 2;
-            event.type = .TEXT_INPUT;
-            event.utf32 = native.utf32;
-            event.text_input_count = 1;
-            queue_input_event(event);
-          case 3;
-            if wasm_has_pointer queue_mouse_delta(native.x - wasm_pointer_x, native.y - wasm_pointer_y);
-            wasm_pointer_x, wasm_pointer_y = native.x, native.y;
-            wasm_has_pointer = true;
-          case 4;
-            event.type = .MOUSE_WHEEL;
-            event.typical_wheel_delta = WHEEL_DELTA;
-            event.wheel_delta = native.y;
-            queue_mouse_delta(0, 0, native.y);
-            queue_input_event(event);
-          case 5;
-            queue_window_resize(INVALID_WINDOW, native.x, native.y);
-          case 6;
-            set_input_focus(native.pressed != 0);
-          case 7;
-            event.type = .QUIT;
-            queue_input_event(event);
+            case 1;
+                event.type = .KEYBOARD;
+                event.key_code = cast(Key_Code) native.key;
+                event.key_pressed = native.pressed;
+                event.repeat = native.repeat != 0;
+                queue_input_event(event);
+            case 2;
+                event.type = .TEXT_INPUT;
+                event.utf32 = native.utf32;
+                event.text_input_count = 1;
+                queue_input_event(event);
+            case 3;
+                if wasm_has_pointer queue_mouse_delta(native.x - wasm_pointer_x, native.y - wasm_pointer_y);
+                wasm_pointer_x, wasm_pointer_y = native.x, native.y;
+                wasm_has_pointer = true;
+            case 4;
+                event.type = .MOUSE_WHEEL;
+                event.typical_wheel_delta = WHEEL_DELTA;
+                event.wheel_delta = native.y;
+                queue_mouse_delta(0, 0, native.y);
+                queue_input_event(event);
+            case 5;
+                queue_window_resize(INVALID_WINDOW, native.x, native.y);
+            case 6;
+                set_input_focus(native.pressed != 0);
+            case 7;
+                event.type = .QUIT;
+                queue_input_event(event);
         }
     }
 }

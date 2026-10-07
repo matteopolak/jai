@@ -880,7 +880,7 @@ WGPUCommandEncoderDescriptor :: struct {
 }
 
 WGPUCompatibilityModeLimits :: struct {
-    chain: WGPUChainedStruct = .{null, .CompatibilityModeLimits};
+    chain: WGPUChainedStruct = .{ null, .CompatibilityModeLimits };
     maxStorageBuffersInVertexStage: u32 = WGPU_LIMIT_U32_UNDEFINED;
     maxStorageTexturesInVertexStage: u32 = WGPU_LIMIT_U32_UNDEFINED;
     maxStorageBuffersInFragmentStage: u32 = WGPU_LIMIT_U32_UNDEFINED;
@@ -919,7 +919,7 @@ WGPUComputePipelineDescriptor :: struct {
 WGPUComputeState :: struct {
     nextInChain: *WGPUChainedStruct;
     module: WGPUShaderModule;
-    entryPoint: WGPUStringView = .{null, WGPU_STRLEN};
+    entryPoint: WGPUStringView = .{ null, WGPU_STRLEN };
     constantCount: u64;
     constants: *WGPUConstantEntry;
 }
@@ -962,18 +962,18 @@ WGPUExtent3D :: struct {
 }
 
 WGPUExternalTextureBindingEntry :: struct {
-    chain: WGPUChainedStruct = .{null, .ExternalTextureBindingEntry};
+    chain: WGPUChainedStruct = .{ null, .ExternalTextureBindingEntry };
     externalTexture: WGPUExternalTexture;
 }
 
 WGPUExternalTextureBindingLayout :: struct {
-    chain: WGPUChainedStruct = .{null, .ExternalTextureBindingLayout};
+    chain: WGPUChainedStruct = .{ null, .ExternalTextureBindingLayout };
 }
 
 WGPUFragmentState :: struct {
     nextInChain: *WGPUChainedStruct;
     module: WGPUShaderModule;
-    entryPoint: WGPUStringView = .{null, WGPU_STRLEN};
+    entryPoint: WGPUStringView = .{ null, WGPU_STRLEN };
     constantCount: u64;
     constants: *WGPUConstantEntry;
     targetCount: u64;
@@ -1136,7 +1136,7 @@ WGPURenderPassDescriptor :: struct {
 }
 
 WGPURenderPassMaxDrawCount :: struct {
-    chain: WGPUChainedStruct = .{null, .RenderPassMaxDrawCount};
+    chain: WGPUChainedStruct = .{ null, .RenderPassMaxDrawCount };
     maxDrawCount: u64 = 50000000;
 }
 
@@ -1161,7 +1161,7 @@ WGPURequestAdapterOptions :: struct {
 }
 
 WGPURequestAdapterWebXROptions :: struct {
-    chain: WGPUChainedStruct = .{null, .RequestAdapterWebXROptions};
+    chain: WGPUChainedStruct = .{ null, .RequestAdapterWebXROptions };
     xrCompatible: WGPUBool = 0;
 }
 
@@ -1191,13 +1191,13 @@ WGPUShaderModuleDescriptor :: struct {
 }
 
 WGPUShaderSourceSPIRV :: struct {
-    chain: WGPUChainedStruct = .{null, .ShaderSourceSPIRV};
+    chain: WGPUChainedStruct = .{ null, .ShaderSourceSPIRV };
     codeSize: u32 = 0;
     code: *u32;
 }
 
 WGPUShaderSourceWGSL :: struct {
-    chain: WGPUChainedStruct = .{null, .ShaderSourceWGSL};
+    chain: WGPUChainedStruct = .{ null, .ShaderSourceWGSL };
     code: WGPUStringView;
 }
 
@@ -1242,7 +1242,7 @@ WGPUSurfaceCapabilities :: struct {
 }
 
 WGPUSurfaceColorManagement :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceColorManagement};
+    chain: WGPUChainedStruct = .{ null, .SurfaceColorManagement };
     colorSpace: WGPUPredefinedColorSpace;
     toneMappingMode: WGPUToneMappingMode;
 }
@@ -1266,35 +1266,35 @@ WGPUSurfaceDescriptor :: struct {
 }
 
 WGPUSurfaceSourceAndroidNativeWindow :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceAndroidNativeWindow};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceAndroidNativeWindow };
     window: *void;
 }
 
 WGPUSurfaceSourceMetalLayer :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceMetalLayer};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceMetalLayer };
     layer: *void;
 }
 
 WGPUSurfaceSourceWaylandSurface :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceWaylandSurface};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceWaylandSurface };
     display: *void;
     surface: *void;
 }
 
 WGPUSurfaceSourceWindowsHWND :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceWindowsHWND};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceWindowsHWND };
     hinstance: *void;
     hwnd: *void;
 }
 
 WGPUSurfaceSourceXCBWindow :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceXCBWindow};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceXCBWindow };
     connection: *void;
     window: u32;
 }
 
 WGPUSurfaceSourceXlibWindow :: struct {
-    chain: WGPUChainedStruct = .{null, .SurfaceSourceXlibWindow};
+    chain: WGPUChainedStruct = .{ null, .SurfaceSourceXlibWindow };
     display: *void;
     window: u64;
 }
@@ -1331,7 +1331,7 @@ WGPUTextureBindingLayout :: struct {
 }
 
 WGPUTextureBindingViewDimension :: struct {
-    chain: WGPUChainedStruct = .{null, .TextureBindingViewDimension};
+    chain: WGPUChainedStruct = .{ null, .TextureBindingViewDimension };
     textureBindingViewDimension: WGPUTextureViewDimension;
 }
 
@@ -1343,7 +1343,7 @@ WGPUTextureComponentSwizzle :: struct {
 }
 
 WGPUTextureComponentSwizzleDescriptor :: struct {
-    chain: WGPUChainedStruct = .{null, .TextureComponentSwizzleDescriptor};
+    chain: WGPUChainedStruct = .{ null, .TextureComponentSwizzleDescriptor };
     swizzle: WGPUTextureComponentSwizzle;
 }
 
@@ -1391,7 +1391,7 @@ WGPUVertexBufferLayout :: struct {
 WGPUVertexState :: struct {
     nextInChain: *WGPUChainedStruct;
     module: WGPUShaderModule;
-    entryPoint: WGPUStringView = .{null, WGPU_STRLEN};
+    entryPoint: WGPUStringView = .{ null, WGPU_STRLEN };
     constantCount: u64;
     constants: *WGPUConstantEntry;
     bufferCount: u64;
@@ -1402,6 +1402,7 @@ WGPUVertexState :: struct {
     wgpuInstanceProcessEvents :: (instance: WGPUInstance) #foreign libwgpu;
     wgpuInstanceWaitAny :: (instance: WGPUInstance, futureCount: u64, futures: *WGPUFutureWaitInfo, timeoutNS: u64) -> WGPUWaitStatus #foreign libwgpu;
 }
+
 wgpuCreateInstance :: (descriptor: *WGPUInstanceDescriptor) -> WGPUInstance #foreign libwgpu;
 wgpuGetInstanceFeatures :: (features: *WGPUSupportedInstanceFeatures) #foreign libwgpu;
 wgpuGetInstanceLimits :: (limits: *WGPUInstanceLimits) -> WGPUStatus #foreign libwgpu;
@@ -1603,5 +1604,9 @@ wgpuTextureViewAddRef :: (textureView: WGPUTextureView) #foreign libwgpu;
 wgpuTextureViewRelease :: (textureView: WGPUTextureView) #foreign libwgpu;
 
 #scope_file
-wgpu_nan32 :: () -> float32 { bits: u32 = 0x7FC0_0000; return (cast(*float32) *bits).*; }
+wgpu_nan32 :: () -> float32 {
+    bits: u32 = 0x7FC0_0000;
+    return (cast(*float32) *bits).*;
+}
+
 WGPU_NAN32 :: #run wgpu_nan32();
