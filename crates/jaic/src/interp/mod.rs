@@ -29,6 +29,7 @@ use crate::ir::{
 pub use native::main_thread;
 pub use native::{library_dirs, set_library_dirs};
 pub use sandbox::{SandboxHost, SharedHost};
+pub use threads::DEADLOCK_GRACE;
 use std::collections::BTreeMap;
 use std::rc::Rc;
 
