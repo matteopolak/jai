@@ -4,7 +4,7 @@
 use jaic::build::{BuildEnv, WorkspaceObserver, Workspaces};
 use jaic::intern::Sym;
 use jaic::interp::{SandboxHost, SharedHost};
-use jaic::sema::ide::{IdeFacts, IdeName};
+use jaic::sema::ide::{IdeFacts, IdeLayout, IdeName};
 use jaic::sema::{Compiler, FileSystem, Options};
 use jaic::source::{FileId, ImportSuggestion};
 use std::cell::RefCell;
@@ -150,10 +150,20 @@ impl Analysis {
         )
     }
 
-    pub fn hover(&mut self, path: &Path, offset: usize) -> Option<(usize, usize, String)> {
+    /// Hover at `offset` as (start, end, description, memory layout).
+    pub fn hover(
+        &mut self,
+        path: &Path,
+        offset: usize,
+    ) -> Option<(usize, usize, String, Option<IdeLayout>)> {
         let file = self.file(path)?;
-        let (span, text) = self.compiler.ide_hover(file, offset as u32)?;
-        Some((span.start as usize, span.end as usize, text))
+        let hover = self.compiler.ide_hover(file, offset as u32)?;
+        Some((
+            hover.span.start as usize,
+            hover.span.end as usize,
+            hover.text,
+            hover.layout,
+        ))
     }
 
     /// Declarations the identifier at `offset` names, as (path, text, start, end) with byte

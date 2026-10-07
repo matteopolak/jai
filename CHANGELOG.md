@@ -4,6 +4,7 @@
 
 ### Added
 
+- jailsp: hovers show memory layout from the compiler's own layout data for the workspace's target: a struct, union, enum or type alias shows `size 8, align 4 (3 bytes of padding)`, a field `offset 4, size 4, align 4 (3 bytes of padding before)` (through `using`, `#as using`, `#place`, `#overlay`, member `#align` and anonymous nested structs and unions), and a variable or constant of an aggregate type its type's size and alignment. `Node(int)` shows the instance; a polymorphic definition shows none. Works in the browser build too.
 - jailsp: an unknown identifier that a standard-library module declares gets an ``Add `#import "Basic";` `` quick fix, one per module the compiler suggests (preferred only when there is one), inserted after the file's imports or below its leading comments; `Math.sqrt` without an import gets `Math :: #import "Math";`. The compiler carries the suggested imports on the diagnostic (`Diagnostic::fixes.imports`).
 - jailint rule `wrapping_constant` (warn): a constant that silently wraps to the type of the other operand of `/`, `%` or an ordering comparison, such as `(0xffff_ffff - 40) / h` or `h < 0x8000_0000` with `h: s32`. The help shows the value the operator really uses and suggests computing in `s64` (or `u64`).
 - Browser build: `jai_play_set_styled(1)` renders errors with ANSI colour and box drawing, for output panes that draw them.
