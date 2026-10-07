@@ -87,7 +87,7 @@ In the browser all threads share one host thread ([inline threads](../compiler/i
 | What | Where | Runs |
 |---|---|---|
 | `tests/webgpu/headless.jai`: render a triangle into a texture, copy to a mappable buffer, check pixels; compute shader (squares of 256 numbers); texture upload and readback; an invalid shader in an error scope must be a validation error | `tools/test_webgpu_native.py` (interpreted and built; exit 77 = no adapter, retried with the fallback adapter) | CI `stdlib-runtime` on Linux (lavapipe, adapter required) and macOS (Metal, skip without an adapter); `windows-native.yml` on x64 and arm64 (WARP, adapter required) |
-| Host bridge against a mock WebGPU: struct marshalling, handles and reference counts, strings, chained structs, futures and callback modes, promise suspension, out-of-range pointers; end-to-end `tests/webgpu/bridge.jai` in the real engine (threads keep running during waits) | `tools/test_webgpu_host.mjs` (`node --experimental-wasm-jspi --test --test-isolation=none`; set `JAI_WASM_DIR` for the end-to-end tests) | CI `scripting-wasm` |
+| Host bridge against a mock WebGPU: struct marshalling, handles and reference counts, strings, chained structs, futures and callback modes, promise suspension, out-of-range pointers; end-to-end `tests/webgpu/bridge.jai` in the real engine (threads keep running during waits) | `tools/test_webgpu_host.mjs` (`node --experimental-wasm-jspi tools/test_webgpu_host.mjs`, run directly so the JSPI flag reaches the tests; set `JAI_WASM_DIR` for the end-to-end tests) | CI `scripting-wasm` |
 | Generator rules (enum strings, struct layouts) | `tools/test_webgpu_gen.py` | CI with the other `tools/test_*.py` |
 | Packaging: the browser bundle has both JS files and loads them; release archives build the triangle and run the headless test from the archive | `tools/check_browser_release.mjs`, `release.yml` smoke test | release workflows |
 | Bridge memory (`jai_host_alloc`/`free`) | `cargo test -p jai-wasm` | CI |
@@ -96,7 +96,7 @@ Run locally:
 
 ```sh
 python3 tools/test_webgpu_native.py --jaic target/debug/jaic [--require-adapter]
-JAI_WASM_DIR=<built bundle> node --experimental-wasm-jspi --test --test-isolation=none tools/test_webgpu_host.mjs
+JAI_WASM_DIR=<built bundle> node --experimental-wasm-jspi tools/test_webgpu_host.mjs
 ```
 
 ## How to change it
