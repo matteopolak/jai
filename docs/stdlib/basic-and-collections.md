@@ -13,7 +13,7 @@
 | `allocation.jai` | `alloc`, `free`, temporary storage |
 | `Array.jai` | `array_add`, `array_copy`, removal, `array_find` |
 | `Simple_String.jai`, `String_Builder.jai` | strings and builders. `string_to_float64_new` returns success first (`ok, value, rest`), the order toml-jai expects. |
-| `Print.jai` | `print`, `tprint`, formatters. Exact float digits run on a `u64` and fall back to 36-limb arithmetic on overflow. Integer and float formatters see through variants (`#type,distinct float64` and `isa` chains of them). |
+| `Print.jai` | `print`, `tprint`, formatters. Exact float digits run on a `u64` and fall back to 36-limb arithmetic on overflow. Integer and float formatters see through variants (`#type,distinct float64` and `isa` chains of them). Edge forms (`tests/stdlib/basic-print-edge-forms.jai`): negatives in another base are two's complement at their width, fixed precision rounds ties away from zero, removed trailing zeros keep their width as spaces, `Inf`/`NaN`, `(enum out of range: N)`, `[1, 2...]` for a cut-short array. |
 | `Int128.jai` | `S128`/`U128` with wrapping arithmetic |
 | `Apollo_Time.jai`, `platform-time.jai` | time |
 | `Memory_Debugger*.jai` | only when `MEMORY_DEBUGGER` is set |

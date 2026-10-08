@@ -121,6 +121,18 @@ __default_format_float :: () -> FormatFloat {
     return result;
 }
 
+__default_format_array :: () -> FormatArray {
+    source := context.print_style.default_format_array;
+    result: FormatArray;
+    result.separator = source.separator;
+    result.begin_string = source.begin_string;
+    result.end_string = source.end_string;
+    result.printing_stopped_early_string = source.printing_stopped_early_string;
+    result.draw_separator_after_last_element = source.draw_separator_after_last_element;
+    result.stop_printing_after_this_many_elements = source.stop_printing_after_this_many_elements;
+    return result;
+}
+
 __default_format_struct :: () -> FormatStruct {
     source := context.print_style.default_format_struct;
     result: FormatStruct;
@@ -217,8 +229,13 @@ print_integer :: (builder: *String_Builder, format: FormatInt) {
         value := get_s64_from_void_pointer(item.value_pointer, info.runtime_size);
         magnitude = cast,no_check(u64) value;
         if value < 0 {
-            append(builder, cast(u8) #char "-");
-            magnitude = ~magnitude + 1;
+            if format.base == 10 {
+                append(builder, cast(u8) #char "-");
+                magnitude = ~magnitude + 1;
+            } else if info.runtime_size < 8 {
+                // Other bases show the value's own bits: -1 as an s8 is ff.
+                magnitude &= ((cast(u64) 1) << cast(u8) (8 * info.runtime_size)) - 1;
+            }
         }
     } else magnitude = get_u64_from_void_pointer(item.value_pointer, info.runtime_size);
     print_u64_base_n(builder, magnitude, format);
@@ -390,7 +407,8 @@ __float_round_digits :: (result: *__Float_Digits) {
 
 // requested = -1 selects the least number of digits inside the nearest-even
 // rounding interval. fixed_after_point supplies DECIMAL precision; otherwise
-// requested is the required significant digit count.
+// requested is the required significant digit count. A cut exactly halfway
+// rounds away from zero.
 __float_decimal_digits :: (bits: u64, requested: s64, fixed_after_point: s64 = -1) -> __Float_Digits {
     result := __float_decimal_digits_in(u64, bits, requested, fixed_after_point);
     if !result.valid result = __float_decimal_digits_in(__Float_Wide, bits, requested, fixed_after_point);
@@ -448,13 +466,13 @@ __float_decimal_digits_in :: ($T: Type, bits: u64, requested: s64, fixed_after_p
         if requested > 18 requested = 18;
     }
     if !shortest && requested <= 0 {
-        // At the cut before the leading digit, zero is the even candidate.
+        // At the cut before the leading digit a tie rounds up, as everywhere else.
         round_up := false;
         if requested == 0 {
             twice := r;
             threshold := s;
             if !__float_wide_multiply(*twice, 2) || !__float_wide_multiply(*threshold, 10) return result;
-            round_up = __float_wide_compare(*twice, *threshold) > 0;
+            round_up = __float_wide_compare(*twice, *threshold) >= 0;
         }
         result.count = 1;
         if round_up {
@@ -495,8 +513,7 @@ __float_decimal_digits_in :: ($T: Type, bits: u64, requested: s64, fixed_after_p
             stop = true;
             twice := r;
             if !__float_wide_multiply(*twice, 2) return result;
-            comparison := __float_wide_compare(*twice, *s);
-            round_up = comparison > 0 || (comparison == 0 && (digit & 1) != 0);
+            round_up = __float_wide_compare(*twice, *s) >= 0;
         }
         if stop {
             if round_up __float_round_digits(*result);
@@ -523,7 +540,8 @@ __float_digit_at :: (digits: *__Float_Digits, index: s64) -> u8 {
 // SHORTEST is general notation with a significant-digit precision, matching
 // maintained consumers; the explicit roundtrip helper selects the exact
 // rounding interval rather than changing that mode's default precision.
-__append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, scientific: bool, fractional: s64, format: FormatFloat) {
+// Returns how many characters zero removal left out (digits and a bare decimal point).
+__append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, scientific: bool, fractional: s64, format: FormatFloat) -> removed: s64 {
     whole: s64 = 1;
     if !scientific && digits.exponent >= 0 whole = digits.exponent + 1;
     for i: 0..whole - 1 {
@@ -544,6 +562,8 @@ __append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, sci
             visible -= 1;
         }
     }
+    removed := fractional - visible;
+    if fractional > 0 && visible == 0 removed += 1;
     if visible > 0 {
         append(builder, format.decimal_separator_character);
         for i: 1..visible {
@@ -561,30 +581,32 @@ __append_float_digits :: (builder: *String_Builder, digits: *__Float_Digits, sci
         } else append(builder, cast(u8) #char "+");
         print_u64_base_n(builder, cast(u64) exponent, FormatInt.{ minimum_digits = 2 });
     }
+    return removed;
 }
 
-__append_float_value :: (builder: *String_Builder, value: float64, format: FormatFloat) {
+// Returns the characters zero removal left out, as __append_float_digits.
+__append_float_value :: (builder: *String_Builder, value: float64, format: FormatFloat) -> removed: s64 {
     bits := cast,force(u64) value;
     magnitude := bits & 0x7fff_ffff_ffff_ffff;
     exponent_bits := magnitude >> 52;
     fraction_bits := magnitude & 0x000f_ffff_ffff_ffff;
     if exponent_bits == 0x7ff && fraction_bits != 0 {
-        append(builder, "nan");
-        return;
+        append(builder, "NaN");
+        return 0;
     }
     if (bits & 0x8000_0000_0000_0000) != 0 append(builder, cast(u8) #char "-");
     else if format.positive_number_prefix == .PLUS append(builder, cast(u8) #char "+");
     else if format.positive_number_prefix == .SPACE append(builder, cast(u8) #char " ");
     if exponent_bits == 0x7ff {
-        append(builder, "inf");
-        return;
+        append(builder, "Inf");
+        return 0;
     }
     precision := format.trailing_width;
     if precision < 0 precision = 6;
     if precision > 18 {
         append(builder, "<unsupported float precision>");
         builder.failed = true;
-        return;
+        return 0;
     }
     scientific := format.mode == .SCIENTIFIC;
     general := format.mode == .SHORTEST;
@@ -598,7 +620,7 @@ __append_float_value :: (builder: *String_Builder, value: float64, format: Forma
     if !digits.valid {
         append(builder, "<float conversion capacity exceeded>");
         builder.failed = true;
-        return;
+        return 0;
     }
     fractional := precision;
     if general {
@@ -607,7 +629,10 @@ __append_float_value :: (builder: *String_Builder, value: float64, format: Forma
         if scientific fractional = requested - 1;
         if fractional < 0 fractional = 0;
     }
-    __append_float_digits(builder, *digits, scientific, fractional, format);
+    removed := __append_float_digits(builder, *digits, scientific, fractional, format);
+    // SHORTEST works like C's %g, which never shows the zeros it drops.
+    if general return 0;
+    return removed;
 }
 
 __append_float_roundtrip :: (builder: *String_Builder, value: float64) {
@@ -721,14 +746,17 @@ print_float :: (builder: *String_Builder, format: FormatFloat) {
     }
     scratch: String_Builder;
     init_string_builder(*scratch);
-    __append_float_value(*scratch, value, format);
+    removed := __append_float_value(*scratch, value, format);
     failed := scratch.failed;
     rendered := builder_to_string(*scratch);
-    // Width is a minimum total byte count, with spaces before the number.
+    // Width is a minimum byte count for the number as it was before zero removal, made up with
+    // spaces in front. With an explicit trailing_width, spaces also stand in for the removed
+    // zeros, so a column of numbers stays aligned: formatFloat(2.5, trailing_width = 3) is "2.5  ".
     spaces: s64 = 0;
-    if format.width > rendered.count spaces = format.width - rendered.count;
+    if format.width > rendered.count + removed spaces = format.width - rendered.count - removed;
     for i: 0..spaces - 1 append(builder, cast(u8) #char " ");
     append(builder, rendered);
+    if format.trailing_width >= 0 for i: 0..removed - 1 append(builder, cast(u8) #char " ");
     free(rendered);
     free_buffers(*scratch);
     if failed builder.failed = true;
@@ -737,15 +765,9 @@ print_float :: (builder: *String_Builder, format: FormatFloat) {
 __append_quoted :: (builder: *String_Builder, text: string) {
     append(builder, cast(u8) #char "\"");
     for byte: text {
-        if byte == #char "\"" append(builder, "\\\"");
-        else if byte == #char "\\" append(builder, "\\\\");
-        else if byte == 10 append(builder, "\\n");
-        else if byte == 13 append(builder, "\\r");
-        else if byte == 9 append(builder, "\\t");
-        else if byte < 32 {
-            append(builder, "\\x");
-            print_u64_base_n(builder, byte, FormatInt.{ base = 16, minimum_digits = 2 });
-        } else append(builder, byte);
+        // Only a line break is spelled out, so the value stays on one line.
+        if byte == 10 append(builder, "\\n");
+        else append(builder, byte);
     }
     append(builder, cast(u8) #char "\"");
 }
@@ -764,7 +786,9 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
         return;
     }
     if info.type == .ENUM {
-        append(builder, (cast(*Type_Info_Enum) info).name);
+        name := (cast(*Type_Info_Enum) info).name;
+        if name append(builder, name);
+        else append(builder, "(anonymous enum)");
         return;
     }
     if info.type == .VARIANT {
@@ -823,8 +847,7 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
             append(builder, ")");
         }
         if (procedure.procedure_flags & .IS_C_CALL) != 0 append(builder, " #c_call");
-        if (procedure.procedure_flags & .HAS_NO_CONTEXT) != 0 append(builder, " #no_context");
-        if (procedure.procedure_flags & .IS_COMPILE_TIME_ONLY) != 0 append(builder, " #compile_time");
+        if (procedure.procedure_flags & .IS_COMPILE_TIME_ONLY) != 0 append(builder, " #compiler");
         return;
     }
     if info.type == .BOOL append(builder, "bool");
@@ -832,10 +855,10 @@ __append_type :: (builder: *String_Builder, info: *Type_Info, depth: s64) {
     else if info.type == .VOID append(builder, "void");
     else if info.type == .TYPE append(builder, "Type");
     else if info.type == .ANY append(builder, "Any");
-    else {
-        append(builder, "<unsupported type>");
-        builder.failed = true;
-    }
+    else if info.type == .CODE append(builder, "Code");
+    else if info.type == .POLYMORPHIC_VARIABLE append(builder, "$");
+    // Overload sets, untyped literals and the like have no name to show.
+    else append(builder, "(some type)");
 }
 
 __append_struct_type :: (builder: *String_Builder, info: *Type_Info_Struct) {
@@ -943,10 +966,8 @@ __append_array :: (builder: *String_Builder, item: Any, info: *Type_Info_Array, 
         element: Any = .{ type = info.element_type, value_pointer = cast(*u8) data + i * info.element_type.runtime_size };
         __append_item(builder, element, true, may_be_uninitialized, depth + 1);
     }
-    if limit < count {
-        if limit > 0 append(builder, format.separator);
-        append(builder, format.printing_stopped_early_string);
-    } else if limit > 0 && format.draw_separator_after_last_element append(builder, format.separator);
+    if limit < count append(builder, format.printing_stopped_early_string);
+    else if limit > 0 && format.draw_separator_after_last_element append(builder, format.separator);
     append(builder, format.end_string);
 }
 
@@ -969,7 +990,11 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         write_string("error: null pointer dereference: read through a null pointer\n", to_standard_error = true);
         Runtime_Support.debug_break();
     }
-    if !item.type || !item.value_pointer {
+    if !item.type {
+        append(builder, "Any.{}");
+        return;
+    }
+    if !item.value_pointer {
         append(builder, "null");
         return;
     }
@@ -1047,7 +1072,7 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
         }
         settings := __default_format_struct();
         __append_struct(builder, info, item.value_pointer, settings, depth);
-    } else if tag == .ARRAY __append_array(builder, item, cast(*Type_Info_Array) item.type, .{}, false, depth);
+    } else if tag == .ARRAY __append_array(builder, item, cast(*Type_Info_Array) item.type, __default_format_array(), false, depth);
     else if tag == .ENUM {
         info := cast(*Type_Info_Enum) item.type;
         value := get_u64_from_void_pointer(item.value_pointer, info.runtime_size);
@@ -1070,14 +1095,21 @@ __append_item :: (builder: *String_Builder, item: Any, nested: bool, uninitializ
                 remainder &= ~flag;
                 first = false;
             }
+            // Bits without a name follow in hex, with a 0x only after named ones.
             if remainder != 0 {
-                if !first append(builder, " | ");
-                append(builder, "0x");
+                if !first append(builder, " | 0x");
                 print_u64_base_n(builder, remainder, FormatInt.{ base = 16 });
             } else if first append(builder, "0");
             return;
         }
+        // Zero (a default-initialized value) prints bare; any other unnamed value is flagged.
+        if value == 0 {
+            append(builder, "0");
+            return;
+        }
+        append(builder, "(enum out of range: ");
         print_integer(builder, FormatInt.{ value = item });
+        append(builder, ")");
     } else if tag == .VARIANT {
         base := item;
         base.type = (cast(*Type_Info_Variant) item.type).variant_of;
