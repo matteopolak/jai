@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Auto-import completion in jailsp: typing part of a name the file cannot see offers it from standard-library modules, the project's modules and its other files, and accepting it also adds the `#import "Basic";` or `#load "util/strings.jai";` it needs (after the existing ones). It needs two typed characters, offers at most 50 names, sorts them after names in scope, and leaves out modules already imported and modules for other target OSes. `jai.toml` at a project root names its entry files (`build_files`) and module folders (`import_path`); without one they are inferred (`build.jai`, `first.jai`, `main.jai`, `src/main.jai`). VS Code: `jai.completion.autoImport` (on by default) and a schema for `jai.toml`. The playground applies the added import too ([language server](docs/compiler/language-server.md#auto-import-completion)).
+
 ## [0.4.3] - 2026-10-08
 
 Closer to Jai's behaviour: `print` formats numbers, floats and enums the same way, constants must fit their types, and a set of invalid programs jaic used to accept are now compile errors. Also fixes formatting with the renamed VS Code extension.
