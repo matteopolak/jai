@@ -571,8 +571,12 @@ impl Compiler {
             let addr = f.b.alloca(size.max(1), align);
             match value {
                 Some(op) => {
+                    let value_span = match &decl.value {
+                        Some(v) if decl.names.len() == 1 => v.span,
+                        _ => span,
+                    };
                     let op = self
-                        .convert(f, op, ty, span)
+                        .convert(f, op, ty, value_span)
                         .map_err(|e| self.declared_type_mismatch(e, decl, decl.names.len() == 1))?;
                     let (_, v) = self.rvalue(f, op, span)?;
                     self.store_value(f, ty, addr, v, span)?;

@@ -2450,6 +2450,97 @@
       "rules": [
         "poly.19"
       ]
+    },
+    {
+      "id": "int-constant-negative-unsigned",
+      "source": "negative/int-constant-negative-unsigned.jai",
+      "sha256": "18b573e8af7f6bfffa7753842a89b32698ed2d72a736a80fa13b28b87f5f2d25",
+      "suite": "negative",
+      "feature": "a negative constant does not fit an unsigned type",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "constant -1 does not fit in u32"
+      }
+    },
+    {
+      "id": "int-constant-decimal-signed-overflow",
+      "source": "negative/int-constant-decimal-signed-overflow.jai",
+      "sha256": "3203363c5e4bc11121203b71922df63ca412d321d31015756f263e2259300d37",
+      "suite": "negative",
+      "feature": "a decimal constant must fit a signed type's range",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "constant 40000 does not fit in s16"
+      }
+    },
+    {
+      "id": "int-constant-argument-overflow",
+      "source": "negative/int-constant-argument-overflow.jai",
+      "sha256": "70fb99ffd9a0bc6c04322cf67a9296666f05238c25ca5dbc0b92ca0b6586c090",
+      "suite": "negative",
+      "feature": "a decimal constant argument must fit a signed parameter",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "constant 200 does not fit in s8"
+      }
+    },
+    {
+      "id": "constant-cast-out-of-range",
+      "source": "negative/constant-cast-out-of-range.jai",
+      "sha256": "7e47f86a47783d968dbb8d33161038df49283aef43a072c16b98e68819809866",
+      "suite": "negative",
+      "feature": "a constant cast is bounds-checked at compile time",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "constant 300 is out of range for u8"
+      }
+    },
+    {
+      "id": "constant-autocast-negative-unsigned",
+      "source": "negative/constant-autocast-negative-unsigned.jai",
+      "sha256": "3fb14f443f235c4abab6b02ef876569f244943ca530ebb38811ce1c94963b1c8",
+      "suite": "negative",
+      "feature": "xx of a negative constant to an unsigned type is rejected",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "constant -1 is out of range for u8"
+      }
+    },
+    {
+      "id": "integer-literal-too-big",
+      "source": "negative/integer-literal-too-big.jai",
+      "sha256": "64615849687346e62c740041dd174b8fb393e2708993f985533d7ee57424d3af",
+      "suite": "negative",
+      "feature": "an integer literal must fit in 64 bits",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "integer literal is too big"
+      }
+    },
+    {
+      "id": "float32-literal-out-of-range",
+      "source": "negative/float32-literal-out-of-range.jai",
+      "sha256": "a84ed18a2e00e83fa86b317c6a9e697fdbdb3bab74c5876358f482c04182d1c4",
+      "suite": "negative",
+      "feature": "a float literal outside float32's range needs a cast to float32",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "does not fit in float32"
+      }
     }
   ]
 }
