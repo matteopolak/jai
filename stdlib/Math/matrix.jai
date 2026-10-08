@@ -416,7 +416,7 @@ make_look_at_matrix :: (viewpoint: Vector3, look_at: Vector3, reference_up_vecto
     up := cross(forward, side);
     result: Matrix4;
     if x_is_forward result = make_matrix_from_rows(forward, side, up);
-    else result = make_matrix_from_rows(side, up, -forward);
+    else result = make_matrix_from_rows(-side, up, -forward); // right-handed: x = forward x up
     transformed := multiply(result, xyzw(viewpoint, 0));
     offset := xyz(-transformed.x, -transformed.y, -transformed.z);
     result._14 = offset.x;
