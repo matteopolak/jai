@@ -48,7 +48,9 @@ init :: (using table: *Table, slots_to_allocate: s64 = 0) {
 
 resize :: (using table: *Table, slots_to_allocate: s64 = 0) {
     if !allocator.proc allocator = context.allocator;
-    capacity := next_power_of_two(Basic.max(SIZE_MIN, slots_to_allocate));
+    // An explicit size is only rounded up to a power of two (init(*t, 10) allocates 16);
+    // SIZE_MIN applies when none is given.
+    capacity := next_power_of_two(ifx slots_to_allocate > 0 then slots_to_allocate else SIZE_MIN);
     while count * 100 >= capacity * LOAD_FACTOR_PERCENT capacity *= 2;
     previous := entries;
     replacement, base := Basic.NewArray(capacity, Entry, true,, allocator);

@@ -21,7 +21,7 @@
 
 Resizable arrays keep their allocator in the descriptor and grow by allocating a new block, copying and freeing the old one. Ordered removal shifts elements; unordered removal moves the last element into the hole.
 
-`Hash_Table.Table(Key, Value)` is open addressing: `table_set`, `table_add`, `table_find`, `table_find_pointer`, `table_contains`, `table_remove`, `table_reset`. `table_find` and `table_remove` return success first, the order corpus programs expect. The hash and compare functions, `LOAD_FACTOR_PERCENT` and `REFILL_REMOVED` are struct parameters.
+`Hash_Table.Table(Key, Value)` is open addressing: `table_set`, `table_add`, `table_find`, `table_find_pointer`, `table_contains`, `table_remove`, `table_reset`. `table_find` and `table_remove` return success first, the order corpus programs expect. The hash and compare functions, `LOAD_FACTOR_PERCENT` and `REFILL_REMOVED` are struct parameters. `init(*t, n)` allocates `n` rounded up to a power of two (`init(*t, 5)` gives 8 slots); `SIZE_MIN` (32) applies only when no size is given.
 
 ```jai
 #import "Basic";
