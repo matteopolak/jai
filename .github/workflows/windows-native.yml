@@ -157,7 +157,21 @@ jobs:
           export PATH
           if command -v clang; then echo "clang is still on PATH"; exit 1; fi
           which -a link
+          # First with the runner's older Clang in Program Files\LLVM (found off PATH), then
+          # with that and Visual Studio's bundled Clang moved away, so link.exe links.
           "$jaic" run first.jai
+          vs="$(cygpath -u "$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" -latest -property installationPath)")"
+          hidden=()
+          for dir in "/c/Program Files/LLVM" "$vs/VC/Tools/Llvm"; do
+            if [ -d "$dir" ]; then mv "$dir" "$dir.hidden"; hidden+=("$dir"); fi
+          done
+          rm -f build/game.exe
+          set +e
+          "$jaic" run first.jai
+          status=$?
+          set -e
+          for dir in "${hidden[@]}"; do mv "$dir.hidden" "$dir"; done
+          test "$status" = 0
           ls -l build
           # The same program under the interpreter (Mesa's opengl32.dll is beside jaic.exe).
           "$jaic" run src/main.jai
