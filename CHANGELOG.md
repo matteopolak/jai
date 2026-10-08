@@ -5,6 +5,7 @@
 ### Fixed
 
 - Release archives ship the stdlib's C libraries (`stb_image`, `stb_image_write`, `stb_image_resize`, `stb_vorbis`, plus `rpmalloc` on macOS and Linux and FreeType on Windows) for every platform, so Simp programs run and build from an installed toolchain. Before, `jaic run` stopped with ``foreign procedure `stbi_load` is not available here`` and `jaic build` could not find `stb_image`.
+- Windows: `jaic build` without Clang on `PATH` no longer runs the coreutils `link` that Git for Windows puts there (``link: extra operand 'build\\game.exe.o'``). It uses Microsoft's `link.exe`, finding Visual Studio and the Windows SDK libraries itself when no developer prompt is open, or a Clang installed outside `PATH`.
 
 ## [0.4.3] - 2026-10-08
 
