@@ -995,6 +995,13 @@ impl Compiler {
                             val: v,
                         })
                     }
+                    Operand::Const {
+                        value: Value::Int(_) | Value::Float(_) | Value::Bool(_),
+                        ..
+                    } => err(
+                        span,
+                        "cannot take the address of a number or bool constant: it has no storage (assign it to a variable first)",
+                    ),
                     other => {
                         // Address of a temporary.
                         let (ty, addr) = self.address_of(f, other, span)?;
@@ -1589,6 +1596,21 @@ impl Compiler {
         // Unify operand types.
         let patterns = (self.bit_pattern(a.span), self.bit_pattern(b.span));
         let ty = self.binary_operand_type(&lhs, &rhs, expected, is_shift, patterns, span)?;
+        if self.types.repr(ty) == TypeId::BOOL
+            && matches!(
+                op,
+                BinOp::Add | BinOp::Sub | BinOp::Mul | BinOp::Div | BinOp::Rem
+            )
+        {
+            let symbol = match op {
+                BinOp::Add => "+",
+                BinOp::Sub => "-",
+                BinOp::Mul => "*",
+                BinOp::Div => "/",
+                _ => "%",
+            };
+            return err(span, format!("operator `{symbol}` is not defined for bool"));
+        }
         // A literal that met the other operand's type takes it as a bit pattern
         // (`mask & ~0x7` with a `u32` mask).
         if !is_shift {
