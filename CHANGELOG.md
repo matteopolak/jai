@@ -15,6 +15,7 @@
 - `print` handles several edge cases as Jai does: a negative integer in another base is its two's complement (`formatInt(-1, base = 16)` on an `s8` is `ff`); fixed-precision floats round ties away from zero (`2.5` with no decimals is `3`); trailing zeros removed by zero removal keep their width as spaces; infinity and NaN print as `Inf`, `-Inf` and `NaN`; an enum value without a name prints as `(enum out of range: 5)`, and leftover `enum_flags` bits print in hex after the names; an array cut short ends `[1, 2...]`; an `Any` with no type prints `Any.{}`; strings inside structs escape only newlines; type names print `(anonymous enum)`, `#c_call` and `#compiler`.
 - Type info gives an anonymous enum an empty name, as for anonymous structs.
 - Two typed integer constants of different types meet in the wider one (`cast(s16) 1 + cast(s32) 2` is `s32`), as variables do.
+- Compile errors for programs jaic accepted: arithmetic on `bool`, more names than a call returns (`a, b := f(1)` with one result), the address of a number constant (`*5`), `#char` of an empty or multi-character string, `using` on a variable that is not a struct or enum, a bare `defer;`, an enum value outside its type, a repeated enum or struct member name, and assigning into a constant array (`ARR[0] = 1` changed a copy).
 
 ## [0.4.2] - 2026-10-08
 
