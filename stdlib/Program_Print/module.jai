@@ -476,7 +476,16 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
         case .IDENT;
             ident := cast(*Code_Ident) node;
             if ident.flags & .HAS_SCOPE_MODIFIER append(builder, "`");
+            if ident.flags & .DEFINES_POLYMORPH_VARIABLE {
+                if ident.flags & .BAKED_POLYMORPH_VARIABLE append(builder, "$$");
+                else append(builder, "$");
+            }
             append(builder, ident.name);
+            if ident.polymorph_restriction {
+                if ident.flags & .INTERFACE_RESTRICTED append(builder, "/interface ");
+                else append(builder, "/");
+                ok = pp_expression(builder, ident.polymorph_restriction, depth, 0);
+            }
         case .CONTEXT;
             append(builder, "context");
         case .PLACEHOLDER;
@@ -617,7 +626,9 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             append(builder, ")");
         case .DIRECTIVE_LOCATION;
             loc := cast(*Code_Directive_Location) node;
-            if loc.is_caller_location {
+            if loc.is_caller_code {
+                append(builder, "#caller_code");
+            } else if loc.is_caller_location {
                 append(builder, "#caller_location");
             } else {
                 append(builder, "#location");
@@ -653,6 +664,26 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
             append(builder, "#overlay(");
             ok = pp_expression(builder, (cast(*Code_Directive_Overlay) node).target_expression, depth, 0);
             append(builder, ")");
+        case .DIRECTIVE_ADD_CONTEXT;
+            append(builder, "#add_context ");
+            decl := (cast(*Code_Directive_Add_Context) node).expression;
+            if decl ok = pp_expression(builder, decl, depth, 0);
+        case .DIRECTIVE_MODULE_PARAMETERS;
+            params := cast(*Code_Directive_Module_Parameters) node;
+            append(builder, "#module_parameters");
+            for header: (*Code_Procedure_Header).[params.module_parameters, params.program_parameters] {
+                if !header continue;
+                append(builder, "(");
+                for arg, i: header.arguments {
+                    if i > 0 append(builder, ", ");
+                    if !pp_declaration(builder, arg, depth, true, true) ok = false;
+                }
+                append(builder, ")");
+            }
+            if params.common_code {
+                append(builder, " ");
+                if !pp_block(builder, params.common_code, depth) ok = false;
+            }
         case .DIRECTIVE_IMPORT;
             imp := cast(*Code_Directive_Import) node;
             print_to_builder(builder, "#import \"%\"", imp.name);

@@ -469,7 +469,13 @@ Code_Ident :: struct {
         DO_NOT_RESOLVE_DUE_TO_PARSER :: 0x10;
         CAN_RESOLVE_TO_REG :: 0x20;
         HAS_SCOPE_MODIFIER :: 0x40;
+        // jaic extensions: `$$name` (baked) and `$T/interface Name` (an interface restriction).
+        BAKED_POLYMORPH_VARIABLE :: 0x80;
+        INTERFACE_RESTRICTED :: 0x100;
     }
+
+    // The restriction of `$T/Restriction`; null otherwise.
+    polymorph_restriction: *Code_Node;
 }
 
 Code_Type_Instantiation :: struct {
@@ -587,6 +593,9 @@ Code_Directive_Location :: struct {
     expression: *Code_Node;
 
     is_caller_location := false;
+
+    // jaic extension: `#caller_code`.
+    is_caller_code := false;
 }
 
 Code_Directive_Library :: struct {
