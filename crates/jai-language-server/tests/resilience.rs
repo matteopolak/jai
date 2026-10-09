@@ -158,3 +158,52 @@ fn a_bad_project_file_is_reported_while_completing() {
     assert!(found[0].contains("jai.toml"), "{found:?}");
     assert!(found[0].contains("unknown setting"), "{found:?}");
 }
+
+fn complete(s: &mut JsonSession, uri: &str, line: u32, character: u32) -> Vec<Value> {
+    let out = send(
+        s,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 9,
+            "method": "textDocument/completion",
+            "params": {
+                "textDocument": { "uri": uri },
+                "position": { "line": line, "character": character },
+            },
+        }),
+    );
+    out[0]["result"]["items"].as_array().unwrap().clone()
+}
+
+#[test]
+fn completion_items_replace_the_whole_word_in_utf16() {
+    let mut s = with_environment();
+    send(
+        &mut s,
+        json!({ "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {} }),
+    );
+    let uri = "file:///resilience-edit/main.jai";
+    // The emoji is two UTF-16 units; the cursor is in the middle of `render_all`.
+    let text = "render_all :: () {}\nmain :: () {\n    s := \"😀\"; rend_er_all();\n}\n#imp\n";
+    open(&mut s, uri, 1, text);
+    let start = text.lines().nth(2).unwrap().find("rend_er_all").unwrap();
+    let units = |bytes: usize| text.lines().nth(2).unwrap()[..bytes].encode_utf16().count() as u32;
+    let items = complete(&mut s, uri, 2, units(start + 4));
+    let item = items
+        .iter()
+        .find(|i| i["label"] == "render_all")
+        .unwrap_or_else(|| panic!("{items:?}"));
+    let edit = &item["textEdit"];
+    assert_eq!(edit["newText"], "render_all");
+    assert_eq!(edit["range"]["start"]["character"], units(start));
+    assert_eq!(
+        edit["range"]["end"]["character"],
+        units(start + "rend_er_all".len())
+    );
+    assert!(item.get("insertText").is_none());
+    // A directive's range includes its `#`.
+    let items = complete(&mut s, uri, 4, 4);
+    let import = items.iter().find(|i| i["label"] == "#import").unwrap();
+    assert_eq!(import["textEdit"]["range"]["start"]["character"], 0);
+    assert_eq!(import["textEdit"]["range"]["end"]["character"], 4);
+}
