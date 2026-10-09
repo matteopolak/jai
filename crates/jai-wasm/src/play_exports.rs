@@ -102,6 +102,13 @@ pub extern "C" fn jai_play_push(channel: u32, byte: u32) -> u32 {
     })
 }
 
+/// Whether this build takes program arguments (channel 3 of `jai_play_push`) and standard input
+/// (channel 4, or the page's `jai_stdin_read`); a page checks for the export before using them.
+#[cfg_attr(target_arch = "wasm32", unsafe(no_mangle))]
+pub extern "C" fn jai_play_accepts_arguments() -> u32 {
+    1
+}
+
 /// Commit the pending path/content pair as one workspace file.
 #[cfg_attr(target_arch = "wasm32", unsafe(no_mangle))]
 pub extern "C" fn jai_play_finish_file() -> u32 {
