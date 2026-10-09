@@ -8,10 +8,30 @@
 #module_parameters ()(USE_UNMAPPING_ALLOCATOR := false);
 
 // With USE_UNMAPPING_ALLOCATOR, a pool that was not given a block allocator takes its blocks
-// from a guard-page allocator of its own, so a stale pointer into a reset or released pool faults
-// instead of reading recycled memory. That needs virtual memory (not wasm).
+// from one guard-page allocator shared by every such pool in the program, so a stale pointer into
+// a released pool faults instead of reading recycled memory. That needs virtual memory (not wasm).
+// (Reset keeps its blocks for reuse; set free_memblocks_on_reset to have reset retire them too.)
 #if USE_UNMAPPING_ALLOCATOR {
     #import "Unmapping_Allocator";
+    #import "Atomics";
+
+    guard_allocator: Allocator;
+    guard_state: s64; // 0 not made, 1 being made or read, 2 ready
+
+    shared_guard_allocator :: () -> Allocator {
+        while true {
+            before := atomic_swap(*guard_state, 1);
+            if before == 1 continue;
+            if before == 0 {
+                push_allocator(context.default_allocator);
+                guard_allocator = get_unmapping_allocator();
+            }
+            result := guard_allocator;
+            atomic_write(*guard_state, 2);
+            return result;
+        }
+        return .{};
+    }
 }
 
 POOL_BUCKET_SIZE_DEFAULT :: 65536;
@@ -30,7 +50,6 @@ Pool :: struct {
     bytes_left: s64;
 
     block_allocator: Allocator;
-    owns_block_allocator := false; // the block allocator was created by the pool (USE_UNMAPPING_ALLOCATOR)
 
     // Bookkeeping lists, linked through Memblock.next.
     unused_memblocks: *Memblock;
@@ -57,10 +76,7 @@ set_allocators :: (pool: *Pool, block_allocator: Allocator = .{}) {
     }
     supplier := block_allocator;
     #if USE_UNMAPPING_ALLOCATOR {
-        if supplier.proc == null {
-            supplier = get_unmapping_allocator();
-            pool.owns_block_allocator = supplier.proc != null;
-        }
+        if supplier.proc == null supplier = shared_guard_allocator();
     }
     if supplier.proc == null supplier = context.allocator;
     // A pool cannot feed itself: asking it for a block would ask it for a block again.
@@ -145,13 +161,6 @@ release :: (pool: *Pool) {
     reset(pool);
     free_chain(pool, pool.unused_memblocks);
     pool.unused_memblocks = null;
-    #if USE_UNMAPPING_ALLOCATOR {
-        if pool.owns_block_allocator {
-            deinit_unmapping_allocator(pool.block_allocator);
-            pool.block_allocator = .{};
-            pool.owns_block_allocator = false;
-        }
-    }
 }
 
 // Allocator entry point: `data` is the *Pool. FREE is a no-op; RESIZE always copies
