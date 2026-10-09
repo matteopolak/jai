@@ -161,6 +161,17 @@ get_absolute_path_unix :: (relative_path: string) -> string, success: bool {
     return result, true;
 }
 
+// One byte of standard input, straight from descriptor 0; false at the end of input.
+read_stdin_byte :: (byte: *u8) -> bool {
+    while true {
+        got := read(0, byte, 1);
+        if got == 1 return true;
+        if got == 0 return false;
+        if errno() != EINTR return false;
+    }
+    return false;
+}
+
 #scope_file
 native_handle :: (file: File) -> *FILE {
     return file.handle;
