@@ -84,7 +84,12 @@ __jaic_build_directory: string #elsewhere;
 runtime_support_shown_path :: (path: string) -> string #no_context #no_abc {
     base := __jaic_build_directory;
     if base.count == 0 || path.count <= base.count return path;
-    for i: 0..base.count - 1 if path[i] != base[i] return path;
+    for i: 0..base.count - 1 {
+        x, y := path[i], base[i];
+        if x == #char "\\" x = #char "/";
+        if y == #char "\\" y = #char "/";
+        if x != y return path;
+    }
     shown := path;
     shown.data += base.count;
     shown.count -= base.count;
