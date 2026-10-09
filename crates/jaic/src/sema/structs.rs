@@ -177,6 +177,15 @@ impl Compiler {
         ty
     }
 
+    /// The `Type` value standing for a polymorphic struct that has no arguments yet.
+    pub fn poly_struct_type(&mut self, ps: PolyStructId) -> TypeId {
+        let name = self.poly_structs[ps.0 as usize].name;
+        self.types.intern(TypeKind::PolyStruct {
+            id: ps,
+            name,
+        })
+    }
+
     pub fn new_poly_struct(
         &mut self,
         name: Sym,

@@ -530,7 +530,7 @@ impl Compiler {
                     let settled = self.settle_untyped(op.clone(), None);
                     match settled {
                         Operand::Procs(p) if p.len() == 1 => self.proc_type(p[0], span)?,
-                        Operand::Type(_) => TypeId::TYPE,
+                        Operand::Type(_) | Operand::PolyStruct(_) => TypeId::TYPE,
                         Operand::Void => {
                             let value = decl.value.as_ref().map_or(span, |v| v.span);
                             let text = self.sources.snippet(value).trim();

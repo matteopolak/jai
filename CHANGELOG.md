@@ -30,6 +30,11 @@ The light-bulb menu offers *Extract into variable*, *Extract into procedure* (pa
 
 *Show Call Hierarchy* lists the callers and callees of a procedure, overloads and modules included, and *Expand Selection* grows from a token through expressions, statements and blocks to the file.
 
+### Fixes
+
+- `type_of` of a polymorphic struct is `Type`, and printing an uninstantiated polymorphic struct prints its name (`Entity`).
+- `type_of` of a polymorphic procedure keeps its parameters and results; the parts that depend on a type variable show as `$`, as in Jai (`procedure ($, s64) -> $`).
+
 ## [0.4.3] - 2026-10-08
 
 Closer to Jai's behaviour: `print` formats numbers, floats and enums the same way, constants must fit their types, and a set of invalid programs jaic used to accept are now compile errors. The language server also gains auto-import completion, and formatting works again with the renamed VS Code extension.
