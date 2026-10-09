@@ -154,7 +154,10 @@ get_absolute_path_windows :: (relative_path: string) -> string, success: bool {
     buffer := cast(*u16) alloc((length + 1) * 2, temp);
     actual := Windows.GetFullPathNameW(name, length + 1, buffer, null);
     if actual == 0 || actual > length return "", false;
-    return os_wide_to_utf8(buffer, xx actual), true;
+    // Paths are spelled with `/` everywhere, so they can go into a string literal or a `#load`.
+    result := os_wide_to_utf8(buffer, xx actual);
+    for 0..result.count - 1 if result[it] == #char "\\" result[it] = #char "/";
+    return result, true;
 }
 
 File_Map_Info :: struct {
