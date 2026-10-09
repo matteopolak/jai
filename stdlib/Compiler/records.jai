@@ -66,7 +66,7 @@ record_slot_hash :: (pointer: *void) -> s64 #no_aoc {
 // Structs a record's tag may name where a member points to a base type (*Code_Node,
 // *Type_Info, *Message). Other records are built as the member's own type.
 RECORD_TYPES :: Type.[
-    Message_File, Message_Import, Message_Typechecked,
+    Message_File, Message_Import, Message_Failed_Import, Message_Typechecked,
 
     Code_Node, Code_Ident, Code_Literal, Code_Context, Code_Binary_Operator, Code_Unary_Operator,
     Code_Procedure_Call, Code_Cast, Code_If, Code_Case, Code_Type_Instantiation,

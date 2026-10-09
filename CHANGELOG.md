@@ -35,6 +35,7 @@ The light-bulb menu offers *Extract into variable*, *Extract into procedure* (pa
 
 ### Metaprogramming
 
+- Intercepting metaprograms now get `FAILED_IMPORT` (module not found) and `ERROR` messages when a workspace fails to compile.
 - `#this`, `#compile_time`, `#bytes`, `#procedure_name`, `#bake_arguments`/`#bake_constants`, `#asm` (opaque), `#load`, `#place` and `#overlay` reach metaprograms as their own `Code_Node` kinds instead of `.PLACEHOLDER`, and `Program_Print` prints them (not `#asm`).
 
 ### Warnings

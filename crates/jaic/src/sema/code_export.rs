@@ -17,6 +17,7 @@ use crate::types::{ArrayKind, TypeKind};
 pub mod message_kind {
     pub const FILE: i64 = 1;
     pub const IMPORT: i64 = 2;
+    pub const FAILED_IMPORT: i64 = 3;
     pub const TYPECHECKED: i64 = 5;
 }
 
@@ -137,6 +138,22 @@ impl Compiler {
             events.push((message_kind::FILE, id));
         }
         events
+    }
+
+    /// One `Message_Failed_Import` record per import that found no module, once.
+    pub fn export_failed_imports(&mut self, r: &mut Records) -> Vec<i64> {
+        std::mem::take(&mut self.failed_imports)
+            .into_iter()
+            .map(|(host, target)| {
+                let mut rec = Record::new("Message_Failed_Import");
+                rec.int("kind", message_kind::FAILED_IMPORT)
+                    .int("workspace", self.workspace)
+                    .int("status", 2) // NOT_FOUND
+                    .str("host_module_name", host.as_bytes())
+                    .str("target_module_name", target.as_bytes());
+                r.add(rec)
+            })
+            .collect()
     }
 
     fn file_module(&self, file: FileId) -> ModuleId {

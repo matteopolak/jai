@@ -17,7 +17,7 @@ From the conformance run (details in the uncommitted `conformance-local/NOTES.md
 
 Other:
 
-- Messages jaic doesn't send: `FAILED_IMPORT`, `ERROR`, `PERFORMANCE_REPORT`, `DEBUG_DUMP` ([build options](docs/metaprogramming/build-options.md)).
+- `PERFORMANCE_REPORT` and `DEBUG_DUMP` messages are never sent (jaic has no bytecode or per-phase report to fill them) ([build options](docs/metaprogramming/build-options.md)).
 
 ## WebAssembly and the browser
 

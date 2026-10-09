@@ -560,6 +560,8 @@ EVENT_PHASE :: 2;
 EVENT_COMPLETE :: 3;
 EVENT_IMPORT :: 4;
 EVENT_TYPECHECKED :: 5;
+EVENT_FAILED_IMPORT :: 6;
+EVENT_ERROR :: 7;
 
 PHASE_PRE_WRITE_EXECUTABLE :: 3;
 PHASE_POST_WRITE_EXECUTABLE :: 4;
@@ -579,6 +581,7 @@ last_complete_error: s64;
 // until the next compiler_wait_for_message().
 message_phase: Message_Phase;
 message_complete: Message_Complete;
+message_error: Message;
 phase_object_files: [..] string;
 
 resolve_workspace :: (w: Workspace) -> s64 {
@@ -620,6 +623,14 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
                 if body && body.header body.header.body_or_null = body;
             }
             return typechecked;
+
+        case EVENT_FAILED_IMPORT;
+            return record_struct(__jaic_event_int(0), type_info(Message_Failed_Import));
+
+        case EVENT_ERROR;
+            message_error.kind = .ERROR;
+            message_error.workspace = id;
+            return *message_error;
 
         case EVENT_PHASE;
             phase := __jaic_event_int(0);
