@@ -308,7 +308,9 @@ test_subcommands :: () {
 }
 
 test_shell_option :: () {
-    Completer :: struct { completions: Args.Shell; }
+    Completer :: struct {
+        completions: Args.Shell;
+    }
     c, error, set := Args.try_parse(Completer, Args.Help(Completer).{ completions = "Print a completion script" }, string.["x", "--completions", "powershell"]);
     expect(error.kind == .NONE && c.completions == .POWERSHELL && set.completions, "Args.Shell works as an option type");
 }
