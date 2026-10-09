@@ -3001,6 +3001,19 @@
       "rules": [
         "ptr.19"
       ]
+    },
+    {
+      "id": "message-failed-import-and-error",
+      "source": "negative/message-failed-import-and-error.jai",
+      "sha256": "18a4ec5396a2c36e9f5e59bac5195410c0a5317a9e12f78a9e8e232f97c9fb00",
+      "suite": "negative",
+      "feature": "message-failed-import-and-error",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "messages: failed import, error, complete"
+      }
     }
   ]
 }
