@@ -653,7 +653,8 @@
           "argv": [
             "./apps/playground"
           ],
-          "seconds": 8
+          "seconds": 8,
+          "not_in_ci": "the playground compiles its shaders at start-up and the GPU-less macOS runner cannot; it builds on CI and runs on a Mac with a GPU"
         }
       ]
     },
