@@ -340,7 +340,21 @@ impl JsonSession {
             self.remember(id.clone());
             return self.encode(vec![failure(identifier, -32800, "Request cancelled")]);
         }
-        let result = self.dispatch(&envelope.method, envelope.params, id.is_some());
+        let method = envelope.method.clone();
+        // A panic in one request is that request's error; the server and its documents live on.
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.dispatch(&envelope.method, envelope.params, id.is_some())
+        }))
+        .unwrap_or_else(|payload| {
+            let what = payload
+                .downcast_ref::<&str>()
+                .map(|s| s.to_string())
+                .or_else(|| payload.downcast_ref::<String>().cloned())
+                .unwrap_or_else(|| "unknown panic".into());
+            eprintln!("jailsp: internal error in `{method}`: {what}");
+            self.session.reset_caches();
+            Err((-32603, format!("Internal error in `{method}`: {what}")))
+        });
         let output = match result {
             Ok(mut messages) => {
                 if let Some(id) = id {
@@ -361,6 +375,14 @@ impl JsonSession {
                 }
             }
         };
+        let mut output = output;
+        output.extend(self.session.take_messages().into_iter().map(|message| {
+            json!({
+                "jsonrpc": "2.0",
+                "method": "window/showMessage",
+                "params": { "type": 2, "message": message },
+            })
+        }));
         self.encode(output)
     }
 
@@ -412,6 +434,10 @@ impl JsonSession {
         params: Value,
         request: bool,
     ) -> Result<Vec<Value>, (i32, String)> {
+        #[cfg(debug_assertions)]
+        if method == "jai/debugPanic" {
+            panic!("requested by jai/debugPanic");
+        }
         if method == "initialize" && request {
             if self.lifecycle != Lifecycle::New {
                 return Err((-32600, "Server is already initialized".into()));

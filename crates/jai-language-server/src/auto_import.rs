@@ -67,9 +67,36 @@ pub(crate) struct Index {
     open: BTreeMap<PathBuf, (u64, Rc<FileScan>)>,
     /// The `.jai` files on disk under each walked folder.
     walked: BTreeMap<PathBuf, Rc<Vec<PathBuf>>>,
+    /// Settings files that did not parse, with the problem last reported for each.
+    reported: BTreeMap<PathBuf, String>,
+    /// Messages for the client not sent yet.
+    pending: Vec<String>,
 }
 
 impl Index {
+    /// The settings file `path` does not parse: tell the client once per distinct problem.
+    pub(crate) fn bad_config(&mut self, path: &Path, problem: &str) {
+        if self.reported.get(path).is_some_and(|p| p == problem) {
+            return;
+        }
+        self.reported
+            .insert(path.to_path_buf(), problem.to_string());
+        self.pending.push(format!(
+            "{}: {problem}. The defaults are used until it is fixed.",
+            path.display()
+        ));
+    }
+
+    /// The settings file `path` parses (again): a later problem is news.
+    pub(crate) fn good_config(&mut self, path: &Path) {
+        self.reported.remove(path);
+    }
+
+    /// Messages for the client, once.
+    pub(crate) fn take_messages(&mut self) -> Vec<String> {
+        std::mem::take(&mut self.pending)
+    }
+
     /// `path` changed: its scan and the module index it is part of are stale.
     pub(crate) fn changed(&mut self, path: &Path) {
         self.files.remove(path);
@@ -326,16 +353,23 @@ impl Sources<'_> {
 
     /// The nearest `jai.toml` at or above `file`: its folder and settings (the defaults when it
     /// does not parse).
-    fn config(&self, file: &Path) -> Option<(PathBuf, ProjectConfig)> {
+    fn config(&self, index: &mut Index, file: &Path) -> Option<(PathBuf, ProjectConfig)> {
         let mut dir = file.parent();
         while let Some(d) = dir {
             let path = d.join(CONFIG_FILE);
             if self.is_file(&path) {
                 let text = self.read(&path).unwrap_or_default();
-                return Some((
-                    d.to_path_buf(),
-                    ProjectConfig::parse(&text).unwrap_or_default(),
-                ));
+                let config = match ProjectConfig::parse(&text) {
+                    Ok(config) => {
+                        index.good_config(&path);
+                        config
+                    }
+                    Err(problem) => {
+                        index.bad_config(&path, &problem);
+                        ProjectConfig::default()
+                    }
+                };
+                return Some((d.to_path_buf(), config));
             }
             dir = d.parent();
         }
@@ -343,7 +377,7 @@ impl Sources<'_> {
     }
 
     fn program(&self, index: &mut Index, file: &Path, folders: &[PathBuf]) -> Program {
-        let config = self.config(file);
+        let config = self.config(index, file);
         let base = config.as_ref().map(|(dir, _)| dir.clone()).or_else(|| {
             folders
                 .iter()
