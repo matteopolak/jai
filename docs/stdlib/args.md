@@ -49,7 +49,7 @@ Arguments:
 Options:
   -c, --[no-]check     Do not write; only report
   -j, --jobs <JOBS>    Parallel jobs [default: 4] [range: 1..64] [env: TOOL_JOBS]
-      --color <COLOR>  When to colour the output [default: auto] [possible values: auto, always, never]
+      --color <COLOR>  When to colour the output [possible values: auto, always, never]
       --config <FILE>  Use this config file
   -v, --verbose        Say more (repeat for more)
   -h, --help           Print help
@@ -61,6 +61,9 @@ help: did you mean `--check`?
 usage: tool [OPTIONS] [PATHS]...
 For more information, run `tool --help`.
 ```
+
+`[default: ...]` appears only when the field's initial value is not the zero value (`0`, `""`, the first enum member), because Jai's type info does not say whether an initializer was written. An explicit `= .AUTO` on the first member is therefore not shown; bool flags never show one.
+
 
 ## API
 
