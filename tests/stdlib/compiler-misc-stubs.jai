@@ -35,7 +35,7 @@ TABLE :: #run -> [] u8 {
     return add_global_data(bytes, .USER_SEGMENT, segment);
 }
 
-main :: () {
+checks :: () {
     assert(NULL_STATUS == .INPUT_IS_CODE_NULL);
     // Typed nodes exist for code from a compile-time run that has done nothing yet.
     assert(CODE_STATUS == .SUCCESS && CODE_SIZE == 1);
@@ -52,3 +52,8 @@ main :: () {
     assert(TABLE.count == 4 && TABLE[0] == 1 && TABLE[3] == 4);
     print("ok\n");
 }
+
+// Compile-time only: the Compiler module's procedures need the compiler.
+#run checks();
+
+main :: () {}
