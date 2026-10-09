@@ -1159,10 +1159,26 @@ impl Compiler {
         let body_scope = self.new_block_scope(scope);
         self.ide_scope_span(body_scope, body.span);
         self.check_block_stmts(&mut f, body_scope, &body.stmts)?;
+        // Where the body can fall off its end although it has to produce a value.
+        let open_end = (!f.b.is_terminated()
+            && !f.return_types.is_empty()
+            && !f.named_results.iter().all(Option::is_some))
+        .then_some(f.b.current);
         if !f.b.is_terminated() {
             self.emit_fallthrough_return(&mut f, body.span)?;
         }
         let func = f.b.finish();
+        if let Some(end) = open_end
+            && func.block_reachable(end)
+        {
+            self.warn(
+                Diagnostic::warning(header.span, "not all control paths return a value")
+                    .with_label("this procedure can reach its end without returning")
+                    .with_help(
+                        "end the body with a `return`; a switch needs a default `case;` or `#complete`",
+                    ),
+            );
+        }
         if let Some(func_id) = func_id {
             self.program.funcs[func_id.0 as usize] = Some(func);
         }
