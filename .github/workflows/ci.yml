@@ -410,6 +410,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           tools/install_ci_llvm_macos.sh
+          # tests/stdlib/sdl2-geometry-timer.jai links the installed SDL2.
+          brew list sdl2 > /dev/null 2>&1 || brew install sdl2
       - name: Install LLVM 23 and its sanitizer runtimes (Linux)
         if: runner.os == 'Linux'
         timeout-minutes: 15
@@ -419,7 +421,7 @@ jobs:
           echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
       - name: Install the libraries Simp and GetRect link (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get install -y --no-install-recommends libx11-dev libgl-dev libegl-dev libfreetype-dev libxfixes-dev libasound2-dev
+        run: sudo apt-get install -y --no-install-recommends libx11-dev libgl-dev libegl-dev libfreetype-dev libsdl2-dev libxfixes-dev libasound2-dev
       - name: Build jaic
         run: cargo build --locked -p jaic-cli
       # Runners have no display or GPU, so programs that open windows are built but not run
