@@ -21,7 +21,9 @@
 //! That is only done for values defined exactly once (parameters count as a definition)
 //! whose definition cannot run again in between: constants anywhere, and other values
 //! within one block.
-use super::{Frame, Interp, Res, Rets, TrapKind, bin_total, cmp_shifted, divides, mask, shift_of};
+use super::{
+    Frame, Interp, Res, Rets, TrapKind, bin_total, cmp_shifted, divides, gather, mask, shift_of,
+};
 use crate::ir::{self, BinOp, CmpOp, ConvOp, ForeignId, GlobalId, Inst, Term, Ty, UnOp, Val};
 
 #[derive(Clone, Copy, Debug)]
@@ -233,7 +235,19 @@ pub(super) enum Op {
         line: u32,
         col: u32,
     },
-    /// Run IR instruction `inst` of block `block` (calls, intrinsics, oversized operands).
+    /// Call of a procedure by name: IR instruction `inst` of block `block`, which is an
+    /// `Inst::Call` with a `Callee::Func`.
+    Call {
+        block: u32,
+        inst: u32,
+    },
+    /// `Intrinsic::BoundsCheck` of `index` against `count`.
+    BoundsCheck {
+        index: u32,
+        count: u32,
+    },
+    /// Run IR instruction `inst` of block `block` (other calls and intrinsics, oversized
+    /// operands).
     Ir {
         block: u32,
         inst: u32,
@@ -288,13 +302,17 @@ pub(super) struct Code {
 }
 
 impl Code {
-    /// The IR block and instruction an `Op::Ir` at `op` runs.
+    /// The IR block and instruction an `Op::Call` or `Op::Ir` at `op` runs.
     pub(super) fn ir_op(&self, op: usize) -> Option<(u32, u32)> {
         match self.ops.get(op)? {
-            &Op::Ir {
+            &(Op::Ir {
                 block,
                 inst,
-            } => Some((block, inst)),
+            }
+            | Op::Call {
+                block,
+                inst,
+            }) => Some((block, inst)),
             _ => None,
         }
     }
@@ -988,7 +1006,24 @@ impl Builder<'_> {
                 inst_vals(inst, &mut |_| {}, &mut |v| {
                     self.v(v);
                 });
-                self.push(slow, None);
+                let op = match inst {
+                    Inst::Call(call) if matches!(call.callee, ir::Callee::Func(_)) => Op::Call {
+                        block: bi as u32,
+                        inst: ii as u32,
+                    },
+                    Inst::Intrinsic(call)
+                        if call.op == ir::Intrinsic::BoundsCheck
+                            && call.args.len() == 2
+                            && call.results.is_empty() =>
+                    {
+                        Op::BoundsCheck {
+                            index: call.args[0].0,
+                            count: call.args[1].0,
+                        }
+                    }
+                    _ => slow,
+                };
+                self.push(op, None);
             }
         }
     }
@@ -1650,6 +1685,45 @@ impl Interp {
                         line,
                         col,
                     } => self.loc = Some((file, line, col)),
+                    Op::Call {
+                        block: ir_block,
+                        inst,
+                    } => {
+                        let Inst::Call(call) = &func.blocks[ir_block as usize].insts[inst as usize]
+                        else {
+                            unreachable!("`build` made a call op from a call");
+                        };
+                        let ir::Callee::Func(callee) = call.callee else {
+                            unreachable!("`build` made it for a procedure called by name");
+                        };
+                        // SAFETY: the same registers, borrowed for this one call only.
+                        let vals = unsafe { std::slice::from_raw_parts_mut(regs, func.vals.len()) };
+                        let (mut small, mut heap) = ([0u64; 8], Vec::new());
+                        let args = gather(vals, &call.args, &mut small, &mut heap);
+                        match self.exec(program, callee, args) {
+                            Ok(rets) => {
+                                for (r, &v) in call.results.iter().zip(rets.iter()) {
+                                    vals[r.0 as usize] = v;
+                                }
+                            }
+                            Err(trap) => {
+                                if trap.kind == Some(TrapKind::Suspended) {
+                                    self.suspend_at = Some((block, from + at));
+                                }
+                                return Err(trap);
+                            }
+                        }
+                        watched = self.watches_blocks();
+                    }
+                    Op::BoundsCheck {
+                        index,
+                        count,
+                    } => {
+                        let (index, count) = (get(index), get(count));
+                        if (index as i64) < 0 || (index as i64) >= count as i64 {
+                            return self.check_trap(ir::TRAP_BOUNDS, index, count);
+                        }
+                    }
                     Op::Ir {
                         block: ir_block,
                         inst,
