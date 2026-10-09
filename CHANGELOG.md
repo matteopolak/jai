@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 - On Windows, a `link.exe` or `lld-link.exe` named by `JAIC_LINKER` now finds the Windows SDK and C runtime libraries outside a developer prompt instead of failing with `LNK1181: cannot open input file 'user32.lib'`.
+- Builds compile faster again: a 240k-line `-O0` build 1.50 s to 1.15 s (peak memory 1.58 to 1.31 GiB), Focus `-O2` 12.7 s to 11.0 s, chess-jai `-O2` 4.5 s to 3.9 s, Jails `-O2` 2.2 s to 1.6 s. Null-pointer checks are one compare and branch to a shared helper and are skipped for a pointer already checked in the same block; LLVM value names are discarded; `jaic build` no longer frees the compiler and LLVM state just before exiting; and the split after the optimizer now also applies when `enable_split_modules` is `false`. See [compile speed](docs/compiler/compile-speed.md).
 
 ## [0.5.1] - 2026-10-09
 

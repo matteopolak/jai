@@ -39,7 +39,7 @@ An optimized build keeps one module through the optimizer, so inlining still see
 
 Parsing and cutting down are serialized under a mutex. Every unit briefly holds a whole copy of the module, so running them all at once raised peak memory by about one module per unit. With the mutex and the cap, an `-O2` build of Jails or jaison takes about a fifth less wall time for about 12% more peak RSS. More than 4 units gave no further speedup, because the optimizer, which stays serial, then dominates.
 
-It applies when `emit_objects` would use one unit at `-O1` and up, without `--emit-ir`, a sanitizer or `JAIC_CODEGEN_UNITS`. `-o x.o` (`emit_object`) never splits.
+It applies (whatever `enable_split_modules` says) when `emit_objects` would use one unit at `-O1` and up, without `--emit-ir`, a sanitizer or `JAIC_CODEGEN_UNITS`. `-o x.o` (`emit_object`) never splits.
 
 `Target::initialize_all` runs once per process behind a `Once`; calling it again from several threads at once crashed LLVM's target registry.
 
@@ -69,6 +69,8 @@ Definitions with C signatures (`#c_call` callbacks that C calls with structs) do
 - New target architecture: an `Arch` variant and classification in `abi.rs`, plus any inline-asm intrinsics in `lower.rs`.
 - Debug info is in `debuginfo.rs`; `lower.rs` only calls its hooks (`begin_function`, `declare_vars`, `enter_block`/`leave_block`, `loc`, `finish_entry`, `Backend::set`, `describe_globals`).
 - Anything module-level (a global, a constructor list) must be emitted once, in unit 0, and declared in the others. Use `Backend::internal_linkage` for new internal symbols so other units can reference them.
+- Null checks (`null_check`) branch to a trap block that calls the `jaic.null_fail` helper (`null_fail_fn`). `FnState.facts` (`NullFacts`) remembers which pointers were checked in the current IR block, so a repeated load or a small constant offset is not checked again. Any new instruction that writes a slot, changes a pointer or lets a slot's address escape must update or reset the facts, or a stale fact hides a real null; `null_checks_skipped_after_a_check_still_catch_changes` covers the cases.
+- Contexts discard value names, and `emit_objects` leaks each module, context and machine (the process is about to exit); `emit_object` and `jaic run` free them. Do not rely on names in emitted IR from `emit_objects`, except with `--emit-ir`.
 - Small test programs use one unit; check splitting with `JAIC_CODEGEN_UNITS=4 cargo test -p jaic-cli --test native`.
 - Small optimized programs stay under `INSTS_PER_UNIT`; force the post-optimizer split with `JAIC_SPLIT_UNITS=4 cargo test -p jaic-cli --test native`. A declaration made from a definition must lose its body, personality and `!dbg` attachment (`strip_body`), or the verifier rejects the module.
 - Windows (`Arch::Win64`): `#program_export` definitions are `dllexport` and `CompilerWrite` calls `_write`. See [Windows](windows.md).

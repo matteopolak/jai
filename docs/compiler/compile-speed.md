@@ -75,6 +75,34 @@ What changed (details in [interpreter](interpreter.md#the-interpreters-code-form
 
 Left: `trace_enter` is about 16% of `interp-fib` (stack traces are on under `jaic run`; its layout lookups could be cached per frame), compare and arithmetic ops still dispatch through a second table on the operator, and calls still recurse on the Rust stack where an explicit activation stack would save the `run_ops` prologue.
 
+### Second pass (null checks, teardown, split)
+
+Warm medians on the same machine, `tools/compile_bench.py --repeat 5`, release `jaic` before and after:
+
+| Workload | Before | After | Notes |
+| --- | --- | --- | --- |
+| gen-60k `build` -O0 | 0.40 s | 0.33 s | codegen 0.21 s to 0.16 s, RSS 517 to 459 MiB |
+| gen-240k `build` -O0 | 1.50 s | 1.15 s | codegen 0.89 s to 0.62 s, RSS 1.58 to 1.31 GiB |
+| gen-240k `check` | 0.46 s | 0.42 s | |
+| focus `build` -O2 | 12.7 s | 11.0 s | codegen 6.65 s to 5.05 s |
+| chess-jai `build` -O2 | 4.51 s | 3.94 s | codegen 3.93 s to 3.33 s |
+| Jails `build` -O2 | 2.17 s | 1.64 s | codegen 1.92 s to 1.39 s |
+| focus -O0, chess-jai -O0, getrect -O2, `check` of focus | | | within noise |
+
+What each change gained:
+
+- **Cheaper null checks** (`lower::NullFacts`, `null_check`): a check was an `icmp` plus a call to a trap function with the source location, emitted at every pointer load and store. It is now a compare and branch to a trap block that calls the shared `jaic.null_fail` helper, and a pointer already checked in the same IR block (or a constant offset under 4096 from one) is not checked again. Facts are dropped when a slot is stored to or its address escapes. About 14% of the 240k-line build's wall time and 25% of its CPU; the line and message of a failed check are unchanged (`null_checks_skipped_after_a_check_still_catch_changes` in `crates/jaic-cli/tests/native.rs`).
+- **No LLVM value names**: `LLVMContextSetDiscardValueNames` on every context. Names were never read.
+- **Leaking at exit**: `jaic build`/`check` forget the LLVM module, context and target machine of each unit and the `Compiler` itself (`LeakOnExit` in `jaic-cli/src/main.rs`) instead of freeing them just before the process ends. `jaic run` still drops, since a program can run more than once in one process. Freeing the compiler was about 9% of `check`.
+- **`pending_done` in sema scope expansion**: `expand_pending` and `settled` skip the finished prefix of the pending list instead of scanning it every round.
+- **Post-optimizer split ignores `enable_split_modules`**: that option now only limits the pre-optimizer split of unoptimized builds. The split after the passes does not change the machine code except for function order, and Focus and chess-jai (which set it to `false`) generate machine code on four threads now.
+
+Tried and rejected: other codegen unit sizes (5,000 stays best, since the cores are 4 fast and 6 slow and total work matters more than balance); removing the parse mutex in `split.rs` (RSS rises by several hundred MiB for nothing); partitioning before the optimizer; skipping LiveDebugValues at -O0 (13 to 15% of `llc` time, but without it the object loses `frame variable` locations).
+
+Where the Focus -O2 "front end" time goes: Focus' `build.jai` runs `hdiutil` and `dsymutil` in its release step, so `front end` there includes about 4 s of external work, plus the metaprogram. It is not compiler overhead; the -O0 figure of 1.2 s is the same program without those steps.
+
+Ideas left: LiveDebugValues cost at -O0; load CSE for the null-check facts (under 7% of the build); a shared trap block per function; cutting the `lookup_full` clones of `using` lists in sema; partitioning the -O2 module before the passes with `available_externally` copies.
+
 ## How to change it
 
 - Measure with `jaic build x.jai -o out --timings` on the same machine, 5 or more warm runs, and check the machine is idle (a stray busy process moves results by 10 to 20%). `tools/compile_bench.py` ([compile-time benchmark](../tools/compile-time-benchmark.md)) runs the corpus projects; for scaling use the corpus-shaped programs from `tools/benchgen.py` ([benchmark generator](../tools/benchmark-generator.md); `gen-10k`/`gen-60k`/`gen-240k` in `compile_bench.py`).
