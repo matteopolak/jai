@@ -104,6 +104,7 @@ output_devices :: () -> [] Output_Device {
     if listed_devices.count return listed_devices;
     gathered: Device_Gathering;
     gathered.caller_context = context;
+    gathered.caller_context.stack_trace = null; // the trace points into this frame, which a later callback outlives
     DirectSoundEnumerateA(on_device_found, *gathered);
     listed_devices = gathered.devices;
     return listed_devices;

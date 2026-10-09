@@ -21,6 +21,7 @@ Input :: #import "Input";
             context.temporary_storage = *_sdk_android_storage;
             context.android_app = app;
             _sdk_android_context = context;
+            _sdk_android_context.stack_trace = null; // the trace points into this frame, which a later callback outlives
             _sdk_android_app = app;
             app.onAppCmd = my_android_handle_command;
             app.onInputEvent = my_android_handle_input;

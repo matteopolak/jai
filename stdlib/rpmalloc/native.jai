@@ -158,6 +158,7 @@ rp_initialize_config :: (config: *rpmalloc_config_t) -> s32 {
     if !config return rp_initialize_default();
     rp_public_config = config.*;
     rp_callback_context = context;
+    rp_callback_context.stack_trace = null; // the trace points into this frame, which a later callback outlives
     native: Native_Config;
     if config.memory_map native.memory_map = rp_map_callback;
     if config.memory_unmap native.memory_unmap = rp_unmap_callback;
