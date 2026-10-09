@@ -445,9 +445,13 @@ node tools/check_scripting_wasm.mjs target/wasm32-unknown-unknown/release/jai_wa
 - `ide_meta.rs` constants: `MAX_EXPANSIONS` (4,096), `MAX_CALLS` (16,384), `MAX_VARIANTS` (4 per site), `MAX_TEXT` (64 KiB per expansion).
 - `features.rs`: `HINT_CHARS` (40), the longest inlay hint label.
 - Hover format comes from the client: `textDocument.hover.contentFormat` in `initialize` (Markdown when it lists `markdown`, else plain text).
-- Default `Limits`:
-  - 32 documents, 256 KiB per document, 4 MiB total.
-  - 1,024 completion items and workspace symbols, 8,192 tokens.
+- Default `Limits` are safety caps, far above real files (generated bindings of several MiB are routine):
+  - 512 open documents, 32 MiB per document, 256 MiB in all; 64 MiB per message and 128 MiB per response.
+  - 64 million tokens and 4 million declaration rows per document (`Limits::rows`: symbols, rename and highlights read them).
+  - 1,024 completion items and workspace-symbol results per query (`Limits::symbols`), 4,096 edits per `didChange`.
+  - `Limits::browser()` is what the playground uses: 4 MiB per document, 32 MiB in all, 16 MiB per message.
+  - Nothing here stops the server. A document over a cap is not opened, and the client gets a `window/showMessage` naming it (the later requests for it answer "document is not open"). A message over the frame cap is skipped unread (`FrameDecoder::take_oversized`), the stream stays in step and a `showMessage` says so; a response over the output cap becomes that request's error.
+  - Per-request work on large files is linear in the document: semantic tokens, document symbols, folding, inlay hints and lints take well under a second on a 3.3 MB, 100,000-line file ([benchmark](../tools/lsp-benchmark.md)); keep it that way (no per-token scans of the rows or of the token list).
 - Documents must use absolute `file:///...` URIs. The browser uses `file:///jai-script/<name>`. Expansion documents use `jai-expansion:///<path>?<line>:<character>`.
 - Benchmark: `python3 tools/lsp_bench.py` measures latency, CPU time and memory per request on real and large files ([language server benchmark](../tools/lsp-benchmark.md)).
 
