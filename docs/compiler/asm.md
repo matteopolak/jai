@@ -20,9 +20,10 @@ The user-facing summary is [SIMD and `#asm`](../language/simd-asm.md); this page
   3. `asm_mask_inst` (`sema/asm/mask.rs`): the `k*` op-mask instructions.
   4. `asm_vec_inst` (`sema/asm/vec.rs`): vector instructions; `lookup_vec` falls back to `simd::lookup_simd`
      (`sema/asm/simd.rs`) for the larger SIMD set. F16C, SHA and GFNI live in `sema/asm/simd/ext.rs`.
-- **Float variables.** A `float32`/`float64` variable is a vector register of the class `vec` that Jai gives it: vector
-  instructions treat it as memory at its address (as for any non-integer variable), `movd`/`movq` between it and an
-  integer operand copy its bits, and integer instructions reject it (`asm_place`).
+- **Float variables.** A `float32`/`float64` variable is a vector register, as in Jai: a vector instruction works on a
+  zero-extended 64-byte copy of it and, when the variable is the destination, stores the low 4 or 8 bytes back
+  (`vec_operand_class`, `asm_vec_inst_floats`), so it never reads or writes past the variable. `movd`/`movq` between it
+  and an integer operand copy its bits, and integer instructions reject it (`asm_place`).
 - **Registers.** Variables are read and written in place through their stack slots. Declared registers are locals
   added to the *enclosing* scope (blocks are not scopes; macros see them). They start at zero. Classes: `gpr` (8
   bytes), `vec` (64 bytes; `xmm/ymm/zmm` by width), `str` (MMX, a `vec` used at 8 bytes), `omr`/`kmask` (an 8-byte
@@ -65,7 +66,8 @@ The user-facing summary is [SIMD and `#asm`](../language/simd-asm.md); this page
   (16/32/64 bytes; `.q` = 8 for MMX forms), else 32 in a block with an AVX feature, 64 with AVX-512, otherwise 16.
   A leading `v` is accepted (`vpaddd`). Two operands mean `dst op= src`, three `dst = a op b`. With an AVX feature, a
   register write clears the bytes above the written size (VEX); otherwise they are kept. A Jai variable operand is
-  memory at its address (integers act as general-purpose registers for `movd`/`movq`/`movmsk*`/`pextr*`).
+  memory at its address (integers act as general-purpose registers for `movd`/`movq`/`movmsk*`/`pextr*`, floats as
+  vector registers).
   A `name:` destination declares a `vec` register, except for instructions that write a general-purpose value
   (`movmsk*`, `pextr*`, `extractps`, `cvt*2si`): there it is a `gpr` (`dst_class` in `vec.rs` and `simd.rs`).
 - **Masks.** An `omr` register is an 8-byte local. `dst: &k` (merge) / `dst: &*k` (zero) apply after the instruction

@@ -505,6 +505,11 @@ struct AsmCtx {
     /// The direction flag (`std`/`cld`), tracked statically within the block. The ABI
     /// guarantees it is clear on entry, so a block that never sets it counts upwards.
     df: bool,
+    /// Float variables named by the vector instruction being lowered, as (register copy, address,
+    /// size in bytes): they are vector registers, so the instruction works on a copy and the
+    /// destination's low bytes are stored back after it.
+    float_vars: Vec<(Val, Val, u64)>,
+    float_dst: Option<(Val, Val, u64)>,
 }
 
 /// An in-progress read-modify-write of one operand.
@@ -690,6 +695,8 @@ impl Compiler {
             },
             vex,
             df: false,
+            float_vars: Vec::new(),
+            float_dst: None,
         };
         for item in &block.items {
             match item {
@@ -1196,7 +1203,7 @@ impl Compiler {
             }
             if !lock
                 && (self.asm_mask_inst(f, cx, inst, base)?
-                    || self.asm_vec_inst(f, cx, inst, base)?)
+                    || self.asm_vec_inst_floats(f, cx, inst, base)?)
             {
                 return Ok(());
             }
