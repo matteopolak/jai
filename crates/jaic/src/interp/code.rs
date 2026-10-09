@@ -21,14 +21,30 @@
 //! That is only done for values defined exactly once (parameters count as a definition)
 //! whose definition cannot run again in between: constants anywhere, and other values
 //! within one block.
-use super::{Frame, Interp, Res, TrapKind, bin_total, cmp_shifted, divides, mask, shift_of};
+mod promote;
+
+use super::{Frame, Interp, Res, Trap, TrapKind, bin_total, cmp_shifted, divides, mask, shift_of};
 use crate::ir::{self, BinOp, CmpOp, ConvOp, ForeignId, GlobalId, Inst, Term, Ty, UnOp, Val};
+
+/// The location of an op that has none (`Op::Call::at`, `Op::Ir::loc`).
+pub(super) const NO_LOC: u32 = u32::MAX;
 
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Op {
     Const {
         dst: u32,
         value: u64,
+    },
+    /// `dst = src`
+    Mov {
+        dst: u32,
+        src: u32,
+    },
+    /// `dst = src & mask`: a store of fewer than 8 bytes to a local kept in a register.
+    Ext {
+        dst: u32,
+        src: u32,
+        mask: u32,
     },
     /// `dst = stack_base + off`
     FrameAddr {
@@ -233,8 +249,9 @@ pub(super) enum Op {
         line: u32,
         col: u32,
     },
-    /// Call of a procedure by name. `at` indexes `Code::pool`: the `nargs` argument registers,
-    /// then the `nrets` registers that take the results.
+    /// Call of a procedure by name. `at` indexes `Code::pool`: the call's location (an index
+    /// into `Code::locs`, or `NO_LOC`), the `nargs` argument registers, then the `nrets`
+    /// registers that take the results.
     Call {
         callee: u32,
         at: u32,
@@ -251,6 +268,8 @@ pub(super) enum Op {
     Ir {
         block: u32,
         inst: u32,
+        /// Where it runs, as for `Call`.
+        loc: u32,
     },
     // Block endings. Targets are op indices; a block that ends by running into the next one
     // has no ending op for it.
@@ -315,6 +334,11 @@ pub(super) struct Code {
     pub block_at: Vec<u32>,
     /// Register lists of calls and returns (`Op::Call`, `Op::RetN`).
     pub pool: Vec<u32>,
+    /// The source locations the code runs at (file, line, column).
+    pub locs: Vec<(u32, u32, u32)>,
+    /// Where each starts to apply: `(op, index into locs)`, in op order. A location holds until
+    /// the next one, also across blocks (`loc_at`).
+    pub loc_marks: Vec<(u32, u32)>,
     /// Registers a frame needs: the IR's values, and room for the most results returned.
     pub regs: usize,
     /// `(blocks pointer, block count, value count, slot count)` of the source `Func`: a
@@ -323,6 +347,13 @@ pub(super) struct Code {
 }
 
 impl Code {
+    /// The location in effect at `op`: the last one set at or before it, if any.
+    pub(super) fn loc_at(&self, op: usize) -> Option<(u32, u32, u32)> {
+        let n = self.loc_marks.partition_point(|&(at, _)| at as usize <= op);
+        let (_, loc) = *self.loc_marks.get(n.checked_sub(1)?)?;
+        Some(self.locs[loc as usize])
+    }
+
     /// The registers that take the results of the call at `op` (an `Op::Call`, or an
     /// `Op::Ir` running a call instruction of `func`).
     pub(super) fn call_results(&self, func: &ir::Func, op: usize) -> Vec<u32> {
@@ -333,12 +364,13 @@ impl Code {
                 nrets,
                 ..
             } => {
-                let from = (at + nargs as u32) as usize;
+                let from = (at + 1 + nargs as u32) as usize;
                 self.pool[from..from + nrets as usize].to_vec()
             }
             Op::Ir {
                 block,
                 inst,
+                ..
             } => match &func.blocks[block as usize].insts[inst as usize] {
                 Inst::Call(call) => call.results.iter().map(|r| r.0).collect(),
                 _ => unreachable!("a frame suspends in a call"),
@@ -346,6 +378,61 @@ impl Code {
             _ => unreachable!("a frame suspends in a call"),
         }
     }
+}
+
+/// Take the `Loc` ops out of `ops`. Setting the location costs a dispatch per statement, and
+/// only calls and failures look at it, so it is looked up there instead: calls and `Op::Ir`
+/// carry their location, and `Code::loc_at` finds the one in effect at any op. Returns the
+/// distinct locations and where each applies.
+fn lower_locs(
+    ops: &mut Vec<Op>,
+    pool: &mut [u32],
+    blocks: &mut [CodeBlock],
+) -> (Vec<(u32, u32, u32)>, Vec<(u32, u32)>) {
+    let mut locs: Vec<(u32, u32, u32)> = Vec::new();
+    let mut index = std::collections::HashMap::new();
+    let mut marks = Vec::new();
+    let mut current = NO_LOC;
+    let mut kept = Vec::with_capacity(ops.len());
+    for block in blocks.iter_mut() {
+        let (start, end) = (block.start as usize, block.end as usize);
+        block.start = kept.len() as u32;
+        for &op in &ops[start..end] {
+            match op {
+                Op::Loc {
+                    file,
+                    line,
+                    col,
+                } => {
+                    let loc = (file, line, col);
+                    current = *index.entry(loc).or_insert_with(|| {
+                        locs.push(loc);
+                        locs.len() as u32 - 1
+                    });
+                    marks.push((kept.len() as u32, current));
+                }
+                Op::Call {
+                    at, ..
+                } => {
+                    pool[at as usize] = current;
+                    kept.push(op);
+                }
+                Op::Ir {
+                    block,
+                    inst,
+                    ..
+                } => kept.push(Op::Ir {
+                    block,
+                    inst,
+                    loc: current,
+                }),
+                _ => kept.push(op),
+            }
+        }
+        block.end = kept.len() as u32;
+    }
+    *ops = kept;
+    (locs, marks)
 }
 
 pub(super) fn fingerprint(func: &ir::Func) -> (usize, usize, usize, usize) {
@@ -486,15 +573,23 @@ pub(super) fn build(
     for block in &mut blocks {
         let (start, end) = (block.start as usize, block.end as usize);
         block.start = ops.len() as u32;
-        ops.extend(
-            (start..end)
-                .filter(|&i| !dropped[i])
-                .map(|i| specialize(b.ops[i])),
-        );
+        ops.extend((start..end).filter(|&i| !dropped[i]).map(|i| b.ops[i]));
         block.end = ops.len() as u32;
     }
+    let nregs = promote::promote(
+        func,
+        frame_offsets,
+        &b.defs,
+        &mut ops,
+        &mut b.pool,
+        &mut blocks,
+    );
+    for op in &mut ops {
+        *op = specialize(*op);
+    }
+    let (locs, loc_marks) = lower_locs(&mut ops, &mut b.pool, &mut blocks);
     // Endings named blocks; now they name ops.
-    let mut regs = func.vals.len();
+    let mut regs = nregs;
     for op in &mut ops {
         match op {
             Op::Jump {
@@ -535,6 +630,8 @@ pub(super) fn build(
         blocks,
         block_at,
         pool: b.pool,
+        locs,
+        loc_marks,
         regs,
         source: fingerprint(func),
     }
@@ -810,6 +907,7 @@ impl Builder<'_> {
         let slow = Op::Ir {
             block: bi as u32,
             inst: ii as u32,
+            loc: NO_LOC,
         };
         match *inst {
             Inst::IConst {
@@ -1087,6 +1185,7 @@ impl Builder<'_> {
                             unreachable!("matched above");
                         };
                         let at = self.pool.len() as u32;
+                        self.pool.push(NO_LOC);
                         self.pool.extend(call.args.iter().map(|v| v.0));
                         self.pool.extend(call.results.iter().map(|v| v.0));
                         Op::Call {
@@ -1518,6 +1617,22 @@ impl Interp {
         self.block_budget.is_some() || self.multi || self.profile.is_some()
     }
 
+    /// Make `loc` the location in effect at op `op` of `code`, if it has one.
+    #[cold]
+    fn sync_loc(&mut self, code: &Code, op: usize) {
+        if let Some(loc) = code.loc_at(op) {
+            self.loc = Some(loc);
+        }
+    }
+
+    /// `trap`, which op `op` raised, at the location it ran at.
+    #[cold]
+    fn located(&mut self, mut trap: Trap, code: &Code, op: usize) -> Trap {
+        self.sync_loc(code, op);
+        trap.loc = self.loc;
+        trap
+    }
+
     /// What entering a block costs when `watches_blocks`: the execution budget, a chance for
     /// other threads to run, and the profile counts.
     #[inline(never)]
@@ -1613,10 +1728,20 @@ impl Interp {
             Some(pc) => (pc, true),
             None => (0, false),
         };
+        // An op that fails reports where it ran, which only the failure path looks up.
+        macro_rules! tri {
+            ($e:expr) => {
+                match $e {
+                    Ok(v) => v,
+                    Err(trap) => return Err(self.located(trap, code, pc - 1)),
+                }
+            };
+        }
         loop {
             if WATCH {
                 let block = code.block_at[pc];
                 if block != 0 && !entered {
+                    self.sync_loc(code, pc);
                     self.enter_block(program, func, code, block as usize - 1)?;
                 }
                 entered = false;
@@ -1631,6 +1756,15 @@ impl Interp {
                     dst,
                     value,
                 } => set(dst, value),
+                Op::Mov {
+                    dst,
+                    src,
+                } => set(dst, get(src)),
+                Op::Ext {
+                    dst,
+                    src,
+                    mask,
+                } => set(dst, get(src) & mask as u64),
                 Op::FrameAddr {
                     dst,
                     off,
@@ -1673,7 +1807,7 @@ impl Interp {
                     dst,
                     a,
                     b,
-                } => set(dst, self.divide(op, ty, get(a), get(b))?),
+                } => set(dst, tri!(self.divide(op, ty, get(a), get(b)))),
                 Op::DivImm {
                     op,
                     ty,
@@ -1682,7 +1816,7 @@ impl Interp {
                     imm,
                 } => set(
                     dst,
-                    self.divide(op, ty, get(a), mask(ty, imm as i64 as u64))?,
+                    tri!(self.divide(op, ty, get(a), mask(ty, imm as i64 as u64))),
                 ),
                 Op::BinImm {
                     op,
@@ -1740,11 +1874,11 @@ impl Interp {
                 Op::GlobalAddr {
                     dst,
                     global,
-                } => set(dst, self.global_addr(program, global)?),
+                } => set(dst, tri!(self.global_addr(program, global))),
                 Op::ForeignAddr {
                     dst,
                     foreign,
-                } => set(dst, self.foreign_addr(program, foreign)?),
+                } => set(dst, tri!(self.foreign_addr(program, foreign))),
                 Op::Load {
                     ty,
                     dst,
@@ -1752,7 +1886,7 @@ impl Interp {
                     off,
                 } => set(
                     dst,
-                    self.load(ty, get(base).wrapping_add(off as i64 as u64))?,
+                    tri!(self.load(ty, get(base).wrapping_add(off as i64 as u64))),
                 ),
                 Op::LoadFrame {
                     ty,
@@ -1764,7 +1898,7 @@ impl Interp {
                     base,
                     off,
                     value,
-                } => self.store(ty, get(base).wrapping_add(off as i64 as u64), get(value))?,
+                } => tri!(self.store(ty, get(base).wrapping_add(off as i64 as u64), get(value))),
                 Op::StoreFrame {
                     ty,
                     off,
@@ -1775,11 +1909,11 @@ impl Interp {
                     base,
                     off,
                     imm,
-                } => self.store(
+                } => tri!(self.store(
                     ty,
                     get(base).wrapping_add(off as i64 as u64),
                     imm as i64 as u64,
-                )?,
+                )),
                 Op::StoreFrameImm {
                     ty,
                     off,
@@ -1791,7 +1925,7 @@ impl Interp {
                     off,
                 } => set(
                     dst,
-                    self.load(Ty::I8, get(base).wrapping_add(off as i64 as u64))?,
+                    tri!(self.load(Ty::I8, get(base).wrapping_add(off as i64 as u64))),
                 ),
                 Op::Load32 {
                     dst,
@@ -1799,7 +1933,7 @@ impl Interp {
                     off,
                 } => set(
                     dst,
-                    self.load(Ty::I32, get(base).wrapping_add(off as i64 as u64))?,
+                    tri!(self.load(Ty::I32, get(base).wrapping_add(off as i64 as u64))),
                 ),
                 Op::Load64 {
                     dst,
@@ -1807,7 +1941,7 @@ impl Interp {
                     off,
                 } => set(
                     dst,
-                    self.load(Ty::I64, get(base).wrapping_add(off as i64 as u64))?,
+                    tri!(self.load(Ty::I64, get(base).wrapping_add(off as i64 as u64))),
                 ),
                 Op::LoadFrame8 {
                     dst,
@@ -1825,29 +1959,29 @@ impl Interp {
                     base,
                     off,
                     value,
-                } => self.store(
+                } => tri!(self.store(
                     Ty::I8,
                     get(base).wrapping_add(off as i64 as u64),
                     get(value),
-                )?,
+                )),
                 Op::Store32 {
                     base,
                     off,
                     value,
-                } => self.store(
+                } => tri!(self.store(
                     Ty::I32,
                     get(base).wrapping_add(off as i64 as u64),
                     get(value),
-                )?,
+                )),
                 Op::Store64 {
                     base,
                     off,
                     value,
-                } => self.store(
+                } => tri!(self.store(
                     Ty::I64,
                     get(base).wrapping_add(off as i64 as u64),
                     get(value),
-                )?,
+                )),
                 Op::StoreFrame8 {
                     off,
                     value,
@@ -1867,6 +2001,7 @@ impl Interp {
                 } => {
                     let (d, s) = (get(dst), get(src));
                     if d < 4096 || s < 4096 {
+                        self.sync_loc(code, here);
                         return self.null_trap("memory copy through a null pointer");
                     }
                     unsafe { copy_bytes(d, s, size) };
@@ -1877,15 +2012,14 @@ impl Interp {
                 } => {
                     let d = get(dst);
                     if d < 4096 {
+                        self.sync_loc(code, here);
                         return self.null_trap("memory fill through a null pointer");
                     }
                     unsafe { zero_bytes(d, size) };
                 }
                 Op::Loc {
-                    file,
-                    line,
-                    col,
-                } => self.loc = Some((file, line, col)),
+                    ..
+                } => unreachable!("`build` took the location ops out"),
                 Op::Call {
                     callee,
                     at,
@@ -1893,10 +2027,13 @@ impl Interp {
                     nrets,
                 } => {
                     let pool = &code.pool[at as usize..];
+                    if pool[0] != NO_LOC {
+                        self.loc = Some(code.locs[pool[0] as usize]);
+                    }
                     let result = self.call_by_name(
                         program,
                         regs,
-                        pool,
+                        &pool[1..],
                         callee,
                         nargs as usize,
                         nrets as usize,
@@ -1917,13 +2054,18 @@ impl Interp {
                 } => {
                     let (index, count) = (get(index), get(count));
                     if (index as i64) < 0 || (index as i64) >= count as i64 {
+                        self.sync_loc(code, here);
                         return self.check_trap(ir::TRAP_BOUNDS, index, count);
                     }
                 }
                 Op::Ir {
                     block,
                     inst,
+                    loc,
                 } => {
+                    if loc != NO_LOC {
+                        self.loc = Some(code.locs[loc as usize]);
+                    }
                     let inst = &func.blocks[block as usize].insts[inst as usize];
                     // SAFETY: the same registers, borrowed for this one step only.
                     let vals = unsafe { std::slice::from_raw_parts_mut(regs, code.regs) };
@@ -2018,6 +2160,7 @@ impl Interp {
                         pc = code.blocks[target as usize].start as usize;
                     }
                     Term::Unreachable => {
+                        self.sync_loc(code, here);
                         return self.trap(format!("reached unreachable code in `{}`", func.name));
                     }
                     _ => unreachable!("only switches and unreachable keep their IR ending"),
