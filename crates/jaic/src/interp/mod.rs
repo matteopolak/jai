@@ -2306,7 +2306,7 @@ impl std::ops::Deref for Rets {
 }
 
 /// Reads an instruction's operands. Most fit in `small` on the Rust stack; longer lists use `heap`.
-fn gather<'a>(
+pub(super) fn gather<'a>(
     vals: &[u64],
     args: &[ir::Val],
     small: &'a mut [u64; 8],
