@@ -936,6 +936,66 @@ impl Session {
         if let Some(list) = self.asm_completion(uri, &doc.text, byte) {
             return Ok(list);
         }
+        let mut list = self.completion_items(uri, byte)?;
+        // Accepting an item replaces the whole word around the cursor, the letters after it
+        // included, so confirming in the middle of a word does not leave its tail behind.
+        let text = &doc.text;
+        let word = |c: char| c.is_alphanumeric() || c == '_';
+        let mut start = text[..byte]
+            .char_indices()
+            .rfind(|&(_, c)| !word(c))
+            .map_or(0, |(i, c)| i + c.len_utf8());
+        let mut end = byte
+            + text[byte..]
+                .find(|c: char| !word(c))
+                .unwrap_or(text.len() - byte);
+        if start > 0
+            && text.as_bytes()[start - 1] == b'#'
+            && list.items.iter().any(|i| i.label.starts_with('#'))
+        {
+            // A directive's label includes its `#`.
+            start -= 1;
+        }
+        if let Some(quote) = self.string_path_start(text, byte) {
+            // Inside `#load "..."` / `#import "..."`: the entry after the last `/`.
+            start = quote;
+            end = byte
+                + text[byte..]
+                    .find(|c: char| c == '"' || c == '/' || c.is_whitespace())
+                    .unwrap_or(text.len() - byte);
+        }
+        if let Ok(range) = doc.index.range(text, Span::new(start, end)) {
+            for item in &mut list.items {
+                if item.replace.is_none() {
+                    item.replace = Some(range);
+                }
+            }
+        }
+        Ok(list)
+    }
+
+    /// Where the partial path being typed in an open `#load` / `#import` string starts.
+    fn string_path_start(&self, text: &str, byte: usize) -> Option<usize> {
+        let line_start = text[..byte].rfind('\n').map_or(0, |n| n + 1);
+        let line = &text[line_start..byte];
+        let quote = line.rfind('"')?;
+        if !line[..quote].matches('"').count().is_multiple_of(2) {
+            return None;
+        }
+        let directive = line[..quote]
+            .trim_end()
+            .rsplit(|c: char| c.is_whitespace() || c == '(')
+            .next()?;
+        if !(directive.starts_with("#load") || directive.starts_with("#import")) {
+            return None;
+        }
+        let typed = &line[quote + 1..];
+        Some(line_start + quote + 1 + typed.rfind('/').map_or(0, |s| s + 1))
+    }
+
+    fn completion_items(&self, uri: &DocumentUri, byte: usize) -> Result<CompletionList, Error> {
+        let doc = self.document(uri)?;
+        let position = doc.index.position(&doc.text, byte)?;
         // `#` and the start of a directive: offer directives (labels include the `#`).
         // Past the whole separator: it may be multi-byte (a no-break space).
         let word_start = doc.text[..byte]

@@ -1328,8 +1328,15 @@ fn completion_wire(completion: &CompletionList) -> Value {
                     .map(|e| json!({ "range": e.range, "newText": e.new_text }))
                     .collect();
             }
-            if let Some(text) = &item.insert_text {
+            // `textEdit` replaces the whole word; `insertText` is for items without a range.
+            let text = item.insert_text.as_deref();
+            if let Some(range) = &item.replace {
+                wire["textEdit"] =
+                    json!({ "range": range, "newText": text.unwrap_or(&item.label) });
+            } else if let Some(text) = text {
                 wire["insertText"] = json!(text);
+            }
+            if text.is_some() {
                 // 2: snippet syntax (`${1:name}`), 1: plain text.
                 wire["insertTextFormat"] = json!(if item.kind == CompletionKind::Snippet {
                     2
