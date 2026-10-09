@@ -78,7 +78,8 @@ backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {
         first := cast(u32) max(skip, 0);
         return Windows.RtlCaptureStackBackTrace(first, cast(u32) min(wanted, 0xffff), trace.data, null);
     } else {
-        #assert false "Native stack capture is not implemented for this target";
+        // No native stack to walk (wasm): report an empty capture.
+        return 0;
     }
 }
 
@@ -91,6 +92,9 @@ backtrace_symbols :: (trace: [] *void, n: int) -> [] string {
     #if OS == .WINDOWS {
         // Without debug information at hand, name each frame by its module and offset.
         for index: 0..n - 1 result[index] = describe_address(trace[index]);
+        return result;
+    } else #if OS == .WASM {
+        for index: 0..n - 1 result[index] = sprint("0x%", formatInt(cast(u64) trace[index], base = 16));
         return result;
     } else {
         symbols := host_backtrace_symbols(trace.data, cast(s32) n);
@@ -163,7 +167,7 @@ is_debugger_present :: inline () -> bool {
         }
         return false;
     } else {
-        #assert false "Debugger detection requires a host adapter";
+        return false;
     }
 }
 
@@ -202,7 +206,8 @@ enable_signal_handler :: (interactive := false) {
         prior_exception_filter = Windows.SetUnhandledExceptionFilter(handle_exception);
         signal_handler_enabled = true;
     } else {
-        #assert false "Crash signal installation requires a host adapter";
+        // No signals or exception filters to hook; the handler simply stays off.
+        return;
     }
 }
 
@@ -210,6 +215,7 @@ disable_signal_handler :: () {
     if !signal_handler_enabled return;
     #if OS == .WINDOWS {
         Windows.SetUnhandledExceptionFilter(prior_exception_filter);
+    } else #if OS == .WASM {
     } else {
         for number, index: watched_signals host_signal(number, prior_handlers[index]);
     }
@@ -279,7 +285,8 @@ is_valid_pointer :: (ptr: *void) -> bool {
         }
         return host_write(ends[1], ptr, 1) == 1;
     } else {
-        #assert false "Pointer mapping validation requires a host memory-map adapter";
+        // Linear memory has no unmapped holes below its size, and address 0 is not a valid object.
+        return ptr != null;
     }
 }
 
@@ -289,13 +296,19 @@ is_valid_pointer :: (ptr: *void) -> bool {
 
 #if OS == .WINDOWS {
     Windows :: #import "Windows";
-} else {
+} else #if OS != .WASM {
     POSIX :: #import "POSIX";
 
     siginfo_t :: POSIX.siginfo_t;
 }
 
 Signal_Handler :: #type (signal: s32) #c_call;
+
+#if OS == .WASM {
+    host_exit :: (code: s32) {
+        exit(code);
+    }
+} else {
 libc :: #system_library "c";
 host_signal :: (number: s32, handler: Signal_Handler) -> Signal_Handler #foreign libc "signal";
 host_exit :: (code: s32) #foreign libc "_exit";
@@ -307,6 +320,7 @@ host_read :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "
 host_close :: (descriptor: s32) -> s32 #foreign libc "close";
 host_pipe :: (ends: *s32) -> s32 #foreign libc "pipe";
 host_write :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "write";
+}
 watched_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
 prior_handlers: [5] Signal_Handler;
 signal_handler_enabled := false;
@@ -349,7 +363,7 @@ minidump_state := Minidump_State.Mini;
     }
 }
 
-#if OS != .WINDOWS {
+#if OS != .WINDOWS && OS != .WASM {
     install_handler :: (signal: s32) #c_call {
         handle_signal(signal, null, null);
     }
