@@ -382,6 +382,8 @@ pub struct Compiler {
     pub packs: HashMap<PackKey, ir::GlobalId>,
     pub output: Vec<u8>,
     pub warnings: Vec<Diagnostic>,
+    /// Overload sets already checked for identical parameter lists.
+    pub overload_sets_checked: std::collections::HashSet<Vec<EntityId>>,
     /// Struct declaration AST per struct (for layout).
     pub struct_asts: HashMap<crate::types::StructId, structs::StructSource>,
     pub entry_point: Option<ProcId>,
@@ -422,6 +424,8 @@ pub struct Compiler {
     pub first_arguments: HashMap<(u32, u32, u32), Span>,
     /// `using,only(...) field.path;` aliases declared in struct bodies.
     pub member_aliases: HashMap<crate::types::StructId, Vec<structs::MemberAlias>>,
+    /// `using,only(..)`/`using,except(..)` on struct members: field index and filter.
+    pub using_filters: HashMap<crate::types::StructId, Vec<(usize, ast::UsingFilter)>>,
     pub default_images: HashMap<TypeId, Option<Rc<value::Aggregate>>>,
     pub default_globals: HashMap<TypeId, ir::GlobalId>,
     pub initializers: HashMap<TypeId, ir::FuncId>,
@@ -558,6 +562,7 @@ impl Compiler {
             packs: HashMap::default(),
             output: Vec::new(),
             warnings: Vec::new(),
+            overload_sets_checked: Default::default(),
             struct_asts: HashMap::default(),
             entry_point: None,
             exports: Vec::new(),
@@ -575,6 +580,7 @@ impl Compiler {
             proc_decl_notes: HashMap::default(),
             first_arguments: HashMap::default(),
             member_aliases: HashMap::default(),
+            using_filters: HashMap::default(),
             default_images: HashMap::default(),
             default_globals: HashMap::default(),
             initializers: HashMap::default(),

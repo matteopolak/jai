@@ -664,6 +664,9 @@ impl Compiler {
                     }
                 }
             }
+            if ids.len() > 1 {
+                self.check_identical_overloads(ids)?;
+            }
             return Ok(Operand::Procs(procs));
         }
         self.entity_operand(f, scope, ids[0], span)

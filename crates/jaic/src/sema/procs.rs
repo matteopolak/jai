@@ -458,6 +458,54 @@ impl Compiler {
         Ok(ty)
     }
 
+    /// Two procedures declared in one scope under one name must differ in their parameter types
+    /// (polymorphic ones are told apart when a call picks between them). Checked when the
+    /// overload set is first used.
+    pub fn check_identical_overloads(&mut self, ids: &[EntityId]) -> Result<()> {
+        if !self.overload_sets_checked.insert(ids.to_vec()) {
+            return Ok(());
+        }
+        let mut seen: Vec<(EntityId, Rc<[TypeId]>, bool)> = Vec::new();
+        for &id in ids {
+            let proc = match self.resolve_entity(id) {
+                Ok(Resolved::Proc(p))
+                | Ok(Resolved::Const {
+                    value: Value::Proc(p),
+                    ..
+                }) => p,
+                _ => continue,
+            };
+            if self.proc(proc).is_poly || self.proc(proc).lit.body.is_none() {
+                continue;
+            }
+            let span = self.entity(id).span;
+            let Ok(sig) = self.signature(proc, span) else {
+                continue;
+            };
+            let TypeKind::Proc(ty) = self.types.kind(sig.ty).clone() else {
+                continue;
+            };
+            let scope = self.entity(id).scope;
+            let params: Rc<[TypeId]> = ty.params.iter().copied().collect();
+            if let Some((first, ..)) = seen.iter().find(|(other, p, v)| {
+                self.entity(*other).scope == scope && **p == *params && *v == ty.variadic
+            }) {
+                let first = self.entity(*first).span;
+                return Err(Box::new(
+                    Diagnostic::error(
+                        span,
+                        "two procedures with this name have identical parameter types",
+                    )
+                    .with_label("this declaration cannot be told apart from the first")
+                    .with_note(first, "the first declaration")
+                    .with_help("change a parameter's type, or remove one of them"),
+                ));
+            }
+            seen.push((id, params, ty.variadic));
+        }
+        Ok(())
+    }
+
     /// Lowered IR signature for a procedure type.
     pub fn ir_sig(&mut self, ty: TypeId, span: Span) -> Result<Sig> {
         let TypeKind::Proc(p) = self.types.kind(ty).clone() else {
