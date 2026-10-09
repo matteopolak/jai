@@ -722,8 +722,15 @@ impl Session {
             while s > 0 && ident(bytes[s - 1]) {
                 s -= 1;
             }
+            if s == end
+                && chain.is_empty()
+                && !(end > 0 && matches!(bytes[end - 1], b')' | b']' | b'}' | b'"' | b'\''))
+            {
+                // `.Member` with an inferred type: the enum its context expects.
+                return self.inferred_completion(uri, text, byte, end, prefix);
+            }
             if s == end || bytes[s].is_ascii_digit() {
-                // `.Member` with an inferred type, `f().x`, a number: nothing to offer.
+                // `f().x`, a number: nothing to offer.
                 return Some((prefix, Vec::new()));
             }
             chain.push(&text[s..end]);
@@ -733,6 +740,45 @@ impl Session {
         let probe = repair(&format!("{}{}", &text[..at], &text[byte..]), Some(at))?;
         let names = self.with_semantic(uri, &probe, |a, path| a.complete(path, at, &chain))?;
         Some((prefix, names))
+    }
+
+    /// Members for `.NAME` typed with `dot` the offset of the `.`: the probe holds a
+    /// placeholder name in place of the word (so the compiler records the type its context
+    /// expects), and the line is closed with whichever of a few endings makes the file parse.
+    fn inferred_completion(
+        &self,
+        uri: &DocumentUri,
+        text: &str,
+        byte: usize,
+        dot: usize,
+        prefix: String,
+    ) -> Option<(String, Vec<IdeName>)> {
+        const PLACEHOLDER: &str = "__jailsp_member";
+        const ENDINGS: [&str; 10] = ["", ";", ")", ");", "))", ")));", "]", "];", " {}", ") {}"];
+        let ident = |c: char| c.is_alphanumeric() || c == '_';
+        let tail = byte
+            + text[byte..]
+                .find(|c: char| !ident(c))
+                .unwrap_or(text.len() - byte);
+        let line_end = text[tail..].find('\n').map_or(text.len(), |i| tail + i);
+        for ending in ENDINGS {
+            let candidate = format!(
+                "{}{PLACEHOLDER}{}{ending}{}",
+                &text[..=dot],
+                &text[tail..line_end],
+                &text[line_end..]
+            );
+            let Some(probe) = repair(&candidate, None) else {
+                continue;
+            };
+            if !probe.contains(PLACEHOLDER) {
+                continue;
+            }
+            let names =
+                self.with_semantic(uri, &probe, |a, path| a.complete_inferred(path, dot + 1));
+            return Some((prefix, names.unwrap_or_default()));
+        }
+        Some((prefix, Vec::new()))
     }
 
     /// Inside the string of `#load "..."` (files and folders relative to the document) or

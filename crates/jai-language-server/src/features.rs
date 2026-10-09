@@ -844,6 +844,15 @@ impl Session {
                     let file = a.file(path)?;
                     let scope = a.compiler.ide_scope_at(file, callee_start as u32)?;
                     let procs = a.compiler.ide_callee(scope, &names);
+                    if procs.is_empty() {
+                        // A variable or member of procedure type.
+                        return Some(
+                            a.compiler
+                                .ide_callee_value(scope, &names)
+                                .into_iter()
+                                .collect::<Vec<_>>(),
+                        );
+                    }
                     Some(
                         procs
                             .into_iter()
