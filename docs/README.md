@@ -131,6 +131,7 @@ Scripts, CI and project policies.
 - [Continuous integration](tools/continuous-integration.md)
 - [Dependency policy](tools/dependency-policy.md)
 - [Differential testing](tools/differential-testing.md): interpreter, native, `-O2` and wasm must agree; `jaigen` random programs; `jaic-reduce`
+- [GitHub Action](tools/github-action.md): `setup-jai`, installing the released toolchain in CI
 - [Fuzzing](tools/fuzzing.md)
 - [jaic regression sweep](tools/jaic-sweep.md)
 - [Stdlib target check](tools/stdlib-target-check.md): every stdlib module type-checked for every target, unreferenced code included
