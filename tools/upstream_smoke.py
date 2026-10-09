@@ -179,10 +179,12 @@ def stop(proc):
             subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True)
             proc.wait()
         return
-    # Signal the group even when the leader has exited: its children may still be running.
+    # Signal the group even when the leader has exited: its children may still be running. macOS
+    # answers EPERM rather than ESRCH for a group whose only member is an unreaped leader.
     try:
         os.killpg(proc.pid, signal.SIGTERM)
-    except ProcessLookupError:
+    except (ProcessLookupError, PermissionError):
+        proc.wait()
         return
     try:
         proc.wait(10)
@@ -190,7 +192,7 @@ def stop(proc):
         pass
     try:
         os.killpg(proc.pid, signal.SIGKILL)
-    except ProcessLookupError:
+    except (ProcessLookupError, PermissionError):
         pass
     proc.wait()
 
