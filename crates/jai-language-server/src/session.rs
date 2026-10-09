@@ -65,6 +65,18 @@ impl Session {
     }
 
     /// The client's workspace folders (absolute paths).
+    /// Messages for the user the server has found since the last call (a settings file that
+    /// does not parse), each to be sent once.
+    pub fn take_messages(&self) -> Vec<String> {
+        self.index.borrow_mut().take_messages()
+    }
+
+    /// Drop everything cached (compiles, scans) after a failure: it is rebuilt on demand.
+    pub fn reset_caches(&self) {
+        *self.semantic.borrow_mut() = Default::default();
+        *self.index.borrow_mut() = Default::default();
+    }
+
     pub fn set_workspace_folders(&mut self, folders: Vec<PathBuf>) {
         self.workspace_folders = folders;
     }
