@@ -17,7 +17,6 @@ From the conformance run (details in the uncommitted `conformance-local/NOTES.md
 
 Other:
 
-- Native builds don't null-check plain loads (`v := p.*` segfaults at `-O0`, is undefined at `-O2`); only the interpreter and `print` report it.
 - `Code_Node` kinds jaic doesn't model (`#asm`, `#bake`, `#bytes`, `#this`, `#load`, `#place`, …) arrive as `.PLACEHOLDER` in metaprograms.
 - Messages jaic doesn't send: `FAILED_IMPORT`, `ERROR`, `PERFORMANCE_REPORT`, `DEBUG_DUMP` ([build options](docs/metaprogramming/build-options.md)).
 
