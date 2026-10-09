@@ -870,7 +870,8 @@ impl Compiler {
             Some(_) => {
                 return err(
                     span,
-                    "floating-point variables are not supported in #asm (SIMD/x87 instructions are not lowered)",
+                    "a floating-point variable is a vector register in #asm: it is an operand of vector instructions \
+                     (`addss x, y`) and of `movd`/`movq`, not of integer instructions",
                 );
             }
             None => {
@@ -1613,7 +1614,8 @@ impl Compiler {
                 other => err(
                     s.span,
                     format!(
-                        "unsupported #asm operand size `.{other}` (vector sizes are not supported)"
+                        "unsupported #asm operand size `.{other}`: an integer instruction takes \
+                         `.b/.w/.d/.q` (`.x/.y/.z` are vector sizes)"
                     ),
                 ),
             },
