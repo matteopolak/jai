@@ -627,6 +627,32 @@ pp_expression :: (builder: *String_Builder, node: *Code_Node, depth: s64, parent
                     append(builder, ")");
                 }
             }
+        case .DIRECTIVE_THIS;
+            append(builder, "#this");
+        case .DIRECTIVE_COMPILE_TIME;
+            append(builder, "#compile_time");
+        case .DIRECTIVE_BYTES;
+            append(builder, "#bytes ");
+            ok = pp_expression(builder, (cast(*Code_Directive_Bytes) node).expression, depth, 0);
+        case .DIRECTIVE_PROCEDURE_NAME;
+            append(builder, "#procedure_name(");
+            arg := (cast(*Code_Directive_Procedure_Name) node).argument;
+            if arg ok = pp_expression(builder, arg, depth, 0);
+            append(builder, ")");
+        case .DIRECTIVE_BAKE;
+            bake := cast(*Code_Directive_Bake) node;
+            if bake.bake_type == .CONSTANTS_BAKE append(builder, "#bake_constants ");
+            else append(builder, "#bake_arguments ");
+            ok = pp_expression(builder, bake.procedure_call, depth, 0);
+        case .DIRECTIVE_LOAD;
+            print_to_builder(builder, "#load \"%\"", (cast(*Code_Directive_Load) node).short_name);
+        case .DIRECTIVE_PLACE;
+            append(builder, "#place ");
+            ok = pp_expression(builder, (cast(*Code_Directive_Place) node).ident, depth, 0);
+        case .DIRECTIVE_OVERLAY;
+            append(builder, "#overlay(");
+            ok = pp_expression(builder, (cast(*Code_Directive_Overlay) node).target_expression, depth, 0);
+            append(builder, ")");
         case .DIRECTIVE_IMPORT;
             imp := cast(*Code_Directive_Import) node;
             print_to_builder(builder, "#import \"%\"", imp.name);

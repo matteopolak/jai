@@ -154,7 +154,7 @@ The before column is jaic 0.4.1. "Silently ignored" means the value was accepted
 | `FAILED_IMPORT` | not sent: a failed import is a compile error (and `provide_import` is an error) |
 | `ERROR` | not sent: errors are printed and `COMPLETE` carries `COMPILATION_FAILED` |
 | `PERFORMANCE_REPORT`, `DEBUG_DUMP` | not sent; the flags that ask for performance reports warn |
-| `Code_Node` kinds | see [compiler records](compiler-records.md). Expressions the exporter does not model (`#asm`, `#bake`, `#bytes`, `#this`, `#procedure_name`, `#caller_code`, `#compile_time`, `#file`/`#filepath`/`#line`, `$T` declarations) and statements (`#load`, `#place`, `#add_context`, `#module_parameters`, `#overlay`) arrive as `.PLACEHOLDER` nodes, which `Program_Print` (and so `compiler_get_code` and edited statements in `compiler_modify_procedure`) reports as unsupported instead of printing something else |
+| `Code_Node` kinds | see [compiler records](compiler-records.md). `#this`, `#compile_time`, `#bytes`, `#procedure_name`, `#bake_arguments`/`#bake_constants` (as `Code_Directive_Bake` around the call), `#asm` (an opaque `Code_Asm`, without its instructions), `#load` (`short_name`, `fully_pathed_filename`), `#place` and `#overlay` are modelled, and `Program_Print` prints all of them but `#asm`. Expressions the exporter still does not model (`#caller_code`, `#file`/`#filepath`/`#line`, `$T` declarations) and statements (`#add_context`, `#module_parameters`) arrive as `.PLACEHOLDER` nodes, which `Program_Print` (and so `compiler_get_code` and edited statements in `compiler_modify_procedure`) reports as unsupported instead of printing something else |
 
 ## How to change it
 

@@ -74,7 +74,9 @@ RECORD_TYPES :: Type.[
     Code_Directive_Run, Code_Directive_Code, Code_Directive_Insert, Code_Directive_Location,
     Code_Directive_Import, Code_Note, Code_Declaration, Code_While, Code_For, Code_Loop_Control,
     Code_Return, Code_Defer, Code_Using, Code_Push_Context, Code_Compound_Declaration,
-    Code_Comma_Separated_Arguments, Code_Directive_Exists,
+    Code_Comma_Separated_Arguments, Code_Directive_Exists, Code_Directive_Bytes,
+    Code_Directive_Procedure_Name, Code_Directive_Bake, Code_Directive_Load, Code_Directive_Place,
+    Code_Directive_Overlay, Code_Asm,
 
     Type_Info, Type_Info_Integer, Type_Info_Float, Type_Info_String, Type_Info_Pointer,
     Type_Info_Procedure, Type_Info_Struct, Type_Info_Array, Type_Info_Enum, Type_Info_Variant,
