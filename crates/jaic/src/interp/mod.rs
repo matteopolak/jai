@@ -498,6 +498,8 @@ pub struct Interp {
     pub block_budget: Option<u64>,
     /// Reused value-register vectors (see `run`).
     val_pool: Vec<Vec<u64>>,
+    /// The pages of program memory the compiler found accessible (see `probe`).
+    probe: Box<probe::Probe>,
     /// Blocks and instructions run in the current frame (`JAIC_PROFILE`, see `profile`).
     frame_blocks: u64,
     frame_insts: u64,
@@ -603,6 +605,7 @@ impl Interp {
             captured: Vec::new(),
             block_budget: None,
             val_pool: Vec::new(),
+            probe: Box::default(),
             frame_blocks: 0,
             frame_insts: 0,
             profile: profile::enabled().then(Default::default),
@@ -770,25 +773,27 @@ impl Interp {
     /// `len` bytes of program memory at `addr`, or `None` when they cannot all be read.
     pub fn read(&self, addr: u64, len: usize) -> Option<Vec<u8>> {
         let mut out = vec![0; len];
-        probe::read(addr, &mut out).then_some(out)
+        self.probe.read(addr, &mut out).then_some(out)
     }
 
     /// Fill `out` from program memory at `addr`; false when it cannot all be read.
     pub fn read_into(&self, addr: u64, out: &mut [u8]) -> bool {
-        probe::read(addr, out)
+        self.probe.read(addr, out)
     }
 
     /// The `u64` at `addr` in program memory, or `None` when it cannot be read.
     pub fn read_u64(&self, addr: u64) -> Option<u64> {
         let mut out = [0; 8];
-        probe::read(addr, &mut out).then(|| u64::from_le_bytes(out))
+        self.probe
+            .read(addr, &mut out)
+            .then(|| u64::from_le_bytes(out))
     }
 
     /// The two `u64`s at `addr` (a Jai `string` or view: count, then data), or `None` when
     /// they cannot be read.
     pub fn read_pair(&self, addr: u64) -> Option<(u64, u64)> {
         let mut out = [0; 16];
-        if !probe::read(addr, &mut out) {
+        if !self.probe.read(addr, &mut out) {
             return None;
         }
         let (a, b) = out.split_at(8);
@@ -801,7 +806,7 @@ impl Interp {
     /// Store `bytes` at `addr` in program memory; false when it cannot be written.
     #[must_use]
     pub fn write(&mut self, addr: u64, bytes: &[u8]) -> bool {
-        probe::write(addr, bytes)
+        self.probe.write(addr, bytes)
     }
 
     /// `read` for a pointer an intrinsic or emulated library call was given: a trap when the
@@ -1835,7 +1840,7 @@ impl Interp {
                 if n > 0 && (a[0] < 4096 || a[1] < 4096) {
                     return self.null_trap("memcmp through a null pointer");
                 }
-                let r: i16 = match probe::compare(a[0], a[1], n) {
+                let r: i16 = match self.probe.compare(a[0], a[1], n) {
                     std::cmp::Ordering::Less => -1,
                     std::cmp::Ordering::Equal => 0,
                     std::cmp::Ordering::Greater => 1,
