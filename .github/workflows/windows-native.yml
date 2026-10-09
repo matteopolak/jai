@@ -54,8 +54,9 @@ jobs:
         run: |
           bash tools/install_ci_llvm_linux.sh
           echo "LLVM_SYS_231_PREFIX=/usr/lib/llvm-23" >> "$GITHUB_ENV"
-          sudo apt-get install -y gcc-mingw-w64-x86-64
+          sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
           x86_64-w64-mingw32-gcc --version
+          x86_64-w64-mingw32-g++ --version
       - name: Build jaic
         run: cargo build --locked -p jaic-cli
       - name: Cross-build the Windows test programs

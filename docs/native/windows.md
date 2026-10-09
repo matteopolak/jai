@@ -80,7 +80,7 @@ Runtime (`stdlib/Runtime_Support.jai`):
 - `-os windows`, `-cpu x64|arm64`, `-target <triple>` on `jaic build`.
 - `JAIC_LINKER`: linker program to use instead of the search above. A program named `link` or `lld-link` gets `link.exe`-style arguments, anything else C-driver arguments (plus `--target` for MSVC).
 - `JAIC_AR`: archiver for static libraries.
-- Cross builds need MinGW-w64 (`brew install mingw-w64`, `apt install gcc-mingw-w64-x86-64`) for x64, and llvm-mingw (above) for arm64.
+- Cross builds need MinGW-w64 (`brew install mingw-w64`, `apt install gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64`) for x64, and llvm-mingw (above) for arm64.
 - On Windows: LLVM (for `clang`; the official `clang+llvm-*-x86_64-pc-windows-msvc` or `clang+llvm-*-aarch64-pc-windows-msvc` archive) and the Visual Studio build tools or Windows SDK for the libraries (the ARM64 build tools on Windows on Arm). LLVM is optional: with only Visual Studio installed, `jaic` finds its `link.exe` and the libraries without a developer prompt.
 - Building `jaic` itself on Windows against the official LLVM archive: link the static C runtime (`CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS=-C target-feature=+crt-static`, or `CARGO_TARGET_AARCH64_PC_WINDOWS_MSVC_RUSTFLAGS` on arm64), because that LLVM is built with `/MT` and mixing runtimes crashes `jaic build` at once; and run `tools/windows-llvm/prepare.sh` on the unpacked archive, which supplies the `xml2s.lib`, `zs.lib` and `zstd_static.lib` that llvm-config names but the archive lacks, and an `llvm-config` front that turns zstd's absolute build-machine path into a name llvm-sys can pass to rustc ([LLVM setup](../tools/llvm-setup.md#windows-msvc-builds)). Both workflows do this.
 
