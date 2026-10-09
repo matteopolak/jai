@@ -617,14 +617,6 @@ pub(super) fn build(
     for (i, block) in blocks.iter().enumerate() {
         block_at[block.start as usize] = i as u32 + 1;
     }
-    if std::env::var("JAIC_DUMP_OPS").is_ok_and(|n| n == func.name) {
-        for (i, bl) in blocks.iter().enumerate() {
-            eprintln!("block {i}:");
-            for o in &ops[bl.start as usize..bl.end as usize] {
-                eprintln!("    {o:?}");
-            }
-        }
-    }
     Code {
         ops,
         blocks,
