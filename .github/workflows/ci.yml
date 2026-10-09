@@ -2,9 +2,10 @@ name: compiler checks
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
-# A newer push to the same branch supersedes an older run.
+# A newer push to a branch supersedes the older run there. Every push to main gets its own
+# group, so its run always finishes; cancel one by hand with `gh run cancel` when it is not needed.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
   cancel-in-progress: true
 jobs:
   scripting-wasm:
