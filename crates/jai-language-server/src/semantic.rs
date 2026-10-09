@@ -243,10 +243,11 @@ pub struct Cache {
     entries: Vec<Analysis>,
 }
 
-fn hash(root: &Path, files: &BTreeMap<PathBuf, Rc<[u8]>>) -> u64 {
+fn hash(root: &Path, dirs: &[PathBuf], files: &BTreeMap<PathBuf, Rc<[u8]>>) -> u64 {
     use std::hash::{Hash, Hasher};
     let mut h = std::collections::hash_map::DefaultHasher::new();
     root.hash(&mut h);
+    dirs.hash(&mut h);
     files.hash(&mut h);
     h.finish()
 }
@@ -264,13 +265,14 @@ impl Cache {
         &mut self,
         env: &Environment,
         root: &Path,
+        dirs: &[PathBuf],
         files: BTreeMap<PathBuf, Rc<[u8]>>,
     ) -> &mut Analysis {
         let files: BTreeMap<PathBuf, Rc<[u8]>> = files
             .into_iter()
             .map(|(p, t)| (env.fs.canonical(&p), t))
             .collect();
-        let key = hash(root, &files);
+        let key = hash(root, dirs, &files);
         if let Some(at) = self.entries.iter().position(|a| a.key == key) {
             let entry = self.entries.remove(at);
             self.entries.push(entry);
@@ -278,7 +280,7 @@ impl Cache {
             if self.entries.len() >= CACHED {
                 self.entries.remove(0);
             }
-            let (compiler, errors) = compile(env, root, files);
+            let (compiler, errors) = compile(env, root, dirs, files);
             self.entries.push(Analysis {
                 compiler,
                 key,
@@ -297,6 +299,7 @@ impl Cache {
 fn compile(
     env: &Environment,
     root: &Path,
+    dirs: &[PathBuf],
     files: BTreeMap<PathBuf, Rc<[u8]>>,
 ) -> (Compiler, Vec<jaic::source::Diagnostic>) {
     let fs: Rc<dyn FileSystem> = Rc::new(OverlayFs {
@@ -304,7 +307,12 @@ fn compile(
         files,
     });
     let dir = root.parent().map(Path::to_path_buf).unwrap_or_default();
-    let mut compiler = Compiler::new((env.options)(root), fs.clone());
+    let options = || {
+        let mut options = (env.options)(root);
+        crate::modules::splice(&mut options.import_paths, dirs);
+        options
+    };
+    let mut compiler = Compiler::new(options(), fs.clone());
     // Compile-time output goes nowhere: stdout may be the protocol channel.
     let host = Rc::new(RefCell::new(SandboxHost::with_files(
         fs,
@@ -319,7 +327,7 @@ fn compile(
     let workspaces = Workspaces::new(BuildEnv {
         unwritten_output_hint: None,
         fs: compiler.fs.clone(),
-        options: (env.options)(root),
+        options: options(),
         backend: None,
         command_line: Vec::new(),
         make_host: Box::new(move |_| Box::new(SharedHost(workspace_host.clone()))),

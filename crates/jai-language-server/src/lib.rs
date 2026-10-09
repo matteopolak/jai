@@ -14,6 +14,7 @@ mod imports;
 mod links;
 pub mod lints;
 mod model;
+mod modules;
 mod position;
 mod project;
 mod protocol;
