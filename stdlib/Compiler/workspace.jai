@@ -189,12 +189,7 @@ get_toplevel_command_line :: () -> [] string {
 // typechecked expression is delivered.
 compiler_begin_intercept :: (w: Workspace, flags: Intercept_Flags = 0, loc := #caller_location) {
     id := resolve_workspace(w);
-    __jaic_workspace_begin_intercept(id);
-
-    if flags & (.DO_PERFORMANCE_REPORT_POLYMORPHS | .DO_PERFORMANCE_REPORT_RUNS) {
-        text := "jaic ignores the Intercept_Flags DO_PERFORMANCE_REPORT_*: it has no performance reports (use -time for timings)";
-        __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.WARNING);
-    }
+    __jaic_workspace_begin_intercept(id, cast(s64) flags);
 
     index := find_intercept(id);
     if index < 0 {
@@ -563,7 +558,7 @@ __jaic_current_workspace :: () -> s64 #compiler;
 __jaic_workspace_add_file :: (ws: s64, path: string) #compiler;
 __jaic_workspace_add_string :: (ws: s64, source: string) #compiler;
 __jaic_workspace_set_option :: (ws: s64, key: string, value: string) #compiler;
-__jaic_workspace_begin_intercept :: (ws: s64) #compiler;
+__jaic_workspace_begin_intercept :: (ws: s64, flags: s64) #compiler;
 __jaic_workspace_next_event :: (ws: s64) -> s64 #compiler;
 __jaic_event_int :: (index: s64) -> s64 #compiler;
 __jaic_event_string :: (index: s64) -> string #compiler;
@@ -591,6 +586,8 @@ EVENT_IMPORT :: 4;
 EVENT_TYPECHECKED :: 5;
 EVENT_FAILED_IMPORT :: 6;
 EVENT_ERROR :: 7;
+EVENT_DEBUG_DUMP :: 8;
+EVENT_PERFORMANCE_REPORT :: 9;
 
 PHASE_PRE_WRITE_EXECUTABLE :: 3;
 PHASE_POST_WRITE_EXECUTABLE :: 4;
@@ -611,6 +608,7 @@ last_complete_error: s64;
 message_phase: Message_Phase;
 message_complete: Message_Complete;
 message_error: Message;
+message_dump: Message_Debug_Dump;
 phase_object_files: [..] string;
 
 resolve_workspace :: (w: Workspace) -> s64 {
@@ -650,6 +648,15 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
 
         case EVENT_FAILED_IMPORT;
             return record_struct(__jaic_event_int(0), type_info(Message_Failed_Import));
+
+        case EVENT_DEBUG_DUMP;
+            message_dump.kind = .DEBUG_DUMP;
+            message_dump.workspace = id;
+            message_dump.dump_text = __jaic_event_string(0);
+            return *message_dump;
+
+        case EVENT_PERFORMANCE_REPORT;
+            return record_struct(__jaic_event_int(0), type_info(Message_Performance_Report));
 
         case EVENT_ERROR;
             message_error.kind = .ERROR;
