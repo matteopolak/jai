@@ -201,7 +201,7 @@ Default_Allocator 4
 Example_Plugin 8
 Extensions/Args 6
 Extensions/Jai_Format 6
-File 33
+File 34
 File_Async 9
 File_Utilities 15
 File_Watcher 7
@@ -530,4 +530,3 @@ executable_formats 7
 generate_c_header 1
 md5 1
 xxHash 17
-
