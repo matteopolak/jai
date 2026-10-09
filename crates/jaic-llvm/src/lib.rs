@@ -466,7 +466,7 @@ pub fn emit_object(program: &Program, options: &Options, path: &Path) -> Result<
 }
 
 /// IR instructions per codegen unit below which splitting does not pay for itself.
-const INSTS_PER_UNIT: usize = 20_000;
+const INSTS_PER_UNIT: usize = 5_000;
 
 /// How many modules to split codegen into: `JAIC_CODEGEN_UNITS` when set, otherwise one
 /// per core for large unoptimized builds. Optimized builds stay whole so LLVM can inline
