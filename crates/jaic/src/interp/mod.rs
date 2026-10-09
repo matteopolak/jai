@@ -356,12 +356,23 @@ const KEEPS_MEMORY: &[&str] = &[
 
 struct Frame {
     offsets: Vec<u64>,
+    /// Bytes of slots, a multiple of 16.
     size: u64,
     /// Largest slot alignment: the frame's absolute start address is a multiple of it, so
     /// `#align 64` locals land aligned (offsets alone only align relative to the frame).
     align: u64,
+    /// Bytes after the slots for the stack trace node, when the procedure keeps one.
+    node_size: u64,
     /// The body in the interpreter's form (`code.rs`).
     code: code::Code,
+}
+
+impl Frame {
+    /// A frame's registers sit after its slots and trace node, on the same stack.
+    #[inline(always)]
+    fn regs(&self, stack_base: u64) -> *mut u64 {
+        (stack_base + self.size + self.node_size) as *mut u64
+    }
 }
 
 struct GlobalMem {
@@ -407,7 +418,11 @@ pub struct Interp {
     globals: Vec<Option<GlobalMem>>,
     /// start address -> (end, global) for address lookups.
     ranges: BTreeMap<u64, (u64, GlobalId)>,
-    frames: Vec<Option<Rc<Frame>>>,
+    /// Each procedure's frame layout and code, built on its first call. Frames are boxed and
+    /// never freed while the interpreter lives (one replaced moves to `retired`), so a
+    /// running procedure's frame stays where it is.
+    frames: Vec<Option<Box<Frame>>>,
+    retired: Vec<Box<Frame>>,
     /// Resolved foreign symbols by `ForeignId` (0 = not resolved yet).
     foreign_addrs: Vec<u64>,
     libraries: HashMap<usize, Option<native::Library>>,
@@ -488,16 +503,13 @@ pub struct Interp {
     /// `Interp::call`s (and C callbacks) running: the sandbox scheduler switches threads only
     /// in the outermost one, where every Rust frame of a thread is resumable.
     call_nesting: u32,
-    /// While a thread suspends (`TrapKind::Suspended`): the block and op where the innermost
-    /// `run_code` stopped, and the value registers `run` hands over, for `exec` to save.
-    suspend_at: Option<(usize, usize)>,
-    suspend_vals: Option<Vec<u64>>,
+    /// While a thread suspends (`TrapKind::Suspended`): the op where the innermost `run_code`
+    /// stopped, for `exec` to save.
+    suspend_at: Option<usize>,
     /// The frames of the suspending thread saved so far, innermost first.
     captured: Vec<threads_inline::SuspFrame>,
     /// Basic blocks left to run before execution traps (editors bound compile-time code).
     pub block_budget: Option<u64>,
-    /// Reused value-register vectors (see `run`).
-    val_pool: Vec<Vec<u64>>,
     /// The pages of program memory the compiler found accessible (see `probe`).
     probe: Box<probe::Probe>,
     /// Blocks and instructions run in the current frame (`JAIC_PROFILE`, see `profile`).
@@ -527,11 +539,22 @@ struct FrameExit {
     /// `sp` before the frame.
     base: u64,
     saved_loc: Option<(u32, u32, u32)>,
-    saved_trace_loc: Option<Option<(u32, u32, u32)>>,
+    /// `trace_loc` before the frame, when the program keeps stack traces.
+    saved_trace_loc: Option<Option<Option<(u32, u32, u32)>>>,
     /// The `context.stack_trace` slot and its previous top (`trace_enter`).
     pushed: Option<(u64, u64)>,
     /// The caller's profile counts.
     outer: (u64, u64),
+}
+
+/// A frame `Interp::enter` pushed.
+struct Entered {
+    /// `sp` before the frame.
+    base: u64,
+    /// Address of the frame's slots.
+    stack_base: u64,
+    /// Address of its registers.
+    regs: *mut u64,
 }
 
 /// Whether `result` is a thread of the sandbox's scheduler switching out (`threads_inline.rs`).
@@ -566,6 +589,7 @@ impl Interp {
             globals: Vec::new(),
             ranges: BTreeMap::new(),
             frames: Vec::new(),
+            retired: Vec::new(),
             foreign_addrs: Vec::new(),
             libraries: HashMap::default(),
             hooks: Vec::new(),
@@ -601,10 +625,8 @@ impl Interp {
             multi: false,
             call_nesting: 0,
             suspend_at: None,
-            suspend_vals: None,
             captured: Vec::new(),
             block_budget: None,
-            val_pool: Vec::new(),
             probe: Box::default(),
             frame_blocks: 0,
             frame_insts: 0,
@@ -883,14 +905,24 @@ impl Interp {
         Ok(())
     }
 
-    fn frame(&mut self, program: &Program, id: FuncId) -> Rc<Frame> {
+    /// The frame of procedure `id`, made on its first call (and again when its body was
+    /// replaced). The reference stays valid for as long as the interpreter lives: frames are
+    /// boxed and a replaced one is kept in `retired`, since it may still be running.
+    #[inline(always)]
+    fn frame<'f>(&mut self, program: &Program, id: FuncId, func: &ir::Func) -> &'f Frame {
         let i = id.0 as usize;
-        let func = program.funcs[i].as_ref().unwrap();
-        if let Some(Some(f)) = self.frames.get(i)
-            && f.code.source == code::fingerprint(func)
-        {
-            return f.clone();
+        if let Some(Some(f)) = self.frames.get(i) {
+            if f.code.source == code::fingerprint(func) {
+                // SAFETY: see above.
+                return unsafe { &*(&**f as *const Frame) };
+            }
         }
+        self.make_frame(program, id, func)
+    }
+
+    #[inline(never)]
+    fn make_frame<'f>(&mut self, program: &Program, id: FuncId, func: &ir::Func) -> &'f Frame {
+        let i = id.0 as usize;
         let mut offsets = Vec::with_capacity(func.slots.len());
         let mut size = 0u64;
         let mut frame_align = 16u64;
@@ -911,17 +943,26 @@ impl Interp {
                     .is_none_or(|g| g.as_ref().is_none_or(|g| g.sig.conv == ir::Conv::C))
         };
         let code = code::build(func, &offsets, &late_value);
-        let frame = Rc::new(Frame {
+        let node_size = match &program.stack_trace {
+            Some(layout) if func.trace.is_some() => layout.node.size.next_multiple_of(8),
+            _ => 0,
+        };
+        let frame = Box::new(Frame {
             offsets,
             size: size.next_multiple_of(16),
             align: frame_align,
+            node_size,
             code,
         });
         if self.frames.len() <= i {
             self.frames.resize_with(i + 1, || None);
         }
-        self.frames[i] = Some(frame.clone());
-        frame
+        let ptr: *const Frame = &*frame;
+        if let Some(old) = self.frames[i].replace(frame) {
+            self.retired.push(old);
+        }
+        // SAFETY: see `frame`.
+        unsafe { &*ptr }
     }
 
     // -----------------------------------------------------------------------
@@ -1282,21 +1323,105 @@ impl Interp {
         result
     }
 
+    /// The body of procedure `id`, or a trap when it has none (yet).
+    #[inline(always)]
+    fn body<'p>(&mut self, program: &'p Program, id: FuncId) -> Res<&'p ir::Func> {
+        match program.funcs.get(id.0 as usize) {
+            Some(Some(func)) => Ok(func),
+            _ => self.no_body(program, id),
+        }
+    }
+
+    #[cold]
+    fn no_body<T>(&mut self, program: &Program, id: FuncId) -> Res<T> {
+        self.missing_func = Some(id);
+        let name = program
+            .func_names
+            .get(id.0 as usize)
+            .cloned()
+            .unwrap_or_default();
+        self.trap(format!(
+            "procedure `{name}` has no body available at this point"
+        ))
+    }
+
+    /// Call procedure `id` with `args`. This is the way in from outside the dispatch loop;
+    /// calls by name in interpreted code use `call_by_name`.
     fn exec(&mut self, program: &Program, id: FuncId, args: &[u64]) -> Res<Rets> {
         if let Some(&Some(hook)) = self.hooks.get(id.0 as usize) {
             return self.run_hook(hook, args);
         }
-        let Some(func) = program.funcs.get(id.0 as usize).and_then(Option::as_ref) else {
-            self.missing_func = Some(id);
-            let name = program
-                .func_names
-                .get(id.0 as usize)
-                .cloned()
-                .unwrap_or_default();
-            return self.trap(format!(
-                "procedure `{name}` has no body available at this point"
-            ));
-        };
+        let func = self.body(program, id)?;
+        let frame = self.frame(program, id, func);
+        let entered = self.enter(program, id, func, frame)?;
+        let n = args.len().min(func.sig.params.len());
+        // SAFETY: `enter` checked the frame's registers fit on the stack, and a procedure
+        // has at least a register for each parameter.
+        unsafe { std::ptr::copy_nonoverlapping(args.as_ptr(), entered.regs, n) };
+        let rets = self.run_entered(program, id, func, frame, &entered)?;
+        // SAFETY: the callee left `rets` results at the start of its registers.
+        let results = unsafe { std::slice::from_raw_parts(entered.regs, rets as usize) };
+        Ok(Rets::collect(results.iter().copied()))
+    }
+
+    /// Call a procedure by name from interpreted code: arguments from the registers
+    /// `pool[..nargs]` of `regs`, results into the registers `pool[nargs..nargs + nrets]`.
+    #[inline(always)]
+    pub(super) fn call_by_name(
+        &mut self,
+        program: &Program,
+        regs: *mut u64,
+        pool: &[u32],
+        callee: u32,
+        nargs: usize,
+        nrets: usize,
+    ) -> Res<()> {
+        let id = FuncId(callee);
+        let (args, rets) = pool.split_at(nargs);
+        // SAFETY (register accesses): `code::build` checked every register named in `pool`.
+        if self.hooks.get(callee as usize).is_some_and(Option::is_some) {
+            let mut small = [0u64; 8];
+            let argv: Vec<u64>;
+            let argv = if nargs <= small.len() {
+                for (slot, &a) in small.iter_mut().zip(args) {
+                    *slot = unsafe { *regs.add(a as usize) };
+                }
+                &small[..nargs]
+            } else {
+                argv = args
+                    .iter()
+                    .map(|&a| unsafe { *regs.add(a as usize) })
+                    .collect();
+                &argv
+            };
+            let out = self.exec(program, id, argv)?;
+            for (&r, &v) in rets[..nrets].iter().zip(out.iter()) {
+                unsafe { *regs.add(r as usize) = v };
+            }
+            return Ok(());
+        }
+        let func = self.body(program, id)?;
+        let frame = self.frame(program, id, func);
+        let entered = self.enter(program, id, func, frame)?;
+        for (i, &a) in args.iter().enumerate().take(func.sig.params.len()) {
+            unsafe { *entered.regs.add(i) = *regs.add(a as usize) };
+        }
+        let n = self.run_entered(program, id, func, frame, &entered)? as usize;
+        for (i, &r) in rets[..nrets].iter().enumerate().take(n) {
+            unsafe { *regs.add(r as usize) = *entered.regs.add(i) };
+        }
+        Ok(())
+    }
+
+    /// Push a frame for `id` on the stack: its slots, trace node and registers.
+    #[inline(always)]
+    fn enter(
+        &mut self,
+        program: &Program,
+        id: FuncId,
+        func: &ir::Func,
+        frame: &Frame,
+    ) -> Res<Entered> {
         if self.depth >= MAX_DEPTH {
             return self.trap_of(
                 TrapKind::StackOverflow,
@@ -1306,61 +1431,88 @@ impl Interp {
         if let Some(covered) = self.covered.as_mut() {
             record_coverage(covered, program, id, func);
         }
-        let frame = self.frame(program, id);
         let base = self.sp;
         let stack_start = self.stack.as_mut_ptr() as u64;
-        let start = (stack_start + base).next_multiple_of(frame.align) - stack_start;
-        let node_size = match &program.stack_trace {
-            Some(layout) if func.trace.is_some() => layout.node.size.next_multiple_of(8),
-            _ => 0,
-        };
-        let traced = node_size != 0;
-        if start + frame.size + node_size > (self.stack.len() * 8) as u64 {
+        let align = frame.align - 1;
+        let start = ((stack_start + base + align) & !align) - stack_start;
+        let end = start + frame.size + frame.node_size + frame.code.regs as u64 * 8;
+        if end > (self.stack.len() * 8) as u64 {
             return self.trap_of(TrapKind::StackOverflow, "interpreter stack overflow");
         }
-        self.sp = start + frame.size + node_size;
+        self.sp = end;
+        let stack_base = stack_start + start;
+        // Registers are not cleared: the IR defines a value before it reads it. Debug builds
+        // fill them with a recognizable pattern to catch code that does not.
+        #[cfg(debug_assertions)]
+        // SAFETY: the registers were checked to fit on the stack above.
+        unsafe {
+            std::slice::from_raw_parts_mut(frame.regs(stack_base), frame.code.regs)
+                .fill(0xdead_beef_dead_beef)
+        };
+        Ok(Entered {
+            base,
+            stack_base,
+            regs: frame.regs(stack_base),
+        })
+    }
+
+    /// Run the procedure in the frame `enter` pushed, whose arguments are in place. Its
+    /// results are at the start of its registers; returns how many.
+    #[inline(always)]
+    fn run_entered(
+        &mut self,
+        program: &Program,
+        id: FuncId,
+        func: &ir::Func,
+        frame: &Frame,
+        entered: &Entered,
+    ) -> Res<u32> {
         self.depth += 1;
         self.calls.push((id, self.loc));
-        let stack_base = stack_start + start;
         let saved_loc = self.loc;
-        let saved_trace_loc = self.trace_loc;
-        let pushed = if traced {
-            self.trace_enter(program, id, func, args, stack_base + frame.size)
-        } else {
-            None
-        };
-        if traced {
-            self.trace_loc = None;
-        } else if self.trace_loc.is_none() {
-            self.trace_loc = Some(self.loc);
+        let (mut saved_trace_loc, mut pushed) = (None, None);
+        if program.stack_trace.is_some() {
+            saved_trace_loc = Some(self.trace_loc);
+            if frame.node_size != 0 {
+                // SAFETY: the callee's first registers are its parameters, which the caller
+                // set (`context` is the first).
+                let args =
+                    unsafe { std::slice::from_raw_parts(entered.regs, func.sig.params.len()) };
+                pushed = self.trace_enter(program, id, func, args, entered.stack_base + frame.size);
+                self.trace_loc = None;
+            } else if self.trace_loc.is_none() {
+                self.trace_loc = Some(self.loc);
+            }
         }
-        let outer = (self.frame_blocks, self.frame_insts);
-        (self.frame_blocks, self.frame_insts) = (0, 0);
-        let result = self.run(program, func, &frame, stack_base, args);
+        let outer = if self.profile.is_some() {
+            let outer = (self.frame_blocks, self.frame_insts);
+            (self.frame_blocks, self.frame_insts) = (0, 0);
+            outer
+        } else {
+            (0, 0)
+        };
+        let result = self.run_code(program, func, frame, entered.stack_base, entered.regs, None);
         let exit = FrameExit {
             id,
-            base,
+            base: entered.base,
             saved_loc,
             saved_trace_loc,
             pushed,
             outer,
         };
         if suspended(&result) {
-            // The thread is switching out: the frame stays on its value stack, to be resumed.
+            // The thread is switching out: the frame stays on its stack, to be resumed.
             (self.frame_blocks, self.frame_insts) = outer;
-            self.capture_frame(exit, frame, stack_base);
+            self.capture_frame(exit, frame, entered.stack_base);
             return result;
         }
         self.leave_frame(func, exit, result)
     }
 
-    /// What `exec` restores when a frame returns (also for a frame `resume_frames` resumed).
-    fn leave_frame(
-        &mut self,
-        func: &ir::Func,
-        exit: FrameExit,
-        mut result: Res<Rets>,
-    ) -> Res<Rets> {
+    /// What `run_entered` restores when a frame returns (also for a frame `resume_frames`
+    /// resumed).
+    #[inline(always)]
+    fn leave_frame(&mut self, func: &ir::Func, exit: FrameExit, mut result: Res<u32>) -> Res<u32> {
         if let Err(trap) = &mut result {
             trap.push_frame(func, self.loc);
         }
@@ -1371,13 +1523,15 @@ impl Interp {
                 self.frame_blocks,
                 self.frame_insts,
             );
+            (self.frame_blocks, self.frame_insts) = exit.outer;
         }
-        (self.frame_blocks, self.frame_insts) = exit.outer;
         if let Some((slot, previous)) = exit.pushed {
             unsafe { std::ptr::write_unaligned(slot as *mut u64, previous) };
         }
         self.loc = exit.saved_loc;
-        self.trace_loc = exit.saved_trace_loc;
+        if let Some(trace_loc) = exit.saved_trace_loc {
+            self.trace_loc = trace_loc;
+        }
         self.depth -= 1;
         self.calls.pop();
         self.sp = exit.base;
@@ -1535,29 +1689,6 @@ impl Interp {
             }
         }
         Ok(Rets::default())
-    }
-
-    fn run(
-        &mut self,
-        program: &Program,
-        func: &ir::Func,
-        frame: &Frame,
-        stack_base: u64,
-        args: &[u64],
-    ) -> Res<Rets> {
-        // Value registers come from a pool: a fresh Vec per call is a malloc/free pair.
-        let mut vals = self.val_pool.pop().unwrap_or_default();
-        vals.clear();
-        vals.resize(func.vals.len(), 0);
-        vals[..args.len().min(func.sig.params.len())]
-            .copy_from_slice(&args[..args.len().min(func.sig.params.len())]);
-        let result = self.run_code(program, func, frame, stack_base, &mut vals, None);
-        if suspended(&result) {
-            self.suspend_vals = Some(vals);
-        } else {
-            self.val_pool.push(vals);
-        }
-        result
     }
 
     fn step(
