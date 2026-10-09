@@ -323,7 +323,7 @@ type Call = (FuncId, Option<(u32, u32, u32)>);
 
 /// C functions whose calls leave nothing observable outside the interpreter's memory, so a
 /// compile-time run that made only these can be repeated (see `Interp::effects`).
-const UNOBSERVABLE_FOREIGNS: &[&str] = &[
+const UNOBSERVABLE_SYMBOLS: &[&str] = &[
     "malloc",
     "calloc",
     "realloc",
@@ -340,7 +340,7 @@ const UNOBSERVABLE_FOREIGNS: &[&str] = &[
 ];
 
 /// Foreign procedures that never release memory, so the pages `probe` found accessible stay so.
-const KEEPS_MEMORY: &[&str] = &[
+const KEEPS_MEMORY_SYMBOLS: &[&str] = &[
     "malloc",
     "calloc",
     "posix_memalign",
@@ -349,10 +349,51 @@ const KEEPS_MEMORY: &[&str] = &[
     "memmove",
     "memset",
     "memcmp",
+    "memchr",
     "strlen",
     "strcmp",
     "strncmp",
+    "strchr",
+    "strrchr",
+    "strstr",
+    "strcpy",
+    "strncpy",
+    "getenv",
+    "read",
+    "write",
+    "clock_gettime",
+    "gettimeofday",
+    "mach_absolute_time",
+    "abs",
+    "labs",
+    "sqrt",
+    "sqrtf",
+    "sin",
+    "sinf",
+    "cos",
+    "cosf",
+    "tan",
+    "tanf",
+    "atan2",
+    "atan2f",
+    "pow",
+    "powf",
+    "floor",
+    "ceil",
+    "fmod",
+    "log",
+    "exp",
 ];
+
+/// What a foreign call does to the interpreter's view of the world (`Interp::foreign_effects`).
+/// Set once the symbol has been looked at.
+const CLASSIFIED: u8 = 1;
+
+/// The call never releases memory.
+const KEEPS_MEMORY: u8 = 2;
+
+/// The call can have effects outside the interpreter's memory.
+const OBSERVABLE: u8 = 4;
 
 struct Frame {
     offsets: Vec<u64>,
@@ -425,6 +466,8 @@ pub struct Interp {
     retired: Vec<Box<Frame>>,
     /// Resolved foreign symbols by `ForeignId` (0 = not resolved yet).
     foreign_addrs: Vec<u64>,
+    /// What each foreign procedure's calls do (`foreign_effects`); 0 until looked at.
+    foreign_flags: Vec<u8>,
     libraries: HashMap<usize, Option<native::Library>>,
     /// `#compiler` procedures handled by the compiler, indexed by `FuncId` (checked on every call).
     pub hooks: Vec<Option<Hook>>,
@@ -599,6 +642,7 @@ impl Interp {
             loc: None,
             trace_loc: None,
             compile_time: true,
+            foreign_flags: Vec::new(),
             run_executable: None,
             run_arguments: Vec::new(),
             run_command_line: None,
@@ -1025,39 +1069,67 @@ impl Interp {
         Ok(addr)
     }
 
+    /// The `KEEPS_MEMORY` and `OBSERVABLE` flags of foreign procedure `id`, from its symbol the
+    /// first time.
+    #[inline]
+    fn foreign_effects(&mut self, program: &Program, id: ForeignId) -> u8 {
+        match self.foreign_flags.get(id.0 as usize) {
+            Some(&flags) if flags != 0 => flags,
+            _ => self.classify_foreign(program, id),
+        }
+    }
+
+    #[cold]
+    fn classify_foreign(&mut self, program: &Program, id: ForeignId) -> u8 {
+        let symbol = program.foreigns[id.0 as usize].symbol.as_str();
+        let mut flags = CLASSIFIED;
+        if KEEPS_MEMORY_SYMBOLS.contains(&symbol) {
+            flags |= KEEPS_MEMORY;
+        }
+        if !UNOBSERVABLE_SYMBOLS.contains(&symbol) {
+            flags |= OBSERVABLE;
+        }
+        if self.foreign_flags.len() <= id.0 as usize {
+            self.foreign_flags.resize(id.0 as usize + 1, 0);
+        }
+        self.foreign_flags[id.0 as usize] = flags;
+        flags
+    }
+
     fn call_foreign(
         &mut self,
         program: &Program,
         id: ForeignId,
         args: &[u64],
         sig: &ir::Sig,
-    ) -> Res<Vec<u64>> {
-        let symbol = program.foreigns[id.0 as usize].symbol.clone();
+    ) -> Res<Rets> {
+        let symbol = program.foreigns[id.0 as usize].symbol.as_str();
+        let effects = self.foreign_effects(program, id);
         // Foreign code may release memory the compiler has found readable.
-        if !KEEPS_MEMORY.contains(&symbol.as_str()) {
+        if effects & KEEPS_MEMORY == 0 {
             probe::invalidate();
         }
-        if !UNOBSERVABLE_FOREIGNS.contains(&symbol.as_str()) {
+        if effects & OBSERVABLE != 0 {
             self.effects += 1;
         }
         if !self.compile_time
-            && let Some(result) = self.executable_path_foreign(&symbol, args)
+            && let Some(result) = self.executable_path_foreign(symbol, args)
         {
-            return result;
+            return result.map(Rets::from);
         }
         if self.host.cooperative_threads() {
-            if let Some(result) = self.inline_thread_foreign(program, &symbol, args) {
-                return result;
+            if let Some(result) = self.inline_thread_foreign(program, symbol, args) {
+                return result.map(Rets::from);
             }
         } else {
             #[cfg(not(target_arch = "wasm32"))]
-            if let Some(result) = self.thread_foreign(program, &symbol, args) {
-                return result;
+            if let Some(result) = self.thread_foreign(program, symbol, args) {
+                return result.map(Rets::from);
             }
         }
-        if let Some(result) = self.host.foreign(&symbol, args, sig) {
-            let exits = matches!(&*symbol, "exit" | "_exit");
-            return result.map_err(|m| {
+        if let Some(result) = self.host.foreign(symbol, args, sig) {
+            let exits = matches!(symbol, "exit" | "_exit");
+            return result.map(Rets::from).map_err(|m| {
                 Trap::new(m).at(self.loc).of_kind(
                     exits.then(|| TrapKind::Exit(args.first().copied().unwrap_or(0) as i32)),
                 )
@@ -1074,20 +1146,20 @@ impl Interp {
             return Err(trap);
         }
         #[cfg(target_os = "macos")]
-        native::main_thread::note_symbol(&symbol);
+        native::main_thread::note_symbol(symbol);
         // The child of a fork has only the forking thread: it must not wait for the others.
-        let forks = matches!(&*symbol, "fork" | "vfork");
+        let forks = matches!(symbol, "fork" | "vfork");
         #[cfg(target_os = "macos")]
         let result = if forks {
             native::main_thread::direct(|| {
-                self.call_native(program, addr, args, sig, Some(&symbol), false)
+                self.call_native(program, addr, args, sig, Some(symbol), false)
             })?
         } else {
-            self.call_native(program, addr, args, sig, Some(&symbol), true)?
+            self.call_native(program, addr, args, sig, Some(symbol), true)?
         };
         #[cfg(not(target_os = "macos"))]
-        let result = self.call_native(program, addr, args, sig, Some(&symbol), !forks)?;
-        if &*symbol == "fork" && result.first() == Some(&0) {
+        let result = self.call_native(program, addr, args, sig, Some(symbol), !forks)?;
+        if symbol == "fork" && result.first() == Some(&0) {
             self.forked_child = true;
             #[cfg(target_os = "macos")]
             native::main_thread::disable();
@@ -1105,28 +1177,34 @@ impl Interp {
         sig: &ir::Sig,
         symbol: Option<&str>,
         release: bool,
-    ) -> Res<Vec<u64>> {
-        // Native code (through a procedure pointer too) may release memory, unless it is one of
-        // the C library procedures known not to.
-        if !symbol.is_some_and(|symbol| KEEPS_MEMORY.contains(&symbol)) {
+    ) -> Res<Rets> {
+        // Native code reached through a procedure pointer may release memory; a named foreign
+        // procedure was classified by `call_foreign`.
+        if symbol.is_none() {
             probe::invalidate();
         }
         // A `#c_call` procedure handed to C is a native thunk already (`proc_value`), unless C
         // cannot call it: that stayed tagged, and asking for its thunk again says why.
-        let mut argv = args.to_vec();
-        for v in &mut argv {
-            if *v & TAG_MASK != FUNC_TAG {
-                continue;
+        let mut thunked: Vec<u64>;
+        let argv = if args.iter().any(|v| v & TAG_MASK == FUNC_TAG) {
+            thunked = args.to_vec();
+            for v in &mut thunked {
+                if *v & TAG_MASK != FUNC_TAG {
+                    continue;
+                }
+                let id = FuncId((*v & !TAG_MASK) as u32);
+                let Some(sig) = program.func_sig(id).filter(|s| s.conv == ir::Conv::C) else {
+                    continue;
+                };
+                let sig = sig.clone();
+                *v = self
+                    .thunk(program, id, &sig)
+                    .map_err(|m| Trap::new(m).at(self.loc))?;
             }
-            let id = FuncId((*v & !TAG_MASK) as u32);
-            let Some(sig) = program.func_sig(id).filter(|s| s.conv == ir::Conv::C) else {
-                continue;
-            };
-            let sig = sig.clone();
-            *v = self
-                .thunk(program, id, &sig)
-                .map_err(|m| Trap::new(m).at(self.loc))?;
-        }
+            thunked.as_slice()
+        } else {
+            args
+        };
         #[cfg(not(target_arch = "wasm32"))]
         self.hand_thunks_to_c();
         let mine = self.take_exec_state();
@@ -1136,7 +1214,7 @@ impl Interp {
         let crash_report = symbol.map(|symbol| crash::ForeignCall::enter(symbol, &mine, program));
         #[cfg(target_arch = "wasm32")]
         let _ = symbol;
-        let result = self.call_unlocked(addr, &argv, sig, release);
+        let result = self.call_unlocked(addr, argv, sig, release);
         #[cfg(not(target_arch = "wasm32"))]
         drop(crash_report);
         self.put_exec_state(mine);
@@ -1152,7 +1230,7 @@ impl Interp {
         argv: &[u64],
         sig: &ir::Sig,
         release: bool,
-    ) -> Result<Vec<u64>, String> {
+    ) -> Result<Rets, String> {
         let Some(shared) = self.shared.clone().filter(|_| release) else {
             return native::call(addr, argv, sig);
         };
@@ -1169,7 +1247,7 @@ impl Interp {
         argv: &[u64],
         sig: &ir::Sig,
         _release: bool,
-    ) -> Result<Vec<u64>, String> {
+    ) -> Result<Rets, String> {
         native::call(addr, argv, sig)
     }
 
@@ -1825,8 +1903,8 @@ impl Interp {
                 let out = match callee {
                     Callee::Func(f) => self.exec(program, *f, argv)?,
                     Callee::Foreign(f) => {
-                        let sig = program.foreigns[f.0 as usize].sig.clone();
-                        self.call_foreign(program, *f, argv, &sig)?.into()
+                        let sig = &program.foreigns[f.0 as usize].sig;
+                        self.call_foreign(program, *f, argv, sig)?
                     }
                     Callee::Indirect(target, sig) => {
                         let addr = vals[target.0 as usize];
@@ -1834,23 +1912,19 @@ impl Interp {
                             FUNC_TAG => {
                                 self.exec(program, FuncId((addr & !TAG_MASK) as u32), argv)?
                             }
-                            FOREIGN_TAG => self
-                                .call_foreign(
-                                    program,
-                                    ForeignId((addr & !TAG_MASK) as u32),
-                                    argv,
-                                    sig,
-                                )?
-                                .into(),
+                            FOREIGN_TAG => self.call_foreign(
+                                program,
+                                ForeignId((addr & !TAG_MASK) as u32),
+                                argv,
+                                sig,
+                            )?,
                             _ if addr < 4096 => {
                                 return self.null_trap("call through a null procedure pointer");
                             }
                             _ => match self.thunk_funcs.get(&addr) {
                                 // A thunk this interpreter made: no need to go through C.
                                 Some(&f) => self.exec(program, f, argv)?,
-                                None => self
-                                    .call_native(program, addr, argv, sig, None, true)?
-                                    .into(),
+                                None => self.call_native(program, addr, argv, sig, None, true)?,
                             },
                         }
                     }
@@ -1870,8 +1944,8 @@ impl Interp {
                 if *op == ir::Intrinsic::CheckFailed {
                     return self.check_failed(program, argv);
                 }
-                let out = self.intrinsic(*op, argv, results.first().map(|_| ()).is_some())?;
-                for (r, v) in results.iter().zip(out) {
+                let out = self.intrinsic(*op, argv)?;
+                for (r, &v) in results.iter().zip(out.iter()) {
                     vals[r.0 as usize] = v;
                 }
             }
@@ -1944,7 +2018,7 @@ impl Interp {
         Ok(())
     }
 
-    fn intrinsic(&mut self, op: ir::Intrinsic, a: &[u64], _has_result: bool) -> Res<Vec<u64>> {
+    fn intrinsic(&mut self, op: ir::Intrinsic, a: &[u64]) -> Res<Rets> {
         use ir::Intrinsic as I;
         let f64_of = |x: u64| f64::from_bits(x);
         Ok(match op {
@@ -1955,7 +2029,7 @@ impl Interp {
                     }
                     unsafe { std::ptr::copy(a[1] as *const u8, a[0] as *mut u8, a[2] as usize) };
                 }
-                vec![]
+                Rets::default()
             }
             I::Memset => {
                 if a[2] > 0 {
@@ -1964,7 +2038,7 @@ impl Interp {
                     }
                     unsafe { std::ptr::write_bytes(a[0] as *mut u8, a[1] as u8, a[2] as usize) };
                 }
-                vec![]
+                Rets::default()
             }
             I::Memcmp => {
                 let n = a[2] as usize;
@@ -1976,7 +2050,7 @@ impl Interp {
                     std::cmp::Ordering::Equal => 0,
                     std::cmp::Ordering::Greater => 1,
                 };
-                vec![r as u16 as u64]
+                Rets::one(r as u16 as u64)
             }
             I::CompareAndSwap => {
                 // (ptr, old, new, width) -> (success, previous)
@@ -1994,7 +2068,7 @@ impl Interp {
                 {
                     self.inline_poll();
                 }
-                vec![success as u64, current]
+                Rets::collect([success as u64, current].into_iter())
             }
             I::DebugBreak => return self.trap("debug_break() was called"),
             I::Trap => {
@@ -2005,7 +2079,7 @@ impl Interp {
                 if index < 0 || index >= count {
                     return self.check_trap(ir::TRAP_BOUNDS, a[0], a[1]);
                 }
-                vec![]
+                Rets::default()
             }
             // Needs the program for its location: `step` handles it.
             I::CheckFailed => unreachable!("CheckFailed is handled by `step`"),
@@ -2013,26 +2087,26 @@ impl Interp {
                 let bytes = self.fetch(a[0], a[1] as usize)?;
                 self.effects += 1;
                 self.host.write(&bytes, a.get(2).is_some_and(|&v| v != 0));
-                vec![]
+                Rets::default()
             }
-            I::Sqrt => vec![f64_of(a[0]).sqrt().to_bits()],
-            I::Sin => vec![f64_of(a[0]).sin().to_bits()],
-            I::Cos => vec![f64_of(a[0]).cos().to_bits()],
-            I::Floor => vec![f64_of(a[0]).floor().to_bits()],
-            I::Ceil => vec![f64_of(a[0]).ceil().to_bits()],
-            I::Round => vec![f64_of(a[0]).round().to_bits()],
-            I::Trunc => vec![f64_of(a[0]).trunc().to_bits()],
-            I::Fabs => vec![f64_of(a[0]).abs().to_bits()],
-            I::Fma => vec![f64_of(a[0]).mul_add(f64_of(a[1]), f64_of(a[2])).to_bits()],
-            I::ReturnAddress => vec![0],
-            I::CycleCounter => vec![cycle_counter()],
+            I::Sqrt => Rets::one(f64_of(a[0]).sqrt().to_bits()),
+            I::Sin => Rets::one(f64_of(a[0]).sin().to_bits()),
+            I::Cos => Rets::one(f64_of(a[0]).cos().to_bits()),
+            I::Floor => Rets::one(f64_of(a[0]).floor().to_bits()),
+            I::Ceil => Rets::one(f64_of(a[0]).ceil().to_bits()),
+            I::Round => Rets::one(f64_of(a[0]).round().to_bits()),
+            I::Trunc => Rets::one(f64_of(a[0]).trunc().to_bits()),
+            I::Fabs => Rets::one(f64_of(a[0]).abs().to_bits()),
+            I::Fma => Rets::one(f64_of(a[0]).mul_add(f64_of(a[1]), f64_of(a[2])).to_bits()),
+            I::ReturnAddress => Rets::one(0),
+            I::CycleCounter => Rets::one(cycle_counter()),
             I::Pause => {
                 if self.multi && self.host.cooperative_threads() {
                     self.inline_poll();
                 }
-                vec![]
+                Rets::default()
             }
-            I::Popcount => vec![a[0].count_ones() as u64],
+            I::Popcount => Rets::one(a[0].count_ones() as u64),
             I::Ctlz => {
                 let bits = a[1] as u32;
                 let lead = if a[0] == 0 {
@@ -2040,11 +2114,11 @@ impl Interp {
                 } else {
                     a[0].leading_zeros()
                 };
-                vec![(lead - (64 - bits)) as u64]
+                Rets::one((lead - (64 - bits)) as u64)
             }
-            I::Cttz => vec![(a[0].trailing_zeros()).min(a[1] as u32) as u64],
-            I::Bswap => vec![a[0].swap_bytes() >> (64 - a[1] as u32)],
-            I::IsCompileTime => vec![self.compile_time as u64],
+            I::Cttz => Rets::one((a[0].trailing_zeros()).min(a[1] as u32) as u64),
+            I::Bswap => Rets::one(a[0].swap_bytes() >> (64 - a[1] as u32)),
+            I::IsCompileTime => Rets::one(self.compile_time as u64),
             I::SAddOverflow | I::SSubOverflow | I::SMulOverflow => {
                 let bits = (a[2] as u32 * 8).min(64);
                 let wide = |v: u64| ((v as i128) << (128 - bits)) >> (128 - bits);
@@ -2055,7 +2129,7 @@ impl Interp {
                     _ => x * y,
                 };
                 let limit = 1i128 << (bits - 1);
-                vec![(r < -limit || r >= limit) as u64]
+                Rets::one((r < -limit || r >= limit) as u64)
             }
             I::UAddOverflow | I::USubOverflow | I::UMulOverflow => {
                 let bits = (a[2] as u32 * 8).min(64);
@@ -2070,9 +2144,9 @@ impl Interp {
                     I::USubOverflow => x - y,
                     _ => x * y,
                 };
-                vec![(r < 0 || r > keep as i128) as u64]
+                Rets::one((r < 0 || r > keep as i128) as u64)
             }
-            I::Wide(op, fmt) => self.wide(op, fmt, a)?,
+            I::Wide(op, fmt) => self.wide(op, fmt, a)?.into(),
         })
     }
 
