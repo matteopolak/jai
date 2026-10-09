@@ -84,6 +84,7 @@ CI now builds open-source Jai projects with their own entry points and runs them
 
 - `jailint` given only a file that a nearby program `#load`s (in its directory or up to two above) now compiles that program and reports the listed file, instead of linting the file as a standalone program with bogus errors. See [jailint](docs/tools/jailint.md).
 - A tracked pre-commit hook checks the staged files with `jaifmt --check`, `jailint -D warnings`, `rustfmt --check` and `tools/rust_item_spacing.py --check`. Enable it with `git config core.hooksPath .githooks`; see [pre-commit hook](docs/tools/pre-commit-hook.md). `jaifmt` and `jailint` needed no command-line change for it.
+- VS Code extension build tooling: Rolldown (`rolldown.config.ts`) replaces esbuild, the lint config is `oxlint.config.ts`, and `scripts/*.mjs` became TypeScript run with `node scripts/x.ts`, type-checked by `tsc`. The bundle is `dist/extension.cjs` (`package.json` is now `"type": "module"`) and is about 1% smaller. See [VS Code extension](docs/tools/vscode-extension.md).
 
 ## [0.4.3] - 2026-10-08
 
