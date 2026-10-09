@@ -501,6 +501,99 @@ impl Session {
         Some(program.root)
     }
 
+    /// Top-level declarations of the project's `.jai` files that are not open, whose name
+    /// contains `query` (lower case), at most `room` of them. The files come from the
+    /// workspace folders and the folders of the open documents' programs, are scanned from
+    /// tokens (`exports.rs`, cached with the auto-import index), and nothing is compiled.
+    pub(crate) fn project_symbols(
+        &self,
+        query: &str,
+        room: usize,
+    ) -> Vec<crate::model::SymbolInformation> {
+        let Some(env) = self.environment.as_ref().filter(|_| room > 0) else {
+            return Vec::new();
+        };
+        let sources = Sources {
+            env,
+            open: self
+                .documents
+                .iter()
+                .chain(&self.lint_configs)
+                .map(|(u, d)| (PathBuf::from(u.path()), d.text.as_str()))
+                .collect(),
+        };
+        let mut index = self.index.borrow_mut();
+        let mut folders: BTreeSet<PathBuf> = self.workspace_folders.iter().cloned().collect();
+        for uri in self.documents.keys() {
+            folders.insert(
+                sources
+                    .program(&mut index, Path::new(uri.path()), &self.workspace_folders)
+                    .dir,
+            );
+        }
+        let mut files: BTreeSet<PathBuf> = BTreeSet::new();
+        for folder in &folders {
+            files.extend(sources.project_files(&mut index, folder));
+        }
+        let mut out = Vec::new();
+        for file in files {
+            if self
+                .documents
+                .contains_key(&match DocumentUri::parse(&format!(
+                    "file://{}",
+                    file.to_string_lossy()
+                )) {
+                    Ok(uri) => uri,
+                    Err(_) => continue,
+                })
+            {
+                continue;
+            }
+            let scan = sources.scan(&mut index, &file);
+            let hits: Vec<_> = scan
+                .symbols
+                .iter()
+                .filter(|s| s.name.to_lowercase().contains(query))
+                .collect();
+            if hits.is_empty() {
+                continue;
+            }
+            let Some(text) = sources.read(&file) else {
+                continue;
+            };
+            let lines = crate::position::LineIndex::new(&text);
+            let uri = format!("file://{}", file.to_string_lossy());
+            for symbol in hits {
+                if out.len() >= room {
+                    return out;
+                }
+                let Ok(range) = lines.range(
+                    &text,
+                    Span::new(symbol.offset, symbol.offset + symbol.name.len()),
+                ) else {
+                    continue;
+                };
+                out.push(crate::model::SymbolInformation {
+                    name: symbol.name.clone(),
+                    kind: match symbol.kind {
+                        CompletionKind::Function => crate::model::SymbolKind::Function,
+                        CompletionKind::Struct => crate::model::SymbolKind::Struct,
+                        CompletionKind::Enum => crate::model::SymbolKind::Enum,
+                        CompletionKind::TypeAlias => crate::model::SymbolKind::TypeAlias,
+                        CompletionKind::Constant => crate::model::SymbolKind::Constant,
+                        _ => crate::model::SymbolKind::Variable,
+                    },
+                    location: crate::model::Location {
+                        uri: uri.clone(),
+                        range,
+                    },
+                    container: None,
+                });
+            }
+        }
+        out
+    }
+
     pub(crate) fn auto_import_items(
         &self,
         uri: &DocumentUri,
