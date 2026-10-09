@@ -98,7 +98,14 @@ runtime_support_runs_line :: (node: *Stack_Trace_Node, loc: Source_Code_Location
 
 runtime_support_same_text :: (a: string, b: string) -> bool #no_context {
     if a.count != b.count return false;
-    for i: 0..a.count - 1 if a[i] != b[i] return false;
+    // Windows paths may be spelled with either separator (the report header's `D:/a/x.jai` and
+    // a frame's `D:\a\x.jai` name the same file).
+    for i: 0..a.count - 1 {
+        x, y := a[i], b[i];
+        if x == #char "\\" x = #char "/";
+        if y == #char "\\" y = #char "/";
+        if x != y return false;
+    }
     return true;
 }
 

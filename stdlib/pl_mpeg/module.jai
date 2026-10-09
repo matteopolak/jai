@@ -182,7 +182,7 @@ set_loop :: (self: *Plm, loop: bool) {
 
 set_video_decode_callback :: (self: *Plm, callback: Video_Decode_Callback, user: *void) {
     entry := plm_state(self);
-    entry.callback_context = context;
+    entry.callback_context = saved_context();
     self.video_decode_callback = callback;
     self.video_decode_callback_user_data = user;
     if callback raw_plm_set_video_decode_callback(entry.native, native_video_callback, entry);
@@ -191,7 +191,7 @@ set_video_decode_callback :: (self: *Plm, callback: Video_Decode_Callback, user:
 
 set_audio_decode_callback :: (self: *Plm, callback: Audio_Decode_Callback, user: *void) {
     entry := plm_state(self);
-    entry.callback_context = context;
+    entry.callback_context = saved_context();
     self.audio_decode_callback = callback;
     self.audio_decode_callback_user_data = user;
     if callback raw_plm_set_audio_decode_callback(entry.native, native_audio_callback, entry);

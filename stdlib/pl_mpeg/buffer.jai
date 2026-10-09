@@ -52,8 +52,8 @@ buffer_create_with_file :: (fh: File, close_when_done: bool) -> *Buffer {
     if !measured || length < 0 return null;
     entry := New(Buffer_State);
     entry.public = New(Buffer);
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.own_native = true;
     entry.public.fh = fh;
     entry.public.file_initted = true;
@@ -142,7 +142,7 @@ buffer_signal_end :: (buffer: *Buffer) {
 
 buffer_set_load_callback :: (buffer: *Buffer, callback: Buffer_Load_Callback, user: *void) {
     entry := buffer_state(buffer);
-    entry.callback_context = context;
+    entry.callback_context = saved_context();
     buffer.load_callback = callback;
     buffer.load_callback_user_data = user;
     if callback raw_plm_buffer_set_load_callback(entry.native, native_load_callback, entry);

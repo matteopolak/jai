@@ -229,8 +229,8 @@ wrap_buffer :: (native: *Native_Buffer, owner: *void = null) -> *Buffer {
     entry = New(Buffer_State);
     entry.public = New(Buffer);
     entry.native = native;
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.owner = owner;
     entry.next = buffer_states;
     buffer_states = entry;
@@ -319,8 +319,8 @@ wrap_demux :: (native: *Native_Demux, owner: *void = null) -> *Demux {
     entry = New(Demux_State);
     entry.public = New(Demux);
     entry.native = native;
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.owner = owner;
     entry.next = demux_states;
     demux_states = entry;
@@ -409,8 +409,8 @@ wrap_video :: (native: *Native_Video, owner: *void = null) -> *Video {
     entry = New(Video_State);
     entry.public = New(Video);
     entry.native = native;
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.owner = owner;
     entry.next = video_states;
     video_states = entry;
@@ -541,8 +541,8 @@ wrap_audio :: (native: *Native_Audio, owner: *void = null) -> *Audio {
     entry = New(Audio_State);
     entry.public = New(Audio);
     entry.native = native;
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.owner = owner;
     entry.next = audio_states;
     audio_states = entry;
@@ -643,8 +643,8 @@ wrap_plm :: (native: *Native_Plm, owner: *void = null) -> *Plm {
     entry = New(Plm_State);
     entry.public = New(Plm);
     entry.native = native;
-    entry.creator = context;
-    entry.callback_context = context;
+    entry.creator = saved_context();
+    entry.callback_context = saved_context();
     entry.owner = owner;
     entry.next = plm_states;
     plm_states = entry;
@@ -797,6 +797,14 @@ file_tell_callback :: (native: *Native_Buffer, user: *void) -> u64 #c_call {
         assert(success && position >= 0);
         return cast(u64) position;
     }
+}
+
+// The context a C callback runs in later: the caller's, without its stack-trace chain, whose nodes
+// live in frames that are gone by then.
+saved_context :: () -> Context {
+    saved := context;
+    saved.stack_trace = null;
+    return saved;
 }
 
 release_owned_shadows :: (owner: *void) {
