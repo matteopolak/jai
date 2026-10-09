@@ -72,7 +72,7 @@ Findings and command-line errors go through jaic's shared renderer (`jaic::rende
 | `unused_variable` | warn | yes | a local variable that is never used |
 | `wrapping_constant` | warn | no | `(0xffff_ffff - 40) / h`, `h < 0x8000_0000` with `h: s32`: a constant that wraps to the other operand's type |
 
-A rule is removed once `jaic` rejects what it found (`format_arg_count`, now a [compile error](../compiler/format-string-check.md)); `jailint.toml` accepts and ignores the names of removed rules (`RETIRED_RULES` in `config.rs`) so existing configs keep loading.
+A rule is removed once `jaic` rejects what it found (`format_arg_count`, now a [compile error](../compiler/format-string-check.md)). A `jailint.toml` that still names a removed rule fails to load with `unknown rule`, like any other unknown name.
 
 Each rule's module (`crates/jailint/src/rules/<rule>.rs`) starts with a doc comment that explains why the rule exists and exactly when it fires. `tests/lint/<rule>/` has code it fires on (`bad.jai`, with the expected output in `bad.expected` and the fixed code in `bad.fixed.jai`) and code it must not fire on (`good.jai`). Every rule has a section below; editors link a finding to it (`#<rule>`).
 
