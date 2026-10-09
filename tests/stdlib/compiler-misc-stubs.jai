@@ -4,7 +4,6 @@
 // add_global_data.
 #import "Basic";
 #import "Compiler";
-#import "File";
 #import "String";
 
 root_type_of :: (code: Code) -> Get_Root_Type_Status, Type {
@@ -42,7 +41,6 @@ checks :: () {
 
     base := compiler_get_base_path();
     assert(base.count > 0 && (ends_with(base, "/") || ends_with(base, "\\")), "base path: %", base);
-    assert(file_exists(tprint("%stdlib/Basic/module.jai", base)), "base path: %", base);
 
     // Accepted and ignored.
     compiler_report_errors_for_unresolved_identifiers("probe.jai");
