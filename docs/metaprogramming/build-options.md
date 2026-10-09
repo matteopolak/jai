@@ -63,7 +63,7 @@ The build fails with an error in two cases {#bo.7}:
   - `noinline`, except on `inline` procedures.
   - `"disable-tail-calls"`.
 - `enable_loop_unrolling`, `enable_loop_vectorization` (with interleaving), `enable_slp_vectorization` and `merge_functions` are the pass builder's switches.
-- `enable_split_modules = false` keeps one codegen unit.
+- `enable_split_modules = false` keeps one codegen unit before the optimizer; the split after the optimizer (see [LLVM backend](../native/llvm-backend.md)) ignores it.
 - `machine_code_optimization_setting` sets the target machine's level apart from the IR's.
 - `bitcode_optimization_setting` `.OS` and `.OZ` run `default<Os>` and `default<Oz>`.
 - `preserve_debug_info = false` turns debug information off.
