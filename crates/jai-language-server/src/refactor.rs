@@ -837,6 +837,9 @@ impl<'a> Cx<'a> {
             return;
         }
         let close = lb - 1;
+        if open > close {
+            return;
+        }
         let multiline = self.text[open..close].contains('\n');
         let pairs = |sep: &str| -> String {
             missing
@@ -846,7 +849,7 @@ impl<'a> Cx<'a> {
                 .join(sep)
         };
         let edit = match fields.last() {
-            None if !multiline => self.edit(open, close, pairs(", ")),
+            None if !multiline => self.edit(open, close, format!(" {} ", pairs(", "))),
             None => {
                 let indent = format!("{}{}", indent_at(self.text, la), self.unit);
                 let lines: String = missing
@@ -866,7 +869,12 @@ impl<'a> Cx<'a> {
             Some(last) => {
                 let (le, trailing) = {
                     let (_, le) = self.ex(&last.value);
-                    let comma = self.text[le..close].trim_start().starts_with(',');
+                    let comma = self
+                        .text
+                        .get(le..close)
+                        .unwrap_or("")
+                        .trim_start()
+                        .starts_with(',');
                     (le, comma)
                 };
                 let Some(name) = &last.name else {
