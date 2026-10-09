@@ -59,6 +59,7 @@ How `crates/jaic`, the interpreter and the language server work.
 
 - [Compiler architecture](compiler/architecture.md)
 - [Diagnostics](compiler/diagnostics.md): error message style guide, rendering, runtime failures, exit statuses
+- [Format string check](compiler/format-string-check.md): `print` format strings against their argument count
 - [jaic `#asm` blocks](compiler/asm.md)
 - [Threads under `jaic run`](compiler/interpreter-threads.md)
 - [jaic interpreter](compiler/interpreter.md)
