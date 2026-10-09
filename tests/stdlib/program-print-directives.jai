@@ -1,7 +1,6 @@
 // Program_Print: directive nodes that used to arrive as .PLACEHOLDER.
 #import "Basic";
 #import "Compiler";
-#import "Program_Print";
 
 check :: (code: Code, expected: string, loc := #caller_location) {
     actual := code_to_string(code);
