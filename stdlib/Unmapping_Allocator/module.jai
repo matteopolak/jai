@@ -42,7 +42,7 @@ unmapping_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
             name := cast(*string) old_memory;
             name.* = "independent guard-page allocator";
         }
-        return cast(*void) cast(u64) (Allocator_Caps.FREE | .MULTIPLE_THREADS | .HINT_I_AM_A_DEBUG_ALLOCATOR | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR);
+        return cast(*void) cast(u64) (Allocator_Caps.FREE | .MULTIPLE_THREADS | .CREATE_HEAP | .IS_THIS_YOURS | .HINT_I_AM_A_DEBUG_ALLOCATOR | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR);
     }
     if mode == .ALLOCATE || mode == .RESIZE {
         pointer := reserve_guarded(state, requested_size);
@@ -59,7 +59,30 @@ unmapping_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size
         if old_memory quarantine(state, old_memory);
         return null;
     }
-    if mode == .CREATE_HEAP || mode == .DESTROY_HEAP || mode == .IS_THIS_YOURS assert(false, "mode not supported by unmapping allocator");
+    if mode == .IS_THIS_YOURS {
+        // Live allocations only: a retired address is no longer anyone's.
+        lock(*state.mutex);
+        defer unlock(*state.mutex);
+        found, size := table_find(*state.table, old_memory);
+        if found && size != 0xffff_ffff_ffff_ffff return cast(*void) 1;
+        return null;
+    }
+    if mode == .CREATE_HEAP {
+        // A heap is another independent instance; its handle is the allocator data.
+        heap := New(Unmapping_Allocator, allocator = state.table.allocator);
+        if !heap return null;
+        heap.table.allocator = state.table.allocator;
+        init(*heap.mutex);
+        return heap;
+    }
+    if mode == .DESTROY_HEAP {
+        heap := cast(*Unmapping_Allocator) old_memory;
+        if !heap return null;
+        allocator := heap.table.allocator;
+        deinit(heap);
+        free(heap, allocator);
+        return null;
+    }
     return null;
 }
 

@@ -43,7 +43,7 @@ overwriting_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_si
             name := cast(*string) old_memory;
             name.* = "independent overwriting allocator";
         }
-        return cast(*void) cast(u64) (Allocator_Caps.FREE | .MULTIPLE_THREADS | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR | .HINT_I_AM_A_DEBUG_ALLOCATOR);
+        return cast(*void) cast(u64) (Allocator_Caps.FREE | .MULTIPLE_THREADS | .CREATE_HEAP | .IS_THIS_YOURS | .HINT_I_AM_A_GENERAL_HEAP_ALLOCATOR | .HINT_I_AM_A_DEBUG_ALLOCATOR);
     }
     if mode == .ALLOCATE || mode == .RESIZE {
         if requested_size < 0 return null;
@@ -68,8 +68,29 @@ overwriting_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_si
         if old_memory && retire(state, old_memory) base.proc(.FREE, 0, 0, old_memory, base.data);
         return null;
     }
-    if mode == .CREATE_HEAP || mode == .DESTROY_HEAP || mode == .IS_THIS_YOURS {
-        assert(false, "mode not supported by overwriting allocator");
+    if mode == .IS_THIS_YOURS {
+        lock(*state.mutex);
+        defer unlock(*state.mutex);
+        found, size := table_find(*state.table, old_memory);
+        if found && size != 0xffff_ffff_ffff_ffff return cast(*void) 1;
+        return null;
+    }
+    if mode == .CREATE_HEAP {
+        // A heap is another independent instance over the same base allocator.
+        heap := New(Overwriting_Allocator, allocator = base);
+        if !heap return null;
+        heap.base_allocator = base;
+        heap.overwrite_byte = state.overwrite_byte;
+        heap.table.allocator = base;
+        init(*heap.mutex);
+        return heap;
+    }
+    if mode == .DESTROY_HEAP {
+        heap := cast(*Overwriting_Allocator) old_memory;
+        if !heap return null;
+        deinit(heap);
+        free(heap, base);
+        return null;
     }
     return null;
 }
