@@ -335,6 +335,10 @@ def run_check(check, args, plat, shots):
             if kind == "jaic":
                 step = {**step, "argv": ["{jaic}", *step["argv"]], "outputs": step.get("outputs", [])}
                 kind = "run"
+            if "needs" in step and not any(Path(ctx["cwd"], step.get("cwd", ""), n).exists()
+                                           for n in (step["needs"], step["needs"] + ".exe")):
+                print(f"    -- {step.get('name') or step['argv'][0]}: no executable was built (it ran at compile time)")
+                continue
             label = step.get("name") or " ".join(step["argv"][:4])
             started = time.time()
             text = STEPS[kind](step, {**ctx, "cwd": ctx["cwd"] / step.get("cwd", "")})
