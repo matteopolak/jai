@@ -1568,7 +1568,10 @@ fn jaifmt_builds_and_formats() {
     let help = fmt(&["--help"]);
     assert_eq!(help.status.code(), Some(0));
     let help = String::from_utf8_lossy(&help.stdout);
-    assert!(help.contains("Usage: jaifmt [OPTIONS] [PATHS]..."), "{help}");
+    assert!(
+        help.contains("Usage: jaifmt [OPTIONS] [PATHS]..."),
+        "{help}"
+    );
     assert!(help.contains("--config <FILE>"), "{help}");
     // --stdin and paths exclude each other.
     let both = fmt(&["--stdin", "src"]);
