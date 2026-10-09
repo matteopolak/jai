@@ -62,17 +62,17 @@ that generate into a temporary directory; see [compile-time benchmark](compile-t
 
 ## Reference numbers
 
-jaic 0.5.1 on an Apple M5 (10 cores, 16 GiB), release build, seed 1, `tools/compile_bench.py --only gen- --repeat 6`
+jaic 0.6.0 on an Apple M5 (10 cores, 16 GiB), release build, seed 1, `tools/compile_bench.py --repeat 7`
 (warm median). "Code lines" counts non-blank, non-comment lines of the generated file only (comments and strings
 blanked by `jaistats.py`); standard-library lines are not counted.
 
 | workload | code lines | check s | build -O0 s | build lines/s | front end s | codegen s | link s | peak RSS MiB |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| gen-10k | 9.5k | 0.04 | 0.13 | 73k | 0.03 | 0.05 | 0.03 | 165 |
-| gen-60k | 57k | 0.13 | 0.42 | 136k | 0.13 | 0.22 | 0.04 | 517 |
-| gen-240k | 228k | 0.47 | 1.50 | 152k | 0.48 | 0.88 | 0.06 | 1579 |
+| gen-10k | 9.5k | 0.04 | 0.11 | 86k | 0.03 | 0.03 | 0.03 | 140 |
+| gen-60k | 57k | 0.12 | 0.33 | 173k | 0.11 | 0.15 | 0.04 | 450 |
+| gen-240k | 228k | 0.51 | 1.18 | 193k | 0.42 | 0.64 | 0.06 | 1351 |
 
-On these, `codegen` (LLVM) is about 60% of an `-O0` build, the front end about 30% and `link` 3 to 5%. With one
+On these, `codegen` (LLVM) is about 30 to 55% of an `-O0` build, the front end 30 to 45% and `link` 5 to 25%. On 0.5.1, with one
 codegen unit the 240k build's codegen takes 3.3 s, against 0.88 s on ten units, so the units use about twice
 the CPU time of one (7.1 s user for the whole build against 3.6 s with one unit). Leaving out debug info
 (`--no-debug-info`) saves 0.25 s (17%) at 240k lines.
