@@ -346,7 +346,7 @@ perform :: (request: Request($T), allocator: Allocator) -> Completion(T) {
         disposition: u32 = 2;
         if keep disposition = 4;
         handle := Async_Windows.CreateFileW(os_utf8_to_wide(name), 0x80000000 | 0x40000000, 3, null, disposition, 0x80, null);
-        return .{ cast(s64) handle }, handle != cast(Async_Windows.HANDLE) -1;
+        return .{ handle }, handle != cast(Async_Windows.HANDLE) -1;
     }
 } else {
     Async_Posix :: #import "POSIX";

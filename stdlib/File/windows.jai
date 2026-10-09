@@ -6,7 +6,7 @@ HANDLE :: Windows.HANDLE;
 INVALID_HANDLE_VALUE :: cast(HANDLE) -1;
 
 File :: struct {
-    handle: s64;
+    handle: HANDLE;
 }
 
 file_open :: (name: string, for_writing := false, keep_existing_content := false, log_errors := false) -> File, bool {
@@ -21,7 +21,7 @@ file_open :: (name: string, for_writing := false, keep_existing_content := false
     if for_writing && keep_existing_content creation = 4;
     wide := os_utf8_to_wide(name);
     handle := Windows.CreateFileW(wide, access, 3, null, creation, 0x80, null);
-    result: File = .{ cast(s64) handle };
+    result: File = .{ handle };
     success := is_valid(result);
     if success && for_writing && keep_existing_content {
         success = file_seek(result, 0, .END);
@@ -34,12 +34,12 @@ file_open :: (name: string, for_writing := false, keep_existing_content := false
 file_close :: (file: *File) -> bool {
     if !is_valid(file.*) return true;
     success := Windows.CloseHandle(native_handle(file.*)) != 0;
-    file.handle = 0;
+    file.handle = null;
     return success;
 }
 
 is_valid :: (file: File) -> bool {
-    return file.handle != 0 && file.handle != -1;
+    return file.handle != null && file.handle != INVALID_HANDLE_VALUE;
 }
 
 file_read_checked :: (f: File, vdata: *void, bytes_to_read: s64) -> (success: bool, total_read: s64) {
@@ -158,7 +158,7 @@ get_absolute_path_windows :: (relative_path: string) -> string, success: bool {
 }
 
 File_Map_Info :: struct {
-    file: File = .{ -1 };
+    file: File = .{ INVALID_HANDLE_VALUE };
     mapping: HANDLE;
     data: string;
 }
@@ -214,7 +214,7 @@ get_path_os_saved_games :: () -> string {
 
 #scope_file
 native_handle :: (file: File) -> HANDLE {
-    return cast(HANDLE) file.handle;
+    return file.handle;
 }
 
 File_GUID :: struct {
