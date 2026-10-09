@@ -16,7 +16,6 @@ From the conformance run (details in the uncommitted `conformance-local/NOTES.md
 - `type_of` of a polymorphic struct template should be `Type`, and printing an uninstantiated polymorphic struct should print its name (jaic has no type for the template).
 - `type_of` of a polymorphic procedure loses its parameters and returns (`poly_proc_type`).
 - Warning for "not all control paths return a value".
-- Compile-time check of `print` format strings against the argument count.
 - Error for clashing names brought in by two `using` members; error for identical overloads.
 - Possible version drift, left alone on purpose until confirmed against a current beta: `Formatter` printing as a struct, one-character strings as `u8` (`x += "s"`, `ifx 1 else "a"`), slice `==`, constant float division by zero, and leniencies such as `u32 & ~0x7`.
 
