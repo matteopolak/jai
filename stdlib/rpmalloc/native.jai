@@ -88,6 +88,8 @@ rp_owns :: (heap: *void, memory: *void) -> bool {
 }
 
 rp_allocate :: (heap: *void, size: s64, alignment: s64) -> *void {
+    // A thread that has not used rpmalloc yet needs its own per-thread state before it allocates.
+    if native_thread_is_initialized() == 0 native_thread_initialize();
     if size < 0 || alignment < 0 return null;
     result: *void;
     if heap {
