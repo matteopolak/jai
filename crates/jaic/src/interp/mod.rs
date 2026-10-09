@@ -1882,8 +1882,7 @@ impl Interp {
                 if n > 0 && (a[0] < 4096 || a[1] < 4096) {
                     return self.null_trap("memcmp through a null pointer");
                 }
-                let (x, y) = (self.read(a[0], n), self.read(a[1], n));
-                let r: i16 = match x.cmp(&y) {
+                let r: i16 = match probe::compare(a[0], a[1], n) {
                     std::cmp::Ordering::Less => -1,
                     std::cmp::Ordering::Equal => 0,
                     std::cmp::Ordering::Greater => 1,
