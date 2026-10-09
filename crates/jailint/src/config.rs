@@ -56,10 +56,6 @@ pub struct Config {
     pub source: Option<PathBuf>,
 }
 
-/// Rules that no longer exist because `jaic` rejects what they found. A `jailint.toml` that
-/// still sets one keeps working; the setting is ignored.
-const RETIRED_RULES: &[&str] = &["format_arg_count"];
-
 impl Config {
     /// The level of `rule`, whose default is `default`.
     pub fn level(&self, rule: &str, default: Level) -> Level {
@@ -146,9 +142,6 @@ impl Config {
             )),
             (_, rule) => {
                 let rule = rule.trim_matches('"');
-                if RETIRED_RULES.contains(&rule) {
-                    return Ok(());
-                }
                 if !crate::RULES.iter().any(|r| r.name == rule) {
                     let help =
                         match jaic::suggest::closest(rule, crate::RULES.iter().map(|r| r.name)) {
@@ -280,13 +273,6 @@ mod tests {
         assert!(Config::parse("[rules]\nno_such_rule = \"warn\"", Path::new("/")).is_err());
         assert!(Config::parse("[rules]\nlossy_xx = \"loud\"", Path::new("/")).is_err());
         assert!(Config::parse("[lint]\n", Path::new("/")).is_err());
-    }
-
-    #[test]
-    fn retired_rules_are_still_accepted() {
-        let config =
-            Config::parse("[rules]\nformat_arg_count = \"allow\"", Path::new("/")).unwrap();
-        assert_eq!(config.level("format_arg_count", Level::Deny), Level::Deny);
     }
 
     #[test]

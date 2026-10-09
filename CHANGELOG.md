@@ -7,7 +7,7 @@
 | Before | Now |
 | --- | --- |
 | `print("% %\n", a)` and `print("done\n", a)` ran | compile errors: a literal format string must use as many arguments as the call passes |
-| jailint rule `format_arg_count` | removed, since jaic reports it; a `jailint.toml` that still sets it is accepted and ignored |
+| jailint rule `format_arg_count` | removed, since jaic reports it; delete it from any `jailint.toml`, which now fails with `unknown rule` |
 
 - `print`, `sprint`, `tprint`, `log`, `assert` messages and user wrappers that forward a `string` and `..Any` to one of them are checked at compile time when the format is a literal. `%N`, `%00` and `\%` are read as `print` reads them; spread (`..args`) calls are skipped. See [format string check](docs/compiler/format-string-check.md).
 
