@@ -2,6 +2,8 @@
 init :: () {
     #if OS == .WINDOWS {
         SetUnhandledExceptionFilter(on_unhandled_seh);
+    } else #if OS == .WASM {
+        // A wasm trap is reported by the engine that runs the module; there is no handler to install.
     } else {
         for signal: fatal_signals host_signal(signal, install_handler);
     }
@@ -19,7 +21,7 @@ init :: () {
         ExitProcess(code);
         return 1;
     }
-} else {
+} else #if OS != .WASM {
     handle_signal :: (sig: s32, info: *siginfo_t, secret: *void) #c_call {
         write_string_unsynchronized("fatal runtime signal\n", true);
         write_frames();
@@ -84,7 +86,10 @@ werrs :: inline (s: ..string) #no_context {
         return RtlCaptureStackBackTrace(0, cast(u32) count, frames, null);
     }
 } else {
-    #assert false "Runtime crash handling requires a native host adapter for this target";
+    // No native stack to walk on wasm: crash reports carry no frames.
+    host_backtrace :: (frames: **void, count: s32) -> s32 #no_context {
+        return 0;
+    }
 }
 
 write_address_unsynchronized :: (address: u64) #no_context {
