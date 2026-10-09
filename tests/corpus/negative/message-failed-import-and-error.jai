@@ -1,3 +1,4 @@
+// rules: bo.13
 // A workspace whose import finds no module sends FAILED_IMPORT, then ERROR, then COMPLETE
 // with COMPILATION_FAILED. (The compiler also prints the error.)
 #import "Basic";
