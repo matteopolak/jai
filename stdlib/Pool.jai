@@ -6,7 +6,13 @@
 // the blocks entirely and are served by one separate allocation each, remembered in
 // `out_of_band_allocations` so reset/release can free them.
 #module_parameters ()(USE_UNMAPPING_ALLOCATOR := false);
-#assert !USE_UNMAPPING_ALLOCATOR "Pool: USE_UNMAPPING_ALLOCATOR is not supported by this implementation.";
+
+// With USE_UNMAPPING_ALLOCATOR, a pool that was not given a block allocator takes its blocks
+// from a guard-page allocator of its own, so a stale pointer into a reset or released pool faults
+// instead of reading recycled memory. That needs virtual memory (not wasm).
+#if USE_UNMAPPING_ALLOCATOR {
+    #import "Unmapping_Allocator";
+}
 
 POOL_BUCKET_SIZE_DEFAULT :: 65536;
 POOL_OVERSIZED_SIZE_DEFAULT :: 6554;
@@ -24,6 +30,7 @@ Pool :: struct {
     bytes_left: s64;
 
     block_allocator: Allocator;
+    owns_block_allocator := false; // the block allocator was created by the pool (USE_UNMAPPING_ALLOCATOR)
 
     // Bookkeeping lists, linked through Memblock.next.
     unused_memblocks: *Memblock;
@@ -49,6 +56,12 @@ set_allocators :: (pool: *Pool, block_allocator: Allocator = .{}) {
         return;
     }
     supplier := block_allocator;
+    #if USE_UNMAPPING_ALLOCATOR {
+        if supplier.proc == null {
+            supplier = get_unmapping_allocator();
+            pool.owns_block_allocator = supplier.proc != null;
+        }
+    }
     if supplier.proc == null supplier = context.allocator;
     // A pool cannot feed itself: asking it for a block would ask it for a block again.
     feeds_itself := supplier.proc == pool_allocator_proc && supplier.data == pool;
@@ -66,7 +79,8 @@ get :: (pool: *Pool, nbytes: s64) -> *void {
 
     // Large (or block-exceeding) requests are not pooled.
     if nbytes >= pool.oversized_size || nbytes + pool.alignment - 1 > pool.memblock_size - HEADER_SIZE {
-        raw := cast(*Memblock) alloc(nbytes + HEADER_SIZE + pool.alignment - 1, pool.block_allocator);
+        wanted := (nbytes + HEADER_SIZE + pool.alignment - 1 + 7) & ~7; // keeps the link field aligned
+        raw := cast(*Memblock) alloc(wanted, pool.block_allocator);
         if !raw return null;
 
         raw.next = pool.out_of_band_allocations;
@@ -131,6 +145,13 @@ release :: (pool: *Pool) {
     reset(pool);
     free_chain(pool, pool.unused_memblocks);
     pool.unused_memblocks = null;
+    #if USE_UNMAPPING_ALLOCATOR {
+        if pool.owns_block_allocator {
+            deinit_unmapping_allocator(pool.block_allocator);
+            pool.block_allocator = .{};
+            pool.owns_block_allocator = false;
+        }
+    }
 }
 
 // Allocator entry point: `data` is the *Pool. FREE is a no-op; RESIZE always copies
