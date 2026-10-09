@@ -508,29 +508,8 @@ fn pieces(func: &ir::Func, offsets: &[u64], ops: &[Op]) -> Option<HashMap<u64, (
 }
 
 impl Pass<'_> {
-    fn dump(&self, what: &str) {
-        if std::env::var("JAIC_DUMP_OPS").is_ok_and(|n| n == self.func.name) {
-            eprintln!("--- {what}");
-            for (i, b) in self.blocks.iter().enumerate() {
-                eprintln!("block {i}");
-                for j in b.start as usize..b.end as usize {
-                    eprintln!(
-                        "  {}{:?}",
-                        if self.dead[j] {
-                            "x "
-                        } else {
-                            "  "
-                        },
-                        self.ops[j]
-                    );
-                }
-            }
-        }
-    }
-
     fn run(&mut self) {
         self.dead = vec![false; self.ops.len()];
-        self.dump("start");
         self.count();
         self.alias_entry_stores();
         for _ in 0..2 {
@@ -539,7 +518,6 @@ impl Pass<'_> {
                 self.forward_copies(b);
             }
             self.drop_unread();
-            self.dump("round");
         }
         self.compact();
     }
