@@ -12,7 +12,7 @@ use jaic::intern::Sym;
 use jaic::sema::ide::{IdeKind, IdeLayout, IdeName};
 use jaic::sema::ide_meta::IdeClass;
 use std::cell::RefCell;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
@@ -69,6 +69,11 @@ impl Session {
     /// does not parse), each to be sent once.
     pub fn take_messages(&self) -> Vec<String> {
         self.index.borrow_mut().take_messages()
+    }
+
+    /// Queue a message for the user (`window/showMessage`), sent once.
+    pub fn notify(&self, message: String) {
+        self.index.borrow_mut().notify(message);
     }
 
     /// Drop everything cached (compiles, scans) after a failure: it is rebuilt on demand.
@@ -411,9 +416,17 @@ impl Session {
     pub fn document_symbols(&self, uri: &DocumentUri) -> Result<Vec<DocumentSymbol>, Error> {
         let doc = self.document(uri)?;
         let rows = &self.analyses[uri].rows;
+        // Children by parent, so the tree is built in one pass over the rows.
+        let mut children: Vec<Vec<usize>> = vec![Vec::new(); rows.len()];
+        for (id, row) in rows.iter().enumerate() {
+            if let Some(parent) = row.parent {
+                children[parent].push(id);
+            }
+        }
         fn tree(
             id: usize,
             rows: &[SymbolRow],
+            children: &[Vec<usize>],
             doc: &Document,
             session: &Session,
             uri: &DocumentUri,
@@ -425,18 +438,16 @@ impl Session {
                 kind: row.kind,
                 range: doc.index.range(&doc.text, row.location)?,
                 selection_range: doc.index.range(&doc.text, row.selection)?,
-                children: rows
+                children: children[id]
                     .iter()
-                    .enumerate()
-                    .filter(|(_, row)| row.parent == Some(id))
-                    .map(|(child, _)| tree(child, rows, doc, session, uri))
+                    .map(|&child| tree(child, rows, children, doc, session, uri))
                     .collect::<Result<_, _>>()?,
             })
         }
         rows.iter()
             .enumerate()
             .filter(|(_, row)| row.parent.is_none())
-            .map(|(id, _)| tree(id, rows, doc, self, uri))
+            .map(|(id, _)| tree(id, rows, &children, doc, self, uri))
             .collect()
     }
 
@@ -1176,7 +1187,7 @@ impl Session {
             BTreeMap::new()
         };
         // `$T` / `$$T`: the name is a type parameter throughout its procedure.
-        let mut poly: Vec<(&str, Span)> = Vec::new();
+        let mut poly: HashMap<&str, Vec<Span>> = HashMap::new();
         for pair in analysis.tokens.windows(2) {
             let (sigil, name) = (pair[0], pair[1]);
             if matches!(sigil.spelling(text), "$" | "$$")
@@ -1190,18 +1201,26 @@ impl Session {
                     })
                     .min_by_key(|r| r.location.end - r.location.start)
             {
-                poly.push((name.spelling(text), row.location));
+                poly.entry(name.spelling(text))
+                    .or_default()
+                    .push(row.location);
             }
         }
-        let specs: Vec<Span> = analysis
+        let mut specs: Vec<Span> = analysis
             .format_calls
             .iter()
             .flat_map(|c| c.specs.iter().map(|s| s.span))
             .collect();
+        specs.sort_by_key(|s| s.start);
+        // The first row declared at each token (a row per token would be a scan per token).
+        let mut declared: HashMap<Span, usize> = HashMap::with_capacity(analysis.rows.len());
+        for (at, row) in analysis.rows.iter().enumerate() {
+            declared.entry(row.selection).or_insert(at);
+        }
         // (span, kind, declaration, readonly, expand)
         let mut pieces: Vec<(Span, SemanticTokenKind, bool, bool, bool)> = Vec::new();
         for (i, token) in analysis.tokens.iter().enumerate() {
-            let row = analysis.rows.iter().find(|row| row.selection == token.span);
+            let row = declared.get(&token.span).map(|&at| &analysis.rows[at]);
             let declaration = row.is_some();
             let readonly = row.is_some_and(|row| row.readonly);
             let piece = |kind| (token.span, kind, declaration, readonly, false);
@@ -1210,9 +1229,11 @@ impl Session {
                 TokenKind::String if crate::here_string::names_language(token.spelling(text)) => {}
                 TokenKind::String => {
                     let mut at = token.span.start;
-                    for spec in specs
+                    let first = specs.partition_point(|s| s.start < token.span.start);
+                    for spec in specs[first..]
                         .iter()
-                        .filter(|s| token.span.start <= s.start && s.end <= token.span.end)
+                        .take_while(|s| s.start < token.span.end)
+                        .filter(|s| s.end <= token.span.end)
                     {
                         if spec.start > at {
                             pieces.push((
@@ -1253,8 +1274,10 @@ impl Session {
                 }
                 TokenKind::Ident => {
                     let spelling = token.spelling(text);
-                    if poly.iter().any(|(name, scope)| {
-                        *name == spelling && contains(*scope, token.span.start)
+                    if poly.get(spelling).is_some_and(|scopes| {
+                        scopes
+                            .iter()
+                            .any(|scope| contains(*scope, token.span.start))
                     }) {
                         let sigil = i > 0
                             && matches!(analysis.tokens[i - 1].spelling(text), "$" | "$$")

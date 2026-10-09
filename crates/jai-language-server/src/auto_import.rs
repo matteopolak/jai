@@ -92,6 +92,11 @@ impl Index {
         self.reported.remove(path);
     }
 
+    /// A message for the client, sent once.
+    pub(crate) fn notify(&mut self, message: String) {
+        self.pending.push(message);
+    }
+
     /// Messages for the client, once.
     pub(crate) fn take_messages(&mut self) -> Vec<String> {
         std::mem::take(&mut self.pending)
