@@ -306,8 +306,9 @@ STEPS = {"run": run_step, "gui": gui_step, "serve": serve_step, "lsp": lsp_step}
 
 
 def skip_reason(check, plat):
-    if plat in check.get("skip", {}):
-        return check["skip"][plat]
+    skips = check.get("skip", {})
+    if plat in skips or "*" in skips:
+        return skips.get(plat) or skips["*"]
     if "only" in check and plat not in check["only"]:
         return check.get("only_reason", "not supported on this platform")
     return None
