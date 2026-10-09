@@ -7,7 +7,7 @@ Tables :: #import "Hash_Table";
 File_Change :: struct {
     full_path: string;
     events: File_Change_Event;
-    time_of_last_change := 0.0;
+    time_of_last_change: float64;
 }
 
 File_Change_Event :: enum_flags {
@@ -162,7 +162,7 @@ add_change :: (watcher: *File_Watcher, full_path: string, events: File_Change_Ev
         entry.full_path = owned_path(full_path, watcher.allocator);
     }
     entry.events |= interesting;
-    entry.time_of_last_change = xx seconds_since_init();
+    entry.time_of_last_change = seconds_since_init();
 }
 
 emit_changes :: (using watcher: *$T/File_Watcher) -> changed: bool, needs_wait: bool, wait_seconds: float64 {

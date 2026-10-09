@@ -33,7 +33,7 @@ main :: () {
 The rest:
 
 - `File_Async`: one worker thread per `Queue`, a bounded submission queue (default 64) and completion events. Not io_uring or IOCP.
-- `File_Watcher`: compares directory snapshots (size and modification time) and merges repeated changes over a quiet interval into added, modified and removed events. Short-lived changes and renames can be missed.
+- `File_Watcher`: compares directory snapshots (size and modification time) and merges repeated changes over a quiet interval into added, modified and removed events. Short-lived changes and renames can be missed. `File_Change.time_of_last_change` is a `float64` of `seconds_since_init()`: as a `float32` it rounded up past the current time, so a zero merge window held a change back one run in two and `wait_seconds` could exceed the window.
 - `Clipboard`: AppKit on macOS, Win32 on Windows, `wl-copy`/`wl-paste` or `xclip` on Linux. Bitmaps convert to DIB/BMP (`make_dib`, `make_bmp`).
 - `Mail`: libcurl SMTP, with base64 bodies and attachments.
 - `Shared_Memory_Channel`: a single-reader, single-writer ring over a named mapping (`writer_reserve_message`, `writer_commit_message`, `reader_poll_for_message`, `reader_done_with_message`). The reader zeroes the region, fills the header and publishes the channel magic last, atomically; `writer_connect` refuses a mapping whose size differs from the header's, and macOS reports shared-memory sizes rounded up to the page size, so give `reader_create_channel` a ring size that makes `bytes + OFFSET_TO_MESSAGE_DATA` a multiple of 16 KiB there (`tests/stdlib/shared-memory-channel.jai`).
