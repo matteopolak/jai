@@ -64,6 +64,9 @@ Closer to Jai's behaviour: `print` formats numbers, floats and enums the same wa
 | `x: u32 = -1;`, `x: s16 = 40000;`, `cast(u8) 300` on a constant | compile errors; use `cast,trunc(T)` for the low bits |
 | `16777216.0` was `float32` | 8+ significant digits (or outside `float32`'s range) makes a float literal `float64` |
 | `true + 1`, `a, b := f(1)`, `*5`, `defer;`, repeated member names | compile errors |
+| `a: int @tag;` (a note before the semicolon), `@"quoted note"` with spaces, clashing `using` members, identical overloads | compile errors (a note ends at the next whitespace and goes after the `;`) |
+| Built executables and a null pointer load or store | stop with `null pointer dereference` (on by default); `Build_Options.null_pointer_check = .OFF` removes the check |
+| `Bindings_Generator` C++ output | later base classes that repeat a member name no longer get `using` |
 
 - Integer constants must fit their type ([numbers](docs/language/numbers.md)). A negative constant no longer converts to an unsigned type (`x: u32 = -1;`), a decimal constant must fit a signed type's range (`x: s16 = 40000;`), and a cast of a constant checks its range at compile time (`cast(u8) 300`, `y: u8 = xx -1`); write `cast,trunc(T)` for the low bits. Hex, binary, `~` and named constants may still fill a signed type's bits (`x: s8 = 0xff` is `-1`). A literal that does not fit the other operand makes the operation `s64` (`small_u8 == -1` is now `false` for 255).
 - A float literal with 8 or more significant digits is `float64`, even when `float32` holds it exactly (`16777216.0`), and so is one outside `float32`'s normal range (`1.0e39`), which no longer converts to `float32` without a cast. Integer literals must fit in 64 bits.
