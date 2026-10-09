@@ -463,6 +463,7 @@ pub struct Interp {
     /// never freed while the interpreter lives (one replaced moves to `retired`), so a
     /// running procedure's frame stays where it is.
     frames: Vec<Option<Box<Frame>>>,
+    #[allow(clippy::vec_box)] // The boxes are what keeps the frames in place.
     retired: Vec<Box<Frame>>,
     /// Resolved foreign symbols by `ForeignId` (0 = not resolved yet).
     foreign_addrs: Vec<u64>,
@@ -955,11 +956,11 @@ impl Interp {
     #[inline(always)]
     fn frame<'f>(&mut self, program: &Program, id: FuncId, func: &ir::Func) -> &'f Frame {
         let i = id.0 as usize;
-        if let Some(Some(f)) = self.frames.get(i) {
-            if f.code.source == code::fingerprint(func) {
-                // SAFETY: see above.
-                return unsafe { &*(&**f as *const Frame) };
-            }
+        if let Some(Some(f)) = self.frames.get(i)
+            && f.code.source == code::fingerprint(func)
+        {
+            // SAFETY: see above.
+            return unsafe { &*(&**f as *const Frame) };
         }
         self.make_frame(program, id, func)
     }

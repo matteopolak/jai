@@ -380,15 +380,14 @@ impl Code {
     }
 }
 
+/// The distinct locations of some code and where each applies (`Code::locs`, `Code::loc_marks`).
+type LoweredLocs = (Vec<(u32, u32, u32)>, Vec<(u32, u32)>);
+
 /// Take the `Loc` ops out of `ops`. Setting the location costs a dispatch per statement, and
 /// only calls and failures look at it, so it is looked up there instead: calls and `Op::Ir`
 /// carry their location, and `Code::loc_at` finds the one in effect at any op. Returns the
 /// distinct locations and where each applies.
-fn lower_locs(
-    ops: &mut Vec<Op>,
-    pool: &mut [u32],
-    blocks: &mut [CodeBlock],
-) -> (Vec<(u32, u32, u32)>, Vec<(u32, u32)>) {
+fn lower_locs(ops: &mut Vec<Op>, pool: &mut [u32], blocks: &mut [CodeBlock]) -> LoweredLocs {
     let mut locs: Vec<(u32, u32, u32)> = Vec::new();
     let mut index = std::collections::HashMap::new();
     let mut marks = Vec::new();
