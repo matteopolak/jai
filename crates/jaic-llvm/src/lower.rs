@@ -906,13 +906,22 @@ impl<'ctx, 'p> Backend<'ctx, 'p> {
             for seg in Self::segments(g) {
                 match seg {
                     Segment::Bytes(a, b) => {
-                        let bytes: Vec<IntValue> = (a..b)
-                            .map(|k| {
-                                let byte = g.init.get(k as usize).copied().unwrap_or(0);
-                                self.ctx.i8_type().const_int(byte as u64, false)
-                            })
-                            .collect();
-                        fields.push(self.ctx.i8_type().const_array(&bytes).into());
+                        // `init` may be shorter than the global: the rest is zero. Bytes go in as
+                        // one ConstantDataArray (or an all-zero aggregate) instead of one
+                        // ConstantInt per byte.
+                        let end = (b as usize).min(g.init.len());
+                        let start = (a as usize).min(end);
+                        let data = &g.init[start..end];
+                        let ty = self.ctx.i8_type().array_type((b - a) as u32);
+                        if data.iter().all(|&x| x == 0) {
+                            fields.push(ty.const_zero().into());
+                        } else if data.len() as u64 == b - a {
+                            fields.push(self.ctx.const_string(data, false).into());
+                        } else {
+                            let mut padded = data.to_vec();
+                            padded.resize((b - a) as usize, 0);
+                            fields.push(self.ctx.const_string(&padded, false).into());
+                        }
                     }
                     Segment::Reloc(r) => {
                         let reloc = &g.relocs[r];
