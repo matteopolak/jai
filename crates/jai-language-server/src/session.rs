@@ -43,6 +43,9 @@ pub struct Session {
     pub(crate) index: RefCell<crate::auto_import::Index>,
 }
 
+/// The open files, the root file and the module folders of a compile.
+type CompileInputs = (BTreeMap<PathBuf, Rc<[u8]>>, PathBuf, Vec<PathBuf>);
+
 impl Session {
     pub fn new(limits: Limits) -> Self {
         Self {
@@ -69,6 +72,13 @@ impl Session {
     /// does not parse), each to be sent once.
     pub fn take_messages(&self) -> Vec<String> {
         self.index.borrow_mut().take_messages()
+    }
+
+    /// How many programs the type checker has compiled for this session, and how many of them
+    /// are kept (for tests and the benchmark: an edit that needs no compile leaves the first
+    /// number alone, and the second stays bounded).
+    pub fn compile_counts(&self) -> (usize, usize) {
+        self.semantic.borrow().counts()
     }
 
     /// Queue a message for the user (`window/showMessage`), sent once.
@@ -371,13 +381,9 @@ impl Session {
             .clone()
     }
 
-    /// Run `query` on the type-checked program containing `uri`, its text replaced by `text`.
-    pub(crate) fn with_semantic<T>(
-        &self,
-        uri: &DocumentUri,
-        text: &str,
-        query: impl FnOnce(&mut semantic::Analysis, &Path) -> Option<T>,
-    ) -> Option<T> {
+    /// What a compile of the program containing `uri` needs, with `uri`'s text replaced by
+    /// `text`: the open files, the program's root file and the module folders searched.
+    fn compile_inputs(&self, uri: &DocumentUri, text: &str) -> Option<CompileInputs> {
         let environment = self.environment.as_ref()?;
         let files: BTreeMap<PathBuf, Rc<[u8]>> = self
             .documents
@@ -399,9 +405,46 @@ impl Session {
             _ => PathBuf::from(open_root.path()),
         };
         let dirs = self.import_dirs(&root);
+        Some((files, root, dirs))
+    }
+
+    /// Run `query` on the type-checked program containing `uri`, its text replaced by `text`.
+    pub(crate) fn with_semantic<T>(
+        &self,
+        uri: &DocumentUri,
+        text: &str,
+        query: impl FnOnce(&mut semantic::Analysis, &Path) -> Option<T>,
+    ) -> Option<T> {
+        let environment = self.environment.as_ref()?;
+        let (files, root, dirs) = self.compile_inputs(uri, text)?;
         let mut cache = self.semantic.borrow_mut();
         let analysis = cache.analyze(environment, &root, &dirs, files);
         query(analysis, Path::new(uri.path()))
+    }
+
+    /// Like `with_semantic`, but on a compile that already exists and knows the first `at` bytes
+    /// of `uri` as they are in `text` (the other open files unchanged), so it never compiles.
+    /// `None` when no compile fits.
+    pub(crate) fn with_compiled_before<T>(
+        &self,
+        uri: &DocumentUri,
+        text: &str,
+        at: usize,
+        query: impl FnOnce(&mut semantic::Analysis, &Path) -> Option<T>,
+    ) -> Option<T> {
+        let environment = self.environment.as_ref()?;
+        let (files, root, dirs) = self.compile_inputs(uri, text)?;
+        let mut cache = self.semantic.borrow_mut();
+        let path = Path::new(uri.path());
+        let analysis = cache.compiled_before(
+            environment,
+            &root,
+            &dirs,
+            files,
+            path,
+            &text.as_bytes()[..at],
+        )?;
+        query(analysis, path)
     }
 
     pub(crate) fn source_detail<'a>(&'a self, uri: &DocumentUri, row: &SymbolRow) -> &'a str {
@@ -761,6 +804,12 @@ impl Session {
             at = s;
         }
         chain.reverse();
+        // The program as last compiled knows everything before the expression being typed.
+        if let Some(names) =
+            self.with_compiled_before(uri, text, at, |a, path| a.complete(path, at, &chain))
+        {
+            return Some((prefix, names));
+        }
         let probe = repair(&format!("{}{}", &text[..at], &text[byte..]), Some(at))?;
         let names = self.with_semantic(uri, &probe, |a, path| a.complete(path, at, &chain))?;
         Some((prefix, names))
