@@ -377,7 +377,7 @@ fn fills_in_missing_struct_fields() {
     );
     let out = run(POINTS, cursor(POINTS, "Point.{}", 6), "Add missing fields");
     assert!(
-        out.contains("    b := Point.{x = 0, y = 0, name = \"\", ok = false, label = null};\n"),
+        out.contains("    b := Point.{ x = 0, y = 0, name = \"\", ok = false, label = null };\n"),
         "{out}"
     );
     let out = run(POINTS, cursor(POINTS, "y = 2", 0), "Add missing fields");
@@ -626,4 +626,57 @@ fn declines_to_extract_what_cannot_be_a_procedure() {
     );
     // Changes a variable declared before it.
     declined(text, select(text, "count += 1;"), "Extract into procedure");
+}
+
+// -------------------------------------------------------------------------------------------
+// Whatever is selected, an offered edit leaves a program that parses
+// -------------------------------------------------------------------------------------------
+
+#[test]
+fn offered_refactorings_always_parse() {
+    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib");
+    let mut offered = 0;
+    for name in ["Autorun.jai", "Example_Plugin.jai", "MacOS_Bundler.jai"] {
+        let text = std::fs::read_to_string(dir.join(name)).unwrap();
+        let s = open(&text);
+        let starts: Vec<usize> = std::iter::once(0)
+            .chain(text.match_indices('\n').map(|(i, _)| i + 1))
+            .collect();
+        for (n, &start) in starts.iter().enumerate() {
+            let end = text[start..].find('\n').map_or(text.len(), |i| start + i);
+            let last = starts
+                .get(n + 2)
+                .map_or(text.len(), |&e| e.saturating_sub(1));
+            // The line, two lines, and the cursor at the first word.
+            let word = start + (text[start..end].len() - text[start..end].trim_start().len());
+            for (a, b) in [
+                (start, end),
+                (start, last.max(end)),
+                (word, word),
+                (word + 1, end),
+            ] {
+                let (a, b) = (a.min(b), b);
+                if !text.is_char_boundary(a) || !text.is_char_boundary(b) {
+                    continue;
+                }
+                let range = Range {
+                    start: position(&text, a),
+                    end: position(&text, b),
+                };
+                for action in s.code_actions(&uri(), range).unwrap() {
+                    if !action.kind.is_some_and(|k| k.starts_with("refactor")) {
+                        continue;
+                    }
+                    offered += 1;
+                    let result = apply(&text, &action);
+                    assert!(
+                        jaic::parser::parse_file(jaic::source::FileId(0), &result).is_ok(),
+                        "{} in {name} at {a}..{b} breaks the program:\n{result}",
+                        action.title
+                    );
+                }
+            }
+        }
+    }
+    assert!(offered > 10, "{offered}");
 }
