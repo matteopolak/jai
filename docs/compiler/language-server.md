@@ -61,7 +61,7 @@ Positions use UTF-16, including supplementary characters and CRLF. Edits apply t
 
 ### Semantic analysis
 
-`semantic.rs` compiles on demand, only when a request needs it, and caches by source text:
+`semantic.rs` compiles on demand, only when a request needs it, and caches by source text (see [Compile cache and memory](#compile-cache-and-memory)):
 
 1. **Overlay.** Open documents are laid over the environment's file system (`OverlayFs`). Natively that is the disk plus the repository stdlib; in the browser it is the bundled stdlib `VirtualFs`.
 2. **Root.** The check starts from the open document that `#load`s the requested one and is loaded by none (`Session::root`); when no open document does, from the project's entry file (`jai.toml`'s `build_files`, an inferred entry, or the file that loads it; `Session::project_root`, shared with auto-import), so the files of the program that are not open are checked and found by references and rename.
@@ -70,6 +70,14 @@ Positions use UTF-16, including supplementary characters and CRLF. Edits apply t
 5. **Isolation.** Compile-time code runs in a `SandboxHost`, so `#run` output never reaches the protocol's stdout. The host is shared with `IdeFacts::output`, which is how a `#run` hover shows what it printed. It also has an interpreter block budget (`Interp::block_budget`), so an edit that makes `#run` loop forever traps instead of hanging. The compile also gets a workspace registry (`build::Workspaces`) on the same host, so a metaprogram's `#run` can create workspaces. Their compile-time code draws from the same budget (`build::step` hands the caller's remaining blocks to the workspace's interpreter and takes back what is left), so a metaprogram cannot multiply it by creating workspaces.
 
 Half-typed text usually does not parse. `repair` blanks lines with spaces, so byte offsets stay put, until the text parses: first the cursor's line (for completion and signature help), then the line the parser reports. If the error is reported on an empty line or a lone `}`, it blanks the last non-empty line before it instead, because that is where a missing `;` belongs. Every semantic feature goes through `Session::checked` (repair, compile or reuse the cache, look up the file), so hover, inlay hints and tokens of one version share one compile.
+
+### Compile cache and memory
+
+A compile of a large program is hundreds of MiB (gen-240k: about 650 MiB), so `semantic::Cache` keeps few of them:
+
+- `CACHED` is 2, counting the one being built. Room is made before a compile starts, never after, so at most two compilers are alive. The ones kept are the newest that *checked* (`Analysis::usable`: the text parsed and scopes were recorded) and, if it is a different one, the newest of all. A half-typed edit does not parse, so without that rule a few failed compiles would push out the last good one.
+- Completion does not compile while a word or a `a.b.` chain is typed. `Session::with_compiled_before` asks the cache for a usable compile of the same root and module folders whose other open files are byte-for-byte what they are now and whose text of this file starts with what the cursor's expression starts after (`Cache::compiled_before`). Everything before the expression is then what the compile saw, so its scopes and types answer. Names declared by edits after that compile appear once the next diagnostics or hover compile has run (every edit's diagnostics do that); an edit before the cursor fails the prefix test and compiles as before. `Session::compile_counts` reports (compiles so far, compiles alive) for tests and the benchmark.
+- What does *not* help, measured on gen-240k (1.6 s per compile): `ide_check_all` is 0.6% of a compile, lex and parse of all 240k lines 12% (the standard library is 11 ms of that), and the rest is checking and lowering bodies. An AST cache keyed by path and hash would save the 11 ms plus the parse of unchanged project files (about 10%), but the parser stamps every span with the compile's `FileId`, which differs between compiles, so a cached tree cannot be reused without re-stamping it; and dropping the lowered IR after a compile freed only 5% of the resident set. The next real win is an incremental checker (re-check only the declarations that depend on the edited file), which is not started.
 
 ### Hover and completion
 
@@ -451,7 +459,7 @@ node tools/check_scripting_wasm.mjs target/wasm32-unknown-unknown/release/jai_wa
 - `auto_import.rs` constants: `MAX_ITEMS` (50), `MIN_PREFIX` (2), `MAX_PROJECT_FILES` (4,000), `MAX_DEPTH` (8), `MAX_LOADED` (4,000 files per load graph), `LOADER_LEVELS` (3).
 - `semantic.rs` constants:
   - `BLOCK_BUDGET`: interpreter blocks per analysis.
-  - `CACHED`: compiles kept, 3.
+  - `CACHED`: compiles alive at once, 2 ([compile cache](#compile-cache-and-memory)).
 - `ide_meta.rs` constants: `MAX_EXPANSIONS` (4,096), `MAX_CALLS` (16,384), `MAX_VARIANTS` (4 per site), `MAX_TEXT` (64 KiB per expansion).
 - `features.rs`: `HINT_CHARS` (40), the longest inlay hint label.
 - Hover format comes from the client: `textDocument.hover.contentFormat` in `initialize` (Markdown when it lists `markdown`, else plain text).
