@@ -24,7 +24,7 @@ HEIGHT :: 6;
 
 make_picture :: () -> [] u8 {
     pixels := NewArray(WIDTH * HEIGHT * 4, u8);
-    for y: 0..HEIGHT - 1 for x: 0..WIDTH - 1 {
+    for y: 0..HEIGHT - 1 for x : 0..WIDTH - 1 {
         texel := pixels.data + (y * WIDTH + x) * 4;
         texel[0] = cast(u8) (x * 30);
         texel[1] = cast(u8) (y * 40);
@@ -59,7 +59,7 @@ main :: () {
     assert(bw == WIDTH && bh == HEIGHT && back.count == picture.count);
     for picture assert(back[it_index] == it, "png byte % differs", it_index);
     // Asking for one channel converts to luminance; three drops alpha.
-    gray, gw, gh := decode(png, 1);
+    gray := decode(png, 1);
     assert(gray.count == WIDTH * HEIGHT);
     rgb := decode(png, 3);
     assert(rgb.count == WIDTH * HEIGHT * 3 && rgb[0] == picture[0] && rgb[3] == picture[4]);
@@ -86,7 +86,7 @@ main :: () {
     from_jpg, jw, jh := decode(jpg, 3);
     assert(jw == WIDTH && jh == HEIGHT);
     worst: s32;
-    for y: 0..HEIGHT - 1 for x: 0..WIDTH - 1 for c: 0..2 {
+    for y: 0..HEIGHT - 1 for x : 0..WIDTH - 1 for c : 0..2 {
         error := abs(cast(s32) from_jpg[(y * WIDTH + x) * 3 + c] - cast(s32) picture[(y * WIDTH + x) * 4 + c]);
         if error > worst worst = error;
     }

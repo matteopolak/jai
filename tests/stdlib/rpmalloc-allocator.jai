@@ -38,7 +38,7 @@ main :: () {
     blocks: [200] *u8;
     for *blocks it.* = cast(*u8) alloc(48 + it_index, a);
     for *blocks memset(it.*, cast(u8) (it_index + 1), 48 + it_index);
-    for block, number: blocks for i: 0..47 + number assert(block[i] == cast,trunc(u8) (number + 1), "block % was overwritten", number);
+    for block, number: blocks for i : 0..47 + number assert(block[i] == cast,trunc(u8) (number + 1), "block % was overwritten", number);
     for blocks free(it, a);
 
     // A separate heap owns its own blocks only, and destroying it releases them.
