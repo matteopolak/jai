@@ -546,9 +546,10 @@ pub fn emit_objects(
     if units == 1 {
         // Optimized builds keep one module through the optimizer and split only machine
         // code generation, unless `JAIC_CODEGEN_UNITS` asked for exactly one unit.
+        // `enable_split_modules = false` does not stop this: the optimizer has already seen the
+        // whole program, so the objects differ from one module's only in how many there are.
         let split = options.opt_level != OptLevel::O0
             && options.emit_ir.is_none()
-            && options.codegen.split_modules != Some(false)
             && std::env::var_os("JAIC_CODEGEN_UNITS").is_none();
         return emit_module(program, options, path, None, split, true);
     }
