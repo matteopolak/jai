@@ -421,10 +421,16 @@ print_expression :: (builder: *String_Builder, node: *Code_Node) {
     PP.print_expression(builder, node);
 }
 
+// The type of the expression `code` holds, when the compiler typed it: code from a
+// compile-time run that has done nothing observable yet has typed nodes (see
+// compiler_get_nodes); other code has none and comes back as NOT_TYPED.
 get_root_type :: (code: Code) -> (status: Get_Root_Type_Status, type: Type) {
-    unsupported("get_root_type");
     result: Type;
-    return .CORRUPTED, result;
+    if __jaic_code_is_null(code) return .INPUT_IS_CODE_NULL, result;
+    root := compiler_get_nodes(code);
+    if !root return .CORRUPTED, result;
+    if !root.type return .NOT_TYPED, result;
+    return .SUCCESS, get_type(root.type);
 }
 
 // A `Type` is represented by its `*Type_Info`.
@@ -464,8 +470,12 @@ compiler_modify_procedure :: (w: Workspace, body: *Code_Procedure_Body) {
     body.body_flags |= .ALREADY_MODIFIED;
 }
 
+// Keeps a procedure in the program though nothing calls it. `header` is a procedure header
+// the workspace sent in a message; the procedure is compiled by the workspace's next
+// lowering step. A header from another workspace, or of a polymorphic procedure or a
+// macro, is ignored.
 compiler_make_procedure_live :: (w: Workspace, header: *Code_Procedure_Header) {
-    unsupported("compiler_make_procedure_live");
+    __jaic_make_procedure_live(resolve_workspace(w), record_of(header));
 }
 
 // Where the struct is declared; empty for a struct the program never declared (built-ins).
@@ -477,42 +487,53 @@ compiler_get_struct_location :: (w: Workspace, info: *Type_Info_Struct) -> Sourc
 
 __jaic_struct_location :: (info: *Type_Info_Struct, path: *string, line: *s64, column: *s64) #compiler;
 
-compiler_report_errors_for_unresolved_identifiers :: (filename: string, w: Workspace = -1) {
-    unsupported("compiler_report_errors_for_unresolved_identifiers");
-}
+// Does nothing: an identifier jaic cannot resolve is always a compile error, reported where it
+// is used, so there is no deferred list of unresolved names to report from.
+compiler_report_errors_for_unresolved_identifiers :: (filename: string, w: Workspace = -1) {}
 
-compiler_report_errors_for_untyped_declarations_with_these_notes :: (w: Workspace, labels: ..string) {
-    unsupported("compiler_report_errors_for_untyped_declarations_with_these_notes");
-}
+// Does nothing: jaic type-checks every declaration of the program's own files (and with
+// `dead_code_elimination = .NONE` the modules' too), so none stays untyped for its notes to matter.
+compiler_report_errors_for_untyped_declarations_with_these_notes :: (w: Workspace, labels: ..string) {}
 
-compiler_set_memory_breakpoint :: (pointer: *void) {
-    unsupported("compiler_set_memory_breakpoint");
-}
+// Does nothing. Another compiler stops compile-time code when it writes to the address;
+// jaic's compile-time interpreter has no write watch. Use a debugger on `jaic`
+// or `assert` on the value instead.
+compiler_set_memory_breakpoint :: (pointer: *void) {}
 
+// Adds a directory where `#library` names are looked up, for compile-time calls and for
+// linking. It applies to the whole compilation, not one workspace, and it comes
+// before the directories jaic already searches.
 compiler_add_library_search_directory :: (path: string) {
-    unsupported("compiler_add_library_search_directory");
+    __jaic_add_library_dir(path);
 }
 
+// The directory above the standard modules (with a trailing slash): the repository
+// root or the install directory of jaic. Empty when the modules are not on disk.
 compiler_get_base_path :: () -> string {
-    unsupported("compiler_get_base_path");
-    return "";
+    return __jaic_base_path();
 }
 
+// Makes `#import "import_name"` in the module `host_module_name` (empty: in every module) read
+// `replacement_name` instead. Imports already resolved keep their module.
 remap_import :: (w: Workspace, host_module_name: string, import_name: string, replacement_name: string) {
-    unsupported("remap_import");
+    __jaic_workspace_remap_import(resolve_workspace(w), host_module_name, import_name, replacement_name);
 }
 
+// Answers a FAILED_IMPORT message: `value` is a module name, a path to a file or a directory
+// holding module.jai, or the module's source text, as `type` says. The workspace then
+// loads its sources again from the start, so an intercepting metaprogram sees the messages of the
+// second attempt after the FAILED_IMPORT of the first.
 provide_import :: (w: Workspace, message: *Message_Failed_Import, type: Provided_Import_Type, value: string) {
-    unsupported("provide_import");
+    __jaic_workspace_provide_import(resolve_workspace(w), message.host_module_name, message.target_module_name, cast(s64) type, value);
 }
 
 // The copy lives in compile-time memory; a constant holding the returned view (`data ::
 // #run add_global_data(...)`) is emitted into the program's data with its bytes. jaic
 // places it with the program's other constant data whatever the segment; a user segment
-// (from add_data_segment, which jaic does not have) is an error.
+// (from add_data_segment) is placed with the other constant data too.
 add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Data_Segment = null, w: Workspace = -1, loc := #caller_location) -> [] u8 {
-    if segment == .USER_SEGMENT || user_segment {
-        text := "add_global_data: jaic has no user data segments";
+    if segment == .USER_SEGMENT && !user_segment {
+        text := "add_global_data: USER_SEGMENT needs the segment add_data_segment returned";
         __jaic_report(text, loc.fully_pathed_filename, loc.line_number, loc.character_number, xx Report.ERROR);
     }
     result: [] u8;
@@ -522,9 +543,12 @@ add_global_data :: (data: [] u8, segment: Data_Segment_Index, user_segment: *Dat
     return result;
 }
 
+// jaic cannot name object-file sections, so the segment is a handle only: the second result,
+// `actual_segment_will_be_created`, is false, and add_global_data puts data given this
+// segment with the other constant data.
 add_data_segment :: (section_name: string, characteristics := Data_Segment_Characteristics.READ | .WRITE, alignment: s32 = 16, w: Workspace = -1) -> (segment: *Data_Segment, actual_segment_will_be_created: bool) {
-    unsupported("add_data_segment");
-    return null, false;
+    segment := cast(*Data_Segment) alloc(1);
+    return segment, false;
 }
 
 // Hook for compiler developers to attach breakpoints to; does nothing.
@@ -549,6 +573,11 @@ __jaic_report :: (message: string, file: string, line: s64, column: s64, mode: s
 __jaic_code_is_null :: (code: Code) -> bool #compiler;
 __jaic_compiler_version :: () -> string #compiler;
 __jaic_custom_link_complete :: (ws: s64, exit_code: s64) #compiler;
+__jaic_base_path :: () -> string #compiler;
+__jaic_add_library_dir :: (path: string) #compiler;
+__jaic_workspace_remap_import :: (ws: s64, host: string, name: string, replacement: string) #compiler;
+__jaic_workspace_provide_import :: (ws: s64, host: string, target: string, type: s64, value: string) #compiler;
+__jaic_make_procedure_live :: (ws: s64, header: s64) #compiler;
 
 #scope_module
 
@@ -592,11 +621,6 @@ resolve_workspace :: (w: Workspace) -> s64 {
 find_intercept :: (id: s64) -> s64 {
     for intercepted if it == id return it_index;
     return -1;
-}
-
-unsupported :: (name: string) {
-    text := tprint("%1 is not supported by jaic yet (it needs syntax-tree access).", name);
-    __jaic_report(text, "", 0, 0, xx Report.ERROR);
 }
 
 fill_complete :: (id: Workspace, error_code: s64) -> *Message {
