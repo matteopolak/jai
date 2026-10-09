@@ -20,9 +20,11 @@ array_view :: inline (array: [] $T, index: int) -> [] T {
     return array_view(array, index, array.count - index);
 }
 
+// A count past the end shortens the view to the elements that exist.
 array_view :: inline (array: [] $T, index: int, count: int) -> [] T {
-    assert(index >= 0 && count >= 0 && index + count <= array.count);
-    return .{ count, array.data + index };
+    assert(index >= 0 && index <= array.count && count >= 0);
+    available := array.count - index;
+    return .{ ifx count < available then count else available, array.data + index };
 }
 
 array_free :: (array: [] $T) {
