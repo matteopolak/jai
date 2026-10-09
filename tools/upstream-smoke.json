@@ -585,9 +585,59 @@
           "argv": [
             "./tracy_test"
           ],
-          "timeout": 120
+          "timeout": 120,
+          "contains": [
+            "Bye world"
+          ]
         }
       ]
+    },
+    {
+      "id": "forbear",
+      "project": "gabrielmfern--forbear",
+      "only": [
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "only_reason": "Linux opens a Wayland window and needs a compositor; there are no Windows bindings upstream",
+      "steps": [
+        {
+          "name": "build.jai",
+          "kind": "jaic",
+          "argv": [
+            "build",
+            "build.jai"
+          ],
+          "timeout": 1200,
+          "outputs": [
+            "apps/playground"
+          ]
+        },
+        {
+          "kind": "gui",
+          "name": "playground window for 8 s",
+          "argv": [
+            "./apps/playground"
+          ],
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "id": "sgpu",
+      "project": "roeyb1--sgpu",
+      "skip": {
+        "*": "needs Slang (a CMake build of about an hour: tools/build_slang.py) and a Vulkan driver the runners lack; builds and runs locally on macOS with MoltenVK (docs/tools/upstream-corpus.md)"
+      },
+      "steps": []
+    },
+    {
+      "id": "vk-engine",
+      "project": "ostef--Vk-Engine",
+      "skip": {
+        "*": "needs ImGui, VMA and Jolt built with CMake and a Vulkan GPU; checked by the upstream sweep cases vk-engine-*-check"
+      },
+      "steps": []
     }
   ]
 }
