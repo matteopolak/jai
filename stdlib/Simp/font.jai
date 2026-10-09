@@ -244,7 +244,6 @@ prepare_text :: (font: *Dynamic_Font, text: string, effect_flags: Font_Effects =
     push_allocator(SIMP_HEAP);
     effects := effect_flags;
     if !font return 0;
-    assert((effects & ~Font_Effects.NO_KERNING) == 0, "Legacy SMALLCAPS/LINING_FIGURES/LEFT_JUSTIFIED substitutions are not implemented");
     record := font_record(font);
     if !record return 0;
     font.temporary_glyphs = .{};
@@ -256,30 +255,57 @@ prepare_text :: (font: *Dynamic_Font, text: string, effect_flags: Font_Effects =
     pos: int;
     previous: u32;
     width: s64;
+    digit_advance: s64;
+    if effects & .LINING_FIGURES digit_advance = widest_digit_advance(font);
     while pos < text.count {
         offset := pos;
         codepoint := decode_utf8(text, *pos);
+        if effects & .SMALLCAPS codepoint = capital_form(codepoint);
         if FT.FT_Get_Char_Index(font.face, codepoint) == 0 font.glyph_conversion_failed = true;
         glyph := find_or_create_glyph(font, codepoint);
         if !glyph {
             font.glyph_conversion_failed = true;
             continue;
         }
-        if previous && !(effects & .NO_KERNING) && font.face.face_flags & FT.FT_FACE_FLAG_KERNING {
+        tabular := digit_advance != 0 && codepoint >= #char "0" && codepoint <= #char "9";
+        if previous && !tabular && !(effects & .NO_KERNING) && font.face.face_flags & FT.FT_FACE_FLAG_KERNING {
             delta: FT.FT_Vector;
             if FT.FT_Get_Kerning(font.face, previous, glyph.glyph_index_within_font, 0, *delta) == 0 width += delta.x >> 6;
         }
-        array_add(*record.starts, width);
+        advance: s64 = glyph.advance;
+        slack: s64;
+        if digit_advance && codepoint >= #char "0" && codepoint <= #char "9" {
+            // Every figure takes the widest figure's cell, with its ink centred in it.
+            slack = (digit_advance - advance) / 2;
+            advance = digit_advance;
+        }
+        array_add(*record.starts, width + slack);
         array_add(*record.byte_offsets, cast(s32) offset);
         array_add(*record.lcd_keys, font_anti_aliasing == .lcd);
         array_add(*font.temporary_glyphs, glyph);
-        width += glyph.advance;
+        width += advance;
         previous = glyph.glyph_index_within_font;
         if glyph.glyph_index_within_font == 0 font.glyph_conversion_failed = true;
     }
     record.width = width;
     record.text_bytes = cast(s32) text.count;
     return width;
+}
+
+// Lower-case letters of ASCII and Latin-1 map to their capitals; anything else is unchanged.
+capital_form :: (codepoint: u32) -> u32 {
+    if codepoint >= #char "a" && codepoint <= #char "z" return codepoint - 32;
+    if codepoint >= 0xe0 && codepoint <= 0xfe && codepoint != 0xf7 return codepoint - 32;
+    return codepoint;
+}
+
+widest_digit_advance :: (font: *Dynamic_Font) -> s64 {
+    widest: s64;
+    for digit: #char "0"..#char "9" {
+        glyph := find_or_create_glyph(font, cast(u32) digit);
+        if glyph && glyph.advance > widest widest = glyph.advance;
+    }
+    return widest;
 }
 
 get_text_width :: (font: *Dynamic_Font, s: string) -> width: s64 {
@@ -307,6 +333,14 @@ generate_quads_for_prepared_text :: (font: *Dynamic_Font, x: s64, y: s64, effect
     if !record return;
     font.current_quads.count = 0;
     left_handed := context.simp && context.simp.coordinate_system == .LEFT_HANDED;
+    if effects & .LEFT_JUSTIFIED {
+        // Start the ink at x rather than the pen: drop the first glyph's left bearing.
+        for glyph: font.temporary_glyphs {
+            if !glyph.page || glyph.width == 0 continue;
+            x -= glyph.offset_x;
+            break;
+        }
+    }
     for glyph, i: font.temporary_glyphs {
         if !glyph.page || glyph.width == 0 || glyph.height == 0 continue;
         width := cast(float) glyph.width;

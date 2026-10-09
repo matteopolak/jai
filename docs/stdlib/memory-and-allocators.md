@@ -56,7 +56,7 @@ main :: () {
 
 ## Configuration
 
-`Default_Allocator(ENABLE_ASSERTS=true, ENABLE_VALIDATE_ARGS=true)`. `Memory(with_candidates=false, with_unwraps=false)`; setting either fails at compile time. `Pool(USE_UNMAPPING_ALLOCATOR=false)` must stay false. `Basic(TEMP_ALLOCATOR_POISON_FREED_MEMORY)` poisons freed temporary memory. Per-pool fields: `memblock_size`, `oversized_size`, `alignment`, `overwrite_memory`, `free_memblocks_on_reset`. `Deep_Copy(DC_DEBUG=false, DEBUG_PRINT=false)` are module parameters; `follow_struct_pointers` is a field of its config.
+`Default_Allocator(ENABLE_ASSERTS=true, ENABLE_VALIDATE_ARGS=true)`. `Memory(with_candidates=false, with_unwraps=false)`; setting either fails at compile time. `Pool(USE_UNMAPPING_ALLOCATOR=false)`: true makes a pool without a block allocator take its blocks from its own guard-page `Unmapping_Allocator` (not on wasm), released with the pool. `Basic(TEMP_ALLOCATOR_POISON_FREED_MEMORY)` poisons freed temporary memory. Per-pool fields: `memblock_size`, `oversized_size`, `alignment`, `overwrite_memory`, `free_memblocks_on_reset`. `Deep_Copy(DC_DEBUG=false, DEBUG_PRINT=false)` are module parameters; `follow_struct_pointers` is a field of its config.
 
 ## Dependencies
 

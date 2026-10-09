@@ -34,4 +34,4 @@
 
 ## Known gaps
 
-Font effects (`SMALLCAPS`, `LINING_FIGURES`, `LEFT_JUSTIFIED`), the Metal backend and Android EGL are not implemented. GetRect's default icon assets (`stdlib/GetRect/data`) are absent; the default font falls back to a system font. The GLX and WGL paths are type-checked but not exercised by tests.
+Font effects are approximations of the legacy ones: `SMALLCAPS` draws the capital forms (ASCII and Latin-1) at the normal size, `LINING_FIGURES` gives every figure the widest figure's cell without kerning, and `LEFT_JUSTIFIED` starts the ink at the requested x. `Render_API.METAL` is accepted as a parameter value but there is no Metal backend in `Simp/backend` (only `gl.jai`); on Android `GL` resolves functions through EGL, but nothing creates an EGL context or surface for Simp, so neither is implemented. GetRect's default icon assets (`stdlib/GetRect/data`) are absent; the default font falls back to a system font. The GLX and WGL paths are type-checked but not exercised by tests.
