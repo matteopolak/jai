@@ -398,8 +398,9 @@ impl Session {
             Some(entry) if open_root == *uri && environment.fs.is_file(&entry) => entry,
             _ => PathBuf::from(open_root.path()),
         };
+        let dirs = self.import_dirs(&root);
         let mut cache = self.semantic.borrow_mut();
-        let analysis = cache.analyze(environment, &root, files);
+        let analysis = cache.analyze(environment, &root, &dirs, files);
         query(analysis, Path::new(uri.path()))
     }
 
@@ -832,10 +833,7 @@ impl Session {
         let roots: Vec<PathBuf> = if load {
             vec![here.join(folder)]
         } else {
-            let options = self
-                .environment
-                .as_ref()
-                .map(|e| (e.options)(Path::new(uri.path())));
+            let options = self.options_for(&PathBuf::from(self.root(uri).path()));
             let mut roots: Vec<PathBuf> = options
                 .map(|o| o.import_paths)
                 .unwrap_or_default()
