@@ -305,6 +305,16 @@ fn use_fast_isel(machine: &TargetMachine) {
     }
 }
 
+/// Whether to run the LLVM IR verifier on each module before code generation. It costs about
+/// 6% of an unoptimized build, so it runs in debug builds of jaic (and so under `cargo test`)
+/// and when `JAIC_VERIFY_IR` is set to anything but `0`; a release jaic skips it.
+fn verify_ir() -> bool {
+    match std::env::var_os("JAIC_VERIFY_IR") {
+        Some(v) => v != "0",
+        None => cfg!(debug_assertions),
+    }
+}
+
 /// Lower `program` (or one shard of it) to one LLVM module and write it as an object file.
 /// With `split_after_opt`, an optimized module large enough is written as several objects
 /// in parallel (`split.rs`); the objects written are returned.
@@ -334,9 +344,11 @@ fn emit_module(
     if let Some(ir_path) = &options.emit_ir {
         module.print_to_file(ir_path).map_err(|e| e.to_string())?;
     }
-    module
-        .verify()
-        .map_err(|e| format!("invalid LLVM IR: {e}"))?;
+    if verify_ir() {
+        module
+            .verify()
+            .map_err(|e| format!("invalid LLVM IR: {e}"))?;
+    }
     apply_codegen_attributes(&context, &module, &options.codegen, &triple);
     if let Some(path) = &options.codegen.bitcode_before
         && !module.write_bitcode_to_path(path)
