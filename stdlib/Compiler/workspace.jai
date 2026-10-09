@@ -654,8 +654,8 @@ build_message :: (id: Workspace, event_kind: s64) -> *Message {
                 for 0..3 counts[it] = __jaic_event_int(it + 1);
                 lists: [4][..] string;
                 next := 0;
-                for count: counts {
-                    for 0..count - 1 array_add(*lists[it_index], __jaic_event_string(next + it));
+                for count, list_index: counts {
+                    for item: 0..count - 1 array_add(*lists[list_index], __jaic_event_string(next + item));
                     next += count;
                 }
                 for lists[0] array_add(*phase_object_files, it);
