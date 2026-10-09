@@ -215,8 +215,7 @@ disable_signal_handler :: () {
     if !signal_handler_enabled return;
     #if OS == .WINDOWS {
         Windows.SetUnhandledExceptionFilter(prior_exception_filter);
-    } else #if OS == .WASM {
-    } else {
+    } else #if OS == .WASM {} else {
         for number, index: watched_signals host_signal(number, prior_handlers[index]);
     }
     signal_handler_enabled = false;
@@ -309,18 +308,19 @@ Signal_Handler :: #type (signal: s32) #c_call;
         exit(code);
     }
 } else {
-libc :: #system_library "c";
-host_signal :: (number: s32, handler: Signal_Handler) -> Signal_Handler #foreign libc "signal";
-host_exit :: (code: s32) #foreign libc "_exit";
-host_backtrace :: (addresses: **void, count: s32) -> s32 #foreign libc "backtrace";
-host_backtrace_symbols :: (addresses: **void, count: s32) -> **u8 #foreign libc "backtrace_symbols";
-host_free :: (pointer: *void) #foreign libc "free";
-host_open :: (path: *u8, flags: s32) -> s32 #foreign libc "open";
-host_read :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "read";
-host_close :: (descriptor: s32) -> s32 #foreign libc "close";
-host_pipe :: (ends: *s32) -> s32 #foreign libc "pipe";
-host_write :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "write";
+    libc :: #system_library "c";
+    host_signal :: (number: s32, handler: Signal_Handler) -> Signal_Handler #foreign libc "signal";
+    host_exit :: (code: s32) #foreign libc "_exit";
+    host_backtrace :: (addresses: **void, count: s32) -> s32 #foreign libc "backtrace";
+    host_backtrace_symbols :: (addresses: **void, count: s32) -> **u8 #foreign libc "backtrace_symbols";
+    host_free :: (pointer: *void) #foreign libc "free";
+    host_open :: (path: *u8, flags: s32) -> s32 #foreign libc "open";
+    host_read :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "read";
+    host_close :: (descriptor: s32) -> s32 #foreign libc "close";
+    host_pipe :: (ends: *s32) -> s32 #foreign libc "pipe";
+    host_write :: (descriptor: s32, buffer: *void, count: u64) -> s64 #foreign libc "write";
 }
+
 watched_signals: [5] s32 = .[11, 4, 8, 5, ifx OS == .MACOS then 10 else 7];
 prior_handlers: [5] Signal_Handler;
 signal_handler_enabled := false;

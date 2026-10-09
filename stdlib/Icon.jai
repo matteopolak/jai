@@ -91,7 +91,7 @@ stamp_icon :: (icon_filename: string, workspace: Workspace, executable_name: str
             log_error("Could not enter % to bundle %.\n", directory, executable_name);
             return;
         }
-        bundle, resources := MacOS_Bundler.create_app_bundle(executable_name, absolute, ifx icon_found then icon_absolute else icon_filename, "", true, true);
+        bundle := MacOS_Bundler.create_app_bundle(executable_name, absolute, ifx icon_found then icon_absolute else icon_filename, "", true, true);
         set_working_directory(previous);
         log("Bundled % with its icon.\n", bundle);
     } else #if OS == .LINUX {
