@@ -13,7 +13,6 @@ Work we know about but haven't done yet. Remove an item when it lands (or move i
 
 From the conformance run (details in the uncommitted `conformance-local/NOTES.md`):
 
-- Error for clashing names brought in by two `using` members; error for identical overloads.
 - Possible version drift, left alone on purpose until confirmed against a current beta: `Formatter` printing as a struct, one-character strings as `u8` (`x += "s"`, `ifx 1 else "a"`), slice `==`, constant float division by zero, and leniencies such as `u32 & ~0x7`.
 
 Other:

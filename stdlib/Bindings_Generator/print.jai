@@ -962,6 +962,7 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         has_fields = true;
     }
 
+    taken_names: [..] *Declaration;
     seen_dynamic_base := false;
     for parent: s.parents {
         if part == .WRAPPER continue;
@@ -971,6 +972,15 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
         disable_using := dynamic_base && seen_dynamic_base;
         if dynamic_base seen_dynamic_base = true;
         if !disable_using && parent_struct disable_using = base_shadows_names(parent_struct, local_names);
+        // Two bases that share a virtual base (a diamond) bring in the same names; Jai rejects
+        // a struct whose `using` members do that, so only the first of them stays `using`.
+        if !disable_using && parent_struct {
+            exposed: [..] *Declaration;
+            collect_exposed_names(*exposed, parent_struct);
+            disable_using = names_overlap(exposed, taken_names);
+            if !disable_using for exposed array_add(*taken_names, it);
+        }
+        array_add(*taken_names, parent);
         if disable_using {
             parent.decl_flags &= ~ .QUALIFIER_USING;
             prepend_comment(*parent.comment, "// jai: not `using`, its names would collide with others in this struct");
@@ -1159,6 +1169,33 @@ print_struct_body :: (builder: *String_Builder, s: *Struct, as_type: bool, part 
 
 // Would `using` a base bring in a data member or type parameter named like a member of the
 // derived struct? (Functions may overload.)
+// The members that `using base` brings into a struct: its data members, its bases and
+// virtual bases by name, and what the `using` ones bring in turn.
+collect_exposed_names :: (names: *[..] *Declaration, base: *Struct, depth := 0) {
+    if !base || depth > 16 return;
+    for base.declarations {
+        if it.kind == .FUNCTION || (it.decl_flags & .OMIT_FROM_OUTPUT) continue;
+        array_add(names, it);
+    }
+    for base.parents {
+        array_add(names, it);
+        if it.decl_flags & .QUALIFIER_USING collect_exposed_names(names, get_base_struct(it), depth + 1);
+    }
+    for base.virtual_bases {
+        array_add(names, it);
+        collect_exposed_names(names, get_base_struct(it), depth + 1);
+    }
+}
+
+names_overlap :: (a: [] *Declaration, b: [] *Declaration) -> bool {
+    for x: a {
+        for y: b {
+            if x != y && x.output_name == y.output_name return true;
+        }
+    }
+    return false;
+}
+
 base_shadows_names :: (base: *Struct, local_names: [..] *Declaration) -> bool {
     for member: base.declarations {
         if member.kind == .FUNCTION || (member.decl_flags & .OMIT_FROM_OUTPUT) continue;

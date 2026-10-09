@@ -3191,7 +3191,11 @@ impl Compiler {
         let mut procs = Vec::new();
         for sc in scopes {
             let r = self.lookup(sc, name);
-            for id in r.unwrap_or_default() {
+            let ids = r.unwrap_or_default();
+            if ids.len() > 1 {
+                self.check_identical_overloads(&ids)?;
+            }
+            for id in ids {
                 let found = match self.resolve_entity(id)? {
                     scope::Resolved::Proc(p)
                     | scope::Resolved::Const {
