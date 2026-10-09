@@ -16,6 +16,7 @@ mod model;
 mod position;
 mod project;
 mod protocol;
+mod refactor;
 mod semantic;
 mod session;
 

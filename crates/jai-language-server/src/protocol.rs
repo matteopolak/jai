@@ -381,7 +381,13 @@ impl JsonSession {
                         "retriggerCharacters": [","],
                     },
                     "codeActionProvider": {
-                        "codeActionKinds": ["quickfix", "refactor.inline", crate::lints::FIX_ALL_KIND]
+                        "codeActionKinds": [
+                            "quickfix",
+                            "refactor.extract",
+                            "refactor.inline",
+                            "refactor.rewrite",
+                            crate::lints::FIX_ALL_KIND,
+                        ]
                     },
                     "codeLensProvider": { "resolveProvider": false },
                     "executeCommandProvider": { "commands": COMMANDS },
