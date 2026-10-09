@@ -1708,7 +1708,12 @@ impl Compiler {
             }
             None => (scope, self.check_condition(f, scope, cond)?),
         };
-        f.b.branch(c, body_block, exit);
+        // `while true` only ends through `break`, which the missing-return warning relies on.
+        if matches!(cond.kind, ast::ExprKind::Bool(true)) {
+            f.b.jump(body_block);
+        } else {
+            f.b.branch(c, body_block, exit);
+        }
         f.b.switch_to(body_block);
         f.loops.push(LoopFrame {
             label,

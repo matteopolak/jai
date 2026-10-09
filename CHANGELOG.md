@@ -29,6 +29,9 @@ The light-bulb menu offers *Extract into variable*, *Extract into procedure* (pa
 ### Call hierarchy and expand selection
 
 *Show Call Hierarchy* lists the callers and callees of a procedure, overloads and modules included, and *Expand Selection* grows from a token through expressions, statements and blocks to the file.
+### Warnings
+
+- A procedure with results whose body can reach its end without returning gets the warning `not all control paths return a value`. `jaic check`, `run` and `build` print compile warnings before any error. See [diagnostics](docs/compiler/diagnostics.md#compile-warnings-compilerwarnings).
 
 ### Fixes
 

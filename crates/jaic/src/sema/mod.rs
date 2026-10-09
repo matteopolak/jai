@@ -685,6 +685,18 @@ impl Compiler {
         }
     }
 
+    /// Record a warning, once per place and message (polymorphic instances check the same
+    /// source again).
+    pub fn warn(&mut self, d: Diagnostic) {
+        if !self
+            .warnings
+            .iter()
+            .any(|w| w.span == d.span && w.message == d.message)
+        {
+            self.warnings.push(d);
+        }
+    }
+
     /// `d` as text for the user, with a "did you mean" help line where one applies.
     pub fn render(&self, d: &Diagnostic) -> String {
         match self.with_name_suggestion(d) {
