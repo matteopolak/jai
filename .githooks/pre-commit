@@ -115,7 +115,7 @@ $jai_list
 EOF
             then
                 failed=1
-                add_fix "jaifmt <files>   (or: jaifmt \$(git diff --cached --name-only --diff-filter=ACMR | grep '\\.jai\$'))"
+                add_fix "jaifmt <files>"
             fi
         fi
     fi
@@ -162,7 +162,8 @@ if [ -n "$rs_list" ]; then
             status=$?
             if [ "$status" != 0 ] || [ -n "$out" ]; then
                 echo "rustfmt: $f would change" >&2
-                printf '%s\n' "$out" | sed 's/<stdin>/'"$(printf '%s' "$f" | sed 's/[&|]/\\&/g')"'/' >&2
+                esc=$(printf '%s' "$f" | sed 's/[&|\\]/\\&/g')
+                printf '%s\n' "$out" | sed "s|<stdin>|$esc|" >&2
                 rs_bad=1
             fi
         done <<EOF
