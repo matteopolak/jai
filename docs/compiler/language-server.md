@@ -45,7 +45,7 @@ It has two layers:
 | Expansion documents (`jai-expansion:` URIs) | `jai/expansion`, `jai/source` (non-standard) | semantic |
 | Code lens: how many polymorphs each polymorphic procedure has, and their bindings | `textDocument/codeLens` | semantic |
 | Semantic tokens: types, procedures, macros, `$T`, constants, enum members, modules, directives, notes, `%` | `textDocument/semanticTokens/full` | syntax, refined by semantic |
-| Document symbols (outline), workspace symbols | `textDocument/documentSymbol`, `workspace/symbol` | syntax |
+| Document symbols (outline), workspace symbols (open documents and the project's other files) | `textDocument/documentSymbol`, `workspace/symbol` | syntax |
 | Folding ranges: blocks and runs of `#import`/`#load` | `textDocument/foldingRange` | syntax |
 | Stdlib and module sources for read-only viewing | `jai/source` (non-standard) | environment |
 
@@ -375,7 +375,7 @@ A here-string whose terminator names a language (`#string WGSL`, `#string,cr sql
 
 ### Syntax-only extras
 
-- **Workspace symbols** search the declaration rows of every open document (top-level and nested), case-insensitive substring.
+- **Workspace symbols** search the declaration rows of every open document (top-level and nested), then the top-level declarations of the project's other `.jai` files (`Session::project_symbols`), case-insensitive substring. Those files are the ones the auto-import walk lists under the workspace folders and the open documents' programs ([indexing](#auto-import-completion)); they are scanned from tokens and never compiled, so `#scope_file` names are included and nothing is nested or has a container. At most `Limits::symbols` come back in all, open documents first.
 - **Folding ranges** pair `{}`, `()` and `[]` across lines (ending on the line before the closer) and fold runs of `#import`/`#load` lines as `imports`.
 - **Code lenses** come from `ide_polymorphs`: each polymorphic procedure in the file with its instances' bindings (`T = s64`). Instances exist only for calls the check reached.
 

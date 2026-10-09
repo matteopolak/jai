@@ -959,7 +959,8 @@ impl Session {
     // Syntax-only features
     // ---------------------------------------------------------------------------------------
 
-    /// Declarations of every open document whose name contains `query` (case-insensitive).
+    /// Declarations of every open document, then of the project's other files, whose name
+    /// contains `query` (case-insensitive), at most `Limits::symbols` of them.
     pub fn workspace_symbols(&self, query: &str) -> Vec<SymbolInformation> {
         let query = query.to_lowercase();
         let mut out = Vec::new();
@@ -993,6 +994,9 @@ impl Session {
                 });
             }
         }
+        // The project's files that are not open: their top-level names, from tokens.
+        let room = self.limits.symbols.saturating_sub(out.len());
+        out.extend(self.project_symbols(&query, room));
         out
     }
 
