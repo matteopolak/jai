@@ -116,7 +116,7 @@ struct Local {
 // Text helpers
 // -------------------------------------------------------------------------------------------
 
-fn trim(text: &str, start: usize, end: usize) -> (usize, usize) {
+pub(crate) fn trim(text: &str, start: usize, end: usize) -> (usize, usize) {
     let end = end.min(text.len());
     let start = start.min(end);
     let slice = &text[start..end];
@@ -210,7 +210,7 @@ fn paren_balance(text: &str) -> i32 {
 
 /// The source extent of an expression. The parser's span can leave out parentheses around the
 /// expression's first or last operand, so they are taken back in.
-fn extent(text: &str, span: Sp) -> (usize, usize) {
+pub(crate) fn extent(text: &str, span: Sp) -> (usize, usize) {
     let (mut a, mut b) = (span.start as usize, span.end as usize);
     if a > b || b > text.len() || !text.is_char_boundary(a) || !text.is_char_boundary(b) {
         return (a, b);
@@ -233,7 +233,7 @@ fn extent(text: &str, span: Sp) -> (usize, usize) {
 }
 
 /// A statement's extent, through its `;`.
-fn stmt_extent(text: &str, s: &Stmt) -> (usize, usize) {
+pub(crate) fn stmt_extent(text: &str, s: &Stmt) -> (usize, usize) {
     let (a, mut b) = (s.span.start as usize, s.span.end as usize);
     if b <= text.len() && a <= b {
         let rest = text[b..].trim_start_matches([' ', '\t']);
