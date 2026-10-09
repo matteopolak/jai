@@ -550,6 +550,14 @@ impl Compiler {
                         let v = f.b.load(it, src);
                         self.vec_scalar_write(f, dst, it, v, span)?;
                     }
+                    // A float variable is a vector register in Jai's `#asm`: `movd i, x` moves its
+                    // bits to or from an integer register.
+                    (dst @ (VOpd::Gpr(_) | VOpd::Mem(_)), src @ (VOpd::Gpr(_) | VOpd::Mem(_)))
+                        if !matches!((dst, src), (VOpd::Mem(_), VOpd::Mem(_))) =>
+                    {
+                        let v = self.vec_scalar_read(f, src, it, span)?;
+                        self.vec_scalar_write(f, dst, it, v, span)?;
+                    }
                     _ => return err(span, format!("`{name}` needs a vector register operand")),
                 }
             }
