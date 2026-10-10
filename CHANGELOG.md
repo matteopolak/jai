@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Default (`-O0`) builds run call-heavy code up to 1.7x faster and compile a little faster: cheaper stack trace bookkeeping (none for procedures that call nothing), struct copies inline, and shorter code for constant division, shifts and `x += y`.
+
 ## [0.7.0] - 2026-10-09
 
 Smaller downloads, more checks that catch mistakes, and more of your program visible to compile-time code.
