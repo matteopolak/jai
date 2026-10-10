@@ -374,9 +374,18 @@ get_runtime_info :: (w: Workspace = -1, loc := #caller_location) -> Runtime_Info
 // Provided by the compiler (filled once the program is fully compiled).
 __runtime_info: Runtime_Info #elsewhere;
 
+// In compile-time code: a descriptor of every type of the workspace's program so far, used or not.
+// In a running program: the types the program reaches.
 get_type_table :: (w: Workspace = -1, loc := #caller_location) -> [] *Type_Info {
+    if #compile_time {
+        table: [] *Type_Info;
+        __jaic_type_table(w, *table);
+        return table;
+    }
     return get_runtime_info(w, loc).type_table;
 }
+
+__jaic_type_table :: (w: s64, out: *[] *Type_Info) #compiler;
 
 // ---------------------------------------------------------------------------
 // Operations that need compiler internals jaic does not expose yet. They type-check
