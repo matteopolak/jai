@@ -1364,25 +1364,43 @@ impl LlvmBackend {
         let object = if settings.output_type == OutputType::ObjectFile {
             output.clone()
         } else if keep_objects {
-            std::fs::create_dir_all(&kept_dir).map_err(|e| {
-                format!(
-                    "could not create the object directory `{}`: {}",
-                    shown(&kept_dir),
-                    jaic::io_reason(&e)
-                )
-            })?;
             kept_dir.join(beside(".o").file_name().unwrap_or_default())
         } else {
             beside(".o")
         };
         // Creating the object file now finds out, with the system's reason, when that place
-        // cannot be written, rather than from LLVM or the linker after code generation.
-        if let Err(e) = std::fs::File::create(&object) {
-            return Err(format!(
-                "cannot write `{}`: {}\nhelp: choose a directory you can write to with `-o`",
-                shown(&object),
-                jaic::io_reason(&e)
-            ));
+        // cannot be written, rather than from LLVM or the linker after code generation. A kept
+        // object's directory is shared with concurrent builds into the same output directory,
+        // and one of them may remove it while it is empty (`remove_stale_objects`), so creating
+        // the directory and the file is retried when it vanishes in between.
+        let mut attempt = 0;
+        loop {
+            attempt += 1;
+            let created = if keep_objects {
+                std::fs::create_dir_all(&kept_dir).map_err(|e| {
+                    format!(
+                        "could not create the object directory `{}`: {}",
+                        shown(&kept_dir),
+                        jaic::io_reason(&e)
+                    )
+                })
+            } else {
+                Ok(())
+            };
+            created?;
+            match std::fs::File::create(&object) {
+                Ok(_) => break,
+                Err(_) if keep_objects && attempt < 20 => {
+                    std::thread::sleep(std::time::Duration::from_millis(5));
+                }
+                Err(e) => {
+                    return Err(format!(
+                        "cannot write `{}`: {}\nhelp: choose a directory you can write to with `-o`",
+                        shown(&object),
+                        jaic::io_reason(&e)
+                    ));
+                }
+            }
         }
         Ok(Prepared {
             output,
