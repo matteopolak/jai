@@ -1,7 +1,7 @@
 //! Doc comments: hover, completion, signature help and intra-doc links, against the
 //! repository's stdlib.
 use jai_language_server::{
-    CompletionKind, DocumentUri, Environment, Limits, MarkupKind, Position, Session,
+    CompletionKind, DocumentUri, Environment, Limits, MarkupKind, Position, Session, TextChange,
 };
 use std::path::PathBuf;
 
@@ -582,4 +582,104 @@ fn broken_doc_links_are_lint_diagnostics_with_a_quick_fix() {
     assert!(!fix.is_preferred);
     let (_, edits) = fix.edit.as_ref().unwrap();
     assert_eq!(edits[0].new_text, "print");
+}
+
+const BELOW: &str = r#"#import "Basic";
+
+main :: () {
+    q, r := divide(47, 5);
+    print("%\n", hail("x"));
+    print("%\n", q);
+    print("%\n", r);
+    print("%\n", q + r);
+    print("%\n", q - r);
+    print("%\n", q * r);
+    print("%\n", q / r);
+}
+
+// Whole-number division.
+//
+// Returns the `quotient` and the `remainder`.
+divide :: (a: int, b: int) -> quotient: int, remainder: int {
+    return a / b, a % b;
+}
+
+// Greets `who`; see [divide].
+hail :: (who: string, times := 1) -> string {
+    return who;
+}
+"#;
+
+/// `BELOW` compiled, then edited (as an editor does) to `text`.
+fn edited(text: &str) -> Session {
+    let mut s = open_with(BELOW);
+    let change = TextChange {
+        range: None,
+        range_length: None,
+        text: text.into(),
+    };
+    s.change(&uri(), 2, &[change]).unwrap();
+    s
+}
+
+#[test]
+fn completion_docs_of_declarations_below_an_edit_are_whole() {
+    // The compile completion answers from predates the new line, so `divide` sits a line
+    // further down in the document than the compile says.
+    let text = BELOW.replace("    q, r :=", "    x := divi\n    q, r :=");
+    let s = edited(&text);
+    let list = s
+        .completion(&uri(), after(&text, "x := divi", 0, 0))
+        .unwrap();
+    let item = list.items.iter().find(|i| i.label == "divide").unwrap();
+    let docs = item.documentation.as_deref().unwrap();
+    assert!(docs.starts_with("Whole-number division."), "{docs}");
+    assert!(
+        docs.ends_with("Returns the `quotient` and the `remainder`."),
+        "{docs}"
+    );
+}
+
+#[test]
+fn signature_help_of_an_open_call_has_docs_and_links() {
+    // Unclosed, the call swallows the rest of the file: the parse error is at its end.
+    let text = BELOW.replace("hail(\"x\"));", "hail(\"x\", ");
+    let s = edited(&text);
+    let help = s
+        .signature_help_as(
+            &uri(),
+            after(&text, "hail(\"x\", ", 0, 0),
+            MarkupKind::Markdown,
+        )
+        .unwrap()
+        .expect("signature help");
+    assert_eq!(help.active_parameter, 1);
+    let docs = help.signatures[0].documentation.as_deref().unwrap();
+    let line = line_of(&text, "divide ::");
+    assert!(
+        docs.contains(&format!("[divide](file:///lsp-doc-test/main.jai#L{line})")),
+        "{docs}"
+    );
+}
+
+#[test]
+fn code_in_comment_fences_is_highlighted_as_jai() {
+    use jai_language_server::SemanticTokenKind as K;
+    let text = "// Greets `who`:\n//\n// ```\n// s := hail(\"Ford\", 2); // \"Hey Hey Ford\"\n// ```\nhail :: (who: string, times := 1) -> string { return who; }\n";
+    let s = open_with(text);
+    let tokens = s.semantic_tokens(&uri()).unwrap();
+    let kinds: Vec<(u32, K)> = tokens
+        .iter()
+        .filter(|t| t.position.line == 3)
+        .map(|t| (t.position.character, t.kind))
+        .collect();
+    let at = |word: &str| text.lines().nth(3).unwrap().find(word).unwrap() as u32;
+    assert_eq!(kinds[0], (at("s :="), K::Variable), "{kinds:?}");
+    assert!(kinds.contains(&(at("hail"), K::Function)), "{kinds:?}");
+    assert!(kinds.contains(&(at("\"Ford\""), K::String)), "{kinds:?}");
+    assert!(kinds.contains(&(at("2)"), K::Number)), "{kinds:?}");
+    // The comment inside the code stays a comment.
+    assert!(kinds.iter().all(|&(c, _)| c < at("// \"Hey")), "{kinds:?}");
+    // Prose lines are not code.
+    assert!(tokens.iter().all(|t| t.position.line != 0), "{tokens:?}");
 }
