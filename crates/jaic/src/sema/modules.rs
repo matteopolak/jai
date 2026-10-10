@@ -643,6 +643,7 @@ impl Compiler {
             match &stmt.kind {
                 ast::StmtKind::Decl(decl) if decl.kind == ast::DeclKind::Const => {
                     for (index, name) in decl.names.iter().enumerate() {
+                        self.check_redeclared(scope, name.name, name.span, Some(decl))?;
                         self.add_entity(
                             scope,
                             name.name,
@@ -687,6 +688,7 @@ impl Compiler {
                 for (index, name) in decl.names.iter().enumerate() {
                     let named = entity_name(self, name.name);
                     using_name.get_or_insert(named);
+                    self.check_redeclared(target, named, name.span, Some(decl))?;
                     let id = self.add_entity(
                         target,
                         named,
@@ -807,6 +809,7 @@ impl Compiler {
             ast::StmtKind::Import(import) => {
                 self.note_program_params(file_scope, import);
                 if let Some(name) = import.name {
+                    self.check_redeclared(target, name.name, name.span, None)?;
                     let id = self.add_entity(
                         target,
                         name.name,
