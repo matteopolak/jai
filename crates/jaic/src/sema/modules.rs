@@ -443,13 +443,18 @@ impl Compiler {
             return Ok(id);
         }
         // A plain `#import "M"` joins an instance already configured elsewhere
-        // (`#import "Basic"()(MEMORY_DEBUGGER=true)` in the program applies to all).
+        // (`#import "Basic"()(MEMORY_DEBUGGER=true)` in the program applies to all), but not
+        // one whose ordinary parameters were set: that is another instance of the module.
         if params.is_empty()
             && let Some(id) = self
                 .module_cache
                 .iter()
                 .filter(|((path, _), _)| *path == key.0)
                 .map(|(_, &id)| id)
+                .filter(|id| {
+                    let m = &self.modules[id.0 as usize];
+                    m.params.iter().all(|(n, ..)| m.program_params.contains(n))
+                })
                 .min_by_key(|id| id.0)
         {
             return Ok(id);
@@ -913,6 +918,28 @@ impl Compiler {
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
                     self.declare_module_parameter(scope, module, position, param)?;
                 }
+                // An argument must name a parameter the module declares.
+                let given: Vec<Sym> = self.modules[module.0 as usize]
+                    .params
+                    .iter()
+                    .map(|(n, ..)| *n)
+                    .filter(|n| !n.as_str().starts_with('$'))
+                    .collect();
+                for name in given {
+                    if !params
+                        .iter()
+                        .chain(runtime_params)
+                        .any(|p| p.name.is_some_and(|n| n.name == name))
+                        // Bundled modules vary between Jai releases: a program may pass a
+                        // parameter this copy of one does not declare.
+                        && !self.is_system_module(module)
+                    {
+                        return err(
+                            stmt.span,
+                            format!("argument `{name}` is not a parameter of this module"),
+                        );
+                    }
+                }
                 let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
                 self.modules[module.0 as usize]
                     .program_params
@@ -1110,6 +1137,20 @@ impl Compiler {
                 span: param.span,
             });
             return Ok(());
+        }
+        if let Some((value, _)) = &provided
+            && let Some(wanted) = literal_param_class(param)
+            && let Some(given) = value_class(value)
+            && wanted != given
+            && !(wanted == "float" && given == "integer")
+        {
+            return err(
+                param.span,
+                format!(
+                    "module parameter `{}` expects {wanted}, but the import gives {given}",
+                    name.name
+                ),
+            );
         }
         if let Some((value, ty)) = provided {
             // A scalar for a parameter with a written type (`DEFAULT_MSAA: s32 = 4`) takes
@@ -1547,4 +1588,43 @@ fn const_alias(name: ast::Ident, value: ast::Expr) -> Rc<ast::Decl> {
         flags: Vec::new(),
         notes: Vec::new(),
     })
+}
+
+/// What a module parameter holds, from its written type or its literal default: `bool`,
+/// `string`, `integer` or `float`. Other parameters are not checked here.
+fn literal_param_class(param: &ast::Param) -> Option<&'static str> {
+    use ast::ExprKind as E;
+    if let Some(E::Ident(t)) = param.ty.as_ref().map(|t| &t.kind) {
+        return match t.as_str() {
+            "bool" => Some("bool"),
+            "string" => Some("string"),
+            "int" | "s8" | "s16" | "s32" | "s64" | "u8" | "u16" | "u32" | "u64" => Some("integer"),
+            "float" | "float32" | "float64" => Some("float"),
+            _ => None,
+        };
+    }
+    if param.ty.is_some() {
+        return None;
+    }
+    let mut default = param.default.as_ref()?;
+    while let E::Unary(ast::UnOp::Neg | ast::UnOp::Plus, inner) = &default.kind {
+        default = inner;
+    }
+    match default.kind {
+        E::Bool(_) => Some("bool"),
+        E::Str(_) => Some("string"),
+        E::Int(_) => Some("integer"),
+        E::Float(_) => Some("float"),
+        _ => None,
+    }
+}
+
+fn value_class(value: &Value) -> Option<&'static str> {
+    match value {
+        Value::Bool(_) => Some("bool"),
+        Value::String(_) => Some("string"),
+        Value::Int(_) => Some("integer"),
+        Value::Float(_) => Some("float"),
+        _ => None,
+    }
 }
