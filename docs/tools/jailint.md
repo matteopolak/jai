@@ -177,7 +177,10 @@ Off by default. `if total == expected` with two computed floats. Comparisons wit
 - the loop could change `xs` itself (assignment, `array_add`, taking its address, `remove`);
 - it walks a grid (`for c: 0..xs[i].count - 1` inside);
 - the index is used with other arrays or computed with inside an index (`ys[i]`, `xs[i + 1]`);
-- `xs` is a constant (`xs :: T.[...]`) and the suggestion would be `for *xs`, since a constant has no elements to point at.;
+- `xs` is a constant (`xs :: T.[...]`) and the suggestion would be `for *xs`, since a constant has no elements to point at;
+- the body also indexes `xs` with another variable (`ms[i] - ms[j]` in two nested loops over `ms`): walking pairs reads best with both indices, so neither loop is reported.
+
+Nested loops: when an element use of the outer index sits inside a `for` that binds `it` (unnamed, or a `for j: 0..ys.count-1` this rule rewrites to bind `it` in the same run), `it` would name the inner element. The outer loop is still reported but gets no fix; the help suggests a named iterator (`for elem: xs` and `elem`). The inner loop is fixed, so `for i: 0..str.count-1 { for j: 0..to_find.count-1 { if str[i] == to_find[j] ... } }` becomes `for i: ... { for to_find { if str[i] == it ... } }`.
 
 ### infinite_loop
 
@@ -344,7 +347,7 @@ Every finding below was checked by hand. Findings that turned out wrong were fix
    - run each enabled rule.
 
    Rules walk the syntax tree (`syntax::walk`) and ask the facts about types and names. Where the compiler did not look (an `#if` branch left out, a body that failed), they fall back to the text and stay quiet.
-4. **Report**. Findings get their level, suppressed ones are dropped, and the rest are rendered (`render.rs`). `--fix` applies each machine-applicable fix whose edits do not overlap one already taken (`fix.rs`); run again for the rest.
+4. **Report**. Findings get their level, suppressed ones are dropped, and the rest are rendered (`render.rs`). `--fix` applies each machine-applicable fix whose edits do not overlap one already taken, leaving a fix whose edits enclose another fix's edits (an outer loop around a rewritten inner one) for the next pass (`fix.rs`). It then lints the fixed files again, up to 5 passes in all, only while some fix was left over; most runs lint once. The language server's `source.fixAll.jailint` applies one pass.
 
 A file compiled by several roots is reported once, from the first root. Within a root, a workspace's compile wins over the metaprogram's.
 

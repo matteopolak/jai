@@ -15,6 +15,7 @@
 - Hover rendered a `[text](name)` doc link with a stray `)` after the resolved link.
 - A `// jailint: allow(rule)` line inside a doc comment now covers the comment lines below it, not just the declaration.
 - `jailint`'s `index_only_loop` now reports loops over strings (`for i: 0..str.count-1 { cur := str[i]; }` becomes `for str`, or `for *str` when bytes are written), and its fix no longer leaves a stray `)` behind when the bound is parenthesized.
+- `jailint --fix` no longer changes behaviour on nested index loops: `for i: 0..ms.count-1 { for j: ... { ms[i] - ms[j] } }` was rewritten to `for ms { for ms { it - it } }`. `index_only_loop` stays quiet for pairwise walks of one array, and leaves an outer loop whose element is used inside a nested loop that binds `it` without a fix (suggesting a named iterator). `--fix` applies a fix that encloses another fix's edits on a later pass, linting again (at most 5 passes).
 - `jailint`'s `manual_index_counter` now reports hand-kept counters in loops over strings.
 - `jailint` false positives found by linting 39 public Jai projects: `defer_in_loop` fires only on deferred calls that release a value (`free`, `array_free`, `destroy*`, `close*`, ...), not on `defer level += 1` or `defer reset(*pool)`; `unused_parameter` skips procedures whose name is defined more than once nearby (platform variants, backends in sibling files, overloads); `self_assignment` compares what both sides resolve to, so `presentMode = presentMode;` under `using` is not reported; the `unused_*` rules skip generated files.
 
