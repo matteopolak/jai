@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Doc comment links reach the fields and parameters of polymorphic structs (`[Ring.items]`, `[Ring.CAPACITY]`), even when the program never instantiates the struct.
+- The tour's basics and polymorphism stops show off doc comments: hover a procedure for its Markdown docs, and follow the links in them.
+
 ## [0.9.0] - 2026-10-10
 
 Doc comments are now real documentation: the editor renders them as Markdown and follows the links in them. `jailint` gets two new rules and fewer false positives.
