@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Type info: a struct declared in a procedure, a block or another struct has `status_flags.LOCAL`.
 - Type info: every procedure constant in a struct body (also polymorphic and `#expand` ones) appears in `type_info(T).members` with the `CONSTANT` flag even when nothing has used it yet, and a constant member's `offset_in_bytes` is `-1` instead of `0`.
 - A name declared twice in one scope is an error (`Limit :: 4; Limit := 5;`, a constant and an import, two constants in a struct or block, two parameters with one name) instead of silently keeping both. Procedures still overload.
 - Compiler messages: `TYPECHECKED` also reports the bodies of the program's own procedures that nothing calls (in a last message before `COMPLETE`), and file-level declarations carry `IS_GLOBAL` (plus `SCOPE_FILE` below `#scope_file`) in their `flags`; a polymorphic procedure's declaration has a procedure type.
