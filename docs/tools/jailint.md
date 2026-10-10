@@ -44,6 +44,7 @@ Findings and command-line errors go through jaic's shared renderer (`jaic::rende
 | `almost_swapped` | warn | no | `a = b; b = a;`, a swap that sets both to `b` |
 | `bitwise_precedence` | warn | yes | `1 << n - 1`, `flags \| 1 << 3`: bitwise operators that group unlike C |
 | `bool_comparison` | warn | yes | `x == true`, `x != false`, `false == x` |
+| `broken_doc_link` | warn | editor | a link in a doc comment (`[prnt]`, `[Type.fild]`) that names no declaration |
 | `defer_in_loop` | warn | no | a `defer` in a loop body that cleans up something from outside the loop |
 | `duplicate_condition` | warn | no | an `else if` or `case` that repeats an earlier one and can never run |
 | `erasing_op` | warn | no | `x * 0`, `x & 0`, `x % 1`: always `0` |
@@ -103,6 +104,27 @@ Fires on an unparenthesized bitwise operation that is an operand of `+ - * / %`,
 ### bool_comparison
 
 `if ready == true` → `if ready`; `x == false` → `!x`. Only when the other side is a non-constant `bool`, so integers and types with `operator ==` are left alone.
+
+### broken_doc_link
+
+A doc comment link that names nothing is not clickable and does not warn, so it rots when the declaration is renamed (see [doc comments](../compiler/doc-comments.md)):
+
+```jai
+// Prints the point with [prnt], or [`Point.xx`].
+show :: (p: Point) {}
+```
+
+```text
+warning[broken_doc_link]: `[prnt]` doesn't resolve to a declaration
+help: did you mean `print`?
+```
+
+Only comments directly above a declaration (or trailing a field, member or parameter) are read; a comment above a statement is not. Links resolve with the language server's rules, from the scope of the documented declaration, so a module (`[Basic.print]`) has to be one the file imports and uses. Unresolved links are reported only when they look meant as links, the same test everywhere (`jaic::docs`):
+
+- reported: ``[`name`]``, `[name()]`, `[text](name)`, a dotted path (`[Type.field]`, `[Basic.print]`) and a bare word of two or more characters that is not all capitals and either has an underscore or a capital in it (`[print_all]`, `[Point]`) or is a close misspelling of a name in scope (`[prnt]`, four letters or more);
+- not reported: one letter (`[x]`), all capitals (`[TODO]`, `[NOTE]`), a plain lowercase word that is nothing like a name in scope (`[sic]`, `[yet]`, `[keys]`), a dotted lowercase path whose first part is no name in scope (`[table.header]`), a word glued to quotes or slashes (`'..[name]'`), a link followed by `:` or named by a `[label]: url` line in the same comment (reference definitions), and everything that is not a link in the first place: `a[i]`, `[0]`, `[x][y]`, `[ ]`, `[^1]`, `[some words]`, URL targets, and text in code spans and fences.
+
+When exactly one name in scope (for a dotted path, one member of what the path leads to) is a close misspelling of the last segment (edit distance up to a third of its length, or a different case), the finding offers it as a fix (`did you mean `print`?`). It is a guess, so `--fix` leaves it alone and the editor offers it as a quick fix. A `// jailint: allow(broken_doc_link)` line inside the comment silences the links below it.
 
 ### defer_in_loop
 

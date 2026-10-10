@@ -10,6 +10,7 @@ mod absurd_comparison;
 mod almost_swapped;
 mod bitwise_precedence;
 mod bool_comparison;
+pub(crate) mod broken_doc_link;
 mod defer_in_loop;
 mod duplicate_condition;
 mod erasing_op;
@@ -70,6 +71,12 @@ pub static RULES: &[RuleInfo] = &[
         default: Level::Warn,
         summary: "comparing a bool with `true` or `false`",
         check: bool_comparison::check,
+    },
+    RuleInfo {
+        name: "broken_doc_link",
+        default: Level::Warn,
+        summary: "a link in a doc comment (`[name]`) that names no declaration",
+        check: broken_doc_link::check,
     },
     RuleInfo {
         name: "defer_in_loop",
