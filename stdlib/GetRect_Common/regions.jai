@@ -250,6 +250,10 @@ add_subwindow :: (info: *Subwindow_Info, theme: *Subwindow_Theme = null, identif
     return state;
 }
 
+close_button_rect :: (theme: *Subwindow_Theme, title: Rect) -> Rect {
+    return .{ title.x + title.w - title.h * (theme.close_button_width + theme.close_button_right_margin), title.y + (title.h - title.h * theme.close_button_height) / 2, title.h * theme.close_button_width, title.h * theme.close_button_height };
+}
+
 draw_subwindow :: (state: *Subwindow_State) {
     if !state.info || !state.info.open return;
     start_using_state(state);
@@ -278,7 +282,9 @@ draw_subwindow :: (state: *Subwindow_State) {
         }
         left_request_cursor(get_pointer_from_resize_control(controls), state);
     }
-    title_status := get_status_flags(title, state);
+    // The close button sits inside the title bar and is drawn later, so leave its click to it.
+    over_close := theme.subwindow_flags & .CLOSE_BUTTON && title.h > 0 && is_inside(mouse_x_float, mouse_y_float, close_button_rect(theme, title));
+    title_status := get_status_flags(title, state, ignore = ifx over_close then .LEFT_CLICK else .NOTHING);
     if title_status & .PRESSED {
         state.dragging = .TITLE;
         state.dragging_last = .{ mouse_x_float, mouse_y_float };
@@ -313,8 +319,7 @@ draw_subwindow :: (state: *Subwindow_State) {
     rounded_rectangle(content, theme.region_background.shape, theme.region_background.color, theme.region_background.frame_color);
     if title.h > 0 core_draw_button(title, info.title_text, *state.base, title_status, *theme.title_bar, null);
     if theme.subwindow_flags & .CLOSE_BUTTON && title.h > 0 {
-        close := Rect.{ title.x + title.w - title.h * (theme.close_button_width + theme.close_button_right_margin), title.y + (title.h - title.h * theme.close_button_height) / 2, title.h * theme.close_button_width, title.h * theme.close_button_height };
-        pressed, button_state, released := button(close, "x", *theme.close_button, cast(s64) state.hash + 1);
+        pressed, button_state, released := button(close_button_rect(theme, title), "x", *theme.close_button, cast(s64) state.hash + 1);
         if pressed {
             info.open = false;
             state.wants_draw = false;
