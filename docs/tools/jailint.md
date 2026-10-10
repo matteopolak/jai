@@ -280,9 +280,14 @@ Only procedures whose every caller is in view. That means named procedures that 
 - not exported from a module;
 - not `#c_call`, `#foreign`, `#expand`, an operator or `for_expansion`;
 - without notes;
-- not sharing its name with another definition nearby.
+- without a variant (below).
 
-The last condition covers platform variants (`#if OS == ...`), build-selected backends in sibling files and overload sets, whose signatures must match. The compiler only sees the variants the build loads, so the `.jai` files under the file's own directory (three levels deep, at most 2000 files, `*.fixed.jai` excluded) are scanned once per directory for other `name :: (` definitions, and a procedure whose name is defined more than once is skipped.
+A variant is another definition of the same name whose parameters have the same names in the same order (their types may differ: `HWND` on one platform, `*void` on another). Some other definition of the name that does not match, such as an unrelated `update` or `draw` elsewhere in the tree, does not count. The procedure is checked against:
+
+- the other definitions in its own file, including the `#if` branches the build did not select (`#if OS == .MACOS { f :: (window: W) {} } else { f :: (window: W) { use(window); } }`);
+- `.jai` files the program does not load, which the compiler cannot see: first the siblings in the file's directory, then the files of the directory above and of its immediate subdirectories (`src/platform/macos.jai` against `src/platform/windows.jai`, or `utils/macos_window.jai` against `utils/win32_window.jai`). These files are parsed with the compiler's parser, not searched as text; procedures nested in other procedures count too. At most 300 files of up to 1 MiB are parsed per directory, once per process, and `*.fixed.jai` files are left out.
+
+Overload sets are skipped before any of this, from the compiler's own view of the scope.
 
 Empty bodies (stubs), bodies with `#insert`, and parameters whose type has a `$` (the argument settles a polymorphic type) are skipped. Prefix a name with `_` to keep a parameter on purpose.
 
