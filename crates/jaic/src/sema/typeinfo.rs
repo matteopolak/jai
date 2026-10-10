@@ -6,6 +6,9 @@ use super::value::Aggregate;
 use super::*;
 use crate::types::{ArrayKind, TypeKind};
 
+/// A struct-scoped constant for type info: where it is declared, its name, type, value and notes.
+type StructConstant = (Span, Sym, TypeId, Option<Value>, Vec<Rc<[u8]>>);
+
 /// Tag values of Preload's `Type_Info_Tag`.
 mod tag {
     pub const INTEGER: i128 = 0;
@@ -812,10 +815,7 @@ impl Compiler {
     /// procedures have no single value and are not listed. They are listed in
     /// `Type_Info_Struct.members` with the `CONSTANT` flag. A constant that fails to resolve
     /// is left out: type info never reports errors for code nothing uses.
-    fn struct_constants(
-        &mut self,
-        s: crate::types::StructId,
-    ) -> Vec<(Span, Sym, TypeId, Option<Value>, Vec<Rc<[u8]>>)> {
+    fn struct_constants(&mut self, s: crate::types::StructId) -> Vec<StructConstant> {
         let Some(scope) = self.struct_asts.get(&s).map(|src| src.scope) else {
             return Vec::new();
         };
