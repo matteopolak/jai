@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Modules: an import argument that names no parameter of the module, or gives a bool parameter a number (or any parameter a literal of another kind), is an error instead of being ignored; a plain `#import "M"` after `#import "M"(FLAG = true)` is its own instance with the default parameters instead of silently sharing the configured one.
 - Type info: a struct declared in a procedure, a block or another struct has `status_flags.LOCAL`.
 - Type info: every procedure constant in a struct body (also polymorphic and `#expand` ones) appears in `type_info(T).members` with the `CONSTANT` flag even when nothing has used it yet, and a constant member's `offset_in_bytes` is `-1` instead of `0`.
 - A name declared twice in one scope is an error (`Limit :: 4; Limit := 5;`, a constant and an import, two constants in a struct or block, two parameters with one name) instead of silently keeping both. Procedures still overload.
