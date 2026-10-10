@@ -569,6 +569,7 @@ __jaic_code_is_null :: (code: Code) -> bool #compiler;
 __jaic_compiler_version :: () -> string #compiler;
 __jaic_custom_link_complete :: (ws: s64, exit_code: s64) #compiler;
 __jaic_base_path :: () -> string #compiler;
+__jaic_main_file :: () -> string #compiler;
 __jaic_add_library_dir :: (path: string) #compiler;
 __jaic_workspace_remap_import :: (ws: s64, host: string, name: string, replacement: string) #compiler;
 __jaic_workspace_provide_import :: (ws: s64, host: string, target: string, type: s64, value: string) #compiler;
