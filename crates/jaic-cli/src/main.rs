@@ -1369,39 +1369,23 @@ impl LlvmBackend {
             beside(".o")
         };
         // Creating the object file now finds out, with the system's reason, when that place
-        // cannot be written, rather than from LLVM or the linker after code generation. A kept
-        // object's directory is shared with concurrent builds into the same output directory,
-        // and one of them may remove it while it is empty (`remove_stale_objects`), so creating
-        // the directory and the file is retried when it vanishes in between.
-        let mut attempt = 0;
-        loop {
-            attempt += 1;
-            let created = if keep_objects {
-                std::fs::create_dir_all(&kept_dir).map_err(|e| {
-                    format!(
-                        "could not create the object directory `{}`: {}",
-                        shown(&kept_dir),
-                        jaic::io_reason(&e)
-                    )
-                })
-            } else {
-                Ok(())
-            };
-            created?;
-            match std::fs::File::create(&object) {
-                Ok(_) => break,
-                Err(_) if keep_objects && attempt < 20 => {
-                    std::thread::sleep(std::time::Duration::from_millis(5));
-                }
-                Err(e) => {
-                    return Err(format!(
-                        "cannot write `{}`: {}\nhelp: choose a directory you can write to with `-o`",
-                        shown(&object),
-                        jaic::io_reason(&e)
-                    ));
-                }
-            }
+        // cannot be written, rather than from LLVM or the linker after code generation.
+        if keep_objects {
+            std::fs::create_dir_all(&kept_dir).map_err(|e| {
+                format!(
+                    "could not create the object directory `{}`: {}",
+                    shown(&kept_dir),
+                    jaic::io_reason(&e)
+                )
+            })?;
         }
+        std::fs::File::create(&object).map_err(|e| {
+            format!(
+                "cannot write `{}`: {}\nhelp: choose a directory you can write to with `-o`",
+                shown(&object),
+                jaic::io_reason(&e)
+            )
+        })?;
         Ok(Prepared {
             output,
             object,
@@ -1414,7 +1398,8 @@ impl LlvmBackend {
 }
 
 /// Delete the objects an earlier build of `file_name` left in `dir` (`<name>.o`, `<name>.o.N.o`),
-/// so a build with fewer codegen units leaves none behind, and the directory if that empties it.
+/// so a build with fewer codegen units leaves none behind. The directory itself stays: concurrent
+/// builds into the same output directory share it, and removing it would race their writes.
 #[cfg(feature = "llvm")]
 fn remove_stale_objects(dir: &Path, file_name: &std::ffi::OsStr) {
     let Ok(entries) = std::fs::read_dir(dir) else {
@@ -1434,9 +1419,6 @@ fn remove_stale_objects(dir: &Path, file_name: &std::ffi::OsStr) {
         if stale {
             let _ = std::fs::remove_file(entry.path());
         }
-    }
-    if dir.file_name().is_some_and(|n| n == ".build") {
-        let _ = std::fs::remove_dir(dir);
     }
 }
 
