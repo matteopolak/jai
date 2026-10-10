@@ -62,6 +62,7 @@ Findings and command-line errors go through jaic's shared renderer (`jaic::rende
 | `needless_bool` | warn | yes | `ifx c then true else false`, `if c return true; else return false;` |
 | `no_effect` | warn | no | `x == 5;`, `count + 1;`, `flush;`: a statement that does nothing |
 | `range_past_count` | warn | editor | `for i: 0..xs.count` indexing `xs[i]`: one past the end |
+| `redundant_alias` | warn | yes | a local that only exists to be copied into another local (`a := f(); b := a;`) or returned right away |
 | `redundant_cast` | warn | yes | a cast to the type the value already has |
 | `remove_in_for` | warn | no | `array_*_remove_*` on the array a `for` is walking |
 | `reversed_range` | warn | editor | `for i: 10..0`: a range that never runs |
@@ -239,6 +240,17 @@ A negated integer comparison is flipped (`!(n < 10)` → `n >= 10`). Comments in
 ### range_past_count
 
 Ranges include their end, so `for i: 0..xs.count { xs[i] }` reads one past the last element. Fires when a range ends at exactly `xs.count` for an array or string and the body indexes `xs[i]` with the loop variable, unless the body mentions `xs.count` (it may guard the last index). The suggested `xs.count - 1` changes what the loop does, so `--fix` does not apply it.
+
+### redundant_alias
+
+A style rule: `total := a + b; result := total;` becomes `result := a + b;`, and `x := compute(); return x;` becomes `return compute();`. The first name may be a deliberately descriptive one, so lower the level (or suppress) where that is the intent. The fix never changes behaviour or types, so it fires only when all of this holds:
+
+- The two statements are adjacent in one statement list and only whitespace and `;` lies between them (a comment between them, even a trailing one, keeps the rule quiet). Reordering a non-adjacent initializer past other statements could change what it reads, so those are never reported, literal initializers included.
+- The first is `a := <init>;` or `a: T = <init>;`: one plain variable with an initializer that is not `---`, no `using`, backtick, notes, flags or `#align`. Its name is written exactly twice in the whole procedure body, the declaration and one use, and that use resolves to this local. That rules out mutation, address-taking, `defer`, uses in nested procedures, `#run` / `#code` / `#insert` and code in `#if` branches; a body with any `#insert` is skipped.
+- Copy: the second is `b := a;` with one name and no explicit type (so no conversion, cast or `xx` happens), `b` has the same type as `a`, and `b` is not named in `a`'s initializer. The fix declares `b` where `a` was (keeping `b`, the name the rest of the code uses) and deletes the second statement. `b` being changed later is fine.
+- Return: the second is `return x;` as the only value of a procedure with one unnamed return value whose type is exactly the type of `x`, and `x` was declared without an explicit type. A different return type would convert (or change how the initializer is typed, as in `3 / 2` for a float). If the initializer is a call, the callee must resolve and return one value.
+
+Parameters, loop variables and globals are never the first name. Macro bodies, generated files and procedures that did not check are skipped.
 
 ### redundant_cast
 

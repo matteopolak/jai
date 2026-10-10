@@ -28,6 +28,7 @@ mod min_max;
 mod needless_bool;
 mod no_effect;
 mod range_past_count;
+mod redundant_alias;
 mod redundant_cast;
 mod remove_in_for;
 mod reversed_range;
@@ -179,6 +180,12 @@ pub static RULES: &[RuleInfo] = &[
         default: Level::Warn,
         summary: "`for i: 0..xs.count` indexing `xs[i]`, one past the end",
         check: range_past_count::check,
+    },
+    RuleInfo {
+        name: "redundant_alias",
+        default: Level::Warn,
+        summary: "a local that only exists to be copied into another local or returned",
+        check: redundant_alias::check,
     },
     RuleInfo {
         name: "redundant_cast",

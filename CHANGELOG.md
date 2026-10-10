@@ -4,6 +4,7 @@
 
 ### Added
 
+- `jailint` rule `redundant_alias` (warn, with a fix): a local that only exists to be copied into another local (`a := f(); b := a;`) or returned right after it is declared (`x := f(); return x;`). It fires only on adjacent statements and when the fix cannot change behaviour or types.
 - Doc comments: the comment above a declaration (or after a field, enum member or parameter) is shown as Markdown in hover, completion and signature help, with its own docs for each overload and each parameter (`- name: text` items, or comments on the parameter). `[print]`, `[Basic.print]`, `[Type.field]` and `[text](print)` links resolve: go to definition, hover and document links work inside the comment, and rendered docs link to the declaration.
 - VS Code highlights Markdown in comments (bold, italic, code, headings, lists, links) and Jai in fenced code blocks, and colours resolved links like the declaration they name.
 - `jailint` rule `broken_doc_link` (warn): a `[name]`, `[Type.field]` or `[text](name)` link in a declaration's doc comment that names nothing, with a "did you mean" quick fix for a close misspelling. Ordinary bracketed prose (`[0]`, `[TODO]`, `[x][y]`, reference definitions, footnotes) is not reported.
