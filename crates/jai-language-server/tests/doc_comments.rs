@@ -449,6 +449,41 @@ fn struct_constants_procedures_and_types_resolve_in_links() {
     );
 }
 
+const POLY_STRUCT: &str = r#"Ring :: struct(Item: Type, CAPACITY: int) {
+    items: [CAPACITY] Item;
+    count: int;
+}
+
+// Holds [Ring.items], at most [Ring.CAPACITY], not [Ring.missing].
+fill :: () {}
+
+main :: () { fill(); }
+"#;
+
+#[test]
+fn polymorphic_struct_fields_and_parameters_resolve_in_links() {
+    let s = open_with(POLY_STRUCT);
+    let line_of_definition = |at: Position| {
+        let found = s.definition(&uri(), at).unwrap();
+        assert_eq!(found.len(), 1, "{found:?}");
+        found[0].range.start.line as usize + 1
+    };
+    // Resolved from the source: the program never instantiates `Ring`.
+    assert_eq!(
+        line_of_definition(after(POLY_STRUCT, "[Ring.items", 0, 2)),
+        line_of(POLY_STRUCT, "items:")
+    );
+    assert_eq!(
+        line_of_definition(after(POLY_STRUCT, "[Ring.CAPACITY", 0, 2)),
+        line_of(POLY_STRUCT, "Ring ::")
+    );
+    assert!(
+        s.definition(&uri(), after(POLY_STRUCT, "[Ring.missing", 0, 2))
+            .unwrap()
+            .is_empty()
+    );
+}
+
 #[test]
 fn struct_constant_links_are_document_links_hovers_and_tokens() {
     let s = open_with(STRUCT_MEMBERS);

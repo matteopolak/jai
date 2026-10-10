@@ -58,6 +58,7 @@ Rustdoc-style intra-doc links name a declaration from the scope of the documente
 | `[Basic.print]` | `print` in the module imported as `Basic` |
 | `[Point.x]`, `[Mode.IDLE]` | a struct field or enum member |
 | `[Point.LIMIT]`, `[Outer.Inner]`, `[Point.helper]` | a constant, type or procedure declared inside a struct |
+| `[Ring.items]`, `[Ring.CAPACITY]` | a field or parameter of a polymorphic struct, found in its source (it need not be instantiated) |
 | `[the text](print)` | `print`, shown as "the text" |
 
 A link that does not resolve stays plain text (the `broken_doc_link` rule of [jailint](../tools/jailint.md) reports it), and so do `a[i]`, `[0]`, `[x][y]` and `[text](https://...)`. Names inside inline code and code fences are never links. Untagged code fences in docs are rendered as `jai`.
