@@ -90,6 +90,7 @@
             accelerated = false;
             samples = wanted_msaa;
         }
+        return null, 0;
     }
 
     #scope_file

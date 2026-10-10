@@ -26,6 +26,7 @@ atomic_add :: (dest: *$T, to_add: $I) -> T {
         if success return old;
         old = observed;
     }
+    return old;
 }
 
 atomic_increment :: (dest: *$T) {
@@ -73,6 +74,7 @@ atomic_bit_test_and_set :: (dest: *$T, $$i: s64) -> bool {
         if success return (old & mask) != 0;
         old = observed;
     }
+    return false;
 }
 
 IsAtomicScalar :: (T: Type) -> bool #compile_time {

@@ -76,6 +76,7 @@ initialize_queue :: ($User_Data: Type) -> *Queue(User_Data), result := Error.{} 
             Threads.wake_all(*owner.completed);
             Threads.unlock(*owner.mutex);
         }
+        return 0;
     }
     if !Threads.thread_init(*queue.worker, worker) || !start_worker(queue) {
         Threads.thread_deinit(*queue.worker);

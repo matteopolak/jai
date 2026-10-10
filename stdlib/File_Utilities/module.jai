@@ -32,8 +32,9 @@ copy_file :: (source: string, dest: string) -> bool {
         read_ok, received := file_read_checked(input, buffer.data, buffer.count);
         if !read_ok return false;
         if received > 0 && !file_write(*output, buffer.data, received) return false;
-        if received < buffer.count return true;
+        if received < buffer.count break;
     }
+    return true;
 }
 
 visit_files :: (dir_name: string, recursive: bool, user_data: $T, proc: (info: *File_Visit_Info, user_data: T), visit_files := true, visit_directories := false, visit_symlinks := true, follow_directory_symlinks := true) -> bool {
