@@ -84,8 +84,9 @@ impl FileSystem for OverlayFs {
     }
 }
 
-/// The open documents' buffers a compile was keyed by, kept so their addresses stay unique.
-type Buffers = BTreeMap<PathBuf, Rc<[u8]>>;
+/// The open documents' texts by path, shared so that asking again with the same inputs is
+/// known by address alone.
+pub type Buffers = Rc<BTreeMap<PathBuf, Rc<[u8]>>>;
 
 pub struct Analysis {
     pub compiler: Compiler,
@@ -415,25 +416,17 @@ fn hash(
     h.finish()
 }
 
-/// A key for inputs by the buffers they share rather than their text: equal only for the
-/// very same `Rc`s (or for buffers at the same addresses, which `Analysis::quick` keeps alive).
-fn quick_key(
-    root: &Path,
-    dirs: &[PathBuf],
-    files: &BTreeMap<PathBuf, Rc<[u8]>>,
-    os: Option<TargetOs>,
-) -> u64 {
+/// A key for inputs by the map of texts they share rather than its contents: equal only for
+/// the very same map (or one at the same address, which `Analysis::quick` keeps alive).
+fn quick_key(root: &Path, dirs: &[PathBuf], files: &Buffers, os: Option<TargetOs>) -> u64 {
     use std::hash::{Hash, Hasher};
     let mut h = crate::fast_hash::FastHasher::default();
-    format!("{os:?}").hash(&mut h);
-    root.hash(&mut h);
-    dirs.hash(&mut h);
-    for (path, text) in files {
-        // The bytes, not `Path::hash`, which walks the components.
-        h.write(path.as_os_str().as_encoded_bytes());
-        (text.as_ptr() as usize).hash(&mut h);
-        text.len().hash(&mut h);
+    os.map(|os| os as u8).hash(&mut h);
+    h.write(root.as_os_str().as_encoded_bytes());
+    for dir in dirs {
+        h.write(dir.as_os_str().as_encoded_bytes());
     }
+    (Rc::as_ptr(files) as usize).hash(&mut h);
     h.finish()
 }
 
@@ -448,7 +441,7 @@ impl Cache {
         &self,
         root: &Path,
         dirs: &[PathBuf],
-        files: &BTreeMap<PathBuf, Rc<[u8]>>,
+        files: &Buffers,
         os: Option<TargetOs>,
     ) -> bool {
         let quick = quick_key(root, dirs, files, os);
@@ -505,13 +498,13 @@ impl Cache {
         env: &Environment,
         root: &Path,
         dirs: &[PathBuf],
-        files: BTreeMap<PathBuf, Rc<[u8]>>,
+        files: Buffers,
         path: &Path,
         prefix: &[u8],
     ) -> Option<&mut Analysis> {
         let canonical: BTreeMap<PathBuf, Rc<[u8]>> = files
-            .into_iter()
-            .map(|(p, t)| (env.fs.canonical(&p), t))
+            .iter()
+            .map(|(p, t)| (env.fs.canonical(p), t.clone()))
             .collect();
         let path = env.fs.canonical(path);
         let at = self.entries.iter().rposition(|a| {
@@ -535,7 +528,7 @@ impl Cache {
         env: &Environment,
         root: &Path,
         dirs: &[PathBuf],
-        files: BTreeMap<PathBuf, Rc<[u8]>>,
+        files: Buffers,
     ) -> &mut Analysis {
         self.analyze_for(env, root, dirs, files, None)
     }
@@ -546,7 +539,7 @@ impl Cache {
         env: &Environment,
         root: &Path,
         dirs: &[PathBuf],
-        files: BTreeMap<PathBuf, Rc<[u8]>>,
+        files: Buffers,
         os: Option<TargetOs>,
     ) -> &mut Analysis {
         // The same buffers as last time (the session hands out its inputs again until a
@@ -563,17 +556,17 @@ impl Cache {
         }
         let given = files.clone();
         let files: BTreeMap<PathBuf, Rc<[u8]>> = files
-            .into_iter()
+            .iter()
             .map(|(p, t)| {
-                let canonical = match self.canonical.get(&p) {
+                let canonical = match self.canonical.get(p) {
                     Some(c) => c.clone(),
                     None => {
-                        let c = env.fs.canonical(&p);
-                        self.canonical.insert(p, c.clone());
+                        let c = env.fs.canonical(p);
+                        self.canonical.insert(p.clone(), c.clone());
                         c
                     }
                 };
-                (canonical, t)
+                (canonical, t.clone())
             })
             .collect();
         let key = hash(root, dirs, &files, os);

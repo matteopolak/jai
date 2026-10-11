@@ -11,7 +11,8 @@ use crate::{
 use jaic::intern::Sym;
 use jaic::sema::ide::{IdeKind, IdeLayout, IdeName};
 use jaic::sema::ide_meta::IdeClass;
-use std::cell::RefCell;
+use std::borrow::Cow;
+use std::cell::{OnceCell, RefCell};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -20,6 +21,28 @@ pub(crate) struct Document {
     pub(crate) version: i32,
     pub(crate) text: String,
     pub(crate) index: LineIndex,
+    /// Whether `text` parses, worked out on first use.
+    pub(crate) parses: OnceCell<bool>,
+    /// Whether `text` has an `#asm` block anywhere, worked out on first use.
+    pub(crate) asm: OnceCell<bool>,
+}
+
+impl Document {
+    pub(crate) fn has_asm(&self) -> bool {
+        *self.asm.get_or_init(|| self.text.contains("#asm"))
+    }
+}
+
+/// The tokens whose span holds `byte` (touching it at either end), in order, found by binary
+/// search: `tokens` are in source order.
+pub(crate) fn tokens_at(tokens: &[Token], byte: usize) -> impl Iterator<Item = (usize, &Token)> {
+    let first = tokens.partition_point(|t| t.span.end < byte);
+    tokens[first..]
+        .iter()
+        .enumerate()
+        .map(move |(i, t)| (first + i, t))
+        .take_while(move |(_, t)| t.span.start <= byte)
+        .filter(move |(_, t)| byte <= t.span.end)
 }
 
 /// Byte ranges each other target skipped, by file and target.
@@ -50,7 +73,8 @@ pub struct Session {
     /// The last `compile_inputs` answer, with the generation, document and text it was for:
     /// working them out reads folders and copies every open document, which a burst of
     /// requests on one version would otherwise repeat.
-    inputs: RefCell<Option<(u64, DocumentUri, String, CompileInputs)>>,
+    /// The text is `None` when it was the document's own.
+    inputs: RefCell<Option<InputsMemo>>,
     /// The code each other target's compile skipped too (by file and target, byte ranges), for
     /// the generation it was found in: not compiled for again. Code no target checks (a file
     /// nothing loads, a branch on yet another CPU) would otherwise compile every target on
@@ -59,7 +83,11 @@ pub struct Session {
 }
 
 /// The open files, the root file and the module folders of a compile.
-type CompileInputs = (BTreeMap<PathBuf, Rc<[u8]>>, PathBuf, Vec<PathBuf>);
+type CompileInputs = (semantic::Buffers, PathBuf, Vec<PathBuf>);
+
+/// `compile_inputs`' last answer: generation, document, its text (`None` for the document's
+/// own) and the inputs.
+type InputsMemo = (u64, DocumentUri, Option<String>, CompileInputs);
 
 /// What completion asks the type checker: the word being typed, the names it could be, and the
 /// path of each file they are declared in (by file number).
@@ -194,6 +222,8 @@ impl Session {
                 version,
                 index: LineIndex::new(&text),
                 text,
+                parses: OnceCell::new(),
+                asm: OnceCell::new(),
             },
         );
         self.rebuild();
@@ -265,6 +295,8 @@ impl Session {
             version,
             index: LineIndex::new(&text),
             text,
+            parses: OnceCell::new(),
+            asm: OnceCell::new(),
         };
         self.rebuild();
         Ok(())
@@ -424,10 +456,16 @@ impl Session {
     /// What a compile of the program containing `uri` needs, with `uri`'s text replaced by
     /// `text`: the open files, the program's root file and the module folders searched.
     fn compile_inputs(&self, uri: &DocumentUri, text: &str) -> Option<CompileInputs> {
+        // The document's own text (as most requests pass it) needs no comparing: any change to
+        // a document moves the generation on.
+        let own = self.is_own_text(uri, text);
         if let Some((generation, last, last_text, inputs)) = &*self.inputs.borrow()
             && *generation == self.generation.get()
             && last == uri
-            && last_text == text
+            && match last_text {
+                None => own,
+                Some(last_text) => last_text == text,
+            }
         {
             return Some(inputs.clone());
         }
@@ -435,10 +473,36 @@ impl Session {
         *self.inputs.borrow_mut() = Some((
             self.generation.get(),
             uri.clone(),
-            text.to_string(),
+            (!own).then(|| text.to_string()),
             inputs.clone(),
         ));
         Some(inputs)
+    }
+
+    /// Whether `text` is the open document's own buffer, not a copy or an edited probe.
+    fn is_own_text(&self, uri: &DocumentUri, text: &str) -> bool {
+        self.documents
+            .get(uri)
+            .is_some_and(|d| std::ptr::eq(d.text.as_str(), text))
+    }
+
+    /// `repair` for text of `uri`, which for the document's own text that parses is that text
+    /// itself, known without parsing it again.
+    pub(crate) fn probe<'a>(
+        &self,
+        uri: &DocumentUri,
+        text: &'a str,
+        first: Option<usize>,
+    ) -> Option<Cow<'a, str>> {
+        if let Some(doc) = self.documents.get(uri)
+            && std::ptr::eq(doc.text.as_str(), text)
+            && *doc
+                .parses
+                .get_or_init(|| semantic::parse_error(text).is_none())
+        {
+            return Some(Cow::Borrowed(text));
+        }
+        repair(text, first).map(Cow::Owned)
     }
 
     fn work_out_inputs(&self, uri: &DocumentUri, text: &str) -> Option<CompileInputs> {
@@ -463,7 +527,7 @@ impl Session {
             _ => PathBuf::from(open_root.path()),
         };
         let dirs = self.import_dirs(&root);
-        Some((files, root, dirs))
+        Some((Rc::new(files), root, dirs))
     }
 
     /// Run `query` on the type-checked program containing `uri`, its text replaced by `text`.
@@ -634,15 +698,8 @@ impl Session {
     ) -> Result<Option<(usize, Token)>, Error> {
         let doc = self.document(uri)?;
         let byte = doc.index.byte(&doc.text, position)?;
-        Ok(self.analyses[uri]
-            .tokens
-            .iter()
-            .enumerate()
-            .find(|(_, token)| {
-                token.span.start <= byte
-                    && byte <= token.span.end
-                    && matches!(token.kind, TokenKind::Ident | TokenKind::Keyword)
-            })
+        Ok(tokens_at(&self.analyses[uri].tokens, byte)
+            .find(|(_, token)| matches!(token.kind, TokenKind::Ident | TokenKind::Keyword))
             .map(|(at, token)| (at, *token)))
     }
 
@@ -728,7 +785,7 @@ impl Session {
         if let Some(locations) = self.doc_link_definition(uri, byte) {
             return Ok(locations);
         }
-        if let Some(probe) = repair(&doc.text, None) {
+        if let Some(probe) = self.probe(uri, &doc.text, None) {
             let found = self
                 .with_semantic_at(uri, &probe, byte, |a, path| {
                     Some(a.definition(path, byte)).filter(|d| !d.is_empty())
@@ -833,7 +890,9 @@ impl Session {
         if let Some((start, end, text)) = self.cast_flag_hover(&doc.text, byte) {
             return found(start, end, text);
         }
-        if let Some((start, end, text)) = self.asm_hover(&doc.text, byte) {
+        if doc.has_asm()
+            && let Some((start, end, text)) = self.asm_hover(&doc.text, byte)
+        {
             return found(start, end, text);
         }
         if let Some((start, end, text)) = self.doc_link_hover(uri, byte, kind) {
@@ -893,7 +952,7 @@ impl Session {
         text: &str,
         byte: usize,
     ) -> Option<semantic::HoverFacts> {
-        let probe = repair(text, None)?;
+        let probe = self.probe(uri, text, None)?;
         let facts = self.with_semantic_at(uri, &probe, byte, |a, path| a.hover(path, byte))?;
         (facts.end <= text.len()
             && text.is_char_boundary(facts.start)

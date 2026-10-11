@@ -119,11 +119,16 @@ fn jai_files(dir: &Path, out: &mut Vec<PathBuf>) {
     }
 }
 
-fn position(text: &str, byte: usize) -> Position {
-    let before = &text[..byte];
-    let line = before.matches('\n').count();
-    let start = before.rfind('\n').map_or(0, |i| i + 1);
-    let character = text[start..byte].encode_utf16().count();
+/// Byte offsets where each line starts, for `position`.
+fn line_starts(text: &str) -> Vec<usize> {
+    std::iter::once(0)
+        .chain(text.match_indices('\n').map(|(i, _)| i + 1))
+        .collect()
+}
+
+fn position(text: &str, starts: &[usize], byte: usize) -> Position {
+    let line = starts.partition_point(|&s| s <= byte) - 1;
+    let character = text[starts[line]..byte].encode_utf16().count();
     Position {
         line: line as u32,
         character: character as u32,
@@ -198,6 +203,7 @@ fn main() {
         }
         for (path, uri, text) in &opened {
             let started = std::time::Instant::now();
+            let starts = line_starts(text);
             let compiles = session.compile_counts().0;
             let errors: Vec<_> = session
                 .diagnostics(uri)
@@ -229,7 +235,7 @@ fn main() {
                 };
                 idents += 1;
                 let start = token.span.start as usize;
-                let at = position(text, start + 1);
+                let at = position(text, &starts, start + 1);
                 let hover = session
                     .hover(uri, at)
                     .ok()
