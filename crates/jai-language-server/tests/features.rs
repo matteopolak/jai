@@ -1288,6 +1288,67 @@ main :: () {}
 }
 
 #[test]
+fn baked_names_and_bare_polymorphic_struct_parameters_hover() {
+    let text = r#"Vector :: struct (T: Type, N: int) { x: T; #if N > 1 { y: T; } }
+Vec2 :: #bake_arguments Vector(N = 2);
+Vec2f :: Vec2(float32);
+scale :: (v: $T, by: int) -> T { return v * by; }
+double :: #bake_arguments scale(by = 2);
+twice :: #bake_constants scale(T = int);
+flatten :: (v: Vec2) -> Vec2f { return .{xx v.x, xx v.y}; }
+main :: () {}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = |s: &mut Session, needle: &str, offset: usize| {
+        s.hover(&uri(), at(text, needle, 0, offset))
+            .unwrap()
+            .map(|h| h.contents.value)
+            .unwrap_or_default()
+    };
+    let mut wrong = Vec::new();
+    for (needle, offset, want) in [
+        ("N = 2", 0, "N: s64"),
+        ("by = 2", 0, "by: s64"),
+        ("T = int", 0, "T: Type"),
+        ("v.x", 0, "v:"),
+        ("x, xx", 0, "x:"),
+        ("y}", 0, "y:"),
+    ] {
+        let got = hover(&mut s, needle, offset);
+        if !got.contains(want) {
+            wrong.push(format!("{needle}: {got:?}"));
+        }
+    }
+    assert!(wrong.is_empty(), "{wrong:#?}");
+    for (needle, decl) in [
+        ("N = 2", "N: int"),
+        ("by = 2", "by: int"),
+        ("T = int", "$T"),
+    ] {
+        assert_eq!(
+            s.definition(&uri(), at(text, needle, 0, 0))
+                .unwrap()
+                .first()
+                .map(|d| d.range.start),
+            Some(at(
+                text,
+                decl,
+                0,
+                if decl == "$T" {
+                    1
+                } else {
+                    0
+                }
+            )),
+            "{needle}"
+        );
+    }
+    let diagnostics = s.diagnostics(&uri()).unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
 fn names_outside_plain_expressions_hover_and_go_to_their_declarations() {
     let text = r#"#import "Basic";
 Pair :: struct { first: int; second: int; }

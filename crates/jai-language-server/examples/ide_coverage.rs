@@ -174,7 +174,20 @@ fn main() {
             let Ok(text) = std::fs::read_to_string(path) else {
                 continue;
             };
-            let uri = DocumentUri::parse(&format!("file://{}", path.display())).unwrap();
+            // `16.4_check_#as.jai`: a `#` or `?` would start a fragment or query.
+            let encoded: String = path
+                .display()
+                .to_string()
+                .chars()
+                .map(|c| match c {
+                    '%' => "%25".into(),
+                    '#' => "%23".into(),
+                    '?' => "%3F".into(),
+                    ' ' => "%20".into(),
+                    c => c.to_string(),
+                })
+                .collect();
+            let uri = DocumentUri::parse(&format!("file://{encoded}")).unwrap();
             if session.open(uri.clone(), 1, text.clone()).is_ok() {
                 opened.push((path.clone(), uri, text));
             }

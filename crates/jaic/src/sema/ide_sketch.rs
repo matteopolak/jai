@@ -227,6 +227,31 @@ impl Compiler {
                 out.push((name, Value::Type(t), TypeId::TYPE));
             }
         }
+        // `v: Vec2` with `Vec2` polymorphic: a call binds `Vec2` to the argument's instance.
+        for param in &header.params {
+            let Some(mut ty) = param.ty.as_ref() else {
+                continue;
+            };
+            if super::procs::has_poly(ty) {
+                continue;
+            }
+            while let ast::ExprKind::Unary(_, e)
+            | ast::ExprKind::ArrayType {
+                elem: e, ..
+            }
+            | ast::ExprKind::TypeDirective {
+                ty: e, ..
+            } = &ty.kind
+            {
+                ty = e;
+            }
+            if let ast::ExprKind::Ident(name) = ty.kind
+                && !out.iter().any(|(n, ..)| *n == name)
+                && let Some(t) = self.ide_sketch_restricted(scope, ty, ty.span)
+            {
+                out.push((name, Value::Type(t), TypeId::TYPE));
+            }
+        }
         for param in &header.params {
             let Some(name) = param.name.filter(|_| param.baked) else {
                 continue;

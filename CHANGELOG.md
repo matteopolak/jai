@@ -4,7 +4,7 @@
 
 ### Highlights
 
-- The bodies of polymorphic procedures and macros nothing calls hover and go to definition all the way through, with each `$T` shown as `T` and its members as `T.name`. Named results (`-> ok := false`) hover too.
+- The bodies of polymorphic procedures and macros nothing calls hover and go to definition all the way through, with each `$T` shown as `T` and its members as `T.name`. Named results (`-> ok := false`) hover too, as do the named arguments of `#bake_arguments` and `#bake_constants`.
 
 ### Fixes
 
