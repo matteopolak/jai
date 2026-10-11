@@ -1119,3 +1119,19 @@ run :: () {
         assert_eq!(help.active_parameter, active, "{call}");
     }
 }
+
+#[test]
+fn hover_of_a_baked_procedure_is_its_remaining_header() {
+    let text = "scale_by :: (value: int, factor: int) -> int { return value * factor; }\ndouble_it :: #bake_arguments scale_by(factor = 2);\nmain :: () { x := double_it(4); }\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let decl = hover(&s, at(text, "double_it ::", 0, 2));
+    let used = hover(&s, at(text, "double_it(4", 0, 2));
+    assert_eq!(decl, "double_it :: (value: int) -> int");
+    assert_eq!(used, "double_it :: (value: int) -> int");
+    let help = s
+        .signature_help(&uri(), at(text, "double_it(4", 0, 10))
+        .unwrap()
+        .expect("signature help");
+    assert_eq!(help.signatures[0].label, "double_it :: (value: int) -> int");
+}

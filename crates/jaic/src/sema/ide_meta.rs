@@ -253,7 +253,7 @@ impl Compiler {
         }
     }
 
-    fn ide_snippet(&self, span: Span) -> &str {
+    pub(crate) fn ide_snippet(&self, span: Span) -> &str {
         let Some(file) = self.sources.try_get(span.file) else {
             return "";
         };
@@ -579,7 +579,7 @@ impl Compiler {
             .iter()
             .map(|param| param.name.map(|n| n.name.to_string()).unwrap_or_default())
             .collect();
-        let head = self.ide_snippet(header.span);
+        let head = self.ide_header_text(p);
         let head = head.lines().next().unwrap_or("").trim();
         let head = head.trim_end_matches('{').trim_end();
         IdeSignature {

@@ -106,7 +106,7 @@ For completion, the word being typed and any `a.b.` chain before it are cut out 
 - **Hover** (`Session::hover`) tries, in order:
   1. a print-family **format string** under the cursor (`format_hover`);
   2. a **directive** token `#insert`, `#run`, `#if`, `#ifx` or `#assert` (`directive_hover`): what it produced;
-  3. the smallest recorded **reference** at the offset: a local or member as `name: Type`, each overload of a procedure as `name :: <header>`, a type with its fields or members, a constant with its value. When the name is the callee of an `#expand` macro call, the expansion is appended (`with_macro_expansion`);
+  3. the smallest recorded **reference** at the offset: a local or member as `name: Type`, each overload of a procedure as `name :: <header>`, a type with its fields or members, a constant with its value. A procedure is shown under the name used, and a `#bake_arguments` copy without its baked parameters: `ProcHeader::baked` marks such a header, whose source text still lists them, and `Compiler::ide_header_text` rebuilds it from the parameters left (signature help and completion details use it too; signature labels take the called name). When the name is the callee of an `#expand` macro call, the expansion is appended (`with_macro_expansion`);
   4. any **expansion** containing the cursor where there is no name (the string of `#insert "..."`);
   5. the syntax layer's declaration text, or `keyword return` on a keyword (completion details say `keyword` too; hover text does not repeat the language name).
 

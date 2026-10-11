@@ -843,7 +843,7 @@ impl Session {
             .calls(uri)
             .into_iter()
             .find(|c| c.span.start as usize == callee_start && open < c.span.end as usize);
-        let (signatures, active) = match recorded {
+        let (mut signatures, active) = match recorded {
             Some(call) => (call.signatures, call.active),
             None => {
                 // The unfinished call's line is blanked; the callee is looked up in the scope.
@@ -877,6 +877,14 @@ impl Session {
                 }
             }
         };
+        // Under the name called: an alias or a `#bake_arguments` copy names the original.
+        if let Some(called) = chain.last() {
+            for sig in &mut signatures {
+                if let Some((_, head)) = sig.label.split_once(" :: ") {
+                    sig.label = format!("{called} :: {head}");
+                }
+            }
+        }
         let parameter = |sig: &jaic::sema::ide_meta::IdeSignature| -> usize {
             if let Some(name) = &named
                 && let Some(i) = sig.param_names.iter().position(|n| n == name)

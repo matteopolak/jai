@@ -473,10 +473,7 @@ impl Compiler {
             // under the name used.
             IdeWhat::Procs(ps) => ps
                 .iter()
-                .map(|&p| {
-                    let header = self.sources.snippet(self.proc(p).lit.header.span);
-                    format!("{name} :: {}", clip(header))
-                })
+                .map(|&p| format!("{name} :: {}", clip(&self.ide_header_text(p))))
                 .collect::<Vec<_>>()
                 .join("\n"),
             IdeWhat::Module(m) => {
@@ -1224,10 +1221,43 @@ impl Compiler {
         out
     }
 
-    fn ide_proc_header(&self, p: ProcId) -> String {
-        let info = self.proc(p);
-        let header = self.sources.snippet(info.lit.header.span);
-        format!("{} :: {}", info.name, clip(header))
+    fn ide_proc_header(&self, name: Sym, p: ProcId) -> String {
+        format!("{name} :: {}", clip(&self.ide_header_text(p)))
+    }
+
+    /// A procedure's header as written, less the parameters `#bake_arguments` fixed.
+    pub(crate) fn ide_header_text(&self, p: ProcId) -> String {
+        let header = &self.proc(p).lit.header;
+        let text = self.ide_snippet(header.span);
+        if !header.baked {
+            return text.to_string();
+        }
+        // The parameter list is the first parenthesized group; the rest follows it.
+        let mut depth = 0;
+        let close = text.char_indices().find_map(|(i, c)| {
+            match c {
+                '(' => depth += 1,
+                ')' if depth == 1 => return Some(i),
+                ')' => depth -= 1,
+                _ => {}
+            }
+            None
+        });
+        let Some(close) = close else {
+            return text.to_string();
+        };
+        let open = text.find('(').unwrap_or(0);
+        let params: Vec<&str> = header
+            .params
+            .iter()
+            .map(|param| self.ide_snippet(param.span).trim())
+            .collect();
+        format!(
+            "{}({}){}",
+            &text[..open],
+            params.join(", "),
+            &text[close + 1..]
+        )
     }
 
     fn ide_type_hover(&self, name: &str, t: TypeId) -> String {
@@ -1308,10 +1338,10 @@ impl Compiler {
                 value: value::Value::Proc(p),
                 ..
             })
-            | Some(Resolved::Proc(p)) => self.ide_proc_header(p),
+            | Some(Resolved::Proc(p)) => self.ide_proc_header(name, p),
             Some(Resolved::ProcSet(ps)) => ps
                 .iter()
-                .map(|&p| self.ide_proc_header(p))
+                .map(|&p| self.ide_proc_header(self.proc(p).name, p))
                 .collect::<Vec<_>>()
                 .join("\n"),
             Some(Resolved::Const {
@@ -1385,10 +1415,9 @@ impl Compiler {
             EntityKind::Decl {
                 decl, ..
             } => match &e.state {
-                EntityState::Done(Resolved::Proc(p)) => (
-                    IdeKind::Function,
-                    clip(self.sources.snippet(self.proc(*p).lit.header.span)),
-                ),
+                EntityState::Done(Resolved::Proc(p)) => {
+                    (IdeKind::Function, clip(&self.ide_header_text(*p)))
+                }
                 EntityState::Done(Resolved::Global {
                     ty, ..
                 }) => (IdeKind::Variable, self.types.name(*ty)),
