@@ -1217,6 +1217,77 @@ main :: () {
 }
 
 #[test]
+fn a_sketch_carries_on_past_members_of_its_stand_ins() {
+    let text = r#"Matrix :: struct ($T: Type, $M: int, $N: int) { rows: [M] [N] T; }
+Counter :: struct { hits: int; }
+describe :: (x: $T, counter: *Counter) -> int {
+    label := x.label;
+    total := x.size * 2;
+    for item: x.items {
+        counter.hits += 1;
+    }
+    if x.ready {
+        counter.hits += 2;
+    }
+    #if OS == .WINDOWS {
+        windows_hits := counter.hits;
+    } else {
+        other_hits := counter.hits;
+    }
+    #assert size_of(T) == 4;
+    missing := x.size + nothing_here;
+    after := counter.hits;
+    return total;
+}
+trace :: (m: $M/Matrix) -> M.T {
+    first := m.rows[0][0];
+    return first;
+}
+bump :: (counter: *Counter) #expand {
+    bumped := counter.hits + 1;
+}
+main :: () {}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = |s: &mut Session, needle: &str, offset: usize| {
+        s.hover(&uri(), at(text, needle, 0, offset))
+            .unwrap()
+            .map(|h| h.contents.value)
+            .unwrap_or_default()
+    };
+    let mut wrong = Vec::new();
+    for (needle, offset, want) in [
+        ("label :=", 1, "label: T.label"),
+        ("total :=", 1, "total: s64"),
+        ("item: x", 1, "item:"),
+        ("hits += 1", 0, "hits: s64"),
+        ("hits += 2", 0, "hits: s64"),
+        ("windows_hits", 1, "windows_hits: s64"),
+        ("other_hits", 1, "other_hits: s64"),
+        ("missing :=", 1, "missing:"),
+        ("after :=", 1, "after: s64"),
+        ("first :=", 1, "first:"),
+        ("bumped :=", 1, "bumped: s64"),
+    ] {
+        let got = hover(&mut s, needle, offset);
+        if !got.contains(want) {
+            wrong.push(format!("{needle}: {got:?}"));
+        }
+    }
+    assert!(wrong.is_empty(), "{wrong:#?}");
+    assert_eq!(
+        s.definition(&uri(), at(text, "hits += 2", 0, 0))
+            .unwrap()
+            .first()
+            .map(|d| d.range.start),
+        Some(at(text, "hits: int", 0, 0))
+    );
+    let diagnostics = s.diagnostics(&uri()).unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
 fn names_outside_plain_expressions_hover_and_go_to_their_declarations() {
     let text = r#"#import "Basic";
 Pair :: struct { first: int; second: int; }

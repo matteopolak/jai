@@ -1381,6 +1381,12 @@ impl Compiler {
             return Ok(inst);
         }
         self.perf.poly_request(id, false, span);
+        if self.ide_sketch_refuses(&bindings) {
+            return err(
+                span,
+                "a sketch does not instantiate polymorphs with its stand-ins",
+            );
+        }
         if self.proc(id).instances.len() >= super::MAX_INSTANCES {
             return err(span, super::too_many_instances(self.proc(id).name));
         }

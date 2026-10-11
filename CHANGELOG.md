@@ -4,7 +4,7 @@
 
 ### Highlights
 
-- The bodies of polymorphic procedures nothing calls hover and go to definition, with each `$T` shown as `T`. Named results (`-> ok := false`) hover too.
+- The bodies of polymorphic procedures and macros nothing calls hover and go to definition all the way through, with each `$T` shown as `T` and its members as `T.name`. Named results (`-> ok := false`) hover too.
 
 ### Fixes
 

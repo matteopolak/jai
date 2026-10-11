@@ -42,6 +42,21 @@ pub struct IdeFacts {
     /// Where `ide_sketch_polymorphs` began: the refs, entities and procedures from there on
     /// come from sketches with stand-in types, which lints skip.
     pub sketch_from: Option<SketchMark>,
+    /// The stand-in types of sketches: anything may be done with a value of one (see
+    /// `ide_sketch`).
+    pub(super) stand_ins: HashSet<TypeId>,
+    /// The stand-in for member `name` of stand-in type `t`.
+    pub(super) stand_in_members: HashMap<(TypeId, Sym), TypeId>,
+    /// Macros (and instances of polymorphic ones) that were expanded somewhere.
+    pub(super) expanded_macros: HashSet<ProcId>,
+    /// The sketch's own instance is being made, which binds stand-ins.
+    pub(super) sketch_root: bool,
+    /// A sketch is being checked: an expression that fails on a stand-in becomes one.
+    pub(super) sketching: bool,
+    /// The type of each expression the current sketch checked.
+    pub(super) sketch_types: HashMap<Span, TypeId>,
+    /// Each expression the current sketch began to check, failed or not.
+    pub(super) sketch_tried: HashSet<Span>,
     /// Lint mode (`jailint`): also record the facts below.
     pub lint: bool,
     /// Type of each checked expression of the recorded files, by span.
