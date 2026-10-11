@@ -18,10 +18,16 @@ pub struct SketchMark {
 
 #[derive(Default)]
 struct RefIndex {
-    built_for: (usize, usize),
-    /// Per file: indices into `refs` sorted by start, and the longest span's length.
-    files: HashMap<FileId, (Vec<u32>, u32)>,
+    /// How many of `refs` are in the index. References are only pushed, or truncated away by
+    /// a sketch, so the index grows with them and starts over when they shrink.
+    built: usize,
+    /// Per file: indices into `refs` of spans up to `SHORT_REF` long, sorted by start, and of
+    /// the longer ones, which are few and checked one by one.
+    files: HashMap<FileId, (Vec<u32>, Vec<u32>)>,
 }
+
+/// Spans up to this many bytes are found by binary search; a lookup walks back at most this far.
+const SHORT_REF: u32 = 64;
 
 #[derive(Default)]
 pub struct IdeFacts {
@@ -153,38 +159,63 @@ pub struct IdeCast {
 impl IdeFacts {
     /// The references whose span holds `offset` in `file`, in the order they were recorded.
     pub fn refs_at(&self, file: FileId, offset: u32) -> Vec<&IdeRef> {
-        let key = (self.refs.len(), self.refs.as_ptr() as usize);
         let mut index = self.by_position.borrow_mut();
-        if index.built_for != key {
-            let mut files: HashMap<FileId, (Vec<u32>, u32)> = HashMap::default();
-            for (i, r) in self.refs.iter().enumerate() {
-                let entry = files.entry(r.span.file).or_default();
-                entry.0.push(i as u32);
-                entry.1 = entry.1.max(r.span.end.saturating_sub(r.span.start));
-            }
-            for (list, _) in files.values_mut() {
-                list.sort_by_key(|&i| self.refs[i as usize].span.start);
-            }
-            *index = RefIndex {
-                built_for: key,
-                files,
-            };
+        if self.refs.len() < index.built {
+            *index = RefIndex::default();
         }
-        let Some((list, longest)) = index.files.get(&file) else {
+        if self.refs.len() > index.built {
+            let from = index.built;
+            let mut unsorted: Vec<FileId> = Vec::new();
+            for (i, r) in self.refs.iter().enumerate().skip(from) {
+                let (short, long) = index.files.entry(r.span.file).or_default();
+                if r.span.end.saturating_sub(r.span.start) > SHORT_REF {
+                    long.push(i as u32);
+                    continue;
+                }
+                if short
+                    .last()
+                    .is_some_and(|&j| self.refs[j as usize].span.start > r.span.start)
+                    && !unsorted.contains(&r.span.file)
+                {
+                    unsorted.push(r.span.file);
+                }
+                short.push(i as u32);
+            }
+            // Stable, so equal starts keep the order recorded; the list is two sorted runs.
+            for file in unsorted {
+                if let Some((short, _)) = index.files.get_mut(&file) {
+                    short.sort_by_key(|&i| self.refs[i as usize].span.start);
+                }
+            }
+            index.built = self.refs.len();
+        }
+        let Some((list, long)) = index.files.get(&file) else {
             return Vec::new();
         };
+        let holds = |i: u32| {
+            let span = self.refs[i as usize].span;
+            span.start <= offset && offset <= span.end
+        };
         let past = list.partition_point(|&i| self.refs[i as usize].span.start <= offset);
-        let earliest = offset.saturating_sub(*longest);
+        let earliest = offset.saturating_sub(SHORT_REF);
         let mut found: Vec<u32> = list[..past]
             .iter()
             .rev()
             .take_while(|&&i| self.refs[i as usize].span.start >= earliest)
-            .filter(|&&i| offset <= self.refs[i as usize].span.end)
             .copied()
+            .filter(|&i| holds(i))
+            .chain(long.iter().copied().filter(|&i| holds(i)))
             .collect();
         // In the order recorded, which breaks ties as a scan of `refs` would.
         found.sort_unstable();
         found.into_iter().map(|i| &self.refs[i as usize]).collect()
+    }
+
+    /// Drop the references recorded after the first `len`; use this, not `refs.truncate`,
+    /// so `refs_at`'s index does not keep the dropped ones.
+    pub fn truncate_refs(&mut self, len: usize) {
+        self.refs.truncate(len);
+        *self.by_position.get_mut() = RefIndex::default();
     }
 
     pub fn new(roots: Vec<String>) -> Self {

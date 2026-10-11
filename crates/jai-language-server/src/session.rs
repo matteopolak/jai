@@ -25,11 +25,17 @@ pub(crate) struct Document {
     pub(crate) parses: OnceCell<bool>,
     /// Whether `text` has an `#asm` block anywhere, worked out on first use.
     pub(crate) asm: OnceCell<bool>,
+    /// The links in `text`'s doc comments, found on first use.
+    pub(crate) sites: OnceCell<Vec<jaic::docs::Site>>,
 }
 
 impl Document {
     pub(crate) fn has_asm(&self) -> bool {
         *self.asm.get_or_init(|| self.text.contains("#asm"))
+    }
+
+    pub(crate) fn sites(&self) -> &[jaic::docs::Site] {
+        self.sites.get_or_init(|| jaic::docs::sites(&self.text))
     }
 }
 
@@ -224,6 +230,7 @@ impl Session {
                 text,
                 parses: OnceCell::new(),
                 asm: OnceCell::new(),
+                sites: OnceCell::new(),
             },
         );
         self.rebuild();
@@ -297,6 +304,7 @@ impl Session {
             text,
             parses: OnceCell::new(),
             asm: OnceCell::new(),
+            sites: OnceCell::new(),
         };
         self.rebuild();
         Ok(())

@@ -8,7 +8,7 @@ use jaic::sema::ide::{IdeFacts, IdeLayout, IdeName};
 use jaic::sema::{Compiler, FileSystem, Options, TargetCpu, TargetOs};
 use jaic::source::{FileId, ImportSuggestion};
 use std::cell::RefCell;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
@@ -56,27 +56,42 @@ pub const OTHER_TARGETS: [TargetOs; 4] = [
 struct OverlayFs {
     base: Rc<dyn FileSystem>,
     files: BTreeMap<PathBuf, Rc<[u8]>>,
+    /// `canonical` answers so far: a compile asks about the same paths over and over.
+    canonical: RefCell<HashMap<PathBuf, PathBuf>>,
+}
+
+impl OverlayFs {
+    fn canonical_of(&self, path: &Path) -> PathBuf {
+        if let Some(known) = self.canonical.borrow().get(path) {
+            return known.clone();
+        }
+        let found = self.base.canonical(path);
+        self.canonical
+            .borrow_mut()
+            .insert(path.to_path_buf(), found.clone());
+        found
+    }
 }
 
 impl FileSystem for OverlayFs {
     fn read(&self, path: &Path) -> Option<Vec<u8>> {
-        match self.files.get(&self.base.canonical(path)) {
+        match self.files.get(&self.canonical_of(path)) {
             Some(bytes) => Some(bytes.to_vec()),
             None => self.base.read(path),
         }
     }
 
     fn is_file(&self, path: &Path) -> bool {
-        self.files.contains_key(&self.base.canonical(path)) || self.base.is_file(path)
+        self.files.contains_key(&self.canonical_of(path)) || self.base.is_file(path)
     }
 
     fn is_dir(&self, path: &Path) -> bool {
-        let p = self.base.canonical(path);
+        let p = self.canonical_of(path);
         self.files.keys().any(|k| k.starts_with(&p) && *k != p) || self.base.is_dir(path)
     }
 
     fn canonical(&self, path: &Path) -> PathBuf {
-        self.base.canonical(path)
+        self.canonical_of(path)
     }
 
     fn list_dir(&self, path: &Path) -> Vec<(String, bool)> {
@@ -625,6 +640,7 @@ fn compile(
     let fs: Rc<dyn FileSystem> = Rc::new(OverlayFs {
         base: env.fs.clone(),
         files,
+        canonical: RefCell::default(),
     });
     let dir = root.parent().map(Path::to_path_buf).unwrap_or_default();
     let options = || {

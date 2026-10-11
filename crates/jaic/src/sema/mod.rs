@@ -341,6 +341,8 @@ pub struct Compiler {
     pub program: ir::Program,
     pub files: Vec<FileInfo>,
     file_by_path: HashMap<(PathBuf, ModuleId), usize>,
+    /// Whether each source file is the stdlib's, for trap reports (a `#run` can trap often).
+    library_files: std::cell::RefCell<HashMap<u32, bool>>,
     pub modules: Vec<Module>,
     module_cache: HashMap<(PathBuf, Vec<ConstArg>), ModuleId>,
     pub scopes: Vec<scope::Scope>,
@@ -556,6 +558,7 @@ impl Compiler {
 
     pub fn new(options: Options, fs: Rc<dyn FileSystem>) -> Self {
         let mut c = Compiler {
+            library_files: Default::default(),
             options,
             fs,
             sources: SourceMap::default(),

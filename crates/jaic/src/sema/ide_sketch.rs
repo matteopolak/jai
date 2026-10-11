@@ -122,7 +122,7 @@ impl Compiler {
             ide.errors.truncate(errors);
             // A sketch that ran away (compile-time code generating without end) is dropped.
             if ide.refs.len() - refs > MAX_SKETCH_REFS {
-                ide.refs.truncate(refs);
+                ide.truncate_refs(refs);
             }
         }
         self.warnings.truncate(warnings);
