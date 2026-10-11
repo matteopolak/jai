@@ -1574,15 +1574,21 @@ impl Compiler {
                 f.b.switch_to(next);
             }
         }
-        if complete {
-            self.check_switch_complete(vty, &covered, value.span)?;
-            if default == done && !f.type_only {
-                // Every member has a case, but the value may still be none of them (a cast, or
-                // uninitialized memory): stop rather than fall through silently.
-                if let Some(fail) = self.unmatched_switch_check(f, vty, val, value.span) {
-                    default = fail;
-                }
-            }
+        // A missing case is reported after the bodies are checked, so they still have types.
+        let missing = if complete {
+            self.check_switch_complete(vty, &covered, value.span)
+        } else {
+            Ok(())
+        };
+        // Every member has a case, but the value may still be none of them (a cast, or
+        // uninitialized memory): stop rather than fall through silently.
+        if complete
+            && missing.is_ok()
+            && default == done
+            && !f.type_only
+            && let Some(fail) = self.unmatched_switch_check(f, vty, val, value.span)
+        {
+            default = fail;
         }
         f.b.jump(default);
         for (i, case) in cases.iter().enumerate() {
@@ -1603,7 +1609,7 @@ impl Compiler {
             f.b.jump(next);
         }
         f.b.switch_to(done);
-        Ok(())
+        missing
     }
 
     /// A switch on a constant runs one case, but every case is still type-checked (only `#if`
@@ -1631,9 +1637,6 @@ impl Compiler {
                 }
             }
         }
-        if complete {
-            self.check_switch_complete(vty, &covered, value.span)?;
-        }
         let here = f.b.current;
         let dead = f.b.new_block();
         f.b.switch_to(dead);
@@ -1658,6 +1661,9 @@ impl Compiler {
             f.b.terminate(ir::Term::Unreachable);
         }
         f.b.switch_to(here);
+        if complete {
+            self.check_switch_complete(vty, &covered, value.span)?;
+        }
         Ok(())
     }
 

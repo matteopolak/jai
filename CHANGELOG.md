@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Changes
+
+- The language server's compile errors come from `jaic` with codes `check`, `parser`, `lexer`, `source` and `limit` (they were `jai` with `jai-check` and so on), so editors show `jaic(check)`.
+
+### Fixes
+
+- An incomplete `#complete` switch keeps hover and inlay hints inside its cases, and its error has an "Add missing cases" quick fix.
+- Hover, signature help and completion show a `#bake_arguments` procedure under its own name, without the baked parameters.
+
 ## [0.10.0] - 2026-10-11
 
 Jai now has a Neovim plugin, and doc comments behave in every popup while you type.

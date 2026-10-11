@@ -463,12 +463,20 @@ impl Session {
         let text = &doc.text;
         let mut fixes = self.import_actions(uri, start, end, context);
         fixes.extend(self.lint_actions(uri, start, end, context));
+        let switch_fixes = self.complete_switch_actions(uri, start, end, context);
+        let fixed_switch = !switch_fixes.is_empty();
+        fixes.extend(switch_fixes);
         if context
             .only
             .as_ref()
             .is_none_or(|only| only.iter().any(|k| k.starts_with("refactor")))
         {
-            fixes.extend(self.refactor_actions(uri, start, end));
+            // The quick fix already adds the cases of a switch with an error.
+            fixes.extend(
+                self.refactor_actions(uri, start, end)
+                    .into_iter()
+                    .filter(|a| !(fixed_switch && a.title.starts_with("Add missing cases"))),
+            );
         }
         let Some(e) = self
             .expansions(uri)
