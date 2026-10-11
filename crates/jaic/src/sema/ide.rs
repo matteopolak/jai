@@ -17,6 +17,13 @@ pub struct SketchMark {
 }
 
 #[derive(Default)]
+struct RefIndex {
+    built_for: (usize, usize),
+    /// Per file: indices into `refs` sorted by start, and the longest span's length.
+    files: HashMap<FileId, (Vec<u32>, u32)>,
+}
+
+#[derive(Default)]
 pub struct IdeFacts {
     /// Files whose path starts with one of these are recorded.
     roots: Vec<String>,
@@ -59,6 +66,9 @@ pub struct IdeFacts {
     pub(super) sketch_tried: HashSet<Span>,
     /// The code an `#if` on `OS` or `CPU` did not take: another target's compile has its facts.
     pub skipped: Vec<Span>,
+    /// `refs` by file, sorted by start, for position lookups (`refs_at`). Built on first use
+    /// and again whenever `refs` has changed since (its length and buffer are the key).
+    by_position: std::cell::RefCell<RefIndex>,
     /// Lint mode (`jailint`): also record the facts below.
     pub lint: bool,
     /// Type of each checked expression of the recorded files, by span.
@@ -141,6 +151,42 @@ pub struct IdeCast {
 }
 
 impl IdeFacts {
+    /// The references whose span holds `offset` in `file`, in the order they were recorded.
+    pub fn refs_at(&self, file: FileId, offset: u32) -> Vec<&IdeRef> {
+        let key = (self.refs.len(), self.refs.as_ptr() as usize);
+        let mut index = self.by_position.borrow_mut();
+        if index.built_for != key {
+            let mut files: HashMap<FileId, (Vec<u32>, u32)> = HashMap::default();
+            for (i, r) in self.refs.iter().enumerate() {
+                let entry = files.entry(r.span.file).or_default();
+                entry.0.push(i as u32);
+                entry.1 = entry.1.max(r.span.end.saturating_sub(r.span.start));
+            }
+            for (list, _) in files.values_mut() {
+                list.sort_by_key(|&i| self.refs[i as usize].span.start);
+            }
+            *index = RefIndex {
+                built_for: key,
+                files,
+            };
+        }
+        let Some((list, longest)) = index.files.get(&file) else {
+            return Vec::new();
+        };
+        let past = list.partition_point(|&i| self.refs[i as usize].span.start <= offset);
+        let earliest = offset.saturating_sub(*longest);
+        let mut found: Vec<u32> = list[..past]
+            .iter()
+            .rev()
+            .take_while(|&&i| self.refs[i as usize].span.start >= earliest)
+            .filter(|&&i| offset <= self.refs[i as usize].span.end)
+            .copied()
+            .collect();
+        // In the order recorded, which breaks ties as a scan of `refs` would.
+        found.sort_unstable();
+        found.into_iter().map(|i| &self.refs[i as usize]).collect()
+    }
+
     pub fn new(roots: Vec<String>) -> Self {
         Self {
             roots,
@@ -532,12 +578,12 @@ impl Compiler {
     /// The innermost recorded name at `offset` of `file`, and whether every record of that
     /// exact span agrees (a polymorphic body is checked once per instance).
     fn ide_hover_ref(&self, file: FileId, offset: u32) -> Option<(IdeRef, bool)> {
-        let refs = &self.ide.as_ref()?.refs;
-        let r = refs
+        let here = self.ide.as_ref()?.refs_at(file, offset);
+        let r = here
             .iter()
-            .filter(|r| r.span.file == file && r.span.start <= offset && offset <= r.span.end)
+            .copied()
             .min_by_key(|r| r.span.end - r.span.start)?;
-        let same = refs
+        let same = here
             .iter()
             .filter(|o| o.span == r.span)
             .all(|o| o.ty == r.ty && same_what(&o.what, &r.what));
@@ -1321,9 +1367,8 @@ impl Compiler {
             return vec![*decl];
         }
         let Some(r) = self.ide.as_ref().and_then(|ide| {
-            ide.refs
-                .iter()
-                .filter(|r| r.span.file == file && r.span.start <= offset && offset <= r.span.end)
+            ide.refs_at(file, offset)
+                .into_iter()
                 .min_by_key(|r| r.span.end - r.span.start)
                 .cloned()
         }) else {

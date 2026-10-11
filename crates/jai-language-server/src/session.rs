@@ -41,6 +41,13 @@ pub struct Session {
     pub(crate) workspace_folders: Vec<PathBuf>,
     /// What modules and project files declare, for auto-import completion.
     pub(crate) index: RefCell<crate::auto_import::Index>,
+    /// Bumped by anything that can change a compile's inputs: an open document, a file on
+    /// disk, the workspace folders.
+    generation: std::cell::Cell<u64>,
+    /// The last `compile_inputs` answer, with the generation, document and text it was for:
+    /// working them out reads folders and copies every open document, which a burst of
+    /// requests on one version would otherwise repeat.
+    inputs: RefCell<Option<(u64, DocumentUri, String, CompileInputs)>>,
 }
 
 /// The open files, the root file and the module folders of a compile.
@@ -63,6 +70,8 @@ impl Session {
             auto_import: true,
             workspace_folders: Vec::new(),
             index: RefCell::default(),
+            generation: std::cell::Cell::new(0),
+            inputs: RefCell::default(),
         }
     }
 
@@ -94,16 +103,28 @@ impl Session {
     pub fn reset_caches(&self) {
         *self.semantic.borrow_mut() = Default::default();
         *self.index.borrow_mut() = Default::default();
+        self.touch();
+    }
+
+    /// The inputs of a compile may have changed.
+    fn touch(&self) {
+        self.generation.set(self.generation.get() + 1);
+        *self.inputs.borrow_mut() = None;
     }
 
     pub fn set_workspace_folders(&mut self, folders: Vec<PathBuf>) {
         self.workspace_folders = folders;
         self.index.borrow_mut().import_dirs.clear();
+        self.touch();
     }
 
     /// A file changed on disk (`created_or_deleted` when it appeared or went away): what was
     /// read from it is read again.
     pub fn file_changed(&mut self, path: &Path, created_or_deleted: bool) {
+        self.touch();
+        if created_or_deleted {
+            self.semantic.borrow_mut().forget_paths();
+        }
         let mut index = self.index.borrow_mut();
         if created_or_deleted {
             index.created_or_deleted(path);
@@ -394,6 +415,24 @@ impl Session {
     /// What a compile of the program containing `uri` needs, with `uri`'s text replaced by
     /// `text`: the open files, the program's root file and the module folders searched.
     fn compile_inputs(&self, uri: &DocumentUri, text: &str) -> Option<CompileInputs> {
+        if let Some((generation, last, last_text, inputs)) = &*self.inputs.borrow()
+            && *generation == self.generation.get()
+            && last == uri
+            && last_text == text
+        {
+            return Some(inputs.clone());
+        }
+        let inputs = self.work_out_inputs(uri, text)?;
+        *self.inputs.borrow_mut() = Some((
+            self.generation.get(),
+            uri.clone(),
+            text.to_string(),
+            inputs.clone(),
+        ));
+        Some(inputs)
+    }
+
+    fn work_out_inputs(&self, uri: &DocumentUri, text: &str) -> Option<CompileInputs> {
         let environment = self.environment.as_ref()?;
         let files: BTreeMap<PathBuf, Rc<[u8]>> = self
             .documents

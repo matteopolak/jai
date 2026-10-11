@@ -9,6 +9,10 @@
 - The parameters of `#foreign` procedures hover, and the library name after `#foreign` hovers and goes to its declaration.
 - `ide_coverage --errors` prints each file's type-checker errors.
 
+### Performance
+
+- Hover and go to definition answer several times faster when many files are open (Linalg's 12k requests: 4.8 s to 0.6 s): the server no longer re-reads folders, copies every open document and canonicalizes every path for each request.
+
 ### Fixes
 
 - A loop value named `it_index` (`for < it_index: 0..n`, often in a `for_expansion`) no longer stops the compile with an internal error; naming a loop's value and index the same is an error.

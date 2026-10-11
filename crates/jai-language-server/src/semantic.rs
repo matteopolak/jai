@@ -103,6 +103,9 @@ pub struct Analysis {
     /// The imports that would declare the error's unknown name (worked out on first use: it
     /// reads the standard library).
     imports: Option<Vec<ImportSuggestion>>,
+    /// `file`'s answers by the path asked for: canonicalizing every compiled file's path for
+    /// each request was a quarter of a hover.
+    found: RefCell<BTreeMap<PathBuf, Option<FileId>>>,
 }
 
 impl Analysis {
@@ -209,15 +212,25 @@ impl Analysis {
     }
 
     pub fn file(&self, path: &Path) -> Option<FileId> {
-        let want = self.compiler.fs.canonical(path);
-        (0..self.compiler.sources.len() as u32)
+        if let Some(&found) = self.found.borrow().get(path) {
+            return found;
+        }
+        let exact = (0..self.compiler.sources.len() as u32)
             .map(FileId)
-            .find(|&f| {
-                self.compiler
-                    .fs
-                    .canonical(Path::new(&self.compiler.sources.get(f).path))
-                    == want
-            })
+            .find(|&f| Path::new(&self.compiler.sources.get(f).path) == path);
+        let found = exact.or_else(|| {
+            let want = self.compiler.fs.canonical(path);
+            (0..self.compiler.sources.len() as u32)
+                .map(FileId)
+                .find(|&f| {
+                    self.compiler
+                        .fs
+                        .canonical(Path::new(&self.compiler.sources.get(f).path))
+                        == want
+                })
+        });
+        self.found.borrow_mut().insert(path.to_path_buf(), found);
+        found
     }
 
     /// A span of any compiled file as (path, text, start, end); `None` for a span in no file
@@ -364,6 +377,8 @@ pub struct Cache {
     /// The target that last answered about skipped code in each file: asked first next time,
     /// so the one compile kept for another target keeps answering.
     pub answered: BTreeMap<PathBuf, TargetOs>,
+    /// Canonical forms of the paths compiled, so a request does not ask the file system again.
+    canonical: BTreeMap<PathBuf, PathBuf>,
     /// Programs compiled so far.
     compiles: usize,
 }
@@ -375,7 +390,7 @@ fn hash(
     os: Option<TargetOs>,
 ) -> u64 {
     use std::hash::{Hash, Hasher};
-    let mut h = std::collections::hash_map::DefaultHasher::new();
+    let mut h = crate::fast_hash::FastHasher::default();
     format!("{os:?}").hash(&mut h);
     root.hash(&mut h);
     dirs.hash(&mut h);
@@ -387,6 +402,11 @@ impl Cache {
     /// Programs compiled so far, and compiles alive now.
     pub fn counts(&self) -> (usize, usize) {
         (self.compiles, self.entries.len())
+    }
+
+    /// Files appeared or went away: canonical paths are asked for again.
+    pub fn forget_paths(&mut self) {
+        self.canonical.clear();
     }
 
     /// Drop the lints found so far (their settings changed); the compiles stay.
@@ -473,7 +493,17 @@ impl Cache {
     ) -> &mut Analysis {
         let files: BTreeMap<PathBuf, Rc<[u8]>> = files
             .into_iter()
-            .map(|(p, t)| (env.fs.canonical(&p), t))
+            .map(|(p, t)| {
+                let canonical = match self.canonical.get(&p) {
+                    Some(c) => c.clone(),
+                    None => {
+                        let c = env.fs.canonical(&p);
+                        self.canonical.insert(p, c.clone());
+                        c
+                    }
+                };
+                (canonical, t)
+            })
             .collect();
         let key = hash(root, dirs, &files, os);
         if let Some(at) = self.entries.iter().position(|a| a.key == key) {
@@ -510,6 +540,7 @@ impl Cache {
                 errors,
                 lints: BTreeMap::new(),
                 imports: None,
+                found: RefCell::default(),
             });
         }
         self.entries.last_mut().expect("just pushed")
@@ -606,7 +637,7 @@ const PARSES_KEPT: usize = 8;
 
 pub(crate) fn text_key(text: &str) -> (u64, usize) {
     use std::hash::{Hash, Hasher};
-    let mut h = std::collections::hash_map::DefaultHasher::new();
+    let mut h = crate::fast_hash::FastHasher::default();
     text.hash(&mut h);
     (h.finish(), text.len())
 }
