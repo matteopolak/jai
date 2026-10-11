@@ -812,7 +812,7 @@ impl JsonSession {
                         diagnostics: context
                             .diagnostics
                             .into_iter()
-                            .filter(|d| matches!(d.source.as_deref(), Some("jailint" | "jai")))
+                            .filter(|d| matches!(d.source.as_deref(), Some("jailint" | "jaic")))
                             .filter_map(|d| Some((d.code?.as_str()?.to_string(), d.range)))
                             .collect(),
                     };

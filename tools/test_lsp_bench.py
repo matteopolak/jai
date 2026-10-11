@@ -180,7 +180,7 @@ class ReportTests(unittest.TestCase):
         self.assertIn('| jailsp/focus/pull | 2 |', text)
         self.assertIn('unsupported', text)
         self.assertIn('Warm CPU time', text)
-        self.assertIn('{\'jai-limit\': 1}', text)
+        self.assertIn('{\'limit\': 1}', text)
         self.assertIn('`jailsp/focus/pull` references: limit', text)
         self.assertIn('`x/y/pull`: missing', text)
         self.assertEqual(cell(None, 'warm'), '-')
