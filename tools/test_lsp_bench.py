@@ -169,7 +169,7 @@ class ReportTests(unittest.TestCase):
         names = list(METRICS)
         rows = {'jailsp/focus/pull': {'metrics': {n: summarize_metric([run(0.5, 0.4, 120)]) for n in names},
                                       'peak_rss_mib': 130.0, 'cpu_seconds': 1.2,
-                                      'info': {'document_bytes': 2048, 'diagnostic_codes': {'jai-limit': 1},
+                                      'info': {'document_bytes': 2048, 'diagnostic_codes': {'limit': 1},
                                                'diagnostics_count': 1, 'hover_result': False}}}
         rows['jailsp/focus/pull']['metrics']['hover_first'] = summarize_metric([{'status': 'unsupported', 'message': 'no'}])
         rows['jailsp/focus/pull']['metrics']['references'] = summarize_metric(

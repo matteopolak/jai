@@ -1009,7 +1009,7 @@ fn an_import_fix_follows_the_check_diagnostic_it_is_asked_for() {
         end: at(text, "print", 0, "print".len()),
     };
     let diagnostic = serde_json::json!({
-        "range": error, "code": "jai-check", "source": "jai", "message": ""});
+        "range": error, "code": "check", "source": "jaic", "message": ""});
     let found = code_actions(
         &mut json,
         top(),
@@ -1019,8 +1019,8 @@ fn an_import_fix_follows_the_check_diagnostic_it_is_asked_for() {
     assert_eq!(found[0]["kind"], "quickfix");
     assert_eq!(found[0]["title"], "Add `#import \"Basic\";`");
     assert_eq!(found[0]["isPreferred"], true);
-    assert_eq!(found[0]["diagnostics"][0]["code"], "jai-check");
-    assert_eq!(found[0]["diagnostics"][0]["source"], "jai");
+    assert_eq!(found[0]["diagnostics"][0]["code"], "check");
+    assert_eq!(found[0]["diagnostics"][0]["source"], "jaic");
     assert_eq!(
         found[0]["edit"]["changes"][uri().as_str()][0]["newText"],
         "#import \"Basic\";\n\n"
