@@ -13,7 +13,7 @@ cargo run --release -p jai-language-server --example ide_coverage -- [--list] [-
 - Every identifier and directive is asked for hover. A hover that is only the syntax layer's fallback ("Source syntax declaration") counts as missing.
 - Every identifier that is not a declaration (`name ::`, `name :=`, `name:`) is also asked for go to definition.
 - Each gap gets a role from its neighbours: `Declaration`, `Named` (`f(name = 1)`, `.{name = 1}`), `Member` (`a.name`, `.NAME`), `Use` or `Directive`.
-- A file with a type-checker error (`DiagnosticCode::Check`) is reported as errored. Past an error some facts are expected to be missing.
+- A file with a type-checker error (`DiagnosticCode::Check` at error severity; warnings do not count) is reported as errored. Past an error some facts are expected to be missing.
 
 Output: one line per file with its counts, each gap with `--list`, then totals by file kind and role.
 
@@ -32,6 +32,7 @@ Gaps that are expected:
 - In a polymorphic procedure or macro nothing calls (see Sketches in [language server](../compiler/language-server.md#semantic-analysis)), members of a `$T` value hover with a stand-in type such as `T.label` but have no definition.
 - Code in a polymorphic struct's `#assert` or `#modify`.
 - Code a metaprogram rebuilt with `compiler_get_code`: it is reparsed from text and has no source positions.
+- Files only a metaprogram's workspace compiles, for a target whose metaprogram needs something the sandbox cannot give at compile time: the Objective-C runtime (`sel_registerName`, Focus's macOS build) or a native library. That target's workspace is never built; other targets still answer `#if OS` branches.
 
 Anything else is usually a kind of name the type checker does not record yet. Add the record where that name is checked (see "How to change it" in [language server](../compiler/language-server.md)), and add a case to `names_outside_plain_expressions_hover_and_go_to_their_declarations` in `crates/jai-language-server/tests/features.rs`.
 
