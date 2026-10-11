@@ -22,6 +22,9 @@ pub(crate) struct Document {
     pub(crate) index: LineIndex,
 }
 
+/// Byte ranges each other target skipped, by file and target.
+type Unreached = BTreeMap<(PathBuf, u8), Vec<(usize, usize)>>;
+
 pub struct Session {
     pub(crate) limits: Limits,
     pub(crate) documents: BTreeMap<DocumentUri, Document>,
@@ -48,6 +51,11 @@ pub struct Session {
     /// working them out reads folders and copies every open document, which a burst of
     /// requests on one version would otherwise repeat.
     inputs: RefCell<Option<(u64, DocumentUri, String, CompileInputs)>>,
+    /// The code each other target's compile skipped too (by file and target, byte ranges), for
+    /// the generation it was found in: not compiled for again. Code no target checks (a file
+    /// nothing loads, a branch on yet another CPU) would otherwise compile every target on
+    /// every hover, more of them than the cache keeps.
+    unreached: RefCell<(u64, Unreached)>,
 }
 
 /// The open files, the root file and the module folders of a compile.
@@ -72,6 +80,7 @@ impl Session {
             index: RefCell::default(),
             generation: std::cell::Cell::new(0),
             inputs: RefCell::default(),
+            unreached: RefCell::default(),
         }
     }
 
@@ -494,18 +503,36 @@ impl Session {
             return None;
         }
         let own = (environment.options)(&root).os;
+        let mut unreached = self.unreached.borrow_mut();
+        if unreached.0 != self.generation.get() {
+            *unreached = (self.generation.get(), Default::default());
+        }
+        // The target that answered last, then those compiled already, then the rest.
         let last = cache.answered.get(path).copied();
-        let order = last.into_iter().chain(
-            semantic::OTHER_TARGETS
-                .into_iter()
-                .filter(|&os| Some(os) != last),
-        );
-        for os in order.filter(|&os| os != own) {
+        let mut order: Vec<jaic::sema::TargetOs> = semantic::OTHER_TARGETS
+            .into_iter()
+            .filter(|&os| {
+                os != own
+                    && !unreached
+                        .1
+                        .get(&(path.to_path_buf(), os as u8))
+                        .is_some_and(|spans| spans.iter().any(|&(a, b)| a <= byte && byte <= b))
+            })
+            .collect();
+        order.sort_by_key(|&os| (Some(os) != last, !cache.has(&root, &dirs, &files, Some(os))));
+        for os in order {
             let analysis = cache.analyze_for(environment, &root, &dirs, files.clone(), Some(os));
-            if !analysis.skipped(path, byte) {
-                let found = query(analysis, path);
-                cache.answered.insert(path.to_path_buf(), os);
-                return found;
+            match analysis.skipped_span(path, byte) {
+                Some(span) => unreached
+                    .1
+                    .entry((path.to_path_buf(), os as u8))
+                    .or_default()
+                    .push(span),
+                None => {
+                    let found = query(analysis, path);
+                    cache.answered.insert(path.to_path_buf(), os);
+                    return found;
+                }
             }
         }
         None

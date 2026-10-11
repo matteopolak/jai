@@ -1,6 +1,6 @@
 //! Which identifiers of a project get no hover or no go to definition from jailsp.
 //!
-//! `cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stdlib DIR] DIR...`
+//! `cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stats] [--stdlib DIR] DIR...`
 //!
 //! Each DIR is opened as a workspace folder with all of its `.jai` files open, as an editor
 //! would. Every identifier and directive outside comments and strings is asked for hover, and
@@ -153,6 +153,7 @@ fn role(tokens: &[jaic::lexer::Token], i: usize) -> Role {
 fn main() {
     let mut list = false;
     let mut show_errors = false;
+    let mut stats = false;
     let mut stdlib = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib");
     let mut dirs = Vec::new();
     let mut args = std::env::args().skip(1);
@@ -160,6 +161,7 @@ fn main() {
         match arg.as_str() {
             "--list" => list = true,
             "--errors" => show_errors = true,
+            "--stats" => stats = true,
             "--stdlib" => stdlib = PathBuf::from(args.next().expect("--stdlib DIR")),
             _ => dirs.push(PathBuf::from(arg)),
         }
@@ -195,6 +197,8 @@ fn main() {
             }
         }
         for (path, uri, text) in &opened {
+            let started = std::time::Instant::now();
+            let compiles = session.compile_counts().0;
             let errors: Vec<_> = session
                 .diagnostics(uri)
                 .unwrap_or_default()
@@ -265,6 +269,13 @@ fn main() {
                     ""
                 },
             );
+            if stats {
+                println!(
+                    "  {} compiles, {} ms",
+                    session.compile_counts().0 - compiles,
+                    started.elapsed().as_millis()
+                );
+            }
             if show_errors {
                 for e in &errors {
                     let first = e.message.lines().next().unwrap_or_default();

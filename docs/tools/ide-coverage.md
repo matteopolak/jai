@@ -3,7 +3,7 @@
 `crates/jai-language-server/examples/ide_coverage.rs` finds the identifiers and directives that get no hover or no go to definition from `jailsp`. It catches whole kinds of names the type checker forgets to record, such as named arguments, struct literal fields or `for` names over a `for_expansion`.
 
 ```sh
-cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stdlib DIR] DIR...
+cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stats] [--stdlib DIR] DIR...
 ```
 
 ## How it works
@@ -47,6 +47,7 @@ Good inputs: `examples/tour` (expected to be clean apart from its untaken `#if`)
 
 - `--list`: print every gap with its line.
 - `--errors`: print each file's type-checker errors (first line of each).
+- `--stats`: print how many compiles each file's requests started and how long they took. A file that needs many compiles points at a cache that is thrashing.
 - `--stdlib DIR`: the stdlib to import from (default `stdlib/`).
 
 ## Dependencies

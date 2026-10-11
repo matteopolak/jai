@@ -40,6 +40,10 @@ const BLOCK_BUDGET: u64 = 20_000_000;
 /// the one being built included.
 const CACHED: usize = 2;
 
+/// Compiles for another target kept besides those (for code an `#if OS == ...` skipped), the
+/// one being built included.
+const ALTERNATES: usize = 2;
+
 /// The targets asked, in order, about code the environment's target skips.
 pub const OTHER_TARGETS: [TargetOs; 4] = [
     TargetOs::Linux,
@@ -80,9 +84,15 @@ impl FileSystem for OverlayFs {
     }
 }
 
+/// The open documents' buffers a compile was keyed by, kept so their addresses stay unique.
+type Buffers = BTreeMap<PathBuf, Rc<[u8]>>;
+
 pub struct Analysis {
     pub compiler: Compiler,
     key: u64,
+    /// `quick_key` of the inputs last answered from this compile, with those inputs, which
+    /// keeps their buffers alive so no other text can take their addresses.
+    quick: Option<(u64, Buffers)>,
     /// The target it was compiled for, when not the environment's (see `other_targets`).
     os: Option<TargetOs>,
     /// The program's root file, the module folders searched and the text of every open file it
@@ -201,13 +211,20 @@ impl Analysis {
     /// `offset` of `path` is code this compile skipped for its target: the file is not part of
     /// it, or an `#if` on `OS` or `CPU` did not take the branch it is in.
     pub fn skipped(&self, path: &Path, offset: usize) -> bool {
+        self.skipped_span(path, offset).is_some()
+    }
+
+    /// The byte range around `offset` of `path` this compile did not check: an `#if` branch on
+    /// `OS` or `CPU` it did not take, or the whole file when the compile did not reach it.
+    pub fn skipped_span(&self, path: &Path, offset: usize) -> Option<(usize, usize)> {
         let Some(file) = self.file(path) else {
-            return true;
+            return Some((0, usize::MAX));
         };
-        self.compiler.ide.as_ref().is_some_and(|ide| {
+        self.compiler.ide.as_ref().and_then(|ide| {
             ide.skipped
                 .iter()
-                .any(|s| s.file == file && s.start as usize <= offset && offset <= s.end as usize)
+                .find(|s| s.file == file && s.start as usize <= offset && offset <= s.end as usize)
+                .map(|s| (s.start as usize, s.end as usize))
         })
     }
 
@@ -398,10 +415,46 @@ fn hash(
     h.finish()
 }
 
+/// A key for inputs by the buffers they share rather than their text: equal only for the
+/// very same `Rc`s (or for buffers at the same addresses, which `Analysis::quick` keeps alive).
+fn quick_key(
+    root: &Path,
+    dirs: &[PathBuf],
+    files: &BTreeMap<PathBuf, Rc<[u8]>>,
+    os: Option<TargetOs>,
+) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let mut h = crate::fast_hash::FastHasher::default();
+    format!("{os:?}").hash(&mut h);
+    root.hash(&mut h);
+    dirs.hash(&mut h);
+    for (path, text) in files {
+        // The bytes, not `Path::hash`, which walks the components.
+        h.write(path.as_os_str().as_encoded_bytes());
+        (text.as_ptr() as usize).hash(&mut h);
+        text.len().hash(&mut h);
+    }
+    h.finish()
+}
+
 impl Cache {
     /// Programs compiled so far, and compiles alive now.
     pub fn counts(&self) -> (usize, usize) {
         (self.compiles, self.entries.len())
+    }
+
+    /// Whether these inputs, as the very buffers given, have a compile kept for `os`.
+    pub fn has(
+        &self,
+        root: &Path,
+        dirs: &[PathBuf],
+        files: &BTreeMap<PathBuf, Rc<[u8]>>,
+        os: Option<TargetOs>,
+    ) -> bool {
+        let quick = quick_key(root, dirs, files, os);
+        self.entries
+            .iter()
+            .any(|a| a.quick.as_ref().is_some_and(|(k, _)| *k == quick))
     }
 
     /// Files appeared or went away: canonical paths are asked for again.
@@ -421,7 +474,12 @@ impl Cache {
     /// asking about a skipped branch does not cost the program's own compile.
     fn make_room(&mut self, os: Option<TargetOs>) {
         if os.is_some() {
-            self.entries.retain(|a| a.os.is_none());
+            // The oldest compile for another target goes; the newest stays, so hovers that go
+            // back and forth between a Windows and a Linux branch do not recompile each time.
+            while self.entries.iter().filter(|a| a.os.is_some()).count() >= ALTERNATES {
+                let oldest = self.entries.iter().position(|a| a.os.is_some());
+                self.entries.remove(oldest.expect("counted"));
+            }
             return;
         }
         while self.entries.iter().filter(|a| a.os.is_none()).count() >= CACHED {
@@ -491,6 +549,19 @@ impl Cache {
         files: BTreeMap<PathBuf, Rc<[u8]>>,
         os: Option<TargetOs>,
     ) -> &mut Analysis {
+        // The same buffers as last time (the session hands out its inputs again until a
+        // document changes): no need to hash megabytes of text to know it is the same program.
+        let quick = quick_key(root, dirs, &files, os);
+        if let Some(at) = self
+            .entries
+            .iter()
+            .position(|a| a.quick.as_ref().is_some_and(|(k, _)| *k == quick))
+        {
+            let entry = self.entries.remove(at);
+            self.entries.push(entry);
+            return self.entries.last_mut().expect("just pushed");
+        }
+        let given = files.clone();
         let files: BTreeMap<PathBuf, Rc<[u8]>> = files
             .into_iter()
             .map(|(p, t)| {
@@ -507,7 +578,8 @@ impl Cache {
             .collect();
         let key = hash(root, dirs, &files, os);
         if let Some(at) = self.entries.iter().position(|a| a.key == key) {
-            let entry = self.entries.remove(at);
+            let mut entry = self.entries.remove(at);
+            entry.quick = Some((quick, given));
             self.entries.push(entry);
         } else {
             // A compile of the same program from text that parses will check, and everything the
@@ -531,6 +603,7 @@ impl Cache {
             self.entries.push(Analysis {
                 compiler,
                 key,
+                quick: Some((quick, given)),
                 os,
                 root: root.to_path_buf(),
                 dirs: dirs.to_vec(),
@@ -630,10 +703,15 @@ thread_local! {
     /// and lints each ask about the same open document, and a parse of a large file is a
     /// transient tree of tens of MiB each time.
     static PARSES: std::cell::RefCell<Vec<(u64, usize, Option<usize>)>> = const { std::cell::RefCell::new(Vec::new()) };
+    /// The text asked about last and its answer: requests on one document ask about the same
+    /// text again and again, and comparing bytes is several times faster than hashing them.
+    static LAST_PARSE: std::cell::RefCell<(String, Option<usize>)> = const { std::cell::RefCell::new((String::new(), None)) };
 }
 
-/// Parse results remembered (the repair of one broken document tries about three texts).
-const PARSES_KEPT: usize = 8;
+/// Parse results remembered: one per open document and a few for the texts the repair of a
+/// broken document tries. Each is 24 bytes; with fewer than there were open documents, every
+/// new compile of a large project parsed all its files again to see that they parse.
+const PARSES_KEPT: usize = 1024;
 
 pub(crate) fn text_key(text: &str) -> (u64, usize) {
     use std::hash::{Hash, Hasher};
@@ -657,19 +735,34 @@ pub fn note_parse(text: &str, error: Option<usize>) {
 
 /// Where `text` fails to lex or parse (a byte offset), if it does.
 pub fn parse_error(text: &str) -> Option<usize> {
+    if let Some(found) = LAST_PARSE.with(|last| {
+        let last = last.borrow();
+        (last.0 == text).then_some(last.1)
+    }) {
+        return found;
+    }
     let (hash, len) = text_key(text);
-    if let Some(found) = PARSES.with(|p| {
+    let error = match PARSES.with(|p| {
         p.borrow()
             .iter()
             .find(|e| (e.0, e.1) == (hash, len))
             .map(|e| e.2)
     }) {
-        return found;
-    }
-    let error = jaic::parser::parse_file(FileId(0), text)
-        .err()
-        .map(|d| d.span.start as usize);
-    note_parse(text, error);
+        Some(found) => found,
+        None => {
+            let error = jaic::parser::parse_file(FileId(0), text)
+                .err()
+                .map(|d| d.span.start as usize);
+            note_parse(text, error);
+            error
+        }
+    };
+    LAST_PARSE.with(|last| {
+        let mut last = last.borrow_mut();
+        last.0.clear();
+        last.0.push_str(text);
+        last.1 = error;
+    });
     error
 }
 
