@@ -1135,3 +1135,104 @@ fn hover_of_a_baked_procedure_is_its_remaining_header() {
         .expect("signature help");
     assert_eq!(help.signatures[0].label, "double_it :: (value: int) -> int");
 }
+
+#[test]
+fn names_from_a_using_parameter_hover_and_go_to_it() {
+    let text = "#import \"Basic\";\nVec2 :: struct { x: float; y: float; }\nCreature :: struct { name: string; health: int; position: Vec2; }\nreport :: (using creature: Creature) {\n    print(\"% % %\\n\", name, health, position.x);\n}\nmain :: () { report(.{}); }\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let name = s
+        .hover(&uri(), at(text, "name, health", 0, 1))
+        .unwrap()
+        .map(|h| h.contents.value);
+    let pos = s
+        .hover(&uri(), at(text, "position.x", 0, 1))
+        .unwrap()
+        .map(|h| h.contents.value);
+    let def = s
+        .definition(&uri(), at(text, "name, health", 0, 1))
+        .unwrap();
+    assert_eq!(name.as_deref(), Some("name: string"));
+    assert_eq!(pos.as_deref(), Some("position: Vec2"));
+    assert_eq!(def.len(), 1, "{def:?}");
+    assert_eq!(def[0].range.start, at(text, "name: string", 0, 0));
+}
+
+/// Names that only the type checker can place: each hovers with its type and goes to its
+/// declaration (found by `examples/ide_coverage.rs`).
+#[test]
+fn names_outside_plain_expressions_hover_and_go_to_their_declarations() {
+    let text = r#"#import "Basic";
+Pair :: struct { first: int; second: int; }
+Ring :: struct ($N: int) { items: [N] int; }
+Countdown :: struct { from: int; }
+for_expansion :: (c: Countdown, body: Code, flags: For_Flags) #expand {
+    for i: 0..c.from - 1 { `it := c.from - i; `it_index := i; #insert body; }
+}
+half :: (x: $T) -> T { y: T = x / 2; return y; }
+scale :: (x: int, by := 2) -> int { return x * by; }
+Callback :: #type (count: int) -> int;
+two :: () -> bool, int { return true, 2; }
+main :: () {
+    p := Pair.{first = 1, second = 2};
+    r: Ring(3);
+    print("% % % %\n", half(5), scale(1, by = 3), p, r.items.count);
+    for value: Countdown.{3} print("%", value);
+    for outer: 0..2 { for 0..2 if it == 1 continue outer; }
+    ok: bool;
+    ok=, n := two();
+    log("%", n,, log_level = .VERBOSE);
+    byte := cast,trunc(u8) 300;
+    print("% %\n", ok, byte);
+}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = |s: &mut Session, needle: &str, nth: usize, offset: usize| {
+        s.hover(&uri(), at(text, needle, nth, offset))
+            .unwrap()
+            .map(|h| h.contents.value)
+            .unwrap_or_default()
+    };
+    let definition = |s: &mut Session, needle: &str, nth: usize, offset: usize| {
+        s.definition(&uri(), at(text, needle, nth, offset))
+            .unwrap()
+            .first()
+            .map(|d| d.range.start)
+    };
+    let mut wrong = Vec::new();
+    for (needle, nth, offset, want) in [
+        ("first = 1", 0, 1, "first: s64"),
+        ("by = 3", 0, 1, "by: s64"),
+        ("items: [N]", 0, 1, "items: [N] int"),
+        ("value: Countdown", 0, 1, "value: s64"),
+        ("outer;", 0, 1, "outer: s64"),
+        ("ok=,", 0, 0, "ok: bool"),
+        ("count: int) ->", 0, 1, "count: s64"),
+        ("log_level", 0, 1, "log_level: Log_Level"),
+    ] {
+        let got = hover(&mut s, needle, nth, offset);
+        if !got.starts_with(want) {
+            wrong.push(format!("{needle}: {got:?}"));
+        }
+    }
+    assert!(wrong.is_empty(), "{wrong:#?}");
+    assert!(hover(&mut s, "trunc", 0, 1).contains("Cast flag"));
+    assert!(hover(&mut s, "#expand", 0, 1).contains("#expand"));
+    assert_eq!(
+        definition(&mut s, "first = 1", 0, 1),
+        Some(at(text, "first: int", 0, 0))
+    );
+    assert_eq!(
+        definition(&mut s, "by = 3", 0, 1),
+        Some(at(text, "by := 2", 0, 0))
+    );
+    assert_eq!(
+        definition(&mut s, "T = x", 0, 0),
+        Some(at(text, "T) -> T", 0, 0))
+    );
+    assert_eq!(
+        definition(&mut s, "outer;", 0, 1),
+        Some(at(text, "outer: 0", 0, 0))
+    );
+}

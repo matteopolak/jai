@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-### Changes
+### Highlights
+
+- Hover and go to definition on more names: fields reached through a `using` parameter, named arguments, struct literal fields, `,,` context arguments, a polymorph's `$T` and its uses, `for name:` over a `for_expansion`, `break`/`continue` labels, `a=,` targets, procedure type parameters, tagged union tags and `#place`/`#overlay` targets. Enum names go to their declaration.
+- Hover on every directive (a one-line description) and on cast flags such as `trunc` and `no_check`; a polymorphic struct's fields hover with their declaration.
+- `examples/ide_coverage.rs` in the language server crate lists the names of a project that get no hover or go to definition.
+
+### Breaking changes
 
 - The language server's compile errors come from `jaic` with codes `check`, `parser`, `lexer`, `source` and `limit` (they were `jai` with `jai-check` and so on), so editors show `jaic(check)`.
 
