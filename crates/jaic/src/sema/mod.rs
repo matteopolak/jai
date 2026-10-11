@@ -26,6 +26,7 @@ mod flow;
 mod format_check;
 pub mod ide;
 pub mod ide_meta;
+mod ide_sketch;
 mod lambda;
 mod lower;
 mod modify;

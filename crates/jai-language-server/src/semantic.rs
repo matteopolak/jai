@@ -526,6 +526,7 @@ fn compile(
             errors.push(e);
         }
     }
+    compiler.ide_sketch_polymorphs();
     (compiler, errors)
 }
 

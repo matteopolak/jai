@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 
+### Highlights
+
+- The bodies of polymorphic procedures nothing calls hover and go to definition, with each `$T` shown as `T`. Named results (`-> ok := false`) hover too.
+
 ### Fixes
 
+- A loop value named `it_index` (`for < it_index: 0..n`, often in a `for_expansion`) no longer stops the compile with an internal error; naming a loop's value and index the same is an error.
 - Hovering a word right after a non-ASCII character no longer fails.
 
 ## [0.11.0] - 2026-10-11

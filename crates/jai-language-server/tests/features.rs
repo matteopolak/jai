@@ -1161,6 +1161,62 @@ fn names_from_a_using_parameter_hover_and_go_to_it() {
 /// Names that only the type checker can place: each hovers with its type and goes to its
 /// declaration (found by `examples/ide_coverage.rs`).
 #[test]
+fn a_polymorph_nothing_calls_hovers_with_its_parameters_as_types() {
+    let text = r#"Value :: struct { n: int; }
+convert :: (v: Value, $Target: Type) -> ok: bool, result: Target {
+    target: Target;
+    count := v.n + 1;
+    return count > 0, target;
+}
+first :: (items: [$N] $T) -> T {
+    out := items[0];
+    return out;
+}
+find :: (key: string) -> found := false, index: int = -1 {
+    return true, 0;
+}
+main :: () {
+    for < it_index: 0..3 {}
+}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = |s: &mut Session, needle: &str, offset: usize| {
+        s.hover(&uri(), at(text, needle, 0, offset))
+            .unwrap()
+            .map(|h| h.contents.value)
+            .unwrap_or_default()
+    };
+    let mut wrong = Vec::new();
+    for (needle, offset, want) in [
+        ("target: Target", 1, "target: Target"),
+        ("count :=", 1, "count: s64"),
+        ("n + 1", 0, "n: s64"),
+        ("out :=", 1, "out: T"),
+        ("found :=", 1, "found: bool"),
+        ("index: int", 1, "index: s64"),
+        ("result: Target", 1, "result: Target"),
+    ] {
+        let got = hover(&mut s, needle, offset);
+        if !got.contains(want) {
+            wrong.push(format!("{needle}: {got:?}"));
+        }
+    }
+    assert!(wrong.is_empty(), "{wrong:#?}");
+    assert_eq!(
+        s.definition(&uri(), at(text, "Target;", 0, 1))
+            .unwrap()
+            .first()
+            .map(|d| d.range.start),
+        Some(at(text, "Target: Type", 0, 0))
+    );
+    // The sketch's errors (`items[0]` of a stand-in `T` is fine, but nothing else is checked
+    // against real types) are not the program's.
+    let diagnostics = s.diagnostics(&uri()).unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
 fn names_outside_plain_expressions_hover_and_go_to_their_declarations() {
     let text = r#"#import "Basic";
 Pair :: struct { first: int; second: int; }

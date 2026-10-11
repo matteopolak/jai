@@ -8,6 +8,14 @@ use super::value::ProcId;
 use super::*;
 use crate::types::{ArrayKind, StructId, TypeKind};
 
+/// Lengths of `IdeFacts::refs`, `Compiler::entities` and `Compiler::procs` at a point.
+#[derive(Clone, Copy, Debug)]
+pub struct SketchMark {
+    pub refs: usize,
+    pub entities: usize,
+    pub procs: usize,
+}
+
 #[derive(Default)]
 pub struct IdeFacts {
     /// Files whose path starts with one of these are recorded.
@@ -31,6 +39,9 @@ pub struct IdeFacts {
     pub(super) type_names: HashMap<Span, EntityId>,
     /// Procedure type parameter names already recorded.
     pub(super) param_names: HashSet<Span>,
+    /// Where `ide_sketch_polymorphs` began: the refs, entities and procedures from there on
+    /// come from sketches with stand-in types, which lints skip.
+    pub sketch_from: Option<SketchMark>,
     /// Lint mode (`jailint`): also record the facts below.
     pub lint: bool,
     /// Type of each checked expression of the recorded files, by span.
@@ -2054,7 +2065,7 @@ fn same_what(a: &IdeWhat, b: &IdeWhat) -> bool {
 }
 
 /// Every expression of the parameter and return types of `header`, outermost first.
-fn for_header_types(header: &ast::ProcHeader, f: &mut dyn FnMut(&ast::Expr)) {
+pub(super) fn for_header_types(header: &ast::ProcHeader, f: &mut dyn FnMut(&ast::Expr)) {
     fn walk(e: &ast::Expr, f: &mut dyn FnMut(&ast::Expr)) {
         use ast::ExprKind as E;
         f(e);

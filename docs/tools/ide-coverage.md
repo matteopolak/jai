@@ -29,7 +29,8 @@ Gaps that are expected:
 
 - Code in an untaken `#if` branch, which is never checked.
 - Builtin members with no declaration (`.count`, `.data`, `Any.type`) and builtins such as `OS`: hover but no definition.
-- Polymorphic procedures and macros nothing in the opened program calls. They are never instantiated, so only the types their header names hover. A library opened on its own shows most of these.
+- In a polymorphic procedure nothing calls, what comes after the sketch's first error (see Sketches in [language server](../compiler/language-server.md#semantic-analysis)): usually the first member of a `$T` value, since the stand-in type has none.
+- Macros nothing calls: only the types their header names hover.
 - Code a metaprogram rebuilt with `compiler_get_code`: it is reparsed from text and has no source positions.
 
 Anything else is usually a kind of name the type checker does not record yet. Add the record where that name is checked (see "How to change it" in [language server](../compiler/language-server.md)), and add a case to `names_outside_plain_expressions_hover_and_go_to_their_declarations` in `crates/jai-language-server/tests/features.rs`.

@@ -413,6 +413,11 @@ impl Compiler {
                 },
                 (None, None) => return err(r.span, "result needs a type"),
             };
+            if let Some(n) = r.name
+                && self.ide.is_some()
+            {
+                self.ide_note_param_name(n.span, n.name, ty);
+            }
             if ty != TypeId::VOID {
                 returns.push(ty);
                 return_names.push(r.name.map(|n| n.name));
@@ -1390,7 +1395,17 @@ impl Compiler {
             let at = binders
                 .iter()
                 .find(|(n, _)| n == name)
-                .map_or(span, |&(_, s)| s);
+                .map(|&(_, s)| s)
+                .or_else(|| {
+                    // `$T: Type`: its parameter's name.
+                    header
+                        .params
+                        .iter()
+                        .filter_map(|p| p.name)
+                        .find(|n| n.name == *name)
+                        .map(|n| n.span)
+                })
+                .unwrap_or(span);
             bound.push((*name, self.add_const(scope, *name, at, value.clone(), *ty)));
         }
         if self.ide.is_some() {
