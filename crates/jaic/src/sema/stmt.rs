@@ -438,6 +438,14 @@ impl Compiler {
                 }
                 let taken = self.body_static_condition(f, scope, cond)?;
                 f.static_taken.insert(span, taken);
+                self.ide_note_skipped(
+                    cond,
+                    if taken {
+                        else_branch
+                    } else {
+                        then_branch
+                    },
+                );
                 self.check_block_stmts(
                     f,
                     scope,

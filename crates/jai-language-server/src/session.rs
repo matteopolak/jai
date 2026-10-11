@@ -432,6 +432,46 @@ impl Session {
         query(analysis, Path::new(uri.path()))
     }
 
+    /// Like `with_semantic` for a question about `byte` of `uri`. When the program's compile
+    /// skipped that code (an `#if OS == ...` branch, or a file only another target loads) and
+    /// has no answer, compiles for the other targets are asked, the first that checked it
+    /// answering.
+    pub(crate) fn with_semantic_at<T>(
+        &self,
+        uri: &DocumentUri,
+        text: &str,
+        byte: usize,
+        query: impl Fn(&mut semantic::Analysis, &Path) -> Option<T>,
+    ) -> Option<T> {
+        let environment = self.environment.as_ref()?;
+        let (files, root, dirs) = self.compile_inputs(uri, text)?;
+        let path = Path::new(uri.path());
+        let mut cache = self.semantic.borrow_mut();
+        let analysis = cache.analyze(environment, &root, &dirs, files.clone());
+        if let Some(found) = query(analysis, path) {
+            return Some(found);
+        }
+        if !analysis.skipped(path, byte) {
+            return None;
+        }
+        let own = (environment.options)(&root).os;
+        let last = cache.answered.get(path).copied();
+        let order = last.into_iter().chain(
+            semantic::OTHER_TARGETS
+                .into_iter()
+                .filter(|&os| Some(os) != last),
+        );
+        for os in order.filter(|&os| os != own) {
+            let analysis = cache.analyze_for(environment, &root, &dirs, files.clone(), Some(os));
+            if !analysis.skipped(path, byte) {
+                let found = query(analysis, path);
+                cache.answered.insert(path.to_path_buf(), os);
+                return found;
+            }
+        }
+        None
+    }
+
     /// Like `with_semantic`, but on a compile that already exists and knows the first `at` bytes
     /// of `uri` as they are in `text` (the other open files unchanged), so it never compiles.
     /// `None` when no compile fits.
@@ -624,7 +664,9 @@ impl Session {
         }
         if let Some(probe) = repair(&doc.text, None) {
             let found = self
-                .with_semantic(uri, &probe, |a, path| Some(a.definition(path, byte)))
+                .with_semantic_at(uri, &probe, byte, |a, path| {
+                    Some(a.definition(path, byte)).filter(|d| !d.is_empty())
+                })
                 .unwrap_or_default();
             let locations: Vec<Location> = found
                 .into_iter()
@@ -786,7 +828,7 @@ impl Session {
         byte: usize,
     ) -> Option<semantic::HoverFacts> {
         let probe = repair(text, None)?;
-        let facts = self.with_semantic(uri, &probe, |a, path| a.hover(path, byte))?;
+        let facts = self.with_semantic_at(uri, &probe, byte, |a, path| a.hover(path, byte))?;
         (facts.end <= text.len()
             && text.is_char_boundary(facts.start)
             && text.is_char_boundary(facts.end))

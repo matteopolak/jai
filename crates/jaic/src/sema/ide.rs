@@ -57,6 +57,8 @@ pub struct IdeFacts {
     pub(super) sketch_types: HashMap<Span, TypeId>,
     /// Each expression the current sketch began to check, failed or not.
     pub(super) sketch_tried: HashSet<Span>,
+    /// The code an `#if` on `OS` or `CPU` did not take: another target's compile has its facts.
+    pub skipped: Vec<Span>,
     /// Lint mode (`jailint`): also record the facts below.
     pub lint: bool,
     /// Type of each checked expression of the recorded files, by span.
@@ -428,6 +430,9 @@ impl Compiler {
         while i < self.procs.len() {
             let id = ProcId(i as u32);
             i += 1;
+            // `t: *Table` makes a procedure polymorphic, which is only known once names
+            // resolve (a compile that stopped early may not have asked yet).
+            let _ = self.refresh_implicit_poly(id);
             let p = self.proc(id);
             let span = p.span;
             if p.is_poly
@@ -443,6 +448,7 @@ impl Compiler {
             }
         }
         errors.extend(self.drain_bodies_lenient().map(|e| *e));
+        self.ide_note_bodiless();
         let mut failed: Vec<_> = self
             .lenient_failures_list()
             .into_iter()
@@ -451,6 +457,58 @@ impl Compiler {
         failed.sort_by_key(|e| (e.span.file.0, e.span.start));
         errors.extend(failed);
         errors
+    }
+
+    /// Procedures without a body (`#foreign`, `#elsewhere`, `#compiler`): no body declares
+    /// their parameters, so their names are recorded from the signature, as is the library
+    /// `#foreign` names.
+    fn ide_note_bodiless(&mut self) {
+        for i in 0..self.procs.len() {
+            let id = ProcId(i as u32);
+            let _ = self.refresh_implicit_poly(id);
+            let p = self.proc(id);
+            if p.is_poly || p.lit.body.is_some() {
+                continue;
+            }
+            let (span, scope, header) = (p.span, p.scope, p.lit.header.clone());
+            if !self.ide_wants(span.file) {
+                continue;
+            }
+            if let Ok(sig) = self.signature(id, span) {
+                for (param, sp) in header.params.iter().zip(&sig.params) {
+                    if let Some(name) = param.name.filter(|n| n.span.end > n.span.start) {
+                        self.ide_note_param_name(name.span, name.name, sp.ty);
+                    }
+                }
+            }
+            if let Some(lib) = header.foreign.as_ref().and_then(|f| f.library)
+                && let Ok(ids) = self.lookup(scope, lib.name)
+                && let [lib_id] = ids[..]
+                && let Some(ide) = self.ide.as_mut()
+            {
+                ide.refs.push(IdeRef {
+                    span: lib.span,
+                    what: IdeWhat::Entity(lib_id),
+                    ty: TypeId::VOID,
+                    decl: false,
+                });
+            }
+        }
+    }
+
+    /// `#if cond` skipped `branch`: when `cond` asks about the target, record where, so the
+    /// language server can ask a compile for another target about that code.
+    pub(super) fn ide_note_skipped(&mut self, cond: &ast::Expr, branch: &[ast::Stmt]) {
+        let (Some(first), Some(last)) = (branch.first(), branch.last()) else {
+            return;
+        };
+        if self.ide.is_none() || !self.ide_wants(first.span.file) || !names_target(cond) {
+            return;
+        }
+        let span = first.span.to(last.span);
+        if let Some(ide) = self.ide.as_mut() {
+            ide.skipped.push(span);
+        }
     }
 
     /// The innermost recorded scope at `offset` of `file` (else the file's own scope).
@@ -2117,5 +2175,16 @@ pub(super) fn for_header_types(header: &ast::ProcHeader, f: &mut dyn FnMut(&ast:
         .chain(header.returns.iter().filter_map(|r| r.ty.as_ref()))
     {
         walk(t, f);
+    }
+}
+
+/// Does a condition mention `OS` or `CPU`?
+fn names_target(expr: &ast::Expr) -> bool {
+    use ast::ExprKind as E;
+    match &expr.kind {
+        E::Ident(name) => matches!(name.as_str(), "OS" | "CPU"),
+        E::Binary(_, a, b) => names_target(a) || names_target(b),
+        E::Unary(_, e) => names_target(e),
+        _ => false,
     }
 }

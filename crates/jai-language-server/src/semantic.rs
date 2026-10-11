@@ -5,7 +5,7 @@ use jaic::build::{BuildEnv, Workspaces};
 use jaic::intern::Sym;
 use jaic::interp::{SandboxHost, SharedHost};
 use jaic::sema::ide::{IdeFacts, IdeLayout, IdeName};
-use jaic::sema::{Compiler, FileSystem, Options};
+use jaic::sema::{Compiler, FileSystem, Options, TargetCpu, TargetOs};
 use jaic::source::{FileId, ImportSuggestion};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -39,6 +39,14 @@ const BLOCK_BUDGET: u64 = 20_000_000;
 /// program, so room is made before the next one starts: at most `CACHED` are alive at once,
 /// the one being built included.
 const CACHED: usize = 2;
+
+/// The targets asked, in order, about code the environment's target skips.
+pub const OTHER_TARGETS: [TargetOs; 4] = [
+    TargetOs::Linux,
+    TargetOs::Windows,
+    TargetOs::MacOS,
+    TargetOs::Wasm,
+];
 
 /// Open documents over the environment's file system.
 struct OverlayFs {
@@ -75,6 +83,8 @@ impl FileSystem for OverlayFs {
 pub struct Analysis {
     pub compiler: Compiler,
     key: u64,
+    /// The target it was compiled for, when not the environment's (see `other_targets`).
+    os: Option<TargetOs>,
     /// The program's root file, the module folders searched and the text of every open file it
     /// was compiled from (shared with the compiler's file system, so no copy).
     root: PathBuf,
@@ -183,6 +193,19 @@ impl Analysis {
                 .unwrap_or_default()
         });
         Some((span.start as usize, span.end as usize, imports.clone()))
+    }
+
+    /// `offset` of `path` is code this compile skipped for its target: the file is not part of
+    /// it, or an `#if` on `OS` or `CPU` did not take the branch it is in.
+    pub fn skipped(&self, path: &Path, offset: usize) -> bool {
+        let Some(file) = self.file(path) else {
+            return true;
+        };
+        self.compiler.ide.as_ref().is_some_and(|ide| {
+            ide.skipped
+                .iter()
+                .any(|s| s.file == file && s.start as usize <= offset && offset <= s.end as usize)
+        })
     }
 
     pub fn file(&self, path: &Path) -> Option<FileId> {
@@ -338,13 +361,22 @@ impl Analysis {
 #[derive(Default)]
 pub struct Cache {
     entries: Vec<Analysis>,
+    /// The target that last answered about skipped code in each file: asked first next time,
+    /// so the one compile kept for another target keeps answering.
+    pub answered: BTreeMap<PathBuf, TargetOs>,
     /// Programs compiled so far.
     compiles: usize,
 }
 
-fn hash(root: &Path, dirs: &[PathBuf], files: &BTreeMap<PathBuf, Rc<[u8]>>) -> u64 {
+fn hash(
+    root: &Path,
+    dirs: &[PathBuf],
+    files: &BTreeMap<PathBuf, Rc<[u8]>>,
+    os: Option<TargetOs>,
+) -> u64 {
     use std::hash::{Hash, Hasher};
     let mut h = std::collections::hash_map::DefaultHasher::new();
+    format!("{os:?}").hash(&mut h);
     root.hash(&mut h);
     dirs.hash(&mut h);
     files.hash(&mut h);
@@ -365,15 +397,22 @@ impl Cache {
     }
 
     /// Drop compiles until one fewer than `CACHED` is left: the newest that checked stays, else
-    /// the newest.
-    fn make_room(&mut self) {
-        while self.entries.len() >= CACHED {
+    /// the newest. A compile for another target makes room only among those (one is kept), so
+    /// asking about a skipped branch does not cost the program's own compile.
+    fn make_room(&mut self, os: Option<TargetOs>) {
+        if os.is_some() {
+            self.entries.retain(|a| a.os.is_none());
+            return;
+        }
+        while self.entries.iter().filter(|a| a.os.is_none()).count() >= CACHED {
             let keep = self
                 .entries
                 .iter()
-                .rposition(|a| a.usable)
-                .unwrap_or(self.entries.len() - 1);
-            let victim = (0..self.entries.len()).find(|&i| i != keep).unwrap_or(0);
+                .rposition(|a| a.usable && a.os.is_none())
+                .or_else(|| self.entries.iter().rposition(|a| a.os.is_none()));
+            let victim = (0..self.entries.len())
+                .find(|&i| Some(i) != keep && self.entries[i].os.is_none())
+                .unwrap_or(0);
             self.entries.remove(victim);
         }
     }
@@ -399,6 +438,7 @@ impl Cache {
         let path = env.fs.canonical(path);
         let at = self.entries.iter().rposition(|a| {
             a.usable
+                && a.os.is_none()
                 && a.root == root
                 && a.dirs == dirs
                 && a.files.len() == canonical.len()
@@ -419,11 +459,23 @@ impl Cache {
         dirs: &[PathBuf],
         files: BTreeMap<PathBuf, Rc<[u8]>>,
     ) -> &mut Analysis {
+        self.analyze_for(env, root, dirs, files, None)
+    }
+
+    /// Like `analyze`, compiled for `os` instead of the environment's target when it is `Some`.
+    pub fn analyze_for(
+        &mut self,
+        env: &Environment,
+        root: &Path,
+        dirs: &[PathBuf],
+        files: BTreeMap<PathBuf, Rc<[u8]>>,
+        os: Option<TargetOs>,
+    ) -> &mut Analysis {
         let files: BTreeMap<PathBuf, Rc<[u8]>> = files
             .into_iter()
             .map(|(p, t)| (env.fs.canonical(&p), t))
             .collect();
-        let key = hash(root, dirs, &files);
+        let key = hash(root, dirs, &files, os);
         if let Some(at) = self.entries.iter().position(|a| a.key == key) {
             let entry = self.entries.remove(at);
             self.entries.push(entry);
@@ -434,12 +486,13 @@ impl Cache {
             if files.values().all(|bytes| {
                 std::str::from_utf8(bytes).is_ok_and(|text| parse_error(text).is_none())
             }) {
-                self.entries.retain(|a| !(a.root == root && a.dirs == dirs));
+                self.entries
+                    .retain(|a| !(a.root == root && a.dirs == dirs && a.os == os));
             }
-            self.make_room();
+            self.make_room(os);
             self.compiles += 1;
             let snapshot = files.clone();
-            let (compiler, errors) = compile(env, root, dirs, files);
+            let (compiler, errors) = compile(env, root, dirs, files, os);
             let usable = errors.is_empty()
                 || compiler
                     .ide
@@ -448,6 +501,7 @@ impl Cache {
             self.entries.push(Analysis {
                 compiler,
                 key,
+                os,
                 root: root.to_path_buf(),
                 dirs: dirs.to_vec(),
                 files: snapshot,
@@ -469,6 +523,7 @@ fn compile(
     root: &Path,
     dirs: &[PathBuf],
     files: BTreeMap<PathBuf, Rc<[u8]>>,
+    os: Option<TargetOs>,
 ) -> (Compiler, Vec<jaic::source::Diagnostic>) {
     let fs: Rc<dyn FileSystem> = Rc::new(OverlayFs {
         base: env.fs.clone(),
@@ -478,6 +533,15 @@ fn compile(
     let options = || {
         let mut options = (env.options)(root);
         crate::modules::splice(&mut options.import_paths, dirs);
+        if let Some(os) = os {
+            options.os = os;
+            options.cpu = match os {
+                TargetOs::Windows | TargetOs::Linux => TargetCpu::X64,
+                TargetOs::MacOS => TargetCpu::Arm64,
+                TargetOs::Wasm => TargetCpu::Wasm,
+            };
+            options.long_double = jaic::sema::long_double_for(os, options.cpu, false);
+        }
         options
     };
     let mut compiler = Compiler::new(options(), fs.clone());

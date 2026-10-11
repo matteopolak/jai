@@ -1,6 +1,6 @@
 //! Which identifiers of a project get no hover or no go to definition from jailsp.
 //!
-//! `cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--stdlib DIR] DIR...`
+//! `cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stdlib DIR] DIR...`
 //!
 //! Each DIR is opened as a workspace folder with all of its `.jai` files open, as an editor
 //! would. Every identifier and directive outside comments and strings is asked for hover, and
@@ -152,12 +152,14 @@ fn role(tokens: &[jaic::lexer::Token], i: usize) -> Role {
 
 fn main() {
     let mut list = false;
+    let mut show_errors = false;
     let mut stdlib = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib");
     let mut dirs = Vec::new();
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--list" => list = true,
+            "--errors" => show_errors = true,
             "--stdlib" => stdlib = PathBuf::from(args.next().expect("--stdlib DIR")),
             _ => dirs.push(PathBuf::from(arg)),
         }
@@ -193,9 +195,13 @@ fn main() {
             }
         }
         for (path, uri, text) in &opened {
-            let errored = session
+            let errors: Vec<_> = session
                 .diagnostics(uri)
-                .is_ok_and(|d| d.iter().any(|d| d.code == DiagnosticCode::Check));
+                .unwrap_or_default()
+                .into_iter()
+                .filter(|d| d.code == DiagnosticCode::Check)
+                .collect();
+            let errored = !errors.is_empty();
             let Ok(tokens) = jaic::lexer::lex(jaic::source::FileId(0), text) else {
                 continue;
             };
@@ -259,6 +265,16 @@ fn main() {
                     ""
                 },
             );
+            if show_errors {
+                for e in &errors {
+                    let first = e.message.lines().next().unwrap_or_default();
+                    println!(
+                        "  {}:{} error: {first}",
+                        e.range.start.line + 1,
+                        e.range.start.character + 1
+                    );
+                }
+            }
             for g in &gaps {
                 if !g.hover {
                     *totals.entry((kind, g.role)).or_default() += 1;

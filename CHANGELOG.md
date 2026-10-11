@@ -5,11 +5,18 @@
 ### Highlights
 
 - The bodies of polymorphic procedures and macros nothing calls hover and go to definition all the way through, with each `$T` shown as `T` and its members as `T.name`. Named results (`-> ok := false`) hover too, as do the named arguments of `#bake_arguments` and `#bake_constants`.
+- Code under an `#if OS == ...` or `#if CPU == ...` branch another target takes, and files only that branch loads, hover and go to definition: the language server compiles for that target when asked about it.
+- The parameters of `#foreign` procedures hover, and the library name after `#foreign` hovers and goes to its declaration.
+- `ide_coverage --errors` prints each file's type-checker errors.
 
 ### Fixes
 
 - A loop value named `it_index` (`for < it_index: 0..n`, often in a `for_expansion`) no longer stops the compile with an internal error; naming a loop's value and index the same is an error.
 - Hovering a word right after a non-ASCII character no longer fails.
+- `#bake_constants` that fixes only some of a procedure's polymorphic types (`#bake_constants f(T = float32)` where `f` also has `$W`) makes a procedure that is still polymorphic in the rest, instead of failing.
+- Constants declared with listed values (`a, b :: 1, 2;`, `a, b : int : 1, 2;`) give each name its value instead of failing with "2 names but 1 values".
+- A missing `#import,dir` or `#import,file` path is named as written (folder `gone` does not exist), with help about imports instead of `#load`.
+- A procedure with a bare polymorphic struct parameter (`p: *Pair`) stays polymorphic when an earlier `#load` fails, instead of erroring as if `Pair` were a type.
 
 ## [0.11.0] - 2026-10-11
 

@@ -1349,6 +1349,76 @@ main :: () {}
 }
 
 #[test]
+fn foreign_parameters_and_libraries_hover() {
+    let text = r#"libc :: #system_library "libc";
+length :: (text: *u8) -> u64 #foreign libc "strlen";
+main :: () {}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = |s: &mut Session, needle: &str| {
+        s.hover(&uri(), at(text, needle, 0, 0))
+            .unwrap()
+            .map(|h| h.contents.value)
+            .unwrap_or_default()
+    };
+    assert!(hover(&mut s, "text:").contains("text: *u8"));
+    assert!(hover(&mut s, "libc \"strlen").contains("libc"));
+    assert_eq!(
+        s.definition(&uri(), at(text, "libc \"strlen", 0, 0))
+            .unwrap()
+            .first()
+            .map(|d| d.range.start),
+        Some(at(text, "libc ::", 0, 0))
+    );
+}
+
+#[test]
+fn code_another_target_compiles_hovers_and_goes_to_definition() {
+    let main = r#"#if OS == .WASM {
+    #load "web.jai";
+    scale :: (by: int) -> int { return by * web_factor(); }
+}
+main :: () {}
+"#;
+    let web_text = "web_factor :: () -> int { return 2; }\n";
+    let web = DocumentUri::parse("file:///lsp-features-test/web.jai").unwrap();
+    let mut s = session();
+    s.open(uri(), 1, main.into()).unwrap();
+    s.open(web.clone(), 1, web_text.into()).unwrap();
+    let shown = s
+        .hover(&uri(), at(main, "by *", 0, 0))
+        .unwrap()
+        .map(|h| h.contents.value)
+        .unwrap_or_default();
+    assert!(shown.contains("by: s64"), "{shown}");
+    let found = s.definition(&uri(), at(main, "web_factor", 0, 0)).unwrap();
+    assert_eq!(found.first().map(|d| d.uri.as_str()), Some(web.as_str()));
+    let shown = s
+        .hover(&web, at(web_text, "int", 0, 0))
+        .unwrap()
+        .map(|h| h.contents.value)
+        .unwrap_or_default();
+    assert!(shown.contains("int"), "{shown}");
+}
+
+#[test]
+fn a_failed_load_leaves_bare_polymorphic_struct_parameters_polymorphic() {
+    let text = r#"#load "missing.jai";
+Pair :: struct (T: Type) { a: T; b: T; }
+swap :: (p: *Pair) { p.a, p.b = p.b, p.a; }
+main :: () {}
+"#;
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let diagnostics = s.diagnostics(&uri()).unwrap();
+    assert!(
+        diagnostics.iter().all(|d| d.range.start.line == 0),
+        "{diagnostics:#?}"
+    );
+}
+
+#[test]
 fn names_outside_plain_expressions_hover_and_go_to_their_declarations() {
     let text = r#"#import "Basic";
 Pair :: struct { first: int; second: int; }

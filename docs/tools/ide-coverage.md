@@ -3,7 +3,7 @@
 `crates/jai-language-server/examples/ide_coverage.rs` finds the identifiers and directives that get no hover or no go to definition from `jailsp`. It catches whole kinds of names the type checker forgets to record, such as named arguments, struct literal fields or `for` names over a `for_expansion`.
 
 ```sh
-cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--stdlib DIR] DIR...
+cargo run --release -p jai-language-server --example ide_coverage -- [--list] [--errors] [--stdlib DIR] DIR...
 ```
 
 ## How it works
@@ -27,7 +27,7 @@ tour/meta/compile_time.jai: 109 identifiers, 1 without hover, 3 without definiti
 
 Gaps that are expected:
 
-- Code in an untaken `#if` branch, which is never checked.
+- Code in an `#if` branch no target takes (`#if false`, a constant the program sets), which is never checked. Branches on `OS` or `CPU` are answered by a compile for another target.
 - Builtin members with no declaration (`.count`, `.data`, `Any.type`) and builtins such as `OS`: hover but no definition.
 - In a polymorphic procedure or macro nothing calls (see Sketches in [language server](../compiler/language-server.md#semantic-analysis)), members of a `$T` value hover with a stand-in type such as `T.label` but have no definition.
 - Code in a polymorphic struct's `#assert` or `#modify`.
@@ -46,6 +46,7 @@ Good inputs: `examples/tour` (expected to be clean apart from its untaken `#if`)
 ## Configuration
 
 - `--list`: print every gap with its line.
+- `--errors`: print each file's type-checker errors (first line of each).
 - `--stdlib DIR`: the stdlib to import from (default `stdlib/`).
 
 ## Dependencies
