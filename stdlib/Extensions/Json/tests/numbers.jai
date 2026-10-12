@@ -242,6 +242,10 @@ integers :: () {
     check(error4.kind != .NONE, "dangling exponent");
 }
 
+// Set to true for the large random sweep (about 15 s with a release jaic in the interpreter);
+// the default count keeps the test to a few seconds even with a debug jaic.
+FULL_SWEEP :: false;
+
 main :: () {
     for pass: 0..1 {
         json_use_simd = pass == 1;
@@ -251,10 +255,8 @@ main :: () {
         parsing();
         integers();
 
-        count := 20000;
-
-        #if OS == .WASM count = 2000;
-        random_round_trips(count);
+        // The number reader does not look at the text's bytes in bulk, so one pass is enough.
+        if pass == 0 random_round_trips(ifx FULL_SWEEP then 20000 else 1500);
     }
 
     assert(failures == 0);

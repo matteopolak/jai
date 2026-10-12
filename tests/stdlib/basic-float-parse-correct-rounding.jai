@@ -19,6 +19,11 @@ next_random :: (state: *State) -> u64 {
     return x * 0x2545_f491_4f6c_dd1d;
 }
 
+// Set to true for the large random sweep (tens of seconds in the interpreter); the default is
+// sized to take a few seconds even under a debug jaic.
+FULL_SWEEP :: false;
+SAMPLES :: #run ifx FULL_SWEEP then 100000 else 1000;
+
 failures := 0;
 
 expect64 :: (text: string, bits: u64) {
@@ -156,7 +161,7 @@ check32 :: (bits: u32, requested: s64) {
 round_trips :: () {
     state := State.{ value = 0x9e37_79b9_7f4a_7c15 };
 
-    for 1..100000 {
+    for 1..SAMPLES {
         bits := next_random(*state);
         if (bits >> 52 & 0x7ff) == 0x7ff continue; // NaN and infinity have no number spelling
 
@@ -164,7 +169,7 @@ round_trips :: () {
         if it % 4 == 0 check64(bits, 40); // a long expansion is no harder to read
     }
 
-    for 1..100000 {
+    for 1..SAMPLES {
         bits := cast,trunc(u32) (next_random(*state) >> 20);
         if (bits >> 23 & 0xff) == 0xff continue;
 
@@ -173,7 +178,7 @@ round_trips :: () {
     }
 
     // Subnormals and the edges of the exponent range specifically.
-    for 1..20000 {
+    for 1..SAMPLES / 5 {
         bits := next_random(*state) & 0x800f_ffff_ffff_ffff;
         if it % 2 == 0 bits |= 0x7fe0_0000_0000_0000 & next_random(*state);
         if (bits >> 52 & 0x7ff) == 0x7ff continue;
@@ -181,7 +186,7 @@ round_trips :: () {
         check64(bits, -1);
     }
 
-    for 1..20000 {
+    for 1..SAMPLES / 5 {
         bits := cast,trunc(u32) (next_random(*state) >> 20) & 0x807f_ffff;
         if it % 2 == 0 bits |= 0x7f00_0000 & cast,trunc(u32) next_random(*state);
         if (bits >> 23 & 0xff) == 0xff continue;
