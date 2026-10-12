@@ -16,6 +16,7 @@ JAI
     compiler_begin_intercept(w);
     add_build_string(PROGRAM, w);
     found := false;
+
     while true {
         msg := compiler_wait_for_message();
         if msg.kind == .TYPECHECKED {
@@ -24,14 +25,17 @@ JAI
                 e := it.expression.expression;
                 if it.expression.name == "Mode" && e && e.kind == .ENUM {
                     info := cast(*Code_Enum) e;
+
                     assert(info.external_type != null && info.external_type.name == "Mode");
                     assert(info.external_type.values.count == 3);
                     found = true;
                 }
             }
         }
+
         if msg.kind == .COMPLETE break;
     }
+
     compiler_end_intercept(w);
     assert(found, "Mode was not reported");
 }

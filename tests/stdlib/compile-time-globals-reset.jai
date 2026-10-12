@@ -18,6 +18,7 @@ once :: () -> int {
 #run {
     counter = 5;
     kept = 7;
+
     for 0..3 {
         table[it] = it + 1;
         kept_table[it] = it + 10;
@@ -31,6 +32,7 @@ main :: () -> s64 {
     if kept != 7 return 2;
     if table[2] != 0 return 3;
     if kept_table[3] != 13 return 4;
+
     // `value := #run f()` evaluates f once, at compile time.
     if value != 42 return 5;
     if runs != 0 return 6;

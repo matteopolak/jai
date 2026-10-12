@@ -9,6 +9,7 @@
 main :: () {
     text: Flowable_Text;
     r: Rect;
+
     if false text_display(r, *text, 0, 20);
     print("ok\n");
 }

@@ -16,9 +16,11 @@ resolved_case_body_indent :: (config: Format_Config) -> int {
 parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
     line_number := 0;
     rest := text;
+
     while rest.count {
         line: string;
         newline := find_index_from_left(rest, #char "\n");
+
         if newline < 0 {
             line = rest;
             rest = "";
@@ -26,6 +28,7 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
             line = slice(rest, 0, newline);
             rest = slice(rest, newline + 1, rest.count - newline - 1);
         }
+
         line_number += 1;
         line = trim(strip_comment(line));
         if !line.count continue;
@@ -39,21 +42,27 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
             case "indent_width";
                 ok := parse_count(value, *config.indent_width, 1, 16);
                 if !ok return false, tprint("line %: indent_width must be an integer from 1 to 16", line_number);
+
             case "case_indent";
                 ok := parse_count(value, *config.case_indent, 0, 16);
                 if !ok return false, tprint("line %: case_indent must be an integer from 0 to 16", line_number);
+
             case "case_body_indent";
                 ok := parse_count(value, *config.case_body_indent, 0, 16);
                 if !ok return false, tprint("line %: case_body_indent must be an integer from 0 to 16", line_number);
+
             case "max_blank_lines";
                 ok := parse_count(value, *config.max_blank_lines, 0, 100);
                 if !ok return false, tprint("line %: max_blank_lines must be an integer from 0 to 100", line_number);
+
             case "max_width";
                 ok := parse_count(value, *config.max_width, 10, 10000);
                 if !ok return false, tprint("line %: max_width must be an integer from 10 to 10000", line_number);
+
             case "brace_style";
                 style, ok := parse_quoted(value);
                 if !ok return false, tprint("line %: brace_style must be a quoted string", line_number);
+
                 if style == "same_line" {
                     config.brace_style = .SAME_LINE;
                 } else if style == "preserve" {
@@ -61,6 +70,7 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                 } else {
                     return false, tprint("line %: brace_style must be \"same_line\" or \"preserve\"", line_number);
                 }
+
             case "blank_lines_between_items";
                 if value == "true" {
                     config.blank_lines_between_items = true;
@@ -69,23 +79,30 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                 } else {
                     return false, tprint("line %: blank_lines_between_items must be true or false", line_number);
                 }
+
             case "blank_line_after_declarations";
                 ok := parse_flag(value, *config.blank_line_after_declarations);
                 if !ok return false, tprint("line %: blank_line_after_declarations must be true or false", line_number);
+
             case "blank_lines_around_blocks";
                 ok := parse_flag(value, *config.blank_lines_around_blocks);
                 if !ok return false, tprint("line %: blank_lines_around_blocks must be true or false", line_number);
+
             case "blank_line_between_cases";
                 ok := parse_flag(value, *config.blank_line_between_cases);
                 if !ok return false, tprint("line %: blank_line_between_cases must be true or false", line_number);
+
             case "blank_line_before_comments";
                 ok := parse_flag(value, *config.blank_line_before_comments);
                 if !ok return false, tprint("line %: blank_line_before_comments must be true or false", line_number);
+
             case "ignore";
                 if !value.count || value[0] != #char "[" || value[value.count - 1] != #char "]" {
                     return false, tprint("line %: ignore must be an array of quoted globs on one line", line_number);
                 }
+
                 items := slice(value, 1, value.count - 2);
+
                 while true {
                     items = trim(items);
                     if !items.count break;
@@ -95,10 +112,12 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                     items = trim(after);
                     if items.count && items[0] == #char "," items = slice(items, 1, items.count - 1);
                 }
+
             case;
                 return false, tprint("line %: unknown key `%`", line_number, key);
         }
     }
+
     return true, "";
 }
 
@@ -111,44 +130,56 @@ is_ignored :: (config: Format_Config, path: string) -> bool {
     if !begins_with(path, root) return false;
     relative := slice(path, root.count, path.count - root.count);
     while relative.count && relative[0] == #char "/" relative = slice(relative, 1, relative.count - 1);
+
     for glob: config.ignore {
         if glob_match(glob, relative) return true;
+
         // Directory prefixes: `tests/corpus` ignores `tests/corpus/a.jai`.
         for *relative {
             if it.* == #char "/" && glob_match(glob, slice(relative, 0, it_index)) return true;
         }
     }
+
     return false;
 }
 
 glob_match :: (pattern: string, text: string) -> bool {
     if !pattern.count return !text.count;
+
     if begins_with(pattern, "**") {
         rest := slice(pattern, 2, pattern.count - 2);
         if rest.count && rest[0] == #char "/" {
             // `**/x` also matches `x` at the top.
             if glob_match(slice(rest, 1, rest.count - 1), text) return true;
         }
+
         for i: 0..text.count {
             if glob_match(rest, slice(text, i, text.count - i)) return true;
         }
+
         return false;
     }
+
     c := pattern[0];
     if c == #char "*" {
         rest := slice(pattern, 1, pattern.count - 1);
+
         for i: 0..text.count {
             if glob_match(rest, slice(text, i, text.count - i)) return true;
             if i < text.count && text[i] == #char "/" break;
         }
+
         return false;
     }
+
     if !text.count return false;
+
     if c == #char "?" {
         if text[0] == #char "/" return false;
     } else if c != text[0] {
         return false;
     }
+
     return glob_match(slice(pattern, 1, pattern.count - 1), slice(text, 1, text.count - 1));
 }
 
@@ -156,23 +187,27 @@ glob_match :: (pattern: string, text: string) -> bool {
 
 strip_comment :: (line: string) -> string {
     in_string := false;
+
     for *line {
         c := it.*;
         if c == #char "\"" in_string = !in_string;
         if c == #char "#" && !in_string return slice(line, 0, it_index);
     }
+
     return line;
 }
 
 parse_count :: (text: string, result: *int, low: int, high: int) -> bool {
     if !text.count return false;
     value := 0;
+
     for text {
         c := it;
         if c < #char "0" || c > #char "9" return false;
         value = value * 10 + (c - #char "0");
         if value > high return false;
     }
+
     if value < low return false;
     result.* = value;
     return true;
@@ -183,10 +218,12 @@ parse_flag :: (text: string, result: *bool) -> bool {
         result.* = true;
         return true;
     }
+
     if text == "false" {
         result.* = false;
         return true;
     }
+
     return false;
 }
 
@@ -201,5 +238,6 @@ parse_quoted_prefix :: (text: string) -> value: string, ok: bool, rest: string {
     close := find_index_from_left(slice(text, 1, text.count - 1), #char "\"");
     if close < 0 return "", false, text;
     value := copy_string(slice(text, 1, close));
+
     return value, true, slice(text, close + 2, text.count - close - 2);
 }

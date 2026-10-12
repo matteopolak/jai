@@ -44,6 +44,7 @@ compiles :: (source: string, mode: Mode) -> bool {
     compiler_begin_intercept(w);
     add_build_string(source, w);
     ok := false;
+
     while true {
         message := compiler_wait_for_message();
         if message.kind == .COMPLETE {
@@ -51,12 +52,14 @@ compiles :: (source: string, mode: Mode) -> bool {
             break;
         }
     }
+
     compiler_end_intercept(w);
     return ok;
 }
 
 #run {
     assert(get_build_options().dead_code_elimination == .MODULES_ONLY);
+
     // .ALL checks only what the program reaches (dce.9).
     assert(compiles(UNUSED_BODY, .ALL));
 }

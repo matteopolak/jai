@@ -12,7 +12,9 @@ webgpu_metal_layer :: (window: Window_Type) -> *void {
         log_error("WebGPU: CAMetalLayer is not available (QuartzCore is loaded with wgpu-native; create the instance first)");
         return null;
     }
+
     layer := msg_ptr(layer_class, sel("layer"));
+
     msg_set_bool(view, sel("setWantsLayer:"), 1);
     msg_set_ptr(view, sel("setLayer:"), layer);
     msg_set_f64(layer, sel("setContentsScale:"), msg_f64(window, sel("backingScaleFactor")));
@@ -24,11 +26,13 @@ webgpu_macos_drawable_size :: (window: Window_Type) -> width: s32, height: s32 {
     WC :: #import "Window_Creation";
     _, _, w, h := WC.get_dimensions(window, false);
     scale := msg_f64(window, sel("backingScaleFactor"));
+
     return cast(s32) (w * scale), cast(s32) (h * scale);
 }
 
 sel :: (name: string) -> *void {
     buffer: [128] u8;
+
     assert(name.count < buffer.count);
     memcpy(buffer.data, name.data, name.count);
     return sel_registerName(buffer.data);
@@ -36,6 +40,7 @@ sel :: (name: string) -> *void {
 
 objc_getClass :: (name: string) -> *void {
     buffer: [128] u8;
+
     assert(name.count < buffer.count);
     memcpy(buffer.data, name.data, name.count);
     return objc_getClass_c(buffer.data);

@@ -15,24 +15,31 @@ run_fatal :: (prefix: string, body: string) {
     set_build_options(options, w);
     compiler_begin_intercept(w);
     add_build_string(source, w);
+
     while true {
         message := compiler_wait_for_message();
         if message.kind == .COMPLETE break;
     }
+
     compiler_end_intercept(w);
 }
 
 #run {
     // overflow.8: constant folding still wraps.
     run_fatal("A : u8 : 250;\nB : u8 : 10;", "z := A + B; assert(z == 4);");
+
     // overflow.8: unary minus is not checked.
     run_fatal("", "x: s8 = -128; y := -x; assert(y == -128);");
+
     // overflow.8: shifts are not checked.
     run_fatal("", "x: u8 = 200; y := x << 1; assert(y == 144); s: s32 = 0x4000_0000; t := s << 1; assert(t < 0);");
+
     // overflow.8: pointer arithmetic is not checked.
     run_fatal("", "p := cast(*u8) 0xffff_ffff_ffff_fff0; q := p + 0x20; assert(cast(u64) q == 0x10);");
+
     // overflow.8: floats are not checked.
     run_fatal("", "f: float32 = 3e38; g := f * 10; assert(g > 3e38);");
+
     // overflow.8: indexing arithmetic is not checked.
     run_fatal("", "a := int.[5, 6, 7]; i: u8 = 2; assert(a[i] == 7);");
 

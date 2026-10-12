@@ -50,6 +50,7 @@ main :: () {
 
     // import.14: an imported module's #add_context is in place before main runs.
     assert(context.rules_plain_marker == 5, "module's #add_context");
+
     // import.16: `using,only(name) M;` brings the listed name in unqualified.
     assert(filtered_answer == 5 && Filtered.filtered_other == 6, "using,only");
     print("ok\n");

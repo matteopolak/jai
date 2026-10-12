@@ -90,18 +90,21 @@ build_and_generate :: () -> string {
     // The WASM target (the browser playground) starts no processes and loads no native
     // libraries, so there is no compiler or libclang to call: skip like a host without them.
     #if OS == .WASM return "";
+
     // Kept: the program loads the library from here when it runs.
     dir := scratch_directory("bindgen-cpp-raw");
     header_path := tprint("%/pad.h", dir);
     source_path := tprint("%/pad.cpp", dir);
     ext := ifx OS == .MACOS then "dylib" else "so";
     library_path := tprint("%/libpad.%", dir, ext);
+
     if !write_entire_file(header_path, HEADER) || !write_entire_file(source_path, SOURCE) return "";
 
     result := run_command("clang++", "-std=c++17", "-Wno-invalid-offsetof", "-shared", "-fPIC", "-o", library_path, source_path, capture_and_return_output = true);
     if result.exit_code != 0 return "";
 
     opts: Generate_Bindings_Options;
+
     array_add(*opts.source_files, header_path);
     array_add(*opts.extra_clang_arguments, "-x", "c++", "-std=c++17");
     array_add(*opts.libpaths, dir);
@@ -148,13 +151,16 @@ main :: () {
         assert(size_of(Pad.Mid) == 8 && size_of(Pad.Mid__RAW) == 6 && size_of(Pad.Last) == 8);
 
         d: Pad.Derived;
+
         assert(byte_offset(*d, *d.c) == Pad.offset_of_c());
         assert(byte_offset(*d, *d.d) == Pad.offset_of_d());
         l: Pad.Longer;
+
         assert(byte_offset(*l, *l.e) == Pad.offset_of_e());
 
         // Fields written by C++ read back in Jai, and the other way round.
         p := Pad.make_derived(1, 2, 3, 4);
+
         assert(p.a == 1 && p.b == 2 && p.c == 3 && p.d == 4);
         assert(Pad.Derived.total(p) == 10);
         d.a = 10;

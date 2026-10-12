@@ -20,20 +20,26 @@ build :: (source: string, remap: bool, answer: (w: Workspace, m: *Message_Failed
     if remap remap_import(w, "", "Not_A_Module", "Math");
     compiler_begin_intercept(w);
     add_build_string(source, w);
+
     while true {
         message := compiler_wait_for_message();
         if message.kind == {
             case .FAILED_IMPORT;
                 failed := cast(*Message_Failed_Import) message;
+
                 array_add(*result.failed_imports, copy_string(failed.target_module_name));
                 if answer answer(w, failed);
+
             case .ERROR;
                 result.errors += 1;
+
             case .COMPLETE;
                 result.error_code = xx (cast(*Message_Complete) message).error_code;
         }
+
         if message.kind == .COMPLETE break;
     }
+
     compiler_end_intercept(w);
     return result;
 }
@@ -78,6 +84,7 @@ provide_directory :: (w: Workspace, m: *Message_Failed_Import) {
 checks :: () {
     // remap_import: `Not_A_Module` does not exist, `Math` does.
     r := build(USES_REMAPPED, true, null);
+
     assert(r.error_code == 0 && r.failed_imports.count == 0);
 
     // provide_import with each kind of value.

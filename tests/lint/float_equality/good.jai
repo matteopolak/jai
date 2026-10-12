@@ -14,8 +14,10 @@ main :: () {
     a := 0.1;
     b := 0.2;
     total := a + b;
+
     // Against a constant: an exact stored value.
     if total == 0 print("zero\n");
+
     // The NaN test.
     if total != total print("not a number\n");
     if abs(total - 0.3) < 0.0001 print("close enough\n");

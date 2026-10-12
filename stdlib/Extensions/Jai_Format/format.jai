@@ -20,7 +20,9 @@ Format_Result :: struct {
 format_text :: (src: string, config: Format_Config) -> Format_Result {
     result: Format_Result;
     lexed := lex(src);
+
     defer array_free(lexed.tokens);
+
     if lexed.error.count {
         line, column := line_and_column(src, lexed.error_offset);
         result.error = tprint("%:%: %", line, column, lexed.error);
@@ -42,6 +44,7 @@ format_text :: (src: string, config: Format_Config) -> Format_Result {
         result.error = message;
         return result;
     }
+
     result.output = builder_to_string(*f.out);
 
     equivalent, why := check_equivalent(src, result.output);
@@ -51,6 +54,7 @@ format_text :: (src: string, config: Format_Config) -> Format_Result {
         result.output = "";
         return result;
     }
+
     result.long_lines = count_long_lines(result.output, config.max_width);
     result.ok = true;
     return result;
@@ -62,16 +66,20 @@ format_text :: (src: string, config: Format_Config) -> Format_Result {
 // (`break_change_allowed`).
 check_equivalent :: (before: string, after: string) -> bool, string {
     a := lex(before);
+
     defer array_free(a.tokens);
     b := lex(after);
+
     defer array_free(b.tokens);
     if a.error.count return false, tprint("input does not lex: %", a.error);
+
     if b.error.count {
         line, column := line_and_column(after, b.error_offset);
         return false, tprint("output does not lex at %:%: %", line, column, b.error);
     }
 
     zone := directive_zone(a.tokens, before);
+
     defer array_free(zone);
 
     ia := 0;
@@ -81,47 +89,60 @@ check_equivalent :: (before: string, after: string) -> bool, string {
     first := true;
     prev_a := -1;
     prev_b := -1;
+
     while true {
         // Comments, in order, must survive (whitespace inside them may change).
         while a.tokens[ia].kind == .LINE_COMMENT || a.tokens[ia].kind == .BLOCK_COMMENT {
             ta := a.tokens[ia];
             tb := b.tokens[ib];
+
             if tb.kind != ta.kind || !same_ignoring_whitespace(token_text(before, ta), token_text(after, tb)) {
                 line, column := line_and_column(before, ta.start);
                 return false, tprint("comment at %:% changed", line, column);
             }
+
             ia += 1;
             ib += 1;
         }
+
         if b.tokens[ib].kind == .LINE_COMMENT || b.tokens[ib].kind == .BLOCK_COMMENT {
             line, column := line_and_column(after, b.tokens[ib].start);
             return false, tprint("unexpected comment at output %:%", line, column);
         }
+
         ta := a.tokens[ia];
         tb := b.tokens[ib];
         text_a := token_text(before, ta);
         text_b := token_text(after, tb);
+
         if ta.kind != tb.kind || text_a != text_b {
             line, column := line_and_column(before, ta.start);
             return false, tprint("token `%` at %:% became `%`", text_a, line, column, text_b);
         }
+
         if ta.kind == .EOF break;
+
         // Like the compiler's lexer, the first token always counts as starting a line.
         break_a := first || contains_newline(before, end_a, ta.start);
         break_b := first || contains_newline(after, end_b, tb.start);
+
         first = false;
+
         if break_a != break_b && !break_change_allowed(before, a.tokens, prev_a, ia, break_a) {
             line, column := line_and_column(before, ta.start);
             return false, tprint("line break before `%` at %:% changed", text_a, line, column);
         }
+
         if prev_a >= 0 && adjacency_matters(zone, a.tokens, before, prev_a, ia) {
             tight_a := prev_a == ia - 1 && ta.ws_start == ta.start;
             tight_b := prev_b == ib - 1 && tb.ws_start == tb.start;
+
             if tight_a != tight_b {
                 line, column := line_and_column(before, ta.start);
                 return false, tprint("spacing before `%` at %:% (after a directive) changed", text_a, line, column);
             }
         }
+
         prev_a = ia;
         prev_b = ib;
         end_a = ta.end;
@@ -129,6 +150,7 @@ check_equivalent :: (before: string, after: string) -> bool, string {
         ia += 1;
         ib += 1;
     }
+
     return true, "";
 }
 
@@ -145,6 +167,7 @@ break_change_allowed :: (src: string, tokens: [] Tok, previous: int, current: in
         if text == "}" return true;
         if text == "{" && removed return true;
     }
+
     if previous < 0 return false;
     prev := tokens[previous];
     if prev.kind == .NOTE return true;
@@ -161,9 +184,12 @@ break_change_allowed :: (src: string, tokens: [] Tok, previous: int, current: in
 // formatter keeps whether these touch (see `Spacing.PRESENCE`).
 directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
     zone: [..] bool;
+
     array_resize(*zone, tokens.count);
+
     // Set before the loop: the flags of a directive that starts the file are read from zone[0].
     if tokens.count && tokens[0].kind == .DIRECTIVE zone[0] = true;
+
     for i: 1..tokens.count - 1 {
         t := tokens[i];
         if t.kind == .DIRECTIVE {
@@ -171,6 +197,7 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
         } else if zone[i - 1] {
             text := token_text(src, t);
             previous := tokens[i - 1];
+
             if t.kind == .PUNCT && (text == "," || text == "(") && t.ws_start == t.start {
                 zone[i] = true;
             } else if t.kind == .IDENT && previous.kind == .PUNCT && token_text(src, previous) == "," {
@@ -178,6 +205,7 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
             }
         }
     }
+
     return zone;
 }
 
@@ -185,16 +213,19 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
 // `,` or `(`, and after a flag `,`. (`#c_call ;` may still become `#c_call;`.)
 adjacency_matters :: (zone: [] bool, tokens: [] Tok, src: string, previous: int, current: int) -> bool {
     if !zone[previous] return false;
+
     if tokens[current].kind == .PUNCT {
         text := token_text(src, tokens[current]);
         if text == "," || text == "(" return true;
     }
+
     return tokens[previous].kind == .PUNCT && token_text(src, tokens[previous]) == ",";
 }
 
 line_and_column :: (src: string, offset: s64) -> line: int, column: int {
     line := 1;
     column := 1;
+
     for i: 0..min(offset, src.count) - 1 {
         if src[i] == #char "\n" {
             line += 1;
@@ -203,6 +234,7 @@ line_and_column :: (src: string, offset: s64) -> line: int, column: int {
             column += 1;
         }
     }
+
     return line, column;
 }
 
@@ -321,6 +353,7 @@ one_of :: (text: string, list: [] string) -> bool {
 directive_name :: (f: *Formatter, i: int) -> string {
     text := text_of(f, i);
     at := 1;
+
     while at < text.count && (text[at] == #char " " || text[at] == #char "\t") at += 1;
     return slice(text, at, text.count - at);
 }
@@ -328,12 +361,14 @@ directive_name :: (f: *Formatter, i: int) -> string {
 uses_crlf :: (src: string) -> bool {
     crlf := 0;
     lf := 0;
+
     for i: 0..src.count - 1 {
         if src[i] == #char "\n" {
             lf += 1;
             if i > 0 && src[i - 1] == #char "\r" crlf += 1;
         }
     }
+
     return lf > 0 && crlf * 2 > lf;
 }
 
@@ -345,6 +380,7 @@ contains_newline :: (src: string, from: s64, to: s64) -> bool {
 same_ignoring_whitespace :: (a: string, b: string) -> bool {
     i := 0;
     j := 0;
+
     while true {
         while i < a.count && is_blank(a[i]) i += 1;
         while j < b.count && is_blank(b[j]) j += 1;
@@ -353,6 +389,7 @@ same_ignoring_whitespace :: (a: string, b: string) -> bool {
         i += 1;
         j += 1;
     }
+
     return false;
 }
 
@@ -363,6 +400,7 @@ is_blank :: inline (c: u8) -> bool {
 count_long_lines :: (text: string, max_width: int) -> int {
     count := 0;
     width := 0;
+
     for text {
         c := it;
         if c == #char "\n" {
@@ -372,6 +410,7 @@ count_long_lines :: (text: string, max_width: int) -> int {
             width += 1; // counts code points, not bytes
         }
     }
+
     if width > max_width count += 1;
     return count;
 }
@@ -386,6 +425,7 @@ comment_marker :: (f: *Formatter, i: int, word: string) -> bool {
 // Marks tokens copied byte for byte: `// jaifmt: off` ... `// jaifmt: on` and `#asm` bodies.
 mark_verbatim :: (f: *Formatter) {
     n := f.tokens.count;
+
     array_resize(*f.verbatim, n);
     i := 0;
     while i < n {
@@ -396,28 +436,36 @@ mark_verbatim :: (f: *Formatter) {
                 if comment_marker(f, j, "on") break;
                 j += 1;
             }
+
             i = j + 1;
             continue;
         }
+
         if f.tokens[i].kind == .DIRECTIVE && directive_name(f, i) == "asm" {
             j := i + 1;
             while j < n && f.tokens[j].kind != .EOF && !is_punct(f, j, "{") && !is_punct(f, j, ";") j += 1;
+
             if is_punct(f, j, "{") {
                 depth := 0;
                 k := j;
+
                 while k < n && f.tokens[k].kind != .EOF {
                     if is_punct(f, k, "{") || is_punct(f, k, ".{") depth += 1;
+
                     if is_punct(f, k, "}") {
                         depth -= 1;
                         if depth == 0 break;
                     }
+
                     if k > j f.verbatim[k] = true;
                     k += 1;
                 }
+
                 i = k + 1;
                 continue;
             }
         }
+
         i += 1;
     }
 }
@@ -428,6 +476,7 @@ mark_columns :: (f: *Formatter) {
     at: s64 = 0;
     if f.src.count >= 3 && f.src[0] == 0xEF && f.src[1] == 0xBB && f.src[2] == 0xBF at = 3;
     column: s32 = 0;
+
     for tok, i: f.tokens {
         while at < tok.start {
             c := f.src[at];
@@ -438,8 +487,10 @@ mark_columns :: (f: *Formatter) {
             } else if c != #char "\r" && c != 0x0b && c != 0x0c && (c & 0xC0) != 0x80 {
                 column += 1;
             }
+
             at += 1;
         }
+
         f.columns[i] = column;
     }
 }
@@ -447,12 +498,15 @@ mark_columns :: (f: *Formatter) {
 // Is token i the last code on its output line (only comments may follow it)?
 mark_line_ends :: (f: *Formatter) {
     n := f.tokens.count;
+
     array_resize(*f.last_on_line, n);
+
     for i: 0..n - 2 {
         j := i + 1;
         while f.tokens[j].kind == .BLOCK_COMMENT && f.breaks[j] == 0
             && !contains_newline(f.src, f.tokens[j].start, f.tokens[j].end) j += 1;
         t := f.tokens[j];
+
         f.last_on_line[i] = f.breaks[j] > 0 || t.kind == .EOF || t.kind == .LINE_COMMENT
             || (t.kind == .BLOCK_COMMENT && f.breaks[j] == 0);
     }
@@ -469,12 +523,14 @@ mark_line_ends :: (f: *Formatter) {
 // Trailing comments stay where they are. Unbalanced input is left to the emit pass to report.
 plan_lines :: (f: *Formatter) {
     n := f.tokens.count;
+
     array_resize(*f.breaks, n);
     for i: 0..n - 1 f.breaks[i] = f.tokens[i].newlines;
 
     partner: [..] int; // the matching bracket
     enclosing: [..] int; // the innermost open bracket around each token, -1 at the top level
     ends_case: [..] bool; // a `;` that ends a `case` label
+
     defer array_free(partner);
     defer array_free(enclosing);
     defer array_free(ends_case);
@@ -484,9 +540,11 @@ plan_lines :: (f: *Formatter) {
 
     open: [..] int;
     statement: [..] int; // first token of the current statement, per bracket level
+
     defer array_free(open);
     defer array_free(statement);
     array_add(*statement, -1);
+
     for i: 0..n - 1 {
         partner[i] = -1;
         enclosing[i] = ifx open.count then open[open.count - 1] else -1;
@@ -503,6 +561,7 @@ plan_lines :: (f: *Formatter) {
         } else if text == "}" || text == ")" || text == "]" {
             if !open.count || !closes(text_of(f, open[open.count - 1]), text) return;
             o := pop(*open);
+
             pop(*statement);
             partner[o] = i;
             partner[i] = o;
@@ -512,9 +571,11 @@ plan_lines :: (f: *Formatter) {
             statement[level] = -1;
         }
     }
+
     if open.count return;
 
     array_resize(*f.literal_brace, n);
+
     for o: 0..n - 1 {
         if is_punct(f, o, "{") && !f.verbatim[o] && partner[o] > o {
             f.literal_brace[o] = opens_dotless_literal(f, o, partner[o], enclosing);
@@ -537,6 +598,7 @@ plan_lines :: (f: *Formatter) {
             f.breaks[c] = 0;
             continue;
         }
+
         if !trailing_comment(f, o + 1) f.breaks[o + 1] = max(f.breaks[o + 1], 1);
         if !f.verbatim[c] f.breaks[c] = max(f.breaks[c], 1);
         next := c + 1;
@@ -586,14 +648,17 @@ separate_items :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int,
     previous: Item;
     item: Item;
     k := from;
+
     while k < to && f.tokens[k].kind != .EOF {
         tok := f.tokens[k];
         if is_comment(f, k) || (item.start < 0 && tok.kind == .DIRECTIVE && begins_with(directive_name(f, k), "scope_")) {
             k += 1;
             continue;
         }
+
         if item.start < 0 item.start = k;
         done := false;
+
         if tok.kind == .PUNCT {
             text := text_of(f, k);
             if is_opener(text) && partner[k] > k {
@@ -601,21 +666,26 @@ separate_items :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int,
                 if text == "{" && is_item_container(f, partner, item.start, o) {
                     separate_items(f, partner, enclosing, o + 1, partner[o], o);
                 }
+
                 k = partner[o];
                 if text == "{" && !f.literal_brace[o] done = block_ends_item(f, k);
             } else if text == ";" {
                 done = true;
             }
         }
+
         item.end = k;
+
         if done {
             finish_item(f, *item, enclosing, level);
             if previous.start >= 0 separate_pair(f, previous, item);
             previous = item;
             item = .{};
         }
+
         k += 1;
     }
+
     if item.start >= 0 {
         finish_item(f, *item, enclosing, level);
         if previous.start >= 0 separate_pair(f, previous, item);
@@ -625,10 +695,13 @@ separate_items :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int,
 finish_item :: (f: *Formatter, item: *Item, enclosing: [] int, level: int) {
     for k: item.start..item.end {
         t := f.tokens[k];
+
         if k > item.start && f.breaks[k] > 0 item.multi_line = true;
+
         if (t.kind == .HERE_STRING || t.kind == .STRING || t.kind == .BLOCK_COMMENT) && contains_newline(f.src, t.start, t.end) {
             item.multi_line = true;
         }
+
         if t.kind == .DIRECTIVE && enclosing[k] == level {
             name := directive_name(f, k);
             if name == "import" || name == "load" item.is_import = true;
@@ -686,43 +759,54 @@ Statement :: struct {
 // Like `separate_items` this only deepens line breaks that exist.
 separate_statements :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int, to: int, kind: Block_Kind, level: int) {
     statements: [..] Statement;
+
     defer array_free(statements);
     current: Statement;
     k := from;
+
     while k < to && f.tokens[k].kind != .EOF {
         tok := f.tokens[k];
         if is_comment(f, k) || (current.start < 0 && tok.kind == .DIRECTIVE && begins_with(directive_name(f, k), "scope_")) {
             k += 1;
             continue;
         }
+
         if current.start < 0 current.start = k;
         done := false;
+
         if tok.kind == .PUNCT {
             text := text_of(f, k);
             direct := enclosing[k] == level;
+
             if text == "{" && !f.literal_brace[k] && partner[k] > k {
                 o := k;
                 if partner[o] > o + 1 && !f.verbatim[o] {
                     if direct && current.first_block < 0 current.first_block = o;
+
                     if !f.verbatim[o + 1] { // not `#asm { ... }`
                         child := block_kind(f, partner, enclosing, current.start, o, kind);
                         separate_statements(f, partner, enclosing, o + 1, partner[o], child, o);
                     }
                 }
+
                 k = partner[o];
                 if direct done = block_ends_item(f, k);
             } else if text == ";" && direct {
                 done = !else_follows(f, k);
             }
         }
+
         current.end = k;
+
         if done {
             finish_statement(f, enclosing, *current, kind, level);
             array_add(*statements, current);
             current = .{};
         }
+
         k += 1;
     }
+
     if current.start >= 0 {
         finish_statement(f, enclosing, *current, kind, level);
         array_add(*statements, current);
@@ -731,6 +815,7 @@ separate_statements :: (f: *Formatter, partner: [] int, enclosing: [] int, from:
     if kind != .CODE && kind != .SWITCH return;
     lines := 0; // the output lines of the body
     for j: from..to - 1 if f.breaks[j] > 0 lines += 1;
+
     for i: 1..statements.count {
         after: Statement;
         after.start = to; // the `}` that ends the block
@@ -757,6 +842,7 @@ block_kind :: (f: *Formatter, partner: [] int, enclosing: [] int, start: int, o:
     for p: start..o - 1 {
         if enclosing[p] == enclosing[o] && f.tokens[p].kind == .IDENT && one_of(text_of(f, p), string.["struct", "union", "enum", "enum_flags"]) return .DATA;
     }
+
     in_code := parent == .CODE || parent == .SWITCH;
     if is_punct(f, previous_code(f, o), "==") return ifx in_code then Block_Kind.SWITCH else .DATA;
     if !in_code && is_item_container(f, partner, start, o) return parent;
@@ -783,6 +869,7 @@ finish_statement :: (f: *Formatter, enclosing: [] int, s: *Statement, kind: Bloc
         if !is_punct(f, k, ",") break;
         k += 1;
     }
+
     if k > first && (is_punct(f, k, ":") || is_punct(f, k, ":=") || is_punct(f, k, "::")) {
         s.is_declaration = true;
         s.names_start = first;
@@ -796,6 +883,7 @@ finish_statement :: (f: *Formatter, enclosing: [] int, s: *Statement, kind: Bloc
                 s.names_end = j;
                 break;
             }
+
             j += 1;
         }
     }
@@ -806,6 +894,7 @@ finish_statement :: (f: *Formatter, enclosing: [] int, s: *Statement, kind: Bloc
         s.is_block = lines > 1;
         s.is_tiny_block = lines == 3;
     }
+
     if s.is_block {
         s.header_end = s.first_block;
     } else if is_ident(f, first, "if") || is_ident(f, first, "for") || is_ident(f, first, "while") {
@@ -818,10 +907,12 @@ finish_statement :: (f: *Formatter, enclosing: [] int, s: *Statement, kind: Bloc
 mentions_names :: (f: *Formatter, enclosing: [] int, level: int, from: int, to: int, named: Statement) -> bool {
     for h: from..to - 1 {
         if f.tokens[h].kind != .IDENT || is_punct(f, h - 1, ".") continue;
+
         for q: named.names_start..named.names_end - 1 {
             if enclosing[q] == level && f.tokens[q].kind == .IDENT && !is_punct(f, q - 1, ".") && text_of(f, q) == text_of(f, h) return true;
         }
     }
+
     return false;
 }
 
@@ -834,35 +925,43 @@ statement_wants_blank :: (f: *Formatter, enclosing: [] int, level: int, statemen
 
     // A lone declaration (or an assignment) stays next to the block or `if` that uses its names.
     run := 0; // declarations in a row, ending at `before`
+
     while run < i && statements[i - 1 - run].is_declaration run += 1;
     cuddles := false;
+
     if !closing && after.header_end >= 0 && (run == 1 || before.is_assignment) {
         cuddles = mentions_names(f, enclosing, level, after.start, after.header_end, before);
     }
+
     // A declaration also stays with the assignment that sets what it declared (`r: T; r.x = 1;`).
     initializes := !closing && before.is_declaration && after.is_assignment && mentions_names(f, enclosing, level, after.start, after.names_end, before);
 
     if f.config.blank_line_after_declarations && !short_body && before.is_declaration && !closing && !after.is_declaration && !after.is_label {
         if !(run == 1 && cuddles) && !initializes return true;
     }
+
     if f.config.blank_lines_around_blocks && !closing && !before.is_label && !after.is_label && (before.is_block || after.is_block) {
         // Neither does a run of tiny blocks (guards, repeated table entries) fall apart.
         if !(cuddles && after.is_block && !before.is_block) && !(before.is_tiny_block && after.is_tiny_block) return true;
     }
+
     if f.config.blank_line_between_cases && after.is_label && !closing {
         arm := i - 1;
         while arm >= 0 && !statements[arm].is_label arm -= 1;
+
         if arm >= 0 && arm < i - 1 {
             for j: statements[arm].start + 1..before.end {
                 if f.breaks[j] > 0 return true;
             }
         }
     }
+
     if f.config.blank_line_before_comments && !before.is_label {
         t := before.end + 1;
         while t < after.start && f.breaks[t] == 0 t += 1;
         if t < after.start && is_comment(f, t) return true;
     }
+
     return false;
 }
 
@@ -871,10 +970,12 @@ statement_wants_blank :: (f: *Formatter, enclosing: [] int, level: int, statemen
 block_ends_item :: (f: *Formatter, close: int) -> bool {
     next := close + 1;
     broken := false;
+
     while is_comment(f, next) {
         if f.breaks[next] > 0 broken = true;
         next += 1;
     }
+
     t := f.tokens[next];
     if t.kind == .EOF return true;
     if !broken && f.breaks[next] == 0 return false;
@@ -889,18 +990,22 @@ is_item_container :: (f: *Formatter, partner: [] int, start: int, o: int) -> boo
     if f.tokens[start].kind != .DIRECTIVE || directive_name(f, start) != "if" || f.literal_brace[o] return false;
     p := previous_code(f, o);
     if is_punct(f, p, "==") return false;
+
     while p >= start {
         t := f.tokens[p];
+
         if is_comment(f, p) {
             p -= 1;
             continue;
         }
+
         if t.kind == .PUNCT {
             text := text_of(f, p);
             if (text == ")" || text == "]") && partner[p] >= 0 && partner[p] < p {
                 p = partner[p] - 1;
                 continue;
             }
+
             if one_of(text, string.["::", ":=", ":", "=", "->", ";", "{", "}"]) return false;
         } else if t.kind == .IDENT {
             text := text_of(f, p);
@@ -911,8 +1016,10 @@ is_item_container :: (f: *Formatter, partner: [] int, start: int, o: int) -> boo
             if name == "if" return true;
             if !is_punct(f, p + 1, "(") && !one_of(name, OPERAND_DIRECTIVES) return false;
         }
+
         p -= 1;
     }
+
     return false;
 }
 
@@ -921,11 +1028,14 @@ is_item_container :: (f: *Formatter, partner: [] int, start: int, o: int) -> boo
 opens_dotless_literal :: (f: *Formatter, o: int, close: int, enclosing: [] int) -> bool {
     p := previous_code(f, o);
     value_position := is_ident(f, p, "return");
+
     for text: string.["(", ",", "=", ":=", "["] if is_punct(f, p, text) value_position = true;
     if !value_position return false;
+
     for j: o + 1..close - 1 {
         if enclosing[j] == o && is_punct(f, j, ";") return false;
     }
+
     return true;
 }
 
@@ -934,16 +1044,19 @@ opens_dotless_literal :: (f: *Formatter, o: int, close: int, enclosing: [] int) 
 joins_header :: (f: *Formatter, previous: int) -> bool {
     t := f.tokens[previous];
     if t.kind == .PUNCT return !one_of(text_of(f, previous), string.[";", "{", "}", ",", "(", "[", ".{", ".["]);
+
     if t.kind == .DIRECTIVE {
         name := directive_name(f, previous);
         return !begins_with(name, "scope_") && name != "through" && name != "load" && name != "import";
     }
+
     if t.kind == .NOTE {
         // `} @Note` and `x: int; @Note` end a declaration.
         q := previous;
         while q >= 0 && (f.tokens[q].kind == .NOTE || is_comment(f, q)) q -= 1;
         return q >= 0 && !is_punct(f, q, "}") && !is_punct(f, q, ";");
     }
+
     return true;
 }
 
@@ -955,6 +1068,7 @@ trailing_comment :: (f: *Formatter, i: int) -> bool {
         if f.tokens[j].kind == .LINE_COMMENT return true;
         j += 1;
     }
+
     return f.breaks[j] > 0 || f.tokens[j].kind == .EOF;
 }
 
@@ -963,13 +1077,16 @@ trailing_comment :: (f: *Formatter, i: int) -> bool {
 case_keeps_statement :: (f: *Formatter, first: int) -> bool {
     depth := 0;
     j := first;
+
     while f.tokens[j].kind != .EOF && (j == first || f.breaks[j] == 0) {
         if is_comment(f, j) {
             j += 1;
             continue;
         }
+
         text := ifx f.tokens[j].kind == .PUNCT then text_of(f, j) else "";
         if text == "{" return false;
+
         if is_opener(text) {
             depth += 1;
         } else if text == "}" || text == ")" || text == "]" {
@@ -979,8 +1096,10 @@ case_keeps_statement :: (f: *Formatter, first: int) -> bool {
             k := j + 1;
             return f.breaks[k] > 0 || f.tokens[k].kind == .EOF || trailing_comment(f, k) || is_punct(f, k, "}");
         }
+
         j += 1;
     }
+
     return false;
 }
 
@@ -988,6 +1107,7 @@ case_keeps_statement :: (f: *Formatter, first: int) -> bool {
 put :: (f: *Formatter, text: string) {
     append(*f.out, text);
     start := 0;
+
     for < text {
         if it == #char "\n" {
             start = it_index + 1;
@@ -995,6 +1115,7 @@ put :: (f: *Formatter, text: string) {
             break;
         }
     }
+
     for i: start..text.count - 1 if (text[i] & 0xC0) != 0x80 f.column += 1;
 }
 
@@ -1027,6 +1148,7 @@ run :: (f: *Formatter) -> bool, string {
 
         if f.verbatim[i] {
             put(f, slice(f.src, tok.ws_start, tok.end - tok.ws_start));
+
             if tok.newlines > 0 {
                 f.line_new = tok.column;
                 f.line_orig = tok.column;
@@ -1038,6 +1160,7 @@ run :: (f: *Formatter) -> bool, string {
             put(f, spacing(f, i));
             put(f, text_of(f, i));
         }
+
         f.emitted_any = true;
 
         if !is_comment(f, i) {
@@ -1051,6 +1174,7 @@ run :: (f: *Formatter) -> bool, string {
         top := f.frames[f.frames.count - 1];
         return false, tprint("unclosed `%`", top.open);
     }
+
     if f.emitted_any put(f, f.newline);
     return true, "";
 }
@@ -1058,6 +1182,7 @@ run :: (f: *Formatter) -> bool, string {
 // Writes the line break(s) and indentation before token i, which starts a line.
 start_line :: (f: *Formatter, i: int) -> bool, string {
     tok := f.tokens[i];
+
     if f.emitted_any {
         blank := min(cast(int) f.breaks[i] - 1, f.config.max_blank_lines);
         for 0..blank put(f, f.newline);
@@ -1073,6 +1198,7 @@ start_line :: (f: *Formatter, i: int) -> bool, string {
     } else {
         put(f, text_of(f, i));
     }
+
     f.line_new = indent;
     f.line_orig = f.columns[i];
     return true, "";
@@ -1082,6 +1208,7 @@ start_line :: (f: *Formatter, i: int) -> bool, string {
 append_block_comment :: (f: *Formatter, i: int, delta: int) {
     text := text_of(f, i);
     lines := split(text, "\n");
+
     if delta < 0 {
         // Only dedent when every continuation line has the room.
         for 1..lines.count - 1 {
@@ -1089,17 +1216,21 @@ append_block_comment :: (f: *Formatter, i: int, delta: int) {
             if !trim(line).count continue;
             spaces := 0;
             while spaces < line.count && line[spaces] == #char " " spaces += 1;
+
             if spaces < -delta {
                 delta = 0;
                 break;
             }
         }
     }
+
     for line, index: lines {
         // Every line of the comment ends with the file's newline: drop a `\r` of its own.
         line = trim_right(line);
+
         if index > 0 {
             put(f, f.newline);
+
             if line.count {
                 if delta > 0 {
                     for 1..delta put(f, " ");
@@ -1108,6 +1239,7 @@ append_block_comment :: (f: *Formatter, i: int, delta: int) {
                 }
             }
         }
+
         put(f, line);
     }
 }
@@ -1135,10 +1267,12 @@ line_indent :: (f: *Formatter, i: int) -> indent: int, ok: bool, message: string
                 line, column := line_and_column(f.src, tok.start);
                 return 0, false, tprint("%:%: unbalanced `%`", line, column, text);
             }
+
             if top.block return top.base, true, "";
             return continuation_indent(f, top, i), true, "";
         }
     }
+
     if !top.block return continuation_indent(f, top, i), true, "";
 
     // A line continuing a statement keeps its offset from the statement's first line.
@@ -1148,6 +1282,7 @@ line_indent :: (f: *Formatter, i: int) -> indent: int, ok: bool, message: string
     code := i;
     while is_comment(f, code) code += 1;
     indent := top.content;
+
     if top.switch_block {
         if is_ident(f, code, "case") {
             indent = top.base + f.case_indent;
@@ -1155,10 +1290,12 @@ line_indent :: (f: *Formatter, i: int) -> indent: int, ok: bool, message: string
             indent = top.base + f.case_indent + ifx top.seen_case then f.case_body_indent else 0;
         }
     }
+
     if code == i {
         top.stmt_new = indent;
         top.stmt_orig = f.columns[i];
     }
+
     return indent, true, "";
 }
 
@@ -1178,22 +1315,26 @@ starts_statement :: (f: *Formatter) -> bool {
         text := text_of(f, p);
         return text == ";" || text == "{" || text == "}" || text == ".{";
     }
+
     if t.kind == .DIRECTIVE {
         name := directive_name(f, p);
         return name == "scope_file" || name == "scope_export" || name == "scope_module";
     }
+
     if t.kind == .NOTE {
         // `} @Note` / `x: int; @Note` end a declaration.
         q := p;
         while q >= 0 && (f.tokens[q].kind == .NOTE || is_comment(f, q)) q -= 1;
         return q < 0 || is_punct(f, q, "}") || is_punct(f, q, ";");
     }
+
     return false;
 }
 
 // Updates brackets, statement state and the operand classification after emitting token i.
 track :: (f: *Formatter, i: int) -> bool, string {
     tok := f.tokens[i];
+
     f.operand_end[i] = classify(f, i);
     top := *f.frames[f.frames.count - 1];
 
@@ -1203,6 +1344,7 @@ track :: (f: *Formatter, i: int) -> bool, string {
         if text == "case" && top.switch_block top.seen_case = true;
         return true, "";
     }
+
     if tok.kind != .PUNCT return true, "";
     text := text_of(f, i);
     if text == "::" f.operator_decl = false;
@@ -1216,8 +1358,10 @@ track :: (f: *Formatter, i: int) -> bool, string {
         frame.line_orig = f.line_orig;
         frame.open_new = f.column - text.count;
         frame.open_orig = f.columns[i];
+
         if (text == "{" || text == ".{") && f.last_on_line[i] {
             frame.block = true;
+
             // A header continued over several lines still indents its body by one level.
             frame.base = ifx top.block then top.stmt_new else f.line_new;
             frame.switch_block = text == "{" && opens_switch(f, i);
@@ -1225,30 +1369,37 @@ track :: (f: *Formatter, i: int) -> bool, string {
             frame.stmt_new = frame.content;
             frame.stmt_orig = 0;
         }
+
         if text == "{" top.colons = 0;
+
         if text == "(" {
             frame.is_cast = is_cast_paren(f, i);
         }
         if text == "[" {
             frame.is_index = f.prev_sig >= 0 && f.operand_end[f.prev_sig] == .OPERAND && f.breaks[i] == 0;
         }
+
         array_add(*f.frames, frame);
         return true, "";
     }
+
     if text == "}" || text == ")" || text == "]" {
         if f.frames.count <= 1 || !closes(f.frames[f.frames.count - 1].open, text) {
             line, column := line_and_column(f.src, tok.start);
             return false, tprint("%:%: unbalanced `%`", line, column, text);
         }
+
         frame := pop(*f.frames);
         if text == ")" f.operand_end[i] = ifx frame.is_cast then Context_Kind.OPERATOR else .OPERAND;
         if text == "]" f.operand_end[i] = ifx frame.is_index || frame.open == ".[" then Context_Kind.OPERAND else .OPERATOR;
+
         if text == "}" {
             // A struct literal is a value; after a block a new statement begins.
             f.operand_end[i] = ifx frame.open == ".{" then Context_Kind.OPERAND else .OPERATOR;
             if frame.open == "{" f.frames[f.frames.count - 1].colons = 0;
         }
     }
+
     return true, "";
 }
 
@@ -1276,6 +1427,7 @@ is_cast_paren :: (f: *Formatter, i: int) -> bool {
         if p < 2 || f.tokens[p].kind != .IDENT || !is_punct(f, p - 1, ",") || !is_tight(f, p) || !is_tight(f, p - 1) return false;
         p -= 2;
     }
+
     return true;
 }
 
@@ -1285,18 +1437,22 @@ classify :: (f: *Formatter, i: int) -> Context_Kind {
         case .IDENT;
             if one_of(text_of(f, i), KEYWORDS_BEFORE_OPERAND) return .OPERATOR;
             return .OPERAND;
+
         case .NUMBER; #through;
         case .STRING; #through;
         case .HERE_STRING;
             return .OPERAND;
+
         case .DIRECTIVE;
             if one_of(directive_name(f, i), OPERAND_DIRECTIVES) return .OPERAND;
             return .OPERATOR;
+
         case .PUNCT;
             text := text_of(f, i);
             if text == ".*" || text == "---" || text == ")" || text == "]" || text == "}" return .OPERAND; // refined by `track`
             return .OPERATOR;
     }
+
     return .UNKNOWN;
 }
 
@@ -1348,19 +1504,23 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
     ntext := ifx nt.kind == .PUNCT then text_of(f, i) else "";
 
     if nt.kind == .LINE_COMMENT return .SPACE;
+
     if nt.kind == .BLOCK_COMMENT || pt.kind == .BLOCK_COMMENT {
         if ptext == "(" || ptext == "[" || ptext == ".[" return .NONE;
         if ntext == ")" || ntext == "]" || ntext == "," || ntext == ";" return .NONE;
         return .SPACE;
     }
+
     if f.operator_decl || adjacency_matters(f.zone, f.tokens, f.src, p, i) return .PRESENCE;
 
     // Separators and brackets.
     if ntext == "," || ntext == ";" return .NONE;
+
     if ptext == "," {
         if is_flag_comma(f, p) || ntext == ")" || ntext == "]" return .NONE;
         return .SPACE;
     }
+
     if ptext == ";" return .SPACE;
     if ptext == "(" || ptext == "[" || ptext == ".[" return .NONE;
     if ntext == ")" || ntext == "]" return .NONE;
@@ -1374,6 +1534,7 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
     if one_of(ntext, SPACED_OPERATORS) || one_of(ptext, SPACED_OPERATORS) return .SPACE;
 
     before := context_before(f, i);
+
     if ntext == ".*" return .NONE;
     if ntext == "." || ntext == ".{" || ntext == ".[" || ntext == ".." return ifx before == .OPERAND then Spacing.NONE else .SPACE;
     if ptext == "." || ptext == ".." return .NONE;
@@ -1381,13 +1542,16 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
 
     if (ntext == "/" && is_constraint_slash(f, i)) || (ptext == "/" && is_constraint_slash(f, p)) return .NONE;
     if one_of(ntext, BINARY_OPERATORS) || one_of(ptext, BINARY_OPERATORS) return .SPACE;
+
     if one_of(ntext, AMBIGUOUS_OPERATORS) {
         if before == .UNKNOWN return .PRESENCE;
         if before == .OPERAND return .SPACE;
+
         // A prefix operator right after another one attaches to it (`**T`, `-*p`).
         if one_of(ptext, AMBIGUOUS_OPERATORS) && context_before(f, p) == .OPERATOR && ptext != "<" && ptext != ">" return .NONE;
         return .SPACE;
     }
+
     if one_of(ptext, AMBIGUOUS_OPERATORS) {
         side := context_before(f, p);
         if side == .UNKNOWN return .PRESENCE;
@@ -1401,6 +1565,7 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
         if before == .OPERAND return .NONE;
         return .SPACE;
     }
+
     return .SPACE;
 }
 
@@ -1410,18 +1575,22 @@ would_merge :: (f: *Formatter, p: int, i: int) -> bool {
     nt := f.tokens[i];
     a := text_of(f, p);
     b := text_of(f, i);
+
     if !a.count || !b.count return false;
     if is_ident_char(a[a.count - 1]) && (is_ident_char(b[0]) || b[0] == #char "\\") return true;
     if pt.kind == .NOTE return !(nt.kind == .PUNCT && one_of(b, string.[";", ",", ")", "]", "}"]));
     if pt.kind == .NUMBER && b[0] == #char "." && !begins_with(b, "..") return true;
+
     // `1.2.3` is `1.2`, `.`, `3`; once the rule above spaces `1.2 .`, a tight `.3` would lex as a
     // float, so the digits after a lone `.` get a space too.
     if pt.kind == .PUNCT && a == "." && nt.kind == .NUMBER && is_digit(b[0]) return true;
     if a[a.count - 1] == #char "/" && (b[0] == #char "/" || b[0] == #char "*") return true;
+
     if pt.kind == .PUNCT && nt.kind == .PUNCT {
         for PUNCTUATION {
             if it.count > a.count && begins_with(it, a) && it[a.count] == b[0] return true;
         }
     }
+
     return false;
 }
