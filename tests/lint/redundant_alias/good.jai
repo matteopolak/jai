@@ -30,7 +30,6 @@ typed :: (n: int) {
     d := cast(s32) c;
     e := n;
     f: s32 = xx e;
-
     print("%\n", b + d + f);
 }
 
@@ -38,7 +37,6 @@ typed :: (n: int) {
 twice :: (n: int) -> int {
     a := n * 2;
     b := a;
-
     print("%\n", a);
     return b;
 }
@@ -48,7 +46,6 @@ mutated :: (n: int) {
     a := n;
     a += 1;
     b := a;
-
     print("%\n", b);
 }
 
@@ -60,30 +57,24 @@ addressed :: (n: int) {
 
 deferred :: () {
     c := 4;
-
     defer print("%\n", c);
     d := c;
-
     print("%\n", d);
 }
 
 // Statements between the two.
 separated :: (n: int) {
     a := n + 1;
-
     print("between\n");
     b := a;
-
     print("%\n", b);
 }
 
 // A comment between the two.
 commented :: (n: int) {
     a := n + 1;
-
     // Kept for the reader.
     b := a;
-
     print("%\n", b);
 }
 
@@ -100,7 +91,6 @@ storage :: () {
 // The new name appears in the first initializer.
 shadows :: (b: int) {
     a := b + 1;
-
     {
         b := a;
         print("%\n", b);
@@ -110,22 +100,17 @@ shadows :: (b: int) {
 // Used by inserted or disabled code.
 inserted :: () {
     count := 0;
-
     #insert "count += 1;";
     total := count;
-
     print("%\n", total);
 }
 
 disabled :: (n: int) {
     path := n;
-
     #if OS == .WINDOWS {
         print("%\n", path);
     }
-
     other := path;
-
     print("%\n", other);
 }
 
@@ -148,9 +133,7 @@ others :: (n: int) {
         c := it;
         print("%\n", c);
     }
-
     p := n;
-
     print("%\n", p);
 }
 

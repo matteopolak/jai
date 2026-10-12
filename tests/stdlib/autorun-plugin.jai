@@ -6,7 +6,6 @@ Autorun :: #import "Autorun";
 
 main :: () {
     plugin := Autorun.get_plugin();
-
     assert(plugin.message != null);
     assert(plugin.shutdown != null);
 

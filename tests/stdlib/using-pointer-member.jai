@@ -19,7 +19,6 @@ f :: () {
 
 main :: () {
     p: P;
-
     editors.active = *p;
     array_add(*p.ids, 1);
     f();

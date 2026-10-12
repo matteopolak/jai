@@ -54,7 +54,6 @@ nap :: (milliseconds: s32) -> s32 #c_call {
     push_context {
         sleep_milliseconds(milliseconds);
     }
-
     return milliseconds;
 }
 

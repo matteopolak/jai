@@ -27,12 +27,10 @@ serve :: (thread: *Thread) -> s64 {
             channel.value *= 2;
             channel.served += 1;
         }
-
         unlock(*channel.mutex);
         signal(*channel.reply);
         if quit break;
     }
-
     return 0;
 }
 
@@ -42,7 +40,6 @@ main :: () {
     init(*channel.mutex);
 
     worker: Thread;
-
     assert(thread_init(*worker, serve));
     assert(thread_start(*worker));
 

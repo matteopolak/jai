@@ -5,7 +5,6 @@
 
 main :: () {
     path, ok := get_absolute_path(".");
-
     assert(ok && path.count > 0, "no absolute path");
     for *path assert(it.* != #char "\\", "backslash in '%'", path);
     print("ok\n");

@@ -7,8 +7,6 @@ main :: () {
     } else {
         print("big\n");
     }
-
     label := ifx n > 0 then "pos" else "pos";
-
     print("%\n", label);
 }

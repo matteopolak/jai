@@ -5,7 +5,6 @@
 
 allocated_after_init :: (slots: int) -> int {
     table: Table(int, int);
-
     init(*table, slots);
     defer deinit(*table);
     return table.allocated;
@@ -20,23 +19,19 @@ main :: () -> s64 {
     if allocated_after_init(0) != 32 return 6;
 
     table: Table(int, int);
-
     defer deinit(*table);
     table_add(*table, 1, 10);
     if table.allocated != 32 return 7;
 
     // A small table still grows as entries arrive.
     small: Table(int, int);
-
     defer deinit(*small);
     init(*small, 1);
     for 1..20 table_add(*small, it, it * 2);
     if small.count != 20 return 8;
-
     for 1..20 {
         found, value := table_find(*small, it);
         if !found || value != it * 2 return 9;
     }
-
     return 0;
 }

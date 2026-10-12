@@ -15,7 +15,6 @@ record :: () {
             count += 1;
             depth_seen = node.call_depth;
         }
-
         node = node.next;
     }
 }
@@ -30,13 +29,12 @@ inner :: (x: int) {
 
 main :: () -> s64 {
     inner(1);
-
     // record's own node comes first, then inner (x == 0), inner (x == 1), main.
     if count != 4 return 1;
     if names[0] != "record" return 2;
-    if names[1] != "inner" || lines[1] != 25 return 3;
-    if names[2] != "inner" || lines[2] != 27 return 4;
-    if names[3] != "main" || lines[3] != 32 return 5;
+    if names[1] != "inner" || lines[1] != 24 return 3;
+    if names[2] != "inner" || lines[2] != 26 return 4;
+    if names[3] != "main" || lines[3] != 31 return 5;
     if depth_seen != 1 return 6;
     return 0;
 }

@@ -50,11 +50,9 @@ main :: () {
 
     // A block in expression position still runs as a block.
     total := 0;
-
     for 1..3 {
         total += it;
     }
-
     if total != 6 fail(7, "block");
 
     print("ok\n");

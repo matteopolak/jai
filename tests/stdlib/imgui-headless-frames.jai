@@ -14,7 +14,6 @@ frame :: (checked: *bool, value: *float, button_min: *ImVec2, button_max: *ImVec
     SetNextWindowPos(BUTTON_WINDOW_POS, .Always);
     SetNextWindowSize(ImVec2.{ 320, 180 }, .Always);
     clicked := false;
-
     if Begin("Test window") {
         clicked = Button("Press");
         <<button_min = GetItemRectMin();
@@ -24,7 +23,6 @@ frame :: (checked: *bool, value: *float, button_min: *ImVec2, button_max: *ImVec
         SliderFloat("Slider", value, 0, 1);
         Text("plain text");
     }
-
     End();
     Render();
     return clicked;
@@ -36,11 +34,9 @@ center :: (a: ImVec2, b: ImVec2) -> x: float, y: float {
 
 main :: () {
     version := to_string(GetVersion());
-
     assert(version == IMGUI_VERSION, "library version '%', bindings '%'", version, IMGUI_VERSION);
 
     ctx := CreateContext();
-
     assert(ctx != null, "CreateContext");
     assert(GetCurrentContext() == ctx, "the new context is current");
 
@@ -52,7 +48,6 @@ main :: () {
     // The built-in font becomes a texture the renderer would upload.
     pixels: *u8;
     width, height: s32;
-
     io.Fonts.GetTexDataAsRGBA32(io.Fonts, *pixels, *width, *height);
     assert(pixels != null && width > 0 && height > 0, "atlas %x%", width, height);
     lit := 0;
@@ -66,7 +61,6 @@ main :: () {
     // Frame 1: lay out, no input.
     frame(*checked, *value, *button_min, *button_max, *check_min);
     data := GetDrawData();
-
     assert(data != null && data.Valid, "draw data");
     assert(data.CmdListsCount > 0 && data.TotalVtxCount > 0 && data.TotalIdxCount > 0,
         "draw lists %, vertices %, indices %", data.CmdListsCount, data.TotalVtxCount, data.TotalIdxCount);
@@ -78,16 +72,13 @@ main :: () {
     // Frames 2 and 3: move the pointer onto the button and press it. Frame 4 releases it, which
     // is the click.
     x, y := center(button_min, button_max);
-
     io.AddMousePosEvent(io, x, y);
     frame(*checked, *value, *button_min, *button_max, *check_min);
     io.AddMouseButtonEvent(io, 0, true);
     pressed := frame(*checked, *value, *button_min, *button_max, *check_min);
-
     assert(!pressed, "the button is not clicked while it is held");
     io.AddMouseButtonEvent(io, 0, false);
     clicked := frame(*checked, *value, *button_min, *button_max, *check_min);
-
     assert(clicked, "the button reports the click");
 
     // The checkbox toggles the same way.
@@ -105,13 +96,10 @@ main :: () {
 
     // The style API: a theme changes colors in the style the context owns.
     style := GetStyle();
-
     StyleColorsLight();
     light := style.Colors[0];
-
     StyleColorsDark();
     dark := style.Colors[0];
-
     assert(light.x != dark.x || light.y != dark.y || light.z != dark.z, "light and dark themes differ");
 
     DestroyContext(ctx);

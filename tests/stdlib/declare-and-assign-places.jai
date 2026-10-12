@@ -25,7 +25,6 @@ measure :: (s: string) -> int, string {
 main :: () {
     t: Token;
     ok:, t.str = split("xhello");
-
     if !ok || t.str != "hello" fail(1, "member target");
 
     found:, t.str, t.pos[1] = split("abc");
@@ -35,13 +34,11 @@ main :: () {
     p := *count;
     tail: string;
     good:, tail, p.* = split("four");
-
     if !good || tail != "our" || count != 4 fail(3, "dereference target");
 
     tokens: [3] Token;
     i := 2;
     done:, tokens[i].str = split("-x-");
-
     if !done || tokens[2].str != "x-" fail(4, "indexed member target");
 
     // `=,` marks the existing places when the rest are declared with `:=`.

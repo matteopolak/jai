@@ -41,6 +41,5 @@ main :: () {
         print("failure: %\n", failure);
         exit(1);
     }
-
     print("ok\n");
 }

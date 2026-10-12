@@ -12,7 +12,6 @@ copy_back :: (source: *#Context) -> *Basic.Context {
 main :: () -> s64 {
     selected: *#Context = *context;
     qualified: *Basic.Context = copy_back(selected);
-
     if copy_context(qualified) != selected return 1;
     return 0;
 }

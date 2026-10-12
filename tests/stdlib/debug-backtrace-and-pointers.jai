@@ -15,7 +15,6 @@ capture_here :: no_inline () -> int {
 main :: () {
     frames: [16] *void;
     count := Debug.backtrace(frames);
-
     assert(count <= frames.count && (count > 0 || !NATIVE), "a stack has frames");
     for 0..count - 1 assert(frames[it] != null, "captured addresses are code");
 
@@ -23,31 +22,25 @@ main :: () {
     assert(Debug.backtrace(frames, 1, 0) == ifx NATIVE then 1 else 0);
     assert(Debug.backtrace(frames, 0, 0) == 0);
     empty: [] *void;
-
     assert(Debug.backtrace(empty) == 0);
     assert((capture_here() > 0) == NATIVE);
 
     names := Debug.backtrace_symbols(frames, count);
-
     assert(names.count == count, "one name per frame");
     for names assert(it.count > 0, "frames have names");
     Debug.free_backtrace(names);
-
     // More names asked for than frames given: only the frames are named.
     names = Debug.translate_symbols(array_view(frames, 0, count), count + 5);
     assert(names.count == count);
     Debug.free_backtrace(names);
 
     lines := Debug.backtrace();
-
     assert((lines.count > 0) == NATIVE);
     Debug.free_backtrace(lines);
 
     local := 7;
-
     assert(Debug.is_valid_pointer(*local), "a stack variable is mapped");
     heap := alloc(64);
-
     assert(Debug.is_valid_pointer(heap), "an allocation is mapped");
     free(heap);
     assert(!Debug.is_valid_pointer(null), "null is not");

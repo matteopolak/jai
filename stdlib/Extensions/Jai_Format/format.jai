@@ -121,7 +121,6 @@ check_equivalent :: (before: string, after: string) -> bool, string {
         }
 
         if ta.kind == .EOF break;
-
         // Like the compiler's lexer, the first token always counts as starting a line.
         break_a := first || contains_newline(before, end_a, ta.start);
         break_b := first || contains_newline(after, end_b, tb.start);
@@ -186,7 +185,6 @@ directive_zone :: (tokens: [] Tok, src: string) -> [..] bool {
     zone: [..] bool;
 
     array_resize(*zone, tokens.count);
-
     // Set before the loop: the flags of a directive that starts the file are read from zone[0].
     if tokens.count && tokens[0].kind == .DIRECTIVE zone[0] = true;
 
@@ -241,7 +239,6 @@ line_and_column :: (src: string, offset: s64) -> line: int, column: int {
 token_text :: inline (src: string, tok: Tok) -> string {
     return slice(src, tok.start, tok.end - tok.start);
 }
-
 
 Frame :: struct {
     open: string; // "{", "(", "[", ".{", ".["; "" for the file itself
@@ -353,7 +350,6 @@ one_of :: (text: string, list: [] string) -> bool {
 directive_name :: (f: *Formatter, i: int) -> string {
     text := text_of(f, i);
     at := 1;
-
     while at < text.count && (text[at] == #char " " || text[at] == #char "\t") at += 1;
     return slice(text, at, text.count - at);
 }
@@ -826,7 +822,7 @@ separate_statements :: (f: *Formatter, partner: [] int, enclosing: [] int, from:
 
 // A body of this many lines or fewer is short enough to read at a glance: no blank line
 // follows its declarations.
-SHORT_BODY_LINES :: 3;
+SHORT_BODY_LINES :: 4;
 
 // Does an `else` come right after the `;` at `semicolon`? Then a braceless `if x f(); else {`
 // goes on past it.
@@ -1361,7 +1357,6 @@ track :: (f: *Formatter, i: int) -> bool, string {
 
         if (text == "{" || text == ".{") && f.last_on_line[i] {
             frame.block = true;
-
             // A header continued over several lines still indents its body by one level.
             frame.base = ifx top.block then top.stmt_new else f.line_new;
             frame.switch_block = text == "{" && opens_switch(f, i);
@@ -1437,16 +1432,13 @@ classify :: (f: *Formatter, i: int) -> Context_Kind {
         case .IDENT;
             if one_of(text_of(f, i), KEYWORDS_BEFORE_OPERAND) return .OPERATOR;
             return .OPERAND;
-
         case .NUMBER; #through;
         case .STRING; #through;
         case .HERE_STRING;
             return .OPERAND;
-
         case .DIRECTIVE;
             if one_of(directive_name(f, i), OPERAND_DIRECTIVES) return .OPERAND;
             return .OPERATOR;
-
         case .PUNCT;
             text := text_of(f, i);
             if text == ".*" || text == "---" || text == ")" || text == "]" || text == "}" return .OPERAND; // refined by `track`
@@ -1546,7 +1538,6 @@ spacing_rule :: (f: *Formatter, i: int) -> Spacing {
     if one_of(ntext, AMBIGUOUS_OPERATORS) {
         if before == .UNKNOWN return .PRESENCE;
         if before == .OPERAND return .SPACE;
-
         // A prefix operator right after another one attaches to it (`**T`, `-*p`).
         if one_of(ptext, AMBIGUOUS_OPERATORS) && context_before(f, p) == .OPERATOR && ptext != "<" && ptext != ">" return .NONE;
         return .SPACE;
@@ -1580,7 +1571,6 @@ would_merge :: (f: *Formatter, p: int, i: int) -> bool {
     if is_ident_char(a[a.count - 1]) && (is_ident_char(b[0]) || b[0] == #char "\\") return true;
     if pt.kind == .NOTE return !(nt.kind == .PUNCT && one_of(b, string.[";", ",", ")", "]", "}"]));
     if pt.kind == .NUMBER && b[0] == #char "." && !begins_with(b, "..") return true;
-
     // `1.2.3` is `1.2`, `.`, `3`; once the rule above spaces `1.2 .`, a tight `.3` would lex as a
     // float, so the digits after a lone `.` get a space too.
     if pt.kind == .PUNCT && a == "." && nt.kind == .NUMBER && is_digit(b[0]) return true;

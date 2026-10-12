@@ -124,7 +124,6 @@ group :: (caps: Captures, index: int) -> string, bool {
     if index < 0 || 2 * index + 1 >= caps.slots.count return "", false;
     s := caps.slots[2 * index];
     e := caps.slots[2 * index + 1];
-
     if s < 0 return "", false;
     return slice(caps.text, s, e - s), true;
 }
@@ -158,18 +157,15 @@ replace_n :: (re: *Regex, text: string, replacement: string, limit: int) -> stri
     last := 0;
     count := 0;
     literal := find_index_from_left(replacement, #char "$") < 0;
-
     for_matches(re.engine, text, #code {
         if limit >= 0 && count >= limit break;
         append(*builder, slice(text, last, s - last));
-
         if literal {
             append(*builder, replacement);
         } else {
             caps := captures_of(engine, text, s, e);
             expand_replacement(*builder, caps, replacement);
         }
-
         last = e;
         count += 1;
     });
@@ -181,7 +177,6 @@ replace_n :: (re: *Regex, text: string, replacement: string, limit: int) -> stri
 split :: (re: *Regex, text: string) -> [..] string {
     out: [..] string;
     last := 0;
-
     for_matches(re.engine, text, #code {
         array_add(*out, slice(text, last, s - last));
         last = e;
@@ -193,13 +188,11 @@ split :: (re: *Regex, text: string) -> [..] string {
 // `text` with every regex metacharacter escaped, so it matches literally.
 escape :: (text: string) -> string {
     builder: String_Builder;
-
     for text {
         c := it;
         if is_meta(c) append(*builder, #char "\\");
         append(*builder, c);
     }
-
     return builder_to_string(*builder);
 }
 
@@ -259,10 +252,8 @@ captures :: ($R: Type, text: string, start := 0) -> R.Groups, bool #modify {
     out: R.Groups;
     engine := static_engine_of(R.pattern, false);
     s, e := find_span(engine, text, start);
-
     if e < 0 return out, false;
     ok := fill_groups(R, engine, text, s, e, *out);
-
     return out, ok;
 }
 
@@ -270,7 +261,6 @@ captures_all :: ($R: Type, text: string) -> [..] R.Groups #modify {
     return is_static(R);
 } {
     out: [..] R.Groups;
-
     for_matches(static_engine_of(R.pattern, false), text, #code {
         groups: R.Groups;
         if fill_groups(R, engine, text, s, e, *groups) array_add(*out, groups);
@@ -285,10 +275,8 @@ parse :: ($R: Type, text: string) -> R.Groups, bool #modify {
     out: R.Groups;
     engine := static_engine_of(R.pattern, true);
     s, e := find_span(engine, text, 0);
-
     if e < 0 return out, false;
     ok := fill_groups(R, engine, text, s, e, *out);
-
     return out, ok;
 }
 
@@ -301,7 +289,6 @@ parse_into :: ($R: Type, text: string, out: *$T) -> bool #modify {
 } {
     engine := static_engine_of(R.pattern, true);
     s, e := find_span(engine, text, 0);
-
     if e < 0 return false;
     return fill_struct(R.pattern, engine, text, s, e, out);
 }
@@ -312,7 +299,6 @@ captures_into :: ($R: Type, text: string, out: *$T, start := 0) -> bool #modify 
 } {
     engine := static_engine_of(R.pattern, false);
     s, e := find_span(engine, text, start);
-
     if e < 0 return false;
     return fill_struct(R.pattern, engine, text, s, e, out);
 }
@@ -370,7 +356,6 @@ static_regex :: ($pattern: string) -> Regex {
 cached_engine :: (pattern: string, full: bool) -> *Engine {
     key := ifx full then tprint("\\A(?:%)\\z", pattern) else pattern;
     found, engine := table_find(*engine_cache, key);
-
     if found return engine;
     key = copy_string(key);
     engine = build_engine(key, .{});
@@ -383,25 +368,19 @@ engine_cache: Table(string, *Engine);
 fill_groups :: ($R: Type, engine: *Engine, text: string, s: int, e: int, out: *R.Groups) -> bool {
     out.match = .{ s, e, slice(text, s, e - s) };
     slots := NewArray(engine.program.slot_count, int,, temp);
-
     fill_slots(engine, text, s, e, slots);
-
     #insert -> string {
         return groups_fill(R.pattern);
     }
-
     return true;
 }
 
 fill_struct :: ($pattern: string, engine: *Engine, text: string, s: int, e: int, out: *$T) -> bool {
     slots := NewArray(engine.program.slot_count, int,, temp);
-
     fill_slots(engine, text, s, e, slots);
-
     #insert -> string {
         return into_fill(pattern, T);
     }
-
     return true;
 }
 

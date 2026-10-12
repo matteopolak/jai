@@ -7,7 +7,6 @@
 code_text :: (code: Code) -> string #expand {
     root := compiler_get_nodes(code);
     builder: String_Builder;
-
     print_expression(*builder, root);
     return builder_to_string(*builder);
 }
@@ -22,6 +21,5 @@ main :: () -> s64 {
         print("%\n", TEXT);
         return 1;
     }
-
     return 0;
 }

@@ -162,21 +162,18 @@ build_and_generate :: () -> string {
     // The WASM target (the browser playground) starts no processes and loads no native
     // libraries, so there is no compiler or libclang to call: skip like a host without them.
     #if OS == .WASM return "";
-
     // Kept: the program loads the library from here when it runs.
     dir := scratch_directory("bindgen-cpp-classes");
     header_path := tprint("%/shapes.h", dir);
     source_path := tprint("%/shapes.cpp", dir);
     ext := ifx OS == .MACOS then "dylib" else "so";
     library_path := tprint("%/libshapes.%", dir, ext);
-
     if !write_entire_file(header_path, HEADER) || !write_entire_file(source_path, SOURCE) return "";
 
     result := run_command("clang++", "-std=c++17", "-shared", "-fPIC", "-o", library_path, source_path, capture_and_return_output = true);
     if result.exit_code != 0 return "";
 
     opts: Generate_Bindings_Options;
-
     array_add(*opts.source_files, header_path);
     array_add(*opts.extra_clang_arguments, "-x", "c++", "-std=c++17");
     array_add(*opts.libpaths, dir);
@@ -223,13 +220,11 @@ main :: () {
         // A printf-like function: the wrapper formats with Jai's print and passes the text as "%s".
         buffer: [32] u8;
         written := shapes_format(buffer.data, buffer.count, "%-%", 12, "ab");
-
         assert(written == 5);
         assert(to_string(buffer.data) == "12-ab");
 
         // Non-virtual methods, constructors, destructors.
         c: Geo.Counter;
-
         Geo.Counter.Constructor(*c, 5);
         Geo.Counter.add(*c, 7);
         print("counter = % (live %)\n", Geo.Counter.get(*c), live());
@@ -247,7 +242,6 @@ main :: () {
 
         // Virtual calls through the vtable.
         s := new_circle(7, 2);
-
         print("name = %, area = %\n", to_string(Geo.Shape_name(s)), Geo.Shape_area(s));
         assert(Geo.Shape_area(s) == 12);
         assert(Geo.Shape.get_id(s) == 7);
@@ -255,7 +249,6 @@ main :: () {
         assert(s.id == 9);
 
         circle := cast(*Geo.Circle) s;
-
         assert(Geo.Circle_circumference(circle) == 12);
         assert(Geo.vtable(s).area != null);
         delete_shape(s);
@@ -265,38 +258,29 @@ main :: () {
         d.d1 = 4;
         assert(Geo.Derived1.sum(*d) == 7);
         assert(d.b1 == 3);
-
         // By-value structs.
         a := Geo.Vec2.make(2);
-
         assert(a.x == 2 && a.y == 2);
         b: Geo.Vec2;
         b.x = 1;
         b.y = 5;
         sum := Geo.add_vec(a, b);
-
         assert(sum.x == 3 && sum.y == 7);
         sum2 := a + b;
-
         assert(sum2.x == 3 && sum2.y == 7);
         assert(a + b == sum);
         r := a - b;
-
         assert(r.x == 1 && r.y == -3);
         p := Geo.operator[](*a, 1);
-
         assert(p.* == 2);
         big := Geo.make_big(10);
-
         assert(big.v[0] == 10 && big.v[7] == 17);
         assert(Geo.sum_big(big) == 108);
         m := Geo.make_mixed(3, 0.5);
-
         assert(m.a == 3 && m.b == 0.5);
         assert(Geo.mixed_sum(m) == 3.5);
         before := live();
         cn := Geo.make_counter(41);
-
         assert(cn.value == 41);
         assert(live() == before + 1);
         Geo.Counter.Destructor(*cn);

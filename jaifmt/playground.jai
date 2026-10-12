@@ -10,12 +10,10 @@ TARGET :: "main.jai";
 main :: () -> int {
     path := tprint("%/%", WORKSPACE, TARGET);
     source, read_ok := read_entire_file(path, log_errors = false);
-
     if !read_ok return fail("%: cannot read the file", TARGET);
 
     config: Format_Config;
     directory := parent_directory(path);
-
     while true {
         toml, has_config := read_entire_file(tprint("%/%", directory, FORMAT_CONFIG_FILE_NAME), log_errors = false);
         if has_config {
@@ -24,7 +22,6 @@ main :: () -> int {
             config = parsed;
             break;
         }
-
         if directory == WORKSPACE break;
         directory = parent_directory(directory);
     }
@@ -52,6 +49,5 @@ parent_directory :: (path: string) -> string {
     for < path {
         if it == #char "/" return ifx it_index == 0 then "/" else string.{ it_index, path.data };
     }
-
     return WORKSPACE;
 }

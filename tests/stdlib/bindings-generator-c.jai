@@ -34,30 +34,25 @@ has :: (text: string, needle: string) -> bool {
 // Runs at compile time: libclang is the compiler's, and executables cannot call it.
 check_bindings :: () {
     dir := scratch_directory("bindgen-c");
-
     hide_scratch_directory_in_log(dir);
     defer delete_directory(dir);
     header_path := tprint("%/test.h", dir);
     output_path := tprint("%/test.jai", dir);
-
     assert(write_entire_file(header_path, HEADER));
 
     opts: Generate_Bindings_Options;
-
     array_add(*opts.source_files, header_path);
     opts.generate_library_declarations = false;
     array_add(*opts.libraries, .{ filename = "does_not_exist", identifier = "lib" });
     assert(generate_bindings(opts, output_path));
 
     text, ok := read_entire_file(output_path);
-
     assert(ok);
 
     assert(has(text, "LIMIT :: 5;"));
     assert(has(text, "MASK :: LIMIT << 2;"));
     assert(has(text, "NAME :: \"hello\";"));
     assert(!has(text, "UNKNOWN_CALL"));
-
     // C's grouping is kept where Jai's precedence would group the text differently.
     assert(has(text, "PACKED_HDR :: 1 << 24 | (1 << 16) | (8 << 8) | 10;"));
     assert(has(text, "SHIFTED_SUM :: (LIMIT + 1) << 2;"));
@@ -68,7 +63,6 @@ check_bindings :: () {
     assert(has(text, "next:     *Node;"));
     assert(has(text, "weights:  [4] float;"));
     assert(has(text, "callback: #type (code: s32, node: *Node) -> void #c_call;"));
-
     // A C enum with no negative values is unsigned on the Itanium ABIs and `int` on Windows.
     #if OS == .WINDOWS assert(has(text, "Color :: enum s32 {"));
     else assert(has(text, "Color :: enum u32 {"));
@@ -76,7 +70,6 @@ check_bindings :: () {
     assert(has(text, "COLOR_GREEN :: GREEN;"));
     assert(has(text, "Flags :: u32;"));
     assert(has(text, "Number :: union {"));
-
     // MSVC keeps bit-fields in units of their declared type; the others pack them in bytes.
     #if OS == .WINDOWS assert(has(text, "__bitfield: u32;"));
     else assert(has(text, "__bitfield: u8;"));

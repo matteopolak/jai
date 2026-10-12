@@ -12,10 +12,8 @@ concrete :: (x: int) -> int {
 #run {
     t := type_of(poly);
     u := type_of(concrete);
-
     assert(t != u);
     info := type_info(t);
-
     assert(info != null);
 }
 

@@ -13,7 +13,6 @@ Table :: struct {
 
 main :: () {
     t: Table;
-
     assert(t.on_signal == IGNORE);
     assert(cast(s64) t.on_signal == 1);
     assert(cast(s64) ERROR == -1);

@@ -7,6 +7,5 @@ main :: () {
     ratio := cast(float) done / total;
     center := cast(float) (w / 2); // whole pixels on purpose
     pages := done / total;
-
     print("% % %\n", ratio, center, pages);
 }

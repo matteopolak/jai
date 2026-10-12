@@ -27,14 +27,12 @@ bump :: (p: Pair) -> int {
 
 main :: () {
     text := "hello";
-
     assert(eat(text) == 5);
     assert(text == "hello");
     assert(poly_eat(text) == 4);
     assert(text == "hello");
 
     pair := Pair.{ 1, 2 };
-
     assert(bump(pair) == 110);
     assert(pair.a == 1 && pair.b == 2);
 
@@ -44,6 +42,5 @@ main :: () {
         eat(s);
         assert(s == "abc");
     }
-
     print("ok\n");
 }

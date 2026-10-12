@@ -12,7 +12,6 @@ main :: () {
     assert(Frames.frames_as_count() == 2);
     assert(Frames.limit_as_byte() == 7);
     small: u16 = Frames.FRAMES;
-
     assert(small == 2);
     print("ok\n");
 }

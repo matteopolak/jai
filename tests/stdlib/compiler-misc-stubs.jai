@@ -29,21 +29,17 @@ NULL_STATUS :: #run -> Get_Root_Type_Status {
 
 TABLE :: #run -> [] u8 {
     segment, created := add_data_segment("probe_section");
-
     assert(segment != null && !created);
     bytes: [4] u8 = .[1, 2, 3, 4];
-
     return add_global_data(bytes, .USER_SEGMENT, segment);
 }
 
 checks :: () {
     assert(NULL_STATUS == .INPUT_IS_CODE_NULL);
-
     // Typed nodes exist for code from a compile-time run that has done nothing yet.
     assert(CODE_STATUS == .SUCCESS && CODE_SIZE == 1);
 
     base := compiler_get_base_path();
-
     assert(base.count > 0 && (ends_with(base, "/") || ends_with(base, "\\")), "base path: %", base);
 
     // Accepted and ignored.

@@ -112,7 +112,6 @@ JAI
     add_build_string(PROGRAM, w);
     added := false;
     failed := false;
-
     while true {
         msg := compiler_wait_for_message();
         if msg.kind == .PHASE && !added {
@@ -122,13 +121,11 @@ JAI
                 added = true;
             }
         }
-
         if msg.kind == .COMPLETE {
             failed = (cast(*Message_Complete) msg).error_code != .NONE;
             break;
         }
     }
-
     compiler_end_intercept(w);
     assert(added, "ctexec.4: the metaprogram defined the placeholder");
     assert(!failed, "ctexec.4: the waiting #run succeeded once the placeholder existed");
@@ -141,7 +138,6 @@ main :: () {
     assert(CHOSEN == u16, "ctexec.1: #run yields a Type");
     assert(initialized_global == 120, "ctexec.1: #run as a global initializer");
     local := #run factorial(6);
-
     assert(local == 720, "ctexec.2: #run inside a procedure body");
 
     // ctexec.3

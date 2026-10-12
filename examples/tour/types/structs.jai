@@ -48,7 +48,6 @@ tour_structs :: () {
 
     // Operator overloading in action.
     step := Vec2.{ 0.5, 0.25 };
-
     knight.position = knight.position + step * 4;
     print("% walks to (%, %) carrying %.\n",
         knight.name, knight.position.x, knight.position.y, knight.sword);

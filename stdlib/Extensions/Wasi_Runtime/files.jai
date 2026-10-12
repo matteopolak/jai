@@ -163,7 +163,6 @@ errno_from_wasi :: (code: s32) -> s32 #no_context {
         case 75; return 18; // cross-device
         case 76; return EACCES; // a right the descriptor lacks
     }
-
     return EIO;
 }
 
@@ -179,32 +178,25 @@ failed :: (code: s32) -> s32 #no_context {
 append_components :: (into: *u8, length: s64, path: *u8, path_bytes: s64) -> s64 #no_context {
     end := length;
     at := 0;
-
     while at < path_bytes {
         while at < path_bytes && path[at] == #char "/" at += 1;
         start := at;
-
         while at < path_bytes && path[at] != #char "/" at += 1;
         count := at - start;
         if count == 0 || (count == 1 && path[start] == #char ".") continue;
-
         if count == 2 && path[start] == #char "." && path[start + 1] == #char "." {
             while end > 1 && into[end - 1] != #char "/" end -= 1;
             if end > 1 end -= 1;
             continue;
         }
-
         if end + count + 2 > PATH_BYTES return -1;
-
         if end > 1 {
             into[end] = #char "/";
             end += 1;
         }
-
         for 0..count - 1 into[end + it] = path[start + it];
         end += count;
     }
-
     into[end] = 0;
     return end;
 }
@@ -216,16 +208,12 @@ absolute_path :: (path: *u8, into: *u8) -> s64 #no_context {
         error_number = ENOENT;
         return -1;
     }
-
     length: s64 = 1;
-
     into[0] = #char "/";
-
     if path[0] != #char "/" {
         for 0..working_directory_bytes - 1 into[it] = working_directory[it];
         length = working_directory_bytes;
     }
-
     length = append_components(into, length, path, c_length(path));
     if length < 0 error_number = ENAMETOOLONG;
     return length;
@@ -235,36 +223,28 @@ absolute_path :: (path: *u8, into: *u8) -> s64 #no_context {
 prepare_files :: () #no_context {
     if files_ready return;
     files_ready = true;
-
     // Pre-opened descriptors are numbered from 3 up, until the first that is not one.
     fd: s32 = 3;
-
     while preopened_count < MAX_PREOPENED {
         status: [2] u32; // tag (0: directory), name length
         if wasi_fd_prestat_get(fd, offset32(status.data)) != 0 break;
-
         if (status[0] & 0xff) == 0 && status[1] < PATH_BYTES {
             raw := link_target.data;
-
             // WASI's `fdstat`: kind, flags, then the rights and the inherited rights.
             descriptor: [3] u64;
-
             if wasi_fd_prestat_dir_name(fd, offset32(raw), status[1]) == 0 && wasi_fd_fdstat_get(fd, offset32(descriptor.data)) == 0 {
                 entry := *preopened[preopened_count];
                 entry.fd = fd;
                 entry.inherited_rights = descriptor[2];
                 entry.absolute = status[1] > 0 && raw[0] == #char "/";
-
                 // A relative name (`.` from `wasmtime --dir .`) is taken from the root.
                 entry.name[0] = #char "/";
                 entry.name_bytes = append_components(entry.name.data, 1, raw, cast(s64) status[1]);
                 if entry.name_bytes > 0 preopened_count += 1;
             }
         }
-
         fd += 1;
     }
-
     working_directory[0] = #char "/";
     working_directory[1] = 0;
     working_directory_bytes = 1;
@@ -273,7 +253,6 @@ prepare_files :: () #no_context {
         first_path[0] = #char "/";
         length := append_components(first_path.data, 1, start, c_length(start));
         index := preopened_for(first_path.data, length);
-
         if length > 0 && index >= 0 && preopened[index].absolute {
             for 0..length working_directory[it] = first_path[it];
             working_directory_bytes = length;
@@ -285,18 +264,15 @@ prepare_files :: () #no_context {
 preopened_for :: (path: *u8, length: s64) -> s64 #no_context {
     best := -1;
     best_bytes := -1;
-
     for i: 0..preopened_count - 1 {
         entry := *preopened[i];
         count := entry.name_bytes;
         matches := count == 1 || (length >= count && bytes_equal(path, entry.name.data, count) && (length == count || path[count] == #char "/"));
-
         if matches && count > best_bytes {
             best = i;
             best_bytes = count;
         }
     }
-
     return best;
 }
 
@@ -313,20 +289,16 @@ wasi_path :: (path: *u8, scratch: *u8) -> Wasi_Path #no_context {
     prepare_files();
     result: Wasi_Path;
     length := absolute_path(path, scratch);
-
     if length < 0 return result;
     index := preopened_for(scratch, length);
     if index < 0 {
         error_number = EACCES;
         return result;
     }
-
     prefix := preopened[index].name_bytes;
     start := ifx prefix == 1 then 1 else prefix + 1;
-
     result.directory = preopened[index].fd;
     result.rights = preopened[index].inherited_rights;
-
     if start >= length {
         // The pre-opened directory itself.
         scratch[0] = #char ".";
@@ -337,7 +309,6 @@ wasi_path :: (path: *u8, scratch: *u8) -> Wasi_Path #no_context {
         result.path = offset32(scratch + start);
         result.bytes = cast,no_check(u32) (length - start);
     }
-
     return result;
 }
 
@@ -355,10 +326,8 @@ path_status :: (path: *u8, follow: bool, status: *Wasi_File_Status) -> s32 #no_c
 // Fills a Linux `struct stat` from WASI's `filestat`.
 linux_status :: (status: *Wasi_File_Status, result: *Linux_File_Status) #no_context {
     memset(result, 0, size_of(Linux_File_Status));
-
     // Type bits as in Linux <sys/stat.h>; permissions rw-r--r-- (0x1a4) or rwxr-xr-x (0x1ed).
     mode: u32;
-
     if status.kind == {
         case 1; mode = 0x6000 | 0x1b0; // block device, rw-rw----
         case 2; mode = 0x2000 | 0x1b6; // character device, rw-rw-rw-
@@ -368,7 +337,6 @@ linux_status :: (status: *Wasi_File_Status, result: *Linux_File_Status) #no_cont
         case 7; mode = 0xa000 | 0x1ff; // symbolic link, rwxrwxrwx
         case; mode = 0x8000 | 0x1a4; // regular file (4), or unknown
     }
-
     result.device = status.device;
     result.inode = status.inode;
     result.links = status.links;
@@ -400,13 +368,11 @@ open_path :: (path: *u8, flags: s32) -> s32 #no_context {
     fd_flags: s32 = ifx (flags & O_APPEND) != 0 then 1 else 0;
     rights := target.rights;
     access := flags & O_ACCESS_MODE;
-
     if access == 0 || (flags & O_DIRECTORY) != 0 rights &= ~RIGHTS_WRITING;
     else if access == O_WRONLY rights &= ~RIGHTS_READING;
     lookup: s32 = ifx (flags & O_NOFOLLOW) != 0 then 0 else LOOKUP_FOLLOW;
     fd: s32;
     code := wasi_path_open(target.directory, lookup, target.path, target.bytes, open_flags, rights, target.rights, fd_flags, offset32(*fd));
-
     if code != 0 return failed(code);
     return fd;
 }
@@ -432,7 +398,6 @@ wasi_close :: (fd: s32) -> s32 #c_call {
 wasi_lseek :: (fd: s32, offset: s64, whence: s32) -> s64 #c_call {
     position: u64;
     code := wasi_fd_seek(fd, offset, whence, offset32(*position));
-
     if code != 0 return failed(code);
     return cast,no_check(s64) position;
 }
@@ -441,7 +406,6 @@ wasi_lseek :: (fd: s32, offset: s64, whence: s32) -> s64 #c_call {
 wasi_fstat :: (fd: s32, result: *Linux_File_Status) -> s32 #c_call {
     status: Wasi_File_Status;
     code := wasi_fd_filestat_get(fd, offset32(*status));
-
     if code != 0 return failed(code);
     linux_status(*status, result);
     return 0;
@@ -483,7 +447,6 @@ wasi_chmod :: (path: *u8, mode: u32) -> s32 #c_call {
 wasi_fchmod :: (fd: s32, mode: u32) -> s32 #c_call {
     status: Wasi_File_Status;
     code := wasi_fd_filestat_get(fd, offset32(*status));
-
     if code != 0 return failed(code);
     return 0;
 }
@@ -548,12 +511,10 @@ wasi_link :: (from: *u8, to: *u8) -> s32 #c_call {
 #program_export "getcwd"
 wasi_getcwd :: (buffer: *u8, size: u64) -> *u8 #c_call {
     prepare_files();
-
     if !buffer || size < cast(u64) working_directory_bytes + 1 {
         error_number = ERANGE;
         return null;
     }
-
     for 0..working_directory_bytes - 1 buffer[it] = working_directory[it];
     buffer[working_directory_bytes] = 0;
     return buffer;
@@ -563,12 +524,10 @@ wasi_getcwd :: (buffer: *u8, size: u64) -> *u8 #c_call {
 wasi_chdir :: (path: *u8) -> s32 #c_call {
     status: Wasi_File_Status;
     if path_status(path, true, *status) != 0 return -1;
-
     if status.kind != 3 {
         error_number = ENOTDIR;
         return -1;
     }
-
     length := absolute_path(path, second_path.data);
     if length < 0 return -1;
     for 0..length working_directory[it] = second_path[it];
@@ -583,64 +542,49 @@ wasi_realpath :: (path: *u8, resolved: *u8) -> *u8 #c_call {
     prepare_files();
     current: [PATH_BYTES] u8;
     length := absolute_path(path, current.data);
-
     if length < 0 return null;
     links_followed := 0;
-
     // `checked` is how much of `current` is known to have no symbolic links.
     checked: s64 = 1;
-
     while checked < length {
         end := checked + 1;
         while end < length && current[end] != #char "/" end += 1;
         saved := current[end];
-
         current[end] = 0;
         target := wasi_path(current.data, first_path.data);
-
         current[end] = saved;
         if target.directory < 0 return null;
         used: u32;
         code := wasi_path_readlink(target.directory, target.path, target.bytes, offset32(link_target.data), PATH_BYTES - 1, offset32(*used));
-
         if code == 0 && used > 0 {
             links_followed += 1;
             if links_followed > 40 {
                 error_number = ELOOP;
                 return null;
             }
-
             // Splice the link's target in place of the component: rebuild from the target
             // (absolute, or relative to the component's directory), then the rest.
             rest: [PATH_BYTES] u8;
             rest_bytes := length - end;
-
             for 0..rest_bytes - 1 rest[it] = current[end + it];
-
             // `checked` ends the component's directory (1: the root).
             parent := ifx link_target[0] == #char "/" then 1 else checked;
-
             length = append_components(current.data, parent, link_target.data, cast(s64) used);
             if length >= 0 length = append_components(current.data, length, rest.data, rest_bytes);
-
             if length < 0 {
                 error_number = ENAMETOOLONG;
                 return null;
             }
-
             checked = 1;
             continue;
         }
-
         // 0 bytes or EINVAL: not a link. Anything else (ENOENT...) fails the call.
         if code != 0 && code != WASI_EINVAL {
             failed(code);
             return null;
         }
-
         checked = end;
     }
-
     status: Wasi_File_Status;
     if path_status(current.data, true, *status) != 0 return null;
     into := resolved;
@@ -651,7 +595,6 @@ wasi_realpath :: (path: *u8, resolved: *u8) -> *u8 #c_call {
             return null;
         }
     }
-
     for 0..length - 1 into[it] = current[it];
     into[length] = 0;
     return into;
@@ -683,7 +626,6 @@ wasi_opendir :: (path: *u8) -> *Directory_Stream #c_call {
         error_number = ENOMEM;
         return null;
     }
-
     memset(stream, 0, size_of(Directory_Stream));
     stream.fd = fd;
     return stream;
@@ -697,19 +639,15 @@ wasi_readdir :: (stream: *Directory_Stream) -> *Linux_Directory_Entry #c_call {
         error_number = EBADF;
         return null;
     }
-
     refilled := false;
-
     while true {
         if stream.at + WASI_ENTRY_HEADER_BYTES <= stream.filled {
             header := stream.buffer.data + stream.at;
             name_bytes := cast(s64) (cast(*u32) (header + 16)).*;
-
             if stream.at + WASI_ENTRY_HEADER_BYTES + name_bytes <= stream.filled {
                 stream.cookie = (cast(*u64) header).*;
                 stream.at += WASI_ENTRY_HEADER_BYTES + name_bytes;
                 entry := *stream.entry;
-
                 memset(entry, 0, size_of(Linux_Directory_Entry));
                 entry.inode = (cast(*u64) (header + 8)).*;
                 entry.next_offset = cast,no_check(s64) stream.cookie;
@@ -720,22 +658,18 @@ wasi_readdir :: (stream: *Directory_Stream) -> *Linux_Directory_Entry #c_call {
                 return entry;
             }
         }
-
         if stream.finished || refilled return null;
         used: u32;
         code := wasi_fd_readdir(stream.fd, offset32(stream.buffer.data), DIRECTORY_BUFFER_BYTES, stream.cookie, offset32(*used));
-
         if code != 0 {
             failed(code);
             return null;
         }
-
         stream.filled = used;
         stream.at = 0;
         stream.finished = used < DIRECTORY_BUFFER_BYTES;
         refilled = true;
     }
-
     return null;
 }
 
@@ -750,7 +684,6 @@ directory_entry_kind :: (kind: u8) -> u8 #no_context {
         case 6; return 12;
         case 7; return 10; // symbolic link
     }
-
     return 0;
 }
 
@@ -760,9 +693,7 @@ wasi_closedir :: (stream: *Directory_Stream) -> s32 #c_call {
         error_number = EBADF;
         return -1;
     }
-
     code := wasi_fd_close(stream.fd);
-
     wasi_free(stream);
     if code != 0 return failed(code);
     return 0;
@@ -784,17 +715,13 @@ wasi_fopen :: (path: *u8, mode: *u8) -> *Stream #c_call {
         error_number = EINVAL;
         return null;
     }
-
     update := false;
     exclusive := false;
-
     for 1..c_length(mode) - 1 {
         if mode[it] == #char "+" update = true;
         if mode[it] == #char "x" exclusive = true;
     }
-
     flags: s32;
-
     if mode[0] == {
         case #char "r"; flags = 0;
         case #char "w"; flags = O_WRONLY | O_CREAT | O_TRUNC;
@@ -803,7 +730,6 @@ wasi_fopen :: (path: *u8, mode: *u8) -> *Stream #c_call {
             error_number = EINVAL;
             return null;
     }
-
     if update flags = (flags & ~O_ACCESS_MODE) | O_RDWR;
     if exclusive flags |= O_EXCL;
     fd := open_path(path, flags);
@@ -814,7 +740,6 @@ wasi_fopen :: (path: *u8, mode: *u8) -> *Stream #c_call {
         error_number = ENOMEM;
         return null;
     }
-
     stream.* = .{ fd = fd };
     return stream;
 }
@@ -825,9 +750,7 @@ wasi_fclose :: (stream: *Stream) -> s32 #c_call {
         error_number = EBADF;
         return -1;
     }
-
     code := wasi_fd_close(stream.fd);
-
     wasi_free(stream);
     if code != 0 return failed(code);
     return 0;
@@ -838,22 +761,18 @@ wasi_fread :: (buffer: *void, size: u64, count: u64, stream: *Stream) -> u64 #c_
     if !stream || size == 0 || count == 0 return 0;
     total := size * count;
     done: u64;
-
     while done < total {
         step := wasi_read(stream.fd, cast(*u8) buffer + done, total - done);
         if step < 0 {
             stream.had_error = true;
             break;
         }
-
         if step == 0 {
             stream.at_end = true;
             break;
         }
-
         done += cast(u64) step;
     }
-
     return done / size;
 }
 
@@ -862,17 +781,14 @@ wasi_fwrite :: (buffer: *void, size: u64, count: u64, stream: *Stream) -> u64 #c
     if !stream || size == 0 || count == 0 return 0;
     total := size * count;
     done: u64;
-
     while done < total {
         step := wasi_write(stream.fd, cast(*u8) buffer + done, total - done);
         if step <= 0 {
             stream.had_error = true;
             break;
         }
-
         done += cast(u64) step;
     }
-
     return done / size;
 }
 
@@ -882,7 +798,6 @@ wasi_fseek :: (stream: *Stream, offset: s64, whence: s32) -> s32 #c_call {
         error_number = EBADF;
         return -1;
     }
-
     if wasi_lseek(stream.fd, offset, whence) < 0 return -1;
     stream.at_end = false;
     return 0;
@@ -899,7 +814,6 @@ wasi_ftell :: (stream: *Stream) -> s64 #c_call {
         error_number = EBADF;
         return -1;
     }
-
     return wasi_lseek(stream.fd, 0, 1);
 }
 
@@ -943,7 +857,6 @@ wasi_fileno :: (stream: *Stream) -> s32 #c_call {
         error_number = EBADF;
         return -1;
     }
-
     return stream.fd;
 }
 
@@ -958,7 +871,6 @@ wasi_sysconf :: (name: s32) -> s64 #c_call {
         case 83; return 1; // _SC_NPROCESSORS_CONF
         case 84; return 1; // _SC_NPROCESSORS_ONLN
     }
-
     error_number = EINVAL;
     return -1;
 }
@@ -966,7 +878,6 @@ wasi_sysconf :: (name: s32) -> s64 #c_call {
 #program_export "strerror"
 wasi_strerror :: (code: s32) -> *u8 #c_call {
     text: string;
-
     if code == {
         case 0; text = "Success\0";
         case EPERM; text = "Operation not permitted\0";
@@ -996,6 +907,5 @@ wasi_strerror :: (code: s32) -> *u8 #c_call {
         case ETIMEDOUT; text = "Connection timed out\0";
         case; text = "Unknown error\0";
     }
-
     return text.data;
 }

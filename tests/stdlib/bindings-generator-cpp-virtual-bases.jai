@@ -42,21 +42,18 @@ build_and_generate :: () -> string {
     // The WASM target (the browser playground) starts no processes and loads no native
     // libraries, so there is no compiler or libclang to call: skip like a host without them.
     #if OS == .WASM return "";
-
     // Kept: the program loads the library from here when it runs.
     dir := scratch_directory("bindgen-cpp-virtual-bases");
     header_path := tprint("%/vbases.h", dir);
     source_path := tprint("%/vbases.cpp", dir);
     ext := ifx OS == .MACOS then "dylib" else "so";
     library_path := tprint("%/libvbases.%", dir, ext);
-
     if !write_entire_file(header_path, HEADER) || !write_entire_file(source_path, SOURCE) return "";
 
     result := run_command("clang++", "-std=c++17", "-shared", "-fPIC", "-o", library_path, source_path, capture_and_return_output = true);
     if result.exit_code != 0 return "";
 
     opts: Generate_Bindings_Options;
-
     array_add(*opts.source_files, header_path);
     array_add(*opts.extra_clang_arguments, "-x", "c++", "-std=c++17");
     array_add(*opts.libpaths, dir);
@@ -83,7 +80,6 @@ main :: () {
         assert(has(BINDINGS, "__vptr: *void; // C++ virtual bases make the class dynamic"));
         assert(has(BINDINGS, "using base: Base; // C++ virtual base"));
         assert(has(BINDINGS, "using small: Small #align 4; // C++ virtual base") || has(BINDINGS, "using small: Small; // C++ virtual base"));
-
         // libclang before 20 cannot report virtual base offsets (jaic prefers a newer one when
         // several are installed); the generator then says so instead of checking the offset.
         assert(has(BINDINGS, "(virtual base) has unexpected offset") || has(BINDINGS, "// C++ virtual base (offset unknown to this libclang)"));
@@ -96,26 +92,21 @@ main :: () {
         assert(size_of(Tight) == 16);
 
         left := make_left(3, 4.0, 5);
-
         assert(left.b == 3 && left.d == 4.0 && left.l == 5);
         assert(left_sum(left) == 12);
         left.l = 10;
         assert(left_sum(left) == 17);
 
         right := make_right(7, 21);
-
         assert(right.b == 7 && right.r == 21);
         assert(Right_f(right) == 42);
 
         tight := make_tight(9, #char "z");
-
         assert(tight.s == 9 && tight.c == #char "z");
 
         value: s32 = 1;
-
         take(*value);
         assert(value == 2);
     }
-
     print("ok\n");
 }

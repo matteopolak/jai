@@ -7,6 +7,5 @@ main :: () {
     z := count;
     w: u8 = 1;
     v: u8 = w;
-
     print("% % %\n", y, z, v);
 }

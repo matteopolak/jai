@@ -13,6 +13,5 @@ SomeEnum :: enum {
 
 main :: () {
     poly_proc(SomeEnum.ASD); // (3)
-
     // poly_proc(123); // (4)  Compile `Error: #modify returned false: T must be ENUM`
 }

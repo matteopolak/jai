@@ -30,7 +30,6 @@ copies :: (n: int) {
     wide := (n + 1) *
         (n + 2);
     area := wide;
-
     print("%\n", area);
 }
 

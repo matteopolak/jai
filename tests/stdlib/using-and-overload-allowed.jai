@@ -38,7 +38,6 @@ g :: (a: $U, b: int) -> int {
 main :: () -> s64 {
     c: C;
     d: D;
-
     c.x = 1;
     c.z = 2;
     d.x = 1.5;

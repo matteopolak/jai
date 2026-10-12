@@ -35,7 +35,6 @@
         add_build_string(SOURCE, w);
         system: [..] string;
         reached := false;
-
         while true {
             message := compiler_wait_for_message();
             if message.kind == .PHASE {
@@ -46,10 +45,8 @@
                     compiler_custom_link_command_is_complete(w, 0);
                 }
             }
-
             if message.kind == .COMPLETE break;
         }
-
         compiler_end_intercept(w);
         return system, reached;
     }

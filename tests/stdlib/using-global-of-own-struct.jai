@@ -20,7 +20,6 @@ using gpu;
 
 main :: () {
     data: Context_Data;
-
     gpu = *data;
     count = 4;
     inner.x = 3;

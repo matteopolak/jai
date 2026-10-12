@@ -48,7 +48,6 @@ fill_slots :: (slots: int) -> int {
     slot_index :: (row: int, col: int) -> int {
         return col;
     }
-
     return slot_index(1, slots);
 }
 
@@ -57,7 +56,6 @@ main :: () {
     kill_timer(1);
     print("%\n", backend_step(1, 2));
     handler := on_event;
-
     handler(1, null);
     draw(1, 2);
     describe(1, 4);

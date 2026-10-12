@@ -51,14 +51,11 @@ main :: () {
     print("%\n", runs("aab", "abb"));
     a := float.[1, 2];
     xs: [3] int;
-
     pairs(xs);
     tail(xs);
     grid: [2][3] int;
-
     clear(grid);
     more: [..] int;
-
     array_add(*more, 1);
     grow(*more);
     print("%\n", dot(a, a));

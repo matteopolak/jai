@@ -10,6 +10,5 @@ main :: () {
     if ready print("still ready\n");
     if !ready print("not ready\n");
     waiting := !is_ready();
-
     print("%\n", waiting);
 }

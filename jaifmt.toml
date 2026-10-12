@@ -4,12 +4,6 @@ max_width = 100
 max_blank_lines = 2
 brace_style = "same_line"
 
-# Blank lines inside code blocks, to keep dense code readable (docs/tools/jaifmt.md).
-blank_line_after_declarations = true # after a run of declarations
-blank_lines_around_blocks = true # around statements with a block body
-blank_line_between_cases = true # before a `case` that follows a multi-line arm
-blank_line_before_comments = true # above a comment that follows code
-
 # Every Jai file the repository owns is formatted, except:
 # - tests/corpus: fixtures pinned by sha256 in tests/corpus/manifest.json, and negative cases
 #   that are deliberately malformed.

@@ -12,7 +12,6 @@ Node :: struct {
 make_ring :: () -> *Node {
     a := New(Node);
     b := New(Node);
-
     a.value = 1;
     b.value = 2;
     a.next = b;
@@ -40,7 +39,6 @@ main :: () {
     assert(RING.value == 1 && RING.next.value == 2);
     assert(RING.next.next == RING);
     s := SELF;
-
     assert(s.self.self == s.self && s.self.value == 7);
     print("ok\n");
 }

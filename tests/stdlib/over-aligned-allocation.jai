@@ -29,7 +29,6 @@ check :: () -> string {
     pairs: [300] *Two_Lines;
     odds: [300] *Odd;
     scraps: [300] *void;
-
     for i: 0..299 {
         scraps[i] = alloc(1 + i % 63);
         lines[i] = New(Line);
@@ -41,7 +40,6 @@ check :: () -> string {
         lines[i].member = i;
         odds[i].value = i;
     }
-
     for i: 0..299 {
         if lines[i].member != i || odds[i].value != i return "contents";
         free(lines[i]);
@@ -60,14 +58,11 @@ check :: () -> string {
     // Growing from below a cache line keeps the bytes and becomes aligned.
     for start: 1..63 {
         block := alloc(start);
-
         memset(block, 0x5a, start);
-
         for size: start + 1..start + 300 {
             block = realloc(block, size, size - 1);
             if size >= 64 && !aligned(block) return "realloc";
         }
-
         for k: 0..start - 1 if (cast(*u8) block)[k] != 0x5a return "realloc contents";
         free(block);
     }
@@ -77,24 +72,19 @@ check :: () -> string {
     if !aligned(array.data) return "NewArray";
     array_free(array);
     growing: [..] Line;
-
     for i: 0..999 {
         array_add(*growing, .{ member = i });
         if !aligned(growing.data) return "array_add";
     }
-
     for growing if it.member != it_index return "array contents";
     array_reset(*growing);
 
     // Locals in the interpreter's frames, and a page-aligned one.
     local: Line;
-
     Page :: struct {
         member: int #align 4096;
     }
-
     page: Page;
-
     if !aligned(*local) return "local";
     if cast(u64) *page % 4096 return "page local";
     return "";
@@ -112,6 +102,5 @@ main :: () {
         print("failure: %\n", failure);
         exit(1);
     }
-
     print("ok\n");
 }

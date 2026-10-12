@@ -4,7 +4,6 @@
 
 main :: () {
     bits: Bit_Array;
-
     init_bit_array(*bits, 130);
     set_bit(*bits, 0);
     set_bit(*bits, 64);
@@ -13,7 +12,6 @@ main :: () {
     assert(bits.slots.count == 3);
     count := 0;
     for: only_set bits count += 1;
-
     assert(count == 3);
     toggle_all_bits(*bits);
     assert(!bits[0] && bits[1]);

@@ -12,7 +12,6 @@ Basic :: #import "Basic"(MEMORY_DEBUGGER = true, VISUALIZE_MEMORY_DEBUGGER = OS 
 
     listen_and_check :: (kept: [] *u8) -> s64 {
         name := Wire.MEMORY_VISUALIZATION_CHANNEL_NAME;
-
         POSIX.shm_unlink(Basic.temp_c_string(name)); // a leftover from a crashed run
         created, reader := Channel.reader_create_channel(name, 1024 * 1024 - Channel.OFFSET_TO_MESSAGE_DATA);
         if !created return 20;
@@ -24,7 +23,6 @@ Basic :: #import "Basic"(MEMORY_DEBUGGER = true, VISUALIZE_MEMORY_DEBUGGER = OS 
 
         saw_version := false;
         traces := 0;
-
         while true {
             found, fatal, message := Channel.reader_poll_for_message(*reader);
             if fatal return 21;
@@ -37,14 +35,11 @@ Basic :: #import "Basic"(MEMORY_DEBUGGER = true, VISUALIZE_MEMORY_DEBUGGER = OS 
             } else if tag == .ADD_STACK_TRACE {
                 info := cast(*Wire.Single_Stack_Trace_Info) message.user_read_pointer;
                 expected_bytes := size_of(Wire.Single_Stack_Trace_Info) + info.num_nodes * size_of(Stack_Trace_Node);
-
                 if info.num_nodes <= 0 || !info.address || message.user_read_bytes != expected_bytes return 23;
                 traces += 1;
             }
-
             if !Channel.reader_done_with_message(*message) return 24;
         }
-
         if !saw_version || traces == 0 return 25;
         return 0;
     }
@@ -54,13 +49,11 @@ main :: () -> s64 {
     blocks: [8] *u8;
     for *blocks it.* = Basic.alloc(32 + it_index);
     result: s64;
-
     #if OS == .MACOS || OS == .LINUX {
         // No visualizer yet: this must be a harmless no-op.
         Basic.memory_visualizer_per_frame_update();
         result = listen_and_check(blocks);
     }
-
     for blocks Basic.free(it);
     return result;
 }

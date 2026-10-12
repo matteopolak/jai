@@ -19,6 +19,5 @@ main :: () {
     s := S.{ type_info(int) };
     p := *s;
     arr: [..] *Type_Info_Struct;
-
     Push(*arr, xx p.t);
 }

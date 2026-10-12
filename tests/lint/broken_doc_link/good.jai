@@ -33,11 +33,9 @@ scale :: (p: Point) {}
 main :: () {
     // The value of [x] is not documented here.
     x := 5;
-
     // jailint: allow(broken_doc_link)
     // This one is silenced: [alsogone].
     scale(.{});
-
     // Statements are not documented: [nowhere_at_all] is not looked at.
     print("%\n", x);
     _ := Strings.begins_with("a", "b");

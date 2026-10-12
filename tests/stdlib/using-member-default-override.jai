@@ -23,7 +23,6 @@ Derived :: struct {
 main :: () {
     d: Derived;
     n := New(Derived);
-
     assert(d.kind == .B);
     assert(n.kind == .B);
     assert(d.extra == 7);

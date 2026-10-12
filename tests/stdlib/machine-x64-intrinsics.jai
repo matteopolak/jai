@@ -5,7 +5,6 @@
 main :: () -> s64 {
     a := rdtsc();
     b := rdtsc();
-
     if b < a return 1;
     stamp := rdtscp();
     if stamp < a return 2;
@@ -14,7 +13,6 @@ main :: () -> s64 {
     sfence();
     mfence();
     x: int = 5;
-
     prefetch(*x, .T0);
     prefetch(*x, .NTA);
     rdrand();

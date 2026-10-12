@@ -34,7 +34,6 @@ main :: () {
         title: string;
         run: () -> ();
     }
-
     stops :: Stop.[
         .{ "Basics", tour_basics },
         .{ "Structs, using and unions", tour_structs },
@@ -58,7 +57,6 @@ main :: () {
     for stops {
         heading(it_index + 1, it.title);
         it.run();
-
         // Each stop may use the temporary allocator; clear it between stops.
         reset_temporary_storage();
     }

@@ -6,6 +6,5 @@ main :: () {
     a := x * 0;
     b := flags & 0;
     c := x % 1;
-
     print("% % %\n", a, b, c);
 }

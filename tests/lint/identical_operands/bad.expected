@@ -17,9 +17,9 @@ warning[identical_operands]: both sides of `-` are `n`
    = note: `identical_operands` is `warn` by default
 
 warning[identical_operands]: both sides of `||` are `ok`
-  --> tests/lint/identical_operands/bad.jai:17:44
+  --> tests/lint/identical_operands/bad.jai:16:44
    |
-17 |     print("% % %\n", same(.{}, .{}), zero, ok || ok);
+16 |     print("% % %\n", same(.{}, .{}), zero, ok || ok);
    |                                            ^^^^^^^^
    |
    = help: the result is the operand itself; was one side meant to be something else?

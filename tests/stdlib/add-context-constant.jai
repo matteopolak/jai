@@ -29,14 +29,12 @@ main :: () {
     context.counter += #Context .LIMIT;
     assert(context.counter == 9);
     assert(context._hook() == 42);
-
     #if #run has_constant("_hook") {} else {
         assert(false);
     }
     #if #run has_constant("counter") {
         assert(false);
     }
-
     assert(has_constant("_hook") && has_constant("LIMIT"));
     assert(!has_constant("counter"));
     print("ok\n");

@@ -6,7 +6,6 @@ Iprof :: #import "Iprof";
 
 main :: () {
     plugin := Iprof.get_plugin();
-
     assert(plugin.message != null);
     assert(plugin.add_source != null);
     assert(plugin.handle_one_option != null);
@@ -14,7 +13,6 @@ main :: () {
 
     options: [] string = string.["-csv", "out.csv", "-min_size", "12", "-modules"];
     cursor := 0;
-
     while cursor < options.count {
         next := plugin.handle_one_option(plugin, options, cursor);
         assert(next > cursor);
@@ -22,7 +20,6 @@ main :: () {
     }
 
     flags: Intercept_Flags;
-
     plugin.before_intercept(plugin, *flags);
     plugin.shutdown(plugin);
     print("ok\n");

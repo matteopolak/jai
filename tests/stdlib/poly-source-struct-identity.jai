@@ -9,7 +9,6 @@ Box :: struct(Item: Type, N: int) {
 main :: () {
     a := type_info(Box(u8, 5)).polymorph_source_struct;
     b := type_info(Box(s64, 2)).polymorph_source_struct;
-
     assert(a != null && a == b, "instances share polymorph_source_struct");
     print("ok\n");
 }

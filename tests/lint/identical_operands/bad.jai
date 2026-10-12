@@ -13,6 +13,5 @@ main :: () {
     n := 5;
     zero := n - n;
     ok := n > 0;
-
     print("% % %\n", same(.{}, .{}), zero, ok || ok);
 }

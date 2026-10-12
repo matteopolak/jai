@@ -12,7 +12,6 @@ main :: () {
         assert(kCGNormalWindowLevel == CGWindowLevelForKey(.kCGNormalWindowLevelKey));
         assert(kCGBackstopMenuLevel == CGWindowLevelForKey(.kCGBackstopMenuLevelKey));
         assert(kCGAssistiveTechHighWindowLevel == CGWindowLevelForKey(.kCGAssistiveTechHighWindowLevelKey));
-
         // Levels documented as fixed: normal is 0, floating sits above it, the minimum below all.
         assert(kCGNormalWindowLevel == 0);
         assert(kCGFloatingWindowLevel > kCGNormalWindowLevel);

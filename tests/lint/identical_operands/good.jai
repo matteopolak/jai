@@ -15,6 +15,5 @@ main :: () {
     f := 0.5;
     is_nan := f != f; // the NaN test
     finite := f - f == 0;
-
     print("% % % %\n", same(.{}, .{}), is_nan, finite, N == N);
 }

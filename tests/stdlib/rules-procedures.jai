@@ -69,45 +69,35 @@ quiet :: (x: int) -> int #no_debug {
 main :: () {
     // proc.1: default and named arguments.
     v, c := named(1, c = "q");
-
     assert(v == 107 && c == "q", "named(1, c = q)");
     w := named(b = 1, a = 2);
-
     assert(w == 201, "named(b = 1, a = 2)");
-
     // proc.2: multiple return values.
     i, s := pair();
-
     assert(i == 4 && s == "four", "pair()");
-
     // proc.3: variadic arguments.
     assert(sum(1, 2, 3) == 6 && sum() == 0, "sum(..int)");
     assert(sum(..int.[4, 5]) == 9, "spread an array into a variadic");
 
     // proc.4: overloads chosen by argument types.
     assert(show(1) == "int" && show(2.5) == "float" && show("s") == "string", "overload by type");
-
     // proc.5: constant aliases join one overload set.
     assert(either(1) == 1 && either(1.0) == 2, "alias overload set");
 
     // proc.6: #caller_location is the call site.
     here := #line;
     at := caller_line();
-
     assert(at == here + 1, "caller location line"); // The call is on the line after `here`.
     assert(ends_with(caller_file(), "rules-procedures.jai"), "caller location file");
-
     // proc.7: #location(), #file and #line give their own position.
     loc := #location();
     line := #line;
-
     assert(loc.line_number + 1 == line, "#location() line");
     assert(ends_with(#file, "rules-procedures.jai"), "#file");
     assert(ends_with(loc.fully_pathed_filename, "rules-procedures.jai"), "#location() file");
 
     // proc.8: an expression passed to a plain Code parameter arrives as code.
     assert(PASSED_EXPRESSION == .BINARY_OPERATOR, "1 + 2 * 3 as code");
-
     // proc.9: a Code-valued argument passes its value, not an identifier.
     assert(PASSED_CODE == .BINARY_OPERATOR, "#code constant passes its value");
 

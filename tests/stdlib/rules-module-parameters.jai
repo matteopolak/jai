@@ -32,7 +32,6 @@ main :: () {
 
     // modparam.2: different first-list values make different instances.
     assert(One.bump() == 1 && Two.bump() == 1 && One.bump() == 2, "separate instances");
-
     // modparam.3: equal values share one instance.
     assert(Two_Again.bump() == 2, "equal arguments share an instance");
 
@@ -54,7 +53,6 @@ main :: () {
     assert(as_u16(Wide.WIDTH) == 2, "untyped argument converts to u16");
     small: u8 = Wide.WIDTH;
     half: float32 = Wide.WIDTH;
-
     assert(small == 2 && half == 2, "untyped argument converts to u8 and float32");
 
     // modparam.9: a typed argument keeps its type.

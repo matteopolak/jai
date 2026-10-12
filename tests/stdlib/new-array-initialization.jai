@@ -26,7 +26,6 @@ main :: () {
     for defaulted assert(it.a == 7 && it.b == -3);
 
     grow: [..] Plain;
-
     array_add(*grow, .{ a = 1, b = 2 });
     array_resize(*grow, 5);
     assert(grow.count == 5 && grow[0].b == 2);
@@ -35,7 +34,6 @@ main :: () {
     assert(grow.count == 2);
 
     with_defaults: [..] Defaulted;
-
     array_resize(*with_defaults, 3);
     for with_defaults assert(it.a == 7 && it.b == -3);
     print("ok\n");
