@@ -9,6 +9,7 @@
 - `Extensions/Io`: cooperative fibers on a per-thread scheduler (`io_run`, `spawn`, `yield`, `sleep`, `cancel`) with a bounded `Channel(T)`, `Wait_Group` and `Fiber_Mutex`. Fibers get guard-paged, pooled stacks and their own copy of the context and temporary storage. Not available on wasm.
 - The `fiber_init`, `fiber_switch` and `fiber_free` intrinsics switch stacks in native builds (x64 SysV and Win64, arm64) and under `jaic run`; wasm builds refuse them.
 - `Extensions/Json`: `to_json`, `from_json` and `parse_json` with encoders and decoders generated from your types at compile time, `@json(...)` attributes, exact integers, shortest round-trip floats, strict RFC 8259 parsing checked against JSONTestSuite, and SIMD string scanning.
+- `Extensions/Http`: a sans-IO HTTP/1.0 and 1.1 codec. Incremental request and response parsers for input in pieces of any size (Content-Length, chunked with trailers, read-until-close, HEAD/1xx/204/304 rules, `Expect: 100-continue`, keep-alive and pipelining) with strict RFC 9112 framing against request smuggling and limits that map to 400/413/414/431/501/505, writers for heads and chunked bodies that choose the framing, a `Date` cache, and SIMD line and field scanning. Checked against llhttp's fixtures, a smuggling table and chunking tests (`tools/http_conformance.py`).
 
 ## [0.14.1] - 2026-10-12
 
