@@ -3223,6 +3223,35 @@
         "stdout": "4 [0, 7, 0]\n6 [0, 7, 0]\n5 [0, 7, 0]\ntrue\n",
         "stderr": ""
       }
+    },
+    {
+      "id": "modify-poly-struct-type-info",
+      "source": "positive/modify-poly-struct-type-info.jai",
+      "sha256": "8e8d166ff16dd3199ba1478cea1b969c84b41bd2f82b62232081b4674901d80f",
+      "suite": "expanded",
+      "feature": "type_info of a bare generic struct in a #modify matches polymorph_source_struct",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "ab\ncd\ntrue\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "modify-poly-struct-type-info-reject",
+      "source": "negative/modify-poly-struct-type-info.jai",
+      "sha256": "06a52176f1a947ce2527a123c28913af0e1168752ccdd464037a33fc1a939d92",
+      "suite": "negative",
+      "feature": "a #modify comparing against a bare generic struct rejects other types",
+      "kind": "negative",
+      "target": "host",
+      "dependencies": [],
+      "negative": {
+        "check": "not a Static"
+      }
     }
   ]
 }
