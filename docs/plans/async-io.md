@@ -1,6 +1,6 @@
 # Async IO, HTTP and JSON plan
 
-Status: milestones 1 to 3 and 7 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation on io_uring, epoll, kqueue and Windows completion ports with IoRing, plus the file thread pool, see [io-engine](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
+Status: milestones 1 to 5 and 7 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation on io_uring, epoll, kqueue and Windows completion ports with IoRing, plus the file thread pool, see [io-engine](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
 
 ## Where we are
 
@@ -249,7 +249,7 @@ main :: () {
 - **Defaults:**
   - limits on header size, body size, requests per connection and idle/header/body timeouts;
   - `Date`/`Server` headers and keep-alive;
-  - h2c upgrade and prior knowledge for HTTP/2;
+  - HTTP/2 (h2 through ALPN, h2c upgrade and prior knowledge) once milestone 10 lands;
   - graceful shutdown on SIGINT/SIGTERM;
   - access logging off unless enabled.
 - **Middleware:** a procedure `(request: *Request, next: Next) -> Response`, for logging, CORS, compression and authentication.
@@ -265,7 +265,7 @@ response, err := send(.{ method = .PUT, url = url, headers = .[ .{ "X-Id", "7" }
 
 - **Connections:**
   - a per-thread connection pool with keep-alive;
-  - HTTP/1.1 and h2c, where h2c is chosen per origin;
+  - HTTP/1.1 now, HTTP/2 after milestone 10 (h2 through ALPN, or h2c per origin);
   - redirects (limited), timeouts and decompression.
 - **Errors:**
   - transport errors, such as connection refused or timeout, are kept separate from non-2xx statuses;
@@ -303,15 +303,15 @@ The client is what drives the server's integration tests. It runs in-process on 
 1. Atomics ordering and the `Io_Uring` bindings, with a raw nop/read/write test. **Done** ([atomics](../specs/stdlib/README.md), [Io_Uring](../specs/stdlib/README.md)).
 2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic run` first. This is the biggest risk, so it comes early. **Done** ([io-fibers](../specs/stdlib/README.md)).
 3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`. **Done**, with kqueue included ([io-engine](../specs/stdlib/README.md)); Linux backends are verified by type-checking locally and run in CI.
-4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3.
-5. The HTTP/1 codec, plus conformance. Also independent.
+4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3. **Done** ([json](../specs/stdlib/README.md)).
+5. The HTTP/1 codec, plus conformance. Also independent. **Done** ([http-codec](../specs/stdlib/README.md)).
 6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests.
 7. IOCP (kqueue is done) + IoRing, and the thread-pool backend. **Done** ([io-engine](../specs/stdlib/README.md)); the Windows backends are verified by type-checking for windows-x64 and windows-arm64 and run in CI, the file pool on macOS.
-8. HPACK, HTTP/2 and h2spec.
-9. Rebuild `File_Async` on `Io`, keeping its API.
+8. Rebuild `File_Async` on `Io`, keeping its API.
+9. **TLS:** a separate module under the HTTP layer. Our own TLS 1.3 (+1.2), or the system libraries (SChannel, Security.framework, OpenSSL), decided then. HTTPS for the server and client.
+10. HPACK, HTTP/2 and h2spec: h2 over TLS through ALPN, plus h2c. It waits for TLS because browsers only speak HTTP/2 over TLS.
 
 ## Later
 
-- **TLS:** a separate module after HTTP works over plain TCP. Our own TLS 1.3 (+1.2), or the system libraries, decided then.
 - **JSON tagged-union representations** and more serde attributes as needed.
 - **HTTP/3.**
