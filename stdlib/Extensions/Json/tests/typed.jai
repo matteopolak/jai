@@ -224,7 +224,7 @@ attributes :: () {
     check(error2.kind == .NONE && alias.created_at == "t", "alias");
     check(alias.role == .MEMBER, "default keeps the initializer");
 
-    unknown, error3 := from_json(User, "{\"id\":1,\"displayName\":\"B\",\"created\":\"t\",\"street\":\"s\",\"zip\":2,\"tags\":[],\"spent\":1,\"extra\":{\"deep\":[1,2]}}");
+    _, error3 := from_json(User, "{\"id\":1,\"displayName\":\"B\",\"created\":\"t\",\"street\":\"s\",\"zip\":2,\"tags\":[],\"spent\":1,\"extra\":{\"deep\":[1,2]}}");
 
     check(error3.kind == .NONE, "unknown fields are ignored");
 
@@ -276,7 +276,7 @@ attributes :: () {
     array_add(*skips.items, 1);
     check(to_json(skips) == "{\"only_out\":2,\"zero\":1,\"maybe\":5,\"flag\":true,\"items\":[1],\"visible\":4}", tprint("skip_serializing_if keeps non-empty values: %", to_json(skips)));
 
-    s2, error8 := from_json(Skips, "{\"both\":9,\"only_out\":9,\"only_in\":8,\"visible\":1}");
+    _, error8 := from_json(Skips, "{\"both\":9,\"only_out\":9,\"only_in\":8,\"visible\":1}");
 
     check(error8.kind == .MISSING_FIELD || error8.kind == .NONE, "skipped fields are not required");
 }
@@ -475,13 +475,20 @@ strings :: () {
 }
 
 main :: () {
-    types();
-    attributes();
-    rules();
-    errors();
-    values();
-    recursion();
-    strings();
+    // Every check runs on the scalar paths and again with the vector paths and the structural
+    // index forced on (even for tiny texts); the results must not differ.
+    for pass: 0..1 {
+        json_use_simd = pass == 1;
+        json_index_min_size = 0;
+
+        types();
+        attributes();
+        rules();
+        errors();
+        values();
+        recursion();
+        strings();
+    }
 
     assert(failures == 0);
     print("ok\n");

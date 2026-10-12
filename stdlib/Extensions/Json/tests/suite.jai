@@ -19,7 +19,7 @@ check :: (condition: bool, what: string) {
     failures += 1;
 }
 
-main :: () {
+run_suite :: () {
     accepted_y := 0;
     rejected_n := 0;
     accepted_i := 0;
@@ -52,7 +52,16 @@ main :: () {
         }
     }
 
-    print("y accepted %/95, n rejected %/188, i accepted %, i rejected %\n", accepted_y, rejected_n, accepted_i, rejected_i);
+    print("simd %: y accepted %/95, n rejected %/188, i accepted %, i rejected %\n", json_use_simd, accepted_y, rejected_n, accepted_i, rejected_i);
     check(accepted_y == 95 && rejected_n == 188 && accepted_i == 10 && rejected_i == 25, "case counts");
+}
+
+main :: () {
+    for pass: 0..1 {
+        json_use_simd = pass == 1;
+        json_index_min_size = 0;
+        run_suite();
+    }
+
     assert(failures == 0);
 }

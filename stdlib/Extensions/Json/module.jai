@@ -45,6 +45,22 @@ Json_Options :: struct {
     max_size := 1 << 30; // bytes of text
 }
 
+// Switches for the vector code paths, which give the same results as the scalar ones. Set
+// json_use_simd to false to force the scalar paths (the tests run both). A text of at least
+// json_index_min_size bytes gets a stage-1 structural index before it is parsed.
+json_use_simd := true;
+json_index_min_size := 256;
+
+// How the structural index fared since the program began, for tests and curiosity.
+Json_Index_Stats :: struct {
+    parsed: int; // texts decoded with an index
+    unindexable: int; // texts stage 1 declined (control characters in strings, bad UTF-8...)
+    sparse: int; // large texts whose strings are too short or too escaped for the index to pay
+    reparsed: int; // texts that failed with an index and were parsed again to get the error
+}
+
+json_index_stats: Json_Index_Stats;
+
 // `message at line 3, column 5 (tags[2])`
 json_error_text :: (error: Json_Error) -> string {
     if error.kind == .NONE return "no error";
@@ -82,31 +98,71 @@ write_json :: (builder: *String_Builder, value: $T, pretty := false) {
 // context.allocator; after a failure nothing is freed, so decode untrusted input under an
 // arena (push_allocator) if leaks matter.
 from_json :: ($T: Type, text: string, options := Json_Options.{}) -> T, Json_Error {
+    empty: T;
+
+    if text.count > options.max_size {
+        r: Json_Reader;
+
+        reader_init(*r, text, options);
+        json_fail_at(*r, .LIMIT, tprint("the input is larger than the limit of % bytes", options.max_size), 0);
+        defer reader_free(*r);
+
+        return empty, finish_error(*r);
+    }
+
+    if simd_enabled() && text.count >= json_index_min_size {
+        // The fast attempt. If it fails for any reason the text is parsed again without the
+        // index, so errors always come from the scalar reader.
+        index: [..] u32;
+
+        defer array_free(index);
+
+        sparse_before := json_index_stats.sparse;
+        indexed := build_index(text, *index);
+
+        if !indexed && json_index_stats.sparse == sparse_before json_index_stats.unindexable += 1;
+
+        if indexed {
+            r: Json_Reader;
+
+            reader_init(*r, text, options);
+            defer reader_free(*r);
+
+            r.index = index;
+            r.indexed = true;
+
+            result: T;
+
+            if decode_document(*r, *result) {
+                json_index_stats.parsed += 1;
+
+                return result, .{};
+            }
+
+            json_index_stats.reparsed += 1;
+        }
+    }
+
     r: Json_Reader;
 
     reader_init(*r, text, options);
     defer reader_free(*r);
 
-    empty: T;
     result: T;
 
-    if text.count > options.max_size {
-        json_fail_at(*r, .LIMIT, tprint("the input is larger than the limit of % bytes", options.max_size), 0);
-
-        return empty, finish_error(*r);
-    }
-
-    ok := json_decode(*r, *result);
-
-    if ok {
-        skip_whitespace(*r);
-
-        if r.pos < text.count ok = json_fail(*r, .SYNTAX, "unexpected data after the value");
-    }
-
-    if !ok return empty, finish_error(*r);
+    if !decode_document(*r, *result) return empty, finish_error(*r);
 
     return result, .{};
+}
+
+decode_document :: (r: *Json_Reader, out: *$T) -> bool {
+    if !json_decode(r, out) return false;
+
+    skip_whitespace(r);
+
+    if r.pos < r.text.count return json_fail(r, .SYNTAX, "unexpected data after the value");
+
+    return true;
 }
 
 // Parses `text` without a target type.
@@ -135,11 +191,18 @@ json_decode :: (r: *Json_Reader, out: *$T) -> bool {
 #load "number.jai";
 #load "writer.jai";
 #load "reader.jai";
+#load "index.jai";
 #load "generate.jai";
 
 #scope_module
+
+simd_enabled :: inline () -> bool {
+    #if OS == .WASM return false;
+    else return json_use_simd;
+}
 
 #import "Basic";
 #import "String";
 #import "Compiler";
 #import "Hash_Table";
+#import "Extensions/SIMD";

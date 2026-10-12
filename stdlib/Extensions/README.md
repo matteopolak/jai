@@ -8,6 +8,7 @@ their path, so the import says the code is jaic-only:
 | `#import "Extensions/Long_Double";` | C's `long double` in the target's format, for C functions that take or return one |
 | `#import "Extensions/Args";` | A typed command-line parser generated at compile time (clap-style: notes, subcommands, help, completions) |
 | `#import "Extensions/Regex";` | Regular expressions like Rust's `regex` crate: Unicode, linear time, and patterns compiled at compile time with typed groups |
+| `#import "Extensions/Json";` | Typed JSON like Rust's serde_json: encoders and decoders generated from your types at compile time, `@json` attributes, strict parsing |
 | `#import "Extensions/SIMD";` | Portable fixed-width vectors (`u8x16`, `f32x4`, ...) with masks, shuffles and table lookups, the same on every target |
 | `#import "Extensions/Byte_Search";` | Vectorized byte and substring search (`memchr`/`memmem`), linear time |
 | `#import "Extensions/Jai_Format";` | The Jai source formatter behind `jaifmt` (text in, text out) |

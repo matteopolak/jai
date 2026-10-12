@@ -163,8 +163,7 @@ read_options :: (notes: [] string) -> [..] Option {
 
         if !begins_with(note, "json(") || !ends_with(note, ")") continue;
 
-        body := slice(note, 5, note.count - 6);
-        rest := body;
+        rest := slice(note, 5, note.count - 6);
 
         while rest.count {
             found, piece, after := split_from_left(rest, #char ",");
@@ -660,6 +659,35 @@ skip_condition :: (g: *Gen, leaf: *Leaf, value: string) -> string {
     return "false";
 }
 
+// The condition that `key` equals `text`: a length test, then whole words compared against
+// constants built here, so no bytes are walked at run time. (Little-endian loads, which every
+// supported target uses.)
+key_match :: (text: string) -> string {
+    builder: String_Builder;
+
+    print(*builder, "key.count == %", text.count);
+
+    at := 0;
+
+    while at < text.count {
+        step := 1;
+
+        if text.count - at >= 8 step = 8;
+        else if text.count - at >= 4 step = 4;
+        else if text.count - at >= 2 step = 2;
+
+        word: u64 = 0;
+
+        for 0..step - 1 word |= (cast(u64) text[at + it]) << (8 * it);
+
+        print(*builder, " && json_load%(key.data + %) == %", step * 8, at, word);
+
+        at += step;
+    }
+
+    return builder_to_string(*builder,, temp);
+}
+
 generate_encoder :: (T: Type) -> string {
     g: Gen;
     info := type_info(T);
@@ -701,7 +729,13 @@ generate_encoder :: (T: Type) -> string {
         if leaf.skip_if.count print(*g.out, "if !(%) {\n", skip_condition(*g, leaf, value));
         else print(*g.out, "{\n");
 
-        print(*g.out, "json_key(w, *first, %);\n", json_literal(leaf.key));
+        // The separator, quotes and colon of compact output are one constant each.
+        quoted: String_Builder;
+
+        append_json_string(*quoted, leaf.key);
+        quoted_key := builder_to_string(*quoted,, temp);
+
+        print(*g.out, "json_key_fixed(w, *first, %, %, %);\n", jai_quote(quoted_key), jai_quote(tprint("%:", quoted_key)), jai_quote(tprint(",%:", quoted_key)));
         emit_leaf_encode(*g, leaf);
         print(*g.out, "}\n");
     }
@@ -957,8 +991,8 @@ generate_decoder :: (T: Type) -> string {
 
         g.field = leaf.member;
 
-        print(out, "%if key == % ", ifx chain then "else " else "", jai_quote(leaf.key));
-        for alias: leaf.aliases print(out, "|| key == % ", jai_quote(alias));
+        print(out, "%if % ", ifx chain then "else " else "", key_match(leaf.key));
+        for alias: leaf.aliases print(out, "|| (%) ", key_match(alias));
 
         print(out, "{\n");
         print(out, "if seen[%] { json_duplicate_field(r, key); return false; }\nseen[%] = true;\n", it_index, it_index);

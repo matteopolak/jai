@@ -61,8 +61,35 @@ append_json_string :: (builder: *String_Builder, text: string) {
 
     start := 0;
     i := 0;
+    scalar_until := 0;
 
     while i < text.count {
+        if simd_enabled() && i >= scalar_until {
+            // Sixteen bytes at a time while none needs attention: below 0x20, a quote, a
+            // backslash, or 0x80 and up (which may or may not be valid UTF-8). After a byte
+            // of 0x80 or more the next sixteen bytes are handled one by one, since text with
+            // many such bytes does not repay the vector tests.
+            while i + 16 <= text.count {
+                chunk := load(u8x16, text.data + i);
+                special := to_bits(lt(chunk, 0x20) | eq(chunk, #char "\"") | eq(chunk, #char "\\"));
+                high := to_bits(ge(chunk, 0x80));
+
+                if (special | high) == 0 {
+                    i += 16;
+
+                    continue;
+                }
+
+                i += trailing_zeros(special | high);
+
+                if high != 0 && trailing_zeros(high) < trailing_zeros(special) scalar_until = i + 16;
+
+                break;
+            }
+
+            if i >= text.count break;
+        }
+
         c := text[i];
         replacement := false;
         step := 1;
@@ -232,6 +259,20 @@ json_key :: (w: *Json_Writer, first: *bool, quoted_key: string) {
 
     append(w.builder, quoted_key);
     append(w.builder, ifx w.pretty then ": " else ":");
+}
+
+// json_key with the compact forms prebuilt at compile time: `first_form` is `"key":` and
+// `next_form` is `,"key":`, so compact output costs one append.
+json_key_fixed :: (w: *Json_Writer, first: *bool, quoted_key: string, first_form: string, next_form: string) {
+    if w.pretty {
+        json_key(w, first, quoted_key);
+
+        return;
+    }
+
+    append(w.builder, ifx first.* then first_form else next_form);
+
+    first.* = false;
 }
 
 // A member whose key is only known at run time (a Hash_Table's).

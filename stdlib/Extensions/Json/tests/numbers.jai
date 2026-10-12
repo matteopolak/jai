@@ -186,8 +186,7 @@ random_round_trips :: (count: int) {
         if !ok {
             bad += 1;
         } else {
-            printed := to_json(value);
-            trimmed := printed;
+            trimmed := to_json(value);
 
             while trimmed.count > 1 && trimmed[trimmed.count - 1] == #char "0" && trimmed[trimmed.count - 2] != #char "." trimmed.count -= 1;
 
@@ -244,14 +243,19 @@ integers :: () {
 }
 
 main :: () {
-    printing();
-    parsing();
-    integers();
+    for pass: 0..1 {
+        json_use_simd = pass == 1;
+        json_index_min_size = 0;
 
-    count := 20000;
+        printing();
+        parsing();
+        integers();
 
-    #if OS == .WASM count = 2000;
-    random_round_trips(count);
+        count := 20000;
+
+        #if OS == .WASM count = 2000;
+        random_round_trips(count);
+    }
 
     assert(failures == 0);
     print("ok\n");

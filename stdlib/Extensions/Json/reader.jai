@@ -22,6 +22,9 @@ Json_Reader :: struct {
     key_start: int; // where the key last returned by json_object_next begins
     path: [..] Path_Segment;
     scratch: [..] u8;
+    index: [] u32; // stage 1's structural index, when `indexed` (see index.jai)
+    ip: int; // the first index entry that may lie at or after `pos`
+    indexed: bool;
 }
 
 Object_Status :: enum u8 {
@@ -297,11 +300,56 @@ hex4 :: (text: string, at: int) -> int {
 // text between the quotes and whether it has escapes.
 scan_string :: (r: *Json_Reader) -> string, bool, bool {
     text := r.text;
+
+    if r.indexed {
+        // An opening quote followed by its closing quote: no escapes, and stage 1 has already
+        // checked the contents. A string with escapes is checked below.
+        ip := r.ip;
+        count := r.index.count;
+
+        while ip < count && cast(int) (r.index[ip] & POSITION_MASK) < r.pos ip += 1;
+
+        r.ip = ip;
+
+        if ip + 1 < count && r.index[ip] == cast(u32) r.pos {
+            next := r.index[ip + 1];
+
+            if (next & CLOSE_FLAG) != 0 && (next & BACKSLASH_FLAG) == 0 {
+                close := cast(int) (next & POSITION_MASK);
+                start := r.pos + 1;
+
+                r.pos = close + 1;
+                r.ip = ip + 2;
+
+                return slice(text, start, close - start), false, true;
+            }
+        }
+    }
+
     i := r.pos + 1;
     start := i;
     escaped := false;
+    scalar_until := 0;
 
     while true {
+        if simd_enabled() && i >= scalar_until && i + 16 <= text.count {
+            // Sixteen bytes at a time while all are plain ASCII; then the byte that needs a
+            // closer look, and the next sixteen bytes one by one (text with many bytes of 0x80
+            // and up does not repay the vector tests).
+            chunk := load(u8x16, text.data + i);
+            attention := to_bits(lt(chunk, 0x20) | eq(chunk, #char "\"") | eq(chunk, #char "\\") | ge(chunk, 0x80));
+
+            if attention == 0 {
+                i += 16;
+
+                continue;
+            }
+
+            i += trailing_zeros(attention);
+
+            if text[i] >= 0x80 scalar_until = i + 16;
+        }
+
         if i >= text.count {
             json_fail_at(r, .SYNTAX, "unterminated string", i);
 
@@ -393,6 +441,40 @@ scan_string :: (r: *Json_Reader) -> string, bool, bool {
     return slice(text, start, i - start), escaped, true;
 }
 
+// The first backslash at or after `from`, or raw.count.
+find_backslash :: (raw: string, from: int) -> int {
+    i := from;
+
+    // Escapes are often close together: look at the first few bytes before using vectors.
+    stop := from + 8;
+
+    if stop > raw.count stop = raw.count;
+
+    while i < stop {
+        if raw[i] == #char "\\" return i;
+
+        i += 1;
+    }
+
+    if simd_enabled() {
+        while i + 16 <= raw.count {
+            found := to_bits(eq(load(u8x16, raw.data + i), #char "\\"));
+
+            if found != 0 return i + trailing_zeros(found);
+
+            i += 16;
+        }
+    }
+
+    while i < raw.count {
+        if raw[i] == #char "\\" return i;
+
+        i += 1;
+    }
+
+    return raw.count;
+}
+
 append_utf8 :: (dest: *u8, code: int) -> int {
     if code < 0x80 {
         dest[0] = cast,no_check(u8) code;
@@ -430,6 +512,16 @@ unescape_into :: (raw: string, dest: *u8) -> int {
     i := 0;
 
     while i < raw.count {
+        next := find_backslash(raw, i);
+
+        if next > i {
+            memcpy(dest + out, raw.data + i, next - i);
+            out += next - i;
+            i = next;
+
+            if i >= raw.count break;
+        }
+
         c := raw[i];
 
         if c != #char "\\" {
@@ -933,4 +1025,21 @@ finish_error :: (r: *Json_Reader) -> Json_Error {
     error.path = builder_to_string(*builder);
 
     return error;
+}
+
+// Unaligned little-endian loads for the generated key matchers.
+json_load64 :: inline (p: *u8) -> u64 {
+    return (cast(*u64) p).*;
+}
+
+json_load32 :: inline (p: *u8) -> u64 {
+    return (cast(*u32) p).*;
+}
+
+json_load16 :: inline (p: *u8) -> u64 {
+    return (cast(*u16) p).*;
+}
+
+json_load8 :: inline (p: *u8) -> u64 {
+    return p.*;
 }
