@@ -186,12 +186,12 @@ shapes :: () {
     {
         push_allocator(tally_proc, *tally);
 
-        wrapped, error := from_json(Wrapped, "[{\"label\": \"a\", \"values\": [1]}, {\"label\": \"b\", \"values\": [x]}]");
+        _, error := from_json(Wrapped, "[{\"label\": \"a\", \"values\": [1]}, {\"label\": \"b\", \"values\": [x]}]");
 
         bad_wrapped = error.kind != .NONE;
         free_json_error(*error);
 
-        names, error2 := from_json([] string, "[\"a\", \"b\", 4]");
+        _, error2 := from_json([] string, "[\"a\", \"b\", 4]");
 
         bad_view = error2.kind != .NONE;
         free_json_error(*error2);
