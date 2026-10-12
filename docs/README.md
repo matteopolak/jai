@@ -103,6 +103,8 @@ The LLVM backend, C ABI and linking.
 - [Command_Line](specs/stdlib/README.md)
 - [Args: a compile-time-generated command-line parser (jaic extension)](specs/stdlib/README.md)
 - [Regex: regular expressions with compile-time typed patterns (jaic extension)](specs/stdlib/README.md)
+- [SIMD: portable fixed-width vectors (jaic extension)](specs/stdlib/README.md)
+- [Byte_Search: vectorized byte and substring search (jaic extension)](specs/stdlib/README.md)
 - [Compiler API, reflection and metaprogram support](specs/stdlib/README.md)
 - [Files, processes and OS services](specs/stdlib/README.md)
 - [GetRect](specs/stdlib/README.md)
