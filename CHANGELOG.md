@@ -11,6 +11,10 @@
 - `Extensions/Json`: `to_json`, `from_json` and `parse_json` with encoders and decoders generated from your types at compile time, `@json(...)` attributes, exact integers, shortest round-trip floats, strict RFC 8259 parsing checked against JSONTestSuite, and SIMD string scanning.
 - `Extensions/Http`: a sans-IO HTTP/1.0 and 1.1 codec. Incremental request and response parsers for input in pieces of any size (Content-Length, chunked with trailers, read-until-close, HEAD/1xx/204/304 rules, `Expect: 100-continue`, keep-alive and pipelining) with strict RFC 9112 framing against request smuggling and limits that map to 400/413/414/431/501/505, writers for heads and chunked bodies that choose the framing, a `Date` cache, and SIMD line and field scanning. Checked against llhttp's fixtures, a smuggling table and chunking tests (`tools/http_conformance.py`).
 
+### Fixes
+
+- `string_to_float64`, `string_to_float` and the Json float decoder are correctly rounded: about 1 in 600 random doubles used to parse one ulp off, and float32 results are now rounded once from the digits instead of through a float64. Json shares Basic's conversion; its own copy is gone.
+
 ## [0.14.1] - 2026-10-12
 
 ### Added

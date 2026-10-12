@@ -814,10 +814,7 @@ json_read_float64 :: (r: *Json_Reader, out: *float64) -> bool {
 
     if !ok return false;
 
-    decimal: Decimal;
-
-    decimal_parse(token, *decimal);
-    value, overflow := float64_from_decimal(*decimal);
+    value, overflow := float64_from_token(token);
 
     if overflow return json_fail_at(r, .OUT_OF_RANGE, tprint("number `%` is out of range for float64", token), start);
 
@@ -834,10 +831,7 @@ json_read_float32 :: (r: *Json_Reader, out: *float32) -> bool {
 
     if !ok return false;
 
-    decimal: Decimal;
-
-    decimal_parse(token, *decimal);
-    value, overflow := float32_from_decimal(*decimal);
+    value, overflow := float32_from_token(token);
 
     if overflow return json_fail_at(r, .OUT_OF_RANGE, tprint("number `%` is out of range for float32", token), start);
 

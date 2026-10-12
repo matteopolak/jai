@@ -189,12 +189,11 @@ json_as_u64 :: (value: *Json_Value) -> u64, bool {
 json_as_float64 :: (value: *Json_Value) -> float64, bool {
     if value.kind != .NUMBER return 0, false;
 
-    decimal: Decimal;
+    result, overflow := float64_from_token(value.text);
 
-    decimal_parse(value.text, *decimal);
-    result, overflow := float64_from_decimal(*decimal);
+    if overflow return 0, false;
 
-    return result, !overflow;
+    return result, true;
 }
 
 json_as_bool :: (value: *Json_Value) -> bool, bool {
