@@ -191,9 +191,8 @@ on a scratch copy with empty `Libs/Linux` placeholders, as on a Linux machine wh
 
 19.5 frees an advanced pointer and 27/foldera writes through null; both are upstream bugs. 10.4 reads freed memory, so its third line is not checked.
 
-**Metaprogramming libraries.** Sweep cases: match-jai `examples/first.jai`; yield-jai `constant`, `defer`, `first`, `if`, `if_case`, `while` (`expand` and `for` would need per-call `macro_expansion_block` export); AST_Utils `astTests.jai`; Jai-Shader-Transpiler `build.jai` (GLSL from `@glsl` procedures); jai-utils `closure.jai`; unotest. Checked by hand but not cases:
+**Metaprogramming libraries.** Sweep cases: match-jai `examples/first.jai`; yield-jai `constant`, `defer`, `first`, `if`, `if_case`, `while` (`expand` and `for` would need per-call `macro_expansion_block` export); AST_Utils `astTests.jai` and `examples/build.jai` (needs `FormatStruct.recursive_long_form_depth`, see [Basic](../specs/stdlib/README.md)); Jai-Shader-Transpiler `build.jai` (GLSL from `@glsl` procedures); jai-utils `closure.jai`; unotest. Checked by hand but not cases:
 
-- AST_Utils `examples/build.jai` sets `FormatStruct.recursive_long_form_depth`, which current Basic does not have, in a procedure of its own files, so it fails to check.
 - epic-fail is a `-plug` plugin ([metaprogram plugins](../metaprogramming/metaprogram-plugins.md)); its `assert` works when imported directly.
 - MetaThreadSafe's examples fail on purpose, with the same diagnostics; `compile_time_example` passes. It used to report the untaken `#if` branch of a baked instance: a call to a polymorphic procedure resolved to the generic header, and a static `#if` carried no evaluated flag. The call now resolves to the instance, whose body is reported with `EVALUATED_AS_TRUE` and `static_if_accepted_case` set (rules `records.30`, `records.31`). MetaThreadSafe is not pinned.
 - jai-control-flow uses `%%` as an escaped percent, which current Jai reads as two arguments; a corrected copy passes all its tests.
