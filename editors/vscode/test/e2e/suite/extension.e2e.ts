@@ -26,7 +26,7 @@ async function diagnostics(document: vscode.TextDocument, predicate: (d: vscode.
 
 // Runs a command again when VS Code cancels it, which it does when the document or the
 // server state changes while the request is in flight (e.g. right after opening a file).
-async function command<T>(name: string, ...args: unknown[]): Promise<T> {
+async function retrying<T>(name: string, ...args: unknown[]): Promise<T> {
   for (let attempt = 1; ; attempt++) {
     try {
       return await vscode.commands.executeCommand<T>(name, ...args);
@@ -75,7 +75,7 @@ describe("Jai extension", () => {
     const code = typeof lint.code === "object" ? lint.code.value : lint.code;
     assert.equal(code, "bool_comparison");
 
-    const actions = await command<vscode.CodeAction[]>(
+    const actions = await retrying<vscode.CodeAction[]>(
       "vscode.executeCodeActionProvider",
       document.uri,
       new vscode.Range(0, 0, document.lineCount, 0),
