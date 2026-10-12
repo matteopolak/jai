@@ -965,11 +965,16 @@ impl Interp {
     }
 
     /// Stop running code for good: every later call traps. Drops the procedures' frames (their
-    /// bodies were released) and the value stacks; nothing may be running.
+    /// bodies were released), the value stacks and the globals' memory (a global asked for
+    /// again is made anew); nothing may be running.
     pub fn release_code(&mut self) {
         self.closed = true;
         self.frames = Vec::new();
         self.retired = Vec::new();
+        self.globals = Vec::new();
+        self.ranges = BTreeMap::new();
+        self.ct_type_tables = Vec::new();
+        self.ct_type_table = (0, 0);
         self.stack = Box::default();
         self.sp = 0;
         #[cfg(not(target_arch = "wasm32"))]
