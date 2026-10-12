@@ -3175,6 +3175,38 @@
       "rules": [
         "modparam.11"
       ]
+    },
+    {
+      "id": "struct-insert-constants",
+      "source": "positive/struct-insert-constants.jai",
+      "sha256": "218c53bd9bbadf0b57823c083c2509ff47c211f5b49dd7ee1cc443d48e1cbdd8",
+      "suite": "expanded",
+      "feature": "constants declared by #insert in a struct body are visible to its members",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "{y}\n{b}\n4\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "macro-backtick-shadows-parameter",
+      "source": "positive/macro-backtick-shadows-parameter.jai",
+      "sha256": "a033a64c23ef9fde7776e723050a4cb120f538a2a42f0f33c38e074f95fe623a",
+      "suite": "expanded",
+      "feature": "a backtick declaration in a macro shadows the parameter of the same name",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "13\n13\n",
+        "stderr": ""
+      }
     }
   ]
 }

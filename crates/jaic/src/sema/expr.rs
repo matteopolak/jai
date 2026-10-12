@@ -672,6 +672,15 @@ impl Compiler {
         ids: &[EntityId],
         span: Span,
     ) -> Result<Operand> {
+        // A macro's backtick declaration reusing a parameter's name shadows the parameter: the
+        // newest local is the one the rest of the body means.
+        if ids.len() > 1
+            && ids
+                .iter()
+                .all(|&id| matches!(self.entity(id).kind, EntityKind::Local { .. }))
+        {
+            return self.entity_operand(f, scope, ids[ids.len() - 1], span);
+        }
         if ids.len() > 1 || self.entity_is_overloadable(ids[0]) {
             let mut procs = Vec::new();
             for &id in ids {

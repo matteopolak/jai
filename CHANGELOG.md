@@ -6,6 +6,11 @@
 
 - winget is no longer offered; install on Windows with `install.ps1` or the release zip.
 
+### Fixes
+
+- Constants that an `#insert` declares inside a struct body, polymorphic or not, are now visible to the members that follow.
+- An `#expand` macro can backtick-declare a name equal to one of its own parameters (`` `engine := engine; ``) without an internal error.
+
 ## [0.12.0] - 2026-10-11
 
 Projects built by a metaprogram, like Focus, now check, hover and go to definition through it, and the language server answers edits faster with much less memory.
