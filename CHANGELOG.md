@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Breaking changes
+
+- winget is no longer offered; install on Windows with `install.ps1` or the release zip.
+
 ## [0.12.0] - 2026-10-11
 
 Projects built by a metaprogram, like Focus, now check, hover and go to definition through it, and the language server answers edits faster with much less memory.
