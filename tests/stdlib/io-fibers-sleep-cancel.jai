@@ -4,12 +4,18 @@
 Io :: #import "Extensions/Io";
 
 wake_order: [..] int;
+// When each sleep was due, in the order the sleepers woke. A slow interpreter can take a while to
+// start ten fibers, so the order is checked against these, not against the delays alone.
+wake_deadlines: [..] Apollo_Time;
 group: Io.Wait_Group;
 
 sleeper :: (milliseconds: int) {
+    deadline := current_time_monotonic() + milliseconds_to_apollo(milliseconds);
     error := Io.sleep(milliseconds);
+
     assert(error == .NONE);
     array_add(*wake_order, milliseconds);
+    array_add(*wake_deadlines, deadline);
     Io.done(*group);
 }
 
@@ -33,9 +39,9 @@ test_sleep_order :: () {
     assert(elapsed >= 100, "everything ended after % ms", elapsed);
     assert(elapsed < 1500, "sleeping fibers overlap: % ms", elapsed);
 
-    for 1..wake_order.count - 1 {
-        if wake_order[it] < wake_order[it - 1] && wake_order[it] > 0 {
-            assert(false, "woke out of order: % after %", wake_order[it], wake_order[it - 1]);
+    for 1..wake_deadlines.count - 1 {
+        if wake_deadlines[it] < wake_deadlines[it - 1] {
+            assert(false, "woke out of order: % ms after % ms", wake_order[it], wake_order[it - 1]);
         }
     }
 
@@ -50,9 +56,12 @@ test_sleep_order :: () {
 equal_order: [..] int;
 
 equal_sleeper :: (index: int) {
+    deadline := current_time_monotonic() + milliseconds_to_apollo(25);
+
     Io.sleep(25);
     array_add(*equal_order, index);
-    array_add(*wake_order, 0);
+    array_add(*wake_order, 25);
+    array_add(*wake_deadlines, deadline);
     Io.done(*group);
 }
 
