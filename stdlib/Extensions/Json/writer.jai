@@ -54,6 +54,8 @@ utf8_sequence_length :: (text: string, at: int) -> int {
     return 0;
 }
 
+#scope_export
+
 // Appends `text` as a JSON string with its quotes. Control characters, quotes and backslashes
 // are escaped; bytes that are not valid UTF-8 become U+FFFD so the output is always valid JSON.
 append_json_string :: (builder: *String_Builder, text: string) {
@@ -147,6 +149,8 @@ append_json_string :: (builder: *String_Builder, text: string) {
 
     append(builder, #char "\"");
 }
+
+#scope_module
 
 #scope_export
 

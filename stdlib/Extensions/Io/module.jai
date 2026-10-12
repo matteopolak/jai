@@ -36,6 +36,7 @@
 #load "net.jai";
 #load "files.jai";
 #load "runtime.jai";
+#load "interrupt.jai";
 
 #scope_module
 #import "Basic";

@@ -217,6 +217,7 @@ json_decode :: (r: *Json_Reader, out: *$T) -> bool {
 #load "reader.jai";
 #load "index.jai";
 #load "generate.jai";
+#load "pairs.jai";
 
 #scope_module
 

@@ -130,6 +130,8 @@ Scheduler :: struct {
     engine: *Engine;
     // Helper threads and the pipe they wake the scheduler through (resolver.jai).
     waker: *Wake_State;
+    // What libraries keep per scheduler (`scheduler_local`), dropped when the scheduler ends.
+    locals: [..] Local_Entry;
     // The alternate signal stack the stack overflow report runs on (overflow.jai).
     #if OS != .WINDOWS {
         alt_memory: *void;
@@ -573,6 +575,7 @@ run_scheduler :: (block: Spawn_Block) {
 
     schedule(scheduler);
 
+    drop_locals(scheduler);
     engine_stop(scheduler);
     unguard_overflow(scheduler);
 
@@ -585,6 +588,7 @@ run_scheduler :: (block: Spawn_Block) {
     }
 
     array_reset(*scheduler.timers);
+    array_reset(*scheduler.locals);
     free(scheduler);
 }
 

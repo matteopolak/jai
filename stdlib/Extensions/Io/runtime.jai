@@ -175,3 +175,75 @@ run_threads :: (count: s64, entry: Thread.Native_Thread_Proc, data: *void) {
 
     for 0..started - 1 Thread.thread_deinit(*threads[it]);
 }
+
+// ---------------------------------------------------------------------------------------------
+// Per-scheduler storage for libraries
+
+#scope_export
+
+// What `set_scheduler_local` is given to release a value when its scheduler ends. It runs on the
+// scheduler's thread after every fiber has ended, so it must not block: close sockets with
+// `close_now`.
+Local_Drop :: #type (value: *void);
+
+Local_Entry :: struct {
+    key: *void;
+    value: *void;
+    drop: Local_Drop;
+}
+
+// The value a library stored for `key` on the running scheduler, or null. Keys are addresses of
+// something the library owns (a global works). This is the per-thread variable the language does
+// not have: the Http client keeps its connection pool here.
+scheduler_local :: (key: *void) -> *void {
+    scheduler := current_scheduler();
+
+    for scheduler.locals if it.key == key return it.value;
+
+    return null;
+}
+
+// Stores `value` for `key` on the running scheduler; `drop` (if not null) gets it when the
+// scheduler ends. Replaces an earlier value for the key without dropping it.
+set_scheduler_local :: (key: *void, value: *void, drop: Local_Drop) {
+    scheduler := current_scheduler();
+
+    for *scheduler.locals {
+        if it.key == key {
+            it.value = value;
+            it.drop = drop;
+
+            return;
+        }
+    }
+
+    array_add(*scheduler.locals, Local_Entry.{ key, value, drop });
+}
+
+// Closes `stream` at once, without waiting, for code that cannot block: a `Local_Drop`, or a
+// fiber that must not give up its turn. Fibers still waiting on the stream are not woken, so use
+// `close` unless the scheduler is ending.
+close_now :: (stream: Tcp_Stream) {
+    scheduler := context.io_scheduler;
+    engine := scheduler.engine;
+
+    if engine.backend == .EPOLL || engine.backend == .KQUEUE poll_close(scheduler, engine, stream.handle.fd);
+
+    sys_close(stream.handle.fd);
+}
+
+#scope_module
+
+drop_locals :: (scheduler: *Scheduler) {
+    previous := context.io_scheduler;
+    context.io_scheduler = scheduler;
+
+    defer context.io_scheduler = previous;
+
+    while scheduler.locals.count > 0 {
+        entry := scheduler.locals[scheduler.locals.count - 1];
+        scheduler.locals.count -= 1;
+
+        if entry.drop entry.drop(entry.value);
+    }
+}
