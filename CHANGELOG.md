@@ -10,6 +10,7 @@
 
 - Constants that an `#insert` declares inside a struct body, polymorphic or not, are now visible to the members that follow.
 - An `#expand` macro can backtick-declare a name equal to one of its own parameters (`` `engine := engine; ``) without an internal error.
+- The address of a `#run` struct constant is now static and stable, so returning it from a procedure no longer yields a dangling pointer.
 
 ## [0.12.0] - 2026-10-11
 

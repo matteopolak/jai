@@ -3207,6 +3207,22 @@
         "stdout": "13\n13\n",
         "stderr": ""
       }
+    },
+    {
+      "id": "run-constant-address",
+      "source": "positive/run-constant-address.jai",
+      "sha256": "86521b8ab5428a8272f2af3db3c202e9835624a72da2f2fd18d772ac0c2261c5",
+      "suite": "expanded",
+      "feature": "the address of a #run struct constant is static and stable",
+      "kind": "program",
+      "target": "host",
+      "dependencies": [],
+      "host_build_reviewed": true,
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "4 [0, 7, 0]\n6 [0, 7, 0]\n5 [0, 7, 0]\ntrue\n",
+        "stderr": ""
+      }
     }
   ]
 }
