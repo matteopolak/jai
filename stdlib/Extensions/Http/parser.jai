@@ -399,8 +399,7 @@ collect_line :: (p: *Parser, data: [] u8, pos: *int, bytes: *[..] u8, line_start
     if newline >= 0 end = newline + 1;
 
     n := end - i;
-    pending := bytes.count - line_start + n;
-    content := pending;
+    content := bytes.count - line_start + n;
 
     if newline >= 0 content -= 2; // the CRLF
     else content -= 1; // a CR may be waiting for its LF
@@ -696,16 +695,14 @@ check_target_form :: (p: *Parser) -> bool {
 
         colon := -1;
 
-        for 0..target.count - 1 {
-            c := target[it];
-
+        for c: target {
             if c == #char "/" || c == #char "?" || c == #char "@" {
                 form = .NONE;
 
                 break;
             }
 
-            if c == #char ":" colon = it;
+            if c == #char ":" colon = it_index;
         }
 
         port := target.count - colon - 1;
@@ -713,8 +710,8 @@ check_target_form :: (p: *Parser) -> bool {
         if form == .AUTHORITY && (colon < 1 || port < 1 || port > 5) form = .NONE;
 
         if form == .AUTHORITY {
-            for colon + 1..target.count - 1 {
-                if !is_digit(target[it]) form = .NONE;
+            for slice(target, colon + 1, port) {
+                if !is_digit(it) form = .NONE;
             }
         }
     } else if target[0] == #char "/" {
@@ -818,9 +815,7 @@ parse_content_length :: (value: string) -> s64, bool {
 
     result: s64;
 
-    for 0..value.count - 1 {
-        c := value[it];
-
+    for c: value {
         if !is_digit(c) return 0, false;
 
         digit := cast(s64) (c - #char "0");
@@ -1073,8 +1068,8 @@ scan_transfer_encoding :: (value: string, chunked: *bool, other: *bool) -> bool 
 
         if item.count == 0 return false;
 
-        for 0..item.count - 1 {
-            if !is_token_char(item[it]) return false;
+        for item {
+            if !is_token_char(it) return false;
         }
 
         if chunked.* return false; // something follows chunked
@@ -1090,9 +1085,7 @@ scan_transfer_encoding :: (value: string, chunked: *bool, other: *bool) -> bool 
 
 // A Host value may not hold blanks, userinfo or path separators.
 host_value_ok :: (value: string) -> bool {
-    for 0..value.count - 1 {
-        c := value[it];
-
+    for c: value {
         if c == #char " " || c == 9 || c == #char "@" || c == #char "/" || c == #char "\\" || c == #char "," return false;
     }
 

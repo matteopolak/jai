@@ -26,7 +26,7 @@ mutate :: (input: string) -> string {
 
     defer array_reset(*bytes);
 
-    for 0..input.count - 1 array_add(*bytes, input[it]);
+    for input array_add(*bytes, it);
 
     if bytes.count == 0 return input;
 

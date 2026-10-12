@@ -239,8 +239,8 @@ HEADER_TABLE_SIZE :: 256;
 header_hash :: inline (name: string) -> int {
     hash: u32 = 2166136261;
 
-    for 0..name.count - 1 {
-        hash = (hash ^ lower(name[it])) * 16777619;
+    for name {
+        hash = (hash ^ lower(it)) * 16777619;
     }
 
     return cast(int) (hash & (HEADER_TABLE_SIZE - 1));

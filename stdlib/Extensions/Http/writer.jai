@@ -85,8 +85,8 @@ write_request_head :: (out: *[..] u8, method: string, target: string, headers: [
 
     valid := method.count > 0 && target.count > 0 && find_bad_target_byte(target.data, 0, target.count) < 0;
 
-    for 0..method.count - 1 {
-        if !is_token_char(method[it]) valid = false;
+    for method {
+        if !is_token_char(it) valid = false;
     }
 
     if valid valid = fields_ok(headers);
@@ -324,8 +324,8 @@ fields_ok :: (headers: [] Header) -> bool {
     for header: headers {
         if header.name.count == 0 return false;
 
-        for i: 0..header.name.count - 1 {
-            if !is_token_char(header.name[i]) return false;
+        for header.name {
+            if !is_token_char(it) return false;
         }
 
         if find_bad_value_byte(header.value.data, 0, header.value.count) >= 0 return false;

@@ -473,7 +473,7 @@ test_writers :: () {
 }
 
 write_chunk_free_body :: (out: *[..] u8, body: string) {
-    for 0..body.count - 1 array_add(out, body[it]);
+    for body array_add(out, it);
 }
 
 test_dates :: () {
@@ -528,20 +528,20 @@ test_names :: () {
 
     check(info.names.count == HEADER_NAME_COUNT, "the name table and the enum have the same size");
 
-    for 1..HEADER_NAME_COUNT - 1 {
-        name := header_name_string(cast(Header_Name) it);
+    for id: 1..HEADER_NAME_COUNT - 1 {
+        name := header_name_string(cast(Header_Name) id);
 
-        check(lookup_header_name(name) == cast(Header_Name) it, tprint("lookup of %", name));
-        check(lookup_header_name(to_lower_copy(name)) == cast(Header_Name) it, tprint("lowercase lookup of %", name));
-        check(lookup_header_name(to_upper_copy(name)) == cast(Header_Name) it, tprint("uppercase lookup of %", name));
+        check(lookup_header_name(name) == cast(Header_Name) id, tprint("lookup of %", name));
+        check(lookup_header_name(to_lower_copy(name)) == cast(Header_Name) id, tprint("lowercase lookup of %", name));
+        check(lookup_header_name(to_upper_copy(name)) == cast(Header_Name) id, tprint("uppercase lookup of %", name));
 
         upper := to_upper_copy(name);
 
-        for 0..upper.count - 1 {
-            if upper[it] == #char "-" upper[it] = #char "_";
+        for *upper {
+            if it.* == #char "-" it.* = #char "_";
         }
 
-        check(info.names[it] == upper, tprint("enum member for %: % vs %", name, info.names[it], upper));
+        check(info.names[id] == upper, tprint("enum member for %: % vs %", name, info.names[id], upper));
     }
 
     check(lookup_header_name("X-Unknown") == .UNKNOWN && lookup_header_name("") == .UNKNOWN && lookup_header_name("Hos") == .UNKNOWN, "unknown names");

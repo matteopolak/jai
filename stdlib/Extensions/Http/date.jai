@@ -94,7 +94,7 @@ http_date :: (cache: *Date_Cache, seconds: s64) -> string {
 
 // The date for the current time (see http_date).
 http_date_now :: (cache: *Date_Cache) -> string {
-    seconds, ok := to_seconds(current_time_consensus() - APOLLO_TIME_FOR_JAN_1_1970);
+    seconds := to_seconds(current_time_consensus() - APOLLO_TIME_FOR_JAN_1_1970);
 
     return http_date(cache, seconds);
 }
