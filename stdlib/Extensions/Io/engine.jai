@@ -148,10 +148,11 @@ engine_stop :: (scheduler: *Scheduler) {
     engine := scheduler.engine;
     if !engine return;
 
+    // Lookups still under way finish first: they need the engine to be woken.
+    wake_stop(scheduler);
+
     if engine.backend == .IO_URING uring_stop(engine);
     else if engine.poll_fd >= 0 sys_close(engine.poll_fd);
-
-    wake_stop(scheduler);
 
     array_reset(*engine.fds);
     array_reset(*engine.changes);

@@ -10,6 +10,7 @@
 - The `fiber_init`, `fiber_switch` and `fiber_free` intrinsics switch stacks in native builds (x64 SysV and Win64, arm64) and under `jaic run`; wasm builds refuse them.
 - `Extensions/Json`: `to_json`, `from_json` and `parse_json` with encoders and decoders generated from your types at compile time, `@json(...)` attributes, exact integers, shortest round-trip floats, strict RFC 8259 parsing checked against JSONTestSuite, and SIMD string scanning.
 - `Extensions/Http`: a sans-IO HTTP/1.0 and 1.1 codec. Incremental request and response parsers for input in pieces of any size (Content-Length, chunked with trailers, read-until-close, HEAD/1xx/204/304 rules, `Expect: 100-continue`, keep-alive and pipelining) with strict RFC 9112 framing against request smuggling and limits that map to 400/413/414/431/501/505, writers for heads and chunked bodies that choose the framing, a `Date` cache, and SIMD line and field scanning. Checked against llhttp's fixtures, a smuggling table and chunking tests (`tools/http_conformance.py`).
+- `Extensions/Io` IO: a completion engine with io_uring (Linux 6.1+, with graceful fallback), epoll and kqueue backends (`JAI_IO_BACKEND` forces one), and fiber `tcp_listen`/`accept`/`connect`/`read`/`write`/`close`, file open/read/write, `resolve` on helper threads, `with_deadline`, IO-aware `cancel`, a portable `Io_Error` with `last_platform_code()`, and `io_run_threads` with `SO_REUSEPORT` listeners. Windows keeps fibers; its IO calls return `.UNSUPPORTED` for now.
 
 ### Fixes
 

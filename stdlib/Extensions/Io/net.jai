@@ -58,16 +58,16 @@ parse_address :: (text: string) -> Address, bool {
 
     colons := 0;
 
-    for 0..text.count - 1 {
-        if text[it] == #char ":" colons += 1;
+    for text {
+        if it == #char ":" colons += 1;
     }
 
     if text.count > 0 && text[0] == #char "[" {
         end := -1;
 
-        for 0..text.count - 1 {
-            if text[it] == #char "]" {
-                end = it;
+        for text {
+            if it == #char "]" {
+                end = it_index;
                 break;
             }
         }
@@ -84,10 +84,10 @@ parse_address :: (text: string) -> Address, bool {
             has_port = true;
         }
     } else if colons == 1 {
-        for 0..text.count - 1 {
-            if text[it] == #char ":" {
-                host = string.{ it, text.data };
-                port_text = string.{ text.count - it - 1, text.data + it + 1 };
+        for text {
+            if it == #char ":" {
+                host = string.{ it_index, text.data };
+                port_text = string.{ text.count - it_index - 1, text.data + it_index + 1 };
                 has_port = true;
             }
         }
@@ -301,8 +301,8 @@ connect :: (host: string, port: u16) -> Tcp_Stream, Io_Error {
 connect :: (target: string) -> Tcp_Stream, Io_Error {
     split := -1;
 
-    for 0..target.count - 1 {
-        if target[it] == #char ":" split = it;
+    for target {
+        if it == #char ":" split = it_index;
     }
 
     if split < 0 return .{}, .INVALID;
@@ -462,8 +462,8 @@ parse_decimal :: (text: string, limit: s64) -> s64, bool {
 
     value := 0;
 
-    for 0..text.count - 1 {
-        digit := text[it];
+    for text {
+        digit := it;
         if digit < #char "0" || digit > #char "9" return 0, false;
 
         value = value * 10 + (digit - #char "0");
@@ -478,8 +478,8 @@ parse_ipv4 :: (text: string, bytes: *[16] u8) -> bool {
     digits := 0;
     value := 0;
 
-    for 0..text.count - 1 {
-        c := text[it];
+    for text {
+        c := it;
 
         if c == #char "." {
             if digits == 0 || part >= 3 return false;
@@ -507,7 +507,7 @@ parse_ipv4 :: (text: string, bytes: *[16] u8) -> bool {
 
 join_bytes :: (high: u8, low: u8) -> u16 {
     value: u16 = high;
-    value = value << 8;
+    value <<= 8;
 
     return value | low;
 }
@@ -566,8 +566,8 @@ parse_ipv6 :: (text: string, bytes: *[16] u8) -> bool {
 
         value := 0;
 
-        for 0..token.count - 1 {
-            digit := hex_value(token[it]);
+        for token {
+            digit := hex_value(it);
             if digit < 0 return false;
 
             value = value * 16 + digit;

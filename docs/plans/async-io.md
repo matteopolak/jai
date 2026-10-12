@@ -1,6 +1,6 @@
 # Async IO, HTTP and JSON plan
 
-Status: agreed design, nothing built yet.
+Status: milestones 1 to 3 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation, see [io-engine](../specs/stdlib/README.md)). The kqueue backend was pulled forward from milestone 7. Windows IO is still to come.
 
 ## Where we are
 
@@ -301,12 +301,12 @@ The client is what drives the server's integration tests. It runs in-process on 
 ## Milestones
 
 1. Atomics ordering and the `Io_Uring` bindings, with a raw nop/read/write test. **Done** ([atomics](../specs/stdlib/README.md), [Io_Uring](../specs/stdlib/README.md)).
-2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic run` first. This is the biggest risk, so it comes early.
-3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`.
+2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic run` first. This is the biggest risk, so it comes early. **Done** ([io-fibers](../specs/stdlib/README.md)).
+3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`. **Done**, with kqueue included ([io-engine](../specs/stdlib/README.md)); Linux backends are verified by type-checking locally and run in CI.
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3.
 5. The HTTP/1 codec, plus conformance. Also independent.
 6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests.
-7. kqueue, IOCP + IoRing, and the thread-pool backend.
+7. IOCP (kqueue is done) + IoRing, and the thread-pool backend.
 8. HPACK, HTTP/2 and h2spec.
 9. Rebuild `File_Async` on `Io`, keeping its API.
 

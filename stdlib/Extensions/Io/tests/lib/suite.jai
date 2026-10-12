@@ -383,7 +383,7 @@ test_connection_refused :: () {
 
     assert(Io.close(listener) == .NONE);
 
-    conn, connect_error := Io.connect(address);
+    _, connect_error := Io.connect(address);
 
     assert(connect_error == .CONNECTION_REFUSED, "connect to a closed port gave %", connect_error);
 
@@ -400,7 +400,7 @@ test_address_in_use :: () {
 
     address, _ := Io.local_address(first);
 
-    second, second_error := Io.tcp_listen(address);
+    _, second_error := Io.tcp_listen(address);
 
     assert(second_error == .ADDRESS_IN_USE, "second listen gave %", second_error);
 
@@ -739,6 +739,9 @@ test_cancel_read :: () {
     Io.close(pair.listener);
 }
 
+// More than the kernel will buffer for a peer that never reads (Linux loopback takes about 10 MB).
+UNREAD_BYTES :: 64 * 1024 * 1024;
+
 Writer_Job :: struct {
     stream: Io.Tcp_Stream;
     written: *int;
@@ -749,7 +752,7 @@ Writer_Job :: struct {
 write_until_canceled :: (job: Writer_Job) {
     defer Io.done(job.group);
 
-    data := NewArray(8 * 1024 * 1024, u8, false);
+    data := NewArray(UNREAD_BYTES, u8, false);
     defer free(data.data);
 
     job.written.*, job.result.* = Io.write(job.stream, data);
@@ -774,7 +777,7 @@ test_cancel_write :: () {
     Io.wait(*group);
 
     assert(result == .CANCELED, "write after cancel gave %", result);
-    assert(written > 0 && written < 8 * 1024 * 1024, "wrote %", written);
+    assert(written > 0 && written < UNREAD_BYTES, "wrote %", written);
 
     // The bytes that did go out arrive intact.
     total := 0;
@@ -831,6 +834,22 @@ test_cancel_resolve :: () {
     });
 
     assert(error == .TIMED_OUT, "resolve past the deadline gave %", error);
+}
+
+// A scheduler that ends right after a lookup was given up: it waits for the helper's answer before
+// it releases the engine, so the late answer cannot touch freed memory.
+test_run_ends_with_lookup_under_way :: () {
+    group: Io.Wait_Group;
+    result := Io.Io_Error.NONE;
+
+    Io.add(*group);
+    handle := Io.spawn(resolving_fiber, Resolve_Cancel.{ *result, *group });
+
+    Io.yield();
+    Io.cancel(handle);
+    Io.wait(*group);
+
+    assert(result == .CANCELED);
 }
 
 acceptor_started: bool;
@@ -1140,7 +1159,7 @@ file_fiber :: (job: File_Job) {
 
     defer free(data.data);
 
-    for 0..data.count - 1 data[it] = pattern(job.index, 0, it);
+    for *data it.* = pattern(job.index, 0, it_index);
 
     if Io.write_file(path, data) != .NONE {
         job.failures.* += 1;
@@ -1237,6 +1256,7 @@ run_all :: () {
 // Runs `group` on a new scheduler and the checks that need the scheduler to be over.
 run_group :: (group: () -> ()) {
     Io.io_run(group);
+    Io.io_run(test_run_ends_with_lookup_under_way);
 
     if acceptor_started {
         assert(acceptor_finished, "the blocked accept never returned");

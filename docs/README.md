@@ -103,6 +103,7 @@ The clean-room `stdlib/`. Contributors must not read the source of an official J
 - [Bindings_Generator](specs/stdlib/README.md)
 - [Stdlib extensions: jaic-only modules in `stdlib/Extensions/`](specs/stdlib/README.md)
 - [Io: fibers, scheduler, channels (jaic extension)](specs/stdlib/README.md)
+- [Io engine: TCP, files, deadlines, io_uring/epoll/kqueue backends (jaic extension)](specs/stdlib/README.md)
 - [Io_Uring: raw io_uring bindings generated from the kernel header, and ring helpers (jaic extension, Linux)](specs/stdlib/README.md)
 - [Command_Line](specs/stdlib/README.md)
 - [Args: a compile-time-generated command-line parser (jaic extension)](specs/stdlib/README.md)
