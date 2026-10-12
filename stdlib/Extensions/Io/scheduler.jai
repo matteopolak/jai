@@ -6,13 +6,41 @@
 // channel's wait list, ...), `park` it, and report what woke it. `wake` makes a parked fiber ready
 // again, `cancel` wakes it with `.CANCELED`.
 
-// Why a blocking call returned early.
+// Why a blocking call returned early or failed. `platform_code()` gives the system's own error
+// number for the last failure of the running fiber, which is how `OTHER` stays useful.
 Io_Error :: enum u8 {
     NONE;
     // `cancel` was called for this fiber, now or earlier.
     CANCELED;
-    // The channel was closed (and, for a receive, is empty).
+    // The channel was closed (and, for a receive, is empty), or the handle was closed while the
+    // fiber waited on it.
     CLOSED;
+    // The `with_deadline` limit passed.
+    TIMED_OUT;
+    // `read_full` hit the end of the stream before it had everything.
+    END_OF_FILE;
+    CONNECTION_RESET;
+    CONNECTION_REFUSED;
+    CONNECTION_ABORTED;
+    BROKEN_PIPE;
+    NOT_CONNECTED;
+    ADDRESS_IN_USE;
+    ADDRESS_UNAVAILABLE;
+    NETWORK_UNREACHABLE;
+    HOST_UNREACHABLE;
+    NOT_FOUND;
+    ALREADY_EXISTS;
+    PERMISSION_DENIED;
+    INVALID;
+    NO_SPACE;
+    TOO_MANY_OPEN_FILES;
+    IS_A_DIRECTORY;
+    // This system has no implementation yet (IO on Windows), or the operation does not apply.
+    UNSUPPORTED;
+    // The name could not be resolved.
+    RESOLVE_FAILED;
+    // Anything else; see `platform_code()`.
+    OTHER;
 }
 
 Spawn_Entry :: #type (data: *void);
@@ -52,6 +80,13 @@ Fiber :: struct {
     // What the fiber is queued on while it is blocked, to take it off again when it is canceled.
     waiter: *Waiter;
     timer_slot: s64 = -1;
+    // The engine operation this fiber is blocked in, and the name lookup, if any.
+    op: *Op;
+    job: *Resolve_Job;
+    // Absolute `now_nanoseconds()` limit for every IO call (0: none), set by `with_deadline`.
+    deadline: s64;
+    // The system's error number behind the last failed IO call.
+    platform_code: s32;
     fiber_context: #Context;
     temporary_storage: Temporary_Storage;
     temporary_ready: bool;
@@ -89,9 +124,12 @@ Scheduler :: struct {
     root_done: bool;
     draining: bool;
     switches: u64;
-    // Operations the completion engine has in flight; a scheduler with none, no timers and
-    // nothing ready has nothing left to wait for.
+    // Operations the completion engine has in flight, and name lookups under way; a scheduler
+    // with none, no timers and nothing ready has nothing left to wait for.
     pending: s64;
+    engine: *Engine;
+    // Helper threads and the pipe they wake the scheduler through (resolver.jai).
+    waker: *Wake_State;
     // The alternate signal stack the stack overflow report runs on (overflow.jai).
     #if OS != .WINDOWS {
         alt_memory: *void;
@@ -134,15 +172,24 @@ yield :: () -> Io_Error {
     return ifx fiber.canceled then Io_Error.CANCELED else .NONE;
 }
 
-// Blocks this fiber, not the thread, for at least `milliseconds`.
+// Blocks this fiber, not the thread, for at least `milliseconds`. Ends early with `.TIMED_OUT`
+// when a `with_deadline` limit comes first.
 sleep :: (milliseconds: s64) -> Io_Error {
     fiber, scheduler := current_fiber();
     if fiber.canceled return .CANCELED;
     if milliseconds <= 0 return yield();
 
-    timer_add(scheduler, fiber, now_nanoseconds() + milliseconds * 1_000_000);
+    end := now_nanoseconds() + milliseconds * 1_000_000;
+    limited := fiber.deadline != 0 && fiber.deadline <= end;
 
-    return park(scheduler, fiber);
+    if limited end = fiber.deadline;
+
+    timer_add(scheduler, fiber, end);
+
+    error := park(scheduler, fiber);
+    if error == .NONE && limited return .TIMED_OUT;
+
+    return error;
 }
 
 // Makes the blocking calls of `fiber` return `.CANCELED`, now and from now on. The call it is
@@ -267,6 +314,10 @@ start_fiber :: (scheduler: *Scheduler, block: Spawn_Block) -> Fiber_Handle {
     fiber.wake_reason = .NONE;
     fiber.waiter = null;
     fiber.timer_slot = -1;
+    fiber.op = null;
+    fiber.job = null;
+    fiber.deadline = 0;
+    fiber.platform_code = 0;
     fiber.entry = block.entry;
     fiber.data = block.data;
 
@@ -374,6 +425,8 @@ park :: (scheduler: *Scheduler, fiber: *Fiber) -> Io_Error {
 wake :: (fiber: *Fiber, reason := Io_Error.NONE) {
     assert(fiber.state == .BLOCKED, "Io: woke a fiber that is not blocked");
 
+    if fiber.timer_slot >= 0 timer_remove(fiber.scheduler, fiber.timer_slot);
+
     fiber.wake_reason = reason;
     fiber.state = .READY;
     push_ready(fiber.scheduler, fiber);
@@ -384,6 +437,21 @@ cancel_fiber :: (fiber: *Fiber) {
 
     fiber.canceled = true;
     if fiber.state != .BLOCKED return;
+
+    // An operation in the engine owns its buffer until it completes, so the fiber stays blocked
+    // until the engine reports the canceled operation (see `cancel_op`).
+    if fiber.op {
+        cancel_op(fiber, .CANCELED);
+
+        return;
+    }
+
+    if fiber.job {
+        abandon_job(fiber);
+        wake(fiber, .CANCELED);
+
+        return;
+    }
 
     if fiber.waiter {
         waiter_unlink(fiber.waiter);
@@ -469,8 +537,18 @@ fire_timers :: (scheduler: *Scheduler) {
     now := now_nanoseconds();
     while scheduler.timers.count > 0 && scheduler.timers[0].deadline <= now {
         fiber := scheduler.timers[0].fiber;
+
         timer_remove(scheduler, 0);
-        wake(fiber);
+
+        // A limit that passes while the fiber waits for the engine or a lookup ends that call only.
+        if fiber.op {
+            cancel_op(fiber, .TIMED_OUT);
+        } else if fiber.job {
+            abandon_job(fiber);
+            wake(fiber, .TIMED_OUT);
+        } else {
+            wake(fiber);
+        }
     }
 }
 
@@ -487,6 +565,7 @@ run_scheduler :: (block: Spawn_Block) {
     scheduler.allocator = context.allocator;
 
     guard_overflow(scheduler);
+    engine_start(scheduler);
 
     handle := start_fiber(scheduler, block);
 
@@ -494,6 +573,7 @@ run_scheduler :: (block: Spawn_Block) {
 
     schedule(scheduler);
 
+    engine_stop(scheduler);
     unguard_overflow(scheduler);
 
     pooled := scheduler.pool;
@@ -521,6 +601,9 @@ schedule :: (scheduler: *Scheduler) {
         // while fibers keep each other busy.
         if scheduler.ready_head == null || scheduler.switches % 64 == 0 fire_timers(scheduler);
 
+        // Fibers that keep each other busy still see their IO complete now and then.
+        if scheduler.ready_head != null && scheduler.pending > 0 && scheduler.switches % 64 == 0 engine_wait(scheduler, 0);
+
         fiber := pop_ready(scheduler);
         if !fiber {
             wait_step(scheduler);
@@ -546,10 +629,9 @@ cancel_all :: (scheduler: *Scheduler) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// The wait step: what the scheduler does when no fiber is ready. This is the one place a
-// completion engine plugs in: it would submit what the fibers queued, wait for completions for
-// at most `timeout` nanoseconds (forever if negative), and `wake` the fibers they belong to.
-// Without one, only timers can end the wait, so the thread sleeps until the next one.
+// The wait step: what the scheduler does when no fiber is ready. It hands the operations the
+// fibers queued to the engine, waits for completions for at most the time to the next timer
+// (forever when there is none), and lets the engine `wake` the fibers they belong to.
 
 wait_step :: (scheduler: *Scheduler) {
     if scheduler.ready_head return;
@@ -564,11 +646,4 @@ wait_step :: (scheduler: *Scheduler) {
 
     engine_wait(scheduler, timeout);
     fire_timers(scheduler);
-}
-
-engine_wait :: (scheduler: *Scheduler, timeout: s64) {
-    if timeout <= 0 return;
-
-    milliseconds := (timeout + 999_999) / 1_000_000;
-    sleep_milliseconds(cast(s32) min(milliseconds, 0x7fff_ffff));
 }

@@ -16,6 +16,10 @@ io-fibers-many * wasm-interp,wasm-native,playground wasm code cannot switch stac
 io-fibers-channels * wasm-interp,wasm-native,playground wasm code cannot switch stacks, so Extensions/Io does not build for it
 io-fibers-sleep-cancel * wasm-interp,wasm-native,playground wasm code cannot switch stacks, so Extensions/Io does not build for it
 io-fibers-context * wasm-interp,wasm-native,playground wasm code cannot switch stacks, so Extensions/Io does not build for it
+Extensions/Io/tests/tcp * wasm-interp,wasm-native wasm code cannot switch stacks, so Extensions/Io does not build for it
+Extensions/Io/tests/timeouts * wasm-interp,wasm-native wasm code cannot switch stacks, so Extensions/Io does not build for it
+Extensions/Io/tests/files * wasm-interp,wasm-native wasm code cannot switch stacks, so Extensions/Io does not build for it
+Extensions/Io/tests/backends * wasm-interp,wasm-native wasm code cannot switch stacks, so Extensions/Io does not build for it
 unmapping-allocator * wasm-interp,wasm-native,playground the module needs POSIX virtual memory calls, which wasm lacks
 pool-unmapping-blocks * wasm-interp,wasm-native,playground the unmapping allocator needs virtual memory calls, which wasm lacks
 window-fullscreen-toggle * wasm-interp,wasm-native,playground wasm has no window system

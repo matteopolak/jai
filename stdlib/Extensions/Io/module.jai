@@ -33,8 +33,16 @@
 #load "fiber_context.jai";
 #load "scheduler.jai";
 #load "sync.jai";
+#load "net.jai";
+#load "files.jai";
+#load "runtime.jai";
 
 #scope_module
 #import "Basic";
 #load "stacks.jai";
 #load "overflow.jai";
+#load "platform.jai";
+#load "engine.jai";
+#load "engine_poll.jai";
+#load "engine_uring.jai";
+#load "resolver.jai";
