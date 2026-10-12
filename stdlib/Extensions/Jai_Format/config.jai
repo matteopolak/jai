@@ -69,6 +69,18 @@ parse_config_into :: (text: string, config: *Format_Config) -> bool, string {
                 } else {
                     return false, tprint("line %: blank_lines_between_items must be true or false", line_number);
                 }
+            case "blank_line_after_declarations";
+                ok := parse_flag(value, *config.blank_line_after_declarations);
+                if !ok return false, tprint("line %: blank_line_after_declarations must be true or false", line_number);
+            case "blank_lines_around_blocks";
+                ok := parse_flag(value, *config.blank_lines_around_blocks);
+                if !ok return false, tprint("line %: blank_lines_around_blocks must be true or false", line_number);
+            case "blank_line_between_cases";
+                ok := parse_flag(value, *config.blank_line_between_cases);
+                if !ok return false, tprint("line %: blank_line_between_cases must be true or false", line_number);
+            case "blank_line_before_comments";
+                ok := parse_flag(value, *config.blank_line_before_comments);
+                if !ok return false, tprint("line %: blank_line_before_comments must be true or false", line_number);
             case "ignore";
                 if !value.count || value[0] != #char "[" || value[value.count - 1] != #char "]" {
                     return false, tprint("line %: ignore must be an array of quoted globs on one line", line_number);
@@ -164,6 +176,18 @@ parse_count :: (text: string, result: *int, low: int, high: int) -> bool {
     if value < low return false;
     result.* = value;
     return true;
+}
+
+parse_flag :: (text: string, result: *bool) -> bool {
+    if text == "true" {
+        result.* = true;
+        return true;
+    }
+    if text == "false" {
+        result.* = false;
+        return true;
+    }
+    return false;
 }
 
 parse_quoted :: (text: string) -> string, bool {

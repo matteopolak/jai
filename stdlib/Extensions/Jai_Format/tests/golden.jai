@@ -153,7 +153,14 @@ check_config_parsing :: () {
     if !config.blank_lines_between_items fail("blank_lines_between_items should default to true");
     off, off_ok := parse_config("blank_lines_between_items = false\n");
     if !off_ok || off.blank_lines_between_items fail("blank_lines_between_items = false not parsed");
-    for string.["indent_width = x\n", "unknown = 1\n", "brace_style = \"weird\"\n", "ignore = \"a\"\n", "blank_lines_between_items = 1\n"] {
+    if config.blank_line_after_declarations || config.blank_lines_around_blocks || config.blank_line_between_cases || config.blank_line_before_comments {
+        fail("the code block blank line options should default to false");
+    }
+    on, on_ok := parse_config("blank_line_after_declarations = true\nblank_lines_around_blocks = true\nblank_line_between_cases = true\nblank_line_before_comments = true\n");
+    if !on_ok || !on.blank_line_after_declarations || !on.blank_lines_around_blocks || !on.blank_line_between_cases || !on.blank_line_before_comments {
+        fail("the code block blank line options were not parsed");
+    }
+    for string.["indent_width = x\n", "unknown = 1\n", "brace_style = \"weird\"\n", "ignore = \"a\"\n", "blank_lines_between_items = 1\n", "blank_lines_around_blocks = yes\n"] {
         _, accepted := parse_config(it);
         if accepted fail("bad config accepted: %", it);
     }

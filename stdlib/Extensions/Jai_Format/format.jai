@@ -560,6 +560,11 @@ plan_lines :: (f: *Formatter) {
     }
 
     if f.config.blank_lines_between_items separate_items(f, partner, enclosing, 0, n, -1);
+
+    c := f.config;
+    if c.blank_line_after_declarations || c.blank_lines_around_blocks || c.blank_line_between_cases || c.blank_line_before_comments {
+        separate_statements(f, partner, enclosing, 0, n, .FILE, -1);
+    }
 }
 
 // A file-level declaration or directive (`blank_lines_between_items`): its first and last code
@@ -631,16 +636,234 @@ finish_item :: (f: *Formatter, item: *Item, enclosing: [] int, level: int) {
     }
 }
 
-// Ensures a blank line between items `a` and `b` where the rules ask for one. It goes before
-// the first line after `a`, so comments and `#scope_*` lines directly above `b` stay with it.
+// Ensures a blank line between items `a` and `b` where the rules ask for one.
 separate_pair :: (f: *Formatter, a: Item, b: Item) {
     if a.is_import && b.is_import return;
     if !a.multi_line && !b.multi_line && a.is_import == b.is_import return;
-    t := a.end + 1;
-    while t <= b.start && f.breaks[t] == 0 t += 1;
-    if t > b.start || f.verbatim[t] return; // on one line, or inside `// jaifmt: off`
-    for j: t..b.start if f.breaks[j] > 1 return;
+    add_blank_line(f, a.end, b.start);
+}
+
+// Puts a blank line between the code ending at token `after` and the code starting at token
+// `before`. It goes before the first line after `after`, so comments and `#scope_*` lines
+// directly above `before` stay with it. Nothing changes when both share a line, when a blank
+// line is already there, or inside `// jaifmt: off`.
+add_blank_line :: (f: *Formatter, after: int, before: int) {
+    t := after + 1;
+    while t <= before && f.breaks[t] == 0 t += 1;
+    if t > before || f.verbatim[t] return;
+    for j: t..before if f.breaks[j] > 1 return;
     f.breaks[t] = 2;
+}
+
+// What a `{ ... }` holds, for the statement-level blank line options.
+Block_Kind :: enum u8 {
+    FILE; // file-level items (the body of a file-level `#if`)
+    DATA; // struct, union and enum members, and the cases of a file-level `#if x == {`
+    CODE; // statements: procedure bodies, control flow, `#run`, `#code`, `#if` inside code
+    SWITCH; // `if x == {` in code: `case` labels and the statements under them
+}
+
+// A statement of a block: its first and last code tokens, and what the blank line options need
+// to know about it.
+Statement :: struct {
+    start := -1;
+    end: int;
+    is_label: bool; // `case X;`
+    is_declaration: bool; // `x := 1;`, `a, b: int;`, `N :: 4;`, a local procedure
+    is_assignment: bool; // `x = 1;`, `a.b += 2;`
+    is_block: bool; // has a block body and spans several lines
+    is_tiny_block: bool; // a block statement of three lines: `if x {`, one line, `}`
+    first_block := -1; // its first `{`, which ends the header
+    header_end := -1; // the header is start..header_end - 1: up to the block, or all of a braceless if/for/while
+    names_start: int; // the names a declaration declares or an assignment assigns: start..names_end - 1
+    names_end: int;
+}
+
+// `blank_line_after_declarations`, `blank_lines_around_blocks`, `blank_line_between_cases` and
+// `blank_line_before_comments`: walks the statements in tokens `from` to `to - 1`, the inside
+// of the `{` at `level` (-1: the file), and every block nested in them. In blocks that hold code
+// a blank line goes between two neighbouring statements when `statement_wants_blank` says so.
+// Like `separate_items` this only deepens line breaks that exist.
+separate_statements :: (f: *Formatter, partner: [] int, enclosing: [] int, from: int, to: int, kind: Block_Kind, level: int) {
+    statements: [..] Statement;
+    defer array_free(statements);
+    current: Statement;
+    k := from;
+    while k < to && f.tokens[k].kind != .EOF {
+        tok := f.tokens[k];
+        if is_comment(f, k) || (current.start < 0 && tok.kind == .DIRECTIVE && begins_with(directive_name(f, k), "scope_")) {
+            k += 1;
+            continue;
+        }
+        if current.start < 0 current.start = k;
+        done := false;
+        if tok.kind == .PUNCT {
+            text := text_of(f, k);
+            direct := enclosing[k] == level;
+            if text == "{" && !f.literal_brace[k] && partner[k] > k {
+                o := k;
+                if partner[o] > o + 1 && !f.verbatim[o] {
+                    if direct && current.first_block < 0 current.first_block = o;
+                    if !f.verbatim[o + 1] { // not `#asm { ... }`
+                        child := block_kind(f, partner, enclosing, current.start, o, kind);
+                        separate_statements(f, partner, enclosing, o + 1, partner[o], child, o);
+                    }
+                }
+                k = partner[o];
+                if direct done = block_ends_item(f, k);
+            } else if text == ";" && direct {
+                done = !else_follows(f, k);
+            }
+        }
+        current.end = k;
+        if done {
+            finish_statement(f, enclosing, *current, kind, level);
+            array_add(*statements, current);
+            current = .{};
+        }
+        k += 1;
+    }
+    if current.start >= 0 {
+        finish_statement(f, enclosing, *current, kind, level);
+        array_add(*statements, current);
+    }
+
+    if kind != .CODE && kind != .SWITCH return;
+    lines := 0; // the output lines of the body
+    for j: from..to - 1 if f.breaks[j] > 0 lines += 1;
+    for i: 1..statements.count {
+        after: Statement;
+        after.start = to; // the `}` that ends the block
+        if i < statements.count after = statements[i];
+        if statement_wants_blank(f, enclosing, level, statements, i, after, lines <= SHORT_BODY_LINES) add_blank_line(f, statements[i - 1].end, after.start);
+    }
+}
+
+// A body of this many lines or fewer is short enough to read at a glance: no blank line
+// follows its declarations.
+SHORT_BODY_LINES :: 3;
+
+// Does an `else` come right after the `;` at `semicolon`? Then a braceless `if x f(); else {`
+// goes on past it.
+else_follows :: (f: *Formatter, semicolon: int) -> bool {
+    next := semicolon + 1;
+    while is_comment(f, next) next += 1;
+    return is_ident(f, next, "else");
+}
+
+// The kind of the block opened by the `{` at `o`, in a statement starting at `start`, inside a
+// block of kind `parent`.
+block_kind :: (f: *Formatter, partner: [] int, enclosing: [] int, start: int, o: int, parent: Block_Kind) -> Block_Kind {
+    for p: start..o - 1 {
+        if enclosing[p] == enclosing[o] && f.tokens[p].kind == .IDENT && one_of(text_of(f, p), string.["struct", "union", "enum", "enum_flags"]) return .DATA;
+    }
+    in_code := parent == .CODE || parent == .SWITCH;
+    if is_punct(f, previous_code(f, o), "==") return ifx in_code then Block_Kind.SWITCH else .DATA;
+    if !in_code && is_item_container(f, partner, start, o) return parent;
+    return .CODE;
+}
+
+ASSIGNMENT_OPERATORS :: string.["=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "<<<=", ">>>=", "&&=", "||="];
+
+// Words that start a statement which is not an assignment, even when an `=` follows later.
+STATEMENT_KEYWORDS :: string.["if", "else", "for", "while", "return", "defer", "using", "case", "push_context", "remove", "break", "continue", "then"];
+
+// Works out what kind of statement `s` is: a case label, a declaration (leading names, then a
+// top-level `:`, `:=` or `::`), an assignment, a block statement, and where its header ends.
+finish_statement :: (f: *Formatter, enclosing: [] int, s: *Statement, kind: Block_Kind, level: int) {
+    first := s.start;
+    if kind == .SWITCH && is_ident(f, first, "case") {
+        s.is_label = true;
+        return;
+    }
+
+    k := first;
+    while f.tokens[k].kind == .IDENT {
+        k += 1;
+        if !is_punct(f, k, ",") break;
+        k += 1;
+    }
+    if k > first && (is_punct(f, k, ":") || is_punct(f, k, ":=") || is_punct(f, k, "::")) {
+        s.is_declaration = true;
+        s.names_start = first;
+        s.names_end = k;
+    } else if (f.tokens[first].kind == .IDENT && !one_of(text_of(f, first), STATEMENT_KEYWORDS)) || f.tokens[first].kind == .PUNCT {
+        j := first;
+        while j <= s.end && !(enclosing[j] == level && (is_punct(f, j, ";") || is_punct(f, j, "{"))) {
+            if enclosing[j] == level && f.tokens[j].kind == .PUNCT && one_of(text_of(f, j), ASSIGNMENT_OPERATORS) {
+                s.is_assignment = true;
+                s.names_start = first;
+                s.names_end = j;
+                break;
+            }
+            j += 1;
+        }
+    }
+
+    if s.first_block >= 0 {
+        lines := 1;
+        for j: first + 1..s.end if f.breaks[j] > 0 lines += 1;
+        s.is_block = lines > 1;
+        s.is_tiny_block = lines == 3;
+    }
+    if s.is_block {
+        s.header_end = s.first_block;
+    } else if is_ident(f, first, "if") || is_ident(f, first, "for") || is_ident(f, first, "while") {
+        s.header_end = s.end + 1;
+    }
+}
+
+// Does something in tokens `from` to `to - 1` mention a name that `named` declares or assigns?
+// A field after a `.` is not a mention.
+mentions_names :: (f: *Formatter, enclosing: [] int, level: int, from: int, to: int, named: Statement) -> bool {
+    for h: from..to - 1 {
+        if f.tokens[h].kind != .IDENT || is_punct(f, h - 1, ".") continue;
+        for q: named.names_start..named.names_end - 1 {
+            if enclosing[q] == level && f.tokens[q].kind == .IDENT && !is_punct(f, q - 1, ".") && text_of(f, q) == text_of(f, h) return true;
+        }
+    }
+    return false;
+}
+
+// Should a blank line separate statement `i - 1` from statement `i`, `after` (or from the `}` that
+// ends the block, when `i` is past the last statement)? Each option asks for it in its own
+// cases; the docs list them with their exceptions.
+statement_wants_blank :: (f: *Formatter, enclosing: [] int, level: int, statements: [] Statement, i: int, after: Statement, short_body: bool) -> bool {
+    before := statements[i - 1];
+    closing := i == statements.count;
+
+    // A lone declaration (or an assignment) stays next to the block or `if` that uses its names.
+    run := 0; // declarations in a row, ending at `before`
+    while run < i && statements[i - 1 - run].is_declaration run += 1;
+    cuddles := false;
+    if !closing && after.header_end >= 0 && (run == 1 || before.is_assignment) {
+        cuddles = mentions_names(f, enclosing, level, after.start, after.header_end, before);
+    }
+    // A declaration also stays with the assignment that sets what it declared (`r: T; r.x = 1;`).
+    initializes := !closing && before.is_declaration && after.is_assignment && mentions_names(f, enclosing, level, after.start, after.names_end, before);
+
+    if f.config.blank_line_after_declarations && !short_body && before.is_declaration && !closing && !after.is_declaration && !after.is_label {
+        if !(run == 1 && cuddles) && !initializes return true;
+    }
+    if f.config.blank_lines_around_blocks && !closing && !before.is_label && !after.is_label && (before.is_block || after.is_block) {
+        // Neither does a run of tiny blocks (guards, repeated table entries) fall apart.
+        if !(cuddles && after.is_block && !before.is_block) && !(before.is_tiny_block && after.is_tiny_block) return true;
+    }
+    if f.config.blank_line_between_cases && after.is_label && !closing {
+        arm := i - 1;
+        while arm >= 0 && !statements[arm].is_label arm -= 1;
+        if arm >= 0 && arm < i - 1 {
+            for j: statements[arm].start + 1..before.end {
+                if f.breaks[j] > 0 return true;
+            }
+        }
+    }
+    if f.config.blank_line_before_comments && !before.is_label {
+        t := before.end + 1;
+        while t < after.start && f.breaks[t] == 0 t += 1;
+        if t < after.start && is_comment(f, t) return true;
+    }
+    return false;
 }
 
 // Does the block closed at `close` end its item? Not when `else`, a note or punctuation
