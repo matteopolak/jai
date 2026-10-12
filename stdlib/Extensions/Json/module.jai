@@ -94,9 +94,9 @@ write_json :: (builder: *String_Builder, value: $T, pretty := false) {
     json_encode(*w, *value);
 }
 
-// Decodes `text` into a `T`. Strings, arrays and tables in the result are allocated from
-// context.allocator; after a failure nothing is freed, so decode untrusted input under an
-// arena (push_allocator) if leaks matter.
+// Decodes `text` into a `T`. Strings, arrays, pointers and tables in the result are allocated
+// from context.allocator; free_json releases them. After a failure everything the decoder
+// allocated has been freed already and the returned value is a default `T`.
 from_json :: ($T: Type, text: string, options := Json_Options.{}) -> T, Json_Error {
     empty: T;
 
@@ -139,6 +139,8 @@ from_json :: ($T: Type, text: string, options := Json_Options.{}) -> T, Json_Err
                 return result, .{};
             }
 
+            // The scalar pass below reports the error again; this one's message is not kept.
+            free_json_error(*r.error);
             json_index_stats.reparsed += 1;
         }
     }
@@ -160,9 +162,31 @@ decode_document :: (r: *Json_Reader, out: *$T) -> bool {
 
     skip_whitespace(r);
 
-    if r.pos < r.text.count return json_fail(r, .SYNTAX, "unexpected data after the value");
+    if r.pos < r.text.count {
+        free_json(out);
+
+        return json_fail(r, .SYNTAX, "unexpected data after the value");
+    }
 
     return true;
+}
+
+// Releases what from_json allocated for `value`: its strings, arrays, pointers (and what they
+// point to), tables and nested values, all with `free`. The fields are reset, so a second call
+// does nothing. A field that still holds its declared default (a document that omitted it) is
+// not freed, so defaults such as `name := "guest"` are safe. Fields with a `with=` handler are
+// left to the handler. Do not use it on values that were not decoded, as their strings may not
+// have come from the allocator.
+free_json :: (value: *$T) {
+    defaults: T;
+
+    json_free_value(value, *defaults);
+}
+
+json_free_value :: (value: *$T, defaults: *T) {
+    #insert -> string {
+        return generate_freer(T);
+    };
 }
 
 // Parses `text` without a target type.

@@ -14,6 +14,7 @@
 ### Fixes
 
 - `string_to_float64`, `string_to_float` and the Json float decoder are correctly rounded: about 1 in 600 random doubles used to parse one ulp off, and float32 results are now rounded once from the digits instead of through a float64. Json shares Basic's conversion; its own copy is gone.
+- `from_json` frees everything it allocated when decoding fails (and returns a default value), including the error message of an indexed attempt that was parsed again; a repeated key in a `Hash_Table` object no longer leaks the earlier value. New `free_json(*value)` releases a decoded value.
 
 ## [0.14.1] - 2026-10-12
 

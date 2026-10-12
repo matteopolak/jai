@@ -759,7 +759,137 @@ emit_leaf_encode :: (g: *Gen, leaf: *Leaf) {
     emit_encode(g, value, leaf.info, leaf.style);
 }
 
+// ---- freeing ----
+//
+// The code that releases what a decoder allocated: strings, arrays, pointers, tables and nested
+// structs. It serves two callers. A decoder that fails frees what it had stored so far (it knows
+// those values are its own, so it frees against zero). The public `free_json` frees a finished
+// value and compares each field with the type's default value first, so a field that kept a
+// default such as `name := "guest"` is left alone.
+
+// Whether a value of this type can own memory.
+owns_memory :: (info: *Type_Info) -> bool {
+    if info.type == {
+        case .STRING; return true;
+        case .POINTER; return true;
+        case .STRUCT; return true;
+        case .ARRAY;
+            array := cast(*Type_Info_Array) info;
+
+            if array.array_type == .FIXED return owns_memory(array.element_type);
+
+            return true;
+    }
+
+    return false;
+}
+
+// Releases the elements of `target` (a resizable array or view), one `for` loop.
+emit_free_elements :: (g: *Gen, out: *String_Builder, target: string, element: *Type_Info) {
+    if !owns_memory(element) return;
+
+    id := next_id(g);
+
+    print(out, "for *item_%: % {\n", id, target);
+    emit_free(g, out, tprint("item_%.*", id), element, "");
+    print(out, "}\n");
+}
+
+// Writes the statements that free what `target` owns and reset it. `default` is an expression
+// for the value a field has when it was not decoded, or "" for the zero value.
+emit_free :: (g: *Gen, out: *String_Builder, target: string, info: *Type_Info, default: string) {
+    if info.type == {
+        case .STRING;
+            if default.count print(out, "if %.count && %.data != (%).data { free(%); }\n% = %;\n", target, target, default, target, target, default);
+            else print(out, "if %.count { free(%); }\n% = \"\";\n", target, target, target);
+        case .POINTER;
+            pointee := (cast(*Type_Info_Pointer) info).pointer_to;
+
+            if pointee.type == .VOID return;
+
+            if default.count print(out, "if % != (%) {\n", target, default);
+            else print(out, "if % != null {\n", target);
+
+            emit_free(g, out, tprint("%.*", target), pointee, "");
+            print(out, "free(%);\n}\n% = %;\n", target, target, ifx default.count then default else "null");
+        case .ARRAY;
+            array := cast(*Type_Info_Array) info;
+
+            if array.array_type == .FIXED {
+                emit_free_elements(g, out, target, array.element_type);
+
+                return;
+            }
+
+            if default.count print(out, "if %.data != (%).data {\n", target, default);
+            else print(out, "if %.data {\n", target);
+
+            emit_free_elements(g, out, target, array.element_type);
+
+            if array.array_type == .VIEW {
+                print(out, "free(%.data);\n", target);
+
+                if default.count print(out, "% = %;\n", target, default);
+                else print(out, "%.data = null;\n%.count = 0;\n", target, target);
+            } else if default.count {
+                print(out, "array_free(%);\n% = %;\n", target, target, default);
+            } else {
+                print(out, "array_reset(%);\n", address_of(target));
+            }
+
+            print(out, "}\n");
+        case .STRUCT;
+            if is_json_value(info) {
+                print(out, "json_free(%);\n", address_of(target));
+            } else if is_table(info) {
+                _, element := table_entry(info);
+                id := next_id(g);
+
+                print(out, "for *entry_%, key_%: % {\nif key_%.count { free(key_%); }\n", id, id, target, id, id);
+                emit_free(g, out, tprint("entry_%.*", id), element, "");
+                print(out, "}\ndeinit(%);\n", address_of(target));
+            } else if default.count {
+                print(out, "json_free_value(%, %);\n", address_of(target), address_of(default));
+            } else {
+                id := next_id(g);
+
+                print(out, "{\ndefault_%: type_of(%);\njson_free_value(%, *default_%);\n}\n", id, target, address_of(target), id);
+            }
+    }
+}
+
+// The body of json_free_value for T: `value` is what to free, `defaults` a default T.
+generate_freer :: (T: Type) -> string {
+    g: Gen;
+    info := type_info(T);
+
+    if info.type != .STRUCT || is_json_value(info) || is_table(info) {
+        g.type_name = tprint("%", T);
+        emit_free(*g, *g.out, "value.*", info, "defaults.*");
+
+        return builder_to_string(*g.out,, temp);
+    }
+
+    plan := analyze(T);
+
+    g.type_name = plan.type_name;
+
+    if !plan.ok return "";
+
+    // Fields with a `with=` handler belong to the handler, which allocated them.
+    for *leaf: plan.leaves {
+        if leaf.skip_deserializing || leaf.with.count || !owns_memory(leaf.info) continue;
+
+        emit_free(*g, *g.out, tprint("value.%", leaf.path), leaf.info, tprint("defaults.%", leaf.path));
+    }
+
+    return builder_to_string(*g.out,, temp);
+}
+
 // ---- decoding ----
+//
+// A decoder that fails frees everything it allocated before it reports the failure, so a failed
+// json_decode leaves nothing behind (the value it was reading into is then unspecified).
 
 emit_decode :: (g: *Gen, target: string, info: *Type_Info, style: Enum_Style, on_fail: string) {
     out := *g.out;
@@ -808,13 +938,13 @@ emit_decode :: (g: *Gen, target: string, info: *Type_Info, style: Enum_Style, on
             }
 
             print(out, "if json_next_is_null(r) {\nif !json_read_null(r) { % }\n% = null;\n} else {\n% = New(type_of(%.*));\n", on_fail, target, target, target);
-            emit_decode(g, tprint("%.*", target), pointee, style, on_fail);
+            emit_decode(g, tprint("%.*", target), pointee, style, tprint("free(%); % = null; %", target, target, on_fail));
             print(out, "}\n");
         case .ARRAY;
             emit_decode_array(g, target, cast(*Type_Info_Array) info, style, on_fail);
         case .STRUCT;
             if is_json_value(info) {
-                print(out, "if !json_read_value(r, %) { % }\n", address_of(target), on_fail);
+                print(out, "if !json_read_value(r, %) { json_free(%); % }\n", address_of(target), address_of(target), on_fail);
             } else if is_table(info) {
                 emit_decode_table(g, target, info, style, on_fail);
             } else {
@@ -889,16 +1019,34 @@ emit_decode_enum :: (g: *Gen, target: string, info: *Type_Info_Enum, style: Enum
 emit_decode_array :: (g: *Gen, target: string, array: *Type_Info_Array, style: Enum_Style, on_fail: string) {
     out := *g.out;
     id := next_id(g);
-    element_fail := tprint("json_path_index(r, index_%); %", id, on_fail);
 
-    print(out, "{\nfirst_% := true;\nindex_% := 0;\nif !json_begin_array(r) { % }\n", id, id, on_fail);
+    // What a failure inside the array releases: the elements read so far and their storage.
+    cleanup: String_Builder;
 
     if array.array_type == .FIXED {
-        print(out, "while true {\nstatus_% := json_array_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, on_fail, id);
-        print(out, "if index_% >= % { json_fail(r, .TYPE, \"too many elements: expected %\"); % }\n", id, array.array_count, array.array_count, on_fail);
+        emit_free_elements(g, *cleanup, target, array.element_type);
+    } else if array.array_type == .VIEW {
+        emit_free_elements(g, *cleanup, tprint("list_%", id), array.element_type);
+        print(*cleanup, "array_reset(*list_%);\n", id);
+    } else {
+        emit_free_elements(g, *cleanup, target, array.element_type);
+        print(*cleanup, "array_reset(%);\n", address_of(target));
+    }
+
+    fail := tprint("% %", builder_to_string(*cleanup,, temp), on_fail);
+    element_fail := tprint("json_path_index(r, index_%); %", id, fail);
+
+    if array.array_type == .VIEW print(out, "{\nlist_%: [..] type_of(%[0]);\n", id, target);
+    else print(out, "{\n");
+
+    print(out, "first_% := true;\nindex_% := 0;\nif !json_begin_array(r) { % }\n", id, id, fail);
+
+    if array.array_type == .FIXED {
+        print(out, "while true {\nstatus_% := json_array_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, fail, id);
+        print(out, "if index_% >= % { json_fail(r, .TYPE, \"too many elements: expected %\"); % }\n", id, array.array_count, array.array_count, fail);
         emit_decode(g, tprint("%[index_%]", target, id), array.element_type, style, element_fail);
         print(out, "index_% += 1;\n}\n", id);
-        print(out, "if index_% != % { json_fail(r, .TYPE, \"too few elements: expected %\"); % }\n}\n", id, array.array_count, array.array_count, on_fail);
+        print(out, "if index_% != % { json_fail(r, .TYPE, \"too few elements: expected %\"); % }\n}\n", id, array.array_count, array.array_count, fail);
 
         return;
     }
@@ -907,13 +1055,11 @@ emit_decode_array :: (g: *Gen, target: string, array: *Type_Info_Array, style: E
 
     if array.array_type == .VIEW {
         list = tprint("list_%", id);
-
-        print(out, "list_%: [..] type_of(%[0]);\n", id, target);
     } else {
         print(out, "%.count = 0;\n", target);
     }
 
-    print(out, "while true {\nstatus_% := json_array_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, on_fail, id);
+    print(out, "while true {\nstatus_% := json_array_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, fail, id);
     print(out, "item_%: type_of(%[0]);\n", id, target);
     emit_decode(g, tprint("item_%", id), array.element_type, style, element_fail);
     print(out, "array_add(*%, item_%);\nindex_% += 1;\n}\n", list, id, id);
@@ -934,13 +1080,24 @@ emit_decode_table :: (g: *Gen, target: string, info: *Type_Info, style: Enum_Sty
     }
 
     id := next_id(g);
-    element_fail := tprint("json_path_key(r, copy_string(key_%,, temp)); %", id, on_fail);
+
+    // What a failure releases: the entries stored so far and the table's storage.
+    cleanup: String_Builder;
+
+    emit_free(g, *cleanup, target, info, "");
+
+    fail := tprint("% %", builder_to_string(*cleanup,, temp), on_fail);
+    element_fail := tprint("json_path_key(r, copy_string(key_%,, temp)); %", id, fail);
 
     print(out, "{\nfirst_% := true;\nif !json_begin_object(r) { % }\n", id, on_fail);
-    print(out, "while true {\nkey_%, status_% := json_object_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, id, on_fail, id);
+    print(out, "while true {\nkey_%, status_% := json_object_next(r, *first_%);\nif status_% == .ERROR { % }\nif status_% == .END break;\n", id, id, id, id, fail, id);
     print(out, "item_%: type_of(%.entries[0].value);\n", id, target);
     emit_decode(g, tprint("item_%", id), element, style, element_fail);
-    print(out, "table_set(%, copy_string(key_%), item_%);\n}\n}\n", address_of(target), id, id);
+
+    // A repeated key replaces the earlier value, which is released.
+    print(out, "existing_% := table_find_pointer(%, key_%);\nif existing_% {\n", id, address_of(target), id, id);
+    emit_free(g, out, tprint("existing_%.*", id), element, "");
+    print(out, "existing_%.* = item_%;\n} else table_add(%, copy_string(key_%), item_%);\n}\n}\n", id, id, address_of(target), id, id);
 }
 
 generate_decoder :: (T: Type) -> string {
@@ -980,7 +1137,21 @@ generate_decoder :: (T: Type) -> string {
 
     print(out, "if !json_begin_object(r) return false;\n");
 
-    if count print(out, "seen: [%] bool;\n", count);
+    // seen[i]: 0 not read, 1 being read, 2 read. A failure releases the fields that were read.
+    cleanup: String_Builder;
+
+    for *leaf: plan.leaves {
+        if leaf.skip_deserializing || leaf.with.count || !owns_memory(leaf.info) continue;
+
+        print(*cleanup, "if seen[%] == 2 {\n", it_index);
+        emit_free(*g, *cleanup, tprint("out.%", leaf.path), leaf.info, "");
+        print(*cleanup, "}\n");
+    }
+
+    cleaned := builder_to_string(*cleanup,, temp);
+
+    if count print(out, "seen: [%] u8;\n", count);
+    if cleaned.count print(out, "done := false;\ndefer if !done {\n%}\n", cleaned);
 
     print(out, "first := true;\nwhile true {\nkey, status := json_object_next(r, *first);\nif status == .ERROR return false;\nif status == .END break;\n");
 
@@ -995,11 +1166,11 @@ generate_decoder :: (T: Type) -> string {
         for alias: leaf.aliases print(out, "|| (%) ", key_match(alias));
 
         print(out, "{\n");
-        print(out, "if seen[%] { json_duplicate_field(r, key); return false; }\nseen[%] = true;\n", it_index, it_index);
+        print(out, "if seen[%] != 0 { json_duplicate_field(r, key); return false; }\nseen[%] = 1;\n", it_index, it_index);
 
         emit_leaf_decode(*g, leaf, tprint("{ json_path_key(r, %); return false; }", jai_quote(leaf.key)));
 
-        print(out, "}\n");
+        print(out, "seen[%] = 2;\n}\n", it_index);
         chain = true;
     }
 
@@ -1013,8 +1184,10 @@ generate_decoder :: (T: Type) -> string {
     for *leaf: plan.leaves {
         if leaf.skip_deserializing || leaf.optional continue;
 
-        print(out, "if !seen[%] { json_missing_field(r, %); return false; }\n", it_index, jai_quote(leaf.key));
+        print(out, "if seen[%] == 0 { json_missing_field(r, %); return false; }\n", it_index, jai_quote(leaf.key));
     }
+
+    if cleaned.count print(out, "done = true;\n");
 
     print(out, "return true;\n");
 
