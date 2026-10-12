@@ -14,7 +14,6 @@
 
 #if OS == .LINUX {
     Uring :: #import "Extensions/Io_Uring";
-    #import "Atomics";
 
     Uring_State :: struct {
         ring: Uring.Ring;

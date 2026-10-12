@@ -34,11 +34,15 @@ restore_deadline :: (previous: s64) {
 }
 
 Backend :: enum u8 {
-    // No IO on this system (Windows for now): every operation fails with `.UNSUPPORTED`.
+    // No IO on this system: every operation fails with `.UNSUPPORTED`.
     NONE;
     IO_URING;
     EPOLL;
     KQUEUE;
+    // Windows: completion ports for sockets and files.
+    IOCP;
+    // Windows 11 22H2 and newer: completion ports for sockets, an IoRing for files.
+    IORING;
 }
 
 name_of_backend :: (backend: Backend) -> string {
@@ -46,6 +50,8 @@ name_of_backend :: (backend: Backend) -> string {
         case .IO_URING; return "io_uring";
         case .EPOLL; return "epoll";
         case .KQUEUE; return "kqueue";
+        case .IOCP; return "iocp";
+        case .IORING; return "ioring";
     }
 
     return "none";
@@ -63,16 +69,17 @@ Capabilities :: struct {
     kernel_ops: s64;
 }
 
-// The backend the running scheduler uses: `.IO_URING`, `.EPOLL`, `.KQUEUE`, or `.NONE` where IO is
-// not implemented yet. Set `JAI_IO_BACKEND` to `io_uring`, `epoll` or `kqueue` before `io_run` to
-// ask for one; a backend the system cannot offer is replaced (see `backend_reason`).
+// The backend the running scheduler uses: `.IO_URING`, `.EPOLL`, `.KQUEUE`, `.IOCP`, `.IORING`, or
+// `.NONE` where IO is not implemented. Set `JAI_IO_BACKEND` to `io_uring`, `epoll`, `kqueue`,
+// `iocp` or `ioring` before `io_run` to ask for one; a backend the system cannot offer is
+// replaced (see `backend_reason`).
 backend :: () -> Backend {
     scheduler := current_scheduler();
 
     return scheduler.engine.backend;
 }
 
-// `backend()` as text: "io_uring", "epoll", "kqueue" or "none".
+// `backend()` as text: "io_uring", "epoll", "kqueue", "iocp", "ioring" or "none".
 backend_name :: () -> string {
     return name_of_backend(backend());
 }

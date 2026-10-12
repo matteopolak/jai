@@ -5,10 +5,6 @@
 #load "lib/suite.jai";
 
 main :: () {
-    #if OS == .WINDOWS {
-        print("skipped: Extensions/Io has no IO on Windows yet\n");
-    } else {
-        run_group(run_tcp);
-        print("ok (backend %)\n", last_backend);
-    }
+    run_group(run_tcp);
+    print("ok (backend %)\n", last_backend);
 }

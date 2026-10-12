@@ -330,13 +330,14 @@ test_end_of_stream :: () {
     count, read_error = Io.read(pair.client, .[]);
     assert(count == 0 && read_error == .NONE);
 
-    // Writing to a peer that went away fails with a broken pipe or a reset, never hangs or kills the process.
+    // Writing to a peer that went away fails with a broken pipe or a reset (Windows reports an
+    // aborted connection), never hangs or kills the process.
     failed := false;
 
     for 1..50 {
         _, write_error := Io.write(pair.client, "still there?");
         if write_error != .NONE {
-            assert(write_error == .BROKEN_PIPE || write_error == .CONNECTION_RESET, "write failed with %", write_error);
+            assert(write_error == .BROKEN_PIPE || write_error == .CONNECTION_RESET || write_error == .CONNECTION_ABORTED, "write failed with %", write_error);
             failed = true;
 
             break;
@@ -365,7 +366,7 @@ test_connection_reset :: () {
     buffer: [16] u8;
     count, read_error := Io.read(pair.client, buffer);
 
-    assert(read_error == .CONNECTION_RESET || read_error == .BROKEN_PIPE, "read after a reset gave % % (code %)", count, read_error, Io.last_platform_code());
+    assert(read_error == .CONNECTION_RESET || read_error == .BROKEN_PIPE || read_error == .CONNECTION_ABORTED, "read after a reset gave % % (code %)", count, read_error, Io.last_platform_code());
     assert(count == 0);
     assert(Io.last_platform_code() != 0);
 
@@ -986,7 +987,13 @@ run_threads_here :: () {
 SCRATCH :: ".scratch/io-engine";
 
 make_scratch :: () {
-    #if OS != .WINDOWS {
+    #if OS == .WINDOWS {
+        kernel32 :: #system_library "kernel32";
+        CreateDirectoryA :: (path: *u8, security: *void) -> s32 #foreign kernel32;
+
+        CreateDirectoryA(".scratch", null);
+        CreateDirectoryA(SCRATCH, null);
+    } else {
         libc :: #system_library "libc";
         mkdir :: (path: *u8, mode: u32) -> s32 #foreign libc;
 
@@ -1201,6 +1208,78 @@ test_files_from_many_fibers :: () {
     assert(failures == 0, "% file fibers failed", failures);
 }
 
+Big_Read :: struct {
+    file: Io.Io_File;
+    result: *Io.Io_Error;
+    count: *int;
+    group: *Io.Wait_Group;
+}
+
+big_reader :: (job: Big_Read) {
+    defer Io.done(job.group);
+
+    BYTES :: 1_500_000;
+
+    buffer := NewArray(BYTES, u8, false);
+
+    defer free(buffer.data);
+
+    job.count.*, job.result.* = Io.read_at(job.file, buffer, 0);
+}
+
+// A large read can be out (on the thread pool, in an IoRing, in the kernel) when another fiber
+// cancels the reader or closes the file. Neither may crash or lose the buffer: the reader ends
+// with its data, or with the cancel or close error, and the scheduler stays usable.
+test_file_cancel_and_close_under_read :: () {
+    make_scratch();
+
+    path := tprint("%/big-read.bin", SCRATCH);
+    data := NewArray(1_500_000, u8, false);
+
+    defer free(data.data);
+
+    memset(data.data, 7, data.count);
+
+    assert(Io.write_file(path, data) == .NONE);
+
+    for variant: 0..1 {
+        file, error := Io.open_file(path, .READ);
+
+        assert(error == .NONE, "open: %", error);
+
+        group: Io.Wait_Group;
+        result: Io.Io_Error;
+        count := -1;
+
+        Io.add(*group);
+        handle := Io.spawn(big_reader, Big_Read.{ file, *result, *count, *group });
+
+        // The reader runs until it waits for its read.
+        Io.yield();
+
+        if variant == 0 {
+            Io.cancel(handle);
+            Io.wait(*group);
+
+            assert(result == .NONE || result == .CANCELED, "read canceled under way gave %", result);
+            assert(Io.close(file) == .NONE);
+        } else {
+            assert(Io.close(file) == .NONE);
+            Io.wait(*group);
+
+            assert(result == .NONE || result == .CLOSED || result == .INVALID || result == .OTHER, "read closed under way gave %", result);
+        }
+
+        if result == .NONE assert(count == data.count, "read % of %", count, data.count);
+    }
+
+    // The scheduler and the files still work.
+    content, read_error := Io.read_file(path);
+
+    assert(read_error == .NONE && content.count == data.count);
+    free(content.data);
+}
+
 // ---------------------------------------------------------------------------------------------
 // Groups
 
@@ -1242,6 +1321,7 @@ run_files :: () {
     test_file_modes_and_offsets();
     test_file_errors();
     test_files_from_many_fibers();
+    test_file_cancel_and_close_under_read();
 }
 
 run_all :: () {

@@ -39,10 +39,15 @@
 
 #scope_module
 #import "Basic";
+#import "Atomics";
 #load "stacks.jai";
 #load "overflow.jai";
 #load "platform.jai";
 #load "engine.jai";
 #load "engine_poll.jai";
 #load "engine_uring.jai";
+#load "engine_iocp.jai";
+#load "engine_ioring.jai";
+#load "files_pool.jai";
+#load "win32.jai";
 #load "resolver.jai";

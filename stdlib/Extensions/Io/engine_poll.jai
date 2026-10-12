@@ -8,10 +8,10 @@
 // in order until an operation would block again, and the descriptor is armed again if anyone is
 // left. Two fibers waiting on one descriptor therefore never lose each other's wake-up.
 //
-// Regular files never report "not ready" (reads and writes happen at once, at their offset), so
-// file IO on these backends is blocking-with-readiness: it blocks the thread for as long as the
-// disk takes. Closing a descriptor fails every operation still waiting on it with the cancel error
-// (`.CLOSED` for its fiber).
+// Regular files never report "not ready", so they cannot wait in the poller. A short read or write
+// on a file runs at once (blocking the thread for the page cache's few microseconds); a longer one
+// goes to the file thread pool (files_pool.jai) and only its fiber waits. Closing a descriptor fails
+// every operation still waiting on it with the cancel error (`.CLOSED` for its fiber).
 
 // Descriptor numbers above this are not tracked.
 MAX_POLLED_FDS :: 1 << 22;
@@ -20,11 +20,18 @@ poll_submit :: (scheduler: *Scheduler, engine: *Engine, op: *Op) -> bool {
     fd := op.handle.fd;
 
     if op.kind == .CLOSE {
+        // A pool worker may be using the file.
+        if op.handle.kind == .FILE pool_drain(scheduler, engine);
+
         poll_close(scheduler, engine, fd);
-        op.result = sys_close(fd);
+        op.result = sys_close_handle(op.handle);
         op.state = .DONE;
 
         return true;
+    }
+
+    if (op.kind == .READ || op.kind == .WRITE) && op.handle.kind == .FILE && engine.file_threads > 0 && op.length > engine.file_inline {
+        if pool_submit(scheduler, engine, op) return false;
     }
 
     if poll_attempt(op) {
@@ -133,6 +140,9 @@ poll_ready :: (scheduler: *Scheduler, engine: *Engine, fd: s64, readable: bool, 
 }
 
 poll_cancel :: (scheduler: *Scheduler, engine: *Engine, op: *Op) {
+    // A pool worker has it and will report it.
+    if op.uncancelable return;
+
     wait_unlink(*engine.fds[op.handle.fd], op);
     finish_op(scheduler, op, -E_CANCELED);
 }
@@ -298,6 +308,12 @@ KQ_WRITE :: -2;
         for 0..count - 1 {
             event := *events[it];
             fd := cast(s64) event.ident;
+
+            if event.filter == EVFILT_USER {
+                pool_collect(scheduler, engine);
+
+                continue;
+            }
 
             if fd >= engine.fds.count continue;
 

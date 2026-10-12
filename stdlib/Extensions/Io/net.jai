@@ -216,9 +216,8 @@ tcp_listen :: (address: Address, backlog := 1024, reuse_port := false) -> Tcp_Li
 
     handle := Handle.{ fd, .SOCKET };
 
-    result := sys_set_option(fd, SOL_SOCKET, SO_REUSEADDR, 1);
+    result := sys_prepare_listener(fd, reuse_port);
 
-    if result >= 0 && reuse_port result = sys_set_option(fd, SOL_SOCKET, SO_REUSEPORT, 1);
     if result >= 0 result = sys_bind(fd, *storage, length);
     if result >= 0 result = sys_listen(fd, cast(s32) backlog);
 
@@ -724,5 +723,5 @@ discard_handle :: (handle: Handle) {
 
     if engine.backend == .EPOLL || engine.backend == .KQUEUE poll_close(scheduler, engine, handle.fd);
 
-    sys_close(handle.fd);
+    sys_close_handle(handle);
 }

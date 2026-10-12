@@ -1,9 +1,8 @@
 // The completion engine: what the fiber calls underneath (`read`, `accept`, ...) turn into. Each
 // scheduler has one. A fiber describes an operation (`Op`), hands it to `engine_submit`, and parks;
 // the engine finishes it, now or later, and `finish_op` wakes the fiber. Nothing above this file
-// knows which backend runs: io_uring (Linux), epoll (Linux) or kqueue (macOS), picked at startup
-// by `engine_start`, or Windows' `.NONE`, where every operation fails with `.UNSUPPORTED` until
-// the completion port backend exists.
+// knows which backend runs: io_uring (Linux), epoll (Linux), kqueue (macOS), or completion ports
+// with an optional IoRing for files (Windows), picked at startup by `engine_start`.
 //
 // Rules the backends keep (docs/plans/async-io.md, "The internal engine"):
 //   - A handle is an opaque descriptor plus a kind tag.
@@ -23,8 +22,8 @@ Handle_Kind :: enum u8 {
     STREAM;
 }
 
-// An open descriptor, as the engine sees it. `fd` is a file descriptor on POSIX and will be a
-// SOCKET or HANDLE on Windows.
+// An open descriptor, as the engine sees it. `fd` is a file descriptor on POSIX and a SOCKET or
+// HANDLE on Windows.
 Handle :: struct {
     fd: s64 = -1;
     kind: Handle_Kind;
@@ -49,8 +48,20 @@ Op_State :: enum u8 {
     DONE;
 }
 
+// The Win32 OVERLAPPED structure. It is the first member of `Op`, so the address the completion
+// port hands back is the address of the operation.
+Overlapped :: struct {
+    internal: u64;
+    internal_high: u64;
+    offset: u32;
+    offset_high: u32;
+    event: s64;
+}
+
 // One operation, from submission to completion.
 Op :: struct {
+    // Windows completion ports: must stay the first member.
+    overlapped: Overlapped;
     kind: Op_Kind;
     state: Op_State;
     handle: Handle;
@@ -71,6 +82,14 @@ Op :: struct {
     canceling: bool;
     // Why `cancel_op` canceled it: `.CANCELED`, `.TIMED_OUT`; `.NONE` if the handle was closed.
     cancel_cause: Io_Error;
+    // Windows: the socket `accept` made ahead of time (AcceptEx).
+    aux: s64;
+    // A file thread pool worker or an IoRing owns it; it runs to the end and cannot be interrupted.
+    uncancelable: bool;
+    // Which internal user an `internal` operation belongs to.
+    tag: Internal_Tag;
+    // The scheduler's end of the file thread pool that a worker reports to.
+    link: *Pool_Link;
 
     // The completion.
     result: s64;
@@ -82,6 +101,14 @@ Op :: struct {
     // The free list, or the list of operations waiting on a descriptor.
     next: *Op;
     previous: *Op;
+}
+
+// What an internal operation (one that belongs to the engine, not to a fiber) is for.
+Internal_Tag :: enum u8 {
+    // The pipe that resolver threads write to.
+    RESOLVER_WAKE;
+    // The eventfd that file pool workers write to (epoll).
+    POOL_WAKE;
 }
 
 Engine :: struct {
@@ -98,6 +125,13 @@ Engine :: struct {
     changes: [..] Kevent;
 
     uring: *Uring_State;
+    iocp: *Iocp_State;
+
+    // The file thread pool (epoll, kqueue): reads and writes longer than `file_inline` bytes go to
+    // `file_threads` workers; 0 threads means everything runs inline.
+    file_inline: s64;
+    file_threads: s64;
+    pool: *Pool_Link;
 }
 
 // What the poll backends remember per descriptor.
@@ -134,10 +168,14 @@ engine_start :: (scheduler: *Scheduler) {
         }
 
         epoll_start(engine);
+        pool_configure(engine);
     } else #if OS == .MACOS {
         if request == .IO_URING || request == .EPOLL engine.fallback_reason = "JAI_IO_BACKEND names a backend macOS does not have";
 
         kqueue_start(engine);
+        pool_configure(engine);
+    } else #if OS == .WINDOWS {
+        iocp_start(engine, request);
     } else {
         engine.backend = .NONE;
         engine.fallback_reason = "IO is not implemented on this system yet";
@@ -151,7 +189,10 @@ engine_stop :: (scheduler: *Scheduler) {
     // Lookups still under way finish first: they need the engine to be woken.
     wake_stop(scheduler);
 
+    pool_detach(scheduler, engine);
+
     if engine.backend == .IO_URING uring_stop(engine);
+    else if engine.backend == .IOCP || engine.backend == .IORING iocp_stop(engine);
     else if engine.poll_fd >= 0 sys_close(engine.poll_fd);
 
     array_reset(*engine.fds);
@@ -170,22 +211,16 @@ engine_stop :: (scheduler: *Scheduler) {
 
 // The backend a user asked for with JAI_IO_BACKEND, or `.NONE` if it is unset or unknown.
 requested_backend :: () -> Backend {
-    #if OS == .WINDOWS {
-        return .NONE;
-    } else {
-        raw := c_getenv("JAI_IO_BACKEND");
-        if !raw return .NONE;
+    scratch: [256] u8;
+    name := env_text("JAI_IO_BACKEND", *scratch);
 
-        length := 0;
-        while raw[length] length += 1;
+    if name == "io_uring" return .IO_URING;
+    if name == "epoll" return .EPOLL;
+    if name == "kqueue" return .KQUEUE;
+    if name == "iocp" return .IOCP;
+    if name == "ioring" return .IORING;
 
-        name := to_string(raw, length);
-        if name == "io_uring" return .IO_URING;
-        if name == "epoll" return .EPOLL;
-        if name == "kqueue" return .KQUEUE;
-
-        return .NONE;
-    }
+    return .NONE;
 }
 
 #if OS != .WINDOWS {
@@ -234,6 +269,14 @@ engine_submit :: (scheduler: *Scheduler, op: *Op) -> bool {
             scheduler.pending += 1;
 
             return false;
+
+        case .IOCP; #through;
+        case .IORING;
+            if iocp_submit(scheduler, engine, op) return true;
+
+            scheduler.pending += 1;
+
+            return false;
     }
 
     op.result = -E_UNSUPPORTED;
@@ -252,6 +295,7 @@ engine_cancel :: (scheduler: *Scheduler, op: *Op) {
     op.canceling = true;
 
     if engine.backend == .IO_URING uring_cancel(scheduler, engine, op);
+    else if engine.backend == .IOCP || engine.backend == .IORING iocp_cancel(scheduler, engine, op);
     else poll_cancel(scheduler, engine, op);
 }
 
@@ -264,6 +308,8 @@ engine_wait :: (scheduler: *Scheduler, timeout: s64) {
         case .IO_URING; uring_wait(scheduler, engine, timeout);
         case .EPOLL; epoll_wait_events(scheduler, engine, timeout);
         case .KQUEUE; kqueue_wait_events(scheduler, engine, timeout);
+        case .IOCP; #through;
+        case .IORING; iocp_wait(scheduler, engine, timeout);
         case; if timeout > 0 sleep_milliseconds(cast(s32) min((timeout + 999_999) / 1_000_000, 0x7fff_ffff));
     }
 }
@@ -373,7 +419,8 @@ error_from_code :: (code: s64) -> Io_Error {
         case E_NOSYS; return .UNSUPPORTED;
     }
 
-    return .OTHER;
+    #if OS == .WINDOWS return windows_error(code);
+    else return .OTHER;
 }
 
 // The error of a plain system call that returned `result` (negative: -errno), for the running
@@ -389,8 +436,9 @@ error_from_result :: (result: s64) -> Io_Error {
 
 // ---------------------------------------------------------------------------------------------
 // Completions that belong to the engine itself rather than a fiber: the wake-up pipe resolver
-// threads write to (resolver.jai).
+// threads write to (resolver.jai) and the eventfd of the file pool (files_pool.jai).
 
 internal_completion :: (scheduler: *Scheduler, op: *Op) {
-    wake_completed(scheduler, op);
+    if op.tag == .POOL_WAKE pool_wake_completed(scheduler, op);
+    else wake_completed(scheduler, op);
 }

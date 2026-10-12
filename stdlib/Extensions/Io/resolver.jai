@@ -8,6 +8,9 @@
 //
 // A fiber that is canceled, or whose deadline passes, stops waiting at once; the lookup itself
 // cannot be interrupted, so the job is abandoned and freed when its answer arrives.
+//
+// On Windows there is no pipe: a helper posts a `KEY_WAKE` packet to the scheduler's completion
+// port, which `iocp_wait` turns into `wake_collect`, and `write_fd` holds that port.
 
 Thread :: #import "Thread";
 
@@ -118,12 +121,22 @@ abandon_job :: (fiber: *Fiber) {
 wake_ensure :: (scheduler: *Scheduler) -> *Wake_State {
     if scheduler.waker return scheduler.waker;
 
-    pipe: [2] s32;
-    if sys_pipe(*pipe, scheduler.engine.backend != .IO_URING) < 0 return null;
-
     state := New(Wake_State);
-    state.read_handle = .{ pipe[0], .STREAM };
-    state.write_fd = pipe[1];
+
+    #if OS == .WINDOWS {
+        state.write_fd = scheduler.engine.iocp.port;
+    } else {
+        pipe: [2] s32;
+
+        if sys_pipe(*pipe, scheduler.engine.backend != .IO_URING) < 0 {
+            free(state);
+
+            return null;
+        }
+
+        state.read_handle = .{ pipe[0], .STREAM };
+        state.write_fd = pipe[1];
+    }
 
     Thread.init(*state.mutex);
     Thread.init(*state.work);
@@ -145,11 +158,14 @@ wake_ensure :: (scheduler: *Scheduler) -> *Wake_State {
 // Makes sure a READ on the pipe is outstanding while lookups are, and takes answers that are
 // already there.
 wake_arm :: (scheduler: *Scheduler) {
+    #if OS == .WINDOWS return;
+
     state := scheduler.waker;
 
     while !state.op && state.outstanding > 0 {
         op := new_op(scheduler.engine, .READ, state.read_handle);
         op.internal = true;
+        op.tag = .RESOLVER_WAKE;
         op.buffer = state.buffer.data;
         op.length = state.buffer.count;
 
@@ -236,8 +252,10 @@ wake_stop :: (scheduler: *Scheduler) {
     for 1..state.helpers_started Thread.signal(*state.work);
     for 0..state.helpers_started - 1 Thread.thread_deinit(*state.helpers[it]);
 
-    sys_close(state.read_handle.fd);
-    sys_close(state.write_fd);
+    #if OS != .WINDOWS {
+        sys_close(state.read_handle.fd);
+        sys_close(state.write_fd);
+    }
 
     Thread.destroy(*state.mutex);
     Thread.destroy(*state.work);
@@ -284,15 +302,30 @@ helper_main :: (thread: *Thread.Thread) -> s64 {
         state.done_tail = job;
         Thread.unlock(*state.mutex);
 
-        byte: u8 = 1;
+        #if OS == .WINDOWS {
+            iocp_post(state.write_fd, KEY_WAKE);
+        } else {
+            byte: u8 = 1;
 
-        sys_write(state.write_fd, *byte, 1, -1);
+            sys_write(state.write_fd, *byte, 1, -1);
+        }
     }
 
     return 0;
 }
 
-#if OS == .MACOS {
+#if OS == .WINDOWS {
+    Addrinfo :: struct {
+        flags: s32;
+        family: s32;
+        socket_type: s32;
+        protocol: s32;
+        address_length: u64;
+        canonical_name: *u8;
+        address: *Sock_Storage;
+        next: *Addrinfo;
+    }
+} else #if OS == .MACOS {
     Addrinfo :: struct {
         flags: s32;
         family: s32;
@@ -320,45 +353,57 @@ helper_main :: (thread: *Thread.Thread) -> s64 {
     c_getaddrinfo :: (node: *u8, service: *u8, hints: *Addrinfo, result: **Addrinfo) -> s32 #foreign libc "getaddrinfo";
     c_freeaddrinfo :: (result: *Addrinfo) #foreign libc "freeaddrinfo";
 
-    // Runs on a helper thread: no context is needed for plain C calls.
-    lookup :: (job: *Resolve_Job) {
-        hints: Addrinfo;
-        hints.socket_type = SOCK_STREAM;
+    address_info :: (host: *u8, hints: *Addrinfo, found: **Addrinfo) -> s32 {
+        return c_getaddrinfo(host, null, hints, found);
+    }
 
-        found: *Addrinfo;
-
-        job.code = c_getaddrinfo(job.host, null, *hints, *found);
-        if job.code != 0 return;
-
-        best: *Addrinfo;
-
-        entry := found;
-
-        while entry {
-            if entry.address && (entry.family == AF_INET || entry.family == AF_INET6) {
-                if entry.family == AF_INET {
-                    best = entry;
-
-                    break;
-                }
-
-                if !best best = entry;
-            }
-
-            entry = entry.next;
-        }
-
-        if best {
-            job.address = from_sockaddr(best.address);
-            job.address.port = job.port;
-        } else {
-            job.code = -1;
-        }
-
+    free_address_info :: (found: *Addrinfo) {
         c_freeaddrinfo(found);
     }
 } else {
-    lookup :: (job: *Resolve_Job) {
+    address_info :: (host: *u8, hints: *Addrinfo, found: **Addrinfo) -> s32 {
+        return win_get_address_info(host, null, hints, found);
+    }
+
+    free_address_info :: (found: *Addrinfo) {
+        win_free_address_info(found);
+    }
+}
+
+// Runs on a helper thread: no context is needed for plain C calls.
+lookup :: (job: *Resolve_Job) {
+    hints: Addrinfo;
+    hints.socket_type = SOCK_STREAM;
+
+    found: *Addrinfo;
+
+    job.code = address_info(job.host, *hints, *found);
+    if job.code != 0 return;
+
+    best: *Addrinfo;
+
+    entry := found;
+
+    while entry {
+        if entry.address && (entry.family == AF_INET || entry.family == AF_INET6) {
+            if entry.family == AF_INET {
+                best = entry;
+
+                break;
+            }
+
+            if !best best = entry;
+        }
+
+        entry = entry.next;
+    }
+
+    if best {
+        job.address = from_sockaddr(best.address);
+        job.address.port = job.port;
+    } else {
         job.code = -1;
     }
+
+    free_address_info(found);
 }

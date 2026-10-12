@@ -1,8 +1,8 @@
 // The operating system calls the engine and the network and file procedures make, and the numbers
 // that differ between systems. Everything here returns a result of 0 or more, or the negative
 // errno, the way the io_uring kernel interface does, so the backends can treat a failed call and a
-// failed operation alike. Windows has no implementation yet (docs/stdlib/io-engine.md): its
-// versions fail with `E_UNSUPPORTED`.
+// failed operation alike. The Windows versions live in win32.jai; on Windows the `E_*` numbers are
+// the system's own (Win32 and Winsock error codes), so `last_platform_code()` stays meaningful.
 //
 // Sockets are created non-blocking and close-on-exec, and never raise SIGPIPE.
 
@@ -51,6 +51,50 @@ E_UNSUPPORTED :: 0x7fff_0001;
     O_APPEND :: 0x8;
     O_CLOEXEC :: 0x1000000;
     SC_PROCESSORS_ONLINE :: 58;
+} else #if OS == .WINDOWS {
+    // Win32 and Winsock error numbers.
+    E_PERM :: 1314;
+    E_NOENT :: 2;
+    E_INTR :: 10004;
+    E_BADF :: 6;
+    E_AGAIN :: 10035;
+    E_NOMEM :: 8;
+    E_ACCES :: 5;
+    E_EXIST :: 80;
+    E_NOTDIR :: 267;
+    E_ISDIR :: 336;
+    E_INVAL :: 87;
+    E_MFILE :: 4;
+    E_NOSPC :: 112;
+    E_PIPE :: 109;
+    E_NOSYS :: 120;
+    E_NOTSOCK :: 10038;
+    E_ADDRINUSE :: 10048;
+    E_ADDRNOTAVAIL :: 10049;
+    E_NETUNREACH :: 10051;
+    E_CONNABORTED :: 10053;
+    E_CONNRESET :: 10054;
+    E_NOTCONN :: 10057;
+    E_TIMEDOUT :: 10060;
+    E_CONNREFUSED :: 10061;
+    E_HOSTUNREACH :: 10065;
+    E_INPROGRESS :: 997;
+    E_CANCELED :: 995;
+
+    AF_INET6 :: 23;
+    SOL_SOCKET :: 0xffff;
+    SO_REUSEADDR :: 4;
+    // Windows has no SO_REUSEPORT; `sys_prepare_listener` does the equivalent.
+    SO_REUSEPORT :: 0;
+    SO_ERROR :: 0x1007;
+    // Abstract open flags, translated by `sys_open`.
+    O_NONBLOCK :: 0x800;
+    O_CREAT :: 0x40;
+    O_TRUNC :: 0x200;
+    O_EXCL :: 0x80;
+    O_APPEND :: 0x400;
+    O_CLOEXEC :: 0x80000;
+    SC_PROCESSORS_ONLINE :: 0;
 } else {
     E_PERM :: 1;
     E_NOENT :: 2;
@@ -277,6 +321,33 @@ MAX_TRANSFER :: 0x4000_0000;
         return 0;
     }
 
+    // Closes a handle of any kind (sockets and files share one call on POSIX).
+    sys_close_handle :: (handle: Handle) -> s64 {
+        return sys_close(handle.fd);
+    }
+
+    // The options a listening socket gets before `bind`: the address may be reused after a restart,
+    // and with `reuse_port` several listeners (one per thread) may share it.
+    sys_prepare_listener :: (fd: s64, reuse_port: bool) -> s64 {
+        result := sys_set_option(fd, SOL_SOCKET, SO_REUSEADDR, 1);
+
+        if result >= 0 && reuse_port result = sys_set_option(fd, SOL_SOCKET, SO_REUSEPORT, 1);
+
+        return result;
+    }
+
+    // The value of an environment variable, or "" if it is unset. `buffer` is scratch space that
+    // the Windows version fills.
+    env_text :: (name: *u8, buffer: *[256] u8) -> string {
+        raw := c_getenv(name);
+        if !raw return "";
+
+        length := 0;
+        while raw[length] length += 1;
+
+        return to_string(raw, length);
+    }
+
     sys_processors :: () -> s64 {
         count := c_sysconf(SC_PROCESSORS_ONLINE);
         if count < 1 return 1;
@@ -382,77 +453,5 @@ MAX_TRANSFER :: 0x4000_0000;
         if end < 0 return -cast(s64) errno_now();
 
         return end;
-    }
-} else {
-    sys_socket :: (family: s32, nonblocking: bool) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_set_option :: (fd: s64, level: s32, name: s32, value: s32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_bind :: (fd: s64, address: *Sock_Storage, length: u32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_listen :: (fd: s64, backlog: s32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_socket_name :: (fd: s64, address: *Sock_Storage, peer: bool) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_shutdown :: (fd: s64, how: s32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_socket_error :: (fd: s64) -> s64 {
-        return E_UNSUPPORTED;
-    }
-
-    sys_open :: (path: *u8, flags: s32, mode: u32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_close :: (fd: s64) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_pipe :: (fds: *[2] s32, nonblocking: bool) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_processors :: () -> s64 {
-        return 1;
-    }
-
-    sys_accept :: (fd: s64, address: *Sock_Storage, length: *u32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_connect :: (fd: s64, address: *Sock_Storage, length: u32) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_recv :: (fd: s64, buffer: *void, length: s64) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_send :: (fd: s64, buffer: *void, length: s64) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_read :: (fd: s64, buffer: *void, length: s64, offset: s64) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_write :: (fd: s64, buffer: *void, length: s64, offset: s64) -> s64 {
-        return -E_UNSUPPORTED;
-    }
-
-    sys_file_size :: (fd: s64) -> s64 {
-        return -E_UNSUPPORTED;
     }
 }

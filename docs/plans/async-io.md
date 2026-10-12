@@ -1,6 +1,6 @@
 # Async IO, HTTP and JSON plan
 
-Status: milestones 1 to 3 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation, see [io-engine](../specs/stdlib/README.md)). The kqueue backend was pulled forward from milestone 7. Windows IO is still to come.
+Status: milestones 1 to 3 and 7 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation on io_uring, epoll, kqueue and Windows completion ports with IoRing, plus the file thread pool, see [io-engine](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
 
 ## Where we are
 
@@ -306,7 +306,7 @@ The client is what drives the server's integration tests. It runs in-process on 
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3.
 5. The HTTP/1 codec, plus conformance. Also independent.
 6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests.
-7. IOCP (kqueue is done) + IoRing, and the thread-pool backend.
+7. IOCP (kqueue is done) + IoRing, and the thread-pool backend. **Done** ([io-engine](../specs/stdlib/README.md)); the Windows backends are verified by type-checking for windows-x64 and windows-arm64 and run in CI, the file pool on macOS.
 8. HPACK, HTTP/2 and h2spec.
 9. Rebuild `File_Async` on `Io`, keeping its API.
 
