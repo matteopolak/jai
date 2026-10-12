@@ -4,6 +4,8 @@
 
 ### Added
 
+- `Atomics`: ordered operations with a `Memory_Order` (`RELAXED`, `ACQUIRE`, `RELEASE`, `ACQ_REL`, `SEQ_CST`): `atomic_load`, `atomic_store`, `atomic_exchange`, `atomic_compare_exchange` and `atomic_fetch_add/sub/and/or/xor`. They compile to single LLVM atomic instructions with the order you name (native and wasm) and run as sequentially consistent in the interpreter.
+- `Extensions/Io_Uring` (Linux only): the io_uring kernel interface. Constants, enums and structs are generated from `linux/io_uring.h` by `tools/gen_io_uring.py` with layout `#assert`s; `io_uring_setup/enter/register`; and a `Ring` with `ring_init`, `get_sqe`, `submit`, `peek_cqe`, `wait_cqe`, `cqe_seen` and `probe_ops`. 128-byte entries and 32-byte completions are supported.
 - `Extensions/Io`: cooperative fibers on a per-thread scheduler (`io_run`, `spawn`, `yield`, `sleep`, `cancel`) with a bounded `Channel(T)`, `Wait_Group` and `Fiber_Mutex`. Fibers get guard-paged, pooled stacks and their own copy of the context and temporary storage. Not available on wasm.
 - The `fiber_init`, `fiber_switch` and `fiber_free` intrinsics switch stacks in native builds (x64 SysV and Win64, arm64) and under `jaic run`; wasm builds refuse them.
 - `Extensions/Json`: `to_json`, `from_json` and `parse_json` with encoders and decoders generated from your types at compile time, `@json(...)` attributes, exact integers, shortest round-trip floats, strict RFC 8259 parsing checked against JSONTestSuite, and SIMD string scanning.

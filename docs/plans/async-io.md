@@ -9,7 +9,7 @@ Status: agreed design, nothing built yet.
 - What we have to build on:
   - `syscall` through libc, with numbers 425-427 for io_uring already in `POSIX/bindings/linux/syscall.jai`;
   - `mmap`, threads and `#asm`;
-  - `Atomics` (CAS with explicit orders, but no plain acquire load or release store);
+  - `Atomics`, now with ordered loads, stores, exchanges and fetch operations ([atomics](../specs/stdlib/README.md));
   - the interpreter's cooperative thread scheduler, which already switches between separate stacks.
 
 ## Decisions so far
@@ -293,14 +293,14 @@ The client is what drives the server's integration tests. It runs in-process on 
 
 ## Prerequisites in jaic and the stdlib
 
-- **Atomics:** acquire loads and release stores.
+- **Atomics:** acquire loads and release stores. Done: [atomics](../specs/stdlib/README.md).
 - **Fibers:** the `fiber_switch` intrinsic in all backends (LLVM native, interpreter), plus Win64 TIB handling.
-- **Bindings:** the generated `io_uring.h`, IoRing (`ioringapi.h`) and kqueue bindings.
+- **Bindings:** the generated `io_uring.h` (done: [Io_Uring](../specs/stdlib/README.md)), IoRing (`ioringapi.h`) and kqueue bindings.
 - **Polymorphism:** compile-time handler inspection needs polymorphic procedures over procedure types, and `#insert` of generated extractors. Both exist, but the routing case will stress them.
 
 ## Milestones
 
-1. Atomics ordering and the `Io_Uring` bindings, with a raw nop/read/write test.
+1. Atomics ordering and the `Io_Uring` bindings, with a raw nop/read/write test. **Done** ([atomics](../specs/stdlib/README.md), [Io_Uring](../specs/stdlib/README.md)).
 2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic run` first. This is the biggest risk, so it comes early.
 3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`.
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3.

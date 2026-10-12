@@ -14,6 +14,7 @@ their path, so the import says the code is jaic-only:
 | `#import "Extensions/Jai_Format";` | The Jai source formatter behind `jaifmt` (text in, text out) |
 | `#import "Extensions/WebGPU";` | The standard WebGPU C API (`webgpu.h`): wgpu-native natively, the page's WebGPU in the browser |
 | `#import "Extensions/Io";` | Cooperative fibers: a per-thread scheduler, `spawn`/`sleep`/`cancel`, bounded channels, wait groups (not on wasm) |
+| `#import "Extensions/Io_Uring";` | Linux io_uring: kernel constants and structs generated from the UAPI header, the three system calls, and a mapped `Ring` (Linux only) |
 | `#import "Extensions/Wasi_Runtime";` | The C library and `_start` a wasm64 program needs as a WASI command (added by `jaic build -os wasm`) |
 
 They may change between jaic releases. Details: `docs/stdlib/extensions.md` in the jaic repository.
