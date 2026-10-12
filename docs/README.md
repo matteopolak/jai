@@ -64,6 +64,7 @@ How `crates/jaic`, the interpreter and the language server work.
 - [jaic `#asm` blocks](compiler/asm.md)
 - [SIMD lowering](compiler/simd-lowering.md): target features, per-ISA backends and how to add an intrinsic or instruction set
 - [Threads under `jaic run`](compiler/interpreter-threads.md)
+- [Fiber intrinsics: switching stacks in every backend](compiler/fibers.md)
 - [jaic interpreter](compiler/interpreter.md)
 - [Low-level IR](compiler/ir.md)
 - [Compile speed](compiler/compile-speed.md): where an `-O0` build spends its time, what was done about it, current numbers
@@ -101,6 +102,7 @@ The clean-room `stdlib/`. Contributors must not read the source of an official J
 - [Binary formats and checksums](specs/stdlib/README.md)
 - [Bindings_Generator](specs/stdlib/README.md)
 - [Stdlib extensions: jaic-only modules in `stdlib/Extensions/`](specs/stdlib/README.md)
+- [Io: fibers, scheduler, channels (jaic extension)](specs/stdlib/README.md)
 - [Command_Line](specs/stdlib/README.md)
 - [Args: a compile-time-generated command-line parser (jaic extension)](specs/stdlib/README.md)
 - [Regex: regular expressions with compile-time typed patterns (jaic extension)](specs/stdlib/README.md)
