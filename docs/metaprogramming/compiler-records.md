@@ -70,9 +70,9 @@ Gotcha: a run that writes globals before `compiler_get_nodes` writes them again 
 
 In typed exports:
 
-- Names resolve to locals first (`Exporter::locals`, scoped per block), then `Compiler::lookup` from the code's scope. A declaration resolves to a cached reference record (`resolved_decls`) with `type`, `type_inst.result` and, for procedures, a header as `expression`. Builtins like `size_of` resolve to nothing.
+- Names resolve to locals first (`Exporter::locals`, scoped per block), then `Compiler::lookup` from the code's scope. A loop's `it` and `it_index` (or its named variables) are locals with no declaration record (`0` in `locals`), so they resolve to nothing rather than to a global of the same name. Names that are not scope names (the member in `a.b` and `.B`, a struct literal's field, a named argument, a loop label) are exported unresolved by `Exporter::name_ident`: a scope lookup would find an unrelated global, or miss after searching every sibling file's imports, which made the lookups a quarter of a Focus edit. A declaration resolves to a cached reference record (`resolved_decls`) with `type`, `type_inst.result` and, for procedures, a header as `expression`. Builtins like `size_of` resolve to nothing.
 - Calls pick the only candidate, else the first overload whose parameter count fits.
-- Value expressions get `type` by checking them in the code's scope without emitting (`Exporter::expr_type`); untyped literals report their default (`s64`, `float32`) {#records.13}.
+- Value expressions get `type` by checking them in the code's scope without emitting (`Exporter::expr_type`). One that reads a local (`Exporter::reads_local`) gets none, since the code's scope does not have the local. Untyped literals report their default (`s64`, `float32`) {#records.13}.
 - Type records carry `__address`, the real descriptor in this program's memory, so `type == type_info(T)` works {#records.11}.
 - In `x := value`, the value takes the declaration's type when it has none.
 

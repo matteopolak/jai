@@ -1032,11 +1032,21 @@ impl Exporter<'_> {
         self.add(rec)
     }
 
+    /// A `Code_Ident` that is not a name of the scope: a member (`a.b`, `.B`), a struct
+    /// literal's field, a named argument or a loop label. Looking it up in the scope would
+    /// miss after the slowest search, or find an unrelated global of the same name.
+    fn name_ident(&mut self, name: Sym, span: Span) -> i64 {
+        let mut rec = self.node("Code_Ident", node::IDENT, span);
+        rec.str("name", name.as_str().as_bytes());
+        self.add(rec)
+    }
+
     /// The declaration record `name` refers to here: a parameter or local of the tree being
     /// exported, else what the scope's lookup finds (a declaration made for it once).
     fn resolve_name(&mut self, name: Sym) -> Option<i64> {
         if let Some(&(_, decl)) = self.locals.iter().rev().find(|(n, _)| *n == name) {
-            return Some(decl);
+            // 0: a local with no declaration record (a loop's `it`).
+            return (decl != 0).then_some(decl);
         }
         let scope = self.scope;
         let c = self.c.as_deref_mut()?;
@@ -1395,7 +1405,7 @@ impl Exporter<'_> {
                 rec
             }
             E::Member(a, name) => {
-                let (a, b) = (self.expr(a), self.ident(name.name, name.span));
+                let (a, b) = (self.expr(a), self.name_ident(name.name, name.span));
                 let mut rec = self.node("Code_Binary_Operator", node::BINARY_OPERATOR, span);
                 rec.int("operator_type", b'.' as i64)
                     .ptr("left", a)
@@ -1403,7 +1413,7 @@ impl Exporter<'_> {
                 rec
             }
             E::InferredMember(name) => {
-                let b = self.ident(name.name, name.span);
+                let b = self.name_ident(name.name, name.span);
                 let mut rec = self.node("Code_Binary_Operator", node::BINARY_OPERATOR, span);
                 rec.int("operator_type", b'.' as i64).ptr("right", b);
                 rec
@@ -1496,7 +1506,7 @@ impl Exporter<'_> {
                 for field in fields {
                     let value = self.expr(&field.value);
                     let target = match (&field.name, &field.target) {
-                        (Some(n), _) => self.ident(n.name, n.span),
+                        (Some(n), _) => self.name_ident(n.name, n.span),
                         (None, Some(t)) => self.expr(t),
                         (None, None) => {
                             values.push(value);
@@ -1761,10 +1771,36 @@ impl Exporter<'_> {
 
     /// The type `e` checks to in the exported code's scope, when it checks there.
     fn expr_type(&mut self, e: &ast::Expr) -> Option<TypeId> {
+        // Locals are not in that scope: checking would fail after a costly search for the
+        // name, or find a global the local shadows.
+        if self.reads_local(e) {
+            return None;
+        }
         let scope = self.scope;
         let c = self.c.as_deref_mut()?;
         let ty = c.check_expr_no_emit(scope, e).ok()?.ty();
         (ty != TypeId::COMPILE_TIME).then_some(ty)
+    }
+
+    /// Does `e` name a local of the exported code (looking through operators, members,
+    /// indexing, casts and calls)?
+    fn reads_local(&self, e: &ast::Expr) -> bool {
+        use ast::ExprKind as E;
+        match &e.kind {
+            E::Ident(name) => self.locals.iter().any(|(n, _)| n == name),
+            E::Binary(_, a, b) | E::Index(a, b) => self.reads_local(a) || self.reads_local(b),
+            E::Unary(_, a)
+            | E::Member(a, _)
+            | E::Cast {
+                value: a, ..
+            } => self.reads_local(a),
+            E::Call {
+                callee,
+                args,
+                ..
+            } => self.reads_local(callee) || args.iter().any(|a| self.reads_local(&a.value)),
+            _ => false,
+        }
     }
 
     /// `Code_Argument` records and the argument values.
@@ -1773,7 +1809,7 @@ impl Exporter<'_> {
         let mut values = Vec::new();
         for arg in args {
             let value = self.expr(&arg.value);
-            let name = arg.name.map_or(0, |n| self.ident(n.name, n.span));
+            let name = arg.name.map_or(0, |n| self.name_ident(n.name, n.span));
             let mut rec = Record::new("Code_Argument");
             rec.ptr("expression", value).ptr("name", name);
             unsorted.push(self.r.add(rec));
@@ -1927,9 +1963,17 @@ impl Exporter<'_> {
                     ast::ForOver::Range(a, b) => (self.expr(a), self.expr(b)),
                     ast::ForOver::Collection(c) => (self.expr(c), 0),
                 };
+                // The loop's variables are locals of the body, not names of the enclosing
+                // scope; they have no declaration record.
+                let locals = self.locals.len();
+                for (name, default) in [(f.it, "it"), (f.index, "it_index")] {
+                    let name = name.map_or_else(|| Sym::intern(default), |i| i.name);
+                    self.locals.push((name, 0));
+                }
                 let it = f.it.map_or(0, |i| self.ident(i.name, i.span));
                 let index = f.index.map_or(0, |i| self.ident(i.name, i.span));
                 let block = self.stmt_block(&f.body);
+                self.locals.truncate(locals);
                 let flags = (f.by_pointer as i64) | ((f.reverse as i64) * 0x2);
                 let mut rec = self.node("Code_For", node::FOR, span);
                 rec.ptr("iteration_expression", a)
@@ -1946,7 +1990,7 @@ impl Exporter<'_> {
                     S::Continue(_) => 1,
                     _ => 2,
                 };
-                let target = label.map_or(0, |l| self.ident(l.name, l.span));
+                let target = label.map_or(0, |l| self.name_ident(l.name, l.span));
                 let mut rec = self.node("Code_Loop_Control", node::LOOP_CONTROL, span);
                 rec.int("control_type", control).ptr("target_ident", target);
                 self.add(rec)
