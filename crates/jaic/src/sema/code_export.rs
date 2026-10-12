@@ -957,7 +957,9 @@ impl Exporter<'_> {
 
     /// A node record with the `Code_Node` fields filled in.
     fn node(&mut self, tag: &'static str, kind: i64, span: Span) -> Record {
-        let mut rec = Record::new(tag);
+        // The common fields (kind, location, serial, type) and a node's own few: growing
+        // from empty reallocated most records two or three times.
+        let mut rec = Record::with_capacity(tag, 12);
         rec.int("kind", kind);
         let Some(c) = self.c.as_deref_mut() else {
             return rec;

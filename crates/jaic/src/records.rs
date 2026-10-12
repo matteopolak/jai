@@ -44,6 +44,14 @@ impl Record {
         }
     }
 
+    /// A record with room for `fields` fields, for one whose size is known up front.
+    pub fn with_capacity(tag: &'static str, fields: usize) -> Self {
+        Record {
+            tag,
+            fields: Vec::with_capacity(fields),
+        }
+    }
+
     pub fn int(&mut self, name: &'static str, v: i64) -> &mut Self {
         self.fields.push((name, Field::Item(Item::Int(v))));
         self
