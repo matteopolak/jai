@@ -961,6 +961,12 @@ impl Interp {
         Ok(())
     }
 
+    /// Forget every procedure's frame: their bodies were released and nothing is running.
+    pub fn release_code(&mut self) {
+        self.frames = Vec::new();
+        self.retired = Vec::new();
+    }
+
     /// The frame of procedure `id`, made on its first call (and again when its body was
     /// replaced). The reference stays valid for as long as the interpreter lives: frames are
     /// boxed and a replaced one is kept in `retired`, since it may still be running.
@@ -1417,7 +1423,9 @@ impl Interp {
     #[inline(always)]
     fn body<'p>(&mut self, program: &'p Program, id: FuncId) -> Res<&'p ir::Func> {
         match program.funcs.get(id.0 as usize) {
-            Some(Some(func)) => Ok(func),
+            // Every lowered body has an entry block; one without was released
+            // (`Compiler::release_lowered_code`).
+            Some(Some(func)) if !func.blocks.is_empty() => Ok(func),
             _ => self.no_body(program, id),
         }
     }

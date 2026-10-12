@@ -841,9 +841,12 @@ fn compile(
         .collect();
     // Compile-time code is over once everything is checked. Each program holds the build
     // state, which would otherwise outlive the compile by hundreds of MB.
+    // Nothing runs the lowered bodies either: hovers and lints answer from the facts.
     compiler.release_build_state();
+    compiler.release_lowered_code();
     for other in &mut others {
         other.compiler.release_build_state();
+        other.compiler.release_lowered_code();
     }
     (compiler, errors, others)
 }

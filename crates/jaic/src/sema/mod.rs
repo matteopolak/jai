@@ -568,6 +568,21 @@ impl Compiler {
         self.export = code_export::ExportState::default();
     }
 
+    /// Drop the bodies of every procedure lowered so far and the interpreter's form of them,
+    /// keeping their signatures, once nothing will run them: an editor's compile answers from
+    /// its facts, and the bodies are tens of MB for a large program. Code checked later (a
+    /// sketch) still lowers and runs; a call into a released body traps as one with no body.
+    pub fn release_lowered_code(&mut self) {
+        for func in self.program.funcs.iter_mut().flatten() {
+            func.blocks = Vec::new();
+            func.vals = Vec::new();
+            func.slots = Vec::new();
+            func.trusted = Vec::new();
+            func.debug = None;
+        }
+        self.interp.release_code();
+    }
+
     pub fn new(options: Options, fs: Rc<dyn FileSystem>) -> Self {
         let mut c = Compiler {
             library_files: Default::default(),
