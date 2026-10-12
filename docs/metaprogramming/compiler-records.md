@@ -10,6 +10,8 @@ The bridge that lets a metaprogram see another workspace's code: `Message_File`,
 
 A metaprogram runs in its own compiler's interpreter, which borrows that compiler, and the target workspace's types are not the metaprogram's types. So the target's compiler exports neutral records (`crates/jaic/src/records.rs`): a tag naming a Jai struct (`"Code_Ident"`, `"Type_Info_Struct"`, `"Message_Import"`) and named fields, each an `Int` (floats as bits), `Str`, `Ref` (record id, 0 = null) or a list of those. Ids are global to the compilation, and records live until it ends.
 
+Exported syntax trees are most of a metaprogram compiler's memory (a third of a Focus check), so a `Record` is compact: each field is a 16-byte `Slot` holding an interned field `Name` (a `u16`), its kind and either the integer/record id itself or an index into the record's `extra` (strings and lists). Lists of record ids are kept as plain `i64`s. Readers get a borrowed `FieldRef` (`Records::field`, `Record::field_named`); writers still pass `Field`/`Item` to `Record::set`. Field names are interned per thread (`Name::of` hashes a literal by address); records hold `Rc`s, so they never cross threads. Plan entries in `record_build.rs` intern their member names once, so filling a struct compares `u16`s.
+
 ### Rust exporter
 
 `sema/code_export.rs`, with state in `Compiler::export`:
