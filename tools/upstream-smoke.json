@@ -576,8 +576,8 @@
       ],
       "skip": {
         "windows-x64": "Focus's Windows process code calls the Process module's init_named_pipe_pair (overlapped named pipes), which the stdlib does not have yet",
-        "linux-x64": "src/platform/linux.jai reads `LD.GL` from the project's own Linux_Display module, which declares it after `#scope_module`; jaic keeps module-scope names private to the module (unverified whether Jai lets a program see them)",
-        "linux-arm64": "src/platform/linux.jai reads `LD.GL` from the project's own Linux_Display module, which declares it after `#scope_module`; jaic keeps module-scope names private to the module (unverified whether Jai lets a program see them)"
+        "linux-x64": "not yet tried on a Linux host: `LD.GL` (declared after `#scope_module`) now resolves, and the next step is src/platform/linux.jai's compile-time `#run` icon loader calling stbi_load_from_memory, which needs the stb libraries built for Linux (a cross check from macOS stops there)",
+        "linux-arm64": "not yet tried on a Linux host: `LD.GL` (declared after `#scope_module`) now resolves, and the next step is src/platform/linux.jai's compile-time `#run` icon loader calling stbi_load_from_memory, which needs the stb libraries built for Linux (a cross check from macOS stops there)"
       }
     },
     {

@@ -155,14 +155,13 @@ struct and string parameters changed through their address (`advance(*s, 1)` in
 | jai-tracy | instrumented program | yes | yes | - | libtracy is not built on Windows |
 | wait_group | example | - | yes | - | Linux: `signal` is an ambiguous overload set in jaic (see below); no Windows backend |
 | hyperserve | GET /ping | - | yes | - | needs wait_group; not done upstream on Windows |
-| Focus | window and screenshot | - | yes | - | Linux: `LD.GL` is declared after `#scope_module`; Windows: `init_named_pipe_pair` missing from Process; x64 uses Focus's portable hash (no x64 `meow_hash`) |
+| Focus | window and screenshot | - | yes | - | Linux: `LD.GL` (after `#scope_module`) now resolves, next is the `#run` icon loader needing the Linux stb libraries, not yet run on a Linux host; Windows: `init_named_pipe_pair` missing from Process; x64 uses Focus's portable hash (no x64 `meow_hash`) |
 | forbear | playground window | - | yes | - | Linux needs a Wayland compositor; on the GPU-less CI macOS runner only the build is checked (the playground compiles shaders at start-up) |
 | sgpu, Vk-Engine | - | - | - | - | Slang / Jolt / ImGui builds and a Vulkan GPU |
 
 Gaps this found and did not fix (each needs a decision about Jai's behaviour or a bigger stdlib piece):
 
 - `signal` named as a value (`log("...", handle, signal)` in wait_group on Linux) is an ambiguous overload of POSIX's `signal` and Thread's `signal(*Semaphore)`.
-- Focus's own `modules/Linux_Display` exposes `GL` after `#scope_module`, and the program reads `LD.GL`.
 - Focus's Windows process code needs overlapped pipe reading; `Process.init_named_pipe_pair` now exists and is exercised against a real child by `tests/stdlib/process-named-pipes.jai` on the Windows CI jobs.
 
 ### Notes per project
