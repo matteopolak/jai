@@ -262,70 +262,181 @@ eisel_lemire :: (w_in: u64, q: s64, mantissa_bits: s64, min_exponent: s64, infin
 
 // Appends digits (no leading or trailing zeros, count >= 1) times 10^(point - count) in the
 // shortest of JSON's spellings: plain for magnitudes 1e-6 up to 1e21, with a ".0" when it would
-// otherwise read as an integer, and `1.5e-9` / `1e21` outside that.
+// otherwise read as an integer, and `1.5e-9` / `1e21` outside that. The text is put together in a
+// local buffer and appended once.
 append_decimal_float :: (builder: *String_Builder, negative: bool, digits: *u8, count: int, exponent10: int) {
-    if negative append(builder, #char "-");
+    out: [64] u8 = ---;
+    n := 0;
+
+    if negative {
+        out[n] = #char "-";
+        n += 1;
+    }
 
     // exponent10 is the exponent of the first digit: the value is d.ddd * 10^exponent10.
     if exponent10 < -6 || exponent10 >= 21 {
-        append(builder, digits[0] + #char "0");
+        out[n] = digits[0] + #char "0";
+        n += 1;
 
         if count > 1 {
-            append(builder, #char ".");
-            for 1..count - 1 append(builder, digits[it] + #char "0");
+            out[n] = #char ".";
+            n += 1;
+
+            for 1..count - 1 {
+                out[n] = digits[it] + #char "0";
+                n += 1;
+            }
         }
 
-        append(builder, #char "e");
+        out[n] = #char "e";
+        n += 1;
 
         value := exponent10;
 
         if value < 0 {
-            append(builder, #char "-");
+            out[n] = #char "-";
+            n += 1;
             value = -value;
         }
 
-        text: [4] u8;
-        length := 0;
-
-        if value == 0 {
-            text[0] = #char "0";
-            length = 1;
-        } else {
-            while value {
-                text[length] = cast,no_check(u8) (value % 10) + #char "0";
-                length += 1;
-                value /= 10;
-            }
+        if value >= 100 {
+            out[n] = cast,no_check(u8) (value / 100) + #char "0";
+            n += 1;
         }
 
-        i := length - 1;
-
-        while i >= 0 {
-            append(builder, text[i]);
-            i -= 1;
+        if value >= 10 {
+            out[n] = cast,no_check(u8) ((value / 10) % 10) + #char "0";
+            n += 1;
         }
 
-        return;
-    }
+        out[n] = cast,no_check(u8) (value % 10) + #char "0";
+        n += 1;
+    } else if exponent10 < 0 {
+        out[n] = #char "0";
+        out[n + 1] = #char ".";
+        n += 2;
 
-    if exponent10 < 0 {
-        append(builder, "0.");
-        for 1..(-exponent10 - 1) append(builder, #char "0");
-        for 0..count - 1 append(builder, digits[it] + #char "0");
+        for 1..(-exponent10 - 1) {
+            out[n] = #char "0";
+            n += 1;
+        }
 
-        return;
-    }
-
-    whole := exponent10 + 1;
-
-    for 0..whole - 1 append(builder, ifx it < count then digits[it] + #char "0" else cast(u8) #char "0");
-
-    if count > whole {
-        append(builder, #char ".");
-        for whole..count - 1 append(builder, digits[it] + #char "0");
+        for 0..count - 1 {
+            out[n] = digits[it] + #char "0";
+            n += 1;
+        }
     } else {
-        append(builder, ".0");
+        whole := exponent10 + 1;
+
+        for 0..whole - 1 {
+            out[n] = ifx it < count then digits[it] + #char "0" else cast(u8) #char "0";
+            n += 1;
+        }
+
+        if count > whole {
+            out[n] = #char ".";
+            n += 1;
+
+            for whole..count - 1 {
+                out[n] = digits[it] + #char "0";
+                n += 1;
+            }
+        } else {
+            out[n] = #char ".";
+            out[n + 1] = #char "0";
+            n += 2;
+        }
     }
+
+    append(builder, out.data, n);
+}
+
+// The shortest decimal that reads back as the same float64, and of those the closest to it:
+// `digits * 10^exponent` with no trailing zero in `digits`. `magnitude` is the bits without the
+// sign, of a finite normal number (a subnormal can need a single digit, and this gives at least two). This is Schubfach (Giulietti, "The Schubfach way to render
+// doubles"), following the reference implementation, with the 126-bit powers of ten of pow10.jai.
+// Basic's `__float_decimal_digits` gives the same digits; tests/numbers.jai checks that they agree.
+shortest_decimal :: (magnitude: u64) -> u64, s64 #no_abc #no_aoc {
+    biased := cast(s64) (magnitude >> 52);
+    mq := 1075 - biased;
+    c := ((cast(u64) 1) << 52) | (magnitude & 0x000f_ffff_ffff_ffff);
+
+    // An integer below 2^53 is its own shortest form (once the trailing zeros are gone).
+    if mq > 0 && mq < 53 {
+        whole := c >> cast(u64) mq;
+
+        if (whole << cast(u64) mq) == c return strip_zeros(whole, 0);
+    }
+
+    q := -mq;
+
+    odd := c & 1;
+    cb := c << 2;
+    cbr := cb + 2;
+    cbl: u64;
+    k: s64;
+
+    if c != ((cast(u64) 1) << 52) || q == -1074 {
+        cbl = cb - 2;
+        k = (q * 78913) >> 18;
+    } else {
+        cbl = cb - 1;
+        k = (q * 631305 - 261663) >> 21;
+    }
+
+    h := cast(u64) (q + (((0 - k) * 108853) >> 15) + 2);
+    index := 2 * (k + 324);
+    g1 := POWER_OF_TEN_126[index];
+    g0 := POWER_OF_TEN_126[index + 1];
+
+    vb := round_to_odd(g1, g0, cb << h);
+    vbl := round_to_odd(g1, g0, cbl << h);
+    vbr := round_to_odd(g1, g0, cbr << h);
+
+    s := vb >> 2;
+
+    if s >= 100 {
+        // One digit fewer: the multiples of ten around s, if exactly one is inside the interval.
+        quotient, _ := multiply_wide(s, 115_292_150_460_684_698 << 4);
+        sp10 := 10 * quotient;
+        tp10 := sp10 + 10;
+        upper_in := vbl + odd <= sp10 << 2;
+        lower_in := (tp10 << 2) + odd <= vbr;
+
+        if upper_in != lower_in return strip_zeros(ifx upper_in then sp10 else tp10, k);
+    }
+
+    t10 := s + 1;
+    s_in := vbl + odd <= s << 2;
+    t_in := (t10 << 2) + odd <= vbr;
+
+    if s_in != t_in return strip_zeros(ifx s_in then s else t10, k);
+
+    // Both are inside: the closer one, the even one when equally close.
+    difference := cast(s64) vb - cast(s64) ((s + t10) << 1);
+
+    return strip_zeros(ifx difference < 0 || (difference == 0 && (s & 1) == 0) then s else t10, k);
+}
+
+round_to_odd :: inline (g1: u64, g0: u64, cp: u64) -> u64 #no_aoc {
+    x1, _ := multiply_wide(g0, cp);
+    y1, y0 := multiply_wide(g1, cp);
+    z := (y0 >> 1) + x1;
+    result := y1 + (z >> 63);
+
+    return result | ((((z & 0x7fff_ffff_ffff_ffff) + 0x7fff_ffff_ffff_ffff) >> 63));
+}
+
+strip_zeros :: inline (value: u64, exponent: s64) -> u64, s64 {
+    v := value;
+    e := exponent;
+
+    while v % 10 == 0 {
+        v /= 10;
+        e += 1;
+    }
+
+    return v, e;
 }
 
 // The fewest digits that read back as the same float64; NaN and infinities have no JSON
@@ -348,9 +459,31 @@ append_float64 :: (builder: *String_Builder, value: float64) {
         return;
     }
 
-    digits := __float_decimal_digits(magnitude, -1);
+    // Subnormals are rare, and Schubfach never gives a single digit for the smallest of them
+    // (4.9e-323 where 5e-323 reads back the same), so they keep the exact generator.
+    if (magnitude >> 52) == 0 {
+        digits := __float_decimal_digits(magnitude, -1);
 
-    append_decimal_float(builder, negative, digits.digits.data, digits.count, digits.exponent);
+        append_decimal_float(builder, negative, digits.digits.data, digits.count, digits.exponent);
+
+        return;
+    }
+
+    value_digits, exponent := shortest_decimal(magnitude);
+
+    // The digits, most significant first, as values 0..9.
+    text: [20] u8 = ---;
+    at := 20;
+
+    while value_digits != 0 {
+        at -= 1;
+        text[at] = cast,no_check(u8) (value_digits % 10);
+        value_digits /= 10;
+    }
+
+    count := 20 - at;
+
+    append_decimal_float(builder, negative, *text[at], count, exponent + count - 1);
 }
 
 append_float32 :: (builder: *String_Builder, value: float32) {

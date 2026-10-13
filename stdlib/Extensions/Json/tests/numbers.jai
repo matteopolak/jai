@@ -321,6 +321,114 @@ fast_path_agrees :: (count: int) {
     check(bad == 0, "the direct float conversions agree with the exact one");
 }
 
+// to_json prints the digits of Schubfach; Basic's exact shortest-digit generator (the former
+// implementation) must give the same digits and the same decimal exponent for every float64.
+same_digits_as_exact :: (value: float64, bad: *int) {
+    bits := bits64(value) & 0x7fff_ffff_ffff_ffff;
+
+    if (bits >> 52) == 0x7ff || bits == 0 return;
+
+    exact := __float_decimal_digits(bits, -1);
+    written := to_json(value);
+
+    // Digits before any exponent, where the point is, and the exponent.
+    digits: [32] u8;
+    count := 0;
+    point := -1;
+    exponent := 0;
+    i := 0;
+
+    if written[0] == #char "-" i = 1;
+
+    while i < written.count && written[i] != #char "e" {
+        if written[i] == #char "." {
+            point = count;
+        } else {
+            digits[count] = written[i] - #char "0";
+            count += 1;
+        }
+
+        i += 1;
+    }
+
+    if point < 0 point = count;
+
+    if i < written.count {
+        i += 1;
+        negative := written[i] == #char "-";
+
+        if negative i += 1;
+
+        while i < written.count {
+            exponent = exponent * 10 + written[i] - #char "0";
+            i += 1;
+        }
+
+        if negative exponent = -exponent;
+    }
+
+    first := 0;
+
+    while first < count - 1 && digits[first] == 0 {
+        first += 1;
+        point -= 1;
+    }
+
+    while count > first + 1 && digits[count - 1] == 0 count -= 1;
+
+    count -= first;
+
+    matches := count == exact.count && point - 1 + exponent == exact.exponent;
+
+    for 0..count - 1 {
+        if matches && digits[first + it] != exact.digits[it] matches = false;
+    }
+
+    if !matches {
+        bad.* += 1;
+        if bad.* < 8 print("shortest digits of % (bits %): got %, exact has % digits, exponent %\n", written, bits, written, exact.count, exact.exponent);
+    }
+}
+
+shortest_matches_exact :: (count: int) {
+    random_seed(424242);
+
+    bad := 0;
+
+    // Every power of two and its neighbours: the irregular spacing and the integer fast path.
+    for exponent: 0..2046 {
+        for delta: -2..2 {
+            bits := (cast(u64) exponent << 52) + cast(u64) (delta + 2);
+            same_digits_as_exact(cast,force(float64) bits, *bad);
+            same_digits_as_exact(cast,force(float64) ((cast(u64) exponent << 52) - 1 - cast(u64) delta + 2), *bad);
+        }
+    }
+
+    // The smallest subnormals and the largest numbers.
+    for 1..2000 {
+        same_digits_as_exact(cast,force(float64) cast(u64) it, *bad);
+        same_digits_as_exact(cast,force(float64) (0x7fef_ffff_ffff_ffff - cast(u64) it), *bad);
+    }
+
+    // Integers and short decimals, as they usually appear.
+    for 1..count {
+        same_digits_as_exact(cast(float64) (cast(s64) random_get() - 2147483648), *bad);
+        same_digits_as_exact(cast(float64) (cast(s64) random_get() % 100000) / 100.0, *bad);
+        same_digits_as_exact(cast(float64) (cast(s64) ((cast(u64) random_get() << 21) ^ cast(u64) random_get())) * 1.0, *bad);
+    }
+
+    // Random bit patterns, and values with a random exponent in the usual range.
+    for 1..count {
+        bits := (cast(u64) random_get() << 32) ^ cast(u64) random_get();
+        same_digits_as_exact(cast,force(float64) bits, *bad);
+
+        small := cast(float64) random_get() / 4294967296.0 * 360.0 - 180.0;
+        same_digits_as_exact(small, *bad);
+    }
+
+    check(bad == 0, "the printed digits are the exact shortest digits");
+}
+
 integers :: () {
     value, error := from_json(s64, "-9223372036854775808");
 
@@ -378,6 +486,7 @@ main :: () {
 
         // The number reader does not look at the text's bytes in bulk, so one pass is enough.
         if pass == 0 random_round_trips(ifx FULL_SWEEP then 20000 else 1500);
+        if pass == 0 shortest_matches_exact(ifx FULL_SWEEP then 300000 else 5000);
         if pass == 0 fast_path_agrees(ifx FULL_SWEEP then 400000 else 3000);
     }
 
