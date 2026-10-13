@@ -388,15 +388,6 @@ status_label :: (status: int) -> string {
     return tprint("% %", status, status_reason(status));
 }
 
-// The media type of a Content-Type value, lower case and without parameters.
-media_type_of :: (content_type: string) -> string {
-    semicolon := find_index_from_left(content_type, #char ";");
-
-    text := ifx semicolon >= 0 then slice(content_type, 0, semicolon) else content_type;
-
-    return trim(text);
-}
-
 header_matches :: (name: string, actual: string, expected: string) -> bool {
     if actual == expected return true;
 

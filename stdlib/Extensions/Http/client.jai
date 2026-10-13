@@ -503,9 +503,7 @@ error_for_status :: (response: *Client_Response) -> Client_Error {
 close_idle_connections :: () {
     pool := client_pool();
 
-    for pool.idle stream_close(it.stream);
-
-    pool.idle.count = 0;
+    while pool.idle.count drop_entry(pool, pool.idle.count - 1);
 }
 
 // How many idle connections the running scheduler keeps, for tests.
@@ -1526,9 +1524,11 @@ checkout :: (client: *Client, url: Url) -> Stream, reused: bool, Client_Error {
 drop_entry :: (pool: *Client_Pool, index: int) {
     entry := pool.idle[index];
 
-    stream_close(entry.stream);
-    free(entry.host.data);
+    // Out of the pool before closing: a close can wait (io_uring), and other fibers may use the
+    // pool meanwhile.
     array_ordered_remove_by_index(*pool.idle, index);
+    free(entry.host.data);
+    stream_close(entry.stream);
 }
 
 checkin :: (owner: *void, host: string, port: u16, stream: Stream) {
