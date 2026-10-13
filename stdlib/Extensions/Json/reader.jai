@@ -22,6 +22,8 @@ Json_Reader :: struct {
     key_start: int; // where the key last returned by json_object_next begins
     path: [..] Path_Segment;
     scratch: [..] u8;
+    values: [..] Json_Value; // children of the arrays being read into a Json_Value, innermost last
+    members: [..] Json_Member; // the same for objects
     index: [] u32; // stage 1's structural index, when `indexed` (see index.jai)
     ip: int; // the first index entry that may lie at or after `pos`
     indexed: bool;
@@ -50,6 +52,8 @@ reader_init :: (r: *Json_Reader, text: string, options: Json_Options) {
 reader_free :: (r: *Json_Reader) {
     array_free(r.path);
     array_free(r.scratch);
+    array_free(r.values);
+    array_free(r.members);
 }
 
 #scope_export
@@ -890,6 +894,45 @@ json_skip_value :: (r: *Json_Reader) -> bool {
     return unexpected(r, "a value");
 }
 
+#scope_module
+
+// The children collected since `base`, moved into one allocation of exactly their size.
+take_values :: (r: *Json_Reader, base: int) -> [..] Json_Value {
+    result: [..] Json_Value;
+    count := r.values.count - base;
+
+    if count == 0 return result;
+
+    result.data = alloc(count * size_of(Json_Value));
+    result.count = count;
+    result.allocated = count;
+    result.allocator = context.allocator;
+
+    memcpy(result.data, r.values.data + base, count * size_of(Json_Value));
+    r.values.count = base;
+
+    return result;
+}
+
+take_members :: (r: *Json_Reader, base: int) -> [..] Json_Member {
+    result: [..] Json_Member;
+    count := r.members.count - base;
+
+    if count == 0 return result;
+
+    result.data = alloc(count * size_of(Json_Member));
+    result.count = count;
+    result.allocated = count;
+    result.allocator = context.allocator;
+
+    memcpy(result.data, r.members.data + base, count * size_of(Json_Member));
+    r.members.count = base;
+
+    return result;
+}
+
+#scope_export
+
 // Reads any value into a Json_Value. On failure `out` holds what was read so far, and
 // free_json releases it.
 json_read_value :: (r: *Json_Reader, out: *Json_Value) -> bool {
@@ -901,36 +944,64 @@ json_read_value :: (r: *Json_Reader, out: *Json_Value) -> bool {
 
             out.kind = .OBJECT;
 
+            base := r.members.count;
             first := true;
+            ok := true;
 
             while true {
                 key, status := json_object_next(r, *first);
 
-                if status == .ERROR return false;
-                if status == .END return true;
+                if status == .ERROR {
+                    ok = false;
 
-                member := array_add(*out.members);
+                    break;
+                }
+
+                if status == .END break;
+
+                member: Json_Member;
                 member.key = copy_string(key);
+                ok = json_read_value(r, *member.value);
 
-                if !json_read_value(r, *member.value) return false;
+                array_add(*r.members, member);
+
+                if !ok break;
             }
+
+            out.members = take_members(r, base);
+
+            return ok;
         case #char "[";
             if !json_begin_array(r) return false;
 
             out.kind = .ARRAY;
 
+            base := r.values.count;
             first := true;
+            ok := true;
 
             while true {
                 status := json_array_next(r, *first);
 
-                if status == .ERROR return false;
-                if status == .END return true;
+                if status == .ERROR {
+                    ok = false;
 
-                item := array_add(*out.items);
+                    break;
+                }
 
-                if !json_read_value(r, item) return false;
+                if status == .END break;
+
+                item: Json_Value;
+                ok = json_read_value(r, *item);
+
+                array_add(*r.values, item);
+
+                if !ok break;
             }
+
+            out.items = take_values(r, base);
+
+            return ok;
         case #char "\"";
             text, ok := json_read_string(r);
 
