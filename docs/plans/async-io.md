@@ -257,10 +257,12 @@ main :: () {
 ### Client
 
 ```jai
-user, err := get_json(User, "http://localhost:8080/users/1");
-created, err := post_json(User, "http://localhost:8080/users", New_User.{ name = "Ada" });
+api: Client;
+api.base_url = "http://localhost:8080";
+user, err := get_json(*api, User, "/users/1");
+created, err := post_json(*api, User, "/users", New_User.{ name = "Ada" });
 
-response, err := send(.{ method = .PUT, url = url, headers = .[ .{ "X-Id", "7" } ], body = bytes });
+response, err := send(*api, .{ method = .PUT, url = url, headers = .[ .{ "X-Id", "7" } ], body = bytes });
 ```
 
 - **Connections:**
