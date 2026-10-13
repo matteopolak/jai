@@ -225,18 +225,20 @@
     uring_reap :: (scheduler: *Scheduler, engine: *Engine) {
         ring := *engine.uring.ring;
 
-        head := ring.cq_head.*;
+        // `finish_op` can re-enter this function (through `uring_entry` when the submission queue is
+        // full), and the inner call consumes entries too: `head` is read again for every entry and
+        // each one is consumed before its handler runs.
         tail := atomic_load(ring.cq_tail, .ACQUIRE);
 
-        while head != tail {
+        while ring.cq_head.* != tail {
+            head := ring.cq_head.*;
             cqe := cast(*Uring.io_uring_cqe) byte_offset(ring.cqes, (head & ring.cq_mask) * ring.cqe_bytes);
 
             user_data := cqe.user_data;
             result := cqe.res;
             flags := cqe.flags;
 
-            head += 1;
-            atomic_store(ring.cq_head, head, .RELEASE);
+            atomic_store(ring.cq_head, head + 1, .RELEASE);
 
             if user_data > 15 {
                 op := cast(*Op) cast(*void) user_data;
