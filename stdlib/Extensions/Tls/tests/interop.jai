@@ -265,7 +265,7 @@ Process :: #import "Process";
 
         page := string.{ reply.count, reply.data };
 
-        if !begins_with(page, "HTTP/1.0 200 ok") return tprint("page: '%'", page);
+        if !begins_with(page, "HTTP/1.0 200 ok") return tprint("page: '%' (read: %, tls: %)", page, read_error, Tls.error_text(Tls.last_error(stream)));
         if !has(page, "Secure Renegotiation") && !has(page, "New, TLS") return "the page does not look like s_server's";
 
         return "";
