@@ -14,6 +14,11 @@
 
 #if defined(_WIN32)
 #include <windows.h>
+/* The library's entropy source is BCryptGenRandom: name its import library so that the DLL and
+ * any executable that links the archive need no extra flags (MinGW links -lbcrypt from the module). */
+#if defined(_MSC_VER)
+#pragma comment(lib, "bcrypt")
+#endif
 #else
 #include <pthread.h>
 #endif
