@@ -49,7 +49,7 @@ jobs:
           nix run .# -- run "$work/hello.jai"
           jaic="$PWD/result/bin/jaic"
           cd "$work"
-          "$jaic" build hello.jai -o hello
+          "$jaic" hello.jai -exe hello
           ./hello
           printf 'x:=1;\n' | "$GITHUB_WORKSPACE/result-1/bin/jaifmt" --stdin
           nix develop "$GITHUB_WORKSPACE" --command sh -c 'cargo --version && llvm-config --version && python3 --version && node --version && echo "$LLVM_SYS_231_PREFIX"'

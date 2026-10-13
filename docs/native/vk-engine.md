@@ -8,12 +8,12 @@
 
 What works:
 
-- `jaic check Build.jai -I Modules -I Source -os linux - <Module>` compiles each of the four modules when `Libs/Linux` holds the libraries; empty placeholder files are enough. The sweep cases `vk-engine-*-check` in `tools/upstream-cases.json` do exactly this in a scratch copy. Use a release `jaic`.
+- `jaic Build.jai -check -I Modules -I Source -os linux - <Module>` compiles each of the four modules when `Libs/Linux` holds the libraries; empty placeholder files are enough. The sweep cases `vk-engine-*-check` in `tools/upstream-cases.json` do exactly this in a scratch copy. Use a release `jaic`.
 - `tools/build_vk_engine_libs.py` builds the native C++ libraries for macOS: `libImGui.dylib`, `libVkMemAlloc.a`, `libJoltC.dylib`.
 
 What doesn't:
 
-- A native macOS `jaic build` fails with ``unknown identifier `VkBuffer` ``. The upstream modules have no macOS branch, and the corpus is read-only input, so this is out of scope:
+- A native macOS `jaic` fails with ``unknown identifier `VkBuffer` ``. The upstream modules have no macOS branch, and the corpus is read-only input, so this is out of scope:
   - `Modules/Vulkan/module.jai` loads bindings and libraries only for `.WINDOWS` and `.LINUX`, so no `Vk*` name exists on macOS and `Source/Core/Graphics/Vulkan` fails.
   - `Modules/ImGui/module.jai` has `#assert false "Unsupported OS"`; `Modules/JoltPhysics/module.jai` declares `JoltC` only for Windows and Linux.
   - The three `generate.jai` files `#assert false` for macOS in their library-building code, so bindings can't be regenerated natively either.

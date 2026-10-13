@@ -53,7 +53,7 @@ literal density is lower, and there are no pointer-heavy data structures or `def
 ```sh
 python3 tools/benchgen.py --lines 60000 --seed 2 --out /tmp/gen60k      # main.jai
 python3 tools/benchgen.py --lines 60000 --files 8 --out /tmp/gen60k-8    # main.jai + part_N.jai via #load
-jaic build /tmp/gen60k/main.jai -o /tmp/gen60k/out && /tmp/gen60k/out    # checksum NNN
+jaic /tmp/gen60k/main.jai -exe /tmp/gen60k/out && /tmp/gen60k/out    # checksum NNN
 python3 tools/jaistats.py /tmp/gen60k --max-file-lines 10000000          # shape of any directory
 ```
 
@@ -75,12 +75,12 @@ blanked by `jaistats.py`); standard-library lines are not counted.
 On these, `codegen` (LLVM) is about 30 to 55% of an `-O0` build, the front end 30 to 45% and `link` 5 to 25%. On 0.5.1, with one
 codegen unit the 240k build's codegen takes 3.3 s, against 0.88 s on ten units, so the units use about twice
 the CPU time of one (7.1 s user for the whole build against 3.6 s with one unit). Leaving out debug info
-(`--no-debug-info`) saves 0.25 s (17%) at 240k lines.
+(`-no_debug_info`) saves 0.25 s (17%) at 240k lines.
 
 ## How to change it
 
 - New statement or declaration kind: add a branch in `Gen.stmt` (statements) or a `Gen.emit_*` method plus a
-  case in `Gen.generate`'s item loop. Check a sweep of seeds with `jaic check` and `jaic build` (run the result and compare
+  case in `Gen.generate`'s item loop. Check a sweep of seeds with `jaic -check` and `jaic` (run the result and compare
   `--trace` output between `-O0` and `-O2`).
 - Changing any probability changes every program for a seed, so numbers from before and after are not
   comparable. Say so in the commit that does it.

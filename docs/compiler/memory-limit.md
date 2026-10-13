@@ -17,14 +17,14 @@ on stderr and exit status **120** (`jaic::memory_limit::EXIT_CODE`). The corpus 
 - `CountingAllocator` is the `jaic` binary's `#[global_allocator]`. It forwards to `std::alloc::System` and, once armed, adds `layout.size()` to a relaxed `AtomicIsize` on alloc (and the growth on realloc) and subtracts it on free. Unarmed, every call costs one relaxed load and a branch.
 - `main` calls `arm_from_env()` before anything else. Blocks allocated before arming and freed afterwards make the total slightly low, which is why it is signed.
 - Compiler memory (sema, IR, diagnostics) and the interpreter's own memory (its stack, globals, the sandbox heap used by `-os wasm` and the browser engine) are ordinary Rust allocations, so they are counted.
-- A natively linked program allocates through C `malloc` (the default Jai allocator calls it, at compile time and under `jaic run`). While the limit is armed, `Interp::foreign_addr` resolves `malloc`, `calloc`, `realloc`, `free`, `posix_memalign` and `aligned_alloc` to counting wrappers (`memory_limit::foreign_override`) instead of libc's. The wrappers return real libc blocks and charge `malloc_size` (macOS) / `malloc_usable_size` (Linux), so C code may free them and `free` of a block they never handed out still works.
+- A natively linked program allocates through C `malloc` (the default Jai allocator calls it, at compile time and under `jaic -interp`). While the limit is armed, `Interp::foreign_addr` resolves `malloc`, `calloc`, `realloc`, `free`, `posix_memalign` and `aligned_alloc` to counting wrappers (`memory_limit::foreign_override`) instead of libc's. The wrappers return real libc blocks and charge `malloc_size` (macOS) / `malloc_usable_size` (Linux), so C code may free them and `free` of a block they never handed out still works.
 - Over the limit, `exceeded` formats the message into a stack buffer, `write(2)`s it and calls `_exit`: it must not allocate (it runs inside the allocator) and must not run `atexit` handlers that could wait on a lock another thread holds. Buffered program output is therefore not flushed.
 
 What is **not** counted:
 
-- Memory C/C++ libraries allocate on their own: LLVM during `jaic build` (C++ `operator new`), libclang for C header imports, a `#foreign` library that calls `malloc` internally (only calls the Jai program makes by name go through the wrappers), and allocators that map pages themselves (`rpmalloc`).
+- Memory C/C++ libraries allocate on their own: LLVM during `jaic` (C++ `operator new`), libclang for C header imports, a `#foreign` library that calls `malloc` internally (only calls the Jai program makes by name go through the wrappers), and allocators that map pages themselves (`rpmalloc`).
 - Thread stacks (the 1 GiB compiler stack and program threads) and mapped files.
-- Child processes: the linker, `dsymutil`, programs a metaprogram launches, the executable `jaic build` produces.
+- Child processes: the linker, `dsymutil`, programs a metaprogram launches, the executable `jaic` produces.
 - On Windows the C allocator is not wrapped; only Rust allocations count.
 
 The counter measures requested (virtual) bytes, not resident memory: a large zeroed block nobody touches counts in full.
@@ -41,7 +41,7 @@ The counter measures requested (virtual) bytes, not resident memory: a large zer
 `JAIC_MEMORY_LIMIT=<n>`: bytes, or with a `K`, `M` or `G` suffix (binary multiples): `3221225472`, `3G`, `512M`. Unset or `0` means no limit. A value that does not parse is a usage error (exit status 2).
 
 ```sh
-JAIC_MEMORY_LIMIT=256M jaic run grow.jai; echo $?   # error: memory limit of 256 MiB exceeded / 120
+JAIC_MEMORY_LIMIT=256M jaic grow.jai -interp; echo $?   # error: memory limit of 256 MiB exceeded / 120
 ```
 
 ## Dependencies

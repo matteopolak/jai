@@ -79,14 +79,14 @@ Design:
   - Win64, which also needs xmm6-15 and the TIB stack bounds;
   - arm64 (AAPCS64 and Windows).
 
-  It is a jaic intrinsic rather than a library `#asm` block, so the interpreter can implement it with the stack machinery it already uses for threads. That keeps `jaic run` fully working.
+  It is a jaic intrinsic rather than a library `#asm` block, so the interpreter can implement it with the stack machinery it already uses for threads. That keeps `jaic -interp` fully working.
 - **Stacks:** each fiber gets an `mmap`/`VirtualAlloc` stack with a guard page.
   - 256 KiB of address space by default, committed lazily by the OS, so 10k fibers cost little real memory.
   - Stacks are pooled.
   - Overflowing hits the guard page and crashes with a "fiber stack overflow" message instead of corrupting memory.
 - **`context`:** each fiber gets its own copy of the spawning context, including its own temporary storage that is reset when the fiber ends. Stack traces and allocators behave as on a thread.
 - **Scheduler:** one per OS thread, each with its own ring.
-  - `io_run` starts N threads (default: the core count, or 1 under `jaic run`).
+  - `io_run` starts N threads (default: the core count, or 1 under `jaic -interp`).
   - Listeners use `SO_REUSEPORT` so each thread accepts its own connections.
   - Fibers stay on the thread they started on in v1 (no work stealing). This avoids most cross-thread bugs, and work stealing can be added later without API changes.
 - **Coordination:** fiber-aware `Channel(T)`, `Wait_Group`, `Fiber_Mutex`, `sleep`, `yield` and `spawn`.
@@ -306,7 +306,7 @@ The client is what drives the server's integration tests. It runs in-process on 
 ## Milestones
 
 1. Atomics ordering and the `Io_Uring` bindings, with a raw nop/read/write test. **Done** ([atomics](../specs/stdlib/README.md), [Io_Uring](../specs/stdlib/README.md)).
-2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic run` first. This is the biggest risk, so it comes early. **Done** ([io-fibers](../specs/stdlib/README.md)).
+2. **Fibers:** the switch intrinsic (x64, arm64, Win64, interpreter), stacks and the scheduler, proven under `jaic -interp` first. This is the biggest risk, so it comes early. **Done** ([io-fibers](../specs/stdlib/README.md)).
 3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`. **Done**, with kqueue included ([io-engine](../specs/stdlib/README.md)); Linux backends are verified by type-checking locally and run in CI.
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3. **Done** ([json](../specs/stdlib/README.md)).
 5. The HTTP/1 codec, plus conformance. Also independent. **Done** ([http-codec](../specs/stdlib/README.md)).
