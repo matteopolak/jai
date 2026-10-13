@@ -104,6 +104,11 @@ poll_wait :: (scheduler: *Scheduler, engine: *Engine, fd: s64, op: *Op) -> bool 
     return false;
 }
 
+// The epoll event bits the backend keeps in `Fd_State.mask`. Defined on every OS: the code that
+// reads the mask is shared with kqueue, which leaves it 0.
+EPOLLIN :: 0x1;
+EPOLLOUT :: 0x4;
+
 // Whether `op` waits for the descriptor to become writable.
 poll_wants_write :: (op: *Op) -> bool {
     return op.kind == .SEND || op.kind == .WRITE || op.kind == .CONNECT;
@@ -457,8 +462,6 @@ KQ_WRITE :: -2;
 }
 
 #if OS == .LINUX {
-    EPOLLIN :: 0x1;
-    EPOLLOUT :: 0x4;
     EPOLLERR :: 0x8;
     EPOLLHUP :: 0x10;
     EPOLLRDHUP :: 0x2000;
