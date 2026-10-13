@@ -283,6 +283,13 @@ serve_connection :: (connection: *Connection) {
                     buffer = .[];
                 }
 
+                // A connection that is not busy also keeps none of its scratch memory (the
+                // response buffer and the parser's storage grow again when it needs them).
+                if can_wait && !hot {
+                    trim(*out, 0);
+                    parser_trim(*parser, 0);
+                }
+
                 if hot {
                     // A client that sent its last request a moment ago most likely sends the next
                     // one at once, and the read below completes without a second operation. It
