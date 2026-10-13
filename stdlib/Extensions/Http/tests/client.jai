@@ -70,10 +70,10 @@ slow :: (ms: Path("ms", int)) -> string {
 
 // What the server received, as text: method, target, body, and some headers.
 inspect :: (request: *Request) -> string {
-    auth, has_auth := header(request, "Authorization");
-    ctype, has_ctype := header(request, "Content-Type");
-    custom, has_custom := header(request, "X-Custom");
-    agent, has_agent := header(request, "User-Agent");
+    auth, _ := header(request, "Authorization");
+    ctype, _ := header(request, "Content-Type");
+    custom, _ := header(request, "X-Custom");
+    agent, _ := header(request, "User-Agent");
 
     return tprint("% % body=[%] auth=[%] ctype=[%] custom=[%] agent=[%]", request.method_text, request.target, body_text(request), auth, ctype, custom, agent);
 }
@@ -337,7 +337,7 @@ failures_of_transport :: (base: string, server: *Server) {
     refused_url := "";
 
     {
-        listener, listen_error := Io.tcp_listen("127.0.0.1:0");
+        listener, _ := Io.tcp_listen("127.0.0.1:0");
         address, _ := Io.local_address(listener);
         refused_url = tprint("http://%/", Io.address_to_string(address));
         Io.close(listener);
@@ -393,7 +393,7 @@ stale :: (base: string, server: *Server) {
     // A POST is not repeated behind the caller's back.
     Io.sleep(300);
 
-    user, post_error := post_json(User, tprint("%/users", base), New_User.{ "Once" });
+    _, post_error := post_json(User, tprint("%/users", base), New_User.{ "Once" });
 
     check(post_error.kind == .TRANSPORT, "a POST on a stale connection fails instead of repeating: %", error_text(post_error));
     free_error(*post_error);

@@ -498,7 +498,7 @@ converse :: (stream: Io.Tcp_Stream, method: Method, method_text: string, url: Ur
 
     defer array_reset(*out);
 
-    kind, ok := write_request_head(*out, method_text, url.target, headers, body.count);
+    _, ok := write_request_head(*out, method_text, url.target, headers, body.count);
 
     if !ok {
         return .{}, false, transport_error(.INVALID_URL, .NONE, "a request header is not valid (a bad name or value, or one that sets the framing itself)");

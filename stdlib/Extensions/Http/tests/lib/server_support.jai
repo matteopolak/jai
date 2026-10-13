@@ -109,13 +109,13 @@ contains :: (text: string, needle: string) -> bool {
 }
 
 header_of :: (response: Client_Response, name: string) -> string {
-    value, found := find_header(response.headers, name);
+    value, _ := find_header(response.headers, name);
 
     return value;
 }
 
 has_header :: (response: Client_Response, name: string) -> bool {
-    value, found := find_header(response.headers, name);
+    _, found := find_header(response.headers, name);
 
     return found;
 }
@@ -231,13 +231,13 @@ read_responses :: (stream: Io.Tcp_Stream, count: int, milliseconds: s64, method 
 }
 
 raw_header :: (response: Raw_Response, name: string) -> string {
-    value, found := find_header(response.headers, name);
+    value, _ := find_header(response.headers, name);
 
     return value;
 }
 
 send_text :: (stream: Io.Tcp_Stream, text: string) {
-    count, error := Io.write(stream, text);
+    _, error := Io.write(stream, text);
 
     check(error == .NONE, "raw write failed: %", error);
 }

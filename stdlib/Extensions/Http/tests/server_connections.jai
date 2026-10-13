@@ -216,7 +216,7 @@ timeouts :: (base: string, server: *Server) {
     sent := 0;
 
     for 1..40 {
-        count, error := Io.write(stream, "X");
+        _, error := Io.write(stream, "X");
         if error != .NONE break;
         sent += 1;
         Io.sleep(20);
@@ -406,7 +406,7 @@ shutdown_test :: (base: string, server: *Server) {
     check(closes_within(idle, 1000), "an idle connection closes at once when the server stops");
 
     // New connections are refused.
-    refused, error := Io.connect(server.address);
+    _, error := Io.connect(server.address);
 
     check(error != .NONE, "a stopped server accepts no more connections");
 

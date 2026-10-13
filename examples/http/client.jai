@@ -7,7 +7,6 @@
 // host reuse the same connection.
 #import "Basic";
 #import "Extensions/Http";
-#import "Extensions/Json";
 Io :: #import "Extensions/Io";
 
 Note :: struct {
@@ -37,12 +36,12 @@ demo :: (run: *Run) {
 
     print("created #%: %\n", created.id, created.title);
 
-    note, get_error := get_json(Note, tprint("%/notes/%", base, created.id));
+    note, _ := get_json(Note, tprint("%/notes/%", base, created.id));
 
     print("read it back: % (done: %)\n", note.title, note.done);
 
     // A status that is not 2xx is an error that carries the problem document's title and detail.
-    missing, missing_error := get_json(Note, tprint("%/notes/%", base, 99999));
+    _, missing_error := get_json(Note, tprint("%/notes/%", base, 99999));
 
     print("asking for a missing note: % (%)\n", missing_error.status, missing_error.detail);
 

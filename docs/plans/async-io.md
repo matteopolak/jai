@@ -1,6 +1,6 @@
 # Async IO, HTTP and JSON plan
 
-Status: milestones 1 to 5 and 7 are done (fibers, and the internal completion engine with fiber TCP, files, deadlines and cancellation on io_uring, epoll, kqueue and Windows completion ports with IoRing, plus the file thread pool, see [io-engine](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
+Status: milestones 1 to 7 are done (fibers, the completion engine on io_uring, epoll, kqueue and Windows completion ports with IoRing plus the file thread pool, Json, the HTTP codec, and the HTTP server and client: see [io-engine](../specs/stdlib/README.md), [http-server](../specs/stdlib/README.md) and [http-client](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
 
 ## Where we are
 
@@ -305,7 +305,7 @@ The client is what drives the server's integration tests. It runs in-process on 
 3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`. **Done**, with kqueue included ([io-engine](../specs/stdlib/README.md)); Linux backends are verified by type-checking locally and run in CI.
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3. **Done** ([json](../specs/stdlib/README.md)).
 5. The HTTP/1 codec, plus conformance. Also independent. **Done** ([http-codec](../specs/stdlib/README.md)).
-6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests.
+6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests. **Done** ([http-server](../specs/stdlib/README.md), [http-client](../specs/stdlib/README.md)); the h2c hook is a stub for milestone 10, and the client has no TLS until milestone 9.
 7. IOCP (kqueue is done) + IoRing, and the thread-pool backend. **Done** ([io-engine](../specs/stdlib/README.md)); the Windows backends are verified by type-checking for windows-x64 and windows-arm64 and run in CI, the file pool on macOS.
 8. Rebuild `File_Async` on `Io`, keeping its API.
 9. **TLS:** a separate module under the HTTP layer. Our own TLS 1.3 (+1.2), or the system libraries (SChannel, Security.framework, OpenSSL), decided then. HTTPS for the server and client.

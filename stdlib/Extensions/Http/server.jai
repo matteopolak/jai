@@ -170,7 +170,7 @@ write_within :: (stream: Io.Tcp_Stream, data: [] u8, timeout: s64) -> bool {
 
     if timeout > 0 previous = Io.set_deadline(timeout);
 
-    count, error := Io.write(stream, data);
+    _, error := Io.write(stream, data);
 
     if timeout > 0 Io.restore_deadline(previous);
 

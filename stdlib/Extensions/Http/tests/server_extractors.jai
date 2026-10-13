@@ -1,7 +1,6 @@
 // Every extractor through a real server, with the errors they give: Path, Params, Rest, Query,
 // Json, Form, Header, Header_Optional, Bytes, Text, *Request and *State.
 #load "lib/server_support.jai";
-#import "Extensions/Json";
 
 Color :: enum {
     red;
@@ -125,7 +124,7 @@ raw_text :: (body: Text) -> string {
 }
 
 about_request :: (request: *Request) -> string {
-    agent, found := header(request, "x-agent");
+    agent, _ := header(request, "x-agent");
     q, has_q := query_param(request, "q");
     return tprint("% % q=%/% agent=% peer=%", request.method_text, request.path, has_q, q, agent, request.peer.family);
 }
