@@ -302,8 +302,8 @@ redirects :: (base: string, server: *Server) {
 
     // Not following.
     error: Http_Error;
-    response, error = send(.{ url = tprint("%/moved", base), follow_redirects = false });
-    check(error.kind == .NONE && response.status == 301 && header(*response, "Location") == "/inspect?moved=1", "follow_redirects = false: %", response.status);
+    response, error = send(.{ url = tprint("%/moved", base), max_redirects = 0 });
+    check(error.kind == .NONE && response.status == 301 && header(*response, "Location") == "/inspect?moved=1", "max_redirects = 0: %", response.status);
     free_response(*response);
 
     // Too many.

@@ -132,7 +132,7 @@ limits :: (base: string, server: *Server) {
     body: [..] u8;
     for 1..1000 array_add(*body, #char "y");
 
-    response := post_body(base, "/text", string.{ body.count, body.data }, "text/plain");
+    response := post_body(default_client(), tprint("%/text", base), string.{ body.count, body.data }, "text/plain");
 
     check(response.status == 200 && starts_with_count(body_of(response), "1000:"), "a body of exactly the limit: % %", response.status, response.body.count);
 

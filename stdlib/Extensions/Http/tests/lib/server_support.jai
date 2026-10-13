@@ -54,6 +54,13 @@ run_server :: (app: *App, body: Server_Test) {
     Io.io_run(entry, *data);
 }
 
+// Runs `body` with a test client for `app`: no socket and no scheduler to set up.
+App_Test :: #type (api: *Client);
+
+run_app :: (app: *App, body: App_Test) {
+    body(test_client(app));
+}
+
 Run_Data :: struct {
     app: *App;
     body: Server_Test;
@@ -70,32 +77,32 @@ supported :: () -> bool {
     return true;
 }
 
-// A request through the client; a transport failure fails the check and returns an empty response.
-fetch :: (base: string, method: Method, path: string, body := "", headers: [] Header_Field = .[]) -> Client_Response {
+// A request through `api`; a transport failure fails the check and returns an empty response.
+fetch :: (api: *Client, method: Method, path: string, body := "", headers: [] Header_Field = .[]) -> Client_Response {
     request: Client_Request;
 
     request.method = method;
-    request.url = tprint("%%", base, path);
+    request.url = path;
     request.headers = headers;
     request.body = .{ body.count, body.data };
     request.timeout = 5000;
-    request.follow_redirects = false;
+    request.max_redirects = 0;
 
-    response, error := send(request);
+    response, error := send(api, request);
 
     check(error.kind == .NONE, "% % failed: %", method_name(method), path, error_text(error));
 
     return response;
 }
 
-get_path :: (base: string, path: string, headers: [] Header_Field = .[]) -> Client_Response {
-    return fetch(base, .GET, path, "", headers);
+get_path :: (api: *Client, path: string, headers: [] Header_Field = .[]) -> Client_Response {
+    return fetch(api, .GET, path, "", headers);
 }
 
-post_body :: (base: string, path: string, body: string, content_type := "application/json") -> Client_Response {
+post_body :: (api: *Client, path: string, body: string, content_type := "application/json") -> Client_Response {
     headers := Header_Field.[.{ "Content-Type", content_type }];
 
-    return fetch(base, .POST, path, body, headers);
+    return fetch(api, .POST, path, body, headers);
 }
 
 // The response body as text.

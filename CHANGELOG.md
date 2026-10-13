@@ -19,9 +19,14 @@
 - `Extensions/Json`: `from_pairs` and `from_text` decode query strings, forms and path text into typed values. `Extensions/Io`: scheduler-local storage and an interrupt flag (`catch_interrupts`, `interrupted`).
 - `tools/http_conformance.py` also builds an echo server and probes it with smuggling shapes, limits and a SIGINT shutdown. `stdlib/Extensions/Http/bench/server_bench.jai` measures requests per second.
 
+- `Extensions/Http` testing: `test_client(*app)` is the ordinary client wired to an `App` through an in-memory connection, so end-to-end tests need no socket and no `io_run` while the whole stack (codec, keep-alive, middleware, routing, extractors, error mapping) still runs, deterministically. `expect_status`, `expect_json`, `expect_problem`, `expect_header`, `expect_text`, `expect_redirect`, `expect` and `expect_equal` print the request, the response and the caller's location when they fail, and `run_tests` runs named tests with a summary and a non-zero exit code. `test_client(*app, .{ over_tcp = true })` runs the same tests over a loopback socket. `examples/http/crud_test.jai` tests the notes API, now split into `notes.jai` and `crud.jai`.
+- `Extensions/Http` client: a `Client` value (`base_url`, default headers with `set_header`, `timeout`, `max_redirects`, a pluggable `transport`), the response verbs `get`, `post`, `put`, `patch`, `delete`, `head` and `options`, and `bytes_of`. `Client_Response` records its request (`method`, `url`, `request_body`), and a call that got no response returns one with `status` 0 and the reason. Calls made outside `Io.io_run` run a scheduler for that call.
+- `Extensions/Io`: `make_pipe`, in-memory duplex streams (`read`, `write`, `shutdown_write`, `close` on `*Pipe_Stream`) that honour deadlines and cancellation, `in_scheduler()`, and `close_now` for listeners.
+
 ### Changes
 
 - `Extensions/Http` codec: `Http_Error` is now `Parse_Error` and `Header` is `Header_Field`, freeing those names for the server.
+- `Extensions/Http` client (breaking): every call also takes a leading `*Client` (`get_json(*api, User, "/users/1")`); the forms without one use `default_client()`. `Client_Request.follow_redirects` is gone: `max_redirects = 0` returns the 3xx, and `-1` (the default) is the client's `max_redirects`. `Client_Request.timeout` defaults to -1, the client's `timeout` (30 s). Procedures that return a `Client_Response` with an error now return a failure response that should be freed like any other.
 
 ### Fixes
 

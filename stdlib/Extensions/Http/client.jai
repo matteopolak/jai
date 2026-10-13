@@ -1,44 +1,98 @@
 // The client: requests over plain HTTP/1.1 on fibers, with a connection pool per scheduler.
 //
-//     user, error := get_json(User, "http://localhost:8080/users/1");
+//     api: Client;
+//     api.base_url = "http://localhost:8080";
+//
+//     user, error := get_json(*api, User, "/users/1");
 //     if error.kind != .NONE print("%\n", error_text(error));
 //
-//     created, error := post_json(User, "http://localhost:8080/users", New_User.{ name = "Ada" });
+//     created, error := post_json(*api, User, "/users", New_User.{ name = "Ada" });
 //
-//     response, error := send(.{ method = .PUT, url = url, headers = .[ .{ "X-Id", "7" } ], body = bytes });
+//     response, error := send(*api, .{ method = .PUT, url = "/users/1", body = bytes });
 //
-// Everything runs on the calling fiber (inside `Io.io_run`) and only that fiber waits. Idle
-// connections are kept for the next request to the same host, so repeated calls reuse one TCP
-// connection. `https://` is not supported yet and says so.
+// Every call takes the `Client` it goes through; the same calls without one (`get_json(User,
+// url)`) use `default_client()`. A call made outside `Io.io_run` runs a scheduler of its own for
+// that one call, so a script needs no setup; inside a scheduler it runs on the calling fiber and
+// only that fiber waits. Idle connections are kept for the next request to the same host, so
+// repeated calls on one scheduler reuse a TCP connection. `https://` is not supported yet and
+// says so.
+//
+// A client's `transport` decides how it reaches a server. The default opens TCP connections;
+// `test_client` (testing.jai) connects to an `App` in memory, so the same calls drive an
+// application without a socket.
 
 // A request. Only `url` is needed; `.{ url = "http://..." }` is a GET.
 Client_Request :: struct {
     method := Method.GET;
-    url: string; // `http://host[:port]/path?query`
+
+    // `http://host[:port]/path?query`, or `/path?query` relative to the client's `base_url`.
+    url: string;
     headers: [] Header_Field; // `Host`, `Content-Length` and `User-Agent` are added when missing
     body: [] u8;
 
-    // Milliseconds for the whole exchange, redirects included (0: no limit).
-    timeout := 30_000;
+    // Milliseconds for the whole exchange, redirects included (0: no limit, -1: the client's
+    // `timeout`).
+    timeout := -1;
 
-    // Follow 301, 302, 303, 307 and 308 up to `max_redirects` times. 301, 302 and 303 turn a
-    // POST into a GET without a body; 307 and 308 repeat the request. `Authorization` and
-    // `Cookie` are not sent to another host.
-    follow_redirects := true;
-    max_redirects := 10;
+    // Follow 301, 302, 303, 307 and 308 up to this many times (more is an error), or not at all
+    // when 0: the 3xx response is returned. -1 is the client's `max_redirects`. 301, 302 and 303
+    // turn a POST into a GET without a body; 307 and 308 repeat the request. `Authorization`
+    // and `Cookie` are not sent to another host.
+    max_redirects := -1;
 
     // The largest response body accepted, in bytes.
     max_response_size := 64 * 1024 * 1024;
 }
 
 // A response, with everything it holds in one allocation. `free_response` releases it.
+//
+// A call that got no response at all (the connection failed, a timeout) still returns one beside
+// its error: `status` is 0 and `reason` says what went wrong, so code that only keeps the
+// response can still name the request. Free it like any other.
 Client_Response :: struct {
     status: int;
     reason: string;
     headers: [] Header_Field;
     body: [] u8;
 
+    // The request this answers, as it was given: the method, the URL (possibly relative) and the
+    // first bytes of its body (`request_body_size` is the full size).
+    method: Method;
+    url: string;
+    request_body: string;
+    request_body_size: int;
+
     storage: *void;
+}
+
+// How a client reaches a server. Both procedures run on a fiber of the running scheduler.
+Transport :: struct {
+    // Passed to both procedures; connections made through one transport are only reused by it.
+    data: *void;
+
+    // Where a relative URL points (`"http://localhost:8080"`); null: the client needs a
+    // `base_url` for relative URLs.
+    base: #type (data: *void) -> string;
+
+    // A new connection for `url` (its scheme, host and port); null: a TCP connection to the host.
+    open: #type (data: *void, url: Url) -> Stream, Io.Io_Error;
+}
+
+// What requests have in common.
+Client :: struct {
+    // Relative request URLs (`/users/1`) are joined to this: `"http://localhost:8080"`.
+    base_url: string;
+
+    // Sent with every request that does not set the header itself (an `Authorization` token).
+    headers: [..] Header_Field;
+
+    // Milliseconds for a request that does not set its own `timeout`.
+    timeout := 30_000;
+
+    // Redirects followed for a request that does not set its own `max_redirects` (0: none).
+    max_redirects := 10;
+
+    transport: Transport;
 }
 
 // Pool settings, for the whole program. Idle connections are closed when they have waited
@@ -51,6 +105,50 @@ Client_Settings :: struct {
 
 client_settings: Client_Settings;
 
+default_client_storage: Client;
+
+// The client behind the calls that take none: no base URL, TCP, 30 seconds. Set its fields before
+// starting threads.
+default_client :: () -> *Client {
+    return *default_client_storage;
+}
+
+// A header sent with every request of `client` that does not set it: `set_header(*api,
+// "Authorization", "Bearer abc")`. Setting a name again replaces the value.
+set_header :: (client: *Client, name: string, value: string) {
+    for client.headers {
+        if equal_nocase(it.name, name) {
+            free(it.value.data);
+
+            client.headers[it_index].value = copy_string(value);
+
+            return;
+        }
+    }
+
+    header: Header_Field;
+
+    header.name = copy_string(name);
+    header.value = copy_string(value);
+    header.id = lookup_header_name(name);
+
+    array_add(*client.headers, header);
+}
+
+// Takes a default header off again.
+remove_header :: (client: *Client, name: string) {
+    for client.headers {
+        if equal_nocase(it.name, name) {
+            free(it.name.data);
+            free(it.value.data);
+
+            array_ordered_remove_by_index(*client.headers, it_index);
+
+            return;
+        }
+    }
+}
+
 // The value of the first header called `name` (any case).
 header :: (response: *Client_Response, name: string) -> string, bool {
     return find_header(response.headers, name);
@@ -59,6 +157,11 @@ header :: (response: *Client_Response, name: string) -> string, bool {
 // The body as text (a view of the same bytes).
 body_text :: (response: *Client_Response) -> string {
     return string.{ response.body.count, response.body.data };
+}
+
+// The bytes of `text` (the same memory), for a request's `body`.
+bytes_of :: (text: string) -> [] u8 {
+    return .{ text.count, text.data };
 }
 
 free_response :: (response: *Client_Response) {
@@ -81,59 +184,122 @@ free_error :: (error: *Http_Error) {
 // Sends `request` and returns the response, whatever its status: a 404 is a response, not an
 // error. Errors are only about not getting one: the URL, the connection, a timeout, a reply that
 // is not HTTP, too many redirects.
+send :: (client: *Client, request: Client_Request) -> Client_Response, Http_Error {
+    if Io.in_scheduler() return send_on_fiber(client, request);
+
+    // No scheduler yet: run one for this call.
+    call: Outside_Call;
+
+    call.client = client;
+    call.request = request;
+
+    Io.io_run(run_outside_call, *call);
+
+    return call.response, call.error;
+}
+
 send :: (request: Client_Request) -> Client_Response, Http_Error {
-    if request.timeout > 0 {
-        previous := Io.set_deadline(request.timeout);
-        response, error := send_following(request);
-        Io.restore_deadline(previous);
+    return send(default_client(), request);
+}
 
-        return response, error;
-    }
+// `GET` with no body; the response whatever its status.
+get :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send(client, .{ method = .GET, url = url, headers = headers });
+}
 
-    return send_following(request);
+head :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send(client, .{ method = .HEAD, url = url, headers = headers });
+}
+
+options :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send(client, .{ method = .OPTIONS, url = url, headers = headers });
+}
+
+delete :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send(client, .{ method = .DELETE, url = url, headers = headers });
+}
+
+// `POST` with `value` as a JSON body (`Content-Type: application/json`); the response whatever
+// its status. `post(client, url)` sends no body.
+post :: (client: *Client, url: string, value: $V, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send_with_json(client, .POST, url, value, headers);
+}
+
+post :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send(client, .{ method = .POST, url = url, headers = headers });
+}
+
+put :: (client: *Client, url: string, value: $V, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send_with_json(client, .PUT, url, value, headers);
+}
+
+patch :: (client: *Client, url: string, value: $V, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
+    return send_with_json(client, .PATCH, url, value, headers);
 }
 
 // `GET url` and the body decoded as a `T`. A status other than 2xx is a `.STATUS` error that
 // carries `status`, `title`/`detail` (from a problem+json body when there is one) and `body`.
-get_json :: ($T: Type, url: string, headers: [] Header_Field = .[]) -> T, Http_Error {
+get_json :: (client: *Client, $T: Type, url: string, headers: [] Header_Field = .[]) -> T, Http_Error {
     request: Client_Request;
 
     request.url = url;
     request.headers = with_json_headers(headers, false);
 
-    return json_exchange(T, request);
+    return json_exchange(client, T, request);
+}
+
+get_json :: ($T: Type, url: string, headers: [] Header_Field = .[]) -> T, Http_Error {
+    return get_json(default_client(), T, url, headers);
 }
 
 // `POST` of `value` as JSON; the response body is decoded as a `T`.
+post_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
+    return json_with_body(client, T, .POST, url, value, headers);
+}
+
 post_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(T, .POST, url, value, headers);
+    return json_with_body(default_client(), T, .POST, url, value, headers);
+}
+
+put_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
+    return json_with_body(client, T, .PUT, url, value, headers);
 }
 
 put_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(T, .PUT, url, value, headers);
+    return json_with_body(default_client(), T, .PUT, url, value, headers);
+}
+
+patch_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
+    return json_with_body(client, T, .PATCH, url, value, headers);
 }
 
 patch_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(T, .PATCH, url, value, headers);
+    return json_with_body(default_client(), T, .PATCH, url, value, headers);
 }
 
 // A request whose response body is not wanted: only whether it worked.
-post_json :: (url: string, value: $V, headers: [] Header_Field = .[]) -> Http_Error {
-    request: Client_Request;
+post_json :: (client: *Client, url: string, value: $V, headers: [] Header_Field = .[]) -> Http_Error {
+    response, error := send_with_json(client, .POST, url, value, headers);
 
-    request.method = .POST;
-    request.url = url;
-    request.headers = with_json_headers(headers, true);
-
-    body := to_json(value,, temp);
-
-    request.body = .{ body.count, body.data };
-
-    response, error := send(request);
+    defer free_response(*response);
 
     if error.kind != .NONE return error;
 
+    if response.status < 200 || response.status >= 300 return status_error(*response);
+
+    return .{};
+}
+
+post_json :: (url: string, value: $V, headers: [] Header_Field = .[]) -> Http_Error {
+    return post_json(default_client(), url, value, headers);
+}
+
+delete_request :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Http_Error {
+    response, error := send(client, .{ method = .DELETE, url = url, headers = headers });
+
     defer free_response(*response);
+
+    if error.kind != .NONE return error;
 
     if response.status < 200 || response.status >= 300 return status_error(*response);
 
@@ -141,46 +307,31 @@ post_json :: (url: string, value: $V, headers: [] Header_Field = .[]) -> Http_Er
 }
 
 delete_request :: (url: string, headers: [] Header_Field = .[]) -> Http_Error {
-    request: Client_Request;
-
-    request.method = .DELETE;
-    request.url = url;
-    request.headers = headers;
-
-    response, error := send(request);
-
-    if error.kind != .NONE return error;
-
-    defer free_response(*response);
-
-    if response.status < 200 || response.status >= 300 return status_error(*response);
-
-    return .{};
+    return delete_request(default_client(), url, headers);
 }
 
 // `GET url` as text.
-get_text :: (url: string, headers: [] Header_Field = .[]) -> string, Http_Error {
-    request: Client_Request;
-
-    request.url = url;
-    request.headers = headers;
-
-    response, error := send(request);
-
-    if error.kind != .NONE return "", error;
+get_text :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> string, Http_Error {
+    response, error := send(client, .{ url = url, headers = headers });
 
     defer free_response(*response);
+
+    if error.kind != .NONE return "", error;
 
     if response.status < 200 || response.status >= 300 return "", status_error(*response);
 
     return copy_string(body_text(*response)), .{};
 }
 
+get_text :: (url: string, headers: [] Header_Field = .[]) -> string, Http_Error {
+    return get_text(default_client(), url, headers);
+}
+
 // Closes every idle connection of the running scheduler (they are also closed when it ends).
 close_idle_connections :: () {
     pool := client_pool();
 
-    for pool.idle Io.close(it.stream);
+    for pool.idle stream_close(it.stream);
 
     pool.idle.count = 0;
 }
@@ -223,7 +374,7 @@ with_json_headers :: (headers: [] Header_Field, has_body: bool) -> [] Header_Fie
     return list;
 }
 
-json_with_body :: ($T: Type, method: Method, url: string, value: $V, headers: [] Header_Field) -> T, Http_Error {
+json_with_body :: (client: *Client, $T: Type, method: Method, url: string, value: $V, headers: [] Header_Field) -> T, Http_Error {
     request: Client_Request;
 
     request.method = method;
@@ -234,15 +385,29 @@ json_with_body :: ($T: Type, method: Method, url: string, value: $V, headers: []
 
     request.body = .{ body.count, body.data };
 
-    return json_exchange(T, request);
+    return json_exchange(client, T, request);
 }
 
-json_exchange :: ($T: Type, request: Client_Request) -> T, Http_Error {
-    response, error := send(request);
+send_with_json :: (client: *Client, method: Method, url: string, value: $V, headers: [] Header_Field) -> Client_Response, Http_Error {
+    request: Client_Request;
 
-    if error.kind != .NONE return .{}, error;
+    request.method = method;
+    request.url = url;
+    request.headers = with_json_headers(headers, true);
+
+    body := to_json(value,, temp);
+
+    request.body = .{ body.count, body.data };
+
+    return send(client, request);
+}
+
+json_exchange :: (client: *Client, $T: Type, request: Client_Request) -> T, Http_Error {
+    response, error := send(client, request);
 
     defer free_response(*response);
+
+    if error.kind != .NONE return .{}, error;
 
     if response.status < 200 || response.status >= 300 return .{}, status_error(*response);
 
@@ -314,29 +479,79 @@ transport_error :: (kind: Http_Error_Kind, io: Io.Io_Error, what: string) -> Htt
     return error;
 }
 
+// What a call was asked to do, kept for the response that answers it.
+Request_Note :: struct {
+    method: Method;
+    url: string;
+    body: [] u8;
+}
+
+// A call made with no scheduler running: `send` runs one for it.
+Outside_Call :: struct {
+    client: *Client;
+    request: Client_Request;
+    response: Client_Response;
+    error: Http_Error;
+}
+
+run_outside_call :: (call: *Outside_Call) {
+    call.response, call.error = send_on_fiber(call.client, call.request);
+}
+
+send_on_fiber :: (client: *Client, request: Client_Request) -> Client_Response, Http_Error {
+    note: Request_Note;
+
+    note.method = request.method;
+    note.url = request.url;
+    note.body = request.body;
+
+    timeout := ifx request.timeout < 0 then client.timeout else request.timeout;
+
+    response: Client_Response;
+    error: Http_Error;
+
+    if timeout > 0 {
+        previous := Io.set_deadline(timeout);
+
+        response, error = send_following(client, request, note);
+
+        Io.restore_deadline(previous);
+    } else {
+        response, error = send_following(client, request, note);
+    }
+
+    if error.kind != .NONE return build_response(0, error_text(error), .[], .[], note), error;
+
+    return response, .{};
+}
+
 // One exchange plus the redirects it leads to.
-send_following :: (request: Client_Request) -> Client_Response, Http_Error {
-    url_text := request.url;
+send_following :: (client: *Client, request: Client_Request, note: Request_Note) -> Client_Response, Http_Error {
+    url_text, problem := absolute_url(client, request.url);
+
+    if problem.kind != .NONE return .{}, problem;
+
     method := request.method;
     body := request.body;
-    headers := request.headers;
+    headers := with_default_headers(client, request.headers);
     redirects := 0;
+    limit := ifx request.max_redirects < 0 then client.max_redirects else request.max_redirects;
 
     while true {
-        response, error := exchange(method, url_text, headers, body, request.max_response_size);
+        response, error := exchange(client, method, url_text, headers, body, request.max_response_size, note);
 
         if error.kind != .NONE return .{}, error;
 
-        redirect := request.follow_redirects && (response.status == 301 || response.status == 302 || response.status == 303 || response.status == 307 || response.status == 308);
+        redirect := limit > 0 && (response.status == 301 || response.status == 302 || response.status == 303 || response.status == 307 || response.status == 308);
 
         location, has_location := header(*response, "Location");
 
         if !redirect || !has_location return response, .{};
 
-        if redirects >= request.max_redirects {
+        if redirects >= limit {
             free_response(*response);
 
-            return .{}, transport_error(.REDIRECTS, .NONE, tprint("more than % redirects, the last to %", request.max_redirects, location));
+            return .{}, transport_error(.REDIRECTS, .NONE, tprint("more than % redirects, the last to %", limit, location));
         }
 
         redirects += 1;
@@ -357,6 +572,42 @@ send_following :: (request: Client_Request) -> Client_Response, Http_Error {
     }
 
     return .{}, .{};
+}
+
+// `text` as an absolute URL: a relative one is joined to the client's base URL.
+absolute_url :: (client: *Client, text: string) -> string, Http_Error {
+    if find_index_from_left(text, "://") > 0 return text, .{};
+
+    base := client.base_url;
+
+    if base.count == 0 && client.transport.base base = client.transport.base(client.transport.data);
+
+    if base.count == 0 {
+        return "", transport_error(.INVALID_URL, .NONE, tprint("`%`: it is not an absolute URL such as http://host/path, and the client has no base_url to join it to", text));
+    }
+
+    while base.count > 0 && base[base.count - 1] == #char "/" base.count -= 1;
+
+    if text.count == 0 || text[0] == #char "/" return tprint("%%", base, text), .{};
+
+    return tprint("%/%", base, text), .{};
+}
+
+// The request's headers and, for every name it does not set, the client's default.
+with_default_headers :: (client: *Client, headers: [] Header_Field) -> [] Header_Field {
+    if client.headers.count == 0 return headers;
+
+    list: [..] Header_Field;
+
+    for headers array_add(*list, it,, temp);
+
+    for client.headers {
+        _, found := find_header(headers, it.name);
+
+        if !found array_add(*list, it,, temp);
+    }
+
+    return list;
 }
 
 same_origin :: (a: string, b: string) -> bool {
@@ -408,7 +659,7 @@ host_with_port :: (url: Url) -> string {
 }
 
 // One request on one connection (a pooled one when there is one), and its response.
-exchange :: (method: Method, url_text: string, extra: [] Header_Field, body: [] u8, max_response_size: int) -> Client_Response, Http_Error {
+exchange :: (client: *Client, method: Method, url_text: string, extra: [] Header_Field, body: [] u8, max_response_size: int, note: Request_Note) -> Client_Response, Http_Error {
     url, problem := parse_url(url_text);
 
     if problem != .NONE {
@@ -467,15 +718,15 @@ exchange :: (method: Method, url_text: string, extra: [] Header_Field, body: [] 
     attempt := 0;
 
     while true {
-        stream, reused, error := checkout(url);
+        stream, reused, error := checkout(client, url);
 
         if error.kind != .NONE return .{}, error;
 
-        response, reply_started, failure := converse(stream, method, method_text, url, headers, body, max_response_size);
+        response, reply_started, failure := converse(client, stream, method, method_text, url, headers, body, max_response_size, note);
 
         if failure.kind == .NONE return response, .{};
 
-        Io.close(stream);
+        stream_close(stream);
 
         // A pooled connection the server closed while it sat idle fails before any answer came:
         // that is not the request's fault, so try once more on a fresh connection.
@@ -493,7 +744,7 @@ exchange :: (method: Method, url_text: string, extra: [] Header_Field, body: [] 
 
 // Writes the request and reads the response on `stream`. The stream goes back to the pool when
 // it can carry another request. `reply_started` says whether any byte of an answer arrived.
-converse :: (stream: Io.Tcp_Stream, method: Method, method_text: string, url: Url, headers: [] Header_Field, body: [] u8, max_response_size: int) -> Client_Response, reply_started: bool, Http_Error {
+converse :: (client: *Client, stream: Stream, method: Method, method_text: string, url: Url, headers: [] Header_Field, body: [] u8, max_response_size: int, note: Request_Note) -> Client_Response, reply_started: bool, Http_Error {
     out: [..] u8;
 
     defer array_reset(*out);
@@ -506,7 +757,7 @@ converse :: (stream: Io.Tcp_Stream, method: Method, method_text: string, url: Ur
 
     append_bytes(*out, body.data, body.count);
 
-    _, write_error := Io.write(stream, out);
+    _, write_error := stream_write(stream, out);
 
     if write_error != .NONE return .{}, false, io_failure(write_error, "sending the request");
 
@@ -540,7 +791,7 @@ converse :: (stream: Io.Tcp_Stream, method: Method, method_text: string, url: Ur
     defer array_reset(*headers_list);
 
     while !finished {
-        count, read_error := Io.read(stream, buffer);
+        count, read_error := stream_read(stream, buffer);
 
         if read_error != .NONE return .{}, started, io_failure(read_error, "reading the response");
 
@@ -606,12 +857,12 @@ converse :: (stream: Io.Tcp_Stream, method: Method, method_text: string, url: Ur
         }
     }
 
-    response := build_response(status, reason, headers_list, collected);
+    response := build_response(status, reason, headers_list, collected, note);
 
     if keep_alive && parser.head.body != .UNTIL_CLOSE {
-        checkin(url, stream);
+        checkin(client, url, stream);
     } else {
-        Io.close(stream);
+        stream_close(stream);
     }
 
     return response, true, .{};
@@ -625,9 +876,12 @@ io_failure :: (error: Io.Io_Error, what: string) -> Http_Error {
     return transport_error(.TRANSPORT, error, tprint("%: %", what, error));
 }
 
-// One allocation for the headers, their text, the reason and the body.
-build_response :: (status: int, reason: string, headers: [] Header_Field, body: [] u8) -> Client_Response {
-    size := headers.count * size_of(Header_Field) + reason.count + body.count + 16;
+REQUEST_BODY_KEPT :: 256;
+
+// One allocation for the headers, their text, the reason, the body and the request's summary.
+build_response :: (status: int, reason: string, headers: [] Header_Field, body: [] u8, note: Request_Note) -> Client_Response {
+    kept := min(note.body.count, REQUEST_BODY_KEPT);
+    size := headers.count * size_of(Header_Field) + reason.count + body.count + note.url.count + kept + 16;
 
     for headers size += it.name.count + it.value.count;
 
@@ -665,6 +919,10 @@ build_response :: (status: int, reason: string, headers: [] Header_Field, body: 
 
     response.headers = .{ headers.count, list };
     response.reason = take(reason, *cursor);
+    response.method = note.method;
+    response.url = take(note.url, *cursor);
+    response.request_body = take(string.{ kept, note.body.data }, *cursor);
+    response.request_body_size = note.body.count;
 
     response.body.data = cursor;
     response.body.count = body.count;
@@ -680,7 +938,8 @@ build_response :: (status: int, reason: string, headers: [] Header_Field, body: 
 Pool_Entry :: struct {
     host: string;
     port: u16;
-    stream: Io.Tcp_Stream;
+    owner: *void; // the transport's data: a connection is only reused by the transport that made it
+    stream: Stream;
     since: s64;
 }
 
@@ -707,7 +966,7 @@ drop_pool :: (value: *void) {
     pool := cast(*Client_Pool) value;
 
     for pool.idle {
-        Io.close_now(it.stream);
+        stream_close_now(it.stream);
         free(it.host.data);
     }
 
@@ -716,9 +975,10 @@ drop_pool :: (value: *void) {
 }
 
 // A connection to the URL's host: an idle one from the pool, or a new one.
-checkout :: (url: Url) -> Io.Tcp_Stream, reused: bool, Http_Error {
+checkout :: (client: *Client, url: Url) -> Stream, reused: bool, Http_Error {
     pool := client_pool();
     now := now_ms();
+    owner := client.transport.data;
 
     // Newest first; connections that waited too long are closed on the way.
     index := pool.idle.count - 1;
@@ -728,7 +988,7 @@ checkout :: (url: Url) -> Io.Tcp_Stream, reused: bool, Http_Error {
 
         if now - entry.since > client_settings.idle_timeout {
             drop_entry(pool, index);
-        } else if entry.port == url.port && entry.host == url.host {
+        } else if entry.owner == owner && entry.port == url.port && entry.host == url.host {
             stream := entry.stream;
 
             free(entry.host.data);
@@ -740,7 +1000,18 @@ checkout :: (url: Url) -> Io.Tcp_Stream, reused: bool, Http_Error {
         index -= 1;
     }
 
-    stream, error := Io.connect(url.host, url.port);
+    stream: Stream;
+    error: Io.Io_Error;
+
+    if client.transport.open {
+        stream, error = client.transport.open(owner, url);
+    } else {
+        tcp: Io.Tcp_Stream;
+
+        tcp, error = Io.connect(url.host, url.port);
+
+        stream = tcp_stream(tcp);
+    }
 
     if error != .NONE {
         return .{}, false, io_failure(error, tprint("connecting to %:%", url.host, url.port));
@@ -754,24 +1025,25 @@ checkout :: (url: Url) -> Io.Tcp_Stream, reused: bool, Http_Error {
 drop_entry :: (pool: *Client_Pool, index: int) {
     entry := pool.idle[index];
 
-    Io.close(entry.stream);
+    stream_close(entry.stream);
     free(entry.host.data);
     array_ordered_remove_by_index(*pool.idle, index);
 }
 
-checkin :: (url: Url, stream: Io.Tcp_Stream) {
+checkin :: (client: *Client, url: Url, stream: Stream) {
     pool := client_pool();
+    owner := client.transport.data;
 
     count := 0;
 
     for pool.idle {
-        if it.port == url.port && it.host == url.host count += 1;
+        if it.owner == owner && it.port == url.port && it.host == url.host count += 1;
     }
 
     // Too many for this host: the oldest one goes.
     while count >= client_settings.max_idle_per_host {
         for pool.idle {
-            if it.port == url.port && it.host == url.host {
+            if it.owner == owner && it.port == url.port && it.host == url.host {
                 drop_entry(pool, it_index);
                 count -= 1;
 
@@ -781,7 +1053,7 @@ checkin :: (url: Url, stream: Io.Tcp_Stream) {
     }
 
     if client_settings.max_idle_per_host <= 0 {
-        Io.close(stream);
+        stream_close(stream);
 
         return;
     }
@@ -790,6 +1062,7 @@ checkin :: (url: Url, stream: Io.Tcp_Stream) {
 
     entry.host = copy_string(url.host);
     entry.port = url.port;
+    entry.owner = owner;
     entry.stream = stream;
     entry.since = now_ms();
 
