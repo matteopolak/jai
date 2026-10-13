@@ -1024,6 +1024,176 @@ test_run_ends_blocked_fibers :: () {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Accept: connections that arrive while nobody accepts, several acceptors, closing with some queued
+
+Acceptor_Job :: struct {
+    listener: Io.Tcp_Listener;
+    group: *Io.Wait_Group;
+    accepted: *int;
+}
+
+counting_acceptor :: (job: Acceptor_Job) {
+    defer Io.done(job.group);
+
+    while true {
+        conn, error := Io.accept(job.listener);
+        if error != .NONE return;
+
+        job.accepted.* += 1;
+        Io.close(conn);
+    }
+}
+
+test_accept_backlog :: () {
+    listener, error := Io.tcp_listen(LOOPBACK);
+
+    assert(error == .NONE);
+
+    address, _ := Io.local_address(listener);
+
+    // More connections than the engine queues ahead of time (io_uring), accepted one at a time.
+    COUNT :: 300;
+    clients: [COUNT] Io.Tcp_Stream;
+
+    for 0..COUNT - 1 {
+        clients[it], error = Io.connect(address);
+        assert(error == .NONE, "connect %: %", it, error);
+    }
+
+    // Everything is accepted once, each socket is connected to its client.
+    for 0..COUNT - 1 {
+        conn, accept_error := Io.accept(listener);
+
+        assert(accept_error == .NONE, "accept %: %", it, accept_error);
+
+        byte: u8 = cast(u8) (it & 255);
+
+        Io.write(conn, .{ 1, *byte });
+        Io.close(conn);
+    }
+
+    for 0..COUNT - 1 {
+        reply: [1] u8;
+        count, read_error := Io.read(clients[it], reply);
+
+        assert(read_error == .NONE && count == 1 && reply[0] == cast(u8) (it & 255), "client % read % % %", it, count, read_error, reply[0]);
+
+        Io.close(clients[it]);
+    }
+
+    // A pause with nothing queued, then more.
+    for 1..3 {
+        client, connect_error := Io.connect(address);
+
+        assert(connect_error == .NONE);
+
+        conn, accept_error := Io.accept(listener);
+
+        assert(accept_error == .NONE);
+
+        Io.sleep(2);
+        Io.close(client);
+        Io.close(conn);
+    }
+
+    assert(Io.close(listener) == .NONE);
+}
+
+test_accept_two_acceptors :: () {
+    listener, error := Io.tcp_listen(LOOPBACK);
+
+    assert(error == .NONE);
+
+    address, _ := Io.local_address(listener);
+
+    group: Io.Wait_Group;
+    accepted: int;
+
+    Io.add(*group, 2);
+    Io.spawn(counting_acceptor, Acceptor_Job.{ listener, *group, *accepted });
+    Io.spawn(counting_acceptor, Acceptor_Job.{ listener, *group, *accepted });
+    Io.sleep(5);
+
+    for 1..50 {
+        client, connect_error := Io.connect(address);
+        assert(connect_error == .NONE);
+
+        Io.close(client);
+    }
+
+    while accepted < 50 Io.sleep(1);
+
+    // Closing the listener ends both acceptors.
+    Io.close(listener);
+    Io.wait(*group);
+
+    assert(accepted == 50, "accepted %", accepted);
+}
+
+test_close_with_queued_connections :: () {
+    listener, error := Io.tcp_listen(LOOPBACK);
+
+    assert(error == .NONE);
+
+    address, _ := Io.local_address(listener);
+
+    first, e1 := Io.connect(address);
+    second, e2 := Io.connect(address);
+    third, e3 := Io.connect(address);
+
+    assert(e1 == .NONE && e2 == .NONE && e3 == .NONE);
+
+    // The first accept may queue the other two ahead of time; closing the listener drops them.
+    conn, accept_error := Io.accept(listener);
+
+    assert(accept_error == .NONE);
+
+    Io.sleep(5);
+    assert(Io.close(listener) == .NONE);
+
+    // The listener's port is free again, and a late accept on the closed listener fails.
+    again, again_error := Io.tcp_listen(address);
+
+    assert(again_error == .NONE, "relisten: %", again_error);
+    Io.close(again);
+
+    for Io.Tcp_Stream.[second, third] {
+        buffer: [4] u8;
+        count, read_error := Io.read(it, buffer);
+
+        assert(count == 0 || read_error != .NONE, "a queued connection stayed open: % %", count, read_error);
+    }
+
+    Io.close(conn);
+    Io.close(first);
+    Io.close(second);
+    Io.close(third);
+}
+
+test_close_now_releases_the_port :: () {
+    listener, error := Io.tcp_listen(LOOPBACK);
+
+    assert(error == .NONE);
+
+    address, _ := Io.local_address(listener);
+
+    // Arms the accept, then gives up on it.
+    Io.with_deadline(5, #code {
+        _, error = Io.accept(listener);
+    });
+
+    assert(error == .TIMED_OUT);
+
+    Io.close(listener, now = true);
+    Io.sleep(5);
+
+    again, again_error := Io.tcp_listen(address);
+
+    assert(again_error == .NONE, "relisten: %", again_error);
+    Io.close(again);
+}
+
+// ---------------------------------------------------------------------------------------------
 // Threads: one scheduler each, listeners sharing a port
 
 Shared_Port :: struct {
@@ -1702,6 +1872,10 @@ run_tcp :: () {
     test_address_in_use();
     test_local_and_peer_address();
     test_close_wakes_waiters();
+    test_accept_backlog();
+    test_accept_two_acceptors();
+    test_close_with_queued_connections();
+    test_close_now_releases_the_port();
     test_resolve();
     test_resolve_coalesces();
     test_resolver_helpers_bounded();

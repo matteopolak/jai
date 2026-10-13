@@ -93,11 +93,13 @@ Op :: struct {
     tag: Internal_Tag;
     // The scheduler's end of the file thread pool that a worker reports to.
     link: *Pool_Link;
+    // io_uring: the listener whose multishot accept this is.
+    slot: *Accept_Slot;
 
     // The completion.
     result: s64;
     flags: u32;
-    // More completions follow (multishot operations; none are requested yet).
+    // More completions follow (multishot operations: the io_uring accept).
     more: bool;
     buffer_id: s32 = -1;
 
