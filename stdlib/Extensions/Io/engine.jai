@@ -148,10 +148,16 @@ Fd_State :: struct {
     // kqueue: a filter is registered and has not fired.
     read_armed: bool;
     write_armed: bool;
-    // epoll: registered at all, whether the registration is live, and the events it asks for.
+    // epoll: registered at all (edge-triggered, for good), and the events it asks for.
     registered: bool;
-    live: bool;
     mask: u32;
+    // epoll: the last try in that direction found nothing to do, and no event has said otherwise
+    // since, so the next operation waits without trying.
+    read_blocked: bool;
+    write_blocked: bool;
+    // The peer has shut down or the socket has an error: receives always try, since the end of the
+    // stream is not an edge that comes again.
+    hup: bool;
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -1659,6 +1659,88 @@ write_later :: (job: Late_Write) {
     Io.write(job.stream, "x");
 }
 
+// Edge-triggered readiness (epoll): data and the end of the stream that arrived before anyone
+// looked are still found, and a wait on a drained socket does not report it readable because of an
+// arrival that was read already.
+test_readiness_after_early_reads :: () {
+    pair := make_pair();
+    buffer: [64] u8;
+
+    // Data and then the end of the stream, both there before the first read.
+    Io.write(pair.client, "abc");
+    Io.shutdown_write(pair.client);
+    Io.sleep(5);
+
+    count, error := Io.read(pair.server, buffer);
+
+    assert(error == .NONE && count == 3, "first read gave % %", count, error);
+
+    Io.with_deadline(1000, #code {
+        count, error = Io.read(pair.server, buffer);
+    });
+
+    assert(error == .NONE && count == 0, "the end of the stream was not seen: % %", count, error);
+    assert(Io.wait_readable(pair.server) == .NONE);
+
+    close_pair(pair);
+
+    // A second arrival whose event is still on its way when the data is read.
+    pair = make_pair();
+
+    // Waiting once registers the socket with epoll.
+    Io.with_deadline(5, #code {
+        error = Io.wait_readable(pair.server);
+    });
+
+    assert(error == .TIMED_OUT);
+
+    _, write_error := Io.write(pair.client, "a");
+
+    assert(write_error == .NONE);
+
+    Io.with_deadline(1000, #code {
+        error = Io.wait_readable(pair.server);
+    });
+
+    assert(error == .NONE, "wait_readable: %", error);
+
+    _, write_error = Io.write(pair.client, "b");
+    assert(write_error == .NONE);
+
+    count, error = Io.read(pair.server, buffer);
+
+    assert(error == .NONE && count >= 1, "read gave % %", count, error);
+
+    // "b" may have been read with "a" or may still be there.
+    if count == 1 {
+        count, error = Io.read(pair.server, buffer);
+
+        assert(error == .NONE && count == 1);
+    }
+
+    Io.with_deadline(30, #code {
+        error = Io.wait_readable(pair.server);
+    });
+
+    assert(error == .TIMED_OUT, "wait_readable on a drained socket gave %", error);
+
+    // And it still works when something does arrive.
+    _, write_error = Io.write(pair.client, "c");
+    assert(write_error == .NONE);
+
+    Io.with_deadline(1000, #code {
+        error = Io.wait_readable(pair.server);
+    });
+
+    assert(error == .NONE, "wait_readable after more data: %", error);
+
+    count, error = Io.read(pair.server, buffer);
+
+    assert(error == .NONE && count == 1 && buffer[0] == #char "c");
+
+    close_pair(pair);
+}
+
 // A fiber that waits idle gives back the stack it used below its current frame; what it keeps in
 // its live frames must survive, and the dead part must work again afterwards.
 Stack_Job :: struct {
@@ -1916,6 +1998,7 @@ run_wait_readable :: () {
     test_close_wakes_wait_readable();
     test_wait_readable_races_deadline();
     test_wait_readable_keeps_the_stack();
+    test_readiness_after_early_reads();
 }
 
 // ---------------------------------------------------------------------------------------------
