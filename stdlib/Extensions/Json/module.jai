@@ -251,6 +251,7 @@ json_decode :: (r: *Json_Reader, out: *$T) -> bool {
 
 #load "value.jai";
 #load "number.jai";
+#load "pow5.jai";
 #load "writer.jai";
 #load "reader.jai";
 #load "index.jai";

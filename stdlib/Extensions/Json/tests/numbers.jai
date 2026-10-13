@@ -200,6 +200,127 @@ random_round_trips :: (count: int) {
     check(bad == 0, "short decimals print as they were written");
 }
 
+// The direct conversions (exact multiplication, Eisel-Lemire) must agree with Basic's exact
+// decimal conversion, bit for bit, on every shape of token: random digits and exponents over the
+// whole range (including subnormals and the edge of overflow), exact halfway cases between
+// neighbouring floats, and neighbours of those.
+reference64 :: (text: string) -> u64, bool {
+    d: Decimal_Float = ---;
+
+    scan_decimal_float(text, *d, limit_exponent = false);
+
+    value, overflow := decimal_float_to_float64(*d);
+
+    return bits64(value), overflow;
+}
+
+reference32 :: (text: string) -> u32, bool {
+    d: Decimal_Float = ---;
+
+    scan_decimal_float(text, *d, limit_exponent = false);
+
+    value, overflow := decimal_float_to_float32(*d);
+
+    return bits32(value), overflow;
+}
+
+fast_path_agrees_with :: (text: string, bad: *int) {
+    expected, overflow := reference64(text);
+    value, ok := parse64(text);
+
+    if ok == overflow || (ok && bits64(value) != expected) {
+        bad.* += 1;
+        if bad.* < 8 print("float64 % gave % (expected %, overflow %)\n", text, bits64(value), expected, overflow);
+    }
+
+    expected32, overflow32 := reference32(text);
+    value32, ok32 := parse32(text);
+
+    if ok32 == overflow32 || (ok32 && bits32(value32) != expected32) {
+        bad.* += 1;
+        if bad.* < 8 print("float32 % gave % (expected %, overflow %)\n", text, bits32(value32), expected32, overflow32);
+    }
+}
+
+random_digits :: (builder: *String_Builder, count: int, zero_runs: bool) {
+    for 1..count {
+        if zero_runs && random_get() % 4 == 0 append(builder, "0");
+        else if zero_runs && random_get() % 4 == 0 append(builder, "9");
+        else print(builder, "%", random_get() % 10);
+    }
+}
+
+fast_path_agrees :: (count: int) {
+    random_seed(7771);
+
+    bad := 0;
+
+    for 1..count {
+        builder: String_Builder;
+
+        if random_get() % 8 == 0 append(*builder, "-");
+
+        whole := cast(int) (random_get() % 20);
+        fraction := cast(int) (random_get() % 20);
+        zero_runs := random_get() % 3 == 0;
+
+        if whole == 0 {
+            append(*builder, "0");
+        } else {
+            print(*builder, "%", 1 + random_get() % 9);
+            random_digits(*builder, whole - 1, zero_runs);
+        }
+
+        if whole == 0 && fraction == 0 fraction = 1;
+
+        if fraction > 0 {
+            append(*builder, ".");
+            random_digits(*builder, fraction, zero_runs);
+        }
+
+        kind := random_get() % 4;
+
+        if kind == 1 print(*builder, "e%", cast(int) (random_get() % 61) - 30);
+        else if kind == 2 print(*builder, "e%", cast(int) (random_get() % 700) - 360);
+        else if kind == 3 print(*builder, "E+%", random_get() % 330);
+
+        text := builder_to_string(*builder);
+        fast_path_agrees_with(text, *bad);
+        free(text);
+    }
+
+    // Halfway between two floats: an odd multiple of half a unit in the last place, as integers
+    // between 2^53 and 2^64 (exact in a u64), with the neighbours on either side.
+    for 1..count / 4 {
+        k := cast(u64) (random_get() % 11) + 1;
+        m := (((cast(u64) random_get() << 32) | cast(u64) random_get()) & ((cast(u64) 1 << 52) - 1)) | (cast(u64) 1 << 52);
+        halfway := (m << k) | ((cast(u64) 1) << (k - 1));
+
+        for delta: -1..1 {
+            text := tprint("%", halfway + cast(u64) delta);
+            fast_path_agrees_with(text, *bad);
+        }
+    }
+
+    // Floats near the ends of the range and around the subnormal boundary, written with their shortest digits.
+    for 1..count / 4 {
+        bits := (cast(u64) random_get() << 32) ^ cast(u64) random_get();
+        pick := random_get() % 4;
+
+        if pick == 0 bits = (bits & 0x000f_ffff_ffff_ffff) | ((cast(u64) (random_get() % 3)) << 52);
+        else if pick == 1 bits = (bits & 0x000f_ffff_ffff_ffff) | ((cast(u64) (0x7fc + random_get() % 3)) << 52);
+        else bits &= 0x7fff_ffff_ffff_ffff;
+
+        value := cast,force(float64) bits;
+
+        if value != value || value - value != 0 continue;
+
+        fast_path_agrees_with(to_json(value), *bad);
+    }
+
+    check(bad == 0, "the direct float conversions agree with the exact one");
+}
+
 integers :: () {
     value, error := from_json(s64, "-9223372036854775808");
 
@@ -257,6 +378,7 @@ main :: () {
 
         // The number reader does not look at the text's bytes in bulk, so one pass is enough.
         if pass == 0 random_round_trips(ifx FULL_SWEEP then 20000 else 1500);
+        if pass == 0 fast_path_agrees(ifx FULL_SWEEP then 400000 else 3000);
     }
 
     assert(failures == 0);
