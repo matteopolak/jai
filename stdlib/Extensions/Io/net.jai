@@ -367,7 +367,7 @@ read :: (stream: Tcp_Stream, buffer: [] u8) -> s64, Io_Error {
 wait_readable :: (stream: Tcp_Stream) -> Io_Error {
     op := begin_op(.WAIT_READABLE, stream.handle);
 
-    error := await_op(op);
+    error := await_op(op, idle = true);
 
     end_op(op);
 

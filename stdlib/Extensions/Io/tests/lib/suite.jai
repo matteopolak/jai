@@ -1659,6 +1659,68 @@ write_later :: (job: Late_Write) {
     Io.write(job.stream, "x");
 }
 
+// A fiber that waits idle gives back the stack it used below its current frame; what it keeps in
+// its live frames must survive, and the dead part must work again afterwards.
+Stack_Job :: struct {
+    stream: Io.Tcp_Stream;
+    ok: *bool;
+    group: *Io.Wait_Group;
+}
+
+touch_stack :: (depth: int, seed: u8) -> int {
+    block: [1024] u8;
+
+    for *block it.* = cast(u8) ((it_index + depth) & 255) ^ seed;
+
+    sum := 0;
+
+    if depth > 0 sum = touch_stack(depth - 1, seed);
+
+    for block sum += it;
+
+    return sum;
+}
+
+stack_sleeper :: (job: Stack_Job) {
+    defer Io.done(job.group);
+
+    live: [2000] u8;
+
+    for *live it.* = cast(u8) ((it_index * 7) & 255);
+
+    before := touch_stack(40, 1);
+
+    error := Io.wait_readable(job.stream);
+
+    intact := error == .NONE;
+
+    for live {
+        if it != cast(u8) ((it_index * 7) & 255) intact = false;
+    }
+
+    if touch_stack(40, 1) != before intact = false;
+
+    job.ok.* = intact;
+}
+
+test_wait_readable_keeps_the_stack :: () {
+    pair := make_pair();
+
+    group: Io.Wait_Group;
+    ok := false;
+
+    Io.add(*group);
+    Io.spawn(stack_sleeper, Stack_Job.{ pair.server, *ok, *group });
+    Io.sleep(10);
+
+    Io.write(pair.client, "x");
+    Io.wait(*group);
+
+    assert(ok, "the stack changed across an idle wait");
+
+    close_pair(pair);
+}
+
 // `wait_readable` returns when a read would not wait, without taking anything: not before, not
 // again after, and the same through a Reader.
 test_wait_readable :: () {
@@ -1853,6 +1915,7 @@ run_wait_readable :: () {
     test_cancel_wait_readable();
     test_close_wakes_wait_readable();
     test_wait_readable_races_deadline();
+    test_wait_readable_keeps_the_stack();
 }
 
 // ---------------------------------------------------------------------------------------------

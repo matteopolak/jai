@@ -363,7 +363,7 @@ end_op :: (op: *Op) {
 
 // Runs `op` for the running fiber and blocks it until the operation completes, is canceled, or
 // the fiber's deadline passes. The result stays in `op.result`.
-await_op :: (op: *Op) -> Io_Error {
+await_op :: (op: *Op, idle := false) -> Io_Error {
     fiber, scheduler := current_fiber();
 
     fiber.platform_code = 0;
@@ -375,6 +375,10 @@ await_op :: (op: *Op) -> Io_Error {
     if !engine_submit(scheduler, op) {
         fiber.op = op;
         if fiber.deadline != 0 timer_add(scheduler, fiber, fiber.deadline);
+
+        // A wait with no buffer is an idle one: the stack the fiber once used below this point
+        // is not needed for as long as it lasts.
+        if idle stack_discard_dead(fiber.stack);
 
         park(scheduler, fiber);
 
