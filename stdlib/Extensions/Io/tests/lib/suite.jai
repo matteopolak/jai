@@ -1417,6 +1417,234 @@ test_file_cancel_and_close_under_read :: () {
 }
 
 // ---------------------------------------------------------------------------------------------
+// wait_readable
+
+Wait_Job :: struct {
+    stream: Io.Tcp_Stream;
+    result: *Io.Io_Error;
+    after: *Io.Io_Error;
+    group: *Io.Wait_Group;
+}
+
+wait_until_canceled :: (job: Wait_Job) {
+    defer Io.done(job.group);
+
+    job.result.* = Io.wait_readable(job.stream);
+
+    // Cancellation is sticky, like for every other wait.
+    job.after.* = Io.wait_readable(job.stream);
+}
+
+Late_Write :: struct {
+    stream: Io.Tcp_Stream;
+    delay: s64;
+    group: *Io.Wait_Group;
+}
+
+write_later :: (job: Late_Write) {
+    defer Io.done(job.group);
+
+    Io.sleep(job.delay);
+    Io.write(job.stream, "x");
+}
+
+// `wait_readable` returns when a read would not wait, without taking anything: not before, not
+// again after, and the same through a Reader.
+test_wait_readable :: () {
+    pair := make_pair();
+    buffer: [16] u8;
+    error: Io.Io_Error;
+
+    // Nothing there: the deadline ends it, and the connection is fine.
+    started := now_ms();
+
+    Io.with_deadline(60, #code {
+        error = Io.wait_readable(pair.client);
+    });
+
+    elapsed := now_ms() - started;
+
+    assert(error == .TIMED_OUT, "wait with nothing to read gave %", error);
+    assert(elapsed >= 55 && elapsed < 1500, "timed out after % ms", elapsed);
+    assert(!Io.is_canceled());
+
+    // Data arriving while it waits.
+    group: Io.Wait_Group;
+
+    Io.add(*group);
+    Io.spawn(write_later, Late_Write.{ pair.server, 20, *group });
+
+    error = Io.wait_readable(pair.client);
+
+    assert(error == .NONE, "wait for data gave %", error);
+    Io.wait(*group);
+
+    // It took nothing: still readable, and the read gets the byte.
+    assert(Io.wait_readable(pair.client) == .NONE, "a second wait for the same byte");
+
+    count, read_error := Io.read(pair.client, buffer);
+
+    assert(read_error == .NONE && count == 1 && buffer[0] == #char "x", "read after a wait gave % %", count, read_error);
+
+    // Through a Reader, with data already there.
+    source := Io.reader_of(pair.client);
+
+    assert(Io.can_wait_readable(source));
+
+    Io.write(pair.server, "yz");
+
+    assert(Io.wait_readable(source) == .NONE, "wait through a reader");
+
+    count, read_error = Io.read(source, buffer);
+    assert(read_error == .NONE && count >= 1, "read through a reader: % %", count, read_error);
+
+    // The end of the stream is readable.
+    Io.close(pair.server);
+
+    assert(Io.wait_readable(pair.client) == .NONE, "wait for the end of the stream");
+
+    // "yz" may still be in flight as one more read; then the end.
+    while read_error == .NONE && count > 0 {
+        count, read_error = Io.read(pair.client, buffer);
+    }
+
+    assert(read_error == .NONE && count == 0, "end of stream gave % %", count, read_error);
+
+    // An expired deadline fails the call before it starts.
+    Io.with_deadline(0, #code {
+        error = Io.wait_readable(pair.client);
+    });
+
+    assert(error == .TIMED_OUT, "wait under an expired deadline gave %", error);
+
+    Io.close(pair.client);
+    Io.close(pair.listener);
+}
+
+// A reader that cannot wait says so.
+test_wait_readable_unsupported :: () {
+    near, far := Io.make_pipe();
+
+    reader := Io.reader_of(near);
+
+    assert(!Io.can_wait_readable(reader));
+    assert(Io.wait_readable(reader) == .UNSUPPORTED, "a pipe reader cannot wait");
+
+    own := Io.Reader.{ null, null, null };
+
+    assert(!Io.can_wait_readable(own) && Io.wait_readable(own) == .UNSUPPORTED);
+
+    Io.close(near);
+    Io.close(far);
+}
+
+test_cancel_wait_readable :: () {
+    pair := make_pair();
+
+    group: Io.Wait_Group;
+    result, after: Io.Io_Error;
+
+    Io.add(*group);
+    handle := Io.spawn(wait_until_canceled, Wait_Job.{ pair.client, *result, *after, *group });
+
+    Io.sleep(10);
+    assert(result == .NONE, "still waiting");
+
+    started := now_ms();
+
+    Io.cancel(handle);
+    Io.wait(*group);
+
+    assert(result == .CANCELED, "wait after cancel gave %", result);
+    assert(after == .CANCELED, "a second wait in a canceled fiber gave %", after);
+    assert(now_ms() - started < 1000, "cancel took % ms", now_ms() - started);
+
+    // The socket is untouched: data still arrives.
+    Io.write(pair.server, "ok");
+    assert(Io.wait_readable(pair.client) == .NONE);
+
+    close_pair(pair);
+}
+
+wait_once :: (job: Wait_Job) {
+    defer Io.done(job.group);
+
+    job.result.* = Io.wait_readable(job.stream);
+}
+
+test_close_wakes_wait_readable :: () {
+    pair := make_pair();
+
+    group: Io.Wait_Group;
+    result, after: Io.Io_Error;
+
+    Io.add(*group);
+    Io.spawn(wait_once, Wait_Job.{ pair.client, *result, *after, *group });
+    Io.sleep(10);
+
+    assert(Io.close(pair.client) == .NONE);
+    assert(Io.wait(*group) == .NONE);
+    assert(result == .CLOSED, "closed under a wait gave %", result);
+
+    Io.close(pair.server);
+    Io.close(pair.listener);
+}
+
+Race_Job :: struct {
+    stream: Io.Tcp_Stream;
+    delay: s64;
+    group: *Io.Wait_Group;
+}
+
+race_writer :: (job: Race_Job) {
+    defer Io.done(job.group);
+
+    Io.sleep(job.delay);
+    Io.write(job.stream, "r");
+}
+
+// The deadline, the data and the wake-up land together: the waiter wakes once, with either answer,
+// and the byte is always there for the read that follows.
+test_wait_readable_races_deadline :: () {
+    pair := make_pair();
+    buffer: [4] u8;
+
+    for 1..60 {
+        group: Io.Wait_Group;
+
+        Io.add(*group);
+        Io.spawn(race_writer, Race_Job.{ pair.server, it % 3, *group });
+
+        error: Io.Io_Error;
+
+        Io.with_deadline(1 + it % 2, #code {
+            error = Io.wait_readable(pair.client);
+        });
+
+        assert(error == .NONE || error == .TIMED_OUT, "race gave %", error);
+
+        // Either way the byte arrives and is read exactly once.
+        count, read_error := Io.read(pair.client, buffer);
+
+        assert(read_error == .NONE && count == 1, "read after a race gave % %", count, read_error);
+
+        Io.wait(*group);
+    }
+
+    close_pair(pair);
+}
+
+run_wait_readable :: () {
+    last_backend = Io.backend_name();
+
+    test_wait_readable();
+    test_wait_readable_unsupported();
+    test_cancel_wait_readable();
+    test_close_wakes_wait_readable();
+    test_wait_readable_races_deadline();
+}
+
+// ---------------------------------------------------------------------------------------------
 // Groups
 
 last_backend: string;
@@ -1436,6 +1664,7 @@ run_tcp :: () {
     test_resolve();
     test_resolve_coalesces();
     test_resolver_helpers_bounded();
+    run_wait_readable();
 }
 
 run_timeouts :: () {

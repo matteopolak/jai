@@ -27,6 +27,7 @@
     UNTRACKED :: 1;
 
     MSG_NOSIGNAL :: 0x4000;
+    POLLIN :: 0x1;
     // Accepted sockets block: io_uring waits for them itself.
     SOCK_CLOEXEC :: 0x80000;
 
@@ -67,7 +68,7 @@
         probe: Uring.Probe;
         probed := Uring.probe_ops(ring, *probe);
 
-        needed := Uring.io_uring_op.[.ACCEPT, .CONNECT, .RECV, .SEND, .READ, .WRITE, .CLOSE, .ASYNC_CANCEL, .SENDMSG_ZC];
+        needed := Uring.io_uring_op.[.ACCEPT, .CONNECT, .RECV, .SEND, .READ, .WRITE, .CLOSE, .ASYNC_CANCEL, .POLL_ADD, .SENDMSG_ZC];
         usable := probed == 0 && (ring.features & Uring.IORING_FEAT_EXT_ARG) != 0;
 
         for needed {
@@ -155,6 +156,11 @@
 
             case .CLOSE;
                 Uring.prep_rw(sqe, .CLOSE, fd, null, 0, 0);
+
+            case .WAIT_READABLE;
+                // One shot; the result is the events that fired, which `wait_readable` ignores.
+                Uring.prep_rw(sqe, .POLL_ADD, fd, null, 0, 0);
+                sqe.poll32_events = POLLIN;
         }
 
         sqe.user_data = cast(u64) cast(*void) op;
