@@ -8,6 +8,7 @@
 
 ### Added
 
+- `Http/bench/server_bench.jai` prints p50, p90, p99, p99.9 and the largest latency per route, and takes a rate for an open load (each request timed from when it was due). Numbers and what they showed: [io-engine](https://github.com/matteopolak/jai/blob/main/docs/stdlib/io-engine.md#latency).
 - `Tls.cipher_suite(stream)`, the name of the negotiated cipher suite, and `Tls.ended_without_close_notify(reader)`.
 
 ### Fixes
