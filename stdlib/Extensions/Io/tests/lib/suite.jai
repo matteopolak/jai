@@ -1052,7 +1052,10 @@ test_accept_backlog :: () {
     address, _ := Io.local_address(listener);
 
     // More connections than the engine queues ahead of time (io_uring), accepted one at a time.
-    COUNT :: 300;
+    // That needs a listen backlog above 128, which Linux grants; macOS caps every backlog at 128
+    // (kern.ipc.somaxconn) and has no such queue, so it checks fewer.
+    #if OS == .LINUX COUNT :: 300;
+    else COUNT :: 100;
     clients: [COUNT] Io.Tcp_Stream;
 
     for 0..COUNT - 1 {
