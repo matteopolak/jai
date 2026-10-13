@@ -340,10 +340,14 @@ burst_client :: (burst: Burst) {
     for 1..5 {
         response, error := send(*plain_client, .{ url = tprint("%/echo/x", burst.base), timeout = 3000 });
 
-        if error.kind == .NONE && response.status == 200 && body_of(response) == "/echo/x" burst.ok.* += 1;
+        text := "";
+
+        if error.kind == .NONE text, _ = read_text(*response);
+
+        if error.kind == .NONE && response.status == 200 && text == "/echo/x" burst.ok.* += 1;
         else check(false, "burst request failed: %", error_text(error));
 
-        free_response(*response);
+        close(*response);
     }
 }
 

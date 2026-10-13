@@ -19,6 +19,10 @@
 //         expect_status(get(api, "/notes/1"), 200);
 //     }
 //
+// A response's body is read from the connection the first time an expectation needs it (to
+// check it, or to show it in a failure) and kept, so any number of expectations can look at it
+// and `read_text` and friends still get it afterwards.
+//
 // Every `expect_*` returns whether it held (or the value it decoded, empty when it did not), so
 // a test can stop early with `if !expect_status(...) return;` when the rest depends on it.
 // `loc` is the caller's location; leave it out.
@@ -133,7 +137,9 @@ expect_no_header :: (response: Client_Response, name: string, loc := #caller_loc
 expect_text :: (response: Client_Response, expected: string, loc := #caller_location) -> bool {
     test_state.checks += 1;
 
-    if body_of_response(response) == expected return true;
+    body, problem := checked_body(response);
+
+    if problem.count == 0 && body == expected return true;
 
     fail_response(loc, tprint("expected the body \"%\"", expected), response);
 
@@ -144,7 +150,9 @@ expect_text :: (response: Client_Response, expected: string, loc := #caller_loca
 expect_body_contains :: (response: Client_Response, needle: string, loc := #caller_location) -> bool {
     test_state.checks += 1;
 
-    if find_index_from_left(body_of_response(response), needle) >= 0 return true;
+    body, problem := checked_body(response);
+
+    if problem.count == 0 && find_index_from_left(body, needle) >= 0 return true;
 
     fail_response(loc, tprint("expected the body to contain \"%\"", needle), response);
 
@@ -200,7 +208,15 @@ expect_json :: (response: Client_Response, $T: Type, status := 0, loc := #caller
         return result;
     }
 
-    value, failure := from_json(T, body_of_response(response));
+    body, problem := checked_body(response);
+
+    if problem.count {
+        fail_response(loc, tprint("the body cannot be read: %", problem), response);
+
+        return result;
+    }
+
+    value, failure := from_json(T, body);
 
     if failure.kind != .NONE {
         fail_response(loc, tprint("the body is not the JSON expected (a %): %", T, json_error_text(failure)), response);
@@ -234,7 +250,15 @@ expect_problem :: (response: Client_Response, status: int, detail := "", loc := 
         return result;
     }
 
-    problem, failure := from_json(Problem, body_of_response(response));
+    body, unreadable := checked_body(response);
+
+    if unreadable.count {
+        fail_response(loc, tprint("the body cannot be read: %", unreadable), response);
+
+        return result;
+    }
+
+    problem, failure := from_json(Problem, body);
 
     if failure.kind != .NONE {
         fail_response(loc, tprint("the body is not a problem document: %", json_error_text(failure)), response);
@@ -350,8 +374,12 @@ Test_State :: struct {
 
 test_state: Test_State;
 
-body_of_response :: (response: Client_Response) -> string {
-    return string.{ response.body.count, response.body.data };
+// The body of `response` for a check, without using it up, and why it is not available when it
+// is not. Copies of a response share the body, so reading through this one is seen by all.
+checked_body :: (response: Client_Response) -> string, string {
+    local := response;
+
+    return peek_body(*local);
 }
 
 status_label :: (status: int) -> string {
@@ -463,9 +491,14 @@ fail_response :: (loc: Source_Code_Location, headline: string, response: Client_
 
     append(*builder, "\n            ");
 
-    body := body_of_response(response);
+    body, problem := checked_body(response);
 
-    if body.count == 0 {
+    if problem.count && response.source && response.source.sample.count {
+        // The test read it already: the start was kept.
+        append_shown(*builder, string.{ response.source.sample.count, response.source.sample.data }, response.source.sample_total);
+    } else if problem.count {
+        print(*builder, "(the body is not available: %)", problem);
+    } else if body.count == 0 {
         append(*builder, "(no body)");
     } else {
         append_shown(*builder, body, body.count);

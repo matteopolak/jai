@@ -5,7 +5,7 @@
 // `test_client` is the ordinary HTTP client wired to the app in memory: every request goes
 // through the real connection loop (parsing, routing, extractors, error mapping, the response
 // writer), only the network is missing. Use it with the calls you know, `get`, `post`,
-// `get_json`, `send`, and check the answers with the `expect_*` procedures, which print the
+// `send`, and check the answers with the `expect_*` procedures, which print the
 // request and the response when something is not as expected. The store is an ordinary variable
 // of the test, so state can be prepared and inspected directly.
 #import "Basic";
@@ -19,7 +19,7 @@ main :: () {
         .{ "filters by status", filters_by_status },
         .{ "replaces and deletes", replaces_and_deletes },
         .{ "answers bad requests with problem documents", rejects_bad_requests },
-        .{ "typed calls", typed_calls },
+        .{ "reads bodies from responses", reads_bodies },
         .{ "works over a real socket too", over_a_socket },
     ]);
 }
@@ -141,30 +141,33 @@ rejects_bad_requests :: () {
     expect_equal(store.notes.count, 0, "none of the bad requests stored anything");
 }
 
-typed_calls :: () {
+reads_bodies :: () {
     store: Store;
     app: App;
 
     notes_routes(*app, *store);
 
-    // Anything the real client can do works on a test client, and returns the same types.
+    // Anything the real client can do works on a test client: the response holds the status and
+    // headers, and the body is read from it afterwards.
     api := test_client(*app);
 
-    note, error := post_json(api, Note, "/notes", New_Note.{ title = "milk" });
+    response := post(api, "/notes", New_Note.{ title = "milk" });
+    note, error := read_json(*response, Note);
 
     expect(error.kind == .NONE, "creating a note works");
     expect_equal(note.id, 1);
 
-    _, missing := get_json(api, Note, "/notes/42");
+    missing_response := get(api, "/notes/42");
+    missing := error_for_status(*missing_response);
 
-    expect_equal(missing.kind, Http_Error_Kind.STATUS);
+    expect_equal(missing.kind, Client_Error_Kind.STATUS);
     expect_equal(missing.status, 404);
     expect_equal(missing.detail, "No note with id 42");
 
-    response := get(api, "/notes");
+    list := get(api, "/notes");
 
-    expect_status(response, 200);
-    expect_header(response, "Content-Type", "application/json");
+    expect_status(list, 200);
+    expect_header(list, "Content-Type", "application/json");
 }
 
 over_a_socket :: () {

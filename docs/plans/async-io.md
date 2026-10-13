@@ -259,8 +259,11 @@ main :: () {
 ```jai
 api: Client;
 api.base_url = "http://localhost:8080";
-user, err := get_json(*api, User, "/users/1");
-created, err := post_json(*api, User, "/users", New_User.{ name = "Ada" });
+response, err := get(*api, "/users/1");            // status and headers; the body is still on the connection
+user, err2 := read_json(*response, User);          // read once: `read_text`, `read_bytes`, `read_json`, `read_some`
+close(*response);
+
+created := post(*api, "/users", New_User.{ name = "Ada" });   // a struct body is sent as JSON
 
 response, err := send(*api, .{ method = .PUT, url = url, headers = .[ .{ "X-Id", "7" } ], body = bytes });
 ```
@@ -271,7 +274,7 @@ response, err := send(*api, .{ method = .PUT, url = url, headers = .[ .{ "X-Id",
   - redirects (limited), timeouts and decompression.
 - **Errors:**
   - transport errors, such as connection refused or timeout, are kept separate from non-2xx statuses;
-  - `get_json` returns an `Http_Error` that carries the status and body when the response is not 2xx.
+  - a non-2xx status is a response, not an error; `error_for_status` turns one into a `Client_Error` that carries the status and body.
 - **HTTPS:** deferred. It needs a TLS module, which we'll add later: our own TLS 1.3 (+1.2) if the size is reasonable, or a wrapper over the system libraries (SChannel, Security.framework, OpenSSL). The HTTP layer takes any byte stream, so TLS slots in underneath without API changes.
 
 ### Underneath

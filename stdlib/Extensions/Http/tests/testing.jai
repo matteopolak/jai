@@ -70,9 +70,19 @@ through_channel :: () -> string {
 }
 
 through_backend :: (state: *State(World)) -> string, Http_Error {
-    text, error := get_text(state.other, "/hello");
+    response, error := get(state.other, "/hello");
+
+    defer close(*response);
 
     if error.kind != .NONE return "", internal_error("the backend said: %", error_text(error));
+
+    status_error := error_for_status(*response);
+
+    if status_error.kind != .NONE return "", internal_error("the backend said: %", error_text(status_error));
+
+    text, read_error := read_text(*response);
+
+    if read_error.kind != .NONE return "", internal_error("the backend said: %", error_text(read_error));
 
     return tprint("backend: %", text), .{};
 }
@@ -213,31 +223,80 @@ basics :: () {
 
     expect_status(head_response, 200);
     expect_header(head_response, "Content-Length", "5");
-    expect_equal(head_response.body.count, 0);
+
+    head_body, head_error := read_text(*head_response);
+
+    expect_equal(head_error.kind, Client_Error_Kind.NONE);
+    expect_equal(head_body.count, 0);
 
     expect_status(options(api, "/hello"), 204);
 
     // Any host reaches the app, with the Host header as written; a base URL is optional.
     expect_text(get(api, "http://example.test/hello"), "hello");
 
-    // Typed calls have the real client's types.
-    again, error := get_json(api, User, "/users/1");
+    // The body readers are the real client's.
+    user_response := get(api, "/users/1");
+    again, error := read_json(*user_response, User);
 
-    expect_equal(error.kind, Http_Error_Kind.NONE);
+    expect_equal(error.kind, Client_Error_Kind.NONE);
     expect_equal(again.id, 1);
 
-    _, status_error := get_json(api, User, "/users/9");
+    missing := get(api, "/users/9");
+    status_error := error_for_status(*missing);
 
-    expect_equal(status_error.kind, Http_Error_Kind.STATUS);
+    expect_equal(status_error.kind, Client_Error_Kind.STATUS);
     expect_equal(status_error.status, 404);
     expect_equal(status_error.detail, "No user with id 9");
 
-    text, text_error := get_text(api, "/hello");
+    hello_response := get(api, "/hello");
+    text, text_error := read_text(*hello_response);
 
-    expect_equal(text_error.kind, Http_Error_Kind.NONE);
+    expect_equal(text_error.kind, Client_Error_Kind.NONE);
     expect_equal(text, "hello");
 
-    expect_equal(delete_request(api, "/hello").status, 405);
+    // A body is read once.
+    _, twice := read_text(*hello_response);
+
+    expect_equal(twice.kind, Client_Error_Kind.BODY);
+
+    expect_equal(delete(api, "/hello").status, 405);
+}
+
+// A failing check shows the body, also when an earlier check or the test itself already looked
+// at it, and the test can still read it afterwards.
+bodies_in_failures :: () {
+    api := test_client(*app);
+
+    begin_failure_capture();
+
+    response := get(api, "/users/1");
+
+    expect_status(response, 404);
+    expect_header(response, "X-Nope");
+
+    text, count := end_failure_capture();
+
+    expect_equal(count, 2);
+    expect(find_index_from_left(text, "\"name\":\"Ada\"") >= 0, "the body is shown");
+
+    // Looking did not use the body up.
+    user, error := read_json(*response, User);
+
+    expect_equal(error.kind, Client_Error_Kind.NONE);
+    expect_equal(user.name, "Ada");
+
+    // A body the test read itself is shown from the part that was kept.
+    begin_failure_capture();
+
+    read_response := get(api, "/users/1");
+    _, _ := read_text(*read_response);
+
+    expect_status(read_response, 404);
+
+    text, count = end_failure_capture();
+
+    expect_equal(count, 1);
+    expect(find_index_from_left(text, "\"name\":\"Ada\"") >= 0, "the start of a body that was read is shown");
 }
 
 relative_urls :: () {
@@ -251,7 +310,7 @@ relative_urls :: () {
 
     response, error := send(*plain, .{ url = "/hello" });
 
-    expect_equal(error.kind, Http_Error_Kind.INVALID_URL);
+    expect_equal(error.kind, Client_Error_Kind.INVALID_URL);
     expect_equal(response.status, 0);
     expect(find_index_from_left(response.reason, "no base_url") >= 0, "the failure says why");
 }
@@ -287,8 +346,10 @@ through_the_whole_stack :: () {
     large := get(api, "/big");
 
     expect_status(large, 200);
-    expect_equal(large.body.count, 300_000);
-    expect_equal(large.body[299_999], cast(u8) (300_000 & 0xff));
+    large_body, _ := read_bytes(*large);
+
+    expect_equal(large_body.count, 300_000);
+    expect_equal(large_body[299_999], cast(u8) (300_000 & 0xff));
 
     // The server's limits answer for themselves.
     app.config.max_body_size = 1000;
@@ -406,14 +467,14 @@ timeouts :: () {
 
     response, error := send(api, .{ url = "/rest/400", timeout = 50 });
 
-    expect_equal(error.kind, Http_Error_Kind.TIMEOUT);
+    expect_equal(error.kind, Client_Error_Kind.TIMEOUT);
     expect_equal(response.status, 0);
 
     api.timeout = 50;
 
-    _, again := get_json(api, string, "/rest/400");
+    _, again := get(api, "/rest/400");
 
-    expect_equal(again.kind, Http_Error_Kind.TIMEOUT);
+    expect_equal(again.kind, Client_Error_Kind.TIMEOUT);
 
     // A slow handler within the limit is fine.
     api.timeout = 5000;
@@ -473,7 +534,7 @@ conflicting_routes :: () {
 
     response, error := send(api, .{ url = "/a/1" });
 
-    expect_equal(error.kind, Http_Error_Kind.TRANSPORT);
+    expect_equal(error.kind, Client_Error_Kind.TRANSPORT);
     expect_equal(response.status, 0);
 }
 
@@ -634,6 +695,7 @@ main :: () {
         .{ "over a real socket", over_a_socket },
         .{ "an app with conflicting routes", conflicting_routes },
         .{ "the text of a failed status check", failure_text },
+        .{ "bodies in failures", bodies_in_failures },
         .{ "the text of every other failed check", failure_messages },
     ]);
 }

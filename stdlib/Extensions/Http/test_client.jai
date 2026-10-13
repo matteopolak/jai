@@ -1,5 +1,5 @@
 // A client wired to an `App` instead of the network, for end-to-end tests. It is the same
-// `Client` as the real one: every call (`get_json`, `post`, `send`...) works on it and returns
+// `Client` as the real one: every call (`get`, `post`, `send`, `read_json`...) works on it and returns
 // the same types, and relative URLs (`"/notes/1"`) are what you write.
 //
 //     app: App;
