@@ -14,32 +14,9 @@ now_ms :: () -> s64 {
     return to_milliseconds(current_time_monotonic());
 }
 
-// The test certificates and keys are read when the test program is built (the path is relative
-// to the program's own directory), so the program runs from any directory.
-Data_File :: struct {
-    name: string;
-    text: string;
-}
-
-DATA_NAMES :: string.["ca.pem", "other_ca.pem", "server.pem", "server.key", "rsa.pem", "rsa.key", "wrong_name.pem", "wrong_name.key", "expired.pem", "expired.key", "unknown.pem", "unknown.key", "client.pem", "client.key"];
-
-read_data_file :: (name: string) -> Data_File {
-    text, ok := read_entire_file(tprint("data/%", name));
-
-    assert(ok, "data/% is missing: build the tests from the tests directory", name);
-
-    return .{ name, text };
-}
-
-read_data :: () -> [] Data_File {
-    files: [..] Data_File;
-
-    for DATA_NAMES array_add(*files, read_data_file(it));
-
-    return files;
-}
-
-DATA :: #run read_data();
+// The test certificates and keys, as string constants (data/certs.jai, made by data/make_certs.sh
+// from the files beside it), so the program carries them and reads no file.
+#load "../data/certs.jai";
 
 load :: (name: string) -> string {
     for DATA if it.name == name return it.text;

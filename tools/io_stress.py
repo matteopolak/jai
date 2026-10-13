@@ -20,8 +20,8 @@ printed, and the exit status is 1 if anything failed (a build that fails counts)
 
 Without test files it runs stdlib/Extensions/Io/tests/{backends,tcp,timeouts,files,pipe,streams}.jai,
 stdlib/Extensions/Http/tests/{client,server_connections,testing,https}.jai and
-stdlib/Extensions/Tls/tests/{tls,interop}.jai (their certificates are read when they are built, so
-they run from the scratch directories too).
+stdlib/Extensions/Tls/tests/tls.jai (it carries its certificates, so it runs from the scratch
+directories). interop.jai starts openssl processes on ports and is not part of it.
 """
 import argparse
 import os
@@ -46,7 +46,6 @@ DEFAULT_TESTS = [
     "stdlib/Extensions/Http/tests/testing.jai",
     "stdlib/Extensions/Http/tests/https.jai",
     "stdlib/Extensions/Tls/tests/tls.jai",
-    "stdlib/Extensions/Tls/tests/interop.jai",
 ]
 VARIANTS = {
     "default": [],
