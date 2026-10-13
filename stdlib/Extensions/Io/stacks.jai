@@ -42,13 +42,6 @@ Stack :: struct {
     unmap_stack :: (base: *void, size: s64) {
         VirtualFree(base, 0, MEM_RELEASE);
     }
-
-    DiscardVirtualMemory :: (address: *void, size: u64) -> u32 #foreign kernel32;
-
-    // The contents of the pages are not needed again; their memory goes back to the system.
-    discard_pages :: (address: *void, size: s64) {
-        DiscardVirtualMemory(address, cast(u64) size);
-    }
 } else {
     libc :: #system_library "libc";
     getpagesize :: () -> s32 #foreign libc;
@@ -78,18 +71,6 @@ Stack :: struct {
     unmap_stack :: (base: *void, size: s64) {
         munmap(base, cast(u64) size);
     }
-
-    madvise :: (address: *void, length: u64, advice: s32) -> s32 #foreign libc;
-
-    // The contents of the pages are not needed again; their memory goes back to the system (a
-    // later touch finds zero pages). macOS ignores MADV_DONTNEED for anonymous memory, so it asks
-    // for MADV_FREE_REUSABLE, which also takes the pages out of the resident size at once.
-    discard_pages :: (address: *void, size: s64) {
-        #if OS == .MACOS advice: s32 = 7;
-        else advice: s32 = 4;
-
-        madvise(address, cast(u64) size, advice);
-    }
 }
 
 // A stack of at least `bytes` bytes (rounded up to whole pages), or a zero `base`.
@@ -110,30 +91,4 @@ stack_allocate :: (bytes: s64) -> Stack {
 
 stack_release :: (stack: Stack) {
     if stack.base unmap_stack(stack.base, stack.size);
-}
-
-// How far below the stack pointer a page must lie before `stack_discard_dead` takes it: the callee's
-// own frames and the registers a context switch saves live just below the caller's frame.
-DISCARD_MARGIN :: 1024;
-
-// Gives the memory of the stack's dead part back to the system: whole pages that lie below the
-// running code's frames, which an earlier deep call touched and which nothing will read again (a
-// stack is written before it is read). Never the guard region, and never anything at or above the
-// current frame. The pages come back as zeros when the fiber calls deeper again.
-stack_discard_dead :: (stack: Stack) {
-    marker: u8;
-
-    page := page_bytes();
-    here := cast(s64) *marker;
-    first := cast(s64) stack.base + stack.guard;
-
-    // A sanitizer can move locals to a heap-allocated fake stack; then there is no stack pointer
-    // to be had from a local, and nothing is released.
-    if here < first || here >= cast(s64) stack.base + stack.size return;
-
-    limit := (here - DISCARD_MARGIN) / page * page;
-
-    if limit - first < page return;
-
-    discard_pages(cast(*void) first, limit - first);
 }
