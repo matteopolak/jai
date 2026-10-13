@@ -45,8 +45,8 @@ Unsupported constructs must produce a diagnostic, never a silent success.
 ## Configuration
 
 ```sh
-cargo run -p jaic-cli -- check file.jai [-I dir] [-os linux|windows|macos]
-cargo run -p jaic-cli -- run file.jai [- metaprogram args]
+cargo run -p jaic-cli -- file.jai -check [-I dir] [-os linux|windows|macos]
+cargo run -p jaic-cli -- file.jai -interp [- metaprogram args]
 ```
 
 Cargo features of `jaic-cli`:

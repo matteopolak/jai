@@ -18,8 +18,8 @@
 Run without installing:
 
 ```sh
-nix run github:matteopolak/jai -- run hello.jai
-nix run github:matteopolak/jai -- build hello.jai -o hello
+nix run github:matteopolak/jai -- hello.jai -interp
+nix run github:matteopolak/jai -- hello.jai -exe hello
 nix run github:matteopolak/jai#jaifmt -- --check src
 nix run github:matteopolak/jai#jailint -- src
 ```

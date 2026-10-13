@@ -46,7 +46,7 @@ jobs:
           work="$RUNNER_TEMP/smoke"
           mkdir -p "$work"
           printf '#import "Basic";\nmain :: () { print("hello from nix\\n"); }\n' > "$work/hello.jai"
-          nix run .# -- run "$work/hello.jai"
+          nix run .# -- "$work/hello.jai" -interp
           jaic="$PWD/result/bin/jaic"
           cd "$work"
           "$jaic" hello.jai -exe hello
