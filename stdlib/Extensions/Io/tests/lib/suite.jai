@@ -516,6 +516,131 @@ lookup_fiber :: (job: Lookup_Job) {
     if error != .NONE || address.port != 7 job.failures.* += 1;
 }
 
+// Fibers that ask for the same name while a lookup is under way share it.
+test_resolve_coalesces :: () {
+    FIBERS :: 50;
+
+    group: Io.Wait_Group;
+    failures := 0;
+
+    before, _ := Io.resolver_statistics();
+
+    Io.add(*group, FIBERS);
+    for 1..FIBERS Io.spawn(lookup_fiber, Lookup_Job.{ *group, *failures });
+
+    Io.wait(*group);
+    assert(failures == 0, "% of % lookups failed", failures, FIBERS);
+
+    after, helpers := Io.resolver_statistics();
+
+    // A helper can answer before the last fiber has asked, so a few jobs are fine; fifty are not.
+    assert(after - before < FIBERS / 2, "% getaddrinfo calls for % fibers", after - before, FIBERS);
+    assert(helpers >= 1 && helpers <= 8, "% helpers", helpers);
+}
+
+Shared_Lookup :: struct {
+    group: *Io.Wait_Group;
+    result: *Io.Io_Error;
+    port: u16;
+    port_seen: *u16;
+}
+
+shared_lookup_fiber :: (job: Shared_Lookup) {
+    defer Io.done(job.group);
+
+    address: Io.Address;
+
+    address, job.result.* = Io.resolve("localhost", job.port);
+    job.port_seen.* = address.port;
+}
+
+// One of several fibers waiting on the same lookup is canceled: it alone gives up, the others get
+// the answer, each with its own port.
+test_cancel_shared_lookup :: () {
+    WAITERS :: 5;
+
+    canceled_once := false;
+
+    for 1..5 {
+        group: Io.Wait_Group;
+        results: [WAITERS] Io.Io_Error;
+        ports: [WAITERS] u16;
+        handles: [WAITERS] Io.Fiber_Handle;
+
+        Io.add(*group, WAITERS);
+
+        for 0..WAITERS - 1 {
+            handles[it] = Io.spawn(shared_lookup_fiber, Shared_Lookup.{ *group, *results[it], cast(u16) (100 + it), *ports[it] });
+        }
+
+        // Let them all start and wait.
+        Io.yield();
+        Io.cancel(handles[2]);
+        Io.wait(*group);
+
+        for 0..WAITERS - 1 {
+            if it == 2 {
+                // The answer may beat the cancel.
+                assert(results[it] == .CANCELED || results[it] == .NONE, "canceled waiter gave %", results[it]);
+
+                if results[it] == .CANCELED canceled_once = true;
+            } else {
+                assert(results[it] == .NONE, "waiter % gave %", it, results[it]);
+                assert(ports[it] == 100 + it, "waiter % got port %", it, ports[it]);
+            }
+        }
+
+        if canceled_once break;
+    }
+
+    assert(canceled_once, "no waiter was canceled in five tries");
+
+    // The shared job is still collected and freed, and lookups go on working.
+    Io.sleep(30);
+
+    address, error := Io.resolve("localhost", 9);
+
+    assert(error == .NONE && address.port == 9, "resolve after a canceled shared lookup: %", error);
+}
+
+NAME_VARIANTS :: string.["localhost", "LOCALHOST", "Localhost", "localHost", "locAlhost", "localhosT", "LocalHost", "lOcalhost", "loCalhost", "locaLhost"];
+
+Variant_Lookup :: struct {
+    group: *Io.Wait_Group;
+    name: string;
+    failures: *int;
+}
+
+variant_fiber :: (job: Variant_Lookup) {
+    defer Io.done(job.group);
+
+    _, error := Io.resolve(job.name, 3);
+    if error != .NONE job.failures.* += 1;
+}
+
+// Distinct names are distinct jobs, and the helpers that serve them stay within the limit and are
+// all joined when `io_run` ends. Whether helpers actually grow depends on how slow the resolver
+// is, which a test cannot control, so only the bookkeeping is checked.
+test_resolver_helpers_bounded :: () {
+    group: Io.Wait_Group;
+    failures := 0;
+
+    before, _ := Io.resolver_statistics();
+
+    Io.add(*group, NAME_VARIANTS.count * 3);
+
+    for 1..3 {
+        for NAME_VARIANTS Io.spawn(variant_fiber, Variant_Lookup.{ *group, it, *failures });
+    }
+
+    Io.wait(*group);
+
+    jobs, helpers := Io.resolver_statistics();
+
+    assert(jobs - before >= 1 && jobs - before <= NAME_VARIANTS.count * 3, "% jobs", jobs - before);
+    assert(helpers >= 1 && helpers <= 8, "% helpers", helpers);
+}
+
 // ---------------------------------------------------------------------------------------------
 // Time: sleeps, deadlines, cancellation
 
@@ -1309,6 +1434,8 @@ run_tcp :: () {
     test_local_and_peer_address();
     test_close_wakes_waiters();
     test_resolve();
+    test_resolve_coalesces();
+    test_resolver_helpers_bounded();
 }
 
 run_timeouts :: () {
@@ -1322,6 +1449,7 @@ run_timeouts :: () {
     test_cancel_read();
     test_cancel_write();
     test_cancel_resolve();
+    test_cancel_shared_lookup();
     test_run_ends_blocked_fibers();
 }
 
