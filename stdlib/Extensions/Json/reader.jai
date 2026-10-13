@@ -1028,6 +1028,7 @@ json_read_value :: (r: *Json_Reader, out: *Json_Value) -> bool {
                 if status == .END break;
 
                 item: Json_Value;
+
                 ok = json_read_value(r, *item);
 
                 array_add(*r.values, item);

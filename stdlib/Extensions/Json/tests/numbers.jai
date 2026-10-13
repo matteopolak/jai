@@ -285,6 +285,7 @@ fast_path_agrees :: (count: int) {
         else if kind == 3 print(*builder, "E+%", random_get() % 330);
 
         text := builder_to_string(*builder);
+
         fast_path_agrees_with(text, *bad);
         free(text);
     }
