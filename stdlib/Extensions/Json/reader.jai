@@ -90,14 +90,28 @@ json_path_index :: (r: *Json_Reader, index: int) {
 
 #scope_module
 
-skip_whitespace :: (r: *Json_Reader) {
-    while r.pos < r.text.count {
-        c := r.text[r.pos];
+// Most values are not preceded by whitespace in compact documents, and by one byte or a short
+// run in pretty-printed ones: the test for "nothing to skip" is inline, the loop is not.
+skip_whitespace :: inline (r: *Json_Reader) {
+    if r.pos < r.text.count && r.text.data[r.pos] > 0x20 return;
 
-        if c != #char " " && c != #char "\n" && c != #char "\t" && c != #char "\r" return;
+    skip_whitespace_run(r);
+}
 
-        r.pos += 1;
+skip_whitespace_run :: (r: *Json_Reader) #no_abc {
+    data := r.text.data;
+    count := r.text.count;
+    i := r.pos;
+
+    while i < count {
+        c := data[i];
+
+        if c != #char " " && c != #char "\n" && c != #char "\t" && c != #char "\r" break;
+
+        i += 1;
     }
+
+    r.pos = i;
 }
 
 describe_byte :: (c: u8) -> string {
@@ -144,12 +158,12 @@ wrong_type :: (r: *Json_Reader, expected: string) -> bool {
 #scope_export
 
 // The next significant byte (0 at the end of the input).
-json_peek :: (r: *Json_Reader) -> u8 {
+json_peek :: inline (r: *Json_Reader) -> u8 {
     skip_whitespace(r);
 
     if r.pos >= r.text.count return 0;
 
-    return r.text[r.pos];
+    return r.text.data[r.pos];
 }
 
 #scope_module
@@ -651,35 +665,39 @@ read_literal :: (r: *Json_Reader, word: string) -> bool {
     return json_fail(r, .SYNTAX, tprint("invalid literal, expected `%`", word));
 }
 
-// Checks the number grammar of RFC 8259 and returns the token's text.
-scan_number :: (r: *Json_Reader) -> string, bool {
-    text := r.text;
+// Checks the number grammar of RFC 8259 and returns the token's text. Every access is guarded by
+// `i < count`, so the bounds checks are off.
+scan_number :: (r: *Json_Reader) -> string, bool #no_abc {
+    data := r.text.data;
+    count := r.text.count;
     start := r.pos;
     i := start;
 
-    if i < text.count && text[i] == #char "-" i += 1;
+    if i < count && data[i] == #char "-" i += 1;
 
-    if i >= text.count {
+    if i >= count {
         json_fail_at(r, .SYNTAX, "invalid number", i);
 
         return "", false;
     }
 
-    if text[i] == #char "0" {
+    if data[i] == #char "0" {
         i += 1;
-    } else if text[i] >= #char "1" && text[i] <= #char "9" {
-        while i < text.count && text[i] >= #char "0" && text[i] <= #char "9" i += 1;
+    } else if data[i] >= #char "1" && data[i] <= #char "9" {
+        i += 1;
+
+        while i < count && data[i] >= #char "0" && data[i] <= #char "9" i += 1;
     } else {
         json_fail_at(r, .SYNTAX, "invalid number", i);
 
         return "", false;
     }
 
-    if i < text.count && text[i] == #char "." {
+    if i < count && data[i] == #char "." {
         i += 1;
         digits := i;
 
-        while i < text.count && text[i] >= #char "0" && text[i] <= #char "9" i += 1;
+        while i < count && data[i] >= #char "0" && data[i] <= #char "9" i += 1;
 
         if i == digits {
             json_fail_at(r, .SYNTAX, "invalid number: a digit must follow the decimal point", i);
@@ -688,14 +706,14 @@ scan_number :: (r: *Json_Reader) -> string, bool {
         }
     }
 
-    if i < text.count && (text[i] == #char "e" || text[i] == #char "E") {
+    if i < count && (data[i] == #char "e" || data[i] == #char "E") {
         i += 1;
 
-        if i < text.count && (text[i] == #char "+" || text[i] == #char "-") i += 1;
+        if i < count && (data[i] == #char "+" || data[i] == #char "-") i += 1;
 
         digits := i;
 
-        while i < text.count && text[i] >= #char "0" && text[i] <= #char "9" i += 1;
+        while i < count && data[i] >= #char "0" && data[i] <= #char "9" i += 1;
 
         if i == digits {
             json_fail_at(r, .SYNTAX, "invalid number: a digit must follow the exponent", i);
@@ -706,7 +724,7 @@ scan_number :: (r: *Json_Reader) -> string, bool {
 
     r.pos = i;
 
-    return slice(text, start, i - start), true;
+    return string.{ i - start, data + start }, true;
 }
 
 // An integer token (optional minus, digits only) as a sign and a magnitude; false for anything
