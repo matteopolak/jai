@@ -7,17 +7,38 @@
 #import "File";
 Tls :: #import "Extensions/Tls";
 
-DATA :: "../../Tls/tests/data/";
+// The certificates of the Tls tests are read when this program is built (relative to its own
+// directory), so it runs from any directory.
+Data_File :: struct {
+    name: string;
+    text: string;
+}
 
-load :: (name: string) -> string {
-    text, ok := read_entire_file(tprint("%1%2", DATA, name));
+DATA_DIRECTORY :: "../../Tls/tests/data/";
+DATA_NAMES :: string.["ca.pem", "other_ca.pem", "server.pem", "server.key", "wrong_name.pem", "wrong_name.key", "expired.pem", "expired.key", "client.pem", "client.key"];
 
-    if !ok {
-        print("FAIL: % is missing: run the tests from the tests directory\n", name);
-        exit(1);
+read_data :: () -> [] Data_File {
+    files: [..] Data_File;
+
+    for DATA_NAMES {
+        text, ok := read_entire_file(tprint("%1%2", DATA_DIRECTORY, it));
+
+        assert(ok, "% is missing: build the tests from the tests directory", it);
+
+        array_add(*files, Data_File.{ it, text });
     }
 
-    return text;
+    return files;
+}
+
+DATA :: #run read_data();
+
+load :: (name: string) -> string {
+    for DATA if it.name == name return it.text;
+
+    assert(false, "no test file %", name);
+
+    return "";
 }
 
 ping :: () -> string {

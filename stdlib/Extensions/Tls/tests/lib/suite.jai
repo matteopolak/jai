@@ -14,12 +14,39 @@ now_ms :: () -> s64 {
     return to_milliseconds(current_time_monotonic());
 }
 
-load :: (name: string) -> string {
+// The test certificates and keys are read when the test program is built (the path is relative
+// to the program's own directory), so the program runs from any directory.
+Data_File :: struct {
+    name: string;
+    text: string;
+}
+
+DATA_NAMES :: string.["ca.pem", "other_ca.pem", "server.pem", "server.key", "rsa.pem", "rsa.key", "wrong_name.pem", "wrong_name.key", "expired.pem", "expired.key", "unknown.pem", "unknown.key", "client.pem", "client.key"];
+
+read_data_file :: (name: string) -> Data_File {
     text, ok := read_entire_file(tprint("data/%", name));
 
-    assert(ok, "data/% is missing: run the tests from the tests directory", name);
+    assert(ok, "data/% is missing: build the tests from the tests directory", name);
 
-    return text;
+    return .{ name, text };
+}
+
+read_data :: () -> [] Data_File {
+    files: [..] Data_File;
+
+    for DATA_NAMES array_add(*files, read_data_file(it));
+
+    return files;
+}
+
+DATA :: #run read_data();
+
+load :: (name: string) -> string {
+    for DATA if it.name == name return it.text;
+
+    assert(false, "no test file %", name);
+
+    return "";
 }
 
 pattern :: (index: int) -> u8 {
@@ -1043,6 +1070,70 @@ test_close_under_a_reader :: () {
     Tls.tls_config_free(*client_config);
 }
 
+Flooding :: struct {
+    stream: *Tls.Tls_Stream;
+    error: Io.Io_Error;
+    done: bool;
+}
+
+// Writes until something stops it.
+flood :: (job: *Flooding) {
+    block: [8192] u8;
+
+    while true {
+        _, error := Tls.write(job.stream, block);
+
+        if error != .NONE {
+            job.error = error;
+
+            break;
+        }
+    }
+
+    job.done = true;
+}
+
+// A peer that does not read cannot hold up `close`: it is what ends the writer that is stuck.
+test_close_with_a_peer_that_does_not_read :: () {
+    server_config := make_config("server", "");
+    client_config := make_config("", "ca");
+
+    init(*server_config);
+    init(*client_config);
+
+    pair := connect_pair(*server_config, *client_config);
+
+    expect_connected(pair);
+
+    job := Flooding.{ stream = pair.client.stream };
+
+    Io.spawn(flood, *job);
+
+    // The socket buffers fill up, and the writer waits inside a send.
+    Io.sleep(300);
+
+    assert(!job.done, "the writer should be stuck");
+
+    started := now_ms();
+
+    Tls.close(pair.client.stream);
+
+    pair.client.stream = null;
+
+    elapsed := now_ms() - started;
+
+    assert(elapsed < 900, "close took % ms with a peer that does not read", elapsed);
+
+    while !job.done Io.sleep(1);
+
+    assert(job.error == .CLOSED, "the stuck writer: %", job.error);
+
+    close_pair(*pair);
+
+    Tls.tls_config_free(*server_config);
+    Tls.tls_config_free(*client_config);
+}
+
 // ---------------------------------------------------------------------------------------------
 // Many connections
 
@@ -1298,6 +1389,7 @@ run_all :: () {
     test_wait_readable();
     test_reading_and_writing_at_once();
     test_close_under_a_reader();
+    test_close_with_a_peer_that_does_not_read();
     test_many_connections();
     test_over_a_pipe();
     test_config_errors();
