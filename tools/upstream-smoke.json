@@ -564,7 +564,7 @@
             "./build_release/focus"
           ],
           "env": {
-            "MESA_NO_ERROR": "1"
+            "MESA_NO_ERROR": "true"
           },
           "seconds": 10
         }
