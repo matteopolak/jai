@@ -140,6 +140,12 @@ alpn_protocol :: (stream: *Tls_Stream) -> string {
     return c_text(mbedtls_ssl_get_alpn_protocol(stream.ssl));
 }
 
+// The cipher suite in use, by mbedTLS's name ("TLS1-3-AES-128-GCM-SHA256",
+// "TLS-ECDHE-ECDSA-WITH-CHACHA20-POLY1305-SHA256").
+cipher_suite :: (stream: *Tls_Stream) -> string {
+    return c_text(mbedtls_ssl_get_ciphersuite(stream.ssl));
+}
+
 // The name a client asked for in its SNI extension, on a stream from `tls_accept` ("" if it sent
 // none). It points into the stream.
 server_name :: (stream: *Tls_Stream) -> string {
