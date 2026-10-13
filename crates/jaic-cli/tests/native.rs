@@ -792,7 +792,7 @@ fn c_thread_callbacks_block_on_jai_threads() {
         assert!(!status.success(), "{args:?} did not fail");
         assert!(
             text.contains("deadlock: every thread is blocked"),
-            "{args:?}: {text}"
+            "{args:?} ({status}): {text}"
         );
         assert!(out.join().unwrap().is_empty(), "{args:?}");
         took
