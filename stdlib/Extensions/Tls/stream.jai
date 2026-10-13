@@ -152,8 +152,7 @@ alpn_protocol :: (stream: *Tls_Stream) -> string {
 }
 
 // The cipher suite in use, by mbedTLS's name ("TLS1-3-AES-128-GCM-SHA256",
-// "TLS-ECDHE-ECDSA-WITH-CHACHA20-POLY1305-SHA256"). A CPU with AES instructions gets AES-GCM
-// where both ends offer it, any other ChaCha20-Poly1305 (see docs/stdlib/tls.md).
+// "TLS-ECDHE-ECDSA-WITH-CHACHA20-POLY1305-SHA256").
 cipher_suite :: (stream: *Tls_Stream) -> string {
     return c_text(mbedtls_ssl_get_ciphersuite(stream.ssl));
 }
