@@ -495,6 +495,9 @@ KQ_WRITE :: -2;
         if state.read_head wanted |= EPOLLIN | EPOLLRDHUP;
         if state.write_head wanted |= EPOLLOUT;
 
+        // A socket that is connecting will be read from next: one registration, not two.
+        if !state.registered && state.write_head && state.write_head.kind == .CONNECT wanted |= EPOLLIN | EPOLLRDHUP;
+
         if state.registered && wanted == state.mask return 0;
 
         event: Epoll_Event;
