@@ -1,6 +1,6 @@
 # Async IO, HTTP and JSON plan
 
-Status: milestones 1 to 7 are done (fibers, the completion engine on io_uring, epoll, kqueue and Windows completion ports with IoRing plus the file thread pool, Json, the HTTP codec, and the HTTP server and client: see [io-engine](../specs/stdlib/README.md), [http-server](../specs/stdlib/README.md) and [http-client](../specs/stdlib/README.md)). The Windows backends have only been type-checked on a Mac; the first real run is the `windows native` workflow.
+Status: milestones 1 to 7 are done (fibers, the completion engine on io_uring, epoll, kqueue and Windows completion ports with IoRing plus the file thread pool, Json, the HTTP codec, and the HTTP server and client: see [io-engine](../specs/stdlib/README.md), [http-server](../specs/stdlib/README.md) and [http-client](../specs/stdlib/README.md)). What is left is hardening (milestone 8), a performance baseline (9), TLS (10) and HTTP/2 (11). Rebuilding `File_Async` on `Io` was dropped (see milestone 8).
 
 ## Where we are
 
@@ -20,10 +20,10 @@ Status: milestones 1 to 7 are done (fibers, the completion engine on io_uring, e
 - **Platforms:** code written against `Io` runs unchanged on every platform and kernel. Backend choice and feature fallbacks are internal, and nobody writes per-platform or per-version code.
 - **io_uring floor: Linux 6.1.** Everything v1 uses exists by 6.1, and newer features are probed at startup. Below 6.1, or where io_uring is disabled (RHEL 9 by default, many containers), the loop uses epoll.
 - **Windows:** completion ports for sockets. The Windows 11 `IoRing` API is used for files where it exists (22H2+), with completion ports as the fallback.
-- **HTTP:** a server, plus a client that is also used to test the server. Both are HTTP/1.0, 1.1 and 2.
+- **HTTP:** a server, plus a client that is also used to test the server. The server speaks HTTP/1.0, 1.1 and 2; the client speaks HTTP/1.0 and 1.1 (an h2 client is not planned).
 - **JSON:** typed and generated at compile time from struct types, with serde-style attributes as notes, built in to the server and client.
 - **Routing:** path templates are parsed at compile time, and handlers take generic extractors (`Path("id", int)`, `Json(T)`, `Query(T)`, …) that are checked against the template.
-- **TLS:** deferred, but planned.
+- **TLS:** vendored mbedTLS 3.6 LTS behind a small `Extensions/Tls` module, with the OS trust store loaded into it (milestone 10).
 
 ## Layers
 
@@ -108,8 +108,8 @@ The completion engine stays internal to `Io`. These rules make sure new io_uring
 3. **Completions are already general:** a result, a portable error plus the raw platform code, a `more` flag (multishot), a buffer id (provided buffers) and notification flags (zero-copy send).
 4. **Handles are opaque:** an fd, SOCKET, HANDLE or io_uring direct-descriptor index, plus a kind tag.
 5. **Buffers belong to the operation until its completion arrives,** even after cancel. Provided-buffer rings are used where present, and a freelist elsewhere.
-6. **Ring setup:** one ring per thread, with `SINGLE_ISSUER | DEFER_TASKRUN | COOP_TASKRUN`. Cross-thread wakeups use `MSG_RING`, eventfd, `EVFILT_USER` or `PostQueuedCompletionStatus`.
-7. **Fallback:** `JAI_IO_BACKEND=epoll|kqueue|iocp|threads` forces a backend for tests. If io_uring setup fails, the engine falls back to epoll and records why.
+6. **Ring setup:** one ring per thread, with `SINGLE_ISSUER | DEFER_TASKRUN | COOP_TASKRUN`. Cross-thread wakeups use a pipe or eventfd, `EVFILT_USER` or `PostQueuedCompletionStatus` (`MSG_RING` only if a benchmark asks for it).
+7. **Fallback:** `JAI_IO_BACKEND=io_uring|epoll|kqueue|iocp|ioring` forces a backend for tests. If io_uring setup fails, the engine falls back to epoll and records why.
 8. **Errors:** `Io_Error` is a portable enum with an `OTHER` member, plus `platform_code`, so new kernel errors never break callers.
 
 Users only ever see fibers and the blocking-style calls, so all of this can change freely.
@@ -249,7 +249,7 @@ main :: () {
 - **Defaults:**
   - limits on header size, body size, requests per connection and idle/header/body timeouts;
   - `Date`/`Server` headers and keep-alive;
-  - HTTP/2 (h2 through ALPN, h2c upgrade and prior knowledge) once milestone 10 lands;
+  - HTTP/2 (h2 through ALPN, and h2c with prior knowledge) once milestone 11 lands. The h2c `Upgrade` mechanism is not supported: RFC 9113 deprecated it;
   - graceful shutdown on SIGINT/SIGTERM;
   - access logging off unless enabled.
 - **Middleware:** a procedure `(request: *Request, next: Next) -> Response`, for logging, CORS, compression and authentication.
@@ -270,12 +270,12 @@ response, err := send(*api, .{ method = .PUT, url = url, headers = .[ .{ "X-Id",
 
 - **Connections:**
   - a per-thread connection pool with keep-alive;
-  - HTTP/1.1 now, HTTP/2 after milestone 10 (h2 through ALPN, or h2c per origin);
-  - redirects (limited), timeouts and decompression.
+  - HTTP/1.1 (no h2 client is planned);
+  - redirects (limited) and timeouts. Response decompression is under Later: the stdlib has no inflate yet.
 - **Errors:**
   - transport errors, such as connection refused or timeout, are kept separate from non-2xx statuses;
   - a non-2xx status is a response, not an error; `error_for_status` turns one into a `Client_Error` that carries the status and body.
-- **HTTPS:** deferred. It needs a TLS module, which we'll add later: our own TLS 1.3 (+1.2) if the size is reasonable, or a wrapper over the system libraries (SChannel, Security.framework, OpenSSL). The HTTP layer takes any byte stream, so TLS slots in underneath without API changes.
+- **HTTPS:** milestone 10. The client and server already talk through `Link { reader, writer, peer }` and the client's `Transport.open`, so TLS slots in underneath without API changes.
 
 ### Underneath
 
@@ -310,13 +310,23 @@ The client is what drives the server's integration tests. It runs in-process on 
 3. The `Io` engine on io_uring and epoll, with fiber TCP, timers, files and channels. The same test suite runs on every backend through `JAI_IO_BACKEND`. **Done**, with kqueue included ([io-engine](../specs/stdlib/README.md)); Linux backends are verified by type-checking locally and run in CI.
 4. `Json`, plus JSONTestSuite. This is independent and can run alongside 1-3. **Done** ([json](../specs/stdlib/README.md)).
 5. The HTTP/1 codec, plus conformance. Also independent. **Done** ([http-codec](../specs/stdlib/README.md)).
-6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests. **Done** ([http-server](../specs/stdlib/README.md), [http-client](../specs/stdlib/README.md)); the h2c hook is a stub for milestone 10, and the client has no TLS until milestone 9.
+6. The HTTP server (routing, extractors, JSON, errors) and the client, with integration tests. **Done** ([http-server](../specs/stdlib/README.md), [http-client](../specs/stdlib/README.md)); HTTP/2 is milestone 11 and TLS milestone 10.
 7. IOCP (kqueue is done) + IoRing, and the thread-pool backend. **Done** ([io-engine](../specs/stdlib/README.md)); the Windows backends are verified by type-checking for windows-x64 and windows-arm64 and run in CI, the file pool on macOS.
-8. Rebuild `File_Async` on `Io`, keeping its API.
-9. **TLS:** a separate module under the HTTP layer. Our own TLS 1.3 (+1.2), or the system libraries (SChannel, Security.framework, OpenSSL), decided then. HTTPS for the server and client.
-10. HPACK, HTTP/2 and h2spec: h2 over TLS through ALPN, plus h2c. It waits for TLS because browsers only speak HTTP/2 over TLS.
+8. **Hardening.** Fix classes of bugs, not cases. The flaky `Io: woke a fiber that is not blocked` (a lookup answered before its fiber parked, epoll only, only under load) showed the scheduler's invariants are not tested the way they fail.
+   - Audit every `wake` caller: it must never target the running fiber (work that completes inline while it is being submitted) or wake a fiber twice (completion plus cancel or timer). Write each site's invariant down in [io-engine](../specs/stdlib/README.md).
+   - `tools/io_stress.py`: the Io and Http tests at -O0, -O2 and under ASan, many copies at once for several rounds, in the conformance workflow.
+   - Windows: run the `windows native` workflow on `main` when `stdlib/Extensions/{Io,Http}` changes, and confirm from its log that the Io and Http tests run there rather than skip.
+   - Memory per connection: the server's 16 KiB read buffer is held for a connection's whole life, idle or not, and parser buffers only grow; the client allocates a 16 KiB buffer and a `Body_Source` per response. Pool and release them, measured with `server_bench.jai` (RSS at 10k idle connections, requests per second at a few hundred busy ones).
+   - DNS: a canceled lookup keeps its helper thread until the OS answers. Bound the lookups outstanding per scheduler so a slow resolver times calls out instead of queueing them forever. Our own UDP resolver waits for UDP.
+   - `File_Async` stays as it is. A rebuild on `Io` needs a way to hand work to a scheduler from another thread, which `Io` deliberately does not have, and would make completions arrive out of order; its only user is its own test.
+9. **Performance baseline.** Requests per second, p50/p99 latency and RSS for `server_bench.jai` on io_uring and epoll, recorded in [io-engine](../specs/stdlib/README.md). Engine features that change nothing users see (multishot accept and recv, provided buffers, registered files, zero-copy send) are added only when these numbers show they pay; provided buffers in particular change who owns a read buffer under `Reader`.
+10. **TLS:** `Extensions/Tls` over a vendored mbedTLS 3.6 LTS, built by `tools/build_native_libs.py` like the other native libraries. TLS 1.3 and 1.2, client and server, SNI, ALPN and session tickets; mbedTLS's I/O callbacks call `Io.read` and `Io.write`, so a handshake is an ordinary fiber that blocks. Roots come from the OS store (the Linux certificate bundles, `SecTrustCopyAnchorCertificates` on macOS, `CertOpenSystemStore` on Windows) unless a config names its own. The server wraps a connection's `Link` after the handshake, which runs under `header_timeout`; the client's `https://` becomes a `Transport`. Failures are a `Client_Error.TLS` with the reason.
+11. **HTTP/2 server:** HPACK, the frame codec, stream states and flow control, and h2spec plus `hpack-test-case`. h2 over TLS through ALPN, and h2c with prior knowledge; no `Upgrade`. A connection fiber reads frames, each stream's handler runs on its own fiber (at most `SETTINGS_MAX_CONCURRENT_STREAMS`), and one writer owns the socket. A handler with an empty flow-control window blocks like any other IO. Limits against rapid reset (CVE-2023-44487), CONTINUATION floods, HPACK bombs and SETTINGS or PING floods are part of the first version, each with a test. The `upgrade_connection` hook stays for WebSocket.
 
 ## Later
 
 - **JSON tagged-union representations** and more serde attributes as needed.
+- **UDP**, then our own DNS resolver on it (cancellable lookups, no helper threads).
+- **Response decompression** in the client (needs an inflate implementation).
+- **WebSocket** on the `upgrade_connection` hook.
 - **HTTP/3.**
