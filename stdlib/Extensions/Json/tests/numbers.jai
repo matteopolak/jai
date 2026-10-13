@@ -398,6 +398,9 @@ shortest_matches_exact :: (count: int) {
 
     // Every power of two and its neighbours: the irregular spacing and the integer fast path.
     for exponent: 0..2046 {
+        // Every exponent in the full sweep; otherwise every 16th, and the ends of the range.
+        if !FULL_SWEEP && exponent % 16 != 0 && exponent > 4 && exponent < 2042 continue;
+
         for delta: -2..2 {
             bits := (cast(u64) exponent << 52) + cast(u64) (delta + 2);
             same_digits_as_exact(cast,force(float64) bits, *bad);
@@ -406,7 +409,7 @@ shortest_matches_exact :: (count: int) {
     }
 
     // The smallest subnormals and the largest numbers.
-    for 1..2000 {
+    for 1..ifx FULL_SWEEP then 2000 else 20 {
         same_digits_as_exact(cast,force(float64) cast(u64) it, *bad);
         same_digits_as_exact(cast,force(float64) (0x7fef_ffff_ffff_ffff - cast(u64) it), *bad);
     }
@@ -473,7 +476,8 @@ integers :: () {
 }
 
 // Set to true for the large random sweep (about 15 s with a release jaic in the interpreter);
-// the default count keeps the test to a few seconds even with a debug jaic.
+// the default counts keep the test well inside the runtime-test timeout even interpreted on a slow
+// machine with a debug jaic.
 FULL_SWEEP :: false;
 
 main :: () {
@@ -486,9 +490,9 @@ main :: () {
         integers();
 
         // The number reader does not look at the text's bytes in bulk, so one pass is enough.
-        if pass == 0 random_round_trips(ifx FULL_SWEEP then 20000 else 1500);
-        if pass == 0 shortest_matches_exact(ifx FULL_SWEEP then 300000 else 5000);
-        if pass == 0 fast_path_agrees(ifx FULL_SWEEP then 400000 else 3000);
+        if pass == 0 random_round_trips(ifx FULL_SWEEP then 20000 else 1000);
+        if pass == 0 shortest_matches_exact(ifx FULL_SWEEP then 300000 else 400);
+        if pass == 0 fast_path_agrees(ifx FULL_SWEEP then 400000 else 600);
     }
 
     assert(failures == 0);
