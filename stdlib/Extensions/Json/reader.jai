@@ -727,9 +727,13 @@ scan_number :: (r: *Json_Reader) -> string, bool #no_abc {
     return string.{ i - start, data + start }, true;
 }
 
+starts_number :: inline (c: u8) -> bool {
+    return c == #char "-" || (c >= #char "0" && c <= #char "9");
+}
+
 // An integer token (optional minus, digits only) as a sign and a magnitude; false for anything
 // else or a magnitude above u64.
-parse_integer_token :: (token: string) -> bool, u64, bool {
+parse_integer_token :: (token: string) -> bool, u64, bool #no_aoc {
     negative := false;
     i := 0;
 
@@ -741,6 +745,20 @@ parse_integer_token :: (token: string) -> bool, u64, bool {
     if i >= token.count return false, 0, false;
 
     magnitude: u64;
+
+    // Up to 19 digits cannot overflow a u64, so the common case needs no check per digit.
+    if token.count - i <= 19 {
+        while i < token.count {
+            digit := cast(u64) token.data[i] - 48;
+
+            if digit >= 10 return false, 0, false;
+
+            magnitude = magnitude * 10 + digit;
+            i += 1;
+        }
+
+        return negative, magnitude, true;
+    }
 
     while i < token.count {
         c := token[i];
@@ -763,7 +781,7 @@ parse_integer_token :: (token: string) -> bool, u64, bool {
 // Reads an integer into `out`, which must fit between `low` and `high`. `type_name` appears in
 // the message when it does not.
 json_read_signed :: (r: *Json_Reader, out: *s64, low: s64, high: s64, type_name: string) -> bool {
-    if json_peek(r) == 0 || value_name(r.text[r.pos]) != "a number" return wrong_type(r, "an integer");
+    if !starts_number(json_peek(r)) return wrong_type(r, "an integer");
 
     start := r.pos;
     token, ok := scan_number(r);
@@ -802,7 +820,7 @@ json_read_signed :: (r: *Json_Reader, out: *s64, low: s64, high: s64, type_name:
 }
 
 json_read_unsigned :: (r: *Json_Reader, out: *u64, high: u64, type_name: string) -> bool {
-    if json_peek(r) == 0 || value_name(r.text[r.pos]) != "a number" return wrong_type(r, "an integer");
+    if !starts_number(json_peek(r)) return wrong_type(r, "an integer");
 
     start := r.pos;
     token, ok := scan_number(r);
@@ -829,7 +847,7 @@ json_read_unsigned :: (r: *Json_Reader, out: *u64, high: u64, type_name: string)
 }
 
 json_read_float64 :: (r: *Json_Reader, out: *float64) -> bool {
-    if json_peek(r) == 0 || value_name(r.text[r.pos]) != "a number" return wrong_type(r, "a number");
+    if !starts_number(json_peek(r)) return wrong_type(r, "a number");
 
     start := r.pos;
     token, ok := scan_number(r);
@@ -846,7 +864,7 @@ json_read_float64 :: (r: *Json_Reader, out: *float64) -> bool {
 }
 
 json_read_float32 :: (r: *Json_Reader, out: *float32) -> bool {
-    if json_peek(r) == 0 || value_name(r.text[r.pos]) != "a number" return wrong_type(r, "a number");
+    if !starts_number(json_peek(r)) return wrong_type(r, "a number");
 
     start := r.pos;
     token, ok := scan_number(r);
