@@ -60,9 +60,11 @@
         pair := make_pair();
 
         epoll_fd := find_epoll_descriptor();
+
         assert(epoll_fd >= 0, "the epoll descriptor");
 
         null_fd := c_open("/dev/null", 2);
+
         assert(null_fd >= 0 && c_dup2(null_fd, epoll_fd) == epoll_fd, "replace the epoll descriptor");
         c_close(null_fd);
 

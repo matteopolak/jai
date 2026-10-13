@@ -469,6 +469,10 @@ KQ_WRITE :: -2;
 } else {
     epoll_start :: (engine: *Engine) {}
     epoll_remove :: (engine: *Engine, fd: s64) {}
-    epoll_arm :: (scheduler: *Scheduler, engine: *Engine, fd: s64) -> s64 { return 0; }
+
+    epoll_arm :: (scheduler: *Scheduler, engine: *Engine, fd: s64) -> s64 {
+        return 0;
+    }
+
     epoll_wait_events :: (scheduler: *Scheduler, engine: *Engine, timeout: s64) {}
 }
