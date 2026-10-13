@@ -135,7 +135,7 @@ Signup :: struct @json(deny_unknown_fields) { name: string; email: string; }
 
 text := to_json(user);                              // uses `context.allocator`; to_json(user, pretty = true)
 user, err := from_json(User, text);                 // Json_Error { message, line, column, path = "tags[2]" }
-value, err := parse_json(text);                     // untyped Json_Value when the shape is unknown
+value, err := from_json(Json_Value, text);          // untyped Json_Value when the shape is unknown
 ```
 
 First set of attributes (serde's most used ones; more can be added later without breaking anything):
