@@ -298,7 +298,7 @@ hex_value :: (c: u8) -> int {
 }
 
 // Four hex digits at `at`, or -1.
-hex4 :: (text: string, at: int) -> int {
+hex4 :: (text: string, at: int) -> int #no_abc {
     if at + 4 > text.count return -1;
 
     value := 0;
@@ -316,7 +316,7 @@ hex4 :: (text: string, at: int) -> int {
 
 // Checks one string (the cursor is on the opening quote) and moves past it. Returns the raw
 // text between the quotes and whether it has escapes.
-scan_string :: (r: *Json_Reader) -> string, bool, bool {
+scan_string :: (r: *Json_Reader) -> string, bool, bool #no_abc {
     text := r.text;
 
     if r.indexed {
