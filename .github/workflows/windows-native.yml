@@ -5,7 +5,7 @@ name: windows native
 #
 # Pushes to the two branches run everything their `paths` filter admits. Pushes to `main` pass
 # the same (broad) filter, which cannot differ per branch, and are then narrowed by the `changes`
-# job to the Io, Io_Uring, Http, Json, Tls, Windows, jaic-llvm, interpreter and native test paths
+# job to the Io, Io_Uring, Http, Json, Tls, Windows, jaic-llvm, interpreter, CLI and native test paths
 # plus this file, so the Windows runners are not spent on every stdlib or compiler change.
 on:
   push:
@@ -79,7 +79,7 @@ jobs:
             exit 0
           fi
           echo "$files"
-          if echo "$files" | grep -Eq '^(stdlib/Extensions/(Io|Io_Uring|Http|Json|Tls)/|tools/native/mbedtls/|stdlib/Windows/|crates/jaic-llvm/|crates/jaic/src/interp/|crates/jaic-cli/tests/native\.rs$|tests/native/|\.github/workflows/windows-native\.yml$)'; then
+          if echo "$files" | grep -Eq '^(stdlib/Extensions/(Io|Io_Uring|Http|Json|Tls)/|tools/native/mbedtls/|stdlib/Windows/|crates/jaic-llvm/|crates/jaic/src/interp/|crates/jaic-cli/src/|crates/jaic-cli/tests/native\.rs$|tests/native/|\.github/workflows/windows-native\.yml$)'; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "no Io, Http, Json, Tls, Windows, LLVM backend, interpreter or native test change; skipping"
