@@ -26,7 +26,7 @@
 ### Changes
 
 - `Extensions/Http` codec: `Http_Error` is now `Parse_Error` and `Header` is `Header_Field`, freeing those names for the server.
-- `Extensions/Http` client (breaking): every call also takes a leading `*Client` (`get_json(*api, User, "/users/1")`); the forms without one use `default_client()`. `Client_Request.follow_redirects` is gone: `max_redirects = 0` returns the 3xx, and `-1` (the default) is the client's `max_redirects`. `Client_Request.timeout` defaults to -1, the client's `timeout` (30 s). Procedures that return a `Client_Response` with an error now return a failure response that should be freed like any other.
+- `Extensions/Http` client (breaking): every call takes a leading `*Client` (`get_json(*api, User, "/users/1")`), and the forms without one are gone; a zeroed `api: Client;` is a ready client. `Client_Request.follow_redirects` is gone: `max_redirects = 0` returns the 3xx, and `-1` (the default) is the client's `max_redirects`. `Client_Request.timeout` defaults to -1, the client's `timeout` (30 s). Procedures that return a `Client_Response` with an error now return a failure response that should be freed like any other.
 
 ### Fixes
 

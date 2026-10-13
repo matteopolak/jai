@@ -2,6 +2,9 @@
 // the connection pool (reuse, eviction, stale connections), redirects, timeouts, refused
 // connections, https and URL errors, chunked and until-close responses.
 #load "lib/server_support.jai";
+
+api: Client;
+
 #import "Extensions/Json";
 
 User :: struct {
@@ -129,7 +132,7 @@ pooling :: (base: string, server: *Server) {
     before := connections_opened();
 
     for 1..5 {
-        text, error := get_text(tprint("%/text", base));
+        text, error := get_text(*api, tprint("%/text", base));
         check(error.kind == .NONE && text == "hello text", "get_text: % %", text, error_text(error));
         free(text.data);
     }
@@ -159,7 +162,7 @@ pooling :: (base: string, server: *Server) {
 
     // Idle connections are evicted after idle_timeout.
     opened := connections_opened();
-    text, error := get_text(tprint("%/text", base));
+    text, error := get_text(*api, tprint("%/text", base));
 
     free(text.data);
     check(idle_connection_count() == 1, "one idle again");
@@ -167,7 +170,7 @@ pooling :: (base: string, server: *Server) {
     client_settings.idle_timeout = 60;
     Io.sleep(120);
 
-    text, error = get_text(tprint("%/text", base));
+    text, error = get_text(*api, tprint("%/text", base));
     free(text.data);
     check(connections_opened() == opened + 2, "a connection that idled too long is not reused: % opened", connections_opened() - opened);
 
@@ -182,7 +185,7 @@ ParallelArgs :: struct {
 parallel_get :: (args: ParallelArgs) {
     defer Io.done(args.group);
 
-    text, error := get_text(args.url);
+    text, error := get_text(*api, args.url);
 
     check(error.kind == .NONE && text == "late", "parallel request: %", error_text(error));
 
@@ -190,77 +193,77 @@ parallel_get :: (args: ParallelArgs) {
 }
 
 json_calls :: (base: string, server: *Server) {
-    user, error := post_json(User, tprint("%/users", base), New_User.{ "Ada" });
+    user, error := post_json(*api, User, tprint("%/users", base), New_User.{ "Ada" });
 
     check(error.kind == .NONE && user.id == 1 && user.name == "Ada", "post_json: % %", user.name, error_text(error));
     free_json(*user);
 
-    user, error = get_json(User, tprint("%/users/1", base));
+    user, error = get_json(*api, User, tprint("%/users/1", base));
     check(error.kind == .NONE && user.name == "Ada", "get_json: %", error_text(error));
     free_json(*user);
 
-    user, error = put_json(User, tprint("%/users/1", base), New_User.{ "Ada Lovelace" });
+    user, error = put_json(*api, User, tprint("%/users/1", base), New_User.{ "Ada Lovelace" });
     check(error.kind == .NONE && user.name == "Ada Lovelace", "put_json: %", error_text(error));
     free_json(*user);
 
     // A 404 carries the status, the problem's title and detail, and the body.
-    user, error = get_json(User, tprint("%/users/99", base));
+    user, error = get_json(*api, User, tprint("%/users/99", base));
     check(error.kind == .STATUS && error.status == 404, "get_json of a missing user: %", error_text(error));
     check(error.title == "Not Found" && error.detail == "No user with id 99", "title and detail from the problem: % / %", error.title, error.detail);
     check(contains(error.body, "\"status\":404"), "the body is kept: %", error.body);
     free_error(*error);
 
-    user, error = post_json(User, tprint("%/users", base), New_User.{ "" });
+    user, error = post_json(*api, User, tprint("%/users", base), New_User.{ "" });
     check(error.kind == .STATUS && error.status == 400 && error.detail == "name is required", "a 400 from the handler: %", error_text(error));
     free_error(*error);
 
     // A reply that is not the JSON asked for.
-    user, error = get_json(User, tprint("%/not-json", base));
+    user, error = get_json(*api, User, tprint("%/not-json", base));
     check(error.kind == .DECODE && error.status == 200, "not JSON: %", error_text(error));
     free_error(*error);
 
-    user, error = get_json(User, tprint("%/text", base));
+    user, error = get_json(*api, User, tprint("%/text", base));
     check(error.kind == .DECODE, "text where JSON was expected: %", error_text(error));
     free_error(*error);
 
-    error = post_json(tprint("%/users", base), New_User.{ "Grace" });
+    error = post_json(*api, tprint("%/users", base), New_User.{ "Grace" });
     check(error.kind == .NONE, "post_json without a response type: %", error_text(error));
     check(users.count == 2, "it did post: %", users.count);
 
-    error = delete_request(tprint("%/users/2", base));
+    error = delete_request(*api, tprint("%/users/2", base));
     check(error.kind == .NONE && users.count == 1, "delete_request: % %", error_text(error), users.count);
 
-    error = delete_request(tprint("%/users/2", base));
+    error = delete_request(*api, tprint("%/users/2", base));
     check(error.kind == .STATUS && error.status == 404, "deleting twice: %", error_text(error));
     free_error(*error);
 
-    // send(): every part of a request.
-    response, send_error := send(.{ method = .PUT, url = tprint("%/inspect?a=b", base), headers = .[.{ "X-Custom", "7" }, .{ "Authorization", "Bearer t" }], body = u8.[#char "h", #char "i"] });
+    // send: every part of a request.
+    response, send_error := send(*api, .{ method = .PUT, url = tprint("%/inspect?a=b", base), headers = .[.{ "X-Custom", "7" }, .{ "Authorization", "Bearer t" }], body = u8.[#char "h", #char "i"] });
 
     check(send_error.kind == .NONE && response.status == 200, "send: %", error_text(send_error));
     check(body_of(response) == "PUT /inspect?a=b body=[hi] auth=[Bearer t] ctype=[] custom=[7] agent=[jaic-http]", "what the server saw: %", body_of(response));
     free_response(*response);
 
-    response, send_error = send(.{ url = tprint("%/users/404", base) });
+    response, send_error = send(*api, .{ url = tprint("%/users/404", base) });
     check(send_error.kind == .NONE && response.status == 404, "a 404 is a response, not an error: %", error_text(send_error));
     free_response(*response);
 
-    response, send_error = send(.{ method = .HEAD, url = tprint("%/text", base) });
+    response, send_error = send(*api, .{ method = .HEAD, url = tprint("%/text", base) });
     check(send_error.kind == .NONE && response.status == 200 && response.body.count == 0, "HEAD through send: % %", response.status, response.body.count);
     check(header(*response, "content-length") == "10", "with the length");
     free_response(*response);
 
-    response, send_error = send(.{ url = tprint("%/inspect", base), headers = .[.{ "User-Agent", "mine/1" }] });
+    response, send_error = send(*api, .{ url = tprint("%/inspect", base), headers = .[.{ "User-Agent", "mine/1" }] });
     check(contains(body_of(response), "agent=[mine/1]"), "a User-Agent of your own: %", body_of(response));
     free_response(*response);
 
-    response, send_error = send(.{ url = tprint("%/inspect", base), headers = .[.{ "Bad Header", "x" }] });
+    response, send_error = send(*api, .{ url = tprint("%/inspect", base), headers = .[.{ "Bad Header", "x" }] });
     check(send_error.kind != .NONE, "an invalid header is refused before sending");
     free_error(*send_error);
 }
 
 follow :: (base: string, path: string, method := Method.GET, body: [] u8 = .[]) -> Client_Response {
-    response, error := send(.{ method = method, url = tprint("%%", base, path), body = body, headers = .[.{ "Authorization", "Bearer keep" }] });
+    response, error := send(*api, .{ method = method, url = tprint("%%", base, path), body = body, headers = .[.{ "Authorization", "Bearer keep" }] });
 
     check(error.kind == .NONE, "% %: %", method_name(method), path, error_text(error));
 
@@ -302,12 +305,12 @@ redirects :: (base: string, server: *Server) {
 
     // Not following.
     error: Http_Error;
-    response, error = send(.{ url = tprint("%/moved", base), max_redirects = 0 });
+    response, error = send(*api, .{ url = tprint("%/moved", base), max_redirects = 0 });
     check(error.kind == .NONE && response.status == 301 && header(*response, "Location") == "/inspect?moved=1", "max_redirects = 0: %", response.status);
     free_response(*response);
 
     // Too many.
-    response, error = send(.{ url = tprint("%/loop", base), max_redirects = 4 });
+    response, error = send(*api, .{ url = tprint("%/loop", base), max_redirects = 4 });
     check(error.kind == .REDIRECTS && contains(error.detail, "more than 4 redirects"), "a redirect loop: %", error_text(error));
     free_error(*error);
 }
@@ -315,7 +318,7 @@ redirects :: (base: string, server: *Server) {
 failures_of_transport :: (base: string, server: *Server) {
     // Timeout.
     started := current_time_monotonic();
-    response, error := send(.{ url = tprint("%/slow/600", base), timeout = 150 });
+    response, error := send(*api, .{ url = tprint("%/slow/600", base), timeout = 150 });
     elapsed := to_milliseconds(current_time_monotonic() - started);
 
     check(error.kind == .TIMEOUT, "timeout: %", error_text(error));
@@ -323,13 +326,13 @@ failures_of_transport :: (base: string, server: *Server) {
     free_error(*error);
 
     // The client is usable afterwards.
-    text, text_error := get_text(tprint("%/text", base));
+    text, text_error := get_text(*api, tprint("%/text", base));
 
     check(text_error.kind == .NONE, "after a timeout: %", error_text(text_error));
     free(text.data);
 
     // The connection that timed out is not reused by mistake: its late answer would be read as the next one.
-    text, text_error = get_text(tprint("%/text", base));
+    text, text_error = get_text(*api, tprint("%/text", base));
     check(text == "hello text", "no stray answer from the timed out request: %", text);
     free(text.data);
 
@@ -343,32 +346,32 @@ failures_of_transport :: (base: string, server: *Server) {
         Io.close(listener);
     }
 
-    response, error = send(.{ url = refused_url, timeout = 2000 });
+    response, error = send(*api, .{ url = refused_url, timeout = 2000 });
     check(error.kind == .TRANSPORT && error.transport == .CONNECTION_REFUSED, "a refused connection: % %", error_text(error), error.transport);
     free_error(*error);
 
     // URLs.
-    response, error = send(.{ url = "https://example.com/" });
+    response, error = send(*api, .{ url = "https://example.com/" });
     check(error.kind == .UNSUPPORTED && contains(error.detail, "https is not supported yet"), "https: %", error_text(error));
     free_error(*error);
 
-    response, error = send(.{ url = "ftp://example.com/" });
+    response, error = send(*api, .{ url = "ftp://example.com/" });
     check(error.kind == .INVALID_URL && contains(error.detail, "scheme `ftp`"), "other schemes: %", error_text(error));
     free_error(*error);
 
-    response, error = send(.{ url = "example.com/path" });
+    response, error = send(*api, .{ url = "example.com/path" });
     check(error.kind == .INVALID_URL && contains(error.detail, "not an absolute URL"), "no scheme: %", error_text(error));
     free_error(*error);
 
-    response, error = send(.{ url = "http:///path" });
+    response, error = send(*api, .{ url = "http:///path" });
     check(error.kind == .INVALID_URL && contains(error.detail, "names no host"), "no host: %", error_text(error));
     free_error(*error);
 
-    response, error = send(.{ url = "http://localhost:99999/" });
+    response, error = send(*api, .{ url = "http://localhost:99999/" });
     check(error.kind == .INVALID_URL && contains(error.detail, "the port"), "bad port: %", error_text(error));
     free_error(*error);
 
-    response, error = send(.{ url = "http://no-such-host.invalid/", timeout = 3000 });
+    response, error = send(*api, .{ url = "http://no-such-host.invalid/", timeout = 3000 });
     check(error.kind == .TRANSPORT || error.kind == .TIMEOUT, "an unknown host: %", error_text(error));
     free_error(*error);
 }
@@ -377,7 +380,7 @@ failures_of_transport :: (base: string, server: *Server) {
 stale :: (base: string, server: *Server) {
     opened := connections_opened();
 
-    text, error := get_text(tprint("%/text", base));
+    text, error := get_text(*api, tprint("%/text", base));
 
     check(error.kind == .NONE, "first: %", error_text(error));
     free(text.data);
@@ -385,7 +388,7 @@ stale :: (base: string, server: *Server) {
     // The server's idle timeout (100 ms) closes it behind the client's back.
     Io.sleep(300);
 
-    text, error = get_text(tprint("%/text", base));
+    text, error = get_text(*api, tprint("%/text", base));
     check(error.kind == .NONE && text == "hello text", "a request on a stale connection is retried: %", error_text(error));
     free(text.data);
     check(connections_opened() == opened + 2, "on a new connection: % opened", connections_opened() - opened);
@@ -393,7 +396,7 @@ stale :: (base: string, server: *Server) {
     // A POST is not repeated behind the caller's back.
     Io.sleep(300);
 
-    _, post_error := post_json(User, tprint("%/users", base), New_User.{ "Once" });
+    _, post_error := post_json(*api, User, tprint("%/users", base), New_User.{ "Once" });
 
     check(post_error.kind == .TRANSPORT, "a POST on a stale connection fails instead of repeating: %", error_text(post_error));
     free_error(*post_error);
@@ -468,28 +471,28 @@ scripted :: (base: string, server: *Server) {
 
     Io.spawn(scripted_server, *script);
 
-    response, send_error := send(.{ url = url });
+    response, send_error := send(*api, .{ url = url });
 
     check(send_error.kind == .NONE && body_of(response) == "hello world" && header(*response, "X-Kind") == "chunked", "a chunked response: % %", body_of(response), error_text(send_error));
     free_response(*response);
 
-    response, send_error = send(.{ url = url });
+    response, send_error = send(*api, .{ url = url });
     check(send_error.kind == .NONE && body_of(response) == "until the end", "a response that ends with the connection: % %", body_of(response), error_text(send_error));
     free_response(*response);
 
-    response, send_error = send(.{ url = url });
+    response, send_error = send(*api, .{ url = url });
     check(send_error.kind == .NONE && response.status == 201 && body_of(response) == "done", "a 100 Continue before the answer: % %", response.status, error_text(send_error));
     free_response(*response);
 
-    response, send_error = send(.{ url = url });
+    response, send_error = send(*api, .{ url = url });
     check(send_error.kind == .TRANSPORT, "a body shorter than its Content-Length: %", error_text(send_error));
     free_error(*send_error);
 
-    response, send_error = send(.{ url = url });
+    response, send_error = send(*api, .{ url = url });
     check(send_error.kind == .TRANSPORT && contains(send_error.detail, "not valid HTTP"), "garbage: %", error_text(send_error));
     free_error(*send_error);
 
-    response, send_error = send(.{ url = url });
+    response, send_error = send(*api, .{ url = url });
     check(send_error.kind == .TRANSPORT, "two different Content-Lengths: %", error_text(send_error));
     free_error(*send_error);
 

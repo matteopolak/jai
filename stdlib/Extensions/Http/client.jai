@@ -10,8 +10,8 @@
 //
 //     response, error := send(*api, .{ method = .PUT, url = "/users/1", body = bytes });
 //
-// Every call takes the `Client` it goes through; the same calls without one (`get_json(User,
-// url)`) use `default_client()`. A call made outside `Io.io_run` runs a scheduler of its own for
+// Every call takes the `Client` it goes through. A zeroed `Client` is a working one (no base URL,
+// TCP, 30 seconds), so `api: Client;` is all a one-off script needs. A call made outside `Io.io_run` runs a scheduler of its own for
 // that one call, so a script needs no setup; inside a scheduler it runs on the calling fiber and
 // only that fiber waits. Idle connections are kept for the next request to the same host, so
 // repeated calls on one scheduler reuse a TCP connection. `https://` is not supported yet and
@@ -105,14 +105,6 @@ Client_Settings :: struct {
 
 client_settings: Client_Settings;
 
-default_client_storage: Client;
-
-// The client behind the calls that take none: no base URL, TCP, 30 seconds. Set its fields before
-// starting threads.
-default_client :: () -> *Client {
-    return *default_client_storage;
-}
-
 // A header sent with every request of `client` that does not set it: `set_header(*api,
 // "Authorization", "Bearer abc")`. Setting a name again replaces the value.
 set_header :: (client: *Client, name: string, value: string) {
@@ -198,10 +190,6 @@ send :: (client: *Client, request: Client_Request) -> Client_Response, Http_Erro
     return call.response, call.error;
 }
 
-send :: (request: Client_Request) -> Client_Response, Http_Error {
-    return send(default_client(), request);
-}
-
 // `GET` with no body; the response whatever its status.
 get :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Client_Response, Http_Error {
     return send(client, .{ method = .GET, url = url, headers = headers });
@@ -248,33 +236,17 @@ get_json :: (client: *Client, $T: Type, url: string, headers: [] Header_Field = 
     return json_exchange(client, T, request);
 }
 
-get_json :: ($T: Type, url: string, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return get_json(default_client(), T, url, headers);
-}
-
 // `POST` of `value` as JSON; the response body is decoded as a `T`.
 post_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
     return json_with_body(client, T, .POST, url, value, headers);
-}
-
-post_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(default_client(), T, .POST, url, value, headers);
 }
 
 put_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
     return json_with_body(client, T, .PUT, url, value, headers);
 }
 
-put_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(default_client(), T, .PUT, url, value, headers);
-}
-
 patch_json :: (client: *Client, $T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
     return json_with_body(client, T, .PATCH, url, value, headers);
-}
-
-patch_json :: ($T: Type, url: string, value: $V, headers: [] Header_Field = .[]) -> T, Http_Error {
-    return json_with_body(default_client(), T, .PATCH, url, value, headers);
 }
 
 // A request whose response body is not wanted: only whether it worked.
@@ -290,10 +262,6 @@ post_json :: (client: *Client, url: string, value: $V, headers: [] Header_Field 
     return .{};
 }
 
-post_json :: (url: string, value: $V, headers: [] Header_Field = .[]) -> Http_Error {
-    return post_json(default_client(), url, value, headers);
-}
-
 delete_request :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> Http_Error {
     response, error := send(client, .{ method = .DELETE, url = url, headers = headers });
 
@@ -304,10 +272,6 @@ delete_request :: (client: *Client, url: string, headers: [] Header_Field = .[])
     if response.status < 200 || response.status >= 300 return status_error(*response);
 
     return .{};
-}
-
-delete_request :: (url: string, headers: [] Header_Field = .[]) -> Http_Error {
-    return delete_request(default_client(), url, headers);
 }
 
 // `GET url` as text.
@@ -321,10 +285,6 @@ get_text :: (client: *Client, url: string, headers: [] Header_Field = .[]) -> st
     if response.status < 200 || response.status >= 300 return "", status_error(*response);
 
     return copy_string(body_text(*response)), .{};
-}
-
-get_text :: (url: string, headers: [] Header_Field = .[]) -> string, Http_Error {
-    return get_text(default_client(), url, headers);
 }
 
 // Closes every idle connection of the running scheduler (they are also closed when it ends).

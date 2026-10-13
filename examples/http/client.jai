@@ -25,9 +25,12 @@ Run :: struct {
 }
 
 demo :: (run: *Run) {
-    base := run.base;
+    // A zeroed Client works; the base URL lets requests name just the path.
+    api: Client;
 
-    created, error := post_json(Note, tprint("%/notes", base), New_Note.{ "write the docs", false });
+    api.base_url = run.base;
+
+    created, error := post_json(*api, Note, "/notes", New_Note.{ "write the docs", false });
 
     if error.kind != .NONE {
         print("could not create a note: %\n", error_text(error));
@@ -36,24 +39,24 @@ demo :: (run: *Run) {
 
     print("created #%: %\n", created.id, created.title);
 
-    note, _ := get_json(Note, tprint("%/notes/%", base, created.id));
+    note, _ := get_json(*api, Note, tprint("/notes/%", created.id));
 
     print("read it back: % (done: %)\n", note.title, note.done);
 
     // A status that is not 2xx is an error that carries the problem document's title and detail.
-    _, missing_error := get_json(Note, tprint("%/notes/%", base, 99999));
+    _, missing_error := get_json(*api, Note, "/notes/99999");
 
     print("asking for a missing note: % (%)\n", missing_error.status, missing_error.detail);
 
     // `send` for everything else: a method, headers, and the raw response.
-    response, send_error := send(.{ method = .PUT, url = tprint("%/notes/%", base, created.id), headers = .[.{ "Content-Type", "application/json" }], body = to_bytes(tprint("{\"title\":\"%\",\"done\":true}", created.title)) });
+    response, send_error := send(*api, .{ method = .PUT, url = tprint("/notes/%", created.id), headers = .[.{ "Content-Type", "application/json" }], body = to_bytes(tprint("{\"title\":\"%\",\"done\":true}", created.title)) });
 
     if send_error.kind == .NONE {
         print("PUT answered % with %\n", response.status, body_text(*response));
         free_response(*response);
     }
 
-    delete_error := delete_request(tprint("%/notes/%", base, created.id));
+    delete_error := delete_request(*api, tprint("/notes/%", created.id));
 
     print("deleted: %\n", ifx delete_error.kind == .NONE then "yes" else error_text(delete_error));
 }
