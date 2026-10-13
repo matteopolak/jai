@@ -287,6 +287,7 @@ serve_connection :: (connection: *Connection) {
                 // response buffer and the parser's storage grow again when it needs them).
                 if can_wait && !hot {
                     trim(*out, 0);
+                    trim(*body_buffer, 0);
                     parser_trim(*parser, 0);
                 }
 
