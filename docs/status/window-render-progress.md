@@ -1,6 +1,6 @@
 # Window/render progress
 
-2026-10-14: resumed checkpoints `a41ae76`, `0e5a7f2`, `375294d`. Prior focused runner
+2026-10-14: resumed code checkpoints `a41ae76`, `0e5a7f2`, `375294d`, `982bc8c`. Prior focused runner
 recorded 69 invocations; these include CPU component tests and foreign-target
 interpreter checks, not combined production GUI integration. No release or
 Focus acceptance is claimed.
