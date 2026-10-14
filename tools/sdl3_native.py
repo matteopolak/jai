@@ -114,6 +114,18 @@ def build(out,plat,cache=None,offline=False,jobs=2):
             program=builddir/('Release' if plat.startswith('windows') else '')/('jai-sdl3-smoke-'+mode+('.exe' if plat.startswith('windows') else ''))
             subprocess.run([str(program)],check=True)
     subprocess.run(['cmake','--install',str(builddir),'--config','Release'],check=True)
+    ledger=json.loads((ROOT/'stdlib/Extensions/SDL3/coverage.json').read_text())
+    installed={p.name:p for p in (stage/'include/SDL3').glob('*.h')}
+    classified=ledger['headers']
+    expected_headers={name for name,entry in classified.items() if entry['category']!='auxiliary_test_library'}
+    if set(installed)!=expected_headers:raise RuntimeError('SDL installed header set differs from the comprehensive core coverage ledger')
+    header_evidence={}
+    for name,path in sorted(installed.items()):
+        installed_hash=hashlib.sha256(path.read_bytes()).hexdigest()
+        source_hash=classified[name]['sha256']
+        if installed_hash!=source_hash and name!='SDL_revision.h':raise RuntimeError(f'installed SDL header differs from verified source: {name}')
+        header_evidence[name]={'source_sha256':source_hash,'installed_sha256':installed_hash,
+                               'status':'source_identical' if source_hash==installed_hash else 'generated_revision_metadata'}
     dependencies=(builddir/'static-link-libraries-Release.txt').read_text()
     check_dependencies(dependencies,plat)
     out=out.resolve();out.mkdir(parents=True,exist_ok=True)
@@ -137,6 +149,7 @@ def build(out,plat,cache=None,offline=False,jobs=2):
     copy_licenses('sdl3',source,src,out)
     (lic/'THIRD-PARTY-NOTICES.txt').write_text(native_notices(src))
     metadata=out/'sdl3';metadata.mkdir(exist_ok=True)
+    (metadata/'installed-headers.json').write_text(json.dumps(header_evidence,indent=2,sort_keys=True)+'\n')
     configs=list(builddir.glob('sdl/include-config-release/build_config/SDL_build_config.h'))
     if not configs: raise RuntimeError('missing generated SDL build configuration')
     config=configs[0].read_text()

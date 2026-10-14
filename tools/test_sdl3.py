@@ -37,6 +37,10 @@ def audit(native,plat):
     for entry in meta['source']['license']:
         name=Path(entry).name if isinstance(entry,str) else entry.get('as',Path(entry['file']).name)
         if not (native/'licenses/sdl3'/name).is_file():raise RuntimeError(f'missing SDL3 license: {name}')
+    ledger=json.loads((ROOT/'stdlib/Extensions/SDL3/coverage.json').read_text())
+    gpu=[item['name'] for item in ledger['headers']['SDL_gpu.h']['declarations'] if item['kind']=='procedure' and item['name'] not in {'SDL_GDKSuspendGPU','SDL_GDKResumeGPU'}]
+    for symbol in gpu:getattr(library,symbol)
+    print(f'audited {len(gpu)} GPU exports (no GPU hardware execution)')
     print(f'audited SDL3 {plat}: {len(symbols)} runtime exports and all artifact hashes')
 
 def main():
@@ -59,11 +63,11 @@ def main():
     compiler=str(a.jaic.resolve())
     exe='.exe' if a.platform.startswith('windows') else ''
     # Run outside the checkout, with only explicit compiler/stdlib/library paths.
-    for name in ('layout','headless','callbacks'):
+    for name in ('layout','headless','callbacks','entry'):
         program=out/(name+exe)
         subprocess.run([compiler,str(out/f'{name}.jai'),'-exe',str(program)],env=env,cwd=out,check=True)
         if not program.exists():raise RuntimeError(f'compiler did not emit {program}')
         subprocess.run([str(program)],env=env,cwd=out,check=True)
-    print('SDL3 linked ABI, headless and callback tests passed')
+    print('SDL3 linked ABI, headless, callback and entry-point tests passed')
 
 if __name__=='__main__':main()

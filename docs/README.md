@@ -96,6 +96,7 @@ The LLVM backend, C ABI and linking.
 
 - [jaic Extensions](extensions/README.md)
 - [SDL3 desktop bindings, generation and native packaging](extensions/sdl3.md)
+- [SDL3 comprehensive header/GPU coverage, organization and verification](extensions/sdl3-coverage.md)
 
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
 
