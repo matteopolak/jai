@@ -50,6 +50,7 @@ reference.
 ```sh
 cargo test -p jai-language-server --test partial_edits --test edit_corpus
 cargo test -p jaic --lib
+python3 -W error::ResourceWarning -m unittest discover -s tools -p test_lsp_partial_edits.py
 python3 tools/lsp_partial_edits.py --max-lines 0 \
   --report artifacts/lsp-edits/fixtures.json tests/lsp/partial
 python3 tools/lsp_partial_edits.py --stdlib ../stdlib/stdlib \
@@ -62,7 +63,11 @@ bound each request/stage with a hard stall deadline, rather than limiting the su
 of many successful checks. The final report records that worker's hash. It persists
 JSON results atomically after every file. Panics, invalid reports, assertion failures and
 timeouts cause a nonzero result; baseline failures are recorded, never counted as
-successful coverage. No supplied/reference executable is used.
+successful coverage. The runner validates report shapes, file identity and nonnegative
+integer counts. Invalid output cannot reset a stalled stage's deadline or turn into a
+successful report; incomplete or untrusted counts are unknown. Runner protocol tests
+exercise malformed output, process failure, deadlines and pipe cleanup separately from
+the real corpus checks. No supplied/reference executable is used.
 
 Each file gets independent, real `#no_context` procedures before and after its
 source. The worker checks typed hover, exact definition locations, typed

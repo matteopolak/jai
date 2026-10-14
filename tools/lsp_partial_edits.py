@@ -14,6 +14,7 @@ import sys
 import uuid
 import queue
 import threading
+import time
 from collections import deque
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +59,7 @@ def build_worker():
 
 def run_file(worker, file, args):
     command = [worker, str(file), str(args.stdlib.resolve()) if args.stdlib else "-", str(args.max_lines), "--progress"]
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=ROOT)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, errors="replace", cwd=ROOT)
     events = queue.Queue()
     errors = deque(maxlen=64)
     def read_stdout():
@@ -72,21 +73,38 @@ def run_file(worker, file, args):
     for reader in readers:
         reader.start()
     report = None
+    protocol_errors = deque(maxlen=64)
     last_phase = "worker startup"
+    deadline = time.monotonic() + args.timeout
     try:
         while True:
-            line = events.get(timeout=args.timeout)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise queue.Empty
+            line = events.get(timeout=remaining)
             if line is None:
                 break
             try:
                 message = json.loads(line)
             except ValueError:
-                errors.append("invalid stdout: " + line[-8192:])
+                protocol_errors.append("invalid worker JSON: " + line[-256:].strip())
                 continue
-            if "progress" in message:
+            if not isinstance(message, dict):
+                protocol_errors.append("worker message must be an object")
+            elif "progress" in message and isinstance(message["progress"], str) and report is None:
                 last_phase = message["progress"]
-            else:
+                deadline = time.monotonic() + args.timeout
+            elif (
+                "progress" not in message
+                and report is None
+                and message.get("file") == str(file)
+                and isinstance(message.get("failures"), list)
+                and all(isinstance(failure, str) for failure in message["failures"])
+                and all(type(message.get(key)) is int and message[key] >= 0 for key in ("edits", "assertions"))
+            ):
                 report = message
+            else:
+                protocol_errors.append("invalid or duplicate worker report/progress message")
         process.wait(timeout=args.timeout)
     except (queue.Empty, subprocess.TimeoutExpired):
         process.kill()
@@ -94,10 +112,16 @@ def run_file(worker, file, args):
         report = {"file": str(file), "failures": [f"request stalled for {args.timeout}s at {last_phase}"], "edits": None, "assertions": None}
     for reader in readers:
         reader.join(timeout=1)
+    process.stdout.close()
+    process.stderr.close()
     if report is None:
         report = {"file": str(file), "failures": ["worker did not return a final JSON report"], "edits": None, "assertions": None}
     if process.returncode and not report["failures"]:
         report["failures"].append(f"worker exit {process.returncode}")
+    if protocol_errors:
+        report["failures"].extend(protocol_errors)
+        report["edits"] = None
+        report["assertions"] = None
     if errors:
         report["stderr"] = "".join(errors)[-8192:]
     return report
