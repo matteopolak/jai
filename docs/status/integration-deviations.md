@@ -2,6 +2,25 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
+The whole-tree lint finding in `internal/net/socket.jai:check_fd_set` exposed an
+unused destination pointer and acceptance of null sets. A new original fixture
+fails before the fix. Validation now requires a nonnull destination as well as
+the descriptor range; FD_ISSET returns zero for null instead of reading it, and
+mutators retain their assertion. Descriptor-edge/null/bit operations pass
+interpreter/native O0/O2 and scoped warnings-denied lint. Names/signatures are
+unchanged; no warning suppression or dummy parameter read was added. This is
+independently chosen defensive validation where the reviewed inventory leaves
+invalid-pointer behavior unspecified, not evidence of any reference body.
+
+Browser fixture corrections are documented with exact API reasons in
+tools/legacy-contract-audit.md. No logger/Thread/IDE assertion was disabled.
+Initial corrections used invalid foreign-variable syntax; those failing runs
+are retained, and the compiler's supported #elsewhere syntax is used. C bridge
+coverage does not claim POSIX or Basic.exit support on Wasm. Whole-tree quality
+606-source run is stable and retains 34/152 failed checks; the earlier run that
+raced a source edit is explicitly not stable. Subsequent Socket scope lint
+supersedes its one ordinary warning, not the incomplete-compilation failures.
+
 ## Production boundary correction and fifth refresh
 
 Filtered coordinator CI feedback for candidate 159ca65 records real Windows
