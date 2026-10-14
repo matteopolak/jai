@@ -1,5 +1,19 @@
 # Compiler deviations and implementation gaps
 
+Windows suspended-thread gap repaired through scheduler suspend counts and CRT
+entry/exit interception. Host-executed original tests exercise real Rust OS
+threads under the baton, not native Windows APIs. Non-Windows id values are
+scheduler-test identities; Windows records actual GetCurrentThreadId values.
+Actual Windows x64/ARM64 execution of the staged producer repro remains required.
+SuspendThread while a target is inside native code and termination of entry or
+adopted native callback threads explicitly diagnose unsupported behavior. Existing
+interpreter thread stack sizing/security-attribute emulation remains reduced;
+the requested native stack size/security descriptor is not implemented. Managed
+handles support the intercepted operations, not arbitrary native HANDLE APIs.
+Proper remaining work: platform runtime validation, configured stack/security
+support and deliberate native-handle interoperability. No Windows runtime pass
+is claimed from a cross-target check.
+
 Qualified constant-write gap repaired in sema/stmt.rs: validation follows all
 aggregate containers, preserves pointer boundaries and caller-scope macro names,
 and applies to existing-target declarations. Original invalid and real mutable
