@@ -830,7 +830,7 @@ impl Compiler {
                 scope::Builtin::Proc(_) => IdeClass::Function,
                 scope::Builtin::TargetConstant(_) => IdeClass::Constant,
             },
-            EntityKind::Placeholder => return None,
+            EntityKind::Placeholder | EntityKind::UnboundGenericParameter => return None,
             EntityKind::Decl {
                 decl, ..
             } => match &e.state {

@@ -105,6 +105,54 @@ pub fn has_poly(expr: &ast::Expr) -> bool {
     }
 }
 
+/// Names introduced by a polymorphic type pattern, in pattern order. Shared
+/// source reflection binds these symbolically; instances bind concrete values.
+pub(super) fn for_poly_binders(expr: &ast::Expr, visit: &mut impl FnMut(Sym)) {
+    use ast::ExprKind as E;
+    match &expr.kind {
+        E::PolyVar {
+            name, ..
+        }
+        | E::PolyRestricted {
+            name, ..
+        } => visit(*name),
+        E::Unary(_, e)
+        | E::TypeDirective {
+            ty: e, ..
+        } => for_poly_binders(e, visit),
+        E::ArrayType {
+            size,
+            elem,
+        } => {
+            if let ast::ArraySize::Fixed(n) = size {
+                for_poly_binders(n, visit);
+            }
+            for_poly_binders(elem, visit);
+        }
+        E::Call {
+            callee,
+            args,
+            ..
+        } => {
+            for_poly_binders(callee, visit);
+            for arg in args {
+                for_poly_binders(&arg.value, visit);
+            }
+        }
+        E::ProcType(header) => {
+            for ty in header
+                .params
+                .iter()
+                .filter_map(|p| p.ty.as_ref())
+                .chain(header.returns.iter().filter_map(|r| r.ty.as_ref()))
+            {
+                for_poly_binders(ty, visit);
+            }
+        }
+        _ => {}
+    }
+}
+
 impl Compiler {
     pub fn new_proc(
         &mut self,

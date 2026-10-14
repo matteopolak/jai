@@ -1821,7 +1821,7 @@ impl Compiler {
             EntityKind::Const {
                 ty, ..
             } => (IdeKind::Constant, self.types.name(*ty)),
-            EntityKind::Placeholder => return None,
+            EntityKind::Placeholder | EntityKind::UnboundGenericParameter => return None,
             EntityKind::Import(_) => (IdeKind::Module, "module".into()),
             EntityKind::Builtin(b) => match b {
                 scope::Builtin::Type(_) => (IdeKind::Type, "builtin type".into()),

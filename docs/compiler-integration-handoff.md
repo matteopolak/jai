@@ -196,3 +196,9 @@ Progress and next tasks are maintained in [compiler progress](status/compiler-pr
 ## Caller-scope context cleanup checkpoint
 
 Backtick defer-pop now retains caller-block lifetime, including conditional and nested macro registration. Context selection uses local runtime storage; cleanup marks move when a macro inserts caller-owned actions. Ordinary caller-owned defers share activation guards. Explicit push blocks restore before outer return cleanup. See compiler/context-cleanup.md. Original core cases: eight pass; native/WASM O0/O2 execution passes. Core unit plus focused integration: 207 passed, one existing ignored test not counted. LLVM/core clippy with warnings denied and scoped Rust formatting checks pass. No stdlib Jai sources changed in this batch.
+
+## Generic defaults / foundations integration request
+
+Source descriptors now expose declared parameter defaults; existing source identity is preserved. Instance parameters exposes defaults evaluated with preceding actual bindings; specified_parameters remains actual values. Compare instance defaults for dependent default elision (see compiler/generic-default-reflection.md). No peer writes performed. Six original core tests and native/WASM64 O0/O2 storage tests pass; invalid defaults and actual-argument serialization failures propagate. Public dependent-default encoding remains an explicit reviewed-contract question. Two IDE match arms only hide internal unbound reflection entities; LSP parser behavior was not changed.
+
+Source-built formatter integration found and fixed direct context assignment in speculative/lambda/conversion contexts. FnCtx context storage is now private and all initialization uses the runtime setter. Core context regressions now number nine. Latest core/LLVM verification: 240 passed across unit and focused Rust integration tests (one existing ignored test not counted); clippy core/LLVM/LSP/browser with warnings denied passes.

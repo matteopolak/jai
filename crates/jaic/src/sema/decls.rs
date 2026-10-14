@@ -44,6 +44,13 @@ impl Compiler {
         let entity = self.entity(id);
         let (name, span, scope) = (entity.name, entity.span, entity.home);
         match entity.kind.clone() {
+            EntityKind::UnboundGenericParameter => Err(Box::new(
+                Diagnostic::error(
+                    span,
+                    format!("generic parameter `{name}` has no concrete binding"),
+                )
+                .with_kind(crate::source::DiagnosticKind::UnboundGenericParameter),
+            )),
             EntityKind::Const {
                 value,
                 ty,

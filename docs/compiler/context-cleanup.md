@@ -19,7 +19,9 @@ branch-local SSA references in exit cleanup. Caller-owned ordinary defers use
 the same registration mechanism. These local slots add interpreter instructions;
 native optimization can promote/eliminate them where control flow permits.
 
-The core cleanroom_context suite contains eight original regressions. The LLVM
+The core cleanroom_context suite contains nine original regressions. The LLVM
 suite executes conditional and nested macro cleanup, loop exits and explicit
 context-block returns natively and on WASM64 at O0 and O2. This is focused
 compiler verification, not integrated production library/corpus verification.
+
+A source-built formatter exposed a missed speculative-checking initialization path. All procedure/thunk/lambda/scratch contexts now initialize runtime context storage through the setter; the field is private. An original is_constant/procedure-call regression covers the missed path.

@@ -139,7 +139,7 @@ impl Compiler {
         span: Span,
     ) -> Result<crate::ir::Val> {
         let ctx_ty = self.context_type(span)?;
-        let op = if matches!(context.kind, E::Context) && f.context.is_none() {
+        let op = if matches!(context.kind, E::Context) && f.context_binding().is_none() {
             // `push_context { }` in #c_call code: a fresh default context.
             let size = self.size_of(ctx_ty, span)?;
             let align = self.align_of(ctx_ty, span)?;
@@ -3127,7 +3127,7 @@ impl Compiler {
             return Ok(());
         }
         let saved = f.defers.clone();
-        let saved_context = f.context;
+        let saved_context = f.context_binding();
         let result = (|| {
             for i in (depth..saved.len()).rev() {
                 // Keep only earlier cleanups visible to a return in deferred code.
@@ -3150,7 +3150,7 @@ impl Compiler {
                     } => {
                         let previous_ptr = f.b.load(Ty::Ptr, *saved_slot);
                         f.set_context(Some(previous_ptr));
-                        f.context = *previous;
+                        f.restore_context_binding(*previous);
                     }
                     DeferAction::Statement(stmt) => {
                         let inner = self.new_block_scope(entry.scope);
@@ -3172,7 +3172,7 @@ impl Compiler {
         })();
         f.defers = saved;
         // Exit branches do not change the context used to compile other paths.
-        f.context = saved_context;
+        f.restore_context_binding(saved_context);
         result
     }
 }
