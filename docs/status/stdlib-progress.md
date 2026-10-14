@@ -23,3 +23,10 @@ Known workarounds and incomplete behavior are recorded in
 module ledger. Next: finish regression/checkpoint, then continue remaining owned
 portable modules using reviewed specifications. Full corpus/release integration
 remains the coordinator's responsibility.
+
+## Replacement integration checkpoint
+
+All eight manifest snapshots merged in separate commits, ending at `6822bc1`.
+Combined compiler/LSP/jailint source build and unchanged jaifmt O2 build against
+production `stdlib` exited zero. Workspace tests and direct audit are in progress;
+no full integration pass is claimed. See [integration evidence](../tools/cleanroom-integration.md).

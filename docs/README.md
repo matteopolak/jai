@@ -105,6 +105,9 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
+- [Independent integration commands and limits](tools/cleanroom-integration.md)
+- [Integration deviations audit](status/integration-deviations.md) and [requests](integration-requests.md)
+
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
 - [Core foundations deviations and remaining limits](status/foundations-deviations.md)
