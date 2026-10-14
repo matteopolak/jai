@@ -51,6 +51,14 @@ for target in ['linux','windows','macos','wasm']:
 for target in ['linux','windows','macos']:
     run(target+'-x64-unused-check',[compiler,'tests/numerics/ui_smoke.jai']+imports+['-check','-no_dce','-os',target,'-cpu','x64'])
 run('overflow-assert',[compiler,'tests/numerics/half_overflow.jai','-interp'],expect_fail=True)
+if not args.quick:
+    for level in ['O0','O2']:
+        exe=out/('overflow-'+level)
+        if run('overflow-'+level+'-build',[compiler,'tests/numerics/half_overflow.jai','-'+level,'-exe',exe]):
+            run('overflow-'+level,[exe],expect_fail=True)
+    wasm=out/'overflow.wasm'
+    if run('overflow-wasm-build',[compiler,'tests/numerics/half_overflow.jai','-os','wasm','-O2','-exe',wasm]):
+        run('overflow-wasm',['node','--no-warnings','tools/wasi_run.mjs',wasm],expect_fail=True)
 failures=[r for r in records if not r['passed']]
 print(f'{len(records)-len(failures)}/{len(records)} checks passed; evidence: {out}')
 raise SystemExit(bool(failures))

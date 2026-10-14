@@ -1,70 +1,86 @@
-# Numerics implementation status
+# Numerics worker status
 
-In progress. Canonical facades for Math, Sloppy_Math, Float16 and
-Color_Interpolation now exist. The first test exercises strict Matrix3 inverse
-thresholds, Matrix4 failure identity, normalization by length, scalar categories,
-HSV degrees, and all 65,536 half encodings. Interpreter and native O0 passed on
-2026-10-14 with the locally source-built fresh peer compiler. This is initial
-coverage, not a claim of full six-module completion.
+The implementation pass covers all six assigned modules. Worker verification
+passes; canonical dependency and native UI integration gaps remain explicitly
+listed below. Final combined-library, corpus and release verification remains
+with the coordinator.
 
-Fresh compiler sources and foundation are copied read-only from peers into this
-workspace's ignored `artifacts/`; all builds and integration writes occur there.
-`-no_dce` currently fails in the staged foundation at `Basic.Buffer`, unrelated
-to the numeric API. Targeted test compilation remains usable.
+| Module | Inventoried names | Delivered mechanisms |
+| --- | ---: | --- |
+| Math | 155 | Portable scalars, IEEE classification, vectors, matrices/inverses, quaternions, planes, projections, polar decomposition, printers |
+| Sloppy_Math | 4 | Inclusive absolute comparisons and numeric bounds |
+| Float16 | 16 | Nearest-even IEEE conversions, vector/matrix storage and conversions, overflow assertion parameter |
+| Color_Interpolation | 13 | Sampling policies, gamma 2.2, degree HSV, shortest arcs, OKLab and interpolation geometry |
+| GetRect | 254 | Geometry, drawing callbacks, frames/input, persistent state, active-widget lifecycle, occlusion, themes, controls, UTF-8 editing, color picker/editor and subwindows |
+| GetRect_LeftHanded | 252 | Corresponding mechanisms with opposite vertical cuts/winding and the reviewed variant-specific signatures/shapes |
 
-Both GetRect facades now have canonical record shapes, geometry, rounded drawing,
-callback registration, frame/input handling, active-widget lifecycle, occlusion,
-state lookup, theme storage, buttons, controls and UTF-8 text editing. The UI
-contract test passed in interpreter and native O0 using explicitly marked
-dependency fixtures. It checks inclusive edges, margin arithmetic, opposite
-top-cut conventions, hash wraparound, drawing callbacks, button presses and
-stale-widget deactivation. This is isolated mechanism coverage; canonical peer
-Input/Window_Type/Hash_Table integration is still pending.
+All 694 public inventory names are present. Canonical nominal names and overlays
+are retained; private helpers are not facade exports. Mutable UI globals are
+declared directly in facade-loaded sources. Extensions and bootstrap sources
+were not changed. No other checkout was modified and no publication was performed.
 
-Color picker/editor state, gradients, interpolation sampling, subwindow callback
-submission, popups, resizing and local clipboard serialization are implemented.
-The headless UI smoke test exercises these using caller drawing/text callbacks.
-The independent Python math/struct oracle supplies 2,415 assertions; interpreter
-and native O2 passed. Core, extended numerics, and UI smoke tests ran successfully
-as actual wasm64 WASI programs under Node 24. Linux and Windows UI type checks
-with unused code included also passed with dependency fixtures.
+## Actual verification
 
-Scalar elementary functions are independently designed portable algorithms; no
-host frexp, ldexp, or cbrt imports are required. UI float parsing uses a private
-portable decimal parser rather than the foundation's currently unavailable WASM
-strtod binding.
+On 2026-10-14, the latest fresh peer Rust compiler was copied and source-built
+locally against LLVM 23. Fresh foundation/binding sources and these six modules
+were staged in this workspace's ignored artifacts. The final run passed **86/86
+checks**, including build checks:
 
-The ignored integration copy removes the foundation's invalid standalone
-`Basic.Buffer` alias (the reviewed type is nested under String_Builder). Neither
-the peer checkout nor this worker's owned production sources were changed for
-that integration correction. With it, full unused-code checking reaches Math
-and both UI modules.
+- Ten self-checking programs in the interpreter, native O0/O2 on macOS ARM64,
+  and actual wasm64 WASI execution under Node 24.
+- Unused-code target checks for Linux, Windows, macOS and WASM, plus explicit
+  x64 checks for Linux, Windows and macOS.
+- Expected half-overflow assertion failures in interpreter, native O0/O2 and WASM.
+- Local public-name inventory checking and independent oracle generation.
 
-Additional edge tests now cover subnormal frexp/ldexp, ties at double underflow,
-signed zero, integer powers, full signed bounds, tiny/huge vector norms, numeric
-printers, and scientific UI formatting. Interaction tests cover dropdown change
-notification and spinbox steps. Both issues were reproduced before correction.
-The UI now exposes working circle/HSV/RGB/type-in picker modes, stashed colors,
-relative sliders and text entry, interpolation controls, keyframe add/delete,
-preview and clipboard sampling controls.
+The independent oracle contains **3,158 assertions** from Python math/IEEE struct,
+exact rational matrix inversion, and Rodrigues rotations. Core tests additionally
+cover all 65,536 half encodings and all adjacent finite-half midpoint ties in both
+signs. Algebra tests cover generic/explicit overloads, strict Matrix3 thresholds,
+exact tiny Matrix4 pivots, IEEE subnormal edges, quaternion/plane/projection
+invariants and zero-divisor reporting. UI tests exercise lifecycle callbacks,
+popup changes, spinboxes, every picker mode, texture loader failure/cache behavior,
+UTF-8 editing and stable composite-widget identities.
 
-`tests/numerics/run.py --compiler artifacts/target/debug/jaic --stdlib
-artifacts/stdlib --quick` passed all 14 checks, including unused-code target
-checks for Linux, Windows, macOS and WASM, and an expected overflow assertion
-with `Float16(ASSERT_ON_OVERFLOW=true)`. The local inventory presence check
-matches 694 inventoried names across the six modules; this is name evidence,
-not a claim of semantic ABI verification.
+Reproduce with:
 
-The expanded quick suite now passes all 20 checks. It also exercises every picker
-mode and catches composite-widget identity collisions: child controls now derive
-their identities from the parent hash. The oracle now contains exactly 3,158
-assertions, including exact rational matrix inverses and independent Rodrigues
-rotations. Core half tests additionally check every adjacent finite midpoint tie
-in both signs. The broad algebra test exercises matrix/vector/quaternion/geometry
-overloads and explicit zero-divisor reporting.
+```sh
+python3 tests/numerics/run.py \
+  --compiler artifacts/target/debug/jaic --stdlib artifacts/stdlib-fresh
+```
 
-Canonical map integration was attempted and failed at the peer Hash.get_hash(u64)
-specialization, rather than being silently replaced in production. The test
-runner offers --canonical-dependencies for coordinator integration. Full expanded
-matrix rerun and final status consolidation are pending; see docs/numerics.md for
-the actual remaining ABI/platform limitations.
+Durable evidence is in `artifacts/numerics-verification/results.json`, per-check
+logs, `artifacts/fresh-numerics-run.log`, `artifacts/compiler-build-fresh.log`,
+`artifacts/numerics-compiler-provenance.json`, and
+`artifacts/numerics-staging.json`. The earlier verified source/compiler/results
+were preserved separately before rebuilding the newer peer compiler.
+
+## Actual gaps
+
+- Canonical Input and Window_Type implementations are not yet available from the
+  peer foundation. Canonical Hash_Table integration was attempted and fails
+  because fresh Hash lacks get_hash(u64). The isolated UI tests therefore use
+  explicitly marked dependency fixtures; these are not production replacements.
+  `--canonical-dependencies` removes them for coordinator integration.
+- The staging copy explicitly removes the invalid standalone Basic.Buffer alias;
+  the reviewed Buffer is nested under String_Builder. This repair is recorded and
+  does not alter the peer checkout or this worker's owned production modules.
+- Concrete Font/Font_Effects/Texture/NSCursor ABIs are absent from the supplied
+  contracts. Contextual opaque callback types support caller renderers; concrete
+  ABI/nominal integration remains unverified. Vertical text metrics use a
+  16-pixel fallback. The Windows module alias is conditional because the fresh
+  binding rejects non-Windows imports.
+- Clipboard operations use module-local owned storage; native clipboard
+  synchronization is not implemented. Native cursor creation requires caller
+  integration. Text editing does not supply native glyph shaping, bidi/grapheme
+  layout, or full multiline visual selection/cursor geometry.
+- Augmented_Keyframe's documented using base does not establish the #as relation
+  required by Color_Interpolation's generic restriction in the current compiler.
+  Editor sampling copies canonical Color_Keyframe records; direct generic
+  sampling of augmented pointers remains a contract question.
+- Simultaneous native multiwindow occlusion/resource lifecycle integration and
+  exact unspecified styling/easing/formatting choices have not been verified.
+  The local name audit is not a full semantic ABI or compatibility proof.
+
+See [implementation details](../numerics.md) and
+[contract questions](../specs/stdlib/numerics-questions.md).

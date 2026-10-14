@@ -51,6 +51,7 @@ main :: () {
     transpose(*a4); assert(a4._41==2); transpose(*a4);
     translate(*a4,xyz(1,2,3)); assert(a4._14==3); a4=translate(a4,xyz(1)); assert(a4._24==3);
     permutation:=Matrix4.{0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0}; ok4,inv4:=inverse_gaussian_elimination(permutation); assert(ok4 && inv4._12==1 && inv4._34==1);
+    tiny4:=Matrix4_Identity; tiny4._44=1e-20; ok4,inv4=inverse(tiny4); assert(ok4 && abs(inv4._44*1e-20-1)<0.000001);
     assert(adjugate(Matrix4_Identity)._44==1 && adjugate_lengyel(Matrix4_Identity)._11==1);
     rows:=make_matrix_from_rows(xyz(1,2,3),xyz(4,5,6),xyz(7,8,9),Matrix3); cols:=make_matrix_from_columns(xyz(1,2,3),xyz(4,5,6),xyz(7,8,9)); assert(rows._12==2 && cols._12==4);
     look:=make_look_at_matrix(xyz(1,0,0),xyz(2,0,0),xyz(0,0,1)); assert(distance(transform_point(look,xyz(1,0,0)),xyz(0))<0.00001);
