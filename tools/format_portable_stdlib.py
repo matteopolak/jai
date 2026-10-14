@@ -18,11 +18,11 @@ RESERVED = {
     "Metal", "MojoShader", "nvidia_aftermath", "nvtt", "Objective_C", "POSIX",
     "rpmalloc", "SDL", "stb_image", "stb_image_resize", "stb_image_write",
     "stb_vorbis", "telemetry3", "Vulkan", "Windows", "X11", "xxHash",
-    "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard",
+    "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard", "File",
 }
 RESERVED_FOLDED = {name.casefold() for name in RESERVED}
 RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print",
-                     "window", "rendering", "input", "gamepad", "clipboard"}
+                     "window", "rendering", "input", "gamepad", "clipboard", "file"}
 
 
 def owned_paths():

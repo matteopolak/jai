@@ -63,7 +63,7 @@ Platform-io now owns Windows File completion; no duplicated implementation begun
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `8a0d40c`, Unix shared-memory transport. Earlier
+Latest committed checkpoint: `c8d1f5d`, Unix Autorun lifecycle. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -135,6 +135,17 @@ in both modes plus prior faults/rejections/SMTP/IPC/startup/parent/target checks
 All 220 owned Jai files pass format/lint. Compiler mixed-spread loss and CLI use
 of a non-oracle helper are retained as pending reproducers; no convenience export
 or surrogate callback module parameter was added.
+
+New verified increment ready for checkpoint: MPEG canonical buffers, checked
+bit/VLC/start-code/file helpers, all reviewed immutable tables, six pixel aliases
+and integer IDCT. Full focused regression passes 70 interpreter/native cases,
+11 expected runtime faults in both modes, five compile-time rejections, ten SMTP
+scenarios, four 2,048-packet process pairings and prior startup/parent checks.
+Linux and selected Windows checks pass; Windows MPEG is explicitly excluded after
+an observed failure at the existing File Unix guard. All 230 owned Jai files pass
+source-built jaifmt --check and jailint -D warnings; table regeneration is byte
+idempotent. New sequence-header tests are in development and not part of these
+passes. Continue header/frame storage, demux and audio/video decoding.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

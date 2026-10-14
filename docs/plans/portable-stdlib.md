@@ -167,3 +167,13 @@ with typed Compiler bridges, copied arguments and stable singleton storage. Test
 real workspace completion/output/child markers and actual error/skip logs. Retain
 mixed-spread and CLI orchestration failures; use explicit argv without changing
 public signatures, and withhold unspecified callback module parameters.
+
+MPEG increment: canonical live buffer state and checked bit/VLC/start-code/file
+operations; generate immutable tables strictly from reviewed data; adapt licensed
+public C pixel/IDCT algorithms with explicit bounds and overflow handling. Test
+all real paths and canonical reflected names before checkpointing. Continue with
+transactional sequence-header parsing and three-frame storage, then demux and
+complete audio/video decoding using the authorized MPEG fixture. Do not expose
+guessed ambient macros or count missing decoders as complete. Qualified imports
+preserve Buffer identity while retaining the original compiler failure. File and
+Windows backend completion belongs to the platform-io worker.
