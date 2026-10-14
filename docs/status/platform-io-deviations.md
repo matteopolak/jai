@@ -1,5 +1,22 @@
 # Platform I/O deviations and pending verification
 
+## Refreshed-contract changes (supersede corresponding historical items below)
+
+- Windows Process record ambiguity is resolved by the refreshed reviewed spec.
+  Public records and adapter are implemented. The temporary fixture module and
+  private entry fixture were removed; validation now uses the public facade.
+  Native System/Thread/Process/runtime execution remains outstanding. Real File
+  Windows x64/ARM64 interpreter/O0/O2 passes are confirmed only for candidate159ca65.
+- Pipe operations allocate a private record beginning with the native OVERLAPPED
+  and retain its allocator. The public pointer addresses that actual native member;
+  buffers are drained before return and state is released through its original
+  allocator. No duplicate public handle state or guessed public fields remain.
+- The reviewed crash contract explicitly limits Windows native backtraces to x64
+  and ties their initialization to DEFINE_SYSTEM_ENTRY_POINT. Earlier private ARM64
+  runtime-backtrace support is being removed from the compatibility path; it cannot
+  be counted as an established public contract. The proper implementation and
+  target/configuration regressions are the next checkpoint.
+
 Role: platform-io. Scope: owned File, Windows System/Thread/runtime internals,
 private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
 

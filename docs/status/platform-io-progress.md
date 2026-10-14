@@ -1,5 +1,32 @@
 # Platform I/O worker progress
 
+## Refreshed-contract continuation
+
+Coordinator-filtered CI feedback confirms candidate `159ca65` passed File
+interpreter/native O0/native O2 on **real Windows x64 and ARM64**. This evidence
+belongs to that candidate; it does not establish native results for later changes
+or for System/Thread/Process/runtime. No raw vendor/corpus CI logs were accessed.
+
+The refreshed Process Windows records are implemented in a canonical private type
+module and re-exported unchanged by the public facade. The native engine now uses
+those records directly, retains all PROCESS_INFORMATION fields including the real
+primary thread handle, and allocates stable OVERLAPPED state with its owning allocator.
+Public create/read/write/wait/kill/deinit and named-pipe initialization are wired to
+the engine; run_command uses the shared portable orchestration. Unix code is retained.
+
+Removed the temporary test-only Process module and internal entry fixture. The
+same ownership/capture/timeout/parent-exit tests now import the public Process facade,
+with added public record-size, native process-info and standalone pipe assertions.
+The new original common Process contract first failed on the old Unix-only facade
+guard, then passed both Windows architecture source checks and host interpreter/O0/O2.
+The complete Windows public suite and helper cross-link at x64 O0/O2. Executed:
+`python3 tools/check_platform_io.py --jaic target/debug/jaic --stdlib
+target/platform-io-stdlib --cross-check --native --windows-process --windows-build x64`.
+These new Windows behaviors still require native CI.
+
+Next: align crash initialization/target behavior with the refreshed reviewed contract,
+implement the public x64 crash facade, and repair general strict-lint coverage.
+
 Durable producer commits: `eb5d83d` (File), `339a16e` (System/Thread/runtime),
 `fe44299` (private Process engine, native exception diagnostics, SDK checks and
 strict lint/handoff). Work remains at the explicit integration gates below;

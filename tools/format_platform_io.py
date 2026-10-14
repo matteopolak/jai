@@ -8,6 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 OWNED = [
+    "stdlib/Process/module.jai", "stdlib/internal/process/windows.jai", "stdlib/internal/process/windows-types.jai",
     "stdlib/File/module.jai", "stdlib/internal/files/file.jai",
     "stdlib/internal/files/native-unix.jai", "stdlib/internal/files/native-windows.jai",
     "stdlib/internal/platform-io", "stdlib/System/module.jai", "stdlib/internal/system/windows.jai",
@@ -15,7 +16,7 @@ OWNED = [
     "stdlib/Runtime_Support/module.jai", "stdlib/internal/runtime/module.jai",
     "stdlib/internal/runtime/startup.jai", "stdlib/internal/runtime/windows-io.jai",
     "stdlib/internal/runtime/windows-arguments.jai", "stdlib/internal/runtime/windows-crash.jai",
-    "stdlib/Process/tests/windows-private-engine.jai", "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai",
+    "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai",
     "tests/platform-io",
 ]
 
