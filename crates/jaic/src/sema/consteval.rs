@@ -189,6 +189,24 @@ impl Compiler {
         self.interp.missing_func = None;
         self.interp.run_effects = outer;
         self.flush_interp_output();
+        for data in std::mem::take(&mut self.interp.pending_data_globals) {
+            let init = self.program_bytes(data.address(), data.size as usize, span)?;
+            let global = self.program.add_global(ir::Global {
+                name: "compiler.global_data".into(),
+                size: data.size,
+                align: data.align,
+                init,
+                relocs: Vec::new(),
+                read_only: data.read_only,
+                export: None,
+            });
+            self.registered_data_segments
+                .insert(global, data.segment_tag);
+            if !data.read_only {
+                self.program.reset_globals.push(global);
+            }
+            self.interp.adopt_data_global(global, data);
+        }
         if !self.interp.pending_type_flags.is_empty() {
             self.apply_type_info_flags(span)?;
         }

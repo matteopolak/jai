@@ -347,6 +347,7 @@ pub struct Compiler {
     pub sources: SourceMap,
     pub types: Types,
     pub program: ir::Program,
+    registered_data_segments: HashMap<ir::GlobalId, u16>,
     pub files: Vec<FileInfo>,
     /// Lexical provenance of scoped/generated sources, for relative source loads
     /// and the distribution boundary around library-owned internals.
@@ -612,6 +613,7 @@ impl Compiler {
             sources: SourceMap::default(),
             types: Types::new(),
             program: ir::Program::default(),
+            registered_data_segments: HashMap::default(),
             files: Vec::new(),
             source_origins: HashMap::default(),
             file_by_path: HashMap::default(),

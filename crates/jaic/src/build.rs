@@ -381,11 +381,20 @@ pub struct Workspaces {
     pub(crate) records: Records,
     /// The structs each program built from the records (`__jaic_rec_builder` numbers them from 1).
     builders: Vec<crate::record_build::Builder>,
+    data_segments: Vec<DataSegment>,
     /// The absolute path of the program's first source file, when it comes from a file: the
     /// top-level workspace's default output name and directory derive from it.
     pub main_file: String,
     /// What the command line chose for the top-level program's output and crash handler.
     pub main_overrides: MainOverrides,
+}
+
+struct DataSegment {
+    handle: Box<u128>,
+    _name: Vec<u8>,
+    workspace: i64,
+    characteristics: u32,
+    alignment: u64,
 }
 
 /// Command-line choices the target program's `get_build_options` reports before a metaprogram
@@ -407,6 +416,9 @@ pub enum MetaOp {
     WorkspaceCreate,
     CurrentWorkspace,
     ValidateWorkspace,
+    DataSegment,
+    GlobalData,
+    RuntimeData,
     AddFile,
     AddString,
     SetOption,
@@ -463,6 +475,9 @@ impl MetaOp {
             "__jaic_workspace_create" => Self::WorkspaceCreate,
             "__jaic_current_workspace" => Self::CurrentWorkspace,
             "__jaic_workspace_validate" => Self::ValidateWorkspace,
+            "__jaic_data_segment" => Self::DataSegment,
+            "__jaic_global_data" => Self::GlobalData,
+            "__jaic_runtime_data" => Self::RuntimeData,
             "__jaic_workspace_add_file" => Self::AddFile,
             "__jaic_workspace_add_string" => Self::AddString,
             "__jaic_workspace_set_option" => Self::SetOption,
@@ -549,6 +564,7 @@ impl Workspaces {
             tags: HashMap::default(),
             records: Records::default(),
             builders: Vec::new(),
+            data_segments: Vec::new(),
             main_file: String::new(),
             main_overrides: MainOverrides::default(),
         }))
@@ -1360,6 +1376,7 @@ pub fn call(
     op: MetaOp,
     has_context: bool,
     args: &[u64],
+    program: &ir::Program,
     interp: &mut Interp,
 ) -> Result<Rets, Trap> {
     let args = if has_context {
@@ -1374,6 +1391,7 @@ pub fn call(
         op,
         MetaOp::CurrentWorkspace
             | MetaOp::ValidateWorkspace
+            | MetaOp::RuntimeData
             | MetaOp::EventInt
             | MetaOp::EventString
             | MetaOp::CommandLineCount
@@ -1576,6 +1594,100 @@ pub fn call(
         MetaOp::CurrentWorkspace => Ok(Rets::one(shared.borrow().current_id() as u64)),
         MetaOp::ValidateWorkspace => {
             shared.borrow_mut().ws(arg(0) as i64).map_err(trap)?;
+            Ok(Rets::default())
+        }
+        MetaOp::RuntimeData => {
+            let id = arg(0) as i64;
+            let mut reg = shared.borrow_mut();
+            reg.ws(id).map_err(trap)?;
+            if id != reg.current_id() {
+                return Err(trap(
+                    "get_runtime_info: global-data snapshots require the running workspace".into(),
+                ));
+            }
+            Ok(Rets::one(interp.runtime_data_snapshot(program)?))
+        }
+        MetaOp::DataSegment => {
+            let name = string(interp, 0)?;
+            let characteristics = arg(1) as u32;
+            let alignment = arg(2) as i32;
+            let workspace = arg(3) as i64;
+            let mut reg = shared.borrow_mut();
+            reg.ws(workspace).map_err(trap)?;
+            if workspace != reg.current_id() {
+                return Err(trap(
+                    "add_data_segment: registration requires the running workspace".into(),
+                ));
+            }
+            if characteristics & !0xf != 0 || characteristics & 4 != 0 {
+                return Err(trap("add_data_segment: executable or unknown segment characteristics are unavailable".into()));
+            }
+            if alignment <= 0 || !(alignment as u32).is_power_of_two() {
+                return Err(trap(
+                    "add_data_segment: alignment must be a positive power of two".into(),
+                ));
+            }
+            let segment = DataSegment {
+                handle: Box::new(0),
+                _name: name,
+                workspace,
+                characteristics,
+                alignment: alignment as u64,
+            };
+            let address = (&*segment.handle as *const u128) as u64;
+            reg.data_segments.push(segment);
+            Ok(Rets::one(address))
+        }
+        MetaOp::GlobalData => {
+            let workspace = arg(0) as i64;
+            let bytes = string(interp, 1)?;
+            let segment = arg(2) as u16;
+            let mut reg = shared.borrow_mut();
+            reg.ws(workspace).map_err(trap)?;
+            if workspace != reg.current_id() {
+                return Err(trap(
+                    "add_global_data: registration requires the running workspace".into(),
+                ));
+            }
+            let (align, read_only, zeroed, tag) = match segment {
+                0 => (16, false, false, 1),
+                2 => (16, true, false, 2),
+                3 => (16, false, true, 0),
+                0x10 => {
+                    let handle = arg(3);
+                    let descriptor = reg
+                        .data_segments
+                        .iter()
+                        .find(|s| {
+                            (&*s.handle as *const u128) as u64 == handle && s.workspace == workspace
+                        })
+                        .ok_or_else(|| {
+                            trap(
+                                "add_global_data: invalid user segment handle for this workspace"
+                                    .into(),
+                            )
+                        })?;
+                    (
+                        descriptor.alignment,
+                        descriptor.characteristics & 2 == 0,
+                        descriptor.characteristics & 8 != 0,
+                        5,
+                    )
+                }
+                1 => {
+                    return Err(trap(
+                        "add_global_data: WRITABLE_NO_RESET reset semantics are unavailable".into(),
+                    ));
+                }
+                _ => return Err(trap("add_global_data: unknown segment index".into())),
+            };
+            if zeroed && bytes.iter().any(|&b| b != 0) {
+                return Err(trap(
+                    "add_global_data: nonzero input for BSS or ZEROED is not supported".into(),
+                ));
+            }
+            let address = interp.register_data_global(&bytes, align, read_only, tag)?;
+            store_pair(interp, arg(4), bytes.len() as u64, address)?;
             Ok(Rets::default())
         }
         MetaOp::AddFile | MetaOp::AddString => {

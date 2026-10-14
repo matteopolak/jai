@@ -282,7 +282,7 @@ impl Compiler {
         self.check_declared_structs()?;
         self.check_declared_overloads()?;
         if lowered {
-            self.fill_runtime_info();
+            self.fill_runtime_info()?;
         }
         // Last: the runtime information above lists only what the program reaches.
         self.check_unreferenced()

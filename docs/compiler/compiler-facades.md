@@ -54,7 +54,9 @@ lexical scope. FILE messages select the original file scope (including private
 names); IMPORT messages select the module. Scoped text retains known lexical file
 provenance for relative loads. Compiler API guards report ordinary compile errors,
 and invalid workspace IDs are validated against the Rust registry instead of
-creating default records. Remaining runtime/data/diagnostic APIs and performance
+creating default records. [Compiler-managed global data](compiler-global-data.md)
+now supports copied registrations, validated segment handles, alignment, live
+compile-time snapshots and relocated target runtime records. Remaining diagnostic APIs and performance
 message ABI are pending. The [independent runtime Jai_Lexer](runtime-jai-lexer.md) is implemented
 and passes its token/EOF, edge and malformed-input fixtures in interpreter and
 native execution. `Code_Visit.visit_pre_and_postorder` is not exported yet:

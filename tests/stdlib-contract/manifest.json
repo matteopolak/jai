@@ -252,5 +252,30 @@
     "mode": "interp",
     "timeout_seconds": 30,
     "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-managed-global-data",
+    "source": "compiler-data/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-invalid-segment-handle",
+    "source": "compiler-invalid-segment/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "",
+    "exit_code": 1,
+    "error_contains": "invalid user segment handle"
+  },
+  {
+    "name": "compiler-invalid-segment-alignment",
+    "source": "compiler-invalid-segment-alignment/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "",
+    "exit_code": 1,
+    "error_contains": "alignment must be a positive power of two"
   }
 ]

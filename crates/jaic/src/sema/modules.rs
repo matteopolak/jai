@@ -481,7 +481,7 @@ impl Compiler {
     }
 
     fn load_file_inner(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
-        let file = self.read_source(&path, span)?;
+        let file = self.read_source(path, span)?;
         let text = self.sources.get(file).text.clone();
         let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
         let module_scope = self.modules[module.0 as usize].scope;

@@ -107,3 +107,30 @@ owns partial-edit resilience and keyword navigation. No other checkout is modifi
 See [implementation plan](compiler/cleanroom-implementation-plan.md) for remaining
 work and [distribution policy](tools/stdlib-integration-decisions.md) for private
 internal import requirements.
+
+Compiler-managed global data now retains storage and relocation identity across
+compile-time registration and target execution. See
+[data contracts and limits](compiler/compiler-global-data.md). The three focused
+data fixtures pass in interpreter and native modes. Invalid segment descriptors
+and alignments produce diagnostics. No arbitrary discrete backend section is
+claimed; the corresponding return boolean is false.
+
+## Formatting and lint status
+
+The source-built `target/debug/jailint -D warnings` passes the four public owned
+facades, all four private implementation directories, and the new data fixtures
+with `JAIC_STDLIB` set to the independent test overlay. No lint rule is disabled.
+Modified Rust files were formatted with scoped rustfmt.
+
+Building the repository formatter against that overlay currently fails:
+
+```sh
+JAIC_STDLIB="$PWD/target/cleanroom-test-stdlib" target/debug/jaic jaifmt/main.jai -O2 -exe "$PWD/target/cleanroom-jaifmt"
+```
+
+`Extensions/Args/generate.jai:775` calls `print(*out, ...)`, but the reviewed Basic
+API supplies builder formatting through `print_to_builder` rather than that print
+overload. Extensions must remain intact. No legacy compatibility overload was
+invented and no supplied formatter binary was executed. Jai format/check remains
+blocked pending an authorized tool/dependency integration solution; it is not
+claimed passing. Retry the source build after integration changes.
