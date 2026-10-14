@@ -18,6 +18,16 @@ main :: () {
 
     assert(resolved && absolute.count > root.count);
     free(absolute);
+
+    #if OS == .WINDOWS {
+        nested_absolute, nested_resolved := F.get_absolute_path("platform-io-雪-😀/absolute/sub");
+
+        assert(nested_resolved && F.make_directory_if_it_does_not_exist(nested_absolute, true));
+        free(nested_absolute);
+        assert(F.delete_directory("platform-io-雪-😀/absolute/sub"));
+        assert(F.delete_directory("platform-io-雪-😀/absolute"));
+    }
+
     assert(F.delete_directory("platform-io-雪-😀/nested/sub"));
     assert(F.delete_directory("platform-io-雪-😀/nested"));
     assert(F.write_entire_file(name, "a\0b\r\nc"));

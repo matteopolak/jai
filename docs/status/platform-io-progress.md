@@ -15,7 +15,8 @@ Evidence executed locally:
 - Host macOS interpreter and native O0/O2 each print `ok`.
 - Windows x64 O0 executable cross-links with the installed MinGW-w64 toolchain.
 - Source-built `target/platform-io-tests/jaifmt` formatted the six owned Jai paths;
-  source-built `target/debug/jailint -D warnings` passed on the same scope.
+  source-built `target/debug/jailint -D warnings` exited zero on the same scope.
+  The later verbose audit below supersedes any complete semantic-lint interpretation.
 
 Compiler/tool staging: copied permitted independent `../compiler/crates` plus
 Cargo manifests into `target/platform-io-toolchain`, then built with
@@ -57,10 +58,100 @@ Windows x64 File/System/Thread/runtime fixtures cross-link. PE imports confirm n
 runtime uses WriteFile/GetCommandLineW/CommandLineToArgvW instead of CRT `_write`.
 The runner now compares bytes, so CRLF translation cannot be hidden by Python decoding.
 
-Source-built jaifmt formatted the owned paths; jailint `-D warnings` passes after
-removing an unused test import. Full scoped format idempotence is rerun at handoff.
+Source-built jaifmt formatted the owned paths; jailint `-D warnings` exited zero after
+removing an unused test import. A later verbose audit found incomplete private-root
+and Windows semantic coverage; see the explicit tool blocker below. These lint exits
+must not be read as the complete required semantic gate.
 
 Next: prepare real private Windows Process mechanisms without inventing missing
 public Windows aggregate layouts; record remaining runtime/crash ABI questions.
 Native Windows execution, interpreter CRT suspension support and full public corpus
 remain coordinator/compiler work. No Windows runtime pass is claimed here.
+
+Committed System/Thread/runtime checkpoint: `339a16e`.
+
+## Private Windows Process engine checkpoint
+
+Implemented a separate real Win32 engine without guessing the absent public
+Windows Process/Pipe layouts. Uses CreateProcessW, CRT-compatible quoting from the
+existing independent argument helper, explicit inherited-handle lists, overlapped
+named pipes/events, simultaneous stdout/stderr reads, synchronous completion of
+input writes, bounded timeouts, cancellation/draining before caller buffers return,
+native exit status/termination, and kill-on-parent-exit job objects assigned before
+the suspended child is resumed. Cleanup handles all partial-launch states.
+
+The original private-engine fixture initially failed because its module was absent.
+Direct internal entry compilation is intentionally forbidden by the compiler's
+library privacy policy. The runner supplies and then removes an explicitly test-only
+staged module for white-box verification; this is NOT a public Process integration.
+Native fixtures cover Unicode/quote/backslash arguments, binary stdin, separate
+capture, large dual-stream output, read/wait timeouts, termination, parent-exit job
+cleanup and its explicit opt-out. Native Windows execution is still outstanding.
+
+Public SDK C layout probe compiled with
+`x86_64-w64-mingw32-gcc -std=c11 -Wall -Wextra -Werror -c
+tests/platform-io/windows-sdk-layout.c -o target/platform-io-tests/windows-sdk-layout.o`.
+This validates handle/GUID/file-position, OVERLAPPED, startup/process/security/job
+records and processor affinity offsets against installed public native headers.
+The same probe also compiled with Clang targeting aarch64-w64-windows-gnu against
+the installed public MinGW headers. Both target layouts pass the assertions;
+neither compilation establishes native runtime passes.
+
+## Windows native exception diagnostics and tool audit
+
+Added SDK-based private exception diagnostics for the core runtime's enabled
+backtrace startup path. This uses the actual SDK CONTEXT for each CPU and does not
+reuse the incomplete public x64-only crash record. The native DLL installs a real
+unhandled-exception filter, emits exception code/address and bounded native stack
+frames through WriteFile, resolves available symbols with DbgHelp and preserves
+OS termination. Initialization errors propagate; no fabricated backtrace frames.
+
+Executed `python3 tools/build_platform_io_runtime.py --stdlib
+target/platform-io-stdlib --cpu x64` with -Wall/-Wextra/-Werror. Clang also compiled
+runtime-windows.c to an arm64 Windows object against installed public SDK headers.
+`--windows-crash` runner source-checks enabled startup for both CPUs and cross-builds
+the original access-violation fixture through the existing independent Compiler
+workspace test. PE imports show platform_io_windows_crash.dll/init. Native execution
+is outstanding; the runner has a real Windows exception-code/stderr assertion.
+
+**Lint blocker discovered by verbose audit:** source-built jailint's quiet exit-zero
+results omit failed private module roots, and host selection does not cover Windows
+branches. All owned files are included, with no suppressions; full Windows/internal
+semantic lint is not satisfied. Exact evidence and required generic fixes are in
+[compiler/tool handoff](../platform-io-compiler-handoff.md), together with suspended
+CRT-thread and native event/OVERLAPPED interpreter interoperation requirements.
+
+Remaining integration gates: reviewed public Windows Process record shapes and
+public crash-handler ARM64 contract; generic compiler/interpreter/linter fixes;
+native Windows x64/arm64 execution; integrated corpus/normal native CI. No publication,
+push, tag, workflow dispatch, peer checkout edit or Extensions change was performed.
+
+## Final verification scope
+
+The single owned Jai path list is in `tools/format_platform_io.py`. Executed format
+and idempotence checks use `--jaifmt target/platform-io-tests/jaifmt` and `--check`.
+The strict `--jailint target/debug/jailint --stdlib target/platform-io-stdlib --lint`
+gate exits **1**, preserving the nine incomplete-root diagnostics in
+`target/platform-io-tests/strict-lint.log`; no complete semantic lint pass is claimed.
+
+Executed combined fixture command:
+
+```
+python3 tools/check_platform_io.py --jaic target/debug/jaic \
+  --stdlib target/platform-io-stdlib --cross-check --native \
+  --private-process --windows-build x64 --windows-crash
+```
+
+All supported host tests and target/cross-build checks pass. Real Windows execution
+is not performed on this host. Windows ABI sizes are asserted in Jai and cross-checked
+against public C SDK headers on x64 and arm64. Pipe EOF status is classified as EOF;
+overlapped transfer counts come from GetOverlappedResult even for immediate completion,
+and zero-byte native pipe writes are not mistaken for EOF. The native fixture retains
+a focused zero-byte-write-then-data case for Windows execution.
+
+Existing Unix preservation tests `file`, `filesystem`, `system`, `thread-condition`,
+`thread-lifetime`, `thread-groups`, `thread-shutdown`, `process` and `process-io` each
+passed host interpreter, native O0 and native O2 with exact expected output and no
+stderr. Source-built tools used permitted independent producer staging only; full
+corpus, Focus/window/font dependencies and integrated native CI remain coordinator
+verification. `git diff --check` passed and Extensions has no changes.

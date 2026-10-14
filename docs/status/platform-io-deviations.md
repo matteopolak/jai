@@ -32,7 +32,9 @@ private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
 5. **Remaining Windows Process/public crash ABI scope.** Public Process Windows
    aggregate shapes are absent from the reviewed spec. Windows crash CONTEXT is
    specified with x64 fields/size only; arm64 contract is missing. Public Windows
-   Process and ENABLE_BACKTRACE_ON_CRASH integration remain incomplete. Proper fix:
+   Process and the public crash-handler facade remain incomplete. Core runtime
+   ENABLE_BACKTRACE_ON_CRASH now selects a private SDK-based native backend, without
+   interpreting the incomplete public context layout. Proper fix for public APIs:
    reviewed shapes, then public adapters and native validation. Existing Unix-only
    implementations are not counted as Windows support.
 6. **Compiler interpreter suspended CRT-thread gap.** Windows Thread uses the
@@ -56,11 +58,71 @@ private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
    variable group-mask iteration. Risk: ABI mistakes cannot be ruled out without
    native tests; long-term fix is SDK C layout probes plus native CI, and reuse of
    reviewed bindings when they contain these declarations.
-9. **Runtime scope limits.** Core Windows entry/output/fatal Jai fault routines are
-   implemented, but optional native exception backtraces remain blocked by public
-   crash ABI review. Existing CRT abort on fatal bounds/cast/assertion failures is
+9. **Runtime scope limits.** Core Windows entry/output/fatal Jai fault routines and
+   optional native SEH exception diagnostics are implemented. The public crash-handler
+   facade remains blocked by public ABI review. Existing CRT abort on fatal bounds/cast/assertion failures is
    retained; no fault assertions were weakened. Unicode command-line conversion
    rejects malformed UTF-16 explicitly at startup rather than replacing characters.
+10. **Explicit private-process unit-test staging.** The compiler correctly rejects
+    running internal library sources as application entry points. To check the new
+    private Windows engine before public record review, `--private-process` creates
+    a test-only `Platform_IO_Process_Test` module in this checkout's target stdlib,
+    loads the library-owned test and removes the wrapper afterward. No production
+    facade imports the engine yet. Source-check/cross-link results are private-engine
+    evidence only, never public Process support or full integration. Risk: adapter
+    semantics remain untested and native engine behavior awaits Windows execution.
+    Proper fix: reviewed Windows public records, public adapters and unchanged public
+    behavior tests, then remove the temporary test-module wrapper.
+11. **Asynchronous pipe scheduling tradeoff.** Private engine `read_pair` starts
+    overlapped reads for both streams, waits for readiness/timeout, and cancels/drains
+    remaining operations before returning caller-owned buffers. This preserves buffer
+    lifetime but creates cancellation overhead for repeated idle reads. It uses real
+    kernel events and CancelIoEx, without polling or discarded outstanding work.
+    Proper optimization: persistent owned read buffers/operations once public pipe
+    ownership and layout are reviewed; measure before changing lifetime behavior.
+12. **Incomplete semantic lint despite exit zero.** All owned Jai paths were passed
+    to source-built jailint `-D warnings`, with no suppressions. A verbose audit
+    subsequently exposed private System/Process roots rejected as application
+    entries, and host-only target selection. Failed bodies were not linted. Thus
+    these results are partial syntax/host semantic lint evidence, NOT the requested
+    complete Windows/internal semantic gate. Location, exact command and general
+    tool fix are in docs/platform-io-compiler-handoff.md. Proper fix: authorized
+    library-module roots, target selection and a failure gate for incomplete requested
+    bodies, then rerun native Windows and integrated lint. No file is excluded to
+    turn this into a claimed pass.
+13. **Windows exception diagnostics production dependency and bounds.** The new
+    runtime-windows.c uses real SDK x64/arm64 CONTEXT/StackWalk64/DbgHelp APIs, caps
+    diagnostics at 64 frames and 1023 symbol bytes, and emits actual addresses when
+    symbols cannot be resolved. One fault reporter runs; concurrent/reentrant faults
+    proceed to OS handling. SymInitialize failure is explicit. Native DLL/import
+    libraries must be built by tools/build_platform_io_runtime.py and placed with
+    each program; a local x64 DLL and enabled-startup executable cross-link, while
+    arm64 C and SDK probes compile to objects. Native Windows runtime behavior is
+    unverified. Proper fix: integrate source builds into normal native CI/package
+    dependencies and run the fault fixture on each CPU. The public crash facade is
+    not silently replaced with a different layout.
+14. **Inherited Android asset gap, outside the Windows checkpoint.** The local
+    File Unix backend still does not implement the reviewed Android tagged
+    filesystem/packaged-asset record and asset-manager operations. No Android File
+    completion or target verification is claimed. Proper fix requires the reviewed
+    asset-manager acquisition/filename-selection contract and Android native binding
+    integration; this work preserves existing Unix behavior while completing Windows.
+15. **Temporary strict lint wrapper.** `tools/format_platform_io.py --lint` adds a
+    failing exit status when verbose jailint says a requested root did not compile.
+    All tool diagnostics are preserved and no rule is disabled. This parses existing
+    diagnostic text because the tool has no structured incomplete-coverage failure
+    option. Risk: wording changes require wrapper updates. Proper long-term fix is
+    the generic linter driver/root/target repair and structured failure gate described
+    in the compiler handoff. The current wrapper intentionally fails rather than
+    count partial results as production lint success.
+16. **Native OS version dependencies.** Windows Thread naming uses the documented
+    SetThreadDescription API (Windows 10 version 1607+); private Process pipes use
+    PIPE_REJECT_REMOTE_CLIENTS (Windows 8+). Modern Windows x64/arm64 is the current
+    target. Older x64 OS availability is not established by the reviewed spec or
+    native tests. Proper long-term fix: review the minimum supported Windows version
+    and, if older versions are required, resolve optional naming dynamically and
+    implement/test an appropriate named-pipe security/version policy. No fake
+    successful naming or disabled native synchronization is used.
 
 No lint suppression, disabled assertion, fake descriptor or module-name compiler
 special case was introduced in the reviewed File scope. Native OS operation
