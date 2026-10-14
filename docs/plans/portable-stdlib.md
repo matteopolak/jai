@@ -51,3 +51,10 @@ documented sysctl selectors; Linux initially falls back to online logical count
 where detailed topology/performance selection is unavailable. Withhold CPU
 counter and Windows APIs until their real backend is supplied. Tests exercise
 real OS results, lookup failure and the selected target declarations.
+
+Text_File_Handler increment: share a byte-line reader across memory/file handlers
+and list/table helpers. Keep source remainder separate from owned file bytes;
+restart releases only owned bytes and preserves the sticky failure flag. Parse
+decimal bracketed version lines when enabled, strip one-byte comments, and track
+physical lines. Return independently allocated helper strings so handler teardown
+cannot dangle them. Record unresolved ownership/version whitespace contracts.

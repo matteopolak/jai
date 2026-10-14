@@ -124,7 +124,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [subtitles](specs/stdlib/modules/subtitles.md) | Owned portable scope; not implemented |
 | [system](specs/stdlib/modules/system.md) | Partial Unix account/machine/executable/errno/processor APIs implemented and interpreter/native tested; Linux x64/arm64 checks pass. Linux topology falls back to online logical count; CPU counter, Windows and Android CLI validation incomplete |
 | [telemetry3](specs/stdlib/modules/telemetry3.md) | Reserved for bindings worker; not implemented or modified here |
-| [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Owned portable scope; not implemented |
+| [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Reviewed exports implemented for byte lines, file/borrowed-memory input, comments/version parsing, diagnostics and array/table helpers; interpreter/native tests pass. Helper ownership and version lexical edges require review |
 | [thread](specs/stdlib/modules/thread.md) | Partial POSIX release synchronization/lifecycle/work groups implemented and interpreter/native tested. Windows/iOS/console, DEBUG/race detector and automatic workspace metadata unfinished |
 | [treemap](specs/stdlib/modules/treemap.md) | Owned portable scope; not implemented |
 | [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |

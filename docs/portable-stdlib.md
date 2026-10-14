@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 49 cases in interpreter/native modes, plus bootstrap
+The current run passes 50 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -267,3 +267,16 @@ Socket regeneration followed by normalization is byte-idempotent. The full
 49-case interpreter/native regression and four parent-lifetime scenarios passed
 after formatting, with selected Linux/Windows target checks. Follow-up filesystem,
 socket and Reflection assertions pass interpreter/native after lint cleanup.
+
+Text_File_Handler implements byte-line reads, CR/LF/CRLF physical line tracking,
+comment/blank-line handling, version headers, sticky load/parse failure, owned
+file input and borrowed memory input. Restart/deinit free only the owned file
+bytes. Error/warning reports carry file/line and caller location through the
+active logger. Array/table helpers copy returned strings and deduplicate table
+keys; callers release strings/keys and container storage independently. Those
+lifetime choices and version lexical edges are recorded for compatibility review.
+Tests cover comments, line positions, borrowed/owned input, sticky failure,
+optional missing files, reports, untrimmed/blank list values and deduplicated keys.
+The expanded 50-case interpreter/native run and selected target checks pass;
+the repository formatter-engine check and jailint -D warnings now cover all
+140 owned Jai files.

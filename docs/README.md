@@ -96,7 +96,8 @@ The LLVM backend, C ABI and linking.
 
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
-- [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping and Unix System coverage
+- [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
+- [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and repository formatter engine
 - [WAV parser design and validation](portable-wav.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
