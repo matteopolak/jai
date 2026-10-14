@@ -1,5 +1,13 @@
 # Window/render worker handoff
 
+Latest checkpoint `b9e7115` implements production public fonts/text/GL rendering,
+native window targets and asynchronous readback. Expanded runner: 139 passes/four
+Windows File dependency failures. Format/check and warnings-denied lint passed on
+all owned Jai code/tests; generated declarations verified. Subsequent public AppKit
+swap and multiwindow/Keymap regressions are in progress. See current status and
+deviations for unresolved lifecycle/platform work; historical notes below are
+preserved evidence and superseded where the coverage ledger says so.
+
 Read [coverage](window-render-coverage.md), [implementation and commands](window-render.md),
 and [precise unresolved contracts](specs/stdlib/window-render-questions.md) together.
 The entire assigned API is **not complete**. This worker has kept native failures visible

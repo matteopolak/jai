@@ -4,8 +4,13 @@
 #import <AppKit/AppKit.h>
 #import <OpenGL/gl3.h>
 
+static _Thread_local int window_thread_marker;
+void window_gl_probe_set_thread_marker(int value) { window_thread_marker = value; }
+int window_gl_probe_get_thread_marker(void) { return window_thread_marker; }
+
 void *window_gl_probe_begin(void) {
     @autoreleasepool {
+        if (![NSThread isMainThread]) return NULL;
         if (!NSApplicationLoad()) return NULL;
         NSOpenGLPixelFormatAttribute attributes[] = {
             NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,

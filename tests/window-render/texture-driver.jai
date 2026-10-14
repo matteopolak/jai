@@ -1,6 +1,7 @@
 #import "Basic";
 S :: #import "Simp";
 GL :: #import "GL";
+W :: #import "Window_Creation";
 
 probe :: #library "window_gl_probe";
 begin_context :: () -> *void #foreign probe "window_gl_probe_begin";
@@ -21,6 +22,7 @@ verify_pixels :: (texture: *S.Texture, bitmap: *S.Bitmap) {
 }
 
 main :: () {
+    W.init_mac_app();
     native_context := begin_context();
 
     assert(native_context != null, "actual native OpenGL 4.1 context is required");
@@ -94,6 +96,17 @@ main :: () {
     GL.gl.glGetTexLevelParameteriv(GL.GL_TEXTURE_2D, 2, GL.GL_TEXTURE_WIDTH, *mip_width);
     assert(mip_width == 1 && GL.gl.glGetError() == GL.GL_NO_ERROR);
     original_name = texture.gl_handle;
+    for *byte: bitmap.data byte.* = 91;
+
+    S.backend_update_texture(*texture, *bitmap);
+    assert(texture.gl_handle == original_name && texture.mipmap_count == 3);
+    verify_pixels(*texture, *bitmap);
+    terminal: [4] u8;
+
+    GL.gl.glGetTexImage(GL.GL_TEXTURE_2D, 2, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, terminal.data);
+    for byte: terminal assert(byte == 91);
+
+    assert(GL.gl.glGetError() == GL.GL_NO_ERROR);
     S.texture_destroy(*texture);
     assert(texture.gl_handle == 0);
     assert(!GL.gl.glIsTexture(original_name));

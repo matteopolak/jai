@@ -1,5 +1,40 @@
 # Window/render progress
 
+Follow-up after `b9e7115`: public AppKit swap_view_buffers selects a real associated
+context. Native close notifications remove Window_Info/context and per-window GPU
+records; a detached root share context preserves live GPU resources across close/
+reopen. Multiwindow switching and retained-texture close/reopen pass interpreter/
+native O0/O2. Shared-context GPU fences now order commands across switches.
+Keymap has new real save/load, duplicate/N-policy/UTF-8/error-continuation coverage.
+Shader tests now check actual compile/link failures return0 with native diagnostics.
+
+Expanded issue #1 production-renderer injection checks expose missing canonical
+GL.wgl_create_context on x64/arm64. Latest full suite: 139 passes/six dependency
+failures (four File, two WGL). Original wheel-pump source checks still pass.
+Win32 class reuse across module parameters is implemented, with a new source-check
+regression; native Windows execution remains pending. Current coverage ledger and
+handoff now supersede historical absent-font/render/API entries.
+
+2026-10-14 current font/render batch (after `7fc1d6a`): real public Dynamic_Font
+loading, metrics, UTF-8 preparation, glyph quads, retained face caches, RGBA atlas
+uploads, immediate GL geometry/text, native window targets, texture framebuffers,
+and fenced PBO readback are implemented. Canonical numerics types are used.
+The expanded production-import runner recorded **139 passing invocations and four
+Windows File dependency failures**, including interpreter/native O0/O2 for real
+public window rendering, font layout, atlas text, GPU textures and pixel readback.
+This is scoped host evidence, not combined corpus/Focus or Windows runtime evidence.
+
+Follow-up changes add cached per-context VAO/VBOs, resize projection refresh,
+framebuffer deletion on texture replacement/destruction, source-channel bitmap
+decoding and RGB/RGBA-only encoding (JPEG quality 80). Final verification and
+scoped commit follow verification. Pixel read flip/resize and fence polling pass
+real-driver assertions. Full owned formatting check and warnings-denied lint pass.
+Mip-chain and compressed subimage updates now use actual per-level native calls;
+updated mip readback passes interpreter/native O0/O2. The full runner rerun retains
+139 passes/four File failures. Native thread-local affinity reproducer fails as
+documented, independently of the passing production GUI tests. No Extensions
+changes or publication actions.
+
 Synchronized-contract batch: public create_window uses the reviewed private
 [3]float default/MSAA4. macOS host creation passes. Windows native class/title/
 work-area/fullscreen and Linux GLX visual/MSAA/background/event-pump source passes

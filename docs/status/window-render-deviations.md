@@ -6,6 +6,89 @@ an incomplete implementation. Existing evidence remains in
 [handoff](../window-render-handoff.md) and [questions](../specs/stdlib/window-render-questions.md).
 No blanket diagnostic/check suppression or Extensions modification is intended.
 
+Current font/render review supersedes the historical absent-public-font and R8
+atlas rows below. Public fonts now use native FreeType metrics/coverage, retained
+borrowed-memory faces and reviewed process-lifetime registries. Real GL atlas text
+and PBO readback pass host interpreter/native O0/O2, alongside production public
+window rendering. Reviewed release_font is intentionally non-destructive;
+destroy_loaded_font frees the copied display name only. These are contract
+semantics, not resource-release substitutes.
+
+Current remaining gaps and risks:
+
+Current lifecycle follow-up: AppKit window-close notifications now release each
+window's VAO/VBO/framebuffer records and remove Window_Info/context entries. One
+detached root share context is deliberately retained to preserve live public GPU
+textures/programs across window close/reopen; there is no reviewed global renderer
+shutdown API. This replaces retaining every closed window context. Actual native
+window association uses Objective-C retained associations with a stable private
+key address, not fabricated object storage. Other target cleanup is still pending.
+
+During close/reopen testing, removing an array element before the final use of its
+foreach binding produced an objc_msgSend access violation. The own compiler's
+documented iteration binding aliases the array element; a minimal experiment
+confirmed aliasing in interpreter/native O0. Cleanup now finishes native uses
+before removing the record. This is an implementation lifetime fix, not a compiler
+snapshot workaround. Earlier retained-texture readback also exposed missing native
+command submission when switching contexts; make_current now flushes the previous
+  context on an actual context change. Shared production contexts now use a native
+  fence/server wait across switches so texture/program visibility does not depend
+  on driver-specific implicit completion. The close/reopen GPU assertion remains active.
+
+* `window-contexts.jai`, `gl-renderer.jai`: Windows/Linux window-close cleanup is
+  still pending. AppKit cleanup and multiwindow close/reopen now have actual host
+  regressions. One detached root share context deliberately owns the share group
+  for live public GPU resources; fonts/programs/textures must outlive windows.
+  Texture-associated FBOs are deleted in their creating contexts on replacement.
+  GPU fences avoid CPU-wide completion waits at context switches. Future global
+  renderer shutdown needs a reviewed API/lifetime contract.
+* `font-features.jai`: actual SFNT GSUB single/alternate/extension substitutions
+  are implemented; unsupported requested substitution kinds assert explicitly.
+  No fabricated feature coverage. Add native-font cases for other reviewed effects
+  when supplied assets exercise them. Native format sources are Microsoft OpenType
+  GSUB and common table documentation; no Jai implementation source was used.
+* `dynamic-fonts.jai`: Latin routing/offset and reversed layout fields need final
+  behavioral review/tests; the overly broad always-route condition was corrected
+  to restrict secondary-font selection to Latin characters. No current
+  claim of all layout-field behavior. Native kerning and general ligatures are
+  intentionally absent per reviewed current behavior; NO_KERNING/LEFT_JUSTIFIED
+  are declared but unapplied per that same contract.
+* `gl-textures.jai`, `gl-pixel-read.jai`: color 2D targets are verified; depth,
+  cube/array/volume/multisample paths remain incomplete. Per-level mip and compressed
+  subimage native calls are now implemented; mip readback passes all three host
+  modes, compressed updates still need native compressed-format driver coverage.
+  Pixel readers require their creating context for polling/consumption and retain
+  the actual native fence until consumed. Native GLsync is canonical u64; native
+  x64/arm64 ABI verification beyond the host remains coordinator work.
+* `tests/window-render/gl-context.m`: main-thread assertion now enforces AppKit's
+  real precondition. Driver tests call public init_mac_app before native fixture
+  creation. Production public-window rendering also passes without that fixture.
+  Interpreter lazily moves foreign calls to main thread after Objective-C symbols;
+  a new original thread-local marker reproducer records the general affinity
+  problem. Native C fixture uses the official GL_SILENCE_DEPRECATION opt-in only;
+  its other compiler warnings are denied. No driver results are fabricated.
+* Windows native renderer depends on the bindings producer's WGL context wrapper;
+  Windows File remains blocked at its unconditional OS_IS_UNIX assertion. Do not
+  replace canonical imports or signatures. Windows injected wheel execution,
+  Linux GUI runtime and Android native app integration remain unverified.
+
+`windows-render-events.jai` now exercises public create_window/set_render_target
+before injecting vertical/horizontal wheel signed extrema, zero, positive/negative
+deltas and modifiers/upper64 bits. It fails source checks on both Windows CPUs at
+missing GL.wgl_create_context, preserving the full-production dependency rather
+than substituting a context. The original event-only injected test continues to
+source-check independently. Current full suite records 139 passes/six failures
+(four File, two WGL); the newer class-specialization regression has scoped x64
+source evidence, with native Windows pending. Shared Win32 class registration now
+validates/reuses an existing compatible native class across module parameters;
+GetClassInfoExW is a private SDK ABI declaration and error1410 is the documented
+ERROR_CLASS_ALREADY_EXISTS value. AppKit retained association policy1 is verified
+from the installed public objc/runtime.h SDK header.
+
+Bitmap codec follow-up removes the earlier forced-RGBA decoding, extra save
+formats and JPEG quality 90. New source-channel and save-alpha regressions enforce
+the reviewed behavior; prior legacy conveniences are not compatibility evidence.
+
 Synchronized-contract update supersedes historical unresolved-default/grammar/
 shader/font/mip entries below: public native window creation and complete Keymap
 operations are now implemented. General compiler reflection is fixed only in local
