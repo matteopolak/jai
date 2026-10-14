@@ -17,7 +17,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Not implemented in this checkout; see ownership exclusions |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
-| [bucket-array](specs/stdlib/modules/bucket-array.md) | Not implemented in this checkout; see ownership exclusions |
+| [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
 | [buildcpp](specs/stdlib/modules/buildcpp.md) | Not implemented in this checkout; see ownership exclusions |
 | [check](specs/stdlib/modules/check.md) | Not implemented in this checkout; see ownership exclusions |
 | [clipboard](specs/stdlib/modules/clipboard.md) | Not implemented in this checkout; see ownership exclusions |
@@ -104,7 +104,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [rewrite](specs/stdlib/modules/rewrite.md) | Not implemented in this checkout; see ownership exclusions |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Not implemented in this checkout; see ownership exclusions |
 | [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | Not implemented in this checkout; see ownership exclusions |
-| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Missing initialization embedding, synchronized output, one-time initialization and fault hooks |
+| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Missing initialization embedding and platform crash-backtrace integration; synchronized output, explicit-Code once and fault hooks now implemented |
 | [sdl](specs/stdlib/modules/sdl.md) | Not implemented in this checkout; see ownership exclusions |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Not implemented in this checkout; see ownership exclusions |
 | [simd](specs/stdlib/modules/simd.md) | Not implemented in this checkout; see ownership exclusions |

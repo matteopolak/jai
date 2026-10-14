@@ -52,6 +52,14 @@ unfinished. File_Utilities currently provides component/path manipulation only.
 Basic Apollo duration conversion handles signed 64-bit extrema using two-limb
 arithmetic. Calendar/clock and floating-to-Apollo APIs remain unfinished.
 
+Bucket_Array maintains stable bucket storage, physical locators, free-slot reuse,
+and forward/reverse value/pointer iteration. Runtime output now serializes
+native writes with atomic compare/exchange. Runtime algorithms live under
+`internal/runtime`; the facade keeps canonical bootstrap records and mutable
+synchronization storage. Fault hooks report failures and abort rather than
+returning fabricated success. The one-time initializer passes an explicit-Code
+test; implicit block conversion through its alias is a recorded compiler gap.
+
 PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
 overloads. Crc implements the non-reflected CRC-64/WE recurrence. Base64 exports
 immutable decoder tables and both standard and URL codecs; permissive tails,
