@@ -16,6 +16,13 @@ Add behavior cases under `tests/platform-io` and keep the native runner step in 
 
 `tools/check_platform_io.py --jaic <compiler> --stdlib stdlib --native` runs against production sources. The CI branch selector is separate from release tags and workflow dispatch.
 
+The normal WebAssembly target job also runs the unchanged File contract with
+`--wasm`, exercising the sandbox and actual WASI O0/O2. It does not use missing
+import traps or mutate Extensions. Coordinator-filtered candidate 159ca65 results
+confirm real Windows x64/arm64 File and signed-wheel checks; the overall workflow
+failed on other runtime/platform/module gaps. The newer WASI fix still needs the
+next coordinator-reviewed CI run. Release builds/publication remain held.
+
 ## Dependencies
 
 The integrated compiler and stdlib, pinned Rust/LLVM toolchain, Visual Studio SDK, and GitHub native runners.

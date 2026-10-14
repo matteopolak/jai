@@ -11,6 +11,11 @@ inventory remains unchanged and failing rather than being expanded to bless
 real failures. Only the canonical private implementation root is excluded from
 application imports; its code remains checked through importing facades. This
 is stronger coverage, not a production pass from the synthetic directory test.
+The first standalone matrix overlapped a workspace invocation using the inherited
+fixed scratch directory. No target source-read failure was observed, but those
+matrix outputs are superseded by an isolated rerun. Scratch directories now
+include the invoking process ID, preventing concurrent verification from deleting
+another run's generated entries; assertions/expectations and coverage are intact.
 
 The whole-tree lint finding in `internal/net/socket.jai:check_fd_set` exposed an
 unused destination pointer and acceptance of null sets. A new original fixture
