@@ -43,3 +43,11 @@ requires caller-scope push_context,defer_pop, currently blocked by the compiler
 reproducer pending/macro-push-context.jai and withheld. Cache storage uses the default own
 allocator, so foreign allocator fields cannot interfere with building a plan.
 Verify default preservation, shallow pointers, reused plans and lexical restore.
+
+System increment: implement Unix account lookup through reentrant POSIX calls,
+copy exposed text into temporary storage, preserve errno's actual entity alias,
+and read machine/executable paths through native APIs. Mac processor queries use
+documented sysctl selectors; Linux initially falls back to online logical count
+where detailed topology/performance selection is unavailable. Withhold CPU
+counter and Windows APIs until their real backend is supplied. Tests exercise
+real OS results, lookup failure and the selected target declarations.

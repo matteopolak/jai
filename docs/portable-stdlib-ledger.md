@@ -122,7 +122,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [stb-vorbis](specs/stdlib/modules/stb-vorbis.md) | Reserved for bindings worker; not implemented or modified here |
 | [string](specs/stdlib/modules/string.md) | Partial: bytes, paths, split/join/replace, boolean/enum/token parsing; scan, wildcard and numeric parsing not implemented |
 | [subtitles](specs/stdlib/modules/subtitles.md) | Owned portable scope; not implemented |
-| [system](specs/stdlib/modules/system.md) | Owned portable scope; not implemented |
+| [system](specs/stdlib/modules/system.md) | Partial Unix account/machine/executable/errno/processor APIs implemented and interpreter/native tested; Linux x64/arm64 checks pass. Linux topology falls back to online logical count; CPU counter, Windows and Android CLI validation incomplete |
 | [telemetry3](specs/stdlib/modules/telemetry3.md) | Reserved for bindings worker; not implemented or modified here |
 | [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Owned portable scope; not implemented |
 | [thread](specs/stdlib/modules/thread.md) | Partial POSIX release synchronization/lifecycle/work groups implemented and interpreter/native tested. Windows/iOS/console, DEBUG/race detector and automatic workspace metadata unfinished |

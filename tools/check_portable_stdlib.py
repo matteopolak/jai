@@ -91,7 +91,7 @@ def main():
             finally:
                 marker.unlink(missing_ok=True)
     print("passed parent-exit cancellation and opt-out", flush=True)
-    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io"}
+    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)

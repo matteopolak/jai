@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 47 cases in interpreter/native modes, plus bootstrap
+The current run passes 49 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -229,3 +229,15 @@ Cache metadata persists for the module lifetime, matching the metadata-lifetime
 requirement. Tests cover defaults, pointers and values changing under a reused
 plan. The Remap_Context expansion is withheld pending its documented compiler
 scope failure; the failed assertions remain in the pending reproducer.
+
+System implements Unix reentrant account lookup (no password field is inspected),
+machine name, executable path, errno aliases/descriptions and processor queries.
+Returned strings and account text are temporary-storage views. macOS processor
+selectors and the dyld executable-path API were checked against Apple's public
+SDK sys/sysctl.h and mach-o/dyld.h; performance selectors query perflevel0 and
+fall back to whole-machine physical/logical counts on older/homogeneous systems.
+Linux processor queries currently fall back to the online logical count for all
+query variants; physical topology/performance differentiation is not claimed.
+CPU counters and Windows APIs are withheld. Host interpreter/native tests and
+Linux x64/arm64 checks pass, as does source-built lint. Android's declarations
+remain unvalidated because the current CLI rejects `-os android`.
