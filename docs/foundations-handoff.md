@@ -19,11 +19,17 @@ Implemented progress:
   byte sets/ranges, scan/scan2 with actual parsing and pointer writes. Scan
   values occupy temporary storage; earlier results/writes survive later
   failures as required. Unsupported/null destinations return false.
+  Scan2 parses float64 destinations directly at full precision and checks
+  integer destination range before writing. The reviewed string_tests export
+  now runs real assertions over comparison/search/split/path/token operations.
 - Added scalar float get_hash through the reviewed generic signature, retaining
   raw signed-zero representations. Other scalar kinds fail specialization
   explicitly pending the exact seed formula; no substitute hash is fabricated.
 - Added Unix Basic working-directory get/set and exit. getcwd grows its buffer
   on ERANGE and asserts other failures rather than fabricating a directory.
+- File_Visit_Info is now declared once in a portable private module and exported
+  on all targets. The Unix filesystem code aliases that same declaration.
+  Its former Unix-only facade visibility was a reviewed shape omission.
 
 Verification uses source-built compiler/jailint from the compiler worker's NEW
 independent Rust sources copied into target/foundation-integration, plus NEW
@@ -38,10 +44,14 @@ JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug
 JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug/jaic -check jaifmt/main.jai
 ```
 
-The focused runner checks five real cases in interpreter/native O0/O2 and
+The focused runner checks seven real cases in interpreter/native O0/O2 and
 type-checks unused code on Linux x64/arm64, macOS arm64, Windows x64, and wasm64.
-Working-directory APIs are Unix-only and that case is not requested on
-Windows/wasm. Other cases run unchanged across those checks.
+Working-directory and native filesystem APIs are Unix-only and those cases are
+not requested on Windows/wasm. Other cases run unchanged across those checks.
+Filesystem coverage uses real files/directories and tests binary content,
+hard-link self-copy protection, truncation, empty-directory preservation,
+destination-inside-source rejection and rename. Builder checks also pass with
+`-add 'ENABLE_ASSERT :: true;'` in the interpreter.
 
 Unchanged real jaifmt currently fails at `is_directory` because the Unix alias
 target's callable signature is absent from the reviewed spec. Its first

@@ -1,6 +1,7 @@
 #import "Basic";
 #import "String";
 main :: () {
+    string_tests();
     assert(wildcard_match("abcdef", "a*[c-e]?f"));
     assert(wildcard_match("", "***"));
     assert(wildcard_match("a*b", "a[*]b"));
@@ -15,6 +16,14 @@ main :: () {
     assert(number == 42 && flag && text == "words here" && real == 1.25);
     assert(!scan2("7 no", "%i %b", *number, *flag));
     assert(number == 7);
+    precise: float64;
+    assert(scan2("1.23456789012345", "%f", *precise));
+    assert(precise == 1.23456789012345);
+    small: u8 = 11;
+    assert(!scan2("256", "%d", *small) && small == 11);
+    assert(scan2("17", "%i", *small) && small == 17);
+    null_integer: *s64;
+    assert(!scan2("1", "%d", null_integer));
     ok, values := scan("%d %s", "-8 \"yes\"");
     assert(ok && values.count == 2);
     assert((cast(*s64)values[0].value_pointer).* == -8);

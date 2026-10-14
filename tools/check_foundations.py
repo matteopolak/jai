@@ -6,7 +6,8 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "basic-filesystem")
+CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "basic-filesystem",
+         "file-utilities-shape", "foundation-filesystem")
 
 
 def main():
@@ -39,7 +40,7 @@ def main():
     if args.cross:
         for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("windows", "x64"), ("wasm", "wasm64")):
             for name in CASES:
-                if name == "basic-filesystem" and os_name in ("windows", "wasm"):
+                if name in ("basic-filesystem", "foundation-filesystem") and os_name in ("windows", "wasm"):
                     continue
                 target = ["-target", "wasm64-unknown-wasi"] if os_name == "wasm" else ["-os", os_name, "-cpu", cpu]
                 run([compiler, "-check", "-no_dce", *target,
