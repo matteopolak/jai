@@ -94,48 +94,12 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
-The clean-room `stdlib/`. Contributors must not read the source of an official Jai distribution at all.
+- [jaic Extensions](extensions/README.md)
 
-- [Standard library layout](specs/stdlib/README.md)
-- [Basic and collection modules](specs/stdlib/README.md)
-- [Basic calendar time, working directory and platform exports](specs/stdlib/README.md)
-- [Binary formats and checksums](specs/stdlib/README.md)
-- [Bindings_Generator](specs/stdlib/README.md)
-- [Stdlib extensions: jaic-only modules in `stdlib/Extensions/`](specs/stdlib/README.md)
-- [Io: fibers, scheduler, channels (jaic extension)](specs/stdlib/README.md)
-- [Io engine: TCP, files, deadlines, io_uring/epoll/kqueue backends (jaic extension)](specs/stdlib/README.md)
-- [Io readers and writers: one set of operations over files, TCP and pipes, one deadline primitive, JSON from a reader (jaic extension)](specs/stdlib/README.md)
-- [Io_Uring: raw io_uring bindings generated from the kernel header, and ring helpers (jaic extension, Linux)](specs/stdlib/README.md)
-- [Command_Line](specs/stdlib/README.md)
-- [Args: a compile-time-generated command-line parser (jaic extension)](specs/stdlib/README.md)
-- [Regex: regular expressions with compile-time typed patterns (jaic extension)](specs/stdlib/README.md)
-- [Json: typed JSON generated at compile time (jaic extension)](specs/stdlib/README.md)
-- [Http: the HTTP/1 codec, strict and sans-IO (jaic extension)](specs/stdlib/README.md)
-- [Tls: TLS 1.2 and 1.3 over Io readers and writers on mbedTLS, system trust per OS (jaic extension)](specs/stdlib/README.md)
-- [Http server: routes, extractors checked at compile time, middleware, graceful shutdown (jaic extension)](specs/stdlib/README.md)
-- [Http client: requests that return a response, body readers, a connection pool, redirects and timeouts (jaic extension)](specs/stdlib/README.md)
-- [Http testing: a client wired to an App in memory, expectations with readable failures, a small test runner (jaic extension)](specs/stdlib/README.md)
-- [Conventions of Io, Tls, Http and Json: values and pointers, close, errors, who frees, milliseconds](specs/stdlib/README.md)
-- [SIMD: portable fixed-width vectors (jaic extension)](specs/stdlib/README.md)
-- [Byte_Search: vectorized byte and substring search (jaic extension)](specs/stdlib/README.md)
-- [Compiler API, reflection and metaprogram support](specs/stdlib/README.md)
-- [Files, processes and OS services](specs/stdlib/README.md)
-- [GetRect](specs/stdlib/README.md)
-- [Iprof profiler module](specs/stdlib/README.md)
-- [Math, random numbers and color/float helpers](specs/stdlib/README.md)
-- [Memory, allocators and hashing](specs/stdlib/README.md)
-- [meow_hash: AES-based 128-bit hash for x64](specs/stdlib/README.md)
-- [Native and platform bindings](specs/stdlib/README.md)
-- [Program_Print](specs/stdlib/README.md)
-- [Strings, Unicode and text files](specs/stdlib/README.md)
-- [Atomics: ordered loads, stores, exchanges and fetch operations](specs/stdlib/README.md)
-- [Threads, atomics, sockets and input](specs/stdlib/README.md)
-- [Toolchains: macOS SDK and Android NDK helpers](specs/stdlib/README.md)
-- [Tooling modules: Debug, MacOS_Bundler, BuildCpp, Autorun, Performance_Report](specs/stdlib/README.md)
-- [Drawing, windows and audio](specs/stdlib/README.md)
-- [Simp (2D renderer)](specs/stdlib/README.md)
-- [Sound_Player (audio mixing and output)](specs/stdlib/README.md)
-- [WebGPU (generated bindings, native and in the playground; support matrix, callback modes, tests)](specs/stdlib/README.md)
+Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
+
+- [Standard-library public-contract fixtures](../tests/stdlib-contract/README.md)
+- [Jai language guide](specs/jai/README.md)
 
 ## Browser
 
@@ -168,6 +132,10 @@ Scripts, CI and project policies.
 - [Fuzzing](tools/fuzzing.md)
 - [jaic regression sweep](tools/jaic-sweep.md)
 - [Stdlib target check](tools/stdlib-target-check.md): every stdlib module type-checked for every target, unreferenced code included
+- [Standard library API auditor](tools/stdlib-api-audit.md): compare documented public module names with importer-visible source declarations
+- [Public-language contract fixtures](../tests/cleanroom-language/README.md): original self-checking cases from the language guide, run against an explicit local source build
+- [Clean-room implementation workspaces](tools/cleanroom-workspaces.md): prepare independent source snapshots and enforce implementer filesystem isolation
+- [Standard library integration decisions](tools/stdlib-integration-decisions.md): bootstrap layout, internal imports, public facade identity, and compatibility test corrections
 - [Stdlib runtime tests](tools/stdlib-runtime-tests.md): every stdlib test run in the interpreter, natively and on wasm on every platform; skip list; per-module coverage ratchet
 - [Objective-C selector check](tools/objc-selector-check.md): every selector the stdlib sends matches its arguments and exists in the runtime
 - [jaifmt (Jai formatter)](tools/jaifmt.md) (front page: [jaifmt README](../jaifmt/README.md)): the `jaifmt/` program, its `build.jai` metaprogram and `jaifmt.wasm`
@@ -192,8 +160,3 @@ Scripts, CI and project policies.
 Agreed designs that are not built yet.
 
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
-
-## Language and library specifications
-
-- [Jai language guide](specs/jai/README.md)
-- [Standard library API specification](specs/stdlib/README.md)
