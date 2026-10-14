@@ -60,6 +60,15 @@ synchronization storage. Fault hooks report failures and abort rather than
 returning fabricated success. The one-time initializer passes an explicit-Code
 test; implicit block conversion through its alias is a recorded compiler gap.
 
+Hash implements the specified byte/string/array sdbm, djb2, FNV-1a and Knuth
+operations. Scalar seed mixing and the scalar FNV overload remain unresolved.
+Hash_Table implements open addressing, custom callbacks, string keys, tombstones,
+duplicates, growth, removal and reset. Default scalar keys fail specialization
+until the missing hash formula is reviewed; the original scalar-key acceptance
+fixture is retained unchanged and currently fails for that documented reason.
+Temporary multiple lookup and Walk_Table are also unfinished. md5 returns the
+32-character digest and passes three standard digest vectors in both modes.
+
 PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
 overloads. Crc implements the non-reflected CRC-64/WE recurrence. Base64 exports
 immutable decoder tables and both standard and URL codecs; permissive tails,

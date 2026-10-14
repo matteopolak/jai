@@ -52,8 +52,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Not implemented in this checkout; see ownership exclusions |
 | [getrect](specs/stdlib/modules/getrect.md) | Not implemented in this checkout; see ownership exclusions |
 | [gl](specs/stdlib/modules/gl.md) | Not implemented in this checkout; see ownership exclusions |
-| [hash-table](specs/stdlib/modules/hash-table.md) | Not implemented in this checkout; see ownership exclusions |
-| [hash](specs/stdlib/modules/hash.md) | Not implemented in this checkout; see ownership exclusions |
+| [hash-table](specs/stdlib/modules/hash-table.md) | Partial: custom-hash and string-key operations pass interpreter/native collision/growth/tombstone tests. Default scalar fixture fails missing reviewed hash formula; temporary multiple lookup and Walk_Table unfinished |
+| [hash](specs/stdlib/modules/hash.md) | Partial: specified byte/string/array hashes and Knuth implemented. Scalar seed mix and scalar FNV formula unresolved; digest vectors pass interpreter/native |
 | [ico-file](specs/stdlib/modules/ico-file.md) | Not implemented in this checkout; see ownership exclusions |
 | [icon](specs/stdlib/modules/icon.md) | Not implemented in this checkout; see ownership exclusions |
 | [imgui](specs/stdlib/modules/imgui.md) | Not implemented in this checkout; see ownership exclusions |
@@ -71,7 +71,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [macos](specs/stdlib/modules/macos.md) | Not implemented in this checkout; see ownership exclusions |
 | [mail](specs/stdlib/modules/mail.md) | Not implemented in this checkout; see ownership exclusions |
 | [math](specs/stdlib/modules/math.md) | Not implemented in this checkout; see ownership exclusions |
-| [md5](specs/stdlib/modules/md5.md) | Not implemented in this checkout; see ownership exclusions |
+| [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
 | [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented in this checkout; see ownership exclusions |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Not implemented in this checkout; see ownership exclusions |
