@@ -86,6 +86,22 @@ Record :: struct { value: s32; }
 ''')
         self.assertEqual(spec.parameter_blocks, ["#module_parameters (ENABLED := false)();"])
 
+    def test_multiple_types_in_one_fence(self):
+        spec = parse_spec('''# Example
+## Public type members
+#### Flag types
+```jai
+using Tag :: enum u32 { A; B; }
+Record :: struct {
+    nested :: enum { X; Y; }
+    value: Tag;
+}
+using Bits :: enum_flags u8 { C :: 1; }
+```
+''')
+        self.assertEqual([s.name for s in spec.shapes], ['Tag', 'Record', 'Bits'])
+        self.assertIn('nested :: enum', spec.shapes[1].code)
+
     def test_variant_conditions_and_overloads(self):
         page = '''# Example
 ## Public declaration inventory

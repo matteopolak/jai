@@ -1,0 +1,66 @@
+{
+  "lz4": {
+    "repository": "lz4/lz4",
+    "revision": "v1.9.4",
+    "files": {
+      "lib/lz4.c": "b6a85fd8f9be0fedb568abd1338719b23b999583ccda6f3404d5ae11e4ce7b8e",
+      "lib/lz4.h": "c1614ecf7ada7b0be1acb560d4239595f96fbb7aa6a79a7c40cb358753830be6",
+      "lib/lz4hc.c": "bca2cf3a014b21919da4fa92db5adbfbfc9aee2f0938107885a3a8f49a750aa8",
+      "lib/lz4hc.h": "6bc1efeb79571807da2ca084809de1760e0cd87064e40eccf9624d95088dce7d",
+      "lib/LICENSE": "8b58c446121a109ccf32edc094bba3010a3d85e4ee3702950db55e4d3e87736c"
+    }
+  },
+  "xxhash": {
+    "repository": "Cyan4973/xxHash",
+    "revision": "v0.7.0",
+    "files": {
+      "xxhash.c": "276a80f25635bac48bc84826afd0f76af14ed910b89b55396c78fb0fbb2b64f5",
+      "xxhash.h": "b053e67b672e8e66e3d51be6fb7b9c0c71d350220ca0a3dc8df0a59acf008a41",
+      "LICENSE": "86ec6953794503942b70fcd4f35b565d44f63f703b7037ce44dad965c4aaae91",
+      "xxh3.h": "519171910e5842acf0bdc3b561be23233b6b8ef11f1c4a6a8356b3d98374d62a"
+    }
+  },
+  "stb": {
+    "repository": "nothings/stb",
+    "revision": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
+    "files": {
+      "stb_image.h": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3",
+      "stb_image_write.h": "cbd5f0ad7a9cf4468affb36354a1d2338034f2c12473cf1a8e32053cb6914a05",
+      "deprecated/stb_image_resize.h": "6a0e75adbabb48df9031c2e39ccd97437bb226fe31e7d4a01c7bf70a18d32ec6",
+      "stb_vorbis.c": "4c7cb2ff1f7011e9d67950446b7eb9ca044f2e464d76bfbb0b84dd2e23e65636",
+      "LICENSE": "bebfe904b14301657e4e5d655c811d51fd31b97c455b9cc2d8600d6bac6cff63"
+    },
+    "license": [
+      "LICENSE"
+    ]
+  },
+  "meshoptimizer": {
+    "repository": "zeux/meshoptimizer",
+    "revision": "v0.11",
+    "files": {
+      "src/meshoptimizer.h": "ca3d9f29fdc23ae2ea9d233d4847132512216fa61a3ecf25513595f275648526",
+      "src/allocator.cpp": "dbe1febe4965d4d81e59131dfd13d2f01771dfa99a912853257459fa22fc2dff",
+      "src/indexgenerator.cpp": "8867aff7855de1770364c709bd0299a33ece69581b53f045dfd62c44c85377dc",
+      "src/indexcodec.cpp": "75e9162aacb194ac753b11cc2cf5752ea2a308d99734ee21b02adbdd22ec885e",
+      "src/vertexcodec.cpp": "2d2b70696ddcc6897c38ec4da14b3d66c31a0aa5782c94433ce48c1438c0e268",
+      "src/vcacheoptimizer.cpp": "1dff27378530d1c54d11991f20aa6aae5e2d9ded9b384c0cbd94725ecd19691a",
+      "src/vfetchoptimizer.cpp": "bf0c01c1d8e9bc474fda3882c630b440553e9fd221c96d785ba08e7c0f0221ff",
+      "src/overdrawoptimizer.cpp": "07958e87c3e4d00e1e40fe59834e0d0df89e0326ef5c4db177b67c5380a85d0d",
+      "src/simplifier.cpp": "9776226047e21c0c5b3d4ac9f8d2326ed518bb807ba9c6a41b212f50f448c0a6",
+      "src/stripifier.cpp": "1d42ec7d1ef5d15d58f4cf20b0ff95c32f698c3ced7078ba0a67b7210245edf9",
+      "src/clusterizer.cpp": "79c97d166c86a338d92230bb557e20d941d5a4fbb7df5dc0541d051bbd0f9c6e",
+      "src/vcacheanalyzer.cpp": "f4e5cbb759f8b02505d9017302eef41da6ce365ddcab39435e6a8212b3659bc9",
+      "src/vfetchanalyzer.cpp": "d293e0c6e41df55e3e7259eaefd4453398a53066d4e8e43cea8e7715f36633e2",
+      "src/overdrawanalyzer.cpp": "d0fcf73a49cc88edcc940dbe07f2c486a5a654642ff200a289877d2ea0af633c",
+      "LICENSE.md": "edbe0afc70ea26a220ef88e9612d9ab88807b771b3a6bdc345bbbe266c61499c"
+    }
+  },
+  "mojoshader": {
+    "repository": "icculus/mojoshader",
+    "revision": "cf2661bcb55d9a8732e86f79922592d7efdf5383",
+    "files": {
+      "mojoshader.h": "f4f658f0aa37c9ffebf777952d4b17a47da56a91eb00d228deb568e6835dd253",
+      "LICENSE.txt": "5ed333fa2c0bcfa3e593b69545998426cdf5ba3d100892b1387206e0565dae27"
+    }
+  }
+}

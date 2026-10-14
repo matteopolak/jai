@@ -8,6 +8,8 @@ from pathlib import Path
 import re
 
 from spec import parse_spec
+from config import IMPORTS, LIBRARIES, PARAMETERS, PRIVATE, TARGETS
+from wrappers import simple_body, forwarding_body
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULES = {
@@ -117,7 +119,13 @@ def generate_facade(module, spec):
             continue
         emitted.add(key)
         code = d.code.rstrip(';')
-        aggregate = re.search(r'::\s*(?:struct|union|enum(?:_flags)?)(?:\s|$)', code)
+        if re.search(r'\*struct$', code):
+            code += ' {}'
+        if re.search(r'\w+\.$', code):
+            record.update(status='unresolved', reason='Reviewed inventory omits aggregate initializer contents')
+            ledger.append(record)
+            continue
+        aggregate = re.search(r':(?::)?\s*(?:struct|union|enum(?:_flags)?)(?:\s|$)', code)
         if aggregate:
             candidates = shapes[d.name]
             exact = [s for s in candidates if s.condition == condition]
@@ -131,6 +139,15 @@ def generate_facade(module, spec):
             blocks = []
             for s in selected:
                 body = s.code
+                if s.member_list:
+                    # The prose renderer omits the terminal semicolon of an
+                    # inline anonymous member and uses postfix overlay notation.
+                    body = re.sub(r'(\w+):\s*([^;{}]+?)\s+#overlay\s+(\w+);',
+                                  r'#overlay (\3) \1: \2;', body)
+                    body = re.sub(r'([^;{}\s])\s+}', r'\1; }', body)
+                if module == 'SDL' and d.name == 'Hack':
+                    body = body.replace('K :: inline (scancode: SDL_Scancode) -> s32',
+                                        'K :: inline (scancode: SDL_Scancode) -> s32 { return cast(s32) scancode | (1 << 30); }')
                 # Member-list headers omit type widths and directives; inventory
                 # headers preserve those. Complete shape blocks retain overlays.
                 if body.startswith(d.name + ' :: ') and '{' in body:
@@ -149,9 +166,17 @@ def generate_facade(module, spec):
                 code = forwarded
                 record['status'] = 'forwarded'
             else:
-                record.update(status='unresolved', reason='Requires independently authored wrapper body')
-                ledger.append(record)
-                continue
+                parts = procedure_parts(code)
+                body = simple_body(module, d.name, condition)
+                if body is None:
+                    body = forwarding_body(module, d, spec.declarations, parts, procedure_parts)
+                if body is not None:
+                    code += ' { ' + body + ' }'
+                    record['status'] = 'implemented'
+                else:
+                    record.update(status='unresolved', reason='Requires independently authored wrapper body')
+                    ledger.append(record)
+                    continue
         else:
             code += ';'
             record['status'] = 'declared'
@@ -177,13 +202,36 @@ def main():
         if args.module and module not in args.module:
             continue
         path = ROOT / 'stdlib' / module / 'declarations.jai'
-        code = '// Generated from ' + str(page.relative_to(ROOT)) + '.\n// Regenerate with tools/native_bindings/generate.py; do not hand-edit.\n\n' + code
+        preamble = ['#scope_file']
+        preamble += ['#import "' + dep + '";' for dep in IMPORTS.get(module, [])]
+        preamble += [PRIVATE.get(module, '')]
+        library_names = sorted(set(re.findall(r'#(?:foreign|elsewhere)\s+(\w+)', code + '\n' + PRIVATE.get(module, ''))))
+        for name in library_names:
+            if name == 'gl_lib':
+                preamble.append('#if OS == .WINDOWS { gl_lib :: #library,system "opengl32"; }\nelse #if OS == .MACOS { gl_lib :: #library,system "OpenGL"; }\nelse { gl_lib :: #library,system "GL"; }')
+            else:
+                preamble.append(name + ' :: #library,system "' + LIBRARIES.get(name, name) + '";')
+        preamble.append('#scope_export')
+        code = '// Generated from ' + str(page.relative_to(ROOT)) + '.\n// Regenerate with tools/native_bindings/generate.py; do not hand-edit.\n\n' + '\n'.join(preamble) + '\n\n' + code
         if args.check:
             if not path.exists() or path.read_text() != code:
                 stale.append(str(path.relative_to(ROOT)))
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(code)
+        entry = ROOT / 'stdlib' / module / 'module.jai'
+        entry_code = '\n'.join(spec.parameter_blocks or [PARAMETERS.get(module, '')]) + '\n'
+        if module in TARGETS:
+            entry_code += '#assert ' + TARGETS[module] + ', "' + module + ' requires its documented native platform";\n'
+        entry_code += '#load "declarations.jai";\n'
+        wrappers = ROOT / 'stdlib' / module / 'wrappers.jai'
+        if wrappers.exists():
+            entry_code += '#load "wrappers.jai";\n'
+        if args.check:
+            if not entry.exists() or entry.read_text() != entry_code:
+                stale.append(str(entry.relative_to(ROOT)))
+        else:
+            entry.write_text(entry_code)
     path = ROOT / 'docs/native/bindings-coverage.json'
     serialized = json.dumps({'format': 1, 'note': 'Declared is not ABI or runtime verified. Unresolved entries are not implemented.', 'modules': all_ledger}, indent=2) + '\n'
     if args.check:

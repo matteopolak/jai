@@ -24,6 +24,7 @@ class Shape:
     code: str
     condition: str = ""
     line: int = 0
+    member_list: bool = False
 
 
 @dataclass
@@ -46,6 +47,22 @@ def platform_condition(label):
     return " && ".join(atoms.get(p, p) for p in parts)
 
 
+def shape_blocks(code):
+    """A reviewed fence may contain several complete top-level type records."""
+    matches = list(re.finditer(r'^(?:using )?([A-Za-z_][A-Za-z_0-9]*)\s*::', code, re.M))
+    depth = 0
+    start = 0
+    blocks = []
+    for match in matches:
+        prefix = code[start:match.start()]
+        depth += prefix.count('{') - prefix.count('}')
+        if depth == 0:
+            blocks.append((match[1], match.start()))
+        start = match.start()
+    return [(name, code[begin:blocks[i + 1][1] if i + 1 < len(blocks) else len(code)].rstrip())
+            for i, (name, begin) in enumerate(blocks)]
+
+
 def parse_spec(text):
     result = Spec()
     section = ""
@@ -66,7 +83,7 @@ def parse_spec(text):
             field_condition_open = False
         if shape_header and (shape_members or allow_empty):
             code = shape_header + " {\n" + "\n".join("    " + m.rstrip(";") + ("" if m.endswith("{") or m == "}" else ";") for m in shape_members) + "\n}"
-            result.shapes.append(Shape(shape_name, code, condition, shape_line))
+            result.shapes.append(Shape(shape_name, code, condition, shape_line, True))
         shape_members = []
         shape_header = ""
 
@@ -75,7 +92,8 @@ def parse_spec(text):
             if in_fence:
                 code = "\n".join(fence).strip("\n")
                 if section in ("Public type members", "Public aggregate shapes and enum values"):
-                    result.shapes.append(Shape(shape_name, code, condition, fence_line))
+                    for name, block in shape_blocks(code) or [(shape_name, code)]:
+                        result.shapes.append(Shape(name, block, condition, fence_line))
                 elif "SDK table shape" in section:
                     result.contextual_blocks.append(code)
                 elif section == "Module parameters":
@@ -108,7 +126,7 @@ def parse_spec(text):
             shape_line = number
             if match[2]:
                 kind, _, config = match[2].partition("; ")
-                kind = kind.replace("`", "").removeprefix("empty ")
+                kind = kind.replace("`", "").removeprefix("empty ").removeprefix("opaque ")
                 shape_header = shape_name + " :: " + kind
                 if config:
                     condition = config.replace("`", "")
