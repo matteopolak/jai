@@ -42,6 +42,15 @@ main :: () {
     assert(!M.buffer_has(ring, 1) && ring.has_ended);
     M.buffer_destroy(ring);
 
+    ring = M.buffer_create_with_capacity(4);
+    assert(M.buffer_write(ring, u8.[1, 2, 3, 4]) == 4);
+    M.buffer_signal_end(ring);
+    assert(M.buffer_read(ring, 8) == 1);
+    M.buffer_discard_read_bytes(ring);
+    assert(M.buffer_read(ring, 24) == 0x020304);
+    assert(!M.buffer_has(ring, 1) && ring.has_ended);
+    M.buffer_destroy(ring);
+
     append := M.create_for_appending(1);
 
     assert(M.buffer_write(append, u8.[0, 0, 1, 0xe0, 0x33]) == 5);

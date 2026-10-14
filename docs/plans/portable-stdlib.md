@@ -186,3 +186,11 @@ test zero-allocation silence plus the authorized sixteen-frame tone payload with
 rewind. Reject unsupported CRC/format transitions explicitly; retain qualified
 constant-write gaps. Continue real PS demux and Plm lifecycle, then seeking and
 broader B/AC/stereo fixtures before completing the codec scope.
+
+Program-stream increment: independently bounded private Demux state over canonical
+Packet/Plm, with finite MPEG-1 PES and checked timestamps. Feed real public decoder
+buffers/callbacks, never extracted test payloads in production. Test whole clip,
+bytewise pending headers, larger-than-capacity file refill, borrowed handles,
+loop/tick callbacks, tracked cleanup and linear seek behavior. Preserve retained
+assertions for truncated PES/timestamps and signaled ring compaction. Document
+linear seeks/system-header bounds/buffering and all unsupported formats precisely.

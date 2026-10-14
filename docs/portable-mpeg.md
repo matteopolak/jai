@@ -85,7 +85,34 @@ Qualified window/quantizer stores also unexpectedly compile, unlike unqualified
 constant-array and exported typed-scalar stores. These are reported compiler gaps;
 the declarations remain canonical constants and no mutable table copy is substituted.
 
-Program-stream demux and Plm lifecycle remain unfinished.
+MPEG-1 program-stream demux and Plm lifecycle are implemented: bounded pack/system
+and PES parsing, stuffing/P-STD fields, PTS/DTS marker validation, padding/other
+packet skipping, callback-driven audio/video buffering, header queries, enable
+flags, looping, timed callbacks and file/memory/buffer constructors. The private
+Demux record stays hidden; canonical public Plm/Packet/callback types are retained.
+Truncated PES and malformed timestamps assert. MPEG-2 packs/PES and unbounded PES
+packets reject explicitly. Header stream counts currently use the system header's
+audio/video bounds; sparse stream-index discovery needs further contract review.
+
+Packet parsing compacts consumed source bytes before holding a variable-length
+packet cursor, leaving room for complete packets at file-buffer refill boundaries.
+Tests cover byte-by-byte append input, retained borrowed source/file handles,
+looping, callbacks and a 240-frame file exceeding the default source capacity.
+Tracking verifies zero live allocations after all program test lifecycles. The
+existing own `tests/stdlib/pl-mpeg-decode.jai` also passes in interpreter mode.
+Ring/append end bounds follow discarded bytes; successful writes clear the old
+terminal bound. This fixes an actual retained assertion for signaled input after
+compaction. Non-file `total_size` counter and resume policy still need review.
+
+Seeks currently rewind and decode linearly: precise selection picks the first
+frame at/after the requested time, nonprecise selection the frame covering it;
+negative/oversized times clamp to available frames. Audio alignment discards whole
+decoded frames until the selected time. Seeking is rejected for nonseekable ring
+sources. These are supported local policies, not resolved reference contracts;
+no packet index or reference-style intra/PTS seek strategy is claimed. Audio lead
+handling after seek and stream switching need review. Decoder buffers may grow
+with unconsumed enabled streams; bounded buffering/backpressure is unfinished.
+
 `buffer_no_start_code`, `BLOCK_SET` and `PUT_PIXEL` lack sufficiently specified
 contracts and are not replaced with guessed exports. The ledger does not count
 this module as complete. No decoded frames/audio results have been fabricated.
