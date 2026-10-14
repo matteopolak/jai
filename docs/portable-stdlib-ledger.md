@@ -42,7 +42,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [executable-formats](specs/stdlib/modules/executable-formats.md) | Owned portable scope; not implemented |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
-| [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Signed contextual seek implemented; Windows/Android incomplete |
+| [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
@@ -86,7 +86,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
 | [performance-report](specs/stdlib/modules/performance-report.md) | Owned portable scope; not implemented |
 | [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Complete reviewed synthesis and DCT values declared as canonical constants; qualified-array write rejection is a retained compiler gap |
-| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Partial: buffers/tables/pixels, elementary video, unprotected Layer II audio, MPEG-1 PS demux and Plm lifecycle/callbacks/linear seeks. Full clip, fragmented/refill/ownership/looping and original B-order/AC fixtures pass. Inter-predicted B/stereo fixtures pending; CRC/format transitions rejected. Seek/stream-bound/macro/no-start-code contracts and compiler constants gaps remain. See portable-mpeg.md |
+| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Partial: buffers/tables/pixels, elementary video, unprotected Layer II audio, MPEG-1 PS demux and Plm lifecycle/callbacks/linear seeks. Full clip, fragmented/refill/ownership/looping and original B/AC/nonzero stereo fixtures pass. Inter-predicted B/richer stereo pending; CRC/format transitions rejected. Seek/stream-bound/macro/no-start-code contracts and compiler constants gaps remain. See portable-mpeg.md |
 | [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
 | [posix](specs/stdlib/modules/posix.md) | Reserved for bindings worker; not implemented or modified here |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |

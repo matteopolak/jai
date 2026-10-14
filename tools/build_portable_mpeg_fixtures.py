@@ -101,4 +101,33 @@ output = ROOT / "target/portable-tests/mpeg"
 output.mkdir(parents=True, exist_ok=True)
 (output / "reordered.m1v").write_bytes(SEQUENCE + picture(1, 80, 0) + picture(2, 160, 2) + picture(3, 120, 1))
 (output / "ac.m1v").write_bytes(SEQUENCE + picture(1, 128, 0, ac=True))
-print("Built independent MPEG B-picture and AC fixtures")
+
+
+def audio_frame(mode, selected_subband):
+    # MPEG-1, 128 kbit/s stereo: reviewed table A, 27 subbands. Joint stereo
+    # extension zero shares sample codes from subband four onward.
+    widths = [4] * 11 + [3] * 12 + [2] * 4
+    bound = 4 if mode == 1 else 27
+    payload = Bits()
+    for sb, width in enumerate(widths):
+        payload.put(1 if sb == selected_subband else 0, width)
+        if sb < bound:
+            payload.put(1 if sb == selected_subband else 0, width)
+    for _ in range(2):
+        payload.put(2, 2)  # One scalefactor for all three parts.
+    payload.put(3, 6)  # Leave headroom for synthesis ringing.
+    payload.put(9, 6)  # Two octave steps: right channel gain is one quarter.
+    for _ in range(12):
+        payload.put(21, 5)  # Grouped base-three samples [0, 1, 2].
+        if selected_subband < bound:
+            payload.put(21, 5)
+    body = payload.finish()
+    assert len(body) <= 413
+    return bytes([0xff, 0xfd, 0x80, mode << 6]) + body + bytes(413 - len(body))
+
+
+for name, mode, sb in [("stereo", 0, 0), ("dual", 2, 0), ("joint", 1, 5)]:
+    frame = audio_frame(mode, sb)
+    assert len(frame) == 417
+    (output / (name + ".mp2")).write_bytes(frame * 2)
+print("Built independent MPEG B/AC and nonzero stereo fixtures")

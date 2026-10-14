@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `31c870a`, MPEG program-stream integration. Earlier
+Latest committed checkpoint: `413011e`, MPEG trailing B /Users/matthew/projects/jai-reference/AC verification. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -126,7 +126,7 @@ All 252 owned Jai files pass jaifmt --check and jailint -D warnings.
 Seeking/count/resume policies and bounded buffering require review; MPEG-2,
 unbounded PES, CRC/format changes, macros and compiler constant gaps remain.
 
-Current verified increment: original intra-coded B-order and nonconstant horizontal
+Previously verified increment: original intra-coded B-order and nonconstant horizontal
 AC fixtures; fixed EOF loss of the pending reference following trailing B output.
 The retained test now yields luma 80/120/160 in display order, with correct times
 and rewind. No-delay B input rejects; real I/P frames pass no-delay mode. Full
@@ -134,6 +134,20 @@ regression passes 76 interpreter/native cases, 19 faults in both modes, six
 compile-time rejections and prior integration/target checks. All 254 owned Jai
 files pass jaifmt --check and jailint -D warnings. Inter-predicted B, stereo, CRC,
 format transitions and unresolved public contracts remain; continue these.
+
+Current verified increment: nonzero stereo/dual/joint Layer II fixtures with distinct
+channel gains. Fixed joint shared-sample reconstruction to retain both scalefactors;
+raw quantized values are decoded once and scaled separately. The temporary replay
+path is removed. Two frames and rewind pass per mode. Full regression passes
+77 interpreter/native cases, 19 faults in both modes, six compile-time rejections
+and prior integration/target checks. File backend formatting is now excluded under
+platform-io ownership; all 254 files in the narrowed scope pass format/lint.
+CRC and remaining codec contracts are next; broader portable scope remains active.
+
+Fresh compiler audit: original atomics, caller-scope context and reflected alignment
+reproducers now pass interpreter execution after the source rebuild. Constructor
+plain-import Buffer failure remains. Native verification and promotion of these
+resolved regressions are pending; no foundation completion is claimed yet.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

@@ -200,3 +200,10 @@ not an encoder/reference binary. Exercise intra-coded B display ordering and a
 nonconstant AC block, preserving all frame/pixel/timing assertions. Fix EOF pending
 reference flush and reject B pictures under the no-delay assumption. Keep direct
 motion tests and expand into nonzero stereo/joint-stereo and CRC coverage next.
+
+Stereo increment: original nonzero separate/dual/shared sample fixtures with
+channel gains four-to-one. Retain independent range/amplitude/rewind assertions.
+Refactor raw quantized decoding from channel reconstruction, avoiding cursor replay
+or ignored right-channel scalefactors. Consult only permitted official native C
+for scaling/CRC facts, preserve reviewed arrays and record provenance. Continue
+protected frames with real checksum validation rather than retaining a CRC skip.

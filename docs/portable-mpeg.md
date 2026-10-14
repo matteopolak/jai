@@ -81,7 +81,16 @@ only the permitted public C input and compares all 2,048 basis results with the
 direct mathematical matrix (observed maximum absolute difference below 9.5e-7).
 It is algorithm verification, not a Jai API oracle. No supplied binary is used.
 CRC-protected frames and changing bitrate/sample-rate/mode assert explicitly and
-remain unsupported. Stereo/joint-stereo branches need independent stream fixtures.
+remain unsupported. Original nonzero stereo, dual-channel and joint-stereo fixtures
+now check distinct left/right gains, two consecutive frames and rewind. Shared
+sample codes are decoded once, then reconstructed with each channel's own
+scalefactor. This fixes the real joint-stereo failure where the right channel
+incorrectly matched the left. A temporary bit-replay verification path was removed
+before checkpointing. The independent fixture leaves synthesis headroom and
+retains range/gain assertions. Separate shared-channel scaling is corroborated by
+the permitted official [FFmpeg C decoder](https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/mpegaudiodec_template.c);
+no FFmpeg code bodies or binaries are incorporated. Richer stereo content remains
+broader integration scope.
 
 Taking `*QUANT_TAB` before dynamic indexing uses the canonical aggregate's static
 storage; quantizer return pointers are checked against that same public table.
