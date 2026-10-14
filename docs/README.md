@@ -119,6 +119,7 @@ Scripts, CI and project policies.
 - [Compile-time benchmark](tools/compile-time-benchmark.md): wall time, peak RSS and phases of real projects, `-timings`
 - [Regex benchmark](tools/regex-benchmark.md): `Extensions/Regex` against Rust `regex`, RE2, PCRE2, CTRE and Hyperscan on a generated corpus
 - [Edit benchmark](tools/edit-bench.md): how long `jailsp` takes to answer after an edit inside a body, compiles per edit
+- [LSP partial-edit implementation plan](plans/lsp-partial-edits.md) and [open questions](specs/lsp-questions.md)
 - [IDE coverage](tools/ide-coverage.md): which identifiers of a project get no hover or go to definition from `jailsp`
 - [Language server benchmark](tools/lsp-benchmark.md): latency, CPU time and RSS of `jailsp` (or another server) on real and generated projects and very large files
 - [Code formatting](tools/code-formatting.md): rustfmt and jaifmt checks, format-only commits and `.git-blame-ignore-revs`
