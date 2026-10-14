@@ -37,6 +37,15 @@ created windows remain gaps. Source-built formatter and warnings-denied lint pas
 Next: actual native OpenGL texture driver verification, then remaining renderer/font
 contracts; public create_window and Keymap grammar still require reviewed details.
 
+New blocker: actual Apple OpenGL 4.1 context fixture source-builds successfully,
+but canonical GL loader fails because general procedure-field reflection omits
+PROCEDURE_WITH_VOID_POINTER_TYPE_INFO when exposing procedure fields as *void.
+Minimal original reproducer and native-symbol control are in tests/window-render/repros.
+Actual driver test fails in interpreter/native O0 before upload. It is added to
+the focused runner without skipping/suppressing the failure; 87 successful
+invocations above describe the preceding batch, not a passing GPU integration.
+Compiler owner must fix the reflection flag; no table patches or peer Rust edits.
+
 Remaining: native window creation/pumps, Keymap operations, glyph atlas/text and
 renderer/context integration. See the [deviations report](window-render-deviations.md)
 and [coverage ledger](../window-render-coverage.md). No peer checkout edits.

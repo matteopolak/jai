@@ -47,6 +47,12 @@ def main():
         subprocess.run(["ar", "rcs", str(output / "libwindow_clipboard_probe.a"), str(obj), str(decoder)], check=True)
         subprocess.run(["cc", "-dynamiclib", str(obj), str(decoder), "-framework", "AppKit", "-o",
                         str(output / "libwindow_clipboard_probe.dylib")], check=True)
+        gl_probe = ROOT / "tests/window-render/gl-context.m"
+        gl_obj = output / "window_gl_probe.o"
+        subprocess.run(["cc", "-O2", "-Wall", "-Wextra", "-Werror", "-c", str(gl_probe), "-o", str(gl_obj)], check=True)
+        subprocess.run(["ar", "rcs", str(output / "libwindow_gl_probe.a"), str(gl_obj)], check=True)
+        subprocess.run(["cc", "-dynamiclib", str(gl_obj), "-framework", "AppKit", "-framework", "OpenGL", "-o",
+                        str(output / "libwindow_gl_probe.dylib")], check=True)
     print(output)
 
 

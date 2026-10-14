@@ -120,3 +120,12 @@ composition remains outstanding. An independent native probe preserves evidence
 that posting an inconsistent physical A key plus emoji text is retranslated by
 AppKit to A; the production test now asserts that actual native behavior and
 separately verifies caller-supplied external Unicode projection.
+
+Actual GPU verification attempt now exposes a compiler dependency blocker. Build
+the test native libraries with `python3 tools/window_render_native.py`; the Apple
+SDK fixture creates a real OpenGL 4.1 core context. Running texture-driver.jai in
+interpreter/native O0 fails in canonical GL.gl_load at indexed extension discovery.
+GL symbol lookup succeeds; a minimal generic reflection test proves missing
+PROCEDURE_WITH_VOID_POINTER_TYPE_INFO for stored callbacks under the procedure-hiding
+struct directive. See questions #26. This driver regression is included in the
+runner and is currently failing, not counted as completed GPU behavior.
