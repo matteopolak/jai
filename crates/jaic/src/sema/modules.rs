@@ -1103,7 +1103,7 @@ impl Compiler {
                             pattern,
                             actual,
                             &mut bindings,
-                            scope,
+                            file_scope,
                             represented,
                         )?;
                         for (name, value, ty) in bindings {

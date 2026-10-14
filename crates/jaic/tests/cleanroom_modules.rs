@@ -31,6 +31,34 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn module_interface_constraints_use_the_declaring_private_file_namespace() {
+    for (arguments, valid) in [
+        ("", true),
+        ("(HOOKS = Good)", true),
+        ("(HOOKS = Broken)", false),
+    ] {
+        let main = format!(
+            "Good :: struct {{ run :: inline (value: int) {{}} }} Broken :: struct {{}} M :: #import \"Contract\"{arguments}; #assert !#exists(M.Required); main :: () {{ result := M.touch(); }}"
+        );
+        let mut c = compiler(
+            &[
+                (
+                    "/lib/Contract/module.jai",
+                    "#module_parameters(HOOKS: $I/interface Required = Required) { #scope_file Required :: struct { run :: inline (value: int) {} } } touch :: () -> int { return 7; }",
+                ),
+                ("/app/main.jai", &main),
+            ],
+            false,
+        );
+        if valid {
+            succeeds(&mut c);
+        } else {
+            rejects(&mut c, "run");
+        }
+    }
+}
+
+#[test]
 fn module_parameter_defaults_use_the_declaring_private_file_namespace() {
     let mut c = compiler(
         &[
