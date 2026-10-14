@@ -84,9 +84,9 @@ integration-deviations.md and legacy-contract-audit.md for exact commands/reason
 Platform-io now owns Windows File completion; no duplicated implementation begun.
 
 Role: independent portable/high-level stdlib worker. No subagents, publication,
-reference binaries or prior implementations used. Extensions and corpus preserved.
+reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `54df2d1`, MPEG elementary video reconstruction. Earlier
+Latest committed checkpoint: `8c1e0fc`, MPEG Layer II audio reconstruction. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -183,7 +183,7 @@ All 239 owned Jai files pass format/lint. B-picture prediction is directly teste
 full B/AC stream fixtures and dimension/rate transitions remain incomplete.
 Continue program-stream demux, audio and Plm before remaining owned modules.
 
-Current verified increment: MPEG-1 Layer II unprotected audio, canonical Audio/Samples,
+Previously verified increment: MPEG-1 Layer II unprotected audio, canonical Audio/Samples,
 headers/quantizers/scalefactors and real interleaved synthesis. Independent silence
 and sixteen mono 440 Hz tone frames pass channel/amplitude/frequency/count/rewind
 checks in both modes. Direct matrix versus licensed public C bases differs by at
@@ -195,6 +195,19 @@ current independent sources with --locked, private target. Full regression passe
 74 interpreter/native cases, 16 faults in both modes, six compile-time rejections,
 and prior SMTP/IPC/startup/parent/target checks. All 248 owned Jai files pass
 jaifmt --check and jailint -D warnings. Continue demux/Plm.
+
+Current verified increment: MPEG-1 program-stream parsing and canonical Plm/Packet
+lifecycle, callbacks, enable/loop flags and real linear seeks. Full clip decodes
+ten video/sixteen audio frames without extracted payloads. Bytewise append input,
+borrowed buffer/file ownership and 240-frame file refills pass in both modes;
+tracking reports zero allocations after program cleanup. Full regression passes
+75 interpreter/native cases, 18 faults in both modes, six compile-time rejections
+and prior integration/target checks. A final retained buffer assertion then fixed
+signaled end bounds after compaction; changed MPEG buffer/video/program cases are
+rechecked independently. Existing own MPEG regression passes interpreter/native.
+All 252 owned Jai files pass jaifmt --check and jailint -D warnings.
+Seeking/count/resume policies and bounded buffering require review; MPEG-2,
+unbounded PES, CRC/format changes, macros and compiler constant gaps remain.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

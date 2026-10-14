@@ -28,6 +28,14 @@ main :: () {
     frame = M.video_decode(video);
     assert(frame != null && frame.y.data[0] == 128 && frame.time == 0);
     M.video_destroy(video);
+    buffer = M.buffer_create_with_capacity(stream.count);
+    assert(M.buffer_write(buffer, stream) == stream.count);
+    M.buffer_signal_end(buffer);
+    video = M.video_create_with_buffer(buffer, true);
+    frame = M.video_decode(video);
+    assert(frame != null && frame.y.data[0] == 128);
+    assert(M.video_decode(video) == null);
+    M.video_destroy(video);
     filename := sprint("%/../stdlib/pl-mpeg-clip.mpg", S.path_strip_filename(#file));
 
     defer free(filename);
