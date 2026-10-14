@@ -55,3 +55,11 @@ arithmetic for exact decimal rendering and binary parsing, eliminating
 snprintf/localeconv/strtod and global locale dependence on every target.
 The earlier missing-import WASI failure is retained as historical evidence in
 the deviations report; no env functions or tool-only substitute are supplied.
+
+Native path strings must be representable in the called ABI. The shared private
+native-path validator rejects embedded NUL before POSIX queries/copy/rename/
+directory traversal/chdir, so operations cannot silently act on a prefix.
+Windows UTF conversion uses the same check and retains its strict UTF-8 rules.
+Pure byte path manipulation still preserves input data; this validation applies
+to native filesystem operations. Original real-file tests verify destination
+and working-directory preservation on rejected inputs.

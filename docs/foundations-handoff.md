@@ -74,14 +74,14 @@ modified. Source snapshots and build outputs are durable under target/.
 Commands:
 
 ```
-python3 tools/check_foundations.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --jaifmt target/jaifmt --jailint target/peer-compiler/debug/jailint --cross
+python3 tools/check_foundations.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --jaifmt target/jaifmt --jailint target/peer-compiler/debug/jailint --wasm --cross
 JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug/jailint -D warnings [owned paths]
 JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug/jaic jaifmt/main.jai -O2 -exe target/jaifmt
 target/jaifmt [owned paths]
 target/jaifmt --check [owned paths]
 ```
 
-The focused runner now contains twenty-six real cases in interpreter/native O0/O2.
+The focused runner now contains twenty-seven real cases in interpreter/native O0/O2.
 `--wasm` also builds/executes each supported case at O0/O2 under Node WASI,
 rejecting all non-WASI imports instead of supplying fake env functions.
 Unused-code checks pass on Linux x64/arm64, macOS arm64, Windows x64/arm64 and
@@ -207,3 +207,20 @@ so the overall run fails despite the execution passes. This is a general
 compiler request, not a Basic-only guard. Six targets pass unused-code checks
 of all newly affected cases; macOS x64 now fails in refreshed POSIX on missing
 itimerval rather than the earlier ipc_perm. Both failures are preserved.
+
+The two general module-parameter compiler defects are now resolved in NEW
+producer sources: unused interface constraints and exact named/positional
+argument declarations are enforced for every module, including stdlib/headerless
+modules. Required original rejection gates retain both failures as regressions.
+No library name/path workaround was added.
+
+Latest filesystem regression verifies that embedded NUL paths fail without
+operating on their valid prefix. Queries/copy/rename/visitation/cwd reject before
+native calls, preserving source, destination and working directory. A shared
+private validator also serves Windows UTF conversion. Both assertion layouts
+have canary tests filling all inline capacity then growing by one byte, and the
+combined debugger/disabled-assert/stamping configuration is exercised.
+Final command without --cross exits zero: 27 host cases in interpreter/native
+O0/O2, 21 supported WASI cases in O0/O2, five assertion programs, API rejection
+and general compiler gates, real jaifmt build/CLI/check and warnings-denied lint.
+Affected unused-code cases pass six targets; macOS x64 still fails itimerval.
