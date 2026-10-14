@@ -28,20 +28,24 @@ def main():
     output = ROOT / "target/window-test-binaries"
     output.mkdir(parents=True, exist_ok=True)
     count = 0
+    failures = []
 
     def run(command, expected=None):
         nonlocal count
         result = subprocess.run(list(map(str, command)), cwd=ROOT, env=env,
                                 capture_output=True, text=True, timeout=60)
         if result.returncode or result.stderr or (expected is not None and result.stdout != expected):
-            raise RuntimeError(f'{command}\nexit {result.returncode}\n{result.stdout}{result.stderr}')
+            failures.append(f'{command}\nexit {result.returncode}\n{result.stdout}{result.stderr}')
+            return False
         count += 1
+        return True
 
     host = ["srgb", "mapping", "bitmap-codec", "signed-native-fields"]
     if platform.system() in {"Darwin", "Windows"}:
         host.append("clipboard-host")
     if args.font:
         host.append("font-public")
+        host.append("glyph-atlas")
     if platform.system() == "Windows":
         host.append("windows-events")
     if platform.system() == "Darwin":
@@ -50,25 +54,27 @@ def main():
         host.append("texture-driver")
     for name in host:
         source = ROOT / f"tests/window-render/{name}.jai"
-        parameters = [args.font.resolve()] if name == "font-public" else []
+        parameters = [args.font.resolve()] if name in {"font-public", "glyph-atlas"} else []
         program_args = ["--", *parameters] if parameters else []
+        before = len(failures)
         run([compiler, source, "-interp", "-I", args.stdlib, *program_args], "ok\n")
         for optimization in ["O0", "O2"]:
             binary = output / f"{name}-{optimization}"
-            run([compiler, source, f"-{optimization}", "-exe", binary, "-I", args.stdlib])
-            run([binary, *parameters], "ok\n")
-        print(f"passed host interpreter and native O0/O2: {name}", flush=True)
+            if run([compiler, source, f"-{optimization}", "-exe", binary, "-I", args.stdlib]):
+                run([binary, *parameters], "ok\n")
+        outcome = "passed" if len(failures) == before else "FAILED"
+        print(f"{outcome} host interpreter and native O0/O2: {name}", flush=True)
 
     linux = ["types", "portable", "callback-types", "keycodes", "window-invalid", "bitmap-codec", "gamepad-virtual", "gamepad-shared-sdk", "texture-packing", "simp-none"]
     for name in linux:
         source = ROOT / f"tests/window-render/{name}.jai"
-        run([compiler, source, "-interp", "-os", "linux", "-I", args.stdlib], "ok\n")
-        print(f"passed Linux-target interpreter: {name}", flush=True)
+        passed = run([compiler, source, "-interp", "-os", "linux", "-I", args.stdlib], "ok\n")
+        print(f"{'passed' if passed else 'FAILED'} Linux-target interpreter: {name}", flush=True)
 
     if args.font:
-        run([compiler, ROOT / "tests/window-render/font-public.jai", "-interp", "-os", "linux",
-             "-I", args.stdlib, "--", args.font.resolve()], "ok\n")
-        print("passed public font facade with native FreeType (Linux-target interpreter)", flush=True)
+        passed = run([compiler, ROOT / "tests/window-render/font-public.jai", "-interp", "-os", "linux",
+                      "-I", args.stdlib, "--", args.font.resolve()], "ok\n")
+        print(f"{'passed' if passed else 'FAILED'} public font facade with native FreeType (Linux-target interpreter)", flush=True)
 
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
@@ -77,19 +83,24 @@ def main():
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])
-    visibility = subprocess.run([str(compiler), str(ROOT / "tests/window-render/private-helper-negative.jai"),
-                                 "-check", "-os", "linux", "-I", str(args.stdlib)],
-                                cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
-    if visibility.returncode != 1 or visibility.stdout or "has no exported member `pack_bitmap`" not in visibility.stderr:
-        raise RuntimeError(f"private-helper visibility regression: {visibility.stdout}{visibility.stderr}")
-    count += 1
+    for case, member in [("private-helper-negative", "pack_bitmap"), ("private-atlas-negative", "atlas_create_page")]:
+        visibility = subprocess.run([str(compiler), str(ROOT / f"tests/window-render/{case}.jai"),
+                                     "-check", "-os", "linux", "-I", str(args.stdlib)],
+                                    cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
+        if visibility.returncode != 1 or visibility.stdout or f"has no exported member `{member}`" not in visibility.stderr:
+            failures.append(f"private-helper visibility regression: {visibility.stdout}{visibility.stderr}")
+        else:
+            count += 1
     checked_cast = subprocess.run([str(compiler), str(ROOT / "tests/window-render/checked-narrow-negative.jai"),
                                    "-interp", "-I", str(args.stdlib)],
                                   cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
     if checked_cast.returncode != 1 or checked_cast.stdout or "cast of 65416 to `s16` overflows" not in checked_cast.stderr:
-        raise RuntimeError(f"checked narrowing regression: {checked_cast.stdout}{checked_cast.stderr}")
-    count += 1
-    print(f"passed {count} focused compiler/program invocations", flush=True)
+        failures.append(f"checked narrowing regression: {checked_cast.stdout}{checked_cast.stderr}")
+    else:
+        count += 1
+    print(f"{count} focused compiler/program invocations passed; {len(failures)} failed", flush=True)
+    if failures:
+        raise RuntimeError("\n\n".join(failures))
 
 
 if __name__ == "__main__":

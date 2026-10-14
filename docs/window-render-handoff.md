@@ -129,3 +129,17 @@ GL symbol lookup succeeds; a minimal generic reflection test proves missing
 PROCEDURE_WITH_VOID_POINTER_TYPE_INFO for stored callbacks under the procedure-hiding
 struct directive. See questions #26. This driver regression is included in the
 runner and is currently failing, not counted as completed GPU behavior.
+
+Private CPU glyph-atlas batch: exact production kernel is loaded in Simp; the
+component test aliases the canonical public records, with no substitute Math/font
+types. Real FreeType coverage and native advance/bearings feed transparent padded
+shelf pages. Blank glyphs, page-full/native errors, signed pitch, monochrome expansion
+and all tracked allocations are tested. This is CPU staging evidence; Dynamic_Font
+ownership/layout, GPU upload and public text drawing remain incomplete.
+
+Latest focused result: 95 compiler/program invocations passed and 3 actual-driver
+executions failed at the reflection dependency. Failure aggregation now completes
+independent checks and returns failure; native execution is conditional on a successful
+build, preventing stale-binary passes. Full owned source-built jaifmt --check and
+jailint -D warnings passed. Generated libevdev/GL mappings remain idempotent. Focus
+and full combined production acceptance remain pending, with no release action.

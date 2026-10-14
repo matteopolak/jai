@@ -1,6 +1,6 @@
 # Window/render progress
 
-2026-10-14: first resumed batch committed as `a41ae76`. Prior focused runner
+2026-10-14: resumed checkpoints `a41ae76`, `0e5a7f2`, `375294d`. Prior focused runner
 recorded 69 invocations; these include CPU component tests and foreign-target
 interpreter checks, not combined production GUI integration. No release or
 Focus acceptance is claimed.
@@ -45,6 +45,20 @@ Actual driver test fails in interpreter/native O0 before upload. It is added to
 the focused runner without skipping/suppressing the failure; 87 successful
 invocations above describe the preceding batch, not a passing GPU integration.
 Compiler owner must fix the reflection flag; no table patches or peer Rust edits.
+
+Latest batch: real private CPU glyph-atlas kernel loaded in Simp, using canonical
+Font_Page/Font_Line/Glyph_Data and native FreeType metrics/coverage. Real caller-font
+tests pass interpreter/native O0/O2, including exact bytes, padding/shelf placement,
+empty glyph advance, native error propagation/page-full rejection, negative pitch,
+mono expansion and allocation cleanup. It is not yet public Dynamic_Font/text rendering.
+Existing-window cursor rect policy now applies immediately and native state is tested.
+
+Final runner: **95 invocations passed, 3 failed**. Failures are the real texture
+driver interpreter/O0/O2 at the same general reflection blocker. The runner reports
+all independent failures and returns nonzero; it never executes stale binaries after
+a build failure. Full owned jaifmt --check and jailint -D warnings pass; generated
+84-declaration evdev and 38-format GL checks pass. Linux x64 / Windows arm64 /
+macOS arm64 focused no_dce checks pass. Extensions diff remains empty.
 
 Remaining: native window creation/pumps, Keymap operations, glyph atlas/text and
 renderer/context integration. See the [deviations report](window-render-deviations.md)

@@ -28,7 +28,11 @@ main :: () {
 
     assert(window != null);
     I.update_window_events();
-    post_key(window, true, "😀");
+    I.set_custom_cursor_handling(true);
+    assert(result_message(window, "areCursorRectsEnabled", s8) == 0);
+    I.set_custom_cursor_handling(false);
+    assert(result_message(window, "areCursorRectsEnabled", s8) != 0);
+    post_key(window, true, "A");
     I.update_window_events();
     found_key := false;
     found_text := false;
