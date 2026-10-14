@@ -4,12 +4,12 @@
 
 Sixth-refresh source checkpoint d9aa140: seven producer merges plus safe editor
 CI fix, latest Windows contracts and general private-interface/startup fixes.
-Workspace631/68 pass/fail (59 suites), foundations27 host/21 WASI plus strict
-rejections pass; macOSx64 timeval remains. Portable101 ordinary cases pass, with
+Workspace 631/68 pass/fail (59 suites), foundations 27 host/21 WASI plus strict
+rejections pass; macOS x64 timeval remains. Portable 101 ordinary cases pass, with
 target verification failure retained. Four platform contracts and arguments pass
 host interpreter/O0/O2; private Process source checks require no staging. Real
-GL SDK checks pass except unavailable debug callback capability. Window145 pass/
-fourfail, numerics126/143. Quality663 format/check pass;38/155 gates fail.
+GL SDK checks pass except unavailable debug callback capability. Window 145 pass/
+four failures, numerics 126/143. Quality 663 format/check pass; 38/155 gates fail.
 Seventh approved snapshots are available and are being integrated. All previous
 checkpoint paragraphs below are historical, not current-tree certification.
 
