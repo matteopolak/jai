@@ -29,11 +29,14 @@ def main():
     inventory = source.split("## Public type members")[0]
     declarations = dict(re.findall(r"^- `([A-Za-z_][A-Za-z_0-9]*) :: ((?:struct|enum|enum_flags)[^`]*)`$", inventory, re.M))
     chunks = ["// Generated from docs/specs/stdlib/modules/compiler.md; edit the spec/generator.\n"]
+    registered = []
     for name, body in re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S):
         if name in {"Run_Directive_Report", "Message_Performance_Report"}:
             continue
         if name not in declarations:
             raise ValueError(f"no inventory declaration for {name}")
+        if declarations[name] == "struct" and (name.startswith(("Code_", "Message")) or name in {"Time_Report", "Polymorph_Report", "Bytecode_Report", "Global_Data_Info", "Global_Data_Segment_Info"}):
+            registered.append("C." + name)
         blocks = re.findall(r"```jai\n(.*?)```", body, re.S)
         if blocks:
             chunks.append(unescape(blocks[0]).strip() + "\n")
@@ -52,6 +55,10 @@ def main():
         chunks.append("\n".join(lines))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n\n".join(chunks))
+    registry = ROOT / "stdlib/internal/compiler-api/registry.jai"
+    registry.parent.mkdir(parents=True, exist_ok=True)
+    registered += ["Type_Info", "Type_Info_Integer", "Type_Info_Float", "Type_Info_String", "Type_Info_Pointer", "Type_Info_Procedure", "Type_Info_Struct", "Type_Info_Struct_Member", "Type_Info_Array", "Type_Info_Enum", "Type_Info_Variant", "Source_Code_Location"]
+    registry.write_text("// Generated from reviewed compiler/prelude record inventories.\n#scope_module\nregister_compiler_types :: () {\n" + "".join("    register_type(type_info(" + name + "));\n" for name in registered) + "}\n#scope_file\nC :: #import \"Compiler\";\n")
     print(OUT)
 
 

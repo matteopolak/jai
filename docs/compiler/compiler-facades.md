@@ -36,8 +36,17 @@ reviewed page remain compatibility questions, not evidence from legacy tests.
 
 ## Remaining scope
 
-Compiler workspace APIs, full neutral-record materialization/serialization and
-procedure modification are still pending facade work. The independent runtime
+Workspace creation/destruction, option storage/forwarding, build source addition,
+diagnostics/version/import helpers, type-table access and code-node materialization
+are now implemented over the Rust bridge. Original metaprograms exercise option
+round trips, compiling added source, discarding a workspace, inspecting AST nodes
+and reconstructing Code with an explicit scope source. Record materialization
+reports missing records/plans and malformed field shapes, and rolls back failed
+cache entries instead of returning zeroed successes. Procedure modification has
+an adapter that serializes current statements, but still needs end-to-end
+interception validation. Non-null Code scope selection in `add_build_string`
+remains explicitly unsupported. Interception and remaining workspace operations
+are pending. The independent runtime
 Jai_Lexer is pending. `Code_Visit.visit_pre_and_postorder` is not exported yet:
 its macro caller bindings are unspecified in the reviewed page. It has no fake
 implementation; explicit event traversal is available through `get_values`.
@@ -58,5 +67,6 @@ TMPDIR="$PWD/target" python3 tests/stdlib-contract/run.py \
 
 `--mode native` compiles and executes the same cases with the source-built LLVM
 backend. This overlay does not write another worker's checkout or integrate a
-release. All six focused cases passed in both the interpreter and native LLVM
-execution on 2026-10-14.
+release. All six initial focused cases passed in both the interpreter and native
+LLVM execution on 2026-10-14. The two added workspace/code cases also pass in the
+interpreter.
