@@ -421,6 +421,7 @@ impl Compiler {
             }
             (None, None) => return err(span, "global needs a type or initializer"),
         };
+        self.ensure_storage_type(ty, span)?;
         if let Some(foreign) = &decl.foreign() {
             return self.foreign_global(scope, name, foreign, ty, span);
         }

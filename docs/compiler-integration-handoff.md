@@ -1,5 +1,36 @@
 # Compiler integration handoff
 
+Latest continuation: 5d0bf33 adds ordered mixed/baked variadics, checked dynamic
+frame storage and general binding-time interfaces. Follow-up source adds
+canonical SIMD operand binding, private CLI plugin orchestration, strict module
+arguments and independently reviewed reflection/probe fixes. No library-name or
+fixture exception was added. Original interpreter/native/WASM64 O0/O2 tests cover
+loaded-file constructor type, alias and storage identity.
+
+Local staging uses only selected NEW sources:
+
+```sh
+python3 tools/assemble-cleanroom-test-library.py --foundation ../foundations/stdlib --portable ../stdlib/stdlib --bindings ../bindings/stdlib
+```
+
+Positive shared tests/compiler-semantics inputs pass repository jaifmt --check
+and verbose jailint -D warnings without incomplete compilation reports. Selected
+core/backend tests, native/WASM64 execution, public facade fixtures, LSP units
+and wasm32 compiler-host checking are listed in the progress report. Required
+compile-rejection cases are distinguished from native execution.
+
+Nondefault actual target temporary-storage allocation needs a joint private
+compiler/runtime mechanism. NO_OUTPUT metadata round-tripping works; no unreviewed
+Runtime_Support parameter is passed. Autorun still needs producer path joining/
+executable resolution; see compiler/producer-integration-requests.md. Full
+integration, corpus and platform CI remain coordinator responsibilities.
+
+One NEW producer MPEG test was initially executed directly and wrote/deleted its
+source-relative artifact under the peer target directory. This violated no-peer-
+writes and is disclosed in status/compiler-deviations.md. No peer source was
+edited or forbidden source accessed. Subsequent interpreter/native execution used
+an exact test copy staged under this checkout and passed.
+
 ## Source build and invocation
 
 The current Rust compiler builds with:
@@ -35,9 +66,11 @@ The compiler automatically loads `Runtime_Support` with named parameters:
 | `DEFINE_SYSTEM_ENTRY_POINT` | `true` |
 | `DEFINE_INITIALIZATION` | `true` |
 | `ENABLE_BACKTRACE_ON_CRASH` | `false` |
-| `TEMPORARY_STORAGE_SIZE` | `32768` (`s64`) |
 
-These are forwarded from compiler options. The existing compiler selects one
+These three reviewed parameters are forwarded from compiler options. The old
+unreviewed TEMPORARY_STORAGE_SIZE import argument has been removed; nondefault
+temporary-storage allocation needs a compiler/runtime contract and is tracked
+in the deviations/questions documents. The existing compiler selects one
 implicit runtime instance per program; the language guide does not establish the
 behavior of explicitly parameterizing that reserved module. Bootstrap records
 belong to the foundation worker. Compiler-specific facades and helpers belong to
@@ -46,7 +79,8 @@ this worker; no duplicate bootstrap records should be defined there.
 ## Current verification and coordination
 
 The LLVM source build above succeeded on 2026-10-14. The supplied snapshot has no
-foundation module files, so runtime fixture execution awaits new foundation code.
+foundation module files. Local tests now use an explicit NEW producer overlay;
+this is staging rather than full repository integration.
 Original virtual-filesystem regressions in `crates/jaic/tests/cleanroom_modules.rs`
 exercise loader contracts without requiring any old library implementation.
 

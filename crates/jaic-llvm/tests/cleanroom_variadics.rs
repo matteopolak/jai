@@ -97,7 +97,7 @@ fn dynamic_packs_survive_continuation_unwind_and_rewind() {
     #program_export "jaic_wasi_green_control"
     get_control :: () -> *Control #no_context { return *control; }
     #program_export "jaic_wasi_frames_exhausted"
-    exhausted :: () #no_context { while true {} }
+    exhausted :: () #no_context { #asm { int3; } }
     #program_export "pthread_create"
     spawn :: () #no_context {}
     #program_export "jaic_wasi_suspend"

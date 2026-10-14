@@ -728,6 +728,7 @@ impl Compiler {
                 }
                 (None, None) => return err(span, "declaration needs a type or a value"),
             };
+            self.ensure_storage_type(ty, span)?;
             // Metaprograms read local declaration types from the exported syntax tree.
             self.local_decl_types.entry((decl.id, i)).or_insert(ty);
             let size = self.size_of(ty, span)?;

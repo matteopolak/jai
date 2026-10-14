@@ -31,6 +31,106 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn implicit_runtime_load_passes_only_reviewed_module_parameters() {
+    let mut fs = VirtualFs::default();
+    fs.insert("/lib/Runtime_Support/module.jai",r#"
+        #module_parameters(DEFINE_SYSTEM_ENTRY_POINT:bool, DEFINE_INITIALIZATION:bool, ENABLE_BACKTRACE_ON_CRASH:bool);
+        #assert(DEFINE_SYSTEM_ENTRY_POINT);
+        #assert(!DEFINE_INITIALIZATION);
+        #assert(ENABLE_BACKTRACE_ON_CRASH);
+    "#.as_bytes());
+    let mut options = Options::host();
+    options.runtime_support = true;
+    options.runtime_entry_point = true;
+    options.runtime_initialization = false;
+    options.backtrace_on_crash = true;
+    options.import_paths = vec!["/lib".into()];
+    let mut c = Compiler::new(options, Rc::new(fs));
+    if let Err(error) = c.load_bootstrap() {
+        panic!("{}", error.render(&c.sources));
+    }
+}
+
+#[test]
+fn nondefault_runtime_storage_cannot_be_silently_ignored() {
+    let mut options = Options::host();
+    options.temporary_storage_size = 65536;
+    let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
+    let error = c
+        .load_bootstrap()
+        .expect_err("missing runtime configuration must diagnose");
+    assert!(error.message.contains("temporary_storage_size"));
+}
+
+#[test]
+fn library_modules_do_not_ignore_unknown_excess_or_duplicate_arguments() {
+    for (module, args) in [
+        (
+            "#module_parameters(N:int=0); touch::()->int{return N;}",
+            "UNKNOWN=1",
+        ),
+        (
+            "#module_parameters(N:int=0); touch::()->int{return N;}",
+            "1,2",
+        ),
+        (
+            "#module_parameters(N:int=0); touch::()->int{return N;}",
+            "1,N=2",
+        ),
+        ("touch::()->int{return 0;}", "UNKNOWN=1"),
+        ("#if true { touch::()->int{return 0;} }", "UNKNOWN=1"),
+    ] {
+        let source = format!("M::#import \"Contract\"({args}); main::(){{ n:=M.touch(); }}");
+        let mut c = compiler(
+            &[
+                ("/lib/prelude/module.jai", ""),
+                ("/lib/Contract/module.jai", module),
+                ("/app/main.jai", &source),
+            ],
+            true,
+        );
+        let error = c
+            .compile_program(Path::new("/app/main.jai"))
+            .expect_err("library imports obey ordinary module binding rules");
+        assert!(
+            error.message.contains("parameter") || error.message.contains("argument"),
+            "{}",
+            error.render(&c.sources)
+        );
+    }
+}
+
+#[test]
+fn loaded_constructor_and_generic_factory_keep_the_declaring_type_namespace() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Record/module.jai",
+                "#load \"types.jai\"; #load \"constructor.jai\"; Alias :: Buffer;",
+            ),
+            (
+                "/lib/Record/types.jai",
+                "Buffer :: struct { value:int=seed; next:*Buffer; } #scope_file seed :: 37;",
+            ),
+            (
+                "/lib/Record/constructor.jai",
+                "create :: () -> Buffer { return F.build(Buffer); } #scope_file F :: #import \"Factory\";",
+            ),
+            (
+                "/lib/Factory/module.jai",
+                "Buffer :: struct { other:u8=99; } build :: ($T:Type) -> T { return T.{}; }",
+            ),
+            (
+                "/app/main.jai",
+                "R :: #import \"Record\"; F :: #import \"Factory\"; #assert(R.Buffer==R.Alias); #assert(R.Buffer!=F.Buffer); #assert(type_of(R.create())==R.Buffer); #assert(R.create().value==37); main :: () {}",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
 fn module_arguments_retain_literal_precision_and_use_real_conversion() {
     let mut c = compiler(
         &[
@@ -736,4 +836,16 @@ fn failed_source_loads_cannot_become_successful_cache_hits() {
             .is_err()
         );
     }
+}
+
+#[path = "support/namespace_source.rs"]
+mod namespace_source;
+
+#[test]
+fn loaded_pointer_constructor_keeps_public_type_and_storage_identity() {
+    let mut files = namespace_source::FILES.to_vec();
+    let main = format!("{}\n#assert(check()==0);", namespace_source::SOURCE);
+    files.push(("/app/main.jai", &main));
+    let mut c = compiler(&files, false);
+    succeeds(&mut c);
 }

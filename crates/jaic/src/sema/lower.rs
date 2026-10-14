@@ -430,6 +430,13 @@ impl Compiler {
 
     /// Turn an operand into a runtime value (loading places, materializing constants).
     pub fn rvalue(&mut self, f: &mut FnCtx, op: Operand, span: Span) -> Result<(TypeId, Val)> {
+        if self.is_register_operand_type(op.ty(), span) {
+            return err(
+                span,
+                "a SIMD register operand cannot be loaded as a scalar; extract a lane in #asm",
+            );
+        }
+
         match op {
             Operand::Value {
                 ty,

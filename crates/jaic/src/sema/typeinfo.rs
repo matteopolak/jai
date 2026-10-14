@@ -437,6 +437,13 @@ impl Compiler {
             TypeKind::Struct(s) => {
                 self.layout_struct(s, span)?;
                 let info = self.types.struct_info(s).clone();
+                self.set_field(
+                    &mut agg,
+                    desc,
+                    "alignment",
+                    Value::Int(info.align as i128),
+                    span,
+                )?;
                 // Anonymous structs are named after the keyword internally; at runtime
                 // they have no name.
                 let name = match info.name.as_str() {
@@ -466,12 +473,6 @@ impl Compiler {
                 let (mut fields, bindings) = self.tagged_union_members(s, &info.fields, span)?;
                 if tflags & 0x1 != 0 {
                     fields.clear();
-                } else if tflags & 0x2 != 0 {
-                    for field in fields.iter_mut() {
-                        if matches!(self.types.kind(field.ty), TypeKind::Proc(_)) {
-                            field.ty = TypeId::VOID_PTR;
-                        }
-                    }
                 }
                 // `constant_storage` holds the polymorphic arguments, then the body's constants.
                 let mut storage = Aggregate {
@@ -542,7 +543,14 @@ impl Compiler {
                         Value::String(name.as_bytes().into()),
                         span,
                     )?;
-                    self.set_info_ptr(&mut m, member_ty, "type", field.ty, span)?;
+                    let hidden_procedure =
+                        tflags & 0x2 != 0 && matches!(self.types.kind(field.ty), TypeKind::Proc(_));
+                    let reflected_type = if hidden_procedure {
+                        TypeId::VOID_PTR
+                    } else {
+                        field.ty
+                    };
+                    self.set_info_ptr(&mut m, member_ty, "type", reflected_type, span)?;
                     self.set_field(
                         &mut m,
                         member_ty,
@@ -550,7 +558,11 @@ impl Compiler {
                         Value::Int(field.offset as i128),
                         span,
                     )?;
-                    let mut flags = 0;
+                    let mut flags = if hidden_procedure {
+                        0x8
+                    } else {
+                        0
+                    };
                     if field.using {
                         flags |= 0x4;
                     }
