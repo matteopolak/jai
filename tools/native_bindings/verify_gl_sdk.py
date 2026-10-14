@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Real macOS GL SDK checks with an explicit own source-built compiler.
 
-Stages unmodified NEW peer sources. This tool never patches a peer or compiler.
+Uses an explicitly selected production library without source staging.
 An optional proposal path labels a separately built trial compiler honestly.
 Unavailable debug-driver support remains a failing verification requirement.
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 import platform
 import sys
 
-from verify import ROOT, invoke, stage
+from verify import ROOT, invoke
 
 
 def digest(path):
@@ -23,23 +23,29 @@ def digest(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler', type=Path, required=True)
+    parser.add_argument('--stdlib', type=Path, required=True)
     parser.add_argument('--compiler-proposal', type=Path)
     parser.add_argument('--report', type=Path, required=True)
     args = parser.parse_args()
     if platform.system() != 'Darwin':
         raise SystemExit('The CGL runtime test requires the public macOS SDK and runtime')
     compiler = args.compiler.resolve(strict=True)
-    work = ROOT/'.work/runs'/(args.report.stem+'-'+str(os.getpid()))
+    if not compiler.is_relative_to(ROOT/'target'):
+        parser.error('use a compiler source-built under this checkout target directory')
+    stdlib = args.stdlib.resolve(strict=True)
+    args.report = args.report.resolve()
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    work = args.report.parent/(args.report.stem+'-'+str(os.getpid()))
     work.mkdir(parents=True, exist_ok=True)
-    stdlib = work/'stdlib'
-    stage(stdlib)
     native = work/'native'
     native.mkdir()
+    temporary = work/'tmp'
+    temporary.mkdir()
     env = dict(os.environ, JAIC_STDLIB=str(stdlib),
-               JAIC_NATIVE_LIBS=str(native), TMPDIR=str(ROOT/'.work/tmp'))
-    report = {'scope':'Worker SDK verification, not coordinator integration; unmodified current NEW peer staging',
+               JAIC_NATIVE_LIBS=str(native), TMPDIR=str(temporary))
+    report = {'scope':'Production SDK verification against explicit integrated sources',
               'compiler':str(compiler), 'compiler_sha256':digest(compiler),
-              'compiler_proposal':None, 'staging_root':str(work), 'staging_adjustments':[],
+              'compiler_proposal':None, 'stdlib':str(stdlib), 'work':str(work), 'staging_adjustments':[],
               'checks':[], 'staged_sources':{}, 'test_sources':{}}
     if args.compiler_proposal:
         proposal = args.compiler_proposal.resolve(strict=True)

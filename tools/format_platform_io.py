@@ -15,6 +15,7 @@ OWNED = [
     "stdlib/Runtime_Support/module.jai", "stdlib/internal/runtime/module.jai",
     "stdlib/internal/runtime/startup.jai", "stdlib/internal/runtime/windows-io.jai",
     "stdlib/internal/runtime/windows-arguments.jai", "stdlib/internal/runtime/windows-crash.jai",
+    "stdlib/Process/tests/windows-private-engine.jai", "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai",
     "tests/platform-io",
 ]
 
