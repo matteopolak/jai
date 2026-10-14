@@ -81,7 +81,7 @@ target/jaifmt [owned paths]
 target/jaifmt --check [owned paths]
 ```
 
-The focused runner now contains twenty-four real cases in interpreter/native O0/O2.
+The focused runner now contains twenty-six real cases in interpreter/native O0/O2.
 `--wasm` also builds/executes each supported case at O0/O2 under Node WASI,
 rejecting all non-WASI imports instead of supplying fake env functions.
 Unused-code checks pass on Linux x64/arm64, macOS arm64, Windows x64/arm64 and
@@ -98,9 +98,16 @@ module parameter now defaults true and propagates through the facade to its
 canonical private instance. Default/on imports share builder type identity;
 off imports omit ensured_count and select the discard assertion declaration.
 Both layouts/capacities and ensured counters are tested. Discarded argument,
-message and variadic expressions have zero side effects. Four reviewed
-parameters propagate; the fifth needs Memory_Debugger_Interface's missing
-defining shape. Enabled memory debugging diagnoses that limit explicitly.
+message and variadic expressions have zero side effects. All five reviewed
+parameters now propagate, including the exact constrained replacement type.
+The canonical shared interface has the reviewed four inline no-op hooks;
+the default sentinel selects real tracking, and replacements preserve their
+canonical type identity. Allocation helpers, arrays, builder heap buffers and
+temporary backing pages route real notifications. Failed resize retains old
+ownership. Heap lifecycle helpers call the allocator's actual modes.
+Default tracking validates live/retired allocator identity with synchronized
+updates. Visualization controls real per-frame counters and logger summaries;
+precise transport remains a question, not a claim of native GUI integration.
 Temporary overwrite mode stamps rolled-back/reset/freed storage, including
 overflow payloads inspected by a test allocator before release.
 Additional cases cover actual stdout/stderr bytes and returned counts,
@@ -146,7 +153,7 @@ Aggregate checks also cover empty fixed/view arrays, the default 100-element
 limit, null formatter values and incompatible struct formatting with logging
 enabled and disabled.
 
-Remaining formatter compatibility details, Memory_Debugger_Interface and
+Remaining formatter/debugger visualization compatibility details and
 the scalar FNV operation's unresolved
 byte/word behavior remain incomplete. Windows runtime testing remains required;
 Windows jaifmt also depends on the portable worker's File/runtime backends.
@@ -154,7 +161,7 @@ See the
 [focused questions](specs/stdlib/foundations-questions.md) for exact missing
 contracts. Full integration/corpus/release verification remains coordinator work.
 
-The latest formatter work retains the peer POSIX macOS/x64 failure above.
+Prior formatter checkpoint retained the peer POSIX macOS/x64 failure above.
 All seventeen cases and four formatter assertion cases passed
 interpreter/native O0/O2. Six independent cross-target checks passed after
 the assertion test was made portable; macOS x64 failed as recorded.
@@ -167,8 +174,10 @@ precise exclusions.
 
 The focused runner now exposes `--jailint` and checks the exact owned source
 scope with jaifmt --check and jailint -D warnings, in addition to real CLI
-behavior and execution tests. It excludes inherited allocation/time/array/
-temporary/File/MD5 implementations from owned formatting/lint claims. Pending
+behavior and execution tests. Current configuration/notification work includes
+the modified allocation/array/temporary helpers in owned formatting/lint scope;
+their previous functionality is preserved. Time/runtime/File/MD5 remain outside
+that scope. The previous pending
 default-metadata reproduction is now promoted to a passing regression using
 NEW compiler default metadata. Generic formatting includes names and values,
 elides matching defaults, retains required parameters and evaluates dependent
@@ -181,3 +190,20 @@ without Basic. NEW producer sources now initialize all scratch contexts through
 the context-state API; copied read-only and rebuilt in own durable staging.
 Latest real build/lint/runtime outcomes are maintained in foundations-progress
 and foundations-deviations. No compiler or peer source was edited here.
+
+Latest checkpoint: 26 cases pass interpreter/native O0/O2 and 21 supported
+production WASI cases pass O0/O2, with all non-WASI imports rejected. Five
+runtime assertion cases pass their rejection checks. Real unchanged jaifmt
+rebuild/CLI/check and scoped warnings-denied jailint pass. Direct binary32
+parsing now avoids double rounding at exact halfway/subnormal/overflow edges.
+Default debugger metadata is live-only and reclaimed, preventing false failure
+when addresses are reused by another Basic configuration. Default/custom tests
+cover real heap allocations/destruction, failed resize, ownership diagnostics,
+visualization flags and canonical replacement/interface aliases.
+
+The runner additionally requires binding-time rejection of an invalid unused
+module interface. Current compiler accepts the original minimal reproducer,
+so the overall run fails despite the execution passes. This is a general
+compiler request, not a Basic-only guard. Six targets pass unused-code checks
+of all newly affected cases; macOS x64 now fails in refreshed POSIX on missing
+itimerval rather than the earlier ipc_perm. Both failures are preserved.

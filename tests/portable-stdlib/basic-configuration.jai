@@ -16,6 +16,11 @@ message :: () -> string {
     return "disabled";
 }
 
+location :: () -> Source_Code_Location {
+    calls += 1;
+    return .{};
+}
+
 main :: () {
     B.assert(!ENABLE_ASSERT);
     B.assert(type_info(B.String_Builder) == type_info(On.String_Builder));
@@ -39,7 +44,7 @@ main :: () {
     defer Off.free_buffers(*disabled);
     Off.append(*disabled, "works");
     B.assert(Off.builder_string_length(*disabled) == 5);
-    Off.assert(effect(), message(), effect());
+    Off.assert(effect(), message(), effect(), loc = location());
     B.assert(calls == 0);
     B.print("ok\n");
 }

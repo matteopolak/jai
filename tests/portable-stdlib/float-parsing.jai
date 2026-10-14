@@ -6,6 +6,12 @@ check :: (text: string, bits: u64) {
     assert((cast(*u64) *value).* == bits);
 }
 
+check_single :: (text: string, bits: u32) {
+    value, success, remainder := string_to_float(text);
+    assert(success && remainder.count == 0);
+    assert((cast(*u32) *value).* == bits);
+}
+
 main :: () {
     check("0.1", 0x3fb999999999999a);
     check("-0", 0x8000000000000000);
@@ -22,6 +28,12 @@ main :: () {
     check("0x1p-1074", 1);
     check("+INFINITY", 0x7ff0000000000000);
     check("-nan(payload)", 0xfff8000000000000);
+    check_single("1.000000059604644775390625000000001", 0x3f800001);
+    check_single("1.000000178813934326171874999999999", 0x3f800001);
+    check_single("340282356779733661637539395458142568447", 0x7f7fffff);
+    check_single("340282356779733661637539395458142568448", 0x7f800000);
+    check_single("0x1.00000000000000000001p-150", 1);
+    check_single("0x1.7fffffffffffffffffffP-149", 1);
     value, success, remainder := string_to_float64(" \t-.25e2tail");
 
     assert(success && value == -25 && remainder == "tail");
