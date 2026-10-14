@@ -10,11 +10,12 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS = [
     "basic", "string", "memory", "pcg", "codec", "bit-array", "reflection",
-    "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread",
+    "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process",
 ]
 EXPECTED = {
     "runtime": "runtime -9223372036854775808 ff\n",
@@ -55,7 +56,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     cases = [(p, EXPECTED.get(p.stem, "ok\n"))
              for p in sorted((ROOT / "tests/portable-stdlib").glob("*.jai"))
-             if p.stem != "bootstrap"]
+             if p.stem not in {"bootstrap", "process-parent"}]
     cases += [(ROOT / f"tests/stdlib-contract/{name}/main.jai", "ok\n") for name in CONTRACTS]
     run([str(compiler), "-check", str(ROOT / "tests/portable-stdlib/bootstrap.jai")], env)
     for index, (source, expected) in enumerate(cases):
@@ -65,7 +66,30 @@ def main():
             run([str(compiler), str(source), "-exe", str(executable)], env)
             run([str(executable)], env, expected, source.parent)
         print("passed", source.relative_to(ROOT), flush=True)
-    dependent = {"file", "filesystem", "socket-loopback"}
+    parent_source = ROOT / "tests/portable-stdlib/process-parent.jai"
+    for native in ([False, True] if args.native else [False]):
+        for keep in [False, True]:
+            marker = parent_source.parent / ("process-retained-marker.tmp" if keep else "process-killed-marker.tmp")
+            marker.unlink(missing_ok=True)
+            extra = ["-add", "PROCESS_KEEP_ALIVE :: true;"] if keep else []
+            try:
+                if native:
+                    executable = output / f"parent-{keep}"
+                    run([str(compiler), str(parent_source), *extra, "-exe", str(executable)], env)
+                    run([str(executable)], env, "ok\n", parent_source.parent)
+                else:
+                    run([str(compiler), "-interp", str(parent_source), *extra], env, "ok\n")
+                deadline = time.monotonic() + (2 if keep else 0.5)
+                while time.monotonic() < deadline:
+                    if marker.exists():
+                        break
+                    time.sleep(0.01)
+                if marker.exists() != keep:
+                    raise RuntimeError(f"parent-exit cleanup mismatch: native={native}, keep={keep}")
+            finally:
+                marker.unlink(missing_ok=True)
+    print("passed parent-exit cancellation and opt-out", flush=True)
+    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)

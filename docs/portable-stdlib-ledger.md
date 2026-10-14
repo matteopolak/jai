@@ -92,7 +92,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
 | [print-color](specs/stdlib/modules/print-color.md) | Owned portable scope; not implemented |
 | [print-vars](specs/stdlib/modules/print-vars.md) | Owned portable scope; not implemented |
-| [process](specs/stdlib/modules/process.md) | Owned portable scope; not implemented |
+| [process](specs/stdlib/modules/process.md) | Unix launch/capture/status/timeout/stream APIs implemented; interpreter/native, large dual streams, EPIPE, child pid and concurrent parent-exit cancellation tested. Windows and noted interactive/finite-query contracts incomplete or under review |
 | [program-print](specs/stdlib/modules/program-print.md) | Reserved for compiler worker; not implemented or modified here |
 | [project-generator](specs/stdlib/modules/project-generator.md) | Owned portable scope; not implemented |
 | [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Owned portable scope; not implemented |

@@ -156,7 +156,21 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 40 cases in interpreter/native modes, plus bootstrap
+The current run passes 43 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
+
+Process implements Unix argument-array launching, launch-error reporting,
+independent stdout/stderr capture, bounded waits, cancellation, native status,
+and stream APIs. A supervisor owns/reaps the actual child, honors parent-exit
+cancellation and its opt-out, and reports the actual child pid. Supervisors close
+inherited handles from other Process instances so a retained second process
+cannot suppress the first one's parent-exit notification. Four additional
+interpreter/native parent-lifetime scenarios verify this OS-visible behavior.
+Large dual-stream capture, nonzero exit, failed launch, timeout, actual pid and
+broken stdin are tested. Pipe writes preserve the calling thread's signal mask
+and consume only a newly generated SIGPIPE, avoiding process termination on
+ordinary EPIPE errors. Windows and the noted interactive/live teardown contracts
+remain unfinished or under review; unknown final status asserts rather than
+fabricating an exit result.
