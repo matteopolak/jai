@@ -277,3 +277,38 @@ Initial `cargo test --locked --workspace --no-fail-fast` reports 21 failed targe
 - Portable production runner: 74/75 ordinary cases pass interpreter/native, plus parent lifetime, fault rejection and native startup ON/OFF checks. Runtime explicit configuration conflict and SMTP/MIME integration remain failures. Production --stdlib performs no source overlay. Windows-specific runtime fixture is retained for a Windows host and cross-target checking.
 - Foundations: 17 supported cases plus four runtime rejection cases pass interpreter/native O0/O2; real jaifmt CLI/format/lint checks pass. Six target checks pass, macOS x64 fails POSIX.itimerval. Windows is checked, never claimed executed.
 - Full workspace retry in isolated normal target/integration-validation: 560 tests passed, 90 failed, one existing ignored; 16 failed targets. Doctests pass in this independent build directory. Initial doctest missing-artifact errors arose while independent build/check invocations reused target outputs; no source/tool/test repair or doctest exclusion was used. Full failures remain in workspace-final.log. Workspace clippy --all-targets -D warnings passes; full Rust formatting and item spacing checks pass.
+# Combined refresh-nine checkpoint
+
+Implementation source `9cd757a` integrates the manifest saved at `4fe1aa4` and
+general root fixes. Producer handoffs/deviations were inspected for compiler,
+foundations, portable, platform I/O and window/render updates. Earlier reports for
+unchanged bindings/numerics/LSP/SDL3 remain applicable. No peer checkout writes,
+vendor bodies, quarantined history, push or CI dispatch were used.
+
+Executed against the production `stdlib` without dependency overlays:
+
+```
+LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo build --locked -p jaic-cli --bin jaic -p jailint -p jai-language-server
+JAIC_STDLIB="$PWD/stdlib" target/debug/jaic jaifmt/main.jai -O2 -exe "$PWD/target/jaifmt"
+LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked -p jaic --lib --test cleanroom_modules --test cleanroom_runtime_contract -p jailint -p jai-language-server --test auto_import
+```
+
+Builds pass; focused test totals are 155 core units, 50 modules, 2 runtime options,
+25 LSP units, 15 auto-import cases and 11 jailint units, all passing. Logs are
+`artifacts/integration-clean/{build-refresh9-fixed,formatter-refresh9-fixed,core-refresh9-fixed}.log`.
+The protected-memory red test first reproduced two child crashes and a fabricated
+comparison; the fixed tests retain all original probe assertions and add real
+overlap/zero-length behavior. Windows VirtualProtect execution awaits native CI.
+
+The production runtime now uses the reviewed public crash facade directly;
+superseded private startup/crash wrappers are removed. Original conflicting runtime
+imports remain negative tests. The default initializer fixture stays positive;
+explicit ON/OFF system-entry behavior is tested by the real workspace metaprogram.
+Jailint's generic target/private-library-root/incomplete-compilation repairs are
+integrated without relaxing application import privacy or changing its rules.
+
+This is a source checkpoint for normal temporary CI, not a completion claim.
+Broad suite outcomes and newly settled foundation discrepancies are pending below
+and in integration-requests.md. Historical evidence is retained in the sections
+that follow.
+

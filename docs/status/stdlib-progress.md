@@ -1,5 +1,27 @@
 # Portable stdlib progress
 
+## Replacement integration: combined refresh-nine checkpoint
+
+Reviewable implementation head: `9cd757a` (no push/dispatch/publication by this
+worker). Merged manifest snapshots: compiler `2f36a1e`, foundations `cc089d7`,
+portable stdlib `846781b`, window/render `9b5877d`, platform I/O `c3e2ff2`, retaining
+previous approved bindings/numerics/LSP/SDL3 and safe CI candidate `767130b`.
+Latest coordinator Basic/GL/SDL contracts are preserved in `4fe1aa4`.
+
+Own combined compiler/LSP/jailint and unchanged real jaifmt source builds pass.
+Core run: 155 compiler units, 50 module regressions, 2 production runtime option
+regressions, 25 LSP units, 15 auto-import cases and 11 jailint units pass.
+General interpreter memcpy/memset fault-safety and memcmp error semantics were
+fixed after original protected-memory children reproduced crashes/fabricated
+results; red evidence is retained. The current auto-import signature suite passes,
+so the producer's alias-doc failure is not reproduced on this combined snapshot.
+
+Full workspace, native/cross platform-I/O, strict lint regression and production
+library suites are running. Foundation helper implementations conflict with newly
+settled contracts; exact active-owner request is in integration-requests.md. Native
+Windows/macOS x64 CI, opaque vendor corpus and coordinator Focus remain external
+gates, with no full-platform success claim. Publication remains held.
+
 ## Replacement integration current checkpoint
 
 Seventh-refresh combined source checkpoint 294f42f is stable and available for
