@@ -649,10 +649,18 @@ impl Compiler {
         stmts: &[ast::Stmt],
         mut vis: ast::ScopeKind,
     ) -> Result<ast::ScopeKind> {
+        let mut failed = None;
         for stmt in stmts {
-            vis = self.declare_stmt(scope, file_scope, stmt, vis)?;
+            match self.declare_stmt(scope, file_scope, stmt, vis) {
+                Ok(next) => vis = next,
+                Err(error) if self.ide.is_some() => {
+                    self.ide.as_mut().unwrap().errors.push((*error).clone());
+                    failed.get_or_insert(error);
+                }
+                Err(error) => return Err(error),
+            }
         }
-        Ok(vis)
+        failed.map_or(Ok(vis), Err)
     }
 
     fn target_scope(&self, scope: ScopeId, file_scope: ScopeId, vis: ast::ScopeKind) -> ScopeId {

@@ -2639,6 +2639,7 @@ impl Compiler {
             },
         ]);
         f.pending_for_body = Some(ForBody {
+            call_span: span,
             code,
             body: body_stmt,
             scope: loop_scope,
@@ -2649,7 +2650,6 @@ impl Compiler {
         });
         let result = self.call_procs(f, loop_scope, &procs, args, None, span);
         f.pending_for_body = None;
-        self.ide_note_for_keyword(span);
         result.map(|_| ())
     }
 

@@ -496,30 +496,34 @@ impl Compiler {
         });
     }
 
-    /// Custom iteration uses the same overload resolver as calls. Give only its keyword
-    /// a procedure reference, using the actual selection even if expansion of the body
-    /// subsequently failed. The collection's expression keeps its own entity reference.
-    pub(super) fn ide_note_for_keyword(&mut self, span: Span) {
+    /// Associate only the custom-loop keyword with the actual overload selection,
+    /// before expansion can fail. Call-summary deduplication and its display budget
+    /// must not discard selections from other real instantiations of this loop.
+    pub(super) fn ide_note_for_keyword(&mut self, span: Span, chosen: ProcId, ambiguous: bool) {
+        if self.sketching() || !self.ide_wants_file(span.file) {
+            return;
+        }
+        let keyword = Span {
+            end: span.start + 3,
+            ..span
+        };
         let Some(ide) = self.ide.as_mut() else {
             return;
         };
-        let Some(call) = ide.calls.iter().find(|call| call.span == span) else {
-            return;
-        };
-        // Equally ranked overloads have no unique selected definition for the editor.
-        if call.ambiguous {
+        let selections = ide
+            .for_expansions
+            .entry(keyword)
+            .or_insert_with(|| Some(Vec::new()));
+        if ambiguous {
+            *selections = None;
             return;
         }
-        let chosen = call.chosen;
-        ide.refs.push(IdeRef {
-            span: Span {
-                end: span.start + 3,
-                ..span
-            },
-            what: IdeWhat::Procs(vec![chosen]),
-            ty: TypeId::COMPILE_TIME,
-            decl: false,
-        });
+        let Some(procs) = selections else {
+            return;
+        };
+        if !procs.contains(&chosen) {
+            procs.push(chosen);
+        }
     }
 
     /// Each `name = value` argument of a call to `chosen`: hovering `name` shows the

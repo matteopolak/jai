@@ -82,6 +82,11 @@ impl Parser<'_> {
         match self.parse_stmt() {
             Ok(stmt) => Ok(Some(stmt)),
             Err(error) => {
+                // Do not build a maximum-depth chain of recovered enclosing blocks:
+                // later AST consumers recurse too. Discard the outer statement instead.
+                if in_block && error.message.starts_with("code is nested too deeply") {
+                    return Err(error);
+                }
                 let Some(errors) = self.recovery.as_mut() else {
                     return Err(error);
                 };
@@ -92,29 +97,86 @@ impl Parser<'_> {
                 self.pending_operator = saved_operator;
                 self.pending_notes = saved_notes;
                 self.block_end = saved_end;
-                self.pos = start;
-                let mut braces = 0usize;
-                loop {
-                    if self.at_eof() {
-                        break;
-                    }
-                    if self.pos > start && braces == 0 && self.newline_before() {
-                        break;
-                    }
-                    match self.tok() {
-                        Tok::Punct(P::LBrace | P::DotBrace) => braces += 1,
-                        Tok::Punct(P::RBrace) if braces > 0 => braces -= 1,
-                        Tok::Punct(P::RBrace) if in_block => break,
-                        Tok::Punct(P::Semi) if braces == 0 => {
-                            self.bump();
-                            break;
-                        }
-                        _ => {}
-                    }
-                    self.bump();
+                if self.recover_multiline_token(start) {
+                    return Ok(None);
                 }
+                self.ide_synchronize(start, in_block);
                 Ok(None)
             }
         }
+    }
+
+    pub(super) fn ide_synchronize(&mut self, start: usize, in_block: bool) {
+        self.pos = start;
+        let mut braces = 0usize;
+        let mut brackets = 0usize;
+        loop {
+            if self.pos > start && self.ide_block_boundary(self.toks[start].span) {
+                break;
+            }
+            if self.at_eof()
+                || (self.pos > start && braces == 0 && brackets == 0 && self.newline_before())
+            {
+                break;
+            }
+            match self.tok() {
+                Tok::Punct(P::LBrace | P::DotBrace) => braces += 1,
+                Tok::Punct(P::LBracket | P::DotBracket) => brackets += 1,
+                Tok::Punct(P::RBracket) => {
+                    brackets = brackets.saturating_sub(1);
+                    // An explicit outer list closer also ends a damaged inner
+                    // struct-literal element whose closing brace was removed.
+                    braces = 0;
+                }
+                Tok::Punct(P::RBrace) if braces > 0 => braces -= 1,
+                Tok::Punct(P::RBrace) if in_block => break,
+                Tok::Punct(P::Semi) if braces == 0 && brackets == 0 => {
+                    self.bump();
+                    break;
+                }
+                _ => {}
+            }
+            self.bump();
+        }
+    }
+
+    /// A malformed ordinary string can swallow later lines up to an unrelated quote.
+    /// Once its containing statement actually fails, rescan after its opening line.
+    /// Valid multiline literals in successful statements keep their original tokens.
+    fn recover_multiline_token(&mut self, start: usize) -> bool {
+        let from = self.toks[start].span.start as usize;
+        let Some(newline) = self.src[from..].find('\n').map(|n| from + n + 1) else {
+            return false;
+        };
+        let crossed = self.toks[start..=self.pos.min(self.toks.len() - 1)]
+            .iter()
+            .any(|token| {
+                matches!(token.tok, Tok::Str(_))
+                    && (token.span.start as usize) < newline
+                    && token.span.end as usize > newline
+                    && self.src.as_bytes()[token.span.start as usize] == b'"'
+            });
+        if !crossed {
+            return false;
+        }
+        let file = self.toks[start].span.file;
+        let (mut suffix, errors) = crate::lexer::lex_ide(file, &self.src[newline..]);
+        for token in &mut suffix {
+            token.span.start += newline as u32;
+            token.span.end += newline as u32;
+        }
+        self.recovery
+            .as_mut()
+            .unwrap()
+            .extend(errors.into_iter().map(|mut e| {
+                e.span.start += newline as u32;
+                e.span.end += newline as u32;
+                e
+            }));
+        self.toks.truncate(start);
+        self.toks.extend(suffix);
+        // The caller must resume at this token, not skip the next healthy line.
+        self.pos = start;
+        true
     }
 }

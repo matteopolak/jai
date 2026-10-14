@@ -50,6 +50,9 @@ pub struct IdeFacts {
     /// Calls and the procedure and parameters they resolved to.
     pub calls: Vec<super::ide_meta::IdeCall>,
     pub(super) call_spans: HashSet<Span>,
+    /// Actual custom-iteration selections per keyword, across real instantiations.
+    /// `None` means an ambiguous selection; sketches never populate this map.
+    pub(super) for_expansions: HashMap<Span, Option<Vec<ProcId>>>,
     /// The compile-time output channel, to tell what each `#run` printed.
     pub output: Option<Rc<std::cell::RefCell<crate::interp::SandboxHost>>>,
     /// Entity the identifier being checked resolved to (set by `check_ident`).
@@ -1434,6 +1437,27 @@ impl Compiler {
     /// of an overload set, a struct or enum. Spans are narrowed to the declared name when it
     /// starts the declaration (`name :: ...`).
     pub fn ide_definition(&mut self, file: FileId, offset: u32) -> Vec<Span> {
+        if let Some(selection) = self.ide.as_ref().and_then(|ide| {
+            (0..3).find_map(|delta| {
+                let start = offset.checked_sub(delta)?;
+                ide.for_expansions.get(&Span {
+                    file,
+                    start,
+                    end: start + 3,
+                })
+            })
+        }) {
+            let spans = selection
+                .as_ref()
+                .into_iter()
+                .flatten()
+                .map(|&p| (self.proc(p).span, self.proc(p).name.to_string()))
+                .collect();
+            let mut definitions = self.ide_narrow_decls(spans);
+            definitions.sort_unstable();
+            definitions.dedup();
+            return definitions;
+        }
         // A struct field or enum member: the declaration its use was matched to.
         if let Some(ide) = self.ide.as_ref()
             && let Some((_, decl)) = ide.member_use_at(file, offset)

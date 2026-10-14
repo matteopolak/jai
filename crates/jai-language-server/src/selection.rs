@@ -78,7 +78,7 @@ impl Session {
     ) -> Result<Vec<SelectionRange>, Error> {
         let doc = self.document(uri)?;
         let text = &doc.text;
-        let parsed = jaic::parser::parse_file_ide(FileId(0), text).file;
+        let parsed = jaic::parser::parse_file_ide(FileId(0), &doc.ide_text()).file;
         let mut result = Vec::new();
         for &position in positions {
             let byte = doc.index.byte(text, position)?;

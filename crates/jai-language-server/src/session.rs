@@ -27,9 +27,19 @@ pub(crate) struct Document {
     pub(crate) asm: OnceCell<bool>,
     /// The links in `text`'s doc comments, found on first use.
     pub(crate) sites: OnceCell<Vec<jaic::docs::Site>>,
+    pub(crate) lexical_damage: Vec<Span>,
 }
 
 impl Document {
+    pub(crate) fn ide_text(&self) -> Cow<'_, str> {
+        crate::lexical_recovery::mask(&self.text, &self.lexical_damage)
+            .map_or_else(|| Cow::Borrowed(self.text.as_str()), Cow::Owned)
+    }
+
+    pub(crate) fn same_positions(&self, text: &str) -> bool {
+        self.text == text || (!self.lexical_damage.is_empty() && self.ide_text().as_ref() == text)
+    }
+
     pub(crate) fn has_asm(&self) -> bool {
         *self.asm.get_or_init(|| self.text.contains("#asm"))
     }
@@ -231,6 +241,7 @@ impl Session {
                 parses: OnceCell::new(),
                 asm: OnceCell::new(),
                 sites: OnceCell::new(),
+                lexical_damage: Vec::new(),
             },
         );
         self.rebuild();
@@ -287,6 +298,8 @@ impl Session {
             self.admit(uri, bytes, old_bytes)?;
             text.replace_range(start..end, &change.text);
         }
+        let lexical_damage =
+            crate::lexical_recovery::update(&document.text, &text, &document.lexical_damage);
         self.file_changed(Path::new(uri.path()), false);
         let config = self.lint_configs.contains_key(uri);
         if config {
@@ -305,6 +318,7 @@ impl Session {
             parses: OnceCell::new(),
             asm: OnceCell::new(),
             sites: OnceCell::new(),
+            lexical_damage,
         };
         self.rebuild();
         Ok(())
@@ -421,7 +435,15 @@ impl Session {
                 analyses.insert(uri.clone(), kept.clone());
                 continue;
             }
-            let mut analysis = Analysis::build(&document.text, uri, self.limits);
+            let mut analysis = Analysis::build(&document.ide_text(), uri, self.limits);
+            analysis.key = crate::semantic::text_key(&document.text);
+            for span in &document.lexical_damage {
+                let end = document.text[span.start..span.end]
+                    .find('\n')
+                    .map_or(span.end, |n| span.start + n);
+                analysis.diagnostic(&document.index, &document.text, Span::new(span.start, end), DiagnosticSeverity::Error, DiagnosticCode::Lexer,
+                    "Incomplete lexical edit; this literal or comment is omitted from IDE analysis.");
+            }
             for (target, span) in analysis.loads.clone() {
                 if !self.documents.contains_key(&target) {
                     analysis.diagnostic(
@@ -523,12 +545,18 @@ impl Session {
             .documents
             .iter()
             .map(|(u, d)| {
-                let text = if u == uri {
-                    text
+                let view = if u == uri {
+                    let damage = if text == d.text {
+                        d.lexical_damage.clone()
+                    } else {
+                        crate::lexical_recovery::update(&d.text, text, &d.lexical_damage)
+                    };
+                    crate::lexical_recovery::mask(text, &damage)
+                        .map_or_else(|| Cow::Borrowed(text), Cow::Owned)
                 } else {
-                    d.text.as_str()
+                    d.ide_text()
                 };
-                (PathBuf::from(u.path()), Rc::from(text.as_bytes()))
+                (PathBuf::from(u.path()), Rc::from(view.as_bytes()))
             })
             .collect();
         // The open document no other open document loads, compiled from the project's entry
@@ -814,7 +842,7 @@ impl Session {
                     let target = DocumentUri::parse(&format!("file://{path}")).ok()?;
                     // An open document's own text and index, else the compiled file's.
                     let range = match self.documents.get(&target) {
-                        Some(open) if *open.text == *text => open
+                        Some(open) if open.same_positions(&text) => open
                             .index
                             .range(
                                 &open.text,

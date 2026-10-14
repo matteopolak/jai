@@ -455,6 +455,12 @@ impl Compiler {
         self.check_format_call(span, chosen.proc, &chosen.slots, &args)?;
         if self.ide.is_some() {
             self.ide_note_call(span, procs, chosen.proc, &chosen.slots, &args, ambiguous);
+            if f.pending_for_body
+                .as_ref()
+                .is_some_and(|body| body.call_span == span)
+            {
+                self.ide_note_for_keyword(span, chosen.proc, ambiguous);
+            }
         }
         self.emit_call(f, scope, chosen, args, span)
     }
