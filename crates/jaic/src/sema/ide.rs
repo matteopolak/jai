@@ -1908,12 +1908,14 @@ impl Compiler {
             let imports = self.scope(sid).imports.len();
             for i in 0..imports {
                 if let Ok(Some(m)) = self.import_module(sid, i) {
-                    modules.push(m);
+                    modules.push((m, Some(self.scope(sid).imports[i].filter.clone())));
                 }
             }
             for entry in self.scope(sid).usings.clone() {
                 match entry {
-                    scope::UsingEntry::Module(m, _) => modules.push(m),
+                    scope::UsingEntry::Module(m, filter) => {
+                        modules.push((m, filter.as_deref().cloned()))
+                    }
                     scope::UsingEntry::Place {
                         ty, ..
                     } => {
@@ -1940,16 +1942,21 @@ impl Compiler {
                 }
             }
             if self.scope(sid).kind == ScopeKind::Module {
-                modules.extend([self.preload, self.runtime_support].into_iter().flatten());
+                modules.extend(
+                    [self.preload, self.runtime_support]
+                        .into_iter()
+                        .flatten()
+                        .map(|m| (m, None)),
+                );
             }
             current = self.scope(sid).parent;
         }
-        let mut done = HashSet::default();
-        while let Some(m) = modules.pop() {
-            if !done.insert(m) {
-                continue;
+        while let Some((m, filter)) = modules.pop() {
+            let mut names = self.ide_module_exports(m, &mut HashSet::default());
+            if let Some(filter) = filter {
+                Self::ide_filter_names(&mut names, &filter);
             }
-            for n in self.ide_module_exports(m, &mut modules) {
+            for n in names {
                 if seen.insert(Sym::intern(&n.name)) {
                     out.push(n);
                 }
@@ -1958,8 +1965,17 @@ impl Compiler {
         out
     }
 
-    /// Exported names of a module; modules it re-exports are pushed to `more`.
-    fn ide_module_exports(&mut self, m: ModuleId, more: &mut Vec<ModuleId>) -> Vec<IdeName> {
+    /// Exported names, applying each edge filter before merging transitive names.
+    /// Only the active path is guarded: another filtered path to the same module
+    /// may expose additional names and must still be traversed.
+    fn ide_module_exports(
+        &mut self,
+        m: ModuleId,
+        visiting: &mut HashSet<ModuleId>,
+    ) -> Vec<IdeName> {
+        if !visiting.insert(m) {
+            return Vec::new();
+        }
         let scope = self.modules[m.0 as usize].scope;
         let _ = self.expand_pending(scope);
         let mut ids: Vec<EntityId> = self
@@ -1971,46 +1987,67 @@ impl Compiler {
             })
             .collect();
         ids.sort_by_key(|&e| self.entity(e).name.as_str());
-        for index in self.modules[m.0 as usize].exported_using_imports.clone() {
-            if let Ok(Some(inner)) = self.import_module(scope, index) {
-                more.push(inner);
-            }
-        }
         let mut names: Vec<IdeName> = ids
             .into_iter()
             .filter(|&e| !self.entity(e).file_private)
             .filter_map(|e| self.ide_entity_name(e))
             .collect();
-        // Members of globals the module exports with `using` (see `module_lookup`).
-        for entry in self.modules[m.0 as usize].exported_usings.clone() {
-            names.extend(self.ide_using_members(&entry));
+        for index in self.modules[m.0 as usize].exported_using_imports.clone() {
+            if let Ok(Some(inner)) = self.import_module(scope, index) {
+                let mut inherited = self.ide_module_exports(inner, visiting);
+                Self::ide_filter_names(&mut inherited, &self.scope(scope).imports[index].filter);
+                names.extend(inherited);
+            }
         }
+        for entry in self.modules[m.0 as usize].exported_usings.clone() {
+            names.extend(self.ide_using_members_inner(&entry, visiting));
+        }
+        visiting.remove(&m);
+        let mut seen = HashSet::default();
+        names.retain(|n| seen.insert(n.name.clone()));
         names
     }
 
+    fn ide_filter_names(names: &mut Vec<IdeName>, filter: &ast::UsingFilter) {
+        match filter {
+            ast::UsingFilter::Map(pairs) => {
+                *names = pairs
+                    .iter()
+                    .filter_map(|(new, old)| {
+                        let mut n = names.iter().find(|n| n.name == old.name.as_str())?.clone();
+                        n.name = new.name.to_string();
+                        Some(n)
+                    })
+                    .collect();
+            }
+            filter => names.retain(|n| !scope::filter_hides(filter, Sym::intern(&n.name))),
+        }
+    }
+
     fn ide_using_members(&mut self, entry: &scope::UsingEntry) -> Vec<IdeName> {
+        self.ide_using_members_inner(entry, &mut HashSet::default())
+    }
+
+    fn ide_using_members_inner(
+        &mut self,
+        entry: &scope::UsingEntry,
+        visiting: &mut HashSet<ModuleId>,
+    ) -> Vec<IdeName> {
         match entry {
             scope::UsingEntry::Place {
                 ty, ..
             } => self.ide_members(IdeReceiver::Value(*ty)),
             scope::UsingEntry::Type(ty) => self.ide_members(IdeReceiver::Type(*ty)),
-            scope::UsingEntry::Module(m, _) => self.ide_members(IdeReceiver::Module(*m)),
-            scope::UsingEntry::Filtered(base, filter) => {
-                let mut names = self.ide_using_members(base);
-                match &**filter {
-                    ast::UsingFilter::Map(pairs) => {
-                        names = pairs
-                            .iter()
-                            .filter_map(|(new, old)| {
-                                let mut n =
-                                    names.iter().find(|n| n.name == old.name.as_str())?.clone();
-                                n.name = new.name.to_string();
-                                Some(n)
-                            })
-                            .collect();
-                    }
-                    filter => names.retain(|n| !scope::filter_hides(filter, Sym::intern(&n.name))),
+            scope::UsingEntry::Module(m, filter) => {
+                let mut names = self.ide_module_exports(*m, visiting);
+                if let Some(filter) = filter {
+                    Self::ide_filter_names(&mut names, filter);
                 }
+                names
+            }
+            scope::UsingEntry::Filtered(base, filter) => {
+                let mut names = self.ide_using_members_inner(base, visiting);
+                Self::ide_filter_names(&mut names, filter);
                 names
             }
         }
@@ -2142,7 +2179,7 @@ impl Compiler {
     pub fn ide_members(&mut self, recv: IdeReceiver) -> Vec<IdeName> {
         let mut out = Vec::new();
         match recv {
-            IdeReceiver::Module(m) => return self.ide_module_exports(m, &mut Vec::new()),
+            IdeReceiver::Module(m) => return self.ide_module_exports(m, &mut HashSet::default()),
             IdeReceiver::Type(t) => {
                 if let TypeKind::Enum(e) = self.types.kind(t) {
                     let info = self.types.enum_info(*e);

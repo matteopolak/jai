@@ -26,7 +26,10 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     let mut code = String::from("pub static BUNDLED: &[(&str, &[u8])] = &[\n");
     // Bootstrap support is part of stdlib, so one tree is sufficient for every host.
-    let source = manifest.join("../../stdlib");
+    println!("cargo:rerun-if-env-changed=JAIC_STDLIB");
+    let source = std::env::var_os("JAIC_STDLIB")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| manifest.join("../../stdlib"));
     println!("cargo:rerun-if-changed={}", source.display());
     let root = source.canonicalize().expect("standard-library source tree");
     let mut files = Vec::new();

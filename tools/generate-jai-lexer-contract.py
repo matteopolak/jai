@@ -12,10 +12,12 @@ def main():
     inventory = source.split("## Public type members")[0]
     constants = re.findall(r"^- `([A-Z_]+) :: (\d+|false)`$", inventory, re.M)
     chunks = ["// Generated from the reviewed Jai_Lexer public contract.\n"]
-    chunks += [name + " :: " + value + ";" for name, value in constants]
+    chunks += [name + " :: " + value + ";" for name, value in sorted(constants)]
     chunks.append("Table_String :: #type,isa string;")
     backing = {"Token_Type": "enum s16", "Note_Flags": "enum_flags u8", "Value_Flags": "enum_flags u32", "Hex_Digit_Type": "enum u8", "Lexer": "struct"}
-    for name, body in re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S):
+    sections = re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S)
+    # Alphabetic lookup within vocabulary, token records, then scanner state.
+    for name, body in sorted(sections, key=lambda item: (item[0] == "Lexer", item[0])):
         block = re.search(r"```jai\n(.*?)```", body, re.S)
         if block:
             chunks.append(re.sub(r"\\\s*_", "_", block[1]).strip())
@@ -29,14 +31,14 @@ def main():
         lines.append("}")
         chunks.append("\n".join(lines))
     functions = list(dict.fromkeys(re.findall(r"^- `([a-z_]+) ::", inventory, re.M)))
-    chunks += [name + " :: Impl." + name + ";" for name in functions]
+    chunks += [name + " :: Impl." + name + ";" for name in sorted(functions)]
     chunks.append('#scope_file\nP :: #import "Pool";\nImpl :: #import "internal/jai-lexer";')
     out = ROOT / "stdlib/Jai_Lexer/module.jai"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n\n".join(chunks) + "\n")
     keyword_names = re.findall(r"^- `(KEYWORD_[A-Z_]+)\s*::", source, re.M)
     lines = ["// Generated keyword spellings and documented input operators.", "check_for_keyword :: (token: *J.Token) -> J.Token_Type {"]
-    for name in keyword_names:
+    for name in sorted(keyword_names):
         lines.append('    if token.ident_value.name == "' + name.removeprefix("KEYWORD_").lower() + '" { token.type = .' + name + '; return token.type; }')
     lines += ["    return token.type;", "}", "#scope_module", "punctuation :: (lexer: *J.Lexer) -> (type: J.Token_Type, width: s64) {"]
     operators = {
@@ -49,7 +51,7 @@ def main():
         "&=": "BITWISE_AND_EQUALS", "|=": "BITWISE_OR_EQUALS", "^=": "BITWISE_XOR_EQUALS", ".*": "POSTFIX_DEREFERENCE",
         "---": "TRIPLE_MINUS", "--": "DOUBLE_MINUS", ",,": "DOUBLE_COMMA", ".{": "BEGIN_STRUCT_LITERAL", ".[": "BEGIN_ARRAY_LITERAL", "=>": "QUICK_LAMBDA",
     }
-    for spelling, name in sorted(operators.items(), key=lambda item: -len(item[0])):
+    for spelling, name in sorted(operators.items(), key=lambda item: (-len(item[0]), item[0])):
         lines.append('    if matches_text(lexer, "' + spelling + '") return .' + name + ', ' + str(len(spelling)) + ';')
     lines += ["    return cast(J.Token_Type) look(lexer, 0), 1;", "}", '#scope_file', 'J :: #import "Jai_Lexer";']
     helper = ROOT / "stdlib/internal/jai-lexer/keywords.jai"

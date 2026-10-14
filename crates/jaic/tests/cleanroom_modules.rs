@@ -57,6 +57,60 @@ fn module_arguments_retain_literal_precision_and_use_real_conversion() {
 }
 
 #[test]
+fn editor_completions_apply_import_and_transitive_reexport_filters() {
+    use jaic::sema::ide::IdeReceiver;
+    use jaic::sema::scope::ScopeId;
+    use jaic::sema::value::ModuleId;
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Impl/module.jai",
+                "shown :: 7; hidden :: 9; extra :: 11;",
+            ),
+            (
+                "/lib/Inner/module.jai",
+                "using,except(hidden) I :: #import \"Impl\";",
+            ),
+            (
+                "/lib/Facade/module.jai",
+                "using,only(shown) I :: #import \"Inner\";",
+            ),
+            (
+                "/app/main.jai",
+                "using,only(shown) I :: #import \"Impl\"; F :: #import \"Facade\"; #assert(shown == F.shown);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+    let facade = c
+        .modules
+        .iter()
+        .position(|m| m.path.as_deref() == Some(Path::new("/lib/Facade/module.jai")))
+        .unwrap();
+    let exported = c.ide_members(IdeReceiver::Module(ModuleId(facade as u32)));
+    assert!(exported.iter().any(|n| n.name == "shown"));
+    assert!(
+        !exported
+            .iter()
+            .any(|n| n.name == "hidden" || n.name == "extra")
+    );
+    let file = (0..c.sources.len())
+        .map(|i| jaic::source::FileId(i as u32))
+        .find(|&f| c.sources.get(f).path == "/app/main.jai")
+        .unwrap();
+    let scope = c.scopes.iter().position(|s| s.file == Some(file)).unwrap();
+    let visible = c.ide_visible(ScopeId(scope as u32), file, u32::MAX);
+    assert!(visible.iter().any(|n| n.name == "shown"));
+    assert!(
+        !visible
+            .iter()
+            .any(|n| n.name == "hidden" || n.name == "extra"),
+        "{visible:?}"
+    );
+}
+
+#[test]
 fn bootstrap_alias_preserves_types_and_storage() {
     let mut c = compiler(
         &[

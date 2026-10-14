@@ -52,6 +52,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
+- [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
 - [Independent runtime Jai lexer](compiler/runtime-jai-lexer.md): implementation, supported recovery and interpreter/native verification
 - [Compiler records (messages, syntax trees, type descriptors)](metaprogramming/compiler-records.md)
 - [Metaprogram plugins (`+Name`)](metaprogramming/metaprogram-plugins.md)

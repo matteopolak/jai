@@ -142,3 +142,23 @@ overload. Extensions must remain intact. No legacy compatibility overload was
 invented and no supplied formatter binary was executed. Jai format/check remains
 blocked pending an authorized tool/dependency integration solution; it is not
 claimed passing. Retry the source build after integration changes.
+
+## Editor and browser integration
+
+Module completion follows transitive exported imports and retains every
+only/except filter. Unqualified completion also applies import/using filters.
+Cycle protection follows the active path so independent filtered paths can
+contribute different names. The original core regression checks qualified facade
+and unqualified filtered completion; module regressions now total 33.
+
+The browser build can select independent sources with `JAIC_STDLIB`. Its new
+Compiler-record/global-data regression passes. The broader pre-existing browser
+suite passes 17/27 against the overlay; see [exact failures](compiler/browser-integration-status.md).
+LSP library and framing suites pass 25 and three tests. Core/browser clippy passes
+with warnings denied.
+
+Generated facade declarations use independent topical/alphabetic organization,
+preserving member layouts and explicit enum values. Both generators produce
+byte-identical output on repeated regeneration. Source-built jailint passes the
+regenerated facade/private trees, and all 19 focused fixtures pass again in both
+modes. Jai formatter execution remains blocked as described above.

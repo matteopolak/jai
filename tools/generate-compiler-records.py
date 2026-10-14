@@ -24,13 +24,30 @@ def unescape(text):
     return re.sub(r"\\\s*_", "_", text)
 
 
+def declaration_order(item):
+    """Independent topical ordering; public member/layout order stays untouched."""
+    name, _ = item
+    if name.startswith(("Data_", "Global_", "Runtime_", "Type_Info_")):
+        group = 0  # Runtime storage and reflection.
+    elif name.startswith(("Build_", "Llvm_", "X64_", "Optimization_", "Version_")):
+        group = 1  # Target configuration.
+    elif name.startswith(("Message", "Intercept_", "Workspace_", "Provided_", "Report")):
+        group = 2  # Workspace lifecycle and events.
+    elif name.startswith(("Code_", "Operator_", "Get_Root_")):
+        group = 3  # Syntax/reflection records.
+    else:
+        group = 4  # Measurement and ancillary records.
+    return group, name
+
+
 def main():
     source = SPEC.read_text()
     inventory = source.split("## Public type members")[0]
     declarations = dict(re.findall(r"^- `([A-Za-z_][A-Za-z_0-9]*) :: ((?:struct|enum|enum_flags)[^`]*)`$", inventory, re.M))
     chunks = ["// Generated from docs/specs/stdlib/modules/compiler.md; edit the spec/generator.\n"]
     registered = []
-    for name, body in re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S):
+    sections = re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S)
+    for name, body in sorted(sections, key=declaration_order):
         if name in {"Run_Directive_Report", "Message_Performance_Report"}:
             continue
         if name not in declarations:
