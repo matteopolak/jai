@@ -122,6 +122,32 @@ null-deref-plain-load mismatch; supply a minimal independent semantic reproducer
 through the compiler owner rather than relaxing pointer safety or expected output.
 # Refresh-nine request: foundations helper contract synchronization
 
+Additional reviewed mismatch: `internal/basic/logging.jai::dispatch_log` invokes
+the logger for an empty formatted message. Latest Basic requires no dispatch for
+empty messages; retain nonempty metadata/lifetime/default logger assertions.
+
+Actual strict integrated lint exposed the fixture's unused `allocator` in
+`memory-debugger-interface.jai::check_free`. Integration will strengthen that hook
+to assert the valid allocator procedure, as the neighboring hook already does.
+The foundation runner now selects real native target profiles and requires every
+owned file in jailint's checked-file manifest; earlier quiet partial passes are
+not accepted. Pending alias probe imports use their real test module directory.
+
+## Native Windows feedback follow-up
+
+Filtered coordinator evidence at `cc07c00` retains real failures: zero-argument
+interpreter startup reports Windows command-line conversion failure; renderer
+native O0/O2 requests nonexistent `gl.lib`/`gdi.lib`; ARM64 ordinary corpus startup
+selects an unsupported x64 handler. Integration traced zero-argument failure to
+the compiler's deliberate null CommandLineToArgvW interception interacting with
+the stricter real runtime. A separate next snapshot will preserve an explicit
+empty C argv before Unicode normalization, remove that fabricated API failure,
+and regenerate Windows library mappings to official opengl32/gdi32 names.
+Actual Windows execution still belongs to coordinator CI. Compiler owner should
+inspect AUTO versus explicit ON backtrace propagation for ARM64; do not disable
+an explicit unsupported request or invent ARM64 handler layouts.
+
+
 Owner: foundations; integrated snapshot `cc089d7`. Latest reviewed
 `docs/specs/stdlib/modules/basic.md` now settles these choices. Please update
 implementation and original behavior assertions together, preserving their coverage:
