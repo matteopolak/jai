@@ -29,6 +29,9 @@ main :: () {
     null_integer: *s64;
 
     assert(!scan2("1", "%d", null_integer));
+    empty: Any;
+
+    assert(!scan2("1", "%d", empty));
     ok, values := scan("%d %s", "-8 \"yes\"");
 
     assert(ok && values.count == 2);

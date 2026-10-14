@@ -19,6 +19,10 @@ Implemented progress:
 - Added canonical Formatter and FormatInt records, formatInt and real integer
   formatting for bases 2–36, minimum digits, padding and grouping. Signed
   minimum and unsigned maximum values are covered.
+  Added the reviewed FormatFloat, FormatStruct, FormatArray and Print_Style
+  records and real formatFloat/formatStruct constructors, with tests for
+  canonical names, promoted value storage, nested enums and defaults. Float
+  and aggregate printing itself remains pending the output contract review.
 - Added String wildcard matching with bounded iterative star backtracking,
   byte sets/ranges, scan/scan2 with actual parsing and pointer writes. Scan
   values occupy temporary storage; earlier results/writes survive later
@@ -33,6 +37,9 @@ Implemented progress:
   default scalar-key Hash_Table growth, find and removal now work.
 - Added Unix Basic working-directory get/set and exit. getcwd grows its buffer
   on ERANGE and asserts other failures rather than fabricating a directory.
+  Added is_integer_type from reflection metadata and sleep_milliseconds using
+  nanosleep with EINTR retry (Sleep on Windows). The Unix sleep regression
+  measures elapsed monotonic time; it does not accept an empty sleep stub.
 - File_Visit_Info is now declared once in a portable private module and exported
   on all targets. The Unix filesystem code aliases that same declaration.
   Its former Unix-only facade visibility was a reviewed shape omission.
@@ -40,10 +47,17 @@ Implemented progress:
   using their synchronized reviewed signatures. Traversal uses real lstat/stat,
   detects ancestor cycles, respects callback pruning, and returns errors from
   directory opening, reading and closing.
+- Windows Basic get/set working directory and exit, plus File_Utilities
+  metadata, copy/rename, visitation, file lists, directory copy and path-prefix
+  existence helpers now have real wide-Win32 implementations. UTF conversions
+  reject invalid input; file identities prevent ancestor cycles and copying a
+  source inside itself. These have been cross-checked, not executed on Windows.
+  [Native ABI details and sources](foundations-native-abi.md) document the narrow
+  private supplements and platform limits.
 
 Verification uses source-built compiler/jailint from the compiler worker's NEW
 independent Rust sources copied into target/foundation-integration, plus NEW
-POSIX bindings copied read-only from the bindings worker. No peer checkout is
+POSIX/Windows bindings copied read-only from the bindings worker. No peer checkout is
 modified. Source snapshots and build outputs are durable under target/.
 
 Commands:
@@ -56,14 +70,33 @@ target/jaifmt [owned paths]
 target/jaifmt --check [owned paths]
 ```
 
-The focused runner checks nine real cases in interpreter/native O0/O2 and
-type-checks unused code on Linux x64/arm64, macOS arm64, Windows x64, and wasm64.
-Working-directory and native filesystem APIs are Unix-only and those cases are
-not requested on Windows/wasm. Other cases run unchanged across those checks.
+The focused runner checks twelve real cases in interpreter/native O0/O2.
+Unused-code checks pass on Linux x64/arm64, macOS arm64, Windows x64/arm64 and
+wasm64. The Windows-specific fixture is also cross-checked on both Windows
+CPUs, including callback instantiations; it requires an actual Windows host
+to execute and is not counted as a host runtime pass. Unix File-dependent
+fixtures are not requested on Windows/wasm; process exit is not requested on
+wasm because that target has no reviewed Basic.exit export.
 Filesystem coverage uses real files/directories and tests binary content,
 hard-link self-copy protection, truncation, empty-directory preservation,
-destination-inside-source rejection and rename. Builder checks also pass with
-`-add 'ENABLE_ASSERT :: true;'` in the interpreter.
+destination-inside-source rejection and rename. A root-level
+`-add 'ENABLE_ASSERT :: true;'` does not enable the optional module-local
+Buffer.ensured_count field: a direct field-access check confirms it remains
+absent. The configuration's declaration/propagation contract is unresolved;
+the default layout is tested, but the enabled layout is not claimed verified.
+Additional cases cover actual stdout/stderr bytes and returned counts,
+temporary/normal string lifetime, process exit status 17, allocator identity
+during builder transfer, symlink following/filtering and traversal cycles.
+file_list now shares the real visitor rather than maintaining a duplicate
+walker that incorrectly reported an ancestor link as a filesystem error.
+
+The expanded macOS x64 unused-code check FAILS in the peer POSIX declarations:
+`__shmid_ds_new.shm_perm` references an undeclared ipc_perm for that target.
+The current new binding source declares ipc_perm only for Linux and macOS
+arm64. Reproducer: tests/portable-stdlib/pending/macos-x64-posix.jai, with
+`-check -no_dce -os macos -cpu x64`. No peer file was changed and no placeholder
+native layout was introduced. The --cross runner continues independent
+targets but returns failure for the overall run until this is resolved.
 
 Unchanged real jaifmt/main.jai builds at O2 against production core APIs. Its
 CLI regression covers dirty-file --check exit status, recursive rewrite,
@@ -72,7 +105,9 @@ String, Hash and File_Utilities facades/internals and focused tests were
 formatted with this executable; --check passes. Source-built jailint passes
 with warnings denied over the same scope.
 
-Full float/aggregate formatting, the scalar FNV operation's unresolved byte/
-word behavior, and non-Unix filesystem backends remain incomplete. See the
+Full float/aggregate formatting and the scalar FNV operation's unresolved
+byte/word behavior remain incomplete. Windows runtime testing remains required;
+Windows jaifmt also depends on the portable worker's File/runtime backends.
+See the
 [focused questions](specs/stdlib/foundations-questions.md) for exact missing
 contracts. Full integration/corpus/release verification remains coordinator work.

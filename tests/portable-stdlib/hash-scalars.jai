@@ -43,5 +43,29 @@ main :: () {
     for i: 1..128 assert(HT.table_contains(*table, i));
 
     assert(table.count == 128);
+    flags: HT.Table(bool, int);
+
+    defer HT.table_reset(*flags);
+    HT.table_add(*flags, true, 9);
+    HT.table_add(*flags, false, 7);
+    found, flag_value := HT.table_find(*flags, true);
+
+    assert(found && flag_value == 9);
+    found, flag_value = HT.table_find(*flags, false);
+    assert(found && flag_value == 7);
+    pointers: HT.Table(*void, int);
+
+    defer HT.table_reset(*pointers);
+    HT.table_add(*pointers, pointer, 3);
+    pointer_found, pointer_value := HT.table_find(*pointers, pointer);
+
+    assert(pointer_found && pointer_value == 3);
+    enums: HT.Table(Signed, int);
+
+    defer HT.table_reset(*enums);
+    HT.table_add(*enums, Signed.LOW, 4);
+    enum_found, enum_value := HT.table_find(*enums, Signed.LOW);
+
+    assert(enum_found && enum_value == 4);
     print("ok\n");
 }

@@ -7,6 +7,7 @@ State :: struct {
     directories: int;
     saw_leaf: bool;
     prune: bool;
+    links: int;
 }
 
 main :: () {
@@ -44,12 +45,33 @@ main :: () {
     info.modification_time = APOLLO_TIME_INVALID;
     assert(U.add_modtime_and_size_if_missing(*info));
     assert(info.size == 3 && !info.had_error);
+    assert(make_symlink("sub", "foundation-visit/link"));
+    defer assert(F.file_delete("foundation-visit/link"));
+    assert(make_symlink("..", "foundation-visit/sub/back"));
+    defer assert(F.file_delete("foundation-visit/sub/back"));
+    state = .{};
+    assert(U.visit_files("foundation-visit", true, *state, visitor, follow_directory_symlinks = false));
+    assert(state.files == 2 && state.links == 2);
+    state = .{};
+    assert(U.visit_files("foundation-visit", true, *state, visitor));
+    assert(state.files == 3 && state.links == 3);
+    // Distinct paths to sub are walked; links to ancestors do not recurse forever.
+    state = .{};
+    assert(U.visit_files("foundation-visit", true, *state, visitor, visit_symlinks = false, follow_directory_symlinks = false));
+    assert(state.links == 0 && state.files == 2);
+    list := U.file_list("foundation-visit", true);
+
+    assert(list.count == 3);
+    for path: list free(path);
+
+    array_free(list);
     print("ok\n");
 }
 
 visitor :: (info: *U.File_Visit_Info, state: *State) {
     assert(!info.had_error);
     assert(info.full_name.count >= info.short_name.count);
+    if info.is_symlink state.links += 1;
 
     if info.is_directory {
         state.directories += 1;
@@ -63,3 +85,16 @@ visitor :: (info: *U.File_Visit_Info, state: *State) {
         }
     }
 }
+
+make_symlink :: (target: string, path: string) -> bool {
+    ctarget := to_c_string(target);
+
+    defer free(ctarget);
+    cpath := to_c_string(path);
+
+    defer free(cpath);
+
+    return P.symlink(ctarget, cpath) == 0;
+}
+
+P :: #import "POSIX";

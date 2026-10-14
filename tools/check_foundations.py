@@ -7,7 +7,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "basic-filesystem",
-         "file-utilities-shape", "foundation-filesystem", "hash-scalars", "file-visitation")
+         "file-utilities-shape", "foundation-filesystem", "hash-scalars", "file-visitation", "basic-output", "formatter-records", "basic-sleep")
 
 
 def main():
@@ -56,29 +56,53 @@ def main():
             raise RuntimeError("jaifmt modified a pruned hidden directory")
         print("passed unchanged jaifmt CLI: check/rewrite/recursion/pruning/stdin/idempotence", flush=True)
 
-    def run(command, expected=None):
+    def run(command, expected=None, expected_stderr="", expected_code=0):
         result = subprocess.run(list(map(str, command)), cwd=ROOT, env=env,
                                 capture_output=True, text=True, timeout=60)
-        if result.returncode or result.stderr or (expected is not None and result.stdout != expected):
+        if result.returncode != expected_code or result.stderr != expected_stderr or (expected is not None and result.stdout != expected):
             raise RuntimeError(f"{command}\nexit={result.returncode}\n{result.stdout}{result.stderr}")
+
+    for name, diagnostic in (("hash-unsupported", "get_hash requires an integer, boolean, enum, pointer, or float"),
+                             ("hash-seed-visibility", "no exported member `HASH_INIT`"),
+                             ("builder-buffer-visibility", "no exported member `Buffer`")):
+        source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
+        rejected = subprocess.run([compiler, "-check", source], cwd=ROOT, env=env,
+                                  capture_output=True, text=True, timeout=60)
+        if rejected.returncode != 1 or diagnostic not in rejected.stderr:
+            raise RuntimeError(f"expected contract rejection {name}: {rejected}")
+    print("passed unsupported-hash and facade-visibility rejection checks", flush=True)
 
     for name in CASES:
         source = ROOT / f"tests/portable-stdlib/{name}.jai"
-        run([compiler, "-interp", source], "ok\n")
+        expected = ("out 7++", "err true", 17) if name == "basic-output" else ("ok\n", "", 0)
+        run([compiler, "-interp", source], *expected)
         for level in ("O0", "O2"):
             binary = output / f"{name}-{level}"
             run([compiler, source, f"-{level}", "-exe", binary])
-            run([binary], "ok\n")
+            run([binary], *expected)
         print(f"passed interpreter/native O0/O2: {name}", flush=True)
     if args.cross:
-        for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("windows", "x64"), ("wasm", "wasm64")):
-            for name in CASES:
-                if name in ("basic-filesystem", "foundation-filesystem", "file-visitation") and os_name in ("windows", "wasm"):
-                    continue
-                target = ["-target", "wasm64-unknown-wasi"] if os_name == "wasm" else ["-os", os_name, "-cpu", cpu]
-                run([compiler, "-check", "-no_dce", *target,
-                     ROOT / f"tests/portable-stdlib/{name}.jai"])
-            print(f"checked unused code: {os_name}/{cpu}", flush=True)
+        failures = []
+        for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("macos", "x64"), ("windows", "x64"), ("windows", "arm64"), ("wasm", "wasm64")):
+            try:
+                for name in CASES:
+                    if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep") and os_name in ("windows", "wasm"):
+                        continue
+                    if name == "basic-output" and os_name == "wasm":
+                        continue
+                    target = ["-target", "wasm64-unknown-wasi"] if os_name == "wasm" else ["-os", os_name, "-cpu", cpu]
+                    run([compiler, "-check", "-no_dce", *target,
+                         ROOT / f"tests/portable-stdlib/{name}.jai"])
+                if os_name == "windows":
+                    run([compiler, "-check", "-no_dce", "-os", os_name, "-cpu", cpu,
+                         ROOT / "tests/portable-stdlib/windows-foundations.jai"])
+                    print("checked Windows-specific filesystem specializations (not executed)", flush=True)
+                print(f"checked unused code: {os_name}/{cpu}", flush=True)
+            except RuntimeError as error:
+                failures.append(f"{os_name}/{cpu}: {error}")
+                print(f"FAILED target {os_name}/{cpu}; continuing independent targets", flush=True)
+        if failures:
+            raise RuntimeError("\n".join(failures))
 
 
 if __name__ == "__main__":
