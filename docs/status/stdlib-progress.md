@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `a435581`, POSIX crash runtime/startup integration. Earlier
+Latest committed checkpoint: `1074da5`, classic ZIP directory parsing. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -18,12 +18,20 @@ expanded regression passes 58 interpreter/native cases, ten SMTP scenarios,
 four parent-lifetime scenarios, four expected faults in both execution modes,
 Xar reverse rejection, startup ON/OFF and selected Linux/Windows target checks.
 
-Current verified checkpoint: classic Zip_File_Directory parsing and ownership,
+Previously verified checkpoint: classic Zip_File_Directory parsing and ownership,
 including malformed second-record cleanup under a counting allocator. The full
 focused run now passes 59 interpreter/native cases and six expected faults in
 both modes, retaining the SMTP, parent-lifetime, startup and target checks above.
 All 181 owned Jai files pass jaifmt --check and jailint -D warnings. The ZIP field
 and extension contract gaps are documented, not asserted as established behavior.
+
+Current verified checkpoint: CAS-based Atomics arithmetic/bitwise operations and
+the exact alias declarations. The three alias intrinsics lack source-compiler
+lowering; the original pending reproducer and handoff are documented. Full focused
+regression passes 61 interpreter/native cases, seven expected faults in both
+modes, two compile-time rejections, all prior SMTP/startup/parent checks and selected
+Linux/Windows checks. All 188 owned Jai files pass format/lint. Four-worker tests
+verify prior-value uniqueness, bit claims and zero-reaching decrement behavior.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

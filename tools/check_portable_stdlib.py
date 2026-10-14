@@ -26,6 +26,7 @@ EXPECTED = {
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 FAULT_EXPECTATIONS = {
+    "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -133,12 +134,16 @@ def main():
                 if result.returncode not in {-signal.SIGSEGV, -signal.SIGBUS}:
                     raise RuntimeError("crash handler failed to preserve fatal signal termination")
         print("passed expected runtime fault", source.name, flush=True)
-    negative = ROOT / "tests/portable-stdlib/negative/xar-reverse.jai"
-    result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
-                            env=env, text=True, capture_output=True, timeout=45)
-    if result.returncode == 0 or "reverse Xar iteration is unsupported" not in result.stderr:
-        raise RuntimeError(f"expected compile-time reverse iteration rejection: {result.stdout}{result.stderr}")
-    print("passed compile-time Xar reverse rejection", flush=True)
+    for name, diagnostic in [
+        ("xar-reverse", "reverse Xar iteration is unsupported"),
+        ("atomic-byte-bit", "atomic bit test requires a 2-, 4-, or 8-byte target"),
+    ]:
+        negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
+        result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
+                                env=env, text=True, capture_output=True, timeout=45)
+        if result.returncode == 0 or diagnostic not in result.stderr:
+            raise RuntimeError(f"expected compile-time rejection: {result.stdout}{result.stderr}")
+        print("passed compile-time rejection", name, flush=True)
     mail = [sys.executable, "-B", str(ROOT / "tools/check_portable_mail.py"),
             "--jaic", str(compiler), "--stdlib", str(root)]
     if args.native:
@@ -148,7 +153,7 @@ def main():
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory"}
-    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init"}
+    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:

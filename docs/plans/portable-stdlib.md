@@ -129,3 +129,9 @@ retain borrowed name views into owned directory storage, preserve the documented
 retained-file ownership, and reject unsupported ZIP64/multidisk cases. Require
 the specified assertions for signatures/descriptors. Verify late parse cleanup
 with allocation accounting, and record unresolved position/extension contracts.
+
+Atomics increment: preserve bootstrap aliases as entities and implement remaining
+integer/pointer arithmetic plus integer/enum bitwise updates with supported CAS.
+Retain a minimal failing canonical-intrinsic compiler reproducer. Verify width
+wrapping, byte pointer steps, negative bit indices and contended prior values;
+do not count missing load/store/exchange lowering as executable alias support.

@@ -10,7 +10,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [android-egl](specs/stdlib/modules/android-egl.md) | Reserved for bindings worker; not implemented or modified here |
 | [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Owned portable scope; not implemented |
 | [android](specs/stdlib/modules/android.md) | Reserved for bindings worker; not implemented or modified here |
-| [atomics](specs/stdlib/modules/atomics.md) | Owned portable scope; not implemented |
+| [atomics](specs/stdlib/modules/atomics.md) | CAS-based arithmetic/bitwise operations implemented and interpreter/native contention tested; exact load/store/exchange aliases declared but execution blocked by missing compiler intrinsic lowering. Scalar domain/conversion details need review |
 | [autorun](specs/stdlib/modules/autorun.md) | Owned portable scope; not implemented |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
