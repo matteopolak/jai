@@ -174,6 +174,7 @@ pub const TRAP_DIVIDE_BY_ZERO: u64 = 6;
 pub const TRAP_NULL_POINTER: u64 = 7;
 
 pub const TRAP_ATOMIC_ALIGNMENT: u64 = 8;
+pub const TRAP_VARIADIC_SIZE: u64 = 9;
 
 /// `a` of a `TRAP_NULL_POINTER` failure: what the access did.
 pub const NULL_READ: u64 = 0;
@@ -252,6 +253,9 @@ pub fn check_message(reason: u64, a: u64, b: u64) -> String {
             )
         }
         TRAP_ATOMIC_ALIGNMENT => format!("atomic address {a:#x} must be aligned to {b} bytes"),
+        TRAP_VARIADIC_SIZE => {
+            format!("variadic segment count {a} exceeds the remaining pack capacity {b}")
+        }
         _ => "runtime check failed".into(),
     }
 }
@@ -531,6 +535,12 @@ pub enum Inst {
         dst: Val,
         base: Val,
         offset: Val,
+    },
+    /// Allocate runtime-sized, aligned storage until the current procedure returns.
+    StackAlloc {
+        dst: Val,
+        size: Val,
+        align: u64,
     },
     /// Copy `size` bytes (non-overlapping).
     Copy {
@@ -1433,6 +1443,14 @@ impl fmt::Display for Func {
 /// Calls `def` for each value `inst` defines and `use_` for each it reads.
 pub fn inst_vals(inst: &Inst, def: &mut impl FnMut(Val), use_: &mut impl FnMut(Val)) {
     match inst {
+        Inst::StackAlloc {
+            dst,
+            size,
+            ..
+        } => {
+            def(*dst);
+            use_(*size);
+        }
         Inst::IConst {
             dst, ..
         }

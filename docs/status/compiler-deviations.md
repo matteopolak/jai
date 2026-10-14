@@ -1,5 +1,15 @@
 # Compiler deviations and implementation gaps
 
+Current continuation: mixed variadic packs use caller stack storage; yielding
+continuations retain dynamic storage on the thread frame stack. Baked packs
+snapshot interpreter memory and reuse content-keyed storage. Native/WASM64 O0/O2
+execution passes, including unwind/rewind. The focused WASM harness provides real
+memcpy; it is not production runtime integration. Interface matching compares
+full procedure types and macro category; argument names/defaults and generic
+required-interface declarations remain unspecified/unverified. Register, CLI
+plugin and independent probe/reflection repairs remain outstanding. No module,
+path or fixture bypass is used. See compiler/mixed-variadics-and-interfaces.md.
+
 Scope: current producer source and handoff documents, plus this task's atomic,
 context, reflection, measured-report and formatting work. This is an active ledger, not a claim of
 full compatibility or production integration. Existing detailed limits remain in

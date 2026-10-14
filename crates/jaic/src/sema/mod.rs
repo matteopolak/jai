@@ -27,6 +27,7 @@ mod format_check;
 pub mod ide;
 pub mod ide_meta;
 mod ide_sketch;
+mod interfaces;
 mod lambda;
 mod lower;
 mod modify;
