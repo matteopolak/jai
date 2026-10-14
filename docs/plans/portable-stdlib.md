@@ -58,3 +58,12 @@ restart releases only owned bytes and preserves the sticky failure flag. Parse
 decimal bracketed version lines when enabled, strip one-byte comments, and track
 physical lines. Return independently allocated helper strings so handler teardown
 cannot dangle them. Record unresolved ownership/version whitespace contracts.
+
+Overwriting_Allocator increment: retain the exact public table/mutex shape.
+Capture its base allocator at construction, allocate bookkeeping from that base,
+and serialize allocation tracking and byte poisoning with the real Thread mutex.
+Resize allocates first, preserves the old region on failure, copies the common
+prefix, poisons/frees the old region, and fills the growth suffix. Validate using
+a real forwarding allocator that inspects poison before native free, plus an
+injected allocation failure. Integrate the foundations worker's reviewed pointer
+hash in target only; do not change its sources or invent a replacement hash.

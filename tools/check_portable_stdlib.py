@@ -44,6 +44,8 @@ def main():
     parser.add_argument("--posix-root", required=True, type=Path,
                         help="new independently implemented POSIX module directory")
     parser.add_argument("--native", action="store_true")
+    parser.add_argument("--hash-root", type=Path,
+                        help="new independently implemented Hash module directory for allocator integration")
     parser.add_argument("--check-target", action="append", default=[],
                         help="OS/CPU pair, e.g. linux/x64; checks portable cases only")
     args = parser.parse_args()
@@ -53,6 +55,9 @@ def main():
     root = ROOT / "target/portable-integration-stdlib"
     shutil.copytree(ROOT / "stdlib", root, dirs_exist_ok=True)
     shutil.copytree(args.posix_root, root / "POSIX", dirs_exist_ok=True)
+    if args.hash_root:
+        shutil.copytree(args.hash_root, root / "Hash", dirs_exist_ok=True)
+        shutil.copytree(args.hash_root.parent / "internal/hash", root / "internal/hash", dirs_exist_ok=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
     output.mkdir(parents=True, exist_ok=True)
@@ -91,8 +96,20 @@ def main():
             finally:
                 marker.unlink(missing_ok=True)
     print("passed parent-exit cancellation and opt-out", flush=True)
+    for source in sorted((ROOT / "tests/portable-stdlib/faults").glob("*.jai")):
+        commands = [[str(compiler), "-interp", str(source), "--"]]
+        if args.native:
+            executable = output / source.stem
+            run([str(compiler), str(source), "-exe", str(executable)], env)
+            commands.append([str(executable)])
+        for command in commands:
+            result = subprocess.run(command, cwd=ROOT, env=env, text=True,
+                                    capture_output=True, timeout=45)
+            if result.returncode == 0 or "assertion failed" not in result.stderr or "invalid overwriting-allocator pointer" not in result.stderr:
+                raise RuntimeError(f"expected checked allocator fault: {result.returncode}: {result.stdout}{result.stderr}")
+        print("passed expected allocator fault", source.name, flush=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler"}
-    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown"}
+    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:

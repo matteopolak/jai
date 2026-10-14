@@ -152,11 +152,11 @@ Run the focused worker regression set with:
 
 ```sh
 python3 -B tools/check_portable_stdlib.py \
-  --posix-root ../bindings/stdlib/POSIX --native \
+  --posix-root ../bindings/stdlib/POSIX --hash-root ../foundations/stdlib/Hash --native \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 50 cases in interpreter/native modes, plus bootstrap
+The current run passes 51 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -276,3 +276,16 @@ Signed start/current/end offsets now use native fseeko; unknown enum values and
 OS failures return false. Seek_Type remains absent from the public facade.
 Focused interpreter/native checks cover all origins, negative offsets, position
 reporting, failed negative-start seek and a closed handle.
+
+Overwriting_Allocator uses the exact public tracking-table/mutex shape and the
+new independent scalar Hash implementation in the integration root. It captures
+the selected base allocator for both client allocations and bookkeeping, poisons
+fresh/freed bytes, preserves old allocations on failed resize, and performs
+separate resize allocation with prefix preservation and poisoned growth suffix.
+The real Thread mutex serializes tracking and base calls. Tests inspect poison
+before native free, inject a failed resize, verify counts/captured defaults and
+exercise four concurrent workers. Double-free is an expected-failure test that
+requires the actual diagnostic and assertion in interpreter/native execution.
+Lifecycle forwarding and outstanding-allocation destruction behavior remain
+recorded for review. The foundations Hash sources are copied only into target;
+their checkout and this worker's assigned Hash sources are not modified.

@@ -82,7 +82,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [nvidia-aftermath](specs/stdlib/modules/nvidia-aftermath.md) | Reserved for bindings worker; not implemented or modified here |
 | [nvtt](specs/stdlib/modules/nvtt.md) | Reserved for bindings worker; not implemented or modified here |
 | [objective-c](specs/stdlib/modules/objective-c.md) | Reserved for bindings worker; not implemented or modified here |
-| [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Owned portable scope; not implemented |
+| [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Reviewed exports implemented using real tracked allocations, poison and mutex; allocation/failed-resize/growth/free and concurrent tests use the new reviewed scalar Hash dependency. Lifecycle forwarding/destruction edges require review |
 | [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
 | [performance-report](specs/stdlib/modules/performance-report.md) | Owned portable scope; not implemented |
 | [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Owned portable scope; not implemented |

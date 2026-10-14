@@ -38,3 +38,10 @@ the implemented behavior; they do not establish missing reference contracts.
 
 Scalar hash seed mixing was clarified in the latest reviewed Hash page. It is
 assigned to the foundations worker; no duplicate implementation is added here.
+
+Overwriting_Allocator uses the new independent scalar-hash implementation only
+in the integration root. Lifecycle/thread modes currently forward to the base;
+the prose permits forwarding/no-op but does not list the exact per-mode mapping.
+Destroying the wrapper releases tracking metadata/mutex, not remaining client
+allocations. Clients must release allocations while the wrapper is alive; exact
+behavior for destruction with outstanding allocations remains under review.
