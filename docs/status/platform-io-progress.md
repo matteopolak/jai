@@ -46,7 +46,7 @@ rules follow canonical exported aliases. All 23 jailint Rust tests pass (11 unit
 
 `tools/format_platform_io.py --lint --jailint target/debug/jailint --stdlib
 target/platform-io-stdlib` passed all four target configurations and verified manifest
-coverage for all 41 owned Jai files. Staged owned files were compared byte-for-byte;
+coverage for all 42 owned Jai files. Staged owned files were compared byte-for-byte;
 this remains independent dependency staging, not coordinator production integration.
 The previous quiet/incomplete lint evidence below is historical and superseded.
 
@@ -64,6 +64,27 @@ the new ordering step removed, then passing when restored.
 Tool checkpoint: `27b719c`. Remaining integration requirements: Windows native CI,
 compiler suspended-CRT-thread/event/callback lifetime support, public Machine_X64
 dependency, reviewed Thread DEBUG configuration, and existing File contract questions.
+
+Crash/entry checkpoint: `2b1d623`. Subsequent strict coverage adds an owned startup
+metaprogram selecting Compiler.set_optimization explicitly, ON/OFF backtrace builds
+at O0/O2, and native-fault checks for both configurations. All four x64 variants
+cross-link. PE imports confirm the crash DLL dependency appears only with ON.
+ARM64 O0/O2 OFF passes -check -no_dce and ON retains the required rejection. Actual
+ARM64 cross-linking is unavailable locally: no aarch64 MinGW linker is installed.
+Program_Print/Code_Visit and their internals were staged from the permitted compiler
+producer to satisfy genuine no-DCE Compiler dependencies; no placeholder was used.
+
+The runner retains independent failures, continues into native/later fixtures, and
+exits nonzero overall. A temporary explicit false assertion in the owned runtime
+fixture produced three genuine failures (interpreter/O0/O2) while later Thread_Group
+still ran. The original file was restored from its durable backup; the final complete
+positive run passed. Public Windows Process coverage additionally checks empty/failed
+launch, named-pipe allocation failure and the native 0xffffffff exit-code bit pattern.
+These Windows behaviors remain source/cross-build evidence until native CI.
+
+Final local gates: source-built jaifmt --check, strict jailint on four targets with
+42/42 owned source coverage, all 23 jailint Rust tests, standalone IDE regression,
+scoped rustfmt/clippy with warnings denied, and the complete platform runner above.
 
 Durable producer commits: `eb5d83d` (File), `339a16e` (System/Thread/runtime),
 `fe44299` (private Process engine, native exception diagnostics, SDK checks and

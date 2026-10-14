@@ -21,6 +21,7 @@ options:
   --os <target>       windows, linux, macos or wasm (default host)
   --cpu <target>      x64, arm64 or wasm (default host)
   --checked-files <file> write the paths actually checked, one per line
+  --add <source>      add source in the program's scope (also -add)
   -j <n>              compile n programs at once (default 1)
   --list              list the rules and their default levels
   --color <when>      auto, always or never
@@ -62,6 +63,7 @@ struct Args {
     target_os: Option<jaic::sema::TargetOs>,
     target_cpu: Option<jaic::sema::TargetCpu>,
     checked_files: Option<PathBuf>,
+    add_sources: Vec<String>,
 }
 
 fn parse_args() -> Result<Option<Args>, String> {
@@ -77,6 +79,7 @@ fn parse_args() -> Result<Option<Args>, String> {
         target_os: None,
         target_cpu: None,
         checked_files: None,
+        add_sources: Vec::new(),
     };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
@@ -96,6 +99,7 @@ fn parse_args() -> Result<Option<Args>, String> {
             "-v" | "--verbose" => args.verbose = true,
             "--config" => args.config = Some(PathBuf::from(value("--config")?)),
             "--checked-files" => args.checked_files = Some(value(&a)?.into()),
+            "--add" | "-add" => args.add_sources.push(value(&a)?),
             "--os" | "-os" => {
                 args.target_os = Some(match value(&a)?.as_str() {
                     "windows" => jaic::sema::TargetOs::Windows,
@@ -141,6 +145,7 @@ fn parse_args() -> Result<Option<Args>, String> {
                     "--os",
                     "--cpu",
                     "--checked-files",
+                    "--add",
                     "-A",
                     "-W",
                     "-D",
@@ -244,6 +249,7 @@ fn run() -> Result<ExitCode, String> {
         verbose: args.verbose,
         target_os: args.target_os,
         target_cpu: args.target_cpu,
+        add_sources: args.add_sources,
     };
     let outcome = jailint::driver::run(&options);
     if let Some(path) = &args.checked_files {

@@ -29,6 +29,7 @@ main :: () {
         W.Sleep(10);
         write_string("after-zero");
     } else if args[1] == "sleep" W.Sleep(10000);
+    else if args[1] == "exit-high" W.ExitProcess(0xffffffff);
     else if args[1] == "bulk" {
         block: [1024] u8;
         for *byte: block byte.* = 120;

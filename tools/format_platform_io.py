@@ -55,8 +55,13 @@ def lint_owned(binary, stdlib):
                 continue
             selected.append(str(path))
         manifest = output / f"{os_target}-{cpu}.txt"
+        definitions = []
+        if os_target == "windows":
+            definitions = ["--add", f'OPTIMIZED :: false; BACKTRACE_ENABLED :: {str(cpu == "x64").lower()}; '
+                           f'OUTPUT_PATH :: "{output.as_posix()}"; '
+                           f'CHILD_SOURCE :: "{(ROOT / "tests/platform-io/windows-fault.jai").as_posix()}";']
         result = subprocess.run([str(binary), "-D", "warnings", "--os", os_target, "--cpu", cpu,
-                                 "--config", str(ROOT / "jailint.toml"), "--checked-files", str(manifest), *selected],
+                                 "--config", str(ROOT / "jailint.toml"), "--checked-files", str(manifest), *definitions, *selected],
                                 cwd=ROOT, env=env, text=True, capture_output=True)
         (output / f"{os_target}-{cpu}.log").write_text(result.stdout + result.stderr)
         sys.stdout.write(result.stdout)

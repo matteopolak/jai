@@ -23,11 +23,21 @@ The virtual root does not relax application privacy or write into the library.
 Canonical exported aliases are recognized by library-call rules using procedure
 identity, avoiding implementation-path assumptions. Original regressions in
 `tools/test_platform_io_lint.py` exercise target findings, privacy and failed bodies.
+Additional program source is supported through --add, with a missing-definition
+regression. This allows the startup test metaprogram to use its real build flags
+during linting instead of a modified source or fabricated fallback definition.
 
 Executed with the permitted independent producer compiler plus these local patches:
 all 23 jailint Rust tests, standalone IDE regression, scoped clippy with warnings
 denied, and four-target strict lint with manifest coverage of every owned source.
 The commands and staging limits are in the platform progress/deviations reports.
+
+The native CI runner now accumulates independent failures and still exits nonzero.
+Thus a suspended-thread interpreter failure must remain visible, while native
+O0/O2 Thread/Process/runtime fixtures still execute and report their own evidence.
+The original failure-injection audit retained three actual assertion failures
+(interpreter/O0/O2), continued through Thread_Group, and failed overall. The source
+was restored and the complete positive run passed afterward.
 
 ## Missing portable System dependency
 

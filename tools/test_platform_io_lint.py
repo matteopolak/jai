@@ -36,6 +36,9 @@ def main():
     app = directory / "application.jai"
     app.write_text('#import "internal/lint-probe";\nmain :: () {}\n')
     check(app, [], 1, "internal sources are private")
+    app.write_text('main :: () -> s32 { return REQUIRED; }\n')
+    check(app, [], 1, "REQUIRED")
+    check(app, ["--add", "REQUIRED :: 17;"], 0, "")
     private.write_text('probe :: () -> int { return missing_value; }\n')
     check(private, [], 1, "missing_value")
     assert not (stdlib / ".jailint-module-root.jai").exists()

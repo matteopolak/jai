@@ -42,6 +42,7 @@ fn lint(file: &Path, levels: &[(&str, Level)]) -> (Vec<Lint>, String) {
         verbose: false,
         target_os: None,
         target_cpu: None,
+        add_sources: Vec::new(),
     };
     let outcome = jailint::driver::run(&options);
     assert!(

@@ -42,6 +42,8 @@ pub struct Options {
     pub verbose: bool,
     pub target_os: Option<TargetOs>,
     pub target_cpu: Option<TargetCpu>,
+    /// Additional source strings, in the program's scope (same as jaic -add).
+    pub add_sources: Vec<String>,
 }
 
 pub struct Outcome {
@@ -409,25 +411,37 @@ fn lint_root(root: &Root, options: &Options, report: &BTreeSet<PathBuf>) -> Root
     compiler.interp.block_budget = Some(BLOCK_BUDGET);
     compiler.attach_workspaces(workspaces.clone());
     crate::facts::enable(&mut compiler, prefixes);
-    let result = compiler.load_bootstrap().and_then(|()| match root {
-        Root::Program(p) => compiler.compile_program(p),
-        Root::Module {
-            entry,
-            dir,
-            ..
-        } => {
-            // Bootstrap imports may require parameters. Reuse their real configured
-            // instances rather than guessing defaults or importing them a second time.
-            if compiler
-                .modules
-                .iter()
-                .any(|module| module.path.as_ref().is_some_and(|p| canonical(p) == *entry))
-            {
-                compiler.compile_sources(&[ProgramSource::String("main :: () {}".into())])
-            } else {
-                compiler.compile_program(&dir.join(".jailint-module-root.jai"))
+    let result = compiler.load_bootstrap().and_then(|()| {
+        let primary = match root {
+            Root::Program(p) => ProgramSource::File(p.clone()),
+            Root::Module {
+                entry,
+                dir,
+                ..
+            } => {
+                // Bootstrap imports may require parameters. Reuse their real configured
+                // instances rather than guessing defaults or importing them a second time.
+                if compiler
+                    .modules
+                    .iter()
+                    .any(|module| module.path.as_ref().is_some_and(|p| canonical(p) == *entry))
+                {
+                    ProgramSource::String("main :: () {}".into())
+                } else {
+                    ProgramSource::File(dir.join(".jailint-module-root.jai"))
+                }
             }
-        }
+        };
+        let sources: Vec<_> = std::iter::once(primary)
+            .chain(
+                options
+                    .add_sources
+                    .iter()
+                    .cloned()
+                    .map(ProgramSource::String),
+            )
+            .collect();
+        compiler.compile_sources(&sources)
     });
     let mut error = result.err().map(|e| e.message.clone());
     let top_complete = error.is_none();

@@ -102,6 +102,15 @@ while ordinary ARM64 entry/initialization continues to compile. The runner check
 both configurations, including the expected failure. The x64 DLL/import library
 must be built and the DLL packaged beside executables using the handler.
 
+The owned startup metaprogram selects DEBUG/O0 or OPTIMIZED/O2 explicitly through
+Compiler.set_optimization. The runner exercises backtraces ON and OFF in both modes;
+ARM64 OFF is supported and ON must diagnose the reviewed unsupported target. The
+fault fixture suppresses interactive Windows error boxes while retaining the actual
+access violation and native exit code. Independent test failures are accumulated:
+an interpreter failure does not prevent native O0/O2 or later fixtures from running,
+and any failure still makes the runner exit nonzero. Failed builds never execute
+an older artifact. This retains the pending interpreter failures in native CI.
+
 ## Public Windows Process
 
 `internal/platform-io/windows-process.jai` implements actual native process and pipe

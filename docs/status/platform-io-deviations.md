@@ -25,7 +25,7 @@
   symbol activity. Proper long-term improvement: out-of-process crash reporting.
 - The earlier private-root/target lint workaround is replaced by generic jailint
   support, strict incomplete-check failures and per-target checked-file manifests.
-  All 41 owned Jai sources are covered without blanket rule suppression. Legitimate
+  All 42 owned Jai sources are covered without blanket rule suppression. Legitimate
   x64-only crash roots are linted on x64 and checked for rejection on ARM64. Rust
   tests needed the repository's original lint fixtures/docs copied alongside the
   locally staged compiler manifests; initial missing-fixture/dependency failures
@@ -53,6 +53,27 @@
   fix belongs in generic callback/runtime lifetime handling, with an original
   interpreter teardown/fault regression on real Windows. Do not replace the
   canonical public context with a disconnected shadow state to conceal this.
+- ARM64 Windows native cross-linking is not available on this host: the real
+  linker search reports no aarch64 MinGW toolchain. ARM64 startup OFF and required
+  ON rejection are source-checked at both optimization settings, not counted as
+  executable builds. Proper fix: coordinator native ARM64 jobs or an installed
+  independent native cross toolchain; never substitute an x64 artifact.
+- Startup lint uses --add with the actual output/source/optimization/backtrace
+  configuration required by the original metaprogram. The linter implements this
+  through ordinary ProgramSource strings, preserving module isolation. This is
+  explicit build context, not a changed staged test body. No fallback definition
+  or skipped assertion was added. A real no-DCE check exposed missing staged
+  Program_Print/Code_Visit dependencies; producer sources were copied locally.
+- Native fault fixtures set SEM_NOGPFAULTERRORBOX through the real OS API so CI
+  cannot hang on an interactive error box. Access violation, stderr diagnostics,
+  and native status remain asserted. No fault/safety check is disabled.
+- Runner failure aggregation was tested by temporarily inserting an explicit
+  false assertion in the owned runtime fixture. All three execution modes failed;
+  later independent tests still executed and overall status failed. The source was
+  restored and the final positive suite rerun. Evidence and durable source backup
+  remain under target/platform-io-runner-negative.log and
+  target/platform-io-runtime-contract-backup.jai. This verifies the runner only,
+  not any additional Windows functionality.
 
 Role: platform-io. Scope: owned File, Windows System/Thread/runtime internals,
 private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
