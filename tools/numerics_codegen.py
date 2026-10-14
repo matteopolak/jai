@@ -7,11 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def normalize(source):
     default = ROOT/'artifacts/jaifmt-current'
-    if not default.is_file(): default = ROOT/'artifacts/jaifmt-repro'
-    if not default.is_file(): default = ROOT/'artifacts/numerics-format-driver'
     formatter = Path(os.environ.get('NUMERICS_JAIFMT', default))
     if not formatter.is_file():
-        raise SystemExit('Build the repository Jai_Format engine driver before regenerating numerics')
+        raise SystemExit('Build repository jaifmt/main.jai from canonical producers before regenerating numerics')
     result = subprocess.run([str(formatter), '--stdin', '--config', str(ROOT/'jaifmt.toml')], input=source, text=True,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT)
     if result.returncode:

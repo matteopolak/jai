@@ -1,5 +1,11 @@
 # Corrective numerics review
 
+Historical checkpoint only: its fixture and bootstrap-tool commands below are
+retired. Those substitute sources/options have been removed after canonical
+integration became available. Use [current progress](numerics-progress.md),
+[current deviations](numerics-deviations.md) and the current status for commands
+and remaining failures. Prior logs remain as investigation evidence.
+
 The prior handoff is not complete. Fixture tests prove isolated algorithms and
 mechanisms, not native or canonical integration.
 
