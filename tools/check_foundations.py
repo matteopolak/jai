@@ -11,17 +11,19 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "format-grammar", "format-floats", "format-aggregates", "format-types", "assert-message",
          "basic-configuration", "temporary-stamping", "float-parsing", "type-parameter-format",
          "formatter-parameter-defaults", "wasm-basic-minimal", "float-roundtrip",
-         "memory-debugger-interface", "memory-debugger-default")
+         "memory-debugger-interface", "memory-debugger-default", "filesystem-invalid-paths")
 
 
 def owned_sources():
-    """Exclude inherited runtime/allocation/time/File/MD5 implementation ownership."""
+    """Keep inherited runtime/time/File/MD5 outside the modified core scope."""
     paths = [ROOT / f"stdlib/{module}/module.jai"
              for module in ("Basic", "String", "Hash", "File_Utilities")]
     paths.extend((ROOT / "stdlib/internal/basic").glob("format*.jai"))
     paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
                  for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "module"))
     paths.append(ROOT / "stdlib/internal/basic-interface/module.jai")
+    paths.append(ROOT / "stdlib/internal/native-path/module.jai")
+    paths.append(ROOT / "stdlib/internal/basic/filesystem.jai")
     paths.extend((ROOT / "stdlib/internal/string").glob("*.jai"))
     paths.append(ROOT / "stdlib/internal/hash/module.jai")
     paths.extend(path for path in (ROOT / "stdlib/internal/files").glob("*.jai") if path.name != "file.jai")
@@ -30,6 +32,7 @@ def owned_sources():
     paths.append(ROOT / "tests/portable-stdlib/negative/builder-ensured-range.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/interface-parameter-module/module.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/no-parameter-module/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/support/test-heap.jai")
     return sorted(set(paths))
 
@@ -102,7 +105,8 @@ def main():
                              ("hash-seed-visibility", "no exported member `HASH_INIT`"),
                              ("builder-buffer-visibility", "no exported member `Buffer`"),
                              ("basic-replacement-interface", "check_"),
-                             ("basic-interface-import-visibility", "no exported member `Interface_Definition`")):
+                             ("basic-interface-import-visibility", "no exported member `Interface_Definition`"),
+                             ("basic-private-formatter", "standard-library internal sources are private")):
         source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         if args.jaifmt:
             run([formatter,"--check",source], "")
@@ -143,7 +147,7 @@ def main():
         print(f"passed interpreter/native O0/O2: {name}", flush=True)
     if args.wasm:
         for name in CASES:
-            if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "basic-output"):
+            if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "basic-output", "filesystem-invalid-paths"):
                 continue
             source = ROOT / f"tests/portable-stdlib/{name}.jai"
             for level in ("O0", "O2"):
@@ -156,7 +160,7 @@ def main():
         for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("macos", "x64"), ("windows", "x64"), ("windows", "arm64"), ("wasm", "wasm64")):
             try:
                 for name in CASES:
-                    if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep") and os_name in ("windows", "wasm"):
+                    if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "filesystem-invalid-paths") and os_name in ("windows", "wasm"):
                         continue
                     if name == "basic-output" and os_name == "wasm":
                         continue
@@ -181,6 +185,17 @@ def main():
                         f"exit={constraint.returncode}\n{constraint.stdout}{constraint.stderr}")
     else:
         print("passed general unused module-interface constraint rejection", flush=True)
+    for source, flag in ((ROOT / "tests/portable-stdlib/negative/basic-unknown-parameter.jai", "FOUNDATIONS_UNDECLARED_PARAMETER"),
+                         (ROOT / "tests/portable-stdlib/pending/module-undeclared-parameter.jai", "EXTRA")):
+        if args.jaifmt:
+            run([formatter,"--check",source], "")
+        rejected = subprocess.run([compiler,"-I",ROOT / "tests/portable-stdlib/pending","-check",source],
+                                  cwd=ROOT,env=env,capture_output=True,text=True,timeout=60)
+        if rejected.returncode != 1 or flag not in rejected.stderr or "parameter" not in rejected.stderr:
+            failures.append(f"compiler must reject undeclared module parameter {flag}:\n"
+                            f"exit={rejected.returncode}\n{rejected.stdout}{rejected.stderr}")
+        else:
+            print(f"passed undeclared module parameter rejection: {flag}",flush=True)
     if failures:
         raise RuntimeError("\n".join(failures))
 

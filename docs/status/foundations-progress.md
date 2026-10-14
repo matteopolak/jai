@@ -1,7 +1,7 @@
 # Foundations progress
 
-Current checkpoint: 44cca8b committed; the five-parameter debugger/hook batch
-and direct binary32 rounding fix are reviewed/tested and awaiting own commit.
+Current implementation checkpoints: 44cca8b (portable conversion/configuration)
+and a11c0c8 (five-parameter debugger interface/direct binary32 rounding).
 All 26 positive cases pass interpreter/native O0/O2; five runtime rejection
 cases assert as required; all 21 supported production WASI cases pass O0/O2
 with non-WASI imports rejected. Real unchanged jaifmt builds at O2, its CLI
@@ -9,14 +9,41 @@ and owned --check pass, and scoped source-built jailint -D warnings passes.
 Latest default/custom debugger tests include real heap allocation/destruction,
 failed resize preservation, mixed-configuration address reuse and frame counts.
 
-Overall runner still fails the required unused-module-interface rejection:
-compiler accepts Broken for $I/interface Required when unused. Current code
-keeps the exact declared constraint; no Basic-specific substitute check.
+Unused-module-interface rejection is now fixed in NEW producer sources and
+passes the required gate; valid default/custom interfaces still pass.
+Unknown parameters are now rejected for system/stdlib and headerless modules
+through general NEW producer validation. Both required rejection tests return
+the expected exact-argument diagnostics. Current library declares exactly the
+reviewed constraints/parameters; no Basic-specific substitute check is added.
 Six targets pass unused-code checks including every newly affected case.
 macOS x64 retains the peer POSIX itimerval blocker. No target was disabled.
+NEW producer interface validation has now landed; own source rebuild/retest is
+in progress. A related forbidden compatibility bypass remains in modules.rs:
+unknown parameter rejection is exempted for system/stdlib modules. Original
+negative/basic-unknown-parameter supplies an undeclared flag to real Basic.
+Required general fix: validate exact declared named/positional arguments for
+every module, with no system-module/name/path exemptions; reject arguments for
+modules that declare no parameters too. Keep first/program parameter semantics.
+No Basic-specific workaround or invented parameter will be added here.
+Producer now contains general exact-argument validation after module
+declarations, without the system-module exemption. Rebuilding read-only copies
+and retesting unknown stdlib/headerless parameters before claiming resolved.
+Additional owned filesystem regression found POSIX embedded-NUL paths acted
+on their valid prefix; shared native-path validation now rejects them before
+query/copy/rename/traversal/cwd calls. Sentinel content/cwd preservation test
+passes initially; full host and cross checks follow.
 
-Next: commit owned debugger batch, refresh NEW compiler when general interface
-validation lands, rerun the required rejection and production checks. Remaining
+Final run: all 27 host cases and all 21 supported production WASI cases pass,
+including required interface/unknown-argument rejection gates. Real unchanged
+jaifmt O2 build/CLI/check and source-built jailint -D warnings pass. Affected
+unused-code cases pass Linux x64/arm64, macOS arm64, Windows x64/arm64 and wasm64;
+macOS x64 still fails peer POSIX itimerval. No peer writes, reference input,
+stdlib/Extensions changes or publication occurred.
+
+Next: commit owned filesystem/privacy/capacity/regression progress; coordinator
+can integrate reviewed checkpoints and rerun its full corpus/native CI. New helper visibility is now
+module-private, and original canary tests fill/grow inline storage in both
+assert layouts, including combined debug/stamping/discard configuration. Remaining
 formatter/style/visualizer contract questions stay in the focused questions;
 Windows runtime and final corpus/release verification remain coordinator-owned.
 

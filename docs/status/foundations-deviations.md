@@ -39,14 +39,20 @@ This is a deviations inventory, not a claim of completed production integration.
   precise expected transport is a focused question. Tests prove real counts,
   flag effects and callback-scoped message lifetime. The old unsupported-debugger
   guard and its negative fixture are removed after hook review/implementation.
-- **Module interface constraint validation** — the compiler currently strips
+- **Resolved module interface constraint validation** — the earlier compiler stripped
   polymorphic module-parameter types without validating their interface member
-  contract when unused. Correct provided interfaces work and missing members
-  fail when invoked, but invalid unused replacements can be accepted. Minimal
+  contract when unused. Correct provided interfaces worked and missing members
+  failed when invoked, but invalid unused replacements were accepted. Minimal
   independent pending/module-interface-constraint with its helper module proves
   this without Basic. Proper general compiler fix is binding-time structural
   constraint validation, not library-specific name checks or weaker signatures.
-  Source declares the exact interface constraint; no workaround is introduced.
+  Source declares the exact interface constraint; no workaround was introduced.
+  Resolved through NEW producer validation: the unused replacement now rejects
+  at binding time with its missing member, and valid interfaces still pass.
+  A second discovered bypass accepted unknown system-module parameters and
+  arguments to headerless modules. NEW producer exact-argument validation now
+  rejects both, with no provenance exemption. Required independent rejection
+  gates preserve these regressions; no local compiler patch was made.
 - **Temporary stamping cost** — `temporary.jai` stamps rolled-back bytes with
   SET_STORAGE_MARK_STAMP, reset initial storage with RESET_STORAGE_STAMP and
   overflow payloads before free with FREE_PAGE_STAMP. When later pages are
@@ -175,3 +181,17 @@ unused-interface rejection gate is retained and fails on current compiler;
 overall success is not claimed. Six-target unused-code checks of all newly
 affected cases pass. Metadata is live-only after the address-reuse regression;
 no tombstone workaround remains.
+
+Follow-up: interface and exact module-argument rejection gates are resolved by
+NEW producer compiler sources and checked directly. A shared private native-path
+validator now rejects embedded NUL before Unix filesystem/cwd calls, preventing
+valid-prefix operations and destination corruption. The original real-file
+regression failed before the fix and now passes in the interpreter. Windows
+already rejected NUL; its converter now shares the validator. Pure byte path
+utilities still preserve their inputs; only native operations reject an
+unrepresentable path. Final scope passes: 27 interpreter/native O0/O2 cases,
+21 production WASI O0/O2 cases, five runtime assertions, all API/interface/
+unknown-parameter rejection gates, real jaifmt build/CLI/check and warnings-denied
+jailint. Six targets pass affected unused-code checks; macOS x64 remains blocked
+by the peer POSIX itimerval declaration. Both earlier general compiler gates
+now pass through producer fixes; overall host/WASI runner exits zero.
