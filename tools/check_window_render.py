@@ -29,6 +29,11 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     count = 0
 
+    def test_source(name):
+        module = {"signed-native-fields": "Input", "texture-packing": "Simp",
+                  "macos-window": "Window_Creation"}.get(name)
+        return ROOT / (f"stdlib/{module}/tests/{name}.jai" if module else f"tests/window-render/{name}.jai")
+
     def run(command, expected=None):
         nonlocal count
         result = subprocess.run(list(map(str, command)), cwd=ROOT, env=env,
@@ -47,7 +52,7 @@ def main():
     if platform.system() == "Darwin":
         host.append("macos-window")
     for name in host:
-        source = ROOT / f"tests/window-render/{name}.jai"
+        source = test_source(name)
         parameters = [args.font.resolve()] if name == "font-public" else []
         program_args = ["--", *parameters] if parameters else []
         run([compiler, source, "-interp", "-I", args.stdlib, *program_args], "ok\n")
@@ -59,7 +64,7 @@ def main():
 
     linux = ["types", "portable", "callback-types", "keycodes", "window-invalid", "bitmap-codec", "gamepad-virtual", "gamepad-shared-sdk", "texture-packing", "simp-none"]
     for name in linux:
-        source = ROOT / f"tests/window-render/{name}.jai"
+        source = test_source(name)
         run([compiler, source, "-interp", "-os", "linux", "-I", args.stdlib], "ok\n")
         print(f"passed Linux-target interpreter: {name}", flush=True)
 

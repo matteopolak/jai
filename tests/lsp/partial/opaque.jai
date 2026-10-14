@@ -19,8 +19,9 @@ Mode :: enum {
     disabled :: 2;
 }
 
-main :: () {
+main :: () -> int {
     word := "😀漢é";
     healthy := 42;
     result := healthy + 1;
+    return result + word.count;
 }

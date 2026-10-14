@@ -20,7 +20,9 @@ named_entries :: Text_Pair.[
     .{ name = "third", value = 3 },
 ];
 
-after :: () {
+after :: () -> int {
     healthy := 42;
     result := healthy + 1;
+    if result <= healthy return healthy;
+    return result;
 }
