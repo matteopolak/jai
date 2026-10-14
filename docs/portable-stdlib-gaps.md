@@ -89,3 +89,16 @@ headers; spelling those as array.Element_Type currently fails in this module's
 compiler loading path. A simple same-file procedure does not reproduce it, so no
 general compiler root cause is claimed. The public types/parameter names are
 unchanged. Max_chunks/overflowing-shift invalid configurations are rejected.
+
+Mail.scramble has no described transform or output lifetime and is withheld.
+Current enable_ssl requests mandatory SMTP STARTTLS, not implicit SMTPS; the
+reference policy is unspecified. Required-TLS rejection is tested, but positive
+encrypted delivery/custom CA verification remains unverified. Header encoded-word
+handling, exact message serialization, default port and proxy/environment policy
+are likewise not established by the prose. Current transport uses protocol default
+port when zero, disables inherited proxy/netrc settings, and uses only explicit
+caller authentication. Native C string fields reject NUL, and header values reject
+CR/LF to avoid silent truncation or injected headers. Attachment strings are
+interpreted as filenames. All current transport tests use this checkout's own
+127.0.0.1 receiver and synthetic fixture credentials, never existing credentials
+or external recipients.

@@ -107,3 +107,19 @@ iterator coordinates/pointers, implement forward/previous and unordered removal,
 and sort in place over indexed chunk pointers. Preserve the quick_sort alias.
 Test growth boundaries, lifetime accounting, pointer loops, iterators and sorts;
 verify reverse custom iteration is rejected at compile time.
+
+Mail transport increment: use the independent Curl bindings and official libcurl
+C API documentation for SMTP/MIME. Compose explicit headers/envelope recipients,
+use MIME for selected text/HTML body and binary file attachments, check every
+native result, and release all per-send handles/lists. Authenticate only with
+caller-provided fields and disable implicit netrc/proxy configuration. Test actual
+SMTP on this checkout's loopback receiver: text/HTML, CC/BCC/attachment payloads,
+recipient rejection and mandatory TLS failure against a plaintext-only receiver.
+Record unresolved SSL policy/serialization and withhold unspecified scramble.
+
+POSIX crash diagnostics increment: retain reviewed public signal/context prefixes,
+install checked sigaction handlers, prewarm native backtrace, and provide a real
+per-thread alternate stack through native TLS ownership. Emit diagnostics without
+depending on the Jai context/allocator, reset/unblock/re-raise the fatal signal,
+and verify actual SIGSEGV plus native stack text in separate source-built programs.
+Do not interpret the reviewed x64-shaped register prefixes on ARM or claim recovery.

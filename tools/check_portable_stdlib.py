@@ -52,6 +52,8 @@ def main():
     parser.add_argument("--native", action="store_true")
     parser.add_argument("--hash-root", type=Path,
                         help="new independently implemented Hash module directory for allocator integration")
+    parser.add_argument("--curl-root", type=Path,
+                        help="new Curl module directory; defaults beside the supplied POSIX module")
     parser.add_argument("--check-target", action="append", default=[],
                         help="OS/CPU pair, e.g. linux/x64; checks portable cases only")
     args = parser.parse_args()
@@ -64,6 +66,11 @@ def main():
     if args.hash_root:
         shutil.copytree(args.hash_root, root / "Hash", dirs_exist_ok=True)
         shutil.copytree(args.hash_root.parent / "internal/hash", root / "internal/hash", dirs_exist_ok=True)
+    curl_root = args.curl_root or args.posix_root.parent / "Curl"
+    if not curl_root.is_dir():
+        parser.error("supply the new Curl dependency with --curl-root")
+    shutil.copytree(curl_root, root / "Curl", dirs_exist_ok=True)
+    shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
     output.mkdir(parents=True, exist_ok=True)
@@ -122,6 +129,11 @@ def main():
     if result.returncode == 0 or "reverse Xar iteration is unsupported" not in result.stderr:
         raise RuntimeError(f"expected compile-time reverse iteration rejection: {result.stdout}{result.stderr}")
     print("passed compile-time Xar reverse rejection", flush=True)
+    mail = [sys.executable, "-B", str(ROOT / "tools/check_portable_mail.py"),
+            "--jaic", str(compiler), "--stdlib", str(root)]
+    if args.native:
+        mail.append("--native")
+    subprocess.run(mail, cwd=ROOT, env=env, check=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator"}
     for target in args.check_target:

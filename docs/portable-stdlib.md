@@ -360,3 +360,16 @@ allocator faults, compile-time Xar reverse rejection, four parent-lifetime check
 and selected portable target checks. All 163 owned Jai files pass jaifmt --check
 and jailint -D warnings. The latest ownership excludes the window/render worker's
 modules and internals from implementation and source-check mutation scope.
+
+Mail adds real SMTP/MIME transport through new Curl bindings. The runner copies
+that dependency/private native adapters beside its supplied POSIX module and
+executes ten loopback scenarios in interpreter/native modes. Tests check selected
+text/HTML type, exact decoded UTF-8 body and binary attachment, multiple To/CC/BCC
+envelope recipients, BCC omission, reply/from headers, explicit synthetic auth,
+late recipient rejection and mandatory-TLS failure. Header injection is rejected
+before connection. No existing credentials or external recipients are involved.
+Every Curl status/pointer result is checked and per-send native resources are
+released. Linux/Windows x64 declarations are checked; positive encrypted delivery
+and exact SSL/serialization/scramble contracts remain unresolved/unverified. See
+[transport validation](portable-mail.md). The 57-case regression plus ten SMTP
+scenarios pass, and all 166 owned Jai files pass source-built jaifmt/jailint checks.

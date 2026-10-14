@@ -69,7 +69,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [machine-x64](specs/stdlib/modules/machine-x64.md) | Owned portable scope; not implemented |
 | [macos-bundler](specs/stdlib/modules/macos-bundler.md) | Owned portable scope; not implemented |
 | [macos](specs/stdlib/modules/macos.md) | Reserved for bindings worker; not implemented or modified here |
-| [mail](specs/stdlib/modules/mail.md) | Owned portable scope; not implemented |
+| [mail](specs/stdlib/modules/mail.md) | SMTP/MIME transport implemented through new Curl bindings; text/HTML, envelope/header recipients, binary attachments, explicit fixture auth, rejection and required-TLS failure tested against loopback in interpreter/native. Scramble, exact serialization and positive encrypted delivery unresolved/unverified |
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
 | [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
