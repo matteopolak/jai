@@ -11,7 +11,8 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "format-grammar", "format-floats", "format-aggregates", "format-types", "assert-message",
          "basic-configuration", "temporary-stamping", "float-parsing", "type-parameter-format",
          "formatter-parameter-defaults", "wasm-basic-minimal", "float-roundtrip",
-         "memory-debugger-interface", "memory-debugger-default", "filesystem-invalid-paths")
+         "memory-debugger-interface", "memory-debugger-default", "filesystem-invalid-paths",
+         "basic-logging", "basic-logging-output", "basic-reflection")
 
 
 def owned_sources():
@@ -20,7 +21,7 @@ def owned_sources():
              for module in ("Basic", "String", "Hash", "File_Utilities")]
     paths.extend((ROOT / "stdlib/internal/basic").glob("format*.jai"))
     paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
-                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "module"))
+                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "logging", "reflection", "module"))
     paths.append(ROOT / "stdlib/internal/basic-interface/module.jai")
     paths.append(ROOT / "stdlib/internal/native-path/module.jai")
     paths.append(ROOT / "stdlib/internal/basic/filesystem.jai")
@@ -139,7 +140,7 @@ def main():
 
     for name in CASES:
         source = ROOT / f"tests/portable-stdlib/{name}.jai"
-        expected = ("out 7++", "err true", 17) if name == "basic-output" else ("ok\n", "", 0)
+        expected = ("out 7++", "err true", 17) if name == "basic-output" else (("out 7", "err true", 0) if name == "basic-logging-output" else ("ok\n", "", 0))
         run([compiler, "-interp", source], *expected)
         for level in ("O0", "O2"):
             binary = output / f"{name}-{level}"
@@ -154,7 +155,8 @@ def main():
             for level in ("O0", "O2"):
                 binary = output / f"{name}-{level}.wasm"
                 run([compiler, source, "-os", "wasm", f"-{level}", "-exe", binary])
-                run(["node", "--no-warnings", ROOT / "tools/run_foundations_wasm.mjs", binary], "ok\n")
+                expected = ("out 7", "err true", 0) if name == "basic-logging-output" else ("ok\n", "", 0)
+                run(["node", "--no-warnings", ROOT / "tools/run_foundations_wasm.mjs", binary], *expected)
             print(f"passed production WASI O0/O2: {name}", flush=True)
     failures = []
     if args.cross:

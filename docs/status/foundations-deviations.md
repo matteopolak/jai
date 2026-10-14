@@ -4,6 +4,30 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+- **Logging policy review** — `internal/basic/logging.jai` now implements all
+  four reviewed signatures and real contextual dispatch. The synchronized
+  reviewed page lists declarations and contextual types but does not specify
+  a log-level filter, newline policy, null logger or failure handling. Current
+  dispatch forwards flags unchanged (ERROR is added for log_error), adds no
+  newline and uses tprint lifetime. Tests prove actual metadata, section/data
+  identity, nested routing, temporary backing and default stdout/stderr effects.
+  Risk: a later explicit policy may require filtering or a different lifetime;
+  focused questions request those exact decisions. No fake logger or missing
+  function substitute was introduced.
+- **Reflection allocation/lifetime** — `internal/basic/reflection.jai` aliases
+  reflected enum name/s64 buffers; enum-typed arrays use temporary copies to
+  preserve element width and high bits rather than casting an s64 slice.
+  The declaration does not state typed-array lifetime. Current tests prove
+  width/value and canonical view identity; review must confirm lifetime.
+  Integer range/clamping cover all supported integer widths, with no platform
+  fallback or numeric approximation.
+- **Public-surface gaps** — the explicit `foundations-api-audit.md` inventories
+  remaining owned declarations and overload gaps, including leak reporting,
+  stack traces, output helpers and reflection/array helpers. These are real
+  unimplemented APIs, not dismissed legacy expectations. Existing live-object
+  debugging is not counted as full leak reporting. Time/native facade gaps
+  are recorded for portable ownership; no peer changes were made.
+
 - **Active style storage** — `internal/basic/format-support.jai` uses a caller
   `context.print_style` extension when present, otherwise a call-local default.
   Reviewed specs declare the style and behavior but no storage hook. No public
