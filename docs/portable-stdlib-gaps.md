@@ -32,6 +32,20 @@ dependency merging and multi-source OBJ_FILE are unfinished. Naming/environment
 parsing, source extension sets and warning forwarding require review. See
 [BuildCpp behavior](portable-buildcpp.md) for actual native tests and cleanup policy.
 
+Treemap's built-in border policy, coordinate orientation, flush_nodes endpoint
+convention, equal-weight order and automatic invalidation after same-count weight
+changes need review. The current supported squarified layout and unchanged growth
+area regression are described in [Treemap design](portable-treemap.md).
+
+Meow Hash's register macros are blocked by the compiler's register-operand macro
+binding: the canonical distinct-u16 __reg type is rejected for a caller u64 operand.
+`pending/register-macro.jai` retains the original failing call. The compiler's
+current rule recognizes Code parameters; replacing the public register type with
+Code would violate its reviewed identity. General register-operand semantics must
+be fixed at that boundary before counting Meow's macro API as supported. Only the
+official public upstream C implementation was consulted for algorithm feasibility;
+no original/upstream Jai implementation was accessed or ported.
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires

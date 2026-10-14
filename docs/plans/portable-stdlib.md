@@ -148,3 +148,9 @@ cleanup before compiler ERROR reporting. Verify static linking, dynamic loading,
 standalone objects, working directories/flags, stale archive removal and macOS
 universal architecture presence. Reject missing/wrong-target tools and record
 unresolved output conventions and unimplemented Windows/cross toolchains.
+
+Treemap increment: stable bucket nodes and copied names, descendant weight sums,
+descending sort and cached squarified geometry. Keep Math delegated, call supplied
+border procedures with actual parent display records, and use shared boundaries
+to prevent accumulated row drift. Validate hierarchy/non-overlap/areas/cache and
+growth beyond one bucket; record unresolved border/range/coordinate conventions.

@@ -142,6 +142,7 @@ The LLVM backend, C ABI and linking.
 - [CAS-based Atomics and intrinsic integration gap](portable-atomics.md)
 - [Deep_Copy supported cases and reflection blocker](portable-deep-copy.md)
 - [Unix BuildCpp artifacts, cleanup and toolchain limits](portable-buildcpp.md)
+- [Treemap weights, stable nodes and rectangle layout](portable-treemap.md)
 - [Portable worker progress](status/stdlib-progress.md) and [deviations](status/stdlib-deviations.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)

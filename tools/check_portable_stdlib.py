@@ -32,6 +32,7 @@ FAULT_EXPECTATIONS = {
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
     "deep-copy-fixed": ("assertion failed", "Deep_Copy does not support fixed arrays"),
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
+    "treemap-dirty": ("assertion failed", "Treemap display requires clean weights"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),

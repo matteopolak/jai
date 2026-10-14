@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `37aad6c`, supported Deep_Copy plus graph blocker. Earlier
+Latest committed checkpoint: `33173e0`, Unix BuildCpp with checked staging/cleanup. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -41,7 +41,7 @@ completed graph functionality. Full focused regression passes 63 cases in both
 modes, nine expected faults in both modes, two compile-time rejections and prior
 SMTP/startup/parent/target checks. All 197 owned Jai files pass format/lint.
 
-Current verified checkpoint: Unix BuildCpp C/C++ compile/link/archive/object and
+Previously verified checkpoint: Unix BuildCpp C/C++ compile/link/archive/object and
 macOS universal outputs. Native executable and dynamically loaded function return
 the expected results; stale archive members disappear on rebuild; missing tool,
 invalid C and wrong-target objects report real errors after cleanup. Full focused
@@ -49,6 +49,14 @@ regression passes 64 interpreter/native cases, nine runtime faults in both modes
 five compile-time rejections, and prior SMTP/startup/parent/target checks. All
 203 owned Jai files pass format/lint. The runner requires zero C-helper intermediate
 directories and preserves previous output after failed compilation.
+
+Current verified checkpoint: Treemap stable nodes, weights/sort, hierarchy,
+callback borders, cached squarified geometry and shared-boundary growth fix.
+Full regression passes 65 interpreter/native cases, ten runtime faults in both
+modes, five compile-time rejections and prior integration checks. All 209 owned
+Jai files pass format/lint; delegated Math is copied only into the integration
+root. Meow is blocked by the canonical register macro compiler reproducer;
+no replacement public type/hash routine was invented.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the
