@@ -408,3 +408,29 @@ evidence and are superseded only where stated here.
 - Bindings production runner now supports --stdlib with no peer staging, and records source/tool hashes. Full desktop/source/API sweep has 57 failed/unimplemented checks; alternatives/mobile configuration sweep has 58 failures. Unsupported-target results remain separate and are not runtime passes.
 - SDL3 real integrated host tests pass ABI/headless/callback/entry, all 1,329 runtime exports and artifact hashes; GPU audit checks 95 exports, not GPU execution. Eighteen Python tests pass after creating their documented scratch parent. Regeneration currently detects stale contracts-macos-x64.jsonl; this remains open rather than accepting drift.
 - Canonical Bootstrap Preload alias maps to prelude/module.jai. Inventory: 135 module spec pages plus one supporting table page; 95 module/bootstrap entries present, 40 missing. Presence never implies completed functionality.
+# Refresh-nine safety finding: interpreter memory intrinsics
+
+`crates/jaic/src/interp/mod.rs` still used unchecked host `ptr::copy` and
+`write_bytes` for interpreted memcpy/memset after only a null-address check.
+`interp/probe.rs::compare` ordered unreadable ranges as ordinary byte values.
+An original child-isolated mmap/mprotect regression against combined production
+sources reproduced signal 10 for both writes/copies and a fabricated -1 comparison
+(`artifacts/integration-clean/memory-intrinsics-red.log`). This can crash the
+compiler and misrepresent invalid program memory. The required general fix is
+bounded fault-safe copying/filling/comparison through the existing kernel backend,
+with explicit interpreter errors and overlap-preserving copy semantics. Implemented
+using 4 KiB scratch buffers and the existing kernel transfer backend. All 155 core
+unit tests now pass, including child-isolated protected transfers, unchanged
+mmap/mprotect regressions, overlapping multi-chunk copies and zero-length calls.
+The Windows VirtualProtect branch is present but awaits actual Windows CI.
+Kernel transfers add system-call overhead per chunk; benchmark/optimize batching
+without reinstating unchecked copies. Prior guarded-probe tests alone did not
+establish intrinsic safety. `read_vec` also uses fallible capacity reservation;
+this is not a guarantee against physical-memory exhaustion.
+
+The merged strict module-argument check initially reported a missing required
+argument before an unknown supplied name. General validation now declares the
+complete header, validates supplied names/duplicates, then rejects omitted ordinary
+parameters; late program parameters remain supported. All 50 module regressions
+and both production runtime configuration regressions pass without test changes.
+
