@@ -18,6 +18,24 @@ def guarded(code, guard):
     return f"#if {guard} {{\n{code}\n}}\n" if guard else code + "\n"
 
 
+def declaration_group(declaration):
+    """Our organization: layout types, ABI calls, mutable data, then constants.
+
+    Stable sorting retains source order within a same-named overload family.
+    Aggregate bodies and enum numbering are never rearranged.
+    """
+    code = declaration.code
+    if re.search(r"::\s*(?:struct|union|enum(?:_flags)?|#type)(?:\s|$|,)", code):
+        group = 0
+    elif "#foreign" in code or "#elsewhere" in code:
+        group = 1
+    elif re.match(r"^\w+\s*:(?!:)", code):
+        group = 2
+    else:
+        group = 3
+    return group, declaration.name.casefold(), declaration.name
+
+
 def main():
     page = ROOT / "docs/specs/stdlib/modules/socket.md"
     spec = parse_spec(page.read_text())
@@ -26,7 +44,7 @@ def main():
         shapes[shape.name].append(shape)
     output, ledger, exported, seen = [], [], [], set()
     manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT"}
-    for declaration in spec.declarations:
+    for declaration in sorted(spec.declarations, key=declaration_group):
         code, name = declaration.code.rstrip(";"), declaration.name
         guard = condition(declaration.condition)
         if (guard, code) in seen:

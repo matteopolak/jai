@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 46 cases in interpreter/native modes, plus bootstrap
+The current run passes 47 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -196,3 +196,25 @@ Apollo duration arithmetic currently assumes signed integer femtoseconds. The
 reviewed page does not explicitly settle representation and rounding edges;
 round-trip tests are internal arithmetic evidence only. See the questions page
 before relying on compatibility or adding calendar/native-time conversions.
+
+The single prelude entry loads independent subsystem files for platform,
+allocation, storage, reflection, diagnostics, intrinsics and context declarations.
+All share the same bootstrap module scope; no duplicate bootstrap/types/storage
+were introduced. Socket generation groups layout types, native calls, mutable
+data and constants, sorting independent names while preserving overload order
+within a name and every aggregate member/enum value.
+
+Lint with the new POSIX integration dependency exposed unused native-result
+variables that the dependency-incomplete root analysis had not reached. Process
+now checks supervisor pipe delivery, signal-disposition installation, child
+cancellation/reaping and cancellation-request failures. Supervisor report-write
+failure exits with a failure status; a failed initial announcement cancels and
+reaps the unannounced child. No ignored-result renaming or lint suppression was
+used to resolve these findings.
+
+The integrated source-built lint command passes with `-D warnings` for prelude,
+Runtime_Support/runtime, Process, Thread, Command_Line, Wav_File/audio, Pool and
+allocation internals, Hash_Table/collection internals, Socket/net internals.
+The same post-change regression command passes all 47 cases plus the four
+parent-lifetime scenarios and selected portable target checks. Formatting remains
+blocked by the documented formatter dependency, separately from lint success.
