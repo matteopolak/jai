@@ -47,9 +47,38 @@ and cross-linking establishes executable generation, but neither proves Windows
 runtime correctness. See the [progress](status/platform-io-progress.md) and
 [deviations](status/platform-io-deviations.md) for executed evidence and gaps.
 
+## System, Thread and runtime
+
+Windows System converts native wide account and path strings into temporary UTF-8
+storage. Current-user profiles use GetUserProfileDirectoryW; named accounts resolve
+their SID and registered ProfileImagePath. A missing account/profile returns failure.
+CPU queries enumerate variable-size processor-core records across processor groups;
+logical counts count affinity bits, physical counts count cores, and performance
+queries select the highest EfficiencyClass reported by Windows. Native error strings
+use FormatMessageW and release its LocalAlloc storage after conversion.
+
+Windows Thread uses critical sections, condition variables and counted semaphores.
+Thread creation uses `_beginthreadex` with CREATE_SUSPENDED; ResumeThread starts the
+callback with its captured context and temporary storage. Completion is observed on
+the actual thread handle before teardown. The unusual reviewed Windows public
+thread_is_done behavior (any wait result except TIMEOUT reports true) is preserved;
+internal teardown additionally requires successful completion. CRT suspended-thread
+interpreter support remains a compiler integration gap with an original reproducer.
+
+Runtime byte output uses WriteFile on GetStdHandle, preserving binary bytes and LF.
+Native Windows process entry parses GetCommandLineW with CommandLineToArgvW and
+strictly converts to UTF-8; the allocations outlive the runtime context and are freed
+after its finalization. Direct initialization calls retain their supplied argc/argv.
+Fatal Jai checks still terminate through the CRT; optional Windows exception
+backtraces require the outstanding public crash ABI clarification.
+
 ## Native API sources
 
 - [CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
 - [MapViewOfFile](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile)
 - [MultiByteToWideChar](https://learn.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar)
 - [SHGetKnownFolderPath](https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderpath)
+- [Processor topology](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlogicalprocessorinformationex)
+- [Processor efficiency classes](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship)
+- [User profile directory](https://learn.microsoft.com/en-us/windows/win32/api/userenv/nf-userenv-getuserprofiledirectoryw)
+- [Condition variable waits](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleepconditionvariablecs)

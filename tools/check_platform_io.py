@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run(command, env, expected=None):
     result = subprocess.run([str(arg) for arg in command], cwd=ROOT, env=env,
-                            capture_output=True, text=True, timeout=60)
-    if result.returncode or result.stderr or (expected is not None and result.stdout != expected):
+                            capture_output=True, timeout=60)
+    if result.returncode or result.stderr or (expected is not None and result.stdout != expected.encode()):
         raise RuntimeError(f"{' '.join(map(str, command))}\n"
                            f"exit={result.returncode}\n{result.stdout}{result.stderr}")
 
@@ -44,6 +44,15 @@ def main():
                 run([compiler, source, optimization, "-exe", executable], env)
                 run([executable], env, "ok\n")
         print("passed", source.relative_to(ROOT), flush=True)
+    source = ROOT / "tests/platform-io/arguments.jai"
+    arguments = ["雪😀", "", 'quote" and slash\\']
+    run([compiler, source, "-interp", "--", *arguments], env, "ok\n")
+    if args.native:
+        for optimization in ["-O0", "-O2"]:
+            executable = output / ("arguments" + optimization + (".exe" if os.name == "nt" else ""))
+            run([compiler, source, optimization, "-exe", executable], env)
+            run([executable, *arguments], env, "ok\n")
+    print("passed", source.relative_to(ROOT), flush=True)
 
 
 if __name__ == "__main__":

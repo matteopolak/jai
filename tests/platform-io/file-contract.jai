@@ -1,6 +1,10 @@
 #import "Basic";
 F :: #import "File";
 
+deny_allocations :: (mode: Allocator_Mode, size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
+    return null;
+}
+
 main :: () {
     root := "platform-io-雪-😀";
     name := "platform-io-雪-😀/binary.bin";
@@ -9,11 +13,28 @@ main :: () {
 
     assert(F.make_directory_if_it_does_not_exist(root));
     assert(F.make_directory_if_it_does_not_exist(root));
+    assert(F.make_directory_if_it_does_not_exist("platform-io-雪-😀/nested/sub", true));
+    absolute, resolved := F.get_absolute_path("platform-io-雪-😀/nested/sub");
+
+    assert(resolved && absolute.count > root.count);
+    free(absolute);
+    assert(F.delete_directory("platform-io-雪-😀/nested/sub"));
+    assert(F.delete_directory("platform-io-雪-😀/nested"));
     assert(F.write_entire_file(name, "a\0b\r\nc"));
     assert(!F.make_directory_if_it_does_not_exist(name));
     file, opened := F.file_open(name, for_writing = true, keep_existing_content = true);
 
     assert(opened);
+    assert(!F.file_write(*file, null, 1));
+    assert(!F.file_write(*file, null, -1));
+    assert(F.file_write(*file, null, 0));
+
+    {
+        push_allocator(Allocator.{ deny_allocations, null });
+        failed_data, allocated := F.read_entire_file(file);
+        assert(!allocated && failed_data.count == 0);
+    }
+
     bytes: [16] u8;
     ok, count := F.file_read(file, bytes.data, bytes.count);
 
@@ -64,14 +85,26 @@ main :: () {
     F.map_entire_file_end(*info);
 
     #if OS == .WINDOWS {
-        borrowed := F.string_to_map_file_info("borrowed");
+        original := copy_string("borrowed");
+        borrowed := F.string_to_map_file_info(original);
+
         F.map_entire_file_end(*borrowed);
+        assert(original == "borrowed");
+        free(original);
     }
 
     assert(F.write_entire_file(moved, ""));
     data, read_ok = F.read_entire_file(moved, true);
     assert(read_ok && data.count == 0 && data.data[0] == 0);
     free(data);
+
+    #if OS == .WINDOWS {
+        empty_mapping, empty_mapped := F.map_file(moved);
+        assert(empty_mapped && empty_mapping.data.count == 0);
+        assert(F.munmap_file(*empty_mapping));
+        assert(F.munmap_file(*empty_mapping));
+    }
+
     assert(F.file_delete(moved));
     assert(F.delete_directory(root));
     _, opened = F.file_open(name, log_errors = false);

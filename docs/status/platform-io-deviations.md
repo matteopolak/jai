@@ -1,7 +1,7 @@
 # Platform I/O deviations and pending verification
 
-Role: platform-io. Scope: owned File facade, File internals, private encoding,
-original platform I/O fixtures and runner. Updated 2026-10-14.
+Role: platform-io. Scope: owned File, Windows System/Thread/runtime internals,
+private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
 
 1. **Native Windows execution unavailable on this macOS host.** Source checks for
    both CPUs and an x64 cross-linked executable are evidence of build support
@@ -29,10 +29,38 @@ original platform I/O fixtures and runner. Updated 2026-10-14.
    questions; they are not asserted as established compatibility behavior. Risk:
    behavior differs from a future clarified spec. Proper fix: reviewed contract
    clarification plus focused native tests, without reading old implementation.
-5. **Remaining Windows subsystem scope.** Process/System/Thread/runtime backends
-   are not yet complete at this checkpoint. Existing Unix-only implementations
-   are not counted as Windows support. Process Windows public aggregate shapes
-   are absent from the reviewed spec; do not invent them to satisfy test callers.
+5. **Remaining Windows Process/public crash ABI scope.** Public Process Windows
+   aggregate shapes are absent from the reviewed spec. Windows crash CONTEXT is
+   specified with x64 fields/size only; arm64 contract is missing. Public Windows
+   Process and ENABLE_BACKTRACE_ON_CRASH integration remain incomplete. Proper fix:
+   reviewed shapes, then public adapters and native validation. Existing Unix-only
+   implementations are not counted as Windows support.
+6. **Compiler interpreter suspended CRT-thread gap.** Windows Thread uses the
+   actual CRT `_beginthreadex` with CREATE_SUSPENDED and ResumeThread, preserving
+   CRT thread-local cleanup and the documented gated start. Own compiler source
+   only schedules CreateThread, explicitly traps CREATE_SUSPENDED, and has no
+   `_beginthreadex`/ResumeThread scheduler path. Original reproducer:
+   tests/platform-io/pending/windows-crt-suspended-thread.jai. Native code builds;
+   Windows interpreter behavior remains blocked until compiler owner adds generic
+   suspended thread handles, resumption, and the CRT entry signature. Do not replace
+   these calls with fabricated handles or run foreign callbacks unsafely.
+7. **Inherited Thread DEBUG/race-detector limitations.** Existing module assertions
+   reject DEBUG and DO_RACE_DETECTOR; they are retained, not suppressed. Windows
+   release synchronization/lifetime is implemented; full debug tracking/order
+   overloads remain unsupported and need a coherent portable implementation.
+8. **Native SDK private declarations.** Missing reviewed Windows declarations for
+   profile, SID/registry lookup, InitializeCriticalSectionEx, CRT `_beginthreadex`,
+   command-line and low-level output operations are private ABI declarations from
+   official Microsoft APIs. Fixed-width DWORD/BOOL/LSTATUS, pointer-sized handles
+   and uintptr_t are used for x64/arm64. CPU records are size/bounds checked before
+   variable group-mask iteration. Risk: ABI mistakes cannot be ruled out without
+   native tests; long-term fix is SDK C layout probes plus native CI, and reuse of
+   reviewed bindings when they contain these declarations.
+9. **Runtime scope limits.** Core Windows entry/output/fatal Jai fault routines are
+   implemented, but optional native exception backtraces remain blocked by public
+   crash ABI review. Existing CRT abort on fatal bounds/cast/assertion failures is
+   retained; no fault assertions were weakened. Unicode command-line conversion
+   rejects malformed UTF-16 explicitly at startup rather than replacing characters.
 
 No lint suppression, disabled assertion, fake descriptor or module-name compiler
 special case was introduced in the reviewed File scope. Native OS operation
