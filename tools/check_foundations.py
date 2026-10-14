@@ -91,7 +91,10 @@ def main():
         linter = args.jailint.resolve(strict=True)
         if not linter.is_relative_to(ROOT / "target"):
             parser.error("use a jailint source build under this checkout's target")
-        run([linter, "-D", "warnings", *owned_sources()], "")
+        checked = subprocess.run([str(linter), "-v", "-D", "warnings", *map(str, owned_sources())],
+                                 cwd=ROOT, env=env, capture_output=True, text=True, timeout=180)
+        if checked.returncode or checked.stdout or "did not compile completely" in checked.stderr:
+            raise RuntimeError(f"foundation lint incomplete or failed:\n{checked.stdout}{checked.stderr}")
         print("passed source-built jailint -D warnings on owned sources and tests", flush=True)
 
     for name, diagnostic in (("hash-unsupported", "get_hash requires an integer, boolean, enum, pointer, or float"),

@@ -32,6 +32,7 @@ def main():
 
     def test_source(name):
         module = {"signed-native-fields": "Input", "texture-packing": "Simp",
+                  "glyph-atlas": "Simp", "macos-events": "Window_Creation",
                   "macos-window": "Window_Creation"}.get(name)
         return ROOT / (f"stdlib/{module}/tests/{name}.jai" if module else f"tests/window-render/{name}.jai")
 
