@@ -348,6 +348,9 @@ pub struct Compiler {
     pub types: Types,
     pub program: ir::Program,
     pub files: Vec<FileInfo>,
+    /// Lexical provenance of scoped/generated sources, for relative source loads
+    /// and the distribution boundary around library-owned internals.
+    source_origins: HashMap<FileId, FileId>,
     file_by_path: HashMap<(PathBuf, ModuleId), usize>,
     /// Whether each source file is the stdlib's, for trap reports (a `#run` can trap often).
     library_files: std::cell::RefCell<HashMap<u32, bool>>,
@@ -609,6 +612,7 @@ impl Compiler {
             types: Types::new(),
             program: ir::Program::default(),
             files: Vec::new(),
+            source_origins: HashMap::default(),
             file_by_path: HashMap::default(),
             modules: Vec::new(),
             module_cache: HashMap::default(),

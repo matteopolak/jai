@@ -433,11 +433,14 @@ impl Compiler {
         if !self.fs.canonical(path).starts_with(&internal) {
             return Ok(());
         }
-        let from_library = self.sources.try_get(span.file).is_some_and(|source| {
-            self.fs
-                .canonical(Path::new(&source.path))
-                .starts_with(self.fs.canonical(stdlib))
-        });
+        let from_library = self
+            .sources
+            .try_get(self.source_origin(span.file))
+            .is_some_and(|source| {
+                self.fs
+                    .canonical(Path::new(&source.path))
+                    .starts_with(self.fs.canonical(stdlib))
+            });
         if from_library {
             return Ok(());
         }
@@ -473,7 +476,7 @@ impl Compiler {
     }
 
     pub fn file_dir(&self, file: FileId) -> PathBuf {
-        let path = PathBuf::from(&self.sources.get(file).path);
+        let path = PathBuf::from(&self.sources.get(self.source_origin(file)).path);
         path.parent().map(Path::to_path_buf).unwrap_or_default()
     }
 
@@ -1506,11 +1509,29 @@ impl Compiler {
     /// Add source text (an `#import,string` or a workspace build string) as a
     /// file of `module`. `label` names it in diagnostics.
     pub fn load_string(&mut self, label: &str, source: &str, module: ModuleId) -> Result<()> {
+        let scope = self.modules[module.0 as usize].scope;
+        self.load_string_in_scope(label, source, scope)
+    }
+
+    pub(super) fn load_string_in_scope(
+        &mut self,
+        label: &str,
+        source: &str,
+        target: ScopeId,
+    ) -> Result<()> {
+        let module = self.scope(target).module;
         let path = PathBuf::from(label);
         let file = self.sources.add(label.to_string(), source.into());
+        let mut origin_scope = Some(target);
+        while let Some(scope) = origin_scope {
+            if let Some(origin) = self.scope(scope).file {
+                self.source_origins.insert(file, self.source_origin(origin));
+                break;
+            }
+            origin_scope = self.scope(scope).parent;
+        }
         let ast = crate::parser::parse_file(file, source).map_err(Box::new)?;
-        let module_scope = self.modules[module.0 as usize].scope;
-        let file_scope = self.new_scope(ScopeKind::File, Some(module_scope), module, Some(file));
+        let file_scope = self.new_scope(ScopeKind::File, Some(target), module, Some(file));
         self.files.push(FileInfo {
             id: file,
             path,
@@ -1518,8 +1539,12 @@ impl Compiler {
             scope: file_scope,
         });
         self.modules[module.0 as usize].files.push(file);
-        self.declare_stmts(module_scope, file_scope, &ast.stmts, ast::ScopeKind::Export)?;
+        self.declare_stmts(target, file_scope, &ast.stmts, ast::ScopeKind::Export)?;
         Ok(())
+    }
+
+    fn source_origin(&self, file: FileId) -> FileId {
+        self.source_origins.get(&file).copied().unwrap_or(file)
     }
 
     /// Load every module reachable through imports and expand all pending

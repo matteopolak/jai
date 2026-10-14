@@ -1,0 +1,15 @@
+alloc:: (size: s64) -> (: *void);
+free:: (memory: *void);
+realloc:: (memory: *void, size: s64, old_size: s64) -> (: *void);
+free:: (s: string);
+alloc_string:: (count: int) -> (: string);
+copy_string:: (s: string) -> (: string);
+to_string:: (s: *u8, length: s64) -> (: string);
+to_string:: (c_string:  /* expression not printed */;
+to_c_string:: (s: string) -> (: *u8);
+Initialize:: (memory: *T);
+New:: (T: Type, initialized: = true) -> (: *T);
+NewArray:: (count: s64, T: Type, initialized: = true, alignment: s32 = -1) -> (result:  /* expression not printed */;
+align_forward:: (orig_size: s64, alignment: s64) -> (: s64);
+push_allocator:: (allocator: Allocator) #expand;
+push_allocator:: (proc: Allocator_Proc, data: *void) #expand;

@@ -177,14 +177,29 @@ impl Compiler {
         } else if Some(m) == self.main_module {
             3
         } else {
-            0
+            4
         };
         let module = &self.modules[m.0 as usize];
+        let entry = module
+            .path
+            .as_ref()
+            .map(|p| self.fs.canonical(p).display().to_string())
+            .or_else(|| {
+                module
+                    .files
+                    .first()
+                    .map(|&f| self.sources.get(f).path.clone())
+            })
+            .unwrap_or_default();
         let mut rec = Record::new("Message_Import");
         rec.int("kind", message_kind::IMPORT)
             .int("workspace", self.workspace)
             .int("module_type", module_type)
             .str("module_name", module.name.as_bytes())
+            .str(
+                "fully_pathed_filename",
+                super::expr::forward_slashes(&entry).as_bytes(),
+            )
             .int("__module", m.0 as i64);
         let id = r.add(rec);
         self.export.modules.insert(m, id);
@@ -571,14 +586,23 @@ impl Compiler {
         // Bodies of procedure literals without a procedure of their own (nested
         // in other bodies) cannot be modified; they keep their code.
         let Some(&p) = self.export.bodies.get(&body) else {
-            return Ok(());
+            return err(
+                Span::NONE,
+                "compiler_modify_procedure: body record does not belong to this workspace procedure",
+            );
         };
         if self.proc(p).body_state == procs::BodyState::Lowering {
-            return Ok(());
+            return err(
+                self.proc(p).span,
+                "compiler_modify_procedure: cannot modify a procedure while it is being lowered",
+            );
         }
         let old = self.proc(p).lit.clone();
         let Some(old_body) = &old.body else {
-            return Ok(());
+            return err(
+                self.proc(p).span,
+                "compiler_modify_procedure: procedure has no body",
+            );
         };
         let mut new_stmts = Vec::new();
         for stmt in stmts {
@@ -965,7 +989,12 @@ impl Exporter<'_> {
             return rec;
         };
         if (span.file.0 as usize) < c.sources.len() {
-            let file = c.file_record(self.r, span.file);
+            let module = c
+                .files
+                .iter()
+                .find(|f| f.id == span.file)
+                .map_or(c.scope(self.scope).module, |f| f.module);
+            let file = c.file_record_in(self.r, span.file, module);
             let source = c.sources.get(span.file);
             let (l0, c0) = source.line_col(span.start);
             let (l1, c1) = source.line_col(span.end);

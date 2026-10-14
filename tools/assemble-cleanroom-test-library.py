@@ -18,6 +18,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--foundation", required=True, type=Path,
                         help="new independent stdlib root; never an old/reference distribution")
+    parser.add_argument("--bindings", type=Path,
+                        help="optional new independent bindings root for native file tests")
     args = parser.parse_args()
     source = args.foundation.resolve(strict=True)
     if not (source / "prelude/module.jai").is_file():
@@ -28,6 +30,12 @@ def main():
     if destination.exists():
         shutil.rmtree(destination)
     shutil.copytree(source, destination)
+    if args.bindings:
+        bindings = args.bindings.resolve(strict=True)
+        for name in ("POSIX", "Linux", "macOS", "Windows", "internal/bindings"):
+            path = bindings / name
+            if path.is_dir():
+                shutil.copytree(path, destination / name, dirs_exist_ok=True)
     for name in OWNED:
         path = ROOT / "stdlib" / name
         if path.is_dir():

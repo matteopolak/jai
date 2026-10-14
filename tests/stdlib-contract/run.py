@@ -71,7 +71,9 @@ def main() -> int:
                     ran = subprocess.run([str(executable)], cwd=temporary, env=env,
                                          text=True, capture_output=True, timeout=timeout)
                     output, error, code = ran.stdout, error + ran.stderr, ran.returncode
-                if mode == "check":
+                if "error_contains" in case:
+                    passed = code == case["exit_code"] and case["error_contains"] in error and output == case["stdout"]
+                elif mode == "check":
                     passed = code == 0
                 else:
                     passed = code == 0 and output == case["stdout"]

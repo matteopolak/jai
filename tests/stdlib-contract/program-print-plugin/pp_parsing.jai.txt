@@ -1,0 +1,9 @@
+string_to_int:: (t: string, base: = 10, T: = int) -> (result: T, success: bool, remainder: string);
+to_integer:: (s: string) -> (result: int, success: bool, remainder: string);
+eat_spaces:: (_s: string) -> (: string);
+string_to_float64:: (_s: string) -> (result: float64, success: bool, remainder: string);
+string_to_float:: (arg: string) -> (result: float, success: bool, remainder: string);
+string_to_float64_new:: (_s: string) -> (success: bool, result: float64, remainder: string);
+string_to_float_new:: (arg: string) -> (success: bool, result: float, remainder: string);
+libc::  /* expression not printed */;
+c_strtod:: (text: *u8, end: *(*u8)) -> (: float64);

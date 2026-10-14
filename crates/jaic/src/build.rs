@@ -406,10 +406,13 @@ pub type SharedWorkspaces = Rc<RefCell<Workspaces>>;
 pub enum MetaOp {
     WorkspaceCreate,
     CurrentWorkspace,
+    ValidateWorkspace,
     AddFile,
     AddString,
     SetOption,
     BeginIntercept,
+    EndIntercept,
+    WorkspaceStatus,
     NextEvent,
     EventInt,
     EventString,
@@ -419,6 +422,7 @@ pub enum MetaOp {
     CompilerVersion,
     CustomLinkComplete,
     AddStringToModule,
+    AddStringToCode,
     CodeNodes,
     CodeIsNull,
     ParseCode,
@@ -458,10 +462,13 @@ impl MetaOp {
         Some(match name {
             "__jaic_workspace_create" => Self::WorkspaceCreate,
             "__jaic_current_workspace" => Self::CurrentWorkspace,
+            "__jaic_workspace_validate" => Self::ValidateWorkspace,
             "__jaic_workspace_add_file" => Self::AddFile,
             "__jaic_workspace_add_string" => Self::AddString,
             "__jaic_workspace_set_option" => Self::SetOption,
             "__jaic_workspace_begin_intercept" => Self::BeginIntercept,
+            "__jaic_workspace_end_intercept" => Self::EndIntercept,
+            "__jaic_workspace_status" => Self::WorkspaceStatus,
             "__jaic_workspace_next_event" => Self::NextEvent,
             "__jaic_event_int" => Self::EventInt,
             "__jaic_event_string" => Self::EventString,
@@ -471,6 +478,7 @@ impl MetaOp {
             "__jaic_compiler_version" => Self::CompilerVersion,
             "__jaic_custom_link_complete" => Self::CustomLinkComplete,
             "__jaic_workspace_add_string_to_module" => Self::AddStringToModule,
+            "__jaic_workspace_add_string_to_code" => Self::AddStringToCode,
             "__jaic_code_nodes" => Self::CodeNodes,
             "__jaic_code_is_null" => Self::CodeIsNull,
             "__jaic_parse_code" => Self::ParseCode,
@@ -511,7 +519,7 @@ impl MetaOp {
 /// Id of the program being compiled by the command line (workspace 1 is reserved, as in `jai`).
 pub const TOP_LEVEL_WORKSPACE: i64 = 2;
 
-pub const COMPILER_VERSION: &str = "beta 0.2.029, jaic";
+pub const COMPILER_VERSION: &str = concat!("jaic ", env!("CARGO_PKG_VERSION"));
 
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.
@@ -1365,6 +1373,7 @@ pub fn call(
     if !matches!(
         op,
         MetaOp::CurrentWorkspace
+            | MetaOp::ValidateWorkspace
             | MetaOp::EventInt
             | MetaOp::EventString
             | MetaOp::CommandLineCount
@@ -1565,6 +1574,10 @@ pub fn call(
             Ok(Rets::one(reg.list.len() as u64 - 1))
         }
         MetaOp::CurrentWorkspace => Ok(Rets::one(shared.borrow().current_id() as u64)),
+        MetaOp::ValidateWorkspace => {
+            shared.borrow_mut().ws(arg(0) as i64).map_err(trap)?;
+            Ok(Rets::default())
+        }
         MetaOp::AddFile | MetaOp::AddString => {
             let id = arg(0) as i64;
             let value = text(interp, 1)?;
@@ -1623,6 +1636,27 @@ pub fn call(
             let ws = reg.ws(arg(0) as i64).map_err(trap)?;
             ws.intercepted = true;
             ws.intercept_flags = arg(1) as i64;
+            Ok(Rets::default())
+        }
+        MetaOp::EndIntercept => {
+            shared
+                .borrow_mut()
+                .ws(arg(0) as i64)
+                .map_err(trap)?
+                .intercepted = false;
+            Ok(Rets::default())
+        }
+        MetaOp::WorkspaceStatus => {
+            let mut reg = shared.borrow_mut();
+            let ws = reg.ws(arg(0) as i64).map_err(trap)?;
+            match arg(1) {
+                0 if ws.failed => {
+                    return Err(trap("a failed workspace cannot be reset to OK".into()));
+                }
+                0 => {}
+                1 => ws.failed = true,
+                status => return Err(trap(format!("invalid workspace status {status}"))),
+            }
             Ok(Rets::default())
         }
         MetaOp::NextEvent => {
@@ -1729,6 +1763,16 @@ pub fn call(
         MetaOp::AddStringToModule => {
             let (id, value, record) = (arg(0) as i64, text(interp, 1)?, arg(2) as i64);
             let mut reg = shared.borrow_mut();
+            if let Some(Item::Int(file)) = reg.records.item(record, "__file", None) {
+                reg.ws(id)
+                    .map_err(trap)?
+                    .pending
+                    .push(ProgramSource::FileString(
+                        value,
+                        crate::source::FileId(file as u32),
+                    ));
+                return Ok(Rets::default());
+            }
             // A FILE message stands for its module (the enclosing import).
             let records = &reg.records;
             let message = match records.item(record, "enclosing_import", None) {
@@ -1741,6 +1785,28 @@ pub fn call(
             };
             let ws = reg.ws(id).map_err(trap)?;
             ws.pending.push(ProgramSource::ModuleString(value, module));
+            Ok(Rets::default())
+        }
+        MetaOp::AddStringToCode => {
+            let id = arg(0) as i64;
+            let source = text(interp, 1)?;
+            let code = arg(2);
+            let mut reg = shared.borrow_mut();
+            if id != reg.current_id() {
+                return Err(trap(
+                    "add_build_string: Code scope must belong to the running workspace".into(),
+                ));
+            }
+            if code >= interp.codes.len() as u64 {
+                return Err(trap("add_build_string: invalid Code scope".into()));
+            }
+            reg.ws(id)
+                .map_err(trap)?
+                .pending
+                .push(ProgramSource::CodeString(
+                    source,
+                    crate::sema::value::CodeId(code as u32),
+                ));
             Ok(Rets::default())
         }
         MetaOp::CodeIsNull => {

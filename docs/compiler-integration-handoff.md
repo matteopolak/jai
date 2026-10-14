@@ -83,6 +83,18 @@ diagnosed. `crates/jaic/tests/cleanroom_layout.rs` reproduces and verifies the
 foundation temporary-storage blocker using independent aggregate names. Rebuild
 the compiler with the command above before enabling the pending foundation source.
 
+Compiler facade adapters now support workspace interception, statement edits and
+scoped source addition. Code scope selectors are accepted only in the running
+workspace, as the reviewed precondition requires; FILE selectors retain their
+private file namespace and relative-load origin. Unknown modification bodies and
+invalid workspace IDs are diagnostics. The version string now identifies this
+actual jaic package version instead of a historical reference-version spelling.
+
+The test overlay optionally accepts `--bindings /absolute/path/to/new/stdlib` and
+copies only the new POSIX/Linux/macOS/Windows bindings and their private helpers.
+This enables the Program_Print plugin's real file-output fixture while preserving
+every other checkout. Full integration remains coordinator-owned.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.

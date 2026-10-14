@@ -215,5 +215,42 @@
     "mode": "interp",
     "timeout_seconds": 30,
     "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-message-records-and-completion",
+    "source": "compiler-messages/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-procedure-modification",
+    "source": "compiler-modify/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-code-and-file-scoped-source",
+    "source": "compiler-scoped-source/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-invalid-workspace-diagnostic",
+    "source": "compiler-invalid-workspace/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "",
+    "exit_code": 1,
+    "error_contains": "invalid workspace 999"
+  },
+  {
+    "name": "program-print-plugin-file-output",
+    "source": "program-print-plugin/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
   }
 ]

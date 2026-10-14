@@ -522,3 +522,38 @@ fn invalid_computed_filter_is_an_error() {
     );
     rejects(&mut c, "strings");
 }
+
+#[test]
+fn procedure_modification_rejects_unknown_body_record() {
+    let mut c = compiler(&[], false);
+    assert!(
+        c.modify_procedure(&jaic::records::Records::default(), 999, &[])
+            .is_err()
+    );
+}
+
+#[test]
+fn import_message_records_describe_actual_source_entry() {
+    use jaic::records::{FieldRef, Records};
+    let mut c = compiler(
+        &[
+            ("/lib/M/module.jai", "answer :: 47;"),
+            (
+                "/app/main.jai",
+                "M :: #import \"M\"; #assert(M.answer == 47);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+    let mut records = Records::default();
+    let events = c.export_file_events(&mut records);
+    let record = events.into_iter().filter(|(kind, _)| *kind == 2).map(|(_, id)| id).find(|&id| matches!(records.field(id, "module_name"), Some(FieldRef::Str(s)) if &**s == b"M")).expect("import event for M");
+    assert!(matches!(
+        records.field(record, "module_type"),
+        Some(FieldRef::Int(4))
+    ));
+    assert!(
+        matches!(records.field(record, "fully_pathed_filename"), Some(FieldRef::Str(s)) if &**s == b"/lib/M/module.jai")
+    );
+}

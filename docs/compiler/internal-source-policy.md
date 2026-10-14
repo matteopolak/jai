@@ -20,9 +20,11 @@ declarations explicitly.
 
 The selected bootstrap determines the library root. Without a selected bootstrap
 there is no installed library identity and this policy is inactive. Generated
-source labels do not establish library ownership; importing an internal helper
-from generated text is rejected unless real source provenance is available.
-See [open questions](../specs/stdlib/compiler-questions.md).
+source labels alone do not establish library ownership. Scoped build strings now
+retain known lexical source provenance from their Code/FILE selector, including
+relative-load resolution. Unscoped generated text has no such provenance and
+cannot directly import private helpers. As documented above, this distribution
+rule is not a security boundary around metaprogram source insertion.
 
 Implementation: `check_source_access`, `load_file` and `load_module` in
 `crates/jaic/src/sema/modules.rs`. Verification:

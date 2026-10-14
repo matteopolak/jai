@@ -30,8 +30,9 @@ defaults. Bootstrap types are imported from the single prelude, not redefined.
 
 Program_Print plugin collection groups typechecked declarations by source filename
 and its finish path writes `pp_<basename>.txt` using the public File API, checking
-write failure. That path awaits the independent File implementation and has not
-yet been exercised. Helpers whose detailed behavior is not established by the
+write failure. An original plugin fixture now verifies emitted declaration text
+through the independent File/POSIX implementations and removes its test output.
+Helpers whose detailed behavior is not established by the
 reviewed page remain compatibility questions, not evidence from legacy tests.
 
 ## Remaining scope
@@ -42,11 +43,19 @@ are now implemented over the Rust bridge. Original metaprograms exercise option
 round trips, compiling added source, discarding a workspace, inspecting AST nodes
 and reconstructing Code with an explicit scope source. Record materialization
 reports missing records/plans and malformed field shapes, and rolls back failed
-cache entries instead of returning zeroed successes. Procedure modification has
-an adapter that serializes current statements, but still needs end-to-end
-interception validation. Non-null Code scope selection in `add_build_string`
-remains explicitly unsupported. Interception and remaining workspace operations
-are pending. The [independent runtime Jai_Lexer](runtime-jai-lexer.md) is implemented
+cache entries instead of returning zeroed successes. Interception now constructs
+FILE/IMPORT/TYPECHECKED/PHASE/COMPLETE, failed-import and debug messages from actual
+compiler events. Category/note filters apply to typechecked records. Original
+fixtures verify completion and an edited procedure whose replacement body is
+executed by a later compile-time assertion. Unknown body records are errors.
+
+`add_build_string` supports non-null Code in its running workspace, retaining its
+lexical scope. FILE messages select the original file scope (including private
+names); IMPORT messages select the module. Scoped text retains known lexical file
+provenance for relative loads. Compiler API guards report ordinary compile errors,
+and invalid workspace IDs are validated against the Rust registry instead of
+creating default records. Remaining runtime/data/diagnostic APIs and performance
+message ABI are pending. The [independent runtime Jai_Lexer](runtime-jai-lexer.md) is implemented
 and passes its token/EOF, edge and malformed-input fixtures in interpreter and
 native execution. `Code_Visit.visit_pre_and_postorder` is not exported yet:
 its macro caller bindings are unspecified in the reviewed page. It has no fake
