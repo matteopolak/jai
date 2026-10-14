@@ -2,6 +2,29 @@
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 
+#[test]
+fn reflected_struct_alignment_matches_completed_layout() {
+    let stdlib = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib");
+    let mut options = Options::host();
+    options.import_paths = vec![stdlib.clone()];
+    options.preload = Some(stdlib.join(jaic::PRELOAD_ENTRY));
+    let mut c = Compiler::new(options, Rc::new(jaic::sema::NativeFs));
+    let source = r#"
+        Record :: struct { value: u64; }
+        Packed :: struct #no_padding { first: u8; second: u64; }
+        Wide :: struct #align 32 { value: u8; }
+        Box :: struct(T: Type) { value: T; }
+        #assert((cast(*Type_Info_Struct) type_info(Record)).alignment == 8);
+        #assert((cast(*Type_Info_Struct) type_info(Packed)).alignment == align_of(Packed));
+        #assert((cast(*Type_Info_Struct) type_info(Wide)).alignment == 32);
+        #assert((cast(*Type_Info_Struct) type_info(Box(u64))).alignment == 8);
+        main :: () {}
+    "#;
+    if let Err(error) = c.compile_sources(&[ProgramSource::String(source.into())]) {
+        panic!("{}", error.render(&c.sources));
+    }
+}
+
 fn compile(source: &str) -> (Compiler, jaic::sema::Result<()>) {
     let mut options = Options::host();
     options.runtime_support = false;

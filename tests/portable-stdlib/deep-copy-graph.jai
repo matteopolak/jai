@@ -1,4 +1,4 @@
-// Pending general compiler alignment metadata fix; do not count as a passing graph test.
+// Real cyclic/shared graph regression against production reflection metadata.
 #import "Basic";
 D :: #import "Deep_Copy";
 H :: #import "Hash_Table";

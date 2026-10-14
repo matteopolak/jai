@@ -1,4 +1,4 @@
-# Deep_Copy progress and reflection blocker
+# Deep_Copy progress and verified graph behavior
 
 Canonical public configuration, pointer-map records and mutable diagnostic
 globals are loaded directly into the module. Private operations separate object
@@ -16,17 +16,15 @@ Overlapping unions are also rejected because the contract supplies no active-arm
 policy. Non-struct pointers retain their source identity; struct pointers are
 followed only when the configuration allows it.
 
-General graph support is **not verified or counted complete**. Both interpreter
-and native execution report `Type_Info_Struct.alignment == 0` for a normal struct
-whose `align_of` is 8. The independent reproducer is
-`tests/portable-stdlib/pending/type-info-alignment.jai`. The graph regression
-`pending/deep-copy-graph.jai` retains its real failing alignment assertion; none
-of its cycle/sharing assertions has been disabled. The implementation retains
-alignment validation rather than guessing a layout. The own compiler descriptor
-builder in `sema/typeinfo.rs` currently populates other reflected struct fields
-but does not populate `alignment`; a general computed-layout assignment is needed
-in compiler ownership. After that fix, rerun the graph test in both modes and
-resolve any further failures before promoting it.
+The compiler now populates `Type_Info_Struct.alignment` from completed struct
+layout. The original reproducer `tests/portable-stdlib/type-info-alignment.jai`
+reports eight, matching `align_of`; the focused compiler regression also covers
+packed, explicitly aligned and generic structs. The unchanged graph assertions
+in `tests/portable-stdlib/deep-copy-graph.jai` pass interpreter and native O0/O2:
+cycles, shared pointers, shared maps, copied string/array ownership, scalar-pointer
+identity, mutation independence, mapper callbacks and preallocated roots.
+Both cases are now part of the ordinary portable runner. These results establish
+the exercised graph behavior, not every unresolved Deep_Copy policy below.
 
 Further unresolved contracts: whether default strings must be copied or borrowed,
 scalar-pointer policy, shared array slices of different extents, empty-but-reserved

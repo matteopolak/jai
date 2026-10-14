@@ -437,6 +437,13 @@ impl Compiler {
             TypeKind::Struct(s) => {
                 self.layout_struct(s, span)?;
                 let info = self.types.struct_info(s).clone();
+                self.set_field(
+                    &mut agg,
+                    desc,
+                    "alignment",
+                    Value::Int(info.align as i128),
+                    span,
+                )?;
                 // Anonymous structs are named after the keyword internally; at runtime
                 // they have no name.
                 let name = match info.name.as_str() {

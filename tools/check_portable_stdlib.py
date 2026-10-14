@@ -19,6 +19,7 @@ CONTRACTS = [
     "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process", "command-line",
 ]
 EXPECTED = {
+    "type-info-alignment": "alignment 8; expected 8\n",
     "print-color": "\x1b[1;31mcolor 42\x1b[0m\x1b[4;32mscope\x1b[0mok\n",
     "basic-output": "out 7++",
     "runtime": "runtime -9223372036854775808 ff\n",
