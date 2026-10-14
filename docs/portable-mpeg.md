@@ -38,8 +38,10 @@ motion vectors, half-pixel compensation, entropy decoding, dequantization, slice
 I/P/B reconstruction and delayed reference-frame ordering are implemented.
 Coverage includes independent constant intra blocks and all ten red I/P frames
 from the authorized synthetic fixture's elementary payload, twice with rewind.
-Forward/backward prediction is tested directly; complete B-picture streams and
-nonconstant AC reconstruction still need additional integration fixtures. The
+Forward/backward prediction is tested directly. Original generated elementary
+fixtures now cover intra-coded B-picture ordering and nonconstant horizontal AC
+reconstruction. Inter-predicted B streams and broader coefficient cases remain
+additional integration scope. The
 tested fixture extraction is explicit test setup, not program-stream demux.
 Truncated fields, bad runs/addresses and incomplete pictures assert. Legitimate
 final slices with fewer than 23 remaining bits use bounded lookahead, so their
@@ -57,10 +59,14 @@ coverage checks reject missing and overlapping slice regions; reaching the final
 macroblock address alone does not establish a completely decoded frame. That
 check adds a temporary allocation and linear pass per picture. Missing reference
 pictures are rejected instead of predicting from initialized placeholder storage.
+The B fixture retained its third-frame assertion and exposed a dropped final
+reference after a trailing B picture. EOF now flushes the pending reference
+regardless of the last coded picture type. No-delay mode rejects B pictures rather
+than returning stale reference content; I/P no-delay decoding is tested.
 
 Layer II audio lifecycle, sync/header parsing, quantizer allocation, grouped/direct
 sample reconstruction, scalefactors, synthesis and interleaved output are implemented
-for unprotected MPEG-1 Layer II frames. A valid zero-allocation frame reconstructs
+for MPEG-1 Layer II frames. A valid zero-allocation frame reconstructs
 silence. The authorized fixture's two explicitly extracted PES payloads yield sixteen
 mono frames (18,432 samples), with real amplitude, channel equality, frequency and
 rewind checks. Frequency uses the steady interior; diagnostics showed extra
@@ -74,8 +80,35 @@ the licensed C factorization. `python3 -B tools/check_portable_mpeg_matrix.py` b
 only the permitted public C input and compares all 2,048 basis results with the
 direct mathematical matrix (observed maximum absolute difference below 9.5e-7).
 It is algorithm verification, not a Jai API oracle. No supplied binary is used.
-CRC-protected frames and changing bitrate/sample-rate/mode assert explicitly and
-remain unsupported. Stereo/joint-stereo branches need independent stream fixtures.
+Protected frames validate the real MSB-first 0x8005 CRC from an all-ones initial
+state over the final sixteen header bits and allocation/scalefactor-selector bits.
+Mismatch asserts before sample reconstruction. The protected joint-stereo fixture
+has two frames and rewind; a corrupted transmitted checksum is rejected in both
+modes. This replaces the earlier explicit unsupported-CRC guard, not a checksum
+skip. Coverage boundaries are corroborated by the official FFmpeg C source linked
+below; public compatibility declarations still come only from reviewed specs.
+
+Checksum state is private and does not enlarge/change the canonical Audio record.
+A CAS-protected registry uses one allocator-captured node per parsed Audio and
+releases it in audio_destroy. Lookup is linear in live decoders and adds a lock
+per header/frame; this cost is unbenchmarked. Tracking verifies node cleanup.
+Callers synchronize each decoder's lifetime. Frame decoding requires a header
+parsed for that exact object; shallow Audio copies/hand-marked has_header values
+are explicitly unsupported rather than silently bypassing checksum validation.
+Manual/copy lifecycle semantics require review. Normal buffer/object allocations
+still require the active allocator lifetime described above.
+
+Changing bitrate/sample-rate/mode remains explicitly unsupported. Original nonzero
+stereo, dual-channel and joint-stereo fixtures
+now check distinct left/right gains, two consecutive frames and rewind. Shared
+sample codes are decoded once, then reconstructed with each channel's own
+scalefactor. This fixes the real joint-stereo failure where the right channel
+incorrectly matched the left. A temporary bit-replay verification path was removed
+before checkpointing. The independent fixture leaves synthesis headroom and
+retains range/gain assertions. Separate shared-channel scaling is corroborated by
+the permitted official [FFmpeg C decoder](https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/libavcodec/mpegaudiodec_template.c);
+no FFmpeg code bodies or binaries are incorporated. Richer stereo content remains
+broader integration scope.
 
 Taking `*QUANT_TAB` before dynamic indexing uses the canonical aggregate's static
 storage; quantizer return pointers are checked against that same public table.

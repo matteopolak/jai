@@ -226,8 +226,9 @@ and context_info always identifies the own context. Cache allocations use the
 default own allocator, independent of the foreign allocator being copied.
 Cache metadata persists for the module lifetime, matching the metadata-lifetime
 requirement. Tests cover defaults, pointers and values changing under a reused
-plan. The Remap_Context expansion is withheld pending its documented compiler
-scope failure; the failed assertions remain in the pending reproducer.
+plan. The updated compiler supports caller-owned cleanup; the exported macro now
+pushes for the caller's remaining lexical scope and restores on nested/early exits.
+The original scope regression is promoted with its assertions retained.
 
 System implements Unix reentrant account lookup (no password field is inspected),
 machine name, executable path, errno aliases/descriptions and processor queries.

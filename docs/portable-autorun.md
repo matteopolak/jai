@@ -21,15 +21,12 @@ It tests the direct helper again and a real NO_OUTPUT workspace's informational
 log. Runtime tests capture missing-executable/nonzero-exit errors. This verifies
 real lifecycle events, not completed CLI plugin integration.
 
-Two compiler issues remain:
+The updated independent compiler fixes mixed scalar/spread variadic calls. The
+original regression passes in both modes and is promoted, retaining result/output
+assertions. Autorun now passes executable plus spread directly, removing the
+temporary argv allocation. Its real workspace argument/lifecycle regression stays.
 
-- `pending/mixed-varargs-spread.jai` fails interpreter/native: a scalar variadic
-  prefix followed by ..args loses the prefix. Own source sema/calls.rs replaces
-  Slot::Variadic with Slot::Spread. The general fix must retain mixed segments and
-  evaluation order, including named/default arguments. Autorun constructs one
-  argv array and passes one spread, preserving its exact public API. This adds
-  transient allocation; the original assertion remains failing and is not counted
-  as a fixed language feature.
+CLI integration remains unfinished:
 - `pending/autorun-cli.jai` with +Autorun fails at unimplemented Metaprogram_Plugins.
   CLI generation also calls build_with_plugin_groups, absent from the reviewed
   public inventory. Do not add that convenience export to satisfy old behavior.

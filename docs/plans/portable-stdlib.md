@@ -194,3 +194,30 @@ bytewise pending headers, larger-than-capacity file refill, borrowed handles,
 loop/tick callbacks, tracked cleanup and linear seek behavior. Preserve retained
 assertions for truncated PES/timestamps and signaled ring compaction. Document
 linear seeks/system-header bounds/buffering and all unsupported formats precisely.
+
+Original MPEG fixture increment: derive valid bitstreams from reviewed VLC data,
+not an encoder/reference binary. Exercise intra-coded B display ordering and a
+nonconstant AC block, preserving all frame/pixel/timing assertions. Fix EOF pending
+reference flush and reject B pictures under the no-delay assumption. Keep direct
+motion tests and expand into nonzero stereo/joint-stereo and CRC coverage next.
+
+Stereo increment: original nonzero separate/dual/shared sample fixtures with
+channel gains four-to-one. Retain independent range/amplitude/rewind assertions.
+Refactor raw quantized decoding from channel reconstruction, avoiding cursor replay
+or ignored right-channel scalefactors. Consult only permitted official native C
+for scaling/CRC facts, preserve reviewed arrays and record provenance. Continue
+protected frames with real checksum validation rather than retaining a CRC skip.
+
+Compiler-refresh increment: source rebuild, then verify original pending atomic,
+caller-scope context, reflected alignment/graph and mixed-spread assertions in both
+modes. Promote only demonstrated passes; enable the reviewed Remap_Context macro
+with nested/early-exit restoration tests and remove Autorun's extra argv array.
+Retain constructor/constant/workspace/bitwise failures. Reclassify the scalar __reg
+probe accurately and verify actual vector operands before any Meow support claim.
+
+Protected audio increment: retain canonical Audio layout while owning private
+checksum state by object identity. Capture its allocator and release metadata in
+audio_destroy. Validate the real header/control CRC before reconstruction; test
+protected joint stereo, corruption, rewind and tracked cleanup. Reject missing
+parsed-header identity instead of silently bypassing CRC; record manual/copy
+lifetime and linear registry costs as unresolved contracts/performance limits.

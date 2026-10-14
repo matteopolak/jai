@@ -9,7 +9,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Window/render clean-room incident](status/window-render-cleanroom-incident-2026-10-14.md):
   reviewed metadata-only exposure, clearance and implementation resumption.
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
-- [Portable MPEG](portable-mpeg.md): MPEG-1 program streams, video/Layer II audio and remaining compatibility gaps
+- [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/CRC-checked audio, independent fixtures and remaining gaps
 
 ## Language
 
@@ -161,8 +161,8 @@ The LLVM backend, C ABI and linking.
 - [SMTP/MIME transport and loopback validation](portable-mail.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
 - [Classic ZIP directory parsing and ownership](portable-zip-directory.md)
-- [CAS-based Atomics and intrinsic integration gap](portable-atomics.md)
-- [Deep_Copy supported cases and reflection blocker](portable-deep-copy.md)
+- [Atomics and verified bootstrap aliases](portable-atomics.md)
+- [Deep_Copy verified graphs and remaining contracts](portable-deep-copy.md)
 - [Unix BuildCpp artifacts, cleanup and toolchain limits](portable-buildcpp.md)
 - [Treemap weights, stable nodes and rectangle layout](portable-treemap.md)
 - [POSIX shared-memory channels and mixed-process verification](portable-shared-memory.md)

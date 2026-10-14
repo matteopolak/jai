@@ -37,10 +37,11 @@ FAULT_EXPECTATIONS = {
     "mpeg-motion-bounds": ("assertion failed", "MPEG motion region out of bounds"),
     "mpeg-sequence-change": ("assertion failed", "MPEG sequence dimension/rate changes are unsupported"),
     "mpeg-picture-hole": ("assertion failed", "incomplete MPEG picture coverage"),
-    "mpeg-audio-crc": ("assertion failed", "CRC-protected MPEG audio is unsupported"),
+    "mpeg-audio-crc": ("assertion failed", "MPEG audio checksum mismatch"),
     "mpeg-audio-quantizer": ("assertion failed", "invalid MPEG grouped quantizer value"),
     "mpeg-program-pts": ("assertion failed", "invalid MPEG timestamp marker"),
     "mpeg-program-truncated": ("assertion failed", "truncated MPEG PES packet"),
+    "mpeg-no-delay-b": ("assertion failed", "MPEG B picture violates no-delay assumption"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -101,6 +102,7 @@ def main():
             parser.error("supply the new Curl dependency with --curl-root")
         shutil.copytree(curl_root, root / "Curl", dirs_exist_ok=True)
         shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_mpeg_fixtures.py")], cwd=ROOT, check=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
     output.mkdir(parents=True, exist_ok=True)

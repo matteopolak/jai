@@ -21,14 +21,12 @@ targets. The reviewed page does not fully specify the accepted type sets or
 out-of-range conversion policy; these choices require review. No floating-point
 fetch-add support is claimed.
 
-There is a source-compiler gap: the reviewed bootstrap declares `atomic_load`,
-`atomic_store`, and `atomic_exchange` as intrinsic procedures, but the current
-compiler's intrinsic dispatch does not recognize those names. The focused
-`pending/atomic-intrinsics.jai` reproduces `unknown intrinsic atomic_store` without
-any module dependency. The alias declarations remain entity aliases; substituting
-new wrapper procedures would break the required identity. These three aliases
-are therefore not counted as executable support. The compiler worker must add
-general intrinsic lowering and operand validation across interpreter/native.
+The updated independent source compiler now lowers atomic load/store/exchange.
+The original intrinsic regression passes interpreter/native and is promoted to
+`tests/portable-stdlib/atomic-intrinsics.jai`, with direct module-alias calls added.
+The three public aliases retain the original bootstrap entities; no wrapper
+procedure or alternate implementation was substituted. Earlier missing-intrinsic
+diagnostics are a resolved compiler integration gap.
 
 Single-thread tests cover integer widths, wrapping, enum masks, negative bit
 indices and byte-based pointer increments. Four simultaneous threads verify

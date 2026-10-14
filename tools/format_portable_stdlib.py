@@ -33,6 +33,8 @@ def owned_paths():
             continue
         if relative.parts[0] == "internal" and relative.parts[1] in RESERVED_INTERNAL:
             continue
+        if relative == Path("internal/files/file.jai"):
+            continue  # File backend completion is now platform-io ownership.
         paths.append(path)
     paths.extend((ROOT / "tests/portable-stdlib").rglob("*.jai"))
     return sorted(paths)
