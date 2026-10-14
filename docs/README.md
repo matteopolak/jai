@@ -95,6 +95,9 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [jaic Extensions](extensions/README.md)
+- [Portable implementation module ledger](portable-stdlib-ledger.md)
+- [Portable implementation plan](plans/portable-stdlib.md)
+- [Unresolved portable contracts](specs/stdlib/questions.md)
 
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
 
