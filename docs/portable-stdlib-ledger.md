@@ -13,7 +13,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [atomics](specs/stdlib/modules/atomics.md) | Not implemented in this checkout; see ownership exclusions |
 | [autorun](specs/stdlib/modules/autorun.md) | Not implemented in this checkout; see ownership exclusions |
 | [base64](specs/stdlib/modules/base64.md) | Not implemented in this checkout; see ownership exclusions |
-| [basic](specs/stdlib/modules/basic.md) | Not implemented in this checkout; see ownership exclusions |
+| [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Not implemented in this checkout; see ownership exclusions |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Not implemented in this checkout; see ownership exclusions |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Not implemented in this checkout; see ownership exclusions |
@@ -72,7 +72,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [mail](specs/stdlib/modules/mail.md) | Not implemented in this checkout; see ownership exclusions |
 | [math](specs/stdlib/modules/math.md) | Not implemented in this checkout; see ownership exclusions |
 | [md5](specs/stdlib/modules/md5.md) | Not implemented in this checkout; see ownership exclusions |
-| [memory](specs/stdlib/modules/memory.md) | Not implemented in this checkout; see ownership exclusions |
+| [memory](specs/stdlib/modules/memory.md) | Generic overlapping copy passes interpreter/native contracts; optional candidate/unwrap APIs not implemented |
 | [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented in this checkout; see ownership exclusions |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Not implemented in this checkout; see ownership exclusions |
 | [metal](specs/stdlib/modules/metal.md) | Not implemented in this checkout; see ownership exclusions |
@@ -120,7 +120,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Not implemented in this checkout; see ownership exclusions |
 | [stb-image](specs/stdlib/modules/stb-image.md) | Not implemented in this checkout; see ownership exclusions |
 | [stb-vorbis](specs/stdlib/modules/stb-vorbis.md) | Not implemented in this checkout; see ownership exclusions |
-| [string](specs/stdlib/modules/string.md) | Not implemented in this checkout; see ownership exclusions |
+| [string](specs/stdlib/modules/string.md) | Partial: bytes, paths, split/join/replace, boolean/enum/token parsing; scan, wildcard and numeric parsing not implemented |
 | [subtitles](specs/stdlib/modules/subtitles.md) | Not implemented in this checkout; see ownership exclusions |
 | [system](specs/stdlib/modules/system.md) | Not implemented in this checkout; see ownership exclusions |
 | [telemetry3](specs/stdlib/modules/telemetry3.md) | Not implemented in this checkout; see ownership exclusions |

@@ -96,6 +96,7 @@ The LLVM backend, C ABI and linking.
 
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
+- [Portable implementation and verification](portable-stdlib.md)
 - [Portable implementation plan](plans/portable-stdlib.md)
 - [Unresolved portable contracts](specs/stdlib/questions.md)
 
