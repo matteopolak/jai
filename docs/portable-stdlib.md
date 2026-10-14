@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 54 cases in interpreter/native modes, plus bootstrap
+The current run passes 55 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -324,3 +324,14 @@ explicitly unsupported; the reviewed ANSI Windows import option is target-checke
 Exact escape serialization and color-flag combination behavior require review.
 The expanded 54-case interpreter/native run and selected target checks pass;
 source-built jaifmt --check and jailint -D warnings pass all 152 owned Jai files.
+
+Default_Allocator implements the documented C-runtime fallback through native
+malloc/realloc/free, with its multithread/free/resize capabilities and specified
+no-op unsafe_reset. Only allocator_proc/unsafe_reset are exported on this branch.
+Tests exercise real oversized resize failure with the old bytes still live,
+successful growth/free and default/disabled-option imports. Host interpreter and
+native execution plus Linux/Windows arm64 checking pass. Optimized X64/Switch
+heap behavior remains explicitly unsupported; its failed target check is not
+reported as fallback success or skipped completed functionality.
+The expanded 55-case regression passes in interpreter/native modes, and all
+155 owned Jai files pass source-built jaifmt --check and jailint -D warnings.

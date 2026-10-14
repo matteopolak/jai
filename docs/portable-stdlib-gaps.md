@@ -67,3 +67,9 @@ space) and reset as ESC[0m. Exact escape byte serialization and combinations of
 the numeric enum_flags color values are not specified. Native Windows console
 attributes/save-restore are unimplemented and explicitly rejected. Windows with
 USE_ANSI_CODES_ON_WINDOWS=true uses the supported ANSI branch.
+
+Default_Allocator implements only its documented C-runtime fallback. Its
+optimized X64 (except iOS) and Switch heap implementation remains unimplemented
+and is rejected explicitly; supported fallback tests are not counted as X64
+heap coverage. The fallback's unsafe_reset is the explicitly specified no-op;
+it exports neither the optimized allocator value nor heap/statistics names.

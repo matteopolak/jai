@@ -117,6 +117,8 @@ def main():
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:
+            if source.stem == "default-allocator" and cpu == "x64":
+                continue  # Optimized heap branch is explicitly unsupported, not fallback coverage.
             if source.parent.name != "portable-stdlib" or source.stem in dependent or (os_name == "windows" and source.stem in posix_only):
                 continue
             run([str(compiler), "-check", "-os", os_name, "-cpu", cpu, str(source)], env)

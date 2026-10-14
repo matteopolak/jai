@@ -34,7 +34,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [debug-info](specs/stdlib/modules/debug-info.md) | Owned portable scope; not implemented |
 | [debug](specs/stdlib/modules/debug.md) | Owned portable scope; not implemented |
 | [deep-copy](specs/stdlib/modules/deep-copy.md) | Owned portable scope; not implemented |
-| [default-allocator](specs/stdlib/modules/default-allocator.md) | Owned portable scope; not implemented |
+| [default-allocator](specs/stdlib/modules/default-allocator.md) | Documented C fallback allocator_proc/unsafe_reset implemented and interpreter/native tested, with real resize failure preservation and arm64 Linux/Windows checks. Optimized X64/Switch heap API explicitly rejected and remains unimplemented |
 | [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Owned portable scope; not implemented |
 | [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
 | [dxgi](specs/stdlib/modules/dxgi.md) | Reserved for bindings worker; not implemented or modified here |

@@ -88,3 +88,9 @@ expansions with deferred reset. Keep enum values/order and parameter names exact
 Test stdout/stderr selection and reset on return. Native Windows console handling
 is not yet supported; reject that branch explicitly while permitting its reviewed
 ANSI import configuration. Record unspecified exact escape serialization.
+
+Default_Allocator fallback increment: implement the documented C-runtime branch
+using real malloc/realloc/free and its capability/lifecycle contract. Preserve
+fallback parameter names and export only allocator_proc/unsafe_reset. Reject the
+optimized X64/Switch branch explicitly until its heap API is implemented. Test
+successful resize, real oversized failure preservation, free and capabilities.
