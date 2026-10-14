@@ -425,3 +425,100 @@ fn module_argument_order_and_omitted_defaults_are_distinct() {
     );
     succeeds(&mut c);
 }
+
+#[test]
+fn computed_import_filters_preserve_filter_kind() {
+    for (filter, visible, hidden) in [
+        ("only(.[\"a\", \"absent\"])", "a", "b"),
+        ("except(.[\"a\", \"absent\"])", "b", "a"),
+        ("only names", "a", "b"),
+        ("except names", "b", "a"),
+    ] {
+        let source = format!(
+            "names :: .[\"a\"]; using,{filter} M :: #import \"M\"; #assert({visible} > 0); #assert({hidden} > 0);"
+        );
+        let mut c = compiler(
+            &[
+                ("/lib/M/module.jai", "a :: 7; b :: 9;"),
+                ("/app/main.jai", &source),
+            ],
+            false,
+        );
+        rejects(&mut c, hidden);
+    }
+}
+
+#[test]
+fn aggregate_mapper_changes_names_and_preserves_lvalues() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "rename :: (names: [] string) #no_context { for *names { if it.* == \"x\" it.* = \"axis\"; if it.* == \"hidden\" it.* = \"\"; } } Point :: struct { x: int; y: int; hidden: int; } check :: () -> bool #no_context { point := Point.{1, 2, 3}; { using,map(rename) point; axis = 9; y = 11; } return point.x == 9 && point.y == 11 && point.hidden == 3; } #assert(check());",
+        )],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn aggregate_only_filter_hides_other_members() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "Point :: struct { x: int; y: int; } check :: () #no_context { point: Point; using,only(x) point; x = 7; y = 9; } #run check();",
+        )],
+        false,
+    );
+    rejects(&mut c, "y");
+}
+
+#[test]
+fn aggregate_using_declaration_keeps_filter() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "Point :: struct { x: int; y: int; } check :: () #no_context { using,only(x) point: Point; x = 7; y = 9; } #run check();",
+        )],
+        false,
+    );
+    rejects(&mut c, "y");
+}
+
+#[test]
+fn file_scope_aggregate_using_keeps_computed_filter() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "Point :: struct { x: int; y: int; } point: Point; using,except(.[\"y\"]) point; #assert(*x == *point.x); #assert(*y == *point.y);",
+        )],
+        false,
+    );
+    rejects(&mut c, "y");
+}
+
+#[test]
+fn mapper_omission_hides_original_short_name() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "omit :: (names: [] string) #no_context { for *names if it.* == \"y\" it.* = \"\"; } Point :: struct { x: int; y: int; } check :: () #no_context { point: Point; using,map(omit) point; x = 7; y = 9; } #run check();",
+        )],
+        false,
+    );
+    rejects(&mut c, "y");
+}
+
+#[test]
+fn invalid_computed_filter_is_an_error() {
+    let mut c = compiler(
+        &[
+            ("/lib/M/module.jai", "a :: 7;"),
+            (
+                "/app/main.jai",
+                "using,only(.[7, 9]) M :: #import \"M\"; #assert(a == 7);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "strings");
+}

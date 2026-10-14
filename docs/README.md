@@ -38,6 +38,7 @@ Jai language behavior as implemented by `jaic`.
 - [Type values, identity and type info](language/type-values-and-info.md)
 - [Unions and tagged unions](language/unions.md)
 - [using](language/using.md)
+- [Compiler compatibility questions](specs/stdlib/compiler-questions.md): unresolved API contracts and implementation limits
 
 ## Metaprogramming
 

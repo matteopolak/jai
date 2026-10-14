@@ -1930,6 +1930,13 @@ impl Compiler {
                             }
                         }
                     }
+                    scope::UsingEntry::Filtered(..) => {
+                        for n in self.ide_using_members(&entry) {
+                            if seen.insert(Sym::intern(&n.name)) {
+                                out.push(n);
+                            }
+                        }
+                    }
                 }
             }
             if self.scope(sid).kind == ScopeKind::Module {
@@ -1976,14 +1983,37 @@ impl Compiler {
             .collect();
         // Members of globals the module exports with `using` (see `module_lookup`).
         for entry in self.modules[m.0 as usize].exported_usings.clone() {
-            if let scope::UsingEntry::Place {
-                ty, ..
-            } = entry
-            {
-                names.extend(self.ide_members(IdeReceiver::Value(ty)));
-            }
+            names.extend(self.ide_using_members(&entry));
         }
         names
+    }
+
+    fn ide_using_members(&mut self, entry: &scope::UsingEntry) -> Vec<IdeName> {
+        match entry {
+            scope::UsingEntry::Place {
+                ty, ..
+            } => self.ide_members(IdeReceiver::Value(*ty)),
+            scope::UsingEntry::Type(ty) => self.ide_members(IdeReceiver::Type(*ty)),
+            scope::UsingEntry::Module(m, _) => self.ide_members(IdeReceiver::Module(*m)),
+            scope::UsingEntry::Filtered(base, filter) => {
+                let mut names = self.ide_using_members(base);
+                match &**filter {
+                    ast::UsingFilter::Map(pairs) => {
+                        names = pairs
+                            .iter()
+                            .filter_map(|(new, old)| {
+                                let mut n =
+                                    names.iter().find(|n| n.name == old.name.as_str())?.clone();
+                                n.name = new.name.to_string();
+                                Some(n)
+                            })
+                            .collect();
+                    }
+                    filter => names.retain(|n| !scope::filter_hides(filter, Sym::intern(&n.name))),
+                }
+                names
+            }
+        }
     }
 
     /// What `names[0].names[1]...` is, looked up from `scope`.
@@ -1992,13 +2022,7 @@ impl Compiler {
         let mut recv = match self.lookup_full(scope, *first).ok()? {
             Found::Entities(ids) => self.ide_entity_receiver(*ids.first()?)?,
             Found::Using(entry, member) => {
-                let ty = match entry {
-                    scope::UsingEntry::Place {
-                        ty, ..
-                    }
-                    | scope::UsingEntry::Type(ty) => ty,
-                    scope::UsingEntry::Module(..) => return None,
-                };
+                let ty = entry.member_type()?;
                 IdeReceiver::Value(self.ide_field_type(ty, member)?)
             }
         };
@@ -2019,15 +2043,9 @@ impl Compiler {
                 }
                 IdeReceiver::Module(m) => match self.module_member_lookup(m, *name).ok()? {
                     Found::Entities(ids) => self.ide_entity_receiver(*ids.first()?)?,
-                    Found::Using(entry, member) => match entry {
-                        scope::UsingEntry::Place {
-                            ty, ..
-                        }
-                        | scope::UsingEntry::Type(ty) => {
-                            IdeReceiver::Value(self.ide_field_type(ty, member)?)
-                        }
-                        scope::UsingEntry::Module(..) => return None,
-                    },
+                    Found::Using(entry, member) => {
+                        IdeReceiver::Value(self.ide_field_type(entry.member_type()?, member)?)
+                    }
                 },
             };
         }

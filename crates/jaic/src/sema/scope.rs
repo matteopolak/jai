@@ -65,6 +65,21 @@ pub enum UsingEntry {
     Type(TypeId),
     /// A module's names, minus those an `only`/`except` filter hides.
     Module(ModuleId, Option<Rc<ast::UsingFilter>>),
+    /// A resolved aggregate name filter; the target retains its original storage.
+    Filtered(Box<UsingEntry>, Rc<ast::UsingFilter>),
+}
+
+impl UsingEntry {
+    pub fn member_type(&self) -> Option<TypeId> {
+        match self {
+            Self::Place {
+                ty, ..
+            }
+            | Self::Type(ty) => Some(*ty),
+            Self::Filtered(entry, _) => entry.member_type(),
+            Self::Module(..) => None,
+        }
+    }
 }
 
 pub struct Scope {
@@ -734,12 +749,12 @@ impl Compiler {
                             return Ok(result);
                         }
                     }
-                    UsingEntry::Place {
-                        ty, ..
-                    }
-                    | UsingEntry::Type(ty) => {
-                        if found.is_empty() && self.type_has_member(*ty, name)? {
-                            return Ok(Found::Using(entry.clone(), name));
+                    _ => {
+                        if found.is_empty()
+                            && let Some((target, member)) =
+                                self.aggregate_using_member(&entry, name)?
+                        {
+                            return Ok(Found::Using(target, member));
                         }
                     }
                 }
@@ -840,11 +855,13 @@ impl Compiler {
             .exported_using_imports
             .clone()
         {
-            if filter_hides(&self.scope(scope).imports[index].filter, name) {
-                continue;
-            }
             let ids = match self.import_module(scope, index) {
-                Ok(Some(inner)) => self.module_declarations(inner, name),
+                Ok(Some(inner)) => {
+                    if filter_hides(&self.scope(scope).imports[index].filter, name) {
+                        continue;
+                    }
+                    self.module_declarations(inner, name)
+                }
                 Ok(None) => continue,
                 Err(e) => Err(e),
             };
@@ -872,8 +889,8 @@ impl Compiler {
         if !ids.is_empty() {
             return Ok(Found::Entities(ids));
         }
-        if let Some(entry) = self.module_using_member(module, name)? {
-            return Ok(Found::Using(entry, name));
+        if let Some((entry, member)) = self.module_using_member(module, name)? {
+            return Ok(Found::Using(entry, member));
         }
         let params: Vec<EntityId> = self.modules[module.0 as usize]
             .param_entities
@@ -891,15 +908,14 @@ impl Compiler {
 
     /// The exported `using` entry of `module` (or of a module it re-exports) whose type has
     /// a member `name`.
-    fn module_using_member(&mut self, module: ModuleId, name: Sym) -> Result<Option<UsingEntry>> {
+    fn module_using_member(
+        &mut self,
+        module: ModuleId,
+        name: Sym,
+    ) -> Result<Option<(UsingEntry, Sym)>> {
         for entry in self.modules[module.0 as usize].exported_usings.clone() {
-            if let UsingEntry::Place {
-                ty, ..
-            }
-            | UsingEntry::Type(ty) = &entry
-                && self.type_has_member(*ty, name)?
-            {
-                return Ok(Some(entry));
+            if let Some(found) = self.aggregate_using_member(&entry, name)? {
+                return Ok(Some(found));
             }
         }
         if self.reexport_visiting.contains(&module) {
@@ -912,18 +928,19 @@ impl Compiler {
             .exported_using_imports
             .clone()
         {
-            if filter_hides(&self.scope(scope).imports[index].filter, name) {
-                continue;
-            }
             match self.import_module(scope, index) {
-                Ok(Some(inner)) => match self.module_using_member(inner, name) {
-                    Ok(None) => {}
-                    other => {
-                        result = other;
-                        break;
+                Ok(Some(inner))
+                    if !filter_hides(&self.scope(scope).imports[index].filter, name) =>
+                {
+                    match self.module_using_member(inner, name) {
+                        Ok(None) => {}
+                        other => {
+                            result = other;
+                            break;
+                        }
                     }
-                },
-                Ok(None) => {}
+                }
+                Ok(_) => {}
                 Err(e) => {
                     result = Err(e);
                     break;

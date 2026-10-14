@@ -40,6 +40,7 @@ mod structs;
 mod suggestions;
 mod trap_report;
 mod typeinfo;
+mod using;
 mod wide;
 
 use crate::ast;

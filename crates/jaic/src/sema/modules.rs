@@ -1305,36 +1305,10 @@ impl Compiler {
                     filter,
                 } = &**boxed;
                 let eval_scope = file_scope_for_eval(self, scope, file_scope);
-                let mut entry = self.using_target(eval_scope, value)?;
-                if let super::scope::UsingEntry::Module(_, slot) = &mut entry
-                    && matches!(
-                        filter,
-                        ast::UsingFilter::Only(_) | ast::UsingFilter::Except(_)
-                    )
-                {
-                    *slot = Some(Rc::new(filter.clone()));
-                }
+                let entry = self.using_target(eval_scope, value)?;
+                let entry = self.filter_using_entry(eval_scope, entry, filter, stmt.span)?;
                 if exported
-                    && let super::scope::UsingEntry::Type(ty) = &entry
-                    && let crate::types::TypeKind::Enum(e) = *self.types.kind(*ty)
-                {
-                    // An exported `using Enum :: enum {...}` exports the members as constants.
-                    let members = self.types.enum_info(e).members.clone();
-                    for (name, v) in members {
-                        self.add_entity(
-                            scope,
-                            name,
-                            stmt.span,
-                            EntityKind::Const {
-                                value: Value::Int(v),
-                                ty: *ty,
-                            },
-                            true,
-                        );
-                    }
-                }
-                if exported
-                    && matches!(entry, super::scope::UsingEntry::Place { .. })
+                    && entry.member_type().is_some()
                     && self.scope(scope).kind == ScopeKind::Module
                 {
                     let module = self.scope(scope).module;
@@ -1359,7 +1333,13 @@ impl Compiler {
             return Ok(None);
         }
         self.scope_mut(scope).imports[index].loading = true;
-        let module = self.resolve_import(entry.from_scope, &entry.import)?;
+        let resolved = (|| {
+            let filter = self.resolve_name_filter(entry.from_scope, &entry.filter)?;
+            self.scope_mut(scope).imports[index].filter = filter;
+            self.resolve_import(entry.from_scope, &entry.import)
+        })();
+        self.scope_mut(scope).imports[index].loading = false;
+        let module = resolved?;
         self.scope_mut(scope).imports[index].module = Some(module);
         Ok(Some(module))
     }

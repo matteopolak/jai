@@ -61,6 +61,13 @@ Facades inside the selected library may import `internal/...`; application impor
 and loads into that canonical directory are rejected, including cache hits and
 symlink aliases. Generated text without source provenance must use public facades.
 
+Computed using filters now retain their kind in the core AST (`UsingFilterKind`),
+and aggregate filters/maps are resolved in `sema/using.rs`. The parser recognizes
+the mapper procedure expression in `using,map(...)`; computed filters no longer
+erase `only` versus `except`. IDE aggregate completion preserves mapped names and
+original declaration locations. These are compiler-owned parser/sema overlaps for
+the LSP worker to retain during integration.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.

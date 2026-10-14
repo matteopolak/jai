@@ -35,6 +35,9 @@ Derived :: struct { #as using base: Base; kind = .B; value: int; }
 
 Elsewhere:
 
+- Aggregate `using,only(...)` and `using,except(...)` keep their filters on local declarations and standalone statements. Computed name arrays retain whether the filter includes or excludes names. Nonexistent names in a filter are allowed.
+- `using,map(mapper) value;` runs a compile-time procedure on a writable array of copied member-name string views. A replacement name resolves back to the original member; an empty replacement omits the short name. Qualification through the original aggregate still works, and writes through mapped names update the original storage. Module-import mapping is not established by the reviewed guide and is rejected.
+
 - `using p;` in a block, or a `using p: *Pt` parameter, brings the fields into scope {#using.11}.
 - `using basket.tag;` on an enum-typed value brings in the enum's members, so `case MANGO;` works in a switch {#using.14}.
 - `using Type.{...};` in a procedure copies the literal into an anonymous local. It is writable, where Jai uses read-only data {#using.12}.

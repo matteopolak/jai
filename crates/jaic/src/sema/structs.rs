@@ -56,7 +56,9 @@ impl MemberAlias {
                 .iter()
                 .find(|(new, _)| new.name == name)
                 .map(|(_, old)| old.name),
-            ast::UsingFilter::Computed(_) => None,
+            ast::UsingFilter::Computed {
+                ..
+            } => None,
         }
     }
 }
@@ -1702,6 +1704,12 @@ impl Compiler {
         span: Span,
     ) -> Result<Operand> {
         match entry {
+            UsingEntry::Filtered(base, filter) => {
+                let Some(target) = super::using::filter_target(&filter, member) else {
+                    return err(span, format!("using filter excludes `{member}`"));
+                };
+                self.using_member(f, *base, target, span)
+            }
             UsingEntry::Type(t) => self.type_member(f, ScopeId(0), t, member, span),
             UsingEntry::Module(m, _) => match self.module_lookup(m, member)? {
                 Found::Using(entry, member) => self.using_member(f, entry, member, span),
