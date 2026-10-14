@@ -64,3 +64,22 @@ required compile-rejection case, and unchanged temporary-storage assertions run
 with the configured runtime. Portable production now passes 92/92 ordinary cases
 plus all fault/rejection/SMTP/channel/parent/startup checks. Runtime alternate-
 instance compatibility remains an explicit question, not a claimed guarantee.
+
+17. Fourth refresh: fourteen macOS window cases pass interpreter/native O0/O2,
+including actual GL texture/readback/shader drivers; numerics is 107/123. Windows
+Keymap/renderer checks fail File's unconditional OS_IS_UNIX guard. Implement real
+Windows File without API changes/fixtures. Signed-wheel still passes x64/arm64
+all-code checking; actual native Windows runs remain required.
+
+18. Broad partial-edit coverage completed with one genuine failure in private
+runtime/startup.jai: line 19 byte/UTF16 26 loses appended __tail_local typed hover,
+completion and inferred hint. Latest compiler retry still fails three assertions
+across 24 edits/860 assertions. Full evidence: 537 files, 14,257 edits, 2,563,157
+assertions, one failed file. Preserve strict source admission and repair general
+IDE recovery; do not weaken the harness.
+
+19. Native SDL WM-info canary/error/window and Objective-C/AppKit tests pass.
+SDL2 RWops/UserEvent assertions still fail 48/72 and 8/32. Caller-owned RWops/
+callback conventions need safe private storage/marshalling or explicit unsupported
+diagnostics. No mismatch assertion is waived. The real new SDK probe is now in
+the build selector and its private fixture lives under stdlib/SDL/tests.

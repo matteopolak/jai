@@ -174,6 +174,44 @@ evidence and are superseded only where stated here.
   reviewed behaviors/targets of any module. Supported subsets are measured by the
   actual suites, never by export counts or staged passes.
 
+### Fourth refresh: native integration
+
+- Bindings a565ab0, numerics 4acc846 and window 7fc1d6a are merged. AppKit, GLX
+  constructors, public native windows, Keymap, shaders and mipmaps are real code.
+  Numerics fixture Input/Window/Hash modules, duplicate Windows clipboard and
+  formatter repair helpers are deleted. Canonical numerics passes 107/123.
+- All 14 exercised macOS window cases pass interpreter/native O0/O2, including
+  windows/events, clipboard, glyph coverage, texture upload/readback and shaders.
+  Linux-target interpreter cases pass; Linux X server/GLX/device execution remains
+  unavailable. Windows failures remain at the genuine File backend dependency.
+- The staged compiler/patch path is removed. window_render_compiler.py builds this
+  integrated checkout directly; staged repairs are not production evidence.
+- SDL WM-info marshals complete private native storage into the exact public
+  prefix, rejecting unrepresentable subsystems with real SDL errors and leaving
+  failed output untouched. Adapter address differs from native-symbol address:
+  an explicit safety tradeoff. Real canary/error/hidden-window tests pass. The new
+  native SDK probe was omitted from the build selector; integration registers its
+  pinned source closure, builds it and moves the private test under SDL/tests.
+  Original ABI assertions are unchanged. Native test dependencies now use explicit
+  library directories rather than worker-specific .work paths.
+- SDL2 layout still fails RWops 48/72 and UserEvent 8/32. Caller-owned RWops and
+  callback marshalling remain unsafe/unfinished; WM-info does not resolve them.
+  Objective-C/AppKit host native tests pass. SetTitle's id/native-void result is
+  unspecified as reviewed; no stable value is claimed. Provisional D3D/Darwin/
+  ImGui/rpmalloc layouts and other native branches remain risks in the binding ledger.
+- Direct audit: x11-events.jai uses a 64-byte XLookupString buffer and publishes
+  non-control bytes as code points, a limited legacy-byte input path. Its
+  set_custom_cursor_handling body performs no operation; the flag has no effect
+  on Linux. Proper fixes are real native committed-text/context and cursor policy
+  integration, followed by Linux runtime tests.
+- Direct audit: gl-shaders.jai always prepends desktop GLSL 330; reviewed GLES
+  300 es remains absent. Windows File/font support and reviewed retained-memory
+  font/cache/atlas lifetimes are unfinished. Real glyph-kernel/GPU-driver passes
+  do not establish public Dynamic_Font text rendering.
+- Broad bindings retain 65 failed/unimplemented desktop and 58 alternative/mobile
+  checks. Thirty-five Python tests pass. Symbols/cross-layout/GPU-export checks
+  are not native/device execution.
+
 - Removed the bundled-module unknown-parameter exemption in `crates/jaic/src/sema/modules.rs` and added general named/positional validation, including parameterless modules. Removed the fourth public Runtime_Support parameter; the build option remains a compiler target constant. Explicit runtime arguments no longer disappear. Original regressions failed before correction; all 39 module regressions pass afterward.
 - `interp/probe.rs` cached mapping checks previously preceded raw copies/slice reads. Strengthening the original mmap/mprotect test to omit manual invalidation reproduced SIGBUS. Actual transfers now use Mach APIs, kernel pipe copying, Windows process-memory APIs or bounds-checked Wasm memory. All five probe tests pass. Comparison now snapshots both ranges, with allocation/copy overhead rather than unchecked in-place slices; this is a deliberate safety tradeoff. Windows/Linux native execution remains CI-required; mapping/protection changes may produce partial failed transfers, never a claimed atomic snapshot. Proper optimization: measured fault-safe chunked transfer without losing invalid-range ordering.
 - IDE admission is now restricted to the exact explicitly selected source entry. Application internal imports and strict CLI entry rejection remain tested; no blanket source-policy weakening.

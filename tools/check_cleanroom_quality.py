@@ -57,6 +57,11 @@ def main():
 
     if args.format:
         run("format", [formatter, "--config", ROOT / "jaifmt.toml", *files])
+    def fingerprints():
+        return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else None
+                for p in files}
+
+    checked_sources = fingerprints()
     run("format-check", [formatter, "--check", "--config", ROOT / "jaifmt.toml", *files])
     # Listing every owned file lets jailint associate #load fragments with their
     # real public module. Directory runs below remain useful diagnostic isolation,
@@ -70,9 +75,12 @@ def main():
         groups.setdefault(group, []).append(file)
     for group, paths in sorted(groups.items()):
         run(group.replace("/", "-"), [linter, "-v", "-D", "warnings", "--config", ROOT / "jailint.toml", *paths])
-    result["source_sha256"] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+    result["source_sha256"] = fingerprints()
+    result["changed_during_checks"] = [name for name in checked_sources
+                                       if checked_sources[name] != result["source_sha256"][name]]
+    result["source_stable"] = not result["changed_during_checks"]
     report.write_text(json.dumps(result, indent=2) + "\n")
-    failed = sum(not r["passed"] for r in result["checks"])
+    failed = sum(not r["passed"] for r in result["checks"]) + int(not result["source_stable"])
     print(f'{len(files)} source files; {failed}/{len(result["checks"])} failed checks; report: {report}')
     return int(failed != 0)
 
