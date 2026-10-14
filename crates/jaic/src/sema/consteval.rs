@@ -1018,7 +1018,7 @@ impl Compiler {
     }
 
     /// The `u64` at `addr` in compile-time memory.
-    fn program_u64(&self, addr: u64, span: Span) -> Result<u64> {
+    pub(super) fn program_u64(&self, addr: u64, span: Span) -> Result<u64> {
         match self.interp.read_u64(addr) {
             Some(v) => Ok(v),
             None => unreadable(addr, span),

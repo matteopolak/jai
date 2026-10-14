@@ -1,5 +1,15 @@
 # Compiler progress
 
+Current continuation checkpoint: mixed scalar/spread normalization and baked
+packs retain all values. Dynamic packs use persistent continuation storage when
+rewritten for yielding WASI procedures. Interface constraints validate unused
+module replacements and procedure/struct type arguments. Verification: 170 core/
+LLVM unit tests plus eight original focused cases pass, including actual native
+and WASM64 execution at O0/O2. Scoped Rust formatting and core/backend all-target
+clippy -D warnings pass. Register operands, CLI plugin orchestration and reviewed
+independent reflection/probe fixes remain outstanding. Production integration
+and corpus verification are coordinator gates.
+
 Producer checkpoints: atomic lowering 1d8833b; caller-owned context cleanup
 ec7e23e; generic defaults/speculative context initialization 5c3846c. The current
 checkpoint adds measured performance reports, generated-source normalization,

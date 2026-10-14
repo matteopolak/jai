@@ -2015,6 +2015,30 @@ impl Interp {
         stack_base: u64,
     ) -> Res<()> {
         match inst {
+            Inst::StackAlloc {
+                dst,
+                size,
+                align,
+            } => {
+                let size = vals[size.0 as usize];
+                let base = self.stack.as_mut_ptr() as u64;
+                let start = base
+                    .checked_add(self.sp)
+                    .and_then(|v| v.checked_add(align - 1))
+                    .map(|v| (v & !(align - 1)) - base);
+                let end = start.and_then(|v| v.checked_add(size.max(1)));
+                let Some((start, end)) = start
+                    .zip(end)
+                    .filter(|(_, end)| *end <= self.stack.len() as u64 * 8)
+                else {
+                    return self.trap_of(
+                        TrapKind::StackOverflow,
+                        "dynamic interpreter stack allocation exceeds the frame stack",
+                    );
+                };
+                self.sp = end;
+                vals[dst.0 as usize] = base + start;
+            }
             Inst::IConst {
                 dst,
                 ty,

@@ -368,7 +368,11 @@ impl Compiler {
                     other => other.ty(),
                 };
                 let mut found = Vec::new();
-                self.match_pattern(t, arg_ty, &mut found, param_scope)?;
+                let represented = match op.const_value() {
+                    Some(Value::Type(t)) => Some(t),
+                    _ => None,
+                };
+                self.match_pattern_value(t, arg_ty, &mut found, param_scope, represented)?;
                 for (n, v, vty) in found {
                     self.add_const(param_scope, n, p.span, v.clone(), vty);
                     key.push(v.clone());

@@ -830,6 +830,15 @@ impl Builder<'_> {
             loc: NO_LOC,
         };
         match *inst {
+            Inst::StackAlloc {
+                dst,
+                size,
+                ..
+            } => {
+                self.v(size);
+                self.v(dst);
+                self.push(slow, None);
+            }
             Inst::IConst {
                 dst,
                 ty,

@@ -1044,6 +1044,48 @@ impl Compiler {
                 if let Some(body) = body {
                     self.declare_stmts(scope, file_scope, &body.stmts, vis)?;
                 }
+                // Constraints are import contracts even when the parameter is
+                // never referenced by a module body. Defaults may name the
+                // trailing declaration block, so validate after declaring it.
+                for param in params.iter().chain(runtime_params) {
+                    if let Some(pattern) = param.ty.as_ref().filter(|p| procs::has_poly(p)) {
+                        let name = param.name.unwrap().name;
+                        let id = self.modules[module.0 as usize]
+                            .param_entities
+                            .iter()
+                            .copied()
+                            .find(|&id| self.entity(id).name == name)
+                            .unwrap();
+                        let scope::Resolved::Const {
+                            value,
+                            ty,
+                        } = self.resolve_entity(id)?
+                        else {
+                            return err(param.span, "a module parameter must bind a constant");
+                        };
+                        let represented = if let Value::Type(t) = value {
+                            Some(t)
+                        } else {
+                            None
+                        };
+                        let actual = if ty == TypeId::VOID {
+                            self.type_of_value(&value)
+                        } else {
+                            ty
+                        };
+                        let mut bindings = Vec::new();
+                        self.match_pattern_value(
+                            pattern,
+                            actual,
+                            &mut bindings,
+                            scope,
+                            represented,
+                        )?;
+                        for (name, value, ty) in bindings {
+                            self.add_const(scope, name, param.span, value, ty);
+                        }
+                    }
+                }
             }
             ast::StmtKind::Placeholder(names) => {
                 for name in names {

@@ -574,6 +574,16 @@ impl Compiler {
         let is_macro = self.proc(proc).is_macro;
         for (k, &i) in runtime_params.iter().enumerate() {
             let param = &sig.params[k];
+            if sig.c_varargs
+                && param.variadic
+                && match &slots[i] {
+                    Slot::Spread(_) => true,
+                    Slot::Variadic(list) => list.iter().any(|&a| args[a].spread),
+                    _ => false,
+                }
+            {
+                return err(span, "a runtime spread cannot determine a C variadic ABI");
+            }
             match &slots[i] {
                 Slot::Default => {
                     if param.default.is_none() && !param.variadic {
@@ -602,7 +612,12 @@ impl Compiler {
                         if sig.c_varargs {
                             continue;
                         }
-                        cost += self.arg_cost(&args[a], elem, is_macro)?;
+                        let target = if args[a].spread {
+                            param.ty
+                        } else {
+                            elem
+                        };
+                        cost += self.arg_cost(&args[a], target, is_macro)?;
                     }
                 }
             }
@@ -1266,7 +1281,12 @@ impl Compiler {
                         TypeId::VOID => op_ty,
                         vt => vt,
                     };
-                    self.match_pattern(t, vt, &mut bindings, def_scope)?;
+                    let represented = if let Value::Type(t) = &value {
+                        Some(*t)
+                    } else {
+                        None
+                    };
+                    self.match_pattern_value(t, vt, &mut bindings, def_scope, represented)?;
                 }
                 bindings.push((name, value, ty));
                 continue;
@@ -1342,24 +1362,28 @@ impl Compiler {
                     other => other.ty(),
                 };
                 if param.variadic
-                    && matches!(slots[i], Slot::Spread(_))
+                    && arg.spread
                     && let TypeKind::Array {
                         elem, ..
                     } = self.types.kind(ty)
                 {
                     ty = *elem;
                 }
+                let represented = match op.const_value() {
+                    Some(Value::Type(t)) => Some(t),
+                    _ => None,
+                };
                 if k > 0 && param.variadic {
                     // Later variadic elements must match the first binding.
                     let mut probe = bindings.clone();
                     if self
-                        .match_pattern(pattern, ty, &mut probe, def_scope)
+                        .match_pattern_value(pattern, ty, &mut probe, def_scope, represented)
                         .is_err()
                     {
                         continue;
                     }
                 }
-                self.match_pattern(pattern, ty, &mut bindings, def_scope)?;
+                self.match_pattern_value(pattern, ty, &mut bindings, def_scope, represented)?;
                 // Later parameter types may use this one's instance (`item: array.type`).
                 if implicit
                     && k == 0
@@ -1620,31 +1644,90 @@ impl Compiler {
             _ => TypeId::TYPE,
         };
         let esize = self.size_of(elem, span)?;
-        let mut array = value::Aggregate::zeroed(esize.saturating_mul(args.len() as u64), span)?;
-        for (i, arg) in args.iter().enumerate() {
-            // `$args: ..Code` quotes each argument like a single `$c: Code` does.
-            if elem == TypeId::CODE
-                && let Some(id) = self.quote_code_arg(arg)
-            {
-                self.write_value(
-                    &mut array,
-                    i as u64 * esize,
-                    &Value::Code(id),
-                    elem,
-                    arg.span,
-                )?;
+        let mut array = value::Aggregate::zeroed(0, span)?;
+        let mut count = 0u64;
+        for arg in args {
+            if arg.spread {
+                let (view, _) = self.baked_spread(def_scope, param, arg)?;
+                self.append_constant_spread(&mut array, &mut count, elem, view, arg.span)?;
                 continue;
             }
-            let op = match (&arg.op, &arg.expr) {
-                (Some(op), _) => op.clone(),
-                (None, Some(e)) => self.eval_const(arg.scope, e, Some(elem))?,
-                (None, None) => return err(arg.span, "missing value"),
+            let size = (count + 1)
+                .checked_mul(esize)
+                .filter(|&n| n <= value::MAX_IMAGE)
+                .ok_or_else(|| {
+                    Box::new(Diagnostic::error(
+                        arg.span,
+                        "baked variadic pack is too large",
+                    ))
+                })?;
+            array.bytes.resize(size as usize, 0);
+            let value = if elem == TypeId::CODE
+                && let Some(id) = self.quote_code_arg(arg)
+            {
+                Value::Code(id)
+            } else {
+                let op = match (&arg.op, &arg.expr) {
+                    (Some(op), _) => op.clone(),
+                    (None, Some(e)) => self.eval_const(arg.scope, e, Some(elem))?,
+                    (None, None) => return err(arg.span, "missing value"),
+                };
+                self.const_value_of_operand(arg.scope, op, elem, arg.span)?
             };
-            let op = self.const_value_of_operand(arg.scope, op, elem, arg.span)?;
-            self.write_value(&mut array, i as u64 * esize, &op, elem, arg.span)?;
+            self.write_value(&mut array, count * esize, &value, elem, arg.span)?;
+            count += 1;
         }
-        let view = self.const_pack(elem, array, args.len() as u64, span)?;
+        let view = self.const_pack(elem, array, count, span)?;
         Ok((view, self.types.array(elem, ArrayKind::View)))
+    }
+
+    /// Snapshot a constant view through interpreter memory so changed compile-time
+    /// globals and pointer/type relocations are retained, rather than reading stale initializers.
+    fn append_constant_spread(
+        &mut self,
+        array: &mut value::Aggregate,
+        count: &mut u64,
+        elem: TypeId,
+        view: Value,
+        span: Span,
+    ) -> Result<()> {
+        let ty = self.types.array(elem, ArrayKind::View);
+        let mut image = value::Aggregate::zeroed(16, span)?;
+        self.write_value(&mut image, 0, &view, ty, span)?;
+        let g = self.program.add_global(ir::Global {
+            name: "baked.spread.view".into(),
+            size: 16,
+            align: 8,
+            init: image.bytes,
+            relocs: image.relocs,
+            read_only: true,
+            export: None,
+        });
+        let addr = self
+            .interp
+            .global_addr(&self.program, g)
+            .map_err(|t| Box::new(Diagnostic::error(span, t.into_message())))?;
+        let n = self.program_u64(addr, span)?;
+        let data = self.program_u64(addr + 8, span)?;
+        let esize = self.size_of(elem, span)?;
+        let total = count
+            .checked_add(n)
+            .filter(|&n| n <= value::MAX_IMAGE)
+            .ok_or_else(|| Box::new(Diagnostic::error(span, "baked variadic pack is too large")))?;
+        let size = total
+            .checked_mul(esize)
+            .filter(|&n| n <= value::MAX_IMAGE)
+            .ok_or_else(|| Box::new(Diagnostic::error(span, "baked variadic pack is too large")))?;
+        array.bytes.resize(size as usize, 0);
+        for i in 0..n {
+            let at = data.checked_add(i * esize).ok_or_else(|| {
+                Box::new(Diagnostic::error(span, "baked spread pointer overflow"))
+            })?;
+            let value = self.read_value(at, elem, span)?;
+            self.write_value(array, (*count + i) * esize, &value, elem, span)?;
+        }
+        *count = total;
+        Ok(())
     }
 
     /// A constant `[] elem` view over `count` elements laid out in `array`. Equal contents
@@ -1763,6 +1846,17 @@ impl Compiler {
         bindings: &mut Vec<(Sym, Value, TypeId)>,
         scope: ScopeId,
     ) -> Result<()> {
+        self.match_pattern_value(pattern, ty, bindings, scope, None)
+    }
+
+    pub(super) fn match_pattern_value(
+        &mut self,
+        pattern: &ast::Expr,
+        ty: TypeId,
+        bindings: &mut Vec<(Sym, Value, TypeId)>,
+        scope: ScopeId,
+        represented: Option<TypeId>,
+    ) -> Result<()> {
         let span = pattern.span;
         let bind = |c: &mut Compiler,
                     bindings: &mut Vec<(Sym, Value, TypeId)>,
@@ -1820,6 +1914,20 @@ impl Compiler {
                 restriction,
                 interface,
             } => {
+                if *interface {
+                    let candidate = if ty == TypeId::TYPE {
+                        represented.ok_or_else(|| {
+                            Box::new(Diagnostic::error(
+                                span,
+                                "interface constraint requires a concrete type binding",
+                            ))
+                        })?
+                    } else {
+                        ty
+                    };
+                    let required = self.eval_type(scope, restriction)?;
+                    self.validate_interface(candidate, required, span)?;
+                }
                 // `$T/Table`: T must be an instance of the polymorphic struct `Table` (or hold one
                 // as an `#as` member).
                 let mut ty = ty;
@@ -2193,6 +2301,81 @@ impl Compiler {
     }
 
     /// Produce the lowered value passed for one parameter.
+    /// Join scalar and spread segments in their original argument order. The
+    /// resulting storage belongs to the caller's frame, just as a fixed pack.
+    fn mixed_variadic_value(
+        &mut self,
+        f: &mut FnCtx,
+        param: &procs::ParamInfo,
+        args: &[CallArg],
+        list: &[usize],
+        span: Span,
+    ) -> Result<ir::Val> {
+        let TypeKind::Array {
+            elem, ..
+        } = *self.types.kind(param.ty)
+        else {
+            return err(span, "variadic pack requires an array-view parameter");
+        };
+        let size = self.size_of(elem, span)?;
+        let align = self.align_of(elem, span)?;
+        let limit = f.b.iconst(Ty::I64, crate::types::MAX_SIZE / size.max(1));
+        let one = f.b.iconst(Ty::I64, 1);
+        let mut count = f.b.iconst(Ty::I64, 0);
+        let mut segments = Vec::new();
+        for &a in list {
+            let target = if args[a].spread {
+                param.ty
+            } else {
+                elem
+            };
+            let op = self.arg_operand(f, &args[a], Some(target))?;
+            let op = self.convert(f, op, target, args[a].span)?;
+            let (_, value) = self.rvalue(f, op, args[a].span)?;
+            let (n, source) = if args[a].spread {
+                let n = f.b.load(Ty::I64, value);
+                let field = f.b.ptr_offset(value, 8);
+                (n, f.b.load(Ty::Ptr, field))
+            } else {
+                (one, value)
+            };
+            let remaining = f.b.bin(ir::BinOp::Sub, Ty::I64, limit, count);
+            let bad = f.b.cmp(ir::CmpOp::UGt, Ty::I64, n, remaining);
+            let fail = f.b.new_block();
+            let ready = f.b.new_block();
+            f.b.branch(bad, fail, ready);
+            f.b.switch_to(fail);
+            self.emit_check_failed(f, ir::TRAP_VARIADIC_SIZE, n, remaining, true, span);
+            f.b.jump(ready);
+            f.b.switch_to(ready);
+            count = f.b.bin(ir::BinOp::Add, Ty::I64, count, n);
+            segments.push((args[a].spread, n, source));
+        }
+        let width = f.b.iconst(Ty::I64, size);
+        let bytes = f.b.bin(ir::BinOp::Mul, Ty::I64, count, width);
+        let base = f.b.new_val(Ty::Ptr);
+        f.b.push(ir::Inst::StackAlloc {
+            dst: base,
+            size: bytes,
+            align,
+        });
+        let mut cursor = base;
+        for (spread, n, source) in segments {
+            let bytes = f.b.bin(ir::BinOp::Mul, Ty::I64, n, width);
+            if spread {
+                f.b.intrinsic(ir::Intrinsic::Memcpy, vec![cursor, source, bytes], &[]);
+            } else {
+                self.store_value(f, elem, cursor, source, span)?;
+            }
+            cursor = f.b.ptr_add(cursor, bytes);
+        }
+        let view = f.b.alloca(16, 8);
+        f.b.store(Ty::I64, view, count);
+        let data = f.b.ptr_offset(view, 8);
+        f.b.store(Ty::Ptr, data, base);
+        Ok(view)
+    }
+
     fn param_value(
         &mut self,
         f: &mut FnCtx,
@@ -2261,6 +2444,9 @@ impl Compiler {
                 self.convert(f, op, param.ty, d.span)?
             }
             Slot::Variadic(list) => {
+                if list.iter().any(|&a| args[a].spread) {
+                    return self.mixed_variadic_value(f, param, args, list, span);
+                }
                 let TypeKind::Array {
                     elem, ..
                 } = self.types.kind(param.ty).clone()
@@ -4114,15 +4300,22 @@ fn assign_slots(
             ));
         }
         if Some(positional) == variadic_index {
-            if arg.spread {
-                slots[positional] = Some(Slot::Spread(i));
-                positional += 1;
-                continue;
-            }
             match &mut slots[positional] {
                 Some(Slot::Variadic(list)) => list.push(i),
-                None => slots[positional] = Some(Slot::Variadic(vec![i])),
+                Some(Slot::Spread(first)) => {
+                    slots[positional] = Some(Slot::Variadic(vec![*first, i]))
+                }
+                None => {
+                    slots[positional] = Some(if arg.spread {
+                        Slot::Spread(i)
+                    } else {
+                        Slot::Variadic(vec![i])
+                    })
+                }
                 _ => return err(arg.span, "variadic parameter already given"),
+            }
+            if arg.spread && positional + 1 < params.len() {
+                positional += 1;
             }
             continue;
         }
