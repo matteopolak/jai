@@ -100,7 +100,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [random](specs/stdlib/modules/random.md) | All reviewed exports implemented; recurrence, odd seeds and float ranges checked interpreter/native |
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Implemented all reviewed exports; null/self/relocated references pass interpreter/native |
-| [remap-context](specs/stdlib/modules/remap-context.md) | Owned portable scope; not implemented |
+| [remap-context](specs/stdlib/modules/remap-context.md) | Both remap procedures implemented with cached validated field-copy plans; interpreter/native tests pass. Lexical expansion withheld pending caller-scope push_context compiler fix |
 | [rewrite](specs/stdlib/modules/rewrite.md) | Owned portable scope; not implemented |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Reserved for bindings worker; not implemented or modified here |
 | [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | Owned portable scope; not implemented |

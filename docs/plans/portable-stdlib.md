@@ -34,3 +34,12 @@ Check RIFF/WAVE, bound parsing by both input and RIFF length, advance chunks wit
 even-byte padding, borrow the first data chunk, and accept PCM/IMA metadata only.
 Test PCM, ADPCM extensions/fact, odd unknown chunks, clamped data, and malformed
 headers before implementation; then run interpreter/native/target checks and lint.
+
+Remap_Context increment: cache immutable copy plans keyed by foreign metadata
+pointer, under a CAS lock. Flatten the leading base aggregate and match stored
+field names/sizes, skipping constants and overlay aliases. Copy only validated
+extents into a default own context and restore its context_info. The expansion
+requires caller-scope push_context,defer_pop, currently blocked by the compiler
+reproducer pending/macro-push-context.jai and withheld. Cache storage uses the default own
+allocator, so foreign allocator fields cannot interfere with building a plan.
+Verify default preservation, shallow pointers, reused plans and lexical restore.

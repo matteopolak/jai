@@ -218,3 +218,14 @@ allocation internals, Hash_Table/collection internals, Socket/net internals.
 The same post-change regression command passes all 47 cases plus the four
 parent-lifetime scenarios and selected portable target checks. Formatting remains
 blocked by the documented formatter dependency, separately from lint success.
+
+Remap_Context provides both remap_context overloads with immutable cached copy
+plans protected by a CAS lock. Stored field names and byte sizes are matched
+across base/custom fields; invalid extents are skipped and diagnosed. Absent or
+size-mismatched fields keep own-context defaults, pointers remain shallow copies,
+and context_info always identifies the own context. Cache allocations use the
+default own allocator, independent of the foreign allocator being copied.
+Cache metadata persists for the module lifetime, matching the metadata-lifetime
+requirement. Tests cover defaults, pointers and values changing under a reused
+plan. The Remap_Context expansion is withheld pending its documented compiler
+scope failure; the failed assertions remain in the pending reproducer.
