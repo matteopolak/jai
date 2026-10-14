@@ -46,6 +46,7 @@ def main():
         host.append("windows-events")
     if platform.system() == "Darwin":
         host.append("macos-window")
+        host.append("macos-events")
     for name in host:
         source = ROOT / f"tests/window-render/{name}.jai"
         parameters = [args.font.resolve()] if name == "font-public" else []

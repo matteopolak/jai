@@ -1,6 +1,6 @@
 # Window/render progress
 
-2026-10-14: resumed from scoped checkpoint `9254180`. Prior focused runner
+2026-10-14: first resumed batch committed as `a41ae76`. Prior focused runner
 recorded 69 invocations; these include CPU component tests and foreign-target
 interpreter checks, not combined production GUI integration. No release or
 Focus acceptance is claimed.
@@ -18,7 +18,7 @@ Deterministic real-window PostMessage injection test type-checks x64/arm64;
 native Windows execution remains pending coordinator hosts. Horizontal axis
 encoding in Event needs reviewed clarification.
 
-Focused runner: 82 invocations passed after replacing CPU substitute-module
+Focused runner: 87 invocations passed after replacing CPU substitute-module
 tests with actual public Simp host bitmap/font imports. The obsolete substitute
 modules have been removed. Owner-aware NEW producer staging removes obsolete
 local Basic precedence. Current lint caught two existing owned manual assignment
@@ -26,6 +26,16 @@ forms; they were corrected without suppressions. Source-built jaifmt --check and
 jailint -D warnings passed on every owned public/private/test Jai scope. Native
 AppKit lifecycle passes interpreter/O0/O2; Windows arm64 and macOS arm64 no_dce
 checks pass. macOS x64 POSIX dependency failure recorded with minimal reproducer.
+
+Second batch: real AppKit queue/dispatch, native NSWindow notifications for
+resize/move/focus/close/minimize, keyboard/repeat/release/modifiers, mouse buttons,
+motion/scroll accumulation and external-event projection now pass host
+interpreter/native O0/O2. Native Objective-C probe confirms AppKit re-translates
+posted physical-key text; the strict test checks the actual translated character.
+IME composition, drops/touch and immediate application of custom cursors to newly
+created windows remain gaps. Source-built formatter and warnings-denied lint pass.
+Next: actual native OpenGL texture driver verification, then remaining renderer/font
+contracts; public create_window and Keymap grammar still require reviewed details.
 
 Remaining: native window creation/pumps, Keymap operations, glyph atlas/text and
 renderer/context integration. See the [deviations report](window-render-deviations.md)

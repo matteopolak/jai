@@ -110,3 +110,13 @@ position constraints; neither native failure was ignored or replaced by fake val
 
 Full deviations/progress live in docs/status. Native Windows/X11/GPU/physical
 devices/Focus acceptance and combined production corpus remain coordinator gates.
+
+AppKit pump batch: 87 focused invocations pass including real NSApplication
+post/dequeue/dispatch with key presses/repeats/releases and synchronous native
+window resize/close notifications in interpreter/native O0/O2. The notification
+observer is a native NSObject subclass with no custom ivars, retained for process
+lifetime. Native text is raw key-event text; NSTextInputClient marked-text/IME
+composition remains outstanding. An independent native probe preserves evidence
+that posting an inconsistent physical A key plus emoji text is retranslated by
+AppKit to A; the production test now asserts that actual native behavior and
+separately verifies caller-supplied external Unicode projection.
