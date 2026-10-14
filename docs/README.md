@@ -108,6 +108,7 @@ The LLVM backend, C ABI and linking.
 - [Unix BuildCpp artifacts, cleanup and toolchain limits](portable-buildcpp.md)
 - [Treemap weights, stable nodes and rectangle layout](portable-treemap.md)
 - [POSIX shared-memory channels and mixed-process verification](portable-shared-memory.md)
+- [Autorun lifecycle and compiler integration gaps](portable-autorun.md)
 - [Portable worker progress](status/stdlib-progress.md) and [deviations](status/stdlib-deviations.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)

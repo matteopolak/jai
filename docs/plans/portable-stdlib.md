@@ -161,3 +161,9 @@ explicit wrap notifications. Query native backing extent instead of assuming the
 requested size. Test full/max-packet/wrap/corruption and mixed interpreter/native
 processes; journal test-owned names and retain historical cleanup limitations.
 Record unresolved wire contracts rather than claiming reference interoperability.
+
+Autorun increment: exact public helpers/lifecycle over a canonical private Plugin
+with typed Compiler bridges, copied arguments and stable singleton storage. Test
+real workspace completion/output/child markers and actual error/skip logs. Retain
+mixed-spread and CLI orchestration failures; use explicit argv without changing
+public signatures, and withhold unspecified callback module parameters.
