@@ -842,6 +842,16 @@ impl Compiler {
                     if d.using
                         && let Some(filter) = d.filter.clone()
                     {
+                        let resolved = self.filter_using_entry(
+                            d.scope,
+                            scope::UsingEntry::Type(d.ty),
+                            &filter,
+                            d.span,
+                        )?;
+                        let filter = match resolved {
+                            scope::UsingEntry::Filtered(_, filter) => (*filter).clone(),
+                            _ => filter,
+                        };
                         filters.push((fields.len(), filter));
                     }
                     fields.push(Field {

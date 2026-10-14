@@ -3499,12 +3499,14 @@ impl Compiler {
                 }
             }
             if param.using {
-                self.scope_mut(mscope)
-                    .usings
-                    .push(scope::UsingEntry::Place {
-                        ty: param.ty,
-                        entity: e,
-                    });
+                let mut entry = scope::UsingEntry::Place {
+                    ty: param.ty,
+                    entity: e,
+                };
+                if let Some(filter) = &param.using_filter {
+                    entry = self.filter_using_entry(mscope, entry, filter, param.span)?;
+                }
+                self.scope_mut(mscope).usings.push(entry);
             }
         }
         if self.ide.is_some() {

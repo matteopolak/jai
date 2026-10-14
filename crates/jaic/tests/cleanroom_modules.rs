@@ -111,6 +111,41 @@ fn editor_completions_apply_import_and_transitive_reexport_filters() {
 }
 
 #[test]
+fn procedure_and_macro_using_parameters_retain_member_filters() {
+    for qualifier in ["", "#expand"] {
+        for filter in ["only(x)", "only(.[\"x\"])", "except(y)", "except(.[\"y\"])"] {
+            let source = format!(
+                "Point :: struct {{ x: int; y: int; }} update :: (using,{filter} p: *Point) {qualifier} {{ x = 7; y = 9; }} main :: () {{ p: Point; update(*p); }}"
+            );
+            let mut c = compiler(&[("/app/main.jai", &source)], false);
+            rejects(&mut c, "y");
+        }
+    }
+    for qualifier in ["", "#expand"] {
+        for filter in ["map(renamed=x)", "map(rename)"] {
+            let source = format!(
+                "rename :: (names: [] string) {{ for *names if it.* == \"x\" it.* = \"renamed\"; }} Point :: struct {{ x: int; y: int; }} update :: (using,{filter} p: *Point) {qualifier} {{ renamed = 7; }} check :: () -> int {{ p: Point; update(*p); return p.x; }} #assert(check() == 7);"
+            );
+            let mut c = compiler(&[("/app/main.jai", &source)], false);
+            succeeds(&mut c);
+        }
+    }
+}
+
+#[test]
+fn embedded_computed_filters_keep_original_member_storage() {
+    let shared = "Point :: struct { x: int; y: int; } Container :: struct { using,only(.[\"x\"]) point: Point; } object: Container; #assert(*object.x == *object.point.x);";
+    let mut c = compiler(&[("/app/main.jai", shared)], false);
+    succeeds(&mut c);
+    let negative = format!("{shared} #assert(object.y == 0);");
+    let mut c = compiler(&[("/app/main.jai", &negative)], false);
+    rejects(&mut c, "y");
+    let mapped = "rename :: (names: [] string) { for *names if it.* == \"x\" it.* = \"axis\"; } Point :: struct { x: int; y: int; } Container :: struct { using,map(rename) point: Point; } object: Container; #assert(*object.axis == *object.point.x);";
+    let mut c = compiler(&[("/app/main.jai", mapped)], false);
+    succeeds(&mut c);
+}
+
+#[test]
 fn bootstrap_alias_preserves_types_and_storage() {
     let mut c = compiler(
         &[

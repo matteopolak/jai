@@ -277,5 +277,14 @@
     "stdout": "",
     "exit_code": 1,
     "error_contains": "alignment must be a positive power of two"
+  },
+  {
+    "name": "compiler-memory-breakpoint-limit",
+    "source": "compiler-memory-breakpoint/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "",
+    "exit_code": 1,
+    "error_contains": "compiler memory breakpoints are unavailable"
   }
 ]

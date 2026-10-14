@@ -19,12 +19,14 @@ overlay. No assertions or fixtures were skipped. Remaining failures are:
 - `code_added_every_round_is_expanded`,
   `output_keeps_the_order_of_stdout_and_stderr_writes`, and `arguments_reach_main`
   request `tprint`, `log_error`, and `get_command_line_arguments`, respectively.
-  Legacy conveniences do not authorize new public compatibility exports.
+  These are reviewed Basic exports that the new foundation does not yet provide.
+  They require foundation implementation, rather than compiler special cases.
 - `allocations_the_host_cannot_make_fail_without_aborting` calls `alloc(-1)` and
   encounters the independent allocator's assertion. Its expected null return
   requires reviewed justification before changing implementation or assertion.
 - `exit_ends_the_program_with_its_code` requests `exit` from Basic and gets an
-  unknown-identifier diagnostic. This is another legacy dependency/API mismatch.
+  unknown-identifier diagnostic. This reviewed platform-conditional Basic export
+  also requires foundation/platform integration.
 - `expansions_inlay_hints_and_format_strings_work_in_the_bridge` expects Basic's
   source text to contain `#load`; the independent facade uses imports and aliases.
   This assertion about source organization is not a compatibility API.

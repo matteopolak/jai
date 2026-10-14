@@ -136,10 +136,11 @@ Building the repository formatter against that overlay currently fails:
 JAIC_STDLIB="$PWD/target/cleanroom-test-stdlib" target/debug/jaic jaifmt/main.jai -O2 -exe "$PWD/target/cleanroom-jaifmt"
 ```
 
-`Extensions/Args/generate.jai:775` calls `print(*out, ...)`, but the reviewed Basic
-API supplies builder formatting through `print_to_builder` rather than that print
-overload. Extensions must remain intact. No legacy compatibility overload was
-invented and no supplied formatter binary was executed. Jai format/check remains
+`Extensions/Args/generate.jai:775` calls the reviewed builder overload
+`print(*out, ...)`, which the independent foundation does not yet export.
+The reviewed Basic page specifies both the overload and its alias to
+`print_to_builder`. Extensions remain intact; implementing that foundation
+overload belongs to its owner. No supplied formatter binary was executed. Jai format/check remains
 blocked pending an authorized tool/dependency integration solution; it is not
 claimed passing. Retry the source build after integration changes.
 
@@ -162,3 +163,16 @@ preserving member layouts and explicit enum values. Both generators produce
 byte-identical output on repeated regeneration. Source-built jailint passes the
 regenerated facade/private trees, and all 19 focused fixtures pass again in both
 modes. Jai formatter execution remains blocked as described above.
+
+Procedure/macro signatures now preserve using filters through binding; embedded
+computed filters resolve during field layout. Original tests verify selected
+names, mapper execution and original field storage. See
+[using propagation](compiler/using-filter-propagation.md). Module regressions now
+total 35. The memory-breakpoint and developer-debugger entry points diagnose
+unavailable debugger support; the negative breakpoint fixture verifies an ordinary
+compiler error. No successful breakpoint installation is claimed.
+
+Rechecking the reviewed Basic page confirms `tprint`, `log_error`, command-line
+arguments, platform `exit`, and builder `print` are specified exports. Their
+browser/formatter failures are missing foundation implementations, not authority
+for compiler special cases. The browser status document records this correction.

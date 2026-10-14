@@ -53,6 +53,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
+- [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded computed filters and storage-preserving mapped access
 - [Independent runtime Jai lexer](compiler/runtime-jai-lexer.md): implementation, supported recovery and interpreter/native verification
 - [Compiler records (messages, syntax trees, type descriptors)](metaprogramming/compiler-records.md)
 - [Metaprogram plugins (`+Name`)](metaprogramming/metaprogram-plugins.md)
