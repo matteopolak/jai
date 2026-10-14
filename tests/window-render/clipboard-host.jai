@@ -7,6 +7,14 @@ main :: () {
 
     assert(value == "clean-room clipboard π 🪟");
     free(value);
+
+    #if OS == .MACOS {
+        C.os_clipboard_set_text("a\0b");
+        embedded := C.os_clipboard_get_text();
+        assert(embedded == "a\0b" && embedded.count == 3);
+        free(embedded);
+    }
+
     pixels := u8.[128, 0, 0, 128, 0, 64, 0, 128, 0, 0, 128, 128, 255, 255, 255, 255];
 
     C.os_clipboard_set_bitmap(2, 2, pixels.data, 4, true);

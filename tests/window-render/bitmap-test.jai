@@ -25,6 +25,9 @@ main :: () {
     invalid := u8.[0, 1, 2, 3];
 
     assert(!S.bitmap_load_from_memory(*decoded, invalid));
+    empty: [] u8;
+
+    assert(!S.bitmap_load_from_memory(*decoded, empty));
     assert(decoded.width == 3 && decoded.data[3] == 200);
     print("ok\n");
 }

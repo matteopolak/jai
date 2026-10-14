@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    if platform.system() not in {"Darwin", "Linux"}:
+        raise RuntimeError("this scoped native test builder supports macOS/Linux; Windows needs the coordinator's source-built native SDK libraries")
     metadata = json.loads((ROOT / "tools/native-libs.json").read_text())
     spec = metadata["sources"]["stb"]
     source = ROOT / "target/window-native-source"

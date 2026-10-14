@@ -22,6 +22,9 @@ main :: () {
 
     assert(t.width == 1 && t.height == 1 && t.depth == 1);
     assert(t.mipmap_count == 1 && t.array_length == 1);
+    assert(t.gl_handle == 0);
+    #assert size_of(S.Texture_Platform_Specific) == 4;
+    #assert offset_of(S.Texture.gl_handle) == 20;
     font: S.Dynamic_Font;
 
     assert(font.utf32_for_unknown_character == 0xfffd);

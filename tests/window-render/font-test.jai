@@ -29,5 +29,38 @@ main :: () {
 
     assert(file_font != null && file_font.face.num_glyphs > 0);
     S.destroy(file_font);
+    bytes[0] = original;
+    original_allocator := context.allocator;
+    tracking: Font_Test_Allocator;
+    tracking.base = original_allocator;
+    context.allocator = .{ font_test_allocator, *tracking };
+    scoped := S.make_loaded_font("scoped", .{ bytes.count, bytes.data });
+
+    context.allocator = original_allocator;
+    persistent := S.make_loaded_font("persistent", .{ bytes.count, bytes.data });
+
+    assert(scoped != null && persistent != null);
+    S.destroy(scoped);
+    assert(tracking.blocks == 0, "font registry retained the retired caller allocator");
+    tracking.active = false;
+    S.destroy(persistent);
     print("ok\n");
+}
+
+#scope_module
+Font_Test_Allocator :: struct {
+    base: Allocator;
+    active := true;
+    blocks: int;
+}
+
+font_test_allocator :: (mode: Allocator_Mode, size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
+    state := cast(*Font_Test_Allocator) allocator_data;
+
+    assert(state.active, "retired allocator called after its last font was destroyed");
+    result := state.base.proc(mode, size, old_size, old_memory, state.base.data);
+    if (mode == .ALLOCATE || mode == .RESIZE) && old_memory == null && result != null state.blocks += 1;
+    if mode == .FREE && old_memory != null state.blocks -= 1;
+
+    return result;
 }

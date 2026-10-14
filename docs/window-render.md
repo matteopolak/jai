@@ -174,3 +174,48 @@ use the virtual desktop bottom; client pixel queries use `height - 1 - y`.
 Latest focused run: `python3 tools/check_window_render.py --font
 /System/Library/Fonts/Helvetica.ttc` passed **57** invocations. The canonical module import
 is `Srgb`, matching the reviewed spec title; no alternate export/module alias is invented.
+
+## Reviewed OpenGL texture shape update
+
+The updated reviewed Simp spec resolves texture identity: OPENGL has `gl_handle: GLuint`;
+NONE has an empty platform record. The canonical ABI now reflects that distinction and
+checks the handle offset/width. Other unreviewed render layouts give a specific diagnostic.
+
+New GL texture source uses the binding owner's actual GL procedure table for native-name
+creation, file/memory/bitmap upload, in-place updates, deletion, driver format support,
+compressed uploads, GPU mip generation and storage for render targets. It preserves native
+unpack state, including row/skips, byte swapping and unpack-buffer binding, and clears an
+unpack PBO while supplying client-memory pixels. Native errors remain visible; failed new
+uploads delete their new resource. It accepts ordinary 2D resources on desktop GL 3+ and
+explicitly rejects unsupported shape flags and unspecified supplied mip chains.
+
+This source is **not GPU-runtime verified**. Linux/Windows checks resolve and type-check
+the procedure bodies; headless execution validates exact padded-row/compressed-block
+staging, malformed storage rejection, NONE/OPENGL layouts and private helper visibility.
+The GL binding's reviewed context constructors are still missing, and the macOS native
+window class is still missing. The compile-only dependency reproducers are in
+tests/window-render/repros. No real-driver capability or rendering success is inferred
+from these source checks. FBO targets, windows, shaders and drawing remain outstanding.
+
+Native format decisions use the public Khronos [texture image reference](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
+and [ES2 compatibility extension](https://registry.khronos.org/OpenGL/extensions/ARB/ARB_ES2_compatibility.txt),
+along with the binding owner's canonical public native types (including its unsigned
+GLsizei alias). Actual positive dimensions are converted at the native boundary.
+
+Latest focused suite has **69** invocations, including the negative visibility diagnostic;
+format/check and warnings-denied lint cover the added GPU source and every owned test.
+
+Final ownership regressions found and corrected two additional issues: persistent font
+registry bookkeeping now uses the long-lived default allocator rather than retaining the
+first caller's scoped allocator; Cocoa text uses its native UTF-8 byte length, preserving
+embedded NUL. Windows explicitly rejects embedded NUL because CF_UNICODETEXT is terminated.
+Native SDL polling projects button state independently of event-generation flags. When
+this module initializes a fresh event subsystem, it disables its otherwise-unused raw
+SDK event streams and performs the documented manual polling; existing caller queues and
+policies are preserved. See [SDL controller polling](https://wiki.libsdl.org/SDL2/SDL_GameControllerEventState).
+
+Generated native declarations and GL format descriptions now have durable scoped
+generators: `tools/window_render_evdev.py` and `tools/window_render_gl_formats.py`. Both
+`--check` commands verify regeneration after repository formatting. Native GL mapping
+decisions live in docs/window-render-gl-formats.json. X11 property discovery reads all
+chunks rather than assuming the window-manager atom list fits a single request.
