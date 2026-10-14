@@ -136,6 +136,7 @@ The LLVM backend, C ABI and linking.
 - [Native GL format mapping ledger](window-render-gl-formats.json)
 - [Focused window/render verification runner](../tools/check_window_render.py)
 - [Window/render contract questions](specs/stdlib/window-render-questions.md)
+- [Platform I/O backends and native runner](platform-io.md), [worker progress](status/platform-io-progress.md), and [deviations](status/platform-io-deviations.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
