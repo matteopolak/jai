@@ -995,6 +995,8 @@ pub struct PushContextDeferStmt {
     pub context: Expr,
     /// `push_context,defer_pop;`: as `PushContextStmt::bare`.
     pub bare: bool,
+    /// A macro backtick gives the restoration lifetime to the caller's scope.
+    pub backtick: bool,
 }
 
 #[derive(Clone, Debug)]

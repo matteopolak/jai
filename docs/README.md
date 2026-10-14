@@ -223,3 +223,5 @@ Scripts, CI and project policies.
 Agreed designs that are not built yet.
 
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
+
+- [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior

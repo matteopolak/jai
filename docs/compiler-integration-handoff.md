@@ -207,3 +207,7 @@ Bootstrap atomics now lower through common validated IR. See
 contention, and actual shared-memory WASM worker contention pass; these are
 focused compiler/backend verification, not a production integration claim.
 Progress and next tasks are maintained in [compiler progress](status/compiler-progress.md).
+
+## Caller-scope context cleanup checkpoint
+
+Backtick defer-pop now retains caller-block lifetime, including conditional and nested macro registration. Context selection uses local runtime storage; cleanup marks move when a macro inserts caller-owned actions. Ordinary caller-owned defers share activation guards. Explicit push blocks restore before outer return cleanup. See compiler/context-cleanup.md. Original core cases: eight pass; native/WASM O0/O2 execution passes. Core unit plus focused integration: 207 passed, one existing ignored test not counted. LLVM/core clippy with warnings denied and scoped Rust formatting checks pass. No stdlib Jai sources changed in this batch.

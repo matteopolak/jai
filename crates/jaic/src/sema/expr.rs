@@ -108,7 +108,7 @@ impl Compiler {
             E::Uninit => err(span, "`---` is only allowed as a declaration initializer"),
             E::Context => {
                 let ty = self.context_type(span)?;
-                let Some(ctx) = f.context else {
+                let Some(ctx) = f.current_context() else {
                     return err(
                         span,
                         "`context` is not available here (procedure is #c_call or #no_context; use push_context)",
@@ -533,10 +533,10 @@ impl Compiler {
         };
         let inner = self.new_block_scope(scope);
         self.ide_scope_span(inner, span);
-        let depth = f.defers.len();
+        let depth = f.mark_defers();
         self.check_block_stmts(f, inner, rest)?;
         let mut op = self.check_expr(f, inner, last, expected)?;
-        if f.defers.len() > depth {
+        if f.defers.len() > depth.position() {
             // Deferred code runs after the value is computed.
             let op_settled = self.settle_untyped(op, expected);
             let ty = op_settled.ty();
@@ -545,9 +545,9 @@ impl Compiler {
                 ty,
                 val: v,
             };
-            self.emit_defers(f, depth, span)?;
+            self.emit_defers(f, depth.position(), span)?;
         }
-        f.defers.truncate(depth);
+        f.truncate_defers(depth.position());
         Ok(op)
     }
 
