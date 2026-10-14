@@ -82,6 +82,22 @@ production `stdlib` exited zero. Workspace tests and direct audit are in progres
 no full integration pass is claimed. See [integration evidence](../tools/cleanroom-integration.md).
 # Replacement integration checkpoint: compiler widths and reflection
 
+Latest replacement integration update: compiler 890329b and portable 8a0d40c are
+merged (413518b, 04d4611), retaining independent context/marker/width/probe fixes.
+Production generic metadata now unblocks all 24 foundation host cases and all 19
+WASI cases at O0/O2; six unused-code target profiles pass, macOS x64 still fails
+POSIX.timeval. Strict lint remains failing on host-inapplicable Windows roots,
+and those exit-zero incomplete compilations are now rejected explicitly.
+All 45 reviewed contract cases pass interpreter and native. Real shared channels
+transfer 2,048 byte-checked packets in each of four interpreted/native process
+pairings. Corrected Mail import passes ten real SMTP/MIME cases. Original runtime
+configuration fixture is retained as an explicit rejection case; its temporary
+storage assertions separately pass with the configured runtime in interpreter/
+native O0/O2. This is supported integration evidence, not release completion.
+Committed bindings still lack AppKit and safe SDL2 mismatched-record marshalling;
+full original corpus remains coordinator-only. Basic.log is reviewed and missing,
+correcting the earlier integration classification. No publication/CI dispatch.
+
 Role: replacement integration worker. Approved refreshed compiler/portable/
 numerics/window snapshots merged. Durable compiler fixes: `16b66d8` floating
 intrinsic widths and `2d839cd` reflected struct alignment/graph regression.

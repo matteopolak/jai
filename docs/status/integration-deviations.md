@@ -2,6 +2,19 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
+Latest checkpoint: compiler 890329b and portable 8a0d40c are merged. Generic
+metadata now unblocks all 24 host/19 WASI foundation cases at O0/O2; portable
+production passes 92/92 ordinary cases plus faults/rejections and real SMTP/
+shared-channel/process/startup integration. AppKit, safe SDL2 record marshalling,
+full lint/platform support, genuine compiler/IDE failures and the opaque external
+corpus remain open. Earlier results below are retained historical evidence.
+
+Correction: Basic.log is explicitly reviewed and missing. Its failing legacy
+tests are genuine coverage; it is not an unreviewed convenience. Only stale
+implementation-location assertions have been migrated, preserving both overload
+and re-export navigation assertions. The latter reveals a separate real recovery
+failure, retained in requests.
+
 | Location | Observable effect / rationale | Evidence and risk | Proper fix |
 | --- | --- | --- | --- |
 | Producer test overlays and numerics tool bootstrap helpers | Reported passes use independently staged peer sources; numerics includes fixture Input/Window/Hash and host tool helpers. These are not integrated production proof. | Producer handoffs/status documents. Snapshot drift and ABI/identity errors can escape those passes. | Run unchanged tools and canonical-dependency suites against this production tree; retain staging evidence separately. |
@@ -124,6 +137,42 @@ evidence and are superseded only where stated here.
 - New scope contains 100 of 135 module/bootstrap facades, 35 absent plus one
   supporting constant-table page. Presence is only a declaration inventory;
   it does not count complete modules or imply runtime/ABI conformance.
+
+### Third refresh
+
+- Approved compiler 890329b supplies canonical shared source generic descriptors
+  and evaluated instance defaults. Required/unbound shared defaults retain explicit
+  null type/-1 offset; instance defaults evaluate real prior bindings. This is an
+  independent encoding using existing fields, awaiting compatibility review.
+  It adds read-only metadata storage; failures propagate rather than dropping
+  arguments. All foundation metadata/default-elision assertions now pass.
+- Performance reports carry actual host timings, run/polymorph records and IR
+  counts. This compiler has no bytecode inlining/dedup pass, so those transformation
+  counts are zero. Anonymous run thunks may have null headers; actual wasm32 compiler
+  hosts reject unavailable timing rather than manufacture durations. Browser clock
+  support and anonymous-callee contract remain open.
+- Unix shared-memory channels use real POSIX objects/native atomic storage, checked
+  native mapping extent and captured creator allocator. All four interpreter/native
+  process pairings pass 2,048 byte-checked packets each. Windows is unsupported;
+  Linux execution, wire-format compatibility, pause/reconnect and failed-cleanup
+  retry policies remain unverified. Absolute cursors, eight-byte framing/alignment,
+  256-byte header and logical-size/name policies are independently selected and
+  documented in portable-shared-memory.md. No original-wire interoperability claim.
+- Shared-channel early failed producer tests left two unjournaled PID-named OS
+  objects. Later tests journal/unlink only proven owned names and check cleanup;
+  no global namespace sweep was attempted. Historical objects are not claimed gone.
+- The runtime storage fixture is split into a positive configured-instance test
+  and the complete original conflicting-import source as a required negative case.
+  All original storage assertions remain. This corrects startup configuration
+  alignment without silently accepting conflicting flags or claiming alternate
+  runtime-instance behavior is specified.
+- The new exchange-contention unit test was updated for the integrated intrinsic
+  dispatch signature's floating-result metadata argument. Its full prior-value
+  sum assertion and all 80,000 exchanges remain unchanged; no test overlay repair.
+- Current presence is 101/135 facades, 34 absent, plus one constant-table supplement.
+  Integration-certified complete modules: zero; this worker has not certified all
+  reviewed behaviors/targets of any module. Supported subsets are measured by the
+  actual suites, never by export counts or staged passes.
 
 - Removed the bundled-module unknown-parameter exemption in `crates/jaic/src/sema/modules.rs` and added general named/positional validation, including parameterless modules. Removed the fourth public Runtime_Support parameter; the build option remains a compiler target constant. Explicit runtime arguments no longer disappear. Original regressions failed before correction; all 39 module regressions pass afterward.
 - `interp/probe.rs` cached mapping checks previously preceded raw copies/slice reads. Strengthening the original mmap/mprotect test to omit manual invalidation reproduced SIGBUS. Actual transfers now use Mach APIs, kernel pipe copying, Windows process-memory APIs or bounds-checked Wasm memory. All five probe tests pass. Comparison now snapshots both ranges, with allocation/copy overhead rather than unchecked in-place slices; this is a deliberate safety tradeoff. Windows/Linux native execution remains CI-required; mapping/protection changes may produce partial failed transfers, never a claimed atomic snapshot. Proper optimization: measured fault-safe chunked transfer without losing invalid-range ordering.

@@ -2931,6 +2931,7 @@ mod atomic_contention_tests {
                             .intrinsic(
                                 ir::Intrinsic::AtomicRmw(ir::AtomicOp::Xchg, ir::ORDER_SEQ_CST),
                                 &[address, index * 20_000 + i, 8],
+                                None,
                             )
                             .unwrap()
                             .into_vec()[0];

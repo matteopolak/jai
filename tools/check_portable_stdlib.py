@@ -156,6 +156,7 @@ def main():
                     raise RuntimeError("crash handler failed to preserve fatal signal termination")
         print("passed expected runtime fault", source.name, flush=True)
     for name, diagnostic in [
+        ("runtime-configuration-conflict", "conflicts with the configured runtime instance"),
         ("xar-reverse", "reverse Xar iteration is unsupported"),
         ("atomic-byte-bit", "atomic bit test requires a 2-, 4-, or 8-byte target"),
         ("buildcpp-compile", "BuildCpp tool failed"),

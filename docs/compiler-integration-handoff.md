@@ -35,9 +35,10 @@ The compiler automatically loads `Runtime_Support` with named parameters:
 | `DEFINE_SYSTEM_ENTRY_POINT` | `true` |
 | `DEFINE_INITIALIZATION` | `true` |
 | `ENABLE_BACKTRACE_ON_CRASH` | `false` |
-| `TEMPORARY_STORAGE_SIZE` | `32768` (`s64`) |
 
-These are forwarded from compiler options. The existing compiler selects one
+These are forwarded from compiler options. Temporary-storage size is a compiler
+target constant forwarded privately, not a fourth public runtime parameter.
+The existing compiler selects one
 implicit runtime instance per program; the language guide does not establish the
 behavior of explicitly parameterizing that reserved module. Bootstrap records
 belong to the foundation worker. Compiler-specific facades and helpers belong to

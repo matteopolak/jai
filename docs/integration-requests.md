@@ -41,3 +41,26 @@ compilation. It exposes three Windows-only implementation files checked as host
 roots; no warning suppression/exclusion was introduced. Provide target-aware
 verification with actual supported tooling. Current owned positive host source
 checks must not be called full platform lint.
+
+14. Basic.log and both log_error overloads are explicitly reviewed in basic.md
+inventory, including location/flags/user_flags/section parameters. They are absent
+from the committed facade; LSP ambiguous-log tests therefore expose a real gap.
+Earlier integration classification of Basic.log as unreviewed was wrong and has
+been corrected. Implement real logger forwarding and metadata; keep failing
+behavior assertions. Only source-location assumptions in navigation tests are
+migrated to the independently organized canonical implementation paths.
+
+15. Canonical navigation migration exposes another genuine IDE regression in
+links.rs: with one unavailable independent import, definition of a re-exported
+deep() call nested inside an overloaded qualified facade call is empty. The
+diagnostics correctly contain only the missing import. The original using-import
+visibility/definition assertions remain enabled. Correct the general semantic
+recording/recovery path; do not remove the missing-import fixture or re-export test.
+
+16. Request 12 is resolved by approved compiler 890329b. All 24 foundation host
+cases and 19 WASI cases pass O0/O2 with production metadata. Source/runtime
+configuration tests are split correctly: the original conflict source remains a
+required compile-rejection case, and unchanged temporary-storage assertions run
+with the configured runtime. Portable production now passes 92/92 ordinary cases
+plus all fault/rejection/SMTP/channel/parent/startup checks. Runtime alternate-
+instance compatibility remains an explicit question, not a claimed guarantee.

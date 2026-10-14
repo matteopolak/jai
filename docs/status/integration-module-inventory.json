@@ -608,8 +608,8 @@
   {
     "spec": "docs/specs/stdlib/modules/shared-memory-channel.md",
     "module": "Shared_Memory_Channel",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Shared_Memory_Channel/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/simd.md",
@@ -728,8 +728,8 @@
   {
     "spec": "docs/specs/stdlib/modules/treemap.md",
     "module": "Treemap",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Treemap/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/unicode.md",
