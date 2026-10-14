@@ -1,5 +1,44 @@
 # Window/render progress
 
+Resumed dependency/OEM verification: **155 focused invocations passed, zero failed**
+with the fresh source-built compiler and NEW bindings/platform-io File/Process.
+Host cases pass interpreter/native O0/O2, including public native windows, text,
+textures, depth/stencil, readback, Keymap and signed decoding. Windows renderer,
+Keymap and OEM/keypad x64/arm64 checks now pass; native Windows execution remains
+pending. The macOS x64 POSIX reproducer and Windows filename-font source check also
+pass separately. Owned formatting/check, warnings-denied lint and both native
+declaration generators pass. The integrated compiler's original general reflection
+fix passes its reproducer; the historical patch is no longer applied by tooling.
+
+Next batch in progress: Windows renderer WM_DESTROY lifecycle cleanup and actual
+GPU resource/readback lifetime across closing all windows and reopening. Its new
+native regression is source-checkable here; no native Windows pass is claimed.
+
+**RESUMED — reviewed 2026-10-14:** coordinator/user cleared the metadata-only
+incident as authorized sanitized integration feedback; no quarantine/reimplementation
+is required. Pending OEM/keypad translation resumes alongside NEW WGL/File/Process
+dependencies. Native Windows runtime for newer work remains pending.
+
+Historical stop: a provenance read of the NEW
+platform-io producer's AGENTS.md unexpectedly exposed an appended paragraph of
+coordinator CI metadata. No feedback document/logs/history/transcripts/reference
+implementation was opened, and no such result is used as this worker's evidence.
+Implementation stopped immediately; see the
+[exact incident scope](window-render-cleanroom-incident-2026-10-14.md).
+Last durable implementation checkpoint: `b005a2d`; the later OEM keyboard batch
+remains durable and uncommitted. The last full own run was147 passes/six dependency
+failures. No implementation/test work continued between recognition and clearance.
+
+Windows keyboard follow-up after `b005a2d`: OEM punctuation and keypad character
+keys now use actual current-layout MapVirtualKeyW translation; get_vk uses the
+bare virtual-key byte from VkKeyScanW. New real-window press/release/state tests
+source-check on Windows x64/arm64; runtime needs Windows hosts. No keyboard layout
+is activated or user preference changed. The canonical compact key enum reserves
+non-ASCII values for special/gamepad keys, so native non-ASCII characters remain
+committed text rather than fabricated keyboard codes. This matches the existing
+ASCII key projection on the other desktop backends. Official Win32 SDK docs supply
+only native ABI/translation semantics; no Jai implementation source was consulted.
+
 After `31ded39`, depth/stencil textures use proper native framebuffer attachments,
 read/draw buffer selection, depth/stencil blit masks and nearest depth filtering.
 Actual D16/D24S8/D32F/D32FS8 clear/resize/packed readback passes interpreter/O0/O2.

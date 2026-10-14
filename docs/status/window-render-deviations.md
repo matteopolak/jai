@@ -1,5 +1,20 @@
 # Window/render deviations and implementation gaps
 
+The coordinator/user cleared the metadata-only incident and authorized resumption.
+No forbidden implementation body was exposed or incorporated; no quarantine or
+reimplementation is required. Exact scope and reviewed disposition remain in the
+[incident report](window-render-cleanroom-incident-2026-10-14.md). Newer native
+Windows evidence must still come from actual runs, not the older aggregate results.
+
+Resumed verification supersedes the historical File/WGL/metadata patch blockers:
+155 focused invocations now pass with zero failures. Staging copies only the NEW
+platform-io File/Process facades, their assigned internals and encoding helpers,
+preserving other producers' foundations/numerics/bindings. Filename font loading
+now uses canonical File on Windows as well as Unix. Fresh own compiler sources
+already preserve erased-procedure metadata; no compiler patch is applied in the
+current build. Historical failures and patch evidence remain below/in docs/native.
+The new Windows lifecycle batch is not yet verified or counted in these155 passes.
+
 Scope: owned public facades, private window/input/gamepad/rendering/clipboard,
 tests and tools through checkpoint `9254180`, plus the current batch. This is
 an incomplete implementation. Existing evidence remains in
@@ -15,6 +30,22 @@ destroy_loaded_font frees the copied display name only. These are contract
 semantics, not resource-release substitutes.
 
 Current remaining gaps and risks:
+
+`internal/input/windows-keys.jai` now privately declares MapVirtualKeyW and
+VkKeyScanW from official winuser.h docs, since the canonical binding inventory
+lacks them. OEM/keypad printable ASCII normalization follows the current native
+layout; unsupported virtual keys return UNKNOWN. Non-ASCII native character values
+cannot safely occupy the compact canonical special-key ranges, so they remain
+TEXT_INPUT only, consistently with existing desktop keyboard projections. No
+Unicode-key completion claim. get_vk returns the native key byte, with shift state
+remaining outside that API's scalar result. `windows-layout-keys.jai` verifies the
+real event/state path against the current native layout and handles unmapped keys
+explicitly; x64/arm64 source checks pass, native runtime remains unverified.
+Native sources: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mapvirtualkeyw
+and https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-vkkeyscanw.
+Native keyboard layout behavior/ABI on Windows hosts is the remaining risk; no
+alternate Jai implementation, keyboard-layout replacement or fake key backend is
+used. Binding ownership can absorb these two private SDK declarations later.
 
 Keymap programmatic Meta-modified bindings dispatch correctly, but the reviewed
 file grammar has no Meta prefix. Persistence now asserts explicitly for such a

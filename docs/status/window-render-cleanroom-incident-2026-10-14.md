@@ -1,5 +1,17 @@
 # Incidental coordinator metadata exposure — implementation stopped
 
+## Reviewed disposition — resumed
+
+The coordinator/user reviewed the exact paragraph and this report on 2026-10-14.
+It contains aggregate sanitized CI metadata only, which is authorized filtered
+integration feedback. No forbidden implementation body, quarantined source, raw
+log or dirty transcript was exposed. The user explicitly cleared this incident:
+no quarantine or reimplementation is required, and independently authored work may
+continue. Implementation resumed with the pending OEM/keypad batch and authorized
+NEW bindings/platform-io dependencies. The historical stop/evidence below remains
+intact. New native Windows execution is still pending and is not inferred from
+that paragraph's older CI results.
+
 On 2026-10-14, while checking the provenance of the NEW platform-io producer before
 integrating its File module, this worker read `../platform-io/AGENTS.md`. Its final
 paragraph unexpectedly contained coordinator CI metadata: aggregate Windows File/

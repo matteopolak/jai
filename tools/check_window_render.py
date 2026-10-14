@@ -54,6 +54,7 @@ def main():
         host.append("windows-committed-text")
         host.append("windows-render-events")
         host.append("windows-class-parameters")
+        host.append("windows-layout-keys")
         host.append("public-window")
     if platform.system() == "Darwin":
         host.append("macos-window")
@@ -90,7 +91,7 @@ def main():
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
             cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none", "public-window", "keymap-behavior"]
-            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters"]
+            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])
