@@ -1,7 +1,8 @@
 # Foundations progress
 
 Current implementation checkpoints: 44cca8b (portable conversion/configuration)
-and a11c0c8 (five-parameter debugger interface/direct binary32 rounding).
+and a11c0c8 (five-parameter debugger interface/direct binary32 rounding), followed
+by 1b1cb39 (native-path safety, private helpers, canaries and strict argument gates).
 All 26 positive cases pass interpreter/native O0/O2; five runtime rejection
 cases assert as required; all 21 supported production WASI cases pass O0/O2
 with non-WASI imports rejected. Real unchanged jaifmt builds at O2, its CLI
@@ -40,8 +41,9 @@ unused-code cases pass Linux x64/arm64, macOS arm64, Windows x64/arm64 and wasm6
 macOS x64 still fails peer POSIX itimerval. No peer writes, reference input,
 stdlib/Extensions changes or publication occurred.
 
-Next: commit owned filesystem/privacy/capacity/regression progress; coordinator
-can integrate reviewed checkpoints and rerun its full corpus/native CI. New helper visibility is now
+Next: coordinator can integrate reviewed checkpoints and rerun full corpus/native
+CI; binding owner must resolve macOS x64 itimerval, with Windows runtime still
+pending. New helper visibility is now
 module-private, and original canary tests fill/grow inline storage in both
 assert layouts, including combined debug/stamping/discard configuration. Remaining
 formatter/style/visualizer contract questions stay in the focused questions;
