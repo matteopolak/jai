@@ -1087,6 +1087,35 @@ impl Builder {
         SlotId(self.func.slots.len() as u32 - 1)
     }
 
+    /// A zero-initialized scalar slot whose address dominates every block.
+    /// Used for state that can be registered conditionally and consumed after
+    /// the control-flow paths join (including caller-owned macro cleanups).
+    pub fn entry_zeroed_slot(&mut self, ty: Ty, size: u64, align: u64) -> Val {
+        let slot = self.slot(size, align);
+        let addr = self.new_val(Ty::Ptr);
+        let zero = self.new_val(ty);
+        self.func.blocks[0].insts.splice(
+            0..0,
+            [
+                Inst::SlotAddr {
+                    dst: addr,
+                    slot,
+                },
+                Inst::IConst {
+                    dst: zero,
+                    ty,
+                    value: 0,
+                },
+                Inst::Store {
+                    ty,
+                    addr,
+                    value: zero,
+                },
+            ],
+        );
+        addr
+    }
+
     pub fn push(&mut self, inst: Inst) {
         if self.is_terminated() {
             // Code after return/break is unreachable; emit into a fresh dead block.

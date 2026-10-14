@@ -21,7 +21,7 @@ impl Compiler {
         let mut f = FnCtx::new(origin.thunk_name().into(), sig, file);
         f.b.func.origin = origin;
         f.compile_time = true;
-        f.context = Some(f.b.param(0));
+        f.set_context(Some(f.b.param(0)));
         f
     }
 

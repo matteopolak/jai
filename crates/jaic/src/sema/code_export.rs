@@ -2126,6 +2126,13 @@ impl Exporter<'_> {
                     .ptr("filter_expression", filter_expression);
                 self.add(rec)
             }
+            S::PushContextDefer(defer) => {
+                let context = self.expr(&defer.context);
+                let mut rec = self.node("Code_Push_Context", node::PUSH_CONTEXT, span);
+                rec.ptr("to_push", context)
+                    .int("push_context_flags", 2 | i64::from(defer.backtick));
+                self.add(rec)
+            }
             S::PushContext(boxed) => {
                 let crate::ast::PushContextStmt {
                     context,

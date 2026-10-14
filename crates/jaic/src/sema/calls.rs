@@ -156,9 +156,10 @@ impl Compiler {
             let (overrides, plain): (Vec<ast::Arg>, Vec<ast::Arg>) =
                 args.iter().cloned().partition(|a| a.context);
             let ctx = self.context_with_overrides(f, scope, &overrides, span)?;
-            let saved = f.context.replace(ctx);
+            let saved = f.current_context();
+            f.set_context(Some(ctx));
             let result = self.check_call(f, scope, callee, &plain, expected, span);
-            f.context = saved;
+            f.set_context(saved);
             return result;
         }
         let callee_op = self.check_expr(f, scope, callee, None)?;
@@ -229,7 +230,7 @@ impl Compiler {
         overrides: &[ast::Arg],
         span: Span,
     ) -> Result<ir::Val> {
-        let Some(current) = f.context else {
+        let Some(current) = f.current_context() else {
             return err(
                 span,
                 "`,,` context arguments need a context (not in #c_call code)",
@@ -2061,7 +2062,7 @@ impl Compiler {
         }
         let mut values = Vec::new();
         if sig.has_context {
-            let Some(ctx) = f.context else {
+            let Some(ctx) = f.current_context() else {
                 return err(
                     span,
                     format!(
@@ -2402,7 +2403,7 @@ impl Compiler {
         let mut values = Vec::new();
         if !pt.no_context {
             // Without a context (e.g. inside #c_call code) the callee receives null.
-            let ctx = match f.context {
+            let ctx = match f.current_context() {
                 Some(c) => c,
                 None => f.b.iconst(Ty::Ptr, 0),
             };
@@ -3593,11 +3594,14 @@ impl Compiler {
             let align = self.align_of(rt, span)?;
             result_slots.push((rt, f.b.alloca(size.max(1), align)));
         }
+        let caller_cleanup_serial = f.current_cleanup_serial();
+        let defer_depth = f.mark_defers();
         f.macros.push(MacroFrame {
             caller_scope: caller,
+            caller_cleanup_serial,
             exit_block: exit,
             result_slots: result_slots.clone(),
-            defer_depth: f.defers.len(),
+            defer_depth,
             loop_depth: f.loops.len(),
             caller_macro_depth: f.macros.len(),
             for_body: f.pending_for_body.take(),
@@ -3609,10 +3613,10 @@ impl Compiler {
         let frame = f.macros.pop().unwrap();
         result?;
         if !f.b.is_terminated() {
-            self.emit_defers(f, frame.defer_depth, span)?;
+            self.emit_defers(f, frame.defer_depth.position(), span)?;
             f.b.jump(exit);
         }
-        f.defers.truncate(frame.defer_depth);
+        f.truncate_defers(frame.defer_depth.position());
         f.b.switch_to(exit);
         let mut values = Vec::new();
         for (rt, addr) in result_slots {

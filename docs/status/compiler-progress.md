@@ -1,7 +1,7 @@
 # Compiler progress
 
 Active task: general bootstrap atomics, caller-scope deferred context in macros,
-and generic-default reflection. Base producer checkpoint: `1e5d732`.
+and generic-default reflection. Atomic producer checkpoint: `1d8833b`.
 
 Investigation: bootstrap load/store/exchange names are absent from intrinsic
 dispatch. Existing ordered IR operations exist, but scalar/alignment validation
@@ -16,15 +16,23 @@ pointer values. Native pthread and shared-memory WASM worker tests validate
 failed with 53,537/80,000 before repair and passes with real host atomics.
 WASM atomics now select +atomics from IR; explicitly disabling it is an error.
 
-Next: finish atomic lint/checkpoint, then fix caller-scope context lifetime and
-generic reflection. No production integration or full corpus claim is made.
+Context milestone: eight original core regressions pass, including conditional
+registration, nested macro blocks, deferred ordering and return/loop exits.
+Native and WASM64 execute the control-flow cases at O0 and O2. Runtime context
+selection and guarded caller-owned cleanup replace compile-time pointer choice;
+stable cleanup boundaries handle insertion into nested macro scopes.
+
+Next: checkpoint verified context lowering, then implement generic reflection.
+No production integration or full corpus claim is made.
 
 Verification: 151 core unit, five atomic, 35 module, three layout, five literal,
 18 LLVM unit, and four LLVM/backend tests pass. Scoped rustfmt and core/backend
-clippy with warnings denied pass. This task adds Rust tests containing original
-Jai/C/JS programs, not new stdlib Jai files. Native CLI rebuild is in progress.
+clippy with warnings denied pass for the atomic checkpoint. This task adds Rust
+tests containing original Jai/C/JS programs, not new stdlib Jai files. Native CLI
+rebuild for that checkpoint passed. Context core/backend clippy with warnings denied passes.
 No quarantined integration sources/history, vendor sources, or transcripts read.
 No agent-message tool is available; commentary and this file provide milestones.
 
-Verification for this task has not yet run. Prior verification is recorded in
-`docs/compiler-integration-handoff.md`; it is not production integration.
+Context broad core verification: 151 unit tests and 56 focused integration cases
+passed; one pre-existing ignored test was not counted. Prior verification is
+recorded in `docs/compiler-integration-handoff.md`; it is not production integration.
