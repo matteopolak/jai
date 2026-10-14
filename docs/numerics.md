@@ -48,9 +48,11 @@ module reverses vertical cuts and drawing winding. If only quads are registered,
 rounded triangles use degenerate quads rather than dropping the rounded geometry.
 
 Applications supply drawing, text preparation, texture loading, mouse queries
-and cursor callbacks. Failed texture loads return null. No built-in image/font
-payloads are supplied; the nine resource-data slots are empty. Opaque texture
-tokens allow a caller renderer to keep native resources in its own map.
+and cursor callbacks. No built-in image/font payloads are supplied; the nine
+resource-data slots are empty. Texture pointers supplied by callers can be passed
+to rendering callbacks; require_texture cannot allocate a real Texture without
+its missing layout/ownership contract and emits an explicit diagnostic. It no
+longer allocates unsafe opaque tokens. This facility remains incomplete.
 
 ## Verification
 
@@ -87,14 +89,23 @@ foundation is ready; missing canonical dependencies then fail normally.
   not prove native window/input ABI integration. The peer Hash_Table integration
   additionally fails because its fresh Hash implementation currently lacks scalar
   get_hash(u64); the UI tests use a marked map fixture.
-- Font, Font_Effects, Texture and NSCursor concrete defining ABIs are not supplied
-  by these specs. The UI uses contextual opaque callback types. Text preparation
-  provides horizontal measurement; vertical font metrics use a 16-pixel fallback.
-  Concrete renderer/font ABI compatibility remains unverified.
-- Clipboard operations currently use an owned module-local clipboard. Native
-  system clipboard synchronization is not implemented. Native cursor creation
-  requires the caller callback; init_pointers asserts if that integration is absent.
-  These are limitations, not completed native integrations.
+- Font/Font_Effects/Texture concrete defining ABIs are not supplied. Both UI
+  variants share contextual nominal types; external identity/layout remain
+  unverified. Text preparation supplies actual horizontal width, and a finite
+  theme baseline supplies vertical placement. Metrics needed by em, text_size,
+  default baselines and nonzero em padding now diagnose the missing ABI instead
+  of returning an invented 16-pixel metric. Callback placement and sequencing
+  have focused tests in both variants.
+- Clipboard operations use CoreFoundation/Pasteboard on macOS and Unicode
+  user32/kernel32 APIs on Windows, with explicit error propagation and ownership
+  cleanup. Real macOS tests use an isolated named board with two native client
+  handles; no user clipboard is accessed. Windows remains runtime-unverified;
+  Linux/WASM native clipboard explicitly diagnoses unsupported transport.
+- Native cursor initialization uses retained AppKit cursors on macOS and borrowed
+  shared cursors on Windows. Reinitialization releases owned macOS references;
+  shared Windows handles must not be destroyed. The private native lifecycle test
+  does not change the user's visible cursor. Diagonal AppKit cursors require
+  macOS 15; earlier systems and Linux/WASM require caller cursor callbacks.
 - Text editing supports UTF-8 scalar boundaries, selection, history, completion,
   and input events. It does not implement grapheme shaping, bidi layout or full
   multiline visual cursor/selection geometry. No native glyph renderer is supplied.

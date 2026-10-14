@@ -95,6 +95,8 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [Numerics implementation status](status/numerics.md)
+- [Numerics corrective review and tool evidence](status/numerics-corrective-plan.md)
+- [Numerics compiler restriction handoff](status/numerics-compiler-handoff.md)
 - [Numerics implementation and verification](numerics.md)
 - [Numerics implementation plan](status/numerics-plan.md)
 - [Numerics contract questions](specs/stdlib/numerics-questions.md)

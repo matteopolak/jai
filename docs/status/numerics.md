@@ -1,9 +1,11 @@
 # Numerics worker status
 
-The implementation pass covers all six assigned modules. Worker verification
-passes; canonical dependency and native UI integration gaps remain explicitly
-listed below. Final combined-library, corpus and release verification remains
-with the coordinator.
+**Not complete / coordinator handoff not accepted.** All six modules have
+implementations, but inventory coverage and fixture tests do not establish full
+production compatibility. Corrective review removed local clipboard substitution,
+invented font metrics and unsafe opaque Texture allocation. Canonical ABI and
+platform gaps below prevent a completion claim. Final integration, corpus and
+release verification remains with the coordinator.
 
 | Module | Inventoried names | Delivered mechanisms |
 | --- | ---: | --- |
@@ -23,10 +25,10 @@ were not changed. No other checkout was modified and no publication was performe
 
 On 2026-10-14, the latest fresh peer Rust compiler was copied and source-built
 locally against LLVM 23. Fresh foundation/binding sources and these six modules
-were staged in this workspace's ignored artifacts. The final run passed **86/86
-checks**, including build checks:
+were staged in this workspace's ignored artifacts. The corrective run passed
+**93/93 checks**, including build checks:
 
-- Ten self-checking programs in the interpreter, native O0/O2 on macOS ARM64,
+- Eleven self-checking programs in the interpreter, native O0/O2 on macOS ARM64,
   and actual wasm64 WASI execution under Node 24.
 - Unused-code target checks for Linux, Windows, macOS and WASM, plus explicit
   x64 checks for Linux, Windows and macOS.
@@ -39,8 +41,10 @@ cover all 65,536 half encodings and all adjacent finite-half midpoint ties in bo
 signs. Algebra tests cover generic/explicit overloads, strict Matrix3 thresholds,
 exact tiny Matrix4 pivots, IEEE subnormal edges, quaternion/plane/projection
 invariants and zero-divisor reporting. UI tests exercise lifecycle callbacks,
-popup changes, spinboxes, every picker mode, texture loader failure/cache behavior,
-UTF-8 editing and stable composite-widget identities.
+popup changes, spinboxes, every picker mode, UTF-8 editing and stable composite
+widget identities. Opaque-token texture cache tests are no longer counted as
+supported behavior: the substitute was removed, and an explicit missing-ABI
+diagnostic is tested separately.
 
 Reproduce with:
 
@@ -65,15 +69,19 @@ were preserved separately before rebuilding the newer peer compiler.
 - The staging copy explicitly removes the invalid standalone Basic.Buffer alias;
   the reviewed Buffer is nested under String_Builder. This repair is recorded and
   does not alter the peer checkout or this worker's owned production modules.
-- Concrete Font/Font_Effects/Texture/NSCursor ABIs are absent from the supplied
-  contracts. Contextual opaque callback types support caller renderers; concrete
-  ABI/nominal integration remains unverified. Vertical text metrics use a
-  16-pixel fallback. The Windows module alias is conditional because the fresh
-  binding rejects non-Windows imports.
-- Clipboard operations use module-local owned storage; native clipboard
-  synchronization is not implemented. Native cursor creation requires caller
-  integration. Text editing does not supply native glyph shaping, bidi/grapheme
-  layout, or full multiline visual selection/cursor geometry.
+- Concrete Font/Font_Effects/Texture defining ABIs are absent from the supplied
+  contracts. Shared contextual types preserve identity between both UI variants,
+  but integration with the external defining module is unverified. Font metrics
+  and Texture allocation now diagnose unavailable contracts; no invented height
+  or opaque allocation is returned. Caller prepare/draw callbacks work with an
+  explicit finite theme baseline and zero em padding. The Windows alias remains
+  conditional because the fresh binding rejects non-Windows imports.
+- Native macOS clipboard synchronization and cursor retain/release are tested.
+  Windows Unicode clipboard and shared cursors compile under target checks but
+  have not run on Windows. Linux/WASM native clipboard/cursors are explicitly
+  unsupported; caller cursor callbacks work. Older macOS systems need a caller
+  callback for diagonal cursors. No native glyph shaping, bidi/grapheme layout,
+  or full multiline visual selection/cursor geometry is provided.
 - Augmented_Keyframe's documented using base does not establish the #as relation
   required by Color_Interpolation's generic restriction in the current compiler.
   Editor sampling copies canonical Color_Keyframe records; direct generic
@@ -84,3 +92,12 @@ were preserved separately before rebuilding the newer peer compiler.
 
 See [implementation details](../numerics.md) and
 [contract questions](../specs/stdlib/numerics-questions.md).
+
+## Corrective review evidence
+
+See [corrective review](numerics-corrective-plan.md) for actual native checks,
+repository formatting/lint commands, generation order, canonical dependency and
+compiler handoffs. Full `jaifmt --check` remains blocked by missing fresh
+File_Utilities APIs; the unmodified repository formatter engine checks all owned
+Jai files successfully. Jailint reports zero findings but explicitly cannot lint
+the failed generic-restriction reproducer body. Neither limitation is a full pass.

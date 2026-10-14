@@ -34,6 +34,7 @@ tests={
     'ui':('tests/numerics/ui.jai','ui contracts ok'),
     'ui-smoke':('tests/numerics/ui_smoke.jai','ui smoke ok'),
     'ui-interaction':('tests/numerics/ui_interaction.jai','ui interaction ok'),
+    'render-callbacks':('tests/numerics/render_callbacks.jai','render callbacks ok'),
     'oracle':('artifacts/numeric_oracle.jai','independent oracle ok'),
     'public-contract':('tests/stdlib-contract/math-float16/main.jai','ok'),
 }

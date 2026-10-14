@@ -1,13 +1,14 @@
 """Generate repetitive independently designed numeric component operations."""
 from pathlib import Path
 import re
+from numerics_codegen import write_generated
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'stdlib/internal/numerics'
 BASE.mkdir(parents=True, exist_ok=True)
 
 def write(name, text):
-    (BASE / name).write_text(text)
+    write_generated(BASE / name,text)
 
 types = []
 for n in [2, 3, 4]:
@@ -80,11 +81,19 @@ write('math_vectors.jai','\n'.join(ops)+'\n#scope_file\n#import "Basic";\n')
 
 def facade(module,spec,impl):
     text=(ROOT/'docs/specs/stdlib/modules'/spec).read_text().split('## Public type members')[0].split('## Behavioral')[0]
-    names=list(dict.fromkeys(re.findall(r'^- `([A-Za-z_][A-Za-z_0-9]*)\s*(?:::|:)',text,re.M)))
+    expected=set(re.findall(r'^- `([A-Za-z_][A-Za-z_0-9]*)\s*(?:::|:)',text,re.M))
+    if module=='Math':
+        names=[]
+        for file in ['math_types.jai','math_scalar.jai','math_vectors.jai','math_quaternion.jai','math_matrix.jai','math_geometry.jai']:
+            names.extend(n for n in re.findall(r'^(\w+)\s*(?:::|:)',(BASE/file).read_text(),re.M) if n in expected and n not in names)
+    elif module=='Sloppy_Math': names=['min_of_type','max_of_type','is_approximately_zero','values_are_close']
+    elif module=='Float16': names=['Float16','Vector2_Float16','Vector3_Float16','Vector4_Float16','Matrix3_Float16','half_to_float_fast4','float_to_half_fast3','float16_to_float32','float32_to_float16','matrix3_float16','matrix3_float32','vector2_float16','vector2_float32','vector3_float16','vector3_float32','vector4_float16']
+    else: names=['GAMMA','Interpolation','Color_Keyframe','rgb_to_hsv','hsv_to_rgb','linear_srgb_to_oklab','oklab_to_linear_srgb','pow','easeInOutQuad','hermite','make_colors','interpolate_one_sample','generate_color_samples']
+    assert set(names)==expected, (module,expected-set(names))
     p=ROOT/'stdlib'/module; p.mkdir(parents=True,exist_ok=True)
     header='#module_parameters(ASSERT_ON_OVERFLOW := false);\n' if module=='Float16' else ''
     args='(ASSERT_ON_OVERFLOW=ASSERT_ON_OVERFLOW)' if module=='Float16' else ''
-    (p/'module.jai').write_text(header+'\n'.join(f'{n} :: Impl.{n};' for n in names)+'\n#scope_file\nImpl :: #import "internal/numerics/'+impl+'"'+args+';\n')
+    write_generated(p/'module.jai',header+'\n'.join(f'{n} :: Impl.{n};' for n in names)+'\n#scope_file\nImpl :: #import "internal/numerics/'+impl+'"'+args+';\n')
 
 if __name__ == '__main__':
     facade('Math','math.md','math')
