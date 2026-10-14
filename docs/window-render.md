@@ -44,3 +44,37 @@ are selected with `-I stdlib`; `JAIC_STDLIB` points at the staging root.
 
 No host GUI, controller or clipboard behavior has been verified at this milestone.
 Full integrated corpus/release checks belong to the coordinator.
+
+## Native clipboard and SDL2 milestone
+
+Clipboard's macOS backend uses actual AppKit NSPasteboard operations, owns returned
+UTF-8 strings through the caller allocator, and creates real PNG clipboard data through
+NSBitmapImageRep from borrowed RGB/RGBA pixels. Native mutation failures assert because
+the reviewed procedures have no status return. Other targets issue an explicit backend
+diagnostic; they are not counted as implemented.
+
+Gamepad has canonical records and an SDL2 controller backend: native discovery/open,
+attachment changes and close, normalized axes/triggers, thresholded digital controls,
+button transitions, and opt-in Input events. The private controller handle has process
+lifetime and closes on disconnection. Stick Y is positive upward; negative/positive signed
+axis endpoints each map exactly to -1/+1. Native SDL errors assert. Physical device
+coverage is unverified; an actual SDL2 virtual controller exercises the native device
+pipeline deterministically. This is separate from a physical hardware claim.
+
+Gamepad/SDL_Input_Map owns parsed strings and array storage, frees all partial results on
+error, parses complete button/axis/hat index tokens with overflow checks, and rejects
+signed/inverted-axis encodings instead of silently losing their meaning. GUID formatting
+uses temporary storage and explicit little-endian byte placement. The database export
+contains 541 platform-qualified mappings extracted from the public **native SDL 2.0.9 C
+source**, with its license retained and artifact/payload hashes recorded in
+[dependency metadata](window-render-sdl-database.json). This is the independently selected
+replacement data allowed by the reviewed spec, not the historical Jai payload. Some native
+records use extended axis encodings that this public mapping shape cannot represent.
+
+Keymap now supplies canonical callback, map/set, and mapping records. Dispatch and file
+grammar remain unresolved and are not represented as complete support.
+
+Validation added: host clipboard interpreter/native O0/O2; SDL mapping interpreter/native
+O0/O2; Linux-target callback-record interpreter; Linux-target interpreter invoking the
+host's real SDL2 virtual-controller APIs for attach, press, hold, release, axis extremes,
+and detach. No physical controller was required or emulated by a success stub.
