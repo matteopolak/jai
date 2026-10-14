@@ -224,3 +224,22 @@ Final command without --cross exits zero: 27 host cases in interpreter/native
 O0/O2, 21 supported WASI cases in O0/O2, five assertion programs, API rejection
 and general compiler gates, real jaifmt build/CLI/check and warnings-denied lint.
 Affected unused-code cases pass six targets; macOS x64 still fails itimerval.
+
+Shortest formatting also tests exact normal power boundaries: a nearest decimal
+can fall outside the smaller lower interval while its ceiling at the same
+precision round-trips. The renderer now checks that complete boundary class
+before increasing precision. Original binary32/binary64 witnesses fail with
+nearest-only search and pass with this correction. Independent Fraction-based
+verification checks all 2300 normal powers and minimum significant precision:
+
+```
+python3 tools/check_float_power_sweep.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --wasm
+```
+
+The sweep calls production APIs and uses exact mathematical intervals; it does
+not consult or execute any other Jai implementation. Its driver is included in
+owned formatting/lint scope. The ordinary focused suite retains small boundary
+regressions in interpreter/native/WASI checks.
+The audit exits zero in native O0/O2 and production WASI O0/O2 (2300 intervals
+per mode). The ordinary 27/21 suite, real tool/lint checks and strict compiler
+gates also exit zero after this correction; six affected cross checks pass.

@@ -1,5 +1,17 @@
 # Foundations progress
 
+Verified numeric follow-up: exact normal powers of two have asymmetric
+rounding intervals, and nearest-decimal-only shortest search could emit one
+extra significant digit. Original float64 2^-1017 / float32 2^-96 regressions
+failed, then passed after trying the decimal ceiling at the same precision.
+An independent Fraction-based audit verified all 2300 normal IEEE power-of-two
+intervals and minimal significant precision in native O0/O2 and production
+WASI O0/O2. No reference implementation is involved. The final ordinary
+27-case interpreter/native and 21-case production WASI suite passes against
+this correction, including real tool/lint and strict parameter rejection gates.
+Affected unused-code checks pass all six independently supported targets;
+macOS x64 retains the previously recorded binding blocker.
+
 Current implementation checkpoints: 44cca8b (portable conversion/configuration)
 and a11c0c8 (five-parameter debugger interface/direct binary32 rounding), followed
 by 1b1cb39 (native-path safety, private helpers, canaries and strict argument gates).

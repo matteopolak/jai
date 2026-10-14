@@ -34,6 +34,7 @@ def owned_sources():
     paths.append(ROOT / "tests/portable-stdlib/pending/interface-parameter-module/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/no-parameter-module/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/support/test-heap.jai")
+    paths.append(ROOT / "tests/portable-stdlib/float-power-sweep.jai")
     return sorted(set(paths))
 
 
