@@ -58,6 +58,17 @@ evidence and are superseded only where stated here.
   coordinator work. Latest guidance makes human Focus acceptance optional;
   coordinator Focus build/launch and signed-wheel testing are still required.
   Release workflow execution/publication remains on hold.
+- Direct inspection found Unix probe descriptors leaked at probing-thread exit,
+  and failed fcntl setup was ignored. The per-thread channel now closes through
+  ownership cleanup; failed nonblocking/close-on-exec setup closes both ends and
+  rejects the transfer. Linux source compilation and native macOS protection tests
+  are checked separately; Linux execution remains external verification.
+- IDE facade aliases were classified as constants even after resolving to an
+  overload set. Completion now classifies resolved procedure values/sets correctly
+  and resolves simple exported aliases with normal compiler visibility checks.
+  An independent alias regression fails before/passes after; the semantic suite
+  improves from three failures to one. Querying facade metadata may resolve more
+  aliases than before; partial-edit timing is checked without changing coverage.
 
 ## Direct audit findings and corrections
 

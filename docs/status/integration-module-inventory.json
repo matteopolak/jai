@@ -32,8 +32,8 @@
   {
     "spec": "docs/specs/stdlib/modules/atomics.md",
     "module": "Atomics",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Atomics/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/autorun.md",
@@ -80,8 +80,8 @@
   {
     "spec": "docs/specs/stdlib/modules/buildcpp.md",
     "module": "BuildCpp",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/BuildCpp/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/check.md",
@@ -170,8 +170,8 @@
   {
     "spec": "docs/specs/stdlib/modules/deep-copy.md",
     "module": "Deep_Copy",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Deep_Copy/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/default-allocator.md",
@@ -483,7 +483,7 @@
     "spec": "docs/specs/stdlib/modules/pl-mpeg-public-tables.md",
     "module": "pl_mpeg (constant table supplement)",
     "facade": null,
-    "status": "supporting spec page; pl_mpeg has no facade"
+    "status": "supporting constant-table page; no independent module"
   },
   {
     "spec": "docs/specs/stdlib/modules/pl-mpeg.md",
@@ -507,7 +507,7 @@
     "spec": "docs/specs/stdlib/modules/preload.md",
     "module": "Preload",
     "facade": "stdlib/prelude/module.jai",
-    "status": "present canonical bootstrap alias; partial implementation"
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/print-color.md",
@@ -812,7 +812,7 @@
   {
     "spec": "docs/specs/stdlib/modules/zip-file-directory.md",
     "module": "Zip_File_Directory",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Zip_File_Directory/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   }
 ]

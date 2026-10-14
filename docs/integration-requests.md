@@ -13,3 +13,17 @@ Requests are read by coordinator; this worker cannot send messages to the deskto
 7. Window/render issue #1 REQUIRED: tests/window-render/signed-wheel-windows.jai encodes +120/-120/-240/+30/-30 as the WM_MOUSEWHEEL high word, calls public MyWindowProc and checks exact signed delta in the shared queue, typical units, window identity and frame clearing. Refreshed real Win32 pump now passes Windows x64 -check -no_dce. Execute this fixture on Windows x64/arm64 CI and test coordinator Focus. Separately tests/window-render/signed-native-fields.jai imports private internals from an application directory and fails strict privacy; relocate it under library-owned tests or exercise public behavior, preserving strict import rules.
 8. Compiler enum forward-reference blocker after the type-only array-index fix: `Flags :: enum_flags u32 { MASK :: FIRST | LATER; FIRST :: 1; LATER :: 4; } #assert(cast(u32) Flags.MASK == 5);` fails unknown FIRST/LATER. Production socket-abi.jai AI.MASK references ADDRCONFIG declared later. Implement lazy dependency-aware enum constant binding (including cycles, implicit values and conditional/inserted members) without module-name exemptions or reordering ABI/reflection contracts. Native macros/ABI suites retain these failures.
 9. Runtime explicit imports: production Mail and runtime-temp-default fixture set DEFINE_SYSTEM_ENTRY_POINT=false while bootstrap selects true. Current integration rejects conflicting singleton runtime configurations explicitly. Reviewed specs do not settle explicit runtime instance identity/flag behavior; resolve this rather than restoring silently ignored parameters. Correct ordinary library imports to use the configured runtime where no alternate entry behavior is intended, retaining startup ON/OFF tests.
+
+10. The three private window/input/rendering fixtures have now been relocated into
+stdlib/Input/tests, stdlib/Simp/tests and stdlib/Window_Creation/tests, preserving
+their assertions and strict application import rejection. Exhaustive signed-word
+test passes interpreter/native O0/O2; Linux-target texture packing passes. Cocoa
+test still fails missing committed AppKit. Update later producer runners to use
+the library-owned locations; check_window_render.py already does so here.
+
+11. Latest reviewed Basic/debugger, Input text, Keymap grammar, Simp shader/font/
+mipmap and window default contracts are preserved. Implement those exact contracts
+rather than retaining historical missing-contract blockers. No extra IME API is
+required by the reviewed Input contract. Bindings: please supply the independent
+procedure-reflection marker reproducer and stable AppKit/ABI checkpoint through
+approved snapshots; no quarantined implementation is admissible.

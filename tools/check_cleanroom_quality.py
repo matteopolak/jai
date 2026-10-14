@@ -58,6 +58,10 @@ def main():
     if args.format:
         run("format", [formatter, "--config", ROOT / "jaifmt.toml", *files])
     run("format-check", [formatter, "--check", "--config", ROOT / "jaifmt.toml", *files])
+    # Listing every owned file lets jailint associate #load fragments with their
+    # real public module. Directory runs below remain useful diagnostic isolation,
+    # but cannot alone establish coverage for fragments loaded across directories.
+    run("lint-combined", [linter, "-v", "-D", "warnings", "--config", ROOT / "jailint.toml", *files])
     groups = {}
     for file in files:
         relative = file.relative_to(ROOT)

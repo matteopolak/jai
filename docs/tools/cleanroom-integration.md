@@ -63,6 +63,20 @@ using the real tool. SDL3 native CI now builds the unchanged formatter from
 production dependencies before its six-target regeneration gate, matching local
 normalization instead of comparing raw generated text to formatted sources.
 
+Refreshed broad runs: full workspace 583 passed, 80 failed, one inherited ignored
+across 51 suites/15 failed targets (`workspace-refreshed.log`); original stdlib
+473 cases, interpreter 264/209 pass/fail and native 256/209 plus eight
+compile-time-only (`stdlib-refreshed.log`). Portable supported runner reports
+82/83 ordinary cases plus parent/fault/startup checks; runtime-temp-default and
+SMTP/MIME fail the explicit runtime singleton conflict (`portable-refreshed.log`).
+No assertion, stale inventory failure, unsupported API or platform was removed.
+
+Refreshed quality scope is 532 new Jai files: formatting/check pass; 40/143
+per-directory checks fail, retaining unsupported platforms and fragment-context
+failures. `quality-refreshed.json` records every command, tool/source hash and
+incomplete compilation. A combined lint run is required to assess fragments in
+their actual loading modules, rather than treating those failures as clean.
+
 ## Compiler corrections verified
 
 `cargo test --locked -p jaic --lib --test cleanroom_modules --test cleanroom_literals --test cleanroom_layout` passed: 150 core unit, 39 module, five literal and three layout tests. `cargo clippy --locked -p jaic --lib --tests -- -D warnings` exited zero. Scoped rustfmt ran over the five modified Rust files. Red/green logs are retained for protection-change SIGBUS, bundled parameter checking and IDE entry admission. Runtime_Support retains its exact reviewed three parameters.
