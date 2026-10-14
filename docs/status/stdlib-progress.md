@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `803f84a`, MPEG buffers/tables/pixels/IDCT. Earlier
+Latest committed checkpoint: `54df2d1`, MPEG elementary video reconstruction. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -86,7 +86,7 @@ an observed failure at the existing File Unix guard. All 230 owned Jai files pas
 source-built jaifmt --check and jailint -D warnings; table regeneration is byte
 idempotent.
 
-Current verified increment: canonical Video lifecycle/frame storage, transactional
+Previously verified increment: canonical Video lifecycle/frame storage, transactional
 headers/matrices and allocation retry/lifetime checks; motion/vector wrapping and
 half-pixel prediction; entropy/dequantization/slice/frame reconstruction. Independent
 constant intra stream and all ten red I/P frames in the authorized fixture's
@@ -99,6 +99,19 @@ x64 checks. The new missing-region fault retains its completeness assertion.
 All 239 owned Jai files pass format/lint. B-picture prediction is directly tested;
 full B/AC stream fixtures and dimension/rate transitions remain incomplete.
 Continue program-stream demux, audio and Plm before remaining owned modules.
+
+Current verified increment: MPEG-1 Layer II unprotected audio, canonical Audio/Samples,
+headers/quantizers/scalefactors and real interleaved synthesis. Independent silence
+and sixteen mono 440 Hz tone frames pass channel/amplitude/frequency/count/rewind
+checks in both modes. Direct matrix versus licensed public C bases differs by at
+most 9.44472552e-7; this is algorithm verification, not API authority. Whole-table
+addressing preserves canonical quantizer pointers; the original direct-index
+lifetime and qualified aggregate-write gaps remain pending. CRC and format changes
+reject explicitly; stereo stream fixtures remain pending. Compiler rebuilt from
+current independent sources with --locked, private target. Full regression passes
+74 interpreter/native cases, 16 faults in both modes, six compile-time rejections,
+and prior SMTP/IPC/startup/parent/target checks. All 248 owned Jai files pass
+jaifmt --check and jailint -D warnings. Continue demux/Plm.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

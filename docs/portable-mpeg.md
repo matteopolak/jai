@@ -58,7 +58,34 @@ macroblock address alone does not establish a completely decoded frame. That
 check adds a temporary allocation and linear pass per picture. Missing reference
 pictures are rejected instead of predicting from initialized placeholder storage.
 
-Program-stream demux, audio decoding and Plm lifecycle remain unfinished.
+Layer II audio lifecycle, sync/header parsing, quantizer allocation, grouped/direct
+sample reconstruction, scalefactors, synthesis and interleaved output are implemented
+for unprotected MPEG-1 Layer II frames. A valid zero-allocation frame reconstructs
+silence. The authorized fixture's two explicitly extracted PES payloads yield sixteen
+mono frames (18,432 samples), with real amplitude, channel equality, frequency and
+rewind checks. Frequency uses the steady interior; diagnostics showed extra
+low-amplitude zero crossings in the padded final frame. Range/channel/count checks
+still cover every output sample. Invalid quantizer codes assert. Ancillary frame
+bits are consumed according to the header's computed frame size.
+
+Synthesis uses a private immutable precomputed 64x32 cosine matrix with delegated
+Math.cos/PI64 and f64 accumulation. This is slower and can round differently than
+the licensed C factorization. `python3 -B tools/check_portable_mpeg_matrix.py` builds
+only the permitted public C input and compares all 2,048 basis results with the
+direct mathematical matrix (observed maximum absolute difference below 9.5e-7).
+It is algorithm verification, not a Jai API oracle. No supplied binary is used.
+CRC-protected frames and changing bitrate/sample-rate/mode assert explicitly and
+remain unsupported. Stereo/joint-stereo branches need independent stream fixtures.
+
+Taking `*QUANT_TAB` before dynamic indexing uses the canonical aggregate's static
+storage; quantizer return pointers are checked against that same public table.
+The direct indexed-address compiler path returns a temporary; its original pending
+regression fails after another call in both modes, including the rebuilt compiler.
+Qualified window/quantizer stores also unexpectedly compile, unlike unqualified
+constant-array and exported typed-scalar stores. These are reported compiler gaps;
+the declarations remain canonical constants and no mutable table copy is substituted.
+
+Program-stream demux and Plm lifecycle remain unfinished.
 `buffer_no_start_code`, `BLOCK_SET` and `PUT_PIXEL` lack sufficiently specified
 contracts and are not replaced with guessed exports. The ledger does not count
 this module as complete. No decoded frames/audio results have been fabricated.
