@@ -128,7 +128,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [thread](specs/stdlib/modules/thread.md) | Partial POSIX release synchronization/lifecycle/work groups implemented and interpreter/native tested. Windows/iOS/console, DEBUG/race detector and automatic workspace metadata unfinished |
 | [treemap](specs/stdlib/modules/treemap.md) | Owned portable scope; not implemented |
 | [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |
-| [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Owned portable scope; not implemented |
+| [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Unix guarded mappings, read-only retained frees, resize/failure preservation and exact metadata shape implemented; interpreter/native guards and stale writes checked using actual child signal termination. Windows/console and lifecycle policy incomplete or under review |
 | [vulkan](specs/stdlib/modules/vulkan.md) | Reserved for bindings worker; not implemented or modified here |
 | [wav-file](specs/stdlib/modules/wav-file.md) | Reviewed exports implemented for PCM/IMA metadata and borrowed data views; bounded/truncated chunk tests pass interpreter/native, Linux/Windows checks and lint. Duplicate chunks require review |
 | [window-creation](specs/stdlib/modules/window-creation.md) | Owned portable scope; not implemented |

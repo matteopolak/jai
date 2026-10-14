@@ -45,3 +45,12 @@ the prose permits forwarding/no-op but does not list the exact per-mode mapping.
 Destroying the wrapper releases tracking metadata/mutex, not remaining client
 allocations. Clients must release allocations while the wrapper is alive; exact
 behavior for destruction with outstanding allocations remains under review.
+
+Unmapping_Allocator's contract says free changes writable pages to read-only,
+but also says stale reads/writes fault. Read-only native protection faults writes
+while allowing reads. This implementation follows the explicit read-only mode;
+tests verify stale writes fault and retained reads remain possible. Clarify that
+contradiction before claiming stale-read faults. Reservations intentionally
+remain mapped after free/deinit. OS lifecycle/thread modes require no per-thread
+state and currently do nothing; their exact compatibility policy needs review.
+Windows/console backends remain unimplemented.

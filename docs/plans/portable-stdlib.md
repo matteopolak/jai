@@ -67,3 +67,12 @@ prefix, poisons/frees the old region, and fills the growth suffix. Validate usin
 a real forwarding allocator that inspects poison before native free, plus an
 injected allocation failure. Integrate the foundations worker's reviewed pointer
 hash in target only; do not change its sources or invent a replacement hash.
+
+Unmapping_Allocator increment: reserve anonymous POSIX mappings with a protected
+trailing page; expose exactly the requested extent at the end of writable pages.
+Track requested lengths in the canonical table. Successful free makes writable
+pages read-only and removes the live entry while retaining the mapping. Resize
+allocates first and protects the old mapping only after copying. Keep wrapper
+owner allocation in a private prefix, since its public shape has no owner field.
+Test guards/stale writes in forked children and verify actual signal termination,
+plus failure preservation, resize and retained readable data per read-only mode.

@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 51 cases in interpreter/native modes, plus bootstrap
+The current run passes 52 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -289,3 +289,18 @@ requires the actual diagnostic and assertion in interpreter/native execution.
 Lifecycle forwarding and outstanding-allocation destruction behavior remain
 recorded for review. The foundations Hash sources are copied only into target;
 their checkout and this worker's assigned Hash sources are not modified.
+
+Unmapping_Allocator implements Unix anonymous reservation with a protected
+trailing page, requested extents ending precisely at that boundary, live-pointer
+tracking, separate resize and retained read-only mappings after free. Failed
+allocation leaves the old resize source live. The wrapper owner is captured in a
+private allocation prefix; public layout stays exactly table/mutex. Metadata and
+native operations use a real mutex. Tests fork children and check actual SIGSEGV
+or SIGBUS termination for guard writes and writes after resize/free, verify
+preserved data/failure and retained read access, and exercise concurrent callers.
+The documented read-only versus stale-read-fault contradiction is recorded;
+Windows/console implementations and lifecycle policy remain incomplete/reviewed.
+The current source checks cover all 146 owned Jai files with source-built
+jaifmt --check and jailint -D warnings. All 52 focused interpreter/native cases,
+four parent-lifetime scenarios, the checked double-free fault and selected
+portable Linux/Windows checks pass.

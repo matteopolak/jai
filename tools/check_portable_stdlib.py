@@ -109,7 +109,7 @@ def main():
                 raise RuntimeError(f"expected checked allocator fault: {result.returncode}: {result.stdout}{result.stderr}")
         print("passed expected allocator fault", source.name, flush=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler"}
-    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator"}
+    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:
