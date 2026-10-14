@@ -24,3 +24,13 @@ Oracles: [Basic](../specs/stdlib/modules/basic.md),
 [scope language](../specs/jai/modules-workspaces-and-examples.md).
 See [requests](../integration-requests.md) and
 [deviations](../status/integration-deviations.md) for unresolved work.
+# Refresh-nine fixture corrections
+
+- `crates/jai-wasm/src/play.rs` output-order fixture explicitly supplies the
+  newline to `log_error("bad\n")`. The reviewed Basic logging policy does not
+  append one. All stdout/stderr content and ordering assertions remain intact.
+- `tests/portable-stdlib/basic-sleep.jai` keeps the real elapsed-time lower bound
+  and zero-sleep check, using native QueryPerformanceCounter/frequency on Windows
+  and POSIX monotonic time elsewhere. The former unconditional POSIX test import
+  rejected Windows before exercising the supported public sleep operation.
+
