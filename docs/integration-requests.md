@@ -120,3 +120,29 @@ to produce a contained diagnostic. Missing reviewed logger and IDE expansion
 assertions remain failing. Native Wasm corpus agreement also retains its
 null-deref-plain-load mismatch; supply a minimal independent semantic reproducer
 through the compiler owner rather than relaxing pointer safety or expected output.
+# Refresh-nine request: foundations helper contract synchronization
+
+Owner: foundations; integrated snapshot `cc089d7`. Latest reviewed
+`docs/specs/stdlib/modules/basic.md` now settles these choices. Please update
+implementation and original behavior assertions together, preserving their coverage:
+
+- `internal/basic/stream-helpers.jai`: sequence strings must be quoted;
+  `print_bytes` formats unsigned hexadecimal and appends a newline;
+  `consume_u8_and_length` copies to the destination, rejects negative/excess
+  lengths without advancing, and succeeds for zero length. Current code compares
+  destination bytes instead of copying and asserts for negative length.
+- `internal/basic/reflection.jai`: missing fields return `(null, 0)`;
+  empty enum ranges return `(0, 0)` rather than asserting.
+- `internal/basic/stack-traces.jai`: metadata-bearing lines use
+  `'procedure' at file:line`; print uses low-level runtime output, returned strings
+  and array use temporary storage, missing metadata is omitted, and logged lines
+  include a newline. Current normal-allocator strings and alternate presentation
+  conflict with the reviewed contract.
+- `internal/basic/arrays.jai`: slice resize must use the current allocator's
+  real resize operation, including shrinking backing storage. Current count-only
+  shrink and allocate/copy/free growth need correction against the settled policy.
+
+These are integration-detected compatibility gaps, not unspecified contracts or
+permission to weaken tests. This worker continues compiler/tool integration while
+the active owner corrects the shared foundation batch.
+
