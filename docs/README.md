@@ -136,6 +136,7 @@ The LLVM backend, C ABI and linking.
 - [Native GL format mapping ledger](window-render-gl-formats.json)
 - [Focused window/render verification runner](../tools/check_window_render.py)
 - [Window/render contract questions](specs/stdlib/window-render-questions.md)
+- [Platform I/O backends and native runner](platform-io.md), [worker progress](status/platform-io-progress.md), and [deviations](status/platform-io-deviations.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
@@ -234,3 +235,5 @@ Scripts, CI and project policies.
 Agreed designs that are not built yet.
 
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
+
+- [Native integration CI](tools/native-integration-ci.md): temporary branch checks and real Windows File execution
