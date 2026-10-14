@@ -24,8 +24,8 @@ reflected types fail explicitly and remain unimplemented.
 String implements byte searches, comparisons, splitting, trimming, replacement,
 ASCII case conversion, CRLF normalization, basic token parsing and paths. Fields
 returned by split/search/path operations borrow their input. Allocation-returning
-operations use the context allocator. Scanning, wildcard matching and numeric
-token parsing remain unfinished.
+operations use the context allocator. Scanning and wildcard matching remain
+unfinished.
 
 Reflection implements scalar assignment with cursor consumption, integer range
 checks, enum lookup/storage, struct-field lookup and array count/data queries.
@@ -44,6 +44,19 @@ PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
 overloads. Crc implements the non-reflected CRC-64/WE recurrence. Base64 exports
 immutable decoder tables and both standard and URL codecs; permissive tails,
 LF-only whitespace, first-padding termination and partial errors are tested.
+
+Bit_Array preserves canonical metadata, padding-word mutation and logical versus
+selected-bit iteration. Bit_Operations provides generic byte reversal, bit scans
+and population count. Sort and IntroSort sort caller views in place. Unicode
+implements immutable tables, strict/non-strict decoding, encoding and iteration;
+its strict malformed-byte count and truncated-tail behavior have focused tests.
+Adpcm implements nibble saturation and complete block decoding to interleaved
+little-endian PCM. A two-channel nine-frame block is checked byte for byte.
+
+Pool implements aligned bulk allocation, separate oversized allocations,
+accounting, reset retention, stamping, release and allocator modes. Its optional
+`USE_UNMAPPING_ALLOCATOR=true` configuration fails explicitly until the native
+unmapping subsystem is available. It is not counted as supported configuration.
 
 The worker built the compiler worker's independent Rust sources with `--locked`
 and `CARGO_TARGET_DIR` under this checkout, first without LLVM and then with the

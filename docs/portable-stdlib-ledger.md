@@ -5,7 +5,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 
 | Spec | Status |
 | --- | --- |
-| [adpcm](specs/stdlib/modules/adpcm.md) | Not implemented in this checkout; see ownership exclusions |
+| [adpcm](specs/stdlib/modules/adpcm.md) | Implemented fixed tables, nibble and complete-block decoder; saturation and two-channel PCM checks pass interpreter/native; incomplete blocks unsupported per spec |
 | [android-aaudio](specs/stdlib/modules/android-aaudio.md) | Not implemented in this checkout; see ownership exclusions |
 | [android-egl](specs/stdlib/modules/android-egl.md) | Not implemented in this checkout; see ownership exclusions |
 | [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Not implemented in this checkout; see ownership exclusions |
@@ -15,8 +15,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Not implemented in this checkout; see ownership exclusions |
-| [bit-array](specs/stdlib/modules/bit-array.md) | Not implemented in this checkout; see ownership exclusions |
-| [bit-operations](specs/stdlib/modules/bit-operations.md) | Not implemented in this checkout; see ownership exclusions |
+| [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
+| [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | Not implemented in this checkout; see ownership exclusions |
 | [buildcpp](specs/stdlib/modules/buildcpp.md) | Not implemented in this checkout; see ownership exclusions |
 | [check](specs/stdlib/modules/check.md) | Not implemented in this checkout; see ownership exclusions |
@@ -58,7 +58,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [icon](specs/stdlib/modules/icon.md) | Not implemented in this checkout; see ownership exclusions |
 | [imgui](specs/stdlib/modules/imgui.md) | Not implemented in this checkout; see ownership exclusions |
 | [input](specs/stdlib/modules/input.md) | Not implemented in this checkout; see ownership exclusions |
-| [introsort](specs/stdlib/modules/introsort.md) | Not implemented in this checkout; see ownership exclusions |
+| [introsort](specs/stdlib/modules/introsort.md) | Implemented in-place comparison sorts; interpreter/native checks pass |
 | [ios](specs/stdlib/modules/ios.md) | Not implemented in this checkout; see ownership exclusions |
 | [iprof](specs/stdlib/modules/iprof.md) | Not implemented in this checkout; see ownership exclusions |
 | [jai-lexer](specs/stdlib/modules/jai-lexer.md) | Not implemented in this checkout; see ownership exclusions |
@@ -87,7 +87,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [performance-report](specs/stdlib/modules/performance-report.md) | Not implemented in this checkout; see ownership exclusions |
 | [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Not implemented in this checkout; see ownership exclusions |
 | [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Not implemented in this checkout; see ownership exclusions |
-| [pool](specs/stdlib/modules/pool.md) | Not implemented in this checkout; see ownership exclusions |
+| [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
 | [posix](specs/stdlib/modules/posix.md) | Not implemented in this checkout; see ownership exclusions |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
 | [print-color](specs/stdlib/modules/print-color.md) | Not implemented in this checkout; see ownership exclusions |
@@ -113,7 +113,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Not implemented in this checkout; see ownership exclusions |
 | [soa](specs/stdlib/modules/soa.md) | Not implemented in this checkout; see ownership exclusions |
 | [socket](specs/stdlib/modules/socket.md) | Not implemented in this checkout; see ownership exclusions |
-| [sort](specs/stdlib/modules/sort.md) | Not implemented in this checkout; see ownership exclusions |
+| [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
 | [sound-player](specs/stdlib/modules/sound-player.md) | Not implemented in this checkout; see ownership exclusions |
 | [srgb](specs/stdlib/modules/srgb.md) | Not implemented in this checkout; see ownership exclusions |
 | [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Not implemented in this checkout; see ownership exclusions |
@@ -127,7 +127,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Not implemented in this checkout; see ownership exclusions |
 | [thread](specs/stdlib/modules/thread.md) | Not implemented in this checkout; see ownership exclusions |
 | [treemap](specs/stdlib/modules/treemap.md) | Not implemented in this checkout; see ownership exclusions |
-| [unicode](specs/stdlib/modules/unicode.md) | Not implemented in this checkout; see ownership exclusions |
+| [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |
 | [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Not implemented in this checkout; see ownership exclusions |
 | [vulkan](specs/stdlib/modules/vulkan.md) | Not implemented in this checkout; see ownership exclusions |
 | [wav-file](specs/stdlib/modules/wav-file.md) | Not implemented in this checkout; see ownership exclusions |
