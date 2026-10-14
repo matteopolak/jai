@@ -19,8 +19,21 @@ main :: () {
     assert(success && count == 0);
     success, count = F.file_read(file, null, 0);
     assert(!success && count == 0);
+    assert(F.file_seek(file, -2, .END));
+    end_tail, end_ok := F.read_entire_file(file);
+
+    assert(end_ok && end_tail == "ef");
+    free(end_tail);
+    assert(F.file_seek(file, 1, .START) && F.file_seek(file, 2, .CURRENT));
+    success, count = F.file_read(file, *byte, 1);
+    assert(success && count == 1 && byte == 100);
+    position, position_ok := F.file_current_position(file);
+
+    assert(position_ok && position == 4);
+    assert(!F.file_seek(file, -1, .START));
     F.file_close(*file);
     assert(!F.is_valid(file));
+    assert(!F.file_seek(file, 0, .START));
     file, ok = F.file_open(name, true, true);
     assert(ok && F.file_write(*file, "Z"));
     F.file_close(*file);

@@ -42,7 +42,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [executable-formats](specs/stdlib/modules/executable-formats.md) | Owned portable scope; not implemented |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
-| [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Seek_Type unresolved; Windows/Android incomplete |
+| [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Signed contextual seek implemented; Windows/Android incomplete |
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |

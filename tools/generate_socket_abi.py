@@ -41,7 +41,7 @@ def declaration_group(declaration):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--formatter", type=Path, required=True,
-                        help="source-built repository formatter-engine frontend under target")
+                        help="source-built repository jaifmt under target")
     args = parser.parse_args()
     formatter = args.formatter.resolve(strict=True)
     if not formatter.is_relative_to(ROOT / "target"):
@@ -118,7 +118,7 @@ ws2_32 :: #system_library "ws2_32";
     facade.parent.mkdir(parents=True, exist_ok=True)
     facade.write_text("// Generated public native aliases.\n" + "\n".join(exported) + '\n#scope_file\nABI :: #import "internal/net/socket-abi";\n')
     (ROOT / "docs/socket-native-ledger.json").write_text(json.dumps(ledger, indent=2) + "\n")
-    subprocess.run([str(formatter), str(ROOT / "jaifmt.toml"), str(target), str(facade)],
+    subprocess.run([str(formatter), "--config", str(ROOT / "jaifmt.toml"), str(target), str(facade)],
                    cwd=ROOT, check=True)
 
 

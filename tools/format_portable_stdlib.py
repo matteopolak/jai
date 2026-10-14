@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Format this worker's explicit Jai scope with the repository formatter engine.
+"""Format this worker's explicit Jai scope with source-built repository jaifmt.
 
 Extensions, peer-owned modules and public/legacy tests are never input paths.
-The ordinary jaifmt CLI remains a separate integration requirement.
+Both jaifmt and jailint use repository configuration.
 """
 import argparse
 import os
@@ -32,7 +32,6 @@ def owned_paths():
             continue
         paths.append(path)
     paths.extend((ROOT / "tests/portable-stdlib").rglob("*.jai"))
-    paths.append(ROOT / "tools/portable-jaifmt.jai")
     return sorted(paths)
 
 
@@ -42,8 +41,8 @@ def main():
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--lint", action="store_true", help="run source-built jailint -D warnings on the same owned scope")
     args = parser.parse_args()
-    binary = ROOT / "target/portable-jaifmt"
-    command = [str(binary), str(ROOT / "jaifmt.toml")]
+    binary = ROOT / "target/jaifmt"
+    command = [str(binary), "--config", str(ROOT / "jaifmt.toml")]
     if args.check:
         command.append("--check")
     paths = owned_paths()
@@ -54,7 +53,7 @@ def main():
         print(f"Source-built jailint checked {len(paths)} owned Jai files")
         return
     subprocess.run(command + [str(path) for path in paths], cwd=ROOT, check=True)
-    print(f"Repository formatter engine {'checked' if args.check else 'formatted'} {len(paths)} owned Jai files")
+    print(f"Source-built jaifmt {'checked' if args.check else 'formatted'} {len(paths)} owned Jai files")
 
 
 if __name__ == "__main__":

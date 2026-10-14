@@ -32,9 +32,9 @@ the implemented behavior; they do not establish missing reference contracts.
   fallback. CPU counter semantics are unresolved and that export is withheld.
   Android is not accepted by the current CLI; macOS x64 passwd shape is missing
   from the new native binding inventory.
-- The full jaifmt CLI remains blocked at File_Utilities.is_directory. The actual
-  repository formatter engine works via the file-only frontend with repo config;
-  its check and source-built jailint cover the complete owned source scope.
+- The source-built full jaifmt CLI now builds with the new foundations modules
+  in an integration directory and passes the complete owned --check scope.
+  The temporary file-only frontend has been removed.
 
 Scalar hash seed mixing was clarified in the latest reviewed Hash page. It is
 assigned to the foundations worker; no duplicate implementation is added here.

@@ -11,9 +11,8 @@ ADPCM samples-per-block and fact sample count are captured. No samples are decod
 Tests cover PCM, ADPCM extensions/fact, odd unknown chunks, oversized RIFF/data
 lengths, packed metadata size, truncated headers, invalid magic and unsupported
 format tags. Interpreter/native execution, Linux/x64 and Windows/x64 checking,
-and source-built jailint -D warnings pass for this scope. Repository formatter
-engine formatting/check passes through the file-only frontend; the original
-jaifmt CLI is still blocked at its File_Utilities.is_directory dependency.
+and source-built jailint -D warnings pass for this scope. Source-built repository
+jaifmt --check passes with repository config on the complete owned scope.
 
 The compiler currently narrows byte casts inside combined bitwise expressions:
 pending/widened-bitwise.jai reproduces the failure. The byte reader uses explicit

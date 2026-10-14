@@ -185,13 +185,11 @@ invocations use the documented trailing -- so argv-dependent tests receive the
 same executable-name convention as native programs; the library does not invent
 an argument when an embedding host explicitly supplies argc=0.
 
-The source-built jailint passes with `-D warnings` on Command_Line, its argument
-acquisition helper and caller tests. The initial jaifmt build failed at missing
-Basic.exit. A retry with the foundations worker's new Basic/String sources in
-target/formatter-integration-stdlib advanced to missing File_Utilities.is_directory
-at jaifmt/main.jai:70. Those sources were copied only into this checkout's target
-integration directory; no peer checkout was modified. The Basic print-to-builder
-overload alias was added during the earlier tool build attempt.
+The original repository jaifmt CLI builds from the authorized Rust compiler and
+the foundations worker's new Basic/String/File_Utilities/Hash integration sources.
+Those sources are copied only into target/formatter-integration-stdlib; no peer
+checkout is modified. Both jaifmt --check with jaifmt.toml and source-built
+jailint -D warnings pass across the explicit owned source/test scope.
 
 Apollo duration arithmetic currently assumes signed integer femtoseconds. The
 reviewed page does not explicitly settle representation and rounding edges;
@@ -216,10 +214,8 @@ used to resolve these findings.
 The integrated source-built lint command passes with `-D warnings` for prelude,
 Runtime_Support/runtime, Process, Thread, Command_Line, Wav_File/audio, Pool and
 allocation internals, Hash_Table/collection internals, Socket/net internals.
-The same post-change regression command passes all 47 cases plus the four
-parent-lifetime scenarios and selected portable target checks. Formatting remains
-blocked for the original CLI by its documented dependency. The repository engine
-now has separate full-scope formatting/check evidence below.
+The regression command passes all 50 cases plus the four
+parent-lifetime scenarios and selected portable target checks. Formatting and lint now have full-scope evidence below.
 
 Remap_Context provides both remap_context overloads with immutable cached copy
 plans protected by a CAS lock. Stored field names and byte sizes are matched
@@ -244,29 +240,23 @@ CPU counters and Windows APIs are withheld. Host interpreter/native tests and
 Linux x64/arm64 checks pass, as does source-built lint. Android's declarations
 remain unvalidated because the current CLI rejects `-os android`.
 
-All 137 owned Jai source/test files are formatted using the repository's unchanged
-Extensions/Jai_Format engine and jaifmt.toml through tools/portable-jaifmt.jai.
-That file-only frontend consumes explicit paths and config, avoiding incomplete
-directory-walk APIs without inventing public library exports. It retains the
-engine's token-equivalence validation, reports real failures, and has --check
-exit status 1 for changed files. The original jaifmt CLI check remains pending.
-Extensions, reserved modules and public/legacy tests are excluded from the scope.
+All owned Jai sources/tests are formatted with source-built repository jaifmt
+and jaifmt.toml. Extensions, reserved modules and public/legacy tests are excluded.
+The temporary file-only frontend was removed after the complete CLI built.
 Reproduce with:
 
 ```sh
 JAIC_STDLIB=$PWD/target/formatter-integration-stdlib \
-  target/compiler/debug/jaic tools/portable-jaifmt.jai -exe $PWD/target/portable-jaifmt
+  target/compiler/debug/jaic jaifmt/main.jai -exe $PWD/target/jaifmt
 python3 -B tools/format_portable_stdlib.py
 python3 -B tools/format_portable_stdlib.py --check
 python3 -B tools/format_portable_stdlib.py --lint
-python3 -B tools/generate_socket_abi.py --formatter target/portable-jaifmt
+python3 -B tools/generate_socket_abi.py --formatter target/jaifmt
 ```
 
-The engine check and source-built jailint -D warnings both pass for all 137 files.
-Socket regeneration followed by normalization is byte-idempotent. The full
-49-case interpreter/native regression and four parent-lifetime scenarios passed
-after formatting, with selected Linux/Windows target checks. Follow-up filesystem,
-socket and Reflection assertions pass interpreter/native after lint cleanup.
+Socket regeneration followed by jaifmt normalization is byte-idempotent. The
+full 50-case interpreter/native regression and four parent-lifetime scenarios
+passed after formatting, with selected Linux/Windows target checks.
 
 Text_File_Handler implements byte-line reads, CR/LF/CRLF physical line tracking,
 comment/blank-line handling, version headers, sticky load/parse failure, owned
@@ -278,5 +268,11 @@ lifetime choices and version lexical edges are recorded for compatibility review
 Tests cover comments, line positions, borrowed/owned input, sticky failure,
 optional missing files, reports, untrimmed/blank list values and deduplicated keys.
 The expanded 50-case interpreter/native run and selected target checks pass;
-the repository formatter-engine check and jailint -D warnings now cover all
-140 owned Jai files.
+repository jaifmt --check and jailint -D warnings cover all
+139 owned Jai files after removing the temporary frontend.
+
+The newly reviewed private contextual Seek_Type contract enables File.file_seek.
+Signed start/current/end offsets now use native fseeko; unknown enum values and
+OS failures return false. Seek_Type remains absent from the public facade.
+Focused interpreter/native checks cover all origins, negative offsets, position
+reporting, failed negative-start seek and a closed handle.
