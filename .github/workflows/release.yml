@@ -182,7 +182,7 @@ jobs:
         timeout-minutes: 15
         run: |
           apt=(sudo apt-get -o Acquire::Retries=5 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
-          "${apt[@]}" update && "${apt[@]}" install -y zlib1g-dev libzstd-dev libxml2-dev libx11-dev libgl-dev
+          "${apt[@]}" update && "${apt[@]}" install -y zlib1g-dev libzstd-dev libxml2-dev libx11-dev libgl-dev libasound2-dev libpulse-dev libpipewire-0.3-dev libwayland-dev libxkbcommon-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libdrm-dev libgbm-dev libegl-dev libudev-dev libusb-1.0-0-dev libdecor-0-dev
       # Instrumented build, training run over this repository's tests and examples, then the
       # profile-guided build into target/pgo/dist. On Linux x86-64 the result is also rewritten by
       # the llvm-bolt that ships in the official LLVM release (elsewhere: PGO only).
@@ -303,6 +303,12 @@ jobs:
           status=$?
           set -e
           test "$status" = 0 || test "$status" = 77
+          # SDL3 is source-built and packaged on all six current release targets. Audit every
+          # declared runtime export and artifact hash, then compile/run ABI + headless tests
+          # with the packaged static archive, outside the checkout and without system SDL3.
+          python3 "$GITHUB_WORKSPACE/tools/test_sdl3.py" --jaic "$jaic" \
+            --native "$GITHUB_WORKSPACE/$PACKAGE_DIR/artifacts/native-libs/${{ matrix.name }}" \
+            --platform "${{ matrix.name }}"
           # Simp and the stb libraries need nothing beyond the archive either: `jaic -interp` loads
           # the packaged shared libraries, and the built executable links the static ones.
           cp "$GITHUB_WORKSPACE/tests/native-libs/simp-image.jai" .
