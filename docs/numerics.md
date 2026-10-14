@@ -1,5 +1,19 @@
 # Independent numerics and UI implementation
 
+Current canonical checkpoint: [progress](status/numerics-progress.md) and
+[deviations](status/numerics-deviations.md) supersede historical fixture/tool
+bootstrap limitations in this document. GetRect now defaults to canonical
+Simp.Dynamic_Font/Texture/Font_Effects and Window_Creation.Window_Type, supports
+Type_Indicator aliases, measures real font fields and allocates full Texture
+storage. Production clipboard uses canonical Clipboard. Font metric policies
+center the ascent/descent line box with y_offset_for_centering; em uses em_width,
+text_size height uses character_height, and glyph y ranges honor handedness.
+Signed or magnitude descender inputs are treated by magnitude. These formulas
+are coherent independent choices where the reviewed spec inventories fields
+without prescribing exact placement. Alternate font metric calls currently need
+corresponding fields; alternate types without them still support explicitly
+positioned caller text drawing. Exact alternate metric contract remains a question.
+
 The six public modules are Math, Sloppy_Math, Float16, Color_Interpolation,
 GetRect and GetRect_LeftHanded. Their reviewed inventories define compatibility.
 Algorithms and shared mechanisms live under `stdlib/internal/numerics`.

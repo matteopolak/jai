@@ -59,8 +59,8 @@ for _ in range(32):
     vector=[rng.uniform(-10,10) for _ in range(3)]; angle=rng.uniform(-math.pi,math.pi)
     dot=sum(a*b for a,b in zip(axis,vector)); cross=[axis[1]*vector[2]-axis[2]*vector[1],axis[2]*vector[0]-axis[0]*vector[2],axis[0]*vector[1]-axis[1]*vector[0]]
     expected=[v*math.cos(angle)+c*math.sin(angle)+a*dot*(1-math.cos(angle)) for v,c,a in zip(vector,cross,axis)]
-    lines.append('    { q:M.Quaternion; M.set_from_axis_and_angle(*q,M.xyz('+','.join(repr(x) for x in axis)+'),'+repr(angle)+');')
-    lines.append('      rotated:=M.rotate(M.xyz('+','.join(repr(x) for x in vector)+'),q);')
+    lines.append('    { q:M.Quaternion; M.set_from_axis_and_angle(*q,M.xyz('+','.join('cast(float32) '+repr(x) for x in axis)+'),cast(float32) '+repr(angle)+');')
+    lines.append('      rotated:=M.rotate(M.xyz('+','.join('cast(float32) '+repr(x) for x in vector)+'),q);')
     for i,value in enumerate(expected): lines.append(f'      assert(M.abs(rotated.component[{i}]-cast(float32) {value!r})<0.00001);')
     lines.append('    }')
 lines += ['    print("independent oracle ok\\n");','}']

@@ -10,6 +10,7 @@ roots=[ROOT/'stdlib'/name for name in ['Math','Sloppy_Math','Float16','Color_Int
 roots += [ROOT/'tests/numerics']
 files=sorted({p for root in roots for p in root.rglob('*.jai')})
 files += [ROOT/'tools/numerics-format-driver.jai', ROOT/'tools/numerics-formatter-files.jai', ROOT/'tools/numerics-formatter-basic.jai']
+files += [ROOT/'tests/stdlib-contract/math-float16/main.jai']
 changed=[]
 for path in files:
     source=path.read_text(); formatted=normalize(source)

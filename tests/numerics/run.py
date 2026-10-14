@@ -7,9 +7,12 @@ parser.add_argument('--compiler',type=Path,required=True)
 parser.add_argument('--stdlib',type=Path,required=True)
 parser.add_argument('--quick',action='store_true')
 parser.add_argument('--canonical-dependencies',action='store_true',help='Use actual Input/Window_Type/Hash_Table instead of the explicitly marked UI fixtures')
+parser.add_argument('--output',type=Path,default=root/'artifacts/numerics-verification')
 args=parser.parse_args()
 compiler=args.compiler.resolve(); env=dict(os.environ,JAIC_STDLIB=str(args.stdlib.resolve()))
-out=root/'artifacts/numerics-verification'; out.mkdir(parents=True,exist_ok=True)
+out=args.output.resolve()
+if not out.is_relative_to(root/'artifacts'): raise SystemExit('evidence must remain in this workspace artifacts')
+out.mkdir(parents=True,exist_ok=True)
 records=[]
 imports=[] if args.canonical_dependencies else ['-I','tests/numerics/dependencies']
 def run(label,cmd,sentinel=None,expect_fail=False):
@@ -35,6 +38,8 @@ tests={
     'ui-smoke':('tests/numerics/ui_smoke.jai','ui smoke ok'),
     'ui-interaction':('tests/numerics/ui_interaction.jai','ui interaction ok'),
     'render-callbacks':('tests/numerics/render_callbacks.jai','render callbacks ok'),
+    'precision-rounding':('tests/numerics/precision_rounding.jai','explicit precision rounding ok'),
+    'canonical-rendering':('tests/numerics/canonical_rendering.jai','canonical rendering types and metrics ok'),
     'oracle':('artifacts/numeric_oracle.jai','independent oracle ok'),
     'public-contract':('tests/stdlib-contract/math-float16/main.jai','ok'),
 }
