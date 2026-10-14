@@ -29,6 +29,7 @@ FAULT_EXPECTATIONS = {
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
     "deep-copy-fixed": ("assertion failed", "Deep_Copy does not support fixed arrays"),
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
+    "treemap-dirty": ("assertion failed", "Treemap display requires clean weights"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -83,6 +84,8 @@ def main():
     shutil.copytree(args.posix_root.parent / "Windows", root / "Windows", dirs_exist_ok=True)
     for module in ["Compiler", "internal/compiler-api"]:
         shutil.copytree(ROOT.parent / "compiler/stdlib" / module, root / module, dirs_exist_ok=True)
+    for module in ["Math", "internal/numerics"]:
+        shutil.copytree(ROOT.parent / "numerics/stdlib" / module, root / module, dirs_exist_ok=True)
     shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"

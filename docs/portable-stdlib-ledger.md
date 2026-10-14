@@ -73,7 +73,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
 | [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
-| [meow-hash](specs/stdlib/modules/meow-hash.md) | Owned portable scope; not implemented |
+| [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented: canonical __reg macro operand binding fails in source compiler; original pending reproducer retained, no surrogate type or fake hash exports |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Reserved for bindings worker; not implemented or modified here |
 | [metal](specs/stdlib/modules/metal.md) | Reserved for bindings worker; not implemented or modified here |
 | [metaprogram-plugins](specs/stdlib/modules/metaprogram-plugins.md) | Owned portable scope; not implemented |
@@ -126,7 +126,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [telemetry3](specs/stdlib/modules/telemetry3.md) | Reserved for bindings worker; not implemented or modified here |
 | [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Reviewed exports implemented for byte lines, file/borrowed-memory input, comments/version parsing, diagnostics and array/table helpers; interpreter/native tests pass. Helper ownership and version lexical edges require review |
 | [thread](specs/stdlib/modules/thread.md) | Partial POSIX release synchronization/lifecycle/work groups implemented and interpreter/native tested. Windows/iOS/console, DEBUG/race detector and automatic workspace metadata unfinished |
-| [treemap](specs/stdlib/modules/treemap.md) | Owned portable scope; not implemented |
+| [treemap](specs/stdlib/modules/treemap.md) | Stable bucket nodes, hierarchy weights/sort, indexed squarified layout, borders and caching implemented; hierarchy/non-overlap/areas/growth checks use new delegated Math. Default border/range/cache/coordinate policies need review |
 | [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |
 | [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Unix guarded mappings, read-only retained frees, resize/failure preservation and exact metadata shape implemented; interpreter/native guards and stale writes checked using actual child signal termination. Windows/console and lifecycle policy incomplete or under review |
 | [vulkan](specs/stdlib/modules/vulkan.md) | Reserved for bindings worker; not implemented or modified here |
