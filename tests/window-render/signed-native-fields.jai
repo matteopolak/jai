@@ -8,7 +8,11 @@ main :: () {
         if encoded >= 32768 expected -= 65536;
 
         assert(signed_word(cast(u64) encoded) == expected);
-        packed := 0xfedcba980000007f | (cast(u64) encoded << 16);
+        narrow: s32 = cast(s32) encoded;
+        native_word: u64 = cast(u64) narrow;
+        packed := 0xfedcba980000007f | (native_word << 16);
+
+        assert((packed >> 32) == 0xfedcba98);
 
         assert(high_signed_word(packed) == expected);
         assert(signed_word(packed) == 127);
