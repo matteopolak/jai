@@ -94,6 +94,8 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
+- [Window/render worker coverage and verification](window-render.md)
+- [Window/render contract questions](specs/stdlib/window-render-questions.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping and Unix System coverage
