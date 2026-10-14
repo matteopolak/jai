@@ -12,6 +12,9 @@ import subprocess
 import shutil
 import sys
 import uuid
+import queue
+import threading
+from collections import deque
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,8 +33,17 @@ def sources(paths):
 def build_worker():
     result = subprocess.run(
         ["cargo", "build", "-p", "jai-language-server", "--example", "partial_edit_coverage", "--message-format=json"],
-        cwd=ROOT, capture_output=True, text=True, check=True,
+        cwd=ROOT, capture_output=True, text=True,
     )
+    if result.returncode:
+        for line in result.stdout.splitlines():
+            try:
+                message = json.loads(line).get("message", {})
+            except ValueError:
+                continue
+            if message.get("rendered"):
+                print(message["rendered"], file=sys.stderr)
+        raise RuntimeError("source worker build failed: " + result.stderr[-4096:])
     for line in result.stdout.splitlines():
         msg = json.loads(line)
         if msg.get("reason") == "compiler-artifact" and msg.get("target", {}).get("name") == "partial_edit_coverage" and msg.get("executable"):
@@ -45,22 +57,49 @@ def build_worker():
 
 
 def run_file(worker, file, args):
-    command = [worker, str(file), str(args.stdlib.resolve()) if args.stdlib else "-", str(args.max_lines)]
+    command = [worker, str(file), str(args.stdlib.resolve()) if args.stdlib else "-", str(args.max_lines), "--progress"]
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=ROOT)
+    events = queue.Queue()
+    errors = deque(maxlen=64)
+    def read_stdout():
+        for line in process.stdout:
+            events.put(line)
+        events.put(None)
+    def read_stderr():
+        for line in process.stderr:
+            errors.append(line[-8192:])
+    readers = [threading.Thread(target=read_stdout, daemon=True), threading.Thread(target=read_stderr, daemon=True)]
+    for reader in readers:
+        reader.start()
+    report = None
+    last_phase = "worker startup"
     try:
-        out = subprocess.run(command, capture_output=True, text=True, timeout=args.timeout, cwd=ROOT)
-    except subprocess.TimeoutExpired as error:
-        stderr = error.stderr or b""
-        if isinstance(stderr, bytes):
-            stderr = stderr.decode("utf-8", errors="replace")
-        return {"file": str(file), "failures": [f"worker exceeded {args.timeout}s timeout"], "edits": 0, "assertions": 0, "stderr": stderr[-8192:]}
-    try:
-        report = json.loads(out.stdout)
-    except (ValueError, TypeError):
-        report = {"file": str(file), "failures": ["worker did not return JSON"], "edits": 0, "assertions": 0}
-    if out.returncode and not report["failures"]:
-        report["failures"].append(f"worker exit {out.returncode}")
-    if out.stderr:
-        report["stderr"] = out.stderr[-8192:]
+        while True:
+            line = events.get(timeout=args.timeout)
+            if line is None:
+                break
+            try:
+                message = json.loads(line)
+            except ValueError:
+                errors.append("invalid stdout: " + line[-8192:])
+                continue
+            if "progress" in message:
+                last_phase = message["progress"]
+            else:
+                report = message
+        process.wait(timeout=args.timeout)
+    except (queue.Empty, subprocess.TimeoutExpired):
+        process.kill()
+        process.wait()
+        report = {"file": str(file), "failures": [f"request stalled for {args.timeout}s at {last_phase}"], "edits": None, "assertions": None}
+    for reader in readers:
+        reader.join(timeout=1)
+    if report is None:
+        report = {"file": str(file), "failures": ["worker did not return a final JSON report"], "edits": None, "assertions": None}
+    if process.returncode and not report["failures"]:
+        report["failures"].append(f"worker exit {process.returncode}")
+    if errors:
+        report["stderr"] = "".join(errors)[-8192:]
     return report
 
 
@@ -70,7 +109,7 @@ def main():
     parser.add_argument("--retry-report", type=Path, help="rerun failed files from an earlier correctness report")
     parser.add_argument("--stdlib", type=Path, help="NEW independent stdlib, using prelude/module.jai")
     parser.add_argument("--max-lines", type=int, default=8, help="evenly sampled nonempty lines per file; 0 checks every line")
-    parser.add_argument("--timeout", type=int, default=60, help="hard timeout per worker process")
+    parser.add_argument("--timeout", type=int, default=60, help="hard deadline for a stalled request/stage, reset by worker progress")
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
@@ -95,9 +134,11 @@ def main():
             reports.append(report)
             print(f"{len(reports)}/{len(files)} {'FAIL' if report['failures'] else 'PASS'} {pending[future]} ({report['edits']} edits)", flush=True)
             # Persist after each completed file so interruptions do not lose evidence.
-            args.report.write_text(json.dumps({**provenance, "files": sorted(reports, key=lambda r: r["file"])}, indent=2) + "\n")
+            partial = args.report.with_name(args.report.name + ".partial")
+            partial.write_text(json.dumps({**provenance, "files": sorted(reports, key=lambda r: r["file"])}, indent=2) + "\n")
+            partial.replace(args.report)
     failed = sum(bool(r["failures"]) for r in reports)
-    print(f"{len(reports)} files, {sum(r['edits'] for r in reports)} edits, {sum(r['assertions'] for r in reports)} assertions, {failed} failed files")
+    print(f"{len(reports)} files, {sum(r['edits'] or 0 for r in reports)} exercised edits, {sum(r['assertions'] or 0 for r in reports)} assertions, {failed} failed files (incomplete workers are not counted)")
     return 1 if failed else 0
 
 

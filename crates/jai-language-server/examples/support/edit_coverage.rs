@@ -19,10 +19,25 @@ pub struct Report {
     pub file: String,
     pub baseline_syntax_errors: usize,
     pub baseline_semantic_errors: usize,
+    pub utf8_lossy: bool,
     pub edits: usize,
     pub assertions: usize,
     pub scope_changes: Vec<String>,
     pub failures: Vec<String>,
+}
+
+static PROGRESS: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_progress(enabled: bool) {
+    PROGRESS.store(enabled, std::sync::atomic::Ordering::Relaxed);
+}
+
+fn progress(phase: &str) {
+    if PROGRESS.load(std::sync::atomic::Ordering::Relaxed) {
+        use std::io::Write;
+        println!("{}", serde_json::json!({"progress": phase}));
+        std::io::stdout().flush().unwrap();
+    }
 }
 
 fn position(text: &str, byte: usize) -> Position {
@@ -92,13 +107,8 @@ fn require(report: &mut Report, yes: bool, context: &str, message: &str) {
 }
 
 fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, context: &str) {
+    progress(&format!("{context}: document symbols"));
     let symbols = s.document_symbols(uri).unwrap();
-    if symbols.is_empty() {
-        eprintln!(
-            "{context}: empty symbols; diagnostics: {:?}",
-            s.diagnostics(uri)
-        );
-    }
     for (name, local, value) in [
         ("__lsp_edit_head", "__head_local", 17),
         ("__lsp_edit_tail", "__tail_local", 23),
@@ -111,6 +121,7 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
         );
         let use_byte = text.find(&format!("{local} + 1")).unwrap();
         let pos = position(text, use_byte);
+        progress(&format!("{context}: hover {local}"));
         let hover = s.hover(uri, pos).unwrap();
         require(
             report,
@@ -120,6 +131,7 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
             context,
             &format!("lost typed hover {local}: {hover:?}"),
         );
+        progress(&format!("{context}: definition {local}"));
         let defs = s.definition(uri, pos).unwrap();
         let expected = position(text, text.find(&format!("{local} := {value}")).unwrap());
         require(
@@ -128,6 +140,7 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
             context,
             &format!("lost or wrong definition {local}: {defs:?}"),
         );
+        progress(&format!("{context}: completion {local}"));
         let completions = s
             .completion(uri, position(text, use_byte + local.len()))
             .unwrap();
@@ -140,6 +153,7 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
             context,
             &format!("lost typed completion {local}"),
         );
+        progress(&format!("{context}: selection {local}"));
         let selections = s.selection_ranges(uri, &[pos]).unwrap();
         require(
             report,
@@ -151,15 +165,16 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
             &format!("lost syntax selection ancestors {local}"),
         );
     }
+    progress(&format!("{context}: semantic tokens"));
     let tokens = s.semantic_tokens(uri).unwrap();
+    let expected_token = position(text, text.find("__tail_local :=").unwrap());
     require(
         report,
-        tokens
-            .iter()
-            .any(|t| t.position == position(text, text.find("__tail_local :=").unwrap())),
+        tokens.iter().any(|t| t.position == expected_token),
         context,
         "lost semantic tokens after edit",
     );
+    progress(&format!("{context}: folding"));
     let folds = s.folding_ranges(uri).unwrap();
     let tail_line = position(text, text.find("__lsp_edit_tail").unwrap()).line;
     require(
@@ -168,6 +183,7 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
         context,
         "lost folding range after edit",
     );
+    progress(&format!("{context}: ordinary-loop definition"));
     require(
         report,
         s.definition(uri, position(text, text.find("for __tail_index").unwrap()))
@@ -176,22 +192,37 @@ fn anchors(s: &Session, uri: &DocumentUri, text: &str, report: &mut Report, cont
         context,
         "ordinary loop gained an expansion definition",
     );
-    s.inlay_hints(
-        uri,
-        Range {
-            start: Position {
-                line: 0,
-                character: 0,
+    progress(&format!("{context}: inlay hints"));
+    let hints = s
+        .inlay_hints(
+            uri,
+            Range {
+                start: Position {
+                    line: 0,
+                    character: 0,
+                },
+                end: position(text, text.len()),
             },
-            end: position(text, text.len()),
-        },
-    )
-    .unwrap();
+        )
+        .unwrap();
+    let expected_hint = position(
+        text,
+        text.find("__tail_local :=").unwrap() + "__tail_local".len(),
+    );
+    require(
+        report,
+        hints
+            .iter()
+            .any(|hint| hint.position == expected_hint && hint.label == ": s64"),
+        context,
+        "lost inferred type hint after edit",
+    );
 }
 
 /// Exercise each selected source line in a real Session, restoring between edits.
 /// Baseline errors are reported separately; no missing anchor is treated as success.
 pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usize) -> Report {
+    progress("parse baseline");
     let uri = file_uri(path);
     let text = format!("{HEAD}{source}{TAIL}");
     let parsed = jaic::parser::parse_file_ide(FileId(0), &text);
@@ -214,7 +245,9 @@ pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usiz
     )
     .unwrap();
     s.set_auto_import(false);
+    progress("open baseline");
     s.open(uri.clone(), 1, text.clone()).unwrap();
+    progress("baseline diagnostics");
     report.baseline_semantic_errors = s
         .diagnostics(&uri)
         .unwrap()
@@ -222,6 +255,7 @@ pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usiz
         .filter(|d| d.severity == DiagnosticSeverity::Error)
         .count();
     anchors(&s, &uri, &text, &mut report, "baseline");
+    progress("baseline complete");
     if !report.failures.is_empty() {
         return report;
     }
@@ -247,6 +281,10 @@ pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usiz
             let mut edited = text.clone();
             edited.replace_range(a..b, "");
             version += 1;
+            progress(&format!(
+                "edit line {} cut {cut}",
+                position(&text, start).line + 1
+            ));
             s.change(
                 &uri,
                 version,
@@ -274,6 +312,7 @@ pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usiz
                 .into_iter()
                 .map(|sym| sym.name)
                 .collect();
+            progress(&format!("{context}: strict scope classification"));
             let strict_edit = jaic::parser::parse_file(FileId(0), &edited).ok();
             for stmt in &parsed.file.stmts {
                 if stmt.span.start as usize <= b && a <= stmt.span.end as usize {
@@ -312,20 +351,23 @@ pub fn check(path: &Path, source: &str, stdlib: Option<PathBuf>, max_lines: usiz
                     }
                 }
             }
+            progress(&format!("{context}: diagnostics"));
             let diagnostics = s.diagnostics(&uri).unwrap();
+            let independent_tail_line =
+                position(&edited, edited.find("__lsp_edit_tail").unwrap()).line;
             for d in diagnostics
                 .iter()
                 .filter(|d| d.severity == DiagnosticSeverity::Error)
             {
                 require(
                     &mut report,
-                    d.range.start.line
-                        < position(&edited, edited.find("__lsp_edit_tail").unwrap()).line,
+                    d.range.start.line < independent_tail_line,
                     &context,
                     &format!("nonlocal diagnostic in independent tail: {d:?}"),
                 );
             }
             version += 1;
+            progress(&format!("{context}: restore source"));
             s.change(
                 &uri,
                 version,

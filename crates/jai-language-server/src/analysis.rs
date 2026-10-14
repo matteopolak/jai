@@ -235,7 +235,10 @@ fn editor_tokens(tokens: &[jaic::lexer::Token]) -> Vec<Token> {
             Tok::Punct(_) => TokenKind::Punctuation,
             Tok::Eof => return None,
         };
-        Some(Token { span: span_of(token.span), kind })
+        Some(Token {
+            span: span_of(token.span),
+            kind,
+        })
     }));
     converted
 }
@@ -292,7 +295,10 @@ impl Analysis {
         let expected_rows = (tokens.len() / 16).min(limits.rows);
         let parsed = jaic::parser::parse_tokens_ide(file, text, tokens);
         result.diagnostics.retain(|d| {
-            d.code != DiagnosticCode::Lexer || index.byte(text, d.range.start).is_ok_and(|byte| !parsed.recovered_literal_at(byte as u32))
+            d.code != DiagnosticCode::Lexer
+                || index
+                    .byte(text, d.range.start)
+                    .is_ok_and(|byte| !parsed.recovered_literal_at(byte as u32))
         });
         crate::semantic::note_parse(
             text,

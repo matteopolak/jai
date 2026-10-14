@@ -7,12 +7,23 @@ Extensions sources.
 The IDE parser first tries strict parsing. On failure it retains good statements
 and enum members, discards malformed ones, and resumes at grammar boundaries:
 semicolons, enclosing braces and subsequent lines. A missing closing brace can
-end at a sibling declaration using indentation as a recovery hint. This is an
-editor policy; the strict parser and CLI still reject the original malformed text.
+end at a sibling declaration using indentation as a recovery hint, only when no
+explicit matching closer exists. Variable and operator declarations use the
+parser's declaration grammar. A partial control statement in an unclosed block
+cannot consume a sibling declaration as its single-statement body. These are
+editor policies; the strict parser and CLI still reject the malformed text.
 Recovered syntax drives symbols, selection ranges and call hierarchy as well as
 semantic checking. IDE declaration and statement checks continue after errors but
 return failure for damaged bodies. They never supply fabricated local values or
 make failed IR available to compile-time execution.
+
+After normal compilation stops, the audit uses the compiler's existing
+`placeholders_final` rule. Failed generators then report their errors rather than
+remaining speculative and recreating nested procedures without end. This is confined
+to the editor audit and leaves strict compilation unchanged. Syntax-damaged macros,
+inserted code and run blocks also cannot be executed as valid recovered bodies.
+Distinct errors from real generic instantiations at the same source position remain
+visible; only identical diagnostics are deduplicated.
 
 Incremental lexical recovery maps previously verified literal/comment boundaries
 through the changed bytes. A damaged opaque region is omitted from the IDE view,
@@ -46,8 +57,10 @@ python3 tools/lsp_partial_edits.py --stdlib ../stdlib/stdlib \
 ```
 
 The Python runner builds its Rust worker from this source tree, copies that binary
-to a per-run artifact, and uses one timeout-isolated process per file. It persists
-JSON results after every file. Panics, invalid reports, assertion failures and
+to a per-run artifact, and uses one isolated process per file. Progress markers
+bound each request/stage with a hard stall deadline, rather than limiting the sum
+of many successful checks. The final report records that worker's hash. It persists
+JSON results atomically after every file. Panics, invalid reports, assertion failures and
 timeouts cause a nonzero result; baseline failures are recorded, never counted as
 successful coverage. No supplied/reference executable is used.
 
@@ -60,6 +73,10 @@ An open configuration explicitly chooses the file as its entry, avoiding a
 different inferred application entry that excludes the file on the host target.
 Auto-import suggestion scanning is outside this harness's scope. Imports and loads
 inside the source remain real.
+
+For a corpus file with invalid UTF-8, the worker uses the same lossy Unicode decoding
+as the supplied compiler's source loader and records `utf8_lossy: true`. Such files
+are exercised as LSP Unicode documents rather than silently omitted.
 
 Some suffix deletions produce strictly valid different scopes: deleting the call
 after `#run` can move the next declaration into that run statement. Such declarations

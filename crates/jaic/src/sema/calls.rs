@@ -3525,6 +3525,7 @@ impl Compiler {
         f.backtick_scope = saved_backtick;
         let frame = f.macros.pop().unwrap();
         result?;
+        self.ide_require_parsed_body(body.span)?;
         if !f.b.is_terminated() {
             self.emit_defers(f, frame.defer_depth, span)?;
             f.b.jump(exit);

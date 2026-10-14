@@ -11,14 +11,19 @@ impl IdeParse {
     /// A rescan can prove that an earlier lexical error was caused by a quote on
     /// another line, rather than by this now-verified literal itself.
     pub fn recovered_literal_at(&self, byte: u32) -> bool {
-        self.tokens.iter().any(|t| matches!(t.tok, Tok::Str(_)) && t.span.start <= byte && byte < t.span.end)
+        self.tokens
+            .iter()
+            .any(|t| matches!(t.tok, Tok::Str(_)) && t.span.start <= byte && byte < t.span.end)
     }
 }
 
 pub fn parse_file_ide(file: FileId, text: &str) -> IdeParse {
     let (tokens, diagnostics) = crate::lexer::lex_ide(file, text);
     let mut parsed = parse_tokens_ide(file, text, tokens);
-    let diagnostics: Vec<_> = diagnostics.into_iter().filter(|d| !parsed.recovered_literal_at(d.span.start)).collect();
+    let diagnostics: Vec<_> = diagnostics
+        .into_iter()
+        .filter(|d| !parsed.recovered_literal_at(d.span.start))
+        .collect();
     parsed.diagnostics.splice(0..0, diagnostics);
     parsed
 }
@@ -36,6 +41,7 @@ pub fn parse_tokens_ide(file: FileId, text: &str, tokens: Vec<Token>) -> IdePars
     }
     let mut parser = Parser::new(text, tokens);
     parser.recovery = Some(Vec::new());
+    parser.index_ide_braces();
     let stmts = parser
         .parse_file_stmts()
         .expect("IDE statement recovery always progresses");
@@ -50,6 +56,22 @@ pub fn parse_tokens_ide(file: FileId, text: &str, tokens: Vec<Token>) -> IdePars
 }
 
 impl Parser<'_> {
+    fn index_ide_braces(&mut self) {
+        self.ide_closed_braces.clear();
+        let mut open = Vec::new();
+        for token in &self.toks {
+            match token.tok {
+                Tok::Punct(P::LBrace | P::DotBrace) => open.push(token.span.start),
+                Tok::Punct(P::RBrace) => {
+                    if let Some(start) = open.pop() {
+                        self.ide_closed_braces.insert(start);
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
     /// Indentation is a recovery hint only after strict parsing failed. A declaration
     /// beginning at or before an unclosed block's header is a plausible sibling.
     pub(super) fn ide_block_boundary(&self, open: Span) -> bool {
@@ -61,35 +83,77 @@ impl Parser<'_> {
             let line = prefix.rsplit('\n').next().unwrap_or("");
             line.len() - line.trim_start_matches([' ', '\t']).len()
         };
-        matches!(self.tok(), Tok::Ident(_))
-            && self.at_n(1, P::ColonColon)
+        let declaration = self.decl_ahead(0)
+            || (self.at_kw("using") && self.decl_ahead(1))
+            || match self.directive() {
+                Some("program_export" | "no_reset") => {
+                    self.decl_ahead(1)
+                        || (matches!(self.tok_at(1), Tok::Str(_)) && self.decl_ahead(2))
+                }
+                Some("scope_file" | "scope_export" | "scope_module" | "module_parameters") => true,
+                _ => false,
+            };
+        !self.ide_closed_braces.contains(&open.start)
+            && declaration
             && indent(self.span().start) <= indent(open.start)
     }
 
     pub(super) fn ide_close_block(&mut self, open: Span, context: &str) -> PResult<Span> {
-        if !self.at(P::RBrace) && self.recovery.is_some() {
+        if !self.at(P::RBrace) {
             let error = self.expected("`}`", context);
-            self.recovery
-                .as_mut()
-                .unwrap()
-                .push(Diagnostic::error(open, error.message));
-            self.block_end = self.pos;
-            return Ok(Span {
-                end: self.span().start,
-                ..open
-            });
+            if let Some(errors) = self.recovery.as_mut() {
+                errors.push(Diagnostic::error(open, error.message));
+                self.block_end = self.pos;
+                return Ok(Span {
+                    end: self.span().start,
+                    ..open
+                });
+            }
         }
         self.expect(P::RBrace, context)
     }
 
-    pub(super) fn parse_stmt_recovering(&mut self, in_block: bool) -> PResult<Option<Stmt>> {
+    pub(super) fn parse_stmt_recovering(
+        &mut self,
+        enclosing: Option<Span>,
+    ) -> PResult<Option<Stmt>> {
+        let in_block = enclosing.is_some();
         let start = self.pos;
         let saved_list = self.in_list;
         let saved_operator = self.pending_operator.clone();
         let saved_notes = self.pending_notes.clone();
         let saved_end = self.block_end;
         match self.parse_stmt() {
-            Ok(stmt) => Ok(Some(stmt)),
+            Ok(stmt) => {
+                // A truncated one-line control statement may otherwise take the next
+                // sibling declaration as its single-statement body. Only intervene
+                // in a known unclosed enclosing block, never in valid current syntax.
+                if self.recovery.is_some()
+                    && enclosing.is_some_and(|open| !self.ide_closed_braces.contains(&open.start))
+                    && let Some(body) = single_declaration_body(&stmt)
+                    && let Ok(body_token) = self
+                        .toks
+                        .binary_search_by_key(&body.span.start, |t| t.span.start)
+                {
+                    let parsed_end = self.pos;
+                    self.pos = body_token;
+                    if self.ide_block_boundary(self.toks[start].span)
+                        && let Some(errors) = self.recovery.as_mut()
+                    {
+                        errors.push(Diagnostic::error(
+                            self.toks[start].span,
+                            "expected a statement body before the next sibling declaration",
+                        ));
+                        self.in_list = saved_list;
+                        self.pending_operator = saved_operator;
+                        self.pending_notes = saved_notes;
+                        self.block_end = saved_end;
+                        return Ok(None);
+                    }
+                    self.pos = parsed_end;
+                }
+                Ok(Some(stmt))
+            }
             Err(error) => {
                 // Do not build a maximum-depth chain of recovered enclosing blocks:
                 // later AST consumers recurse too. Discard the outer statement instead.
@@ -184,8 +248,34 @@ impl Parser<'_> {
             }));
         self.toks.truncate(start);
         self.toks.extend(suffix);
+        self.index_ide_braces();
         // The caller must resume at this token, not skip the next healthy line.
         self.pos = start;
         true
     }
+}
+
+fn single_declaration_body(stmt: &Stmt) -> Option<&Stmt> {
+    use crate::ast::StmtKind as S;
+    let body = match &stmt.kind {
+        S::If {
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            if matches!(then_branch.kind, S::Decl(_)) {
+                &**then_branch
+            } else {
+                else_branch.as_deref()?
+            }
+        }
+        S::While(w) => &w.body,
+        S::For(f) => &f.body,
+        S::Defer {
+            body, ..
+        } => body,
+        S::PushContext(p) => &p.body,
+        _ => return None,
+    };
+    matches!(body.kind, S::Decl(_)).then_some(body)
 }

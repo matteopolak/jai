@@ -2764,7 +2764,9 @@ impl Compiler {
             }
             let result = match &*body {
                 ast::CodeBody::Expr(e) => self.check_expr(f, inner, e, None).map(|_| ()),
-                ast::CodeBody::Block(b) => self.check_block_stmts(f, inner, &b.stmts),
+                ast::CodeBody::Block(b) => self
+                    .check_block_stmts(f, inner, &b.stmts)
+                    .and_then(|_| self.ide_require_parsed_body(b.span)),
             };
             // Names resolve in the target's scope, but what the code declares lives where it
             // is inserted (yield-jai: `#insert,scope(call) #run make_args();` then `Args`).

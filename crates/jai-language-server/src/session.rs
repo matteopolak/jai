@@ -374,6 +374,7 @@ impl Session {
                 if self.analyses[uri].diagnostics.iter().any(|d| {
                     matches!(d.code, DiagnosticCode::Lexer | DiagnosticCode::Parser)
                         && d.range.start == range.start
+                        && d.message == message
                 }) {
                     return None;
                 }

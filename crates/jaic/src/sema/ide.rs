@@ -510,9 +510,21 @@ impl Compiler {
         }
     }
 
+    /// Recovered bodies supply facts but cannot be executed as valid procedures or code.
+    pub(super) fn ide_require_parsed_body(&self, span: Span) -> Result<()> {
+        if let Some(error) = self.ide.as_ref().and_then(|ide| {
+            ide.parse_errors.iter().find(|e| {
+                e.span.file == span.file && span.start <= e.span.start && e.span.start < span.end
+            })
+        }) {
+            return Err(Box::new(error.clone()));
+        }
+        Ok(())
+    }
+
     /// After compiling for an editor: check every procedure body and top-level declaration of
-    /// the recorded files, not just what the program reaches. Returns what failed: one error
-    /// per declaration and per procedure body (a body that fails does not stop the others, and
+    /// the recorded files, not just what the program reaches. Returns errors from declarations
+    /// and independent statements (a body that fails does not stop the others, and
     /// a declaration another one depends on reports its own error once, at its own span).
     pub fn ide_check_all(&mut self) -> Vec<Diagnostic> {
         let mut errors: Vec<Diagnostic> = Vec::new();
@@ -521,6 +533,11 @@ impl Compiler {
         } else {
             return errors;
         }
+        // Normal compilation has ended (possibly before finish_program). The IDE
+        // audit has a complete source snapshot: no metaprogram is still supplying
+        // placeholders. Use the compiler's existing finalization rule so a failed
+        // generator cannot stay speculative and recreate nested procedures forever.
+        self.placeholders_final = true;
         for i in 0..self.entities.len() {
             let id = EntityId(i as u32);
             let e = self.entity(id);
@@ -1440,10 +1457,11 @@ impl Compiler {
         if let Some(selection) = self.ide.as_ref().and_then(|ide| {
             (0..3).find_map(|delta| {
                 let start = offset.checked_sub(delta)?;
+                let end = start.checked_add(3)?;
                 ide.for_expansions.get(&Span {
                     file,
                     start,
-                    end: start + 3,
+                    end,
                 })
             })
         }) {

@@ -107,7 +107,7 @@ impl Parser<'_> {
             if self.ide_block_boundary(open) {
                 break;
             }
-            if let Some(stmt) = self.parse_stmt_recovering(true)? {
+            if let Some(stmt) = self.parse_stmt_recovering(Some(open))? {
                 stmts.push(stmt);
             }
         }

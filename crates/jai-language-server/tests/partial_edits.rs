@@ -200,6 +200,22 @@ fn imported_custom_iteration_navigates_to_its_source() {
     assert_eq!(defs.len(), 1, "{defs:?}");
     assert_eq!(defs[0].uri, imported.as_str());
     assert_eq!(defs[0].range.start, at(library, "for_expansion"));
+
+    let incomplete = library.replace("`it := 7;", "`it := (");
+    s.change(
+        &imported,
+        2,
+        &[jai_language_server::TextChange {
+            range: None,
+            range_length: None,
+            text: incomplete.clone(),
+        }],
+    )
+    .unwrap();
+    let defs = s.definition(&uri(), at(&qualified, "for item")).unwrap();
+    assert_eq!(defs.len(), 1, "{defs:?}");
+    assert_eq!(defs[0].uri, imported.as_str());
+    assert_eq!(defs[0].range.start, at(&incomplete, "for_expansion"));
 }
 
 #[test]
@@ -269,6 +285,20 @@ fn recovered_or_semantically_invalid_bodies_cannot_run_at_compile_time() {
             );
         }
     }
+    let source = "damaged :: () -> int #expand {\n    bad := (\n    return 42;\n}\ncaller :: () -> int { return damaged(); }\n#run caller();\n";
+    let mut fs = VirtualFs::default();
+    fs.insert("/partial-edits/main.jai", source.as_bytes());
+    let mut options = Options::host();
+    options.runtime_support = false;
+    options.stack_trace = false;
+    let mut compiler = Compiler::new(options, Rc::new(fs));
+    compiler.ide = Some(Box::new(IdeFacts::new(vec!["/partial-edits/".into()])));
+    assert!(
+        compiler
+            .compile_program(Path::new("/partial-edits/main.jai"))
+            .is_err(),
+        "a recovered macro ran as valid code"
+    );
 }
 
 #[test]
@@ -508,9 +538,22 @@ fn generic_loop_site_retains_all_actual_selected_expansions() {
     );
 
     let generic = "For_Flags :: u8;\nBag :: struct { count: int; }\nOther :: struct { count: int; }\nfor_expansion :: (b: $T, body: Code, flags: For_Flags) #expand { for 0..b.count { `it := 1; #insert body; } }\nvisit :: (bag: $T) { for item: bag { result := item; } }\nmain :: () { first: Bag; second: Other; visit(first); visit(second); }\n";
-    s.change(&uri(), 2, &[jai_language_server::TextChange { range: None, range_length: None, text: generic.into() }]).unwrap();
+    s.change(
+        &uri(),
+        2,
+        &[jai_language_server::TextChange {
+            range: None,
+            range_length: None,
+            text: generic.into(),
+        }],
+    )
+    .unwrap();
     let defs = s.definition(&uri(), at(generic, "for item")).unwrap();
-    assert_eq!(defs.len(), 1, "instances of one generic source declaration: {defs:?}");
+    assert_eq!(
+        defs.len(),
+        1,
+        "instances of one generic source declaration: {defs:?}"
+    );
     assert_eq!(defs[0].range.start, at(generic, "for_expansion"));
 }
 
@@ -519,8 +562,100 @@ fn fresh_unfinished_quote_does_not_hide_recovered_identifier_tokens() {
     let text = "broken :: \"unfinished\nmain :: () { healthy := 42; result := healthy + 1; }\nother :: \"closed\";\n";
     let mut s = session();
     s.open(uri(), 1, text.into()).unwrap();
-    let hover = s.hover(&uri(), at(text, "healthy +")).unwrap().expect("recovered identifier token");
+    let hover = s
+        .hover(&uri(), at(text, "healthy +"))
+        .unwrap()
+        .expect("recovered identifier token");
     assert_eq!(hover.contents.value, "healthy: s64");
     let diagnostics = s.diagnostics(&uri()).unwrap();
-    assert!(diagnostics.iter().filter(|d| d.severity == jai_language_server::DiagnosticSeverity::Error).all(|d| d.range.start.line == 0), "{diagnostics:?}");
+    assert!(
+        diagnostics
+            .iter()
+            .filter(|d| d.severity == jai_language_server::DiagnosticSeverity::Error)
+            .all(|d| d.range.start.line == 0),
+        "{diagnostics:?}"
+    );
+}
+
+#[test]
+fn missing_type_brace_recovers_global_variables_and_operators() {
+    let text = "Record :: struct {\n    field: int;\nsettings: int;\noperator == :: (a: Record, b: Record) -> bool { return true; }\nmain :: () { value := settings; }\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let symbols = s.document_symbols(&uri()).unwrap();
+    assert!(
+        symbols.iter().any(|sym| sym.name == "settings"),
+        "{symbols:?}"
+    );
+    assert!(
+        symbols.iter().any(|sym| sym.name == "operator=="),
+        "{symbols:?}"
+    );
+}
+
+#[test]
+fn explicit_block_closer_keeps_unindented_locals_in_their_scopes() {
+    let text = "global := false;\nmain :: () {\nglobal := 42;\nbroken := (\nresult := global + 1;\n}\nlast :: () {}\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let defs = s.definition(&uri(), at(text, "global +")).unwrap();
+    assert_eq!(defs.len(), 1, "{defs:?}");
+    assert_eq!(defs[0].range.start, at(text, "global := 42"));
+}
+
+#[test]
+fn partial_single_line_control_body_does_not_consume_the_next_procedure() {
+    for header in ["if true", "for 0..1", "while true", "defer"] {
+        let text = format!(
+            "first :: () {{ {header}\nsecond :: () {{ healthy := 42; result := healthy + 1; }}\n"
+        );
+        let mut s = session();
+        s.open(uri(), 1, text.clone()).unwrap();
+        let symbols = s.document_symbols(&uri()).unwrap();
+        assert!(
+            symbols.iter().any(|sym| sym.name == "second"),
+            "{header}: {symbols:?}"
+        );
+        let hover = s
+            .hover(&uri(), at(&text, "healthy +"))
+            .unwrap()
+            .expect("second procedure typechecking");
+        assert_eq!(hover.contents.value, "healthy: s64");
+    }
+}
+
+#[test]
+fn missing_brace_keeps_flagged_procedures_and_file_scope_markers_outside() {
+    let text = "first :: () {\n    local := 42;\n#program_export \"api\"\nsecond :: () #c_call {}\n#scope_file\nstate: int;\nlast :: () {}\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let symbols = s.document_symbols(&uri()).unwrap();
+    for name in ["second", "state", "last"] {
+        assert!(symbols.iter().any(|sym| sym.name == name), "{symbols:?}");
+    }
+}
+
+#[test]
+fn different_real_instantiation_errors_at_one_source_site_are_not_discarded() {
+    let text = "A :: struct {}\nB :: struct {}\nbad :: (v: $T) { result := v.missing; }\nmain :: () { a: A; b: B; bad(a); bad(b); }\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let errors: Vec<_> = s
+        .diagnostics(&uri())
+        .unwrap()
+        .into_iter()
+        .filter(|d| d.severity == jai_language_server::DiagnosticSeverity::Error)
+        .collect();
+    assert!(
+        errors
+            .iter()
+            .any(|d| d.message.contains("`A`") && d.message.contains("missing")),
+        "{errors:?}"
+    );
+    assert!(
+        errors
+            .iter()
+            .any(|d| d.message.contains("`B`") && d.message.contains("missing")),
+        "{errors:?}"
+    );
 }

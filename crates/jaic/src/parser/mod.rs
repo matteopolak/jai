@@ -83,6 +83,7 @@ pub(crate) struct Parser<'a> {
     depth: usize,
     /// Set only by the editor entry points. Strict parsing never resynchronizes.
     recovery: Option<Vec<Diagnostic>>,
+    ide_closed_braces: crate::fxhash::HashSet<u32>,
 }
 
 impl<'a> Parser<'a> {
@@ -98,6 +99,7 @@ impl<'a> Parser<'a> {
             pending_notes: Vec::new(),
             depth: 0,
             recovery: None,
+            ide_closed_braces: crate::fxhash::HashSet::default(),
         }
     }
 
@@ -117,7 +119,7 @@ impl<'a> Parser<'a> {
     fn parse_file_stmts(&mut self) -> PResult<Vec<Stmt>> {
         let mut stmts = Vec::new();
         while !self.at_eof() {
-            if let Some(stmt) = self.parse_stmt_recovering(false)? {
+            if let Some(stmt) = self.parse_stmt_recovering(None)? {
                 stmts.push(stmt);
             }
         }
