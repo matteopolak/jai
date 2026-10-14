@@ -5,11 +5,11 @@
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "803f84ac8c7472c225dab5f990618e21f96a1ccf"
+    "commit": "8c1e0fcc0e30a61c79064955ae78d583a36a1954"
   },
   "bindings": {
     "ref": "producer/bindings",
-    "commit": "b8e492be60e4315cf4ca6c0fa87c3a7488cffda2"
+    "commit": "79af73eb0df4341db478e8d043bd1e1d93586983"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -25,14 +25,14 @@
   },
   "foundations": {
     "ref": "producer/foundations",
-    "commit": "49c937b4898fef4bf5da490bd87c8e4f04050eca"
+    "commit": "c6fe3cb9256f4f58f3b1f104b5db20cf065b73a3"
   },
   "window-render": {
     "ref": "producer/window-render",
-    "commit": "31ded394d6f82d0e263411a733b1bb9980bcfd17"
+    "commit": "bb33b9749ad662b566984f0a8201b1741a08f7bc"
   },
   "platform-io": {
     "ref": "producer/platform-io",
-    "commit": "658498a0e2b3d5743ccb3113679e95e9772e5ebf"
+    "commit": "700f07e08e9f4371e2599090f7e0de3a02c3a19e"
   }
 }
