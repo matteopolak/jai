@@ -23,3 +23,11 @@ is not claimed by these tests.
 IDE module completion separately follows filtered transitive reexports. It guards
 the current traversal path rather than globally discarding repeated modules,
 allowing distinct filtered import paths to contribute different visible names.
+
+Exported Code_Using records retain filter categories and computed expressions.
+Program_Print reconstructs computed filters and using parameters, and includes a
+procedure header's available body when body printing is enabled. The original
+record/printing fixture verifies these properties through a Code copy. Static
+name-list/map expression shapes are unspecified in the reviewed record contract;
+their categories remain visible, but printing returns false rather than losing
+the filter or inventing a public expression representation.

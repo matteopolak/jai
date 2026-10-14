@@ -10,6 +10,8 @@ interpreted target execution. Read-only registrations become read-only IR data.
 `add_data_segment` copies the section name and owns an opaque descriptor for the
 duration of compilation. User registrations validate the exact descriptor and its
 workspace, and honor its power-of-two alignment and read/write classification.
+Descriptor storage is also adopted into the interpreter's global map, allowing
+handles and aliases returned from one `#run` to retain identity in a later `#run`.
 The backend groups compatible globals and does not create arbitrary discrete
 named sections, so `actual_segment_will_be_created` returns `false`.
 

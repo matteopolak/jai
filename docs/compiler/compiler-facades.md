@@ -27,6 +27,10 @@ defaults. Bootstrap types are imported from the single prelude, not redefined.
   selected directives. Unsupported kinds return `false`; float literals and
   compound declarations currently do so. Expression nesting is limited to 512.
   Public `print_procedure_bodies` storage is passed to private algorithms.
+  Computed using filters and parameter usings survive printing/Code reconstruction.
+  A header's available body is included when body printing is enabled. Static
+  filter expression records remain unspecified and return an unprinted status
+  rather than silently losing their filter.
 
 Program_Print plugin collection groups typechecked declarations by source filename
 and its finish path writes `pp_<basename>.txt` using the public File API, checking

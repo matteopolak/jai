@@ -286,5 +286,12 @@
     "stdout": "",
     "exit_code": 1,
     "error_contains": "compiler memory breakpoints are unavailable"
+  },
+  {
+    "name": "compiler-using-records-preserve-filters",
+    "source": "compiler-using-records/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
   }
 ]

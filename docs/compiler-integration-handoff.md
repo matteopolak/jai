@@ -176,3 +176,12 @@ Rechecking the reviewed Basic page confirms `tprint`, `log_error`, command-line
 arguments, platform `exit`, and builder `print` are specified exports. Their
 browser/formatter failures are missing foundation implementations, not authority
 for compiler special cases. The browser status document records this correction.
+
+Code_Using export/printing now retains computed filters and parameter usings, and
+procedure-header printing includes available bodies when enabled. Static filters
+retain their category but cannot yet be printed because their public expression
+representation is unspecified; source reconstruction reports failure instead of
+dropping them. The new Code-copy fixture passes in both modes. Segment handles
+also survive a separate #run and aliases: their opaque allocations participate in
+the same real-global relocation map as registered data. Focused facade fixtures
+now total 21.

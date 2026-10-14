@@ -390,7 +390,7 @@ pub struct Workspaces {
 }
 
 struct DataSegment {
-    handle: Box<u128>,
+    handle: u64,
     _name: Vec<u8>,
     workspace: i64,
     characteristics: u32,
@@ -1628,13 +1628,16 @@ pub fn call(
                 ));
             }
             let segment = DataSegment {
-                handle: Box::new(0),
+                // Opaque handles must survive #run freezing and relocation without
+                // being copied to an unrelated address. The interpreter adopts this
+                // allocation as a real compiler-owned global after the run.
+                handle: interp.register_data_global(&[0; 16], 16, true, 2)?,
                 _name: name,
                 workspace,
                 characteristics,
                 alignment: alignment as u64,
             };
-            let address = (&*segment.handle as *const u128) as u64;
+            let address = segment.handle;
             reg.data_segments.push(segment);
             Ok(Rets::one(address))
         }
@@ -1658,9 +1661,7 @@ pub fn call(
                     let descriptor = reg
                         .data_segments
                         .iter()
-                        .find(|s| {
-                            (&*s.handle as *const u128) as u64 == handle && s.workspace == workspace
-                        })
+                        .find(|s| s.handle == handle && s.workspace == workspace)
                         .ok_or_else(|| {
                             trap(
                                 "add_global_data: invalid user segment handle for this workspace"

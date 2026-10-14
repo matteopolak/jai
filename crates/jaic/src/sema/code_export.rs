@@ -1358,6 +1358,30 @@ impl Exporter<'_> {
         rec
     }
 
+    fn using_filter(&mut self, filter: &ast::UsingFilter) -> (i64, i64) {
+        use ast::{UsingFilter, UsingFilterKind};
+        match filter {
+            UsingFilter::None => (0, 0),
+            // Static name-list/map expression shapes are not established by the
+            // reviewed public record contract. Preserve their category without
+            // fabricating a replacement expression that looks reference-derived.
+            UsingFilter::Only(_) => (1, 0),
+            UsingFilter::Except(_) => (2, 0),
+            UsingFilter::Map(_) => (3, 0),
+            UsingFilter::Computed {
+                kind,
+                expr,
+            } => {
+                let kind = match kind {
+                    UsingFilterKind::Only => 1,
+                    UsingFilterKind::Except => 2,
+                    UsingFilterKind::Map => 3,
+                };
+                (kind, self.expr(expr))
+            }
+        }
+    }
+
     fn literal_number_flags(&self, span: Span, float: Option<f64>, negative: bool) -> i64 {
         let text = self.c.as_ref().map_or("", |c| c.sources.snippet(span));
         let spelling = text.trim_start_matches('-').trim_start();
@@ -2091,11 +2115,15 @@ impl Exporter<'_> {
             }
             S::Using(boxed) => {
                 let crate::ast::UsingStmt {
-                    value, ..
+                    value,
+                    filter,
                 } = &**boxed;
                 let value = self.expr(value);
+                let (filter_type, filter_expression) = self.using_filter(filter);
                 let mut rec = self.node("Code_Using", node::USING, span);
-                rec.ptr("expression", value);
+                rec.ptr("expression", value)
+                    .int("filter_type", filter_type)
+                    .ptr("filter_expression", filter_expression);
                 self.add(rec)
             }
             S::PushContext(boxed) => {
@@ -2644,8 +2672,16 @@ impl Exporter<'_> {
                     .str("name", name.as_str().as_bytes())
                     .ptr("resolved_declaration", arg);
                 let ident = self.add(ident);
+                let (filter_type, filter_expression) = param
+                    .using_filter
+                    .as_ref()
+                    .map(|filter| self.using_filter(filter))
+                    .unwrap_or((0, 0));
                 let mut using = self.node("Code_Using", node::USING, param.span);
-                using.ptr("expression", ident);
+                using
+                    .ptr("expression", ident)
+                    .int("filter_type", filter_type)
+                    .ptr("filter_expression", filter_expression);
                 usings.push(self.add(using));
             }
         }

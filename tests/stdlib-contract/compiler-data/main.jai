@@ -24,6 +24,9 @@ registered :: #run register();
 alias :: registered;
 readonly :: #run C.add_global_data(u8.[5, 7], .READ_ONLY);
 zeroed :: #run C.add_global_data(u8.[0, 0], .BSS);
+segment_handle, discrete_segment :: #run C.add_data_segment("later_registration", alignment=64);
+handle_alias :: segment_handle;
+later_data :: #run C.add_global_data(u8.[61], .USER_SEGMENT, handle_alias);
 #run {
     temporary := registered;
     temporary[0] = 88;
@@ -38,6 +41,8 @@ main :: () {
     assert(alias[0] == 23);
     assert(readonly.count == 2 && readonly[1] == 7);
     assert(zeroed.count == 2 && zeroed[0] == 0);
+    assert(!discrete_segment && later_data.count == 1 && later_data[0] == 61);
+    assert(((cast(u64) later_data.data) & 63) == 0);
     info := C.get_runtime_info();
     assert(info.global_data_info != null);
     assert(info.global_data_info.segment_info.count > 0);
