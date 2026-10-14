@@ -1,5 +1,10 @@
 # Platform I/O worker progress
 
+Durable producer commits: `eb5d83d` (File), `339a16e` (System/Thread/runtime),
+`fe44299` (private Process engine, native exception diagnostics, SDK checks and
+strict lint/handoff). Work remains at the explicit integration gates below;
+this is not a full native Windows/corpus completion claim.
+
 ## File checkpoint (2026-10-14)
 
 Implemented Win32 File handles, binary reads/writes, 64-bit size/seek, flush,
