@@ -4,18 +4,25 @@
 G :: #import "GetRect";
 L :: #import "GetRect_LeftHanded";
 draw_count:int;
+load_count:int;
+Texture_Pointer :: type_of(G.require_texture(""));
 main :: () {
     procs:G.Draw_Procs;
     procs.immediate_quad=quad; procs.immediate_triangle=triangle;
     procs.prepare_text=prepare; procs.draw_prepared_text=text;
     procs.get_mouse_pointer_position=mouse;
     procs.set_scissor=scissor; procs.clear_scissor=clear;
+    procs.texture_load_from_memory=load_texture;
     G.ui_init(procs=*procs);
     window:type_of(G.Button_State.widget.window);
     G.ui_per_frame_update(window,800,600,1);
     color:=xyz(1,0,0);
     applied,dragging,picker:=G.color_picker(.{0,0,200,200},*color,identifier=100);
     assert(picker.current_hsv_color.x==0 && !applied);
+    for mode:1..3 { picker.color_pick_mode=cast(G.Color_Pick_Mode) mode; applied,dragging,picker=G.color_picker(.{0,0,200,200},*color,identifier=100); assert(picker.current_rgb_color.x==1); }
+    texture:=G.require_texture("pixels"); assert(texture!=null && load_count==1);
+    assert(G.require_texture("pixels")==texture && load_count==1);
+    assert(G.require_texture("!bad")==null && load_count==2);
     editor:=G.color_animation_editor(.{250,0,300,150},identifier=200);
     assert(editor.color_samples.count>0);
     G.open_time_view(editor.theme,editor,.{300,300,100,100});
@@ -50,3 +57,4 @@ text :: (font:type_of(G.Label_Theme.font),x:s64,y:s64,color:Vector4,effects:type
 mouse :: (window:type_of(G.Button_State.widget.window),right_handed:bool)->(x:int,y:int,success:bool) { return 700,500,true; }
 scissor :: (x0:s32,y0:s32,x1:s32,y1:s32) {}
 clear :: () {}
+load_texture :: (texture:Texture_Pointer,memory:[]u8,srgb:bool,build_mipmaps:bool)->bool { assert(texture!=null && srgb && build_mipmaps); load_count+=1; return memory.count>0 && memory[0]!=33; }

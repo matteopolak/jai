@@ -27,8 +27,19 @@ main :: () {
         back := H.float32_to_float16(f);
         if (i & 0x7c00) == 0x7c00 && (i & 0x3ff) != 0 {
             assert(M.isnan(f));
+            assert((cast(u16) back & 0x7c00)==0x7c00 && (cast(u16) back & 0x3ff)!=0);
+            assert((cast(u16) back & 0x8000)==(cast(u16) i & 0x8000));
         } else assert(cast(u16) back == cast(u16) i);
     }
+    for i:0..0x7bfe {
+        a:=H.float16_to_float32(cast(H.Float16) i);
+        b:=H.float16_to_float32(cast(H.Float16) (i+1));
+        midpoint:=(a+b)/2;
+        expected:=i+(i&1);
+        assert(cast(u16) H.float32_to_float16(midpoint)==cast(u16) expected);
+        assert(cast(u16) H.float32_to_float16(-midpoint)==(cast(u16) expected|0x8000));
+    }
+    assert(cast(u16) H.float32_to_float16(65520.0)==0x7c00);
     assert(cast(u16) H.float32_to_float16(1.00048828125) == 0x3c00);
     assert(cast(u16) H.float32_to_float16(1.00146484375) == 0x3c02);
     assert(S.values_are_close(M.xy(0), M.xy(0.0001)));

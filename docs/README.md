@@ -95,6 +95,7 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [Numerics implementation status](status/numerics.md)
+- [Numerics implementation and verification](numerics.md)
 - [Numerics implementation plan](status/numerics-plan.md)
 - [Numerics contract questions](specs/stdlib/numerics-questions.md)
 - [jaic Extensions](extensions/README.md)

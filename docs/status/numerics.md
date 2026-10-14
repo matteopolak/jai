@@ -55,5 +55,16 @@ with `Float16(ASSERT_ON_OVERFLOW=true)`. The local inventory presence check
 matches 694 inventoried names across the six modules; this is name evidence,
 not a claim of semantic ABI verification.
 
-Pending: complete native O0/O2 and WASM matrix reruns, replacement of the table
-fixture by the fresh peer map, parameter review, and final honest gap classification.
+The expanded quick suite now passes all 20 checks. It also exercises every picker
+mode and catches composite-widget identity collisions: child controls now derive
+their identities from the parent hash. The oracle now contains exactly 3,158
+assertions, including exact rational matrix inverses and independent Rodrigues
+rotations. Core half tests additionally check every adjacent finite midpoint tie
+in both signs. The broad algebra test exercises matrix/vector/quaternion/geometry
+overloads and explicit zero-divisor reporting.
+
+Canonical map integration was attempted and failed at the peer Hash.get_hash(u64)
+specialization, rather than being silently replaced in production. The test
+runner offers --canonical-dependencies for coordinator integration. Full expanded
+matrix rerun and final status consolidation are pending; see docs/numerics.md for
+the actual remaining ABI/platform limitations.
