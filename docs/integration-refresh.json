@@ -9,11 +9,11 @@
   },
   "bindings": {
     "ref": "producer/bindings",
-    "commit": "16124141104f34476efbc019b4668c149db5a4e3"
+    "commit": "a565ab0905e27b5ff1148956782523dca3785003"
   },
   "numerics": {
     "ref": "producer/numerics",
-    "commit": "ee5c32a572b49aece38a6fc1b8754b1c87a94fc1"
+    "commit": "4acc8467a57d1f2062ea5792330f409132d1d44d"
   },
   "lsp": {
     "ref": "producer/lsp",
@@ -29,6 +29,6 @@
   },
   "window-render": {
     "ref": "producer/window-render",
-    "commit": "e7e719a22f08270c62e8314bb08652f14bf7c150"
+    "commit": "7fc1d6abcd3d3d82c3a140f0ea9540c2d3e3eae4"
   }
 }
