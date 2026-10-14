@@ -64,6 +64,15 @@ main :: () {
     let defs = s.definition(&uri(), at(text, "for item")).unwrap();
     assert_eq!(defs.len(), 1, "{defs:?}");
     assert_eq!(defs[0].range.start, at(text, "for_expansion :: (b: *Bag"));
+    let keyword_byte = text.find("for item").unwrap();
+    for delta in 1..3 {
+        assert_eq!(
+            s.definition(&uri(), position(text, keyword_byte + delta))
+                .unwrap(),
+            defs,
+            "every character of the keyword must select the same expansion"
+        );
+    }
     let defs = s.definition(&uri(), at(text, "collection {")).unwrap();
     assert_eq!(defs.len(), 1, "{defs:?}");
     assert_eq!(defs[0].range.start, at(text, "collection: Bag"));
@@ -263,9 +272,14 @@ fn missing_close_brace_keeps_procedure_locals_and_next_global_separate() {
 fn recovered_or_semantically_invalid_bodies_cannot_run_at_compile_time() {
     use jaic::sema::{Compiler, Options, VirtualFs, ide::IdeFacts};
     use std::{path::Path, rc::Rc};
-    for broken in ["bad := (", "bad := missing_name;"] {
+    for broken in [
+        "bad := (",
+        "bad := missing_name;",
+        "same :: 1; same :: 2;",
+        "push_context,defer_pop unknown;",
+    ] {
         let source = format!(
-            "damaged :: () -> int {{\n    {broken}\n    healthy := 42;\n    return healthy;\n}}\n#run damaged();\n"
+            "Context :: struct {{ state: int; }}\ndamaged :: () -> int {{\n    {broken}\n    healthy := 42;\n    return healthy;\n}}\n#run damaged();\n"
         );
         for editor in [false, true] {
             let mut fs = VirtualFs::default();
@@ -658,4 +672,30 @@ fn different_real_instantiation_errors_at_one_source_site_are_not_discarded() {
             .any(|d| d.message.contains("`B`") && d.message.contains("missing")),
         "{errors:?}"
     );
+}
+
+#[test]
+fn declaration_hoisting_and_context_errors_keep_independent_later_locals() {
+    for damaged in ["same :: 1; same :: 2;", "push_context,defer_pop unknown;"] {
+        let text = format!(
+            "Context :: struct {{ state: int; }}\nmain :: () {{\n    {damaged}\n    healthy := 42;\n    result := healthy + 1;\n}}\n"
+        );
+        let mut s = session();
+        s.open(uri(), 1, text.clone()).unwrap();
+        let hover = s
+            .hover(&uri(), at(&text, "healthy +"))
+            .unwrap()
+            .expect("independent local after a hoisting/context error");
+        assert_eq!(hover.contents.value, "healthy: s64", "{damaged}");
+        let defs = s.definition(&uri(), at(&text, "healthy +")).unwrap();
+        assert_eq!(defs.len(), 1, "{damaged}: {defs:?}");
+        assert_eq!(defs[0].range.start, at(&text, "healthy :="));
+        assert!(
+            s.diagnostics(&uri())
+                .unwrap()
+                .iter()
+                .any(|d| d.severity == jai_language_server::DiagnosticSeverity::Error),
+            "{damaged}: real errors must remain"
+        );
+    }
 }

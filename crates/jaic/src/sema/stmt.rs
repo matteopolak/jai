@@ -21,16 +21,17 @@ impl Compiler {
         let file_scope = self.file_scope_of(scope);
         self.hoist_body_imports(file_scope, stmts, false);
         // Constants are visible throughout their block, also before their declaration.
+        let mut failed = None;
         for stmt in stmts {
             if let S::Decl(decl) = &stmt.kind
                 && decl.kind == ast::DeclKind::Const
                 && !decl.backtick
                 && f.hoisted_consts.insert((scope, decl.id))
+                && let Err(error) = self.declare_local_consts(scope, scope, decl)
             {
-                self.declare_local_consts(scope, scope, decl)?;
+                self.check_block_error_ide(f, &mut failed, error)?;
             }
         }
-        let mut failed = None;
         for (i, stmt) in stmts.iter().enumerate() {
             if let S::PushContextDefer(defer) = &stmt.kind {
                 let ast::PushContextDeferStmt {
@@ -38,7 +39,13 @@ impl Compiler {
                     bare,
                 } = &**defer;
                 // `push_context,defer_pop ctx;` holds for the rest of the block.
-                let addr = self.push_context_addr(f, scope, context, *bare, stmt.span)?;
+                let addr = match self.push_context_addr(f, scope, context, *bare, stmt.span) {
+                    Ok(addr) => addr,
+                    Err(error) => {
+                        self.check_block_error_ide(f, &mut failed, error)?;
+                        continue;
+                    }
+                };
                 let saved = f.context.replace(addr);
                 let result = self.check_block_stmts_from(f, scope, &stmts[i + 1..]);
                 f.context = saved;
@@ -76,17 +83,27 @@ impl Compiler {
         stmt: &ast::Stmt,
         failed: &mut Option<Box<Diagnostic>>,
     ) -> Result<()> {
-        match self.check_block_stmt(f, scope, stmt) {
-            Err(error) if self.ide.is_some() && !self.sketching() => {
-                self.ide.as_mut().unwrap().errors.push((*error).clone());
-                if failed.is_none() {
-                    *failed = Some(error);
-                }
-                self.sketch_reopen(f);
-                Ok(())
-            }
-            result => result,
+        if let Err(error) = self.check_block_stmt(f, scope, stmt) {
+            self.check_block_error_ide(f, failed, error)?;
         }
+        Ok(())
+    }
+
+    fn check_block_error_ide(
+        &mut self,
+        f: &mut FnCtx,
+        failed: &mut Option<Box<Diagnostic>>,
+        error: Box<Diagnostic>,
+    ) -> Result<()> {
+        if self.ide.is_none() || self.sketching() {
+            return Err(error);
+        }
+        self.ide.as_mut().unwrap().errors.push((*error).clone());
+        if failed.is_none() {
+            *failed = Some(error);
+        }
+        self.sketch_reopen(f);
+        Ok(())
     }
 
     /// A statement of a block. A sketch goes on past a statement it cannot check, for the

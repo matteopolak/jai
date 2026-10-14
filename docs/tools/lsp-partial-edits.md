@@ -16,6 +16,9 @@ Recovered syntax drives symbols, selection ranges and call hierarchy as well as
 semantic checking. IDE declaration and statement checks continue after errors but
 return failure for damaged bodies. They never supply fabricated local values or
 make failed IR available to compile-time execution.
+Local-constant hoisting failures and failed deferred context switches follow the
+same continuation rule. A failed switch leaves the existing context in place for
+independent editor checks and still makes the containing body fail.
 
 After normal compilation stops, the audit uses the compiler's existing
 `placeholders_final` rule. Failed generators then report their errors rather than
@@ -62,8 +65,11 @@ to a per-run artifact, and uses one isolated process per file. Progress markers
 bound each request/stage with a hard stall deadline, rather than limiting the sum
 of many successful checks. The final report records that worker's hash. It persists
 JSON results atomically after every file. Panics, invalid reports, assertion failures and
-timeouts cause a nonzero result; baseline failures are recorded, never counted as
-successful coverage. The runner validates report shapes, file identity and nonnegative
+timeouts cause a nonzero result. Baseline errors remain reported; passing independent
+probes does not count those errors as successful typechecking. The report's
+`baseline_semantic_errors` field counts all published error diagnostics, including
+syntax errors; `baseline_syntax_errors` separately counts lexer/parser errors.
+The runner validates report shapes, file identity and nonnegative
 integer counts. Invalid output cannot reset a stalled stage's deadline or turn into a
 successful report; incomplete or untrusted counts are unknown. Runner protocol tests
 exercise malformed output, process failure, deadlines and pipe cleanup separately from
