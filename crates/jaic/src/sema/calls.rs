@@ -935,14 +935,17 @@ impl Compiler {
             );
             let fits = match arg.expr.as_ref().map(|e| &e.kind) {
                 // `.{...}` and `.[...]` build aggregates, `.NAME` picks an enum member.
-                Some(
-                    E::StructLit {
-                        ..
-                    }
-                    | E::ArrayLit {
-                        ..
-                    },
-                ) => !scalar,
+                Some(E::StructLit {
+                    ..
+                }) => {
+                    !scalar
+                        || !self
+                            .builtin_members(self.types.repr(param), arg.span)?
+                            .is_empty()
+                }
+                Some(E::ArrayLit {
+                    ..
+                }) => !scalar,
                 Some(_) if arg.expr.as_ref().is_some_and(inferred_flags) => matches!(
                     self.types.kind(param),
                     TypeKind::Enum(_) | TypeKind::Struct(_)

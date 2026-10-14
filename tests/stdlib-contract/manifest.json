@@ -201,5 +201,19 @@
     "mode": "interp",
     "timeout_seconds": 30,
     "stdout": "ok\n"
+  },
+  {
+    "name": "jai-lexer-lookahead-precision-and-here-strings",
+    "source": "jai-lexer-edges/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "jai-lexer-malformed-prefix-and-overflow",
+    "source": "jai-lexer-errors/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
   }
 ]

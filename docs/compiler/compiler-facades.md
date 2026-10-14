@@ -46,8 +46,9 @@ cache entries instead of returning zeroed successes. Procedure modification has
 an adapter that serializes current statements, but still needs end-to-end
 interception validation. Non-null Code scope selection in `add_build_string`
 remains explicitly unsupported. Interception and remaining workspace operations
-are pending. The independent runtime
-Jai_Lexer is pending. `Code_Visit.visit_pre_and_postorder` is not exported yet:
+are pending. The [independent runtime Jai_Lexer](runtime-jai-lexer.md) is implemented
+and passes its token/EOF, edge and malformed-input fixtures in interpreter and
+native execution. `Code_Visit.visit_pre_and_postorder` is not exported yet:
 its macro caller bindings are unspecified in the reviewed page. It has no fake
 implementation; explicit event traversal is available through `get_values`.
 See [questions](../specs/stdlib/compiler-questions.md).

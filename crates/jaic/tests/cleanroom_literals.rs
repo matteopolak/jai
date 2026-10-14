@@ -19,6 +19,13 @@ fn decimal_precision_counts_fractional_digits_and_ignores_trailing_zeros() {
 }
 
 #[test]
+fn contextual_string_record_literal_is_valid_as_a_call_argument() {
+    check(
+        "measure :: (s: string) -> int #no_context { return s.count; } text :: \"orchid\"; #assert(measure(.{text.count, text.data}) == 6); #assert(measure(.{count=3, data=text.data}) == 3);",
+    );
+}
+
+#[test]
 fn hex_float_spellings_require_four_eight_or_sixteen_digits() {
     for literal in ["0h0", "0h123", "0h12345", "0h123456789", "0h123456789abcde"] {
         let mut options = Options::host();
