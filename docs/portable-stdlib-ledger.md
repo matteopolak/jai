@@ -85,8 +85,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Reviewed exports implemented using real tracked allocations, poison and mutex; allocation/failed-resize/growth/free and concurrent tests use the new reviewed scalar Hash dependency. Lifecycle forwarding/destruction edges require review |
 | [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
 | [performance-report](specs/stdlib/modules/performance-report.md) | Owned portable scope; not implemented |
-| [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Owned portable scope; not implemented |
-| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Owned portable scope; not implemented |
+| [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Complete reviewed immutable synthesis and DCT data generated with other public codec tables; decoder integration unfinished |
+| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Partial: canonical buffers, bit/VLC/scan/file helpers, reviewed tables, six pixel layouts and integer IDCT. Program-stream demux, audio/video and Plm lifecycle unfinished; ambient macros/no-start-code require review. See portable-mpeg.md |
 | [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
 | [posix](specs/stdlib/modules/posix.md) | Reserved for bindings worker; not implemented or modified here |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
