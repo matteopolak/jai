@@ -2,12 +2,12 @@
 
 ## Replacement integration current checkpoint
 
-Fifth refresh: approved c8d1f5d portable, a11c0c8 foundations and eb5d83d
+Fifth refresh source checkpoint 33f0c42: approved c8d1f5d portable, a11c0c8 foundations and eb5d83d
 platform-io are merged, together with reviewed CI candidate 159ca65. Latest
 general integration fix 2fff11c supplies the real private WASI file ABI; the
 POSIX guard and Extensions are intact. All ten fuzz regression targets pass;
 unchanged File contracts pass host interpreter/native O0/O2 and Wasm interpreter/
-real WASI O0/O2. Portable production 95/95 plus faults/SMTP/channels/startup passes
+real WASI O0/O2. Portable production 96/96 plus faults/SMTP/channels/startup passes
 without the removed implicit sibling compiler overlay. The overlay discovery is
 fully disclosed in integration-deviations.md. Foundations 26 host/21 WASI cases
 pass O0/O2; macOS x64 timeval and unused-interface validation still fail gates.
@@ -17,9 +17,15 @@ format/check, workspace clippy warnings denied and Rust formatting pass.
 Coordinator-filtered real Windows x64/arm64 File and signed-wheel native checks
 pass; overall CI fails other runtime/platform/module checks. No full Windows
 rendering or Focus claim. Full LSP sweep finishes 558 files/14,835 edits/2,600,590
-assertions with one startup recovery failure. New affected-source sweep and broad
-current production checks continue; exact final results will be recorded in
-tools/cleanroom-integration.md. Inventory is 102/135 facades, 33 missing plus one
+assertions with one startup recovery failure. Twelve affected sources pass 317
+edits/33,577 assertions; three Socket sources pass 81 edits/5,698 assertions.
+Workspace 619 passed/68 failed/one inherited ignored; original stdlib 479 cases:
+interpreter 270/209 and native 263/208 plus eight compile-time-only. Quality scope: 607 files
+format/check passes, 34/152 gates fail (61 incomplete compilations, zero ordinary
+findings). Actual wasm32 formatter passes 24 golden cases, broader engine fails
+unsupported Thread. Windows editor/font source support now includes the real File
+import, with both CPUs -no_dce green; final affected checks run against this head.
+Exact results are in tools/cleanroom-integration.md. Inventory is 102/135 facades, 33 missing plus one
 supporting table; no module is certified exhaustively complete.
 
 The paragraphs below retain previous checkpoint evidence, superseded where the

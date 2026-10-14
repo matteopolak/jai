@@ -1,19 +1,19 @@
 {
   "compiler": {
     "ref": "producer/compiler",
-    "commit": "890329bbca1c9c03cae737e8a73773e34d018d7c"
+    "commit": "5d0bf335c2ffb74dfdc10b16fd96598ff6b0da72"
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "c8d1f5d14fe3f0bc8dec8043870def22787d57a3"
+    "commit": "803f84ac8c7472c225dab5f990618e21f96a1ccf"
   },
   "bindings": {
     "ref": "producer/bindings",
-    "commit": "a565ab0905e27b5ff1148956782523dca3785003"
+    "commit": "b8e492be60e4315cf4ca6c0fa87c3a7488cffda2"
   },
   "numerics": {
     "ref": "producer/numerics",
-    "commit": "4acc8467a57d1f2062ea5792330f409132d1d44d"
+    "commit": "441385dc93b1fadfca64980009cc6ab9ea368b2b"
   },
   "lsp": {
     "ref": "producer/lsp",
@@ -25,14 +25,14 @@
   },
   "foundations": {
     "ref": "producer/foundations",
-    "commit": "a11c0c8e1097d9a78ba8c96540ba8da0ddd53177"
+    "commit": "49c937b4898fef4bf5da490bd87c8e4f04050eca"
   },
   "window-render": {
     "ref": "producer/window-render",
-    "commit": "7fc1d6abcd3d3d82c3a140f0ea9540c2d3e3eae4"
+    "commit": "31ded394d6f82d0e263411a733b1bb9980bcfd17"
   },
   "platform-io": {
     "ref": "producer/platform-io",
-    "commit": "eb5d83dce32a123b1dd770a3dd8251eed946afa2"
+    "commit": "658498a0e2b3d5743ccb3113679e95e9772e5ebf"
   }
 }

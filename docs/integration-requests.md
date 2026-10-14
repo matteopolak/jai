@@ -101,3 +101,22 @@ File now uses private opaque stream C ABI supplied by unchanged Wasi_Runtime,
 with real interpreter/WASI O0/O2 File behavior and formatter saved regressions.
 No POSIX guard was weakened. Integrate this change into the next reviewed CI
 candidate; full workflow/corpus still needs coordinator execution.
+
+22. Reviewable source checkpoint 33f0c42 also fixes the Windows font File import
+guard and rejects null fd-set pointers while preserving names/signatures. Both
+Windows CPUs pass editor/public font all-code checks; execute real FreeType/font
+loading in native CI. The prior window source checks missed this unused path;
+the runner now includes it. The target matrix additionally discovers all nested
+public facades (819 checks over seven profiles), with isolated scratch inputs.
+Existing error inventory differences include intended native-platform guards,
+stale old-path expectations and genuine semantic/ABI gaps; do not equate their
+count with an equal number of compatibility bugs or bless them all as intentional.
+
+23. Actual source-built wasm32 compiler/formatter: 24 golden formatter cases
+pass, but full engine check fails Thread's documented native-only guard in tour.
+Browser C bridge legacy fixtures now use explicit C declarations while keeping
+all input/EOF/exit assertions; negative Basic allocation is separately required
+to produce a contained diagnostic. Missing reviewed logger and IDE expansion
+assertions remain failing. Native Wasm corpus agreement also retains its
+null-deref-plain-load mismatch; supply a minimal independent semantic reproducer
+through the compiler owner rather than relaxing pointer safety or expected output.

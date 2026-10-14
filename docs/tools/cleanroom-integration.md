@@ -15,14 +15,22 @@ its actual library and source-built tools under its own target directory:
 | --- | --- |
 | `cargo build --locked -p jaic-cli -p jailint -p jai-language-server` with pinned LLVM | Pass, `build-refresh5.log` |
 | Unchanged `jaifmt/main.jai -O2` build | Pass, `formatter-refresh5.log` |
-| `tools/check_portable_stdlib.py --jaic target/debug/jaic --stdlib stdlib --native --keep-going` | 95/95 ordinary cases; faults/rejections, ten SMTP cases, four 2,048-packet interprocess combinations and actual startup ON/OFF pass, `portable-refresh5.log` |
+| `tools/check_portable_stdlib.py --jaic target/debug/jaic --stdlib stdlib --native --keep-going` | 96/96 ordinary cases; faults/rejections, ten SMTP cases, four 2,048-packet interprocess combinations and actual startup ON/OFF pass, `portable-refresh5-final.log` |
 | `tools/check_foundations.py --jaic target/debug/jaic --stdlib stdlib --wasm --cross` | All 26 host and 21 WASI cases pass O0/O2, including selected debugger type identity/hooks. Six profiles pass; macOS x64 POSIX.timeval and invalid unused-interface acceptance remain failures, `foundations-refresh5.log` |
 | `tools/check_platform_io.py --jaic target/debug/jaic --stdlib stdlib --native --cross-check --wasm` | Host interpreter/native O0/O2; Windows x64/arm64, Linux x64 and macOS arm64 all-code checking; Wasm all-code/interpreter and real WASI O0/O2 pass, `platform-io-refresh5-wasi.log` |
 | `cargo test --locked --manifest-path fuzz/harness/Cargo.toml` | All ten regression targets pass, `fuzz-refresh5.log`; formatter failure before the WASI boundary fix retained in `fuzz-formatter-red.log` |
 | Public contract runner, interpreter/native | All 45 reviewed fixtures pass in each mode, `contracts-refresh5-{interp,native}.log` |
-| Workspace clippy all targets, warnings denied; repository Rust format check | Pass, `clippy-refresh5.log`, `rustfmt-refresh5.log` |
+| Workspace clippy all targets, warnings denied; repository Rust format check; wasm32 jai-wasm clippy | Pass, `clippy-matrix-final.log`, `rustfmt-matrix-final.log`, `clippy-wasm-refresh5.log` |
 | File shared/WASI implementation and unchanged File fixture, actual jaifmt check and verbose jailint warnings denied | Complete pass, `file-wasi-{format,lint}.log` |
 | `python3 -m unittest discover -s tools -p test_portable_crash.py` | One nonmutation property test passes, `startup-harness-unit.log`; subprocess is mocked only here, never in runtime evidence |
+| `cargo test --locked --workspace --no-fail-fast` | 619 passed/68 failed/one inherited ignored, 55 suites and 14 failed targets, `workspace-refresh5-final.log`; subsequent nested-target coverage is tested separately below |
+| `cargo test --locked -p jaic-cli --test stdlib_targets -- --nocapture` | Nested discovery regression passes; all 117 public/bootstrap/extension module entries run seven profiles (819 checks), retaining 341 expected-error inventory differences, `target-matrix-isolated-final.log` |
+| `tools/check_cleanroom_quality.py --baseline e1e8d19d0e6792ebc895c12fabe49ba919ef0226 --format --report artifacts/integration-clean/quality-refresh5-final.json` | 607 new Jai files format/check pass; source stable, no changed inputs; 34/152 checks fail. Combined lint: zero ordinary findings, 61 incomplete compilations among 411 programs. This is a failed lint gate |
+| `tools/stdlib_runtime.py --jaic target/debug/jaic --modes interp,native --jobs 6 --verbose` | 479 cases: interpreter 270 passed/209 failed; native 263 passed/208 failed/eight compile-time-only. Stale skip inventory remains fatal, `stdlib-refresh5.log` |
+| Production window runner with real FreeType font and pinned native libs | All 128 source/program invocations pass, `window-refresh5.log`; fourteen host cases execute interpreter/O0/O2, other records include source checks/Linux-target interpretation |
+| `/opt/homebrew/bin/python3 tests/numerics/run.py --compiler target/debug/jaic --stdlib stdlib --canonical-dependencies` | 107/123 checks pass; unsupported Wasm window/editor/font paths remain failures, `numerics-refresh5.log` |
+| Bindings/compiler/lexer normalized regeneration with actual jaifmt; SDL3 six-profile regeneration | All pass, `{bindings,compiler,lexer,sdl3}-regeneration-refresh5.log` |
+| `tools/build_scripting_wasm.py --release --output artifacts/integration-clean/browser-current` then actual Node engine/formatter checks | Real wasm32 compiler builds; formatter 24 golden cases and 414-line source pass. Broader engine check fails the tour's unsupported Thread import; `browser-{build,formatter,engine}-refresh5.log`. This is not a full browser pass |
 
 `tools/check_portable_crash.py` previously copied sibling compiler facades even
 with an explicit production library. Those implicit copies/default sibling paths
@@ -32,10 +40,21 @@ is input-integrity coverage only. The discovery, scope and original failures are
 retained in [the deviations audit](../status/integration-deviations.md).
 
 The frozen 558-file LSP sweep completed 14,835 edits/2,600,590 assertions, with
-one runtime-startup recovery failure (`lsp-final.json`). A focused fifth-refresh
-sweep covers the newly changed facade/backend/debugger sources. Full opaque
+one runtime-startup recovery failure (`lsp-final.json`). The twelve fifth-refresh
+facade/backend/debugger sources pass 317 edits/33,577 assertions (`lsp-refresh5.json`);
+the subsequent three Socket sources pass 81 edits/5,698 assertions
+(`lsp-socket-final.json`). This is incremental coverage, not a full current-tree
+LSP pass. Full opaque
 public application corpus and Focus remain coordinator work; no local full
 application corpus pass is claimed.
+
+The full workspace still fails auto_import/features/links/refactor/resilience/
+semantic LSP targets; jai-wasm lib; CLI cli/diagnostics/native/objc_selectors/
+optimized_split/stdlib_targets; and jailint rules. Browser fixture corrections
+preserve C input/EOF/exit/allocation assertions with reviewed API boundaries;
+jai-wasm is now 26 passed/three failed. Missing reviewed logging, unsupported
+Thread and IDE expansion failures are retained. Exact migration reasons are in
+[legacy-contract-audit.md](legacy-contract-audit.md).
 
 Filtered coordinator native CI candidate 159ca65 results: real Windows x64 AND
 arm64 File interpreter/native O0/O2 and signed-wheel interpreter/native pass.
