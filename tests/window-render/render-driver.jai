@@ -87,6 +87,25 @@ main :: () {
         assert(pixel[2] == 0 && pixel[3] == 0);
     }
 
+    feature_path := sprint("%assets/feature-font.ttf", #filepath);
+
+    defer free(feature_path);
+    feature_font := S.load_font("", feature_path, 32);
+
+    assert(feature_font != null && feature_font.feature_smallcaps != null && feature_font.feature_lining_numbers != null);
+    ink_by_effect: [4] u64;
+
+    for effects, index: S.Font_Effects.[0, .SMALLCAPS, .LINING_FIGURES, .SMALLCAPS | .LINING_FIGURES] {
+        S.set_render_target(*target);
+        S.clear_render_target(0, 0, 0, 0);
+        assert(S.draw_text(feature_font, 4, 10, "a1", effects = effects) > 0);
+        GL.gl.glReadPixels(0, 0, 64, 64, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, pixels.data);
+        for pixel_index: 0..64 * 64 - 1 ink_by_effect[index] += pixels[pixel_index * 4 + 3];
+
+        assert(ink_by_effect[index] > 0);
+        for previous: 0..index - 1 assert(ink_by_effect[index] != ink_by_effect[previous]);
+    }
+
     assert(GL.gl.glGetError() == GL.GL_NO_ERROR);
     print("ok\n");
 }

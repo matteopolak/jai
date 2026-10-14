@@ -40,7 +40,7 @@ def main():
         count += 1
         return True
 
-    host = ["srgb", "mapping", "bitmap-codec", "signed-native-fields", "keymap-behavior", "mipmap"]
+    host = ["srgb", "mapping", "bitmap-codec", "signed-native-fields", "keymap-behavior", "mipmap", "font-effects"]
     if platform.system() in {"Darwin", "Windows"}:
         host.append("clipboard-host")
     if args.font:
@@ -78,7 +78,7 @@ def main():
         outcome = "passed" if len(failures) == before else "FAILED"
         print(f"{outcome} host interpreter and native O0/O2: {name}", flush=True)
 
-    linux = ["types", "portable", "callback-types", "keycodes", "window-invalid", "bitmap-codec", "gamepad-virtual", "gamepad-shared-sdk", "texture-packing", "simp-none"]
+    linux = ["types", "portable", "callback-types", "keycodes", "window-invalid", "bitmap-codec", "gamepad-virtual", "gamepad-shared-sdk", "texture-packing", "simp-none", "font-effects"]
     for name in linux:
         source = ROOT / f"tests/window-render/{name}.jai"
         passed = run([compiler, source, "-interp", "-os", "linux", "-I", args.stdlib], "ok\n")
@@ -92,7 +92,7 @@ def main():
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
             cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none", "public-window", "keymap-behavior"]
-            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "font-public"]
+            cases += ["evdev-signatures", "window-invalid", "font-effects"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "font-public", "font-effects"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])

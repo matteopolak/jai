@@ -1,5 +1,7 @@
 # Window/render deviations and implementation gaps
 
+Current font-effects correction: old narrow cast operands truncated GSUB high bytes (feature tags appeared as109/112), preventing smallcaps/lining lookup discovery. Typed u16/u32 operands before shifts fix real native table decoding with checked arithmetic retained. Mandatory original font tests failed before the fix and now pass native FreeType and GL effect paths. No guessed metrics or fixture substitutes are used. Single/alternate/extension lookups remain supported; general contextual/multiple/ligature shaping remains an explicit diagnostic, consistent with the reviewed unshaped text path. Native lookup flags affect other sequence inputs, so they do not filter the current glyph here; the briefly authored uncommitted GDEF-filter extension was removed, with a real flagged-font regression retained. The fonts are independently authored binary assets with deterministic source generators, not copied font/reference assets. Native format source: https://learn.microsoft.com/en-us/typography/opentype/spec/chapter2 .
+
 The coordinator/user cleared the metadata-only incident and authorized resumption.
 No forbidden implementation body was exposed or incorporated; no quarantine or
 reimplementation is required. Exact scope and reviewed disposition remain in the

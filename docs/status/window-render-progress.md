@@ -1,5 +1,7 @@
 # Window/render progress
 
+Font-effects batch: corrected GSUB big-endian16/32-bit decoding by widening byte operands before shifts. Original native fonts now require real smallcaps/lining-figure discovery, ordered single/alternate/extension substitution, coverage1/2, native advance metrics and all four effect combinations. Real GL atlas text yields distinct nonzero framebuffer ink for those effects. A second original GDEF/flagged font checks that lookup flags do not suppress the current single glyph; an uncommitted sequence-filter experiment was removed after checking official native documentation. Source-built formatter check and warnings-denied lint pass across all owned Jai files. Full expanded runner:169 focused invocations passed, zero failed, including interpreter/native O0/O2 public text rendering. Original asset regeneration and Python compilation pass. Native Windows execution remains pending.
+
 Windows teardown batch after `dfeeb20`: WM_DESTROY now notifies renderer lifecycle
 owners. Window VAO/VBO/FBO records and Window_Info/context entries are retired;
 non-root WGL contexts are deleted, common DCs are released, and native class/private

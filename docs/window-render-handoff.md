@@ -1,5 +1,7 @@
 # Window/render worker handoff
 
+Latest font regression batch fixes a production GSUB endian-decoding bug; typed widened operands preserve high bytes without disabling checked casts. New original TrueType/GSUB/GDEF assets exercise real FreeType single1/2, alternate, extension, coverage1/2, ordered substitutions, digit effect precedence and glyph advances. Public GL text renders all four effect combinations with distinct actual framebuffer coverage. Generator: python3 tools/window_render_feature_font.py --check. No external font asset was copied. Full verification count follows in progress; Windows native execution and general sequence shaping remain unclaimed.
+
 Resumed dependency/OEM/lifecycle batches:159 focused invocations pass with zero failures using
 fresh own compiler sources, latest NEW bindings and platform-io File/Process.
 Owned format/check/lint and generated native declarations pass. macOS x64 POSIX
