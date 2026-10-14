@@ -97,6 +97,7 @@ The LLVM backend, C ABI and linking.
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
 - [Core foundations deviations and remaining limits](status/foundations-deviations.md)
+- [Core foundations live progress](status/foundations-progress.md)
 - [Core foundations contract questions](specs/stdlib/foundations-questions.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
