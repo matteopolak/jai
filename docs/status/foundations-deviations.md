@@ -97,6 +97,20 @@ This is a deviations inventory, not a claim of completed production integration.
   Basic-only and real float-formatting WASI binaries have no env imports and
   execute successfully. All 19 supported production WASI cases now pass O0/O2,
   including exact parser/shortest property/configuration/temporary-stamp cases.
+  A nearest-decimal-only shortest search was found insufficient at exact normal
+  powers of two, whose lower/upper rounding radii differ. It was replaced by
+  nearest/ceiling candidate selection at each precision for that entire IEEE
+  boundary class, not individual fixtures. Original witnesses first failed and
+  now pass. An independent exact-rational sweep validates all 2300 normal power
+  intervals and minimum significant digits; native/WASI O0/O2 audit is underway.
+  Audit evidence: native O0/O2 each verified all 2300 intervals. Initial WASI
+  launch did not execute because the test script omitted .wasm while the compiler
+  appended that suffix. The script now names its actual artifact explicitly;
+  no implementation fallback, fake imports or dropped cases are involved.
+  Final audit exits zero: all 2300 intervals/minimum precisions pass native O0,
+  native O2, WASI O0 and WASI O2. The test driver calls real production APIs;
+  Python Fraction is an independent exact-mathematics verifier, not another
+  Jai implementation or a formatter substitute.
 - **Latest compiler context regression** — refreshed producer compiler enables
   generic default reflection but panics in FnCtx.current_context building
   unchanged real jaifmt and running scoped jailint. Scratch contexts set context
