@@ -26,6 +26,20 @@ fn contextual_string_record_literal_is_valid_as_a_call_argument() {
 }
 
 #[test]
+fn typed_array_literals_keep_the_written_element_type() {
+    check(
+        "bytes :: u8.[1, 2, 3]; rows :: [2]u64.[.[3, 4], .[5, 6], .[7, 8]]; #assert(type_of(bytes) == [3]u8); #assert(type_of(rows) == [3][2]u64); #assert(rows[1][0] == 5);",
+    );
+}
+
+#[test]
+fn type_only_indexing_describes_an_array_field_element_without_reading_storage() {
+    check(
+        "Packet :: struct { values: [4]u16; rows: [2][3]s32; } #assert(type_of(Packet.values[0]) == u16); #assert(type_of(Packet.rows[0][1]) == s32);",
+    );
+}
+
+#[test]
 fn hex_float_spellings_require_four_eight_or_sixteen_digits() {
     for literal in ["0h0", "0h123", "0h12345", "0h123456789", "0h123456789abcde"] {
         let mut options = Options::host();

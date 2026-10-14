@@ -2722,6 +2722,21 @@ impl Compiler {
         index_span: Span,
         span: Span,
     ) -> Result<Operand> {
+        // A field named through its owning type has no instance storage. In
+        // type_of, represent its array as a type-only place so indexing finds
+        // the element type through the ordinary array rules, without a load.
+        let base_op = match base_op {
+            Operand::Type(ty)
+                if f.type_only
+                    && matches!(self.types.kind(self.types.repr(ty)), TypeKind::Array { .. }) =>
+            {
+                Operand::Place {
+                    ty,
+                    addr: f.b.iconst(Ty::Ptr, 0),
+                }
+            }
+            other => other,
+        };
         // Constant string indexing folds.
         if let (
             Operand::Const {
