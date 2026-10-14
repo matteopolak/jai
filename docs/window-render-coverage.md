@@ -6,9 +6,9 @@ dependency gates. Missing exports remain missing rather than returning fabricate
 
 | Module | Supported source and verification | Outstanding API or verification |
 | --- | --- | --- |
-| Window_Type | Reviewed native aliases/sentinels; Linux/Windows x64/arm64 checks | macOS binding lacks NSWindow; other native targets not verified |
+| Window_Type | Reviewed native aliases/sentinels; canonical Objective_C/AppKit NSWindow; Linux/Windows x64/arm64 checks and macOS host public imports | Other native targets not verified |
 | Window_Creation | Reviewed native Saved_Window_Info shapes, Win32 style constants and dimension/pointer overloads; Linux dimension/pointer and EWMH fullscreen request; ABI and invalid-handle checks | create_window background default unreviewed; Windows fullscreen, macOS/Android operations; real successful-window/X-server and Windows host tests |
-| Input | Common nominal types, enums, globals, frame reset, resize/move views, resize append, Linux/Windows key translation, Windows gamepad callback/import declarations | Native event pumps, cursor policy, MyWindowProc, Android declarations/behavior, macOS window binding; Windows OEM keys |
+| Input | Common nominal types/globals/reset; Linux/Windows key translation; Win32 native procedure/pump, signed wheel/modifiers/state, keyboard/text/focus/resize/move/button/close source; exhaustive portable signed-field tests | Windows injection runtime pending; macOS/Linux/Android pumps, native device-change callback, raw mouse motion/drop handling; horizontal axis convention and Windows OEM keys |
 | Keymap | Canonical set/map/mapping/error/callback types; pointer assignment and record defaults checked | Registration, dispatch, enable/reset/copy, parsing, persistence and builder procedures; reviewed grammar and callback precedence needed |
 | Gamepad | Canonical records/global, SDL2 init/update/discovery/state/transitions/events; actual SDL virtual-device, event-disabled state and shared SDK queue tests | Physical controller and Windows/macOS native-host tests; axis/event policy review |
 | Gamepad native libevdev surface | All 84 reviewed declarations, opaque types, private native enum context; Linux SDK input type aliases; every procedure signature resolved for x64/arm64 | libevdev runtime on a Linux host; fd/device/HID permission coverage |
