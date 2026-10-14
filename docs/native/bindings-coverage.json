@@ -47627,9 +47627,9 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
       "counts": {
-        "implemented_manual": 15,
+        "implemented_manual": 18,
         "declared": 1591,
-        "unresolved": 8,
+        "unresolved": 5,
         "duplicate": 1
       },
       "member_counts": {},
@@ -47711,16 +47711,16 @@
           "signature": "_glGetActiveAttrib :: (program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type: *GLenum, $$name: string)",
           "condition": "",
           "spec_line": 16,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "_glGetActiveUniform",
           "signature": "_glGetActiveUniform :: (program: GLuint, index: GLuint, bufSize: GLsizei, length: *GLsizei, size: *GLint, type: *GLenum, $$name: string)",
           "condition": "",
           "spec_line": 17,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "_glGetAttribLocation",
@@ -47743,8 +47743,8 @@
           "signature": "glx_create_context :: (window: Window_Type, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false) -> GLXContext, GLXFBConfig, chosen_msaa: s32",
           "condition": "OS == .LINUX",
           "spec_line": 20,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "Window_Creation",
@@ -101468,6 +101468,100 @@
           "condition": "",
           "spec_line": 495,
           "status": "declared"
+        }
+      ],
+      "supplemental_facades": [
+        {
+          "module": "Objective_C/AppKit",
+          "artifact": "stdlib/Objective_C/AppKit/module.jai",
+          "artifact_sha256": "c4863909fc8c8b43d7cac4471f02dbc3bbdfa0fa7814944073fce074d181112b",
+          "public_types": [
+            "NSBackingStoreType",
+            "NSResponder",
+            "NSWindow",
+            "NSWindowCollectionBehavior",
+            "NSWindowStyleMask"
+          ],
+          "private_pointer_only_types": [
+            "NSView",
+            "NSScreen"
+          ],
+          "members": [
+            {
+              "signature": "center::(self:*NSWindow)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "contentView::(self:*NSWindow)->*NSView",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "initWithContentRect::(self:*NSWindow,rect:O.NSRect,styleMask:NSWindowStyleMask,backing:NSBackingStoreType,_defer:O.BOOL)->*NSWindow",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "initWithContentRect::(self:O.id,rect:O.NSRect,styleMask:NSWindowStyleMask,backing:NSBackingStoreType,_defer:O.BOOL,screen:*NSScreen)->*NSWindow",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "makeFirstResponder::(self:*NSWindow,view:O.id)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "makeKeyAndOrderFront::(self:*NSWindow,sender:O.id)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "setCollectionBehavior::(self:*NSWindow,behavior:NSWindowCollectionBehavior)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "setContentView::(self:*NSWindow,contentView:O.id)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "setDelegate::(self:*NSWindow,dg:O.id)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "setReleasedWhenClosed::(self:*NSWindow,value:O.BOOL)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "setTitle::(self:*NSWindow,title:string)->O.id",
+              "status": "unresolved_return_contract",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "styleMask::(self:*NSWindow)->NSWindowStyleMask",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            },
+            {
+              "signature": "toggleFullScreen::(self:*NSWindow,sender:O.id)",
+              "status": "implemented",
+              "verification": "Source presence only; native tests are recorded separately."
+            }
+          ],
+          "aliases": [
+            {
+              "name": "NSWindow.frame",
+              "signature": "(self: *NSView) -> NSRect",
+              "target": "private NSView.frame",
+              "status": "implemented"
+            }
+          ],
+          "note": "Contextual AppKit contract from reviewed prose, not additional root exports. setTitle return remains unresolved."
         }
       ]
     },
@@ -172322,8 +172416,9 @@
       "spec": "docs/specs/stdlib/modules/sdl.md",
       "spec_sha256": "09a12c2658b5a379c41af91fa98405523c33798343492130c3c4b85b605e32b1",
       "counts": {
-        "declared": 522,
-        "implemented": 17
+        "declared": 521,
+        "implemented": 17,
+        "implemented_manual": 1
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -173243,7 +173338,9 @@
           "signature": "SDL_GetWindowWMInfo :: (window: *SDL_Window, info: *SDL_SysWMinfo) -> SDL_bool #foreign SDL2",
           "condition": "",
           "spec_line": 147,
-          "status": "declared"
+          "status": "implemented_manual",
+          "artifact": "stdlib/SDL/wrappers.jai",
+          "native_abi_adapter": "SDL_GetWindowWMInfo"
         },
         {
           "name": "SDL_HasClipboardText",

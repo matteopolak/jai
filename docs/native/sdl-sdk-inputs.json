@@ -5,5 +5,17 @@
   "headers": {
     "include/SDL2/SDL_version.h": "3f855e8b65f58b0dbc6db4a12465b136d32a0d03985f73904d95c12ed31858d7",
     "include/SDL2/SDL_rwops.h": "4262fe54e2752a2db76fa5526bb985d782d0fe4f2aec53a73059f7fe41b229ec"
+  },
+  "wm_adapter_oracle": {
+    "library": "Official SDL2-compatible native SDK 2.32.70",
+    "archive_sha256": "e4a8bd5a7052418b8f9cb031e31927389051c22b81d9069806d70b047d856d12",
+    "header": "include/SDL2/SDL_syswm.h",
+    "header_sha256": "460556dde8a5a06023bac5a2e7582e05559d065c353129737ec4519ff1238875",
+    "native_storage": "version + signed subsystem + pointer-aligned 64-byte union",
+    "supported_public_subsystems": [
+      "WINDOWS",
+      "X11",
+      "COCOA"
+    ]
   }
 }
