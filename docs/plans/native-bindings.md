@@ -41,7 +41,8 @@ machine-readable ledger and the questions document.
 ## Verification commands
 
 Generator tests: `python3 -m unittest discover -s tests/native-bindings -p 'test_*.py'`.
-Generation: `python3 tools/native_bindings/generate.py` (then `--check`).
+Generation: `python3 tools/native_bindings/generate.py --formatter .work/jaifmt`
+(then the same command with `--check`; use a current own source-built jaifmt).
 Native dependencies and integration tests will be driven by checked-in scripts
 under `tools/native_bindings`; their output and exact limitations are recorded
 in `docs/native/bindings-coverage.md`.

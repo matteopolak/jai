@@ -35,8 +35,8 @@ conversion are in [apple-sdk-inputs.json](apple-sdk-inputs.json).
 
 ## Tool verification
 
-Thirty-one Python regressions pass. Regeneration is checked with
-`python3 tools/native_bindings/generate.py --check`. The full desktop/native
+Thirty-three Python regressions pass. Formatted regeneration is checked with
+`python3 tools/native_bindings/generate.py --formatter .work/jaifmt --check`. The earlier full desktop/native
 run after declaration organization is `.work/organized-verification.json`:
 44 failed or unimplemented checks are retained alongside passing results.
 The subsequent NVTT/member/bitfield batch is
@@ -55,9 +55,10 @@ env TMPDIR="$PWD/.work/tmp" \
   .work/target-current/debug/jaic jaifmt/main.jai -O2 -exe .work/jaifmt
 ```
 
-This is a build blocker, not a formatting pass. No Extensions files or other
-worker checkouts were changed. Formatter normalization and format idempotence
-remain pending until the new dependencies build the formatter.
+This was a build blocker at that checkpoint, not a formatting pass. No
+Extensions files or other worker checkouts were changed. Current foundations
+subsequently resolved it: actual formatter and idempotence checks now pass, as
+recorded below. The old failure evidence is retained.
 
 The source-built jailint ran with repository config and `-D warnings` on all
 owned module folders, `stdlib/internal/bindings`, and `tests/native-bindings`.
@@ -149,7 +150,66 @@ scopes and outputs are in `.work/current-owned-quality.json`.
 Regenerate checked-in source with
 `python3 tools/native_bindings/generate.py --formatter .work/jaifmt`, then
 repeat with `--check`. Use the same options for `vendor_context.py`.
-Both formatted regeneration checks passed; the 31 generator regressions passed.
+Both formatted regeneration checks passed; the latest 33 generator regressions passed.
 Raw output remains available for bootstrapping tools, but must be normalized
 before committing. See the [deviations report](../status/bindings-deviations.md)
 for staging limits and remaining ABI/runtime failures.
+
+The reviewed contextual AppKit window surface is implemented in
+`Objective_C/AppKit`; it does not extend root Objective_C exports. Window
+enums, nominal prefixes, constructor overloads and typed message wrappers are
+present. Pointer-only NSView/NSScreen context types stay private. A real native
+test creates/releases an NSResponder, verifies native NSWindow selectors and
+round-trips a nonzero frame through an initialized NSView and the reviewed
+NSWindow.frame alias. Host build/run and macOS ARM64 no-DCE checks pass;
+macOS x64 no-DCE remains blocked by POSIX itimerval. Evidence:
+`.work/appkit-targeted-evidence.json`. The setTitle id-versus-native-void
+return discrepancy remains explicitly unresolved in the questions/deviations.
+
+SDL_GetWindowWMInfo now uses an explicit native ABI adapter. Its unchanged
+public record receives only representable fields from a complete private
+native record. Complete SDL2-compatible 2.32.70 headers are archive/hash pinned
+in dependencies.json; an independent C probe checks actual private Jai size,
+union size and offset against them. A real hidden Cocoa window test succeeds,
+with public-record canaries intact, and native failure/error propagation is
+checked. Other native subsystems cannot be represented by the platform-specific
+public record and receive a real SDL error. Existing SDL 2.0.1 RWops/UserEvent
+size assertions remain active and continue to fail. The new adapter does not
+claim those record gaps resolved.
+
+GL's missing active-attribute/uniform output wrappers now forward caller-owned
+writable buffers with native outputs intact and a capacity check. Both
+overloads instantiate for Linux/Windows x64/ARM64. macOS source checks remain
+blocked by the window worker's root-AppKit imports, and real GL runtime output
+coverage is still required.
+
+The GLX constructor now forwards legacy/ARB context creation using the existing
+X11 display and a matching native window visual, with requested version,
+profile and debug attributes and the selected sample count. Temporary native
+configuration/visual buffers are freed; callers retain current-context and
+destruction responsibility. Linux x64 and ARM64 no-DCE source regressions pass.
+No Linux GLX runtime test has run on this host. ABI prototypes are checked
+against the pinned complete official libglvnd v1.7.0 glx.h; native attribute
+semantics follow the [Khronos GLX ARB context specification](https://registry.khronos.org/OpenGL/extensions/ARB/GLX_ARB_create_context.txt).
+X11's native library mappings now use case-correct GLX and X11 names.
+
+The authored-body scanner now stops at a declaration terminator and rejects
+foreign prototypes before searching for a body, including optional-semicolon
+prototypes. A failing regression exposed that a following record could
+previously be mistaken for the prototype's body. The corrected supplemental
+AppKit ledger excludes every file-private declaration. Thirty-three generator
+regressions now pass. This correction does not count a prototype as an
+implemented wrapper or conceal missing implementations.
+
+Latest owned quality evidence is `.work/wrappers-quality.json`: 40 passing
+checks covering jaifmt --check, both formatted regeneration checks, 33 Python
+regressions and warnings-as-errors lint on every owned folder and native test.
+GL was linted again after adding the server-version query. Rust/compiler
+sources were not modified; no Rust formatting exclusions are needed.
+The scoped native report `.work/platform-wrapper-progress.json` retains real
+AppKit/SDL/WM-info successes and the still-failing SDL layout assertion.
+`.work/wrapper-final-source-checks.json` records the final no-DCE GLX source
+checks. The full privacy matrix is `.work/privacy-desktop-matrix.json` (40
+passes, 14 failures, 24 explicit target exclusions). Privacy failures mean the
+required diagnostic was not reached; they are not treated as successful scope
+enforcement. The configuration sweep still has 58 required failures.

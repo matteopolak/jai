@@ -77,6 +77,7 @@ def stage(destination, foundation=None):
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
         ('foundations',['Basic','String','Hash','File_Utilities'],['basic','string','hash','files']),
+        ('window-render',['Window_Creation','Window_Type','Input','Keymap','Gamepad','Simp','sRGB','Clipboard'],['window','rendering','input','gamepad','clipboard']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
     ]:
@@ -118,6 +119,7 @@ def main():
     parser.add_argument('--compiler', type=Path, required=True)
     parser.add_argument('--module', action='append', choices=MODULES)
     parser.add_argument('--runtime', action='store_true')
+    parser.add_argument('--privacy-only', action='store_true', help='Run the full target privacy matrix without repeating declaration/runtime suites')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
     parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
     parser.add_argument('--stdlib', type=Path, help='Verify this production library directly, without any source overlays')
@@ -139,7 +141,8 @@ def main():
     report['test_sources'] = {}
     report['native_artifacts'] = {p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                                   for p in sorted((ROOT/'.work/native').glob('lib*')) if p.is_file()} if args.runtime else {}
-    for module, slug in MODULES.items():
+    report['privacy_only'] = args.privacy_only
+    for module, slug in ([] if args.privacy_only else MODULES.items()):
         if args.module and module not in args.module:
             continue
         spec = parse_spec((ROOT/'docs/specs/stdlib/modules'/f'{slug}.md').read_text())
@@ -167,20 +170,51 @@ def main():
                                      status='passed' if public_result['exit'] == 0 else 'failed')
                 report['targets'].append(public_result)
             print(module, os_name+'-'+cpu, result['status'])
-    for module, private in [('lz4', 'liblz4'), ('xxHash', 'binding_XXH32'), ('stb_image', 'FILE'),
-                            ('Curl', 'Native'), ('Curl', 'Varargs'), ('dxc_compiler', 'IMalloc'),
-                            ('MojoShader', 'MOJOSHADER_uniformType'), ('Objective_C', 'binding_objc_class')]:
+    for module, filename, configs in [
+        ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
+        ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
+        ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
+    ]:
+        if args.privacy_only:
+            continue
         if args.module and module not in args.module:
             continue
-        file = work/'privacy-check.jai'
-        file.write_text('M :: #import "'+module+'"; leaked :: M.'+private+'; main :: () {}\n')
-        result = invoke([compiler,file,'-check','-os','windows' if module=='dxc_compiler' else 'macos','-cpu','x64'], env)
-        result.update(module=module, member=private)
-        result['status'] = 'passed' if result['exit'] != 0 and ('has no exported member `'+private+'`') in result['stderr'] else 'failed'
-        report['privacy'].append(result)
-    if args.runtime:
-        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'mojoshader', 'macos', 'metal', 'gl', 'graphics-math', 'sdl', 'sdl-layout']:
+        source = ROOT/'tests/native-bindings'/filename
+        report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
+        for os_name, cpu in configs:
+            result = invoke([compiler,source,'-check','-no_dce','-os',os_name,'-cpu',cpu],env)
+            result.update(module=module, os=os_name, cpu=cpu, check='source_regression',
+                          source=str(source.relative_to(ROOT)), status='passed' if result['exit']==0 else 'failed')
+            report['targets'].append(result)
+    for module, private in [('lz4', 'liblz4'), ('xxHash', 'binding_XXH32'), ('stb_image', 'FILE'),
+                            ('Curl', 'Native'), ('Curl', 'Varargs'), ('dxc_compiler', 'IMalloc'),
+                            ('MojoShader', 'MOJOSHADER_uniformType'), ('Objective_C', 'binding_objc_class'),
+                            ('Objective_C', 'NSWindow'), ('Objective_C/AppKit', 'NSView'),
+                            ('Objective_C/AppKit', 'NSScreen'), ('Objective_C/AppKit', 'send_result'),
+                            ('SDL', 'NativeSDL')]:
+        if args.module and module.split('/')[0] not in args.module and module not in args.module:
+            continue
+        for os_name, cpu in TARGET_CONFIGS:
+            result = {'module':module, 'member':private, 'os':os_name, 'cpu':cpu}
+            target = TARGETS.get(module.split('/')[0], '')
+            if target and not enabled(target,os_name,cpu):
+                result.update(status='unsupported', reason='Reviewed module target condition: '+target)
+                report['privacy'].append(result)
+                continue
+            file = work/('privacy-'+module.replace('/','_')+'-'+private+'-'+os_name+'-'+cpu+'.jai')
+            file.write_text('M :: #import "'+module+'"; leaked :: M.'+private+'; main :: () {}\n')
+            result.update(invoke([compiler,file,'-check','-os',os_name,'-cpu',cpu], env))
+            result['status'] = 'passed' if result['exit'] != 0 and ('has no exported member `'+private+'`') in result['stderr'] else 'failed'
+            if result['status'] == 'failed':
+                result['reason'] = 'Required privacy diagnostic was not reached; failure is not evidence that privacy passed'
+            report['privacy'].append(result)
+    if args.runtime and not args.privacy_only:
+        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']:
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
+            if name == 'appkit':
+                relevant = ['Objective_C']
+            if name == 'sdl-wm':
+                relevant = ['SDL']
             if args.module and not any(m in args.module for m in relevant):
                 continue
             source = ROOT/'tests/native-bindings'/f'{name}.jai'

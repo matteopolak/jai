@@ -1,182 +1,128 @@
 {
-  "scope": "Worker verification against explicitly staged NEW independent foundation; incomplete module set, not final coordinator integration.",
-  "compiler": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/target-latest/debug/jaic",
-  "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-  "report": ".work/reviewed-worker-verification.json",
-  "report_sha256": "3603ce4fcb95f76c45db586b885f0961a4de9eb6058ea21669a261022cf706b2",
-  "results": {
-    "targets": {
-      "unsupported": 70,
-      "passed": 208,
-      "failed": 34
-    },
-    "privacy": {
-      "passed": 7,
-      "failed": 1
-    },
-    "native": {
-      "passed": 29,
-      "failed": 3
-    },
-    "symbols": {
-      "passed": 1200
-    }
-  },
-  "native_programs": [
+  "scope": "Incomplete bindings worker progress against current NEW peer sources; not coordinator integration or release verification. Broad baseline and subsequent scoped reports have distinct source hashes/scopes. All failures remain required work.",
+  "reports": [
     {
-      "name": "lz4",
-      "language": "Jai",
-      "status": "passed"
+      "report": ".work/latest-production-sources-worker.json",
+      "sha256": "9f96872aa1f3f33c8cd88019de87ffdd4cb2a78122c0988d32056b46c3949e27",
+      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
+      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/latest-production-sources-worker-94044",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 177,
+          "failed": 49
+        },
+        "privacy": {
+          "failed": 13
+        },
+        "native": {
+          "passed": 33,
+          "failed": 3
+        },
+        "symbols": {
+          "passed": 1200
+        }
+      },
+      "source_hashes_recorded": true,
+      "native_artifact_hashes_recorded": true
     },
     {
-      "name": "xxhash",
-      "language": "Jai",
-      "status": "passed"
+      "report": ".work/current-configurations.json",
+      "sha256": "f7bc641873f4d7ebf26e775d7c8909ab023498dd13ca51790201ea167034756d",
+      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
+      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/current-configurations-61423",
+      "results": {
+        "checks": {
+          "passed": 14,
+          "failed": 58
+        }
+      },
+      "source_hashes_recorded": true,
+      "native_artifact_hashes_recorded": false
     },
     {
-      "name": "images",
-      "language": "Jai",
-      "status": "passed"
+      "report": ".work/platform-wrapper-progress.json",
+      "sha256": "f6f6946b1981afa2ea32c5762a59cae6c5ba2a821186a65a79ff8ce7fe0766a7",
+      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
+      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/platform-wrapper-progress-99364",
+      "results": {
+        "targets": {
+          "passed": 22,
+          "failed": 12,
+          "unsupported": 4
+        },
+        "privacy": {
+          "failed": 6
+        },
+        "native": {
+          "passed": 9,
+          "failed": 2
+        },
+        "symbols": {
+          "passed": 299
+        }
+      },
+      "source_hashes_recorded": true,
+      "native_artifact_hashes_recorded": true
     },
     {
-      "name": "meshoptimizer",
-      "language": "Jai",
-      "status": "passed"
+      "report": ".work/wrapper-final-source-checks.json",
+      "sha256": "8174e9211643d658ac126098aa80398e660e076dddd1523ca03041455d0b69ef",
+      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
+      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/wrapper-final-source-checks-99954",
+      "results": {
+        "targets": {
+          "passed": 22,
+          "failed": 12,
+          "unsupported": 4
+        },
+        "privacy": {
+          "failed": 6
+        },
+        "native": {},
+        "symbols": {}
+      },
+      "source_hashes_recorded": true,
+      "native_artifact_hashes_recorded": false
     },
     {
-      "name": "freetype",
-      "language": "Jai",
-      "status": "passed"
+      "report": ".work/privacy-desktop-matrix.json",
+      "sha256": "df84f3c2dc9eb7376232549be8937401f47800e63a5bdbc75281d536f4b80027",
+      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
+      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/privacy-desktop-matrix-514",
+      "results": {
+        "targets": {},
+        "privacy": {
+          "passed": 40,
+          "failed": 14,
+          "unsupported": 24
+        },
+        "native": {},
+        "symbols": {}
+      },
+      "source_hashes_recorded": true,
+      "native_artifact_hashes_recorded": false
     },
     {
-      "name": "posix",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "curl",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "objective-c",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "mojoshader",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "macos",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "metal",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "graphics-math",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "sdl",
-      "language": "Jai",
-      "status": "passed"
-    },
-    {
-      "name": "sdl-layout",
-      "language": "Jai",
-      "status": "failed"
-    },
-    {
-      "name": "imgui-ffi",
-      "language": "C++",
-      "status": "passed"
-    }
-  ],
-  "failed_native_builds": [
-    {
-      "name": "ios",
-      "diagnostic": "tests/native-bindings/ios.jai:6:13: error: module `iOS` has no exported member `get_ios_target_triple`\n        check(I.get_ios_target_triple(.ARM64) == \"arm64-apple-ios\");\n                ^^^^^^^^^^^^^^^^^^^^^\n\n"
-    },
-    {
-      "name": "gl",
-      "diagnostic": ".work/runs/reviewed-worker-verification-92801/stdlib/GL/declarations.jai:13299:1: error: module `Window_Creation` not found\n    Window_Creation :: #import \"Window_Creation\";\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: looked for `Window_Creation.jai` and `Window_Creation/module.jai` in:\n    /Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/reviewed-worker-verification-92801/stdlib/GL/modules\n    /Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/tests/native-bindings/modules\n    /Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/reviewed-worker-verification-92801/stdlib\nhelp: a module of your own goes in a `modules` folder next to the main file, or in a directory passed with `-import_dir`\n\n"
-    }
-  ],
-  "configuration_report": ".work/configuration-latest.json",
-  "configuration_report_sha256": "882087a696a68bd6095606b280319db70358648aa24a70dadd06fe0f2af29112",
-  "configuration_results": {
-    "passed": 14,
-    "failed": 58
-  },
-  "lint_report": ".work/bindings-lint-reviewed.json",
-  "lint_exits": {
-    "0": 36
-  },
-  "formatter": "Not built: latest current-foundation attempt fails jaifmt/main.jai:53, unknown exit; earlier integrated snapshot fails missing builder-print overload.",
-  "limits": [
-    "38 failed/unimplemented full-batch checks retained",
-    "58 failed required configuration checks retained",
-    "Native C++ ImGui bridge does not validate the blocked Jai ImGui facade",
-    "Direct3D arithmetic test is a private unit/C-macro oracle test, not Windows SDK runtime execution",
-    "Full current foundation still fails Basic.Buffer",
-    "No full corpus or release verification claimed"
-  ],
-  "failed_native_runs": [
-    {
-      "name": "sdl-layout",
-      "diagnostic": "SDL record 5: Jai size 48, native SDK size 72\nSDL record 6: Jai size 8, native SDK size 32\n"
+      "report": ".work/wrappers-quality.json",
+      "sha256": "0cc5afa3285631217d0d9dc9030e0cfc7ace02423cbb991002dd8df7f36f2cdb",
+      "scope": "Owned formatting, formatted regeneration, generator regressions and lint",
+      "checks": 40,
+      "failures": 0
     }
   ],
-  "test_sources": {
-    "tests/native-bindings/lz4.jai": "03da7e706a690d30117ae8675444413b6e4e7b4de063a5f12554e85ebd42581d",
-    "tests/native-bindings/xxhash.jai": "9bcf69bd6b352522842227f629afbe03b8ae7743ea9fa48b8acc6c7282c76fc4",
-    "tests/native-bindings/images.jai": "c642cb7f8e02eb8383a874202677bcf6780a42e6d8cccab767f85356907bc34d",
-    "tests/native-bindings/meshoptimizer.jai": "45bd1c46ebbbe5d577bb7f41f1e27600732e35ea648eec303e54e041b36a9ab7",
-    "tests/native-bindings/freetype.jai": "48e4bd946f38e43c7ddb1e9d943c0b8274806941d3f8071a3f42e75a43f971b0",
-    "tests/native-bindings/posix.jai": "20a43539f51936645cdd264a64b0915fa768e850651ba0670453fe4b8c2cce0e",
-    "tests/native-bindings/curl.jai": "1fe400bd2a1e863469e6eef116fcc72d80f934257027c5ef73004b745609aa89",
-    "tests/native-bindings/ios.jai": "95b648f31dd23b76fbeaf3c37d7c1c4cfd22e1b6be7b5d4bab32b7b325d99a8a",
-    "tests/native-bindings/objective-c.jai": "ee0979a5076e942322a7dfbf3f6ae5a52dff4726071dfa0a59f716bdc2b144f2",
-    "tests/native-bindings/mojoshader.jai": "1a9bc6d66487170278140d8b4b4f6d5d424b595280c97da351fc5b2819e5f6f2",
-    "tests/native-bindings/macos.jai": "fc74b8be3097935b58c5c6d46fbfaf58abe5c9515acd6e01b22b2809ceafe006",
-    "tests/native-bindings/metal.jai": "dbac2bbb395dd4c6f754efccb5872552cbca62177c2c4914d5953be130c60edf",
-    "tests/native-bindings/gl.jai": "d37b965308ae9dbda102b043122cef42de811c8c719a76e82926e7bf52d8e5f3",
-    "tests/native-bindings/graphics-math.jai": "d98e7829b1081ef688a85488329c402a2239ca901b37d78e14326e9e0e99260a",
-    "tests/native-bindings/sdl.jai": "7968552cc26788da40a6c0128d6cdd2c770f7f7d14738d81dad22f999099dd55",
-    "tests/native-bindings/sdl-layout.jai": "0e7b9de92ef4806018acc69928b08a0c0bd109e1dcc991285dd69072ffdf581f",
-    "tests/native-bindings/imgui_ffi.cpp": "c16b6c35669d70f804a4150616f6f870f6ab9bfef72377226d5c13f0e92026a7"
+  "root_declaration_counts": {
+    "declared": 28330,
+    "unresolved": 198,
+    "implemented_manual": 33,
+    "implemented": 548,
+    "forwarded": 1262,
+    "duplicate": 1
   },
-  "native_artifacts": {
-    "libabi_probe.dylib": "1ff4eb16be469c09ecb6f12f81c1c314fb156f10a3fcc0fadb7e522ffdf88c26",
-    "libapple_abi_probe.dylib": "66b17e52e080e80bad7f656df1e54b08c6843663d15ec099865076e91e264eac",
-    "libbinding_ffi.a": "d29f4744657c339129e1ffcdc4d05ceff6a0505a8962c4f42b93ec968d6a52e5",
-    "libbinding_ffi.dylib": "5e70b0a4aa814b4d9cd944c044e2a3f1f64940dfcdba09841d4c6fdb81b9216b",
-    "libgraphics_macro_probe.dylib": "5bfd9acb7f57be01be0991c51dfac6094990893e8134289e379fbcdb22955c84",
-    "libimgui.a": "02b15e2aedeffc0afea27f71f6398b0cb1bd80383e638de6f364ba7821ac63f9",
-    "libimgui.dylib": "05857d55489cc59fc05cc90f74866653ec8cf460811103023fcb3a64181bbab0",
-    "liblz4.a": "852416aee16ba83f88a87c1fdab2ca3fd4a70de2fc9a44d5657ac1897c66e798",
-    "liblz4.dylib": "324618dd7832240680c9c7aec999602fcb259d46ca76c9c96d4738d125997137",
-    "libmeshoptimizer.a": "c430db8e98202d262eaff9c6ee98d9e373f9c71f2ed57dde1e93338baa2b49f3",
-    "libmeshoptimizer.dylib": "f05d7098cfb510c04f42a6dcab1bfe6bf3a482e2a50985fbbfa044b2539e4d1d",
-    "libmojoshader.a": "58bb8197a2746136981c05e538c3cd775df07fe2334abd5de2ef29372e0f2d5d",
-    "libmojoshader.dylib": "72af557346fe0da43c54403f4fd5bc7f0239f49a9edbfda10091b047264e6f14",
-    "libsdl_abi_probe.dylib": "5a0c314459acdcd2bc836f97298f335ac8783228b0c1ed7eab31d7c7cc2c344a",
-    "libstb_image.a": "ced3c7d440f2a5adf430cb5858fb9a262cd746926e86fa9593ec548252470dc1",
-    "libstb_image.dylib": "80432a1069d49374fa686b23304b0e6f5b858dfdb84b3748b9e3bf33a1f63bb9",
-    "libstb_image_resize.a": "89d8d6bb731c03a33a55b1c5d4ea8f0f1ac44db581a495a04dead4410f80d632",
-    "libstb_image_resize.dylib": "5e71fe45039c38c792f43ffebc9ed69fc4235bbb89e8127b72d796fa4ab4dba5",
-    "libstb_image_write.a": "84679ec695f77e47c0a7610c324d555a80d7bef14356ccff9b2ef683392ffa98",
-    "libstb_image_write.dylib": "30690a2b69029aaa800a6b5847d050f744d8be0528000fcd8b20a38e92b17163",
-    "libstb_vorbis.a": "0f74a9b0d2572834bde2f0903db9e060cc694981750fddb02428cc27267aca10",
-    "libstb_vorbis.dylib": "28b192c3738f32c35d50e76361afd95623d04532d314bdbd0158615ceff38d1c",
-    "libxxhash070.a": "4afa9860cbc7f0b545f172d79e608bc6c95aeb4433f58bd98267c78830221319",
-    "libxxhash070.dylib": "f1814bbbdfe7f9f5837472bd229d793ff470530d37beb5fe006a90107107eec5"
-  }
+  "supplemental_appkit_return_contract_unresolved": true,
+  "required_sdl_public_layout_failures": [
+    "SDL_RWops: 48 vs native 72",
+    "SDL_UserEvent: 8 vs native 32"
+  ],
+  "native_wm_adapter": "Real Cocoa window, error propagation, canaries and actual native/private size+offset+union checks pass; other platform runtime checks remain required."
 }

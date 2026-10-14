@@ -8,6 +8,18 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Current verification scope.** The broad current-foundations report is
+  `.work/latest-production-sources-worker.json`: 65 failed/unimplemented
+  checks, including 13 privacy checks blocked before their required diagnostic.
+  It precedes the final GLX/alias additions; subsequent scoped reports retain
+  their own staged hashes and do not overwrite its failures. The expanded
+  `.work/privacy-desktop-matrix.json` checks all six desktop configurations:
+  40 pass, 14 fail before the required diagnostic, and 24 lie outside explicit
+  reviewed module targets. The privacy-only mode avoids repeating native
+  suites while retaining this entire matrix; normal verification also runs
+  it. Proper fix: resolve the actual POSIX/D3D dependency failures and rerun,
+  rather than treating an unrelated import error as a privacy pass.
+
 - **Source staging (`tools/native_bindings/verify.py`).** Tests copy NEW peer
   sources into durable isolated trees, with one foundation prelude. Earlier
   evidence used a frozen independently authored foundation because current
@@ -27,6 +39,15 @@ correctness. Previously recorded failures remain required work.
   for checked-in output. Risk: omission regenerates unformatted files; proper
   fix is a production developer command that builds the tools and always
   supplies that option. No formatter rules are disabled.
+- **Coverage scanner repair.** The authored-body scanner previously could
+  consume a later record's opening brace after a foreign prototype. It now
+  respects declaration terminators, ignores quoted delimiters and rejects
+  foreign headers even without semicolons. An original regression failed
+  before the fix and now passes. AppKit supplemental metadata only scans the
+  public section, so helper prototypes are not listed as public implemented
+  members. This is a repaired false-coverage cause, not a retained workaround.
+  Proper longer-term validation is compiler AST-backed signature/body
+  inspection once the integrated dependency tree can be analyzed completely.
 - **Lint isolation.** Earlier all-at-once jailint terminated with a bus signal;
   per-directory invocations retain all rules and warnings-as-errors. Evidence:
   `.work/bindings-lint-reviewed.json`. This avoids accumulated tool state, not
@@ -35,6 +56,28 @@ correctness. Previously recorded failures remain required work.
   recorded separately in `.work/current-owned-quality.json`.
 
 ## ABI gaps and native availability
+
+- **SDL WM-info adapter.** `internal/bindings/sdl-native` retains the complete
+  pinned SDK's 64-byte native union and signed native discriminator. The
+  public `SDL_GetWindowWMInfo` is now a `#c_call` wrapper, with the exact public
+  argument/result types, forwarding to a private foreign declaration with the
+  original library symbol. Its procedure address therefore belongs to the
+  adapter, not directly to SDL's symbol; this is required to prevent writing
+  native storage into the smaller public record. It copies only the reviewed
+  per-platform fields after checking the subsystem. Other subsystems return
+  SDL_FALSE with a real SDL error, leaving the output untouched. This is an
+  explicit representational limitation (e.g. Wayland cannot fit the X11
+  public branch), not a fabricated successful handle. Proper long-term fix:
+  retain marshalling, pin/package the production native SDK/runtime, and test
+  each platform/subsystem; extending public fields requires reviewed API
+  changes and is not done here. Evidence: real hidden Cocoa window plus error
+  propagation and public-record canaries in `sdl-wm.jai`, and independent
+  C sizes/offsets/union-storage checks from the pinned official 2.32.70 SDK.
+  The native source is loaded directly for the ABI unit comparison; this
+  does not create public facade exports. Runtime build/run succeeded; Windows
+  and Linux runtime coverage remains required. Stack storage adds a bounded
+  72-byte native record per call; no heap allocation or global registry is
+  introduced. RWops/UserEvent discrepancy tests remain unchanged and failing.
 
 - **SDL public prefixes (`stdlib/SDL/declarations.jai`).** Reviewed RWops is
   48 bytes and UserEvent 8; pinned SDL 2.0.1 native records are 72 and 32 on
@@ -85,8 +128,38 @@ correctness. Previously recorded failures remain required work.
 
 ## Reduced or unresolved behavior
 
+- **GLX context creation.** The GL wrapper now implements real legacy and ARB
+  creation, chooses an RGBA window configuration matching the existing native
+  window visual, reports its actual sample count, and releases enumeration
+  buffers/visual descriptions. It reads the canonical exported X11 display;
+  a missing display returns null rather than silently opening another owned
+  connection. Requested debug/profile features require their real extensions
+  and entry point. Native X errors use the caller's existing error handler;
+  no process-global handler replacement or error swallowing is introduced.
+  Making current and eventual context destruction remain caller-owned.
+  Evidence: Linux x64/ARM64 no-DCE instantiations with default and modern
+  arguments. There is no host Linux GLX server/runtime test; source checks are
+  not native success claims. Proper fix: native Linux server/context tests and
+  explicit reviewed global-display initialization/error/lifecycle contracts.
+  Private missing GLX C prototypes come from the pinned complete official
+  libglvnd v1.7.0 header; corrected X11 library spellings are GLX and X11.
+  WGL, NSOpenGL and generic context dispatch still remain required gaps.
+
+- **AppKit contextual facade.** `Objective_C/AppKit/module.jai` implements the
+  newly reviewed window enums, nominal prefixes and typed messages. NSView and
+  NSScreen are private opaque pointer types, with no asserted instance layout.
+  `setTitle` preserves the reviewed id result signature although native
+  setTitle: returns void; its value is not validated or promised. This is an
+  unresolved return-contract discrepancy, not a fabricated stable value.
+  Proper fix: review that result contract, then use the matching native void
+  message signature and explicitly specified wrapper result. The NSView frame
+  alias is tested against a real initialized AppKit NSView; no window-server
+  or displayed-window runtime behavior is claimed. Window-render currently
+  imports these contextual names from root Objective_C; it needs the reviewed
+  submodule import. No root exports or peer files were changed to bypass that.
+
 - **Open wrappers.** Android glue/assets/context lifecycle, EGL context
-  creation, GL platform context creation/debug/output buffers, X11 global
+  creation, remaining GL platform context creation/debug, X11 global
   display/clipboard/DnD/widgets, Objective-C class generation/encoding,
   D3D/DXC convenience compilation, rpmalloc rewrite/raw paths and enabled
   telemetry still contain unresolved ledger entries. No placeholder body is
@@ -114,6 +187,16 @@ correctness. Previously recorded failures remain required work.
   semantics and test real contexts on each platform. Current version parsing
   uses native sscanf and accepts suffixes; strict trailing-text behavior is
   still an open question.
+- **GL output strings.** `_glGetActiveAttrib` and `_glGetActiveUniform` forward
+  a string's data as caller-owned writable storage, preserving all native
+  output parameters and the requested buffer size. Oversized requests abort
+  instead of writing past the string's capacity. Passing read-only text as
+  output storage is invalid. Source checks instantiate both procedures for
+  Linux/Windows x64/ARM64; macOS remains blocked by the peer window import.
+  No real GL-context output test has passed. Proper fix: integrated window
+  dependencies and real-context tests, plus review of invalid-buffer failure
+  policy. The bounds guard is a deliberate safety policy, not evidence of
+  reference behavior for invalid calls.
 - **Objective-C ABI/ownership.** Typed message forwarding uses stret on x64
   for results larger than 16 bytes; other target result classes need native
   coverage. The reviewed release helper has an unspecified return value;
