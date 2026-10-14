@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Materialize only reviewed native Socket declarations, never procedure stubs."""
 from collections import defaultdict
+import argparse
 import json
 from pathlib import Path
 import re
+import subprocess
 
 from portable_api_spec import parse_spec
 
@@ -37,6 +39,13 @@ def declaration_group(declaration):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--formatter", type=Path, required=True,
+                        help="source-built repository formatter-engine frontend under target")
+    args = parser.parse_args()
+    formatter = args.formatter.resolve(strict=True)
+    if not formatter.is_relative_to(ROOT / "target"):
+        parser.error("formatter must be a source build under this checkout's target directory")
     page = ROOT / "docs/specs/stdlib/modules/socket.md"
     spec = parse_spec(page.read_text())
     shapes = defaultdict(list)
@@ -109,6 +118,8 @@ ws2_32 :: #system_library "ws2_32";
     facade.parent.mkdir(parents=True, exist_ok=True)
     facade.write_text("// Generated public native aliases.\n" + "\n".join(exported) + '\n#scope_file\nABI :: #import "internal/net/socket-abi";\n')
     (ROOT / "docs/socket-native-ledger.json").write_text(json.dumps(ledger, indent=2) + "\n")
+    subprocess.run([str(formatter), str(ROOT / "jaifmt.toml"), str(target), str(facade)],
+                   cwd=ROOT, check=True)
 
 
 if __name__ == "__main__":

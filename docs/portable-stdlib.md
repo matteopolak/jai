@@ -186,11 +186,12 @@ same executable-name convention as native programs; the library does not invent
 an argument when an embedding host explicitly supplies argc=0.
 
 The source-built jailint passes with `-D warnings` on Command_Line, its argument
-acquisition helper and caller tests. The jaifmt build was retried against the new
-integration modules and currently fails at jaifmt/main.jai:53: missing Basic.exit.
-That completion now belongs to the foundations worker. Formatting/check evidence
-remains outstanding; no formatter success is claimed. The Basic print-to-builder
-overload alias was added while attempting that tool build.
+acquisition helper and caller tests. The initial jaifmt build failed at missing
+Basic.exit. A retry with the foundations worker's new Basic/String sources in
+target/formatter-integration-stdlib advanced to missing File_Utilities.is_directory
+at jaifmt/main.jai:70. Those sources were copied only into this checkout's target
+integration directory; no peer checkout was modified. The Basic print-to-builder
+overload alias was added during the earlier tool build attempt.
 
 Apollo duration arithmetic currently assumes signed integer femtoseconds. The
 reviewed page does not explicitly settle representation and rounding edges;
@@ -217,7 +218,8 @@ Runtime_Support/runtime, Process, Thread, Command_Line, Wav_File/audio, Pool and
 allocation internals, Hash_Table/collection internals, Socket/net internals.
 The same post-change regression command passes all 47 cases plus the four
 parent-lifetime scenarios and selected portable target checks. Formatting remains
-blocked by the documented formatter dependency, separately from lint success.
+blocked for the original CLI by its documented dependency. The repository engine
+now has separate full-scope formatting/check evidence below.
 
 Remap_Context provides both remap_context overloads with immutable cached copy
 plans protected by a CAS lock. Stored field names and byte sizes are matched
@@ -241,3 +243,27 @@ query variants; physical topology/performance differentiation is not claimed.
 CPU counters and Windows APIs are withheld. Host interpreter/native tests and
 Linux x64/arm64 checks pass, as does source-built lint. Android's declarations
 remain unvalidated because the current CLI rejects `-os android`.
+
+All 137 owned Jai source/test files are formatted using the repository's unchanged
+Extensions/Jai_Format engine and jaifmt.toml through tools/portable-jaifmt.jai.
+That file-only frontend consumes explicit paths and config, avoiding incomplete
+directory-walk APIs without inventing public library exports. It retains the
+engine's token-equivalence validation, reports real failures, and has --check
+exit status 1 for changed files. The original jaifmt CLI check remains pending.
+Extensions, reserved modules and public/legacy tests are excluded from the scope.
+Reproduce with:
+
+```sh
+JAIC_STDLIB=$PWD/target/formatter-integration-stdlib \
+  target/compiler/debug/jaic tools/portable-jaifmt.jai -exe $PWD/target/portable-jaifmt
+python3 -B tools/format_portable_stdlib.py
+python3 -B tools/format_portable_stdlib.py --check
+python3 -B tools/format_portable_stdlib.py --lint
+python3 -B tools/generate_socket_abi.py --formatter target/portable-jaifmt
+```
+
+The engine check and source-built jailint -D warnings both pass for all 137 files.
+Socket regeneration followed by normalization is byte-idempotent. The full
+49-case interpreter/native regression and four parent-lifetime scenarios passed
+after formatting, with selected Linux/Windows target checks. Follow-up filesystem,
+socket and Reflection assertions pass interpreter/native after lint cleanup.
