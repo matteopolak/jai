@@ -1,5 +1,43 @@
 # Clean-room integration verification
 
+## Sixth refresh checkpoint
+
+Source checkpoint d9aa140 integrates the seven approved sixth-refresh heads and
+the safe editor CI correction 767130b, preserves the latest four Windows public
+contract clarifications, and fixes declaring-file interface lookup, runtime
+startup target/configuration behavior and test production boundaries. Results:
+
+- Workspace: 631 passed/68 failed/one inherited ignored, 59 suites, 14 failed
+  targets (`workspace-refresh6.log`). Core interfaces, mixed variadics and all
+  41 module cases pass; actual production runtime option regressions pass.
+- Portable: 101 ordinary cases pass in both requested modes, plus faults,
+  rejections/SMTP/channels/startup. Additional Windows checking fails at the
+  Basic sleep fixture's unconditional POSIX test-clock import; no overall pass
+  is claimed (`portable-refresh6.log`). The later keep-going repair preserves
+  all independent target failures rather than stopping at the first one.
+- Foundations: all 27 host and 21 WASI O0/O2 cases and strict rejection gates
+  pass; macOS x64 still fails POSIX.timeval (`foundations-refresh6.log`).
+- Platform I/O: four host contract cases and Unicode arguments pass interpreter/
+  O0/O2; Windows x64/arm64, Linux x64 and macOS arm64 source checks pass. Private
+  Process all-code checks use an actual library-owned entry without staging.
+  File also passes real WASI O0/O2 (`platform-io-refresh6-{green,wasm}.log`).
+- Production GL SDK: native C oracle, reflection native/interpreter and real
+  context/shader/buffer checks pass with no source overlays/compiler proposal.
+  Debug callback capability is explicitly unavailable, so the aggregate fails
+  (`gl-sdk-production-refresh6.json`).
+- Window runner: 145 invocations pass/four fail; new host public fonts, text,
+  GPU rendering/readback/lifetime cases pass interpreter/native O0/O2. Windows
+  WGL dependency failures remain (`window-refresh6.log`). Numerics: 126/143
+  (`numerics-refresh6.log`).
+- Quality: all 663 sources format/check pass; sources stable; 38/155 checks fail
+  (`quality-refresh6.json`). Required incomplete-compilation failures stay fatal.
+  This is not a complete lint pass.
+
+All earlier evidence below is historical. Seventh approved heads are now
+available; their integration/reverification is underway. No native Windows
+runtime/corpus/Focus or release completion is claimed. See the deviations audit
+for every staged-tool substitute discovered and removed, and remaining gaps.
+
 ## Current fifth refresh
 
 Approved compiler 890329b, portable c8d1f5d, foundations a11c0c8, bindings
