@@ -7,12 +7,14 @@ Architecture: one canonical `stdlib/prelude/module.jai`, public module facades o
 - [x] Preserve authoritative startup guidance, manifest and edited specs under ignored `artifacts/integration-clean/authoritative`.
 - [x] Read producer ownership, handoff, status and deviation reports; merge each manifest snapshot in a logical merge commit.
 - [x] Resolve foundations overlap using designated ownership, retaining portable command-line initialization; retain compiler bootstrap constants and LSP recovery options together.
-- [ ] Build combined compiler/LSP/jailint and unchanged jaifmt against production stdlib; repair general integration defects with focused regressions.
-- [ ] Run workspace compiler/LSP/browser tests, original stdlib fixtures, worker suites and unused-code target checks; retain all failure evidence.
-- [ ] Audit canonical identities/privacy, scalar Hash, real window/font/clipboard dependencies, SDL ABI marshalling, runtime module parameters and fault-safe pointer reads.
-- [ ] Format/check/lint new stdlib/tests and verify regeneration; run Rust formatting/clippy with warnings denied.
-- [ ] Run partial-edit checks over permitted independent source. Public applications require vendor-free staging and coordinator-filtered full-corpus results; do not run unrestricted fetchers.
-- [ ] Review temporary-branch workflow safety and native macOS x64/Windows coverage; leave execution/publication to coordinator.
-- [ ] Record exact results, present/missing modules, unresolved contracts and every detected deviation; commit durable checkpoints and refresh only stable permitted producer snapshots.
+- [x] Build combined compiler/LSP/jailint and unchanged jaifmt against production stdlib; repair general defects with original red/green regressions.
+- [x] Run workspace/compiler/LSP/browser, original stdlib and worker suites; record genuine failures and unavailable target execution separately.
+- [x] Audit canonical identities/privacy, scalar Hash, native UI dependencies, SDL ABI, exact runtime parameters and fault-safe pointer reads; retain open deviations.
+- [x] Run real formatting/check/lint and regeneration, Rust formatting and warnings-denied clippy. Lint/compilation failures remain blocking, not passing results.
+- [x] Run broad partial edits over permitted independent sources; retain the startup recovery failure. Latest refreshed sweep is in progress.
+- [x] Review temporary-branch workflow safety/macOS x64/Windows jobs. No release/CI dispatch or publication performed.
+- [x] Record exact results, inventory/questions/deviations and durable commits; refresh only approved committed producer refs.
+- [ ] Resolve remaining general compiler/IDE and native/library contract gaps through producer checkpoints, then rerun affected gates.
+- [ ] Obtain coordinator-filtered full public corpus results and actual Windows/macOS x64/Linux/device/Focus verification. No unrestricted fetcher or vendor source access is permitted here.
 
 Evidence lives under ignored `artifacts/integration-clean/`. Product docs contain commands, results and gaps, never copied logs or worker scratch directories.

@@ -1,5 +1,54 @@
 # Clean-room integration verification
 
+## Current integrated evidence
+
+Exact approved heads are in `docs/integration-refresh.json`, integrated with
+separate logical merges. The current source-built compiler/LSP/jailint and
+unchanged repository jaifmt use the combined production stdlib. Existing
+Extensions remain byte-identical outside new SDL3. Historical results below
+are retained evidence, superseded only by the results in this section.
+
+| Scope / command | Actual result |
+| --- | --- |
+| `cargo test --locked --workspace --no-fail-fast` with `CARGO_TARGET_DIR=target/integration-validation` | 612 passed, 73 failed, one inherited ignored; 55 suites, 14 failed targets (`workspace-refresh4.log`) |
+| Public-language runner | All 11 reviewed fixtures pass |
+| `tests/stdlib-contract/run.py --jaic "$PWD/target/debug/jaic" --stdlib-root "$PWD/stdlib" --mode interp` and `--mode native` | All 45 reviewed fixtures pass in each mode |
+| `tools/check_portable_stdlib.py --jaic target/debug/jaic --stdlib stdlib --native --keep-going` | 92/92 ordinary cases pass; faults/rejections, parent/startup, ten real SMTP cases and four 2,048-packet channel pairings also pass |
+| `tools/check_foundations.py --jaic target/debug/jaic --stdlib stdlib --wasm --cross` | 24 host cases/five runtime rejections pass interpreter/O0/O2; 19 WASI cases pass O0/O2; six profiles pass, macOS x64 fails POSIX.timeval |
+| `tests/numerics/run.py --compiler target/debug/jaic --stdlib stdlib --canonical-dependencies` | 107/123 production checks pass; remaining target/font/cursor gaps retained |
+| `tools/check_window_render.py --jaic target/debug/jaic --stdlib stdlib --native-libs target/window-native --font /System/Library/Fonts/Helvetica.ttc` | Fourteen macOS cases pass interpreter/O0/O2, including real GL textures/shaders, windows/events/clipboard/fonts; Linux-target interpreter cases pass; Windows File-dependent checks fail |
+| Production binding verifier and configuration runner | 65 failed/unimplemented desktop and 58 alternative/mobile checks retained |
+| SDL `--module SDL --runtime --native-libs artifacts/integration-clean/native-sdl-refresh4` | Real events/bitmap and safe WM-info adapter pass; original ABI assertions fail RWops 48/72 and UserEvent 8/32; macOS x64 also fails |
+| Objective-C `--module Objective_C --runtime` | Real Objective-C/AppKit native tests pass; target/privacy failures retained |
+| Binding `generate.py --check --formatter target/jaifmt`, compiler/lexer `--check`, SDL3 `--jaifmt target/jaifmt --check` | All regeneration/idempotence checks pass, including six SDL3 profiles |
+| Workspace `cargo clippy --all-targets -- -D warnings`, wasm32 jai-wasm clippy and repository Rust format check | Pass; Windows/Linux core source checks pass, not native execution |
+| `tools/check_cleanroom_quality.py --baseline e1e8d19d0e6792ebc895c12fabe49ba919ef0226 --format --report artifacts/integration-clean/quality-final.json` | 587 new Jai files format/check pass; 33/148 checks fail. Source stability is recorded. Combined lint retains one finding and incomplete compilations across 396 programs |
+| Original stdlib runtime sweep, interpreter/native | 479 cases: interpreter 269 passed/210 failed; native 262 passed/209 failed/eight compile-time-only. Stale skip inventory remains fatal; nothing removed |
+
+Evidence is under ignored `artifacts/integration-clean`, including exact commands,
+source/tool hashes and all earlier failures. No logs/native outputs are committed.
+The actual tool source was not patched to bypass library gaps. Nonverbose jailint
+exit-zero incomplete compilation is rejected; scoped Basic/runtime lint passes,
+whole-scope lint does not. An earlier quality run raced test relocation and failed
+at the old path; that failure remains recorded, with a subsequent stable-scope run.
+
+The 537-file partial-edit sweep exercised 14,257 edits/2,563,157 assertions and
+retains one runtime-startup recovery failure; a focused current retry still fails
+three assertions. The refreshed 558-file sweep is running. No public-application
+staging/full-corpus pass is claimed: full opaque vendor corpus remains coordinator-
+run, with filtered failures/minimal independent reproducers returned here.
+
+Temporary branch safety: release jobs trigger tags/manual dispatch; browser
+release and benchmarks are manual. Native SDL3/Windows/compiler jobs perform
+verification. Package-manager jobs install published artifacts and are not new
+clean-room evidence. Coordinator must hold release builds/publication and review
+all triggered jobs before pushing `codex/cleanroom-integration`. Native Windows,
+macOS x64, Linux/device execution and coordinator Focus testing remain open.
+
+Inventory: 101/135 module facades, plus contextual AppKit, 34 absent and one
+supporting table page. Integration-certified complete modules: zero; presence
+and passing subsets are not complete API/behavior/platform certification.
+
 This is the replacement independent integration workspace. Only the sanitized baseline, manifest producer refs, reviewed specs and independently authored sources are implementation inputs. Quarantined integration code/history/transcripts and vendored corpus modules are not inputs. No reference binary, subagent, publishing or credential access is authorized.
 
 ## Integrated snapshots
