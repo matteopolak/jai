@@ -29,6 +29,11 @@ token parsing remain unfinished.
 
 ## Verification
 
+PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
+overloads. Crc implements the non-reflected CRC-64/WE recurrence. Base64 exports
+immutable decoder tables and both standard and URL codecs; permissive tails,
+LF-only whitespace, first-padding termination and partial errors are tested.
+
 The worker built the compiler worker's independent Rust sources with `--locked`
 and `CARGO_TARGET_DIR` under this checkout, first without LLVM and then with the
 default LLVM feature. No supplied reference binary was executed.

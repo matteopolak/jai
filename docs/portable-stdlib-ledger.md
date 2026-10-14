@@ -12,7 +12,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [android](specs/stdlib/modules/android.md) | Not implemented in this checkout; see ownership exclusions |
 | [atomics](specs/stdlib/modules/atomics.md) | Not implemented in this checkout; see ownership exclusions |
 | [autorun](specs/stdlib/modules/autorun.md) | Not implemented in this checkout; see ownership exclusions |
-| [base64](specs/stdlib/modules/base64.md) | Not implemented in this checkout; see ownership exclusions |
+| [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Not implemented in this checkout; see ownership exclusions |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Not implemented in this checkout; see ownership exclusions |
@@ -26,7 +26,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Not implemented in this checkout; see ownership exclusions |
 | [command-line](specs/stdlib/modules/command-line.md) | Not implemented in this checkout; see ownership exclusions |
 | [compiler](specs/stdlib/modules/compiler.md) | Not implemented in this checkout; see ownership exclusions |
-| [crc](specs/stdlib/modules/crc.md) | Not implemented in this checkout; see ownership exclusions |
+| [crc](specs/stdlib/modules/crc.md) | Implemented CRC-64/WE; empty and check vectors pass interpreter/native |
 | [curl](specs/stdlib/modules/curl.md) | Not implemented in this checkout; see ownership exclusions |
 | [d3d-compiler](specs/stdlib/modules/d3d-compiler.md) | Not implemented in this checkout; see ownership exclusions |
 | [d3d11](specs/stdlib/modules/d3d11.md) | Not implemented in this checkout; see ownership exclusions |
@@ -83,7 +83,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [nvtt](specs/stdlib/modules/nvtt.md) | Not implemented in this checkout; see ownership exclusions |
 | [objective-c](specs/stdlib/modules/objective-c.md) | Not implemented in this checkout; see ownership exclusions |
 | [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Not implemented in this checkout; see ownership exclusions |
-| [pcg](specs/stdlib/modules/pcg.md) | Not implemented in this checkout; see ownership exclusions |
+| [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
 | [performance-report](specs/stdlib/modules/performance-report.md) | Not implemented in this checkout; see ownership exclusions |
 | [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Not implemented in this checkout; see ownership exclusions |
 | [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Not implemented in this checkout; see ownership exclusions |
