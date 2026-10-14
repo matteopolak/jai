@@ -524,6 +524,20 @@ impl Interp {
         id_out: u64,
     ) -> Res<u64> {
         const CREATE_SUSPENDED: u64 = 4;
+        let valid_entry = self
+            .func_of(start)
+            .and_then(|func| program.funcs[func.0 as usize].as_ref())
+            .is_some_and(|function| {
+                let signature = &function.sig;
+                signature.conv == ir::Conv::C
+                    && signature.params == [Ty::Ptr]
+                    && signature.returns == [Ty::I32]
+                    && !signature.c_varargs
+                    && signature.c_abi.is_none()
+            });
+        if !valid_entry {
+            return self.trap("Win32 thread entry ABI requires one pointer argument and one 32-bit result with C convention");
+        }
         let Some(id) =
             self.spawn_gated_thread(program, start, parameter, flags & CREATE_SUSPENDED != 0)?
         else {

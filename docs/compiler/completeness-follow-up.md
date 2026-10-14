@@ -60,6 +60,9 @@ establishes gated startup, unsigned callback results and caller-owned handles;
 [explicit CRT exit](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/endthread-endthreadex)
 terminates the current thread. This implementation uses Rust-owned OS threads
 to execute interpreted procedures under the existing baton scheduler.
+Entry validation requires the actual scalar C ABI (one pointer argument and one
+32-bit result, no aggregate/variadic adaptation); an original wide-result callback
+previously accepted is now rejected before spawning.
 
 Original tests execute both APIs, zero/timed waits, nested suspend counts,
 resumption, exit-code queries, explicit CRT exit and handle closure on this host.

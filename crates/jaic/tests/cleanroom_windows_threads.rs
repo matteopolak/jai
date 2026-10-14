@@ -72,3 +72,26 @@ fn explicit_crt_exit_finishes_only_the_current_interpreted_thread() {
         panic!("{}", error.render(&c.sources));
     }
 }
+
+#[test]
+fn managed_windows_thread_entry_requires_the_real_callback_abi() {
+    let mut options = Options::host();
+    options.runtime_support = false;
+    let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
+    let source = r#"
+        CreateThread :: (security:*void, stack_size:u64, entry:*void, data:*void, flags:u32, id:*u32) -> u64 #foreign;
+        WaitForSingleObject :: (handle:u64, timeout:u32) -> u32 #foreign;
+        CloseHandle :: (handle:u64) -> s32 #foreign;
+        wrong :: (data:*void) -> u64 #c_call { return 17; }
+        run :: () { h:=CreateThread(null,0,cast(*void)wrong,null,0,null); WaitForSingleObject(h,5000); CloseHandle(h); }
+        #run run();
+    "#;
+    let error = c
+        .compile_sources(&[ProgramSource::String(source.into())])
+        .expect_err("wide callback result must not masquerade as u32");
+    assert!(
+        error.message.contains("thread entry ABI"),
+        "{}",
+        error.render(&c.sources)
+    );
+}
