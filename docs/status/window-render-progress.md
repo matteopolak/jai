@@ -1,5 +1,22 @@
 # Window/render progress
 
+After `31ded39`, depth/stencil textures use proper native framebuffer attachments,
+read/draw buffer selection, depth/stencil blit masks and nearest depth filtering.
+Actual D16/D24S8/D32F/D32FS8 clear/resize/packed readback passes interpreter/O0/O2.
+Text coordinate parity and left/right scissor assertions pass on the real driver.
+Pending PBO reads now survive their creating AppKit window closing: per-context
+FBOs are released and shared buffer/fence resources remain consumable in the live
+share group. The original strict-context failure was reproduced before this fix.
+
+Latest full runner: **147 passes, six visible dependency failures** (four canonical
+Windows File assertions, two missing canonical WGL constructors). All host cases
+pass interpreter/native O0/O2. Full owned jaifmt --check and jailint -D warnings
+pass. Canonical AppKit setTitle now replaces the superseded private title bridge.
+BC4 compressed upload/update byte readback passes all three host modes. The extra
+negative test verifies an explicit diagnostic for programmatic Meta persistence,
+whose spelling is absent from the reviewed grammar; it is not claimed as completed
+Meta serialization support.
+
 Follow-up after `b9e7115`: public AppKit swap_view_buffers selects a real associated
 context. Native close notifications remove Window_Info/context and per-window GPU
 records; a detached root share context preserves live GPU resources across close/

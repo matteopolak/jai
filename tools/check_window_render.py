@@ -67,6 +67,7 @@ def main():
         host.append("public-window")
         host.append("texture-driver")
         host.append("shader-driver")
+        host.append("depth-driver")
         host.append("window-render-host")
     for name in host:
         source = test_source(name)
@@ -115,6 +116,13 @@ def main():
                                   cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
     if checked_cast.returncode != 1 or checked_cast.stdout or "cast of 65416 to `s16` overflows" not in checked_cast.stderr:
         failures.append(f"checked narrowing regression: {checked_cast.stdout}{checked_cast.stderr}")
+    else:
+        count += 1
+    unsupported = subprocess.run([str(compiler), str(ROOT / "tests/window-render/keymap-meta-persistence-negative.jai"),
+                                  "-interp", "-I", str(args.stdlib)], cwd=ROOT, env=env,
+                                 capture_output=True, text=True, timeout=60)
+    if unsupported.returncode == 0 or unsupported.stdout or "reviewed keymap persistence grammar has no Meta modifier prefix" not in unsupported.stderr:
+        failures.append(f"unsupported Meta persistence diagnostic regression: {unsupported.stdout}{unsupported.stderr}")
     else:
         count += 1
     print(f"{count} focused compiler/program invocations passed; {len(failures)} failed", flush=True)

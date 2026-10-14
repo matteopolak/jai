@@ -4,7 +4,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [Window/render progress](status/window-render-progress.md): scoped native window,
-  input, Keymap, font-atlas/text, texture and asynchronous readback evidence;
+  input, Keymap, font-atlas/text, texture, depth/stencil and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 - [Portable MPEG](portable-mpeg.md): buffers, tables, elementary video/Layer II audio and remaining demux/compiler gaps

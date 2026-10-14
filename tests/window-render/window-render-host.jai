@@ -75,10 +75,20 @@ main :: () {
     S.set_render_target(*retained);
     GL.gl.glReadPixels(2, 2, 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, pixel.data);
     assert(pixel[0] == 255 && pixel[1] == 0 && pixel[2] == 0);
-    S.texture_destroy(*retained);
+    S.set_render_target(second);
+    S.set_render_target(*retained);
+    pending := S.pixel_read_begin(*retained, .RGBA8);
+
     S.set_render_target(replacement);
     close(second, O.selector("close"));
     O.release(second);
+    GL.gl.glFinish();
+    assert(S.pixel_read_is_done(pending));
+    readback := S.pixel_read_end(pending);
+
+    assert(readback.width == 8 && readback.height == 8 && readback.data[0] == 255);
+    S.deinit(*readback);
+    S.texture_destroy(*retained);
     close(replacement, O.selector("close"));
     O.release(replacement);
     assert(S.window_infos.count == 0);
