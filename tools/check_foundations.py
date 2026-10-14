@@ -10,7 +10,8 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "file-utilities-shape", "foundation-filesystem", "hash-scalars", "file-visitation", "basic-output", "formatter-records", "basic-sleep",
          "format-grammar", "format-floats", "format-aggregates", "format-types", "assert-message",
          "basic-configuration", "temporary-stamping", "float-parsing", "type-parameter-format",
-         "formatter-parameter-defaults", "wasm-basic-minimal", "float-roundtrip")
+         "formatter-parameter-defaults", "wasm-basic-minimal", "float-roundtrip",
+         "memory-debugger-interface", "memory-debugger-default")
 
 
 def owned_sources():
@@ -19,7 +20,8 @@ def owned_sources():
              for module in ("Basic", "String", "Hash", "File_Utilities")]
     paths.extend((ROOT / "stdlib/internal/basic").glob("format*.jai"))
     paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
-                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "module"))
+                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "module"))
+    paths.append(ROOT / "stdlib/internal/basic-interface/module.jai")
     paths.extend((ROOT / "stdlib/internal/string").glob("*.jai"))
     paths.append(ROOT / "stdlib/internal/hash/module.jai")
     paths.extend(path for path in (ROOT / "stdlib/internal/files").glob("*.jai") if path.name != "file.jai")
@@ -27,6 +29,8 @@ def owned_sources():
     paths.extend((ROOT / "tests/portable-stdlib/negative").glob("format-*.jai"))
     paths.append(ROOT / "tests/portable-stdlib/negative/builder-ensured-range.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/interface-parameter-module/module.jai")
+    paths.append(ROOT / "tests/portable-stdlib/support/test-heap.jai")
     return sorted(set(paths))
 
 
@@ -97,7 +101,8 @@ def main():
     for name, diagnostic in (("hash-unsupported", "get_hash requires an integer, boolean, enum, pointer, or float"),
                              ("hash-seed-visibility", "no exported member `HASH_INIT`"),
                              ("builder-buffer-visibility", "no exported member `Buffer`"),
-                             ("basic-memory-debugger", "Memory_Debugger_Interface layout is not reviewed")):
+                             ("basic-replacement-interface", "check_"),
+                             ("basic-interface-import-visibility", "no exported member `Interface_Definition`")):
         source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         if args.jaifmt:
             run([formatter,"--check",source], "")
@@ -146,8 +151,8 @@ def main():
                 run([compiler, source, "-os", "wasm", f"-{level}", "-exe", binary])
                 run(["node", "--no-warnings", ROOT / "tools/run_foundations_wasm.mjs", binary], "ok\n")
             print(f"passed production WASI O0/O2: {name}", flush=True)
+    failures = []
     if args.cross:
-        failures = []
         for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("macos", "x64"), ("windows", "x64"), ("windows", "arm64"), ("wasm", "wasm64")):
             try:
                 for name in CASES:
@@ -166,8 +171,18 @@ def main():
             except RuntimeError as error:
                 failures.append(f"{os_name}/{cpu}: {error}")
                 print(f"FAILED target {os_name}/{cpu}; continuing independent targets", flush=True)
-        if failures:
-            raise RuntimeError("\n".join(failures))
+    if args.jaifmt:
+        run([formatter,"--check",ROOT / "tests/portable-stdlib/pending/module-interface-constraint.jai"], "")
+    constraint = subprocess.run([compiler, "-I", ROOT / "tests/portable-stdlib/pending", "-check",
+                                 ROOT / "tests/portable-stdlib/pending/module-interface-constraint.jai"],
+                                cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
+    if constraint.returncode != 1 or "run" not in constraint.stderr:
+        failures.append("compiler must reject the invalid unused module interface constraint:\n"
+                        f"exit={constraint.returncode}\n{constraint.stdout}{constraint.stderr}")
+    else:
+        print("passed general unused module-interface constraint rejection", flush=True)
+    if failures:
+        raise RuntimeError("\n".join(failures))
 
 
 if __name__ == "__main__":

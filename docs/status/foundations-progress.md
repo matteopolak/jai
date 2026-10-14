@@ -1,5 +1,27 @@
 # Foundations progress
 
+Current checkpoint: 44cca8b committed; the five-parameter debugger/hook batch
+and direct binary32 rounding fix are reviewed/tested and awaiting own commit.
+All 26 positive cases pass interpreter/native O0/O2; five runtime rejection
+cases assert as required; all 21 supported production WASI cases pass O0/O2
+with non-WASI imports rejected. Real unchanged jaifmt builds at O2, its CLI
+and owned --check pass, and scoped source-built jailint -D warnings passes.
+Latest default/custom debugger tests include real heap allocation/destruction,
+failed resize preservation, mixed-configuration address reuse and frame counts.
+
+Overall runner still fails the required unused-module-interface rejection:
+compiler accepts Broken for $I/interface Required when unused. Current code
+keeps the exact declared constraint; no Basic-specific substitute check.
+Six targets pass unused-code checks including every newly affected case.
+macOS x64 retains the peer POSIX itimerval blocker. No target was disabled.
+
+Next: commit owned debugger batch, refresh NEW compiler when general interface
+validation lands, rerun the required rejection and production checks. Remaining
+formatter/style/visualizer contract questions stay in the focused questions;
+Windows runtime and final corpus/release verification remain coordinator-owned.
+
+## Prior milestones and failure evidence
+
 Current committed checkpoints: 9d2c6bd, 2db13bf (formatter and original tests).
 
 Active work: reviewed Basic configuration propagation, enabled/disabled builder
@@ -62,3 +84,26 @@ default sentinel selection. This resolves the interface-shape question. Next
 batch implements the exact fifth parameter and real debugger notification
 routing; the current explicit unsupported guard will be removed, not retained
 as a stale contract gap.
+Exact five parameters now propagate through the public/private modules and a
+single canonical four-hook interface declaration. Custom replacement alias
+identity and real allocation/reallocation/free/heap notifications pass initial
+tests. Default debugger has real allocator ownership/live allocation records,
+synchronized updates, and visualization-on/off frame counters/logger snapshots;
+default production WASI runs with no env imports. No unsupported-interface guard
+remains. Memory debugger/heap support is now being expanded in the owned runner.
+
+New general compiler request: $I/interface constraints on module parameters
+are accepted without structural validation when the parameter is unused. Own
+pending/module-interface-constraint.jai with -I tests/portable-stdlib/pending
+currently succeeds for Broken with no run method. Required: validate all
+declared interface members/signatures during parameter binding, preserving
+normal lazy body checking; no Basic-specific assertions or API weakening.
+All 26 host cases now pass interpreter/native O0/O2 and all 21 supported
+production WASI cases pass O0/O2, including real heap state/block allocation
+and default/custom debug notification, ownership diagnostics and visualization
+flag effects. Real unchanged jaifmt build/CLI/check and warnings-denied scoped
+jailint pass. The general unused-interface rejection is now a required runner
+gate: current compiler wrongly accepts it, so no overall full-pass claim.
+Compiler declaration site: sema/modules.rs declare_module_parameter strips
+poly type syntax; retain/evaluate its interface constraint against each provided
+or default value, including type-valued struct interfaces, before body use.

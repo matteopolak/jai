@@ -10,21 +10,43 @@ This is a deviations inventory, not a claim of completed production integration.
   setter/global or prelude field was invented. Tests exercise both paths. Risk:
   the eventual reviewed hook can differ; resolve its exact declaration and
   integrate that hook while preserving reflected type identity.
-- **Memory debugger interface** — reviewed Basic now gives five parameters.
-  The facade/private module propagate MEMORY_DEBUGGER=false, ENABLE_ASSERT=true,
-  VISUALIZE_MEMORY_DEBUGGER=true and TEMP_ALLOCATOR_OVERWRITE_MEMORY=false.
-  ENABLE_ASSERT controls both Buffer layout and the discard assert declaration;
-  temp stamping executes when enabled. MEMORY_DEBUGGER=true diagnoses missing
-  reviewed Memory_Debugger_Interface shape. The typed REPLACEMENT_INTERFACE
-  parameter cannot be declared faithfully without that shape and remains absent;
-  no fake interface or accepted-but-ignored replacement parameter was added.
-  Proper fix: review interface fields/procedures, implement real debugging and
-  declare the exact fifth parameter. VISUALIZE has no effect while debugging
-  is disabled, as reviewed. Configuration tests verify default/on type identity,
-  on/off Buffer sizes and ensured counters, and zero discarded side effects.
-  Latest synchronized review now supplies the four-hook defining shape. The
-  unsupported guard is a temporary checkpoint only; exact replacement parameter
-  and real enabled notification routing are the next implementation batch.
+- **Memory debugger scope/performance** — all five exact reviewed parameters
+  now propagate, including the constrained replacement type and canonical
+  sentinel interface. The reviewed default interface's four inline no-op hooks
+  are normative contract declarations, not substitute debugger functionality.
+  The sentinel selects real live allocation/heap ownership tracking;
+  replacements retain canonical type/storage identity. Core alloc/realloc/free,
+  arrays, builder buffers and temporary backing pages route actual callbacks.
+  Failed resize retains the old live object and emits no false free/alloc event.
+  A synchronized linked registry detects ownership mismatches and duplicate
+  live registration. Lookup is linear in live objects; metadata is reclaimed
+  on free/heap destruction. Metadata uses raw default-allocator calls
+  to prevent recursive instrumentation. External/raw allocations are not
+  automatically instrumented, and unknown frees are allowed because another
+  Basic configuration may have allocated them. Temporary bump objects are
+  excluded from default tracking; their physical backing pages are tracked.
+  Longer-term improvements: indexed metadata and runtime/implicit-allocation
+  instrumentation coordinated with compiler/runtime ownership. No exact
+  full-process leak-scanning support is claimed. A retired-address tombstone
+  design was removed after an original deterministic allocator-reuse regression
+  exposed false rejection across Basic configurations; that regression passes.
+- **Memory visualization transport** — VISUALIZE controls actual per-frame
+  block/byte counters and the reviewed frame-update hook publishes a textual
+  snapshot through context.logger without allocating its own formatted string.
+  False suppresses that work/output; replacements own their implementation.
+  This is independently designed text visualization, not an implemented native
+  GUI/remote visualizer protocol. Reviewed specs do not define that transport;
+  precise expected transport is a focused question. Tests prove real counts,
+  flag effects and callback-scoped message lifetime. The old unsupported-debugger
+  guard and its negative fixture are removed after hook review/implementation.
+- **Module interface constraint validation** — the compiler currently strips
+  polymorphic module-parameter types without validating their interface member
+  contract when unused. Correct provided interfaces work and missing members
+  fail when invoked, but invalid unused replacements can be accepted. Minimal
+  independent pending/module-interface-constraint with its helper module proves
+  this without Basic. Proper general compiler fix is binding-time structural
+  constraint validation, not library-specific name checks or weaker signatures.
+  Source declares the exact interface constraint; no workaround is introduced.
 - **Temporary stamping cost** — `temporary.jai` stamps rolled-back bytes with
   SET_STORAGE_MARK_STAMP, reset initial storage with RESET_STORAGE_STAMP and
   overflow payloads before free with FREE_PAGE_STAMP. When later pages are
@@ -58,7 +80,9 @@ This is a deviations inventory, not a claim of completed production integration.
   snprintf/localeconv/strtod imports with original arbitrary-precision integer
   conversion. Finite floats expand exactly as integers times powers of five,
   decimal precision rounds ties to even, and parsing rounds exact decimal/hex
-  rationals to binary64, including subnormals. Shortest searches 9/17 significant
+  rationals directly to binary32/binary64, including subnormals. Direct target
+  rounding fixes rare double-rounding errors near binary32 halfway/overflow
+  boundaries, covered by original exact decimal/hex regressions. Shortest searches 9/17 significant
   precisions and reparses candidates; repeated allocations and integer work are
   deliberate performance costs, not reduced precision. Long inputs use dynamic
   limbs with no fixture-specific limits; extreme exponents classify before
@@ -105,10 +129,12 @@ This is a deviations inventory, not a claim of completed production integration.
   own executable fixture requiring a Windows host. Wasm process exit is excluded
   because no Basic.exit export is reviewed there. No lint suppression or test
   assertion weakening was added. Coordinator owns full corpus/release checks.
-  The compile-rejection fixture basic-memory-debugger is formatted/checked and
-  required to produce the explicit unsupported-interface diagnostic. It cannot
-  pass compiler-backed lint because its purpose is a compile-time rejection;
-  it is kept outside the positive lint inventory, like the API rejection cases.
+  The former unsupported-debugger compile-rejection fixture was retired when
+  the interface contract and real implementation became available. Current
+  invalid replacement/private-import fixtures are formatted/checked and must
+  fail compilation; they remain outside positive compiler-backed lint, like
+  other compile-rejection cases. The unused-interface reproducer is also a
+  mandatory rejection gate and currently fails because the compiler accepts it.
 
 Prior checkpoint evidence: seventeen formatter/core cases and four formatter-assertion
 cases passed interpreter/native O0/O2;
@@ -140,3 +166,12 @@ NEW bindings remove the earlier ipc_perm blocker but p_realtimer references
 missing itimerval at declarations.jai:3422. No local binding patch or target
 exclusion was added. The existing POSIX minimal reproduction continues to
 cover this ownership blocker; proper shape/fix belongs to bindings review.
+
+Latest debugger/direct-binary32 batch: all 26 host cases and all 21 supported
+production WASI cases pass O0/O2 (host interpreter too), including exact
+binary32 halfway/subnormal/overflow vectors. Five runtime assertions, real
+unchanged jaifmt build/CLI/check and scoped warnings-denied lint pass. A general
+unused-interface rejection gate is retained and fails on current compiler;
+overall success is not claimed. Six-target unused-code checks of all newly
+affected cases pass. Metadata is live-only after the address-reuse regression;
+no tombstone workaround remains.
