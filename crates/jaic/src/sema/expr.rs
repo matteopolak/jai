@@ -75,7 +75,7 @@ impl Compiler {
                 match expected.map(|t| self.types.repr(t)) {
                     Some(t) if self.types.is_float(t) => Ok(Operand::Const {
                         ty: t,
-                        value: Value::Float(v as f64),
+                        value: Value::float(v as f64),
                         untyped: true,
                     }),
                     _ => Ok(Operand::untyped_int(v)),
@@ -83,7 +83,10 @@ impl Compiler {
             }
             E::Float(v) => Ok(Operand::Const {
                 ty: self.float_literal_type(*v, expr.span),
-                value: Value::Float(*v),
+                value: Value::Float(
+                    *v,
+                    crate::lexer::float_literal_precision(self.sources.snippet(span), *v),
+                ),
                 untyped: true,
             }),
             E::Char(c) => Ok(Operand::Const {
@@ -1061,7 +1064,7 @@ impl Compiler {
                         })
                     }
                     Operand::Const {
-                        value: Value::Int(_) | Value::Float(_) | Value::Bool(_),
+                        value: Value::Int(_) | Value::Float(_, _) | Value::Bool(_),
                         ..
                     } => err(
                         span,
@@ -1144,7 +1147,7 @@ impl Compiler {
                 {
                     let folded = match (op, value) {
                         (UnOp::Neg, Value::Int(v)) => Some(Value::Int(v.wrapping_neg())),
-                        (UnOp::Neg, Value::Float(v)) => Some(Value::Float(-v)),
+                        (UnOp::Neg, Value::Float(v, required)) => Some(Value::Float(-v, *required)),
                         (UnOp::Not, Value::Bool(v)) => Some(Value::Bool(!v)),
                         (UnOp::Not, Value::Int(v)) => Some(Value::Bool(*v == 0)),
                         (UnOp::Not, Value::Null) => Some(Value::Bool(true)),
@@ -1268,7 +1271,9 @@ impl Compiler {
                     let r = self.types.repr(e);
                     match &value {
                         Value::Int(_) => self.types.is_integer(r) || self.types.is_float(r),
-                        Value::Float(_) => self.types.is_float(r),
+                        Value::Float(_, p) => {
+                            self.types.is_float(r) && !(p.requires_float64 && r == TypeId::F32)
+                        }
                         Value::Null => {
                             self.types.is_pointer(r)
                                 || matches!(self.types.kind(r), TypeKind::Proc(_))
@@ -1278,7 +1283,7 @@ impl Compiler {
                 });
                 let ty = target.unwrap_or_else(|| self.default_untyped(ty, &value));
                 let value = match value {
-                    Value::Int(i) if self.types.is_float(ty) => Value::Float(i as f64),
+                    Value::Int(i) if self.types.is_float(ty) => Value::float(i as f64),
                     v => v,
                 };
                 Operand::Const {
@@ -1654,7 +1659,7 @@ impl Compiler {
             matches!(
                 o,
                 Operand::Const {
-                    value: Value::Float(_),
+                    value: Value::Float(_, _),
                     untyped: true,
                     ..
                 }
@@ -1671,9 +1676,11 @@ impl Compiler {
                 && !matches!(s.types.kind(o.ty()), TypeKind::Enum(_))
         };
         if !is_shift && is_float_lit(&rhs) && is_int_value(self, &lhs) {
-            lhs = self.explicit_cast(f, lhs, TypeId::F32, ast::CastFlags::default(), span)?;
+            let ty = self.default_untyped(rhs.ty(), &rhs.const_value().unwrap());
+            lhs = self.explicit_cast(f, lhs, ty, ast::CastFlags::default(), span)?;
         } else if !is_shift && is_float_lit(&lhs) && is_int_value(self, &rhs) {
-            rhs = self.explicit_cast(f, rhs, TypeId::F32, ast::CastFlags::default(), span)?;
+            let ty = self.default_untyped(lhs.ty(), &lhs.const_value().unwrap());
+            rhs = self.explicit_cast(f, rhs, ty, ast::CastFlags::default(), span)?;
         }
         // Unify operand types.
         let patterns = (self.bit_pattern(a.span), self.bit_pattern(b.span));
@@ -2102,14 +2109,14 @@ impl Compiler {
                 let lf = matches!(
                     lhs,
                     Operand::Const {
-                        value: Value::Float(_),
+                        value: Value::Float(_, _),
                         ..
                     }
                 );
                 let rf = matches!(
                     rhs,
                     Operand::Const {
-                        value: Value::Float(_),
+                        value: Value::Float(_, _),
                         ..
                     }
                 );
@@ -2117,9 +2124,17 @@ impl Compiler {
                     return Ok(TypeId::VOID_PTR);
                 }
                 Ok(if lf || rf {
+                    let natural = if [lhs, rhs].iter().any(|o| {
+                        o.const_value()
+                            .is_some_and(|v| self.default_untyped(o.ty(), &v) == TypeId::F64)
+                    }) {
+                        TypeId::F64
+                    } else {
+                        TypeId::F32
+                    };
                     expected
                         .filter(|&e| self.types.is_float(e))
-                        .unwrap_or(TypeId::F32)
+                        .unwrap_or(natural)
                 } else {
                     expected
                         .filter(|&e| self.types.is_integer(e) || self.types.is_float(e))
@@ -2328,14 +2343,34 @@ impl Compiler {
                     other => other,
                 }
             }
-            (Value::Int(_) | Value::Float(_), Value::Int(_) | Value::Float(_)) => {
+            (Value::Int(_) | Value::Float(_, _), Value::Int(_) | Value::Float(_, _)) => {
+                let mut precision = crate::lexer::FloatLiteralPrecision::default();
+                for value in [lv, rv] {
+                    if let Value::Float(_, p) = value {
+                        precision.defaults_to_float64 |= p.defaults_to_float64;
+                        precision.requires_float64 |= p.requires_float64;
+                        precision.requires_float64_due_to_significant_digits |=
+                            p.requires_float64_due_to_significant_digits;
+                    }
+                }
+                if self.types.repr(ty) == TypeId::F32 && !untyped && precision.requires_float64 {
+                    return err(
+                        span,
+                        "this floating literal requires float64 precision (use an explicit cast to round it)",
+                    );
+                }
                 let a = num(lv);
                 let b = num(rv);
+                let float = |value| {
+                    let mut p = precision;
+                    p.requires_float64 |= crate::lexer::has_big_float32_exponent(value);
+                    Value::Float(value, p)
+                };
                 match op {
-                    BinOp::Add => Some(Value::Float(a + b)),
-                    BinOp::Sub => Some(Value::Float(a - b)),
-                    BinOp::Mul => Some(Value::Float(a * b)),
-                    BinOp::Div => Some(Value::Float(a / b)),
+                    BinOp::Add => Some(float(a + b)),
+                    BinOp::Sub => Some(float(a - b)),
+                    BinOp::Mul => Some(float(a * b)),
+                    BinOp::Div => Some(float(a / b)),
                     _ => a.partial_cmp(&b).and_then(cmp),
                 }
             }
@@ -2368,7 +2403,7 @@ impl Compiler {
             && !matches!((lv, rv), (Value::Bool(_), Value::Bool(_)) if !matches!(op, BinOp::Eq | BinOp::Ne))
         {
             TypeId::BOOL
-        } else if matches!(value, Value::Float(_)) && !self.types.is_float(ty) {
+        } else if matches!(value, Value::Float(_, _)) && !self.types.is_float(ty) {
             if self.types.is_float(*rt) {
                 *rt
             } else {
@@ -2836,7 +2871,7 @@ impl Compiler {
 fn num(v: &Value) -> f64 {
     match v {
         Value::Int(i) => *i as f64,
-        Value::Float(f) => *f,
+        Value::Float(f, _) => *f,
         _ => 0.0,
     }
 }

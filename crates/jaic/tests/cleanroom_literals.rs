@@ -42,6 +42,32 @@ fn hex_float_spellings_require_four_eight_or_sixteen_digits() {
     );
 }
 
+#[test]
+fn required_float_precision_survives_aliases_and_constant_arithmetic() {
+    for source in [
+        "value: float32 = 0.123456789;",
+        "precise :: 0.123456789; alias :: precise; value: float32 = alias;",
+        "precise :: 0.123456789; value: float32 = -precise;",
+        "precise :: 0.123456789; value: float32 = precise + 0.0;",
+        "consume :: (x: float32) {} main :: () { consume(0.123456789); }",
+    ] {
+        let mut options = Options::host();
+        options.runtime_support = false;
+        let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
+        assert!(
+            c.compile_sources(&[ProgramSource::String(source.into())])
+                .is_err(),
+            "required precision was silently narrowed: {source}"
+        );
+    }
+    check(
+        "value: float32 = 0.12345678; precise :: 0.123456789; narrowed: float32 = cast(float32) precise; #assert(type_of(narrowed) == float32);",
+    );
+    check(
+        "select :: (x: float32) -> int { return 32; } select :: (x: float64) -> int { return 64; } #assert(select(0.123456789) == 64); #assert(type_of(0.0 + 0.12345678) == float64); #assert(type_of(0.0 + 0.123456789) == float64);",
+    );
+}
+
 fn literal_record_flags(literal: &str) -> i64 {
     use jaic::records::{FieldRef, Item, Records};
     let mut options = Options::host();

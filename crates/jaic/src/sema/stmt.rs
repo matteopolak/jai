@@ -1891,8 +1891,8 @@ impl Compiler {
 
     fn const_equal(&self, a: &Operand, b: &Operand) -> bool {
         match (a.const_value(), b.const_value()) {
-            (Some(Value::Int(x)), Some(Value::Float(y)))
-            | (Some(Value::Float(y)), Some(Value::Int(x))) => x as f64 == y,
+            (Some(Value::Int(x)), Some(Value::Float(y, _)))
+            | (Some(Value::Float(y, _)), Some(Value::Int(x))) => x as f64 == y,
             (Some(x), Some(y)) => x == y,
             _ => false,
         }

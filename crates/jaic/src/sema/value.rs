@@ -23,7 +23,9 @@ pub struct CodeId(pub u32);
 #[derive(Clone, Debug)]
 pub enum Value {
     Int(i128),
-    Float(f64),
+    /// The second component retains a lexical requirement for float64 through
+    /// untyped aliases and folding. Explicit/typed conversions clear it.
+    Float(f64, crate::lexer::FloatLiteralPrecision),
     Bool(bool),
     String(Rc<[u8]>),
     Type(TypeId),
@@ -69,7 +71,7 @@ impl PartialEq for Value {
         use Value::*;
         match (self, other) {
             (Int(a), Int(b)) => a == b,
-            (Float(a), Float(b)) => a.to_bits() == b.to_bits(),
+            (Float(a, ar), Float(b, br)) => a.to_bits() == b.to_bits() && ar == br,
             (Bool(a), Bool(b)) => a == b,
             (String(a), String(b)) => a == b,
             (Type(a), Type(b)) => a == b,
@@ -90,7 +92,10 @@ impl std::hash::Hash for Value {
         std::mem::discriminant(self).hash(state);
         match self {
             Value::Int(v) => v.hash(state),
-            Value::Float(v) => v.to_bits().hash(state),
+            Value::Float(v, required) => {
+                v.to_bits().hash(state);
+                required.hash(state);
+            }
             Value::Bool(v) => v.hash(state),
             Value::String(v) => v.hash(state),
             Value::Type(v) => v.hash(state),
@@ -106,6 +111,14 @@ impl std::hash::Hash for Value {
 }
 
 impl Value {
+    pub fn float(value: f64) -> Value {
+        Value::Float(value, Default::default())
+    }
+
+    pub fn requires_float64(&self) -> bool {
+        matches!(self, Value::Float(_, precision) if precision.requires_float64)
+    }
+
     pub fn as_int(&self) -> Option<i128> {
         match self {
             Value::Int(v) => Some(*v),
@@ -124,7 +137,7 @@ impl Value {
     pub fn render(&self, types: &Types) -> String {
         match self {
             Value::Int(v) => v.to_string(),
-            Value::Float(v) => format!("{v}"),
+            Value::Float(v, _) => format!("{v}"),
             Value::Bool(v) => v.to_string(),
             Value::String(s) => format!("\"{}\"", String::from_utf8_lossy(s)),
             Value::Type(t) => types.name(*t),

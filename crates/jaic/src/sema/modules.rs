@@ -1240,36 +1240,48 @@ impl Compiler {
             );
         }
         if let Some((value, ty)) = provided {
-            // A scalar for a parameter with a written type (`DEFAULT_MSAA: s32 = 4`) takes
-            // that type: it becomes the declaration's value instead of an untyped constant.
-            let literal = match &value {
-                Value::Int(i) if *i >= 0 => Some(ast::ExprKind::Int(ast::Int128::new(*i as u128))),
-                Value::Bool(b) => Some(ast::ExprKind::Bool(*b)),
-                Value::Float(x) => Some(ast::ExprKind::Float(*x)),
-                Value::String(s) => Some(ast::ExprKind::Str(s.clone())),
-                _ => None,
-            };
-            let scalar_type = ty == TypeId::VOID
-                || (!matches!(self.types.kind(ty), crate::types::TypeKind::Enum(_))
-                    && (self.types.is_integer(ty) || self.types.is_float(ty)));
-            if scalar_type
-                && let Some(kind) = literal
-                && let EntityKind::Decl {
-                    decl, ..
-                } = &mut self.entity_mut(id).kind
-                && decl.ty.is_some()
-            {
-                Rc::make_mut(decl).value = Some(ast::Expr {
-                    kind,
-                    span: param.span,
-                });
+            // Convert the original constant rather than reconstructing a literal AST:
+            // reconstruction loses lexical precision, relocation identity and declared types.
+            if let Some(target) = param.ty.as_ref().filter(|t| !procs::has_poly(t)) {
+                let expected = self.eval_type(scope, target)?;
+                let actual = if ty == TypeId::VOID {
+                    self.type_of_value(&value)
+                } else {
+                    ty
+                };
+                let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, self.scope_file(scope));
+                let op = self.convert(
+                    &mut f,
+                    lower::Operand::Const {
+                        ty: actual,
+                        value,
+                        untyped: ty == TypeId::VOID,
+                    },
+                    expected,
+                    param.span,
+                )?;
+                let op = if op.is_const() {
+                    op
+                } else {
+                    self.run_thunk(f, op, param.span)?
+                };
+                let Some(value) = op.const_value() else {
+                    return err(
+                        param.span,
+                        "module parameter conversion did not produce a constant",
+                    );
+                };
+                self.entity_mut(id).kind = EntityKind::Const {
+                    value,
+                    ty: expected,
+                };
                 return Ok(());
             }
             // A parameter without a written type is a constant like `NAME :: value`: given an
             // untyped number it stays untyped, so `MAX_FRAMES := 3` passes to a `u64`.
             let untyped = ty == TypeId::VOID
                 && param.ty.is_none()
-                && matches!(value, Value::Int(_) | Value::Float(_));
+                && matches!(value, Value::Int(_) | Value::Float(_, _));
             let entity = self.entity_mut(id);
             entity.kind = EntityKind::Const {
                 value,
@@ -1402,7 +1414,7 @@ impl Compiler {
                     let (value, ty, untyped) = self.eval_const_literal(from_scope, &arg.value)?;
                     let typed = matches!(value, Value::Bytes(_))
                         || matches!(self.types.kind(ty), crate::types::TypeKind::Enum(_))
-                        || (!untyped && matches!(value, Value::Int(_) | Value::Float(_)));
+                        || (!untyped && matches!(value, Value::Int(_) | Value::Float(_, _)));
                     (
                         value,
                         if typed {
@@ -1711,7 +1723,7 @@ fn value_class(value: &Value) -> Option<&'static str> {
         Value::Bool(_) => Some("bool"),
         Value::String(_) => Some("string"),
         Value::Int(_) => Some("integer"),
-        Value::Float(_) => Some("float"),
+        Value::Float(_, _) => Some("float"),
         _ => None,
     }
 }

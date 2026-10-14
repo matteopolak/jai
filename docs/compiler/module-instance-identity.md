@@ -23,6 +23,12 @@ failure. Repeating a failed parse/load returns its original diagnostic; neither
 file deduplication nor module/program-parameter deduplication turns failure into
 an empty successful module. A new compilation creates a fresh loader cache.
 
+Module arguments carry lexical float precision metadata through the cache and
+untyped parameter bindings. Parameters with explicit types now convert the
+original constant using the shared conversion machinery instead of synthesizing
+a new literal AST. This preserves precision, explicit numeric types and pointer
+relocations, and rejects required float64 values supplied to float32 parameters.
+
 ## Configuration
 
 There is no compatibility flag. This is the documented compatibility rule recorded in the [language guide](../specs/jai/modules-workspaces-and-examples.md#imports-and-modules).

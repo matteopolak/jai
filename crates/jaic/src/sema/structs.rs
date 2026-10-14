@@ -396,7 +396,7 @@ impl Compiler {
                 for (k, op) in items.into_iter().enumerate() {
                     let v = self.struct_arg_value(param_scope, op, elem, p.span)?;
                     let v = match (v, self.types.is_float(elem)) {
-                        (Value::Int(i), true) => Value::Float(i as f64),
+                        (Value::Int(i), true) => Value::float(i as f64),
                         (v, _) => v,
                     };
                     self.write_value(&mut array, k as u64 * esize, &v, elem, p.span)?;
@@ -426,7 +426,7 @@ impl Compiler {
                 },
             };
             let value = match (value, self.types.is_float(ty)) {
-                (Value::Int(i), true) => Value::Float(i as f64),
+                (Value::Int(i), true) => Value::float(i as f64),
                 (v, _) => v,
             };
             let ty = if ty == TypeId::VOID {
@@ -2418,12 +2418,12 @@ impl Compiler {
         match value {
             Value::Int(i) => {
                 if self.types.is_float(r) {
-                    return self.write_value(agg, offset, &Value::Float(*i as f64), ty, span);
+                    return self.write_value(agg, offset, &Value::float(*i as f64), ty, span);
                 }
                 let bytes = (*i as u128).to_le_bytes();
                 agg.bytes[o..o + size as usize].copy_from_slice(&bytes[..size as usize]);
             }
-            Value::Float(x) => {
+            Value::Float(x, _) => {
                 if r == TypeId::F32 {
                     agg.bytes[o..o + 4].copy_from_slice(&(*x as f32).to_le_bytes());
                 } else {

@@ -1044,6 +1044,16 @@ impl Compiler {
                     convert::LITERAL
                 });
             }
+            Operand::Const {
+                value: Value::Float(_, precision),
+                untyped: true,
+                ..
+            } if precision.requires_float64 && self.types.repr(param) == TypeId::F32 => {
+                return err(
+                    arg.span,
+                    "this floating literal requires float64 precision (use an explicit cast to round it)",
+                );
+            }
             // A string literal is NUL-terminated, so it converts to a C string.
             Operand::Const {
                 value: Value::String(_),
@@ -3480,7 +3490,7 @@ impl Compiler {
                     Value::String(_)
                         | Value::Int(_)
                         | Value::Bool(_)
-                        | Value::Float(_)
+                        | Value::Float(_, _)
                         | Value::Proc(_)
                         | Value::Type(_)
                 ) && !self.text_may_write(&body, name)

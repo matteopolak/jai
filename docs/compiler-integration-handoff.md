@@ -117,6 +117,14 @@ claimed; the corresponding return boolean is false.
 
 ## Formatting and lint status
 
+Lexical float precision now survives untyped aliases/folding/overloads and module
+arguments. Typed module parameters use the shared constant conversion path, rather
+than synthesizing new literal ASTs. See [precision](compiler/literal-precision.md).
+The focused compiler suite includes 150 unit tests, 32 module, five literal and
+three layout regressions. All 19 owned stdlib fixtures pass in interpreter and
+native modes against the test overlay, and the 11 public-language fixtures pass.
+Core `cargo clippy --locked -p jaic --lib --tests -- -D warnings` passes.
+
 The source-built `target/debug/jailint -D warnings` passes the four public owned
 facades, all four private implementation directories, and the new data fixtures
 with `JAIC_STDLIB` set to the independent test overlay. No lint rule is disabled.

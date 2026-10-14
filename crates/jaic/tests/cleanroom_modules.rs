@@ -31,6 +31,32 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn module_arguments_retain_literal_precision_and_use_real_conversion() {
+    let mut c = compiler(
+        &[
+            ("/lib/typed/module.jai", "#module_parameters(P: float32);"),
+            ("/app/main.jai", "M :: #import \"typed\"(0.123456789);"),
+        ],
+        false,
+    );
+    rejects(&mut c, "requires float64");
+    let mut c = compiler(
+        &[
+            (
+                "/lib/untyped/module.jai",
+                "#module_parameters(P := 0.0); value :: P;",
+            ),
+            (
+                "/app/main.jai",
+                "M :: #import \"untyped\"(0.12345678); #assert(type_of(M.value) == float64);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
 fn bootstrap_alias_preserves_types_and_storage() {
     let mut c = compiler(
         &[

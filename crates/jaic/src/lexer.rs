@@ -737,7 +737,7 @@ impl<'a> Lexer<'a> {
 
 /// Decimal literal precision heuristic documented by the public lexer contract.
 /// This is independent of whether rounding to f32 happens to preserve the value.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 pub struct FloatLiteralPrecision {
     pub defaults_to_float64: bool,
     pub requires_float64: bool,
