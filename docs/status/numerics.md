@@ -54,7 +54,7 @@ python3 tests/numerics/run.py \
 ```
 
 Durable evidence is in `artifacts/numerics-verification/results.json`, per-check
-logs, `artifacts/fresh-numerics-run.log`, `artifacts/compiler-build-fresh.log`,
+logs, `artifacts/corrective-numerics-run.log`, `artifacts/compiler-build-fresh.log`,
 `artifacts/numerics-compiler-provenance.json`, and
 `artifacts/numerics-staging.json`. The earlier verified source/compiler/results
 were preserved separately before rebuilding the newer peer compiler.
@@ -97,7 +97,7 @@ See [implementation details](../numerics.md) and
 
 See [corrective review](numerics-corrective-plan.md) for actual native checks,
 repository formatting/lint commands, generation order, canonical dependency and
-compiler handoffs. Full `jaifmt --check` remains blocked by missing fresh
-File_Utilities APIs; the unmodified repository formatter engine checks all owned
-Jai files successfully. Jailint reports zero findings but explicitly cannot lint
-the failed generic-restriction reproducer body. Neither limitation is a full pass.
+compiler handoffs. The unmodified full jaifmt CLI now builds using isolated local
+tool-bootstrap helpers, and its actual scoped --check passes on 55 owned files.
+Jailint reports zero findings but explicitly cannot lint the failed generic
+restriction reproducer body; that is not complete lint coverage.

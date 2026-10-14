@@ -119,3 +119,10 @@ foundation is ready; missing canonical dependencies then fail normally.
   corpus, release and combined-library verification belongs to the coordinator.
 
 Open contract issues are maintained in [numerics questions](specs/stdlib/numerics-questions.md).
+
+The [corrective review](status/numerics-corrective-plan.md) records current
+production staging commands, native clipboard/cursor tests and actual scoped
+jaifmt --check (55 files, zero changes/errors). The full CLI is source-built with
+separate, local host-tool bootstrap helpers; these do not enter the production
+verification library. Jailint -D warnings reports zero findings, with the known
+generic-restriction reproducer explicitly uncompiled and not fully linted.

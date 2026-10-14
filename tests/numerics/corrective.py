@@ -1,5 +1,6 @@
 """Native integration and explicit unsupported-contract checks; no reference tools."""
 from pathlib import Path
+import argparse
 import json
 import os
 import subprocess
@@ -7,7 +8,10 @@ import sys
 
 root = Path(__file__).resolve().parents[2]
 compiler = root / 'artifacts/target/debug/jaic'
-library = root / 'artifacts/stdlib-fresh'
+parser = argparse.ArgumentParser()
+parser.add_argument('--stdlib', type=Path, default=root/'artifacts/stdlib-verification')
+args = parser.parse_args()
+library = args.stdlib.resolve()
 out = root / 'artifacts/numerics-corrective'
 out.mkdir(parents=True, exist_ok=True)
 env = dict(os.environ, JAIC_STDLIB=str(library))
@@ -29,12 +33,14 @@ def check(name, command, marker=None, diagnostic=False):
         print(text)
     return ok
 
-for source, marker in [('native_clipboard', 'native clipboard ok'),
-                       ('native_cursors', 'native cursor lifecycle ok')]:
+for source, path, marker in [
+        ('native_clipboard', library/'GetRect/tests/native_clipboard.jai', 'native clipboard ok'),
+        ('native_cursors', library/'GetRect/tests/native_cursors.jai', 'native cursor lifecycle ok'),
+        ('native_ui_cursors', root/'tests/numerics/native_ui_cursors.jai', 'native UI cursor lifecycle ok')]:
     for level in ['O0', 'O2']:
         executable = out / (source + '-' + level)
         if check(source + '-' + level + '-build',
-                 [compiler, library / 'GetRect/tests' / (source + '.jai'),
+                 [compiler, path, '-I', 'tests/numerics/dependencies',
                   '-' + level, '-exe', executable]):
             check(source + '-' + level, [executable], marker)
 

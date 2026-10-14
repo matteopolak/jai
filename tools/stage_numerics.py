@@ -9,6 +9,7 @@ parser.add_argument('--destination',type=Path,default=root/'artifacts/stdlib')
 parser.add_argument('--compiler-library',type=Path,help='New compiler-owned stdlib modules, copied read-only without Extensions')
 parser.add_argument('--repair-foundation-buffer-alias',action='store_true')
 parser.add_argument('--formatter-bootstrap',action='store_true',help='Stage real implementations of missing reviewed Basic tool APIs; never modifies peer sources')
+parser.add_argument('--manifest',type=Path,default=root/'artifacts/numerics-staging.json')
 args=parser.parse_args()
 dest=args.destination.resolve()
 if not dest.is_relative_to(root/'artifacts'):
@@ -39,30 +40,41 @@ if args.formatter_bootstrap:
     facade=dest/'Basic/module.jai'
     source=facade.read_text()
     additions=[]
-    implementations=[]
     if 'print :: print_to_builder;' not in source:
         additions.append('print :: print_to_builder;')
-    if 'tprint ::' not in source:
-        additions.append('tprint :: Impl.tprint;')
-        implementations.append('''tprint :: (format_string: string, args: ..Any) -> string {
-    previous := context.allocator;
-    context.allocator = temporary_allocator;
-    defer context.allocator = previous;
-    return sprint(format_string, ..args);
-}''')
-    if 'exit ::' not in source:
-        additions.append('exit :: Impl.exit;')
-        implementations.append('exit :: (status: s32) #foreign numerics_tool_libc "exit";\n#scope_file\nnumerics_tool_libc :: #system_library "libc";')
+    helpers=[]
+    for name in ['tprint','exit','get_working_directory']:
+        if name+' ::' not in source:
+            additions.append(name+' :: Impl.numerics_tool_'+name+';')
+            helpers.append(name)
     if additions:
         facade.write_text(source.replace('#scope_file','\n'.join(additions)+'\n#scope_file',1))
         repairs.append('Formatter bootstrap: reviewed Basic aliases '+', '.join(additions))
-    if implementations:
+    if helpers:
         private=dest/'internal/basic/numerics-tool-integration.jai'
-        private.write_text('// Staging-only reviewed Basic tool API implementations.\n'+'\n'.join(implementations)+'\n')
+        shutil.copyfile(root/'tools/numerics-formatter-basic.jai',private)
         entry=dest/'internal/basic/module.jai'
         load='#load "numerics-tool-integration.jai";'
         text=entry.read_text()
         if load not in text: entry.write_text(text+'\n'+load+'\n')
-manifest=root/'artifacts/numerics-staging.json'
+    facade=dest/'File_Utilities/module.jai'
+    source=facade.read_text()
+    aliases=[]
+    for name in ['is_directory','visit_files']:
+        if name+' ::' not in source:
+            aliases.append(name+' :: Files.'+name+';')
+    if aliases:
+        # Both helper declarations must be absent to avoid duplicate overloads
+        # after the foundation owner implements one of these APIs.
+        if len(aliases)!=2:
+            raise SystemExit('partial filesystem tool APIs now available: update staging bootstrap rather than duplicate declarations')
+        facade.write_text(source.replace('#scope_file','\n'.join(aliases)+'\n#scope_file',1))
+        shutil.copyfile(root/'tools/numerics-formatter-files.jai',dest/'internal/files/numerics-formatter-files.jai')
+        entry=dest/'internal/files/filesystem.jai'
+        entry.write_text('#load "numerics-formatter-files.jai";\n'+entry.read_text())
+        repairs.append('Formatter bootstrap: real scoped POSIX is_directory and visit_files implementation.')
+manifest=args.manifest.resolve()
+if not manifest.is_relative_to(root/'artifacts'):
+    raise SystemExit('staging manifest must remain inside this workspace artifacts directory')
 manifest.write_text(json.dumps(dict(files=records,repairs=repairs),indent=2)+'\n')
 print(f'Staged {len(records)} fresh source files into {dest}; manifest: {manifest}')
