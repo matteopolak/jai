@@ -1,5 +1,12 @@
 # Portable stdlib worker deviations
 
+Platform-io role report: [platform I/O deviations](platform-io-deviations.md)
+enumerates native verification limits, crash DLL packaging/stack bounds, staged
+dependencies, remaining interpreter suspension and debug/race-detector gaps, and
+the absent Machine_X64 public System dependency. Reviewed Windows crash support
+is x64 only; ARM64 enabled-handler rejection is explicitly tested. The older
+private-root lint workaround has been replaced by general strict tool support.
+
 This is the portable worker's current review record, not full release approval.
 The complete per-module completion inventory is in
 [the module ledger](../portable-stdlib-ledger.md). Unimplemented entries remain

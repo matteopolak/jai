@@ -19,7 +19,11 @@ main :: () {
     assert(args.count == 2);
     assert(size_of(P.Pipe_Platform) == 16 && size_of(P.Process.Pipe) == 24);
     assert(size_of(P.Process_Platform) == 32 && size_of(P.Process) == 104);
+    assert(type_info(P.Process).name == "Process" && type_info(P.Process.Pipe).name == "Pipe");
+    assert(type_info(P.Process_Platform).name == "Process_Platform" && type_info(P.Pipe_Platform).name == "Pipe_Platform");
     standalone: P.Process.Pipe;
+
+    assert(standalone.handle == W.INVALID_HANDLE_VALUE && standalone.overlapped == null && !standalone.eof);
     pair_ok, client := P.init_named_pipe_pair(*standalone, false);
 
     assert(pair_ok && standalone.overlapped != null);

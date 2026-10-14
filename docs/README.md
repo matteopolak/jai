@@ -94,7 +94,7 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
-- [Platform I/O backends and native runner](platform-io.md), [worker progress](status/platform-io-progress.md), and [deviations](status/platform-io-deviations.md)
+- [Platform I/O backends and native runner](platform-io.md): public Windows Process, x64 crash ABI, strict target lint; [worker progress](status/platform-io-progress.md) and [deviations](status/platform-io-deviations.md)
 - [Platform I/O compiler and lint handoff](platform-io-compiler-handoff.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)

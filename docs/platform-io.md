@@ -52,8 +52,9 @@ runtime correctness. See the [progress](status/platform-io-progress.md) and
 Unresolved contracts are recorded in the [platform I/O questions](specs/stdlib/platform-io-questions.md).
 The [compiler/tool handoff](platform-io-compiler-handoff.md) records remaining
 interpreter and semantic-lint requirements. The scoped format/lint runner is
-`tools/format_platform_io.py`; its strict lint mode currently fails on incomplete
-coverage instead of treating the underlying tool's quiet exit zero as a full pass.
+`tools/format_platform_io.py`. Its strict lint mode selects macOS ARM64, Linux x64,
+Windows x64 and Windows ARM64, fails on incomplete checking, verifies staged owned
+files byte-for-byte and requires every owned file in the checked-file manifests.
 
 ## System, Thread and runtime
 
@@ -78,16 +79,28 @@ Native Windows process entry parses GetCommandLineW with CommandLineToArgvW and
 strictly converts to UTF-8; the allocations outlive the runtime context and are freed
 after its finalization. Direct initialization calls retain their supplied argc/argv.
 Fatal Jai checks still terminate through the CRT. Optional Windows hardware exception
-diagnostics use a private source-built C backend with SDK-native contexts, bypassing
-no public ABI. The public crash-handler facade still needs its outstanding review.
+diagnostics implement the reviewed public x64 crash-handler facade through a private
+source-built C backend. Its SDK size/offset assertions check the byte-shaped public
+records; contexts are copied to aligned native storage before stack walking. Mutable
+public handler state retains its documented names and storage.
 
 Build the DLL and import library with `tools/build_platform_io_runtime.py --stdlib
-target/platform-io-stdlib --cpu x64` (or arm64). The runner's `--windows-crash` option
+target/platform-io-stdlib --cpu x64`. The runner's `--windows-crash` option
 builds this dependency and an enabled-startup access-violation fixture, checking the
 native exception code and emitted diagnostics when run on Windows. This is a real
 production dependency requiring coordinator native CI/package integration. The
 diagnostic handler prints up to 64 actual frames and resolves available symbols;
-missing unwind/symbol information is not synthesized.
+missing unwind/symbol information is not synthesized. DbgHelp calls are serialized.
+A fault that interrupts an active symbol operation prints an explicit stack-unavailable
+message instead of deadlocking. The public section query inspects the running main
+executable's PE section table and returns the real section name and write permission.
+
+Crash initialization occurs only from the configured system entry point. An
+initialization-only import does not install or import the handler. The reviewed
+Windows contract is x64-only; enabling it on ARM64 fails with a target diagnostic,
+while ordinary ARM64 entry/initialization continues to compile. The runner checks
+both configurations, including the expected failure. The x64 DLL/import library
+must be built and the DLL packaged beside executables using the handler.
 
 ## Public Windows Process
 

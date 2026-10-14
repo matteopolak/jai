@@ -24,6 +24,13 @@ def run(command, env, expected=None):
                            f"exit={result.returncode}\n{result.stdout.decode(errors='replace')}{result.stderr.decode(errors='replace')}")
 
 
+def expect_diagnostic(command, env, message):
+    result = subprocess.run([str(arg) for arg in command], cwd=ROOT, env=env,
+                            capture_output=True, timeout=60)
+    if result.returncode == 0 or message.encode() not in result.stdout + result.stderr:
+        raise RuntimeError(f"missing required diagnostic {message!r}: {result}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jaic", type=Path, required=True)
@@ -41,6 +48,12 @@ def main():
     env = dict(os.environ, JAIC_STDLIB=str(args.stdlib.resolve(strict=True)))
     output = ROOT / "target/platform-io-tests"
     output.mkdir(parents=True, exist_ok=True)
+    cpu = args.windows_build or ("arm64" if platform.machine().lower() in {"arm64", "aarch64"} and os.name == "nt" else "x64")
+    if cpu == "x64" and (os.name == "nt" or args.windows_build or args.windows_crash):
+        subprocess.run([sys.executable, str(ROOT / "tools/build_platform_io_runtime.py"),
+                        "--stdlib", str(args.stdlib.resolve()), "--cpu", cpu], cwd=ROOT, check=True)
+        shutil.copy2(args.stdlib.resolve() / "internal/runtime/crash-native/platform_io_windows_crash.dll",
+                     output / "platform_io_windows_crash.dll")
     helper = output / "process-helper.exe"
     if os.name == "nt":
         run([compiler, ROOT / "tests/platform-io/windows-process-child.jai", "-O2", "-exe", helper], env)
@@ -77,9 +90,9 @@ def main():
     if args.windows_process:
         source = ROOT / "tests/platform-io/windows-process.jai"
         helper = ROOT / "tests/platform-io/windows-process-child.jai"
-        for cpu in ["x64", "arm64"]:
-            run([compiler, source, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
-            run([compiler, helper, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
+        for target_cpu in ["x64", "arm64"]:
+            run([compiler, source, "-os", "windows", "-cpu", target_cpu, "-check", "-no_dce"], env)
+            run([compiler, helper, "-os", "windows", "-cpu", target_cpu, "-check", "-no_dce"], env)
         if os.name == "nt" or args.windows_build:
             target = [] if os.name == "nt" else ["-os", "windows", "-cpu", args.windows_build]
             for optimization in ["-O0", "-O2"]:
@@ -103,17 +116,23 @@ def main():
                             marker.unlink(missing_ok=True)
         print("public Windows Process checked; native execution required", flush=True)
     if args.windows_crash:
-        cpu = args.windows_build or ("arm64" if platform.machine().lower() in {"arm64", "aarch64"} and os.name == "nt" else "x64")
-        subprocess.run([sys.executable, str(ROOT / "tools/build_platform_io_runtime.py"),
-                        "--stdlib", str(args.stdlib.resolve()), "--cpu", cpu], cwd=ROOT, check=True)
         bootstrap = ROOT / "tests/platform-io/windows-runtime-bootstrap.jai"
         for target_cpu in ["x64", "arm64"]:
             run([compiler, bootstrap, "-os", "windows", "-cpu", target_cpu, "-check", "-no_dce"], env)
+        expect_diagnostic([compiler, ROOT / "tests/platform-io/pending/windows-arm64-crash-handler.jai",
+                           "-os", "windows", "-cpu", "arm64", "-check", "-no_dce"], env,
+                          "the reviewed Windows crash handler supports x64 only")
         crash_output = output / "windows-crash"
         crash_output.mkdir(exist_ok=True)
         definitions = (f'BACKTRACE_ENABLED :: true; OUTPUT_PATH :: "{crash_output.as_posix()}"; '
                        f'CHILD_SOURCE :: "{(ROOT / "tests/platform-io/windows-fault.jai").as_posix()}";')
         builder = ROOT / "tests/portable-stdlib/startup-crash/build.jai"
+        if cpu == "arm64":
+            expect_diagnostic([compiler, builder, "-os", "windows", "-cpu", cpu, "-add", definitions,
+                               "-exe", crash_output / "builder.exe"], env,
+                              "the reviewed Windows crash handler supports x64 only")
+            print("passed reviewed ARM64 enabled-crash rejection and initialization-only support", flush=True)
+            return
         run([compiler, builder, "-os", "windows", "-cpu", cpu, "-add", definitions,
              "-exe", crash_output / "builder.exe"], env)
         shutil.copy2(args.stdlib.resolve() / "internal/runtime/crash-native/platform_io_windows_crash.dll",

@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Platform-io role continuation: public Windows Process records/adapter landed in
+`700f07e`; reviewed x64 crash facade and generic strict-lint/IDE repairs are now
+implemented. Four-target strict lint covers every owned source; host interpreter/
+O0/O2 and Windows source/cross-link checks pass. Later Windows native CI remains
+required. See [platform progress](platform-io-progress.md) for exact commands and
+[deviations](platform-io-deviations.md) for limitations and dependency staging.
+
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
