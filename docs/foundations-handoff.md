@@ -89,6 +89,10 @@ temporary/normal string lifetime, process exit status 17, allocator identity
 during builder transfer, symlink following/filtering and traversal cycles.
 file_list now shares the real visitor rather than maintaining a duplicate
 walker that incorrectly reported an ancestor link as a filesystem error.
+copy_file rejects a directory source before opening the destination, preserving
+an existing destination when that source is invalid. A real regression first
+exposed destination truncation and now verifies preservation as well as the
+successful file-copy truncation behavior.
 
 The expanded macOS x64 unused-code check FAILS in the peer POSIX declarations:
 `__shmid_ds_new.shm_perm` references an undeclared ipc_perm for that target.

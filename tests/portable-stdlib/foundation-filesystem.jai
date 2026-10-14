@@ -39,6 +39,11 @@ main :: () {
     free(copied);
     assert(U.file_exists("foundation-filesystem-test/dest/empty"));
     assert(F.write_entire_file("foundation-filesystem-test/dest/content", "longer destination contents to truncate"));
+    assert(!U.copy_file("foundation-filesystem-test/source", "foundation-filesystem-test/dest/content"));
+    preserved, preserved_ok := F.read_entire_file("foundation-filesystem-test/dest/content");
+
+    assert(preserved_ok && preserved == "longer destination contents to truncate");
+    free(preserved);
     assert(U.copy_file("foundation-filesystem-test/source/content", "foundation-filesystem-test/dest/content"));
     copied, copy_ok = F.read_entire_file("foundation-filesystem-test/dest/content");
     assert(copy_ok && copied == "bytes\0inside");
