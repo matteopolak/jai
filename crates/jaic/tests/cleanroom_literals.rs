@@ -40,6 +40,51 @@ fn type_only_indexing_describes_an_array_field_element_without_reading_storage()
 }
 
 #[test]
+fn scalar_float_intrinsics_decode_their_actual_register_width() {
+    check(
+        r#"
+        sqrt :: (x: float32) -> float32 #intrinsic;
+        sqrt :: (x: float64) -> float64 #intrinsic;
+        sin :: (x: float32) -> float32 #intrinsic;
+        cos :: (x: float32) -> float32 #intrinsic;
+        floor :: (x: float32) -> float32 #intrinsic;
+        ceil :: (x: float32) -> float32 #intrinsic;
+        round :: (x: float32) -> float32 #intrinsic;
+        trunc :: (x: float32) -> float32 #intrinsic;
+        fabs :: (x: float32) -> float32 #intrinsic;
+        #assert(sqrt(cast(float32) 9) == 3);
+        #assert(sqrt(cast(float64) 16) == 4);
+        #assert(sin(cast(float32) 0) == 0 && cos(cast(float32) 0) == 1);
+        #assert(floor(cast(float32) 1.75) == 1 && ceil(cast(float32) -1.75) == -1);
+        #assert(round(cast(float32) -1.5) == -2 && trunc(cast(float32) -1.75) == -1);
+        #assert(fabs(cast(float32) -3) == 3);
+        #assert(cast,force(u32) sqrt(0h80000000) == 0x80000000);
+    "#,
+    );
+}
+
+#[test]
+fn scalar_float_intrinsics_reject_inconsistent_signatures() {
+    for source in [
+        "sqrt :: (x: s32) -> s32 #intrinsic; #run sqrt(9);",
+        "sqrt :: (x: float32) -> float64 #intrinsic; #run sqrt(cast(float32) 9);",
+        "sqrt :: (x: float32, y: float32) -> float32 #intrinsic; #run sqrt(cast(float32) 9, cast(float32) 1);",
+    ] {
+        let mut options = Options::host();
+        options.runtime_support = false;
+        let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
+        let error = c
+            .compile_sources(&[ProgramSource::String(source.into())])
+            .expect_err("invalid floating intrinsic signature accepted");
+        assert!(
+            error.message.contains("floating intrinsic signature"),
+            "{}",
+            error.render(&c.sources)
+        );
+    }
+}
+
+#[test]
 fn hex_float_spellings_require_four_eight_or_sixteen_digits() {
     for literal in ["0h0", "0h123", "0h12345", "0h123456789", "0h123456789abcde"] {
         let mut options = Options::host();

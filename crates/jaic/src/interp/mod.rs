@@ -1987,6 +1987,7 @@ impl Interp {
         vals: &mut [u64],
         frame: &Frame,
         stack_base: u64,
+        value_types: &[Ty],
     ) -> Res<()> {
         match inst {
             Inst::IConst {
@@ -2163,7 +2164,8 @@ impl Interp {
                 ) {
                     return self.fiber_intrinsic(program, *op, argv);
                 }
-                let out = self.intrinsic(*op, argv)?;
+                let result_type = results.first().map(|r| value_types[r.0 as usize]);
+                let out = self.intrinsic(*op, argv, result_type)?;
                 for (r, &v) in results.iter().zip(out.iter()) {
                     vals[r.0 as usize] = v;
                 }
@@ -2237,9 +2239,15 @@ impl Interp {
         Ok(())
     }
 
-    fn intrinsic(&mut self, op: ir::Intrinsic, a: &[u64]) -> Res<Rets> {
+    fn intrinsic(&mut self, op: ir::Intrinsic, a: &[u64], result_type: Option<Ty>) -> Res<Rets> {
         use ir::Intrinsic as I;
-        let f64_of = |x: u64| f64::from_bits(x);
+        let unary_float = |value: u64, narrow: fn(f32) -> f32, wide: fn(f64) -> f64| {
+            if result_type == Some(Ty::F32) {
+                narrow(f32::from_bits(value as u32)).to_bits() as u64
+            } else {
+                wide(f64::from_bits(value)).to_bits()
+            }
+        };
         Ok(match op {
             I::Memcpy => {
                 if a[2] > 0 {
@@ -2306,15 +2314,23 @@ impl Interp {
                 self.host.write(&bytes, a.get(2).is_some_and(|&v| v != 0));
                 Rets::default()
             }
-            I::Sqrt => Rets::one(f64_of(a[0]).sqrt().to_bits()),
-            I::Sin => Rets::one(f64_of(a[0]).sin().to_bits()),
-            I::Cos => Rets::one(f64_of(a[0]).cos().to_bits()),
-            I::Floor => Rets::one(f64_of(a[0]).floor().to_bits()),
-            I::Ceil => Rets::one(f64_of(a[0]).ceil().to_bits()),
-            I::Round => Rets::one(f64_of(a[0]).round().to_bits()),
-            I::Trunc => Rets::one(f64_of(a[0]).trunc().to_bits()),
-            I::Fabs => Rets::one(f64_of(a[0]).abs().to_bits()),
-            I::Fma => Rets::one(f64_of(a[0]).mul_add(f64_of(a[1]), f64_of(a[2])).to_bits()),
+            I::Sqrt => Rets::one(unary_float(a[0], f32::sqrt, f64::sqrt)),
+            I::Sin => Rets::one(unary_float(a[0], f32::sin, f64::sin)),
+            I::Cos => Rets::one(unary_float(a[0], f32::cos, f64::cos)),
+            I::Floor => Rets::one(unary_float(a[0], f32::floor, f64::floor)),
+            I::Ceil => Rets::one(unary_float(a[0], f32::ceil, f64::ceil)),
+            I::Round => Rets::one(unary_float(a[0], f32::round, f64::round)),
+            I::Trunc => Rets::one(unary_float(a[0], f32::trunc, f64::trunc)),
+            I::Fabs => Rets::one(unary_float(a[0], f32::abs, f64::abs)),
+            I::Fma => Rets::one(if result_type == Some(Ty::F32) {
+                f32::from_bits(a[0] as u32)
+                    .mul_add(f32::from_bits(a[1] as u32), f32::from_bits(a[2] as u32))
+                    .to_bits() as u64
+            } else {
+                f64::from_bits(a[0])
+                    .mul_add(f64::from_bits(a[1]), f64::from_bits(a[2]))
+                    .to_bits()
+            }),
             I::ReturnAddress => Rets::one(0),
             I::CycleCounter => Rets::one(cycle_counter()),
             I::Syscall => {
@@ -2853,6 +2869,7 @@ mod atomic_contention_tests {
                                 .intrinsic(
                                     ir::Intrinsic::AtomicCas(4, 4),
                                     &[address, before, before + 1, 8],
+                                    None,
                                 )
                                 .unwrap()
                                 .into_vec();

@@ -2534,6 +2534,27 @@ impl Compiler {
             .iter()
             .map(|&t| self.ir_ty(t).unwrap_or(Ty::Ptr))
             .collect();
+        if matches!(
+            op,
+            ir::Intrinsic::Sqrt
+                | ir::Intrinsic::Sin
+                | ir::Intrinsic::Cos
+                | ir::Intrinsic::Floor
+                | ir::Intrinsic::Ceil
+                | ir::Intrinsic::Round
+                | ir::Intrinsic::Trunc
+                | ir::Intrinsic::Fabs
+        ) && (values.len() != 1
+            || sig.params.len() != 1
+            || sig.returns.len() != 1
+            || !matches!(returns.as_slice(), [Ty::F32 | Ty::F64])
+            || sig.params[0].ty != sig.returns[0])
+        {
+            return err(
+                span,
+                "floating intrinsic signature requires one float32/float64 argument and the same result type",
+            );
+        }
         let atomic = matches!(
             op,
             ir::Intrinsic::AtomicLoad(_)
