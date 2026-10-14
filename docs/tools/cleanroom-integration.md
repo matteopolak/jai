@@ -56,6 +56,13 @@ platform backends and Wasm formatting imports. `cargo clippy --locked --workspac
 regenerates the newly reviewed itimerval shapes. The next macOS x64 error is
 unknown timeval; this shape-selection contradiction is retained for review.
 
+Compiler-record and Jai_Lexer generators now normalize output with the actual
+repository formatter and check a second pass for idempotence. `--check` compares
+without writing. Both generators pass `--check`; the helper regression passes
+using the real tool. SDL3 native CI now builds the unchanged formatter from
+production dependencies before its six-target regeneration gate, matching local
+normalization instead of comparing raw generated text to formatted sources.
+
 ## Compiler corrections verified
 
 `cargo test --locked -p jaic --lib --test cleanroom_modules --test cleanroom_literals --test cleanroom_layout` passed: 150 core unit, 39 module, five literal and three layout tests. `cargo clippy --locked -p jaic --lib --tests -- -D warnings` exited zero. Scoped rustfmt ran over the five modified Rust files. Red/green logs are retained for protection-change SIGBUS, bundled parameter checking and IDE entry admission. Runtime_Support retains its exact reviewed three parameters.

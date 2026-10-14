@@ -62,3 +62,18 @@ All eight manifest snapshots merged in separate commits, ending at `6822bc1`.
 Combined compiler/LSP/jailint source build and unchanged jaifmt O2 build against
 production `stdlib` exited zero. Workspace tests and direct audit are in progress;
 no full integration pass is claimed. See [integration evidence](../tools/cleanroom-integration.md).
+# Replacement integration checkpoint: compiler widths and reflection
+
+Role: replacement integration worker. Approved refreshed compiler/portable/
+numerics/window snapshots merged. Durable compiler fixes: `16b66d8` floating
+intrinsic widths and `2d839cd` reflected struct alignment/graph regression.
+Original binary32, alignment and Deep_Copy graph tests pass interpreter/native
+O0/O2 against production; workspace clippy warnings denied passes. Numerics
+production suite now 40/83, preserving missing-AppKit/platform/Wasm failures.
+Windows signed-wheel public regression passes x64 all-code typechecking; native
+CI remains required. Reviewed contracts/regenerated POSIX shapes committed in
+`7a89c1d`; next macOS x64 failure is timeval shape selection, not itimerval.
+Broader refreshed workspace/portable/quality checks are running. Coordinator
+requests and deviations remain in the integration documents; no push or CI
+dispatch performed.
+
