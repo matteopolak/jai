@@ -82,3 +82,9 @@ stored fields. Preserve field types with type_of(T.member), not reconstructed
 type names. Generate indexed gather/scatter code from the same selected fields,
 and implement pointer iteration by a temporary element plus deferred scatter so
 continue/break/return do not lose writes. Reject reverse iteration explicitly.
+
+Print_Color increment: implement ANSI set/reset, formatted output and scoped Code
+expansions with deferred reset. Keep enum values/order and parameter names exact.
+Test stdout/stderr selection and reset on return. Native Windows console handling
+is not yet supported; reject that branch explicitly while permitting its reviewed
+ANSI import configuration. Record unspecified exact escape serialization.

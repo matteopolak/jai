@@ -54,6 +54,7 @@ main :: () {
     assert(points[3].x == 3 && points[3].y == 3.5);
     change_first(*points);
     assert(points[0].x == 88);
+    assert(points[1].x == 11 && points[2].x == 12 && points[3].x == 3);
     overlay: S.Soa(With_Overlay, 2);
 
     assert(type_info(type_of(overlay)).members.count == 2);

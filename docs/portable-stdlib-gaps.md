@@ -61,3 +61,9 @@ selected for general overlapping unions. Pointer iteration gathers a temporary
 and scatters on scope exit, including continue/break/return. In-loop accesses
 through other aliases observe writeback only when that iteration ends; whether
 the experimental pointer contract requires finer-grained observation is unclear.
+
+Print_Color currently emits ANSI style/color as ESC[style;color m (without the
+space) and reset as ESC[0m. Exact escape byte serialization and combinations of
+the numeric enum_flags color values are not specified. Native Windows console
+attributes/save-restore are unimplemented and explicitly rejected. Windows with
+USE_ANSI_CODES_ON_WINDOWS=true uses the supported ANSI branch.

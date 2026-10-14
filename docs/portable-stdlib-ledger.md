@@ -90,7 +90,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
 | [posix](specs/stdlib/modules/posix.md) | Reserved for bindings worker; not implemented or modified here |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
-| [print-color](specs/stdlib/modules/print-color.md) | Owned portable scope; not implemented |
+| [print-color](specs/stdlib/modules/print-color.md) | ANSI enums, set/reset, formatting and scoped expansion implemented; stdout/stderr and reset on caller return tested. Native Windows console mode explicitly rejected; ANSI Windows configuration supported by target checking |
 | [print-vars](specs/stdlib/modules/print-vars.md) | Owned portable scope; not implemented |
 | [process](specs/stdlib/modules/process.md) | Unix launch/capture/status/timeout/stream APIs implemented; interpreter/native, large dual streams, EPIPE, child pid and concurrent parent-exit cancellation tested. Windows and noted interactive/finite-query contracts incomplete or under review |
 | [program-print](specs/stdlib/modules/program-print.md) | Reserved for compiler worker; not implemented or modified here |

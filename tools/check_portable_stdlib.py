@@ -18,13 +18,15 @@ CONTRACTS = [
     "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process", "command-line",
 ]
 EXPECTED = {
+    "print-color": "\x1b[1;31mcolor 42\x1b[0m\x1b[4;32mscope\x1b[0mok\n",
     "runtime": "runtime -9223372036854775808 ff\n",
     "foundations": "-42 true text 55\n",
     "command-help": lambda out: all(text in out for text in ["configuration comment", "last option", "--alpha", "--zeta", "--help"]) and out.index("--alpha") < out.index("--zeta") and out.endswith("ok\n"),
 }
+EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 
 
-def run(command, env, expected=None, cwd=ROOT):
+def run(command, env, expected=None, cwd=ROOT, expected_stderr=""):
     result = subprocess.run(command, cwd=cwd, env=env, text=True,
                             capture_output=True, timeout=45)
     matches = expected(result.stdout) if callable(expected) else expected is None or result.stdout == expected
@@ -33,7 +35,7 @@ def run(command, env, expected=None, cwd=ROOT):
         print(result.stdout, end="", file=sys.stderr)
         print(result.stderr, end="", file=sys.stderr)
         raise RuntimeError(f"exit={result.returncode}, expected stdout={expected!r}")
-    if result.stderr:
+    if result.stderr != expected_stderr:
         print(result.stderr, end="", file=sys.stderr)
         raise RuntimeError("unexpected compiler/runtime diagnostics")
 
@@ -67,11 +69,13 @@ def main():
     cases += [(ROOT / f"tests/stdlib-contract/{name}/main.jai", "ok\n") for name in CONTRACTS]
     run([str(compiler), "-check", str(ROOT / "tests/portable-stdlib/bootstrap.jai")], env)
     for index, (source, expected) in enumerate(cases):
-        run([str(compiler), "-interp", str(source), "--"], env, expected)
+        run([str(compiler), "-interp", str(source), "--"], env, expected,
+            expected_stderr=EXPECTED_STDERR.get(source.stem,""))
         if args.native:
             executable = output / f"case-{index}"
             run([str(compiler), str(source), "-exe", str(executable)], env)
-            run([str(executable)], env, expected, source.parent)
+            run([str(executable)], env, expected, source.parent,
+                expected_stderr=EXPECTED_STDERR.get(source.stem,""))
         print("passed", source.relative_to(ROOT), flush=True)
     parent_source = ROOT / "tests/portable-stdlib/process-parent.jai"
     for native in ([False, True] if args.native else [False]):
