@@ -6,6 +6,12 @@ Bucket :: #import "Bucket_Array";
 presses: int;
 holds: int;
 command_seen: string;
+errors: int;
+
+capture_error :: (text: string, #discard data: *void, info: Log_Info) {
+    assert(text.count > 0 && (info.common_flags & .ERROR) != 0);
+    errors += 1;
+}
 
 press :: () {
     presses += 1;
@@ -66,6 +72,53 @@ main :: () {
     assert(second.mappings.count == map.mappings.count);
     assert(second.mappings[2].command_string == "hello world");
     assert(second.mappings[2].command_string.data != map.mappings[2].command_string.data);
+    path := sprint("%../../target/window-keymap-test.txt", #filepath);
+
+    defer free(path);
+    K.save_to_file(*set, path);
+    K.reset_keymaps(*other);
+    assert(K.load_from_file(*other, "saved keymap", path));
+    assert(second.mappings.count == map.mappings.count && second.mappings[2].command_string == "hello world");
+
+    policy: K.Keymap;
+
+    K.add_proc(*policy, "press", press);
+    assert(K.load_from_memory(*policy, "[1]\nN-x press\ny press\nN-x press\n", "policy", "memory"));
+    assert(policy.mappings.count == 2);
+    event = .{};
+    event.type = .KEYBOARD;
+    event.key_pressed = 1;
+    event.key_code = cast(I.Key_Code) #char "X";
+    event.ctrl_pressed = true;
+    before := presses;
+
+    assert(K.keymap_handle_event(policy, event) && presses == before + 1);
+    policy.ignore_modifier_keys = true;
+    assert(!K.keymap_handle_event(policy, event));
+    event.key_code = cast(I.Key_Code) #char "Y";
+    assert(K.keymap_handle_event(policy, event) && presses == before + 2);
+    good, key := K.map_string_to_key("é");
+
+    assert(good && cast(u32) key == 0xe9);
+    good, key = K.map_string_to_key("ab");
+    assert(!good && key == .UNKNOWN);
+    succeeded, reason := K.add_mapping(*policy, .SHIFT, .{ shift_pressed = true }, true, "press", true);
+
+    assert(!succeeded && reason == .NONSENSICAL_MODIFIERS);
+    succeeded, reason = K.add_mapping(*policy, .F1, .{}, true, "missing", true);
+    assert(!succeeded && reason == .UNKNOWN_COMMAND);
+    scoped := context;
+    scoped.logger = capture_error;
+
+    {
+        push_context, defer_pop scoped;
+        assert(!K.load_from_memory(*policy, "[1]\nq missing\nz press\n[bad]\na press\n", "invalid", "memory"));
+    }
+
+    assert(errors == 3 && policy.mappings.count == 3);
+    K.reset_keymap(*policy);
+    array_free(policy.mappings);
+    array_free(policy.procs);
     K.reset_keymaps(*set);
     assert(map.mappings.count == 0 && map.procs.count == 2 && set.keymaps.count == 1);
     K.reset_keymaps(*other);

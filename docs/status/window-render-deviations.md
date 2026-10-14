@@ -16,19 +16,40 @@ semantics, not resource-release substitutes.
 
 Current remaining gaps and risks:
 
-* `window-contexts.jai`, `gl-renderer.jai`: native contexts, per-context VAO/VBOs and
-  shared built-in programs are retained for process lifetime. Window-close/native
-  handle reuse and full cleanup are not yet integrated. Texture-associated FBOs
-  are now deleted in their creating contexts on texture destruction/replacement.
-  Proper fix: lifecycle notifications release context-owned registries and preserve
-  live shared GPU objects. Multiwindow close/reopen regression remains required.
+Current lifecycle follow-up: AppKit window-close notifications now release each
+window's VAO/VBO/framebuffer records and remove Window_Info/context entries. One
+detached root share context is deliberately retained to preserve live public GPU
+textures/programs across window close/reopen; there is no reviewed global renderer
+shutdown API. This replaces retaining every closed window context. Actual native
+window association uses Objective-C retained associations with a stable private
+key address, not fabricated object storage. Other target cleanup is still pending.
+
+During close/reopen testing, removing an array element before the final use of its
+foreach binding produced an objc_msgSend access violation. The own compiler's
+documented iteration binding aliases the array element; a minimal experiment
+confirmed aliasing in interpreter/native O0. Cleanup now finishes native uses
+before removing the record. This is an implementation lifetime fix, not a compiler
+snapshot workaround. Earlier retained-texture readback also exposed missing native
+command submission when switching contexts; make_current now flushes the previous
+  context on an actual context change. Shared production contexts now use a native
+  fence/server wait across switches so texture/program visibility does not depend
+  on driver-specific implicit completion. The close/reopen GPU assertion remains active.
+
+* `window-contexts.jai`, `gl-renderer.jai`: Windows/Linux window-close cleanup is
+  still pending. AppKit cleanup and multiwindow close/reopen now have actual host
+  regressions. One detached root share context deliberately owns the share group
+  for live public GPU resources; fonts/programs/textures must outlive windows.
+  Texture-associated FBOs are deleted in their creating contexts on replacement.
+  GPU fences avoid CPU-wide completion waits at context switches. Future global
+  renderer shutdown needs a reviewed API/lifetime contract.
 * `font-features.jai`: actual SFNT GSUB single/alternate/extension substitutions
   are implemented; unsupported requested substitution kinds assert explicitly.
   No fabricated feature coverage. Add native-font cases for other reviewed effects
   when supplied assets exercise them. Native format sources are Microsoft OpenType
   GSUB and common table documentation; no Jai implementation source was used.
 * `dynamic-fonts.jai`: Latin routing/offset and reversed layout fields need final
-  behavioral review/tests; current always-route condition is too broad. No current
+  behavioral review/tests; the overly broad always-route condition was corrected
+  to restrict secondary-font selection to Latin characters. No current
   claim of all layout-field behavior. Native kerning and general ligatures are
   intentionally absent per reviewed current behavior; NO_KERNING/LEFT_JUSTIFIED
   are declared but unapplied per that same contract.
@@ -50,6 +71,19 @@ Current remaining gaps and risks:
   Windows File remains blocked at its unconditional OS_IS_UNIX assertion. Do not
   replace canonical imports or signatures. Windows injected wheel execution,
   Linux GUI runtime and Android native app integration remain unverified.
+
+`windows-render-events.jai` now exercises public create_window/set_render_target
+before injecting vertical/horizontal wheel signed extrema, zero, positive/negative
+deltas and modifiers/upper64 bits. It fails source checks on both Windows CPUs at
+missing GL.wgl_create_context, preserving the full-production dependency rather
+than substituting a context. The original event-only injected test continues to
+source-check independently. Current full suite records 139 passes/six failures
+(four File, two WGL); the newer class-specialization regression has scoped x64
+source evidence, with native Windows pending. Shared Win32 class registration now
+validates/reuses an existing compatible native class across module parameters;
+GetClassInfoExW is a private SDK ABI declaration and error1410 is the documented
+ERROR_CLASS_ALREADY_EXISTS value. AppKit retained association policy1 is verified
+from the installed public objc/runtime.h SDK header.
 
 Bitmap codec follow-up removes the earlier forced-RGBA decoding, extra save
 formats and JPEG quality 90. New source-channel and save-alpha regressions enforce

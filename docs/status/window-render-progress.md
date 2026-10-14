@@ -1,5 +1,20 @@
 # Window/render progress
 
+Follow-up after `b9e7115`: public AppKit swap_view_buffers selects a real associated
+context. Native close notifications remove Window_Info/context and per-window GPU
+records; a detached root share context preserves live GPU resources across close/
+reopen. Multiwindow switching and retained-texture close/reopen pass interpreter/
+native O0/O2. Shared-context GPU fences now order commands across switches.
+Keymap has new real save/load, duplicate/N-policy/UTF-8/error-continuation coverage.
+Shader tests now check actual compile/link failures return0 with native diagnostics.
+
+Expanded issue #1 production-renderer injection checks expose missing canonical
+GL.wgl_create_context on x64/arm64. Latest full suite: 139 passes/six dependency
+failures (four File, two WGL). Original wheel-pump source checks still pass.
+Win32 class reuse across module parameters is implemented, with a new source-check
+regression; native Windows execution remains pending. Current coverage ledger and
+handoff now supersede historical absent-font/render/API entries.
+
 2026-10-14 current font/render batch (after `7fc1d6a`): real public Dynamic_Font
 loading, metrics, UTF-8 preparation, glyph quads, retained face caches, RGBA atlas
 uploads, immediate GL geometry/text, native window targets, texture framebuffers,
