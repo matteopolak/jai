@@ -14941,7 +14941,7 @@
       "counts": {
         "declared": 894,
         "forwarded": 429,
-        "unresolved": 12
+        "implemented": 12
       },
       "declarations": [
         {
@@ -21298,96 +21298,84 @@
           "signature": "set_Usage :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: bool)",
           "condition": "",
           "spec_line": 916,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_Usage",
           "signature": "get_Usage :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> bool",
           "condition": "",
           "spec_line": 917,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_RGB_Range",
           "signature": "set_RGB_Range :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: bool)",
           "condition": "",
           "spec_line": 918,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_RGB_Range",
           "signature": "get_RGB_Range :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> bool",
           "condition": "",
           "spec_line": 919,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_YCbCr_Matrix",
           "signature": "set_YCbCr_Matrix :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: bool)",
           "condition": "",
           "spec_line": 920,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_YCbCr_Matrix",
           "signature": "get_YCbCr_Matrix :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> bool",
           "condition": "",
           "spec_line": 921,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_YCbCr_xvYCC",
           "signature": "set_YCbCr_xvYCC :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: bool)",
           "condition": "",
           "spec_line": 922,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_YCbCr_xvYCC",
           "signature": "get_YCbCr_xvYCC :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> bool",
           "condition": "",
           "spec_line": 923,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_Nominal_Range",
           "signature": "set_Nominal_Range :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: u32)",
           "condition": "",
           "spec_line": 924,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_Nominal_Range",
           "signature": "get_Nominal_Range :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> u32",
           "condition": "",
           "spec_line": 925,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_Reserved",
           "signature": "set_Reserved :: (fields: *D3D11_VIDEO_PROCESSOR_COLOR_SPACE, value: u32)",
           "condition": "",
           "spec_line": 926,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_Reserved",
           "signature": "get_Reserved :: (fields: D3D11_VIDEO_PROCESSOR_COLOR_SPACE) -> u32",
           "condition": "",
           "spec_line": 927,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE",
@@ -23718,6 +23706,7 @@
           "signature": "ID3D11Debug_UUID :: \"79cf2233-7536-4948-9d36-1e4692dc5760\"",
           "condition": "",
           "spec_line": 1260,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23725,6 +23714,7 @@
           "signature": "ID3D11Debug :: struct",
           "condition": "",
           "spec_line": 1261,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23732,6 +23722,7 @@
           "signature": "ID3D11Debug_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1262,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23739,6 +23730,7 @@
           "signature": "ID3D11Debug_SetFeatureMask :: inline (this: *ID3D11Debug, Mask: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1263,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23746,6 +23738,7 @@
           "signature": "ID3D11Debug_GetFeatureMask :: inline (this: *ID3D11Debug) -> u32",
           "condition": "",
           "spec_line": 1264,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23753,6 +23746,7 @@
           "signature": "ID3D11Debug_SetPresentPerRenderOpDelay :: inline (this: *ID3D11Debug, Milliseconds: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1265,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23760,6 +23754,7 @@
           "signature": "ID3D11Debug_GetPresentPerRenderOpDelay :: inline (this: *ID3D11Debug) -> u32",
           "condition": "",
           "spec_line": 1266,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23767,6 +23762,7 @@
           "signature": "ID3D11Debug_SetSwapChain :: inline (this: *ID3D11Debug, pSwapChain: *IDXGISwapChain) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1267,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23774,6 +23770,7 @@
           "signature": "ID3D11Debug_GetSwapChain :: inline (this: *ID3D11Debug, ppSwapChain: **IDXGISwapChain) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1268,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23781,6 +23778,7 @@
           "signature": "ID3D11Debug_ValidateContext :: inline (this: *ID3D11Debug, pContext: *ID3D11DeviceContext) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1269,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23788,6 +23786,7 @@
           "signature": "ID3D11Debug_ReportLiveDeviceObjects :: inline (this: *ID3D11Debug, Flags: D3D11_RLDO_FLAGS) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1270,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23795,6 +23794,7 @@
           "signature": "ID3D11Debug_ValidateContextForDispatch :: inline (this: *ID3D11Debug, pContext: *ID3D11DeviceContext) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1271,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23802,6 +23802,7 @@
           "signature": "vtable :: (obj: *ID3D11Debug) -> *ID3D11Debug_VTable",
           "condition": "",
           "spec_line": 1272,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23809,6 +23810,7 @@
           "signature": "ID3D11SwitchToRef_UUID :: \"1ef337e3-58e7-4f83-a692-db221f5ed47e\"",
           "condition": "",
           "spec_line": 1273,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23816,6 +23818,7 @@
           "signature": "ID3D11SwitchToRef :: struct",
           "condition": "",
           "spec_line": 1274,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23823,6 +23826,7 @@
           "signature": "ID3D11SwitchToRef_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1275,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23830,6 +23834,7 @@
           "signature": "ID3D11SwitchToRef_SetUseRef :: inline (this: *ID3D11SwitchToRef, UseRef: BOOL) -> BOOL",
           "condition": "",
           "spec_line": 1276,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23837,6 +23842,7 @@
           "signature": "ID3D11SwitchToRef_GetUseRef :: inline (this: *ID3D11SwitchToRef) -> BOOL",
           "condition": "",
           "spec_line": 1277,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23844,6 +23850,7 @@
           "signature": "vtable :: (obj: *ID3D11SwitchToRef) -> *ID3D11SwitchToRef_VTable",
           "condition": "",
           "spec_line": 1278,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23872,6 +23879,7 @@
           "signature": "ID3D11TracingDevice_UUID :: \"1911c771-1587-413e-a7e0-fb26c3de0268\"",
           "condition": "",
           "spec_line": 1282,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23879,6 +23887,7 @@
           "signature": "ID3D11TracingDevice :: struct",
           "condition": "",
           "spec_line": 1283,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23886,6 +23895,7 @@
           "signature": "ID3D11TracingDevice_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1284,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23893,6 +23903,7 @@
           "signature": "ID3D11TracingDevice_SetShaderTrackingOptionsByType :: inline (this: *ID3D11TracingDevice, ResourceTypeFlags: u32, Options: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1285,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23900,6 +23911,7 @@
           "signature": "ID3D11TracingDevice_SetShaderTrackingOptions :: inline (this: *ID3D11TracingDevice, pShader: *IUnknown, Options: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1286,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23907,6 +23919,7 @@
           "signature": "vtable :: (obj: *ID3D11TracingDevice) -> *ID3D11TracingDevice_VTable",
           "condition": "",
           "spec_line": 1287,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23914,6 +23927,7 @@
           "signature": "ID3D11RefTrackingOptions_UUID :: \"193dacdf-0db2-4c05-a55c-ef06cac56fd9\"",
           "condition": "",
           "spec_line": 1288,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23921,6 +23935,7 @@
           "signature": "ID3D11RefTrackingOptions :: struct",
           "condition": "",
           "spec_line": 1289,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23928,6 +23943,7 @@
           "signature": "ID3D11RefTrackingOptions_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1290,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23935,6 +23951,7 @@
           "signature": "ID3D11RefTrackingOptions_SetTrackingOptions :: inline (this: *ID3D11RefTrackingOptions, uOptions: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1291,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23942,6 +23959,7 @@
           "signature": "vtable :: (obj: *ID3D11RefTrackingOptions) -> *ID3D11RefTrackingOptions_VTable",
           "condition": "",
           "spec_line": 1292,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23949,6 +23967,7 @@
           "signature": "ID3D11RefDefaultTrackingOptions_UUID :: \"03916615-c644-418c-9bf4-75db5be63ca0\"",
           "condition": "",
           "spec_line": 1293,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23956,6 +23975,7 @@
           "signature": "ID3D11RefDefaultTrackingOptions :: struct",
           "condition": "",
           "spec_line": 1294,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23963,6 +23983,7 @@
           "signature": "ID3D11RefDefaultTrackingOptions_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1295,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -23970,6 +23991,7 @@
           "signature": "ID3D11RefDefaultTrackingOptions_SetTrackingOptions :: inline (this: *ID3D11RefDefaultTrackingOptions, ResourceTypeFlags: u32, Options: u32) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1296,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -23977,6 +23999,7 @@
           "signature": "vtable :: (obj: *ID3D11RefDefaultTrackingOptions) -> *ID3D11RefDefaultTrackingOptions_VTable",
           "condition": "",
           "spec_line": 1297,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24026,6 +24049,7 @@
           "signature": "ID3D11InfoQueue_UUID :: \"6543dbb6-1b48-42f5-ab82-e97ec74326f6\"",
           "condition": "",
           "spec_line": 1304,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -24033,6 +24057,7 @@
           "signature": "ID3D11InfoQueue :: struct",
           "condition": "",
           "spec_line": 1305,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -24040,6 +24065,7 @@
           "signature": "ID3D11InfoQueue_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1306,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -24047,6 +24073,7 @@
           "signature": "ID3D11InfoQueue_SetMessageCountLimit :: inline (this: *ID3D11InfoQueue, MessageCountLimit: u64) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1307,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24054,6 +24081,7 @@
           "signature": "ID3D11InfoQueue_ClearStoredMessages :: inline (this: *ID3D11InfoQueue)",
           "condition": "",
           "spec_line": 1308,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24061,6 +24089,7 @@
           "signature": "ID3D11InfoQueue_GetMessageA :: inline (this: *ID3D11InfoQueue, MessageIndex: u64, pMessage: *D3D11_MESSAGE, pMessageByteLength: *SIZE_T) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1309,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24068,6 +24097,7 @@
           "signature": "ID3D11InfoQueue_GetNumMessagesAllowedByStorageFilter :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1310,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24075,6 +24105,7 @@
           "signature": "ID3D11InfoQueue_GetNumMessagesDeniedByStorageFilter :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1311,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24082,6 +24113,7 @@
           "signature": "ID3D11InfoQueue_GetNumStoredMessages :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1312,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24089,6 +24121,7 @@
           "signature": "ID3D11InfoQueue_GetNumStoredMessagesAllowedByRetrievalFilter :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1313,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24096,6 +24129,7 @@
           "signature": "ID3D11InfoQueue_GetNumMessagesDiscardedByMessageCountLimit :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1314,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24103,6 +24137,7 @@
           "signature": "ID3D11InfoQueue_GetMessageCountLimit :: inline (this: *ID3D11InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1315,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24110,6 +24145,7 @@
           "signature": "ID3D11InfoQueue_AddStorageFilterEntries :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1316,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24117,6 +24153,7 @@
           "signature": "ID3D11InfoQueue_GetStorageFilter :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1317,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24124,6 +24161,7 @@
           "signature": "ID3D11InfoQueue_ClearStorageFilter :: inline (this: *ID3D11InfoQueue)",
           "condition": "",
           "spec_line": 1318,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24131,6 +24169,7 @@
           "signature": "ID3D11InfoQueue_PushEmptyStorageFilter :: inline (this: *ID3D11InfoQueue) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1319,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24138,6 +24177,7 @@
           "signature": "ID3D11InfoQueue_PushCopyOfStorageFilter :: inline (this: *ID3D11InfoQueue) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1320,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24145,6 +24185,7 @@
           "signature": "ID3D11InfoQueue_PushStorageFilter :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1321,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24152,6 +24193,7 @@
           "signature": "ID3D11InfoQueue_PopStorageFilter :: inline (this: *ID3D11InfoQueue)",
           "condition": "",
           "spec_line": 1322,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24159,6 +24201,7 @@
           "signature": "ID3D11InfoQueue_GetStorageFilterStackSize :: inline (this: *ID3D11InfoQueue) -> u32",
           "condition": "",
           "spec_line": 1323,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24166,6 +24209,7 @@
           "signature": "ID3D11InfoQueue_AddRetrievalFilterEntries :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1324,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24173,6 +24217,7 @@
           "signature": "ID3D11InfoQueue_GetRetrievalFilter :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1325,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24180,6 +24225,7 @@
           "signature": "ID3D11InfoQueue_ClearRetrievalFilter :: inline (this: *ID3D11InfoQueue)",
           "condition": "",
           "spec_line": 1326,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24187,6 +24233,7 @@
           "signature": "ID3D11InfoQueue_PushEmptyRetrievalFilter :: inline (this: *ID3D11InfoQueue) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1327,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24194,6 +24241,7 @@
           "signature": "ID3D11InfoQueue_PushCopyOfRetrievalFilter :: inline (this: *ID3D11InfoQueue) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1328,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24201,6 +24249,7 @@
           "signature": "ID3D11InfoQueue_PushRetrievalFilter :: inline (this: *ID3D11InfoQueue, pFilter: *D3D11_INFO_QUEUE_FILTER) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1329,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24208,6 +24257,7 @@
           "signature": "ID3D11InfoQueue_PopRetrievalFilter :: inline (this: *ID3D11InfoQueue)",
           "condition": "",
           "spec_line": 1330,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24215,6 +24265,7 @@
           "signature": "ID3D11InfoQueue_GetRetrievalFilterStackSize :: inline (this: *ID3D11InfoQueue) -> u32",
           "condition": "",
           "spec_line": 1331,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24222,6 +24273,7 @@
           "signature": "ID3D11InfoQueue_AddMessage :: inline (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY, Severity: D3D11_MESSAGE_SEVERITY, ID: D3D11_MESSAGE_ID, pDescription: *u8) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1332,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24229,6 +24281,7 @@
           "signature": "ID3D11InfoQueue_AddApplicationMessage :: inline (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY, pDescription: *u8) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1333,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24236,6 +24289,7 @@
           "signature": "ID3D11InfoQueue_SetBreakOnCategory :: inline (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY, bEnable: BOOL) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1334,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24243,6 +24297,7 @@
           "signature": "ID3D11InfoQueue_SetBreakOnSeverity :: inline (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY, bEnable: BOOL) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1335,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24250,6 +24305,7 @@
           "signature": "ID3D11InfoQueue_SetBreakOnID :: inline (this: *ID3D11InfoQueue, ID: D3D11_MESSAGE_ID, bEnable: BOOL) -> APP_DEPRECATED_HRESULT",
           "condition": "",
           "spec_line": 1336,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24257,6 +24313,7 @@
           "signature": "ID3D11InfoQueue_GetBreakOnCategory :: inline (this: *ID3D11InfoQueue, Category: D3D11_MESSAGE_CATEGORY) -> BOOL",
           "condition": "",
           "spec_line": 1337,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24264,6 +24321,7 @@
           "signature": "ID3D11InfoQueue_GetBreakOnSeverity :: inline (this: *ID3D11InfoQueue, Severity: D3D11_MESSAGE_SEVERITY) -> BOOL",
           "condition": "",
           "spec_line": 1338,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24271,6 +24329,7 @@
           "signature": "ID3D11InfoQueue_GetBreakOnID :: inline (this: *ID3D11InfoQueue, ID: D3D11_MESSAGE_ID) -> BOOL",
           "condition": "",
           "spec_line": 1339,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24278,6 +24337,7 @@
           "signature": "ID3D11InfoQueue_SetMuteDebugOutput :: inline (this: *ID3D11InfoQueue, bMute: BOOL)",
           "condition": "",
           "spec_line": 1340,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24285,6 +24345,7 @@
           "signature": "ID3D11InfoQueue_GetMuteDebugOutput :: inline (this: *ID3D11InfoQueue) -> BOOL",
           "condition": "",
           "spec_line": 1341,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -24292,6 +24353,7 @@
           "signature": "vtable :: (obj: *ID3D11InfoQueue) -> *ID3D11InfoQueue_VTable",
           "condition": "",
           "spec_line": 1342,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35204,6 +35266,7 @@
           "signature": "ID3D12Debug_UUID :: \"344488b7-6846-474b-b989-f027448245e0\"",
           "condition": "",
           "spec_line": 1563,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35211,6 +35274,7 @@
           "signature": "ID3D12Debug :: struct",
           "condition": "",
           "spec_line": 1564,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35218,6 +35282,7 @@
           "signature": "ID3D12Debug_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1565,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35225,6 +35290,7 @@
           "signature": "ID3D12Debug_EnableDebugLayer :: inline (this: *ID3D12Debug)",
           "condition": "",
           "spec_line": 1566,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35232,6 +35298,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug) -> *ID3D12Debug_VTable",
           "condition": "",
           "spec_line": 1567,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35246,6 +35313,7 @@
           "signature": "ID3D12Debug1_UUID :: \"affaa4ca-63fe-4d8e-b8ad-159000af4304\"",
           "condition": "",
           "spec_line": 1569,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35253,6 +35321,7 @@
           "signature": "ID3D12Debug1 :: struct",
           "condition": "",
           "spec_line": 1570,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35260,6 +35329,7 @@
           "signature": "ID3D12Debug1_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1571,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35267,6 +35337,7 @@
           "signature": "ID3D12Debug1_EnableDebugLayer :: inline (this: *ID3D12Debug1)",
           "condition": "",
           "spec_line": 1572,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35274,6 +35345,7 @@
           "signature": "ID3D12Debug1_SetEnableGPUBasedValidation :: inline (this: *ID3D12Debug1, Enable: BOOL)",
           "condition": "",
           "spec_line": 1573,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35281,6 +35353,7 @@
           "signature": "ID3D12Debug1_SetEnableSynchronizedCommandQueueValidation :: inline (this: *ID3D12Debug1, Enable: BOOL)",
           "condition": "",
           "spec_line": 1574,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35288,6 +35361,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug1) -> *ID3D12Debug1_VTable",
           "condition": "",
           "spec_line": 1575,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35295,6 +35369,7 @@
           "signature": "ID3D12Debug2_UUID :: \"93a665c4-a3b2-4e5d-b692-a26ae14e3374\"",
           "condition": "",
           "spec_line": 1576,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35302,6 +35377,7 @@
           "signature": "ID3D12Debug2 :: struct",
           "condition": "",
           "spec_line": 1577,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35309,6 +35385,7 @@
           "signature": "ID3D12Debug2_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1578,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35316,6 +35393,7 @@
           "signature": "ID3D12Debug2_SetGPUBasedValidationFlags :: inline (this: *ID3D12Debug2, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS)",
           "condition": "",
           "spec_line": 1579,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35323,6 +35401,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug2) -> *ID3D12Debug2_VTable",
           "condition": "",
           "spec_line": 1580,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35330,6 +35409,7 @@
           "signature": "ID3D12Debug3_UUID :: \"5cf4e58f-f671-4ff1-a542-3686e3d153d1\"",
           "condition": "",
           "spec_line": 1581,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35337,6 +35417,7 @@
           "signature": "ID3D12Debug3 :: struct",
           "condition": "",
           "spec_line": 1582,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35344,6 +35425,7 @@
           "signature": "ID3D12Debug3_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1583,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35351,6 +35433,7 @@
           "signature": "ID3D12Debug3_SetEnableGPUBasedValidation :: inline (this: *ID3D12Debug3, Enable: BOOL)",
           "condition": "",
           "spec_line": 1584,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35358,6 +35441,7 @@
           "signature": "ID3D12Debug3_SetEnableSynchronizedCommandQueueValidation :: inline (this: *ID3D12Debug3, Enable: BOOL)",
           "condition": "",
           "spec_line": 1585,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35365,6 +35449,7 @@
           "signature": "ID3D12Debug3_SetGPUBasedValidationFlags :: inline (this: *ID3D12Debug3, Flags: D3D12_GPU_BASED_VALIDATION_FLAGS)",
           "condition": "",
           "spec_line": 1586,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35372,6 +35457,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug3) -> *ID3D12Debug3_VTable",
           "condition": "",
           "spec_line": 1587,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35379,6 +35465,7 @@
           "signature": "ID3D12Debug4_UUID :: \"014b816e-9ec5-4a2f-a845-ffbe441ce13a\"",
           "condition": "",
           "spec_line": 1588,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35386,6 +35473,7 @@
           "signature": "ID3D12Debug4 :: struct",
           "condition": "",
           "spec_line": 1589,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35393,6 +35481,7 @@
           "signature": "ID3D12Debug4_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1590,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35400,6 +35489,7 @@
           "signature": "ID3D12Debug4_DisableDebugLayer :: inline (this: *ID3D12Debug4)",
           "condition": "",
           "spec_line": 1591,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35407,6 +35497,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug4) -> *ID3D12Debug4_VTable",
           "condition": "",
           "spec_line": 1592,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35414,6 +35505,7 @@
           "signature": "ID3D12Debug5_UUID :: \"548d6b12-09fa-40e0-9069-5dcd589a52c9\"",
           "condition": "",
           "spec_line": 1593,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35421,6 +35513,7 @@
           "signature": "ID3D12Debug5 :: struct",
           "condition": "",
           "spec_line": 1594,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35428,6 +35521,7 @@
           "signature": "ID3D12Debug5_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1595,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35435,6 +35529,7 @@
           "signature": "ID3D12Debug5_SetEnableAutoName :: inline (this: *ID3D12Debug5, Enable: BOOL)",
           "condition": "",
           "spec_line": 1596,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35442,6 +35537,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug5) -> *ID3D12Debug5_VTable",
           "condition": "",
           "spec_line": 1597,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35449,6 +35545,7 @@
           "signature": "ID3D12Debug6_UUID :: \"82a816d6-5d01-4157-97d0-4975463fd1ed\"",
           "condition": "",
           "spec_line": 1598,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35456,6 +35553,7 @@
           "signature": "ID3D12Debug6 :: struct",
           "condition": "",
           "spec_line": 1599,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35463,6 +35561,7 @@
           "signature": "ID3D12Debug6_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1600,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35470,6 +35569,7 @@
           "signature": "ID3D12Debug6_SetForceLegacyBarrierValidation :: inline (this: *ID3D12Debug6, Enable: BOOL)",
           "condition": "",
           "spec_line": 1601,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35477,6 +35577,7 @@
           "signature": "vtable :: (obj: *ID3D12Debug6) -> *ID3D12Debug6_VTable",
           "condition": "",
           "spec_line": 1602,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35533,6 +35634,7 @@
           "signature": "ID3D12DebugDevice1_UUID :: \"a9b71770-d099-4a65-a698-3dee10020f88\"",
           "condition": "",
           "spec_line": 1610,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35540,6 +35642,7 @@
           "signature": "ID3D12DebugDevice1 :: struct",
           "condition": "",
           "spec_line": 1611,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35547,6 +35650,7 @@
           "signature": "ID3D12DebugDevice1_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1612,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35554,6 +35658,7 @@
           "signature": "ID3D12DebugDevice1_SetDebugParameter :: inline (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1613,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35561,6 +35666,7 @@
           "signature": "ID3D12DebugDevice1_GetDebugParameter :: inline (this: *ID3D12DebugDevice1, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1614,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35568,6 +35674,7 @@
           "signature": "ID3D12DebugDevice1_ReportLiveDeviceObjects :: inline (this: *ID3D12DebugDevice1, Flags: D3D12_RLDO_FLAGS) -> HRESULT",
           "condition": "",
           "spec_line": 1615,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35575,6 +35682,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugDevice1) -> *ID3D12DebugDevice1_VTable",
           "condition": "",
           "spec_line": 1616,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35582,6 +35690,7 @@
           "signature": "ID3D12DebugDevice_UUID :: \"3febd6dd-4973-4787-8194-e45f9e28923e\"",
           "condition": "",
           "spec_line": 1617,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35589,6 +35698,7 @@
           "signature": "ID3D12DebugDevice :: struct",
           "condition": "",
           "spec_line": 1618,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35596,6 +35706,7 @@
           "signature": "ID3D12DebugDevice_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1619,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35603,6 +35714,7 @@
           "signature": "ID3D12DebugDevice_SetFeatureMask :: inline (this: *ID3D12DebugDevice, Mask: D3D12_DEBUG_FEATURE) -> HRESULT",
           "condition": "",
           "spec_line": 1620,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35610,6 +35722,7 @@
           "signature": "ID3D12DebugDevice_GetFeatureMask :: inline (this: *ID3D12DebugDevice) -> D3D12_DEBUG_FEATURE",
           "condition": "",
           "spec_line": 1621,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35617,6 +35730,7 @@
           "signature": "ID3D12DebugDevice_ReportLiveDeviceObjects :: inline (this: *ID3D12DebugDevice, Flags: D3D12_RLDO_FLAGS) -> HRESULT",
           "condition": "",
           "spec_line": 1622,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35624,6 +35738,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugDevice) -> *ID3D12DebugDevice_VTable",
           "condition": "",
           "spec_line": 1623,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35631,6 +35746,7 @@
           "signature": "ID3D12DebugDevice2_UUID :: \"60eccbc1-378d-4df1-894c-f8ac5ce4d7dd\"",
           "condition": "",
           "spec_line": 1624,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35638,6 +35754,7 @@
           "signature": "ID3D12DebugDevice2 :: struct",
           "condition": "",
           "spec_line": 1625,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35645,6 +35762,7 @@
           "signature": "ID3D12DebugDevice2_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1626,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35652,6 +35770,7 @@
           "signature": "ID3D12DebugDevice2_SetDebugParameter :: inline (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1627,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35659,6 +35778,7 @@
           "signature": "ID3D12DebugDevice2_GetDebugParameter :: inline (this: *ID3D12DebugDevice2, Type: D3D12_DEBUG_DEVICE_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1628,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35666,6 +35786,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugDevice2) -> *ID3D12DebugDevice2_VTable",
           "condition": "",
           "spec_line": 1629,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35673,6 +35794,7 @@
           "signature": "ID3D12DebugCommandQueue_UUID :: \"09e0bf36-54ac-484f-8847-4baeeab6053a\"",
           "condition": "",
           "spec_line": 1630,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35680,6 +35802,7 @@
           "signature": "ID3D12DebugCommandQueue :: struct",
           "condition": "",
           "spec_line": 1631,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35687,6 +35810,7 @@
           "signature": "ID3D12DebugCommandQueue_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1632,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35694,6 +35818,7 @@
           "signature": "ID3D12DebugCommandQueue_AssertResourceState :: inline (this: *ID3D12DebugCommandQueue, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL",
           "condition": "",
           "spec_line": 1633,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35701,6 +35826,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandQueue) -> *ID3D12DebugCommandQueue_VTable",
           "condition": "",
           "spec_line": 1634,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35708,6 +35834,7 @@
           "signature": "ID3D12DebugCommandQueue1_UUID :: \"16be35a2-bfd6-49f2-bcae-eaae4aff862d\"",
           "condition": "",
           "spec_line": 1635,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35715,6 +35842,7 @@
           "signature": "ID3D12DebugCommandQueue1 :: struct",
           "condition": "",
           "spec_line": 1636,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35722,6 +35850,7 @@
           "signature": "ID3D12DebugCommandQueue1_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1637,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35729,6 +35858,7 @@
           "signature": "ID3D12DebugCommandQueue1_AssertResourceAccess :: inline (this: *ID3D12DebugCommandQueue1, pResource: *ID3D12Resource, Subresource: u32, Access: D3D12_BARRIER_ACCESS)",
           "condition": "",
           "spec_line": 1638,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35736,6 +35866,7 @@
           "signature": "ID3D12DebugCommandQueue1_AssertTextureLayout :: inline (this: *ID3D12DebugCommandQueue1, pResource: *ID3D12Resource, Subresource: u32, Layout: D3D12_BARRIER_LAYOUT)",
           "condition": "",
           "spec_line": 1639,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35743,6 +35874,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandQueue1) -> *ID3D12DebugCommandQueue1_VTable",
           "condition": "",
           "spec_line": 1640,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35764,6 +35896,7 @@
           "signature": "ID3D12DebugCommandList1_UUID :: \"102ca951-311b-4b01-b11f-ecb83e061b37\"",
           "condition": "",
           "spec_line": 1643,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35771,6 +35904,7 @@
           "signature": "ID3D12DebugCommandList1 :: struct",
           "condition": "",
           "spec_line": 1644,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35778,6 +35912,7 @@
           "signature": "ID3D12DebugCommandList1_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1645,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35785,6 +35920,7 @@
           "signature": "ID3D12DebugCommandList1_AssertResourceState :: inline (this: *ID3D12DebugCommandList1, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL",
           "condition": "",
           "spec_line": 1646,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35792,6 +35928,7 @@
           "signature": "ID3D12DebugCommandList1_SetDebugParameter :: inline (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1647,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35799,6 +35936,7 @@
           "signature": "ID3D12DebugCommandList1_GetDebugParameter :: inline (this: *ID3D12DebugCommandList1, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1648,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35806,6 +35944,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandList1) -> *ID3D12DebugCommandList1_VTable",
           "condition": "",
           "spec_line": 1649,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35813,6 +35952,7 @@
           "signature": "ID3D12DebugCommandList_UUID :: \"09e0bf36-54ac-484f-8847-4baeeab6053f\"",
           "condition": "",
           "spec_line": 1650,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35820,6 +35960,7 @@
           "signature": "ID3D12DebugCommandList :: struct",
           "condition": "",
           "spec_line": 1651,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35827,6 +35968,7 @@
           "signature": "ID3D12DebugCommandList_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1652,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35834,6 +35976,7 @@
           "signature": "ID3D12DebugCommandList_AssertResourceState :: inline (this: *ID3D12DebugCommandList, pResource: *ID3D12Resource, Subresource: u32, State: u32) -> BOOL",
           "condition": "",
           "spec_line": 1653,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35841,6 +35984,7 @@
           "signature": "ID3D12DebugCommandList_SetFeatureMask :: inline (this: *ID3D12DebugCommandList, Mask: D3D12_DEBUG_FEATURE) -> HRESULT",
           "condition": "",
           "spec_line": 1654,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35848,6 +35992,7 @@
           "signature": "ID3D12DebugCommandList_GetFeatureMask :: inline (this: *ID3D12DebugCommandList) -> D3D12_DEBUG_FEATURE",
           "condition": "",
           "spec_line": 1655,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35855,6 +36000,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandList) -> *ID3D12DebugCommandList_VTable",
           "condition": "",
           "spec_line": 1656,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35862,6 +36008,7 @@
           "signature": "ID3D12DebugCommandList2_UUID :: \"aeb575cf-4e06-48be-ba3b-c450fc96652e\"",
           "condition": "",
           "spec_line": 1657,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35869,6 +36016,7 @@
           "signature": "ID3D12DebugCommandList2 :: struct",
           "condition": "",
           "spec_line": 1658,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35876,6 +36024,7 @@
           "signature": "ID3D12DebugCommandList2_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1659,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35883,6 +36032,7 @@
           "signature": "ID3D12DebugCommandList2_SetDebugParameter :: inline (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1660,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35890,6 +36040,7 @@
           "signature": "ID3D12DebugCommandList2_GetDebugParameter :: inline (this: *ID3D12DebugCommandList2, Type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE, pData: *void, DataSize: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1661,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35897,6 +36048,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandList2) -> *ID3D12DebugCommandList2_VTable",
           "condition": "",
           "spec_line": 1662,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35904,6 +36056,7 @@
           "signature": "ID3D12DebugCommandList3_UUID :: \"197d5e15-4d37-4d34-af78-724cd70fdb1f\"",
           "condition": "",
           "spec_line": 1663,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35911,6 +36064,7 @@
           "signature": "ID3D12DebugCommandList3 :: struct",
           "condition": "",
           "spec_line": 1664,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35918,6 +36072,7 @@
           "signature": "ID3D12DebugCommandList3_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1665,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35925,6 +36080,7 @@
           "signature": "ID3D12DebugCommandList3_AssertResourceAccess :: inline (this: *ID3D12DebugCommandList3, pResource: *ID3D12Resource, Subresource: u32, Access: D3D12_BARRIER_ACCESS)",
           "condition": "",
           "spec_line": 1666,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35932,6 +36088,7 @@
           "signature": "ID3D12DebugCommandList3_AssertTextureLayout :: inline (this: *ID3D12DebugCommandList3, pResource: *ID3D12Resource, Subresource: u32, Layout: D3D12_BARRIER_LAYOUT)",
           "condition": "",
           "spec_line": 1667,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35939,6 +36096,7 @@
           "signature": "vtable :: (obj: *ID3D12DebugCommandList3) -> *ID3D12DebugCommandList3_VTable",
           "condition": "",
           "spec_line": 1668,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35946,6 +36104,7 @@
           "signature": "ID3D12SharingContract_UUID :: \"0adf7d52-929c-4e61-addb-ffed30de66ef\"",
           "condition": "",
           "spec_line": 1669,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35953,6 +36112,7 @@
           "signature": "ID3D12SharingContract :: struct",
           "condition": "",
           "spec_line": 1670,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35960,6 +36120,7 @@
           "signature": "ID3D12SharingContract_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1671,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -35967,6 +36128,7 @@
           "signature": "ID3D12SharingContract_Present :: inline (this: *ID3D12SharingContract, pResource: *ID3D12Resource, Subresource: u32, window: HWND)",
           "condition": "",
           "spec_line": 1672,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35974,6 +36136,7 @@
           "signature": "ID3D12SharingContract_SharedFenceSignal :: inline (this: *ID3D12SharingContract, pFence: *ID3D12Fence, FenceValue: u64)",
           "condition": "",
           "spec_line": 1673,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35981,6 +36144,7 @@
           "signature": "ID3D12SharingContract_BeginCapturableWork :: inline (this: *ID3D12SharingContract, guid: *GUID)",
           "condition": "",
           "spec_line": 1674,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35988,6 +36152,7 @@
           "signature": "ID3D12SharingContract_EndCapturableWork :: inline (this: *ID3D12SharingContract, guid: *GUID)",
           "condition": "",
           "spec_line": 1675,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -35995,6 +36160,7 @@
           "signature": "vtable :: (obj: *ID3D12SharingContract) -> *ID3D12SharingContract_VTable",
           "condition": "",
           "spec_line": 1676,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36002,6 +36168,7 @@
           "signature": "ID3D12ManualWriteTrackingResource_UUID :: \"86ca3b85-49ad-4b6e-aed5-eddb18540f41\"",
           "condition": "",
           "spec_line": 1677,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36009,6 +36176,7 @@
           "signature": "ID3D12ManualWriteTrackingResource :: struct",
           "condition": "",
           "spec_line": 1678,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36016,6 +36184,7 @@
           "signature": "ID3D12ManualWriteTrackingResource_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1679,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36023,6 +36192,7 @@
           "signature": "ID3D12ManualWriteTrackingResource_TrackWrite :: inline (this: *ID3D12ManualWriteTrackingResource, Subresource: u32, pWrittenRange: *D3D12_RANGE)",
           "condition": "",
           "spec_line": 1680,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36030,6 +36200,7 @@
           "signature": "vtable :: (obj: *ID3D12ManualWriteTrackingResource) -> *ID3D12ManualWriteTrackingResource_VTable",
           "condition": "",
           "spec_line": 1681,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36079,6 +36250,7 @@
           "signature": "ID3D12InfoQueue_UUID :: \"0742a90b-c387-483f-b946-30a7e4e61458\"",
           "condition": "",
           "spec_line": 1688,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36086,6 +36258,7 @@
           "signature": "ID3D12InfoQueue :: struct",
           "condition": "",
           "spec_line": 1689,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36093,6 +36266,7 @@
           "signature": "ID3D12InfoQueue_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1690,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36100,6 +36274,7 @@
           "signature": "ID3D12InfoQueue_SetMessageCountLimit :: inline (this: *ID3D12InfoQueue, MessageCountLimit: u64) -> HRESULT",
           "condition": "",
           "spec_line": 1691,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36107,6 +36282,7 @@
           "signature": "ID3D12InfoQueue_ClearStoredMessages :: inline (this: *ID3D12InfoQueue)",
           "condition": "",
           "spec_line": 1692,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36114,6 +36290,7 @@
           "signature": "ID3D12InfoQueue_GetMessageA :: inline (this: *ID3D12InfoQueue, MessageIndex: u64, pMessage: *D3D12_MESSAGE, pMessageByteLength: *SIZE_T) -> HRESULT",
           "condition": "",
           "spec_line": 1693,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36121,6 +36298,7 @@
           "signature": "ID3D12InfoQueue_GetNumMessagesAllowedByStorageFilter :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1694,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36128,6 +36306,7 @@
           "signature": "ID3D12InfoQueue_GetNumMessagesDeniedByStorageFilter :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1695,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36135,6 +36314,7 @@
           "signature": "ID3D12InfoQueue_GetNumStoredMessages :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1696,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36142,6 +36322,7 @@
           "signature": "ID3D12InfoQueue_GetNumStoredMessagesAllowedByRetrievalFilter :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1697,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36149,6 +36330,7 @@
           "signature": "ID3D12InfoQueue_GetNumMessagesDiscardedByMessageCountLimit :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1698,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36156,6 +36338,7 @@
           "signature": "ID3D12InfoQueue_GetMessageCountLimit :: inline (this: *ID3D12InfoQueue) -> u64",
           "condition": "",
           "spec_line": 1699,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36163,6 +36346,7 @@
           "signature": "ID3D12InfoQueue_AddStorageFilterEntries :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT",
           "condition": "",
           "spec_line": 1700,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36170,6 +36354,7 @@
           "signature": "ID3D12InfoQueue_GetStorageFilter :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT",
           "condition": "",
           "spec_line": 1701,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36177,6 +36362,7 @@
           "signature": "ID3D12InfoQueue_ClearStorageFilter :: inline (this: *ID3D12InfoQueue)",
           "condition": "",
           "spec_line": 1702,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36184,6 +36370,7 @@
           "signature": "ID3D12InfoQueue_PushEmptyStorageFilter :: inline (this: *ID3D12InfoQueue) -> HRESULT",
           "condition": "",
           "spec_line": 1703,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36191,6 +36378,7 @@
           "signature": "ID3D12InfoQueue_PushCopyOfStorageFilter :: inline (this: *ID3D12InfoQueue) -> HRESULT",
           "condition": "",
           "spec_line": 1704,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36198,6 +36386,7 @@
           "signature": "ID3D12InfoQueue_PushStorageFilter :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT",
           "condition": "",
           "spec_line": 1705,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36205,6 +36394,7 @@
           "signature": "ID3D12InfoQueue_PopStorageFilter :: inline (this: *ID3D12InfoQueue)",
           "condition": "",
           "spec_line": 1706,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36212,6 +36402,7 @@
           "signature": "ID3D12InfoQueue_GetStorageFilterStackSize :: inline (this: *ID3D12InfoQueue) -> u32",
           "condition": "",
           "spec_line": 1707,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36219,6 +36410,7 @@
           "signature": "ID3D12InfoQueue_AddRetrievalFilterEntries :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT",
           "condition": "",
           "spec_line": 1708,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36226,6 +36418,7 @@
           "signature": "ID3D12InfoQueue_GetRetrievalFilter :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER, pFilterByteLength: *SIZE_T) -> HRESULT",
           "condition": "",
           "spec_line": 1709,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36233,6 +36426,7 @@
           "signature": "ID3D12InfoQueue_ClearRetrievalFilter :: inline (this: *ID3D12InfoQueue)",
           "condition": "",
           "spec_line": 1710,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36240,6 +36434,7 @@
           "signature": "ID3D12InfoQueue_PushEmptyRetrievalFilter :: inline (this: *ID3D12InfoQueue) -> HRESULT",
           "condition": "",
           "spec_line": 1711,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36247,6 +36442,7 @@
           "signature": "ID3D12InfoQueue_PushCopyOfRetrievalFilter :: inline (this: *ID3D12InfoQueue) -> HRESULT",
           "condition": "",
           "spec_line": 1712,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36254,6 +36450,7 @@
           "signature": "ID3D12InfoQueue_PushRetrievalFilter :: inline (this: *ID3D12InfoQueue, pFilter: *D3D12_INFO_QUEUE_FILTER) -> HRESULT",
           "condition": "",
           "spec_line": 1713,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36261,6 +36458,7 @@
           "signature": "ID3D12InfoQueue_PopRetrievalFilter :: inline (this: *ID3D12InfoQueue)",
           "condition": "",
           "spec_line": 1714,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36268,6 +36466,7 @@
           "signature": "ID3D12InfoQueue_GetRetrievalFilterStackSize :: inline (this: *ID3D12InfoQueue) -> u32",
           "condition": "",
           "spec_line": 1715,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36275,6 +36474,7 @@
           "signature": "ID3D12InfoQueue_AddMessage :: inline (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY, Severity: D3D12_MESSAGE_SEVERITY, ID: D3D12_MESSAGE_ID, pDescription: *u8) -> HRESULT",
           "condition": "",
           "spec_line": 1716,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36282,6 +36482,7 @@
           "signature": "ID3D12InfoQueue_AddApplicationMessage :: inline (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY, pDescription: *u8) -> HRESULT",
           "condition": "",
           "spec_line": 1717,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36289,6 +36490,7 @@
           "signature": "ID3D12InfoQueue_SetBreakOnCategory :: inline (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY, bEnable: BOOL) -> HRESULT",
           "condition": "",
           "spec_line": 1718,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36296,6 +36498,7 @@
           "signature": "ID3D12InfoQueue_SetBreakOnSeverity :: inline (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY, bEnable: BOOL) -> HRESULT",
           "condition": "",
           "spec_line": 1719,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36303,6 +36506,7 @@
           "signature": "ID3D12InfoQueue_SetBreakOnID :: inline (this: *ID3D12InfoQueue, ID: D3D12_MESSAGE_ID, bEnable: BOOL) -> HRESULT",
           "condition": "",
           "spec_line": 1720,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36310,6 +36514,7 @@
           "signature": "ID3D12InfoQueue_GetBreakOnCategory :: inline (this: *ID3D12InfoQueue, Category: D3D12_MESSAGE_CATEGORY) -> BOOL",
           "condition": "",
           "spec_line": 1721,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36317,6 +36522,7 @@
           "signature": "ID3D12InfoQueue_GetBreakOnSeverity :: inline (this: *ID3D12InfoQueue, Severity: D3D12_MESSAGE_SEVERITY) -> BOOL",
           "condition": "",
           "spec_line": 1722,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36324,6 +36530,7 @@
           "signature": "ID3D12InfoQueue_GetBreakOnID :: inline (this: *ID3D12InfoQueue, ID: D3D12_MESSAGE_ID) -> BOOL",
           "condition": "",
           "spec_line": 1723,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36331,6 +36538,7 @@
           "signature": "ID3D12InfoQueue_SetMuteDebugOutput :: inline (this: *ID3D12InfoQueue, bMute: BOOL)",
           "condition": "",
           "spec_line": 1724,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36338,6 +36546,7 @@
           "signature": "ID3D12InfoQueue_GetMuteDebugOutput :: inline (this: *ID3D12InfoQueue) -> BOOL",
           "condition": "",
           "spec_line": 1725,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36345,6 +36554,7 @@
           "signature": "vtable :: (obj: *ID3D12InfoQueue) -> *ID3D12InfoQueue_VTable",
           "condition": "",
           "spec_line": 1726,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36366,6 +36576,7 @@
           "signature": "ID3D12InfoQueue1_UUID :: \"2852dd88-b484-4c0c-b6b1-67168500e600\"",
           "condition": "",
           "spec_line": 1729,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36373,6 +36584,7 @@
           "signature": "ID3D12InfoQueue1 :: struct",
           "condition": "",
           "spec_line": 1730,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36380,6 +36592,7 @@
           "signature": "ID3D12InfoQueue1_VTable :: struct #type_info_none",
           "condition": "",
           "spec_line": 1731,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "declared"
         },
         {
@@ -36387,6 +36600,7 @@
           "signature": "ID3D12InfoQueue1_RegisterMessageCallback :: inline (this: *ID3D12InfoQueue1, CallbackFunc: D3D12MessageFunc, CallbackFilterFlags: D3D12_MESSAGE_CALLBACK_FLAGS, pContext: *void, pCallbackCookie: *u32) -> HRESULT",
           "condition": "",
           "spec_line": 1732,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36394,6 +36608,7 @@
           "signature": "ID3D12InfoQueue1_UnregisterMessageCallback :: inline (this: *ID3D12InfoQueue1, CallbackCookie: u32) -> HRESULT",
           "condition": "",
           "spec_line": 1733,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -36401,6 +36616,7 @@
           "signature": "vtable :: (obj: *ID3D12InfoQueue1) -> *ID3D12InfoQueue1_VTable",
           "condition": "",
           "spec_line": 1734,
+          "effective_condition": "INCLUDE_DEBUG_BINDINGS",
           "status": "forwarded"
         },
         {
@@ -47408,8 +47624,8 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
       "counts": {
-        "unresolved": 24,
-        "declared": 1590,
+        "unresolved": 23,
+        "declared": 1591,
         "duplicate": 1
       },
       "declarations": [
@@ -47511,7 +47727,7 @@
         {
           "name": "wgl_create_context",
           "signature": "wgl_create_context :: (hwnd: HWND, share:HGLRC=null, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> HGLRC, HDC, chosen_msaa: s32",
-          "condition": "",
+          "condition": "OS == .WINDOWS",
           "spec_line": 19,
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
@@ -47519,7 +47735,7 @@
         {
           "name": "glx_create_context",
           "signature": "glx_create_context :: (window: Window_Type, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false) -> GLXContext, GLXFBConfig, chosen_msaa: s32",
-          "condition": "",
+          "condition": "OS == .LINUX",
           "spec_line": 20,
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
@@ -47527,14 +47743,14 @@
         {
           "name": "Window_Creation",
           "signature": "Window_Creation :: #import \"Window_Creation\"",
-          "condition": "",
+          "condition": "OS == .MACOS",
           "spec_line": 21,
           "status": "declared"
         },
         {
           "name": "nsgl_create_context",
           "signature": "nsgl_create_context :: (win: *NSWindow, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false) -> *NSOpenGLContext",
-          "condition": "",
+          "condition": "OS == .MACOS",
           "spec_line": 22,
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
@@ -47542,7 +47758,7 @@
         {
           "name": "nsgl_create_context",
           "signature": "nsgl_create_context :: (major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> *NSOpenGLContext, chosen_msaa: s32",
-          "condition": "",
+          "condition": "OS == .MACOS",
           "spec_line": 23,
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
@@ -47550,7 +47766,7 @@
         {
           "name": "nsgl_get_proc_address",
           "signature": "nsgl_get_proc_address :: (name: string) -> *void",
-          "condition": "",
+          "condition": "OS == .MACOS",
           "spec_line": 24,
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
@@ -47616,8 +47832,7 @@
           "signature": "GL_Procedures :: struct #type_info_procedures_are_void_pointers #type_info_no_size_complaint",
           "condition": "",
           "spec_line": 32,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "GLenum",
@@ -58720,6 +58935,7 @@
           "signature": "GLX_EXT_swap_control : bool",
           "condition": "GLX extension",
           "spec_line": 1619,
+          "effective_condition": "OS == .LINUX",
           "status": "declared"
         },
         {
@@ -58727,6 +58943,7 @@
           "signature": "GLX_EXT_swap_control_tear : bool",
           "condition": "GLX extension",
           "spec_line": 1620,
+          "effective_condition": "OS == .LINUX",
           "status": "declared"
         },
         {
@@ -58750,8 +58967,8 @@
       "spec_sha256": "88486730797c1f0aa1ec5bf439ba16b37c476c75c2122ca688132d590e4be8f6",
       "counts": {
         "declared": 939,
-        "implemented": 76,
-        "unresolved": 44
+        "implemented": 84,
+        "unresolved": 36
       },
       "declarations": [
         {
@@ -59991,8 +60208,7 @@
           "signature": "PushID :: (str_id: string) #no_context",
           "condition": "OS != .WINDOWS",
           "spec_line": 186,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "PushID",
@@ -60034,8 +60250,7 @@
           "signature": "GetID :: (str_id: string) -> ID #no_context",
           "condition": "OS != .WINDOWS",
           "spec_line": 192,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "GetID",
@@ -60056,8 +60271,7 @@
           "signature": "TextUnformatted :: (text: string) #no_context",
           "condition": "OS != .WINDOWS",
           "spec_line": 195,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "Text_CFormat",
@@ -61700,8 +61914,7 @@
           "signature": "CalcTextSize :: (text: string, hide_text_after_double_hash := false, wrap_width: float = -1.0) -> ImVec2 #no_context",
           "condition": "OS != .WINDOWS",
           "spec_line": 428,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "ColorConvertU32ToFloat4",
@@ -63702,8 +63915,7 @@
           "signature": "PushID :: (str_id: string) #no_context",
           "condition": "OS == .WINDOWS",
           "spec_line": 716,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "PushID",
@@ -63745,8 +63957,7 @@
           "signature": "GetID :: (str_id: string) -> ID #no_context",
           "condition": "OS == .WINDOWS",
           "spec_line": 722,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "GetID",
@@ -63767,8 +63978,7 @@
           "signature": "TextUnformatted :: (text: string) #no_context",
           "condition": "OS == .WINDOWS",
           "spec_line": 725,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "Text_CFormat",
@@ -65411,8 +65621,7 @@
           "signature": "CalcTextSize :: (text: string, hide_text_after_double_hash := false, wrap_width: float = -1.0) -> ImVec2 #no_context",
           "condition": "OS == .WINDOWS",
           "spec_line": 958,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "ColorConvertU32ToFloat4",
@@ -66218,7 +66427,7 @@
       "spec_sha256": "81fa83688dee1e64d2280901a39d4eed175280b0addc40d9c82bc28ee899485d",
       "counts": {
         "implemented": 1,
-        "unresolved": 2
+        "implemented_manual": 2
       },
       "declarations": [
         {
@@ -66233,16 +66442,16 @@
           "signature": "get_ios_sdk_path :: () -> string",
           "condition": "OS == .IOS",
           "spec_line": 10,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/iOS/wrappers.jai"
         },
         {
           "name": "get_ios_simulator_sdk_path",
           "signature": "get_ios_simulator_sdk_path :: () -> string",
           "condition": "OS == .IOS",
           "spec_line": 11,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/iOS/wrappers.jai"
         }
       ]
     },
@@ -67999,8 +68208,8 @@
       "spec_sha256": "2279e8b733cf40b5506e0701b283d690a4c2c055afc040e70a08e4280e85911e",
       "counts": {
         "declared": 2480,
-        "unresolved": 66,
-        "implemented": 1
+        "unresolved": 8,
+        "implemented": 59
       },
       "declarations": [
         {
@@ -79200,32 +79409,28 @@
           "signature": "set_pad3 :: (fields: *mach_msg_type_descriptor_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1607,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_pad3",
           "signature": "get_pad3 :: (fields: mach_msg_type_descriptor_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1608,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_type_descriptor_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1609,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_type_descriptor_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1610,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_port_descriptor_t",
@@ -79239,48 +79444,42 @@
           "signature": "set_pad2 :: (fields: *mach_msg_port_descriptor_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1612,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_pad2",
           "signature": "get_pad2 :: (fields: mach_msg_port_descriptor_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1613,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_disposition",
           "signature": "set_disposition :: (fields: *mach_msg_port_descriptor_t, value: mach_msg_type_name_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1614,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_disposition",
           "signature": "get_disposition :: (fields: mach_msg_port_descriptor_t) -> mach_msg_type_name_t",
           "condition": "OS == .MACOS",
           "spec_line": 1615,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_port_descriptor_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1616,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_port_descriptor_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1617,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_descriptor32_t",
@@ -79294,64 +79493,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_descriptor32_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1619,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_descriptor32_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1620,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_descriptor32_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1621,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_descriptor32_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1622,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_pad1",
           "signature": "set_pad1 :: (fields: *mach_msg_ool_descriptor32_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1623,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_pad1",
           "signature": "get_pad1 :: (fields: mach_msg_ool_descriptor32_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1624,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_descriptor32_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1625,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_descriptor32_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1626,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_descriptor64_t",
@@ -79365,64 +79556,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_descriptor64_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1628,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_descriptor64_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1629,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_descriptor64_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1630,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_descriptor64_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1631,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_pad1",
           "signature": "set_pad1 :: (fields: *mach_msg_ool_descriptor64_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1632,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_pad1",
           "signature": "get_pad1 :: (fields: mach_msg_ool_descriptor64_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1633,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_descriptor64_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1634,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_descriptor64_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1635,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_descriptor_t",
@@ -79436,64 +79619,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_descriptor_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1637,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_descriptor_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1638,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_descriptor_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1639,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_descriptor_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1640,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_pad1",
           "signature": "set_pad1 :: (fields: *mach_msg_ool_descriptor_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1641,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_pad1",
           "signature": "get_pad1 :: (fields: mach_msg_ool_descriptor_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1642,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_descriptor_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1643,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_descriptor_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1644,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_ports_descriptor32_t",
@@ -79507,64 +79682,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_ports_descriptor32_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1646,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_ports_descriptor32_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1647,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_ports_descriptor32_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1648,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_ports_descriptor32_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1649,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_disposition",
           "signature": "set_disposition :: (fields: *mach_msg_ool_ports_descriptor32_t, value: mach_msg_type_name_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1650,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_disposition",
           "signature": "get_disposition :: (fields: mach_msg_ool_ports_descriptor32_t) -> mach_msg_type_name_t",
           "condition": "OS == .MACOS",
           "spec_line": 1651,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_ports_descriptor32_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1652,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_ports_descriptor32_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1653,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_ports_descriptor64_t",
@@ -79578,64 +79745,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_ports_descriptor64_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1655,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_ports_descriptor64_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1656,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_ports_descriptor64_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1657,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_ports_descriptor64_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1658,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_disposition",
           "signature": "set_disposition :: (fields: *mach_msg_ool_ports_descriptor64_t, value: mach_msg_type_name_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1659,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_disposition",
           "signature": "get_disposition :: (fields: mach_msg_ool_ports_descriptor64_t) -> mach_msg_type_name_t",
           "condition": "OS == .MACOS",
           "spec_line": 1660,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_ports_descriptor64_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1661,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_ports_descriptor64_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1662,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_ool_ports_descriptor_t",
@@ -79649,64 +79808,56 @@
           "signature": "set_deallocate :: (fields: *mach_msg_ool_ports_descriptor_t, value: u32)",
           "condition": "OS == .MACOS",
           "spec_line": 1664,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_deallocate",
           "signature": "get_deallocate :: (fields: mach_msg_ool_ports_descriptor_t) -> u32",
           "condition": "OS == .MACOS",
           "spec_line": 1665,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_copy",
           "signature": "set_copy :: (fields: *mach_msg_ool_ports_descriptor_t, value: mach_msg_copy_options_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1666,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_copy",
           "signature": "get_copy :: (fields: mach_msg_ool_ports_descriptor_t) -> mach_msg_copy_options_t",
           "condition": "OS == .MACOS",
           "spec_line": 1667,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_disposition",
           "signature": "set_disposition :: (fields: *mach_msg_ool_ports_descriptor_t, value: mach_msg_type_name_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1668,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_disposition",
           "signature": "get_disposition :: (fields: mach_msg_ool_ports_descriptor_t) -> mach_msg_type_name_t",
           "condition": "OS == .MACOS",
           "spec_line": 1669,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_type",
           "signature": "set_type :: (fields: *mach_msg_ool_ports_descriptor_t, value: mach_msg_descriptor_type_t)",
           "condition": "OS == .MACOS",
           "spec_line": 1670,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_type",
           "signature": "get_type :: (fields: mach_msg_ool_ports_descriptor_t) -> mach_msg_descriptor_type_t",
           "condition": "OS == .MACOS",
           "spec_line": 1671,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "mach_msg_descriptor_t",
@@ -86186,7 +86337,7 @@
       "spec": "docs/specs/stdlib/modules/metal.md",
       "spec_sha256": "fbb4a78a33814027922fa9418893badee357b6f1b016709f19d0d0c2d901d24e",
       "counts": {
-        "unresolved": 8,
+        "implemented": 8,
         "declared": 162
       },
       "declarations": [
@@ -86195,8 +86346,7 @@
           "signature": "init_metal :: ()",
           "condition": "",
           "spec_line": 7,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "CAMetalDrawable",
@@ -86231,8 +86381,7 @@
           "signature": "MTLOriginMake :: inline (x: NSUInteger, y: NSUInteger, z: NSUInteger) -> MTLOrigin",
           "condition": "",
           "spec_line": 12,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLSize",
@@ -86246,8 +86395,7 @@
           "signature": "MTLSizeMake :: inline (width: NSUInteger, height: NSUInteger, depth: NSUInteger) -> MTLSize",
           "condition": "",
           "spec_line": 14,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLRegion",
@@ -86261,24 +86409,21 @@
           "signature": "MTLRegionMake1D :: inline (x: NSUInteger, width: NSUInteger) -> MTLRegion",
           "condition": "",
           "spec_line": 16,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLRegionMake2D",
           "signature": "MTLRegionMake2D :: inline (x: NSUInteger, y: NSUInteger, width: NSUInteger, height: NSUInteger) -> MTLRegion",
           "condition": "",
           "spec_line": 17,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLRegionMake3D",
           "signature": "MTLRegionMake3D :: inline (x: NSUInteger, y: NSUInteger, z: NSUInteger, width: NSUInteger, height: NSUInteger, depth: NSUInteger) -> MTLRegion",
           "condition": "",
           "spec_line": 18,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLSamplePosition",
@@ -86292,8 +86437,7 @@
           "signature": "MTLSamplePositionMake :: inline (x: float, y: float) -> MTLSamplePosition",
           "condition": "",
           "spec_line": 20,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLCommandEncoder",
@@ -86636,8 +86780,7 @@
           "signature": "MTLClearColorMake :: (red: float64, green: float64, blue: float64, alpha: float64) -> MTLClearColor",
           "condition": "",
           "spec_line": 69,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "MTLBufferLayoutDescriptor",
@@ -90800,8 +90943,9 @@
       "spec": "docs/specs/stdlib/modules/objective-c.md",
       "spec_sha256": "e05df5ef938a512af587eda06e38c27e6676328595af10bb0afbc82f89435270",
       "counts": {
-        "unresolved": 37,
-        "declared": 449
+        "implemented": 29,
+        "declared": 449,
+        "unresolved": 8
       },
       "declarations": [
         {
@@ -90809,16 +90953,14 @@
           "signature": "init_objective_c :: ()",
           "condition": "",
           "spec_line": 8,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "init_objective_c_selector_struct",
           "signature": "init_objective_c_selector_struct :: (selectors: *$T)",
           "condition": "",
           "spec_line": 9,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BOOL",
@@ -90832,6 +90974,7 @@
           "signature": "BOOL :: bool",
           "condition": "else branch",
           "spec_line": 11,
+          "effective_condition": "OS != .MACOS",
           "status": "declared"
         },
         {
@@ -90895,160 +91038,140 @@
           "signature": "to_string :: (str: *NSString) -> string",
           "condition": "",
           "spec_line": 20,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_alloc",
           "signature": "objc_alloc :: (class: Class) -> id #no_context",
           "condition": "",
           "spec_line": 21,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_copy",
           "signature": "objc_copy :: (self: *$instancetype) -> *instancetype #no_context",
           "condition": "",
           "spec_line": 22,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "autorelease",
           "signature": "autorelease :: (self: *$instancetype) -> id #no_context",
           "condition": "",
           "spec_line": 23,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "release",
           "signature": "release :: (self: *$instancetype) -> id #no_context",
           "condition": "",
           "spec_line": 24,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "retain",
           "signature": "retain :: (self: *$instancetype) -> *instancetype #no_context",
           "condition": "",
           "spec_line": 25,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "class",
           "signature": "class :: (self: id) -> Class #no_context",
           "condition": "",
           "spec_line": 26,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "superclass",
           "signature": "superclass :: (self: id) -> Class #no_context",
           "condition": "",
           "spec_line": 27,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "isEqual",
           "signature": "isEqual :: (self: id, object: id) -> bool #no_context",
           "condition": "",
           "spec_line": 28,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_init",
           "signature": "objc_init :: (self: *$type) -> *type #no_context",
           "condition": "",
           "spec_line": 29,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_alloc",
           "signature": "objc_alloc :: ($type: Type) -> *type #no_context",
           "condition": "",
           "spec_line": 30,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_new",
           "signature": "objc_new :: ($type: Type) -> *type #no_context",
           "condition": "",
           "spec_line": 31,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "class",
           "signature": "class :: ($type: Type) -> Class #no_context",
           "condition": "",
           "spec_line": 32,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_lookUpClass",
           "signature": "objc_lookUpClass :: (name: string) -> Class",
           "condition": "",
           "spec_line": 33,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_getClass",
           "signature": "objc_getClass :: (name: string) -> Class",
           "condition": "",
           "spec_line": 34,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_allocateClassPair",
           "signature": "objc_allocateClassPair :: (super: Class, name: string, extra_bytes: u64 = 0) -> Class",
           "condition": "",
           "spec_line": 35,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_getProtocol",
           "signature": "objc_getProtocol :: (name: string) -> *Protocol",
           "condition": "",
           "spec_line": 36,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "sel_registerName",
           "signature": "sel_registerName :: (name: string) -> Selector",
           "condition": "",
           "spec_line": 37,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "sel_getUid",
           "signature": "sel_getUid :: (name: string) -> Selector",
           "condition": "",
           "spec_line": 38,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "selector",
           "signature": "selector :: (sel_str: string) -> Selector",
           "condition": "",
           "spec_line": 39,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "create_objc_class_member_stub",
@@ -91087,8 +91210,7 @@
           "signature": "objc_finalize_class :: (my_class: Class)",
           "condition": "",
           "spec_line": 44,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "objc_type_encode",
@@ -91119,8 +91241,7 @@
           "signature": "has_isa_member :: (ty: *Type_Info_Struct) -> bool",
           "condition": "",
           "spec_line": 48,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "type_check_objc_method_type",
@@ -91163,6 +91284,7 @@
           "signature": "objc_msgSend_stret :: objc_msgSend",
           "condition": "else branch",
           "spec_line": 54,
+          "effective_condition": "CPU != .X64",
           "status": "declared"
         },
         {
@@ -91170,6 +91292,7 @@
           "signature": "objc_msgSendSuper_stret :: objc_msgSendSuper",
           "condition": "else branch",
           "spec_line": 55,
+          "effective_condition": "CPU != .X64",
           "status": "declared"
         },
         {
@@ -91177,6 +91300,7 @@
           "signature": "method_invoke_stret :: method_invoke",
           "condition": "else branch",
           "spec_line": 56,
+          "effective_condition": "CPU != .X64",
           "status": "declared"
         },
         {
@@ -91184,6 +91308,7 @@
           "signature": "_objc_msgForward_stret :: _objc_msgForward",
           "condition": "else branch",
           "spec_line": 57,
+          "effective_condition": "CPU != .X64",
           "status": "declared"
         },
         {
@@ -91191,6 +91316,7 @@
           "signature": "class_getMethodImplementation_stret :: class_getMethodImplementation",
           "condition": "else branch",
           "spec_line": 58,
+          "effective_condition": "CPU != .X64",
           "status": "declared"
         },
         {
@@ -91198,8 +91324,7 @@
           "signature": "objc_msgSend_typed :: inline (target: *void, selector: Selector) -> *void #no_context",
           "condition": "",
           "spec_line": 59,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "OBJC_BOOL_IS_BOOL",
@@ -93873,8 +93998,7 @@
           "signature": "init_objective_c_foundation :: ()",
           "condition": "",
           "spec_line": 443,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "NSTimeInterval",
@@ -93965,8 +94089,7 @@
           "signature": "NSMakePoint :: (x: CGFloat, y: CGFloat) -> NSPoint",
           "condition": "",
           "spec_line": 456,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "NSSize",
@@ -93980,8 +94103,7 @@
           "signature": "NSMakeSize :: (w: CGFloat, h: CGFloat) -> NSSize",
           "condition": "",
           "spec_line": 458,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "NSRect",
@@ -93995,8 +94117,7 @@
           "signature": "NSMakeRect :: (x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> NSRect",
           "condition": "",
           "spec_line": 460,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "NSStringEncoding",
@@ -94250,8 +94371,8 @@
       "spec_sha256": "b1a7f318d6f75eaeed6630c14320444ba84f989d560785c07cf1d7e398c62e48",
       "counts": {
         "declared": 9813,
-        "implemented": 30,
-        "unresolved": 142
+        "implemented": 102,
+        "unresolved": 70
       },
       "declarations": [
         {
@@ -113019,112 +113140,98 @@
           "signature": "set_w_T_w_Termsig :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2688,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Termsig",
           "signature": "get_w_T_w_Termsig :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2689,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Coredump",
           "signature": "set_w_T_w_Coredump :: (fields: *wait_t, value: bool)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2690,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Coredump",
           "signature": "get_w_T_w_Coredump :: (fields: wait_t) -> bool",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2691,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Retcode",
           "signature": "set_w_T_w_Retcode :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2692,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Retcode",
           "signature": "get_w_T_w_Retcode :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2693,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Filler",
           "signature": "set_w_T_w_Filler :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2694,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Filler",
           "signature": "get_w_T_w_Filler :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2695,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Stopval",
           "signature": "set_w_S_w_Stopval :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2696,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Stopval",
           "signature": "get_w_S_w_Stopval :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2697,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Stopsig",
           "signature": "set_w_S_w_Stopsig :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2698,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Stopsig",
           "signature": "get_w_S_w_Stopsig :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2699,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Filler",
           "signature": "set_w_S_w_Filler :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2700,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Filler",
           "signature": "get_w_S_w_Filler :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 2701,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "wait",
@@ -127676,128 +127783,112 @@
           "signature": "set___invalid :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4779,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___invalid",
           "signature": "get___invalid :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4780,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___denorm",
           "signature": "set___denorm :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4781,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___denorm",
           "signature": "get___denorm :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4782,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___zdiv",
           "signature": "set___zdiv :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4783,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___zdiv",
           "signature": "get___zdiv :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4784,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___ovrfl",
           "signature": "set___ovrfl :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4785,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___ovrfl",
           "signature": "get___ovrfl :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4786,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___undfl",
           "signature": "set___undfl :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4787,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___undfl",
           "signature": "get___undfl :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4788,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___precis",
           "signature": "set___precis :: (fields: *__darwin_fp_control, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4789,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___precis",
           "signature": "get___precis :: (fields: __darwin_fp_control) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4790,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___pc",
           "signature": "set___pc :: (fields: *__darwin_fp_control, value: u16)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4791,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___pc",
           "signature": "get___pc :: (fields: __darwin_fp_control) -> u16",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4792,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___rc",
           "signature": "set___rc :: (fields: *__darwin_fp_control, value: u16)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4793,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___rc",
           "signature": "get___rc :: (fields: __darwin_fp_control) -> u16",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4794,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "__darwin_fp_status",
@@ -127811,224 +127902,196 @@
           "signature": "set___invalid :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4796,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___invalid",
           "signature": "get___invalid :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4797,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___denorm",
           "signature": "set___denorm :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4798,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___denorm",
           "signature": "get___denorm :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4799,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___zdiv",
           "signature": "set___zdiv :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4800,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___zdiv",
           "signature": "get___zdiv :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4801,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___ovrfl",
           "signature": "set___ovrfl :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4802,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___ovrfl",
           "signature": "get___ovrfl :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4803,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___undfl",
           "signature": "set___undfl :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4804,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___undfl",
           "signature": "get___undfl :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4805,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___precis",
           "signature": "set___precis :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4806,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___precis",
           "signature": "get___precis :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4807,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___stkflt",
           "signature": "set___stkflt :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4808,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___stkflt",
           "signature": "get___stkflt :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4809,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___errsumm",
           "signature": "set___errsumm :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4810,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___errsumm",
           "signature": "get___errsumm :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4811,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___c0",
           "signature": "set___c0 :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4812,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___c0",
           "signature": "get___c0 :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4813,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___c1",
           "signature": "set___c1 :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4814,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___c1",
           "signature": "get___c1 :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4815,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___c2",
           "signature": "set___c2 :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4816,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___c2",
           "signature": "get___c2 :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4817,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___tos",
           "signature": "set___tos :: (fields: *__darwin_fp_status, value: u16)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4818,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___tos",
           "signature": "get___tos :: (fields: __darwin_fp_status) -> u16",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4819,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___c3",
           "signature": "set___c3 :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4820,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___c3",
           "signature": "get___c3 :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4821,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set___busy",
           "signature": "set___busy :: (fields: *__darwin_fp_status, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4822,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get___busy",
           "signature": "get___busy :: (fields: __darwin_fp_status) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4823,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "__darwin_mmst_reg",
@@ -128965,112 +129028,98 @@
           "signature": "set_w_T_w_Termsig :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4955,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Termsig",
           "signature": "get_w_T_w_Termsig :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4956,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Coredump",
           "signature": "set_w_T_w_Coredump :: (fields: *wait_t, value: bool)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4957,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Coredump",
           "signature": "get_w_T_w_Coredump :: (fields: wait_t) -> bool",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4958,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Retcode",
           "signature": "set_w_T_w_Retcode :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4959,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Retcode",
           "signature": "get_w_T_w_Retcode :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4960,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_T_w_Filler",
           "signature": "set_w_T_w_Filler :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4961,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_T_w_Filler",
           "signature": "get_w_T_w_Filler :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4962,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Stopval",
           "signature": "set_w_S_w_Stopval :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4963,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Stopval",
           "signature": "get_w_S_w_Stopval :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4964,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Stopsig",
           "signature": "set_w_S_w_Stopsig :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4965,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Stopsig",
           "signature": "get_w_S_w_Stopsig :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4966,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_w_S_w_Filler",
           "signature": "set_w_S_w_Filler :: (fields: *wait_t, value: u32)",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4967,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_w_S_w_Filler",
           "signature": "get_w_S_w_Filler :: (fields: wait_t) -> u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4968,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "wait",
@@ -164297,8 +164346,8 @@
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
       "spec_sha256": "b48e3ee72411d9af591c65b3f81b7a2b5b0ffdcbcd8a72e04e54038c985e8bff",
       "counts": {
-        "unresolved": 83,
-        "declared": 28
+        "unresolved": 80,
+        "declared": 31
       },
       "declarations": [
         {
@@ -164498,6 +164547,7 @@
           "signature": "dump_statistics :: (builder: *void) #expand",
           "condition": "else branch",
           "spec_line": 32,
+          "effective_condition": "!ENABLE_STATISTICS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -164681,24 +164731,21 @@
           "signature": "rpmalloc_global_statistics_t :: struct",
           "condition": "",
           "spec_line": 55,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rpmalloc_thread_statistics_t",
           "signature": "rpmalloc_thread_statistics_t :: struct",
           "condition": "",
           "spec_line": 56,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rpmalloc_config_t",
           "signature": "rpmalloc_config_t :: struct",
           "condition": "",
           "spec_line": 57,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rpmalloc_initialize",
@@ -169878,6 +169925,7 @@
           "signature": "ENABLE_TELEMETRY :: 1",
           "condition": "else branch",
           "spec_line": 23,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169885,6 +169933,7 @@
           "signature": "W :: #import \"Windows\"",
           "condition": "else branch",
           "spec_line": 24,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169892,6 +169941,7 @@
           "signature": "TM_SDK_MAJOR_VERSION :: 3",
           "condition": "else branch",
           "spec_line": 25,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169899,6 +169949,7 @@
           "signature": "TM_SDK_MINOR_VERSION :: 5",
           "condition": "else branch",
           "spec_line": 26,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169906,6 +169957,7 @@
           "signature": "TM_SDK_REVISION_NUMBER :: 0",
           "condition": "else branch",
           "spec_line": 27,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169913,6 +169965,7 @@
           "signature": "TM_SDK_BUILD_NUMBER :: 147",
           "condition": "else branch",
           "spec_line": 28,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169920,6 +169973,7 @@
           "signature": "TM_SDK_VERSION :: \"3.5.0.147\"",
           "condition": "else branch",
           "spec_line": 29,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169927,6 +169981,7 @@
           "signature": "TmBuildVersion :: 03_5_000_147",
           "condition": "else branch",
           "spec_line": 30,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169934,6 +169989,7 @@
           "signature": "TM_BUILD_YEAR :: 2022",
           "condition": "else branch",
           "spec_line": 31,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169941,6 +169997,7 @@
           "signature": "TM_BUILD_MONTH :: 9",
           "condition": "else branch",
           "spec_line": 32,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169948,6 +170005,7 @@
           "signature": "TM_BUILD_DAY :: 6",
           "condition": "else branch",
           "spec_line": 33,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169955,6 +170013,7 @@
           "signature": "TM_BUILD_SECOND :: 53968",
           "condition": "else branch",
           "spec_line": 34,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169962,6 +170021,7 @@
           "signature": "TM_BUILD_DATE :: \"2022.09.06.53968\"",
           "condition": "else branch",
           "spec_line": 35,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169969,6 +170029,7 @@
           "signature": "TmBuildDate :: 2022_09_06_53968",
           "condition": "else branch",
           "spec_line": 36,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169976,6 +170037,7 @@
           "signature": "TM_API_MAJOR_VERSION :: 2022",
           "condition": "else branch",
           "spec_line": 37,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169983,6 +170045,7 @@
           "signature": "TM_API_MINOR_VERSION :: 5",
           "condition": "else branch",
           "spec_line": 38,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169990,6 +170053,7 @@
           "signature": "TM_API_REVISION_NUMBER :: 23",
           "condition": "else branch",
           "spec_line": 39,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -169997,6 +170061,7 @@
           "signature": "TM_API_BUILD_NUMBER :: 51766",
           "condition": "else branch",
           "spec_line": 40,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -170004,6 +170069,7 @@
           "signature": "TM_API_VERSION :: \"2022.05.23.51766\"",
           "condition": "else branch",
           "spec_line": 41,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -170011,6 +170077,7 @@
           "signature": "telemetry_enabled :: () -> bool #expand",
           "condition": "else branch",
           "spec_line": 42,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170019,6 +170086,7 @@
           "signature": "tm_program_name := \"\"",
           "condition": "else branch",
           "spec_line": 43,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -170026,6 +170094,7 @@
           "signature": "tm_build_info := \"\"",
           "condition": "else branch",
           "spec_line": 44,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -170033,6 +170102,7 @@
           "signature": "telemetry_init :: (program_name: string, build_info: string, output_file := \"\") -> int",
           "condition": "else branch",
           "spec_line": 45,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170041,6 +170111,7 @@
           "signature": "telemetry_start :: (frames := 0, output_file:= \"\") -> int",
           "condition": "else branch",
           "spec_line": 46,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170049,6 +170120,7 @@
           "signature": "telemetry_stop :: ()",
           "condition": "else branch",
           "spec_line": 47,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170057,6 +170129,7 @@
           "signature": "telemetry_shutdown :: ()",
           "condition": "else branch",
           "spec_line": 48,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170065,6 +170138,7 @@
           "signature": "telemetry_tick :: ()",
           "condition": "else branch",
           "spec_line": 49,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170073,6 +170147,7 @@
           "signature": "telemetry_enterzone :: (name: string, loc := #caller_location, is_dynamic := false) #expand",
           "condition": "else branch",
           "spec_line": 50,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170081,6 +170156,7 @@
           "signature": "telemetry_leavezone :: () #expand",
           "condition": "else branch",
           "spec_line": 51,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170089,6 +170165,7 @@
           "signature": "telemetry_plot :: (plot_name: string, plot_value: float64) #expand",
           "condition": "else branch",
           "spec_line": 52,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170097,6 +170174,7 @@
           "signature": "telemetry_message :: (message: string) #expand",
           "condition": "else branch",
           "spec_line": 53,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170105,6 +170183,7 @@
           "signature": "telemetry_setthreadname :: (name: string)",
           "condition": "else branch",
           "spec_line": 54,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170113,6 +170192,7 @@
           "signature": "telemetry_start_gpuzone :: (frame_number: u32, gpu_freq: u64, cpu_freq: u64, gpu_begin: u64, cpu_begin: u64, fast_begin: u64)",
           "condition": "else branch",
           "spec_line": 55,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170121,6 +170201,7 @@
           "signature": "telemetry_end_gpuzone :: ()",
           "condition": "else branch",
           "spec_line": 56,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170129,6 +170210,7 @@
           "signature": "telemetry_add_gpuzone :: (name: string, frame_number: u32, level: u32, gpu_enter: u64, gpu_leave: u64)",
           "condition": "else branch",
           "spec_line": 57,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -170137,6 +170219,7 @@
           "signature": "g_tm_api : *tm_api = null",
           "condition": "else branch",
           "spec_line": 58,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         },
         {
@@ -170144,6 +170227,7 @@
           "signature": "g_tm_api0 : *tm_api = null",
           "condition": "else branch",
           "spec_line": 59,
+          "effective_condition": "ENABLED && OS == .WINDOWS",
           "status": "declared"
         }
       ]
@@ -170153,8 +170237,7 @@
       "spec_sha256": "cb35688669c9d9ab3a692b2da360742515c7ff4e14d4545cca4bcf41e1a25177",
       "counts": {
         "declared": 3273,
-        "implemented": 10,
-        "unresolved": 52
+        "implemented": 62
       },
       "declarations": [
         {
@@ -181663,184 +181746,161 @@
           "signature": "vkEnumeratePhysicalDevices :: (instance: VkInstance) -> [] VkPhysicalDevice, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1651,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceQueueFamilyProperties",
           "signature": "vkGetPhysicalDeviceQueueFamilyProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties",
           "condition": "OS == .WINDOWS",
           "spec_line": 1652,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateInstanceExtensionProperties",
           "signature": "vkEnumerateInstanceExtensionProperties :: (pLayerName: *u8) -> [] VkExtensionProperties, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1653,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateDeviceExtensionProperties",
           "signature": "vkEnumerateDeviceExtensionProperties :: (physicalDevice: VkPhysicalDevice, pLayerName: *u8) -> [] VkExtensionProperties, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1654,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateInstanceLayerProperties",
           "signature": "vkEnumerateInstanceLayerProperties :: () -> [] VkLayerProperties, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1655,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateDeviceLayerProperties",
           "signature": "vkEnumerateDeviceLayerProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkLayerProperties, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1656,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetImageSparseMemoryRequirements",
           "signature": "vkGetImageSparseMemoryRequirements :: (device: VkDevice, image: VkImage) -> [] VkSparseImageMemoryRequirements",
           "condition": "OS == .WINDOWS",
           "spec_line": 1657,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSparseImageFormatProperties",
           "signature": "vkGetPhysicalDeviceSparseImageFormatProperties :: (physicalDevice: VkPhysicalDevice, format: VkFormat, type: VkImageType, samples: VkSampleCountFlagBits, usage: VkImageUsageFlags, tiling: VkImageTiling) -> [] VkSparseImageFormatProperties",
           "condition": "OS == .WINDOWS",
           "spec_line": 1658,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumeratePhysicalDeviceGroups",
           "signature": "vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance) -> [] VkPhysicalDeviceGroupProperties, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1659,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetImageSparseMemoryRequirements2",
           "signature": "vkGetImageSparseMemoryRequirements2 :: (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2) -> [] VkSparseImageMemoryRequirements2",
           "condition": "OS == .WINDOWS",
           "spec_line": 1660,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceQueueFamilyProperties2",
           "signature": "vkGetPhysicalDeviceQueueFamilyProperties2 :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties2",
           "condition": "OS == .WINDOWS",
           "spec_line": 1661,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSparseImageFormatProperties2",
           "signature": "vkGetPhysicalDeviceSparseImageFormatProperties2 :: (physicalDevice: VkPhysicalDevice, pFormatInfo: *VkPhysicalDeviceSparseImageFormatInfo2) -> [] VkSparseImageFormatProperties2",
           "condition": "OS == .WINDOWS",
           "spec_line": 1662,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSurfaceFormatsKHR",
           "signature": "vkGetPhysicalDeviceSurfaceFormatsKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkSurfaceFormatKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1663,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSurfacePresentModesKHR",
           "signature": "vkGetPhysicalDeviceSurfacePresentModesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkPresentModeKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1664,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetSwapchainImagesKHR",
           "signature": "vkGetSwapchainImagesKHR :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] VkImage, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1665,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDevicePresentRectanglesKHR",
           "signature": "vkGetPhysicalDevicePresentRectanglesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkRect2D, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1666,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPropertiesKHR",
           "signature": "vkGetPhysicalDeviceDisplayPropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPropertiesKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1667,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPlanePropertiesKHR",
           "signature": "vkGetPhysicalDeviceDisplayPlanePropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlanePropertiesKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1668,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayPlaneSupportedDisplaysKHR",
           "signature": "vkGetDisplayPlaneSupportedDisplaysKHR :: (physicalDevice: VkPhysicalDevice, planeIndex: u32) -> [] VkDisplayKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1669,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayModePropertiesKHR",
           "signature": "vkGetDisplayModePropertiesKHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModePropertiesKHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1670,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayProperties2KHR",
           "signature": "vkGetPhysicalDeviceDisplayProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayProperties2KHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1671,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPlaneProperties2KHR",
           "signature": "vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlaneProperties2KHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1672,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayModeProperties2KHR",
           "signature": "vkGetDisplayModeProperties2KHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModeProperties2KHR, VkResult",
           "condition": "OS == .WINDOWS",
           "spec_line": 1673,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "VK_KHR_win32_surface",
@@ -193327,232 +193387,203 @@
           "signature": "vkEnumeratePhysicalDevices :: (instance: VkInstance) -> [] VkPhysicalDevice, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3314,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceQueueFamilyProperties",
           "signature": "vkGetPhysicalDeviceQueueFamilyProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties",
           "condition": "OS == .LINUX",
           "spec_line": 3315,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateInstanceExtensionProperties",
           "signature": "vkEnumerateInstanceExtensionProperties :: (pLayerName: *u8) -> [] VkExtensionProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3316,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateDeviceExtensionProperties",
           "signature": "vkEnumerateDeviceExtensionProperties :: (physicalDevice: VkPhysicalDevice, pLayerName: *u8) -> [] VkExtensionProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3317,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateInstanceLayerProperties",
           "signature": "vkEnumerateInstanceLayerProperties :: () -> [] VkLayerProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3318,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumerateDeviceLayerProperties",
           "signature": "vkEnumerateDeviceLayerProperties :: (physicalDevice: VkPhysicalDevice) -> [] VkLayerProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3319,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetImageSparseMemoryRequirements",
           "signature": "vkGetImageSparseMemoryRequirements :: (device: VkDevice, image: VkImage) -> [] VkSparseImageMemoryRequirements",
           "condition": "OS == .LINUX",
           "spec_line": 3320,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSparseImageFormatProperties",
           "signature": "vkGetPhysicalDeviceSparseImageFormatProperties :: (physicalDevice: VkPhysicalDevice, format: VkFormat, type: VkImageType, samples: VkSampleCountFlagBits, usage: VkImageUsageFlags, tiling: VkImageTiling) -> [] VkSparseImageFormatProperties",
           "condition": "OS == .LINUX",
           "spec_line": 3321,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumeratePhysicalDeviceGroups",
           "signature": "vkEnumeratePhysicalDeviceGroups :: (instance: VkInstance) -> [] VkPhysicalDeviceGroupProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3322,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetImageSparseMemoryRequirements2",
           "signature": "vkGetImageSparseMemoryRequirements2 :: (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2) -> [] VkSparseImageMemoryRequirements2",
           "condition": "OS == .LINUX",
           "spec_line": 3323,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceQueueFamilyProperties2",
           "signature": "vkGetPhysicalDeviceQueueFamilyProperties2 :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties2",
           "condition": "OS == .LINUX",
           "spec_line": 3324,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSparseImageFormatProperties2",
           "signature": "vkGetPhysicalDeviceSparseImageFormatProperties2 :: (physicalDevice: VkPhysicalDevice, pFormatInfo: *VkPhysicalDeviceSparseImageFormatInfo2) -> [] VkSparseImageFormatProperties2",
           "condition": "OS == .LINUX",
           "spec_line": 3325,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSurfaceFormatsKHR",
           "signature": "vkGetPhysicalDeviceSurfaceFormatsKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkSurfaceFormatKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3326,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSurfacePresentModesKHR",
           "signature": "vkGetPhysicalDeviceSurfacePresentModesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkPresentModeKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3327,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetSwapchainImagesKHR",
           "signature": "vkGetSwapchainImagesKHR :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] VkImage, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3328,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDevicePresentRectanglesKHR",
           "signature": "vkGetPhysicalDevicePresentRectanglesKHR :: (physicalDevice: VkPhysicalDevice, surface: VkSurfaceKHR) -> [] VkRect2D, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3329,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPropertiesKHR",
           "signature": "vkGetPhysicalDeviceDisplayPropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPropertiesKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3330,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPlanePropertiesKHR",
           "signature": "vkGetPhysicalDeviceDisplayPlanePropertiesKHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlanePropertiesKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3331,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayPlaneSupportedDisplaysKHR",
           "signature": "vkGetDisplayPlaneSupportedDisplaysKHR :: (physicalDevice: VkPhysicalDevice, planeIndex: u32) -> [] VkDisplayKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3332,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayModePropertiesKHR",
           "signature": "vkGetDisplayModePropertiesKHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModePropertiesKHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3333,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceQueueFamilyProperties2KHR",
           "signature": "vkGetPhysicalDeviceQueueFamilyProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkQueueFamilyProperties2",
           "condition": "OS == .LINUX",
           "spec_line": 3334,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceSparseImageFormatProperties2KHR",
           "signature": "vkGetPhysicalDeviceSparseImageFormatProperties2KHR :: (physicalDevice: VkPhysicalDevice, pFormatInfo: *VkPhysicalDeviceSparseImageFormatInfo2) -> [] VkSparseImageFormatProperties2",
           "condition": "OS == .LINUX",
           "spec_line": 3335,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkEnumeratePhysicalDeviceGroupsKHR",
           "signature": "vkEnumeratePhysicalDeviceGroupsKHR :: (instance: VkInstance) -> [] VkPhysicalDeviceGroupProperties, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3336,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayProperties2KHR",
           "signature": "vkGetPhysicalDeviceDisplayProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayProperties2KHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3337,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPhysicalDeviceDisplayPlaneProperties2KHR",
           "signature": "vkGetPhysicalDeviceDisplayPlaneProperties2KHR :: (physicalDevice: VkPhysicalDevice) -> [] VkDisplayPlaneProperties2KHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3338,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetDisplayModeProperties2KHR",
           "signature": "vkGetDisplayModeProperties2KHR :: (physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> [] VkDisplayModeProperties2KHR, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3339,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetImageSparseMemoryRequirements2KHR",
           "signature": "vkGetImageSparseMemoryRequirements2KHR :: (device: VkDevice, pInfo: *VkImageSparseMemoryRequirementsInfo2) -> [] VkSparseImageMemoryRequirements2",
           "condition": "OS == .LINUX",
           "spec_line": 3340,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetPastPresentationTimingGOOGLE",
           "signature": "vkGetPastPresentationTimingGOOGLE :: (device: VkDevice, swapchain: VkSwapchainKHR) -> [] VkPastPresentationTimingGOOGLE, VkResult",
           "condition": "OS == .LINUX",
           "spec_line": 3341,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "vkGetQueueCheckpointDataNV",
           "signature": "vkGetQueueCheckpointDataNV :: (queue: VkQueue) -> [] VkCheckpointDataNV",
           "condition": "OS == .LINUX",
           "spec_line": 3342,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         }
       ]
     },
@@ -193562,8 +193593,9 @@
       "counts": {
         "declared": 1546,
         "implemented": 9,
-        "unresolved": 3,
-        "forwarded": 4
+        "unresolved": 2,
+        "forwarded": 4,
+        "implemented_manual": 1
       },
       "declarations": [
         {
@@ -204353,8 +204385,8 @@
           "signature": "uid :: (str: string) -> GUID",
           "condition": "OS == .WINDOWS",
           "spec_line": 1548,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Windows/wrappers.jai"
         },
         {
           "name": "FILE_MAP_ALL_ACCESS",

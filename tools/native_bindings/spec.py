@@ -38,6 +38,9 @@ class Spec:
 
 def platform_condition(label):
     label = label.strip()
+    option = re.match(r'`(\w+) := (true|false)`;', label)
+    if option:
+        return ('' if option[2] == 'true' else '!') + option[1]
     if label == "Unix":
         return "OS != .WINDOWS"
     atoms = {"Linux": "OS == .LINUX", "Windows": "OS == .WINDOWS",
@@ -67,6 +70,7 @@ def parse_spec(text):
     result = Spec()
     section = ""
     condition = ""
+    section_condition = ""
     shape_name = ""
     shape_header = ""
     shape_members = []
@@ -109,29 +113,36 @@ def parse_spec(text):
             fence.append(line)
             continue
         if line.startswith("## "):
+            if line == '## Library and ABI metadata' and shape_header:
+                section = 'Library and ABI metadata'
+                continue
             finish_list()
             section = line[3:].strip()
             condition = ""
+            section_condition = ""
             shape_name = ""
+            continue
+        if line == '### Target-conditional fields' and shape_header:
+            section = 'Public type members'
             continue
         match = re.match(r"### (.+?)-specific (?:type )?declarations", line)
         if match:
             finish_list()
             condition = platform_condition(match[1])
+            section_condition = condition
             continue
-        match = re.match(r"#{3,4} `([^`]+)`(?: \(([^)]+)\))?", line)
+        match = re.match(r"#{3,4} `([^`]+)`(?: \[([^\]]+)\])?(?: \(([^)]+)\))?", line)
         if match:
             finish_list()
             shape_name = match[1]
             shape_line = number
-            if match[2]:
-                kind, _, config = match[2].partition("; ")
+            condition = match[2] or section_condition
+            if match[3]:
+                kind, _, config = match[3].partition("; ")
                 kind = kind.replace("`", "").removeprefix("empty ").removeprefix("opaque ")
                 shape_header = shape_name + " :: " + kind
                 if config:
                     condition = config.replace("`", "")
-            elif section == "Public aggregate shapes and enum values":
-                condition = ""
             continue
         match = re.match(r"#### \[(.+)\]", line)
         if match and shape_header:
@@ -152,10 +163,12 @@ def parse_spec(text):
         if match and shape_header:
             shape_members.append(match[1])
             continue
-        match = re.match(r"- (?:\[([^\]]+)\] )?`(.*)`(?: \(.*\))?$", line)
+        match = re.match(r"- (?:\[([^\]]+)\] )?`(.*)`(?: \((.*)\))?$", line)
         if match:
             code = match[2]
             cond = match[1] or condition
+            if match[3] and match[3].endswith(' only'):
+                cond = platform_condition(match[3].removesuffix(' only'))
             if section == "Public declaration inventory":
                 result.declarations.append(Declaration(code, cond, number))
             elif section == "Module parameters":

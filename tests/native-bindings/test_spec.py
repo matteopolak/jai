@@ -102,6 +102,44 @@ using Bits :: enum_flags u8 { C :: 1; }
         self.assertEqual([s.name for s in spec.shapes], ['Tag', 'Record', 'Bits'])
         self.assertIn('nested :: enum', spec.shapes[1].code)
 
+    def test_gl_metadata_does_not_detach_target_fields(self):
+        spec = parse_spec('''# GL
+## Public type members
+#### `Procs` (struct; `!ALL`)
+- `flag: bool`
+## Library and ABI metadata
+- [OS == .MACOS] `lib :: #library,system "OpenGL"`
+### Target-conditional fields
+#### [OS == .MACOS]
+- `call: () #c_call`
+''')
+        self.assertEqual(len(spec.shapes), 1)
+        self.assertIn('call:', spec.shapes[0].code)
+        self.assertNotIn('#library', spec.shapes[0].code)
+
+    def test_parenthetical_platform_availability(self):
+        spec = parse_spec('''# GL
+## Public declaration inventory
+- `create :: () -> *void` (Windows only)
+''')
+        self.assertEqual(spec.declarations[0].condition, 'OS == .WINDOWS')
+
+    def test_condition_between_shape_name_and_kind(self):
+        spec = parse_spec('''# Android
+## Public type members
+#### `App` [GLUE] (struct)
+```jai
+App :: struct { state: s64; }
+```
+#### `App` [!GLUE] (struct)
+```jai
+App :: struct { state: s32; }
+```
+#### `Other` (struct)
+- `value: u32`
+''')
+        self.assertEqual([s.condition for s in spec.shapes], ['GLUE', '!GLUE', ''])
+
     def test_variant_conditions_and_overloads(self):
         page = '''# Example
 ## Public declaration inventory

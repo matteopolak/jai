@@ -61,6 +61,18 @@
     "files": {
       "mojoshader.h": "f4f658f0aa37c9ffebf777952d4b17a47da56a91eb00d228deb568e6835dd253",
       "LICENSE.txt": "5ed333fa2c0bcfa3e593b69545998426cdf5ba3d100892b1387206e0565dae27"
+    },
+    "archive": {
+      "url": "https://codeload.github.com/icculus/mojoshader/tar.gz/cf2661bcb55d9a8732e86f79922592d7efdf5383",
+      "sha256": "a8ae7c9a7ec09e855b46b80f6dcddd65a94bb09188a53a1500fbd0381423c729",
+      "root": "mojoshader-cf2661bcb55d9a8732e86f79922592d7efdf5383"
+    }
+  },
+  "windows-sdk": {
+    "repository": "microsoft/win32metadata",
+    "revision": "76c04c2021ef4a831a6f1e06d9566002d746139b",
+    "files": {
+      "generation/WinSDK/RecompiledIdlHeaders/um/d3d11.h": "ff082b8df5a18dab59939df3b5d041b5abe9206a0d1c8e2e75dc1be1cbe22135"
     }
   }
 }

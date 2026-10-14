@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 import platform
 import subprocess
+import shutil
+import tarfile
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,6 +39,16 @@ def main():
                 path.write_bytes(data)
             if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
                 raise SystemExit('Hash mismatch: ' + str(path))
+        if 'archive' in source:
+            pin = source['archive']
+            archive = vendor/(name+'.tar.gz')
+            if not archive.exists():
+                archive.write_bytes(urllib.request.urlopen(pin['url'], timeout=60).read())
+            if hashlib.sha256(archive.read_bytes()).hexdigest() != pin['sha256']:
+                raise SystemExit('Archive hash mismatch: '+name)
+            if not (vendor/pin['root']).is_dir():
+                with tarfile.open(archive) as stream:
+                    stream.extractall(vendor, filter='data')
     args.output.mkdir(parents=True, exist_ok=True)
     objects = args.output / 'objects'
     objects.mkdir(exist_ok=True)
@@ -44,6 +56,7 @@ def main():
         'lz4': [vendor/'lz4/lib/lz4.c', vendor/'lz4/lib/lz4hc.c'],
         'xxhash070': [vendor/'xxhash/xxhash.c'],
         'meshoptimizer': sorted((vendor/'meshoptimizer/src').glob('*.cpp')),
+        'binding_ffi': [ROOT/'stdlib/internal/bindings/varargs/bridge.c'],
     }
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
               'stb_image_resize': 'STB_IMAGE_RESIZE_IMPLEMENTATION',
@@ -62,9 +75,19 @@ def main():
             compiled.append(obj)
         run(['ar', 'rcs', args.output / ('lib' + name + '.a'), *compiled])
         suffix = '.dylib' if platform.system() == 'Darwin' else '.so'
+        extra = ['-lffi'] if name == 'binding_ffi' else []
         run(['c++' if name == 'meshoptimizer' else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
-             '-lm', '-o', args.output / ('lib' + name + suffix)])
+             '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)
+    mojo = vendor/manifest['mojoshader']['archive']['root']
+    for shared in (False, True):
+        build = args.output/('mojoshader-shared' if shared else 'mojoshader-static')
+        run(['cmake','-S',mojo,'-B',build,'-DCMAKE_BUILD_TYPE=Release',
+             '-DCMAKE_POLICY_VERSION_MINIMUM=3.5','-DCOMPILER_SUPPORT=ON','-DEFFECT_SUPPORT=ON',
+             '-DBUILD_SHARED_LIBS='+('ON' if shared else 'OFF')])
+        run(['cmake','--build',build,'--target','mojoshader','--parallel','4'])
+        suffix = ('.dylib' if platform.system()=='Darwin' else '.so') if shared else '.a'
+        shutil.copy2(build/('libmojoshader'+suffix),args.output/('libmojoshader'+suffix))
 
 
 if __name__ == '__main__':

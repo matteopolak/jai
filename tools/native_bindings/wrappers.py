@@ -4,9 +4,31 @@ This module deliberately does not infer behavior from legacy tests. Native
 macro arithmetic follows the corresponding public C APIs.
 """
 import re
+from bitfields import body as bitfield_body
 
 
 def simple_body(module, name, condition=''):
+    if module == 'Objective_C':
+        bodies = {
+            'NSMakePoint': 'return NSPoint.{x,y};',
+            'NSMakeSize': 'return NSSize.{w,h};',
+            'NSMakeRect': 'return NSRect.{NSPoint.{x,y},NSSize.{w,h}};',
+            'init_objective_c_foundation': 'if !binding_objc_class("NSString") binding_abort();',
+        }
+        if name in bodies:
+            return bodies[name]
+    if module == 'Metal':
+        bodies = {
+            'init_metal': 'init_objective_c(); if !binding_objc_class("MTLTextureDescriptor") binding_abort();',
+            'MTLOriginMake': 'return MTLOrigin.{x,y,z};',
+            'MTLSizeMake': 'return MTLSize.{width,height,depth};',
+            'MTLRegionMake1D': 'return MTLRegion.{MTLOrigin.{x,0,0},MTLSize.{width,1,1}};',
+            'MTLRegionMake2D': 'return MTLRegion.{MTLOrigin.{x,y,0},MTLSize.{width,height,1}};',
+            'MTLRegionMake3D': 'return MTLRegion.{MTLOrigin.{x,y,z},MTLSize.{width,height,depth}};',
+            'MTLSamplePositionMake': 'return MTLSamplePosition.{x,y};',
+            'MTLClearColorMake': 'return MTLClearColor.{red,green,blue,alpha};',
+        }
+        return bodies.get(name)
     if module == 'xxHash':
         bodies = {
             'XXH_versionNumber': 'return binding_XXH_versionNumber();',
@@ -137,15 +159,108 @@ def simple_body(module, name, condition=''):
 
 
 def forwarding_body(module, declaration, declarations, parts, parse):
+    bits = bitfield_body(parts)
+    if bits is not None:
+        return bits
     name, params, args, tail = parts
     prefix = 'return ' if '->' in tail and not re.search(r'->\s*(?:void|\(\))', tail) else ''
+    if module == 'Vulkan' and re.search(r'->\s*\[\]', tail):
+        element = re.search(r'->\s*\[\]\s*(\w+)', tail)[1]
+        has_result = 'VkResult' in tail
+        native_declarations = list(declarations)
+        for pfn in declarations:
+            if pfn.name == 'PFN_' + name and pfn.condition == declaration.condition:
+                from spec import Declaration
+                signature = pfn.code.split('#type', 1)[1].replace('#c_call', '#foreign libvulkan')
+                native_declarations.append(Declaration(name + ' :: ' + signature, pfn.condition))
+        for raw in native_declarations:
+            if raw.name != name or '#foreign' not in raw.code:
+                continue
+            if raw.condition != declaration.condition:
+                continue
+            target = parse(raw.code)
+            if not target or len(target[1]) != len(params)+2:
+                continue
+            native_name = name if raw in declarations else 'binding_' + name
+            first_call = native_name + '(' + ', '.join(args + ['*count', 'null']) + ')'
+            second_call = native_name + '(' + ', '.join(args + ['*count', 'values.data']) + ')'
+            body = 'count: u32; '
+            if has_result:
+                body += 'status := ' + first_call + '; if status != .SUCCESS || count == 0 return .[], status; '
+            else:
+                body += first_call + '; if count == 0 return .[]; '
+            body += 'values, base := Binding_Arrays.allocate_values(cast(s64) count, ' + element + '); '
+            body += ('if !base return .[], .ERROR_OUT_OF_HOST_MEMORY; ' if has_result else 'if !base binding_abort(); ')
+            if has_result:
+                body += 'status = ' + second_call + '; if cast,trunc(s32) status < 0 { Binding_Arrays.release_values(base); return .[], status; } '
+            else:
+                body += second_call + '; '
+            body += 'values.count = count; return values' + (', status' if has_result else '') + ';'
+            return body
     if module == 'Linux' and name == 'io_uring_enter':
         signal = 'null' if len(args) == 4 else args[-1]
         size = 'size_of(io_uring_getevents_arg)' if 'io_uring_getevents_arg' in params[-1] else '8'
         return 'return cast(s32) syscall(426, fd, to_submit, min_complete, flags, ' + signal + ', ' + size + ');'
     if module == 'Curl' and name.startswith('curl_m'):
-        values = ['cformat' if a == 'format' else '..' + a if a == '__args' else a for a in args]
-        return 'cformat := Native.terminated_copy(format); defer Native.release(cformat); return ' + name + '_CFormat(' + ', '.join(values) + ');'
+        fixed = []
+        for arg in args:
+            if arg == '__args':
+                continue
+            value = 'cformat' if arg == 'format' else arg
+            kind = 4 if arg == 'maxlength' else 6
+            fixed.append('.{kind='+str(kind)+', value=cast(u64) '+value+'}')
+        output = 'cformat := Native.terminated_copy(format); defer Native.release(cformat); '
+        output += 'fixed: ['+str(len(fixed))+']Varargs.Argument = .['+', '.join(fixed)+']; '
+        invoke = 'invoke_pointer' if name=='curl_maprintf' else 'invoke_int'
+        return output + 'return Varargs.'+invoke+'(cast(*void) '+name+'_CFormat, fixed, __args);'
+    if module == 'Objective_C':
+        if name == 'init_objective_c':
+            return 'if !binding_objc_class("NSObject") binding_abort();'
+        if name == 'init_objective_c_selector_struct':
+            return '''for member: type_info(T).members {
+                if (member.flags & .CONSTANT) != 0 continue;
+                if member.type != type_info(Selector) binding_abort();
+                text := Native.terminated_copy(member.name);
+                for i: 0..member.name.count-1 if text[i] == #char "_" text[i] = #char ":";
+                slot := cast(*Selector) (cast(*u8) selectors + member.offset_in_bytes);
+                <<slot = binding_objc_selector(text);
+                Native.release(text);
+            }'''
+        if name == 'selector':
+            return 'return sel_registerName(sel_str);'
+        if name == 'objc_new':
+            return 'return objc_init(objc_alloc(type));'
+        if name == 'class' and params[0].startswith('$type'):
+            return 'name := Native.terminated_copy(type_info(type).name); defer Native.release(name); return cast(Class) binding_objc_class(name);'
+        if name == 'class':
+            return 'return object_getClass(self);'
+        if name == 'superclass':
+            return 'return class_getSuperclass(object_getClass(self));'
+        if name == 'objc_finalize_class':
+            return 'objc_registerClassPair(my_class);'
+        if name == 'has_isa_member':
+            return 'for member: ty.members if member.name == "isa" return true; return false;'
+        if name == 'to_string':
+            return 'text := NSString.UTF8String(str); if !text return ""; return .{data=text, count=cast(s64) binding_strlen(text)};'
+        messages = {'objc_alloc': 'alloc', 'objc_init': 'init', 'objc_copy': 'copy',
+                    'retain': 'retain', 'autorelease': 'autorelease', 'release': 'release',
+                    'isEqual': 'isEqual:'}
+        if name in messages:
+            if name == 'objc_alloc':
+                receiver = 'class' if not params[0].startswith('$') else 'binding_objc_class(binding_name)'
+                call_args = []
+            else:
+                receiver, call_args = 'self', args[1:]
+            result_type = re.search(r'->\s*([^#]+)', tail)[1].strip()
+            c_result = 'void' if name == 'release' else 'BOOL' if name == 'isEqual' else result_type
+            signature = 'Send :: #type (receiver: *void, op: *void' + ''.join(', a'+str(i)+': type_of('+arg+')' for i,arg in enumerate(call_args)) + ') -> ' + c_result + ' #c_call; '
+            if name == 'objc_alloc' and params[0].startswith('$'):
+                signature += 'binding_name := Native.terminated_copy(type_info(type).name); defer Native.release(binding_name); '
+            signature += 'send := cast(Send) binding_objc_send; '
+            call = 'send(' + ', '.join(['cast(*void) ' + receiver, 'binding_objc_selector("'+messages[name]+'")']+call_args) + ')'
+            return signature + (call+'; return null;' if name=='release' else 'return '+call+' != NO;' if name=='isEqual' else 'return '+call+';')
+        if name == 'objc_msgSend_typed':
+            return 'Send :: #type (target: *void, op: Selector) -> *void #c_call; send := cast(Send) binding_objc_send; return send(target, selector);'
     # A value overload forwarding to its documented pointer overload. Comparing
     # every parameter prevents accidentally selecting a different native overload.
     for native in declarations:
@@ -154,21 +269,36 @@ def forwarding_body(module, declaration, declarations, parts, parse):
         if native.condition and declaration.condition and native.condition != declaration.condition:
             continue
         target = parse(native.code)
-        if not target or len(target[1]) != len(params):
+        if not target:
             continue
-        call_args, changed, compatible = [], False, True
-        for arg, public_param, native_param in zip(args, params, target[1]):
+        call_args, changed, compatible, setup = [], False, True, []
+        native_index = 0
+        for arg, public_param in zip(args, params):
             def ty(p):
                 return p.split(':', 1)[1].split('=', 1)[0].strip() if ':' in p else ''
+            if native_index >= len(target[1]):
+                compatible = False
+                break
+            native_param = target[1][native_index]
             public_type, native_type = ty(public_param), ty(native_param)
-            if native_type == public_type:
+            next_param = target[1][native_index+1] if native_index+1 < len(target[1]) else ''
+            if public_type == 'string' and native_type == '*u8' and ty(next_param) == '*u8' and re.search(r'\b\w*(?:end|End)\s*:',next_param):
+                call_args.extend([arg+'.data',arg+'.data + '+arg+'.count'])
+                changed = True
+                native_index += 1
+            elif native_type == public_type:
                 call_args.append(arg)
             elif native_type == '*' + public_type:
                 call_args.append('*' + arg)
                 changed = True
+            elif module == 'Objective_C' and public_type == 'string' and native_type == '*u8':
+                setup.append('binding_'+arg+' := Native.terminated_copy('+arg+'); defer Native.release(binding_'+arg+'); ')
+                call_args.append('binding_'+arg)
+                changed = True
             else:
                 compatible = False
                 break
-        if changed and compatible:
-            return prefix + name + '(' + ', '.join(call_args) + ');'
+            native_index += 1
+        if changed and compatible and native_index == len(target[1]):
+            return ''.join(setup) + prefix + name + '(' + ', '.join(call_args) + ');'
     return None

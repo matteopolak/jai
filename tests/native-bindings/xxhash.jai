@@ -8,6 +8,8 @@ abort :: () #foreign libc;
 check :: (value: bool) { if !value abort(); }
 
 main :: () {
+    check(type_info(H.XXH32_state_t).name == "XXH32_state_t");
+    check(type_info(H.XXH64_state_t).name == "XXH64_state_t");
     check(H.XXH_versionNumber() == 700);
     check(size_of(H.XXH32_state_t) == check_size(5));
     check(size_of(H.XXH64_state_t) == check_size(6));

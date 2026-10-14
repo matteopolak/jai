@@ -10,6 +10,7 @@ probe :: #library "../../.work/native/abi_probe";
 check_size :: (which: s32) -> u64 #foreign probe "binding_size";
 
 main :: () {
+    check(type_info(M.meshopt_Stream).name == "meshopt_Stream");
     check(size_of(M.meshopt_Stream) == check_size(7));
     check(size_of(M.meshopt_Meshlet) == check_size(8));
     check(size_of(M.meshopt_Bounds) == check_size(9));

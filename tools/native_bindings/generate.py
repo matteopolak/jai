@@ -10,6 +10,9 @@ import re
 from spec import parse_spec
 from config import IMPORTS, LIBRARIES, PARAMETERS, PRIVATE, TARGETS
 from wrappers import simple_body, forwarding_body
+from objc import materialize_methods
+from bitfields import body as bitfield_body
+from spec import Declaration
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULES = {
@@ -69,7 +72,7 @@ def guard(code, condition):
     return '#if ' + condition + ' {\n' + code + '\n}\n' if condition else code + '\n'
 
 
-def condition_for(module, declaration):
+def condition_for(module, declaration, spec=None):
     condition = declaration.condition
     if condition == 'else branch':
         if module == 'Objective_C':
@@ -82,6 +85,10 @@ def condition_for(module, declaration):
             raise ValueError(f'{module}: ambiguous else condition')
     if condition == 'GLX extension':
         condition = 'OS == .LINUX'
+    if spec is not None and module in ('d3d11', 'd3d12'):
+        debug_types = {s.name for s in spec.shapes if s.condition == 'INCLUDE_DEBUG_BINDINGS'}
+        if any(declaration.name == t or declaration.name == t+'_VTable' or declaration.name.startswith(t+'_') or re.search(r'\*'+re.escape(t)+r'\b',declaration.code) for t in debug_types):
+            condition = 'INCLUDE_DEBUG_BINDINGS'
     return condition
 
 
@@ -109,9 +116,17 @@ def generate_facade(module, spec):
     for shape in spec.shapes:
         shapes[shape.name].append(shape)
     ledger, output, emitted = [], [], set()
+    manual_path = ROOT / 'stdlib' / module / 'wrappers.jai'
+    manual_names = set(re.findall(r'^(\w+)\s*::\s*\(', manual_path.read_text(), re.M)) if manual_path.exists() else set()
     for d in spec.declarations:
         record = {'name': d.name, 'signature': d.code, 'condition': d.condition, 'spec_line': d.line}
-        condition = condition_for(module, d)
+        condition = condition_for(module, d, spec)
+        if condition != d.condition:
+            record['effective_condition'] = condition
+        if d.name in manual_names:
+            record.update(status='implemented_manual', artifact=str(manual_path.relative_to(ROOT)))
+            ledger.append(record)
+            continue
         key = (condition, d.code)
         if key in emitted:
             record.update(status='duplicate', reason='Exact repeated inventory signature')
@@ -130,6 +145,8 @@ def generate_facade(module, spec):
             candidates = shapes[d.name]
             exact = [s for s in candidates if s.condition == condition]
             selected = exact or [s for s in candidates if not s.condition]
+            if not selected and not condition and candidates and all(s.condition for s in candidates):
+                selected = candidates
             if not selected and len(candidates) == 1:
                 selected = candidates
             if not selected:
@@ -139,6 +156,32 @@ def generate_facade(module, spec):
             blocks = []
             for s in selected:
                 body = s.code
+                if module == 'ImGui':
+                    member_declarations = [Declaration(line.strip().rstrip(' {;'),s.condition)
+                                           for line in body.splitlines() if procedure_parts(line.strip().rstrip(' {;'))]
+                    lines = []
+                    for line in body.splitlines():
+                        signature = line.strip().rstrip(' {;')
+                        parts = procedure_parts(signature)
+                        if parts and '#foreign' not in signature:
+                            wrapper = forwarding_body(module,Declaration(signature,s.condition),member_declarations,parts,procedure_parts)
+                            if wrapper is not None:
+                                line = '    '+signature+' { '+wrapper+' }'
+                            else:
+                                record.setdefault('unresolved_members',[]).append(signature)
+                        lines.append(line)
+                    body = '\n'.join(lines)
+                if module == 'd3d11':
+                    lines = []
+                    for line in body.splitlines():
+                        parts = procedure_parts(line.strip().rstrip(' {;'))
+                        bits = bitfield_body(parts) if parts else None
+                        if bits is not None:
+                            line = line.rstrip(' {;') + ' { ' + bits + ' }'
+                        lines.append(line)
+                    body = '\n'.join(lines)
+                if module in ('Objective_C', 'Metal'):
+                    body = materialize_methods(d.name, body, procedure_parts)
                 if s.member_list:
                     # The prose renderer omits the terminal semicolon of an
                     # inline anonymous member and uses postfix overlay notation.
@@ -205,6 +248,17 @@ def main():
         preamble = ['#scope_file']
         preamble += ['#import "' + dep + '";' for dep in IMPORTS.get(module, [])]
         preamble += [PRIVATE.get(module, '')]
+        if module == 'Vulkan':
+            for name in sorted(set(re.findall(r'\b(binding_vk\w+)\(', code))):
+                public_name = name.removeprefix('binding_')
+                for d in spec.declarations:
+                    if d.name == 'PFN_' + public_name:
+                        signature = d.code.split('#type', 1)[1].replace('#c_call', '#foreign libvulkan "' + public_name + '"')
+                        preamble.append(guard(name+' :: '+signature+';', d.condition))
+        if module == 'MojoShader':
+            context = ROOT/'stdlib/internal/bindings/vendor/mojoshader-context.jai'
+            if context.exists():
+                preamble.append(context.read_text())
         library_names = sorted(set(re.findall(r'#(?:foreign|elsewhere)\s+(\w+)', code + '\n' + PRIVATE.get(module, ''))))
         for name in library_names:
             if name == 'gl_lib':

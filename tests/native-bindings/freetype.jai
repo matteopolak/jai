@@ -7,6 +7,7 @@ check_size :: (which: s32) -> u64 #foreign probe "binding_size";
 check_offset :: (which: s32) -> u64 #foreign probe "binding_offset";
 
 main :: () {
+    check(type_info(F.FT_FaceRec).name == "FT_FaceRec_");
     check(size_of(F.FT_FaceRec) == check_size(10));
     check(size_of(F.FT_GlyphSlotRec) == check_size(11));
     check(size_of(F.FT_Bitmap) == check_size(12));

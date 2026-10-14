@@ -15,6 +15,8 @@ abort :: () #foreign libc;
 check :: (value: bool) { if !value abort(); }
 
 main :: () {
+    check(type_info(L.LZ4_stream_t).name == "LZ4_stream_u");
+    check(type_info(L.LZ4HC_CCtx_internal).name == "LZ4HC_CCtx_internal");
     check(L.LZ4_versionNumber() == L.LZ4_VERSION_NUMBER);
     check(size_of(L.LZ4_stream_u) == check_size(0));
     check(size_of(L.LZ4_streamDecode_u) == check_size(1));

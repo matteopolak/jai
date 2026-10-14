@@ -49,6 +49,16 @@ class GeneratorTests(unittest.TestCase):
         self.assertNotIn('mystery ::', code)
         self.assertEqual(ledger[0]['status'], 'unresolved')
 
+    def test_string_span_and_value_reference_forwarding(self):
+        spec = parse_spec('''# ImGui
+## Public declaration inventory
+- `Draw :: (pos: *Vec2, text_begin: *u8, text_end: *u8) #foreign native`
+- `Draw :: (pos: Vec2, text: string) #no_context`
+''')
+        code, ledger = generate_facade('ImGui', spec)
+        self.assertIn('Draw(*pos, text.data, text.data + text.count)', code)
+        self.assertEqual(ledger[1]['status'], 'implemented')
+
 
 if __name__ == '__main__':
     unittest.main()
