@@ -111,7 +111,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [simp](specs/stdlib/modules/simp.md) | Owned portable scope; not implemented |
 | [simple-package](specs/stdlib/modules/simple-package.md) | Owned portable scope; not implemented |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |
-| [soa](specs/stdlib/modules/soa.md) | Owned portable scope; not implemented |
+| [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
 | [sound-player](specs/stdlib/modules/sound-player.md) | Owned portable scope; not implemented |

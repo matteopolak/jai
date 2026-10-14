@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 52 cases in interpreter/native modes, plus bootstrap
+The current run passes 53 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -304,3 +304,14 @@ The current source checks cover all 146 owned Jai files with source-built
 jaifmt --check and jailint -D warnings. All 52 focused interpreter/native cases,
 four parent-lifetime scenarios, the checked double-free fault and selected
 portable Linux/Windows checks pass.
+
+Soa generates fixed backing arrays using the actual field types, omitting
+constants/imported aliases/overlays. Indexed reads gather values and assignments
+scatter them. Pointer iteration uses deferred scatter so updates survive
+continue/break/return; value iteration makes no writes. Tests cover those exits,
+empty extent, mixed component types and overlay reconstruction. General union
+selection and observation through other aliases inside a pointer iteration are
+recorded for review. No allocation or dynamic growth is added to the public type.
+Soa passes focused interpreter/native execution and Linux/Windows target checks;
+the expanded 53-case regression passes. Source-built jaifmt and jailint check all
+149 owned Jai files.

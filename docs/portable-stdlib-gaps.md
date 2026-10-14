@@ -54,3 +54,10 @@ contradiction before claiming stale-read faults. Reservations intentionally
 remain mapped after free/deinit. OS lifecycle/thread modes require no per-thread
 state and currently do nothing; their exact compatibility policy needs review.
 Windows/console backends remain unimplemented.
+
+Soa omits explicit overlays/imported aliases/constants and keeps the first stored
+field when raw extents overlap. The contract does not settle which union arm is
+selected for general overlapping unions. Pointer iteration gathers a temporary
+and scatters on scope exit, including continue/break/return. In-loop accesses
+through other aliases observe writeback only when that iteration ends; whether
+the experimental pointer contract requires finer-grained observation is unclear.

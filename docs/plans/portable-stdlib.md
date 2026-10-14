@@ -76,3 +76,9 @@ allocates first and protects the old mapping only after copying. Keep wrapper
 owner allocation in a private prefix, since its public shape has no owner field.
 Test guards/stale writes in forked children and verify actual signal termination,
 plus failure preservation, resize and retained readable data per read-only mode.
+
+Soa increment: generate fixed component arrays from nonconstant, nonoverlapping
+stored fields. Preserve field types with type_of(T.member), not reconstructed
+type names. Generate indexed gather/scatter code from the same selected fields,
+and implement pointer iteration by a temporary element plus deferred scatter so
+continue/break/return do not lose writes. Reject reverse iteration explicitly.
