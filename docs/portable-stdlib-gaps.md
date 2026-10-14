@@ -20,6 +20,13 @@ compiler lacks the corresponding bootstrap intrinsic dispatch. The original
 bitwise updates execute; full scalar-domain/conversion contracts require review.
 See [Atomics implementation](portable-atomics.md).
 
+Deep_Copy's graph path retains a checked failure because the source compiler
+returns zero struct alignment metadata in both modes. Pending minimal reflection
+and graph tests retain the actual failed assertions. Scalar/string/scalar-array
+copies work; graph conformance is not counted. Ownership, shared-slice extents,
+scalar pointers and diagnostic-statistic policies require review; see
+[Deep_Copy progress](portable-deep-copy.md).
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires

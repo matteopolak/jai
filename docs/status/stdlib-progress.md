@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `1074da5`, classic ZIP directory parsing. Earlier
+Latest committed checkpoint: `b4a7b61`, CAS-based Atomics plus intrinsic handoff. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -25,13 +25,21 @@ both modes, retaining the SMTP, parent-lifetime, startup and target checks above
 All 181 owned Jai files pass jaifmt --check and jailint -D warnings. The ZIP field
 and extension contract gaps are documented, not asserted as established behavior.
 
-Current verified checkpoint: CAS-based Atomics arithmetic/bitwise operations and
+Previously verified checkpoint: CAS-based Atomics arithmetic/bitwise operations and
 the exact alias declarations. The three alias intrinsics lack source-compiler
 lowering; the original pending reproducer and handoff are documented. Full focused
 regression passes 61 interpreter/native cases, seven expected faults in both
 modes, two compile-time rejections, all prior SMTP/startup/parent checks and selected
 Linux/Windows checks. All 188 owned Jai files pass format/lint. Four-worker tests
 verify prior-value uniqueness, bit claims and zero-reaching decrement behavior.
+
+Current verified checkpoint: partial Deep_Copy scalar/string/resizable-array
+operations, callback/preallocated/reused-map cases and conditional debug globals.
+General graph support is blocked by reflected struct alignment 0 (versus 8),
+reproduced in interpreter/native with retained assertions. It is not counted as
+completed graph functionality. Full focused regression passes 63 cases in both
+modes, nine expected faults in both modes, two compile-time rejections and prior
+SMTP/startup/parent/target checks. All 197 owned Jai files pass format/lint.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

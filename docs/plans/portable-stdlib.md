@@ -135,3 +135,9 @@ integer/pointer arithmetic plus integer/enum bitwise updates with supported CAS.
 Retain a minimal failing canonical-intrinsic compiler reproducer. Verify width
 wrapping, byte pointer steps, negative bit indices and contended prior values;
 do not count missing load/store/exchange lowering as executable alias support.
+
+Deep_Copy increment: preserve public records/globals; register allocation origins
+before recursive traversal, use caller/local maps, and honor callback/preallocated
+roots. Validate reflected layout and reject fixed arrays/Any explicitly. Keep
+the graph regression pending while the compiler emits zero struct alignment;
+count only independently verified scalar/string/scalar-array functionality.

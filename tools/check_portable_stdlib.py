@@ -27,6 +27,8 @@ EXPECTED = {
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 FAULT_EXPECTATIONS = {
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
+    "deep-copy-fixed": ("assertion failed", "Deep_Copy does not support fixed arrays"),
+    "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -78,6 +80,7 @@ def main():
     if not curl_root.is_dir():
         parser.error("supply the new Curl dependency with --curl-root")
     shutil.copytree(curl_root, root / "Curl", dirs_exist_ok=True)
+    shutil.copytree(args.posix_root.parent / "Windows", root / "Windows", dirs_exist_ok=True)
     shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
