@@ -159,12 +159,13 @@ CR/LF to avoid silent truncation or injected headers. Attachment strings are
 interpreted as filenames. All current transport tests use this checkout's own
 127.0.0.1 receiver and synthetic fixture credentials, never existing credentials
 or external recipients.
-# MPEG increment
 
-Buffers, immutable tables, pixel conversion and IDCT have real focused coverage;
-program-stream demux and audio/video decoders remain unfinished. Exact unknown
+## MPEG increment
+
+Buffers, immutable tables, pixels/IDCT and elementary video decoding have real
+focused coverage; program-stream demux, audio and Plm remain unfinished. B-stream
+integration/nonconstant AC fixtures and dimension/rate changes remain limitations. Exact unknown
 contracts and general import-resolution reproducer are documented in
 [portable MPEG](portable-mpeg.md). Windows checking fails at the separately owned
 File guard and is not counted as MPEG support. No empty decoder bodies or guessed
 macro exports were added.
-

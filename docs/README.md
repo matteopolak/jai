@@ -7,7 +7,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   input, Keymap, font-atlas/text, texture and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
-- [Portable MPEG](portable-mpeg.md): supported buffers, immutable tables, pixels and IDCT; remaining decoder scope
+- [Portable MPEG](portable-mpeg.md): buffers, tables, elementary video/Layer II audio and remaining demux/compiler gaps
 
 ## Language
 

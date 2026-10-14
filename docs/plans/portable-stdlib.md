@@ -177,3 +177,12 @@ complete audio/video decoding using the authorized MPEG fixture. Do not expose
 guessed ambient macros or count missing decoders as complete. Qualified imports
 preserve Buffer identity while retaining the original compiler failure. File and
 Windows backend completion belongs to the platform-io worker.
+
+Audio increment: checked MPEG-1 Layer II frame/header and allocation/scalefactor
+decoding, actual synthesis and interleaved output; preserve canonical quantizer
+storage through whole-table addressing, retaining the failing compiler regression.
+Compare the independent direct cosine matrix with licensed C basis vectors, and
+test zero-allocation silence plus the authorized sixteen-frame tone payload with
+rewind. Reject unsupported CRC/format transitions explicitly; retain qualified
+constant-write gaps. Continue real PS demux and Plm lifecycle, then seeking and
+broader B/AC/stereo fixtures before completing the codec scope.

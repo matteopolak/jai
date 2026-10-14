@@ -34,6 +34,11 @@ FAULT_EXPECTATIONS = {
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
     "treemap-dirty": ("assertion failed", "Treemap display requires clean weights"),
     "mpeg-vlc-truncated": ("assertion failed", "truncated MPEG VLC code"),
+    "mpeg-motion-bounds": ("assertion failed", "MPEG motion region out of bounds"),
+    "mpeg-sequence-change": ("assertion failed", "MPEG sequence dimension/rate changes are unsupported"),
+    "mpeg-picture-hole": ("assertion failed", "incomplete MPEG picture coverage"),
+    "mpeg-audio-crc": ("assertion failed", "CRC-protected MPEG audio is unsupported"),
+    "mpeg-audio-quantizer": ("assertion failed", "invalid MPEG grouped quantizer value"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -77,6 +82,7 @@ def main():
         parser.error("compiler must be a source build under this checkout's target directory")
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_runtime.py")], cwd=ROOT, check=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_zip_fixtures.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_mpeg_matrix.py")], cwd=ROOT, check=True)
     if args.stdlib:
         root = args.stdlib.resolve(strict=True)
     else:
@@ -163,6 +169,7 @@ def main():
         ("buildcpp-compile", "BuildCpp tool failed"),
         ("buildcpp-tool", "BuildCpp tool failed"),
         ("buildcpp-target", "BuildCpp object target validation failed"),
+        ("mpeg-scalar-store", "cannot assign to constant"),
     ]:
         negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
