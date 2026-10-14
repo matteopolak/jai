@@ -40,5 +40,20 @@ the peer checkout nor this worker's owned production sources were changed for
 that integration correction. With it, full unused-code checking reaches Math
 and both UI modules.
 
-Pending: more IEEE/extreme numeric cases, declaration/parameter review, complete
-native O0/O2 and target matrix reruns, and final honest gap classification.
+Additional edge tests now cover subnormal frexp/ldexp, ties at double underflow,
+signed zero, integer powers, full signed bounds, tiny/huge vector norms, numeric
+printers, and scientific UI formatting. Interaction tests cover dropdown change
+notification and spinbox steps. Both issues were reproduced before correction.
+The UI now exposes working circle/HSV/RGB/type-in picker modes, stashed colors,
+relative sliders and text entry, interpolation controls, keyframe add/delete,
+preview and clipboard sampling controls.
+
+`tests/numerics/run.py --compiler artifacts/target/debug/jaic --stdlib
+artifacts/stdlib --quick` passed all 14 checks, including unused-code target
+checks for Linux, Windows, macOS and WASM, and an expected overflow assertion
+with `Float16(ASSERT_ON_OVERFLOW=true)`. The local inventory presence check
+matches 694 inventoried names across the six modules; this is name evidence,
+not a claim of semantic ABI verification.
+
+Pending: complete native O0/O2 and WASM matrix reruns, replacement of the table
+fixture by the fresh peer map, parameter review, and final honest gap classification.

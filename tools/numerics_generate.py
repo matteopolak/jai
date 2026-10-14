@@ -39,7 +39,7 @@ for n in [2,3,4]:
     def aggregate(expr): return '.{'+', '.join(expr(f) for f in fs)+'}'
     ops += [f'dot_product :: (a: {T}, b: {T}) -> float {{ return '+ ' + '.join(f'a.{f}*b.{f}' for f in fs)+'; }',
             f'length_squared :: inline (a: {T}) -> float {{ return dot_product(a,a); }}',
-            f'length :: (a: {T}) -> float {{ return sqrt(dot_product(a,a)); }}',
+            f'length :: (a: {T}) -> float {{ largest:float=0; for x:a.component {{ if isnan(x) return FLOAT32_NAN; largest=max(largest,abs(x)); }} if largest==0 || isinf(largest) return largest; sum:float=0; for x:a.component sum+=square(x/largest); return largest*sqrt(sum); }}',
             f'abs :: inline (using v: {T}) -> {T} {{ return '+aggregate(lambda f:f'abs(v.{f})')+'; }',
             f'saturate :: (a: {T}) -> {T} {{ return '+aggregate(lambda f:f'saturate(a.{f})')+'; }',
             f'lerp :: (a: {T}, b: {T}, t: float) -> {T} {{ return '+aggregate(lambda f:f'lerp(a.{f},b.{f},t)')+'; }']
@@ -82,7 +82,9 @@ def facade(module,spec,impl):
     text=(ROOT/'docs/specs/stdlib/modules'/spec).read_text().split('## Public type members')[0].split('## Behavioral')[0]
     names=list(dict.fromkeys(re.findall(r'^- `([A-Za-z_][A-Za-z_0-9]*)\s*(?:::|:)',text,re.M)))
     p=ROOT/'stdlib'/module; p.mkdir(parents=True,exist_ok=True)
-    (p/'module.jai').write_text('\n'.join(f'{n} :: Impl.{n};' for n in names)+'\n#scope_file\nImpl :: #import "internal/numerics/'+impl+'";\n')
+    header='#module_parameters(ASSERT_ON_OVERFLOW := false);\n' if module=='Float16' else ''
+    args='(ASSERT_ON_OVERFLOW=ASSERT_ON_OVERFLOW)' if module=='Float16' else ''
+    (p/'module.jai').write_text(header+'\n'.join(f'{n} :: Impl.{n};' for n in names)+'\n#scope_file\nImpl :: #import "internal/numerics/'+impl+'"'+args+';\n')
 
 if __name__ == '__main__':
     facade('Math','math.md','math')

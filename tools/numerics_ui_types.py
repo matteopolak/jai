@@ -19,7 +19,7 @@ for spec,variant in [('getrect.md','right'),('getrect-lefthanded.md','left')]:
         fields=[]
         for line in body.splitlines():
             m=re.match(r'- `([^`]+)`',line)
-            if not m: 
+            if not m:
                 if 'Anonymous union containing' in line: fields.append('union { initial_value_float32: float32; initial_value_float64: float64; initial_value_int: int; }')
                 continue
             f=m.group(1).rstrip(';')
