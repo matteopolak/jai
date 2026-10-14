@@ -1,5 +1,11 @@
 # Platform I/O worker progress
 
+Latest code checkpoint: `6d71f26` (full finite Windows waits and final Unix
+preservation audit); preceding checkpoints are `556330b`, `2b1d623`, `27b719c`
+and `700f07e`. Owned code/tests are committed. Native Windows verification and
+the explicit compiler/dependency/contract items below remain coordinator inputs;
+this is not a full integration or release-completion claim.
+
 ## Refreshed-contract continuation
 
 Coordinator-filtered CI feedback confirms candidate `159ca65` passed File
