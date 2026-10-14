@@ -1,10 +1,10 @@
 # Current canonical dependency reproducers
 
 No peer checkout was modified. Source-built compiler:
-artifacts/current-target/debug/jaic. artifacts/canonical-current stages new
+artifacts/current-target/debug/jaic. artifacts/canonical-final-stable stages new
 independent producers and owned numerics, with no fixtures or tool repairs.
 
-`tests/numerics/window_type_reproducer.jai -check` fails on macOS:
+`tests/numerics/window_type_reproducer.jai -check` originally failed on macOS:
 
 ```text
 Window_Type/module.jai:8: module Objective_C has no exported member NSWindow
@@ -18,11 +18,11 @@ the AppKit import while this pass was active; restaged source now passes this
 reproducer (artifacts/window-type-reproducer-current.log). The failure evidence
 is retained. No numerics facade workaround or invented NSWindow export was added.
 
-## Foundation WASM formatting
+## Resolved foundation WASM formatting
 
 tests/numerics/wasm_format_reproducer.jai imports only Basic and formats 1.25.
-With the correctly ownership-filtered canonical foundation it builds, but actual
-WASI execution fails before main:
+The initial ownership-filtered foundation built it, but actual WASI execution
+failed before main:
 
 ```text
 wasm link error: missing imports env.localeconv, env.snprintf, env.strtod
@@ -32,18 +32,20 @@ Build with -os wasm -O2 and run through tools/wasi_run.mjs. Evidence:
 artifacts/wasm-format-reproducer-build-current.log and
 artifacts/wasm-format-reproducer-current.log. The earlier pre-filter staging log
 used a stale Basic snapshot and failed differently; it is preserved as initial
-investigation evidence, not current production behavior. Foundation/compiler
-must implement portable formatting/parsing or supported host bindings. No fake
-host functions, missing assertions, or alternate formatter were substituted.
+investigation evidence, not current production behavior. The foundation owner
+subsequently supplied portable formatting/parsing. Current actual execution
+passes (artifacts/wasm-format-delivery.log); core WASM imports standard WASI only
+(artifacts/canonical-wasm-imports.json). No fake host functions, missing
+assertions, or alternate formatter were substituted.
 
 ## Direct binary32 intrinsics
 
 tests/numerics/intrinsic_f32_reproducer.jai is a language-only intrinsic test.
 Current -interp fails on sqrt(float32(9)) == 3; -check succeeds. Evidence:
-artifacts/f32-intrinsic-current.log and artifacts/f32-intrinsic-check.log.
+artifacts/f32-intrinsic-delivery.log and artifacts/f32-intrinsic-check.log.
 Math's promotion/narrowing wrappers remain necessary pending the compiler's
 general intrinsic return/argument-width fix; no symbol/module special cases are
-requested. Native behavior will be checked independently.
+requested. Native O0 independently succeeds (artifacts/f32-intrinsic-native.log).
 
 ## Cross-target dependency gates
 
@@ -53,3 +55,7 @@ full check on macOS x64 reaches missing POSIX.itimerval. Default UI imports on
 WASM reach Window_Type's explicit unsupported-target assertion. See current
 canonical suite logs; these are failures, not skipped supported configurations.
 Window/input-pump behavior and canonical native backend fixes remain owner work.
+The current run is artifacts/canonical-verification-stable/results.json:
+107/123, with sixteen remaining target/dependency failures. Numerical-only
+Windows checking succeeds after integrating the real foundation Windows helper
+modules; it is not a substitute for the failed full UI target check.

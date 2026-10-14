@@ -7,19 +7,19 @@ import subprocess
 import sys
 
 root = Path(__file__).resolve().parents[2]
-compiler = root / 'artifacts/target/debug/jaic'
+compiler = root / 'artifacts/current-target/debug/jaic'
 parser = argparse.ArgumentParser()
-parser.add_argument('--stdlib', type=Path, default=root/'artifacts/stdlib-verification')
+parser.add_argument('--stdlib', type=Path, default=root/'artifacts/canonical-reviewed')
 parser.add_argument('--compiler', type=Path, default=compiler)
-parser.add_argument('--canonical-dependencies', action='store_true')
-parser.add_argument('--output', type=Path, default=root/'artifacts/numerics-corrective')
+parser.add_argument('--canonical-dependencies', action='store_true', default=True)
+parser.add_argument('--output', type=Path, default=root/'artifacts/canonical-corrective-reviewed')
 args = parser.parse_args()
 library = args.stdlib.resolve()
 compiler = args.compiler.resolve()
 out = args.output.resolve()
 if not out.is_relative_to(root/'artifacts'): raise SystemExit('evidence must remain in local artifacts')
 out.mkdir(parents=True, exist_ok=True)
-imports = [] if args.canonical_dependencies else ['-I', 'tests/numerics/dependencies']
+imports = []
 env = dict(os.environ, JAIC_STDLIB=str(library))
 records = []
 
@@ -49,8 +49,9 @@ for source, path, marker in [
                  [compiler, path] + imports + ['-' + level, '-exe', executable]):
             check(source + '-' + level, [executable], marker)
 
-for source, marker in [('font_metrics_missing', 'em requires a font'),
-                       ('texture_abi_missing', 'texture loader callback required')]:
+for source, marker in [('font_required', 'em requires a font'),
+                       ('texture_loader_required', 'texture loader callback required'),
+                       ('text_capacity_assert', 'text input capacity exceeded')]:
     for level in ['O0', 'O2']:
         executable = out / (source + '-' + level)
         if check(source + '-' + level + '-build',
