@@ -98,7 +98,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Not implemented in this checkout; see ownership exclusions |
 | [radixsort](specs/stdlib/modules/radixsort.md) | Not implemented in this checkout; see ownership exclusions |
 | [random](specs/stdlib/modules/random.md) | Not implemented in this checkout; see ownership exclusions |
-| [reflection](specs/stdlib/modules/reflection.md) | Not implemented in this checkout; see ownership exclusions |
+| [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Not implemented in this checkout; see ownership exclusions |
 | [remap-context](specs/stdlib/modules/remap-context.md) | Not implemented in this checkout; see ownership exclusions |
 | [rewrite](specs/stdlib/modules/rewrite.md) | Not implemented in this checkout; see ownership exclusions |

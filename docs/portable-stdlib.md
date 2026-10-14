@@ -27,6 +27,17 @@ returned by split/search/path operations borrow their input. Allocation-returnin
 operations use the context allocator. Scanning, wildcard matching and numeric
 token parsing remain unfinished.
 
+Reflection implements scalar assignment with cursor consumption, integer range
+checks, enum lookup/storage, struct-field lookup and array count/data queries.
+Basic integer parsing supports signed limits, overflow rejection and bases 2–36;
+floating parsing uses the native C `strtod` ABI. Its locale/error-range behavior
+still needs contract review. Numeric String token parsers consume extracted tokens.
+
+Temporary-storage implementation is pending a compiler inherited-overlay gap.
+Its exact public type declaration and algorithms are retained in
+`internal/basic/temporary.jai`, which is deliberately not loaded or exported.
+The associated test is a pending reproducer, not a passing functionality claim.
+
 ## Verification
 
 PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
