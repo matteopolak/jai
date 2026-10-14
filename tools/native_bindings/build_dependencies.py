@@ -84,6 +84,7 @@ def main():
         'graphics_macro_probe': [ROOT/'tests/native-bindings/generated/d3d12_macro_probe.c'],
         'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
         'sdl_runtime_abi_probe': [ROOT/'tests/native-bindings/sdl_runtime_abi_probe.c'],
+        'posix_abi_probe': [ROOT/'tests/native-bindings/posix_abi_probe.c'],
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
     }

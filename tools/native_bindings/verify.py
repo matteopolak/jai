@@ -76,7 +76,7 @@ def stage(destination, foundation=None):
         raise SystemExit('The independent foundation bootstrap is not ready')
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
-        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','string','hash','files']),
+        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','string','hash','files','native-path']),
         ('window-render',['Window_Creation','Window_Type','Input','Keymap','Gamepad','Simp','sRGB','Clipboard'],['window','rendering','input','gamepad','clipboard']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
@@ -178,6 +178,7 @@ def main():
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
+        ('GL', 'wgl-context.jai', [('windows','x64'),('windows','arm64')]),
         ('GL', 'gl-debug-output.jai', TARGET_CONFIGS),
     ]:
         if args.privacy_only:
@@ -214,12 +215,19 @@ def main():
                 result['reason'] = 'Required privacy diagnostic was not reached; failure is not evidence that privacy passed'
             report['privacy'].append(result)
     if args.runtime and not args.privacy_only:
-        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'nsgl', 'gl-context', 'reflection-procedure-flags', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']:
+        runtime_tests = ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'posix-abi', 'curl', 'ios', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'nsgl', 'gl-context', 'reflection-procedure-flags', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']
+        if sys.platform == 'win32':
+            runtime_tests.append('wgl-context')
+        for name in runtime_tests:
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
             if name == 'sdl-wm':
                 relevant = ['SDL']
+            if name == 'posix-abi':
+                relevant = ['POSIX']
+            if name == 'wgl-context':
+                relevant = ['GL']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
             if args.module and not any(m in args.module for m in relevant):

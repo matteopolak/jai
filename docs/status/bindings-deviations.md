@@ -8,6 +8,30 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **2026-10-14 update: formatter dependency resolved.** Refreshing the safe
+  producer compiler incorporates its general scratch-context initializer fix.
+  The actual formatter now builds unpatched against current NEW foundations;
+  staging includes their new `internal/native-path`. Previous trial evidence
+  below is historical, not the active production tooling route. Current strict
+  lint of GL/POSIX/WGL internals/all native tests passes without exclusions.
+- **Distinct shape availability.** Reviewed POSIX shape sections deduplicate
+  identical CPU shapes. The parser now associates a sole per-OS CPU shape with
+  that OS's declared CPUs, retaining distinct variants. This relies on the
+  reviewed distinct-shape inventory contract and latest explicit review; no C
+  SDK layout is substituted into the public API. Remaining eight Android
+  declarations have no same-OS shape, and remain unresolved. Proper long-term
+  spec representation: list every availability condition beside shared shapes
+  to avoid implicit association. Host sizes/offsets/getitimer and four desktop
+  POSIX source/public matrices pass; Android native verification is unavailable.
+- **WGL format/default policy and Windows evidence.** See
+  [WGL implementation](../native/wgl-context.md) for complete location, selected
+  defaults, fallback ranking, cleanup abort policy, pixel-format side effect and
+  unpreserved last-error details. These choices are independently authored where
+  the oracle leaves private policy open. Windows x64/ARM64 source checks pass;
+  native Windows test execution and layout probes remain required. Proper fix
+  for any stricter behavior requirement is a reviewed contract and real Windows
+  CI, not altered public handles/signatures or fabricated host evidence.
+
 - **Current formatter compiler regression.** After refreshing the latest NEW
   compiler and foundations, building the actual formatter ICEs because three
   scratch contexts bypass the new context-slot initializer. This is distinct

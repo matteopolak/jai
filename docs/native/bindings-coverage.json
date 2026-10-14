@@ -47627,9 +47627,9 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
       "counts": {
-        "implemented_manual": 21,
+        "implemented_manual": 22,
         "declared": 1591,
-        "unresolved": 2,
+        "unresolved": 1,
         "duplicate": 1
       },
       "member_counts": {},
@@ -47735,8 +47735,8 @@
           "signature": "wgl_create_context :: (hwnd: HWND, share:HGLRC=null, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> HGLRC, HDC, chosen_msaa: s32",
           "condition": "OS == .WINDOWS",
           "spec_line": 19,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "glx_create_context",
@@ -101569,9 +101569,9 @@
       "spec": "docs/specs/stdlib/modules/posix.md",
       "spec_sha256": "66fedef8804852fff84f2a7af77c8a8e64d539f5c8a500b9040f5ceba062a6ef",
       "counts": {
-        "declared": 9816,
+        "declared": 9875,
         "implemented": 102,
-        "unresolved": 67
+        "unresolved": 8
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -131002,8 +131002,7 @@
           "signature": "DT :: enum u8",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4211,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "DIRBLKSIZ",
@@ -133614,8 +133613,7 @@
           "signature": "PC :: enum u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4584,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "_CS_PATH",
@@ -133804,8 +133802,7 @@
           "signature": "using _SC_definitions :: enum s32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4611,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "_CS_POSIX_V6_ILP32_OFF32_CFLAGS",
@@ -134722,8 +134719,7 @@
           "signature": "dirent :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4742,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "_telldir",
@@ -134737,8 +134733,7 @@
           "signature": "DIR :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4744,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "closedir",
@@ -134878,8 +134873,7 @@
           "signature": "passwd :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4764,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "getpwuid",
@@ -135341,16 +135335,14 @@
           "signature": "stack_t :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4830,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "ucontext_t",
           "signature": "ucontext_t :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4831,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pid_t",
@@ -135378,8 +135370,7 @@
           "signature": "sigevent :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4835,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "__siginfo",
@@ -135414,8 +135405,7 @@
           "signature": "sigaction_t :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4840,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sig_t",
@@ -135744,8 +135734,7 @@
           "signature": "pollfd :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4887,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "nfds_t",
@@ -135822,16 +135811,14 @@
           "signature": "timespec :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4898,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "timeval",
           "signature": "timeval :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4899,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "suseconds_t",
@@ -135852,8 +135839,7 @@
           "signature": "timezone :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4902,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "clockinfo",
@@ -135874,8 +135860,7 @@
           "signature": "tm :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4905,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "tzname",
@@ -136057,8 +136042,7 @@
           "signature": "clockid_t :: enum u32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4931,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "clock_getres",
@@ -136198,8 +136182,7 @@
           "signature": "utsname :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4951,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "uname",
@@ -137571,8 +137554,7 @@
           "signature": "iovec :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5147,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "vtype",
@@ -139476,8 +139458,7 @@
           "signature": "flock :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5419,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "flocktimeout",
@@ -139729,8 +139710,7 @@
           "signature": "stat_t :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5455,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "stat64_t",
@@ -139982,8 +139962,7 @@
           "signature": "aiocb :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5491,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "aio_cancel",
@@ -143483,8 +143462,7 @@
           "signature": "sched_param :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5991,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sched_yield",
@@ -144415,8 +144393,7 @@
           "signature": "PRIO :: enum s32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 6124,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "PRIO_MIN",
@@ -144437,8 +144414,7 @@
           "signature": "RUSAGE :: enum s32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 6127,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "RUSAGE_INFO",
@@ -144473,8 +144449,7 @@
           "signature": "RLIMIT_RESOURCE :: enum s32",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 6132,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "RLIM_NLIMITS",
@@ -144656,8 +144631,7 @@
           "signature": "rusage :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 6158,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rusage_info_t",
@@ -144713,8 +144687,7 @@
           "signature": "rlimit :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 6166,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "proc_rlimit_control_wakeupmon",
@@ -158795,8 +158768,7 @@
           "signature": "DT :: enum u8",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8177,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "__DIRENT64_INO_T",
@@ -159832,8 +159804,7 @@
           "signature": "clockid_t :: enum u32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8325,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "MAX_CLOCKS",
@@ -161660,8 +161631,7 @@
           "signature": "using _SC_definitions :: enum s32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8586,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "STDIN_FILENO",
@@ -161717,8 +161687,7 @@
           "signature": "PC :: enum u32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8594,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "SHMMIN",
@@ -161949,8 +161918,7 @@
           "signature": "Dl_info :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8627,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "dlopen",
@@ -162146,24 +162114,21 @@
           "signature": "dirent :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8655,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "dirent64",
           "signature": "dirent64 :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8656,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "DIR",
           "signature": "DIR :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8657,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "opendir",
@@ -162324,8 +162289,7 @@
           "signature": "passwd :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8680,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "getpwnam",
@@ -162402,8 +162366,7 @@
           "signature": "timespec :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8691,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "timeval",
@@ -162432,8 +162395,7 @@
           "signature": "timezone :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8695,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sigset_t",
@@ -162503,8 +162465,7 @@
           "signature": "sigevent :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8705,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sigevent_t",
@@ -162546,8 +162507,7 @@
           "signature": "sigaction_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8711,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sigaction64_t",
@@ -163179,8 +163139,7 @@
           "signature": "tm :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8801,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "time",
@@ -164160,8 +164119,7 @@
           "signature": "shminfo :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8941,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "shm_info",
@@ -164203,8 +164161,7 @@
           "signature": "utsname :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8947,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "uname",
@@ -166794,8 +166751,7 @@
           "signature": "f_owner_ex :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9317,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "statx_timestamp",
@@ -166809,8 +166765,7 @@
           "signature": "statx_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9319,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "fcntl",
@@ -170233,16 +170188,14 @@
           "signature": "pthread_attr_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9808,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pthread_barrier_t",
           "signature": "pthread_barrier_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9809,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pthread_barrierattr_t",
@@ -170256,8 +170209,7 @@
           "signature": "pthread_cond_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9811,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pthread_condattr_t",
@@ -170278,8 +170230,7 @@
           "signature": "pthread_mutex_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9814,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pthread_mutexattr_t",
@@ -170300,8 +170251,7 @@
           "signature": "pthread_rwlock_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9817,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "pthread_rwlockattr_t",
@@ -170428,8 +170378,7 @@
           "signature": "cpu_set_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9835,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sched_setaffinity",
@@ -170471,8 +170420,7 @@
           "signature": "PTHREAD_MUTEX :: enum u32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9841,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "PTHREAD_RWLOCK_PREFER",
@@ -171200,8 +171148,7 @@
           "signature": "sem_t :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9945,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "sem_clockwait",
@@ -171348,8 +171295,7 @@
           "signature": "RUSAGE :: enum s32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9966,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "RLIM64_INFINITY",
@@ -171377,8 +171323,7 @@
           "signature": "PRIO :: enum s32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9970,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "_STK_LIM",
@@ -171399,8 +171344,7 @@
           "signature": "RLIMIT_RESOURCE :: enum s32",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9973,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "RLIM_NLIMITS",
@@ -171442,24 +171386,21 @@
           "signature": "rusage :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9979,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rlimit",
           "signature": "rlimit :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9980,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rlimit64",
           "signature": "rlimit64 :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 9981,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "rlim_t",
