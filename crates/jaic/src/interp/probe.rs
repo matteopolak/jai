@@ -4,13 +4,13 @@
 //! from an integer and follows it crashes like a native program would. The compiler itself must
 //! not: when it reads a `#run` result, a string a metaprogram handed to `add_build_string`, or
 //! writes an out-parameter of a `compiler_*` call, the address comes from the program and may
-//! be anything. Before such an access touches a page, the kernel is asked whether it can, which
-//! reports an unmapped or protected address as an error rather than a signal:
+//! be anything. Mapping queries bound allocations, but are never proof that a later access
+//! is safe: another native thread can change protections at any time. Actual transfers use
+//! fault-safe kernel copies, which report an unmapped/protected address as an error:
 //!
-//! - macOS: `mach_vm_region` describes the whole mapping the address lies in and what it allows.
-//! - Other Unix: one byte of the page goes through a per-thread pipe. `write(pipe, addr)` fails
-//!   with `EFAULT` when `addr` cannot be read, and `read(pipe, addr)` when it cannot be written.
-//! - Windows: `VirtualQuery` says whether the pages are committed and allow the access.
+//! - macOS: `mach_vm_read_overwrite` and `mach_vm_write` transfer actual bytes.
+//! - Other Unix: actual bytes go through a per-thread pipe, returning `EFAULT` on bad pointers.
+//! - Windows: `ReadProcessMemory` / `WriteProcessMemory` transfer actual bytes.
 //! - wasm32: program memory is the linear memory, so the address only has to lie inside it.
 //!
 //! Asking costs system calls, and a metaprogram's messages are read a field at a time, so what
@@ -86,23 +86,13 @@ impl Probe {
         if !self.accessible(addr, out.len(), false) {
             return false;
         }
-        if !out.is_empty() {
-            // SAFETY: every page of the range was found readable.
-            unsafe {
-                std::ptr::copy_nonoverlapping(addr as *const u8, out.as_mut_ptr(), out.len())
-            };
-        }
-        true
+        out.is_empty() || sys::copy(addr, out.as_mut_ptr() as u64, out.len(), false)
     }
 
     /// Compare `len` bytes of program memory at `a` and at `b`, in place. A range that cannot
     /// be read orders before one that can, and equal to another that cannot.
     pub fn compare(&self, a: u64, b: u64, len: usize) -> std::cmp::Ordering {
-        let view = |addr: u64| {
-            // SAFETY: every page of the range was found readable.
-            self.accessible(addr, len, false)
-                .then(|| unsafe { std::slice::from_raw_parts(addr as *const u8, len) })
-        };
+        let view = |addr: u64| self.read_vec(addr, len);
         // An empty range may start anywhere, `from_raw_parts` wants a non-null pointer.
         if len == 0 {
             return std::cmp::Ordering::Equal;
@@ -115,11 +105,7 @@ impl Probe {
         if !self.accessible(addr, bytes.len(), true) {
             return false;
         }
-        if !bytes.is_empty() {
-            // SAFETY: every page of the range was found writable.
-            unsafe { std::ptr::copy_nonoverlapping(bytes.as_ptr(), addr as *mut u8, bytes.len()) };
-        }
-        true
+        bytes.is_empty() || sys::copy(bytes.as_ptr() as u64, addr, bytes.len(), true)
     }
 
     /// Can every page of `addr..addr + len` be read (or written)? Asks the system about the
@@ -260,6 +246,35 @@ mod sys {
         false
     }
 
+    /// Transfer through kernel buffers; a protection change yields EFAULT, never
+    /// an unchecked userspace dereference. Chunks fit the minimum pipe capacity.
+    pub fn copy(mut src: u64, mut dst: u64, mut len: usize, _write: bool) -> bool {
+        let Some((from, to)) = pipe_fds() else {
+            return false;
+        };
+        while len != 0 {
+            let count = len.min(512);
+            // SAFETY: the kernel validates both user ranges while copying.
+            let written = unsafe { sys_write(to, src as *const c_void, count) };
+            if written <= 0 {
+                return false;
+            }
+            // SAFETY: likewise, invalid destinations are reported by read.
+            let read = unsafe { sys_read(from, dst as *mut c_void, written as usize) };
+            if read != written {
+                let mut scratch = [0u8; 512];
+                let remaining = written - read.max(0);
+                // SAFETY: drain the outstanding bytes into a local buffer.
+                unsafe { sys_read(from, scratch.as_mut_ptr().cast(), remaining as usize) };
+                return false;
+            }
+            src += written as u64;
+            dst += written as u64;
+            len -= written as usize;
+        }
+        true
+    }
+
     /// The page of `at`, if its byte can be read (and, if asked, written).
     pub fn region(at: u64, write: bool) -> Option<(u64, u64)> {
         let mut byte = 0u8;
@@ -276,6 +291,46 @@ mod sys {
 #[cfg(target_os = "macos")]
 mod sys {
     use std::ffi::c_int;
+
+    pub fn copy(src: u64, dst: u64, len: usize, write: bool) -> bool {
+        unsafe extern "C" {
+            static mach_task_self_: u32;
+            fn mach_vm_read_overwrite(
+                task: u32,
+                address: u64,
+                size: u64,
+                data: u64,
+                out: *mut u64,
+            ) -> c_int;
+            fn mach_vm_write(task: u32, address: u64, data: usize, count: u32) -> c_int;
+        }
+        if !write {
+            let mut copied = 0;
+            // SAFETY: Mach validates the source and destination mappings in-kernel.
+            return unsafe {
+                mach_vm_read_overwrite(mach_task_self_, src, len as u64, dst, &mut copied)
+            } == 0
+                && copied == len as u64;
+        }
+        let mut offset = 0;
+        while offset < len {
+            let count = (len - offset).min(u32::MAX as usize);
+            // SAFETY: Mach validates the target mapping; source is our owned slice.
+            if unsafe {
+                mach_vm_write(
+                    mach_task_self_,
+                    dst + offset as u64,
+                    src as usize + offset,
+                    count as u32,
+                )
+            } != 0
+            {
+                return false;
+            }
+            offset += count;
+        }
+        true
+    }
 
     /// The mapping `at` lies in, if it allows reading (and, if asked, writing).
     pub fn region(at: u64, write: bool) -> Option<(u64, u64)> {
@@ -338,6 +393,21 @@ mod sys {
 
     #[link(name = "kernel32")]
     unsafe extern "system" {
+        fn GetCurrentProcess() -> *mut c_void;
+        fn ReadProcessMemory(
+            process: *mut c_void,
+            address: *const c_void,
+            buffer: *mut c_void,
+            size: usize,
+            copied: *mut usize,
+        ) -> i32;
+        fn WriteProcessMemory(
+            process: *mut c_void,
+            address: *mut c_void,
+            buffer: *const c_void,
+            size: usize,
+            copied: *mut usize,
+        ) -> i32;
         fn VirtualQuery(
             address: *const c_void,
             info: *mut MemoryBasicInformation,
@@ -351,6 +421,32 @@ mod sys {
 
     /// Protections that allow writing: read-write, write-copy and their executable forms.
     const WRITABLE: u32 = 0x04 | 0x08 | 0x40 | 0x80;
+
+    pub fn copy(src: u64, dst: u64, len: usize, write: bool) -> bool {
+        let mut copied = 0;
+        // SAFETY: these APIs validate program addresses in the kernel and report faults.
+        let status = unsafe {
+            let process = GetCurrentProcess();
+            if write {
+                WriteProcessMemory(
+                    process,
+                    dst as *mut c_void,
+                    src as *const c_void,
+                    len,
+                    &mut copied,
+                )
+            } else {
+                ReadProcessMemory(
+                    process,
+                    src as *const c_void,
+                    dst as *mut c_void,
+                    len,
+                    &mut copied,
+                )
+            }
+        };
+        status != 0 && copied == len
+    }
 
     /// The pages around `at` that are committed, readable and (if asked) writable like it is.
     pub fn region(at: u64, write: bool) -> Option<(u64, u64)> {
@@ -371,6 +467,17 @@ mod sys {
 
 #[cfg(target_arch = "wasm32")]
 mod sys {
+    pub fn copy(src: u64, dst: u64, len: usize, _write: bool) -> bool {
+        let end = core::arch::wasm32::memory_size(0) as u64 * 65536;
+        if src.checked_add(len as u64).is_none_or(|x| x > end)
+            || dst.checked_add(len as u64).is_none_or(|x| x > end)
+        {
+            return false;
+        }
+        // SAFETY: memory cannot shrink; both ranges are inside linear memory.
+        unsafe { std::ptr::copy(src as *const u8, dst as *mut u8, len) };
+        true
+    }
     /// The linear memory, if `at` is inside it.
     pub fn region(at: u64, _write: bool) -> Option<(u64, u64)> {
         let end = core::arch::wasm32::memory_size(0) as u64 * 65536;
@@ -487,10 +594,20 @@ mod tests {
             unsafe { mprotect(base.wrapping_byte_add(SIZE), SIZE, 0) },
             0
         );
-        invalidate();
+        // A native thread can change page protections without calling the compiler.
+        // Deliberately keep any cached mapping information from the earlier reads.
         assert!(read(start, &mut byte));
         assert!(!read(start + SIZE as u64 + 8, &mut byte));
         assert!(!write(start + SIZE as u64, &byte));
+        assert!(
+            PROBE
+                .with(|p| p.read_vec(start + SIZE as u64, byte.len()))
+                .is_none()
+        );
+        assert_eq!(
+            PROBE.with(|p| p.compare(start + SIZE as u64, start, byte.len())),
+            std::cmp::Ordering::Less
+        );
         assert!(
             !read(start + SIZE as u64 - 4, &mut byte),
             "a range that runs into it"

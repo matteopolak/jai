@@ -55,11 +55,6 @@ impl Compiler {
                     Value::Bool(self.options.backtrace_on_crash),
                     TypeId::BOOL,
                 ),
-                (
-                    Sym::intern("TEMPORARY_STORAGE_SIZE"),
-                    Value::Int(self.options.temporary_storage_size as i128),
-                    TypeId::S64,
-                ),
             ];
             let m = self.load_module("Runtime_Support", &entry, params, span)?;
             self.runtime_support = Some(m);
@@ -102,6 +97,14 @@ impl Compiler {
     }
 
     fn begin_sources_inner(&mut self, sources: &[ProgramSource]) -> Result<()> {
+        self.ide_selected_entry = if self.ide.is_some() {
+            sources.iter().find_map(|source| match source {
+                ProgramSource::File(path) => Some(self.fs.canonical(path)),
+                _ => None,
+            })
+        } else {
+            None
+        };
         self.load_bootstrap()?;
         let m = self.new_module("main", None, Vec::new());
         self.main_module = Some(m);

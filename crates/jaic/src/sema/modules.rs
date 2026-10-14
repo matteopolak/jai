@@ -434,6 +434,12 @@ impl Compiler {
     /// Distribution boundary for library-owned helpers, checked before cache hits.
     /// Canonical paths cover relative traversal and native filesystem aliases alike.
     fn check_source_access(&self, path: &Path, span: Span) -> Result<()> {
+        if span == Span::NONE
+            && self.ide.is_some()
+            && self.ide_selected_entry.as_ref() == Some(&self.fs.canonical(path))
+        {
+            return Ok(());
+        }
         let Some(stdlib) = self.options.stdlib_root() else {
             return Ok(());
         };
@@ -563,12 +569,38 @@ impl Compiler {
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
-        if let Err(error) = self.load_file(entry, id, span) {
+        if let Err(error) = self
+            .load_file(entry, id, span)
+            .and_then(|()| self.validate_module_arguments(id, span))
+        {
             self.module_failures.insert(id, error.clone());
             return Err(error);
         }
         self.apply_program_params(id);
         Ok(id)
+    }
+
+    fn validate_module_arguments(&self, id: ModuleId, span: Span) -> Result<()> {
+        let module = &self.modules[id.0 as usize];
+        for (name, ..) in &module.params {
+            let valid = if let Some(position) = name.as_str().strip_prefix("$") {
+                position
+                    .parse::<usize>()
+                    .is_ok_and(|p| p < module.param_entities.len())
+            } else {
+                module
+                    .param_entities
+                    .iter()
+                    .any(|id| self.entity(*id).name == *name)
+            };
+            if !valid {
+                return err(
+                    span,
+                    format!("argument `{name}` is not a parameter of this module"),
+                );
+            }
+        }
+        Ok(())
     }
 
     fn module_load_result(&self, id: ModuleId) -> Result<ModuleId> {
@@ -1029,28 +1061,6 @@ impl Compiler {
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
                     self.declare_module_parameter(scope, module, position, param)?;
                 }
-                // An argument must name a parameter the module declares.
-                let given: Vec<Sym> = self.modules[module.0 as usize]
-                    .params
-                    .iter()
-                    .map(|(n, ..)| *n)
-                    .filter(|n| !n.as_str().starts_with('$'))
-                    .collect();
-                for name in given {
-                    if !params
-                        .iter()
-                        .chain(runtime_params)
-                        .any(|p| p.name.is_some_and(|n| n.name == name))
-                        // Bundled modules vary between Jai releases: a program may pass a
-                        // parameter this copy of one does not declare.
-                        && !self.is_system_module(module)
-                    {
-                        return err(
-                            stmt.span,
-                            format!("argument `{name}` is not a parameter of this module"),
-                        );
-                    }
-                }
                 let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
                 self.modules[module.0 as usize]
                     .program_params
@@ -1449,8 +1459,40 @@ impl Compiler {
             ast::ImportSource::Module(name)
                 if &**name == "Runtime_Support" && self.runtime_support.is_some() =>
             {
-                // One runtime per program, whatever parameters the importer asks for.
-                Ok(self.runtime_support.unwrap())
+                // One runtime per program; explicit arguments must describe that
+                // configured instance rather than silently changing or ignoring it.
+                let id = self.runtime_support.unwrap();
+                let entities = self.modules[id.0 as usize].param_entities.clone();
+                for (name, value, _) in params {
+                    let entity = if let Some(position) = name.as_str().strip_prefix('$') {
+                        position
+                            .parse::<usize>()
+                            .ok()
+                            .and_then(|p| entities.get(p).copied())
+                    } else {
+                        entities
+                            .iter()
+                            .copied()
+                            .find(|id| self.entity(*id).name == name)
+                    };
+                    let Some(entity) = entity else {
+                        return err(
+                            import.span,
+                            format!("argument `{name}` is not a parameter of this module"),
+                        );
+                    };
+                    let expected = self.resolve_entity(entity)?;
+                    if !matches!(expected, scope::Resolved::Const { value: ref existing, .. } if *existing == value)
+                    {
+                        return err(
+                            import.span,
+                            format!(
+                                "argument `{name}` conflicts with the configured runtime instance"
+                            ),
+                        );
+                    }
+                }
+                Ok(id)
             }
             ast::ImportSource::Module(name) => {
                 let host = self.scope(from_scope).module;
@@ -1483,6 +1525,7 @@ impl Compiler {
                 let id = self.new_module("string", None, params);
                 let label = format!("<import string {}>", self.sources.len());
                 self.load_string(&label, source, id)?;
+                self.validate_module_arguments(id, import.span)?;
                 Ok(id)
             }
         }
@@ -1520,6 +1563,7 @@ impl Compiler {
                 let id = self.new_module(name, None, params.to_vec());
                 let label = format!("<provided import {name}>");
                 self.load_string(&label, &provided.value, id)?;
+                self.validate_module_arguments(id, span)?;
                 self.provided_texts.insert(provided.value.clone(), id);
                 return Ok(Some(id));
             }

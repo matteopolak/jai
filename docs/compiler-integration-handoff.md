@@ -185,3 +185,19 @@ dropping them. The new Code-copy fixture passes in both modes. Segment handles
 also survive a separate #run and aliases: their opaque allocations participate in
 the same real-global relocation map as registered data. Focused facade fixtures
 now total 21.
+
+## Replacement integration corrections
+
+The reviewed Runtime_Support contract has exactly three boolean module parameters.
+TEMPORARY_STORAGE_SIZE is a compiler target constant/build option, not a fourth
+public module parameter. Bootstrap now passes only the reviewed parameters.
+All modules, including bundled ones, reject unknown names and excess positional
+arguments. Explicit imports of the configured runtime validate parameters and
+reject conflicting values instead of silently discarding them.
+
+IDE audits admit their explicitly selected internal source entry only; strict
+application imports/entries remain private. Regression coverage is in
+cleanroom_modules.rs. Guarded interpreter transfers now use kernel-mediated
+copy APIs; protection changes cannot invalidate a userspace-copy safety premise.
+The strengthened original mmap/mprotect regression failed with SIGBUS before
+this fix and passes without manual invalidation afterward.

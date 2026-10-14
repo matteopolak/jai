@@ -9,7 +9,7 @@ root through its `FileSystem`. A destination inside `<stdlib>/internal` requires
 an originating source file whose canonical path belongs to that library tree.
 The check runs before module-cache and loaded-file deduplication, so a facade
 loading a helper does not authorize a later application import of that helper.
-Direct application entry files in the internal directory are rejected as well.
+Direct application entry files in the internal directory are rejected as well. An IDE audit may explicitly select one internal file as its inspection entry; that exact top-level entry is admitted without authorizing application imports or generated source access.
 
 The boundary covers module-name imports, explicit file and directory imports,
 `#load`, relative traversal and native symlinks. Virtual filesystems use lexical

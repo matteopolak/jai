@@ -352,6 +352,8 @@ pub struct Compiler {
     /// Lexical provenance of scoped/generated sources, for relative source loads
     /// and the distribution boundary around library-owned internals.
     source_origins: HashMap<FileId, FileId>,
+    /// Explicit editor entry, admitted for inspection without authorizing imports.
+    ide_selected_entry: Option<PathBuf>,
     file_by_path: HashMap<(PathBuf, ModuleId), modules::FileLoadState>,
     /// Whether each source file is the stdlib's, for trap reports (a `#run` can trap often).
     library_files: std::cell::RefCell<HashMap<u32, bool>>,
@@ -616,6 +618,7 @@ impl Compiler {
             registered_data_segments: HashMap::default(),
             files: Vec::new(),
             source_origins: HashMap::default(),
+            ide_selected_entry: None,
             file_by_path: HashMap::default(),
             modules: Vec::new(),
             module_cache: HashMap::default(),

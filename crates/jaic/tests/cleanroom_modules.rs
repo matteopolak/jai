@@ -31,6 +31,90 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn bundled_modules_reject_unknown_and_excess_positional_arguments() {
+    for arguments in ["misspelled = true", "true, false"] {
+        let main = format!("M :: #import \"Config\"({arguments});");
+        let mut c = compiler(
+            &[
+                ("/lib/prelude/module.jai", ""),
+                (
+                    "/lib/Config/module.jai",
+                    "#module_parameters(enabled: bool);",
+                ),
+                ("/app/main.jai", &main),
+            ],
+            true,
+        );
+        rejects(&mut c, "not a parameter");
+    }
+}
+
+#[test]
+fn implicit_runtime_does_not_ignore_explicit_import_arguments() {
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            (
+                "/lib/Runtime_Support/module.jai",
+                "#module_parameters(DEFINE_SYSTEM_ENTRY_POINT: bool, DEFINE_INITIALIZATION: bool, ENABLE_BACKTRACE_ON_CRASH: bool);",
+            ),
+            (
+                "/app/main.jai",
+                "R :: #import \"Runtime_Support\"(unknown = true);",
+            ),
+        ],
+        true,
+    );
+    c.options.runtime_support = true;
+    rejects(&mut c, "not a parameter");
+}
+
+#[test]
+fn ide_selected_internal_entry_is_admitted_without_opening_application_imports() {
+    let files = [
+        ("/lib/prelude/module.jai", ""),
+        ("/lib/internal/helper/module.jai", "value :: 4;"),
+        ("/app/main.jai", "H :: #import \"internal/helper\";"),
+    ];
+    let mut c = compiler(&files, true);
+    c.ide = Some(Box::default());
+    c.compile_program(Path::new("/lib/internal/helper/module.jai"))
+        .unwrap_or_else(|e| panic!("{}", e.render(&c.sources)));
+
+    let mut c = compiler(&files, true);
+    c.ide = Some(Box::default());
+    rejects(&mut c, "private");
+    let mut c = compiler(&files, true);
+    assert!(
+        c.compile_program(Path::new("/lib/internal/helper/module.jai"))
+            .is_err()
+    );
+}
+
+#[test]
+fn bootstrap_runtime_passes_only_reviewed_parameters() {
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            (
+                "/lib/Runtime_Support/module.jai",
+                "#module_parameters(DEFINE_SYSTEM_ENTRY_POINT: bool, DEFINE_INITIALIZATION: bool, ENABLE_BACKTRACE_ON_CRASH: bool);",
+            ),
+            ("/app/main.jai", ""),
+        ],
+        true,
+    );
+    c.options.runtime_support = true;
+    succeeds(&mut c);
+    assert_eq!(
+        c.modules[c.runtime_support.unwrap().0 as usize]
+            .params
+            .len(),
+        3
+    );
+}
+
+#[test]
 fn module_arguments_retain_literal_precision_and_use_real_conversion() {
     let mut c = compiler(
         &[
