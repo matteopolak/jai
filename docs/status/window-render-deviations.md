@@ -16,6 +16,14 @@ semantics, not resource-release substitutes.
 
 Current remaining gaps and risks:
 
+Keymap programmatic Meta-modified bindings dispatch correctly, but the reviewed
+file grammar has no Meta prefix. Persistence now asserts explicitly for such a
+mapping instead of silently dropping the modifier. This is a deliberate supported-
+domain restriction pending reviewed serialization policy (question32), with risk
+that callers expecting arbitrary modifier persistence cannot save those bindings.
+Literal #/newline command escaping is also unspecified; no invented escape syntax
+is claimed. The proper fix needs the reviewed grammar, not a new convenience export.
+
 Current lifecycle follow-up: AppKit window-close notifications now release each
 window's VAO/VBO/framebuffer records and remove Window_Info/context entries. One
 detached root share context is deliberately retained to preserve live public GPU
@@ -53,12 +61,17 @@ command submission when switching contexts; make_current now flushes the previou
   claim of all layout-field behavior. Native kerning and general ligatures are
   intentionally absent per reviewed current behavior; NO_KERNING/LEFT_JUSTIFIED
   are declared but unapplied per that same contract.
-* `gl-textures.jai`, `gl-pixel-read.jai`: color 2D targets are verified; depth,
+* `gl-textures.jai`, `gl-pixel-read.jai`: color and depth/stencil 2D targets are verified;
   cube/array/volume/multisample paths remain incomplete. Per-level mip and compressed
   subimage native calls are now implemented; mip readback passes all three host
-  modes, compressed updates still need native compressed-format driver coverage.
-  Pixel readers require their creating context for polling/consumption and retain
-  the actual native fence until consumed. Native GLsync is canonical u64; native
+  modes; actual BC4 compressed upload/update byte readback now passes all three
+  modes as well. Other compressed formats still need their native driver cases.
+  Pixel readers can be polled/consumed in their creating context or a registered
+  context in the same native share group, retaining real buffer/fence resources
+  across AppKit window close. Context-local reader FBOs are deleted in their owner
+  context; closed-window readers transfer ownership to the detached share root.
+  The earlier creating-context assertion is preserved as regression evidence in
+  progress notes. Native GLsync is canonical u64; native
   x64/arm64 ABI verification beyond the host remains coordinator work.
 * `tests/window-render/gl-context.m`: main-thread assertion now enforces AppKit's
   real precondition. Driver tests call public init_mac_app before native fixture
@@ -88,6 +101,15 @@ from the installed public objc/runtime.h SDK header.
 Bitmap codec follow-up removes the earlier forced-RGBA decoding, extra save
 formats and JPEG quality 90. New source-channel and save-alpha regressions enforce
 the reviewed behavior; prior legacy conveniences are not compatibility evidence.
+
+Native depth/stencil coverage now includes D16, D24S8, D32F and D32FS8, actual clear
+values, resizing blits and packed PBO reads on Apple GL in all three execution
+modes. Depth blits require identical source/destination storage formats, matching
+the native GL rule; no fabricated cross-format conversion. Text baseline conversion
+and both scissor coordinate systems have real framebuffer comparisons. Latest full
+suite:147 passes/six canonical Windows dependency failures. The newer canonical
+AppKit setTitle wrapper handles native void correctly, so the private title ABI
+bridge is superseded; its unspecified id return remains unused.
 
 Synchronized-contract update supersedes historical unresolved-default/grammar/
 shader/font/mip entries below: public native window creation and complete Keymap

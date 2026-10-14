@@ -110,6 +110,26 @@ main :: () {
     S.texture_destroy(*texture);
     assert(texture.gl_handle == 0);
     assert(!GL.gl.glIsTexture(original_name));
+    S.deinit(*bitmap);
+    S.bitmap_alloc(*bitmap, 8, 8, .BC4);
+    assert(S.is_supported(.BC4) && bitmap.data.count == 32);
+    for *byte: bitmap.data byte.* = 0x55;
+
+    assert(S.texture_load_from_bitmap(*texture, *bitmap));
+    GL.gl.glBindTexture(GL.GL_TEXTURE_2D, texture.gl_handle);
+    blocks: [32] u8;
+
+    GL.gl.glGetCompressedTexImage(GL.GL_TEXTURE_2D, 0, blocks.data);
+    assert(memcmp(blocks.data, bitmap.data.data, blocks.count) == 0);
+    original_name = texture.gl_handle;
+    for *byte: bitmap.data byte.* = 0xaa;
+
+    S.backend_update_texture(*texture, *bitmap);
+    assert(texture.gl_handle == original_name);
+    GL.gl.glBindTexture(GL.GL_TEXTURE_2D, texture.gl_handle);
+    GL.gl.glGetCompressedTexImage(GL.GL_TEXTURE_2D, 0, blocks.data);
+    assert(memcmp(blocks.data, bitmap.data.data, blocks.count) == 0);
+    S.texture_destroy(*texture);
     assert(GL.gl.glGetError() == GL.GL_NO_ERROR);
     print("ok\n");
 }

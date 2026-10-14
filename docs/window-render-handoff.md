@@ -1,10 +1,11 @@
 # Window/render worker handoff
 
-Latest checkpoint `b9e7115` implements production public fonts/text/GL rendering,
-native window targets and asynchronous readback. Expanded runner: 139 passes/four
-Windows File dependency failures. Format/check and warnings-denied lint passed on
-all owned Jai code/tests; generated declarations verified. Subsequent public AppKit
-swap and multiwindow/Keymap regressions are in progress. See current status and
+Latest durable checkpoints `b9e7115` and `31ded39` implement production public fonts/text/GL rendering,
+native window targets/lifecycle and asynchronous readback. Current expanded runner:
+147 passes/six Windows dependency failures (File and WGL). Format/check and warnings-denied lint passed on
+all owned Jai code/tests; generated declarations verified. Public AppKit swaps,
+multiwindow close/reopen, retained GPU resources, depth/stencil readback and Keymap
+regressions pass interpreter/native O0/O2. See current status and
 deviations for unresolved lifecycle/platform work; historical notes below are
 preserved evidence and superseded where the coverage ledger says so.
 

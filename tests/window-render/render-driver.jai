@@ -64,6 +64,29 @@ main :: () {
     for index: 0..64 * 64 - 1 ink += pixels[index * 4 + 3];
 
     assert(ink > 0);
+    S.set_render_target(*target, .LEFT_HANDED);
+    S.clear_render_target(0, 0, 0, 0);
+    assert(S.draw_text(font, 4, 34, "A") == width);
+    flipped: [64 * 64 * 4] u8;
+
+    GL.gl.glReadPixels(0, 0, 64, 64, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, flipped.data);
+    assert(memcmp(pixels.data, flipped.data, pixels.count) == 0, "text coordinate systems must agree after baseline conversion");
+
+    for coords: S.Simp_Coordinate_System.[.LEFT_HANDED, .RIGHT_HANDED] {
+        S.set_render_target(*target, coords);
+        S.clear_render_target(0, 0, 0, 0);
+        S.set_scissor(4, 8, 12, 16);
+        S.clear_render_target(0, 0, 1, 1);
+        S.clear_scissor();
+        native_y: s32 = 10;
+        if coords == .LEFT_HANDED native_y = 53;
+
+        GL.gl.glReadPixels(6, native_y, 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, pixel.data);
+        assert(pixel[2] == 255 && pixel[3] == 255);
+        GL.gl.glReadPixels(20, native_y, 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, pixel.data);
+        assert(pixel[2] == 0 && pixel[3] == 0);
+    }
+
     assert(GL.gl.glGetError() == GL.GL_NO_ERROR);
     print("ok\n");
 }
