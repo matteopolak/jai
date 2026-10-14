@@ -31,7 +31,7 @@ The comments above hold for the plain {#import.2}, named {#import.3}, `using` {#
 
 `using,only(a, b) M;` brings in just those names {#import.16}; `except` and `map` filters also exist (`ast::UsingFilter`).
 
-`using,only(a, b) #import "M";` filters an import (`Import::using`). The listed names resolve normally, but M's other names are still found as a last resort when nothing else binds them (`lookup_sibling_file_imports`), because libraries like Epic_Fail list only some of the names they use {#import.17}. The filter's real job is to stop, for example, Basic's `assert` competing with the module's own (`tests/stdlib/using-only-import.jai`) {#import.18}.
+`using,only(a, b) #import "M";` filters an import (`Import::using`): excluded names do not become available through fallback lookup {#import.17}. A named alias remains available for qualified lookup of the module's exported names. Filters also prevent excluded procedures from joining an overload set {#import.18}.
 
 ## How to change it
 

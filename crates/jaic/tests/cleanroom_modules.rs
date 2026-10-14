@@ -23,6 +23,13 @@ fn succeeds(c: &mut Compiler) {
     }
 }
 
+fn rejects(c: &mut Compiler, name: &str) {
+    let error = c
+        .compile_program(Path::new("/app/main.jai"))
+        .expect_err("source violating visibility must be rejected");
+    assert!(error.message.contains(name), "{}", error.render(&c.sources));
+}
+
 #[test]
 fn bootstrap_alias_preserves_types_and_storage() {
     let mut c = compiler(
@@ -81,4 +88,89 @@ fn bootstrap_discovery_uses_only_canonical_entry() {
         jaic::stdlib_root_from_preload(Path::new("/lib/prelude/module.jai")),
         Some(Path::new("/lib"))
     );
+}
+
+#[test]
+fn module_private_declarations_are_not_qualified_exports() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/M/module.jai",
+                "#scope_module hidden :: 11; #scope_export visible :: hidden + 2;",
+            ),
+            (
+                "/app/main.jai",
+                "M :: #import \"M\"; #assert(M.visible == 13); #assert(M.hidden == 11);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "hidden");
+}
+
+#[test]
+fn private_imports_in_sibling_files_do_not_leak() {
+    let mut c = compiler(
+        &[
+            ("/lib/Private/module.jai", "secret :: 17;"),
+            (
+                "/app/piece.jai",
+                "#scope_file #import \"Private\"; #assert(secret == 17);",
+            ),
+            (
+                "/app/main.jai",
+                "#load \"piece.jai\"; #assert(secret == 17);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "secret");
+}
+
+#[test]
+fn only_import_does_not_offer_filtered_out_names_as_fallback() {
+    let mut c = compiler(
+        &[
+            ("/lib/M/module.jai", "shown :: 7; hidden :: 9;"),
+            (
+                "/app/main.jai",
+                "using,only(shown) M :: #import \"M\"; #assert(shown == 7); #assert(M.hidden == 9); #assert(hidden == 9);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "hidden");
+}
+
+#[test]
+fn loaded_file_has_independent_visibility_and_private_shadowing() {
+    let mut c = compiler(
+        &[
+            (
+                "/app/piece.jai",
+                "shared :: 5; #scope_file shadow :: 19; #assert(shadow == 19); #assert(local == 23); #scope_module local :: 23;",
+            ),
+            (
+                "/app/main.jai",
+                "shadow :: 13; #scope_file #load \"piece.jai\"; #assert(shared == 5); #assert(shadow == 13); #assert(local == 23);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn imported_module_cannot_look_into_importer_scope() {
+    let mut c = compiler(
+        &[
+            ("/lib/M/module.jai", "value :: application_only;"),
+            (
+                "/app/main.jai",
+                "application_only :: 41; M :: #import \"M\"; #assert(M.value == 41);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "application_only");
 }

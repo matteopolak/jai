@@ -785,54 +785,7 @@ impl Compiler {
                 }
                 current = self.scope(sid).parent;
             }
-            return self.lookup_sibling_file_imports(scope, name);
-        }
-        Ok(Found::Entities(found))
-    }
-
-    /// Last resort for an unknown name: modules imported under `#scope_file` by the files
-    /// of the same module, including names a `using,only` import leaves out (code such as
-    /// focus relies on these being visible module-wide). Only reached when nothing else
-    /// binds the name.
-    fn lookup_sibling_file_imports(&mut self, scope: ScopeId, name: Sym) -> Result<Found> {
-        let module = self.scope(scope).module;
-        // The module scope too: imports outside `#scope_file` live there.
-        let module_scope = self.modules.get(module.0 as usize).map(|m| m.scope);
-        let file_scopes: Vec<ScopeId> = (self.files.iter())
-            .filter(|f| f.module == module)
-            .map(|f| f.scope)
-            .chain(module_scope)
-            .collect();
-        let mut found = Vec::new();
-        for fs in file_scopes {
-            for i in 0..self.scope(fs).imports.len() {
-                // `using,only(a, b) #import "M"` keeps a and b in front of everything else,
-                // but code written against it (Epic_Fail) still reaches M's other names.
-                match &self.scope(fs).imports[i].filter {
-                    ast::UsingFilter::None | ast::UsingFilter::Only(_) => {}
-                    ast::UsingFilter::Except(names) if names.iter().all(|n| n.name != name) => {}
-                    _ => continue,
-                }
-                if let Some(m) = self.import_module(fs, i)? {
-                    let result = self.module_lookup(m, name)?;
-                    if !matches!(&result, Found::Entities(ids) if ids.is_empty()) {
-                        self.ide_note_import_use(fs, i);
-                    }
-                    match result {
-                        Found::Entities(ids) => {
-                            for id in ids {
-                                if !found.contains(&id) {
-                                    found.push(id);
-                                }
-                            }
-                        }
-                        Found::Using(entry, member) if found.is_empty() => {
-                            return Ok(Found::Using(entry, member));
-                        }
-                        Found::Using(..) => {}
-                    }
-                }
-            }
+            return Ok(Found::Entities(found));
         }
         Ok(Found::Entities(found))
     }
@@ -928,26 +881,9 @@ impl Compiler {
         Ok(Found::Entities(params))
     }
 
-    /// `module.name` written out: the exported names, else a `#scope_module` one. Only
-    /// `#scope_file` names stay out of reach through the namespace.
+    /// Qualified lookup observes the same export boundary as an anonymous import.
     pub fn module_member_lookup(&mut self, module: ModuleId, name: Sym) -> Result<Found> {
-        let found = self.module_lookup(module, name)?;
-        if !matches!(&found, Found::Entities(ids) if ids.is_empty()) {
-            return Ok(found);
-        }
-        let scope = self.modules[module.0 as usize].scope;
-        let ids = self
-            .scope(scope)
-            .names
-            .get(&name)
-            .map(|ids| {
-                ids.iter()
-                    .copied()
-                    .filter(|&e| !self.entity(e).file_private)
-                    .collect()
-            })
-            .unwrap_or_default();
-        Ok(Found::Entities(ids))
+        self.module_lookup(module, name)
     }
 
     /// The exported `using` entry of `module` (or of a module it re-exports) whose type has

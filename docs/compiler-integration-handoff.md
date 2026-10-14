@@ -50,6 +50,12 @@ foundation module files, so runtime fixture execution awaits new foundation code
 Original virtual-filesystem regressions in `crates/jaic/tests/cleanroom_modules.rs`
 exercise loader contracts without requiring any old library implementation.
 
+Qualified module lookup now enforces exports, and lookup no longer searches sibling
+files' private imports or names excluded by `only`. Original scope regressions
+verify these boundaries and independent `#load` visibility. The LSP worker should
+retain the same boundary when enumerating namespace completion candidates; legacy
+IDE enumeration of non-file-private entities needs alignment with exported entities.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.
