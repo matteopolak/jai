@@ -9,6 +9,7 @@
 //! C-callable thunks (`native/callbacks.rs`).
 #![allow(unsafe_code)]
 
+mod atomics;
 mod code;
 #[cfg(not(target_arch = "wasm32"))]
 mod crash;
@@ -2270,72 +2271,18 @@ impl Interp {
                 };
                 Rets::one(r as u16 as u64)
             }
-            I::CompareAndSwap => {
-                // (ptr, old, new, width) -> (success, previous)
-                let width = a.get(3).copied().unwrap_or(8);
-                let ty = Ty::int(width);
-                let current = self.load(ty, a[0])?;
-                let success = current == mask(ty, a[1]);
-                if success {
-                    self.store(ty, a[0], a[2])?;
-                }
-                // A failed or no-op swap is a thread waiting for another one.
-                if self.multi
-                    && self.host.cooperative_threads()
-                    && (!success || mask(ty, a[2]) == current)
-                {
-                    self.inline_poll();
-                }
-                Rets::collect([success as u64, current].into_iter())
-            }
-            // The interpreter runs one thread at a time, so every order behaves as sequentially
-            // consistent. A load that sees nothing new is a thread waiting for another one.
-            I::AtomicLoad(_) => {
-                let ty = Ty::int(a.get(1).copied().unwrap_or(8));
-                let value = self.load(ty, a[0])?;
+            I::CompareAndSwap
+            | I::AtomicLoad(_)
+            | I::AtomicStore(_)
+            | I::AtomicRmw(..)
+            | I::AtomicCas(..) => {
+                let result = self.atomic_access(op, a)?;
+                // Poll after the indivisible operation, so waiting cooperative
+                // threads can make progress without weakening native atomicity.
                 if self.multi && self.host.cooperative_threads() {
                     self.inline_poll();
                 }
-                Rets::one(value)
-            }
-            I::AtomicStore(_) => {
-                let ty = Ty::int(a.get(2).copied().unwrap_or(8));
-                self.store(ty, a[0], a[1])?;
-                Rets::default()
-            }
-            I::AtomicRmw(op, _) => {
-                let ty = Ty::int(a.get(2).copied().unwrap_or(8));
-                let current = self.load(ty, a[0])?;
-                let operand = mask(ty, a[1]);
-                let next = match op {
-                    ir::AtomicOp::Xchg => operand,
-                    ir::AtomicOp::Add => current.wrapping_add(operand),
-                    ir::AtomicOp::Sub => current.wrapping_sub(operand),
-                    ir::AtomicOp::And => current & operand,
-                    ir::AtomicOp::Or => current | operand,
-                    ir::AtomicOp::Xor => current ^ operand,
-                };
-                let next = mask(ty, next);
-                self.store(ty, a[0], next)?;
-                if self.multi && self.host.cooperative_threads() && next == current {
-                    self.inline_poll();
-                }
-                Rets::one(current)
-            }
-            I::AtomicCas(..) => {
-                let ty = Ty::int(a.get(3).copied().unwrap_or(8));
-                let current = self.load(ty, a[0])?;
-                let success = current == mask(ty, a[1]);
-                if success {
-                    self.store(ty, a[0], a[2])?;
-                }
-                if self.multi
-                    && self.host.cooperative_threads()
-                    && (!success || mask(ty, a[2]) == current)
-                {
-                    self.inline_poll();
-                }
-                Rets::collect([success as u64, current].into_iter())
+                result
             }
             I::DebugBreak => return self.trap("debug_break() was called"),
             I::Trap => {
@@ -2875,5 +2822,51 @@ impl Drop for Interp {
             let gate: std::sync::Arc<dyn native::Gate> = shared;
             native::release_callbacks(&gate);
         }
+    }
+}
+
+
+#[cfg(test)]
+mod atomic_contention_tests {
+    use super::*;
+    use std::sync::{
+        Arc, Barrier,
+        atomic::{AtomicU64, Ordering},
+    };
+
+    #[test]
+    fn interpreted_cas_is_atomic_against_simultaneous_host_access() {
+        let value = Arc::new(AtomicU64::new(0));
+        let barrier = Arc::new(Barrier::new(4));
+        let workers: Vec<_> = (0..4)
+            .map(|_| {
+                let value = value.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    let mut interp = Interp::new(Box::new(NativeHost));
+                    let address = Arc::as_ptr(&value) as u64;
+                    barrier.wait();
+                    for _ in 0..20_000 {
+                        loop {
+                            let before = value.load(Ordering::SeqCst);
+                            let result = interp
+                                .intrinsic(
+                                    ir::Intrinsic::AtomicCas(4, 4),
+                                    &[address, before, before + 1, 8],
+                                )
+                                .unwrap()
+                                .into_vec();
+                            if result[0] != 0 {
+                                break;
+                            }
+                        }
+                    }
+                })
+            })
+            .collect();
+        for worker in workers {
+            worker.join().unwrap();
+        }
+        assert_eq!(value.load(Ordering::SeqCst), 80_000);
     }
 }

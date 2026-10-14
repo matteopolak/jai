@@ -201,3 +201,9 @@ cleanroom_modules.rs. Guarded interpreter transfers now use kernel-mediated
 copy APIs; protection changes cannot invalidate a userspace-copy safety premise.
 The strengthened original mmap/mprotect regression failed with SIGBUS before
 this fix and passes without manual invalidation afterward.
+Bootstrap atomics now lower through common validated IR. See
+[atomic semantics and regressions](compiler/bootstrap-atomics.md) and the mandatory
+[deviations report](status/compiler-deviations.md). Native O0/O2, interpreter host
+contention, and actual shared-memory WASM worker contention pass; these are
+focused compiler/backend verification, not a production integration claim.
+Progress and next tasks are maintained in [compiler progress](status/compiler-progress.md).

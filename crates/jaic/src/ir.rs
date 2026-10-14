@@ -173,6 +173,8 @@ pub const TRAP_DIVIDE_BY_ZERO: u64 = 6;
 /// a member of a null struct pointer (a: `NULL_READ`..`NULL_FILL`, b: the address).
 pub const TRAP_NULL_POINTER: u64 = 7;
 
+pub const TRAP_ATOMIC_ALIGNMENT: u64 = 8;
+
 /// `a` of a `TRAP_NULL_POINTER` failure: what the access did.
 pub const NULL_READ: u64 = 0;
 
@@ -249,6 +251,7 @@ pub fn check_message(reason: u64, a: u64, b: u64) -> String {
                 a as i64
             )
         }
+        TRAP_ATOMIC_ALIGNMENT => format!("atomic address {a:#x} must be aligned to {b} bytes"),
         _ => "runtime check failed".into(),
     }
 }

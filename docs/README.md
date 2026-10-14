@@ -51,6 +51,8 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compiler module (Jai side)](metaprogramming/compiler-module.md)
 - [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
+- [Bootstrap atomics](compiler/bootstrap-atomics.md): scalar validation, host/native/WASM atomic semantics and contention regressions
+- [Compiler progress](status/compiler-progress.md) and [deviations](status/compiler-deviations.md): producer checkpoints, verification evidence, gaps and required long-term fixes
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
 - [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded filters, mapped storage and safe Code reconstruction
