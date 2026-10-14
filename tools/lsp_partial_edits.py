@@ -6,6 +6,7 @@ This is a regression harness, not a benchmark. It never executes supplied binari
 import argparse
 import concurrent.futures
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import shutil
@@ -65,7 +66,8 @@ def run_file(worker, file, args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("paths", nargs="+", type=Path)
+    parser.add_argument("paths", nargs="*", type=Path)
+    parser.add_argument("--retry-report", type=Path, help="rerun failed files from an earlier correctness report")
     parser.add_argument("--stdlib", type=Path, help="NEW independent stdlib, using prelude/module.jai")
     parser.add_argument("--max-lines", type=int, default=8, help="evenly sampled nonempty lines per file; 0 checks every line")
     parser.add_argument("--timeout", type=int, default=60, help="hard timeout per worker process")
@@ -74,10 +76,16 @@ def main():
     args = parser.parse_args()
     if args.max_lines < 0 or args.timeout <= 0 or args.jobs <= 0:
         parser.error("limits must be nonnegative, with positive timeout/jobs")
-    files = sources(args.paths)
+    paths = list(args.paths)
+    if args.retry_report:
+        paths.extend(Path(r["file"]) for r in json.loads(args.retry_report.read_text())["files"] if r["failures"])
+    files = sources(paths)
     if not files:
         parser.error("no Jai sources found")
     worker = build_worker()
+    provenance = {"worker_sha256": hashlib.sha256(Path(worker).read_bytes()).hexdigest(),
+                  "max_lines": args.max_lines, "stdlib": str(args.stdlib.resolve()) if args.stdlib else None,
+                  "timeout_seconds": args.timeout}
     reports = []
     args.report.parent.mkdir(parents=True, exist_ok=True)
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
@@ -87,7 +95,7 @@ def main():
             reports.append(report)
             print(f"{len(reports)}/{len(files)} {'FAIL' if report['failures'] else 'PASS'} {pending[future]} ({report['edits']} edits)", flush=True)
             # Persist after each completed file so interruptions do not lose evidence.
-            args.report.write_text(json.dumps({"files": sorted(reports, key=lambda r: r["file"])}, indent=2) + "\n")
+            args.report.write_text(json.dumps({**provenance, "files": sorted(reports, key=lambda r: r["file"])}, indent=2) + "\n")
     failed = sum(bool(r["failures"]) for r in reports)
     print(f"{len(reports)} files, {sum(r['edits'] for r in reports)} edits, {sum(r['assertions'] for r in reports)} assertions, {failed} failed files")
     return 1 if failed else 0

@@ -1454,7 +1454,7 @@ impl Compiler {
                 .map(|&p| (self.proc(p).span, self.proc(p).name.to_string()))
                 .collect();
             let mut definitions = self.ide_narrow_decls(spans);
-            definitions.sort_unstable();
+            definitions.sort_unstable_by_key(|s| (s.file.0, s.start, s.end));
             definitions.dedup();
             return definitions;
         }

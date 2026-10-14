@@ -513,3 +513,14 @@ fn generic_loop_site_retains_all_actual_selected_expansions() {
     assert_eq!(defs.len(), 1, "instances of one generic source declaration: {defs:?}");
     assert_eq!(defs[0].range.start, at(generic, "for_expansion"));
 }
+
+#[test]
+fn fresh_unfinished_quote_does_not_hide_recovered_identifier_tokens() {
+    let text = "broken :: \"unfinished\nmain :: () { healthy := 42; result := healthy + 1; }\nother :: \"closed\";\n";
+    let mut s = session();
+    s.open(uri(), 1, text.into()).unwrap();
+    let hover = s.hover(&uri(), at(text, "healthy +")).unwrap().expect("recovered identifier token");
+    assert_eq!(hover.contents.value, "healthy: s64");
+    let diagnostics = s.diagnostics(&uri()).unwrap();
+    assert!(diagnostics.iter().filter(|d| d.severity == jai_language_server::DiagnosticSeverity::Error).all(|d| d.range.start.line == 0), "{diagnostics:?}");
+}

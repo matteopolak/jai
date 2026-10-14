@@ -222,6 +222,24 @@ struct Context<'a> {
     limits: Limits,
 }
 
+fn editor_tokens(tokens: &[jaic::lexer::Token]) -> Vec<Token> {
+    let mut converted = Vec::with_capacity(tokens.len());
+    converted.extend(tokens.iter().filter_map(|token| {
+        let kind = match &token.tok {
+            Tok::Ident(name) if KEYWORDS.contains(&name.as_str()) => TokenKind::Keyword,
+            Tok::Ident(_) => TokenKind::Ident,
+            Tok::Directive(_) | Tok::Note(_) => TokenKind::Directive,
+            Tok::Int(_) | Tok::Float(_) => TokenKind::Number,
+            Tok::Str(_) => TokenKind::String,
+            Tok::Punct(P::Dot) => TokenKind::Dot,
+            Tok::Punct(_) => TokenKind::Punctuation,
+            Tok::Eof => return None,
+        };
+        Some(Token { span: span_of(token.span), kind })
+    }));
+    converted
+}
+
 impl Analysis {
     pub fn build(text: &str, uri: &DocumentUri, limits: Limits) -> Self {
         let index = LineIndex::new(text);
@@ -242,24 +260,7 @@ impl Analysis {
             result.compiler_diagnostic(&index, text, error, DiagnosticCode::Lexer);
         }
         // One entry per token but the end marker: sized once, not grown by doubling.
-        let mut converted: Vec<Token> = Vec::with_capacity(tokens.len());
-        converted.extend(tokens.iter().filter_map(|token| {
-            let span = span_of(token.span);
-            let kind = match &token.tok {
-                Tok::Ident(name) if KEYWORDS.contains(&name.as_str()) => TokenKind::Keyword,
-                Tok::Ident(_) => TokenKind::Ident,
-                Tok::Directive(_) | Tok::Note(_) => TokenKind::Directive,
-                Tok::Int(_) | Tok::Float(_) => TokenKind::Number,
-                Tok::Str(_) => TokenKind::String,
-                Tok::Punct(P::Dot) => TokenKind::Dot,
-                Tok::Punct(_) => TokenKind::Punctuation,
-                Tok::Eof => return None,
-            };
-            Some(Token {
-                span,
-                kind,
-            })
-        }));
+        let mut converted = editor_tokens(&tokens);
         if converted.len() > limits.tokens {
             let at = converted[limits.tokens].span;
             result.diagnostic(
@@ -290,6 +291,9 @@ impl Analysis {
         }
         let expected_rows = (tokens.len() / 16).min(limits.rows);
         let parsed = jaic::parser::parse_tokens_ide(file, text, tokens);
+        result.diagnostics.retain(|d| {
+            d.code != DiagnosticCode::Lexer || index.byte(text, d.range.start).is_ok_and(|byte| !parsed.recovered_literal_at(byte as u32))
+        });
         crate::semantic::note_parse(
             text,
             lex_errors
@@ -299,6 +303,18 @@ impl Analysis {
         );
         for error in &parsed.diagnostics {
             result.compiler_diagnostic(&index, text, error, DiagnosticCode::Parser);
+        }
+        // Recovery can rescan a multiline token. All syntax consumers must use
+        // those current tokens too, or an unaffected name may still look like a string.
+        result.tokens = editor_tokens(&parsed.tokens);
+        result.format_calls = crate::format::calls(&parsed.tokens, text);
+        result.links = crate::links::links(&parsed.tokens);
+        if result.tokens.len() > limits.tokens {
+            let at = result.tokens[limits.tokens].span;
+            result.tokens.truncate(limits.tokens);
+            result.diagnostic(&index, text, at, DiagnosticSeverity::Warning, DiagnosticCode::Limit,
+                "Token budget exceeded after recovery; syntax navigation is unavailable for this version.");
+            return result;
         }
         let parsed = parsed.file;
         let context = Context {

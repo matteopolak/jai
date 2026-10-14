@@ -7,9 +7,18 @@ pub struct IdeParse {
     pub diagnostics: Vec<Diagnostic>,
 }
 
+impl IdeParse {
+    /// A rescan can prove that an earlier lexical error was caused by a quote on
+    /// another line, rather than by this now-verified literal itself.
+    pub fn recovered_literal_at(&self, byte: u32) -> bool {
+        self.tokens.iter().any(|t| matches!(t.tok, Tok::Str(_)) && t.span.start <= byte && byte < t.span.end)
+    }
+}
+
 pub fn parse_file_ide(file: FileId, text: &str) -> IdeParse {
     let (tokens, diagnostics) = crate::lexer::lex_ide(file, text);
     let mut parsed = parse_tokens_ide(file, text, tokens);
+    let diagnostics: Vec<_> = diagnostics.into_iter().filter(|d| !parsed.recovered_literal_at(d.span.start)).collect();
     parsed.diagnostics.splice(0..0, diagnostics);
     parsed
 }
