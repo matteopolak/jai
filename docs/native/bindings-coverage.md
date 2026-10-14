@@ -84,17 +84,19 @@ changed to satisfy it.
 
 ## Latest reviewed batch
 
-The latest complete worker run, `.work/coverage-final-batch.json`, records 208
+The latest complete worker run, `.work/reviewed-worker-verification.json`, records 208
 passing source/public-surface checks, 70 explicitly unsupported desktop
 combinations, and 34 failed source/public checks. Seven privacy checks pass;
-one is blocked by a dependent D3D layout failure. All 901 probed native symbols
-resolve, including 518 ImGui functions and nested methods.
+one is blocked by a dependent D3D layout failure. All 1,200 probed native symbols
+resolve, including 518 ImGui functions/nested methods and 299 SDL functions.
 
-Twelve source-built Jai native programs and one real ImGui C++/libffi program
-pass (26 build/execution checks). The Jai programs include eleven library
+Thirteen source-built Jai native programs and one real ImGui C++/libffi program
+pass (28 build/execution checks). The Jai programs include twelve library
 runtime suites and one private Direct3D arithmetic suite checked against
 complete selected SDK C macros. The iOS host helper and host GL program still
-fail to build. In total, this run retains 37 failed/unimplemented checks. It
+fail to build. The separate SDL ABI program builds and fails on two incomplete
+record layouts; its assertions remain enabled. In total, this run retains 38
+failed/unimplemented checks. It
 does not establish complete support for the assigned module set.
 
 The separate `.work/configuration-latest.json` checks GL extension/debug
