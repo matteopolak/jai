@@ -6,7 +6,8 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 def normalize(source):
-    default = ROOT/'artifacts/jaifmt-repro'
+    default = ROOT/'artifacts/jaifmt-current'
+    if not default.is_file(): default = ROOT/'artifacts/jaifmt-repro'
     if not default.is_file(): default = ROOT/'artifacts/numerics-format-driver'
     formatter = Path(os.environ.get('NUMERICS_JAIFMT', default))
     if not formatter.is_file():

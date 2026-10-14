@@ -10,10 +10,16 @@ root = Path(__file__).resolve().parents[2]
 compiler = root / 'artifacts/target/debug/jaic'
 parser = argparse.ArgumentParser()
 parser.add_argument('--stdlib', type=Path, default=root/'artifacts/stdlib-verification')
+parser.add_argument('--compiler', type=Path, default=compiler)
+parser.add_argument('--canonical-dependencies', action='store_true')
+parser.add_argument('--output', type=Path, default=root/'artifacts/numerics-corrective')
 args = parser.parse_args()
 library = args.stdlib.resolve()
-out = root / 'artifacts/numerics-corrective'
+compiler = args.compiler.resolve()
+out = args.output.resolve()
+if not out.is_relative_to(root/'artifacts'): raise SystemExit('evidence must remain in local artifacts')
 out.mkdir(parents=True, exist_ok=True)
+imports = [] if args.canonical_dependencies else ['-I', 'tests/numerics/dependencies']
 env = dict(os.environ, JAIC_STDLIB=str(library))
 records = []
 
@@ -40,17 +46,15 @@ for source, path, marker in [
     for level in ['O0', 'O2']:
         executable = out / (source + '-' + level)
         if check(source + '-' + level + '-build',
-                 [compiler, path, '-I', 'tests/numerics/dependencies',
-                  '-' + level, '-exe', executable]):
+                 [compiler, path] + imports + ['-' + level, '-exe', executable]):
             check(source + '-' + level, [executable], marker)
 
-for source, marker in [('font_metrics_missing', 'Font ABI required for em height'),
-                       ('texture_abi_missing', 'concrete Texture ABI and ownership contract unavailable')]:
+for source, marker in [('font_metrics_missing', 'em requires a font'),
+                       ('texture_abi_missing', 'texture loader callback required')]:
     for level in ['O0', 'O2']:
         executable = out / (source + '-' + level)
         if check(source + '-' + level + '-build',
-                 [compiler, 'tests/numerics/' + source + '.jai',
-                  '-I', 'tests/numerics/dependencies', '-' + level, '-exe', executable]):
+                 [compiler, 'tests/numerics/' + source + '.jai'] + imports + ['-' + level, '-exe', executable]):
             check(source + '-' + level, [executable], marker, diagnostic=True)
 
 # This is a reproduced compiler/spec integration blocker, not implemented

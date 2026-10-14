@@ -1,5 +1,15 @@
 # Numerics worker status
 
+Current canonical integration supersedes the historical fixture evidence below:
+**81/99 checks** in artifacts/canonical-verification-r2, all interpreter/native
+O0/O2 programs passing, 21/21 native corrective checks without fixture imports.
+Remaining actual WASM/cross-target failures and deviations are in
+[current progress](numerics-progress.md), [deviations](numerics-deviations.md), and
+[dependency handoff](numerics-dependency-handoff.md). Canonical Simp types/metrics/
+Texture storage now replace empty render_types and metric/Texture traps.
+The older sections describe predecessor checkpoints and must not be presented
+as current missing-dependency facts or production completion.
+
 **Not complete / coordinator handoff not accepted.** All six modules have
 implementations, but inventory coverage and fixture tests do not establish full
 production compatibility. Corrective review removed local clipboard substitution,

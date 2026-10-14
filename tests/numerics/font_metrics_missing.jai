@@ -1,4 +1,4 @@
-// Expected diagnostic: no Font ABI/metric provider is present in the reviewed input.
+// A canonical font pointer is required; missing metadata is no longer trapped.
 G :: #import "GetRect";
 
 main :: () {
