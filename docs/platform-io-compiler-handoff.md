@@ -1,7 +1,42 @@
 # Platform I/O compiler/tool integration handoff
 
-No compiler source was modified in this worker's production changes. These are
-general semantic/tool gaps; do not fix them by matching module or fixture names.
+The worker now includes a small general IDE dependency-order fix and generic
+jailint driver/rule fixes. Compiler-owned integration is required; no module/path
+or symbol-name special cases were introduced. Remaining gaps below must retain
+their real failures.
+
+## Implemented strict lint and IDE repairs
+
+`crates/jaic/tests/ide_layout.rs` is a standalone original reproducer with no stdlib
+dependency. It loads a record, resolves its type before requesting its layout, then
+asks IDE checking to validate unused declarations. Previously INFO_SIZE recursively
+requested itself through the padding layout; the fix lays out the containing record
+before resolving member constants, matching ordinary unreferenced checking. A
+temporary removal of only the new ordering step reproduced the circular-dependency
+failure; the fixed test passes. The real Thread lint failure also disappears.
+
+Jailint now accepts OS/CPU targets, recognizes nested import-directory modules,
+imports private library roots from virtual library-owned sources, reuses already
+configured bootstrap instances, records loaded files across directories, writes a
+checked-file manifest, and returns failure for incomplete compiler/IDE checking.
+The virtual root does not relax application privacy or write into the library.
+Canonical exported aliases are recognized by library-call rules using procedure
+identity, avoiding implementation-path assumptions. Original regressions in
+`tools/test_platform_io_lint.py` exercise target findings, privacy and failed bodies.
+
+Executed with the permitted independent producer compiler plus these local patches:
+all 23 jailint Rust tests, standalone IDE regression, scoped clippy with warnings
+denied, and four-target strict lint with manifest coverage of every owned source.
+The commands and staging limits are in the platform progress/deviations reports.
+
+## Missing portable System dependency
+
+The reviewed System facade exports M64 on x64. Machine_X64 is absent from this
+snapshot and the new portable producer at inspection time. Windows counter reads
+now implement the reviewed rdtsc/QPC precedence, but the public import alias needs
+that producer module before integration. Do not supply a fake partial module or
+claim System's entire public inventory complete without it. Unix counter facade
+coverage likewise belongs to the portable integration review.
 
 ## Suspended CRT threads in the Windows interpreter
 
@@ -24,7 +59,7 @@ interoperation with interpreter-created event handles. A scheduler-only event ca
 be passed as hEvent to the actual native ReadFile/WriteFile APIs. The worker claims
 no Windows Process interpreter validation.
 
-## Linter private-library roots and target selection
+## Historical linter failure evidence (superseded by repairs above)
 
 Executed evidence:
 
