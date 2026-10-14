@@ -9,6 +9,11 @@ described in [crash diagnostics](portable-crash-handler.md) and the mandatory
 [deviations report](status/stdlib-deviations.md). Native best-effort backtraces
 do not establish an exact reference diagnostic format.
 
+Zip_File_Directory.position_in_file currently records the central record's file
+offset; its intended meaning is absent from the reviewed contract. Trailing junk
+and directory digital-signature records are rejected. These extension policies
+need review. See [directory parsing](portable-zip-directory.md).
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires

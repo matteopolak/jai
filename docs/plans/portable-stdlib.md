@@ -123,3 +123,9 @@ per-thread alternate stack through native TLS ownership. Emit diagnostics withou
 depending on the Jai context/allocator, reset/unblock/re-raise the fatal signal,
 and verify actual SIGSEGV plus native stack text in separate source-built programs.
 Do not interpret the reviewed x64-shaped register prefixes on ARM or claim recovery.
+
+ZIP directory increment: independently decode bounded classic end/central records,
+retain borrowed name views into owned directory storage, preserve the documented
+retained-file ownership, and reject unsupported ZIP64/multidisk cases. Require
+the specified assertions for signatures/descriptors. Verify late parse cleanup
+with allocation accounting, and record unresolved position/extension contracts.

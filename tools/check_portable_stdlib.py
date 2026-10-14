@@ -30,6 +30,8 @@ FAULT_EXPECTATIONS = {
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
     "crash-memory-fault": ("crash signal ", "native stack:"),
+    "zip-signature": ("assertion failed", "unexpected ZIP directory signature"),
+    "zip-descriptor": ("assertion failed", "ZIP data descriptors are unsupported"),
 }
 
 
@@ -65,6 +67,7 @@ def main():
         parser.error("compiler must be a source build under this checkout's target directory")
     root = ROOT / "target/portable-integration-stdlib"
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_runtime.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_zip_fixtures.py")], cwd=ROOT, check=True)
     shutil.copytree(ROOT / "stdlib", root, dirs_exist_ok=True)
     shutil.copytree(args.posix_root, root / "POSIX", dirs_exist_ok=True)
     if args.hash_root:
@@ -144,7 +147,7 @@ def main():
     if args.native:
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
-    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler"}
+    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)

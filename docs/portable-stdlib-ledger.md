@@ -140,4 +140,4 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
 | [xar](specs/stdlib/modules/xar.md) | Reviewed exports implemented: stable exponential chunks, captured allocator, removal, coordinates/iterators, pointer/value loops and in-place sorting. Failure/iterator boundary policy noted; reverse iteration and capacity limits checked |
 | [xxhash](specs/stdlib/modules/xxhash.md) | Reserved for bindings worker; not implemented or modified here |
-| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Owned portable scope; not implemented |
+| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Classic central directory parsing/ownership implemented; bounds, ZIP64/multidisk rejection and specified signature/descriptor assertions tested. position_in_file/extensions require review; current File dependency Unix-only |
