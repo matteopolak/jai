@@ -6,6 +6,55 @@ an incomplete implementation. Existing evidence remains in
 [handoff](../window-render-handoff.md) and [questions](../specs/stdlib/window-render-questions.md).
 No blanket diagnostic/check suppression or Extensions modification is intended.
 
+Current font/render review supersedes the historical absent-public-font and R8
+atlas rows below. Public fonts now use native FreeType metrics/coverage, retained
+borrowed-memory faces and reviewed process-lifetime registries. Real GL atlas text
+and PBO readback pass host interpreter/native O0/O2, alongside production public
+window rendering. Reviewed release_font is intentionally non-destructive;
+destroy_loaded_font frees the copied display name only. These are contract
+semantics, not resource-release substitutes.
+
+Current remaining gaps and risks:
+
+* `window-contexts.jai`, `gl-renderer.jai`: native contexts, per-context VAO/VBOs and
+  shared built-in programs are retained for process lifetime. Window-close/native
+  handle reuse and full cleanup are not yet integrated. Texture-associated FBOs
+  are now deleted in their creating contexts on texture destruction/replacement.
+  Proper fix: lifecycle notifications release context-owned registries and preserve
+  live shared GPU objects. Multiwindow close/reopen regression remains required.
+* `font-features.jai`: actual SFNT GSUB single/alternate/extension substitutions
+  are implemented; unsupported requested substitution kinds assert explicitly.
+  No fabricated feature coverage. Add native-font cases for other reviewed effects
+  when supplied assets exercise them. Native format sources are Microsoft OpenType
+  GSUB and common table documentation; no Jai implementation source was used.
+* `dynamic-fonts.jai`: Latin routing/offset and reversed layout fields need final
+  behavioral review/tests; current always-route condition is too broad. No current
+  claim of all layout-field behavior. Native kerning and general ligatures are
+  intentionally absent per reviewed current behavior; NO_KERNING/LEFT_JUSTIFIED
+  are declared but unapplied per that same contract.
+* `gl-textures.jai`, `gl-pixel-read.jai`: color 2D targets are verified; depth,
+  cube/array/volume/multisample paths remain incomplete. Per-level mip and compressed
+  subimage native calls are now implemented; mip readback passes all three host
+  modes, compressed updates still need native compressed-format driver coverage.
+  Pixel readers require their creating context for polling/consumption and retain
+  the actual native fence until consumed. Native GLsync is canonical u64; native
+  x64/arm64 ABI verification beyond the host remains coordinator work.
+* `tests/window-render/gl-context.m`: main-thread assertion now enforces AppKit's
+  real precondition. Driver tests call public init_mac_app before native fixture
+  creation. Production public-window rendering also passes without that fixture.
+  Interpreter lazily moves foreign calls to main thread after Objective-C symbols;
+  a new original thread-local marker reproducer records the general affinity
+  problem. Native C fixture uses the official GL_SILENCE_DEPRECATION opt-in only;
+  its other compiler warnings are denied. No driver results are fabricated.
+* Windows native renderer depends on the bindings producer's WGL context wrapper;
+  Windows File remains blocked at its unconditional OS_IS_UNIX assertion. Do not
+  replace canonical imports or signatures. Windows injected wheel execution,
+  Linux GUI runtime and Android native app integration remain unverified.
+
+Bitmap codec follow-up removes the earlier forced-RGBA decoding, extra save
+formats and JPEG quality 90. New source-channel and save-alpha regressions enforce
+the reviewed behavior; prior legacy conveniences are not compatibility evidence.
+
 Synchronized-contract update supersedes historical unresolved-default/grammar/
 shader/font/mip entries below: public native window creation and complete Keymap
 operations are now implemented. General compiler reflection is fixed only in local

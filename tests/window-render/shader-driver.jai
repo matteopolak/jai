@@ -1,12 +1,14 @@
 #import "Basic";
 S :: #import "Simp";
 GL :: #import "GL";
+W :: #import "Window_Creation";
 
 probe :: #library "window_gl_probe";
 begin_context :: () -> *void #foreign probe "window_gl_probe_begin";
 end_context :: (context: *void) #foreign probe "window_gl_probe_end";
 
 main :: () {
+    W.init_mac_app();
     native := begin_context();
 
     assert(native != null);

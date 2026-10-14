@@ -3,6 +3,9 @@
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
+- [Window/render progress](status/window-render-progress.md): scoped native window,
+  input, Keymap, font-atlas/text, texture and asynchronous readback evidence;
+  [remaining deviations](status/window-render-deviations.md).
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

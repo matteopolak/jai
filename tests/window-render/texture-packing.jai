@@ -7,7 +7,7 @@ GL :: #import "GL";
 
 // Exercise the exact private staging/format code without substituting a GL driver.
 // Actual GPU execution remains a separate platform integration requirement.
-#load "../../stdlib/internal/rendering/gl-textures.jai";
+#load "../../stdlib/internal/rendering/texture-packing.jai";
 
 main :: () {
     source: [48] u8;

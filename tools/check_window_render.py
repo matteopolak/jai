@@ -46,6 +46,9 @@ def main():
     if args.font:
         host.append("font-public")
         host.append("glyph-atlas")
+        host.append("dynamic-font")
+        if platform.system() == "Darwin":
+            host.append("render-driver")
     if platform.system() == "Windows":
         host.append("windows-events")
         host.append("windows-committed-text")
@@ -56,9 +59,10 @@ def main():
         host.append("public-window")
         host.append("texture-driver")
         host.append("shader-driver")
+        host.append("window-render-host")
     for name in host:
         source = ROOT / f"tests/window-render/{name}.jai"
-        parameters = [args.font.resolve()] if name in {"font-public", "glyph-atlas"} else []
+        parameters = [args.font.resolve()] if name in {"font-public", "glyph-atlas", "dynamic-font", "render-driver"} else []
         program_args = ["--", *parameters] if parameters else []
         before = len(failures)
         run([compiler, source, "-interp", "-I", args.stdlib, *program_args], "ok\n")

@@ -54,11 +54,15 @@ main :: () {
 
     for row: 0..glyph.height - 1 {
         source := slot.bitmap.buffer + cast(int) row * slot.bitmap.pitch;
-        dest := page.bitmap_data.data.data + (glyph.y0 + cast(int) row) * page.bitmap_data.stride + glyph.x0;
+        dest := page.bitmap_data.data.data + (glyph.y0 + cast(int) row) * page.bitmap_data.stride + glyph.x0 * 4;
 
-        assert(memcmp(source, dest, glyph.width) == 0);
-        assert(dest[-1] == 0 && dest[glyph.width] == 0);
-        for col: 0..glyph.width - 1 ink += dest[col];
+        assert(dest[-1] == 0 && dest[glyph.width * 4 + 3] == 0);
+
+        for col: 0..glyph.width - 1 {
+            assert(dest[col * 4] == 255 && dest[col * 4 + 1] == 255 && dest[col * 4 + 2] == 255);
+            assert(dest[col * 4 + 3] == source[col]);
+            ink += dest[col * 4 + 3];
+        }
     }
 
     assert(ink > 0);
@@ -75,7 +79,11 @@ main :: () {
 
     assert(rejected == null && reason == .PAGE_FULL && rejected_native == 0);
     assert(tiny.lines.count == 0 && !tiny.dirty);
-    for byte: tiny.bitmap_data.data assert(byte == 0);
+
+    for byte, index: tiny.bitmap_data.data {
+        if index % 4 == 3 assert(byte == 0);
+        else assert(byte == 255);
+    }
 
     blank_index := FT_Get_Char_Index(font.face, #char " ");
     blank, blank_error, blank_native := atlas_rasterize(page, font.face, blank_index, #char " ");

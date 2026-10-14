@@ -29,5 +29,15 @@ main :: () {
 
     assert(!S.bitmap_load_from_memory(*decoded, empty));
     assert(decoded.width == 3 && decoded.data[3] == 200);
+    assert(S.bitmap_save(*bitmap, path, false));
+    assert(S.bitmap_load(*decoded, path));
+    assert(decoded.format == .RGB8 && decoded.data.count == 18);
+    for i: 0..5 for channel : 0..2 assert(decoded.data[i * 3 + channel] == bitmap.data[i * 4 + channel]);
+
+    unsupported: S.Bitmap;
+
+    S.bitmap_alloc(*unsupported, 2, 2, .R8);
+    defer S.deinit(*unsupported);
+    assert(!S.bitmap_save(*unsupported, path));
     print("ok\n");
 }
