@@ -166,5 +166,26 @@
     "mode": "interp",
     "timeout_seconds": 30,
     "stdout": "ok\n"
+  },
+  {
+    "name": "compiler-records-and-helpers",
+    "source": "compiler-helpers/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "code-visit-orders-and-header-boundary",
+    "source": "code-visit-orders/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
+  },
+  {
+    "name": "program-print-nodes-and-unsupported-status",
+    "source": "program-print-nodes/main.jai",
+    "mode": "interp",
+    "timeout_seconds": 30,
+    "stdout": "ok\n"
   }
 ]

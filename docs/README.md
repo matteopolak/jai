@@ -49,6 +49,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compile-time values, globals and runtime info](metaprogramming/compile-time-data-and-state.md)
 - [Compile-time execution (`#run`)](metaprogramming/compile-time-execution.md)
 - [Compiler module (Jai side)](metaprogramming/compiler-module.md)
+- [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler records (messages, syntax trees, type descriptors)](metaprogramming/compiler-records.md)
 - [Metaprogram plugins (`+Name`)](metaprogramming/metaprogram-plugins.md)
 - [Bootstrap and Runtime_Support](specs/jai/README.md)
