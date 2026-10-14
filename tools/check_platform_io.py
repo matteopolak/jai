@@ -28,6 +28,8 @@ def main():
     parser.add_argument("--cross-check", action="store_true")
     args = parser.parse_args()
     compiler = args.jaic.resolve(strict=True)
+    if not compiler.is_relative_to(ROOT / "target"):
+        parser.error("use the compiler source-built under this checkout target directory")
     env = dict(os.environ, JAIC_STDLIB=str(args.stdlib.resolve(strict=True)))
     output = ROOT / "target/platform-io-tests"
     output.mkdir(parents=True, exist_ok=True)

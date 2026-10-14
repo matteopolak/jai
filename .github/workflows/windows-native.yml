@@ -246,6 +246,9 @@ jobs:
           target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -interp
           target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -exe native-exes/signed-wheel
           native-exes/signed-wheel.exe
+      - name: Native File handles mappings and Unicode paths
+        if: success() || failure()
+        run: python -u tools/check_platform_io.py --jaic target/x86_64-pc-windows-msvc/debug/jaic.exe --stdlib stdlib --native
       - name: Native backend tests
         if: success() || failure()
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
@@ -420,6 +423,9 @@ jobs:
           target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -interp
           target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -exe native-exes/signed-wheel
           native-exes/signed-wheel.exe
+      - name: Native File handles mappings and Unicode paths
+        if: success() || failure()
+        run: python -u tools/check_platform_io.py --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe --stdlib stdlib --native
       - name: Native backend tests
         if: success() || failure()
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
