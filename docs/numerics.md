@@ -20,6 +20,11 @@ epsilon. Float32 intrinsic wrappers still promote/narrow because a minimal
 current interpreter intrinsic test fails; native direct intrinsics pass. This is
 a documented compiler workaround, not a correct-rounding/performance claim.
 
+Vector and quaternion normalization retain a private float64 norm through division
+to avoid subnormal rounding and finite-input overflow. Public lengths and epsilon
+comparison still use their canonical binary32 result. Zero unit vectors remain
+unchanged, including signed zeros; maximum-range and subnormal cases are tested.
+
 Half conversion rounds integer significands once to nearest-even across normal,
 subnormal, tie and overflow boundaries. Tests cover all 65,536 half encodings and
 adjacent finite-half midpoint ties in both signs. Explicit casts mark intended
@@ -52,6 +57,9 @@ within a frame. Eligible scroll regions consume them once using normal clipping/
 occlusion hit testing; frame reset prevents stale pulses. Keyboard wheel pulses
 remain supported. Unknown horizontal axis semantics remain an explicit question;
 this consumer work does not implement or replace the native event pump.
+Text shortcut dispatch reads canonical key_code independently of the pressed flag;
+Ctrl/Cmd+A/release cases are tested without clipboard side effects. Cursor pointer
+types share one native-helper identity across both variants.
 
 Verification uses a fresh locally source-built Rust compiler and canonical producer
 staging, no fixtures or source repairs. Source/manifest/log commands, actual results

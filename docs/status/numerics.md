@@ -1,9 +1,10 @@
 # Numerics implementation status
 
-**Incomplete canonical acceptance.** Current canonical run is **107/123**;
-sixteen failures remain in native-window/target dependencies. All seventeen main
+**Incomplete canonical acceptance.** Current canonical run is **126/143**;
+seventeen failures remain in native-window/target dependencies. All twenty main
 programs pass interpreter and native macOS ARM64 O0/O2. Core, algebra, precision,
-3,572-assertion independent oracle, public contract and overflow diagnostics also
+3,572-assertion independent oracle, IEEE normalization/absolute-value cases,
+public contract and overflow diagnostics also
 execute in actual WASM. Core WASM imports only standard WASI functions.
 
 All six reviewed module inventories are present (694 names): Math155,
@@ -27,34 +28,34 @@ Rust sources under artifacts/compiler-current. Build evidence:
 artifacts/current-compiler-build.log.
 
 ```sh
-python3 tools/stage_numerics.py --destination artifacts/canonical-final-stable \
+python3 tools/stage_numerics.py --destination artifacts/canonical-numeric-final \
   --compiler-library ../compiler/stdlib --foundations ../foundations/stdlib \
   --window-render ../window-render/stdlib \
-  --manifest artifacts/canonical-final-stable-manifest.json
+  --manifest artifacts/canonical-numeric-final-manifest.json
 python3 tests/numerics/run.py --compiler artifacts/current-target/debug/jaic \
-  --stdlib artifacts/canonical-final-stable --output artifacts/canonical-verification-stable
-python3 tests/numerics/corrective.py --stdlib artifacts/canonical-final-stable \
-  --output artifacts/canonical-corrective-stable
+  --stdlib artifacts/canonical-numeric-final --output artifacts/canonical-verification-numeric-final
+python3 tests/numerics/corrective.py --stdlib artifacts/canonical-numeric-final \
+  --output artifacts/canonical-corrective-numeric-final
 ```
 
 Staging copies only independent producer-owned overlays and records exact source
 bytes/hashes; manifest repairs is empty. No fixtures or source edits repair
-dependencies. Current outputs: canonical-suite-stable.log,
-canonical-verification-stable/results.json, canonical-corrective-stable.log,
-canonical-corrective-stable/results.json, canonical-wasm-imports.json, and the
+dependencies. Current outputs: canonical-suite-numeric-final.log,
+canonical-verification-numeric-final/results.json, canonical-corrective-numeric-final.log,
+canonical-corrective-numeric-final/results.json, canonical-wasm-imports.json, and the
 matching staging manifest under artifacts. Earlier failed runs remain preserved.
 
 Actual full source-built repository jaifmt --check with root config passes
-**59 files, zero changes/errors/ignored files**. Scoped source-built jailint
+**62 files, zero changes/errors/ignored files**. Scoped source-built jailint
 -D warnings reports zero findings; augmented_generic_reproducer's rejected call
-is explicitly not fully linted. Evidence: artifacts/canonical-jaifmt-stable.log,
-canonical-lint-stable.log and canonical-jaifmt-build-stable.log.
+is explicitly not fully linted. Evidence: artifacts/canonical-jaifmt-numeric-final.log,
+canonical-lint-numeric-final.log and canonical-jaifmt-build-stable.log.
 Both generators are byte-idempotent, and staged owned production files are
 byte-identical. No Extensions or compiler source was modified.
 
 ## Remaining gates
 
-- Twelve UI-containing WASM builds plus WASM full-target check fail because
+- Thirteen UI-containing WASM builds plus WASM full-target check fail because
   canonical Window_Type/Input has no reviewed WASM native handle. No invented
   handle or fixture bypass is used.
 - Windows full-target checks (default CPU and x64) reach Simp's explicit

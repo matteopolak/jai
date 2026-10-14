@@ -6,20 +6,24 @@ The current follow-up removes superseded fixtures/tool repairs, fixes UI decimal
 rounding/format precision and ignored capacity failures, adds real alternate
 Type_Indicator coverage, handles canonical signed/fractional wheel events once
 per eligible region/frame, and expands the independent oracle to 3,572 assertions.
-These changes are reviewed and locally verified; the cleanup commit is pending.
+Committed checkpoints: ee5c32a (canonical types/precision), 4acc846 (cleanup,
+decimal/capacity/wheel integration), 9fb8bfe (IEEE normalization, shortcuts and
+shared cursor identity). All code changes are reviewed and locally verified.
+Final documentation records those implementation commits; no code work is
+silently left pending.
 
 Latest actual evidence:
-- Canonical suite 107/123: all seventeen programs pass interpreter/native O0/O2;
+- Canonical suite 126/143: all twenty programs pass interpreter/native O0/O2;
   numeric/oracle/public-contract/overflow cases run in actual WASM.
 - Native corrective 25/25 without fixture imports. Includes native cursor lifecycle
   and explicit diagnostics; the generic reproducer remains a blocker.
-- Full source-built jaifmt --check on 59 owned files: zero changes/errors/ignored.
+- Full source-built jaifmt --check on 62 owned files: zero changes/errors/ignored.
 - Scoped jailint -D warnings: zero findings; rejected augmented call not fully linted.
 - Generators byte-idempotent; owned staged production bytes identical.
-- Manifest artifacts/canonical-final-stable-manifest.json uses independent producers
+- Manifest artifacts/canonical-numeric-final-manifest.json uses independent producers
   and empty repairs. Old failed/fixture/tool evidence retained, never completion.
 
-Current failures: twelve UI-containing WASM program builds plus WASM target
+Current failures: thirteen UI-containing WASM program builds plus WASM target
 check need a reviewed native Window_Type/Input contract; Windows full-target
 (default/x64) reaches the Simp filename-font/File gate; macOS x64 misses
 POSIX.itimerval. Direct float32 intrinsic interpreter semantics and generic
@@ -38,3 +42,9 @@ run native window/input/GPU acceptance plus full corpus/CI externally. Issue1
 event-pump work is explicitly not owned here. No quarantined integration data,
 vendored library bodies, reference sources/binaries, auth, subagents or publication
 were used.
+
+Additional before/after evidence: keyboard-shortcuts-before/after,
+cursor-identity-before/after and normalization-ieee-before/after. Wide norm
+intermediates preserve subnormal/max-range unit vectors and quaternions; the
+returned length/epsilon comparison remains binary32. The vector generator now
+emits that implementation, and repeated regeneration is byte-idempotent.

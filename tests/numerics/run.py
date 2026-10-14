@@ -45,6 +45,9 @@ tests={
     'decimal-precision':('tests/numerics/decimal_precision.jai','canonical decimal precision ok'),
     'text-capacity':('tests/numerics/text_capacity.jai',('text capacity rejection ok','rejected input because capacity was exceeded')),
     'wheel-events':('tests/numerics/wheel_events.jai','canonical wheel events ok'),
+    'keyboard-shortcuts':('tests/numerics/keyboard_shortcuts.jai','canonical keyboard shortcuts ok'),
+    'normalization-ieee':('tests/numerics/normalization_ieee.jai','IEEE normalization ok'),
+    'abs-ieee':('tests/numerics/abs_ieee.jai','IEEE absolute value ok'),
     'oracle':('artifacts/numeric_oracle.jai','independent oracle ok'),
     'public-contract':('tests/stdlib-contract/math-float16/main.jai','ok'),
 }
