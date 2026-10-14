@@ -2,6 +2,16 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
+The inherited target matrix discovered only top-level modules, omitting four
+nested public facades: Objective_C/AppKit, Android/AAudio, Android/EGL and
+Gamepad/SDL_Input_Map. An original synthetic-directory regression failed before
+the general recursive discovery fix and passes afterward. The actual seven-
+profile unused-code matrix is rerun with these modules. Its old expected-error
+inventory remains unchanged and failing rather than being expanded to bless
+real failures. Only the canonical private implementation root is excluded from
+application imports; its code remains checked through importing facades. This
+is stronger coverage, not a production pass from the synthetic directory test.
+
 The whole-tree lint finding in `internal/net/socket.jai:check_fd_set` exposed an
 unused destination pointer and acceptance of null sets. A new original fixture
 fails before the fix. Validation now requires a nonnull destination as well as
