@@ -180,6 +180,7 @@ mod sys {
 
     unsafe extern "C" {
         fn pipe(fds: *mut c_int) -> c_int;
+        fn close(fd: c_int) -> c_int;
         fn fcntl(fd: c_int, cmd: c_int, ...) -> c_int;
 
         #[link_name = "read"]
@@ -199,30 +200,49 @@ mod sys {
     #[cfg(not(target_os = "linux"))]
     const O_NONBLOCK: c_int = 4;
 
+    struct ProbePipe(Cell<Option<(c_int, c_int)>>);
+
+    impl Drop for ProbePipe {
+        fn drop(&mut self) {
+            if let Some((read, write)) = self.0.get() {
+                // SAFETY: these descriptors belong exclusively to this thread's probe.
+                unsafe {
+                    close(read);
+                    close(write);
+                }
+            }
+        }
+    }
+
     thread_local! {
-        /// The read and write ends, made on first use. Never closed: one per thread that checks.
-        static PIPE: Cell<Option<(c_int, c_int)>> = const { Cell::new(None) };
+        /// One kernel-copy channel per probing thread, closed when the thread exits.
+        static PIPE: ProbePipe = const { ProbePipe(Cell::new(None)) };
     }
 
     fn pipe_fds() -> Option<(c_int, c_int)> {
-        if let Some(fds) = PIPE.get() {
-            return Some(fds);
-        }
-        let mut fds = [0 as c_int; 2];
-        // SAFETY: `pipe` writes two descriptors into the array; `fcntl` takes plain integers.
-        unsafe {
-            if pipe(fds.as_mut_ptr()) != 0 {
-                return None;
+        PIPE.with(|cached| {
+            if let Some(fds) = cached.0.get() {
+                return Some(fds);
             }
-            // Non-blocking, so a pipe left full by a failure can never stall the compiler.
-            for fd in fds {
-                fcntl(fd, F_SETFD, FD_CLOEXEC);
-                fcntl(fd, F_SETFL, O_NONBLOCK);
+            let mut fds = [0 as c_int; 2];
+            // SAFETY: `pipe` writes two descriptors; subsequent calls take plain integers.
+            unsafe {
+                if pipe(fds.as_mut_ptr()) != 0 {
+                    return None;
+                }
+                // A failed setup must not leave a blocking pipe or leak descriptors.
+                for fd in fds {
+                    if fcntl(fd, F_SETFD, FD_CLOEXEC) < 0 || fcntl(fd, F_SETFL, O_NONBLOCK) < 0 {
+                        close(fds[0]);
+                        close(fds[1]);
+                        return None;
+                    }
+                }
             }
-        }
-        let fds = (fds[0], fds[1]);
-        PIPE.set(Some(fds));
-        Some(fds)
+            let fds = (fds[0], fds[1]);
+            cached.0.set(Some(fds));
+            Some(fds)
+        })
     }
 
     /// Copy one byte from `src` to `dst` through the pipe: the kernel makes the accesses that
