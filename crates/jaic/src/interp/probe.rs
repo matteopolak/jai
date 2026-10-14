@@ -394,6 +394,7 @@ mod sys {
     #[link(name = "kernel32")]
     unsafe extern "system" {
         fn GetCurrentProcess() -> *mut c_void;
+
         fn ReadProcessMemory(
             process: *mut c_void,
             address: *const c_void,
@@ -401,6 +402,7 @@ mod sys {
             size: usize,
             copied: *mut usize,
         ) -> i32;
+
         fn WriteProcessMemory(
             process: *mut c_void,
             address: *mut c_void,
@@ -408,6 +410,7 @@ mod sys {
             size: usize,
             copied: *mut usize,
         ) -> i32;
+
         fn VirtualQuery(
             address: *const c_void,
             info: *mut MemoryBasicInformation,
@@ -478,6 +481,7 @@ mod sys {
         unsafe { std::ptr::copy(src as *const u8, dst as *mut u8, len) };
         true
     }
+
     /// The linear memory, if `at` is inside it.
     pub fn region(at: u64, _write: bool) -> Option<(u64, u64)> {
         let end = core::arch::wasm32::memory_size(0) as u64 * 65536;
