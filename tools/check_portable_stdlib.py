@@ -200,14 +200,20 @@ def main():
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
+        before = len(failures)
         target_cases = cases + ([(ROOT / "tests/portable-stdlib/windows-foundations.jai", "ok\n")] if os_name == "windows" else [])
         for source, _ in target_cases:
             if source.stem == "default-allocator" and cpu == "x64":
                 continue  # Optimized heap branch is explicitly unsupported, not fallback coverage.
             if source.parent.name != "portable-stdlib" or source.stem in dependent or (os_name == "windows" and source.stem in posix_only):
                 continue
-            run([str(compiler), "-check", "-os", os_name, "-cpu", cpu, str(source)], env)
-        print("checked portable cases", target, flush=True)
+            try:
+                run([str(compiler), "-check", "-os", os_name, "-cpu", cpu, str(source)], env)
+            except (RuntimeError, subprocess.TimeoutExpired) as error:
+                if not args.keep_going: raise
+                failures.append(f"target {target}: {source.relative_to(ROOT)}")
+                print("FAILED target case; continuing independent checks:", target, source.relative_to(ROOT), str(error), flush=True)
+        print("checked portable cases" if len(failures) == before else "FAILED portable target cases", target, flush=True)
     print(f"{len(cases) - sum(f.startswith('tests/') for f in failures)}/{len(cases)} focused cases passed; native={args.native}")
     if failures:
         raise RuntimeError("Failed checks: " + ", ".join(failures))
