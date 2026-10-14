@@ -1,5 +1,34 @@
 # Foundations progress
 
+Continuing all owned Basic scope: sequence/byte output, prefix consumer,
+using-member field lookup, reflected enum ranges/highest, slice array_resize,
+and all five stack-trace declarations now have real independent implementations.
+The expanded 34-case host interpreter/native O0/O2 and 28-case production WASI
+O0/O2 suite passes, including six runtime assertion cases, all seven unused-code
+targets, unchanged real jaifmt CLI/owned format check and strict lint. No tests
+or errors were skipped. Precise pending edge/presentation contracts are in the
+questions/deviations docs. Next: real leak-report service and remaining scalar,
+allocator and visualization APIs. The NEW Compiler already supplies reviewed
+get_runtime_info/global data segments, allowing real global-root scanning.
+
+Stable checkpoint: 9a64f00 contains logging, numeric/enum reflection, original
+regressions and the Basic API audit. Actual unchanged NEW producer auto-import
+ranking now PASSES: Basic and Math are both found in the required order.
+The initial isolated staging lacked Math/used older LSP source; read-only NEW
+producer/numerics refresh resolved that dependency. Full auto_import.rs passes
+12/13, retaining the failure of print alias signature documentation. General
+original facade/helper reproducer and proper compiler/LSP request are recorded
+in docs/status/foundations-lsp-request.md; no Rust or peer file was changed.
+Latest source-built compiler/jaifmt/lint/core rerun PASSES after refresh:
+30 host cases in three modes, 24 WASI cases in two modes, five runtime
+assertion cases, strict configuration/visibility rejection gates, and all
+seven unused-code targets. Windows target programs are checked, not executed.
+The independent alias probe passes interpreter/native O0/O2 and production
+WASI O0/O2, plus actual format check/strict lint. Refreshed compiler also passes
+the independent 2300-case shortest interval/minimality audit in all four modes.
+The alias probe is now an explicit interpreter gate in the owned runner, and
+its facade/helper/probe files are included in the owned format/lint inventory.
+
 Current Basic public-surface batch: both log overloads and both log_error
 overloads now dispatch real formatted messages through the active logger,
 preserving caller/explicit location, source identifier, data, section identity,

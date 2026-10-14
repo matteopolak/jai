@@ -128,6 +128,8 @@ The LLVM backend, C ABI and linking.
 
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Basic public surface audit and outstanding exports](foundations-api-audit.md)
+- [Remaining Basic implementation plan](status/foundations-completion-plan.md)
+- [Public alias completion signature request](status/foundations-lsp-request.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
 - [Core foundations deviations and remaining limits](status/foundations-deviations.md)
 - [Core foundations live progress](status/foundations-progress.md)
