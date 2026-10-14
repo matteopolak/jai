@@ -26,6 +26,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
+mod aliases;
+
 /// The most auto-import items one completion offers.
 pub const MAX_ITEMS: usize = 50;
 
@@ -304,13 +306,14 @@ impl Sources<'_> {
             let only_os = self.scan(index, &file).only_os.clone();
             let mut decls = Vec::new();
             for part in self.closure(index, &file) {
-                decls.extend(
-                    self.scan(index, &part)
-                        .decls
-                        .iter()
-                        .filter(|d| d.visibility == Visibility::Export)
-                        .cloned(),
-                );
+                let scan = self.scan(index, &part);
+                for decl in scan
+                    .decls
+                    .iter()
+                    .filter(|d| d.visibility == Visibility::Export)
+                {
+                    decls.extend(self.alias_documentation(index, &file, &part, decl, dir));
+                }
             }
             modules.push(Module {
                 name: format!("{prefix}{name}"),
@@ -772,8 +775,21 @@ impl Session {
             } else {
                 1
             };
+            let declaration_root = if program.closure.contains(&f) {
+                &program.root
+            } else {
+                &f
+            };
             for d in scan.decls.iter().filter(|d| matches(d)) {
-                found.push((rank, source.clone(), d.clone()));
+                for declaration in sources.alias_documentation(
+                    &mut index,
+                    declaration_root,
+                    &f,
+                    d,
+                    &program.dir.join("modules"),
+                ) {
+                    found.push((rank, source.clone(), declaration));
+                }
             }
         }
         // Modules: the project's, then the stdlib's (one the project has hides it).

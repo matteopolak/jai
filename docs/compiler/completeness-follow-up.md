@@ -67,3 +67,24 @@ Cross-target Rust checking/clippy is separate from Windows execution. The exact
 NEW Windows producer repro is staged under target/producer-fixtures/windows-threads
 for platform validation. Non-Windows scheduler tests use scheduler ids because
 they have no Windows OS identity. Actual Windows x64/ARM64 runtime remains a gate.
+
+## Public alias completion documentation
+
+The tolerant export index retains simple dotted constant alias paths and lexical
+visibility. A separate alias resolver follows named imports, module/load graphs
+and local alias chains, then rewrites callable header names to the exported alias.
+Parameter names/defaults and each overload header come from the actual target.
+Public facade comments take precedence; target comments supply missing docs.
+File-private qualifiers resolve only in their declaring file; external lookups
+accept exports only. A visited-path guard and finite depth bound stop cycles.
+
+Original LSP tests cover loaded overloads, private qualifiers, renamed public
+headers, valid aliases to private local procedures, inaccessible private targets
+and cycles. The unchanged Basic print/ranking assertions pass against the selected
+NEW independent library. The auto-import test setup now honors JAIC_STDLIB so this
+dependency can be selected explicitly; no assertion/library substitute was used.
+Complex computed aliases, struct-member namespaces and unnamed import/filter
+resolution retain their original expression documentation in this token index;
+they are not represented as fabricated callable headers. Existing display limits
+of four headers and 200 bytes per scanned header remain unchanged. This is an IDE
+documentation improvement and does not change callable/type/storage identity.

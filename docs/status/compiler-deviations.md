@@ -1,5 +1,16 @@
 # Compiler deviations and implementation gaps
 
+LSP alias documentation resolves simple named-import/load/local alias graphs
+with lexical/export visibility and cycle guards. The token index still falls
+back to the original expression for computed aliases, struct namespaces and
+unnamed import/filter resolution; it does not fabricate signatures. Existing
+four-header/200-byte display bounds remain. local_decls retains private metadata
+in the scan cache for lexical resolution, increasing cached declaration storage;
+stdlib scans are discarded by the existing cache lifecycle. Full semantic alias
+documentation would use the compiler's resilient symbol graph once available.
+The auto-import test helper now accepts explicit JAIC_STDLIB selection; actual
+original Basic print/ranking assertions pass without modification or substitute.
+
 Windows suspended-thread gap repaired through scheduler suspend counts and CRT
 entry/exit interception. Host-executed original tests exercise real Rust OS
 threads under the baton, not native Windows APIs. Non-Windows id values are
