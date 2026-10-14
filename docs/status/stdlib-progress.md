@@ -2,6 +2,18 @@
 
 ## Replacement integration current checkpoint
 
+Seventh-refresh combined source checkpoint 294f42f is stable and available for
+coordinator review while the next approved heads are prepared. Actual combined
+foundation host/WASI and all seven target gates pass. Exact shortest-float audit
+passes 2300 intervals in each native/WASI O0/O2 mode. Rebuilt native window test
+dependencies plus the expanded production runner pass 155/155 invocations,
+including actual host GL rendering/depth/stencil/BC4/readback. Five platform
+contracts and arguments pass host interpreter/O0/O2 and all requested target
+checks; public Windows Process and all fixtures cross-link x64 O0/O2. Native
+Windows System/Thread/Process/WGL execution still requires CI. Release held;
+worker has not pushed or dispatched any workflow. Compiler/portable/foundation/
+window newer approved heads are now queued; full final-tree evidence is pending.
+
 Sixth-refresh source checkpoint d9aa140: seven producer merges plus safe editor
 CI fix, latest Windows contracts and general private-interface/startup fixes.
 Workspace 631/68 pass/fail (59 suites), foundations 27 host/21 WASI plus strict

@@ -249,6 +249,19 @@ jobs:
           target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -interp
           target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -exe native-exes/signed-wheel
           native-exes/signed-wheel.exe
+      - name: Public renderer wheel propagation interpreter (issue 1)
+        if: success() || failure()
+        run: target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -interp
+      - name: Public renderer wheel propagation native O0 (issue 1)
+        if: success() || failure()
+        run: |
+          target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -O0 -exe native-exes/render-wheel-O0
+          native-exes/render-wheel-O0.exe
+      - name: Public renderer wheel propagation native O2 (issue 1)
+        if: success() || failure()
+        run: |
+          target/x86_64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -O2 -exe native-exes/render-wheel-O2
+          native-exes/render-wheel-O2.exe
       - name: Native backend tests
         if: success() || failure()
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
@@ -426,6 +439,19 @@ jobs:
           target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -interp
           target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/signed-wheel-windows.jai -exe native-exes/signed-wheel
           native-exes/signed-wheel.exe
+      - name: Public renderer wheel propagation interpreter (issue 1)
+        if: success() || failure()
+        run: target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -interp
+      - name: Public renderer wheel propagation native O0 (issue 1)
+        if: success() || failure()
+        run: |
+          target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -O0 -exe native-exes/render-wheel-O0
+          native-exes/render-wheel-O0.exe
+      - name: Public renderer wheel propagation native O2 (issue 1)
+        if: success() || failure()
+        run: |
+          target/aarch64-pc-windows-msvc/debug/jaic.exe tests/window-render/windows-render-events.jai -O2 -exe native-exes/render-wheel-O2
+          native-exes/render-wheel-O2.exe
       - name: Native backend tests
         if: success() || failure()
         run: cargo test --locked -p jaic-cli --no-default-features --features static-llvm --test native -- --test-threads 2
