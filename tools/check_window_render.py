@@ -40,7 +40,7 @@ def main():
         count += 1
         return True
 
-    host = ["srgb", "mapping", "bitmap-codec", "signed-native-fields"]
+    host = ["srgb", "mapping", "bitmap-codec", "signed-native-fields", "keymap-behavior", "mipmap"]
     if platform.system() in {"Darwin", "Windows"}:
         host.append("clipboard-host")
     if args.font:
@@ -48,10 +48,14 @@ def main():
         host.append("glyph-atlas")
     if platform.system() == "Windows":
         host.append("windows-events")
+        host.append("windows-committed-text")
+        host.append("public-window")
     if platform.system() == "Darwin":
         host.append("macos-window")
         host.append("macos-events")
+        host.append("public-window")
         host.append("texture-driver")
+        host.append("shader-driver")
     for name in host:
         source = ROOT / f"tests/window-render/{name}.jai"
         parameters = [args.font.resolve()] if name in {"font-public", "glyph-atlas"} else []
@@ -78,8 +82,8 @@ def main():
 
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
-            cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none"]
-            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events"]
+            cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none", "public-window", "keymap-behavior"]
+            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])

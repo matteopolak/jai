@@ -1,5 +1,40 @@
 # Window/render progress
 
+Synchronized-contract batch: public create_window uses the reviewed private
+[3]float default/MSAA4. macOS host creation passes. Windows native class/title/
+work-area/fullscreen and Linux GLX visual/MSAA/background/event-pump source passes
+target checks. Win32 wheel injection now creates its 800x600 window through the
+production public API; native Windows execution still requires Windows hosts.
+
+Keymap has the complete reviewed procedure inventory: borrowed registration names,
+owned command copies, shared versioned reader, chord/section/modifier grammar,
+press/hold dispatch, reset/copy and normalized persistence. Behavioral tests pass
+host interpreter/O0/O2. Windows dependency checks fail at NEW File's unconditional
+OS_IS_UNIX assertion, reached via the canonical Text_File_Handler; reproducer added.
+
+The independent producer's general procedure metadata patch is durable in
+docs/native and built by tools/window_render_compiler.py only in worker target
+staging. Real GL texture interpreter/O0/O2 now passes. Rust formatting and clippy
+pass. This patched source-built candidate is not coordinator production integration.
+
+Runner recorded 119 passes and 4 Windows File-dependency failures before mip tests;
+the expanded run recorded 123 passes, the same four File failures and one private
+packing-test alias failure after adding the real mip builder. The alias now points
+to the actual public Simp builder and its focused interpreter check passes. No
+substitute implementation was added. Full rerun continues with the next batch.
+
+Owned mip storage uses pinned native stb resampling with alpha/sRGB, four-byte
+strides and explicit ownership. Actual GL driver checks upload supplied chains
+and verify terminal-level dimensions. Shader driver tests link reviewed macro-stage
+sources. Full owned formatting/check/lint passed before the packing alias fix;
+that scoped test is being rechecked.
+
+Additional
+shader/committed-text cases. macOS keyboard/text counts/filtering and Windows raw
+WM_CHAR values now follow the reviewed committed-text contract; extra IME APIs
+are outside compatibility scope. Shared-source shader preambles compile/link on
+an actual Apple GL context. Next: owned mip storage and public font/render paths.
+
 2026-10-14: resumed code checkpoints `a41ae76`, `0e5a7f2`, `375294d`, `982bc8c`. Prior focused runner
 recorded 69 invocations; these include CPU component tests and foreign-target
 interpreter checks, not combined production GUI integration. No release or

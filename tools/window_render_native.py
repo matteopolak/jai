@@ -23,8 +23,9 @@ def main():
     output = ROOT / "target/window-native"
     source.mkdir(parents=True, exist_ok=True)
     output.mkdir(parents=True, exist_ok=True)
-    for name in ["stb_image.h", "stb_image_write.h", "LICENSE"]:
+    for name in ["stb_image.h", "stb_image_write.h", "deprecated/stb_image_resize.h", "LICENSE"]:
         path = source / name
+        path.parent.mkdir(parents=True, exist_ok=True)
         if not path.exists():
             url = f'https://raw.githubusercontent.com/{spec["repository"]}/{spec["revision"]}/{name}'
             path.write_bytes(urllib.request.urlopen(url, timeout=30).read())
@@ -32,7 +33,7 @@ def main():
             raise RuntimeError(f"native source digest mismatch: {name}")
     extension = "dylib" if platform.system() == "Darwin" else "so"
     shared_flag = "-dynamiclib" if platform.system() == "Darwin" else "-shared"
-    for name in ["stb_image", "stb_image_write"]:
+    for name in ["stb_image", "stb_image_write", "stb_image_resize"]:
         unit = source / f"{name}.c"
         unit.write_text(metadata["libraries"][name]["code"])
         obj = output / f"{name}.o"

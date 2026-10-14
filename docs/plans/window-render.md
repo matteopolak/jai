@@ -22,3 +22,11 @@ Staging and compiler outputs are expendable; source, regressions, and docs remai
 
 Native failures must remain visible. No dummy windows, synthetic font metrics, memory-only
 clipboard, fabricated database, or success-returning placeholder constitutes support.
+
+Updated contract execution (2026-10-14): use reviewed public defaults for native
+window creation; implement Keymap lifecycle/actions before its text adapter;
+conform committed-character delivery to platform-specific counts/filtering;
+replace superseded font ownership/atlas assumptions with reviewed shared registries;
+implement shader preambles and owned mip storage before public renderer/text paths.
+Build the general compiler reflection patch in local target staging and retain
+the original failure evidence; no GL-specific pointer table repair is permitted.

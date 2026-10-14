@@ -1,21 +1,17 @@
 #import "Basic";
 W :: #import "Windows";
 I :: #import "Input";
+WC :: #import "Window_Creation";
 
 user32 :: #library,system "user32";
 post_message :: (window: W.HWND, message: u32, wparam: W.WPARAM, lparam: W.LPARAM) -> s32 #foreign user32 "PostMessageW";
 
 main :: () {
-    class_name := u16.[#char "W", #char "R", #char "T", 0];
-    wc: W.WNDCLASSEXW;
-    wc.cbSize = size_of(W.WNDCLASSEXW);
-    wc.lpfnWndProc = I.MyWindowProc;
-    wc.lpszClassName = class_name.data;
-    assert(W.RegisterClassExW(*wc) != 0);
-    win := W.CreateWindowExW(0, class_name.data, class_name.data, 0, 0, 0, 100, 100, null, null, null, null);
+    win := WC.create_window(800, 600, "Issue #1 native wheel regression");
 
     assert(win != null);
     defer assert(W.DestroyWindow(win) != 0);
+    I.update_window_events();
 
     deltas := s32.[-32768, -120, -1, 0, 1, 120, 32767];
 

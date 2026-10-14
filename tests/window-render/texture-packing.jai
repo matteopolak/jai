@@ -1,5 +1,8 @@
 #import "Basic";
 S :: #import "Simp";
+
+bitmap_build_mipmaps :: S.bitmap_build_mipmaps;
+
 GL :: #import "GL";
 
 // Exercise the exact private staging/format code without substituting a GL driver.

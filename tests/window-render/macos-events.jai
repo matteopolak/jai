@@ -40,6 +40,7 @@ main :: () {
     for event: I.events_this_frame {
         if event.type == .KEYBOARD && event.key_code == cast(I.Key_Code) #char "A" {
             assert(event.key_pressed == 1 && !event.repeat && event.shift_pressed);
+            assert(event.text_input_count == 1);
             assert(event.window == window);
             found_key = true;
         }
@@ -47,7 +48,7 @@ main :: () {
         if event.type == .TEXT_INPUT {
             // AppKit re-translates posted physical A+shift to layout text.
             // The independent Objective-C environment probe confirms this.
-            assert(event.utf32 == #char "A" && event.text_input_count == 1);
+            assert(event.utf32 == #char "A" && event.text_input_count == 0);
             assert(event.window == window);
             found_text = true;
         }
