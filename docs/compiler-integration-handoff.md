@@ -75,6 +75,14 @@ input) on 2026-10-14. It uses this checkout's `target/debug/jaic` with an explic
 widths and AST precision/radix/sign flags. Full stdlib and corpus completion is
 not implied by this focused run.
 
+Inherited inline layout targets now resolve through `using` and `#as using`:
+`#overlay(implementation_data)` can target a field inherited from a previously
+laid-out base. The same resolver supports `#place`, nested inline embedding and
+embedded filters; a target behind a using pointer has no inline offset and is
+diagnosed. `crates/jaic/tests/cleanroom_layout.rs` reproduces and verifies the
+foundation temporary-storage blocker using independent aggregate names. Rebuild
+the compiler with the command above before enabling the pending foundation source.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.

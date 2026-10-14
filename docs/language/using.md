@@ -50,6 +50,12 @@ Elsewhere:
 
 Member lookup order is in `find_member`: direct members come before promoted ones, so a direct member shadows a promoted one {#using.15}. Default overrides resolve through `override_target`/`override_path` and apply when `default_initializer` builds the default value.
 
+Inline `#overlay` and `#place` targets use the same promoted-field resolver as
+ordinary member lookup, constrained to fields already laid out. Nested `using`
+embedding preserves its accumulated offset and each embedding's filter.
+Pointer-backed promoted storage has no inline layout offset and is rejected as
+an overlay/place target.
+
 Tests: `tests/stdlib/using-pointer-member.jai`, `using-member-default-override.jai`, `struct-body-member-path-override.jai`, `module-using-global.jai`, `module-using-import-reexport.jai`, `using-discard-struct-constants.jai`, `using-global-of-own-struct.jai`.
 
 ## Dependencies
