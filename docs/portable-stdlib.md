@@ -41,6 +41,15 @@ Runtime startup now creates owned scratch storage and embedding contexts;
 teardown frees its own storage even when a client replaces the active scratch
 pointer. Context records honor their required alignment.
 
+The runtime heap uses per-allocation headers around native allocations, with
+alignment derived from request size. Typed allocations and array growth therefore
+honor over-aligned element layouts with this allocator. Resizing preserves the
+common prefix even when alignment changes or the raw allocation shrinks.
+NewArray supports explicit alignment and returns the allocation base separately.
+Other allocators must supply sufficient alignment for typed New/array storage;
+those paths assert insufficient alignment instead of returning invalid typed
+pointers. Scratch allocation similarly aligns request sizes and checks overflow.
+
 ## Verification
 
 File provides Unix stdio operations, offset whole-file reads, preserving or
