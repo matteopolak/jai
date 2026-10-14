@@ -6,6 +6,19 @@ retained in the worktree and excluded from foundations commits.
 
 Implemented progress:
 
+- Both reviewed log and log_error overload families use shared private
+  contextual dispatch with exact parameters/defaults. Regression coverage
+  includes caller and explicit locations, nested context restoration, ERROR
+  addition, user flags, section/data identity, temporary message storage and
+  real default logger stdout/stderr. Policy questions (verbosity filtering,
+  newline/null logger/failure and lifetime) are explicit in the questions and
+  deviations documents; no broad logging-completeness claim hides these.
+- Added integer range/saturating cross-type clamping and enum name/s64/typed
+  value reflection. Name/s64 views preserve compiler storage; typed values
+  are temporary width-correct copies, including unsigned high-bit enums.
+  See the public-surface audit for the remaining genuine missing APIs and
+  overloads, separated from portable time/native responsibility.
+
 - Removed the invented standalone Basic.Buffer facade. The canonical
   String_Builder.Buffer declaration and optional ensured_count layout remain.
 - Added the reviewed builder print overload and temporary-storage tprint.

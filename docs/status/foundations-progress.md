@@ -1,5 +1,22 @@
 # Foundations progress
 
+Current Basic public-surface batch: both log overloads and both log_error
+overloads now dispatch real formatted messages through the active logger,
+preserving caller/explicit location, source identifier, data, section identity,
+flags and user flags. Added integer range/saturating clamping and three enum
+reflection helpers with width-correct values and canonical reflected views.
+Original missing-export tests first rejected, then pass. No legacy expectations
+or tool sources were changed. Public surface audit: docs/foundations-api-audit.md.
+
+Verification completed: all 30 positive interpreter/native O0/O2 cases and
+24 supported production WASI O0/O2 cases pass; unchanged real jaifmt rebuild,
+CLI/idempotence/owned --check and source-built jailint -D warnings pass. Cross
+target checks pass Linux x64/arm64, macOS x64/arm64, Windows x64/arm64 and
+WASM64 after read-only refresh of safe producer bindings. This resolves the
+previous macOS x64 itimerval binding blocker without a local binding patch.
+Actual auto-import/corpus CI remains coordinator verification. Logging policy
+and precise remaining helper contracts are recorded rather than fabricated.
+
 Verified numeric follow-up: exact normal powers of two have asymmetric
 rounding intervals, and nearest-decimal-only shortest search could emit one
 extra significant digit. Original float64 2^-1017 / float32 2^-96 regressions
