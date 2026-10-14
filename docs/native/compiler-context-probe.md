@@ -1,5 +1,12 @@
 # Current compiler scratch-context regression
 
+2026-10-14 resolution: safe producer compiler refresh incorporates the general
+initializer repair. The ordinary source-built compiler now builds actual
+`jaifmt/main.jai` against current foundations (including their new native-path
+dependency). All 40 owned production formatting/regeneration/regression/strict
+lint checks pass: `.work/production-owned-tool-checks.json`. The account below
+preserves historical failure/proposal evidence, not an active trial requirement.
+
 The current NEW compiler stores the active context through a runtime slot.
 Three type-checking scratch initializers still assign the context pointer
 directly, leaving that slot absent. Probing a context-requiring call in an
